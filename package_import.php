@@ -145,8 +145,25 @@ function form_save() {
 				$id = base64_decode(str_replace('chk_file_', '', $var));
 				$id = json_decode($id, true);
 
-				// Get rid of the basename
-				$id['pfile'] = str_replace($config['base_path'] . '/', '', $id['pfile']);
+				if (strpos($id['pfile'], '/') !== false) {
+					$parts = explode('/', $id['pfile']);
+				} elseif (strpos($id['pfile'], '\\') !== false) {
+					$parts = explode('\\', $id['pfile']);
+				} else {
+					$parts = array($id['pfile']);
+				}
+
+				foreach($parts as $index => $p) {
+					if ($p == 'scripts') {
+						break;
+					} elseif ($p == 'resource') {
+						break;
+					} else {
+						unset($parts[$index]);
+					}
+				}
+
+				$id['pfile'] = implode('/', $parts);
 
 				$files[] = $id['pfile'];
 			}
@@ -159,10 +176,16 @@ function form_save() {
 			}
 		}
 
+		if (cacti_sizeof($files) && !cacti_sizeof($hashes)) {
+			$hashes[] = "dont import";
+		} elseif (cacti_sizeof($hashes) && !cacti_sizeof($files)) {
+			$files[]  = "dont import";
+		}
+
 		$package_name = import_package_get_name($xmlfile);
 
 		/* obtain debug information if it's set */
-		$data = import_package($xmlfile, $profile_id, $remove_orphans, $replace_svalues, $preview_only, $hashes, $files);
+		$data = import_package($xmlfile, $profile_id, $remove_orphans, $replace_svalues, $preview_only, false, false, $hashes, $files);
 
 		if ($preview_only) {
 			package_prepare_import_array($templates, $files, $package_name, $xmlfile, $data);
