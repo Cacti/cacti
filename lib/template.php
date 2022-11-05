@@ -2130,6 +2130,11 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 				} else {
 					debug_log_insert('new_graphs', __('ERROR: No Data Source associated. Check Template'));
 				}
+
+				db_execute_prepared('INSERT IGNORE INTO host_graph
+					(host_id, graph_template_id)
+					VALUES(?, ?)',
+					array($host_id, $graph_template_id));
 			} else {
 				debug_log_insert('new_graphs', __('ERROR: Whitelist Validation Failed. Check Data Input Method'));
 			}

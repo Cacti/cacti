@@ -42,6 +42,7 @@ Cacti CHANGELOG
 -feature#4417: Remote Pollers - Support execution of custom functions at poller bottom
 -feature#4638: Detect the graph with stale rrd or missing rrd
 -feature#4762: Allow Package Import to be selective
+-feature#4967: Make adding Associated Graph Templates and Data Queries easier to use
 -feature#4786: Windows install does not support SVG rendering
 -feature#4820: When importing, make it possible to only import certain components
 -feature#4841: Move the cactid function db_check_reconnect() to lib/database.php for other service oriented scripts
