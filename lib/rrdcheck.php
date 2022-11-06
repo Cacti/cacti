@@ -47,7 +47,7 @@ function get_rrdfiles($thread_id = 1, $max_threads = 1) {
 		$split_size = ceil(cacti_sizeof($rows) / $max_threads);
 
 		$thread  = 1;
-		$rras = 0;
+		$rras    = 0;
 		$newrows = array();
 
 		foreach($rows as $row) {
@@ -69,7 +69,6 @@ function get_rrdfiles($thread_id = 1, $max_threads = 1) {
 	}
 }
 
-
 /**
  * rrdcheck_debug - this simple routine prints a standard message to the console
  *   when running in debug mode.
@@ -87,7 +86,7 @@ function rrdcheck_debug($message) {
 }
 
 /**
- * do_rrdcheck - this routine is a generic routine that 
+ * do_rrdcheck - this routine is a generic routine that
  *   check all RRDfiles (missing files, ...) and stored information (NaN)
  *
  * @param $thread_id - (int) the rrdcheck parallel thread id
@@ -152,8 +151,11 @@ function do_rrdcheck($thread_id = 1) {
 			// don't attempt to get information if the file does not exist
 			if ($file_exists) {
 				if (time() > (filemtime($file)+3600)) {
-					db_execute_prepared ('INSERT INTO rrdcheck (local_data_id,test_date,message) VALUES
-					(?,NOW(),?)', array($rrdfile['local_data_id'], "RRD file modify time older than hour - $file"));
+					db_execute_prepared ('INSERT INTO rrdcheck
+						(local_data_id,test_date,message)
+						VALUES (?, NOW(), ?)',
+						array($rrdfile['local_data_id'], "RRD file modify time older than hour - $file"));
+
 					$done[] = $rrdfile['local_data_id'];
 				} else {
 					$pstart = $start - $rrdfile['rrdstep'];
@@ -184,7 +186,7 @@ function do_rrdcheck($thread_id = 1) {
 								$data_source_names = preg_split('/\s+/', $line);
 
 								foreach ($data_source_names as $index => $name)  {
-                							$nan_24[$index] = 0;
+									$nan_24[$index] = 0;
 									$nan_1[$index] = 0;
 								}
 
@@ -209,14 +211,14 @@ function do_rrdcheck($thread_id = 1) {
 											$lines_1++;
 										}
 									}
-  
+
 									if (strtolower($number) == 'nan' || strtolower($number) == '-nan') {
 										$nan_24[$index]++;
 
 										if ($lines_24 > $one_hour_limit) {
 											$nan_1[$index]++;
 										}
-                        	        				}
+									}
 								}
 							}
 						}
@@ -229,16 +231,30 @@ function do_rrdcheck($thread_id = 1) {
 								$ratio = $count/$lines_24;
 							} else {
 								$ratio = 0;
+
 								cacti_log("WARNING: RRDcheck - something is wrong lines24=$lines_24, DS " . $data_source_names[$index] . ", file " .  $file  , false, 'rrdcheck');
 							}
 
 							if ($ratio == 1) {
-									db_execute_prepared ('INSERT INTO rrdcheck (local_data_id,test_date,message) VALUES
-										(?,NOW(),?)', array($rrdfile['local_data_id'], "Stale values for last 24 hours, DS $data_source_names[$index], file $file"));
-									$notified = true;
+								db_execute_prepared ('INSERT INTO rrdcheck
+									(local_data_id, test_date, message)
+									VALUES (?, NOW(), ?)',
+									array(
+										$rrdfile['local_data_id'],
+										"Stale values for last 24 hours, DS {$data_source_names[$index]}, file $file"
+									)
+								);
+
+								$notified = true;
 							} elseif ($ratio > 0.5) {
-								db_execute_prepared ('INSERT INTO rrdcheck (local_data_id,test_date,message) VALUES
-										(?,NOW(),?)', array($rrdfile['local_data_id'], "More than 50% ($count/$lines_24) values are NaN in last 24 hours, DS $data_source_names[$index], file $file"));
+								db_execute_prepared ('INSERT INTO rrdcheck
+									(local_data_id,test_date,message)
+									VALUES (?, NOW(), ?)',
+									array(
+										$rrdfile['local_data_id'],
+										"More than 50% ($count/$lines_24) values are NaN in last 24 hours, DS {$data_source_names[$index]}, file $file"
+									)
+								);
 							}
 						}
 
@@ -252,27 +268,45 @@ function do_rrdcheck($thread_id = 1) {
 								$ratio = $count/$lines_1;
 							} else {
 								$ratio = 0;
+
 								cacti_log("WARNING: RRDcheck - something is wrong lines1=$lines_1, DS " . $data_source_names[$index] . ", file " .  $file  , false, 'rrdcheck');
 							}
 
 							if ($ratio == 1) {
-								db_execute_prepared ('INSERT INTO rrdcheck (local_data_id,test_date,message) VALUES
-										(?,NOW(),?)', array($rrdfile['local_data_id'], "Stale values for last hour, DS $data_source_names[$index], file $file"));
+								db_execute_prepared ('INSERT INTO rrdcheck
+									(local_data_id, test_date, message)
+									VALUES (? , NOW(), ?)',
+									array(
+										$rrdfile['local_data_id'],
+										"Stale values for last hour, DS {$data_source_names[$index]}, file $file"
+									)
+								);
 							} elseif ($ratio > 0.5) {
-								db_execute_prepared ('INSERT INTO rrdcheck (local_data_id,test_date,message) VALUES
-									(?,NOW(),?)', array($rrdfile['local_data_id'], "More than 50% ($count/$lines_1) values are NaN in last hour, DS $data_source_names[$index], file $file"));
+								db_execute_prepared ('INSERT INTO rrdcheck
+									(local_data_id, test_date, message)
+									VALUES (?, NOW(), ?)',
+									array(
+										$rrdfile['local_data_id'],
+										"More than 50% ($count/$lines_1) values are NaN in last hour, DS {$data_source_names[$index]}, file $file"
+									)
+								);
 							}
 						}
 
 						$done[] = $rrdfile['local_data_id'];
 					} else {
 						cacti_log("WARNING: RRDcheck - no rrd data returned - " .  $file  , false, 'rrdcheck');
+
 						$done[] = $rrdfile['local_data_id'];
 					}
-				}	// end of process the rrd file
-			} else {	// rrdfile does not exist
-				db_execute_prepared ('INSERT INTO rrdcheck (local_data_id,test_date,message) VALUES
-					(?,NOW(),?)', array($rrdfile['local_data_id'], "RRD file does not exist - $file"));
+				}
+			} else {
+				// rrdfile does not exist
+				db_execute_prepared ('INSERT INTO rrdcheck
+					(local_data_id, test_date, message)
+					VALUES (?, NOW(), ?)',
+					array($rrdfile['local_data_id'], "RRD file does not exist - $file"));
+
 				$done[] = $rrdfile['local_data_id'];
 			}
 		}
@@ -298,8 +332,6 @@ function do_rrdcheck($thread_id = 1) {
 	}
 }
 
-
-
 /**
  * rrdcheck_log_statistics - provides generic timing message to both the Cacti log and the settings
  *   table so that the statistcs can be graphed as well.
@@ -315,8 +347,7 @@ function rrdcheck_log_statistics($type) {
 
 	if ($type == 'BOOST') {
 		$sub_type = 'bchild';
-	}
-	else {
+	} else {
 		$sub_type = '';
 	}
 
@@ -368,7 +399,7 @@ function rrdcheck_log_statistics($type) {
 	set_config_option('stats_rrdcheck_' . $type, $cacti_stats);
 
 	/* log to the logfile */
-	cacti_log('rrdcheck STATS: ' . $cacti_stats , true, 'SYSTEM');
+	cacti_log('RRDCHECK STATS: ' . $cacti_stats , true, 'SYSTEM');
 }
 
 /**
@@ -461,7 +492,6 @@ function rrdcheck_error_handler($errno, $errmsg, $filename, $linenum, $vars = []
 	return;
 }
 
-
 /**
  * rrdcheck_boost_bottom - this routine accomodates rrdcheck after the boost process
  *   has completed.  The use of boost will require boost version 2.5 or above.  The idea
@@ -484,14 +514,14 @@ function rrdcheck_boost_bottom() {
 		/* Wait for all processes to continue */
 		while ($running = rrdcheck_processes_running('bmaster')) {
 			rrdcheck_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
+
 			sleep(2);
 		}
 	}
 }
 
-
-/** 
- * rrdcheck_poller_bottom - this routine launches the main rrdcheck poller. 
+/**
+ * rrdcheck_poller_bottom - this routine launches the main rrdcheck poller.
  *   It is forked independently
  *   to the Cacti poller after all polling has finished.
  *
@@ -506,6 +536,7 @@ function rrdcheck_poller_bottom () {
 		chdir($config['base_path']);
 
 		$command_string = read_config_option('path_php_binary');
+
 		if (read_config_option('path_rrdcheck_log') != '') {
 			if ($config['cacti_server_os'] == 'unix') {
 				$extra_args = '-q ' . $config['base_path'] . '/poller_rrdcheck.php >> ' . read_config_option('path_rrdcheck_log') . ' 2>&1';
@@ -597,10 +628,13 @@ function rrdcheck_rrdtool_execute($command, &$pipes) {
 		}
 	} elseif (!$broken) {
 		cacti_log("ERROR: RRDtool was unable to fork.  Likely RRDtool can not be found or system out of resources.  Blocking subsequent messages.", false, 'POLLER');
+
 		$broken = true;
 	}
 
-	if (strlen($stdout)) return $stdout;
+	if (strlen($stdout)) {
+		return $stdout;
+	}
 }
 
 /**
@@ -657,13 +691,14 @@ function rrdcheck_launch_children($type) {
  */
 function rrdcheck_get_subtype($type) {
 	switch($type) {
-
-		case 'master': 
-		case 'pmaster': 
+		case 'master':
+		case 'pmaster':
 			return 'child';
+
 			break;
 		case 'bmaster':
 			return 'bchild';
+
 			break;
 	}
 }
@@ -696,6 +731,7 @@ function rrdcheck_kill_running_processes() {
 	if (cacti_sizeof($processes)) {
 		foreach($processes as $p) {
 			cacti_log(sprintf('WARNING: Killing rrdcheck %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'BOOST');
+
 			posix_kill($p['pid'], SIGTERM);
 
 			unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);

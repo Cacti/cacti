@@ -102,7 +102,7 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-/** 
+/**
  * Types include
  *
  * pmaster  - the main process launched from the Cacti main poller and will launch child processes
@@ -181,8 +181,6 @@ function rrdcheck_master_handler($forcerun) {
 
 	$last_run = read_config_option('rrdcheck_last_run_time');
 
-	rrdcheck_log_statistics('HOURLY');
-
 	/* see if boost is active or not */
 	$boost_active = read_config_option('boost_rrd_update_enable');
 
@@ -199,19 +197,19 @@ function rrdcheck_master_handler($forcerun) {
 			$run_interval = 240;
 		}
 
-		// determine if it's time to determine hourly averages 
+		// determine if it's time to determine hourly averages
 		if (empty($last_run)) {
-			// since the poller has never run before, let's fake it out 
+			// since the poller has never run before, let's fake it out
 			set_config_option('rrdcheck_last_run_time', date('Y-m-d G:i:s', $current_time));
 		}
 
-		// if it's time to check, do so now 
+		// if it's time to check, do so now
 		if ((!empty($last_run) && ((strtotime($last_run) + ($run_interval * 60)) < $current_time)) || $forcerun) {
 			set_config_option('rrdcheck_last_run_time', date('Y-m-d G:i:s', $current_time));
 
 			rrdcheck_launch_children($type);
 
-			// Wait for all processes to continue 
+			// Wait for all processes to continue
 			while ($running = rrdcheck_processes_running($type)) {
 				rrdcheck_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
 				sleep(2);
