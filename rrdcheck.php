@@ -141,7 +141,7 @@ function rrdcheck_display_problems() {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar($config['url_path'] . 'rrdcheck.php?filter'. get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('RRDcheck problems'), 'page', 'main');
+	$nav = html_nav_bar($config['url_path'] . 'rrdcheck.php?filter'. get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('RRDcheck Problems'), 'page', 'main');
 
 	form_start('rrdcheck.php');
 
