@@ -1113,13 +1113,15 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 		}
 	}
 
-	/* the first thing we must do is make sure there is at least one
-	rra associated with this data source... *
-	UPDATE: As of version 0.6.6, we are splitting this up into two
-	SQL strings because of the multiple DS per RRD support. This is
-	not a big deal however since this function gets called once per
-	data source */
-
+	/**
+	 * the first thing we must do is make sure there is at least one
+	 * rra associated with this data source... *
+	 *
+	 * UPDATE: As of version 0.6.6, we are splitting this up into two
+	 * SQL strings because of the multiple DS per RRD support. This is
+	 * not a big deal however since this function gets called once per
+	 * data source
+	 */
 	$rras = db_fetch_assoc_prepared('SELECT
 		dtd.rrd_step, dsp.x_files_factor, dspr.steps, dspr.rows,
 		dspc.consolidation_function_id,
@@ -1145,21 +1147,26 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 	/* create the "--step" line */
 	$create_ds = RRD_NL . '--start 0 --step '. $rras[0]['rrd_step'] . ' ' . RRD_NL;
 
-	/* query the data sources to be used in this .rrd file */
-	$data_sources = db_fetch_assoc_prepared('SELECT
-		data_template_rrd.id,
-		data_template_rrd.rrd_heartbeat,
-		data_template_rrd.rrd_minimum,
-		data_template_rrd.rrd_maximum,
-		data_template_rrd.data_source_type_id
-		FROM data_template_rrd
-		WHERE data_template_rrd.local_data_id = ?
-		ORDER BY local_data_template_rrd_id', array($local_data_id));
+	/**
+	 * Only use the Data Sources that are included in the Graph in the case that there
+	 * is a Data Template that includes more Data Sources than there Graph Template
+	 * uses.
+	 */
+	$data_sources = db_fetch_assoc_prepared('SELECT DISTINCT dtr.id, dtr.data_source_name, dtr.rrd_heartbeat,
+		dtr.rrd_minimum, dtr.rrd_maximum, dtr.data_source_type_id
+		FROM data_template_rrd AS dtr
+		INNER JOIN graph_templates_item AS gti
+		ON dtr.id = gti.task_item_id
+		WHERE dtr.local_data_id = ?
+		ORDER BY local_data_template_rrd_id',
+		array($local_data_id));
 
-	/* ONLY make a new DS entry if:
-	- There is multiple data sources and this item is not the main one.
-	- There is only one data source (then use it) */
-
+	/**
+	 * ONLY make a new DS entry if:
+	 *
+	 * - There are multiple data sources and this item is not the main one.
+	 * - There are only one data source (then use it)
+	 */
 	if (cacti_sizeof($data_sources)) {
 		foreach ($data_sources as $data_source) {
 			/* use the cacti ds name by default or the user defined one, if entered */
@@ -1198,8 +1205,9 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 		$create_rra .= 'RRA:' . $consolidation_functions[$rra['consolidation_function_id']] . ':' . $rra['x_files_factor'] . ':' . $rra['steps'] . ':' . $rra['rows'] . RRD_NL;
 	}
 
-	/* check for structured path configuration, if in place verify directory
-	   exists and if not create it.
+	/**
+	 * check for structured path configuration, if in place verify directory
+	 * exists and if not create it.
 	 */
 	if (read_config_option('extended_paths') == 'on') {
 		if (read_config_option('storage_location') > 0) {
@@ -1245,7 +1253,6 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
    @arg $rrd_update_template  - the order in which values need to be added
    @arg $rrd_update_values    - values to include in the database */
 function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_template, &$rrd_update_values, &$rrdtool_pipe) {
-
 	/* lets count the number of rrd files processed */
 	$rrds_processed = 0;
 
@@ -1268,10 +1275,12 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 	}
 
 	if ($file_exists == false) {
+cacti_log("File for LDI: $local_data_id does not exist!");
 		$ds_exists = db_fetch_cell_prepared('SELECT id FROM data_local WHERE id = ?', array($local_data_id));
 
 		// Check for a Data Source that has been removed
 		if ($ds_exists) {
+cacti_log("Creating for LDI: $local_data_id does not exist!");
 			$valid_entry = boost_rrdtool_function_create($local_data_id, false, $rrdtool_pipe);
 		} else {
 			return 'OK';

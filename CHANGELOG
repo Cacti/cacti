@@ -29,6 +29,7 @@ Cacti CHANGELOG
 -issue#4971: Deprecation warnings in log files with php 8.2 associate with mib parser
 -issue#4978: Graph timezone issue
 -issue#4980: Business Hour php errors
+-issue#4988: Data Templates that include many Data Sources bug only a few are used, cause RRDfile bloat
 -feature#1100: Structured path not created when using remote poller and Update On-Demand
 -feature#1392: AJAX handled errors do not notify Admins that page errors exist
 -feature#2239: Allow Import and Export to be more controlled
