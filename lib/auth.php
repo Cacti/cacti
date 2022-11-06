@@ -547,10 +547,10 @@ function get_auth_realms($login = false) {
  *
  * @return (bool) whether the current user is allowed the view the specified graph or not
  */
-function is_graph_allowed($local_graph_id, $user = 0) {
+function is_graph_allowed($local_graph_id, $user_id = 0) {
 	$rows  = 0;
 
-	get_allowed_graphs('', '', '', $rows, $user, $local_graph_id);
+	get_allowed_graphs('', '', '', $rows, $user_id, $local_graph_id);
 
 	return ($rows > 0);
 }
@@ -674,8 +674,8 @@ function auth_augment_roles_byname($role_name, $auth_name) {
  *
  * @return (bool) whether the current user is allowed the view the specified graph tree or not
  */
-function is_tree_allowed($tree_id, $user = 0) {
-	if ($user == -1) {
+function is_tree_allowed($tree_id, $user_id = 0) {
+	if ($user_id == -1) {
 		return true;
 	}
 
@@ -684,9 +684,9 @@ function is_tree_allowed($tree_id, $user = 0) {
 	}
 
 	if (read_config_option('auth_method') != 0) {
-		if ($user == 0) {
+		if ($user_id == 0) {
 			if (isset($_SESSION['sess_user_id'])) {
-				$user = $_SESSION['sess_user_id'];
+				$user_id = $_SESSION['sess_user_id'];
 			} else {
 				$_SESSION['sess_tree_perms'][$tree_id] = false;
 
@@ -697,14 +697,14 @@ function is_tree_allowed($tree_id, $user = 0) {
 		$policy = db_fetch_cell_prepared('SELECT policy_trees
 			FROM user_auth
 			WHERE id = ?',
-			array($user));
+			array($user_id));
 
 		$trees  = db_fetch_assoc_prepared('SELECT user_id
 			FROM user_auth_perms
 			WHERE user_id = ?
 			AND type = 2
 			AND item_id = ?',
-			array($user, $tree_id));
+			array($user_id, $tree_id));
 
 		if (auth_check_perms($trees, $policy)) {
 			$_SESSION['sess_tree_perms'][$tree_id] = true;
@@ -719,7 +719,7 @@ function is_tree_allowed($tree_id, $user = 0) {
 			ON uag.id = uagm.group_id
 			WHERE uag.enabled = 'on'
 			AND uagm.user_id = ?",
-			array($user));
+			array($user_id));
 
 		if (!cacti_sizeof($groups)) {
 			$_SESSION['sess_tree_perms'][$tree_id] = false;
@@ -745,7 +745,7 @@ function is_tree_allowed($tree_id, $user = 0) {
 			WHERE uag.enabled = 'on'
 			AND uagm.user_id = ?
 			AND uagp.item_id = ?",
-			array($user, $tree_id));
+			array($user_id, $tree_id));
 
 		foreach ($groups as $g) {
 			if (auth_check_perms($gtrees, $g['policy_trees'])) {
@@ -772,9 +772,9 @@ function is_tree_allowed($tree_id, $user = 0) {
  *
  * @return (bool) whether the current user is allowed the view the specified device or not
  */
-function is_device_allowed($host_id, $user = 0) {
+function is_device_allowed($host_id, $user_id = 0) {
 	$total_rows = -2;
-	get_allowed_devices('', '', '', $total_rows, $user, $host_id);
+	get_allowed_devices('', '', '', $total_rows, $user_id, $host_id);
 	return ($total_rows > 0);
 }
 
@@ -1074,7 +1074,7 @@ function is_realm_allowed($realm, $check_user = false) {
  *
  * @return (array) An array of Tree branch items that a re allowed (graphs, devices)
  */
-function get_allowed_tree_level($tree_id, $parent_id, $editing = false, $user = 0) {
+function get_allowed_tree_level($tree_id, $parent_id, $editing = false, $user_id = 0) {
 	$items = db_fetch_assoc_prepared('SELECT gti.id, gti.title, gti.host_id,
 		gti.site_id, gti.local_graph_id, gti.host_grouping_type,
 		h.description AS hostname, s.name AS sitename
@@ -1095,11 +1095,11 @@ function get_allowed_tree_level($tree_id, $parent_id, $editing = false, $user = 
 		if (cacti_sizeof($items)) {
 			foreach($items as $item) {
 				if ($item['host_id'] > 0) {
-					if (!is_device_allowed($item['host_id'], $user)) {
+					if (!is_device_allowed($item['host_id'], $user_id)) {
 						unset($items[$i]);
 					}
 				} elseif($item['local_graph_id'] > 0) {
-					if (!is_graph_allowed($item['local_graph_id'], $user)) {
+					if (!is_graph_allowed($item['local_graph_id'], $user_id)) {
 						unset($items[$i]);
 					}
 				}
@@ -1126,7 +1126,7 @@ function get_allowed_tree_level($tree_id, $parent_id, $editing = false, $user = 
  *
  * @return (array) An array of Tree branch items that a re allowed (graphs, devices)
  */
-function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $sql_order = '', $sql_limit = '', &$total_rows = 0, $user = 0) {
+function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $sql_order = '', $sql_limit = '', &$total_rows = 0, $user_id = 0) {
 	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
@@ -1157,7 +1157,7 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $sql_o
 	}
 
 	$trees = array_rekey(
-		get_allowed_trees(false, false, '', '', '', $total_rows, $user),
+		get_allowed_trees(false, false, '', '', '', $total_rows, $user_id),
 		'id', 'name'
 	);
 
@@ -1222,7 +1222,7 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $sql_o
  *
  * @return (array) An array of policy objects comprising the users permissions
  */
-function get_policies($user) {
+function get_policies($user_id) {
 	/* get policies for all user groups */
 	$policies = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type, uag.name,
 		uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates, uag.policy_trees
@@ -1231,14 +1231,14 @@ function get_policies($user) {
 		ON uag.id = uagm.group_id
 		WHERE uag.enabled = 'on'
 		AND uagm.user_id = ?",
-		array($user));
+		array($user_id));
 
 	/* get policies for the user */
 	$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, 'user' AS name,
 		policy_graphs, policy_hosts, policy_graph_templates, policy_trees
 		FROM user_auth
 		WHERE id = ?",
-		array($user));
+		array($user_id));
 
 	return $policies;
 }
@@ -1256,7 +1256,7 @@ function get_policies($user) {
  *
  * @return (array) Array of tree header graphs to display
  */
-function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '', $sql_order = 'gti.position', $sql_limit = '', &$total_rows = 0, $user = 0) {
+function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '', $sql_order = 'gti.position', $sql_limit = '', &$total_rows = 0, $user_id = 0) {
 	if (!is_numeric($tree_id)) {
 		return array();
 	}
@@ -1285,15 +1285,15 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(h.disabled = "" OR h.disabled IS NULL)';
 	}
 
-	if ($user == -1) {
+	if ($user_id == -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user == 0) {
+	if ($auth_method > 0 && $user_id == 0) {
 		if (isset($_SESSION['sess_user_id'])) {
-			$user = $_SESSION['sess_user_id'];
+			$user_id = $_SESSION['sess_user_id'];
 		} else {
 			return array();
 		}
@@ -1302,7 +1302,7 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 	$graph_auth_method = read_config_option('graph_auth_method');
 
 	/* get policies for all groups and user */
-	$policies = get_policies($user);
+	$policies = get_policies($user_id);
 
 	if ($auth_method != 0) {
 		$sql_where = get_policy_where($graph_auth_method, $policies, $sql_where);
@@ -1324,7 +1324,7 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 		$sql_order
 		$sql_limit");
 
-	$total_rows = db_fetch_cell("SELECT COUNT(*)
+	$sql = "SELECT COUNT(*)
 		FROM graph_templates_graph AS gtg
 		INNER JOIN graph_local AS gl
 		ON gl.id=gtg.local_graph_id
@@ -1334,7 +1334,9 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 		ON gt.id=gl.graph_template_id
 		LEFT JOIN host AS h
 		ON h.id=gl.host_id
-		$sql_where");
+		$sql_where";
+
+	$total_rows = get_total_row_data($user_id, $sql, array(), 'graph');
 
 	return $graphs;
 }
@@ -1352,7 +1354,7 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
  *
  * @return (array) Array of allowed graphs
  */
-function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sql_limit = '', &$total_rows = 0, $user = 0, $graph_id = 0) {
+function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sql_limit = '', &$total_rows = 0, $user_id = 0, $graph_id = 0) {
 	if ($sql_limit != '') {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
@@ -1377,28 +1379,28 @@ function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sq
 		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL)";
 	}
 
-	if ($user == -1) {
+	if ($user_id == -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user == 0) {
+	if ($auth_method > 0 && $user_id == 0) {
 		if (isset($_SESSION['sess_user_id'])) {
-			$user = $_SESSION['sess_user_id'];
+			$user_id = $_SESSION['sess_user_id'];
 		} else {
 			return array();
 		}
 	}
 
 	/* see if permissions are simple */
-	$simple_perms = get_simple_graph_perms($user);
+	$simple_perms = get_simple_graph_perms($user_id);
 
 	/* in case we need to review get the graph_auth_method */
 	$graph_auth_method = read_config_option('graph_auth_method');
 
 	/* get policies for all groups and user */
-	$policies = get_policies($user);
+	$policies = get_policies($user_id);
 
 	if (!$simple_perms && $auth_method != 0) {
 		$sql_where = get_policy_where($graph_auth_method, $policies, $sql_where);
@@ -1418,7 +1420,7 @@ function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sq
 		$sql_order
 		$sql_limit");
 
-	$total_rows = db_fetch_cell("SELECT COUNT(*)
+	$sql = "SELECT COUNT(*)
 		FROM graph_templates_graph AS gtg
 		INNER JOIN graph_local AS gl
 		ON gl.id=gtg.local_graph_id
@@ -1426,7 +1428,13 @@ function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sq
 		ON gt.id=gl.graph_template_id
 		LEFT JOIN host AS h
 		ON h.id=gl.host_id
-		$sql_where");
+		$sql_where";
+
+	if ($graph_id == 0) {
+		$total_rows = get_total_row_data($user_id, $sql, array(), 'graph');
+	} else {
+		$total_rows = db_fetch_cell($sql);
+	}
 
 	return $graphs;
 }
@@ -1444,7 +1452,7 @@ function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sq
  *
  * @return (array) Array of allowed graphs
  */
-function get_allowed_aggregate_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sql_limit = '', &$total_rows = 0, $user = 0, $graph_id = 0) {
+function get_allowed_aggregate_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sql_limit = '', &$total_rows = 0, $user_id = 0, $graph_id = 0) {
 	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
@@ -1469,28 +1477,28 @@ function get_allowed_aggregate_graphs($sql_where = '', $sql_order = 'gtg.title_c
 		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL)";
 	}
 
-	if ($user == -1) {
+	if ($user_id == -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user == 0) {
+	if ($auth_method > 0 && $user_id == 0) {
 		if (isset($_SESSION['sess_user_id'])) {
-			$user = $_SESSION['sess_user_id'];
+			$user_id = $_SESSION['sess_user_id'];
 		} else {
 			return array();
 		}
 	}
 
 	/* see if permissions are simple */
-	$simple_perms = get_simple_graph_perms($user);
+	$simple_perms = get_simple_graph_perms($user_id);
 
 	/* in case we need to review get the graph_auth_method */
 	$graph_auth_method = read_config_option('graph_auth_method');
 
 	/* get policies for all groups and user */
-	$policies = get_policies($user);
+	$policies = get_policies($user_id);
 
 	if (!$simple_perms && $auth_method != 0) {
 		$sql_where = get_policy_where($graph_auth_method, $policies, $sql_where);
@@ -1518,7 +1526,7 @@ function get_allowed_aggregate_graphs($sql_where = '', $sql_order = 'gtg.title_c
 		$sql_order
 		$sql_limit");
 
-	$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT gl.id)
+	$sql = "SELECT COUNT(DISTINCT gl.id)
 		FROM graph_templates_graph AS gtg
 		INNER JOIN (
 			SELECT ag.local_graph_id AS id, gl.host_id, gl.graph_template_id,
@@ -1534,7 +1542,9 @@ function get_allowed_aggregate_graphs($sql_where = '', $sql_order = 'gtg.title_c
 		ON gt.id=gl.graph_template_id
 		LEFT JOIN host AS h
 		ON h.id=gl.host_id
-		$sql_where");
+		$sql_where";
+
+	$total_rows = get_total_row_data($user_id, $sql, array(), 'aggregate_graph');
 
 	return $graphs;
 }
@@ -1595,7 +1605,7 @@ function get_simple_device_perms($user) {
  *
  * @return (bool)   True if simple permissions are in place, otherwise false
  */
-function get_simple_graph_perms($user) {
+function get_simple_graph_perms($user_id) {
 	if (isset($_SESSION['sess_simple_perms'])) {
 		return $_SESSION['sess_simple_perms'];
 	}
@@ -1603,13 +1613,13 @@ function get_simple_graph_perms($user) {
 	$policy_graphs = db_fetch_cell_prepared('SELECT policy_graphs
 		FROM user_auth
 		WHERE id = ?',
-		array($user));
+		array($user_id));
 
 	$perm_count = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM user_auth_perms
 		WHERE user_id = ?
 		AND type = 1',
-		array($user));
+		array($user_id));
 
 	if ($policy_graphs == 1 && $perm_count == 0) {
 		$_SESSION['sess_simple_perms'] = true;
@@ -1625,7 +1635,7 @@ function get_simple_graph_perms($user) {
 			WHERE uagp.type = 1
 			AND uagm.user_id = ?
 			GROUP BY uag.id',
-			array($user));
+			array($user_id));
 
 		if (cacti_sizeof($policies)) {
 			foreach($policies as $p) {
@@ -1652,7 +1662,7 @@ function get_simple_graph_perms($user) {
  *
  * @return (bool)   True if simple permissions are in place, otherwise false
  */
-function get_simple_graph_template_perms($user) {
+function get_simple_graph_template_perms($user_id) {
 	if (isset($_SESSION['sess_simple_template_perms'])) {
 		return $_SESSION['sess_simple_template_perms'];
 	}
@@ -1660,13 +1670,13 @@ function get_simple_graph_template_perms($user) {
 	$policy_graph_templates = db_fetch_cell_prepared('SELECT policy_graph_templates
 		FROM user_auth
 		WHERE id = ?',
-		array($user));
+		array($user_id));
 
 	$perm_count = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM user_auth_perms
 		WHERE user_id = ?
 		AND type = 4',
-		array($user));
+		array($user_id));
 
 	if ($policy_graph_templates == 1 && $perm_count == 0) {
 		$_SESSION['sess_simple_template_perms'] = true;
@@ -1682,7 +1692,7 @@ function get_simple_graph_template_perms($user) {
 			WHERE uagp.type = 4
 			AND uagm.user_id = ?
 			GROUP BY uag.id',
-			array($user));
+			array($user_id));
 
 		if (cacti_sizeof($policies)) {
 			foreach($policies as $p) {
@@ -1713,10 +1723,10 @@ function get_simple_graph_template_perms($user) {
  *
  * @return (array)  An array of permitted Graph Templates
  */
-function get_allowed_graph_templates($sql_where = '', $sql_order = 'gt.name', $sql_limit = '', &$total_rows = 0, $user = 0, $graph_template_id = 0) {
-	if ($user == 0) {
+function get_allowed_graph_templates($sql_where = '', $sql_order = 'gt.name', $sql_limit = '', &$total_rows = 0, $user_id = 0, $graph_template_id = 0) {
+	if ($user_id == 0) {
 		if (isset($_SESSION['sess_user_id'])) {
-			$user = $_SESSION['sess_user_id'];
+			$user_id = $_SESSION['sess_user_id'];
 		} else {
 			return array();
 		}
@@ -1745,31 +1755,31 @@ function get_allowed_graph_templates($sql_where = '', $sql_order = 'gt.name', $s
 
 	$sql_where = 'WHERE ' . ($sql_where != '' ? $sql_where . ' AND ':' ') . '(gt.id IS NOT NULL) ';
 
-	if ($user == -1) {
+	if ($user_id == -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user == 0) {
+	if ($auth_method > 0 && $user_id == 0) {
 		if (isset($_SESSION['sess_user_id'])) {
-			$user = $_SESSION['sess_user_id'];
+			$user_id = $_SESSION['sess_user_id'];
 		} else {
 			return array();
 		}
 	}
 
 	/* see if permissions are simple */
-	$simple_perms = get_simple_graph_perms($user);
+	$simple_perms = get_simple_graph_perms($user_id);
 
 	/* in case we need to review get the graph_auth_method */
 	$graph_auth_method = read_config_option('graph_auth_method');
 
 	/* get policies for all groups and user */
-	$policies = get_policies($user);
+	$policies = get_policies($user_id);
 
 	/* short circuit if we don't have a user */
-	if ($auth_method > 0 && $user == 0) {
+	if ($auth_method > 0 && $user_id == 0) {
 		return array();
 	}
 
@@ -1791,13 +1801,15 @@ function get_allowed_graph_templates($sql_where = '', $sql_order = 'gt.name', $s
 	}
 
 	if ($total_rows >= 0 || $total_rows == -2) {
-		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT gl.graph_template_id) AS id
+		$sql = "SELECT COUNT(DISTINCT gl.graph_template_id) AS id
 			FROM graph_local AS gl
 			LEFT JOIN graph_templates AS gt
 			ON gt.id = gl.graph_template_id
 			LEFT JOIN host AS h
 			ON h.id = gl.host_id
-			$sql_where");
+			$sql_where";
+
+		$total_rows = get_total_row_data($user_id, $sql, array(), 'graph');
 	}
 
 	// For timing
@@ -2358,7 +2370,7 @@ function get_permission_string(&$graph, &$policies) {
  *
  * @return (string|array)  An array of permitted Trees or the SQL to gather them
  */
-function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', $sql_order = 'name', $sql_limit = '', &$total_rows = 0, $user = 0) {
+function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', $sql_order = 'name', $sql_limit = '', &$total_rows = 0, $user_id = 0) {
 	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
@@ -2369,16 +2381,16 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
 		$sql_order = "ORDER BY $sql_order";
 	}
 
-	if ($user == -1) {
+	if ($user_id == -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
 	if ($auth_method != 0) {
-		if ($user == 0) {
+		if ($user_id == 0) {
 			if (isset($_SESSION['sess_user_id'])) {
-				$user = $_SESSION['sess_user_id'];
+				$user_id = $_SESSION['sess_user_id'];
 			} else {
 				return array();
 			}
@@ -2390,9 +2402,9 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
 			ON uag.id = uagm.group_id
 			WHERE uag.enabled = 'on'
 			AND uagm.user_id = ?",
-			array($user));
+			array($user_id));
 
-		$policies[] = db_fetch_row_prepared("SELECT id, 'user' as type, policy_trees FROM user_auth WHERE id = ?", array($user));
+		$policies[] = db_fetch_row_prepared("SELECT id, 'user' as type, policy_trees FROM user_auth WHERE id = ?", array($user_id));
 
 		$i          = 0;
 		$sql_join   = '';
@@ -2429,10 +2441,12 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
 		} else {
 			$trees = db_fetch_assoc($sql);
 
-			$total_rows = db_fetch_cell("SELECT COUNT(gt.id)
+			$sql = "SELECT COUNT(gt.id)
 				FROM graph_tree AS gt
 				$sql_join
-				$sql_where");
+				$sql_where";
+
+			$total_rows = get_total_row_data($user_id, $sql, array(), 'tree');
 		}
 	} else {
 		if ($sql_where != '') {
@@ -2444,8 +2458,11 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
 		if ($return_sql) {
 			return "SELECT id, name FROM graph_tree $sql_where $sql_order";
 		} else {
-			$trees      = db_fetch_assoc("SELECT id, name FROM graph_tree AS gt $sql_where $sql_order");
-			$total_rows = db_fetch_cell("SELECT COUNT(*) FROM graph_tree AS gt $sql_where");
+			$trees = db_fetch_assoc("SELECT id, name FROM graph_tree AS gt $sql_where $sql_order");
+
+			$sql = "SELECT COUNT(*) FROM graph_tree AS gt $sql_where";
+
+			$total_rows = get_total_row_data($user_id, $sql, array(), 'tree');
 		}
 	}
 
@@ -2466,7 +2483,7 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
  *
  * @return (array)  An array of permitted Tree branches
  */
-function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit = '', &$total_rows = 0, $user = 0) {
+function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit = '', &$total_rows = 0, $user_id = 0) {
 	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
@@ -2480,24 +2497,24 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
 	// suppress total rows
 	$total_rows = -1;
 
-	if ($user == -1) {
+	if ($user_id == -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user == 0) {
+	if ($auth_method > 0 && $user_id == 0) {
 		if (isset($_SESSION['sess_user_id'])) {
-			$user = $_SESSION['sess_user_id'];
+			$user_id = $_SESSION['sess_user_id'];
 		} else {
 			return array();
 		}
 	}
 
-	$simple_perms = get_simple_device_perms($user);
+	$simple_perms = get_simple_device_perms($user_id);
 
 	/* get policies for all groups and user */
-	$policies = get_policies($user);
+	$policies = get_policies($user_id);
 
 	$sql_hosts_where = '';
 
@@ -2574,9 +2591,11 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
 			$sql_order
 			$sql_limit";
 
-		$branches   = db_fetch_assoc($sql);
+		$branches = db_fetch_assoc($sql);
 
-		$total_rows = db_fetch_cell('SELECT COUNT(*) FROM (' . $sql . ') AS rower');
+		$sql = 'SELECT COUNT(*) FROM (' . $sql . ') AS rower';
+
+		$total_rows = get_total_row_data($user_id, $sql, array(), 'branch');
 	} else {
 		if ($sql_where != '') {
 			$sql_where = "WHERE gt.enabled='on' AND h.disabled='' AND ((h.id > 0 AND h.deleted = '') OR h.id IS NULL) AND $sql_where";
@@ -2605,8 +2624,11 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
 			$sql_order
 			$sql_limit";
 
-		$branches   = db_fetch_assoc($sql);
-		$total_rows = db_fetch_cell('SELECT COUNT(*) FROM (' . $sql . ') AS rower');
+		$branches = db_fetch_assoc($sql);
+
+		$sql = 'SELECT COUNT(*) FROM (' . $sql . ') AS rower';
+
+		$total_rows = get_total_row_data($user_id, $sql, array(), 'branch');
 	}
 
 	return $branches;
@@ -2625,22 +2647,22 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
  *
  * @return (array)  An array of permitted devices
  */
-function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_limit = '', &$total_rows = 0, $user = 0, $host_id = 0) {
-	if ($user == -1) {
+function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_limit = '', &$total_rows = 0, $user_id = 0, $host_id = 0) {
+	if ($user_id == -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user == 0) {
+	if ($auth_method > 0 && $user_id == 0) {
 		if (isset($_SESSION['sess_user_id'])) {
-			$user = $_SESSION['sess_user_id'];
+			$user_id = $_SESSION['sess_user_id'];
 		} else {
 			return array();
 		}
 	}
 
-	$simple_perms = get_simple_device_perms($user);
+	$simple_perms = get_simple_device_perms($user_id);
 
 	$init_rows = $total_rows;
 
@@ -2670,7 +2692,7 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
 		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . " h.id=$host_id";
 	}
 
-	if ($user == -1) {
+	if ($user_id == -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
@@ -2679,7 +2701,7 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
 	$graph_auth_method = read_config_option('graph_auth_method');
 
 	/* get policies for all groups and user */
-	$policies = get_policies($user);
+	$policies = get_policies($user_id);
 
 	if (!$simple_perms && $auth_method != 0) {
 		$sql_where = get_policy_where($graph_auth_method, $policies, $sql_where);
@@ -2708,7 +2730,7 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
 	}
 
 	if ($total_rows >= 0 || $total_rows == -2) {
-		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT id)
+		$sql = "SELECT COUNT(DISTINCT id)
 			FROM (
 				SELECT h.id
 				FROM host AS h
@@ -2719,7 +2741,9 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
 				LEFT JOIN host_template AS ht
 				ON h.host_template_id=ht.id
 				$sql_where
-			) AS rower");
+			) AS rower";
+
+		$total_rows = get_total_row_data($user_id, $sql, array(), 'device');
 	}
 
 	return $host_list;
@@ -2739,7 +2763,7 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
  *
  * @return (array)  An array of permitted sites
  */
-function get_allowed_sites($sql_where = '', $sql_order = 'name', $sql_limit = '', &$total_rows = 0, $user = 0, $site_id = 0) {
+function get_allowed_sites($sql_where = '', $sql_order = 'name', $sql_limit = '', &$total_rows = 0, $user_id = 0, $site_id = 0) {
 	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
@@ -2758,14 +2782,14 @@ function get_allowed_sites($sql_where = '', $sql_order = 'name', $sql_limit = ''
 		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . " s.id=$site_id";
 	}
 
-	if ($user == -1) {
+	if ($user_id == -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if (isset($_SESSION['sess_user_id']) && $user == 0) {
-		$user = $_SESSION['sess_user_id'];
+	if (isset($_SESSION['sess_user_id']) && $user_id == 0) {
+		$user_id = $_SESSION['sess_user_id'];
 	} elseif ($auth_method > 0) {
 		return array();
 	}
@@ -2779,11 +2803,13 @@ function get_allowed_sites($sql_where = '', $sql_order = 'name', $sql_limit = ''
 		$sql_order
 		$sql_limit");
 
-	$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT s.id)
+	$sql = "SELECT COUNT(DISTINCT s.id)
 		FROM sites AS s
 		INNER JOIN host AS h
 		ON s.id=h.site_id
-		$sql_where");
+		$sql_where";
+
+	$total_rows = get_total_row_data($user_id, $sql, array(), 'site_device');
 
 	return $sites;
 }
@@ -2802,24 +2828,24 @@ function get_allowed_sites($sql_where = '', $sql_order = 'name', $sql_limit = ''
  *
  * @return (array)  An array of permitted site devices
  */
-function get_allowed_site_devices($site_id, $sql_where = '', $sql_order = 'description', $sql_limit = '', &$total_rows = 0, $user = 0) {
-	if ($user == -1) {
+function get_allowed_site_devices($site_id, $sql_where = '', $sql_order = 'description', $sql_limit = '', &$total_rows = 0, $user_id = 0) {
+	if ($user_id == -1) {
 		$auth_method = 0;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user == 0) {
+	if ($auth_method > 0 && $user_id == 0) {
 		if (isset($_SESSION['sess_user_id'])) {
-			$user = $_SESSION['sess_user_id'];
+			$user_id = $_SESSION['sess_user_id'];
 		} else {
 			return array();
 		}
 	}
 
-	$simple_perms = get_simple_device_perms($user);
+	$simple_perms = get_simple_device_perms($user_id);
 
-	$policies = get_policies($user);
+	$policies = get_policies($user_id);
 
 	$graph_auth_method = read_config_option('graph_auth_method');
 
@@ -2875,7 +2901,7 @@ function get_allowed_site_devices($site_id, $sql_where = '', $sql_order = 'descr
 		$sql_order
 		$sql_limit");
 
-	$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT id)
+	$sql = "SELECT COUNT(DISTINCT id)
 		FROM (
 			SELECT h.id
 			FROM host AS h
@@ -2888,7 +2914,9 @@ function get_allowed_site_devices($site_id, $sql_where = '', $sql_order = 'descr
 			LEFT JOIN host_template AS ht
 			ON h.host_template_id=ht.id
 			$sql_where
-		) AS rower");
+		) AS rower";
+
+	$total_rows = get_total_row_data($user_id, $sql, array(), 'site_device');
 
 	return $host_list;
 }
@@ -2907,8 +2935,8 @@ function get_allowed_site_devices($site_id, $sql_where = '', $sql_order = 'descr
  *
  * @return (array)  An array of permitted and normalized graph templates
  */
-function get_allowed_graph_templates_normalized($sql_where = '', $sql_order = 'name', $sql_limit = '', &$total_rows = 0, $user = 0, $graph_template_id = 0) {
-	$templates = array_rekey(get_allowed_graph_templates($sql_where, $sql_order, $sql_limit, $total_rows, $user, $graph_template_id), 'id', 'name');
+function get_allowed_graph_templates_normalized($sql_where = '', $sql_order = 'name', $sql_limit = '', &$total_rows = 0, $user_id = 0, $graph_template_id = 0) {
+	$templates = array_rekey(get_allowed_graph_templates($sql_where, $sql_order, $sql_limit, $total_rows, $user_id, $graph_template_id), 'id', 'name');
 
 	if (!cacti_sizeof($templates)) {
 		return array();
@@ -2945,6 +2973,75 @@ function get_allowed_graph_templates_normalized($sql_where = '', $sql_order = 'n
 		$sql_limit");
 
 	return $templates;
+}
+
+/**
+ * get_total_row_data - returns the total rows based upon a set of criteria
+ *
+ * This function will hash the $sql, and then search for the total
+ * row counter based upon that criteria and if it finds a unexpired
+ * match for that data, it will return the row count in the table
+ * otherwise, it will execute the SQL and return the data.
+ *
+ * @param  (int)    The user id making the request
+ * @param  (string) The sql to be executed, either prepared or otherwise
+ * @param  (array)  In the case of a prepared statement the
+ * @param  (string) The user defined class of data
+ * @param  (int)    The timeout for the Class if not controlled by Cacti
+ *
+ * @return (array) an array containing a list of hosts
+ */
+function get_total_row_data($user_id, $sql, $sql_params = array(), $class = '', $timeout = 86400) {
+	$execute  = true;
+	$now_time = time();
+
+	if (cacti_sizeof($sql_params)) {
+		$nsql = str_replace('?', "'%s'", $sql);
+		$nsql = vsprintf($nsql, $sql_params);
+
+		$hash = md5($nsql);
+	} else {
+		$hash = md5($sql);
+	}
+
+	$row_data = db_fetch_row_prepared('SELECT *
+		FROM user_auth_row_cache
+		WHERE user_id = ?
+		AND class = ?
+		AND hash = ?',
+		array($user_id, $class, $hash));
+
+	$cached = false;
+
+	if (cacti_sizeof($row_data)) {
+		$cached    = true;
+		$last_time = read_config_option('time_last_change_' . $class);
+
+		if (!empty($last_time)) {
+			if ($row_data['time'] >= $last_time) {
+				return $row_data['total_rows'];
+			}
+		} elseif ($now_time - $row_data['time'] < $timeout) {
+			return $row_data['total_rows'];
+		}
+	}
+
+	if ($class != '') {
+		set_config_option('time_last_change_' . $class, $now_time);
+	}
+
+	if (cacti_sizeof($sql_params)) {
+		$rows = db_fetch_cell($sql, $sql_params);
+	} else {
+		$rows = db_fetch_cell($sql);
+	}
+
+	db_execute_prepared('REPLACE INTO user_auth_row_cache
+		(user_id, class, hash, total_rows)
+		VALUES (?, ?, ?, ?)',
+		array($user_id, $class, $hash, $rows));
+
+	return $rows;
 }
 
 /**
@@ -3129,11 +3226,11 @@ function get_allowed_ajax_graphs($sql_where = '') {
  *
  * @return (array) An array of permitted graph items
  */
-function get_allowed_graph_items($sql_where, $sql_order = 'name', $sql_limit = 20, $user = 0) {
+function get_allowed_graph_items($sql_where, $sql_order = 'name', $sql_limit = 20, $user_id = 0) {
 	$return = array();
 
-	if ($user == 0 && isset($_SESSION['sess_user_id'])) {
-		$user = $_SESSION['sess_user_id'];
+	if ($user_id == 0 && isset($_SESSION['sess_user_id'])) {
+		$user_id = $_SESSION['sess_user_id'];
 	}
 
 	if ($sql_where != '') {
@@ -3165,7 +3262,7 @@ function get_allowed_graph_items($sql_where, $sql_order = 'name', $sql_limit = 2
 
 	if (cacti_sizeof($items)) {
 		foreach($items as $i) {
-			if (is_device_allowed($i['host_id'], $user)) {
+			if (is_device_allowed($i['host_id'], $user_id)) {
 				$return[] = array('id' => $i['id'], 'name' => $i['name']);
 			}
 		}

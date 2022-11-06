@@ -1532,6 +1532,12 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 	$cache_array['local_graph_id'] = sql_save($save, 'graph_local');
 
+	/**
+	 * Save the last time a graph was created/deleted
+	 * for Caching.
+	 */
+	set_config_option('time_last_change_graph', time());
+
 	/* apply graph items */
 	change_graph_template($cache_array['local_graph_id'], $graph_template_id, true);
 
@@ -1626,6 +1632,12 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 				}
 
 				$cache_array['local_data_id'][$data_template['id']] = sql_save($save, 'data_local');
+
+				/**
+				 * Save the last time a data_source was created/deleted
+				 * for Caching.
+				 */
+				set_config_option('time_last_change_data_source', time());
 
 				// Determine the data source profile to use
 				if (isset($suggested_vals[$graph_template_id]['data_template'][$data_template['id']]['data_source_profile_id'])) {

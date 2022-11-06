@@ -150,6 +150,12 @@ function api_tree_copy_node($tree_id, $node_id, $new_parent, $new_position) {
 
 	api_tree_sort_branch($id, $tree_id);
 
+	/**
+	 * Save the last time a tree branch was created/updated
+	 * for Caching.
+	 */
+	set_config_option('time_last_change_branch', time());
+
 	header('Content-Type: application/json; charset=utf-8');
 	print json_encode(array('id' => 'tbranch:' . $id));
 }
@@ -235,6 +241,12 @@ function api_tree_create_node($tree_id, $node_id, $position, $title = '') {
 	$id = sql_save($save, 'graph_tree_items');
 
 	api_tree_sort_branch($id, $tree_id);
+
+	/**
+	 * Save the last time a tree branch was created/updated
+	 * for Caching.
+	 */
+	set_config_option('time_last_change_branch', time());
 
 	header('Content-Type: application/json; charset=utf-8');
 	print json_encode(array('id' => 'tbranch:' . $id, 'text' => $title));
@@ -349,6 +361,12 @@ function api_tree_delete_node($tree_id, $node_id) {
 			WHERE graph_tree_id = ?
 			AND id = ?',
 			array($tree_id, $data['leaf_id']));
+
+		/**
+	 	 * Save the last time a tree branch was created/updated
+		 * for Caching.
+		 */
+		set_config_option('time_last_change_branch', time());
 	}
 }
 
@@ -371,6 +389,12 @@ function api_tree_delete_node_content($tree_id, $leaf_id) {
 				FROM graph_tree_items
 				WHERE graph_tree_id = ?
 				AND id = ?', array($tree_id, $child['id']));
+
+			/**
+	 	 	 * Save the last time a tree branch was created/updated
+			 * for Caching.
+			 */
+			set_config_option('time_last_change_branch', time());
 		}
 	}
 }
@@ -448,6 +472,12 @@ function api_tree_move_node($tree_id, $node_id, $new_parent, $new_position) {
 				$position++;
 			}
 		}
+
+		/**
+ 	 	 * Save the last time a tree branch was created/updated
+		 * for Caching.
+		 */
+		set_config_option('time_last_change_branch', time());
 
 		api_tree_sort_branch($data['leaf_id'], $tree_id);
 	} else {
@@ -741,6 +771,14 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
 			api_tree_sort_branch($tree_item_id, $tree_id);
 		} else {
 			raise_message(2);
+		}
+
+		if (empty($save['id'])) {
+			/**
+			 * Save the last time a tree branch was created/updated
+			 * for Caching.
+			 */
+			set_config_option('time_last_change_branch', time());
 		}
 	}
 

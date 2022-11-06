@@ -1463,10 +1463,9 @@ function get_device_records(&$total_rows, $rows) {
 
 	$sql_where = api_plugin_hook_function('device_sql_where', $sql_where);
 
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(host.id)
-		FROM host
-		$sql_where");
+	$sql = "SELECT COUNT(host.id) FROM host $sql_where";
+
+	$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, array(), 'device');
 
 	$poller_interval = read_config_option('poller_interval');
 

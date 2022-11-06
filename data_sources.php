@@ -136,6 +136,14 @@ function form_save() {
 		if (!isempty_request_var('host_id')) {
 			push_out_host(get_request_var('host_id'), $local_data_id);
 		}
+
+		if (empty($save['id'])) {
+			/**
+			 * Save the last time a data source was created/updated
+			 * for Caching.
+			 */
+			set_config_option('time_last_change_data_source', time());
+		}
 	}
 
 	if ((isset_request_var('save_component_data')) && (!is_error_message())) {
@@ -232,6 +240,14 @@ function form_save() {
 
 			if ($data_template_data_id) {
 				raise_message(1);
+
+				if (empty($save['id'])) {
+					/**
+					 * Save the last time a data source was created/updated
+					 * for Caching.
+					 */
+					set_config_option('time_last_change_data_source', time());
+				}
 			} else {
 				raise_message(2);
 			}
@@ -1548,7 +1564,7 @@ function ds() {
 		) AS dtr
 		ON dl.id = dtr.local_data_id";
 
-		$total_rows = db_fetch_cell("SELECT COUNT(*)
+		$sql = "SELECT COUNT(*)
 			FROM data_local AS dl
 			INNER JOIN data_template_data AS dtd
 			ON dl.id = dtd.local_data_id
@@ -1557,7 +1573,9 @@ function ds() {
 			LEFT JOIN host AS h
 			ON h.id = dl.host_id
 			$orphan_join
-			$sql_where1");
+			$sql_where1";
+
+		$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, array(), 'data_source');
 
 		$data_sources = db_fetch_assoc("SELECT dtr.local_graph_id, dtd.local_data_id,
 			dtd.name_cache, dtd.active, dtd.rrd_step, dt.name AS data_template_name,
@@ -1574,7 +1592,7 @@ function ds() {
 			$sql_order
 			$sql_limit");
 	} else {
-		$total_rows = db_fetch_cell("SELECT COUNT(*)
+		$sql = "SELECT COUNT(*)
 			FROM data_local AS dl
 			INNER JOIN data_template_data AS dtd
 			ON dl.id=dtd.local_data_id
@@ -1582,7 +1600,9 @@ function ds() {
 			ON dt.id = dl.data_template_id
 			LEFT JOIN host AS h
 			ON h.id = dl.host_id
-			$sql_where1");
+			$sql_where1";
+
+		$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, array(), 'data_source');
 
 		$data_sources = db_fetch_assoc("SELECT dtd.local_data_id, dtd.name_cache, dtd.active,
 			dtd.rrd_step, dt.name AS data_template_name, dl.host_id, dtd.data_source_profile_id

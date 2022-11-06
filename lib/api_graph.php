@@ -98,6 +98,12 @@ function api_delete_graphs(&$local_graph_ids, $delete_type) {
 
 		break;
 	}
+
+	/**
+	 * Save the last time a graph was created/updated
+	 * for Caching.
+	 */
+	set_config_option('time_last_change_graph', time());
 }
 
 function api_graph_remove($local_graph_id) {
@@ -116,6 +122,12 @@ function api_graph_remove($local_graph_id) {
 	db_execute_prepared('DELETE FROM graph_tree_items WHERE local_graph_id = ?', array($local_graph_id));
 	db_execute_prepared('DELETE FROM reports_items WHERE local_graph_id = ?', array($local_graph_id));
 	db_execute_prepared('DELETE FROM graph_local WHERE id = ?', array($local_graph_id));
+
+	/**
+	 * Save the last time a graph was created/updated
+	 * for Caching.
+	 */
+	set_config_option('time_last_change_graph', time());
 }
 
 function api_graph_remove_bad_graphs(&$local_graph_ids = array()) {
@@ -136,6 +148,12 @@ function api_graph_remove_bad_graphs(&$local_graph_ids = array()) {
 				AND local_graph_id = 0');
 		}
 	}
+
+	/**
+	 * Save the last time a graph was created/updated
+	 * for Caching.
+	 */
+	set_config_option('time_last_change_graph', time());
 }
 
 function api_graph_remove_aggregate_items($local_graph_ids) {
@@ -208,6 +226,12 @@ function api_graph_remove_multi($local_graph_ids) {
 			db_execute("DELETE FROM reports_items WHERE local_graph_id IN ($ids_to_delete)");
 			db_execute("DELETE FROM graph_local WHERE id IN ($ids_to_delete)");
 		}
+
+		/**
+		 * Save the last time a graph was created/updated
+		 * for Caching.
+		 */
+		set_config_option('time_last_change_graph', time());
 	}
 }
 
@@ -550,6 +574,12 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 			}
 		}
 	}
+
+	/**
+	 * Save the last time a graph was created/updated
+	 * for Caching.
+	 */
+	set_config_option('time_last_change_graph', time());
 }
 
 function api_graph_change_device($local_graph_id, $host_id) {

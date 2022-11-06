@@ -290,6 +290,12 @@ function tree_dnd() {
 
 			$sequence++;
 		}
+
+		/**
+	 	 * Save the last time a tree branch was created/updated
+		 * for Caching.
+		 */
+		set_config_option('time_last_change_branch', time());
 	}
 
 	header('Location: tree.php?header=false');
@@ -527,6 +533,14 @@ function form_save() {
 						sort_recursive(0, $tree_id);
 					}
 				}
+
+				if (empty($save['id'])) {
+					/**
+				 	 * Save the last time a tree was created/updated
+					 * for Caching.
+					 */
+					set_config_option('time_last_change_tree', time());
+				}
 			} else {
 				raise_message(2);
 			}
@@ -594,18 +608,39 @@ function form_actions() {
 			if (get_nfilter_request_var('drp_action') == '1') { // delete
 				db_execute('DELETE FROM graph_tree WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM graph_tree_items WHERE ' . array_to_sql_or($selected_items, 'graph_tree_id'));
+
+				/**
+			 	 * Save the last time a tree or branch was created/updated
+				 * for Caching.
+				 */
+				set_config_option('time_last_change_tree', time());
+				set_config_option('time_last_change_branch', time());
 			} elseif (get_nfilter_request_var('drp_action') == '2') { // publish
 				db_execute("UPDATE graph_tree
 					SET enabled='on',
 					last_modified=NOW(),
 					modified_by=" . $_SESSION['sess_user_id'] . '
 					WHERE ' . array_to_sql_or($selected_items, 'id'));
+
+				/**
+			 	 * Save the last time a tree or branch was created/updated
+				 * for Caching.
+				 */
+				set_config_option('time_last_change_tree', time());
+				set_config_option('time_last_change_branch', time());
 			} elseif (get_nfilter_request_var('drp_action') == '3') { // un-publish
 				db_execute("UPDATE graph_tree
 					SET enabled='',
 					last_modified=NOW(),
 					modified_by=" . $_SESSION['sess_user_id'] . '
 					WHERE ' . array_to_sql_or($selected_items, 'id'));
+
+				/**
+			 	 * Save the last time a tree or branch was created/updated
+				 * for Caching.
+				 */
+				set_config_option('time_last_change_tree', time());
+				set_config_option('time_last_change_branch', time());
 			} elseif (get_nfilter_request_var('drp_action') == '4') { // un-lock
 				db_execute("UPDATE graph_tree
 					SET locked=0,
@@ -1984,11 +2019,13 @@ function tree() {
 		$sql_order
 		$sql_limit");
 
-	$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT(t.id))
+	$sql = "SELECT COUNT(DISTINCT(t.id))
 		FROM graph_tree AS t
 		LEFT JOIN graph_tree_items AS ti
 		ON t.id=ti.graph_tree_id
-		$sql_where");
+		$sql_where";
+
+	$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, array(), 'tree');
 
 	$nav = html_nav_bar('tree.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Trees'), 'page', 'main');
 

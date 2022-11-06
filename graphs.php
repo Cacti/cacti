@@ -316,6 +316,12 @@ function form_save() {
 
 		if (!is_error_message()) {
 			$local_graph_id = sql_save($save1, 'graph_local');
+
+			/**
+			 * Save the last time a graph was created/updated
+			 * for Caching.
+			 */
+			set_config_option('time_last_change_graph', time());
 		}
 
 		if (!is_error_message()) {
@@ -2170,7 +2176,7 @@ function graph_management() {
 	/* allow plugins to modify sql_where */
 	$sql_where = api_plugin_hook_function('graphs_sql_where', $sql_where);
 
-	$total_rows = db_fetch_cell("SELECT
+	$sql = "SELECT
 		COUNT(gtg.id)
 		FROM graph_local AS gl
 		INNER JOIN graph_templates_graph AS gtg
@@ -2184,7 +2190,9 @@ function graph_management() {
 		LEFT JOIN sites AS s
 		ON h.site_id=s.id
 		$orphan_join
-		$sql_where");
+		$sql_where";
+
+	$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, array(), 'graph');
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;

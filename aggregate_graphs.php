@@ -1227,7 +1227,7 @@ function aggregate_items() {
 		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' agi.local_graph_id IN(' . get_request_var('local_graph_ids') . ')';
 	}
 
-	$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT gl.id) AS total
+	$sql = "SELECT COUNT(DISTINCT gl.id) AS total
 		FROM graph_templates_graph AS gtg
 		INNER JOIN graph_local AS gl
 		ON gtg.local_graph_id=gl.id
@@ -1236,7 +1236,9 @@ function aggregate_items() {
 			FROM aggregate_graphs_items
 			WHERE aggregate_graph_id=$aggregate_id) AS agi
 		ON gtg.local_graph_id=agi.local_graph_id
-		$sql_where");
+		$sql_where";
+
+	$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, array(), 'aggregate_graph');
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
@@ -1254,7 +1256,6 @@ function aggregate_items() {
 		$sql_where
 		$sql_order
 		$sql_limit");
-
 
 	?>
 	<script type='text/javascript'>
@@ -1651,7 +1652,7 @@ function aggregate_graph() {
 		$sql_where .= ' AND ag.aggregate_template_id=' . get_request_var('template_id');
 	}
 
-	$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT gl.id) AS total
+	$sql = "SELECT COUNT(DISTINCT gl.id) AS total
 		FROM graph_templates_graph AS gtg
 		INNER JOIN graph_local AS gl
 		ON gtg.local_graph_id=gl.id
@@ -1659,7 +1660,9 @@ function aggregate_graph() {
 		ON gtg.local_graph_id=ag.local_graph_id
 		LEFT JOIN aggregate_graph_templates AS agt
 		ON agt.id=ag.aggregate_template_id
-		$sql_where");
+		$sql_where";
+
+	$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, array(), 'aggregate_graph');
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
