@@ -131,11 +131,11 @@ function rrdcheck_display_problems() {
 
 	$problems = db_fetch_assoc("SELECT h.description, dtd.name_cache, rc.local_data_id, rc.test_date, rc.message
 		FROM rrdcheck AS rc
-		INNER JOIN data_local AS dl
+		LEFT JOIN data_local AS dl
 		ON rc.local_data_id = dl.id
-		INNER JOIN data_template_data AS dtd
+		LEFT JOIN data_template_data AS dtd
 		ON rc.local_data_id = dtd.local_data_id
-		INNER JOIN host AS h
+		LEFT JOIN host AS h
 		ON dl.host_id = h.id
 		$sql_where
 		$sql_order
