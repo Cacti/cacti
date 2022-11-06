@@ -1205,6 +1205,11 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 		$create_rra .= 'RRA:' . $consolidation_functions[$rra['consolidation_function_id']] . ':' . $rra['x_files_factor'] . ':' . $rra['steps'] . ':' . $rra['rows'] . RRD_NL;
 	}
 
+	if ($config['cacti_server_os'] != 'win32') {
+		$owner_id = fileowner($config['rra_path']);
+		$group_id = filegroup($config['rra_path']);
+	}
+
 	/**
 	 * check for structured path configuration, if in place verify directory
 	 * exists and if not create it.
@@ -1218,16 +1223,34 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 			}
 		} elseif (!is_dir(dirname($data_source_path))) {
 			if ($config['is_web'] == false || is_writable($config['rra_path'])) {
-				if (mkdir(dirname($data_source_path), 0775)) {
-					if ($config['cacti_server_os'] != 'win32') {
-						$owner_id = fileowner($config['rra_path']);
-						$group_id = filegroup($config['rra_path']);
+				if (mkdir(dirname($data_source_path), 0775, true)) {
+					if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
+						$success  = true;
+						$paths    = explode('/', str_replace($config['rra_path'], '/', dirname($data_source_path)));
+						$spath    = '';
 
-						if ((chown(dirname($data_source_path), $owner_id)) &&
-								(chgrp(dirname($data_source_path), $group_id))) {
-							/* permissions set ok */
-						} else {
-							cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", false);
+						foreach($paths as $path) {
+							if ($path == '') {
+								continue;
+							}
+
+							$spath .= '/' . $path;
+
+							$powner_id = fileowner($config['rra_path'] . $spath);
+							$pgroup_id = fileowner($config['rra_path'] . $spath);
+
+							if ($powner_id != $owner_id) {
+								$success = chown($config['rra_path'] . $spath, $owner_id);
+							}
+
+							if ($pgroup_id != $group_id && $success) {
+								$success = chgrp($config['rra_path'] . $spath, $group_id);
+							}
+
+							if (!$success) {
+								cacti_log("ERROR: Unable to set directory permissions for '" . $config['rra_path'] . $spath . "'", false);
+								break;
+							}
 						}
 					}
 				} else {
@@ -1242,7 +1265,13 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 	if ($show_source == true) {
 		return read_config_option('path_rrdtool') . ' create' . RRD_NL . "$data_source_path$create_ds$create_rra";
 	} else {
-		return rrdtool_execute("create $data_source_path $create_ds$create_rra", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
+		$success = rrdtool_execute("create $data_source_path $create_ds$create_rra", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
+
+		if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
+			shell_exec("chown $owner_id:$group_id $data_source_path");
+		}
+
+		return $success;
 	}
 }
 
@@ -1275,12 +1304,10 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 	}
 
 	if ($file_exists == false) {
-cacti_log("File for LDI: $local_data_id does not exist!");
 		$ds_exists = db_fetch_cell_prepared('SELECT id FROM data_local WHERE id = ?', array($local_data_id));
 
 		// Check for a Data Source that has been removed
 		if ($ds_exists) {
-cacti_log("Creating for LDI: $local_data_id does not exist!");
 			$valid_entry = boost_rrdtool_function_create($local_data_id, false, $rrdtool_pipe);
 		} else {
 			return 'OK';
@@ -1295,7 +1322,6 @@ cacti_log("Creating for LDI: $local_data_id does not exist!");
 
 	if ($valid_entry) {
 		if ($rrd_update_template != '') {
-			cacti_log("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
 			rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
 		} else {
 			cacti_log("update $rrd_path $update_options $rrd_update_values", false, 'BOOST', POLLER_VERBOSITY_MEDIUM);

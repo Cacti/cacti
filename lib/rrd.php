@@ -703,6 +703,11 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 		$create_rra .= 'RRA:' . $consolidation_functions[$rra['consolidation_function_id']] . ':' . $rra['x_files_factor'] . ':' . $rra['steps'] . ':' . $rra['rows'] . RRD_NL;
 	}
 
+	if ($config['cacti_server_os'] != 'win32') {
+		$owner_id = fileowner($config['rra_path']);
+		$group_id = filegroup($config['rra_path']);
+	}
+
 	/**
 	 * check for structured path configuration, if in place verify directory
 	 * exists and if not create it.
@@ -716,16 +721,34 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 			}
 		} elseif (!is_dir(dirname($data_source_path))) {
 			if ($config['is_web'] == false || is_writable($config['rra_path'])) {
-				if (mkdir(dirname($data_source_path), 0775)) {
-					if ($config['cacti_server_os'] != 'win32') {
-						$owner_id = fileowner($config['rra_path']);
-						$group_id = filegroup($config['rra_path']);
+				if (mkdir(dirname($data_source_path), 0775, true)) {
+					if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
+						$success  = true;
+						$paths    = explode('/', str_replace($config['rra_path'], '/', dirname($data_source_path)));
+						$spath    = '';
 
-						if ((chown(dirname($data_source_path), $owner_id)) &&
-							(chgrp(dirname($data_source_path), $group_id))) {
-							/* permissions set ok */
-						} else {
-							cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", false);
+						foreach($paths as $path) {
+							if ($path == '') {
+								continue;
+							}
+
+							$spath .= '/' . $path;
+
+							$powner_id = fileowner($config['rra_path'] . $spath);
+							$pgroup_id = fileowner($config['rra_path'] . $spath);
+
+							if ($powner_id != $owner_id) {
+								$success = chown($config['rra_path'] . $spath, $owner_id);
+							}
+
+							if ($pgroup_id != $group_id && $success) {
+								$success = chgrp($config['rra_path'] . $spath, $group_id);
+							}
+
+							if (!$success) {
+								cacti_log("ERROR: Unable to set directory permissions for '" . $config['rra_path'] . $spath . "'", false);
+								break;
+							}
 						}
 					}
 				} else {
@@ -740,7 +763,13 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 	if ($show_source == true) {
 		return read_config_option('path_rrdtool') . ' create' . RRD_NL . "$data_source_path$create_ds$create_rra";
 	} else {
-		rrdtool_execute("create $data_source_path $create_ds$create_rra", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
+		$success = rrdtool_execute("create $data_source_path $create_ds$create_rra", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
+
+		if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
+			shell_exec("chown $owner_id:$group_id $data_source_path");
+		}
+
+		return $success;
 	}
 }
 
