@@ -192,8 +192,10 @@ function rrdcheck_master_handler($forcerun) {
 		rrdcheck_debug('Skipping Periodic Rollup - Boost will handle the Periodic Roll-up Cycle');
 	} else {
 		if ($run_interval == 'boost') {
-			cacti_log("WARNING: RRDcheck interval set to 'boost' and Boost Plugin Not Enabled, reseting to default of 4 hours", false, 'rrdcheck');
+			cacti_log("WARNING: RRDcheck interval set to 'boost' and boost not enabled, reseting to default of 4 hours", false, 'rrdcheck');
+
 			set_config_option('rrdcheck_interval', 240);
+
 			$run_interval = 240;
 		}
 
@@ -228,7 +230,7 @@ function rrdcheck_master_handler($forcerun) {
  */
 function display_version() {
 	$version = get_cacti_version();
-	print "Cacti RRD check Poller, Version $version " . COPYRIGHT_YEARS . PHP_EOL;
+	print "Cacti RRD Check Poller, Version $version " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 /**

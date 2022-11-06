@@ -26,7 +26,7 @@ function get_rrdfiles($thread_id = 1, $max_threads = 1) {
 	static $newrows = array();
 
 	if ($max_threads == 1) {
-		return db_fetch_assoc('SELECT dtd.local_data_id AS local_data_id, rrd_name, data_source_path, dtd.rrd_step AS rrdstep
+		return db_fetch_assoc('SELECT dtd.data_source_profile_id, dtd.local_data_id AS local_data_id, rrd_name, data_source_path, dtd.rrd_step AS rrdstep
 			FROM data_template_data AS dtd
 			JOIN poller_item AS pi
 			ON pi.local_data_id = dtd.local_data_id
@@ -36,7 +36,7 @@ function get_rrdfiles($thread_id = 1, $max_threads = 1) {
 	} elseif (sizeof($newrows)) {
 		return $newrows[$thread_id];
 	} else {
-		$rows = db_fetch_assoc('SELECT dtd.local_data_id AS local_data_id, rrd_name, data_source_path, dtd.rrd_step AS rrdstep
+		$rows = db_fetch_assoc('SELECT dtd.data_source_profile_id, dtd.local_data_id AS local_data_id, rrd_name, data_source_path, dtd.rrd_step AS rrdstep
 			FROM data_template_data AS dtd
 			JOIN poller_item AS pi
 			ON pi.local_data_id = dtd.local_data_id
@@ -95,7 +95,6 @@ function rrdcheck_debug($message) {
  */
 function do_rrdcheck($thread_id = 1) {
 	global $config, $type;
-
 	global $total_user, $total_system, $total_real, $total_dsses;
 	global $user_time, $system_time, $real_time, $rrd_files;
 
@@ -114,6 +113,15 @@ function do_rrdcheck($thread_id = 1) {
 		set_config_option('rrdcheck_parallel', '1');
 	}
 
+	$profiles = array_rekey(
+		db_fetch_assoc('SELECT step, data_source_profile_id AS id, MIN(steps) AS steps, `rows`
+			FROM data_source_profiles AS dsp
+			INNER JOIN data_source_profiles_rra AS dspr
+			ON dsp.id = dspr.data_source_profile_id
+			GROUP BY data_source_profile_id'),
+		'id', array('step', 'steps', 'rows')
+	);
+
 	$rrdfiles   = get_rrdfiles($thread_id, $max_threads);
 	$stats      = array();
 	$rrd_files += cacti_sizeof($rrdfiles);
@@ -129,13 +137,19 @@ function do_rrdcheck($thread_id = 1) {
 	}
 
 	if (cacti_sizeof($rrdfiles)) {
-		$end = time() - $poller_interval;
-		$start = $end - 86400;
-
 		$done = array();
+		$now  = time();
 
 		foreach ($rrdfiles as $rrdfile) {
-			if (in_array ($rrdfile['local_data_id'], $done)) {
+			$poller_interval = $profiles[$rrdfile['data_source_profile_id']]['step'];
+
+			// The first RRA may have less than 24 hours of samples
+			$duration = $profiles[$rrdfile['data_source_profile_id']]['step'] * ($profiles[$rrdfile['data_source_profile_id']]['rows']-1);
+
+			$end   = $now;
+			$start = $end - $duration;
+
+			if (in_array($rrdfile['local_data_id'], $done)) {
 				continue;
 			}
 
@@ -159,8 +173,9 @@ function do_rrdcheck($thread_id = 1) {
 					$done[] = $rrdfile['local_data_id'];
 				} else {
 					$pstart = $start - $rrdfile['rrdstep'];
-					$pend = $end - $rrdfile['rrdstep'];
-					$one_hour_limit = 3600/$rrdfile['rrdstep'] * 23;
+					$pend   = $end   - $rrdfile['rrdstep'];
+
+					$one_hour_limit = 3600 / $rrdfile['rrdstep'];
 
 					if ($use_proxy) {
 						$info = rrdtool_execute("fetch $file LAST -s $pstart -e $pend ", false, RRDTOOL_OUTPUT_STDOUT, false, 'rrdcheck');
@@ -172,14 +187,21 @@ function do_rrdcheck($thread_id = 1) {
 					$info_array = explode("\n", $info);
 
 					if (cacti_sizeof($info_array)) {
-						$first = true;
+						$first    = true;
 						$lines_24 = 0;
-						$lines_1 = 0;
-						$nan_24 = array();
-						$nan_1 = array();
+						$lines_1  = 0;
+						$nan_24   = array();
+						$nan_1    = array();
 
 						foreach($info_array as $line) {
 							$line = trim($line);
+
+							// remove line - OK u:0.03 s:0.12 r:0.33
+							if (substr($line, 0, 2) == 'OK') {
+								continue;
+							} elseif ($line == '') {
+								continue;
+							}
 
 							if ($first) {
 								/* get the data source names */
@@ -187,27 +209,23 @@ function do_rrdcheck($thread_id = 1) {
 
 								foreach ($data_source_names as $index => $name)  {
 									$nan_24[$index] = 0;
-									$nan_1[$index] = 0;
+									$nan_1[$index]  = 0;
 								}
 
-								$dsses+= cacti_sizeof($data_source_names);
+								$dsses += cacti_sizeof($data_source_names);
 
 								$first = false;
-
-							} elseif ($line != '') {
-								// remove line - OK u:0.03 s:0.12 r:0.33
-								if (substr($line, 0, 2) == 'OK') {
-									continue;
-								}
-
+							} else {
 								$parts = explode(':', $line);
 								$data  = explode(' ', trim($parts[1]));
 
-								foreach($data as $index=>$number) {
-									if ($index == 0) {	// only onetime for each row
+								foreach($data as $index => $number) {
+									if ($index == 0) {
+										// only onetime for each row
 										$lines_24++;
 
-										if ($lines_24 > $one_hour_limit) { // last hour
+										if ($lines_24 > $one_hour_limit) {
+											// last hour
 											$lines_1++;
 										}
 									}
@@ -223,10 +241,15 @@ function do_rrdcheck($thread_id = 1) {
 							}
 						}
 
+						//cacti_log('Duration:' . $duration . ', 1HLimit:' . $one_hour_limit);
+						//cacti_log('Lines24:' . $lines_24 . ', Lines1:' . $lines_1);
+						//cacti_log('Nan24:'   . json_encode($nan_24));
+						//cacti_log('Nan1:'    . json_encode($nan_1));
+
 						$notified = false;
 
 						// 24 hour statistics
-						foreach	($nan_24 as $index=>$count) {
+						foreach	($nan_24 as $index => $count) {
 							if ($lines_24 > 0) {
 								$ratio = $count/$lines_24;
 							} else {
@@ -259,8 +282,9 @@ function do_rrdcheck($thread_id = 1) {
 						}
 
 						// 1 hour statistics
-						foreach	($nan_1 as $index=>$count) {
-							if ($notified) {	// 24hour notified, skipping
+						foreach	($nan_1 as $index => $count) {
+							if ($notified) {
+								// 24hour notified, skipping
 								continue;
 							}
 
@@ -439,7 +463,7 @@ function rrdcheck_log_child_stats($type, $thread_id, $total_time) {
 
 	$cacti_stats = sprintf('Time:%01.2f Type:%s ProcessNumber:%s RRDfiles:%s DSSes:%s RRDUser:%01.2f RRDSystem:%01.2f RRDReal:%01.2f', $total_time, strtoupper($type), $thread_id, $rrd_files, $dsses, $rrd_user, $rrd_system, $rrd_real);
 
-	cacti_log('rrdcheck CHILD STATS: ' . $cacti_stats, true, 'SYSTEM');
+	cacti_log('RRDCHECK CHILD STATS: ' . $cacti_stats, true, 'SYSTEM');
 }
 
 /**
@@ -517,6 +541,8 @@ function rrdcheck_boost_bottom() {
 
 			sleep(2);
 		}
+
+		rrdcheck_log_statistics('BOOST');
 	}
 }
 
