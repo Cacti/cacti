@@ -548,15 +548,11 @@ function graphs() {
 
 		/* create a row at the bottom that lets the user create any graph they choose */
 		print "<tr class='even'>
-			<td style='width:1%;'><i>" . __('Create') . "</i></td>
-			<td class='left'>";
+			<td class='left' style='width:1%'>";
 			form_dropdown('cg_g', $available_graph_templates, 'name', 'id', '', __('(Select a graph type to create)'), '', 'textArea');
 
 		print '</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td class="right">
+				<td class="left">
 					<input type="submit" class="create ui-button ui-corner-all ui-widget ui-state-active" id="submit" value="' . __('Create') . '" role="button">
 				</td>
 			</tr>';
