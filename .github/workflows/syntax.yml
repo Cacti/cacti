@@ -108,7 +108,6 @@ jobs:
       env:
         version: ${{ matrix.php }}
       run: |
-        sudo apt-get install php$version-fpm
         sudo service php$version-fpm start
         sudo service php$version-fpm status
 
