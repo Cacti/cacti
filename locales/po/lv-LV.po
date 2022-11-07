@@ -4,19 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti 1.2.20\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-11-05 21:03-0400\n"
-"PO-Revision-Date: 2022-11-06 01:04+0000\n"
-"Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
-"Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\n"
-"Language: lv-LV\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\n"
-"X-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-11-05 21:03-0400\nPO-Revision-Date: 2022-11-07 22:53+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2601 lib/html.php:2491
 msgid "About Cacti"
@@ -757,13 +745,12 @@ msgid "No Aggregate Graphs Found"
 msgstr "Nav atrasts neviens apkopots grafiks"
 
 #: aggregate_items.php:350
-#, fuzzy
 msgid "Override Values for Graph Item"
-msgstr "Ignorēt grafika elementa vērtības"
+msgstr "Aizstāt grafika elementa vērtību"
 
 #: aggregate_items.php:361 lib/api_aggregate.php:1907
 msgid "Override this Value"
-msgstr "Ignorēt šo vērtību"
+msgstr "Aizstāt šo vērtību"
 
 #: aggregate_templates.php:310
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -1677,9 +1664,8 @@ msgid "%d Threads"
 msgstr "%d pavedieni"
 
 #: automation_networks.php:519
-#, fuzzy
 msgid "Run Limit"
-msgstr "Run Limit"
+msgstr "Izpildes ierobežojums"
 
 #: automation_networks.php:520
 msgid "After the selected Run Limit, the discovery process will be terminated."
@@ -1786,7 +1772,7 @@ msgstr "Paziņojuma iestatījumi"
 
 #: automation_networks.php:573
 msgid "Notification Enabled"
-msgstr "Paziņojums iespējots"
+msgstr "Paziņošana iespējota"
 
 #: automation_networks.php:574
 msgid "If checked, when the Automation Network is scanned, a report will be sent to the Notification Email account.."
@@ -2467,7 +2453,6 @@ msgid "No Automation Device Templates Found"
 msgstr "Netika atrasta neviena automatizācijas ierīču veidne"
 
 #: automation_tree_rules.php:258
-#, fuzzy
 msgid "Click 'Continue' to delete the following Rule(s)."
 msgstr "Noklikšķiniet 'Turpināt', lai dzēstu norādīto(s) noteikumu(s)."
 
@@ -2564,7 +2549,6 @@ msgid "Cacti System Warning"
 msgstr "Cacti sistēmas brīdinājums"
 
 #: cactid.php:44
-#, fuzzy
 msgid "WARNING: Cacti Daemon PID["
 msgstr "BRĪDINĀJUMS: Cacti Daemon PID["
 
@@ -2573,7 +2557,6 @@ msgid "Cacti System Notice"
 msgstr "Cacti sistēmas paziņojums"
 
 #: cactid.php:131
-#, fuzzy
 msgid "Notice: Cacti Daemon PID["
 msgstr "Paziņojums: Cacti Daemon PID["
 
@@ -2663,9 +2646,8 @@ msgid "CDEF Items"
 msgstr "CDEF preces"
 
 #: cdef.php:595 vdef.php:579
-#, fuzzy
 msgid "Item Value"
-msgstr "Pozīcijas vērtība"
+msgstr "Elementa vērtība"
 
 #: cdef.php:612 vdef.php:598
 #, php-format
@@ -3393,12 +3375,10 @@ msgid "Data Input Method [new]"
 msgstr "Datu ievades metode [jauna]"
 
 #: data_input.php:594 include/global_arrays.php:493
-#, fuzzy
 msgid "SNMP Query"
 msgstr "SNMP vaicājums"
 
 #: data_input.php:597 include/global_arrays.php:495
-#, fuzzy
 msgid "Script Query"
 msgstr "Skripta vaicājums"
 
@@ -4136,7 +4116,6 @@ msgid "Data Source Fields"
 msgstr "Datu avota lauki"
 
 #: data_sources.php:988
-#, fuzzy
 msgid "Data Source Item Fields"
 msgstr "Datu avota elementa lauki"
 
@@ -4617,7 +4596,7 @@ msgstr "Diagrammas veidnes vienumi [rediģēt: %s]"
 #: graph_templates.php:495 include/global_arrays.php:2235
 #, fuzzy
 msgid "Graph Item Inputs"
-msgstr "Grafika vienumu ievades"
+msgstr "Grafika elementu ievades"
 
 #: graph_templates.php:521
 msgid "No Inputs"
@@ -4682,7 +4661,7 @@ msgstr "Netika atrasta neviena diagramma veidne"
 #: graph_templates_inputs.php:148
 #, fuzzy, php-format
 msgid "Graph Item Inputs [edit graph: %s]"
-msgstr "Diagrammas vienumu ievades [rediģēt diagrammu: %s]"
+msgstr "Grafika elementu ievades [rediģēt grafiku: %s]"
 
 #: graph_templates_inputs.php:199
 msgid "Associated Graph Items"
@@ -5131,9 +5110,8 @@ msgid "Graph Items [graph: %s]"
 msgstr "Diagrammas vienumi [grafika: %s]"
 
 #: graphs_items.php:467
-#, fuzzy
 msgid "Choose the Data Source to associate with this Graph Item."
-msgstr "Izvēlieties datu avotu ar ko saistīt ar šo grafikas elementu."
+msgstr "Izvēlieties datu avotu ar ko saistīt šo grafikas elementu."
 
 #: graphs_new.php:84
 msgid "Default Settings Saved"
@@ -5202,10 +5180,9 @@ msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id of
 msgstr "Kļūda, analizējot datu vaicājuma resursa XML failu datu vaicājumam “%s” ar id “%s”"
 
 #: graphs_new.php:697
-#, fuzzy, php-format
-#| msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'"
+#, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
-msgstr "Kļūda, analizējot datu vaicājuma resursa XML failu datu vaicājumam “%s” ar id “%s”"
+msgstr "Kļūda, pārsējot datu vaicājuma resursa XML failu datu vaicājumam '%s' ar id '%s'.  Lauka nosaukumam '%s' trūkst 'direction' atribūts"
 
 #: graphs_new.php:701
 #, php-format
@@ -6477,10 +6454,9 @@ msgid "Every %d Day"
 msgstr "Katru %d dienu"
 
 #: include/global_arrays.php:732
-#, fuzzy, php-format
-#| msgid "%3.1f Minutes"
+#, php-format
 msgid "%0.1f Minutes"
-msgstr "%3.1f minūtes"
+msgstr "%0.1f minūtes"
 
 #: include/global_arrays.php:764 include/global_arrays.php:1427
 #: include/global_settings.php:1559 rrdcleaner.php:525
@@ -7268,7 +7244,6 @@ msgid "Send Now"
 msgstr "Sūtīt tagad"
 
 #: include/global_arrays.php:1613
-#, fuzzy
 msgid "Take Ownership"
 msgstr "Kļūt par īpašnieku"
 
@@ -8797,9 +8772,8 @@ msgid "Insert Hard Return"
 msgstr "Ievietojiet cieto atgriešanos"
 
 #: include/global_form.php:1062
-#, fuzzy
 msgid "Forces the legend to the next line after this item."
-msgstr "Piespiež leģendu uz nākamo rindu pēc šī vienuma."
+msgstr "Piespiež rādīt leģendu nākamā rindā pēc šī elementa."
 
 #: include/global_form.php:1065
 msgid "Line Width (decimal)"
@@ -9332,9 +9306,8 @@ msgid "Logical operation to combine rules."
 msgstr "Loģiska darbība noteikumu apvienošanai."
 
 #: include/global_form.php:2140 include/global_form.php:2182
-#, fuzzy
 msgid "The Field Name that shall be used for this Rule Item."
-msgstr "Lauka nosaukums, kas tiks izmantots šim kārtulas elementam."
+msgstr "Lauka nosaukums, kas jāizmanto šim noteikuma elementam."
 
 #: include/global_form.php:2148 include/global_form.php:2190
 msgid "Operator."
@@ -12753,17 +12726,17 @@ msgstr "Autentifikācija iepriekš nebija iestatīta. Mēģināja iestatīt viet
 #: lib/boost.php:63
 #, php-format
 msgid "%s MBytes"
-msgstr "%s MB"
+msgstr "%s MBaiti"
 
 #: lib/boost.php:66
 #, php-format
 msgid "%s KBytes"
-msgstr "%s KB"
+msgstr "%s KBaiti"
 
 #: lib/boost.php:69
 #, php-format
 msgid "%s Bytes"
-msgstr "%s baiti"
+msgstr "%s Baiti"
 
 #: lib/clog_webapi.php:120 utilities.php:1613
 #, php-format
@@ -12776,7 +12749,7 @@ msgstr "Noklikšķiniet uz \"Turpināt\", lai iztīrītu žurnāla failu.<br><br
 
 #: lib/clog_webapi.php:229 utilities.php:1434
 msgid "Purge Log"
-msgstr "Tīrīšanas žurnāls"
+msgstr "Tīrīt žurnālu"
 
 #: lib/clog_webapi.php:253 utilities.php:1383
 msgid "Log Filters"
@@ -12825,7 +12798,7 @@ msgstr "Astes līnijas"
 
 #: lib/clog_webapi.php:546 utilities.php:1447
 msgid "Stats"
-msgstr "Stati"
+msgstr "Statistika"
 
 #: lib/clog_webapi.php:548
 msgid "Warnings++"
@@ -16779,10 +16752,9 @@ msgid "You have not Trusted this Package Author.  If you wish to import, check t
 msgstr ""
 
 #: package_import.php:198
-#, fuzzy, php-format
-#| msgid "Cacti log purged successfully"
+#, php-format
 msgid "The Package %s Imported Successfully"
-msgstr "Kaktusu baļķis veiksmīgi iztīrīts"
+msgstr "Pakotne %s veiksmīgi importēta"
 
 #: package_import.php:200
 #, php-format
@@ -19211,7 +19183,7 @@ msgstr ""
 #, fuzzy
 #| msgid "Max Poller Memory Allowed:"
 msgid "Max Total Memory Possible"
-msgstr "Aptaujātaja maksimālā atļautā atmiņa:"
+msgstr "Maksimālā kopējā atmiņa iespējama"
 
 #: utilities.php:655
 #, php-format
@@ -19222,7 +19194,7 @@ msgstr ""
 #, fuzzy
 #| msgid "Max Poller Memory Allowed:"
 msgid "Max Core Memory Possible"
-msgstr "Aptaujātaja maksimālā atļautā atmiņa:"
+msgstr "Maksimālā pamata atmiņa iespējama"
 
 #: utilities.php:674
 msgid "Reduce Total Core Memory"
@@ -19741,10 +19713,9 @@ msgid "Previous Runtime Timers:"
 msgstr "Detalizēti izpildlaika taimeri:"
 
 #: utilities.php:2797 utilities.php:2799
-#, fuzzy, php-format
-#| msgid "Procs: "
+#, php-format
 msgid "Process: %d"
-msgstr "Procesi: "
+msgstr "Procesi: %d"
 
 #: utilities.php:2797
 #, php-format
