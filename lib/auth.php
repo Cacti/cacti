@@ -443,9 +443,11 @@ function user_remove($user_id) {
 	db_execute_prepared('DELETE FROM user_auth_realm WHERE user_id = ?', array($user_id));
 	db_execute_prepared('DELETE FROM user_auth_cache WHERE user_id = ?', array($user_id));
 	db_execute_prepared('DELETE FROM user_auth_perms WHERE user_id = ?', array($user_id));
+	db_execute_prepared('DELETE FROM user_auth_row_cache WHERE user_id = ?', array($user_id));
 	db_execute_prepared('DELETE FROM user_auth_group_members WHERE user_id = ?', array($user_id));
 	db_execute_prepared('DELETE FROM settings_user WHERE user_id = ?', array($user_id));
 	db_execute_prepared('DELETE FROM settings_tree WHERE user_id = ?', array($user_id));
+	db_execute_prepared('DELETE FROM sessions WHERE user_id = ?', array($user_id));
 
 	api_plugin_hook_function('user_remove', $user_id);
 }
