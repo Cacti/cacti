@@ -1811,11 +1811,16 @@ function get_allowed_graph_templates($sql_where = '', $sql_order = 'gt.name', $s
 			ON h.id = gl.host_id
 			$sql_where";
 
-		$total_rows = get_total_row_data($user_id, $sql, array(), 'graph');
+		if ($graph_template_id == 0) {
+			$total_rows = get_total_row_data($user_id, $sql, array(), 'graph');
+		} else {
+			$total_rows = db_fetch_cell($sql);
+		}
 	}
 
 	// For timing
 	$end = microtime(true);
+
 	cacti_log(sprintf('The Get Templates total time was %4.2f', $end - $start), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 	if ($templates === false) {
