@@ -769,14 +769,14 @@ function is_tree_allowed($tree_id, $user_id = 0) {
 /**
  * is_device_allowed - determines whether the current user is allowed to view a certain device
  *
- * @param  (int)  $host_id - the ID of the device to check permissions for
+ * @param  (int)  $device_id - the ID of the device to check permissions for
  * @param  (int)  If checking a user, specify the user_id otherwise for the current user leave blank
  *
  * @return (bool) whether the current user is allowed the view the specified device or not
  */
-function is_device_allowed($host_id, $user_id = 0) {
+function is_device_allowed($device_id, $user_id = 0) {
 	$total_rows = -2;
-	get_allowed_devices('', '', '', $total_rows, $user_id, $host_id);
+	get_allowed_devices('', '', '', $total_rows, $user_id, $device_id);
 	return ($total_rows > 0);
 }
 
@@ -2649,7 +2649,7 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
  *
  * @return (array)  An array of permitted devices
  */
-function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_limit = '', &$total_rows = 0, $user_id = 0, $host_id = 0) {
+function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_limit = '', &$total_rows = 0, $user_id = 0, $device_id = 0) {
 	if ($user_id == -1) {
 		$auth_method = 0;
 	} else {
@@ -2690,8 +2690,8 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
 		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL) ";
 	}
 
-	if ($host_id > 0) {
-		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . " h.id=$host_id";
+	if ($device_id > 0) {
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . " h.id = $device_id";
 	}
 
 	if ($user_id == -1) {
@@ -2745,7 +2745,11 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
 				$sql_where
 			) AS rower";
 
-		$total_rows = get_total_row_data($user_id, $sql, array(), 'device');
+		if ($device_id == 0) {
+			$total_rows = get_total_row_data($user_id, $sql, array(), 'device');
+		} else {
+			$total_rows = db_fetch_cell($sql);
+		}
 	}
 
 	return $host_list;
