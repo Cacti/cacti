@@ -133,7 +133,7 @@ function remove_aged_row_cache() {
 		foreach($classes as $name => $ts) {
 			db_execute_prepared('DELETE FROM user_auth_row_cache
 				WHERE class = ? AND UNIX_TIMESTAMP(time) < ?',
-				array($name, $td));
+				array($name, $ts));
 		}
 	}
 }

@@ -39,7 +39,7 @@ function repopulate_poller_cache() {
 
 	include_once($config['library_path'] . '/api_data_source.php');
 
-	$poller_data    = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' dl.*, h.poller_id
+	$poller_data = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' dl.*, h.poller_id
 		FROM data_local AS dl
 		INNER JOIN host AS h
 		ON dl.host_id=h.id
@@ -663,6 +663,12 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 			}
 		}
 	}
+
+	/**
+	 * Save the last time a device/site was created/updated
+	 * for Caching.
+	 */
+	set_config_option('time_last_change_poller_item', time());
 }
 
 /** for a given data template, update all input data and the poller cache

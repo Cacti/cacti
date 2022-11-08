@@ -2153,23 +2153,25 @@ function utilities_view_poller_cache() {
 		}
 	}
 
-	$total_rows = db_fetch_cell("SELECT COUNT(*)
+	$sql = "SELECT COUNT(*)
 		FROM poller_item AS pi
 		INNER JOIN data_local AS dl
 		ON dl.id = pi.local_data_id
-		INNER JOIN data_template_data AS dtd
+		LEFT JOIN data_template_data AS dtd
 		ON dtd.local_data_id = pi.local_data_id
-		INNER JOIN host AS h
+		LEFT JOIN host AS h
 		ON pi.host_id = h.id
-		$sql_where");
+		$sql_where";
+
+	$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, array(), 'poller_item');
 
 	$poller_sql = "SELECT pi.*, dtd.name_cache, h.description, h.id AS host_id
 		FROM poller_item AS pi
 		INNER JOIN data_local AS dl
 		ON dl.id = pi.local_data_id
-		INNER JOIN data_template_data AS dtd
+		LEFT JOIN data_template_data AS dtd
 		ON dtd.local_data_id = pi.local_data_id
-		INNER JOIN host AS h
+		LEFT JOIN host AS h
 		ON pi.host_id = h.id
 		$sql_where
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . ', action ASC
