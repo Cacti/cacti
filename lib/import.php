@@ -1071,17 +1071,12 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 				}
 			}
 
-			/* use the profiles step * 2 as the heartbeat if we are not importing a new profile */
+			/* setup the rrd_heartbeat based upon the profiles setting */
 			if ($import_as_new === false) {
-				$save['rrd_heartbeat'] = db_fetch_cell_prepared('SELECT step
+				$save['rrd_heartbeat'] = db_fetch_cell_prepared('SELECT heartbeat
 					FROM data_source_profiles
 					WHERE id = ?',
-					array($profile_id)) * 2;
-			}
-
-			/* Fix for importing during installation - use the polling interval as the step if we are to use the default rra settings */
-			if (is_array($profile_id) == true) {
-				$save['rrd_heartbeat'] = read_config_option('poller_interval') * 2;
+					array($profile_id));
 			}
 
 			if ($legacy_template) {
