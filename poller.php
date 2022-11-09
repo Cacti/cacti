@@ -474,13 +474,13 @@ while ($poller_runs_completed < $poller_runs) {
 	// obtain some defaults from the database
 	$poller_type = read_config_option('poller_type');
 
-	if (cacti_sizeof($poller) && isset($poller['threads'])) {
+	if ($poller_type == '1') {
+		$max_threads = '1';
+	} elseif (isset($poller['threads'])) {
 		$max_threads = $poller['threads'];
-	} else {
-		$max_threads = read_config_option('max_threads');
 	}
 
-	if (!isset($max_threads) || intval($max_threads) < 1) {
+	if (intval($max_threads) < 1) {
 		$max_threads = 1;
 	}
 
@@ -655,10 +655,6 @@ while ($poller_runs_completed < $poller_runs) {
 
 				// open a pipe to rrdtool for writing
 				$rrdtool_pipe = rrd_init();
-			}
-
-			if ($poller_type == '1') {
-				$max_threads = '1';
 			}
 
 			$rrds_processed = 0;
