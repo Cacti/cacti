@@ -130,7 +130,7 @@ default:
 }
 
 function form_actions() {
-	global $actions;
+	global $link_actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action');
@@ -183,7 +183,7 @@ function form_actions() {
 
 	form_start('links.php');
 
-	html_start_box($actions[get_request_var_post('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box($link_actions[get_request_var_post('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($pages) && cacti_sizeof($pages)) {
 		if (get_request_var('drp_action') == '3') { // Enable Pages
