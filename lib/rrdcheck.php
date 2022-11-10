@@ -324,7 +324,7 @@ function do_rrdcheck($thread_id = 1) {
 				
 				$pstart = $start - $step;
 				$pend = $end - $step;
-				$one_hour_limit = 3600 / $step * 23;
+				$one_hour_limit = ($duration - 3600) / $step;
 				
 				if ($use_proxy) {
 					$info_array = rrdtool_execute("fetch $file LAST -s $pstart -e $pend ", false, RRDTOOL_OUTPUT_STDOUT, false, 'rrdcheck');
