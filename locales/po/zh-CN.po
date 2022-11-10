@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-10-17 21:18-0400\n"
+"POT-Creation-Date: 2022-11-05 21:03-0400\n"
 "PO-Revision-Date: 2022-03-14 21:04-0400\n"
 "Last-Translator: Aiolos <ip6tables@qq.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\n"
@@ -354,7 +354,7 @@ msgstr "聚合图形设置"
 msgid "Details"
 msgstr "详情"
 
-#: aggregate_graphs.php:677 graphs_new.php:833 lib/html_reports.php:1381
+#: aggregate_graphs.php:677 graphs_new.php:846 lib/html_reports.php:1381
 #: utilities.php:361
 msgid "Items"
 msgstr "项目"
@@ -453,12 +453,12 @@ msgstr "匹配图形"
 #: color.php:529 color_templates.php:529 data_debug.php:1061 data_input.php:826
 #: data_queries.php:1279 data_source_profiles.php:912 data_sources.php:1439
 #: data_templates.php:1013 gprint_presets.php:262 graph_templates.php:703
-#: graph_view.php:621 graphs.php:2037 graphs_new.php:457 host.php:1619
+#: graph_view.php:621 graphs.php:2037 graphs_new.php:457 host.php:1622
 #: host_templates.php:727 lib/api_automation.php:140 lib/api_automation.php:473
 #: lib/api_automation.php:707 lib/api_automation.php:1066
 #: lib/clog_webapi.php:604 lib/html.php:245 lib/html_filter.php:63
 #: lib/html_graph.php:203 lib/html_reports.php:1836 lib/html_tree.php:131
-#: lib/html_tree.php:975 links.php:310 managers.php:149 managers.php:493
+#: lib/html_tree.php:977 links.php:310 managers.php:149 managers.php:493
 #: managers.php:725 plugins.php:459 pollers.php:879 rrdcheck.php:179
 #: rrdcleaner.php:507 settings.php:534 settings.php:556 settings.php:607
 #: sites.php:476 tree.php:818 tree.php:853 tree.php:888 tree.php:1925
@@ -476,11 +476,11 @@ msgstr "搜索"
 #: aggregate_graphs.php:1314 aggregate_graphs.php:1357
 #: aggregate_graphs.php:1610 color_templates.php:649 data_sources.php:1623
 #: data_sources.php:1757 graph_view.php:485 graph_view.php:680
-#: graph_view.php:729 graphs.php:2054 graphs.php:2215 host.php:1730
+#: graph_view.php:729 graphs.php:2054 graphs.php:2215 host.php:1733
 #: include/global_arrays.php:955 include/global_arrays.php:1185
 #: include/global_arrays.php:1987 lib/api_automation.php:283 lib/html.php:1686
 #: lib/html.php:1688 lib/html.php:1766 lib/html_graph.php:209
-#: lib/html_tree.php:1030 lib/html_tree.php:1359 tree.php:797 tree.php:2069
+#: lib/html_tree.php:1032 lib/html_tree.php:1361 tree.php:797 tree.php:2069
 #: user_admin.php:877 user_admin.php:1144 user_admin.php:2539
 #: user_group_admin.php:874 user_group_admin.php:1028 user_group_admin.php:2292
 #: utilities.php:320
@@ -496,7 +496,7 @@ msgstr "图形"
 #: data_queries.php:1289 data_source_profiles.php:922
 #: data_source_profiles.php:1037 data_sources.php:1449 data_templates.php:1039
 #: gprint_presets.php:272 graph_templates.php:713 graph_view.php:684
-#: graphs.php:2058 graphs_new.php:467 host.php:1644 host_templates.php:752
+#: graphs.php:2058 graphs_new.php:467 host.php:1647 host_templates.php:752
 #: include/global_form.php:256 lib/api_automation.php:183
 #: lib/api_automation.php:483 lib/api_automation.php:717
 #: lib/api_automation.php:1109 lib/html_reports.php:1856 links.php:320
@@ -525,11 +525,11 @@ msgstr "部分聚合"
 #: color_templates.php:567 data_debug.php:990 data_input.php:848
 #: data_queries.php:1301 data_source_profiles.php:940 data_sources.php:1392
 #: data_templates.php:1057 gprint_presets.php:290 graph_templates.php:731
-#: graph_view.php:629 graphs.php:2028 graphs_new.php:446 host.php:1609
+#: graph_view.php:629 graphs.php:2028 graphs_new.php:446 host.php:1612
 #: host_templates.php:770 lib/api_automation.php:195 lib/api_automation.php:464
 #: lib/api_automation.php:729 lib/api_automation.php:1121
 #: lib/clog_webapi.php:529 lib/html.php:1538 lib/html_filter.php:80
-#: lib/html_graph.php:190 lib/html_reports.php:1867 lib/html_tree.php:1017
+#: lib/html_graph.php:190 lib/html_reports.php:1867 lib/html_tree.php:1019
 #: links.php:330 managers.php:171 managers.php:515 managers.php:745
 #: plugins.php:495 pollers.php:924 sites.php:498 tree.php:1947
 #: user_admin.php:2167 user_admin.php:2561 user_admin.php:2658
@@ -544,7 +544,7 @@ msgstr "Go"
 #: data_input.php:848 data_queries.php:1301 data_source_profiles.php:940
 #: data_sources.php:1392 data_templates.php:1057 gprint_presets.php:290
 #: graph_templates.php:731 graph_view.php:629 graphs.php:2028
-#: graphs_new.php:446 host.php:1609 host_templates.php:770
+#: graphs_new.php:446 host.php:1612 host_templates.php:770
 #: lib/html_graph.php:190 managers.php:171 managers.php:515 managers.php:745
 #: plugins.php:495 pollers.php:924 sites.php:498 tree.php:1947
 #: user_admin.php:2167 user_admin.php:2561 user_admin.php:2658
@@ -565,12 +565,12 @@ msgstr "设置/刷新过滤器"
 #: color_templates.php:568 data_debug.php:991 data_input.php:849
 #: data_queries.php:1302 data_source_profiles.php:941 data_sources.php:1393
 #: data_templates.php:1058 gprint_presets.php:291 graph_templates.php:732
-#: graph_view.php:630 graphs.php:2029 graphs_new.php:447 host.php:1610
+#: graph_view.php:630 graphs.php:2029 graphs_new.php:447 host.php:1613
 #: host_templates.php:771 lib/api_automation.php:196 lib/api_automation.php:465
 #: lib/api_automation.php:730 lib/api_automation.php:1122
 #: lib/clog_webapi.php:530 lib/html_filter.php:85 lib/html_graph.php:191
-#: lib/html_graph.php:308 lib/html_reports.php:1868 lib/html_tree.php:1018
-#: lib/html_tree.php:1129 links.php:331 managers.php:172 managers.php:516
+#: lib/html_graph.php:308 lib/html_reports.php:1868 lib/html_tree.php:1020
+#: lib/html_tree.php:1131 links.php:331 managers.php:172 managers.php:516
 #: managers.php:746 plugins.php:496 pollers.php:925 sites.php:499 tree.php:1948
 #: user_admin.php:2168 user_admin.php:2562 user_admin.php:2659
 #: user_admin.php:2775 user_admin.php:2872 user_admin.php:2969
@@ -583,8 +583,8 @@ msgstr "清除"
 #: data_input.php:849 data_queries.php:1302 data_source_profiles.php:941
 #: data_sources.php:1393 data_templates.php:1058 gprint_presets.php:291
 #: graph_templates.php:732 graph_view.php:630 graphs.php:2029
-#: graphs_new.php:447 host.php:1610 host_templates.php:771
-#: lib/html_graph.php:191 lib/html_tree.php:1018 managers.php:172
+#: graphs_new.php:447 host.php:1613 host_templates.php:771
+#: lib/html_graph.php:191 lib/html_tree.php:1020 managers.php:172
 #: managers.php:516 managers.php:746 plugins.php:496 pollers.php:925
 #: sites.php:499 tree.php:1948 user_admin.php:2168 user_admin.php:2562
 #: user_admin.php:2659 user_admin.php:2775 user_admin.php:2872
@@ -606,7 +606,7 @@ msgstr "图形标题"
 #: automation_graph_rules.php:896 automation_tree_rules.php:936
 #: data_debug.php:345 data_input.php:931 data_queries.php:1383
 #: data_sources.php:1617 data_templates.php:1166 graph_templates.php:837
-#: graphs.php:2231 host.php:1724 host_templates.php:870
+#: graphs.php:2231 host.php:1727 host_templates.php:870
 #: lib/api_automation.php:282 pollers.php:1001 sites.php:572 tree.php:2009
 #: user_admin.php:885 user_admin.php:999 user_admin.php:1144
 #: user_admin.php:1291 user_admin.php:1430 user_group_admin.php:680
@@ -670,7 +670,7 @@ msgstr "聚合图形"
 #: aggregate_graphs.php:1588 data_debug.php:964 data_sources.php:1366
 #: graph_view.php:642 graphs.php:1993 host.php:1564
 #: include/global_arrays.php:2885 include/global_settings.php:583
-#: lib/api_automation.php:442 lib/html_graph.php:153 lib/html_tree.php:981
+#: lib/api_automation.php:442 lib/html_graph.php:153 lib/html_tree.php:983
 #: rrdcleaner.php:383 user_admin.php:2517 user_admin.php:2734
 #: user_group_admin.php:2270 user_group_admin.php:2390 utilities.php:2021
 msgid "Template"
@@ -682,7 +682,7 @@ msgstr "模板"
 #: automation_graph_rules.php:775 automation_tree_rules.php:820
 #: data_debug.php:968 data_sources.php:1370 graph_templates_items.php:543
 #: graphs.php:1997 graphs_items.php:357 host.php:1533 host.php:1551
-#: host.php:1568 host.php:1629 lib/api_automation.php:150
+#: host.php:1568 host.php:1632 lib/api_automation.php:150
 #: lib/api_automation.php:168 lib/api_automation.php:429
 #: lib/api_automation.php:446 lib/api_automation.php:1076
 #: lib/api_automation.php:1094 lib/auth.php:2992 lib/auth.php:3034
@@ -724,7 +724,7 @@ msgstr "任何"
 #: lib/html_reports.php:1002 lib/html_reports.php:1006
 #: lib/html_reports.php:1014 lib/html_reports.php:1025
 #: lib/html_reports.php:1045 lib/html_reports.php:1299
-#: lib/html_reports.php:1304 lib/html_reports.php:1309 package_import.php:614
+#: lib/html_reports.php:1304 lib/html_reports.php:1309 package_import.php:637
 #: settings.php:527 settings.php:549 settings.php:577 templates_import.php:326
 #: templates_import.php:358 user_admin.php:2522 user_admin.php:2739
 #: user_group_admin.php:2275 user_group_admin.php:2395 utilities.php:2026
@@ -905,7 +905,7 @@ msgstr "确认新密码"
 
 #: auth_changepassword.php:358 auth_profile.php:560 graphs_new.php:448
 #: lib/html_form.php:1290 lib/html_form.php:1299 lib/html_graph.php:193
-#: lib/html_tree.php:1020 settings.php:494
+#: lib/html_tree.php:1022 settings.php:494
 msgid "Save"
 msgstr "保存"
 
@@ -1110,7 +1110,7 @@ msgstr "删除设备"
 
 #: automation_devices.php:54 automation_devices.php:300
 #: automation_devices.php:409 automation_devices.php:419
-#: automation_devices.php:648 automation_devices.php:649 host.php:1634
+#: automation_devices.php:648 automation_devices.php:649 host.php:1637
 #: lib/api_automation.php:173 lib/api_automation.php:1099
 #: lib/html_utility.php:924 pollers.php:47
 msgid "Down"
@@ -1118,7 +1118,7 @@ msgstr "Down"
 
 #: automation_devices.php:55 automation_devices.php:300
 #: automation_devices.php:411 automation_devices.php:421
-#: automation_devices.php:648 automation_devices.php:649 host.php:1633
+#: automation_devices.php:648 automation_devices.php:649 host.php:1636
 #: lib/api_automation.php:172 lib/api_automation.php:1098
 #: lib/html_utility.php:930
 msgid "Up"
@@ -1174,7 +1174,7 @@ msgid "Delete Device(s)"
 msgstr "删除图形(s)"
 
 #: automation_devices.php:268 automation_devices.php:555 host.php:1519
-#: host.php:1640 host.php:1790 include/global_arrays.php:952
+#: host.php:1643 host.php:1793 include/global_arrays.php:952
 #: include/global_arrays.php:1008 include/global_arrays.php:2301
 #: lib/api_automation.php:179 lib/api_automation.php:271
 #: lib/api_automation.php:479 lib/api_automation.php:563
@@ -1196,7 +1196,7 @@ msgstr "IP"
 msgid "SNMP Name"
 msgstr "SNMP 名称"
 
-#: automation_devices.php:280 host.php:1582 include/global_form.php:1201
+#: automation_devices.php:280 host.php:1585 include/global_form.php:1201
 #: include/global_settings.php:2243
 msgid "Location"
 msgstr "位置"
@@ -1218,7 +1218,7 @@ msgstr "描述"
 msgid "OS"
 msgstr "OS"
 
-#: automation_devices.php:284 host.php:1754 include/global_arrays.php:507
+#: automation_devices.php:284 host.php:1757 include/global_arrays.php:507
 msgid "Uptime"
 msgstr "Uptime"
 
@@ -1230,11 +1230,11 @@ msgstr "SNMP"
 #: automation_graph_rules.php:771 automation_networks.php:1077
 #: automation_tree_rules.php:816 data_debug.php:351 data_debug.php:1016
 #: data_sources.php:1418 data_templates.php:1195 host.php:757 host.php:882
-#: host.php:1625 host.php:1742 lib/api_automation.php:164
+#: host.php:1628 host.php:1745 lib/api_automation.php:164
 #: lib/api_automation.php:280 lib/api_automation.php:573
 #: lib/api_automation.php:1090 lib/api_automation.php:1221
 #: lib/html_reports.php:1842 lib/installer.php:1772 managers.php:218
-#: package_import.php:469 package_import.php:544 plugins.php:465
+#: package_import.php:492 package_import.php:567 plugins.php:465
 #: plugins.php:587 pollers.php:1013 templates_import.php:224
 #: templates_import.php:263 user_admin.php:1144 user_group_admin.php:1028
 #: utilities.php:2066
@@ -1249,7 +1249,7 @@ msgstr "上次检查"
 msgid "Not Detected"
 msgstr "没有检测到"
 
-#: automation_devices.php:324 host.php:1832
+#: automation_devices.php:324 host.php:1835
 msgid "No Devices Found"
 msgstr "未找到设备"
 
@@ -1265,7 +1265,7 @@ msgstr "网络"
 msgid "Reset fields to defaults"
 msgstr "将字段重置为默认值"
 
-#: automation_devices.php:501 color.php:570 host.php:1611
+#: automation_devices.php:501 color.php:570 host.php:1614
 #: lib/html_form.php:1307
 msgid "Export"
 msgstr "导出"
@@ -1286,7 +1286,7 @@ msgstr "清空已发现的设备"
 #: automation_devices.php:670 automation_networks.php:1151
 #: automation_snmp.php:563 automation_snmp.php:564 automation_snmp.php:565
 #: automation_snmp.php:566 automation_snmp.php:567 automation_snmp.php:568
-#: data_debug.php:563 data_source_profiles.php:73 host.php:1809
+#: data_debug.php:563 data_source_profiles.php:73 host.php:1812
 #: lib/functions.php:5559 lib/functions.php:5563 lib/html.php:1161
 #: lib/html.php:1227 lib/html_reports.php:1632 lib/html_reports.php:1658
 #: lib/html_reports.php:1729 lib/html_reports.php:1730
@@ -1416,7 +1416,7 @@ msgstr "数据查询"
 #: automation_graph_rules.php:915 automation_networks.php:537
 #: automation_tree_rules.php:821 automation_tree_rules.php:941
 #: automation_tree_rules.php:959 data_debug.php:1022 data_sources.php:1423
-#: host.php:1630 include/global_arrays.php:879 include/global_form.php:1542
+#: host.php:1633 include/global_arrays.php:879 include/global_form.php:1542
 #: include/global_settings.php:361 lib/api_automation.php:169
 #: lib/api_automation.php:1095 lib/html_reports.php:1847
 #: lib/html_reports.php:1939 lib/html_reports.php:1950
@@ -1431,7 +1431,7 @@ msgstr "启用"
 #: automation_graph_rules.php:777 automation_graph_rules.php:915
 #: automation_networks.php:1092 automation_tree_rules.php:822
 #: automation_tree_rules.php:959 data_debug.php:1023 data_sources.php:1424
-#: data_templates.php:1231 host.php:1631 include/global_arrays.php:878
+#: data_templates.php:1231 host.php:1634 include/global_arrays.php:878
 #: include/global_arrays.php:1530 include/global_arrays.php:1822
 #: include/global_settings.php:360 include/global_settings.php:1554
 #: include/global_settings.php:1568 include/global_settings.php:1581
@@ -2138,7 +2138,7 @@ msgid "No Networks Found"
 msgstr "未找到网络"
 
 #: automation_networks.php:1203 data_debug.php:1037 lib/clog_webapi.php:584
-#: lib/html_graph.php:307 lib/html_tree.php:1128 lib/html_tree.php:1149
+#: lib/html_graph.php:307 lib/html_tree.php:1130 lib/html_tree.php:1151
 #: pollers.php:900 utilities.php:1464 utilities.php:2455
 msgid "Refresh"
 msgstr "刷新"
@@ -2264,7 +2264,7 @@ msgid "Item"
 msgstr "项"
 
 #: automation_snmp.php:534 include/auth.php:297 include/global_settings.php:652
-#: package_import.php:436 permission_denied.php:59 plugins.php:605
+#: package_import.php:459 permission_denied.php:59 plugins.php:605
 msgid "Version"
 msgstr "版本"
 
@@ -2451,7 +2451,7 @@ msgstr "自动化模板[新建]"
 msgid "Device Automation Templates"
 msgstr "设备自动化模板"
 
-#: automation_templates.php:491 data_sources.php:1647 package_import.php:541
+#: automation_templates.php:491 data_sources.php:1647 package_import.php:564
 #: templates_import.php:260 user_admin.php:1291 user_group_admin.php:1173
 msgid "Template Name"
 msgstr "模板名称"
@@ -3057,7 +3057,7 @@ msgid "The Status of the Data Source Debug Check."
 msgstr "数据源调试检查的状态."
 
 #: data_debug.php:357 lib/installer.php:2217 lib/installer.php:2249
-#: package_import.php:514
+#: package_import.php:537
 msgid "Writable"
 msgstr "可写"
 
@@ -3118,7 +3118,7 @@ msgid "Summary of issues found for the Data Source."
 msgstr "发现数据源的任何摘要问题."
 
 #: data_debug.php:511 data_debug.php:1067 data_sources.php:1445
-#: data_sources.php:1601 host.php:1736 include/global_arrays.php:956
+#: data_sources.php:1601 host.php:1739 include/global_arrays.php:956
 #: include/global_arrays.php:1002 include/global_arrays.php:2283
 #: lib/api_automation.php:284 user_admin.php:1144 user_group_admin.php:1028
 #: utilities.php:325
@@ -3241,7 +3241,7 @@ msgstr "重新运行分析"
 msgid "Check"
 msgstr "检查"
 
-#: data_debug.php:765 include/global_form.php:1028 lib/rrd.php:2963
+#: data_debug.php:765 include/global_form.php:1028 lib/rrd.php:2970
 #: utilities.php:798 utilities.php:815 utilities.php:3022
 msgid "Value"
 msgstr "值"
@@ -3317,7 +3317,7 @@ msgstr "配置文件"
 
 #: data_debug.php:1004 data_debug.php:1020 data_debug.php:1031
 #: data_sources.php:1405 data_sources.php:1422 data_templates.php:1023
-#: graphs.php:2047 graphs_new.php:424 host.php:1586 host_templates.php:737
+#: graphs.php:2047 graphs_new.php:424 host.php:1589 host_templates.php:737
 #: lib/clog_webapi.php:545 lib/html.php:204 lib/html_reports.php:977
 #: lib/html_reports.php:2073 plugins.php:469 settings.php:526 settings.php:548
 #: settings.php:576 tree.php:794 user_admin.php:2143 utilities.php:1035
@@ -3632,7 +3632,7 @@ msgstr "未找到XML 文件."
 msgid "Associated Graph Templates"
 msgstr "关联图形模板"
 
-#: data_queries.php:1121 graph_templates.php:831 graphs_new.php:537
+#: data_queries.php:1121 graph_templates.php:831 graphs_new.php:569
 #: host.php:756 lib/api_automation.php:576
 msgid "Graph Template Name"
 msgstr "图形模板名称"
@@ -3783,7 +3783,7 @@ msgstr "跳数"
 
 #: data_source_profiles.php:639 graphs_new.php:463 include/global_form.php:298
 #: lib/html.php:529 lib/html_filter.php:72 lib/installer.php:2534
-#: lib/rrd.php:3017 utilities.php:866 utilities.php:1779
+#: lib/rrd.php:3024 utilities.php:866 utilities.php:1779
 msgid "Rows"
 msgstr "行数:"
 
@@ -4133,8 +4133,8 @@ msgstr "自定义数据"
 msgid "Data Source Item %s"
 msgstr "数据源的项目%s"
 
-#: data_sources.php:1090 data_templates.php:744 package_import.php:516
-#: package_import.php:574 templates_import.php:290
+#: data_sources.php:1090 data_templates.php:744 package_import.php:539
+#: package_import.php:597 templates_import.php:290
 msgid "New"
 msgstr "新"
 
@@ -4527,7 +4527,7 @@ msgid "Cacti Real-time Graphing"
 msgstr "Cacti 实时画图"
 
 #: graph_realtime.php:411 lib/html_graph.php:238 lib/html_reports.php:124
-#: lib/html_tree.php:1059
+#: lib/html_tree.php:1061
 msgid "Thumbnails"
 msgstr "缩略图"
 
@@ -4645,8 +4645,8 @@ msgid "Check this checkbox if you wish to allow the user to override the value o
 msgstr "如果您希望在创建图形时允许用户覆盖右侧的值,请选中此复选框."
 
 #: graph_templates.php:694 graph_templates.php:709 graph_templates.php:873
-#: graphs_new.php:532 include/global_arrays.php:1192
-#: include/global_arrays.php:2211 lib/html_tree.php:549 user_admin.php:1283
+#: graphs_new.php:566 include/global_arrays.php:1192
+#: include/global_arrays.php:2211 lib/html_tree.php:551 user_admin.php:1283
 #: user_group_admin.php:1165
 msgid "Graph Templates"
 msgstr "图形模板"
@@ -4777,13 +4777,13 @@ msgid "Report"
 msgstr "报告"
 
 #: graph_view.php:646 lib/html.php:190 lib/html.php:195 lib/html_graph.php:157
-#: lib/html_tree.php:985
+#: lib/html_tree.php:987
 msgid "All Graphs & Templates"
 msgstr "所有图形和模板"
 
 #: graph_view.php:647 include/global_arrays.php:2883 lib/graphs.php:58
 #: lib/graphs.php:67 lib/html.php:198 lib/html_graph.php:158
-#: lib/html_tree.php:986
+#: lib/html_tree.php:988
 msgid "Not Templated"
 msgstr "没有模板化"
 
@@ -4923,7 +4923,7 @@ msgstr "无设备"
 msgid "Created graph: %s"
 msgstr "创建图形: '%s'"
 
-#: graphs.php:260 lib/template.php:2131 lib/template.php:2160
+#: graphs.php:260 lib/template.php:2131 lib/template.php:2165
 msgid "ERROR: No Data Source associated. Check Template"
 msgstr "ERROR: 没有关联数据源. 请检查模板"
 
@@ -4947,7 +4947,7 @@ msgstr "保持数据源不变."
 msgid "Choose a Graph Template and click 'Continue' to change the Graph Template for the following Graph(s). Please note, that only compatible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources."
 msgstr "选择一个图形模板,然后点击 '继续' 以更改以下图形的图形模板. 请注意,只会显示兼容的图形模板. 兼容性由具有相同数据源的人员标识."
 
-#: graphs.php:916
+#: graphs.php:916 graphs_new.php:532
 msgid "New Graph Template"
 msgstr "新的图形模板"
 
@@ -5192,80 +5192,80 @@ msgstr "编辑设备"
 msgid "Create New Device"
 msgstr "创建新设备"
 
-#: graphs_new.php:538 graphs_new.php:855 lib/html.php:1011 user_admin.php:1502
-#: user_group_admin.php:1382
-msgid "Select All"
-msgstr "选择全部"
-
-#: graphs_new.php:538 graphs_new.php:855 lib/html.php:912 lib/html.php:1011
-msgid "Select All Rows"
-msgstr "选择所有行"
-
-#: graphs_new.php:625 include/global_arrays.php:947
+#: graphs_new.php:551 graphs_new.php:560 include/global_arrays.php:947
 #: include/global_arrays.php:1024 lib/html_form.php:1288 lib/html_form.php:1301
 #: tree.php:1375
 msgid "Create"
 msgstr "创建"
 
-#: graphs_new.php:627
+#: graphs_new.php:553
 msgid "(Select a graph type to create)"
 msgstr "(选择要创建的图形类型)"
 
-#: graphs_new.php:676
+#: graphs_new.php:570 graphs_new.php:868 lib/html.php:1011 user_admin.php:1502
+#: user_group_admin.php:1382
+msgid "Select All"
+msgstr "选择全部"
+
+#: graphs_new.php:570 graphs_new.php:868 lib/html.php:912 lib/html.php:1011
+msgid "Select All Rows"
+msgstr "选择所有行"
+
+#: graphs_new.php:680
 #, fuzzy, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id of '%s'"
 msgstr "为 ID 为“%s”的数据查询“%s”解析数据查询资源 XML 文件时出错"
 
-#: graphs_new.php:693
+#: graphs_new.php:697
 #, fuzzy, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
 msgstr "为 ID 为“%s”的数据查询“%s”解析数据查询资源 XML 文件时出错"
 
-#: graphs_new.php:697
+#: graphs_new.php:701
 #, fuzzy, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'"
 msgstr "为 ID 为“%s”的数据查询“%s”解析数据查询资源 XML 文件时出错"
 
-#: graphs_new.php:734
+#: graphs_new.php:741
 #, php-format
 msgid "Data Query [%s]"
 msgstr "数据查询 [%s]"
 
-#: graphs_new.php:851
+#: graphs_new.php:864
 msgid "From there you can get more information."
 msgstr "从那里您可以得到更多的信息."
 
-#: graphs_new.php:851
+#: graphs_new.php:864
 msgid "This Data Query returned 0 rows, perhaps there was a problem executing this Data Query."
 msgstr "这个数据查询返回了0行,也许执行这个数据查询有问题."
 
-#: graphs_new.php:851
+#: graphs_new.php:864
 msgid "You can run this Data Query in debug mode"
 msgstr "您可以在调试模式下运行此数据查询"
 
-#: graphs_new.php:866
+#: graphs_new.php:879
 #, fuzzy
 msgid "The index is disabled due to the Data Query having no associated Graph Templates."
 msgstr "由于数据查询没有关联的图表模板，索引被禁用。"
 
-#: graphs_new.php:916
+#: graphs_new.php:929
 msgid "Search Returned no Rows."
 msgstr "搜索没有返回行."
 
-#: graphs_new.php:921
+#: graphs_new.php:934
 #, fuzzy
 msgid "Error in Data Query.  This could be due to the following: File Permissions, or a missing or improperly formatted Data Query XML file."
 msgstr "数据查询错误。这可能是由于以下原因： 文件权限，或丢失或格式不正确的数据查询 XML 文件。"
 
-#: graphs_new.php:947
+#: graphs_new.php:960
 msgid "Select a Graph Type to Create"
 msgstr "选择要创建的图形类型"
 
-#: graphs_new.php:950
+#: graphs_new.php:963
 msgid "Make selection default"
 msgstr "选择默认"
 
-#: graphs_new.php:950
+#: graphs_new.php:963
 msgid "Set Default"
 msgstr "默认设置"
 
@@ -5608,7 +5608,7 @@ msgstr "SNMP 描述"
 msgid "SNMP GetNext"
 msgstr "SNMP GetNext"
 
-#: host.php:1424 host.php:1594
+#: host.php:1424 host.php:1597
 msgid "Undefined"
 msgstr "未定义"
 
@@ -5617,36 +5617,36 @@ msgstr "未定义"
 msgid "Site"
 msgstr "站点"
 
-#: host.php:1611
+#: host.php:1614
 msgid "Export Devices"
 msgstr "导出设备"
 
-#: host.php:1632 lib/api_automation.php:171 lib/api_automation.php:1097
+#: host.php:1635 lib/api_automation.php:171 lib/api_automation.php:1097
 msgid "Not Up"
 msgstr "Not UP"
 
-#: host.php:1635 lib/api_automation.php:174 lib/api_automation.php:1100
+#: host.php:1638 lib/api_automation.php:174 lib/api_automation.php:1100
 #: lib/html_utility.php:927 pollers.php:49
 msgid "Recovering"
 msgstr "恢复中"
 
-#: host.php:1636 lib/api_automation.php:175 lib/api_automation.php:1101
+#: host.php:1639 lib/api_automation.php:175 lib/api_automation.php:1101
 #: lib/auth.php:2340 lib/html_utility.php:936 lib/import.php:319
-#: lib/plugins.php:1256 lib/plugins.php:1257 lib/rrd.php:2988 lib/rrd.php:3000
-#: package_import.php:518 utilities.php:211 utilities.php:212
+#: lib/plugins.php:1258 lib/plugins.php:1259 lib/rrd.php:2995 lib/rrd.php:3007
+#: package_import.php:541 utilities.php:211 utilities.php:212
 #: utilities.php:2594
 msgid "Unknown"
 msgstr "未知"
 
-#: host.php:1712 lib/api_automation.php:570 tree.php:867 utilities.php:2188
+#: host.php:1715 lib/api_automation.php:570 tree.php:867 utilities.php:2188
 msgid "Device Description"
 msgstr "设备描述"
 
-#: host.php:1715
+#: host.php:1718
 msgid "The name by which this Device will be referred to."
 msgstr "该设备将被引用的名称."
 
-#: host.php:1718 include/global_form.php:1193 include/global_form.php:1762
+#: host.php:1721 include/global_form.php:1193 include/global_form.php:1762
 #: lib/api_automation.php:279 lib/api_automation.php:571
 #: lib/api_automation.php:884 lib/api_automation.php:1219 managers.php:219
 #: pollers.php:130 pollers.php:1007 user_admin.php:1144
@@ -5654,67 +5654,67 @@ msgstr "该设备将被引用的名称."
 msgid "Hostname"
 msgstr "主机名"
 
-#: host.php:1721
+#: host.php:1724
 msgid "Either an IP address, or hostname.  If a hostname, it must be resolvable by either DNS, or from your hosts file."
 msgstr "IP地址或主机名. 如果是主机名,则必须由DNS或主机文件解析."
 
-#: host.php:1727
+#: host.php:1730
 msgid "The internal database ID for this Device.  Useful when performing automation or debugging."
 msgstr "设备的内部数据库ID. 执行自动化或调试时很有用."
 
-#: host.php:1733
+#: host.php:1736
 msgid "The total number of Graphs generated from this Device."
 msgstr "该设备生成的图形总数."
 
-#: host.php:1739
+#: host.php:1742
 msgid "The total number of Data Sources generated from this Device."
 msgstr "该设备生成的数据源总数."
 
-#: host.php:1745
+#: host.php:1748
 msgid "The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname \"localhost\", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an \"Unknown\" state."
 msgstr "基于ping 结果的设备监控状态. 如果是特殊类型的设备,则通过使用主机名 \"localhost\" 或由于设置为不执行可用性检查而始终保持为 '启用'.当使用cmd.php 数据采集器时,没有图形的设备不会被数据采集器ping, 并保持在 \"未知\" 状态."
 
-#: host.php:1748
+#: host.php:1751
 msgid "In State"
 msgstr "持续时间"
 
-#: host.php:1751
+#: host.php:1754
 msgid "The amount of time that this Device has been in its current state."
 msgstr "设备处于当前状态的持续时间."
 
-#: host.php:1757
+#: host.php:1760
 msgid "The current amount of time that the host has been up."
 msgstr "主机的开机时间."
 
-#: host.php:1760
+#: host.php:1763
 msgid "Poll Time"
 msgstr "采集时间"
 
-#: host.php:1763
+#: host.php:1766
 msgid "The amount of time it takes to collect data from this Device."
 msgstr "从设备采集数据所花费的时间."
 
-#: host.php:1766
+#: host.php:1769
 msgid "Current (ms)"
 msgstr "当前(毫秒)"
 
-#: host.php:1769
+#: host.php:1772
 msgid "The current ping time in milliseconds to reach the Device."
 msgstr "当前到达设备的ping 延迟(以毫秒为单位)."
 
-#: host.php:1772
+#: host.php:1775
 msgid "Average (ms)"
 msgstr "平均(毫秒)"
 
-#: host.php:1775
+#: host.php:1778
 msgid "The average ping time in milliseconds to reach the Device since the counters were cleared for this Device."
 msgstr "自从设备清除计数器后,到达设备的平均ping 延迟(以毫秒为单位)."
 
-#: host.php:1778
+#: host.php:1781
 msgid "Availability"
 msgstr "可用性"
 
-#: host.php:1781
+#: host.php:1784
 msgid "The availability percentage based upon ping results since the counters were cleared for this Device."
 msgstr "自从设备清除计数器以来,基于ping 结果的可用性百分比."
 
@@ -6643,7 +6643,7 @@ msgstr "自然排序"
 msgid "Numeric Ordering"
 msgstr "数字排序"
 
-#: include/global_arrays.php:914 lib/rrd.php:2929
+#: include/global_arrays.php:914 lib/rrd.php:2936
 msgid "Header"
 msgstr "头部"
 
@@ -6771,7 +6771,7 @@ msgstr "设备规则"
 
 #: include/global_arrays.php:979 include/global_arrays.php:1029
 #: include/global_arrays.php:1190 lib/html_filter.php:177
-#: lib/html_graph.php:252 lib/html_tree.php:1073
+#: lib/html_graph.php:252 lib/html_tree.php:1075
 msgid "Presets"
 msgstr "预置"
 
@@ -6805,7 +6805,7 @@ msgid "Export Templates"
 msgstr "导出模板"
 
 #: include/global_arrays.php:991 include/global_arrays.php:1013
-#: include/global_arrays.php:1031 lib/plugins.php:1211
+#: include/global_arrays.php:1031 lib/plugins.php:1213
 msgid "Configuration"
 msgstr "系统配置"
 
@@ -7056,7 +7056,7 @@ msgid "Data Input Field"
 msgstr "数据输入字段"
 
 #: include/global_arrays.php:1316 include/global_form.php:593
-#: include/global_form.php:1694 package_import.php:790
+#: include/global_form.php:1694 package_import.php:813
 msgid "Data Source Profile"
 msgstr "数据源配置文件"
 
@@ -8240,7 +8240,7 @@ msgstr "数据将从数据源采集的频率?"
 msgid "How long can data be missing before RRDtool records unknown data.  Increase this value if your Data Source is unstable and you wish to carry forward old data rather than show gaps in your graphs.  This value is multiplied by the X-Files Factor to determine the actual amount of time."
 msgstr "在RRDtool 记录未知数据之前数据可能会丢失多久. 如果您的数据源不稳定并且您希望继承旧数据而不是显示图形中的空白,请增加此值. 该值乘以X-Files Factor以确定实际时间量."
 
-#: include/global_form.php:240 lib/rrd.php:3020
+#: include/global_form.php:240 lib/rrd.php:3027
 msgid "X-Files Factor"
 msgstr "X Files 因子"
 
@@ -8422,7 +8422,7 @@ msgid "The script/source used to gather data for this data source."
 msgstr "用于为数据源收集数据的脚本/来源."
 
 #: include/global_form.php:595 include/global_form.php:1696
-#: package_import.php:792
+#: package_import.php:815
 msgid "Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources."
 msgstr "选择数据源配置文件. 数据源配置文件控制结果数据源的采集周期,数据聚合和保留策略."
 
@@ -8795,7 +8795,7 @@ msgstr "不透明度/ Alpha通道"
 msgid "The opacity/alpha channel of the color."
 msgstr "颜色的不透明度/ Alpha通道."
 
-#: include/global_form.php:999 lib/rrd.php:3016
+#: include/global_form.php:999 lib/rrd.php:3023
 msgid "Consolidation Function"
 msgstr "合并功能"
 
@@ -9167,31 +9167,31 @@ msgstr "从本地文件导入模板"
 msgid "If the XML file containing template data is located on your local machine, select it here."
 msgstr "如果包含模板数据的XML文件位于本地计算机上,请在此处选择它."
 
-#: include/global_form.php:1689 package_import.php:785
+#: include/global_form.php:1689 package_import.php:808
 #, fuzzy
 #| msgid "Data Source Profiles"
 msgid "Data Source Overrides"
 msgstr "数据源配置文件"
 
-#: include/global_form.php:1698 package_import.php:794
+#: include/global_form.php:1698 package_import.php:817
 msgid "Create New from Template"
 msgstr "从模板新建"
 
-#: include/global_form.php:1703 package_import.php:799
+#: include/global_form.php:1703 package_import.php:822
 #, fuzzy
 #| msgid "Graph Template Options"
 msgid "Graph/Data Template Overrides"
 msgstr "图形模板选项"
 
-#: include/global_form.php:1708 package_import.php:804
+#: include/global_form.php:1708 package_import.php:827
 msgid "Remove Orphaned Graph Items"
 msgstr "删除孤立的图形"
 
-#: include/global_form.php:1710 package_import.php:806
+#: include/global_form.php:1710 package_import.php:829
 msgid "If checked, Cacti will delete any Graph Items from both the Graph Template and associated Graphs that are not included in the imported Graph Template."
 msgstr "如果选中,Cacti 将删除图形模板和关联图形中未包含在导入的图形模板中的任何图形项目."
 
-#: include/global_form.php:1715 package_import.php:811
+#: include/global_form.php:1715 package_import.php:834
 msgid "Replace Data Query Suggested Value Patterns"
 msgstr ""
 
@@ -9200,33 +9200,33 @@ msgid "Replace Data Source and Graph Template Suggested Value Records for Data Q
 msgstr ""
 
 #: include/global_form.php:1722 include/global_settings.php:553
-#: package_import.php:818
+#: package_import.php:841
 msgid "Graph Template Image Format"
 msgstr "图形模板图像格式"
 
-#: include/global_form.php:1723 package_import.php:819
+#: include/global_form.php:1723 package_import.php:842
 #, fuzzy
 #| msgid "The default Image Format to be used for all new Graph Templates."
 msgid "The Image Format to be used when importing or updating Graph Templates."
 msgstr "用于所有新图形模板的默认图像格式."
 
 #: include/global_form.php:1729 include/global_settings.php:560
-#: package_import.php:826
+#: package_import.php:849
 msgid "Graph Template Height"
 msgstr "图形模板高度"
 
-#: include/global_form.php:1730 package_import.php:827
+#: include/global_form.php:1730 package_import.php:850
 #, fuzzy
 #| msgid "The default Graph Width to be used for all new Graph Templates."
 msgid "The Height to be used when importing or updating Graph Templates."
 msgstr "用于所有新图形模板的默认图形宽度."
 
 #: include/global_form.php:1737 include/global_settings.php:568
-#: package_import.php:835
+#: package_import.php:858
 msgid "Graph Template Width"
 msgstr "图形模板宽度"
 
-#: include/global_form.php:1738 package_import.php:836
+#: include/global_form.php:1738 package_import.php:859
 #, fuzzy
 #| msgid "The default Graph Width to be used for all new Graph Templates."
 msgid "The Width to be used when importing or updating Graph Templates."
@@ -9891,11 +9891,11 @@ msgstr "您已安装的RRDtool 版本."
 #: include/global_settings.php:404
 #, fuzzy
 #| msgid "Enable Report"
-msgid "Enable gradient support"
+msgid "Enable Gradient Support"
 msgstr "启用报告"
 
 #: include/global_settings.php:405
-msgid "Enabled gradient support for AREA charts."
+msgid "Enabled Gradient Support for AREA and STACK charts."
 msgstr ""
 
 #: include/global_settings.php:410
@@ -10894,12 +10894,12 @@ msgstr "Cacti的数据源统计脚本可以运行的最长时间，而不会产�
 #: include/global_settings.php:1332
 #, fuzzy
 #| msgid "DNS Timeout"
-msgid "RRD check Timeout"
+msgid "RRDfile Check Timeout"
 msgstr "DNS 超时"
 
 #: include/global_settings.php:1333
 #, fuzzy
-msgid "The maximum amount of time Cacti's RRD check script can run without generating a timeout error and being killed."
+msgid "The maximum amount of time Cacti's RRDfile check script can run without generating a timeout error and being killed."
 msgstr "仙人掌的Spikekill脚本可以运行的最长时间，而不会产生超时错误并被杀死。"
 
 #: include/global_settings.php:1347
@@ -11418,7 +11418,7 @@ msgstr "LDAP CN 设置"
 msgid "Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: displayname) "
 msgstr "创建新用户时, 将从LDAP 中取出全名的字段. ( windows: displayname ) "
 
-#: include/global_settings.php:1801 package_import.php:433
+#: include/global_settings.php:1801 package_import.php:456
 msgid "Email"
 msgstr "邮箱"
 
@@ -11812,31 +11812,32 @@ msgstr "数据源统计数据采集器的内存限制"
 msgid "The maximum amount of memory for the Cacti Poller and Data Source Statistics Poller"
 msgstr "Cacti poller 和数据源统计poller 的最大内存量"
 
-#: include/global_settings.php:2192 rrdcheck.php:33 rrdcheck.php:95
+#: include/global_settings.php:2192
 #, fuzzy
-msgid "RRD check"
-msgstr "运行检查"
+#| msgid "RRDfile Cleaner"
+msgid "RRDfile Check"
+msgstr "RRD 文件清理器"
 
 #: include/global_settings.php:2197
 #, fuzzy
 #| msgid "Enable Rule"
-msgid "Enable RRD check"
+msgid "Enable RRDfile check"
 msgstr "启用规则"
 
 #: include/global_settings.php:2198
 #, fuzzy
 #| msgid "Should Data Source Statistics be collected for this Cacti system?"
-msgid "Should RRD check be enabled for this Cacti system?"
+msgid "Should RRDfile check be enabled for this Cacti system?"
 msgstr "应该收集这个Cacti 系统的数据源统计数据吗?"
 
 #: include/global_settings.php:2203
 #, fuzzy
-msgid "Number of RRD check Processes"
+msgid "Number of RRDfile check Processes"
 msgstr "Boost 进程数"
 
 #: include/global_settings.php:2204
 #, fuzzy
-msgid "The number of concurrent RRD check processes to use to use to process all of rrd files."
+msgid "The number of concurrent RRDfile check processes to use to use to process all of rrd files."
 msgstr "用于处理boost 表中所有RRD 的并发boost 进程数."
 
 #: include/global_settings.php:2231
@@ -12281,9 +12282,9 @@ msgstr "1列"
 #: include/global_settings.php:2678 include/global_settings.php:2679
 #: include/global_settings.php:2680 include/global_settings.php:2681
 #: lib/html_graph.php:228 lib/html_graph.php:229 lib/html_graph.php:230
-#: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1049
-#: lib/html_tree.php:1050 lib/html_tree.php:1051 lib/html_tree.php:1052
-#: lib/html_tree.php:1053
+#: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1051
+#: lib/html_tree.php:1052 lib/html_tree.php:1053 lib/html_tree.php:1054
+#: lib/html_tree.php:1055
 #, php-format
 msgid "%d Columns"
 msgstr "%d 列"
@@ -12580,7 +12581,7 @@ msgstr "匹配设备"
 
 #: lib/api_automation.php:146 lib/api_automation.php:1072
 #: lib/clog_webapi.php:539 lib/html_reports.php:956 lib/html_reports.php:1611
-#: lib/html_reports.php:1938 lib/html_reports.php:1949 lib/rrd.php:2958
+#: lib/html_reports.php:1938 lib/html_reports.php:1949 lib/rrd.php:2965
 #: utilities.php:356 utilities.php:1442 utilities.php:3022
 msgid "Type"
 msgstr "Type"
@@ -12851,7 +12852,7 @@ msgstr "受限的"
 msgid "Branch:"
 msgstr "分支:"
 
-#: lib/auth.php:2564 lib/auth.php:2596 lib/html_tree.php:957
+#: lib/auth.php:2564 lib/auth.php:2596 lib/html_tree.php:959
 #: lib/reports.php:1048
 msgid "Device:"
 msgstr "设备:"
@@ -13498,12 +13499,12 @@ msgstr "您必须为数据源'％s'选择XML输出列，并将复选框切换到
 msgid "Your Graph Template has not Data Templates in use.  Please correct your Graph Template"
 msgstr "您的图表模板尚未使用数据模板。请更正您的图表模板"
 
-#: lib/database.php:1933
+#: lib/database.php:1935
 #, fuzzy
 msgid "Failed to determine password field length, can not continue as may corrupt password"
 msgstr "无法确定密码字段长度,无法继续,因为可能会损坏密码"
 
-#: lib/database.php:1940
+#: lib/database.php:1942
 #, fuzzy
 msgid "Failed to alter password field length, can not continue as may corrupt password"
 msgstr "无法更改密码字段长度,无法继续,因为可能会损坏密码"
@@ -13625,8 +13626,8 @@ msgstr "退出"
 msgid "Leaf"
 msgstr "叶子"
 
-#: lib/functions.php:3772 lib/html_tree.php:656 lib/html_tree.php:692
-#: lib/html_tree.php:921 lib/html_tree.php:929 lib/html_tree.php:1503
+#: lib/functions.php:3772 lib/html_tree.php:658 lib/html_tree.php:694
+#: lib/html_tree.php:923 lib/html_tree.php:931 lib/html_tree.php:1505
 msgid "Non Query Based"
 msgstr "Non Query Based"
 
@@ -14288,62 +14289,62 @@ msgstr "您在此表单上有未保存的更改.如果按'继续',这些更改�
 msgid "Data Query Data Sources must be created through %s"
 msgstr "数据查询数据源必须通过%s创建"
 
-#: lib/html_graph.php:193 lib/html_tree.php:1020
+#: lib/html_graph.php:193 lib/html_tree.php:1022
 msgid "Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile"
 msgstr "将当前的图形,列,缩略图,预设和时间偏移首选项保存到您的配置文件"
 
-#: lib/html_graph.php:223 lib/html_tree.php:1044
+#: lib/html_graph.php:223 lib/html_tree.php:1046
 msgid "Columns"
 msgstr "列"
 
-#: lib/html_graph.php:227 lib/html_tree.php:1048
+#: lib/html_graph.php:227 lib/html_tree.php:1050
 #, php-format
 msgid "%d Column"
 msgstr "%d 列"
 
-#: lib/html_graph.php:257 lib/html_tree.php:1078
+#: lib/html_graph.php:257 lib/html_tree.php:1080
 msgid "Custom"
 msgstr "自定义"
 
 #: lib/html_graph.php:271 lib/html_reports.php:1936 lib/html_reports.php:1947
-#: lib/html_tree.php:1092
+#: lib/html_tree.php:1094
 msgid "From"
 msgstr "从"
 
-#: lib/html_graph.php:276 lib/html_tree.php:1097
+#: lib/html_graph.php:276 lib/html_tree.php:1099
 msgid "Start Date Selector"
 msgstr "开始日期选择器"
 
 #: lib/html_graph.php:280 lib/html_reports.php:1937 lib/html_reports.php:1948
-#: lib/html_tree.php:1101
+#: lib/html_tree.php:1103
 msgid "To"
 msgstr "至"
 
-#: lib/html_graph.php:285 lib/html_tree.php:1106
+#: lib/html_graph.php:285 lib/html_tree.php:1108
 msgid "End Date Selector"
 msgstr "结束日期选择器"
 
-#: lib/html_graph.php:290 lib/html_tree.php:1111
+#: lib/html_graph.php:290 lib/html_tree.php:1113
 msgid "Shift Time Backward"
 msgstr "向后移动时间"
 
-#: lib/html_graph.php:291 lib/html_tree.php:1112
+#: lib/html_graph.php:291 lib/html_tree.php:1114
 msgid "Define Shifting Interval"
 msgstr "定义移动间隔"
 
-#: lib/html_graph.php:302 lib/html_tree.php:1123
+#: lib/html_graph.php:302 lib/html_tree.php:1125
 msgid "Shift Time Forward"
 msgstr "向前移动时间"
 
-#: lib/html_graph.php:307 lib/html_tree.php:1128
+#: lib/html_graph.php:307 lib/html_tree.php:1130
 msgid "Refresh selected time span"
 msgstr "刷新选定的时间跨度"
 
-#: lib/html_graph.php:308 lib/html_tree.php:1129
+#: lib/html_graph.php:308 lib/html_tree.php:1131
 msgid "Return to the default time span"
 msgstr "返回到默认的时间跨度"
 
-#: lib/html_graph.php:316 lib/html_tree.php:1137
+#: lib/html_graph.php:316 lib/html_tree.php:1139
 msgid "Window"
 msgstr "窗口"
 
@@ -14351,7 +14352,7 @@ msgstr "窗口"
 msgid "Interval"
 msgstr "间隔"
 
-#: lib/html_graph.php:340 lib/html_tree.php:1161
+#: lib/html_graph.php:340 lib/html_tree.php:1163
 msgid "Stop"
 msgstr "停止"
 
@@ -14866,48 +14867,48 @@ msgstr "无效"
 msgid "No Reports Found"
 msgstr "未找到报告"
 
-#: lib/html_tree.php:913 lib/html_tree.php:921 lib/html_tree.php:929
+#: lib/html_tree.php:915 lib/html_tree.php:923 lib/html_tree.php:931
 msgid "Graph Template:"
 msgstr "图形模板:"
 
-#: lib/html_tree.php:929
+#: lib/html_tree.php:931
 #, fuzzy
 msgid "Template Based"
 msgstr "图形模板基础"
 
-#: lib/html_tree.php:935 lib/reports.php:1268
+#: lib/html_tree.php:937 lib/reports.php:1268
 msgid "Tree:"
 msgstr "树:"
 
-#: lib/html_tree.php:940
+#: lib/html_tree.php:942
 msgid "Site:"
 msgstr "站点:"
 
-#: lib/html_tree.php:946
+#: lib/html_tree.php:948
 msgid "Leaf:"
 msgstr "叶子:"
 
-#: lib/html_tree.php:952
+#: lib/html_tree.php:954
 msgid "Device Template:"
 msgstr "设备模板:"
 
-#: lib/html_tree.php:966
+#: lib/html_tree.php:968
 msgid "Applied"
 msgstr "应用"
 
-#: lib/html_tree.php:966
+#: lib/html_tree.php:968
 msgid "Filter"
 msgstr "过滤"
 
-#: lib/html_tree.php:966
+#: lib/html_tree.php:968
 msgid "Graph Filters"
 msgstr "图形过滤器"
 
-#: lib/html_tree.php:1017
+#: lib/html_tree.php:1019
 msgid "Set/Refresh Filter"
 msgstr "设置/刷新过滤器"
 
-#: lib/html_tree.php:1439
+#: lib/html_tree.php:1441
 msgid "(Non Graph Template)"
 msgstr "(非图形模板)"
 
@@ -15545,7 +15546,7 @@ msgstr "对于远程poller 而言,频繁更新的路径(包括插件,脚本和�
 msgid "Required Writable at Install Time Only"
 msgstr "仅在安装时需要可写"
 
-#: lib/installer.php:2221 lib/installer.php:2253 package_import.php:512
+#: lib/installer.php:2221 lib/installer.php:2253 package_import.php:535
 msgid "Not Writable"
 msgstr "不可写入"
 
@@ -15725,11 +15726,11 @@ msgstr "不建议更新您已经修改过的模板。模板的升级不会删除
 msgid "Please select the Device Templates that you wish to use after the Install.  If you Operating System is Windows, you need to ensure that you select the 'Windows Device' Template.  If your Operating System is Linux/UNIX, make sure you select the 'Local Linux Machine' Device Template."
 msgstr "请在安装后选择您想要使用的设备模板. 如果您的操作系统是Windows,则需要确保选择 'Windows 设备' 模板.如果您的操作系统是Linux/UNIX,请确保选择 ' Local Linux Machine' 设备模板."
 
-#: lib/installer.php:2455 package_import.php:427 plugins.php:593
+#: lib/installer.php:2455 package_import.php:450 plugins.php:593
 msgid "Author"
 msgstr "作者"
 
-#: lib/installer.php:2455 package_import.php:430
+#: lib/installer.php:2455 package_import.php:453
 msgid "Homepage"
 msgstr "主页"
 
@@ -16285,34 +16286,34 @@ msgstr "TCP ping 超时"
 msgid "Ping not performed due to setting."
 msgstr "由于设置原因, Ping 不能执行."
 
-#: lib/plugins.php:654
+#: lib/plugins.php:656
 #, php-format
 msgid "%s Version %s or above is required for %s. "
 msgstr "%s 版本 %s 或以上是 %s 所必需的."
 
-#: lib/plugins.php:658
+#: lib/plugins.php:660
 #, php-format
 msgid "%s is required for %s, and it is not installed. "
 msgstr "%s 是必需的 %s, 且未安装."
 
-#: lib/plugins.php:681
+#: lib/plugins.php:683
 msgid "Plugin cannot be installed."
 msgstr "插件无法安装."
 
-#: lib/plugins.php:1211 lib/plugins.php:1218 plugins.php:479 plugins.php:559
+#: lib/plugins.php:1213 lib/plugins.php:1220 plugins.php:479 plugins.php:559
 msgid "Plugins"
 msgstr "插件"
 
-#: lib/plugins.php:1230 lib/plugins.php:1236
+#: lib/plugins.php:1232 lib/plugins.php:1238
 #, php-format
 msgid "Requires: Cacti >= %s"
 msgstr "需要:Cacti >= %s"
 
-#: lib/plugins.php:1233
+#: lib/plugins.php:1235
 msgid "Legacy Plugin"
 msgstr "旧版插件"
 
-#: lib/plugins.php:1258
+#: lib/plugins.php:1260
 msgid "Not Stated"
 msgstr "没有说明"
 
@@ -16385,174 +16386,174 @@ msgstr "添加已存在报表图形项目'<i>%s</i>'失败"
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
 msgstr "跳过已存在的报告图项目 '<i>%s</i>'"
 
-#: lib/rrd.php:2725
+#: lib/rrd.php:2732
 #, php-format
 msgid "Required RRD step size is '%s'"
 msgstr "所需的RRD步长为'%s'"
 
-#: lib/rrd.php:2754
+#: lib/rrd.php:2761
 #, php-format
 msgid "Type for Data Source '%s' should be '%s'"
 msgstr "数据源'%s' 的类型应该是'%s' "
 
-#: lib/rrd.php:2759
+#: lib/rrd.php:2766
 #, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
 msgstr "数据源'%s' 的心跳应该是'%s' "
 
-#: lib/rrd.php:2771
+#: lib/rrd.php:2778
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "数据源'%s'的RRD最小值应为'%s'"
 
-#: lib/rrd.php:2791
+#: lib/rrd.php:2798
 #, php-format
 msgid "RRD maximum for Data Source '%s' should be '%s'"
 msgstr "数据源'%s'的RRD最大值应为'%s'"
 
-#: lib/rrd.php:2801
+#: lib/rrd.php:2808
 #, php-format
 msgid "DS '%s' missing in RRDfile"
 msgstr " RRD 文件中缺少DS '%s' "
 
-#: lib/rrd.php:2810
+#: lib/rrd.php:2817
 #, php-format
 msgid "DS '%s' missing in Cacti definition"
 msgstr "DS'%s' 在Cacti 定义中缺失"
 
-#: lib/rrd.php:2827 lib/rrd.php:2828
+#: lib/rrd.php:2834 lib/rrd.php:2835
 #, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "Cacti RRA '%s' 具有与 '%s' 相同的CF/步数(%s,%s)"
 
-#: lib/rrd.php:2842 lib/rrd.php:2843
+#: lib/rrd.php:2849 lib/rrd.php:2850
 #, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "文件RRA '%s'具有相同的CF/步(%s,%s)为'%s'"
 
-#: lib/rrd.php:2874
+#: lib/rrd.php:2881
 #, php-format
 msgid "XFF for cacti RRA id '%s' should be '%s'"
 msgstr "XAF的cacti RRA id'%s' '应该是'%s'"
 
-#: lib/rrd.php:2878
+#: lib/rrd.php:2885
 #, php-format
 msgid "Number of rows for Cacti RRA id '%s' should be '%s'"
 msgstr "Cacti RRA id'%s'的行数应该是'%s'"
 
-#: lib/rrd.php:2894
+#: lib/rrd.php:2901
 #, php-format
 msgid "RRA '%s' missing in RRDfile"
 msgstr "在RRDfile中缺少RRA '%s'"
 
-#: lib/rrd.php:2903
+#: lib/rrd.php:2910
 #, php-format
 msgid "RRA '%s' missing in Cacti definition"
 msgstr "在Cacti 定义中缺少RRA'%s' "
 
-#: lib/rrd.php:2925
+#: lib/rrd.php:2932
 msgid "RRD File Information"
 msgstr "RRD 文件信息"
 
-#: lib/rrd.php:2957
+#: lib/rrd.php:2964
 msgid "Data Source Items"
 msgstr "数据源的项目"
 
-#: lib/rrd.php:2959
+#: lib/rrd.php:2966
 msgid "Minimal Heartbeat"
 msgstr "最小心跳"
 
-#: lib/rrd.php:2960
+#: lib/rrd.php:2967
 msgid "Min"
 msgstr "最小"
 
-#: lib/rrd.php:2961
+#: lib/rrd.php:2968
 msgid "Max"
 msgstr "最大"
 
-#: lib/rrd.php:2962
+#: lib/rrd.php:2969
 msgid "Last DS"
 msgstr "上一个 DS"
 
-#: lib/rrd.php:2964
+#: lib/rrd.php:2971
 msgid "Unknown Sec"
 msgstr "未知"
 
-#: lib/rrd.php:3015
+#: lib/rrd.php:3022
 msgid "Round Robin Archive"
 msgstr "循环存档"
 
-#: lib/rrd.php:3018
+#: lib/rrd.php:3025
 msgid "Cur Row"
 msgstr "Cur Row"
 
-#: lib/rrd.php:3019
+#: lib/rrd.php:3026
 msgid "PDP per Row"
 msgstr "每行PDP"
 
-#: lib/rrd.php:3021
+#: lib/rrd.php:3028
 msgid "CDP Prep Value (0)"
 msgstr "CDP 预设值(0)"
 
-#: lib/rrd.php:3022
+#: lib/rrd.php:3029
 msgid "CDP Unknown Data points (0)"
 msgstr "CDP 未知数据点(0)"
 
-#: lib/rrd.php:3100
+#: lib/rrd.php:3107
 #, php-format
 msgid "rename %s to %s"
 msgstr "将 %s 重命名为 %s"
 
-#: lib/rrd.php:3159
+#: lib/rrd.php:3166
 msgid "Error while parsing the XML of rrdtool dump"
 msgstr "解析rrdtool 转储的XML 时出错"
 
-#: lib/rrd.php:3191 lib/rrd.php:3249 lib/rrd.php:3308
+#: lib/rrd.php:3198 lib/rrd.php:3256 lib/rrd.php:3315
 #, php-format
 msgid "ERROR while writing XML file: %s"
 msgstr "写入XML 文件时出错: %s"
 
-#: lib/rrd.php:3202 lib/rrd.php:3260 lib/rrd.php:3319
+#: lib/rrd.php:3209 lib/rrd.php:3267 lib/rrd.php:3326
 #, php-format
 msgid "ERROR: RRDfile %s not writeable"
 msgstr "ERROR: RRD 文件 %s 不可写入"
 
-#: lib/rrd.php:3232 lib/rrd.php:3291
+#: lib/rrd.php:3239 lib/rrd.php:3298
 msgid "Error while parsing the XML of RRDtool dump"
 msgstr "解析RRDtool 转储的XML 时出错"
 
-#: lib/rrd.php:3539
+#: lib/rrd.php:3546
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
 msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) 从RRD 文件中删除\n"
 
-#: lib/rrd.php:3576
+#: lib/rrd.php:3583
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
 msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f)添加到RRD 文件\n"
 
-#: lib/rrd.php:3606 lib/rrd.php:3620
+#: lib/rrd.php:3613 lib/rrd.php:3627
 #, php-format
 msgid "Website does not have write access to %s, may be unable to create/update RRDs"
 msgstr "网站没有 %s 的写入权限,可能无法创建/更新RRD"
 
-#: lib/rrd.php:3616
+#: lib/rrd.php:3623
 msgid "(Custom)"
 msgstr "(自定义)"
 
-#: lib/rrd.php:3622
+#: lib/rrd.php:3629
 msgid "Failed to open data file, poller may not have run yet"
 msgstr "无法打开数据文件,poller 可能尚未运行"
 
-#: lib/rrd.php:3625
+#: lib/rrd.php:3632
 msgid "RRA Folder"
 msgstr "RRA 文件夹"
 
-#: lib/rrd.php:3625
+#: lib/rrd.php:3632
 msgid "Root"
 msgstr "根目录"
 
-#: lib/rrd.php:3734
+#: lib/rrd.php:3741
 msgid "Unknown RRDtool Error"
 msgstr "未知的RRDtool 错误"
 
@@ -16566,22 +16567,22 @@ msgstr "从模板创建聚合"
 msgid "Attempting to Create Graph from Removed Graph Template"
 msgstr "尝试从已删除的图形模板创建图形"
 
-#: lib/template.php:2123 lib/template.php:2152
+#: lib/template.php:2123 lib/template.php:2157
 #, php-format
 msgid "Created: %s"
 msgstr "已创建图形: %s"
 
-#: lib/template.php:2134 lib/template.php:2163
+#: lib/template.php:2139 lib/template.php:2168
 #, fuzzy
 msgid "ERROR: Whitelist Validation Failed. Check Data Input Method"
 msgstr "ERROR: 白名单验证失败.请检查数据输入方法"
 
-#: lib/template.php:2142
+#: lib/template.php:2147
 #, fuzzy
 msgid "Graph Not created for "
 msgstr "图形创建"
 
-#: lib/template.php:2171
+#: lib/template.php:2176
 #, fuzzy
 msgid "NOTE: Graph not added for Data Query "
 msgstr "从数据查询创建图形"
@@ -16632,7 +16633,7 @@ msgid "When executing subqueries, having a larger temporary table size, keep tho
 msgstr "执行具有较大临时表大小的子查询时,请将这些临时表保存在内存中."
 
 #: lib/utility.php:1048 lib/utility.php:1054
-msgid "When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80%."
+msgid "When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80%.  If the recommendation is negative, you must decrease this and or the sort_buffer_size until the recommendation fits within the allowable memory."
 msgstr ""
 
 #: lib/utility.php:1060
@@ -17103,154 +17104,154 @@ msgstr ""
 msgid "You have not Trusted this Package Author.  If you wish to import, check the Automatically Trust Author checkbox"
 msgstr ""
 
-#: package_import.php:175
+#: package_import.php:198
 #, fuzzy, php-format
 #| msgid "Cacti log purged successfully"
 msgid "The Package %s Imported Successfully"
 msgstr "Cacti 日志清空成功"
 
-#: package_import.php:177
+#: package_import.php:200
 #, php-format
 msgid "The Package %s Import Failed"
 msgstr ""
 
-#: package_import.php:324 package_import.php:330 package_import.php:386
-#: package_import.php:389
+#: package_import.php:347 package_import.php:353 package_import.php:409
+#: package_import.php:412
 #, fuzzy
 #| msgid "Error in data query"
 msgid "Error in Package"
 msgstr "数据查询出错"
 
-#: package_import.php:324
+#: package_import.php:347
 msgid "See the cacti.log for more information.  It could be that you had either an API Key error or the package was tamered with, or the location is not available."
 msgstr ""
 
-#: package_import.php:324
+#: package_import.php:347
 #, php-format
 msgid "The package \"%s\" download or validation failed"
 msgstr ""
 
-#: package_import.php:330
+#: package_import.php:353
 msgid "See the cacti.log for more information.  It could be that you had either an API Key error or the package was tamered with, or the location is not available"
 msgstr ""
 
-#: package_import.php:330
+#: package_import.php:353
 msgid "The package download or validation failed"
 msgstr ""
 
-#: package_import.php:386
+#: package_import.php:409
 #, fuzzy
 #| msgid "Package Files"
 msgid "Package XML File Damaged."
 msgstr "包文件"
 
-#: package_import.php:386
+#: package_import.php:409
 msgid "The XML files appears to be invalid.  Please contact the package author"
 msgstr ""
 
-#: package_import.php:389
+#: package_import.php:412
 msgid "Check the package repository file for files that should exist and find the one that is missing"
 msgstr ""
 
-#: package_import.php:389
+#: package_import.php:412
 msgid "The XML files for the package does not exist"
 msgstr ""
 
-#: package_import.php:423
+#: package_import.php:446
 #, fuzzy
 #| msgid "Package Files"
 msgid "Packages Details"
 msgstr "包文件"
 
-#: package_import.php:439
+#: package_import.php:462
 #, fuzzy
 #| msgid "right"
 msgid "Copyright"
 msgstr "右"
 
-#: package_import.php:459
+#: package_import.php:482
 msgid "Import Package Filenames [ None selected imports all, Check to import selectively ]"
 msgstr ""
 
-#: package_import.php:463
+#: package_import.php:486
 #, fuzzy
 #| msgid "Package Files"
 msgid "Package"
 msgstr "包文件"
 
-#: package_import.php:466
+#: package_import.php:489
 #, fuzzy
 #| msgid "Rename"
 msgid "Filename"
 msgstr "重命名"
 
-#: package_import.php:508 package_import.php:605 templates_import.php:349
+#: package_import.php:531 package_import.php:628 templates_import.php:349
 msgid "Differences"
 msgstr ""
 
-#: package_import.php:510 package_import.php:576 templates_import.php:292
+#: package_import.php:533 package_import.php:599 templates_import.php:292
 #, fuzzy
 #| msgid "[unchanged]"
 msgid "Unchanged"
 msgstr "[不变]"
 
-#: package_import.php:534
+#: package_import.php:557
 msgid "Import Package Templates [ None selected imports all, Check to import selectively ]"
 msgstr ""
 
-#: package_import.php:538 templates_import.php:257
+#: package_import.php:561 templates_import.php:257
 #, fuzzy
 #| msgid "Template Title"
 msgid "Template Type"
 msgstr "模板标题"
 
-#: package_import.php:547 templates_import.php:269
+#: package_import.php:570 templates_import.php:269
 #, fuzzy
 #| msgid "Change Device"
 msgid "Changes/Diffferences"
 msgstr "更改设备"
 
-#: package_import.php:572 templates_import.php:288
+#: package_import.php:595 templates_import.php:288
 #, fuzzy
 #| msgid "Update"
 msgid "Updated"
 msgstr "更新"
 
-#: package_import.php:609 templates_import.php:353
+#: package_import.php:632 templates_import.php:353
 #, fuzzy
 #| msgid "Orphaned"
 msgid "Orphans"
 msgstr "孤立的"
 
-#: package_import.php:662
+#: package_import.php:685
 msgid "File Differences for: "
 msgstr ""
 
-#: package_import.php:769
+#: package_import.php:792
 #, fuzzy
 #| msgid "Package Files"
 msgid "Local Package Import File"
 msgstr "包文件"
 
-#: package_import.php:770
+#: package_import.php:793
 msgid "The *.xml.gz file located on your Local machine to Upload and Import."
 msgstr ""
 
-#: package_import.php:775
+#: package_import.php:798
 #, fuzzy
 #| msgid "Automatically Add to Cacti"
 msgid "Automatically Trust Signer"
 msgstr "自动添加到Cacti"
 
-#: package_import.php:777
+#: package_import.php:800
 msgid "If checked, Cacti will automatically Trust the Signer for this and any future Packages by that author."
 msgstr ""
 
-#: package_import.php:813
+#: package_import.php:836
 msgid "Replace Data Source and Graph Template Suggested Value Records.  Graphs and Data Sources will take on new names after either a Data Query Reindex or by using the forced Replace Suggested Values process."
 msgstr ""
 
-#: package_import.php:884
+#: package_import.php:907
 #, fuzzy
 #| msgid "Import"
 msgid "Package Import"
@@ -17834,6 +17835,11 @@ msgstr "此数据采集器最后一次与主Cacti 站点完全同步."
 #: pollers.php:1130
 msgid "No Data Collectors Found"
 msgstr "未找到数据采集器"
+
+#: rrdcheck.php:33 rrdcheck.php:95
+#, fuzzy
+msgid "RRD check"
+msgstr "运行检查"
 
 #: rrdcheck.php:34
 msgid "RRD check is disabled, please enable in Configuration -> Settings -> Data"

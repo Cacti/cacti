@@ -1113,13 +1113,15 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 		}
 	}
 
-	/* the first thing we must do is make sure there is at least one
-	rra associated with this data source... *
-	UPDATE: As of version 0.6.6, we are splitting this up into two
-	SQL strings because of the multiple DS per RRD support. This is
-	not a big deal however since this function gets called once per
-	data source */
-
+	/**
+	 * the first thing we must do is make sure there is at least one
+	 * rra associated with this data source... *
+	 *
+	 * UPDATE: As of version 0.6.6, we are splitting this up into two
+	 * SQL strings because of the multiple DS per RRD support. This is
+	 * not a big deal however since this function gets called once per
+	 * data source
+	 */
 	$rras = db_fetch_assoc_prepared('SELECT
 		dtd.rrd_step, dsp.x_files_factor, dspr.steps, dspr.rows,
 		dspc.consolidation_function_id,
@@ -1145,21 +1147,26 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 	/* create the "--step" line */
 	$create_ds = RRD_NL . '--start 0 --step '. $rras[0]['rrd_step'] . ' ' . RRD_NL;
 
-	/* query the data sources to be used in this .rrd file */
-	$data_sources = db_fetch_assoc_prepared('SELECT
-		data_template_rrd.id,
-		data_template_rrd.rrd_heartbeat,
-		data_template_rrd.rrd_minimum,
-		data_template_rrd.rrd_maximum,
-		data_template_rrd.data_source_type_id
-		FROM data_template_rrd
-		WHERE data_template_rrd.local_data_id = ?
-		ORDER BY local_data_template_rrd_id', array($local_data_id));
+	/**
+	 * Only use the Data Sources that are included in the Graph in the case that there
+	 * is a Data Template that includes more Data Sources than there Graph Template
+	 * uses.
+	 */
+	$data_sources = db_fetch_assoc_prepared('SELECT DISTINCT dtr.id, dtr.data_source_name, dtr.rrd_heartbeat,
+		dtr.rrd_minimum, dtr.rrd_maximum, dtr.data_source_type_id
+		FROM data_template_rrd AS dtr
+		INNER JOIN graph_templates_item AS gti
+		ON dtr.id = gti.task_item_id
+		WHERE dtr.local_data_id = ?
+		ORDER BY local_data_template_rrd_id',
+		array($local_data_id));
 
-	/* ONLY make a new DS entry if:
-	- There is multiple data sources and this item is not the main one.
-	- There is only one data source (then use it) */
-
+	/**
+	 * ONLY make a new DS entry if:
+	 *
+	 * - There are multiple data sources and this item is not the main one.
+	 * - There are only one data source (then use it)
+	 */
 	if (cacti_sizeof($data_sources)) {
 		foreach ($data_sources as $data_source) {
 			/* use the cacti ds name by default or the user defined one, if entered */
@@ -1198,8 +1205,14 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 		$create_rra .= 'RRA:' . $consolidation_functions[$rra['consolidation_function_id']] . ':' . $rra['x_files_factor'] . ':' . $rra['steps'] . ':' . $rra['rows'] . RRD_NL;
 	}
 
-	/* check for structured path configuration, if in place verify directory
-	   exists and if not create it.
+	if ($config['cacti_server_os'] != 'win32') {
+		$owner_id = fileowner($config['rra_path']);
+		$group_id = filegroup($config['rra_path']);
+	}
+
+	/**
+	 * check for structured path configuration, if in place verify directory
+	 * exists and if not create it.
 	 */
 	if (read_config_option('extended_paths') == 'on') {
 		if (read_config_option('storage_location') > 0) {
@@ -1210,16 +1223,34 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 			}
 		} elseif (!is_dir(dirname($data_source_path))) {
 			if ($config['is_web'] == false || is_writable($config['rra_path'])) {
-				if (mkdir(dirname($data_source_path), 0775)) {
-					if ($config['cacti_server_os'] != 'win32') {
-						$owner_id = fileowner($config['rra_path']);
-						$group_id = filegroup($config['rra_path']);
+				if (mkdir(dirname($data_source_path), 0775, true)) {
+					if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
+						$success  = true;
+						$paths    = explode('/', str_replace($config['rra_path'], '/', dirname($data_source_path)));
+						$spath    = '';
 
-						if ((chown(dirname($data_source_path), $owner_id)) &&
-								(chgrp(dirname($data_source_path), $group_id))) {
-							/* permissions set ok */
-						} else {
-							cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", false);
+						foreach($paths as $path) {
+							if ($path == '') {
+								continue;
+							}
+
+							$spath .= '/' . $path;
+
+							$powner_id = fileowner($config['rra_path'] . $spath);
+							$pgroup_id = fileowner($config['rra_path'] . $spath);
+
+							if ($powner_id != $owner_id) {
+								$success = chown($config['rra_path'] . $spath, $owner_id);
+							}
+
+							if ($pgroup_id != $group_id && $success) {
+								$success = chgrp($config['rra_path'] . $spath, $group_id);
+							}
+
+							if (!$success) {
+								cacti_log("ERROR: Unable to set directory permissions for '" . $config['rra_path'] . $spath . "'", false);
+								break;
+							}
 						}
 					}
 				} else {
@@ -1234,7 +1265,13 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 	if ($show_source == true) {
 		return read_config_option('path_rrdtool') . ' create' . RRD_NL . "$data_source_path$create_ds$create_rra";
 	} else {
-		return rrdtool_execute("create $data_source_path $create_ds$create_rra", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
+		$success = rrdtool_execute("create $data_source_path $create_ds$create_rra", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
+
+		if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
+			shell_exec("chown $owner_id:$group_id $data_source_path");
+		}
+
+		return $success;
 	}
 }
 
@@ -1245,7 +1282,6 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
    @arg $rrd_update_template  - the order in which values need to be added
    @arg $rrd_update_values    - values to include in the database */
 function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_template, &$rrd_update_values, &$rrdtool_pipe) {
-
 	/* lets count the number of rrd files processed */
 	$rrds_processed = 0;
 
@@ -1286,7 +1322,6 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 
 	if ($valid_entry) {
 		if ($rrd_update_template != '') {
-			cacti_log("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
 			rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
 		} else {
 			cacti_log("update $rrd_path $update_options $rrd_update_values", false, 'BOOST', POLLER_VERBOSITY_MEDIUM);

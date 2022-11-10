@@ -29,16 +29,26 @@ $rra_path = $config['rra_path'] . '/';
 
 top_header();
 
+set_default_action();
+
 if (read_config_option('rrdcheck_enable') != 'on') {
 	html_start_box( __('RRD check'), '100%', '', '3', 'center', '');
 	print __('RRD check is disabled, please enable in Configuration -> Settings -> Data');
 	html_end_box();
-} else {
-	rrdcheck_display_problems();
+}
+
+switch(get_request_var('action')) {
+	case 'purge':
+		rrdcheck_purge();
+	default:
+		rrdcheck_display_problems();
 }
 
 bottom_footer();
 
+function rrdcheck_purge() {
+	db_execute('TRUNCATE TABLE rrdcheck');
+}
 
 /*
  * Display all rrdcheck entries
@@ -92,7 +102,7 @@ function rrdcheck_display_problems() {
 		$rows = get_request_var('rows');
 	}
 
-	html_start_box( __('RRD check'), '100%', '', '3', 'center', '');
+	html_start_box(__('RRDfile Checker'), '100%', '', '3', 'center', '');
 	filter();
 	html_end_box();
 
@@ -119,13 +129,19 @@ function rrdcheck_display_problems() {
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$problems = db_fetch_assoc("SELECT local_data_id, test_date, message
-		FROM rrdcheck
+	$problems = db_fetch_assoc("SELECT h.description, dtd.name_cache, rc.local_data_id, rc.test_date, rc.message
+		FROM rrdcheck AS rc
+		LEFT JOIN data_local AS dl
+		ON rc.local_data_id = dl.id
+		LEFT JOIN data_template_data AS dtd
+		ON rc.local_data_id = dtd.local_data_id
+		LEFT JOIN host AS h
+		ON dl.host_id = h.id
 		$sql_where
 		$sql_order
 		$sql_limit");
-		
-	$nav = html_nav_bar($config['url_path'] . 'rrdcheck.php?filter'. get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('RRDcheck problems'), 'page', 'main');
+
+	$nav = html_nav_bar($config['url_path'] . 'rrdcheck.php?filter'. get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('RRDcheck Problems'), 'page', 'main');
 
 	form_start('rrdcheck.php');
 
@@ -134,9 +150,27 @@ function rrdcheck_display_problems() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'test_date'  	 	=> array( __('Date'), 'ASC'),
-		'local_data_id'     	=> array( __('DS'), 'ASC'),
-		'message'   		=> array( __('Message'), 'ASC')
+		'description' => array(
+			'display' =>  __('Host Description'),
+			'sort'    => 'ASC'
+		),
+		'name_cache' => array(
+			'display' =>  __('Data Source'),
+			'sort'    => 'ASC'
+		),
+		'local_data_id' => array(
+			'display' =>  __('DS'),
+			'sort'    => 'ASC'
+		),
+		'message' => array(
+			'display' =>  __('Message'),
+			'sort'    => 'ASC'
+		),
+		'test_date' => array(
+			'display' =>  __('Date'),
+			'align'   => 'right',
+			'sort'    => 'DESC'
+		),
 	);
 
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
@@ -144,13 +178,17 @@ function rrdcheck_display_problems() {
 	if (cacti_sizeof($problems)) {
 		foreach($problems as $problem) {
 			form_alternate_row('line' . $problem['local_data_id'], true);
-			form_selectable_cell($problem['test_date'], $file['local_data_id']);
+
+			form_selectable_cell(filter_value($problem['description'], get_request_var('filter')), $problem['local_data_id']);
+			form_selectable_cell(filter_value($problem['name_cache'], get_request_var('filter')), $problem['local_data_id']);
 			form_selectable_cell(filter_value($problem['local_data_id'], get_request_var('filter')), $problem['local_data_id']);
 			form_selectable_cell(filter_value($problem['message'], get_request_var('filter')), $problem['local_data_id']);
+			form_selectable_cell($problem['test_date'], $file['local_data_id']);
+
 			form_end_row();
 		}
 	} else {
-		print "<tr><td><em>" . __('No RRDcheck problem found') . "</em></td></tr>\n";
+		print "<tr><td><em>" . __('No RRDcheck Problems Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
@@ -213,6 +251,7 @@ function filter() {
 						<span>
 							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __x('filter: use', 'Go');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __x('filter: reset', 'Clear');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='purge' value='<?php print __x('filter: purge', 'Purge');?>'>
 						</span>
 					</td>
 					<td id='text'></td>
@@ -243,6 +282,10 @@ function filter() {
 					loadPageNoHeader(strURL);
 				});
 
+				$('#purge').click(function() {
+					strURL = 'rrdcheck.php?action=purge&header=false';
+					loadPageNoHeader(strURL);
+				});
 			});
 			</script>
 		</td>

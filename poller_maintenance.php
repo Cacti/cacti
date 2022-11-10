@@ -110,6 +110,9 @@ api_device_purge_deleted_devices();
 // Rotate Cacti Logs
 logrotate_check($force);
 
+// Remove deleted devices
+remove_aged_row_cache();
+
 if ($config['poller_id'] > 1) {
 	api_plugin_hook('poller_remote_maint');
 }
@@ -117,6 +120,23 @@ if ($config['poller_id'] > 1) {
 unregister_process('maintenance', 'master', $config['poller_id']);
 
 exit(0);
+
+function remove_aged_row_cache() {
+	$classes = array_rekey(
+		db_fetch_assoc('SELECT REPLACE(name, "time_last_change_", "") AS name, value
+			FROM settings
+			WHERE name LIKE "time_last_change%"'),
+		'name', 'value'
+	);
+
+	if (cacti_sizeof($classes)) {
+		foreach($classes as $name => $ts) {
+			db_execute_prepared('DELETE FROM user_auth_row_cache
+				WHERE class = ? AND UNIX_TIMESTAMP(time) < ?',
+				array($name, $ts));
+		}
+	}
+}
 
 function logrotate_check($force) {
 	global $disable_log_rotation;

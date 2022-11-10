@@ -38,7 +38,7 @@
  * @param  (string) String that points to the client ssl cert file
  * @param  (string) String that points to the ssl ca file
  *
- * @returns (bool) '1' for success, false for error
+ * @returns (bool|object) connection object on success, false for error
  */
 function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $port = '3306', $retries = 20,
 	$db_ssl = false, $db_ssl_key = '', $db_ssl_cert = '', $db_ssl_ca = '', $persist = false) {
@@ -120,7 +120,9 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 			$database_sessions["$odevice:$port:$db_name"] = $cnn_id;
 
-			$database_details[] = array(
+			$object_hash = spl_object_hash($cnn_id);
+
+			$database_details[$object_hash] = array(
 				'database_conn'     => $cnn_id,
 				'database_hostname' => $device,
 				'database_username' => $user,
@@ -227,7 +229,7 @@ function db_check_reconnect($db_conn = false) {
 
 	if (cacti_sizeof($database_details) && $db_conn !== false) {
 		foreach($database_details as $det) {
-			if ($det['database_conn'] == $db_conn) {
+			if (spl_object_hash($det['database_conn']) == spl_object_hash($db_conn)) {
 				$database_hostname = $det['database_hostname'];
 				$database_username = $det['database_username'];
 				$database_password = $det['database_password'];
@@ -368,7 +370,7 @@ function db_execute($sql, $log = true, $db_conn = false) {
  * @return (bool) '1' for success, false for failed
  */
 function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = false, $execute_name = 'Exec', $default_value = true, $return_func = 'no_return_function', $return_params = array()) {
-	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $database_total_queries, $database_last_error, $database_log;
+	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $database_total_queries, $database_last_error, $database_log, $affected_rows;
 
 	$database_total_queries++;
 
@@ -395,7 +397,8 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 	}
 
 	$errors = 0;
-	$db_conn->affected_rows = 0;
+
+	$affected_rows[spl_object_hash($db_conn)] = 0;
 
 	while (true) {
 		$query = $db_conn->prepare($sql);
@@ -440,8 +443,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 		}
 
 		if ($en == '') {
-			// With PDO, we have to free this up
-			$db_conn->affected_rows = $query->rowCount();
+			$affected_rows[spl_object_hash($db_conn)] = $query->rowCount();
 
 			$return_value = $default_value;
 			if (function_exists($return_func)) {
@@ -745,7 +747,7 @@ function db_fetch_insert_id($db_conn = false) {
  *                         or false on error
  */
 function db_affected_rows($db_conn = false) {
-	global $database_sessions, $database_default, $database_hostname, $database_port;
+	global $database_sessions, $database_default, $database_hostname, $database_port, $affected_rows;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
@@ -756,7 +758,7 @@ function db_affected_rows($db_conn = false) {
 		}
 	}
 
-	return $db_conn->affected_rows;
+	return $affected_rows[spl_object_hash($db_conn)];
 }
 
 /**

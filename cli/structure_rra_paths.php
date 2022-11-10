@@ -197,7 +197,7 @@ foreach ($data_sources as $info) {
 			struct_debug("NOTE: New Directory '$new_base_path' Created for RRD Files");
 
 			if ($config['cacti_server_os'] != 'win32') {
-				if (recursive_chown($new_base_path, $owner_id) && recursive_chgrp($new_base_path, $group_id)) {
+				if (sp_recursive_chown($new_base_path, $owner_id) && sp_recursive_chgrp($new_base_path, $group_id)) {
 					struct_debug("NOTE: New Directory '$new_base_path' Permissions Set");
 				} else {
 					print "FATAL: Could not Set Permissions for Directory '$new_base_path'" . PHP_EOL;
@@ -262,7 +262,7 @@ foreach ($data_sources as $info) {
 				struct_debug("Move Completed for: '" . $old_rrd_path . "' > '" . $new_rrd_path . "'");
 
 				if ($config['cacti_server_os'] != 'win32') {
-					if (recursive_chown($new_rrd_path, $owner_id) && chgrp($new_rrd_path, $group_id)) {
+					if (sp_recursive_chown($new_rrd_path, $owner_id) && sp_recursive_chgrp($new_rrd_path, $group_id)) {
 						struct_debug("Permissions set for '$new_rrd_path'");
 					} else {
 						print "FATAL: Could not Set Permissions for File '$new_rrd_path'" . PHP_EOL;
@@ -332,20 +332,20 @@ function update_database($info) {
 }
 
 /**
- * recursive_chown - Recursively chown on a path
+ * sp_recursive_chown - Recursively chown on a path
  *
  * @param  (string)     $path
  * @param  (string|int) $user
  *
  * @return (void)
  */
-function recursive_chown($path, $user) {
+function sp_recursive_chown($path, $user) {
 	$directory = rtrim($path, '/');
 
 	if ($items = glob($path . '/*')) {
 		foreach ($items as $item) {
 			if (is_dir($item)) {
-				return recursive_chown($item, $user);
+				return sp_recursive_chown($item, $user);
 			} else {
 				return chown($item, $user);
 			}
@@ -356,20 +356,20 @@ function recursive_chown($path, $user) {
 }
 
 /**
- * recursive_chgrp - Recursively chgrp on a path
+ * sp_recursive_chgrp - Recursively chgrp on a path
  *
  * @param  (string)     $path
  * @param  (string|int) $group
  *
  * @return (void)
  */
-function recursive_chgrp($path, $group) {
+function sp_recursive_chgrp($path, $group) {
 	$directory = rtrim($path, '/');
 
 	if ($items = glob($path . '/*')) {
 		foreach ($items as $item) {
 			if (is_dir($item)) {
-				return recursive_chgrp($item, $group);
+				return sp_recursive_chgrp($item, $group);
 			} else {
 				return chgrp($item, $group);
 			}

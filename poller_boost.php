@@ -35,6 +35,7 @@ require(__DIR__ . '/include/cli_check.php');
 require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/boost.php');
 require_once($config['base_path'] . '/lib/dsstats.php');
+require_once($config['base_path'] . '/lib/rrdcheck.php');
 require_once($config['base_path'] . '/lib/rrd.php');
 
 /* get the boost polling cycle */
@@ -196,6 +197,7 @@ if ($child == false) {
 
 			if ($rrd_updates > 0) {
 				dsstats_boost_bottom();
+				rrdcheck_boost_bottom();
 
 				api_plugin_hook('boost_poller_bottom');
 			}

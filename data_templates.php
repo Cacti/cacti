@@ -109,9 +109,17 @@ function form_save() {
 		$save2['t_active']      = form_input_validate((isset_request_var('t_active') ? get_nfilter_request_var('t_active') : ''), 't_active', '', true, 3);
 		$save2['active']        = form_input_validate((isset_request_var('active') ? get_nfilter_request_var('active') : ''), 'active', '', true, 3);
 
-		$rrd_step               = db_fetch_cell_prepared('SELECT step FROM data_source_profiles WHERE id = ?', array(get_request_var('data_source_profile_id')));
-		$rrd_heartbeat          = db_fetch_cell_prepared('SELECT heartbeat FROM data_source_profiles WHERE id = ?', array(get_request_var('data_source_profile_id')));
-		$save2['rrd_step']      = $rrd_step;
+		$rrd_step = db_fetch_cell_prepared('SELECT step
+			FROM data_source_profiles
+			WHERE id = ?',
+			array(get_request_var('data_source_profile_id')));
+
+		$rrd_heartbeat = db_fetch_cell_prepared('SELECT heartbeat
+			FROM data_source_profiles
+			WHERE id = ?',
+			array(get_request_var('data_source_profile_id')));
+
+		$save2['rrd_step'] = $rrd_step;
 
 		$save2['t_data_source_profile_id'] = form_input_validate((isset_request_var('t_data_source_profile_id') ? get_nfilter_request_var('t_data_source_profile_id') : ''), 't_data_source_profile_id', '', true, 3);
 		$save2['data_source_profile_id']   = form_input_validate(get_request_var('data_source_profile_id'), 'data_source_profile_id', '^[0-9]+$', (isset_request_var('data_source_profile_id') ? true : false), 3);
@@ -209,7 +217,13 @@ function form_save() {
 			db_execute_prepared('UPDATE data_template_data
 				SET data_input_id = ?
 				WHERE data_template_id = ?',
-				array(get_request_var('data_input_id'), get_request_var('data_template_id')));
+				array(get_request_var('data_input_id'), $data_template_id));
+
+			db_execute_prepared('UPDATE data_template_rrd
+				SET rrd_heartbeat = ?
+				WHERE data_template_id = ?
+				AND local_data_id = 0',
+				array($rrd_heartbeat, $data_template_id));
 		}
 
 		if (!is_error_message()) {
@@ -388,13 +402,25 @@ function form_actions() {
 					WHERE id = ?',
 					array(get_filter_request_var('data_source_profile_id')));
 
+				$heartbeat = db_fetch_cell_prepared('SELECT heartbeat
+					FROM data_source_profiles
+					WHERE id = ?',
+					array(get_filter_request_var('data_source_profile_id')));
+
 				if (!empty($step)) {
 					for ($i=0;($i<cacti_count($selected_items));$i++) {
 						db_execute_prepared('UPDATE data_template_data
 							SET data_source_profile_id = ?,
 							rrd_step = ?
-							WHERE data_template_id = ?',
+							WHERE data_template_id = ?
+							AND local_data_id = 0',
 							array(get_filter_request_var('data_source_profile_id'), $step, $selected_items[$i]));
+
+						db_execute_prepared('UPDATE data_template_rrd
+							SET rrd_heartbeat = ?
+							WHERE data_template_id = ?
+							AND local_data_id = 0',
+							array($heartbeat, $selected_items[$i]));
 					}
 				}
 			}

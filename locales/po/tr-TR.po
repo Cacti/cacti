@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-10-17 21:18-0400\n"
+"POT-Creation-Date: 2022-11-05 21:03-0400\n"
 "PO-Revision-Date: 2022-06-21 05:25+0000\n"
 "Last-Translator: San IPE <sanipe1949@krunsea.com>\n"
 "Language-Team: Turkish <http://translate.cacti.net/projects/cacti/core-v1-2-x/tr/>\n"
@@ -378,7 +378,7 @@ msgstr "Toplam Grafik Ayarları"
 msgid "Details"
 msgstr "Detaylar"
 
-#: aggregate_graphs.php:677 graphs_new.php:833 lib/html_reports.php:1381
+#: aggregate_graphs.php:677 graphs_new.php:846 lib/html_reports.php:1381
 #: utilities.php:361
 msgid "Items"
 msgstr "Öğeler"
@@ -485,12 +485,12 @@ msgstr "Grafik Eşleştirme"
 #: color.php:529 color_templates.php:529 data_debug.php:1061 data_input.php:826
 #: data_queries.php:1279 data_source_profiles.php:912 data_sources.php:1439
 #: data_templates.php:1013 gprint_presets.php:262 graph_templates.php:703
-#: graph_view.php:621 graphs.php:2037 graphs_new.php:457 host.php:1619
+#: graph_view.php:621 graphs.php:2037 graphs_new.php:457 host.php:1622
 #: host_templates.php:727 lib/api_automation.php:140 lib/api_automation.php:473
 #: lib/api_automation.php:707 lib/api_automation.php:1066
 #: lib/clog_webapi.php:604 lib/html.php:245 lib/html_filter.php:63
 #: lib/html_graph.php:203 lib/html_reports.php:1836 lib/html_tree.php:131
-#: lib/html_tree.php:975 links.php:310 managers.php:149 managers.php:493
+#: lib/html_tree.php:977 links.php:310 managers.php:149 managers.php:493
 #: managers.php:725 plugins.php:459 pollers.php:879 rrdcheck.php:179
 #: rrdcleaner.php:507 settings.php:534 settings.php:556 settings.php:607
 #: sites.php:476 tree.php:818 tree.php:853 tree.php:888 tree.php:1925
@@ -508,11 +508,11 @@ msgstr "Ara"
 #: aggregate_graphs.php:1314 aggregate_graphs.php:1357
 #: aggregate_graphs.php:1610 color_templates.php:649 data_sources.php:1623
 #: data_sources.php:1757 graph_view.php:485 graph_view.php:680
-#: graph_view.php:729 graphs.php:2054 graphs.php:2215 host.php:1730
+#: graph_view.php:729 graphs.php:2054 graphs.php:2215 host.php:1733
 #: include/global_arrays.php:955 include/global_arrays.php:1185
 #: include/global_arrays.php:1987 lib/api_automation.php:283 lib/html.php:1686
 #: lib/html.php:1688 lib/html.php:1766 lib/html_graph.php:209
-#: lib/html_tree.php:1030 lib/html_tree.php:1359 tree.php:797 tree.php:2069
+#: lib/html_tree.php:1032 lib/html_tree.php:1361 tree.php:797 tree.php:2069
 #: user_admin.php:877 user_admin.php:1144 user_admin.php:2539
 #: user_group_admin.php:874 user_group_admin.php:1028 user_group_admin.php:2292
 #: utilities.php:320
@@ -528,7 +528,7 @@ msgstr "Grafikler"
 #: data_queries.php:1289 data_source_profiles.php:922
 #: data_source_profiles.php:1037 data_sources.php:1449 data_templates.php:1039
 #: gprint_presets.php:272 graph_templates.php:713 graph_view.php:684
-#: graphs.php:2058 graphs_new.php:467 host.php:1644 host_templates.php:752
+#: graphs.php:2058 graphs_new.php:467 host.php:1647 host_templates.php:752
 #: include/global_form.php:256 lib/api_automation.php:183
 #: lib/api_automation.php:483 lib/api_automation.php:717
 #: lib/api_automation.php:1109 lib/html_reports.php:1856 links.php:320
@@ -558,11 +558,11 @@ msgstr "Toplamın Bir Parçası"
 #: color_templates.php:567 data_debug.php:990 data_input.php:848
 #: data_queries.php:1301 data_source_profiles.php:940 data_sources.php:1392
 #: data_templates.php:1057 gprint_presets.php:290 graph_templates.php:731
-#: graph_view.php:629 graphs.php:2028 graphs_new.php:446 host.php:1609
+#: graph_view.php:629 graphs.php:2028 graphs_new.php:446 host.php:1612
 #: host_templates.php:770 lib/api_automation.php:195 lib/api_automation.php:464
 #: lib/api_automation.php:729 lib/api_automation.php:1121
 #: lib/clog_webapi.php:529 lib/html.php:1538 lib/html_filter.php:80
-#: lib/html_graph.php:190 lib/html_reports.php:1867 lib/html_tree.php:1017
+#: lib/html_graph.php:190 lib/html_reports.php:1867 lib/html_tree.php:1019
 #: links.php:330 managers.php:171 managers.php:515 managers.php:745
 #: plugins.php:495 pollers.php:924 sites.php:498 tree.php:1947
 #: user_admin.php:2167 user_admin.php:2561 user_admin.php:2658
@@ -577,7 +577,7 @@ msgstr "Git"
 #: data_input.php:848 data_queries.php:1301 data_source_profiles.php:940
 #: data_sources.php:1392 data_templates.php:1057 gprint_presets.php:290
 #: graph_templates.php:731 graph_view.php:629 graphs.php:2028
-#: graphs_new.php:446 host.php:1609 host_templates.php:770
+#: graphs_new.php:446 host.php:1612 host_templates.php:770
 #: lib/html_graph.php:190 managers.php:171 managers.php:515 managers.php:745
 #: plugins.php:495 pollers.php:924 sites.php:498 tree.php:1947
 #: user_admin.php:2167 user_admin.php:2561 user_admin.php:2658
@@ -598,12 +598,12 @@ msgstr "Filtreleri Ayarla / Yenile"
 #: color_templates.php:568 data_debug.php:991 data_input.php:849
 #: data_queries.php:1302 data_source_profiles.php:941 data_sources.php:1393
 #: data_templates.php:1058 gprint_presets.php:291 graph_templates.php:732
-#: graph_view.php:630 graphs.php:2029 graphs_new.php:447 host.php:1610
+#: graph_view.php:630 graphs.php:2029 graphs_new.php:447 host.php:1613
 #: host_templates.php:771 lib/api_automation.php:196 lib/api_automation.php:465
 #: lib/api_automation.php:730 lib/api_automation.php:1122
 #: lib/clog_webapi.php:530 lib/html_filter.php:85 lib/html_graph.php:191
-#: lib/html_graph.php:308 lib/html_reports.php:1868 lib/html_tree.php:1018
-#: lib/html_tree.php:1129 links.php:331 managers.php:172 managers.php:516
+#: lib/html_graph.php:308 lib/html_reports.php:1868 lib/html_tree.php:1020
+#: lib/html_tree.php:1131 links.php:331 managers.php:172 managers.php:516
 #: managers.php:746 plugins.php:496 pollers.php:925 sites.php:499 tree.php:1948
 #: user_admin.php:2168 user_admin.php:2562 user_admin.php:2659
 #: user_admin.php:2775 user_admin.php:2872 user_admin.php:2969
@@ -616,8 +616,8 @@ msgstr "Temizle"
 #: data_input.php:849 data_queries.php:1302 data_source_profiles.php:941
 #: data_sources.php:1393 data_templates.php:1058 gprint_presets.php:291
 #: graph_templates.php:732 graph_view.php:630 graphs.php:2029
-#: graphs_new.php:447 host.php:1610 host_templates.php:771
-#: lib/html_graph.php:191 lib/html_tree.php:1018 managers.php:172
+#: graphs_new.php:447 host.php:1613 host_templates.php:771
+#: lib/html_graph.php:191 lib/html_tree.php:1020 managers.php:172
 #: managers.php:516 managers.php:746 plugins.php:496 pollers.php:925
 #: sites.php:499 tree.php:1948 user_admin.php:2168 user_admin.php:2562
 #: user_admin.php:2659 user_admin.php:2775 user_admin.php:2872
@@ -640,7 +640,7 @@ msgstr "Grafik Başlığı"
 #: automation_graph_rules.php:896 automation_tree_rules.php:936
 #: data_debug.php:345 data_input.php:931 data_queries.php:1383
 #: data_sources.php:1617 data_templates.php:1166 graph_templates.php:837
-#: graphs.php:2231 host.php:1724 host_templates.php:870
+#: graphs.php:2231 host.php:1727 host_templates.php:870
 #: lib/api_automation.php:282 pollers.php:1001 sites.php:572 tree.php:2009
 #: user_admin.php:885 user_admin.php:999 user_admin.php:1144
 #: user_admin.php:1291 user_admin.php:1430 user_group_admin.php:680
@@ -707,7 +707,7 @@ msgstr "Toplam Grafikler"
 #: aggregate_graphs.php:1588 data_debug.php:964 data_sources.php:1366
 #: graph_view.php:642 graphs.php:1993 host.php:1564
 #: include/global_arrays.php:2885 include/global_settings.php:583
-#: lib/api_automation.php:442 lib/html_graph.php:153 lib/html_tree.php:981
+#: lib/api_automation.php:442 lib/html_graph.php:153 lib/html_tree.php:983
 #: rrdcleaner.php:383 user_admin.php:2517 user_admin.php:2734
 #: user_group_admin.php:2270 user_group_admin.php:2390 utilities.php:2021
 msgid "Template"
@@ -719,7 +719,7 @@ msgstr "Şablon"
 #: automation_graph_rules.php:775 automation_tree_rules.php:820
 #: data_debug.php:968 data_sources.php:1370 graph_templates_items.php:543
 #: graphs.php:1997 graphs_items.php:357 host.php:1533 host.php:1551
-#: host.php:1568 host.php:1629 lib/api_automation.php:150
+#: host.php:1568 host.php:1632 lib/api_automation.php:150
 #: lib/api_automation.php:168 lib/api_automation.php:429
 #: lib/api_automation.php:446 lib/api_automation.php:1076
 #: lib/api_automation.php:1094 lib/auth.php:2992 lib/auth.php:3034
@@ -761,7 +761,7 @@ msgstr "Herhangi"
 #: lib/html_reports.php:1002 lib/html_reports.php:1006
 #: lib/html_reports.php:1014 lib/html_reports.php:1025
 #: lib/html_reports.php:1045 lib/html_reports.php:1299
-#: lib/html_reports.php:1304 lib/html_reports.php:1309 package_import.php:614
+#: lib/html_reports.php:1304 lib/html_reports.php:1309 package_import.php:637
 #: settings.php:527 settings.php:549 settings.php:577 templates_import.php:326
 #: templates_import.php:358 user_admin.php:2522 user_admin.php:2739
 #: user_group_admin.php:2275 user_group_admin.php:2395 utilities.php:2026
@@ -969,7 +969,7 @@ msgstr "Yeni şifreyi onayla"
 
 #: auth_changepassword.php:358 auth_profile.php:560 graphs_new.php:448
 #: lib/html_form.php:1290 lib/html_form.php:1299 lib/html_graph.php:193
-#: lib/html_tree.php:1020 settings.php:494
+#: lib/html_tree.php:1022 settings.php:494
 msgid "Save"
 msgstr "Kaydet"
 
@@ -1194,7 +1194,7 @@ msgstr "Aygıtları Sil"
 
 #: automation_devices.php:54 automation_devices.php:300
 #: automation_devices.php:409 automation_devices.php:419
-#: automation_devices.php:648 automation_devices.php:649 host.php:1634
+#: automation_devices.php:648 automation_devices.php:649 host.php:1637
 #: lib/api_automation.php:173 lib/api_automation.php:1099
 #: lib/html_utility.php:924 pollers.php:47
 msgid "Down"
@@ -1202,7 +1202,7 @@ msgstr "Aşağı"
 
 #: automation_devices.php:55 automation_devices.php:300
 #: automation_devices.php:411 automation_devices.php:421
-#: automation_devices.php:648 automation_devices.php:649 host.php:1633
+#: automation_devices.php:648 automation_devices.php:649 host.php:1636
 #: lib/api_automation.php:172 lib/api_automation.php:1098
 #: lib/html_utility.php:930
 msgid "Up"
@@ -1264,7 +1264,7 @@ msgid "Delete Device(s)"
 msgstr "Aygıtları Sil"
 
 #: automation_devices.php:268 automation_devices.php:555 host.php:1519
-#: host.php:1640 host.php:1790 include/global_arrays.php:952
+#: host.php:1643 host.php:1793 include/global_arrays.php:952
 #: include/global_arrays.php:1008 include/global_arrays.php:2301
 #: lib/api_automation.php:179 lib/api_automation.php:271
 #: lib/api_automation.php:479 lib/api_automation.php:563
@@ -1287,7 +1287,7 @@ msgstr "IP"
 msgid "SNMP Name"
 msgstr "SNMP Adı"
 
-#: automation_devices.php:280 host.php:1582 include/global_form.php:1201
+#: automation_devices.php:280 host.php:1585 include/global_form.php:1201
 #: include/global_settings.php:2243
 msgid "Location"
 msgstr "Konum"
@@ -1309,7 +1309,7 @@ msgstr "Açıklama"
 msgid "OS"
 msgstr "OS"
 
-#: automation_devices.php:284 host.php:1754 include/global_arrays.php:507
+#: automation_devices.php:284 host.php:1757 include/global_arrays.php:507
 msgid "Uptime"
 msgstr "Çalışma Süresi"
 
@@ -1321,11 +1321,11 @@ msgstr "SNMP"
 #: automation_graph_rules.php:771 automation_networks.php:1077
 #: automation_tree_rules.php:816 data_debug.php:351 data_debug.php:1016
 #: data_sources.php:1418 data_templates.php:1195 host.php:757 host.php:882
-#: host.php:1625 host.php:1742 lib/api_automation.php:164
+#: host.php:1628 host.php:1745 lib/api_automation.php:164
 #: lib/api_automation.php:280 lib/api_automation.php:573
 #: lib/api_automation.php:1090 lib/api_automation.php:1221
 #: lib/html_reports.php:1842 lib/installer.php:1772 managers.php:218
-#: package_import.php:469 package_import.php:544 plugins.php:465
+#: package_import.php:492 package_import.php:567 plugins.php:465
 #: plugins.php:587 pollers.php:1013 templates_import.php:224
 #: templates_import.php:263 user_admin.php:1144 user_group_admin.php:1028
 #: utilities.php:2066
@@ -1341,7 +1341,7 @@ msgstr "Son kontrol"
 msgid "Not Detected"
 msgstr "Tespit Edilmedi"
 
-#: automation_devices.php:324 host.php:1832
+#: automation_devices.php:324 host.php:1835
 msgid "No Devices Found"
 msgstr "Hiç Aygıtı Bulunamadı"
 
@@ -1359,7 +1359,7 @@ msgstr "Ağ"
 msgid "Reset fields to defaults"
 msgstr "Alanları varsayılanlara sıfırla"
 
-#: automation_devices.php:501 color.php:570 host.php:1611
+#: automation_devices.php:501 color.php:570 host.php:1614
 #: lib/html_form.php:1307
 msgid "Export"
 msgstr "Dışa Aktar"
@@ -1382,7 +1382,7 @@ msgstr "Keşfedilen Cihazları Temizle"
 #: automation_devices.php:670 automation_networks.php:1151
 #: automation_snmp.php:563 automation_snmp.php:564 automation_snmp.php:565
 #: automation_snmp.php:566 automation_snmp.php:567 automation_snmp.php:568
-#: data_debug.php:563 data_source_profiles.php:73 host.php:1809
+#: data_debug.php:563 data_source_profiles.php:73 host.php:1812
 #: lib/functions.php:5559 lib/functions.php:5563 lib/html.php:1161
 #: lib/html.php:1227 lib/html_reports.php:1632 lib/html_reports.php:1658
 #: lib/html_reports.php:1729 lib/html_reports.php:1730
@@ -1526,7 +1526,7 @@ msgstr "Veri sorgusu"
 #: automation_graph_rules.php:915 automation_networks.php:537
 #: automation_tree_rules.php:821 automation_tree_rules.php:941
 #: automation_tree_rules.php:959 data_debug.php:1022 data_sources.php:1423
-#: host.php:1630 include/global_arrays.php:879 include/global_form.php:1542
+#: host.php:1633 include/global_arrays.php:879 include/global_form.php:1542
 #: include/global_settings.php:361 lib/api_automation.php:169
 #: lib/api_automation.php:1095 lib/html_reports.php:1847
 #: lib/html_reports.php:1939 lib/html_reports.php:1950
@@ -1541,7 +1541,7 @@ msgstr "Etkin"
 #: automation_graph_rules.php:777 automation_graph_rules.php:915
 #: automation_networks.php:1092 automation_tree_rules.php:822
 #: automation_tree_rules.php:959 data_debug.php:1023 data_sources.php:1424
-#: data_templates.php:1231 host.php:1631 include/global_arrays.php:878
+#: data_templates.php:1231 host.php:1634 include/global_arrays.php:878
 #: include/global_arrays.php:1530 include/global_arrays.php:1822
 #: include/global_settings.php:360 include/global_settings.php:1554
 #: include/global_settings.php:1568 include/global_settings.php:1581
@@ -2324,7 +2324,7 @@ msgid "No Networks Found"
 msgstr "Ağ Bulunamadı"
 
 #: automation_networks.php:1203 data_debug.php:1037 lib/clog_webapi.php:584
-#: lib/html_graph.php:307 lib/html_tree.php:1128 lib/html_tree.php:1149
+#: lib/html_graph.php:307 lib/html_tree.php:1130 lib/html_tree.php:1151
 #: pollers.php:900 utilities.php:1464 utilities.php:2455
 msgid "Refresh"
 msgstr "Yenile"
@@ -2461,7 +2461,7 @@ msgid "Item"
 msgstr "Öğe"
 
 #: automation_snmp.php:534 include/auth.php:297 include/global_settings.php:652
-#: package_import.php:436 permission_denied.php:59 plugins.php:605
+#: package_import.php:459 permission_denied.php:59 plugins.php:605
 msgid "Version"
 msgstr "Versiyon"
 
@@ -2677,7 +2677,7 @@ msgstr "Otomasyon Şablonları [yeni]"
 msgid "Device Automation Templates"
 msgstr "Cihaz Otomasyonu Şablonları"
 
-#: automation_templates.php:491 data_sources.php:1647 package_import.php:541
+#: automation_templates.php:491 data_sources.php:1647 package_import.php:564
 #: templates_import.php:260 user_admin.php:1291 user_group_admin.php:1173
 msgid "Template Name"
 msgstr "Şablon Adı"
@@ -3372,7 +3372,7 @@ msgid "The Status of the Data Source Debug Check."
 msgstr "Veri Kaynağı Hata Ayıklama Kontrolü Durumu."
 
 #: data_debug.php:357 lib/installer.php:2217 lib/installer.php:2249
-#: package_import.php:514
+#: package_import.php:537
 msgid "Writable"
 msgstr "Yazılabilir"
 
@@ -3440,7 +3440,7 @@ msgid "Summary of issues found for the Data Source."
 msgstr "Veri Kaynağı için bulunan tüm özet konular."
 
 #: data_debug.php:511 data_debug.php:1067 data_sources.php:1445
-#: data_sources.php:1601 host.php:1736 include/global_arrays.php:956
+#: data_sources.php:1601 host.php:1739 include/global_arrays.php:956
 #: include/global_arrays.php:1002 include/global_arrays.php:2283
 #: lib/api_automation.php:284 user_admin.php:1144 user_group_admin.php:1028
 #: utilities.php:325
@@ -3576,7 +3576,7 @@ msgstr "Tekrar Çalıştırma Analizi"
 msgid "Check"
 msgstr "Kontrol"
 
-#: data_debug.php:765 include/global_form.php:1028 lib/rrd.php:2963
+#: data_debug.php:765 include/global_form.php:1028 lib/rrd.php:2970
 #: utilities.php:798 utilities.php:815 utilities.php:3022
 msgid "Value"
 msgstr "Değer"
@@ -3654,7 +3654,7 @@ msgstr "Profil"
 
 #: data_debug.php:1004 data_debug.php:1020 data_debug.php:1031
 #: data_sources.php:1405 data_sources.php:1422 data_templates.php:1023
-#: graphs.php:2047 graphs_new.php:424 host.php:1586 host_templates.php:737
+#: graphs.php:2047 graphs_new.php:424 host.php:1589 host_templates.php:737
 #: lib/clog_webapi.php:545 lib/html.php:204 lib/html_reports.php:977
 #: lib/html_reports.php:2073 plugins.php:469 settings.php:526 settings.php:548
 #: settings.php:576 tree.php:794 user_admin.php:2143 utilities.php:1035
@@ -4013,7 +4013,7 @@ msgstr "XML dosyası bulunamadı."
 msgid "Associated Graph Templates"
 msgstr "İlişkili Grafik Şablonları"
 
-#: data_queries.php:1121 graph_templates.php:831 graphs_new.php:537
+#: data_queries.php:1121 graph_templates.php:831 graphs_new.php:569
 #: host.php:756 lib/api_automation.php:576
 #, fuzzy
 msgid "Graph Template Name"
@@ -4194,7 +4194,7 @@ msgstr "Adımlar"
 
 #: data_source_profiles.php:639 graphs_new.php:463 include/global_form.php:298
 #: lib/html.php:529 lib/html_filter.php:72 lib/installer.php:2534
-#: lib/rrd.php:3017 utilities.php:866 utilities.php:1779
+#: lib/rrd.php:3024 utilities.php:866 utilities.php:1779
 msgid "Rows"
 msgstr "Satırlar"
 
@@ -4600,8 +4600,8 @@ msgstr "Özel Veriler"
 msgid "Data Source Item %s"
 msgstr "Veri Kaynağı Öğesi %s"
 
-#: data_sources.php:1090 data_templates.php:744 package_import.php:516
-#: package_import.php:574 templates_import.php:290
+#: data_sources.php:1090 data_templates.php:744 package_import.php:539
+#: package_import.php:597 templates_import.php:290
 msgid "New"
 msgstr "Yeni"
 
@@ -5047,7 +5047,7 @@ msgid "Cacti Real-time Graphing"
 msgstr "Kaktüsler Gerçek Zamanlı Grafikler"
 
 #: graph_realtime.php:411 lib/html_graph.php:238 lib/html_reports.php:124
-#: lib/html_tree.php:1059
+#: lib/html_tree.php:1061
 msgid "Thumbnails"
 msgstr "Minyatür"
 
@@ -5180,8 +5180,8 @@ msgid "Check this checkbox if you wish to allow the user to override the value o
 msgstr "Grafik oluşturma sırasında kullanıcının sağdaki değeri geçersiz kılmasına izin vermek istiyorsanız bu onay kutusunu işaretleyin."
 
 #: graph_templates.php:694 graph_templates.php:709 graph_templates.php:873
-#: graphs_new.php:532 include/global_arrays.php:1192
-#: include/global_arrays.php:2211 lib/html_tree.php:549 user_admin.php:1283
+#: graphs_new.php:566 include/global_arrays.php:1192
+#: include/global_arrays.php:2211 lib/html_tree.php:551 user_admin.php:1283
 #: user_group_admin.php:1165
 #, fuzzy
 msgid "Graph Templates"
@@ -5332,14 +5332,14 @@ msgid "Report"
 msgstr "Rapor"
 
 #: graph_view.php:646 lib/html.php:190 lib/html.php:195 lib/html_graph.php:157
-#: lib/html_tree.php:985
+#: lib/html_tree.php:987
 #, fuzzy
 msgid "All Graphs & Templates"
 msgstr "Tüm Grafikler ve Şablonlar"
 
 #: graph_view.php:647 include/global_arrays.php:2883 lib/graphs.php:58
 #: lib/graphs.php:67 lib/html.php:198 lib/html_graph.php:158
-#: lib/html_tree.php:986
+#: lib/html_tree.php:988
 #, fuzzy
 msgid "Not Templated"
 msgstr "Tapınaklı Değil"
@@ -5491,7 +5491,7 @@ msgstr "Cihaz"
 msgid "Created graph: %s"
 msgstr "Oluşturulan grafik: %s"
 
-#: graphs.php:260 lib/template.php:2131 lib/template.php:2160
+#: graphs.php:260 lib/template.php:2131 lib/template.php:2165
 #, fuzzy
 msgid "ERROR: No Data Source associated. Check Template"
 msgstr "HATA: İlişkili Veri Kaynağı yok. Şablonu Kontrol Et"
@@ -5521,7 +5521,7 @@ msgstr "Veri Kaynaklarına dokunmadan bırakın."
 msgid "Choose a Graph Template and click 'Continue' to change the Graph Template for the following Graph(s). Please note, that only compatible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources."
 msgstr "Bir Grafik Şablonu seçin ve aşağıdaki Grafik (ler) için Grafik Şablonunu değiştirmek için &#39;Devam Et&#39;i tıklayın. Lütfen yalnızca uyumlu Grafik Şablonlarının görüntüleneceğini unutmayın. Uyumlu, aynı Veri Kaynaklarına sahip olanlar tarafından belirlenir."
 
-#: graphs.php:916
+#: graphs.php:916 graphs_new.php:532
 #, fuzzy
 msgid "New Graph Template"
 msgstr "Yeni Grafik Şablonu"
@@ -5804,88 +5804,88 @@ msgstr "Bu Cihazı Düzenle"
 msgid "Create New Device"
 msgstr "Yeni Cihaz Oluştur"
 
-#: graphs_new.php:538 graphs_new.php:855 lib/html.php:1011 user_admin.php:1502
-#: user_group_admin.php:1382
-msgid "Select All"
-msgstr "Tümünü Seç"
-
-#: graphs_new.php:538 graphs_new.php:855 lib/html.php:912 lib/html.php:1011
-#, fuzzy
-msgid "Select All Rows"
-msgstr "Tüm Satırları Seç"
-
-#: graphs_new.php:625 include/global_arrays.php:947
+#: graphs_new.php:551 graphs_new.php:560 include/global_arrays.php:947
 #: include/global_arrays.php:1024 lib/html_form.php:1288 lib/html_form.php:1301
 #: tree.php:1375
 msgid "Create"
 msgstr "Oluştur"
 
-#: graphs_new.php:627
+#: graphs_new.php:553
 #, fuzzy
 msgid "(Select a graph type to create)"
 msgstr "(Oluşturulacak grafik türünü seçin)"
 
-#: graphs_new.php:676
+#: graphs_new.php:570 graphs_new.php:868 lib/html.php:1011 user_admin.php:1502
+#: user_group_admin.php:1382
+msgid "Select All"
+msgstr "Tümünü Seç"
+
+#: graphs_new.php:570 graphs_new.php:868 lib/html.php:912 lib/html.php:1011
+#, fuzzy
+msgid "Select All Rows"
+msgstr "Tüm Satırları Seç"
+
+#: graphs_new.php:680
 #, fuzzy, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id of '%s'"
 msgstr "'%s' kimlikli Veri Sorgusu '%s' için Veri Sorgusu Kaynağı XML dosyası Ayrıştırma Hatası"
 
-#: graphs_new.php:693
+#: graphs_new.php:697
 #, fuzzy, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
 msgstr "'%s' kimlikli Veri Sorgusu '%s' için Veri Sorgusu Kaynağı XML dosyası Ayrıştırma Hatası"
 
-#: graphs_new.php:697
+#: graphs_new.php:701
 #, fuzzy, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'"
 msgstr "'%s' kimlikli Veri Sorgusu '%s' için Veri Sorgusu Kaynağı XML dosyası Ayrıştırma Hatası"
 
-#: graphs_new.php:734
+#: graphs_new.php:741
 #, fuzzy, php-format
 msgid "Data Query [%s]"
 msgstr "Veri Sorgu [ %s]"
 
-#: graphs_new.php:851
+#: graphs_new.php:864
 #, fuzzy
 msgid "From there you can get more information."
 msgstr "Oradan daha fazla bilgi edinebilirsiniz."
 
-#: graphs_new.php:851
+#: graphs_new.php:864
 #, fuzzy
 msgid "This Data Query returned 0 rows, perhaps there was a problem executing this Data Query."
 msgstr "Bu Veri Sorgulama 0 satır döndürdü, belki de bu Veri Sorgulama işlemini yürütürken bir sorun oluştu."
 
-#: graphs_new.php:851
+#: graphs_new.php:864
 #, fuzzy
 msgid "You can run this Data Query in debug mode"
 msgstr "Bu Veri Sorgusunu hata ayıklama modunda çalıştırabilirsiniz"
 
-#: graphs_new.php:866
+#: graphs_new.php:879
 #, fuzzy
 msgid "The index is disabled due to the Data Query having no associated Graph Templates."
 msgstr "Veri Sorgusunun ilişkili Grafik Şablonları olmaması nedeniyle dizin devre dışı bırakıldı."
 
-#: graphs_new.php:916
+#: graphs_new.php:929
 #, fuzzy
 msgid "Search Returned no Rows."
 msgstr "Arama hiçbir satır döndürmedi."
 
-#: graphs_new.php:921
+#: graphs_new.php:934
 #, fuzzy
 msgid "Error in Data Query.  This could be due to the following: File Permissions, or a missing or improperly formatted Data Query XML file."
 msgstr "Veri Sorgusunda Hata. Bunun nedeni şunlar olabilir: Dosya İzinleri veya eksik veya yanlış biçimlendirilmiş Veri Sorgusu XML dosyası."
 
-#: graphs_new.php:947
+#: graphs_new.php:960
 #, fuzzy
 msgid "Select a Graph Type to Create"
 msgstr "Oluşturulacak Grafik Türünü Seçin"
 
-#: graphs_new.php:950
+#: graphs_new.php:963
 #, fuzzy
 msgid "Make selection default"
 msgstr "Seçimi varsayılan yap"
 
-#: graphs_new.php:950
+#: graphs_new.php:963
 msgid "Set Default"
 msgstr "Varsayılana ayarla"
 
@@ -6274,7 +6274,7 @@ msgstr "SNMP Desc"
 msgid "SNMP GetNext"
 msgstr "SNMP GetNext"
 
-#: host.php:1424 host.php:1594
+#: host.php:1424 host.php:1597
 msgid "Undefined"
 msgstr "Tanımlanmamış"
 
@@ -6283,40 +6283,40 @@ msgstr "Tanımlanmamış"
 msgid "Site"
 msgstr "Site"
 
-#: host.php:1611
+#: host.php:1614
 #, fuzzy
 msgid "Export Devices"
 msgstr "Aygıtları Dışa Aktar"
 
-#: host.php:1632 lib/api_automation.php:171 lib/api_automation.php:1097
+#: host.php:1635 lib/api_automation.php:171 lib/api_automation.php:1097
 #, fuzzy
 msgid "Not Up"
 msgstr "Up değil"
 
-#: host.php:1635 lib/api_automation.php:174 lib/api_automation.php:1100
+#: host.php:1638 lib/api_automation.php:174 lib/api_automation.php:1100
 #: lib/html_utility.php:927 pollers.php:49
 #, fuzzy
 msgid "Recovering"
 msgstr "kurtarma"
 
-#: host.php:1636 lib/api_automation.php:175 lib/api_automation.php:1101
+#: host.php:1639 lib/api_automation.php:175 lib/api_automation.php:1101
 #: lib/auth.php:2340 lib/html_utility.php:936 lib/import.php:319
-#: lib/plugins.php:1256 lib/plugins.php:1257 lib/rrd.php:2988 lib/rrd.php:3000
-#: package_import.php:518 utilities.php:211 utilities.php:212
+#: lib/plugins.php:1258 lib/plugins.php:1259 lib/rrd.php:2995 lib/rrd.php:3007
+#: package_import.php:541 utilities.php:211 utilities.php:212
 #: utilities.php:2594
 msgid "Unknown"
 msgstr "Bilinmeyen"
 
-#: host.php:1712 lib/api_automation.php:570 tree.php:867 utilities.php:2188
+#: host.php:1715 lib/api_automation.php:570 tree.php:867 utilities.php:2188
 msgid "Device Description"
 msgstr "Cihaz Tanımı"
 
-#: host.php:1715
+#: host.php:1718
 #, fuzzy
 msgid "The name by which this Device will be referred to."
 msgstr "Bu cihazın gönderileceği isim."
 
-#: host.php:1718 include/global_form.php:1193 include/global_form.php:1762
+#: host.php:1721 include/global_form.php:1193 include/global_form.php:1762
 #: lib/api_automation.php:279 lib/api_automation.php:571
 #: lib/api_automation.php:884 lib/api_automation.php:1219 managers.php:219
 #: pollers.php:130 pollers.php:1007 user_admin.php:1144
@@ -6324,81 +6324,81 @@ msgstr "Bu cihazın gönderileceği isim."
 msgid "Hostname"
 msgstr "Sunucu Adı"
 
-#: host.php:1721
+#: host.php:1724
 #, fuzzy
 msgid "Either an IP address, or hostname.  If a hostname, it must be resolvable by either DNS, or from your hosts file."
 msgstr "Bir IP adresi veya ana bilgisayar adı. Bir ana bilgisayar adıysa, DNS veya ana bilgisayar dosyanızdan çözülebilir olmalıdır."
 
-#: host.php:1727
+#: host.php:1730
 #, fuzzy
 msgid "The internal database ID for this Device.  Useful when performing automation or debugging."
 msgstr "Bu Aygıt için dahili veritabanı kimliği. Otomasyon veya hata ayıklama yaparken kullanışlıdır."
 
-#: host.php:1733
+#: host.php:1736
 #, fuzzy
 msgid "The total number of Graphs generated from this Device."
 msgstr "Bu Cihazdan oluşturulan toplam Grafik sayısı."
 
-#: host.php:1739
+#: host.php:1742
 #, fuzzy
 msgid "The total number of Data Sources generated from this Device."
 msgstr "Bu Cihazdan üretilen toplam Veri Kaynağı sayısı."
 
-#: host.php:1745
+#: host.php:1748
 #, fuzzy
 msgid "The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname \"localhost\", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an \"Unknown\" state."
 msgstr "Ping sonuçlarına göre Cihazın izleme durumu. Bu Aygıt özel bir Aygıt ise, &quot;localhost&quot; ana bilgisayar adını kullanarak veya bir Uygunluk Denetimi yapmama ayarı nedeniyle, her zaman Yukarı kalır. Cmd.php veri toplayıcısı kullanılırken, Grafiksiz bir Aygıt veri toplayıcı tarafından pinge edilmez ve &quot;Bilinmeyen&quot; durumda kalır."
 
-#: host.php:1748
+#: host.php:1751
 #, fuzzy
 msgid "In State"
 msgstr "Şehir"
 
-#: host.php:1751
+#: host.php:1754
 #, fuzzy
 msgid "The amount of time that this Device has been in its current state."
 msgstr "Bu Cihazın mevcut durumda olduğu süre."
 
-#: host.php:1757
+#: host.php:1760
 #, fuzzy
 msgid "The current amount of time that the host has been up."
 msgstr "Ev sahibinin güncel zaman miktarı."
 
-#: host.php:1760
+#: host.php:1763
 #, fuzzy
 msgid "Poll Time"
 msgstr "Anket Zamanı"
 
-#: host.php:1763
+#: host.php:1766
 #, fuzzy
 msgid "The amount of time it takes to collect data from this Device."
 msgstr "Bu Cihazdan veri toplamak için geçen süre."
 
-#: host.php:1766
+#: host.php:1769
 #, fuzzy
 msgid "Current (ms)"
 msgstr "Akım (ms)"
 
-#: host.php:1769
+#: host.php:1772
 #, fuzzy
 msgid "The current ping time in milliseconds to reach the Device."
 msgstr "Aygıta ulaşmak için milisaniye cinsinden geçerli ping süresi."
 
-#: host.php:1772
+#: host.php:1775
 #, fuzzy
 msgid "Average (ms)"
 msgstr "Ortalama (ms)"
 
-#: host.php:1775
+#: host.php:1778
 #, fuzzy
 msgid "The average ping time in milliseconds to reach the Device since the counters were cleared for this Device."
 msgstr "Cihaza ulaşmak için milisaniye cinsinden ortalama ping süresi, bu Cihaz için sayaçlar silindi."
 
-#: host.php:1778
+#: host.php:1781
 msgid "Availability"
 msgstr "Kullanılabilirlik"
 
-#: host.php:1781
+#: host.php:1784
 #, fuzzy
 msgid "The availability percentage based upon ping results since the counters were cleared for this Device."
 msgstr "Bu Aygıt için sayaçları temizlediğinden beri ping sonuçlarına göre kullanılabilirlik yüzdesi."
@@ -7462,7 +7462,7 @@ msgstr "Doğal Sipariş"
 msgid "Numeric Ordering"
 msgstr "Sayısal Sipariş"
 
-#: include/global_arrays.php:914 lib/rrd.php:2929
+#: include/global_arrays.php:914 lib/rrd.php:2936
 msgid "Header"
 msgstr "Başlık"
 
@@ -7611,7 +7611,7 @@ msgstr "Cihaz Kuralları"
 
 #: include/global_arrays.php:979 include/global_arrays.php:1029
 #: include/global_arrays.php:1190 lib/html_filter.php:177
-#: lib/html_graph.php:252 lib/html_tree.php:1073
+#: lib/html_graph.php:252 lib/html_tree.php:1075
 msgid "Presets"
 msgstr "Hazır ayarlar"
 
@@ -7647,7 +7647,7 @@ msgid "Export Templates"
 msgstr "Şablonları Dışa Aktar"
 
 #: include/global_arrays.php:991 include/global_arrays.php:1013
-#: include/global_arrays.php:1031 lib/plugins.php:1211
+#: include/global_arrays.php:1031 lib/plugins.php:1213
 msgid "Configuration"
 msgstr "Yapılandırma"
 
@@ -7909,7 +7909,7 @@ msgid "Data Input Field"
 msgstr "Veri Giriş Alanı"
 
 #: include/global_arrays.php:1316 include/global_form.php:593
-#: include/global_form.php:1694 package_import.php:790
+#: include/global_form.php:1694 package_import.php:813
 #, fuzzy
 msgid "Data Source Profile"
 msgstr "Veri Kaynağı Profili"
@@ -9216,7 +9216,7 @@ msgstr "Verilerin Veri Kaynağından toplanma sıklığı?"
 msgid "How long can data be missing before RRDtool records unknown data.  Increase this value if your Data Source is unstable and you wish to carry forward old data rather than show gaps in your graphs.  This value is multiplied by the X-Files Factor to determine the actual amount of time."
 msgstr "RRDtool bilinmeyen verileri kaydetmeden önce verilerin ne kadar süreyle eksik olabileceği. Veri Kaynağınız kararsızsa ve grafiklerinizdeki boşlukları göstermek yerine eski verileri ilerletmek istiyorsanız bu değeri artırın. Bu değer, gerçek zaman miktarını belirlemek için X Dosyaları Faktörü ile çarpılır."
 
-#: include/global_form.php:240 lib/rrd.php:3020
+#: include/global_form.php:240 lib/rrd.php:3027
 #, fuzzy
 msgid "X-Files Factor"
 msgstr "X Dosyaları Faktörü"
@@ -9435,7 +9435,7 @@ msgid "The script/source used to gather data for this data source."
 msgstr "Bu veri kaynağı için veri toplamak için kullanılan komut dosyası / kaynak."
 
 #: include/global_form.php:595 include/global_form.php:1696
-#: package_import.php:792
+#: package_import.php:815
 #, fuzzy
 msgid "Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources."
 msgstr "Veri Kaynağı Profilini seçin. Veri Kaynağı Profili, ortaya çıkan Veri Kaynakları için yoklama aralığını, veri toplanmasını ve saklama ilkesini kontrol eder."
@@ -9896,7 +9896,7 @@ msgstr "Opaklık / Alfa Kanalı"
 msgid "The opacity/alpha channel of the color."
 msgstr "Rengin opaklık / alfa kanalı."
 
-#: include/global_form.php:999 lib/rrd.php:3016
+#: include/global_form.php:999 lib/rrd.php:3023
 #, fuzzy
 msgid "Consolidation Function"
 msgstr "Birleştirme İşlevi"
@@ -10344,32 +10344,32 @@ msgstr "Şablonu Yerel Dosyadan İçe Aktar"
 msgid "If the XML file containing template data is located on your local machine, select it here."
 msgstr "Şablon verilerini içeren XML dosyası yerel makinenizdeyse, buradan seçin."
 
-#: include/global_form.php:1689 package_import.php:785
+#: include/global_form.php:1689 package_import.php:808
 #, fuzzy
 msgid "Data Source Overrides"
 msgstr "Veri Kaynağı Profilleri"
 
-#: include/global_form.php:1698 package_import.php:794
+#: include/global_form.php:1698 package_import.php:817
 #, fuzzy
 msgid "Create New from Template"
 msgstr "Şablondan Yeni Yarat"
 
-#: include/global_form.php:1703 package_import.php:799
+#: include/global_form.php:1703 package_import.php:822
 #, fuzzy
 msgid "Graph/Data Template Overrides"
 msgstr "Grafik Şablonu Seçenekleri"
 
-#: include/global_form.php:1708 package_import.php:804
+#: include/global_form.php:1708 package_import.php:827
 #, fuzzy
 msgid "Remove Orphaned Graph Items"
 msgstr "Artık Grafik Öğelerini Kaldır"
 
-#: include/global_form.php:1710 package_import.php:806
+#: include/global_form.php:1710 package_import.php:829
 #, fuzzy
 msgid "If checked, Cacti will delete any Graph Items from both the Graph Template and associated Graphs that are not included in the imported Graph Template."
 msgstr "İşaretlenirse, Cacti, hem Grafik Şablonundan hem de İçe Aktarılan Grafik Şablonunda bulunmayan ilişkili Grafiklerden Grafik Öğelerini siler."
 
-#: include/global_form.php:1715 package_import.php:811
+#: include/global_form.php:1715 package_import.php:834
 msgid "Replace Data Query Suggested Value Patterns"
 msgstr ""
 
@@ -10378,34 +10378,34 @@ msgid "Replace Data Source and Graph Template Suggested Value Records for Data Q
 msgstr ""
 
 #: include/global_form.php:1722 include/global_settings.php:553
-#: package_import.php:818
+#: package_import.php:841
 #, fuzzy
 msgid "Graph Template Image Format"
 msgstr "Grafik Şablonu Resim Biçimi"
 
-#: include/global_form.php:1723 package_import.php:819
+#: include/global_form.php:1723 package_import.php:842
 #, fuzzy
 msgid "The Image Format to be used when importing or updating Graph Templates."
 msgstr "Tüm yeni Grafik Şablonları için kullanılacak varsayılan Görüntü Formatı."
 
 #: include/global_form.php:1729 include/global_settings.php:560
-#: package_import.php:826
+#: package_import.php:849
 #, fuzzy
 msgid "Graph Template Height"
 msgstr "Grafik Şablon Yüksekliği"
 
-#: include/global_form.php:1730 package_import.php:827
+#: include/global_form.php:1730 package_import.php:850
 #, fuzzy
 msgid "The Height to be used when importing or updating Graph Templates."
 msgstr "Tüm yeni Grafik Şablonları için kullanılacak varsayılan Grafik Genişliği."
 
 #: include/global_form.php:1737 include/global_settings.php:568
-#: package_import.php:835
+#: package_import.php:858
 #, fuzzy
 msgid "Graph Template Width"
 msgstr "Grafik Şablon Genişliği"
 
-#: include/global_form.php:1738 package_import.php:836
+#: include/global_form.php:1738 package_import.php:859
 #, fuzzy
 msgid "The Width to be used when importing or updating Graph Templates."
 msgstr "Tüm yeni Grafik Şablonları için kullanılacak varsayılan Grafik Genişliği."
@@ -11182,11 +11182,11 @@ msgstr "Yüklemiş olduğunuz RRDtool sürümü."
 
 #: include/global_settings.php:404
 #, fuzzy
-msgid "Enable gradient support"
+msgid "Enable Gradient Support"
 msgstr "Raporu Etkinleştir"
 
 #: include/global_settings.php:405
-msgid "Enabled gradient support for AREA charts."
+msgid "Enabled Gradient Support for AREA and STACK charts."
 msgstr ""
 
 #: include/global_settings.php:410
@@ -12296,12 +12296,12 @@ msgstr "Cacti'nin Veri Kaynağı İstatistikleri komut dosyasının zaman aşım
 
 #: include/global_settings.php:1332
 #, fuzzy
-msgid "RRD check Timeout"
+msgid "RRDfile Check Timeout"
 msgstr "DNS Zaman Aşımı"
 
 #: include/global_settings.php:1333
 #, fuzzy
-msgid "The maximum amount of time Cacti's RRD check script can run without generating a timeout error and being killed."
+msgid "The maximum amount of time Cacti's RRDfile check script can run without generating a timeout error and being killed."
 msgstr "Bir Cacti'nin Spikekill betiğinin zaman aşımı hatası oluşturmadan ve öldürülmeden çalışabileceği maksimum süre."
 
 #: include/global_settings.php:1347
@@ -12872,7 +12872,7 @@ msgstr "LDAP CN Ayarları"
 msgid "Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: displayname) "
 msgstr "LDAP&#39;den alınan, yeni bir kullanıcı oluştururken Tam Adı değiştirecek alan. (pencerelerde: görünen ad)"
 
-#: include/global_settings.php:1801 package_import.php:433
+#: include/global_settings.php:1801 package_import.php:456
 msgid "Email"
 msgstr "E-posta"
 
@@ -13333,29 +13333,29 @@ msgstr "Veri Kaynağı İstatistikleri Veri Toplayıcı için Bellek Sınırı"
 msgid "The maximum amount of memory for the Cacti Poller and Data Source Statistics Poller"
 msgstr "Cacti Poller ve Data Source Statistics Poller için maksimum hafıza miktarı"
 
-#: include/global_settings.php:2192 rrdcheck.php:33 rrdcheck.php:95
+#: include/global_settings.php:2192
 #, fuzzy
-msgid "RRD check"
-msgstr "Denetimi Çalıştır"
+msgid "RRDfile Check"
+msgstr "RRDfile Temizleyici"
 
 #: include/global_settings.php:2197
 #, fuzzy
-msgid "Enable RRD check"
+msgid "Enable RRDfile check"
 msgstr "Kuralı Etkinleştir"
 
 #: include/global_settings.php:2198
 #, fuzzy
-msgid "Should RRD check be enabled for this Cacti system?"
+msgid "Should RRDfile check be enabled for this Cacti system?"
 msgstr "Bu Cacti sistemi için Veri Kaynağı İstatistikleri toplanmalı mı?"
 
 #: include/global_settings.php:2203
 #, fuzzy
-msgid "Number of RRD check Processes"
+msgid "Number of RRDfile check Processes"
 msgstr "Takviye İşlem Sayısı"
 
 #: include/global_settings.php:2204
 #, fuzzy
-msgid "The number of concurrent RRD check processes to use to use to process all of rrd files."
+msgid "The number of concurrent RRDfile check processes to use to use to process all of rrd files."
 msgstr "Takviye tablosundaki tüm RRD&#39;leri işlemek için kullanılacak eşzamanlı artırma işlemlerinin sayısı."
 
 #: include/global_settings.php:2231
@@ -13863,9 +13863,9 @@ msgstr "1 Sütun"
 #: include/global_settings.php:2678 include/global_settings.php:2679
 #: include/global_settings.php:2680 include/global_settings.php:2681
 #: lib/html_graph.php:228 lib/html_graph.php:229 lib/html_graph.php:230
-#: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1049
-#: lib/html_tree.php:1050 lib/html_tree.php:1051 lib/html_tree.php:1052
-#: lib/html_tree.php:1053
+#: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1051
+#: lib/html_tree.php:1052 lib/html_tree.php:1053 lib/html_tree.php:1054
+#: lib/html_tree.php:1055
 #, php-format
 msgid "%d Columns"
 msgstr "yaklaşık %d gün önce"
@@ -14195,7 +14195,7 @@ msgstr "Eşleşen Cihazlar"
 
 #: lib/api_automation.php:146 lib/api_automation.php:1072
 #: lib/clog_webapi.php:539 lib/html_reports.php:956 lib/html_reports.php:1611
-#: lib/html_reports.php:1938 lib/html_reports.php:1949 lib/rrd.php:2958
+#: lib/html_reports.php:1938 lib/html_reports.php:1949 lib/rrd.php:2965
 #: utilities.php:356 utilities.php:1442 utilities.php:3022
 msgid "Type"
 msgstr "Tip"
@@ -14497,7 +14497,7 @@ msgstr "Kısıtlı"
 msgid "Branch:"
 msgstr "Şube:"
 
-#: lib/auth.php:2564 lib/auth.php:2596 lib/html_tree.php:957
+#: lib/auth.php:2564 lib/auth.php:2596 lib/html_tree.php:959
 #: lib/reports.php:1048
 msgid "Device:"
 msgstr "Cihaz:"
@@ -15164,12 +15164,12 @@ msgstr "' %s' Veri Kaynağı için bir XML çıktı sütunu seçmeli ve onay kut
 msgid "Your Graph Template has not Data Templates in use.  Please correct your Graph Template"
 msgstr "Grafik Şablonunuz kullanımda Veri Şablonları içermiyor. Lütfen Grafik Şablonunuzu düzeltin"
 
-#: lib/database.php:1933
+#: lib/database.php:1935
 #, fuzzy
 msgid "Failed to determine password field length, can not continue as may corrupt password"
 msgstr "Şifre alanı uzunluğu belirlenemedi, şifreyi bozabileceğinden devam edemiyor"
 
-#: lib/database.php:1940
+#: lib/database.php:1942
 #, fuzzy
 msgid "Failed to alter password field length, can not continue as may corrupt password"
 msgstr "Şifre alanı uzunluğu değiştirilemedi, şifreyi bozabileceğinden devam edemiyor"
@@ -15295,8 +15295,8 @@ msgstr "Çıkış"
 msgid "Leaf"
 msgstr "Yaprak"
 
-#: lib/functions.php:3772 lib/html_tree.php:656 lib/html_tree.php:692
-#: lib/html_tree.php:921 lib/html_tree.php:929 lib/html_tree.php:1503
+#: lib/functions.php:3772 lib/html_tree.php:658 lib/html_tree.php:694
+#: lib/html_tree.php:923 lib/html_tree.php:931 lib/html_tree.php:1505
 #, fuzzy
 msgid "Non Query Based"
 msgstr "Sorgu Tabanlı Olmayan"
@@ -16031,70 +16031,70 @@ msgstr "Bu formda kaydedilmemiş değişiklikleriniz var. &#39;Devam Et&#39; tu�
 msgid "Data Query Data Sources must be created through %s"
 msgstr "Veri Sorgu Veri Kaynakları %s üzerinden oluşturulmalıdır"
 
-#: lib/html_graph.php:193 lib/html_tree.php:1020
+#: lib/html_graph.php:193 lib/html_tree.php:1022
 #, fuzzy
 msgid "Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile"
 msgstr "Mevcut Grafikler, Sütunlar, Küçük Resimler, Ön Ayar ve Zaman Kaydırma tercihlerini profilinize kaydedin."
 
-#: lib/html_graph.php:223 lib/html_tree.php:1044
+#: lib/html_graph.php:223 lib/html_tree.php:1046
 msgid "Columns"
 msgstr "Sütunlar"
 
-#: lib/html_graph.php:227 lib/html_tree.php:1048
+#: lib/html_graph.php:227 lib/html_tree.php:1050
 #, php-format
 msgid "%d Column"
 msgstr "yaklaşık %d gün önce"
 
-#: lib/html_graph.php:257 lib/html_tree.php:1078
+#: lib/html_graph.php:257 lib/html_tree.php:1080
 msgid "Custom"
 msgstr "Özel"
 
 #: lib/html_graph.php:271 lib/html_reports.php:1936 lib/html_reports.php:1947
-#: lib/html_tree.php:1092
+#: lib/html_tree.php:1094
 msgid "From"
 msgstr "Kimden"
 
-#: lib/html_graph.php:276 lib/html_tree.php:1097
+#: lib/html_graph.php:276 lib/html_tree.php:1099
 #, fuzzy
 msgid "Start Date Selector"
 msgstr "Başlangıç Tarihi Seçicisi"
 
 #: lib/html_graph.php:280 lib/html_reports.php:1937 lib/html_reports.php:1948
-#: lib/html_tree.php:1101
+#: lib/html_tree.php:1103
 msgid "To"
 msgstr "Kime"
 
-#: lib/html_graph.php:285 lib/html_tree.php:1106
+#: lib/html_graph.php:285 lib/html_tree.php:1108
 #, fuzzy
 msgid "End Date Selector"
 msgstr "Bitiş Tarihi Seçicisi"
 
-#: lib/html_graph.php:290 lib/html_tree.php:1111
+#: lib/html_graph.php:290 lib/html_tree.php:1113
 #, fuzzy
 msgid "Shift Time Backward"
 msgstr "Vardiya Süresi Geri"
 
-#: lib/html_graph.php:291 lib/html_tree.php:1112
+#: lib/html_graph.php:291 lib/html_tree.php:1114
 #, fuzzy
 msgid "Define Shifting Interval"
 msgstr "Vites Değiştirme Aralığını Tanımla"
 
-#: lib/html_graph.php:302 lib/html_tree.php:1123
+#: lib/html_graph.php:302 lib/html_tree.php:1125
 #, fuzzy
 msgid "Shift Time Forward"
 msgstr "Vardiya Süresi İleri"
 
-#: lib/html_graph.php:307 lib/html_tree.php:1128
+#: lib/html_graph.php:307 lib/html_tree.php:1130
 #, fuzzy
 msgid "Refresh selected time span"
 msgstr "Seçilen zaman aralığını yenile"
 
-#: lib/html_graph.php:308 lib/html_tree.php:1129
+#: lib/html_graph.php:308 lib/html_tree.php:1131
 #, fuzzy
 msgid "Return to the default time span"
 msgstr "Varsayılan zaman dilimine geri dön"
 
-#: lib/html_graph.php:316 lib/html_tree.php:1137
+#: lib/html_graph.php:316 lib/html_tree.php:1139
 msgid "Window"
 msgstr "Pencere"
 
@@ -16102,7 +16102,7 @@ msgstr "Pencere"
 msgid "Interval"
 msgstr "Aralık"
 
-#: lib/html_graph.php:340 lib/html_tree.php:1161
+#: lib/html_graph.php:340 lib/html_tree.php:1163
 msgid "Stop"
 msgstr "Dur"
 
@@ -16679,53 +16679,53 @@ msgstr "Geçersiz"
 msgid "No Reports Found"
 msgstr "Rapor Bulunamadı"
 
-#: lib/html_tree.php:913 lib/html_tree.php:921 lib/html_tree.php:929
+#: lib/html_tree.php:915 lib/html_tree.php:923 lib/html_tree.php:931
 #, fuzzy
 msgid "Graph Template:"
 msgstr "Grafik Şablonu:"
 
-#: lib/html_tree.php:929
+#: lib/html_tree.php:931
 #, fuzzy
 msgid "Template Based"
 msgstr "Şablon Tabanlı"
 
-#: lib/html_tree.php:935 lib/reports.php:1268
+#: lib/html_tree.php:937 lib/reports.php:1268
 msgid "Tree:"
 msgstr "Ağaç:"
 
-#: lib/html_tree.php:940
+#: lib/html_tree.php:942
 msgid "Site:"
 msgstr "Site:"
 
-#: lib/html_tree.php:946
+#: lib/html_tree.php:948
 #, fuzzy
 msgid "Leaf:"
 msgstr "Yaprak"
 
-#: lib/html_tree.php:952
+#: lib/html_tree.php:954
 #, fuzzy
 msgid "Device Template:"
 msgstr "Cihaz Şablonu:"
 
-#: lib/html_tree.php:966
+#: lib/html_tree.php:968
 msgid "Applied"
 msgstr "Uygulandı"
 
-#: lib/html_tree.php:966
+#: lib/html_tree.php:968
 msgid "Filter"
 msgstr "Filtre"
 
-#: lib/html_tree.php:966
+#: lib/html_tree.php:968
 #, fuzzy
 msgid "Graph Filters"
 msgstr "Grafik Filtreleri"
 
-#: lib/html_tree.php:1017
+#: lib/html_tree.php:1019
 #, fuzzy
 msgid "Set/Refresh Filter"
 msgstr "Filtreyi Ayarla / Yenile"
 
-#: lib/html_tree.php:1439
+#: lib/html_tree.php:1441
 #, fuzzy
 msgid "(Non Graph Template)"
 msgstr "(Grafik Olmayan Şablon)"
@@ -17450,7 +17450,7 @@ msgstr "Uzak oylayıcılar için, eklentiler, komut dosyaları ve kaynaklar yoll
 msgid "Required Writable at Install Time Only"
 msgstr "Yalnızca Yükleme Zamanında Gerekli Yazılabilir"
 
-#: lib/installer.php:2221 lib/installer.php:2253 package_import.php:512
+#: lib/installer.php:2221 lib/installer.php:2253 package_import.php:535
 msgid "Not Writable"
 msgstr "Yazılabilir değil"
 
@@ -17644,11 +17644,11 @@ msgstr "Halihazırda değişiklik yaptığınız Şablonları güncellemeniz ön
 msgid "Please select the Device Templates that you wish to use after the Install.  If you Operating System is Windows, you need to ensure that you select the 'Windows Device' Template.  If your Operating System is Linux/UNIX, make sure you select the 'Local Linux Machine' Device Template."
 msgstr "Lütfen Kurulumdan sonra kullanmak istediğiniz Cihaz Şablonlarını seçin. İşletim Sistemi Windows ise, &#39;Windows Aygıt&#39; Şablonu&#39;nu seçtiğinizden emin olmanız gerekir. İşletim Sisteminiz Linux / UNIX ise, &#39;Yerel Linux Makinesi&#39; Aygıt Şablonu&#39;nu seçtiğinizden emin olun."
 
-#: lib/installer.php:2455 package_import.php:427 plugins.php:593
+#: lib/installer.php:2455 package_import.php:450 plugins.php:593
 msgid "Author"
 msgstr "Yazar"
 
-#: lib/installer.php:2455 package_import.php:430
+#: lib/installer.php:2455 package_import.php:453
 msgid "Homepage"
 msgstr "Anasayfa"
 
@@ -18229,36 +18229,36 @@ msgstr "TCP ping zaman aşımına uğradı"
 msgid "Ping not performed due to setting."
 msgstr "Ayar nedeniyle ping işlemi gerçekleştirilmedi."
 
-#: lib/plugins.php:654
+#: lib/plugins.php:656
 #, fuzzy, php-format
 msgid "%s Version %s or above is required for %s. "
 msgstr "%s %s veya %s sürümü %s için gerekli."
 
-#: lib/plugins.php:658
+#: lib/plugins.php:660
 #, fuzzy, php-format
 msgid "%s is required for %s, and it is not installed. "
 msgstr "%s %s için gerekli ve yüklenmemiş."
 
-#: lib/plugins.php:681
+#: lib/plugins.php:683
 #, fuzzy
 msgid "Plugin cannot be installed."
 msgstr "Eklenti yüklenemiyor."
 
-#: lib/plugins.php:1211 lib/plugins.php:1218 plugins.php:479 plugins.php:559
+#: lib/plugins.php:1213 lib/plugins.php:1220 plugins.php:479 plugins.php:559
 msgid "Plugins"
 msgstr "Eklentiler"
 
-#: lib/plugins.php:1230 lib/plugins.php:1236
+#: lib/plugins.php:1232 lib/plugins.php:1238
 #, fuzzy, php-format
 msgid "Requires: Cacti >= %s"
 msgstr "Gerektirir: Kaktüsler&gt; = %s"
 
-#: lib/plugins.php:1233
+#: lib/plugins.php:1235
 #, fuzzy
 msgid "Legacy Plugin"
 msgstr "Eski Eklenti"
 
-#: lib/plugins.php:1258
+#: lib/plugins.php:1260
 #, fuzzy
 msgid "Not Stated"
 msgstr "Belirtilmeyen"
@@ -18337,189 +18337,189 @@ msgstr "Rapor Grafiği Öğesi Eklenemedi &#39; <i> %s</i> &#39; Zaten Var"
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
 msgstr "Atlanan Rapor Grafiği Öğesi &#39; <i> %s</i> &#39; Zaten Var"
 
-#: lib/rrd.php:2725
+#: lib/rrd.php:2732
 #, fuzzy, php-format
 msgid "Required RRD step size is '%s'"
 msgstr "Gerekli RRD adım boyutu &#39; %s&#39;"
 
-#: lib/rrd.php:2754
+#: lib/rrd.php:2761
 #, fuzzy, php-format
 msgid "Type for Data Source '%s' should be '%s'"
 msgstr "Veri Kaynağı Türü &#39; %s&#39; &#39; %s&#39; olmalıdır"
 
-#: lib/rrd.php:2759
+#: lib/rrd.php:2766
 #, fuzzy, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
 msgstr "&#39; %s&#39; Veri Kaynağı İçin Kalp Atışı &#39; %s&#39; olmalıdır"
 
-#: lib/rrd.php:2771
+#: lib/rrd.php:2778
 #, fuzzy, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "&#39; %s&#39; Veri Kaynağı için minimum RRD &#39; %s&#39; olmalıdır"
 
-#: lib/rrd.php:2791
+#: lib/rrd.php:2798
 #, fuzzy, php-format
 msgid "RRD maximum for Data Source '%s' should be '%s'"
 msgstr "&#39; %s&#39; Veri Kaynağı için maksimum RRD &#39; %s&#39; olmalıdır"
 
-#: lib/rrd.php:2801
+#: lib/rrd.php:2808
 #, fuzzy, php-format
 msgid "DS '%s' missing in RRDfile"
 msgstr "RRD dosyasında DS &#39; %s&#39; eksik"
 
-#: lib/rrd.php:2810
+#: lib/rrd.php:2817
 #, fuzzy, php-format
 msgid "DS '%s' missing in Cacti definition"
 msgstr "DS &#39; %s&#39; Cacti tanımında eksik"
 
-#: lib/rrd.php:2827 lib/rrd.php:2828
+#: lib/rrd.php:2834 lib/rrd.php:2835
 #, fuzzy, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "Cacti RRA &#39; %s&#39;, &#39; %s&#39; ile aynı CF / adımlara ( %s, %s) sahip"
 
-#: lib/rrd.php:2842 lib/rrd.php:2843
+#: lib/rrd.php:2849 lib/rrd.php:2850
 #, fuzzy, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "RRA &#39; %s&#39; dosyasında CF / adımları ( %s, %s) &#39; %s&#39; ile aynı"
 
-#: lib/rrd.php:2874
+#: lib/rrd.php:2881
 #, fuzzy, php-format
 msgid "XFF for cacti RRA id '%s' should be '%s'"
 msgstr "Kaktüsler için XFF RRA kimliği &#39; %s&#39; &#39; %s&#39; olmalıdır"
 
-#: lib/rrd.php:2878
+#: lib/rrd.php:2885
 #, fuzzy, php-format
 msgid "Number of rows for Cacti RRA id '%s' should be '%s'"
 msgstr "Cacti RRA kimliği &#39; %s&#39; için satır sayısı &#39; %s&#39; olmalıdır"
 
-#: lib/rrd.php:2894
+#: lib/rrd.php:2901
 #, fuzzy, php-format
 msgid "RRA '%s' missing in RRDfile"
 msgstr "RRA &#39; %s&#39;, RRD dosyasında eksik"
 
-#: lib/rrd.php:2903
+#: lib/rrd.php:2910
 #, fuzzy, php-format
 msgid "RRA '%s' missing in Cacti definition"
 msgstr "Cacti tanımında RRA &#39; %s&#39; eksik"
 
-#: lib/rrd.php:2925
+#: lib/rrd.php:2932
 #, fuzzy
 msgid "RRD File Information"
 msgstr "RDR Dosya Bilgileri"
 
-#: lib/rrd.php:2957
+#: lib/rrd.php:2964
 #, fuzzy
 msgid "Data Source Items"
 msgstr "Veri Kaynağı Öğeleri"
 
-#: lib/rrd.php:2959
+#: lib/rrd.php:2966
 #, fuzzy
 msgid "Minimal Heartbeat"
 msgstr "Minimal Kalp Atışı"
 
-#: lib/rrd.php:2960
+#: lib/rrd.php:2967
 msgid "Min"
 msgstr "Min"
 
-#: lib/rrd.php:2961
+#: lib/rrd.php:2968
 msgid "Max"
 msgstr "Maksimum"
 
-#: lib/rrd.php:2962
+#: lib/rrd.php:2969
 #, fuzzy
 msgid "Last DS"
 msgstr "Son DS"
 
-#: lib/rrd.php:2964
+#: lib/rrd.php:2971
 #, fuzzy
 msgid "Unknown Sec"
 msgstr "Bilinmeyen Sn"
 
-#: lib/rrd.php:3015
+#: lib/rrd.php:3022
 #, fuzzy
 msgid "Round Robin Archive"
 msgstr "Round Robin Arşivi"
 
-#: lib/rrd.php:3018
+#: lib/rrd.php:3025
 #, fuzzy
 msgid "Cur Row"
 msgstr "Cur Row"
 
-#: lib/rrd.php:3019
+#: lib/rrd.php:3026
 #, fuzzy
 msgid "PDP per Row"
 msgstr "Satır başına PDP"
 
-#: lib/rrd.php:3021
+#: lib/rrd.php:3028
 #, fuzzy
 msgid "CDP Prep Value (0)"
 msgstr "CDP Hazırlık Değeri (0)"
 
-#: lib/rrd.php:3022
+#: lib/rrd.php:3029
 #, fuzzy
 msgid "CDP Unknown Data points (0)"
 msgstr "CDP Bilinmeyen Veri noktaları (0)"
 
-#: lib/rrd.php:3100
+#: lib/rrd.php:3107
 #, fuzzy, php-format
 msgid "rename %s to %s"
 msgstr "%s adını %s olarak değiştir"
 
-#: lib/rrd.php:3159
+#: lib/rrd.php:3166
 #, fuzzy
 msgid "Error while parsing the XML of rrdtool dump"
 msgstr "Rrdtool dökümü XML&#39;sini ayrıştırırken hata oluştu"
 
-#: lib/rrd.php:3191 lib/rrd.php:3249 lib/rrd.php:3308
+#: lib/rrd.php:3198 lib/rrd.php:3256 lib/rrd.php:3315
 #, fuzzy, php-format
 msgid "ERROR while writing XML file: %s"
 msgstr "XML dosyası yazarken HATA: %s"
 
-#: lib/rrd.php:3202 lib/rrd.php:3260 lib/rrd.php:3319
+#: lib/rrd.php:3209 lib/rrd.php:3267 lib/rrd.php:3326
 #, fuzzy, php-format
 msgid "ERROR: RRDfile %s not writeable"
 msgstr "HATA:% RRDdosyası yazılabilir değil"
 
-#: lib/rrd.php:3232 lib/rrd.php:3291
+#: lib/rrd.php:3239 lib/rrd.php:3298
 #, fuzzy
 msgid "Error while parsing the XML of RRDtool dump"
 msgstr "RRDtool dökümü XML&#39;sini ayrıştırırken hata oluştu"
 
-#: lib/rrd.php:3539
+#: lib/rrd.php:3546
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
 msgstr "RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF =% 1.2f) RRD dosyasından kaldırıldı"
 
-#: lib/rrd.php:3576
+#: lib/rrd.php:3583
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
 msgstr "RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF =% 1.2f) RRD dosyasına eklendi"
 
-#: lib/rrd.php:3606 lib/rrd.php:3620
+#: lib/rrd.php:3613 lib/rrd.php:3627
 #, fuzzy, php-format
 msgid "Website does not have write access to %s, may be unable to create/update RRDs"
 msgstr "Web sitesi %s dosyasına yazma erişimine sahip değil, RRD oluşturamıyor / güncelleyemiyor olabilir"
 
-#: lib/rrd.php:3616
+#: lib/rrd.php:3623
 #, fuzzy
 msgid "(Custom)"
 msgstr "Özel"
 
-#: lib/rrd.php:3622
+#: lib/rrd.php:3629
 #, fuzzy
 msgid "Failed to open data file, poller may not have run yet"
 msgstr "Veri dosyası açılamadı, anket henüz çalıştırılmamış olabilir."
 
-#: lib/rrd.php:3625
+#: lib/rrd.php:3632
 #, fuzzy
 msgid "RRA Folder"
 msgstr "RRA Klasörü"
 
-#: lib/rrd.php:3625
+#: lib/rrd.php:3632
 msgid "Root"
 msgstr "Kök"
 
-#: lib/rrd.php:3734
+#: lib/rrd.php:3741
 #, fuzzy
 msgid "Unknown RRDtool Error"
 msgstr "Bilinmeyen RRDtool Hatası"
@@ -18534,22 +18534,22 @@ msgstr "Şablondan Toplama Oluştur"
 msgid "Attempting to Create Graph from Removed Graph Template"
 msgstr "Kaldırılan Grafik Şablonundan Grafik Oluşturma Girişimi"
 
-#: lib/template.php:2123 lib/template.php:2152
+#: lib/template.php:2123 lib/template.php:2157
 #, fuzzy, php-format
 msgid "Created: %s"
 msgstr "Oluşturuldu: %s"
 
-#: lib/template.php:2134 lib/template.php:2163
+#: lib/template.php:2139 lib/template.php:2168
 #, fuzzy
 msgid "ERROR: Whitelist Validation Failed. Check Data Input Method"
 msgstr "HATA: Beyaz Liste Doğrulaması Başarısız Oldu. Veri Girişi Yöntemini Kontrol Edin"
 
-#: lib/template.php:2142
+#: lib/template.php:2147
 #, fuzzy
 msgid "Graph Not created for "
 msgstr "Grafik Oluşturma"
 
-#: lib/template.php:2171
+#: lib/template.php:2176
 #, fuzzy
 msgid "NOTE: Graph not added for Data Query "
 msgstr "Veri Sorgulamadan Grafik Oluşturma"
@@ -18606,7 +18606,7 @@ msgid "When executing subqueries, having a larger temporary table size, keep tho
 msgstr "Alt sorguları yürütürken, daha büyük bir geçici tablo boyutuna sahip olan bu geçici tabloları bellekte saklar."
 
 #: lib/utility.php:1048 lib/utility.php:1054
-msgid "When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80%."
+msgid "When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80%.  If the recommendation is negative, you must decrease this and or the sort_buffer_size until the recommendation fits within the allowable memory."
 msgstr ""
 
 #: lib/utility.php:1060
@@ -19136,149 +19136,149 @@ msgstr ""
 msgid "You have not Trusted this Package Author.  If you wish to import, check the Automatically Trust Author checkbox"
 msgstr ""
 
-#: package_import.php:175
+#: package_import.php:198
 #, fuzzy, php-format
 msgid "The Package %s Imported Successfully"
 msgstr "Kaktüsler günlüğü başarıyla temizlendi"
 
-#: package_import.php:177
+#: package_import.php:200
 #, php-format
 msgid "The Package %s Import Failed"
 msgstr ""
 
-#: package_import.php:324 package_import.php:330 package_import.php:386
-#: package_import.php:389
+#: package_import.php:347 package_import.php:353 package_import.php:409
+#: package_import.php:412
 #, fuzzy
 msgid "Error in Package"
 msgstr "Veri sorgusunda hata"
 
-#: package_import.php:324
+#: package_import.php:347
 msgid "See the cacti.log for more information.  It could be that you had either an API Key error or the package was tamered with, or the location is not available."
 msgstr ""
 
-#: package_import.php:324
+#: package_import.php:347
 #, php-format
 msgid "The package \"%s\" download or validation failed"
 msgstr ""
 
-#: package_import.php:330
+#: package_import.php:353
 msgid "See the cacti.log for more information.  It could be that you had either an API Key error or the package was tamered with, or the location is not available"
 msgstr ""
 
-#: package_import.php:330
+#: package_import.php:353
 msgid "The package download or validation failed"
 msgstr ""
 
-#: package_import.php:386
+#: package_import.php:409
 #, fuzzy
 #| msgid "Package Files"
 msgid "Package XML File Damaged."
 msgstr "Paket Dosyaları"
 
-#: package_import.php:386
+#: package_import.php:409
 msgid "The XML files appears to be invalid.  Please contact the package author"
 msgstr ""
 
-#: package_import.php:389
+#: package_import.php:412
 msgid "Check the package repository file for files that should exist and find the one that is missing"
 msgstr ""
 
-#: package_import.php:389
+#: package_import.php:412
 msgid "The XML files for the package does not exist"
 msgstr ""
 
-#: package_import.php:423
+#: package_import.php:446
 #, fuzzy
 #| msgid "Package Files"
 msgid "Packages Details"
 msgstr "Paket Dosyaları"
 
-#: package_import.php:439
+#: package_import.php:462
 #, fuzzy
 #| msgid "right"
 msgid "Copyright"
 msgstr "sağ"
 
-#: package_import.php:459
+#: package_import.php:482
 msgid "Import Package Filenames [ None selected imports all, Check to import selectively ]"
 msgstr ""
 
-#: package_import.php:463
+#: package_import.php:486
 #, fuzzy
 #| msgid "Package Files"
 msgid "Package"
 msgstr "Paket Dosyaları"
 
-#: package_import.php:466
+#: package_import.php:489
 #, fuzzy
 #| msgid "Rename"
 msgid "Filename"
 msgstr "Yeniden Adlandır"
 
-#: package_import.php:508 package_import.php:605 templates_import.php:349
+#: package_import.php:531 package_import.php:628 templates_import.php:349
 msgid "Differences"
 msgstr ""
 
-#: package_import.php:510 package_import.php:576 templates_import.php:292
+#: package_import.php:533 package_import.php:599 templates_import.php:292
 #, fuzzy
 msgid "Unchanged"
 msgstr "Değişemedi"
 
-#: package_import.php:534
+#: package_import.php:557
 msgid "Import Package Templates [ None selected imports all, Check to import selectively ]"
 msgstr ""
 
-#: package_import.php:538 templates_import.php:257
+#: package_import.php:561 templates_import.php:257
 #, fuzzy
 #| msgid "Template Title"
 msgid "Template Type"
 msgstr "Şablon Başlığı"
 
-#: package_import.php:547 templates_import.php:269
+#: package_import.php:570 templates_import.php:269
 #, fuzzy
 msgid "Changes/Diffferences"
 msgstr "Cihazı Değiştir"
 
-#: package_import.php:572 templates_import.php:288
+#: package_import.php:595 templates_import.php:288
 #, fuzzy
 #| msgid "Update"
 msgid "Updated"
 msgstr "Güncelle"
 
-#: package_import.php:609 templates_import.php:353
+#: package_import.php:632 templates_import.php:353
 #, fuzzy
 #| msgid "Orphaned"
 msgid "Orphans"
 msgstr "Öksüz ve yetim"
 
-#: package_import.php:662
+#: package_import.php:685
 msgid "File Differences for: "
 msgstr ""
 
-#: package_import.php:769
+#: package_import.php:792
 #, fuzzy
 #| msgid "Package Files"
 msgid "Local Package Import File"
 msgstr "Paket Dosyaları"
 
-#: package_import.php:770
+#: package_import.php:793
 msgid "The *.xml.gz file located on your Local machine to Upload and Import."
 msgstr ""
 
-#: package_import.php:775
+#: package_import.php:798
 #, fuzzy
 msgid "Automatically Trust Signer"
 msgstr "Kaktüslere Otomatik Olarak Ekle"
 
-#: package_import.php:777
+#: package_import.php:800
 msgid "If checked, Cacti will automatically Trust the Signer for this and any future Packages by that author."
 msgstr ""
 
-#: package_import.php:813
+#: package_import.php:836
 msgid "Replace Data Source and Graph Template Suggested Value Records.  Graphs and Data Sources will take on new names after either a Data Query Reindex or by using the forced Replace Suggested Values process."
 msgstr ""
 
-#: package_import.php:884
+#: package_import.php:907
 #, fuzzy
 #| msgid "Import"
 msgid "Package Import"
@@ -19949,6 +19949,11 @@ msgstr "Bu Veri Toplayıcı&#39;nın en son ana Cacti sitesiyle tam olarak eşit
 #, fuzzy
 msgid "No Data Collectors Found"
 msgstr "Veri Toplayıcı Bulunamadı"
+
+#: rrdcheck.php:33 rrdcheck.php:95
+#, fuzzy
+msgid "RRD check"
+msgstr "Denetimi Çalıştır"
 
 #: rrdcheck.php:34
 msgid "RRD check is disabled, please enable in Configuration -> Settings -> Data"

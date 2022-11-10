@@ -529,9 +529,37 @@ function graphs() {
 	$script = "<script type='text/javascript'>\nvar created_graphs = new Array();\n";
 
 	if (get_request_var('graph_type') < 0) {
-		print "<div class='cactiTable'><div><div class='cactiTableTitle'><span>" . __('Graph Templates') . "</span></div><div class='cactiTableButton'><span></span></div></div></div>\n";
+		html_start_box(__('New Graph Template'), '', '100%', '', '3', 'center', '');
 
-		html_start_box('', '100%', '', '3', 'center', '');
+		$available_graph_templates = db_fetch_assoc_prepared('SELECT gt.id, gt.name
+			FROM graph_templates AS gt
+			LEFT JOIN snmp_query_graph AS sqg
+			ON sqg.graph_template_id = gt.id
+			WHERE sqg.name IS NULL
+			AND gt.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?)
+			AND gt.multiple = ""
+			UNION
+			SELECT id, name
+			FROM graph_templates AS gt
+			WHERE multiple = "on"
+			ORDER BY name',
+			array(get_request_var('host_id'))
+		);
+
+		/* create a row at the bottom that lets the user create any graph they choose */
+		print "<tr class='even'>
+			<td class='left' style='width:1%'>";
+			form_dropdown('cg_g', $available_graph_templates, 'name', 'id', '', __('(Select a graph type to create)'), '', 'textArea');
+
+		print '</td>
+				<td class="left">
+					<input type="submit" class="create ui-button ui-corner-all ui-widget ui-state-active" id="submit" value="' . __('Create') . '" role="button">
+				</td>
+			</tr>';
+
+		html_end_box();
+
+		html_start_box(__('Graph Templates'), '100%', '', '3', 'center', '');
 
 		print "<tr class='tableHeader'>
 				<th class='tableSubHeaderColumn'>" . __('Graph Template Name') . "</th>
@@ -589,7 +617,7 @@ function graphs() {
 			foreach ($graph_templates as $graph_template) {
 				$query_row = $graph_template['graph_template_id'];
 
-				print "<tr id='gt_line$query_row' class='selectable " . (($i % 2 == 0) ? 'odd' : 'even') . "'>"; $i++;
+				print "<tr id='gt_line$query_row' style='display:table-row' class='selectable " . (($i % 2 == 0) ? 'odd' : 'even') . "'>"; $i++;
 				print "<td>
 					<span id='gt_text$query_row" . "_0'>" . filter_value($graph_template['graph_template_name'], get_request_var('filter')) . "</span>
 					</td>
@@ -601,35 +629,7 @@ function graphs() {
 			}
 		}
 
-		html_end_box(false);
-
-		html_start_box('', '100%', '', '3', 'center', '');
-
-		$available_graph_templates = db_fetch_assoc_prepared('SELECT gt.id, gt.name
-			FROM graph_templates AS gt
-			LEFT JOIN snmp_query_graph AS sqg
-			ON sqg.graph_template_id = gt.id
-			WHERE sqg.name IS NULL
-			AND gt.id NOT IN (SELECT graph_template_id FROM host_graph WHERE host_id = ?)
-			AND gt.multiple = ""
-			UNION
-			SELECT id, name
-			FROM graph_templates AS gt
-			WHERE multiple = "on"
-			ORDER BY name',
-			array(get_request_var('host_id'))
-		);
-
-		/* create a row at the bottom that lets the user create any graph they choose */
-		print "<tr class='even'>
-			<td style='width:1%;'><i>" . __('Create') . "</i></td>
-			<td class='left'>";
-			form_dropdown('cg_g', $available_graph_templates, 'name', 'id', '', __('(Select a graph type to create)'), '', 'textArea');
-
-		print '</td>
-			</tr>';
-
-		html_end_box(false);
+		html_end_box();
 	}
 
 	if (get_request_var('graph_type') != -1 && !isempty_request_var('host_id')) {
@@ -731,7 +731,16 @@ function graphs() {
 					}
 				}
 
-				print "<div class='cactiTable'><div><div class='cactiTableTitle'><span>" . __esc('Data Query [%s]', $snmp_query['name']) . "</span></div><div class='cactiTableButton'><span class='reloadquery fa fa-sync' id='reload" . $snmp_query['id'] . "' data-id='" . $snmp_query['id'] . "'></span></div></div></div>";
+				print "<div class='cactiTable'>
+					<div>
+						<div class='cactiTableTitle'>
+							<span>" . __esc('Data Query [%s]', $snmp_query['name']) . "</span>
+						</div>
+						<div class='cactiTableButton'>
+							<span class='reloadquery fa fa-sync' id='reload" . $snmp_query['id'] . "' data-id='" . $snmp_query['id'] . "'></span>
+						</div>
+					</div>
+				</div>";
 
 				if (cacti_sizeof($xml_array)) {
 					$html_dq_header = '';
@@ -921,7 +930,7 @@ function graphs() {
 					print "<tr class='odd'><td class='textError'>" . __('Error in Data Query.  This could be due to the following: File Permissions, or a missing or improperly formatted Data Query XML file.') . '</td></tr>';
 				}
 
-				html_end_box(false);
+				html_end_box();
 
 				/* draw the graph template drop down here */
 				$data_query_graphs = db_fetch_assoc_prepared('SELECT id, name
@@ -956,7 +965,7 @@ function graphs() {
 						</td>
 					</tr>";
 
-					html_end_box(false);
+					html_end_box();
 				}
 
 				$script .= 'dqUpdateDeps(' . $snmp_query['id'] . ',' . $num_visible_fields . ");\n";

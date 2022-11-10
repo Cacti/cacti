@@ -2789,6 +2789,23 @@ INSERT INTO user_auth_realm VALUES (101,1);
 INSERT INTO user_auth_realm VALUES (1043,1);
 
 --
+-- Table structure for table `user_auth_row_cache`
+--
+
+CREATE TABLE user_auth_row_cache (
+  `user_id` mediumint(8) NOT NULL default '0',
+  `class` varchar(20) NOT NULL default '',
+  `hash` varchar(32) NOT NULL default '0',
+  `total_rows` int(10) unsigned NOT NULL default '0',
+  `time` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_id`,`class`,`hash`)
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
+
+--
+-- Dumping data for table `user_auth_row_cache`
+--
+
+--
 -- Table structure for table `user_log`
 --
 

@@ -370,6 +370,26 @@ abstract class LdapError {
 }
 
 class Ldap {
+	public $dn;
+	public $host;
+	public $username;
+	public $password;
+	public $port;
+	public $port_ssl;
+	public $version;
+	public $encryption;
+	public $referrals;
+	public $debug;
+	public $group_require;
+	public $group_dn;
+	public $group_attrib;
+	public $group_member_type;
+	public $mode;
+	public $search_base;
+	public $search_filter;
+	public $specific_dn;
+	public $specific_password;
+
 	function __construct() {
 		/* Initialize LDAP parameters for Authenticate */
 		$this->dn         = read_config_option('ldap_dn');

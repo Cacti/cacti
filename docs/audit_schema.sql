@@ -1004,6 +1004,11 @@ INSERT INTO `table_columns` VALUES ('user_auth_perms',2,'item_id','mediumint(8) 
 INSERT INTO `table_columns` VALUES ('user_auth_perms',3,'type','tinyint(3) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('user_auth_realm',1,'realm_id','mediumint(8) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('user_auth_realm',2,'user_id','mediumint(8) unsigned','NO','PRI','0','');
+INSERT INTO `table_columns` VALUES ('user_auth_row_cache',1,'user_id','mediumint(8) unsigned','NO','PRI','0','');
+INSERT INTO `table_columns` VALUES ('user_auth_row_cache',2,'class','varchar(20)','NO','PRI','','');
+INSERT INTO `table_columns` VALUES ('user_auth_row_cache',3,'hash','varchar(32)','NO','PRI','','');
+INSERT INTO `table_columns` VALUES ('user_auth_row_cache',4,'total_rows','int(10)','NO','','0','');
+INSERT INTO `table_columns` VALUES ('user_auth_row_cache',5,'time','timestamp','NO','','current_timestamp()','');
 INSERT INTO `table_columns` VALUES ('user_domains',1,'domain_id','int(10) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('user_domains',2,'domain_name','varchar(20)','NO','',NULL,'');
 INSERT INTO `table_columns` VALUES ('user_domains',3,'type','int(10) unsigned','NO','','0','');
@@ -1422,6 +1427,9 @@ INSERT INTO `table_indexes` VALUES ('user_auth_perms',1,'user_id',2,'type','A',0
 INSERT INTO `table_indexes` VALUES ('user_auth_realm',0,'PRIMARY',1,'realm_id','A',28,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('user_auth_realm',0,'PRIMARY',2,'user_id','A',28,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('user_auth_realm',1,'user_id',1,'user_id','A',4,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('user_auth_row_cache',0,'PRIMARY',1,'user_id','A',2,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('user_auth_row_cache',0,'PRIMARY',2,'class','A',17,NULL,NULL,'','BTREE','');
+INSERT INTO `table_indexes` VALUES ('user_auth_row_cache',0,'PRIMARY',3,'hash','A',51,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('user_domains',0,'PRIMARY',1,'domain_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('user_domains_ldap',0,'PRIMARY',1,'domain_id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('user_log',0,'PRIMARY',1,'username','A',0,NULL,NULL,'','BTREE','');

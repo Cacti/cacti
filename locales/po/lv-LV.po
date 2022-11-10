@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-10-17 21:18-0400\nPO-Revision-Date: 2022-10-25 04:09+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-11-05 21:03-0400\nPO-Revision-Date: 2022-11-07 22:53+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2601 lib/html.php:2491
 msgid "About Cacti"
@@ -322,7 +322,7 @@ msgstr "Noklikšķiniet 'Turpināt', lai zem koka zara novietotu šādu(s) apkop
 
 #: aggregate_graphs.php:522 host.php:490
 msgid "Destination Branch:"
-msgstr "Galamērķa filiāle:"
+msgstr "Galamērķa zars:"
 
 #: aggregate_graphs.php:527 graphs.php:963
 msgid "Place Graph(s) on Tree"
@@ -352,7 +352,7 @@ msgstr "Apkopotā diagramma neeksistē"
 msgid "Details"
 msgstr "Detalizētāka informācija"
 
-#: aggregate_graphs.php:677 graphs_new.php:833 lib/html_reports.php:1381
+#: aggregate_graphs.php:677 graphs_new.php:846 lib/html_reports.php:1381
 #: utilities.php:361
 msgid "Items"
 msgstr "Elementi"
@@ -447,12 +447,12 @@ msgstr "Atbilstoši grafiki"
 #: color.php:529 color_templates.php:529 data_debug.php:1061 data_input.php:826
 #: data_queries.php:1279 data_source_profiles.php:912 data_sources.php:1439
 #: data_templates.php:1013 gprint_presets.php:262 graph_templates.php:703
-#: graph_view.php:621 graphs.php:2037 graphs_new.php:457 host.php:1619
+#: graph_view.php:621 graphs.php:2037 graphs_new.php:457 host.php:1622
 #: host_templates.php:727 lib/api_automation.php:140 lib/api_automation.php:473
 #: lib/api_automation.php:707 lib/api_automation.php:1066
 #: lib/clog_webapi.php:604 lib/html.php:245 lib/html_filter.php:63
 #: lib/html_graph.php:203 lib/html_reports.php:1836 lib/html_tree.php:131
-#: lib/html_tree.php:975 links.php:310 managers.php:149 managers.php:493
+#: lib/html_tree.php:977 links.php:310 managers.php:149 managers.php:493
 #: managers.php:725 plugins.php:459 pollers.php:879 rrdcheck.php:179
 #: rrdcleaner.php:507 settings.php:534 settings.php:556 settings.php:607
 #: sites.php:476 tree.php:818 tree.php:853 tree.php:888 tree.php:1925
@@ -470,11 +470,11 @@ msgstr "Meklēt"
 #: aggregate_graphs.php:1314 aggregate_graphs.php:1357
 #: aggregate_graphs.php:1610 color_templates.php:649 data_sources.php:1623
 #: data_sources.php:1757 graph_view.php:485 graph_view.php:680
-#: graph_view.php:729 graphs.php:2054 graphs.php:2215 host.php:1730
+#: graph_view.php:729 graphs.php:2054 graphs.php:2215 host.php:1733
 #: include/global_arrays.php:955 include/global_arrays.php:1185
 #: include/global_arrays.php:1987 lib/api_automation.php:283 lib/html.php:1686
 #: lib/html.php:1688 lib/html.php:1766 lib/html_graph.php:209
-#: lib/html_tree.php:1030 lib/html_tree.php:1359 tree.php:797 tree.php:2069
+#: lib/html_tree.php:1032 lib/html_tree.php:1361 tree.php:797 tree.php:2069
 #: user_admin.php:877 user_admin.php:1144 user_admin.php:2539
 #: user_group_admin.php:874 user_group_admin.php:1028 user_group_admin.php:2292
 #: utilities.php:320
@@ -490,7 +490,7 @@ msgstr "Grafiki"
 #: data_queries.php:1289 data_source_profiles.php:922
 #: data_source_profiles.php:1037 data_sources.php:1449 data_templates.php:1039
 #: gprint_presets.php:272 graph_templates.php:713 graph_view.php:684
-#: graphs.php:2058 graphs_new.php:467 host.php:1644 host_templates.php:752
+#: graphs.php:2058 graphs_new.php:467 host.php:1647 host_templates.php:752
 #: include/global_form.php:256 lib/api_automation.php:183
 #: lib/api_automation.php:483 lib/api_automation.php:717
 #: lib/api_automation.php:1109 lib/html_reports.php:1856 links.php:320
@@ -519,11 +519,11 @@ msgstr "Daļa no Agregāta"
 #: color_templates.php:567 data_debug.php:990 data_input.php:848
 #: data_queries.php:1301 data_source_profiles.php:940 data_sources.php:1392
 #: data_templates.php:1057 gprint_presets.php:290 graph_templates.php:731
-#: graph_view.php:629 graphs.php:2028 graphs_new.php:446 host.php:1609
+#: graph_view.php:629 graphs.php:2028 graphs_new.php:446 host.php:1612
 #: host_templates.php:770 lib/api_automation.php:195 lib/api_automation.php:464
 #: lib/api_automation.php:729 lib/api_automation.php:1121
 #: lib/clog_webapi.php:529 lib/html.php:1538 lib/html_filter.php:80
-#: lib/html_graph.php:190 lib/html_reports.php:1867 lib/html_tree.php:1017
+#: lib/html_graph.php:190 lib/html_reports.php:1867 lib/html_tree.php:1019
 #: links.php:330 managers.php:171 managers.php:515 managers.php:745
 #: plugins.php:495 pollers.php:924 sites.php:498 tree.php:1947
 #: user_admin.php:2167 user_admin.php:2561 user_admin.php:2658
@@ -538,7 +538,7 @@ msgstr "Doties"
 #: data_input.php:848 data_queries.php:1301 data_source_profiles.php:940
 #: data_sources.php:1392 data_templates.php:1057 gprint_presets.php:290
 #: graph_templates.php:731 graph_view.php:629 graphs.php:2028
-#: graphs_new.php:446 host.php:1609 host_templates.php:770
+#: graphs_new.php:446 host.php:1612 host_templates.php:770
 #: lib/html_graph.php:190 managers.php:171 managers.php:515 managers.php:745
 #: plugins.php:495 pollers.php:924 sites.php:498 tree.php:1947
 #: user_admin.php:2167 user_admin.php:2561 user_admin.php:2658
@@ -559,12 +559,12 @@ msgstr "Atlasīt/Atjaunināt filtrus"
 #: color_templates.php:568 data_debug.php:991 data_input.php:849
 #: data_queries.php:1302 data_source_profiles.php:941 data_sources.php:1393
 #: data_templates.php:1058 gprint_presets.php:291 graph_templates.php:732
-#: graph_view.php:630 graphs.php:2029 graphs_new.php:447 host.php:1610
+#: graph_view.php:630 graphs.php:2029 graphs_new.php:447 host.php:1613
 #: host_templates.php:771 lib/api_automation.php:196 lib/api_automation.php:465
 #: lib/api_automation.php:730 lib/api_automation.php:1122
 #: lib/clog_webapi.php:530 lib/html_filter.php:85 lib/html_graph.php:191
-#: lib/html_graph.php:308 lib/html_reports.php:1868 lib/html_tree.php:1018
-#: lib/html_tree.php:1129 links.php:331 managers.php:172 managers.php:516
+#: lib/html_graph.php:308 lib/html_reports.php:1868 lib/html_tree.php:1020
+#: lib/html_tree.php:1131 links.php:331 managers.php:172 managers.php:516
 #: managers.php:746 plugins.php:496 pollers.php:925 sites.php:499 tree.php:1948
 #: user_admin.php:2168 user_admin.php:2562 user_admin.php:2659
 #: user_admin.php:2775 user_admin.php:2872 user_admin.php:2969
@@ -577,8 +577,8 @@ msgstr "Notīrīt"
 #: data_input.php:849 data_queries.php:1302 data_source_profiles.php:941
 #: data_sources.php:1393 data_templates.php:1058 gprint_presets.php:291
 #: graph_templates.php:732 graph_view.php:630 graphs.php:2029
-#: graphs_new.php:447 host.php:1610 host_templates.php:771
-#: lib/html_graph.php:191 lib/html_tree.php:1018 managers.php:172
+#: graphs_new.php:447 host.php:1613 host_templates.php:771
+#: lib/html_graph.php:191 lib/html_tree.php:1020 managers.php:172
 #: managers.php:516 managers.php:746 plugins.php:496 pollers.php:925
 #: sites.php:499 tree.php:1948 user_admin.php:2168 user_admin.php:2562
 #: user_admin.php:2659 user_admin.php:2775 user_admin.php:2872
@@ -600,7 +600,7 @@ msgstr "Grafika nosaukums"
 #: automation_graph_rules.php:896 automation_tree_rules.php:936
 #: data_debug.php:345 data_input.php:931 data_queries.php:1383
 #: data_sources.php:1617 data_templates.php:1166 graph_templates.php:837
-#: graphs.php:2231 host.php:1724 host_templates.php:870
+#: graphs.php:2231 host.php:1727 host_templates.php:870
 #: lib/api_automation.php:282 pollers.php:1001 sites.php:572 tree.php:2009
 #: user_admin.php:885 user_admin.php:999 user_admin.php:1144
 #: user_admin.php:1291 user_admin.php:1430 user_group_admin.php:680
@@ -663,7 +663,7 @@ msgstr "Apkopotie grafiki"
 #: aggregate_graphs.php:1588 data_debug.php:964 data_sources.php:1366
 #: graph_view.php:642 graphs.php:1993 host.php:1564
 #: include/global_arrays.php:2885 include/global_settings.php:583
-#: lib/api_automation.php:442 lib/html_graph.php:153 lib/html_tree.php:981
+#: lib/api_automation.php:442 lib/html_graph.php:153 lib/html_tree.php:983
 #: rrdcleaner.php:383 user_admin.php:2517 user_admin.php:2734
 #: user_group_admin.php:2270 user_group_admin.php:2390 utilities.php:2021
 msgid "Template"
@@ -675,7 +675,7 @@ msgstr "Veidne"
 #: automation_graph_rules.php:775 automation_tree_rules.php:820
 #: data_debug.php:968 data_sources.php:1370 graph_templates_items.php:543
 #: graphs.php:1997 graphs_items.php:357 host.php:1533 host.php:1551
-#: host.php:1568 host.php:1629 lib/api_automation.php:150
+#: host.php:1568 host.php:1632 lib/api_automation.php:150
 #: lib/api_automation.php:168 lib/api_automation.php:429
 #: lib/api_automation.php:446 lib/api_automation.php:1076
 #: lib/api_automation.php:1094 lib/auth.php:2992 lib/auth.php:3034
@@ -717,7 +717,7 @@ msgstr "Jebkuru"
 #: lib/html_reports.php:1002 lib/html_reports.php:1006
 #: lib/html_reports.php:1014 lib/html_reports.php:1025
 #: lib/html_reports.php:1045 lib/html_reports.php:1299
-#: lib/html_reports.php:1304 lib/html_reports.php:1309 package_import.php:614
+#: lib/html_reports.php:1304 lib/html_reports.php:1309 package_import.php:637
 #: settings.php:527 settings.php:549 settings.php:577 templates_import.php:326
 #: templates_import.php:358 user_admin.php:2522 user_admin.php:2739
 #: user_group_admin.php:2275 user_group_admin.php:2395 utilities.php:2026
@@ -745,13 +745,12 @@ msgid "No Aggregate Graphs Found"
 msgstr "Nav atrasts neviens apkopots grafiks"
 
 #: aggregate_items.php:350
-#, fuzzy
 msgid "Override Values for Graph Item"
-msgstr "Ignorēt grafika elementa vērtības"
+msgstr "Aizstāt grafika elementa vērtību"
 
 #: aggregate_items.php:361 lib/api_aggregate.php:1907
 msgid "Override this Value"
-msgstr "Ignorēt šo vērtību"
+msgstr "Aizstāt šo vērtību"
 
 #: aggregate_templates.php:310
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -898,7 +897,7 @@ msgstr "Atkārtot jauno paroli"
 
 #: auth_changepassword.php:358 auth_profile.php:560 graphs_new.php:448
 #: lib/html_form.php:1290 lib/html_form.php:1299 lib/html_graph.php:193
-#: lib/html_tree.php:1020 settings.php:494
+#: lib/html_tree.php:1022 settings.php:494
 msgid "Save"
 msgstr "Saglabāt"
 
@@ -947,19 +946,19 @@ msgstr "Pieeja noliegta! Lietotāja konts ir atspējots."
 
 #: auth_login.php:191
 msgid "You do not have access to any area of Cacti.  Contact your administrator."
-msgstr "Jums nav piekļuves nevienai kaktusu zonai. Sazinieties ar savu administratoru."
+msgstr "Jums nav piekļuves nevienai Cacti sadaļai.  Sazinieties ar savu Cacti administratoru."
 
 #: auth_login.php:279 lib/html_tree.php:159
 msgid "Login to Cacti"
-msgstr "Piesakieties Cacti"
+msgstr "Autorizēties Cacti"
 
 #: auth_login.php:286
 msgid "User Login"
-msgstr "Lietotājvārds"
+msgstr "Lietotāja autorizēšanās"
 
 #: auth_login.php:300
 msgid "Enter your Username and Password below"
-msgstr "Ievadiet savu lietotājvārdu un paroli zemāk"
+msgstr "Zemāk ievadiet savu lietotājvārdu un paroli"
 
 #: auth_login.php:314 include/global_form.php:1534 lib/functions.php:5214
 msgid "Password"
@@ -996,7 +995,7 @@ msgstr "Pamata"
 
 #: auth_profile.php:282
 msgid "User Account Details"
-msgstr "Lietotāja konta informācija"
+msgstr "Lietotāja konta dati"
 
 #: auth_profile.php:296 include/global_arrays.php:819
 #: include/global_settings.php:2651 lib/html.php:1932 lib/html.php:1954
@@ -1007,7 +1006,7 @@ msgstr "Koka skats"
 #: auth_profile.php:300 include/global_arrays.php:820 lib/html.php:1939
 #: lib/html.php:1963 lib/html.php:2455
 msgid "List View"
-msgstr "Saraksta Skats"
+msgstr "Saraksta skats"
 
 #: auth_profile.php:304 include/global_arrays.php:821 lib/html.php:1946
 #: lib/html.php:2456
@@ -1020,17 +1019,17 @@ msgstr "Lietotājvārds"
 
 #: auth_profile.php:318 include/global_form.php:1511
 msgid "The login name for this user."
-msgstr "Šī lietotāja pieteikšanās vārds."
+msgstr "Šī lietotāja pieteikšanās lietotājvārds."
 
 #: auth_profile.php:325 include/global_form.php:1518
 #: include/global_settings.php:1795 user_admin.php:2226 user_domains.php:497
 #: user_group_admin.php:680 utilities.php:1151
 msgid "Full Name"
-msgstr "Vārds, uzvārds"
+msgstr "Pilnais vārds un uzvārds"
 
 #: auth_profile.php:326 include/global_form.php:1519
 msgid "A more descriptive name for this user, that can include spaces or special characters."
-msgstr "Šī lietotāja aprakstošāks nosaukums, kas var ietvert atstarpes vai speciālās rakstzīmes."
+msgstr "Aprakstošāks šī lietotāja nosaukums, kas var ietvert atstarpes vai īpašas rakstzīmes."
 
 #: auth_profile.php:333 include/global_form.php:1526
 msgid "Email Address"
@@ -1058,11 +1057,11 @@ msgstr "Notīrīt privātos datus, tostarp kolonnu izmērus."
 
 #: auth_profile.php:359 auth_profile.php:361
 msgid "Logout Everywhere"
-msgstr "Atteikties Visur"
+msgstr "Iziet visur"
 
 #: auth_profile.php:360
 msgid "Clear all your Login Session Tokens."
-msgstr "Notīriet visus pieteikšanās sesijas marķierus."
+msgstr "Notīrīt visas jūsu pieteikšanās sesijas atslēgas."
 
 #: auth_profile.php:381 user_admin.php:1837 user_group_admin.php:1719
 msgid "User Settings"
@@ -1070,7 +1069,7 @@ msgstr "Lietotāja iestatījumi"
 
 #: auth_profile.php:471
 msgid "Private Data Cleared"
-msgstr "Privātie dati ir notīrīti"
+msgstr "Privātie dati notīrīti"
 
 #: auth_profile.php:471
 msgid "Your Private Data has been cleared."
@@ -1098,7 +1097,7 @@ msgstr "Dzēst ierīci"
 
 #: automation_devices.php:54 automation_devices.php:300
 #: automation_devices.php:409 automation_devices.php:419
-#: automation_devices.php:648 automation_devices.php:649 host.php:1634
+#: automation_devices.php:648 automation_devices.php:649 host.php:1637
 #: lib/api_automation.php:173 lib/api_automation.php:1099
 #: lib/html_utility.php:924 pollers.php:47
 msgid "Down"
@@ -1106,7 +1105,7 @@ msgstr "Neaktīva (nedarbojoša, bezsaistē, izslēgta)"
 
 #: automation_devices.php:55 automation_devices.php:300
 #: automation_devices.php:411 automation_devices.php:421
-#: automation_devices.php:648 automation_devices.php:649 host.php:1633
+#: automation_devices.php:648 automation_devices.php:649 host.php:1636
 #: lib/api_automation.php:172 lib/api_automation.php:1098
 #: lib/html_utility.php:930
 msgid "Up"
@@ -1160,7 +1159,7 @@ msgid "Delete Device(s)"
 msgstr "Dzēst ierīci(-es)"
 
 #: automation_devices.php:268 automation_devices.php:555 host.php:1519
-#: host.php:1640 host.php:1790 include/global_arrays.php:952
+#: host.php:1643 host.php:1793 include/global_arrays.php:952
 #: include/global_arrays.php:1008 include/global_arrays.php:2301
 #: lib/api_automation.php:179 lib/api_automation.php:271
 #: lib/api_automation.php:479 lib/api_automation.php:563
@@ -1182,7 +1181,7 @@ msgstr "IP"
 msgid "SNMP Name"
 msgstr "SNMP nosaukums"
 
-#: automation_devices.php:280 host.php:1582 include/global_form.php:1201
+#: automation_devices.php:280 host.php:1585 include/global_form.php:1201
 #: include/global_settings.php:2243
 msgid "Location"
 msgstr "Atrašanās vieta"
@@ -1204,7 +1203,7 @@ msgstr "Apraksts"
 msgid "OS"
 msgstr "OS"
 
-#: automation_devices.php:284 host.php:1754 include/global_arrays.php:507
+#: automation_devices.php:284 host.php:1757 include/global_arrays.php:507
 msgid "Uptime"
 msgstr "Darbības laiks"
 
@@ -1216,11 +1215,11 @@ msgstr "SNMP"
 #: automation_graph_rules.php:771 automation_networks.php:1077
 #: automation_tree_rules.php:816 data_debug.php:351 data_debug.php:1016
 #: data_sources.php:1418 data_templates.php:1195 host.php:757 host.php:882
-#: host.php:1625 host.php:1742 lib/api_automation.php:164
+#: host.php:1628 host.php:1745 lib/api_automation.php:164
 #: lib/api_automation.php:280 lib/api_automation.php:573
 #: lib/api_automation.php:1090 lib/api_automation.php:1221
 #: lib/html_reports.php:1842 lib/installer.php:1772 managers.php:218
-#: package_import.php:469 package_import.php:544 plugins.php:465
+#: package_import.php:492 package_import.php:567 plugins.php:465
 #: plugins.php:587 pollers.php:1013 templates_import.php:224
 #: templates_import.php:263 user_admin.php:1144 user_group_admin.php:1028
 #: utilities.php:2066
@@ -1235,7 +1234,7 @@ msgstr "Pēdējā pārbaude"
 msgid "Not Detected"
 msgstr "Nav atklāts"
 
-#: automation_devices.php:324 host.php:1832
+#: automation_devices.php:324 host.php:1835
 msgid "No Devices Found"
 msgstr "Netika atrasta neviena ierīce"
 
@@ -1251,7 +1250,7 @@ msgstr "Tīkls"
 msgid "Reset fields to defaults"
 msgstr "Atiestatīt laukus uz noklusējuma iestatījumiem"
 
-#: automation_devices.php:501 color.php:570 host.php:1611
+#: automation_devices.php:501 color.php:570 host.php:1614
 #: lib/html_form.php:1307
 msgid "Export"
 msgstr "Eksportēt"
@@ -1272,7 +1271,7 @@ msgstr "Iztīriet atklātās ierīces"
 #: automation_devices.php:670 automation_networks.php:1151
 #: automation_snmp.php:563 automation_snmp.php:564 automation_snmp.php:565
 #: automation_snmp.php:566 automation_snmp.php:567 automation_snmp.php:568
-#: data_debug.php:563 data_source_profiles.php:73 host.php:1809
+#: data_debug.php:563 data_source_profiles.php:73 host.php:1812
 #: lib/functions.php:5559 lib/functions.php:5563 lib/html.php:1161
 #: lib/html.php:1227 lib/html_reports.php:1632 lib/html_reports.php:1658
 #: lib/html_reports.php:1729 lib/html_reports.php:1730
@@ -1402,7 +1401,7 @@ msgstr "Datu vaicājums"
 #: automation_graph_rules.php:915 automation_networks.php:537
 #: automation_tree_rules.php:821 automation_tree_rules.php:941
 #: automation_tree_rules.php:959 data_debug.php:1022 data_sources.php:1423
-#: host.php:1630 include/global_arrays.php:879 include/global_form.php:1542
+#: host.php:1633 include/global_arrays.php:879 include/global_form.php:1542
 #: include/global_settings.php:361 lib/api_automation.php:169
 #: lib/api_automation.php:1095 lib/html_reports.php:1847
 #: lib/html_reports.php:1939 lib/html_reports.php:1950
@@ -1417,7 +1416,7 @@ msgstr "Iespējots"
 #: automation_graph_rules.php:777 automation_graph_rules.php:915
 #: automation_networks.php:1092 automation_tree_rules.php:822
 #: automation_tree_rules.php:959 data_debug.php:1023 data_sources.php:1424
-#: data_templates.php:1231 host.php:1631 include/global_arrays.php:878
+#: data_templates.php:1231 host.php:1634 include/global_arrays.php:878
 #: include/global_arrays.php:1530 include/global_arrays.php:1822
 #: include/global_settings.php:360 include/global_settings.php:1554
 #: include/global_settings.php:1568 include/global_settings.php:1581
@@ -1665,9 +1664,8 @@ msgid "%d Threads"
 msgstr "%d pavedieni"
 
 #: automation_networks.php:519
-#, fuzzy
 msgid "Run Limit"
-msgstr "Run Limit"
+msgstr "Izpildes ierobežojums"
 
 #: automation_networks.php:520
 msgid "After the selected Run Limit, the discovery process will be terminated."
@@ -1774,7 +1772,7 @@ msgstr "Paziņojuma iestatījumi"
 
 #: automation_networks.php:573
 msgid "Notification Enabled"
-msgstr "Paziņojums iespējots"
+msgstr "Paziņošana iespējota"
 
 #: automation_networks.php:574
 msgid "If checked, when the Automation Network is scanned, a report will be sent to the Notification Email account.."
@@ -2066,7 +2064,7 @@ msgstr "Izpildes saraksts"
 
 #: automation_networks.php:1076
 msgid "Total IPs"
-msgstr "Kopējais IP"
+msgstr "Kopējais IP skaits"
 
 #: automation_networks.php:1077
 msgid "The Current Status of this Networks Discovery"
@@ -2119,7 +2117,7 @@ msgid "No Networks Found"
 msgstr "Nav atrasts neviens tīkls"
 
 #: automation_networks.php:1203 data_debug.php:1037 lib/clog_webapi.php:584
-#: lib/html_graph.php:307 lib/html_tree.php:1128 lib/html_tree.php:1149
+#: lib/html_graph.php:307 lib/html_tree.php:1130 lib/html_tree.php:1151
 #: pollers.php:900 utilities.php:1464 utilities.php:2455
 msgid "Refresh"
 msgstr "Atsvaidzināt"
@@ -2154,7 +2152,7 @@ msgstr "Notīrīt filtrēto"
 
 #: automation_snmp.php:234
 msgid "Click 'Continue' to delete the following SNMP Option(s)."
-msgstr "Noklikšķiniet uz \"Turpināt\", lai dzēstu šādu(-s) SNMP opciju(-as)."
+msgstr "Klikšķiniet 'Turpināt', lai izdzēstu šo(-īs) SNMP opciju(-as)."
 
 #: automation_snmp.php:241
 msgid "Click 'Continue' to duplicate the following SNMP Options. You can optionally change the title format for the new SNMP Options."
@@ -2244,7 +2242,7 @@ msgid "Item"
 msgstr "Elements"
 
 #: automation_snmp.php:534 include/auth.php:297 include/global_settings.php:652
-#: package_import.php:436 permission_denied.php:59 plugins.php:605
+#: package_import.php:459 permission_denied.php:59 plugins.php:605
 msgid "Version"
 msgstr "Versija"
 
@@ -2282,7 +2280,7 @@ msgstr "Autentifikācijas protokols"
 
 #: automation_snmp.php:543
 msgid "Priv Passphrase"
-msgstr "Priv ieejas frāze"
+msgstr "Privāta frāze"
 
 #: automation_snmp.php:544
 msgid "Priv Protocol"
@@ -2343,8 +2341,9 @@ msgid "SNMP Option Set"
 msgstr "SNMP opciju kopa"
 
 #: automation_snmp.php:803
+#, fuzzy
 msgid "Networks Using"
-msgstr "Tīklu izmantošana"
+msgstr "Tīkla izmantošana"
 
 #: automation_snmp.php:804
 msgid "SNMP Entries"
@@ -2400,7 +2399,7 @@ msgstr "Šī ir unikāla virkne, kas tiks saskaņota ar ierīču virkni sysDescr
 
 #: automation_templates.php:296 automation_templates.php:494
 msgid "System Name Match"
-msgstr "Sistēmas nosaukuma atbilstība"
+msgstr "Sistēmas nosaukums sakrīt"
 
 #: automation_templates.php:297
 msgid "This is a unique string that will be matched to a devices sysName string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression."
@@ -2431,7 +2430,7 @@ msgstr "Automatizācijas veidnes [jauna]"
 msgid "Device Automation Templates"
 msgstr "Ierīču automatizācijas veidnes"
 
-#: automation_templates.php:491 data_sources.php:1647 package_import.php:541
+#: automation_templates.php:491 data_sources.php:1647 package_import.php:564
 #: templates_import.php:260 user_admin.php:1291 user_group_admin.php:1173
 msgid "Template Name"
 msgstr "Veidnes nosaukums"
@@ -2454,7 +2453,6 @@ msgid "No Automation Device Templates Found"
 msgstr "Netika atrasta neviena automatizācijas ierīču veidne"
 
 #: automation_tree_rules.php:258
-#, fuzzy
 msgid "Click 'Continue' to delete the following Rule(s)."
 msgstr "Noklikšķiniet 'Turpināt', lai dzēstu norādīto(s) noteikumu(s)."
 
@@ -2551,7 +2549,6 @@ msgid "Cacti System Warning"
 msgstr "Cacti sistēmas brīdinājums"
 
 #: cactid.php:44
-#, fuzzy
 msgid "WARNING: Cacti Daemon PID["
 msgstr "BRĪDINĀJUMS: Cacti Daemon PID["
 
@@ -2560,7 +2557,6 @@ msgid "Cacti System Notice"
 msgstr "Cacti sistēmas paziņojums"
 
 #: cactid.php:131
-#, fuzzy
 msgid "Notice: Cacti Daemon PID["
 msgstr "Paziņojums: Cacti Daemon PID["
 
@@ -2650,9 +2646,8 @@ msgid "CDEF Items"
 msgstr "CDEF preces"
 
 #: cdef.php:595 vdef.php:579
-#, fuzzy
 msgid "Item Value"
-msgstr "Pozīcijas vērtība"
+msgstr "Elementa vērtība"
 
 #: cdef.php:612 vdef.php:598
 #, php-format
@@ -2699,25 +2694,25 @@ msgstr "Nav CDEF"
 
 #: clog.php:34 clog_user.php:33
 msgid "FATAL: YOU DO NOT HAVE ACCESS TO THIS AREA OF CACTI"
-msgstr "FATAL: JUMS NAV PIEKĻUVES ŠAI KAKTIUSU ZONAI"
+msgstr "FATĀLA: JUMS NAV PIEKĻUVE ŠAI CACTI SADAĻAI"
 
 #: color.php:170
 msgid "Unnamed Color"
-msgstr "Krāsa bez nosaukuma"
+msgstr "Nenosaukta krāsa"
 
 #: color.php:187
 msgid "Click 'Continue' to delete the following Color"
 msgid_plural "Click 'Continue' to delete the following Colors"
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai dzēstu šo krāsu"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] ""
+msgstr[1] "Klikšķiniet 'Turpināt', lai dzēstu šo krāsu"
+msgstr[2] "Klikšķiniet 'Turpināt', lai dzēstu šīs krāsas"
 
 #: color.php:192
 msgid "Delete Color"
 msgid_plural "Delete Colors"
-msgstr[0] "Dzēst krāsu"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] ""
+msgstr[1] "Dzēst krāsu"
+msgstr[2] "Dzēst krāsas"
 
 #: color.php:352
 msgid "Cacti has imported the following items:"
@@ -2729,7 +2724,7 @@ msgstr "Importēt krāsas"
 
 #: color.php:369
 msgid "Import Colors from Local File"
-msgstr "Importējiet krāsas no vietējā faila"
+msgstr "Importēt krāsas no vietējā faila"
 
 #: color.php:370
 msgid "Please specify the location of the CSV file containing your Color information."
@@ -3045,7 +3040,7 @@ msgid "The Status of the Data Source Debug Check."
 msgstr "Datu avota atkļūdošanas pārbaudes statuss."
 
 #: data_debug.php:357 lib/installer.php:2217 lib/installer.php:2249
-#: package_import.php:514
+#: package_import.php:537
 msgid "Writable"
 msgstr "Rakstāms"
 
@@ -3105,7 +3100,7 @@ msgid "Summary of issues found for the Data Source."
 msgstr "Datu avotam atrasto problēmu kopsavilkums."
 
 #: data_debug.php:511 data_debug.php:1067 data_sources.php:1445
-#: data_sources.php:1601 host.php:1736 include/global_arrays.php:956
+#: data_sources.php:1601 host.php:1739 include/global_arrays.php:956
 #: include/global_arrays.php:1002 include/global_arrays.php:2283
 #: lib/api_automation.php:284 user_admin.php:1144 user_group_admin.php:1028
 #: utilities.php:325
@@ -3220,7 +3215,7 @@ msgstr "Atkārtoti palaist analīzi"
 msgid "Check"
 msgstr "Pārbaudīt"
 
-#: data_debug.php:765 include/global_form.php:1028 lib/rrd.php:2963
+#: data_debug.php:765 include/global_form.php:1028 lib/rrd.php:2970
 #: utilities.php:798 utilities.php:815 utilities.php:3022
 msgid "Value"
 msgstr "Vērtība"
@@ -3292,7 +3287,7 @@ msgstr "Profils"
 
 #: data_debug.php:1004 data_debug.php:1020 data_debug.php:1031
 #: data_sources.php:1405 data_sources.php:1422 data_templates.php:1023
-#: graphs.php:2047 graphs_new.php:424 host.php:1586 host_templates.php:737
+#: graphs.php:2047 graphs_new.php:424 host.php:1589 host_templates.php:737
 #: lib/clog_webapi.php:545 lib/html.php:204 lib/html_reports.php:977
 #: lib/html_reports.php:2073 plugins.php:469 settings.php:526 settings.php:548
 #: settings.php:576 tree.php:794 user_admin.php:2143 utilities.php:1035
@@ -3417,7 +3412,7 @@ msgstr "Lauka pasūtījums"
 
 #: data_input.php:682
 msgid "(Not In Use)"
-msgstr "(Netiek lietots)"
+msgstr "(Netiek izmantots)"
 
 #: data_input.php:691
 msgid "No Input Fields"
@@ -3514,7 +3509,7 @@ msgstr "Noklikšķiniet uz \"Turpināt\", lai dzēstu šo datu vaicājumu diagra
 #: data_queries.php:566
 #, php-format
 msgid "Graph Name: %s"
-msgstr "Diagrammas nosaukums: %s"
+msgstr "Grafika nosaukums: %s"
 
 #: data_queries.php:572
 msgid "Remove Data Query Graph Template"
@@ -3536,7 +3531,7 @@ msgstr "Saistītās datu veidnes"
 #: data_queries.php:683
 #, php-format
 msgid "Data Template - %s"
-msgstr "Datu veidne — %s"
+msgstr "Datu veidne - %s"
 
 #: data_queries.php:734
 msgid "If this Graph Template requires the Data Template Data Source to the left, select the correct XML output column and then to enable the mapping either check or toggle here."
@@ -3603,7 +3598,7 @@ msgstr "Nevarēja atrast XML failu."
 msgid "Associated Graph Templates"
 msgstr "Saistītās grafiku veidnes"
 
-#: data_queries.php:1121 graph_templates.php:831 graphs_new.php:537
+#: data_queries.php:1121 graph_templates.php:831 graphs_new.php:569
 #: host.php:756 lib/api_automation.php:576
 msgid "Graph Template Name"
 msgstr "Grafika veidnes nosaukums"
@@ -3760,7 +3755,7 @@ msgstr "Soļi"
 
 #: data_source_profiles.php:639 graphs_new.php:463 include/global_form.php:298
 #: lib/html.php:529 lib/html_filter.php:72 lib/installer.php:2534
-#: lib/rrd.php:3017 utilities.php:866 utilities.php:1779
+#: lib/rrd.php:3024 utilities.php:866 utilities.php:1779
 msgid "Rows"
 msgstr "Rindas"
 
@@ -3848,7 +3843,7 @@ msgstr "%d diena"
 #: include/global_settings.php:1572
 #, php-format
 msgid "%d Days"
-msgstr "%d dienas"
+msgstr "%d dienas"
 
 #: data_source_profiles.php:850 include/global_arrays.php:694
 #: include/global_arrays.php:1481 include/global_arrays.php:1502
@@ -4121,7 +4116,6 @@ msgid "Data Source Fields"
 msgstr "Datu avota lauki"
 
 #: data_sources.php:988
-#, fuzzy
 msgid "Data Source Item Fields"
 msgstr "Datu avota elementa lauki"
 
@@ -4134,8 +4128,8 @@ msgstr "Pielāgoti dati"
 msgid "Data Source Item %s"
 msgstr "Datu avota elements %s"
 
-#: data_sources.php:1090 data_templates.php:744 package_import.php:516
-#: package_import.php:574 templates_import.php:290
+#: data_sources.php:1090 data_templates.php:744 package_import.php:539
+#: package_import.php:597 templates_import.php:290
 msgid "New"
 msgstr "Jauns"
 
@@ -4511,7 +4505,7 @@ msgid "Cacti Real-time Graphing"
 msgstr "Kaktusi reāllaika diagrammas"
 
 #: graph_realtime.php:411 lib/html_graph.php:238 lib/html_reports.php:124
-#: lib/html_tree.php:1059
+#: lib/html_tree.php:1061
 msgid "Thumbnails"
 msgstr "Sīktēli"
 
@@ -4602,7 +4596,7 @@ msgstr "Diagrammas veidnes vienumi [rediģēt: %s]"
 #: graph_templates.php:495 include/global_arrays.php:2235
 #, fuzzy
 msgid "Graph Item Inputs"
-msgstr "Grafika vienumu ievades"
+msgstr "Grafika elementu ievades"
 
 #: graph_templates.php:521
 msgid "No Inputs"
@@ -4626,8 +4620,8 @@ msgid "Check this checkbox if you wish to allow the user to override the value o
 msgstr "Atzīmējiet šo izvēles rūtiņu, ja vēlaties ļaut lietotājam grafika izveides laikā ignorēt vērtību labajā pusē."
 
 #: graph_templates.php:694 graph_templates.php:709 graph_templates.php:873
-#: graphs_new.php:532 include/global_arrays.php:1192
-#: include/global_arrays.php:2211 lib/html_tree.php:549 user_admin.php:1283
+#: graphs_new.php:566 include/global_arrays.php:1192
+#: include/global_arrays.php:2211 lib/html_tree.php:551 user_admin.php:1283
 #: user_group_admin.php:1165
 msgid "Graph Templates"
 msgstr "Grafiku veidnes"
@@ -4667,7 +4661,7 @@ msgstr "Netika atrasta neviena diagramma veidne"
 #: graph_templates_inputs.php:148
 #, fuzzy, php-format
 msgid "Graph Item Inputs [edit graph: %s]"
-msgstr "Diagrammas vienumu ievades [rediģēt diagrammu: %s]"
+msgstr "Grafika elementu ievades [rediģēt grafiku: %s]"
 
 #: graph_templates_inputs.php:199
 msgid "Associated Graph Items"
@@ -4755,13 +4749,13 @@ msgid "Report"
 msgstr "Paziņot par pārkāpumu"
 
 #: graph_view.php:646 lib/html.php:190 lib/html.php:195 lib/html_graph.php:157
-#: lib/html_tree.php:985
+#: lib/html_tree.php:987
 msgid "All Graphs & Templates"
 msgstr "Visi grafiki un veidnes"
 
 #: graph_view.php:647 include/global_arrays.php:2883 lib/graphs.php:58
 #: lib/graphs.php:67 lib/html.php:198 lib/html_graph.php:158
-#: lib/html_tree.php:986
+#: lib/html_tree.php:988
 msgid "Not Templated"
 msgstr "Nav veidnes"
 
@@ -4896,7 +4890,7 @@ msgstr "Nav ierīces - "
 msgid "Created graph: %s"
 msgstr "Izveidots grafiks: %s"
 
-#: graphs.php:260 lib/template.php:2131 lib/template.php:2160
+#: graphs.php:260 lib/template.php:2131 lib/template.php:2165
 msgid "ERROR: No Data Source associated. Check Template"
 msgstr "KĻŪDA: nav saistīts datu avots. Pārbaudiet veidni"
 
@@ -4920,7 +4914,7 @@ msgstr "Neatstājiet datu avotu(-s) neskartus."
 msgid "Choose a Graph Template and click 'Continue' to change the Graph Template for the following Graph(s). Please note, that only compatible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources."
 msgstr "Izvēlieties diagrammas veidni un noklikšķiniet uz \"Turpināt\", lai mainītu diagrammas veidni tālāk norādītajam(-iem) grafikam(-iem). Lūdzu, ņemiet vērā, ka tiks parādītas tikai saderīgas grafiku veidnes. Saderību nosaka tie, kuriem ir identiski datu avoti."
 
-#: graphs.php:916
+#: graphs.php:916 graphs_new.php:532
 msgid "New Graph Template"
 msgstr "Jauna grafika veidne"
 
@@ -5116,9 +5110,8 @@ msgid "Graph Items [graph: %s]"
 msgstr "Diagrammas vienumi [grafika: %s]"
 
 #: graphs_items.php:467
-#, fuzzy
 msgid "Choose the Data Source to associate with this Graph Item."
-msgstr "Izvēlieties datu avotu ar ko saistīt ar šo grafikas elementu."
+msgstr "Izvēlieties datu avotu ar ko saistīt šo grafikas elementu."
 
 #: graphs_new.php:84
 msgid "Default Settings Saved"
@@ -5161,80 +5154,79 @@ msgstr "Rediģēt šo ierīci"
 msgid "Create New Device"
 msgstr "Izveidojiet jaunu ierīci"
 
-#: graphs_new.php:538 graphs_new.php:855 lib/html.php:1011 user_admin.php:1502
-#: user_group_admin.php:1382
-msgid "Select All"
-msgstr "Izvēlieties visu"
-
-#: graphs_new.php:538 graphs_new.php:855 lib/html.php:912 lib/html.php:1011
-msgid "Select All Rows"
-msgstr "Atlasiet Visas rindas"
-
-#: graphs_new.php:625 include/global_arrays.php:947
+#: graphs_new.php:551 graphs_new.php:560 include/global_arrays.php:947
 #: include/global_arrays.php:1024 lib/html_form.php:1288 lib/html_form.php:1301
 #: tree.php:1375
 msgid "Create"
 msgstr "Izveidot"
 
-#: graphs_new.php:627
+#: graphs_new.php:553
 msgid "(Select a graph type to create)"
 msgstr "(Atlasiet izveidojamās diagrammas veidu)"
 
-#: graphs_new.php:676
+#: graphs_new.php:570 graphs_new.php:868 lib/html.php:1011 user_admin.php:1502
+#: user_group_admin.php:1382
+msgid "Select All"
+msgstr "Izvēlieties visu"
+
+#: graphs_new.php:570 graphs_new.php:868 lib/html.php:912 lib/html.php:1011
+msgid "Select All Rows"
+msgstr "Atlasiet Visas rindas"
+
+#: graphs_new.php:680
 #, fuzzy, php-format
 #| msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'"
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id of '%s'"
 msgstr "Kļūda, analizējot datu vaicājuma resursa XML failu datu vaicājumam “%s” ar id “%s”"
 
-#: graphs_new.php:693
-#, fuzzy, php-format
-#| msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'"
-msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
-msgstr "Kļūda, analizējot datu vaicājuma resursa XML failu datu vaicājumam “%s” ar id “%s”"
-
 #: graphs_new.php:697
+#, php-format
+msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
+msgstr "Kļūda, pārsējot datu vaicājuma resursa XML failu datu vaicājumam '%s' ar id '%s'.  Lauka nosaukumam '%s' trūkst 'direction' atribūts"
+
+#: graphs_new.php:701
 #, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'"
 msgstr "Kļūda, analizējot datu vaicājuma resursa XML failu datu vaicājumam “%s” ar id “%s”"
 
-#: graphs_new.php:734
+#: graphs_new.php:741
 #, php-format
 msgid "Data Query [%s]"
 msgstr "Datu vaicājums [%s]"
 
-#: graphs_new.php:851
+#: graphs_new.php:864
 msgid "From there you can get more information."
 msgstr "No turienes jūs varat iegūt vairāk informācijas."
 
-#: graphs_new.php:851
+#: graphs_new.php:864
 msgid "This Data Query returned 0 rows, perhaps there was a problem executing this Data Query."
 msgstr "Šis datu vaicājums atgrieza 0 rindu, iespējams, radās problēma, izpildot šo datu vaicājumu."
 
-#: graphs_new.php:851
+#: graphs_new.php:864
 msgid "You can run this Data Query in debug mode"
 msgstr "Šo datu vaicājumu var palaist atkļūdošanas režīmā"
 
-#: graphs_new.php:866
+#: graphs_new.php:879
 msgid "The index is disabled due to the Data Query having no associated Graph Templates."
 msgstr "Indekss ir atspējots, jo datu vaicājumam nav saistītu diagrammu veidņu."
 
-#: graphs_new.php:916
+#: graphs_new.php:929
 msgid "Search Returned no Rows."
 msgstr "Meklēšana neatgrieza nevienu rindu."
 
-#: graphs_new.php:921
+#: graphs_new.php:934
 msgid "Error in Data Query.  This could be due to the following: File Permissions, or a missing or improperly formatted Data Query XML file."
 msgstr "Kļūda datu vaicājumā. To var izraisīt šādi iemesli: faila atļaujas vai trūkstošs vai nepareizi formatēts Data Query XML fails."
 
-#: graphs_new.php:947
+#: graphs_new.php:960
 msgid "Select a Graph Type to Create"
 msgstr "Izvēlieties izveidojamo diagrammas veidu"
 
-#: graphs_new.php:950
+#: graphs_new.php:963
 msgid "Make selection default"
 msgstr "Padarīt atlasi par noklusējumu"
 
-#: graphs_new.php:950
+#: graphs_new.php:963
 msgid "Set Default"
 msgstr "Iestatīt noklusējumu"
 
@@ -5567,7 +5559,7 @@ msgstr "SNMP apraksts"
 msgid "SNMP GetNext"
 msgstr "SNMP GetNext"
 
-#: host.php:1424 host.php:1594
+#: host.php:1424 host.php:1597
 msgid "Undefined"
 msgstr "Nav noteikts"
 
@@ -5576,36 +5568,36 @@ msgstr "Nav noteikts"
 msgid "Site"
 msgstr "Vietne"
 
-#: host.php:1611
+#: host.php:1614
 msgid "Export Devices"
 msgstr "Eksportēt ierīces"
 
-#: host.php:1632 lib/api_automation.php:171 lib/api_automation.php:1097
+#: host.php:1635 lib/api_automation.php:171 lib/api_automation.php:1097
 msgid "Not Up"
 msgstr "Nedarbojas"
 
-#: host.php:1635 lib/api_automation.php:174 lib/api_automation.php:1100
+#: host.php:1638 lib/api_automation.php:174 lib/api_automation.php:1100
 #: lib/html_utility.php:927 pollers.php:49
 msgid "Recovering"
 msgstr "Atgūstas"
 
-#: host.php:1636 lib/api_automation.php:175 lib/api_automation.php:1101
+#: host.php:1639 lib/api_automation.php:175 lib/api_automation.php:1101
 #: lib/auth.php:2340 lib/html_utility.php:936 lib/import.php:319
-#: lib/plugins.php:1256 lib/plugins.php:1257 lib/rrd.php:2988 lib/rrd.php:3000
-#: package_import.php:518 utilities.php:211 utilities.php:212
+#: lib/plugins.php:1258 lib/plugins.php:1259 lib/rrd.php:2995 lib/rrd.php:3007
+#: package_import.php:541 utilities.php:211 utilities.php:212
 #: utilities.php:2594
 msgid "Unknown"
 msgstr "Nezināms"
 
-#: host.php:1712 lib/api_automation.php:570 tree.php:867 utilities.php:2188
+#: host.php:1715 lib/api_automation.php:570 tree.php:867 utilities.php:2188
 msgid "Device Description"
 msgstr "Ierīces apraksts"
 
-#: host.php:1715
+#: host.php:1718
 msgid "The name by which this Device will be referred to."
 msgstr "Nosaukums, ar kādu šī Ierīce tiks apzīmēta."
 
-#: host.php:1718 include/global_form.php:1193 include/global_form.php:1762
+#: host.php:1721 include/global_form.php:1193 include/global_form.php:1762
 #: lib/api_automation.php:279 lib/api_automation.php:571
 #: lib/api_automation.php:884 lib/api_automation.php:1219 managers.php:219
 #: pollers.php:130 pollers.php:1007 user_admin.php:1144
@@ -5613,67 +5605,67 @@ msgstr "Nosaukums, ar kādu šī Ierīce tiks apzīmēta."
 msgid "Hostname"
 msgstr "Resursdatora nosaukums"
 
-#: host.php:1721
+#: host.php:1724
 msgid "Either an IP address, or hostname.  If a hostname, it must be resolvable by either DNS, or from your hosts file."
 msgstr "Vai nu IP adrese, vai resursdatora nosaukums. Ja resursdatora nosaukums, tam ir jābūt atrisināmam ar DNS vai no jūsu saimniekdatora faila."
 
-#: host.php:1727
+#: host.php:1730
 msgid "The internal database ID for this Device.  Useful when performing automation or debugging."
 msgstr "Šīs ierīces iekšējās datu bāzes ID. Noderīgs, veicot automatizāciju vai atkļūdošanu."
 
-#: host.php:1733
+#: host.php:1736
 msgid "The total number of Graphs generated from this Device."
 msgstr "Kopējais no šīs ierīces ģenerēto grafiku skaits."
 
-#: host.php:1739
+#: host.php:1742
 msgid "The total number of Data Sources generated from this Device."
 msgstr "Kopējais datu avotu skaits, kas ģenerēti no šīs ierīces."
 
-#: host.php:1745
+#: host.php:1748
 msgid "The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname \"localhost\", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an \"Unknown\" state."
 msgstr "Ierīces uzraudzības statuss, pamatojoties uz ping rezultātiem. Ja šī ierīce ir īpaša veida ierīce, izmantojot resursdatora nosaukumu “localhost” vai iestatījuma dēļ neveikt pieejamības pārbaudi, tā vienmēr paliks Up. Lietojot cmd.php datu savācēju, datu savācējs nepiesaista ierīci bez diagrammām, un tā paliks stāvoklī \"Nezināms\"."
 
-#: host.php:1748
+#: host.php:1751
 msgid "In State"
 msgstr "Valstī"
 
-#: host.php:1751
+#: host.php:1754
 msgid "The amount of time that this Device has been in its current state."
 msgstr "Laiks, cik ilgi šī ierīce ir atradusies pašreizējā stāvoklī."
 
-#: host.php:1757
+#: host.php:1760
 msgid "The current amount of time that the host has been up."
 msgstr "Pašreizējais saimniekdatora darbības laiks."
 
-#: host.php:1760
+#: host.php:1763
 msgid "Poll Time"
 msgstr "Aptaujas laiks"
 
-#: host.php:1763
+#: host.php:1766
 msgid "The amount of time it takes to collect data from this Device."
 msgstr "Laiks, kas nepieciešams datu ievākšanai no šīs ierīces."
 
-#: host.php:1766
+#: host.php:1769
 msgid "Current (ms)"
 msgstr "Pašreizējais (ms)"
 
-#: host.php:1769
+#: host.php:1772
 msgid "The current ping time in milliseconds to reach the Device."
 msgstr "Pašreizējais ehotestēšanas laiks milisekundēs, lai sasniegtu ierīci."
 
-#: host.php:1772
+#: host.php:1775
 msgid "Average (ms)"
 msgstr "Vidējais (ms)"
 
-#: host.php:1775
+#: host.php:1778
 msgid "The average ping time in milliseconds to reach the Device since the counters were cleared for this Device."
 msgstr "Vidējais ehotestēšanas laiks milisekundēs, lai sasniegtu ierīci, kopš šīs ierīces skaitītāji ir notīrīti."
 
-#: host.php:1778
+#: host.php:1781
 msgid "Availability"
 msgstr "Pieejamība"
 
-#: host.php:1781
+#: host.php:1784
 msgid "The availability percentage based upon ping results since the counters were cleared for this Device."
 msgstr "Pieejamības procents, pamatojoties uz ping rezultātiem, kopš šīs ierīces skaitītāji tika notīrīti."
 
@@ -6462,10 +6454,9 @@ msgid "Every %d Day"
 msgstr "Katru %d dienu"
 
 #: include/global_arrays.php:732
-#, fuzzy, php-format
-#| msgid "%3.1f Minutes"
+#, php-format
 msgid "%0.1f Minutes"
-msgstr "%3.1f minūtes"
+msgstr "%0.1f minūtes"
 
 #: include/global_arrays.php:764 include/global_arrays.php:1427
 #: include/global_settings.php:1559 rrdcleaner.php:525
@@ -6575,7 +6566,7 @@ msgstr "Dabiskā sakārtošana"
 msgid "Numeric Ordering"
 msgstr "Ciparu secība"
 
-#: include/global_arrays.php:914 lib/rrd.php:2929
+#: include/global_arrays.php:914 lib/rrd.php:2936
 msgid "Header"
 msgstr "Galvene"
 
@@ -6704,7 +6695,7 @@ msgstr "Ierīces noteikumi"
 
 #: include/global_arrays.php:979 include/global_arrays.php:1029
 #: include/global_arrays.php:1190 lib/html_filter.php:177
-#: lib/html_graph.php:252 lib/html_tree.php:1073
+#: lib/html_graph.php:252 lib/html_tree.php:1075
 msgid "Presets"
 msgstr "Standarti"
 
@@ -6738,7 +6729,7 @@ msgid "Export Templates"
 msgstr "Eksportēt veidnes"
 
 #: include/global_arrays.php:991 include/global_arrays.php:1013
-#: include/global_arrays.php:1031 lib/plugins.php:1211
+#: include/global_arrays.php:1031 lib/plugins.php:1213
 msgid "Configuration"
 msgstr "Konfigurācija"
 
@@ -6985,7 +6976,7 @@ msgid "Data Input Field"
 msgstr "Datu ievades lauks"
 
 #: include/global_arrays.php:1316 include/global_form.php:593
-#: include/global_form.php:1694 package_import.php:790
+#: include/global_form.php:1694 package_import.php:813
 msgid "Data Source Profile"
 msgstr "Datu avota profils"
 
@@ -7253,7 +7244,6 @@ msgid "Send Now"
 msgstr "Sūtīt tagad"
 
 #: include/global_arrays.php:1613
-#, fuzzy
 msgid "Take Ownership"
 msgstr "Kļūt par īpašnieku"
 
@@ -8160,7 +8150,7 @@ msgstr "Cik bieži dati tiks vākti no datu avota?"
 msgid "How long can data be missing before RRDtool records unknown data.  Increase this value if your Data Source is unstable and you wish to carry forward old data rather than show gaps in your graphs.  This value is multiplied by the X-Files Factor to determine the actual amount of time."
 msgstr "Cik ilgi datu var trūkt, pirms RRDtool reģistrē nezināmus datus. Palieliniet šo vērtību, ja jūsu datu avots ir nestabils un vēlaties pārnest vecos datus, nevis rādīt diagrammās nepilnības. Šī vērtība tiek reizināta ar X-Files koeficientu, lai noteiktu faktisko laika ilgumu."
 
-#: include/global_form.php:240 lib/rrd.php:3020
+#: include/global_form.php:240 lib/rrd.php:3027
 msgid "X-Files Factor"
 msgstr "X-failu faktors"
 
@@ -8341,7 +8331,7 @@ msgid "The script/source used to gather data for this data source."
 msgstr "Skripts/avots, kas tiek izmantots datu vākšanai šim datu avotam."
 
 #: include/global_form.php:595 include/global_form.php:1696
-#: package_import.php:792
+#: package_import.php:815
 msgid "Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources."
 msgstr "Atlasiet datu avota profilu. Datu avota profils kontrolē iegūto datu avotu aptaujas intervālu, datu apkopošanu un saglabāšanas politiku."
 
@@ -8714,7 +8704,7 @@ msgstr "Necaurredzamība/Alfa kanāls"
 msgid "The opacity/alpha channel of the color."
 msgstr "Krāsas necaurredzamības/alfa kanāls."
 
-#: include/global_form.php:999 lib/rrd.php:3016
+#: include/global_form.php:999 lib/rrd.php:3023
 msgid "Consolidation Function"
 msgstr "Konsolidācijas funkcija"
 
@@ -8782,9 +8772,8 @@ msgid "Insert Hard Return"
 msgstr "Ievietojiet cieto atgriešanos"
 
 #: include/global_form.php:1062
-#, fuzzy
 msgid "Forces the legend to the next line after this item."
-msgstr "Piespiež leģendu uz nākamo rindu pēc šī vienuma."
+msgstr "Piespiež rādīt leģendu nākamā rindā pēc šī elementa."
 
 #: include/global_form.php:1065
 msgid "Line Width (decimal)"
@@ -9090,31 +9079,31 @@ msgstr "Importēt veidni no vietējā faila"
 msgid "If the XML file containing template data is located on your local machine, select it here."
 msgstr "Ja XML fails, kurā ir veidnes dati, atrodas jūsu lokālajā datorā, atlasiet to šeit."
 
-#: include/global_form.php:1689 package_import.php:785
+#: include/global_form.php:1689 package_import.php:808
 #, fuzzy
 #| msgid "Data Source Profiles"
 msgid "Data Source Overrides"
 msgstr "Datu avotu profili"
 
-#: include/global_form.php:1698 package_import.php:794
+#: include/global_form.php:1698 package_import.php:817
 msgid "Create New from Template"
 msgstr "Izveidot jaunu no veidnes"
 
-#: include/global_form.php:1703 package_import.php:799
+#: include/global_form.php:1703 package_import.php:822
 #, fuzzy
 #| msgid "Graph Template Options"
 msgid "Graph/Data Template Overrides"
 msgstr "Grafika veidnes opcijas"
 
-#: include/global_form.php:1708 package_import.php:804
+#: include/global_form.php:1708 package_import.php:827
 msgid "Remove Orphaned Graph Items"
 msgstr "Noņemiet bāreņu diagrammas vienumus"
 
-#: include/global_form.php:1710 package_import.php:806
+#: include/global_form.php:1710 package_import.php:829
 msgid "If checked, Cacti will delete any Graph Items from both the Graph Template and associated Graphs that are not included in the imported Graph Template."
 msgstr "Ja šī izvēles rūtiņa ir atzīmēta, Cacti izdzēsīs visus diagrammas vienumus gan no grafika veidnes, gan saistītajiem grafikiem, kas nav iekļauti importētajā grafika veidnē."
 
-#: include/global_form.php:1715 package_import.php:811
+#: include/global_form.php:1715 package_import.php:834
 msgid "Replace Data Query Suggested Value Patterns"
 msgstr ""
 
@@ -9123,33 +9112,33 @@ msgid "Replace Data Source and Graph Template Suggested Value Records for Data Q
 msgstr ""
 
 #: include/global_form.php:1722 include/global_settings.php:553
-#: package_import.php:818
+#: package_import.php:841
 msgid "Graph Template Image Format"
 msgstr "Grafika veidnes attēla formāts"
 
-#: include/global_form.php:1723 package_import.php:819
+#: include/global_form.php:1723 package_import.php:842
 #, fuzzy
 #| msgid "The default Image Format to be used for all new Graph Templates."
 msgid "The Image Format to be used when importing or updating Graph Templates."
 msgstr "Noklusējuma attēla formāts, kas jāizmanto visām jaunajām diagrammu veidnēm."
 
 #: include/global_form.php:1729 include/global_settings.php:560
-#: package_import.php:826
+#: package_import.php:849
 msgid "Graph Template Height"
 msgstr "Grafika veidnes augstums"
 
-#: include/global_form.php:1730 package_import.php:827
+#: include/global_form.php:1730 package_import.php:850
 #, fuzzy
 #| msgid "The default Graph Width to be used for all new Graph Templates."
 msgid "The Height to be used when importing or updating Graph Templates."
 msgstr "Noklusējuma diagrammas platums, kas tiks izmantots visām jaunajām diagrammu veidnēm."
 
 #: include/global_form.php:1737 include/global_settings.php:568
-#: package_import.php:835
+#: package_import.php:858
 msgid "Graph Template Width"
 msgstr "Grafika veidnes platums"
 
-#: include/global_form.php:1738 package_import.php:836
+#: include/global_form.php:1738 package_import.php:859
 #, fuzzy
 #| msgid "The default Graph Width to be used for all new Graph Templates."
 msgid "The Width to be used when importing or updating Graph Templates."
@@ -9317,9 +9306,8 @@ msgid "Logical operation to combine rules."
 msgstr "Loģiska darbība noteikumu apvienošanai."
 
 #: include/global_form.php:2140 include/global_form.php:2182
-#, fuzzy
 msgid "The Field Name that shall be used for this Rule Item."
-msgstr "Lauka nosaukums, kas tiks izmantots šim kārtulas elementam."
+msgstr "Lauka nosaukums, kas jāizmanto šim noteikuma elementam."
 
 #: include/global_form.php:2148 include/global_form.php:2190
 msgid "Operator."
@@ -9803,11 +9791,11 @@ msgstr "Instalētā RRDtool versija."
 #: include/global_settings.php:404
 #, fuzzy
 #| msgid "Enable Report"
-msgid "Enable gradient support"
+msgid "Enable Gradient Support"
 msgstr "Iespējot atskaiti"
 
 #: include/global_settings.php:405
-msgid "Enabled gradient support for AREA charts."
+msgid "Enabled Gradient Support for AREA and STACK charts."
 msgstr ""
 
 #: include/global_settings.php:410
@@ -10745,13 +10733,13 @@ msgstr "Maksimālais laiks, cik ilgi Cacti datu avota statistikas skripts var da
 #: include/global_settings.php:1332
 #, fuzzy
 #| msgid "DNS Timeout"
-msgid "RRD check Timeout"
+msgid "RRDfile Check Timeout"
 msgstr "DNS noildze"
 
 #: include/global_settings.php:1333
 #, fuzzy
 #| msgid "The maximum amount of time a Cacti's Spikekill script can run without generating a timeout error and being killed."
-msgid "The maximum amount of time Cacti's RRD check script can run without generating a timeout error and being killed."
+msgid "The maximum amount of time Cacti's RRDfile check script can run without generating a timeout error and being killed."
 msgstr "Maksimālais laiks, ko var palaist Cacti's Spikekill skripts, neradot taimauta kļūdu un nenogalinot."
 
 #: include/global_settings.php:1347
@@ -11240,7 +11228,7 @@ msgstr "LDAP CN iestatījumi"
 msgid "Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: displayname) "
 msgstr "Lauks, kas aizstās pilno vārdu, veidojot jaunu lietotāju, kas ņemts no LDAP. (logos: parādāmais nosaukums) "
 
-#: include/global_settings.php:1801 package_import.php:433
+#: include/global_settings.php:1801 package_import.php:456
 msgid "Email"
 msgstr "E-pasts"
 
@@ -11626,34 +11614,34 @@ msgstr "Datu avota statistikas datu apkopotāja atmiņas ierobežojums"
 msgid "The maximum amount of memory for the Cacti Poller and Data Source Statistics Poller"
 msgstr "Maksimālais atmiņas apjoms Cacti un Datu avota statistikas aptaujātajam"
 
-#: include/global_settings.php:2192 rrdcheck.php:33 rrdcheck.php:95
+#: include/global_settings.php:2192
 #, fuzzy
-#| msgid "Run Check"
-msgid "RRD check"
-msgstr "Palaist pārbaudi"
+#| msgid "RRDfile Cleaner"
+msgid "RRDfile Check"
+msgstr "RRDfile tīrītājs"
 
 #: include/global_settings.php:2197
 #, fuzzy
 #| msgid "Enable Rule"
-msgid "Enable RRD check"
+msgid "Enable RRDfile check"
 msgstr "Iespējot kārtulu"
 
 #: include/global_settings.php:2198
 #, fuzzy
 #| msgid "Should Data Source Statistics be collected for this Cacti system?"
-msgid "Should RRD check be enabled for this Cacti system?"
+msgid "Should RRDfile check be enabled for this Cacti system?"
 msgstr "Vai par šo kaktusu sistēmu ir jāapkopo datu avotu statistika?"
 
 #: include/global_settings.php:2203
 #, fuzzy
 #| msgid "Number of DSStats Processes"
-msgid "Number of RRD check Processes"
+msgid "Number of RRDfile check Processes"
 msgstr "DSStats procesu skaits"
 
 #: include/global_settings.php:2204
 #, fuzzy
 #| msgid "The number of concurrent DSStats processes to use to use to process all of the Data Sources."
-msgid "The number of concurrent RRD check processes to use to use to process all of rrd files."
+msgid "The number of concurrent RRDfile check processes to use to use to process all of rrd files."
 msgstr "Vienlaicīgu DSStats procesu skaits, kas jāizmanto visu datu avotu apstrādei."
 
 #: include/global_settings.php:2231
@@ -12091,9 +12079,9 @@ msgstr "1 sleja"
 #: include/global_settings.php:2678 include/global_settings.php:2679
 #: include/global_settings.php:2680 include/global_settings.php:2681
 #: lib/html_graph.php:228 lib/html_graph.php:229 lib/html_graph.php:230
-#: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1049
-#: lib/html_tree.php:1050 lib/html_tree.php:1051 lib/html_tree.php:1052
-#: lib/html_tree.php:1053
+#: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1051
+#: lib/html_tree.php:1052 lib/html_tree.php:1053 lib/html_tree.php:1054
+#: lib/html_tree.php:1055
 #, php-format
 msgid "%d Columns"
 msgstr "%d kolonnas"
@@ -12380,7 +12368,7 @@ msgstr "Atbilstošās ierīces"
 
 #: lib/api_automation.php:146 lib/api_automation.php:1072
 #: lib/clog_webapi.php:539 lib/html_reports.php:956 lib/html_reports.php:1611
-#: lib/html_reports.php:1938 lib/html_reports.php:1949 lib/rrd.php:2958
+#: lib/html_reports.php:1938 lib/html_reports.php:1949 lib/rrd.php:2965
 #: utilities.php:356 utilities.php:1442 utilities.php:3022
 msgid "Type"
 msgstr "Tips"
@@ -12569,7 +12557,7 @@ msgstr "Darbības laiks:"
 
 #: lib/api_device.php:1525
 msgid "Hostname:"
-msgstr "Resursdatora nosaukums: "
+msgstr "Resursdatora nosaukums:"
 
 #: lib/api_device.php:1526
 msgid "Location:"
@@ -12647,7 +12635,7 @@ msgstr "Ierobežots"
 msgid "Branch:"
 msgstr "Filiāle:"
 
-#: lib/auth.php:2564 lib/auth.php:2596 lib/html_tree.php:957
+#: lib/auth.php:2564 lib/auth.php:2596 lib/html_tree.php:959
 #: lib/reports.php:1048
 msgid "Device:"
 msgstr "Ierīce:"
@@ -12738,17 +12726,17 @@ msgstr "Autentifikācija iepriekš nebija iestatīta. Mēģināja iestatīt viet
 #: lib/boost.php:63
 #, php-format
 msgid "%s MBytes"
-msgstr "%s MB"
+msgstr "%s MBaiti"
 
 #: lib/boost.php:66
 #, php-format
 msgid "%s KBytes"
-msgstr "%s KB"
+msgstr "%s KBaiti"
 
 #: lib/boost.php:69
 #, php-format
 msgid "%s Bytes"
-msgstr "%s baiti"
+msgstr "%s Baiti"
 
 #: lib/clog_webapi.php:120 utilities.php:1613
 #, php-format
@@ -12761,7 +12749,7 @@ msgstr "Noklikšķiniet uz \"Turpināt\", lai iztīrītu žurnāla failu.<br><br
 
 #: lib/clog_webapi.php:229 utilities.php:1434
 msgid "Purge Log"
-msgstr "Tīrīšanas žurnāls"
+msgstr "Tīrīt žurnālu"
 
 #: lib/clog_webapi.php:253 utilities.php:1383
 msgid "Log Filters"
@@ -12810,7 +12798,7 @@ msgstr "Astes līnijas"
 
 #: lib/clog_webapi.php:546 utilities.php:1447
 msgid "Stats"
-msgstr "Stati"
+msgstr "Statistika"
 
 #: lib/clog_webapi.php:548
 msgid "Warnings++"
@@ -13263,11 +13251,11 @@ msgstr "Jums ir jāatlasa XML izvades kolonna datu avotam “%s” un jāieslēd
 msgid "Your Graph Template has not Data Templates in use.  Please correct your Graph Template"
 msgstr "Jūsu diagrammas veidnē netiek izmantotas datu veidnes. Lūdzu, izlabojiet diagrammas veidni"
 
-#: lib/database.php:1933
+#: lib/database.php:1935
 msgid "Failed to determine password field length, can not continue as may corrupt password"
 msgstr "Neizdevās noteikt paroles lauka garumu, nevar turpināt, jo var tikt bojāta parole"
 
-#: lib/database.php:1940
+#: lib/database.php:1942
 msgid "Failed to alter password field length, can not continue as may corrupt password"
 msgstr "Neizdevās mainīt paroles lauka garumu, nevar turpināt, jo var tikt bojāta parole"
 
@@ -13380,8 +13368,8 @@ msgstr "Iziet"
 msgid "Leaf"
 msgstr "Lapa"
 
-#: lib/functions.php:3772 lib/html_tree.php:656 lib/html_tree.php:692
-#: lib/html_tree.php:921 lib/html_tree.php:929 lib/html_tree.php:1503
+#: lib/functions.php:3772 lib/html_tree.php:658 lib/html_tree.php:694
+#: lib/html_tree.php:923 lib/html_tree.php:931 lib/html_tree.php:1505
 msgid "Non Query Based"
 msgstr "Nebalstīts uz vaicājumiem"
 
@@ -13752,7 +13740,7 @@ msgstr "Ziņot par kļūdu"
 
 #: lib/html.php:2492
 msgid "Cacti"
-msgstr "Kaktusi"
+msgstr "Cacti"
 
 #: lib/html.php:2494
 msgid "Click to Show/Hide Filter"
@@ -14016,62 +14004,62 @@ msgstr "Šajā veidlapā ir nesaglabātas izmaiņas. Ja nospiedīsiet \"Turpinā
 msgid "Data Query Data Sources must be created through %s"
 msgstr "Datu vaicājuma datu avoti ir jāizveido, izmantojot %s"
 
-#: lib/html_graph.php:193 lib/html_tree.php:1020
+#: lib/html_graph.php:193 lib/html_tree.php:1022
 msgid "Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile"
 msgstr "Saglabājiet pašreizējās grafiku, kolonnu, sīktēlu, iepriekš iestatīto un laika nobīdes preferences savā profilā"
 
-#: lib/html_graph.php:223 lib/html_tree.php:1044
+#: lib/html_graph.php:223 lib/html_tree.php:1046
 msgid "Columns"
 msgstr "Kolonnas"
 
-#: lib/html_graph.php:227 lib/html_tree.php:1048
+#: lib/html_graph.php:227 lib/html_tree.php:1050
 #, php-format
 msgid "%d Column"
 msgstr "%d kolonna"
 
-#: lib/html_graph.php:257 lib/html_tree.php:1078
+#: lib/html_graph.php:257 lib/html_tree.php:1080
 msgid "Custom"
 msgstr "Pielāgots"
 
 #: lib/html_graph.php:271 lib/html_reports.php:1936 lib/html_reports.php:1947
-#: lib/html_tree.php:1092
+#: lib/html_tree.php:1094
 msgid "From"
 msgstr "No"
 
-#: lib/html_graph.php:276 lib/html_tree.php:1097
+#: lib/html_graph.php:276 lib/html_tree.php:1099
 msgid "Start Date Selector"
 msgstr "Sākuma datuma atlasītājs"
 
 #: lib/html_graph.php:280 lib/html_reports.php:1937 lib/html_reports.php:1948
-#: lib/html_tree.php:1101
+#: lib/html_tree.php:1103
 msgid "To"
 msgstr "Kam"
 
-#: lib/html_graph.php:285 lib/html_tree.php:1106
+#: lib/html_graph.php:285 lib/html_tree.php:1108
 msgid "End Date Selector"
 msgstr "Beigu datuma atlasītājs"
 
-#: lib/html_graph.php:290 lib/html_tree.php:1111
+#: lib/html_graph.php:290 lib/html_tree.php:1113
 msgid "Shift Time Backward"
 msgstr "Pārbīdīt laiku atpakaļ"
 
-#: lib/html_graph.php:291 lib/html_tree.php:1112
+#: lib/html_graph.php:291 lib/html_tree.php:1114
 msgid "Define Shifting Interval"
 msgstr "Definējiet pārslēgšanas intervālu"
 
-#: lib/html_graph.php:302 lib/html_tree.php:1123
+#: lib/html_graph.php:302 lib/html_tree.php:1125
 msgid "Shift Time Forward"
 msgstr "Laika maiņa uz priekšu"
 
-#: lib/html_graph.php:307 lib/html_tree.php:1128
+#: lib/html_graph.php:307 lib/html_tree.php:1130
 msgid "Refresh selected time span"
 msgstr "Atsvaidzināt atlasīto laika posmu"
 
-#: lib/html_graph.php:308 lib/html_tree.php:1129
+#: lib/html_graph.php:308 lib/html_tree.php:1131
 msgid "Return to the default time span"
 msgstr "Atgriezties uz noklusējuma laika posmu"
 
-#: lib/html_graph.php:316 lib/html_tree.php:1137
+#: lib/html_graph.php:316 lib/html_tree.php:1139
 msgid "Window"
 msgstr "Logs"
 
@@ -14079,7 +14067,7 @@ msgstr "Logs"
 msgid "Interval"
 msgstr "Intervāls"
 
-#: lib/html_graph.php:340 lib/html_tree.php:1161
+#: lib/html_graph.php:340 lib/html_tree.php:1163
 msgid "Stop"
 msgstr "Apturēt"
 
@@ -14583,47 +14571,47 @@ msgstr "Nederīgs"
 msgid "No Reports Found"
 msgstr "Pārskati netika atrasti"
 
-#: lib/html_tree.php:913 lib/html_tree.php:921 lib/html_tree.php:929
+#: lib/html_tree.php:915 lib/html_tree.php:923 lib/html_tree.php:931
 msgid "Graph Template:"
 msgstr "Diagrammas veidne:"
 
-#: lib/html_tree.php:929
+#: lib/html_tree.php:931
 msgid "Template Based"
 msgstr "Pamatojoties uz veidni"
 
-#: lib/html_tree.php:935 lib/reports.php:1268
+#: lib/html_tree.php:937 lib/reports.php:1268
 msgid "Tree:"
 msgstr "Koks:"
 
-#: lib/html_tree.php:940
+#: lib/html_tree.php:942
 msgid "Site:"
 msgstr "Vietne:"
 
-#: lib/html_tree.php:946
+#: lib/html_tree.php:948
 msgid "Leaf:"
 msgstr "Lapa:"
 
-#: lib/html_tree.php:952
+#: lib/html_tree.php:954
 msgid "Device Template:"
 msgstr "Ierīces veidne:"
 
-#: lib/html_tree.php:966
+#: lib/html_tree.php:968
 msgid "Applied"
 msgstr "Pielietots"
 
-#: lib/html_tree.php:966
+#: lib/html_tree.php:968
 msgid "Filter"
 msgstr "Filtrēt"
 
-#: lib/html_tree.php:966
+#: lib/html_tree.php:968
 msgid "Graph Filters"
 msgstr "Grafiku filtri"
 
-#: lib/html_tree.php:1017
+#: lib/html_tree.php:1019
 msgid "Set/Refresh Filter"
 msgstr "Iestatīt/atsvaidzināt filtru"
 
-#: lib/html_tree.php:1439
+#: lib/html_tree.php:1441
 msgid "(Non Graph Template)"
 msgstr "(Ne-diagrammas veidne)"
 
@@ -14711,7 +14699,7 @@ msgstr "Pakešu faili"
 
 #: lib/import.php:2434
 msgid "[preview] "
-msgstr "[priekšskatījums] "
+msgstr "[priekšskatījums]"
 
 #: lib/import.php:2439
 msgid "Cacti would make the following changes if the Template was imported:"
@@ -14731,7 +14719,7 @@ msgstr "[neizdevās]"
 
 #: lib/import.php:2454
 msgid "[preview]"
-msgstr "[priekšskatījums] "
+msgstr "[priekšskatījums]"
 
 #: lib/import.php:2458
 msgid "[updated]"
@@ -15247,7 +15235,7 @@ msgstr "Attālajiem aptaujātājiem ir ļoti svarīgi, lai ceļiem, kurus jūs b
 msgid "Required Writable at Install Time Only"
 msgstr "Nepieciešams rakstīt tikai instalēšanas laikā"
 
-#: lib/installer.php:2221 lib/installer.php:2253 package_import.php:512
+#: lib/installer.php:2221 lib/installer.php:2253 package_import.php:535
 msgid "Not Writable"
 msgstr "Nav Rakstāms"
 
@@ -15414,11 +15402,11 @@ msgstr "Nav ieteicams atjaunināt veidnes, kurās jau esat veicis izmaiņas. Vei
 msgid "Please select the Device Templates that you wish to use after the Install.  If you Operating System is Windows, you need to ensure that you select the 'Windows Device' Template.  If your Operating System is Linux/UNIX, make sure you select the 'Local Linux Machine' Device Template."
 msgstr "Lūdzu, atlasiet ierīces veidnes, kuras vēlaties izmantot pēc instalēšanas. Ja jūsu operētājsistēma ir Windows, jums ir jāatlasa veidne \"Windows ierīce\". Ja jūsu operētājsistēma ir Linux/UNIX, noteikti atlasiet ierīces veidni Vietējā Linux mašīna."
 
-#: lib/installer.php:2455 package_import.php:427 plugins.php:593
+#: lib/installer.php:2455 package_import.php:450 plugins.php:593
 msgid "Author"
 msgstr "Autors"
 
-#: lib/installer.php:2455 package_import.php:430
+#: lib/installer.php:2455 package_import.php:453
 msgid "Homepage"
 msgstr "Mājas lapa"
 
@@ -15953,34 +15941,34 @@ msgstr "TCP ping noildze"
 msgid "Ping not performed due to setting."
 msgstr "Ping netika veikts iestatījuma dēļ."
 
-#: lib/plugins.php:654
+#: lib/plugins.php:656
 #, php-format
 msgid "%s Version %s or above is required for %s. "
 msgstr "Ir nepieciešama %s versija %s vai jaunāka, lai atjauninātu %s. "
 
-#: lib/plugins.php:658
+#: lib/plugins.php:660
 #, php-format
 msgid "%s is required for %s, and it is not installed. "
 msgstr "%s ir nepieciešams %s, un tas nav uzstādīts. "
 
-#: lib/plugins.php:681
+#: lib/plugins.php:683
 msgid "Plugin cannot be installed."
 msgstr "Spraudni nevar uzstādīt."
 
-#: lib/plugins.php:1211 lib/plugins.php:1218 plugins.php:479 plugins.php:559
+#: lib/plugins.php:1213 lib/plugins.php:1220 plugins.php:479 plugins.php:559
 msgid "Plugins"
 msgstr "Spraudņi"
 
-#: lib/plugins.php:1230 lib/plugins.php:1236
+#: lib/plugins.php:1232 lib/plugins.php:1238
 #, php-format
 msgid "Requires: Cacti >= %s"
 msgstr "Nepieciešams: Cacti >= %s"
 
-#: lib/plugins.php:1233
+#: lib/plugins.php:1235
 msgid "Legacy Plugin"
 msgstr "Mantotais spraudnis"
 
-#: lib/plugins.php:1258
+#: lib/plugins.php:1260
 msgid "Not Stated"
 msgstr "Nav norādīts"
 
@@ -16052,175 +16040,175 @@ msgstr "Neizdevās pievienot atskaites grafikas elementu <i>%s</i> . Jau pastāv
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
 msgstr "Izlaistā pārskata grafikas elements “ <i>%s</i> ” jau pastāv"
 
-#: lib/rrd.php:2725
+#: lib/rrd.php:2732
 #, php-format
 msgid "Required RRD step size is '%s'"
 msgstr "Nepieciešamais RRD soļa lielums ir “%s”"
 
-#: lib/rrd.php:2754
+#: lib/rrd.php:2761
 #, php-format
 msgid "Type for Data Source '%s' should be '%s'"
 msgstr "Datu avota “%s” veidam ir jābūt “%s”"
 
-#: lib/rrd.php:2759
+#: lib/rrd.php:2766
 #, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
 msgstr "Datu avota “%s” sirdsdarbībai ir jābūt “%s”"
 
-#: lib/rrd.php:2771
+#: lib/rrd.php:2778
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "RRD minimumam datu avotam “%s” ir jābūt “%s”"
 
-#: lib/rrd.php:2791
+#: lib/rrd.php:2798
 #, php-format
 msgid "RRD maximum for Data Source '%s' should be '%s'"
 msgstr "Datu avota “%s” RRD maksimālajai vērtībai ir jābūt “%s”"
 
-#: lib/rrd.php:2801
+#: lib/rrd.php:2808
 #, php-format
 msgid "DS '%s' missing in RRDfile"
 msgstr "RRD failā trūkst DS '%s'"
 
-#: lib/rrd.php:2810
+#: lib/rrd.php:2817
 #, php-format
 msgid "DS '%s' missing in Cacti definition"
 msgstr "Kaktusu definīcijā trūkst DS '%s'"
 
-#: lib/rrd.php:2827 lib/rrd.php:2828
+#: lib/rrd.php:2834 lib/rrd.php:2835
 #, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "Cacti RRA '%s' ir tāds pats CF/soļi (%s, %s) kā '%s'"
 
-#: lib/rrd.php:2842 lib/rrd.php:2843
+#: lib/rrd.php:2849 lib/rrd.php:2850
 #, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "RRA failam “%s” ir tāds pats CF/soļi (%s, %s) kā failam “%s”."
 
-#: lib/rrd.php:2874
+#: lib/rrd.php:2881
 #, php-format
 msgid "XFF for cacti RRA id '%s' should be '%s'"
 msgstr "XFF kaktusu RRA ID '%s' ir jābūt '%s'"
 
-#: lib/rrd.php:2878
+#: lib/rrd.php:2885
 #, php-format
 msgid "Number of rows for Cacti RRA id '%s' should be '%s'"
 msgstr "Rindu skaitam Cacti RRA id '%s' ir jābūt '%s'"
 
-#: lib/rrd.php:2894
+#: lib/rrd.php:2901
 #, php-format
 msgid "RRA '%s' missing in RRDfile"
 msgstr "RRD failā trūkst RRA “%s”."
 
-#: lib/rrd.php:2903
+#: lib/rrd.php:2910
 #, php-format
 msgid "RRA '%s' missing in Cacti definition"
 msgstr "Kaktusu definīcijā trūkst RRA “%s”."
 
-#: lib/rrd.php:2925
+#: lib/rrd.php:2932
 msgid "RRD File Information"
 msgstr "RRD faila informācija"
 
-#: lib/rrd.php:2957
+#: lib/rrd.php:2964
 msgid "Data Source Items"
 msgstr "Datu avota vienumi"
 
-#: lib/rrd.php:2959
+#: lib/rrd.php:2966
 msgid "Minimal Heartbeat"
 msgstr "Minimāla sirdsdarbība"
 
-#: lib/rrd.php:2960
+#: lib/rrd.php:2967
 msgid "Min"
 msgstr "Min"
 
-#: lib/rrd.php:2961
+#: lib/rrd.php:2968
 msgid "Max"
 msgstr "Maks."
 
-#: lib/rrd.php:2962
+#: lib/rrd.php:2969
 msgid "Last DS"
 msgstr "Pēdējā DS"
 
-#: lib/rrd.php:2964
+#: lib/rrd.php:2971
 msgid "Unknown Sec"
 msgstr "Nezināma sek"
 
-#: lib/rrd.php:3015
+#: lib/rrd.php:3022
 msgid "Round Robin Archive"
 msgstr "Round Robin arhīvs"
 
-#: lib/rrd.php:3018
+#: lib/rrd.php:3025
 msgid "Cur Row"
 msgstr "Cur Row"
 
-#: lib/rrd.php:3019
+#: lib/rrd.php:3026
 msgid "PDP per Row"
 msgstr "PDP katrā rindā"
 
-#: lib/rrd.php:3021
+#: lib/rrd.php:3028
 msgid "CDP Prep Value (0)"
 msgstr "CDP sagatavošanas vērtība (0)"
 
-#: lib/rrd.php:3022
+#: lib/rrd.php:3029
 msgid "CDP Unknown Data points (0)"
 msgstr "CDP nezināmie datu punkti (0)"
 
-#: lib/rrd.php:3100
+#: lib/rrd.php:3107
 #, php-format
 msgid "rename %s to %s"
 msgstr "pārdēvēt %s par %s"
 
-#: lib/rrd.php:3159
+#: lib/rrd.php:3166
 msgid "Error while parsing the XML of rrdtool dump"
 msgstr "Kļūda, parsējot rrdtool dump XML"
 
-#: lib/rrd.php:3191 lib/rrd.php:3249 lib/rrd.php:3308
+#: lib/rrd.php:3198 lib/rrd.php:3256 lib/rrd.php:3315
 #, php-format
 msgid "ERROR while writing XML file: %s"
 msgstr "KĻŪDA, rakstot XML failu: %s"
 
-#: lib/rrd.php:3202 lib/rrd.php:3260 lib/rrd.php:3319
+#: lib/rrd.php:3209 lib/rrd.php:3267 lib/rrd.php:3326
 #, php-format
 msgid "ERROR: RRDfile %s not writeable"
 msgstr "KĻŪDA: RRDfails %s nav ierakstāms"
 
-#: lib/rrd.php:3232 lib/rrd.php:3291
+#: lib/rrd.php:3239 lib/rrd.php:3298
 msgid "Error while parsing the XML of RRDtool dump"
 msgstr "Kļūda, parsējot RRDtool izgāztuves XML"
 
-#: lib/rrd.php:3539
+#: lib/rrd.php:3546
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
 msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) noņemts no RRD faila"
 
-#: lib/rrd.php:3576
+#: lib/rrd.php:3583
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
 msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) pievieno RRD failam"
 
-#: lib/rrd.php:3606 lib/rrd.php:3620
+#: lib/rrd.php:3613 lib/rrd.php:3627
 #, php-format
 msgid "Website does not have write access to %s, may be unable to create/update RRDs"
 msgstr "Vietnei nav rakstīšanas piekļuves %s, iespējams, nevar izveidot/atjaunināt RRD"
 
-#: lib/rrd.php:3616
+#: lib/rrd.php:3623
 msgid "(Custom)"
 msgstr "(Pielāgots)"
 
-#: lib/rrd.php:3622
+#: lib/rrd.php:3629
 msgid "Failed to open data file, poller may not have run yet"
 msgstr "Neizdevās atvērt datu failu, iespējams, aptaujātajs vēl nav palaists"
 
-#: lib/rrd.php:3625
+#: lib/rrd.php:3632
 msgid "RRA Folder"
 msgstr "RRA mape"
 
-#: lib/rrd.php:3625
+#: lib/rrd.php:3632
 #, fuzzy
 msgid "Root"
 msgstr "ROOT - uz objektu orientēta bibliotēku kopa mērogojamu datu analīzei"
 
-#: lib/rrd.php:3734
+#: lib/rrd.php:3741
 msgid "Unknown RRDtool Error"
 msgstr "Nezināma RRDtool kļūda"
 
@@ -16232,20 +16220,20 @@ msgstr "Mēģinājums izveidot grafiku no neveidnes"
 msgid "Attempting to Create Graph from Removed Graph Template"
 msgstr "Mēģinājums izveidot grafiku no noņemtās diagrammas veidnes"
 
-#: lib/template.php:2123 lib/template.php:2152
+#: lib/template.php:2123 lib/template.php:2157
 #, php-format
 msgid "Created: %s"
 msgstr "Izveidots: %s"
 
-#: lib/template.php:2134 lib/template.php:2163
+#: lib/template.php:2139 lib/template.php:2168
 msgid "ERROR: Whitelist Validation Failed. Check Data Input Method"
 msgstr "KĻŪDA: baltā saraksta validācija neizdevās. Pārbaudiet datu ievades metodi"
 
-#: lib/template.php:2142
+#: lib/template.php:2147
 msgid "Graph Not created for "
 msgstr "Grafiks nav izveidots priekš "
 
-#: lib/template.php:2171
+#: lib/template.php:2176
 #, fuzzy
 msgid "NOTE: Graph not added for Data Query "
 msgstr "PIEZĪME. Datu vaicājumam diagramma nav pievienota "
@@ -16296,7 +16284,7 @@ msgid "When executing subqueries, having a larger temporary table size, keep tho
 msgstr "Izpildot apakšvaicājumus, kuriem ir lielāks pagaidu tabulas izmērs, saglabājiet šīs pagaidu tabulas atmiņā."
 
 #: lib/utility.php:1048 lib/utility.php:1054
-msgid "When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80%."
+msgid "When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80%.  If the recommendation is negative, you must decrease this and or the sort_buffer_size until the recommendation fits within the allowable memory."
 msgstr ""
 
 #: lib/utility.php:1060
@@ -16763,154 +16751,153 @@ msgstr ""
 msgid "You have not Trusted this Package Author.  If you wish to import, check the Automatically Trust Author checkbox"
 msgstr ""
 
-#: package_import.php:175
-#, fuzzy, php-format
-#| msgid "Cacti log purged successfully"
+#: package_import.php:198
+#, php-format
 msgid "The Package %s Imported Successfully"
-msgstr "Kaktusu baļķis veiksmīgi iztīrīts"
+msgstr "Pakotne %s veiksmīgi importēta"
 
-#: package_import.php:177
+#: package_import.php:200
 #, php-format
 msgid "The Package %s Import Failed"
 msgstr ""
 
-#: package_import.php:324 package_import.php:330 package_import.php:386
-#: package_import.php:389
+#: package_import.php:347 package_import.php:353 package_import.php:409
+#: package_import.php:412
 #, fuzzy
 #| msgid "Error in data query"
 msgid "Error in Package"
 msgstr "Kļūda datu vaicājumā"
 
-#: package_import.php:324
+#: package_import.php:347
 msgid "See the cacti.log for more information.  It could be that you had either an API Key error or the package was tamered with, or the location is not available."
 msgstr ""
 
-#: package_import.php:324
+#: package_import.php:347
 #, php-format
 msgid "The package \"%s\" download or validation failed"
 msgstr ""
 
-#: package_import.php:330
+#: package_import.php:353
 msgid "See the cacti.log for more information.  It could be that you had either an API Key error or the package was tamered with, or the location is not available"
 msgstr ""
 
-#: package_import.php:330
+#: package_import.php:353
 msgid "The package download or validation failed"
 msgstr ""
 
-#: package_import.php:386
+#: package_import.php:409
 #, fuzzy
 #| msgid "Package Files"
 msgid "Package XML File Damaged."
 msgstr "Pakešu faili"
 
-#: package_import.php:386
+#: package_import.php:409
 msgid "The XML files appears to be invalid.  Please contact the package author"
 msgstr ""
 
-#: package_import.php:389
+#: package_import.php:412
 msgid "Check the package repository file for files that should exist and find the one that is missing"
 msgstr ""
 
-#: package_import.php:389
+#: package_import.php:412
 msgid "The XML files for the package does not exist"
 msgstr ""
 
-#: package_import.php:423
+#: package_import.php:446
 #, fuzzy
 #| msgid "Package Files"
 msgid "Packages Details"
 msgstr "Pakešu faili"
 
-#: package_import.php:439
+#: package_import.php:462
 #, fuzzy
 #| msgid "right"
 msgid "Copyright"
 msgstr "pa labi"
 
-#: package_import.php:459
+#: package_import.php:482
 msgid "Import Package Filenames [ None selected imports all, Check to import selectively ]"
 msgstr ""
 
-#: package_import.php:463
+#: package_import.php:486
 #, fuzzy
 #| msgid "Package Files"
 msgid "Package"
 msgstr "Pakešu faili"
 
-#: package_import.php:466
+#: package_import.php:489
 #, fuzzy
 #| msgid "Rename"
 msgid "Filename"
 msgstr "Pārdēvēt"
 
-#: package_import.php:508 package_import.php:605 templates_import.php:349
+#: package_import.php:531 package_import.php:628 templates_import.php:349
 msgid "Differences"
 msgstr ""
 
-#: package_import.php:510 package_import.php:576 templates_import.php:292
+#: package_import.php:533 package_import.php:599 templates_import.php:292
 #, fuzzy
 #| msgid "[unchanged]"
 msgid "Unchanged"
 msgstr "[nemainīts]"
 
-#: package_import.php:534
+#: package_import.php:557
 msgid "Import Package Templates [ None selected imports all, Check to import selectively ]"
 msgstr ""
 
-#: package_import.php:538 templates_import.php:257
+#: package_import.php:561 templates_import.php:257
 #, fuzzy
 #| msgid "Template Title"
 msgid "Template Type"
 msgstr "Veidnes nosaukums"
 
-#: package_import.php:547 templates_import.php:269
+#: package_import.php:570 templates_import.php:269
 #, fuzzy
 #| msgid "Change Device"
 msgid "Changes/Diffferences"
 msgstr "Mainīt ierīci"
 
-#: package_import.php:572 templates_import.php:288
+#: package_import.php:595 templates_import.php:288
 #, fuzzy
 #| msgid "Update"
 msgid "Updated"
 msgstr "Atjaunot"
 
-#: package_import.php:609 templates_import.php:353
+#: package_import.php:632 templates_import.php:353
 #, fuzzy
 #| msgid "Orphaned"
 msgid "Orphans"
 msgstr "Bāreņi"
 
-#: package_import.php:662
+#: package_import.php:685
 msgid "File Differences for: "
 msgstr ""
 
-#: package_import.php:769
+#: package_import.php:792
 #, fuzzy
 #| msgid "Package Files"
 msgid "Local Package Import File"
 msgstr "Pakešu faili"
 
-#: package_import.php:770
+#: package_import.php:793
 msgid "The *.xml.gz file located on your Local machine to Upload and Import."
 msgstr ""
 
-#: package_import.php:775
+#: package_import.php:798
 #, fuzzy
 #| msgid "Automatically Add to Cacti"
 msgid "Automatically Trust Signer"
 msgstr "Automātiski pievienot kaktusiem"
 
-#: package_import.php:777
+#: package_import.php:800
 msgid "If checked, Cacti will automatically Trust the Signer for this and any future Packages by that author."
 msgstr ""
 
-#: package_import.php:813
+#: package_import.php:836
 msgid "Replace Data Source and Graph Template Suggested Value Records.  Graphs and Data Sources will take on new names after either a Data Query Reindex or by using the forced Replace Suggested Values process."
 msgstr ""
 
-#: package_import.php:884
+#: package_import.php:907
 #, fuzzy
 #| msgid "Import"
 msgid "Package Import"
@@ -17490,6 +17477,12 @@ msgstr "Pēdējo reizi šis datu savācējs tika pilnībā sinhronizēts ar galv
 msgid "No Data Collectors Found"
 msgstr "Nav atrasts neviens datu savācējs"
 
+#: rrdcheck.php:33 rrdcheck.php:95
+#, fuzzy
+#| msgid "Run Check"
+msgid "RRD check"
+msgstr "Palaist pārbaudi"
+
 #: rrdcheck.php:34
 msgid "RRD check is disabled, please enable in Configuration -> Settings -> Data"
 msgstr ""
@@ -17522,21 +17515,19 @@ msgid "Age"
 msgstr "Aug"
 
 #: rrdcheck.php:189 rrdcheck.php:190 rrdcheck.php:191
-#, fuzzy, php-format
-#| msgid "%d Hours"
+#, php-format
 msgid "%d hours"
 msgstr "%d stundas"
 
 #: rrdcheck.php:192
 #, php-format
 msgid "%d day"
-msgstr ""
+msgstr "%d diena"
 
 #: rrdcheck.php:193 rrdcheck.php:194
-#, fuzzy, php-format
-#| msgid "days"
+#, php-format
 msgid "%d days"
-msgstr "dienas"
+msgstr "%d dienas"
 
 #: rrdcheck.php:198
 msgid "Messages"
@@ -19192,7 +19183,7 @@ msgstr ""
 #, fuzzy
 #| msgid "Max Poller Memory Allowed:"
 msgid "Max Total Memory Possible"
-msgstr "Aptaujātaja maksimālā atļautā atmiņa:"
+msgstr "Maksimālā kopējā atmiņa iespējama"
 
 #: utilities.php:655
 #, php-format
@@ -19203,7 +19194,7 @@ msgstr ""
 #, fuzzy
 #| msgid "Max Poller Memory Allowed:"
 msgid "Max Core Memory Possible"
-msgstr "Aptaujātaja maksimālā atļautā atmiņa:"
+msgstr "Maksimālā pamata atmiņa iespējama"
 
 #: utilities.php:674
 msgid "Reduce Total Core Memory"
@@ -19722,10 +19713,9 @@ msgid "Previous Runtime Timers:"
 msgstr "Detalizēti izpildlaika taimeri:"
 
 #: utilities.php:2797 utilities.php:2799
-#, fuzzy, php-format
-#| msgid "Procs: "
+#, php-format
 msgid "Process: %d"
-msgstr "Procesi: "
+msgstr "Procesi: %d"
 
 #: utilities.php:2797
 #, php-format

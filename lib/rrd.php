@@ -310,6 +310,13 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 				1 => array('pipe', 'w')
 			);
 
+            if ( $config['is_web'] ) {
+                if( isset( $_COOKIE['CactiTimeZone'] ) ) {
+                    $gmt_offset = $_COOKIE['CactiTimeZone'];
+                    cacti_time_zone_set( $gmt_offset );
+                }
+            }
+
 			$process = proc_open(read_config_option('path_rrdtool') . ' - ' . $debug, $descriptorspec, $pipes);
 
 			if (!is_resource($process)) {
@@ -624,19 +631,27 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 	/* create the "--step" line */
 	$create_ds = RRD_NL . '--start 0 --step '. $rras[0]['rrd_step'] . ' ' . RRD_NL;
 
-	/* query the data sources to be used in this .rrd file */
-	$data_sources = db_fetch_assoc_prepared('SELECT id, rrd_heartbeat,
-		rrd_minimum, rrd_maximum, data_source_type_id
-		FROM data_template_rrd
+	/**
+	 * Only use the Data Sources that are included in the Graph in the case that there
+	 * is a Data Template that includes more Data Sources than there Graph Template
+	 * uses.
+	 */
+	$data_sources = db_fetch_assoc_prepared('SELECT DISTINCT dtr.id, dtr.data_source_name, dtr.rrd_heartbeat,
+		dtr.rrd_minimum, dtr.rrd_maximum, dtr.data_source_type_id
+		FROM data_template_rrd AS dtr
+		INNER JOIN graph_templates_item AS gti
+		ON dtr.id = gti.task_item_id
 		WHERE local_data_id = ?
 		ORDER BY local_data_template_rrd_id',
 		array($local_data_id)
 	);
 
-	/* ONLY make a new DS entry if:
-	- There is multiple data sources and this item is not the main one.
-	- There is only one data source (then use it) */
-
+	/**
+	 * ONLY make a new DS entry if:
+	 *
+	 * - There are multiple data sources and this item is not the main one.
+	 * - There are only one data source (then use it)
+	 */
 	if (cacti_sizeof($data_sources)) {
 		$data_local = db_fetch_row_prepared('SELECT host_id,
 			snmp_query_id, snmp_index
@@ -688,8 +703,14 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 		$create_rra .= 'RRA:' . $consolidation_functions[$rra['consolidation_function_id']] . ':' . $rra['x_files_factor'] . ':' . $rra['steps'] . ':' . $rra['rows'] . RRD_NL;
 	}
 
-	/* check for structured path configuration, if in place verify directory
-	   exists and if not create it.
+	if ($config['cacti_server_os'] != 'win32') {
+		$owner_id = fileowner($config['rra_path']);
+		$group_id = filegroup($config['rra_path']);
+	}
+
+	/**
+	 * check for structured path configuration, if in place verify directory
+	 * exists and if not create it.
 	 */
 	if (read_config_option('extended_paths') == 'on') {
 		if (read_config_option('storage_location')) {
@@ -700,16 +721,34 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 			}
 		} elseif (!is_dir(dirname($data_source_path))) {
 			if ($config['is_web'] == false || is_writable($config['rra_path'])) {
-				if (mkdir(dirname($data_source_path), 0775)) {
-					if ($config['cacti_server_os'] != 'win32') {
-						$owner_id = fileowner($config['rra_path']);
-						$group_id = filegroup($config['rra_path']);
+				if (mkdir(dirname($data_source_path), 0775, true)) {
+					if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
+						$success  = true;
+						$paths    = explode('/', str_replace($config['rra_path'], '/', dirname($data_source_path)));
+						$spath    = '';
 
-						if ((chown(dirname($data_source_path), $owner_id)) &&
-								(chgrp(dirname($data_source_path), $group_id))) {
-							/* permissions set ok */
-						} else {
-							cacti_log("ERROR: Unable to set directory permissions for '" . dirname($data_source_path) . "'", false);
+						foreach($paths as $path) {
+							if ($path == '') {
+								continue;
+							}
+
+							$spath .= '/' . $path;
+
+							$powner_id = fileowner($config['rra_path'] . $spath);
+							$pgroup_id = fileowner($config['rra_path'] . $spath);
+
+							if ($powner_id != $owner_id) {
+								$success = chown($config['rra_path'] . $spath, $owner_id);
+							}
+
+							if ($pgroup_id != $group_id && $success) {
+								$success = chgrp($config['rra_path'] . $spath, $group_id);
+							}
+
+							if (!$success) {
+								cacti_log("ERROR: Unable to set directory permissions for '" . $config['rra_path'] . $spath . "'", false);
+								break;
+							}
 						}
 					}
 				} else {
@@ -724,7 +763,13 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 	if ($show_source == true) {
 		return read_config_option('path_rrdtool') . ' create' . RRD_NL . "$data_source_path$create_ds$create_rra";
 	} else {
-		rrdtool_execute("create $data_source_path $create_ds$create_rra", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
+		$success = rrdtool_execute("create $data_source_path $create_ds$create_rra", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
+
+		if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
+			shell_exec("chown $owner_id:$group_id $data_source_path");
+		}
+
+		return $success;
 	}
 }
 
@@ -909,6 +954,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 
 	if (cacti_sizeof($output)) {
 		$timestamp = 0;
+
 		foreach($output as $line) {
 			$line      = trim($line);
 			$max_array = array();
@@ -2181,7 +2227,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 						$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ' ';
 					}
 
-					if ($graph_item['shift'] == CHECKED && abs($graph_item['value']) > 0) {      
+					if ($graph_item['shift'] == CHECKED && abs($graph_item['value']) > 0) {
 						/* create a SHIFT statement */
 						$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
 					}
@@ -2656,7 +2702,7 @@ function rrdtool_function_info($local_data_id) {
 	return $rrd_info;
 }
 
-/** 
+/**
  * rrdtool_function_contains_cf  verifies if the RRDfile contains the 'MAX' consolidation function
  *
  * @param  (int)  $local_data_id - the id of the data source
@@ -2909,7 +2955,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 
 }
 
-/** 
+/**
  * rrdtool_info2html - take output from rrdtool info array and build html table
  *
  * @param  (array) $info_array - array of rrdtool info data
@@ -3046,7 +3092,7 @@ function rrdtool_info2html($info_array, $diff=array()) {
 	html_end_box();
 }
 
-/** 
+/**
  * rrdtool_tune - create rrdtool tune/resize commands html+cli enabled
  *
  * @param (string) $rrd_file - rrd file name
@@ -3106,7 +3152,7 @@ function rrdtool_tune($rrd_file, $diff, $show_source = true) {
 	}
 }
 
-/** 
+/**
  * rrd_check - Given a data source id, check the rrdtool file to the data source definition
  *
  * @param  (int) $data_source_id - data source id
@@ -3121,7 +3167,7 @@ function rrd_check($data_source_id) {
 	$data_source_path = get_data_source_path($rrd_tune_array['data_source_id'], true);
 }
 
-/** 
+/**
  * rrd_repair - Given a data source id, update the rrdtool file to match the data source definition
  *
  * @param  (int) $data_source_id - data source id
@@ -3136,7 +3182,7 @@ function rrd_repair($data_source_id) {
 	$data_source_path = get_data_source_path($rrd_tune_array['data_source_id'], true);
 }
 
-/** 
+/**
  * rrd_datasource_add - add a (list of) datasource(s) to an (array of) rrd file(s)
  *
  * @param  (array) $file_array - array of rrd files
@@ -3211,7 +3257,7 @@ function rrd_datasource_add($file_array, $ds_array, $debug) {
 	return true;
 }
 
-/** 
+/**
  * rrd_rra_delete - delete a (list of) rra(s) from an (array of) rrd file(s)
  *
  * @param  (array) $file_array - array of rrd files
@@ -3269,7 +3315,7 @@ function rrd_rra_delete($file_array, $rra_array, $debug) {
 	return true;
 }
 
-/** 
+/**
  * rrd_rra_clone - clone a (list of) rra(s) from an (array of) rrd file(s)
  *
  * @param  (array)  $file_array - array of rrd files
@@ -3328,7 +3374,7 @@ function rrd_rra_clone($file_array, $cf, $rra_array, $debug) {
 	return true;
 }
 
-/** 
+/**
  * rrd_append_ds - appends a <DS> subtree to an RRD XML structure
  *
  * @param  (object) $dom     - the DOM object, where the RRD XML is stored
@@ -3386,7 +3432,7 @@ function rrd_append_ds($dom, $version, $name, $type, $min_hb, $min, $max) {
 	$insert->parentNode->insertBefore($new_node, $insert);
 }
 
-/** 
+/**
  * rrd_append_compute_ds - COMPUTE DS: appends a <DS> subtree to an RRD XML structure
  *
  * @param  (object) $dom     - the DOM object, where the RRD XML is stored
@@ -3439,7 +3485,7 @@ function rrd_append_compute_ds($dom, $version, $name, $type, $cdef) {
 	$insert->parentNode->insertBefore($new_node, $insert);
 }
 
-/** 
+/**
  * rrd_append_cdp_prep_ds - append a <DS> subtree to the <CDP_PREP> subtrees of a RRD XML structure
  *
  * @param (object) $dom     - the DOM object, where the RRD XML is stored
@@ -3482,7 +3528,7 @@ function rrd_append_cdp_prep_ds($dom, $version) {
 	}
 }
 
-/** 
+/**
  * rrd_append_value - append a <V>alue element to the <DATABASE> subtrees of a RRD XML structure
  *
  * @param  (object) $dom - the DOM object, where the RRD XML is stored
@@ -3510,7 +3556,7 @@ function rrd_append_value($dom) {
 	}
 }
 
-/** 
+/**
  * rrd_delete_rra - delete an <RRA> subtree from the <RRD> XML structure
  *
  * @param  (object) $dom     - the DOM document, where the RRD XML is stored
@@ -3781,6 +3827,7 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	/* destroy the image object */
 	imagedestroy($image);
 	imagedestroy($logo);
+
 	if (isset($nimage)) {
 		imagedestroy($nimage);
 	}
@@ -3791,7 +3838,7 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	return $image_data;
 }
 
-/** 
+/**
  * gradient - Add gradient support for AREA type charts. This function adds several CDEF with different shading
  *
  * @param  (bool)   $vname       - the data source name
@@ -3840,14 +3887,14 @@ function gradient($vname=FALSE, $start_color='#0000a0', $end_color='#f0f0f0', $l
 		$lower   = 0;
 		$spline .= sprintf("CDEF:%sminimum=%s,%s,- ".RRD_NL, $vnamet, $vname, $vname);
 	}
-	
+
 	for ($i=$steps; $i>0; $i--){
 		$spline .=  sprintf("CDEF:%s%d=%s,%sminimum,-,%d,/,%d,*,%sminimum,+ ".RRD_NL,$spline_vname,$i,$vname,$vnamet,$steps,$i,$vnamet);
 	}
 
 	// We don't use alpha blending for the area right now
 	$alpha = 'ff';
-	
+
 	for ($i=$steps; $i>0; $i--){
 		$factor=$i / $steps;
 		$r=round($r1 + $diff_r * $factor);
@@ -3866,7 +3913,7 @@ function gradient($vname=FALSE, $start_color='#0000a0', $end_color='#f0f0f0', $l
 	return $spline;
 }
 
-/** 
+/**
  * colourBrightness - Add colourBrightness support for the gradient charts. This function calculates the darker version of a given color
  *
  * @param  (bool)   $hex     - The hex representation of a color
@@ -3877,7 +3924,7 @@ function gradient($vname=FALSE, $start_color='#0000a0', $end_color='#f0f0f0', $l
  * License:			GPLv2
  * Original Code		http://www.barelyfitz.com/projects/csscolor/
  */
- function colourBrightness($hex, $percent) {
+function colourBrightness($hex, $percent) {
  	// Work out if hash given
 	$hash = '';
 
@@ -3906,8 +3953,8 @@ function gradient($vname=FALSE, $start_color='#0000a0', $end_color='#f0f0f0', $l
 		}
 	}
 
-        //// RBG to Hex
-        $hex = '';
+	//// RBG to Hex
+	$hex = '';
 
 	for ($i=0; $i < 3; $i++) {
 		// Convert the decimal digit to hex
@@ -3915,9 +3962,9 @@ function gradient($vname=FALSE, $start_color='#0000a0', $end_color='#f0f0f0', $l
 
 		// Add a leading zero if necessary
 		if (strlen($hexDigit) == 1) {
-			$hexDigit = "0" . $hexDigit;
+			$hexDigit = '0' . $hexDigit;
 		}
-		
+
 		// Append to the hex string
 		$hex .= $hexDigit;
 	}
@@ -3930,64 +3977,70 @@ function gradient($vname=FALSE, $start_color='#0000a0', $end_color='#f0f0f0', $l
  *
  * @param  (array)  $data    - The graph_array data containing all rrdtool graph options
  *
- * @return (aray) - the graph_array containing AREA definitions for the business hours
+ * @return (array) - the graph_array containing AREA definitions for the business hours
  *
  */
 function add_business_hours($data) {
-    if (read_config_option("business_hours_enable") == "on") {
+    if (read_config_option('business_hours_enable') == 'on') {
         if ($data['start'] < 0 ) {
             $bh_graph_start = time() + $data['start'];
-            $bh_graph_end = time() + $data["end"];
+            $bh_graph_end   = time() + $data['end'];
         } else {
             $bh_graph_start = $data['start'];
-            $bh_graph_end =  $data["end"];
+            $bh_graph_end   =  $data['end'];
         }
 
-        preg_match("/(\d+)\:(\d+)/",read_config_option("business_hours_start"), $bh_start_matches);
-        preg_match("/(\d+)\:(\d+)/",read_config_option("business_hours_end"), $bh_end_matches);
+        preg_match('/(\d+)\:(\d+)/',read_config_option('business_hours_start'), $bh_start_matches);
+        preg_match('/(\d+)\:(\d+)/',read_config_option('business_hours_end'), $bh_end_matches);
 
-
-        $start_bh_time = mktime( $bh_start_matches[0],$bh_start_matches[1],0,date("m",$bh_graph_start),date("d",$bh_graph_start),date("Y",$bh_graph_start));
-        $end_bh_time = mktime( $bh_end_matches[0],$bh_end_matches[1],0,date("m",$bh_graph_end),date("d",$bh_graph_end),date("Y",$bh_graph_end));
+        $start_bh_time = mktime( $bh_start_matches[1],$bh_start_matches[2],0,date('m',$bh_graph_start),date('d',$bh_graph_start),date('Y',$bh_graph_start));
+        $end_bh_time   = mktime( $bh_end_matches[1],$bh_end_matches[2],0,date('m',$bh_graph_end),date('d',$bh_graph_end),date('Y',$bh_graph_end));
 
         if ($start_bh_time < $bh_graph_start) {
             if ($start_bh_time < $end_bh_time) {
                 $start_bh_time = $bh_graph_start;
             } else {
-                $start_bh_time = mktime( $bh_start_matches[0],$bh_start_matches[1],0,date("m",$bh_graph_start),date("d",$bh_graph_start)+1,date("Y",$bh_graph_start));
+                $start_bh_time = mktime($bh_start_matches[1], $bh_start_matches[2], 0, date('m', $bh_graph_start), date('d', $bh_graph_start) + 1, date('Y', $bh_graph_start));
             }
         }
 
         // Get the number of days:
-        $datediff = $bh_graph_end - $bh_graph_start;
+        $datediff    = $bh_graph_end - $bh_graph_start;
         $num_of_days = round($datediff / (60 * 60 * 24)) + 1;
 
-        if ($num_of_days <= read_config_option("business_hours_max_days")) {
+        if ($num_of_days <= read_config_option('business_hours_max_days')) {
             for ($day=0; $day<$num_of_days; $day++ ) {
-                $current_start_bh_time = mktime($bh_start_matches[0],$bh_start_matches[1],0,date("m",$start_bh_time),date("d",$start_bh_time)+$day,date("Y",$start_bh_time));
-                $current_end_bh_time = mktime( $bh_end_matches[0],$bh_end_matches[1],0,date("m",$start_bh_time),date("d",$start_bh_time)+$day,date("Y",$start_bh_time));
-                if (  $current_start_bh_time < $bh_graph_start ) {
+                $current_start_bh_time = mktime($bh_start_matches[1],$bh_start_matches[2],0,date('m',$start_bh_time),date('d',$start_bh_time)+$day,date('Y',$start_bh_time));
+                $current_end_bh_time   = mktime( $bh_end_matches[1],$bh_end_matches[2],0,date('m',$start_bh_time),date('d',$start_bh_time)+$day,date('Y',$start_bh_time));
+
+                if ($current_start_bh_time < $bh_graph_start) {
                     $current_start_bh_time = $bh_graph_start;
                 }
-                if (  $current_end_bh_time > $bh_graph_end ) {
+
+                if ($current_end_bh_time > $bh_graph_end) {
                     $current_end_bh_time = $bh_graph_end;
                 }
-                $data[ 'graph_defs' ] .= 'CDEF:officehours' . $day . '=a,POP,TIME,' . $current_start_bh_time . ',LT,1,0,IF,TIME,' . $current_end_bh_time . ',GT,1,0,IF,MAX,0,GT,0,1,IF' . RRD_NL;
-                $data[ 'graph_defs' ] .= 'CDEF:dslimit' . $day . '=INF,officehours' . $day . ',*' . RRD_NL;
 
-                if ( preg_match('/[0-9A-Fa-f]{6,8}/',read_config_option("business_hours_color")) ) {
-                    $bh_color = read_config_option("business_hours_color");
+                $data['graph_defs'] .= 'CDEF:officehours' . $day . '=a,POP,TIME,' . $current_start_bh_time . ',LT,1,0,IF,TIME,' . $current_end_bh_time . ',GT,1,0,IF,MAX,0,GT,0,1,IF' . RRD_NL;
+                $data['graph_defs'] .= 'CDEF:dslimit' . $day . '=INF,officehours' . $day . ',*' . RRD_NL;
+
+                if (preg_match('/[0-9A-Fa-f]{6,8}/',read_config_option('business_hours_color'))) {
+                    $bh_color = read_config_option('business_hours_color');
                 } else {
                     $bh_color = 'ccccccff';
                 }
-                if ( date("N",$current_start_bh_time) <6 ) {
-                    $data[ 'graph_defs' ] .= 'AREA:dslimit' . $day . '#' . $bh_color . RRD_NL;
+
+                if (date('N',$current_start_bh_time) < 6) {
+                    $data['graph_defs'] .= 'AREA:dslimit' . $day . '#' . $bh_color . RRD_NL;
                 }
-                if ( ( date("N",$current_start_bh_time) >5 ) && ( read_config_option("business_hours_hideWeekends") == "") ) {
-                    $data[ 'graph_defs' ] .= 'AREA:dslimit' . $day . '#'.$bh_color . RRD_NL;
+
+                if ((date('N',$current_start_bh_time) > 5) && (read_config_option('business_hours_hideWeekends') == '')) {
+                    $data['graph_defs'] .= 'AREA:dslimit' . $day . '#'.$bh_color . RRD_NL;
                 }
             }
         }
     }
+
     return $data;
 }
+

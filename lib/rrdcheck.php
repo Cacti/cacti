@@ -27,7 +27,7 @@ function get_rrdfiles($thread_id = 1, $max_threads = 1) {
 	static $newrows = array();
 
 	if ($max_threads == 1) {
-		$rows = db_fetch_assoc('SELECT data_source_profile_id,dtd.local_data_id AS local_data_id, rrd_name, data_source_path, dtd.rrd_step AS rrdstep
+		return db_fetch_assoc('SELECT dtd.data_source_profile_id, dtd.local_data_id AS local_data_id, rrd_name, data_source_path, dtd.rrd_step AS rrdstep
 			FROM data_template_data AS dtd
 			JOIN poller_item AS pi
 			ON pi.local_data_id = dtd.local_data_id
@@ -45,6 +45,7 @@ function get_rrdfiles($thread_id = 1, $max_threads = 1) {
 	} elseif (sizeof($newrows)) {
 		return $newrows[$thread_id];
 	} else {
+
 		$rows = db_fetch_assoc('SELECT count(*) 
 			FROM data_template_data AS dtd
 			JOIN poller_item AS pi
@@ -65,7 +66,7 @@ function get_rrdfiles($thread_id = 1, $max_threads = 1) {
 			AND dtd.local_data_id != 0');
 
 		$thread  = 1;
-		$rras = 0;
+		$rras    = 0;
 		$newrows = array();
 
 		foreach($rows as $row) {
@@ -89,7 +90,6 @@ function get_rrdfiles($thread_id = 1, $max_threads = 1) {
 	}
 }
 
-
 /**
  * rrdcheck_debug - this simple routine prints a standard message to the console
  *   when running in debug mode.
@@ -107,7 +107,7 @@ function rrdcheck_debug($message) {
 }
 
 /**
- * do_rrdcheck - this routine is a generic routine that 
+ * do_rrdcheck - this routine is a generic routine that
  *   check all RRDfiles (missing files, ...) and stored information (NaN)
  *
  * @param $thread_id - (int) the rrdcheck parallel thread id
@@ -134,14 +134,14 @@ function do_rrdcheck($thread_id = 1) {
 		set_config_option('rrdcheck_parallel', '1');
 	}
 
-        $profiles = array_rekey(
-                db_fetch_assoc('SELECT step, data_source_profile_id AS id, MIN(steps) AS steps, `rows`
-                        FROM data_source_profiles AS dsp
-                        INNER JOIN data_source_profiles_rra AS dspr
-                        ON dsp.id = dspr.data_source_profile_id
-                        GROUP BY data_source_profile_id'),
-                'id', array('step', 'steps', 'rows')
-        );
+	$profiles = array_rekey(
+		db_fetch_assoc('SELECT step, data_source_profile_id AS id, MIN(steps) AS steps, `rows`
+			FROM data_source_profiles AS dsp
+			INNER JOIN data_source_profiles_rra AS dspr
+			ON dsp.id = dspr.data_source_profile_id
+			GROUP BY data_source_profile_id'),
+		'id', array('step', 'steps', 'rows')
+	);
 
 	$rrdfiles   = get_rrdfiles($thread_id, $max_threads);
 	$stats      = array();
@@ -189,6 +189,7 @@ function do_rrdcheck($thread_id = 1) {
 				}
 
 				if (time() > (filemtime($file)+3600)) {
+
 					db_execute_prepared ('INSERT INTO rrdcheck 
 					(local_data_id,test_date,message) 
 					VALUES (?,NOW(),?)', 
@@ -384,7 +385,7 @@ function do_rrdcheck($thread_id = 1) {
 									if ($lines_24 > $one_hour_limit) {
 										$nan_1[$index]++;
 									}
-                       	        				}
+                }
 							}
 						}
 					}
@@ -505,8 +506,6 @@ function do_rrdcheck($thread_id = 1) {
 	}
 }
 
-
-
 /**
  * rrdcheck_log_statistics - provides generic timing message to both the Cacti log and the settings
  *   table so that the statistcs can be graphed as well.
@@ -522,8 +521,7 @@ function rrdcheck_log_statistics($type) {
 
 	if ($type == 'BOOST') {
 		$sub_type = 'bchild';
-	}
-	else {
+	} else {
 		$sub_type = '';
 	}
 
@@ -575,7 +573,7 @@ function rrdcheck_log_statistics($type) {
 	set_config_option('stats_rrdcheck_' . $type, $cacti_stats);
 
 	/* log to the logfile */
-	cacti_log('rrdcheck STATS: ' . $cacti_stats , true, 'SYSTEM');
+	cacti_log('RRDCHECK STATS: ' . $cacti_stats , true, 'SYSTEM');
 }
 
 /**
@@ -615,7 +613,7 @@ function rrdcheck_log_child_stats($type, $thread_id, $total_time) {
 
 	$cacti_stats = sprintf('Time:%01.2f Type:%s ProcessNumber:%s RRDfiles:%s DSSes:%s RRDUser:%01.2f RRDSystem:%01.2f RRDReal:%01.2f', $total_time, strtoupper($type), $thread_id, $rrd_files, $dsses, $rrd_user, $rrd_system, $rrd_real);
 
-	cacti_log('rrdcheck CHILD STATS: ' . $cacti_stats, true, 'SYSTEM');
+	cacti_log('RRDCHECK CHILD STATS: ' . $cacti_stats, true, 'SYSTEM');
 }
 
 /**
@@ -668,7 +666,6 @@ function rrdcheck_error_handler($errno, $errmsg, $filename, $linenum, $vars = []
 	return;
 }
 
-
 /**
  * rrdcheck_boost_bottom - this routine accomodates rrdcheck after the boost process
  *   has completed.  The use of boost will require boost version 2.5 or above.  The idea
@@ -691,14 +688,16 @@ function rrdcheck_boost_bottom() {
 		/* Wait for all processes to continue */
 		while ($running = rrdcheck_processes_running('bmaster')) {
 			rrdcheck_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
+
 			sleep(2);
 		}
+
+		rrdcheck_log_statistics('BOOST');
 	}
 }
 
-
-/** 
- * rrdcheck_poller_bottom - this routine launches the main rrdcheck poller. 
+/**
+ * rrdcheck_poller_bottom - this routine launches the main rrdcheck poller.
  *   It is forked independently
  *   to the Cacti poller after all polling has finished.
  *
@@ -713,6 +712,7 @@ function rrdcheck_poller_bottom () {
 		chdir($config['base_path']);
 
 		$command_string = read_config_option('path_php_binary');
+
 		if (read_config_option('path_rrdcheck_log') != '') {
 			if ($config['cacti_server_os'] == 'unix') {
 				$extra_args = '-q ' . $config['base_path'] . '/poller_rrdcheck.php >> ' . read_config_option('path_rrdcheck_log') . ' 2>&1';
@@ -804,10 +804,13 @@ function rrdcheck_rrdtool_execute($command, &$pipes) {
 		}
 	} elseif (!$broken) {
 		cacti_log("ERROR: RRDtool was unable to fork.  Likely RRDtool can not be found or system out of resources.  Blocking subsequent messages.", false, 'POLLER');
+
 		$broken = true;
 	}
 
-	if (strlen($stdout)) return $stdout;
+	if (strlen($stdout)) {
+		return $stdout;
+	}
 }
 
 /**
@@ -864,13 +867,14 @@ function rrdcheck_launch_children($type) {
  */
 function rrdcheck_get_subtype($type) {
 	switch($type) {
-
-		case 'master': 
-		case 'pmaster': 
+		case 'master':
+		case 'pmaster':
 			return 'child';
+
 			break;
 		case 'bmaster':
 			return 'bchild';
+
 			break;
 	}
 }
@@ -903,6 +907,7 @@ function rrdcheck_kill_running_processes() {
 	if (cacti_sizeof($processes)) {
 		foreach($processes as $p) {
 			cacti_log(sprintf('WARNING: Killing rrdcheck %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'BOOST');
+
 			posix_kill($p['pid'], SIGTERM);
 
 			unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);

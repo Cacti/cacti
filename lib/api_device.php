@@ -83,6 +83,13 @@ function api_device_remove($device_id) {
 	}
 
 	api_device_cache_crc_update($poller_id);
+
+	/**
+	 * Save the last time a device/site was created/updated
+	 * for Caching.
+	 */
+	set_config_option('time_last_change_device', time());
+	set_config_option('time_last_change_site_device', time());
 }
 
 /**
@@ -244,6 +251,13 @@ function api_device_remove_multi($device_ids, $delete_type = 2) {
 			}
 		}
 	}
+
+	/**
+	 * Save the last time a device/site was created/updated
+	 * for Caching.
+	 */
+	set_config_option('time_last_change_device', time());
+	set_config_option('time_last_change_site_device', time());
 }
 
 /**
@@ -1099,6 +1113,15 @@ function api_device_save($id, $device_template_id, $description, $hostname, $snm
 			/* update title cache for graph and data source */
 			update_data_source_title_cache_from_host($device_id);
 			update_graph_title_cache_from_host($device_id);
+
+			if (empty($id)) {
+				/**
+				 * Save the last time a device/site was created/updated
+				 * for Caching.
+				 */
+				set_config_option('time_last_change_device', time());
+				set_config_option('time_last_change_site_device', time());
+			}
 		} else {
 			raise_message(2);
 		}

@@ -242,8 +242,10 @@ function dsstats_master_handler($forcerun) {
 		dsstats_debug('Skipping Periodic Rollup - Boost will handle the Periodic Roll-up Cycle');
 	} else {
 		if ($daily_interval == 'boost') {
-			cacti_log("WARNING: Daily update interval set to 'boost' and Boost Plugin Not Enabled, resetting to default of 1 hour", false, 'DSSTATS');
+			cacti_log("WARNING: Daily update interval set to 'boost' and boost not enabled, resetting to default of 1 hour", false, 'DSSTATS');
+
 			set_config_option('dsstats_daily_interval', 60);
+
 			$daily_interval = 60;
 		}
 

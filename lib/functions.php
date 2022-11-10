@@ -6540,6 +6540,31 @@ function is_resource_writable($path) {
 	return false;
 }
 
+function recursive_chown($path, $uid, $gid) {
+    $d = opendir($path);
+
+	while(($file = readdir($d)) !== false) {
+		if ($file != '.' && $file != '..') {
+			$fullpath = $path . '/' . $file ;
+
+			if (filetype($fullpath) == 'dir') {
+				return recursive_chown($fullpath, $uid, $gid);
+			}
+
+			$success = chown($fullpath, $uid);
+			if ($success) {
+				$success = chgrp($fullpath, $gid);
+			}
+        }
+
+		if (!$success) {
+			return false;
+		}
+    }
+
+	return true;
+}
+
 function get_validated_theme($theme, $defaultTheme) {
 	global $config;
 	if (isset($theme) && strlen($theme)) {

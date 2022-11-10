@@ -248,6 +248,15 @@ function form_save() {
 
 			if ($site_id) {
 				raise_message(1);
+
+				if (empty($save['id'])) {
+					/**
+				 	 * Save the last time a device/site was created/updated
+					 * for Caching.
+					 */
+					set_config_option('time_last_change_site', time());
+					set_config_option('time_last_change_site_device', time());
+				}
 			} else {
 				raise_message(2);
 			}
@@ -294,6 +303,13 @@ function duplicate_site($template_id, $name) {
 			raise_message('site_error', __('Template Site was not found! Unable to duplicate.'), MESSAGE_LEVEL_ERROR);
 		}
 	}
+
+	/**
+ 	 * Save the last time a device/site was created/updated
+	 * for Caching.
+	 */
+	set_config_option('time_last_change_site', time());
+	set_config_option('time_last_change_site_device', time());
 }
 
 /* ------------------------
@@ -315,6 +331,13 @@ function form_actions() {
 			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 				db_execute('DELETE FROM sites WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('UPDATE host SET site_id=0 WHERE deleted="" AND ' . array_to_sql_or($selected_items, 'site_id'));
+
+				/**
+			 	 * Save the last time a device/site was created/updated
+				 * for Caching.
+				 */
+				set_config_option('time_last_change_site', time());
+				set_config_option('time_last_change_site_device', time());
 			} elseif (get_nfilter_request_var('drp_action') == '2') { /* Duplicate */
 				duplicate_site($selected_items, get_nfilter_request_var('site_name'));
 			}
@@ -545,7 +568,9 @@ function sites() {
 		$sql_where = '';
 	}
 
-	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM sites $sql_where");
+	$sql = "SELECT COUNT(*) FROM sites $sql_where";
+
+	$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, array(), 'site');
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;

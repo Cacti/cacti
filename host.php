@@ -1463,10 +1463,9 @@ function get_device_records(&$total_rows, $rows) {
 
 	$sql_where = api_plugin_hook_function('device_sql_where', $sql_where);
 
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(host.id)
-		FROM host
-		$sql_where");
+	$sql = "SELECT COUNT(host.id) FROM host $sql_where";
+
+	$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, array(), 'device');
 
 	$poller_interval = read_config_option('poller_interval');
 
@@ -1568,7 +1567,10 @@ function host() {
 							<option value='-1'<?php if (get_request_var('host_template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('host_template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
-							$host_templates = db_fetch_assoc('SELECT id, name FROM host_template ORDER BY name');
+							$host_templates = db_fetch_assoc('SELECT DISTINCT ht.id, ht.name
+								FROM host_template ht
+								JOIN host h ON h.host_template_id = ht.id
+								ORDER BY ht.name');
 
 							if (cacti_sizeof($host_templates)) {
 								foreach ($host_templates as $host_template) {
