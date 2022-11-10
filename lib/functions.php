@@ -6519,7 +6519,6 @@ function is_resource_writable($path) {
 	if ($path[strlen($path)-1] == '/') {
 		return is_resource_writable($path . uniqid(mt_rand()) . '.tmp');
 	}
-// cacti_log('aaa' . $path);
 
 	if (file_exists($path)) {
 		if (($f = @fopen($path, 'a'))) {
@@ -6530,7 +6529,6 @@ function is_resource_writable($path) {
 
 		return false;
 	}
-//cacti_log('bbb' . $path);
 
 	if (($f = @fopen($path, 'w'))) {
 		fclose($f);
