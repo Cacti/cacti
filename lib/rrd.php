@@ -2726,9 +2726,12 @@ function rrdtool_function_contains_cf($local_data_id, $cf) {
 	return false;
 }
 
-/** rrdtool_cacti_compare 	compares cacti information to rrd file information
- * @param $data_source_id		the id of the data source
+/**
+ * rrdtool_cacti_compare - compares cacti information to rrd file information
+ *
+ * @param $data_source_idi  the id of the data source
  * @param $info				rrdtool info as an array
+ *
  * @return					array build like $info defining html class in case of error
  */
 function rrdtool_cacti_compare($data_source_id, &$info) {
@@ -2742,9 +2745,11 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 		array($data_source_id));
 
 	/* get cacti DS information */
-	$cacti_ds_array = db_fetch_assoc_prepared('SELECT data_source_name, data_source_type_id,
-		rrd_heartbeat, rrd_maximum, rrd_minimum
-		FROM data_template_rrd
+	$cacti_ds_array = db_fetch_assoc_prepared('SELECT DISTINCT dtr.id, dtr.data_source_name, dtr.data_source_type_id,
+		dtr.rrd_heartbeat, dtr.rrd_maximum, dtr.rrd_minimum
+		FROM data_template_rrd AS dtr
+		INNER JOIN graph_templates_item AS gti
+		ON dtr.id = gti.task_item_id
 		WHERE local_data_id = ?',
 		array($data_source_id));
 
@@ -2752,6 +2757,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 	$cacti_rra_array = db_fetch_assoc_prepared('SELECT
 		dspc.consolidation_function_id AS cf,
 		dsp.x_files_factor AS xff,
+		dsp.heartbeat,
 		dspr.steps AS steps,
 		dspr.rows AS `rows`
 		FROM data_source_profiles AS dsp
@@ -2761,6 +2767,11 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 		ON dsp.id=dspr.data_source_profile_id
 		WHERE dsp.id = ?
 		ORDER BY dspc.consolidation_function_id, dspr.steps',
+		array($cacti_header_array['data_source_profile_id']));
+
+	$profile_heartbeat = db_fetch_cell_prepared('SELECT heartbeat
+		FROM data_source_profiles
+		WHERE id = ?',
 		array($cacti_header_array['data_source_profile_id']));
 
 	$diff = array();
@@ -2774,7 +2785,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 	/* -----------------------------------------------------------------------------------
 	 * data source information
 	 -----------------------------------------------------------------------------------*/
-	if (cacti_sizeof($cacti_ds_array) > 0) {
+	if (cacti_sizeof($cacti_ds_array)) {
 		$data_local = db_fetch_row_prepared('SELECT host_id,
 			snmp_query_id, snmp_index
 			FROM data_local
@@ -2785,6 +2796,21 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 		$speed = rrdtool_function_interface_speed($data_local);
 
 		foreach ($cacti_ds_array as $key => $data_source) {
+			/**
+			 * Accomodate a Cacti bug where the heartbeat was not
+			 * propagated.
+			 */
+			if ($data_source['rrd_heartbeat'] != $profile_heartbeat) {
+				cacti_log(sprintf('NOTE: Incorrect Data Source heartbeat found and corrected for Local Data ID %s and Data Source \'%s\'', $data_source_id, $data_source['data_source_name']), false, 'DSDEBUG');
+
+				db_execute_prepared('UPDATE data_template_rrd
+					SET rrd_heartbeat = ?
+					WHERE id = ?',
+					array($profile_heartbeat, $data_source['id']));
+
+				$data_source['rrd_heartbeat'] = $profile_heartbeat;
+			}
+
 			$ds_name = $data_source['data_source_name'];
 
 			/* try to print matching rrd file's ds information */
