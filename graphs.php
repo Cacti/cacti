@@ -2212,13 +2212,10 @@ function graph_management() {
 		ON h.id=gl.host_id
 		LEFT JOIN sites AS s
 		ON h.site_id=s.id
-		LEFT JOIN (
-			SELECT id, snmp_query_id, graph_template_id, GROUP_CONCAT(name) AS name
-			FROM snmp_query_graph
-			GROUP BY snmp_query_id, graph_template_id
-		) AS sqg
+		LEFT JOIN snmp_query_graph AS sqg
 		ON gl.snmp_query_id = sqg.snmp_query_id
 		AND gl.graph_template_id = sqg.graph_template_id
+		AND gl.snmp_query_graph_id = sqg.id
 		$orphan_join
 		$sql_where
 		$sql_order
