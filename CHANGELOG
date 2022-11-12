@@ -32,6 +32,7 @@ Cacti CHANGELOG
 -issue#4988: Data Templates that include many Data Sources bug only a few are used, cause RRDfile bloat
 -issue#4990: Backtrace generated on the Links page due to undefined variable use
 -issue#4991: Updating a Data Template does not properly switch the rrd_heartbeat properly for all data sources resulting in empty graphs
+-issue#4996: Graph Name in Graph Management shows the same name multiple times
 -feature#1100: Structured path not created when using remote poller and Update On-Demand
 -feature#1392: AJAX handled errors do not notify Admins that page errors exist
 -feature#2239: Allow Import and Export to be more controlled
