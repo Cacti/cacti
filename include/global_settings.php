@@ -368,6 +368,16 @@ $settings = array(
 			'default' => CACTI_LANGUAGE_HANDLER_DEFAULT,
 			'array' => $i18n_supported_languages
 		),
+		'client_timezone_support' => array(
+			'friendly_name' => __('Client TimeZone Support'),
+			'description' => __('How should Cacti support Client Dates based upon the Client browsers timezone.'),
+			'method' => 'drop_array',
+			'array' => array(
+				'0' => __('Disabled'),
+				'1' => __('Enabled')
+			),
+			'default' => '0'
+		),
 		'default_date_format' => array(
 			'friendly_name' => __('Date Display Format'),
 			'description' => __('The System default date format to use in Cacti.'),
@@ -2518,6 +2528,16 @@ $settings_user = array(
 			'method' => 'drop_array',
 			'array' => $graph_views,
 			'default' => '1'
+		),
+		'client_timezone_support' => array(
+			'friendly_name' => __('TimeZone Support'),
+			'description' => __('How would you like Cacti to present dates?  This setting will also change the way that Cacti Graphs dates are represented.'),
+			'method' => 'drop_array',
+			'array' => array(
+				'0' => __('Cacti Server Timezone'),
+				'1' => __('My Browsers Timezone')
+			),
+			'default' => '0'
 		),
 		'user_language' => array(
 			'friendly_name' => __('User Language'),

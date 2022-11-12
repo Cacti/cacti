@@ -7035,14 +7035,16 @@ function cacti_cookie_session_logout() {
 
 /**
  * cacti_browser_zone_set - Set the PHP timezone to the
- * browsers timezone.
+ * browsers timezone if enabled.
  *
  * @return - null
  */
 function cacti_browser_zone_set() {
-	if (isset($_SESSION['sess_browser_php_tz'])) {
-		ini_set('date.timezone', $_SESSION['sess_browser_php_tz']);
-		putenv('TZ=' . $_SESSION['sess_browser_system_tz']);
+	if (cacti_browser_zone_enabled()) {
+		if (isset($_SESSION['sess_browser_php_tz'])) {
+			ini_set('date.timezone', $_SESSION['sess_browser_php_tz']);
+			putenv('TZ=' . $_SESSION['sess_browser_system_tz']);
+		}
 	}
 }
 
@@ -7053,9 +7055,27 @@ function cacti_browser_zone_set() {
  * @return - null
  */
 function cacti_system_zone_set() {
-	if (isset($_SESSION['sess_php_tz'])) {
-		ini_set('date.timezone', $_SESSION['sess_php_tz']);
-		putenv('TZ=' . $_SESSION['sess_system_tz']);
+	if (cacti_browser_zone_enabled()) {
+		if (isset($_SESSION['sess_php_tz'])) {
+			ini_set('date.timezone', $_SESSION['sess_php_tz']);
+			putenv('TZ=' . $_SESSION['sess_system_tz']);
+		}
+	}
+}
+
+function cacti_browser_zone_enabled() {
+	$system_setting = read_config_option('client_timezone_support');
+
+	if (empty($system_setting)) {
+		return false;
+	} else {
+		$user_setting = read_user_setting('client_timezone_support', '0');
+
+		if (empty($user_setting)) {
+			return false;
+		}
+
+		return true;
 	}
 }
 

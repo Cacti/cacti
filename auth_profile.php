@@ -149,6 +149,10 @@ function api_auth_clear_user_setting($name) {
 
 	$user = $_SESSION['sess_user_id'];
 
+	if (read_config_option('client_timezone_support') == '0') {
+		unset($settings_user['client_timezone_support']);
+	}
+
 	if (!empty($user)) {
 		if (isset_request_var('tab') && get_nfilter_request_var('tab') == 'general') {
 			db_execute_prepared('DELETE FROM settings_user

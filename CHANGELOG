@@ -55,6 +55,7 @@ Cacti CHANGELOG
 -feature#4901: Make the script server accept arguments in the standard way
 -feature#4902: Updated Support for MySQL 8.x
 -feature#4907: Add lmSensors to the Net-SNMP Device Template
+-feature#4926: Allow the user to override Cacti auto-client time zone detection
 -feature#4943: Add ability to periodically check RRDfiles for errors in batch
 -feature#4948: When using proxies to load balance Cacti, if the proxy cookie times out, Cacti should properly redirect
 -feature#4955: Provide Common Sense Memory Tuning based upon MySQL Tuner Recommendations
