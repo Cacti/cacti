@@ -2118,6 +2118,12 @@ function compare_data($save, $previous_data, $table) {
 						continue;
 					} elseif ($table == 'data_template_data' && $column == 'rrd_step') {
 						continue;
+					} elseif ($table == 'graph_templates_graph' && $column == 'image_format_id') {
+						continue;
+					} elseif ($table == 'graph_templates_graph' && $column == 'graph_width') {
+						continue;
+					} elseif ($table == 'graph_templates_graph' && $column == 'graph_height') {
+						continue;
 					}
 				} elseif (empty($previous_data[$column]) && empty($value)) {
 					continue;
