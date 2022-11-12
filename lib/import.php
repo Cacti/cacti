@@ -754,7 +754,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 				if (isset($item_array[$field_name])) {
 					/* is the value of this field a hash or not? */
 					if (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', $item_array[$field_name])) {
-						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache);
+						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache, 'graph_templates_item');
 					} elseif (($field_name == 'color_id') && (preg_match('/^[a-fA-F0-9]{6}$/', $item_array[$field_name])) && (get_version_index($parsed_hash['version']) >= get_version_index('0.8.5'))) { /* treat the 'color' field differently */
 						$color_id = db_fetch_cell_prepared('SELECT id
 							FROM colors
@@ -988,7 +988,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 			if ($field_name == 'data_source_profile_id') {
 				$save[$field_name] = $profile_id;
 			} elseif (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', $xml_array['ds'][$field_name])) {
-				$save[$field_name] = resolve_hash_to_id($xml_array['ds'][$field_name], $hash_cache);
+				$save[$field_name] = resolve_hash_to_id($xml_array['ds'][$field_name], $hash_cache, 'data_template_data');
 			} else {
 				$save[$field_name] = xml_character_decode($xml_array['ds'][$field_name]);
 			}
@@ -1064,7 +1064,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 				if (isset($item_array[$field_name])) {
 					/* is the value of this field a hash or not? */
 					if (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', $item_array[$field_name])) {
-						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache);
+						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache, 'data_template_rrd');
 					} else {
 						$save[$field_name] = xml_character_decode($item_array[$field_name]);
 					}
@@ -1135,7 +1135,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 
 				unset($save);
 				$save['data_template_data_id'] = $data_template_data_id;
-				$save['data_input_field_id']   = resolve_hash_to_id($item_array['data_input_field_id'], $hash_cache);
+				$save['data_input_field_id']   = resolve_hash_to_id($item_array['data_input_field_id'], $hash_cache, 'data_input_data');
 				$save['t_value']               = $item_array['t_value'];
 				$save['value']                 = xml_character_decode($item_array['value']);
 
@@ -1199,7 +1199,7 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_s
 		if (isset($xml_array[$field_name])) {
 			/* is the value of this field a hash or not? */
 			if (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', $xml_array[$field_name])) {
-				$save[$field_name] = resolve_hash_to_id($xml_array[$field_name], $hash_cache);
+				$save[$field_name] = resolve_hash_to_id($xml_array[$field_name], $hash_cache, 'snmp_query');
 			} else {
 				$save[$field_name] = xml_character_decode($xml_array[$field_name]);
 			}
@@ -1269,7 +1269,7 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_s
 				if (isset($item_array[$field_name])) {
 					/* is the value of this field a hash or not? */
 					if (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', $item_array[$field_name])) {
-						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache);
+						$save[$field_name] = resolve_hash_to_id($item_array[$field_name], $hash_cache, 'snmp_query_graph');
 					} else {
 						$save[$field_name] = xml_character_decode($item_array[$field_name]);
 					}
@@ -1289,8 +1289,8 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_s
 					foreach ($item_array['rrd'] as $sub_item_hash => $sub_item_array) {
 						unset($save);
 						$save['snmp_query_graph_id']  = $data_query_graph_id;
-						$save['data_template_id']     = resolve_hash_to_id($sub_item_array['data_template_id'], $hash_cache);
-						$save['data_template_rrd_id'] = resolve_hash_to_id($sub_item_array['data_template_rrd_id'], $hash_cache);
+						$save['data_template_id']     = resolve_hash_to_id($sub_item_array['data_template_id'], $hash_cache, 'snmp_query_graph_rrd');
+						$save['data_template_rrd_id'] = resolve_hash_to_id($sub_item_array['data_template_rrd_id'], $hash_cache, 'snmp_query_graph_rrd');
 						$save['snmp_field_name']      = $sub_item_array['snmp_field_name'];
 
 						if (!empty($save['data_template_id']) && !empty($save['data_template_rrd_id'])) {
@@ -1397,7 +1397,7 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_s
 					$save['id']                  = (empty($_data_query_graph_rrd_sv_id) ? '0' : $_data_query_graph_rrd_sv_id);
 					$save['hash']                = $parsed_hash['hash'];
 					$save['snmp_query_graph_id'] = $data_query_graph_id;
-					$save['data_template_id']    = resolve_hash_to_id($sub_item_array['data_template_id'], $hash_cache);
+					$save['data_template_id']    = resolve_hash_to_id($sub_item_array['data_template_id'], $hash_cache, 'snmp_query_graph_rrd_sv');
 					$save['sequence']            = $sub_item_array['sequence'];
 					$save['field_name']          = $sub_item_array['field_name'];
 					$save['text']                = xml_character_decode($sub_item_array['text']);
@@ -2245,7 +2245,7 @@ function hash_to_friendly_name($hash, $display_type_name) {
 	}
 }
 
-function resolve_hash_to_id($hash, &$hash_cache_array) {
+function resolve_hash_to_id($hash, &$hash_cache_array, $table) {
 	global $import_debug_info;
 
 	/* parse information from the hash */
@@ -2272,7 +2272,7 @@ function resolve_hash_to_id($hash, &$hash_cache_array) {
 			return 0;
 		}
 
-		cacti_log("Import Error: Import found an invalid dependency hash of :" . $parsed_hash['hash'] . ".  Please open bug on GitHub.");
+		cacti_log("Import Error: Import found an invalid dependency hash of :" . $parsed_hash['hash'] . " for Table $table.  Please open bug on GitHub.");
 
 		$import_debug_info['dep'][$hash] = 'unmet';
 
