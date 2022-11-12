@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1.2.20\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-11-12 11:22-0500\n"
+"POT-Creation-Date: 2022-11-12 15:22-0500\n"
 "PO-Revision-Date: 2022-11-07 22:53+0000\n"
 "Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\n"
@@ -217,7 +217,7 @@ msgid "In order to migrate the Aggregate Graphs below to a Template based Aggreg
 msgstr "Lai migrētu tālāk norādītos apkopotos grafikus uz veidnēm balstītu apkopojumu, tiem ir jāizmanto tikai viena diagrammas veidne. Lūdzu, nospiediet “Atgriezties” un pēc tam atlasiet tikai Apkopoto grafiku, kas izmanto to pašu diagrammas veidni."
 
 #: aggregate_graphs.php:393 aggregate_graphs.php:441 aggregate_graphs.php:487
-#: auth_changepassword.php:359 auth_profile.php:443 automation_networks.php:398
+#: auth_changepassword.php:359 auth_profile.php:447 automation_networks.php:398
 #: automation_snmp.php:254 graphs.php:1194 graphs.php:1244 graphs.php:1247
 #: graphs.php:1289 host.php:539 include/auth.php:265 lib/api_aggregate.php:1592
 #: lib/api_aggregate.php:1607 lib/html_form.php:1293 managers.php:1065
@@ -456,7 +456,7 @@ msgstr "Atbilstoši grafiki"
 #: automation_graph_rules.php:743 automation_networks.php:1182
 #: automation_networks.php:1226 automation_snmp.php:695
 #: automation_templates.php:393 automation_tree_rules.php:810 cdef.php:756
-#: color.php:529 color_templates.php:529 data_debug.php:1061 data_input.php:826
+#: color.php:529 color_templates.php:529 data_debug.php:1111 data_input.php:826
 #: data_queries.php:1279 data_source_profiles.php:912 data_sources.php:1455
 #: data_templates.php:1039 gprint_presets.php:262 graph_templates.php:703
 #: graph_view.php:621 graphs.php:2043 graphs_new.php:457 host.php:1621
@@ -482,7 +482,7 @@ msgstr "Meklēt"
 #: aggregate_graphs.php:1314 aggregate_graphs.php:1357
 #: aggregate_graphs.php:1610 color_templates.php:649 data_sources.php:1643
 #: data_sources.php:1777 graph_view.php:485 graph_view.php:680
-#: graph_view.php:729 graphs.php:2060 graphs.php:2223 host.php:1732
+#: graph_view.php:729 graphs.php:2060 graphs.php:2227 host.php:1732
 #: include/global_arrays.php:955 include/global_arrays.php:1185
 #: include/global_arrays.php:1987 lib/api_automation.php:283 lib/html.php:1686
 #: lib/html.php:1688 lib/html.php:1766 lib/html_graph.php:209
@@ -498,7 +498,7 @@ msgstr "Grafiki"
 #: automation_graph_rules.php:785 automation_networks.php:1192
 #: automation_snmp.php:705 automation_templates.php:403
 #: automation_tree_rules.php:830 cdef.php:766 color.php:539
-#: color_templates.php:545 data_debug.php:1071 data_input.php:836
+#: color_templates.php:545 data_debug.php:1121 data_input.php:836
 #: data_queries.php:1289 data_source_profiles.php:922
 #: data_source_profiles.php:1037 data_sources.php:1465 data_templates.php:1065
 #: gprint_presets.php:272 graph_templates.php:713 graph_view.php:684
@@ -528,7 +528,7 @@ msgstr "Daļa no Agregāta"
 #: automation_graph_rules.php:797 automation_networks.php:1226
 #: automation_snmp.php:717 automation_templates.php:415
 #: automation_tree_rules.php:842 cdef.php:784 color.php:563
-#: color_templates.php:567 data_debug.php:990 data_input.php:848
+#: color_templates.php:567 data_debug.php:1039 data_input.php:848
 #: data_queries.php:1301 data_source_profiles.php:940 data_sources.php:1408
 #: data_templates.php:1083 gprint_presets.php:290 graph_templates.php:731
 #: graph_view.php:629 graphs.php:2034 graphs_new.php:446 host.php:1611
@@ -546,7 +546,7 @@ msgstr "Doties"
 
 #: aggregate_graphs.php:1336 aggregate_graphs.php:1626
 #: automation_devices.php:495 automation_snmp.php:717
-#: automation_templates.php:415 cdef.php:784 color.php:563 data_debug.php:990
+#: automation_templates.php:415 cdef.php:784 color.php:563 data_debug.php:1039
 #: data_input.php:848 data_queries.php:1301 data_source_profiles.php:940
 #: data_sources.php:1408 data_templates.php:1083 gprint_presets.php:290
 #: graph_templates.php:731 graph_view.php:629 graphs.php:2034
@@ -568,7 +568,7 @@ msgstr "Atlasīt/Atjaunināt filtrus"
 #: automation_graph_rules.php:798 automation_networks.php:1227
 #: automation_snmp.php:718 automation_templates.php:416
 #: automation_tree_rules.php:843 cdef.php:785 color.php:564
-#: color_templates.php:568 data_debug.php:991 data_input.php:849
+#: color_templates.php:568 data_debug.php:1040 data_input.php:849
 #: data_queries.php:1302 data_source_profiles.php:941 data_sources.php:1409
 #: data_templates.php:1084 gprint_presets.php:291 graph_templates.php:732
 #: graph_view.php:630 graphs.php:2035 graphs_new.php:447 host.php:1612
@@ -585,7 +585,7 @@ msgid "Clear"
 msgstr "Notīrīt"
 
 #: aggregate_graphs.php:1337 aggregate_graphs.php:1627 automation_snmp.php:718
-#: automation_templates.php:416 cdef.php:785 color.php:564 data_debug.php:991
+#: automation_templates.php:416 cdef.php:785 color.php:564 data_debug.php:1040
 #: data_input.php:849 data_queries.php:1302 data_source_profiles.php:941
 #: data_sources.php:1409 data_templates.php:1084 gprint_presets.php:291
 #: graph_templates.php:732 graph_view.php:630 graphs.php:2035
@@ -610,9 +610,9 @@ msgstr "Grafika nosaukums"
 
 #: aggregate_graphs.php:1363 aggregate_graphs.php:1693
 #: automation_graph_rules.php:896 automation_tree_rules.php:936
-#: data_debug.php:345 data_input.php:931 data_queries.php:1383
+#: data_debug.php:447 data_input.php:931 data_queries.php:1383
 #: data_sources.php:1637 data_templates.php:1192 graph_templates.php:837
-#: graphs.php:2239 host.php:1726 host_templates.php:870
+#: graphs.php:2243 host.php:1726 host_templates.php:870
 #: lib/api_automation.php:282 pollers.php:1001 sites.php:597 tree.php:2046
 #: user_admin.php:885 user_admin.php:999 user_admin.php:1144
 #: user_admin.php:1291 user_admin.php:1430 user_group_admin.php:680
@@ -626,7 +626,7 @@ msgid "Included in Aggregate"
 msgstr "Iekļauts apkopojumā"
 
 #: aggregate_graphs.php:1365 aggregate_graphs.php:1695 graph_templates.php:854
-#: graph_view.php:758 graph_view.php:771 graphs.php:2257
+#: graph_view.php:758 graph_view.php:771 graphs.php:2261
 msgid "Size"
 msgstr "Izmērs"
 
@@ -645,8 +645,8 @@ msgstr "Nē"
 
 #: aggregate_graphs.php:1381 aggregate_templates.php:709
 #: automation_tree_rules.php:682 cdef.php:911 color.php:726 color.php:728
-#: color_templates.php:673 data_debug.php:638 data_debug.php:643
-#: data_debug.php:648 data_input.php:975 data_queries.php:1435
+#: color_templates.php:673 data_debug.php:687 data_debug.php:692
+#: data_debug.php:697 data_input.php:975 data_queries.php:1435
 #: data_source_profiles.php:1116 data_source_profiles.php:1117
 #: data_source_profiles.php:1118 data_sources.php:1724 data_sources.php:1725
 #: data_templates.php:1253 gprint_presets.php:437 graph_templates.php:894
@@ -659,7 +659,7 @@ msgstr "Nē"
 msgid "Yes"
 msgstr "Jā"
 
-#: aggregate_graphs.php:1387 graphs.php:2299 lib/api_automation.php:601
+#: aggregate_graphs.php:1387 graphs.php:2303 lib/api_automation.php:601
 msgid "No Graphs Found"
 msgstr "Nav atrasts neviens grafiks"
 
@@ -672,7 +672,7 @@ msgstr " [Lietots pielāgoto grafiku saraksts — notīrīt, lai atiestatītu]"
 msgid "Aggregate Graphs"
 msgstr "Apkopotie grafiki"
 
-#: aggregate_graphs.php:1588 data_debug.php:964 data_sources.php:1382
+#: aggregate_graphs.php:1588 data_debug.php:1013 data_sources.php:1382
 #: graph_view.php:642 graphs.php:1999 host.php:1563
 #: include/global_arrays.php:2885 include/global_settings.php:593
 #: lib/api_automation.php:442 lib/html_graph.php:153 lib/html_tree.php:983
@@ -685,7 +685,7 @@ msgstr "Veidne"
 #: automation_devices.php:514 automation_devices.php:529
 #: automation_devices.php:544 automation_graph_rules.php:753
 #: automation_graph_rules.php:775 automation_tree_rules.php:820
-#: data_debug.php:968 data_sources.php:1386 graph_templates_items.php:543
+#: data_debug.php:1017 data_sources.php:1386 graph_templates_items.php:543
 #: graphs.php:2003 graphs_items.php:357 host.php:1532 host.php:1550
 #: host.php:1567 host.php:1631 lib/api_automation.php:150
 #: lib/api_automation.php:168 lib/api_automation.php:429
@@ -703,11 +703,11 @@ msgstr "Jebkuru"
 
 #: aggregate_graphs.php:1593 aggregate_graphs.php:1707
 #: automation_graph_rules.php:906 automation_graph_rules.php:907
-#: automation_networks.php:462 automation_tree_rules.php:948 data_debug.php:969
-#: data_sources.php:952 data_sources.php:1387 data_sources.php:1698
-#: data_templates.php:1255 graph_templates_items.php:66 graphs.php:1584
-#: graphs.php:1593 graphs.php:2004 graphs_items.php:358 graphs_items.php:470
-#: host.php:1148 host.php:1159 host.php:1533 host.php:1568
+#: automation_networks.php:462 automation_tree_rules.php:948
+#: data_debug.php:1018 data_sources.php:952 data_sources.php:1387
+#: data_sources.php:1698 data_templates.php:1255 graph_templates_items.php:66
+#: graphs.php:1584 graphs.php:1593 graphs.php:2004 graphs_items.php:358
+#: graphs_items.php:470 host.php:1148 host.php:1159 host.php:1533 host.php:1568
 #: include/global_arrays.php:506 include/global_arrays.php:564
 #: include/global_arrays.php:653 include/global_arrays.php:847
 #: include/global_arrays.php:1698 include/global_form.php:588
@@ -907,7 +907,7 @@ msgstr "Jaunā parole"
 msgid "Confirm new password"
 msgstr "Atkārtot jauno paroli"
 
-#: auth_changepassword.php:358 auth_profile.php:560 graphs_new.php:448
+#: auth_changepassword.php:358 auth_profile.php:564 graphs_new.php:448
 #: lib/html_form.php:1290 lib/html_form.php:1299 lib/html_graph.php:193
 #: lib/html_tree.php:1022 settings.php:494
 msgid "Save"
@@ -1005,97 +1005,97 @@ msgstr "Pieslēgties"
 msgid "General"
 msgstr "Pamata"
 
-#: auth_profile.php:282
+#: auth_profile.php:286
 msgid "User Account Details"
 msgstr "Lietotāja konta dati"
 
-#: auth_profile.php:296 include/global_arrays.php:819
+#: auth_profile.php:300 include/global_arrays.php:819
 #: include/global_settings.php:2671 lib/html.php:1932 lib/html.php:1954
 #: lib/html.php:2454
 msgid "Tree View"
 msgstr "Koka skats"
 
-#: auth_profile.php:300 include/global_arrays.php:820 lib/html.php:1939
+#: auth_profile.php:304 include/global_arrays.php:820 lib/html.php:1939
 #: lib/html.php:1963 lib/html.php:2455
 msgid "List View"
 msgstr "Saraksta skats"
 
-#: auth_profile.php:304 include/global_arrays.php:821 lib/html.php:1946
+#: auth_profile.php:308 include/global_arrays.php:821 lib/html.php:1946
 #: lib/html.php:2456
 msgid "Preview View"
 msgstr "Priekšskatījuma skats"
 
-#: auth_profile.php:317 include/global_form.php:1510 user_admin.php:2224
+#: auth_profile.php:321 include/global_form.php:1510 user_admin.php:2224
 msgid "User Name"
 msgstr "Lietotājvārds"
 
-#: auth_profile.php:318 include/global_form.php:1511
+#: auth_profile.php:322 include/global_form.php:1511
 msgid "The login name for this user."
 msgstr "Šī lietotāja pieteikšanās lietotājvārds."
 
-#: auth_profile.php:325 include/global_form.php:1518
+#: auth_profile.php:329 include/global_form.php:1518
 #: include/global_settings.php:1805 user_admin.php:2226 user_domains.php:497
 #: user_group_admin.php:680 utilities.php:1151
 msgid "Full Name"
 msgstr "Pilnais vārds un uzvārds"
 
-#: auth_profile.php:326 include/global_form.php:1519
+#: auth_profile.php:330 include/global_form.php:1519
 msgid "A more descriptive name for this user, that can include spaces or special characters."
 msgstr "Aprakstošāks šī lietotāja nosaukums, kas var ietvert atstarpes vai īpašas rakstzīmes."
 
-#: auth_profile.php:333 include/global_form.php:1526
+#: auth_profile.php:337 include/global_form.php:1526
 msgid "Email Address"
 msgstr "E-pasta adrese"
 
-#: auth_profile.php:334
+#: auth_profile.php:338
 msgid "An Email Address you be reached at."
 msgstr "E-pasta adrese, kuru izmanto, lai sazinātos ar jums."
 
-#: auth_profile.php:341 auth_profile.php:343
+#: auth_profile.php:345 auth_profile.php:347
 msgid "Clear User Settings"
 msgstr "Notīrīt lietotāja iestatījumus"
 
-#: auth_profile.php:342
+#: auth_profile.php:346
 msgid "Return all User Settings to Default values."
 msgstr "Atgrieziet visus lietotāja iestatījumus uz noklusējuma vērtībām."
 
-#: auth_profile.php:348 auth_profile.php:350
+#: auth_profile.php:352 auth_profile.php:354
 msgid "Clear Private Data"
 msgstr "Notīrīt privātos datus"
 
-#: auth_profile.php:349
+#: auth_profile.php:353
 msgid "Clear Private Data including Column sizing."
 msgstr "Notīrīt privātos datus, tostarp kolonnu izmērus."
 
-#: auth_profile.php:359 auth_profile.php:361
+#: auth_profile.php:363 auth_profile.php:365
 msgid "Logout Everywhere"
 msgstr "Iziet visur"
 
-#: auth_profile.php:360
+#: auth_profile.php:364
 msgid "Clear all your Login Session Tokens."
 msgstr "Notīrīt visas jūsu pieteikšanās sesijas atslēgas."
 
-#: auth_profile.php:381 user_admin.php:1837 user_group_admin.php:1719
+#: auth_profile.php:385 user_admin.php:1837 user_group_admin.php:1719
 msgid "User Settings"
 msgstr "Lietotāja iestatījumi"
 
-#: auth_profile.php:471
+#: auth_profile.php:475
 msgid "Private Data Cleared"
 msgstr "Privātie dati notīrīti"
 
-#: auth_profile.php:471
+#: auth_profile.php:475
 msgid "Your Private Data has been cleared."
 msgstr "Jūsu privātie dati ir dzēsti."
 
-#: auth_profile.php:493
+#: auth_profile.php:497
 msgid "All your login sessions have been cleared."
 msgstr "Visas jūsu pieteikšanās sesijas ir notīrītas."
 
-#: auth_profile.php:493
+#: auth_profile.php:497
 msgid "User Sessions Cleared"
 msgstr "Lietotāja sesijas ir notīrītas"
 
-#: auth_profile.php:577
+#: auth_profile.php:581
 msgid "Reset"
 msgstr "Atiestatīt"
 
@@ -1225,7 +1225,7 @@ msgstr "SNMP"
 
 #: automation_devices.php:286 automation_devices.php:510
 #: automation_graph_rules.php:771 automation_networks.php:1077
-#: automation_tree_rules.php:816 data_debug.php:351 data_debug.php:1016
+#: automation_tree_rules.php:816 data_debug.php:453 data_debug.php:1066
 #: data_sources.php:1434 data_templates.php:1221 host.php:757 host.php:882
 #: host.php:1627 host.php:1744 lib/api_automation.php:164
 #: lib/api_automation.php:280 lib/api_automation.php:573
@@ -1271,7 +1271,7 @@ msgstr "Eksportēt"
 msgid "Export to a file"
 msgstr "Eksportēt uz failu"
 
-#: automation_devices.php:502 data_debug.php:992 lib/clog_webapi.php:219
+#: automation_devices.php:502 data_debug.php:1041 lib/clog_webapi.php:219
 #: lib/clog_webapi.php:531 managers.php:747
 msgid "Purge"
 msgstr "Iztīrīšana"
@@ -1283,7 +1283,7 @@ msgstr "Iztīriet atklātās ierīces"
 #: automation_devices.php:670 automation_networks.php:1151
 #: automation_snmp.php:563 automation_snmp.php:564 automation_snmp.php:565
 #: automation_snmp.php:566 automation_snmp.php:567 automation_snmp.php:568
-#: data_debug.php:563 data_source_profiles.php:73 host.php:1811
+#: data_debug.php:612 data_source_profiles.php:73 host.php:1811
 #: lib/functions.php:5559 lib/functions.php:5563 lib/html.php:1161
 #: lib/html.php:1227 lib/html_reports.php:1632 lib/html_reports.php:1658
 #: lib/html_reports.php:1729 lib/html_reports.php:1730
@@ -1412,7 +1412,7 @@ msgstr "Datu vaicājums"
 #: automation_graph_rules.php:776 automation_graph_rules.php:899
 #: automation_graph_rules.php:915 automation_networks.php:537
 #: automation_tree_rules.php:821 automation_tree_rules.php:941
-#: automation_tree_rules.php:959 data_debug.php:1022 data_sources.php:1439
+#: automation_tree_rules.php:959 data_debug.php:1072 data_sources.php:1439
 #: host.php:1632 include/global_arrays.php:879 include/global_form.php:1542
 #: include/global_settings.php:361 include/global_settings.php:377
 #: lib/api_automation.php:169 lib/api_automation.php:1095
@@ -1428,7 +1428,7 @@ msgstr "Iespējots"
 
 #: automation_graph_rules.php:777 automation_graph_rules.php:915
 #: automation_networks.php:1092 automation_tree_rules.php:822
-#: automation_tree_rules.php:959 data_debug.php:1023 data_sources.php:1440
+#: automation_tree_rules.php:959 data_debug.php:1073 data_sources.php:1440
 #: data_templates.php:1257 host.php:1633 include/global_arrays.php:878
 #: include/global_arrays.php:1530 include/global_arrays.php:1822
 #: include/global_settings.php:360 include/global_settings.php:376
@@ -2130,7 +2130,7 @@ msgstr "Nekad"
 msgid "No Networks Found"
 msgstr "Nav atrasts neviens tīkls"
 
-#: automation_networks.php:1203 data_debug.php:1037 lib/clog_webapi.php:584
+#: automation_networks.php:1203 data_debug.php:1087 lib/clog_webapi.php:584
 #: lib/html_graph.php:307 lib/html_tree.php:1130 lib/html_tree.php:1151
 #: pollers.php:900 utilities.php:1464 utilities.php:2457
 msgid "Refresh"
@@ -3018,102 +3018,102 @@ msgstr "Automātiskā datu avota atkļūdošana tiek atkārtota pēc remonta."
 msgid "Data Source repair received an invalid Data Source ID."
 msgstr "Datu avota remonts saņēma nederīgu datu avota ID."
 
-#: data_debug.php:329 data_debug.php:816 data_queries.php:713
+#: data_debug.php:431 data_debug.php:865 data_queries.php:713
 #: data_sources.php:1013 data_templates.php:678 graphs_items.php:466
 #: include/global_arrays.php:967 include/global_form.php:970
 #: lib/api_aggregate.php:1712 lib/html.php:1139 rrdcheck.php:158
 msgid "Data Source"
 msgstr "Datu avots"
 
-#: data_debug.php:331
+#: data_debug.php:433
 msgid "The Data Source to Debug"
 msgstr "Atkļūdošanas datu avots"
 
-#: data_debug.php:334 lib/html.php:2477 utilities.php:1031 utilities.php:1150
+#: data_debug.php:436 lib/html.php:2477 utilities.php:1031 utilities.php:1150
 msgid "User"
 msgstr "Lietotājs"
 
-#: data_debug.php:336
+#: data_debug.php:438
 msgid "The User who requested the Debug."
 msgstr "Lietotājs, kurš pieprasīja atkļūdošanu."
 
-#: data_debug.php:339
+#: data_debug.php:441
 msgid "Started"
 msgstr "Sācies"
 
-#: data_debug.php:342
+#: data_debug.php:444
 msgid "The Date that the Debug was Started."
 msgstr "Atkļūdošanas sākšanas datums."
 
-#: data_debug.php:348
+#: data_debug.php:450
 msgid "The Data Source internal ID."
 msgstr "Datu avota iekšējais ID."
 
-#: data_debug.php:354
+#: data_debug.php:456
 msgid "The Status of the Data Source Debug Check."
 msgstr "Datu avota atkļūdošanas pārbaudes statuss."
 
-#: data_debug.php:357 lib/installer.php:2217 lib/installer.php:2249
+#: data_debug.php:459 lib/installer.php:2217 lib/installer.php:2249
 #: package_import.php:537
 msgid "Writable"
 msgstr "Rakstāms"
 
-#: data_debug.php:360
+#: data_debug.php:462
 msgid "Determines if the Data Collector or the Web Site have Write access."
 msgstr "Nosaka, vai datu apkopotājam vai vietnei ir rakstīšanas piekļuve."
 
-#: data_debug.php:363 templates_import.php:234
+#: data_debug.php:465 templates_import.php:234
 msgid "Exists"
 msgstr "Pastāv"
 
-#: data_debug.php:366
+#: data_debug.php:468
 msgid "Determines if the Data Source is located in the Poller Cache."
 msgstr "Nosaka, vai datu avots atrodas aptaujātaja kešatmiņā."
 
-#: data_debug.php:369 data_sources.php:1661 data_templates.php:1257
+#: data_debug.php:471 data_sources.php:1661 data_templates.php:1257
 #: plugins.php:39 plugins.php:471
 msgid "Active"
 msgstr "Aktīvs"
 
-#: data_debug.php:372
+#: data_debug.php:474
 msgid "Determines if the Data Source is Enabled."
 msgstr "Nosaka, vai datu avots ir iespējots."
 
-#: data_debug.php:375
+#: data_debug.php:477
 msgid "RRD Match"
 msgstr "RRD spēle"
 
-#: data_debug.php:378
+#: data_debug.php:480
 msgid "Determines if the RRDfile matches the Data Source Template."
 msgstr "Nosaka, vai RRDfails atbilst datu avota veidnei."
 
-#: data_debug.php:381
+#: data_debug.php:483
 msgid "Valid Data"
 msgstr "Derīgi dati"
 
-#: data_debug.php:384
+#: data_debug.php:486
 msgid "Determines if the RRDfile has been getting good recent Data."
 msgstr "Nosaka, vai RRDfile nesen ir saņēmis labus datus."
 
-#: data_debug.php:387
+#: data_debug.php:489
 msgid "RRD Updated"
 msgstr "RRD atjaunināts"
 
-#: data_debug.php:390
+#: data_debug.php:492
 #, fuzzy
 #| msgid "Determines if the RRDfile has been writted to properly."
 msgid "Determines if the RRDfile has been written to properly."
 msgstr "Nosaka, vai RRDfile ir pareizi ierakstīts."
 
-#: data_debug.php:393 data_debug.php:563 data_debug.php:746
+#: data_debug.php:495 data_debug.php:612 data_debug.php:795
 msgid "Issues"
 msgstr "Darbi"
 
-#: data_debug.php:396
+#: data_debug.php:498
 msgid "Summary of issues found for the Data Source."
 msgstr "Datu avotam atrasto problēmu kopsavilkums."
 
-#: data_debug.php:511 data_debug.php:1067 data_sources.php:1461
+#: data_debug.php:560 data_debug.php:1117 data_sources.php:1461
 #: data_sources.php:1621 host.php:1738 include/global_arrays.php:956
 #: include/global_arrays.php:1002 include/global_arrays.php:2283
 #: lib/api_automation.php:284 user_admin.php:1144 user_group_admin.php:1028
@@ -3121,185 +3121,193 @@ msgstr "Datu avotam atrasto problēmu kopsavilkums."
 msgid "Data Sources"
 msgstr "Datu avoti"
 
-#: data_debug.php:566 data_debug.php:1033
+#: data_debug.php:615 data_debug.php:1083
 msgid "Not Debugging"
 msgstr "Neatkļūdošana"
 
-#: data_debug.php:582
+#: data_debug.php:631
 msgid "No Checks"
 msgstr "Nav čeku"
 
-#: data_debug.php:625 lib/api_automation.php:761 lib/graphs.php:79
+#: data_debug.php:674 lib/api_automation.php:761 lib/graphs.php:79
 #: lib/graphs.php:103 templates_import.php:238
 msgid "Not Found"
 msgstr "Nav atrasts"
 
-#: data_debug.php:643 data_debug.php:648
+#: data_debug.php:692 data_debug.php:697
 msgid "Not Checked Yet"
 msgstr "Vēl nav pārbaudīts"
 
-#: data_debug.php:666
+#: data_debug.php:715
 msgid "Issues found!  Waiting on RRDfile update"
 msgstr "Problēmas atrastas! Gaida RRDfile atjauninājumu"
 
-#: data_debug.php:669
+#: data_debug.php:718
 msgid "No Initial found!  Waiting on RRDfile update"
 msgstr "Sākums nav atrasts! Gaida RRDfile atjauninājumu"
 
-#: data_debug.php:673
+#: data_debug.php:722
 msgid "Waiting on analysis and RRDfile update"
 msgstr "Gaida analīzi un RRDfile atjauninājumu"
 
-#: data_debug.php:680
+#: data_debug.php:729
 msgid "RRDfile Owner"
 msgstr "RRD faila īpašnieks"
 
-#: data_debug.php:685
+#: data_debug.php:734
 msgid "Website runs as"
 msgstr "Vietne darbojas kā"
 
-#: data_debug.php:690
+#: data_debug.php:739
 msgid "Poller runs as"
 msgstr "Aptaujātajs palaists kā"
 
-#: data_debug.php:695
+#: data_debug.php:744
 msgid "Is RRA Folder writeable by poller?"
 msgstr "Vai RRA mapei ir aptaujātāja rakstīšanas tiesības?"
 
-#: data_debug.php:700
+#: data_debug.php:749
 msgid "Is RRDfile writeable by poller?"
 msgstr "Vai RRDfile ir aptaujātaja rakstīšanas tiesības?"
 
-#: data_debug.php:705
+#: data_debug.php:754
 msgid "Does the RRDfile Exist?"
 msgstr "Vai RRDfile pastāv?"
 
-#: data_debug.php:710
+#: data_debug.php:759
 msgid "Is the Data Source set as Active?"
 msgstr "Vai datu avots ir iestatīts kā iespējots?"
 
-#: data_debug.php:715
+#: data_debug.php:764
 msgid "Did the poller receive valid data?"
 msgstr "Vai aptaujātajs saņēma derīgus datus?"
 
-#: data_debug.php:720
+#: data_debug.php:769
 msgid "Was the RRDfile updated?"
 msgstr "Vai RRDfile tika atjaunināts?"
 
-#: data_debug.php:726
+#: data_debug.php:775
 msgid "First Check TimeStamp"
 msgstr "Vispirms pārbaudiet laika zīmogu"
 
-#: data_debug.php:731
+#: data_debug.php:780
 msgid "Second Check TimeStamp"
 msgstr "Otrā pārbaude laika zīmogs"
 
-#: data_debug.php:736
+#: data_debug.php:785
 msgid "Were we able to convert the title?"
 msgstr "Vai mums izdevās pārvērst nosaukumu?"
 
-#: data_debug.php:741
+#: data_debug.php:790
 msgid "Data Source matches the RRDfile?"
 msgstr "Datu avots atbilst RRDfile?"
 
-#: data_debug.php:755
+#: data_debug.php:804
 #, php-format
 msgid "Data Source Troubleshooter [ Auto Refreshing till Complete ] %s"
 msgstr "Datu avota problēmu novēršanas rīks [ Automātiskā atsvaidzināšana līdz pabeigšanai ] %s"
 
-#: data_debug.php:755 data_debug.php:757
+#: data_debug.php:804 data_debug.php:806
 msgid "Refresh Now"
 msgstr "Atsvaidziniet tūlīt"
 
-#: data_debug.php:757
+#: data_debug.php:806
 #, php-format
 msgid "Data Source Troubleshooter [ Auto Refreshing till RRDfile Update ] %s"
 msgstr "Datu avota problēmu novēršanas rīks [ Automātiskā atsvaidzināšana līdz RRD faila atjaunināšanai ] %s"
 
-#: data_debug.php:759
+#: data_debug.php:808
 #, php-format
 msgid "Data Source Troubleshooter [ Analysis Complete! %s ]"
 msgstr "Datu avota problēmu novēršanas rīks [ Analīze pabeigta! %s]"
 
-#: data_debug.php:759
+#: data_debug.php:808
 msgid "Rerun Analysis"
 msgstr "Atkārtoti palaist analīzi"
 
-#: data_debug.php:764
+#: data_debug.php:813
 msgid "Check"
 msgstr "Pārbaudīt"
 
-#: data_debug.php:765 include/global_form.php:1028 lib/rrd.php:3009
+#: data_debug.php:814 include/global_form.php:1028 lib/rrd.php:3033
 #: utilities.php:798 utilities.php:815 utilities.php:3024
 msgid "Value"
 msgstr "Vērtība"
 
-#: data_debug.php:766
+#: data_debug.php:815
 msgid "Results"
 msgstr "Rezultāti"
 
-#: data_debug.php:777
+#: data_debug.php:826
 msgid "<not set>"
 msgstr "<not set>"
 
-#: data_debug.php:812 data_debug.php:863
+#: data_debug.php:861 data_debug.php:912
 msgid "Data Source Repair Recommendations"
 msgstr "Datu avotu labošanas ieteikumi"
 
-#: data_debug.php:817
+#: data_debug.php:866
 msgid "Issue"
 msgstr "Izdot"
 
-#: data_debug.php:829
+#: data_debug.php:878
 #, fuzzy, php-format
 #| msgid "For attrbitute '%s', issue found '%s'"
 msgid "For attribute '%s', issue found '%s'"
 msgstr "Atribūtam “%s” tika atrasta problēma “%s”"
 
-#: data_debug.php:844
+#: data_debug.php:893
 msgid "Apply Suggested Fixes"
 msgstr "Lietojiet ieteiktos labojumus"
 
-#: data_debug.php:844
+#: data_debug.php:893
 #, php-format
 msgid "Repair Steps [ %s ]"
 msgstr "Labošanas darbības [%s]"
 
-#: data_debug.php:846
+#: data_debug.php:895
 msgid "Repair Steps [ Run Fix from Command Line ]"
 msgstr "Labošanas darbības [Palaidiet labošanu no komandrindas]"
 
-#: data_debug.php:849
+#: data_debug.php:898
 msgid "Command"
 msgstr "Komanda"
 
-#: data_debug.php:865
+#: data_debug.php:914
 msgid "Waiting on Data Source Check to Complete"
 msgstr "Gaida datu avota pārbaudes pabeigšanu"
 
-#: data_debug.php:953
+#: data_debug.php:1002
 msgid "All Devices"
 msgstr "Visas ierīces"
 
-#: data_debug.php:953
+#: data_debug.php:1002
 #, php-format
 msgid "Data Source Troubleshooter [ %s ]"
 msgstr "Datu avota problēmu novēršanas rīks [ %s ]"
 
-#: data_debug.php:953
+#: data_debug.php:1002
 msgid "No Device"
 msgstr "Nav ierīces"
 
-#: data_debug.php:992
+#: data_debug.php:1041
 msgid "Delete All Checks"
 msgstr "Dzēst visus čekus"
 
-#: data_debug.php:1000 data_sources.php:1417 data_templates.php:1045
+#: data_debug.php:1042
+msgid "Run All"
+msgstr ""
+
+#: data_debug.php:1042
+msgid "Run checks on currently filtered Data Sources and preserve other results"
+msgstr ""
+
+#: data_debug.php:1050 data_sources.php:1417 data_templates.php:1045
 #: lib/html.php:2486
 msgid "Profile"
 msgstr "Profils"
 
-#: data_debug.php:1004 data_debug.php:1020 data_debug.php:1031
+#: data_debug.php:1054 data_debug.php:1070 data_debug.php:1081
 #: data_sources.php:1421 data_sources.php:1438 data_templates.php:1049
 #: graphs.php:2053 graphs_new.php:424 host.php:1588 host_templates.php:737
 #: lib/clog_webapi.php:545 lib/html.php:204 lib/html_reports.php:977
@@ -3309,11 +3317,11 @@ msgstr "Profils"
 msgid "All"
 msgstr "Visi"
 
-#: data_debug.php:1021 utilities.php:1057 utilities.php:1188
+#: data_debug.php:1071 utilities.php:1057 utilities.php:1188
 msgid "Failed"
 msgstr "Neizdevās"
 
-#: data_debug.php:1027 data_debug.php:1032
+#: data_debug.php:1077 data_debug.php:1082
 msgid "Debugging"
 msgstr "Atkļūdošana"
 
@@ -3769,7 +3777,7 @@ msgstr "Soļi"
 
 #: data_source_profiles.php:639 graphs_new.php:463 include/global_form.php:298
 #: lib/html.php:529 lib/html_filter.php:72 lib/installer.php:2534
-#: lib/rrd.php:3063 utilities.php:866 utilities.php:1779
+#: lib/rrd.php:3087 utilities.php:866 utilities.php:1779
 msgid "Rows"
 msgstr "Rindas"
 
@@ -4773,12 +4781,12 @@ msgstr "Visi grafiki un veidnes"
 msgid "Not Templated"
 msgstr "Nav veidnes"
 
-#: graph_view.php:738 graph_view.php:766 graphs.php:2233
+#: graph_view.php:738 graph_view.php:766 graphs.php:2237
 #: include/global_form.php:1899 lib/html_reports.php:1040 tree.php:936
 msgid "Graph Name"
 msgstr "Grafika nosaukums"
 
-#: graph_view.php:740 graph_view.php:768 graphs.php:2236
+#: graph_view.php:740 graph_view.php:768 graphs.php:2240
 #, fuzzy
 #| msgid "The Title of this Graph.  Generally programatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual."
 msgid "The Title of this Graph.  Generally programmatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual."
@@ -4788,23 +4796,23 @@ msgstr "Šīs diagrammas nosaukums. Parasti programmatiski ģenerēts, izmantojo
 msgid "The device for this Graph."
 msgstr "Ierīce šim grafikam."
 
-#: graph_view.php:748 graphs.php:2245
+#: graph_view.php:748 graphs.php:2249
 msgid "Source Type"
 msgstr "Avota veids"
 
-#: graph_view.php:750 graphs.php:2248
+#: graph_view.php:750 graphs.php:2252
 msgid "The underlying source that this Graph was based upon."
 msgstr "Pamatavots, uz kura balstījās šī diagramma."
 
-#: graph_view.php:753 graphs.php:2251
+#: graph_view.php:753 graphs.php:2255
 msgid "Source Name"
 msgstr "Avota nosaukums"
 
-#: graph_view.php:755 graphs.php:2254
+#: graph_view.php:755 graphs.php:2258
 msgid "The Graph Template or Data Query that this Graph was based upon."
 msgstr "Diagrammas veidne vai datu vaicājums, uz kura balstījās šī diagramma."
 
-#: graph_view.php:760 graph_view.php:773 graphs.php:2260
+#: graph_view.php:760 graph_view.php:773 graphs.php:2264
 msgid "The size of this Graph when not in Preview mode."
 msgstr "Šīs diagrammas lielums, kad tas nav priekšskatījuma režīmā."
 
@@ -5096,11 +5104,11 @@ msgstr "Grafiks, datu avots"
 msgid "Non Templated"
 msgstr "Nav veidnes"
 
-#: graphs.php:2242
+#: graphs.php:2246
 msgid "The internal database ID for this Graph.  Useful when performing automation or debugging."
 msgstr "Šī grafika iekšējā datu bāzes ID. Noderīgs, veicot automatizāciju vai atkļūdošanu."
 
-#: graphs.php:2286
+#: graphs.php:2290
 msgid "Empty Graph"
 msgstr "Tukšs grafiks"
 
@@ -5597,7 +5605,7 @@ msgstr "Atgūstas"
 
 #: host.php:1638 lib/api_automation.php:175 lib/api_automation.php:1101
 #: lib/auth.php:2359 lib/html_utility.php:936 lib/import.php:319
-#: lib/plugins.php:1258 lib/plugins.php:1259 lib/rrd.php:3034 lib/rrd.php:3046
+#: lib/plugins.php:1258 lib/plugins.php:1259 lib/rrd.php:3058 lib/rrd.php:3070
 #: package_import.php:541 utilities.php:211 utilities.php:212
 #: utilities.php:2596
 msgid "Unknown"
@@ -6580,7 +6588,7 @@ msgstr "Dabiskā sakārtošana"
 msgid "Numeric Ordering"
 msgstr "Ciparu secība"
 
-#: include/global_arrays.php:914 lib/rrd.php:2975
+#: include/global_arrays.php:914 lib/rrd.php:2999
 msgid "Header"
 msgstr "Galvene"
 
@@ -8164,7 +8172,7 @@ msgstr "Cik bieži dati tiks vākti no datu avota?"
 msgid "How long can data be missing before RRDtool records unknown data.  Increase this value if your Data Source is unstable and you wish to carry forward old data rather than show gaps in your graphs.  This value is multiplied by the X-Files Factor to determine the actual amount of time."
 msgstr "Cik ilgi datu var trūkt, pirms RRDtool reģistrē nezināmus datus. Palieliniet šo vērtību, ja jūsu datu avots ir nestabils un vēlaties pārnest vecos datus, nevis rādīt diagrammās nepilnības. Šī vērtība tiek reizināta ar X-Files koeficientu, lai noteiktu faktisko laika ilgumu."
 
-#: include/global_form.php:240 lib/rrd.php:3066
+#: include/global_form.php:240 lib/rrd.php:3090
 msgid "X-Files Factor"
 msgstr "X-failu faktors"
 
@@ -8718,7 +8726,7 @@ msgstr "Necaurredzamība/Alfa kanāls"
 msgid "The opacity/alpha channel of the color."
 msgstr "Krāsas necaurredzamības/alfa kanāls."
 
-#: include/global_form.php:999 lib/rrd.php:3062
+#: include/global_form.php:999 lib/rrd.php:3086
 msgid "Consolidation Function"
 msgstr "Konsolidācijas funkcija"
 
@@ -12412,7 +12420,7 @@ msgstr "Atbilstošās ierīces"
 
 #: lib/api_automation.php:146 lib/api_automation.php:1072
 #: lib/clog_webapi.php:539 lib/html_reports.php:956 lib/html_reports.php:1611
-#: lib/html_reports.php:1938 lib/html_reports.php:1949 lib/rrd.php:3004
+#: lib/html_reports.php:1938 lib/html_reports.php:1949 lib/rrd.php:3028
 #: utilities.php:356 utilities.php:1442 utilities.php:3024
 msgid "Type"
 msgstr "Tips"
@@ -14473,7 +14481,7 @@ msgstr "Notikumi"
 msgid "Send Report"
 msgstr "Nosūtīt ziņojumu"
 
-#: lib/html_reports.php:1470 lib/import.php:2455 user_admin.php:1848
+#: lib/html_reports.php:1470 lib/import.php:2461 user_admin.php:1848
 msgid "[new]"
 msgstr "[jauns]"
 
@@ -14717,67 +14725,67 @@ msgstr "neeksistē"
 msgid "not writable"
 msgstr "nav rakstāms"
 
-#: lib/import.php:2163
+#: lib/import.php:2169
 msgid "Unknown Field"
 msgstr "Nezināms lauks"
 
-#: lib/import.php:2416
+#: lib/import.php:2422
 msgid "Import Preview Results"
 msgstr "Importēt priekšskatījuma rezultātus"
 
-#: lib/import.php:2416
+#: lib/import.php:2422
 msgid "Import Results"
 msgstr "Importēt rezultātus"
 
-#: lib/import.php:2420
+#: lib/import.php:2426
 msgid "Cacti would make the following changes if the Package was imported:"
 msgstr "Ja pakotne tiktu importēta, Cacti veiktu šādas izmaiņas:"
 
-#: lib/import.php:2422
+#: lib/import.php:2428
 msgid "Cacti has imported the following items for the Package:"
 msgstr "Cacti pakotnei ir importējis šādas preces:"
 
-#: lib/import.php:2425
+#: lib/import.php:2431
 msgid "Package Files"
 msgstr "Pakešu faili"
 
-#: lib/import.php:2429
+#: lib/import.php:2435
 msgid "[preview] "
 msgstr "[priekšskatījums]"
 
-#: lib/import.php:2434
+#: lib/import.php:2440
 msgid "Cacti would make the following changes if the Template was imported:"
 msgstr "Ja veidne tiktu importēta, Cacti veiktu šādas izmaiņas:"
 
-#: lib/import.php:2436
+#: lib/import.php:2442
 msgid "Cacti has imported the following items for the Template:"
 msgstr "Cacti ir importējis šādus vienumus veidnei:"
 
-#: lib/import.php:2445
+#: lib/import.php:2451
 msgid "[success]"
 msgstr "[panākumi]"
 
-#: lib/import.php:2447
+#: lib/import.php:2453
 msgid "[fail]"
 msgstr "[neizdevās]"
 
-#: lib/import.php:2449
+#: lib/import.php:2455
 msgid "[preview]"
 msgstr "[priekšskatījums]"
 
-#: lib/import.php:2453
+#: lib/import.php:2459
 msgid "[updated]"
 msgstr "[atjaunināts]"
 
-#: lib/import.php:2457
+#: lib/import.php:2463
 msgid "[unchanged]"
 msgstr "[nemainīts]"
 
-#: lib/import.php:2493
+#: lib/import.php:2499
 msgid "Found Dependency:"
 msgstr "Atrastā atkarība:"
 
-#: lib/import.php:2495
+#: lib/import.php:2501
 msgid "Unmet Dependency:"
 msgstr "Neapmierinātā atkarība:"
 
@@ -16084,175 +16092,175 @@ msgstr "Neizdevās pievienot atskaites grafikas elementu <i>%s</i> . Jau pastāv
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
 msgstr "Izlaistā pārskata grafikas elements “ <i>%s</i> ” jau pastāv"
 
-#: lib/rrd.php:2771
+#: lib/rrd.php:2782
 #, php-format
 msgid "Required RRD step size is '%s'"
 msgstr "Nepieciešamais RRD soļa lielums ir “%s”"
 
-#: lib/rrd.php:2800
+#: lib/rrd.php:2824
 #, php-format
 msgid "Type for Data Source '%s' should be '%s'"
 msgstr "Datu avota “%s” veidam ir jābūt “%s”"
 
-#: lib/rrd.php:2805
+#: lib/rrd.php:2829
 #, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
 msgstr "Datu avota “%s” sirdsdarbībai ir jābūt “%s”"
 
-#: lib/rrd.php:2817
+#: lib/rrd.php:2841
 #, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "RRD minimumam datu avotam “%s” ir jābūt “%s”"
 
-#: lib/rrd.php:2837
+#: lib/rrd.php:2861
 #, php-format
 msgid "RRD maximum for Data Source '%s' should be '%s'"
 msgstr "Datu avota “%s” RRD maksimālajai vērtībai ir jābūt “%s”"
 
-#: lib/rrd.php:2847
+#: lib/rrd.php:2871
 #, php-format
 msgid "DS '%s' missing in RRDfile"
 msgstr "RRD failā trūkst DS '%s'"
 
-#: lib/rrd.php:2856
+#: lib/rrd.php:2880
 #, php-format
 msgid "DS '%s' missing in Cacti definition"
 msgstr "Kaktusu definīcijā trūkst DS '%s'"
 
-#: lib/rrd.php:2873 lib/rrd.php:2874
+#: lib/rrd.php:2897 lib/rrd.php:2898
 #, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "Cacti RRA '%s' ir tāds pats CF/soļi (%s, %s) kā '%s'"
 
-#: lib/rrd.php:2888 lib/rrd.php:2889
+#: lib/rrd.php:2912 lib/rrd.php:2913
 #, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "RRA failam “%s” ir tāds pats CF/soļi (%s, %s) kā failam “%s”."
 
-#: lib/rrd.php:2920
+#: lib/rrd.php:2944
 #, php-format
 msgid "XFF for cacti RRA id '%s' should be '%s'"
 msgstr "XFF kaktusu RRA ID '%s' ir jābūt '%s'"
 
-#: lib/rrd.php:2924
+#: lib/rrd.php:2948
 #, php-format
 msgid "Number of rows for Cacti RRA id '%s' should be '%s'"
 msgstr "Rindu skaitam Cacti RRA id '%s' ir jābūt '%s'"
 
-#: lib/rrd.php:2940
+#: lib/rrd.php:2964
 #, php-format
 msgid "RRA '%s' missing in RRDfile"
 msgstr "RRD failā trūkst RRA “%s”."
 
-#: lib/rrd.php:2949
+#: lib/rrd.php:2973
 #, php-format
 msgid "RRA '%s' missing in Cacti definition"
 msgstr "Kaktusu definīcijā trūkst RRA “%s”."
 
-#: lib/rrd.php:2971
+#: lib/rrd.php:2995
 msgid "RRD File Information"
 msgstr "RRD faila informācija"
 
-#: lib/rrd.php:3003
+#: lib/rrd.php:3027
 msgid "Data Source Items"
 msgstr "Datu avota vienumi"
 
-#: lib/rrd.php:3005
+#: lib/rrd.php:3029
 msgid "Minimal Heartbeat"
 msgstr "Minimāla sirdsdarbība"
 
-#: lib/rrd.php:3006
+#: lib/rrd.php:3030
 msgid "Min"
 msgstr "Min"
 
-#: lib/rrd.php:3007
+#: lib/rrd.php:3031
 msgid "Max"
 msgstr "Maks."
 
-#: lib/rrd.php:3008
+#: lib/rrd.php:3032
 msgid "Last DS"
 msgstr "Pēdējā DS"
 
-#: lib/rrd.php:3010
+#: lib/rrd.php:3034
 msgid "Unknown Sec"
 msgstr "Nezināma sek"
 
-#: lib/rrd.php:3061
+#: lib/rrd.php:3085
 msgid "Round Robin Archive"
 msgstr "Round Robin arhīvs"
 
-#: lib/rrd.php:3064
+#: lib/rrd.php:3088
 msgid "Cur Row"
 msgstr "Cur Row"
 
-#: lib/rrd.php:3065
+#: lib/rrd.php:3089
 msgid "PDP per Row"
 msgstr "PDP katrā rindā"
 
-#: lib/rrd.php:3067
+#: lib/rrd.php:3091
 msgid "CDP Prep Value (0)"
 msgstr "CDP sagatavošanas vērtība (0)"
 
-#: lib/rrd.php:3068
+#: lib/rrd.php:3092
 msgid "CDP Unknown Data points (0)"
 msgstr "CDP nezināmie datu punkti (0)"
 
-#: lib/rrd.php:3146
+#: lib/rrd.php:3170
 #, php-format
 msgid "rename %s to %s"
 msgstr "pārdēvēt %s par %s"
 
-#: lib/rrd.php:3205
+#: lib/rrd.php:3229
 msgid "Error while parsing the XML of rrdtool dump"
 msgstr "Kļūda, parsējot rrdtool dump XML"
 
-#: lib/rrd.php:3237 lib/rrd.php:3295 lib/rrd.php:3354
+#: lib/rrd.php:3261 lib/rrd.php:3319 lib/rrd.php:3378
 #, php-format
 msgid "ERROR while writing XML file: %s"
 msgstr "KĻŪDA, rakstot XML failu: %s"
 
-#: lib/rrd.php:3248 lib/rrd.php:3306 lib/rrd.php:3365
+#: lib/rrd.php:3272 lib/rrd.php:3330 lib/rrd.php:3389
 #, php-format
 msgid "ERROR: RRDfile %s not writeable"
 msgstr "KĻŪDA: RRDfails %s nav ierakstāms"
 
-#: lib/rrd.php:3278 lib/rrd.php:3337
+#: lib/rrd.php:3302 lib/rrd.php:3361
 msgid "Error while parsing the XML of RRDtool dump"
 msgstr "Kļūda, parsējot RRDtool izgāztuves XML"
 
-#: lib/rrd.php:3585
+#: lib/rrd.php:3609
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
 msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) noņemts no RRD faila"
 
-#: lib/rrd.php:3622
+#: lib/rrd.php:3646
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
 msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) pievieno RRD failam"
 
-#: lib/rrd.php:3652 lib/rrd.php:3666
+#: lib/rrd.php:3676 lib/rrd.php:3690
 #, php-format
 msgid "Website does not have write access to %s, may be unable to create/update RRDs"
 msgstr "Vietnei nav rakstīšanas piekļuves %s, iespējams, nevar izveidot/atjaunināt RRD"
 
-#: lib/rrd.php:3662
+#: lib/rrd.php:3686
 msgid "(Custom)"
 msgstr "(Pielāgots)"
 
-#: lib/rrd.php:3668
+#: lib/rrd.php:3692
 msgid "Failed to open data file, poller may not have run yet"
 msgstr "Neizdevās atvērt datu failu, iespējams, aptaujātajs vēl nav palaists"
 
-#: lib/rrd.php:3671
+#: lib/rrd.php:3695
 msgid "RRA Folder"
 msgstr "RRA mape"
 
-#: lib/rrd.php:3671
+#: lib/rrd.php:3695
 #, fuzzy
 msgid "Root"
 msgstr "ROOT - uz objektu orientēta bibliotēku kopa mērogojamu datu analīzei"
 
-#: lib/rrd.php:3780
+#: lib/rrd.php:3804
 msgid "Unknown RRDtool Error"
 msgstr "Nezināma RRDtool kļūda"
 
