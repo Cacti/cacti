@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-06-18 20:39-0400\n"
-"PO-Revision-Date: 2022-11-07 22:53+0000\n"
+"PO-Revision-Date: 2022-11-14 15:34+0000\n"
 "Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core/lv/>\n"
 "Language: lv-LV\n"
@@ -1739,9 +1739,9 @@ msgstr ""
 #, fuzzy
 msgid "A space delimited list of alternate DNS Servers to use for DNS resolution. If blank, the poller OS will be used to resolve DNS names."
 msgstr ""
-"Alternatīvu DNS serveru saraksts ar atstarpi, ko izmantot DNS izšķiršanai. "
-"Ja lauks ir tukšs, DNS nosaukumu noteikšanai tiks izmantota aptaujas "
-"operētājsistēma."
+"Alternatīvo DNS serveru saraksts ar atstarpi, ko izmantot DNS noteikšanai. "
+"Ja lauku atstāsiet tukšus, DNS nosaukumu noteikšanai tiks izmantota "
+"aptaujātaja (poller) operētājsistēma."
 
 #: automation_networks.php:491
 msgid "Enter IPs or FQDNs of DNS Servers"
@@ -2457,9 +2457,8 @@ msgid "SNMP Option Set"
 msgstr ""
 
 #: automation_snmp.php:811
-#, fuzzy
 msgid "Networks Using"
-msgstr "Tīkla izmantošana"
+msgstr "Tīklus izmanto"
 
 #: automation_snmp.php:812
 msgid "SNMP Entries"
@@ -4063,15 +4062,19 @@ msgstr[2] "Atstāt visus <strong>grafikus</strong> neskartus."
 msgid "Delete all <strong>Graph Items</strong> that reference this Data Source."
 msgid_plural "Delete all <strong>Graph Items</strong> that reference these Data Sources."
 msgstr[0] ""
-msgstr[1] "Dzēst visus <strong>grafika vienumus</strong>, kas atsaucas uz šo datu avotu."
-msgstr[2] "Dzēst visus <strong>grafikas vienumus</strong>, kas atsaucas uz šiem datu avotiem."
+msgstr[1] ""
+"Dzēst visus <strong>grafika vienumus</strong>, kas atsaucas uz šo datu avotu."
+msgstr[2] ""
+"Dzēst visus <strong>grafika vienumus</strong>, kas atsaucas uz šiem datu "
+"avotiem."
 
 #: data_sources.php:512
 msgid "Delete all <strong>Graphs</strong> that reference this Data Source."
 msgid_plural "Delete all <strong>Graphs</strong> that reference these Data Sources."
 msgstr[0] ""
 msgstr[1] "Dzēst visus <strong>grafikus</strong>, kas atsaucas uz šo datu avotu."
-msgstr[2] "Dzēst visus <strong>grafikus</strong>, kas atsaucas uz šiem datu avotiem."
+msgstr[2] ""
+"Dzēst visus <strong>grafikus</strong>, kas atsaucas uz šiem datu avotiem."
 
 #: data_sources.php:519
 msgid "Delete Data Source"
