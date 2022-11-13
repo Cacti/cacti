@@ -54,7 +54,7 @@ function get_rrdfiles($thread_id = 1, $max_threads = 1) {
 
 		return $rows;
 	} else {
-		$newrows = array_chunk($rows, $max_threads);
+		$newrows = array_chunk($rows, ceil(cacti_sizeof($rows) / $max_threads));
 
 		if (isset($newrows[$thread_id - 1])) {
 			return $newrows[$thread_id - 1];
