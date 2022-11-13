@@ -57,7 +57,15 @@ function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port =
 	$dev = 0.0;
 
 	$script_timeout = read_config_option('script_timeout');
-	$ping_timeout   = read_config_option('ping_timeout');
+
+	$ping_timeout = db_fetch_cell_prepared('SELECT ping_timeout
+		FROM host
+		WHERE hostname = ?',
+		array($hostname));
+
+	if (empty($ping_timeout)) {
+		$ping_timeout = read_config_option('ping_timeout');
+	}
 
 	switch (strtoupper($ping_type)) {
 		case 'ICMP':
@@ -115,3 +123,4 @@ function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port =
 		return sprintf('min:%0.4f avg:%0.4f max:%0.4f dev:%0.4f loss:%0.4f', $min, $avg, $max, $dev, $loss);
 	}
 }
+
