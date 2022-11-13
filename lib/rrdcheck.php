@@ -24,66 +24,40 @@
 
 
 function get_rrdfiles($thread_id = 1, $max_threads = 1) {
+	global $config;
+
 	static $newrows = array();
 
+	if (cacti_sizeof($newrows)) {
+		return $newrows[$thread_id - 1];
+	}
+
+	$rows = db_fetch_assoc_prepared('SELECT dtd.data_source_profile_id, dtd.local_data_id,
+		REPLACE(dtd.data_source_path, "<path_rra>", ?) AS data_source_path,
+		GROUP_CONCAT(DISTINCT dtr.data_source_name) AS data_source_names,
+		GROUP_CONCAT(DISTINCT dtd.rrd_step) AS rrd_step,
+		GROUP_CONCAT(DISTINCT dtr.rrd_heartbeat) AS rrd_heartbeat,
+		dsp.heartbeat AS profile_heartbeat, dsp.step AS profile_step
+		FROM data_template_data AS dtd
+		INNER JOIN data_template_rrd AS dtr
+		ON dtr.local_data_id = dtd.local_data_id
+		INNER JOIN graph_templates_item AS gti
+		ON dtr.id = gti.task_item_id
+		INNER JOIN data_source_profiles AS dsp
+		ON dtd.data_source_profile_id = dsp.id
+		WHERE dtd.local_data_id != 0
+		GROUP BY dtd.local_data_id',
+		array($config['rra_path']));
+
 	if ($max_threads == 1) {
-		return db_fetch_assoc('SELECT dtd.data_source_profile_id, dtd.local_data_id AS local_data_id, rrd_name, data_source_path, dtd.rrd_step AS rrdstep
-			FROM data_template_data AS dtd
-			JOIN poller_item AS pi
-			ON pi.local_data_id = dtd.local_data_id
-			WHERE pi.local_data_id IS NOT NULL
-			AND data_source_path != ""
-			AND dtd.local_data_id != 0');
+		$newrows[0] = $rows;
 
-		foreach ($rows as $row) {
-        		$newrows[$row['local_data_id']]['ds'][$row['rrd_name']] = $row['rrdstep'];
-        		$newrows[$row['local_data_id']]['path'] = $row['data_source_path'];
-		}	
-		
-		return ($newrows);
-			
-	} elseif (sizeof($newrows)) {
-		return $newrows[$thread_id];
+		return $rows;
 	} else {
+		$newrows = array_chunk($rows, $max_threads);
 
-		$rows = db_fetch_assoc('SELECT count(*) 
-			FROM data_template_data AS dtd
-			JOIN poller_item AS pi
-			ON pi.local_data_id = dtd.local_data_id
-			WHERE pi.local_data_id IS NOT NULL
-			AND data_source_path != ""
-			AND dtd.local_data_id != 0
-			GROUP BY dtd.local_data_id');
-
-		$split_size = ceil(cacti_sizeof($rows) / $max_threads);
-
-		$rows = db_fetch_assoc('SELECT data_source_profile_id,dtd.local_data_id AS local_data_id, rrd_name, data_source_path, dtd.rrd_step AS rrdstep
-			FROM data_template_data AS dtd
-			JOIN poller_item AS pi
-			ON pi.local_data_id = dtd.local_data_id
-			WHERE pi.local_data_id IS NOT NULL
-			AND data_source_path != ""
-			AND dtd.local_data_id != 0');
-
-		$thread  = 1;
-		$rras    = 0;
-		$newrows = array();
-
-		foreach($rows as $row) {
-			$rras++;
-
-			if ($rras > $split_size && $thread < $max_threads) {
-				$thread++;
-				$rras = 0;
-			}
-
-        		$newrows[$thread][$row['local_data_id']]['ds'][$row['rrd_name']] = $row['rrdstep'];
-        		$newrows[$thread][$row['local_data_id']]['path'] = $row['data_source_path'];
-        		$newrows[$thread][$row['local_data_id']]['data_source_profile_id'] = $row['data_source_profile_id'];        		
-		}
-
-		if (isset($newrows[$thread_id])) {
-			return $newrows[$thread_id];
+		if (isset($newrows[$thread_id - 1])) {
+			return $newrows[$thread_id - 1];
 		} else {
 			return array();
 		}
@@ -158,19 +132,26 @@ function do_rrdcheck($thread_id = 1) {
 	}
 
 	if (cacti_sizeof($rrdfiles)) {
-
 		$now  = time();
 
-		foreach ($rrdfiles as $rrdkey=>$rrdval) {
-                        $poller_interval = $profiles[$rrdval['data_source_profile_id']]['step'];
+		foreach ($rrdfiles as $rrdval) {
+			$local_data_id = $rrdval['local_data_id'];
+			$data_sources  = array();
 
-                        // The first RRA may have less than 24 hours of samples
-                        $duration = $profiles[$rrdval['data_source_profile_id']]['step'] * ($profiles[$rrdval['data_source_profile_id']]['rows']-1);
+			// Rekey the Data Sources key
+			$sources = explode(',', $rrdval['data_source_names']);
+			foreach($sources as $s) {
+				$data_sources[$s] = $s;
+			}
 
-                        $end   = $now;
-       	                $start = $end - $duration;
+			// The first RRA may have less than 24 hours of samples
+			$duration = $profiles[$rrdval['data_source_profile_id']]['step'] * ($profiles[$rrdval['data_source_profile_id']]['rows']-1);
+			$step     = $profiles[$rrdval['data_source_profile_id']]['step'];
 
-			$file = str_replace('<path_rra>', $config['rra_path'], $rrdval['path']);
+			$end   = $now;
+			$start = $end - $duration;
+
+			$file = $rrdval['data_source_path'];
 
 			if ($use_proxy) {
 				$file_exists = rrdtool_execute("file_exists $file", true, RRDTOOL_OUTPUT_BOOLEAN, false, 'rrdcheck');
@@ -182,151 +163,201 @@ function do_rrdcheck($thread_id = 1) {
 			// don't attempt to get information if the file does not exist
 			if ($file_exists) {
 				if (!is_resource_writable($file)) {
-					db_execute_prepared ('INSERT INTO rrdcheck 
-					(local_data_id,test_date,message) 
-					VALUES	(?,NOW(),?)',
-					array($rrdkey, "RRD file is not writable - $file"));
+					db_execute_prepared ('INSERT INTO rrdcheck
+						(local_data_id, test_date, message)
+						VALUES	(?,NOW(),?)',
+						array(
+							$local_data_id,
+							"RRDfile is not writable - $file"
+						)
+					);
 				}
 
-				if (time() > (filemtime($file)+3600)) {
+				if (time() > (filemtime($file) + 3600)) {
+					db_execute_prepared ('INSERT INTO rrdcheck
+						(local_data_id, test_date, message)
+						VALUES (?,NOW(),?)',
+						array(
+							$local_data_id,
+							"RRDfile modify time older than hour - $file"
+						)
+					);
+				}
 
-					db_execute_prepared ('INSERT INTO rrdcheck 
-					(local_data_id,test_date,message) 
-					VALUES (?,NOW(),?)', 
-					array($rrdkey, "RRD file modify time older than hour - $file"));
-				} 
+				if ($rrdval['profile_step'] != $rrdval['rrd_step']) {
+					// Fix the RRD Data Template Data Step
+					db_execute_prepared('UPDATE data_template_data
+						SET rrd_step = ?
+						WHERE local_data_id = ?',
+						array(
+							$rrdval['profile_step'],
+							$local_data_id
+						)
+					);
+				}
 
-				$step = current($rrdval['ds']);
-				
+				if ($rrdval['rrd_heartbeat'] != $rrdval['profile_heartbeat']) {
+					// Fix the RRD Data Template Data Step
+					db_execute_prepared('UPDATE data_template_rrd
+						SET rrd_heartbeat = ?
+						WHERE local_data_id = ?',
+						array($rrdval['profile_heartbeat'], $rrdval['local_data_id']));
+				}
+
 				if ($use_proxy) {
 					$output = rrdtool_execute("info $file", false, RRDTOOL_OUTPUT_STDOUT, false, 'rrdcheck');
 				} else {
 					$output = rrdcheck_rrdtool_execute("info $file", $pipes);
 				}
 
-       				$matches  = array();
-				$rrd_info = array();
-				$output   = explode("\n", $output);
+				$matches     = array();
+				$rrd_info    = array();
+				$output      = explode("\n", $output);
 				$last_update = false;
-				
-       				foreach ($output as $line) {
-               				$line = trim($line);
-                				
-               				if (!$last_update) {
-               					if (preg_match('/^last_update = (\S+)$/', $line, $matches)) {
-							$last_update = $matches[1];
-						}
-               				}
-               				
-               				if (preg_match('/^ds\[(\S+)\]\.(\S+) = (\S+)$/', $line, $matches)) {
-                       				$rrd_info[$matches[1]][$matches[2]] = trim($matches[3], '"');
-               				} 
-       				}
+				$rrd_step    = false;
 
-       				if ($last_update  < (time() - 3600)) {
-					db_execute_prepared ('INSERT INTO rrdcheck 
-						(local_data_id,test_date,message) 
-						VALUES (?,NOW(),?)',
-						array(
-							$rrdkey,
-							"Last update value in RRD file is older than 1 hour. File $file"
-						)
-					);
-				}
+				// Process the RRDfile information into an array
+				foreach ($output as $line) {
+					$line = trim($line);
 
-				if (cacti_sizeof($rrdval['ds']) > cacti_sizeof($rrd_info)) {
-					db_execute_prepared ('INSERT INTO rrdcheck 
-						(local_data_id,test_date,message)
-						VALUES (?,NOW(),?)',
-						array(
-							$rrdkey,
-							"Number of DSs in database is bigger than in RRD file, please investigate. File $file"
-						)
-					);
-				}
-
-				if (cacti_sizeof($rrdval['ds']) < cacti_sizeof($rrd_info)) {
-					db_execute_prepared ('INSERT INTO rrdcheck
-						(local_data_id,test_date,message)
-						VALUES (?,NOW(),?)',
-						array(
-							$rrdkey, 
-							"Number of DSs in database is lower than in RRD file, please investigate. File $file"
-						)
-					);
-				}
-
-				$output = '';
-       				$matches = array();
-
-				foreach ($rrd_info as $info_key=>$info_array) {
-					if (!isset($rrdval['ds'][$info_key])) {
-						db_execute_prepared ('INSERT INTO rrdcheck 
-							(local_data_id,test_date,message) 
-							VALUES (?,NOW(),?)',
-							array(
-								$rrdkey,
-								"DS name exists in RRA file, but not in database. File $file, DS name $info_key"
-							)
-						);
-						
+					if ($line == '') {
 						continue;
 					}
 
-					if ($info_array['minimal_heartbeat'] <= $rrdval['ds'][$info_key]) {
-						db_execute_prepared ('INSERT INTO rrdcheck 
-							(local_data_id,test_date,message)
-							VALUES	(?,NOW(),?)',
+					if (!$last_update) {
+						if (preg_match('/^last_update = (\S+)$/', $line, $matches)) {
+							$last_update = $matches[1];
+						}
+					}
+
+					if (!$rrd_step) {
+						if (preg_match('/^step = (\S+)$/', $line, $matches)) {
+							$rrd_step = $matches[1];
+						}
+					}
+
+					if (preg_match('/^ds\[(\S+)\]\.(\S+) = (\S+)$/', $line, $matches)) {
+						$rrd_info[$matches[1]][$matches[2]] = trim($matches[3], '"');
+					}
+				}
+
+				if ($rrd_step != $rrdval['profile_step']) {
+					db_execute_prepared ('INSERT INTO rrdcheck
+						(local_data_id, test_date, message)
+						VALUES (?, NOW(), ?)',
+						array(
+							$local_data_id,
+							"The RRDfile step of {$step} does not match the Data Source Profile step {$rrdval['profile_step']}.  File '$file'."
+						)
+					);
+				}
+
+				if ($last_update  < (time() - 3600)) {
+					db_execute_prepared ('INSERT INTO rrdcheck
+						(local_data_id, test_date, message)
+						VALUES (?, NOW(), ?)',
+						array(
+							$local_data_id,
+							"Last update value in RRDfile is older than 1 hour.  File '$file'."
+						)
+					);
+				}
+
+				// Not really an issue that we should be calling out till we can fix
+				if (cacti_sizeof($data_sources) > cacti_sizeof($rrd_info)) {
+					db_execute_prepared ('INSERT INTO rrdcheck
+						(local_data_id, test_date, message)
+						VALUES (?, NOW(), ?)',
+						array(
+							$local_data_id,
+							"There are more Data Sources in the database than in the RRDfile, please investigate.  File '$file'."
+						)
+					);
+				}
+
+				if (cacti_sizeof($data_sources) < cacti_sizeof($rrd_info)) {
+					db_execute_prepared ('INSERT INTO rrdcheck
+						(local_data_id, test_date, message)
+						VALUES (?, NOW(), ?)',
+						array(
+							$local_data_id,
+							"There are less Data Sources in the database than in the RRDfile, please investigate.  File '$file'."
+						)
+					);
+				}
+
+				$output  = '';
+				$matches = array();
+
+				foreach ($rrd_info as $info_key => $info_array) {
+					if (!isset($data_sources[$info_key])) {
+						db_execute_prepared ('INSERT INTO rrdcheck
+							(local_data_id, test_date, message)
+							VALUES (?, NOW(), ?)',
 							array(
-								$rrdkey,
-								"RRD Minimal Heart is lower than polling interval. It can causes gaps in graph. File $file, DS name $key"
+								$local_data_id,
+								"The Data Source '$info_key' exists in RRDfile, but not in database.  File '$file'."
+							)
+						);
+
+						continue;
+					}
+
+					if ($info_array['minimal_heartbeat'] <= $poller_interval) {
+						db_execute_prepared ('INSERT INTO rrdcheck
+							(local_data_id, test_date, message)
+							VALUES	(?, NOW(), ?)',
+							array(
+								$local_data_id,
+								"The RRDfile Minimal Heart for Data Source '{$info_key}' is lower than polling interval.  This will causes gaps in Graphs.  File '$file.'"
 							)
 						);
 					}
-					if ($info_array['minimal_heartbeat'] < (2* $step)) {
+
+					if ($info_array['minimal_heartbeat'] < $rrdval['profile_heartbeat']) {
 						db_execute_prepared ('INSERT INTO rrdcheck
-							(local_data_id,test_date,message)
-							VALUES (?,NOW(),?)',
+							(local_data_id, test_date, message)
+							VALUES (?, NOW(), ?)',
 							array(
-								$rrdkey,
-								"It is recomended that the heartbeat is at least 2x larger than polling interval. File $file, DS name $key"
+								$local_data_id,
+								"The RRDfile minimal heartbeat for Data Source '{$info_key}' should be '{$rrdval['profile_heartbeat']}' and is currently '{$info_array['minimal_heartbeat']}'.  File '$file'."
 							)
 						);
 					}
 				}
 
 				// test if ds in db == ds in rra
-				foreach ($rrdval['ds'] as $dsname=>$dsvalue) {
-
+				foreach ($data_sources as $dsname) {
 					if (!array_key_exists($dsname, $rrd_info)) {
-						db_execute_prepared ('INSERT INTO rrdcheck 
-							(local_data_id,test_date,message)
-							VALUES (?,NOW(),?)',
+						db_execute_prepared ('INSERT INTO rrdcheck
+							(local_data_id, test_date, message)
+							VALUES (?, NOW(), ?)',
 							array(
-								$rrdkey, 
-								"DS name exists in DB, but not in RRA file. File $file, DS name $dsname"
+								$local_data_id,
+								"Data Source name '$dsname' exists in the Database, but not in RRDfile.  File '$file'."
 							)
 						);
 					}
-					
+
+					// Should never happend
 					if (empty($dsname)) {
 						db_execute_prepared ('INSERT INTO rrdcheck
-							(local_data_id,test_date,message)
-							VALUES (?,NOW(),?)',
+							(local_data_id, test_date, message)
+							VALUES (?, NOW(), ?)',
 							array(
-								$rrdkey,
-								"Database DS name is empty. Local data ID = $rrdkey, file $file"
+								$local_data_id,
+								"Database Data Source name is empty for local data id '$local_data_id'.   File '$file'."
 							)
 						);
 					}
 				}
 
 				// test stale data
-				
+
 				$pstart = $start - $step;
 				$pend = $end - $step;
 				$one_hour_limit = ($duration - 3600) / $step;
-				
+
 				if ($use_proxy) {
 					$info_array = rrdtool_execute("fetch $file LAST -s $pstart -e $pend ", false, RRDTOOL_OUTPUT_STDOUT, false, 'rrdcheck');
 				} else {
@@ -358,34 +389,33 @@ function do_rrdcheck($thread_id = 1) {
 							$data_source_names = preg_split('/\s+/', $line);
 
 							foreach ($data_source_names as $index => $name)  {
-               							$nan_24[$index] = 0;
-								$nan_1[$index] = 0;
+								$nan_24[$index] = 0;
+								$nan_1[$index]  = 0;
 							}
 
-							$dsses+= cacti_sizeof($data_source_names);
-
-							$first = false;
+							$dsses += cacti_sizeof($data_source_names);
+							$first  = false;
 						} else {
 							$parts = explode(':', $line);
 							$data  = explode(' ', trim($parts[1]));
 
 							foreach($data as $index=>$number) {
-								if ($index == 0) {	
+								if ($index == 0) {
 									// only onetime for each row
 									$lines_24++;
-									
+
 									if ($lines_24 > $one_hour_limit) { // last hour
 										$lines_1++;
 									}
 								}
-  
+
 								if (strtolower($number) == 'nan' || strtolower($number) == '-nan') {
 									$nan_24[$index]++;
 
 									if ($lines_24 > $one_hour_limit) {
 										$nan_1[$index]++;
 									}
-                }
+								}
 							}
 						}
 					}
@@ -398,43 +428,44 @@ function do_rrdcheck($thread_id = 1) {
 							$ratio = $count/$lines_24;
 						} else {
 							$ratio = 0;
+
 							db_execute_prepared ('INSERT INTO rrdcheck
-								(local_data_id,test_date,message)
+								(local_data_id, test_date, message)
 								VALUES (?,NOW(),?)',
 								array(
-									$rrdkey, 
-									"No data returned, maybe corrupted DS  {$data_source_names[$index]}, file $file"
+									$local_data_id,
+									"No data returned, maybe corrupted Data Source '{$data_source_names[$index]}'.  File '$file'."
 								)
 							);
 						}
 
 						if ($ratio == 1) {
 							db_execute_prepared ('INSERT INTO rrdcheck
-								(local_data_id,test_date,message)
+								(local_data_id, test_date, message)
 								VALUES (?,NOW(),?)',
 								array(
-									$rrdkey,
-									"Stale values for last 24 hours, DS {$data_source_names[$index]}, file $file"
+									$local_data_id,
+									"Stale values for last 24 hours, Data Source '{$data_source_names[$index]}'.  File '$file'."
 								)
 							);
 
 							$notified = true;
 						} elseif ($ratio > 0.5) {
 							db_execute_prepared ('INSERT INTO rrdcheck
-								(local_data_id,test_date,message)
+								(local_data_id, test_date, message)
 								VALUES (?,NOW(),?)',
 								array(
-									$rrdkey, 
-									"More than 50% ($count/$lines_24) values are NaN in last 24 hours, DS {$data_source_names[$index]}, file $file"
+									$local_data_id,
+									"More than 50% ($count/$lines_24) values are NaN in last 24 hours, Data Source '{$data_source_names[$index]}'.  File '$file'."
 								)
 							);
 						}
 					}
 
 					// 1 hour statistics
-					
+
 					foreach	($nan_1 as $index=>$count) {
-						if ($notified) {	
+						if ($notified) {
 							// 24hour notified, skipping
 							continue;
 						}
@@ -443,45 +474,45 @@ function do_rrdcheck($thread_id = 1) {
 							$ratio = $count/$lines_1;
 						} else {
 							$ratio = 0;
-							
+
 							db_execute_prepared ('INSERT INTO rrdcheck
-								(local_data_id,test_date,message)
+								(local_data_id, test_date, message)
 								VALUES (?,NOW(),?)',
 								array(
-									$rrdkey, 
-									"No data returned, maybe corrupted DS {$data_source_names[$index]}, file $file"
+									$local_data_id,
+									"No data returned, maybe corrupted Data Source '{$data_source_names[$index]}'.  File '$file'."
 								)
 							);
 						}
 
 						if ($ratio == 1) {
 							db_execute_prepared ('INSERT INTO rrdcheck
-								(local_data_id,test_date,message)
+								(local_data_id, test_date, message)
 								VALUES (?,NOW(),?)',
 								array(
-									$rrdkey,
-									"Stale values for last hour, DS {$data_source_names[$index]}, file $file"
+									$local_data_id,
+									"Stale values for last hour, Data Source '{$data_source_names[$index]}'.  File '$file'."
 								)
 							);
 						} elseif ($ratio > 0.5) {
 							db_execute_prepared ('INSERT INTO rrdcheck
-								(local_data_id,test_date,message)
+								(local_data_id, test_date, message)
 								VALUES (?,NOW(),?)',
 								array(
-									$rrdkey,
-									"More than 50% ($count/$lines_1) values are NaN in last hour, DS {$data_source_names[$index]}, file $file"
+									$local_data_id,
+									"More than 50% ($count/$lines_1) values are NaN in last hour, Data Source '{$data_source_names[$index]}'.  File '$file'."
 								)
 							);
 						}
 					}
 				} else {
-					cacti_log("WARNING: RRDcheck - no rrd data returned - $file", false, 'rrdcheck');
+					cacti_log("WARNING: RRDcheck - no rrd data returned - '$file'", false, 'rrdcheck');
 				}
 			} else {	// rrdfile does not exist
-				db_execute_prepared ('INSERT INTO rrdcheck 
-					(local_data_id,test_date,message) 
+				db_execute_prepared ('INSERT INTO rrdcheck
+					(local_data_id, test_date, message)
 					VALUES (?,NOW(),?)',
-					array($rrdkey, "RRD file does not exist - $file"));
+					array($local_data_id, "RRDfile does not exist - '$file'"));
 			}
 		}
 	}
