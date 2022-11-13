@@ -46,14 +46,6 @@ function get_rrdfile_names($thread_id = 1, $max_threads = 1) {
 	} elseif (sizeof($newrows)) {
 		return $newrows[$thread_id];
 	} else {
-		$items_total = db_fetch_cell('SELECT COUNT(*)
-			FROM data_template_data AS dtd
-			LEFT JOIN poller_item AS pi
-			ON pi.local_data_id = dtd.local_data_id
-			WHERE pi.local_data_id IS NOT NULL
-			AND data_source_path != ""
-			AND dtd.local_data_id != 0');
-
 		$dsses_total = db_fetch_cell('SELECT SUM(rrd_num)
 			FROM data_template_data AS dtd
 			LEFT JOIN poller_item AS pi
