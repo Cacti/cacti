@@ -51,6 +51,7 @@ $debug    = false;
 $force    = false;
 $archived = 0;
 $purged   = 0;
+$start    = microtime(true);
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
@@ -116,6 +117,10 @@ remove_aged_row_cache();
 if ($config['poller_id'] > 1) {
 	api_plugin_hook('poller_remote_maint');
 }
+
+$end = microtime(true);
+
+cacti_log(sprintf('MAINT STATS: Time:%0.2f', $end - $start), false, 'SYSTEM');
 
 unregister_process('maintenance', 'master', $config['poller_id']);
 
