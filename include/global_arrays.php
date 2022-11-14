@@ -1054,7 +1054,7 @@ $device_classes = array(
 	'webserver'    => __('Web Server Related'),
 	'windows'      => __('Windows Related'),
 	'ups'          => __('UPS Related'),
-	''             => __('Unassigned')
+	'unassigned'   => __('Unassigned')
 );
 
 if ((isset($_SESSION['sess_user_id']))) {
