@@ -893,6 +893,23 @@ function query_snmp_host($host_id, $snmp_query_id) {
 		}
 	}
 
+	/* Filtered index by value */
+	if (isset($snmp_queries['value_index_parse'])) {
+		$value_parse_regexp = '/' . str_replace('VALUE/REGEXP:', '', $snmp_queries['value_index_parse']) . '/';
+		
+		foreach ($snmp_indexes as $oid => $value) {
+			if (!preg_match($value_parse_regexp, $value)) {
+				unset($snmp_indexes[$oid]);
+			}
+		}
+		query_debug_timer_offset('data_query', __('List of indexes filtered by value @ \'%s\' Index Count: %s', $snmp_queries['oid_index'] , cacti_sizeof($snmp_indexes)));
+
+		/* show list of indices found */
+		foreach ($snmp_indexes as $oid => $value) {
+			query_debug_timer_offset('data_query', __('Filtered Index by value found at OID: \'%s\' value: \'%s\'', $oid , $value));
+		}
+	}
+	
 	/* the last octet of the oid is the index by default */
 	$index_parse_regexp = '/.*\.([0-9]+)$/';
 
@@ -1200,6 +1217,15 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						}
 
 						$snmp_index = preg_replace($index_regex,"\\1", $oid);
+						
+						if (isset($snmp_queries['value_index_parse'])) {
+							if (!in_array($snmp_index, $snmp_indexes)) {
+								debug_log_insert('data_query', __('No index[%s] in value_index_parse, skipping.', $snmp_index));
+								unset($snmp_data[$oid]);
+								continue;
+							}
+						}
+						
 						$oid = $field_array['oid'] . ".$snmp_index" . (isset($field_array['oid_suffix']) ? ('.' . $field_array['oid_suffix']) : '');
 						if ($field_name == 'ifOperStatus' || $field_name == 'ifAdminStatus') {
 							switch(true) {
@@ -1250,6 +1276,14 @@ function query_snmp_host($host_id, $snmp_query_id) {
 							$snmp_index = $value;
 						}
 
+						if (isset($snmp_queries['value_index_parse'])) {
+							if (!in_array($snmp_index, $snmp_indexes)) {
+								debug_log_insert('data_query', __('No index[%s] in value_index_parse, skipping.', $snmp_index));
+								unset($snmp_data[$oid]);
+								continue;
+							}
+						}
+						
 						$oid = $field_array['oid'] .  '.' . $parse_value;
 
 						/* rewrite octet strings */
@@ -1291,6 +1325,14 @@ function query_snmp_host($host_id, $snmp_query_id) {
 							$snmp_index = $value;
 						}
 
+						if (isset($snmp_queries['value_index_parse'])) {
+							if (!in_array($snmp_index, $snmp_indexes)) {
+								debug_log_insert('data_query', __('No index[%s] in value_index_parse, skipping.', $snmp_index));
+								unset($snmp_data[$oid]);
+								continue;
+							}
+						}
+						
 						$oid      = $field_array['oid'] .  '.' . $parse_value;
 						$ip_value = '';
 
@@ -1330,6 +1372,14 @@ function query_snmp_host($host_id, $snmp_query_id) {
 							$snmp_index = $value;
 						}
 
+						if (isset($snmp_queries['value_index_parse'])) {
+							if (!in_array($snmp_index, $snmp_indexes)) {
+								debug_log_insert('data_query', __('No index[%s] in value_index_parse, skipping.', $snmp_index));
+								unset($snmp_data[$oid]);
+								continue;
+							}
+						}
+						
 						$oid = $field_array['oid'];
 
 						debug_log_insert('data_query', __('Found item [%s=\'%s\'] index: %s [from regexp oid value parse]', $field_name, $parse_value, $snmp_index));
