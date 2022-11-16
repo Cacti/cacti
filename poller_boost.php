@@ -154,6 +154,9 @@ if ($child == false) {
 
 		/* Launch the boost children */
 		if ($continue) {
+			/* Allow mysql to flush the rename transaction */
+			sleep(7);
+
 			boost_launch_children();
 
 			/* Wait for all processes to continue */
