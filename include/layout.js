@@ -2871,7 +2871,8 @@ function appendHeaderSuppression(url) {
 }
 
 function stripHeaderSuppression(url) {
-	return url.replace('header=false', '').replace('?&', '?').replace('&&', '&');
+	url = url.replace('header=false', '').replace('?&', '?').replace('&&', '&');
+	return url.replace('headercontent=true', '').replace('?&', '?').replace('&&', '&');
 }
 
 /** setupPageTimeout - This function will setup the page timeout based upon
