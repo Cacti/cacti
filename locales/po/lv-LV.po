@@ -4,19 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti 1.2.20\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-11-12 15:22-0500\n"
-"PO-Revision-Date: 2022-11-07 22:53+0000\n"
-"Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
-"Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\n"
-"Language: lv-LV\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\n"
-"X-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-11-12 15:22-0500\nPO-Revision-Date: 2022-11-14 15:34+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2601 lib/html.php:2491
 msgid "About Cacti"
@@ -947,10 +935,9 @@ msgid "User was Authenticated, but the Template Account is disabled.  Using Gues
 msgstr "Lietotājs tika autentificēts, bet veidnes konts ir atspējots. Viesu konta izmantošana"
 
 #: auth_login.php:145
-#, fuzzy, php-format
-#| msgid "Access Denied!  Guest user id %s does not exist.  Please contact your Adminitrator."
+#, php-format
 msgid "Access Denied!  Guest user id %s does not exist.  Please contact your Administrator."
-msgstr "Pieeja noliegta! Viesa lietotāja ID %s nepastāv. Lūdzu, sazinieties ar savu administratoru."
+msgstr "Piekļuve liegta!  Viesu lietotāja ID %s neeksistē.  Lūdzu, sazinieties ar savu Cacti administratoru."
 
 #: auth_login.php:180
 msgid "Access Denied!  User account disabled."
@@ -1636,7 +1623,7 @@ msgstr "Alternatīvie DNS serveri"
 #: automation_networks.php:483
 #, fuzzy
 msgid "A space delimited list of alternate DNS Servers to use for DNS resolution. If blank, the poller OS will be used to resolve DNS names."
-msgstr "Alternatīvu DNS serveru saraksts ar atstarpi, ko izmantot DNS izšķiršanai. Ja lauks ir tukšs, DNS nosaukumu noteikšanai tiks izmantota aptaujas operētājsistēma."
+msgstr "Alternatīvo DNS serveru saraksts ar atstarpi, ko izmantot DNS noteikšanai. Ja lauku atstāsiet tukšus, DNS nosaukumu noteikšanai tiks izmantota aptaujātaja (poller) operētājsistēma."
 
 #: automation_networks.php:486
 msgid "Enter IPs or FQDNs of DNS Servers"
@@ -2355,9 +2342,8 @@ msgid "SNMP Option Set"
 msgstr "SNMP opciju kopa"
 
 #: automation_snmp.php:803
-#, fuzzy
 msgid "Networks Using"
-msgstr "Tīkla izmantošana"
+msgstr "Tīklus izmanto"
 
 #: automation_snmp.php:804
 msgid "SNMP Entries"
@@ -3103,7 +3089,7 @@ msgstr "RRD atjaunināts"
 #, fuzzy
 #| msgid "Determines if the RRDfile has been writted to properly."
 msgid "Determines if the RRDfile has been written to properly."
-msgstr "Nosaka, vai RRDfile ir pareizi ierakstīts."
+msgstr "Nosaka, vai RRDfile tika pareizi ierakstīts."
 
 #: data_debug.php:495 data_debug.php:612 data_debug.php:795
 msgid "Issues"
@@ -3251,10 +3237,9 @@ msgid "Issue"
 msgstr "Izdot"
 
 #: data_debug.php:878
-#, fuzzy, php-format
-#| msgid "For attrbitute '%s', issue found '%s'"
+#, php-format
 msgid "For attribute '%s', issue found '%s'"
-msgstr "Atribūtam “%s” tika atrasta problēma “%s”"
+msgstr "'%s' atribūtam, atrasta '%s' problēma"
 
 #: data_debug.php:893
 msgid "Apply Suggested Fixes"
@@ -3295,12 +3280,14 @@ msgid "Delete All Checks"
 msgstr "Dzēst visus čekus"
 
 #: data_debug.php:1042
+#, fuzzy
 msgid "Run All"
-msgstr ""
+msgstr "Palaist visu"
 
 #: data_debug.php:1042
+#, fuzzy
 msgid "Run checks on currently filtered Data Sources and preserve other results"
-msgstr ""
+msgstr "Veikt pārbaudi pašreiz filtrētiem datu avotiem un saglabāt citus rezultātus"
 
 #: data_debug.php:1050 data_sources.php:1417 data_templates.php:1045
 #: lib/html.php:2486
@@ -3972,7 +3959,7 @@ msgid "Delete all <strong>Graph Items</strong> that reference this Data Source."
 msgid_plural "Delete all <strong>Graph Items</strong> that reference these Data Sources."
 msgstr[0] ""
 msgstr[1] "Dzēst visus <strong>grafika vienumus</strong>, kas atsaucas uz šo datu avotu."
-msgstr[2] "Dzēst visus <strong>grafikas vienumus</strong>, kas atsaucas uz šiem datu avotiem."
+msgstr[2] "Dzēst visus <strong>grafika vienumus</strong>, kas atsaucas uz šiem datu avotiem."
 
 #: data_sources.php:528
 msgid "Delete all <strong>Graphs</strong> that reference this Data Source."
@@ -4207,7 +4194,7 @@ msgstr "Datu avota nosaukums"
 #, fuzzy
 #| msgid "The name of this Data Source. Generally programtically generated from the Data Template definition."
 msgid "The name of this Data Source. Generally programmatically generated from the Data Template definition."
-msgstr "Šī datu avota nosaukums. Parasti programmatiski ģenerēts no datu veidnes definīcijas."
+msgstr "Šī datu avota nosaukums. Parasti programmu ģenerēta no datu veidnes definīcijas."
 
 #: data_sources.php:1640
 msgid "The internal database ID for this Data Source. Useful when performing automation or debugging."
@@ -4405,7 +4392,7 @@ msgstr "Nav atrasta neviena datu veidne"
 #, fuzzy
 #| msgid "Click 'Continue' to delete the folling GPRINT Preset(s)."
 msgid "Click 'Continue' to delete the following GPRINT Preset(s)."
-msgstr "Noklikšķiniet uz 'Turpināt', lai dzēstu sekojošo(-os) GPRINT priekšiestatījumu(s)."
+msgstr "Noklikšķiniet uz 'Turpināt', lai dzēstu norādīto(s) GPRINT priekšiestatījumu(s)."
 
 #: gprint_presets.php:153
 msgid "Delete GPRINT Preset(s)"
@@ -4477,10 +4464,8 @@ msgid "CSV Export"
 msgstr "CSV eksportēšana"
 
 #: graph.php:139 graph.php:408 lib/html.php:484
-#, fuzzy
-#| msgid "Edit Graph Template."
 msgid "Edit Graph Template"
-msgstr "Rediģēt diagrammas veidni."
+msgstr "Rediģēt grafika veidni"
 
 #: graph.php:144 lib/html.php:490 lib/html.php:492
 msgid "Click to view just this Graph in Real-time"
@@ -5093,10 +5078,8 @@ msgid "Graph Management [ %s ]"
 msgstr "Grafiku pārvaldība [ %s ]"
 
 #: graphs.php:2049
-#, fuzzy
-#| msgid "Graph, Data Source"
 msgid "Graph Source"
-msgstr "Grafiks, datu avots"
+msgstr "Grafika avots"
 
 #: graphs.php:2054
 #, fuzzy
@@ -5255,7 +5238,7 @@ msgstr "Iestatīt noklusējumu"
 #: help.php:38
 #, php-format
 msgid "WARNING: Cacti Page: %s Generated a Fatal Error %d!"
-msgstr ""
+msgstr "BRĪDINĀJUMS: Cacti lapa: %s ģenerēja letālu kļūdu %d!"
 
 #: help.php:68
 #, php-format
@@ -17619,7 +17602,7 @@ msgstr "Notīrīt"
 #| msgid "Purge"
 msgctxt "filter: purge"
 msgid "Purge"
-msgstr "Iztīrīšana"
+msgstr "Iztīrīt"
 
 #: rrdcleaner.php:30 tree.php:31
 msgctxt "dropdown action"
