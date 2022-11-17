@@ -1036,6 +1036,7 @@ $menu_glyphs = array(
 );
 
 $device_classes = array(
+	'wireless'     => __('Access Points, Controllers'),
 	'application'  => __('Application Related'),
 	'cacti'        => __('Cacti Related'),
 	'database'     => __('Database Related'),
@@ -1043,6 +1044,7 @@ $device_classes = array(
 	'general'      => __('Generic Device'),
 	'hpc'          => __('HPC/Grid Computing'),
 	'hypervisor'   => __('Hypervisor Related'),
+	'remotemgmt'   => __('ILO, IPMI, iDrac, etc.')
 	'license'      => __('Licensing Related'),
 	'linux'        => __('Linux Related'),
 	'loadbalancer' => __('Load Balancer'),
