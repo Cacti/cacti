@@ -44,6 +44,7 @@ Cacti CHANGELOG
 -feature#2747: Provide better sorting in Console >Management > Graphs
 -feature#2871: Report when RRA's heartbeat is below the data source profile's interval
 -feature#3131: Button to reindex bad indexes
+-feature#3578: Scheduled Automatic Re-indexing of Devices
 -feature#4025: When importing a Template or Package, allow the user to use the system default Height, Width, and Image format instead of the one embedded in the Template
 -feature#4239: On "Graph Utility View" add the name of and a link to the graph template which the graph is based on
 -feature#4417: Remote Pollers - Support execution of custom functions at poller bottom

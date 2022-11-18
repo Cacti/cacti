@@ -1305,6 +1305,23 @@ $settings = array(
 			'max_length' => '10',
 			'size' => '5'
 		),
+		'reindex_header' => array(
+			'friendly_name' => __('Periodic All Device Re-Index'),
+			'collapsible' => 'true',
+			'method' => 'spacer',
+		),
+		'automatic_reindex' => array(
+			'friendly_name' => __('Re-Index All Device Schedule'),
+			'description' => __('At what frequency do you wish to Re-Index all Devices.  This Re-Index will occur at midnight at the frequency that you select.'),
+			'default' => '0',
+			'method' => 'drop_array',
+			'array' => array(
+				'0' => __('Disabled'),
+				'1' => __('Daily'),
+				'2' => __('Weekly on Sunday'),
+				'3' => __('Monthly on Sunady')
+			)
+		),
 		'timeouts_header' => array(
 			'friendly_name' => __('Background Timeout and Concurrent Process Settings'),
 			'collapsible' => 'true',

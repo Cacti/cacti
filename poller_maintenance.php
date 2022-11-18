@@ -100,6 +100,8 @@ if ($config['poller_id'] == 1) {
 	authcache_purge();
 
 	secpass_check_expired();
+
+	reindex_devices();
 }
 
 // Check the realtime cache and poller
@@ -125,6 +127,49 @@ cacti_log(sprintf('MAINT STATS: Time:%0.2f', $end - $start), false, 'SYSTEM');
 unregister_process('maintenance', 'master', $config['poller_id']);
 
 exit(0);
+
+function reindex_devices() {
+	global $config;
+
+	$schedule = read_config_option('automatic_reindex');
+
+	// 0 - Disabled
+	// 1 - Daily at Midnight
+	// 2 - Weekly on Sunday
+	// 3 - Monthly on Sunday
+
+	$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+	$extra_args     = $config['base_path'] . '/cli/poller_reindex_hosts.php --id=all --qid=all';
+
+	if ($schedule == 0) {
+		return;
+	}
+
+	$last_run = read_config_option('periodic_reindex_lastrun');
+	$now      = time();
+
+	if (empty($last_run)) {
+		set_config_option('periodic_reindex_lastrun', time());
+		return;
+	} else {
+		if ($schedule == 1) {
+			if (date('z', $now) != date('z', $last_run)) {
+				set_config_option('periodic_reindex_lastrun', $now);
+				exec_background($command_string, $extra_args);
+			}
+		} elseif ($schedule == 2) {
+			if (date('z', $now) != date('z', $last_run) && date('w', $now) == 0) {
+				exec_background($command_string, $extra_args);
+			}
+		} elseif ($schedule == 3) {
+			if (date('z', $now) != date('z', $last_run)) {
+				if (date('w', $now) == 0 && date('n', $now) != date('n', $last_run)) {
+					exec_background($command_string, $extra_args);
+				}
+			}
+		}
+	}
+}
 
 function remove_aged_row_cache() {
 	$classes = array_rekey(
