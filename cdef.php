@@ -49,6 +49,7 @@ switch (get_request_var('action')) {
 	case 'item_remove':
 		cdef_item_remove();
 
+		header('Location: cdef.php?action=edit&id=' . get_request_var('cdef_id'));
 		break;
 	case 'item_movedown':
 		get_filter_request_var('cdef_id');
@@ -61,13 +62,6 @@ switch (get_request_var('action')) {
 		get_filter_request_var('cdef_id');
 
 		item_moveup();
-
-		header('Location: cdef.php?action=edit&id=' . get_request_var('cdef_id'));
-		break;
-	case 'item_remove':
-		get_filter_request_var('cdef_id');
-
-		item_remove();
 
 		header('Location: cdef.php?action=edit&id=' . get_request_var('cdef_id'));
 		break;
@@ -348,6 +342,8 @@ function cdef_item_remove_confirm() {
 		<td class='right'>
 			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");$(".deleteMarker").blur();' name='cancel'>
 			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove CDEF Item');?>'>
+			<input type='hidden' id='my_cdef_id' value='<?php print $cdef['id'];?>'>
+			<input type='hidden' id='my_id' value='<?php print $cdef_item['id'];?>'>
 		</td>
 	</tr>
 	<?php
@@ -355,14 +351,6 @@ function cdef_item_remove_confirm() {
 	html_end_box();
 
 	form_end();
-}
-
-function cdef_item_remove() {
-	/* ================= input validation ================= */
-	get_filter_request_var('cdef_id');
-	/* ==================================================== */
-
-	db_execute_prepared('DELETE FROM cdef_items WHERE id = ?', array(get_request_var('cdef_id')));
 }
 
 function item_movedown() {
@@ -383,13 +371,16 @@ function item_moveup() {
 	move_item_up('cdef_items', get_request_var('id'), 'cdef_id=' . get_request_var('cdef_id'));
 }
 
-function item_remove() {
+function cdef_item_remove() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
 	get_filter_request_var('cdef_id');
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM cdef_items WHERE id = ?', array(get_request_var('id')));
+	db_execute_prepared('DELETE FROM cdef_items
+		WHERE cdef_id = ?
+		AND id = ?',
+		array(get_request_var('cdef_id'), get_request_var('id')));
 }
 
 function item_edit() {
@@ -674,12 +665,12 @@ function cdef_edit() {
 					$('#continue').off('click').on('click', function(data) {
 						$.post('cdef.php?action=item_remove', {
 							__csrf_magic: csrfMagicToken,
-							cdef_id: id[1],
-							id: id[0]
+							cdef_id: $('#my_cdef_id').val(),
+							id: $('#my_id').val()
 						}).done(function(data) {
 							$('#cdialog').dialog('close');
 							$('.deleteMarker').blur();
-							loadPageNoHeader('cdef.php?action=edit&header=false&id='+id[0]);
+							loadPageNoHeader('cdef.php?action=edit&header=false&id='+$('#my_cdef_id').val());
 						});
 					});
 

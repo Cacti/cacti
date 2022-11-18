@@ -335,6 +335,8 @@ function vdef_item_remove_confirm() {
 		<td class='right'>
 			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
 			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove VDEF Item');?>'>
+			<input type='hidden' id='my_vdef_id' value='<?php print $vdef['id'];?>'>
+			<input type='hidden' id='my_id' value='<?php print $vdef_item['id'];?>'>
 		</td>
 	</tr>
 	<?php
@@ -349,7 +351,9 @@ function vdef_item_remove() {
 	get_filter_request_var('vdef_id');
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM vdef_items WHERE id = ?', array(get_request_var('vdef_id')));
+	db_execute_prepared('DELETE FROM vdef_items
+		WHERE id = ?',
+		array(get_request_var('id')));
 }
 
 function vdef_item_edit() {
@@ -661,11 +665,11 @@ function vdef_edit() {
 					$('#continue').off('click').on('click', function(data) {
 						$.post('vdef.php?action=item_remove', {
 							__csrf_magic: csrfMagicToken,
-							vdef_id: id[1],
-							id: id[0]
+							vdef_id: $('#my_vdef_id').val(),
+							id: $('#my_id').val()
 						}).done(function(data) {
 							$('#cdialog').dialog('close');
-							loadPageNoHeader('vdef.php?action=edit&header=false&id='+id[0]);
+							loadPageNoHeader('vdef.php?action=edit&header=false&id='+$('#my_vdef_id').val());
 						});
 					});
 

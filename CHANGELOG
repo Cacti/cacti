@@ -35,6 +35,7 @@ Cacti CHANGELOG
 -issue#4993: Data Debug Troubleshooter does not pick up invalid RRD_heartbeat settings
 -issue#4996: Graph Name in Graph Management shows the same name multiple times
 -issue#5001: Data Debug Troubleshooter Reports False Positive Issues with Missing Data Sources
+-issue#5006: Cannot delete vdef and cdef item (in theme paw) - php error
 -feature#1100: Structured path not created when using remote poller and Update On-Demand
 -feature#1392: AJAX handled errors do not notify Admins that page errors exist
 -feature#2239: Allow Import and Export to be more controlled
