@@ -797,6 +797,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	}
 
 	if ($host['bulk_walk_size'] <= 0) {
+		$walk_size  = 5;
 		$walk_sizes = array(1, 5, 10, 15, 20, 25, 30, 40, 50, 60);
 		$low_total  = 999;
 		$selected   = -1;
@@ -837,12 +838,12 @@ function query_snmp_host($host_id, $snmp_query_id) {
 		if ($host['bulk_walk_size'] == 0) {
 			query_debug_timer_offset('data_query', __('Saving Bulk Walk Size to Device.'));
 
-			$host['bulk_walk_size'] = $size;
+			$host['bulk_walk_size'] = $walk_size;
 
 			db_execute_prepared('UPDATE host
 				SET bulk_walk_size = ?
 				WHERE id = ?',
-				array($size, $host_id));
+				array($walk_size, $host_id));
 		}
 	} else {
 		$walk_size = $host['bulk_walk_size'];
@@ -906,7 +907,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 			query_debug_timer_offset('data_query', __('Filtered Index by value found at OID: \'%s\' value: \'%s\'', $oid , $value));
 		}
 	}
-	
+
 	/* parse the index if required */
 	if (isset($snmp_queries['oid_index_parse'])) {
 		$index_parse_regexp = '/' . str_replace('OID/REGEXP:', '', $snmp_queries['oid_index_parse']) . '/';
@@ -1211,7 +1212,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						}
 
 						$snmp_index = preg_replace($index_regex,"\\1", $oid);
-						
+
 						if (isset($snmp_queries['value_index_parse'])) {
 							if (!in_array($snmp_index, $snmp_indexes)) {
 								debug_log_insert('data_query', __('No index[%s] in value_index_parse, skipping.', $snmp_index));
@@ -1219,7 +1220,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 								continue;
 							}
 						}
-						
+
 						$oid = $field_array['oid'] . ".$snmp_index" . (isset($field_array['oid_suffix']) ? ('.' . $field_array['oid_suffix']) : '');
 						if ($field_name == 'ifOperStatus' || $field_name == 'ifAdminStatus') {
 							switch(true) {
@@ -1277,7 +1278,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 								continue;
 							}
 						}
-						
+
 						$oid = $field_array['oid'] .  '.' . $parse_value;
 
 						/* rewrite octet strings */
@@ -1326,7 +1327,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 								continue;
 							}
 						}
-						
+
 						$oid      = $field_array['oid'] .  '.' . $parse_value;
 						$ip_value = '';
 
@@ -1373,7 +1374,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 								continue;
 							}
 						}
-						
+
 						$oid = $field_array['oid'];
 
 						debug_log_insert('data_query', __('Found item [%s=\'%s\'] index: %s [from regexp oid value parse]', $field_name, $parse_value, $snmp_index));
