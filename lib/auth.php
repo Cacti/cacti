@@ -2699,12 +2699,6 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
 		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . " h.id = $device_id";
 	}
 
-	if ($user_id == -1) {
-		$auth_method = 0;
-	} else {
-		$auth_method = read_config_option('auth_method');
-	}
-
 	$graph_auth_method = read_config_option('graph_auth_method');
 
 	/* get policies for all groups and user */
