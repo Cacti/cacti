@@ -5782,6 +5782,7 @@ function IgnoreErrorHandler($message) {
 		'End of MIB',
 		'Timeout',
 		'Unknown host',
+		'Connection timed out',
 		'Invalid object identifier',
 		'Name or service not known',
 		'USM generic error in file',
