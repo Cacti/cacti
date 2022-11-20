@@ -459,6 +459,25 @@ $cdef_functions = array(1 =>
 	'ROLL'
 );
 
+$phperrors = array (
+	E_ERROR => 'ERROR',
+	E_WARNING => 'WARNING',
+	E_PARSE => 'PARSE',
+	E_NOTICE => 'NOTICE',
+	E_CORE_ERROR => 'CORE_ERROR',
+	E_CORE_WARNING => 'CORE_WARNING',
+	E_COMPILE_ERROR  => 'COMPILE_ERROR',
+	E_COMPILE_WARNING => 'COMPILE_WARNING',
+	E_USER_ERROR => 'USER_ERROR',
+	E_USER_WARNING => 'USER_WARNING',
+	E_USER_NOTICE  => 'USER_NOTICE',
+	E_STRICT => 'STRICT',
+	E_RECOVERABLE_ERROR  => 'RECOVERABLE_ERROR',
+	E_DEPRECATED => 'DEPRECATED',
+	E_USER_DEPRECATED  => 'USER_DEPRECATED',
+	E_ALL => 'ALL'
+);
+
 if (cacti_version_compare(get_rrdtool_version(), '1.8.0', '>=')) {
 	$cdef_functions[] = 'ROUND';
 }
@@ -679,7 +698,7 @@ $poller_options = array(
 	2 => 'spine'
 );
 
-if (!file_exists(read_config_option('path_spine')) || !is_executable(read_config_option('path_spine'))) {
+if (!empty(read_config_option('path_spine')) && (!file_exists(read_config_option('path_spine')) || !is_executable(read_config_option('path_spine')))) {
 	unset($poller_options[2]);
 }
 
@@ -1951,25 +1970,6 @@ $database_statuses = array(
 	1 => __('[Warning]'),
 	2 => __('[Success]'),
 	3 => __('[Skipped]'),
-);
-
-$phperrors = array (
-	E_ERROR => 'ERROR',
-	E_WARNING => 'WARNING',
-	E_PARSE => 'PARSE',
-	E_NOTICE => 'NOTICE',
-	E_CORE_ERROR => 'CORE_ERROR',
-	E_CORE_WARNING => 'CORE_WARNING',
-	E_COMPILE_ERROR  => 'COMPILE_ERROR',
-	E_COMPILE_WARNING => 'COMPILE_WARNING',
-	E_USER_ERROR => 'USER_ERROR',
-	E_USER_WARNING => 'USER_WARNING',
-	E_USER_NOTICE  => 'USER_NOTICE',
-	E_STRICT => 'STRICT',
-	E_RECOVERABLE_ERROR  => 'RECOVERABLE_ERROR',
-	E_DEPRECATED => 'DEPRECATED',
-	E_USER_DEPRECATED  => 'USER_DEPRECATED',
-	E_ALL => 'ALL'
 );
 
 $navigation = array(
