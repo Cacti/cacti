@@ -698,7 +698,7 @@ $poller_options = array(
 	2 => 'spine'
 );
 
-if (!empty(read_config_option('path_spine')) && (!file_exists(read_config_option('path_spine')) || !is_executable(read_config_option('path_spine')))) {
+if (read_config_option('path_spine') != '' && (!file_exists(read_config_option('path_spine')) || !is_executable(read_config_option('path_spine')))) {
 	unset($poller_options[2]);
 }
 
