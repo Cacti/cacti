@@ -1626,6 +1626,8 @@ function update_host_status($status, $host_id, &$ping, $ping_availability, $prin
 				if ($host['status_event_count'] == $ping_failure_count) {
 					$host['status_fail_date'] = time();
 				}
+
+				set_config_option('time_last_change_site_device', time());
 			/* host is down, but not ready to issue log message */
 			} else {
 				/* host down for the first time, set event date */
@@ -1638,10 +1640,13 @@ function update_host_status($status, $host_id, &$ping, $ping_availability, $prin
 			$host['status_event_count'] = 1;
 			$host['status'] = HOST_DOWN;
 
+			set_config_option('time_last_change_site_device', time());
 		/* host was unknown and now is down */
 		} elseif ($host['status'] == HOST_UNKNOWN) {
 			$host['status'] = HOST_DOWN;
 			$host['status_event_count'] = 0;
+
+			set_config_option('time_last_change_site_device', time());
 		} else {
 			$host['status_event_count']++;
 		}
@@ -1715,6 +1720,8 @@ function update_host_status($status, $host_id, &$ping, $ping_availability, $prin
 				$host['status_event_count']++;
 			}
 
+			set_config_option('time_last_change_site_device', time());
+
 			/* if it's time to issue a recovery message, indicate so */
 			if ($host['status_event_count'] >= $ping_recovery_count) {
 				/* host is up, flag it that way */
@@ -1740,6 +1747,8 @@ function update_host_status($status, $host_id, &$ping, $ping_availability, $prin
 		/* host was unknown and now is up */
 			$host['status'] = HOST_UP;
 			$host['status_event_count'] = 0;
+
+			set_config_option('time_last_change_site_device', time());
 		}
 	}
 	/* if the user wants a flood of information then flood them */
