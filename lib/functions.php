@@ -2683,7 +2683,11 @@ function stri_replace($find, $replace, $string) {
  * @return - the modified string
  */
 function clean_up_lines($string) {
-	return preg_replace('/\s*[\r\n]+\s*/',' ', $string);
+	if ($string != '') {
+		return preg_replace('/\s*[\r\n]+\s*/',' ', $string);
+	} else {
+		return $string;
+	}
 }
 
 /**
@@ -2695,9 +2699,11 @@ function clean_up_lines($string) {
  * @return - the modified string
  */
 function clean_up_name($string) {
-	$string = preg_replace('/[\s\.]+/', '_', $string);
-	$string = preg_replace('/[^a-zA-Z0-9_]+/', '', $string);
-	$string = preg_replace('/_{2,}/', '_', $string);
+	if ($string != '') {
+		$string = preg_replace('/[\s\.]+/', '_', $string);
+		$string = preg_replace('/[^a-zA-Z0-9_]+/', '', $string);
+		$string = preg_replace('/_{2,}/', '_', $string);
+	}
 
 	return $string;
 }
@@ -2711,9 +2717,11 @@ function clean_up_name($string) {
  * @return - the modified string
  */
 function clean_up_file_name($string) {
-	$string = preg_replace('/[\s\.]+/', '_', $string);
-	$string = preg_replace('/[^a-zA-Z0-9_-]+/', '', $string);
-	$string = preg_replace('/_{2,}/', '_', $string);
+	if ($string != '') {
+		$string = preg_replace('/[\s\.]+/', '_', $string);
+		$string = preg_replace('/[^a-zA-Z0-9_-]+/', '', $string);
+		$string = preg_replace('/_{2,}/', '_', $string);
+	}
 
 	return $string;
 }
