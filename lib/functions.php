@@ -7105,6 +7105,10 @@ function cacti_browser_zone_enabled() {
  * @return - null
  */
 function cacti_time_zone_set($gmt_offset) {
+	if (!cacti_browser_zone_enabled()) {
+		return;
+	}
+
 	$hours     = floor($gmt_offset / 60);
 	$remaining = $gmt_offset % 60;
 

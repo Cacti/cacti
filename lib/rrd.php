@@ -304,16 +304,17 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 		}
 
 		cacti_session_close();
+
 		if (is_file(read_config_option('path_rrdtool')) && is_executable(read_config_option('path_rrdtool'))) {
 			$descriptorspec = array(
 				0 => array('pipe', 'r'),
 				1 => array('pipe', 'w')
 			);
 
-            if ( $config['is_web'] ) {
-                if( isset( $_COOKIE['CactiTimeZone'] ) ) {
+            if ($config['is_web']) {
+                if (isset($_COOKIE['CactiTimeZone'])) {
                     $gmt_offset = $_COOKIE['CactiTimeZone'];
-                    cacti_time_zone_set( $gmt_offset );
+                    cacti_time_zone_set($gmt_offset);
                 }
             }
 
