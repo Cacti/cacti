@@ -800,9 +800,9 @@ function graph_edit() {
 				</div>
 				<script type='text/javascript'>
 				$(function() {
-					var width = $(window).width() - $('.cactiConsoleNavigationArea').width();
+					var rrdwidth = $(window).width() - $('.cactiConsoleNavigationArea').width();
 					$('#agg_preview').show();
-					$('#rrdtoolinfo, #imagewindow').css('max-width', width);
+					$('#rrdtoolinfo, #imagewindow').css('max-width', rrdwidth);
 				});
 				</script>
 			</td></tr>
