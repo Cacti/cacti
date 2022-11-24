@@ -2321,7 +2321,6 @@ tr#realtime td:first-child {
 }
 
 .ui-multiselect-header ul {
-	margin-top: 4px;
 	height: 15px;
 	float: left;
 }
