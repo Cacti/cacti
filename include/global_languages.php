@@ -656,6 +656,7 @@ function get_list_of_locales() {
 		'sv-SE' => array('language' => 'Swedish',             'direction' => 'ltr', 'country' => 'se', 'filename' => 'swedish_sweden'),
 		'th-TH' => array('language' => 'Thai',                'direction' => 'ltr', 'country' => 'th', 'filename' => 'thai_thailand'),
 		'tr-TR' => array('language' => 'Turkish',             'direction' => 'ltr', 'country' => 'tr', 'filename' => 'turkish_turkey'),
+		'uk-UA' => array('language' => 'Ukrainian',           'direction' => 'ltr', 'country' => 'ua', 'filename' => 'ukrainian_ukraine'),
 		'vi-VN' => array('language' => 'Vietnamese',          'direction' => 'ltr', 'country' => 'vn', 'filename' => 'vietnamese_vietnam')
 	);
 
