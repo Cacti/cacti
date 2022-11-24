@@ -298,11 +298,11 @@ function cacti_stats_calc($array, $ptile = 95) {
 	$p25n_index  = ceil($elements * 0.75);
 
 	$results = array(
-		'p95n'     => $array[$p95n_index],
-		'p90n'     => $array[$p90n_index],
-		'p75n'     => $array[$p75n_index],
-		'p50n'     => $array[$p50n_index],
-		'p25n'     => $array[$p25n_index],
+		'p95n'     => (isset($array[$p95n_index]) ? $array[$p95n_index] : 0),
+		'p90n'     => (isset($array[$p90n_index]) ? $array[$p90n_index] : 0),
+		'p75n'     => (isset($array[$p75n_index]) ? $array[$p75n_index] : 0),
+		'p50n'     => (isset($array[$p50n_index]) ? $array[$p50n_index] : 0),
+		'p25n'     => (isset($array[$p25n_index]) ? $array[$p25n_index] : 0),
 		'average'  => $average,
 		'sum'      => $sum,
 		'elements' => $elements,
