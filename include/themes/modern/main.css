@@ -123,7 +123,7 @@ hr.menu {
 a, a:active, a:visited {
 	color: #006400;
 	text-decoration: none;
-	font-size: 12px;
+	font-size: 11px;
 }
 
 a:hover {
@@ -2198,6 +2198,10 @@ tr.selected a {
 	padding: 0;
 }
 
+#nav a {
+	font-size: 12px;
+}
+
 #nav li ul li a {
 	padding: 2px 4px;
 	background: #ececec;
@@ -2261,7 +2265,6 @@ ul#nav {
 }
 
 .ui-multiselect-header ul {
-	margin-top: 4px;
 	height: 15px;
 	float: left;
 }
