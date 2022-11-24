@@ -4520,7 +4520,9 @@ function set_page_refresh($refresh) {
 		$_SESSION['refresh']['seconds'] = $refresh['seconds'];
 	}
 
-	if (isset($refresh['logout'])) {
+	if (read_config_option('auth_cache_enabled') == 'on' && isset($_SESSION['cacti_remembers']) && $_SESSION['cacti_remembers'] == true) {
+		$_SESSION['refresh']['logout'] = 'false';
+	} elseif (isset($refresh['logout'])) {
 		if ($refresh['logout'] == 'true' || $refresh['logout'] === true) {
 			$_SESSION['refresh']['logout'] = 'true';
 		} else {

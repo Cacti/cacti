@@ -39,6 +39,7 @@ Cacti CHANGELOG
 -issue#5012: Fixed three error for PHP 8 when execute cli/upgrade_database.php
 -issue#5013: Cacti Bulk Walk Size of 'Auto-detect at First Reindex' not working
 -issue#5017: Undefined array key and Rounding causes errors
+-issue#5018: It is possible in some rare cases to have 'remember me' enabled and still be logged out after a browser timeout 
 -feature#1100: Structured path not created when using remote poller and Update On-Demand
 -feature#1392: AJAX handled errors do not notify Admins that page errors exist
 -feature#2239: Allow Import and Export to be more controlled
