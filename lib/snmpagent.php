@@ -413,7 +413,7 @@ function snmpagent_poller_bottom() {
 		$mc_device_stats = $mc->table('cactiStatsDeviceTable')->select(array('cactiStatsDeviceIndex','cactiStatsDeviceFailedPolls'));
 		if ($mc_device_stats && cacti_sizeof($mc_device_stats)>0) {
 			foreach($mc_device_stats as $mc_device_stat) {
-				if (isset($mc_device_stat['cactiStatsDeviceFailedPolls'])) {
+				if (isset($mc_device_stat['cactiStatsDeviceFailedPolls']) && isset($mc_device_stat['cactiStatsDeviceIndex'])) {
 					$mc_dfailed[$mc_device_stat['cactiStatsDeviceIndex']] = $mc_device_stat['cactiStatsDeviceFailedPolls'];
 				}
 			}
