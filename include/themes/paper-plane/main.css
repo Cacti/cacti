@@ -2373,6 +2373,7 @@ tr#realtime td:first-child {
 
 .ui-multiselect-header {
 	background-color: #E5E5E5;
+	margin-bottom: 3px;
 }
 
 .ui-multiselect, .ui-multiselect-button, .ui-selectmenu-button {
@@ -2386,8 +2387,7 @@ tr#realtime td:first-child {
 }
 
 .ui-multiselect-header ul {
-	margin-top: 4px;
-	height: 15px;
+	height: 20px;
 	float: left;
 }
 

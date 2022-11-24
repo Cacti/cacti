@@ -2430,9 +2430,12 @@ tr#realtime td:first-child {
 }
 
 .ui-multiselect-header ul {
-	margin-top: 4px;
-	height: 15px;
+	height: 23px;
 	float: left;
+}
+
+.ui-multiselect-header i {
+	color: #93CEFF;
 }
 
 .ui-multiselect-filter {

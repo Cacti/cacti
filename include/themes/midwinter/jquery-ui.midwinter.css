@@ -43,7 +43,7 @@
 }
 
 .ui-multiselect-header {
-    margin-bottom: 1px;
+	margin-bottom: 3px;
 }
 
 .ui-multiselect-header ul li {
@@ -71,8 +71,7 @@
 }
 
 .ui-multiselect-header ul {
-    margin-top: 4px;
-    height: 15px;
+    height: 20px;
     float: left;
 }
 
