@@ -494,8 +494,8 @@ function report_audit_results($output = true) {
 								}
 
 								/* work around MariaDB compatibility issue */
-								$c[$col]     = str_replace('current_timestamp()', 'CURRENT_TIMESTAMP', $c[$col]);
-								$dbc[$dbcol] = str_replace('current_timestamp()', 'CURRENT_TIMESTAMP',$dbc[$dbcol]);
+								$c[$col]     = ! $c[$col] ?: str_replace('current_timestamp()', 'CURRENT_TIMESTAMP', $c[$col]);
+								$dbc[$dbcol] = ! $dbc[$dbcol] ?: str_replace('current_timestamp()', 'CURRENT_TIMESTAMP',$dbc[$dbcol]);
 
 								/* work around MySQL 8.x simplified int columns */
 								if (strpos($dbc[$dbcol], 'int(') !== false) {
