@@ -45,7 +45,7 @@ if (api_plugin_hook_function('custom_logout_message', OPER_MODE_NATIVE) === OPER
 }
 
 /* Check to see if we are using Web Basic Auth */
-if (get_request_var('action') == 'timeout') {
+if (get_request_var('action') == 'timeout' || get_request_var('action') == 'disabled') {
 	print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>";
 	print "<html>";
 	print "<head>";
@@ -58,41 +58,9 @@ if (get_request_var('action') == 'timeout') {
 			<div class='cactiLogoutLogo'></div>
 			<legend>" . __('Automatic Logout') . "</legend>
 			<div class='logoutTitle'>
-				<p>" . __('You have been logged out of Cacti due to a session timeout.') . "</p>
-				<p>" . __('Please close your browser or %sLogin Again%s', '</p><center>[<a href="index.php">', '</a>]</center>') . "
-			</div>
-			<div class='logoutErrors'></div>
-		</div>
-		<div class='versionInfo'>" . __('Version %s', $version) . " | " . COPYRIGHT_YEARS_SHORT . "</div>
-	</div>
-	<div class='logoutRight'></div>
-	<script type='text/javascript'>
-	$(function() {
-		if (typeof myRefresh != 'undefined') {
-			clearTimeout(myRefresh);
-		}
-
-		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
-		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
-	});
-	</script>";
-	include('./include/global_session.php');
-	print "</body>
-	</html>";
-} elseif (get_request_var('action') == 'disabled') {
-	print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>";
-	print "<html>";
-	print "<head>";
-	html_common_header(__('Logout of Cacti'));
-	print "</head>";
-	print "<body class='logoutBody'>
-	<div class='logoutLeft'></div>
-	<div class='logoutCenter'>
-		<div class='logoutArea'>
-			<div class='cactiLogoutLogo cactiLoginSuspend'></div>
-			<legend>" . __('Automatic Logout') . "</legend>
-			<div class='logoutTitle'>
-				<p>" . __('You have been logged out of Cacti due to an account suspension.') . "</p>
+				<p>" . (get_request_var('action') == 'timeout' ?
+						__('You have been logged out of Cacti due to a session timeout.'):
+						__('You have been logged out of Cacti due to an account suspension.')) . "</p>
 				<p>" . __('Please close your browser or %sLogin Again%s', '</p><center>[<a href="index.php">', '</a>]</center>') . "
 			</div>
 			<div class='logoutErrors'></div>
