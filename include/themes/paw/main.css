@@ -308,7 +308,7 @@ label {
 
 .spikeKillMenuItem {
 	display: block;
-	width: 100%:;
+	width: 100%;
 }
 
 .deviceUp {
@@ -1834,7 +1834,7 @@ div.submenu span {
 
 .tabs nav a.selected {
 	color: white;
-	boder-bottom: 1px solid rgba(63,117,162,0.8);
+	border-bottom: 1px solid rgba(63,117,162,0.8);
 	background: rgba(63,117,162,0.8);
 }
 
