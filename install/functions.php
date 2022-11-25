@@ -471,6 +471,7 @@ function install_setup_get_templates() {
 		'Cacti_Stats.xml.gz',
 		'Cisco_Router.xml.gz',
 		'Citrix_NetScaler_VPX.xml.gz',
+		'ESXi_Device.xml.gz',
 		'Generic_SNMP_Device.xml.gz',
 		'Local_Linux_Machine.xml.gz',
 		'NetSNMP_Device.xml.gz',
