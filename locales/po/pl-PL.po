@@ -4,19 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-11-12 15:22-0500\n"
-"PO-Revision-Date: 2022-03-14 20:56-0400\n"
-"Last-Translator: Jaroslaw Kłopotek <jkl@interduo.pl>\n"
-"Language-Team: Polish <http://translate.cacti.net/projects/cacti/core/pl-PL/>\n"
-"Language: pl_PL\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Poedit 3.0.1\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-11-12 15:22-0500\nPO-Revision-Date: 2022-11-25 18:50+0000\nLast-Translator: kaktus <kaktus_j_p@o2.pl>\nLanguage-Team: Polish <http://translate.cacti.net/projects/cacti/core-v1-2-x/pl/>\nLanguage: pl-PL\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2601 lib/html.php:2491
 msgid "About Cacti"
@@ -314,9 +302,8 @@ msgid "Convert to normal Graph(s)"
 msgstr "Przelicz na wykres LINE1"
 
 #: aggregate_graphs.php:501
-#, fuzzy
 msgid "Click 'Continue' to associate the following Graph(s) with the Aggregate Graph."
-msgstr "Kliknij 'Kontynuuj', aby powiązać poniższy wykres(y) z wykresem zagregowanym"
+msgstr "Kliknij \"Kontynuuj\", aby powiązać poniższy wykres(y) z wykresem zbiorczym"
 
 #: aggregate_graphs.php:506
 #, fuzzy
@@ -583,9 +570,8 @@ msgstr "Idź"
 #: user_group_admin.php:2527 user_group_admin.php:2624
 #: user_group_admin.php:2721 utilities.php:1077 utilities.php:1432
 #: utilities.php:1764 utilities.php:2051 utilities.php:2979 utilities.php:3242
-#, fuzzy
 msgid "Set/Refresh Filters"
-msgstr "Ustawianie/odświeżanie filtrów"
+msgstr "Ustaw / odśwież filtry"
 
 #: aggregate_graphs.php:1337 aggregate_graphs.php:1627
 #: aggregate_templates.php:629 automation_devices.php:496
@@ -1508,7 +1494,6 @@ msgstr "Kryteria tworzenia wykresu"
 #: automation_graph_rules.php:734 automation_graph_rules.php:781
 #: automation_graph_rules.php:886 include/global_arrays.php:975
 #: include/global_arrays.php:2775
-#, fuzzy
 msgid "Graph Rules"
 msgstr "Reguły wykresów"
 
@@ -1560,7 +1545,6 @@ msgid "Rule Name"
 msgstr "Nazwa reguły"
 
 #: automation_graph_rules.php:895
-#, fuzzy
 msgid "The name of this rule."
 msgstr "Nazwa tej reguły."
 
@@ -1576,7 +1560,6 @@ msgid "Graph Type"
 msgstr "Rodzaj wykresu"
 
 #: automation_graph_rules.php:921
-#, fuzzy
 msgid "No Graph Rules Found"
 msgstr "Nie znaleziono reguł wykresów"
 
@@ -1601,14 +1584,14 @@ msgid "Can Not Perform Discovery for Disabled Network '%s'"
 msgstr "Nie można przeprowadzić wyszukiwania dla sieci wyłączonej \"%s"
 
 #: automation_networks.php:219
-#, fuzzy, php-format
+#, php-format
 msgid "ERROR: You must specify the day of the week.  Disabling Network %s!."
-msgstr "ERROR: Musisz określić dzień tygodnia.  Wyłączanie sieci %s!"
+msgstr "BŁĄD: Musisz określić dzień tygodnia.  Wyłączanie sieci %s!."
 
 #: automation_networks.php:225
-#, fuzzy, php-format
+#, php-format
 msgid "ERROR: You must specify both the Months and Days of Month.  Disabling Network %s!"
-msgstr "ERROR: Musisz określić zarówno miesiące, jak i dni miesiąca.  Wyłączanie sieci %s!"
+msgstr "BŁĄD: Musisz określić zarówno miesiące, jak i dni miesiąca.  Wyłączanie sieci %s!"
 
 #: automation_networks.php:231
 #, fuzzy, php-format
@@ -1621,9 +1604,8 @@ msgid "ERROR: Network '%s' is Invalid."
 msgstr "ERROR: \"%\" sieci jest nieważny."
 
 #: automation_networks.php:348
-#, fuzzy
 msgid "Click 'Continue' to delete the following Network(s)."
-msgstr "Kliknij \"Continue\" (Kontynuuj), aby usunąć następujące sieci."
+msgstr "Kliknij \"Kontynuuj\", aby usunąć następujące sieci."
 
 #: automation_networks.php:355
 #, fuzzy
@@ -1675,7 +1657,6 @@ msgid "Monthly"
 msgstr "Miesięcznie"
 
 #: automation_networks.php:423 automation_networks.php:1069
-#, fuzzy
 msgid "Monthly on Day"
 msgstr "Miesięcznie w dniu"
 
@@ -1714,9 +1695,8 @@ msgid "Name"
 msgstr "Nazwa"
 
 #: automation_networks.php:442
-#, fuzzy
 msgid "Give this Network a meaningful name."
-msgstr "Nadaj tej sieci znaczącą nazwę."
+msgstr "Nadaj tej Sieci sensowną nazwę."
 
 #: automation_networks.php:445
 #, fuzzy
@@ -1744,14 +1724,12 @@ msgid "Choose the Cacti Site that you wish to associate discovered Devices with.
 msgstr "Wybierz stronę Cacti, z którą chcesz powiązać odkryte urządzenia."
 
 #: automation_networks.php:466
-#, fuzzy
 msgid "Subnet Range"
 msgstr "Zakres podsieci"
 
 #: automation_networks.php:467
-#, fuzzy
 msgid "Enter valid Network Ranges separated by commas.  You may use an IP address, a Network range such as 192.168.1.0/24 or 192.168.1.0/255.255.255.0, or using wildcards such as 192.168.*.*"
-msgstr "Wprowadź prawidłowe zakresy sieci rozdzielone przecinkami.  Można użyć adresu IP, zakresu sieci takiego jak 192.168.1.0/24 lub 192.168.1.0/255.255.255.255.0, lub używając symboli wieloznacznych takich jak 192.168.*.*."
+msgstr "Wprowadź prawidłowe zakresy sieci rozdzielone przecinkami.  Można użyć adresu IP, zakresu sieci takiego jak 192.168.1.0/24 lub 192.168.1.0/255.255.255.0, lub używając symboli wieloznacznych takich jak 192.168.*.*"
 
 #: automation_networks.php:476
 #, fuzzy
@@ -1851,7 +1829,7 @@ msgstr "%d minuta"
 #: include/global_settings.php:1636 include/global_settings.php:2597
 #: include/global_settings.php:2856 include/global_settings.php:2857
 #: include/global_settings.php:2858 pollers.php:912 pollers.php:913
-#, fuzzy, php-format
+#, php-format
 msgid "%d Minutes"
 msgstr "%d minut"
 
@@ -18061,9 +18039,8 @@ msgid "Web"
 msgstr "Strona Internetowa"
 
 #: lib/installer.php:3446
-#, fuzzy
 msgid "Cli"
-msgstr "Klasyczny"
+msgstr "cli"
 
 #: lib/installer.php:3451
 #, fuzzy, php-format
