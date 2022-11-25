@@ -97,6 +97,10 @@ if (get_nfilter_request_var('action') == 'login') {
 	}
 }
 
+if (empty($user['tfa_enabled'])) {
+	$_SESSION['sess_user_2fa'] = true;
+}
+
 if (!empty($_SESSION['sess_user_2fa'])) {
 	auth_login_redirect($user['login_opts']);
 	exit;

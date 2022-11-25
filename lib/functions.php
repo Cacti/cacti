@@ -7162,6 +7162,7 @@ function cacti_cookie_logout() {
 		$secure = false;
 	}
 
+	$cookies = [session_name(), session_name() . '_opt', 'cacti_rembers'];
 	if (version_compare(PHP_VERSION, '7.3', '>=')) {
 		$options = array(
 			'path'     => $config['url_path'],
@@ -7172,11 +7173,13 @@ function cacti_cookie_logout() {
 			'samesite' => 'Strict'
 		);
 
-		setcookie(session_name(), '', $options);
-		setcookie('cacti_remembers', '', $options);
+		foreach ($cookies as $cookie) {
+			setcookie($cookie, '', $options);
+		}
 	} else {
-		setcookie(session_name(), '', time() - 3600, $config['url_path'], $domain, $secure, true);
-		setcookie('cacti_remembers', '', time() - 3600, $config['url_path'], $domain, $secure, true);
+		foreach ($cookies as $cookie) {
+			setcookie($cookie, '', time() - 3600, $config['url_path'], $domain, $secure, true);
+		}
 	}
 
 	unset($_COOKIE[$config['cacti_session_name']]);
