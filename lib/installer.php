@@ -554,13 +554,17 @@ class Installer implements JsonSerializable {
 
 	private function getLanguage() {
 		$language = read_config_option('install_language');
+		$section = 'install';
+
 		if (empty($language)) {
 			$language = read_config_option('i18n_default_language');
+			$section = 'i18n';
 			if (empty($language) && isset($_SESSION['sess_user_id'])) {
 				$language = read_user_setting('user_language', get_new_user_default_language(), true);
+				$section = 'user';
 			}
 		}
-		log_install_medium('language', 'getLanguage(): ' . $language);
+		log_install_medium('language', 'getLanguage(): ' . $language . ' [' . $section . ']');
 		return $language;
 	}
 
@@ -583,6 +587,10 @@ class Installer implements JsonSerializable {
 					$_SESSION['sess_user_language'] = $param_language;
 					set_user_setting('user_language', $param_language);
 				}
+
+				$test_i18n = read_config_option('i18n_default_language');
+				$test_install = read_config_option('install_language');
+				log_install_debug('language','setLanguage(): ' . $test_i18n . ' / ' . $test_install);
 			}
 		}
 	}
@@ -2940,6 +2948,7 @@ class Installer implements JsonSerializable {
 			$this->setStep(Installer::STEP_COMPLETE);
 		} else {
 			log_install_always('', $failure);
+
 			$this->setProgress(Installer::PROGRESS_COMPLETE);
 			$this->setStep(Installer::STEP_ERROR);
 		}
