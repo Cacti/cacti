@@ -257,7 +257,7 @@
 				// Please note: IE does not fire hover or click behaviors on completely transparent elements.
 				// Use a background color and set opacity to 1% as a workaround.(see CSS file)
 				$('<div id="zoom-container" data-active-element=""></div>').appendTo('body').delay(1000);
-				$('#zoom-container').css({ position: 'absolute', 'pointer-events': 'none' });
+				$('#zoom-container').css({ position: 'absolute', 'pointer-events': 'none' }).removeClass().addClass('zoom_active_' + zoomGetId(zoom));
 			}else {
                 $('#zoom-container').attr('data-active-element', '');
             }
