@@ -4,23 +4,11 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti 1.2.23\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-11-12 15:22-0500\n"
-"PO-Revision-Date: 2022-11-24 10:11-0500\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: uk_UA\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
-"X-Generator: Poedit 3.2\n"
+msgstr "Project-Id-Version: Cacti 1.2.23\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-11-12 15:22-0500\nPO-Revision-Date: 2022-11-26 01:05+0000\nLast-Translator: Rostyslav Haitkulov <info@ubilling.net.ua>\nLanguage-Team: Ukrainian <http://translate.cacti.net/projects/cacti/core-v1-2-x/uk/>\nLanguage: uk-UA\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2601 lib/html.php:2491
 msgid "About Cacti"
-msgstr "Про кактуси"
+msgstr "Про Cacti"
 
 #: about.php:42
 msgid "Cacti is designed to be a complete graphing solution based on the RRDtool's framework. Its goal is to make a network administrator's job easier by taking care of all the necessary details necessary to create meaningful graphs."
@@ -62,11 +50,11 @@ msgstr "Cacti ліцензовано під GNU GPL:"
 
 #: about.php:75 lib/installer.php:1658
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
-msgstr "Ця програма є безкоштовним; ви можете поширювати його та/або змінювати згідно з умовами GNU General Public License, опублікованої Free Software Foundation; версії 2 Ліцензії або (на ваш вибір) будь-якої пізнішої версії."
+msgstr "Ця програма є вільним програмним забезпеченням; Ви можете розповсюджувати її та/або змінювати згідно умов GNU General Public License, опублікованої Free Software Foundation; 2-ї версії ліцензії (або ж, на ваш вибір), будь-якої пізнішої версії."
 
 #: about.php:77
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
-msgstr "Ця програма розповсюджується в надії, що вона буде корисною, але БЕЗ ЖОДНИХ ГАРАНТІЙ; навіть без неявної гарантії ПРИДАТНОСТІ ДЛЯ ПРОДАЖУ чи ВІДПОВІДНОСТІ ДЛЯ КОНКРЕТНОЇ МЕТИ. Додаткову інформацію див. у Загальній публічній ліцензії GNU."
+msgstr "Ця програма розповсюджується з надією, що вона буде корисною, але БЕЗ ЖОДНИХ ГАРАНТІЙ; навіть без неявних гарантій ПРИДАТНОСТІ ДЛЯ ПРОДАЖУ чи ПРИДАТНОСТІ ДЛЯ КОНКРЕТНОЇ МЕТИ. Додаткову інформацію дивіться в ліцензії GNU General Public License."
 
 #: aggregate_graphs.php:42 aggregate_templates.php:30
 #: automation_graph_rules.php:32 automation_networks.php:31
@@ -91,36 +79,36 @@ msgstr "Видалити"
 
 #: aggregate_graphs.php:43
 msgid "Convert to Normal Graph"
-msgstr "Перетворити на звичайний графік"
+msgstr "Конвертувати в Нормальний Графік"
 
 #: aggregate_graphs.php:44 graphs.php:58
 msgid "Place Graphs on Report"
-msgstr "Розмістити графіки у звіті"
+msgstr "Розмістити графіки на звіті"
 
 #: aggregate_graphs.php:45
 msgid "Migrate Aggregate to use a Template"
-msgstr "Перенесіть Aggregate на використання шаблону"
+msgstr "Мігрувати агреговане для використання Шаблону"
 
 #: aggregate_graphs.php:46
 msgid "Create New Aggregate from Aggregates"
-msgstr "Створення нового агрегату з агрегатів"
+msgstr "Створити нове Агреговане з Агрегованого"
 
 #: aggregate_graphs.php:50
 msgid "Associate with Aggregate"
-msgstr "Зв’яжіться з Aggregate"
+msgstr "Асоціювати з агрегованим"
 
 #: aggregate_graphs.php:51
 msgid "Disassociate with Aggregate"
-msgstr "Розірвати асоціацію з Aggregate"
+msgstr "Відділити від агрегованого"
 
 #: aggregate_graphs.php:84 graphs.php:197 host.php:214
 #, php-format
 msgid "Place on a Tree (%s)"
-msgstr "Розмістити на дереві (%s)"
+msgstr "Розмістити в дереві (%s)"
 
 #: aggregate_graphs.php:352
 msgid "Click 'Continue' to delete the following Aggregate Graph(s)."
-msgstr "Натисніть «Продовжити», щоб видалити наступні агрегатні графіки."
+msgstr "Натисніть \"Продовжити\" для видалення наступних Агрегованих графіків."
 
 #: aggregate_graphs.php:357 aggregate_graphs.php:430 aggregate_graphs.php:455
 #: aggregate_graphs.php:484 aggregate_graphs.php:497 aggregate_graphs.php:506
@@ -158,7 +146,7 @@ msgstr "Натисніть «Продовжити», щоб видалити н�
 #: user_group_admin.php:479 user_group_admin.php:490 vdef.php:270 vdef.php:280
 #: vdef.php:336
 msgid "Cancel"
-msgstr "Скасувати"
+msgstr "Відміна"
 
 #: aggregate_graphs.php:357 aggregate_graphs.php:430 aggregate_graphs.php:455
 #: aggregate_graphs.php:484 aggregate_graphs.php:497 aggregate_graphs.php:506
@@ -199,15 +187,15 @@ msgstr "Продовжити"
 #: aggregate_graphs.php:357 aggregate_graphs.php:430 aggregate_graphs.php:455
 #: graphs.php:916
 msgid "Delete Graph(s)"
-msgstr "Видалити графік(и)"
+msgstr "Видалити Графік(и)"
 
 #: aggregate_graphs.php:387
 msgid "The selected Aggregate Graphs represent elements from more than one Graph Template."
-msgstr "Вибрані агрегатні графіки представляють елементи з кількох шаблонів графіків."
+msgstr "Обрані Агреговані Графіки являють собою елементи з більш ніж одного Шаблону Графіків."
 
 #: aggregate_graphs.php:388
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template.  Please press 'Return' and then select only Aggregate Graph that utilize the same Graph Template."
-msgstr "Щоб перенести наведені нижче сукупні графіки до агрегату на основі шаблону, вони мають використовувати лише один шаблон графіка. Натисніть «Повернутися», а потім виберіть лише сукупний графік, який використовує той самий шаблон графіка."
+msgstr "Щоб мігрувати наведені нижче Агреговані Графіки до Агрегованих на основі Шаблону, вони мають використовувати лише один Шаблон Графіків. Натисніть \"Повернути\", оберіть лише Агрегований Графік, який використовує той самий Шаблон Графіка."
 
 #: aggregate_graphs.php:393 aggregate_graphs.php:441 aggregate_graphs.php:487
 #: auth_changepassword.php:359 auth_profile.php:447 automation_networks.php:398
@@ -216,11 +204,11 @@ msgstr "Щоб перенести наведені нижче сукупні г�
 #: lib/api_aggregate.php:1607 lib/html_form.php:1293 managers.php:1065
 #: permission_denied.php:30 permission_denied.php:32
 msgid "Return"
-msgstr "Повернутися"
+msgstr "Повернути"
 
 #: aggregate_graphs.php:397
 msgid "The selected Aggregate Graphs does not appear to have any matching Aggregate Templates."
-msgstr "Вибрані агрегатні графіки не мають відповідних агрегатних шаблонів."
+msgstr "Вибрані Агреговані Графіки не мають відповідних Шаблонів."
 
 #: aggregate_graphs.php:398
 msgid "In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist.  Please press 'Return' and then first create your Aggregate Template before retrying."
@@ -228,45 +216,45 @@ msgstr "Щоб перенести наведені нижче сукупні г�
 
 #: aggregate_graphs.php:414
 msgid "Click 'Continue' and the following Aggregate Graph(s) will be migrated to use the Aggregate Template that you choose below."
-msgstr "Натисніть «Продовжити», і наступні агрегатні графіки буде перенесено на використання сукупного шаблону, який ви виберете нижче."
+msgstr "Натисніть \"Продовжити\" і наступні Агреговані Графіки буде мігровано для використання Шаблону Агрегації, що ви виберете нижче."
 
 #: aggregate_graphs.php:420
 msgid "Aggregate Template:"
-msgstr "Сукупний шаблон:"
+msgstr "Шаблон Агрегації:"
 
 #: aggregate_graphs.php:434
 msgid "There are currently no Aggregate Templates defined for the selected Legacy Aggregates."
-msgstr "Наразі немає шаблонів агрегатів, визначених для вибраних застарілих агрегатів."
+msgstr "Наразі немає Шаблонів Агрегації, визначених для вибраних Legacy Агрегацій."
 
 #: aggregate_graphs.php:435
 #, php-format
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template '%s'."
-msgstr "Щоб перенести наведені нижче агрегатні графіки до агрегату на основі шаблону, спочатку створіть агрегатний шаблон для шаблону графіка \"%s\"."
+msgstr "Щоб мігрувати наступні Агреговані Графіки до Агрегації на основі Шаблону, спочатку створіть Шаблон Агрегації для Шаблону Графіка '%s'."
 
 #: aggregate_graphs.php:436
 msgid "Please press 'Return' to continue."
-msgstr "Щоб продовжити, натисніть «Назад»."
+msgstr "Будь ласка, натисніть 'Повернути' для продовження."
 
 #: aggregate_graphs.php:447
 msgid "Click 'Continue' to combine the following Aggregate Graph(s) into a single Aggregate Graph."
-msgstr "Натисніть «Продовжити», щоб об’єднати наступні агрегатні графіки в один агрегатний графік."
+msgstr "Натисніть 'Продовжити' для об'єднання наступних Агрегованих Графіків в один Агрегований Графік."
 
 #: aggregate_graphs.php:452
 msgid "Aggregate Name:"
-msgstr "Назва агрегату:"
+msgstr "Ім'я Агрегованого:"
 
 #: aggregate_graphs.php:453
 msgid "New Aggregate"
-msgstr "Новий агрегат"
+msgstr "Новий Агрегований"
 
 #: aggregate_graphs.php:468 graphs.php:1270 host.php:520
 msgid "Click 'Continue' to add the selected Graphs to the Report below."
-msgstr "Натисніть «Продовжити», щоб додати вибрані графіки до звіту нижче."
+msgstr "Натисніть 'Продовжити', щоб додати вибрані Графіки до Звіту нижче."
 
 #: aggregate_graphs.php:472 graph_view.php:827 graphs.php:1274 host.php:524
 #: lib/html_reports.php:35 lib/html_reports.php:1931
 msgid "Report Name"
-msgstr "Назва звіту"
+msgstr "Ім'я Звіту"
 
 #: aggregate_graphs.php:476 graph_view.php:834 graphs.php:1278 host.php:528
 #: lib/html_reports.php:1613
@@ -279,7 +267,7 @@ msgstr "Вирівнювання"
 
 #: aggregate_graphs.php:484 graphs.php:1286
 msgid "Add Graphs to Report"
-msgstr "Додайте графіки до звіту"
+msgstr "Додати Графіки до Звіту"
 
 #: aggregate_graphs.php:486 graphs.php:1288
 msgid "You currently have no reports defined."
@@ -287,19 +275,19 @@ msgstr "Наразі у вас немає визначених звітів."
 
 #: aggregate_graphs.php:492
 msgid "Click 'Continue' to convert the following Aggregate Graph(s) into a normal Graph."
-msgstr "Натисніть «Продовжити», щоб перетворити наступні агрегатні графіки на звичайний графік."
+msgstr "Натисніть \"Продовжити\", щоб конвертувати наступні Агреговані Графіки на звичайний Графік."
 
 #: aggregate_graphs.php:497
 msgid "Convert to normal Graph(s)"
-msgstr "Перетворити на нормальний графік(и)"
+msgstr "Конвертувати у звичайний Графік(и)"
 
 #: aggregate_graphs.php:501
 msgid "Click 'Continue' to associate the following Graph(s) with the Aggregate Graph."
-msgstr "Натисніть «Продовжити», щоб пов’язати наступний(і) графік(и) із сукупним графіком."
+msgstr "Натисніть \"Продовжити\" для того, щоб асоціювати наступні Графіки з Агрегованим Графіком."
 
 #: aggregate_graphs.php:506
 msgid "Associate Graph(s)"
-msgstr "Асоційований графік(и)"
+msgstr "Асоціювати Графік(и)"
 
 #: aggregate_graphs.php:510
 msgid "Click 'Continue' to disassociate the following Graph(s) from the Aggregate."
@@ -5469,7 +5457,6 @@ msgstr "Метод повторного індексування"
 #: include/global_arrays.php:2811 lib/api_automation.php:1293
 #: lib/api_automation.php:1355 lib/api_automation.php:1422
 #: lib/html_reports.php:1616 links.php:379 plugins.php:569
-#, fuzzy
 msgid "Actions"
 msgstr "Дії"
 
