@@ -79,6 +79,7 @@ Cacti CHANGELOG
 -feature: Upgrade billboard.js to version 3.6
 -feature: Upgrade jQuery to version 3.6.1
 -feature: Upgrade jQueryUI to version 1.13.2
+-feature: Introduce exec() function with timeout
 
 1.2.22
 -security#4834: When creating new graphs, cross site injection is possible
