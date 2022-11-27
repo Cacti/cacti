@@ -235,9 +235,8 @@ if ($active_profiles != 1) {
 		$sql_where = '';
 	}
 
-	if ($active_profiles > 1) {
-		$poller_items = db_fetch_assoc_prepared(
-			"SELECT " . SQL_NO_CACHE . " *
+	$poller_items = db_fetch_assoc_prepared(
+		"SELECT " . SQL_NO_CACHE . " *
 			FROM poller_item AS pi
 			LEFT JOIN host AS h
 			ON h.id = pi.host_id
@@ -249,11 +248,11 @@ if ($active_profiles != 1) {
 			$sql_where1
 			AND pi.rrd_next_step <= 0
 			ORDER by pi.host_id",
-			$params1
-		);
+		$params1
+	);
 
-		$script_server_calls = db_fetch_cell_prepared(
-			"SELECT " . SQL_NO_CACHE . " COUNT(*)
+	$script_server_calls = db_fetch_cell_prepared(
+		"SELECT " . SQL_NO_CACHE . " COUNT(*)
 			FROM poller_item AS pi
 			LEFT JOIN host AS h
 			ON h.id = pi.host_id
@@ -265,20 +264,20 @@ if ($active_profiles != 1) {
 			AND pi.action IN(?, ?)
 			$sql_where2
 			AND pi.rrd_next_step <= 0",
-			$params2
-		);
+		$params2
+	);
 
-		// setup next polling interval
-		db_execute_prepared(
-			"UPDATE poller_item AS pi
+	// setup next polling interval
+	db_execute_prepared(
+		"UPDATE poller_item AS pi
 			SET rrd_next_step = IF(rrd_step = ?, 0, IF(rrd_next_step - ? < 0, rrd_step, rrd_next_step - ?))
 			WHERE poller_id = ?
 			$sql_where3",
-			$params3
-		);
-	} else {
-		$poller_items = db_fetch_assoc_prepared(
-			"SELECT " . SQL_NO_CACHE . " *
+		$params3
+	);
+} else {
+	$poller_items = db_fetch_assoc_prepared(
+		"SELECT " . SQL_NO_CACHE . " *
 		FROM poller_item AS pi
 		LEFT JOIN host AS h
 		ON h.id = pi.host_id
@@ -289,11 +288,11 @@ if ($active_profiles != 1) {
 		AND IFNULL(TRIM(h.disabled),'') != 'on'
 		$sql_where1
 		ORDER by pi.host_id",
-			$params1
-		);
+		$params1
+	);
 
-		$script_server_calls = db_fetch_cell_prepared(
-			"SELECT " . SQL_NO_CACHE . " COUNT(*)
+	$script_server_calls = db_fetch_cell_prepared(
+		"SELECT " . SQL_NO_CACHE . " COUNT(*)
 		FROM poller_item AS pi
 		LEFT JOIN host AS h
 		ON h.id = pi.host_id
@@ -304,9 +303,8 @@ if ($active_profiles != 1) {
 		AND IFNULL(TRIM(h.disabled),'') != 'on'
 		AND pi.action IN(?, ?)
 		$sql_where2",
-			$params2
-		);
-	}
+		$params2
+	);
 }
 
 if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on') {
