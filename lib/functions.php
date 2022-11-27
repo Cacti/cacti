@@ -1027,6 +1027,36 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
 }
 
 /**
+ * raise_message_javascript - raises a message that will appear in the UI
+ * as the result of an server side error that can not be captured
+ * normally.
+ *
+ * @param  (string) The title for the dialog title bar
+ * @param  (string) Header section for the message
+ * @param  (string) The actual error message to display
+ *
+ * @return (void)
+ */
+function raise_message_javascript($title, $header, $message) {
+	?>
+	<script type='text/javascript'>
+	var mixedReasonTitle = '<?php print $title;?>';
+	var mixedOnPage      = '<?php print $header;?>';
+	sessionMessage   = {
+		message: '<?php print $message;?>',
+		level: MESSAGE_LEVEL_MIXED
+	};
+
+	$(function() {
+		displayMessages();
+	});
+	</script>
+	<?php
+
+	exit;
+}
+
+/**
  * display_output_messages - displays all of the cached messages from the raise_message() function and clears
  * the message cache
  */
