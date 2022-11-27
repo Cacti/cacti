@@ -1268,8 +1268,9 @@ function setGraphTabs() {
 
 function setupResponsiveMenuAndTabs() {
 	$('.maintabs a.lefttab, .dropdownMenu a, .menuoptions a, #gtabs a.righttab').not('[href^="http"], [href^="https"], [href^="#"], [target="_blank"]').off('click').on('click', function(event) {
-		if (!shouldCaptureClick(event))
+		if (!shouldCaptureClick(event)) {
 			return;
+		}
 
 		page = basename($(this).attr('href'));
 
@@ -1281,13 +1282,7 @@ function setupResponsiveMenuAndTabs() {
 			event.preventDefault();
 		}
 
-		if ($('#navigation').length) {
-			var hasNavigation = true;
-		} else {
-			var hasNavigation = false;
-		}
-
-		if (hasNavigation && ($(this).hasClass('selected') || (pageName == page && pageName != 'graph_view.php') && pageName != 'link.php')) {
+		if (userMenuNavigationExists(page) && ($(this).hasClass('selected') || (pageName == page && pageName != 'graph_view.php') && pageName != 'link.php')) {
 			handleUserMenu(true);
 		} else {
 			var id = $(this).attr('id');
@@ -2035,7 +2030,7 @@ function loadTopTabStart(options) {
 	if (options.url.indexOf('graph_view.php') >= 0) {
 		$('.cactiGraphHeaderBackground').show();
 		$('.cactiConsolePageHeadBackdrop').hide();
-	} else {
+	} else if (userMenuNavigationExists(options.url)) {
 		$('.cactiGraphHeaderBackground').hide();
 		$('.cactiConsolePageHeadBackdrop').show();
 	}
@@ -2055,11 +2050,14 @@ function loadTopTabEnd(options) {
 	if (options.tabId) {
 		var tabElementId = '#' + options.tabId;
 		var tabElement = $(tabElementId);
+
 		if (tabElement.hasClass('lefttab')) {
 			$('.lefttab').removeClass('selected');
 			$('.submenuoptions').find('.selected').removeClass('selected');
 			tabElement.addClass('selected');
+
 			var hideTabId = tabElementId.substring(0, tabElementId.length - 9);
+
 			if (hideTabId) {
 				$(hideTabId).addClass('selected');
 			}
@@ -2068,6 +2066,22 @@ function loadTopTabEnd(options) {
 			tabElementId.addClass('selected');
 		}
 	}
+}
+
+function userMenuNavigationExists(url) {
+	if (url == 'index.php') {
+		return true;
+	} else {
+		$('#navigation').find('a').each(function() {
+			var checkUrl = basename($(this).attr('href'));
+
+			if (checkUrl == url) {
+				return true;
+			}
+		});
+	}
+
+	return false;
 }
 
 function loadPageUsingPost(href, postData, returnLocation) {
