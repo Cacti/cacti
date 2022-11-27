@@ -1282,7 +1282,7 @@ function setupResponsiveMenuAndTabs() {
 			event.preventDefault();
 		}
 
-		if (userMenuNavigationExists(page) && ($(this).hasClass('selected') || (pageName == page && pageName != 'graph_view.php') && pageName != 'link.php')) {
+		if ((userMenuNavigationExists(page) || page == 'graph_view.php') && ($(this).hasClass('selected') || (pageName == page && pageName != 'graph_view.php') && pageName != 'link.php')) {
 			handleUserMenu(true);
 		} else {
 			var id = $(this).attr('id');
@@ -2061,9 +2061,9 @@ function loadTopTabEnd(options) {
 			if (hideTabId) {
 				$(hideTabId).addClass('selected');
 			}
-		} else if (tabElementId.parents('.submenuoptions').length > 0) {
-			tabElementId.parents('.submenuoptions').find('.selected').removeClass('selected');
-			tabElementId.addClass('selected');
+		} else if (tabElement.parents('.submenuoptions').length > 0) {
+			tabElement.parents('.submenuoptions').find('.selected').removeClass('selected');
+			tabElement.addClass('selected');
 		}
 	}
 }
