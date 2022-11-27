@@ -299,5 +299,9 @@ class SNMP {
 		break;
 		}
 	}
+
+	public function getType(): string {
+		return "SNMP class";
+	}
 }
 
