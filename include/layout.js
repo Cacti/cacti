@@ -2070,19 +2070,6 @@ function loadTopTabEnd(options) {
     }
 }
 
-function loadTopTabStart(options) {
-    $('.submenuoptions').slideUp(120);
-    $('.menuoptions').slideUp(120);
-
-    if (href.indexOf('graph_view.php') >= 0) {
-        $('.cactiGraphHeaderBackground').show();
-        $('.cactiConsolePageHeadBackdrop').hide();
-    } else {
-        $('.cactiGraphHeaderBackground').hide();
-        $('.cactiConsolePageHeadBackdrop').show();
-    }
-}
-
 function loadPageUsingPost(href, postData, returnLocation) {
     $.post(href, postData, function(data) {
         if (returnLocation !== undefined) {
