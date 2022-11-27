@@ -388,7 +388,6 @@ Cacti CHANGELOG
 -issue#4284: Whilst upgrading, errors in upgrade scripts prevent properly execution
 -issue#4293: Tree search does not take hosts belonging to a site into account
 -issue#4294: Tables outside of pre-built list that need fixing, cause bad unknown column errors
-<<<<<<< HEAD
 -issue#4295: If a page contains multiple tables, a larger table can cause small ones to lose columns
 -issue#4297: Unable to search using regular expressions when trying to filter graphs
 -issue#4312: When using CMD.PHP as the poller, warnings can appear if you only use a subset of data input types

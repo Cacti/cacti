@@ -2276,13 +2276,8 @@ function graph_management() {
 
 	$graph_list = db_fetch_assoc("SELECT gtg.id, gl.id AS local_graph_id,
 		gtg.height, gtg.width, gtg.title_cache, gt.name, gl.host_id,
-<<<<<<< HEAD
 		IF(gl.graph_template_id = 0, 0, IF(gl.snmp_query_id = 0, 2, 1)) AS graph_source,
-		IF(gl.snmp_query_id > 0, sqg.name, gt.name) AS source_name
-=======
-		IF(gl.graph_template_id=0, 0, IF(gl.snmp_query_id=0, 2, 1)) AS graph_source,
 		v.name AS vdef, c.name AS cdef
->>>>>>> 76ebce61c (Allow CDEF to be used as a filter for Graph/Graph Templates (#2439))
 		FROM graph_local AS gl
 		INNER JOIN graph_templates_graph AS gtg
 		ON gl.id=gtg.local_graph_id
