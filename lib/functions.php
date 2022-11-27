@@ -50,7 +50,7 @@ function title_trim($text, $max_length) {
  *
  * @return mixed the filtered string
  */
-function filter_value(?string $value, string $filter, string $href = ''): string {
+function filter_value(?string $value, string $filter, string $href = ''): ?string {
 	static $charset;
 
 	if ($charset == '') {
