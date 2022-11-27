@@ -837,7 +837,7 @@ function support_view_tech() {
 	} elseif (get_request_var('tab') == 'poller') {
 		if (db_column_exists('sites', 'disabled')) {
 			$sql_where = 'AND IFNULL(s.disabled, "") != "on"';
-		) else {
+		} else {
 			$sql_where = '';
 		}
 

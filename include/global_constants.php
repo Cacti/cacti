@@ -509,7 +509,7 @@ if (defined('CACTI_CLI_ONLY')) {
 	define('CLI_SGR_END',                     'm');  # concludes an SGR sequence
 	define('CLI_SGR_RESET',                     0);  # reset all SGR attrs
 	define('CLI_SGR_BOLD',                      1);  # bold
-	define('CLI_SGR_BOLD',                      2);  # dim
+	define('CLI_SGR_DIM',                       2);  # dim
 	define('CLI_SGR_BLINK',                     5);  # slow blink
 	define('CLI_SGR_BLINK_FAST',	            6);  # rapid blink
 

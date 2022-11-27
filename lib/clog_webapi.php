@@ -307,7 +307,7 @@ function clog_view_logfile() {
 
 	if (db_column_exists('sites', 'disabled')) {
 		$sql_where = 'AND IFNULL(s.disabled,"") != "on"';
-	) else {
+	} else {
 		$sql_where = '';
 	}
 

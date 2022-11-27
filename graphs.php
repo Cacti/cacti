@@ -2150,11 +2150,7 @@ function graph_management() {
 	if (get_request_var('host_id') == '-1') {
 		/* Show all items */
 	} elseif (isempty_request_var('host_id')) {
-<<<<<<< HEAD
-		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.host_id=0';
-=======
 		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ISNULL(gl.host_id,0)=0';
->>>>>>> 76ebce61c (Allow CDEF to be used as a filter for Graph/Graph Templates (#2439))
 		$sql_where2 .= ' AND gl.host_id=0';
 	} elseif (!isempty_request_var('host_id')) {
 		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.host_id=' . get_request_var('host_id');

@@ -1434,7 +1434,7 @@ function get_device_records(&$total_rows, $rows) {
 
 	if (db_column_exists('sites', 'disabled')) {
 		$host_where_disabled = "(IFNULL(TRIM(s.disabled), '') = 'on' OR IFNULL(TRIM(host.disabled),'') = 'on')";
-	) else {
+	} else {
 		$host_where_disabled = "(IFNULL(TRIM(host.disabled), '') = 'on')";
 	}
 
