@@ -192,7 +192,7 @@ function exec_with_timeout($cmd, &$output, &$return_code, $timeout = 5) {
 	stream_set_blocking($pipes[2], 0);
 
 	// Turn the timeout into microseconds.
-	$timeout = $timeout * 1000000;
+	$timeout = (int) $timeout * 1000000;
 
 	// Output buffer.
 	$buffer = '';
@@ -203,8 +203,9 @@ function exec_with_timeout($cmd, &$output, &$return_code, $timeout = 5) {
 
 		// Wait until we have output or the timer expired.
 		$read  = array($pipes[1]);
+		$write = array();
 		$other = array();
-		stream_select($read, $other, $other, 0, $timeout);
+		stream_select($read, $write, $other, 0, $timeout);
 
 		// Get the status of the process.
 		// Do this before we read from the stream,
@@ -221,7 +222,7 @@ function exec_with_timeout($cmd, &$output, &$return_code, $timeout = 5) {
 		}
 
 		// Subtract the number of microseconds that we waited.
-		$timeout -= (microtime(true) - $start) * 1000000;
+		$timeout -= (int) (microtime(true) - $start) * 1000000;
 	}
 
 	// Check if there were any errors.
