@@ -747,42 +747,44 @@ function template() {
 						</select>
 					</td>
 					<td>
-						<?php print __('CDEF');?>
+						<?php print __('CDEFs');?>
 					</td>
 					<td>
 						<select id='cdef_id' onChange='applyFilter()'>
 							<option value='-1'<?php if (get_request_var('cdef_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
-							<option value='0'<?php if (get_request_var('cdef_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
 
-							// suppress total rows retrieval
-							$total_rows = -1;
-							$cdefs = db_fetch_assoc('SELECT id, name FROM cdef ORDER BY name');
+							$cdefs = db_fetch_assoc('SELECT c.id, c.name
+								FROM cdef AS c
+								INNER JOIN (SELECT DISTINCT cdef_id FROM graph_templates_item WHERE cdef_id > 0) AS gti
+								ON c.id = gti.cdef_id
+								ORDER BY name');
 
 							if (cacti_sizeof($cdefs)) {
 								foreach ($cdefs as $cdef) {
-									print "<option value='" . $cdef['id'] . "'"; if (get_request_var('cdef_id') == $cdef['id']) { print ' selected'; } print '>' . html_escape($cdef['name']) . "</option>\n";
+									print "<option value='" . $cdef['id'] . "'" . (get_request_var('cdef_id') == $cdef['id'] ? ' selected':'') . '>' . html_escape($cdef['name']) . '</option>';
 								}
 							}
 							?>
 						</select>
 					</td>
 					<td>
-						<?php print __('VDEF');?>
+						<?php print __('VDEFs');?>
 					</td>
 					<td>
 						<select id='vdef_id' onChange='applyFilter()'>
 							<option value='-1'<?php if (get_request_var('vdef_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
-							<option value='0'<?php if (get_request_var('vdef_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
 
-							// suppress total rows retrieval
-							$total_rows = -1;
-							$vdefs = db_fetch_assoc('SELECT id, name FROM vdef ORDER BY name');
+							$vdefs = db_fetch_assoc('SELECT v.id, v.name
+								FROM vdef AS v
+								INNER JOIN (SELECT DISTINCT vdef_id FROM graph_templates_item WHERE vdef_id > 0) AS gti
+								ON v.id = gti.vdef_id
+								ORDER BY name');
 
 							if (cacti_sizeof($vdefs)) {
 								foreach ($vdefs as $vdef) {
-									print "<option value='" . $vdef['id'] . "'"; if (get_request_var('vdef_id') == $vdef['id']) { print ' selected'; } print '>' . html_escape($vdef['name']) . "</option>\n";
+									print "<option value='" . $vdef['id'] . "'" . (get_request_var('vdef_id') == $vdef['id'] ? ' selected':'') . '>' . html_escape($vdef['name']) . '</option>';
 								}
 							}
 							?>
@@ -843,22 +845,18 @@ function template() {
 
 	if (get_request_var('vdef_id') == '-1') {
 		/* Show all items */
-	} elseif (isempty_request_var('vdef_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ISNULL(gti.vdef_id,0)=0';
 	} elseif (!isempty_request_var('vdef_id')) {
-		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gti.vdef_id=' . get_request_var('vdef_id');
+		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gti.vdef_id = ' . get_request_var('vdef_id');
 	}
 
 	if (get_request_var('cdef_id') == '-1') {
 		/* Show all items */
-	} elseif (isempty_request_var('cdef_id')) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ISNULL(gti.cdef_id,0)=0';
 	} elseif (!isempty_request_var('cdef_id')) {
-		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gti.cdef_id=' . get_request_var('cdef_id');
+		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gti.cdef_id = ' . get_request_var('cdef_id');
 	}
 
 	if (get_request_var('has_graphs') == 'true') {
-		$sql_having = 'HAVING graphs>0';
+		$sql_having = 'HAVING graphs > 0';
 	} else {
 		$sql_having = '';
 	}
@@ -877,7 +875,7 @@ function template() {
 				FROM graph_templates_graph AS gtg
 				WHERE gtg.local_graph_id=0
 			) AS gtg
-			ON gtg.graph_template_id=gt.id
+			ON gtg.graph_template_id = gt.id
 			$sql_where
 			GROUP BY gt.id
 			$sql_having
@@ -889,20 +887,15 @@ function template() {
 	$template_list = db_fetch_assoc("SELECT
 		gt.id, gt.name, gl.snmp_query_id AS dqid,
 		CONCAT(gtg.height,'x',gtg.width) AS size, gtg.vertical_label,
-		gtg.image_format_id, COUNT(gl.id) AS graphs,
-		c.name AS cdef, v.name AS vdef
+		gtg.image_format_id, COUNT(gl.id) AS graphs
 		FROM graph_templates AS gt
 		INNER JOIN graph_templates_graph AS gtg
-		ON gtg.graph_template_id=gt.id
-		AND gtg.local_graph_id=0
+		ON gtg.graph_template_id = gt.id
+		AND gtg.local_graph_id = 0
 		LEFT JOIN graph_local AS gl
-		ON gt.id=gl.graph_template_id
+		ON gt.id = gl.graph_template_id
 		LEFT JOIN graph_templates_item AS gti
-		ON gti.graph_template_id=gt.id
-		LEFT JOIN cdef AS c
-		ON c.id = gti.cdef_id
-		LEFT JOIN vdef AS v
-		ON v.id = gti.vdef_id
+		ON gti.graph_template_id = gt.id
 		$sql_where
 		GROUP BY gt.id
 		$sql_having
@@ -933,29 +926,17 @@ function template() {
 			'sort' => 'DESC',
 			'tip' => __('The number of Graphs using this Graph Template.')
 		),
-		'cdef_id' => array(
-			'display' => __('CDEF'),
-			'align'   => 'left',
-			'sort'    => 'ASC',
-			'tip'     => __('The CDEF of this Graph.')
-		),
-		'vdef_id' => array(
-			'display' => __('VDEF'),
-			'align'   => 'left',
-			'sort'    => 'ASC',
-			'tip'     => __('The VDEF of this Graph.')
+		'image_format_id' => array(
+			'display' => __('Image Format'),
+			'align' => 'right',
+			'sort' => 'ASC',
+			'tip' => __('The default image format for the resulting Graphs.')
 		),
 		'size' => array(
 			'display' => __('Size'),
 			'align' => 'right',
 			'sort' => 'ASC',
 			'tip' => __('The default size of the resulting Graphs.')
-		),
-		'image_format_id' => array(
-			'display' => __('Image Format'),
-			'align' => 'right',
-			'sort' => 'ASC',
-			'tip' => __('The default image format for the resulting Graphs.')
 		),
 		'vertical_label' => array(
 			'display' => __('Vertical Label'),
@@ -983,15 +964,14 @@ function template() {
 			} else {
 				$disabled = false;
 			}
+
 			form_alternate_row('line' . $template['id'], true, $disabled);
 			form_selectable_cell(filter_value($template['name'], get_request_var('filter'), 'graph_templates.php?action=template_edit&id=' . $template['id']), $template['id']);
 			form_selectable_cell($template['id'], $template['id'], '', 'right');
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($template['graphs'], '-1'), $template['id'], '', 'right');
-			form_selectable_cell(filter_value($template['cdef'], get_request_var('rfilter')), $template['id'], '', 'left');
-			form_selectable_cell(filter_value($template['vdef'], get_request_var('rfilter')), $template['id'], '', 'left');
-			form_selectable_ecell($template['size'], $template['id'], '', 'right');
 			form_selectable_cell($image_types[$template['image_format_id']], $template['id'], '', 'right');
+			form_selectable_ecell($template['size'], $template['id'], '', 'right');
 			form_selectable_ecell($template['vertical_label'], $template['id'], '', 'right');
 			form_checkbox_cell($template['name'], $template['id'], $disabled);
 			form_end_row();
