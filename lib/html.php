@@ -1407,6 +1407,9 @@ function draw_menu($user_menu = '') {
 		/* pass 1: see if we are allowed to view any children */
 		$show_header_items = false;
 		foreach ($header_array as $item_url => $item_title) {
+			$basename = explode('?', basename($item_url));
+			$basename = $basename[0];
+
 			if (preg_match('#link.php\?id=(\d+)#', $item_url, $matches)) {
 				if (is_realm_allowed($matches[1]+10000)) {
 					$show_header_items = true;
@@ -1418,7 +1421,7 @@ function draw_menu($user_menu = '') {
 
 				if (is_realm_allowed($current_realm_id)) {
 					$show_header_items = true;
-				} elseif (api_user_realm_auth(strtok($item_url, '?'))) {
+				} elseif (api_user_realm_auth($basename)) {
 					$show_header_items = true;
 				}
 			}
@@ -1447,13 +1450,10 @@ function draw_menu($user_menu = '') {
 				$basename = $basename[0];
 				$current_realm_id = (isset($user_auth_realm_filenames[$basename]) ? $user_auth_realm_filenames[$basename] : 0);
 
-				/* don't show the menu pick if the file does not exist */
-				if (!file_exists($config['base_path'] . '/' . $basename)) {
-					continue;
-				}
-
-				/* if this item is an array, then it contains sub-items. if not, is just
-				the title string and needs to be displayed */
+				/**
+				 * if this item is an array, then it contains sub-items. if not, is just
+				 * the title string and needs to be displayed
+				 */
 				if (is_array($item_title)) {
 					$i = 0;
 
