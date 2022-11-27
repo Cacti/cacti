@@ -23,10 +23,15 @@
  +-------------------------------------------------------------------------+
 */
 
+require_once(__DIR__ . '/include/cli_check.php');
+require_once($config['base_path'] . '/lib/snmp.php');
+require_once($config['base_path'] . '/lib/poller.php');
+require_once($config['base_path'] . '/lib/rrd.php');
+require_once($config['base_path'] . '/lib/ping.php');
+
 if (function_exists('pcntl_async_signals')) {
 	pcntl_async_signals(true);
 } else {
-
 	declare(ticks=100);
 }
 
@@ -115,12 +120,6 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-require_once(__DIR__ . '/include/cli_check.php');
-require_once($config['base_path'] . '/lib/snmp.php');
-require_once($config['base_path'] . '/lib/poller.php');
-require_once($config['base_path'] . '/lib/rrd.php');
-require_once($config['base_path'] . '/lib/ping.php');
-
 if ($version) {
 	display_version();
 	exit;
@@ -187,6 +186,7 @@ if (function_exists('pcntl_signal')) {
 // record the start time
 $start = microtime(true);
 $poller_interval = read_config_option('poller_interval');
+$script_timeout  = read_config_option('script_timeout');
 $active_profiles = read_config_option('active_profiles');
 
 // check arguments
@@ -409,7 +409,7 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 		$last_host = $host_id;
 
 		if (!$host_down) {
-			$output = collect_device_data($item, $error_ds);
+			$output = collect_device_data($item, $error_ds, $script_timeout);
 			$itemcnt++;
 
 			if (read_config_option('poller_debug') == 'on' && strlen($output) > $maxwidth) {
@@ -677,7 +677,7 @@ function update_system_mibs($host_id) {
 	}
 }
 
-function collect_device_data(&$item, &$error_ds) {
+function collect_device_data(&$item, &$error_ds, $script_timeout) {
 	global $print_data_to_stdout, $using_proc_function, $sessions, $pipes, $cactiphp;
 
 	$thread_start = microtime(true);
@@ -726,7 +726,7 @@ function collect_device_data(&$item, &$error_ds) {
 
 			break;
 		case POLLER_ACTION_SCRIPT:
-			$output = trim(exec_poll($item['arg1']));
+			$output = trim(exec_poll($item['arg1'], $script_timeout));
 
 			if ($output == 'U') {
 				$error_ds[$ds] = $ds;
