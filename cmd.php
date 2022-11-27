@@ -52,7 +52,7 @@ $pmessage   = false;
 $help       = false;
 $version    = false;
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -166,8 +166,7 @@ if (!is_numeric($poller_id) || $poller_id < 1) {
 // notify cacti processes that a poller is running
 record_cmdphp_started();
 
-$exists = db_fetch_cell_prepared(
-	'SELECT COUNT(*)
+$exists = db_fetch_cell_prepared('SELECT COUNT(*)
 	FROM host
 	WHERE poller_id = ?',
 	array($poller_id)
@@ -228,15 +227,14 @@ if ($debug) {
 input_validate_input_number($first, 'first');
 input_validate_input_number($last, 'last');
 
-if ($active_profiles != 1) {
-	if (db_column_exists('sites', 'disabled')) {
-		$sql_where = 'AND IFNULL(s.disabled,"") != "on"';
-	} else {
-		$sql_where = '';
-	}
+if (db_column_exists('sites', 'disabled')) {
+	$sql_where = 'AND IFNULL(s.disabled, "") != "on"';
+} else {
+	$sql_where = '';
+}
 
-	$poller_items = db_fetch_assoc_prepared(
-		"SELECT " . SQL_NO_CACHE . " *
+if ($active_profiles != 1) {
+	$poller_items = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . " *
 			FROM poller_item AS pi
 			LEFT JOIN host AS h
 			ON h.id = pi.host_id
@@ -251,8 +249,7 @@ if ($active_profiles != 1) {
 		$params1
 	);
 
-	$script_server_calls = db_fetch_cell_prepared(
-		"SELECT " . SQL_NO_CACHE . " COUNT(*)
+	$script_server_calls = db_fetch_cell_prepared("SELECT " . SQL_NO_CACHE . " COUNT(*)
 			FROM poller_item AS pi
 			LEFT JOIN host AS h
 			ON h.id = pi.host_id
@@ -276,8 +273,7 @@ if ($active_profiles != 1) {
 		$params3
 	);
 } else {
-	$poller_items = db_fetch_assoc_prepared(
-		"SELECT " . SQL_NO_CACHE . " *
+	$poller_items = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . " *
 		FROM poller_item AS pi
 		LEFT JOIN host AS h
 		ON h.id = pi.host_id
@@ -291,8 +287,7 @@ if ($active_profiles != 1) {
 		$params1
 	);
 
-	$script_server_calls = db_fetch_cell_prepared(
-		"SELECT " . SQL_NO_CACHE . " COUNT(*)
+	$script_server_calls = db_fetch_cell_prepared("SELECT " . SQL_NO_CACHE . " COUNT(*)
 		FROM poller_item AS pi
 		LEFT JOIN host AS h
 		ON h.id = pi.host_id
@@ -793,8 +788,7 @@ function ping_and_reindex_check(&$item, $mibs) {
 	$ping    = new Net_Ping;
 	$host_id = $item['host_id'];
 
-	$host = db_fetch_row_prepared(
-		'SELECT hostname, ping_port, ping_method, ping_retries, ping_timeout, availability_method
+	$host = db_fetch_row_prepared('SELECT hostname, ping_port, ping_method, ping_retries, ping_timeout, availability_method
 		FROM host
 		WHERE id = ?',
 		array($host_id)
@@ -823,8 +817,7 @@ function ping_and_reindex_check(&$item, $mibs) {
 
 	if (!$host_down) {
 		// do the reindex check for this host
-		$reindex = db_fetch_assoc_prepared(
-			'SELECT ' . SQL_NO_CACHE . ' pr.data_query_id, pr.action,
+		$reindex = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' pr.data_query_id, pr.action,
 			pr.op, pr.assert_value, pr.arg1
 			FROM poller_reindex AS pr
 			WHERE pr.host_id=?',
