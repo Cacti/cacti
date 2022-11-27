@@ -26,33 +26,27 @@
  * exec_poll - executes a command and returns its output
  *
  * @param  (string) $command - the command to execute
+ * @param  (int)    $timeout - the command timeout
  *
  * @return (string) the output of $command after execution
  */
-function exec_poll($command) {
+function exec_poll($command, $timeout) {
 	global $config;
 
-	if (function_exists('popen')) {
-		if ($config['cacti_server_os'] == 'unix') {
-			$fp = popen($command, 'r');
-		} else {
-			$fp = popen($command, 'rb');
-		}
+	$output = array();
+	$return = 0;
 
-		/* return if the popen command was not successful */
-		if (!is_resource($fp)) {
-			cacti_log('WARNING; Problem with POPEN command.', false, 'POLLER');
-			return 'U';
-		}
+	$data = exec_with_timeout($command, $output, $return, $timeout);
 
-		$output = fgets($fp, 8192);
-
-		pclose($fp);
-	} else {
-		$output = `$command`;
+	if ($return != 0) {
+		cacti_log(sprintf('WARNING: Script:%s, ErrorCode:%d, Output:%s', $command, $return, implode(',', $output)), false, 'POLLER');
 	}
 
-	return $output;
+	if ($data == '') {
+		return 'U';
+	} else {
+		return $data;
+	}
 }
 
 /**
@@ -192,7 +186,7 @@ function exec_with_timeout($cmd, &$output, &$return_code, $timeout = 5) {
 	stream_set_blocking($pipes[2], 0);
 
 	// Turn the timeout into microseconds.
-	$timeout = $timeout * 1000000;
+	$timeout = (int) $timeout * 1000000;
 
 	// Output buffer.
 	$buffer = '';
@@ -203,8 +197,9 @@ function exec_with_timeout($cmd, &$output, &$return_code, $timeout = 5) {
 
 		// Wait until we have output or the timer expired.
 		$read  = array($pipes[1]);
+		$write = array();
 		$other = array();
-		stream_select($read, $other, $other, 0, $timeout);
+		stream_select($read, $write, $other, 0, $timeout);
 
 		// Get the status of the process.
 		// Do this before we read from the stream,
@@ -221,7 +216,7 @@ function exec_with_timeout($cmd, &$output, &$return_code, $timeout = 5) {
 		}
 
 		// Subtract the number of microseconds that we waited.
-		$timeout -= (microtime(true) - $start) * 1000000;
+		$timeout -= (int) (microtime(true) - $start) * 1000000;
 	}
 
 	// Check if there were any errors.
