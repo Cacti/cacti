@@ -1593,7 +1593,6 @@ $settings = array(
 			'max_length' => '10',
 			'size' => '5'
 		),
-	),
 	'authentication' => array(
 		'auth_header' => array(
 			'friendly_name' => __('General'),
