@@ -1720,13 +1720,13 @@ function build_rule_item_filter($automation_rule_items, $prefix = '') {
 				#
 				$sql_filter .= ' ' . $automation_op_array['op'][$automation_rule_item['operator']] . ' ';
 				if ($automation_op_array['binary'][$automation_rule_item['operator']]) {
-						$query_pattern = $automation_op_array['pre'][$automation_rule_item['operator']] . $automation_rule_item['pattern'] . $automation_op_array['post'][$automation_rule_item['operator']];
-						// Don't escape numeric values with numeric comparison operators
-						if($automation_rule_item['operator'] >= AUTOMATION_OP_LT && $automation_rule_item['operator'] <= AUTOMATION_OP_GE && is_numeric($query_pattern)) {
-							$sql_filter .= $query_pattern;
-						} else {
-							$sql_filter .= db_qstr($query_pattern);
-						}
+					$query_pattern = $automation_op_array['pre'][$automation_rule_item['operator']] . $automation_rule_item['pattern'] . $automation_op_array['post'][$automation_rule_item['operator']];
+					// Don't escape numeric values with numeric comparison operators
+					if($automation_rule_item['operator'] >= AUTOMATION_OP_LT && $automation_rule_item['operator'] <= AUTOMATION_OP_GE && is_numeric($query_pattern)) {
+						$sql_filter .= $query_pattern;
+					} else {
+						$sql_filter .= db_qstr($query_pattern);
+					}
 				}
 			}
 		}
