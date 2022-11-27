@@ -402,7 +402,7 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 
 		// ping host, find out if there are re-index checks required
 		if ($new_host && !empty($host_id)) {
-			$host_down = ping_and_reindex_check($item, $mibs);
+			$host_down = ping_and_reindex_check($item, $mibs, $script_timeout);
 		}
 
 		$new_host  = false;
@@ -678,7 +678,7 @@ function update_system_mibs($host_id) {
 }
 
 function collect_device_data(&$item, &$error_ds, $script_timeout) {
-	global $print_data_to_stdout, $using_proc_function, $sessions, $pipes, $cactiphp;
+	global $print_data_to_stdout, $using_proc_function, $pipes, $cactiphp;
 
 	$thread_start = microtime(true);
 	$ds           = $item['local_data_id'];
@@ -776,14 +776,14 @@ function collect_device_data(&$item, &$error_ds, $script_timeout) {
 		default:
 			$error_ds[$ds] = $ds;
 
-			cacti_log("Device[$host_id] DS[$ds] ERROR: Invalid polling option: " . $item['action'], $stdout, 'POLLER');
+			cacti_log("Device[$host_id] DS[$ds] ERROR: Invalid polling option: " . $item['action'], $print_data_to_stdout, 'POLLER');
 	}
 
 	return $output;
 }
 
-function ping_and_reindex_check(&$item, $mibs) {
-	global $poller_id, $print_data_to_stdout, $sessions, $set_spike_kill, $poller_db_cnn_id, $pipes, $cactiphp, $using_proc_function;
+function ping_and_reindex_check(&$item, $mibs, $script_timeout) {
+	global $poller_id, $print_data_to_stdout, $set_spike_kill, $poller_db_cnn_id, $pipes, $cactiphp, $using_proc_function;
 
 	$ping    = new Net_Ping;
 	$host_id = $item['host_id'];
@@ -854,7 +854,7 @@ function ping_and_reindex_check(&$item, $mibs) {
 
 						break;
 					case POLLER_ACTION_SCRIPT:
-						$output = trim(exec_poll($index_item['arg1']));
+						$output = trim(exec_poll($index_item['arg1'], $script_timeout));
 
 						if (!is_numeric($output)) {
 							if (prepare_validate_result($output) == false) {

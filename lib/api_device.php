@@ -1223,7 +1223,7 @@ function api_device_quick_save(&$save) {
  *
  * @return (void)
  */
-function api_device_update_host_template(int $host_id, int $host_template_id) {
+function api_device_update_host_template(int $device_id, int $device_template_id) {
 	static $raised = array();
 
 	db_execute_prepared('UPDATE host
@@ -1369,7 +1369,7 @@ function api_device_update_host_template(int $host_id, int $host_template_id) {
 						raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 						$raised[$poller_id] = true;
 					}
-				} elseif (!$isset($raised[$poller_id])) {
+				} elseif (!isset($raised[$poller_id])) {
 					raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 					$raised[$poller_id] = true;
 				}
