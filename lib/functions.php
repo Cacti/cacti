@@ -863,7 +863,7 @@ function is_valid_theme(?string &$theme, int $set_user = 0) {
  *
  * @return mixed the original $field_value
  */
-function form_input_validate($field_value, $field_name, $regexp_match, $allow_nulls, $custom_message = 3) {
+function form_input_validate($field_value, $field_name, $regexp_match, $allow_nulls, $message_id = 3) {
 	global $messages;
 
 	/* write current values to the "field_values" array so we can retain them */
@@ -873,22 +873,26 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
 		return $field_value;
 	}
 
+	$report_message = null;
 	if ($allow_nulls == false && $field_value == '') {
-		if (read_config_option('log_validation') == 'on') {
-			cacti_log("Form Validation Failed: Variable '$field_name' does not allow nulls and variable is null", false);
-		}
-
-		raise_message($custom_message);
-
-		$_SESSION['sess_error_fields'][$field_name] = $field_name;
+		$report_message = __("Form Validation Failed: Variable '%s' does not allow nulls and variable is null", $field_name);
 	} elseif ($regexp_match != '' && !preg_match('/' . $regexp_match . '/', $field_value)) {
-		if (read_config_option('log_validation') == 'on') {
-			cacti_log("Form Validation Failed: Variable '$field_name' with Value '$field_value' Failed REGEX '$regexp_match'", false);
+		$report_message = __("Form Validation Failed: Variable '%s' with Value '%s' Failed REGEX '%s'", $field_name, $field_value, $regexp_match);
+	}
+
+	if ($report_message !== null) {
+		$custom_message = null;
+		if (read_config_option('log_validation')) {
+			cacti_log($report_message, false, 'ERROR:');
+
+			if (read_config_option('log_validation') == INPUT_VALIDATION_FULL && $message_id == 3) {
+				$message_id = $field_name;
+				$custom_message = $report_message;
+			}
 		}
 
-		raise_message($custom_message);
-
-		$_SESSION['sess_error_fields'][$field_name] = $field_name;
+		$_SESSION['sess_error_fields'][$field_name] = $custom_message ?? $message_id;
+		raise_message($message_id, $custom_message, MESSAGE_LEVEL_ERROR);
 	}
 
 	return $field_value;

@@ -238,7 +238,7 @@ function form_save() {
 	if (isset_request_var('save_component_site')) {
 		$save['id']           = get_filter_request_var('id');
 		$save['name']         = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
-		$save['disabled']     = form_input_validate(get_nfilter_request_var('disabled'), 'disabled', '(^on$)', false, 3);
+		$save['disabled']     = form_input_validate(get_nfilter_request_var('disabled'), 'disabled', '(^on$)', true, 3);
 		$save['address1']     = form_input_validate(get_nfilter_request_var('address1'), 'address1', '', true, 3);
 		$save['address2']     = form_input_validate(get_nfilter_request_var('address2'), 'address2', '', true, 3);
 		$save['city']         = form_input_validate(get_nfilter_request_var('city'), 'city', '', true, 3);

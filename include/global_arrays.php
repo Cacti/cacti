@@ -700,6 +700,12 @@ $logfile_expansion = array(
 	LOG_EXPAND_FULL    => ('FULL - Display and search expansion'),
 );
 
+$logfile_validation = array(
+	INPUT_VALIDATION_NONE => ('NONE - No reporting'),
+	INPUT_VALIDATION_LOG  => ('LOG - Only record to log'),
+	INPUT_VALIDATION_FULL => ('FULL - Display and log'),
+);
+
 $poller_options = array(
 	1 => 'cmd.php',
 	2 => 'spine'

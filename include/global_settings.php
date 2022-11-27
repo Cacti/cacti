@@ -331,7 +331,8 @@ $settings['general'] = array(
 	'log_validation' => array(
 		'friendly_name' => __('Log Input Validation Issues'),
 		'description' => __('Record when request fields are accessed without going through proper input validation'),
-		'method' => 'checkbox',
+		'method' => 'drop_array',
+		'array' => $logfile_validation,
 		'default' => ''
 	),
 	'data_source_trace' => array(
