@@ -926,8 +926,6 @@ function clog_regex_graphs($matches, $link = false) {
 			}
 		}
 
-		$result .= $matches[1] . "<a href='";
-
 		$i = 0;
 		foreach ($graph_ids as $id) {
 			$graph_add .= ($i > 0 ? '%2C' : '') . $id;
@@ -936,7 +934,7 @@ function clog_regex_graphs($matches, $link = false) {
 		}
 
 		if ($link) {
-			$result .= html_escape($graph_add) . '\'>' . $title . '</a>' . $matches[3];
+			$result .= $matches[1] . "<a href='" . html_escape($graph_add) . '\'>' . $title . '</a>' . $matches[3];
 		} else {
 			$result .= $title . $matches[3];
 		}

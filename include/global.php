@@ -29,11 +29,12 @@
    include/config.php for user configurable settings.
 
 */
-
+global $config;
 $config = array();
 
 /* this should be auto-detected, set it manually if needed */
 $config['cacti_server_os'] = (strstr(PHP_OS, 'WIN')) ? 'win32' : 'unix';
+$config['is_web'] = !defined('CACTI_CLI_ONLY');
 
 /* define cacti version */
 /* used for includes */
@@ -252,7 +253,6 @@ include_once($config['library_path'] . '/html_validate.php');
 
 $filename = get_current_page();
 
-$config['is_web'] = !defined('CACTI_CLI_ONLY');
 if (isset($no_http_headers) && $no_http_headers == true) {
 	$config['is_web'] = false;
 }

@@ -772,7 +772,7 @@ function install_file_paths() {
 
 	/* RRDtool Version */
 	if ((@file_exists($input['path_rrdtool']['default'])) && (($config['cacti_server_os'] == 'win32') || (is_executable($input['path_rrdtool']['default']))) ) {
-		$input['rrdtool_version'] = $settings['general']['rrdtool_version'] ?? '';
+		$input['rrdtool_version'] = $settings['general']['rrdtool_version'] ?? [];
 
 		$temp_ver = get_installed_rrdtool_version();
 

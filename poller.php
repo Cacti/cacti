@@ -436,7 +436,7 @@ while ($poller_runs_completed < $poller_runs) {
 		ON h.id = pi.host_id
 		LEFT JOIN sites s
 		ON s.id = h.site_id
-		WHERE poller_id = ?
+		WHERE h.poller_id = ?
 		AND h.deleted=""
 		AND IFNULL(h.disabled,"") != "on"
 		AND IFNULL(s.disabled,"") != "on"

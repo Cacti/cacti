@@ -1615,7 +1615,7 @@ function determine_display_log_entry($message_type, $line, $filter) {
  * @param $host_id - (int) the host ID for the results
  * @param $ping - (class array) results of the ping command.
  */
-function update_host_status(int $status, int $host_id, array &$hosts, Net_Ping &$ping, int $ping_availability, bool $print_data_to_stdout) {
+function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $ping_availability, bool $print_data_to_stdout) {
 	$issue_log_message   = false;
 	$ping_failure_count  = read_config_option('ping_failure_count');
 	$ping_recovery_count = read_config_option('ping_recovery_count');
@@ -4917,17 +4917,17 @@ function mailer($from, $to, $cc, $bcc, $replyto, string $subject, string $body, 
 		return record_mailer_error($replyText, $mail->ErrorInfo);
 	}
 
-	$body = str_replace('<SUBJECT>', $subject,   $body);
-	$body = str_replace('<TO>',      $toText,    $body);
-	$body = str_replace('<CC>',      $ccText,    $body);
-	$body = str_replace('<FROM>',    $fromText,  $body);
-	$body = str_replace('<REPLYTO>', $replyText, $body);
+	$body = str_replace('<SUBJECT>', $subject   ?? '', $body ?? '');
+	$body = str_replace('<TO>',      $toText    ?? '', $body ?? '');
+	$body = str_replace('<CC>',      $ccText    ?? '', $body ?? '');
+	$body = str_replace('<FROM>',    $fromText  ?? '', $body ?? '');
+	$body = str_replace('<REPLYTO>', $replyText ?? '', $body ?? '');
 
-	$body_text = str_replace('<SUBJECT>', $subject,   $body_text);
-	$body_text = str_replace('<TO>',      $toText,    $body_text);
-	$body_text = str_replace('<CC>',      $ccText,    $body_text);
-	$body_text = str_replace('<FROM>',    $fromText,  $body_text);
-	$body_text = str_replace('<REPLYTO>', $replyText, $body_text);
+	$body_text = str_replace('<SUBJECT>', $subject   ?? '', $body_text ?? '');
+	$body_text = str_replace('<TO>',      $toText    ?? '', $body_text ?? '');
+	$body_text = str_replace('<CC>',      $ccText    ?? '', $body_text ?? '');
+	$body_text = str_replace('<FROM>',    $fromText  ?? '', $body_text ?? '');
+	$body_text = str_replace('<REPLYTO>', $replyText ?? '', $body_text ?? '');
 
 	// Set the subject
 	$mail->Subject = $subject;
@@ -6379,17 +6379,37 @@ function date_time_format() {
 
 function get_source_timestamp() {
 	global $config;
+
+	static $git_status = null;
+
 	$timestamp = 0;
-	$git_path = realpath(__DIR__ . '/../.git/');
-	if (file_exists($git_path)) {
-		$old_path = getcwd();
-		chdir($git_path);
-		$shell = @shell_exec('git log -1 --pretty=format:%ct.%h');
-		$parts = explode('.', $shell);
-		chdir($old_path);
-	} else {
-		$parts =  array(0 => -1, 1 => 'UNKNOWN');
+	$parts = $git_status;
+
+	if ($git_status === null) {
+		$git_path = realpath(__DIR__ . '/../.git/');
+		if (file_exists($git_path)) {
+			$old_path = getcwd();
+			chdir($git_path);
+			$shell = @shell_exec('git log -1 --pretty=format:%ct.%h 2>&1');
+			if (stripos($shell, 'fatal: detected dubious ownership in repository') !== false) {
+				cacti_log('Website user must add website root to git config using "git config --global --add safe.directory <webroot>"', false, 'WARN');
+			}
+
+			if (preg_match('/\d+\.([[:xdigit:]]+)/', $shell)) {
+				$parts = explode('.', $shell);
+			}
+			chdir($old_path);
+		}
 	}
+
+	if ($parts === null) {
+		$parts      = array(0 => -1, 1 => 0, 'UNKNOWN');
+	}
+
+	if ($git_status === null) {
+		$git_status = $parts;
+	}
+
 	return $parts;
 }
 
@@ -6403,6 +6423,7 @@ function format_cacti_version($version, $format = CACTI_VERSION_FORMAT_FULL) {
 	if (count($parts) > 3) {
 		if ($parts[3] == '-1') {
 			$source = get_source_timestamp();
+			cacti_log('Source: ' . json_encode($source ?? '<null>'), false, 'DEBUG');
 			$parts[3] = 99;
 			$parts[4] = $source[0];
 			$parts[5] = $source[1];
@@ -6827,10 +6848,15 @@ function get_md5_hash($path) {
 	}
 
 	if (empty($md5)) {
-		if (file_exists($path)) {
-			$md5 = md5_file($path);
-		} else {
-			$md5 = md5_file(dirname(__FILE__) . '/../' . $path);
+		foreach ([$path, dirname(__FILE__) . '/../' . $path] as $file) {
+			if (file_exists($file)) {
+				$md5 = md5_file($file);
+				break;
+			}
+		}
+
+		if (empty($md5)) {
+			cacti_log('Missing include file, unable to hash: ' . $path, false, 'WARN', POLLER_VERBOSITY_DEVDBG);
 		}
 	}
 
