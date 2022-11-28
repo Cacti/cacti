@@ -209,7 +209,9 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 
 		if (!$error) {
 			/* set the php session */
-			$_SESSION['sess_user_id'] = $user['id'];
+			$_SESSION['sess_user_id']     = $user['id'];
+			$_SESSION['sess_user_agent']  = $_SERVER['HTTP_USER_AGENT'];
+			$_SESSION['sess_client_addr'] = get_client_addr();
 
 			/* handle 'force change password' */
 			if ($user['must_change_password'] == 'on' && $auth_method == 1 && $user['password_change'] == 'on') {

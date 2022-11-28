@@ -79,7 +79,9 @@ if ($auth_method != 0) {
 		if (!isset($_SESSION['sess_user_id'])) {
 			$cookie_user = check_auth_cookie();
 			if ($cookie_user !== false) {
-				$_SESSION['sess_user_id'] = $cookie_user;
+				$_SESSION['sess_user_id']     = $cookie_user;
+				$_SESSION['sess_user_agent']  = $_SERVER['HTTP_USER_AGENT'];
+				$_SESSION['sess_client_addr'] = get_client_addr();
 			}
 		}
 	}
@@ -99,7 +101,9 @@ if ($auth_method != 0) {
 				array($username));
 
 			if (cacti_sizeof($current_user)) {
-				$_SESSION['sess_user_id'] = $current_user['id'];;
+				$_SESSION['sess_user_id']     = $current_user['id'];;
+				$_SESSION['sess_user_agent']  = $_SERVER['HTTP_USER_AGENT'];
+				$_SESSION['sess_client_addr'] = get_client_addr();
 
 				return true;
 			} else {
@@ -121,7 +125,9 @@ if ($auth_method != 0) {
 		/* find guest user */
 		if (!empty($guest_user_id)) {
 			if (empty($_SESSION['sess_user_id'])) {
-				$_SESSION['sess_user_id'] = $guest_user_id;
+				$_SESSION['sess_user_id']     = $guest_user_id;
+				$_SESSION['sess_user_agent']  = $_SERVER['HTTP_USER_AGENT'];
+				$_SESSION['sess_client_addr'] = get_client_addr();
 			}
 
 			$current_user = db_fetch_row_prepared('SELECT *
