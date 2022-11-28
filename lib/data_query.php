@@ -36,13 +36,13 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 
 	/* don't run/rerun the query if the host is down, or disabled */
 	if (db_column_exists('sites', 'disabled')) {
-		$sdisabled = 's.disabled AS site_disabled,';
+		$sdisabled = ',s.disabled AS site_disabled';
 	} else {
-		$sdisabled = '"" AS site_disabled,';
+		$sdisabled = ',"" AS site_disabled';
 	}
 
 	$status = db_fetch_row_prepared("SELECT h.status, h.poller_id,
-		h.disabled, $sdisabled
+		h.disabled $sdisabled
 		FROM host h
 		LEFT JOIN sites s
 		ON h.site_id = s.id
