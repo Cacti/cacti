@@ -717,7 +717,7 @@ function applyTimespanFilterChange() {
 	href = '?header=false&predefined_timespan=' + $('#predefined_timespan').val();
 	href += '&predefined_timeshift=' + $('#predefined_timeshift').val();
 
-	loadUrl({ urlhref });
+	loadUrl({ url: href });
 
 }
 
