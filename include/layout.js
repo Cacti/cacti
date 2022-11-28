@@ -2760,10 +2760,10 @@ function setupSortable() {
 		var href = '';
 
 		if (!$target.is('.ui-resizable-handle')) {
-			var page = $(this).find('.sortinfo').attr('sort-page');
-			var column = $(this).find('.sortinfo').attr('sort-column');
+			var page      = $(this).find('.sortinfo').attr('sort-page');
+			var column    = $(this).find('.sortinfo').attr('sort-column');
 			var direction = $(this).find('.sortinfo').attr('sort-direction');
-			var returnto = $(this).find('.sortinfo').attr('sort-return');
+			var returnto  = $(this).find('.sortinfo').attr('sort-return');
 
 			if (shiftPressed) {
 				sortAdd = '&add=true';
@@ -2771,7 +2771,7 @@ function setupSortable() {
 				sortAdd = '&add=reset';
 			}
 
-			href = page + (page.indexOf('?') > 0 ? '&' : '?') +
+			url = page + (page.indexOf('?') > 0 ? '&' : '?') +
 				'sort_column=' + column +
 				'&sort_direction=' + direction +
 				sortAdd;
