@@ -1383,9 +1383,9 @@ function getMainWidth() {
 function getCactiHelp(cactiPage) {
 	var url = urlPath + 'help.php?page=' + cactiPage;
 
-	$.get(url, function(data) {
-		if (data != 'Not Found') {
-			window.open(data, '_blank');
+	$.getJSON(url, function(data) {
+		if (data.status == 'Success') {
+			window.open(data.location, '_blank');
 		}
 	});
 }
