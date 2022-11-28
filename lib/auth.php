@@ -38,24 +38,34 @@ function clear_auth_cookie() {
 
 	if (isset($_COOKIE['cacti_remembers']) && read_config_option('auth_cache_enabled') == 'on') {
 		$parts = explode(',', $_COOKIE['cacti_remembers']);
-		$user  = $parts[0];
 
-		if ($user != '') {
+		if (cacti_sizeof($parts) == 2) {
+			$user_id  = $parts[0];
+			$realm_id = -1;
+			$token    = $parts[1];
+		} else {
+			$user_id  = $parts[0];
+			$realm_id = $parts[1];
+			$token    = $parts[2];
+		}
+
+		// Legacy support which leaked usernames
+		if (!is_numeric($user_id)) {
 			$user_id = db_fetch_cell_prepared('SELECT id
 				FROM user_auth
 				WHERE username = ?',
-				array($user));
+				array($user_id));
+		}
 
-			if (!empty($user_id)) {
-				if (isset($parts[1])) {
-					$secret = hash('sha512', $parts[1], false);
-					cacti_cookie_session_logout();
-					db_execute_prepared('DELETE FROM user_auth_cache
-						WHERE user_id = ?
-						AND token = ?',
-						array($user_id, $secret));
-				}
-			}
+		if ($user_id > 0) {
+			$secret = hash('sha512', $token, false);
+
+			cacti_cookie_session_logout();
+
+			db_execute_prepared('DELETE FROM user_auth_cache
+				WHERE user_id = ?
+				AND token = ?',
+				array($user_id, $secret));
 		}
 	}
 }
@@ -100,56 +110,61 @@ function check_auth_cookie() {
 		$parts = explode(',', $_COOKIE['cacti_remembers']);
 
 		if (cacti_sizeof($parts) == 2) {
-			$user  = $parts[0];
-			$realm = -1;
-			$token = $parts[1];
+			$user_id  = $parts[0];
+			$realm_id = -1;
+			$token    = $parts[1];
 		} else {
-			$user  = $parts[0];
-			$realm = $parts[1];
-			$token = $parts[2];
+			$user_id  = $parts[0];
+			$realm_id = $parts[1];
+			$token    = $parts[2];
 		}
 
-		if ($user != '' && $user !== get_guest_account()) {
-			if ($realm == -1) {
+		if (!is_numeric($user_id)) {
+			$user_id = db_fetch_cell_prepared('SELECT id
+				FROM user_auth
+				WHERE username = ?',
+				array($user_id));
+		}
+
+		if ($user_id > 0 && $user_id !== get_guest_account()) {
+			if ($realm_id == -1) {
 				$user_info = db_fetch_row_prepared('SELECT id, realm, username
 					FROM user_auth
 					WHERE id = ?',
-					array($user));
+					array($user_id));
 			} else {
 				$user_info = db_fetch_row_prepared('SELECT id, realm, username
 					FROM user_auth
 					WHERE id = ?
 					AND realm = ?',
-					array($user, $realm));
+					array($user_id, $realm_id));
 			}
 
-			if (!empty($user_info)) {
-				if (isset($token)) {
-					$secret = hash('sha512', $token, false);
+			if (cacti_sizeof($user_info)) {
+				$secret = hash('sha512', $token, false);
 
-					$found  = db_fetch_cell_prepared('SELECT user_id
-						FROM user_auth_cache
-						WHERE user_id = ?
-						AND token = ?',
-						array($user_info['id'], $secret)
+				$found  = db_fetch_cell_prepared('SELECT user_id
+					FROM user_auth_cache
+					WHERE user_id = ?
+					AND token = ?',
+					array($user_info['id'], $secret)
+				);
+
+				if (empty($found)) {
+					return false;
+				} else {
+					set_auth_cookie($user_info);
+
+					cacti_log("LOGIN: User '" . $user_info['username'] . "' Authenticated via Authentication Cookie", false, 'AUTH');
+
+					db_execute_prepared('INSERT IGNORE INTO user_log
+						(username, user_id, result, ip, time)
+						VALUES
+						(?, ?, 2, ?, NOW())',
+						array($user_info['username'], $user_info['id'], get_client_addr(''))
 					);
 
-					if (empty($found)) {
-						return false;
-					} else {
-						set_auth_cookie($user_info);
-
-						cacti_log("LOGIN: User '" . $user_info['username'] . "' Authenticated via Authentication Cookie", false, 'AUTH');
-
-						db_execute_prepared('INSERT IGNORE INTO user_log
-							(username, user_id, result, ip, time)
-							VALUES
-							(?, ?, 2, ?, NOW())',
-							array($user_info['username'], $user_info['id'], get_client_addr(''))
-						);
-
-						return $user_info['id'];
-					}
+					return $user_info['id'];
 				}
 			}
 		}
