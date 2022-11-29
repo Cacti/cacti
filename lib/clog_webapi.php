@@ -634,13 +634,13 @@ function filter($clogAdmin, $selectedFile) {
 			});
 
 			$('#clear').unbind().click(function() {
-				strURL = basename(location.pathname) + '?clear=true&header=false';
-				loadPageNoHeader(strURL);
+				strURL = basename(location.pathname) + '?clear=true';
+				loadUrl({url:strURL});
 			});
 
 			$('#purge').unbind().click(function() {
-				strURL = basename(location.pathname) + '?purge=true&header=false&filename=' + $('#filename').val();
-				loadPageNoHeader(strURL);
+				strURL = basename(location.pathname) + '?purge=true&filename=' + $('#filename').val();
+				loadUrl({url:strURL});
 			});
 
 			$('#logfile').submit(function(event) {

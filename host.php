@@ -152,7 +152,7 @@ switch (get_request_var('action')) {
 		disable_device_debug(get_filter_request_var('host_id'));
 		raise_message('disable_debug', __('Device Debugging Disabled for Device.'), MESSAGE_LEVEL_INFO);
 
-		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
+		header('Location: host.php?action=edit&id=' . get_request_var('host_id'));
 
 		break;
 	case 'repopulate':
@@ -1687,13 +1687,12 @@ function host() {
 			strURL += '&location=' + $('#location').val();
 			strURL += '&rows=' + $('#rows').val();
 			strURL += '&filter=' + $('#filter').val();
-			strURL += '&header=false';
-			loadPageNoHeader(strURL);
+			loadUrl({url:strURL});
 		}
 
 		function clearFilter() {
-			strURL = 'host.php?clear=1&header=false';
-			loadPageNoHeader(strURL);
+			strURL = 'host.php?clear=1';
+			loadUrl({url:strURL});
 		}
 
 		function exportRecords() {

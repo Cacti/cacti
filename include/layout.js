@@ -714,7 +714,7 @@ function selectAll(attrib, checked) {
 function applyTimespanFilterChange() {
 	var href;
 
-	href = '?header=false&predefined_timespan=' + $('#predefined_timespan').val();
+	href = '?predefined_timespan=' + $('#predefined_timespan').val();
 	href += '&predefined_timeshift=' + $('#predefined_timeshift').val();
 
 	loadUrl({ url: href });
@@ -949,9 +949,7 @@ function displayMessages() {
 
 			sessionMessageOpen = {};
 		} else if (sessionMessage.level == MESSAGE_LEVEL_CSRF) {
-			var href = document.location.href;
-			href = href + (href.indexOf('?') > 0 ? '&' : '?') + 'csrf_timeout=true';
-			document.location = href;
+			location.reload();
 			return false;
 		} else {
 			title = sessionMessageTitle;

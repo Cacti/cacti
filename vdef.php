@@ -692,7 +692,7 @@ function vdef_edit() {
 							id: $('#my_id').val()
 						}).done(function(data) {
 							$('#cdialog').dialog('close');
-							loadPageNoHeader('vdef.php?action=edit&header=false&id='+$('#my_vdef_id').val());
+							loadUrl({url:'vdef.php?action=edit&id='+$('#my_vdef_id').val()});
 						});
 					});
 

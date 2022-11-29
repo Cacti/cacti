@@ -218,8 +218,8 @@ class CactiTableFilter {
 			$separator = '&';
 		}
 
-		$applyFilter .= $separator . 'header=false';
-		$clearFilter .= $separator . 'header=false&clear=true"';
+		$applyFilter .= $separator;
+		$clearFilter .= $separator . 'clear=true"';
 		$changeChain  = '';
 
 		$separator = "\"+\"&";
@@ -266,11 +266,11 @@ class CactiTableFilter {
 		return "<script type='text/javascript'>
 			function applyFilter() {
 				strURL = '" . $applyFilter . "';
-				loadPageNoHeader(strURL);
+				loadUrl({url:strURL});
 			}
 
 			function clearFilter() {
-				loadPageNoHeader('" . $clearFilter . "');
+				loadUrl({url:'" . $clearFilter . "'});
 			}
 
 			$(function() {

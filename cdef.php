@@ -696,7 +696,7 @@ function cdef_edit() {
 						}).done(function(data) {
 							$('#cdialog').dialog('close');
 							$('.deleteMarker').blur();
-							loadPageNoHeader('cdef.php?action=edit&header=false&id='+$('#my_cdef_id').val());
+							loadUrl({url:'cdef.php?action=edit&id='+$('#my_cdef_id').val()});
 						});
 					});
 

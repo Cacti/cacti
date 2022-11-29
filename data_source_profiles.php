@@ -750,7 +750,7 @@ function profile_edit() {
 							id: $('#rra_id').val()
 						}).done(function(data) {
 							$('#cdialog').dialog('close');
-							loadPageNoHeader('data_source_profiles.php?action=edit&header=false&id=' + $('#rra_profile_id').val());
+							loadUrl({url:'data_source_profiles.php?action=edit&id=' + $('#rra_profile_id').val()});
 						});
 					});
 

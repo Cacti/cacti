@@ -261,11 +261,11 @@ function filter() {
 			</form>
 			<script type="text/javascript">
 			function refreshForm() {
-				strURL = 'rrdcheck.php?header=false'+
+				strURL = 'rrdcheck.php?'+
 					'&filter='+$('#filter').val()+
 					'&age='+$('#age').val()+
 					'&rows='+$('#rows').val();
-				loadPageNoHeader(strURL);
+				loadUrl({url:strURL});
 			}
 
 			$(function() {
@@ -279,13 +279,13 @@ function filter() {
 				});
 
 				$('#clear').click(function() {
-					strURL = 'rrdcheck.php?header=false&clear=1';
-					loadPageNoHeader(strURL);
+					strURL = 'rrdcheck.php?&clear=1';
+					loadUrl({url:strURL});
 				});
 
 				$('#purge').click(function() {
-					strURL = 'rrdcheck.php?action=purge&header=false';
-					loadPageNoHeader(strURL);
+					strURL = 'rrdcheck.php?action=purge';
+					loadUrl({url:strURL});
 				});
 			});
 			</script>

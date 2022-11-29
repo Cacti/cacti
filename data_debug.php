@@ -1169,8 +1169,8 @@ function data_debug_filter() {
 		}
 
 		function runallFilter() {
-			strURL = 'data_debug.php?action=runall&debug=-1&header=false';
-			loadPageNoHeader(strURL);
+			strURL = 'data_debug.php?action=runall&debug=-1';
+			loadUrl({url:strURL});
 		}
 
 		$(function() {

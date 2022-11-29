@@ -302,13 +302,7 @@ function form_save() {
 
 			clear_messages();
 
-			if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
-				$header = '&header=false';
-			} else {
-				$header = '';
-			}
-
-			header('Location: data_queries.php?action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+			header('Location: data_queries.php?action=item_edit?id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
 		}
 	}
 }
@@ -1207,7 +1201,7 @@ function data_query_edit() {
 							id: $('#snmp_query_graph_id').val()
 						}, function(data) {
 							$('#cdialog').dialog('close');
-							loadPageNoHeader('data_queries.php?action=edit&header=false&id='+snmp_query_id);
+							loadUrl({url:'data_queries.php?action=edit&id='+snmp_query_id});
 						});
 					});
 

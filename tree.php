@@ -242,7 +242,7 @@ function tree_down() {
 		WHERE id = ?',
 		array($new_seq, $tree_id));
 
-	header('Location: tree.php?header=false');
+	header('Location: tree.php');
 	exit;
 }
 
@@ -270,7 +270,7 @@ function tree_up() {
 		WHERE id = ?',
 		array($new_seq, $tree_id));
 
-	header('Location: tree.php?header=false');
+	header('Location: tree.php');
 	exit;
 }
 
@@ -298,7 +298,7 @@ function tree_dnd() {
 		set_config_option('time_last_change_branch', time());
 	}
 
-	header('Location: tree.php?header=false');
+	header('Location: tree.php');
 	exit;
 }
 
