@@ -749,11 +749,6 @@ function applySkin() {
 
 		// Handle re-index changes
 		$('fieldset.reindex_methods').buttonset();
-
-		// debounce submits
-		$('form').submit(function() {
-			$('input[type="submit"], button[type="submit"]').not('.import, .export').button('disable');
-		});
 	}
 
 	setGraphTabs();

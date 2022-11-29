@@ -138,7 +138,7 @@ function draw_edit_control($field_name, &$field_array) {
 			((isset($field_array['default'])) ? $field_array['default'] : ''),
 			$field_array['max_length'],
 			((isset($field_array['size'])) ? $field_array['size'] : '40'),
-			'text',
+			((isset($field_array['type'])) ? $field_array['type'] : 'text'),
 			((isset($field_array['form_id'])) ? $field_array['form_id'] : ''),
 			((isset($field_array['placeholder'])) ? $field_array['placeholder'] : '')
 		);
@@ -1490,16 +1490,45 @@ function form_end($ajax = true) {
 			formArray['<?php print $form_id;?>'] = $('#<?php print $form_id;?>').serializeForm();
 			changed = false;
 
-			$('#<?php print $form_id;?>').submit(function(event) {
+			var formObj = $('#<?php print $form_id;?>');
+			var formRules = {};
+			$(formObj).find('input[type="email"]').each(function() {
+				var name = $(this).attr('id');
+				if (name === null || name.length == 0) {
+					name = $(this).attr('name');
+				}
+
+				if (name !== null && name.length > 0) {
+					formRules[name] = {
+						required: true,
+						email: true,
+					};
+				}
+			});
+
+
+			$(formObj).submit(function(event) {
 				event.preventDefault();
 
-				// Enable the form if it's disabled
+				// Disable the submit button so it can't be done twice
 				$(this).find('input, textarea, select').prop('disabled', false);
+			}).validate({
+				rules: formRules,
+				errorClass: 'txtErrorText',
+				validClass: 'success',
+				highlight: function(element, errorClass, validClass) {
+					$(element).parents("div.formData").addClass("txtErrorTextBox"); //.addClass(errorClass).removeClass(validClass);
+				},
+				unhighlight: function(element, errorClass, validClass) {
+					$(element).parents("div.formData").removeClass("txtErrorTextBox"); // .removeClass(errorClass).addClass(validClass);
+				},
+				submitHandler: function() {
+					$('input[type="submit"], button[type="submit"]').not('.import, .export').button('disable');
 
-				strURL  = '<?php print $form_action;?>';
-
-				json =  $(this).serializeObject();
-				postUrl({ url: strURL }, json);
+					var json =  $(this).serializeObject();
+					var strURL  = '<?php print $form_action;?>';
+					postUrl({ url: strURL }, json);
+				}
 			});
 		});
 		</script>

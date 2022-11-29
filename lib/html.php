@@ -2642,6 +2642,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/jquery.tablesorter.widgets.js', true);
 	print get_md5_include_js('include/js/jquery.tablesorter.pager.js', true);
 	print get_md5_include_js('include/js/jquery.sparkline.js', true);
+	print get_md5_include_js('include/js/jquery.validate/jquery.validate.js', true);
 	print get_md5_include_js('include/js/Chart.js', true);
 	print get_md5_include_js('include/js/dygraph-combined.js', true);
 	print get_md5_include_js('include/js/d3.js');

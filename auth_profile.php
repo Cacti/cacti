@@ -353,6 +353,7 @@ function settings() {
 		),
 		'email_address' => array(
 			'method' => 'textbox',
+			'type' => 'email',
 			'friendly_name' => __('Email Address'),
 			'description' => __('An Email Address you be reached at.'),
 			'value' => '|arg1:email_address|',
@@ -463,7 +464,7 @@ function settings() {
 
 	form_hidden_box('save_component_graph_config','1','');
 
-	form_save_buttons(array(array('id' => 'return', 'value' => __esc('Return'))));
+	form_save_buttons(array(array('id' => 'return', 'value' => __esc('Return'))), force_type: 'save');
 
 	form_end();
 }

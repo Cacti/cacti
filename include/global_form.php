@@ -1534,6 +1534,7 @@ $fields_user_user_edit_host = array(
 		'description' => __('An Email Address where the User can be reached.'),
 		'value' => '|arg1:email_address|',
 		'max_length' => '128',
+		'type' => 'email',
 		'size' => 60
 		),
 	'password' => array(
