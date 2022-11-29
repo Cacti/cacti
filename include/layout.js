@@ -21,11 +21,11 @@
  +-------------------------------------------------------------------------+
 */
 
-const MESSAGE_LEVEL_NONE = 0;
-const MESSAGE_LEVEL_INFO = 1;
-const MESSAGE_LEVEL_WARN = 2;
+const MESSAGE_LEVEL_NONE  = 0;
+const MESSAGE_LEVEL_INFO  = 1;
+const MESSAGE_LEVEL_WARN  = 2;
 const MESSAGE_LEVEL_ERROR = 3;
-const MESSAGE_LEVEL_CSRF = 4;
+const MESSAGE_LEVEL_CSRF  = 4;
 const MESSAGE_LEVEL_MIXED = 5;
 
 var theme;
@@ -134,8 +134,7 @@ var isMobile = {
 
 /* simple ajax request queueing */
 jQuery.ajaxQ = (function() {
-	var id = 0,
-		Q = {};
+	var id = 0, Q = {};
 
 	jQuery(document).ajaxSend(function(e, jqx) {
 		jqx._id = ++id;
@@ -351,14 +350,14 @@ $.fn.focusEnd = function() {
 $.fn.getObjectDetails = function() {
 	var coords = {};
 
-	coords.width = $(this).outerWidth();
+	coords.width  = $(this).outerWidth();
 	coords.height = $(this).outerHeight();
 	coords.left = 0;
-	coords.top = 0;
+	coords.top  = 0;
 
-	$(this).parentsUntil('body').each(function() {
+	$(this).parentsUntil('body').each(function(){
 		coords.left += $(this).position().left;
-		coords.top += $(this).position().top;
+		coords.top  += $(this).position().top;
 	});
 
 	return coords;
@@ -749,6 +748,11 @@ function applySkin() {
 
 		// Handle re-index changes
 		$('fieldset.reindex_methods').buttonset();
+
+		// debounce submits
+		$('form').submit(function() {
+			$('input[type="submit"], button[type="submit"]').not('.import, .export').button('disable');
+		});
 	}
 
 	setGraphTabs();
@@ -853,6 +857,12 @@ function applySkin() {
 	renderLanguages();
 }
 
+function finalizeAuthProfile(options, data) {
+	if (name == 'selected_theme' || name == 'user_language') {
+		document.location = 'auth_profile.php?action=edit';
+	}
+}
+
 function renderLanguages() {
 	if ($('select#user_language').selectmenu('instance') !== undefined) {
 		$('select#user_language').selectmenu('destroy');
@@ -864,14 +874,13 @@ function renderLanguages() {
 				var value = $(this).val();
 				var page = basename(location.pathname);
 				if (page == 'auth_profile.php') {
-					$.post('auth_profile.php?tab=' + currentTab + '&action=update_data', {
+					postUrl({
+						url: 'auth_profile.php?tab=' + currentTab + '&action=update_data',
+						funcEnd: 'finalizeAuthProfile'
+					}, {
 						__csrf_magic: csrfMagicToken,
 						name: name,
-						value: value
-					}, function() {
-						if (name == 'selected_theme' || name == 'user_language') {
-							document.location = 'auth_profile.php?action=edit';
-						}
+						value: value,
 					});
 				}
 			}
@@ -1045,6 +1054,20 @@ function markFilterTDs(child, filterNum) {
 	});
 }
 
+function finalizeAuthProfileData(options, data) {
+	if (hScroll) {
+		$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'visible' });
+		$('#overflow').removeClass('fa-expand').addClass('fa-compress');
+
+		resetTables();
+	} else {
+		$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'hidden' });
+		$('#overflow').removeClass('fa-compress').addClass('fa-expand');
+
+		tuneTables();
+	}
+}
+
 function makeFiltersResponsive() {
 	storage = Storages.localStorage;
 
@@ -1076,24 +1099,14 @@ function makeFiltersResponsive() {
 
 							hScroll = !hScroll;
 
-							$.post(urlPath + 'auth_profile.php?tab=general&action=update_data', {
+							postUrl({
+								url: urlPath + 'auth_profile.php?tab=general&action=update_data',
+								funcEnd: 'finalizeAuthProfileData'
+							 }, {
 								__csrf_magic: csrfMagicToken,
 								name: 'enable_hscroll',
 								value: hScroll ? 'on' : ''
-							}, function() {
-								if (hScroll) {
-									$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'visible' });
-									$('#overflow').removeClass('fa-expand').addClass('fa-compress');
-
-									resetTables();
-								} else {
-									$('#main, .cactiConsoleContentArea').css({ 'overflow-x': 'hidden' });
-									$('#overflow').removeClass('fa-compress').addClass('fa-expand');
-
-									tuneTables();
-								}
-
-							});
+							 });
 						});
 					}
 				}
@@ -1478,7 +1491,7 @@ function responsiveResizeGraphs(initialize) {
 	});
 
 	previousMainWidth = mainWidth;
-	previousColumns = myColumns;
+	previousColumns   = myColumns;
 
 	if ($('.cactiTreeNavigationArea').length) {
 		resizeTreePanel();
@@ -1599,13 +1612,14 @@ function resetTable(object) {
 }
 
 function tuneTable(object, width) {
-	var rows = $(object).find('tr').length;
-	var tableWidth = $(object).width();
-	var totalCols = $(object).find('th').length;
-	var reducedWidth = 0;
-	var columnsHidden = countHiddenCols(object);
+	var rows           = $(object).find('tr').length;
+	var width          = width;
+	var tableWidth     = $(object).width();
+	var totalCols      = $(object).find('th').length;
+	var reducedWidth   = 0;
+	var columnsHidden  = countHiddenCols(object);
 	var visibleColumns = totalCols - columnsHidden;
-	var id = $(object).attr('id');
+	var id             = $(object).attr('id');
 
 	if (rows > 101) return false;
 
@@ -1621,12 +1635,12 @@ function tuneTable(object, width) {
 	// We have to both show and hide columns that fit.
 	// So, always find the size of the page columns.
 	var calculatedColumns = [];
-	var calculatedWidth = 0;
-	var allSeenWidth = 0;
+	var calculatedWidth   = 0;
+	var allSeenWidth      = 0;
 	var calculatedPadding = 15;
-	var tableChanged = false;
-	var stopExpand = false;
-	var debug = false;
+	var tableChanged      = false;
+	var stopExpand        = false;
+	var debug             = false;
 
 	var tableHeaders = $(object).find('th');
 	var tableCheckBox = $(tableHeaders).each(function() {
@@ -1751,16 +1765,16 @@ function tuneFilter(object, width) {
 		var timespan = true;
 
 		var timeShiftWidth = $(object).find('.shiftArrow').closest('td').width();
-		var dateWidth = $(object).find('#date1').closest('td').width() + $(object).find('#date1').closest('td').prev('td').width();
-		var clearWidth = $('#tsclear').width();
-		var refreshWidth = $('#tsrefresh').width();
+		var dateWidth      = $(object).find('#date1').closest('td').width() + $(object).find('#date1').closest('td').prev('td').width();
+		var clearWidth     = $('#tsclear').width();
+		var refreshWidth   = $('#tsrefresh').width();
 	} else {
 		var timespan = false;
 
-		var clearWidth = $(object).find('#clear').width();
-		var saveWidth = $(object).find('#save').width();
-		var exportWidth = $(object).find('#export').width();
-		var importWidth = $(object).find('#import').width();
+		var clearWidth     = $(object).find('#clear').width();
+		var saveWidth      = $(object).find('#save').width();
+		var exportWidth    = $(object).find('#export').width();
+		var importWidth    = $(object).find('#import').width();
 	}
 
 	var minTds = 2;
@@ -1895,8 +1909,8 @@ function tuneFilter(object, width) {
 
 function handleUserMenu(toggle) {
 	var windowWidth = $(window).width();
-	var savedState = getMenuState();
-	var curState = $('#navigation').is(':visible') ? 'visible' : 'hidden';
+	var savedState  = getMenuState();
+	var curState    = $('#navigation').is(':visible') ? 'visible':'hidden';
 
 	//console.log('handle called, curState:'+curState+', savedState:'+savedState+', Toggle:'+toggle);
 	if ($('#navigation').length) {
@@ -2043,7 +2057,6 @@ function loadTopTabEnd(options) {
 	if (options.tabId) {
 		var tabElementId = '#' + options.tabId;
 		var tabElement = $(tabElementId);
-
 		if (tabElement.hasClass('lefttab')) {
 			$('.lefttab').removeClass('selected');
 			$('.submenuoptions').find('.selected').removeClass('selected');
@@ -2078,117 +2091,13 @@ function userMenuNavigationExists(url) {
 }
 
 function loadPageUsingPost(href, postData, returnLocation) {
-	$.post(href, postData, function(data) {
-		if (returnLocation !== undefined) {
-			$('#' + returnLocation).empty().html(data);
-		} else {
-			$('#main').empty().html(data);
-		}
-
-		applySkin();
-	});
-}
-
-function loadPage(href, force) {
-	statePushed = false;
-	cont = false;
-
-	if (force == undefined) {
-		force = false;
-	}
-
-	if (!force) {
-		cont = checkFormStatus(href, 'loadpage');
-	} else {
-		cont = true;
-	}
-
-	if (cont) {
-		closeDateFilters();
-
-		clearAllTimeouts();
-
-		$.ajaxQ.abortAll();
-		$.get(href)
-			.done(function(html) {
-				var htmlObject = $(html);
-				var matches = html.match(/<title>(.*?)<\/title>/);
-
-				if (matches != null) {
-					var htmlTitle = matches[1];
-					var breadCrumbs = htmlObject.find('#breadcrumbs').html();
-					var html = htmlObject.find('#main').html();
-					var jstree = htmlObject.find('.cactiTreeNavigationArea').html();
-
-					checkForRedirects(html, href);
-					if (typeof jstree !== 'undefined' && $('.cactiTreeNavigationArea').length !== 0) {
-						$('.cactiTreeNavigationArea').html(jstree);
-					}
-					$('#main').empty().hide();
-					$('title').text(htmlTitle);
-					$('#breadcrumbs').html(breadCrumbs);
-					$('div[class^="ui-"]').remove();
-					$('#main').html(html);
-
-					myTitle = htmlTitle;
-					pushState(myTitle, href);
-				} else {
-					checkForRedirects(html, href);
-
-					$('#main').empty().hide();
-					$('#main').html(html);
-
-					thref = stripHeaderSuppression(href);
-
-					pushState(myTitle, href);
-				}
-
-				var hrefParts = href.split('?');
-				pageName = basename(hrefParts[0]);
-
-				if (pageName != '') {
-					// Workaround for Create Device
-					if (pageName == 'host.php') {
-						if (href.indexOf('create') >= 0) {
-							$('#menu').find('.pic').removeClass('selected');
-							$('#menu').find("a[href='" + escapeString(href) + "']").addClass('selected');
-						} else {
-							$('#menu').find('.pic').removeClass('selected');
-							$('#menu').find("a[href$='host.php']").addClass('selected');
-						}
-					} else if ($('#menu').find("a[href^='" + escapeString(href) + "']").length > 0) {
-						$('#menu').find('.pic').removeClass('selected');
-						$('#menu').find("a[href^='" + escapeString(href) + "']").addClass('selected');
-					} else if ($('#menu').find("a[href*='/" + pageName + "']").length > 0) {
-						$('#menu').find('.pic').removeClass('selected');
-						$('#menu').find("a[href*='/" + pageName + "']").addClass('selected');
-					}
-
-					if (pageName == 'graph_templates_items.php' || pageName == 'graph_templates_inputs.php') {
-						$('#menu').find('a[href*="graph_templates.php"]').addClass('selected');
-					}
-				}
-
-				applySkin();
-
-				if (isMobile.any() != null) {
-					window.scrollTo(0, 1);
-				} else {
-					window.scrollTo(0, 0);
-				}
-
-				handleConsole(pageName);
-
-				Pace.stop();
-
-				return false;
-			})
-			.fail(function(html) {
-				getPresentHTTPErrorOrRedirect(html, href);
-			});
-	}
-
-	return false;
+	var stack = ''; //getStackTrace(); // new Error().stack;
+	console.error("Function loadPageUsingPost is now depreciated, use postUrl instead\n" + stack);
+	return postUrl({
+		url: href,
+		tabId: returnLocation,
+		type: 'loadPageUsingPost',
+	}, postData);
 }
 
 function setNavigationScroll() {
@@ -2204,8 +2113,8 @@ function setNavigationScroll() {
 		}
 
 		if (object != '') {
-			var mpos = $(object).position();
-			var width = $(object).outerWidth();
+			var mpos   = $(object).position();
+			var width  = $(object).outerWidth();
 			var height = $(object).outerHeight();
 			if (pos.pageX < mpos.left ||
 				pos.pageY < mpos.top ||
@@ -2251,12 +2160,22 @@ function setNavigationScroll() {
 
 function loadPageNoHeader(href, scroll, force) {
 	var stack = ''; //getStackTrace(); // new Error().stack;
-	console.error("Function loadPageNoHeader is now depreciated, load loadUrl instead\n" + stack);
+	console.error("Function loadPageNoHeader is now depreciated, use loadUrl instead\n" + stack);
 	return loadUrl({
 		url: href,
 		scroll: scroll,
 		force: force,
 		loadType: 'noheader'
+	});
+}
+
+function loadPage(href, force) {
+	var stack = ''; //getStackTrace(); // new Error().stack;
+	console.error("Function loadPage is now depreciated, use loadUrl instead\n" + stack);
+	return loadUrl({
+		url: href,
+		force: force,
+		loadType: 'loadPage'
 	});
 }
 
@@ -2275,6 +2194,10 @@ function loadUrl(options) {
 		if (options.funcStart != '') {
 			window[options.funcStart](options);
 		}
+
+		closeDateFilters();
+
+		clearAllTimeouts();
 
 		$.ajaxQ.abortAll();
 		$.get(options.url)
@@ -2295,7 +2218,6 @@ function postUrl(options, data) {
 	cont = false;
 
 	options = sanitizeAjaxOptions(options);
-
 	if (options.funcStart != '') {
 		window[options.funcStart](options);
 	}
@@ -2323,18 +2245,18 @@ function findElement(htmlObject, element) {
 
 function sanitizeAjaxOptions(check) {
 	options = {
-		force: false,
-		scroll: false,
+		force:     false,
+		scroll:    false,
 		elementId: 'main',
-		tabId: '',
-		loadType: 'noheader',
+		tabId:     '',
+		loadType:  'noheader',
 		funcStart: '',
-		funcEnd: '',
-		url: '',
-		pageName: '',
-		noState: false,
-		handle: true,
-		redirect: '',
+		funcEnd:   '',
+		url:       '',
+		pageName:  '',
+		noState:   false,
+		handle:    true,
+		redirect:  '',
 	};
 
 	if (typeof check == 'undefined') {
@@ -2403,13 +2325,13 @@ function handleAjaxResponse(html, options) {
 	if (options.handle && options.redirect.trim() == '') {
 		elementId = '#' + options.elementId;
 
-		var htmlObject = $(html);
-		var matches = html.match(/<title>(.*?)<\/title>/);
+		var htmlObject  = $(html);
+		var matches     = html.match(/<title>(.*?)<\/title>/);
 
 		if (matches != null) {
-			var htmlTitle = matches[1];
-			var breadCrumbs = findElement(htmlObject, '#breadcrumbs').html();
-			var htmlContent = findElement(htmlObject, elementId).html();
+			var htmlTitle   = matches[1];
+			var breadCrumbs = findElement(htmlObject,'#breadcrumbs').html();
+			var htmlContent = findElement(htmlObject,elementId).html();
 
 			$('title').text(htmlTitle);
 			$('#breadcrumbs').html(breadCrumbs);
@@ -2614,7 +2536,7 @@ function checkFormStatus(href, type, scroll_or_id) {
 
 	if ($('.cactiFormStart').not('#chk').length) {
 		$('.cactiFormStart').not('#chk').each(function() {
-			var formID = $(this).attr('id');
+			var formID     = $(this).attr('id');
 			var submitData = $(this).serializeForm();
 
 			if (typeof formArray != 'undefined' && typeof formArray[formID] != 'undefined') {
@@ -2750,7 +2672,7 @@ function setupSortable() {
 
 		var $target = $(e.target);
 		var sortAdd = '';
-		var href = '';
+		var href     = '';
 
 		if (!$target.is('.ui-resizable-handle')) {
 			var page      = $(this).find('.sortinfo').attr('sort-page');
@@ -2886,7 +2808,7 @@ function applyTableSizing() {
 		handles: 'e',
 
 		start: function(event, ui) {
-			colWidth = $(this).width();
+			colWidth     = $(this).width();
 			originalSize = ui.size.width;
 
 			if (originalSize == 0) {
@@ -2968,7 +2890,7 @@ function pulsateStop(element) {
 }
 
 function setTitleAndHref() {
-	myHref = $(location).attr('href');
+	myHref  = $(location).attr('href');
 	myTitle = $(document).attr('title');
 }
 
@@ -3003,8 +2925,8 @@ function setZoneInfo() {
 
 $(function() {
 	statePushed = false;
-	popFired = false;
-	var tapped = false;
+	popFired    = false;
+	var tapped  = false;
 
 	/**
 	 * Unbind key elements to debounce actions
@@ -3253,10 +3175,10 @@ function keepWindowSize() {
 
 function hideCurrentTab(id, shrinking) {
 	if ($('#' + id + '-ellipsis').length == 0) {
-		var myid = id + '-ellipsis';
-		var href = $('#' + id).attr('href');
-		var selected = $('#' + id).hasClass('selected');
-		var text = $('#' + id).text();
+		var myid     = id+'-ellipsis';
+		var href     = $('#'+id).attr('href');
+		var selected = $('#'+id).hasClass('selected');
+		var text     = $('#'+id).text();
 
 		if (shrinking) {
 			$('#submenu-ellipsis').prepend('<li><a class="lefttab' + (selected ? ' selected' : '') + '" id="' + myid + '" href="' + href + '">' + text + '</a></li>');
@@ -3276,25 +3198,25 @@ function showCurrentTab(id) {
 }
 
 function tabsWrapping() {
-	var mainTabPos = $('.maintabs:first').position();
-	var tabHeight = $('#tabs').height();
+	var mainTabPos    = $('.maintabs:first').position();
+	var tabHeight     = $('#tabs').height();
 
 	if ($('.usertabs').length) {
 		var mainTabHeight = tabHeight;
-		var userTabPos = $('.usertabs').position();
+		var userTabPos    = $('.usertabs').position();
 	} else {
 		var mainTabHeight = $('.maintabs:first nav').height();
-		var userTabPos = mainTabPos;
+		var userTabPos    = mainTabPos;
 	}
 
-	var bodyWidth = $('body').width();
-	var otherWidth = 0;
+	var bodyWidth     = $('body').width();
+	var otherWidth    = 0;
 	$('#tabs').find('div:not(.maintabs):visible').each(function() {
 		otherWidth += $(this).outerWidth();
 	});
 
 	var ellipsisWidth = $('.maintabs-submenu-ellipsis').outerWidth();
-	var mtabsWidth = $('.maintabs:not(.usertabs)').outerWidth();
+	var mtabsWidth    = $('.maintabs:not(.usertabs)').outerWidth();
 
 	if ($('#gtabs>.tabs').length) {
 		var gtabsWidth = $('#gtabs>.tabs').outerWidth();
@@ -3365,43 +3287,26 @@ function closeDateFilters() {
 }
 
 function saveGraphFilter(section) {
-	closeDateFilters();
-
-	var error_href = graphPage;
-
-	$.post(graphPage + '?action=save', {
-			section: section,
-			columns: $('#columns').val(),
-			graphs: $('#graphs').val(),
-			graph_template_id: $('#graph_template_id').val(),
-			predefined_timespan: $('#predefined_timespan').val(),
-			predefined_timeshift: $('#predefined_timeshift').val(),
-			thumbnails: $('#thumbnails').is(':checked'),
-			__csrf_magic: csrfMagicToken
-		}).done(function(data) {
-			checkForRedirects(data);
-
-			$('#text').show().text(filterSettingsSaved).fadeOut(2000, function() {
-				$('#text').empty();
-			});
-		})
-		.fail(function(data) {
-			getPresentHTTPErrorOrRedirect(data, error_href);
-		});
-
-	// TODO: Fix up this function
-	loadUrl({
-		url: href + '&section=' + section,
+	postUrl({
+		url: graphPage + '?action=save',
 		funcEnd: 'finializeGraphFilter'
+	}, {
+		section: section,
+		columns: $('#columns').val(),
+		graphs: $('#graphs').val(),
+		graph_template_id: $('#graph_template_id').val(),
+		predefined_timespan: $('#predefined_timespan').val(),
+		predefined_timeshift: $('#predefined_timeshift').val(),
+		thumbnails: $('#thumbnails').is(':checked'),
+		__csrf_magic: csrfMagicToken
 	});
 }
 
-function finalizeGraphFilter(options) {
+function finalizeGraphFilter(options, data) {
 	$('#text').show().text(filterSettingsSaved).fadeOut(2000, function() {
 		$('#text').empty();
 	});
 }
-
 
 function applyGraphFilter() {
 	var href = correctUrlParameters(graphPage + '?action=' + pageAction +
@@ -3411,8 +3316,6 @@ function applyGraphFilter() {
 		'&graphs=' + $('#graphs').val() +
 		'&graph_template_id=' + $('#graph_template_id').val() +
 		'&thumbnails=' + $('#thumbnails').is(':checked'));
-
-	closeDateFilters();
 
 	loadUrl({ url: href });
 }
@@ -3440,12 +3343,14 @@ function pushState(myTitle, options) {
 function handlePopState(e) {
 	var href = document.location.href;
 
-	if (typeof e.state.Options != 'undefined') {
-		loadUrl(e.state.Options);
-		return false;
-	} else if (typeof e.state.Url != 'undefined') {
-		loadUrl({ url: href });
-		return false;
+	if (typeof e.state != 'undefined' && e.state != null) {
+		if (typeof e.state.Options != 'undefined' && e.state.Options != null) {
+			loadUrl(e.state.Options);
+			return false;
+		} else if (typeof e.state.Url != 'undefined' && e.state.Url != null) {
+			loadUrl({url:href});
+			return false;
+		}
 	}
 	return true;
 }
@@ -3462,7 +3367,10 @@ function applyGraphTimespan() {
 }
 
 function refreshGraphTimespanFilter() {
-	var json = {
+	postUrl({
+		url: correctUrlParameters(graphPage + '?action=' + pageAction),
+		funcEnd: 'finalizeGraphFilter',
+	}, {
 		custom: 1,
 		button_refresh_x: 1,
 		date1: $('#date1').val(),
@@ -3471,20 +3379,14 @@ function refreshGraphTimespanFilter() {
 		predefined_timespan: $('#predefined_timespan').val(),
 		predefined_timeshift: $('#predefined_timeshift').val(),
 		__csrf_magic: csrfMagicToken
-	};
-
-	var href = correctUrlParameters(graphPage + '?action=' + pageAction);
-
-	closeDateFilters();
-
-	$.ajaxQ.abortAll();
-	$.post(href, json).done(function(data) {
-		handleAjaxResponse(data);
 	});
 }
 
 function timeshiftGraphFilterLeft() {
-	var json = {
+	postUrl({
+		url: correctUrlParameters(graphPage + '?action=' + pageAction),
+		funcEnd: 'finalizeGraphFilter',
+	}, {
 		move_left_x: 1,
 		move_left_y: 1,
 		date1: $('#date1').val(),
@@ -3492,25 +3394,14 @@ function timeshiftGraphFilterLeft() {
 		predefined_timespan: $('#predefined_timespan').val(),
 		predefined_timeshift: $('#predefined_timeshift').val(),
 		__csrf_magic: csrfMagicToken
-	};
-
-	var href = correctUrlParameters(graphPage + '?action=' + pageAction);
-
-	closeDateFilters();
-
-	$.ajaxQ.abortAll();
-	$.post(href, json).done(function(data) {
-		checkForRedirects(data, href);
-
-		$('#main').empty().hide();
-		$('div[class^="ui-"]').remove();
-		$('#main').html(data);
-		applySkin();
 	});
 }
 
 function timeshiftGraphFilterRight() {
-	var json = {
+	postUrl({
+		url:  correctUrlParameters(graphPage + '?action=' + pageAction),
+		funcEnd: 'finalizeGraphFilter',
+	}, {
 		move_right_x: 1,
 		move_right_y: 1,
 		date1: $('#date1').val(),
@@ -3518,46 +3409,29 @@ function timeshiftGraphFilterRight() {
 		predefined_timespan: $('#predefined_timespan').val(),
 		predefined_timeshift: $('#predefined_timeshift').val(),
 		__csrf_magic: csrfMagicToken
-	};
-
-	var href = correctUrlParameters(graphPage + '?action=' + pageAction);
-
-	closeDateFilters();
-
-	$.ajaxQ.abortAll();
-	$.post(href, json).done(function(data) {
-		checkForRedirects(data, href);
-
-		$('#main').empty().hide();
-		$('div[class^="ui-"]').remove();
-		$('#main').html(data);
-		applySkin();
 	});
 }
 
 function clearGraphTimespanFilter() {
-	var json = {
+	postUrl({
+		url: correctUrlParameters(graphPage + '?action=' + pageAction),
+		funcEnd: 'finalizeGraphFilter',
+	},{
 		button_clear: 1,
 		date1: $('#date1').val(),
 		date2: $('#date2').val(),
 		predefined_timespan: $('#predefined_timespan').val(),
 		predefined_timeshift: $('#predefined_timeshift').val(),
 		__csrf_magic: csrfMagicToken
-	};
-
-	var href = correctUrlParameters(graphPage + '?action=' + pageAction);
-
-	closeDateFilters();
-
-	$.ajaxQ.abortAll();
-	$.post(href, json).done(function(data) {
-		checkForRedirects(data, href);
-
-		$('#main').empty().hide();
-		$('div[class^="ui-"]').remove();
-		$('#main').html(data);
-		applySkin();
 	});
+}
+
+function finalizeSpikeKillResults(options, data) {
+	redrawGraph(local_graph_id);
+	$('#spikeresults').remove();
+	$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="' + spikeKillResults + '"></div>');
+	$('#spikeresults').html(data.results);
+	$('#spikeresults').dialog({ width: 1100, maxHeight: 600 });
 }
 
 function removeSpikesStdDev(local_graph_id) {
@@ -3565,21 +3439,10 @@ function removeSpikesStdDev(local_graph_id) {
 		'?method=stddev' +
 		'&local_graph_id=' + local_graph_id;
 
-	closeDateFilters();
-
-	$.getJSON(href)
-		.done(function(data) {
-			checkForRedirects(data, href);
-
-			redrawGraph(local_graph_id);
-			$('#spikeresults').remove();
-			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="' + spikeKillResults + '"></div>');
-			$('#spikeresults').html(data.results);
-			$('#spikeresults').dialog({ width: 1100, maxHeight: 600 });
-		})
-		.fail(function(data) {
-			getPresentHTTPError(data);
-		});
+	loadUrl({
+		url: href,
+		funcEnd: 'finalizeSpikeKillResults',
+	});
 }
 
 function removeSpikesVariance(local_graph_id) {
@@ -3587,21 +3450,10 @@ function removeSpikesVariance(local_graph_id) {
 		'?method=variance' +
 		'&local_graph_id=' + local_graph_id;
 
-	closeDateFilters();
-
-	$.getJSON(href)
-		.done(function(data) {
-			checkForRedirects(data, href);
-
-			redrawGraph(local_graph_id);
-			$('#spikeresults').remove();
-			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="' + spikeKillResults + '"></div>');
-			$('#spikeresults').html(data.results);
-			$('#spikeresults').dialog({ width: 1100, maxHeight: 600 });
-		})
-		.fail(function(data) {
-			getPresentHTTPError(data);
-		});
+	loadUrl({
+		url: href,
+		funcEnd: 'finalizeSpikeKillResults',
+	});
 }
 
 function removeSpikesInRange(local_graph_id) {
@@ -3611,21 +3463,10 @@ function removeSpikesInRange(local_graph_id) {
 		'&outlier-start=' + graph_start +
 		'&outlier-end=' + graph_end;
 
-	closeDateFilters();
-
-	$.getJSON(href)
-		.done(function(data) {
-			checkForRedirects(data, href);
-
-			redrawGraph(local_graph_id);
-			$('#spikeresults').remove();
-			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="' + spikeKillResults + '"></div>');
-			$('#spikeresults').html(data.results);
-			$('#spikeresults').dialog({ width: 1100, maxHeight: 600 });
-		})
-		.fail(function(data) {
-			getPresentHTTPError(data);
-		});
+	loadUrl({
+		url: href,
+		funcEnd: 'finalizeSpikeKillResults',
+	});
 }
 
 function removeRangeFill(local_graph_id) {
@@ -3635,36 +3476,19 @@ function removeRangeFill(local_graph_id) {
 		'&outlier-start=' + graph_start +
 		'&outlier-end=' + graph_end;
 
-	closeDateFilters();
-
-	$.getJSON(href)
-		.done(function(data) {
-			checkForRedirects(data, href);
-
-			redrawGraph(local_graph_id);
-			$('#spikeresults').remove();
-			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="' + spikeKillResults + '"></div>');
-			$('#spikeresults').html(data.results);
-			$('#spikeresults').dialog({ width: 1100, maxHeight: 600 });
-		})
-		.fail(function(data) {
-			getPresentHTTPError(data);
-		});
+	loadUrl({
+		url: href,
+		funcEnd: 'finalizeSpikeKillResults',
+	});
 }
 
 function removeSpikesAbsolute(local_graph_id) {
 	var strURL = urlPath + 'spikekill.php?method=absolute&local_graph_id=' + local_graph_id;
 
-	$.getJSON(strURL)
-		.done(function(data) {
-			checkForLogout(data);
-
-			redrawGraph(local_graph_id);
-			$('#spikeresults').remove();
-		})
-		.fail(function(data) {
-			getPresentHTTPError(data);
-		});
+	loadUrl({
+		url: href,
+		funcEnd: 'finalizeSpikeKillResults',
+	});
 }
 
 function dryRunStdDev(local_graph_id) {
@@ -3673,20 +3497,10 @@ function dryRunStdDev(local_graph_id) {
 		'&dryrun=true' +
 		'&local_graph_id=' + local_graph_id;
 
-	closeDateFilters();
-
-	$.getJSON(href)
-		.done(function(data) {
-			checkForRedirects(data, href);
-
-			$('#spikeresults').remove();
-			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="' + spikeKillResults + '"></div>');
-			$('#spikeresults').html(data.results);
-			$('#spikeresults').dialog({ width: 1100, maxHeight: 600 });
-		})
-		.fail(function(data) {
-			getPresentHTTPError(data);
-		});
+	loadUrl({
+		url: href,
+		funcEnd: 'finalizeSpikeKillResults',
+	});
 }
 
 function dryRunVariance(local_graph_id) {
@@ -3695,20 +3509,10 @@ function dryRunVariance(local_graph_id) {
 		'&dryrun=true' +
 		'&local_graph_id=' + local_graph_id;
 
-	closeDateFilters();
-
-	$.getJSON(href)
-		.done(function(data) {
-			checkForRedirects(data, href);
-
-			$('#spikeresults').remove();
-			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="' + spikeKillResults + '"></div>');
-			$('#spikeresults').html(data.results);
-			$('#spikeresults').dialog({ width: 1100, maxHeight: 600 });
-		})
-		.fail(function(data) {
-			getPresentHTTPError(data);
-		});
+	loadUrl({
+		url: href,
+		funcEnd: 'finalizeSpikeKillResults',
+	});
 }
 
 function dryRunSpikesInRange(local_graph_id) {
@@ -3721,19 +3525,10 @@ function dryRunSpikesInRange(local_graph_id) {
 
 	closeDateFilters();
 
-	$.getJSON(href)
-		.done(function(data) {
-			checkForRedirects(data, href);
-
-			redrawGraph(local_graph_id);
-			$('#spikeresults').remove();
-			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="' + spikeKillResults + '"></div>');
-			$('#spikeresults').html(data.results);
-			$('#spikeresults').dialog({ width: 1100, maxHeight: 600 });
-		})
-		.fail(function(data) {
-			getPresentHTTPError(data);
-		});
+	loadUrl({
+		url: href,
+		funcEnd: 'finalizeSpikeKillResults',
+	});
 }
 
 function dryRunRangeFill(local_graph_id) {
@@ -3744,45 +3539,26 @@ function dryRunRangeFill(local_graph_id) {
 		'&outlier-start=' + graph_start +
 		'&outlier-end=' + graph_end;
 
-	closeDateFilters();
-
-	$.getJSON(href)
-		.done(function(data) {
-			checkForRedirects(data, href);
-
-			redrawGraph(local_graph_id);
-			$('#spikeresults').remove();
-			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="' + spikeKillResults + '"></div>');
-			$('#spikeresults').html(data.results);
-			$('#spikeresults').dialog({ width: 1100, maxHeight: 600 });
-		})
-		.fail(function(data) {
-			getPresentHTTPError(data);
-		});
+	loadUrl({
+		url: href,
+		funcEnd: 'finalizeSpikeKillResults',
+	});
 }
 
 function dryRunAbsolute(local_graph_id) {
-	var strURL = urlPath + 'spikekill.php?method=absolute&dryrun=true&local_graph_id=' + local_graph_id;
+	var href = urlPath + 'spikekill.php?method=absolute&dryrun=true&local_graph_id=' + local_graph_id;
 
-	$.getJSON(strURL)
-		.done(function(data) {
-			checkForLogout(data);
-
-			$('#spikeresults').remove();
-			$('body').append('<div id="spikeresults" style="overflow-y:scroll;" title="' + spikeKillResults + '"></div>');
-			$('#spikeresults').html(data.results);
-			$('#spikeresults').dialog({ width: 1100, maxHeight: 600 });
-		})
-		.fail(function(data) {
-			getPresentHTTPError(data);
-		});
+	loadUrl({
+		url: href,
+		funcEnd: 'finalizeSpikeKillResults',
+	});
 }
 
 function redrawGraph(graph_id) {
 	var mainWidth = getMainWidth() - 30;
-	var isThumb = $('#thumbnails').is(':checked');
+	var isThumb   = $('#thumbnails').is(':checked');
 	var myColumns = $('#columns').val();
-	var graphRow = $('.tableRowGraph').width();
+	var graphRow  = $('.tableRowGraph').width();
 	var drillDown = $('.graphDrillDown:first').outerWidth() + 10;
 
 	if (mainWidth < graphRow) {
@@ -3793,12 +3569,12 @@ function redrawGraph(graph_id) {
 
 	var myWidth = (graphRow - (drillDown * myColumns)) / myColumns;
 
-	var graph_height = $('#wrapper_' + graph_id).attr('graph_height');
-	var graph_width = $('#wrapper_' + graph_id).attr('graph_width');
+	var graph_height = $('#wrapper_'+graph_id).attr('graph_height');
+	var graph_width  = $('#wrapper_'+graph_id).attr('graph_width');
 
 	closeDateFilters();
 
-	var url = 'graph_json.php?rra_id=0' +
+	var href = 'graph_json.php?rra_id=0' +
 		'&local_graph_id=' + graph_id +
 		'&graph_start=' + graph_start +
 		'&graph_end=' + graph_end +
@@ -3806,57 +3582,58 @@ function redrawGraph(graph_id) {
 		'&graph_width=' + graph_width +
 		(isThumb ? '&graph_nolegend=true' : '');
 
-	$.getJSON(url)
-		.done(function(data) {
-			if (typeof data.status == 'undefined') {
-				if (myWidth < data.image_width) {
-					ratio = myWidth / data.image_width;
-					data.image_width = parseInt(data.image_width * ratio);
-					data.image_height = parseInt(data.image_height * ratio);
-					data.graph_width = parseInt(data.graph_width * ratio);
-					data.graph_height = parseInt(data.graph_height * ratio);
-					data.graph_top = parseInt(data.graph_top * ratio);
-					data.graph_left = parseInt(data.graph_left * ratio);
-				}
+	loadUrl({
+		url: href,
+		funcEnd: 'finalizeGraphRedraw',
+	});
+}
 
-				$('#wrapper_' + data.local_graph_id).empty().html(
-					"<img class='graphimage' id='graph_" + data.local_graph_id + "'" +
-					" src='data:image/" + data.type + ";base64," + data.image + "'" +
-					" rra_id='" + data.rra_id + "'" +
-					" graph_type='" + data.type + "'" +
-					" graph_id='" + data.local_graph_id + "'" +
-					" graph_start='" + data.graph_start + "'" +
-					" graph_end='" + data.graph_end + "'" +
-					" graph_left='" + data.graph_left + "'" +
-					" graph_top='" + data.graph_top + "'" +
-					" graph_width='" + data.graph_width + "'" +
-					" graph_height='" + data.graph_height + "'" +
-					" width='" + data.image_width + "'" +
-					" height='" + data.image_height + "'" +
-					" image_width='" + data.image_width + "'" +
-					" image_height='" + data.image_height + "'" +
-					" canvas_top='" + data.graph_top + "'" +
-					" canvas_left='" + data.graph_left + "'" +
-					" canvas_width='" + data.graph_width + "'" +
-					" canvas_height='" + data.graph_height + "'" +
-					" value_min='" + data.value_min + "'" +
-					" value_max='" + data.value_max + "'>"
-				);
+function finalizeGraphRedraw(options, data) {
+	if (typeof data.status == 'undefined') {
+		if (myWidth < data.image_width) {
+			ratio = myWidth / data.image_width;
+			data.image_width = parseInt(data.image_width * ratio);
+			data.image_height = parseInt(data.image_height * ratio);
+			data.graph_width = parseInt(data.graph_width * ratio);
+			data.graph_height = parseInt(data.graph_height * ratio);
+			data.graph_top = parseInt(data.graph_top * ratio);
+			data.graph_left = parseInt(data.graph_left * ratio);
+		}
 
-				$('#graph_' + data.local_graph_id).zoom({
-					inputfieldStartTime: 'date1',
-					inputfieldEndTime: 'date2',
-					serverTimeOffset: timeOffset
-				});
+		$('#wrapper_' + data.local_graph_id).empty().html(
+			"<img class='graphimage' id='graph_" + data.local_graph_id + "'" +
+			" src='data:image/" + data.type + ";base64," + data.image + "'" +
+			" rra_id='" + data.rra_id + "'" +
+			" graph_type='" + data.type + "'" +
+			" graph_id='" + data.local_graph_id + "'" +
+			" graph_start='" + data.graph_start + "'" +
+			" graph_end='" + data.graph_end + "'" +
+			" graph_left='" + data.graph_left + "'" +
+			" graph_top='" + data.graph_top + "'" +
+			" graph_width='" + data.graph_width + "'" +
+			" graph_height='" + data.graph_height + "'" +
+			" width='" + data.image_width + "'" +
+			" height='" + data.image_height + "'" +
+			" image_width='" + data.image_width + "'" +
+			" image_height='" + data.image_height + "'" +
+			" canvas_top='" + data.graph_top + "'" +
+			" canvas_left='" + data.graph_left + "'" +
+			" canvas_width='" + data.graph_width + "'" +
+			" canvas_height='" + data.graph_height + "'" +
+			" value_min='" + data.value_min + "'" +
+			" value_max='" + data.value_max + "'>"
+		);
 
-				data = undefined;
-			} else {
-				getPresentHTTPError(data);
-			}
-		})
-		.fail(function(data) {
-			getPresentHTTPError(data);
+		$('#graph_' + data.local_graph_id).zoom({
+			inputfieldStartTime: 'date1',
+			inputfieldEndTime: 'date2',
+			serverTimeOffset: timeOffset
 		});
+
+		data = undefined;
+	} else {
+		getPresentHTTPError(data);
+	}
 }
 
 function initializeGraphs(disable_cache) {
@@ -4296,8 +4073,8 @@ function expandClipboardSection(section) {
 }
 
 function copyToClipboard(containerId) {
-	var clipboardDataId = containerId.replace('copyToClipboard', 'clipboardData');
-	var clipboardData = document.getElementById(clipboardDataId);
+	var clipboardDataId = containerId.replace('copyToClipboard','clipboardData');
+	var clipboardData   = document.getElementById(clipboardDataId);
 
 	var messageWidth = $(window).width();
 	if (messageWidth > 350) {
@@ -4707,6 +4484,43 @@ function checkSNMPPassphraseConfirm(type) {
 		}
 	}
 }
+
+(function($) {
+
+ $.textMetrics = function(el) {
+
+  var h = 0, w = 0;
+
+  var div = document.createElement('div');
+  document.body.appendChild(div);
+  $(div).css({
+   position: 'absolute',
+   left: -1000,
+   top: -1000,
+   display: 'none'
+  });
+
+  $(div).html($(el).html());
+  var styles = ['font-size','font-style', 'font-weight', 'font-family','line-height', 'text-transform', 'letter-spacing'];
+  $(styles).each(function() {
+   var s = this.toString();
+   $(div).css(s, $(el).css(s));
+  });
+
+  h = $(div).outerHeight();
+  w = $(div).outerWidth();
+
+  $(div).remove();
+
+  var ret = {
+   height: h,
+   width: w
+  };
+
+  return ret;
+ }
+
+})(jQuery);
 
 function basename(path) {
 	return path.split('/').reverse()[0];
