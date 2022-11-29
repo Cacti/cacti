@@ -751,6 +751,7 @@ $heartbeats = array(
 	330    => __('%0.1f Minutes', 5.5),
 	600    => __('%d Minutes', 10),
 	660    => __('%d Minutes', 11),
+	900    => __('%d Minutes', 15),
 	1200   => __('%d Minutes', 20),
 	1800   => __('%d Minutes', 30),
 	2400   => __('%d Minutes', 40),
