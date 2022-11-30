@@ -2,9 +2,9 @@ name: Cacti Commit Audit
 
 on:
   push:
-    branches: [ 1.2.x ]
+    branches: [ 1.2.x, develop ]
   pull_request:
-    branches: [ 1.2.x ]
+    branches: [ 1.2.x, develop ]
 
 permissions:
   contents: read
@@ -22,7 +22,7 @@ jobs:
         os: [ubuntu-latest] #ubuntu-20.04.04 currently
         php: ['5.4','7.0','7.4', '8.0', '8.1', '8.2']
         experimental: [false]
-        
+
     services:
       mysql:
         image: mysql:latest
@@ -35,7 +35,7 @@ jobs:
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-        
+
     name: PHP ${{ matrix.php }} Test on ${{ matrix.os }}
     steps:
     - name: Checkout
@@ -50,7 +50,7 @@ jobs:
 
     - name: Check PHP version
       run: php -v
-      
+
     - name: Checkout Thold Plugin
       uses: GuillaumeFalourd/clone-github-repo-action@v2
       with:
@@ -102,7 +102,7 @@ jobs:
 
     - name: Check PHP syntax
       run: if find ${{ github.workspace }} -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
-      
+
     - name: Install php-fpm
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       env:
@@ -123,11 +123,11 @@ jobs:
     - name: Install Apache and tools
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: sudo apt-get install apache2 php-fpm snmp rrdtool
-      
+
     - name: Enable Proxy FCGI
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: sudo a2enmod proxy_fcgi setenvif actions alias
-      
+
     - name: Configure Apache Site
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
@@ -137,11 +137,11 @@ jobs:
     - name: Open permissions for testing purposes
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: sudo chmod -R 777 ${{ github.workspace}}
-      
+
     - name: Restart Apache2
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: sudo systemctl restart apache2
-      
+
     - name: Create and Initialize Database
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       env:
@@ -197,7 +197,7 @@ jobs:
     - name: View contents of logs
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: sudo cat ${{ github.workspace }}/log/cacti.log
-          
+
 #    - name: Validate composer.json and composer.lock
 #      run: composer validate --strict
 
