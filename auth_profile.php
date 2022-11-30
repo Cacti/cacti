@@ -270,6 +270,9 @@ function form_save() {
 	kill_session_var('sess_user_language');
 	kill_session_var('sess_user_config_array');
 	kill_session_var('selected_theme');
+
+	$tab = (isset_request_var('tab') && get_nfilter_request_var('tab')) ? ('?tab=' . get_nfilter_request_var('tab')) : '';
+	header('Location: auth_profile.php' . $tab);
 }
 
 /* --------------------------
@@ -559,7 +562,7 @@ function settings_2fa() {
 
 	html_end_box(true, true);
 
-	form_save_buttons(array(array('id' => 'return', 'value' => __esc('Return'))));
+	form_save_buttons(array(array('id' => 'return', 'value' => __esc('Return'))), force_type: 'save');
 
 	?>
 	<script type='text/javascript'>

@@ -4564,11 +4564,27 @@ function formValidate(formId, href) {
 			unhighlight: function (element, errorClass, validClass) {
 				$(element).parents("div.formData").removeClass("txtErrorTextBox"); // .removeClass(errorClass).addClass(validClass);
 			},
-			submitHandler: function () {
+			submitHandler: function (form) {
 				$('input[type="submit"], button[type="submit"]').not('.import, .export').button('disable');
 
 				var json = $(this).serializeObject();
-				postUrl({ url: href }, json);
+				postUrl({ url: href }, json).done(function() {
+					$('input[type="submit"], button[type="submit"]').not('.import, .export').button('enabled');
+				});
+			},
+			invalidHandler: function (event, validator) {
+				// 'this' refers to the form
+				var errors = validator.numberOfInvalids();
+				if (errors) {
+					var message = errors == 1
+						? 'You missed 1 field. It has been highlighted'
+						: 'You missed ' + errors + ' fields. They have been highlighted';
+					$("div.error span").html(message);
+					$("div.error").show();
+				} else {
+					$("div.error").hide();
+				}
+				$('input[type="submit"], button[type="submit"]').not('.import, .export').button('enabled');
 			}
 		});
 	}
@@ -4584,7 +4600,6 @@ function formCallback(formId, currentPage, action, callback) {
 	var formCallbackInput       = formCallbackId + '_input';
 	var formCallbackInputFields = 'input' + formCallbackId + '_input';
 
-	debugger;
 	$(formCallbackInput).autocomplete({
 		source: currentPage + '?action=' + action,
 		autoFocus: true,
