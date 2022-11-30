@@ -1729,6 +1729,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	/* hack for rrdtool 1.2.x support */
 	$graph_item_stack_type = '';
+	$graph_vdefs = array();
 
 	if (cacti_sizeof($graph_items)) {
 		foreach ($graph_items as $graph_item) {
@@ -1764,7 +1765,6 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			$cdef_graph_defs = '';
 
 			if ((!empty($graph_item['cdef_id'])) && (!isset($cdef_cache[$graph_item['cdef_id']][$graph_item['data_template_rrd_id']][$cf_id]))) {
-
 				$cdef_string 	= $graph_variables['cdef_cache'][$graph_item['graph_templates_item_id']];
 				$magic_item 	= array();
 				$already_seen	= array();
@@ -1990,6 +1990,55 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$cdef_string = str_replace('CURRENT_DS_MAXIMUM_VALUE', (empty($graph_item['rrd_maximum']) ? '0' : $graph_item['rrd_maximum']), $cdef_string);
 				$cdef_string = str_replace('CURRENT_GRAPH_MINIMUM_VALUE', (empty($graph['lower_limit']) ? '0' : $graph['lower_limit']), $cdef_string);
 				$cdef_string = str_replace('CURRENT_GRAPH_MAXIMUM_VALUE', (empty($graph['upper_limit']) ? '0' : $graph['upper_limit']), $cdef_string);
+
+				/* special data source types for prediction/trending */
+        		if (preg_match('/CURRENT_DS_LSLSLOPE/', $cdef_string)) {
+					$vdef_name = 'vdef' . $def_name . 'slope';
+
+					if (!isset($graph_vdefs[$vdef_name])) {
+						$graph_vdefs[$vdef_name] = "$vdef_name=$def_name,LSLSLOPE";
+					}
+
+					$cdef_string = str_replace('CURRENT_DS_LSLSLOPE', $vdef_name, $cdef_string);
+				} elseif (preg_match('/CURRENT_DS_LSLINT/', $cdef_string)) {
+					$vdef_name = 'vdef' . $def_name . 'int';
+
+					if (!isset($graph_vdefs[$vdef_name])) {
+						$graph_vdefs[$vdef_name] = "$vdef_name=$def_name,LSLINT";
+					}
+
+					$cdef_string = str_replace('CURRENT_DS_LSLINT', $vdef_name, $cdef_string);
+				} elseif (preg_match('/CURRENT_DS_LSLCORREL/', $cdef_string) ) {
+					$vdef_name = 'vdef' . $def_name . 'correl';
+
+					if (!isset($graph_vdefs[$vdef_name])) {
+						$graph_vdefs[$vdef_name] = "$vdef_name=$def_name,LSLCORREL";
+					}
+
+					$cdef_string = str_replace('CURRENT_DS_LSLCORREL', $vdef_name, $cdef_string);
+				} elseif (preg_match('/CURRENT_DS_LSLFUNCTION/', $cdef_string) ) {
+					$vdefslope_name = 'vdef' . $def_name . 'slope';
+					$vdefint_name   = 'vdef' . $def_name . 'int';
+
+					if (!isset($graph_vdefs[$vdefslope_name])) {
+						$graph_vdefs[$vdefslope_name] = "$vdefslope_name=$def_name,LSLSLOPE";
+					}
+
+					if (!isset($graph_vdefs[$vdefint_name])) {
+						$graph_vdefs[$vdefint_name] = "$vdefint_name=$def_name,LSLINT";
+					}
+
+					$cdef_string = str_replace('CURRENT_DS_LSLFUNCTION', "$def_name,POP,COUNT,$vdefslope_name,*,$vdefint_name,+" , $cdef_string);
+				}
+
+				/* generate the custom prediction vdef string */
+				foreach ($graph_vdefs as $vdef_name => $vdef_def) {
+					if ($vdef_def != '') {
+						$graph_defs .= "VDEF:$vdef_def" . RRD_NL;
+					}
+
+					$graph_vdefs[$vdef_name] = '';
+				}
 
 				if ((strpos($cdef_string, '|query_ifHighSpeed|') !== false) ||
 					(strpos($cdef_string, '|query_ifSpeed|') !== false)) {
