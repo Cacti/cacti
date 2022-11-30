@@ -57,7 +57,8 @@ var lastWidth = {};
 var resizeDelta = 100;
 var resizeTime = 0;
 var resizeTimeout = false;
-var formArray;
+var formArray = {};
+var formRules = {};
 var pageWidth = null;
 var isHover = false;
 var hoverTimer = false;
@@ -4524,4 +4525,137 @@ function checkSNMPPassphraseConfirm(type) {
 
 function basename(path) {
 	return path.split('/').reverse()[0];
+}
+
+function formValidate(formId, href) {
+	changed = false;
+
+	var formObj = $(formId);
+	if (formObj.length) {
+		formArray[formId] = $(formObj).serializeForm();
+
+		$(formObj).find('input[type="email"]').each(function () {
+			var name = $(this).attr('id');
+			if (name === null || name.length == 0) {
+				name = $(this).attr('name');
+			}
+
+			if (name !== null && name.length > 0) {
+				formRules[formId][name] = {
+					required: true,
+					email: true,
+				};
+			}
+		});
+
+
+		$(formObj).submit(function (event) {
+			event.preventDefault();
+
+			// Disable the submit button so it can't be done twice
+			$(this).find('input, textarea, select').prop('disabled', false);
+		}).validate({
+			rules: formRules[formId],
+			errorClass: 'txtErrorText',
+			validClass: 'success',
+			highlight: function (element, errorClass, validClass) {
+				$(element).parents("div.formData").addClass("txtErrorTextBox"); //.addClass(errorClass).removeClass(validClass);
+			},
+			unhighlight: function (element, errorClass, validClass) {
+				$(element).parents("div.formData").removeClass("txtErrorTextBox"); // .removeClass(errorClass).addClass(validClass);
+			},
+			submitHandler: function () {
+				$('input[type="submit"], button[type="submit"]').not('.import, .export').button('disable');
+
+				var json = $(this).serializeObject();
+				postUrl({ url: href }, json);
+			}
+		});
+	}
+}
+
+function formCallback(formId, currentPage, action, callback) {
+	var formCallbackTimer;
+	var formCallbackClickTimer;
+	var formCallbackOpen = false;
+
+	var formCallbackId          = '#' + formId;
+	var formCallbackWrap        = formCallbackId + '_wrap';
+	var formCallbackInput       = formCallbackId + '_input';
+	var formCallbackInputFields = 'input' + formCallbackId + '_input';
+
+	debugger;
+	$(formCallbackInput).autocomplete({
+		source: currentPage + '?action=' + action,
+		autoFocus: true,
+		minLength: 0,
+		select: function (event, ui) {
+			$(formCallbackInput).val(ui.item.label);
+			if (ui.item.id) {
+				$(formCallbackId).val(ui.item.id);
+			} else {
+				$(formCallbackId).val(ui.item.value);
+			}
+
+			if (typeof callback !== 'undefined') {
+				callback();
+			}
+		}
+	}).css('border', 'none').css('background-color', 'transparent');
+
+	$(formCallbackWrap).on('dblclick', function() {
+		formCallbackOpen = false;
+		clearTimeout(formCallbackTimer);
+		clearTimeout(formCallbackClickTimer);
+		$(formCallbackInput).autocomplete('close').select();
+	}).on('click', function() {
+		if (formCallbackOpen) {
+			$(formCallbackInput).autocomplete('close');
+			clearTimeout(formCallbackTimer);
+			formCallbackOpen = false;
+		} else {
+			formCallbackClickTimer = setTimeout(function() {
+				$(formCallbackInput).autocomplete('search', '');
+				clearTimeout(formCallbackTimer);
+				formCallbackOpen = true;
+			}, 200);
+		}
+		$(formCallbackInput).select();
+	}).on('keyup', function() {
+		$(formCallbackId).val($(formCallbackInput).val());
+	}).on('mouseleave', function() {
+		formCallbackTimer = setTimeout(function() {
+			$(formCallbackInput).autocomplete('close');
+		}, 800);
+	});
+
+	width = $(formCallbackInput).textBoxWidth();
+	if (width < 100) {
+		width = 100;
+	}
+
+	$(formCallbackWrap).css('width', width + 20);
+	$(formCallbackInput).css('width', width);
+
+	$('ul[id^="ui-id"]').on('mouseenter', function() {
+		clearTimeout(formCallbackTimer);
+	}).on('mouseleave', function() {
+		formCallbackTimer = setTimeout(function() {
+			$(formCallbackInput).autocomplete('close');
+		}, 800);
+	});
+
+	$('ul[id^="ui-id"] > li').each().on('mouseenter', function() {
+		$(this).addClass('ui-state-hover');
+	}).on('mouseleave', function() {
+		$(this).removeClass('ui-state-hover');
+	});
+
+	$(formCallbackWrap).on('mouseenter', function() {
+		$(this).addClass('ui-state-hover');
+		$(formCallbackInputFields).addClass('ui-state-hover');
+	}).on('mouseleave', function() {
+		$(this).removeClass('ui-state-hover');
+		$(formCallbackInputFields).removeClass('ui-state-hover');
+	});
 }

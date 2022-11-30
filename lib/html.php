@@ -2485,7 +2485,7 @@ function html_common_header($title, $selectedTheme = '') {
 	?>
 	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>
 	<meta name='apple-mobile-web-app-capable' content='yes'>
-	<meta name='description' content='Monitoring tool of the Internet'>
+	<meta name='description' content='Monitoringauth tool of the Internet'>
 	<meta name='mobile-web-app-capable' content='yes'>
 	<meta name="theme-color" content="#161616"/>
 	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' https://api.qrserver.com <?php print $alternates;?> data: blob:; style-src 'self' 'unsafe-inline' <?php print $alternates;?>; script-src 'self' <?php print html_escape($script_policy);?> 'unsafe-inline' <?php print $alternates;?>; worker-src 'self' <?php print $alternates;?>;">
