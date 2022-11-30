@@ -7613,7 +7613,7 @@ function debounce_run_notification($id, $freqnency = 1200) {
  *
  * @return array
  */
-function cacti_unique_ids(string|array $ids, bool $shouldExplode = true) {
+function cacti_unique_ids($ids, bool $shouldExplode = true) {
 	if ($shouldExplode && is_string($ids)) {
 		$ids = explode(',', str_replace(' ', '', $ids));
 	}
