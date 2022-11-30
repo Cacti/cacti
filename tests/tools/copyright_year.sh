@@ -1,9 +1,9 @@
-#!/bin/bash
+#!#!/usr/bin/env bash
 
 # ----------------------------------------------
 # PHP Files First
 # ----------------------------------------------
-for file in `find . -name \*.php -print`;do 
+for file in `find . -name \*.php -print`;do
   echo -n $file;
   grep '2004-2021' $file >/dev/null;
   result=$?
@@ -19,7 +19,7 @@ done
 # ----------------------------------------------
 # JavaScript Files First
 # ----------------------------------------------
-for file in `find . -name \*.js -print`;do 
+for file in `find . -name \*.js -print`;do
   echo -n $file;
   grep '2004-2021 The Cacti Group' $file >/dev/null;
   result=$?

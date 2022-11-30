@@ -1,4 +1,4 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -41,8 +41,8 @@ if (cacti_sizeof($parms)) {
 
 	$options = getopt($shortopts, $longopts);
 
-	foreach($options as $arg => $value) {
-		switch($arg) {
+	foreach ($options as $arg => $value) {
+		switch ($arg) {
 			case 'json':
 				$output_json = true;
 				break;
@@ -77,7 +77,7 @@ if ($output_json) {
 } else {
 	foreach ($perms as $perm => $value) {
 		$count++;
-		printf('%25s %5s    ', $perm, $value?'Yes':'No');
+		printf('%25s %5s    ', $perm, $value ? 'Yes' : 'No');
 		if ($count % 2 == 0) print PHP_EOL;
 	}
 }

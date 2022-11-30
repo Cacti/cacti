@@ -1,4 +1,4 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -26,7 +26,7 @@
 require(__DIR__ . '/../include/cli_check.php');
 
 $fail_msg = array();
-define_exit('EXIT_UNKNOWN',-1, "ERROR: Failed due to unknown reason\n");
+define_exit('EXIT_UNKNOWN', -1, "ERROR: Failed due to unknown reason\n");
 define_exit('EXIT_NORMAL',  0, "");
 define_exit('EXIT_ARGERR',  1, "ERROR: Invalid Argument: (%s)\n\n");
 
@@ -41,7 +41,7 @@ $dev   = false;
 
 if (cacti_sizeof($parms)) {
 
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -54,16 +54,16 @@ if (cacti_sizeof($parms)) {
 
 			case '--dev':
 			case '-d':
-				$dev=true;
+				$dev = true;
 				break;
 			case '--debug':
 				display_version();
-				$debug=true;
+				$debug = true;
 				break;
 
 			case '-q':
 			case '--quiet':
-				$quiet=true;
+				$quiet = true;
 				break;
 
 			case '--version':
@@ -94,7 +94,7 @@ if ($debug) {
 	);
 
 	foreach ($tests as $name => $value) {
-		printf ("%35s = (Rel %1s, Dev %1s) %s\n", $name, is_cacti_release($value), is_cacti_develop($value), $value);
+		printf("%35s = (Rel %1s, Dev %1s) %s\n", $name, is_cacti_release($value), is_cacti_develop($value), $value);
 	}
 
 	print PHP_EOL;
@@ -108,26 +108,26 @@ if ($debug) {
 	);
 
 	foreach ($tests as $name => $value) {
-		printf ("%35s = %s\n", $name, $value);
+		printf("%35s = %s\n", $name, $value);
 	}
 
 	print PHP_EOL;
 
 	$tests  = array(
 		'Fresh'       => 'new_install',
-//		'1.3.0'	   => '1.3.0',
-//		'Develop'	 => CACTI_VERSION_FULL,
-//		'1.3 Dev 569' => '1.3.0.99.1553092569.fab5112a',
+		//		'1.3.0'	   => '1.3.0',
+		//		'Develop'	 => CACTI_VERSION_FULL,
+		//		'1.3 Dev 569' => '1.3.0.99.1553092569.fab5112a',
 		'1.3 Dev 328' => '1.3.0.99.1553092328.12f20874',
-//		'1.3 Beta 2'  => '1.3.0.2',
-//		'1.3 Beta 1'  => '1.3.0.1',
-//		'1.2 Dev 329' => '1.2.3.99.1553092329.0d39f3ad',
-//		'1.2.2'	   => '1.2.2',
-//		'1.2.0'	   => '1.2.0',
-//		'1.2 Beta 1'  => '1.2.0.1',
+		//		'1.3 Beta 2'  => '1.3.0.2',
+		//		'1.3 Beta 1'  => '1.3.0.1',
+		//		'1.2 Dev 329' => '1.2.3.99.1553092329.0d39f3ad',
+		//		'1.2.2'	   => '1.2.2',
+		//		'1.2.0'	   => '1.2.0',
+		//		'1.2 Beta 1'  => '1.2.0.1',
 		'0.8.8h'	  => '0.8.8h',
-//		'0.8.8b'	  => '0.8.8b',
-//		'0.8.8'	   => '0.8.8',
+		//		'0.8.8b'	  => '0.8.8b',
+		//		'0.8.8'	   => '0.8.8',
 	);
 
 	$sources = $tests;
@@ -149,16 +149,25 @@ if ($debug) {
 		$key = $keys[$test];
 		$formatted = format_cacti_version($version);
 
-		printf ("%15s (Rel %1s, Dev %1s) => %s (%s)\n",
-			$test, is_cacti_release($formatted), is_cacti_develop($formatted), $formatted, version_to_decimal($formatted, 9, false));
+		printf(
+			"%15s (Rel %1s, Dev %1s) => %s (%s)\n",
+			$test,
+			is_cacti_release($formatted),
+			is_cacti_develop($formatted),
+			$formatted,
+			version_to_decimal($formatted, 9, false)
+		);
 
 		foreach ($sources as $name => $source) {
 			$dkey = $keys[$name];
 			$matrix[$key][$dkey] = cacti_version_compare($formatted, $source, '<') ? '+' : '.';
 
-			printf ("  =>  %15s = %-15s (%20s)\n",
-				$name, cacti_version_compare($formatted, $source, '<') ? 'Upgrade' : 'Not Required',
-				version_to_decimal($source, 9, false));
+			printf(
+				"  =>  %15s = %-15s (%20s)\n",
+				$name,
+				cacti_version_compare($formatted, $source, '<') ? 'Upgrade' : 'Not Required',
+				version_to_decimal($source, 9, false)
+			);
 		}
 		print PHP_EOL;
 	}
@@ -208,8 +217,8 @@ function display_help() {
 	print "         --debug    show debug testing and matrix\n\n";
 }
 
-function fail($exit_value,$args = array(),$display_help = 0) {
-	global $quiet,$fail_msg;
+function fail($exit_value, $args = array(), $display_help = 0) {
+	global $quiet, $fail_msg;
 
 	if (!$quiet) {
 		if (!isset($args)) {
@@ -218,7 +227,7 @@ function fail($exit_value,$args = array(),$display_help = 0) {
 			$args = array($args);
 		}
 
-		if (!array_key_exists($exit_value,$fail_msg)) {
+		if (!array_key_exists($exit_value, $fail_msg)) {
 			$format = $fail_msg[EXIT_UNKNOWN];
 		} else {
 			$format = $fail_msg[$exit_value];
@@ -240,7 +249,7 @@ function define_exit($name, $value, $text) {
 		$fail_msg = array();
 	}
 
-	define($name,$value);
+	define($name, $value);
 	$fail_msg[$name] = $text;
 	$fail_msg[$value] = $text;
 }

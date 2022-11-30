@@ -60,8 +60,8 @@ if (!function_exists('get_cacti_cli_version')) {
 
 if (!function_exists('is_resource_writable')) {
 	function is_resource_writable($path) {
-		if ($path[strlen($path)-1]=='/') {
-			return is_resource_writable($path.uniqid(mt_rand()).'.tmp');
+		if ($path[strlen($path) - 1] == '/') {
+			return is_resource_writable($path . uniqid(mt_rand()) . '.tmp');
 		}
 
 		if (file_exists($path)) {
@@ -106,7 +106,7 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
@@ -358,18 +358,18 @@ memoryUsage();
 function spliceRRDs(&$new_rrd, &$old_flat, &$old_dsnames) {
 	if (cacti_sizeof($new_rrd) && cacti_sizeof($old_flat)) {
 		if (isset($new_rrd['rra'])) {
-			foreach($new_rrd['rra'] as $rra_num => $rra) {
+			foreach ($new_rrd['rra'] as $rra_num => $rra) {
 				$cf  = $new_rrd['rra'][$rra_num]['cf'];
 				$pdp = $new_rrd['rra'][$rra_num]['pdp_per_row'];
 				if (isset($rra['database'])) {
-					foreach($rra['database'] as $cdp_ds_num => $value) {
+					foreach ($rra['database'] as $cdp_ds_num => $value) {
 						$dsname    = $new_rrd['ds'][$cdp_ds_num]['name'];
 						$olddsnum  = $old_dsnames[$dsname];
 						$last_good = 'NaN';
 
 						debug("Splicing DSName $dsname NewId $cdp_ds_num OldId $olddsnum");
 
-						foreach($value as $time => $v) {
+						foreach ($value as $time => $v) {
 							if ($v == 'NaN' || $v == 0) {
 								if ($time < $old_flat['mintime']) {
 									continue;
@@ -425,7 +425,7 @@ function getOldRRDValue(&$old_flat, $dsnum, $cf, $time) {
 
 		$result = $stmt->execute();
 
-		while($row = $result->fetchArray()) {
+		while ($row = $result->fetchArray()) {
 			return $row['value'];
 		}
 
@@ -438,7 +438,7 @@ function getOldRRDValue(&$old_flat, $dsnum, $cf, $time) {
 		} else {
 			$first = true;
 
-			foreach($old_flat[$dsnum][$cf] as $timestamp => $data) {
+			foreach ($old_flat[$dsnum][$cf] as $timestamp => $data) {
 				if ($first && $time > $timestamp) {
 					// The time is before any good data in the RRDfile
 					debug("No Good data found.  Timestamp $time newer than the newest timestamp $timestamp");
@@ -491,7 +491,7 @@ function recreateXML($new_rrd) {
 	$rrd .= "\t<step> "       . $new_rrd['step']       . " </step>\n";
 	$rrd .= "\t<lastupdate> " . $new_rrd['lastupdate'] . " </lastupdate>\n";
 
-	foreach($new_rrd['ds'] as $dsnum => $ds) {
+	foreach ($new_rrd['ds'] as $dsnum => $ds) {
 		$rrd .= "\t<ds>\n";
 		$rrd .= "\t\t<name> "        . $ds['name']        . " </name>\n";;
 		$rrd .= "\t\t<type> "        . $ds['type']        . " </type>\n";;
@@ -504,7 +504,7 @@ function recreateXML($new_rrd) {
 		$rrd .= "\t</ds>\n";
 	}
 
-	foreach($new_rrd['rra'] as $rra_num => $rra) {
+	foreach ($new_rrd['rra'] as $rra_num => $rra) {
 		$rrd .= "\t<rra>\n";
 		$rrd .= "\t\t<cf> " . $rra['cf'] . " </cf>\n";
 		$rrd .= "\t\t<pdp_per_row> " . $rra['pdp_per_row'] . " </pdp_per_row>\n";
@@ -513,7 +513,7 @@ function recreateXML($new_rrd) {
 		$rrd .= "\t\t</params>\n";
 		$rrd .= "\t\t<cdp_prep>\n";
 
-		foreach($new_rrd['rra'][$rra_num]['cdp_prep'] as $cdp_ds_num => $pdp) {
+		foreach ($new_rrd['rra'][$rra_num]['cdp_prep'] as $cdp_ds_num => $pdp) {
 			$rrd .= "\t\t\t<ds>\n";
 			$rrd .= "\t\t\t\t<primary_value> " . $pdp['primary_value'] . " </primary_value>\n";
 			$rrd .= "\t\t\t\t<secondary_value> " . $pdp['secondary_value'] . " </secondary_value>\n";
@@ -522,8 +522,8 @@ function recreateXML($new_rrd) {
 			$rrd .= "\t\t\t</ds>\n";
 
 			$output = array();
-			foreach($new_rrd['rra'][$rra_num]['database'] as $dsnum => $v) {
-				foreach($v as $time => $value) {
+			foreach ($new_rrd['rra'][$rra_num]['database'] as $dsnum => $v) {
+				foreach ($v as $time => $value) {
 					$output[$time][$dsnum] = $value;
 				}
 			}
@@ -532,9 +532,9 @@ function recreateXML($new_rrd) {
 		$rrd .= "\t\t</cdp_prep>\n";
 		$rrd .= "\t\t<database>\n";
 
-		foreach($output as $time => $v) {
+		foreach ($output as $time => $v) {
 			$rrd .= "\t\t\t<row>";
-			foreach($v as $dsnum => $value) {
+			foreach ($v as $dsnum => $value) {
 				$rrd .= "<v> " . $value . " </v>";
 			}
 			$rrd .= "</row>\n";
@@ -558,11 +558,11 @@ function memoryUsage() {
 	if ($mem_usage < 1024)
 		$memstr = $mem_usage . ' B';
 	elseif ($mem_usage < 1048576)
-		$memstr = round($mem_usage/1024,2) . ' KB';
+		$memstr = round($mem_usage / 1024, 2) . ' KB';
 	else
-		$memstr = round($mem_usage/1048576,2) . ' MB';
+		$memstr = round($mem_usage / 1048576, 2) . ' MB';
 
-	print 'NOTE: Time:' . round(microtime(true)-$time, 2) . ', RUsage:' . $memstr . PHP_EOL;
+	print 'NOTE: Time:' . round(microtime(true) - $time, 2) . ', RUsage:' . $memstr . PHP_EOL;
 }
 
 /** flattenXML - Take all the data from the various data sources and
@@ -589,10 +589,10 @@ function flattenXML(&$xml) {
 	$mintime  = 'NaN';
 
 	if (cacti_sizeof($xml['rra'])) {
-		foreach($xml['rra'] as $rraid => $data) {
+		foreach ($xml['rra'] as $rraid => $data) {
 			$cf = $data['cf'];
 
-			foreach($data['database'] as $dsid => $timedata) {
+			foreach ($data['database'] as $dsid => $timedata) {
 				$i = 0;
 
 				// Don't load data from less granular RRA's
@@ -602,7 +602,7 @@ function flattenXML(&$xml) {
 					$maxtoload = 9999999999999;
 				}
 
-				foreach($timedata as $timestamp => $value) {
+				foreach ($timedata as $timestamp => $value) {
 					if ($i == 0 && $value != 'NaN') {
 						$maxarray[$dsid][$cf] = $timestamp;
 						$i++;
@@ -621,14 +621,14 @@ function flattenXML(&$xml) {
 			}
 		}
 
-		foreach($newxml as $dsid => $data) {
-			foreach($data as $cf => $timedata) {
+		foreach ($newxml as $dsid => $data) {
+			foreach ($data as $cf => $timedata) {
 				// Sort the data
 				ksort($timedata);
 
 				// Get rid of NaN
 				$last_data = 0;
-				foreach($timedata as $timestamp => $data) {
+				foreach ($timedata as $timestamp => $data) {
 					if ($data == 'NaN') {
 						$timedata[$timestamp] = $last_data;
 					} else {
@@ -641,12 +641,14 @@ function flattenXML(&$xml) {
 				$newxml[$dsid][$cf] = $timedata;
 
 				if ($debug) {
-					$stats = sprintf("DS:%2d, CF:%8s, Vals:%10s, Max:%10s, Avg:%10s",
+					$stats = sprintf(
+						"DS:%2d, CF:%8s, Vals:%10s, Max:%10s, Avg:%10s",
 						$dsid,
 						$cf,
 						number_format(cacti_sizeof($timedata)),
 						number_format(getMaxValue($timedata), 4),
-						number_format(getAvgValue($timedata), 4));
+						number_format(getAvgValue($timedata), 4)
+					);
 
 					debug($stats);
 				}
@@ -664,7 +666,7 @@ function flattenXML(&$xml) {
  */
 function getMaxValue(&$data) {
 	$max = 0;
-	foreach($data as $timestamp => $value) {
+	foreach ($data as $timestamp => $value) {
 		if ($value != 'NaN' && $value > $max) {
 			$max = $value;
 		}
@@ -725,7 +727,7 @@ function processXML(&$output) {
 	$in_cdp_ds  = false;
 
 	if (cacti_sizeof($output)) {
-		foreach($output as $line) {
+		foreach ($output as $line) {
 			if (substr_count($line, '<row>')) {
 				$line   = trim(str_replace('<row>', '', str_replace('</row>', '', $line)));
 				$larray = explode('<v>', $line);
@@ -733,7 +735,7 @@ function processXML(&$output) {
 
 				array_shift($larray);
 				$tdsno  = 0;
-				foreach($larray as $l) {
+				foreach ($larray as $l) {
 					$value = trim(str_replace('</v>', '', $l));
 					$rrd['rra'][$rra_num]['database'][$tdsno][$time] = $value;
 					$tdsno++;
@@ -809,7 +811,7 @@ function processXML(&$output) {
 	}
 
 	if (cacti_sizeof($dsnames)) {
-		foreach($dsnames as $index => $name) {
+		foreach ($dsnames as $index => $name) {
 			$rrd['dsnames'][$name] = $index;
 		}
 	}
@@ -857,7 +859,7 @@ function backupRRDFile($rrdfile) {
  */
 function preProcessXML(&$output) {
 	if (cacti_sizeof($output)) {
-		foreach($output as $line) {
+		foreach ($output as $line) {
 			$line = trim($line);
 			$date = '';
 			if ($line == '') {
@@ -872,13 +874,13 @@ function preProcessXML(&$output) {
 					$row = strpos($line, '<row>');
 
 					if ($row > 0) {
-						$date = trim(substr($line,$comment_start+30,11));
+						$date = trim(substr($line, $comment_start + 30, 11));
 					}
 
 					if ($comment_start == 0) {
-						$line = trim(substr($line, $comment_end+3));
+						$line = trim(substr($line, $comment_end + 3));
 					} else {
-						$line = trim(substr($line,0,$comment_start-1) . substr($line,$comment_end+3));
+						$line = trim(substr($line, 0, $comment_start - 1) . substr($line, $comment_end + 3));
 					}
 
 					if (!empty($date)) {
@@ -934,12 +936,12 @@ function loadTable($db, &$records) {
 	$db->exec("BEGIN TRANSACTION");
 
 	$sql = '';
-	foreach($records as $dsid => $cfdata) {
+	foreach ($records as $dsid => $cfdata) {
 		if (is_numeric($dsid)) {
-			foreach($cfdata as $cf => $timedata) {
+			foreach ($cfdata as $cf => $timedata) {
 				$i = 0;
-				foreach($timedata as $timestamp => $value) {
-					$sql .= ($sql != '' ? ', ':'') . '(' . $dsid . ',"' . $cf . '",' . $timestamp . ', ' . $value . ')';
+				foreach ($timedata as $timestamp => $value) {
+					$sql .= ($sql != '' ? ', ' : '') . '(' . $dsid . ',"' . $cf . '",' . $timestamp . ', ' . $value . ')';
 					$i++;
 
 					if ($i > 50) {
@@ -982,7 +984,7 @@ function display_version() {
 /** display_help - Displays usage information about how to utilize
  *  this program.
  */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print PHP_EOL . 'usage: splice_rrd.php --oldrrd=file --newrrd=file [--finrrd=file]' . PHP_EOL;
