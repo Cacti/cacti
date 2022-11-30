@@ -906,7 +906,7 @@ function snmp_escape_string($string) {
 	}
 
 	if (substr_count($string, SNMP_ESCAPE_CHARACTER)) {
-		$string = substr_replace(SNMP_ESCAPE_CHARACTER, "\\" . SNMP_ESCAPE_CHARACTER, $string);
+		$string = str_replace(SNMP_ESCAPE_CHARACTER, "\\" . SNMP_ESCAPE_CHARACTER, $string);
 	}
 
 	return SNMP_ESCAPE_CHARACTER . $string . SNMP_ESCAPE_CHARACTER;
