@@ -465,9 +465,9 @@ function settings() {
 		html_end_box(true, true);
 	}
 
-	form_hidden_box('save_component_graph_config','1','');
+	form_hidden_box('save_component_graph_config', '1', '');
 
-	form_save_buttons(array(array('id' => 'return', 'value' => __esc('Return'))), force_type: 'save');
+	form_save_buttons(array(array('id' => 'return', 'value' => __esc('Return'))), '', 'save');
 
 	form_end();
 }
@@ -562,7 +562,7 @@ function settings_2fa() {
 
 	html_end_box(true, true);
 
-	form_save_buttons(array(array('id' => 'return', 'value' => __esc('Return'))), force_type: 'save');
+	form_save_buttons(array(array('id' => 'return', 'value' => __esc('Return'))), '', 'save');
 
 	?>
 	<script type='text/javascript'>
