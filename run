@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+SUDO_USR=www-data
+if [ -f "${SCRIPT_DIR}/.runuser" ]; then
+	SUDO_USR=$(cat "{$SCRIPT_DIR}/.runuser");
+fi
+CAN_I_RUN_SUDO=$(sudo -n uptime 2>&1 | grep -E "(password|load)" | wc -l)
+
+SUDO_CMD=
+if [[ ${CAN_I_RUN_SUDO} != 0 ]]; then
+	SUDO_CMD="sudo -u ${SUDO_USR} "
+fi
+
+${SUDO_CMD}php -q $@
