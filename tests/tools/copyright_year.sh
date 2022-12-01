@@ -1,4 +1,25 @@
 #!/usr/bin/env bash
+#  +-------------------------------------------------------------------------+
+#  | Copyright (C) 2004-2022 The Cacti Group                                 |
+#  |                                                                         |
+#  | This program is free software; you can redistribute it and/or           |
+#  | modify it under the terms of the GNU General Public License             |
+#  | as published by the Free Software Foundation; either version 2          |
+#  | of the License, or (at your option) any later version.                  |
+#  |                                                                         |
+#  | This program is distributed in the hope that it will be useful,         |
+#  | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+#  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+#  | GNU General Public License for more details.                            |
+#  +-------------------------------------------------------------------------+
+#  | Cacti: The Complete RRDTool-based Graphing Solution                     |
+#  +-------------------------------------------------------------------------+
+#  | This code is designed, written, and maintained by the Cacti Group. See  |
+#  | about.php and/or the AUTHORS file for specific developer information.   |
+#  +-------------------------------------------------------------------------+
+#  | http://www.cacti.net/                                                   |
+#  +-------------------------------------------------------------------------+
+
 update_copyright() {
 	local file=$1
 	file=${file/$SCRIPT_BASE/};
@@ -8,19 +29,28 @@ update_copyright() {
 		line=
 	fi
 
-	old_data=$(grep -e "2004-20[0-9][0-9]" "$1" 2>/dev/null)
+	old_reg="20[0-9][0-9][ ]*-[ ]*20[0-9][0-9]"
+	old_data=$(grep -c -e "$old_reg" "$1" 2>/dev/null)
+	new_reg="2004-$YEAR"
 	result=$?
 
-	if [[ $result -eq 0 ]]; then
-		if [[ $old_data =~ -${YEAR} ]]; then
+	if [[ $old_data -eq 0 ]]; then
+		old_reg="(Copyright.*) 20[0-9][0-9] "
+		old_data=$(grep -c -e "$old_reg" "$1" 2>/dev/null)
+		new_reg="\1 2004-$YEAR"
+		result=$?
+	fi
+
+	if [[ $old_data -gt 0 ]]; then
+		old_data=$(grep -e "$old_reg" "$1" 2>/dev/null)
+		if [[ $old_data =~ .*-${YEAR}.* ]]; then
 			if [[ -z "$ERRORS_ONLY" ]]; then
 				echo "$line Skipping Copyright Data"
 			fi
 		else
-			new_data=${old_data// 2004-20[0-9][0-9] / 2004-$YEAR }
 			echo "$line Updating Copyright Data"
-			printf "\tOld: %s\n\tNew: %s\n\n" "$old_data" "$new_data"
-			sed -i s/"$old_data"/"$new_data"/g $1
+			printf "\tOld: %s\n\tNew: %s\n\tData: %s\n\n" "$old_reg" "$new_reg" "$old_data"
+			sed -i -r s/"$old_reg"/"$new_reg"/g $1
 		fi
 	else
 		echo "$line  Copyright not found!"
@@ -43,9 +73,6 @@ YEAR=$(date +"%Y")
 ERRORS_ONLY=1
 while [ -n "$1" ]; do
 	case $1 in
-# ------------------------------------------------------------------------------
-# Get inputs from user (Interactive mode)
-# ------------------------------------------------------------------------------
 		"--help")
 			echo "NOTE: Checks all Cacti pages for this years copyright"
 			echo ""
@@ -66,7 +93,7 @@ done
 # ----------------------------------------------
 SCRIPT_INCLUSION=
 SCRIPT_SEPARATOR=
-for ext in sql php js md; do
+for ext in sh sql php js md; do
 	if [ -n "$SCRIPT_INCLUSION" ]; then
 		SCRIPT_SEPARATOR="-o "
 	fi
