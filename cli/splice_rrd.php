@@ -48,7 +48,7 @@ if ($config['poller_id'] > 1) {
 // For legacy Cacti behavior
 if (!function_exists('cacti_sizeof')) {
 	function cacti_sizeof($object) {
-		return cacti_sizeof($object);
+		return ($object === false || !is_array($object)) ? 0 : sizeof($object);
 	}
 }
 
