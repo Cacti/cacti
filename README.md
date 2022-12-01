@@ -14,20 +14,64 @@ issues](http://isitmaintained.com/badge/open/cacti/cacti.svg)](http://isitmainta
 
 -----------------------------------------------------------------------------
 
+# Welcome to the Cacti GitHub Site!
+
+## Introduction
+
+We currently have two functioning versions of Cacti on this site, and several
+Cacti plugins supported by The Cacti Group.  Our current long lived version
+is Cacti in the `1.2.x` Branch.  The current release version of this branch 
+is Cacti 1.2.22.  Sometime in December 2022, we will release Cacti 1.2.23.  
+This maintainenance release has several bugs fixes, and significantly more 
+welcomed feature enhancements.  You can review the CHANGELOG for the `1.2.x`
+Branch for more information on that.
+
+Additionally, we have the `develop` branch.  This is now an active Development
+Branch.  In this branch, we as a team have re-grouped and are introducing several
+new features.  We hope to be able to deliver a Christmas present for Cacti
+enthuseists, which will be a Cacti 1.3.0-beta release.  If you want to get
+involved earlier, you can simply download the development release and knock
+yourselves out.  The 1.3.0 release will include everything in the pending 1.2.23
+release, as well as several additional features from our roadmap.
+
+System requirements vary from Cacti point release to point release.  The 1.2.x
+series requires the following:
+
+| Dependency | Cacti 1.2.x  | Cacti 1.3.x |
+|------------|--------------|-------------|
+| MariaDB    | 5.5+         | 10.2.x+     |
+| MySQL      | 5.5+         | 5.7+        |
+| PHP        | 5.4+         | 8.0+        |
+| RRDtool    | 1.4+         | 1.7+        |
+| Net-SNMP   | 5.5+         | 5.8+        |
+
+For Cacti 1.2.x, it is reasonable to run with RHEL/CentOS 7 of equivalent.  However,
+for Cacti 1.3.x, it would be better to run on RHEL/CentOS/Rocky 8 or equivalent as
+this OS version makes PHP8.0 available via a DNF Stream.
+
+However, if you wish to run Cacti 1.3.x on the RHEL/CentOS 7 distribution you can
+do so if you use the REMI distributions of PHP.  You will also in this case
+have to build RRDtool 1.8+ from source, which is strait forward.
+
+In the sections below, you can find some important first steps before installing
+either the Cacti 1.2.x version of the pending Cacti 1.3.x version.  Good luck
+and enjoy Cacti.
+
 ## Running Cacti from the `develop` Branch
 
 ### IMPORTANT
 
 When using source or by downloading the code directly from the repository, it is
-important to run the database upgrade script if you experience any errors
-referring to missing tables or columns in the database.
+important to note that periodically, you may have to return the database upgrade 
+cli script to bring in new columns.  You can use the --forcever=1.2.22 option
+to assume you are upgrading from an earlier cacti version:
 
-Changes to the database are committed to the `cacti.sql` file which is used for
-new installations and committed to the installer database upgrade for existing
-installations. Because the version number does not change until release in the
-`develop` branch, which will result in the database upgrade not running, it is
-important to either use the database upgrade script to force the current version
-or update the version in the database.
+```bash
+php -q upgrade_database.php --forcever=1.2.22
+```
+
+If you experience SQL errors in your Cacti log, please open a case in our Cacti
+issue tracker here.
 
 #### Upgrading from Pre-Cacti 1.x Releases
 
@@ -88,7 +132,9 @@ upgrading.  The settings with XXX, Cacti will provide a recommendation at upgrad
 It is not out of the ordinary to have to restart MySQL/MariaDB during the upgrade
 to tune these settings.  Please make special note of this before you begin your upgrade.
 
-Before you upgrade, you should make these required changes, then restart MySQL/MariaDB.  After that, you can save yourself some time and potential errors by running the following scripts (assuming you are using bash):
+Before you upgrade, you should make these required changes, then restart MySQL/MariaDB.
+After that, you can save yourself some time and potential errors by running the following
+scripts (assuming you are using bash):
 
 ```
 for table in `mysql -e "SELECT TABLE_NAME FROM information_schema.TABLES WHERE table_schema='cacti' AND engine!='MEMORY'" cacti | grep -v TABLE_NAME`;
