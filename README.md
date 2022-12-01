@@ -35,8 +35,11 @@ involved earlier, you can simply download the development release and knock
 yourselves out.  The 1.3.0 release will include everything in the pending 1.2.23
 release, as well as several additional features from our roadmap.
 
-System requirements vary from Cacti point release to point release.  The 1.2.x
-series requires the following:
+System requirements vary from Cacti point release to point release.  The matrix
+below documents the minimum tool levels for each version.  With our source
+distribution, all the vendor included packages are pre-packeged and tested
+by the Cacti group, so there is no reason to use package management tools
+to install those dependencies.
 
 | Dependency | Cacti 1.2.x  | Cacti 1.3.x |
 |------------|--------------|-------------|
