@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest] #ubuntu-20.04.04 currently
-        php: ['7.4', '8.0', '8.1', '8.2']
+        php: ['8.0', '8.1', '8.2']
         experimental: [false]
 
     services:
