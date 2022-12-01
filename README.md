@@ -20,11 +20,11 @@ issues](http://isitmaintained.com/badge/open/cacti/cacti.svg)](http://isitmainta
 
 We currently have two functioning versions of Cacti on this site, and several
 Cacti plugins supported by The Cacti Group.  Our current long lived version
-is Cacti in the `1.2.x` Branch.  The current release version of this branch 
+of Cacti in the `1.2.x` branch.  The current release version of this branch 
 is Cacti 1.2.22.  Sometime in December 2022, we will release Cacti 1.2.23.  
 This maintainenance release has several bugs fixes, and significantly more 
 welcomed feature enhancements.  You can review the CHANGELOG for the `1.2.x`
-Branch for more information on that.
+branch for more information on that.
 
 Additionally, we have the `develop` branch.  This is now an active Development
 Branch.  In this branch, we as a team have re-grouped and are introducing several
