@@ -61,9 +61,9 @@ In the sections below, you can find some important first steps before installing
 either the Cacti 1.2.x version of the pending Cacti 1.3.x version.  Good luck
 and enjoy Cacti.
 
-## Running Cacti from the `develop` Branch
+# Running Cacti from the `develop` Branch
 
-### IMPORTANT
+## IMPORTANT
 
 When using source or by downloading the code directly from the repository, it is
 important to note that periodically, you may have to return the database upgrade 
@@ -77,7 +77,7 @@ php -q upgrade_database.php --forcever=1.2.22
 If you experience SQL errors in your Cacti log, please open a case in our Cacti
 issue tracker here.
 
-#### Upgrading from Pre-Cacti 1.x Releases
+## Upgrading from Pre-Cacti 1.x Releases
 
 When Cacti was first developed nearly 20 years ago, MySQL was not as mature as it
 is now.  When The Cacti Group went about engineering Cacti 1.x, a decision was
@@ -152,13 +152,13 @@ This will convert any tables that are either InnoDB or MyISAM to Barracuda file 
 
 Good luck, and enjoy Cacti!
 
-#### Running Database Upgrade Script
+## Running Database Upgrade Script
 
 ```
 sudo -u cacti php -q cli/upgrade_database.php --forcever=`cat include/cacti_version`
 ```
 
-#### Updating Cacti Version in Database
+## Updating Cacti Version in Database
 
 ```
 update version set cacti = '1.1.38';
