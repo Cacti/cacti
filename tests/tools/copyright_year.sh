@@ -22,7 +22,7 @@
 
 update_copyright() {
 	local file=$1
-	file=${file/$SCRIPT_BASE/};
+	file=${file/$SCRIPT_BASE/}
 	printf -v line "%60s" "$file"
 	if [[ -z "$ERRORS_ONLY" ]]; then
 		echo -n "$line"
@@ -43,14 +43,18 @@ update_copyright() {
 
 	if [[ $old_data -gt 0 ]]; then
 		old_data=$(grep -e "$old_reg" "$1" 2>/dev/null)
-		if [[ $old_data =~ .*-${YEAR}.* ]]; then
+		new_data=$(echo "$old_data" | sed -r s/"$old_reg"/"$new_reg"/g)
+		if [[ "$old_data" == "$new_data" ]]; then
 			if [[ -z "$ERRORS_ONLY" ]]; then
 				echo "$line Skipping Copyright Data"
 			fi
 		else
 			echo "$line Updating Copyright Data"
-			printf "\tOld: %s\n\tNew: %s\n\tData: %s\n\n" "$old_reg" "$new_reg" "$old_data"
+			printf "%60s %s\n" "==============================" "===================="
+			printf "%60s %s\n" "$old_data" "=>"
+			printf "%60s %s\n" "$new_data" ""
 			sed -i -r s/"$old_reg"/"$new_reg"/g $1
+			printf "%60s %s\n" "==============================" "===================="
 		fi
 	else
 		echo "$line  Copyright not found!"
@@ -58,7 +62,7 @@ update_copyright() {
 	fi
 }
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 SCRIPT_BASE=$(realpath "${SCRIPT_DIR}/../../")/
 
 BAD_FOLDERS="include/vendor \*\*/vendor include/fa cache include/js scripts"
@@ -69,23 +73,28 @@ done
 
 SCRIPT_ERR=0
 YEAR=$(date +"%Y")
-
+EXT="sh sql php js md conf"
 ERRORS_ONLY=1
 while [ -n "$1" ]; do
 	case $1 in
-		"--help")
-			echo "NOTE: Checks all Cacti pages for this years copyright"
-			echo ""
-			echo "usage: copyright_year.sh [-a]"
-			echo ""
-			;;
-		"-A"|"-a")
-			ERRORS_ONLY=0
-			;;
-		*)
-			;;
+	"--help")
+		echo "NOTE: Checks all Cacti pages for this years copyright"
+		echo ""
+		echo "usage: copyright_year.sh [-a]"
+		echo ""
+		;;
+	"-E" | "-e")
+		shift
+		EXT="$1"
+		;;
+	"-A" | "-a")
+		ERRORS_ONLY=
+		echo "Searching..."
+		;;
+	*) ;;
+
 	esac
-	shift;
+	shift
 done
 
 # ----------------------------------------------
@@ -93,7 +102,7 @@ done
 # ----------------------------------------------
 SCRIPT_INCLUSION=
 SCRIPT_SEPARATOR=
-for ext in sh sql php js md conf; do
+for ext in $EXT; do
 	if [ -n "$SCRIPT_INCLUSION" ]; then
 		SCRIPT_SEPARATOR="-o "
 	fi
