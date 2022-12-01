@@ -46,10 +46,10 @@ to install those dependencies.
 | MariaDB    | 5.5+         | 10.2.x+     |
 | MySQL      | 5.5+         | 5.7+        |
 | PHP        | 5.4+         | 8.0+        |
-| RRDtool    | 1.4+         | 1.7+        |
+| RRDtool    | 1.4+         | 1.8+        |
 | Net-SNMP   | 5.5+         | 5.8+        |
 
-For Cacti 1.2.x, it is reasonable to run with RHEL/CentOS 7 of equivalent.  However,
+For Cacti 1.2.x, it is reasonable to run with RHEL/CentOS 7 or equivalent.  However,
 for Cacti 1.3.x, it would be better to run on RHEL/CentOS/Rocky 8 or equivalent as
 this OS version makes PHP8.0 available via a DNF Stream.
 
