@@ -203,6 +203,7 @@ class Installer implements JsonSerializable {
 
 	/* jsonSerialize() - provides JSON object of return data with optional
 	 *                   values output dependant on Runtime mode */
+	#[ReturnTypeWillChange]
 	public function jsonSerialize() {
 		if (empty($this->output)) {
 			$this->output = $this->processCurrentStep();
@@ -3748,6 +3749,7 @@ class InstallerButton implements JsonSerializable {
 		$this->Enabled = !empty($this->Step);
 	}
 
+	#[ReturnTypeWillChange]
 	public function jsonSerialize() {
 		return array(
 			'Text' => $this->Text,
