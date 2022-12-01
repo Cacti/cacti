@@ -38,7 +38,7 @@ was done as the InnoDB storage engine provides a better user experience when you
 web site has several concurrent logins.  Though a little slower, it also provides
 greater resiliency for the developers.
 
-With that said, there are several changes that you MUST perform to MySQL/MariaDB 
+With that said, there are several changes that you MUST perform to MySQL/MariaDB
 before you upgrade, and a service restart is required.  Depending on your release
 of MariaDB or MySQL, the following settings will either be required, or already
 enabled as default:
@@ -92,7 +92,7 @@ Before you upgrade, you should make these required changes, then restart MySQL/M
 
 ```
 for table in `mysql -e "SELECT TABLE_NAME FROM information_schema.TABLES WHERE table_schema='cacti' AND engine!='MEMORY'" cacti | grep -v TABLE_NAME`;
-do 
+do
    echo "Converting $table";
    mysql -e "ALTER TABLE $table ENGINE=InnoDB ROW_FORMAT=Dynamic CHARSET=utf8mb4" cacti;
 done
@@ -327,4 +327,4 @@ Cacti supports most RRDtool graphing abilities including:
 - Text alignment
 
 -----------------------------------------------------------------------------
-Copyright (c) 2021 - The Cacti Group, Inc.
+Copyright (c) 2014-2022 - The Cacti Group, Inc.
