@@ -1711,32 +1711,25 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 				if ($host['status_event_count'] == $ping_failure_count) {
 					$host['status_fail_date'] = time();
 				}
-
-				set_config_option('time_last_change_site_device', time());
-			/* host is down, but not ready to issue log message */
 			} else {
 				/* host down for the first time, set event date */
 				if ($host['status_event_count'] == $ping_failure_count) {
 					$host['status_fail_date'] = time();
 				}
 			}
-		/* host is recovering, put back in failed state */
 		} elseif ($host['status'] == HOST_RECOVERING) {
+			/* host is recovering, put back in failed state */
 			$host['status_event_count'] = 1;
 			$host['status'] = HOST_DOWN;
-
-			set_config_option('time_last_change_site_device', time());
-		/* host was unknown and now is down */
 		} elseif ($host['status'] == HOST_UNKNOWN) {
+			/* host was unknown and now is down */
 			$host['status'] = HOST_DOWN;
 			$host['status_event_count'] = 0;
-
-			set_config_option('time_last_change_site_device', time());
 		} else {
 			$host['status_event_count']++;
 		}
-	/* host is up!! */
 	} else {
+		/* host is up!! */
 		/* update total polls and availability */
 		$host['total_polls']++;
 		$host['availability'] = 100 * ($host['total_polls'] - $host['failed_polls']) / $host['total_polls'];
@@ -1805,8 +1798,6 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 				$host['status_event_count']++;
 			}
 
-			set_config_option('time_last_change_site_device', time());
-
 			/* if it's time to issue a recovery message, indicate so */
 			if ($host['status_event_count'] >= $ping_recovery_count) {
 				/* host is up, flag it that way */
@@ -1821,7 +1812,6 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 
 				/* reset the event counter */
 				$host['status_event_count'] = 0;
-				/* host is recovering, but not ready to issue log message */
 			} else {
 				/* host recovering for the first time, set event date */
 				if ($host['status_event_count'] == $ping_recovery_count) {
@@ -1829,13 +1819,12 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 				}
 			}
 		} else {
-		/* host was unknown and now is up */
+			/* host was unknown and now is up */
 			$host['status'] = HOST_UP;
 			$host['status_event_count'] = 0;
-
-			set_config_option('time_last_change_site_device', time());
 		}
 	}
+
 	/* if the user wants a flood of information then flood them */
 	if (($host['status'] == HOST_UP) || ($host['status'] == HOST_RECOVERING)) {
 		/* log ping result if we are to use a ping for reachability testing */
