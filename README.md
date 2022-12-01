@@ -169,7 +169,7 @@ installer upgrading from a previous version.
 
 -----------------------------------------------------------------------------
 
-## About
+# About Cacti
 
 Cacti is a complete network graphing solution designed to harness the power of
 RRDtool's data storage and graphing functionality providing the following
