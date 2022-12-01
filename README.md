@@ -22,7 +22,8 @@ We currently have two functioning versions of Cacti on this site, and several
 Cacti plugins supported by The Cacti Group.  Our current long lived version
 of Cacti in the `1.2.x` branch.  The current release version of this branch 
 is Cacti 1.2.22.  Sometime in December 2022, we will release Cacti 1.2.23.  
-This maintainenance release has several bugs fixes, and significantly more 
+
+This pending maintainenance release has several bugs fixes, and significantly more 
 welcomed feature enhancements.  You can review the CHANGELOG for the `1.2.x`
 branch for more information on that.
 
