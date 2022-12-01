@@ -250,14 +250,14 @@ function api_device_remove_multi($device_ids, $delete_type = 2) {
 				api_device_purge_from_remote($device_ids, $poller_id);
 			}
 		}
-	}
 
-	/**
-	 * Save the last time a device/site was created/updated
-	 * for Caching.
-	 */
-	set_config_option('time_last_change_device', time());
-	set_config_option('time_last_change_site_device', time());
+		/**
+		 * Save the last time a device/site was created/updated
+		 * for Caching.
+		 */
+		set_config_option('time_last_change_device', time());
+		set_config_option('time_last_change_site_device', time());
+	}
 }
 
 /**
