@@ -3047,10 +3047,6 @@ function get_total_row_data($user_id, $sql, $sql_params = array(), $class = '', 
 		}
 	}
 
-	if ($class != '') {
-		set_config_option('time_last_change_' . $class, $now_time);
-	}
-
 	if (cacti_sizeof($sql_params)) {
 		$rows = db_fetch_cell($sql, $sql_params);
 	} else {
