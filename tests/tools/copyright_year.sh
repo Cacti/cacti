@@ -61,7 +61,7 @@ update_copyright() {
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 SCRIPT_BASE=$(realpath "${SCRIPT_DIR}/../../")/
 
-BAD_FOLDERS="include/vendor \*\*/vendor include/fa cache include/js"
+BAD_FOLDERS="include/vendor \*\*/vendor include/fa cache include/js scripts"
 SCRIPT_EXCLUSION=
 for f in $BAD_FOLDERS; do
 	SCRIPT_EXCLUSION="$SCRIPT_EXCLUSION -not -path ${SCRIPT_BASE}$f/\* "
@@ -93,7 +93,7 @@ done
 # ----------------------------------------------
 SCRIPT_INCLUSION=
 SCRIPT_SEPARATOR=
-for ext in sh sql php js md; do
+for ext in sh sql php js md conf; do
 	if [ -n "$SCRIPT_INCLUSION" ]; then
 		SCRIPT_SEPARATOR="-o "
 	fi

@@ -1,24 +1,28 @@
 ## cactid.service
 
+[//] #
+[//] # Copyright (C) 2004-2022 The Cacti Group
+[//] #
+
 ### Background
 
-PHP has matured over the years, and in the year 2020, it is now possible to 
-create reliable services leveraging it.  Cacti for years used crontab as a 
-launcher primarily due to the issues we had experienced in the early days of 
-PHP 4.2 with constant memory leaks with the core PHP and the various PHP 
+PHP has matured over the years, and in the year 2020, it is now possible to
+create reliable services leveraging it.  Cacti for years used crontab as a
+launcher primarily due to the issues we had experienced in the early days of
+PHP 4.2 with constant memory leaks with the core PHP and the various PHP
 modules that were in use.  However, times are changing.
 
-With the advent of technologies such as MariaDB Galera, keepalived, haproxy, 
-and database session management for fault tolerant web server and 
-databases, and with clustered file systems like GlusterFS and CEPH for 
-RRDfile and web site content fault tolerance, the idea of a fully 
+With the advent of technologies such as MariaDB Galera, keepalived, haproxy,
+and database session management for fault tolerant web server and
+databases, and with clustered file systems like GlusterFS and CEPH for
+RRDfile and web site content fault tolerance, the idea of a fully
 distributed highly available Cacti is now possible.
 
-Add to that, the concept of Remote Data Collectors for network resiliency, 
+Add to that, the concept of Remote Data Collectors for network resiliency,
 and Cacti has fully entering into what I refer to as 'enterprise' class in
 it's stability and reliability.
 
-However, to more easily support keepalived, we need to move away from the 
+However, to more easily support keepalived, we need to move away from the
 crontab based setup Cacti has used for nearly 20 years.  Long live Crontab!
 
 ### Installing on Linux (systemd based systems)
