@@ -824,6 +824,7 @@ if ($poller_id == 1) {
 	rrdcheck_poller_bottom();
 	api_plugin_hook('poller_bottom');
 	bad_index_check($mibs);
+	host_status_cache_check();
 } else {
 	// flush the boost table if in recovery mode
 	if ($poller_id > 1 && $config['connection'] == 'recovery') {
@@ -834,6 +835,27 @@ if ($poller_id == 1) {
 	automation_poller_bottom();
 	poller_maintenance();
 	api_plugin_hook('poller_bottom');
+}
+
+function host_status_cache_check() {
+	$current = db_fetch_cell("SELECT MD5(variable)
+		FROM (
+			SELECT GROUP_CONCAT(CONCAT(status, '|', hosts)) AS variable
+			FROM (
+				SELECT status, COUNT(*) AS hosts
+				FROM host
+				GROUP BY status
+			) AS rs
+		) AS rs1");
+
+	$last = read_config_options('host_status_cache');
+
+	if ($last != $current) {
+		$now = time();
+		set_config_option('time_last_change_device', $now);
+		set_config_option('time_last_change_site_device', $now);
+		set_config_option('host_status_cache', $current);
+	}
 }
 
 function bad_index_check($mibs) {
