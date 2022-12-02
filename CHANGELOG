@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -issue#3547: Database Audit utility does not check database permissions
 -issue#3559: When a developer uses backtracing, HTML output can be seen from command line
 -issue#3560: When using `input_validate_xxx`, calls to `die_html_input_error()` do not pass variable name
+-issue#5019: Install SQL Statements with Database name should be quoted
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1442: Add validation to GUI inputs
 -feature#1523: Value above RRD maximum value

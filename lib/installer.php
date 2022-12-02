@@ -2548,7 +2548,7 @@ class Installer implements JsonSerializable {
 				__('Your database default collation does NOT appear to be full UTF8 compliant. ') .
 				__('Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to \'utf8mb4_unicode_ci\' by running the following: ') .
 				Installer::sectionCode(
-					'mysql> ALTER DATABASE ' . $database . ' CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'
+					'mysql> ALTER DATABASE `' . $database . '` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'
 				)
 			);
 		}
