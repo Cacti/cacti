@@ -301,10 +301,14 @@ function form_actions() {
 			} elseif (get_request_var('drp_action') == '3') { // Disable Selected Devices
 				api_device_disable_devices($selected_items);
 			} elseif (get_request_var('drp_action') == '4') { // change device options
+				ini_set('max_execution_time', '-1');
+
 				api_device_change_options($selected_items, $_POST);
 			} elseif (get_request_var('drp_action') == '5') { // Clear Statistics for Selected Devices
 				api_device_clear_statistics($selected_items);
 			} elseif (get_request_var('drp_action') == '7') { // sync to device template
+				ini_set('max_execution_time', '-1');
+
 				api_device_sync_device_templates($selected_items);
 			} elseif (get_request_var('drp_action') == '8') { // place device on report
 				if (!reports_add_devices(get_filter_request_var('report_id'), $selected_items, get_filter_request_var('timespan'), get_filter_request_var('align'))) {
@@ -316,6 +320,8 @@ function form_actions() {
 					raise_message('reports_add_error', __('Unable to add some Devices to Report \'%s\'', $name), MESSAGE_LEVEL_WARN);
 				}
 			} elseif (get_request_var('drp_action') == '1') { // delete
+				ini_set('max_execution_time', '-1');
+
 				if (!isset_request_var('delete_type')) {
 					set_request_var('delete_type', 2);
 				}
@@ -505,7 +511,7 @@ function form_actions() {
 			</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel'). "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Run Automation on Device(s)') . "'>";
-        } elseif (get_request_var('drp_action') == '8') {
+		} elseif (get_request_var('drp_action') == '8') {
 			global $alignment, $graph_timespans;
 
 			$reports = db_fetch_assoc_prepared('SELECT id, name
@@ -534,10 +540,10 @@ function form_actions() {
 				print "</td></tr>\n";
 
 				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Add Devices to Report') . "'>";
-            } else {
-                print "<tr><td class='even'><span class='textError'>" . __('You currently have no Reports defined.') . "</span></td></tr>\n";
-                $save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
-            }
+			} else {
+				print "<tr><td class='even'><span class='textError'>" . __('You currently have no Reports defined.') . "</span></td></tr>\n";
+				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+			}
 		} else {
 			$save['drp_action'] = get_request_var('drp_action');
 			$save['host_list']  = $host_list;
@@ -1359,52 +1365,57 @@ function host_validate_vars() {
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
-			),
+		),
 		'filter' => array(
 			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
-			),
+		),
 		'location' => array(
 			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
 			'default' => '-1',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
 			'default' => 'description',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'sort_direction' => array(
 			'filter' => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'host_status' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
+		'availability_method' => array(
+			'filter' => FILTER_VALIDATE_INT,
+			'pageset' => true,
+			'default' => '-1'
+		),
 		'host_template_id' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
 		'site_id' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
 		'poller_id' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			)
+		)
 	);
 
 	$filters = api_plugin_hook_function('device_filters', $filters);
@@ -1511,7 +1522,7 @@ function get_device_records(&$total_rows, $rows) {
 }
 
 function host() {
-	global $device_actions, $item_rows, $config;
+	global $device_actions, $item_rows, $config, $availability_options;
 
 	if ((!empty($_SESSION['sess_host_status'])) && (!isempty_request_var('host_status'))) {
 		if ($_SESSION['sess_host_status'] != get_nfilter_request_var('host_status')) {
@@ -1658,6 +1669,32 @@ function host() {
 						</select>
 					</td>
 					<td>
+						<?php print __('Service Check');?>
+					</td>
+					<td>
+						<select id='availability_method'>
+							<option value='-1'<?php if (get_request_var('host_status') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
+							<?php
+							if (get_request_var('host_template_id') > 0) {
+								$sql_where = 'WHERE host_template_id = ' . get_request_var('host_template_id');
+							} else {
+								$sql_where = '';
+							}
+
+							$options = array_rekey(
+								db_fetch_assoc("SELECT DISTINCT availability_method AS id FROM host $sql_where"),
+								'id', 'id'
+							);
+
+							if (cacti_sizeof($options)) {
+								foreach ($options as $option) {
+									print "<option value='" . $option . "'"; if (get_request_var('availability_method') == $option) { print ' selected'; } print '>' . html_escape($availability_options[$option]) . '</option>';
+								}
+							}
+							?>
+						</select>
+					</td>
+					<td>
 						<?php print __('Devices');?>
 					</td>
 					<td>
@@ -1681,6 +1718,7 @@ function host() {
 		function applyFilter() {
 			strURL  = 'host.php';
 			strURL += '?host_status=' + $('#host_status').val();
+			strURL += '&availability_method=' + $('#availability_method').val();
 			strURL += '&host_template_id=' + $('#host_template_id').val();
 			strURL += '&site_id=' + $('#site_id').val();
 			strURL += '&poller_id=' + $('#poller_id').val();
@@ -1702,7 +1740,7 @@ function host() {
 		}
 
 		$(function() {
-			$('#rows, #site_id, #poller_id, #location, #host_template_id, #host_status').change(function() {
+			$('#rows, #site_id, #poller_id, #location, #host_template_id, #host_status, #availability_method').change(function() {
 				applyFilter();
 			});
 
@@ -1746,6 +1784,12 @@ function host() {
 			'sort' => 'ASC',
 			'tip' => __('The internal database ID for this Device.  Useful when performing automation or debugging.')
 		),
+		'device_threads' => array(
+			'display' => __('Threads'),
+			'align' => 'right',
+			'sort' => 'ASC',
+			'tip' => __('The number of threads to use to collect information for this Device.  Applies to spine only.')
+		),
 		'graphs' => array(
 			'display' => __('Graphs'),
 			'align' => 'right',
@@ -1763,6 +1807,12 @@ function host() {
 			'align' => 'center',
 			'sort' => 'ASC',
 			'tip' => __('The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname "localhost", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an "Unknown" state.')
+		),
+		'availability_method' => array(
+			'display' => __('Service Check'),
+			'align' => 'right',
+			'sort' => 'ASC',
+			'tip' => __('The Availability/Reachability method used to communicate with the device.  In some cases, the Availability/Reachability method will be \'none\', which is not uncommon for some devices'),
 		),
 		'instate' => array(
 			'display' => __('In State'),
@@ -1800,12 +1850,12 @@ function host() {
 			'sort' => 'ASC',
 			'tip' => __('The availability percentage based upon ping results since the counters were cleared for this Device.')
 		),
-		'nosort_created' => array(
-			'display' => __('Created'),
+		'created' => array(
+			'display' => __('Create Date'),
 			'align' => 'right',
 			'sort' => 'ASC',
-			'tip' => __('The date this device wasadded to the database'),
-		),
+			'tip' => __('The Date that the Device was added to Cacti.')
+		)
 	);
 
 	$display_text_size = sizeof($display_text);
@@ -1825,7 +1875,7 @@ function host() {
 
 	if (sizeof($display_text) != $display_text_size && cacti_sizeof($hosts)) {//display_text changed
 		api_plugin_hook_function('device_table_replace', $hosts);
-	} else if (cacti_sizeof($hosts)) {
+	} elseif (cacti_sizeof($hosts)) {
 		foreach ($hosts as $host) {
 			if ($host['disabled'] == '' &&
 				($host['status'] == HOST_RECOVERING || $host['status'] == HOST_UP) &&
@@ -1842,8 +1892,10 @@ function host() {
 			form_selectable_cell(filter_value($host['description'], get_request_var('filter'), 'host.php?action=edit&id=' . $host['id']), $host['id']);
 			form_selectable_cell(filter_value($host['hostname'], get_request_var('filter')), $host['id']);
 			form_selectable_cell(filter_value($host['id'], get_request_var('filter')), $host['id'], '', 'right');
+			form_selectable_cell($host['device_threads'], $host['id'], '', 'right');
 			form_selectable_cell('<a class="linkEditMain" href="' . $graphs_url . '">' . number_format_i18n($host['graphs'], '-1') . '</a>', $host['id'], '', 'right');
 			form_selectable_cell('<a class="linkEditMain" href="' . $data_source_url . '">' . number_format_i18n($host['data_sources'], '-1') . '</a>', $host['id'], '', 'right');
+			form_selectable_cell($availability_options[$host['availability_method']], $host['id'], '', 'right');
 			form_selectable_cell(get_colored_device_status(($host['disabled'] == 'on' ? true : false), $host['status']), $host['id'], '', 'center');
 			form_selectable_cell(get_timeinstate($host), $host['id'], '', 'right');
 			form_selectable_cell($uptime, $host['id'], '', 'right');
@@ -1851,7 +1903,7 @@ function host() {
 			form_selectable_cell(round(($host['cur_time']), 2), $host['id'], '', 'right');
 			form_selectable_cell(round(($host['avg_time']), 2), $host['id'], '', 'right');
 			form_selectable_cell(round($host['availability'], 2) . ' %', $host['id'], '', 'right');
-			form_selectable_cell($host['created'], $host['id'], '', 'right');
+			form_selectable_cell($host['created'] == '' ? __('Unknown'):$host['created'], $host['id'], '', 'right');
 			form_checkbox_cell($host['description'], $host['id']);
 			form_end_row();
 		}

@@ -40,6 +40,7 @@ Cacti CHANGELOG
 -feature#5020: Introduce script timeout for cmd.php
 -feature#5021: Allow form input validation to be reported to GUI
 -feature#5025: Add Least Squares Special Data Types to Cacti
+-feature#5027: Add Service Check Filter and Column and Device Thread Column
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
