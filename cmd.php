@@ -23,6 +23,7 @@
  +-------------------------------------------------------------------------+
 */
 
+require_once(__DIR__ . '/include/cli_check.php');
 if (function_exists('pcntl_async_signals')) {
 	pcntl_async_signals(true);
 } else {
@@ -114,7 +115,6 @@ if (sizeof($parms)) {
 	}
 }
 
-require_once(__DIR__ . '/include/cli_check.php');
 require_once($config['base_path'] . '/lib/snmp.php');
 require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/rrd.php');
