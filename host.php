@@ -1462,6 +1462,10 @@ function get_device_records(&$total_rows, $rows) {
 		$sql_where .= ($sql_where == '' ? ' WHERE ' : ' AND ') . "(host.status=$host_where_status AND NOT $host_where_disabled)";
 	}
 
+	if (get_request_var('availability_method') != '-1') {
+		$sql_where .= ($sql_where == '' ? ' WHERE ' : ' AND ') . 'host.availability_method=' . get_request_var('availability_method');
+	}
+
 	if (get_request_var('host_template_id') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('host_template_id') == '0') {
@@ -1895,15 +1899,15 @@ function host() {
 			form_selectable_cell($host['device_threads'], $host['id'], '', 'right');
 			form_selectable_cell('<a class="linkEditMain" href="' . $graphs_url . '">' . number_format_i18n($host['graphs'], '-1') . '</a>', $host['id'], '', 'right');
 			form_selectable_cell('<a class="linkEditMain" href="' . $data_source_url . '">' . number_format_i18n($host['data_sources'], '-1') . '</a>', $host['id'], '', 'right');
-			form_selectable_cell($availability_options[$host['availability_method']], $host['id'], '', 'right');
 			form_selectable_cell(get_colored_device_status(($host['disabled'] == 'on' ? true : false), $host['status']), $host['id'], '', 'center');
+			form_selectable_cell($availability_options[$host['availability_method']], $host['id'], '', 'right');
 			form_selectable_cell(get_timeinstate($host), $host['id'], '', 'right');
 			form_selectable_cell($uptime, $host['id'], '', 'right');
 			form_selectable_cell(round($host['polling_time'],2), $host['id'], '', 'right');
 			form_selectable_cell(round(($host['cur_time']), 2), $host['id'], '', 'right');
 			form_selectable_cell(round(($host['avg_time']), 2), $host['id'], '', 'right');
 			form_selectable_cell(round($host['availability'], 2) . ' %', $host['id'], '', 'right');
-			form_selectable_cell($host['created'] == '' ? __('Unknown'):$host['created'], $host['id'], '', 'right');
+			form_selectable_cell($host['created'] == '' ? __('Unknown'):substr($host['created'],0,10), $host['id'], '', 'right');
 			form_checkbox_cell($host['description'], $host['id']);
 			form_end_row();
 		}
