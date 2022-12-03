@@ -7075,22 +7075,34 @@ function get_debug_prefix() {
 	return sprintf('<[ %s | %7d ]> -- ', $dateTime, getmypid());
 }
 
-function get_client_addr($client_addr = false) {
-	$http_addr_headers = array(
-		'X-Forwarded-For',
-		'X-Client-IP',
-		'X-Real-IP',
-		'X-ProxyUser-Ip',
-		'CF-Connecting-IP',
-		'True-Client-IP',
-		'HTTP_X_FORWARDED',
-		'HTTP_X_FORWARDED_FOR',
-		'HTTP_X_CLUSTER_CLIENT_IP',
-		'HTTP_FORWARDED_FOR',
-		'HTTP_FORWARDED',
-		'HTTP_CLIENT_IP',
-		'REMOTE_ADDR',
-	);
+function get_client_addr($client_addr = false, $restrictive = false) {
+	if (!$restrictive) {
+		$http_addr_headers = array(
+			'X-Forwarded-For',
+			'X-Client-IP',
+			'X-Real-IP',
+			'X-ProxyUser-Ip',
+			'CF-Connecting-IP',
+			'True-Client-IP',
+			'HTTP_X_FORWARDED',
+			'HTTP_X_FORWARDED_FOR',
+			'HTTP_X_CLUSTER_CLIENT_IP',
+			'HTTP_FORWARDED_FOR',
+			'HTTP_FORWARDED',
+			'HTTP_CLIENT_IP',
+			'REMOTE_ADDR',
+		);
+	} else {
+		$http_addr_headers = array(
+			'X-Forwarded-For',
+			'X-Client-IP',
+			'X-Real-IP',
+			'X-ProxyUser-Ip',
+			'CF-Connecting-IP',
+			'True-Client-IP',
+			'REMOTE_ADDR',
+		);
+	}
 
 	$client_addr = false;
 	foreach ($http_addr_headers as $header) {
