@@ -39,6 +39,7 @@ Cacti CHANGELOG
 -issue#5006: Cannot delete vdef and cdef item (in theme paw) - php error
 -issue#5012: Fixed three error for PHP 8 when execute cli/upgrade_database.php
 -issue#5013: Cacti Bulk Walk Size of 'Auto-detect at First Reindex' not working
+-issue#5015: Upgrade for 1.2.21 reporting unknown status
 -issue#5017: Undefined array key and Rounding causes errors
 -issue#5018: It is possible in some rare cases to have 'remember me' enabled and still be logged out after a browser timeout 
 -issue#5024: SNMP connection does not replace escape char in 'community'
