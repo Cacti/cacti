@@ -74,80 +74,86 @@ if ($cacti_db_session == true) {
 	$session_counter_garbage = 0;
 } else {
 	$session_save_path   = get_session_save_path();
-	$session_dir_handle  = @opendir($session_save_path);
-	$session_maxlifetime = ini_get("session.gc_maxlifetime");
 
-	if ($session_dir_handle) {
-		$user_ids_active          = array();
-		$user_ids_sleeping        = array();
-		$session_counter_active   = 0;
-		$session_counter_sleeping = 0;
-		$session_counter_garbage  = 0;
+	if (file_exists($session_save_path)) {
+		$session_dir_handle  = opendir($session_save_path);
+		$session_maxlifetime = ini_get("session.gc_maxlifetime");
 
-		while (false !== ($filename = readdir($session_dir_handle))) {
-			/* a real user session should be greater than 400 Bytes */
-			if (strpos($filename, 'sess_') !== false && filesize($session_save_path . '/' . $filename)> 400) {
-				$session = @file_get_contents($session_save_path . '/' . $filename);
+		if ($session_dir_handle) {
+			$user_ids_active          = array();
+			$user_ids_sleeping        = array();
+			$session_counter_active   = 0;
+			$session_counter_sleeping = 0;
+			$session_counter_garbage  = 0;
 
-				/* first off check if we are allowed to read the session
-				 * file. Then we are only interested in sessions of
-				 * authenticated Cacti users
-				 */
-				if ($session !== false && strpos($session, 'cacti_cwd') !== false && preg_match('/sess_user_id\|s:[0-9]*:\"[0-9]*\"/', $session, $match)) {
-					$session_user_id = substr($match[0], strpos($match[0], ':"')+2, -1);
-					/* due to the fact that ATIME could be unsupported/disabled we have to use MTIME instead */
-					$mtime = filemtime($session_save_path . '/' . $filename);
+			while (false !== ($filename = readdir($session_dir_handle))) {
+				/* a real user session should be greater than 400 Bytes */
+				if (strpos($filename, 'sess_') !== false && filesize($session_save_path . '/' . $filename)> 400) {
+					$session = file_get_contents($session_save_path . '/' . $filename);
 
-					/* determine active user sessions
-					 * Sessions with a MTIME higher than the end of the
-					 * poller interval have to be counted too or we
-					 * won't see real active users.
+					/* first off check if we are allowed to read the session
+					 * file. Then we are only interested in sessions of
+					 * authenticated Cacti users
 					 */
-					if ($mtime >= $active_interval_begin) {
-						/* increase active session counter */
-						$session_counter_active++;
+					if ($session !== false && strpos($session, 'cacti_cwd') !== false && preg_match('/sess_user_id\|s:[0-9]*:\"[0-9]*\"/', $session, $match)) {
+						$session_user_id = substr($match[0], strpos($match[0], ':"')+2, -1);
+						/* due to the fact that ATIME could be unsupported/disabled we have to use MTIME instead */
+						$mtime = filemtime($session_save_path . '/' . $filename);
 
-						/* count all active users */
-						if (false === ($key = array_search($session_user_id, $user_ids_active))) {
-							$user_ids_active[] = $session_user_id;
+						/* determine active user sessions
+						 * Sessions with a MTIME higher than the end of the
+						 * poller interval have to be counted too or we
+						 * won't see real active users.
+						 */
+						if ($mtime >= $active_interval_begin) {
+							/* increase active session counter */
+							$session_counter_active++;
+
+							/* count all active users */
+							if (false === ($key = array_search($session_user_id, $user_ids_active))) {
+								$user_ids_active[] = $session_user_id;
+							}
+
+							/* if the same user has more than one session and this one is active then the user is not sleeping */
+							if (false !== ($key = array_search($session_user_id, $user_ids_sleeping))) {
+								unset($user_ids_sleeping[$key]);
+							}
+
+							continue;
 						}
 
-						/* if the same user has more than one session and this one is active then the user is not sleeping */
-						if (false !== ($key = array_search($session_user_id, $user_ids_sleeping))) {
-							unset($user_ids_sleeping[$key]);
+						/* determine user sessions which are sleeping */
+						if ($mtime >= ($active_interval_begin - $session_maxlifetime) && $mtime < $active_interval_begin) {
+							/* increase sleeping session counter */
+							$session_counter_sleeping++;
+
+							/* count all sleeping users if they have no active sessions */
+							if (!in_array($session_user_id, $user_ids_active) && !in_array($session_user_id, $user_ids_sleeping)) {
+								$user_ids_sleeping[] = $session_user_id;
+							}
+
+							continue;
 						}
 
-						continue;
-					}
-
-					/* determine user sessions which are sleeping */
-					if ($mtime >= ($active_interval_begin - $session_maxlifetime) && $mtime < $active_interval_begin) {
-						/* increase sleeping session counter */
-						$session_counter_sleeping++;
-
-						/* count all sleeping users if they have no active sessions */
-						if (!in_array($session_user_id, $user_ids_active) && !in_array($session_user_id, $user_ids_sleeping)) {
-							$user_ids_sleeping[] = $session_user_id;
+						/* count all user session declared as garbage */
+						if ($mtime < ($active_interval_begin - $session_maxlifetime)) {
+							$session_counter_garbage++;
 						}
-
-						continue;
-					}
-
-					/* count all user session declared as garbage */
-					if ($mtime < ($active_interval_begin - $session_maxlifetime)) {
-						$session_counter_garbage++;
 					}
 				}
 			}
-		}
 
-		$user_counter_active   = cacti_count($user_ids_active);
-		$user_counter_sleeping = cacti_count($user_ids_sleeping);
+			$user_counter_active   = cacti_count($user_ids_active);
+			$user_counter_sleeping = cacti_count($user_ids_sleeping);
+
+			/* close directory handle and destroy this session */
+			closedir($session_dir_handle);
+		}
 	}
 
-	/* close directory handle and destroy this session */
-	@closedir($session_dir_handle);
-	@session_destroy();
+	if (session_id()) {
+		session_destroy();
+	}
 }
 
 print
