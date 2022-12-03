@@ -1990,8 +1990,9 @@ $i18n_themes = array(
 $database_statuses = array(
 	0 => __('[Fail]'),
 	1 => __('[Warning]'),
-	2 => __('[Success]'),
-	3 => __('[Skipped]'),
+	2 => __('[Restart]'),
+	3 => __('[Success]'),
+	4 => __('[Skipped]'),
 );
 
 $navigation = array(
