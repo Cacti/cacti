@@ -124,13 +124,15 @@ switch (get_request_var('action')) {
 		break;
 	case 'lock':
 		api_tree_lock(get_request_var('id'), $_SESSION['sess_user_id']);
+		tree_edit(true);
 
-		header('Location: tree.php?action=edit&header=false&id=' . get_request_var('id'));
+//		header('Location: tree.php?action=edit&header=false&id=' . get_request_var('id'));
 		break;
 	case 'unlock':
 		api_tree_unlock(get_request_var('id'), $_SESSION['sess_user_id']);
+		tree_edit(true);
 
-		header('Location: tree.php?action=edit&header=false&id=' . get_request_var('id'));
+//		header('Location: tree.php?action=edit&header=false&id=' . get_request_var('id'));
 		break;
 	case 'copy_node':
 		api_tree_copy_node(get_request_var('tree_id'), get_request_var('id'), get_request_var('parent'), get_request_var('position'));
@@ -741,7 +743,7 @@ function form_actions() {
     Tree Functions
    --------------------- */
 
-function tree_edit() {
+function tree_edit($partial = false) {
 	global $fields_tree_edit;
 
 	/* ================= input validation ================= */
@@ -773,6 +775,8 @@ function tree_edit() {
 		$header_label = __('Trees [new]');
 	}
 
+	print '<div id="tree_edit_container">';
+
 	form_start('tree.php', 'tree_edit');
 
 	// Remove inherit from the main tree option
@@ -796,10 +800,10 @@ function tree_edit() {
 	$lockdiv = '';
 
 	if (isset($tree['locked']) && $tree['locked'] == 0) {
-		$lockdiv = "<div style='padding:3px;'><table><tr><td><input type='button' class='ui-button ui-corner-all ui-widget' id='lock' value='" . __esc('Edit Tree') . "'></td><td style='font-weight:bold;'>" . __('To Edit this tree, you must first lock it by pressing the Edit Tree button.') . "</td></tr></table></div>\n";
+		$lockdiv = "<div style='padding:5px 5px 5px 0px'><table><tr><td><input type='button' class='ui-button ui-corner-all ui-widget' id='lock' value='" . __esc('Edit Tree') . "'></td><td style='font-weight:bold;'>" . __('To Edit this tree, you must first lock it by pressing the Edit Tree button.') . "</td></tr></table></div>\n";
 		$editable = false;
 	} elseif (isset($tree['locked']) && $tree['locked'] == 1) {
-		$lockdiv = "<div style='padding:3px;'><table><tr><td><input type='button' class='ui-button ui-corner-all ui-widget' id='unlock' value='" . __esc('Finish Editing Tree') . "'></td><td><input type='button' class='ui-button ui-corner-all ui-widget' id='addbranch' value='" . __esc('Add Root Branch') . "' onClick='createNode()'></td><td style='font-weight:bold;'>" . __('This tree has been locked for Editing on %1$s by %2$s.', $tree['locked_date'], get_username($tree['modified_by']));
+		$lockdiv = "<div style='padding:5px 5px 5px 0px'><table><tr><td><input type='button' class='ui-button ui-corner-all ui-widget' id='unlock' value='" . __esc('Finish Editing Tree') . "'></td><td><input type='button' class='ui-button ui-corner-all ui-widget' id='addbranch' value='" . __esc('Add Root Branch') . "' onClick='createNode()'></td><td style='font-weight:bold;'>" . __('This tree has been locked for Editing on %1$s by %2$s.', $tree['locked_date'], get_username($tree['modified_by']));
 		if ($tree['modified_by'] == $_SESSION['sess_user_id']) {
 			$editable = true;
 			$lockdiv .= '</td></tr></table></div>';
@@ -818,7 +822,15 @@ function tree_edit() {
 
 	if (!isempty_request_var('id')) {
 		print $lockdiv;
+	}
 
+	print '</div>';
+
+	if ($partial) {
+		return;
+	}
+
+	if (!isempty_request_var('id')) {
 		print "<table class='treeTable' style='width:100%;'>\n";
 
 		print "<tr class='even' id='tree_filter'>\n";
@@ -979,6 +991,21 @@ function tree_edit() {
 			});
 		}
 
+		function loadTreeEdit(url) {
+			var myMagic = csrfMagicToken;
+
+			$.post(url, { __csrf_magic: csrfMagicToken })
+			.done(function(data) {
+				$('#tree_edit_container').replaceWith(data);
+				$('#tree_edit').append('<input type="hidden" name="__csrf_magic" value="'+myMagic+'">');
+				initializeTreeEdit();
+				applySkin();
+			})
+			.fail(function(data) {
+				getPresentHTTPError(data);
+			});
+		}
+
 		function getGraphData() {
 			$.get('tree.php?action=graphs&filter='+$('#grfilter').val()
 				+ '&site_id=' + (selectedItem.site_id ? selectedItem.site_id:'')
@@ -1078,6 +1105,18 @@ function tree_edit() {
 				});
 		}
 
+		function initializeTreeEdit() {
+			$('#lock').click(function() {
+				strURL = 'tree.php?action=lock&id=<?php print $tree['id'];?>';
+				loadTreeEdit(strURL);
+			});
+
+			$('#unlock').click(function() {
+				strURL = 'tree.php?action=unlock&id=<?php print $tree['id'];?>';
+				loadTreeEdit(strURL);
+			});
+		}
+
 		graphsDropSet = '';
 		hostsDropSet  = '';
 		sitesDropSet  = '';
@@ -1109,15 +1148,7 @@ function tree_edit() {
 				}
 			});
 
-			$('#lock').click(function() {
-				strURL = 'tree.php?action=lock&id=<?php print $tree['id'];?>';
-				loadPage(strURL);
-			});
-
-			$('#unlock').click(function() {
-				strURL = 'tree.php?action=unlock&id=<?php print $tree['id'];?>';
-				loadPage(strURL);
-			});
+			initializeTreeEdit();
 
 			var height  = parseInt($(window).height()-$('#ctree').offset().top-10)+'px';
 			var sheight = parseInt($(window).height()-$('#sites').offset().top-10)+'px';
