@@ -1446,6 +1446,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 		} else {
 			print __('ERROR: Device[' . $device_id . '] not found.  Please check database for errors.');
 		}
+
 		return;
 	}
 
@@ -1514,6 +1515,12 @@ function api_device_ping_device($device_id, $from_remote = false) {
 					}
 					print '</span>';
 				} else {
+					if ($host['status'] != 3) {
+						db_execute_prepared('UPDATE host
+							SET status = 3
+							WHERE id = ?',
+							array($device_id));
+					}
 
 					/* modify for some system descriptions */
 					/* 0000937: System output in host.php poor for Alcatel */
