@@ -262,7 +262,7 @@ function kill_spikes($templates, &$found) {
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = CACTI_VERSION_TEXT;
+	$version = get_cacti_cli_version();
 	echo "Cacti SpikeKiller Batch Poller, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 

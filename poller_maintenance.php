@@ -747,7 +747,7 @@ function maint_debug($message) {
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = CACTI_VERSION_TEXT;
+	$version = get_cacti_cli_version();
 	print "Cacti Maintenance Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 

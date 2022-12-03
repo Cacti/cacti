@@ -38,7 +38,7 @@ require_once($config['base_path'] . '/lib/reports.php');
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = CACTI_VERSION_TEXT;
+	$version = get_cacti_cli_version();
 	print "Cacti Reporting Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 

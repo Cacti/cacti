@@ -229,7 +229,7 @@ function rrdcheck_master_handler($forcerun) {
  * display_version - displays version information
  */
 function display_version() {
-	$version = get_cacti_version();
+	$version = get_cacti_cli_version();
 	print "Cacti RRD Check Poller, Version $version " . COPYRIGHT_YEARS . PHP_EOL;
 }
 

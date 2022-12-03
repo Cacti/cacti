@@ -157,7 +157,7 @@ db_close();
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = CACTI_VERSION_TEXT;
+	$version = get_cacti_cli_version();
 	print "Cacti Realtime Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 

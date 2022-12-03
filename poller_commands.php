@@ -421,7 +421,7 @@ function commands_kill_running_processes() {
  * @return (void)
  */
 function display_version() {
-	$version = CACTI_VERSION_TEXT;
+	$version = get_cacti_cli_version();
 	print "Cacti Poller Commands Poller, Version $version " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
