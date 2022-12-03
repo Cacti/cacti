@@ -38,17 +38,22 @@ $path_mibcache = $config['base_path'] . '/cache/mibcache/mibcache.tmp';
 $path_mibcache_lock = $config['base_path'] . '/cache/mibcache/mibcache.lock';
 
 /* check mib cache table status */
-$mibcache_changed = db_fetch_cell_prepared("SHOW TABLE STATUS WHERE `Name` LIKE 'snmpagent_cache' AND (UNIX_TIMESTAMP(`Update_time`)) >= ?", array($last_time));
+$mibcache_changed = db_fetch_cell_prepared("SHOW TABLE STATUS
+	WHERE `Name` LIKE 'snmpagent_cache'
+	AND (UNIX_TIMESTAMP(`Update_time`)) >= ?",
+	array($last_time));
 
-if($mibcache_changed !== NULL || file_exists($path_mibcache) === false ) {
+if ($mibcache_changed !== NULL || file_exists($path_mibcache) === false ) {
 	$objects = db_fetch_assoc("SELECT `oid`, LOWER(type) as type, `otype`, `max-access`, `value` FROM snmpagent_cache");
 
-	if($objects && cacti_sizeof($objects)>0) {
+	if ($objects && cacti_sizeof($objects)>0) {
 		$oids = array();
+
 		foreach($objects as &$object) {
 			$oids[] = $object['oid'];
 			$object = ($object['otype'] == 'DATA' && $object['max-access'] != 'not-accessible') ? array('type' => $object['type'], 'value' => $object['value']) : false;
 		}
+
 		/* natural sorting with MySQL is not available - especially not for OIDs */
 		natsort($oids);
 
@@ -56,23 +61,28 @@ if($mibcache_changed !== NULL || file_exists($path_mibcache) === false ) {
 		$next_accessible_object_required = array();
 
 		foreach($oids as $key => $oid) {
-			if($objects[$key]) {
-				if($last_accessible_object) {
+			if ($objects[$key]) {
+				if ($last_accessible_object) {
 					$cache[$last_accessible_object]['next'] = $oid;
 				}
-				if(cacti_sizeof($next_accessible_object_required)>0) {
+
+				if (cacti_sizeof($next_accessible_object_required)>0) {
 					foreach($next_accessible_object_required as $next_accessible_object_required_oid) {
 						$cache[$next_accessible_object_required_oid]['next'] = $oid;
 					}
+
 					$next_accessible_object_required = array();
 				}
+
 				$last_accessible_object = $oid;
-			}else {
+			} else {
 				$next_accessible_object_required[] = $oid;
 			}
+
 			$cache[$oid] = $objects[$key];
 		}
 	}
+
 	/* create lock file */
 	$lock = fopen($path_mibcache_lock, 'w');
 
@@ -83,6 +93,5 @@ if($mibcache_changed !== NULL || file_exists($path_mibcache) === false ) {
 	fclose($lock);
 	unlink($path_mibcache_lock);
 }
-return;
 
-?>
+return;

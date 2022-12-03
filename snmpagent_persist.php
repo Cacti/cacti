@@ -71,29 +71,28 @@ $eol				= "\n";
 $cache  			= array();
 $cache_last_refresh = false;
 
-
+/* process command line options */
+get_options();
 
 /* start background caching process if not running */
 $php = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 $extra_args     = '-q ' . cacti_escapeshellarg('./snmpagent_mibcache.php');
 
-if(strstr(PHP_OS, 'WIN')) {
+if (strstr(PHP_OS, 'WIN')) {
 	/* windows part missing */
 	pclose(popen('start "CactiSNMPCache" /I /B ' . $php . ' ' . $extra_args, 'r'));
 } else {
 	exec('ps -ef | grep -v grep | grep -v "sh -c" | grep snmpagent_mibcache.php', $output);
-	if(!cacti_sizeof($output)) {
+
+	if (!cacti_sizeof($output)) {
 		exec($php . ' ' . $extra_args . ' > /dev/null &');
 	}
 }
 
-
 /* activate circular reference collector */
 gc_enable();
 
-
-while(1) {
-
+while(true) {
 	$input = trim(fgets(STDIN));
 	switch($input) {
 		case '':
@@ -101,33 +100,39 @@ while(1) {
 		case 'PING':
 			fwrite(STDOUT, 'PONG' . $eol);
 			cache_refresh();
+
 			break;
 		case 'get':
 			$oid = trim(fgets(STDIN));
-			if($data = cache_read($oid)) {
+
+			if ($data = cache_read($oid)) {
 				fwrite(STDOUT, $oid . $eol . (isset($smi_base_datatypes[$data['type']]) ? $smi_base_datatypes[$data['type']] : 'INTEGER') . $eol . $data['value'] . $eol);
-			}else {
+			} else {
 				fwrite(STDOUT, 'NONE' . $eol);
 			}
+
 			break;
 		case 'getnext':
 			$oid = trim(fgets(STDIN));
-			if( $next_oid = cache_get_next($oid)) {
-				if($data = cache_read($next_oid)) {
+
+			if ($next_oid = cache_get_next($oid)) {
+				if ($data = cache_read($next_oid)) {
 					fwrite(STDOUT, $next_oid . $eol . (isset($smi_base_datatypes[$data['type']]) ? $smi_base_datatypes[$data['type']] : 'INTEGER') . $eol . $data['value'] . $eol);
-			}else {
+				} else {
 					 fwrite(STDOUT, 'NONE' . $eol);
 				}
-			}else {
+			} else {
 				fwrite(STDOUT, 'NONE' . $eol);
-
 			}
+
 			break;
 		case 'debug':
 			fwrite(STDOUT, print_r($cache, true));
+
 			break;
 		case 'shutdown':
 			fwrite(STDOUT, 'BYE' . $eol);
+
 			exit(0);
 	}
 }
@@ -152,18 +157,86 @@ function cache_refresh() {
 	clearstatcache();
 	$cache_refresh_time = @filemtime( $path_mibcache );
 
-	if($cache_refresh_time !== false) {
+	if ($cache_refresh_time !== false) {
 		/* initial phase */
-		if( $cache_last_refresh === false || $cache_refresh_time > $cache_last_refresh ) {
-			while( is_file( $path_mibcache_lock ) !== false ) {
+		if ($cache_last_refresh === false || $cache_refresh_time > $cache_last_refresh) {
+			while(is_file($path_mibcache_lock) !== false) {
 				sleep(1);
 				clearstatcache();
 			}
+
 			$cache = NULL;
+
 			gc_collect_cycles();
+
 			$cache_last_refresh = $cache_refresh_time;
+
 			include( $path_mibcache );
 		}
 	}
+
 	return;
 }
+
+function get_options() {
+	$parms = $_SERVER['argv'];
+	array_shift($parms);
+
+	$options = array();
+
+	if (sizeof($parms)) {
+		$shortopts = 'VvHh';
+
+		$longopts = array(
+			'foreground',
+			'debug',
+			'version',
+			'help'
+		);
+
+		$options = getopt($shortopts, $longopts);
+
+		foreach($options as $arg => $value) {
+			switch($arg) {
+				case 'foreground':
+				case 'debug':
+					break;
+				case 'version':
+				case 'V':
+				case 'v':
+					display_version();
+					exit(0);
+				case 'help':
+				case 'H':
+				case 'h':
+					display_help();
+					exit(0);
+				default:
+					print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
+					display_help();
+					exit(1);
+			}
+		}
+	}
+
+	return $options;
+}
+
+function display_version() {
+	global $config;
+
+	$version = get_cacti_cli_version();
+	print 'The Cacti SNMP Agent Daemon, Version ' . $version . ', ' . COPYRIGHT_YEARS . PHP_EOL;
+}
+
+/*	display_help - displays the usage of the function */
+function display_help () {
+	display_version();
+
+	print PHP_EOL . 'usage: snmpagenet_persist.php' . PHP_EOL . PHP_EOL;
+	print 'Daemon for the Cacti SNMP Agent.  Launch this daemon using' . PHP_EOL;
+	print 'systemctl to allow Cacti to respond to SNMP requests from' . PHP_EOL;
+	print 'upstream montiring systems.  This is a persistent daemon,' . PHP_EOL;
+	print 'so care must be taken in systemd to define it as such.' . PHP_EOL . PHP_EOL;
+}
+

@@ -260,7 +260,8 @@ function debug($string) {
 function display_version() {
 	global $config;
 
-	print 'The Cacti Daemon (cactid), Version ' . CACTI_VERSION . ', ' . COPYRIGHT_YEARS . PHP_EOL;
+	$version = get_cacti_cli_version();
+	print 'The Cacti Daemon (cactid), Version ' . $version . ', ' . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 /*	display_help - displays the usage of the function */
