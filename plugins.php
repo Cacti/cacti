@@ -509,7 +509,8 @@ function update_show_current () {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE ($table.name LIKE " . db_qstr('%' . get_request_var('filter') . '%') . ')';
+		$sql_where = "WHERE ($table.name LIKE " . db_qstr('%' . get_request_var('filter') . '%') . ' OR ' .
+			"$table.directory LIKE " . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 
 	if (!isset_request_var('state')) {
