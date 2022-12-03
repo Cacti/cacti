@@ -867,7 +867,7 @@ function host_status_cache_check() {
 			) AS rs
 		) AS rs1");
 
-	$last = read_config_options('host_status_cache');
+	$last = read_config_option('host_status_cache');
 
 	if ($last != $current) {
 		$now = time();
