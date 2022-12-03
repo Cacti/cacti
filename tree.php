@@ -125,14 +125,10 @@ switch (get_request_var('action')) {
 	case 'lock':
 		api_tree_lock(get_request_var('id'), $_SESSION['sess_user_id']);
 		tree_edit(true);
-
-//		header('Location: tree.php?action=edit&header=false&id=' . get_request_var('id'));
 		break;
 	case 'unlock':
 		api_tree_unlock(get_request_var('id'), $_SESSION['sess_user_id']);
 		tree_edit(true);
-
-//		header('Location: tree.php?action=edit&header=false&id=' . get_request_var('id'));
 		break;
 	case 'copy_node':
 		api_tree_copy_node(get_request_var('tree_id'), get_request_var('id'), get_request_var('parent'), get_request_var('position'));
