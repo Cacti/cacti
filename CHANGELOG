@@ -121,6 +121,7 @@ Cacti CHANGELOG
 -feature#4955: Provide Common Sense Memory Tuning based upon MySQL Tuner Recommendations
 -feature#4956: The function db_check_reconnect() should be able to work with any connection
 -feature#4957: Add Device Template Classes to match the Classes in Upcoming release of the Package Plugin
+-feature#4963: Make Tree the unlock process not have to rebuild the page
 -feature#4989: Cache Cacti 'Total Rows' by Hash to Improve Performance
 -feature#5009: Adding a new method for use in xml files: value_parse_index
 -feature: Adding ESXi Device Template
