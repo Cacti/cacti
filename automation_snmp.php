@@ -438,7 +438,7 @@ function automation_snmp_item_edit() {
 		$header_label = __('SNMP Options [new]');
 		$automation_snmp_item = array();
 		$automation_snmp_item['snmp_id'] = get_request_var('id');
-		$automation_snmp_item['sequence'] = get_sequence('', 'sequence', 'automation_snmp_items', 'snmp_id=' . get_request_var('id'));
+		$automation_snmp_item['sequence'] = get_sequence(0, 'sequence', 'automation_snmp_items', 'snmp_id=' . get_request_var('id'));
 	}
 
 	form_start('automation_snmp.php', 'automation_item_edit');
