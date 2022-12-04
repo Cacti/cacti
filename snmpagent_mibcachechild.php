@@ -33,6 +33,7 @@ set_time_limit(0);
 chdir(dirname(__FILE__));
 
 $last_time = time()-30;
+$cache     = array();
 
 $path_mibcache = $config['base_path'] . '/cache/mibcache/mibcache.tmp';
 $path_mibcache_lock = $config['base_path'] . '/cache/mibcache/mibcache.lock';
@@ -43,10 +44,10 @@ $mibcache_changed = db_fetch_cell_prepared("SHOW TABLE STATUS
 	AND (UNIX_TIMESTAMP(`Update_time`)) >= ?",
 	array($last_time));
 
-if ($mibcache_changed !== NULL || file_exists($path_mibcache) === false ) {
+if ($mibcache_changed !== null || file_exists($path_mibcache) === false ) {
 	$objects = db_fetch_assoc("SELECT `oid`, LOWER(type) as type, `otype`, `max-access`, `value` FROM snmpagent_cache");
 
-	if ($objects && cacti_sizeof($objects)>0) {
+	if ($objects && cacti_sizeof($objects)) {
 		$oids = array();
 
 		foreach($objects as &$object) {
@@ -87,7 +88,9 @@ if ($mibcache_changed !== NULL || file_exists($path_mibcache) === false ) {
 	$lock = fopen($path_mibcache_lock, 'w');
 
 	/* Note: If SNMPAgent plugin has been disabled the cache will be truncated automatically */
-	file_put_contents($path_mibcache, '<?php $cache = ' . var_export($cache, true) . ';', LOCK_EX);
+	if (cacti_sizeof($cache)) {
+		file_put_contents($path_mibcache, '<?php $cache = ' . var_export($cache, true) . ';', LOCK_EX);
+	}
 
 	/* destroy lock file */
 	fclose($lock);
