@@ -4551,6 +4551,10 @@ function sanitize_unserialize_selected_items(?string $items): array {
 function cacti_escapeshellcmd($string) {
 	global $config;
 
+	if ($string == '') {
+		return $string;
+	}
+
 	if ($config['cacti_server_os'] == 'unix') {
 		return escapeshellcmd($string);
 	} elseif (!empty($string)) {

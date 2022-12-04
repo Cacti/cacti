@@ -89,6 +89,7 @@ Cacti CHANGELOG
 -issue#5024: SNMP connection does not replace escape char in 'community'
 -issue#5028: Cacti User Stats can throw errors depending on the PHP version that you running
 -issue#5029: Searching for a plugin by name sometimes does not work from Plugin management interface
+-issue#5033: -issue#5033: Installer shows deprecated messages on PHP 8.1.2
 -feature#1100: Structured path not created when using remote poller and Update On-Demand
 -feature#1392: AJAX handled errors do not notify Admins that page errors exist
 -feature#2239: Allow Import and Export to be more controlled
