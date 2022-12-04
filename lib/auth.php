@@ -3061,7 +3061,7 @@ function get_total_row_data($user_id, $sql, $sql_params = array(), $class = '', 
 	if ($user_id > 0) {
 		db_execute_prepared('REPLACE INTO user_auth_row_cache
 			(user_id, class, hash, total_rows, time)
-			VALUES (?, ?, ?, ?, ?)',
+			VALUES (?, ?, ?, ?, FROM_UXIXTIME(?))',
 			array($user_id, $class, $hash, $rows, $now_time));
 	}
 
