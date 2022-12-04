@@ -905,7 +905,7 @@ function utilities_get_mysql_info($poller_id = 1) {
 		if (isset($variables['innodb_version'])) {
 			$link_ver = substr($variables['innodb_version'], 0, 3);
 		} else {
-			$link_ver = '5.5';
+			$link_ver = $version;
 		}
 	} else {
 		$database = 'MySQL';
