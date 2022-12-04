@@ -3030,7 +3030,7 @@ function get_total_row_data($user_id, $sql, $sql_params = array(), $class = '', 
 		$hash = md5($sql);
 	}
 
-	$row_data = db_fetch_row_prepared('SELECT *
+	$row_data = db_fetch_row_prepared('SELECT rows, UNIX_TIMESTAM(time) AS time
 		FROM user_auth_row_cache
 		WHERE user_id = ?
 		AND class = ?
