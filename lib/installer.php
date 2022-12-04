@@ -138,20 +138,23 @@ class Installer implements JsonSerializable {
 		$step = read_config_option('install_step', true);
 		log_install_high('step', 'Initial: ' . clean_up_lines(var_export($step, true)));
 
-		if ($step === false || $step === null) {
+		if (empty($step)) {
 			$step = $this->getStepDefault();
 		}
 		$this->stepError = false;
 
 		if ($step == Installer::STEP_INSTALL) {
 			$install_version = read_config_option('install_version', true);
+
 			log_install_high('step', 'Previously complete: ' . clean_up_lines(var_export($install_version, true)));
-			if ($install_version === false || $install_version === null) {
+
+			if (empty($install_version)) {
 				$install_version = $this->old_cacti_version;
 			}
 
 			$install_params = array();
 			$install_error = read_config_option('install_error', true);
+
 			if (!empty($install_error)) {
 				$step = Installer::STEP_ERROR;
 			} elseif (cacti_version_compare(CACTI_VERSION, $install_version, '==')) {
@@ -190,13 +193,14 @@ class Installer implements JsonSerializable {
 		$this->setLanguage($this->getLanguage());
 		$this->setTheme($this->getTheme());
 
-		if ($this->theme === false || $this->theme === null) {
+		if (empty($this->theme)) {
 			$this->setTheme('modern');
 		}
 
 		if ($step < Installer::STEP_INSTALL) {
 			$this->setDefaults($install_params);
 		}
+
 		log_install_debug('step', 'Error: ' . clean_up_lines(var_export($this->stepError, true)));
 		log_install_debug('step', 'Done: ' . clean_up_lines(var_export($this->stepCurrent, true)));
 	}
@@ -2664,19 +2668,19 @@ class Installer implements JsonSerializable {
 		);
 
 		$backgroundTime = read_config_option('install_started', true);
-		if ($backgroundTime === null) {
+		if (empty($backgroundTime)) {
 			$backgroundTime = false;
 		}
 
 		$backgroundLast = read_config_option('install_updated', true);
-		if ($backgroundLast === null) {
+		if (empty($backgroundLast)) {
 			$backgroundLast = false;
 		}
 
 		$backgroundNeeded = $backgroundTime === false;
-		if ($backgroundTime === false) {
+		if (empty($backgroundTime)) {
 			$backgroundTime = microtime(true);
-			set_config_option("install_started", $backgroundTime);
+			set_config_option('install_started', $backgroundTime);
 		}
 
 		log_install_debug('background', 'backgroundTime = ' . $backgroundTime, 0);
@@ -2691,8 +2695,10 @@ class Installer implements JsonSerializable {
 
 			log_install_debug('background', 'backgroundDateStarted = ' . $backgroundDateStarted->format('Y-m-d H:i:s') . PHP_EOL);
 			log_install_debug('background', 'backgroundLast = ' . $backgroundTime);
+
 			if ($backgroundLast === false || $backgroundLast < $backgroundTime) {
 				log_install_high('background', 'backgroundLast = ' . $backgroundTime . " (Replaced)");
+
 				$backgroundLast = $backgroundTime;
 			}
 
@@ -2702,17 +2708,21 @@ class Installer implements JsonSerializable {
 			if ($backgroundLast < $backgroundExpire) {
 				$newTime = microtime(true);
 
-				set_config_option("install_started", $newTime);
-				set_config_option("install_updated", $newTime);
+				set_config_option('install_started', $newTime);
+				set_config_option('install_updated', $newTime);
 
-				$backgroundTime = read_config_option("install_started", true);
-				if ($backgroundTime === null) {
+				$backgroundTime = read_config_option('install_started', true);
+
+				if (empty($backgroundTime)) {
 					$backgroundTime = false;
 				}
-				$backgroundLast = read_config_option("install_updated", true);
-				if ($backgroundLast === null) {
+
+				$backgroundLast = read_config_option('install_updated', true);
+
+				if (empty($backgroundLast)) {
 					$backgroundLast = false;
 				}
+
 				$backgroundNeeded = ("$newTime" == "$backgroundTime");
 
 				log_install_debug('background', PHP_EOL . '=======' . PHP_EOL . 'Expired' . PHP_EOL . '=======' . PHP_EOL);
@@ -2737,7 +2747,7 @@ class Installer implements JsonSerializable {
 		$this->buttonPrevious->Visible = false;
 
 		$progressCurrent = read_config_option('install_progress', true);
-		if ($progressCurrent === false || $progressCurrent === null) {
+		if (empty($progressCurrent)) {
 			$progressCurrent = Installer::PROGRESS_NONE;
 		}
 
@@ -3391,28 +3401,34 @@ class Installer implements JsonSerializable {
 		}
 
 		$backgroundTime = read_config_option('install_started', true);
-		if ($backgroundTime === null) {
+		if (empty($backgroundTime)) {
 			$backgroundTime = false;
 		}
 
 		log_install_high('', "beginInstall(): '$backgroundTime' (time) != '$backgroundArg' (arg) && '-b' != '$backgroundArg' (arg)");
 		if ("$backgroundTime" != "$backgroundArg" && "-b" != "$backgroundArg") {
 			$dateTime = DateTime::createFromFormat('U.u', $backgroundTime);
+
 			if ($dateTime === false) {
 				$dateTime = new DateTime();
 			}
 
 			$dateArg = DateTime::createFromFormat('U.u', $backgroundArg);
+
 			if ($dateArg === false) {
 				$dateArg = new DateTime();
 			}
+
 			$background_error = __('Background was already started at %s, this attempt at %s was skipped',
 				$dateTime->format('Y-m-d H:i:s.u'),
 				$dateArg->format('Y-m-d H:i:s.u'));
+
 			log_install_always('', $background_error);
+
 			if ($installer != null) {
 				$installer->addError(Installer::STEP_INSTALL, '', $background_error);
 			}
+
 			return false;
 		}
 
