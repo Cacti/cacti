@@ -30,6 +30,12 @@ if ($config['poller_id'] > 1) {
 	exit(1);
 }
 
+$storage_location = read_config_option('storage_location');
+if ($storage_location > 0) {
+	print 'FATAL: This utility is designed for local RRDfile storage and is not compatible with the RRDProxy.' . PHP_EOL;
+	exit(1);
+}
+
 define('PHP_DEOL', PHP_EOL . PHP_EOL);
 
 $host_id          = false;
