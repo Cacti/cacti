@@ -4469,6 +4469,10 @@ function sanitize_unserialize_selected_items($items) {
 function cacti_escapeshellcmd($string) {
 	global $config;
 
+	if ($string == '') {
+		return $string;
+	}
+
 	if ($config['cacti_server_os'] == 'unix') {
 		return escapeshellcmd($string);
 	} else {
@@ -4477,10 +4481,10 @@ function cacti_escapeshellcmd($string) {
 		for ($i=0; $i < strlen($replacements); $i++) {
 			$string = str_replace($replacements[$i], ' ', $string);
 		}
+
 		return $string;
 	}
 }
-
 
 /**
  * mimics escapeshellarg, even for windows
