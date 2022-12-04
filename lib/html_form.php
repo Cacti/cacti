@@ -1442,7 +1442,7 @@ function form_end($ajax = true) {
 			}
 
 			$(function() {
-				formValidate('<?php print $form_id; ?>', '<?php print $form_action; ?>');
+				formValidate('#<?php print $form_id; ?>', '<?php print $form_action; ?>');
 			});
 		</script>
 <?php

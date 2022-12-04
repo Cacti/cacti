@@ -2201,7 +2201,7 @@ function loadUrl(options) {
 		clearAllTimeouts();
 
 		$.ajaxQ.abortAll();
-		$.get(options.url)
+		return $.get(options.url)
 			.done(function(html) {
 				handleAjaxResponse(html, options);
 				return false;
@@ -2224,7 +2224,7 @@ function postUrl(options, data) {
 	}
 
 	$.ajaxQ.abortAll();
-	$.post(options.url, data)
+	return $.post(options.url, data)
 		.done(function(html) {
 			handleAjaxResponse(html, options);
 			return false;
@@ -2232,8 +2232,6 @@ function postUrl(options, data) {
 		.fail(function(html) {
 			getPresentHTTPError(html);
 		});
-
-	return false;
 }
 
 function findElement(htmlObject, element) {
@@ -4567,9 +4565,9 @@ function formValidate(formId, href) {
 			submitHandler: function (form) {
 				$('input[type="submit"], button[type="submit"]').not('.import, .export').button('disable');
 
-				var json = $(this).serializeObject();
-				postUrl({ url: href }, json).done(function() {
-					$('input[type="submit"], button[type="submit"]').not('.import, .export').button('enabled');
+				var json = $(form).serializeObject();
+				postUrl({ url: href }, json).always(function() {
+					$('input[type="submit"], button[type="submit"]').not('.import, .export').button('enable');
 				});
 			},
 			invalidHandler: function (event, validator) {
