@@ -46,6 +46,7 @@ Cacti CHANGELOG
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
+-security#XXXX: CVE-2022-46169 Unauthenticated Command Injection in Remote Agent
 -issue#4418: When using Single Signon Frameworks like SiteMinder Cacti does not properly detect ticket revocation in callbacks
 -issue#4682: New templates are not installed during the update
 -issue#4838: CLI Based upgrade generates warnings in PHP 8.1

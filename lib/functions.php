@@ -7079,37 +7079,50 @@ function get_debug_prefix() {
 	return sprintf('<[ %s | %7d ]> -- ', $dateTime, getmypid());
 }
 
-function get_client_addr($client_addr = false, $restrictive = false) {
-	if (!$restrictive) {
-		$http_addr_headers = array(
-			'X-Forwarded-For',
-			'X-Client-IP',
-			'X-Real-IP',
-			'X-ProxyUser-Ip',
-			'CF-Connecting-IP',
-			'True-Client-IP',
-			'HTTP_X_FORWARDED',
-			'HTTP_X_FORWARDED_FOR',
-			'HTTP_X_CLUSTER_CLIENT_IP',
-			'HTTP_FORWARDED_FOR',
-			'HTTP_FORWARDED',
-			'HTTP_CLIENT_IP',
-			'REMOTE_ADDR',
-		);
-	} else {
-		$http_addr_headers = array(
-			'X-Forwarded-For',
-			'X-Client-IP',
-			'X-Real-IP',
-			'X-ProxyUser-Ip',
-			'CF-Connecting-IP',
-			'True-Client-IP',
-			'REMOTE_ADDR',
-		);
+function get_client_addr() {
+	global $config, $allowed_proxy_headers;
+
+	$proxy_headers = $config['proxy_headers'] ?? null;
+	if ($proxy_headers === null) {
+		$last_time = read_config_option('proxy_alert');
+		if (empty($last_time)) {
+			$last_time = date('Y-m-d');
+		}
+
+		$last_date = new DateTime($last_time);
+		$this_date = new Datetime();
+
+		$this_diff = $this_date->diff($last_date);
+		$this_days = $this_diff->format('%a');
+
+		if ($this_days) {
+			cacti_log('WARNING: Configuration option "proxy_headers" will be automatically false in future releases.  Please set if you require proxy IPs to be used', false, 'AUTH');
+			set_config_option('proxy_alert', date('Y-m-d'));
+		}
+
+		$proxy_headers = true;
+	}
+
+	/* If proxy_headers is true, allow all known headers -- NOT advised
+	 * If proxy_headers is false, allow only REMOTE_ADDR
+	 * IF proxy_headers is an array, filter by known headers
+	 */
+	if ($proxy_headers === true) {
+		$proxy_headers = $allowed_proxy_headers;
+	} elseif (is_array($proxy_headers)) {
+		$proxy_headers = array_intersect($proxy_headers, $allowed_proxy_headers);
+	}
+
+	if (!is_array($proxy_headers)) {
+		$proxy_headers = [];
+	}
+
+	if (!in_array('REMOTE_ADDR', $proxy_headers)) {
+		$proxy_headers[] = 'REMOTE_ADDR';
 	}
 
 	$client_addr = false;
-	foreach ($http_addr_headers as $header) {
+	foreach ($proxy_headers as $header) {
 		if (!empty($_SERVER[$header])) {
 			$header_ips = explode(',', $_SERVER[$header]);
 			foreach ($header_ips as $header_ip) {

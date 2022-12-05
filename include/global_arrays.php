@@ -2931,4 +2931,20 @@ if ($config['cacti_server_os'] == 'unix') {
 	);
 }
 
+$allowed_proxy_headers =	array(
+	'X-Forwarded-For',
+	'X-Client-IP',
+	'X-Real-IP',
+	'X-ProxyUser-Ip',
+	'CF-Connecting-IP',
+	'True-Client-IP',
+	'HTTP_X_FORWARDED',
+	'HTTP_X_FORWARDED_FOR',
+	'HTTP_X_CLUSTER_CLIENT_IP',
+	'HTTP_FORWARDED_FOR',
+	'HTTP_FORWARDED',
+	'HTTP_CLIENT_IP',
+	'REMOTE_ADDR',
+);
+
 api_plugin_hook('config_arrays');
