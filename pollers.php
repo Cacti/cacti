@@ -715,7 +715,8 @@ function poller_edit() {
 					showHideRemoteDB();
 				});
 
-				$('#dbtest').click(function() {
+				$('#dbtest').click(function(e) {
+					e.preventDefault();
 					ping_database();
 				});
 
@@ -731,7 +732,8 @@ function poller_edit() {
 
 				var options = {
 					url:'pollers.php',
-					funcEnd:'pingDatabaseFinalize'
+					funcEnd:'pingDatabaseFinalize',
+					handle: false
 				};
 
 				var data = {
@@ -752,8 +754,8 @@ function poller_edit() {
 				postUrl(options, data);
 			}
 
-			function pingDatabaseFinalize(data) {
-				$('#results').empty().show().html(data).fadeOut(2000);
+			function pingDatabaseFinalize(options, data) {
+				$('#results').empty().show().html(data).fadeOut(5000);
 			}
 
 			</script>
@@ -850,9 +852,9 @@ function test_database_connection($poller = array()) {
 
     if (is_object($connection)) {
         db_close($connection);
-        print __('Connection Successful');
+        print '&nbsp;<i class="fas fa-check"></i>&nbsp;' . __('Connection Successful');
     } else {
-        print __('Connection Failed');
+        print '&nbsp;<i class="fas fa-times"></i>&nbsp;' . __('Connection Failed');
     }
 }
 

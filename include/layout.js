@@ -2446,7 +2446,11 @@ function handleAjaxResponse(html, options) {
 	}
 
 	if (options.funcEnd != '') {
-		window[options.funcEnd](options, html);
+		if (typeof window[options.funcEnd] === 'undefined') {
+			console.log('WARNING: Missing function "' + options.funcEnd + '".');
+		} else {
+			window[options.funcEnd](options, html);
+		}
 	}
 
 	if (options.redirect.trim() != '') {
