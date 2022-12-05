@@ -22,11 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
-include_once ('./include/auth.php');
-include_once ($config['library_path'] . '/functions.php');
-include_once ($config['library_path'] . '/rrd.php');
+include_once('./include/auth.php');
+include_once($config['library_path'] . '/functions.php');
+include_once($config['library_path'] . '/rrd.php');
 
-$ds_actions = array (
+$ds_actions = array(
 	1 => __x('dropdown action', 'Delete'),
 	3 => __x('dropdown action', 'Archive')
 );
@@ -40,52 +40,52 @@ if (isset_request_var('rescan')) {
 	set_request_var('action', 'restart');
 }
 
-switch(get_request_var('action')) {
-case 'actions' :
-	top_header();
-	do_rrd();
-	/* show current table again */
-	list_rrd();
-	bottom_footer();
+switch (get_request_var('action')) {
+	case 'actions':
+		top_header();
+		do_rrd();
+		/* show current table again */
+		list_rrd();
+		bottom_footer();
 
-	break;
-case 'restart' :
-	top_header();
-	/* fill files name table */
-	rrdclean_fill_table();
-	list_rrd();
-	bottom_footer();
+		break;
+	case 'restart':
+		top_header();
+		/* fill files name table */
+		rrdclean_fill_table();
+		list_rrd();
+		bottom_footer();
 
-	break;
-case 'remall' :
-case 'arcall' :
-	top_header();
-	/* fill files name table */
-	remove_all_rrds();
-	list_rrd();
-	bottom_footer();
+		break;
+	case 'remall':
+	case 'arcall':
+		top_header();
+		/* fill files name table */
+		remove_all_rrds();
+		list_rrd();
+		bottom_footer();
 
-	break;
-default :
-	top_header();
-	/* fill files name table */
-	list_rrd();
-	bottom_footer();
+		break;
+	default:
+		top_header();
+		/* fill files name table */
+		list_rrd();
+		bottom_footer();
 
-	break;
+		break;
 }
 
 /*
  * Fill RRDCleaner's table
  */
 function rrdclean_fill_table() {
- 	global $config, $rra_path;
+	global $config, $rra_path;
 
- 	/* suppress warnings */
- 	error_reporting(0);
+	/* suppress warnings */
+	error_reporting(0);
 
- 	/* install the rrdclean error handler */
- 	set_error_handler('rrdclean_error_handler');
+	/* install the rrdclean error handler */
+	set_error_handler('rrdclean_error_handler');
 
 	/* delete old file names table */
 	rrdclean_truncate_tables();
@@ -139,27 +139,27 @@ function rrdclean_error_handler($errno, $errmsg, $filename, $linenum, $vars = []
 	global $debug;
 	if ($debug) {
 		/* define all error types */
-		$errortype = array (
-		E_ERROR             => 'Error',
-		E_WARNING           => 'Warning',
-		E_PARSE             => 'Parsing Error',
-		E_NOTICE            => 'Notice',
-		E_CORE_ERROR        => 'Core Error',
-		E_CORE_WARNING      => 'Core Warning',
-		E_COMPILE_ERROR     => 'Compile Error',
-		E_COMPILE_WARNING   => 'Compile Warning',
-		E_USER_ERROR        => 'User Error',
-		E_USER_WARNING      => 'User Warning',
-		E_USER_NOTICE       => 'User Notice',
-		#			E_STRICT            => 'Runtime Notice',
-		#			E_RECOVERABLE_ERROR => 'Catchable Fatal Error'
+		$errortype = array(
+			E_ERROR             => 'Error',
+			E_WARNING           => 'Warning',
+			E_PARSE             => 'Parsing Error',
+			E_NOTICE            => 'Notice',
+			E_CORE_ERROR        => 'Core Error',
+			E_CORE_WARNING      => 'Core Warning',
+			E_COMPILE_ERROR     => 'Compile Error',
+			E_COMPILE_WARNING   => 'Compile Warning',
+			E_USER_ERROR        => 'User Error',
+			E_USER_WARNING      => 'User Warning',
+			E_USER_NOTICE       => 'User Notice',
+			#			E_STRICT            => 'Runtime Notice',
+			#			E_RECOVERABLE_ERROR => 'Catchable Fatal Error'
 
 		);
 
 		/* create an error string for the log */
 		$err = "ERRNO:'"  . $errno   . "' TYPE:'"    . $errortype[$errno] .
-		"' MESSAGE:'" . $errmsg  . "' IN FILE:'" . $filename .
-		"' LINE NO:'" . $linenum . "'";
+			"' MESSAGE:'" . $errmsg  . "' IN FILE:'" . $filename .
+			"' LINE NO:'" . $linenum . "'";
 
 		/* let's ignore some lesser issues */
 		if (substr_count($errmsg, 'date_default_timezone'))
@@ -167,7 +167,7 @@ function rrdclean_error_handler($errno, $errmsg, $filename, $linenum, $vars = []
 		if (substr_count($errmsg, 'Only variables'))
 			return;
 
-		print ('PROGERR: ' . $err . "\n"); # print_r($vars); print('</pre>');
+		print('PROGERR: ' . $err . "\n"); # print_r($vars); print('</pre>');
 	}
 
 	return;
@@ -207,16 +207,16 @@ function get_files() {
 	$size = 0;
 	$sql  = array();
 
-	if(read_config_option('storage_location')) {
+	if (read_config_option('storage_location')) {
 
 		$rrdtool_pipe = rrd_init();
 		rrdtool_execute('setcnn timeout off', false, RRDTOOL_OUTPUT_NULL, $rrdtool_pipe, $logopt = 'POLLER');
 		$scan = rrdtool_execute('rrd-list', false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, $logopt = 'POLLER');
 		rrd_close($rrdtool_pipe);
 
-		if($scan){
+		if ($scan) {
 			$files = explode("\r\n", $scan);
-			foreach($files as $file) {
+			foreach ($files as $file) {
 				list($pathname, $size, $mtime) = explode(',', $file);
 				$sql[] = "('" . str_replace($rra_path, '', $pathname) . "', " . $size . ", '" . date('Y-m-d H:i:s', $mtime) . "',0)";
 				$size++;
@@ -232,8 +232,7 @@ function get_files() {
 				}
 			}
 		}
-
-	}else {
+	} else {
 
 		$dir_iterator = new RecursiveDirectoryIterator($rra_path);
 		$iterator = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::SELF_FIRST);
@@ -285,31 +284,31 @@ function list_rrd() {
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
-			),
+		),
 		'filter' => array(
 			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
-			),
+		),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
 			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'sort_direction' => array(
 			'filter' => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'age' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '0'
-			)
+		)
 	);
 
 	validate_store_request_vars($filters, 'sess_rrdc');
@@ -322,7 +321,7 @@ function list_rrd() {
 		$rows = get_request_var('rows');
 	}
 
-	html_start_box( __('RRD Cleaner'), '100%', '', '3', 'center', '');
+	html_start_box(__('RRD Cleaner'), '100%', '', '3', 'center', '');
 	filter();
 	html_end_box();
 
@@ -338,7 +337,7 @@ function list_rrd() {
 	$secsback = get_request_var('age');
 
 	if (get_request_var('age') == 0) {
-		$sql_where .= " AND last_mod>='" . date("Y-m-d H:i:s", time()-(86400*7)) . "'";
+		$sql_where .= " AND last_mod>='" . date("Y-m-d H:i:s", time() - (86400 * 7)) . "'";
 	} else {
 		$sql_where .= " AND last_mod<='" . date("Y-m-d H:i:s", (time() - $secsback)) . "'";
 	}
@@ -356,7 +355,7 @@ function list_rrd() {
 		$sql_where");
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$file_list = db_fetch_assoc("SELECT rc.id, rc.name, rc.last_mod, rc.size,
 		rc.name_cache, rc.local_data_id, rc.data_template_id, dt.name AS data_template_name
@@ -367,7 +366,7 @@ function list_rrd() {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar($config['url_path'] . 'rrdcleaner.php?filter'. get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('RRD Files'), 'page', 'main');
+	$nav = html_nav_bar($config['url_path'] . 'rrdcleaner.php?filter' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('RRD Files'), 'page', 'main');
 
 	form_start('rrdcleaner.php');
 
@@ -376,28 +375,28 @@ function list_rrd() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'name'               => array( __('RRD File Name'), 'ASC'),
-		'name_cache'         => array( __('DS Name'), 'ASC'),
-		'local_data_id'      => array( __('DS ID'), 'ASC'),
-		'data_template_id'   => array( __('Template ID'), 'ASC'),
-		'data_template_name' => array( __('Template'), 'ASC'),
-		'last_mod'           => array( __('Last Modified'), 'DESC'),
-		'size'               => array( __('Size [KB]'), 'DESC')
+		'name'               => array(__('RRD File Name'), 'ASC'),
+		'name_cache'         => array(__('DS Name'), 'ASC'),
+		'local_data_id'      => array(__('DS ID'), 'ASC'),
+		'data_template_id'   => array(__('Template ID'), 'ASC'),
+		'data_template_name' => array(__('Template'), 'ASC'),
+		'last_mod'           => array(__('Last Modified'), 'DESC'),
+		'size'               => array(__('Size [KB]'), 'DESC')
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	if (cacti_sizeof($file_list)) {
-		foreach($file_list as $file) {
+		foreach ($file_list as $file) {
 			$data_template_name = ((empty($file['data_template_name'])) ? '<em>None</em>' : $file['data_template_name']);
 			form_alternate_row('line' . $file['id'], true);
 			form_selectable_cell(filter_value($file['name'], get_request_var('filter')), $file['id']);
 			form_selectable_cell(filter_value($file['name_cache'], get_request_var('filter'), $config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $file['local_data_id']), $file['id']);
-			form_selectable_cell($file['local_data_id'] > 0 ? $file['local_data_id']:'<i>' . __('Deleted') . '</i>', $file['id']);
-			form_selectable_cell($file['data_template_id'] > 0 ? $file['data_template_id']: '<i>' . __('Deleted') . '</i>', $file['id']);
+			form_selectable_cell($file['local_data_id'] > 0 ? $file['local_data_id'] : '<i>' . __('Deleted') . '</i>', $file['id']);
+			form_selectable_cell($file['data_template_id'] > 0 ? $file['data_template_id'] : '<i>' . __('Deleted') . '</i>', $file['id']);
 			form_selectable_cell(filter_value($file['data_template_name'], get_request_var('filter')), $file['id']);
 			form_selectable_cell($file['last_mod'], $file['id']);
-			form_selectable_cell(round($file['size']/1024,2), $file['id']);
+			form_selectable_cell(round($file['size'] / 1024, 2), $file['id']);
 			form_checkbox_cell($file['id'], $file['id']);
 			form_end_row();
 		}
@@ -424,7 +423,7 @@ function list_rrd() {
 function rrdcleaner_legend($total_size) {
 	html_start_box('', '100%', '', '3', 'center', '');
 	print '<tr>';
-	print '<td><b>' . __('Total Size [MB]:') . '</b> ' . round($total_size/1024/1024,2) . '</td>';
+	print '<td><b>' . __('Total Size [MB]:') . '</b> ' . round($total_size / 1024 / 1024, 2) . '</td>';
 	print '</tr><tr>';
 	print '<td><b>' . __('Last Scan:') . '</b> ' . rrdcleaner_lastupdate() . '</td>';
 	print '</tr>';
@@ -497,141 +496,130 @@ function do_rrd() {
 function filter() {
 	global $item_rows;
 
-	?>
+?>
 	<tr class='even'>
 		<td>
 			<form id='form_rrdclean' method='get' action='rrdcleaner.php'>
-			<table class='filterTable'>
-				<tr>
-					<td>
-						<?php print __('Search');?>
-					</td>
-					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
-					</td>
-					<td>
-						<?php print __('Time Since Update');?>
-					</td>
-					<td>
-						<select id='age' onChange='refreshForm()'>
-							<option value='0'   <?php print (get_request_var('age') == '0'   ? ' selected':'');?>>&lt; <?php print __('%d Week', 1);?></option>
-							<option value='604800'   <?php print (get_request_var('age') == '604800'   ? ' selected':'');?>>&gt; <?php print __('%d Week', 1);?></option>
-							<option value='1209600'  <?php print (get_request_var('age') == '1209600'  ? ' selected':'');?>>&gt; <?php print __('%d Weeks',2);?></option>
-							<option value='1814400'  <?php print (get_request_var('age') == '1814400'  ? ' selected':'');?>>&gt; <?php print __('%d Weeks', 3);?></option>
-							<option value='2628000'  <?php print (get_request_var('age') == '2628000'  ? ' selected':'');?>>&gt; <?php print __('%d Month', 1);?></option>
-							<option value='5256000'  <?php print (get_request_var('age') == '5256000'  ? ' selected':'');?>>&gt; <?php print __('%d Months', 2);?></option>
-							<option value='10512000' <?php print (get_request_var('age') == '10512000' ? ' selected':'');?>>&gt; <?php print __('%d Months', 4);?></option>
-							<option value='15768000' <?php print (get_request_var('age') == '15768000' ? ' selected':'');?>>&gt; <?php print __('%d Months', 6);?></option>
-							<option value='31536000' <?php print (get_request_var('age') == '31536000' ? ' selected':'');?>>&gt; <?php print __('%d Year', 1);?></option>
-						</select>
-					</td>
-					<td>
-						<?php print __('RRDfiles');?>
-					</td>
-					<td>
-						<select id='rows'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
-							<?php
-							if (cacti_sizeof($item_rows)) {
-								foreach ($item_rows as $key => $value) {
-									print '<option value="' . $key . '"'; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
-								}
-							}
-							?>
-						</select>
-					</td>
-					<td>
-						<span>
-							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __x('filter: use', 'Go');?>'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __x('filter: reset', 'Clear');?>'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='rescan' value='<?php print __esc('Rescan');?>' name='rescan'>
-						</span>
-					</td>
-					<td>
-						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='remall' value='<?php print __esc('Delete All');?>' title='<?php print __esc('Delete All Unknown RRDfiles');?>'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='arcall' value='<?php print __esc('Archive All');?>' title='<?php print __esc('Archive All Unknown RRDfiles');?>'>
-						</span>
-					</td>
-					<td id='text'></td>
-				</tr>
-			</table>
+				<table class='filterTable'>
+					<tr>
+						<td>
+							<?php print __('Search'); ?>
+						</td>
+						<td>
+							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter'); ?>'>
+						</td>
+						<td>
+							<?php print __('Time Since Update'); ?>
+						</td>
+						<td>
+							<select id='age' onChange='refreshForm()'>
+								<option value='0' <?php print(get_request_var('age') == '0'   ? ' selected' : ''); ?>>&lt; <?php print __('%d Week', 1); ?></option>
+								<option value='604800' <?php print(get_request_var('age') == '604800'   ? ' selected' : ''); ?>>&gt; <?php print __('%d Week', 1); ?></option>
+								<option value='1209600' <?php print(get_request_var('age') == '1209600'  ? ' selected' : ''); ?>>&gt; <?php print __('%d Weeks', 2); ?></option>
+								<option value='1814400' <?php print(get_request_var('age') == '1814400'  ? ' selected' : ''); ?>>&gt; <?php print __('%d Weeks', 3); ?></option>
+								<option value='2628000' <?php print(get_request_var('age') == '2628000'  ? ' selected' : ''); ?>>&gt; <?php print __('%d Month', 1); ?></option>
+								<option value='5256000' <?php print(get_request_var('age') == '5256000'  ? ' selected' : ''); ?>>&gt; <?php print __('%d Months', 2); ?></option>
+								<option value='10512000' <?php print(get_request_var('age') == '10512000' ? ' selected' : ''); ?>>&gt; <?php print __('%d Months', 4); ?></option>
+								<option value='15768000' <?php print(get_request_var('age') == '15768000' ? ' selected' : ''); ?>>&gt; <?php print __('%d Months', 6); ?></option>
+								<option value='31536000' <?php print(get_request_var('age') == '31536000' ? ' selected' : ''); ?>>&gt; <?php print __('%d Year', 1); ?></option>
+							</select>
+						</td>
+						<td>
+							<?php print __('RRDfiles'); ?>
+						</td>
+						<td>
+							<select id='rows'>
+								<option value='-1' <?php print (get_request_var('rows') == '-1' ? ' selected>' : '>') . __('Default'); ?></option>
+									<?php
+									if (cacti_sizeof($item_rows)) {
+										foreach ($item_rows as $key => $value) {
+											print '<option value="' . $key . '"';
+											if (get_request_var('rows') == $key) {
+												print ' selected';
+											}
+											print '>' . $value . "</option>\n";
+										}
+									}
+									?>
+							</select>
+						</td>
+						<td>
+							<span>
+								<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __x('filter: use', 'Go'); ?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __x('filter: reset', 'Clear'); ?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='rescan' value='<?php print __esc('Rescan'); ?>' name='rescan'>
+							</span>
+						</td>
+						<td>
+							<span>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='remall' value='<?php print __esc('Delete All'); ?>' title='<?php print __esc('Delete All Unknown RRDfiles'); ?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='arcall' value='<?php print __esc('Archive All'); ?>' title='<?php print __esc('Archive All Unknown RRDfiles'); ?>'>
+							</span>
+						</td>
+						<td id='text'></td>
+					</tr>
+				</table>
 			</form>
 			<script type="text/javascript">
-			function refreshForm() {
-				strURL = 'rrdcleaner.php';
-					'?filter='+$('#filter').val()+
-					'&age='+$('#age').val()+
-					'&rows='+$('#rows').val();
-				loadUrl({url:strURL})
-			}
+				function refreshForm() {
+					strURL = 'rrdcleaner.php';
+					'?filter=' + $('#filter').val() +
+						'&age=' + $('#age').val() +
+						'&rows=' + $('#rows').val();
+					loadUrl({
+						url: strURL
+					})
+				}
 
-			$(function() {
-				$('#form_rrdclean').submit(function() {
-					refreshForm();
-					return false;
-				});
+				function finishFinalize(options, data) {
+					$('#text').text('Finished').fadeOut(2000);
+				}
 
-				$('#rows').change(function() {
-					refreshForm();
-				});
+				$(function() {
+					$('#form_rrdclean').submit(function() {
+						refreshForm();
+						return false;
+					});
 
-				$('#clear').click(function() {
-					strURL = 'rrdcleaner.php?clear=1';
-					loadUrl({url:strURL})
-				});
+					$('#rows').change(function() {
+						refreshForm();
+					});
 
-				$('#rescan').click(function() {
-					$('#text').text('Rebuilding RRDfile Listing');
-					pulsate('#text');
-					$.get('rrdcleaner.php?rescan=1&clear=1')
-						.done(function(data) {
-							checkForLogout(data);
-
-							$('#main').html(data);
-							$('#text').text('Finished').fadeOut(2000);
-							applySkin();
+					$('#clear').click(function() {
+						loadUrl({
+							url: 'rrdcleaner.php?clear=1',
 						})
-						.fail(function(data) {
-							getPresentHTTPError(data);
+					});
+
+					$('#rescan').click(function() {
+						$('#text').text('Rebuilding RRDfile Listing');
+						pulsate('#text');
+						loadUrl({
+							url: 'rrdcleaner.php?rescan=1&clear=1',
+							funcEnd: 'finishFinalize',
 						});
-				});
+					});
 
-				$('#arcall').click(function() {
-					$('#text').text('Scheduling Archiving of All Unknowns');
-					pulsate('#text');
-					$.get('rrdcleaner.php?action=arcall&raction=3&clear=1')
-						.done(function(data) {
-							checkForLogout(data);
-
-							$('#main').html(data);
-							$('#text').text('Finished').fadeOut(2000);
-							applySkin();
-						})
-						.fail(function(data) {
-							getPresentHTTPError(data);
+					$('#arcall').click(function() {
+						$('#text').text('Scheduling Archiving of All Unknowns');
+						pulsate('#text');
+						loadUrl({
+							url: 'rrdcleaner.php?action=arcall&raction=3&clear=1',
+							funcEnd: 'finishFinalize',
 						});
-				});
+					});
 
-				$('#remall').click(function() {
-					$('#text').text('Scheduling Purging of All Unknowns');
-					pulsate('#text');
-					$.get('rrdcleaner.php?action=remall&raction=1&clear=1')
-						.done(function(data) {
-							checkForLogout(data);
-
-							$('#main').html(data);
-							$('#text').text('Finished').fadeOut(2000);
-							applySkin();
-						})
-						.fail(function(data) {
-							getPresentHTTPError(data);
+					$('#remall').click(function() {
+						$('#text').text('Scheduling Purging of All Unknowns');
+						pulsate('#text');
+						loadUrl({
+							url: 'rrdcleaner.php?action=remall&raction=1&clear=1',
+							funcEnd: 'finishFinalize',
 						});
+					});
 				});
-			});
 			</script>
 		</td>
 	</tr>
-	<?php
+<?php
 }
-
