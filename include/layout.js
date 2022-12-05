@@ -851,6 +851,15 @@ function applySkin() {
 		return dfd;
 	});
 
+	$('#password').keyup(function () {
+		var url = window.location.href.split('?')[0] + '?action=checkpass';
+		checkPassword(url);
+	});
+
+	$('#password_confirm').keyup(function () {
+		checkPasswordConfirm();
+	});
+
 	keepWindowSize();
 
 	displayMessages();
@@ -861,6 +870,56 @@ function applySkin() {
 function finalizeAuthProfile(options, data) {
 	if (name == 'selected_theme' || name == 'user_language') {
 		document.location = 'auth_profile.php?action=edit';
+	}
+}
+
+function checkPassword(url) {
+	var options = {
+		url: url,
+		handle: false,
+		funcEnd: 'checkPasswordFinalize'
+	}
+
+	if ($('#password').val().length == 0) {
+		$('#pass').remove();
+		$('#passconfirm').remove();
+	} else if ($('#password').val().length < passwordMinChars) {
+		checkPasswordFinalize(options, passwordTooShort);
+	} else {
+		var data = {
+			password: $('#password').val(),
+			password_confim: $('#password_confirm').val(),
+			__csrf_magic: csrfMagicToken
+		}
+
+		postUrl(options, data);
+	}
+}
+
+function checkPasswordFinalize(options, data) {
+	var className = 'fa-times badpassword';
+	if (data == 'ok') {
+		className = 'fa-check goodpassword';
+		data = passwordValid;
+	}
+
+	$('#pass').remove();
+	$('#password').after('<span id="pass"><i class="fa ' + className + '"></i><span style="padding-left:4px;">' + data + '</span></span>');
+	$('#password').tooltip();
+	checkPasswordConfirm();
+}
+
+function checkPasswordConfirm() {
+	if ($('#password_confirm').val().length > 0) {
+		if ($('#password').val() != $('#password_confirm').val()) {
+			$('#passconfirm').remove();
+			$('#password_confirm').after('<span id="passconfirm"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">' + passwordNotMatch + '</span></span>');
+		} else {
+			$('#passconfirm').remove();
+			$('#password_confirm').after('<span id="passconfirm"><i class="goodpassword fa fa-check"></i><span style="padding-left:4px;">' + passwordMatch + '</span></span>');
+		}
+	} else {
+		$('#passconfirm').remove();
 	}
 }
 

@@ -354,67 +354,6 @@ $secpass_minlen = read_config_option('secpass_minlen');
 
 html_auth_footer('change_password', $errorMessage, "
 	<script>
-
-	var minChars=$secpass_minlen;
-
-	function checkPassword() {
-		if ($('#password').val().length == 0) {
-			$('#pass').remove();
-			$('#passconfirm').remove();
-		} else if ($('#password').val().length < minChars) {
-			checkPasswordFinalize('" . __esc('Password Too Short') . "');
-		} else {
-			var options = {
-				url: 'auth_changepassword.php?action=checkpass',
-				funcEnd: 'checkPasswordReturn',
-				handle: false
-			}
-
-			var data = {
-				password: $('#password').val(),
-				password_confim: $('#password_confirm').val(),
-				__csrf_magic: csrfMagicToken
-			}
-
-			postUrl(options, data);
-		}
-	}
-
-	function checkPasswordReturn(options, data) {
-		checkPasswordFinalize(data);
-	}
-
-	function checkPasswordFinalize(data) {
-		var className = 'badpassword';
-		var classIcon = 'times';
-		if (data == 'ok') {
-			className = 'goodpassword';
-			classIcon = 'check';
-			data = '" . __esc('Password Validation Passes') . "';
-		}
-
-		$('#pass').remove();
-		$('#password').after('<div id=\"pass\" class=\"password ' + className + ' fa fa-' + classIcon + '\" title=\"'+data+'\"></div>');
-		$('.password').tooltip();
-		checkPasswordConfirm();
-	}
-
-	function checkPasswordConfirm() {
-		if ($('#password_confirm').val().length > 0) {
-			if ($('#password').val() != $('#password_confirm').val()) {
-				$('#passconfirm').remove();
-				$('#password_confirm').after('<div id=\"passconfirm\" class=\"passconfirm badpassword fa fa-times\" title=\"". __esc('Passwords do Not Match') . "\"></div>');
-				$('.passconfirm').tooltip();
-			} else {
-				$('#passconfirm').remove();
-				$('#password_confirm').after('<div id=\"passconfirm\" class=\"passconfirm goodpassword fa fa-check\" title=\"" . __esc('Passwords Match') . "\"></div>');
-				$('.passconfirm').tooltip();
-			}
-		} else {
-			$('#passconfirm').remove();
-		}
-	}
-
 	var password_change = $('#password_change').is(':checked');
 
 	$(function() {
@@ -423,13 +362,5 @@ html_auth_footer('change_password', $errorMessage, "
 		/* clear passwords */
 		$('#password').val('');
 		$('#password_confirm').val('');
-
-		$('#password').keyup(function() {
-			checkPassword();
-		});
-
-		$('#password_confirm').keyup(function() {
-			checkPasswordConfirm();
-		});
 	});
 	</script>");
