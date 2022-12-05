@@ -195,7 +195,7 @@ function display_help() {
 	print "    --ip           self explanatory (can also be a FQDN)\n";
 	print "   (either one or both fields can be used and may be regex)\n\n";
 	print "Optional:\n";
-	print "    -confirm       confirms that you wish to remove matches\n\n";
+	print "    --confirm       confirms that you wish to remove matches\n\n";
 	print "List Options:\n";
 	print "    --quiet - batch mode value return\n\n";
 }
