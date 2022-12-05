@@ -161,7 +161,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 			cacti_log("LOGIN: Guest User '" . $user['username'] . "' in use", false, 'AUTH');
 		}
 
-		$client_addr = get_client_addr('');
+		$client_addr = get_client_addr();
 
 		db_execute_prepared('INSERT IGNORE INTO user_log
 			(username, user_id, result, ip, time)
@@ -260,9 +260,9 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 		db_execute_prepared('INSERT IGNORE INTO user_log
 			(username, user_id, result, ip, time)
 			VALUES (?, ?, 0, ?, NOW())',
-			array($username, !empty($id) ? $id:0, get_client_addr('')));
+			array($username, !empty($id) ? $id:0, get_client_addr()));
 
-		cacti_log('LOGIN FAILED: ' . $realm_name . " Login Failed for user '" . $username . "' from IP Address '" . get_client_addr('') . "'.", false, 'AUTH');
+		cacti_log('LOGIN FAILED: ' . $realm_name . " Login Failed for user '" . $username . "' from IP Address '" . get_client_addr() . "'.", false, 'AUTH');
 	}
 }
 

@@ -78,7 +78,7 @@ function set_auth_cookie($user) {
 	if (db_table_exists('user_auth_cache')) {
 		clear_auth_cookie();
 
-		$nssecret = md5($_SERVER['REQUEST_TIME'] .  mt_rand(10000,10000000)) . md5(get_client_addr(''));
+		$nssecret = md5($_SERVER['REQUEST_TIME'] .  mt_rand(10000,10000000)) . md5(get_client_addr());
 
 		$secret = hash('sha512', $nssecret, false);
 
@@ -86,7 +86,7 @@ function set_auth_cookie($user) {
 			(user_id, hostname, last_update, token)
 			VALUES
 			(?, ?, NOW(), ?);',
-			array($user['id'], get_client_addr(''), $secret));
+			array($user['id'], get_client_addr(), $secret));
 
 		cacti_cookie_session_set($user['id'], $user['realm'], $nssecret);
 	}
@@ -157,7 +157,7 @@ function check_auth_cookie() {
 						(username, user_id, result, ip, time)
 						VALUES
 						(?, ?, 2, ?, NOW())',
-						array($user_info['username'], $user_info['id'], get_client_addr(''))
+						array($user_info['username'], $user_info['id'], get_client_addr())
 					);
 
 					return $user_info['id'];
@@ -3425,7 +3425,7 @@ function auth_process_lockout($username, $realm) {
 
 			if (cacti_sizeof($user)) {
 				if ($user['enabled'] == '') {
-					cacti_log("LOGIN FAILED: Local Login Failed for user '" . $username . "' from IP Address '" . get_client_addr('') . "'.  User account Disabled.", false, 'AUTH');
+					cacti_log("LOGIN FAILED: Local Login Failed for user '" . $username . "' from IP Address '" . get_client_addr() . "'.  User account Disabled.", false, 'AUTH');
 
 					$error     = true;
 					$error_msg = __('Access Denied!  Login Disabled.');
@@ -3459,22 +3459,22 @@ function auth_process_lockout($username, $realm) {
 				db_execute_prepared('INSERT IGNORE INTO user_log
 					(username, user_id, result, ip, time)
 					VALUES (?, ?, 0, ?, NOW())',
-					array($username, isset($user['id']) ? $user['id']:0, get_client_addr('')));
+					array($username, isset($user['id']) ? $user['id']:0, get_client_addr()));
 
 				if ($user['locked'] == 'on') {
-					cacti_log("LOGIN FAILED: Local Login Failed for user '" . $username . "' from IP Address '" . get_client_addr('') . "'.  Account is locked out.", false, 'AUTH');
+					cacti_log("LOGIN FAILED: Local Login Failed for user '" . $username . "' from IP Address '" . get_client_addr() . "'.  Account is locked out.", false, 'AUTH');
 
 					$error     = true;
 					$error_msg = __('Your account has been locked.  Please contact your Administrator.');
 				} else {
-					cacti_log("LOGIN FAILED: Local Login Failed for user '" . $username . "' from IP Address '" . get_client_addr('') . "'.", false, 'AUTH');
+					cacti_log("LOGIN FAILED: Local Login Failed for user '" . $username . "' from IP Address '" . get_client_addr() . "'.", false, 'AUTH');
 
 					/* error */
 					$error     = true;
 					$error_msg = __('Access Denied!  Login Failed.');
 				}
 			} elseif ($user['locked'] == 'on') {
-				cacti_log("LOGIN FAILED: Local Login Failed for user '" . $username . "' from IP Address '" . get_client_addr('') . "'.", false, 'AUTH');
+				cacti_log("LOGIN FAILED: Local Login Failed for user '" . $username . "' from IP Address '" . get_client_addr() . "'.", false, 'AUTH');
 
 				$error     = true;
 				$error_msg = __('Access Denied!  Login Failed.');

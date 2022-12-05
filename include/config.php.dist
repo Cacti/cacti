@@ -163,3 +163,29 @@ $disable_log_rotation = false;
  * are defined in lib/database.php
  */
 # define('DEBUG_SQL_FLOW', true);
+
+/*
+ * Allow the use of Proxy IPs when searching for client
+ * IP to be used
+ *
+ * This can be set to one of the following:
+ *   - false: to use only REMOTE_ADDR
+ *   - true: to use all allowed headers (not advised)
+ *   - array of one or more the following:
+ *		'X-Forwarded-For',
+ *		'X-Client-IP',
+ *		'X-Real-IP',
+ *		'X-ProxyUser-Ip',
+ *		'CF-Connecting-IP',
+ *		'True-Client-IP',
+ *		'HTTP_X_FORWARDED',
+ *		'HTTP_X_FORWARDED_FOR',
+ *		'HTTP_X_CLUSTER_CLIENT_IP',
+ *		'HTTP_FORWARDED_FOR',
+ *		'HTTP_FORWARDED',
+ *		'HTTP_CLIENT_IP',
+ *
+ * NOTE: The following will always be checked:
+ *		'REMOTE_ADDR',
+ */
+$proxy_headers = null;
