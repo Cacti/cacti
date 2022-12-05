@@ -265,6 +265,13 @@ global $local_db_cnn_id, $remote_db_cnn_id, $conn_mode;
 
 $config['connection'] = 'online';
 
+$ps = $config['is_web'] ? '<p>' : '';
+$sp = $config['is_web'] ? '</p>' : PHP_EOL;
+$ul = $config['is_web'] ? '<ul>' : PHP_EOL;
+$li = $config['is_web'] ? '<li>' : PHP_EOL . '  - ';
+$lu = $config['is_web'] ? '</ul>' : '';
+$il = $config['is_web'] ? '</li>' : '';
+
 if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca);
 
@@ -323,12 +330,6 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	if (!isset($database_ssl_ca))   $database_ssl_ca   = false;
 
 	if (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca)) {
-		$ps = $config['is_web'] ? '<p>' : '';
-		$sp = $config['is_web'] ? '</p>' : PHP_EOL;
-		$ul = $config['is_web'] ? '<ul>' : PHP_EOL;
-		$li = $config['is_web'] ? '<li>' : PHP_EOL . '  - ';
-		$lu = $config['is_web'] ? '</ul>' : '';
-		$il = $config['is_web'] ? '</li>' : '';
 		print $ps . 'FATAL: Connection to Cacti database failed. Please ensure: ' . $ul;
 		print $li . 'the PHP MySQL module is installed and enabled.' . $il;
 		print $li . 'the database is running.' . $il;
@@ -342,10 +343,25 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 			print $lu . $sp;
 		}
 		exit;
-	} else {
-		/* gather the existing cactidb version */
-		$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1');
+	} elseif (!db_table_exists('settings') || !db_table_exists('version')) {
+		print $ps . 'FATAL: Connection to Cacti database succeed but `Settings` table not found. Please ensure: ' . $ul;
+		print $li . 'the PHP MySQL module is installed and enabled.' . $il;
+		print $li . 'the database is running.' . $il;
+		print $li . 'the cacti.sql has been imported.' . $il;
+		print $li . 'the credentials in config.php are valid and correct.' . $il;
+		print $lu . $sp;
+		if (isset($_REQUEST['display_db_errors']) && !empty($config['DATABASE_ERROR'])) {
+			print $ps . 'The following database errors occurred: ' . $ul;
+			foreach ($config['DATABASE_ERROR'] as $e) {
+				print $li . $e['Code'] . ': ' . $e['Error'] . $il;
+			}
+			print $lu . $sp;
+		}
+		exit;
 	}
+
+	/* gather the existing cactidb version */
+	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1');
 }
 
 /* check cacti log is available */

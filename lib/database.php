@@ -477,6 +477,10 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 			}
 			unset($query);
 
+			if (!db_column_exists('settings', 'name')) {
+				$log = false;
+			}
+
 			if ($log) {
 				if ($en == 1213 || $en == 1205) {
 					$errors++;
@@ -1177,8 +1181,12 @@ function db_column_exists($table, $column, $log = true, $db_conn = false) {
 		return $results[$table][$column];
 	}
 
-	$results[$table][$column] = (db_fetch_cell("SHOW columns FROM `$table` LIKE '$column'", '', $log, $db_conn) ? true : false);
+	$result = false;
+	if (db_table_exists($table, $log, $db_conn)) {
+		$result = (db_fetch_cell("SHOW columns FROM `$table` LIKE '$column'", '', $log, $db_conn) ? true : false);
+	}
 
+	$results[$table][$column] = $result;
 	return $results[$table][$column];
 }
 
