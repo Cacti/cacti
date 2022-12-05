@@ -96,7 +96,7 @@ if (isset($config['cacti_version'])) {
 }
 
 /* Should we allow proxy ip headers? */
-$config['proxy_headers'] = $proxy_headers ?? null;
+$config['proxy_headers'] = (isset($proxy_headers) ? $proxy_headers : null);
 
 /* Set the poller_id */
 if (isset($poller_id)) {

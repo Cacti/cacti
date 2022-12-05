@@ -6725,7 +6725,7 @@ function get_debug_prefix() {
 function get_client_addr() {
 	global $config, $allowed_proxy_headers;
 
-	$proxy_headers = $config['proxy_headers'] ?? null;
+	$proxy_headers = (isset($config['proxy_headers']) ? $config['proxy_headers'] : null);
 	if ($proxy_headers === null) {
 		$last_time = read_config_option('proxy_alert');
 		if (empty($last_time)) {
