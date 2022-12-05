@@ -141,7 +141,7 @@ if ($host_descr != '') {
 	$params[] = '%' . $host_descr . '%';
 }
 
-$data_queries = db_fetch_assoc_prepared("SELECT h.description, h.hostname, h.host_id, hsq.snmp_query_id
+$data_queries = db_fetch_assoc_prepared("SELECT h.description, h.hostname, hsq.host_id, hsq.snmp_query_id
 	FROM host_snmp_query hsq
 	INNER JOIN host h
 	ON h.id = hsq.host_id
