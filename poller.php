@@ -413,8 +413,8 @@ while ($poller_runs_completed < $poller_runs) {
 			$polling_hosts = array(0 => array('id' => '0'));
 		}
 	} else {
-		$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
-			FROM host
+		$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' h.id
+			FROM host h
 			LEFT JOIN sites s
 			ON s.id = h.site_id
 			WHERE poller_id = ?
