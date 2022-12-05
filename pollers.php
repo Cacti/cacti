@@ -544,7 +544,14 @@ function form_actions() {
 
 	form_start('pollers.php');
 
-	html_start_box($poller_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
+	$drp_action = get_nfilter_request_var('drp_action');
+	$action = __('Unknown');
+	if (array_key_exists($drp_action, $poller_actions)) {
+		$action = $poller_actions[get_nfilter_request_var('drp_action')];
+	} elseif ($drp_action === POLLER_DELETE) {
+		$action = __('Delete');
+	}
+	html_start_box($action, '60%', '', '3', 'center', '');
 
 	if (isset($poller_array) && cacti_sizeof($poller_array)) {
 		if (get_nfilter_request_var('drp_action') == POLLER_DELETE) { // delete
