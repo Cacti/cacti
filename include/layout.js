@@ -21,11 +21,11 @@
  +-------------------------------------------------------------------------+
 */
 
-const MESSAGE_LEVEL_NONE  = 0;
-const MESSAGE_LEVEL_INFO  = 1;
-const MESSAGE_LEVEL_WARN  = 2;
+const MESSAGE_LEVEL_NONE = 0;
+const MESSAGE_LEVEL_INFO = 1;
+const MESSAGE_LEVEL_WARN = 2;
 const MESSAGE_LEVEL_ERROR = 3;
-const MESSAGE_LEVEL_CSRF  = 4;
+const MESSAGE_LEVEL_CSRF = 4;
 const MESSAGE_LEVEL_MIXED = 5;
 
 var theme;
@@ -113,43 +113,43 @@ function renderLoading() {
 }
 
 var isMobile = {
-	Android: function() {
+	Android: function () {
 		return navigator.userAgent.match(/Android/i);
 	},
-	BlackBerry: function() {
+	BlackBerry: function () {
 		return navigator.userAgent.match(/BlackBerry/i);
 	},
-	iOS: function() {
+	iOS: function () {
 		return navigator.userAgent.match(/iPhone|iPad|iPod/i);
 	},
-	Opera: function() {
+	Opera: function () {
 		return navigator.userAgent.match(/Opera Mini/i);
 	},
-	Windows: function() {
+	Windows: function () {
 		return navigator.userAgent.match(/IEMobile/i);
 	},
-	any: function() {
+	any: function () {
 		return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
 	}
 };
 
 /* simple ajax request queueing */
-jQuery.ajaxQ = (function() {
+jQuery.ajaxQ = (function () {
 	var id = 0, Q = {};
 
-	jQuery(document).ajaxSend(function(e, jqx) {
+	jQuery(document).ajaxSend(function (e, jqx) {
 		jqx._id = ++id;
 		Q[jqx._id] = jqx;
 	});
 
-	jQuery(document).ajaxComplete(function(e, jqx) {
+	jQuery(document).ajaxComplete(function (e, jqx) {
 		delete Q[jqx._id];
 	});
 
 	return {
-		abortAll: function() {
+		abortAll: function () {
 			var r = [];
-			jQuery.each(Q, function(i, jqx) {
+			jQuery.each(Q, function (i, jqx) {
 				r.push(jqx._id);
 				jqx.abort();
 			});
@@ -218,9 +218,9 @@ function getQueryString(name) {
  *  this preventing your backend server from becoming overloaded
  *  usage: $("#yourid").delayKeyup(function(){ console.log('do something'); }, 500);
  *  @args name - the variable name to return */
-$.fn.delayKeyup = function(callback, ms) {
+$.fn.delayKeyup = function (callback, ms) {
 	var timer = 0;
-	$(this).keyup(function() {
+	$(this).keyup(function () {
 		clearTimeout(timer);
 		timer = setTimeout(callback, ms);
 	});
@@ -229,7 +229,7 @@ $.fn.delayKeyup = function(callback, ms) {
 
 /** bindFirst - Function ensures that the event is found at the top
  * of the event stack. */
-$.fn.bindFirst = function(which, handler) {
+$.fn.bindFirst = function (which, handler) {
 	var $el = $(this);
 	$el.off(which, handler);
 	$el.on(which, handler);
@@ -242,13 +242,13 @@ $.fn.bindFirst = function(which, handler) {
 };
 
 /** replaceOptions - function replaces the options in a select dropdown */
-$.fn.replaceOptions = function(options, selected) {
+$.fn.replaceOptions = function (options, selected) {
 	var self, $option;
 
 	this.empty();
 	self = this;
 
-	$.each(options, function(index, option) {
+	$.each(options, function (index, option) {
 		if (selected == option.value) {
 			$option = $('<option></option>')
 				.attr('value', option.value)
@@ -265,7 +265,7 @@ $.fn.replaceOptions = function(options, selected) {
 
 /** textWidth - This function will return the natural width of a string
  *  without any wrapping. */
-$.fn.textWidth = function(text) {
+$.fn.textWidth = function (text) {
 	var org = $(this);
 	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + (text || org.text()) + '</span>');
 	if (!text) {
@@ -283,7 +283,7 @@ $.fn.textWidth = function(text) {
 
 /** textBoxWidth - This function will return the natural width of a string
  *  without any wrapping. */
-$.fn.textBoxWidth = function() {
+$.fn.textBoxWidth = function () {
 	var org = $(this);
 	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + (org.val() || org.text()) + '</span>');
 	html.css('font-family', org.css('font-family'));
@@ -299,9 +299,9 @@ $.fn.textBoxWidth = function() {
 
 /** classes - This function will return an array of all
  *  classes of an element */
-$.fn.classes = function(callback) {
+$.fn.classes = function (callback) {
 	var classes = [];
-	$.each(this, function(i, v) {
+	$.each(this, function (i, v) {
 		var splitClassName = v.className.split(/\s+/);
 		for (var j in splitClassName) {
 			var className = splitClassName[j];
@@ -320,14 +320,14 @@ $.fn.classes = function(callback) {
 
 /** These three functions will set the cursor into
  *  a textbox or textarea and optionally select characters */
-$.fn.setCursorPosition = function(position) {
+$.fn.setCursorPosition = function (position) {
 	if (this.length == 0) return this;
 	return this.setSelection(position, position);
 };
 
-$.fn.selectRange = function(start, end) {
+$.fn.selectRange = function (start, end) {
 	if (!end) end = start;
-	return this.each(function() {
+	return this.each(function () {
 		if (this.setSelectionRange) {
 			this.focus();
 			this.setSelectionRange(start, end);
@@ -343,39 +343,39 @@ $.fn.selectRange = function(start, end) {
 	//return this;
 };
 
-$.fn.focusEnd = function() {
+$.fn.focusEnd = function () {
 	this.setCursorPosition($(this).val().length);
 	return this;
 };
 
-$.fn.getObjectDetails = function() {
+$.fn.getObjectDetails = function () {
 	var coords = {};
 
-	coords.width  = $(this).outerWidth();
+	coords.width = $(this).outerWidth();
 	coords.height = $(this).outerHeight();
 	coords.left = 0;
-	coords.top  = 0;
+	coords.top = 0;
 
-	$(this).parentsUntil('body').each(function(){
+	$(this).parentsUntil('body').each(function () {
 		coords.left += $(this).position().left;
-		coords.top  += $(this).position().top;
+		coords.top += $(this).position().top;
 	});
 
 	return coords;
 };
 
-$.fn.serializeForm = function() {
+$.fn.serializeForm = function () {
 	var arrayData, objectData;
 	arrayData = this.serializeArray();
 	formID = $(this).attr('id');
 	arrayData = arrayData.concat(
-		$('#' + formID + ' input[type=checkbox]:not(:checked)').map(function() {
+		$('#' + formID + ' input[type=checkbox]:not(:checked)').map(function () {
 			return { "name": this.name, "value": $(this).is(':checked') ? 'on' : '' }
 		}).get());
 
 	objectData = {};
 
-	$.each(arrayData, function() {
+	$.each(arrayData, function () {
 		var value;
 
 		if (this.value != null) {
@@ -398,14 +398,14 @@ $.fn.serializeForm = function() {
 	return objectData;
 };
 
-$.fn.serializeObject = function() {
+$.fn.serializeObject = function () {
 	var arrayData, objectData, formID;
 	arrayData = this.serializeArray();
 	formID = $(this).attr('id');
 
 	objectData = {};
 
-	$.each(arrayData, function() {
+	$.each(arrayData, function () {
 		var value;
 
 		if (this.value != null) {
@@ -446,27 +446,27 @@ function escapeString(string) {
 // Plugin to apply numeric format for tablesorter
 $.tablesorter.addParser({
 	id: 'numberFormat',
-	is: function(s) {
+	is: function (s) {
 		return /^[0-9]?[0-9,\.]*$/.test(s);
 	},
-	format: function(s) {
+	format: function (s) {
 		return $.tablesorter.formatFloat(s.replace(/,/g, ''));
 	},
 	type: 'numeric'
 });
 
 /** Mini jquery plugin to determine if an element has a scrollbar present */
-(function($) {
-	$.fn.hasScrollBar = function() {
+(function ($) {
+	$.fn.hasScrollBar = function () {
 		return this.get(0).scrollHeight > this.outerHeight();
 	};
 })(jQuery);
 
 /** Mini jquery plugin to create a bind to show/hide events */
-(function($) {
-	$.each(['show', 'hide'], function(i, ev) {
+(function ($) {
+	$.each(['show', 'hide'], function (i, ev) {
 		var el = $.fn[ev];
-		$.fn[ev] = function() {
+		$.fn[ev] = function () {
 			this.trigger(ev);
 			return el.apply(this, arguments);
 		};
@@ -474,8 +474,8 @@ $.tablesorter.addParser({
 })(jQuery);
 
 // Helper function to get text dimensions
-(function($) {
-	$.textMetrics = function(el) {
+(function ($) {
+	$.textMetrics = function (el) {
 		var h = 0,
 			w = 0;
 
@@ -492,7 +492,7 @@ $.tablesorter.addParser({
 
 		var styles = ['font-size', 'font-style', 'font-weight', 'font-family', 'line-height', 'text-transform', 'letter-spacing'];
 
-		$(styles).each(function() {
+		$(styles).each(function () {
 			var s = this.toString();
 			$(div).css(s, $(el).css(s));
 		});
@@ -540,7 +540,7 @@ function updateCheckboxes(checkboxes, clicked_element) {
  *  taking action as required to enable or disable rows. */
 function applySelectorVisibilityAndActions() {
 	// Change for accessibility
-	$('input[type="radio"]').off('click').on('click', function() {
+	$('input[type="radio"]').off('click').on('click', function () {
 		if ($(this).is(':checked')) {
 			$(this).attr('aria-checked', 'true');
 		} else {
@@ -549,7 +549,7 @@ function applySelectorVisibilityAndActions() {
 	});
 
 	// Apply disabled/enabled status first for Graph Templates
-	$('tr[id^="gt_line"]').each(function(data) {
+	$('tr[id^="gt_line"]').each(function (data) {
 		var id = $(this).attr('id');
 		var search = id.substr(7);
 		if ($.inArray(search, gt_created_graphs) >= 0) {
@@ -559,12 +559,12 @@ function applySelectorVisibilityAndActions() {
 	});
 
 	// Create Actions for Rows
-	$('tr[id^="gt_line"].selectable:not(.disabled_row)').off('click').on('click', function(event) {
+	$('tr[id^="gt_line"].selectable:not(.disabled_row)').off('click').on('click', function (event) {
 		selectUpdateRow(event, $(this));
 	});
 
 	// Create Actions for Rows
-	$('tr[id^="line"].selectable').filter(':not(.disabled_row)').off('click').on('click', function(event) {
+	$('tr[id^="line"].selectable').filter(':not(.disabled_row)').off('click').on('click', function (event) {
 		selectUpdateRow(event, $(this));
 	});
 }
@@ -622,7 +622,7 @@ function dqUpdateDeps(snmp_query_id) {
 	var allChecked = $('#all_' + snmp_query_id).is(':checked');
 
 	// Next for Data Queries
-	$('tr[id^="dqline' + snmp_query_id + '_"]').each(function(data) {
+	$('tr[id^="dqline' + snmp_query_id + '_"]').each(function (data) {
 		var id = $(this).attr('id');
 		var pieces = id.split('_');
 		var dq = pieces[0].substr(6);
@@ -644,7 +644,7 @@ function dqUpdateDeps(snmp_query_id) {
 		$('#all_' + snmp_query_id).prop('checked', false);
 	}
 
-	$('tr[id^="dqline' + snmp_query_id + '_"]').not('.disabled_row').off('click').on('click', function(event) {
+	$('tr[id^="dqline' + snmp_query_id + '_"]').not('.disabled_row').off('click').on('click', function (event) {
 		selectUpdateRow(event, $(this));
 	});
 }
@@ -654,26 +654,26 @@ function dqUpdateDeps(snmp_query_id) {
 function selectAll(attrib, checked) {
 	if (attrib == 'chk') {
 		if (checked == true) {
-			$('tr[id^="line"]:not(.disabled_row)').each(function(data) {
+			$('tr[id^="line"]:not(.disabled_row)').each(function (data) {
 				$(this).addClass('selected');
 				$(this).find(':checkbox').prop('checked', true).attr('aria-checked', 'true').attr('data-prev-check', 'true');
 			});
 			disableSelection();
 		} else {
-			$('tr[id^="line"]:not(.disabled_row)').each(function(data) {
+			$('tr[id^="line"]:not(.disabled_row)').each(function (data) {
 				$(this).removeClass('selected');
 				$(this).find(':checkbox').prop('checked', false).removeAttr('aria-checked').removeAttr('data-prev-check');
 			});
 		}
 	} else if (attrib == 'sg') {
 		if (checked == true) {
-			$('tr[id^="gt_line"]:not(.disabled_row)').each(function(data) {
+			$('tr[id^="gt_line"]:not(.disabled_row)').each(function (data) {
 				$(this).addClass('selected');
 				$(this).find(':checkbox').prop('checked', true).attr('aria-checked', 'true').attr('data-prev-check', 'true');
 			});
 			disableSelection();
 		} else {
-			$('tr[id^="gt_line"]:not(.disabled_row)').each(function(data) {
+			$('tr[id^="gt_line"]:not(.disabled_row)').each(function (data) {
 				$(this).removeClass('selected');
 				$(this).find(':checkbox').prop('checked', false).removeAttr('aria-checked').removeAttr('data-prev-check');
 			});
@@ -683,26 +683,26 @@ function selectAll(attrib, checked) {
 		var dq = attribSplit[1];
 
 		if (checked == true) {
-			$('tr[id^="dqline' + dq + '\_"]:not(.disabled_row)').each(function(data) {
+			$('tr[id^="dqline' + dq + '\_"]:not(.disabled_row)').each(function (data) {
 				$(this).addClass('selected');
 				$(this).find(':checkbox').prop('checked', true).attr('aria-checked', 'true').attr('data-prev-check', 'true');
 			});
 			disableSelection();
 		} else {
-			$('tr[id^="dqline' + dq + '\_"]:not(.disabled_row)').each(function(data) {
+			$('tr[id^="dqline' + dq + '\_"]:not(.disabled_row)').each(function (data) {
 				$(this).removeClass('selected');
 				$(this).find(':checkbox').prop('checked', false).removeAttr('aria-checked').removeAttr('data-prev-check');
 			});
 		}
 	} else {
 		if (checked == true) {
-			$('tr[id^="line_' + attrib + '"]:not(.disabled_row)').each(function(data) {
+			$('tr[id^="line_' + attrib + '"]:not(.disabled_row)').each(function (data) {
 				$(this).addClass('selected');
 				$(this).find(':checkbox').prop('checked', true).attr('aria-checked', 'true').attr('data-prev-check', 'true');
 			});
 			disableSelection();
 		} else {
-			$('tr[id^="line_' + attrib + '"]:not(.disabled_row)').each(function(data) {
+			$('tr[id^="line_' + attrib + '"]:not(.disabled_row)').each(function (data) {
 				$(this).removeClass('selected');
 				$(this).find(':checkbox').prop('checked', false).removeAttr('aria-checked').removeAttr('data-prev-check');
 			});
@@ -741,7 +741,7 @@ function applySkin() {
 		theme = 'classic';
 
 		// debounce submits
-		$('form').submit(function() {
+		$('form').submit(function () {
 			$('input[type="submit"], button[type="submit"]').not('.import, .export').prop('disabled', true);
 		});
 	} else {
@@ -751,7 +751,7 @@ function applySkin() {
 		$('fieldset.reindex_methods').buttonset();
 
 		// debounce submits
-		$('form').submit(function() {
+		$('form').submit(function () {
 			$('input[type="submit"], button[type="submit"]').not('.import, .export').button('disable');
 		});
 	}
@@ -776,7 +776,7 @@ function applySkin() {
 
 	applySelectorVisibilityAndActions();
 
-	$('.helpPage').off('click').on('click', function(event) {
+	$('.helpPage').off('click').on('click', function (event) {
 		event.stopPropagation();
 		getCactiHelp($(this).attr('data-page'));
 	});
@@ -792,7 +792,7 @@ function applySkin() {
 	setupButtonStyle();
 
 	// Debug message actions
-	$('table.debug tr:nth-child(1)').off('click').on('click', function() {
+	$('table.debug tr:nth-child(1)').off('click').on('click', function () {
 		if ($(this).parent().find('table').is(':visible')) {
 			$(this).parent().find('table').slideUp('fast');
 		} else {
@@ -800,7 +800,7 @@ function applySkin() {
 		}
 	});
 
-	$('.cactiTableCopy').off('click').on('click', function(event) {
+	$('.cactiTableCopy').off('click').on('click', function (event) {
 		event.preventDefault();
 		event.stopPropagation();
 		var containerId = $(this).attr('id');
@@ -811,12 +811,12 @@ function applySkin() {
 		.tooltip({
 			close: true
 		})
-		.on('focus', function() {
+		.on('focus', function () {
 			if ($(this).tooltip('instance')) {
 				$(this).tooltip('close');
 			}
 		})
-		.on('click', function() {
+		.on('click', function () {
 			if ($(this).tooltip('instance')) {
 				$(this).tooltip('close');
 			}
@@ -824,7 +824,7 @@ function applySkin() {
 
 	$(document).tooltip({
 		items: 'div.cactiTooltipHint, span.cactiTooltipHint, .checkboxSlider',
-		content: function() {
+		content: function () {
 			var element = $(this);
 
 			if (element.is('div')) {
@@ -836,15 +836,15 @@ function applySkin() {
 		}
 	});
 
-	$(document).on('keyup keydown', function(event) {
+	$(document).on('keyup keydown', function (event) {
 		shiftPressed = event.shiftKey;
 	});
 
 	$('#main').css('display', 'table');
 
-	var showPage = $('#main').map(function(i, el) {
+	var showPage = $('#main').map(function (i, el) {
 		var dfd = $.Deferred();
-		$(el).show(function() {
+		$(el).show(function () {
 			dfd.resolve();
 		});
 
@@ -929,7 +929,7 @@ function renderLanguages() {
 
 		$('select#user_language').languageselect({
 			width: '220',
-			change: function() {
+			change: function () {
 				var name = $(this).attr('id');
 				var value = $(this).val();
 				var page = basename(location.pathname);
@@ -996,7 +996,7 @@ function displayMessages() {
 				'Ok': {
 					text: sessionMessageOk,
 					id: 'btnSessionMessageOk',
-					click: function() {
+					click: function () {
 						$(this).dialog('close');
 					}
 				}
@@ -1010,7 +1010,7 @@ function displayMessages() {
 				'Ok': {
 					text: sessionMessageOk,
 					id: 'btnSessionMessageOk',
-					click: function() {
+					click: function () {
 						$(this).dialog('close');
 					}
 				}
@@ -1027,7 +1027,7 @@ function displayMessages() {
 				'Pause': {
 					text: sessionMessagePause,
 					id: 'btnSessionMessagePause',
-					click: function() {
+					click: function () {
 						if (sessionMessageTimer != null) {
 							clearInterval(sessionMessageTimer);
 							sessionMessageTimer = null;
@@ -1039,7 +1039,7 @@ function displayMessages() {
 				'Ok': {
 					text: sessionMessageOk,
 					id: 'btnSessionMessageOk',
-					click: function() {
+					click: function () {
 						$(this).dialog('close');
 						$('#messageContainer').remove();
 						clearInterval(sessionMessageTimer);
@@ -1047,7 +1047,7 @@ function displayMessages() {
 				}
 			};
 
-			sessionMessageOpen = function() {
+			sessionMessageOpen = function () {
 				sessionMessageCountdown(5000);
 			}
 		}
@@ -1088,7 +1088,7 @@ function sessionMessageCountdown(time) {
 
 	$('#btnSessionMessageOk').html('<span class="ui-button-text">' + sessionMessageOk + ' (' + sessionMessageTimeLeft + ')</span>');
 
-	sessionMessageTimer = setInterval(function() {
+	sessionMessageTimer = setInterval(function () {
 		sessionMessageTimeLeft--;
 
 		$('#btnSessionMessageOk').html('<span class="ui-button-text">' + sessionMessageOk + ' (' + sessionMessageTimeLeft + ')</span>');
@@ -1104,9 +1104,9 @@ function sessionMessageCountdown(time) {
 function markFilterTDs(child, filterNum) {
 	trNum = 0;
 
-	$('#' + child).find('tr').each(function() {
+	$('#' + child).find('tr').each(function () {
 		tdNum = 0;
-		$(this).find('td').each(function() {
+		$(this).find('td').each(function () {
 			$(this).attr('id', 'fn' + filterNum + 'tr' + trNum + 'td' + tdNum);
 			tdNum++;
 		});
@@ -1134,7 +1134,7 @@ function makeFiltersResponsive() {
 	filterNum = 0;
 
 	if ($('div.cactiTableButton').closest('.cactiTable').not('#dqdebug').find('.filterTable').length) {
-		$('div.cactiTableButton').closest('.cactiTable').not('#dqdebug').each(function() {
+		$('div.cactiTableButton').closest('.cactiTable').not('#dqdebug').each(function () {
 			if ($(this).find('.filterTable').length) {
 				filterHeader = $(this).closest('.cactiTable');
 				id = filterHeader.attr('id');
@@ -1153,7 +1153,7 @@ function makeFiltersResponsive() {
 							filterHeader.find('div.cactiTableButton').append('<span class="cactiSwitchConstraintWrapper"><a title="' + tableConstraints + '" class="linkOverDark cactiSwitchConstraints" href="#"><i id="overflow" class="fa fa-expand"></i></a></span>');
 						}
 
-						$('.cactiSwitchConstraints').off('click').on('click', function(event) {
+						$('.cactiSwitchConstraints').off('click').on('click', function (event) {
 							event.preventDefault();
 							event.stopPropagation();
 
@@ -1162,11 +1162,11 @@ function makeFiltersResponsive() {
 							postUrl({
 								url: urlPath + 'auth_profile.php?tab=general&action=update_data',
 								funcEnd: 'finalizeAuthProfileData'
-							 }, {
+							}, {
 								__csrf_magic: csrfMagicToken,
 								name: 'enable_hscroll',
 								value: hScroll ? 'on' : ''
-							 });
+							});
 						});
 					}
 				}
@@ -1181,7 +1181,7 @@ function makeFiltersResponsive() {
 					title = $('#export').attr('value');
 					filterHeader.find('div.cactiTableButton').append('<span title="' + title + '" style="display:none;" class="cactiFilterExport"><i class="fa fa-arrow-down"></i></span>');
 
-					$('.cactiFilterExport').off('click').on('click', function(event) {
+					$('.cactiFilterExport').off('click').on('click', function (event) {
 						event.stopPropagation();
 						$('#export').trigger('click');
 					}).tooltip();
@@ -1191,7 +1191,7 @@ function makeFiltersResponsive() {
 					title = $('#import').attr('value');
 					filterHeader.find('div.cactiTableButton').append('<span title="' + title + '" style="display:none;" class="cactiFilterImport"><i class="fa fa-arrow-up"></i></span>');
 
-					$('.cactiFilterImport').off('click').on('click', function(event) {
+					$('.cactiFilterImport').off('click').on('click', function (event) {
 						event.stopPropagation();
 						$('#import').trigger('click');
 					}).tooltip();
@@ -1202,7 +1202,7 @@ function makeFiltersResponsive() {
 						filterHeader.find('div.cactiTableButton').append('<span title="' + clearFilterTitle + '" style="display:none;" class="cactiFilterClear"><i class="fa fa-trash-alt"></i></span>');
 					}
 
-					$('.cactiFilterClear').off('click').on('click', function(event) {
+					$('.cactiFilterClear').off('click').on('click', function (event) {
 						event.stopPropagation();
 						$('#clear').trigger('click');
 					}).tooltip();
@@ -1210,7 +1210,7 @@ function makeFiltersResponsive() {
 
 				toggleFilterAndIcon(id, child, true);
 
-				filterHeader.find('.cactiTableTitle, .cactiTableButton').off('click').on('click', function() {
+				filterHeader.find('.cactiTableTitle, .cactiTableButton').off('click').on('click', function () {
 					id = $(this).closest('.cactiTable').attr('id');
 					child = id + '_child';
 					toggleFilterAndIcon(id, child, false);
@@ -1240,10 +1240,10 @@ function makeFiltersResponsive() {
 			}
 		});
 	} else if ($('#dqdebug').length) {
-		$('#dqdebug').find('div.cactiTableButton').each(function() {
+		$('#dqdebug').find('div.cactiTableButton').each(function () {
 			if ($(this).find('a').length) {
 				anchors = $('div.cactiTableButton').find('a');
-				anchors.each(function() {
+				anchors.each(function () {
 					$(this).attr('title', $(this).text());
 				});
 				anchors.not('.cactiTableCopy').addClass('fa fa-trash-alt');
@@ -1254,7 +1254,7 @@ function makeFiltersResponsive() {
 	}
 
 	if ($('#form_graph_view').length) {
-		$('#form_graph_view').filter('input, select').not('#date1, #date2').click(function() {
+		$('#form_graph_view').filter('input, select').not('#date1, #date2').click(function () {
 			closeDateFilters();
 		});
 	}
@@ -1309,7 +1309,7 @@ function setGraphTabs() {
 
 		/* update menu selection */
 		if (theme == 'classic') {
-			$('.righttab').each(function() {
+			$('.righttab').each(function () {
 				if ($(this).hasClass('selected')) {
 					if ($(this).find('img').length) {
 						imageSRC = $(this).find('img').attr('src');
@@ -1333,7 +1333,7 @@ function setGraphTabs() {
 }
 
 function setupResponsiveMenuAndTabs() {
-	$('.maintabs a.lefttab, .dropdownMenu a, .menuoptions a, #gtabs a.righttab').not('[href^="http"], [href^="https"], [href^="#"], [target="_blank"]').off('click').on('click', function(event) {
+	$('.maintabs a.lefttab, .dropdownMenu a, .menuoptions a, #gtabs a.righttab').not('[href^="http"], [href^="https"], [href^="#"], [target="_blank"]').off('click').on('click', function (event) {
 		if (!shouldCaptureClick(event)) {
 			return;
 		}
@@ -1358,7 +1358,7 @@ function setupResponsiveMenuAndTabs() {
 		}
 	});
 
-	$(window).on('orientationchange, fullscreenchange', function() {
+	$(window).on('orientationchange, fullscreenchange', function () {
 		responsiveUI('force');
 	});
 }
@@ -1381,7 +1381,7 @@ function responsiveUI(event) {
 	if (event != 'force') {
 		if (new Date() - resizeTime < resizeDelta) {
 			var myEvent = event;
-			setTimeout(function() {
+			setTimeout(function () {
 				responsiveUI(myEvent);
 			}, resizeDelta);
 
@@ -1402,7 +1402,7 @@ function responsiveUI(event) {
 	var mainWidth = getMainWidth();
 
 	/* change textbox and textarea widths */
-	$('input[type="text"], textarea').each(function() {
+	$('input[type="text"], textarea').each(function () {
 		if ($(this).attr('type') == 'text') {
 			var offset = 20;
 		} else {
@@ -1428,7 +1428,7 @@ function responsiveUI(event) {
 		}
 	});
 
-	$('.filterTable').each(function() {
+	$('.filterTable').each(function () {
 		tuneFilter($(this), mainWidth);
 	});
 
@@ -1449,7 +1449,7 @@ function getMainWidth() {
 function getCactiHelp(cactiPage) {
 	var url = urlPath + 'help.php?page=' + cactiPage;
 
-	$.getJSON(url, function(data) {
+	$.getJSON(url, function (data) {
 		if (data.status == 'Success') {
 			window.open(data.location, '_blank');
 		}
@@ -1491,7 +1491,7 @@ function responsiveResizeGraphs(initialize) {
 
 	var myWidth = parseInt((graphRow - (drillDown * myColumns)) / myColumns);
 
-	$('.graphimage').each(function() {
+	$('.graphimage').each(function () {
 		var graph_id = $(this).attr('graph_id');
 
 		if (!(graph_id > 0)) {
@@ -1551,7 +1551,7 @@ function responsiveResizeGraphs(initialize) {
 	});
 
 	previousMainWidth = mainWidth;
-	previousColumns   = myColumns;
+	previousColumns = myColumns;
 
 	if ($('.cactiTreeNavigationArea').length) {
 		resizeTreePanel();
@@ -1568,7 +1568,7 @@ function resizeTreePanel() {
 		var pageBottomHeight = $('.cactiPageBottom').outerHeight();
 		//console.log('----------------------');
 
-		var jsTreeHeight = Math.max.apply(Math, $('#jstree').children(':visible').map(function() {
+		var jsTreeHeight = Math.max.apply(Math, $('#jstree').children(':visible').map(function () {
 			return $(this).outerHeight();
 		}).get());
 
@@ -1584,7 +1584,7 @@ function resizeTreePanel() {
 		$('#jstree').height(jsTreeHeight + 30);
 		$('.cactiTreeNavigationArea').height(treeAreaHeight + searchHeight);
 
-		var visWidth = Math.max.apply(Math, $('#jstree').children(':visible').map(function() {
+		var visWidth = Math.max.apply(Math, $('#jstree').children(':visible').map(function () {
 			return $(this).width();
 		}).get());
 
@@ -1622,7 +1622,7 @@ function resizeTreePanel() {
 function countHiddenCols(object) {
 	var hidden = 0;
 
-	$(object).find('th').each(function() {
+	$(object).find('th').each(function () {
 		if ($(this).css('display') == 'none') {
 			hidden++;
 		}
@@ -1634,8 +1634,8 @@ function countHiddenCols(object) {
 function tuneTables() {
 	var mainWidth = getMainWidth();
 
-	$('.cactiTable').each(function() {
-		$(this).find('th:first-child').each(function() {
+	$('.cactiTable').each(function () {
+		$(this).find('th:first-child').each(function () {
 			var object = $(this).closest('.cactiTable');
 
 			tuneTable(object, mainWidth);
@@ -1652,8 +1652,8 @@ function pageHasHidableColumnsAndProfile() {
 }
 
 function resetTables() {
-	$('.cactiTable').each(function() {
-		$(this).find('th:first-child').each(function() {
+	$('.cactiTable').each(function () {
+		$(this).find('th:first-child').each(function () {
 			var object = $(this).closest('.cactiTable');
 
 			resetTable(object);
@@ -1664,7 +1664,7 @@ function resetTables() {
 function resetTable(object) {
 	var id = $(object).attr('id');
 	var column = 1;
-	$(object).find('th').each(function() {
+	$(object).find('th').each(function () {
 		$('#' + id + ' th:nth-child(' + column + ')').show();
 		$('#' + id + ' td:nth-child(' + column + ')').show();
 		column++;
@@ -1672,14 +1672,14 @@ function resetTable(object) {
 }
 
 function tuneTable(object, width) {
-	var rows           = $(object).find('tr').length;
-	var width          = width;
-	var tableWidth     = $(object).width();
-	var totalCols      = $(object).find('th').length;
-	var reducedWidth   = 0;
-	var columnsHidden  = countHiddenCols(object);
+	var rows = $(object).find('tr').length;
+	var width = width;
+	var tableWidth = $(object).width();
+	var totalCols = $(object).find('th').length;
+	var reducedWidth = 0;
+	var columnsHidden = countHiddenCols(object);
 	var visibleColumns = totalCols - columnsHidden;
-	var id             = $(object).attr('id');
+	var id = $(object).attr('id');
 
 	if (rows > 101) return false;
 
@@ -1695,22 +1695,22 @@ function tuneTable(object, width) {
 	// We have to both show and hide columns that fit.
 	// So, always find the size of the page columns.
 	var calculatedColumns = [];
-	var calculatedWidth   = 0;
-	var allSeenWidth      = 0;
+	var calculatedWidth = 0;
+	var allSeenWidth = 0;
 	var calculatedPadding = 15;
-	var tableChanged      = false;
-	var stopExpand        = false;
-	var debug             = false;
+	var tableChanged = false;
+	var stopExpand = false;
+	var debug = false;
 
 	var tableHeaders = $(object).find('th');
-	var tableCheckBox = $(tableHeaders).each(function() {
+	var tableCheckBox = $(tableHeaders).each(function () {
 		if ($(this).index() == tableHeaders.length) {
 			calculatedColumns.addClass('noHide');
 		}
 	});
 
 	// Traverse the table and look for columns to hide from left to right
-	$($(object).find('th').get()).each(function() {
+	$($(object).find('th').get()).each(function () {
 		var isLastCheckBox = $(this).hasClass('tableSubHeaderCheckbox') && $(this).index() == tableHeaders.length - 1;
 		var columnWidth = $.textMetrics(this).width;
 
@@ -1735,7 +1735,7 @@ function tuneTable(object, width) {
 	}
 
 	if (width < tableWidth) {
-		$($(object).find('th').get()).each(function() {
+		$($(object).find('th').get()).each(function () {
 			// Now traverse the available columns for hiding
 			// and See which need to be hidden
 			if (!calculatedColumns.includes($(this).index())) {
@@ -1762,7 +1762,7 @@ function tuneTable(object, width) {
 		});
 
 		if (tableChanged) {
-			$($(object).find('td').each(function() {
+			$($(object).find('td').each(function () {
 				if (!calculatedColumns.includes($(this).index())) {
 					$(this).hide();
 				}
@@ -1777,7 +1777,7 @@ function tuneTable(object, width) {
 
 		// Since we can show hidden columns now, let's go
 		// in reverse until we run out of space
-		$($(object).find('th').get()).each(function() {
+		$($(object).find('th').get()).each(function () {
 			if (!calculatedColumns.includes($(this).index())) {
 				if ($(this).is(':hidden') && stopExpand == false) {
 					var columnWidth = $.textMetrics(this).width + calculatedPadding;
@@ -1811,7 +1811,7 @@ function tuneTable(object, width) {
 		});
 
 		if (tableChanged) {
-			$($(object).find('td').each(function() {
+			$($(object).find('td').each(function () {
 				if (calculatedColumns.includes($(this).index())) {
 					$(this).show();
 				}
@@ -1825,16 +1825,16 @@ function tuneFilter(object, width) {
 		var timespan = true;
 
 		var timeShiftWidth = $(object).find('.shiftArrow').closest('td').width();
-		var dateWidth      = $(object).find('#date1').closest('td').width() + $(object).find('#date1').closest('td').prev('td').width();
-		var clearWidth     = $('#tsclear').width();
-		var refreshWidth   = $('#tsrefresh').width();
+		var dateWidth = $(object).find('#date1').closest('td').width() + $(object).find('#date1').closest('td').prev('td').width();
+		var clearWidth = $('#tsclear').width();
+		var refreshWidth = $('#tsrefresh').width();
 	} else {
 		var timespan = false;
 
-		var clearWidth     = $(object).find('#clear').width();
-		var saveWidth      = $(object).find('#save').width();
-		var exportWidth    = $(object).find('#export').width();
-		var importWidth    = $(object).find('#import').width();
+		var clearWidth = $(object).find('#clear').width();
+		var saveWidth = $(object).find('#save').width();
+		var exportWidth = $(object).find('#export').width();
+		var importWidth = $(object).find('#import').width();
 	}
 
 	var minTds = 2;
@@ -1846,7 +1846,7 @@ function tuneFilter(object, width) {
 
 	if ($(object).width() > width) {
 		if (!timespan) {
-			$($(object).find('td').get().reverse()).each(function() {
+			$($(object).find('td').get().reverse()).each(function () {
 				if ($(this).find('input[type="button"]').length == 0) {
 					if ($(this).is(':visible')) {
 						$(this).hide();
@@ -1926,7 +1926,7 @@ function tuneFilter(object, width) {
 			}
 
 			if ($(object).width() < width) {
-				$(object).find('td').each(function() {
+				$(object).find('td').each(function () {
 					if ($(this).find('input[type="button"]').length == 0) {
 						if (!$(this).is(':visible')) {
 							showWidth = $(this).width();
@@ -1969,8 +1969,8 @@ function tuneFilter(object, width) {
 
 function handleUserMenu(toggle) {
 	var windowWidth = $(window).width();
-	var savedState  = getMenuState();
-	var curState    = $('#navigation').is(':visible') ? 'visible':'hidden';
+	var savedState = getMenuState();
+	var curState = $('#navigation').is(':visible') ? 'visible' : 'hidden';
 
 	//console.log('handle called, curState:'+curState+', savedState:'+savedState+', Toggle:'+toggle);
 	if ($('#navigation').length) {
@@ -2022,7 +2022,7 @@ function menuHide(store) {
 	$('#navigation_right').animate({ 'margin-left': '0px' }, 20);
 
 	if (myClass != '') {
-		$(myClass).hide('slide', { direction: 'left' }, 20, function() {
+		$(myClass).hide('slide', { direction: 'left' }, 20, function () {
 			responsiveResizeGraphs();
 		});
 	}
@@ -2064,7 +2064,7 @@ function menuShow() {
 	}
 
 	if (myClass != '') {
-		$(myClass).show('slide', { direction: 'left' }, 20, function() {
+		$(myClass).show('slide', { direction: 'left' }, 20, function () {
 			responsiveResizeGraphs();
 		});
 	}
@@ -2138,7 +2138,7 @@ function userMenuNavigationExists(url) {
 	if (url == 'index.php') {
 		return true;
 	} else {
-		$('#navigation').find('a').each(function() {
+		$('#navigation').find('a').each(function () {
 			var checkUrl = basename($(this).attr('href'));
 
 			if (checkUrl == url) {
@@ -2163,7 +2163,7 @@ function loadPageUsingPost(href, postData, returnLocation) {
 function setNavigationScroll() {
 	var object = '';
 
-	$('.cactiConsoleNavigationArea, .cactiTreeNavigationArea').unbind('mousemove').on('mousemove', function(pos) {
+	$('.cactiConsoleNavigationArea, .cactiTreeNavigationArea').unbind('mousemove').on('mousemove', function (pos) {
 		object = '';
 
 		if ($('.cactiConsoleNavigationArea').length) {
@@ -2173,8 +2173,8 @@ function setNavigationScroll() {
 		}
 
 		if (object != '') {
-			var mpos   = $(object).position();
-			var width  = $(object).outerWidth();
+			var mpos = $(object).position();
+			var width = $(object).outerWidth();
 			var height = $(object).outerHeight();
 			if (pos.pageX < mpos.left ||
 				pos.pageY < mpos.top ||
@@ -2183,7 +2183,7 @@ function setNavigationScroll() {
 
 				if (isHover) {
 					clearTimeout(hoverTimer);
-					hoverTimer = setTimeout(function() {
+					hoverTimer = setTimeout(function () {
 						$(object).css('overflow-y', 'hidden');
 					}, 500);
 				}
@@ -2192,7 +2192,7 @@ function setNavigationScroll() {
 			} else {
 				if (!isHover) {
 					clearTimeout(hoverTimer);
-					hoverTimer = setTimeout(function() {
+					hoverTimer = setTimeout(function () {
 						$(object).css('overflow-y', 'auto');
 					}, 500);
 				}
@@ -2202,7 +2202,7 @@ function setNavigationScroll() {
 		}
 	});
 
-	$('.cactiConsoleNavigationArea, .cactiTreeNavigationArea').unbind('mouseleave').on('mouseleave', function(pos) {
+	$('.cactiConsoleNavigationArea, .cactiTreeNavigationArea').unbind('mouseleave').on('mouseleave', function (pos) {
 		if ($('.cactiConsoleNavigationArea').length) {
 			object = '.cactiConsoleNavigationArea';
 		} else if ($('.cactiTreeNavigationArea').length) {
@@ -2212,7 +2212,7 @@ function setNavigationScroll() {
 		isHover = false;
 
 		clearTimeout(hoverTimer);
-		hoverTimer = setTimeout(function() {
+		hoverTimer = setTimeout(function () {
 			$(object).css('overflow-y', 'hidden');
 		}, 500);
 	});
@@ -2261,11 +2261,11 @@ function loadUrl(options) {
 
 		$.ajaxQ.abortAll();
 		return $.get(options.url)
-			.done(function(html) {
+			.done(function (html) {
 				handleAjaxResponse(html, options);
 				return false;
 			})
-			.fail(function(html) {
+			.fail(function (html) {
 				getPresentHTTPError(html);
 			});
 	}
@@ -2284,11 +2284,11 @@ function postUrl(options, data) {
 
 	$.ajaxQ.abortAll();
 	return $.post(options.url, data)
-		.done(function(html) {
+		.done(function (html) {
 			handleAjaxResponse(html, options);
 			return false;
 		})
-		.fail(function(html) {
+		.fail(function (html) {
 			getPresentHTTPError(html);
 		});
 }
@@ -2303,18 +2303,18 @@ function findElement(htmlObject, element) {
 
 function sanitizeAjaxOptions(check) {
 	options = {
-		force:     false,
-		scroll:    false,
+		force: false,
+		scroll: false,
 		elementId: 'main',
-		tabId:     '',
-		loadType:  'noheader',
+		tabId: '',
+		loadType: 'noheader',
 		funcStart: '',
-		funcEnd:   '',
-		url:       '',
-		pageName:  '',
-		noState:   false,
-		handle:    true,
-		redirect:  '',
+		funcEnd: '',
+		url: '',
+		pageName: '',
+		noState: false,
+		handle: true,
+		redirect: '',
 	};
 
 	if (typeof check == 'undefined') {
@@ -2383,13 +2383,13 @@ function handleAjaxResponse(html, options) {
 	if (options.handle && options.redirect.trim() == '') {
 		elementId = '#' + options.elementId;
 
-		var htmlObject  = $(html);
-		var matches     = html.match(/<title>(.*?)<\/title>/);
+		var htmlObject = $(html);
+		var matches = html.match(/<title>(.*?)<\/title>/);
 
 		if (matches != null) {
-			var htmlTitle   = matches[1];
-			var breadCrumbs = findElement(htmlObject,'#breadcrumbs').html();
-			var htmlContent = findElement(htmlObject,elementId).html();
+			var htmlTitle = matches[1];
+			var breadCrumbs = findElement(htmlObject, '#breadcrumbs').html();
+			var htmlContent = findElement(htmlObject, elementId).html();
 
 			$('title').text(htmlTitle);
 			$('#breadcrumbs').html(breadCrumbs);
@@ -2518,7 +2518,7 @@ function getPresentHTTPErrorOrRedirect(data, url) {
 				width: messageWidth,
 				title: errorReasonTitle,
 				buttons: {
-					Ok: function() {
+					Ok: function () {
 						$(this).dialog('close');
 					}
 				}
@@ -2543,7 +2543,7 @@ function getPresentHTTPErrorOrRedirect(data, url) {
 function ajaxAnchors() {
 	var page = basename(location.pathname);
 
-	$('a.pic, a.linkOverDark, a.linkEditMain, a.console, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"], [href^="mailto"], [target="_blank"]').off('click').on('click', function(event) {
+	$('a.pic, a.linkOverDark, a.linkEditMain, a.console, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"], [href^="mailto"], [target="_blank"]').off('click').on('click', function (event) {
 		if (!shouldCaptureClick(event))
 			return;
 
@@ -2597,14 +2597,14 @@ function checkFormStatus(href, type, scroll_or_id) {
 	var changed = false;
 
 	if ($('.cactiFormStart').not('#chk').length) {
-		$('.cactiFormStart').not('#chk').each(function() {
-			var formID     = $(this).attr('id');
+		$('.cactiFormStart').not('#chk').each(function () {
+			var formID = $(this).attr('id');
 			var submitData = $(this).serializeForm();
 
 			if (typeof formArray != 'undefined' && typeof formArray[formID] != 'undefined') {
 				var formData = formArray[formID];
 
-				$.each(submitData, function(index, value) {
+				$.each(submitData, function (index, value) {
 					if (typeof formData[index] != 'undefined') {
 						if (formData[index] != value) {
 							if (index == 'settings_sendmail_path' || index == 'rrd_archive' || index == '__csrf_magicSubmit' || index == '__csrf_magic' || index == 'settings_smtp_password' || index == 'settings_smtp_password_confirm') {
@@ -2635,7 +2635,7 @@ function checkFormStatus(href, type, scroll_or_id) {
 function setupCollapsible() {
 	var storage = Storages.localStorage;
 
-	$('.collapsible').each(function(data) {
+	$('.collapsible').each(function (data) {
 		var id = $(this).attr('id') + '_cs';
 		if (storage.isSet(id)) {
 			var state = storage.get(id);
@@ -2651,7 +2651,7 @@ function setupCollapsible() {
 		}
 	});
 
-	$('.collapsible').off('click').on('click', function(data) {
+	$('.collapsible').off('click').on('click', function (data) {
 		var id = $(this).attr('id') + '_cs';
 
 		if ($(this).find('i').hasClass('fa-angle-double-up')) {
@@ -2662,7 +2662,7 @@ function setupCollapsible() {
 		} else {
 			$(this).removeClass('collapsed');
 			$(this).nextUntil('div.spacer').slideDown('slow');
-			$(this).nextUntil('div.spacer').each(function(data) {
+			$(this).nextUntil('div.spacer').each(function (data) {
 				$(this).find('input, select').change();
 			});
 			$(this).find('i').removeClass('fa-angle-double-down').addClass('fa-angle-double-up');
@@ -2697,21 +2697,21 @@ function handleConsole(pageName) {
 function setupUserMenu() {
 	handleConsole();
 
-	$('.menuoptions').mouseenter(function() {
+	$('.menuoptions').mouseenter(function () {
 		clearTimeout(userMenuTimer);
-	}).mouseleave(function() {
+	}).mouseleave(function () {
 		if ($('.menuoptions').is(':visible')) {
-			userMenuTimer = setTimeout(function() { closeUserMenu(); }, 1000);
+			userMenuTimer = setTimeout(function () { closeUserMenu(); }, 1000);
 		}
 	});
 
-	$('.user').mouseenter(function(data) {
+	$('.user').mouseenter(function (data) {
 		clearTimeout(userMenuTimer);
-		userMenuOpenTimer = setTimeout(function() { openUserMenu(); }, 400);
+		userMenuOpenTimer = setTimeout(function () { openUserMenu(); }, 400);
 		openUserMenu();
-	}).mouseleave(function(data) {
+	}).mouseleave(function (data) {
 		if ($('.menuoptions').is(':visible')) {
-			userMenuTimer = setTimeout(function() { closeUserMenu(); }, 1000);
+			userMenuTimer = setTimeout(function () { closeUserMenu(); }, 1000);
 		} else {
 			clearTimeout(userMenuOpenTimer);
 		}
@@ -2729,18 +2729,18 @@ function setupSpecialKeys() {
 /** setupSortable - This function will set all actions for sortable columns
  *  every time a page is regenerated */
 function setupSortable() {
-	$('th.sortable').on('click', function(e) {
+	$('th.sortable').on('click', function (e) {
 		document.getSelection().removeAllRanges();
 
 		var $target = $(e.target);
 		var sortAdd = '';
-		var href     = '';
+		var href = '';
 
 		if (!$target.is('.ui-resizable-handle')) {
-			var page      = $(this).find('.sortinfo').attr('sort-page');
-			var column    = $(this).find('.sortinfo').attr('sort-column');
+			var page = $(this).find('.sortinfo').attr('sort-page');
+			var column = $(this).find('.sortinfo').attr('sort-column');
 			var direction = $(this).find('.sortinfo').attr('sort-direction');
-			var returnto  = $(this).find('.sortinfo').attr('sort-return');
+			var returnto = $(this).find('.sortinfo').attr('sort-return');
 
 			if (shiftPressed) {
 				sortAdd = '&add=true';
@@ -2767,7 +2767,7 @@ function shouldCaptureClick(event) {
 }
 
 function setupBreadcrumbs() {
-	$('#breadcrumbs > li > a').click(function(event) {
+	$('#breadcrumbs > li > a').click(function (event) {
 		if (!shouldCaptureClick(event))
 			return
 
@@ -2792,7 +2792,7 @@ function saveTableWidths(initial) {
 	var key;
 
 	// Initialize table width on the page
-	$('.cactiTable').each(function(data) {
+	$('.cactiTable').each(function (data) {
 		var key = $(this).attr('id');
 
 		if (storage.isSet(key)) {
@@ -2828,7 +2828,7 @@ function saveTableWidths(initial) {
 
 		if (key !== undefined) {
 			if (initial && items.length) {
-				$('#' + key).find('th.ui-resizable').each(function(data) {
+				$('#' + key).find('th.ui-resizable').each(function (data) {
 					if (items[i] == 0) {
 						items[i] = $(this).width();
 						sizes[i] = items[i];
@@ -2841,7 +2841,7 @@ function saveTableWidths(initial) {
 					i++;
 				});
 			} else {
-				$('#' + key).find('th.ui-resizable').each(function(data) {
+				$('#' + key).find('th.ui-resizable').each(function (data) {
 					sizes[i] = $(this).width();
 
 					if (sizes[i] != 0) {
@@ -2869,31 +2869,31 @@ function applyTableSizing() {
 	$('.tableHeader').not('.tableFixed').find('th').resizable({
 		handles: 'e',
 
-		start: function(event, ui) {
-			colWidth     = $(this).width();
+		start: function (event, ui) {
+			colWidth = $(this).width();
 			originalSize = ui.size.width;
 
 			if (originalSize == 0) {
 				originalSize = $(this).width();
 			}
 
-			$(ui.originalElement).siblings().each(function(data) {
+			$(ui.originalElement).siblings().each(function (data) {
 				$(this).attr('resizeWidth', $(this).width());
 			});
 		},
 
-		resize: function(event, ui) {
+		resize: function (event, ui) {
 			var resizeDelta = ui.size.width - originalSize;
 			var newColWidth = colWidth + resizeDelta;
 			var nextWidth = $(ui.element).next().attr('resizeWidth');
 			$(ui.element).next().css('width', nextWidth - resizeDelta);
-			$(ui.element).prevUntil('tr').each(function(data) {
+			$(ui.element).prevUntil('tr').each(function (data) {
 				$(this).css('width', $(this).attr('resizeWidth'));
 			});
 			$(this).css('height', 'auto');
 		},
 
-		stop: function(event, ui) {
+		stop: function (event, ui) {
 			saveTableWidths(false);
 		}
 	});
@@ -2920,7 +2920,7 @@ function setupPageTimeout() {
 	}
 
 	if (typeof refreshMSeconds != 'undefined') {
-		myRefresh = setTimeout(function() {
+		myRefresh = setTimeout(function () {
 			if (refreshIsLogout) {
 				document.location = urlPath + 'logout.php?action=timeout';
 			} else {
@@ -2952,7 +2952,7 @@ function pulsateStop(element) {
 }
 
 function setTitleAndHref() {
-	myHref  = $(location).attr('href');
+	myHref = $(location).attr('href');
 	myTitle = $(document).attr('title');
 }
 
@@ -2961,7 +2961,7 @@ function clearAllTimeouts() {
 		return true;
 	}
 
-	var id = window.setTimeout(function() {}, 0);
+	var id = window.setTimeout(function () { }, 0);
 
 	while (id--) {
 		window.clearTimeout(id); // will do nothing if no timeout with id is present
@@ -2985,10 +2985,10 @@ function setZoneInfo() {
 	document.cookie = CactiTimeZone;
 }
 
-$(function() {
+$(function () {
 	statePushed = false;
-	popFired    = false;
-	var tapped  = false;
+	popFired = false;
+	var tapped = false;
 
 	/**
 	 * Unbind key elements to debounce actions
@@ -2996,11 +2996,11 @@ $(function() {
 	$('input, select, textarea, a').unbind();
 
 	// Use traditional popstate handler
-	window.onpopstate = function(event) {
+	window.onpopstate = function (event) {
 		handlePopState();
 	}
 
-	$('#filter, #rfilter').keydown(function(event) {
+	$('#filter, #rfilter').keydown(function (event) {
 		if (event.keyCode == 8 && $(this).val() == '') {
 			handlePopState();
 		}
@@ -3021,9 +3021,9 @@ $(function() {
 	$('#navigation_right').show();
 
 	if (isMobile.any() != null) {
-		$(window).on('touchstart', function(event) {
+		$(window).on('touchstart', function (event) {
 			if (!tapped) {
-				tapped = setTimeout(function() { tapped = null; }, 300);
+				tapped = setTimeout(function () { tapped = null; }, 300);
 			} else {
 				clearTimeout(tapped);
 				tapped = null;
@@ -3034,17 +3034,17 @@ $(function() {
 			}
 		});
 
-		$(window).on('load', function(event) {
-			setTimeout(function() { window.scrollTo(0, 1); }, 0);
+		$(window).on('load', function (event) {
+			setTimeout(function () { window.scrollTo(0, 1); }, 0);
 		});
 	}
 });
 
 /* only perform the recalculation of elements at the final end of the windows resize event */
-var waitForFinalEvent = (function() {
+var waitForFinalEvent = (function () {
 	var timers = {};
 
-	return function(callback, ms, uniqueId) {
+	return function (callback, ms, uniqueId) {
 		if (!uniqueId) {
 			uniqueId = "Don't call this twice without a uniqueId";
 		}
@@ -3063,7 +3063,7 @@ function setupEllipsis() {
 		'</ul>' +
 		'</div>').appendTo('body');
 
-	$('.maintabs-submenu, .usertabs-submenu, .submenu-ellipsis').off('click').on('click', function(event) {
+	$('.maintabs-submenu, .usertabs-submenu, .submenu-ellipsis').off('click').on('click', function (event) {
 		event.preventDefault();
 
 		var submenu_index = $(this).attr('id').replace('menu-', 'submenu-');
@@ -3089,17 +3089,17 @@ function setupEllipsis() {
 		return false;
 	});
 
-	$('.submenuoptions').mouseenter(function(event) {
+	$('.submenuoptions').mouseenter(function (event) {
 		clearTimeout(userMenuTimer);
-	}).mouseleave(function(event) {
+	}).mouseleave(function (event) {
 		if ($('.submenuoptions').is(':visible')) {
-			userMenuTimer = setTimeout(function() { $('.submenuoptions').stop().slideUp(120); }, 1000);
+			userMenuTimer = setTimeout(function () { $('.submenuoptions').stop().slideUp(120); }, 1000);
 		} else {
 			clearTimeout(userMenuOpenTimer);
 		}
 	});
 
-	$(window).on('click', function(event) {
+	$(window).on('click', function (event) {
 		if ($(event.target).parents('.submenuoptions').length == 0 && $('.submenuoptions').is(':visible')) {
 			$('.submenuoptions').slideUp(120);
 		}
@@ -3110,15 +3110,15 @@ function setupEllipsis() {
 }
 
 function keepWindowSize() {
-	$(window).resize(function(event) {
-		waitForFinalEvent(function() {
+	$(window).resize(function (event) {
+		waitForFinalEvent(function () {
 			$('.cactiGraphContentArea').show();
 
 			var resizeTime = new Date();
 			var myEvent = event;
 			if (resizeTimeout === false) {
 				resizeTimeout = true;
-				setTimeout(function() {
+				setTimeout(function () {
 					responsiveUI(myEvent);
 				}, resizeDelta);
 			}
@@ -3181,7 +3181,7 @@ function keepWindowSize() {
 
 			var bodyWidth = $('body').width();
 			var otherWidth = 0;
-			$('#tabs').find('div:not(.maintabs):visible').each(function() {
+			$('#tabs').find('div:not(.maintabs):visible').each(function () {
 				otherWidth += $(this).outerWidth();
 			});
 
@@ -3205,7 +3205,7 @@ function keepWindowSize() {
 
 			var items = $($('.maintabs nav ul li a.lefttab').get());
 			var done = false;
-			items.each(function() {
+			items.each(function () {
 				var id = $(this).attr('id');
 
 				showCurrentTab(id);
@@ -3214,7 +3214,7 @@ function keepWindowSize() {
 			// Hide top menus if you have to
 			var items = $($('.maintabs nav ul li a.lefttab').get().reverse());
 			var done = false;
-			items.each(function() {
+			items.each(function () {
 				var id = $(this).attr('id');
 
 				if (!done) {
@@ -3237,10 +3237,10 @@ function keepWindowSize() {
 
 function hideCurrentTab(id, shrinking) {
 	if ($('#' + id + '-ellipsis').length == 0) {
-		var myid     = id+'-ellipsis';
-		var href     = $('#'+id).attr('href');
-		var selected = $('#'+id).hasClass('selected');
-		var text     = $('#'+id).text();
+		var myid = id + '-ellipsis';
+		var href = $('#' + id).attr('href');
+		var selected = $('#' + id).hasClass('selected');
+		var text = $('#' + id).text();
 
 		if (shrinking) {
 			$('#submenu-ellipsis').prepend('<li><a class="lefttab' + (selected ? ' selected' : '') + '" id="' + myid + '" href="' + href + '">' + text + '</a></li>');
@@ -3260,25 +3260,25 @@ function showCurrentTab(id) {
 }
 
 function tabsWrapping() {
-	var mainTabPos    = $('.maintabs:first').position();
-	var tabHeight     = $('#tabs').height();
+	var mainTabPos = $('.maintabs:first').position();
+	var tabHeight = $('#tabs').height();
 
 	if ($('.usertabs').length) {
 		var mainTabHeight = tabHeight;
-		var userTabPos    = $('.usertabs').position();
+		var userTabPos = $('.usertabs').position();
 	} else {
 		var mainTabHeight = $('.maintabs:first nav').height();
-		var userTabPos    = mainTabPos;
+		var userTabPos = mainTabPos;
 	}
 
-	var bodyWidth     = $('body').width();
-	var otherWidth    = 0;
-	$('#tabs').find('div:not(.maintabs):visible').each(function() {
+	var bodyWidth = $('body').width();
+	var otherWidth = 0;
+	$('#tabs').find('div:not(.maintabs):visible').each(function () {
 		otherWidth += $(this).outerWidth();
 	});
 
 	var ellipsisWidth = $('.maintabs-submenu-ellipsis').outerWidth();
-	var mtabsWidth    = $('.maintabs:not(.usertabs)').outerWidth();
+	var mtabsWidth = $('.maintabs:not(.usertabs)').outerWidth();
 
 	if ($('#gtabs>.tabs').length) {
 		var gtabsWidth = $('#gtabs>.tabs').outerWidth();
@@ -3365,7 +3365,7 @@ function saveGraphFilter(section) {
 }
 
 function finalizeGraphFilter(options, data) {
-	$('#text').show().text(filterSettingsSaved).fadeOut(2000, function() {
+	$('#text').show().text(filterSettingsSaved).fadeOut(2000, function () {
 		$('#text').empty();
 	});
 }
@@ -3410,7 +3410,7 @@ function handlePopState(e) {
 			loadUrl(e.state.Options);
 			return false;
 		} else if (typeof e.state.Url != 'undefined' && e.state.Url != null) {
-			loadUrl({url:href});
+			loadUrl({ url: href });
 			return false;
 		}
 	}
@@ -3461,7 +3461,7 @@ function timeshiftGraphFilterLeft() {
 
 function timeshiftGraphFilterRight() {
 	postUrl({
-		url:  correctUrlParameters(graphPage + '?action=' + pageAction),
+		url: correctUrlParameters(graphPage + '?action=' + pageAction),
 		funcEnd: 'finalizeGraphFilter',
 	}, {
 		move_right_x: 1,
@@ -3478,7 +3478,7 @@ function clearGraphTimespanFilter() {
 	postUrl({
 		url: correctUrlParameters(graphPage + '?action=' + pageAction),
 		funcEnd: 'finalizeGraphFilter',
-	},{
+	}, {
 		button_clear: 1,
 		date1: $('#date1').val(),
 		date2: $('#date2').val(),
@@ -3618,9 +3618,9 @@ function dryRunAbsolute(local_graph_id) {
 
 function redrawGraph(graph_id) {
 	var mainWidth = getMainWidth() - 30;
-	var isThumb   = $('#thumbnails').is(':checked');
+	var isThumb = $('#thumbnails').is(':checked');
 	var myColumns = $('#columns').val();
-	var graphRow  = $('.tableRowGraph').width();
+	var graphRow = $('.tableRowGraph').width();
 	var drillDown = $('.graphDrillDown:first').outerWidth() + 10;
 
 	if (mainWidth < graphRow) {
@@ -3631,8 +3631,8 @@ function redrawGraph(graph_id) {
 
 	var myWidth = (graphRow - (drillDown * myColumns)) / myColumns;
 
-	var graph_height = $('#wrapper_'+graph_id).attr('graph_height');
-	var graph_width  = $('#wrapper_'+graph_id).attr('graph_width');
+	var graph_height = $('#wrapper_' + graph_id).attr('graph_height');
+	var graph_width = $('#wrapper_' + graph_id).attr('graph_width');
 
 	closeDateFilters();
 
@@ -3703,12 +3703,12 @@ function initializeGraphs(disable_cache) {
 
 	$.ajaxQ.abortAll();
 
-	$('a[id$="_mrtg"]').each(function() {
+	$('a[id$="_mrtg"]').each(function () {
 		var graph_id = $(this).attr('id').replace('graph_', '').replace('_mrtg', '');
 
 		$(this).attr('href', urlPath + 'graph.php?local_graph_id=' + graph_id);
 
-		$(this).off('click').on('click', function(event) {
+		$(this).off('click').on('click', function (event) {
 			if (!shouldCaptureClick(event))
 				return;
 
@@ -3725,11 +3725,11 @@ function initializeGraphs(disable_cache) {
 	var timestampDate1 = getTimestampFromDate($('#date1').val());
 	var timestampDate2 = getTimestampFromDate($('#date2').val());
 
-	$('a[id$="_csv"]').each(function() {
+	$('a[id$="_csv"]').each(function () {
 		var graph_id = $(this).attr('id').replace('graph_', '').replace('_csv', '');
 
 		// Disable context menu
-		$(this).children().contextmenu(function() {
+		$(this).children().contextmenu(function () {
 			return false;
 		});
 
@@ -3743,7 +3743,7 @@ function initializeGraphs(disable_cache) {
 
 		$(this).attr('href', url);
 
-		$(this).off('click').on('click', function(event) {
+		$(this).off('click').on('click', function (event) {
 			if (!shouldCaptureClick(event))
 				return;
 
@@ -3763,7 +3763,7 @@ function initializeGraphs(disable_cache) {
 		});
 	});
 
-	$('#form_graph_view').off('submit').on('submit', function(event) {
+	$('#form_graph_view').off('submit').on('submit', function (event) {
 		event.preventDefault();
 		event.stopPropagation();
 		applyFilter();
@@ -3775,7 +3775,7 @@ function initializeGraphs(disable_cache) {
 	var myWidth = (mainWidth - (30 * myColumns)) / myColumns;
 	var numGraphs = $('.graphWrapper').length;
 
-	$('.graphWrapper').each(function() {
+	$('.graphWrapper').each(function () {
 		var graph_id = $(this).attr('graph_id');
 		if (!(graph_id > 0)) {
 			graph_id = $(this).attr('id').replace('wrapper_', '');
@@ -3803,7 +3803,7 @@ function initializeGraphs(disable_cache) {
 			(isThumb ? '&graph_nolegend=true' : '');
 
 		$.getJSON(url)
-			.done(function(data) {
+			.done(function (data) {
 				if (myWidth < data.image_width) {
 					ratio = myWidth / data.image_width;
 
@@ -3866,20 +3866,20 @@ function initializeGraphs(disable_cache) {
 
 				data = undefined;
 			})
-			.fail(function(data) {
+			.fail(function (data) {
 				getPresentHTTPErrorOrRedirect(data, error_url);
 			});
 	});
 
-	$('#realtimeoff').off('click').on('click', function() {
+	$('#realtimeoff').off('click').on('click', function () {
 		stopRealtime();
 	});
 
-	$('#ds_step').off('change').on('change', function() {
+	$('#ds_step').off('change').on('change', function () {
 		realtimeGrapher();
 	});
 
-	$('a[id$="_util"]').each(function() {
+	$('a[id$="_util"]').each(function () {
 		var graph_id = $(this).attr('id').replace('graph_', '').replace('_util', '');
 
 		$(this).attr('href', urlPath +
@@ -3890,7 +3890,7 @@ function initializeGraphs(disable_cache) {
 			'&graph_start=' + timestampDate1 +
 			'&graph_end=' + timestampDate2);
 
-		$(this).off('click').on('click', function(event) {
+		$(this).off('click').on('click', function (event) {
 			if (!shouldCaptureClick(event))
 				return;
 
@@ -3904,13 +3904,13 @@ function initializeGraphs(disable_cache) {
 		});
 	});
 
-	$('a[id$="_realtime"]').each(function() {
+	$('a[id$="_realtime"]').each(function () {
 		// Disable right click
-		$(this).children().on('contextmenu', function(event) {
+		$(this).children().on('contextmenu', function (event) {
 			return false;
 		});
 
-		$(this).off('click').on('click', function(event) {
+		$(this).off('click').on('click', function (event) {
 			if (!shouldCaptureClick(event))
 				return;
 
@@ -3944,7 +3944,7 @@ function initializeGraphs(disable_cache) {
 }
 
 $.widget('custom.languageselect', $.ui.selectmenu, {
-	_renderItem: function(ul, item) {
+	_renderItem: function (ul, item) {
 		var li = $('<li>');
 		var wrapper = $('<div>', { text: item.label });
 		if (item.disabled) {
@@ -3962,7 +3962,7 @@ $.widget('custom.languageselect', $.ui.selectmenu, {
 
 // combobox example borrowed from jqueryui
 $.widget('custom.dropcolor', {
-	_create: function() {
+	_create: function () {
 		this.wrapper = $('<span style="display:inline-flex"><span class="ui-select-text"><div id="bgc" class="ui-icon color-icon" style="margin-left:2px;margin-right:3px;"></div></span></span>')
 			.addClass('ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-button ui-widget')
 			.insertAfter(this.element);
@@ -3972,7 +3972,7 @@ $.widget('custom.dropcolor', {
 		this._createShowAllButton();
 	},
 
-	_createAutocomplete: function() {
+	_createAutocomplete: function () {
 		var selected = this.element.children(':selected');
 		var value = selected.val() ? selected.text() : '';
 		var regExp = /\(([^)]+)\)/;
@@ -3983,7 +3983,7 @@ $.widget('custom.dropcolor', {
 		}
 		this.input = $('<input class="ui-autocomplete-input ui-state-default ui-selectmenu-text" style="background:transparent;border:0px;padding:0px;padding-left:24px;margin-left:-24px" value="' + value + '">')
 			.appendTo(this.wrapper)
-			.on('click', function() {
+			.on('click', function () {
 				$(this).autocomplete('search', '');
 			})
 			.autocomplete({
@@ -3991,14 +3991,14 @@ $.widget('custom.dropcolor', {
 				minLength: 0,
 				source: $.proxy(this, '_source'),
 				select: $.proxy(this, '_select'),
-				search: function() {
+				search: function () {
 					$(this).data('ui-autocomplete').menu.bindings = $();
 				},
-				close: function() {
+				close: function () {
 					$(this).data('ui-autocomplete').menu.bindings = $();
 				},
-				create: function() {
-					$(this).data('ui-autocomplete')._renderItem = function(ul, item) {
+				create: function () {
+					$(this).data('ui-autocomplete')._renderItem = function (ul, item) {
 						var regExp = /\(([^)]+)\)/;
 						var hex = regExp.exec(item.label);
 						var mylabel = $($.parseHTML(item.label));
@@ -4012,7 +4012,7 @@ $.widget('custom.dropcolor', {
 						}
 					}
 
-					$(this).data('ui-autocomplete')._resizeMenu = function() {
+					$(this).data('ui-autocomplete')._resizeMenu = function () {
 						var ul = this.menu.element;
 						ul.outerWidth('220px');
 					}
@@ -4020,7 +4020,7 @@ $.widget('custom.dropcolor', {
 			});
 
 		this._on(this.input, {
-			autocompleteselect: function(event, ui) {
+			autocompleteselect: function (event, ui) {
 				ui.item.option.selected = true;
 				this._trigger('select', event, {
 					item: ui.item.option
@@ -4031,7 +4031,7 @@ $.widget('custom.dropcolor', {
 		});
 	},
 
-	_select: function(event, ui) {
+	_select: function (event, ui) {
 		var regExp = /\(([^)]+)\)/;
 		var hex = regExp.exec(ui.item.label);
 		var id = $(ui.item.option).attr('value');
@@ -4046,7 +4046,7 @@ $.widget('custom.dropcolor', {
 		}
 	},
 
-	_createShowAllButton: function() {
+	_createShowAllButton: function () {
 		var input = this.input;
 		var wasOpen = false;
 
@@ -4054,10 +4054,10 @@ $.widget('custom.dropcolor', {
 			.attr('tabIndex', -1)
 			.appendTo(this.wrapper)
 			.addClass('ui-icon ui-icon-triangle-1-s ui-selectmenu-icon')
-			.on('mousedown', function() {
+			.on('mousedown', function () {
 				wasOpen = input.autocomplete('widget').is(':visible');
 			})
-			.on('click', function() {
+			.on('click', function () {
 				input.trigger('focus');
 
 				// Close if already visible
@@ -4069,9 +4069,9 @@ $.widget('custom.dropcolor', {
 			});
 	},
 
-	_source: function(request, response) {
+	_source: function (request, response) {
 		var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), 'i');
-		results = this.element.children('option').map(function() {
+		results = this.element.children('option').map(function () {
 			var text = $(this).text();
 			if (this.value && (!request.term || matcher.test(text))) {
 				return {
@@ -4085,7 +4085,7 @@ $.widget('custom.dropcolor', {
 		response(results);
 	},
 
-	_removeIfInvalid: function(event, ui) {
+	_removeIfInvalid: function (event, ui) {
 		// Selected an item, nothing to do
 		if (ui.item) {
 			return;
@@ -4096,7 +4096,7 @@ $.widget('custom.dropcolor', {
 		var valueLowerCase = value.toLowerCase();
 		var valid = false;
 
-		this.element.children('option').each(function() {
+		this.element.children('option').each(function () {
 			if ($(this).text().toLowerCase() === valueLowerCase) {
 				this.selected = valid = true;
 				return false;
@@ -4111,13 +4111,13 @@ $.widget('custom.dropcolor', {
 		// Remove invalid value
 		this.input.val('');
 		this.element.val('');
-		this._delay(function() {
+		this._delay(function () {
 			this.input.tooltip('close').attr('title', '');
 		}, 2500);
 		this.input.autocomplete('instance').term = '';
 	},
 
-	_destroy: function() {
+	_destroy: function () {
 		this.wrapper.remove();
 		this.element.show();
 	}
@@ -4129,14 +4129,14 @@ function expandClipboardSection(section) {
 		section.slideDown('fast');
 	}
 
-	var children = section.find('table').each(function(i) {
+	var children = section.find('table').each(function (i) {
 		expandClipboardSection($(this));
 	});
 }
 
 function copyToClipboard(containerId) {
-	var clipboardDataId = containerId.replace('copyToClipboard','clipboardData');
-	var clipboardData   = document.getElementById(clipboardDataId);
+	var clipboardDataId = containerId.replace('copyToClipboard', 'clipboardData');
+	var clipboardData = document.getElementById(clipboardDataId);
 
 	var messageWidth = $(window).width();
 	if (messageWidth > 350) {
@@ -4154,7 +4154,7 @@ function copyToClipboard(containerId) {
 			height: 170,
 			width: messageWidth,
 			buttons: {
-				Ok: function() {
+				Ok: function () {
 					$(this).dialog('close');
 					$('#clipboardMessage').remove();
 				}
@@ -4171,7 +4171,7 @@ function copyToClipboard(containerId) {
 			height: 120,
 			width: messageWidth,
 			buttons: {
-				Ok: function() {
+				Ok: function () {
 					$(this).dialog('close');
 					$('#clipboardMessage').remove();
 				}
@@ -4223,7 +4223,7 @@ function copyToClipboard(containerId) {
 			height: 120,
 			width: messageWidth,
 			buttons: {
-				Ok: function() {
+				Ok: function () {
 					$(this).dialog('close');
 					$('#clipboardMessage').remove();
 				}
@@ -4278,19 +4278,19 @@ function setSNMPSecurity() {
 				$('#snmp_security_level').selectmenu('refresh');
 			}
 
-			$('#snmp_password').keyup(function() {
+			$('#snmp_password').keyup(function () {
 				checkSNMPPassphrase('auth');
 			});
 
-			$('#snmp_password_confirm').keyup(function() {
+			$('#snmp_password_confirm').keyup(function () {
 				checkSNMPPassphraseConfirm('auth');
 			});
 
-			$('#snmp_priv_passphrase').keyup(function() {
+			$('#snmp_priv_passphrase').keyup(function () {
 				checkSNMPPassphrase('priv');
 			});
 
-			$('#snmp_priv_passphrase_confirm').keyup(function() {
+			$('#snmp_priv_passphrase_confirm').keyup(function () {
 				checkSNMPPassphraseConfirm('priv');
 			});
 		}
@@ -4547,40 +4547,40 @@ function checkSNMPPassphraseConfirm(type) {
 	}
 }
 
-(function($) {
+(function ($) {
 
- $.textMetrics = function(el) {
+	$.textMetrics = function (el) {
 
-  var h = 0, w = 0;
+		var h = 0, w = 0;
 
-  var div = document.createElement('div');
-  document.body.appendChild(div);
-  $(div).css({
-   position: 'absolute',
-   left: -1000,
-   top: -1000,
-   display: 'none'
-  });
+		var div = document.createElement('div');
+		document.body.appendChild(div);
+		$(div).css({
+			position: 'absolute',
+			left: -1000,
+			top: -1000,
+			display: 'none'
+		});
 
-  $(div).html($(el).html());
-  var styles = ['font-size','font-style', 'font-weight', 'font-family','line-height', 'text-transform', 'letter-spacing'];
-  $(styles).each(function() {
-   var s = this.toString();
-   $(div).css(s, $(el).css(s));
-  });
+		$(div).html($(el).html());
+		var styles = ['font-size', 'font-style', 'font-weight', 'font-family', 'line-height', 'text-transform', 'letter-spacing'];
+		$(styles).each(function () {
+			var s = this.toString();
+			$(div).css(s, $(el).css(s));
+		});
 
-  h = $(div).outerHeight();
-  w = $(div).outerWidth();
+		h = $(div).outerHeight();
+		w = $(div).outerWidth();
 
-  $(div).remove();
+		$(div).remove();
 
-  var ret = {
-   height: h,
-   width: w
-  };
+		var ret = {
+			height: h,
+			width: w
+		};
 
-  return ret;
- }
+		return ret;
+	}
 
 })(jQuery);
 
@@ -4602,10 +4602,12 @@ function formValidate(formId, href) {
 			}
 
 			if (name !== null && name.length > 0) {
-				formRules[formId][name] = {
-					required: true,
-					email: true,
-				};
+				if (typeof formRules[formId] !== 'undefined') {
+					formRules[formId][name] = {
+						required: true,
+						email: true,
+					};
+				}
 			}
 		});
 
@@ -4629,7 +4631,7 @@ function formValidate(formId, href) {
 				$('input[type="submit"], button[type="submit"]').not('.import, .export').button('disable');
 
 				var json = $(form).serializeObject();
-				postUrl({ url: href }, json).always(function() {
+				postUrl({ url: href }, json).always(function () {
 					$('input[type="submit"], button[type="submit"]').not('.import, .export').button('enable');
 				});
 			},
@@ -4656,9 +4658,9 @@ function formCallback(formId, currentPage, action, callback) {
 	var formCallbackClickTimer;
 	var formCallbackOpen = false;
 
-	var formCallbackId          = '#' + formId;
-	var formCallbackWrap        = formCallbackId + '_wrap';
-	var formCallbackInput       = formCallbackId + '_input';
+	var formCallbackId = '#' + formId;
+	var formCallbackWrap = formCallbackId + '_wrap';
+	var formCallbackInput = formCallbackId + '_input';
 	var formCallbackInputFields = 'input' + formCallbackId + '_input';
 
 	$(formCallbackInput).autocomplete({
@@ -4679,28 +4681,28 @@ function formCallback(formId, currentPage, action, callback) {
 		}
 	}).css('border', 'none').css('background-color', 'transparent');
 
-	$(formCallbackWrap).on('dblclick', function() {
+	$(formCallbackWrap).on('dblclick', function () {
 		formCallbackOpen = false;
 		clearTimeout(formCallbackTimer);
 		clearTimeout(formCallbackClickTimer);
 		$(formCallbackInput).autocomplete('close').select();
-	}).on('click', function() {
+	}).on('click', function () {
 		if (formCallbackOpen) {
 			$(formCallbackInput).autocomplete('close');
 			clearTimeout(formCallbackTimer);
 			formCallbackOpen = false;
 		} else {
-			formCallbackClickTimer = setTimeout(function() {
+			formCallbackClickTimer = setTimeout(function () {
 				$(formCallbackInput).autocomplete('search', '');
 				clearTimeout(formCallbackTimer);
 				formCallbackOpen = true;
 			}, 200);
 		}
 		$(formCallbackInput).select();
-	}).on('keyup', function() {
+	}).on('keyup', function () {
 		$(formCallbackId).val($(formCallbackInput).val());
-	}).on('mouseleave', function() {
-		formCallbackTimer = setTimeout(function() {
+	}).on('mouseleave', function () {
+		formCallbackTimer = setTimeout(function () {
 			$(formCallbackInput).autocomplete('close');
 		}, 800);
 	});
@@ -4713,24 +4715,24 @@ function formCallback(formId, currentPage, action, callback) {
 	$(formCallbackWrap).css('width', width + 20);
 	$(formCallbackInput).css('width', width);
 
-	$('ul[id^="ui-id"]').on('mouseenter', function() {
+	$('ul[id^="ui-id"]').on('mouseenter', function () {
 		clearTimeout(formCallbackTimer);
-	}).on('mouseleave', function() {
-		formCallbackTimer = setTimeout(function() {
+	}).on('mouseleave', function () {
+		formCallbackTimer = setTimeout(function () {
 			$(formCallbackInput).autocomplete('close');
 		}, 800);
 	});
 
-	$('ul[id^="ui-id"] > li').each().on('mouseenter', function() {
+	$('ul[id^="ui-id"] > li').each().on('mouseenter', function () {
 		$(this).addClass('ui-state-hover');
-	}).on('mouseleave', function() {
+	}).on('mouseleave', function () {
 		$(this).removeClass('ui-state-hover');
 	});
 
-	$(formCallbackWrap).on('mouseenter', function() {
+	$(formCallbackWrap).on('mouseenter', function () {
 		$(this).addClass('ui-state-hover');
 		$(formCallbackInputFields).addClass('ui-state-hover');
-	}).on('mouseleave', function() {
+	}).on('mouseleave', function () {
 		$(this).removeClass('ui-state-hover');
 		$(formCallbackInputFields).removeClass('ui-state-hover');
 	});
