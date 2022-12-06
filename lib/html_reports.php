@@ -1003,7 +1003,7 @@ function reports_item_edit() {
 			'value' => '|arg1:host_template_id|',
 			'on_change' => 'changeDeviceTemplate()',
 			'sql' => "SELECT -1 AS id, '" . __('Any') . "' AS name UNION SELECT 0 AS id, '" . __('None') . "' AS name UNION (
-			'	SELECT DISTINCT ht.id, ht.name
+				SELECT DISTINCT ht.id, ht.name
 				FROM host_template AS ht
 				INNER JOIN host AS h
 				ON h.host_template_id=ht.id
