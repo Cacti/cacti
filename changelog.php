@@ -95,7 +95,8 @@ function changelog_view() {
 
 	$tab = get_request_var('tab');
 	if (empty($tabs[$tab])) {
-		$tab = reset(array_keys($tabs));
+		$tab_keys = array_keys($tabs);
+		$tab      = reset($tab_keys);
 	}
 	$header_label = __esc('Change Log [%s]', $tabs[$tab]);
 
