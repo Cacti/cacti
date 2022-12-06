@@ -2535,7 +2535,7 @@ function getPresentHTTPErrorOrRedirect(data, url) {
 		} else {
 			console.log(data.status);
 			$.ajaxQ.abortAll();
-			document.location = stripHeaderSuppression(url);
+			document.location = url;
 		}
 	}
 }
@@ -3324,9 +3324,9 @@ function checkForRedirects(data, href) {
 		document.location = urlPath + 'logout.php?action=disabled';
 	} else if (data.indexOf('cactiRedirect') >= 0) {
 		if (typeof href == 'undefined' || href == null) {
-			document.location = stripHeaderSuppression(document.location);
+			location.reload();
 		} else {
-			document.location = stripHeaderSuppression(href);
+			document.location = href;
 		}
 	} else if (data.indexOf('cactiLoginLogo') >= 0) {
 		document.location = urlPath + 'logout.php?action=timeout';
