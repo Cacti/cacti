@@ -2997,7 +2997,7 @@ $(function () {
 
 	// Use traditional popstate handler
 	window.onpopstate = function (event) {
-		handlePopState();
+		handlePopState(event);
 	}
 
 	$('#filter, #rfilter').keydown(function (event) {
@@ -3405,7 +3405,7 @@ function pushState(myTitle, options) {
 function handlePopState(e) {
 	var href = document.location.href;
 
-	if (typeof e.state != 'undefined' && e.state != null) {
+	if (typeof e !== 'undefined' && e.state != 'undefined' && e.state != null) {
 		if (typeof e.state.Options != 'undefined' && e.state.Options != null) {
 			loadUrl(e.state.Options);
 			return false;

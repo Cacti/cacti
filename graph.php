@@ -254,20 +254,21 @@ case 'view':
 			graph_start = $(this).attr('graph_start');
 			graph_end   = $(this).attr('graph_end');
 
-			$.get(urlPath+'graph.php?' +
-				'action=zoom' +
-				'&local_graph_id='+graph_id+
-				'&rra_id='+rra_id+
-				'&graph_start='+graph_start+
-				'&graph_end='+graph_end)
+			loadUrl({
+				url: 'graph.php?' +
+					'action=zoom' +
+					'&local_graph_id='+graph_id+
+					'&rra_id='+rra_id+
+					'&graph_start='+graph_start+
+					'&graph_end='+graph_end
+			});
+/*
 				.done(function(data) {
 					$('#main').html(data);
 					$('#breadcrumbs').append('<li><a id="nav_util" href="#"><?php print __('Utility View');?></a></li>');
 					applySkin();
 				})
-				.fail(function(data) {
-					getPresentHTTPError(data);
-				});
+*/
 		});
 		$('a[id$="_csv"]').each(function() {
 			$(this).off('click').on('click', function(event) {
@@ -443,35 +444,44 @@ case 'zoom':
 	var refreshMSeconds=9999999;
 
 	function graphProperties() {
-		$.get(urlPath+'graph.php?action=properties&local_graph_id='+graph_id+'&rra_id=<?php print get_request_var('rra_id');?>&view_type=<?php print get_request_var('view_type');?>&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val())
-			.done(function(data) {
-				$('#data').html(data);
-			})
-			.fail(function(data) {
-				getPresentHTTPError(data);
-			});
+		loadUrl({
+			url: urlPath+'graph.php?action=properties' +
+				'&local_graph_id=' + graph_id +
+				'&rra_id=<?php print get_request_var('rra_id');?>' +
+				'&view_type=<?php print get_request_var('view_type');?>' +
+				'&graph_start=' + $('#graph_start').val() +
+				'&graph_end='+$('#graph_end').val(),
+			elementId: 'data',
+		});
+
 		props_on = true;
 		graph_data_on = false;
 	}
 
 	function graphXport() {
-		$.get(urlPath+'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&format=table&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val())
-			.done(function(data) {
-				$('#data').html(data);
-				resizeWrapper();
+		loadUrl({
+			url: urlPath+'graph_xport.php?local_graph_id=' + graph_id +
+				'&rra_id=0' +
+				'&format=table' +
+				'&graph_start=' + $('#graph_start').val() +
+				'&graph_end=' + $('#graph_end').val(),
+			elementId: 'data',
+			funcEnd: 'graphXportFinalize',
+		});
 
-				$('.download').click(function(event) {
-					event.preventDefault;
-					graph_id = $(this).attr('id').replace('graph_','');
-					document.location = urlPath+'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&view_type=tree&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val();
-					Pace.stop();
-				});
-			})
-			.fail(function(data) {
-				getPresentHTTPError(data);
-			});
 		props_on = false;
 		graph_data_on = true;
+	}
+
+	function graphXportFinalize(options, data) {
+		resizeWrapper();
+
+		$('.download').click(function(event) {
+			event.preventDefault;
+			graph_id = $(this).attr('id').replace('graph_','');
+			document.location = urlPath+'graph_xport.php?local_graph_id='+graph_id+'&rra_id=0&view_type=tree&graph_start='+$('#graph_start').val()+'&graph_end='+$('#graph_end').val();
+			Pace.stop();
+		});
 	}
 
 	function initializeGraph() {
