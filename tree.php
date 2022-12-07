@@ -793,7 +793,8 @@ function tree_edit($partial = false) {
 
 	html_end_box(true, true);
 
-	$lockdiv = '';
+	$lockdiv  = '';
+	$editable = true;
 
 	if (isset($tree['locked']) && $tree['locked'] == 0) {
 		$lockdiv = "<div style='padding:5px 5px 5px 0px'><table><tr><td><input type='button' class='ui-button ui-corner-all ui-widget' id='lock' value='" . __esc('Edit Tree') . "'></td><td style='font-weight:bold;'>" . __('To Edit this tree, you must first lock it by pressing the Edit Tree button.') . "</td></tr></table></div>\n";
@@ -801,7 +802,6 @@ function tree_edit($partial = false) {
 	} elseif (isset($tree['locked']) && $tree['locked'] == 1) {
 		$lockdiv = "<div style='padding:5px 5px 5px 0px'><table><tr><td><input type='button' class='ui-button ui-corner-all ui-widget' id='unlock' value='" . __esc('Finish Editing Tree') . "'></td><td><input type='button' class='ui-button ui-corner-all ui-widget' id='addbranch' value='" . __esc('Add Root Branch') . "' onClick='createNode()'></td><td style='font-weight:bold;'>" . __('This tree has been locked for Editing on %1$s by %2$s.', $tree['locked_date'], get_username($tree['modified_by']));
 		if ($tree['modified_by'] == $_SESSION['sess_user_id']) {
-			$editable = true;
 			$lockdiv .= '</td></tr></table></div>';
 		} else {
 			$editable = false;
@@ -809,7 +809,6 @@ function tree_edit($partial = false) {
 		}
 	} else {
 		$tree['id'] = 0;
-		$editable = true;
 	}
 
 	if ($editable) {
@@ -971,6 +970,12 @@ function tree_edit($partial = false) {
 		var branchSortInfo = {};
 		var selectedItem   = {};
 
+		if ($('#lock').length) {
+			var editable = false;
+		} else {
+			var editable = true;
+		}
+
 		function createNode() {
 			var ref = $('#ctree').jstree(true);
 			sel = ref.create_node('#', '<?php print __esc('New Node');?>', '0');
@@ -978,14 +983,6 @@ function tree_edit($partial = false) {
 				ref.edit(sel);
 			}
 		};
-
-		function disableTree() {
-			$('.treeTable').each(function() {
-				$(this).mousedown(function(event) {
-					event.preventDefault();
-				});
-			});
-		}
 
 		function loadTreeEdit(url) {
 			var myMagic = csrfMagicToken;
@@ -1009,7 +1006,7 @@ function tree_edit($partial = false) {
 				.done(function(data) {
 					$('#graphs').jstree('destroy');
 					$('#graphs').html(data);
-					dragable('#graphs');
+					dragable('graphs');
 				})
 				.fail(function(data) {
 					getPresentHTTPError(data);
@@ -1022,7 +1019,8 @@ function tree_edit($partial = false) {
 				.done(function(data) {
 					$('#hosts').jstree('destroy');
 					$('#hosts').html(data);
-					dragable('#hosts');
+					dragable('hosts');
+					dragable('graphs');
 				})
 				.fail(function(data) {
 					getPresentHTTPError(data);
@@ -1033,7 +1031,10 @@ function tree_edit($partial = false) {
 			$.get('tree.php?action=sites&filter='+$('#sfilter').val(), function(data) {
 				$('#sites').jstree('destroy');
 				$('#sites').html(data);
-				dragable('#sites');
+				dragable('sites');
+				dragable('hosts');
+				dragable('graphs');
+				enableKeyups();
 			});
 		}
 
@@ -1042,12 +1043,12 @@ function tree_edit($partial = false) {
 				// Already set
 			} else {
 				$.get('tree.php?action=get_host_sort&nodeid='+nodeid)
-					.done(function(data) {
-						hostSortInfo[nodeid] = data;
-					})
-					.fail(function(data) {
-						getPresentHTTPError(data);
-					});
+				.done(function(data) {
+					hostSortInfo[nodeid] = data;
+				})
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
 			}
 		}
 
@@ -1056,12 +1057,12 @@ function tree_edit($partial = false) {
 				// Already set
 			} else {
 				$.get('tree.php?action=get_branch_sort&nodeid='+nodeid)
-					.done(function(data) {
-						branchSortInfo[nodeid] = data;
-					})
-					.fail(function(data) {
-						getPresentHTTPError(data);
-					});
+				.done(function(data) {
+					branchSortInfo[nodeid] = data;
+				})
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
 			}
 		}
 
@@ -1083,151 +1084,94 @@ function tree_edit($partial = false) {
 
 		function setBranchSortOrder(type, nodeid) {
 			$.get('tree.php?action=set_branch_sort&type='+type+'&nodeid='+nodeid)
-				.done(function(data) {
-					branchSortInfo[nodeid] = type;
-				})
-				.fail(function(data) {
-					getPresentHTTPError(data);
-				});
+			.done(function(data) {
+				branchSortInfo[nodeid] = type;
+			})
+			.fail(function(data) {
+				getPresentHTTPError(data);
+			});
 		}
 
 		function setHostSortOrder(type, nodeid) {
 			$.get('tree.php?action=set_host_sort&type='+type+'&nodeid='+nodeid)
-				.done(function(data) {
-					hostSortInfo[nodeid] = type;
-				})
-				.fail(function(data) {
-					getPresentHTTPError(data);
-				});
+			.done(function(data) {
+				hostSortInfo[nodeid] = type;
+			})
+			.fail(function(data) {
+				getPresentHTTPError(data);
+			});
 		}
 
 		function initializeTreeEdit() {
 			$('#lock').click(function() {
 				strURL = 'tree.php?action=lock&id=<?php print $tree['id'];?>';
+
 				loadTreeEdit(strURL);
+
+				$('#sfilter, #hfilter, #gfilter').each(function() {
+					$(this).prop('disabled', false);
+					$(this).removeClass('ui-state-disabled');
+					if ($(this).selectmenu('instance') !== undefined) {
+						$(this).selectmenu('enable');
+					}
+				});
+
+				editable = true;
+				reset    = false;
+
+				drawTree();
+
+				dragable('graphs');
+				dragable('hosts');
+				dragable('sites');
+
+				enableKeyups();
 			});
 
 			$('#unlock').click(function() {
 				strURL = 'tree.php?action=unlock&id=<?php print $tree['id'];?>';
+
 				loadTreeEdit(strURL);
+
+				$('#sfilter, #hfilter, #gfilter').each(function() {
+					$(this).prop('disabled', true);
+					$(this).addClass('ui-state-disabled');
+					if ($(this).selectmenu('instance') !== undefined) {
+						$(this).selectmenu('disable');
+					}
+				});
+
+				editable = false;
+				reset    = false;
+
+				drawTree();
+
+				dragable('graphs');
+				dragable('hosts');
+				dragable('sites');
+
+				enableKeyups();
 			});
+
+			if ($('#lock').length) {
+				editable = false;
+			} else {
+				editable = true;
+			}
 		}
 
-		graphsDropSet = '';
-		hostsDropSet  = '';
-		sitesDropSet  = '';
-
-		$(function() {
-			<?php if ($editable == false) {?>
-			$('select, input').not('#lock, #element').each(function() {
-				$(this).prop('disabled', true);
-				$(this).addClass('ui-state-disabled');
-				if ($(this).selectmenu('instance') !== undefined) {
-					$(this).selectmenu('disable');
-				}
-			});
-			disableTree();
-			<?php } else {?>
-			$('select, input').each(function() {
-				$(this).prop('disabled', false);
-			});
-			<?php }?>
-
-			$('form').unbind().submit(function(event) {
-				event.preventDefault();
-
-				if ($(this).attr('id') == 'tree_edit') {
-					var options = {
-						url: 'tree.php',
-					}
-
-					var data = {
-						action: 'save',
-						name: $('#name').val(),
-						sort_type: $('#sort_type').val(),
-						enabled: $('#enabled').is(':checked'),
-						id: $('#id').val(),
-						save_component_tree: 1,
-						__csrf_magic: csrfMagicToken
-					}
-
-					postUrl(options, data);
-				}
-			});
-
-			initializeTreeEdit();
-
-			var height  = parseInt($(window).height()-$('#ctree').offset().top-10)+'px';
-			var sheight = parseInt($(window).height()-$('#sites').offset().top-10)+'px';
-			var hheight = parseInt($(window).height()-$('#hosts').offset().top-10)+'px';
-			var gheight = parseInt($(window).height()-$('#graphs').offset().top-10)+'px';
-
-			$('#element').change(function() {
-				resizer();
-			});
-
-			$(window).resize(function() {
-				resizer();
-			});
-
-			function resizer() {
-				if ($('#ctree').length) {
-					var wheight = $(window).height();
-					var cTop    = $('#ctree').parent().offset().top;
-					var sTop    = $('#sites').parent().offset().top;
-					var height  = wheight - cTop - 10;
-					var sheight = wheight - sTop - 10;
-
-					$('#ctree').css('height', height).css('overflow','auto');
-					$('#hosts').css('height', sheight).css('overflow','auto');
-					$('#sites').css('height', sheight).css('overflow','auto');
-					$('#graphs').css('height', sheight).css('overflow','auto');
-
-					switchDisplay();
-				}
+		function drawTree() {
+			if (editable) {
+				var plugins = [ 'state', 'wholerow', 'contextmenu', 'dnd', 'types' ];
+			} else {
+				var plugins = [ 'state', 'wholerow', 'types' ];
 			}
 
-			function switchDisplay() {
-				var selected = $('#element').prop('selectedIndex');
-				var windowWidth = parseInt($(window).outerWidth());
-				var clientWidth = parseInt($(document).width());
-
-				if (selected == 0) {
-					if (clientWidth > windowWidth) {
-						$('#element').prop('selectedIndex', 1);
-						if ($('#element').selectmenu('instance')) {
-							$('#element').selectmenu('refresh');
-						}
-						selected = $('#element').prop('selectedIndex');
-					}
-				}
-
-				switch(selected) {
-					case 0:
-						$('.treeItemsAreaSite').show();
-						$('.treeItemsAreaDevice').show();
-						$('.treeItemsAreaGraph').show();
-						break;
-					case 1:
-						$('.treeItemsAreaSite').show();
-						$('.treeItemsAreaDevice').hide();
-						$('.treeItemsAreaGraph').hide();
-						break;
-					case 2:
-						$('.treeItemsAreaSite').hide();
-						$('.treeItemsAreaDevice').show();
-						$('.treeItemsAreaGraph').hide();
-						break;
-					case 3:
-						$('.treeItemsAreaSite').hide();
-						$('.treeItemsAreaDevice').hide();
-						$('.treeItemsAreaGraph').show();
-						break;
-				}
+			if ($('#ctree').jstree('instance')) {
+				$('#ctree').jstree('destroy');
 			}
 
-			$("#ctree")
-			.jstree({
+			$("#ctree").jstree({
 				'types' : {
 					'site' : {
 						icon : 'images/site.png',
@@ -1246,9 +1190,9 @@ function tree_edit($partial = false) {
 					'items': function(node) {
 						if (node.id.search('tgraph') > 0) {
 							var dataType = 'graph';
-						}else if (node.id.search('thost') > 0) {
+						} else if (node.id.search('thost') > 0) {
 							var dataType = 'host';
-						}else if (node.id.search('tsite') > 0) {
+						} else if (node.id.search('tsite') > 0) {
 							var dataType = 'site';
 						}else {
 							var dataType = 'branch';
@@ -1256,9 +1200,9 @@ function tree_edit($partial = false) {
 
 						if (dataType == 'graph') {
 							return graphContext(node.id);
-						}else if (dataType == 'host') {
+						} else if (dataType == 'host') {
 							return hostContext(node.id);
-						}else if (dataType == 'site') {
+						} else if (dataType == 'site') {
 							return siteContext(node.id);
 						} else {
 							return branchContext(node.id);
@@ -1283,13 +1227,20 @@ function tree_edit($partial = false) {
 					'dots' : false
 				},
 				'state': { 'key': 'tree_<?php print get_request_var('id');?>' },
-				'plugins' : [ 'state', 'wholerow', <?php if ($editable) {?>'contextmenu', 'dnd', <?php }?>'types' ]
+				'plugins' : plugins
 			})
 			.on('ready.jstree', function(e, data) {
 				if (reset == true) {
 					$('#ctree').jstree('clear_state');
 				}
-			})<?php if ($editable) {?>.on('delete_node.jstree', function (e, data) {
+
+				if (!editable) {
+					$("#ctree").children().on('contextmenu', function(event) {
+						return false;
+					});
+				}
+			})
+			.on('delete_node.jstree', function (e, data) {
 				$.get('?action=delete_node', { 'id' : data.node.id, 'tree_id' : $('#id').val() })
 					.always(function() {
 						var st = data.instance.get_state();
@@ -1299,7 +1250,7 @@ function tree_edit($partial = false) {
 			.on('hover_node.jstree', function (e, data) {
 				if (data.node.id.search('thost') >= 0) {
 					setHostSortIcon(data.node.id);
-				}else if (data.node.id.search('thost') < 0 && data.node.id.search('tgraph') < 0 && data.node.id.search('tsite')) {
+				} else if (data.node.id.search('thost') < 0 && data.node.id.search('tgraph') < 0 && data.node.id.search('tsite')) {
 					setBranchSortIcon(data.node.id);
 				}
 			})
@@ -1353,89 +1304,264 @@ function tree_edit($partial = false) {
 				}
 
 				$.get('?action=copy_node', { 'id' : data.original.id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position })
-				.always(function () {
-					var st = data.instance.get_state();
-					data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
+					.always(function () {
+						var st = data.instance.get_state();
+						data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
+					});
+			});
+		}
+
+		function enableKeyups() {
+			$('#grfilter').keyup(function(data) {
+				graphMeTimer && clearTimeout(graphMeTimer);
+				graphMeTimer = setTimeout(getGraphData, 300);
+			});
+
+			$('#hfilter').keyup(function(data) {
+				hostMeTimer && clearTimeout(hostMeTimer);
+				hostMeTimer = setTimeout(getHostData, 300);
+			});
+
+			$('#sfilter').keyup(function(data) {
+				siteMeTimer && clearTimeout(siteMeTimer);
+				siteMeTimer = setTimeout(getSiteData, 300);
+			});
+		}
+
+		function resizer() {
+			if ($('#ctree').length) {
+				var wheight = $(window).height();
+				var cTop    = $('#ctree').parent().offset().top;
+				var sTop    = $('#sites').parent().offset().top;
+				var height  = wheight - cTop - 10;
+				var sheight = wheight - sTop - 10;
+
+				$('#ctree').css('height', height).css('overflow','auto');
+				$('#hosts').css('height', sheight).css('overflow','auto');
+				$('#sites').css('height', sheight).css('overflow','auto');
+				$('#graphs').css('height', sheight).css('overflow','auto');
+
+				switchDisplay();
+			}
+		}
+
+		function switchDisplay() {
+			var selected = $('#element').prop('selectedIndex');
+			var windowWidth = parseInt($(window).outerWidth());
+			var clientWidth = parseInt($(document).width());
+
+			if (selected == 0) {
+				if (clientWidth > windowWidth) {
+					$('#element').prop('selectedIndex', 1);
+					if ($('#element').selectmenu('instance')) {
+						$('#element').selectmenu('refresh');
+					}
+					selected = $('#element').prop('selectedIndex');
+				}
+			}
+
+			switch(selected) {
+				case 0:
+					$('.treeItemsAreaSite').show();
+					$('.treeItemsAreaDevice').show();
+					$('.treeItemsAreaGraph').show();
+					break;
+				case 1:
+					$('.treeItemsAreaSite').show();
+					$('.treeItemsAreaDevice').hide();
+					$('.treeItemsAreaGraph').hide();
+					break;
+				case 2:
+					$('.treeItemsAreaSite').hide();
+					$('.treeItemsAreaDevice').show();
+					$('.treeItemsAreaGraph').hide();
+					break;
+				case 3:
+					$('.treeItemsAreaSite').hide();
+					$('.treeItemsAreaDevice').hide();
+					$('.treeItemsAreaGraph').show();
+					break;
+			}
+		}
+
+		graphsDropSet = '';
+		hostsDropSet  = '';
+		sitesDropSet  = '';
+
+		$(function() {
+			drawTree();
+
+			if ($('#unlock').length) {
+				enableKeyups();
+
+				$('select, input').each(function() {
+					$(this).prop('disabled', false);
 				});
-			})<?php } else {?>.children().bind('contextmenu', function(event) {
-				return false;
-			})<?php }?>;
+			} else {
+				$('select, input').not('#lock, #element').each(function() {
+					$(this).prop('disabled', true);
+					$(this).addClass('ui-state-disabled');
+
+					if ($(this).selectmenu('instance') !== undefined) {
+						$(this).selectmenu('disable');
+					}
+				});
+			}
+
+			$('form').unbind().submit(function(event) {
+				event.preventDefault();
+
+				if ($(this).attr('id') == 'tree_edit') {
+					var options = {
+						url: 'tree.php',
+					}
+
+					var data = {
+						action: 'save',
+						name: $('#name').val(),
+						sort_type: $('#sort_type').val(),
+						enabled: $('#enabled').is(':checked'),
+						id: $('#id').val(),
+						save_component_tree: 1,
+						__csrf_magic: csrfMagicToken
+					}
+
+					postUrl(options, data);
+				}
+			});
+
+			var height  = parseInt($(window).height()-$('#ctree').offset().top-10)+'px';
+			var sheight = parseInt($(window).height()-$('#sites').offset().top-10)+'px';
+			var hheight = parseInt($(window).height()-$('#hosts').offset().top-10)+'px';
+			var gheight = parseInt($(window).height()-$('#graphs').offset().top-10)+'px';
+
+			$('#element').change(function() {
+				resizer();
+			});
+
+			$(window).resize(function() {
+				resizer();
+			});
+
+			initializeTreeEdit();
 
 			$('#ctree').css('height', height).css('overflow','auto');;
 
-			dragable('#graphs', 'graphs');
-			dragable('#sites',  'sites');
-			dragable('#hosts',  'hosts');
+			dragable('graphs');
+			dragable('hosts');
+			dragable('sites');
 		});
 
-		function dragable(element, type) {
-			$(element)
-				.jstree({
-					'types' : {
-						'site' : {
-							icon : 'images/site.png',
-							valid_children: 'none',
-							max_children : 0
-						},
-						'device' : {
-							icon : 'images/server.png',
-							valid_children: 'none',
-							max_children : 0
-						},
-						'graph' : {
-							icon : 'images/server_chart_curve.png',
-							valid_children: 'none',
-							max_children : 0
-						}
+		function dragable(element) {
+			var id = '#'+element;
+			var divdata = '';
+
+			if (editable) {
+				var plugins = [ 'wholerow', 'dnd', 'types' ];
+			} else {
+				var plugins = [ 'wholerow', 'types' ];
+			}
+
+			// We have to reload the various trees due
+			// to plugins being imutable after load
+			// so reconstruct the tree from the current elements
+			// destroy the tree, and repaint to elements
+			// as they would have been.
+			if ($(id).hasClass('jstree')) {
+				$(id).find('.jstree-node').each(function() {
+					var text   = $(this).find('.jstree-anchor').text();
+					var id     = $(this).attr('id');
+					var jsdata = $(this).attr('data-jstree');
+
+					divdata += "<ul><li id='" + id + "' data-jstree='" + jsdata + "'>" + text + '</li></ul>';
+				});
+
+				$(id).jstree('destroy').html(divdata);
+			}
+
+			$(id)
+			.jstree({
+				'types' : {
+					'site' : {
+						icon : 'images/site.png',
+						valid_children: 'none',
+						max_children : 0
 					},
-					'core' : {
-						'animation' : 0,
-						'check_callback' : function(operation, node, node_parent, node_position, more) {
-							return false;  // not dragging onto self
-						}
+					'device' : {
+						icon : 'images/server.png',
+						valid_children: 'none',
+						max_children : 0
 					},
-					'dnd' : {
-						'always_copy' : true,
-						'check_while_dragging': true
-					},
-					'themes' : { 'stripes' : true },
-					'plugins' : [ 'wholerow', <?php if ($editable) {?>'dnd', <?php }?>'types' ]
-				})
-				.on('ready.jstree', function(e, data) {
-					if (reset == true) {
-						$('#ctree').jstree('clear_state');
+					'graph' : {
+						icon : 'images/server_chart_curve.png',
+						valid_children: 'none',
+						max_children : 0
 					}
-				})<?php if ($editable) {?>
+				},
+				'core' : {
+					'animation' : 0,
+					'check_callback' : function(operation, node, node_parent, node_position, more) {
+						return false;  // not dragging onto self
+					}
+				},
+				'dnd' : {
+					'always_copy' : true,
+					'check_while_dragging': true
+				},
+				'themes' : { 'stripes' : true },
+				'plugins' : plugins
+			})
+			.on('ready.jstree', function(e, data) {
+				if (reset == true) {
+					$('#ctree').jstree('clear_state');
+				}
+			});
+
+			if (editable) {
+				$(id)
 				.on('select_node.jstree', function(e, data) {
-					if (type == 'graphs') {
+					if (element == 'graphs') {
 						graphsDropSet = data;
 					} else {
 						hostsDropSet  = data;
 					}
 				})
 				.on('activate_node.jstree', function(e, data) {
-					if (type == 'sites') {
-						selectedItem.site_id = (data.node.id).split(':')[1];
+					if (element == 'sites') {
+						var sites = [];
+
+						$('#sites').find('.jstree-clicked').each(function() {
+							sites.push(this.id.split(':')[1].replace('_anchor', ''));
+						});
+						selectedItem.site_id = sites;
 						selectedItem.host_id = '';
 						getHostData();
 						getGraphData();
-					}else if(type == 'hosts'){
-						selectedItem.host_id = (data.node.id).split(':')[1];
+					} else if (element == 'hosts'){
+						var hosts = [];
+
+						$('#hosts').find('.jstree-clicked').each(function() {
+							hosts.push(this.id.split(':')[1].replace('_anchor', ''));
+						});
+
+						selectedItem.host_id = hosts;
 						getGraphData();
 					}
 				})
 				.on('deselect_node.jstree', function(e, data) {
-					if (type == 'graphs') {
+					if (element == 'graphs') {
 						graphsDropSet = data;
 					} else {
 						hostsDropSet  = data;
 					}
-				})<?php }?>;
-				$(element).find('.jstree-ocl').hide();
-				$(element).children().bind('contextmenu', function(event) {
-					return false;
 				});
-				$(element).show();
+			}
+
+			$(id).find('.jstree-ocl').hide();
+			$(id).children().bind('contextmenu', function(event) {
+				return false;
+			});
+			$(id).show();
 		}
 
 		function branchContext(nodeid) {
@@ -1784,21 +1910,6 @@ function tree_edit($partial = false) {
 				}
 			};
 		}
-
-		$('#grfilter').keyup(function(data) {
-			graphMeTimer && clearTimeout(graphMeTimer);
-			graphMeTimer = setTimeout(getGraphData, 300);
-		});
-
-		$('#hfilter').keyup(function(data) {
-			hostMeTimer && clearTimeout(hostMeTimer);
-			hostMeTimer = setTimeout(getHostData, 300);
-		});
-
-		$('#sfilter').keyup(function(data) {
-			siteMeTimer && clearTimeout(siteMeTimer);
-			siteMeTimer = setTimeout(getSiteData, 300);
-		});
 		</script>
 		<?php
 	}
@@ -1827,13 +1938,15 @@ function display_sites() {
 function display_hosts() {
 	$sql_where = '';
 
+	$site_ids = get_filter_request_var('site_id', FILTER_VALIDATE_IS_NUMERIC_LIST);
+
 	if (get_request_var('filter') != '') {
 		$sql_where .= 'h.hostname LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR h.description LIKE '      . db_qstr('%' . get_request_var('filter') . '%');
 	}
 
-	if (get_filter_request_var('site_id') > 0) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.site_id = ' . get_filter_request_var('site_id');
+	if ($site_ids != '') {
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.site_id IN( ' . $site_ids . ')';
 	}
 
 	$hosts = get_allowed_devices($sql_where, 'description', read_config_option('autocomplete_rows'));
@@ -1848,6 +1961,9 @@ function display_hosts() {
 function display_graphs() {
 	$sql_where = '';
 
+	$site_ids = get_filter_request_var('site_id', FILTER_VALIDATE_IS_NUMERIC_LIST);
+	$host_ids = get_filter_request_var('host_id', FILTER_VALIDATE_IS_NUMERIC_LIST);
+
 	if (get_request_var('filter') != '') {
 		$sql_where .= 'WHERE (
 			title_cache LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
@@ -1857,12 +1973,12 @@ function display_graphs() {
 		$sql_where .= 'WHERE local_graph_id > 0';
 	}
 
-	if (get_filter_request_var('site_id') != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ': 'WHERE ') . 'h.site_id = ' . get_request_var('site_id');
+	if ($site_ids != '') {
+		$sql_where .= ($sql_where != '' ? ' AND ': 'WHERE ') . 'h.site_id IN( ' . $site_ids . ')';
 	}
 
-	if (get_filter_request_var('host_id') != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'gl.host_id = ' . get_request_var('host_id');
+	if ($host_ids != '') {
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'gl.host_id IN( ' . $host_ids . ')';
 	}
 
 	$graphs = db_fetch_assoc("SELECT
