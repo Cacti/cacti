@@ -121,6 +121,16 @@ class Installer implements JsonSerializable {
 	private $buttonPrevious = null;
 	private $buttonTest = null;
 
+	private $iconClass;
+	private $eula;
+	private $cronInterval;
+	private $defaultAutomation;
+	private $permissions;
+	private $extensions;
+	private $modules;
+	private $automationRange;
+	private $snmpOptions;
+
 	/*
 	 * class Installer initialization
 	 *
@@ -802,7 +812,7 @@ class Installer implements JsonSerializable {
 							$this->addError(Installer::STEP_BINARY_LOCATIONS, 'Paths', $name, __('Resource is not writable'));
 						}
 					} elseif ($check == 'file_exists') {
-						$should_set = file_exists($path) || $optional;
+						$should_set = (!empty($path) && file_exists($path)) || $optional;
 						if (!$should_set) {
 							$this->addError(Installer::STEP_BINARY_LOCATIONS, 'Paths', $name, __('File not found'));
 						}
