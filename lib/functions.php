@@ -6897,6 +6897,16 @@ function get_md5_include_js($path, $async = false) {
 		$npath = str_replace($config['base_path'] . '/', '', $path);
 	} else {
 		$npath = $path;
+	} elseif (debounce_run_notification('missing:' . $path)) {
+		$path = str_replace($config['base_path'] . '/', '', $path);
+
+		cacti_log(sprintf('WARNING: Key Cacti Include File %s missing.  Please locate and replace this file', $config['base_path'] . '/' . $path), false, 'WEBUI');
+
+		admin_email(__('Cacti System Warning'), __('WARNING:  Key Cacti Include File %s missing.  Please locate and replace this file', $config['base_path'] . '/' . $path));
+
+		return '';
+	} else {
+		return '';
 	}
 
 	if ($async) {
@@ -6908,6 +6918,24 @@ function get_md5_include_js($path, $async = false) {
 
 function get_md5_include_css($path) {
 	global $config;
+
+	$npath = '';
+
+	if (file_exists($path)) {
+		$npath = str_replace($config['base_path'] . '/', '', $path);
+	} elseif (file_exists($path)) {
+		$npath = $path;
+	} elseif (debounce_run_notification('missing:' . $path)) {
+		$path = str_replace($config['base_path'] . '/', '', $path);
+
+		cacti_log(sprintf('WARNING: Key Cacti Include File %s missing.  Please locate and replace this file', $config['base_path'] . '/' . $path), false, 'WEBUI');
+
+		admin_email(__('Cacti System Warning'), __('WARNING:  Key Cacti Include File %s missing.  Please locate and replace this file', $config['base_path'] . '/' . $path));
+
+		return '';
+	} else {
+		return '';
+	}
 
 	return '<link href=\''. $config['url_path'] . $path . '?' . get_md5_hash($path) . '\' type=\'text/css\' rel=\'stylesheet\'>' . PHP_EOL;
 }
