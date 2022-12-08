@@ -1916,12 +1916,12 @@ function tree_edit($partial = false) {
 }
 
 function display_sites() {
-	if (get_request_var('filter') != '') {
+	if (get_nfilter_request_var('filter') != '') {
 		$sql_where = 'WHERE
-			name LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR city LIKE '    . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR state LIKE '   . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR country LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
+			name LIKE '       . db_qstr('%' . get_nfilter_request_var('filter') . '%') . '
+			OR city LIKE '    . db_qstr('%' . get_nfilter_request_var('filter') . '%') . '
+			OR state LIKE '   . db_qstr('%' . get_nfilter_request_var('filter') . '%') . '
+			OR country LIKE ' . db_qstr('%' . get_nfilter_request_var('filter') . '%');
 	} else {
 		$sql_where = '';
 	}
@@ -1940,9 +1940,9 @@ function display_hosts() {
 
 	$site_ids = get_filter_request_var('site_id', FILTER_VALIDATE_IS_NUMERIC_LIST);
 
-	if (get_request_var('filter') != '') {
-		$sql_where .= 'h.hostname LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR h.description LIKE '      . db_qstr('%' . get_request_var('filter') . '%');
+	if (get_nfilter_request_var('filter') != '') {
+		$sql_where .= 'h.hostname LIKE ' . db_qstr('%' . get_nfilter_request_var('filter') . '%') . '
+			OR h.description LIKE '      . db_qstr('%' . get_nfilter_request_var('filter') . '%');
 	}
 
 	if ($site_ids != '') {
@@ -1964,10 +1964,10 @@ function display_graphs() {
 	$site_ids = get_filter_request_var('site_id', FILTER_VALIDATE_IS_NUMERIC_LIST);
 	$host_ids = get_filter_request_var('host_id', FILTER_VALIDATE_IS_NUMERIC_LIST);
 
-	if (get_request_var('filter') != '') {
+	if (get_nfilter_request_var('filter') != '') {
 		$sql_where .= 'WHERE (
-			title_cache LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR gt.name LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . ')
+			title_cache LIKE ' . db_qstr('%' . get_nfilter_request_var('filter') . '%') . '
+			OR gt.name LIKE '  . db_qstr('%' . get_nfilter_request_var('filter') . '%') . ')
 			AND local_graph_id > 0';
 	} else {
 		$sql_where .= 'WHERE local_graph_id > 0';
@@ -2014,21 +2014,26 @@ function tree() {
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
-			),
+		),
+		'filter' => array(
+			'filter' => FILTER_CALLBACK,
+			'default' => '',
+			'options' => array('options' => 'sanitize_search_string')
+		),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
 			'default' => 'sequence',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'sort_direction' => array(
 			'filter' => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
-			)
+		)
 	);
 
 	validate_store_request_vars($filters, 'sess_tree');
