@@ -94,6 +94,7 @@ Cacti CHANGELOG
 -issue#5033: Installer shows deprecated messages on PHP 8.1.2
 -issue#5034: RRD Proxy Server not supported by CLI script "structure_rra_paths.php"
 -issue#5041: md5_file error in custom theme after updating to 1.2.23
+-issue#5066: Cacti does not escape the watermark leading to broken graphs
 -issue#5068: Installer deprecation messages during CLI install in PHP8.2
 -feature#1100: Structured path not created when using remote poller and Update On-Demand
 -feature#1392: AJAX handled errors do not notify Admins that page errors exist
