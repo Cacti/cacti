@@ -6895,7 +6895,7 @@ function get_md5_include_js($path, $async = false) {
 
 	if (file_exists($path)) {
 		$npath = str_replace($config['base_path'] . '/', '', $path);
-	} else {
+	} elseif (file_exists($path)) {
 		$npath = $path;
 	} elseif (debounce_run_notification('missing:' . $path)) {
 		$path = str_replace($config['base_path'] . '/', '', $path);
