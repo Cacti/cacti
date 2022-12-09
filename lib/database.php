@@ -2250,16 +2250,24 @@ function db_create_permissions_array($default = false) {
 function db_get_permissions($include_unknown = false, $log = false, $db_conn = false) {
 	$perms = db_create_permissions_array(false);
 
-	$perms_regex = '/(' . implode('|',array_reverse(array_keys($perms))). ')+/i';
-
 	$db_name   = db_fetch_cell('SELECT DATABASE()', $log, $db_conn);
 	$db_grants = db_fetch_assoc('SHOW GRANTS FOR CURRENT_USER', $log, $db_conn);
 
 	if (cacti_sizeof($db_grants)) {
 		foreach ($db_grants as $db_grants_user) {
 			foreach ($db_grants_user as $db_grant) {
+				// We are only interested in GRANT lines
 				if (preg_match('/GRANT (.*) ON (.+)\.(.+) TO/i', $db_grant, $db_grant_match)) {
-					if ($db_grant_match[2] == "`$db_name`" || $db_grant_match[2] == '*') {
+					// Replace any * used with .* for preg_match
+					// Replace any % used with .* for preg_match
+					$db_grant_regex = str_replace(['*', '%'], ['.*', '.*'], $db_grant_match[2]);
+
+					// See if we match the database name
+					$db_regex_match = preg_match('/' . $db_grant_regex . '/', '`' . $db_name . '`');
+
+					// Yes, we did
+					if ($db_regex_match) {
+						// Lets get all the permissions assigned.
 						$db_grant_perms = preg_split('/,[ ]*/', $db_grant_match[1]);
 						if (cacti_sizeof($db_grant_perms)) {
 							foreach ($db_grant_perms as $db_grant_perm) {
