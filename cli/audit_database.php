@@ -957,8 +957,16 @@ function create_tables($load = true) {
 		$error  = 0;
 
 		if (file_exists($config['base_path'] . '/docs/audit_schema.sql')) {
-			$cmd = 'MYSQL_PWD="' . cacti_escapeshellarg($database_password) . '" mysql' .
-				' -u' . cacti_escapeshellarg($database_username) .
+			if ($config['cacti_server_os'] == 'win32') {
+				$unix_pass = '';
+				$win32_pass = ' -p' . cacti_escapeshellarg($database_password);
+			} else {
+				$unix_pass = 'MYSQL_PWD="' . cacti_escapeshellarg($database_password) . '" ';
+				$win32_pass = '';
+			}
+
+			$cmd = $unix_pass . 'mysql -u' . cacti_escapeshellarg($database_username) .
+				$win32_pass .
 				' -h' . cacti_escapeshellarg($database_hostname) .
 				' -P' . cacti_escapeshellarg($database_port) .
 				' ' . $database_default .
