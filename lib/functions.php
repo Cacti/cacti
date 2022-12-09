@@ -7919,21 +7919,28 @@ function text_regex_datasource($matches, $link = false) {
 			$graph_ids = implode(',', $graph_rows);
 			$graph_array = array(0 => '', 1 => ' Graphs[', 2 => $graph_ids, 3 => ']');
 
-			$graph_results = text_regex_graphs($graph_array);
+			$graph_results = text_regex_graphs($graph_array, $link);
 		}
 
-		$result .= $matches[1];
+		$result = $matches[1];
 
 		$ds_titles = get_data_source_titles($ds_ids);
 		if (!isset($ds_titles)) {
 			$ds_titles = array();
 		}
 
+		$sep           = '';
+		$ds_matches    = $matches;
+		$ds_matches[1] = $ds_matches[3] = '';
 		foreach ($ds_ids as $ds_id) {
-			$result .= text_regex_replace($ds_id, $link, 'data_sources.php?action=ds_edit&id=%s', $matches, $ds_titles);
+			$result .= $sep . text_regex_replace($ds_id, $link, 'data_sources.php?action=ds_edit&id=%s', $ds_matches, $ds_titles);
+			$sep = ', ';
 		}
 
-		$result .= $matches[3] . $graph_results;
+		$result .= $matches[3];
+		if (!empty($graph_results)) {
+			$result .= ', ' . $graph_results;
+		}
 	}
 
 	return $result;
@@ -7999,7 +8006,7 @@ function text_regex_rra($matches, $link = false) {
 	$local_data_ids = $matches[2];
 	if (strlen($local_data_ids)) {
 		$datasource_array = array(0 => '', 1 => ' DS[', 2 => $local_data_ids, 3 => ']');
-		$datasource_result = text_regex_datasource($datasource_array);
+		$datasource_result = text_regex_datasource($datasource_array, $link);
 
 		if (strlen($datasource_result)) {
 			$result .= ' ' . $datasource_result;
@@ -8019,7 +8026,7 @@ function text_regex_graphs($matches, $link = false) {
 	$graph_ids = cacti_unique_ids($matches[2]);
 
 	if (cacti_sizeof($graph_ids)) {
-		$result = '';
+		$result = $matches[1];
 		$graph_add = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
 
 		$title = '';
