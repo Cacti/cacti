@@ -35,15 +35,16 @@ if ($config['poller_id'] > 1) {
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$upgrade    = false;
-$create     = false;
-$loadopt    = false;
-$report     = false;
-$repair     = false;
-$altersopt  = false;
+$upgrade   = false;
+$create    = false;
+$loadopt   = false;
+$report    = false;
+$repair    = false;
+$altersopt = false;
+$debug     = false;
 
 if (cacti_sizeof($parms)) {
-	$shortopts = 'VvHh';
+	$shortopts = 'VvHhDd';
 
 	$longopts = array(
 		'create',
@@ -53,6 +54,7 @@ if (cacti_sizeof($parms)) {
 		'repair',
 		'alters',
 		'version',
+		'debug',
 		'help'
 	);
 
@@ -82,6 +84,13 @@ if (cacti_sizeof($parms)) {
 			break;
 		case 'upgrade':
 			$upgrade = true;
+
+			break;
+
+		case 'debug':
+		case 'D':
+		case 'd':
+			$debug = true;
 
 			break;
 		case 'version':
@@ -893,7 +902,7 @@ function get_column_sequence_number($table, $index, $column) {
 
 function create_tables($load = true) {
 	global $config, $database_default, $database_username, $database_password, $database_port, $database_hostname;
-	global $altersopt;
+	global $altersopt, $debug;
 
 	if (!db_has_permissions('CREATE')) {
 		echo "ERROR: Unable to create audit tables, permission required" . PHP_EOL;
@@ -969,9 +978,14 @@ function create_tables($load = true) {
 				$win32_pass .
 				' -h' . cacti_escapeshellarg($database_hostname) .
 				' -P' . cacti_escapeshellarg($database_port) .
-				' ' . $database_default .
+				' ' . cacti_escapeshellarg($database_default) .
 				' < ' . $config['base_path'] . '/docs/audit_schema.sql';
 			exec($cmd, $output, $error);
+			if ($debug) {
+				echo 'Called: ' . $cmd . PHP_EOL;
+				echo 'Result: ' . $error . PHP_EOL;
+				echo 'Output: ' . PHP_EOL . print_r($output, true) . PHP_EOL;
+			}
 
 			if ($error == 0) {
 				print ($altersopt ? '-- ' : '') . 'SUCCESS: Loaded the Audit Schema' . PHP_EOL;
