@@ -95,7 +95,7 @@ function update_data_source_title_cache($local_data_id) {
 		FROM data_template_data
 		WHERE local_data_id = ?',
 		array($local_data_id));
-	
+
 	$data_source = get_data_source_title($local_data_id);
 
 	if (strstr($data_source, '|query_') !== false || strstr($data_source, '|host_') !== false) {
@@ -305,6 +305,8 @@ function substitute_host_data($string, $l_escape_string, $r_escape_string, $host
 		$replace[] = $host['notes'];
 		$search[]  = $l_escape_string . 'host_location' . $r_escape_string;
 		$replace[] = $host['location'];
+		$search[]  = $l_escape_string . 'host_poller_id' . $r_escape_string;
+		$replace[] = $host['poller_id '];
 		$search[]  = $l_escape_string . 'host_polling_time' . $r_escape_string;
 		$replace[] = $host['polling_time'];
 		$search[]  = $l_escape_string . 'host_avg_time' . $r_escape_string;

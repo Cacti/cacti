@@ -43,6 +43,7 @@ Cacti CHANGELOG
 -feature#5021: Allow form input validation to be reported to GUI
 -feature#5025: Add Least Squares Special Data Types to Cacti
 -feature#5027: Add Service Check Filter and Column and Device Thread Column
+-feature#5039: Add host_poller_id replacement variable
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
