@@ -222,7 +222,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 	return false;
 }
 
-function db_check_reconnect($db_conn = false) {
+function db_check_reconnect(object|false $db_conn = false) {
 	global $config, $database_details;
 
 	include($config['base_path'] . '/include/config.php');

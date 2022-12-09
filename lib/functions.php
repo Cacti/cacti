@@ -456,7 +456,6 @@ function set_config_option($config_name, $value, $remote = false) {
 		}
 	}
 
-	$config_array = array();
 	if ($config['is_web']) {
 		$sess = true;
 	} else {
@@ -1431,7 +1430,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
  * @param $page_nr      - (int) the page we want to show rows for
  * @param $total_rows   - (int) the total number of rows in the logfile
  */
-function tail_file(string $file_name, int $number_of_lines, ?int $message_type = -1, ?string $filter = '', ?int &$page_nr = 1, ?int &$total_rows = 0, ?array $field_map = array()): array {
+function tail_file(string $file_name, int $number_of_lines, ?int $message_type = -1, ?string $filter = '', ?int &$page_nr = 1, ?int &$total_rows = 0, ?bool $expand_text = false): array {
 	if (!file_exists($file_name)) {
 		touch($file_name);
 		return array();
@@ -1451,13 +1450,13 @@ function tail_file(string $file_name, int $number_of_lines, ?int $message_type =
 	$display_line  = array();
 	$should_expand = read_config_option('log_expand') == LOG_EXPAND_FULL;
 	iF ($should_expand) {
-		$should_expand = !empty($filter) && !empty($field_map) && !empty($field_map['data']) && !empty($field_map['func']);
+		$should_expand = !empty($filter) && !empty($expand_text);
 	}
 
 	while (($line = fgets($fp)) !== false) {
 		$display = (determine_display_log_entry($message_type, $line, $filter));
 		if ($should_expand && !$display) {
-			$expanded = preg_replace_callback($field_map['data'],$field_map['func'],$line);
+			$expanded = text_substitute($line, isHtml: false);
 			if ($expanded != $line) {
 				// expand line different so lets see if we want it now after all
 				$display = determine_display_log_entry($message_type, $expanded, $filter);
@@ -2866,6 +2865,35 @@ function get_data_source_title($local_data_id) {
 		}
 	}
 	return $title;
+}
+
+/**
+ * Returns a cached array of titles.  Note that this
+ * includes all titles found durng previous calls to
+ * this function in addition to those passed
+ *
+ * @param  array $local_data_ids
+ *
+ * @return array
+ */
+function get_data_source_titles(array $local_data_ids) {
+	static $title_cache = null;
+
+	$local_data_ids = cacti_unique_ids($local_data_ids);
+
+	$titles = array();
+
+	foreach ($local_data_ids as $local_data_id) {
+		if (!array_key_exists($local_data_id, $titles)) {
+			if (!isset($title_cache[$local_data_id])) {
+				$title_cache[$local_data_id] = get_data_source_title($local_data_id);
+			}
+
+			$titles[$local_data_id] = $title_cache[$local_data_id];
+		}
+	}
+
+	return $titles;
 }
 
 /**
@@ -4686,6 +4714,7 @@ function general_header() {
 }
 
 function admin_email($subject, $message) {
+	$result = false;
 	if (read_config_option('admin_user') > 0) {
 		if (read_config_option('notify_admin') == 'on') {
 			$admin_details = db_fetch_row_prepared('SELECT full_name, email_address
@@ -4710,22 +4739,20 @@ function admin_email($subject, $message) {
 						$to = $admin_details['email_address'];
 					}
 
-					send_mail($to, $from, $subject, $message, null, null, true);
-				} else {
-					cacti_log('WARNING: Primary Admin account does not have an email address!  Unable to send administrative Email.', false, 'SYSTEM');
+					// If we get any message back then we have failed
+					$result = empty(send_mail($to, $from, $subject, $message, html: true, expandIds: true));
 				}
-			} else {
-				cacti_log('WARNING: Primary Admin account set to an invalid user!  Unable to send administrative Email.', false, 'SYSTEM');
 			}
-		} else {
-			cacti_log('WARNING: Primary Admin account notifications disabled!  Unable to send administrative Email.', false, 'SYSTEM');
 		}
-	} else {
+	}
+
+	if (!$result) {
 		cacti_log('WARNING: Primary Admin account not set!  Unable to send administrative Email.', false, 'SYSTEM');
 	}
+	return $result;
 }
 
-function send_mail($to, $from, string $subject, string $body, ?array $attachments = array(), ?array $headers = array(), bool $html = false): string {
+function send_mail($to, $from, string $subject, string $body, ?array $attachments = array(), ?array $headers = array(), bool $html = false, $expandIds = false): string {
 	$fromname = '';
 	if (is_array($from)) {
 		$fromname = $from[1];
@@ -4749,7 +4776,7 @@ function send_mail($to, $from, string $subject, string $body, ?array $attachment
 	}
 
 	$from = array(0 => $from, 1 => $fromname);
-	return mailer($from, $to, null, null, null, $subject, $body, null, $attachments, $headers, $html);
+	return mailer($from, $to, subject: $subject, body: $body, attachments: $attachments, headers: $headers, html: $html, expandIds: $expandIds);
 }
 
 /**
@@ -4768,6 +4795,7 @@ function send_mail($to, $from, string $subject, string $body, ?array $attachment
  * @param $attachments - the emails attachments as an array
  * @param $headers     - an array of name value pairs representing custom headers.
  * @param $html        - if set to true, html is the default, otherwise text format will be used
+ * @param $expandIds   - Find log style xxx[nn] and expand to full names
  *
  * For contact parameters, they can accept arrays containing zero or more values in the forms of:
  *     'email@email.com,email2@email.com,email3@email.com'
@@ -4790,7 +4818,7 @@ function send_mail($to, $from, string $subject, string $body, ?array $attachment
  * inline      : Whether to attach 'inline' (default for graph mode) or as 'attachment' (default for all others)
  * encoding    : Encoding type, normally base64
  */
-function mailer($from, $to, $cc, $bcc, $replyto, string $subject, string $body, ?string $body_text = null, ?array $attachments = array(), ?array $headers = array(), bool $html = true): string {
+function mailer(null|array|string $from, null|array|string $to, null|array|string $cc = null, null|array|string $bcc = null, null|array|string $replyto = null, string $subject, string $body, ?string $body_text = null, ?array $attachments = array(), ?array $headers = array(), bool $html = true, bool $expandIds = false): string {
 	global $config, $cacti_locale, $mail_methods;
 
 	require_once($config['include_path'] . '/vendor/phpmailer/src/Exception.php');
@@ -4944,17 +4972,16 @@ function mailer($from, $to, $cc, $bcc, $replyto, string $subject, string $body, 
 		return record_mailer_error($replyText, $mail->ErrorInfo);
 	}
 
-	$body = str_replace('<SUBJECT>', $subject   ?? '', $body ?? '');
-	$body = str_replace('<TO>',      $toText    ?? '', $body ?? '');
-	$body = str_replace('<CC>',      $ccText    ?? '', $body ?? '');
-	$body = str_replace('<FROM>',    $fromText  ?? '', $body ?? '');
-	$body = str_replace('<REPLYTO>', $replyText ?? '', $body ?? '');
+	$conversion_array = [
+		'<SUBJECT>' => $subject   ?? '',
+		'<TO>'      => $toText    ?? '',
+		'<CC>'      => $ccText    ?? '',
+		'<FROM>'    => $fromText  ?? '',
+		'<REPLYTO>' => $replyText ?? '',
+	];
 
-	$body_text = str_replace('<SUBJECT>', $subject   ?? '', $body_text ?? '');
-	$body_text = str_replace('<TO>',      $toText    ?? '', $body_text ?? '');
-	$body_text = str_replace('<CC>',      $ccText    ?? '', $body_text ?? '');
-	$body_text = str_replace('<FROM>',    $fromText  ?? '', $body_text ?? '');
-	$body_text = str_replace('<REPLYTO>', $replyText ?? '', $body_text ?? '');
+	$body      = text_substitute($body, true, $expandIds, $conversion_array);
+	$body_text = text_substitute($body_text, false, $expandIds, $conversion_array);
 
 	// Set the subject
 	$mail->Subject = $subject;
@@ -7669,7 +7696,13 @@ function cacti_unique_ids($ids, bool $shouldExplode = true) {
 	return $ids;
 }
 
-function cacti_depreciated($text) {
+/**
+ * Record a log of depreciated use
+ *
+ * @param string $text text to insert
+ * @return void
+ */
+function cacti_depreciated(string $text) {
 	cacti_debug_backtrace('WARN Depreciated use of ' . $text . ' at ');
 }
 
@@ -7679,4 +7712,426 @@ function substring_index($subject, $delim, $count) {
 	} else {
 		return implode($delim, array_slice(explode($delim, $subject), 0, $count));
 	}
+}
+
+function text_substitute(array|string $text, bool $isHtml = true, bool $includeStandard = true, ?array $extraSubtitutions = null, ?array $extraMatches = null) {
+	$parser = 'text_regex_parser' . ($isHtml ? '_html' : '');
+
+	$extraSubtitutions = $extraSubtitutions ?? [];
+	$extraMatches      = $extraMatches      ?? [];
+
+	/* Get parts for text substitution */
+	$extra_search = array_keys($extraSubtitutions);
+	$extra_values = array_values($extraSubtitutions);
+
+	if (!empty($text)) {
+		$regex_array = $includeStandard ? text_get_regex_array($extraMatches) : $extraMatches;
+
+		if (!empty($regex_array)) {
+			$regex_complete = '';
+			foreach ($regex_array as $regex_key => $regex_setting) {
+				$regex_text = $regex_setting['regex'] ?? '';
+				if (!empty($regex_text)) {
+					$regex_complete .= (strlen($regex_complete) ? ')|(' : '') . $regex_text;
+				} else {
+					cacti_log('WARNING: Bad regex search: ' . json_encode($regex_setting), false, 'UTIL');
+				}
+			}
+
+			$regex_complete = '~(' . $regex_complete . ')~';
+
+			if (is_array($text)) {
+				foreach ($text as &$line) {
+					$line = text_substitute_line($line, $regex_complete, $parser, $extra_search, $extra_values);
+				}
+			} else {
+				$text = text_substitute_line($text, $regex_complete, $parser, $extra_search, $extra_values);
+			}
+		}
+	}
+
+	return $text;
+}
+
+function text_substitute_line(string $source, string $regex, string $parser, array $search, array $values) {
+	$result = $source;
+	if (!empty($source)) {
+		if (!empty($regex)) {
+			$result = preg_replace_callback($regex, $parser, $result);
+		}
+
+		if (!empty($values) && cacti_sizeof($values) == cacti_sizeof($search)) {
+			$result = str_replace($search, $values, $result);
+		}
+	}
+
+	return $result;
+}
+
+function text_get_regex_array(?array $extraSubtitutions = []) {
+	static $regex_array = array();
+	static $regex_extra = array();
+
+	if ($extraSubtitutions !== null) {
+		$regex_extra = $extraSubtitutions;
+	}
+
+	if (!cacti_sizeof($regex_array)) {
+		$regex_array = array(
+			1  => array('name' => 'DS',     'regex' => '( DS\[)([, \d]+)(\])',       'func' => 'text_regex_datasource'),
+			2  => array('name' => 'DQ',     'regex' => '( DQ\[)([, \d]+)(\])',       'func' => 'text_regex_dataquery'),
+			3  => array('name' => 'Device', 'regex' => '( Device\[)([, \d]+)(\])',   'func' => 'text_regex_device'),
+			4  => array('name' => 'Poller', 'regex' => '( Poller\[)([, \d]+)(\])',   'func' => 'text_regex_poller'),
+			5  => array('name' => 'RRA',    'regex' => "([_\/])(\d+)(\.rrd&#039;)",  'func' => 'text_regex_rra'),
+			6  => array('name' => 'GT',     'regex' => '( GT\[)([, \d]+)(\])',       'func' => 'text_regex_graphtemplates'),
+			7  => array('name' => 'Graph',  'regex' => '( Graph\[)([, \d]+)(\])',    'func' => 'text_regex_graphs'),
+			8  => array('name' => 'Graphs', 'regex' => '( Graphs\[)([, \d]+)(\])',   'func' => 'text_regex_graphs'),
+			9  => array('name' => 'User',   'regex' => '( User\[)([, \d]+)(\])',     'func' => 'text_regex_users'),
+			10 => array('name' => 'User',   'regex' => '( Users\[)([, \d]+)(\])',    'func' => 'text_regex_users'),
+			11 => array('name' => 'Rule',   'regex' => '( Rule\[)([, \d]+)(\])',   	 'func' => 'text_regex_rule'),
+		);
+
+		// We will currently issue two hooks, one for the clog portion for backwards
+		// compatibility and one for new name.  In the future, the old hook will be
+		// marked depreciated and removed.
+		$regex_array = api_plugin_hook_function('clog_regex_array', $regex_array);
+		$regex_array = api_plugin_hook_function('text_regex_array', $regex_array);
+	}
+
+	return array_merge($regex_array, $regex_extra);
+}
+
+function text_regex_replace($id, $link, $url, $matches, $cache) {
+	global $config;
+
+	if ($link) {
+		return $matches[1] . '<a href=\'' . html_escape($config['url_path'] . sprintf($url,  $id)) . '\'>' . (isset($cache[$id]) ? html_escape($cache[$id]) : $id) . '</a>' . $matches[3];
+	} else {
+		return $matches[1] . (isset($cache[$id]) ? $cache[$id] : $id) . $matches[3];
+	}
+}
+
+function text_regex_parser_html($matches) {
+	return text_regex_parser($matches, true);
+}
+
+function text_regex_parser($matches, $link = false) {
+	$result = $matches[0];
+	$match = $matches[0];
+
+	$key_match = -1;
+	for ($index = 1; $index < cacti_sizeof($matches); $index++) {
+		if ($match == $matches[$index]) {
+			$key_match = $index;
+			break;
+		}
+	}
+
+	if ($key_match != -1) {
+		$key_setting = ($key_match - 1) / 4;
+		$regex_array = text_get_regex_array();
+
+		if (cacti_sizeof($regex_array)) {
+			if (array_key_exists($key_setting, $regex_array)) {
+				$regex_setting = $regex_array[$key_setting];
+
+				$rekey_array = array();
+				for ($j = 0; $j < 4; $j++) {
+					$rekey_array[$j] = $matches[$key_match + $j];
+				}
+
+				if (function_exists($regex_setting['func'])) {
+					$result = call_user_func_array($regex_setting['func'], array($rekey_array, $link));
+				} else {
+					$result = $match;
+				}
+			}
+		}
+	}
+
+	return $result;
+}
+
+function text_regex_device($matches, $link = false) {
+	static $host_cache = null;
+
+	if (!cacti_sizeof($host_cache)) {
+		$host_cache[0] = __('System Device');
+	}
+
+	$result = $matches[0];
+
+	$dev_ids = cacti_unique_ids($matches[2]);
+	if (cacti_sizeof($dev_ids)) {
+		$result = '';
+
+		foreach ($dev_ids as $id) {
+			if (!isset($host_cache[$id])) {
+				$host_cache[$id] = db_fetch_cell_prepared(
+					'SELECT description
+					FROM host
+		            WHERE id = ?',
+					array($id)
+				);
+			}
+
+			$result .= text_regex_replace($id, $link, 'host.php?action=edit&id=%s', $matches, $host_cache);
+		}
+	}
+
+	return $result;
+}
+
+function text_regex_datasource($matches, $link = false) {
+	static $gr_cache = null;
+
+	$result = $matches[0];
+
+	$ds_ids = cacti_unique_ids($matches[2]);
+
+	if (cacti_sizeof($ds_ids)) {
+		$result     = '';
+		$graph_rows = array();
+
+		foreach ($ds_ids as $ds) {
+			if (!isset($gr_cache[$ds])) {
+				$gr_cache[$ds] = array_rekey(
+					db_fetch_assoc_prepared(
+						'SELECT DISTINCT
+						gti.local_graph_id AS id
+						FROM graph_templates_item AS gti
+						INNER JOIN data_template_rrd AS dtr
+						ON gti.task_item_id=dtr.id
+						WHERE gti.local_graph_id > 0
+						AND dtr.local_data_id = ?',
+						array($ds)
+					),
+					'id',
+					'id'
+				);
+			}
+
+			$graph_rows = array_merge($graph_rows, $gr_cache[$ds]);
+		}
+
+		$graph_results = '';
+		if (cacti_sizeof($graph_rows)) {
+			$graph_ids = implode(',', $graph_rows);
+			$graph_array = array(0 => '', 1 => ' Graphs[', 2 => $graph_ids, 3 => ']');
+
+			$graph_results = text_regex_graphs($graph_array);
+		}
+
+		$result .= $matches[1];
+
+		$ds_titles = get_data_source_titles($ds_ids);
+		if (!isset($ds_titles)) {
+			$ds_titles = array();
+		}
+
+		foreach ($ds_ids as $ds_id) {
+			$result .= text_regex_replace($ds_id, $link, 'data_sources.php?action=ds_edit&id=%s', $matches, $ds_titles);
+		}
+
+		$result .= $matches[3] . $graph_results;
+	}
+
+	return $result;
+}
+
+function text_regex_poller($matches, $link = false) {
+	static $poller_cache = null;
+
+	if (!cacti_sizeof($poller_cache)) {
+		$poller_cache = array_rekey(
+			db_fetch_assoc('SELECT id, name
+				FROM poller'),
+			'id',
+			'name'
+		);
+	}
+
+	$result = $matches[0];
+
+	$poller_ids = cacti_unique_ids($matches[2]);
+
+	if (cacti_sizeof($poller_ids)) {
+		$result = '';
+
+		foreach ($poller_ids as $poller_id) {
+			$result .= text_regex_replace($poller_id, $link, 'pollers.php?action=edit&id=%s', $matches, $poller_cache);
+		}
+	}
+
+	return $result;
+}
+
+function text_regex_dataquery($matches, $link = false) {
+	static $query_cache = null;
+
+	if (!cacti_sizeof($query_cache)) {
+		$query_cache = array_rekey(
+			db_fetch_assoc('SELECT id, name
+				FROM snmp_query'),
+			'id',
+			'name'
+		);
+	}
+
+	$result = $matches[0];
+
+	$query_ids = cacti_unique_ids($matches[2]);
+
+	if (cacti_sizeof($query_ids)) {
+		$result = '';
+
+		foreach ($query_ids as $query_id) {
+			$result .= text_regex_replace($query_id, $link, 'data_queries.php?action=edit&id=%s', $matches, $query_cache);
+		}
+	}
+
+	return $result;
+}
+
+function text_regex_rra($matches, $link = false) {
+	$result = $matches[0];
+
+	$local_data_ids = $matches[2];
+	if (strlen($local_data_ids)) {
+		$datasource_array = array(0 => '', 1 => ' DS[', 2 => $local_data_ids, 3 => ']');
+		$datasource_result = text_regex_datasource($datasource_array);
+
+		if (strlen($datasource_result)) {
+			$result .= ' ' . $datasource_result;
+		}
+	}
+
+	return $result;
+}
+
+function text_regex_graphs($matches, $link = false) {
+	global $config;
+
+	static $graph_cache = null;
+
+	$result = $matches[0];
+
+	$graph_ids = cacti_unique_ids($matches[2]);
+
+	if (cacti_sizeof($graph_ids)) {
+		$result = '';
+		$graph_add = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
+
+		$title = '';
+		$i     = 0;
+
+		foreach ($graph_ids as $id) {
+			if (!isset($graph_cache[$id])) {
+				$graph_cache[$id] = db_fetch_cell_prepared(
+					'SELECT title_cache AS title
+					FROM graph_templates_graph AS gtg
+					WHERE local_graph_id = ?',
+					array($id)
+				);
+			}
+		}
+
+		$i = 0;
+		foreach ($graph_ids as $id) {
+			$graph_add .= ($i > 0 ? '%2C' : '') . $id;
+			$title     .= ($title != '' ? ', ' : '') . html_escape((isset($graph_cache[$id]) ? html_escape($graph_cache[$id]) : $id));
+			$i++;
+		}
+
+		if ($link) {
+			$result .= $matches[1] . "<a href='" . html_escape($graph_add) . '\'>' . $title . '</a>' . $matches[3];
+		} else {
+			$result .= $title . $matches[3];
+		}
+	}
+
+	return $result;
+}
+
+function text_regex_graphtemplates($matches, $link = false) {
+	static $templates_cache = null;
+
+	if (!cacti_sizeof($templates_cache)) {
+		$templates_cache = array_rekey(
+			db_fetch_assoc('SELECT id, name
+				FROM graph_templates'),
+			'id',
+			'name'
+		);
+	}
+
+	$result = $matches[0];
+
+	$ids = cacti_unique_ids($matches[2]);
+
+	if (cacti_sizeof($ids)) {
+		$result = '';
+
+		foreach ($ids as $id) {
+			$result .= text_regex_replace($id, $link, 'graph_templates.php?action=template_edit&id=%s', $matches, $templates_cache);
+		}
+	}
+
+	return $result;
+}
+
+function text_regex_users($matches, $link = false) {
+	static $users_cache = null;
+
+	$result = $matches[0];
+
+	$user_ids = cacti_unique_ids($matches[2]);
+
+	if (cacti_sizeof($user_ids)) {
+		$result = '';
+
+		foreach ($user_ids as $id) {
+			if (!isset($users_cache[$id])) {
+				$users_cache[$id] = db_fetch_cell_prepared(
+					'SELECT username
+					FROM user_auth
+					WHERE id = ?',
+					array($id)
+				);
+			}
+		}
+
+		foreach ($user_ids as $id) {
+			$result .= text_regex_replace($id, $link, 'user_admin.php?action=user_edit&tab=general&id=%s', $matches, $users_cache);
+		}
+	}
+
+	return $result;
+}
+
+function text_regex_rule($matches, $link = false) {
+	static $rules_cache = null;
+
+	if (!cacti_sizeof($rules_cache)) {
+		$rules_cache = array_rekey(
+			db_fetch_assoc('SELECT id, name
+				FROM automation_graph_rules'),
+			'id',
+			'name'
+		);
+	}
+
+	$result = $matches[0];
+
+	$dev_ids = cacti_unique_ids($matches[2]);
+
+	if (cacti_sizeof($dev_ids)) {
+		$result = '';
+
+		foreach ($dev_ids as $rule_id) {
+			$result .= text_regex_replace($rule_id, $link, 'automation_graph_rules.php?action=edit&id=%s', $matches, $rules_cache);
+		}
+	}
+
+	return $result;
 }

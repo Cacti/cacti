@@ -306,7 +306,7 @@ function substitute_host_data($string, $l_escape_string, $r_escape_string, $host
 		$search[]  = $l_escape_string . 'host_location' . $r_escape_string;
 		$replace[] = $host['location'];
 		$search[]  = $l_escape_string . 'host_poller_id' . $r_escape_string;
-		$replace[] = $host['poller_id '];
+		$replace[] = $host['poller_id'];
 		$search[]  = $l_escape_string . 'host_polling_time' . $r_escape_string;
 		$replace[] = $host['polling_time'];
 		$search[]  = $l_escape_string . 'host_avg_time' . $r_escape_string;
