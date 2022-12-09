@@ -8026,7 +8026,7 @@ function text_regex_graphs($matches, $link = false) {
 	$graph_ids = cacti_unique_ids($matches[2]);
 
 	if (cacti_sizeof($graph_ids)) {
-		$result = $matches[1];
+		$result = '';
 		$graph_add = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
 
 		$title = '';

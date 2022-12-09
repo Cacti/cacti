@@ -30,10 +30,12 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 $output_json = false;
+$output_grants = false;
 if (cacti_sizeof($parms)) {
-	$shortopts = 'JjVvHh';
+	$shortopts = 'JjGgVvHh';
 
 	$longopts = array(
+		'grant',
 		'json',
 		'version',
 		'help'
@@ -45,6 +47,12 @@ if (cacti_sizeof($parms)) {
 		switch ($arg) {
 			case 'json':
 				$output_json = true;
+				break;
+
+			case 'grants':
+			case 'G':
+			case 'g':
+				$output_grants = true;
 				break;
 
 			case 'version':
@@ -75,6 +83,18 @@ $count = 0;
 if ($output_json) {
 	print strtolower(json_encode($perms, JSON_PRETTY_PRINT));
 } else {
+	if ($output_grants) {
+		$pad = str_repeat('-', 20);
+		printf("\n %20s %-12s %20s\n\n", $pad, '   Grants', $pad);
+		$grants = db_get_grants();
+		foreach ($grants as $grant_row) {
+			foreach ($grant_row as $grant) {
+				echo $grant . PHP_EOL;
+			}
+		}
+		printf("\n %20s %-12s %20s\n\n", $pad, ' Permission', $pad);
+	}
+
 	foreach ($perms as $perm => $value) {
 		$count++;
 		printf('%25s %5s    ', $perm, $value ? 'Yes' : 'No');

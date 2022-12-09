@@ -2247,6 +2247,11 @@ function db_create_permissions_array($default = false) {
 	);
 }
 
+function db_get_grants($log = false, $db_conn = false) {
+	$db_grants = db_fetch_assoc('SHOW GRANTS FOR CURRENT_USER', $log, $db_conn);
+	return $db_grants;
+}
+
 function db_get_permissions($include_unknown = false, $log = false, $db_conn = false) {
 	$perms = db_create_permissions_array(false);
 
