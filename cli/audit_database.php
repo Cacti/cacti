@@ -970,7 +970,7 @@ function create_tables($load = true) {
 				$unix_pass = '';
 				$win32_pass = ' -p' . cacti_escapeshellarg($database_password);
 			} else {
-				$unix_pass = 'MYSQL_PWD="' . cacti_escapeshellarg($database_password) . '" ';
+				$unix_pass = 'MYSQL_PWD=' . cacti_escapeshellarg($database_password) . ' ';
 				$win32_pass = '';
 			}
 
