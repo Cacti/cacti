@@ -22,10 +22,10 @@
  +-------------------------------------------------------------------------+
 */
 
-global $is_ajax_request;
+global $is_request_ajax;
 
 print "\t\t\t</main>\n\t\t</div>\n\t</div>\n";
-if (!$is_ajax_request) {
+if (!$is_request_ajax) {
 	api_plugin_hook('page_bottom');
 	print "\t</body>\n</html>\n";
 }

@@ -2401,6 +2401,8 @@ function handleAjaxResponse(html, options) {
 			htmlContent = html;
 		}
 
+		// No need to check noState on options
+		// as this is handled inside pushState();
 		pushState(myTitle, options);
 
 		$(elementId).empty().hide();
