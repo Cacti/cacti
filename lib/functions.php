@@ -6066,62 +6066,55 @@ function CactiShutdownHandler() {
  * enable_device_debug - Enables device debug for a device
  * if it is disabled.
  *
- * @param $host_id - the device id to search for
+ * @param int $host_id - the device id to search for
  *
- * @return mixed void
+ * @return string
  */
-function enable_device_debug($host_id) {
+function enable_device_debug(int $host_id): string {
 	$device_debug = read_config_option('selective_device_debug', true);
-	if ($device_debug != '') {
-		$devices = explode(',', $device_debug);
-		if (array_search($host_id, $devices) === false) {
-			set_config_option('selective_device_debug', $device_debug . ',' . $host_id, true);
-		}
-	} else {
-		set_config_option('selective_device_debug', $host_id, true);
+	$devices = explode(',', $device_debug ?? '');
+	if (array_search($host_id, $devices) === false) {
+		$devices []= $host_id;
+		$device_debug = implode(',', $devices);
+		set_config_option('selective_device_debug', $device_debug, true);
 	}
+
+	return $device_debug ?? '';
 }
 
 /**
  * disable_device_debug - Disables device debug for a device
  * if it is enabled.
  *
- * @param $host_id - the device id to search for
+ * @param int $host_id - the device id to search for
  *
- * @return mixed void
+ * @return string
  */
-function disable_device_debug($host_id) {
+function disable_device_debug(int $host_id): string {
 	$device_debug = read_config_option('selective_device_debug', true);
-	if ($device_debug != '') {
-		$devices = explode(',', $device_debug);
-		foreach($devices as $key => $device) {
-			if ($device == $host_id) {
-				unset($devices[$key]);
-				break;
-			}
-		}
-		set_config_option('selective_device_debug', implode(',', $devices), true);
+	$devices = explode(',', $device_debug ?? '');
+	$device_index = array_search($host_id, $devices);
+	if ($device_index !== false) {
+		unset($devices[$device_index]);
+		$device_debug = implode(',', $devices);
+		set_config_option('selective_device_debug', $device_debug, true);
 	}
+
+	return $device_debug ?? '';
 }
 
 /**
  * is_device_debug_enabled - Determines if device debug is enabled
  * for a device.
  *
- * @param $host_id - the device id to search for
+ * @param int $host_id - the device id to search for
  *
- * @return mixed boolean true or false
+ * @return bool
  */
-function is_device_debug_enabled($host_id) {
+function is_device_debug_enabled(int $host_id): bool {
 	$device_debug = read_config_option('selective_device_debug', true);
-	if ($device_debug != '') {
-		$devices = explode(',', $device_debug);
-		if (array_search($host_id, $devices) !== false) {
-			return true;
-		}
-	}
-
-	return false;
+	$devices = explode(',', $device_debug);
+	return (array_search($host_id, $devices) !== false);
 }
 
 /**

@@ -539,7 +539,7 @@ function debug_level($host_id, $level) {
 
 	static $debug_enabled = array();
 
-	if (!isset($debug_enabled[$host_id])) {
+	if (!is_bool($debug_enabled[$host_id] ?? null)) {
 		if ($debug) {
 			$debug_enabled[$host_id] = true;
 		} else {
