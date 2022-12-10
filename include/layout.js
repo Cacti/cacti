@@ -2405,10 +2405,12 @@ function handleAjaxResponse(html, options) {
 		// as this is handled inside pushState();
 		pushState(myTitle, options);
 
-		$(elementId).empty().hide();
-		$('div[class^="ui-"]').remove();
-		$(elementId).html(htmlContent);
-		$(elementId).show();
+		if (html !== null && html.length > 0) {
+			$(elementId).empty().hide();
+			$('div[class^="ui-"]').remove();
+			$(elementId).html(htmlContent);
+			$(elementId).show();
+		}
 
 		if (options.pageName != '') {
 			// Workaround for Create Device
