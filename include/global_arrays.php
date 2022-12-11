@@ -855,18 +855,18 @@ $graph_views = array(1 =>
 );
 
 $auth_methods = array(
-	1 => __('Builtin Authentication'),
-	2 => __('Web Basic Authentication')
+	AUTH_METHOD_CACTI => __('Cacti Builtin Authentication'),
+	AUTH_METHOD_BASIC => __('Web Basic Authentication')
 );
 
 if (function_exists('ldap_connect')) {
-	$auth_methods[3] = __('LDAP Authentication');
-	$auth_methods[4] = __('Multiple LDAP/AD Domains');
+	$auth_methods[AUTH_METHOD_LDAP]   = null;
+	$auth_methods[AUTH_METHOD_DOMAIN] = __('Multiple LDAP/AD Domains');
 }
 
 $domain_types = array(
-	'1' => __('LDAP'),
-	'2' => __('Active Directory')
+	DOMAIN_TYPE_LDAP => __('LDAP'),-
+	DOMAIN_TYPE_AD   => __('Active Directory')
 );
 
 $auth_realms = get_auth_realms();

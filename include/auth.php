@@ -62,14 +62,14 @@ if (get_current_page() == 'logout.php') {
 	return true;
 }
 
-if ($auth_method != 0) {
+if ($auth_method != AUTH_METHOD_NONE) {
 	/* handle alternate authentication realms */
 	api_plugin_hook_function('auth_alternate_realms');
 
 	/**
 	 * handle change password dialog and auth cookie if not using basic auth
 	 */
-	if ($auth_method != 2) {
+	if ($auth_method != AUTH_METHOD_BASIC) {
 		if (isset($_SESSION['sess_change_password'])) {
 			header('Location: ' . $config['url_path'] . 'auth_changepassword.php?ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
 			exit;
@@ -91,7 +91,7 @@ if ($auth_method != 0) {
 	 * but their user_id is not set, include the auth_login.php script to
 	 * process their log in.
 	 */
-	if ($auth_method == 2 && !isset($_SESSION['sess_user_id'])) {
+	if ($auth_method == AUTH_METHOD_BASIC && !isset($_SESSION['sess_user_id'])) {
 		$username = get_basic_auth_username();
 		if ($username !== false) {
 			$current_user = db_fetch_row_prepared('SELECT *
@@ -289,7 +289,7 @@ if ($auth_method != 0) {
 
 			if (isset($_SERVER['HTTP_REFERER'])) {
 				$goBack = "<td colspan='2' class='center'>[<a href='" . $_SERVER['HTTP_REFERER'] . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
-			} elseif ($auth_method != 2 && $auth_method > 0) {
+			} elseif ($auth_method != AUTH_METHOD_BASIC && $auth_method > AUTH_METHOD_NONE) {
 				$goBack = "<td colspan='2' class='center'>[<a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 			}
 

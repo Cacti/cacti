@@ -514,7 +514,7 @@ function user_enable($user_id) {
  * @return (array) Array of login realms
  */
 function get_auth_realms($login = false) {
-	if (read_config_option('auth_method') == 4) {
+	if (read_config_option('auth_method') == AUTH_METHOD_DOMAIN) {
 		$drealms = db_fetch_assoc('SELECT domain_id, domain_name
 			FROM user_domains
 			WHERE enabled="on"
@@ -555,6 +555,7 @@ function get_auth_realms($login = false) {
 		}
 	}
 
+	// TODO: Verify this array
 	return array(
 		'0' => __('Local'),
 		'3' => __('LDAP'),
@@ -705,7 +706,7 @@ function is_tree_allowed($tree_id, $user_id = 0) {
 		return $_SESSION['sess_tree_perms'][$tree_id];
 	}
 
-	if (read_config_option('auth_method') != 0) {
+	if (read_config_option('auth_method') != AUTH_METHOD_NONE) {
 		if ($user_id == 0) {
 			if (isset($_SESSION['sess_user_id'])) {
 				$user_id = $_SESSION['sess_user_id'];
@@ -824,7 +825,7 @@ function is_graph_template_allowed($graph_template_id, $user = 0) {
  * @return (bool) True if allowed, else false
  */
 function is_view_allowed($view = 'show_tree') {
-	if (read_config_option('auth_method') != 0) {
+	if (read_config_option('auth_method') != AUTH_METHOD_NONE) {
 		if (!isset($_SESSION['sess_user_id'])) {
 			return false;
 		}
@@ -961,7 +962,7 @@ function is_realm_allowed($realm, $check_user = false) {
 	global $config;
 
 	/* list all realms that this user has access to */
-	if (read_config_option('auth_method') != 0) {
+	if (read_config_option('auth_method') != AUTH_METHOD_NONE) {
 		/* if we are only checking another users permission, don't check cache */
 		if ($check_user == false) {
 			/* user is not set, no permissions */
@@ -1030,7 +1031,7 @@ function is_realm_allowed($realm, $check_user = false) {
 		 * check the permissions from the table, should only happen once per login
 		 * of after a permission change by the administrator.
 		 */
-		if (read_config_option('auth_method') != 0) {
+		if (read_config_option('auth_method') != AUTH_METHOD_NONE) {
 			if (cacti_version_compare($config['cacti_db_version'], '1.0.0', '>=')) {
 				$user_realm = db_fetch_cell_prepared("SELECT realm_id
 					FROM user_auth_realm
@@ -1208,7 +1209,7 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $sql_o
 			ORDER BY gt.sequence");
 	}
 
-	if (read_config_option('auth_method') != 0) {
+	if (read_config_option('auth_method') != AUTH_METHOD_NONE) {
 		$new_hierarchy = array();
 		if (cacti_sizeof($hierarchy)) {
 			foreach($hierarchy as $h) {
@@ -1308,12 +1309,12 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 	}
 
 	if ($user_id == -1) {
-		$auth_method = 0;
+		$auth_method = AUTH_METHOD_NONE;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user_id == 0) {
+	if ($auth_method > AUTH_METHOD_NONE && $user_id == 0) {
 		if (isset($_SESSION['sess_user_id'])) {
 			$user_id = $_SESSION['sess_user_id'];
 		} else {
@@ -1326,7 +1327,7 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 	/* get policies for all groups and user */
 	$policies = get_policies($user_id);
 
-	if ($auth_method != 0) {
+	if ($auth_method != AUTH_METHOD_NONE) {
 		$sql_where = get_policy_where($graph_auth_method, $policies, $sql_where);
 	}
 
@@ -1402,12 +1403,12 @@ function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sq
 	}
 
 	if ($user_id == -1) {
-		$auth_method = 0;
+		$auth_method = AUTH_METHOD_NONE;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user_id == 0) {
+	if ($auth_method > AUTH_METHOD_NONE && $user_id == 0) {
 		if (isset($_SESSION['sess_user_id'])) {
 			$user_id = $_SESSION['sess_user_id'];
 		} else {
@@ -1424,7 +1425,7 @@ function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sq
 	/* get policies for all groups and user */
 	$policies = get_policies($user_id);
 
-	if (!$simple_perms && $auth_method != 0) {
+	if (!$simple_perms && $auth_method != AUTH_METHOD_NONE) {
 		$sql_where = get_policy_where($graph_auth_method, $policies, $sql_where);
 	}
 
@@ -1500,12 +1501,12 @@ function get_allowed_aggregate_graphs($sql_where = '', $sql_order = 'gtg.title_c
 	}
 
 	if ($user_id == -1) {
-		$auth_method = 0;
+		$auth_method = AUTH_METHOD_NONE;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user_id == 0) {
+	if ($auth_method > AUTH_METHOD_NONE && $user_id == 0) {
 		if (isset($_SESSION['sess_user_id'])) {
 			$user_id = $_SESSION['sess_user_id'];
 		} else {
@@ -1522,7 +1523,7 @@ function get_allowed_aggregate_graphs($sql_where = '', $sql_order = 'gtg.title_c
 	/* get policies for all groups and user */
 	$policies = get_policies($user_id);
 
-	if (!$simple_perms && $auth_method != 0) {
+	if (!$simple_perms && $auth_method != AUTH_METHOD_NONE) {
 		$sql_where = get_policy_where($graph_auth_method, $policies, $sql_where);
 	}
 
@@ -1778,12 +1779,12 @@ function get_allowed_graph_templates($sql_where = '', $sql_order = 'gt.name', $s
 	$sql_where = 'WHERE ' . ($sql_where != '' ? $sql_where . ' AND ':' ') . '(gt.id IS NOT NULL) ';
 
 	if ($user_id == -1) {
-		$auth_method = 0;
+		$auth_method = AUTH_METHOD_NONE;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user_id == 0) {
+	if ($auth_method > AUTH_METHOD_NONE && $user_id == 0) {
 		if (isset($_SESSION['sess_user_id'])) {
 			$user_id = $_SESSION['sess_user_id'];
 		} else {
@@ -1801,11 +1802,11 @@ function get_allowed_graph_templates($sql_where = '', $sql_order = 'gt.name', $s
 	$policies = get_policies($user_id);
 
 	/* short circuit if we don't have a user */
-	if ($auth_method > 0 && $user_id == 0) {
+	if ($auth_method > AUTH_METHOD_NONE && $user_id == 0) {
 		return array();
 	}
 
-	if (!$simple_perms && $auth_method != 0) {
+	if (!$simple_perms && $auth_method != AUTH_METHOD_NONE) {
 		$sql_where = get_policy_where($graph_auth_method, $policies, $sql_where);
 	}
 
@@ -2409,12 +2410,12 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
 	}
 
 	if ($user_id == -1) {
-		$auth_method = 0;
+		$auth_method = AUTH_METHOD_NONE;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method != 0) {
+	if ($auth_method != AUTH_METHOD_NONE) {
 		if ($user_id == 0) {
 			if (isset($_SESSION['sess_user_id'])) {
 				$user_id = $_SESSION['sess_user_id'];
@@ -2526,12 +2527,12 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
 	$total_rows = -1;
 
 	if ($user_id == -1) {
-		$auth_method = 0;
+		$auth_method = AUTH_METHOD_NONE;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user_id == 0) {
+	if ($auth_method > AUTH_METHOD_NONE && $user_id == 0) {
 		if (isset($_SESSION['sess_user_id'])) {
 			$user_id = $_SESSION['sess_user_id'];
 		} else {
@@ -2573,7 +2574,7 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
 		}
 	}
 
-	if ($auth_method != 0) {
+	if ($auth_method != AUTH_METHOD_NONE) {
 		$i          = 0;
 		$sql_join   = '';
 		$sql_where1 = '';
@@ -2677,12 +2678,12 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
  */
 function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_limit = '', &$total_rows = 0, $user_id = 0, $device_id = 0) {
 	if ($user_id == -1) {
-		$auth_method = 0;
+		$auth_method = AUTH_METHOD_NONE;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user_id == 0) {
+	if ($auth_method > AUTH_METHOD_NONE && $user_id == 0) {
 		if (isset($_SESSION['sess_user_id'])) {
 			$user_id = $_SESSION['sess_user_id'];
 		} else {
@@ -2725,7 +2726,7 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
 	/* get policies for all groups and user */
 	$policies = get_policies($user_id);
 
-	if (!$simple_perms && $auth_method != 0) {
+	if (!$simple_perms && $auth_method != AUTH_METHOD_NONE) {
 		$sql_where = get_policy_where($graph_auth_method, $policies, $sql_where);
 	}
 
@@ -2809,14 +2810,14 @@ function get_allowed_sites($sql_where = '', $sql_order = 'name', $sql_limit = ''
 	}
 
 	if ($user_id == -1) {
-		$auth_method = 0;
+		$auth_method = AUTH_METHOD_NONE;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
 	if (isset($_SESSION['sess_user_id']) && $user_id == 0) {
 		$user_id = $_SESSION['sess_user_id'];
-	} elseif ($auth_method > 0) {
+	} elseif ($auth_method > AUTH_METHOD_NONE) {
 		return array();
 	}
 
@@ -2856,12 +2857,12 @@ function get_allowed_sites($sql_where = '', $sql_order = 'name', $sql_limit = ''
  */
 function get_allowed_site_devices($site_id, $sql_where = '', $sql_order = 'description', $sql_limit = '', &$total_rows = 0, $user_id = 0) {
 	if ($user_id == -1) {
-		$auth_method = 0;
+		$auth_method = AUTH_METHOD_NONE;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if ($auth_method > 0 && $user_id == 0) {
+	if ($auth_method > AUTH_METHOD_NONE && $user_id == 0) {
 		if (isset($_SESSION['sess_user_id'])) {
 			$user_id = $_SESSION['sess_user_id'];
 		} else {
@@ -2899,7 +2900,7 @@ function get_allowed_site_devices($site_id, $sql_where = '', $sql_order = 'descr
 		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . " h.site_id=$site_id";
 	}
 
-	if ($auth_method != 0 && !$simple_perms) {
+	if ($auth_method != AUTH_METHOD_NONE && !$simple_perms) {
 		$sql_where = get_policy_where($graph_auth_method, $policies, $sql_where);
 	}
 
@@ -3303,7 +3304,7 @@ function get_allowed_graph_items($sql_where, $sql_order = 'name', $sql_limit = 2
 function auth_get_username() {
 	$auth_method = read_config_option('auth_method');
 
-	if ($auth_method == 2) {
+	if ($auth_method == AUTH_METHOD_BASIC) {
 		$username = get_basic_auth_username();
 
 		/* Get the Web Basic Auth username and set action so we login right away */
@@ -4435,7 +4436,7 @@ function auth_display_custom_error_message($message) {
 
 	$auth_method = read_config_option('auth_method');
 
-	if ($auth_method == 2) {
+	if ($auth_method == AUTH_METHOD_BASIC) {
 		$custom_message = read_config_option('basic_auth_fail_message');
 	} else {
 		$custom_message = '';
@@ -4455,7 +4456,7 @@ function auth_display_custom_error_message($message) {
 	print '<body><center>';
 	print '<div class="ui-state-error ui-corner-all" style="width:50%;margin-left:auto;margin-right:auto;margin-top:200px;padding:20px"><p>' . $message . '</p><p>' . $custom_message . '</p></div>';
 
-	if ($auth_method != 2) {
+	if ($auth_method != AUTH_METHOD_BASIC) {
 		print '<div class="ui-corner-all" style="width:50%;margin:auto;padding:20px"><a href="index.php">' . __('Login Again') . '</a></div><script type="text/javascript">$(function() { $("a").button(); });</script>';
 	}
 
@@ -4654,7 +4655,7 @@ function auth_login_create_user_from_template($username, $realm) {
 
 		cacti_log("LOGIN FAILED: Template user id '" . read_config_option('user_template') . "' does not exist.", false, 'AUTH');
 
-		if (read_config_option('auth_method') == 2) {
+		if (read_config_option('auth_method') == AUTH_METHOD_BASIC) {
 			auth_display_custom_error_message($error_msg);
 			exit;
 		}
@@ -4674,7 +4675,7 @@ function auth_login_create_user_from_template($username, $realm) {
 function check_reset_no_authentication($auth_method) {
 	global $error, $error_msg, $config;
 
-	if ($auth_method == 0) {
+	if ($auth_method == AUTH_METHOD_NONE) {
 		$admin_id = db_execute_prepared('SELECT id
 			FROM user_auth
 			WHERE id = ?',
@@ -4740,7 +4741,7 @@ function check_reset_no_authentication($auth_method) {
 			WHERE id = ?",
 			array($admin_id));
 
-		$auth_method = 1;
+		$auth_method = AUTH_METHOD_CACTI;
 		set_config_option('auth_method', $auth_method, true);
 
 		$_SESSION['sess_user_id'] = $admin_id;

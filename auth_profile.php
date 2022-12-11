@@ -283,7 +283,7 @@ function settings() {
 	global $tabs_graphs, $settings_user, $current_user, $graph_views, $current_user;
 
 	/* you cannot have per-user graph settings if cacti's user management is not turned on */
-	if (read_config_option('auth_method') == 0) {
+	if (read_config_option('auth_method') == AUTH_METHOD_NONE) {
 		raise_message(6);
 		return;
 	}
@@ -401,7 +401,7 @@ function settings() {
 	html_end_box(true, true);
 
 	if (is_view_allowed('graph_settings') == true) {
-		if (read_config_option('auth_method') != 0) {
+		if (read_config_option('auth_method') != AUTH_METHOD_NONE) {
 			$settings_user['tree']['default_tree_id']['sql'] = get_allowed_trees(false, true);
 		}
 
@@ -476,7 +476,7 @@ function settings_2fa() {
 	global $tabs_graphs, $settings_user, $current_user, $graph_views, $current_user;
 
 	/* you cannot have per-user graph settings if cacti's user management is not turned on */
-	if (read_config_option('auth_method') == 0) {
+	if (read_config_option('auth_method') == AUTH_METHOD_NONE) {
 		raise_message(6);
 		return;
 	}

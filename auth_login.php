@@ -49,10 +49,10 @@ $error_msg     = '';                                  // The errors message in c
 /* global variables for exception handling */
 global $error, $error_msg;
 
-if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
-	if ($auth_method > 2 && $frv_realm <= 1) {
+if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_BASIC) {
+	if ($auth_method > AUTH_METHOD_BASIC && $frv_realm <= 1) {
 		// User picked 'local' from dropdown;
-		$auth_method = 1;
+		$auth_method = AUTH_METHOD_CACTI;
 	} else {
 		$auth_method = read_config_option('auth_method');
 	}
@@ -60,7 +60,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 	// Compensate as the dropdown for LDAP is off by one
 	if ($frv_realm == 2) {
 		$realm = 3;
-	} elseif ($auth_method == 2) {
+	} elseif ($auth_method == AUTH_METHOD_BASIC) {
 		$realm = $auth_method;
 	} else {
 		$realm = $frv_realm;
@@ -69,7 +69,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 	cacti_log("DEBUG: User '" . $username . "' attempting to login with realm " . $frv_realm . ", using method " . $auth_method, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 	switch ($auth_method) {
-		case '0': // No authentication, should not be reachable
+		case AUTH_METHOD_NONE: // No authentication, should not be reachable
 			$error     = true;
 			$error_msg = __esc('Cacti no longer supports No Authentication mode. Please contact your System Administrator.');
 			cacti_log("FATAL: No authentication attempted and not supported.", false, 'AUTH');
@@ -79,25 +79,20 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 			exit;
 
 			break;
-		case '1': // Local authentication
+		case AUTH_METHOD_CACTI: // Local authentication
 			cacti_log("DEBUG: Local User '" . $username . "' to attempt login.", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 			$user = local_auth_login_process($username);
 
 			break;
-		case '2': // Basic authentication
+		case AUTH_METHOD_BASIC: // Basic authentication
 			cacti_log("DEBUG: Basic Auth User '" . $username . "' attempting to login.", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 			$user = basic_auth_login_process($username);
 
 			break;
-		case '3': // LDAP Authentication
-			cacti_log("DEBUG: LDAP User '" . $username . "' to attempt login.", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
-
-			$user = ldap_login_process($username);
-
-			break;
-		case '4': // LDAP Domains login
+		case AUTH_METHOD_LDAP: // LDAP Authentication
+		case AUTH_METHOD_DOMAIN: // LDAP Domains login
 			cacti_log("DEBUG: Domains User '" . $username . "' to attempt login.", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 			$user = domains_login_process($username);
@@ -146,7 +141,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 
 			cacti_log("LOGIN FAILED: Unable to locate guest user '" . read_config_option('guest_user') . "'", false, 'AUTH');
 
-			if ($auth_method == 2) {
+			if ($auth_method == AUTH_METHOD_BASIC) {
 				auth_display_custom_error_message($error_msg);
 				exit;
 			}
@@ -181,7 +176,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 			$error     = true;
 			$error_msg = __('Access Denied!  User account disabled.');
 
-			if ($auth_method == 2) {
+			if ($auth_method == AUTH_METHOD_BASIC) {
 				auth_display_custom_error_message($error_msg);
 				exit;
 			}
@@ -194,14 +189,14 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 
 			cacti_log(sprintf("LOGIN FAILED: User %s with id %s does not have access to any area of Cacti.", $user['username'], $user['id']), false, 'AUTH');
 
-			if ($auth_method == 2) {
+			if ($auth_method == AUTH_METHOD_BASIC) {
 				auth_display_custom_error_message($error_msg);
 				exit;
 			}
 		}
 
 		/* remember me support.  Not for guest of basic auth */
-		if ($auth_method != 2 && $user['id'] !== get_guest_account()) {
+		if ($auth_method != AUTH_METHOD_BASIC && $user['id'] !== get_guest_account()) {
 			if (!$error && isset_request_var('remember_me') && read_config_option('auth_cache_enabled') == 'on') {
 				set_auth_cookie($user);
 			}
@@ -214,7 +209,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == 2) {
 			$_SESSION['sess_client_addr'] = get_client_addr();
 
 			/* handle 'force change password' */
-			if ($user['must_change_password'] == 'on' && $auth_method == 1 && $user['password_change'] == 'on') {
+			if ($user['must_change_password'] == 'on' && $auth_method == AUTH_METHOD_CACTI && $user['password_change'] == 'on') {
 				$_SESSION['sess_change_password'] = true;
 			}
 
@@ -313,18 +308,8 @@ html_auth_header(
 	</td>
 </tr>
 <?php
-if (read_config_option('auth_method') == '3' || read_config_option('auth_method') == '4') {
-	if (read_config_option('auth_method') == '3') {
-		$realms = api_plugin_hook_function(
-			'login_realms',
-			array(
-				'1' => array('name' => __('Local'), 'selected' => false),
-				'2' => array('name' => __('LDAP'),  'selected' => true)
-			)
-		);
-	} else {
-		$realms = get_auth_realms(true);
-	}
+if (read_config_option('auth_method') == AUTH_METHOD_LDAP || read_config_option('auth_method') == AUTH_METHOD_DOMAIN) {
+	$realms = get_auth_realms(true);
 
 	// try and remember previously selected realm
 	if ($frv_realm && array_key_exists($frv_realm, $realms)) {

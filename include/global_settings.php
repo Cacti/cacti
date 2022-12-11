@@ -1604,7 +1604,7 @@ $settings['authentication'] = array(
 		'friendly_name' => __('Authentication Method'),
 		'description' => __('<blockquote><i>Built-in Authentication</i> - Cacti handles user authentication, which allows you to create users and give them rights to different areas within Cacti.<br><br><i>Web Basic Authentication</i> - Authentication is handled by the web server. Users can be added or created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used.<br><br><i>LDAP Authentication</i> - Allows for authentication against a LDAP server. Users will be created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used.  If PHPs LDAP module is not enabled, LDAP Authentication will not appear as a selectable option.<br><br><i>Multiple LDAP/AD Domain Authentication</i> - Allows administrators to support multiple disparate groups from different LDAP/AD directories to access Cacti resources.  Just as LDAP Authentication, the PHP LDAP module is required to utilize this method.</blockquote>'),
 		'method' => 'drop_array',
-		'default' => 1,
+		'default' => AUTH_METHOD_CACTI,
 		'array' => $auth_methods
 	),
 	'auth_cache_enabled' => array(
@@ -1641,6 +1641,66 @@ $settings['authentication'] = array(
 		'none_value' => __('No User'),
 		'sql' => 'SELECT id AS id, username AS name FROM user_auth WHERE realm = 0 AND id NOT IN (' . $admin_account . ') ORDER BY username',
 		'default' => '0'
+	),
+	'secpass_lock_header' => array(
+		'friendly_name' => __('Account Locking'),
+		'method' => 'spacer',
+		'collapsible' => 'true'
+	),
+	'secpass_lockfailed' => array(
+		'friendly_name' => __('Lock Accounts'),
+		'description' => __('Lock an account after this many failed attempts in 1 hour.'),
+		'method' => 'drop_array',
+		'default' => '0',
+		'array' => array(
+			'0' => __('Disabled'),
+			'1' => __('1 Attempt'),
+			'2' => __('%d Attempts', 2),
+			'3' => __('%d Attempts', 3),
+			'4' => __('%d Attempts', 4),
+			'5' => __('%d Attempts', 5),
+			'6' => __('%d Attempts', 6)
+		)
+	),
+	'secpass_unlocktime' => array(
+		'friendly_name' => __('Auto Unlock'),
+		'description' => __('An account will automatically be unlocked after this many minutes.  Even if the correct password is entered, the account will not unlock until this time limit has been met.  Max of 1440 minutes (1 Day)'),
+		'method' => 'drop_array',
+		'default' => '60',
+		'array' => array(
+			'0'    => __('Disabled'),
+			'1'    => __('1 Minute'),
+			'2'    => __('%d Minutes', 2),
+			'5'    => __('%d Minutes', 5),
+			'10'   => __('%d Minutes', 10),
+			'20'   => __('%d Minutes', 20),
+			'30'   => __('%d Minutes', 30),
+			'60'   => __('1 Hour'),
+			'120'  => __('%d Hours', 2),
+			'240'  => __('%d Hours', 4),
+			'480'  => __('%d Hours', 8),
+			'960'  => __('%d Hours', 16),
+			'1440' => __('1 Day'),
+		),
+	),
+	'secpass_pwned_header' => array(
+		'friendly_name' => __('Pwned Checks (Online)'),
+		'method' => 'spacer',
+		'collapsible' => 'true'
+	),
+	'secpass_pwnedcheck' => array(
+		'friendly_name' => __('Pwned Check'),
+		'description' => __('Check password against haveibeenpwned.com'),
+		'method' => 'checkbox',
+		'default' => '',
+	),
+	'secpass_pwnedcount' => array(
+		'friendly_name' => __('Pwned Threshold'),
+		'description' => __('Block use of a password once it reaches this reported usage level'),
+		'method' => 'textbox',
+		'default' => '8',
+		'max_length' => 2,
+		'size' => 4
 	),
 	'basic_header' => array(
 		'friendly_name' => __('Basic Authentication Settings'),
@@ -1749,236 +1809,6 @@ $settings['authentication'] = array(
 			'11' => __('%d Changes', 11),
 			'12' => __('%d Changes', 12),
 		),
-	),
-	'secpass_pwned_header' => array(
-		'friendly_name' => __('Pwned Checks (Online)'),
-		'method' => 'spacer',
-		'collapsible' => 'true'
-	),
-	'secpass_pwnedcheck' => array(
-		'friendly_name' => __('Pwned Check'),
-		'description' => __('Check password against haveibeenpwned.com'),
-		'method' => 'checkbox',
-		'default' => '',
-	),
-	'secpass_pwnedcount' => array(
-		'friendly_name' => __('Pwned Threshold'),
-		'description' => __('Block use of a password once it reaches this reported usage level'),
-		'method' => 'textbox',
-		'default' => '8',
-		'max_length' => 2,
-		'size' => 4
-	),
-	'secpass_lock_header' => array(
-		'friendly_name' => __('Account Locking'),
-		'method' => 'spacer',
-		'collapsible' => 'true'
-	),
-	'secpass_lockfailed' => array(
-		'friendly_name' => __('Lock Accounts'),
-		'description' => __('Lock an account after this many failed attempts in 1 hour.'),
-		'method' => 'drop_array',
-		'default' => '0',
-		'array' => array(
-			'0' => __('Disabled'),
-			'1' => __('1 Attempt'),
-			'2' => __('%d Attempts', 2),
-			'3' => __('%d Attempts', 3),
-			'4' => __('%d Attempts', 4),
-			'5' => __('%d Attempts', 5),
-			'6' => __('%d Attempts', 6) )
-	),
-	'secpass_unlocktime' => array(
-		'friendly_name' => __('Auto Unlock'),
-		'description' => __('An account will automatically be unlocked after this many minutes.  Even if the correct password is entered, the account will not unlock until this time limit has been met.  Max of 1440 minutes (1 Day)'),
-		'method' => 'drop_array',
-		'default' => '60',
-		'array' => array(
-			'0'    => __('Disabled'),
-			'1'    => __('1 Minute'),
-			'2'    => __('%d Minutes', 2),
-			'5'    => __('%d Minutes', 5),
-			'10'   => __('%d Minutes', 10),
-			'20'   => __('%d Minutes', 20),
-			'30'   => __('%d Minutes', 30),
-			'60'   => __('1 Hour'),
-			'120'  => __('%d Hours', 2),
-			'240'  => __('%d Hours', 4),
-			'480'  => __('%d Hours', 8),
-			'960'  => __('%d Hours', 16),
-			'1440' => __('1 Day') )
-	),
-	'ldap_general_header' => array(
-		'friendly_name' => __('LDAP General Settings'),
-		'method' => 'spacer'
-	),
-	'ldap_server' => array(
-		'friendly_name' => __('Server(s)'),
-		'description' => __('A space delimited list of DNS hostnames or IP address of for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user.'),
-		'method' => 'textbox',
-		'size' => '80',
-		'max_length' => '255'
-	),
-	'ldap_port' => array(
-		'friendly_name' => __('Port Standard'),
-		'description' => __('TCP port for Non-SSL communications including LDAP + TLS.  Default is 389.'),
-		'method' => 'textbox',
-		'max_length' => '5',
-		'default' => '389',
-		'size' => '5'
-	),
-	'ldap_port_ssl' => array(
-		'friendly_name' => __('Port SSL'),
-		'description' => __('TCP port for LDAPS for SSL communications.  Default is 636.'),
-		'method' => 'textbox',
-		'max_length' => '5',
-		'default' => '636',
-		'size' => '5'
-	),
-	'ldap_version' => array(
-		'friendly_name' => __('Protocol Version'),
-		'description' => __('Protocol Version to connect to the server with.'),
-		'method' => 'drop_array',
-		'default' => '3',
-		'array' => $ldap_versions
-	),
-	'ldap_network_timeout' => array(
-		'friendly_name' => __('Connect Timeout'),
-		'description' => __('The Network Connect Timeout in seconds.'),
-		'method' => 'textbox',
-		'max_length' => '5',
-		'default' => '2',
-		'size' => '5'
-	),
-	'ldap_bind_timeout' => array(
-		'friendly_name' => __('Bind Timeout'),
-		'description' => __('The Bind Timeout in seconds.'),
-		'method' => 'textbox',
-		'max_length' => '5',
-		'default' => '5',
-		'size' => '5'
-	),
-	'ldap_debug' => array(
-		'friendly_name' => __('LDAP Debug Mode'),
-		'description' => __('If Checked Cacti will log extra LDAP information to the Cacti log during Binding and Searching activities.'),
-		'default' => '',
-		'method' => 'checkbox'
-	),
-	'ldap_encryption' => array(
-		'friendly_name' => __('Encryption'),
-		'description' => __('Encryption that the server supports. NOTE: When using LDAP + TLS you must use version 3.'),
-		'method' => 'drop_array',
-		'default' => '0',
-		'array' => $ldap_encryption
-	),
-	'ldap_tls_certificate' => array(
-		'friendly_name' => __('TLS Certificate Requirements'),
-		'description' => __('Should LDAP verify TLS Certificates when received by the Client.'),
-		'method' => 'drop_array',
-		'default' => LDAP_OPT_X_TLS_NEVER,
-		'array' => $ldap_tls_cert_req
-	),
-	'ldap_referrals' => array(
-		'friendly_name' => __('Referrals'),
-		'description' => __('Enable or Disable LDAP referrals.  If disabled, it may increase the speed of searches.'),
-		'method' => 'drop_array',
-		'default' => '0',
-		'array' => array(
-			'0' => __('Disabled'),
-			'1' => __('Enable')
-		)
-	),
-	'ldap_mode' => array(
-		'friendly_name' => __('Mode'),
-		'description' => __('Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the user\'s Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the user\'s Distinguished Name (DN).'),
-		'method' => 'drop_array',
-		'default' => '0',
-		'array' => $ldap_modes
-	),
-	'ldap_dn' => array(
-		'friendly_name' => __('Distinguished Name (DN)'),
-		'description' => __('Distinguished Name syntax, such as for windows: <i>"&lt;username&gt;@win2kdomain.local"</i> or for OpenLDAP: <i>"uid=&lt;username&gt;,ou=people,dc=domain,dc=local"</i>.   "&lt;username&gt" is replaced with the username that was supplied at the login prompt.  This is only used when in "No Searching" mode.'),
-		'method' => 'textbox',
-		'max_length' => '255',
-		'size' => '100'
-	),
-	'ldap_group_require' => array(
-		'friendly_name' => __('Require Group Membership'),
-		'description' => __('Require user to be member of group to authenticate. Group settings must be set for this to work, enabling without proper group settings will cause authentication failure.'),
-		'default' => '',
-		'method' => 'checkbox'
-	),
-	'ldap_group_header' => array(
-		'friendly_name' => __('LDAP Group Settings'),
-		'method' => 'spacer'
-	),
-	'ldap_group_dn' => array(
-		'friendly_name' => __('Group Distinguished Name (DN)'),
-		'description' => __('Distinguished Name of the group that user must have membership.'),
-		'method' => 'textbox',
-		'max_length' => '255',
-		'size' => '100'
-	),
-	'ldap_group_attrib' => array(
-		'friendly_name' => __('Group Member Attribute'),
-		'description' => __('Name of the attribute that contains the usernames of the members.'),
-		'method' => 'textbox',
-		'max_length' => '255',
-		'size' => '100'
-	),
-	'ldap_group_member_type' => array(
-		'friendly_name' => __('Group Member Type'),
-		'description' => __('Defines if users use full Distinguished Name or just Username in the defined Group Member Attribute.'),
-		'method' => 'drop_array',
-		'default' => 1,
-		'array' => array(
-			1 => __('Distinguished Name'),
-			2 => __('Username')
-		)
-	),
-	'ldap_search_base_header' => array(
-		'friendly_name' => __('LDAP Specific Search Settings'),
-		'method' => 'spacer'
-	),
-	'ldap_search_base' => array(
-		'friendly_name' => __('Search Base'),
-		'description' => __('Search base for searching the LDAP directory, such as <i>\'dc=win2kdomain,dc=local\'</i> or <i>\'ou=people,dc=domain,dc=local\'</i>.'),
-		'method' => 'textbox',
-		'max_length' => '255'
-	),
-	'ldap_search_filter' => array(
-		'friendly_name' => __('Search Filter'),
-		'description' => __('Search filter to use to locate the user in the LDAP directory, such as for windows: <i>\'(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\'</i> or for OpenLDAP: <i>\'(&(objectClass=account)(uid=&lt;username&gt))\'</i>.  \'&lt;username&gt\' is replaced with the username that was supplied at the login prompt. '),
-		'method' => 'textbox',
-		'max_length' => '255'
-	),
-	'ldap_specific_dn' => array(
-		'friendly_name' => __('Search Distinguished Name (DN)'),
-		'description' => __('Distinguished Name for Specific Searching binding to the LDAP directory.'),
-		'method' => 'textbox',
-		'max_length' => '255'
-	),
-	'ldap_specific_password' => array(
-		'friendly_name' => __('Search Password'),
-		'description' => __('Password for Specific Searching binding to the LDAP directory.'),
-		'method' => 'textbox_password',
-		'max_length' => '255'
-	),
-	'cn_header' => array(
-		'friendly_name' => __('LDAP CN Settings'),
-		'method' => 'spacer'
-	),
-	'cn_full_name' => array(
-		'friendly_name' => __('Full Name'),
-		'description' => __('Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: displayname) '),
-		'method' => 'textbox',
-		'max_length' => '255'
-	),
-	'cn_email' => array(
-		'friendly_name' => __('Email'),
-		'description' => __('Field that will replace the Email taken from LDAP. (on windows: mail)'),
-		'method' => 'textbox',
-		'max_length' => '255'
 	),
 );
 

@@ -493,6 +493,15 @@ if (!defined('LDAP_OPT_X_TLS_NEVER')) {
 define('CACTI_VERSION_FORMAT_SHORT', 0);
 define('CACTI_VERSION_FORMAT_FULL', 1);
 
+define('AUTH_METHOD_NONE', 0);
+define('AUTH_METHOD_CACTI', 1);
+define('AUTH_METHOD_BASIC', 2);
+define('AUTH_METHOD_LDAP', 3);
+define('AUTH_METHOD_DOMAIN', 4);
+
+define('DOMAIN_TYPE_LDAP', 1);
+define('DOMAIN_TYPE_AD', 2);
+
 /* constants primarily of use in the CLI. */
 if (defined('CACTI_CLI_ONLY')) {
 	define('CLI_BEL',                       "\x7");  # bell: beep and/or flash

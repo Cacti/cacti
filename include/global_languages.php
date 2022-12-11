@@ -709,7 +709,7 @@ function read_user_i18n_setting($config_name) {
 	/* users must have cacti user auth turned on to use this, or the guest account must be active */
 	if (isset($_SESSION['sess_user_id'])) {
 		$effective_uid = $_SESSION['sess_user_id'];
-	} elseif ((read_config_option('auth_method') == 0)) {
+	} elseif ((read_config_option('auth_method') == AUTH_METHOD_NONE)) {
 		if (isset($_SESSION['sess_config_array'])) {
 			$config_array = $_SESSION['sess_config_array'];
 		} elseif (isset($config['config_options_array'])) {

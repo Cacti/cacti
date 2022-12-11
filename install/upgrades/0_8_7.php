@@ -89,12 +89,12 @@ function upgrade_to_0_8_7() {
 	if ($auth_method_results['data'] !== false) {
 		if ($global_auth == "on") {
 			if ($ldap_enabled == "on") {
-				db_install_execute("REPLACE INTO settings VALUES ('auth_method','3')");
+				db_install_execute("REPLACE INTO settings VALUES ('auth_method','" . AUTH_METHOD_DOMAIN . "')");
 			} else {
-				db_install_execute("REPLACE INTO settings VALUES ('auth_method','1')");
+				db_install_execute("REPLACE INTO settings VALUES ('auth_method','" . AUTH_METHOD_CACTI . "')");
 			}
 		} else {
-			db_install_execute("REPLACE INTO settings VALUES ('auth_method','0')");
+			db_install_execute("REPLACE INTO settings VALUES ('auth_method','" . AUTH_METHOD_NONE . "')");
 		}
 	}
 

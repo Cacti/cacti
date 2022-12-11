@@ -104,7 +104,7 @@ if (isset($_SESSION['refresh'])) {
 	$myrefresh['seconds'] = read_user_setting('user_auto_logout_time');
 	$myrefresh['page']    = $config['url_path'] . 'logout.php?action=timeout';
 	$refreshIsLogout      = 'true';
-} elseif (read_config_option('auth_method') == 2) {
+} elseif (read_config_option('auth_method') == AUTH_METHOD_BASIC) {
 	$myrefresh['seconds'] = 99999999;
 	$myrefresh['page']    = 'index.php';
 	$refreshIsLogout      = 'false';

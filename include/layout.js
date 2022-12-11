@@ -4741,3 +4741,14 @@ function formCallback(formId, currentPage, action, callback) {
 		$(formCallbackInputFields).removeClass('ui-state-hover');
 	});
 }
+
+function toggleFields(fields, prefix = '#row_') {
+	Object.keys(fields).forEach(index => {
+		var value = fields[index];
+		if (value) {
+			$(prefix + index).show();
+		} else {
+			$(prefix + index).hide();
+		}
+	});
+}

@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1442: Add validation to GUI inputs
 -feature#1523: Value above RRD maximum value
+-feature#2166: LDAP configuration should only use 'user_domains_ldap'
 -feature#2437: Create system-wide Proxy settings for plugins
 -feature#2439: Allow CDEF to be used as a filter for Graph/Graph Templates
 -feature#2474: Enable better version reporting for GitHub/Source/Package editions

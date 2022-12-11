@@ -315,7 +315,7 @@ function read_user_setting($config_name, $default = false, $force = false, $user
 	/* users must have cacti user auth turned on to use this, or the guest account must be active */
 	if ($user == 0 && isset($_SESSION['sess_user_id'])) {
 		$effective_uid = $_SESSION['sess_user_id'];
-	} elseif (read_config_option('auth_method') == 0 || $user > 0) {
+	} elseif (read_config_option('auth_method') == AUTH_METHOD_NONE || $user > 0) {
 		/* first attempt to get the db setting for guest */
 		if ($user == 0) {
 			$effective_uid = db_fetch_cell("SELECT user_auth.id
@@ -3694,7 +3694,7 @@ function draw_login_status($using_guest_account = false) {
 	if (isset($_SESSION['sess_user_id']) && $_SESSION['sess_user_id'] === $guest_account) {
 		api_plugin_hook('nav_login_before');
 
-		print __('Logged in as') . " <span id='user' class='user usermenuup'>". __('guest') . "</span></div><div><ul class='menuoptions' style='display:none;'>" . ($auth_method != 2 ? "<li><a href='" . $config['url_path'] . "index.php?login=true'>" . __('Login as Regular User') . "</a></li>":"<li><a href='#'>" . __('Logged in a Guest') . '</a></li>');
+		print __('Logged in as') . " <span id='user' class='user usermenuup'>". __('guest') . "</span></div><div><ul class='menuoptions' style='display:none;'>" . ($auth_method != AUTH_METHOD_BASIC ? "<li><a href='" . $config['url_path'] . "index.php?login=true'>" . __('Login as Regular User') . "</a></li>":"<li><a href='#'>" . __('Logged in a Guest') . '</a></li>');
 
 		print "<li class='menuHr'><hr class='menu'></li>";
 		print "<li id='userCommunity'><a href='https://forums.cacti.net' target='_blank' rel='noopener'>" . __('User Community') . "</a></li>";
@@ -3725,7 +3725,7 @@ function draw_login_status($using_guest_account = false) {
 			print "<li class='menuHr'><hr class='menu'></li>";
 		}
 
-		print ($auth_method > 0 && $auth_method != 2 ? "<li><a href='" . html_escape($config['url_path'] . 'logout.php') . "'>" . __('Logout') . '</a></li>':'');
+		print ($auth_method > AUTH_METHOD_NONE && $auth_method != AUTH_METHOD_BASIC ? "<li><a href='" . html_escape($config['url_path'] . 'logout.php') . "'>" . __('Logout') . '</a></li>':'');
 		print '</ul>';
 
 		api_plugin_hook('nav_login_after');
@@ -7307,7 +7307,7 @@ function raise_ajax_permission_denied() {
 /**
  * cacti_session_start - Create a Cacti session from the settings set by the administrator
  *
- * @return mixed null
+ * @return void
  */
 function cacti_session_start() {
 	global $config;

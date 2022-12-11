@@ -368,7 +368,7 @@ function domain_edit() {
 			'description' => __('A space delimited list of DNS hostnames or IP address of for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user.'),
 			'method' => 'textbox',
 			'value' => '|arg1:server|',
-			'default' => read_config_option('ldap_server'),
+			'default' => '',
 			'size' => 80,
 			'max_length' => '255'
 			),
@@ -378,7 +378,7 @@ function domain_edit() {
 			'method' => 'textbox',
 			'max_length' => '5',
 			'value' => '|arg1:port|',
-			'default' => read_config_option('ldap_port'),
+			'default' => 389,
 			'size' => '5'
 			),
 		'port_ssl' => array(
@@ -387,7 +387,7 @@ function domain_edit() {
 			'method' => 'textbox',
 			'max_length' => '5',
 			'value' => '|arg1:port_ssl|',
-			'default' => read_config_option('ldap_port_ssl'),
+			'default' => 686,
 			'size' => '5'
 			),
 		'proto_version' => array(
