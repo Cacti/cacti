@@ -678,11 +678,9 @@ switch (get_request_var('action')) {
 					}).trigger('change');
 
 					$('#extended_paths').change(function() {
-						if ($(this).is(':checked')) {
-							$('#row_extended_paths_type').show();
-						} else {
-							$('#row_extended_paths_type').hide();
-						}
+						toggleFields({
+							extended_paths_type: $(this).is(':checked'),
+						});
 					}).trigger('change');
 				} else if (currentTab == 'mail') {
 					$('#row_settings_email_header div.formHeaderText').append('<div id="emailtest" class="emailtest"><?php print __('Send a Test Email'); ?></div>');

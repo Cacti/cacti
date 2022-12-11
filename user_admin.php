@@ -1764,44 +1764,18 @@ function settings_edit($header_label) {
 	var themeFonts=<?php print read_config_option('font_method');?>;
 
 	function graphSettings() {
-		if (themeFonts == 1) {
-				$('#row_fonts').hide();
-				$('#row_custom_fonts').hide();
-				$('#row_title_size').hide();
-				$('#row_title_font').hide();
-				$('#row_legend_size').hide();
-				$('#row_legend_font').hide();
-				$('#row_axis_size').hide();
-				$('#row_axis_font').hide();
-				$('#row_unit_size').hide();
-				$('#row_unit_font').hide();
-		} else {
-			var custom_fonts = $('#custom_fonts').is(':checked');
-
-			switch(custom_fonts) {
-			case true:
-				$('#row_fonts').show();
-				$('#row_title_size').show();
-				$('#row_title_font').show();
-				$('#row_legend_size').show();
-				$('#row_legend_font').show();
-				$('#row_axis_size').show();
-				$('#row_axis_font').show();
-				$('#row_unit_size').show();
-				$('#row_unit_font').show();
-				break;
-			case false:
-				$('#row_fonts').show();
-				$('#row_title_size').hide();
-				$('#row_title_font').hide();
-				$('#row_legend_size').hide();
-				$('#row_legend_font').hide();
-				$('#row_axis_size').hide();
-				$('#row_axis_font').hide();
-				$('#row_unit_size').hide();
-				$('#row_unit_font').hide();
-				break;
-			}
+		var custom_fonts = $('#custom_fonts').is(':checked');
+		var fields = {
+			fonts: (themeFonts == 1),
+			custom_fonts: themeFonts != 1 && custom_fonts,
+			title_size: themeFonts != 1 && custom_fonts,
+			title_font: themeFonts != 1 && custom_fonts,
+			legend_size: themeFonts != 1 && custom_fonts,
+			legend_font: themeFonts != 1 && custom_fonts,
+			axis_size: themeFonts != 1 && custom_fonts,
+			axis_font: themeFonts != 1 && custom_fonts,
+			unit_size: themeFonts != 1 && custom_fonts,
+			unit_font: themeFonts != 1 && custom_fonts,
 		}
 	}
 

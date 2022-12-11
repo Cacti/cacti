@@ -33,100 +33,100 @@ $link_actions = array(
 set_default_action();
 
 switch (get_request_var('action')) {
-case 'actions':
-	form_actions();
+	case 'actions':
+		form_actions();
 
-	break;
-case 'delete_page':
-	if (isset_request_var('id') && get_filter_request_var('id')) {
-		page_delete(get_request_var('id'));
-	}
-
-	header('Location: links.php');
-
-	break;
-case 'move_page_up':
-	if (isset_request_var('id') && get_filter_request_var('id') && isset_request_var('order') && get_filter_request_var('order')) {
-		page_move(get_request_var('id'), get_request_var('order'), '-1');
-	}
-
-	header('Location: links.php');
-
-	break;
-case 'move_page_down':
-	if (isset_request_var('id') && get_filter_request_var('id') && isset_request_var('order') && get_filter_request_var('order')) {
-		page_move(get_request_var('id'), get_request_var('order'), '1');
-	}
-
-	header('Location: links.php');
-
-	break;
-case 'save':
-	$save['id']      = isset_request_var('id') ? get_filter_request_var('id'):0;
-	$save['title']   = form_input_validate(get_nfilter_request_var('title'), 'title', '', false, 3);
-	$save['style']   = get_nfilter_request_var('style');
-	$save['enabled'] = (isset_request_var('enabled') ? 'on':'');
-	$save['refresh'] = form_input_validate(get_nfilter_request_var('refresh'), 'refresh', '^[0-9]+$', false, 3);
-
-	if (preg_match('/^((((ht|f)tp(s?))\:\/\/){1}\S+)/i', get_nfilter_request_var('fileurl')) && get_nfilter_request_var('filename') == '0') {
-		$save['contentfile'] = get_nfilter_request_var('fileurl');
-	} else {
-		$save['contentfile'] = preg_replace('/[^A-Za-z0-9_\.-]/','_', get_nfilter_request_var('filename'));
-	}
-
-	$consolesection    = get_nfilter_request_var('consolesection');
-	$consolenewsection = get_nfilter_request_var('consolenewsection');
-	$extendedstyle     = '';
-	$lastsortorder     = db_fetch_cell('SELECT MAX(sortorder) FROM external_links');
-	$save['sortorder'] = $lastsortorder + 1;
-
-	if ($save['style'] == 'CONSOLE') {
-		if ($consolesection == '__NEW__') {
-			$extendedstyle = $consolenewsection;
-		} else {
-			$extendedstyle = $consolesection;
+		break;
+	case 'delete_page':
+		if (isset_request_var('id') && get_filter_request_var('id')) {
+			page_delete(get_request_var('id'));
 		}
-
-		if ($extendedstyle == '') {
-			$extendedstyle = __('External Links');
-		}
-	}
-	$save['extendedstyle'] = $extendedstyle;
-
-	if (!is_error_message()){
-		$id = sql_save($save, 'external_links');
-
-		// always give the login account access
-		db_execute_prepared('REPLACE INTO user_auth_realm (user_id, realm_id) VALUES (?, ?)', array($_SESSION['sess_user_id'], $id+10000));
-
-		raise_message(1);
 
 		header('Location: links.php');
-		exit;
-	} else {
-		raise_message(2);
 
-		header('Location: links.php?action=edit&id=' . (isset_request_var('id') ? get_filter_request_var('id'):''));
-		exit;
-	}
+		break;
+	case 'move_page_up':
+		if (isset_request_var('id') && get_filter_request_var('id') && isset_request_var('order') && get_filter_request_var('order')) {
+			page_move(get_request_var('id'), get_request_var('order'), '-1');
+		}
 
-	break;
-case 'edit':
-	top_header();
+		header('Location: links.php');
 
-	edit_page();
+		break;
+	case 'move_page_down':
+		if (isset_request_var('id') && get_filter_request_var('id') && isset_request_var('order') && get_filter_request_var('order')) {
+			page_move(get_request_var('id'), get_request_var('order'), '1');
+		}
 
-	bottom_footer();
+		header('Location: links.php');
 
-	break;
-default:
-	top_header();
+		break;
+	case 'save':
+		$save['id']      = isset_request_var('id') ? get_filter_request_var('id') : 0;
+		$save['title']   = form_input_validate(get_nfilter_request_var('title'), 'title', '', false, 3);
+		$save['style']   = get_nfilter_request_var('style');
+		$save['enabled'] = (isset_request_var('enabled') ? 'on' : '');
+		$save['refresh'] = form_input_validate(get_nfilter_request_var('refresh'), 'refresh', '^[0-9]+$', false, 3);
 
-	pages();
+		if (preg_match('/^((((ht|f)tp(s?))\:\/\/){1}\S+)/i', get_nfilter_request_var('fileurl')) && get_nfilter_request_var('filename') == '0') {
+			$save['contentfile'] = get_nfilter_request_var('fileurl');
+		} else {
+			$save['contentfile'] = preg_replace('/[^A-Za-z0-9_\.-]/', '_', get_nfilter_request_var('filename'));
+		}
 
-	bottom_footer();
+		$consolesection    = get_nfilter_request_var('consolesection');
+		$consolenewsection = get_nfilter_request_var('consolenewsection');
+		$extendedstyle     = '';
+		$lastsortorder     = db_fetch_cell('SELECT MAX(sortorder) FROM external_links');
+		$save['sortorder'] = $lastsortorder + 1;
 
-	break;
+		if ($save['style'] == 'CONSOLE') {
+			if ($consolesection == '__NEW__') {
+				$extendedstyle = $consolenewsection;
+			} else {
+				$extendedstyle = $consolesection;
+			}
+
+			if ($extendedstyle == '') {
+				$extendedstyle = __('External Links');
+			}
+		}
+		$save['extendedstyle'] = $extendedstyle;
+
+		if (!is_error_message()) {
+			$id = sql_save($save, 'external_links');
+
+			// always give the login account access
+			db_execute_prepared('REPLACE INTO user_auth_realm (user_id, realm_id) VALUES (?, ?)', array($_SESSION['sess_user_id'], $id + 10000));
+
+			raise_message(1);
+
+			header('Location: links.php');
+			exit;
+		} else {
+			raise_message(2);
+
+			header('Location: links.php?action=edit&id=' . (isset_request_var('id') ? get_filter_request_var('id') : ''));
+			exit;
+		}
+
+		break;
+	case 'edit':
+		top_header();
+
+		edit_page();
+
+		bottom_footer();
+
+		break;
+	default:
+		top_header();
+
+		pages();
+
+		bottom_footer();
+
+		break;
 }
 
 function form_actions() {
@@ -142,18 +142,18 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_request_var('drp_action') == '3') { // Enable Page
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					db_execute_prepared("UPDATE external_links SET enabled='on' WHERE id = ?", array($selected_items[$i]));
 				}
 			} elseif (get_request_var('drp_action') == '2') { // Disable Page
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					db_execute_prepared("UPDATE external_links SET enabled='' WHERE id = ?", array($selected_items[$i]));
 				}
 			} elseif (get_request_var('drp_action') == '1') { // Delete Page
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
 					db_execute_prepared('DELETE FROM external_links WHERE id = ?', array($selected_items[$i]));
-					db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', array($selected_items[$i]+10000));
-					db_execute_prepared('DELETE FROM user_auth_group_realm WHERE realm_id = ?', array($selected_items[$i]+10000));
+					db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', array($selected_items[$i] + 10000));
+					db_execute_prepared('DELETE FROM user_auth_group_realm WHERE realm_id = ?', array($selected_items[$i] + 10000));
 				}
 			}
 		}
@@ -163,7 +163,8 @@ function form_actions() {
 	}
 
 	/* setup some variables */
-	$page_list = ''; $i = 0;
+	$page_list = '';
+	$i = 0;
 
 	/* loop through each of the pages selected on the previous page and get more info about them */
 	foreach ($_POST as $var => $val) {
@@ -245,26 +246,26 @@ function pages() {
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
-			),
+		),
 		'filter' => array(
 			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
-			),
+		),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
 			'default' => 'sortorder',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'sort_direction' => array(
 			'filter' => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
-			)
+		)
 	);
 
 	validate_store_request_vars($filters, 'sess_links');
@@ -276,25 +277,29 @@ function pages() {
 		$rows = get_request_var('rows');
 	}
 
-	?>
+?>
 	<script type='text/javascript'>
-	function applyFilter() {
-		strURL  = 'links.php?rows=' + $('#rows').val();
-		strURL += '&filter=' + $('#filter').val();
-		loadUrl({url:strURL})
-	}
+		function applyFilter() {
+			strURL = 'links.php?rows=' + $('#rows').val();
+			strURL += '&filter=' + $('#filter').val();
+			loadUrl({
+				url: strURL
+			})
+		}
 
-	function clearFilter() {
-		strURL  = 'links.php?clear=true';
-		loadUrl({url:strURL})
-	}
+		function clearFilter() {
+			strURL = 'links.php?clear=true';
+			loadUrl({
+				url: strURL
+			})
+		}
 
-	$(function() {
-		$('#links').submit(function(event) {
-			event.preventDefault();
-			applyFilter();
+		$(function() {
+			$('#links').submit(function(event) {
+				event.preventDefault();
+				applyFilter();
+			});
 		});
-	});
 	</script>
 	<?php
 
@@ -303,35 +308,35 @@ function pages() {
 	<tr class='even noprint'>
 		<td>
 			<form id='links' action='links.php' method='post'>
-			<table class='filterTable' cellpadding='2' cellspacing='0'>
-				<tr>
-					<td>
-						<?php print __('Search');?>
-					</td>
-					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
-					</td>
-					<td>
-						<?php print __('Links');?>
-					</td>
-					<td>
-						<select id='rows' onChange='applyFilter()'>
-							<option value=-1 <?php get_request_var('rows') == -1 ? 'selected':'';?>><?php print __('Default');?></option>
-							<?php
-							foreach ($item_rows as $key => $row) {
-								echo "<option value='" . $key . "'" . ($key == get_request_var('rows') ? ' selected' : '') . '>' . $row . '</option>';
-							}
-							?>
-						</select>
-					</td>
-					<td>
-						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __('Go');?>' title='<?php print __esc('Apply Filter');?>' onClick='applyFilter()'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __('Clear');?>' title='<?php print __esc('Reset filters');?>' onClick='clearFilter()'>
-						</span>
-					</td>
-				</tr>
-			</table>
+				<table class='filterTable' cellpadding='2' cellspacing='0'>
+					<tr>
+						<td>
+							<?php print __('Search'); ?>
+						</td>
+						<td>
+							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter'); ?>'>
+						</td>
+						<td>
+							<?php print __('Links'); ?>
+						</td>
+						<td>
+							<select id='rows' onChange='applyFilter()'>
+								<option value=-1 <?php get_request_var('rows') == -1 ? 'selected' : ''; ?>><?php print __('Default'); ?></option>
+								<?php
+								foreach ($item_rows as $key => $row) {
+									echo "<option value='" . $key . "'" . ($key == get_request_var('rows') ? ' selected' : '') . '>' . $row . '</option>';
+								}
+								?>
+							</select>
+						</td>
+						<td>
+							<span>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __('Go'); ?>' title='<?php print __esc('Apply Filter'); ?>' onClick='applyFilter()'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __('Clear'); ?>' title='<?php print __esc('Reset filters'); ?>' onClick='clearFilter()'>
+							</span>
+						</td>
+					</tr>
+				</table>
 			</form>
 		</td>
 	</tr>
@@ -354,7 +359,7 @@ function pages() {
 
 	$sql_order = get_order_string();
 	$sql_order = str_replace('sortorder DESC', 'sortorder ASC', $sql_order);
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$pages = db_fetch_assoc("SELECT *
 		FROM external_links
@@ -372,7 +377,7 @@ function pages() {
 
 	print $nav;
 
-    html_start_box('', '100%', '', '4', 'center', '');
+	html_start_box('', '100%', '', '4', 'center', '');
 
 	$display_text = array(
 		'nosort0'     => array('display' => __('Actions'), 'align' => 'left',  'sort' => ''),
@@ -390,7 +395,7 @@ function pages() {
 		foreach ($pages as $page) {
 			form_alternate_row('line' . $page['id']);
 
-			$actions = '<a class="pic"  href="' . html_escape('links.php?action=edit&id='.$page['id']) . '" title="' . __esc('Edit Page') . '"><img src="' . $config['url_path'] . 'images/application_edit.png" alt=""></a>';
+			$actions = '<a class="pic"  href="' . html_escape('links.php?action=edit&id=' . $page['id']) . '" title="' . __esc('Edit Page') . '"><img src="' . $config['url_path'] . 'images/application_edit.png" alt=""></a>';
 
 			if ($page['enabled'] == 'on') {
 				$actions .= '<a class="pic" href="' . html_escape('link.php?id=' . $page['id']) . '" title="' . __esc('View Page') . '"><img src="' . $config['url_path'] . 'images/view_page.png" alt=""></a>';
@@ -399,17 +404,17 @@ function pages() {
 			form_selectable_cell($actions, $page['id'], '50');
 			form_selectable_ecell($page['contentfile'], $page['id']);
 			form_selectable_ecell($page['title'], $page['id']);
-			form_selectable_ecell($style_translate[$page['style']] . ($page['style'] == 'CONSOLE' ? ' ( ' . ($page['extendedstyle'] == '' ? __('External Links'):$page['extendedstyle']) . ' )':''), $page['id']);
-			form_selectable_cell(($page['enabled'] == 'on' ? __('Yes'):__('No')), $page['id']);
+			form_selectable_ecell($style_translate[$page['style']] . ($page['style'] == 'CONSOLE' ? ' ( ' . ($page['extendedstyle'] == '' ? __('External Links') : $page['extendedstyle']) . ' )' : ''), $page['id']);
+			form_selectable_cell(($page['enabled'] == 'on' ? __('Yes') : __('No')), $page['id']);
 
 			if (get_request_var('sort_column') == 'sortorder') {
 				if ($i != 0) {
-					$sort = '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('links.php?action=move_page_up&order=' . $page['sortorder'] . '&id='.$page['id']) . '"></a>';
+					$sort = '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('links.php?action=move_page_up&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
 				} else {
 					$sort = '<span class="moveArrowNone"></span>';
 				}
 
-				if ($i == cacti_sizeof($pages)-1) {
+				if ($i == cacti_sizeof($pages) - 1) {
 					$sort .= '<span class="moveArrowNone"></span>';
 				} else {
 					$sort .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('links.php?action=move_page_down&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
@@ -442,8 +447,8 @@ function pages() {
 
 function page_delete($id) {
 	db_execute_prepared('DELETE FROM external_links WHERE id = ?', array($id));
-	db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', array($id+10000));
-	db_execute_prepared('DELETE FROM user_auth_group_realm WHERE realm_id = ?', array($id+10000));
+	db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', array($id + 10000));
+	db_execute_prepared('DELETE FROM user_auth_group_realm WHERE realm_id = ?', array($id + 10000));
 
 	page_resort();
 }
@@ -484,7 +489,7 @@ function edit_page() {
 	$sec_ar['External Links'] = __('External Links');
 
 	foreach ($sections as $sec) {
-		if ($sec['extendedstyle'] !='') {
+		if ($sec['extendedstyle'] != '') {
 			$sec_ar[$sec['extendedstyle']] = $sec['extendedstyle'];
 		}
 	}
@@ -503,7 +508,7 @@ function edit_page() {
 		'id' => array(
 			'friendly_name' => __('Style'),
 			'method' => 'hidden',
-			'value' => isset_request_var('id') ? get_request_var('id'):0
+			'value' => isset_request_var('id') ? get_request_var('id') : 0
 		),
 		'style' => array(
 			'friendly_name' => __('Style'),
@@ -515,28 +520,28 @@ function edit_page() {
 				'FRONTTOP'   => __('Top of Console Page')
 			),
 			'description' => __('Where should this page appear?'),
-			'value' => (isset($data['style']) ? $data['style']:'')
+			'value' => (isset($data['style']) ? $data['style'] : '')
 		),
 		'consolesection' => array(
 			'friendly_name' => __('Console Menu Section'),
 			'method' => 'drop_array',
 			'array' => $sec_ar,
 			'description' => __('Under which Console heading should this item appear? (All External Link menus will appear between Configuration and Utilities)'),
-			'value' => (isset($data['extendedstyle']) ? $data['extendedstyle']:'')
+			'value' => (isset($data['extendedstyle']) ? $data['extendedstyle'] : '')
 		),
 		'consolenewsection' => array(
 			'friendly_name' => __('New Console Section'),
 			'method' => 'textbox',
 			'max_length' => 20,
 			'description' => __('If you don\'t like any of the choices above, type a new title in here.'),
-			'value' => (isset($data['extendedstyle']) ? $data['extendedstyle']:'')
+			'value' => (isset($data['extendedstyle']) ? $data['extendedstyle'] : '')
 		),
 		'title' => array(
 			'friendly_name' => __('Tab/Menu Name'),
 			'method' => 'textbox',
 			'max_length' => 20,
 			'description' => __('The text that will appear in the tab or menu.'),
-			'value' => (isset($data['title']) ? $data['title']:'')
+			'value' => (isset($data['title']) ? $data['title'] : '')
 		),
 		'filename' => array(
 			'friendly_name' => __('Content File/URL'),
@@ -545,7 +550,7 @@ function edit_page() {
 			'exclusions' => array('README', 'index.php'),
 			'none_value' => __('Web URL Below'),
 			'description' => __('The file that contains the content for this page. This file needs to be in the Cacti \'include/content/\' directory.'),
-			'value' => (isset($data['contentfile']) ? $data['contentfile']:'')
+			'value' => (isset($data['contentfile']) ? $data['contentfile'] : '')
 		),
 		'fileurl' => array(
 			'friendly_name' => __('Web URL Location'),
@@ -554,21 +559,21 @@ function edit_page() {
 			'max_length' => 255,
 			'size' => 80,
 			'default' => 'http://www.cacti.net',
-			'value' => (isset($data['contentfile']) ? $data['contentfile']:'')
+			'value' => (isset($data['contentfile']) ? $data['contentfile'] : '')
 		),
 		'enabled' => array(
 			'friendly_name' => __('Enabled'),
 			'method' => 'checkbox',
 			'description' => __('If checked, the page will be available immediately to the admin user.'),
 			'default' => 'on',
-			'value' => (isset($data['enabled']) ? 'on':'')
+			'value' => (isset($data['enabled']) ? 'on' : '')
 		),
 		'refresh' => array(
 			'friendly_name' => __('Automatic Page Refresh'),
 			'method' => 'drop_array',
 			'array' => $myrefresh,
 			'description' => __('How often do you wish this page to be refreshed automatically.'),
-			'value' => (isset($data['refresh']) ? $data['refresh']:'')
+			'value' => (isset($data['refresh']) ? $data['refresh'] : '')
 		),
 	);
 
@@ -591,50 +596,49 @@ function edit_page() {
 
 	form_save_button('links.php', 'save');
 
-    ?>
+	?>
 	<script type='text/javascript'>
-	$(function() {
-		// hide and show the extra console fields when necessary
-		$('#style').change(function() {
-			if ($('#style').val() != 'CONSOLE') {
-				$('#row_consolesection').hide();
-				$('#row_consolenewsection').hide();
-			} else {
-				$('#row_consolesection').show();
+		$(function() {
+			// hide and show the extra console fields when necessary
+			$('#style').change(function() {
+				if ($('#style').val() != 'CONSOLE') {
+					$('#row_consolesection').hide();
+					$('#row_consolenewsection').hide();
+				} else {
+					$('#row_consolesection').show();
+					setConsoleNewSectionVisibility();
+				}
+			}).change();
+
+			$('#filename').change(function() {
+				changeFilename();
+			}).change();
+
+			// if you change the section, make the 'new' textbox reflect it
+			// if you change it to 'new', then clear the textbox, and jump to it
+			$('#consolesection').change(function() {
 				setConsoleNewSectionVisibility();
+			}).change();
+		});
+
+		function setConsoleNewSectionVisibility() {
+			var isNew = $('#consolesection').val() == '__NEW__';
+			toggleFields({
+				row_consolenewsection: isNew,
+			});
+
+			if (isNew) {
+				$('#consolenewsection').focus();
 			}
-		}).change();
-
-		$('#filename').change(function() {
-			changeFilename();
-		}).change();
-
-		// if you change the section, make the 'new' textbox reflect it
-		// if you change it to 'new', then clear the textbox, and jump to it
-		$('#consolesection').change(function() {
-			setConsoleNewSectionVisibility();
-		}).change();
-	});
-
-	function setConsoleNewSectionVisibility() {
-		if ($('#consolesection').val() == '__NEW__') {
-			$('#row_consolenewsection').show();
-			$('#consolenewsection').focus();
-		} else {
-			$('#row_consolenewsection').hide();
 		}
-	}
 
-	function changeFilename() {
-		if ($('#filename').val() == 0) {
-			$('#row_fileurl').show();
-		} else {
-			$('#row_fileurl').hide();
+		function changeFilename() {
+			toggleFields({
+				fileurl: $('#filename').val() == 0,
+			});
 		}
-	}
-
 	</script>
-	<?php
+<?php
 }
 
 // vim:ts=4:sw=4:

@@ -92,7 +92,7 @@ function aggregate_form_save() {
 	$save1['name']              = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 	$save1['graph_template_id'] = get_filter_request_var('graph_template_id_prev');
 	$save1['gprint_prefix']     = form_input_validate(get_nfilter_request_var('gprint_prefix'), 'gprint_prefix', '', true, 3);
-	$save1['gprint_format']     = isset_request_var('gprint_format') ? 'on':'';
+	$save1['gprint_format']     = isset_request_var('gprint_format') ? 'on' : '';
 	$save1['graph_type']        = form_input_validate(get_nfilter_request_var('graph_type'), 'graph_type', '', false, 3);
 	$save1['total']             = form_input_validate(get_nfilter_request_var('total'), 'total', '', false, 3);
 	$save1['total_type']        = form_input_validate(get_nfilter_request_var('total_type'), 'total_type', '', false, 3);
@@ -110,10 +110,12 @@ function aggregate_form_save() {
 
 	/* do a quick comparison to see if anything changed */
 	if ($is_new == false) {
-		$old = db_fetch_row_prepared('SELECT *
+		$old = db_fetch_row_prepared(
+			'SELECT *
 			FROM aggregate_graph_templates
 			WHERE id = ?',
-			array($save1['id']));
+			array($save1['id'])
+		);
 
 		$save_me = 0;
 
@@ -133,12 +135,16 @@ function aggregate_form_save() {
 		$id = sql_save($save1, 'aggregate_graph_templates', 'id');
 
 		/* update children of the template */
-		db_execute_prepared("UPDATE aggregate_graphs
+		db_execute_prepared(
+			"UPDATE aggregate_graphs
 			SET gprint_prefix = ?, gprint_format = ?, graph_type = ?, total = ?, total_prefix = ?, order_type = ?
 			WHERE aggregate_template_id = ?
 			AND template_propogation='on'",
-			array($save1['gprint_prefix'], $save1['gprint_format'], $save1['graph_type'],
-				$save1['total'], $save1['total_prefix'],  $save1['order_type'], $id));
+			array(
+				$save1['gprint_prefix'], $save1['gprint_format'], $save1['graph_type'],
+				$save1['total'], $save1['total_prefix'],  $save1['order_type'], $id
+			)
+		);
 
 		cacti_log('AGGREGATE GRAPH TEMPLATE Saved ID: ' . $id, false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 	} else {
@@ -161,10 +167,12 @@ function aggregate_form_save() {
 	 * rebuild existing graphs if needed. */
 	$params_changed = false;
 
-	$params_old = db_fetch_row_prepared('SELECT *
+	$params_old = db_fetch_row_prepared(
+		'SELECT *
 		FROM aggregate_graph_templates_graph
 		WHERE aggregate_template_id = ?',
-		array($id));
+		array($id)
+	);
 
 	if (!empty($params_old)) {
 		foreach ($params_old as $field => $value_old) {
@@ -186,12 +194,15 @@ function aggregate_form_save() {
 	/* save the template items now */
 	/* get existing item ids and sequences from graph template */
 	$graph_templates_items = array_rekey(
-		db_fetch_assoc_prepared('SELECT id, sequence
+		db_fetch_assoc_prepared(
+			'SELECT id, sequence
 			FROM graph_templates_item
 			WHERE local_graph_id=0
 			AND graph_template_id = ?',
-			array($save1['graph_template_id'])),
-		'id', array('sequence')
+			array($save1['graph_template_id'])
+		),
+		'id',
+		array('sequence')
 	);
 
 	/* get existing aggregate template items */
@@ -199,7 +210,8 @@ function aggregate_form_save() {
 		db_fetch_assoc_prepared('SELECT *
 			FROM aggregate_graph_templates_item
 			WHERE aggregate_template_id = ?', array($id)),
-		'graph_templates_item_id', array('sequence', 'color_template', 't_graph_type_id', 'graph_type_id', 't_cdef_id', 'cdef_id', 'item_skip', 'item_total')
+		'graph_templates_item_id',
+		array('sequence', 'color_template', 't_graph_type_id', 'graph_type_id', 't_cdef_id', 'cdef_id', 'item_skip', 'item_total')
 	);
 
 	/* update graph template item values with posted values */
@@ -208,15 +220,15 @@ function aggregate_form_save() {
 	$items_changed = false;
 	$items_to_save = array();
 
-	foreach($graph_templates_items as $item_id => $data) {
+	foreach ($graph_templates_items as $item_id => $data) {
 		$item_new = array();
 		$item_new['aggregate_template_id']   = $id;
 		$item_new['graph_templates_item_id'] = $item_id;
 
-		$item_new['color_template'] = isset($data['color_template']) ? $data['color_template']:0;
-		$item_new['item_skip']      = isset($data['item_skip']) ? 'on':'';
-		$item_new['item_total']     = isset($data['item_total']) ? 'on':'';
-		$item_new['sequence']       = isset($data['sequence']) ? $data['sequence']:0;
+		$item_new['color_template'] = isset($data['color_template']) ? $data['color_template'] : 0;
+		$item_new['item_skip']      = isset($data['item_skip']) ? 'on' : '';
+		$item_new['item_total']     = isset($data['item_total']) ? 'on' : '';
+		$item_new['sequence']       = isset($data['sequence']) ? $data['sequence'] : 0;
 
 		/* compare with old item to see if we need to push out. */
 		if (!isset($aggregate_template_items_old[$item_id])) {
@@ -249,7 +261,6 @@ function aggregate_form_save() {
 
 
 function aggregate_get_graph_items($table, $id) {
-
 }
 
 /* ------------------------
@@ -284,7 +295,8 @@ function aggregate_form_actions() {
 	}
 
 	/* setup some variables */
-	$aggregate_list = ''; $i = 0;
+	$aggregate_list = '';
+	$i = 0;
 
 	/* loop through each of the color templates selected on the previous page and get more info about them */
 	foreach ($_POST as $var => $val) {
@@ -347,10 +359,12 @@ function aggregate_template_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$template = db_fetch_row_prepared('SELECT *
+		$template = db_fetch_row_prepared(
+			'SELECT *
 			FROM aggregate_graph_templates
 			WHERE id = ?',
-			array(get_request_var('id')));
+			array(get_request_var('id'))
+		);
 
 		$header_label = __esc('Aggregate Template [edit: %s]', $template['name']);
 	} else {
@@ -373,16 +387,18 @@ function aggregate_template_edit() {
 	$helper_string = '|host_description|';
 
 	if (isset($template)) {
-		$data_query = db_fetch_cell_prepared('SELECT snmp_query_id
+		$data_query = db_fetch_cell_prepared(
+			'SELECT snmp_query_id
 			FROM snmp_query_graph
 			WHERE graph_template_id = ?',
-			array($template['graph_template_id']));
+			array($template['graph_template_id'])
+		);
 
 		if ($data_query > 0) {
 			$data_query_info = get_data_query_array($data_query);
-			foreach($data_query_info['fields'] as $field_name => $field_array) {
+			foreach ($data_query_info['fields'] as $field_name => $field_array) {
 				if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
-					$helper_string .= ($helper_string != '' ? ', ':'') . '|query_' . $field_name . '|';
+					$helper_string .= ($helper_string != '' ? ', ' : '') . '|query_' . $field_name . '|';
 				}
 			}
 		}
@@ -416,119 +432,111 @@ function aggregate_template_edit() {
 	form_hidden_box('save_component_template', '1', '');
 	form_save_button('aggregate_templates.php', 'return', 'id');
 
-	?>
+?>
 	<script type='text/javascript'>
+		$(function() {
+			if ($('#id').val() == 0) {
+				$('[id^="agg_total_"]').prop('checked', true);
+			}
 
-	$(function() {
-		if ($('#id').val() == 0) {
-			$('[id^="agg_total_"]').prop('checked', true);
-		}
-
-		if ($('#graph_template_id').val() == 0) {
-			$('#row_name').hide();
-			$('#row_spacer1').hide();
-			$('#row_gprint_prefix').hide();
-			$('#row_gprint_format').hide();
-			$('#row_graph_type').hide();
-			$('#row_total').hide();
-			$('#row_total_type').hide();
-			$('#row_total_prefix').hide();
-			$('#row_order_type').hide();
-
-			$('#graph_template_id').change(function() {
-				$('#template_edit').submit();
+			var showField = $('#graph_template_id').val() != 0;
+			toggleField({
+				name: showField,
+				spacer1: showField,
+				gprint_prefix: showField,
+				gprint_format: showField,
+				graph_type: showField,
+				total: showField,
+				total_type: showField,
+				total_prefix: showField,
+				order_type: showField,
 			});
 
-			$('#save_component_template').parent().next('table').css('display', 'none');
-		} else {
-			$('#graph_template_id').prop('disabled', true);
-			if ($('#graph_template_id').selectmenu('instance') !== undefined) {
-				$('#graph_template_id').selectmenu('disable');
-			}
-		}
+			if ($('#graph_template_id').val() == 0) {
+				$('#graph_template_id').change(function() {
+					$('#template_edit').submit();
+				});
 
-		$('#total').change(function() {
+				$('#save_component_template').parent().next('table').css('display', 'none');
+			} else {
+				$('#graph_template_id').prop('disabled', true);
+				if ($('#graph_template_id').selectmenu('instance') !== undefined) {
+					$('#graph_template_id').selectmenu('disable');
+				}
+			}
+
+			$('#total').change(function() {
+				changeTotals();
+			});
+
+			$('#total_type').change(function() {
+				changeTotalsType();
+			});
+
+			$('input[id^="agg_total"], input[id^="agg_skip"]').click(function() {
+				id = $(this).attr('id');
+
+				if (id.indexOf('skip') > 0) {
+					altId = id.replace('skip', 'total');
+				} else {
+					altId = id.replace('total', 'skip');
+				}
+
+				if ($('#' + id).is(':checked')) {
+					$('#' + altId).prop('checked', false);
+				} else {
+					$('#' + altId).prop('checked', true);
+				}
+
+				updateSaveButton();
+			});
+
 			changeTotals();
-		});
-
-		$('#total_type').change(function() {
-			changeTotalsType();
-		});
-
-		$('input[id^="agg_total"], input[id^="agg_skip"]').click(function() {
-			id = $(this).attr('id');
-
-			if (id.indexOf('skip') > 0) {
-				altId = id.replace('skip', 'total');
-			} else {
-				altId = id.replace('total', 'skip');
-			}
-
-			if ($('#'+id).is(':checked')) {
-				$('#'+altId).prop('checked', false);
-			} else {
-				$('#'+altId).prop('checked', true);
-			}
 
 			updateSaveButton();
 		});
 
-		changeTotals();
+		function updateSaveButton() {
+			if ($('input[id^="agg_total"]').is(':checked')) {
+				$('#submit').prop('disabled', false);
 
-		updateSaveButton();
-	});
+				if ($('#submit').button('instance')) {
+					$('#submit').button('enable');
+				}
+			} else {
+				$('#submit').prop('disabled', true);
 
-	function updateSaveButton() {
-		if ($('input[id^="agg_total"]').is(':checked')) {
-			$('#submit').prop('disabled', false);
-
-			if ($('#submit').button('instance')) {
-				$('#submit').button('enable');
-			}
-		} else {
-			$('#submit').prop('disabled', true);
-
-			if ($('#submit').button('instance')) {
-				$('#submit').button('disable');
+				if ($('#submit').button('instance')) {
+					$('#submit').button('disable');
+				}
 			}
 		}
-	}
 
-	function changeTotals() {
-		switch ($('#total').val()) {
-			case '<?php print AGGREGATE_TOTAL_NONE;?>':
-				$('#row_total_type').hide();
-				$('#row_total_prefix').hide();
-				$('#row_order_type').show();
-				break;
-			case '<?php print AGGREGATE_TOTAL_ALL;?>':
-				$('#row_total_type').show();
-				$('#row_total_prefix').show();
-				$('#row_order_type').show();
-				changeTotalsType();
-				break;
-			case '<?php print AGGREGATE_TOTAL_ONLY;?>':
-				$('#row_total_type').show();
-				$('#row_total_prefix').show();
-				//$('#order_type').prop('disabled', true);
-				changeTotalsType();
-				break;
+		function changeTotals() {
+			var showField = $('#total').val() == '<?php print AGGREGATE_TOTAL_NONE; ?>';
+
+			toggleField({
+				total_type: showField,
+				total_prefix: showField,
+				order_type: showField,
+			});
+
+			changeTotalsType();
 		}
-	}
 
-	function changeTotalsType() {
-		if ($('#total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_SIMILAR;?>) {
-			if ($('#total_prefix').val() == '') {
-				$('#total_prefix').attr('value', '<?php print __('Total');?>');
-			}
-		} else if ($('#total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_ALL;?>) {
-			if ($('#total_prefix').val() == '') {
-				$('#total_prefix').attr('value', '<?php print __('All Items');?>');
+		function changeTotalsType() {
+			if ($('#total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_SIMILAR; ?>) {
+				if ($('#total_prefix').val() == '') {
+					$('#total_prefix').attr('value', '<?php print __('Total'); ?>');
+				}
+			} else if ($('#total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_ALL; ?>) {
+				if ($('#total_prefix').val() == '') {
+					$('#total_prefix').attr('value', '<?php print __('All Items'); ?>');
+				}
 			}
 		}
-	}
 	</script>
-	<?php
+<?php
 }
 
 /**
@@ -543,32 +551,32 @@ function aggregate_template() {
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
-			),
+		),
 		'filter' => array(
 			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
-			),
+		),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
 			'default' => 'pgt.name',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'sort_direction' => array(
 			'filter' => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'has_graphs' => array(
 			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
-			'default' => read_config_option('default_has') == 'on' ? 'true':'false'
-			)
+			'default' => read_config_option('default_has') == 'on' ? 'true' : 'false'
+		)
 	);
 
 	validate_store_request_vars($filters, 'sess_agg_tmp');
@@ -619,7 +627,7 @@ function aggregate_template() {
 					</td>
 						<td>
 							<span>
-								<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . ' onChange="applyFilter()">
+								<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked' : '') . ' onChange="applyFilter()">
 								<label for="has_graphs">' . __('Has Graphs') . '</label>
 							</span>
 						</td>
@@ -646,7 +654,7 @@ function aggregate_template() {
 	}
 
 	if (get_request_var('has_graphs') == 'true') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'graphs.graphs>0';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'graphs.graphs>0';
 	}
 
 	$total_rows = db_fetch_cell("SELECT
@@ -663,7 +671,7 @@ function aggregate_template() {
 		$sql_where");
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$template_list = db_fetch_assoc("SELECT pgt.*, graphs.graphs, gt.name AS graph_template_name
 		FROM aggregate_graph_templates AS pgt
@@ -706,14 +714,14 @@ function aggregate_template() {
 
 			form_alternate_row('line' . $template['id'], true, $disabled);
 			form_selectable_cell(filter_value($template['name'], get_request_var('filter'), 'aggregate_templates.php?action=edit&id=' . $template['id'] . '&page=1'), $template['id']);
-			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['id'], '', 'right');
+			form_selectable_cell($disabled ? __('No') : __('Yes'), $template['id'], '', 'right');
 			form_selectable_cell('<a class="linkEditMain" href="' . html_escape('aggregate_graphs.php?reset=true&template_id=' . $template['id']) . '">' . number_format_i18n($template['graphs'], '-1') . '</a>', $template['id'], '', 'right');
 			form_selectable_cell(filter_value($template['graph_template_name'], get_request_var('filter')), $template['id']);
 			form_checkbox_cell($template['graph_template_name'], $template['id'], $disabled);
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Aggregate Templates Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Aggregate Templates Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
@@ -728,38 +736,40 @@ function aggregate_template() {
 
 	form_end();
 
-	?>
+?>
 	<script type='text/javascript'>
+		function applyFilter() {
+			strURL = 'aggregate_templates.php';
+			strURL += '?rows=' + $('#rows').val();
+			strURL += '&has_graphs=' + $('#has_graphs').is(':checked');
+			strURL += '&filter=' + $('#filter').val();
+			loadUrl({
+				url: strURL
+			})
+		}
 
-	function applyFilter() {
-		strURL  = 'aggregate_templates.php';
-		strURL += '?rows=' + $('#rows').val();
-		strURL += '&has_graphs=' + $('#has_graphs').is(':checked');
-		strURL += '&filter=' + $('#filter').val();
-		loadUrl({url:strURL})
-	}
+		function clearFilter() {
+			strURL = 'aggregate_templates.php?clear=1';
+			loadUrl({
+				url: strURL
+			})
+		}
 
-	function clearFilter() {
-		strURL = 'aggregate_templates.php?clear=1';
-		loadUrl({url:strURL})
-	}
+		$(function() {
+			$('#clear').click(function() {
+				clearFilter();
+			});
 
-	$(function() {
-		$('#clear').click(function() {
-			clearFilter();
+			$('#template').submit(function(event) {
+				event.preventDefault();
+				applyFilter();
+			});
+
+			$('#forms').submit(function(event) {
+				event.preventDefault();
+				applyFilter();
+			});
 		});
-
-		$('#template').submit(function(event) {
-			event.preventDefault();
-			applyFilter();
-		});
-
-		$('#forms').submit(function(event) {
-			event.preventDefault();
-			applyFilter();
-		});
-	});
 	</script>
-	<?php
+<?php
 }
-

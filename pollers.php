@@ -36,7 +36,7 @@ $poller_actions = array(
 );
 
 if ($config['poller_id'] == 1) {
-	$poller_actions += array(POLLER_RESYNC =>__('Full Sync'));
+	$poller_actions += array(POLLER_RESYNC => __('Full Sync'));
 }
 
 $poller_status = array(
@@ -81,7 +81,7 @@ $fields_poller_edit = array(
 		'action' => 'ajax_tz',
 		'id' => '|arg1:timezone|',
 		'value' => '|arg1:timezone|'
-		),
+	),
 	'notes' => array(
 		'method' => 'textarea',
 		'friendly_name' => __('Notes'),
@@ -183,7 +183,7 @@ $fields_poller_edit = array(
 		'friendly_name' => __('Remote Database SSL'),
 		'description' => __('If the remote database uses SSL to connect, check the checkbox below.'),
 		'value' => '|arg1:dbssl|',
-		'default' => $database_ssl ? 'on':''
+		'default' => $database_ssl ? 'on' : ''
 	),
 	'dbsslkey' => array(
 		'method' => 'textbox',
@@ -235,12 +235,14 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'ajax_tz':
-		print json_encode(db_fetch_assoc_prepared('SELECT Name AS label, Name AS `value`
+		print json_encode(db_fetch_assoc_prepared(
+			'SELECT Name AS label, Name AS `value`
 			FROM mysql.time_zone_name
 			WHERE Name LIKE ?
 			ORDER BY Name
 			LIMIT ' . read_config_option('autocomplete_rows'),
-			array('%' . get_nfilter_request_var('term') . '%')));
+			array('%' . get_nfilter_request_var('term') . '%')
+		));
 
 		break;
 	case 'ping':
@@ -295,7 +297,7 @@ function form_save() {
 			$save['dbpass']        = form_input_validate(get_nfilter_request_var('dbpass'),    'dbpass',    '', true, 3);
 			$save['dbport']        = form_input_validate(get_nfilter_request_var('dbport'),    'dbport',    '^[0-9]+$', true, 3);
 			$save['dbretries']     = form_input_validate(get_nfilter_request_var('dbretries'), 'dbretries', '^[0-9]+$', true, 3);
-			$save['dbssl']         = isset_request_var('dbssl') ? 'on':'';
+			$save['dbssl']         = isset_request_var('dbssl') ? 'on' : '';
 			$save['dbsslkey']      = form_input_validate(get_nfilter_request_var('dbsslkey'),  'dbsslkey',  '', true, 3);
 			$save['dbsslcert']     = form_input_validate(get_nfilter_request_var('dbsslcert'), 'dbsslcert', '', true, 3);
 			$save['dbsslca']       = form_input_validate(get_nfilter_request_var('dbsslca'),   'dbsslca',   '', true, 3);
@@ -358,7 +360,7 @@ function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
 		$ip_hostnames[$hostname] = $hostname;
 
 		if (cacti_sizeof($addresses)) {
-			foreach($addresses as $address) {
+			foreach ($addresses as $address) {
 				if (isset($address['target'])) {
 					$ip_hostnames[$address['host']] = $address['host'];
 				}
@@ -389,9 +391,9 @@ function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
 
 	$sql_where2 = '';
 	if (cacti_sizeof($ip_hostnames)) {
-		foreach($ip_hostnames as $host) {
+		foreach ($ip_hostnames as $host) {
 			$parts = explode('.', $host);
-			$sql_where2 .= ($sql_where2 != '' ? ' OR ':' (') .
+			$sql_where2 .= ($sql_where2 != '' ? ' OR ' : ' (') .
 				"($column = " . db_qstr($parts[0]) .
 				" OR $column = " . db_qstr($host) . ")";
 		}
@@ -399,16 +401,18 @@ function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
 	}
 
 	if ($sql_where1 != '' || $sql_where2 != '') {
-		$sql_where = ' AND (' . $sql_where1 . ($sql_where1 != '' && $sql_where2 != '' ? ' OR ':'') . $sql_where2 . ')';
+		$sql_where = ' AND (' . $sql_where1 . ($sql_where1 != '' && $sql_where2 != '' ? ' OR ' : '') . $sql_where2 . ')';
 	} else {
 		$sql_where = '';
 	}
 
-	$duplicate = db_fetch_cell_prepared("SELECT id
+	$duplicate = db_fetch_cell_prepared(
+		"SELECT id
 		FROM poller
 		WHERE id != ?
 		$sql_where",
-		array($poller_id));
+		array($poller_id)
+	);
 
 	if (empty($duplicate)) {
 		return false;
@@ -421,11 +425,13 @@ function poller_host_duplicate($poller_id, $host) {
 	if ($host == 'localhost') {
 		return true;
 	} else {
-		return db_fetch_cell_prepared('SELECT COUNT(*)
+		return db_fetch_cell_prepared(
+			'SELECT COUNT(*)
 			FROM poller
 			WHERE dbhost LIKE "' . $host . '%"
 			AND id != ?',
-			array($poller_id));
+			array($poller_id)
+		);
 	}
 }
 
@@ -467,7 +473,7 @@ function form_actions() {
 				$failed  = array();
 				$ids     = array();
 
-				foreach($selected_items as $item) {
+				foreach ($selected_items as $item) {
 					// Operation not allowed on the main poller
 					if ($item == 1) {
 						continue;
@@ -475,10 +481,12 @@ function form_actions() {
 
 					$ids[]   = $item;
 
-					$poller = db_fetch_row_prepared('SELECT *
+					$poller = db_fetch_row_prepared(
+						'SELECT *
 						FROM poller
 						WHERE id = ?',
-						array($item));
+						array($item)
+					);
 
 					if ($poller['dbhost'] == 'localhost') {
 						raise_message('poller_dbhost');
@@ -490,10 +498,12 @@ function form_actions() {
 						if (replicate_out($item)) {
 							$success[] = $item;
 
-							db_execute_prepared('UPDATE poller
+							db_execute_prepared(
+								'UPDATE poller
 								SET last_sync = NOW()
 								WHERE id = ?',
-								array($item));
+								array($item)
+							);
 						} else {
 							$failed[] = $item;
 						}
@@ -508,11 +518,13 @@ function form_actions() {
 					cacti_log('NOTE: All selected Remote Data Collectors in [' . implode(', ', $ids) . '] synchronized correctly by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
 				}
 			} elseif (get_request_var('drp_action') == '5') { // clear statistics
-				foreach($selected_items as $item) {
-					db_execute_prepared('UPDATE poller
+				foreach ($selected_items as $item) {
+					db_execute_prepared(
+						'UPDATE poller
 						SET total_time = 0, max_time = 0, min_time = 9999999, avg_time = 0, total_polls = 0
 						WHERE id = ?',
-						array($item));
+						array($item)
+					);
 				}
 
 				raise_message('poller_clear', __('Data Collector Statistics cleared.'), MESSAGE_LEVEL_INFO);
@@ -524,7 +536,8 @@ function form_actions() {
 	}
 
 	/* setup some variables */
-	$pollers = ''; $i = 0;
+	$pollers = '';
+	$i = 0;
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
 	foreach ($_POST as $var => $val) {
@@ -634,10 +647,12 @@ function poller_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$poller = db_fetch_row_prepared('SELECT *
+		$poller = db_fetch_row_prepared(
+			'SELECT *
 			FROM poller
 			WHERE id = ?',
-			array(get_request_var('id')));
+			array(get_request_var('id'))
+		);
 
 		$header_label = __esc('Site [edit: %s]', $poller['name']);
 	} else {
@@ -692,86 +707,81 @@ function poller_edit() {
 
 	if (isset($poller) && cacti_sizeof($poller)) {
 		if ($poller['id'] > 1) {
-			?>
+?>
 			<script type='text/javascript'>
-			pt = <?php print $pt;?>;
+				pt = <?php print $pt; ?>;
 
-			function showHideRemoteDB() {
+				function showHideRemoteDB() {
 					var hasSSL = $('#dbssl').is(':checked');
-					if (hasSSL) {
-						$('#row_dbsslkey').show();
-						$('#row_dbsslcert').show();
-						$('#row_dbsslca').show();
-					} else {
-						$('#row_dbsslkey').hide();
-						$('#row_dbsslcert').hide();
-						$('#row_dbsslca').hide();
-					}
-			}
+					toggleFields({
+						dbsslkey: hasSSL,
+						dbsslcert: hasSSL,
+						dbsslca: hasSSL,
+					});
+				}
 
-			$(function() {
-				$('#row_dbsslca').after('<?php print $row_html;?>');
-				$('#dbssl').click(function() {
+				$(function() {
+					$('#row_dbsslca').after('<?php print $row_html; ?>');
+					$('#dbssl').click(function() {
+						showHideRemoteDB();
+					});
+
+					$('#dbtest').click(function(e) {
+						e.preventDefault();
+						ping_database();
+					});
+
 					showHideRemoteDB();
+
+					if (pt == 1) {
+						$('#row_threads').hide();
+					}
 				});
 
-				$('#dbtest').click(function(e) {
-					e.preventDefault();
-					ping_database();
-				});
+				function ping_database() {
+					dbssl = $('#dbssl').is(':checked') ? 'on' : '';
 
-				showHideRemoteDB();
+					var options = {
+						url: 'pollers.php',
+						funcEnd: 'pingDatabaseFinalize',
+						handle: false
+					};
 
-				if (pt == 1) {
-					$('#row_threads').hide();
+					var data = {
+						__csrf_magic: csrfMagicToken,
+						action: 'ping',
+						dbdefault: $('#dbdefault').val(),
+						dbhost: $('#dbhost').val(),
+						dbuser: $('#dbuser').val(),
+						dbpass: $('#dbpass').val(),
+						dbport: $('#dbport').val(),
+						dbretries: $('#dbretries').val(),
+						dbssl: dbssl,
+						dbsslkey: $('#dbsslkey').val(),
+						dbsslcert: $('#dbsslcert').val(),
+						dbsslca: $('#dbsslca').val()
+					};
+
+					postUrl(options, data);
 				}
-			});
 
-			function ping_database() {
-				dbssl = $('#dbssl').is(':checked') ? 'on':'';
-
-				var options = {
-					url:'pollers.php',
-					funcEnd:'pingDatabaseFinalize',
-					handle: false
-				};
-
-				var data = {
-					__csrf_magic: csrfMagicToken,
-					action:       'ping',
-					dbdefault:    $('#dbdefault').val(),
-					dbhost:       $('#dbhost').val(),
-					dbuser:       $('#dbuser').val(),
-					dbpass:       $('#dbpass').val(),
-					dbport:       $('#dbport').val(),
-					dbretries:    $('#dbretries').val(),
-					dbssl:        dbssl,
-					dbsslkey:     $('#dbsslkey').val(),
-					dbsslcert:    $('#dbsslcert').val(),
-					dbsslca:      $('#dbsslca').val()
-				};
-
-				postUrl(options, data);
-			}
-
-			function pingDatabaseFinalize(options, data) {
-				$('#results').empty().show().html(data).fadeOut(5000);
-			}
-
+				function pingDatabaseFinalize(options, data) {
+					$('#results').empty().show().html(data).fadeOut(5000);
+				}
 			</script>
-			<?php
+		<?php
 		} else {
-			?>
+		?>
 			<script type='text/javascript'>
-			pt = <?php print $pt;?>;
+				pt = <?php print $pt; ?>;
 
-			$(function() {
-				if (pt == 1) {
-					$('#row_threads').hide();
-				}
-			});
+				$(function() {
+					if (pt == 1) {
+						$('#row_threads').hide();
+					}
+				});
 			</script>
-			<?php
+	<?php
 		}
 	}
 
@@ -786,7 +796,7 @@ function poller_edit() {
 	);
 
 	if ($poller['id'] > 1) {
-		$form_buttons []= array(
+		$form_buttons[] = array(
 			'id'     => 'delete',
 			'value'  => __esc('Delete'),
 			'method' => 'post',
@@ -850,12 +860,12 @@ function test_database_connection($poller = array()) {
 		$poller['dbsslca']
 	);
 
-    if (is_object($connection)) {
-        db_close($connection);
-        print '&nbsp;<i class="fas fa-check"></i>&nbsp;' . __('Connection Successful');
-    } else {
-        print '&nbsp;<i class="fas fa-times"></i>&nbsp;' . __('Connection Failed');
-    }
+	if (is_object($connection)) {
+		db_close($connection);
+		print '&nbsp;<i class="fas fa-check"></i>&nbsp;' . __('Connection Successful');
+	} else {
+		print '&nbsp;<i class="fas fa-times"></i>&nbsp;' . __('Connection Failed');
+	}
 }
 
 function pollers() {
@@ -867,30 +877,30 @@ function pollers() {
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
-			),
+		),
 		'refresh' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'default' => '20'
-			),
+		),
 		'filter' => array(
 			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
-			),
+		),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
 			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'sort_direction' => array(
 			'filter' => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
-			)
+		)
 	);
 
 	validate_store_request_vars($filters, 'sess_pollers');
@@ -908,97 +918,103 @@ function pollers() {
 		$rows = get_request_var('rows');
 	}
 
-	html_start_box( __('Data Collectors'), '100%', '', '3', 'center', '');
+	html_start_box(__('Data Collectors'), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
 		<td>
 			<form id='form_poller' action='pollers.php'>
-			<table class='filterTable'>
-				<tr>
-					<td>
-						<?php print __('Search');?>
-					</td>
-					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
-					</td>
-					<td>
-						<?php print __('Collectors');?>
-					</td>
-					<td>
-						<select id='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
-							<?php
-							if (cacti_sizeof($item_rows)) {
-								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
-								}
-							}
-							?>
-						</select>
-					</td>
-					<td>
-						<?php print __('Refresh');?>
-					</td>
-					<td>
-						<select id='refresh' onChange='applyFilter()'>
-							<?php
-							$frequency = array(
-								5   => __('%d Seconds', 5),
-								10  => __('%d Seconds', 10),
-								20  => __('%d Seconds', 20),
-								30  => __('%d Seconds', 30),
-								45  => __('%d Seconds', 45),
-								60  => __('%d Minute', 1),
-								120 => __('%d Minutes', 2),
-								300 => __('%d Minutes', 5)
-							);
+				<table class='filterTable'>
+					<tr>
+						<td>
+							<?php print __('Search'); ?>
+						</td>
+						<td>
+							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter'); ?>'>
+						</td>
+						<td>
+							<?php print __('Collectors'); ?>
+						</td>
+						<td>
+							<select id='rows' onChange='applyFilter()'>
+								<option value='-1' <?php print (get_request_var('rows') == '-1' ? ' selected>' : '>') . __('Default'); ?></option>
+									<?php
+									if (cacti_sizeof($item_rows)) {
+										foreach ($item_rows as $key => $value) {
+											print "<option value='" . $key . "'";
+											if (get_request_var('rows') == $key) {
+												print ' selected';
+											}
+											print '>' . html_escape($value) . "</option>\n";
+										}
+									}
+									?>
+							</select>
+						</td>
+						<td>
+							<?php print __('Refresh'); ?>
+						</td>
+						<td>
+							<select id='refresh' onChange='applyFilter()'>
+								<?php
+								$frequency = array(
+									5   => __('%d Seconds', 5),
+									10  => __('%d Seconds', 10),
+									20  => __('%d Seconds', 20),
+									30  => __('%d Seconds', 30),
+									45  => __('%d Seconds', 45),
+									60  => __('%d Minute', 1),
+									120 => __('%d Minutes', 2),
+									300 => __('%d Minutes', 5)
+								);
 
-							foreach ($frequency as $r => $row) {
-								echo "<option value='" . $r . "'" . (isset_request_var('refresh') && $r == get_request_var('refresh') ? ' selected' : '') . '>' . $row . '</option>';
-							}
-							?>
-						</select>
-					</td>
-					<td>
-						<span>
-							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
-						</span>
-					</td>
-				</tr>
-			</table>
+								foreach ($frequency as $r => $row) {
+									echo "<option value='" . $r . "'" . (isset_request_var('refresh') && $r == get_request_var('refresh') ? ' selected' : '') . '>' . $row . '</option>';
+								}
+								?>
+							</select>
+						</td>
+						<td>
+							<span>
+								<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go'); ?>' title='<?php print __esc('Set/Refresh Filters'); ?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear'); ?>' title='<?php print __esc('Clear Filters'); ?>'>
+							</span>
+						</td>
+					</tr>
+				</table>
 			</form>
 			<script type='text/javascript'>
+				function applyFilter() {
+					strURL = 'pollers.php';
+					strURL += '?filter=' + $('#filter').val();
+					strURL += '&refresh=' + $('#refresh').val();
+					strURL += '&rows=' + $('#rows').val();
+					loadUrl({
+						url: strURL
+					})
+				}
 
-			function applyFilter() {
-				strURL  = 'pollers.php';
-				strURL += '?filter='+$('#filter').val();
-				strURL += '&refresh='+$('#refresh').val();
-				strURL += '&rows='+$('#rows').val();
-				loadUrl({url:strURL})
-			}
+				function clearFilter() {
+					strURL = 'pollers.php?clear=1';
+					loadUrl({
+						url: strURL
+					})
+				}
 
-			function clearFilter() {
-				strURL = 'pollers.php?clear=1';
-				loadUrl({url:strURL})
-			}
+				$(function() {
+					$('#clear').click(function() {
+						clearFilter();
+					});
 
-			$(function() {
-				$('#clear').click(function() {
-					clearFilter();
+					$('#form_poller').submit(function(event) {
+						event.preventDefault();
+						applyFilter();
+					});
 				});
-
-				$('#form_poller').submit(function(event) {
-					event.preventDefault();
-					applyFilter();
-				});
-			});
-
 			</script>
 		</td>
 	</tr>
-	<?php
+<?php
 
 	html_end_box();
 
@@ -1012,7 +1028,7 @@ function pollers() {
 	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM poller $sql_where");
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$pollers = db_fetch_assoc("SELECT poller.*, UNIX_TIMESTAMP() - UNIX_TIMESTAMP(poller.last_status) as heartbeat, count(h.id) AS hosts
 		FROM poller
@@ -1131,11 +1147,11 @@ function pollers() {
 
 			if ($poller['disabled'] == 'on') {
 				$poller['status'] = 4;
-			}else if ($poller['heartbeat'] > 310) {
+			} else if ($poller['heartbeat'] > 310) {
 				$poller['status'] = 6;
 			}
 
-			$mma = round($poller['avg_time']?:0, 2) . '/' .  round(max($poller['max_time']?:1,1), 2);
+			$mma = round($poller['avg_time'] ?: 0, 2) . '/' .  round(max($poller['max_time'] ?: 1, 1), 2);
 
 			if (empty($poller['name'])) {
 				$poller['name'] = '&lt;no name&gt;';
@@ -1148,7 +1164,7 @@ function pollers() {
 			form_selectable_cell($poller['id'], $poller['id'], '', 'right');
 			form_selectable_ecell($poller['hostname'], $poller['id'], '', 'right');
 			form_selectable_cell($poller_status[$poller['status']], $poller['id'], '', 'center');
-			form_selectable_cell($poller['processes'] . '/' . ($pt == 2 ? $poller['threads']:'-'), $poller['id'], '', 'right');
+			form_selectable_cell($poller['processes'] . '/' . ($pt == 2 ? $poller['threads'] : '-'), $poller['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($poller['total_time'], 2), $poller['id'], '', 'right');
 			form_selectable_cell($mma, $poller['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($poller['hosts'], '-1'), $poller['id'], '', 'right');
@@ -1168,7 +1184,7 @@ function pollers() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Data Collectors Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Data Collectors Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
@@ -1182,4 +1198,3 @@ function pollers() {
 
 	form_end();
 }
-

@@ -1646,45 +1646,18 @@ function user_group_settings_edit($header_label) {
 	var themeFonts=<?php print read_config_option('font_method');?>;
 
 	function graphSettings() {
-		if (themeFonts == 1) {
-				$('#row_fonts').hide();
-				$('#row_custom_fonts').hide();
-				$('#row_title_size').hide();
-				$('#row_title_font').hide();
-				$('#row_legend_size').hide();
-				$('#row_legend_font').hide();
-				$('#row_axis_size').hide();
-				$('#row_axis_font').hide();
-				$('#row_unit_size').hide();
-				$('#row_unit_font').hide();
-		} else {
-			var custom_fonts = $('#custom_fonts').is(':checked');
-
-			switch(custom_fonts) {
-			case true:
-				$('#row_fonts').show();
-				$('#row_title_size').show();
-				$('#row_title_font').show();
-				$('#row_legend_size').show();
-				$('#row_legend_font').show();
-				$('#row_axis_size').show();
-				$('#row_axis_font').show();
-				$('#row_unit_size').show();
-				$('#row_unit_font').show();
-				break;
-			case false:
-				$('#row_fonts').show();
-				$('#row_title_size').hide();
-				$('#row_title_font').hide();
-				$('#row_legend_size').hide();
-				$('#row_legend_font').hide();
-				$('#row_axis_size').hide();
-				$('#row_axis_font').hide();
-				$('#row_unit_size').hide();
-				$('#row_unit_font').hide();
-				break;
-			}
-		}
+		var showField = $('#custom_fonts').is(':checked');
+		toggleFields({
+			fonts: themeFonts == 1,
+			title_size: showField,
+			title_font: showField,
+			legend_size: showField,
+			legend_font: showField,
+			axis_size: showField,
+			axis_font: showField,
+			unit_size: showField,
+			unit_font: showField,
+		});
 	}
 
 	$(function() {
