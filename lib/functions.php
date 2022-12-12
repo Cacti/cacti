@@ -6920,11 +6920,11 @@ function get_include_relpath($path) {
 	} elseif (file_exists($basePath . $path)) {
 		$npath = $path;
 	} elseif (debounce_run_notification('missing:' . $path)) {
-		$path = str_replace($basePath, '', $path);
+		$npath = str_replace($basePath, '', $path);
 
-		cacti_log(sprintf('WARNING: Key Cacti Include File %s missing.  Please locate and replace this file', $config['base_path'] . '/' . $path), false, 'WEBUI');
+		cacti_log(sprintf('WARNING: Key Cacti Include File %s missing.  Please locate and replace this file', $config['base_path'] . '/' . $npath), false, 'WEBUI');
 
-		admin_email(__('Cacti System Warning'), __('WARNING:  Key Cacti Include File %s missing.  Please locate and replace this file', $config['base_path'] . '/' . $path));
+		admin_email(__('Cacti System Warning'), __('WARNING:  Key Cacti Include File %s missing.  Please locate and replace this file', $config['base_path'] . '/' . $npath));
 	}
 
 	return $npath;
@@ -6953,7 +6953,7 @@ function get_md5_include_css($path) {
 		return '';
 	}
 
-	return '<link href=\''. $config['url_path'] . $path . '?' . get_md5_hash($path) . '\' type=\'text/css\' rel=\'stylesheet\'>' . PHP_EOL;
+	return '<link href=\''. $config['url_path'] . $relpath . '?' . get_md5_hash($relpath) . '\' type=\'text/css\' rel=\'stylesheet\'>' . PHP_EOL;
 }
 
 function is_resource_writable($path) {
