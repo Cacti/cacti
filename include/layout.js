@@ -3953,7 +3953,7 @@ function initializeGraphs(disable_cache) {
 
 		var graph_height = $(this).attr('graph_height');
 		var graph_width  = $(this).attr('graph_width');
-		var error_url    = 'graph_view.php';
+		var error_url    = urlPath + 'graph_view.php';
 
 		closeDateFilters();
 
