@@ -161,7 +161,9 @@ function form_save() {
 		}
 
 		if (isset($selected_graphs)) {
+			top_header();
 			html_graph_new_graphs('graphs_new.php', $host_id, $host_template_id, $selected_graphs);
+			bottom_footer();
 			exit;
 		}
 
