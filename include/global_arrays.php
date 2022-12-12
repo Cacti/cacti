@@ -1034,6 +1034,7 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 		__('Utilities') => array(
 			'utilities.php'  => __('System Utilities'),
 			'links.php'      => __('External Links'),
+			'user_log.php'   => __('User Log'),
 			),
 		__('Troubleshooting') => array(
 			'data_debug.php' => __('Data Sources'),
@@ -1044,16 +1045,17 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 } else {
 	$menu = array(
 		__('Management') => array(
-			'host.php' => __('Devices')
+			'host.php' => __('Devices'),
 			),
 		__('Data Collection') => array(
-			'pollers.php' => __('Data Collectors')
+			'pollers.php' => __('Data Collectors'),
 			),
 		__('Configuration')  => array(
-			'settings.php' => __('Settings')
+			'settings.php' => __('Settings'),
 			),
 		__('Utilities') => array(
-			'utilities.php' => __('System Utilities')
+			'utilities.php' => __('System Utilities'),
+			'user_log.php'  => __('User Log'),
 			)
 	);
 }
@@ -1299,6 +1301,7 @@ $user_auth_realm_filenames = array(
 	'user_domains.php' => 1,
 	'user_group_admin.php' => 1,
 	'utilities.php' => 15,
+	'user_log.php' => 15,
 	'vdef.php' => 14,
 	'smtp_servers.php' => 8,
 	'email_templates.php' => 8,
@@ -2454,6 +2457,30 @@ $navigation = array(
 		'url' => 'support.php',
 		'level' => '2'
 	),
+	'user_log.php:' => array(
+		'title' => __('User Log'),
+		'mapping' => 'index.php:',
+		'url' => 'user_log.php',
+		'level' => '1'
+	),
+	'user_log.php:view' => array(
+		'title' => __('View User Log'),
+		'mapping' => 'index.php:,user_log.php:',
+		'url' => 'user_log.php',
+		'level' => '2'
+	),
+	'user_log.php:clear' => array(
+		'title' => __('Clear User Log'),
+		'mapping' => 'index.php:,user_log.php:',
+		'url' => 'user_log.php',
+		'level' => '2'
+	),
+	'user_log.php:purge' => array(
+		'title' => __('Purge User Log'),
+		'mapping' => 'index.php:,user_log.php:',
+		'url' => 'user_log.php',
+		'level' => '2'
+	),
 	'utilities.php:' => array(
 		'title' => __('Utilities'),
 		'mapping' => 'index.php:',
@@ -2486,18 +2513,6 @@ $navigation = array(
 	),
 	'utilities.php:clear_logfile' => array(
 		'title' => __('Clear Log'),
-		'mapping' => 'index.php:,utilities.php:',
-		'url' => 'utilities.php',
-		'level' => '2'
-	),
-	'utilities.php:view_user_log' => array(
-		'title' => __('View User Log'),
-		'mapping' => 'index.php:,utilities.php:',
-		'url' => 'utilities.php',
-		'level' => '2'
-	),
-	'utilities.php:clear_user_log' => array(
-		'title' => __('Clear User Log'),
 		'mapping' => 'index.php:,utilities.php:',
 		'url' => 'utilities.php',
 		'level' => '2'
