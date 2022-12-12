@@ -3306,7 +3306,7 @@ function checkForRedirects(data, href) {
 		document.location = urlPath + 'logout.php?action=disabled';
 	} else if (data.indexOf('cactiRedirect') >= 0) {
 		if (typeof href == 'undefined' || href == null) {
-			document.location = stripHeaderSuppression(document.location);
+			document.location = stripHeaderSuppression(document.location.href);
 		} else {
 			document.location = stripHeaderSuppression(href);
 		}
