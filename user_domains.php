@@ -549,38 +549,17 @@ function domain_edit() {
 		}
 
 		function initSearch() {
-			switch ($('#mode').val()) {
-				case '0':
-					$('#row_search_base_header').hide();
-					$('#row_search_base').hide();
-					$('#row_search_filter').hide();
-					$('#row_specific_dn').hide();
-					$('#row_specific_password').hide();
-					$('#row_cn_header').hide();
-					$('#row_cn_full_name').hide();
-					$('#row_cn_email').hide();
-					break;
-				case '1':
-					$('#row_search_base_header').show();
-					$('#row_search_base').show();
-					$('#row_search_filter').show();
-					$('#row_specific_dn').hide();
-					$('#row_specific_password').hide();
-					$('#row_cn_header').hide();
-					$('#row_cn_full_name').hide();
-					$('#row_cn_email').hide();
-					break;
-				case '2':
-					$('#row_search_base_header').show();
-					$('#row_search_base').show();
-					$('#row_search_filter').show();
-					$('#row_specific_dn').show();
-					$('#row_specific_password').show();
-					$('#row_cn_header').show();
-					$('#row_cn_full_name').show();
-					$('#row_cn_email').show();
-					break;
-			}
+			var mode = $('#mode').val();
+			toggleFields({
+				search_base_header: mode > 0,
+				search_base: mode > 0,
+				search_filter: mode > 0,
+				specific_dn: mode > 1,
+				specific_password: mode > 1,
+				cn_header: mode > 1,
+				cn_full_name: mode > 1,
+				cn_email: mode > 1,
+			});
 		}
 
 		$(function() {
