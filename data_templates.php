@@ -963,7 +963,7 @@ function template_edit() {
 				mixedReasonTitle = '<?php print __('Custom Data Warning Message');?>';
 				mixedOnPage      = '<?php print __esc('WARNING: Data Loss can Occur');?>';
 				sessionMessage   = {
-					message: '<?php print __esc('After you uncheck this checkbox and then Save the Data Template, any existing Data Sources based on this Data Template will loose their Custom Data.  This can result in broken Data Collection and Graphs');?>',
+					message: '<?php print __esc('After you uncheck this checkbox and then Save the Data Template, any existing Data Sources based on this Data Template will lose their Custom Data.  This can result in broken Data Collection and Graphs');?>',
 					level: MESSAGE_LEVEL_MIXED
 				};
 
