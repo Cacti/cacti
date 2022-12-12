@@ -3306,7 +3306,7 @@ function checkForRedirects(data, href) {
 		document.location = urlPath + 'logout.php?action=disabled';
 	} else if (data.indexOf('cactiRedirect') >= 0) {
 		if (typeof href == 'undefined' || href == null) {
-			document.location = stripHeaderSuppression(document.location);
+			document.location = stripHeaderSuppression(document.location.href);
 		} else {
 			document.location = stripHeaderSuppression(href);
 		}
@@ -3953,7 +3953,7 @@ function initializeGraphs(disable_cache) {
 
 		var graph_height = $(this).attr('graph_height');
 		var graph_width  = $(this).attr('graph_width');
-		var error_url    = 'graph_view.php';
+		var error_url    = urlPath + 'graph_view.php';
 
 		closeDateFilters();
 
