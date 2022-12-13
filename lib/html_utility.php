@@ -289,10 +289,14 @@ function get_checkbox_style() {
 	return '';
 }
 
-/* set_default_action - sets the required 'action' request variable
-   @arg $default - The default action is not set
-   @returns - null */
-function set_default_action($default = '') {
+/**
+ * Sets the required 'action' request variable
+ *
+ * @param  string $default The default action is not set
+ *
+ * @return void
+ */
+function set_default_action(string $default = ''):void {
 	if (!isset_request_var('action')) {
 		set_request_var('action', $default);
 	} elseif (is_array(get_nfilter_request_var('action'))) {
@@ -306,10 +310,14 @@ function set_default_action($default = '') {
 	}
 }
 
-/* unset_request_var - unsets the request variable
-   @arg $variable - The variable to unset
-   @returns - null */
-function unset_request_var($variable) {
+/**
+ * Unsets the request variable.
+ *
+ * @param  string  $variable
+ *
+ * @return void
+ */
+function unset_request_var(string $variable): void {
 	global $_CACTI_REQUEST;
 
 	if (isset($_CACTI_REQUEST[$variable])) {
@@ -321,19 +329,25 @@ function unset_request_var($variable) {
 	}
 }
 
-/* isset_request_var - checks to see if the $_REQUEST variable
-   is set.  Returns true or false.
-   @arg $variable - The variable to check
-   @returns - true or false */
-function isset_request_var($variable) {
+/**
+ *  checks to see if the $_REQUEST variable is set.
+ *
+ * @param  string  $variable
+ *
+ * @return boolean
+ */
+function isset_request_var(string $variable): bool {
 	return isset($_REQUEST[$variable]);
 }
 
-/* isempty_request_var - checks to see if the $_REQUEST variable
-   is empty.  Returns true or false.
-   @arg $variable - The variable to check
-   @returns - true or false */
-function isempty_request_var($variable) {
+/**
+ *  checks to see if the $_REQUEST variableis empty.
+ *
+ * @param  string  $variable
+ *
+ * @return boolean
+ */
+function isempty_request_var(string $variable): bool {
 	if (isset_request_var($variable)) {
 		$value = $_REQUEST[$variable];
 
@@ -345,11 +359,15 @@ function isempty_request_var($variable) {
 	return true;
 }
 
-/* set_request_var - sets a given $_REQUEST variable and Cacti global.
-   @arg $variable - The variable to set
-   @arg $value - The value to set the variable to
-   @returns - null */
-function set_request_var($variable, $value) {
+/**
+ * Sets a given $_REQUEST variable and Cacti global.
+ *
+ * @param  string $variable The variable to set
+ * @param  mixed  $value    The value to set the variable to
+ *
+ * @return void
+ */
+function set_request_var(string $variable, mixed $value):void {
 	global $_CACTI_REQUEST;
 
 	$_CACTI_REQUEST[$variable] = $value;
@@ -358,16 +376,20 @@ function set_request_var($variable, $value) {
 	$_GET[$variable]           = $value;
 }
 
-/* get_request_var - returns the current value of a PHP $_REQUEST variable, optionally
-     returning a default value if the request variable does not exist.  When Cacti
-     has 'log_validation' set on, it will log all instances where a request variable
-     has not first been filtered.
-   @arg $name - the name of the request variable. this should be a valid key in the
-     $_REQUEST array
-   @arg $default - the value to return if the specified name does not exist in the
-     $_REQUEST array
-   @returns - the value of the request variable */
-function get_request_var($name, $default = '') {
+/**
+ * returns the current value of a PHP $_REQUEST variable, optionally
+ * returning a default value if the request variable does not exist.  When Cacti
+ * has 'log_validation' set on, it will log all instances where a request variable
+ * has not first been filtered.
+ *
+ * @param  string $name     the name of the request variable. this should be a
+ *                          valid key in the $_REQUEST array
+ * @param  mixed  $default  the value to return if the specified name does not
+ *                          exist in the $_REQUEST array
+ *
+ * @return mixed
+ */
+function get_request_var(string $name, mixed $default = ''): mixed {
 	global $_CACTI_REQUEST;
 
 	$log_validation = read_config_option('log_validation');
@@ -387,26 +409,36 @@ function get_request_var($name, $default = '') {
 	}
 }
 
-/* get_request_var_request - deprecated - alias of get_request_var()
-     returning a default value if the request variable does not exist
-   @arg $name - the name of the request variable. this should be a valid key in the
-     $_GET array
-   @arg $default - the value to return if the specified name does not exist in the
-     $_GET array
-   @returns - the value of the request variable */
-function get_request_var_request($name, $default = '') {
+/**
+ * stub call for get_request_var
+ *
+ * @deprecated v1.0
+ *
+ * @param  string $name     the name of the request variable. this should be a
+ *                          valid key in the $_REQUEST array
+ * @param  mixed  $default  the value to return if the specified name does not
+ *                          exist in the $_REQUEST array
+ *
+ * @return mixed
+ */
+function get_request_var_request(string $name, mixed $default = ''): mixed {
 	return get_request_var($name, $default);
 }
 
-/* get_filter_request_var - returns the current value of a PHP $_REQUEST variable and also
-     sanitizing the value using the filter. It will also optionally
-     return a default value if the request variable does not exist
-   @arg $name - the name of the request variable. this should be a valid key in the
-     $_REQUEST array
-   @arg $default - the value to return if the specified name does not exist in the
-     $_REQUEST array
-   @returns - the value of the request variable */
-function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options = array()) {
+/**
+ * returns the current value of a PHP $_REQUEST variable and also
+ * sanitizing the value using the filter. It will also optionally
+ * return a default value if the request variable does not exist
+ *
+ * @param  string $name     the name of the request variable. this should be a
+ *                          valid key in the $_REQUEST array
+ * @param  int    $filter   the filter mode to use
+ * @param  array  $options  used to pass to filter_var function or to hold the
+ *                          default value to be returned
+ *
+ * @return mixed
+ */
+function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT, array $options = array()):mixed {
 	if (isset_request_var($name)) {
 		if (isempty_request_var($name)) {
 			set_request_var($name, get_nfilter_request_var($name));
@@ -503,19 +535,27 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 
 			return $options['default'];
 		} else {
-			return;
+			return null;
 		}
 	}
 }
 
-/* get_nfilter_request_var - returns the value of the request variable deferring
-   any filtering.
-   @arg $name - the name of the request variable. this should be a valid key in the
-     $_POST array
-   @arg $default - the value to return if the specified name does not exist in the
-     $_POST array
-   @returns - the value of the request variable */
-function get_nfilter_request_var($name, $default = '') {
+/**
+ * returns the current value of a PHP $_REQUEST variable, optionally
+ * returning a default value if the request variable does not exist,
+ * but without using any of the filtering checks.
+ *
+ * This should only be used when the request variable has already been
+ * vetted via other filer request var functoins
+ *
+ * @param  string $name     the name of the request variable. this should be a
+ *                          valid key in the $_REQUEST array
+ * @param  mixed  $default  the value to return if the specified name does not
+ *                          exist in the $_REQUEST array
+ *
+ * @return mixed
+ */
+function get_nfilter_request_var(string $name, mixed $default = ''):mixed {
 	global $_CACTI_REQUEST;
 
 	if (isset($_CACTI_REQUEST[$name])) {
@@ -527,14 +567,18 @@ function get_nfilter_request_var($name, $default = '') {
 	}
 }
 
-/* get_request_var_post - depricated - returns the current value of a
-     PHP $_POST variable, optionally returning a default value if the
-     request variable does not exist.
-   @arg $name - the name of the request variable. this should be a valid key in the
-     $_POST array
-   @arg $default - the value to return if the specified name does not exist in the
-     $_POST array
-   @returns - the value of the request variable */
+/**
+ * stub call for get_nfilteR_request_var
+ *
+ * @deprecated v1.0
+ *
+ * @param  string $name     the name of the request variable. this should be a
+ *                          valid key in the $_REQUEST array
+ * @param  mixed  $default  the value to return if the specified name does not
+ *                          exist in the $_REQUEST array
+ *
+ * @return mixed
+ */
 function get_request_var_post($name, $default = '') {
 	return get_nfilter_request_var($name, $default);
 }
@@ -547,66 +591,76 @@ function get_request_var_post($name, $default = '') {
    @arg $filters - an array keyed with the filter methods.
    @arg $session_prefix - the prefix for the session variable
 
-   Valid filter include those from PHP filter_var() function syntax.
-   The format of the array is:
-
-     array(
-       'varA' => array(
-          'filter' => value,
-          'pageset' => true,      (optional)
-          'session' => sess_name, (optional)
-          'options' => mixed,
-          'default' => value),
-       'varB' => array(
-          'filter' => value,
-          'pageset' => true,      (optional)
-          'session' => sess_name, (optional)
-          'options' => mixed,
-          'default' => value),
-       ...
-     );
-
-   The 'pageset' attribute is optional, and when set, any changes
-   between what the page returns and what is set in the session
-   result in the page number being returned to 1.
-
-   The 'session' attribute is also optional, and when set, all
-   changes will be stored to the session variable defined and
-   not to session_prefix . '_' . $variable as the default.  This
-   allows for the concept of global session variables such as
-   'sess_default_rows'.
-
-   Validation 'filter' follow PHP conventions including:
-
-     FILTER_VALIDATE_BOOLEAN          - Validate that the variable is boolean
-     FILTER_VALIDATE_EMAIL            - Validate that the variable is an email
-     FILTER_VALIDATE_FLOAT            - Validate that the variable is a float
-     FILTER_VALIDATE_INT              - Validate that the variable is an integer
-     FILTER_VALIDATE_IP               - Validate that the variable is an IP address
-     FILTER_VALIDATE_MAC              - Validate that the variable is a MAC Address
-     FILTER_VALIDATE_REGEXP           - Validate against a REGEX
-     FILTER_VALIDATE_URL              - Validate that the variable is a valid URL
-     FILTER_VALIDATE_IS_REGEX         - Validate if a filter variable is a valid regex
-     FILTER_VALIDATE_IS_NUMERIC_ARRAY - Validate if a filter variable is a numeric array
-     FILTER_VALIDATE_IS_NUMERIC_LIST  - Validate if a filter variable is a comma delimited list of numbers
-
-   Sanitization 'filters' follow PHP conventions including:
-
-     FILTER_SANITIZE_EMAIL              - Sanitize the email address
-     FILTER_SANITIZE_ENCODED            - URL-encode string
-     FILTER_SANITIZE_MAGIC_QUOTES       - Apply addslashes()
-     FILTER_SANITIZE_NUMBER_FLOAT       - Remove all non float values
-     FILTER_SANITIZE_NUMBER_INT         - Remove everything non int
-     FILTER_SANITIZE_SPECIAL_CHARS      - Escape special chars
-     FILTER_SANITIZE_FULL_SPECIAL_CHARS - Equivalent to htmlspecialchars adding ENT_QUOTES
-     FILTER_SANITIZE_STRING             - Strip tags, optionally strip or encode special chars
-     FILTER_SANITIZE_URL                - Remove all characters except letters, digits, etc.
-     FILTER_UNSAFE_RAW                  - Nothing and optional strip or encode
 
    @returns - the $_REQUEST variable validated and sanitized. */
-function validate_store_request_vars($filters, $sess_prefix = '') {
-	global $_CACTI_REQUEST;
 
+/**
+ * validate, sanitize, and store request variables into the
+ * custom $_CACTI_REQUEST and desired session variables for
+ * Cacti filtering.
+ *
+ * @param  array  $filters      an array keyed with the filter methods.
+ *
+ *    Valid filter include those from PHP filter_var() function syntax.
+ *    The format of the array is:
+ *      array(
+ *        'varA' => array(
+ *           'filter' => value,
+ *           'pageset' => true,      (optional)
+ *           'session' => sess_name, (optional)
+ *           'options' => mixed,
+ *           'default' => value),
+ *        'varB' => array(
+ *           'filter' => value,
+ *           'pageset' => true,      (optional)
+ *           'session' => sess_name, (optional)
+ *           'options' => mixed,
+ *           'default' => value),
+ *        ...
+ *      );
+ *
+ *    The 'pageset' attribute is optional, and when set, any changes
+ *    between what the page returns and what is set in the session
+ *    result in the page number being returned to 1.
+ *
+ *    The 'session' attribute is also optional, and when set, all
+ *    changes will be stored to the session variable defined and
+ *    not to session_prefix . '_' . $variable as the default.  This
+ *    allows for the concept of global session variables such as
+ *    'sess_default_rows'.
+ *
+ *    Validation 'filter' follow PHP conventions including:
+ *
+ *      FILTER_VALIDATE_BOOLEAN          - Validate that the variable is boolean
+ *      FILTER_VALIDATE_EMAIL            - Validate that the variable is an email
+ *      FILTER_VALIDATE_FLOAT            - Validate that the variable is a float
+ *      FILTER_VALIDATE_INT              - Validate that the variable is an integer
+ *      FILTER_VALIDATE_IP               - Validate that the variable is an IP address
+ *      FILTER_VALIDATE_MAC              - Validate that the variable is a MAC Address
+ *      FILTER_VALIDATE_REGEXP           - Validate against a REGEX
+ *      FILTER_VALIDATE_URL              - Validate that the variable is a valid URL
+ *      FILTER_VALIDATE_IS_REGEX         - Validate if a filter variable is a valid regex
+ *      FILTER_VALIDATE_IS_NUMERIC_ARRAY - Validate if a filter variable is a numeric array
+ *      FILTER_VALIDATE_IS_NUMERIC_LIST  - Validate if a filter variable is a comma delimited list of numbers
+ *
+ *    Sanitization 'filters' follow PHP conventions including:
+ *
+ *      FILTER_SANITIZE_EMAIL              - Sanitize the email address
+ *      FILTER_SANITIZE_ENCODED            - URL-encode string
+ *      FILTER_SANITIZE_MAGIC_QUOTES       - Apply addslashes()
+ *      FILTER_SANITIZE_NUMBER_FLOAT       - Remove all non float values
+ *      FILTER_SANITIZE_NUMBER_INT         - Remove everything non int
+ *      FILTER_SANITIZE_SPECIAL_CHARS      - Escape special chars
+ *      FILTER_SANITIZE_FULL_SPECIAL_CHARS - Equivalent to htmlspecialchars adding ENT_QUOTES
+ *      FILTER_SANITIZE_STRING             - Strip tags, optionally strip or encode special chars
+ *      FILTER_SANITIZE_URL                - Remove all characters except letters, digits, etc.
+ *      FILTER_UNSAFE_RAW                  - Nothing and optional strip or encode
+ *
+ * @param  string $sess_prefix  the prefix for the session variable
+ *
+ * @return void
+ */
+function validate_store_request_vars(array $filters, string $sess_prefix = ''):void {
 	$changed = 0;
 	$custom_error = '';
 

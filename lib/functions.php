@@ -26,14 +26,14 @@
  * title_trim - takes a string of text, truncates it to $max_length and appends
  * three periods onto the end
  *
- * @param $text - the string to evaluate
- * @param $max_length - the maximum number of characters the string can contain
- *   before it is truncated
+ * @param string  $text        the string to evaluate
+ * @param integer $max_length  the maximum number of characters the string can contain
+ *                             before it is truncated
  *
- * @return mixed the truncated string if len($text) is greater than $max_length, else
+ * @return string the truncated string if len($text) is greater than $max_length, else
  *   the original string
  */
-function title_trim($text, $max_length) {
+function title_trim(string $text, int $max_length): string {
 	if (strlen($text) > $max_length) {
 		return mb_substr($text, 0, $max_length) . '...';
 	} else {
@@ -48,7 +48,7 @@ function title_trim($text, $max_length) {
  * @param $filter - the search term to filter for
  * @param $href - the href if you wish to have an anchor returned
  *
- * @return mixed the filtered string
+ * @return null|string the filtered string
  */
 function filter_value(?string $value, string $filter, string $href = ''): ?string {
 	static $charset;
@@ -81,65 +81,76 @@ function filter_value(?string $value, string $filter, string $href = ''): ?strin
 }
 
 /**
- * set_graph_config_option - deprecated - wrapper to set_user_setting().
+ * Wrapper to set_user_setting().
  *
- * @param $config_name - the name of the configuration setting as specified $settings array
- * @param $value       - the values to be saved
- * @param $user        - the user id, otherwise the session user
+ * @deprecated v1.0
  *
- * @return            - void
+ * @param string $config_name - the name of the configuration setting as specified $settings array
+ * @param mixed  $value       - the values to be saved
+ * @param int    $user        - the user id, otherwise the session user
+ *
+ * @return void
  */
-function set_graph_config_option($config_name, $value, $user = -1) {
+function set_graph_config_option(string $config_name, mixed $value, int $user = -1) {
 	set_user_setting($config_name, $value, $user);
 }
 
 /**
- * graph_config_value_exists - deprecated - wrapper to user_setting_exists
+ * Wrapper to user_setting_exists
  *
- * @param $config_name - the name of the configuration setting as specified $settings_user array
- *   in 'include/global_settings.php'
- * @param $user_id - the id of the user to check the configuration value for
+ * @deprecated v1.0
  *
- * @return (bool) - true if a value exists, false if a value does not exist
+ * @param string $config_name   the name of the configuration setting as
+ *                              specified $settings_user array in
+ *                              'include/global_settings.php'
+ *
+ * @param int    $user_id       the id of the user to check the configuration
+ *                              value for
+ *
+ * @return bool  true if a value exists, false if a value does not exist
  */
-function graph_config_value_exists($config_name, $user_id) {
+function graph_config_value_exists(string $config_name, int $user_id) {
 	return user_setting_exists($config_name, $user_id);
 }
 
 /**
- * read_default_graph_config_option - deprecated - wrapper to read_default_user_setting
+ * Wrapper to read_default_user_setting
  *
- * @param $config_name - the name of the configuration setting as specified $settings array
- *   in 'include/global_settings.php'
+ * @deprecated v1.0
  *
- * @return mixed the default value of the configuration option
+ * @param string $config_name   the name of the configuration setting as
+ *                              specified $settings_user array in
+ *                              'include/global_settings.php'
+ *
+ * @return bool  the default value of the configuration option
  */
 function read_default_graph_config_option($config_name) {
 	return read_default_user_setting($config_name);
 }
 
 /**
- * read_graph_config_option - deprecated - finds the current value of a graph configuration setting
+ * Wrapper to read_user_setting
  *
- * @param $config_name - the name of the configuration setting as specified $settings_user array
- *   in 'include/global_settings.php'
+ * @deprecated v1.0
  *
- * @return mixed the current value of the graph configuration option
+ * @param string $config_name   the name of the configuration setting as
+ *                              specified $settings_user array in
+ *                              'include/global_settings.php'
+ *
+ * @return bool  the default value of the configuration option
  */
 function read_graph_config_option($config_name, $force = false) {
 	return read_user_setting($config_name, false, $force);
 }
 
 /**
- * save_user_setting - sets/updates aLL user settings
+ * Sets/updates aLL user settings
  *
- * @param $config_name - the name of the configuration setting as specified $settings array
- * @param $value       - the values to be saved
- * @param $user        - the user id, otherwise the session user
+ * @param  integer|null $user  the user id, otherwise the session user
  *
- * @return            - void
+ * @return void
  */
-function save_user_settings($user = -1) {
+function save_user_settings(?int $user = -1):void {
 	global $settings_user;
 
 	if ($user == -1 || empty($user)) {
@@ -185,13 +196,13 @@ function save_user_settings($user = -1) {
 /**
  * set_user_setting - sets/updates a user setting with the given value.
  *
- * @param $config_name - the name of the configuration setting as specified $settings array
- * @param $value       - the values to be saved
- * @param $user        - the user id, otherwise the session user
+ * @param string   $config_name - the name of the configuration setting as specified $settings array
+ * @param mixed    $value       - the values to be saved
+ * @param null|int $user        - the user id, otherwise the session user
  *
- * @return          - void
+ * @return void
  */
-function set_user_setting($config_name, $value, $user = -1) {
+function set_user_setting(string $config_name, mixed $value, ?int $user = -1):void {
 	global $settings_user;
 
 	if ($user == -1 && isset($_SESSION['sess_user_id'])) {
@@ -219,15 +230,18 @@ function set_user_setting($config_name, $value, $user = -1) {
 }
 
 /**
- * user_setting_exists - determines if a value exists for the current user/setting specified
+ * Determines if a value exists for the current user/setting specified
  *
- * @param $config_name - the name of the configuration setting as specified $settings_user array
- *   in 'include/global_settings.php'
- * @param $user_id - the id of the user to check the configuration value for
+ * @param  string       $config_name  the name of the configuration setting as
+ *                                    specified $settings_user array in
+ *                                    'include/global_settings.php'
  *
- * @return (bool) - true if a value exists, false if a value does not exist
+ * @param  integer|null $user_id      the id of the user to check the
+ *                                    configuration value for
+ *
+ * @return boolean
  */
-function user_setting_exists($config_name, $user_id) {
+function user_setting_exists(string $config_name, ?int $user_id):bool {
 	static $user_setting_values = array();
 
 	if (!isset($user_setting_values[$config_name])) {
@@ -251,13 +265,18 @@ function user_setting_exists($config_name, $user_id) {
 }
 
 /**
- * clear_user_setting - if a value exists for the current user/setting specified, removes it
+ * If a value exists for the current user/setting specified, removes it
  *
- * @param $config_name - the name of the configuration setting as specified $settings_user array
- *   in 'include/global_settings.php'
- * @param $user_id - the id of the user to remove the configuration value for
+ * @param  string       $config_name  the name of the configuration setting as
+ *                                    specified $settings_user array in
+ *                                    'include/global_settings.php'
+ *
+ * @param  integer|null $user_id      the id of the user to check the
+ *                                    configuration value for
+ *
+ * @return void
  */
-function clear_user_setting($config_name, $user = -1) {
+function clear_user_setting($config_name, $user = -1):void {
 	global $settings_user;
 
 	if ($user == -1) {
@@ -275,14 +294,15 @@ function clear_user_setting($config_name, $user = -1) {
 }
 
 /**
- * read_default_user_setting - finds the default value of a user configuration setting
+ * Finds the default value of a user configuration setting
  *
- * @param $config_name - the name of the configuration setting as specified $settings array
- *   in 'include/global_settings.php'
+ * @param  string       $config_name  the name of the configuration setting as
+ *                                    specified $settings_user array in
+ *                                    'include/global_settings.php'
  *
  * @return mixed the default value of the configuration option
  */
-function read_default_user_setting($config_name) {
+function read_default_user_setting(string $config_name):mixed {
 	global $config, $settings_user;
 
 	foreach ($settings_user as $tab_array) {
@@ -299,17 +319,21 @@ function read_default_user_setting($config_name) {
 }
 
 /**
- * read_user_setting - finds the current value of a graph configuration setting
+ * Finds the current value of a users configuration setting
  *
- * @param $config_name - the name of the configuration setting as specified $settings_user array
- *   in 'include/global_settings.php'
- * @param $default - the default value is none is set
- * @param $force - pull the data from the database if true ignoring session
- * @param $user - assume this user's identity
+ * @param  string       $config_name  the name of the configuration setting as
+ *                                    specified $settings_user array in
+ *                                    'include/global_settings.php'
+ *
+ * @param  mixed        $default      the default value is none is set
+ *
+ * @param  bool         $force        pull the data from the database if true ignoring session
+ *
+ * @param  integer|null $user_id      the id of the user to read the
  *
  * @return mixed the current value of the user setting
  */
-function read_user_setting($config_name, $default = false, $force = false, $user = 0) {
+function read_user_setting(string $config_name, mixed $default = false, bool $force = false, ?int $user = 0):mixed {
 	global $config;
 
 	/* users must have cacti user auth turned on to use this, or the guest account must be active */
@@ -386,14 +410,16 @@ function read_user_setting($config_name, $default = false, $force = false, $user
 }
 
 /**
- * is_remote_path_setting - determines of a Cacti setting should be maintained
- *   on the Remote Data Collector separate from the Main cacti server
+ * Determines of a Cacti setting should be maintained
+ * on the Remote Data Collector separate from the Main cacti server
  *
- * @param $config_name - the name of the configuration setting as specified $settings array
+ * @param  string       $config_name  the name of the configuration setting as
+ *                                    specified $settings_user array in
+ *                                    'include/global_settings.php'
  *
- * @return (bool) - true if the setting should be saved locally
+ * @return bool - true if the setting should be saved locally
  */
-function is_remote_path_setting($config_name) {
+function is_remote_path_setting(string $config_name):bool {
 	global $config;
 
 	if ($config['poller_id'] > 1 && (strpos($config_name, 'path_') !== false || strpos($config_name, '_path') !== false)) {
@@ -404,15 +430,20 @@ function is_remote_path_setting($config_name) {
 }
 
 /**
- * set_config_option - sets/updates a cacti config option with the given value.
+ * Sets/updates a cacti config option with the given value.
  *
- * @param $config_name - the name of the configuration setting as specified $settings array
- * @param $value       - the values to be saved
- * @param $remote      - push the setting to the remote with the exception of path variables
+ * @param  string       $config_name  the name of the configuration setting as
+ *                                    specified $settings array in
+ *                                    'include/global_settings.php'
  *
- * @return (void)
+ * @param  mixed        $value        the values to be saved
+ *
+ * @param  bool         $remote       push the setting to the remote with
+ *                                    the exception of path variables
+ *
+ * @return void
  */
-function set_config_option($config_name, $value, $remote = false) {
+function set_config_option(string $config_name, mixed $value, bool $remote = false):void {
 	global $config;
 
 	include_once($config['base_path'] . '/lib/poller.php');
@@ -475,14 +506,15 @@ function set_config_option($config_name, $value, $remote = false) {
 }
 
 /**
- * config_value_exists - determines if a value exists for the current user/setting specified
+ * Determines if a value exists for the current user/setting specified
  *
- * @param $config_name - the name of the configuration setting as specified $settings array
- *   in 'include/global_settings.php'
+ * @param  string       $config_name  the name of the configuration setting as
+ *                                    specified $settings array in
+ *                                    'include/global_settings.php'
  *
  * @return mixed true if a value exists, false if a value does not exist
  */
-function config_value_exists($config_name) {
+function config_value_exists(string $config_name):bool {
 	static $config_values = array();
 
 	if (!isset($config_values[$config_name])) {
@@ -499,15 +531,16 @@ function config_value_exists($config_name) {
 }
 
 /**
- * read_default_config_option - finds the default value of a Cacti configuration setting
+ * Finds the default value of a Cacti configuration setting
  *
- * @param $config_name - the name of the configuration setting as specified $settings array
- *   in 'include/global_settings.php'
+ * @param  string       $config_name  the name of the configuration setting as
+ *                                    specified $settings_user array in
+ *                                    'include/global_settings.php'
  *
  * @return mixed the default value of the configuration option
  */
-function read_default_config_option($config_name) {
-	global $config, $settings;
+function read_default_config_option(string $config_name):mixed {
+	global $settings;
 
 	if (isset($settings) && is_array($settings)) {
 		foreach ($settings as $tab_array) {
@@ -522,8 +555,15 @@ function read_default_config_option($config_name) {
 			}
 		}
 	}
+
+	return null;
 }
 
+/**
+ * Primse the common configuration settings
+ *
+ * @return void
+ */
 function prime_common_config_settings() {
 	global $config;
 
@@ -659,14 +699,15 @@ function prime_common_config_settings() {
 }
 
 /**
- * read_config_option - finds the current value of a Cacti configuration setting
+ * Finds the current value of a Cacti configuration setting
  *
- * @param $config_name - the name of the configuration setting as specified $settings array
- *   in 'include/global_settings.php'
+ * @param  string       $config_name  the name of the configuration setting as
+ *                                    specified $settings array in
+ *                                    'include/global_settings.php'
  *
  * @return mixed the current value of the configuration option
  */
-function read_config_option($config_name, $force = false) {
+function read_config_option(string $config_name, bool $force = false):mixed {
 	global $config, $database_hostname, $database_default, $database_port, $database_sessions;
 
 	$loaded = false;
@@ -758,7 +799,7 @@ function read_config_option($config_name, $force = false) {
  *
  * @return mixed the theme name
  */
-function get_selected_theme() {
+function get_selected_theme():mixed {
 	global $config, $themes;
 
 	// shortcut if theme is set in session
@@ -822,7 +863,7 @@ function get_selected_theme() {
  *
  * @return boolean
  */
-function is_valid_theme(?string &$theme, int $set_user = 0) {
+function is_valid_theme(?string &$theme, int $set_user = 0):bool {
 	global $themes, $config;
 	$valid = true;
 	if ($theme == null || !file_exists($config['base_path'] . '/include/themes/' . $theme . '/main.css')) {
@@ -3557,12 +3598,12 @@ function get_item($tblname, $field, $startid, $lmt_query, $direction) {
 /**
  * get_sequence - returns the next available sequence id
  *
- * @param $id - (int) the current id
- * @param $field - the field name that contains the target id
- * @param $table_name - the table name that contains the target id
- * @param $group_query - an SQL "where" clause to limit the query
+ * @param int|null $id - (int) the current id
+ * @param string   $field - the field name that contains the target id
+ * @param string   $table_name - the table name that contains the target id
+ * @param string   $group_query - an SQL "where" clause to limit the query
  *
- * @return mixed (int) the next available sequence id
+ * @return int the next available sequence id
  */
 function get_sequence(?int $id, string $field, string $table_name, string $group_query): int {
 	if (empty($id)) {

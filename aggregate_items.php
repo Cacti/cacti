@@ -104,7 +104,8 @@ function form_save() {
 		foreach ($items as $item) {
 			/* generate a new sequence if needed */
 			if (isempty_request_var('sequence')) {
-				set_request_var('sequence', get_sequence(get_request_var('sequence'), 'sequence', 'graph_templates_item', 'local_graph_id=' . get_request_var('local_graph_id')));
+				$sequence = get_filter_request_var('sequence');
+				set_request_var('sequence', get_sequence($sequence, 'sequence', 'graph_templates_item', 'local_graph_id=' . get_request_var('local_graph_id')));
 			}
 			$save['id']                           = get_filter_request_var('graph_template_item_id');
 			$save['graph_template_id']            = get_filter_request_var('graph_template_id');
