@@ -154,7 +154,7 @@ if ($exists > 0) {
 				}
 			}
 
-			$graph_templates = db_fetch_assoc('SELECT graph_template_id
+			$graph_templates = db_fetch_assoc_prepared('SELECT graph_template_id
 				FROM host_template_graph
 				WHERE host_template_id = ?',
 				array($host['host_template_id']));
