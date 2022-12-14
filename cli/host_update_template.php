@@ -103,69 +103,88 @@ if (cacti_sizeof($parms)) {
 /* determine the hosts to reindex */
 if (strtolower($host_id) == 'all') {
 	$sql_where = '';
-}else if (is_numeric($host_id)) {
+} elseif (is_numeric($host_id)) {
 	$sql_where = ' WHERE id=' . $host_id;
 } else {
 	print "ERROR: You must specify either a host_id or 'all' to proceed.\n\n";
 	display_help();
-	exit;
+	exit(1);
 }
 
 /* determine data queries to rerun */
-if (is_numeric($template)) {
-	$sql_where .= ($sql_where != '' ? " AND host_template_id=$template": "WHERE host_template_id=$template");
+if (is_numeric($template) && $template > 0) {
+	$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . " host_template_id=$template";
 } else {
 	print "ERROR: You must specify a Host Template to proceed.\n\n";
 	display_help();
-	exit;
+	exit(1);
 }
 
 /* verify that the host template is accurate */
-if (db_fetch_cell("SELECT id FROM host_template WHERE id=$template") > 0) {
+$exists = db_fetch_cell_prepared('SELECT id
+	FROM host_template
+	WHERE id = ?',
+	array($template));
+
+if ($exists > 0) {
 	$hosts = db_fetch_assoc("SELECT * FROM host $sql_where");
 
 	if (cacti_sizeof($hosts)) {
-	foreach($hosts as $host) {
-		print "NOTE: Updating Host '" . $host['description'] . "'\n";
-		$snmp_queries = db_fetch_assoc('SELECT snmp_query_id
-			FROM host_template_snmp_query
-			WHERE host_template_id=' . $host['host_template_id']);
+		foreach($hosts as $host) {
+			print "NOTE: Updating Host '" . $host['description'] . "'\n";
 
-		if (cacti_sizeof($snmp_queries) > 0) {
-			print "NOTE: Updating Data Queries. There were '" . cacti_sizeof($snmp_queries) . "' Found\n";
-			foreach ($snmp_queries as $snmp_query) {
-				print "NOTE: Updating Data Query ID '" . $snmp_query['snmp_query_id'] . "'\n";
-				db_execute('REPLACE INTO host_snmp_query (host_id,snmp_query_id,reindex_method)
-					VALUES (' . $host['id'] . ', ' . $snmp_query['snmp_query_id'] . ',' . DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME . ')');
+			$snmp_queries = db_fetch_assoc_prepared('SELECT snmp_query_id
+				FROM host_template_snmp_query
+				WHERE host_template_id = ?',
+				array($host['host_template_id']));
 
-				/* recache snmp data */
-				run_data_query($host['id'], $snmp_query['snmp_query_id']);
+			if (cacti_sizeof($snmp_queries) > 0) {
+				print "NOTE: Updating Data Queries. There were '" . cacti_sizeof($snmp_queries) . "' Found\n";
+
+				foreach ($snmp_queries as $snmp_query) {
+					print "NOTE: Updating Data Query ID '" . $snmp_query['snmp_query_id'] . "'\n";
+
+					db_execute_prepared('INSERT IGNORE INTO host_snmp_query
+						(host_id, snmp_query_id, reindex_method)
+						VALUES (?, ?, ?)',
+						array($host['id'], $snmp_query['snmp_query_id'], DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME));
+
+					/* recache snmp data */
+					run_data_query($host['id'], $snmp_query['snmp_query_id']);
+				}
+			}
+
+			$graph_templates = db_fetch_assoc('SELECT graph_template_id
+				FROM host_template_graph
+				WHERE host_template_id = ?',
+				array($host['host_template_id']));
+
+			if (cacti_sizeof($graph_templates) > 0) {
+				print "NOTE: Updating Graph Templates. There were '" . cacti_sizeof($graph_templates) . "' Found\n";
+
+				foreach ($graph_templates as $graph_template) {
+					db_execute_prepared('INSERT IGNORE INTO host_graph
+						(host_id, graph_template_id)
+						VALUES (?, ?)',
+						array($host['id'], $graph_template['graph_template_id']));
+
+					automation_hook_graph_template($host['id'], $graph_template['graph_template_id']);
+
+					api_plugin_hook_function('add_graph_template_to_host', array('host_id' => $host['id'], 'graph_template_id' => $graph_template['graph_template_id']));
+				}
 			}
 		}
-
-		$graph_templates = db_fetch_assoc('SELECT graph_template_id FROM host_template_graph WHERE host_template_id=' . $host['host_template_id']);
-
-		if (cacti_sizeof($graph_templates) > 0) {
-			print "NOTE: Updating Graph Templates. There were '" . cacti_sizeof($graph_templates) . "' Found\n";
-
-			foreach ($graph_templates as $graph_template) {
-				db_execute('REPLACE INTO host_graph (host_id, graph_template_id) VALUES (' . $host['id'] . ', ' . $graph_template['graph_template_id'] . ')');
-
-				automation_hook_graph_template($host['id'], $graph_template['graph_template_id']);
-
-				api_plugin_hook_function('add_graph_template_to_host', array('host_id' => $host['id'], 'graph_template_id' => $graph_template['graph_template_id']));
-			}
-		}
-	}
 	}
 } else {
 	print "ERROR: The selected Host Template does not exist, try --list-host-templates\n\n";
+
 	exit(1);
 }
 
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_cli_version();
+
 	print "Cacti Retemplate Host Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
