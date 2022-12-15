@@ -35,7 +35,7 @@ function ss_multicpu_avg($device_id) {
 		$host['snmp_context'],
 		$host['snmp_port'],
 		$host['snmp_timeout'],
-		$snmp_retries,
+		$snmp_retries
 	);
 
 	$load = 0;
