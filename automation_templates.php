@@ -199,7 +199,7 @@ function form_save() {
 		$save['sysName']       = get_nfilter_request_var('sysName');
 		$save['sysOid']        = get_nfilter_request_var('sysOid');
 		if (function_exists('filter_var')) {
-			$save['sysDescr'] = filter_var($save['sysDescr'], FILTER_SANITIZE_STRING);
+			$save['sysDescr'] = filter_var($save['sysDescr'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 		} else {
 			$save['sysDescr'] = strip_tags($save['sysDescr']);
 		}
