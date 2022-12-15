@@ -105,7 +105,8 @@ function grow_dhtml_trees() {
 		if ($user['policy_trees'] == 1) {
 			$default_tree_id = db_fetch_cell_prepared('SELECT graph_tree.id
 				FROM graph_tree
-				LEFT JOIN user_auth_perms ON user_auth_perms.item_id = graph_tree.id
+				LEFT JOIN user_auth_perms
+				ON user_auth_perms.item_id = graph_tree.id
 				AND user_auth_perms.type = 2
 				AND user_auth_perms.user_id = ?
 				WHERE user_auth_perms.item_id IS NULL
@@ -114,9 +115,10 @@ function grow_dhtml_trees() {
 				LIMIT 1',
 				array($_SESSION['sess_user_id']));
 		} else {
-			$default_tree_id = db_fetch_cell('SELECT graph_tree.id
+			$default_tree_id = db_fetch_cell_prepared('SELECT graph_tree.id
 				FROM graph_tree
-				INNER JOIN user_auth_perms ON user_auth_perms.item_id = graph_tree.id
+				INNER JOIN user_auth_perms
+				ON user_auth_perms.item_id = graph_tree.id
 				AND user_auth_perms.type = 2
 				AND user_auth_perms.user_id = ?
 				WHERE graph_tree.enabled = "on"
@@ -125,7 +127,10 @@ function grow_dhtml_trees() {
 				array($_SESSION['sess_user_id']));
 		}
 	} else {
-		$default_tree_id = db_fetch_cell('SELECT id FROM graph_tree ORDER BY sequence LIMIT 1');
+		$default_tree_id = db_fetch_cell('SELECT id
+			FROM graph_tree
+			ORDER BY sequence
+			LIMIT 1');
 	}
 
 	print "<div class='cactiTreeSearch' style='white-space:nowrap'><span style='padding-right:4px;'>" . __('Search') . "</span><input type='text' class='ui-state-default ui-corner-all' id='searcher' style='padding:2px;font-size:12px;max-width:200px;' size='35'><hr></div>\n";
@@ -304,7 +309,7 @@ function grow_dhtml_trees() {
 			});
 		});
 
-		$('#searcher').keyup(function() {	
+		$('#searcher').keyup(function() {
 			if(search_to) { clearTimeout(search_to); }
 			search_to = setTimeout(function() {
 				var v = $('#searcher').val();
