@@ -1155,6 +1155,15 @@ function tree_edit($partial = false) {
 
 			if ($('#lock').length) {
 				editable = false;
+
+				$('select, input').not('#lock, #element').each(function() {
+					$(this).prop('disabled', true);
+					$(this).addClass('ui-state-disabled');
+
+					if ($(this).selectmenu('instance') !== undefined) {
+						$(this).selectmenu('disable');
+					}
+				});
 			} else {
 				editable = true;
 			}
