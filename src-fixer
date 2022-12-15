@@ -24,11 +24,12 @@ SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 cd "${SCRIPTPATH}"
 
 ANSI=--no-ansi
+VERBOSE=
 if [ -t 1 ]; then
-	echo Terminal;
 	if [[ -z $RUNNER_OS ]]; then
 		ANSI=
+		VERBOSE=--verbose
 	fi
 fi;
-echo vendor/bin/php-cs-fixer fix $ANSI $@
-vendor/bin/php-cs-fixer fix $ANSI $@
+echo vendor/bin/php-cs-fixer fix $VERBOSE $ANSI $@
+vendor/bin/php-cs-fixer fix $VERBOSE $ANSI $@
