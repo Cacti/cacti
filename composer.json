@@ -1,0 +1,25 @@
+{
+    "name": "cacti/cacti",
+    "description": "Cacti Network Monitoring Framework",
+    "type": "composer-plugin",
+    "license": "GPL2",
+    "require": {
+        "friendsofphp/php-cs-fixer": "^3.13"
+    },
+    "authors": [
+        {
+            "name": "The Cacti Group",
+            "email": "developers@cacti.net"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true
+    },
+    "scripts": {
+        "lint": "phplint --no-cache src/",
+        "phpcsfixer": "php-cs-fixer fix --diff --dry-run --ansi",
+        "phpcsfixit": "php-cs-fixer fix --ansi"
+    }
+}

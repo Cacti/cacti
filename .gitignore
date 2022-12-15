@@ -31,6 +31,7 @@ log/**
 rra/**
 # Ignore Cacti cache files/folders
 cache/**
+*.cache
 # Ignore Cacti plugin files/folders
 plugins/**
 # Ignore Cacti script files/folders
@@ -61,3 +62,7 @@ locales/po/*.mo
 include/vendor/csrf/csrf-secret.php
 .vscode/launch.json
 .rnd
+
+# Ignore vendor folders
+include/vendor/*
+vendor/*
