@@ -2536,8 +2536,7 @@ function getPresentHTTPErrorOrRedirect(data, url) {
 			$.get(urlPath + 'help.php?page=' + escape(url) + '&error=' + data.status);
 		} else if (data.status >= 400) {
 			// Let the HTTP Error stick
-		} else {
-			console.log(data.status);
+		} else if (data.statusText != 'abort') {
 			$.ajaxQ.abortAll();
 			document.location = url;
 		}
