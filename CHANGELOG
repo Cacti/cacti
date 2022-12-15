@@ -52,7 +52,6 @@ Cacti CHANGELOG
 -issue#5041: md5_file error in custom theme after updating to 1.2.23
 -issue#5066: Cacti does not escape the watermark leading to broken graphs
 -issue#5068: Installer deprecation messages during CLI install in PHP8.2
--issue#5084: After Update 1.2.20 to 1.2.22 CMDPHP ERROR: A DB Cell Failed
 -issue#5088: CLI script host_update_template.php falsely changes reindex method to uptime
 -feature#1100: Structured path not created when using remote poller and Update On-Demand
 -feature#1392: AJAX handled errors do not notify Admins that page errors exist
