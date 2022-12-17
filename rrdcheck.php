@@ -180,6 +180,14 @@ function rrdcheck_display_problems() {
 		foreach($problems as $problem) {
 			form_alternate_row('line' . $problem['local_data_id'], true);
 
+			if ($problem['description'] == '') {
+				$problem['description'] = __('Deleted');
+			}
+
+			if ($problem['name_cache'] == '') {
+				$problem['name_cache'] = __('Deleted');
+			}
+
 			form_selectable_cell(filter_value($problem['description'], get_request_var('filter')), $problem['local_data_id']);
 			form_selectable_cell(filter_value($problem['name_cache'], get_request_var('filter')), $problem['local_data_id']);
 			form_selectable_cell(filter_value($problem['local_data_id'], get_request_var('filter')), $problem['local_data_id'], '', 'center');
