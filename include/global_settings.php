@@ -2221,13 +2221,13 @@ $settings = array(
 			'method' => 'spacer',
 		),
 		'rrdcheck_enable' => array(
-			'friendly_name' => __('Enable RRDfile check'),
+			'friendly_name' => __('Enable RRDfile Check'),
 			'description' => __('Should RRDfile check be enabled for this Cacti system?'),
 			'method' => 'checkbox',
 			'default' => ''
 		),
 		'rrdcheck_parallel' => array(
-			'friendly_name' => __('Number of RRDfile check Processes'),
+			'friendly_name' => __('Number of RRDfile Check Processes'),
 			'description' => __('The number of concurrent RRDfile check processes to use to use to process all of rrd files.'),
 			'default' => '1',
 			'method' => 'drop_array',
