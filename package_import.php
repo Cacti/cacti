@@ -496,57 +496,67 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 		html_header_checkbox($display_text, false, '', true, 'file');
 
 		foreach($files as $pdata => $pfiles) {
-			list($file_package_file, $file_package_name) = explode('|', $pdata);
+			$pdata_parts = explode('|', $pdata);
 
-			foreach($pfiles as $pfile => $status) {
-				$id = 'file_' . base64_encode(
-					json_encode(
-						array(
-							'package'  => $file_package_name,
-							'filename' => $file_package_file,
-							'pfile'    => $pfile,
+			$file_package_file = $pdata_parts[0];
+
+			if (isset($pdata_parts[1])) {
+				$file_package_name = $pdata_parts[1];
+			} else {
+				$file_package_name = 'Not Set';
+			}
+
+			if (cacti_sizeof($pfiles)) {
+				foreach($pfiles as $pfile => $status) {
+					$id = 'file_' . base64_encode(
+						json_encode(
+							array(
+								'package'  => $file_package_name,
+								'filename' => $file_package_file,
+								'pfile'    => $pfile,
+							)
 						)
-					)
-				);
+					);
 
-				form_alternate_row('line_' . $id);
-				form_selectable_cell($file_package_name, $id);
-				form_selectable_cell($pfile, $id);
+					form_alternate_row('line_' . $id);
+					form_selectable_cell($file_package_name, $id);
+					form_selectable_cell($pfile, $id);
 
-				$status  = explode(',', $status);
-				$nstatus = '';
+					$status  = explode(',', $status);
+					$nstatus = '';
 
-				foreach($status as $s) {
-					$s = trim($s);
+					foreach($status as $s) {
+						$s = trim($s);
 
-					if ($s == 'differences') {
-						$url = 'package_import.php' .
-							'?action=diff' .
-							'&package_location=0' .
-							'&package_file=' . $file_package_file .
-							'&package_name=' . $file_package_name .
-							'&filename=' . str_replace($config['base_path'] . '/', '', $pfile);
+						if ($s == 'differences') {
+							$url = 'package_import.php' .
+								'?action=diff' .
+								'&package_location=0' .
+								'&package_file=' . $file_package_file .
+								'&package_name=' . $file_package_name .
+								'&filename=' . str_replace($config['base_path'] . '/', '', $pfile);
 
-						$nstatus .= ($nstatus != '' ? ', ':'') .
-							"<a class='diffme linkEditMain' href='" . html_escape($url) . "'>" . __('Differences') . '</a>';
-					} elseif ($s == 'identical') {
-						$nstatus .= ($nstatus != '' ? ', ':'') . __('Unchanged');
-					} elseif ($s == 'not writable') {
-						$nstatus .= ($nstatus != '' ? ', ':'') . __('Not Writable');
-					} elseif ($s == 'writable') {
-						$nstatus .= ($nstatus != '' ? ', ':'') . __('Writable');
-					} elseif ($s == 'new') {
-						$nstatus .= ($nstatus != '' ? ', ':'') . __('New');
-					} else {
-						$nstatus .= ($nstatus != '' ? ', ':'') . __('Unknown');
+							$nstatus .= ($nstatus != '' ? ', ':'') .
+								"<a class='diffme linkEditMain' href='" . html_escape($url) . "'>" . __('Differences') . '</a>';
+						} elseif ($s == 'identical') {
+							$nstatus .= ($nstatus != '' ? ', ':'') . __('Unchanged');
+						} elseif ($s == 'not writable') {
+							$nstatus .= ($nstatus != '' ? ', ':'') . __('Not Writable');
+						} elseif ($s == 'writable') {
+							$nstatus .= ($nstatus != '' ? ', ':'') . __('Writable');
+						} elseif ($s == 'new') {
+							$nstatus .= ($nstatus != '' ? ', ':'') . __('New');
+						} else {
+							$nstatus .= ($nstatus != '' ? ', ':'') . __('Unknown');
+						}
 					}
+
+					form_selectable_cell($nstatus, $id);
+
+					form_checkbox_cell($pfile, $id);
+
+					form_end_row();
 				}
-
-				form_selectable_cell($nstatus, $id);
-
-				form_checkbox_cell($pfile, $id);
-
-				form_end_row();
 			}
 		}
 
