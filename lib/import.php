@@ -1315,6 +1315,8 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_s
 							WHERE snmp_query_graph_id = ?',
 							array($data_query_graph_id));
 					}
+				} elseif (!cacti_sizeof($item_array['sv_graph'])) {
+					cacti_log('WARNING: Suggested Values Array for Graph Template Empty', false, 'IMPORT', POLLER_VERBOSITY_HIGH);
 				}
 
 				foreach ($item_array['sv_graph'] as $sub_item_hash => $sub_item_array) {
@@ -1371,6 +1373,8 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_s
 							WHERE snmp_query_graph_id = ?',
 							array($data_query_graph_id));
 					}
+				} elseif (!cacti_sizeof($item_array['sv_graph'])) {
+					cacti_log('WARNING: Suggested Values Array for Data Template Empty', false, 'IMPORT', POLLER_VERBOSITY_HIGH);
 				}
 
 				foreach ($item_array['sv_data_source'] as $sub_item_hash => $sub_item_array) {
