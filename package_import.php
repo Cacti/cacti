@@ -258,8 +258,8 @@ function package_diff_file() {
 	global $config;
 
 	$package_location = get_filter_request_var('package_location');
-	$package_file     = get_request_var('package_file');
-	$filename         = get_request_var('filename');
+	$package_file     = get_nfilter_request_var('package_file');
+	$filename         = get_nfilter_request_var('filename');
 
 	$options = array(
 		'ignoreWhitespace' => true,
