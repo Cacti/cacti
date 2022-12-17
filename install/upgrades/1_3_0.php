@@ -29,6 +29,7 @@ function upgrade_to_1_3_0() {
 	db_install_add_column('poller', array('name' => 'log_level', 'type' => 'int', 'null' => false, 'default' => '-1'));
 	db_install_add_column('host', array('name' => 'created', 'type' => 'timestamp', 'default' => 'CURRENT_TIMESTAMP'));
 	db_install_add_column('sites', array('name' => 'disabled', 'type' => 'char(2)', 'null' => false, 'default' => ''));
+	db_install_add_column('user_domains_ldap', array('name' => 'tls_certificate', 'type' => 'tinyint(3)', 'unsigned' => true, 'null' => false, 'default' => '3'));
 
 	//Not sure why we were adding this...
 	//db_install_add_column('user_domains', array('name' => 'tls_verify', 'type' => 'int', 'null' => false, 'default' => '0'));
@@ -79,29 +80,34 @@ function ldap_convert_1_3_0() {
 		'cn_email'               => 'cn_email',
 	];
 
-	$domain_id = db_fetch_cell('SELECT domain_id FROM user_domains WHERE domain_name = \'LDAP\'');
-	if (!$domain_id) {
-		cacti_log('NOTE: Creating new LDAP domain', true, 'INSTALL');
-		db_install_execute('INSERT INTO user_domains (domain_name, type, enabled) VALUES (\'LDAP\', 1, \'on\')');
+	$ldap_server = read_config_option('ldap_server');
+
+	if (!empty($ldap_server)) {
 		$domain_id = db_fetch_cell('SELECT domain_id FROM user_domains WHERE domain_name = \'LDAP\'');
-	}
-
-	if ($domain_id) {
-		$ldap_id = db_fetch_cell_prepared('SELECT domain_id FROM user_domains_ldap WHERE domain_id = ?', array($domain_id));
-		if ($ldap_id != $domain_id) {
-			$ldap_settings = [ 'domain_id' => $domain_id ];
-			foreach ($ldap_fields as $old => $new) {
-				$ldap_settings[$new] = read_config_option($old);
-			}
-
-			$ldap_sql = 'INSERT INTO user_domains_ldap (' . implode(', ', array_keys($ldap_settings)) . ') VALUES (' . implode(', ', explode(' ', trim(str_repeat('? ', count($ldap_settings))))) . ')';
-			db_install_execute($ldap_sql, array_values($ldap_settings));
+		if (!$domain_id) {
+			cacti_log('NOTE: Creating new LDAP domain', true, 'INSTALL');
+			db_install_execute('INSERT INTO user_domains (domain_name, type, enabled) VALUES (\'LDAP\', 1, \'on\')');
+			$domain_id = db_fetch_cell('SELECT domain_id FROM user_domains WHERE domain_name = \'LDAP\'');
 		}
-	}
 
-	if (read_config_option('auth_method') == '3') {
-		set_config_option('auth_method', '4');
-	}
+		if ($domain_id) {
+			$ldap_id = db_fetch_cell_prepared('SELECT domain_id FROM user_domains_ldap WHERE domain_id = ?', array($domain_id));
+			if ($ldap_id != $domain_id) {
+				$ldap_settings = [ 'domain_id' => $domain_id ];
+				foreach ($ldap_fields as $old => $new) {
+					$ldap_settings[$new] = read_config_option($old);
+				}
 
-	set_config_option('install_ldap_builtin', $domain_id);
+				$ldap_sql = 'INSERT INTO user_domains_ldap (' . implode(', ', array_keys($ldap_settings)) . ') VALUES (' . implode(', ', explode(' ', trim(str_repeat('? ', count($ldap_settings))))) . ')';
+
+				db_install_execute($ldap_sql, array_values($ldap_settings));
+			}
+		}
+
+		if (read_config_option('auth_method') == '3') {
+			set_config_option('auth_method', '4');
+		}
+
+		set_config_option('install_ldap_builtin', $domain_id);
+	}
 }
