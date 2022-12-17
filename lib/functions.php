@@ -6471,14 +6471,16 @@ function get_source_timestamp() {
 	static $git_status = null;
 
 	$timestamp = 0;
-	$parts = $git_status;
+	$parts     = $git_status;
 
 	if ($git_status === null) {
 		$git_path = realpath(__DIR__ . '/../.git/');
+
 		if (file_exists($git_path)) {
 			$old_path = getcwd();
 			chdir($git_path);
 			$shell = @shell_exec('git log -1 --pretty=format:%ct.%h 2>&1');
+
 			if (stripos($shell, 'fatal: detected dubious ownership in repository') !== false) {
 				cacti_log('Website user must add website root to git config using "git config --global --add safe.directory <webroot>"', false, 'WARN');
 			}
@@ -6486,12 +6488,13 @@ function get_source_timestamp() {
 			if (preg_match('/\d+\.([[:xdigit:]]+)/', $shell)) {
 				$parts = explode('.', $shell);
 			}
+
 			chdir($old_path);
 		}
 	}
 
 	if ($parts === null) {
-		$parts      = array(0 => -1, 1 => 0, 'UNKNOWN');
+		$parts = array(0 => 0, 1 => 0, 'UNKNOWN');
 	}
 
 	if ($git_status === null) {
@@ -6505,6 +6508,8 @@ function format_cacti_version($version, $format = CACTI_VERSION_FORMAT_FULL) {
 	if ($version == 'new_install') {
 		$version = CACTI_VERSION . ($format == CACTI_VERSION_FORMAT_FULL ? '.0.0' : ''); //($format == CACTI_VERSION_FORMAT_FULL) ? CACTI_VERSION_FULL : CACTI_VERSION;
 	}
+
+	//cacti_log('The version is: ' . $version);
 
 	$parts = explode('.', $version);
 
@@ -6666,10 +6671,11 @@ function cacti_version_compare($version1, $version2, $operator = '>') {
 	return false;
 }
 
-function is_install_needed($version = NULL) {
+function is_install_needed($version = null) {
 	$mode = '==';
-	$db = get_cacti_db_version();
-	if ($version === NULL) {
+	$db   = get_cacti_db_version();
+
+	if ($version === null) {
 		if (is_cacti_develop(CACTI_VERSION_FULL)) {
 			$version = CACTI_DEV_VERSION;
 			$mode = '<';
@@ -6679,15 +6685,18 @@ function is_install_needed($version = NULL) {
 	}
 
 	$version = format_cacti_version($version);
-	$result = (cacti_version_compare($db, $version, $mode));
+	$result  = (cacti_version_compare($db, $version, $mode));
+
 	if (function_exists('log_install_medium')) {
 		log_install_medium('step', "$result = (cacti_version_compare($db, $version, $mode)");
 	}
+
+	return false;
+
 	return $result;
 }
 
-function is_cacti_develop($version = null)
-{
+function is_cacti_develop($version = null) {
 	static $isStaticRelease = null;
 
 	if ($isStaticRelease === null || $version !== null) {
@@ -6710,8 +6719,7 @@ function is_cacti_develop($version = null)
 	return $isRelease;
 }
 
-function is_cacti_release($version = null)
-{
+function is_cacti_release($version = null) {
 	static $isStaticRelease = null;
 
 	if ($isStaticRelease === null || $version !== null) {
@@ -6741,11 +6749,17 @@ function version_to_decimal(string $version, int $length = 9, bool $hex = true):
 	if ($version === 'Unknown') {
 		return 0;
 	}
+
 	$newver = '';
 	$minor  = '';
 
+	// Remove the -1 for now if it appears in the version
+	//$version = str_replace('-', '', $version);
+
 	$parts = explode('.', $version);
 	$section = 0;
+
+	//cacti_log("The version started as $version");
 
 	/* Loop through each section of a version
 	 * whether that is 1.3.0 or 1.3.0.99.-1
@@ -6758,7 +6772,6 @@ function version_to_decimal(string $version, int $length = 9, bool $hex = true):
 		// Are we in a section greater than the number of
 		// parts within the version string
 		if ($section >= cacti_sizeof($parts)) {
-
 			// If in sections 3-5, assume prefix can be 99
 			if ($section >= 3 && $section < 5) {
 				$prefix = '99';
@@ -6786,7 +6799,6 @@ function version_to_decimal(string $version, int $length = 9, bool $hex = true):
 
 				// While we have a part, try and process it
 				while ($part > '') {
-
 					// Take the last two parts of the string
 					// Prefix it with 00 so we always have 2
 					// or more characters
@@ -6803,13 +6815,14 @@ function version_to_decimal(string $version, int $length = 9, bool $hex = true):
 			// If the part isn't numeric and we are on the 3rd
 			// section, try and break it up as it might be a hex
 			// string
-			$major  = strlen($part)>0?char_to_dec($part[0]):'0';
-			$minor  = strlen($part)>1?char_to_dec($part[1]):'0';
-			$extras = array($major,99,99,$minor);
+			$major  = strlen($part) > 0 ? char_to_dec($part[0]):'0';
+			$minor  = strlen($part) > 1 ? char_to_dec($part[1]):'0';
+			$extras = array($major, 99, 99, $minor);
 		}
 
 		if (is_array($extras)) {
 			$sub = 0;
+
 			foreach ($extras as $extra) {
 				$parts[$section+$sub] = $extra;
 				$sub++;
@@ -6821,11 +6834,14 @@ function version_to_decimal(string $version, int $length = 9, bool $hex = true):
 		$keep    = ($section < 2) ? -1 : -2;
 		$part    = substr($prefix . $part, $keep);
 		$newver .= $part;
+
 		$section++;
 	}
+
 	if (!ctype_xdigit($newver)) {
 		cacti_log('Invalid hex passed - ' . $newver . ' - ' . cacti_debug_backtrace('', false, false, 0, 1), false, 'WARNING');
 	}
+
 	return $hex ? @hexdec($newver) : $newver;
 }
 
