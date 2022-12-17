@@ -2889,7 +2889,7 @@ CREATE TABLE `user_domains_ldap` (
   `port_ssl` int(10) unsigned NOT NULL,
   `proto_version` tinyint(3) unsigned NOT NULL,
   `encryption` tinyint(3) unsigned NOT NULL,
-  `tls_certificate` tinytint(3) unsigned NOT NULL default '3',
+  `tls_certificate` tinyint(3) unsigned NOT NULL default '3',
   `referrals` tinyint(3) unsigned NOT NULL,
   `mode` tinyint(3) unsigned NOT NULL,
   `dn` varchar(128) NOT NULL,
