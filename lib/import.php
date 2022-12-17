@@ -1309,10 +1309,14 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_s
 			/* import into: snmp_query_graph_sv */
 			if (is_array($item_array['sv_graph'])) {
 				/* if the user choose to replace data query suggested values */
-				if ($data_query_graph_id > 0 && $replace_svalues) {
-					db_execute_prepared('DELETE FROM snmp_query_graph_sv
-						WHERE snmp_query_graph_id = ?',
-						array($data_query_graph_id));
+				if ($data_query_graph_id > 0 && $replace_svalues && cacti_sizeof($item_array['sv_graph'])) {
+					if (!$preview_only) {
+						db_execute_prepared('DELETE FROM snmp_query_graph_sv
+							WHERE snmp_query_graph_id = ?',
+							array($data_query_graph_id));
+					}
+				} elseif (!cacti_sizeof($item_array['sv_graph'])) {
+					cacti_log('WARNING: Suggested Values Array for Graph Template Empty', false, 'IMPORT', POLLER_VERBOSITY_HIGH);
 				}
 
 				foreach ($item_array['sv_graph'] as $sub_item_hash => $sub_item_array) {
@@ -1363,10 +1367,14 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_s
 			/* import into: snmp_query_graph_rrd_sv */
 			if (is_array($item_array['sv_data_source'])) {
 				/* if the user choose to replace data query suggested values */
-				if ($data_query_graph_id > 0 && $replace_svalues) {
-					db_execute_prepared('DELETE FROM snmp_query_graph_rrd_sv
-						WHERE snmp_query_graph_id = ?',
-						array($data_query_graph_id));
+				if ($data_query_graph_id > 0 && $replace_svalues && cacti_sizeof($item_array['sv_data_source'])) {
+					if (!$preview_only) {
+						db_execute_prepared('DELETE FROM snmp_query_graph_rrd_sv
+							WHERE snmp_query_graph_id = ?',
+							array($data_query_graph_id));
+					}
+				} elseif (!cacti_sizeof($item_array['sv_graph'])) {
+					cacti_log('WARNING: Suggested Values Array for Data Template Empty', false, 'IMPORT', POLLER_VERBOSITY_HIGH);
 				}
 
 				foreach ($item_array['sv_data_source'] as $sub_item_hash => $sub_item_array) {
@@ -2353,7 +2361,7 @@ function check_hash_version($hash_version) {
 	global $cacti_version_codes, $config, $import_messages;
 
 	foreach ($cacti_version_codes as $version => $code) {
-		if (cacti_version_compare($version,CACTI_VERSION,'=')) {
+		if ($version == CACTI_VERSION) {
 			$current_version_code = $code;
 		}
 
@@ -2387,7 +2395,7 @@ function get_version_index($string_version) {
 	$i = 0;
 
 	foreach ($cacti_version_codes as $version => $code) {
-		if (cacti_version_compare($string_version,$version,'=')) {
+		if ($string_version == $version) {
 			return $i;
 		}
 
