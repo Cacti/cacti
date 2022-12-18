@@ -525,9 +525,10 @@ include_once($config['library_path'] . '/poller.php');
 include_once($config['library_path'] . '/snmpagent.php');
 include_once($config['library_path'] . '/aggregate.php');
 include_once($config['library_path'] . '/api_automation.php');
-include_once($config['include_path'] . '/csrf.php');
 
 if ($config['is_web']) {
+	include_once($config['include_path'] . '/csrf.php');
+
 	/* raise a message and perform a page refresh if we've changed modes */
 	if ($config['poller_id'] > 1) {
 		if (isset($_SESSION['connection_mode'])) {
@@ -544,7 +545,7 @@ if ($config['is_web']) {
 				$reload  = true;
 				$message = __('The Main Data Collector has gone to an Offline or Recovering Status');
 				$level   = MESSAGE_LEVEL_ERROR;
-			}
+}
 
 			if ($reload) {
 				$_SESSION['connection_mode'] = $config['connection'];
@@ -607,4 +608,3 @@ api_plugin_hook('config_insert');
 
 /* set config cacti_version for plugins */
 $config['cacti_version'] = CACTI_VERSION;
-

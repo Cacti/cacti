@@ -155,7 +155,7 @@ if ($debug) {
 			is_cacti_release($formatted),
 			is_cacti_develop($formatted),
 			$formatted,
-			version_to_decimal($formatted, 9, false)
+			version_to_bits($formatted, false)
 		);
 
 		foreach ($sources as $name => $source) {
@@ -166,7 +166,7 @@ if ($debug) {
 				"  =>  %15s = %-15s (%20s)\n",
 				$name,
 				cacti_version_compare($formatted, $source, '<') ? 'Upgrade' : 'Not Required',
-				version_to_decimal($source, 9, false)
+				version_to_bits($source, false)
 			);
 		}
 		print PHP_EOL;

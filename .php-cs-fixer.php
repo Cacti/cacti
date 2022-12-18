@@ -59,12 +59,12 @@ $config
         'no_mixed_echo_print' => [
             'use' => 'print'
         ],
-        'no_spaces_after_function_name' => true,
-        //'braces' => [
-        //	'position_after_functions_and_oop_constructs' => 'same',
-        //	'position_after_control_structures' => 'same',
-        //	'allow_single_line_closure' => true,
-        //],
+		'no_spaces_after_function_name' => true,
+		'braces' => [
+			'position_after_functions_and_oop_constructs' => 'same',
+			'position_after_control_structures' => 'same',
+			'allow_single_line_closure' => true,
+		],
         'single_blank_line_at_eof' => true,
         'no_whitespace_in_blank_line' => true,
         'no_trailing_whitespace' => true,
@@ -101,17 +101,18 @@ $config
                 'continue', 'do', 'echo', 'else', 'elseif', 'extends',
                 'final', 'finally', 'for', 'foreach', 'function',
                 'function_import', 'global', 'goto', 'if', 'implements',
-                'instanceof', 'insteadof', 'interface', 'match',
-                'named_argument', 'new', 'open_tag_with_echo', 'php_open',
-                'print', 'private', 'protected', 'public', 'return',
-                'static', 'throw', 'trait', 'try', 'use', 'use_lambda',
-                'use_trait', 'var', 'while', 'yield', 'yield_from'
-            ],
-        ],
+				'include', 'include_once', 'require', 'require_once',
+				'instanceof', 'insteadof', 'interface', 'match',
+				'named_argument', 'new', 'open_tag_with_echo', 'php_open',
+				'print', 'private', 'protected', 'public', 'return',
+				'static', 'throw', 'trait', 'try', 'use', 'use_lambda',
+				'use_trait', 'var', 'while', 'yield', 'yield_from'
+			],
+		],
         'switch_case_semicolon_to_colon' => true,
         'switch_case_space' => true,
         'switch_continue_to_break' => true,
-        'logical_operators' => true,
+		'logical_operators' => true,
         'function_declaration' => [
             'closure_function_spacing' => 'one'
         ],
