@@ -260,6 +260,11 @@ if (isset($no_http_headers) && $no_http_headers == true) {
 	$config['is_web'] = false;
 }
 
+if ($config['is_web'] && ini_get('session.auto_start') == 1) {
+	print 'FATAL: PHP settings session.auto_start NOT supported.  Disable in your php.ini file and then restart your Web Service' . PHP_EOL;
+	exit;
+}
+
 /* set poller mode */
 global $local_db_cnn_id, $remote_db_cnn_id, $conn_mode;
 
@@ -384,6 +389,12 @@ if ($config['poller_id'] > 1) {
 	}
 }
 
+if (isset($cacti_db_session) && $cacti_db_session && db_table_exists('sessions')) {
+	include(dirname(__FILE__) . '/session.php');
+} else {
+	$cacti_db_session = false;
+}
+
 if (!defined('IN_CACTI_INSTALL')) {
 	set_error_handler('CactiErrorHandler');
 	register_shutdown_function('CactiShutdownHandler');
@@ -433,6 +444,9 @@ if ($config['is_web']) {
 	$config['cookie_options']     = $options;
 	$config['cacti_session_name'] = $cacti_session_name;
 
+	/* start the session before sending headers */
+	cacti_session_start();
+
 	/* we don't want these pages cached */
 	header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 	header('X-Frame-Options: SAMEORIGIN');
@@ -452,14 +466,6 @@ if ($config['is_web']) {
 	header('P3P: CP="CAO PSA OUR"');
 	header('Cache-Control: no-store, no-cache, must-revalidate');
 	header('Cache-Control: max-age=31536000');
-
-	if (isset($cacti_db_session) && $cacti_db_session && db_table_exists('sessions')) {
-		include(dirname(__FILE__) . '/session.php');
-	} else {
-		$cacti_db_session = false;
-	}
-
-	cacti_session_start();
 
 	/* make sure to start only Cacti session at a time */
 	if (!isset($_SESSION['cacti_cwd'])) {

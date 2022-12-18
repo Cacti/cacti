@@ -110,6 +110,7 @@ Cacti CHANGELOG
 -issue#5101: Remote Data Collector Recovery Fails
 -issue#5102: When in Recovery Mode plugins that are designed to work remotely stop working
 -issue#5103: When Remote Data Collector changes status a full page refresh or logout should occur
+-issue#5107: Block Cacti install is session.auto_start is enabled
 -feature#1100: Structured path not created when using remote poller and Update On-Demand
 -feature#1392: AJAX handled errors do not notify Admins that page errors exist
 -feature#2239: Allow Import and Export to be more controlled
