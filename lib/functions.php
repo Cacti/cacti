@@ -4963,7 +4963,7 @@ function admin_email($subject, $message) {
 	return $result;
 }
 
-function send_mail($to, $from, string $subject, string $body, ?array $attachments = array(), ?array $headers = array(), bool $html = false, $expandIds = false): string {
+function send_mail($to, $from = null, string $subject = null, string $body = null, ?array $attachments = array(), ?array $headers = array(), bool $html = false, $expandIds = false): string {
 	$fromname = '';
 
 	if (is_array($from)) {
@@ -4971,7 +4971,7 @@ function send_mail($to, $from, string $subject, string $body, ?array $attachment
 		$from     = $from[0];
 	}
 
-	if ($from == '') {
+	if ($from === null || $from === '') {
 		$from     = read_config_option('settings_from_email');
 		$fromname = read_config_option('settings_from_name');
 	} elseif ($fromname == '') {
@@ -5622,7 +5622,7 @@ function email_test() {
 
 		$global_alert_address = read_config_option('settings_test_email');
 
-		$errors = send_mail($global_alert_address, '', __('Cacti Test Message'), $message, null, null, true);
+		$errors = send_mail($global_alert_address, subject: __('Cacti Test Message'), body: $message, html: true);
 
 		if ($errors == '') {
 			$errors = __('Success!');
