@@ -316,6 +316,8 @@ function read_default_user_setting(string $config_name):mixed {
 			}
 		}
 	}
+
+	return '';
 }
 
 /**
