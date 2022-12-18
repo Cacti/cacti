@@ -57,6 +57,7 @@ Cacti CHANGELOG
 -issue#5068: Installer deprecation messages during CLI install in PHP8.2
 -issue#5084: After Update 1.2.20 to 1.2.22 CMDPHP ERROR: A DB Cell Failed
 -issue#5088: CLI script host_update_template.php falsely changes reindex method to uptime
+-issue#5089: When numeric regex validation fails, not backtrace message is logged in the Cacti log
 -issue#5096: PHP8.x SNMP Agent Complains of missing $cache variable in snmpagent_mibcachechild.php
 -issue#5097: The RRDtool Utilities should not appear on Remote Data Collectors
 -issue#5101: Remote Data Collector Recovery Fails

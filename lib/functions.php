@@ -848,6 +848,7 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
 	} elseif ($regexp_match != '' && !preg_match('/' . $regexp_match . '/', $field_value)) {
 		if (read_config_option('log_validation') == 'on') {
 			cacti_log("Form Validation Failed: Variable '$field_name' with Value '$field_value' Failed REGEX '$regexp_match'", false);
+			cacti_debug_backtrace('REGEX FAILURE');
 		}
 
 		raise_message($custom_message);
