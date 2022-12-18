@@ -45,13 +45,18 @@ if (api_plugin_hook_function('custom_logout_message', OPER_MODE_NATIVE) === OPER
 }
 
 /* Check to see if we are using Web Basic Auth */
-if (get_request_var('action') == 'timeout' || get_request_var('action') == 'disabled') {
-	$hook = 'logout';
-	$reason = _('session timeout');
+if (get_request_var('action') == 'timeout' || get_request_var('action') == 'disabled' || get_request_var('action') == 'remote') {
+	$hook   = 'logout';
+	$reason = __('a Session Timeout');
+
 	if (get_request_var('action') == 'disabled') {
-		$hook = 'disabled';
-		$reason = _('an account suspension');
+		$hook   = 'disabled';
+		$reason = __('an Account Suspension');
+	} else if (get_request_var('action') == 'remote') {
+		$hook   = 'logout';
+		$reason = __('a change in state of the Remote Data Collector');
 	}
+
 	html_auth_header($hook, __('Logout of Cacti'),  __('Automatic Logout'), __('You have been logged out of Cacti due to %s.', $reason));
 	print '<div>' . __('Please close your browser or %sLogin Again%s', '[<a href="index.php">', '</a>]') . '</div>';
 	html_auth_footer($hook, __('Cookies have been cleared'), '');

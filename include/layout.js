@@ -3324,14 +3324,24 @@ function checkForRedirects(data, href) {
 	} else if (typeof data == 'object') {
 		return true;
 	} else if (data.indexOf('cactiLoginSuspend') >= 0) {
+		$.ajaxQ.abortAll();
 		document.location = urlPath + 'logout.php?action=disabled';
+	} else if (data.indexOf('cactiRemoteState') >= 0) {
+		$.ajaxQ.abortAll();
+		document.location = urlPath + 'logout.php?action=remote';
+	} else if (data.indexOf('cactiPermissionDenied') >= 0) {
+		$.ajaxQ.abortAll();
+		document.location = urlPath + 'permission_denied.php';
 	} else if (data.indexOf('cactiRedirect') >= 0) {
 		if (typeof href == 'undefined' || href == null) {
+			$.ajaxQ.abortAll();
 			location.reload();
 		} else {
+			$.ajaxQ.abortAll();
 			document.location = href;
 		}
 	} else if (data.indexOf('cactiLoginLogo') >= 0) {
+		$.ajaxQ.abortAll();
 		document.location = urlPath + 'logout.php?action=timeout';
 	}
 

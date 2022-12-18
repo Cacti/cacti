@@ -56,15 +56,37 @@
         This parameter is only used in the legacy behavior.
  */
 function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, $add_label = false) {
+	global $config;
+
 	static $table_suffix = 1;
 	static $help_count   = 0;
+	static $mode_count   = 0;
+	static $beta_count   = 0;
 
 	if ($add_label === false) {
 		$add_label = __('Add');
 	}
 
-	if (!is_cacti_release() && $title != '') {
+	if (!is_cacti_release() && $title != '' && $beta_count == 0) {
 		$title .= ' [ ' . CACTI_VERSION_BRIEF_FULL . ' ]';
+
+		$beta_count++;
+	}
+
+	if ($config['poller_id'] > 1 && $title != '' && $mode_count == 0) {
+		$title .= ' [ ' . __('Remote Server') . ': ';
+
+		if ($config['connection'] == 'offline') {
+			$title .= '<span class="deviceDown">' . __('Offline') . '</span>';
+		} elseif ($config['connection'] == 'recovery') {
+			$title .= '<span class="deviceRecovering">' . __('Recovering') . '</span>';
+		} else {
+			$title .= __('Online');
+		}
+
+		$title .= ' ]';
+
+		$mode_count++;
 	}
 
 	$table_prefix = basename(get_current_page(), '.php');;

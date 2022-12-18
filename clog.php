@@ -31,7 +31,18 @@ include_once('./lib/utility.php');
 
 /* check edit/alter permissions */
 if (!clog_admin()) {
-	echo __('FATAL: YOU DO NOT HAVE ACCESS TO THIS AREA OF CACTI');
+	if (isset_request_var('header')) {
+		if ($config['poller_id'] > 1) {
+			print '<div style="display:none">cactiRemoteState</div>';
+		} else {
+			print '<div style="display:none">cactiPermissionDenied</div>';
+		}
+	} elseif ($config['poller_id'] > 1) {
+		header('Location: logout.php?action=remote');
+	} else {
+		header('Location: permission_denied.php');
+	}
+
 	exit;
 }
 
