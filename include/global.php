@@ -380,12 +380,6 @@ if ($config['poller_id'] > 1) {
 	}
 }
 
-if (isset($cacti_db_session) && $cacti_db_session && db_table_exists('sessions')) {
-	include(dirname(__FILE__) . '/session.php');
-} else {
-	$cacti_db_session = false;
-}
-
 if (!defined('IN_CACTI_INSTALL')) {
 	set_error_handler('CactiErrorHandler');
 	register_shutdown_function('CactiShutdownHandler');
@@ -454,6 +448,12 @@ if ($config['is_web']) {
 	header('P3P: CP="CAO PSA OUR"');
 	header('Cache-Control: no-store, no-cache, must-revalidate');
 	header('Cache-Control: max-age=31536000');
+
+	if (isset($cacti_db_session) && $cacti_db_session && db_table_exists('sessions') && $config['connection'] == 'online') {
+		include(dirname(__FILE__) . '/session.php');
+	} else {
+		$cacti_db_session = false;
+	}
 
 	cacti_session_start();
 
@@ -536,6 +536,44 @@ include_once($config['library_path'] . '/api_automation.php');
 include_once($config['include_path'] . '/csrf.php');
 
 if ($config['is_web']) {
+	/* raise a message and perform a page refresh if we've changed modes */
+	if ($config['poller_id'] > 1) {
+		if (isset($_SESSION['connection_mode'])) {
+			$previous_mode = $_SESSION['connection_mode'];
+			$reload        = false;
+
+			cacti_log('Connection: ' . $config['connection'] . ', Previous Mode: ' . $previous_mode . ', Page: ' . $_SERVER['SCRIPT_NAME'], false, 'WEBUI', POLLER_VERBOSITY_DEBUG);
+
+			if ($config['connection'] == 'online' && ($config['connection'] != $previous_mode)) {
+				$reload  = true;
+				$message = __('The Main Data Collector has returned to an Online Status');
+				$level   = MESSAGE_LEVEL_INFO;
+			} else if ($config['connection'] != 'online' && $previous_mode == 'online') {
+				$reload  = true;
+				$message = __('The Main Data Collector has gone to an Offline or Recovering Status');
+				$level   = MESSAGE_LEVEL_ERROR;
+			}
+
+			if ($reload) {
+				$_SESSION['connection_mode'] = $config['connection'];
+
+				raise_message('connection_state', $message, $level);
+
+				session_destroy();
+
+				print '<div style="display:none">cactiRemoteState</div>';
+
+				exit;
+			}
+		} else {
+			cacti_log('Connection: ' . $config['connection'] . ', Previous Mode: notset');
+
+			$previous_mode = $config['connection'];
+
+			$_SESSION['connection_mode'] = $config['connection'];
+		}
+	}
+
 	if (isset_request_var('newtheme')) {
 		unset($_SESSION['selected_theme']);
 	}
