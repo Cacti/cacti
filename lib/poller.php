@@ -1891,7 +1891,7 @@ function poller_push_reindex_data_to_poller($device_id = 0, $data_query_id = 0, 
 	}
 
 	if (cacti_sizeof($recache_hosts)) {
-		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . 'host_id IN (' . implode(', ', $recache_hosts) . ')';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' host_id IN (' . implode(', ', $recache_hosts) . ')';
 
 		$local_data_ids = db_fetch_assoc_prepared("SELECT *
 			FROM data_local
