@@ -200,7 +200,9 @@ function api_plugin_run_plugin_hook($hook, $plugin, $function, $args) {
 			if (api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities, $plugin)) {
 				$function($args);
 			}
-		} elseif ($config['connection'] == 'online' || $config['connection'] == 'offline') {
+		} elseif ($config['connection'] == 'online' ||
+			((api_plugin_has_capability($plugin, 'offline_mgmt') || api_plugin_has_capability($plugin, 'offline_view'))
+			&& $config['connection'] != 'online')) {
 			$function($args);
 		} else {
 			// Don't run as they are not required
@@ -212,7 +214,7 @@ function api_plugin_run_plugin_hook($hook, $plugin, $function, $args) {
 			'config_insert',
 		);
 
-		if (in_array($hook, $remote_hooks) && $config['connection'] == 'offline') {
+		if (in_array($hook, $remote_hooks) && ($config['connection'] == 'offline' || $config['connection'] == 'recovery')) {
 			if (!api_plugin_has_capability($plugin, 'offline_mgmt')) {
 				if ($orig_menu !== $menu) {
 					$menu = $orig_menu;

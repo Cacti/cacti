@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#4889: Increase host query performance by removing check for NULL after 1.2.22
 -issue#4892: Recache Loop after many devices go offline
 -issue#4893: in cacti 1.2.22 real time counter gets stuck and does not count down
+-issue#4896: When remote poller is in offline mode GUI inaccesible and poller times out 
 -issue#4897: Technical support page on remote poller shows max connections of Main poller
 -issue#4903: MySQL 8.x regular expressions break Cacti Automation
 -issue#4904: The Recommendation for innodb_buffer_pool_instances is incorrect for MySQL 8 and MariaDB < 10.5
@@ -24,6 +25,7 @@ Cacti CHANGELOG
 -issue#4941: Viewing graphs can break when boost is running in some rare cases
 -issue#4944: Newer Cacti Packages should be signed with SHA256 as SHA1 is being deprecated
 -issue#4947: When creating a Data Template, ensure that the default max value is always 'U' and not '0'
+-issue#4951: upgrading to 1.2.22 most of the plugins break in a multipoller setup 
 -issue#4960: Setting context for connections throws error in PHP 8.x
 -issue#4963: Will the calculation rules of 95nth_percentile involve php and rrdtool versions
 -issue#4964: Tree search not hiding non-matching tree objects
@@ -58,6 +60,7 @@ Cacti CHANGELOG
 -issue#5096: PHP8.x SNMP Agent Complains of missing $cache variable in snmpagent_mibcachechild.php
 -issue#5097: The RRDtool Utilities should not appear on Remote Data Collectors
 -issue#5101: Remote Data Collector Recovery Fails
+-issue#5102: When in Recovery Mode plugins that are designed to work remotely stop working
 -feature#1100: Structured path not created when using remote poller and Update On-Demand
 -feature#1392: AJAX handled errors do not notify Admins that page errors exist
 -feature#2239: Allow Import and Export to be more controlled
