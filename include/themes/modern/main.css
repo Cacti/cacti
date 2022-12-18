@@ -123,7 +123,7 @@ hr.menu {
 a, a:active, a:visited {
 	color: #006400;
 	text-decoration: none;
-	font-size: 11px;
+	font-size: 12px;
 }
 
 a:hover {
@@ -1639,7 +1639,7 @@ legend {
 	color: snow;
 	vertical-align: middle;
 	text-align: left;
-	font-size: 11px;
+	font-size: 12px;
 	font-weight: normal;
 	padding: 2px;
 }
@@ -1647,7 +1647,7 @@ legend {
 .tableHeader th div {
 	display: block;
 	padding-right: 8px;
-	font-size: 11px;
+	font-size: 12px;
 }
 
 .tableSubHeaderColumn, .tableSubHeaderColumnCenter, .tableSubHeaderColumnRight {
