@@ -72,7 +72,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 		$beta_count++;
 	}
 
-   if ($config['poller_id'] > 1 && $title != '' && $mode_count == 0) {
+	if ($config['poller_id'] > 1 && $title != '' && $mode_count == 0) {
 		$title .= ' [ ' . __('Remote Server') . ': ';
 
 		if ($config['connection'] == 'offline') {
@@ -86,7 +86,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 		$title .= ' ]';
 
 		$mode_count++;
-   }
+	}
 
 	$table_prefix = basename(get_current_page(), '.php');;
 	if (!isempty_request_var('action')) {
