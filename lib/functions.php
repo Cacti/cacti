@@ -299,7 +299,7 @@ function clear_user_setting(string $config_name, ?int $user = null):void {
  *
  * @return ?mixed the default value of the configuration option
  */
-function read_default_user_setting(string $config_name): ?mixed {
+function read_default_user_setting(string $config_name): mixed {
 	global $settings_user;
 
 	$result = '';
