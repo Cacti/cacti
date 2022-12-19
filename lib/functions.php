@@ -91,7 +91,7 @@ function filter_value(?string $value, string $filter, string $href = ''): ?strin
  *
  * @return void
  */
-function set_graph_config_option(string $config_name, mixed $value, int $user = -1) {
+function set_graph_config_option(string $config_name, mixed $value, int $user = null) {
 	set_user_setting($config_name, $value, $user);
 }
 
@@ -151,12 +151,11 @@ function read_graph_config_option($config_name, $force = false) {
  *
  * @return void
  */
-function save_user_settings(?int $user = -1):void {
+function save_user_settings(?int $user = null):void {
 	global $settings_user;
 
-	if ($user == -1 || empty($user)) {
-		$user = $_SESSION['sess_user_id'];
-	}
+	// Passed user id, or session id, or else 0
+	$user = $user ?? ($_SESSION['sess_user_id'] ?? 0);
 
 	foreach ($settings_user as $tab_short_name => $tab_fields) {
 		foreach ($tab_fields as $field_name => $field_array) {
@@ -205,21 +204,15 @@ function save_user_settings(?int $user = -1):void {
  *
  * @return void
  */
-function set_user_setting(string $config_name, mixed $value, ?int $user = -1):void {
+function set_user_setting(string $config_name, mixed $value, ?int $user = null):void {
 	global $settings_user;
 
-	if ($user == -1 && isset($_SESSION['sess_user_id'])) {
-		$user = $_SESSION['sess_user_id'];
-	}
+	// Passed user id, or session id, or else 0
+	$user = $user ?? ($_SESSION['sess_user_id'] ?? 0);
 
-	if ($user == -1) {
-		if (isset($_SESSION['sess_user_id'])) {
-			$mode = 'WEBUI';
-		} else {
-			$mode = 'POLLER';
-		}
-
-		cacti_log('NOTE: Attempt to set user setting \'' . $config_name . '\', with no user id: ' . cacti_debug_backtrace('', false, false, 0, 1), false, $mode, POLLER_VERBOSITY_MEDIUM);
+	if ($user == 0) {
+		$mode = isset($_SESSION['sess_user_id']) ? 'WEBUI' : 'POLLER';
+		cacti_log('NOTE: Attempt to set user setting \'' . $config_name . '\', with no valid user id: ' . cacti_debug_backtrace('', false, false, 0, 1), false, $mode, POLLER_VERBOSITY_MEDIUM);
 	} elseif (db_table_exists('settings_user')) {
 		db_execute_prepared('REPLACE INTO settings_user
 			SET user_id = ?,
@@ -245,9 +238,13 @@ function set_user_setting(string $config_name, mixed $value, ?int $user = -1):vo
  * @return boolean
  */
 function user_setting_exists(string $config_name, ?int $user_id):bool {
-	static $user_setting_values = array();
+	static $exists_user_setting = array();
 
-	if (!isset($user_setting_values[$config_name])) {
+	// We use isset instead of array_key_exists so that
+	// if we never had a value, we can see if we got on
+	// but once we know we have one, assume we always
+	// will
+	if (!isset($config_name[$exists_user_setting])) {
 		$value = 0;
 
 		if (db_table_exists('settings_user')) {
@@ -258,14 +255,10 @@ function user_setting_exists(string $config_name, ?int $user_id):bool {
 				array($config_name, $user_id));
 		}
 
-		if ($value !== false && $value > 0) {
-			$user_setting_values[$config_name] = true;
-		} else {
-			$user_setting_values[$config_name] = false;
-		}
+		$exists_user_setting[$config_name] = ($value !== false && $value > 0);
 	}
 
-	return $user_setting_values[$config_name];
+	return $exists_user_setting[$config_name];
 }
 
 /**
@@ -281,12 +274,11 @@ function user_setting_exists(string $config_name, ?int $user_id):bool {
  *
  * @return void
  */
-function clear_user_setting($config_name, $user = -1):void {
-	global $settings_user;
+function clear_user_setting(string $config_name, ?int $user = null):void {
+	global $config;
 
-	if ($user == -1) {
-		$user = $_SESSION['sess_user_id'];
-	}
+	/* users must have cacti user auth turned on to use this, or the guest account must be active */
+	$effective_uid = $user ?? ($_SESSION['sess_user_id'] ?? 0);
 
 	if (db_table_exists('settings_user')) {
 		db_execute_prepared('DELETE FROM settings_user
@@ -305,24 +297,30 @@ function clear_user_setting($config_name, $user = -1):void {
  *                                    specified $settings_user array in
  *                                    'include/global_settings.php'
  *
- * @return mixed the default value of the configuration option
+ * @return ?mixed the default value of the configuration option
  */
-function read_default_user_setting(string $config_name):mixed {
-	global $config, $settings_user;
+function read_default_user_setting(string $config_name): ?mixed {
+	global $settings_user;
+
+	$result = '';
 
 	foreach ($settings_user as $tab_array) {
-		if (isset($tab_array[$config_name]) && isset($tab_array[$config_name]['default'])) {
-			return $tab_array[$config_name]['default'];
-		} else {
-			foreach ($tab_array as $field_array) {
-				if (isset($field_array['items']) && isset($field_array['items'][$config_name]) && isset($field_array['items'][$config_name]['default'])) {
-					return $field_array['items'][$config_name]['default'];
-				}
+		if (isset($tab_array[$config_name]['default'])) {
+			$result = $tab_array[$config_name]['default'];
+
+			break;
+		}
+
+		foreach ($tab_array as $field_array) {
+			if (isset($field_array['items'][$config_name]['default'])) {
+				$result = $field_array['items'][$config_name]['default'];
+
+				break;
 			}
 		}
 	}
 
-	return '';
+	return $result;
 }
 
 /**
@@ -336,7 +334,7 @@ function read_default_user_setting(string $config_name):mixed {
  *
  * @param  bool         $force        pull the data from the database if true ignoring session
  *
- * @param  integer|null $user_id      the id of the user to read the
+ * @param  integer|null $user_id      the id of the user to read the setting for
  *
  * @return mixed the current value of the user setting
  */
@@ -344,46 +342,7 @@ function read_user_setting(string $config_name, mixed $default = false, bool $fo
 	global $config;
 
 	/* users must have cacti user auth turned on to use this, or the guest account must be active */
-	if ($user == 0 && isset($_SESSION['sess_user_id'])) {
-		$effective_uid = $_SESSION['sess_user_id'];
-	} elseif (read_config_option('auth_method') == AUTH_METHOD_NONE || $user > 0) {
-		/* first attempt to get the db setting for guest */
-		if ($user == 0) {
-			$effective_uid = db_fetch_cell("SELECT user_auth.id
-				FROM settings
-				INNER JOIN user_auth
-				ON user_auth.username = settings.value
-				WHERE settings.name = 'guest_user'");
-
-			if ($effective_uid == '') {
-				$effective_uid = 0;
-			}
-		} else {
-			$effective_uid = $user;
-		}
-
-		$db_setting = false;
-
-		if (db_table_exists('settings_user')) {
-			$db_setting = db_fetch_row_prepared('SELECT value
-				FROM settings_user
-				WHERE name = ?
-				AND user_id = ?',
-				array($config_name, $effective_uid));
-		}
-
-		if (cacti_sizeof($db_setting)) {
-			return $db_setting['value'];
-		}
-
-		if ($default !== false) {
-			return $default;
-		} else {
-			return read_default_user_setting($config_name);
-		}
-	} else {
-		$effective_uid = 0;
-	}
+	$effective_uid = $user ?? ($_SESSION['sess_user_id'] ?? 0);
 
 	if (!$force) {
 		if (isset($_SESSION['sess_user_config_array'])) {
@@ -391,6 +350,10 @@ function read_user_setting(string $config_name, mixed $default = false, bool $fo
 		}
 	}
 
+	// We use isset instead of array_key_exists so that
+	// if we never had a value, we can see if we got on
+	// but once we know we have one, assume we always
+	// will
 	if (!isset($user_config_array[$config_name])) {
 		$db_setting = false;
 
@@ -410,11 +373,10 @@ function read_user_setting(string $config_name, mixed $default = false, bool $fo
 			$user_config_array[$config_name] = read_default_user_setting($config_name);
 		}
 
-		if (isset($_SESSION)) {
-			$_SESSION['sess_user_config_array'] = $user_config_array;
-		} else {
-			$config['config_user_settings_array'] = $user_config_array;
-		}
+		$set_var = $config['is_web'] ? '_SESSION' : 'config';
+		$set_key = $config['is_web'] ? 'sess_user_config_array' : 'config_user_options_array';
+
+		$$set_var[$set_key] = $user_config_array;
 	}
 
 	return $user_config_array[$config_name];
@@ -498,18 +460,15 @@ function set_config_option(string $config_name, mixed $value, bool $remote = fal
 		}
 	}
 
-	if ($config['is_web']) {
-		$sess = true;
-	} else {
-		$sess = false;
+	$set_var = $config['is_web'] ? '_SESSION' : 'config';
+	$set_key = $config['is_web'] ? 'sess_config_array' : 'config_options_array';
+
+	// Store whatever value we have in the array
+	if (!isset($$set_var[$set_key]) || !is_array($$set_var[$set_key])) {
+		$$set_var[$set_key] = array();
 	}
 
-	// Store the array back for later retrieval
-	if ($sess) {
-		$_SESSION['sess_config_array']  = $value;
-	} else {
-		$config['config_options_array'] = $value;
-	}
+	$$set_var[$set_key][$config_name] = $value;
 
 	if (!empty($config['DEBUG_SET_CONFIG_OPTION'])) {
 		file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() . cacti_debug_backtrace($config_name, false, false, 0, 1) . "\n", FILE_APPEND);
@@ -526,19 +485,19 @@ function set_config_option(string $config_name, mixed $value, bool $remote = fal
  * @return mixed true if a value exists, false if a value does not exist
  */
 function config_value_exists(string $config_name):bool {
-	static $config_values = array();
+	static $exists_config_value = array();
 
-	if (!isset($config_values[$config_name])) {
+	// We use isset instead of array_key_exists so that
+	// if we never had a value, we can see if we got on
+	// but once we know we have one, assume we always
+	// will
+	if (!isset($exists_config_value[$config_name])) {
 		$value = db_fetch_cell_prepared('SELECT COUNT(*) FROM settings WHERE name = ?', array($config_name));
 
-		if ($value > 0) {
-			$config_values[$config_name] = true;
-		} else {
-			$config_values[$config_name] = false;
-		}
+		$exists_config_value[$config_name] = ($value > 0);
 	}
 
-	return $config_values[$config_name];
+	return $exists_config_value[$config_name];
 }
 
 /**
@@ -688,19 +647,17 @@ function prime_common_config_settings() {
 		'name', 'value'
 	);
 
-	if (isset($_SESSION['sess_config_array'])) {
-		$sess = true;
-	} else {
-		$sess = false;
-	}
-
 	if (cacti_sizeof($settings)) {
+		$set_var = $config['is_web'] ? '_SESSION' : 'config';
+		$set_key = $config['is_web'] ? 'sess_config_array' : 'config_options_array';
+
+		// Store whatever value we have in the array
+		if (!isset($$set_var[$set_key]) || !is_array($$set_var[$set_key])) {
+			$$set_var[$set_key] = array();
+		}
+
 		foreach ($settings as $name => $value) {
-			if ($sess) {
-				$_SESSION['sess_config_array'][$name] = $value;
-			} else {
-				$config['config_options_array'][$name] = $value;
-			}
+			$$set_var[$set_key][$name] = $value;
 		}
 	}
 
@@ -723,19 +680,15 @@ function read_config_option(string $config_name, bool $force = false):mixed {
 
 	$loaded = false;
 
-	if ($config['is_web']) {
-		$sess = true;
+	$set_var = $config['is_web'] ? '_SESSION' : 'config';
+	$set_key = $config['is_web'] ? 'sess_config_array' : 'config_options_array';
 
-		if (isset($_SESSION['sess_config_array'][$config_name])) {
-			$loaded = true;
-		}
-	} else {
-		$sess = false;
-
-		if (isset($config['config_options_array'][$config_name])) {
-			$loaded = true;
-		}
+	// Store whatever value we have in the array
+	if (!isset($$set_var[$set_key]) || !is_array($$set_var[$set_key])) {
+		$$set_var[$set_key] = array();
 	}
+
+	$loaded = isset($$set_var[$set_key][$config_name]);
 
 	if (!empty($config['DEBUG_READ_CONFIG_OPTION'])) {
 		file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() . cacti_debug_backtrace($config_name, false, false, 0, 1) . "\n", FILE_APPEND);
@@ -777,30 +730,11 @@ function read_config_option(string $config_name, bool $force = false):mixed {
 			}
 
 			// Store whatever value we have in the array
-			if ($sess) {
-				if (!isset($_SESSION['sess_config_array']) || !is_array($_SESSION['sess_config_array'])) {
-					$_SESSION['sess_config_array'] = array();
-				}
-
-				$_SESSION['sess_config_array'][$config_name] = $value;
-			} else {
-				if (!isset($config['config_options_array']) || !is_array($config['config_options_array'])) {
-					$config['config_options_array'] = array();
-				}
-
-				$config['config_options_array'][$config_name] = $value;
-			}
-		}
-	} else {
-		// We already have the value stored in the array and
-		// we don't want to force a db read, so use the cached
-		// version
-		if ($sess) {
-			$value = $_SESSION['sess_config_array'][$config_name];
-		} else {
-			$value = $config['config_options_array'][$config_name];
+			$$set_var[$set_key][$config_name] = $value;
 		}
 	}
+
+	$value = $$set_var[$set_key][$config_name];
 
 	return $value;
 }
@@ -5570,7 +5504,7 @@ function email_test() {
 	} elseif ($how == 1) {
 		$mail     = __('Sendmail') . '<br><b>' . __('Sendmail Path'). '</b>: ';
 		$sendmail = read_config_option('settings_sendmail_path');
-		$mail    .= $sendmail;
+		$mail .= $sendmail;
 	} elseif ($how == 2) {
 		print __('Method: SMTP') . '<br>';
 		$mail          = __('SMTP') . '<br>';
