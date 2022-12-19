@@ -729,9 +729,9 @@ function read_config_option(string $config_name, bool $force = false):mixed {
 				$value = $db_result['value'];
 			}
 
-			// Store whatever value we have in the array
-			$$set_var[$set_key][$config_name] = $value;
 		}
+		// Store whatever value we have in the array
+		$$set_var[$set_key][$config_name] = $value;
 	}
 
 	$value = $$set_var[$set_key][$config_name];
