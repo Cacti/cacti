@@ -46,6 +46,16 @@ if (api_plugin_hook_function('custom_logout_message', OPER_MODE_NATIVE) === OPER
 
 /* Check to see if we are using Web Basic Auth */
 if (get_request_var('action') == 'timeout' || get_request_var('action') == 'disabled' || get_request_var('action') == 'remote') {
+	if (get_request_var('action') == 'timeout') {
+		$message = __('You have been logged out of Cacti due to a session timeout.');
+	} elseif (get_request_var('action') == 'disabled') {
+		$message = __('You have been logged out of Cacti due to an account suspension.');
+	} elseif (get_request_var('action') == 'remove') {
+		$message = __('You have been logged out of Cacti due to a Remote Data Collector state change');
+	} else {
+		$message = '';
+	}
+
 	print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>";
 	print "<html>";
 	print "<head>";
@@ -58,10 +68,7 @@ if (get_request_var('action') == 'timeout' || get_request_var('action') == 'disa
 			<div class='cactiLogoutLogo'></div>
 			<legend>" . __('Automatic Logout') . "</legend>
 			<div class='logoutTitle'>
-				<p>" . (get_request_var('action') == 'timeout' ?
-					__('You have been logged out of Cacti due to a session timeout.') : (get_request_var('action') == 'disabled' ?
-					__('You have been logged out of Cacti due to an account suspension.'):
-					__('You have been logged out of Cacti due to a Remote Data Collector state change'))) . "</p>
+				<p>" . $message . "</p>
 				<p>" . __('Please close your browser or %sLogin Again%s', '</p><center>[<a href="index.php">', '</a>]</center>') . "
 			</div>
 			<div class='logoutErrors'></div>
