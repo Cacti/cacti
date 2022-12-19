@@ -284,7 +284,7 @@ function clear_user_setting(string $config_name, ?int $user = null):void {
 		db_execute_prepared('DELETE FROM settings_user
 			WHERE name = ?
 			AND user_id = ?',
-			array($config_name, $user));
+			array($config_name, $effective_uid));
 	}
 
 	unset($_SESSION['sess_user_config_array']);
