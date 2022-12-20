@@ -366,7 +366,7 @@ if ((isset($poller_lastrun) && isset($poller_interval) && $poller_lastrun > 0) &
  */
 if ((($poller_start - $poller_lastrun - 5) > MAX_POLLER_RUNTIME) && ($poller_lastrun > 0)) {
 	cacti_log("WARNING: $task_type is out of sync with the Poller Interval!  The Poller Interval is '$poller_interval' seconds, with a maximum of a '$min_period' second $task_type, but " . number_format_i18n($poller_start - $poller_lastrun, 1) . ' seconds have passed since the last poll!', true, 'POLLER');
-	admin_email(__('Cacti System Warning'), __('WARNING: %s is out of sync with the Poller Interval for poller id %d!  The Poller Interval is %d seconds, with a maximum of a %d seconds, but %d seconds have passed since the last poll!', $task_type, $poller_id, $poller_interval, $min_period, number_format_i18n($poller_start - $poller_lastrun, 1)));
+	admin_email(__('Cacti System Warning'), __('WARNING: %s is out of sync with the Poller Interval for Poller[%d]!  The Poller Interval is %d seconds, with a maximum of a %d seconds, but %d seconds have passed since the last poll!', $task_type, $poller_id, $poller_interval, $min_period, number_format_i18n($poller_start - $poller_lastrun, 1)));
 }
 
 set_config_option('poller_lastrun_' . $poller_id, (int)$poller_start);
@@ -511,7 +511,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 	if ($running_processes) {
 		cacti_log("WARNING: There are $running_processes processes detected as overrunning a polling cycle, please investigate", true, 'POLLER');
-		admin_email(__('Cacti System Warning'), __('WARNING: There are %d processes detected as overrunning a polling cycle for poller id %d, please investigate.', $running_processes, $poller_id));
+		admin_email(__('Cacti System Warning'), __('WARNING: There are %d processes detected as overrunning a polling cycle for Poller[%d], please investigate.', $running_processes, $poller_id));
 	}
 
 	db_execute_prepared('DELETE FROM poller_time
@@ -559,7 +559,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 		cacti_log("WARNING: Poller Output Table not Empty.  Issues: $count, $issue_list", true, 'POLLER');
 
-		admin_email(__('Cacti System Warning'), __('WARNING: Poller Output Table not empty for poller id %d.  Issues: %d, %s.', $poller_id, $count, $issue_list));
+		admin_email(__('Cacti System Warning'), __('WARNING: Poller Output Table not empty for Poller[%d].  Issues: %d, %s.', $poller_id, $count, $issue_list));
 
 		db_execute_prepared('DELETE po ' . $issues_sql, $issues_param);
 	}
@@ -575,7 +575,7 @@ while ($poller_runs_completed < $poller_runs) {
 		// exit poller if spine is selected and file does not exist
 		if (($poller_type == '2') && (!file_exists(read_config_option('path_spine')))) {
 			cacti_log('ERROR: The spine path: ' . read_config_option('path_spine') . ' is invalid.  Poller can not continue!', true, 'POLLER');
-			admin_email(__('Cacti System Warning'), __('ERROR: The spine path: %s is invalid for poller id %d.  Poller can not continue!', read_config_option('path_spine'), $poller_id));
+			admin_email(__('Cacti System Warning'), __('ERROR: The spine path: %s is invalid for Poller[%d].  Poller can not continue!', read_config_option('path_spine'), $poller_id));
 			exit;
 		}
 
@@ -718,7 +718,7 @@ while ($poller_runs_completed < $poller_runs) {
 					// end the process if the runtime exceeds MAX_POLLER_RUNTIME
 					if (($poller_start + MAX_POLLER_RUNTIME) < time()) {
 						cacti_log('Maximum runtime of ' . MAX_POLLER_RUNTIME . ' seconds exceeded. Exiting.', true, 'POLLER');
-						admin_email(__('Cacti System Warning'), __('Maximum runtime of %d seconds exceeded for poller id %d. Exiting.', MAX_POLLER_RUNTIME, $poller_id));
+						admin_email(__('Cacti System Warning'), __('Maximum runtime of %d seconds exceeded for Poller[%d]. Exiting.', MAX_POLLER_RUNTIME, $poller_id));
 
 						// generate a snmp notification
 						snmpagent_poller_exiting();
@@ -818,7 +818,7 @@ while ($poller_runs_completed < $poller_runs) {
 		}
 	} else {
 		cacti_log('WARNING: Cacti Polling Cycle Exceeded Poller Interval by ' . ($loop_end-$loop_start-$poller_interval) . ' seconds', true, 'POLLER', $level);
-                admin_email(__('Cacti System Warning'), __('WARNING: Cacti Polling Cycle Exceeded Poller Interval by ' . ($loop_end-$loop_start-$poller_interval) . ' seconds', true, 'POLLER', $level));
+                admin_email(__('Cacti System Warning'), __('WARNING: Cacti Polling Cycle Exceeded Poller Interval by ' . round($loop_end-$loop_start-$poller_interval,2) . ' seconds', true, 'POLLER', $level));
 	}
 
 	if (!$logged) {
@@ -1096,7 +1096,7 @@ function poller_run_stats ($loop_start) {
 
 			if ($ratio/$poller_interval > $threshold_24h/100 && $threshold_24h > 0) {
 				cacti_log(__("WARNING: 24 hours poller avg. run time reached more than $threshold_24h% of time limit") , true, 'POLLER');
-				admin_email(__('Cacti System Warning'), __('WARNING: 24 hours poller (id %d) avg. run time is %f seconds (more than %d &#37; of time limit)', $poller_id, $ratio,$threshold_24h));
+				admin_email(__('Cacti System Warning'), __('WARNING: 24 hours Poller[%d] avg. run time is %f seconds (more than %d &#37; of time limit)', $poller_id, $ratio,$threshold_24h));
 			}
 		}
 	}
@@ -1110,7 +1110,7 @@ function poller_run_stats ($loop_start) {
 
 		if ($count > $threshold_1h_count && $threshold_1h_count > 0) {
 			cacti_log(__("WARNING: In last hour poller run time $count times (limit $threshold_1h_count) reached more than $threshold_1h% of time limit") , true, 'POLLER');
-			admin_email(__('Cacti System Warning'), __('WARNING: In last hour poller (id %d) run time %d times reached more than %d &#37; of time limit', $poller_id, $threshold_1h_count, $threshold_1h));
+			admin_email(__('Cacti System Warning'), __('WARNING: In last hour Poller[%d] run time %d times reached more than %d &#37; of time limit', $poller_id, $threshold_1h_count, $threshold_1h));
 		}
 	}
 
