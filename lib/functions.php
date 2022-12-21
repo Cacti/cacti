@@ -6646,33 +6646,53 @@ function date_time_format() {
 	}
 }
 
+function get_last_line(string $file) {
+	$line   = '';
+	$cursor = -1;
+
+	$f = fopen($file, 'r');
+	fseek($f, $cursor, SEEK_END);
+
+	$char = fgetc($f);
+	//Trim trailing newline characters in the file
+	while ($char === '' || $char === "\r" || $char === "\n") {
+		fseek($f, $cursor--, SEEK_END);
+		$char = fgetc($f);
+	}
+
+	//Read until the next line of the file begins or the first newline char
+	while ($char !== false && $char !== '' && $char !== "\r" && $char !== "\n") {
+		//Prepend the new character
+		$line = $char . $line;
+		fseek($f, $cursor--, SEEK_END);
+		$char = fgetc($f);
+	}
+
+	return $line;
+}
+
 function get_source_timestamp() {
 	static $git_status = null;
 
 	$parts     = $git_status;
 
 	if ($git_status === null) {
-		$git_path = realpath(__DIR__ . '/../.git/');
+		$git_path = realpath(__DIR__ . '/../.git/logs/HEAD');
 
 		if (file_exists($git_path)) {
-			$old_path = getcwd();
-			chdir($git_path);
-			$shell = @shell_exec('git log -1 --pretty=format:%ct.%h 2>&1');
+			$line = get_last_line($git_path);
 
-			if (stripos($shell, 'fatal: detected dubious ownership in repository') !== false) {
-				cacti_log('Website user must add website root to git config using "git config --global --add safe.directory <webroot>"', false, 'WARN');
-				$shell = '0.(0)';
+			if (preg_match('/([0-9a-z]{40}) ([0-9a-z]{40}) .* ([0-9]{10})/', $line, $matches)) {
+				$parts = array(
+					intval($matches[3]),
+					substr($matches[2], 0, 8),
+				);
 			}
-
-			if (preg_match('/\d+\.([[:xdigit:]]+)/', $shell)) {
-				$parts = explode('.', $shell);
-			}
-			chdir($old_path);
 		}
 	}
 
 	if ($parts === null) {
-		$parts      = array(0, 0, 'UNKNOWN');
+		$parts      = array(0, 'UNKNOWN');
 	}
 
 	if ($git_status === null) {
