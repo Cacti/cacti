@@ -7029,7 +7029,11 @@ function version_to_bits(string $version, $hex = false): int {
 		// consist of the number 9 repeated
 		// by the section
 		while (cacti_sizeof($parts) < $length) {
-			$parts[] = str_repeat('9', cacti_sizeof($parts) + 1);
+			$part_count  = cacti_sizeof($parts);
+			$part_prefix = ($part_count < 3) ? '0':'9';
+			$part_length = ($part_count < 3) ? 0 : $part_count;
+
+			$parts[] = str_repeat($part_prefix, $part_length + 1);
 		}
 
 		// Set the starting section to 0
