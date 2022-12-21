@@ -38,6 +38,7 @@ $lang2locale = get_list_of_locales();
 if (!read_config_option('i18n_language_support') && read_config_option('i18n_language_support') != '') {
 	i18n_debug('load_fallback_procedure(1)');
 	load_fallback_procedure();
+
 	return;
 }
 
@@ -48,6 +49,7 @@ if (isset($_REQUEST['language'])) {
 
 /* determine whether or not we can support the language */
 $user_locale = '';
+
 if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']])) {
 	/* user requests another language */
 	$user_locale = apply_locale($_REQUEST['language']);
@@ -141,6 +143,7 @@ if (file_exists($path2catalogue)) {
 } else {
 	i18n_debug('load_fallback_procedure(2): ' . $path2catalogue);
 	load_fallback_procedure();
+
 	return;
 }
 
@@ -169,6 +172,7 @@ if ($plugins && cacti_sizeof($plugins)) {
 		if (cacti_sizeof($plugins) != (cacti_sizeof($cacti_textdomains) - 1)) {
 			i18n_debug('load_fallback_procedure(3)');
 			load_fallback_procedure();
+
 			return;
 		}
 	}
@@ -190,6 +194,7 @@ if (empty($i18n_handler) && !empty($config['i18n_language_handler'])) {
 
 if (empty($i18n_handler)) {
 	i18n_debug('Handler: not specified in config, autodetection is now in progress');
+
 	if (file_exists($config['include_path'] . '/vendor/gettext/src/Translator.php') && version_compare(PHP_VERSION, '8.0', '<=')) {
 		$i18n_handler = CACTI_LANGUAGE_HANDLER_OSCAROTERO;
 	} elseif (file_exists($config['include_path'] . '/vendor/phpgettext/streams.php')) {
@@ -229,6 +234,7 @@ switch ($i18n_handler) {
 		}
 
 		break;
+
 	default:
 		$i18n_handler = CACTI_LANGUAGE_HANDLER_DEFAULT;
 
@@ -245,17 +251,19 @@ if (CACTI_LANGUAGE_HANDLER != CACTI_LANGUAGE_HANDLER_DEFAULT) {
 
 	foreach ($cacti_textdomains as $domain => $paths) {
 		i18n_debug("load_language($domain): " . $cacti_textdomains[$domain]['path2catalogue']);
+
 		switch (CACTI_LANGUAGE_HANDLER) {
 			case CACTI_LANGUAGE_HANDLER_PHPGETTEXT:
 				$i18n[$domain] = load_gettext_original($domain);
-				break;
 
+				break;
 			case CACTI_LANGUAGE_HANDLER_MOTRANSLATOR:
 				$i18n[$domain] = load_gettext_motranslator($domain);
-				break;
 
+				break;
 			case CACTI_LANGUAGE_HANDLER_OSCAROTERO:
 				$i18n[$domain] = load_gettext_oscarotero($domain);
+
 				break;
 		}
 
@@ -349,8 +357,9 @@ function apply_locale($language) {
 	global $cacti_locale, $cacti_country, $lang2locale;
 
 	$locale_set = false;
+
 	if ($language != '') {
-		$language = repair_locale($language);
+		$language   = repair_locale($language);
 		$locale_set = isset($lang2locale[$language]);
 	}
 
@@ -360,7 +369,7 @@ function apply_locale($language) {
 		$accepted = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
 		$accepted = $accepted[0];
 
-		$language = repair_locale($accepted);
+		$language   = repair_locale($accepted);
 		$locale_set = isset($lang2locale[$language]);
 	}
 
@@ -391,15 +400,18 @@ function repair_locale($language) {
 	/* Repair legacy language support */
 	if ($language != '' && $language != null) {
 		$found_locale = '';
-		$locale = str_replace('_','-', $language);
+		$locale       = str_replace('_','-', $language);
+
 		if (array_key_exists($locale, $lang2locale)) {
 			$language = $locale;
 		} else {
 			$wanted_locale = substr($language, 0, 2);
-			$language = '';
+			$language      = '';
+
 			foreach ($lang2locale as $locale => $data) {
 				if (substr($locale, 0, 2) == $wanted_locale) {
 					$language = $locale;
+
 					break;
 				}
 			}
@@ -415,19 +427,19 @@ function repair_locale($language) {
  * Universal escaping wrappers
  */
 function __esc() {
-	return htmlspecialchars( call_user_func_array('__', func_get_args()), ENT_QUOTES);
+	return htmlspecialchars(call_user_func_array('__', func_get_args()), ENT_QUOTES);
 }
 
 function __esc_n() {
-	return htmlspecialchars( call_user_func_array('__n', func_get_args()), ENT_QUOTES);
+	return htmlspecialchars(call_user_func_array('__n', func_get_args()), ENT_QUOTES);
 }
 
 function __esc_x() {
-	return htmlspecialchars( call_user_func_array('__x', func_get_args()), ENT_QUOTES);
+	return htmlspecialchars(call_user_func_array('__x', func_get_args()), ENT_QUOTES);
 }
 
 function __esc_xn() {
-	return htmlspecialchars( call_user_func_array('__xn', func_get_args()), ENT_QUOTES);
+	return htmlspecialchars(call_user_func_array('__xn', func_get_args()), ENT_QUOTES);
 }
 
 /**
@@ -435,7 +447,7 @@ function __esc_xn() {
  *
  * @return
  */
-function load_fallback_procedure(){
+function load_fallback_procedure() {
 	global $cacti_textdomains, $cacti_locale, $cacti_country, $lang2locale;
 
 	/* reset variables */
@@ -457,11 +469,12 @@ function __gettext($text, $domain = 'cacti') {
 		switch (CACTI_LANGUAGE_HANDLER) {
 			case CACTI_LANGUAGE_HANDLER_PHPGETTEXT:
 				$translated = $i18n[$domain]->translate($text);
-				break;
 
+				break;
 			case CACTI_LANGUAGE_HANDLER_OSCAROTERO:
 			case CACTI_LANGUAGE_HANDLER_MOTRANSLATOR:
 				$translated = $i18n[$domain]->gettext($text);
+
 				break;
 		}
 	}
@@ -498,23 +511,24 @@ function __() {
 	/* this should not happen */
 	if ($num < 1) {
 		return false;
+		/* convert pure text strings */
+	}
 
-	/* convert pure text strings */
-	} elseif ($num == 1) {
+	if ($num == 1) {
 		return __gettext($args[0]);
+		/* convert pure text strings by using a different textdomain */
+	}
 
-	/* convert pure text strings by using a different textdomain */
-	} elseif ($num == 2 && isset($i18n[ (string) $args[1]]) && $args[1] != 'cacti') {
+	if ($num == 2 && isset($i18n[(string) $args[1]]) && $args[1] != 'cacti') {
 		return __gettext($args[0], $args[1]);
-
-	/* convert stings including one or more placeholders */
+		/* convert stings including one or more placeholders */
 	} else {
 		/* only the last argument is allowed to initiate
 		   the use of a different textdomain */
 
 		/* get gettext string */
-		if (isset($i18n[ (string) $args[$num-1]]) && $args[$num-1] != 'cacti') {
-			$args[0] = __gettext($args[0], $args[$num-1]);
+		if (isset($i18n[(string) $args[$num - 1]]) && $args[$num - 1] != 'cacti') {
+			$args[0] = __gettext($args[0], $args[$num - 1]);
 		} else {
 			$args[0] = __gettext($args[0]);
 		}
@@ -526,14 +540,14 @@ function __() {
 
 function __xn($context, $singular, $plural, $number, $domain = 'cacti') {
 	$xsingular = $context . chr(4) . $singular;
-	$xplural = $context . chr(4) . $plural;
+	$xplural   = $context . chr(4) . $plural;
 
 	$msgstr = __n($xsingular, $xplural, $number, $domain);
 
-	if ($number == 1 ) {
-		return ( $msgstr == $xsingular ) ? __uf($singular) : __uf($msgstr);
+	if ($number == 1) {
+		return ($msgstr == $xsingular) ? __uf($singular) : __uf($msgstr);
 	} else {
-		return ( $msgstr == $xplural ) ? __uf($plural) : __uf($msgstr);
+		return ($msgstr == $xplural) ? __uf($plural) : __uf($msgstr);
 	}
 }
 
@@ -550,7 +564,7 @@ function __x() {
 		$context = array_shift($args);
 		$num--;
 
-		$msgid = reset($args);
+		$msgid  = reset($args);
 		$xmsgid = $context . chr(4) . $msgid;
 
 		$args[0] = $xmsgid;
@@ -560,12 +574,12 @@ function __x() {
 			$msgstr = __gettext($args[0]);
 		} else {
 			/* get gettext string */
-			$msgstr = isset($i18n[ (string) $args[$num-1]]) && $args[$num-1] != 'cacti' ?
-			__gettext($args[0], $args[$num-1]) : __gettext($args[0]);
+			$msgstr = isset($i18n[(string) $args[$num - 1]]) && $args[$num - 1] != 'cacti' ?
+			__gettext($args[0], $args[$num - 1]) : __gettext($args[0]);
 		}
 
 		/* use the raw message id if language catalogue does not contain a context specific message string */
-		$args[0] = ( $msgstr == $xmsgid ) ? $msgid : $msgstr;
+		$args[0] = ($msgstr == $xmsgid) ? $msgid : $msgstr;
 
 		/* process return string against input arguments */
 		return __uf(call_user_func_array('sprintf', $args));
@@ -671,8 +685,9 @@ function get_list_of_locales() {
 function get_installed_locales() {
 	global $config, $lang2locale;
 
-	$locations = array();
+	$locations                    = array();
 	$supported_languages['en-US'] = $lang2locale['en-US']['language'];
+
 	foreach ($lang2locale as $locale => $properties) {
 		$locations[$properties['filename'] . '.mo'] = array(
 			'locale'   => $locale,
@@ -686,6 +701,7 @@ function get_installed_locales() {
 
 	/* create a list of all languages this Cacti system supports ... */
 	$dhandle = opendir($config['base_path'] . '/locales/LC_MESSAGES');
+
 	if (is_resource($dhandle)) {
 		while (false !== ($filename = readdir($dhandle))) {
 			if (isset($locations[$filename]['language'])) {
@@ -701,7 +717,7 @@ function get_installed_locales() {
 
 /* read_user_i18n_setting - finds the current value of a i18n configuration setting
    @arg $config_name - the name of the configuration setting as specified $settings_user array
-     in 'include/global_settings.php'
+	 in 'include/global_settings.php'
    @returns - the current value of the i18n configuration option or the system default value */
 function read_user_i18n_setting($config_name) {
 	global $config;
@@ -710,10 +726,10 @@ function read_user_i18n_setting($config_name) {
 	if (isset($_SESSION['sess_user_id'])) {
 		$effective_uid = $_SESSION['sess_user_id'];
 	} elseif ((read_config_option('auth_method') == AUTH_METHOD_NONE)) {
-		if (isset($_SESSION['sess_config_array'])) {
-			$config_array = $_SESSION['sess_config_array'];
-		} elseif (isset($config['config_options_array'])) {
-			$config_array = $config['config_options_array'];
+		if (isset($_SESSION[OPTIONS_WEB])) {
+			$config_array = $_SESSION[OPTIONS_WEB];
+		} elseif (isset($config[OPTIONS_CLI])) {
+			$config_array = $config[OPTIONS_CLI];
 		}
 
 		if (!isset($config_array[$config_name])) {
@@ -749,6 +765,9 @@ function read_user_i18n_setting($config_name) {
  * number_format_i18n - local specific number format wrapper
  *
  * @return - formatted number in the correct locale
+ * @param mixed $number
+ * @param null|mixed $decimals
+ * @param mixed $baseu
  */
 function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 	global $cacti_locale, $cacti_country;
@@ -757,7 +776,7 @@ function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 
 	if (function_exists('numfmt_create')) {
 		$fmt_key = $cacti_locale . '_'. $country;
-		$fmt = numfmt_create($fmt_key, NumberFormatter::DECIMAL);
+		$fmt     = numfmt_create($fmt_key, NumberFormatter::DECIMAL);
 
 		if ($decimals == null) {
 			$decimals = 0;
@@ -791,14 +810,14 @@ function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 		$number = '';
 	} elseif ($decimals == -1 || $decimals === null) {
 		$number = number_format($number, 0, $locale['decimal_point'], $locale['thousands_sep']);
-	} elseif ($number>=pow($baseu, 4)) {
-		$number = number_format($number/pow($baseu, 4), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
-	} elseif ($number>=pow($baseu, 3)) {
-		$number = number_format($number/pow($baseu, 3), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' G');
-	} elseif ($number>=pow($baseu, 2)) {
-		$number = number_format($number/pow($baseu, 2), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' M');
-	} elseif ($number>=$baseu) {
-		$number = number_format($number/$baseu, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' K');
+	} elseif ($number >= pow($baseu, 4)) {
+		$number = number_format($number / pow($baseu, 4), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
+	} elseif ($number >= pow($baseu, 3)) {
+		$number = number_format($number / pow($baseu, 3), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' G');
+	} elseif ($number >= pow($baseu, 2)) {
+		$number = number_format($number / pow($baseu, 2), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' M');
+	} elseif ($number >= $baseu) {
+		$number = number_format($number / $baseu, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' K');
 	} else {
 		$number = number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
 	}
@@ -806,21 +825,21 @@ function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 	foreach ($origlocales as $locale_setting) {
 		if (strpos($locale_setting, '=') !== false) {
 			list($category, $locale) = explode('=', $locale_setting);
-  		} else {
+		} else {
 			$category = LC_ALL;
 			$locale   = $locale_setting;
 		}
 
 		switch($category) {
-		case 'LC_ALL':
-		case 'LC_COLLATE':
-		case 'LC_CTYPE':
-		case 'LC_MONETARY':
-		case 'LC_NUMERIC':
-		case 'LC_TIME':
-			if (defined($category)) {
-				setlocale(constant($category), $locale);
-			}
+			case 'LC_ALL':
+			case 'LC_COLLATE':
+			case 'LC_CTYPE':
+			case 'LC_MONETARY':
+			case 'LC_NUMERIC':
+			case 'LC_TIME':
+				if (defined($category)) {
+					setlocale(constant($category), $locale);
+				}
 		}
 	}
 
@@ -829,9 +848,11 @@ function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 
 function get_new_user_default_language() {
 	$accepted = repair_locale(read_config_option('i18n_default_language'));
+
 	if ($accepted == '') {
 		$accepted = repair_locale(read_default_config_option('i18n_default_language'));
 	}
+
 	return $accepted;
 }
 

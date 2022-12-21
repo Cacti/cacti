@@ -502,6 +502,10 @@ define('AUTH_METHOD_DOMAIN', 4);
 define('DOMAIN_TYPE_LDAP', 1);
 define('DOMAIN_TYPE_AD', 2);
 
+define('OPTIONS_WEB', 'sess_config_array');
+define('OPTIONS_CLI', 'config_options_array');
+define('OPTIONS_USER', 'sess_user_config_array');
+
 /* constants primarily of use in the CLI. */
 if (defined('CACTI_CLI_ONLY')) {
 	define('CLI_BEL',                       "\x7");  # bell: beep and/or flash
@@ -574,5 +578,4 @@ if (defined('CACTI_CLI_ONLY')) {
 	# available colors are documented widely in the web.
 	define('CLI_CSI_FG_256COL', CLI_CSI . '38;5;'); # foreground
 	define('CLI_CSI_BG_256COL', CLI_CSI . '48;5;'); # background
-
 }

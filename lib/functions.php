@@ -220,7 +220,7 @@ function set_user_setting(string $config_name, mixed $value, ?int $user = null):
 			value = ?',
 			array($user, $config_name, $value));
 
-		unset($_SESSION['sess_user_config_array']);
+		unset($_SESSION[OPTIONS_USER]);
 		$settings_user[$config_name]['value'] = $value;
 	}
 }
@@ -287,7 +287,7 @@ function clear_user_setting(string $config_name, ?int $user = null):void {
 			array($config_name, $effective_uid));
 	}
 
-	unset($_SESSION['sess_user_config_array']);
+	unset($_SESSION[OPTIONS_USER]);
 }
 
 /**
@@ -345,8 +345,8 @@ function read_user_setting(string $config_name, mixed $default = false, bool $fo
 	$effective_uid = $user ?? ($_SESSION['sess_user_id'] ?? 0);
 
 	if (!$force) {
-		if (isset($_SESSION['sess_user_config_array'])) {
-			$user_config_array = $_SESSION['sess_user_config_array'];
+		if (isset($_SESSION[OPTIONS_USER])) {
+			$user_config_array = $_SESSION[OPTIONS_USER];
 		}
 	}
 
@@ -374,7 +374,7 @@ function read_user_setting(string $config_name, mixed $default = false, bool $fo
 		}
 
 		$set_var = $config['is_web'] ? '_SESSION' : 'config';
-		$set_key = $config['is_web'] ? 'sess_user_config_array' : 'config_user_options_array';
+		$set_key = $config['is_web'] ? OPTIONS_USER : 'config_user_options_array';
 
 		$$set_var[$set_key] = $user_config_array;
 	}
@@ -461,7 +461,7 @@ function set_config_option(string $config_name, mixed $value, bool $remote = fal
 	}
 
 	$set_var = $config['is_web'] ? '_SESSION' : 'config';
-	$set_key = $config['is_web'] ? 'sess_config_array' : 'config_options_array';
+	$set_key = $config['is_web'] ? OPTIONS_WEB : OPTIONS_CLI;
 
 	// Store whatever value we have in the array
 	if (!isset($$set_var[$set_key]) || !is_array($$set_var[$set_key])) {
@@ -530,11 +530,11 @@ function read_default_config_option(string $config_name):mixed {
 }
 
 /**
- * Primse the common configuration settings
+ * Cache the common configuration settings
  *
  * @return void
  */
-function prime_common_config_settings() {
+function cache_common_config_settings() {
 	global $config;
 
 	//$start = microtime(true);
@@ -649,7 +649,7 @@ function prime_common_config_settings() {
 
 	if (cacti_sizeof($settings)) {
 		$set_var = $config['is_web'] ? '_SESSION' : 'config';
-		$set_key = $config['is_web'] ? 'sess_config_array' : 'config_options_array';
+		$set_key = $config['is_web'] ? OPTIONS_WEB : OPTIONS_CLI;
 
 		// Store whatever value we have in the array
 		if (!isset($$set_var[$set_key]) || !is_array($$set_var[$set_key])) {
@@ -681,7 +681,7 @@ function read_config_option(string $config_name, bool $force = false):mixed {
 	$loaded = false;
 
 	$set_var = $config['is_web'] ? '_SESSION' : 'config';
-	$set_key = $config['is_web'] ? 'sess_config_array' : 'config_options_array';
+	$set_key = $config['is_web'] ? OPTIONS_WEB : OPTIONS_CLI;
 
 	// Store whatever value we have in the array
 	if (!isset($$set_var[$set_key]) || !is_array($$set_var[$set_key])) {
@@ -728,8 +728,8 @@ function read_config_option(string $config_name, bool $force = false):mixed {
 			if (cacti_sizeof($db_result)) {
 				$value = $db_result['value'];
 			}
-
 		}
+
 		// Store whatever value we have in the array
 		$$set_var[$set_key][$config_name] = $value;
 	}
@@ -1191,8 +1191,9 @@ function kill_session_var($var_name) {
  * force_session_data - forces session data into the session if the session was closed for some reason
  */
 function force_session_data() {
+	global $config;
 	// This function should always exist, if not its an invalid install
-	if (!function_exists('session_status')) {
+	if (!function_exists('session_status') || !$config['is_web']) {
 		return false;
 	}
 
@@ -6646,11 +6647,8 @@ function date_time_format() {
 }
 
 function get_source_timestamp() {
-	global $config;
-
 	static $git_status = null;
 
-	$timestamp = 0;
 	$parts     = $git_status;
 
 	if ($git_status === null) {
@@ -6663,6 +6661,7 @@ function get_source_timestamp() {
 
 			if (stripos($shell, 'fatal: detected dubious ownership in repository') !== false) {
 				cacti_log('Website user must add website root to git config using "git config --global --add safe.directory <webroot>"', false, 'WARN');
+				$shell = '0.(0)';
 			}
 
 			if (preg_match('/\d+\.([[:xdigit:]]+)/', $shell)) {
@@ -6673,7 +6672,7 @@ function get_source_timestamp() {
 	}
 
 	if ($parts === null) {
-		$parts      = array(0 => -1, 1 => 0, 'UNKNOWN');
+		$parts      = array(0, 0, 'UNKNOWN');
 	}
 
 	if ($git_status === null) {
@@ -6712,7 +6711,7 @@ function format_cacti_version_text($version) {
 
 	$parts = explode('.', $version);
 
-	while (count($parts) < 6) {
+	while (count($parts) < 5) {
 		$parts[] = '0';
 	}
 

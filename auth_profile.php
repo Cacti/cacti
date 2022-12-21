@@ -52,6 +52,7 @@ switch (get_request_var('action')) {
 		$value = get_nfilter_request_var('value');
 
 		$current_tab = get_nfilter_request_var('tab');
+
 		if ($current_tab == 'general') {
 			api_auth_update_user_setting($name, $value);
 		} else {
@@ -59,17 +60,19 @@ switch (get_request_var('action')) {
 		}
 
 		break;
-
 	case 'disable_2fa':
 		print disable_2fa($_SESSION['sess_user_id']);
+
 		exit;
 
 	case 'enable_2fa':
 		print enable_2fa($_SESSION['sess_user_id']);
+
 		exit;
 
 	case 'verify_2fa':
 		print verify_2fa($_SESSION['sess_user_id'], substr('000000' . get_nfilter_request_var('code'), -6));
+
 		exit;
 
 	default:
@@ -128,11 +131,12 @@ switch (get_request_var('action')) {
 		}
 
 		bottom_footer();
+
 		break;
 }
 
 /* --------------------------
-    The Save Function
+	The Save Function
    -------------------------- */
 
 function api_auth_logout_everywhere() {
@@ -158,7 +162,7 @@ function api_auth_clear_user_settings() {
 				array($user)
 			);
 
-			kill_session_var('sess_user_config_array');
+			kill_session_var(OPTIONS_USER);
 		} elseif (isset_request_var('tab')) {
 			api_plugin_hook('auth_profile_reset');
 		}
@@ -197,7 +201,7 @@ function api_auth_clear_user_setting($name) {
 
 						print $settings[$name]['default'];
 
-						kill_session_var('sess_user_config_array');
+						kill_session_var(OPTIONS_USER);
 
 						break;
 					}
@@ -232,7 +236,7 @@ function api_auth_update_user_setting($name, $value) {
 						array($name, $value, $user)
 					);
 
-					kill_session_var('sess_user_config_array');
+					kill_session_var(OPTIONS_USER);
 					kill_session_var('selected_theme');
 					kill_session_var('sess_user_language');
 
@@ -249,9 +253,9 @@ function form_save() {
 	// Save the users profile information
 	if (isset_request_var('full_name') && isset_request_var('email_address') && isset($_SESSION['sess_user_id'])) {
 		db_execute_prepared(
-			"UPDATE user_auth
+			'UPDATE user_auth
 			SET full_name = ?, email_address = ?
-			WHERE id = ?",
+			WHERE id = ?',
 			array(
 				get_nfilter_request_var('full_name'),
 				get_nfilter_request_var('email_address'),
@@ -281,7 +285,7 @@ function form_save() {
 
 	/* reset local settings cache so the user sees the new settings */
 	kill_session_var('sess_user_language');
-	kill_session_var('sess_user_config_array');
+	kill_session_var(OPTIONS_USER);
 	kill_session_var('selected_theme');
 
 	$tab = (isset_request_var('tab') && get_nfilter_request_var('tab')) ? ('?tab=' . get_nfilter_request_var('tab')) : '';
@@ -289,7 +293,7 @@ function form_save() {
 }
 
 /* --------------------------
-    User Settings Functions
+	User Settings Functions
    -------------------------- */
 
 function settings() {
@@ -298,6 +302,7 @@ function settings() {
 	/* you cannot have per-user graph settings if cacti's user management is not turned on */
 	if (read_config_option('auth_method') == AUTH_METHOD_NONE) {
 		raise_message(6);
+
 		return;
 	}
 
@@ -306,6 +311,7 @@ function settings() {
 
 		if (strpos($referer, 'auth_profile.php') === false) {
 			$timespan_sel_pos = strpos($referer, '&predefined_timespan');
+
 			if ($timespan_sel_pos) {
 				$referer = substr($referer, 0, $timespan_sel_pos);
 			}
@@ -333,6 +339,7 @@ function settings() {
 
 	// Set the graph views the user has permission to
 	unset($graph_views);
+
 	if (is_view_allowed('show_tree')) {
 		$graph_views[1] = __('Tree View');
 	}
@@ -354,54 +361,54 @@ function settings() {
 	/* file: user_admin.php, action: user_edit (host) */
 	$fields_user = array(
 		'username' => array(
-			'method' => 'value',
+			'method'        => 'value',
 			'friendly_name' => __('User Name'),
-			'description' => __('The login name for this user.'),
-			'value' => '|arg1:username|',
-			'max_length' => '40',
-			'size' => '40'
+			'description'   => __('The login name for this user.'),
+			'value'         => '|arg1:username|',
+			'max_length'    => '40',
+			'size'          => '40'
 		),
 		'full_name' => array(
-			'method' => 'textbox',
+			'method'        => 'textbox',
 			'friendly_name' => __('Full Name'),
-			'description' => __('A more descriptive name for this user, that can include spaces or special characters.'),
-			'value' => '|arg1:full_name|',
-			'max_length' => '120',
-			'size' => '60'
+			'description'   => __('A more descriptive name for this user, that can include spaces or special characters.'),
+			'value'         => '|arg1:full_name|',
+			'max_length'    => '120',
+			'size'          => '60'
 		),
 		'email_address' => array(
-			'method' => 'textbox',
-			'type' => 'email',
+			'method'        => 'textbox',
+			'type'          => 'email',
 			'friendly_name' => __('Email Address'),
-			'description' => __('An Email Address you be reached at.'),
-			'value' => '|arg1:email_address|',
-			'max_length' => '60',
-			'size' => '60'
+			'description'   => __('An Email Address you be reached at.'),
+			'value'         => '|arg1:email_address|',
+			'max_length'    => '60',
+			'size'          => '60'
 		),
 		'clear_settings' => array(
-			'method' => 'button',
+			'method'        => 'button',
 			'friendly_name' => __('Clear User Settings'),
-			'description' => __('Return all User Settings to Default values.'),
-			'value' => __('Clear User Settings'),
-			'on_click' => 'clearUserSettings()'
+			'description'   => __('Return all User Settings to Default values.'),
+			'value'         => __('Clear User Settings'),
+			'on_click'      => 'clearUserSettings()'
 		),
 		'private_data' => array(
-			'method' => 'button',
+			'method'        => 'button',
 			'friendly_name' => __('Clear Private Data'),
-			'description' => __('Clear Private Data including Column sizing.'),
-			'value' => __('Clear Private Data'),
-			'on_click' => 'clearPrivateData()'
+			'description'   => __('Clear Private Data including Column sizing.'),
+			'value'         => __('Clear Private Data'),
+			'on_click'      => 'clearPrivateData()'
 		)
 	);
 
 	if (read_config_option('auth_cache_enabled') == 'on') {
 		$fields_user += array(
 			'logout_everywhere' => array(
-				'method' => 'button',
+				'method'        => 'button',
 				'friendly_name' => __('Logout Everywhere'),
-				'description' => __('Clear all your Login Session Tokens.'),
-				'value' => __('Logout Everywhere'),
-				'on_click' => 'logoutEverywhere()'
+				'description'   => __('Clear all your Login Session Tokens.'),
+				'value'         => __('Logout Everywhere'),
+				'on_click'      => 'logoutEverywhere()'
 			)
 		);
 	}
@@ -425,7 +432,7 @@ function settings() {
 		foreach ($settings_user as $tab_short_name => $tab_fields) {
 			$collapsible = true;
 
-			print "<div class='spacer formHeader" . ($collapsible ? ' collapsible' : '') . "' id='row_$tab_short_name'><div class='formHeaderText'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>" : "") . "</div></div>\n";
+			print "<div class='spacer formHeader" . ($collapsible ? ' collapsible' : '') . "' id='row_$tab_short_name'><div class='formHeaderText'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>" : '') . "</div></div>\n";
 
 			$form_array = array();
 
@@ -461,10 +468,10 @@ function settings() {
 
 					if (cacti_sizeof($user_row)) {
 						$form_array[$field_name]['user_set'] = true;
-						$form_array[$field_name]['value'] = $user_row['value'];
+						$form_array[$field_name]['value']    = $user_row['value'];
 					} else {
 						$form_array[$field_name]['user_set'] = false;
-						$form_array[$field_name]['value'] = null;
+						$form_array[$field_name]['value']    = null;
 					}
 				}
 			}
@@ -497,6 +504,7 @@ function settings_2fa() {
 	/* you cannot have per-user graph settings if cacti's user management is not turned on */
 	if (read_config_option('auth_method') == AUTH_METHOD_NONE) {
 		raise_message(6);
+
 		return;
 	}
 
@@ -505,6 +513,7 @@ function settings_2fa() {
 
 		if (strpos($referer, 'auth_profile.php') === false) {
 			$timespan_sel_pos = strpos($referer, '&predefined_timespan');
+
 			if ($timespan_sel_pos) {
 				$referer = substr($referer, 0, $timespan_sel_pos);
 			}
@@ -532,45 +541,45 @@ function settings_2fa() {
 
 	$fields_user = array(
 		'username' => array(
-			'method' => 'value',
+			'method'        => 'value',
 			'friendly_name' => __('User Name'),
-			'description' => __('The login name for this user.'),
-			'value' => '|arg1:username|',
-			'max_length' => '40',
-			'size' => '40',
+			'description'   => __('The login name for this user.'),
+			'value'         => '|arg1:username|',
+			'max_length'    => '40',
+			'size'          => '40',
 		),
 		'tfa_enabled' => array(
-			'method' => 'checkbox',
+			'method'        => 'checkbox',
 			'friendly_name' => __('2FA Enabled'),
-			'description' => __('Whether 2FA is enabled for this user.'),
-			'value' => '|arg1:tfa_enabled|',
-			'on_click' => 'toggle2FA()',
-			'max_length' => '40',
-			'size' => '40',
+			'description'   => __('Whether 2FA is enabled for this user.'),
+			'value'         => '|arg1:tfa_enabled|',
+			'on_click'      => 'toggle2FA()',
+			'max_length'    => '40',
+			'size'          => '40',
 		),
 		'tfa_qr_code' => array(
-			'method' => 'value',
+			'method'        => 'value',
 			'friendly_name' => __('2FA QA Code'),
-			'description' => __('The 2FA QA Code to be scanned with Google Authenticator, Authy or any compatible 2FA app'),
-			'value' => '	',
-			'max_length' => '40',
-			'size' => '40',
+			'description'   => __('The 2FA QA Code to be scanned with Google Authenticator, Authy or any compatible 2FA app'),
+			'value'         => '	',
+			'max_length'    => '40',
+			'size'          => '40',
 		),
 		'tfa_token' => array(
-			'method' => 'textbox',
+			'method'        => 'textbox',
 			'friendly_name' => __('2FA App Token'),
-			'description' => __('The token generated by Google Authenticator, Auth or any compatible 2FA app'),
-			'value' => '',
-			'max_length' => '40',
-			'size' => '40',
+			'description'   => __('The token generated by Google Authenticator, Auth or any compatible 2FA app'),
+			'value'         => '',
+			'max_length'    => '40',
+			'size'          => '40',
 		),
 		'tfa_verify' => array(
-			'method' => 'button',
+			'method'        => 'button',
 			'friendly_name' => __('Verify App Token'),
-			'description' => __('Verify the 2FA App token entered above'),
-			'value' => __('Verify App Token'),
-			'max_length' => '40',
-			'size' => '40',
+			'description'   => __('Verify the 2FA App token entered above'),
+			'value'         => __('Verify App Token'),
+			'max_length'    => '40',
+			'size'          => '40',
 		),
 	);
 
@@ -585,10 +594,10 @@ function settings_2fa() {
 
 	form_save_buttons(array(array('id' => 'return', 'value' => __esc('Return'))), '', 'save');
 
-?>
+	?>
 	<script type='text/javascript'>
 		var tfa_enabled = <?php print $current_user['tfa_enabled'] != '' ? 'true' : 'false'; ?>;
-		var tfa_text = '<?php print $current_user['tfa_enabled'] != '' ? __('Enabled') : __('Disabled'); ?>';
+		var tfa_text = '<?php print $current_user['tfa_enabled']   != '' ? __('Enabled') : __('Disabled'); ?>';
 		var tfa_verified = false;
 		var tfa_enabling = '<?php print __('Enabling...'); ?>';
 
@@ -658,13 +667,13 @@ function settings_2fa() {
 		});
 	</script>
 <?php
-	form_end();
+		form_end();
 }
 
 function settings_javascript() {
 	global $config;
 
-?>
+	?>
 	<script type='text/javascript'>
 		var themeFonts = <?php print read_config_option('font_method'); ?>;
 		var currentTab = '<?php print get_nfilter_request_var('tab'); ?>';

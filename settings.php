@@ -34,7 +34,7 @@ global $disable_log_rotation, $local_db_cnn_id;
 
 switch (get_request_var('action')) {
 	case 'save':
-		$errors = array();
+		$errors  = array();
 		$inserts = array();
 
 		foreach ($settings[get_request_var('tab')] as $field_name => $field_array) {
@@ -82,7 +82,7 @@ switch (get_request_var('action')) {
 				if (get_nfilter_request_var($field_name) != '' && !is_dir(get_nfilter_request_var($field_name))) {
 					$_SESSION['sess_error_fields'][$field_name] = $field_name;
 					$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
-					$errors[8] = 8;
+					$errors[8]                                  = 8;
 				} else {
 					if (get_request_var('tab') == 'path' && is_remote_path_setting($field_name)) {
 						db_execute_prepared(
@@ -112,7 +112,7 @@ switch (get_request_var('action')) {
 				) {
 					$_SESSION['sess_error_fields'][$field_name] = $field_name;
 					$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
-					$errors[36] = 36;
+					$errors[36]                                 = 36;
 				} else {
 					$continue = true;
 
@@ -122,13 +122,13 @@ switch (get_request_var('action')) {
 						if ($extension != 'log') {
 							$_SESSION['sess_error_fields'][$field_name] = $field_name;
 							$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
-							$errors[9] = 9;
-							$continue = false;
+							$errors[9]                                  = 9;
+							$continue                                   = false;
 						}
 					} elseif (get_nfilter_request_var($field_name) != '' && !is_valid_pathname(get_nfilter_request_var($field_name))) {
 						$_SESSION['sess_error_fields'][$field_name] = $field_name;
 						$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
-						$errors[36] = 36;
+						$errors[36]                                 = 36;
 					}
 
 					if ($continue) {
@@ -156,9 +156,12 @@ switch (get_request_var('action')) {
 				if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name . '_confirm')) {
 					$_SESSION['sess_error_fields'][$field_name] = $field_name;
 					$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
-					$errors[4] = 4;
+					$errors[4]                                  = 4;
+
 					break;
-				} elseif (!isempty_request_var($field_name)) {
+				}
+
+				if (!isempty_request_var($field_name)) {
 					$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
 					db_execute_prepared(
 						'REPLACE INTO settings
@@ -214,13 +217,16 @@ switch (get_request_var('action')) {
 					} else {
 						$value = filter_var(get_nfilter_request_var($field_name), $field_array['filter']);
 					}
+
 					if ($value === false) {
 						$_SESSION['sess_error_fields'][$field_name] = $field_name;
 						$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
-						$errors[3] = 3;
+						$errors[3]                                  = 3;
+
 						continue;
 					}
 				}
+
 				if (is_array(get_nfilter_request_var($field_name))) {
 					$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(implode(',', get_nfilter_request_var($field_name))) . ')';
 					db_execute_prepared(
@@ -334,14 +340,16 @@ switch (get_request_var('action')) {
 		}
 
 		/* reset local settings cache so the user sees the new settings */
-		kill_session_var('sess_config_array');
+		kill_session_var(OPTIONS_WEB);
 
 		header('Location: settings.php?tab=' . get_request_var('tab'));
 
 		break;
 	case 'send_test':
 		email_test();
+
 		break;
+
 	default:
 		top_header();
 
@@ -396,7 +404,7 @@ switch (get_request_var('action')) {
 			$i = 0;
 
 			foreach (array_keys($tabs) as $tab_short_name) {
-				print "<li class='subTab" . (!in_array($tab_short_name, $system_tabs) ? ' pluginTab' : '') . "'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . html_escape("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . "</a></li>\n";
+				print "<li class='subTab" . (!in_array($tab_short_name, $system_tabs, true) ? ' pluginTab' : '') . "'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . html_escape("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . "</a></li>\n";
 
 				$i++;
 			}
@@ -523,7 +531,7 @@ switch (get_request_var('action')) {
 
 		form_save_button('', 'save');
 
-?>
+		?>
 		<script type='text/javascript'>
 			var themeChanged = false;
 			var currentTheme = '';
@@ -957,7 +965,7 @@ switch (get_request_var('action')) {
 		</script>
 <?php
 
-		bottom_footer();
+				bottom_footer();
 
 		break;
 }
