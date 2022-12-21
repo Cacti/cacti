@@ -51,9 +51,9 @@ html_start_box(__('About Cacti'), '100%', '', '3', 'center', '');
 			<li>Larry Adams <i>(TheWitness)</i></li>
 			<li>Mark Brugnoli-Vinten <i>(netniV)</i></li>
 			<li>Jimmy Conner <i>(cigamit)</i></li>
-			<li>Petr Macan <i>(xmacan)</i></li>
+			<li>Petr Macek <i>(xmacan)</i></li>
 			<li>Andreas Braun <i>(browniebraun)</i></li>
-			<li>Thomas Urban <i>(thurban)</i></li>
+			<li>Thomas Urban <i>(phalek)</i></li>
 			<li>Jing Chen <i>(ddb4github)</i></li>
 		</ul>
 		</div>
