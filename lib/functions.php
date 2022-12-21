@@ -155,7 +155,7 @@ function save_user_settings(?int $user = null):void {
 	global $settings_user;
 
 	// Passed user id, or session id, or else 0
-	$user = $user ?? ($_SESSION['sess_user_id'] ?? 0);
+	$user = $user ?? ($_SESSION[SESS_USER_ID] ?? 0);
 
 	foreach ($settings_user as $tab_short_name => $tab_fields) {
 		foreach ($tab_fields as $field_name => $field_array) {
@@ -173,8 +173,8 @@ function save_user_settings(?int $user = null):void {
 					}
 				} elseif ($field_array['method'] == 'textbox_password') {
 					if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name.'_confirm')) {
-						$_SESSION['sess_error_fields'][$field_name] = $field_name;
-						$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
+						$_SESSION[SESS_ERROR_FIELDS][$field_name] = $field_name;
+						$_SESSION[SESS_FIELD_VALUES][$field_name] = get_nfilter_request_var($field_name);
 
 						// Set error 4
 						$errors[4]  = 4;
@@ -208,10 +208,10 @@ function set_user_setting(string $config_name, mixed $value, ?int $user = null):
 	global $settings_user;
 
 	// Passed user id, or session id, or else 0
-	$user = $user ?? ($_SESSION['sess_user_id'] ?? 0);
+	$user = $user ?? ($_SESSION[SESS_USER_ID] ?? 0);
 
 	if ($user == 0) {
-		$mode = isset($_SESSION['sess_user_id']) ? 'WEBUI' : 'POLLER';
+		$mode = isset($_SESSION[SESS_USER_ID]) ? 'WEBUI' : 'POLLER';
 		cacti_log('NOTE: Attempt to set user setting \'' . $config_name . '\', with no valid user id: ' . cacti_debug_backtrace('', false, false, 0, 1), false, $mode, POLLER_VERBOSITY_MEDIUM);
 	} elseif (db_table_exists('settings_user')) {
 		db_execute_prepared('REPLACE INTO settings_user
@@ -278,7 +278,7 @@ function clear_user_setting(string $config_name, ?int $user = null):void {
 	global $config;
 
 	/* users must have cacti user auth turned on to use this, or the guest account must be active */
-	$effective_uid = $user ?? ($_SESSION['sess_user_id'] ?? 0);
+	$effective_uid = $user ?? ($_SESSION[SESS_USER_ID] ?? 0);
 
 	if (db_table_exists('settings_user')) {
 		db_execute_prepared('DELETE FROM settings_user
@@ -342,7 +342,7 @@ function read_user_setting(string $config_name, mixed $default = false, bool $fo
 	global $config;
 
 	/* users must have cacti user auth turned on to use this, or the guest account must be active */
-	$effective_uid = $user ?? ($_SESSION['sess_user_id'] ?? 0);
+	$effective_uid = $user ?? ($_SESSION[SESS_USER_ID] ?? 0);
 
 	if (!$force) {
 		if (isset($_SESSION[OPTIONS_USER])) {
@@ -764,13 +764,13 @@ function get_selected_theme():mixed {
 	}
 
 	// figure out user defined theme
-	if (isset($_SESSION['sess_user_id'])) {
+	if (isset($_SESSION[SESS_USER_ID])) {
 		// fetch user defined theme
 		$user_theme = db_fetch_cell_prepared("SELECT value
 			FROM settings_user
 			WHERE name='selected_theme'
 			AND user_id = ?",
-			array($_SESSION['sess_user_id']), '', false);
+			array($_SESSION[SESS_USER_ID]), '', false);
 
 		// user has a theme
 		if (! empty($user_theme)) {
@@ -787,7 +787,7 @@ function get_selected_theme():mixed {
 					SET value = ?
 					WHERE user_id = ?
 					AND name="selected_theme"',
-					array($theme, $_SESSION['sess_user_id']));
+					array($theme, $_SESSION[SESS_USER_ID]));
 
 				break;
 			}
@@ -823,12 +823,12 @@ function is_valid_theme(?string &$theme, int $set_user = 0):bool {
 				$theme = $t;
 				$valid = true;
 
-				if ($user_table && $set_user && isset($_SESSION['sess_user_id'])) {
+				if ($user_table && $set_user && isset($_SESSION[SESS_USER_ID])) {
 					db_execute_prepared('UPDATE settings_user
 						SET value = ?
 						WHERE user_id = ?
 						AND name="selected_theme"',
-						array($theme, $_SESSION['sess_user_id']));
+						array($theme, $_SESSION[SESS_USER_ID]));
 				}
 
 				break;
@@ -858,7 +858,7 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
 	global $messages;
 
 	/* write current values to the "field_values" array so we can retain them */
-	$_SESSION['sess_field_values'][$field_name] = $field_value;
+	$_SESSION[SESS_FIELD_VALUES][$field_name] = $field_value;
 
 	if (($allow_nulls == true) && ($field_value == '')) {
 		return $field_value;
@@ -884,7 +884,7 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
 			}
 		}
 
-		$_SESSION['sess_error_fields'][$field_name] = $custom_message ?? $message_id;
+		$_SESSION[SESS_ERROR_FIELDS][$field_name] = $custom_message ?? $message_id;
 		raise_message($message_id, $custom_message, MESSAGE_LEVEL_ERROR);
 	}
 
@@ -915,7 +915,7 @@ function check_changed($request, $session) {
 function is_error_message() {
 	global $config, $messages;
 
-	if (isset($_SESSION['sess_error_fields']) && cacti_sizeof($_SESSION['sess_error_fields'])) {
+	if (isset($_SESSION[SESS_ERROR_FIELDS]) && cacti_sizeof($_SESSION[SESS_ERROR_FIELDS])) {
 		return true;
 	} else {
 		return false;
@@ -1004,9 +1004,9 @@ function get_message_max_type() {
 
 	$level = MESSAGE_LEVEL_NONE;
 
-	if (isset($_SESSION['sess_messages'])) {
-		if (is_array($_SESSION['sess_messages'])) {
-			foreach ($_SESSION['sess_messages'] as $current_message_id => $current_message) {
+	if (isset($_SESSION[SESS_MESSAGES])) {
+		if (is_array($_SESSION[SESS_MESSAGES])) {
+			foreach ($_SESSION[SESS_MESSAGES] as $current_message_id => $current_message) {
 				$current_level = get_message_level($current_message);
 
 				if ($current_level == MESSAGE_LEVEL_NONE && isset($messages[$current_message_id])) {
@@ -1068,11 +1068,11 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
 		cacti_session_start();
 	}
 
-	if (!isset($_SESSION['sess_messages'])) {
-		$_SESSION['sess_messages'] = array();
+	if (!isset($_SESSION[SESS_MESSAGES])) {
+		$_SESSION[SESS_MESSAGES] = array();
 	}
 
-	$_SESSION['sess_messages'][$message_id] = array('message' => $message, 'level' => $message_level);
+	$_SESSION[SESS_MESSAGES][$message_id] = array('message' => $message, 'level' => $message_level);
 
 	if ($need_session) {
 		cacti_session_close();
@@ -1127,14 +1127,14 @@ function display_output_messages() {
 		$omessage['message']  = $debug_message;
 
 		debug_log_clear('new_graphs');
-	} elseif (isset($_SESSION['sess_messages'])) {
-		if (!is_array($_SESSION['sess_messages'])) {
-			$_SESSION['sess_messages'] = array('custom_error' => array('level' => 3, 'message' => $_SESSION['sess_messages']));
+	} elseif (isset($_SESSION[SESS_MESSAGES])) {
+		if (!is_array($_SESSION[SESS_MESSAGES])) {
+			$_SESSION[SESS_MESSAGES] = array('custom_error' => array('level' => 3, 'message' => $_SESSION[SESS_MESSAGES]));
 		}
 
 		$omessage['level'] = get_message_max_type();
 
-		foreach ($_SESSION['sess_messages'] as $current_message_id => $current_message) {
+		foreach ($_SESSION[SESS_MESSAGES] as $current_message_id => $current_message) {
 			$message = get_format_message_instance($current_message);
 
 			if (!empty($message)) {
@@ -1169,8 +1169,8 @@ function clear_messages() {
 		cacti_session_start();
 	}
 
-	kill_session_var('sess_error_fields');
-	kill_session_var('sess_messages');
+	kill_session_var(SESS_ERROR_FIELDS);
+	kill_session_var(SESS_MESSAGES);
 
 	if ($need_session) {
 		cacti_session_close();
@@ -3782,7 +3782,7 @@ function draw_login_status($using_guest_account = false) {
 	$guest_account = get_guest_account();
 	$auth_method   = read_config_option('auth_method');
 
-	if (isset($_SESSION['sess_user_id']) && $_SESSION['sess_user_id'] === $guest_account) {
+	if (isset($_SESSION[SESS_USER_ID]) && $_SESSION[SESS_USER_ID] === $guest_account) {
 		api_plugin_hook('nav_login_before');
 
 		print __('Logged in as') . " <span id='user' class='user usermenuup'>". __('guest') . "</span></div><div><ul class='menuoptions' style='display:none;'>" . ($auth_method != AUTH_METHOD_BASIC ? "<li><a href='" . $config['url_path'] . "index.php?login=true'>" . __('Login as Regular User') . '</a></li>':"<li><a href='#'>" . __('Logged in a Guest') . '</a></li>');
@@ -3793,11 +3793,11 @@ function draw_login_status($using_guest_account = false) {
 		print '</ul>';
 
 		api_plugin_hook('nav_login_after');
-	} elseif (isset($_SESSION['sess_user_id']) && $using_guest_account == false) {
+	} elseif (isset($_SESSION[SESS_USER_ID]) && $using_guest_account == false) {
 		$user = db_fetch_row_prepared('SELECT username, password_change, realm
 			FROM user_auth
 			WHERE id = ?',
-			array($_SESSION['sess_user_id']));
+			array($_SESSION[SESS_USER_ID]));
 
 		api_plugin_hook('nav_login_before');
 
@@ -4825,7 +4825,7 @@ function bottom_footer() {
 	   this way we can restore the field's previous values. we reset it here, because
 	   they only need to be stored for a single page
 	*/
-	kill_session_var('sess_field_values');
+	kill_session_var(SESS_FIELD_VALUES);
 
 	/* make sure the debug log doesn't get too big */
 	debug_log_clear();
@@ -5716,7 +5716,7 @@ function clog_admin() {
 
 function clog_authorized() {
 	if (!isset($_SESSION['sess_clog_level'])) {
-		if (isset($_SESSION['sess_user_id'])) {
+		if (isset($_SESSION[SESS_USER_ID])) {
 			if (is_realm_allowed(18)) {
 				$_SESSION['sess_clog_level'] = CLOG_PERM_ADMIN;
 			} else {
@@ -5784,7 +5784,7 @@ function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limi
 	}
 
 	if ($record) {
-		if ($html && !defined('CACTI_CLI_ONLY')) {
+		if ($html && CACTI_WEB) {
 			print "<table style='width:100%;text-align:center;'><tr><td>$s</td></tr></table>\n";
 		}
 
@@ -7663,7 +7663,7 @@ function cacti_session_start() {
 		die('PHP Session Management is missing, please install PHP Session module');
 	}
 
-	session_name($config['cacti_session_name']);
+	session_name($config[CACTI_SESSION_NAME]);
 
 	if (session_status() === PHP_SESSION_NONE) {
 		$session_restart = '';
@@ -7671,7 +7671,7 @@ function cacti_session_start() {
 		$session_restart = 're';
 	}
 
-	$session_result = session_start($config['cookie_options']);
+	$session_result = session_start($config[COOKIE_OPTIONS]);
 
 	if (!$session_result) {
 		cacti_log('Session "' . session_id() . '" ' . $session_restart . 'start failed! ' . cacti_debug_backtrace('', false, false, 0, 1), false, 'WARNING:');
@@ -7710,8 +7710,8 @@ function cacti_session_destroy() {
 function cacti_cookie_set($session, $val, $timeout = null) {
 	global $config;
 
-	if (isset($config['cookie_options']['cookie_domain'])) {
-		$domain = $config['cookie_options']['cookie_domain'];
+	if (isset($config[COOKIE_OPTIONS][COOKIE_OPTIONS_DOMAIN])) {
+		$domain = $config[COOKIE_OPTIONS][COOKIE_OPTIONS_DOMAIN];
 	} else {
 		$domain = '';
 	}
@@ -7746,8 +7746,8 @@ function cacti_cookie_set($session, $val, $timeout = null) {
 function cacti_cookie_logout() {
 	global $config;
 
-	if (isset($config['cookie_options']['cookie_domain'])) {
-		$domain = $config['cookie_options']['cookie_domain'];
+	if (isset($config[COOKIE_OPTIONS][COOKIE_OPTIONS_DOMAIN])) {
+		$domain = $config[COOKIE_OPTIONS][COOKIE_OPTIONS_DOMAIN];
 	} else {
 		$domain = '';
 	}
@@ -7779,7 +7779,7 @@ function cacti_cookie_logout() {
 		}
 	}
 
-	unset($_COOKIE[$config['cacti_session_name']]);
+	unset($_COOKIE[$config[CACTI_SESSION_NAME]]);
 }
 
 /**
@@ -7793,8 +7793,8 @@ function cacti_cookie_logout() {
 function cacti_cookie_session_set($user, $realm, $nssecret) {
 	global $config;
 
-	if (isset($config['cookie_options']['cookie_domain'])) {
-		$domain = $config['cookie_options']['cookie_domain'];
+	if (isset($config[COOKIE_OPTIONS][COOKIE_OPTIONS_DOMAIN])) {
+		$domain = $config[COOKIE_OPTIONS][COOKIE_OPTIONS_DOMAIN];
 	} else {
 		$domain = '';
 	}
@@ -7831,8 +7831,8 @@ function cacti_cookie_session_set($user, $realm, $nssecret) {
 function cacti_cookie_session_logout() {
 	global $config;
 
-	if (isset($config['cookie_options']['cookie_domain'])) {
-		$domain = $config['cookie_options']['cookie_domain'];
+	if (isset($config[COOKIE_OPTIONS][COOKIE_OPTIONS_DOMAIN])) {
+		$domain = $config[COOKIE_OPTIONS][COOKIE_OPTIONS_DOMAIN];
 	} else {
 		$domain = '';
 	}
@@ -7867,9 +7867,9 @@ function cacti_cookie_session_logout() {
  */
 function cacti_browser_zone_set() {
 	if (cacti_browser_zone_enabled()) {
-		if (isset($_SESSION['sess_browser_php_tz'])) {
-			ini_set('date.timezone', $_SESSION['sess_browser_php_tz']);
-			putenv('TZ=' . $_SESSION['sess_browser_system_tz']);
+		if (isset($_SESSION[SESS_BROWSER_PHP_TZ])) {
+			ini_set('date.timezone', $_SESSION[SESS_BROWSER_PHP_TZ]);
+			putenv('TZ=' . $_SESSION[SESS_BROWSER_SYSTEM_TZ]);
 		}
 	}
 }
@@ -7882,9 +7882,9 @@ function cacti_browser_zone_set() {
  */
 function cacti_system_zone_set() {
 	if (cacti_browser_zone_enabled()) {
-		if (isset($_SESSION['sess_php_tz'])) {
-			ini_set('date.timezone', $_SESSION['sess_php_tz']);
-			putenv('TZ=' . $_SESSION['sess_system_tz']);
+		if (isset($_SESSION[SESS_PHP_TZ])) {
+			ini_set('date.timezone', $_SESSION[SESS_PHP_TZ]);
+			putenv('TZ=' . $_SESSION[SESS_SYSTEM_TZ]);
 		}
 	}
 }
@@ -7921,9 +7921,9 @@ function cacti_time_zone_set($gmt_offset) {
 	$hours     = floor($gmt_offset / 60);
 	$remaining = $gmt_offset % 60;
 
-	if (!isset($_SESSION['sess_php_tz'])) {
-		$_SESSION['sess_php_tz']    = ini_get('date.timezone');
-		$_SESSION['sess_system_tz'] = getenv('TZ');
+	if (!isset($_SESSION[SESS_PHP_TZ])) {
+		$_SESSION[SESS_PHP_TZ]    = ini_get('date.timezone');
+		$_SESSION[SESS_SYSTEM_TZ] = getenv('TZ');
 	}
 
 	$zone = timezone_name_from_abbr('', $gmt_offset);
@@ -7941,8 +7941,8 @@ function cacti_time_zone_set($gmt_offset) {
 			ini_set('date.timezone', 'Etc/GMT' . ($hours > 0 ? '-':'+') . abs($hours));
 		}
 
-		$_SESSION['sess_browser_system_tz'] = $sys_offset;
-		$_SESSION['sess_browser_php_tz']    = $php_offset;
+		$_SESSION[SESS_BROWSER_SYSTEM_TZ] = $sys_offset;
+		$_SESSION[SESS_BROWSER_PHP_TZ]    = $php_offset;
 	} else {
 		$time = ($hours > 0 ? '-':'+') . abs($hours) . ':' . substr('00' . $remaining, -2);
 
@@ -8016,8 +8016,8 @@ function cacti_time_zone_set($gmt_offset) {
 			ini_set('date.timezone', $zone);
 		}
 
-		$_SESSION['sess_browser_system_tz'] = $sys_offset;
-		$_SESSION['sess_browser_php_tz']    = $php_offset;
+		$_SESSION[SESS_BROWSER_SYSTEM_TZ] = $sys_offset;
+		$_SESSION[SESS_BROWSER_PHP_TZ]    = $php_offset;
 	}
 }
 

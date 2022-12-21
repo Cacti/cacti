@@ -89,7 +89,7 @@ $xport_meta = array();
 $graph_data_array['export_csv'] = true;
 
 /* Get graph export */
-$xport_array = rrdtool_function_xport(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, $xport_meta, $_SESSION['sess_user_id']);
+$xport_array = rrdtool_function_xport(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, $xport_meta, $_SESSION[SESS_USER_ID]);
 
 /* Make graph title the suggested file name */
 if (is_array($xport_array['meta'])) {

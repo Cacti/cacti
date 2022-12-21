@@ -32,20 +32,20 @@ if (isset($_SESSION['automation_message']) && $_SESSION['automation_message'] !=
 	kill_session_var('automation_message');
 }
 
-if (isset($_SESSION['clog_message']) && $_SESSION['clog_message'] != '') {
-	$messages['clog_message'] = array(
-		'message' => $_SESSION['clog_message'],
+if (isset($_SESSION[CLOG_MESSAGE]) && $_SESSION[CLOG_MESSAGE] != '') {
+	$messages[CLOG_MESSAGE] = array(
+		'message' => $_SESSION[CLOG_MESSAGE],
 		'type' => 'info'
 	);
-	kill_session_var('clog_message');
+	kill_session_var(CLOG_MESSAGE);
 }
 
-if (isset($_SESSION['clog_error']) && $_SESSION['clog_error'] != '') {
-	$messages['clog_error'] = array(
-		'message' => $_SESSION['clog_error'],
+if (isset($_SESSION[CLOG_ERROR]) && $_SESSION[CLOG_ERROR] != '') {
+	$messages[CLOG_ERROR] = array(
+		'message' => $_SESSION[CLOG_ERROR],
 		'type' => 'error'
 	);
-	kill_session_var('clog_error');
+	kill_session_var(CLOG_ERROR);
 }
 
 $script = basename($_SERVER['SCRIPT_NAME']);
@@ -108,7 +108,7 @@ if (isset($_SESSION['refresh'])) {
 	$myrefresh['seconds'] = 99999999;
 	$myrefresh['page']    = 'index.php';
 	$refreshIsLogout      = 'false';
-} elseif (!isset($_SESSION['sess_user_id']) && isset($_SERVER['REQUEST_URL']) && strpos($_SERVER['REQUEST_URI'], 'index.php') !== false) {
+} elseif (!isset($_SESSION[SESS_USER_ID]) && isset($_SERVER['REQUEST_URL']) && strpos($_SERVER['REQUEST_URI'], 'index.php') !== false) {
 	$myrefresh['seconds'] = 99999999;
 	$myrefresh['page']    = sanitize_uri($_SERVER['REQUEST_URI']);
 	$refreshIsLogout      = 'false';
@@ -119,7 +119,7 @@ if (isset($_SESSION['refresh'])) {
 }
 
 /* guest account does not auto log off */
-if (isset($_SESSION['sess_user_id']) && $_SESSION['sess_user_id'] == read_config_option('guest_user')) {
+if (isset($_SESSION[SESS_USER_ID]) && $_SESSION[SESS_USER_ID] == read_config_option('guest_user')) {
 	$myrefresh['seconds'] = 99999999;
 	$myrefresh['page']    = sanitize_uri($_SERVER['REQUEST_URI']);
 	$refreshIsLogout      = 'false';

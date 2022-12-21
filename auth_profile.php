@@ -61,17 +61,17 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'disable_2fa':
-		print disable_2fa($_SESSION['sess_user_id']);
+		print disable_2fa($_SESSION[SESS_USER_ID]);
 
 		exit;
 
 	case 'enable_2fa':
-		print enable_2fa($_SESSION['sess_user_id']);
+		print enable_2fa($_SESSION[SESS_USER_ID]);
 
 		exit;
 
 	case 'verify_2fa':
-		print verify_2fa($_SESSION['sess_user_id'], substr('000000' . get_nfilter_request_var('code'), -6));
+		print verify_2fa($_SESSION[SESS_USER_ID], substr('000000' . get_nfilter_request_var('code'), -6));
 
 		exit;
 
@@ -140,7 +140,7 @@ switch (get_request_var('action')) {
    -------------------------- */
 
 function api_auth_logout_everywhere() {
-	$user = $_SESSION['sess_user_id'];
+	$user = $_SESSION[SESS_USER_ID];
 
 	if (!empty($user)) {
 		db_execute_prepared(
@@ -152,7 +152,7 @@ function api_auth_logout_everywhere() {
 }
 
 function api_auth_clear_user_settings() {
-	$user = $_SESSION['sess_user_id'];
+	$user = $_SESSION[SESS_USER_ID];
 
 	if (!empty($user)) {
 		if (isset_request_var('tab') && get_nfilter_request_var('tab') == 'general') {
@@ -174,7 +174,7 @@ function api_auth_clear_user_settings() {
 function api_auth_clear_user_setting($name) {
 	global $settings_user;
 
-	$user = $_SESSION['sess_user_id'];
+	$user = $_SESSION[SESS_USER_ID];
 
 	if (read_config_option('client_timezone_support') == '0') {
 		unset($settings_user['client_timezone_support']);
@@ -216,7 +216,7 @@ function api_auth_clear_user_setting($name) {
 function api_auth_update_user_setting($name, $value) {
 	global $settings_user;
 
-	$user = $_SESSION['sess_user_id'];
+	$user = $_SESSION[SESS_USER_ID];
 
 	if (!empty($user)) {
 		if ($name == 'full_name' || $name == 'email_address') {
@@ -238,7 +238,7 @@ function api_auth_update_user_setting($name, $value) {
 
 					kill_session_var(OPTIONS_USER);
 					kill_session_var('selected_theme');
-					kill_session_var('sess_user_language');
+					kill_session_var(SESS_USER_LANGUAGE);
 
 					break;
 				}
@@ -251,7 +251,7 @@ function form_save() {
 	global $settings_user;
 
 	// Save the users profile information
-	if (isset_request_var('full_name') && isset_request_var('email_address') && isset($_SESSION['sess_user_id'])) {
+	if (isset_request_var('full_name') && isset_request_var('email_address') && isset($_SESSION[SESS_USER_ID])) {
 		db_execute_prepared(
 			'UPDATE user_auth
 			SET full_name = ?, email_address = ?
@@ -259,7 +259,7 @@ function form_save() {
 			array(
 				get_nfilter_request_var('full_name'),
 				get_nfilter_request_var('email_address'),
-				$_SESSION['sess_user_id']
+				$_SESSION[SESS_USER_ID]
 			)
 		);
 	}
@@ -268,7 +268,7 @@ function form_save() {
 
 	// Save the users graph settings if they have permission
 	if (is_view_allowed('graph_settings') == true && isset_request_var('tab') && get_nfilter_request_var('tab') == 'general') {
-		save_user_settings($_SESSION['sess_user_id']);
+		save_user_settings($_SESSION[SESS_USER_ID]);
 	} elseif (isset_request_var('tab')) {
 		api_plugin_hook('auth_profile_save');
 	}
@@ -284,7 +284,7 @@ function form_save() {
 	}
 
 	/* reset local settings cache so the user sees the new settings */
-	kill_session_var('sess_user_language');
+	kill_session_var(SESS_USER_LANGUAGE);
 	kill_session_var(OPTIONS_USER);
 	kill_session_var('selected_theme');
 
@@ -330,7 +330,7 @@ function settings() {
 		'SELECT *
 		FROM user_auth
 		WHERE id = ?',
-		array($_SESSION['sess_user_id'])
+		array($_SESSION[SESS_USER_ID])
 	);
 
 	if (!cacti_sizeof($current_user)) {
@@ -441,7 +441,7 @@ function settings() {
 
 				if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
-						if (graph_config_value_exists($sub_field_name, $_SESSION['sess_user_id'])) {
+						if (graph_config_value_exists($sub_field_name, $_SESSION[SESS_USER_ID])) {
 							$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
 						}
 
@@ -450,11 +450,11 @@ function settings() {
 							FROM settings_user
 							WHERE name = ?
 							AND user_id = ?',
-							array($sub_field_name, $_SESSION['sess_user_id'])
+							array($sub_field_name, $_SESSION[SESS_USER_ID])
 						);
 					}
 				} else {
-					if (graph_config_value_exists($field_name, $_SESSION['sess_user_id'])) {
+					if (graph_config_value_exists($field_name, $_SESSION[SESS_USER_ID])) {
 						$form_array[$field_name]['form_id'] = 1;
 					}
 
@@ -463,7 +463,7 @@ function settings() {
 						FROM settings_user
 						WHERE name = ?
 						AND user_id = ?',
-						array($field_name, $_SESSION['sess_user_id'])
+						array($field_name, $_SESSION[SESS_USER_ID])
 					);
 
 					if (cacti_sizeof($user_row)) {
@@ -532,7 +532,7 @@ function settings_2fa() {
 		'SELECT *
 		FROM user_auth
 		WHERE id = ?',
-		array($_SESSION['sess_user_id'])
+		array($_SESSION[SESS_USER_ID])
 	);
 
 	if (!cacti_sizeof($current_user)) {

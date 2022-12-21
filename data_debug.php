@@ -188,7 +188,7 @@ function debug_runall_filtered() {
 		INNER JOIN host AS h
 		ON h.id = dl.host_id
 		$sql_where",
-		array($now, $info, $_SESSION['sess_user_id']));
+		array($now, $info, $_SESSION[SESS_USER_ID]));
 }
 
 function debug_process_status($id) {
@@ -276,7 +276,7 @@ function debug_rerun($selected_items) {
 
 				$save['info']       = $info;
 				$save['started']    = time();
-				$save['user']       = intval($_SESSION['sess_user_id']);
+				$save['user']       = intval($_SESSION[SESS_USER_ID]);
 
 				$id = sql_save($save, 'data_debug');
 			} else {

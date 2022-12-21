@@ -58,9 +58,9 @@ if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']])) 
 
 	/* save customized language setting (authenticated users only) */
 	set_user_setting('language', $user_locale);
-} elseif (isset($_SESSION['sess_user_language']) && isset($lang2locale[$_SESSION['sess_user_language']])) {
+} elseif (isset($_SESSION[SESS_USER_LANGUAGE]) && isset($lang2locale[$_SESSION[SESS_USER_LANGUAGE]])) {
 	/* language definition stored in the SESSION */
-	$user_locale = apply_locale($_SESSION['sess_user_language']);
+	$user_locale = apply_locale($_SESSION[SESS_USER_LANGUAGE]);
 } else {
 	/* look up for user customized language setting stored in Cacti DB */
 	$user_locale = apply_locale(read_user_i18n_setting('user_language'));
@@ -70,7 +70,7 @@ if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']])) 
 setlocale(LC_CTYPE, str_replace('-', '_', $user_locale) . '.UTF-8');
 
 if ($user_locale !== false && $user_locale !== '') {
-	$_SESSION['sess_user_language'] = $user_locale;
+	$_SESSION[SESS_USER_LANGUAGE] = $user_locale;
 }
 
 /* define the path to the language file */
@@ -451,7 +451,7 @@ function load_fallback_procedure() {
 	global $cacti_textdomains, $cacti_locale, $cacti_country, $lang2locale;
 
 	/* reset variables */
-	$_SESSION['sess_user_language'] = '';
+	$_SESSION[SESS_USER_LANGUAGE] = '';
 
 	$cacti_textdomains = array();
 	define('CACTI_LOCALE', 'en-US');
@@ -723,8 +723,8 @@ function read_user_i18n_setting($config_name) {
 	global $config;
 
 	/* users must have cacti user auth turned on to use this, or the guest account must be active */
-	if (isset($_SESSION['sess_user_id'])) {
-		$effective_uid = $_SESSION['sess_user_id'];
+	if (isset($_SESSION[SESS_USER_ID])) {
+		$effective_uid = $_SESSION[SESS_USER_ID];
 	} elseif ((read_config_option('auth_method') == AUTH_METHOD_NONE)) {
 		if (isset($_SESSION[OPTIONS_WEB])) {
 			$config_array = $_SESSION[OPTIONS_WEB];

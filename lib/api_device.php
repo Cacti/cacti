@@ -994,7 +994,7 @@ function api_device_save($id, $device_template_id, $description, $hostname, $snm
 
 		if (strlen($save['snmp_password']) < 8 && $snmp_auth_protocol != '[None]') {
 			raise_message(32);
-			$_SESSION['sess_error_fields']['snmp_password'] = 'snmp_password';
+			$_SESSION[SESS_ERROR_FIELDS]['snmp_password'] = 'snmp_password';
 		}
 	} else {
 		$save['snmp_username']        = '';

@@ -32,9 +32,17 @@
 global $config;
 $config = array();
 
+/* define if cacti is in CLI mode */
+define('CACTI_CLI', (php_sapi_name() == 'cli'));
+define('CACTI_WEB', (php_sapi_name() != 'cli'));
+
+if (defined('CACTI_CLI_ONLY') && CACTI_WEB) {
+	die('<br><strong>This script is only meant to run at the command line.</strong>');
+}
+
 /* this should be auto-detected, set it manually if needed */
 $config['cacti_server_os'] = (strstr(PHP_OS, 'WIN')) ? 'win32' : 'unix';
-$config['is_web']          = !defined('CACTI_CLI_ONLY');
+$config['is_web']          = CACTI_WEB;
 
 /* define cacti version */
 /* used for includes */
@@ -81,13 +89,6 @@ if ($cacti_version === false) {
 	die('ERROR: failed to load cacti version file');
 }
 $cacti_version = trim($cacti_version);
-
-/* define if cacti is in CLI mode */
-define('CACTI_CLI', (php_sapi_name() == 'cli'));
-
-if (defined('CACTI_CLI_ONLY') && !CACTI_CLI) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
 
 // define documentation table of contents
 define('CACTI_DOCUMENTATION_TOC', 'docs/Table-of-Contents.html');
@@ -412,7 +413,18 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 $log_filename = cacti_log_file();
 
 if (!is_resource_writable($log_filename)) {
-	die('System log file is not available for writing, please enable write access' . PHP_EOL . 'Log: ' . $log_filename . PHP_EOL);
+	print $ps . 'FATAL: System log file is not available for writing. Please ensure: ' . $ul;
+	print $li . 'the log folder is correctly set.' . $il;
+	if (CACTI_CLI) {
+		print $li . 'the script was run as the website user. ' . $il;
+	}
+	print $li . 'the log folder is writable by the website user.' . $il;
+	print $li . 'there is enough disk space.' . $il;
+	print $lu . $sp;
+	if (CACTI_CLI) {
+		print $ps . 'To run as the website user, use sudo -u <website user> php -q <script file>' . $sp;
+	}
+	print $ps . 'Log: ' . $log_filename . $sp;
 }
 
 /* prime the most popular config settings */
@@ -461,29 +473,29 @@ if ($config['is_web']) {
 	ini_set('session.use_strict_mode', true);
 
 	$options = array(
-		'cookie_httponly' => true,
-		'cookie_path'     => $config['url_path'],
-		'use_strict_mode' => true
+		COOKIE_OPTIONS_HTTPONLY => true,
+		COOKIE_OPTIONS_PATH     => $config['url_path'],
+		COOKIE_OPTIONS_STRICT   => true
 	);
 
 	if (isset($cacti_cookie_domain) && $cacti_cookie_domain != '') {
 		ini_set('session.cookie_domain', $cacti_cookie_domain);
-		$options['cookie_domain'] = $cacti_cookie_domain;
+		$options[COOKIE_OPTIONS_DOMAIN] = $cacti_cookie_domain;
 	}
 
 	// SameSite php7.3+ behavior
 	if (version_compare(PHP_VERSION, '7.3', '>=')) {
 		ini_set('session.cookie_samesite', 'Strict');
-		$options['cookie_samesite'] = 'Strict';
+		$options[COOKIE_OPTIONS_SAMESITE] = 'Strict';
 	}
 
 	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
 		ini_set('session.cookie_secure', true);
-		$options['cookie_secure'] = true;
+		$options[COOKIE_OPTIONS_SECURE] = true;
 	}
 
-	$config['cookie_options']     = $options;
-	$config['cacti_session_name'] = $cacti_session_name;
+	$config[COOKIE_OPTIONS]     = $options;
+	$config[CACTI_SESSION_NAME] = $cacti_session_name;
 
 	/* start the session before sending headers */
 	cacti_session_start();
@@ -510,10 +522,10 @@ if ($config['is_web']) {
 	header('Cache-Control: max-age=31536000');
 
 	/* make sure to start only Cacti session at a time */
-	if (!isset($_SESSION['cacti_cwd'])) {
-		$_SESSION['cacti_cwd'] = $config['base_path'];
+	if (!isset($_SESSION[CACTI_CWD])) {
+		$_SESSION[CACTI_CWD] = $config['base_path'];
 	} else {
-		if ($_SESSION['cacti_cwd'] != $config['base_path']) {
+		if ($_SESSION[CACTI_CWD] != $config['base_path']) {
 			cacti_session_destroy();
 		}
 	}

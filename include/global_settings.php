@@ -134,15 +134,15 @@ if ($config['cacti_server_os'] == 'win32') {
 /* cache the admin account */
 $admin_account = '0';
 
-if (isset($_SESSION['admin_account']) && isset($_SESSION['sess_user_id'])) {
+if (isset($_SESSION['admin_account']) && isset($_SESSION[SESS_USER_ID])) {
 	$admin_account = $_SESSION['admin_account'];
-} elseif (isset($_SESSION['sess_user_id'])) {
+} elseif (isset($_SESSION[SESS_USER_ID])) {
 	$admin_account = db_fetch_cell('SELECT value FROM settings WHERE name="admin_user"');
 
 	if (!empty($admin_account)) {
-		$_SESSION['admin_account'] = db_qstr($admin_account) . ', ' . $_SESSION['sess_user_id'];
+		$_SESSION['admin_account'] = db_qstr($admin_account) . ', ' . $_SESSION[SESS_USER_ID];
 	} else {
-		$_SESSION['admin_account'] = $_SESSION['sess_user_id'];
+		$_SESSION['admin_account'] = $_SESSION[SESS_USER_ID];
 	}
 }
 
@@ -1681,6 +1681,30 @@ $settings['authentication'] = array(
 			'480'  => __('%d Hours', 8),
 			'960'  => __('%d Hours', 16),
 			'1440' => __('1 Day'),
+		),
+	),
+	'secpass_2fatime' => array(
+		'friendly_name' => __('2FA Timeout'),
+		'description' => __('How long the Two Factor Auth token lasts before being rechecked up to a max of 1 week'),
+		'method' => 'drop_array',
+		'default' => '1440',
+		'array' => array(
+			'5'    => __('%d Minutes', 5),
+			'10'   => __('%d Minutes', 10),
+			'20'   => __('%d Minutes', 20),
+			'30'   => __('%d Minutes', 30),
+			'60'   => __('%d Hour', 1),
+			'120'  => __('%d Hours', 2),
+			'240'  => __('%d Hours', 4),
+			'480'  => __('%d Hours', 8),
+			'960'  => __('%d Hours', 16),
+			'1440' => __('%d Day', 1),
+			'2880' => __('%d Days', 2),
+			'4320' => __('%d Days', 3),
+			'5760' => __('%d Days', 4),
+			'7200' => __('%d Days', 5),
+			'8640' => __('%d Days', 6),
+			'10080' => __('%d Week', 1),
 		),
 	),
 	'secpass_pwned_header' => array(

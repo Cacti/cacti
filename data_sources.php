@@ -302,7 +302,7 @@ function form_save() {
 							if ($save3['rrd_minimum'] >= $save3['rrd_maximum']) {
 								raise_message(43);
 
-								$_SESSION['sess_error_fields']['rrd_maximum'] = 'rrd_maximum';
+								$_SESSION[SESS_ERROR_FIELDS]['rrd_maximum'] = 'rrd_maximum';
 
 								header('Location: data_sources.php?action=ds_edit&id=' . (empty($local_data_id) ? get_filter_request_var('local_data_id') : $local_data_id) . '&host_id=' . get_request_var('host_id') . '&view_rrd=' . (isset_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : '0'));
 
@@ -1574,7 +1574,7 @@ function ds() {
 			$orphan_join
 			$sql_where1";
 
-		$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, array(), 'data_source');
+		$total_rows = get_total_row_data($_SESSION[SESS_USER_ID], $sql, array(), 'data_source');
 
 		$data_sources = db_fetch_assoc("SELECT dtr.local_graph_id, dtd.local_data_id,
 			dtd.name_cache, dtd.active, dtd.rrd_step, dt.name AS data_template_name,
@@ -1601,7 +1601,7 @@ function ds() {
 			ON h.id = dl.host_id
 			$sql_where1";
 
-		$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, array(), 'data_source');
+		$total_rows = get_total_row_data($_SESSION[SESS_USER_ID], $sql, array(), 'data_source');
 
 		$data_sources = db_fetch_assoc("SELECT dtd.local_data_id, dtd.name_cache, dtd.active,
 			dtd.rrd_step, dt.name AS data_template_name, dl.host_id, dtd.data_source_profile_id

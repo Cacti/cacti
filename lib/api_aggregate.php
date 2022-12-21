@@ -1136,7 +1136,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 		$save1['total_type']        = $_total_type;
 		$save1['total_prefix']      = $_total_prefix;
 		$save1['order_type']        = $_reorder;
-		$save1['user_id']           = $_SESSION['sess_user_id'];
+		$save1['user_id']           = $_SESSION[SESS_USER_ID];
 		$aggregate_graph_id         = sql_save($save1, 'aggregate_graphs');
 
 		# sequence number of next graph item to be added, index starts at 1

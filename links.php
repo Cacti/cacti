@@ -97,7 +97,7 @@ switch (get_request_var('action')) {
 			$id = sql_save($save, 'external_links');
 
 			// always give the login account access
-			db_execute_prepared('REPLACE INTO user_auth_realm (user_id, realm_id) VALUES (?, ?)', array($_SESSION['sess_user_id'], $id + 10000));
+			db_execute_prepared('REPLACE INTO user_auth_realm (user_id, realm_id) VALUES (?, ?)', array($_SESSION[SESS_USER_ID], $id + 10000));
 
 			raise_message(1);
 

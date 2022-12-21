@@ -70,18 +70,18 @@ if ($auth_method != AUTH_METHOD_NONE) {
 	 * handle change password dialog and auth cookie if not using basic auth
 	 */
 	if ($auth_method != AUTH_METHOD_BASIC) {
-		if (isset($_SESSION['sess_change_password'])) {
+		if (isset($_SESSION[SESS_CHANGE_PASSWORD])) {
 			header('Location: ' . $config['url_path'] . 'auth_changepassword.php?ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
 			exit;
 		}
 
 		/* check for remember me functionality */
-		if (!isset($_SESSION['sess_user_id'])) {
+		if (!isset($_SESSION[SESS_USER_ID])) {
 			$cookie_user = check_auth_cookie();
 			if ($cookie_user !== false) {
-				$_SESSION['sess_user_id']     = $cookie_user;
-				$_SESSION['sess_user_agent']  = $_SERVER['HTTP_USER_AGENT'];
-				$_SESSION['sess_client_addr'] = get_client_addr();
+				$_SESSION[SESS_USER_ID]     = $cookie_user;
+				$_SESSION[SESS_USER_AGENT]  = $_SERVER['HTTP_USER_AGENT'];
+				$_SESSION[SESS_CLIENT_ADDR] = get_client_addr();
 			}
 		}
 	}
@@ -91,7 +91,7 @@ if ($auth_method != AUTH_METHOD_NONE) {
 	 * but their user_id is not set, include the auth_login.php script to
 	 * process their log in.
 	 */
-	if ($auth_method == AUTH_METHOD_BASIC && !isset($_SESSION['sess_user_id'])) {
+	if ($auth_method == AUTH_METHOD_BASIC && !isset($_SESSION[SESS_USER_ID])) {
 		$username = get_basic_auth_username();
 		if ($username !== false) {
 			$current_user = db_fetch_row_prepared('SELECT *
@@ -101,9 +101,9 @@ if ($auth_method != AUTH_METHOD_NONE) {
 				array($username));
 
 			if (cacti_sizeof($current_user)) {
-				$_SESSION['sess_user_id']     = $current_user['id'];;
-				$_SESSION['sess_user_agent']  = $_SERVER['HTTP_USER_AGENT'];
-				$_SESSION['sess_client_addr'] = get_client_addr();
+				$_SESSION[SESS_USER_ID]     = $current_user['id'];;
+				$_SESSION[SESS_USER_AGENT]  = $_SERVER['HTTP_USER_AGENT'];
+				$_SESSION[SESS_CLIENT_ADDR] = get_client_addr();
 
 				return true;
 			} else {
@@ -124,16 +124,16 @@ if ($auth_method != AUTH_METHOD_NONE) {
 
 		/* find guest user */
 		if (!empty($guest_user_id)) {
-			if (empty($_SESSION['sess_user_id'])) {
-				$_SESSION['sess_user_id']     = $guest_user_id;
-				$_SESSION['sess_user_agent']  = $_SERVER['HTTP_USER_AGENT'];
-				$_SESSION['sess_client_addr'] = get_client_addr();
+			if (empty($_SESSION[SESS_USER_ID])) {
+				$_SESSION[SESS_USER_ID]     = $guest_user_id;
+				$_SESSION[SESS_USER_AGENT]  = $_SERVER['HTTP_USER_AGENT'];
+				$_SESSION[SESS_CLIENT_ADDR] = get_client_addr();
 			}
 
 			$current_user = db_fetch_row_prepared('SELECT *
 				FROM user_auth
 				WHERE id = ?',
-				array($_SESSION['sess_user_id']));
+				array($_SESSION[SESS_USER_ID]));
 
 			return true;
 		}
@@ -143,15 +143,15 @@ if ($auth_method != AUTH_METHOD_NONE) {
 	 * If we are a guest user in a non-guest area, wipe credentials
 	 * user will be redirected back to the login page.
 	 */
-	if (!isset($guest_account) && isset($_SESSION['sess_user_id'])) {
-		if (get_guest_account() === $_SESSION['sess_user_id']) {
-			kill_session_var('sess_user_id');
+	if (!isset($guest_account) && isset($_SESSION[SESS_USER_ID])) {
+		if (get_guest_account() === $_SESSION[SESS_USER_ID]) {
+			kill_session_var(SESS_USER_ID);
 			cacti_session_destroy();
 			cacti_session_start();
 		}
 	}
 
-	if (empty($_SESSION['sess_user_id'])) {
+	if (empty($_SESSION[SESS_USER_ID])) {
 		if (isset($auth_json) && $auth_json == true) {
 			print json_encode(
 				array(
@@ -169,20 +169,19 @@ if ($auth_method != AUTH_METHOD_NONE) {
 
 		exit;
 	} else {
-
-		if (empty($_SESSION['sess_user_2fa'])) {
+		if (empty($_SESSION[SESS_USER_2FA])) {
 			$user_2fa = db_fetch_cell_prepared(
 				'SELECT tfa_enabled
 					FROM user_auth
 					WHERE id = ?',
-				array($_SESSION['sess_user_id'])
+				array($_SESSION[SESS_USER_ID])
 			);
 
 			if (!empty($user_2fa)) {
 				header('Location: ' . $config['url_path'] . '/auth_2fa.php');
 				exit;
 			} else {
-				$_SESSION['sess_user_2fa'] = true;
+				$_SESSION[SESS_USER_2FA] = time();
 			}
 		}
 
@@ -252,7 +251,7 @@ if ($auth_method != AUTH_METHOD_NONE) {
 					WHERE uar.user_id = ?
 					AND uar.realm_id = ?';
 
-			$auth_sql_params = array($_SESSION['sess_user_id'], $realm_id);
+			$auth_sql_params = array($_SESSION[SESS_USER_ID], $realm_id);
 
 			/* Because we now expect installation to be done by authorized users, check the group_realm *
 			 * exists before using it as this may not be present if upgrading from pre-1.x              */
@@ -271,7 +270,7 @@ if ($auth_method != AUTH_METHOD_NONE) {
 					AND uagm.user_id = ?
 					AND uagr.realm_id = ?';
 
-				$auth_sql_params = array_merge($auth_sql_params, array($_SESSION['sess_user_id'], $realm_id));
+				$auth_sql_params = array_merge($auth_sql_params, array($_SESSION[SESS_USER_ID], $realm_id));
 			}
 
 			$auth_sql_query .= '
@@ -338,6 +337,6 @@ if ($auth_method != AUTH_METHOD_NONE) {
 		$current_user = db_fetch_row_prepared('SELECT *
 			FROM user_auth
 			WHERE id = ?',
-			array($_SESSION['sess_user_id']));
+			array($_SESSION[SESS_USER_ID]));
 	}
 }

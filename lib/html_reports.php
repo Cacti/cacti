@@ -265,7 +265,7 @@ function reports_form_save() {
 		$now = time();
 
 		if (isempty_request_var('id')) {
-			$save['user_id'] = $_SESSION['sess_user_id'];
+			$save['user_id'] = $_SESSION[SESS_USER_ID];
 		} else {
 			$save['user_id'] = db_fetch_cell_prepared('SELECT user_id FROM reports WHERE id = ?', array(get_nfilter_request_var('id')));
 		}
@@ -352,7 +352,7 @@ function reports_form_save() {
 		get_filter_request_var('id');
 		/* ==================================================== */
 
-		unset($_SESSION['sess_error_fields']);
+		unset($_SESSION[SESS_ERROR_FIELDS]);
 
 		$save = array();
 
@@ -426,13 +426,13 @@ function reports_form_actions() {
 				db_execute('DELETE FROM reports_items WHERE ' . str_replace('id', 'report_id', array_to_sql_or($selected_items, 'id')));
 			} elseif (get_nfilter_request_var('drp_action') == REPORTS_OWN) { // take ownership
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
-					reports_log(__FUNCTION__ . ', takeown: ' . $selected_items[$i] . ' user: ' . $_SESSION['sess_user_id'], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
+					reports_log(__FUNCTION__ . ', takeown: ' . $selected_items[$i] . ' user: ' . $_SESSION[SESS_USER_ID], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
 					db_execute_prepared(
 						'UPDATE reports
 						SET user_id = ?
 						WHERE id = ?',
-						array($_SESSION['sess_user_id'], $selected_items[$i])
+						array($_SESSION[SESS_USER_ID], $selected_items[$i])
 					);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == REPORTS_DUPLICATE) { // duplicate
@@ -596,7 +596,7 @@ function reports_send($id) {
 
 	if (!cacti_sizeof($report)) {
 		/* set error condition */
-	} elseif ($report['user_id'] == $_SESSION['sess_user_id']) {
+	} elseif ($report['user_id'] == $_SESSION[SESS_USER_ID]) {
 		reports_log(__FUNCTION__ . ', send now, report_id: ' . $id, false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
 		/* use report name as default EMail title */
@@ -1486,8 +1486,8 @@ function reports_edit() {
 	}
 
 	/* if there was an error on the form, display the date in the correct format */
-	if (isset($_SESSION['sess_field_values']['mailtime'])) {
-		$_SESSION['sess_field_values']['mailtime'] = date(reports_date_time_format(), $_SESSION['sess_field_values']['mailtime']);
+	if (isset($_SESSION[SESS_FIELD_VALUES]['mailtime'])) {
+		$_SESSION[SESS_FIELD_VALUES]['mailtime'] = date(reports_date_time_format(), $_SESSION[SESS_FIELD_VALUES]['mailtime']);
 	}
 
 	switch (get_request_var('tab')) {
@@ -1919,7 +1919,7 @@ function reports() {
 	if (is_reports_admin()) {
 		$sql_join = 'LEFT JOIN user_auth ON user_auth.id=reports.user_id';
 	} else {
-		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' user_auth.id=' . $_SESSION['sess_user_id'];
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' user_auth.id=' . $_SESSION[SESS_USER_ID];
 		$sql_join = 'INNER JOIN user_auth ON user_auth.id=reports.user_id';
 	}
 

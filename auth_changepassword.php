@@ -42,7 +42,7 @@ switch ($action) {
 		break;
 	default:
 		// If the user is not logged in, redirect them to the login page
-		if (!isset($_SESSION['sess_user_id'])) {
+		if (!isset($_SESSION[SESS_USER_ID])) {
 			if (isset($_SERVER['HTTP_REFERER'])) {
 				header('Location: ' . $_SERVER['HTTP_REFERER']);
 			} else {
@@ -57,7 +57,7 @@ switch ($action) {
 $user = db_fetch_row_prepared('SELECT *
 	FROM user_auth
 	WHERE id = ?',
-	array($_SESSION['sess_user_id']));
+	array($_SESSION[SESS_USER_ID]));
 
 $version = CACTI_VERSION;
 
@@ -81,7 +81,7 @@ if ($user['password_change'] != 'on') {
 	raise_message('nopassword');
 
 	/* destroy session information */
-	kill_session_var('sess_user_id');
+	kill_session_var(SESS_USER_ID);
 	cacti_cookie_logout();
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
@@ -105,7 +105,7 @@ $errorMessage = '';
 switch ($action) {
 case 'changepassword':
 	// Get current user
-	$user_id = intval($_SESSION['sess_user_id']);
+	$user_id = intval($_SESSION[SESS_USER_ID]);
 
 	// Get passwords entered for change
 	$password         = get_nfilter_request_var('password');
@@ -226,9 +226,9 @@ case 'changepassword':
 		db_execute_prepared("DELETE FROM user_auth_cache
 			WHERE user_id = ?
 			$sql_where",
-			array($_SESSION['sess_user_id']));
+			array($_SESSION[SESS_USER_ID]));
 
-		kill_session_var('sess_change_password');
+		kill_session_var(SESS_CHANGE_PASSWORD);
 
 		raise_message('password_success');
 

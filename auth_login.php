@@ -204,13 +204,13 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 
 		if (!$error) {
 			/* set the php session */
-			$_SESSION['sess_user_id']     = $user['id'];
-			$_SESSION['sess_user_agent']  = $_SERVER['HTTP_USER_AGENT'];
-			$_SESSION['sess_client_addr'] = get_client_addr();
+			$_SESSION[SESS_USER_ID]     = $user['id'];
+			$_SESSION[SESS_USER_AGENT]  = $_SERVER['HTTP_USER_AGENT'];
+			$_SESSION[SESS_CLIENT_ADDR] = get_client_addr();
 
 			/* handle 'force change password' */
 			if ($user['must_change_password'] == 'on' && $auth_method == AUTH_METHOD_CACTI && $user['password_change'] == 'on') {
-				$_SESSION['sess_change_password'] = true;
+				$_SESSION[SESS_CHANGE_PASSWORD] = true;
 			}
 
 			if (db_table_exists('user_auth_group')) {
@@ -221,7 +221,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 					ON uag.id=uagm.group_id
 					WHERE user_id = ?
 					AND login_opts != 4',
-					array($_SESSION['sess_user_id'])
+					array($_SESSION[SESS_USER_ID])
 				);
 
 				if (!empty($group_options)) {
@@ -229,8 +229,8 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 				}
 			}
 
-			if (user_setting_exists('user_language', $_SESSION['sess_user_id'])) {
-				$_SESSION['sess_user_language'] = read_user_setting('user_language');
+			if (user_setting_exists('user_language', $_SESSION[SESS_USER_ID])) {
+				$_SESSION[SESS_USER_LANGUAGE] = read_user_setting('user_language');
 			}
 
 			cacti_log("DEBUG: User '" . $username . "' about to re-direct to preferred login page", false, 'AUTH', POLLER_VERBOSITY_DEBUG);

@@ -413,7 +413,7 @@ case 'preview':
 	html_graph_preview_filter('graph_view.php', 'preview');
 
 	html_end_box();
-		
+
 	api_plugin_hook_function('graph_tree_page_buttons',
 	  array(
 	     'mode'      => 'preview',
@@ -612,7 +612,7 @@ case 'list':
 	$reports = db_fetch_assoc_prepared('SELECT *
 		FROM reports
 		WHERE user_id = ?',
-		array($_SESSION['sess_user_id']));
+		array($_SESSION[SESS_USER_ID]));
 
 	top_graph_header();
 

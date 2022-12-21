@@ -1165,8 +1165,8 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 			$realm_id = $realm_id + 100;
 
 			$user_ids[] = read_config_option('admin_user');
-			if (isset($_SESSION['sess_user_id'])) {
-				$user_ids[] = $_SESSION['sess_user_id'];
+			if (isset($_SESSION[SESS_USER_ID])) {
+				$user_ids[] = $_SESSION[SESS_USER_ID];
 			}
 
 			if (cacti_sizeof($user_ids)) {

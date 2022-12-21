@@ -547,7 +547,7 @@ function form_actions() {
 				FROM reports
 				WHERE user_id = ?
 				ORDER BY name',
-				array($_SESSION['sess_user_id'])
+				array($_SESSION[SESS_USER_ID])
 			);
 
 			if (cacti_sizeof($reports)) {
@@ -1539,7 +1539,7 @@ function get_device_records(&$total_rows, $rows) {
 		ON s.id = host.site_id
 		$sql_where";
 
-	$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, array(), 'device');
+	$total_rows = get_total_row_data($_SESSION[SESS_USER_ID], $sql, array(), 'device');
 
 	$poller_interval = read_config_option('poller_interval');
 

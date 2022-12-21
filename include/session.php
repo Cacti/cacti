@@ -82,12 +82,12 @@ function cacti_db_session_write($id, $data) {
 
 	cacti_db_session_check();
 
-	if (!isset($_SESSION['sess_user_id'])) {
+	if (!isset($_SESSION[SESS_USER_ID])) {
 		session_decode($data);
 	}
 
-	if (isset($_SESSION['sess_user_id'])) {
-		$user_id = $_SESSION['sess_user_id'];
+	if (isset($_SESSION[SESS_USER_ID])) {
+		$user_id = $_SESSION[SESS_USER_ID];
 	} else {
 		$user_id = 0;
 	}

@@ -102,8 +102,8 @@ function repopulate_poller_cache() {
 		WHERE dtr.local_data_id = 0
 		GROUP BY dtr.data_template_id, dif.data_name');
 
-	if (isset($_SESSION['sess_user_id'])) {
-		cacti_log('NOTE: Poller Cache repopulated by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
+	if (isset($_SESSION[SESS_USER_ID])) {
+		cacti_log('NOTE: Poller Cache repopulated by user ' . get_username($_SESSION[SESS_USER_ID]), false, 'WEBUI');
 	} else {
 		cacti_log('NOTE: Poller Cache repopulated by cli script');
 	}

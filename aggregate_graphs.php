@@ -470,7 +470,7 @@ function form_actions() {
 				FROM reports
 				WHERE user_id = ?
 				ORDER BY name',
-				array($_SESSION['sess_user_id'])
+				array($_SESSION[SESS_USER_ID])
 			);
 
 			if (cacti_sizeof($reports)) {
@@ -821,9 +821,9 @@ function graph_edit() {
 				<td id='rrdtoolinfo' class='left' style='padding-left:15px;max-width:900px;overflow:scroll'>
 					<div style='overflow:auto;'>
 						<span class='textInfo'><?php print __('RRDtool Command:'); ?></span><br>
-						<?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']); ?>
+						<?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]); ?>
 						<span class='textInfo'><?php print __('RRDtool Says:'); ?></span><br><?php unset($graph_data_array['print_source']); ?>
-						<pre class='monoSpace tableRow left'><?php print($config['poller_id'] == 1 ? @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']) : __esc('Not Checked')); ?></pre>
+						<pre class='monoSpace tableRow left'><?php print($config['poller_id'] == 1 ? @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]) : __esc('Not Checked')); ?></pre>
 					</div>
 					<script type='text/javascript'>
 						$(function() {
@@ -1262,7 +1262,7 @@ function aggregate_items() {
 		ON gtg.local_graph_id=agi.local_graph_id
 		$sql_where";
 
-	$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, array(), 'aggregate_graph');
+	$total_rows = get_total_row_data($_SESSION[SESS_USER_ID], $sql, array(), 'aggregate_graph');
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
@@ -1703,7 +1703,7 @@ function aggregate_graph() {
 		ON agt.id=ag.aggregate_template_id
 		$sql_where";
 
-	$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, array(), 'aggregate_graph');
+	$total_rows = get_total_row_data($_SESSION[SESS_USER_ID], $sql, array(), 'aggregate_graph');
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;

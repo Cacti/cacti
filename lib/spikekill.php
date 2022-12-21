@@ -88,8 +88,8 @@ class spikekill {
 		$this->username  = 'OsUser:' . get_current_user();
 		$this->user_info = array();
 
-		if (isset($_SESSION['sess_user_id'])) {
-			$this->user = $_SESSION['sess_user_id'];
+		if (isset($_SESSION[SESS_USER_ID])) {
+			$this->user = $_SESSION[SESS_USER_ID];
 
 			/* confirm the user id is accurate */
 			$this->user_info = db_fetch_row_prepared('SELECT id, username

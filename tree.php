@@ -123,11 +123,11 @@ switch (get_request_var('action')) {
 		tree_dnd();
 		break;
 	case 'lock':
-		api_tree_lock(get_request_var('id'), $_SESSION['sess_user_id']);
+		api_tree_lock(get_request_var('id'), $_SESSION[SESS_USER_ID]);
 		tree_edit(true);
 		break;
 	case 'unlock':
-		api_tree_unlock(get_request_var('id'), $_SESSION['sess_user_id']);
+		api_tree_unlock(get_request_var('id'), $_SESSION[SESS_USER_ID]);
 		tree_edit(true);
 		break;
 	case 'copy_node':
@@ -507,7 +507,7 @@ function form_save() {
 		$save['sort_type']     = form_input_validate(get_nfilter_request_var('sort_type'), 'sort_type', '', true, 3);
 		$save['last_modified'] = date('Y-m-d H:i:s', time());
 		$save['enabled']       = get_nfilter_request_var('enabled') == 'true' ? 'on':'-';
-		$save['modified_by']   = $_SESSION['sess_user_id'];
+		$save['modified_by']   = $_SESSION[SESS_USER_ID];
 
 		if (isempty_request_var('sequence')) {
 			$save['sequence'] = tree_get_max_sequence() + 1;
@@ -516,7 +516,7 @@ function form_save() {
 		}
 
 		if (empty($save['id'])) {
-			$save['user_id'] = $_SESSION['sess_user_id'];
+			$save['user_id'] = $_SESSION[SESS_USER_ID];
 		}
 
 		if (!is_error_message()) {
@@ -617,7 +617,7 @@ function form_actions() {
 				db_execute("UPDATE graph_tree
 					SET enabled='on',
 					last_modified=NOW(),
-					modified_by=" . $_SESSION['sess_user_id'] . '
+					modified_by=" . $_SESSION[SESS_USER_ID] . '
 					WHERE ' . array_to_sql_or($selected_items, 'id'));
 
 				/**
@@ -630,7 +630,7 @@ function form_actions() {
 				db_execute("UPDATE graph_tree
 					SET enabled='',
 					last_modified=NOW(),
-					modified_by=" . $_SESSION['sess_user_id'] . '
+					modified_by=" . $_SESSION[SESS_USER_ID] . '
 					WHERE ' . array_to_sql_or($selected_items, 'id'));
 
 				/**
@@ -643,7 +643,7 @@ function form_actions() {
 				db_execute("UPDATE graph_tree
 					SET locked=0,
 					last_modified=NOW(),
-					modified_by=" . $_SESSION['sess_user_id'] . '
+					modified_by=" . $_SESSION[SESS_USER_ID] . '
 					WHERE ' . array_to_sql_or($selected_items, 'id'));
 			}
 		}
@@ -801,7 +801,7 @@ function tree_edit($partial = false) {
 		$editable = false;
 	} elseif (isset($tree['locked']) && $tree['locked'] == 1) {
 		$lockdiv = "<div style='padding:5px 5px 5px 0px'><table><tr><td><input type='button' class='ui-button ui-corner-all ui-widget' id='unlock' value='" . __esc('Finish Editing Tree') . "'></td><td><input type='button' class='ui-button ui-corner-all ui-widget' id='addbranch' value='" . __esc('Add Root Branch') . "' onClick='createNode()'></td><td style='font-weight:bold;'>" . __('This tree has been locked for Editing on %1$s by %2$s.', $tree['locked_date'], get_username($tree['modified_by']));
-		if ($tree['modified_by'] == $_SESSION['sess_user_id']) {
+		if ($tree['modified_by'] == $_SESSION[SESS_USER_ID]) {
 			$lockdiv .= '</td></tr></table></div>';
 		} else {
 			$editable = false;
@@ -2192,7 +2192,7 @@ function tree() {
 		ON t.id=ti.graph_tree_id
 		$sql_where";
 
-	$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, array(), 'tree');
+	$total_rows = get_total_row_data($_SESSION[SESS_USER_ID], $sql, array(), 'tree');
 
 	$nav = html_nav_bar('tree.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Trees'), 'page', 'main');
 

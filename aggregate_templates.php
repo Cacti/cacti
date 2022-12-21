@@ -98,7 +98,7 @@ function aggregate_form_save() {
 	$save1['total_type']        = form_input_validate(get_nfilter_request_var('total_type'), 'total_type', '', false, 3);
 	$save1['total_prefix']      = form_input_validate(get_nfilter_request_var('total_prefix'), 'total_prefix', '', true, 3);
 	$save1['order_type']        = form_input_validate(get_nfilter_request_var('order_type'), 'order_type', '', false, 3);
-	$save1['user_id']           = $_SESSION['sess_user_id'];
+	$save1['user_id']           = $_SESSION[SESS_USER_ID];
 
 	/* form validation failed */
 	if (is_error_message()) {

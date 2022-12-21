@@ -645,13 +645,13 @@ function graph_properties() {
 								<span class='textInfo'><?= __('RRDtool Command:'); ?></span><br>
 <?php
 	$null_param = array();
-	print @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
+	print @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]);
 	unset($graph_data_array['print_source']);
 ?>
 								<span class='textInfo'><?= __('RRDtool Says:'); ?></span><br>
 <?php
 	if ($config['poller_id'] == 1) {
-		print @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
+		print @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]);
 	} else {
 		print __esc('Not Checked');
 	}

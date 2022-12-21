@@ -215,7 +215,7 @@ case 'countdown':
 	$graph_data_array['output_flag']     = RRDTOOL_OUTPUT_GRAPH_DATA;
 	$null_param = array();
 
-	$output = rrdtool_function_graph(get_request_var('local_graph_id'), '', $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
+	$output = rrdtool_function_graph(get_request_var('local_graph_id'), '', $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]);
 
 	$error = '';
 	if (file_exists($graph_rrd)) {
@@ -229,7 +229,7 @@ case 'countdown':
 	if (empty($output) && empty($error)) {
 		$graph_data_array['get_error'] = true;
 		$null_param = array();
-		rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
+		rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]);
 
 		$error = ob_get_contents();
 

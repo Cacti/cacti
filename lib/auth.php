@@ -636,8 +636,8 @@ function auth_augment_roles($role_name, $files) {
 				$user_auth_roles[$role_name][] = $user_auth_realm_filenames[$file];
 			}
 		} else {
-			if (isset($_SESSION['sess_auth_names'][$role_name])) {
-				$realm_id = $_SESSION['sess_auth_names'][$role_name];
+			if (isset($_SESSION[SESS_AUTH_NAMES][$role_name])) {
+				$realm_id = $_SESSION[SESS_AUTH_NAMES][$role_name];
 			} else {
 				$realm_id = db_fetch_cell_prepared('SELECT id+100 AS realm
 					FROM plugin_realms
@@ -654,7 +654,7 @@ function auth_augment_roles($role_name, $files) {
 				);
 
 				if ($realm_id > 0) {
-					$_SESSION['sess_auth_names'][$role_name] = $realm_id;
+					$_SESSION[SESS_AUTH_NAMES][$role_name] = $realm_id;
 				}
 			}
 
@@ -681,8 +681,8 @@ function auth_augment_roles($role_name, $files) {
 function auth_augment_roles_byname($role_name, $auth_name) {
 	global $user_auth_roles, $user_auth_realm_filenames;
 
-	if (isset($_SESSION['sess_auth_names'][$auth_name])) {
-		$realm_id = $_SESSION['sess_auth_names'][$auth_name];
+	if (isset($_SESSION[SESS_AUTH_NAMES][$auth_name])) {
+		$realm_id = $_SESSION[SESS_AUTH_NAMES][$auth_name];
 	} else {
 		$realm_id = db_fetch_cell_prepared('SELECT id+100 AS realm
 			FROM plugin_realms
@@ -690,7 +690,7 @@ function auth_augment_roles_byname($role_name, $auth_name) {
 			array($auth_name));
 
 		if ($realm_id > 0) {
-			$_SESSION['sess_auth_names'][$auth_name] = $realm_id;
+			$_SESSION[SESS_AUTH_NAMES][$auth_name] = $realm_id;
 		}
 	}
 
@@ -717,16 +717,16 @@ function is_tree_allowed($tree_id, $user_id = 0) {
 		return true;
 	}
 
-	if (isset($_SESSION['sess_tree_perms'][$tree_id])) {
-		return $_SESSION['sess_tree_perms'][$tree_id];
+	if (isset($_SESSION[SESS_TREE_PERMS][$tree_id])) {
+		return $_SESSION[SESS_TREE_PERMS][$tree_id];
 	}
 
 	if (read_config_option('auth_method') != AUTH_METHOD_NONE) {
 		if ($user_id == 0) {
-			if (isset($_SESSION['sess_user_id'])) {
-				$user_id = $_SESSION['sess_user_id'];
+			if (isset($_SESSION[SESS_USER_ID])) {
+				$user_id = $_SESSION[SESS_USER_ID];
 			} else {
-				$_SESSION['sess_tree_perms'][$tree_id] = false;
+				$_SESSION[SESS_TREE_PERMS][$tree_id] = false;
 
 				return false;
 			}
@@ -745,7 +745,7 @@ function is_tree_allowed($tree_id, $user_id = 0) {
 			array($user_id, $tree_id));
 
 		if (auth_check_perms($trees, $policy)) {
-			$_SESSION['sess_tree_perms'][$tree_id] = true;
+			$_SESSION[SESS_TREE_PERMS][$tree_id] = true;
 
 			return true;
 		}
@@ -760,14 +760,14 @@ function is_tree_allowed($tree_id, $user_id = 0) {
 			array($user_id));
 
 		if (!cacti_sizeof($groups)) {
-			$_SESSION['sess_tree_perms'][$tree_id] = false;
+			$_SESSION[SESS_TREE_PERMS][$tree_id] = false;
 
 			return false;
 		}
 
 		foreach ($groups as $g) {
 			if (auth_check_perms($trees, $g['policy_trees'])) {
-				$_SESSION['sess_tree_perms'][$tree_id] = true;
+				$_SESSION[SESS_TREE_PERMS][$tree_id] = true;
 
 				return true;
 			}
@@ -787,17 +787,17 @@ function is_tree_allowed($tree_id, $user_id = 0) {
 
 		foreach ($groups as $g) {
 			if (auth_check_perms($gtrees, $g['policy_trees'])) {
-				$_SESSION['sess_tree_perms'][$tree_id] = true;
+				$_SESSION[SESS_TREE_PERMS][$tree_id] = true;
 
 				return true;
 			}
 		}
 
-		$_SESSION['sess_tree_perms'][$tree_id] = false;
+		$_SESSION[SESS_TREE_PERMS][$tree_id] = false;
 
 		return false;
 	} else {
-		$_SESSION['sess_tree_perms'][$tree_id] = true;
+		$_SESSION[SESS_TREE_PERMS][$tree_id] = true;
 
 		return true;
 	}
@@ -845,7 +845,7 @@ function is_graph_template_allowed($graph_template_id, $user = 0) {
  */
 function is_view_allowed($view = 'show_tree') {
 	if (read_config_option('auth_method') != AUTH_METHOD_NONE) {
-		if (!isset($_SESSION['sess_user_id'])) {
+		if (!isset($_SESSION[SESS_USER_ID])) {
 			return false;
 		}
 
@@ -857,7 +857,7 @@ function is_view_allowed($view = 'show_tree') {
 					ON uag.id = uagm.user_id
 					WHERE uag.enabled = 'on'
 					AND uagm.user_id = ?",
-					array($_SESSION['sess_user_id'])
+					array($_SESSION[SESS_USER_ID])
 				), $view, $view
 			);
 
@@ -876,7 +876,7 @@ function is_view_allowed($view = 'show_tree') {
 		$value = db_fetch_cell_prepared("SELECT $view
 			FROM user_auth
 			WHERE id = ?",
-			array($_SESSION['sess_user_id'])
+			array($_SESSION[SESS_USER_ID])
 		);
 
 		return ($value == 'on');
@@ -904,7 +904,7 @@ function is_tree_branch_empty($tree_id, $parent = 0) {
 		), 'local_graph_id', 'local_graph_id'
 	);
 
-	$simple_perms = get_simple_graph_perms($_SESSION['sess_user_id']);
+	$simple_perms = get_simple_graph_perms($_SESSION[SESS_USER_ID]);
 
 	if (cacti_sizeof($graphs) && ($simple_perms || cacti_sizeof(get_allowed_graphs('gl.id IN(' . implode(',', $graphs) . ')'))) > 0) {
 		return false;
@@ -990,65 +990,65 @@ function is_realm_allowed($realm, $check_user = false) {
 		/* if we are only checking another users permission, don't check cache */
 		if ($check_user == false) {
 			/* user is not set, no permissions */
-			if (!isset($_SESSION['sess_user_id'])) {
+			if (!isset($_SESSION[SESS_USER_ID])) {
 				return false;
 			}
 
 			/* check to see if the admin invalidated a permission */
-			if (!is_user_perms_valid($_SESSION['sess_user_id'])) {
+			if (!is_user_perms_valid($_SESSION[SESS_USER_ID])) {
 				if (db_table_exists('user_auth_cache')) {
 					$enabled = db_fetch_cell_prepared('SELECT enabled
 						FROM user_auth
 						WHERE id = ?',
-						array($_SESSION['sess_user_id']));
+						array($_SESSION[SESS_USER_ID]));
 
-					if ($enabled == '' && get_guest_account() !== $_SESSION['sess_user_id']) {
+					if ($enabled == '' && get_guest_account() !== $_SESSION[SESS_USER_ID]) {
 						db_execute_prepared('DELETE FROM user_auth_cache
 							WHERE user_id = ?',
-							array($_SESSION['sess_user_id']));
+							array($_SESSION[SESS_USER_ID]));
 
-						kill_session_var('sess_user_id');
-						kill_session_var('sess_user_realms');
+						kill_session_var(SESS_USER_ID);
+						kill_session_var(SESS_USER_REALMS);
 						kill_session_var(OPTIONS_USER);
 						kill_session_var(OPTIONS_WEB);
-						kill_session_var('sess_auth_names');
-						kill_session_var('sess_tree_perms');
-						kill_session_var('sess_simple_perms');
-						kill_session_var('sess_simple_template_perms');
+						kill_session_var(SESS_AUTH_NAMES);
+						kill_session_var(SESS_TREE_PERMS);
+						kill_session_var(sess_simple_perms);
+						kill_session_var(SESS_SIMPLE_TEMPLATE_PERMS);
 
 						print '<span style="display:none;">cactiLoginSuspend</span>';
 
 						exit;
 					} else {
-						kill_session_var('sess_user_realms');
+						kill_session_var(SESS_USER_REALMS);
 						kill_session_var(OPTIONS_USER);
 						kill_session_var(OPTIONS_WEB);
-						kill_session_var('sess_auth_names');
-						kill_session_var('sess_tree_perms');
-						kill_session_var('sess_simple_perms');
-						kill_session_var('sess_simple_template_perms');
+						kill_session_var(SESS_AUTH_NAMES);
+						kill_session_var(SESS_TREE_PERMS);
+						kill_session_var(sess_simple_perms);
+						kill_session_var(SESS_SIMPLE_TEMPLATE_PERMS);
 					}
 
 					print '<span style="display:none;">cactiRedirect</span>';
 
 					exit;
 				} else {
-					kill_session_var('sess_user_realms');
+					kill_session_var(SESS_USER_REALMS);
 					kill_session_var(OPTIONS_USER);
 					kill_session_var(OPTIONS_WEB);
-					kill_session_var('sess_auth_names');
-					kill_session_var('sess_tree_perms');
-					kill_session_var('sess_simple_perms');
-					kill_session_var('sess_simple_template_perms');
+					kill_session_var(SESS_AUTH_NAMES);
+					kill_session_var(SESS_TREE_PERMS);
+					kill_session_var(sess_simple_perms);
+					kill_session_var(SESS_SIMPLE_TEMPLATE_PERMS);
 				}
 			}
 
 			/* if the permission is already valid, the session variable will be set */
-			if (isset($_SESSION['sess_user_realms'][$realm])) {
-				return $_SESSION['sess_user_realms'][$realm];
+			if (isset($_SESSION[SESS_USER_REALMS][$realm])) {
+				return $_SESSION[SESS_USER_REALMS][$realm];
 			}
 
-			$user_id = $_SESSION['sess_user_id'];
+			$user_id = $_SESSION[SESS_USER_ID];
 		} else {
 			$user_id = $check_user;
 		}
@@ -1084,33 +1084,33 @@ function is_realm_allowed($realm, $check_user = false) {
 
 			if (!empty($user_realm)) {
 				if ($check_user == false) {
-					$_SESSION['sess_user_realms'][$realm] = true;
+					$_SESSION[SESS_USER_REALMS][$realm] = true;
 				} else {
 					return true;
 				}
 			} else {
 				if ($check_user == false) {
-					$_SESSION['sess_user_realms'][$realm] = false;
+					$_SESSION[SESS_USER_REALMS][$realm] = false;
 				} else {
 					return false;
 				}
 			}
 		} else {
 			if ($check_user == false) {
-				$_SESSION['sess_user_realms'][$realm] = true;
+				$_SESSION[SESS_USER_REALMS][$realm] = true;
 			} else {
 				return true;
 			}
 		}
 	} else {
 		if ($check_user == false) {
-			$_SESSION['sess_user_realms'][$realm] = true;
+			$_SESSION[SESS_USER_REALMS][$realm] = true;
 		} else {
 			return true;
 		}
 	}
 
-	return $_SESSION['sess_user_realms'][$realm];
+	return $_SESSION[SESS_USER_REALMS][$realm];
 }
 
 /**
@@ -1362,8 +1362,8 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 	}
 
 	if ($auth_method > AUTH_METHOD_NONE && $user_id == 0) {
-		if (isset($_SESSION['sess_user_id'])) {
-			$user_id = $_SESSION['sess_user_id'];
+		if (isset($_SESSION[SESS_USER_ID])) {
+			$user_id = $_SESSION[SESS_USER_ID];
 		} else {
 			return array();
 		}
@@ -1462,8 +1462,8 @@ function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sq
 	}
 
 	if ($auth_method > AUTH_METHOD_NONE && $user_id == 0) {
-		if (isset($_SESSION['sess_user_id'])) {
-			$user_id = $_SESSION['sess_user_id'];
+		if (isset($_SESSION[SESS_USER_ID])) {
+			$user_id = $_SESSION[SESS_USER_ID];
 		} else {
 			return array();
 		}
@@ -1566,8 +1566,8 @@ function get_allowed_aggregate_graphs($sql_where = '', $sql_order = 'gtg.title_c
 	}
 
 	if ($auth_method > AUTH_METHOD_NONE && $user_id == 0) {
-		if (isset($_SESSION['sess_user_id'])) {
-			$user_id = $_SESSION['sess_user_id'];
+		if (isset($_SESSION[SESS_USER_ID])) {
+			$user_id = $_SESSION[SESS_USER_ID];
 		} else {
 			return array();
 		}
@@ -1690,8 +1690,8 @@ function get_simple_device_perms($user) {
  * @return (bool)   True if simple permissions are in place, otherwise false
  */
 function get_simple_graph_perms($user_id) {
-	if (isset($_SESSION['sess_simple_perms'])) {
-		return $_SESSION['sess_simple_perms'];
+	if (isset($_SESSION[sess_simple_perms])) {
+		return $_SESSION[sess_simple_perms];
 	}
 
 	$policy_graphs = db_fetch_cell_prepared('SELECT policy_graphs
@@ -1706,7 +1706,7 @@ function get_simple_graph_perms($user_id) {
 		array($user_id));
 
 	if ($policy_graphs == 1 && $perm_count == 0) {
-		$_SESSION['sess_simple_perms'] = true;
+		$_SESSION[sess_simple_perms] = true;
 
 		return true;
 	} else {
@@ -1724,14 +1724,14 @@ function get_simple_graph_perms($user_id) {
 		if (cacti_sizeof($policies)) {
 			foreach ($policies as $p) {
 				if ($p['policy_graphs'] == 1 && $p['exceptions'] == 0) {
-					$_SESSION['sess_simple_perms'] = true;
+					$_SESSION[sess_simple_perms] = true;
 
 					return true;
 				}
 			}
 		}
 
-		$_SESSION['sess_simple_perms'] = false;
+		$_SESSION[sess_simple_perms] = false;
 
 		return false;
 	}
@@ -1748,8 +1748,8 @@ function get_simple_graph_perms($user_id) {
  * @return (bool)   True if simple permissions are in place, otherwise false
  */
 function get_simple_graph_template_perms($user_id) {
-	if (isset($_SESSION['sess_simple_template_perms'])) {
-		return $_SESSION['sess_simple_template_perms'];
+	if (isset($_SESSION[SESS_SIMPLE_TEMPLATE_PERMS])) {
+		return $_SESSION[SESS_SIMPLE_TEMPLATE_PERMS];
 	}
 
 	$policy_graph_templates = db_fetch_cell_prepared('SELECT policy_graph_templates
@@ -1764,7 +1764,7 @@ function get_simple_graph_template_perms($user_id) {
 		array($user_id));
 
 	if ($policy_graph_templates == 1 && $perm_count == 0) {
-		$_SESSION['sess_simple_template_perms'] = true;
+		$_SESSION[SESS_SIMPLE_TEMPLATE_PERMS] = true;
 
 		return true;
 	} else {
@@ -1782,14 +1782,14 @@ function get_simple_graph_template_perms($user_id) {
 		if (cacti_sizeof($policies)) {
 			foreach ($policies as $p) {
 				if ($p['policy_graph_templates'] == 1 && $p['exceptions'] == 0) {
-					$_SESSION['sess_simple_template_perms'] = true;
+					$_SESSION[SESS_SIMPLE_TEMPLATE_PERMS] = true;
 
 					return true;
 				}
 			}
 		}
 
-		$_SESSION['sess_simple_template_perms'] = false;
+		$_SESSION[SESS_SIMPLE_TEMPLATE_PERMS] = false;
 
 		return false;
 	}
@@ -1816,8 +1816,8 @@ function get_simple_graph_template_perms($user_id) {
  */
 function get_allowed_graph_templates($sql_where = '', $sql_order = 'gt.name', $sql_limit = '', &$total_rows = 0, $user_id = 0, $graph_template_id = 0) {
 	if ($user_id == 0) {
-		if (isset($_SESSION['sess_user_id'])) {
-			$user_id = $_SESSION['sess_user_id'];
+		if (isset($_SESSION[SESS_USER_ID])) {
+			$user_id = $_SESSION[SESS_USER_ID];
 		} else {
 			return array();
 		}
@@ -1853,8 +1853,8 @@ function get_allowed_graph_templates($sql_where = '', $sql_order = 'gt.name', $s
 	}
 
 	if ($auth_method > AUTH_METHOD_NONE && $user_id == 0) {
-		if (isset($_SESSION['sess_user_id'])) {
-			$user_id = $_SESSION['sess_user_id'];
+		if (isset($_SESSION[SESS_USER_ID])) {
+			$user_id = $_SESSION[SESS_USER_ID];
 		} else {
 			return array();
 		}
@@ -2496,8 +2496,8 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
 
 	if ($auth_method != AUTH_METHOD_NONE) {
 		if ($user_id == 0) {
-			if (isset($_SESSION['sess_user_id'])) {
-				$user_id = $_SESSION['sess_user_id'];
+			if (isset($_SESSION[SESS_USER_ID])) {
+				$user_id = $_SESSION[SESS_USER_ID];
 			} else {
 				return array();
 			}
@@ -2618,8 +2618,8 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
 	}
 
 	if ($auth_method > AUTH_METHOD_NONE && $user_id == 0) {
-		if (isset($_SESSION['sess_user_id'])) {
-			$user_id = $_SESSION['sess_user_id'];
+		if (isset($_SESSION[SESS_USER_ID])) {
+			$user_id = $_SESSION[SESS_USER_ID];
 		} else {
 			return array();
 		}
@@ -2775,8 +2775,8 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
 	}
 
 	if ($auth_method > AUTH_METHOD_NONE && $user_id == 0) {
-		if (isset($_SESSION['sess_user_id'])) {
-			$user_id = $_SESSION['sess_user_id'];
+		if (isset($_SESSION[SESS_USER_ID])) {
+			$user_id = $_SESSION[SESS_USER_ID];
 		} else {
 			return array();
 		}
@@ -2912,8 +2912,8 @@ function get_allowed_sites($sql_where = '', $sql_order = 'name', $sql_limit = ''
 		$auth_method = read_config_option('auth_method');
 	}
 
-	if (isset($_SESSION['sess_user_id']) && $user_id == 0) {
-		$user_id = $_SESSION['sess_user_id'];
+	if (isset($_SESSION[SESS_USER_ID]) && $user_id == 0) {
+		$user_id = $_SESSION[SESS_USER_ID];
 	} elseif ($auth_method > AUTH_METHOD_NONE) {
 		return array();
 	}
@@ -2966,8 +2966,8 @@ function get_allowed_site_devices($site_id, $sql_where = '', $sql_order = 'descr
 	}
 
 	if ($auth_method > AUTH_METHOD_NONE && $user_id == 0) {
-		if (isset($_SESSION['sess_user_id'])) {
-			$user_id = $_SESSION['sess_user_id'];
+		if (isset($_SESSION[SESS_USER_ID])) {
+			$user_id = $_SESSION[SESS_USER_ID];
 		} else {
 			return array();
 		}
@@ -3390,8 +3390,8 @@ function get_allowed_ajax_graphs($sql_where = '') {
 function get_allowed_graph_items($sql_where, $sql_order = 'name', $sql_limit = 20, $user_id = 0) {
 	$return = array();
 
-	if ($user_id == 0 && isset($_SESSION['sess_user_id'])) {
-		$user_id = $_SESSION['sess_user_id'];
+	if ($user_id == 0 && isset($_SESSION[SESS_USER_ID])) {
+		$user_id = $_SESSION[SESS_USER_ID];
 	}
 
 	if ($sql_where != '') {
@@ -4497,11 +4497,11 @@ function reset_user_perms($user_id) {
 		WHERE id = ?',
 		array($user_id));
 
-	if ($user_id == $_SESSION['sess_user_id']) {
-		kill_session_var('sess_user_realms');
+	if ($user_id == $_SESSION[SESS_USER_ID]) {
+		kill_session_var(SESS_USER_REALMS);
 		kill_session_var(OPTIONS_USER);
 		kill_session_var(OPTIONS_WEB);
-		kill_session_var('sess_auth_names');
+		kill_session_var(SESS_AUTH_NAMES);
 	}
 }
 
@@ -4525,8 +4525,8 @@ function is_user_perms_valid($user_id) {
 			array($user_id));
 	}
 
-	if (isset($_SESSION['sess_user_perms_key'])) {
-		if ($key != $_SESSION['sess_user_perms_key']) {
+	if (isset($_SESSION[SESS_USER_PERMS_KEY])) {
+		if ($key != $_SESSION[SESS_USER_PERMS_KEY]) {
 			$valid = false;
 		} else {
 			$valid = true;
@@ -4535,7 +4535,7 @@ function is_user_perms_valid($user_id) {
 		$valid = true;
 	}
 
-	$_SESSION['sess_user_perms_key'] = $key;
+	$_SESSION[SESS_USER_PERMS_KEY] = $key;
 
 	return $valid;
 }
@@ -4715,12 +4715,12 @@ function auth_login_redirect($login_opts = '') {
 		$login_opts = db_fetch_cell_prepared('SELECT login_opts
 			FROM user_auth
 			WHERE id = ?',
-			array($_SESSION['sess_user_id']));
+			array($_SESSION[SESS_USER_ID]));
 	}
 
 	$newtheme = false;
 
-	if (user_setting_exists('selected_theme', $_SESSION['sess_user_id']) && read_config_option('selected_theme') != read_user_setting('selected_theme')) {
+	if (user_setting_exists('selected_theme', $_SESSION[SESS_USER_ID]) && read_config_option('selected_theme') != read_user_setting('selected_theme')) {
 		unset($_SESSION['selected_theme']);
 		$newtheme = true;
 	}
@@ -4985,8 +4985,8 @@ function check_reset_no_authentication($auth_method) {
 		$auth_method = AUTH_METHOD_CACTI;
 		set_config_option('auth_method', $auth_method, true);
 
-		$_SESSION['sess_user_id']         = $admin_id;
-		$_SESSION['sess_change_password'] = true;
+		$_SESSION[SESS_USER_ID]         = $admin_id;
+		$_SESSION[SESS_CHANGE_PASSWORD] = true;
 		header('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
 
 		exit;
@@ -5013,7 +5013,7 @@ function disable_2fa($user_id) {
 			'SELECT *
 			FROM user_auth
 			WHERE id = ?',
-			array($_SESSION['sess_user_id'])
+			array($_SESSION[SESS_USER_ID])
 		);
 
 		if ($current_user['tfa_enabled'] != '') {
@@ -5050,7 +5050,7 @@ function enable_2fa($user_id) {
 			'SELECT *
 			FROM user_auth
 			WHERE id = ?',
-			array($_SESSION['sess_user_id'])
+			array($_SESSION[SESS_USER_ID])
 		);
 
 		if ($current_user['tfa_secret'] != $secret) {

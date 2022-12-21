@@ -102,7 +102,7 @@ function clog_purge_logfile() {
 				raise_message('clog_purged');
 			}
 
-			cacti_log('NOTE: Cacti Log file ' . $purgefile . ', Removed by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
+			cacti_log('NOTE: Cacti Log file ' . $purgefile . ', Removed by user ' . get_username($_SESSION[SESS_USER_ID]), false, 'WEBUI');
 		} else {
 			raise_message('clog_permissions');
 		}

@@ -515,9 +515,9 @@ function form_file($form_name, $form_size = 30, $form_accept = '') {
 	print "<label class='import_label' for='$form_name'>" . __('Select a File') . "</label>\n";
 	print "<input type='file'";
 
-	if (isset($_SESSION['sess_error_fields']) && !empty($_SESSION['sess_error_fields'][$form_name])) {
+	if (isset($_SESSION[SESS_ERROR_FIELDS]) && !empty($_SESSION[SESS_ERROR_FIELDS][$form_name])) {
 		print " class='import_button ui-state-default ui-corner-all txtErrorTextBox'";
-		unset($_SESSION['sess_error_fields'][$form_name]);
+		unset($_SESSION[SESS_ERROR_FIELDS][$form_name]);
 	} else {
 		print " class='import_button ui-state-default ui-corner-all'";
 	}
@@ -557,16 +557,16 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
 		$extra_color = (isset($data['error']) ? 'red' : 'green');
 		$error_class = (isset($data['error']) ? 'txtErrorTextBox' : '');
 	} else {
-		if (isset($_SESSION['sess_field_values'])) {
-			if (!empty($_SESSION['sess_field_values'][$form_name])) {
-				$form_previous_value = $_SESSION['sess_field_values'][$form_name];
+		if (isset($_SESSION[SESS_FIELD_VALUES])) {
+			if (!empty($_SESSION[SESS_FIELD_VALUES][$form_name])) {
+				$form_previous_value = $_SESSION[SESS_FIELD_VALUES][$form_name];
 			}
 		}
 
-		if (isset($_SESSION['sess_error_fields'])) {
-			if (!empty($_SESSION['sess_error_fields'][$form_name])) {
+		if (isset($_SESSION[SESS_ERROR_FIELDS])) {
+			if (!empty($_SESSION[SESS_ERROR_FIELDS][$form_name])) {
 				$error_class = 'txtErrorTextBox';
-				unset($_SESSION['sess_error_fields'][$form_name]);
+				unset($_SESSION[SESS_ERROR_FIELDS][$form_name]);
 			}
 		}
 
@@ -616,18 +616,18 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
 
 	print "<input type='$type'";
 
-	if (isset($_SESSION['sess_error_fields'])) {
-		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
+	if (isset($_SESSION[SESS_ERROR_FIELDS])) {
+		if (!empty($_SESSION[SESS_ERROR_FIELDS][$form_name])) {
 			print " class='ui-state-default ui-corner-all txtErrorTextBox'";
-			unset($_SESSION['sess_error_fields'][$form_name]);
+			unset($_SESSION[SESS_ERROR_FIELDS][$form_name]);
 		} else {
 			print " class='ui-state-default ui-corner-all'";
 		}
 	}
 
-	if (isset($_SESSION['sess_field_values'])) {
-		if (!empty($_SESSION['sess_field_values'][$form_name])) {
-			$form_previous_value = $_SESSION['sess_field_values'][$form_name];
+	if (isset($_SESSION[SESS_FIELD_VALUES])) {
+		if (!empty($_SESSION[SESS_FIELD_VALUES][$form_name])) {
+			$form_previous_value = $_SESSION[SESS_FIELD_VALUES][$form_name];
 		}
 	}
 
@@ -670,10 +670,10 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 
 	print "<input type='$type' " . ($type == 'password' || $type == 'password_confirm' ? 'autocomplete="current-password"' : 'off') . ($title != '' ? ' title="' . $title . '"' : '');
 
-	if (isset($_SESSION['sess_error_fields'])) {
-		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
+	if (isset($_SESSION[SESS_ERROR_FIELDS])) {
+		if (!empty($_SESSION[SESS_ERROR_FIELDS][$form_name])) {
 			print " class='ui-state-default ui-corner-all txtErrorTextBox'";
-			unset($_SESSION['sess_error_fields'][$form_name]);
+			unset($_SESSION[SESS_ERROR_FIELDS][$form_name]);
 		} else {
 			print " class='ui-state-default ui-corner-all'";
 		}
@@ -681,9 +681,9 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 		print " class='ui-state-default ui-corner-all'";
 	}
 
-	if (isset($_SESSION['sess_field_values']) && isset($_SESSION['sess_error_fields'])) {
-		if (!empty($_SESSION['sess_field_values'][$form_name])) {
-			$form_previous_value = $_SESSION['sess_field_values'][$form_name];
+	if (isset($_SESSION[SESS_FIELD_VALUES]) && isset($_SESSION[SESS_ERROR_FIELDS])) {
+		if (!empty($_SESSION[SESS_FIELD_VALUES][$form_name])) {
+			$form_previous_value = $_SESSION[SESS_FIELD_VALUES][$form_name];
 		}
 	}
 
@@ -726,16 +726,16 @@ function form_dropdown($form_name, $form_data, $column_display, $column_id, $for
 		$form_previous_value = $form_default_value;
 	}
 
-	if (isset($_SESSION['sess_error_fields'])) {
-		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
+	if (isset($_SESSION[SESS_ERROR_FIELDS])) {
+		if (!empty($_SESSION[SESS_ERROR_FIELDS][$form_name])) {
 			$class .= ($class != '' ? ' ' : '') . 'txtErrorTextBox';
-			unset($_SESSION['sess_error_fields'][$form_name]);
+			unset($_SESSION[SESS_ERROR_FIELDS][$form_name]);
 		}
 	}
 
-	if (isset($_SESSION['sess_field_values'])) {
-		if (!empty($_SESSION['sess_field_values'][$form_name])) {
-			$form_previous_value = $_SESSION['sess_field_values'][$form_name];
+	if (isset($_SESSION[SESS_FIELD_VALUES])) {
+		if (!empty($_SESSION[SESS_FIELD_VALUES][$form_name])) {
+			$form_previous_value = $_SESSION[SESS_FIELD_VALUES][$form_name];
 		}
 	}
 
@@ -763,16 +763,16 @@ function form_droplanguage($form_name, $column_display, $column_id, $form_previo
 		$form_previous_value = $form_default_value;
 	}
 
-	if (isset($_SESSION['sess_error_fields'])) {
-		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
+	if (isset($_SESSION[SESS_ERROR_FIELDS])) {
+		if (!empty($_SESSION[SESS_ERROR_FIELDS][$form_name])) {
 			$class .= ($class != '' ? ' ' : '') . 'txtErrorTextBox';
-			unset($_SESSION['sess_error_fields'][$form_name]);
+			unset($_SESSION[SESS_ERROR_FIELDS][$form_name]);
 		}
 	}
 
-	if (isset($_SESSION['sess_field_values'])) {
-		if (!empty($_SESSION['sess_field_values'][$form_name])) {
-			$form_previous_value = $_SESSION['sess_field_values'][$form_name];
+	if (isset($_SESSION[SESS_FIELD_VALUES])) {
+		if (!empty($_SESSION[SESS_FIELD_VALUES][$form_name])) {
+			$form_previous_value = $_SESSION[SESS_FIELD_VALUES][$form_name];
 		}
 	}
 
@@ -813,10 +813,10 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 		$previous_value = $default_value;
 	}
 
-	if (isset($_SESSION['sess_error_fields'])) {
-		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
+	if (isset($_SESSION[SESS_ERROR_FIELDS])) {
+		if (!empty($_SESSION[SESS_ERROR_FIELDS][$form_name])) {
 			$class .= ($class != '' ? ' ' : '') . 'txtErrorTextBox';
-			unset($_SESSION['sess_error_fields'][$form_name]);
+			unset($_SESSION[SESS_ERROR_FIELDS][$form_name]);
 		}
 	}
 
@@ -887,9 +887,9 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 		$form_previous_value = $form_default_value;
 	}
 
-	if (isset($_SESSION['sess_field_values'])) {
-		if (!empty($_SESSION['sess_field_values'][$form_name])) {
-			$form_previous_value = $_SESSION['sess_field_values'][$form_name];
+	if (isset($_SESSION[SESS_FIELD_VALUES])) {
+		if (!empty($_SESSION[SESS_FIELD_VALUES][$form_name])) {
+			$form_previous_value = $_SESSION[SESS_FIELD_VALUES][$form_name];
 		}
 	}
 
@@ -930,9 +930,9 @@ function form_radio_button($form_name, $form_previous_value, $form_current_value
 		$form_previous_value = $form_default_value;
 	}
 
-	if (isset($_SESSION['sess_field_values'])) {
-		if (!empty($_SESSION['sess_field_values'][$form_name])) {
-			$form_previous_value = $_SESSION['sess_field_values'][$form_name];
+	if (isset($_SESSION[SESS_FIELD_VALUES])) {
+		if (!empty($_SESSION[SESS_FIELD_VALUES][$form_name])) {
+			$form_previous_value = $_SESSION[SESS_FIELD_VALUES][$form_name];
 		}
 	}
 
@@ -973,16 +973,16 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
 		$form_previous_value = $form_default_value;
 	}
 
-	if (isset($_SESSION['sess_error_fields'])) {
-		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
+	if (isset($_SESSION[SESS_ERROR_FIELDS])) {
+		if (!empty($_SESSION[SESS_ERROR_FIELDS][$form_name])) {
 			$class .= ($class != '' ? ' ' : '') . 'txtErrorTextBox';
-			unset($_SESSION['sess_error_fields'][$form_name]);
+			unset($_SESSION[SESS_ERROR_FIELDS][$form_name]);
 		}
 	}
 
-	if (isset($_SESSION['sess_field_values'])) {
-		if (!empty($_SESSION['sess_field_values'][$form_name])) {
-			$form_previous_value = $_SESSION['sess_field_values'][$form_name];
+	if (isset($_SESSION[SESS_FIELD_VALUES])) {
+		if (!empty($_SESSION[SESS_FIELD_VALUES][$form_name])) {
+			$form_previous_value = $_SESSION[SESS_FIELD_VALUES][$form_name];
 		}
 	}
 
@@ -1023,10 +1023,10 @@ function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $
 		}
 	}
 
-	if (isset($_SESSION['sess_error_fields'])) {
-		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
+	if (isset($_SESSION[SESS_ERROR_FIELDS])) {
+		if (!empty($_SESSION[SESS_ERROR_FIELDS][$form_name])) {
 			$class .= ($class != '' ? ' ' : '') . 'txtErrorTextBox';
-			unset($_SESSION['sess_error_fields'][$form_name]);
+			unset($_SESSION[SESS_ERROR_FIELDS][$form_name]);
 		}
 	}
 
@@ -1152,18 +1152,18 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 
 	print "<input type='$type'";
 
-	if (isset($_SESSION['sess_error_fields'])) {
-		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
+	if (isset($_SESSION[SESS_ERROR_FIELDS])) {
+		if (!empty($_SESSION[SESS_ERROR_FIELDS][$form_name])) {
 			print " class='ui-state-default ui-corner-all txtErrorTextBox'";
-			unset($_SESSION['sess_error_fields'][$form_name]);
+			unset($_SESSION[SESS_ERROR_FIELDS][$form_name]);
 		} else {
 			print " class='ui-state-default ui-corner-all'";
 		}
 	}
 
-	if (isset($_SESSION['sess_field_values'])) {
-		if (!empty($_SESSION['sess_field_values'][$form_name])) {
-			$form_previous_value = $_SESSION['sess_field_values'][$form_name];
+	if (isset($_SESSION[SESS_FIELD_VALUES])) {
+		if (!empty($_SESSION[SESS_FIELD_VALUES][$form_name])) {
+			$form_previous_value = $_SESSION[SESS_FIELD_VALUES][$form_name];
 		}
 	}
 

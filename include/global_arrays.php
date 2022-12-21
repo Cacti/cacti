@@ -1100,7 +1100,7 @@ $device_classes = array(
 	'unassigned'   => __('Unassigned')
 );
 
-if ((isset($_SESSION['sess_user_id']))) {
+if ((isset($_SESSION[SESS_USER_ID]))) {
 	if (db_table_exists('external_links')) {
 		$consoles = db_fetch_assoc('SELECT id, title, extendedstyle
 			FROM external_links

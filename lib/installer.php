@@ -599,7 +599,7 @@ class Installer implements JsonSerializable {
 		if (empty($language)) {
 			$language = read_config_option('i18n_default_language');
 			$section = 'i18n';
-			if (empty($language) && isset($_SESSION['sess_user_id'])) {
+			if (empty($language) && isset($_SESSION[SESS_USER_ID])) {
 				$language = read_user_setting('user_language', get_new_user_default_language(), true);
 				$section = 'user';
 			}
@@ -623,8 +623,8 @@ class Installer implements JsonSerializable {
 				$this->language = $param_language;
 				set_config_option('i18n_default_language', $param_language);
 				set_config_option('install_language', $param_language);
-				if (isset($_SESSION['sess_user_id'])) {
-					$_SESSION['sess_user_language'] = $param_language;
+				if (isset($_SESSION[SESS_USER_ID])) {
+					$_SESSION[SESS_USER_LANGUAGE] = $param_language;
 					set_user_setting('user_language', $param_language);
 				}
 
@@ -722,7 +722,7 @@ class Installer implements JsonSerializable {
 	private function getTheme() {
 		$theme = read_config_option('install_theme');
 		if (empty($theme)) {
-			if (isset($_SESSION['sess_user_id'])) {
+			if (isset($_SESSION[SESS_USER_ID])) {
 				$theme = read_user_setting('selected_theme');
 			}
 
@@ -750,7 +750,7 @@ class Installer implements JsonSerializable {
 				$this->theme = $param_theme;
 				set_config_option('install_theme', $this->theme);
 				set_config_option('selected_theme', $this->theme);
-				if (isset($_SESSION['sess_user_id'])) {
+				if (isset($_SESSION[SESS_USER_ID])) {
 					set_user_setting('selected_theme', $this->theme);
 					$_SESSION['selected_theme'] = $this->theme;
 				}

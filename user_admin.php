@@ -268,7 +268,7 @@ function form_actions() {
 			if ($selected_items != false) {
 				if (get_nfilter_request_var('drp_action') == '1') { // delete
 					for ($i=0;($i < cacti_count($selected_items));$i++) {
-						if ($_SESSION['sess_user_id'] != $selected_items[$i]) {
+						if ($_SESSION[SESS_USER_ID] != $selected_items[$i]) {
 							user_remove($selected_items[$i]);
 						} else {
 							raise_message('attempt current', __('You are not allowed to delete the current login account'), MESSAGE_LEVEL_ERROR);
@@ -280,7 +280,7 @@ function form_actions() {
 					}
 				} elseif (get_nfilter_request_var('drp_action') == '4') { // disable
 					for ($i=0;($i < cacti_count($selected_items));$i++) {
-						if ($_SESSION['sess_user_id'] != $selected_items[$i]) {
+						if ($_SESSION[SESS_USER_ID] != $selected_items[$i]) {
 							user_disable($selected_items[$i]);
 						} else {
 							raise_message('attempt current', __('You are not allowed to disable the current login account'), MESSAGE_LEVEL_ERROR);
@@ -2221,7 +2221,7 @@ function user() {
 			// Check for a disabled removal
 			$disabled = is_template_account($user['id']);
 
-			if ($_SESSION['sess_user_id'] == $user['id']) {
+			if ($_SESSION[SESS_USER_ID] == $user['id']) {
 				$disabled = true;
 			}
 

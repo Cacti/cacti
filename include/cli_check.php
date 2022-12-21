@@ -22,7 +22,16 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
+/* The following define forces the system to  NOT run
+ * through a web browser at all, because that would be
+ * bad.
+ *
+ * CLI scripts use this file as a way to predefine that
+ * they are not to be run from a browser
+ *
+ * Any source wishing to check whether the system is in
+ * CLI or WEB mode should use the CACTI_WEB and
+ * CACTI_CLI constants
 define('CACTI_CLI_ONLY', true);
 
 /* We are not talking to the browser */

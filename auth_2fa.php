@@ -27,7 +27,7 @@ include(__DIR__ . '/include/global.php');
 /* set default action */
 set_default_action();
 
-if (!isset($_SESSION['sess_user_id'])) {
+if (!isset($_SESSION[SESS_USER_ID])) {
 	header('Location: logout.php');
 	exit;
 }
@@ -35,21 +35,29 @@ if (!isset($_SESSION['sess_user_id'])) {
 $user = db_fetch_row_prepared('SELECT id, username, tfa_enabled, tfa_secret, login_opts
 	FROM user_auth
 	WHERE id = ?',
-	array($_SESSION['sess_user_id']));
+	array($_SESSION[SESS_USER_ID]));
 
 $message = '';
-if (isset($_COOKIE[session_name() . '_otp'])) {
-	$daysUntilInvalid = 0;
-	$time = (string) floor((time() / (3600 * 24))); // get day number
+$tfaMins = read_config_option('secpass_mfatime');
+$tfaBase = intval(floor((time() / (60 * $tfaMins))));
+$tfaTime = time() - $tfaBase;
 
-	list($otpday, $hash) = explode(':', $_COOKIE[session_name() . '_otp']);
+// See if we have no 2FA time set, and if so, lets try and get it from the cookie
+if (empty($_SESSION[SESS_USER_2FA]) && isset($_COOKIE[session_name() . '_otp'])) {
+	list($tfaCookieTime, $tfaCookeHash) = explode(':', $_COOKIE[session_name() . '_otp']);
 
-	if ($otpday >= $time - $daysUntilInvalid && $hash === hash_hmac('sha1', $user['username'].':'.$otpday.':'.$_SERVER['HTTP_USER_AGENT'], $user['tfa_secret'])) {
-		$_SESSION['sess_user_2fa'] = true;
+	if ($tfaCookieTime && $tfaCookeHash === hash_hmac('sha1', $user['username'] . ':' . $tfaMins . ':' . $tfaCookieTime . ':' . $_SERVER['HTTP_USER_AGENT'], $user['tfa_secret'])) {
+		$_SESSION[SESS_USER_2FA] = $tfaCookieTime;
 	}
 }
 
-/* Get the user 2fa token */
+// Is the current session 2FA time expired?
+if (!empty($_SESSION[SESS_USER_2FA]) && $_SESSION[SESS_USER_2FA] < $tfaTime) {
+	// Yes, lets unset the session variable and recheck
+	unset($_SESSION[SESS_USER_2FA]);
+}
+
+// Are we being asked to login with a 2FA token?
 if (get_nfilter_request_var('action') == 'login_2fa') {
 	/* Auth token from Form */
 	$token = get_nfilter_request_var('token');
@@ -57,23 +65,27 @@ if (get_nfilter_request_var('action') == 'login_2fa') {
 	if (cacti_sizeof($user)) {
 		if (empty($user['tfa_enabled'])) {
 			cacti_log("DEBUG: User '" . $user['username'] . "' attempting to verify 2fa token, but not 2fa enabled", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
-			$_SESSION['sess_user_2fa'] = true;
+			$_SESSION[SESS_USER_2FA] = true;
 		} else {
 			cacti_log("DEBUG: User '" . $user['username'] . "' attempting to verify 2fa token", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 			$g = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
-			$_SESSION['sess_user_2fa'] = $g->checkCode($user['tfa_secret'],  $token);
-		        $time = floor(time() / (3600 * 24)); // get day number
-		        //about using the user agent: It's easy to fake it, but it increases the barrier for stealing and reusing cookies nevertheless
-		        // and it doesn't do any harm (except that it's invalid after a browser upgrade, but that may be even intented)
-		        $cookie = $time.':'.hash_hmac('sha1', $user['username'].':'.$time.':'.$_SERVER['HTTP_USER_AGENT'], $user['tfa_secret']);
-		        cacti_cookie_set(session_name() . '_otp', $cookie, time() + (30 * 24 * 3600));
+			if ($g->checkCode($user['tfa_secret'],  $token)) {
+				$_SESSION[SESS_USER_2FA] = time();
+
+				// About using the user agent: It's easy to fake it, but it increases the barrier for stealing and reusing cookies nevertheless
+				// and it doesn't do any harm (except that it's invalid after a browser upgrade, but that may be even intented)
+				$cookie = $_SESSION[SESS_USER_2FA] .':'.hash_hmac('sha1', $user['username'].':'. $tfaMins . ':' . $_SESSION[SESS_USER_2FA] .':'.$_SERVER['HTTP_USER_AGENT'], $user['tfa_secret']);
+				cacti_cookie_set(session_name() . '_otp', $cookie, time() + (30 * 24 * 3600));
+			} else {
+				$_SESSION[SESS_USER_2FA] = false;
+			}
 		}
 	} else {
-		$_SESSION['sess_user_2fa'] = true;
+		$_SESSION[SESS_USER_2FA] = time();
 	}
 
 	/* Process the user  */
-	if ($_SESSION['sess_user_2fa']) {
+	if ($_SESSION[SESS_USER_2FA]) {
 		if (isset($user['tfa_enabled'])) {
 			cacti_log("LOGIN: User '" . $user['username'] . "' 2FA Authenticated", false, 'AUTH');
 
@@ -98,10 +110,10 @@ if (get_nfilter_request_var('action') == 'login_2fa') {
 }
 
 if (empty($user['tfa_enabled'])) {
-	$_SESSION['sess_user_2fa'] = true;
+	$_SESSION[SESS_USER_2FA] = true;
 }
 
-if (!empty($_SESSION['sess_user_2fa'])) {
+if (!empty($_SESSION[SESS_USER_2FA])) {
 	auth_login_redirect($user['login_opts']);
 	exit;
 }

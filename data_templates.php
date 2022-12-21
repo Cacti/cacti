@@ -156,7 +156,7 @@ function form_save() {
 			if ($save3['rrd_minimum'] >= $save3['rrd_maximum']) {
 				raise_message(43);
 
-				$_SESSION['sess_error_fields']['rrd_maximum'] = 'rrd_maximum';
+				$_SESSION[SESS_ERROR_FIELDS]['rrd_maximum'] = 'rrd_maximum';
 
 				header('Location: data_templates.php?action=template_edit&id=' . (empty($data_template_id) ? get_request_var('data_template_id') : $data_template_id) . (isempty_request_var('current_rrd') ? '' : '&view_rrd=' . (get_nfilter_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : get_request_var('data_template_rrd_id'))));
 				exit;

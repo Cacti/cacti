@@ -51,7 +51,7 @@ function duplicate_reports($_id, $_title) {
 	}
 
 	/* duplicate to your id */
-	$save['user_id'] = $_SESSION['sess_user_id'];
+	$save['user_id'] = $_SESSION[SESS_USER_ID];
 
 	/* substitute the title variable */
 	$save['name'] = str_replace('<name>', $report['name'], $_title);
@@ -77,7 +77,7 @@ function reports_add_devices($report_id, $device_ids, $timespan, $align) {
 		WHERE id = ?',
 		array($report_id));
 
-	if ($report_user != $_SESSION['sess_user_id']) {
+	if ($report_user != $_SESSION[SESS_USER_ID]) {
 		raise_message('reports_not_owner');
 
 		return false;
@@ -165,7 +165,7 @@ function reports_add_graphs($report_id, $local_graph_id, $timespan, $align) {
 		WHERE id = ?',
 		array($report_id));
 
-	if ($report_user != $_SESSION['sess_user_id']) {
+	if ($report_user != $_SESSION[SESS_USER_ID]) {
 		raise_message('reports_not_owner');
 
 		return false;
@@ -1856,7 +1856,7 @@ function reports_graphs_action_prepare($save) {
 					FROM reports
 					WHERE user_id = ?
 					ORDER by name',
-					array($_SESSION['sess_user_id'])), 'name', 'id', '', '', '0');
+					array($_SESSION[SESS_USER_ID])), 'name', 'id', '', '', '0');
 
 				echo '<br><p>' . __('Graph Timespan:') . '<br>';
 				form_dropdown('timespan', $graph_timespans, '', '', '0', '', '', '');

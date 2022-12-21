@@ -32,12 +32,12 @@ function process_tree_settings() {
 				db_execute_prepared('DELETE FROM settings_tree
 					WHERE graph_tree_item_id = ?
 					AND user_id = ?',
-					array(get_request_var('branch_id'), $_SESSION['sess_user_id']));
+					array(get_request_var('branch_id'), $_SESSION[SESS_USER_ID]));
 
 				db_execute_prepared('INSERT INTO settings_tree
 					(graph_tree_item_id, user_id,status)
 					VALUES (?, ?, ?)',
-					array(get_request_var('branch_id'), $_SESSION['sess_user_id'], get_request_var('hide')));
+					array(get_request_var('branch_id'), $_SESSION[SESS_USER_ID], get_request_var('hide')));
 			}
 		}
 	}
@@ -100,7 +100,7 @@ function grow_dhtml_trees() {
 		$user = db_fetch_row_prepared('SELECT policy_trees
 			FROM user_auth
 			WHERE id = ?',
-			array($_SESSION['sess_user_id']));
+			array($_SESSION[SESS_USER_ID]));
 
 		if ($user['policy_trees'] == 1) {
 			$default_tree_id = db_fetch_cell_prepared('SELECT graph_tree.id
@@ -113,7 +113,7 @@ function grow_dhtml_trees() {
 				AND graph_tree.enabled = "on"
 				ORDER BY graph_tree.id
 				LIMIT 1',
-				array($_SESSION['sess_user_id']));
+				array($_SESSION[SESS_USER_ID]));
 		} else {
 			$default_tree_id = db_fetch_cell_prepared('SELECT graph_tree.id
 				FROM graph_tree
@@ -124,7 +124,7 @@ function grow_dhtml_trees() {
 				WHERE graph_tree.enabled = "on"
 				ORDER BY graph_tree.id
 				LIMIT 1',
-				array($_SESSION['sess_user_id']));
+				array($_SESSION[SESS_USER_ID]));
 		}
 	} else {
 		$default_tree_id = db_fetch_cell('SELECT id

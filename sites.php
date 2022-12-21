@@ -579,7 +579,7 @@ function sites() {
 
 	$sql = "SELECT COUNT(*) FROM sites $sql_where";
 
-	$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, array(), 'site');
+	$total_rows = get_total_row_data($_SESSION[SESS_USER_ID], $sql, array(), 'site');
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;

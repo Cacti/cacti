@@ -506,6 +506,46 @@ define('OPTIONS_WEB', 'sess_config_array');
 define('OPTIONS_CLI', 'config_options_array');
 define('OPTIONS_USER', 'sess_user_config_array');
 
+define('CACTI_SESSION_NAME', 'cacti_session_name');
+define('CACTI_CWD', 'cacti_cwd');
+
+define('SESS_USER_2FA', 'sess_user_2fa');
+define('SESS_USER_ID', 'sess_user_id');
+define('SESS_USER_AGENT', 'sess_user_agent');
+define('SESS_USER_LANGUAGE', 'sess_user_language');
+define('SESS_USER_REALMS', 'sess_user_realms');
+define('SESS_AUTH_NAMES', 'sess_auth_names');
+define('SESS_CLIENT_ADDR', 'sess_client_addr');
+define('SESS_CHANGE_PASSWORD', 'sess_change_password');
+
+/** Session Permission Constants */
+define('SESS_USER_PERMS_KEY', 'sess_user_perms_key');
+define('SESS_SIMPLE_PERMS', 'sess_simple_perms');
+define('SESS_SIMPLE_TEMPLATE_PERMS', 'sess_simple_template_perms');
+define('SESS_TREE_PERMS', 'sess_tree_perms');
+
+define('SESS_ERROR_FIELDS', 'sess_error_fields');
+define('SESS_FIELD_VALUES', 'sess_field_values');
+define('SESS_MESSAGES', 'sess_messages');
+
+define('SESS_BROWSER_PHP_TZ', 'sess_browser_php_tz');
+define('SESS_PHP_TZ', 'sess_php_tz');
+define('SESS_BROWSER_SYSTEM_TZ', 'sess_browser_system_tz');
+define('SESS_SYSTEM_TZ', 'sess_system_tz');
+
+/* CLog Session Constants */
+define('CLOG_MESSAGE', 'clog_message');
+define('CLOG_ERROR', 'clog_error');
+
+/* Cookie options */
+define('COOKIE_OPTIONS', 'cookie_options');
+define('COOKIE_OPTIONS_DOMAIN', 'cookie_domain');
+define('COOKIE_OPTIONS_SAMESITE', 'cookie_samesite');
+define('COOKIE_OPTIONS_SECURE', 'cookie_secure');
+define('COOKIE_OPTIONS_HTTPONLY', 'cookie_httponly');
+define('COOKIE_OPTIONS_PATH', 'cookie_path');
+define('COOKIE_OPTIONS_STRICT', 'use_strict_mode');
+
 /* constants primarily of use in the CLI. */
 if (defined('CACTI_CLI_ONLY')) {
 	define('CLI_BEL',                       "\x7");  # bell: beep and/or flash

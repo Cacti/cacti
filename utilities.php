@@ -131,7 +131,7 @@ function rebuild_resource_cache() {
 
 	raise_message('resource_cache_rebuild');
 
-	cacti_log('NOTE: Poller Resource Cache scheduled for rebuild by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
+	cacti_log('NOTE: Poller Resource Cache scheduled for rebuild by user ' . get_username($_SESSION[SESS_USER_ID]), false, 'WEBUI');
 }
 
 function utilities_view_logfile() {
@@ -1037,7 +1037,7 @@ function utilities_view_poller_cache() {
 		ON pi.host_id = h.id
 		$sql_where";
 
-	$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, array(), 'poller_item');
+	$total_rows = get_total_row_data($_SESSION[SESS_USER_ID], $sql, array(), 'poller_item');
 
 	$poller_sql = "SELECT pi.*, dtd.name_cache, h.description, h.id AS host_id
 		FROM poller_item AS pi
@@ -1269,8 +1269,8 @@ function purge_data_source_statistics() {
 		db_execute('TRUNCATE TABLE ' . $table);
 	}
 
-	if (isset($_SESSION['sess_user_id'])) {
-		cacti_log('NOTE: Cacti DS Stats purged by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
+	if (isset($_SESSION[SESS_USER_ID])) {
+		cacti_log('NOTE: Cacti DS Stats purged by user ' . get_username($_SESSION[SESS_USER_ID]), false, 'WEBUI');
 	} else {
 		cacti_log('NOTE: Cacti DS Stats purged by cli script');
 	}
