@@ -63,7 +63,7 @@ html_start_box(__('About Cacti'), '100%', '', '3', 'center', '');
 		<ul type='disc'>
 			<li>Sean Mancini <i>(bmfmancini)</i></li>
 			<li>J.P. Pasnak, CD <i>(Linegod)</i></strong></li>
-			<li>Chris Bell <i>(BSOD2600)</i></li>
+			<li>Chris Bell (Windows) <i>(BSOD2600)</i></li>
 			<li>Paul Gevers (Debian) <i>(paulgevers)</i></strong></li>
 			<li>Morten Stevens (Fedora) <i>(mortenstevens)</i></strong></li>
 		</ul>
