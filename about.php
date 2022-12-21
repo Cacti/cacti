@@ -43,18 +43,42 @@ html_start_box(__('About Cacti'), '100%', '', '3', 'center', '');
 
 		<p><?php print __('Please see the official %sCacti website%s for information, support, and updates.', '<a href="http://www.cacti.net/?version=' . CACTI_VERSION . '">', '</a>'); ?></p>
 
-		<p><strong><?php print __('Cacti Developers'); ?></strong><br>
+		<div class='flexContainer'>
+		<div class='flexChild' style='min-width:300px;'>
+		<p><strong><?php print __('Active Developers'); ?></strong></p>
+		<p style='min-height:45px'><?php print __('Developers working on Cacti, its Architecture, Documentation and Future Releases.'); ?></strong></p>
+		<ul type='disc'>
+			<li>Larry Adams <i>(TheWitness)</i></li>
+			<li>Mark Brugnoli-Vinten <i>(netniV)</i></li>
+			<li>Jimmy Conner <i>(cigamit)</i></li>
+			<li>Petr Macan <i>(xmacan)</i></li>
+			<li>Andreas Braun <i>(browniebraun)</i></li>
+			<li>Thomas Urban <i>(thurban)</i></li>
+			<li>Jing Chen <i>(ddb4github)</i></li>
+		</ul>
+		</div>
+		<div class='flexChild' style='min-width:300px;'>
+		<p><strong><?php print __('Honorable Mentions'); ?></strong></p>
+		<p style='min-height:45px'><?php print __('Contributors to Docuemntation, QA, Packaging, the Forums and our YouTube page.'); ?></strong></p>
+		<ul type='disc'>
+			<li>Sean Mancini <i>(bmfmancini)</i></li>
+			<li>J.P. Pasnak, CD <i>(Linegod)</i></strong></li>
+			<li>Chris Bell <i>(BSOD2600)</i></li>
+			<li>Paul Gevers (Debian) <i>(paulgevers)</i></strong></li>
+			<li>Morten Stevens (Fedora) <i>(mortenstevens)</i></strong></li>
+		</ul>
+		</div>
+		<div class='flexChild' style='min-width:300px;'>
+		<p><strong><?php print __('Emeritus Members'); ?></strong></p>
+		<p style='min-height:45px'><?php print __('Members of the original Cacti Group that have since moved on in their careers.  We continue to wish them the best.'); ?></strong></p>
 		<ul type='disc'>
 			<li>Ian Berry <i>(raX)</i></li>
-			<li>Larry Adams <i>(TheWitness)</i></li>
-			<li>Tony Roman <i>(rony)</i></strong></li>
-			<li>J.P. Pasnak, CD <i>(Linegod)</i></strong></li>
-			<li>Jimmy Conner <i>(cigamit)</i></li>
 			<li>Reinhard Scheck <i>(gandalf)</i></li>
-			<li>Andreas Braun <i>(browniebraun)</i></li>
-			<li>Mark Brugnoli-Vinten <i>(netniV)</i></li>
+			<li>Tony Roman <i>(rony)</i></strong></li>
+			<li>Andy Blyler <i>(ablyler)</i></strong></li>
 		</ul>
-		</p>
+		</div>
+		</div>
 
 		<p><strong><?php print __('Thanks'); ?></a></strong><br>
 		<ul type='disc'>
