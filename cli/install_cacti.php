@@ -32,7 +32,7 @@ array_shift($parms);
 
 global $debug;
 
-$debug = false;
+$debug   = false;
 $options = array('Runtime' => 'Cli');
 
 $should_install = false;
@@ -45,11 +45,11 @@ db_execute("DELETE FROM settings WHERE name like 'log_install%' or name = 'insta
 define('log_install_echo', 'on');
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -57,25 +57,30 @@ if (cacti_sizeof($parms)) {
 			/* Standard parameters */
 			case '-d':
 			case '--debug':
-				$logname = 'log_install';
+				$logname  = 'log_install';
 				$tmplevel = false;
+
 				if (!empty($value)) {
 					$pos = strpos($value,':');
+
 					if ($pos !== false) {
-						$tmplevel = substr($value,$pos+1);
-						$value = substr($value,0,$pos);
+						$tmplevel = substr($value,$pos + 1);
+						$value    = substr($value,0,$pos);
 					}
+
 					if (!empty($value)) {
 						$logname .= '_' . $value;
 					}
 				}
+
 				if ($tmplevel !== false) {
 					$level = $tmplevel;
 				} else {
-					$level = log_install_level($logname, POLLER_VERBOSITY_NONE) + 1;
+					$level = log_install_level($logname, POLLER_VERBOSITY_DEBUG) + 1;
 				}
 				$level = log_install_level_sanitize($level);
 				set_config_option($logname, $level);
+
 				break;
 			case '--version':
 			case '-V':
@@ -85,76 +90,94 @@ if (cacti_sizeof($parms)) {
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
 
-			/* Script specific parameters */
+				/* Script specific parameters */
 			case '--accept-eula':
 				set_install_option($options, 'Eula', 'End User License Agreement', 'Accepted');
+
 				break;
 			case '--automationmode':
 			case '-am':
 				set_install_option($options, 'AutomationMode', 'Automation Enabled', $value);
+
 				break;
 			case '--automationrange':
 			case '-ar':
 				set_install_option($options, 'AutomationRange', 'Automation Range', $value);
+
 				break;
 			case '--cron':
 			case '-c':
 				set_install_option($options, 'CronInterval', 'Cron Interval', $value);
+
 				break;
 			case '--force':
 			case '-f':
 				$force_install = true;
+
 				break;
 			case '--ini':
 			case '-i':
 				get_install_option($options, $value, false);
+
 				break;
 			case '--json':
 			case '-j':
 				get_install_option($options, $value, true);
+
 				break;
 			case '--install':
 				$should_install = true;
+
 				break;
 			case '--language':
 			case '--lang':
 			case '-l':
 				set_install_option($options, 'Language', 'Language', $value);
+
 				break;
 			case '--mode':
 			case '-m':
 				set_install_option($options, 'Mode', 'Mode', $value);
+
 				break;
 			case '--profile':
 			case '-p':
 				set_install_option($options, 'Profile', 'Collection Profile', $value);
+
 				break;
 			case '--path':
 				set_install_multioption($options, 'Paths', 'Path Option', $value, 'path_');
+
 				break;
 			case '--rrdtool':
 			case '-r':
 				set_install_option($options, 'RRDVersion', 'RRDTool Version', $value);
+
 				break;
 			case '--snmp':
 				set_install_multioption($options, 'SnmpOptions', 'Snmp Option', $value, 'Snmp');
+
 				break;
 			case '--table':
 				set_install_multioption($options, 'Tables', 'Table', $value, '');
+
 				break;
 			case '--template':
 				set_install_multioption($options, 'Templates', 'Template', $value, 'chk_template_', true);
+
 				break;
 			case '--theme':
 			case '-t':
 				set_install_option($options, 'Theme', 'Theme', $value);
-				break;
 
-			/* Bad or unexpected parameter! */
+				break;
+				/* Bad or unexpected parameter! */
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
+
 				exit(1);
 		}
 	}
@@ -172,36 +195,43 @@ include_once($config['base_path'] . '/lib/utility.php');
 
 $options['Step'] = Installer::STEP_INSTALL_CONFIRM;
 
-$results = array('Step' => $options['Step']);
+$results     = array('Step' => $options['Step']);
 $update_char = 'o';
 
 debug_install_array('Options', $options);
 $installer = new Installer($options);
-$results = $installer->jsonSerialize();
+$results   = $installer->jsonSerialize();
 debug_install_array('Result', $results);
 
 process_install_errors($results);
 
 $install_mode = 'no';
+
 switch ($installer->getMode()) {
 	case Installer::MODE_INSTALL:
 		$install_mode = 'INSTALL CORE';
+
 		break;
 	case Installer::MODE_POLLER:
 		$install_mode = 'INSTALL POLLER';
+
 		break;
 	case Installer::MODE_UPGRADE:
 		$install_mode = 'UPGRADE';
+
 		break;
 	case Installer::MODE_DOWNGRADE:
 		$install_mode = 'DOWNGRADE';
+
 		break;
 }
 log_install_always('cli', 'Installer prepared for ' . $install_mode . ' action');
 
 $message = '';
+
 if ($installer->getStep() == Installer::STEP_INSTALL_CONFIRM && $should_install) {
 	$time = '';
+
 	if ($force_install) {
 		$time = '-b';
 	}
@@ -212,22 +242,29 @@ if ($installer->getStep() == Installer::STEP_INSTALL_CONFIRM && $should_install)
 
 $step = $installer->getStep();
 log_install_high('cli','getStep(): ' . $step);
+
 switch ($installer->getStep()) {
 	case Installer::STEP_INSTALL:
 		log_install_always('cli', 'An Installation was already in progress');
+
 		break;
 	case Installer::STEP_INSTALL_CONFIRM:
 		log_install_always('cli', 'No errors were detected.  Install not performed as --install not specified');
+
 		break;
 	case Installer::STEP_ERROR:
 		log_install_always('cli', 'One or more errors occurred during install, please refer to log files');
 		process_install_errors(array('Errors'=>$installer->getErrors()));
+
 		break;
 	case Installer::STEP_COMPLETE:
 		log_install_always('cli', 'Installation has now completed, you may launch the web console');
+
 		break;
+
 	default:
 		log_install_always('cli', 'Unexpected step (' . $installer->getStep() . ')');
+
 		break;
 }
 print PHP_EOL;
@@ -236,25 +273,32 @@ print PHP_EOL;
 function get_install_option(&$options, $file, $json = true) {
 	if (empty($file)) {
 		print 'ERROR: Invalid file specified, unable to import options';
+
 		exit(1);
 	}
 
 	if ($json) {
 		$contents = @file_get_contents($file);
+
 		if (empty($contents)) {
 			print 'ERROR: Unable to import options from file ' . $file;
+
 			exit(1);
 		}
 
 		$options = @json_decode($contents, true);
+
 		if (empty($options)) {
 			print 'ERROR: Failed to decode options in file ' . $file;
+
 			exit(1);
 		}
 	} else {
 		$options = @parse_ini_file($file);
+
 		if (empty($options)) {
 			print 'ERROR: Unable to import options from file ' . $file;
+
 			exit(1);
 		}
 	}
@@ -271,14 +315,17 @@ function set_install_option(&$options, $key, $display_name, $value) {
 /*  set_install_multioption - sets sub-options that have multiple key/value combinations with optional prefix */
 function set_install_multioption(&$options, $key, $display_name, $value, $prefix, $replace_dots = false) {
 	$option_pos = strpos($value, ':');
+
 	if ($option_pos !== false) {
 		$option_name = trim(substr($value, 0, $option_pos));
+
 		if ($replace_dots) {
 			$option_name = str_replace('.', '_', $option_name);
 		}
 		$prefix_len = strlen($prefix);
+
 		if ($prefix_len > 0 && substr($option_name, 0, $prefix_len) == $prefix) {
-			$option_key = $option_name;
+			$option_key  = $option_name;
 			$option_name = substr($option_key, $prefix_len);
 		} else {
 			$option_key = $prefix . $option_name;
@@ -286,13 +333,15 @@ function set_install_multioption(&$options, $key, $display_name, $value, $prefix
 		$option_value = trim(substr($value, $option_pos + 1));
 		set_install_option($options[$key], $option_key, $display_name . ' \'' . $option_name . '\'', $option_value);
 	} else {
-		echo 'ERROR: Invalid ' . $display_name . ' value ' . $value . PHP_EOL . PHP_EOL;
+		print 'ERROR: Invalid ' . $display_name . ' value ' . $value . PHP_EOL . PHP_EOL;
+
 		exit(1);
 	}
 }
 
 function debug_install_array($parent, $contents, $indent = 0) {
 	$hasContents = false;
+
 	foreach ($contents as $key => $value) {
 		if (is_array($value) || is_object($value)) {
 			debug_install_array($parent . '.' . $key, $value, $indent + 1);
@@ -309,13 +358,14 @@ function debug_install_array($parent, $contents, $indent = 0) {
 
 function process_install_errors($results) {
 	if (isset($results['Errors']) && cacti_sizeof($results['Errors']) > 0) {
-		$errors = $results['Errors'];
-		$count = 0;
+		$errors   = $results['Errors'];
+		$count    = 0;
 		$sections = 0;
 
 		foreach ($errors as $error_section => $error_array) {
 			$sections++;
 			print $error_section . PHP_EOL;
+
 			foreach ($error_array as $error_key => $error) {
 				$count++;
 				print $error_key . ' Error #' . $count . ' - ' . $error . PHP_EOL;
@@ -335,7 +385,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	print PHP_EOL . 'usage: install_cacti.php [--debug] --accept-eula ' . PHP_EOL;
 	print '                         [--automationmode=] [--automationrange=] [--cron=]' . PHP_EOL;
 	print '                         [--language=] [--mode=] [--profile=] [--path=]' . PHP_EOL;
