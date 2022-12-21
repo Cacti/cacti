@@ -1013,7 +1013,7 @@ function is_realm_allowed($realm, $check_user = false) {
 						kill_session_var(OPTIONS_WEB);
 						kill_session_var(SESS_AUTH_NAMES);
 						kill_session_var(SESS_TREE_PERMS);
-						kill_session_var(sess_simple_perms);
+						kill_session_var(SESS_SIMPLE_PERMS);
 						kill_session_var(SESS_SIMPLE_TEMPLATE_PERMS);
 
 						print '<span style="display:none;">cactiLoginSuspend</span>';
@@ -1025,7 +1025,7 @@ function is_realm_allowed($realm, $check_user = false) {
 						kill_session_var(OPTIONS_WEB);
 						kill_session_var(SESS_AUTH_NAMES);
 						kill_session_var(SESS_TREE_PERMS);
-						kill_session_var(sess_simple_perms);
+						kill_session_var(SESS_SIMPLE_PERMS);
 						kill_session_var(SESS_SIMPLE_TEMPLATE_PERMS);
 					}
 
@@ -1038,7 +1038,7 @@ function is_realm_allowed($realm, $check_user = false) {
 					kill_session_var(OPTIONS_WEB);
 					kill_session_var(SESS_AUTH_NAMES);
 					kill_session_var(SESS_TREE_PERMS);
-					kill_session_var(sess_simple_perms);
+					kill_session_var(SESS_SIMPLE_PERMS);
 					kill_session_var(SESS_SIMPLE_TEMPLATE_PERMS);
 				}
 			}
@@ -1690,8 +1690,8 @@ function get_simple_device_perms($user) {
  * @return (bool)   True if simple permissions are in place, otherwise false
  */
 function get_simple_graph_perms($user_id) {
-	if (isset($_SESSION[sess_simple_perms])) {
-		return $_SESSION[sess_simple_perms];
+	if (isset($_SESSION[SESS_SIMPLE_PERMS])) {
+		return $_SESSION[SESS_SIMPLE_PERMS];
 	}
 
 	$policy_graphs = db_fetch_cell_prepared('SELECT policy_graphs
@@ -1706,7 +1706,7 @@ function get_simple_graph_perms($user_id) {
 		array($user_id));
 
 	if ($policy_graphs == 1 && $perm_count == 0) {
-		$_SESSION[sess_simple_perms] = true;
+		$_SESSION[SESS_SIMPLE_PERMS] = true;
 
 		return true;
 	} else {
@@ -1724,14 +1724,14 @@ function get_simple_graph_perms($user_id) {
 		if (cacti_sizeof($policies)) {
 			foreach ($policies as $p) {
 				if ($p['policy_graphs'] == 1 && $p['exceptions'] == 0) {
-					$_SESSION[sess_simple_perms] = true;
+					$_SESSION[SESS_SIMPLE_PERMS] = true;
 
 					return true;
 				}
 			}
 		}
 
-		$_SESSION[sess_simple_perms] = false;
+		$_SESSION[SESS_SIMPLE_PERMS] = false;
 
 		return false;
 	}
