@@ -167,7 +167,7 @@ jobs:
     - name: Install Cacti through the CLI
       run: |
         cd ${{ github.workspace }}
-        sudo php cli/install_cacti.php --accept-eula --install --force
+        sudo php cli/install_cacti.php --accept-eula --install --force --debug
 
     - name: Install and Enable Plugins
       run: |
