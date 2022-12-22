@@ -65,6 +65,7 @@ Cacti CHANGELOG
 -issue#5103: When Remote Data Collector changes status a full page refresh or logout should occur
 -issue#5105: Fix PHP 8 error in ss_host_disk.php - function abs with empty value 
 -issue#5107: Block Cacti install is session.auto_start is enabled
+-issue#5111: Warnings executing function dsstats_get_and_store_ds_avgpeak_values() during boost processing
 -feature#1100: Structured path not created when using remote poller and Update On-Demand
 -feature#1392: AJAX handled errors do not notify Admins that page errors exist
 -feature#2239: Allow Import and Export to be more controlled
