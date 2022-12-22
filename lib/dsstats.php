@@ -941,6 +941,13 @@ function dsstats_poller_output(&$rrd_update_array) {
 function dsstats_boost_bottom() {
 	global $config;
 
+	global $total_user, $total_system, $total_real, $total_dsses;
+
+	$total_user   = 0;
+	$total_system = 0;
+	$total_real   = 0;
+	$total_dsses  = 0;
+
 	if (read_config_option('dsstats_enable') == 'on') {
 		include_once($config['base_path'] . '/lib/rrd.php');
 
