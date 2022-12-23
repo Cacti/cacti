@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PHPMailer - PHP email creation and transport class.
  * PHP Version 5.5.
@@ -32,7 +33,7 @@ use League\OAuth2\Client\Token\AccessToken;
  *
  * @author  Marcus Bointon (Synchro/coolbru) <phpmailer@synchromedia.co.uk>
  */
-class OAuth
+class OAuth implements OAuthTokenProvider
 {
     /**
      * An instance of the League OAuth Client Provider.
@@ -122,7 +123,7 @@ class OAuth
      */
     public function getOauth64()
     {
-        // Get a new token if it's not available or has expired
+        //Get a new token if it's not available or has expired
         if (null === $this->oauthToken || $this->oauthToken->hasExpired()) {
             $this->oauthToken = $this->getToken();
         }
