@@ -8080,17 +8080,17 @@ function substring_index($subject, $delim, $count) {
 	}
 }
 
-function text_substitute(array|string $text, bool $isHtml = true, bool $includeStandard = true, ?array $extraSubtitutions = null, ?array $extraMatches = null) {
-	$parser = 'text_regex_parser' . ($isHtml ? '_html' : '');
-
-	$extraSubtitutions = $extraSubtitutions ?? array();
-	$extraMatches      = $extraMatches ?? array();
-
-	/* Get parts for text substitution */
-	$extra_search = array_keys($extraSubtitutions);
-	$extra_values = array_values($extraSubtitutions);
-
+function text_substitute(null|array|string $text, bool $isHtml = true, bool $includeStandard = true, ?array $extraSubtitutions = null, ?array $extraMatches = null) {
 	if (!empty($text)) {
+		$parser = 'text_regex_parser' . ($isHtml ? '_html' : '');
+
+		$extraSubtitutions = $extraSubtitutions ?? array();
+		$extraMatches      = $extraMatches ?? array();
+
+		/* Get parts for text substitution */
+		$extra_search = array_keys($extraSubtitutions);
+		$extra_values = array_values($extraSubtitutions);
+
 		$regex_array = $includeStandard ? text_get_regex_array($extraMatches) : $extraMatches;
 
 		if (!empty($regex_array)) {
