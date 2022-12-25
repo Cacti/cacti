@@ -807,7 +807,7 @@ function applySkin() {
 		copyToClipboard(containerId);
 	});
 
-	$('i, th, img, input, label, select, button, .drillDown, .checkboxSlider')
+	$('i, a, th, img, input, label, select, button, .drillDown, .checkboxSlider')
 	.tooltip({
 		close: true
 	})
