@@ -1664,6 +1664,7 @@ function utility_php_verify_extensions(&$extensions, $source) {
 			'gd'        => array('cli' => false, 'web' => false),
 			'gmp'       => array('cli' => false, 'web' => false),
 			'hash'      => array('cli' => false, 'web' => false),
+			'intl'      => array('cli' => false, 'web' => false),
 			'json'      => array('cli' => false, 'web' => false),
 			'ldap'      => array('cli' => false, 'web' => false),
 			'mbstring'  => array('cli' => false, 'web' => false),
@@ -1682,6 +1683,7 @@ function utility_php_verify_extensions(&$extensions, $source) {
 
 		if ($config['cacti_server_os'] == 'unix') {
 			$extensions['posix'] = array('cli' => false, 'web' => false);
+			$extensions['pcntl'] = array('cli' => false, 'web' => false);
 		} else {
 			$extensions['com_dotnet'] = array('cli' => false, 'web' => false);
 		}
