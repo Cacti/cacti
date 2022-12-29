@@ -1683,12 +1683,13 @@ function utility_php_verify_extensions(&$extensions, $source) {
 
 		if ($config['cacti_server_os'] == 'unix') {
 			$extensions['posix'] = array('cli' => false, 'web' => false);
+			$extensions['pcntl'] = array('cli' => false, 'web' => false);
 		} else {
 			$extensions['com_dotnet'] = array('cli' => false, 'web' => false);
 		}
 	}
 
-	uksort($extensions, "utility_php_sort_extensions");
+	uksort($extensions, 'utility_php_sort_extensions');
 
 	foreach ($extensions as $name=>$extension) {
 		if (extension_loaded($name)){
