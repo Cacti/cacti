@@ -4,19 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti 1.2.20\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-12-17 15:36-0500\n"
-"PO-Revision-Date: 2022-12-15 17:32+0000\n"
-"Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
-"Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\n"
-"Language: lv-LV\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\n"
-"X-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-12-17 15:36-0500\nPO-Revision-Date: 2022-12-30 02:23+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2605 lib/html.php:2491
 msgid "About Cacti"
@@ -24,7 +12,7 @@ msgstr "Par Cacti"
 
 #: about.php:42
 msgid "Cacti is designed to be a complete graphing solution based on the RRDtool's framework. Its goal is to make a network administrator's job easier by taking care of all the necessary details necessary to create meaningful graphs."
-msgstr "Cacti - pilnvērtīgs grafiskais risinājums, kura pamatā ir RRDtool ietvars. Tā mērķis ir atvieglot tīkla administratora darbu, vizualizējot visu nepieciešamo informāciju ar jēgpilniem grafikiem."
+msgstr "Cacti - pilnvērtīgs grafiskais risinājums, kura pamatā ir RRDtool rīks. Tā mērķis ir atvieglot tīkla administratora darbu, vizualizējot visu nepieciešamo informāciju ar jēgpilniem grafikiem."
 
 #: about.php:44
 #, php-format
@@ -66,7 +54,7 @@ msgstr "Šī ir bezmaksas programmatūra. Jūs varat to izplatīt tālāk un/vai
 
 #: about.php:77
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
-msgstr "Šī programma tiek izplatīta cerībā, ka kādam tā būs noderīga, taču BEZ GARANTIJAS; pat bez netiešas garantijas par TIRDZNIECĪBU vai PIEMĒROTĪBU KONKRĒTAM MĒRĶIEM. Lai iegūtu papildinformāciju, skatiet GNU vispārējo publisko licenci (GNU General Public License)."
+msgstr "Šī programma tiek izplatīta cerībā, ka kādam tā būs noderīga, taču BEZ GARANTIJAS; pat bez netiešas garantijas par TIRDZNIECĪBU vai PIEMĒROTĪBU KONKRĒTAM MĒRĶIM. Lai iegūtu papildinformāciju, skatiet GNU vispārējo publisko licenci (GNU General Public License)."
 
 #: aggregate_graphs.php:42 aggregate_templates.php:30
 #: automation_graph_rules.php:32 automation_networks.php:31
@@ -94,13 +82,14 @@ msgid "Convert to Normal Graph"
 msgstr "Konvertēt uz Normālu grafiku"
 
 #: aggregate_graphs.php:44 graphs.php:58
+#, fuzzy
 msgid "Place Graphs on Report"
 msgstr "Novietot grafikus Pārskatā"
 
 #: aggregate_graphs.php:45
 #, fuzzy
 msgid "Migrate Aggregate to use a Template"
-msgstr "Migrēt apkopojumu, lai izmantotu veidni"
+msgstr "Migrēt apkopojumu (apkopotos datus), lai izmantotu veidni"
 
 #: aggregate_graphs.php:46
 #, fuzzy
@@ -110,7 +99,7 @@ msgstr "Izveidojiet jaunu apkopojumu no apkopojumiem"
 #: aggregate_graphs.php:50
 #, fuzzy
 msgid "Associate with Aggregate"
-msgstr "Saistīt ar Agregātu"
+msgstr "Saistīt ar apkopojumu"
 
 #: aggregate_graphs.php:51
 #, fuzzy
@@ -257,7 +246,7 @@ msgstr "Lai migrētu tālāk norādītos apkopotos grafikus uz veidnēm balstīt
 
 #: aggregate_graphs.php:436
 msgid "Please press 'Return' to continue."
-msgstr "Lūdzu, nospiediet 'Atgriezties', lai turpinātu."
+msgstr "Lūdzu, nospiediet 'Atgriezt', lai turpinātu."
 
 #: aggregate_graphs.php:447
 #, fuzzy
@@ -275,11 +264,13 @@ msgid "New Aggregate"
 msgstr "Jauns agregāts"
 
 #: aggregate_graphs.php:468 graphs.php:1270 host.php:520
+#, fuzzy
 msgid "Click 'Continue' to add the selected Graphs to the Report below."
 msgstr "Noklikšķiniet 'Turpināt', lai pievienotu atlasītos grafikus zemāk esošajam pārskatam."
 
 #: aggregate_graphs.php:472 graph_view.php:827 graphs.php:1274 host.php:524
 #: lib/html_reports.php:35 lib/html_reports.php:1931
+#, fuzzy
 msgid "Report Name"
 msgstr "Pārskata nosaukums"
 
@@ -293,10 +284,12 @@ msgid "Align"
 msgstr "Izlīdzināt"
 
 #: aggregate_graphs.php:484 graphs.php:1286
+#, fuzzy
 msgid "Add Graphs to Report"
 msgstr "Pievienot grafikus pārskatam"
 
 #: aggregate_graphs.php:486 graphs.php:1288
+#, fuzzy
 msgid "You currently have no reports defined."
 msgstr "Pašlaik jums nav definēta neviena pārskata."
 
@@ -356,6 +349,7 @@ msgid "[edit: %s]"
 msgstr "[labot: %s]"
 
 #: aggregate_graphs.php:660 aggregate_graphs.php:773 aggregate_graphs.php:775
+#, fuzzy
 msgid "Aggregate Graph does not Exist"
 msgstr "Apkopotā diagramma neeksistē"
 
@@ -375,6 +369,7 @@ msgid "Preview"
 msgstr "Priekšskatījums"
 
 #: aggregate_graphs.php:686
+#, fuzzy
 msgid "Aggregate Graphs Accessed does not Exist"
 msgstr "Apkopotie grafiki, kuriem piekļūts, nepastāv"
 
@@ -391,11 +386,12 @@ msgid "Show Item Details"
 msgstr "Rādīt elementa informāciju"
 
 #: aggregate_graphs.php:772
+#, fuzzy
 msgid "Aggregate Preview Does Not Exist"
 msgstr "Kopējais priekšskatījums neeksistē"
 
 #: aggregate_graphs.php:779
-#, php-format
+#, fuzzy, php-format
 msgid "Aggregate Preview %s"
 msgstr "Apkopotais priekšskatījums %s"
 
@@ -405,14 +401,14 @@ msgstr "RRDtool komanda:"
 
 #: aggregate_graphs.php:799 graph.php:601 graphs.php:1684
 msgid "Not Checked"
-msgstr "Nav pārbaudīts"
+msgstr "Nepārbaudīts"
 
 #: aggregate_graphs.php:799 graph.php:597 graphs.php:1682
 msgid "RRDtool Says:"
 msgstr "RRDtool ziņo:"
 
 #: aggregate_graphs.php:829
-#, php-format
+#, fuzzy, php-format
 msgid "Aggregate Graph %s"
 msgstr "Apkopotā diagramma %s"
 
@@ -421,6 +417,7 @@ msgid "Prefix Replacement Values"
 msgstr "Prefiksu aizstāšanas vērtības"
 
 #: aggregate_graphs.php:853 aggregate_templates.php:395 graphs.php:1059
+#, fuzzy
 msgid "You may use these replacement values for the Prefix in the Aggregate Graph"
 msgstr "Šīs aizvietošanas vērtības varat izmantot prefiksam apkopotajā diagrammā"
 
@@ -431,7 +428,7 @@ msgstr "Kopā"
 
 #: aggregate_graphs.php:1024 aggregate_templates.php:526 graphs.php:1143
 msgid "All Items"
-msgstr "Visi ieraksti"
+msgstr "Visi elementi"
 
 #: aggregate_graphs.php:1047 graphs.php:1695 lib/api_aggregate.php:1875
 msgid "Graph Configuration"
@@ -449,7 +446,7 @@ msgstr "Slēpt elementa informāciju"
 
 #: aggregate_graphs.php:1299
 msgid "Matching Graphs"
-msgstr "Atbilstoši grafiki"
+msgstr "Atbilstošie grafiki"
 
 #: aggregate_graphs.php:1308 aggregate_graphs.php:1582
 #: aggregate_templates.php:591 automation_devices.php:474
@@ -520,6 +517,7 @@ msgid "Default"
 msgstr "Noklusējuma"
 
 #: aggregate_graphs.php:1331
+#, fuzzy
 msgid "Part of Aggregate"
 msgstr "Daļa no Agregāta"
 
@@ -541,6 +539,7 @@ msgstr "Daļa no Agregāta"
 #: user_admin.php:2167 user_admin.php:2561 user_admin.php:2658
 #: user_admin.php:2774 user_admin.php:2871 user_admin.php:2968
 #: user_admin.php:3065
+#, fuzzy
 msgid "Go"
 msgstr "Doties"
 
@@ -622,6 +621,7 @@ msgid "ID"
 msgstr "ID"
 
 #: aggregate_graphs.php:1364
+#, fuzzy
 msgid "Included in Aggregate"
 msgstr "Iekļauts apkopojumā"
 
@@ -665,10 +665,11 @@ msgstr "Nav atrasts neviens grafiks"
 
 #: aggregate_graphs.php:1573
 msgid " [ Custom Graphs List Applied - Clear to Reset ]"
-msgstr " [Lietots pielāgoto grafiku saraksts — notīrīt, lai atiestatītu]"
+msgstr " [ Pielietots pielāgots grafiku saraksts - Notīri, lai atiestatīt ]"
 
 #: aggregate_graphs.php:1573 aggregate_graphs.php:1683
 #: include/global_arrays.php:2743
+#, fuzzy
 msgid "Aggregate Graphs"
 msgstr "Apkopotie grafiki"
 
@@ -737,6 +738,7 @@ msgid "None"
 msgstr "Neviens"
 
 #: aggregate_graphs.php:1692
+#, fuzzy
 msgid "The title for the Aggregate Graphs"
 msgstr "Apkopoto diagrammu nosaukums"
 
@@ -745,14 +747,17 @@ msgid "The internal database identifier for this object"
 msgstr "Šī objekta iekšējais datu bāzes identifikators"
 
 #: aggregate_graphs.php:1694 graphs.php:1225
+#, fuzzy
 msgid "Aggregate Template"
 msgstr "Apkopotā veidne"
 
 #: aggregate_graphs.php:1694
+#, fuzzy
 msgid "The Aggregate Template that this Aggregate Graphs is based upon"
 msgstr "Apkopotā veidne, uz kuras balstās šie apkopotie grafiki"
 
 #: aggregate_graphs.php:1713
+#, fuzzy
 msgid "No Aggregate Graphs Found"
 msgstr "Nav atrasts neviens apkopots grafiks"
 
@@ -765,6 +770,7 @@ msgid "Override this Value"
 msgstr "Aizstāt šo vērtību"
 
 #: aggregate_templates.php:310
+#, fuzzy
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
 msgstr "Noklikšķiniet uz \"Turpināt\", lai dzēstu šādu(-as) apkopoto diagrammu veidni(-es)."
 
@@ -773,16 +779,18 @@ msgid "Delete Color Template(s)"
 msgstr "Dzēst krāsu veidni(-es)"
 
 #: aggregate_templates.php:355
-#, php-format
+#, fuzzy, php-format
 msgid "Aggregate Template [edit: %s]"
 msgstr "Apkopotā veidne [rediģēt: %s]"
 
 #: aggregate_templates.php:357
+#, fuzzy
 msgid "Aggregate Template [new]"
 msgstr "Apkopotā veidne [jauna]"
 
 #: aggregate_templates.php:583 aggregate_templates.php:682
 #: include/global_arrays.php:2725
+#, fuzzy
 msgid "Aggregate Templates"
 msgstr "Apkopotās veidnes"
 
@@ -804,6 +812,7 @@ msgid "Template Title"
 msgstr "Veidnes nosaukums"
 
 #: aggregate_templates.php:692
+#, fuzzy
 msgid "Aggregate Templates that are in use can not be Deleted.  In use is defined as being referenced by an Aggregate."
 msgstr "Izmantotās apkopotās veidnes nevar izdzēst. Lietošanā tiek definēts kā apkopojums, uz kuru atsaucas."
 
@@ -819,7 +828,7 @@ msgstr "Dzēšams"
 #: data_queries.php:1394 gprint_presets.php:402 graph_templates.php:848
 #: vdef.php:892
 msgid "Graphs Using"
-msgstr "Grafiku izmantošana"
+msgstr "Grafiki izmanto"
 
 #: aggregate_templates.php:694 graphs.php:2055 include/global_arrays.php:940
 #: include/global_arrays.php:1340 include/global_form.php:1415
@@ -828,6 +837,7 @@ msgid "Graph Template"
 msgstr "Grafika veidne"
 
 #: aggregate_templates.php:716
+#, fuzzy
 msgid "No Aggregate Templates Found"
 msgstr "Nav atrasta neviena apkopotā veidne"
 
@@ -853,7 +863,7 @@ msgstr "Piespiedu paroles maiņa"
 
 #: auth_changepassword.php:284
 msgid "Password requirements include:"
-msgstr "Paroles prasībās ietilpst:"
+msgstr "Paroles prasības:"
 
 #: auth_changepassword.php:288
 #, php-format
@@ -866,7 +876,7 @@ msgstr "Jāsatur jaukts reģistrs"
 
 #: auth_changepassword.php:296
 msgid "Must include at least 1 number"
-msgstr "Jāsatur vismaz 1 numurs"
+msgstr "Jāsatur vismaz 1 cipars"
 
 #: auth_changepassword.php:300
 msgid "Must include at least 1 special character"
@@ -936,15 +946,16 @@ msgstr "Paroles sakrīt"
 
 #: auth_login.php:75
 msgid "Cacti no longer supports No Authentication mode. Please contact your System Administrator."
-msgstr "Cacti vairs neatbalsta režīmu Bez autentifikācijas. Lūdzu, sazinieties ar sistēmas administratoru."
+msgstr "Cacti vairs neatbalsta bez autentifikācijas režīmu. Lūdzu, sazinieties ar savu sistēmas administratoru."
 
 #: auth_login.php:110
+#, fuzzy
 msgid "Unable to determine user Login Realm or Domain. Please contact your System Administrator."
-msgstr "Nevar noteikt lietotāja pieteikšanās sfēru vai domēnu. Lūdzu, sazinieties ar sistēmas administratoru."
+msgstr "Nevar noteikt lietotāja pieteikšanās nozari (Realm) vai domēnu. Lūdzu, sazinieties ar savu sistēmas administratoru."
 
 #: auth_login.php:138
 msgid "User was Authenticated, but the Template Account is disabled.  Using Guest Account"
-msgstr "Lietotājs tika autentificēts, bet veidnes konts ir atspējots. Viesu konta izmantošana"
+msgstr "Lietotājs tika autorizēts, bet konta veidne ir atspējota.  Izmanto viesa kontu"
 
 #: auth_login.php:145
 #, php-format
@@ -953,7 +964,7 @@ msgstr "Piekļuve liegta!  Viesu lietotāja ID %s neeksistē.  Lūdzu, sazinieti
 
 #: auth_login.php:180
 msgid "Access Denied!  User account disabled."
-msgstr "Pieeja noliegta! Lietotāja konts ir atspējots."
+msgstr "Pieeja noliegta!  Lietotāja konts ir atspējots."
 
 #: auth_login.php:191
 msgid "You do not have access to any area of Cacti.  Contact your administrator."
@@ -986,16 +997,17 @@ msgstr "LDAP"
 
 #: auth_login.php:348 user_admin.php:2139 user_admin.php:2228
 #: user_group_admin.php:680
+#, fuzzy
 msgid "Realm"
 msgstr "Valstība"
 
 #: auth_login.php:365
 msgid "Keep me signed in"
-msgstr "Saglabājiet mani"
+msgstr "Saglabāt mani kā autorizējušos"
 
 #: auth_login.php:371
 msgid "Login"
-msgstr "Pieslēgties"
+msgstr "Autorizēties"
 
 #: auth_profile.php:76 include/global_settings.php:38
 #: include/global_settings.php:1167 include/global_settings.php:1470
@@ -1030,7 +1042,7 @@ msgstr "Lietotājvārds"
 
 #: auth_profile.php:322 include/global_form.php:1511
 msgid "The login name for this user."
-msgstr "Šī lietotāja pieteikšanās lietotājvārds."
+msgstr "Šī lietotāja autorizācijas lietotājvārds."
 
 #: auth_profile.php:329 include/global_form.php:1518
 #: include/global_settings.php:1822 user_admin.php:2226 user_domains.php:497
@@ -1072,7 +1084,7 @@ msgstr "Iziet visur"
 
 #: auth_profile.php:364
 msgid "Clear all your Login Session Tokens."
-msgstr "Notīrīt visas jūsu pieteikšanās sesijas atslēgas."
+msgstr "Notīrīt visas jūsu autorizācijas sesijas atslēgas."
 
 #: auth_profile.php:385 user_admin.php:1837 user_group_admin.php:1719
 msgid "User Settings"
@@ -1088,7 +1100,7 @@ msgstr "Jūsu privātie dati ir dzēsti."
 
 #: auth_profile.php:497
 msgid "All your login sessions have been cleared."
-msgstr "Visas jūsu pieteikšanās sesijas ir notīrītas."
+msgstr "Visas jūsu autorizācijas sesijas ir notīrītas."
 
 #: auth_profile.php:497
 msgid "User Sessions Cleared"
@@ -1120,40 +1132,43 @@ msgstr "Neaktīva (nedarbojoša, bezsaistē, izslēgta)"
 #: lib/api_automation.php:172 lib/api_automation.php:1098
 #: lib/html_utility.php:930
 msgid "Up"
-msgstr "Aktīva (darbojoša, tiešsaistē)"
+msgstr "Aktīva (darbojoša, tiešsaistē, ieslēgta)"
 
 #: automation_devices.php:107
 msgid "Added manually through device automation interface."
-msgstr "Pievienots manuāli, izmantojot ierīces automatizācijas interfeisu."
+msgstr "Pievienots manuāli, izmantojot ierīces automatizācijas saskarni."
 
 #: automation_devices.php:123
 #, php-format
 msgid "Device %s Added to Cacti"
-msgstr "Ierīce %s pievienota kaktusiem"
+msgstr "Ierīce %s pievienota Cacti"
 
 #: automation_devices.php:125
 #, php-format
 msgid "Device %s Not Added to Cacti"
-msgstr "Ierīce %s nav pievienota kaktusiem"
+msgstr "Ierīce %s nav pievienota Cacti"
 
 #: automation_devices.php:135
+#, fuzzy
 msgid "Devices Removed from Cacti Automation database"
-msgstr "No Cacti Automation datu bāzes noņemtās ierīces"
+msgstr "Ierīce noņemta no Cacti automatizācijas datu bāzes"
 
 #: automation_devices.php:196
 msgid "Click 'Continue' to add the following Discovered device(s)."
-msgstr "Noklikšķiniet uz \"Turpināt\", lai pievienotu šādu(-as) atklāto(-ās) ierīci(-es)."
+msgstr "Noklikšķiniet 'Turpināt', lai pievienotu sekojošu(-as) atklāto(-ās) ierīci(-es)."
 
 #: automation_devices.php:202 pollers.php:985
+#, fuzzy
 msgid "Pollers"
-msgstr "Polleri"
+msgstr "Aptaujātaji (Pollers)"
 
 #: automation_devices.php:206
 msgid "Select Template"
-msgstr "Atlasiet Veidne"
+msgstr "Atlasiet veidni"
 
 #: automation_devices.php:212 automation_templates.php:281
 #: automation_templates.php:492
+#, fuzzy
 msgid "Availability Method"
 msgstr "Pieejamības metode"
 
@@ -1163,7 +1178,7 @@ msgstr "Pievienot ierīci(-es)"
 
 #: automation_devices.php:222
 msgid "Click 'Continue' to Delete the following Discovered device(s)."
-msgstr "Noklikšķiniet uz \"Turpināt\", lai dzēstu šādu(-as) atklāto(-ās) ierīci(-es)."
+msgstr "Noklikšķiniet 'Turpināt', lai dzēstu sekojošu(-as) atklāto(-ās) ierīci(-es)."
 
 #: automation_devices.php:227 host.php:484
 msgid "Delete Device(s)"
@@ -1243,7 +1258,7 @@ msgstr "Pēdējā pārbaude"
 
 #: automation_devices.php:306 automation_devices.php:640
 msgid "Not Detected"
-msgstr "Nav atklāts"
+msgstr "Nav noteikts"
 
 #: automation_devices.php:324 host.php:1834
 msgid "No Devices Found"
@@ -1259,7 +1274,7 @@ msgstr "Tīkls"
 
 #: automation_devices.php:496
 msgid "Reset fields to defaults"
-msgstr "Atiestatīt laukus uz noklusējuma iestatījumiem"
+msgstr "Atiestatīt laukus uz to noklusējuma vērtībām"
 
 #: automation_devices.php:501 color.php:570 host.php:1613
 #: lib/html_form.php:1307
@@ -1273,11 +1288,11 @@ msgstr "Eksportēt uz failu"
 #: automation_devices.php:502 data_debug.php:1053 lib/clog_webapi.php:219
 #: lib/clog_webapi.php:531 managers.php:747
 msgid "Purge"
-msgstr "Iztīrīšana"
+msgstr "Iztīrīt"
 
 #: automation_devices.php:502
 msgid "Purge Discovered Devices"
-msgstr "Iztīriet atklātās ierīces"
+msgstr "Iztīrīt atklātās ierīces"
 
 #: automation_devices.php:670 automation_networks.php:1151
 #: automation_snmp.php:563 automation_snmp.php:564 automation_snmp.php:565
@@ -1316,15 +1331,15 @@ msgstr "Iespējot"
 #: plugins.php:32 pollers.php:34 user_admin.php:31 user_domains.php:31
 #: user_group_admin.php:33
 msgid "Disable"
-msgstr "Izslēgt"
+msgstr "Atspējot"
 
 #: automation_graph_rules.php:256
 msgid "Press 'Continue' to delete the following Graph Rules."
-msgstr "Nospiediet \"Turpināt\", lai dzēstu tālāk norādītos grafikas noteikumus."
+msgstr "Nospiediet 'Turpināt', lai dzēstu sekojošos grafika noteikumus."
 
 #: automation_graph_rules.php:263
 msgid "Click 'Continue' to duplicate the following Rule(s). You can optionally change the title format for the new Graph Rules."
-msgstr "Noklikšķiniet uz \"Turpināt\", lai dublētu šādu(-s) noteikumu(-us). Varat pēc izvēles mainīt jauno grafiku kārtulu virsraksta formātu."
+msgstr "Noklikšķiniet 'Turpināt', lai dublētu sekojošu(-as) kārtulu(-as). Varat pēc savas izvēles mainīt jauno grafiku kārtulu virsraksta formātu."
 
 #: automation_graph_rules.php:265 automation_tree_rules.php:267 graphs.php:938
 #: graphs.php:949
@@ -1333,11 +1348,11 @@ msgstr "Virsraksta formāts"
 
 #: automation_graph_rules.php:265 automation_tree_rules.php:267
 msgid "rule_name"
-msgstr "noteikuma_nosaukums"
+msgstr "kārtulas_nosaukums"
 
 #: automation_graph_rules.php:271 automation_tree_rules.php:273
 msgid "Click 'Continue' to enable the following Rule(s)."
-msgstr "Noklikšķiniet uz \"Turpināt\", lai iespējotu šādu(-s) noteikumu(-us)."
+msgstr "Noklikšķiniet 'Turpināt', lai iespējotu sekojošu(-as) kārtulu(-as)."
 
 #: automation_graph_rules.php:273 automation_tree_rules.php:275
 msgid "Make sure, that those rules have successfully been tested!"
@@ -1345,7 +1360,7 @@ msgstr "Pārliecinieties, vai šie noteikumi ir veiksmīgi pārbaudīti!"
 
 #: automation_graph_rules.php:279 automation_tree_rules.php:281
 msgid "Click 'Continue' to disable the following Rule(s)."
-msgstr "Noklikšķiniet uz \"Turpināt\", lai atspējotu šādu(s) noteikumu(-us)."
+msgstr "Noklikšķiniet 'Turpināt', lai atspējotu sekojošu(-as) kārtulu(-as)."
 
 #: automation_graph_rules.php:290 automation_tree_rules.php:292
 msgid "Apply requested action"
@@ -1358,16 +1373,16 @@ msgstr "Vai esiet pārliecināti?"
 #: automation_graph_rules.php:420
 #, php-format
 msgid "Are you sure you want to delete the Rule '%s'?"
-msgstr "Vai tiešām vēlaties dzēst kārtulu \"%s\"?"
+msgstr "Vai tiešām vēlaties dzēst '%s' kārtulu?"
 
 #: automation_graph_rules.php:535
 #, php-format
 msgid "Rule Selection [edit: %s]"
-msgstr "Noteikumu atlase [rediģēt: %s]"
+msgstr "Kārtulas atlase [rediģēt: %s]"
 
 #: automation_graph_rules.php:541
 msgid "Rule Selection [new]"
-msgstr "Noteikumu izvēle [jauns]"
+msgstr "Kārtulas atlase [jauns]"
 
 #: automation_graph_rules.php:551 automation_graph_rules.php:566
 #: automation_graph_rules.php:582 automation_tree_rules.php:394
@@ -1377,7 +1392,7 @@ msgstr "Nerādīt"
 
 #: automation_graph_rules.php:551
 msgid "Rule Details."
-msgstr "Noteikumu detaļas."
+msgstr "Kārtulas detaļas."
 
 #: automation_graph_rules.php:566
 msgid "Matching Devices."
@@ -1445,15 +1460,15 @@ msgstr "Atspējots"
 
 #: automation_graph_rules.php:895 automation_tree_rules.php:935
 msgid "Rule Name"
-msgstr "Noteikuma Vārds"
+msgstr "Kārtulas nosaukums"
 
 #: automation_graph_rules.php:895
 msgid "The name of this rule."
-msgstr "Šī noteikuma nosaukums."
+msgstr "Šīs kārtulas nosaukums."
 
 #: automation_graph_rules.php:896
 msgid "The internal database ID for this rule.  Useful in performing debugging and automation."
-msgstr "Šīs kārtulas iekšējā datu bāzes ID. Noderīga, veicot atkļūdošanu un automatizāciju."
+msgstr "Šīs kārtulas iekšējās datu bāzes ID.  Noderīgi, veicot atkļūdošanu un automatizāciju."
 
 #: automation_graph_rules.php:898 include/global_form.php:1847
 #: include/global_form.php:1933 include/global_form.php:2038
@@ -1474,9 +1489,9 @@ msgid "Cancel Discovery"
 msgstr "Atcelt Discovery"
 
 #: automation_networks.php:148
-#, fuzzy, php-format
+#, php-format
 msgid "Can Not Restart Discovery for Discovery in Progress for Network '%s'"
-msgstr "Nevar restartēt atklāšanu tīklam '%s'."
+msgstr "Nevar atsākt atklāšanu '%s' tīklam, kas jau ir atklāšanas procesā"
 
 #: automation_networks.php:152
 #, php-format
@@ -1602,7 +1617,7 @@ msgstr "Datu ievācējs"
 #: automation_networks.php:450 include/global_form.php:1212
 #, fuzzy
 msgid "Choose the Cacti Data Collector/Poller to be used to gather data from this Device."
-msgstr "Izvēlieties Cacti Data Collector/Poller, kas tiks izmantots datu vākšanai no šīs ierīces."
+msgstr "Izvēlieties Cacti Data Collector/aptaujātaju, kas tiks izmantots šīs ierīces datu vākšanai."
 
 #: automation_networks.php:457
 msgid "Associated Site"
@@ -1762,7 +1777,7 @@ msgstr "Automātiski pievienot kaktusiem"
 
 #: automation_networks.php:551
 msgid "For any newly discovered Devices that are reachable using SNMP and who match a Device Rule, add them to Cacti."
-msgstr "Ikvienām jaunatklātajām ierīcēm, kuras ir sasniedzamas, izmantojot SNMP un kuras atbilst ierīces kārtulai, pievienojiet tās Cacti."
+msgstr "Ikvienu jaunatklātu ierīci, kura ir sasniedzama, izmantojot SNMP, un kura atbilst ierīces kārtulai, pievienot Cacti."
 
 #: automation_networks.php:556
 msgid "Allow same sysName on different hosts"
@@ -2382,7 +2397,7 @@ msgstr "Netika atrasta neviena SNMP opciju kopa"
 #, fuzzy
 #| msgid "Click 'Continue' to delete the folling Automation Template(s)."
 msgid "Click 'Continue' to delete the following Automation Template(s)."
-msgstr "Noklikšķiniet uz \"Turpināt\", lai dzēstu sekojošo(-s) automatizācijas veidni(-es)."
+msgstr "Noklikšķiniet uz 'Turpināt', lai dzēstu sekojošo(-ās) automatizācijas veidni(-es)."
 
 #: automation_templates.php:167
 msgid "Delete Automation Template(s)"
@@ -2467,11 +2482,11 @@ msgstr "Netika atrasta neviena automatizācijas ierīču veidne"
 
 #: automation_tree_rules.php:258
 msgid "Click 'Continue' to delete the following Rule(s)."
-msgstr "Noklikšķiniet 'Turpināt', lai dzēstu norādīto(s) noteikumu(s)."
+msgstr "Noklikšķiniet 'Turpināt', lai dzēstu sekojošu(-as) kārtulu(-as)."
 
 #: automation_tree_rules.php:265
 msgid "Click 'Continue' to duplicate the following Rule(s). You can optionally change the title format for the new Rules."
-msgstr "Noklikšķiniet uz \"Turpināt\", lai dublētu šādu(-s) noteikumu(-us). Varat pēc izvēles mainīt jauno noteikumu virsraksta formātu."
+msgstr "Noklikšķiniet 'Turpināt', lai dublētu sekojošu(-as) kārtulu(-as). Varat pēc savas izvēles mainīt jauno kārtulu virsraksta formātu."
 
 #: automation_tree_rules.php:394
 msgid "Created Trees"
@@ -2480,7 +2495,7 @@ msgstr "Izveidotie koki"
 #: automation_tree_rules.php:486
 #, php-format
 msgid "Are you sure you want to DELETE the Rule '%s'?"
-msgstr "Vai tiešām vēlaties DZĒST kārtulu \"%s\"?"
+msgstr "Vai tiešām vēlaties dzēst '%s' kārtulu?"
 
 #: automation_tree_rules.php:544
 msgid "Eligible Objects"
@@ -2904,9 +2919,9 @@ msgstr[2] ""
 #| msgid_plural "Click 'Continue' to Syncrhonize all Aggregate Graphs with the selected Color Templates."
 msgid "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Template."
 msgid_plural "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Templates."
-msgstr[0] "Noklikšķiniet uz \"Turpināt\", lai sinhronizētu visus apkopotos grafikus ar atlasīto krāsu veidni."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] ""
+msgstr[1] "Noklikšķiniet uz 'Turpināt', lai sinhronizētu visus apkopotos grafikus ar atlasīto krāsu veidni."
+msgstr[2] "Noklikšķiniet uz 'Turpināt', lai sinhronizētu visus apkopotos grafikus ar atlasītām krāsu veidnēm."
 
 #: color_templates.php:264
 msgid "Synchronize Color Template"
@@ -2977,9 +2992,9 @@ msgid "Remove Color Item"
 msgstr "Noņemt krāsu elementu"
 
 #: color_templates_items.php:341
-#, fuzzy, php-format
+#, php-format
 msgid "Color Template Items [edit Report Item: %s]"
-msgstr "Krāsu veidnes elementi [labot pārskata vienumu: %s]"
+msgstr "Krāsu veidnes elementi [labot atskaites vienumu: %s]"
 
 #: color_templates_items.php:344
 #, fuzzy, php-format
@@ -4427,7 +4442,7 @@ msgstr "GPRINT priekšiestatījumi"
 
 #: gprint_presets.php:268 gprint_presets.php:415 include/global_arrays.php:1004
 msgid "GPRINTs"
-msgstr "GPRINTs"
+msgstr "GPRINTi"
 
 #: gprint_presets.php:385
 msgid "GPRINT Preset Name"
@@ -4696,7 +4711,7 @@ msgstr "Elements #%s"
 #: graph_templates_items.php:135 graph_templates_items.php:161
 #: graphs_items.php:141
 msgid "Cur:"
-msgstr "Cur:"
+msgstr "Paš:"
 
 #: graph_templates_items.php:142 graph_templates_items.php:168
 #: graphs_items.php:148
@@ -5257,25 +5272,26 @@ msgstr "BRĪDINĀJUMS: Cacti lapa: %s ģenerēja letālu kļūdu %d!"
 #: help.php:68
 #, php-format
 msgid "The Document page '%s' count not be reached.  The Cacti Documentation site is not reachable.  The http error was '%s'.  Consider downloading an official release to obtain the latest documentation and hosting the documentation locally."
-msgstr ""
+msgstr "Dokumentācijas lapa nav sasniegta '%s' reizes.  Cacti dokumentācijas vietne nav sasniedzama.  HTTP kļūda bija '%s'.  Apsveriet iespēju lejupielādēt oficiālu izlaidumu, lai iegūtu jaunāko dokumentāciju, un hostēt to lokāli uz servera."
 
 #: help.php:82
 msgid "Cacti GitHub Site"
 msgstr "Cacti GitHub vietne"
 
 #: help.php:82
+#, fuzzy
 msgid "Open a ticket at "
-msgstr ""
+msgstr "Atvērt problēmas ziņojumu (ticket) "
 
 #: help.php:82
 #, php-format
 msgid "The Help File %s was not located on the Cacti Documentation Website."
-msgstr ""
+msgstr "%s palīga fails netika atrasts Cacti dokumentācijas vietnē."
 
 #: help.php:96
 #, php-format
 msgid "The Document page '%s' count not be reached locally."
-msgstr ""
+msgstr "Lokālā dokumentācijas lapa nav sasniegta '%s' reizes."
 
 #: host.php:44
 msgid "Change Device Settings"
@@ -5405,6 +5421,7 @@ msgid "Add Devices to Report"
 msgstr "Pievienojiet ziņojumam ierīces"
 
 #: host.php:538
+#, fuzzy
 msgid "You currently have no Reports defined."
 msgstr "Pašlaik jums nav definēta neviena pārskata."
 
@@ -5809,7 +5826,7 @@ msgstr "To ierīču skaits, kurās tiek izmantota šī ierīces veidne."
 
 #: host_templates.php:914 include/global_arrays.php:1079
 msgid "Unassigned"
-msgstr ""
+msgstr "Nepiešķirts"
 
 #: host_templates.php:924
 msgid "No Device Templates Found"
@@ -5839,11 +5856,11 @@ msgstr "Atļauja liegta"
 
 #: include/auth.php:273 lib/functions.php:6922 permission_denied.php:54
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
-msgstr "Ja jūtat, ka tā ir kļūda. Lūdzu, sazinieties ar savu kaktusu administratoru."
+msgstr "Ja jūtat, ka tā ir kļūda. Lūdzu, sazinieties ar savu Cacti administratoru."
 
 #: include/auth.php:273 lib/functions.php:6922 permission_denied.php:54
 msgid "You are not permitted to access this section of Cacti."
-msgstr "Jums nav atļauts piekļūt šai kaktusu sadaļai."
+msgstr "Jums nav atļauts piekļūt šai Cacti sadaļai."
 
 #: include/auth.php:276
 msgid "Installation In Progress"
@@ -5855,15 +5872,15 @@ msgstr "Pašlaik var pieteikties tikai Cacti administratori ar instalēšanas/ja
 
 #: include/auth.php:277
 msgid "There is an Installation or Upgrade in progress."
-msgstr "Notiek instalēšana vai jaunināšana."
+msgstr "Pašlaik notiek uzstādīšana vai atjaunināšana."
 
 #: include/global_arrays.php:143
 msgid "Save Successful."
-msgstr "Saglabāt veiksmīgi."
+msgstr "Veiksmīgi saglabāts."
 
 #: include/global_arrays.php:146
 msgid "Save Failed."
-msgstr "Saglabāt neizdevās."
+msgstr "Neizdevās saglabāt."
 
 #: include/global_arrays.php:149
 msgid "Save Failed due to field input errors (Check red fields)."
@@ -5871,7 +5888,7 @@ msgstr "Saglabāt neizdevās lauka ievades kļūdu dēļ (pārbaudiet sarkanos l
 
 #: include/global_arrays.php:152
 msgid "Passwords do not match, please retype."
-msgstr "Paroles nesakrīt, lūdzu, ierakstiet vēlreiz."
+msgstr "Paroles nesakrīt, lūdzu, ievadiet vēlreiz."
 
 #: include/global_arrays.php:155
 msgid "You must select at least one field."
@@ -5891,7 +5908,7 @@ msgstr "Izceltais direktorijs nepastāv. Lūdzu, ievadiet derīgu direktoriju."
 
 #: include/global_arrays.php:167
 msgid "The Cacti log file must have the extension '.log'"
-msgstr "Kaktusu žurnāla failam ir jābūt paplašinājumam \".log\"."
+msgstr "Cacti žurnāla failam jābūt ar '.log' paplašinājumu."
 
 #: include/global_arrays.php:170
 msgid "Data Input for method does not appear to be whitelisted."
@@ -6696,6 +6713,7 @@ msgid "Data Collectors"
 msgstr "Datu savācēji"
 
 #: include/global_arrays.php:988 include/global_arrays.php:2890
+#, fuzzy
 msgid "Aggregate"
 msgstr "Agregāts"
 
@@ -6729,7 +6747,7 @@ msgstr "VDEF"
 
 #: include/global_arrays.php:1006 include/global_arrays.php:1050
 msgid "Import/Export"
-msgstr "Importa eksporta"
+msgstr "Importēt/Eksportēt"
 
 #: include/global_arrays.php:1007 include/global_arrays.php:1219
 #: include/global_arrays.php:2629
@@ -6737,10 +6755,8 @@ msgid "Import Templates"
 msgstr "Importēt veidnes"
 
 #: include/global_arrays.php:1008 include/global_arrays.php:2635
-#, fuzzy
-#| msgid "Import Templates"
 msgid "Import Packages"
-msgstr "Importēt veidnes"
+msgstr "Importēt pakotnes"
 
 #: include/global_arrays.php:1009 include/global_arrays.php:1218
 #: include/global_arrays.php:2617 templates_export.php:159
@@ -6765,7 +6781,7 @@ msgstr "Lietotāji"
 
 #: include/global_arrays.php:1014 include/global_arrays.php:2587
 msgid "User Groups"
-msgstr "Grupas"
+msgstr "Lietotāju grupas"
 
 #: include/global_arrays.php:1015 include/global_arrays.php:2575
 #: user_domains.php:649 user_domains.php:741
@@ -6786,7 +6802,7 @@ msgstr "Sistēmas utilītas"
 #: include/global_arrays.php:2191 links.php:91 links.php:302 links.php:372
 #: links.php:403 links.php:485 user_admin.php:1580 user_group_admin.php:1462
 msgid "External Links"
-msgstr "Arejas saites"
+msgstr "Ārējās saites"
 
 #: include/global_arrays.php:1021 include/global_arrays.php:1055
 msgid "Troubleshooting"
@@ -6798,103 +6814,86 @@ msgstr "Atbalsts"
 
 #: include/global_arrays.php:1059
 msgid "Access Points, Controllers"
-msgstr ""
+msgstr "Piekļuves punkti, kontrolieri"
 
 #: include/global_arrays.php:1060
-#, fuzzy
-#| msgid "Apply Automation Rules"
 msgid "Application Related"
-msgstr "Izmantojiet automatizācijas noteikumus"
+msgstr "Programmu saistīta"
 
 #: include/global_arrays.php:1061
-#, fuzzy
-#| msgid "Cacti Report"
 msgid "Cacti Related"
-msgstr "Kaktusu ziņojums"
+msgstr "Cacti saistīta"
 
 #: include/global_arrays.php:1062
-#, fuzzy
-#| msgid "Database Status"
 msgid "Database Related"
-msgstr "Datu bāzes statuss"
+msgstr "Datu bāzes saistīta"
 
 #: include/global_arrays.php:1063
 msgid "Facilities Related"
-msgstr ""
+msgstr "Aprīkojumu saistīta"
 
 #: include/global_arrays.php:1064
-#, fuzzy
-#| msgid "Generic Log Level"
 msgid "Generic Device"
-msgstr "Vispārējs žurnāla līmenis"
+msgstr "Vispārēja ierīce"
 
 #: include/global_arrays.php:1065
-#, fuzzy
-#| msgid "Grid Options"
 msgid "HPC/Grid Computing"
-msgstr "Režģa opcijas"
+msgstr "Augstas veiktspējas skaitļošana (HPC)/Režģa skaitļošana"
 
 #: include/global_arrays.php:1066
+#, fuzzy
 msgid "Hypervisor Related"
-msgstr ""
+msgstr "Hipervizoru saistīta"
 
 #: include/global_arrays.php:1067
 msgid "ILO, IPMI, iDrac, etc."
-msgstr ""
+msgstr "ILO, IPMI, iDrac, utt."
 
 #: include/global_arrays.php:1068
 msgid "Licensing Related"
-msgstr ""
+msgstr "Licencēšanas saistīta"
 
 #: include/global_arrays.php:1069
 msgid "Linux Related"
-msgstr ""
+msgstr "Linux saistīta"
 
 #: include/global_arrays.php:1070
 #, fuzzy
 #| msgid "Load Balancing"
 msgid "Load Balancer"
-msgstr "Slodzes līdzsvarošana"
+msgstr "Slodzes līdzsvarotājs"
 
 #: include/global_arrays.php:1071
-#, fuzzy
-#| msgid "Network Filters"
 msgid "Network Switch"
-msgstr "Tīkla filtri"
+msgstr "Tīkla komutators"
 
 #: include/global_arrays.php:1072
-#, fuzzy
-#| msgid "Network Filters"
 msgid "Network Router"
-msgstr "Tīkla filtri"
+msgstr "Tīkla maršrutētājs (rūteris)"
 
 #: include/global_arrays.php:1073
-#, fuzzy
-#| msgid "Network Filters"
 msgid "Network Firewall"
-msgstr "Tīkla filtri"
+msgstr "Tīkla ugunsmūris"
 
 #: include/global_arrays.php:1074
 msgid "Storage Related"
-msgstr ""
+msgstr "Krātuves saistīta"
 
 #: include/global_arrays.php:1075
-#, fuzzy
-#| msgid "Select Template"
 msgid "Telco Related"
-msgstr "Atlasiet Veidne"
+msgstr "Telekomunikācijas uzņēmuma saistīta"
 
 #: include/global_arrays.php:1076
 msgid "Web Server Related"
-msgstr ""
+msgstr "Tīmekļa (Web) servera saistīta"
 
 #: include/global_arrays.php:1077
 msgid "Windows Related"
-msgstr ""
+msgstr "Windows saistīta"
 
 #: include/global_arrays.php:1078
 msgid "UPS Related"
-msgstr ""
+msgstr "Nepārtraukta barošanas bloka (UPS) saistīta"
 
 #: include/global_arrays.php:1102
 msgid "All Lines"
@@ -6940,7 +6939,7 @@ msgstr "Vietnes/Ierīces/Dati"
 
 #: include/global_arrays.php:1209
 msgid "Spike Handling"
-msgstr "Smailes apstrāde"
+msgstr "Grafika pīķa pieauguma apstrāde"
 
 #: include/global_arrays.php:1221 utilities.php:2265
 msgid "Log Administration"
@@ -6952,15 +6951,15 @@ msgstr "Žurnāla apskate"
 
 #: include/global_arrays.php:1224
 msgid "Reports Administration"
-msgstr "Pārskatu administrācija"
+msgstr "Atskaites administrēšana"
 
 #: include/global_arrays.php:1225
 msgid "Reports Creation"
-msgstr "Pārskatu izveide"
+msgstr "Atskaites izveide"
 
 #: include/global_arrays.php:1226
 msgid "Show Graph Action Icons"
-msgstr "Rādīt diagrammas darbību ikonas"
+msgstr "Rādīt grafika darbību ikonas"
 
 #: include/global_arrays.php:1227
 msgid "Show User Help Links"
@@ -7320,7 +7319,7 @@ msgstr "Koks"
 
 #: include/global_arrays.php:1668
 msgid "Horizontal Rule"
-msgstr "Horizontāla kārtula"
+msgstr "Horizontālā kārtula"
 
 #: include/global_arrays.php:1672
 msgid "left"
@@ -7963,11 +7962,11 @@ msgstr "Apkopotie vienumi"
 
 #: include/global_arrays.php:2797
 msgid "Graph Rule Items"
-msgstr "Grafika kārtulu vienumi"
+msgstr "Grafika kārtulas vienumi"
 
 #: include/global_arrays.php:2821
 msgid "Tree Rule Items"
-msgstr "Koka noteikumu vienumi"
+msgstr "Koka kārtulas vienumi"
 
 #: include/global_arrays.php:2852 include/global_arrays.php:2868
 #: lib/api_device.php:1547
@@ -9340,7 +9339,7 @@ msgstr "Loģiska darbība noteikumu apvienošanai."
 
 #: include/global_form.php:2140 include/global_form.php:2182
 msgid "The Field Name that shall be used for this Rule Item."
-msgstr "Lauka nosaukums, kas jāizmanto šim noteikuma elementam."
+msgstr "Lauka nosaukums, kas jāizmanto šim kārtulas elementam."
 
 #: include/global_form.php:2148 include/global_form.php:2190
 msgid "Operator."
@@ -9362,7 +9361,7 @@ msgstr "Secība."
 
 #: include/global_form.php:2215 include/global_form.php:2260
 msgid "A useful name for this Rule."
-msgstr "Noderīgs nosaukums šim noteikumam."
+msgstr "Noderīgs nosaukums šai kārtulai."
 
 #: include/global_form.php:2223
 msgid "Choose a Data Query to apply to this rule."
@@ -9370,7 +9369,7 @@ msgstr "Izvēlieties datu vaicājumu, ko lietot šai kārtulai."
 
 #: include/global_form.php:2234
 msgid "Choose any of the available Graph Types to apply to this rule."
-msgstr "Izvēlieties kādu no pieejamajiem diagrammu veidiem, ko piemērot šai kārtulai."
+msgstr "Izvēlieties kādu no pieejamajiem grafikas tipiem, ko piemērot šai kārtulai."
 
 #: include/global_form.php:2247 include/global_form.php:2304
 msgid "Enable Rule"
@@ -9378,7 +9377,7 @@ msgstr "Iespējot kārtulu"
 
 #: include/global_form.php:2248 include/global_form.php:2305
 msgid "Check this box to enable this rule."
-msgstr "Atzīmējiet šo izvēles rūtiņu, lai iespējotu šo noteikumu."
+msgstr "Atķeksējiet šo izvēles rūtiņu, lai iespējotu šo kārtulu."
 
 #: include/global_form.php:2268
 msgid "Choose a Tree for the new Tree Items."
@@ -9786,22 +9785,20 @@ msgid "Cacti includes support for multiple alternate Language Translation Proces
 msgstr "Cacti ietver atbalstu vairākiem alternatīviem valodu tulkošanas procesoriem. Ja neviens nav atlasīts, kaktusi mēģinās izmantot pirmo atrasto."
 
 #: include/global_settings.php:372
-#, fuzzy
-#| msgid "MySQL - TimeZone Support"
 msgid "Client TimeZone Support"
-msgstr "MySQL — laika joslas atbalsts"
+msgstr "Klienta laika josla atbalsts"
 
 #: include/global_settings.php:373
 msgid "How should Cacti support Client Dates based upon the Client browsers timezone."
-msgstr ""
+msgstr "Kā Cacti nosaka klienta datumus, pamatojoties uz klienta pārlūkprogrammu laika joslu."
 
 #: include/global_settings.php:382 include/global_settings.php:2591
 msgid "Date Display Format"
-msgstr "Datuma parādīšanas formāts"
+msgstr "Datuma rādīšanas formāts"
 
 #: include/global_settings.php:383
 msgid "The System default date format to use in Cacti."
-msgstr "Sistēmas noklusējuma datuma formāts lietošanai kaktusos."
+msgstr "Sistēmas noklusējuma datuma formāts, ko izmantot Cacti."
 
 #: include/global_settings.php:389 include/global_settings.php:2598
 msgid "Date Separator"
@@ -9809,7 +9806,7 @@ msgstr "Datuma atdalītājs"
 
 #: include/global_settings.php:390
 msgid "The System default date separator to be used in Cacti."
-msgstr "Sistēmas noklusējuma datuma atdalītājs, kas jāizmanto kaktusos."
+msgstr "Sistēmas noklusējuma datuma atdalītājs, kas jāizmanto Cacti."
 
 #: include/global_settings.php:396
 msgid "Other Settings"
@@ -9817,11 +9814,11 @@ msgstr "Citi iestatījumi"
 
 #: include/global_settings.php:401
 msgid "Has Graphs/Data Sources Checked"
-msgstr "Ir pārbaudīti grafiki/datu avoti"
+msgstr "Vai pārbaudīt grafikus/datu avotus"
 
 #: include/global_settings.php:402
 msgid "Should the Has Graphs and Has Data Sources be Checked by Default."
-msgstr "Vai pēc noklusējuma ir jāpārbauda diagrammas un datu avoti."
+msgstr "Vai pēc noklusējuma pārbaudīt grafikus un datu avotus."
 
 #: include/global_settings.php:407 utilities.php:292 utilities.php:297
 msgid "RRDtool Version"
@@ -9832,14 +9829,12 @@ msgid "The version of RRDtool that you have installed."
 msgstr "Instalētā RRDtool versija."
 
 #: include/global_settings.php:414
-#, fuzzy
-#| msgid "Enable Report"
 msgid "Enable Gradient Support"
-msgstr "Iespējot atskaiti"
+msgstr "Iespējot gradienta atbalstu"
 
 #: include/global_settings.php:415
 msgid "Enabled Gradient Support for AREA and STACK charts."
-msgstr ""
+msgstr "Iespējots gradienta atbalstu apgabala (AREA) un kaudzes (STACK) grafikiem."
 
 #: include/global_settings.php:420
 msgid "Graph Permission Method"
@@ -9886,14 +9881,12 @@ msgid "When checked, Form and Setting Help will be show inline.  Otherwise it wi
 msgstr "Kad tas ir atzīmēts, veidlapu un iestatījumu palīdzība tiks rādīta iekļauta. Pretējā gadījumā tas tiks parādīts, virzot kursoru virs palīdzības pogas."
 
 #: include/global_settings.php:448
-#, fuzzy
-#| msgid "Get Page Help"
 msgid "Local Page Help Only"
-msgstr "Saņemiet lapas palīdzību"
+msgstr "Saņemt tikai lokālā servera lapas palīga atbalstu"
 
 #: include/global_settings.php:449
 msgid "By default Cacti page help is located at docs.cacti.net.  However, if your system does not have access to the Internet, you may download the documentation locally in HTML format and host it in the 'docs' location of you Cacti server.  If you choose only to leverage the local location for page help documentation, check this checkbox."
-msgstr ""
+msgstr "Pēc noklusējuma Cacti lapas palīgs atrodas vietnē docs.cacti.net.  Tomēr, ja jūsu sistēmai (serverim) nav piekļuves internetam, jūs varat lejupielādēt dokumentāciju HTML formātā un hostēt to uz Cacti servera 'docs' lokācijā.  Ja vēlaties izmantot tikai lokālās lapas palīdzības dokumentāciju, atķeksējiet šo izvēles rūtiņu."
 
 #: include/global_settings.php:454
 msgid "Deletion Verification"
@@ -9921,7 +9914,7 @@ msgstr "Kad tas ir iespējots, Cacti nebloķēs grafikus. Tas ļauj ātrāk manu
 
 #: include/global_settings.php:472
 msgid "Hide Cacti Dashboard"
-msgstr "Paslēpt kaktusu informācijas paneli"
+msgstr "Paslēpt Cacti informācijas paneli"
 
 #: include/global_settings.php:473
 msgid "For use with Cacti's External Link Support.  Using this setting, you can hide the Cacti Dashboard, so you can display just your own page."
@@ -10546,62 +10539,56 @@ msgid "The font to use for Graph Unit items.  Enter either a valid True Type Fon
 msgstr "Fonts, ko izmantot grafikas vienības vienumiem. Ievadiet derīgu True Type Font failu vai derīgu Pango font-config vērtību."
 
 #: include/global_settings.php:1115
-#, fuzzy
-#| msgid "User Settings"
 msgid "Business Hours Settings"
-msgstr "Lietotāja iestatījumi"
+msgstr "Uzņēmējdarbības darba stundas iestatījumi"
 
 #: include/global_settings.php:1120
 msgid "Start of Business Day"
-msgstr ""
+msgstr "Uzņēmējdarbības darba dienas sākums"
 
 #: include/global_settings.php:1121
 msgid "The time your business hours start. Format: hh:mm"
-msgstr ""
+msgstr "Laiks, kad sākas jūsu uzņēmējdarbības darba diena. Formāts: hh:mm"
 
 #: include/global_settings.php:1128
 msgid "End of Business Day"
-msgstr ""
+msgstr "Uzņēmējdarbības darba dienas beigas"
 
 #: include/global_settings.php:1129
 msgid "The time your business hours end. Format: hh:mm"
-msgstr ""
+msgstr "Laiks, kad beidzas jūsu uzņēmējdarbības darba diena. Formāts: hh:mm"
 
 #: include/global_settings.php:1136
-#, fuzzy
-#| msgid "%d Weeks"
 msgid "Hide Weekends"
-msgstr "%d nedēļas"
+msgstr "Paslēpt nedēļas nogales"
 
 #: include/global_settings.php:1137
 msgid "Only show business hours during weekdays."
-msgstr ""
+msgstr "Rādīt tikai darbadienas uzņēmējdarbības darba stundas."
 
 #: include/global_settings.php:1142
 msgid "Show business hours"
-msgstr ""
+msgstr "Rādīt uzņēmējdarbības darba stundas"
 
 #: include/global_settings.php:1143
 msgid "Display business hours on rrd graphs."
-msgstr ""
+msgstr "Rādīt uzņēmējdarbības darba stundas RRD grafikos."
 
 #: include/global_settings.php:1148
 msgid "Color to use for business hours"
-msgstr ""
+msgstr "Krāsa, ko izmantot uzņēmējdarbības darba stundām"
 
 #: include/global_settings.php:1149
 msgid "The color to be shown for business hours"
-msgstr ""
+msgstr "Krāsa, ko rādīt uzņēmējdarbības darba stundām"
 
 #: include/global_settings.php:1156
-#, fuzzy
-#| msgid "Maximum number of rows per page"
 msgid "Maximum number of days to show business hours"
-msgstr "Maksimālais rindu skaits lapā"
+msgstr "Maksimālais dienu skaits, ko rādīt uzņēmējdarbības darba stundām"
 
 #: include/global_settings.php:1157
 msgid "After this number of days, the business hours will not be added to the graph. <br/>Recommended: 62 days"
-msgstr ""
+msgstr "Pēc šī dienu skaita uzņēmējdarbības darba stundas netiks pievienotas grafikam.<br/>Ieteicams: 62 dienas"
 
 #: include/global_settings.php:1172
 msgid "Data Collection Enabled"
@@ -11712,16 +11699,12 @@ msgid "The number of concurrent RRDfile check processes to use to use to process
 msgstr "Vienlaicīgu DSStats procesu skaits, kas jāizmanto visu datu avotu apstrādei."
 
 #: include/global_settings.php:2258
-#, fuzzy
-#| msgid "Frequency"
 msgid "Check Frequency"
-msgstr "Biežums"
+msgstr "Pārbaudes biežums"
 
 #: include/global_settings.php:2259
-#, fuzzy
-#| msgid "How frequent should Daily Stats be updated?"
 msgid "How frequent should RRD be checked ?"
-msgstr "Cik bieži ir jāatjaunina ikdienas statistika?"
+msgstr "Cik bieži pārbaudīt RRD?"
 
 #: include/global_settings.php:2265
 msgid "Data Storage Settings"
@@ -11760,27 +11743,23 @@ msgid "Which Directory Pattern do you wish to use for Structured RRD Paths.  'De
 msgstr ""
 
 #: include/global_settings.php:2295
-#, fuzzy
-#| msgid "Device"
 msgid "Device ID"
-msgstr "Ierīce"
+msgstr "Ierīces ID"
 
 #: include/global_settings.php:2296
-#, fuzzy
-#| msgid "Delete Data Query"
-#| msgid_plural "Delete Data Query"
 msgid "Device ID/Data Query ID"
-msgstr "Dzēst datu vaicājumu"
+msgstr "Ierīces ID/Datu vaicājuma ID"
 
 #: include/global_settings.php:2297
 #, fuzzy
 #| msgid "Device Based"
 msgid "Device Hash/Device ID"
-msgstr "Pamatojoties uz ierīci"
+msgstr "Ierīces Hash/Ierīces ID"
 
 #: include/global_settings.php:2298
+#, fuzzy
 msgid "Device Hash/Device ID/Data Query ID"
-msgstr ""
+msgstr "Ierīces Hash/Ierīces ID/Datu vaicājuma ID"
 
 #: include/global_settings.php:2302
 msgid "Max Device Hash Directories"
@@ -12475,7 +12454,7 @@ msgstr "Objekti"
 
 #: lib/api_automation.php:876
 msgid "A blue font color indicates that the rule will be applied to the objects in question.  Other objects will not be subject to the rule."
-msgstr "Zila fonta krāsa norāda, ka noteikums tiks piemērots attiecīgajiem objektiem. Uz citiem objektiem noteikums neattieksies."
+msgstr "Zilā burtu krāsa norāda, ka kārtula tiks piemērota attiecīgajiem objektiem.  Uz pārējiem objektiem kārtula neattiecas."
 
 #: lib/api_automation.php:876
 #, php-format
@@ -12488,7 +12467,7 @@ msgstr "Ierīces statuss"
 
 #: lib/api_automation.php:907
 msgid "There are no Objects that match this rule."
-msgstr "Nav neviena objekta, kas atbilstu šim noteikumam."
+msgstr "Nav neviena objekta, kas atbilstu šai kārtulai."
 
 #: lib/api_automation.php:954
 msgid "Error in data query"
@@ -12540,15 +12519,15 @@ msgstr "Nav koku izveides kritēriju"
 
 #: lib/api_automation.php:1971 lib/api_automation.php:2036
 msgid "Device Match Rule"
-msgstr "Ierīces atbilstības noteikums"
+msgstr "Ierīces atbilstības kārtula"
 
 #: lib/api_automation.php:1992
 msgid "Create Graph Rule"
-msgstr "Izveidojiet grafikas kārtulu"
+msgstr "Izveidot grafikas kārtulu"
 
 #: lib/api_automation.php:2039
 msgid "Graph Match Rule"
-msgstr "Grafika atbilstības noteikums"
+msgstr "Grafika atbilstības kārtula"
 
 #: lib/api_automation.php:2071
 msgid "Create Tree Rule (Device)"
@@ -12556,7 +12535,7 @@ msgstr "Izveidot koka kārtulu (ierīce)"
 
 #: lib/api_automation.php:2074
 msgid "Create Tree Rule (Graph)"
-msgstr "Izveidot koka kārtulu (grafiku)"
+msgstr "Izveidot koka kārtulu (grafiks)"
 
 #: lib/api_automation.php:2120
 #, fuzzy, php-format
@@ -13251,7 +13230,7 @@ msgstr "Atrodas ievades lauks “%s” [get]"
 #: lib/data_query.php:968
 #, php-format
 msgid "Found OID rewrite rule: 's/%s/%s/'"
-msgstr "Atrasts OID pārrakstīšanas kārtula: 's/%s/%s/'"
+msgstr "Atrasta OID pārrakstīšanas kārtula: 's/%s/%s/'"
 
 #: lib/data_query.php:979
 #, php-format
@@ -13814,7 +13793,7 @@ msgstr "Mugurkauls"
 
 #: lib/html.php:2480
 msgid "RRDProxy"
-msgstr "RRDProxy"
+msgstr "RRD starpniekserveris"
 
 #: lib/html.php:2481
 msgid "Keyboard"
@@ -16249,7 +16228,7 @@ msgstr "Round Robin arhīvs"
 
 #: lib/rrd.php:3091
 msgid "Cur Row"
-msgstr "Cur Row"
+msgstr "Pašreizējā rinda"
 
 #: lib/rrd.php:3092
 msgid "PDP per Row"
@@ -16851,11 +16830,11 @@ msgstr ""
 
 #: package_import.php:67
 msgid "Package Key Information Not Found"
-msgstr ""
+msgstr "Pakotnes kriptogrāfijas atslēgas informācija nav atrasta"
 
 #: package_import.php:69
 msgid "In order to use this Plugin, you must first run the <b><i class=\"deviceUp\">genkey.php</i></b> script in the plugin directory.  Once that is complete, you will have a public and private key used to sign your packages."
-msgstr ""
+msgstr "Lai izmantotu šo spraudni, vispirms jāpalaiž <b><i class=\"deviceUp\">genkey.php</i></b> skripts spraudņu mapē.  Kad skripts pabeigs savu darbu, jums būs pieejama publiskā un privātā kriptogrāfijas atslēga, ko izmantot, lai parakstītu pakotnes."
 
 #: package_import.php:108
 msgid "You have not Trusted this Package Author.  If you wish to import, check the Automatically Trust Author checkbox"
@@ -16864,19 +16843,17 @@ msgstr ""
 #: package_import.php:198
 #, php-format
 msgid "The Package %s Imported Successfully"
-msgstr "Pakotne %s veiksmīgi importēta"
+msgstr "%s pakotne veiksmīgi importēta"
 
 #: package_import.php:200
 #, php-format
 msgid "The Package %s Import Failed"
-msgstr ""
+msgstr "%s pakotni neizdevās importēt"
 
 #: package_import.php:347 package_import.php:353 package_import.php:409
 #: package_import.php:412
-#, fuzzy
-#| msgid "Error in data query"
 msgid "Error in Package"
-msgstr "Kļūda datu vaicājumā"
+msgstr "Kļūda pakotnē"
 
 #: package_import.php:347
 msgid "See the cacti.log for more information.  It could be that you had either an API Key error or the package was tamered with, or the location is not available."
@@ -16896,14 +16873,12 @@ msgid "The package download or validation failed"
 msgstr ""
 
 #: package_import.php:409
-#, fuzzy
-#| msgid "Package Files"
 msgid "Package XML File Damaged."
-msgstr "Pakešu faili"
+msgstr "Pakotnes XML fails bojāts."
 
 #: package_import.php:409
 msgid "The XML files appears to be invalid.  Please contact the package author"
-msgstr ""
+msgstr "XML faili šķiet nederīgi.  Lūdzu, sazinieties ar pakotnes autoru"
 
 #: package_import.php:412
 msgid "Check the package repository file for files that should exist and find the one that is missing"
@@ -16911,67 +16886,51 @@ msgstr ""
 
 #: package_import.php:412
 msgid "The XML files for the package does not exist"
-msgstr ""
+msgstr "Pakotnes XML faili neeksistē"
 
 #: package_import.php:446
-#, fuzzy
-#| msgid "Package Files"
 msgid "Packages Details"
-msgstr "Pakešu faili"
+msgstr "Pakotnes sīkāka informācija"
 
 #: package_import.php:462
-#, fuzzy
-#| msgid "right"
 msgid "Copyright"
-msgstr "pa labi"
+msgstr "Autortiesības"
 
 #: package_import.php:482
 msgid "Import Package Filenames [ None selected imports all, Check to import selectively ]"
-msgstr ""
+msgstr "Importēt pakotnes failu nosaukumus [ Importē visus, ja neviens nav atlasīts. Importē atlasītos, ja ir izvēlēti. ]"
 
 #: package_import.php:486
-#, fuzzy
-#| msgid "Package Files"
 msgid "Package"
-msgstr "Pakešu faili"
+msgstr "Pakotne"
 
 #: package_import.php:489
-#, fuzzy
-#| msgid "Rename"
 msgid "Filename"
-msgstr "Pārdēvēt"
+msgstr "Faila nosaukums"
 
 #: package_import.php:531 package_import.php:628 templates_import.php:349
 msgid "Differences"
-msgstr ""
+msgstr "Atšķirības"
 
 #: package_import.php:533 package_import.php:599 templates_import.php:292
-#, fuzzy
-#| msgid "[unchanged]"
 msgid "Unchanged"
-msgstr "[nemainīts]"
+msgstr "Bez izmaiņām"
 
 #: package_import.php:557
 msgid "Import Package Templates [ None selected imports all, Check to import selectively ]"
-msgstr ""
+msgstr "Importēt pakotnes veidnes [ Importē visas, ja neviena nav atlasīta. Importē atlasītās, ja ir izvēlētas. ]"
 
 #: package_import.php:561 templates_import.php:257
-#, fuzzy
-#| msgid "Template Title"
 msgid "Template Type"
-msgstr "Veidnes nosaukums"
+msgstr "Veidnes tips"
 
 #: package_import.php:570 templates_import.php:269
-#, fuzzy
-#| msgid "Change Device"
 msgid "Changes/Diffferences"
-msgstr "Mainīt ierīci"
+msgstr "Izmaiņas/atšķirības"
 
 #: package_import.php:595 templates_import.php:288
-#, fuzzy
-#| msgid "Update"
 msgid "Updated"
-msgstr "Atjaunot"
+msgstr "Atjaunināts (veiktas izmaiņas)"
 
 #: package_import.php:632 templates_import.php:353
 #, fuzzy
@@ -16980,8 +16939,9 @@ msgid "Orphans"
 msgstr "Bāreņi"
 
 #: package_import.php:685
+#, fuzzy
 msgid "File Differences for: "
-msgstr ""
+msgstr "Failu atšķirības: "
 
 #: package_import.php:792
 #, fuzzy
@@ -16991,7 +16951,7 @@ msgstr "Pakešu faili"
 
 #: package_import.php:793
 msgid "The *.xml.gz file located on your Local machine to Upload and Import."
-msgstr ""
+msgstr "*.xml.gz fails, kas atrodas uz jūsu datora, ko augšupielādēt un importēt."
 
 #: package_import.php:798
 #, fuzzy
@@ -17008,10 +16968,8 @@ msgid "Replace Data Source and Graph Template Suggested Value Records.  Graphs a
 msgstr ""
 
 #: package_import.php:907
-#, fuzzy
-#| msgid "Import"
 msgid "Package Import"
-msgstr "Importēt"
+msgstr "Pakotnes importēšana"
 
 #: plugins.php:33 plugins.php:677
 msgid "Uninstall"
@@ -17023,7 +16981,7 @@ msgstr "Nav saderīgs"
 
 #: plugins.php:38 plugins.php:475 utilities.php:749
 msgid "Not Installed"
-msgstr "Nav Uzstādīta"
+msgstr "Nav uzstādīts"
 
 #: plugins.php:40
 msgid "Awaiting Configuration"
@@ -17509,7 +17467,7 @@ msgstr "Šī datu apkopotāja statuss."
 
 #: pollers.php:1019
 msgid "Proc/Threads"
-msgstr "Proc/Threads"
+msgstr "Procesi/Pavedieni"
 
 #: pollers.php:1022
 msgid "The Number of Poller Processes and Threads for this Data Collector."
@@ -17610,20 +17568,16 @@ msgid "RRDcheck Problems"
 msgstr "Netika atrasta neviena ierīces veidne"
 
 #: rrdcheck.php:154
-#, fuzzy
-#| msgid "Description"
 msgid "Host Description"
-msgstr "Apraksts"
+msgstr "Resursdatora apraksts"
 
 #: rrdcheck.php:162
-#, fuzzy
-#| msgid "Valid Data"
 msgid "Local Data ID"
-msgstr "Derīgi dati"
+msgstr "Lokālais datu ID"
 
 #: rrdcheck.php:167
 msgid "Message"
-msgstr ""
+msgstr "Ziņa"
 
 #: rrdcheck.php:184 rrdcheck.php:188 rrdcleaner.php:396 rrdcleaner.php:397
 msgid "Deleted"
@@ -17636,11 +17590,8 @@ msgid "No RRDcheck Problems Found"
 msgstr "Netika atrasta neviena ierīces veidne"
 
 #: rrdcheck.php:232
-#, fuzzy
-#| msgctxt "A short textual representation of a month, three letters"
-#| msgid "Aug"
 msgid "Age"
-msgstr "Aug"
+msgstr "Vecums"
 
 #: rrdcheck.php:236 rrdcheck.php:237 rrdcheck.php:238
 #, php-format
@@ -17659,7 +17610,7 @@ msgstr "%d dienas"
 
 #: rrdcheck.php:245
 msgid "Messages"
-msgstr ""
+msgstr "Ziņas"
 
 #: rrdcheck.php:261 rrdcleaner.php:545 user_domains.php:680
 #: user_group_admin.php:1952 user_group_admin.php:2314
@@ -17713,7 +17664,7 @@ msgstr "Veidnes ID"
 
 #: rrdcleaner.php:384
 msgid "Last Modified"
-msgstr "Pēdējā modifikācijā"
+msgstr "Pēdējoreiz veiktas izmaiņas"
 
 #: rrdcleaner.php:385
 msgid "Size [KB]"
@@ -17766,7 +17717,7 @@ msgstr "PIEZĪME. Ceļa iestatījumi šajā cilnē tiek saglabāti tikai lokāli
 #: settings.php:381
 #, php-format
 msgid "Cacti Settings (%s)%s"
-msgstr "Kaktusu iestatījumi (%s)%s"
+msgstr "Cacti iestatījumi (%s)%s"
 
 #: settings.php:498
 msgid "Poller Interval must be less than Cron Interval"
@@ -17778,7 +17729,7 @@ msgstr "Atlasiet spraudni(s)"
 
 #: settings.php:523
 msgid "Plugins Selected"
-msgstr "Atlasīti spraudņi"
+msgstr "Atlasītie spraudņi"
 
 #: settings.php:543
 msgid "Select File(s)"
@@ -19302,11 +19253,12 @@ msgstr "Sistēmas atmiņa"
 #: utilities.php:707 utilities.php:712
 #, php-format
 msgid "%0.2f GB"
-msgstr ""
+msgstr "%0.2f GB"
 
 #: utilities.php:645
+#, fuzzy
 msgid "MySQL/MariaDB Memory Statistics (Source: MySQL Tuner)"
-msgstr ""
+msgstr "MySQL/MariaDB atmiņas statistika (Avots: MySQL Tuner)"
 
 #: utilities.php:650 utilities.php:659 utilities.php:665
 #, fuzzy
@@ -19327,19 +19279,19 @@ msgstr "Maksimālā pamata atmiņa iespējama"
 
 #: utilities.php:674
 msgid "Reduce Total Core Memory"
-msgstr ""
+msgstr "Samazināt kopējo pamata atmiņu"
 
 #: utilities.php:684 utilities.php:701
 msgid "Calculation Formula"
-msgstr ""
+msgstr "Aprēķina formula"
 
 #: utilities.php:690 utilities.php:695 utilities.php:711
 msgid "Max Connection Memory Possible"
-msgstr ""
+msgstr "Maksimālā iespējamā savienojuma atmiņa"
 
 #: utilities.php:691
 msgid "Reduce Total Client Memory"
-msgstr ""
+msgstr "Samazināt kopējo klienta atmiņu"
 
 #: utilities.php:716
 msgid "PHP Information"
@@ -19632,7 +19584,7 @@ msgstr "Šī izvēlnes izvēle no datu bāzes izdzēsīs visu esošo datu avotu 
 
 #: utilities.php:2312
 msgid "RRD Utilities"
-msgstr "RRD Utilities"
+msgstr "RRD rīki"
 
 #: utilities.php:2313
 msgid "RRDfile Cleaner"
@@ -19648,7 +19600,7 @@ msgstr ""
 
 #: utilities.php:2327
 msgid "SNMP Agent Utilities"
-msgstr "SNMP aģentu utilītas"
+msgstr "SNMP aģenta rīki"
 
 #: utilities.php:2331
 msgid "This shows all objects being handled by the SNMP Agent."
@@ -19672,7 +19624,7 @@ msgstr "Ļauj administratoriem uzturēt SNMP paziņojumu uztvērējus."
 
 #: utilities.php:2353
 msgid "Cacti System Utilities"
-msgstr "Cacti System Utilities"
+msgstr "Cacti rīki"
 
 #: utilities.php:2448
 msgid "Refresh Interval"
@@ -19846,9 +19798,9 @@ msgid "Status: <span class=\"deviceUp\"><b>Running</b></span>, Remaining: %s (ds
 msgstr ""
 
 #: utilities.php:2803
-#, php-format
+#, fuzzy, php-format
 msgid "Status: <span class=\"deviceRecovering\"><b>Idle</b></span>, PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)"
-msgstr ""
+msgstr "Statuss: <span class=\"deviceRecovering\"><b>Dīkstāvē</b></span>, Iepriekšējais izpildlaiks: %s (sekundes), Iepriekšēji apstrādātas: %10s (ds rindas)"
 
 #: utilities.php:2809
 msgid "Run Time Configuration"
