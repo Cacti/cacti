@@ -2,109 +2,108 @@ Cacti CHANGELOG
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
--security#XXXX: CVE-2022-46169 Unauthenticated Command Injection in Remote Agent
--issue#4418: When using Single Signon Frameworks like SiteMinder Cacti does not properly detect ticket revocation in callbacks
+-security#5119: CVE-2022-46169 Unauthenticated Command Injection in Remote Agent
+-issue#4418: When using Single Sign-on Frameworks, revocation is not always detected in callbacks
 -issue#4682: New templates are not installed during the update
--issue#4838: CLI Based upgrade generates warnings in PHP 8.1
--issue#4888: Cacti audit_database.php script fails on MySQL 8.0.29 and likely will on newer versions
--issue#4889: Increase host query performance by removing check for NULL after 1.2.22
--issue#4892: Recache Loop after many devices go offline
--issue#4893: in cacti 1.2.22 real time counter gets stuck and does not count down
--issue#4896: When remote poller is in offline mode GUI inaccesible and poller times out 
+-issue#4738: Improve PHP 8.1 support for Installer CLI
+-issue#4888: The database audit script fails to run properly on MySQL 8.0.29
+-issue#4889: Increase host query performance by removing check for NULL
+-issue#4892: When many hosts go offline, Recache Event can be constantly logged
+-issue#4893: Real Time Counter can become stuck and does not count down
+-issue#4896: When remote poller is in offline mode, GUI can become inaccesible and poller can timeout
 -issue#4897: Technical support page on remote poller shows max connections of Main poller
--issue#4903: MySQL 8.x regular expressions break Cacti Automation
--issue#4904: The Recommendation for innodb_buffer_pool_instances is incorrect for MySQL 8 and MariaDB < 10.5
--issue#4905: Labels on AREA having a colon breaks the gradient creation with an rrdtool error
--issue#4917: Under certain circumstances Real Time counter gets stuck and does not count down
--issue#4921: Aggregate Graph Permissions not working as expected
--issue#4923: Graph template "duplicate" action does not working - 500 Internal Server Error
--issue#4927: When running audit_database.php script will fail if cacti password had a ')' in it
--issue#4934: Updated phpseclib to version 2.0.38 to support PHP 8.1
--issue#4935: Net-SNMP - Device I/O template Maximum Value is zero
--issue#4940: Error display Data Collectors when sorting by hostname
--issue#4941: Viewing graphs can break when boost is running in some rare cases
--issue#4944: Newer Cacti Packages should be signed with SHA256 as SHA1 is being deprecated
+-issue#4903: Correct incompatibility between MySQL 8.x and Automation regular expressions
+-issue#4904: The recommendation for innodb_buffer_pool_instances is incorrect for MySQL 8 and MariaDB < 10.5
+-issue#4905: Using colons in labels can break graphs with gradients
+-issue#4917: Real Time Counter can become stuck and does not count down
+-issue#4921: Some Aggregate graphs can be denied access incorrectly
+-issue#4923: Unable to duplicate a Graph template
+-issue#4927: Unable to audit the database if database password contains a bracket
+-issue#4934: Upgrade phpseclib to 2.0.37
+-issue#4935: The 'Net-SNMP - Device I/O' template incorrectly sets a maximum value of zero
+-issue#4940: When sorting by hostname, database errors can be reported
+-issue#4941: When boost is running, graphs can appear broken
+-issue#4944: Packages should be signed with SHA256 as SHA1 is considered deprecated
 -issue#4947: When creating a Data Template, ensure that the default max value is always 'U' and not '0'
--issue#4951: upgrading to 1.2.22 most of the plugins break in a multipoller setup 
+-issue#4951: Plugins may not work correctly with Multi-Poller setups
 -issue#4960: Setting context for connections throws error in PHP 8.x
--issue#4963: Will the calculation rules of 95nth_percentile involve php and rrdtool versions
--issue#4964: Tree search not hiding non-matching tree objects
--issue#4966: When viewing the Device page, ensure that the Device Template filter only includes Devices Types in use
--issue#4971: Deprecation warnings in log files with php 8.2 associate with mib parser
--issue#4978: Graph timezone issue
--issue#4980: Business Hour php errors
--issue#4988: Data Templates that include many Data Sources bug only a few are used, cause RRDfile bloat
--issue#4990: Backtrace generated on the Links page due to undefined variable use
--issue#4991: Updating a Data Template does not properly switch the rrd_heartbeat properly for all data sources resulting in empty graphs
+-issue#4963: Wen calculating 95th percentile, floor() maybe used instead of ceil() incorrectly
+-issue#4964: Tree search does not correct hide non-matching tree objects
+-issue#4966: Device Template filters should show on used templates
+-issue#4971: MIB Parser can sometimes cause errors in later PHP versions
+-issue#4978: Boost may sometimes lose the Time Zone unexpectedly
+-issue#4980: Setting business hours can cause PHP errors
+-issue#4988: When creating RRD File, more data sources than expected may be defined
+-issue#4990: When viewing Links, errors can be generated
+-issue#4991: Updating a Data Template does not switch rrd_heartbeat properly for all sources leading to empty graphs
 -issue#4993: Data Debug Troubleshooter does not pick up invalid RRD_heartbeat settings
--issue#4996: Graph Name in Graph Management shows the same name multiple times
--issue#5001: Data Debug Troubleshooter Reports False Positive Issues with Missing Data Sources
--issue#5006: Cannot delete vdef and cdef item (in theme paw) - php error
--issue#5012: Fixed three error for PHP 8 when execute cli/upgrade_database.php
--issue#5013: Cacti Bulk Walk Size of 'Auto-detect at First Reindex' not working
+-issue#4996: When managing graphs, Graphs can be listed multiple times incorrectly
+-issue#5001: Data Debug troubleshooter reports false positives with Missing Data Sources
+-issue#5006: Errors can occur when attempting to remove items from CDEF or VDEF's
+-issue#5012: When upgrading database at command line, some PHP errors may be seen
+-issue#5013: Automatically set Bulk Walk size when missing on a host
 -issue#5015: Upgrade for 1.2.21 reporting unknown status
--issue#5017: Undefined array key and Rounding causes errors
--issue#5018: It is possible in some rare cases to have 'remember me' enabled and still be logged out after a browser timeout 
--issue#5024: SNMP connection does not replace escape char in 'community'
--issue#5028: Cacti User Stats can throw errors depending on the PHP version that you running
--issue#5029: Searching for a plugin by name sometimes does not work from Plugin management interface
--issue#5030: Installer shows innodb unset
--issue#5033: Installer shows deprecated messages on PHP 8.1.2
+-issue#5017: SNMP Agent can cause unexpected errors due to implicit rounding
+-issue#5018: When using 'Remember me', session can still be forced to end unexpectedly
+-issue#5024: Escape char not properly replaced in snmp strings
+-issue#5028: Cacti User Stats script can throw errors unexpectedly
+-issue#5029: Searching for a plugin by name does not always work
+-issue#5030: Installer shows innodb unset in MariaDB 10.10+
+-issue#5033: Improve PHP 8.1 support with Installer
 -issue#5034: RRD Proxy Server not supported by CLI script "structure_rra_paths.php"
--issue#5041: md5_file error in custom theme after updating to 1.2.23
--issue#5057: PHP8.1 when adding a device rule in automation deprecated messages occour
--issue#5066: Cacti does not escape the watermark leading to broken graphs
--issue#5068: Installer deprecation messages during CLI install in PHP8.2
--issue#5084: After Update 1.2.20 to 1.2.22 CMDPHP ERROR: A DB Cell Failed
--issue#5088: CLI script host_update_template.php falsely changes reindex method to uptime
--issue#5089: When numeric regex validation fails, not backtrace message is logged in the Cacti log
--issue#5096: PHP8.x SNMP Agent Complains of missing $cache variable in snmpagent_mibcachechild.php
--issue#5097: The RRDtool Utilities should not appear on Remote Data Collectors
--issue#5101: Remote Data Collector Recovery Fails
--issue#5102: When in Recovery Mode plugins that are designed to work remotely stop working
--issue#5103: When Remote Data Collector changes status a full page refresh or logout should occur
--issue#5105: Fix PHP 8 error in ss_host_disk.php - function abs with empty value 
--issue#5107: Block Cacti install is session.auto_start is enabled
--issue#5111: Warnings executing function dsstats_get_and_store_ds_avgpeak_values() during boost processing
+-issue#5041: Custom themes may cause errors if they do not contain all required CSS/JS files
+-issue#5057: When adding a device rule in automation, depreciated filters may be reported
+-issue#5066: Graph watermark is not escaped properly, leading to broken graphs
+-issue#5068: Improve PHP 8.2 support with Installer
+-issue#5084: When viewing trees, runtime errors may be recorded
+-issue#5088: When running script host_update_template.php, reindex method may incorrectly be changed to uptime
+-issue#5089: When numeric regex validation fails, no backtrace is logged
+-issue#5096: When the SNMP Agent is enabled, certain objects can result in errors appearing
+-issue#5097: RRDtool Utilities should not appear on Remote Data Collectors
+-issue#5101: When a remote poller fails, the recovery process may also fail
+-issue#5102: When in Recovery Mode, plugins that are designed to work remotely stop working
+-issue#5103: When Remote Data Collector changes status, a full page refresh or logout should occur
+-issue#5105: ss_host_disk.php php issue after upgrade PHP 8.1 (from 7.4)
+-issue#5107: Block installation if PHP has session.auto_start enabled
+-issue#5111: During boost processing, some DS Stats functions can cause errors
 -feature#1100: Structured path not created when using remote poller and Update On-Demand
--feature#1392: AJAX handled errors do not notify Admins that page errors exist
--feature#2239: Allow Import and Export to be more controlled
+-feature#1392: Notify Admins that page errors exist even when using dynamic callbacks
+-feature#2239: Allow Import and Export to be more selective
 -feature#2485: Importing Template requires you to upload the same file after previewing
--feature#2548: Logs display Order vs head or tail
--feature#2567: For large systems, the sort buffer should be optimized for large tables
--feature#2747: Provide better sorting in Console >Management > Graphs
+-feature#2548: Add Head/Tail filtering of log for more efficient searches
+-feature#2567: The innodb sort buffer should be optimized for large tables
+-feature#2747: Allow more sorting options when managing Graphs
 -feature#2871: Report when RRA's heartbeat is below the data source profile's interval
--feature#3131: Button to reindex bad indexes
--feature#3578: Scheduled Automatic Re-indexing of Devices
--feature#4025: When importing a Template or Package, allow the user to use the system default Height, Width, and Image format instead of the one embedded in the Template
+-feature#3131: Add utility feature to reindex hosts with bad indexes
+-feature#3578: Allow Re-indexing of Devices to be Scheduled
+-feature#4025: When importing a Template or Package, allow the user to ignore template and use the system default dimensions
 -feature#4239: On "Graph Utility View" add the name of and a link to the graph template which the graph is based on
--feature#4417: Remote Pollers - Support execution of custom functions at poller bottom
--feature#4638: Detect the graph with stale rrd or missing rrd
--feature#4754: The script ss_fping.php should timeout based upon the actual device if its searchable
+-feature#4417: Support execution of custom functions at poller bottom for remote pollers
+-feature#4754: The script ss_fping.php should timeout based on the host
 -feature#4762: Allow Package Import to be selective
--feature#4967: Make adding Associated Graph Templates and Data Queries easier to use
 -feature#4786: Windows install does not support SVG rendering
 -feature#4820: When importing, make it possible to only import certain components
--feature#4841: Move the cactid function db_check_reconnect() to lib/database.php for other service oriented scripts
--feature#4874: Add support for showing business hours
--feature#4890: Add multi threading for Poller rechace script
--feature#4899: Pass poller status to script_server to avoid connecting to the main database when offline or in recovery
+-feature#4841: Move the `cactid` function `db_check_reconnect()` to `lib/database.php` for other service oriented scripts
+-feature#4874: Add support for Business Hours
+-feature#4890: Add multi threading for Poller recache script
+-feature#4899: Allow script server to be told when the main database when offline or in recovery
 -feature#4901: Make the script server accept arguments in the standard way
--feature#4902: Updated Support for MySQL 8.x
+-feature#4902: Increase compatibility with MySQL 8.x
 -feature#4907: Add lmSensors to the Net-SNMP Device Template
--feature#4926: Allow the user to override Cacti auto-client time zone detection
+-feature#4926: Allow the user to override Cacti's built-in Time Zone detection
 -feature#4943: Add ability to periodically check RRDfiles for errors in batch
--feature#4948: When using proxies to load balance Cacti, if the proxy cookie times out, Cacti should properly redirect
--feature#4955: Provide Common Sense Memory Tuning based upon MySQL Tuner Recommendations
--feature#4956: The function db_check_reconnect() should be able to work with any connection
--feature#4957: Add Device Template Classes to match the Classes in Upcoming release of the Package Plugin
--feature#4965: Make Tree the unlock process not have to rebuild the page
--feature#4989: Cache Cacti 'Total Rows' by Hash to Improve Performance
--feature#5009: Adding a new method for use in xml files: value_parse_index
+-feature#4948: When security cookie times out, redirection does not always occur properly
+-feature#4955: Provide memory tuning based upon MySQL Tuner recommendations
+-feature#4956: The function `db_check_reconnect()` should be able to work with any connection
+-feature#4957: Add Device Template categories to match the classes of the Package Plugin
+-feature#4965: When unlocking a tree, entire page should not need rebuilding
+-feature#4967: Make adding Associated Graph Templates and Data Queries easier to use
+-feature#4989: Improve table performance by caching 'Total Rows' using a hash
+-feature#5009: Allow SNMP Value OIDs to be parsed using regular expressions
 -feature: Adding ESXi Device Template
--feature: Upgrade billboard.js to version 3.6
 -feature: Upgrade jQuery to version 3.6.1
 -feature: Upgrade jQueryUI to version 1.13.2
+-feature: Upgrade billboard.js to version 3.6
 -feature: Introduce exec() function with timeout
 
 1.2.22
@@ -124,7 +123,7 @@ Cacti CHANGELOG
 -issue#4822: Cacti polling and boost report the wrong number of Data Sources when Devices are disabled
 -issue#4823: When editing Graph Template Items there are cases where VDEF's are hidden when they should be shown
 -issue#4831: Database SSL setting lacks default value
--issue#4837: Update default path cacti under *BSD by xmacan
+-issue#4837: Update default path cacti under *BSD
 -issue#4840: Web Basic authentication not creating template user
 -issue#4846: Unable to change the Heartbeat of a Data Source Profile
 -issue#4849: Tree Search Does Not Properly Search All Trees
@@ -137,18 +136,18 @@ Cacti CHANGELOG
 -issue#4866: Update code style to support PHP 8 requirements
 -issue#4867: In Graph Management, filtering for "Device: None" shows all graphs
 -issue#4871: Realtime popup window experiences issues on some browsers
--issue#4873: Auth settings do not always properly reflect the options selected by ddb4github
+-issue#4873: Auth settings do not always properly reflect the options selected
 -issue#4880: MySQL can cause cacti to become stalled due to locking issues
 -issue#4882: Boost process can get hung under rare conditions until the poller times out
 -issue#4884: Exporting graphs under PHP 8 can cause errors
 -issue#4887: Host table has wrong default for disabled and deleted columns
 -feature#4533: RRD storage paths do not scale properly
 -feature#4820: When importing, make it possible to only import certain components
--feature#4825: Update change_device script to include new features by bmfmancini
+-feature#4825: Update change_device script to include new features
 -feature#4827: Make help pages use latest online version wherever possible
 -feature#4832: Cacti should show PHP INI locations during install
 -feature#4833: Detect PHP INI values that are different in the INI vs running config
--feature#4870: Added Gradient Color support for AREA charts by thurban
+-feature#4870: Added Gradient Color support for AREA charts
 -feature#4872: Update CDEF functions for RRDtool
 -feature#4881: When boost is running, it's not clear which processes are running and how long they have to complete
 
@@ -156,13 +155,13 @@ Cacti CHANGELOG
 -issue#4531: Correct duplicate keys within database
 -issue#4614: Add support for hooks during polling loop or at poller end
 -issue#4683: When adding a device, errors may be reported whilst updating templates
--issue#4684: When creating RRD error image, font may not exist by xmacan
+-issue#4684: When creating RRD error image, font may not exist
 -issue#4685: Correct issues with corrupted Cacti Packages
 -issue#4687: Poller output not empty all the time
--issue#4688: When running under PHP 5.4, certain operators are not valid by ddb4github
+-issue#4688: When running under PHP 5.4, certain operators are not valid
 -issue#4689: Package Import generates errors when you try to import directory or non-file
 -issue#4693: Correct issues with Heartbeat definitions under PHP 8.x
--issue#4695: When importing packages, hash types are not properly processed by ddb4github
+-issue#4695: When importing packages, hash types are not properly processed
 -issue#4697: Login problem
 -issue#4698: When creating a device, unexpected poller down message may be shown
 -issue#4701: Editing a new user or user group may cause errors
@@ -170,11 +169,11 @@ Cacti CHANGELOG
 -issue#4707: Unable to duplicate graph templates due to missing column
 -issue#4716: Correct issues with Data Source Edit under PHP 8.x
 -issue#4719: Browsers may reject CactiTimeZone and CactiDateTime cookies due to SameSite requirements
--issue#4721: Some JavaScript and image files URL are broken under midwinter theme by ddb4github
--issue#4722: When upgrading from pre 1.x, various errors may be seen by ddb4github
+-issue#4721: Some JavaScript and image files URL are broken under midwinter theme
+-issue#4722: When upgrading from pre 1.x, various errors may be seen
 -issue#4726: When running under Fedora, issues may be seen with snmp values
 -issue#4729: Add ability for Template and Package Installs to update Suggested Name Values/Patterns
--issue#4732: When using audit tool, text/mediumtext columns may not be properly processed by ddb4github
+-issue#4732: When using audit tool, text/mediumtext columns may not be properly processed
 -issue#4735: When changing data source profiles, errors may be shown
 -issue#4736: Update PHP recommendations to meet current expectations
 -issue#4743: When viewing graphs, fontawesome may not always been found
@@ -254,8 +253,8 @@ Cacti CHANGELOG
 -issue#4586: When viewing graphs, excess database queries may occur
 -issue#4587: Settings may be read more often than required
 -issue#4588: Unable to save host with multi-byte characters
--issue#4589: When updating tables, ensure engine, row_format and charset by ddb4github
--issue#4594: When selecting font, attempt to use system-based font before internally supplied version by ddb4github
+-issue#4589: When updating tables, ensure engine, row_format and charset
+-issue#4594: When selecting font, attempt to use system-based font before internally supplied version
 -issue#4597: Selective Device Debug does not work with Remote Data Collectors
 -issue#4598: Plugin tab does not stay visible when main poller is offline
 -issue#4603: When failing back to PHP GetText, module is not always selected
@@ -281,7 +280,7 @@ Cacti CHANGELOG
 -issue#4651: Device Description is not consistent in Poller Cache view
 -issue#4652: After repopulating graph, navigation to check cumbersome
 -issue#4654: When saving a data template, replication may cause errors
--issue#4658: When upgrading from pre-1.0, tree information may not properly update by ddb4github
+-issue#4658: When upgrading from pre-1.0, tree information may not properly update
 -issue#4659: When moving a device between pollers, errors may occur
 -issue#4666: Add date calculation support for PHP 8
 -issue#4671: Add poller sleeping support for PHP 8
