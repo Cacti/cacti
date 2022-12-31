@@ -1683,7 +1683,7 @@ function utility_php_verify_extensions(&$extensions, $source) {
 
 		if ($config['cacti_server_os'] == 'unix') {
 			$extensions['posix'] = array('cli' => false, 'web' => false);
-			$extensions['pcntl'] = array('cli' => false, 'web' => false);
+			$extensions['pcntl'] = array('cli' => false, 'web' => true);
 		} else {
 			$extensions['com_dotnet'] = array('cli' => false, 'web' => false);
 		}
