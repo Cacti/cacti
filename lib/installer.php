@@ -1884,14 +1884,14 @@ class Installer implements JsonSerializable {
 
 		$enabled['php_modules'] = DB_STATUS_SUCCESS;
 
-		foreach ($this->modules as $id =>$e) {
+		foreach ($this->modules as $id => $e) {
 			form_alternate_row('line' . $id);
 			form_selectable_cell($id, '');
 			form_selectable_cell('<font color=green>' . __('Yes') . '</font>', '');
 			form_selectable_cell(Installer::formatModuleStatus($this->modules[$id], $id), '');
 			form_end_row();
 
-			if (!$e['installed']) {
+			if (!$this->modules[$id]['installed']) {
 				$enabled['php_modules'] = DB_STATUS_ERROR;
 			}
 		}
@@ -1919,7 +1919,7 @@ class Installer implements JsonSerializable {
 			form_selectable_cell(Installer::formatModuleStatus($ext[$id], $id, 'orange'), '');
 			form_end_row();
 
-			if (!$e['installed']) {
+			if (!$ext[$id]['installed']) {
 				$enabled['php_optional'] = DB_STATUS_WARNING;
 			}
 		}
@@ -3500,6 +3500,7 @@ class Installer implements JsonSerializable {
 		} elseif (!$module['web']) {
 			if ($pcntl_special) {
 				$module['web'] = true;
+				$module['installed'] = true;
 				return '<font color=orange>' . __('%s - N/A', __('Web')) . '</font>';
 			} else {
 				return '<font color=orange>' . __('%s - No', __('Web')) . '</font>';
