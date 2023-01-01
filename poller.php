@@ -400,7 +400,7 @@ while ($poller_runs_completed < $poller_runs) {
 		ON h.id = pi.host_id ' . $sql_where);
 
 	if (db_column_exists('sites', 'disabled')) {
-		$sql_where = 'AND IFNULL(s.disabled,"") != "on"';
+		$sql_where = "AND IFNULL(s.disabled, '') != 'on'";
 	} else {
 		$sql_where = '';
 	}
@@ -423,15 +423,15 @@ while ($poller_runs_completed < $poller_runs) {
 			$polling_hosts = array(0 => array('id' => '0'));
 		}
 	} else {
-		$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' h.id
+		$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . " h.id
 			FROM host h
 			LEFT JOIN sites s
 			ON s.id = h.site_id
 			WHERE poller_id = ?
-			AND h.deleted=""
-			AND IFNULL(h.disabled,"") != "on"
-			AND IFNULL(s.disabled,"") != "on"
-			ORDER BY id',
+			AND h.deleted = ''
+			AND IFNULL(h.disabled, '') != 'on'
+			$sql_where
+			ORDER BY id",
 			array($poller_id));
 	}
 
@@ -440,17 +440,17 @@ while ($poller_runs_completed < $poller_runs) {
 
 	$script = $server = $snmp = 0;
 
-	$totals = db_fetch_assoc_prepared('SELECT action, COUNT(*) AS totals
+	$totals = db_fetch_assoc_prepared("SELECT action, COUNT(*) AS totals
 		FROM poller_item AS pi
 		INNER JOIN host AS h
 		ON h.id = pi.host_id
 		LEFT JOIN sites s
 		ON s.id = h.site_id
 		WHERE h.poller_id = ?
-		AND h.deleted=""
-		AND IFNULL(h.disabled,"") != "on"
-		AND IFNULL(s.disabled,"") != "on"
-		GROUP BY action',
+		AND h.deleted = ''
+		AND IFNULL(h.disabled, '') != 'on'
+		$sql_where
+		GROUP BY action",
 		array($poller_id));
 
 	if (cacti_sizeof($totals)) {
@@ -1094,6 +1094,10 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 function poller_run_stats($loop_start) {
 	global $poller_id, $poller_interval, $poller_lastrun;
 
+	if (!db_table_exists('poller_time_stats')) {
+		return false;
+	}
+
 	$threshold_1h       = read_config_option('poller_warning_1h_ratio');
 	$threshold_1h_count = read_config_option('poller_warning_1h_count');
 	$threshold_24h      = read_config_option('poller_warning_24h_ratio');
@@ -1115,6 +1119,7 @@ function poller_run_stats($loop_start) {
 
 			if ($ratio / $poller_interval > $threshold_24h / 100 && $threshold_24h > 0) {
 				cacti_log(__("WARNING: 24 hours poller avg. run time reached more than $threshold_24h% of time limit") , true, 'POLLER');
+
 				admin_email(__('Cacti System Warning'), __('WARNING: 24 hours Poller[%d] avg. run time is %f seconds (more than %d &#37; of time limit)', $poller_id, $ratio,$threshold_24h));
 			}
 		}
@@ -1122,12 +1127,15 @@ function poller_run_stats($loop_start) {
 
 	// last hour stats
 	if (date('G', $poller_lastrun) != date('G')) {
-		$count = db_fetch_cell_prepared('SELECT count(total_time) FROM poller_time_stats WHERE time > DATE_SUB(NOW(), INTERVAL 60 minute)
-				AND (total_time/?) > (?/100)',
+		$count = db_fetch_cell_prepared('SELECT count(total_time)
+			FROM poller_time_stats
+			WHERE time > DATE_SUB(NOW(), INTERVAL 60 minute)
+			AND (total_time/?) > (?/100)',
 			array($poller_interval, $threshold_1h));
 
 		if ($count > $threshold_1h_count && $threshold_1h_count > 0) {
 			cacti_log(__("WARNING: In last hour poller run time $count times (limit $threshold_1h_count) reached more than $threshold_1h% of time limit") , true, 'POLLER');
+
 			admin_email(__('Cacti System Warning'), __('WARNING: In last hour Poller[%d] run time %d times reached more than %d &#37; of time limit', $poller_id, $threshold_1h_count, $threshold_1h));
 		}
 	}
@@ -1142,10 +1150,14 @@ function poller_run_stats($loop_start) {
 }
 
 function multiple_poller_boost_check() {
-	$pollers = db_fetch_cell('SELECT COUNT(*) FROM poller WHERE disabled="" AND id > 1');
+	$pollers = db_fetch_cell('SELECT COUNT(*)
+		FROM poller
+		WHERE disabled = ""
+		AND id > 1');
 
 	if ($pollers > 0 && read_config_option('boost_rrd_update_enable') == '') {
 		cacti_log('NOTE: A second Cacti data collector has been added.  Therefore, enabling boost automatically!', false, 'POLLER');
+
 		admin_email(__('Cacti System Notification'), __('NOTE: A second Cacti data collector has been added.  Therefore, enabling boost automatically!'));
 
 		set_config_option('boost_rrd_update_enable', 'on');
@@ -1158,6 +1170,7 @@ function multiple_poller_boost_check() {
  */
 function spikekill_poller_bottom() {
 	global $config;
+
 	include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 	$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
@@ -1182,3 +1195,4 @@ function display_help() {
 	print "    --force        Override poller overrun detection and force a poller run.\n";
 	print "    --debug|-d     Output debug information.  Similar to cacti's DEBUG logging level.\n\n";
 }
+

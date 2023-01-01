@@ -166,6 +166,7 @@ if (empty($url_path)) {
 }
 
 $config['url_path'] = $url_path;
+
 define('URL_PATH',       $url_path);
 define('CACTI_PATH_URL', $url_path);
 
@@ -687,6 +688,16 @@ if ($config['is_web']) {
 
 		cacti_time_zone_set($gmt_offset);
 	}
+}
+
+$path_php = read_config_option('path_php_binary');
+
+if ($path_php != '') {
+	define('CACTI_PATH_PHP', $path_php);
+} elseif ($config['cacti_server_os'] == 'unix') {
+	define('CACTI_PATH_PHP', '/usr/bin/php');
+} else {
+	define('CACTI_PATH_PHP', 'C:/php/php.exe');
 }
 
 api_plugin_hook('config_insert');

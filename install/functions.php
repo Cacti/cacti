@@ -500,7 +500,7 @@ function find_search_paths($os = 'unix') {
 	}
 
 	if (!empty(CACTI_PATH_PHP)) {
-		$search_paths = array_merge(explode($search_suffix,CACTI_PATH_PHP), $search_paths);
+		$search_paths = array_merge(explode($search_suffix, CACTI_PATH_PHP), $search_paths);
 	}
 
 	// Filter out any blank lines and then make sure those remaining are unique

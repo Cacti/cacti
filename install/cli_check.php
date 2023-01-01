@@ -36,7 +36,7 @@ if ($argv !== false && $argc != false && $argc > 1) {
 
 	if ($value == 'extensions') {
 		$ext = false;
-		utility_php_verify_extensions($ext,'cli');
+		utility_php_verify_extensions($ext, 'cli');
 		print json_encode($ext);
 	} elseif ($value == 'recommends') {
 		$rec = false;

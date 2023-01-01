@@ -174,7 +174,7 @@ if ($auth_method != AUTH_METHOD_NONE) {
 
 		exit;
 	} else {
-		if (empty($_SESSION[SESS_USER_2FA])) {
+		if (empty($_SESSION[SESS_USER_2FA]) && db_column_exists('user_auth', 'tfa_enabled')) {
 			$user_2fa = db_fetch_cell_prepared(
 				'SELECT tfa_enabled
 					FROM user_auth

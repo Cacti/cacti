@@ -2056,7 +2056,7 @@ class Installer implements JsonSerializable {
 			form_alternate_row('line' . $id);
 			form_selectable_cell($id, '');
 			form_selectable_cell('<font color=green>' . __('Yes') . '</font>', '');
-			form_selectable_cell(Installer::formatModuleStatus($e), '');
+			form_selectable_cell(Installer::formatModuleStatus($this->modules[$id]), '');
 			form_end_row();
 
 			if (!$e['installed']) {
@@ -2084,7 +2084,7 @@ class Installer implements JsonSerializable {
 			form_alternate_row('line' . $id, true);
 			form_selectable_cell($id, '');
 			form_selectable_cell('<font color=green>' . __('Yes') . '</font>', '');
-			form_selectable_cell(Installer::formatModuleStatus($e, 'orange'), '');
+			form_selectable_cell(Installer::formatModuleStatus($ext[$id], 'orange'), '');
 			form_end_row();
 
 			if (!$e['installed']) {
@@ -3761,20 +3761,27 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
-	public static function formatModuleStatus($module, $badColor = 'red') {
+	public static function formatModuleStatus(&$module, $badColor = 'red') {
+		$pcntl_special = false;
+		if ($name == 'pcntl') {
+			if (!$module['web']) {
+				$pcntl_special = true;
+			}
+		}
+
 		if ($module['installed']) {
 			return '<font color=green>' . __('Yes') . '</font>';
-		}
-
-		if (!($module['web'] || $module['cli'])) {
+		} elseif (!($module['web'] || $module['cli'])) {
 			return '<font color=' . $badColor . '>' . __('No - %s', __('Both')) . '</font>';
-		}
-
-		if (!$module['web']) {
-			return '<font color=orange>' . __('%s - No', __('Web')) . '</font>';
-		}
-
-		if (!$module['cli']) {
+		} elseif (!$module['web']) {
+			if ($pcntl_special) {
+				$module['web'] = true;
+				$module['installed'] = true;
+				return '<font color=orange>' . __('%s - N/A', __('Web')) . '</font>';
+			} else {
+				return '<font color=orange>' . __('%s - No', __('Web')) . '</font>';
+			}
+		} elseif (!$module['cli']) {
 			return '<font color=orange>' . __('%s - No', __('Cli')) . '</font>';
 		}
 	}

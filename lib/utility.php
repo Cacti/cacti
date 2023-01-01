@@ -1670,7 +1670,7 @@ function utility_php_extensions() {
 	global $config;
 
 	$php      = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
-	$php_file = cacti_escapeshellarg(CACTI_PATH_CLI . '_check.php') . ' extensions';
+	$php_file = cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' extensions';
 	$json     = shell_exec($php . ' -q ' . $php_file);
 	$ext      = @json_decode($json, true);
 
@@ -1710,7 +1710,7 @@ function utility_php_verify_extensions(&$extensions, $source) {
 
 		if ($config['cacti_server_os'] == 'unix') {
 			$extensions['posix'] = array('cli' => false, 'web' => false);
-			$extensions['pcntl'] = array('cli' => false, 'web' => false);
+			$extensions['pcntl'] = array('cli' => false, 'web' => true);
 		} else {
 			$extensions['com_dotnet'] = array('cli' => false, 'web' => false);
 		}
@@ -1729,7 +1729,7 @@ function utility_php_recommends() {
 	global $config;
 
 	$php        = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
-	$php_file   = cacti_escapeshellarg(CACTI_PATH_CLI . '_check.php') . ' recommends';
+	$php_file   = cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' recommends';
 	$json       = shell_exec($php . ' -q ' . $php_file);
 	$ext        = array('web' => '', 'cli' => '');
 	$ext['cli'] = @json_decode($json, true);
@@ -1850,7 +1850,7 @@ function utility_php_optionals() {
 	global $config;
 
 	$php      = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
-	$php_file = cacti_escapeshellarg(CACTI_PATH_CLI . '_check.php') . ' optionals';
+	$php_file = cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' optionals';
 	$json     = shell_exec($php . ' -q ' . $php_file);
 	$opt      = @json_decode($json, true);
 

@@ -32,13 +32,17 @@ chdir(__DIR__ . '/../');
 /* set the json variable for request validation handling */
 include_once('lib/functions.php');
 include_once('lib/html_utility.php');
+
 set_request_var('json', true);
 $auth_json = true;
 
-include('include/auth.php');
-include('install/functions.php');
-include('lib/installer.php');
-include('lib/utility.php');
+include_once('include/auth.php');
+include_once('install/functions.php');
+include_once('lib/installer.php');
+include_once('lib/utility.php');
+
+set_request_var('json', true);
+$auth_json = true;
 
 $debug = false;
 
@@ -74,6 +78,7 @@ if (isset($initialData['step']) && $initialData['step'] == Installer::STEP_TEST_
 		$json_debug = json_encode($installer);
 	}
 }
+
 log_install_high('json','  End: ' . clean_up_lines($json_debug) . PHP_EOL);
 header('Content-Type: application/json');
 header('Content-Length: ' . strlen($json));
