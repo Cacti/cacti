@@ -813,7 +813,7 @@ function form_droplanguage($form_name, $column_display, $column_id, $form_previo
 	print '</select>';
 }
 
-function form_callback($form_name, $classic_sql, $column_display, $column_id, $callback, $previous_id, $previous_value, $none_entry, $default_value, $class = '', $on_change = '') {
+function form_callback($form_name, $classic_sql, $column_display, $column_id, $action, $previous_id, $previous_value, $none_entry, $default_value, $class = '', $on_change = '') {
 	if ($previous_value == '') {
 		$previous_value = $default_value;
 	}
@@ -848,29 +848,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 			$previous_value = $none_entry;
 		}
 
-		print "<span id='$form_name" . "_wrap' class='autodrop ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-corner-all ui-button ui-widget'>";
-		print "<span id='$form_name" . "_click' style='z-index:4' class='ui-selectmenu-icon ui-icon ui-icon-triangle-1-s'></span>";
-		print "<span class='ui-select-text'>";
-		print "<input type='text' class='ui-state-default ui-corner-all' id='$form_name" . "_input' value='" . html_escape($previous_value) . "'>";
-		print '</span>';
-
-		if (!empty($none_entry) && empty($previous_value)) {
-			$previous_value = $none_entry;
-		}
-
-		print '</span>';
-		print "<input type='hidden' id='" . $form_name . "' name='" . $form_name . "' value='" . html_escape($previous_id) . "'>";
-		?>
-		<script type='text/javascript'>
-			function finalizeFormCallback<?= $form_name?>() {
-				<?= $on_change?>
-			}
-
-			$(function() {
-				formCallback('<?= $form_name?>', '<?= get_current_page()?>', '<?= $callback?>', finalizeFormCallback<?= $form_name?>);
-			});
-		</script>
-	<?php
+		print "<input id='$form_name' name='$form_name' type='text' class='drop-callback ui-state-default ui-corner-all' data-action='$action' data-callback='$on_change' data-value='" . html_escape($previous_value) . "' value='" . html_escape($previous_id) . "'>";
 	}
 }
 

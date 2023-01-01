@@ -2675,6 +2675,7 @@ function html_common_header($title, $selectedTheme = '') {
 		var reportABug = '<?php print __esc('Report a bug');?>';
 		var searchFilter = '<?php print __esc('Enter a search term');?>';
 		var searchRFilter = '<?php print __esc('Enter a regular expression');?>';
+		var searchSelect = '<?php print __esc('Select to Search');?>';
 		var sessionMessageCancel = '<?php print __esc('Cancel');?>';
 		var sessionMessageContinue = '<?php print __esc('Continue');?>';
 		var sessionMessageOk = '<?php print __esc('Ok');?>';

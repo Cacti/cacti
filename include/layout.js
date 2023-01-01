@@ -34,6 +34,9 @@ var userMenuTimer;
 var userMenuOpenTimer = null;
 var graphMenuTimer;
 var graphMenuElement = 0;
+var callbackTimer = {};
+var callbackClickTimer = {}
+var callbackOpen = {};
 var pulsating = true;
 var pageLoaded = false;
 var shiftPressed = false;
@@ -3033,6 +3036,8 @@ $(function () {
 
 	handleUserMenu();
 
+	makeCallbacks();
+
 	$('#navigation_right').show();
 
 	if (isMobile.any() != null) {
@@ -4148,6 +4153,142 @@ $.widget('custom.dropcolor', {
 	}
 });
 
+function makeCallbacks() {
+	var cn = 0;
+
+	$('.drop-callback').each(function() {
+		var title    = searchSelect;
+		var action   = $(this).attr('data-action');
+		var value    = $(this).attr('data-value');
+
+		var Id        = $(this).attr('id');
+		var dcId      = '#' + Id;
+		var dcWrap    = dcId + '_wrap';
+		var dcWrapId  = Id + '_wrap';
+		var dcClickId = Id + '_click';
+		var dcInput   = dcId + '_input';
+		var dcInputId = Id + '_input';
+
+		var dcInputFields = 'input' + dcId + '_input';
+
+		$(dcId).attr('data-callback-id', cn);
+
+		if ($(dcWrap).length) {
+			$(dcWrap).remove();
+		}
+
+		if (value == '') {
+			value = title;
+		}
+
+		var dialogForm = "<span id='" + dcWrapId + "' class='ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-button ui-widget'>";
+		dialogForm    += "<span id='" + dcClickId + "' style='z-index:4' class='ui-selectmenu-icon ui-icon ui-icon-triangle-1-s'></span>";
+		dialogForm    += "<span class='ui-select-text'>";
+		dialogForm    += "<input type='text' class='ui-state-default ui-corner-all' id='" + dcInputId + "' value='" + value + "'>";
+		dialogForm    += "</span>";
+		dialogForm    += "</span>&nbsp;";
+
+		$(this).after(dialogForm);
+		$(this).hide();
+
+		$(dcInput).autocomplete({
+			source: pageName + '?action=' + action,
+			autoFocus: true,
+			minLength: 0,
+			select: function(event, ui) {
+				var callBack = $(dcId).attr('data-callback');
+
+				$(dcInput).val(ui.item.label);
+
+				if (ui.item.id) {
+					$(dcId).val(ui.item.id);
+				} else {
+					$(dcId).val(ui.item.value);
+				}
+
+				if (callBack != '') {
+					callBack = callBack.replace('(', '').replace(')', '');
+
+					executeFunctionByName(callBack, window);
+				}
+			},
+			open: function(event, ui) {
+				$('.ui-dialog').css('z-index', '20');
+				$(this).css('z-index', '5000');
+			}
+		}).css('border', 'none').css('background-color', 'transparent');
+
+		$(dcWrap).on('dblclick', function() {
+			var cn = $(dcId).attr('data-callback-id');
+
+			callbackOpen[cn] = false;
+
+			clearTimeout(callbackTimer[cn]);
+
+			clearTimeout(callbackClickTimer[cn]);
+			$(dcInput).autocomplete('close').select();
+		}).on('click', function() {
+			var cn = $(dcId).attr('data-callback-id');
+
+			if (callbackOpen[cn]) {
+				$(dcInput).autocomplete('close');
+				clearTimeout(callbackTimer[cn]);
+				callbackOpen[cn] = false;
+			} else {
+				callbackClickTimer[cn] = setTimeout(function() {
+					var cn = $(dcId).attr('data-callback-id');
+					$(dcInput).autocomplete('search', '');
+
+					clearTimeout(callbackTimer[cn]);
+					callbackOpen[cn] = true;
+				}, 200);
+			}
+			$(dcInput).select();
+		}).on('keyup', function() {
+			$(dcId).val($(dcInput).val());
+		}).on('mouseleave', function() {
+			var cn = $(dcId).attr('data-callback-id');
+
+			callbackTimer[cn] = setTimeout(function() { $(dcInput).autocomplete('close'); }, 800);
+		});
+
+		var width = $(dcInput).textBoxWidth();
+		if (width < 200) {
+			width = 200;
+		}
+
+		$(dcWrap).css('width', width+20);
+		$(dcInput).css('width', width);
+		$(dcWrap).find('.ui-select-text').css('width', width);
+
+		$('ul[id^="ui-id"]').on('mouseenter', function() {
+			var cn = $(dcId).attr('data-callback-id');
+			clearTimeout(callbackTimer[cn]);
+		}).on('mouseleave', function() {
+			var cn = $(dcId).attr('data-callback-id');
+			callbackTimer[cn] = setTimeout(function() {
+				$(dcInput).autocomplete('close');
+			}, 800);
+		});
+
+		$('ul[id^="ui-id"] > li').on('mouseenter', function() {
+			$(this).addClass('ui-state-hover');
+		}).on('mouseleave', function() {
+			$(this).removeClass('ui-state-hover');
+		});
+
+		$(dcWrap).on('mouseenter', function() {
+			$(this).addClass('ui-state-hover');
+			$('input#' + id + '_input').addClass('ui-state-hover');
+		}).on('mouseleave', function() {
+			$(this).removeClass('ui-state-hover');
+			$(dcInputFields).removeClass('ui-state-hover');
+		});
+
+		cn++;
+	});
+}
+
 function expandClipboardSection(section) {
 	var isVisible = section.is(':visible');
 	if (!isVisible) {
@@ -4623,91 +4764,6 @@ function formValidate(formId, href) {
 	}
 }
 
-function formCallback(formId, currentPage, action, callback) {
-	var formCallbackTimer;
-	var formCallbackClickTimer;
-	var formCallbackOpen = false;
-
-	var formCallbackId = '#' + formId;
-	var formCallbackWrap = formCallbackId + '_wrap';
-	var formCallbackInput = formCallbackId + '_input';
-	var formCallbackInputFields = 'input' + formCallbackId + '_input';
-
-	$(formCallbackInput).autocomplete({
-		source: currentPage + '?action=' + action,
-		autoFocus: true,
-		minLength: 0,
-		select: function (event, ui) {
-			$(formCallbackInput).val(ui.item.label);
-			if (ui.item.id) {
-				$(formCallbackId).val(ui.item.id);
-			} else {
-				$(formCallbackId).val(ui.item.value);
-			}
-
-			if (typeof callback !== 'undefined') {
-				callback();
-			}
-		}
-	}).css('border', 'none').css('background-color', 'transparent');
-
-	$(formCallbackWrap).on('dblclick', function () {
-		formCallbackOpen = false;
-		clearTimeout(formCallbackTimer);
-		clearTimeout(formCallbackClickTimer);
-		$(formCallbackInput).autocomplete('close').select();
-	}).on('click', function () {
-		if (formCallbackOpen) {
-			$(formCallbackInput).autocomplete('close');
-			clearTimeout(formCallbackTimer);
-			formCallbackOpen = false;
-		} else {
-			formCallbackClickTimer = setTimeout(function () {
-				$(formCallbackInput).autocomplete('search', '');
-				clearTimeout(formCallbackTimer);
-				formCallbackOpen = true;
-			}, 200);
-		}
-		$(formCallbackInput).select();
-	}).on('keyup', function () {
-		$(formCallbackId).val($(formCallbackInput).val());
-	}).on('mouseleave', function () {
-		formCallbackTimer = setTimeout(function () {
-			$(formCallbackInput).autocomplete('close');
-		}, 800);
-	});
-
-	width = $(formCallbackInput).textBoxWidth();
-	if (width < 100) {
-		width = 100;
-	}
-
-	$(formCallbackWrap).css('width', width + 20);
-	$(formCallbackInput).css('width', width);
-
-	$('ul[id^="ui-id"]').on('mouseenter', function () {
-		clearTimeout(formCallbackTimer);
-	}).on('mouseleave', function () {
-		formCallbackTimer = setTimeout(function () {
-			$(formCallbackInput).autocomplete('close');
-		}, 800);
-	});
-
-	$('ul[id^="ui-id"] > li').each().on('mouseenter', function () {
-		$(this).addClass('ui-state-hover');
-	}).on('mouseleave', function () {
-		$(this).removeClass('ui-state-hover');
-	});
-
-	$(formCallbackWrap).on('mouseenter', function () {
-		$(this).addClass('ui-state-hover');
-		$(formCallbackInputFields).addClass('ui-state-hover');
-	}).on('mouseleave', function () {
-		$(this).removeClass('ui-state-hover');
-		$(formCallbackInputFields).removeClass('ui-state-hover');
-	});
-}
-
 function toggleFields(fields, prefix = '#row_') {
 	Object.keys(fields).forEach(index => {
 		var value = fields[index];
@@ -4718,3 +4774,16 @@ function toggleFields(fields, prefix = '#row_') {
 		}
 	});
 }
+
+function executeFunctionByName(functionName, context /*, args */) {
+	var args       = Array.prototype.slice.call(arguments, 2);
+	var namespaces = functionName.split('.');
+	var func       = namespaces.pop();
+
+	for(var i = 0; i < namespaces.length; i++) {
+		context = context[namespaces[i]];
+	}
+
+	return context[func].apply(context, args);
+}
+

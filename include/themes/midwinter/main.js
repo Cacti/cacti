@@ -608,13 +608,13 @@ function setupDefaultElements() {
 		minLength: 0,
 		select: function(event,ui) {
 			$('#host_id').val(ui.item.id);
-			callBack = $('#call_back').val();
+
+			var callBack = $('#call_back').val();
+
 			if (callBack != 'undefined') {
-				if (callBack.indexOf('applyFilter') >= 0) {
-					applyFilter();
-				} else if (callBack.indexOf('applyGraphFilter') >= 0) {
-					applyGraphFilter();
-				}
+				callBack = callBack.replace('(', '').replace(')', '');
+
+				executeFunctionByName(callBack, window);
 			} else if (typeof applyGraphFilter === 'function') {
 				applyGraphFilter();
 			} else {
