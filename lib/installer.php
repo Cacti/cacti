@@ -902,7 +902,7 @@ class Installer implements JsonSerializable {
 						$input  = mt_rand(2, 64);
 						$output = shell_exec(
 							cacti_escapeshellcmd($path) . ' -q ' .
-								cacti_escapeshellarg(CACTI_PATH_CLI . '_test.php') .
+								cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_test.php') .
 							' ' . $input
 						);
 
