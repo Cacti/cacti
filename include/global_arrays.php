@@ -860,7 +860,7 @@ $auth_methods = array(
 );
 
 if (function_exists('ldap_connect')) {
-	$auth_methods[AUTH_METHOD_DOMAIN] = __('Multiple LDAP/AD Domains');
+	$auth_methods[AUTH_METHOD_DOMAIN] = __('LDAP/AD User Domains');
 }
 
 $domain_types = array(
