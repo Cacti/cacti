@@ -1969,8 +1969,8 @@ function tuneFilter(object, width) {
 
 function handleUserMenu(toggle) {
 	var windowWidth = $(window).width();
-	var savedState = getMenuState();
-	var curState = $('#navigation').is(':visible') ? 'visible' : 'hidden';
+	var savedState  = getMenuState();
+	var curState    = $('#navigation').is(':visible') ? 'visible' : 'hidden';
 
 	//console.log('handle called, curState:'+curState+', savedState:'+savedState+', Toggle:'+toggle);
 	if ($('#navigation').length) {
@@ -2042,6 +2042,12 @@ function menuShow() {
 	var storage = Storages.localStorage;
 	var myClass = '';
 
+	if (!userMenuNavigationExists(pageName)) {
+		$('#navigation').hide();
+		storage.set('menuState_' + pageName, 'hidden');
+		return;
+	}
+
 	if ($('.cactiTreeNavigationArea').length) {
 		if (marginLeftTree == null) {
 			marginLeftTree = minTreeWidth;
@@ -2076,8 +2082,7 @@ function menuShow() {
 
 function loadTopTab(href, id, force) {
 	var stack = ''; //getStackTrace(); // new Error().stack;
-	console.warn("Function loadTopTab is being called\n" + stack);
-	var url = href + (href.indexOf('?') > 0 ? '&' : '?') + 'headercontent=true';
+	var url   = href + (href.indexOf('?') > 0 ? '&' : '?') + 'headercontent=true';
 
 	return loadUrl({
 		url: url,
@@ -2117,6 +2122,7 @@ function loadTopTabEnd(options) {
 	if (options.tabId) {
 		var tabElementId = '#' + options.tabId;
 		var tabElement = $(tabElementId);
+
 		if (tabElement.hasClass('lefttab')) {
 			$('.lefttab').removeClass('selected');
 			$('.submenuoptions').find('.selected').removeClass('selected');
@@ -2135,16 +2141,22 @@ function loadTopTabEnd(options) {
 }
 
 function userMenuNavigationExists(url) {
-	if (url == 'index.php') {
+	if (url == 'index.php' || basename(url) == 'index.php') {
 		return true;
 	} else {
+		var myFound = false;
+
 		$('#navigation').find('a').each(function () {
 			var checkUrl = basename($(this).attr('href'));
 
-			if (checkUrl == url) {
+			if (checkUrl == url || checkUrl == basename(url)) {
+				myFound = true;
+
 				return true;
 			}
 		});
+
+		return myFound;
 	}
 
 	return false;
