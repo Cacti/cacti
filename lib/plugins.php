@@ -25,10 +25,11 @@
 function do_hook($name) {
 	$data = func_get_args();
 	$data = api_plugin_hook($name, $data);
+
 	return $data;
 }
 
-function do_hook_function($name, $parm = NULL) {
+function do_hook_function($name, $parm = null) {
 	return api_plugin_hook_function($name, $parm);
 }
 
@@ -47,7 +48,7 @@ function api_plugin_hook($name) {
 	static $hook_cache = array();
 
 	$args = func_get_args();
-	$ret = '';
+	$ret  = '';
 
 	if (defined('IN_CACTI_INSTALL') || !db_table_exists('plugin_hooks')) {
 		return $args;
@@ -76,12 +77,14 @@ function api_plugin_hook($name) {
 		foreach ($result as $hdata) {
 			if (!in_array($hdata['name'], $plugins_integrated, true)) {
 				$message = '';
+
 				if (api_plugin_can_install($hdata['name'], $message)) {
-					if (file_exists($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
-						include_once($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
+					if (file_exists(CACTI_PATH_PLUGINS . '/' . $hdata['name'] . '/' . $hdata['file'])) {
+						include_once(CACTI_PATH_PLUGINS . '/' . $hdata['name'] . '/' . $hdata['file']);
 					}
 
 					$function = $hdata['function'];
+
 					if (function_exists($function)) {
 						api_plugin_run_plugin_hook($name, $hdata['name'], $function, $args);
 					} else {
@@ -97,7 +100,7 @@ function api_plugin_hook($name) {
 	return $args;
 }
 
-function api_plugin_hook_function($name, $parm = NULL) {
+function api_plugin_hook_function($name, $parm = null) {
 	global $config, $plugin_hooks, $plugins_integrated;
 
 	static $hook_cache = array();
@@ -135,13 +138,14 @@ function api_plugin_hook_function($name, $parm = NULL) {
 
 	if (!empty($result)) {
 		foreach ($result as $hdata) {
-			if (!in_array($hdata['name'], $plugins_integrated)) {
+			if (!in_array($hdata['name'], $plugins_integrated, true)) {
 				$message = '';
+
 				if (api_plugin_can_install($hdata['name'], $message)) {
 					$p[] = $hdata['name'];
 
-					if (file_exists($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file'])) {
-						include_once($config['base_path'] . '/plugins/' . $hdata['name'] . '/' . $hdata['file']);
+					if (file_exists(CACTI_PATH_PLUGINS . '/' . $hdata['name'] . '/' . $hdata['file'])) {
+						include_once(CACTI_PATH_PLUGINS . '/' . $hdata['name'] . '/' . $hdata['file']);
 					}
 
 					$function = $hdata['function'];
@@ -222,7 +226,7 @@ function api_plugin_run_plugin_hook($hook, $plugin, $function, $args) {
 			'config_insert',
 		);
 
-		if (in_array($hook, $remote_hooks) && ($config['connection'] == 'offline' || $config['connection'] == 'recovery')) {
+		if (in_array($hook, $remote_hooks, true) && ($config['connection'] == 'offline' || $config['connection'] == 'recovery')) {
 			if (!api_plugin_has_capability($plugin, 'offline_mgmt')) {
 				if ($orig_menu !== $menu) {
 					$menu = $orig_menu;
@@ -283,7 +287,7 @@ function api_plugin_run_plugin_hook_function($hook, $plugin, $function, $ret) {
 
 function api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilities) {
 	if (isset($required_capabilities[$hook])) {
-		foreach($required_capabilities[$hook] as $capability) {
+		foreach ($required_capabilities[$hook] as $capability) {
 			if (strpos($capability, 'remote_collect') !== false) {
 				return true;
 			}
@@ -296,7 +300,7 @@ function api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilitie
 function api_plugin_get_dependencies($plugin) {
 	global $config;
 
-	$file = $config['base_path'] . '/plugins/' . $plugin . '/INFO';
+	$file = CACTI_PATH_PLUGINS . '/' . $plugin . '/INFO';
 
 	$returndeps = array();
 
@@ -308,6 +312,7 @@ function api_plugin_get_dependencies($plugin) {
 
 			foreach ($parts as $p) {
 				$vparts = explode(':', $p);
+
 				if (isset($vparts[1])) {
 					$returndeps[$vparts[0]] = $vparts[1];
 				} else {
@@ -334,7 +339,7 @@ function api_plugin_minimum_version($plugin, $version) {
 		$result = cacti_version_compare($version, $plugin_version, '<=');
 	} else {
 		$plugin_version = '<not read>';
-		$result = true;
+		$result         = true;
 	}
 
 	return $result;
@@ -364,7 +369,7 @@ function api_plugin_remote_capabilities($plugin) {
 		return 'online_view:1 online_mgmt:1 offline_view:1 offline_mgmt:1 remote_collect:1';
 	}
 
-	$file = $config['base_path'] . '/plugins/' . $plugin . '/INFO';
+	$file = CACTI_PATH_PLUGINS . '/' . $plugin . '/INFO';
 
 	if (!isset($info_data[$plugin])) {
 		if (file_exists($file)) {
@@ -433,17 +438,18 @@ function api_plugin_status_run($hook, $required_capabilities, $plugin_capabiliti
 
 		switch ($capability) {
 			case 'offline_view': // if the plugin has mgmt, it's assumed to have view
-				if (strpos($plugin_capabilities, "offline_mgmt:1") !== false) {
+				if (strpos($plugin_capabilities, 'offline_mgmt:1') !== false) {
 					return true;
 				}
 
 				break;
 			case 'online_view': // if the plugin has mgmt, it's assumed to have view
-				if (strpos($plugin_capabilities, "offline_mgmt:1") !== false) {
+				if (strpos($plugin_capabilities, 'offline_mgmt:1') !== false) {
 					return true;
 				}
 
 				break;
+
 			default:
 				break;
 		}
@@ -455,19 +461,21 @@ function api_plugin_status_run($hook, $required_capabilities, $plugin_capabiliti
 function api_plugin_db_table_create($plugin, $table, $data) {
 	global $config;
 
-	include_once($config['library_path'] . '/database.php');
+	include_once(CACTI_PATH_LIBRARY . '/database.php');
 
 	$result = db_fetch_assoc('SHOW TABLES');
 	$tables = array();
+
 	foreach ($result as $index => $arr) {
 		foreach ($arr as $t) {
 			$tables[] = $t;
 		}
 	}
 
-	if (!in_array($table, $tables)) {
-		$c = 0;
+	if (!in_array($table, $tables, true)) {
+		$c   = 0;
 		$sql = 'CREATE TABLE `' . $table . "` (\n";
+
 		foreach ($data['columns'] as $column) {
 			if (isset($column['name'])) {
 				if ($c > 0) {
@@ -619,17 +627,18 @@ function api_plugin_db_add_column($plugin, $table, $column) {
 	// Example: api_plugin_db_add_column ('thold', 'plugin_config',
 	//	array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false));
 
-	include_once($config['library_path'] . '/database.php');
+	include_once(CACTI_PATH_LIBRARY . '/database.php');
 
-	$result = db_fetch_assoc('SHOW COLUMNS FROM `' . $table . '`');
+	$result  = db_fetch_assoc('SHOW COLUMNS FROM `' . $table . '`');
 	$columns = array();
+
 	foreach ($result as $index => $arr) {
 		foreach ($arr as $t) {
 			$columns[] = $t;
 		}
 	}
 
-	if (isset($column['name']) && !in_array($column['name'], $columns)) {
+	if (isset($column['name']) && !in_array($column['name'], $columns, true)) {
 		$sql = 'ALTER TABLE `' . $table . '` ADD `' . $column['name'] . '`';
 
 		if (isset($column['type'])) {
@@ -677,8 +686,8 @@ function api_plugin_db_add_column($plugin, $table, $column) {
 
 function api_plugin_can_install($plugin, &$message) {
 	$dependencies = api_plugin_get_dependencies($plugin);
-	$message = '';
-	$proceed = true;
+	$message      = '';
+	$proceed      = true;
 
 	if (is_array($dependencies) && cacti_sizeof($dependencies)) {
 		foreach ($dependencies as $dependency => $version) {
@@ -686,7 +695,7 @@ function api_plugin_can_install($plugin, &$message) {
 				$message .= __('%s Version %s or above is required for %s. ', ucwords($dependency), $version, ucwords($plugin));
 
 				$proceed = false;
-			} else if (!api_plugin_installed($dependency)) {
+			} elseif (!api_plugin_installed($dependency)) {
 				$message .= __('%s is required for %s, and it is not installed. ', ucwords($dependency), ucwords($plugin));
 
 				$proceed = false;
@@ -715,10 +724,11 @@ function api_plugin_install($plugin) {
 		raise_message('dependency_check', $message, MESSAGE_LEVEL_ERROR);
 
 		header('Location: plugins.php');
+
 		exit;
 	}
 
-	include_once($config['base_path'] . "/plugins/$plugin/setup.php");
+	include_once(CACTI_PATH_PLUGINS . "/$plugin/setup.php");
 
 	$exists = db_fetch_assoc_prepared(
 		'SELECT id
@@ -736,7 +746,7 @@ function api_plugin_install($plugin) {
 		);
 	}
 
-	$name = $author = $webpage = $version = '';
+	$name     = $author = $webpage = $version = '';
 	$function = 'plugin_' . $plugin . '_version';
 
 	if (function_exists($function)) {
@@ -763,9 +773,11 @@ function api_plugin_install($plugin) {
 	);
 
 	$function = 'plugin_' . $plugin . '_install';
+
 	if (function_exists($function)) {
 		$function();
 		$ready = api_plugin_check_config($plugin);
+
 		if ($ready) {
 			// Set the plugin as "disabled" so it can go live
 			db_execute_prepared(
@@ -791,7 +803,7 @@ function api_plugin_install($plugin) {
 function api_plugin_uninstall_integrated() {
 	global $config, $plugin_hooks, $plugins_integrated;
 
-	foreach($plugins_integrated as $plugin) {
+	foreach ($plugins_integrated as $plugin) {
 		api_plugin_uninstall($plugin, false);
 	}
 }
@@ -799,11 +811,11 @@ function api_plugin_uninstall_integrated() {
 function api_plugin_uninstall($plugin, $tables = true) {
 	global $config;
 
-	if (file_exists($config['base_path'] . "/plugins/$plugin/setup.php")) {
-		include_once($config['base_path'] . "/plugins/$plugin/setup.php");
+	if (file_exists(CACTI_PATH_PLUGINS . "/$plugin/setup.php")) {
+		include_once(CACTI_PATH_PLUGINS . "/$plugin/setup.php");
 
 		// Run the Plugin's Uninstall Function first
-		$function = 'plugin_' . $plugin . '_uninstall';
+		$function = "plugin_{$plugin}_uninstall";
 
 		if (function_exists($function)) {
 			$function();
@@ -833,10 +845,10 @@ function api_plugin_check_config($plugin) {
 
 	clearstatcache();
 
-	if (file_exists($config['base_path'] . "/plugins/$plugin/setup.php")) {
-		include_once($config['base_path'] . "/plugins/$plugin/setup.php");
+	if (file_exists(CACTI_PATH_PLUGINS . "/$plugin/setup.php")) {
+		include_once(CACTI_PATH_PLUGINS . "/$plugin/setup.php");
 
-		$function = 'plugin_' . $plugin . '_check_config';
+		$function = "plugin_{$plugin}_check_config";
 
 		if (function_exists($function)) {
 			return $function();
@@ -862,7 +874,7 @@ function api_plugin_enable($plugin) {
 }
 
 function api_plugin_is_enabled($plugin) {
-	static $pstatus = array();;
+	static $pstatus = array();
 
 	if (isset($pstatus[$plugin])) {
 		return $pstatus[$plugin];
@@ -898,7 +910,7 @@ function api_plugin_disable($plugin) {
 function api_plugin_replicate_config() {
 	global $config;
 
-	include_once($config['base_path'] . '/lib/poller.php');
+	include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 	$gone_time = read_config_option('poller_interval') * 2;
 
@@ -913,7 +925,7 @@ function api_plugin_replicate_config() {
 	);
 
 	if (cacti_sizeof($pollers)) {
-		foreach($pollers as $poller_id => $last_polled) {
+		foreach ($pollers as $poller_id => $last_polled) {
 			if ($last_polled < $gone_time) {
 				replicate_out($poller_id, 'plugins');
 			}
@@ -924,7 +936,7 @@ function api_plugin_replicate_config() {
 function api_plugin_drop_remote_table($table) {
 	global $config;
 
-	include_once($config['base_path'] . '/lib/poller.php');
+	include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 	$gone_time = read_config_option('poller_interval') * 2;
 
@@ -939,7 +951,7 @@ function api_plugin_drop_remote_table($table) {
 	);
 
 	if (cacti_sizeof($pollers)) {
-		foreach($pollers as $poller_id => $last_polled) {
+		foreach ($pollers as $poller_id => $last_polled) {
 			$rcnn_id = poller_connect_to_remote($poller_id);
 
 			if ($rcnn_id !== false) {
@@ -967,7 +979,7 @@ function api_plugin_moveup($plugin) {
 		array($plugin));
 
 	if (!empty($id)) {
-		$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config')+1;
+		$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config') + 1;
 
 		$prior_id = db_fetch_cell_prepared('SELECT MAX(id)
 			FROM plugin_config
@@ -985,7 +997,7 @@ function api_plugin_moveup($plugin) {
 
 function api_plugin_movedown($plugin) {
 	$id      = db_fetch_cell_prepared('SELECT id FROM plugin_config WHERE directory = ?', array($plugin));
-	$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config')+1;
+	$temp_id = db_fetch_cell('SELECT MAX(id) FROM plugin_config') + 1;
 	$next_id = db_fetch_cell_prepared('SELECT MIN(id) FROM plugin_config WHERE id > ?', array($id));
 
 	/* update the above plugin to the prior temp id */
@@ -1008,7 +1020,7 @@ function api_plugin_register_hook($plugin, $hook, $function, $file, $enable = fa
 	if (!$exists) {
 		// enable the hooks if they are system level hooks to enable configuration
 		$settings = array('config_settings', 'config_arrays', 'config_form');
-		$status   = (!in_array($hook, $settings) ? 0 : 1);
+		$status   = (!in_array($hook, $settings, true) ? 0 : 1);
 
 		if ($enable) {
 			$status = 1;
@@ -1037,11 +1049,11 @@ function api_plugin_register_hook($plugin, $hook, $function, $file, $enable = fa
 			}
 		}
 
-		db_execute_prepared("UPDATE plugin_hooks
+		db_execute_prepared('UPDATE plugin_hooks
 			SET `function` = ?, `status` = ?,
 			`file` = ?
 			WHERE `name` = ?
-			AND `hook` = ?",
+			AND `hook` = ?',
 			array($function, $status, $file, $plugin, $hook));
 	}
 
@@ -1078,9 +1090,9 @@ function api_plugin_disable_hooks($plugin) {
 }
 
 function api_plugin_disable_hooks_all($plugin) {
-	db_execute_prepared("UPDATE plugin_hooks
+	db_execute_prepared('UPDATE plugin_hooks
 		SET status = 0
-		WHERE name = ?",
+		WHERE name = ?',
 		array($plugin));
 
 	api_plugin_replicate_config();
@@ -1089,9 +1101,10 @@ function api_plugin_disable_hooks_all($plugin) {
 function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 	$files = explode(',', $file);
 
-	$i = 0;
+	$i         = 0;
 	$sql_where = '(';
-	foreach($files as $tfile) {
+
+	foreach ($files as $tfile) {
 		$sql_where .= ($sql_where != '(' ? ' OR ':'') .
 			' (file = "' . $tfile . '" OR file LIKE "' . $tfile . ',%" OR file LIKE "%,' . $tfile . ',%" OR file LIKE "%,' . $tfile . '")';
 	}
@@ -1121,19 +1134,19 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 				db_execute_prepared('UPDATE IGNORE user_auth_realm
 					SET realm_id = ?
 					WHERE realm_id = ?',
-					array($realm_id+100, $realm_info['id']+100));
+					array($realm_id + 100, $realm_info['id'] + 100));
 
 				db_execute_prepared('UPDATE IGNORE user_auth_group_realm
 					SET realm_id = ?
 					WHERE realm_id = ?',
-					array($realm_id+100, $realm_info['id']+100));
+					array($realm_id + 100, $realm_info['id'] + 100));
 
 				db_execute_prepared('DELETE FROM plugin_realms
 					WHERE id = ?',
 					array($realm_info['id']));
 			} elseif (strpos($realm_info['file'], $file)) {
 				if (substr($realm_info['file'], 0, strlen($file)) == $file) {
-					$file = substr($file, strlen($file)-1);
+					$file = substr($file, strlen($file) - 1);
 				} else {
 					$file = str_replace(',' . $file, '', $realm_info['file']);
 					$file = str_replace(',,', ',', $file);
@@ -1165,12 +1178,13 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 			$realm_id = $realm_id + 100;
 
 			$user_ids[] = read_config_option('admin_user');
+
 			if (isset($_SESSION[SESS_USER_ID])) {
 				$user_ids[] = $_SESSION[SESS_USER_ID];
 			}
 
 			if (cacti_sizeof($user_ids)) {
-				foreach($user_ids as $user_id) {
+				foreach ($user_ids as $user_id) {
 					db_execute_prepared('REPLACE INTO user_auth_realm
 						(user_id, realm_id)
 						VALUES (?, ?)',
@@ -1224,7 +1238,7 @@ function api_plugin_load_realms() {
 		foreach ($plugin_realms as $plugin_realm) {
 			$plugin_files = explode(',', $plugin_realm['file']);
 
-			foreach($plugin_files as $plugin_file) {
+			foreach ($plugin_files as $plugin_file) {
 				$user_auth_realm_filenames[$plugin_file] = $plugin_realm['id'] + 100;
 			}
 
@@ -1265,7 +1279,7 @@ function plugin_draw_navigation_text($nav) {
 function plugin_is_compatible($plugin) {
 	global $config;
 
-	$info = plugin_load_info_file($config['base_path'] . '/plugins/' . $plugin . '/INFO');
+	$info = plugin_load_info_file(CACTI_PATH_PLUGINS . '/' . $plugin . '/INFO');
 
 	if ($info !== false) {
 		if (!isset($info['compat']) || cacti_version_compare(CACTI_VERSION, $info['compat'], '<')) {
@@ -1303,6 +1317,7 @@ function plugin_load_info_defaults($file, $info, $defaults = array()) {
 	);
 
 	$info_fields = $info_fields + $defaults;
+
 	foreach ($info_fields as $name => $value) {
 		if (!array_key_exists($name, $result)) {
 			$result[$name] = $value;
@@ -1322,9 +1337,11 @@ function plugin_load_info_defaults($file, $info, $defaults = array()) {
 
 function plugin_load_info_file($file) {
 	$info = false;
+
 	if (file_exists($file)) {
 		if (is_readable($file)) {
 			$info = parse_ini_file($file, true);
+
 			if (cacti_sizeof($info) && array_key_exists('info', $info)) {
 				$info = plugin_load_info_defaults($file, $info['info']);
 			} else {

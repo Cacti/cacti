@@ -55,29 +55,33 @@ switch (get_request_var('action')) {
 		template_item_add_gt();
 
 		header('Location: host_templates.php?action=edit&id=' . get_filter_request_var('host_template_id'));
-		break;
-    case 'item_remove_gt_confirm':
-        template_item_remove_gt_confirm();
 
-        break;
+		break;
+	case 'item_remove_gt_confirm':
+		template_item_remove_gt_confirm();
+
+		break;
 	case 'item_remove_gt':
 		template_item_remove_gt();
 
 		header('Location: host_templates.php?action=edit&id=' . get_filter_request_var('host_template_id'));
+
 		break;
 	case 'item_add_dq':
 		template_item_add_dq();
 
 		header('Location: host_templates.php?action=edit&id=' . get_filter_request_var('host_template_id'));
-		break;
-    case 'item_remove_dq_confirm':
-        template_item_remove_dq_confirm();
 
-        break;
+		break;
+	case 'item_remove_dq_confirm':
+		template_item_remove_dq_confirm();
+
+		break;
 	case 'item_remove_dq':
 		template_item_remove_dq();
 
 		header('Location: host_templates.php?action=edit&id=' . get_filter_request_var('host_template_id'));
+
 		break;
 	case 'edit':
 		top_header();
@@ -85,18 +89,21 @@ switch (get_request_var('action')) {
 		template_edit();
 
 		bottom_footer();
+
 		break;
+
 	default:
 		top_header();
 
 		template();
 
 		bottom_footer();
+
 		break;
 }
 
 /* --------------------------
-    The Save Function
+	The Save Function
    -------------------------- */
 
 function form_save() {
@@ -171,7 +178,7 @@ function duplicate_host_template($_host_template_id, $host_template_title) {
 }
 
 /* ------------------------
-    The "actions" function
+	The "actions" function
    ------------------------ */
 
 function template_item_add_dq() {
@@ -222,22 +229,24 @@ function form_actions() {
 				/* "undo" any device that is currently using this template */
 				db_execute('UPDATE host SET host_template_id = 0 WHERE deleted = "" AND ' . array_to_sql_or($selected_items, 'host_template_id'));
 			} elseif (get_nfilter_request_var('drp_action') == '2') { // duplicate
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					duplicate_host_template($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '3') { // sync
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					api_device_template_sync_template($selected_items[$i]);
 				}
 			}
 		}
 
 		header('Location: host_templates.php');
+
 		exit;
 	}
 
 	/* setup some variables */
-	$host_list = ''; $i = 0;
+	$host_list = '';
+	$i         = 0;
 
 	/* loop through each of the host templates selected on the previous page and get more info about them */
 	foreach ($_POST as $var => $val) {
@@ -298,6 +307,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: host_templates.php');
+
 		exit;
 	}
 
@@ -318,7 +328,7 @@ function form_actions() {
 }
 
 /* ---------------------
-    Template Functions
+	Template Functions
    --------------------- */
 
 function template_item_remove_gt_confirm() {
@@ -481,7 +491,7 @@ function template_edit() {
 
 	/* we have to hide this button to make a form change in the main form trigger the correct
 	 * submit action */
-	echo "<div style='display:none;'><input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Default Submit Button') . "'></div>";
+	print "<div style='display:none;'><input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Default Submit Button') . "'></div>";
 
 	html_end_box(true, true);
 
@@ -497,6 +507,7 @@ function template_edit() {
 			ORDER BY graph_templates.name', array(get_request_var('id')));
 
 		$i = 0;
+
 		if (cacti_sizeof($selected_graph_templates)) {
 			foreach ($selected_graph_templates as $item) {
 				form_alternate_row("gt$i", true);
@@ -554,6 +565,7 @@ function template_edit() {
 			ORDER BY snmp_query.name', array(get_request_var('id')));
 
 		$i = 0;
+
 		if (cacti_sizeof($selected_data_queries)) {
 			foreach ($selected_data_queries as $item) {
 				form_alternate_row("dq$i", true);
@@ -674,38 +686,38 @@ function template() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 			),
 		'class' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => '-1',
 			'pageset' => true,
 			'sort'    => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'has_hosts' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => read_config_option('default_has') == 'on' ? 'true':'false'
@@ -740,14 +752,18 @@ function template() {
 					</td>
 					<td>
 						<select id='class' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('class') == '-1' ? ' selected>':'>') . __('All');?></option>
+							<option value='-1'<?php print(get_request_var('class') == '-1' ? ' selected>':'>') . __('All');?></option>
 							<?php
 							if (cacti_sizeof($device_classes)) {
 								foreach ($device_classes as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('class') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'";
+
+									if (get_request_var('class') == $key) {
+										print ' selected';
+									} print '>' . html_escape($value) . "</option>\n";
 								}
 							}
-							?>
+	?>
 						</select>
 					</td>
 					<td>
@@ -755,19 +771,23 @@ function template() {
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
+							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (cacti_sizeof($item_rows)) {
-								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
-								}
-							}
-							?>
+	if (cacti_sizeof($item_rows)) {
+		foreach ($item_rows as $key => $value) {
+			print "<option value='" . $key . "'";
+
+			if (get_request_var('rows') == $key) {
+				print ' selected';
+			} print '>' . html_escape($value) . "</option>\n";
+		}
+	}
+	?>
 						</select>
 					</td>
 					<td>
 						<span>
-							<input type='checkbox' id='has_hosts' <?php print (get_request_var('has_hosts') == 'true' ? 'checked':'');?>>
+							<input type='checkbox' id='has_hosts' <?php print(get_request_var('has_hosts') == 'true' ? 'checked':'');?>>
 							<label for='has_hosts'><?php print __('Has Devices');?></label>
 						</span>
 					</td>
@@ -847,7 +867,7 @@ function template() {
 		) AS rs");
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$template_list = db_fetch_assoc("SELECT
 		host_template.id, host_template.name, host_template.class, COUNT(DISTINCT host.id) AS hosts
@@ -862,33 +882,33 @@ function template() {
 	$display_text = array(
 		'name' => array(
 			'display' => __('Device Template Name'),
-			'align' => 'left',
-			'sort' => 'ASC',
-			'tip' => __('The name of this Device Template.')
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The name of this Device Template.')
 		),
 		'host_template.class' => array(
 			'display' => __('Device Class'),
-			'align' => 'left',
-			'sort' => 'ASC',
-			'tip' => __('The Class of this Device Template.  The Class Name should be representative of it\'s function.')
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The Class of this Device Template.  The Class Name should be representative of it\'s function.')
 		),
 		'host_template.id' => array(
 			'display' => __('ID'),
-			'align' => 'right',
-			'sort' => 'ASC',
-			'tip' => __('The internal database ID for this Device Template.  Useful when performing automation or debugging.')
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The internal database ID for this Device Template.  Useful when performing automation or debugging.')
 		),
 		'nosort' => array(
 			'display' => __('Deletable'),
-			'align' => 'right',
-			'sort' => '',
-			'tip' => __('Device Templates in use cannot be Deleted.  In use is defined as being referenced by a Device.')
+			'align'   => 'right',
+			'sort'    => '',
+			'tip'     => __('Device Templates in use cannot be Deleted.  In use is defined as being referenced by a Device.')
 		),
 		'hosts' => array(
 			'display' => __('Devices Using'),
-			'align' => 'right',
-			'sort' => 'DESC',
-			'tip' => __('The number of Devices using this Device Template.')
+			'align'   => 'right',
+			'sort'    => 'DESC',
+			'tip'     => __('The number of Devices using this Device Template.')
 		)
 	);
 
@@ -903,6 +923,7 @@ function template() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
+
 	if (cacti_sizeof($template_list)) {
 		foreach ($template_list as $template) {
 			if ($template['hosts'] > 0) {
@@ -927,7 +948,7 @@ function template() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Device Templates Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Device Templates Found') . "</em></td></tr>\n";
 	}
 	html_end_box(false);
 
@@ -940,5 +961,3 @@ function template() {
 
 	form_end();
 }
-
-

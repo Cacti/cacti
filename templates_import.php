@@ -31,7 +31,7 @@ include_once('./lib/utility.php');
 /* set default action */
 set_default_action();
 
-$action = get_request_var('action');
+$action  = get_request_var('action');
 $is_save = isset_request_var('save_component_import');
 
 $tmp_dir = sys_get_temp_dir();
@@ -54,7 +54,7 @@ if ($is_tmp && $is_save && $action == 'save') {
 }
 
 /* --------------------------
-    The Save Function
+	The Save Function
    -------------------------- */
 
 function form_save() {
@@ -64,19 +64,21 @@ function form_save() {
 		//print '<pre>';print_r($_FILES);print '</pre>';exit;
 		if (($_FILES['import_file']['tmp_name'] != 'none') && ($_FILES['import_file']['tmp_name'] != '')) {
 			/* file upload */
-			$fp = fopen($_FILES['import_file']['tmp_name'],'r');
+			$fp       = fopen($_FILES['import_file']['tmp_name'],'r');
 			$xml_data = fread($fp,filesize($_FILES['import_file']['tmp_name']));
 			fclose($fp);
 		} else {
-			header('Location: templates_import.php'); exit;
+			header('Location: templates_import.php');
+
+			exit;
 		}
 
 		if (get_filter_request_var('import_data_source_profile') == '0') {
 			$import_as_new = true;
-			$profile_id = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
+			$profile_id    = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 		} else {
 			$import_as_new = false;
-			$profile_id = get_request_var('import_data_source_profile');
+			$profile_id    = get_request_var('import_data_source_profile');
 		}
 
 		if (get_nfilter_request_var('preview_only') == 'true') {
@@ -102,7 +104,7 @@ function form_save() {
 		/* loop through each of the graphs selected on the previous page and get more info about them */
 		foreach ($_POST as $var => $val) {
 			if (strpos($var, 'chk_') !== false) {
-				$id = base64_decode(str_replace('chk_', '', $var));
+				$id = base64_decode(str_replace('chk_', '', $var), true);
 				$id = json_decode($id, true);
 
 				if (isset($id['hash'])) {
@@ -130,12 +132,12 @@ function form_save() {
 
 			exit;
 		} else {
-			cacti_log(sprintf("ERROR: Import or Preview failed for XML file %s!", $_FILES['import_file']['name']), false, 'IMPORT');
+			cacti_log(sprintf('ERROR: Import or Preview failed for XML file %s!', $_FILES['import_file']['name']), false, 'IMPORT');
 
 			$message_text = '';
 
 			if (cacti_sizeof($import_messages)) {
-				foreach($import_messages as $message) {
+				foreach ($import_messages as $message) {
 					if (isset($messages[$message])) {
 						$message_text .= ($message_text != '' ? '<br>':'') . $messages[$message]['message'];
 					}
@@ -171,6 +173,7 @@ function prepare_template_display(&$import_info) {
 		foreach ($import_info as $type => $type_array) {
 			if ($type == 'files') {
 				$templates['files'] = $type_array;
+
 				continue;
 			}
 
@@ -178,9 +181,9 @@ function prepare_template_display(&$import_info) {
 				$hash = $vals['hash'];
 
 				if (!isset($templates[$hash])) {
-					$templates[$hash]['status'] = $vals['type'];;
+					$templates[$hash]['status'] = $vals['type'];
 				} else {
-					$templates[$hash]['status'] .= '<br>' . $vals['type'];;
+					$templates[$hash]['status'] .= '<br>' . $vals['type'];
 				}
 
 				$templates[$hash]['type']      = $type;
@@ -229,7 +232,7 @@ function display_template_data(&$templates) {
 
 		$id = 0;
 
-		foreach($files as $path => $status) {
+		foreach ($files as $path => $status) {
 			if ($status == 'found') {
 				$status = "<span class='deviceUp'>" . __('Exists') . '</span>';
 			} elseif ($status == 'notreadable') {
@@ -272,7 +275,7 @@ function display_template_data(&$templates) {
 
 		html_header_checkbox($display_text, false, '', true, 'import');
 
-		foreach($templates as $hash => $detail) {
+		foreach ($templates as $hash => $detail) {
 			$id = base64_encode(
 				json_encode(
 					array(
@@ -303,7 +306,7 @@ function display_template_data(&$templates) {
 				$unmet_count = 0;
 				$met_count   = 0;
 
-				foreach($detail['deps'] as $hash => $dep) {
+				foreach ($detail['deps'] as $hash => $dep) {
 					if ($dep == 'met') {
 						$dep_details[$dep] = $dep;
 						$met_count++;
@@ -331,15 +334,15 @@ function display_template_data(&$templates) {
 				$diff_array   = array();
 				$orphan_array = array();
 
-				foreach($detail['vals'] as $package => $diffs) {
+				foreach ($detail['vals'] as $package => $diffs) {
 					if (isset($diffs['differences'])) {
-						foreach($diffs['differences'] as $item) {
+						foreach ($diffs['differences'] as $item) {
 							$diff_array[$item] = $item;
 						}
 					}
 
 					if (isset($diffs['orphans'])) {
-						foreach($diffs['orphans'] as $item) {
+						foreach ($diffs['orphans'] as $item) {
 							$orphan_array[$item] = $item;
 						}
 					}
@@ -370,7 +373,7 @@ function display_template_data(&$templates) {
 function bad_tmp() {
 	html_start_box(__('Import Template'), '60%', '', '1', 'center', '');
 	form_alternate_row();
-	print "<td class='textarea'><p><strong>" . __('ERROR') . ":</strong> " .__('Failed to access temporary folder, import functionality is disabled') . "</p></td></tr>\n";
+	print "<td class='textarea'><p><strong>" . __('ERROR') . ':</strong> ' .__('Failed to access temporary folder, import functionality is disabled') . "</p></td></tr>\n";
 	html_end_box();
 }
 
@@ -378,6 +381,7 @@ function import() {
 	global $hash_type_names, $fields_template_import;
 
 	$default_profile = db_fetch_cell('SELECT id FROM data_source_profiles WHERE `default`="on"');
+
 	if (empty($default_profile)) {
 		$default_profile = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY id LIMIT 1');
 	}
@@ -387,34 +391,34 @@ function import() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'preview_only' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'default' => 'on'
 		),
 		'replace_svalues' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'default' => ''
 		),
 		'remove_orphans' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'default' => ''
 		),
 		'data_source_profile' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => $default_profile
 		),
 		'image_format' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => read_config_option('default_image_format')
 		),
 		'graph_width' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => read_config_option('default_graph_width')
 		),
 		'graph_height' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => read_config_option('default_graph_height')
 		),
 	);
@@ -531,5 +535,6 @@ function is_tmp_writable($tmp_dir) {
 	$tmp_len = strlen($tmp_dir);
 	$tmp_dir .= ($tmp_len !== 0 && substr($tmp_dir, -$tmp_len) === '/') ? '': '/';
 	$is_tmp = is_resource_writable($tmp_dir);
+
 	return $is_tmp;
 }

@@ -30,26 +30,31 @@ set_default_action();
 switch (get_request_var('action')) {
 	case 'view':
 		header('location: user_log.php');
+
 		break;
 	case 'clear':
 		clear_user_log();
 		raise_message('purge_user_log', __('User Log Purged.'), MESSAGE_LEVEL_INFO);
 		header('location: user_log.php');
+
 		break;
 	case 'purge':
 		top_header();
 		purge_user_log();
 		bottom_footer();
+
 		break;
+
 	default:
 		top_header();
 		view_user_log();
 		bottom_footer();
+
 		break;
 }
 
 /* -----------------------
-    Functions
+	Functions
    ----------------------- */
 
 function view_user_log() {
@@ -58,36 +63,36 @@ function view_user_log() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'time',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'DESC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'username' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => '-1',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'result' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			)
@@ -162,12 +167,16 @@ function view_user_log() {
 							<?php
 							$users = db_fetch_assoc('SELECT DISTINCT username FROM user_auth ORDER BY username');
 
-							if (cacti_sizeof($users)) {
-								foreach ($users as $user) {
-									print "<option value='" . html_escape($user['username']) . "'"; if (get_request_var('username') == $user['username']) { print ' selected'; } print '>' . html_escape($user['username']) . '</option>';
-								}
-							}
-							?>
+	if (cacti_sizeof($users)) {
+		foreach ($users as $user) {
+			print "<option value='" . html_escape($user['username']) . "'";
+
+			if (get_request_var('username') == $user['username']) {
+				print ' selected';
+			} print '>' . html_escape($user['username']) . '</option>';
+		}
+	}
+	?>
 						</select>
 					</td>
 					<td>
@@ -187,14 +196,18 @@ function view_user_log() {
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
+							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (cacti_sizeof($item_rows)) {
-								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
-								}
-							}
-							?>
+	if (cacti_sizeof($item_rows)) {
+		foreach ($item_rows as $key => $value) {
+			print "<option value='" . $key . "'";
+
+			if (get_request_var('rows') == $key) {
+				print ' selected';
+			} print '>' . html_escape($value) . '</option>';
+		}
+	}
+	?>
 						</select>
 					</td>
 					<td>
@@ -241,10 +254,10 @@ function view_user_log() {
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
 		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (
-			ul.username LIKE '     . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR ul.time LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . '
+			ul.username LIKE '	 . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR ul.time LIKE '	  . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR ua.full_name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR ul.ip LIKE '        . db_qstr('%' . get_request_var('filter') . '%') . ')';
+			OR ul.ip LIKE '		. db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 
 	$total_rows = db_fetch_cell("SELECT
@@ -261,7 +274,7 @@ function view_user_log() {
 		ON ua.username=ul.username
 		$sql_where
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
-		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+		LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$user_log = db_fetch_assoc($user_log_sql);
 
@@ -283,6 +296,7 @@ function view_user_log() {
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1, 'user_log.php?action=view');
 
 	$i = 0;
+
 	if (cacti_sizeof($user_log)) {
 		foreach ($user_log as $item) {
 			form_alternate_row('line' . $i, true);
@@ -292,25 +306,25 @@ function view_user_log() {
 			</td>
 			<td class='nowrap'>
 				<?php if (isset($item['full_name'])) {
-						print filter_value($item['full_name'], get_request_var('filter'));
-					} else {
-						print __('(User Removed)');
-					}
-				?>
+					print filter_value($item['full_name'], get_request_var('filter'));
+				} else {
+					print __('(User Removed)');
+				}
+			?>
 			</td>
 			<td class='nowrap'>
 				<?php if (isset($auth_realms[$item['realm']])) {
-						print filter_value($auth_realms[$item['realm']], get_request_var('filter'));
-					} else {
-						print __('N/A');
-					}
-				?>
+					print filter_value($auth_realms[$item['realm']], get_request_var('filter'));
+				} else {
+					print __('N/A');
+				}
+			?>
 			</td>
 			<td class='nowrap'>
 				<?php print filter_value($item['time'], get_request_var('filter'));?>
 			</td>
 			<td class='nowrap'>
-				<?php print ($item['result'] == 0 ? __('Failed'):($item['result'] == 1 ? __('Success - Password'):($item['result'] == 3 ? __('Success - Password Change'):__('Success - Token'))));?>
+				<?php print($item['result'] == 0 ? __('Failed'):($item['result'] == 1 ? __('Success - Password'):($item['result'] == 3 ? __('Success - Password Change'):__('Success - Token'))));?>
 			</td>
 			<td class='nowrap'>
 				<?php print filter_value($item['ip'], get_request_var('filter'));?>
@@ -336,7 +350,7 @@ function clear_user_log() {
 		/* remove active users */
 		foreach ($users as $user) {
 			// Check how many rows for the current user with a valid token
-			foreach ([1, 2] as $result) {
+			foreach (array(1, 2) as $result) {
 				$total_rows = db_fetch_cell_prepared('SELECT COUNT(username)
 					FROM user_log
 					WHERE username = ?

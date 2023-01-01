@@ -37,19 +37,19 @@ ini_set('memory_limit', '-1');
 define('MAX_RECACHE_RUNTIME', 1800);
 
 require(__DIR__ . '/include/cli_check.php');
-require_once($config['base_path'] . '/lib/api_device.php');
-require_once($config['base_path'] . '/lib/api_data_source.php');
-require_once($config['base_path'] . '/lib/api_graph.php');
-require_once($config['base_path'] . '/lib/api_tree.php');
-require_once($config['base_path'] . '/lib/data_query.php');
-require_once($config['base_path'] . '/lib/html_form_template.php');
-require_once($config['base_path'] . '/lib/ping.php');
-require_once($config['base_path'] . '/lib/poller.php');
-require_once($config['base_path'] . '/lib/rrd.php');
-require_once($config['base_path'] . '/lib/snmp.php');
-require_once($config['base_path'] . '/lib/sort.php');
-require_once($config['base_path'] . '/lib/template.php');
-require_once($config['base_path'] . '/lib/utility.php');
+require_once(CACTI_PATH_LIBRARY . '/api_device.php');
+require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
+require_once(CACTI_PATH_LIBRARY . '/api_graph.php');
+require_once(CACTI_PATH_LIBRARY . '/api_tree.php');
+require_once(CACTI_PATH_LIBRARY . '/data_query.php');
+require_once(CACTI_PATH_LIBRARY . '/html_form_template.php');
+require_once(CACTI_PATH_LIBRARY . '/ping.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/rrd.php');
+require_once(CACTI_PATH_LIBRARY . '/snmp.php');
+require_once(CACTI_PATH_LIBRARY . '/sort.php');
+require_once(CACTI_PATH_LIBRARY . '/template.php');
+require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 $poller_id = $config['poller_id'];
 $debug     = false;
@@ -71,11 +71,11 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -83,31 +83,39 @@ if (cacti_sizeof($parms)) {
 			case '--version':
 			case '-V':
 				display_version();
+
 				exit(0);
 			case '-H':
 			case '--help':
 				display_help();
+
 				exit(0);
 			case '--poller':
 			case '-p':
 				$poller_id = $value;
+
 				break;
 			case '--child':
 			case '-c':
 				$host_id = $value;
 				$type    = 'child';
+
 				break;
 			case '-t':
 			case '--threads':
 				$threads = $value;
+
 				break;
 			case '--debug':
 			case '-d':
 				$debug = true;
+
 				break;
+
 			default:
 				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -210,42 +218,44 @@ if ($host_id === false) {
 	if (cacti_sizeof($poller_commands)) {
 		foreach ($poller_commands as $command) {
 			switch ($command['action']) {
-			case POLLER_COMMAND_REINDEX:
-				list($device_id, $data_query_id) = explode(':', $command['command']);
+				case POLLER_COMMAND_REINDEX:
+					list($device_id, $data_query_id) = explode(':', $command['command']);
 
-				if ($last_host_id != $device_id) {
-					$last_host_id = $device_id;
-					$first_host = true;
-				} else {
-					$first_host = false;
-				}
+					if ($last_host_id != $device_id) {
+						$last_host_id = $device_id;
+						$first_host   = true;
+					} else {
+						$first_host = false;
+					}
 
-				if ($first_host) {
-					cacti_log("Device[$device_id] NOTE: Recache Event Detected for Device", true, 'PCOMMAND');
-				}
+					if ($first_host) {
+						cacti_log("Device[$device_id] NOTE: Recache Event Detected for Device", true, 'PCOMMAND');
+					}
 
-				cacti_log("Device[$device_id] DQ[$data_query_id] RECACHE: Recache for Device started.", true, 'PCOMMAND', $verbosity);
-				run_data_query($device_id, $data_query_id);
-				cacti_log("Device[$device_id] DQ[$data_query_id] RECACHE: Recached successfully.", true, 'PCOMMAND', $verbosity);
+					cacti_log("Device[$device_id] DQ[$data_query_id] RECACHE: Recache for Device started.", true, 'PCOMMAND', $verbosity);
+					run_data_query($device_id, $data_query_id);
+					cacti_log("Device[$device_id] DQ[$data_query_id] RECACHE: Recached successfully.", true, 'PCOMMAND', $verbosity);
 
-				break;
-			case POLLER_COMMAND_PURGE:
-				$device_id = $command['command'];
+					break;
+				case POLLER_COMMAND_PURGE:
+					$device_id = $command['command'];
 
-				api_device_purge_from_remote($device_id, $poller_id);
-				cacti_log("Device[$device_id] PURGE: Purged successfully.", true, 'PCOMMAND', $verbosity);
+					api_device_purge_from_remote($device_id, $poller_id);
+					cacti_log("Device[$device_id] PURGE: Purged successfully.", true, 'PCOMMAND', $verbosity);
 
-				break;
-			default:
-				cacti_log('ERROR: Unknown poller command issued', true, 'PCOMMAND');
+					break;
+
+				default:
+					cacti_log('ERROR: Unknown poller command issued', true, 'PCOMMAND');
 			}
 
 			/* record current_time */
 			$current = microtime(true);
 
 			/* end if runtime has been exceeded */
-			if (($current-$start) > MAX_RECACHE_RUNTIME) {
+			if (($current - $start) > MAX_RECACHE_RUNTIME) {
 				cacti_log("ERROR: Poller Command processing timed out after processing '$command'", true, 'PCOMMAND');
+
 				break;
 			}
 		}
@@ -261,9 +271,9 @@ if ($host_id === false) {
 }
 
 function commands_master_handler($forcerun, &$hosts, $threads) {
-	commands_debug("There are " . cacti_sizeof($hosts) . " to reindex");
+	commands_debug('There are ' . cacti_sizeof($hosts) . ' to reindex');
 
-	foreach($hosts as $id) {
+	foreach ($hosts as $id) {
 		/* run the daily stats */
 		commands_debug("Launching Host ID $id");
 		commands_launch_child($id);
@@ -278,6 +288,7 @@ function commands_master_handler($forcerun, &$hosts, $threads) {
 			} else {
 				commands_debug(sprintf('%s Processes Running, Launching more processes.', $running));
 				usleep(500000);
+
 				break;
 			}
 		}
@@ -319,7 +330,7 @@ function commands_launch_child($host_id) {
 
 	cacti_log(sprintf('NOTE: Launching Commands Process Number %s for Type %s', $host_id, 'child'), false, 'CLEANUP', POLLER_VERBOSITY_MEDIUM);
 
-	exec_background($php_binary, $config['base_path'] . "/poller_commands.php --child=$host_id" . ($seebug ? ' --debug':''));
+	exec_background($php_binary, CACTI_PATH_BASE . "/poller_commands.php --child=$host_id" . ($seebug ? ' --debug':''));
 }
 
 /**
@@ -383,7 +394,9 @@ function sig_handler($signo) {
 			}
 
 			exit(1);
+
 			break;
+
 		default:
 			/* ignore all other signals */
 	}
@@ -396,23 +409,23 @@ function sig_handler($signo) {
  * @return (void)
  */
 function commands_kill_running_processes() {
-    global $type;
+	global $type;
 
-    $processes = db_fetch_assoc_prepared('SELECT *
+	$processes = db_fetch_assoc_prepared('SELECT *
         FROM processes
         WHERE tasktype = "commands"
         AND taskname IN ("child")
         AND pid != ?',
-        array(getmypid()));
+		array(getmypid()));
 
-    if (cacti_sizeof($processes)) {
-        foreach($processes as $p) {
-            cacti_log(sprintf('WARNING: Killing Commands %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'CLEANUP');
-            posix_kill($p['pid'], SIGTERM);
+	if (cacti_sizeof($processes)) {
+		foreach ($processes as $p) {
+			cacti_log(sprintf('WARNING: Killing Commands %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'CLEANUP');
+			posix_kill($p['pid'], SIGTERM);
 
-            unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);
-        }
-    }
+			unregister_process($p['tasktype'], $p['taskname'], $p['taskid'], $p['pid']);
+		}
+	}
 }
 
 /**
@@ -430,7 +443,7 @@ function display_version() {
  *
  * @return (void)
  */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print PHP_EOL;
@@ -442,4 +455,3 @@ function display_help () {
 	print '  --threads=N - Override the System Processes setting and use N processes' . PHP_EOL;
 	print '  --debug     - Display verbose output during execution' . PHP_EOL . PHP_EOL;
 }
-

@@ -26,16 +26,16 @@
 error_reporting(0);
 
 if (!isset($called_by_script_server)) {
-	include_once(dirname(__FILE__) . '/../include/cli_check.php');
-	include_once(dirname(__FILE__) . '/../lib/snmp.php');
-	include_once(dirname(__FILE__) . '/../lib/ping.php');
+	include_once(__DIR__ . '/../include/cli_check.php');
+	include_once(__DIR__ . '/../lib/snmp.php');
+	include_once(__DIR__ . '/../lib/ping.php');
 
 	array_shift($_SERVER['argv']);
 
 	print call_user_func_array('ss_fping', $_SERVER['argv']);
 } else {
-	include_once(dirname(__FILE__) . '/../lib/snmp.php');
-	include_once(dirname(__FILE__) . '/../lib/ping.php');
+	include_once(__DIR__ . '/../lib/snmp.php');
+	include_once(__DIR__ . '/../lib/ping.php');
 }
 
 function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port = 80) {
@@ -83,6 +83,7 @@ function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port =
 	}
 
 	$i = 0;
+
 	while ($i < $ping_sweeps) {
 		$result = $ping->ping(AVAIL_PING, $method, $ping_timeout, 1);
 
@@ -91,8 +92,14 @@ function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port =
 		} else {
 			$time[$i] = $ping->ping_status;
 			$total_time += $ping->ping_status;
-			if ($ping->ping_status < $min) $min = $ping->ping_status;
-			if ($ping->ping_status > $max) $max = $ping->ping_status;
+
+			if ($ping->ping_status < $min) {
+				$min = $ping->ping_status;
+			}
+
+			if ($ping->ping_status > $max) {
+				$max = $ping->ping_status;
+			}
 		}
 
 		$i++;
@@ -101,8 +108,9 @@ function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port =
 		$ss_fping_current = microtime(true);
 
 		/* if called from script server, end one second before a timeout occurs */
-		if (isset($called_by_script_server) && ($ss_fping_current - $ss_fping_start + ($ping_timeout/1000) + 1) > $script_timeout) {
+		if (isset($called_by_script_server) && ($ss_fping_current - $ss_fping_start + ($ping_timeout / 1000) + 1) > $script_timeout) {
 			$ping_sweeps = $i;
+
 			break;
 		}
 	}
@@ -110,17 +118,17 @@ function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port =
 	if ($failed_results == $ping_sweeps) {
 		return 'min:U avg:U max:U dev:U loss:100.00';
 	} else {
-		$loss = ($failed_results/$ping_sweeps) * 100;
-		$avg  = $total_time/($ping_sweeps-$failed_results);
+		$loss = ($failed_results / $ping_sweeps) * 100;
+		$avg  = $total_time / ($ping_sweeps - $failed_results);
 
 		/* calculate standard deviation */
 		$predev = 0;
-		foreach($time as $sample) {
-			$predev += pow(($sample-$avg),2);
+
+		foreach ($time as $sample) {
+			$predev += pow(($sample - $avg),2);
 		}
 		$dev = sqrt($predev / cacti_count($time));
 
 		return sprintf('min:%0.4f avg:%0.4f max:%0.4f dev:%0.4f loss:%0.4f', $min, $avg, $max, $dev, $loss);
 	}
 }
-

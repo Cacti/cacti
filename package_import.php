@@ -49,6 +49,7 @@ switch(get_request_var('action')) {
 		package_diff_file();
 
 		break;
+
 	default:
 		top_header();
 		package_import();
@@ -99,6 +100,7 @@ function form_save() {
 			file_put_contents($xmlfile, $_SESSION['sess_import_package']);
 		} else {
 			header('Location: package_import.php');
+
 			exit;
 		}
 
@@ -107,15 +109,16 @@ function form_save() {
 		} elseif (!package_validate_signature($xmlfile)) {
 			raise_message('verify_warning', __('You have not Trusted this Package Author.  If you wish to import, check the Automatically Trust Author checkbox'), MESSAGE_LEVEL_ERROR);
 			header('Location: package_import?package_location=0');
+
 			exit;
 		}
 
 		if (get_filter_request_var('data_source_profile') == '0') {
 			$import_as_new = true;
-			$profile_id = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
+			$profile_id    = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 		} else {
 			$import_as_new = false;
-			$profile_id = get_request_var('data_source_profile');
+			$profile_id    = get_request_var('data_source_profile');
 		}
 
 		if (get_nfilter_request_var('preview_only') == 'on') {
@@ -142,7 +145,7 @@ function form_save() {
 		/* loop through each of the graphs selected on the previous page and get more info about them */
 		foreach ($_POST as $var => $val) {
 			if (strpos($var, 'chk_file_') !== false) {
-				$id = base64_decode(str_replace('chk_file_', '', $var));
+				$id = base64_decode(str_replace('chk_file_', '', $var), true);
 				$id = json_decode($id, true);
 
 				if (strpos($id['pfile'], '/') !== false) {
@@ -153,10 +156,12 @@ function form_save() {
 					$parts = array($id['pfile']);
 				}
 
-				foreach($parts as $index => $p) {
+				foreach ($parts as $index => $p) {
 					if ($p == 'scripts') {
 						break;
-					} elseif ($p == 'resource') {
+					}
+
+					if ($p == 'resource') {
 						break;
 					} else {
 						unset($parts[$index]);
@@ -169,7 +174,7 @@ function form_save() {
 			}
 
 			if (strpos($var, 'chk_import_') !== false) {
-				$id = base64_decode(str_replace('chk_import_', '', $var));
+				$id = base64_decode(str_replace('chk_import_', '', $var), true);
 				$id = json_decode($id, true);
 
 				$hashes[] = $id['hash'];
@@ -177,9 +182,9 @@ function form_save() {
 		}
 
 		if (cacti_sizeof($files) && !cacti_sizeof($hashes)) {
-			$hashes[] = "dont import";
+			$hashes[] = 'dont import';
 		} elseif (cacti_sizeof($hashes) && !cacti_sizeof($files)) {
-			$files[]  = "dont import";
+			$files[]  = 'dont import';
 		}
 
 		$package_name = import_package_get_name($xmlfile);
@@ -205,6 +210,7 @@ function form_save() {
 			unset($_SESSION['sess_import_package']);
 
 			header('Location: package_import.php');
+
 			exit;
 		}
 	}
@@ -219,7 +225,7 @@ function package_file_get_contents($filename) {
 		$data = import_read_package_data($xmlfile, $binary_signature);
 
 		if (isset($data['publickey'])) {
-			$public_key = base64_decode($data['publickey']);
+			$public_key = base64_decode($data['publickey'], true);
 		} else {
 			$public_key = get_public_key();
 		}
@@ -228,9 +234,9 @@ function package_file_get_contents($filename) {
 
 		foreach ($data['files']['file'] as $file) {
 			if ($file['name'] == $filename) {
-				$binary_signature = base64_decode($file['filesignature']);
+				$binary_signature = base64_decode($file['filesignature'], true);
 
-				$fdata = base64_decode($file['data']);
+				$fdata = base64_decode($file['data'], true);
 
 				if (strlen($public_key) < 200) {
 					$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
@@ -263,7 +269,7 @@ function package_diff_file() {
 
 	$options = array(
 		'ignoreWhitespace' => true,
-		'ignoreCase' => false
+		'ignoreCase'       => false
 	);
 
 	$newfile = package_file_get_contents($filename);
@@ -273,7 +279,7 @@ function package_diff_file() {
 		$newfile = explode("\n", $newfile);
 	}
 
-	$oldfile = file_get_contents($config['base_path'] . '/' . $filename);
+	$oldfile = file_get_contents(CACTI_PATH_BASE . '/' . $filename);
 
 	if ($oldfile !== false) {
 		$oldfile = str_replace("\n\r", "\n", $oldfile);
@@ -288,10 +294,10 @@ function package_diff_file() {
 
 			print $diff->render($renderer);
 		} else {
-			print "New file does not exist";
+			print 'New file does not exist';
 		}
 	} else {
-		print "Old file does not exist";
+		print 'Old file does not exist';
 	}
 }
 
@@ -313,7 +319,7 @@ function package_get_details() {
 		$templates = array();
 		$files     = array();
 
-		foreach($package_ids as $package_id) {
+		foreach ($package_ids as $package_id) {
 			$filename     = $manifest[$package_id]['filename'];
 			$package_name = $manifest[$package_id]['name'];
 
@@ -397,7 +403,7 @@ function import_validate_public_key($xmlfile, $accept = false) {
 			}
 
 			if (isset($xml['publickey'])) {
-				$package_publickey = base64_decode($xml['publickey']);
+				$package_publickey = base64_decode($xml['publickey'], true);
 			}
 
 			if ($package_publickey != '') {
@@ -495,7 +501,7 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 
 		html_header_checkbox($display_text, false, '', true, 'file');
 
-		foreach($files as $pdata => $pfiles) {
+		foreach ($files as $pdata => $pfiles) {
 			$pdata_parts = explode('|', $pdata);
 
 			$file_package_file = $pdata_parts[0];
@@ -507,7 +513,7 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 			}
 
 			if (cacti_sizeof($pfiles)) {
-				foreach($pfiles as $pfile => $status) {
+				foreach ($pfiles as $pfile => $status) {
 					$id = 'file_' . base64_encode(
 						json_encode(
 							array(
@@ -525,7 +531,7 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 					$status  = explode(',', $status);
 					$nstatus = '';
 
-					foreach($status as $s) {
+					foreach ($status as $s) {
 						$s = trim($s);
 
 						if ($s == 'differences') {
@@ -534,7 +540,7 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 								'&package_location=0' .
 								'&package_file=' . $file_package_file .
 								'&package_name=' . $file_package_name .
-								'&filename=' . str_replace($config['base_path'] . '/', '', $pfile);
+								'&filename=' . str_replace(CACTI_PATH_BASE . '/', '', $pfile);
 
 							$nstatus .= ($nstatus != '' ? ', ':'') .
 								"<a class='diffme linkEditMain' href='" . html_escape($url) . "'>" . __('Differences') . '</a>';
@@ -585,7 +591,7 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 
 		$templates = array_reverse($templates);
 
-		foreach($templates as $hash => $detail) {
+		foreach ($templates as $hash => $detail) {
 			$files = explode('<br>', $detail['package_file']);
 
 			$id = 'import_' . base64_encode(
@@ -620,15 +626,15 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 				$diff_array   = array();
 				$orphan_array = array();
 
-				foreach($detail['vals'] as $package => $diffs) {
+				foreach ($detail['vals'] as $package => $diffs) {
 					if (isset($diffs['differences'])) {
-						foreach($diffs['differences'] as $item) {
+						foreach ($diffs['differences'] as $item) {
 							$diff_array[$item] = $item;
 						}
 					}
 
 					if (isset($diffs['orphans'])) {
-						foreach($diffs['orphans'] as $item) {
+						foreach ($diffs['orphans'] as $item) {
 							$orphan_array[$item] = $item;
 						}
 					}
@@ -709,39 +715,39 @@ function validate_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'preview_only' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(on|true|false)')),
 			'default' => 'on'
 		),
 		'replace_svalues' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(on|true|false)')),
 			'default' => 'on'
 		),
 		'remove_orphans' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(on|true|false)')),
 			'default' => 'on'
 		),
 		'trust_signer' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(on|true|false)')),
 			'default' => 'on'
 		),
 		'data_source_profile' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => $default_profile
 		),
 		'image_format' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => read_config_option('default_image_format')
 		),
 		'graph_width' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => read_config_option('default_graph_width')
 		),
 		'graph_height' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => read_config_option('default_graph_height')
 		),
 	);
@@ -800,78 +806,78 @@ function get_import_form($default_profile) {
 	$form = array(
 		'import_file' => array(
 			'friendly_name' => __('Local Package Import File'),
-			'description' => __('The *.xml.gz file located on your Local machine to Upload and Import.'),
-			'accept' => '.xml.gz',
-			'method' => 'file'
+			'description'   => __('The *.xml.gz file located on your Local machine to Upload and Import.'),
+			'accept'        => '.xml.gz',
+			'method'        => 'file'
 		),
 		'trust_signer' => array(
 			'friendly_name' => __('Automatically Trust Signer'),
-			'method' => 'hidden',
-			'description' => __('If checked, Cacti will automatically Trust the Signer for this and any future Packages by that author.'),
-			'value' => 'on',
-			'default' => ''
+			'method'        => 'hidden',
+			'description'   => __('If checked, Cacti will automatically Trust the Signer for this and any future Packages by that author.'),
+			'value'         => 'on',
+			'default'       => ''
 		),
 	);
 
 	$form2 = array(
 		'data_header' => array(
 			'friendly_name' => __('Data Source Overrides'),
-			'collapsible' => 'true',
-			'method' => 'spacer',
+			'collapsible'   => 'true',
+			'method'        => 'spacer',
 		),
 		'data_source_profile' => array(
 			'friendly_name' => __('Data Source Profile'),
-			'method' => 'drop_sql',
-			'description' => __('Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources.'),
-			'sql' => "SELECT id, name FROM data_source_profiles ORDER BY name",
-			'none_value' => __('Create New from Template'),
-			'value' => isset_request_var('data_source_profile') ? get_filter_request_var('data_source_profile'):'',
-			'default' => $default_profile
+			'method'        => 'drop_sql',
+			'description'   => __('Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources.'),
+			'sql'           => 'SELECT id, name FROM data_source_profiles ORDER BY name',
+			'none_value'    => __('Create New from Template'),
+			'value'         => isset_request_var('data_source_profile') ? get_filter_request_var('data_source_profile'):'',
+			'default'       => $default_profile
 		),
 		'graph_header' => array(
 			'friendly_name' => __('Graph/Data Template Overrides'),
-			'collapsible' => 'true',
-			'method' => 'spacer',
+			'collapsible'   => 'true',
+			'method'        => 'spacer',
 		),
 		'remove_orphans' => array(
 			'friendly_name' => __('Remove Orphaned Graph Items'),
-			'method' => 'checkbox',
-			'description' => __('If checked, Cacti will delete any Graph Items from both the Graph Template and associated Graphs that are not included in the imported Graph Template.'),
-			'value' => $remove_orphans,
-			'default' => ''
+			'method'        => 'checkbox',
+			'description'   => __('If checked, Cacti will delete any Graph Items from both the Graph Template and associated Graphs that are not included in the imported Graph Template.'),
+			'value'         => $remove_orphans,
+			'default'       => ''
 		),
 		'replace_svalues' => array(
 			'friendly_name' => __('Replace Data Query Suggested Value Patterns'),
-			'method' => 'checkbox',
-			'description' => __('Replace Data Source and Graph Template Suggested Value Records.  Graphs and Data Sources will take on new names after either a Data Query Reindex or by using the forced Replace Suggested Values process.'),
-			'value' => $replace_svalues,
-			'default' => ''
+			'method'        => 'checkbox',
+			'description'   => __('Replace Data Source and Graph Template Suggested Value Records.  Graphs and Data Sources will take on new names after either a Data Query Reindex or by using the forced Replace Suggested Values process.'),
+			'value'         => $replace_svalues,
+			'default'       => ''
 		),
 		'image_format' => array(
 			'friendly_name' => __('Graph Template Image Format'),
-			'description' => __('The Image Format to be used when importing or updating Graph Templates.'),
-			'method' => 'drop_array',
-			'default' => read_config_option('default_image_format'),
-			'value' => $image_format,
-			'array' => $image_types,
+			'description'   => __('The Image Format to be used when importing or updating Graph Templates.'),
+			'method'        => 'drop_array',
+			'default'       => read_config_option('default_image_format'),
+			'value'         => $image_format,
+			'array'         => $image_types,
 		),
 		'graph_height' => array(
 			'friendly_name' => __('Graph Template Height', 'pagkage'),
-			'description' => __('The Height to be used when importing or updating Graph Templates.'),
-			'method' => 'textbox',
-			'default' => read_config_option('default_graph_height'),
-			'size' => '5',
-			'value' => $graph_height,
-			'max_length' => '5'
+			'description'   => __('The Height to be used when importing or updating Graph Templates.'),
+			'method'        => 'textbox',
+			'default'       => read_config_option('default_graph_height'),
+			'size'          => '5',
+			'value'         => $graph_height,
+			'max_length'    => '5'
 		),
 		'graph_width' => array(
 			'friendly_name' => __('Graph Template Width'),
-			'description' => __('The Width to be used when importing or updating Graph Templates.'),
-			'method' => 'textbox',
-			'default' => read_config_option('default_graph_width'),
-			'size' => '5',
-			'value' => $graph_width,
-			'max_length' => '5'
+			'description'   => __('The Width to be used when importing or updating Graph Templates.'),
+			'method'        => 'textbox',
+			'default'       => read_config_option('default_graph_width'),
+			'size'          => '5',
+			'value'         => $graph_width,
+			'max_length'    => '5'
 		)
 	);
 
@@ -1049,7 +1055,7 @@ function package_prepare_import_array(&$templates, &$files, $package_name, $pack
 
 	if (cacti_sizeof($import_info)) {
 		if (isset($import_info[1]) && cacti_sizeof($import_info[1])) {
-			foreach($import_info[1] as $filename => $status) {
+			foreach ($import_info[1] as $filename => $status) {
 				$files["$package_filename|$package_name"][$filename] = $status;
 			}
 		}
@@ -1066,11 +1072,11 @@ function package_prepare_import_array(&$templates, &$files, $package_name, $pack
 					if (!isset($templates[$hash])) {
 						$templates[$hash]['package']      = $package_name;
 						$templates[$hash]['package_file'] = $package_filename;
-						$templates[$hash]['status']       = $vals['type'];;
+						$templates[$hash]['status']       = $vals['type'];
 					} else {
-						$templates[$hash]['package']      .= '<br>' . $package_name;
+						$templates[$hash]['package'] .= '<br>' . $package_name;
 						$templates[$hash]['package_file'] .= '<br>' . $package_filename;
-						$templates[$hash]['status']       .= '<br>' . $vals['type'];;
+						$templates[$hash]['status'] .= '<br>' . $vals['type'];
 					}
 
 					$templates[$hash]['type']      = $type;
@@ -1094,4 +1100,3 @@ function package_prepare_import_array(&$templates, &$files, $package_name, $pack
 		}
 	}
 }
-

@@ -1742,7 +1742,7 @@ function group_edit() {
 
 		foreach (array_keys($tabs) as $tab_short_name) {
 			print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") .
-				" href='" . html_escape($config['url_path'] .
+				" href='" . html_escape(CACTI_PATH_URL .
 				'user_group_admin.php?action=edit&id=' . get_request_var('id') .
 				'&tab=' . $tab_short_name) .
 				"'>" . $tabs[$tab_short_name] . '</a></li>';

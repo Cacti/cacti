@@ -43,7 +43,8 @@ switch (get_request_var('action')) {
 	case 'remove':
 		color_remove();
 
-		header ('Location: color.php');
+		header('Location: color.php');
+
 		break;
 	case 'edit':
 		top_header();
@@ -51,6 +52,7 @@ switch (get_request_var('action')) {
 		color_edit();
 
 		bottom_footer();
+
 		break;
 	case 'export':
 		color_export();
@@ -62,18 +64,21 @@ switch (get_request_var('action')) {
 		color_import();
 
 		bottom_footer();
+
 		break;
+
 	default:
 		top_header();
 
 		color();
 
 		bottom_footer();
+
 		break;
 }
 
 /* --------------------------
-    The Save Function
+	The Save Function
    -------------------------- */
 
 function form_save() {
@@ -110,7 +115,7 @@ function form_save() {
 	} elseif (isset_request_var('save_component_import')) {
 		if (isset($_FILES['import_file']['tmp_name'])) {
 			if (($_FILES['import_file']['tmp_name'] != 'none') && ($_FILES['import_file']['tmp_name'] != '')) {
-				$csv_data = file($_FILES['import_file']['tmp_name']);
+				$csv_data   = file($_FILES['import_file']['tmp_name']);
 				$debug_data = color_import_processor($csv_data);
 
 				if (cacti_sizeof($debug_data)) {
@@ -130,7 +135,7 @@ function form_save() {
 }
 
 /* -----------------------
-    Color Functions
+	Color Functions
    ----------------------- */
 
 function form_actions() {
@@ -151,12 +156,13 @@ function form_actions() {
 		}
 
 		header('Location: color.php');
+
 		exit;
 	}
 
 	/* setup some variables */
 	$color_list = '';
-	$i = 0;
+	$i          = 0;
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
 	foreach ($_POST as $var => $val) {
@@ -194,6 +200,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: color.php');
+
 		exit;
 	}
 
@@ -214,129 +221,131 @@ function form_actions() {
 }
 
 function color_import_processor(&$colors) {
-	$i      = 0;
-	$hexcol = 0;
+	$i            = 0;
+	$hexcol       = 0;
 	$return_array = array();
 
 	if (cacti_sizeof($colors)) {
-		foreach($colors as $color_line) {
+		foreach ($colors as $color_line) {
 			/* parse line */
 			$line_array = explode(',', $color_line);
 
 			/* header row */
 			if ($i == 0) {
-				$save_order = '(';
-				$j = 0;
-				$first_column = true;
-				$required = 0;
+				$save_order    = '(';
+				$j             = 0;
+				$first_column  = true;
+				$required      = 0;
 				$update_suffix = '';
 
 				if (cacti_sizeof($line_array)) {
-				foreach($line_array as $line_item) {
-					$line_item = trim(str_replace("'", '', $line_item));
-					$line_item = trim(str_replace('"', '', $line_item));
+					foreach ($line_array as $line_item) {
+						$line_item = trim(str_replace("'", '', $line_item));
+						$line_item = trim(str_replace('"', '', $line_item));
 
-					switch ($line_item) {
-						case 'hex':
-							$hexcol = $j;
-						case 'name':
-							if (!$first_column) {
-								$save_order .= ', ';
-							}
+						switch ($line_item) {
+							case 'hex':
+								$hexcol = $j;
+							case 'name':
+								if (!$first_column) {
+									$save_order .= ', ';
+								}
 
-							$save_order .= $line_item;
+								$save_order .= $line_item;
 
-							$insert_columns[] = $j;
-							$first_column = false;
+								$insert_columns[] = $j;
+								$first_column     = false;
 
-							if ($update_suffix != '') {
-								$update_suffix .= ", $line_item=VALUES($line_item)";
-							} else {
-								$update_suffix .= " ON DUPLICATE KEY UPDATE $line_item=VALUES($line_item)";
-							}
+								if ($update_suffix != '') {
+									$update_suffix .= ", $line_item=VALUES($line_item)";
+								} else {
+									$update_suffix .= " ON DUPLICATE KEY UPDATE $line_item=VALUES($line_item)";
+								}
 
-							$required++;
+								$required++;
 
-							break;
-						default:
-							/* ignore unknown columns */
-					}
+								break;
 
-					$j++;
-				}
-			}
+							default:
+								/* ignore unknown columns */
+						}
 
-			$save_order .= ')';
-
-			if ($required >= 2) {
-				array_push($return_array, '<b>HEADER LINE PROCESSED OK</b>:  <br>Columns found where: ' . $save_order . '<br>');
-			} else {
-				array_push($return_array, '<b>HEADER LINE PROCESSING ERROR</b>: Missing required field <br>Columns found where:' . $save_order . '<br>');
-				break;
-			}
-		} else {
-			$save_value = '(';
-			$j = 0;
-			$first_column = true;
-			$sql_where = '';
-
-			if (cacti_sizeof($line_array)) {
-			foreach($line_array as $line_item) {
-				if (in_array($j, $insert_columns)) {
-					$line_item = trim(str_replace("'", '', $line_item));
-					$line_item = trim(str_replace('"', '', $line_item));
-
-					if (!$first_column) {
-						$save_value .= ',';
-					} else {
-						$first_column = false;
-					}
-
-					$save_value .= "'" . $line_item . "'";
-
-					if ($j == $hexcol) {
-						$sql_where = "WHERE hex='$line_item'";
+						$j++;
 					}
 				}
 
-				$j++;
-			}
-			}
+				$save_order .= ')';
 
-			$save_value .= ')';
-
-			if ($j > 0) {
-				if (isset_request_var('allow_update')) {
-					$sql_execute = 'INSERT INTO colors ' . $save_order .
-						' VALUES ' . $save_value . $update_suffix;
-
-					if (db_execute($sql_execute)) {
-						array_push($return_array,"INSERT SUCCEEDED: $save_value");
-					} else {
-						array_push($return_array,"INSERT FAILED: $save_value");
-					}
+				if ($required >= 2) {
+					array_push($return_array, '<b>HEADER LINE PROCESSED OK</b>:  <br>Columns found where: ' . $save_order . '<br>');
 				} else {
-					/* perform check to see if the row exists */
-					$existing_row = db_fetch_row("SELECT * FROM colors $sql_where");
+					array_push($return_array, '<b>HEADER LINE PROCESSING ERROR</b>: Missing required field <br>Columns found where:' . $save_order . '<br>');
 
-					if (cacti_sizeof($existing_row)) {
-						array_push($return_array,"<strong>INSERT SKIPPED, EXISTING:</strong> $save_value");
-					} else {
+					break;
+				}
+			} else {
+				$save_value   = '(';
+				$j            = 0;
+				$first_column = true;
+				$sql_where    = '';
+
+				if (cacti_sizeof($line_array)) {
+					foreach ($line_array as $line_item) {
+						if (in_array($j, $insert_columns, true)) {
+							$line_item = trim(str_replace("'", '', $line_item));
+							$line_item = trim(str_replace('"', '', $line_item));
+
+							if (!$first_column) {
+								$save_value .= ',';
+							} else {
+								$first_column = false;
+							}
+
+							$save_value .= "'" . $line_item . "'";
+
+							if ($j == $hexcol) {
+								$sql_where = "WHERE hex='$line_item'";
+							}
+						}
+
+						$j++;
+					}
+				}
+
+				$save_value .= ')';
+
+				if ($j > 0) {
+					if (isset_request_var('allow_update')) {
 						$sql_execute = 'INSERT INTO colors ' . $save_order .
-							' VALUES ' . $save_value;
+							' VALUES ' . $save_value . $update_suffix;
 
 						if (db_execute($sql_execute)) {
 							array_push($return_array,"INSERT SUCCEEDED: $save_value");
 						} else {
 							array_push($return_array,"INSERT FAILED: $save_value");
 						}
+					} else {
+						/* perform check to see if the row exists */
+						$existing_row = db_fetch_row("SELECT * FROM colors $sql_where");
+
+						if (cacti_sizeof($existing_row)) {
+							array_push($return_array,"<strong>INSERT SKIPPED, EXISTING:</strong> $save_value");
+						} else {
+							$sql_execute = 'INSERT INTO colors ' . $save_order .
+								' VALUES ' . $save_value;
+
+							if (db_execute($sql_execute)) {
+								array_push($return_array,"INSERT SUCCEEDED: $save_value");
+							} else {
+								array_push($return_array,"INSERT FAILED: $save_value");
+							}
+						}
 					}
 				}
 			}
-		}
 
-		$i++;
-	}
+			$i++;
+		}
 	}
 
 	return $return_array;
@@ -353,7 +362,7 @@ function color_import() {
 		</td></tr>\n";
 
 		if (cacti_sizeof($_SESSION['import_debug_info'])) {
-			foreach($_SESSION['import_debug_info'] as $import_result) {
+			foreach ($_SESSION['import_debug_info'] as $import_result) {
 				print "<tr class='even'><td>" . $import_result . "</td></tr>\n";
 			}
 		}
@@ -363,7 +372,7 @@ function color_import() {
 		kill_session_var('import_debug_info');
 	}
 
-	html_start_box( __('Import Colors'), '100%', '', '3', 'center', '');
+	html_start_box(__('Import Colors'), '100%', '', '3', 'center', '');
 
 	form_alternate_row();?>
 		<td width='50%'><font class='textEditTitle'><?php print __('Import Colors from Local File'); ?></font><br>
@@ -387,7 +396,7 @@ function color_import() {
 
 	html_end_box(false);
 
-	html_start_box( __('Required File Format Notes'), '100%', '', '3', 'center', '');
+	html_start_box(__('Required File Format Notes'), '100%', '', '3', 'center', '');
 
 	form_alternate_row();?>
 		<td><strong><?php print __('The file must contain a header row with the following column headings.');?></strong>
@@ -413,7 +422,7 @@ function color_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$color = db_fetch_row_prepared('SELECT * FROM colors WHERE id = ?', array(get_request_var('id')));
+		$color        = db_fetch_row_prepared('SELECT * FROM colors WHERE id = ?', array(get_request_var('id')));
 		$header_label = __esc('Colors [edit: %s]', $color['hex']);
 	} else {
 		$header_label = __('Colors [new]');
@@ -465,37 +474,37 @@ function process_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'has_graphs' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => read_config_option('default_has') == 'on' ? 'true':'false'
 			),
 		'named' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => 'true'
@@ -536,25 +545,29 @@ function color() {
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
+							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'";
+
+									if (get_request_var('rows') == $key) {
+										print ' selected';
+									} print '>' . html_escape($value) . "</option>\n";
 								}
 							}
-							?>
+	?>
 						</select>
 					</td>
 					<td>
 						<span>
-							<input type='checkbox' id='named' <?php print (get_request_var('named') == 'true' ? 'checked':'');?>>
+							<input type='checkbox' id='named' <?php print(get_request_var('named') == 'true' ? 'checked':'');?>>
 							<label for='named'><?php print __('Named Colors');?></label>
 						</span>
 					</td>
 					<td>
 						<span>
-							<input type='checkbox' id='has_graphs' <?php print (get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
+							<input type='checkbox' id='has_graphs' <?php print(get_request_var('has_graphs') == 'true' ? 'checked':'');?>>
 							<label for='has_graphs'><?php print __('Has Graphs');?></label>
 						</span>
 					</td>
@@ -666,7 +679,7 @@ function color() {
 		) AS rs");
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$colors = db_fetch_assoc("SELECT *,
         SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs,
@@ -687,11 +700,11 @@ function color() {
 		$sql_order
 		$sql_limit");
 
-    $nav = html_nav_bar('color.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Colors'), 'page', 'main');
+	$nav = html_nav_bar('color.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Colors'), 'page', 'main');
 
 	form_start('color.php', 'chk');
 
-    print $nav;
+	print $nav;
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -708,6 +721,7 @@ function color() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
+
 	if (cacti_sizeof($colors)) {
 		foreach ($colors as $color) {
 			if ($color['graphs'] == 0 && $color['templates'] == 0) {
@@ -791,9 +805,8 @@ function color_export() {
 
 		print '"name","hex"' . "\n";
 
-		foreach($colors as $color) {
+		foreach ($colors as $color) {
 			print '"' . $color['name'] . '","' . $color['hex'] . '"' . "\n";
 		}
 	}
 }
-

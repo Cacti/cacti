@@ -24,7 +24,7 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once($config['base_path'] . '/install/functions.php');
+require_once(CACTI_PATH_INSTALL . '/functions.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -183,15 +183,15 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-include_once($config['base_path'] . '/lib/api_automation.php');
-include_once($config['base_path'] . '/lib/api_automation_tools.php');
-include_once($config['base_path'] . '/lib/api_data_source.php');
-include_once($config['base_path'] . '/lib/api_device.php');
-include_once($config['base_path'] . '/lib/data_query.php');
-include_once($config['base_path'] . '/lib/import.php');
-include_once($config['base_path'] . '/lib/installer.php');
-require_once($config['base_path'] . '/lib/poller.php');
-include_once($config['base_path'] . '/lib/utility.php');
+include_once(CACTI_PATH_LIBRARY . '/api_automation.php');
+include_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
+include_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
+include_once(CACTI_PATH_LIBRARY . '/api_device.php');
+include_once(CACTI_PATH_LIBRARY . '/data_query.php');
+include_once(CACTI_PATH_LIBRARY . '/import.php');
+include_once(CACTI_PATH_LIBRARY . '/installer.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+include_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 $options['Step'] = Installer::STEP_INSTALL_CONFIRM;
 

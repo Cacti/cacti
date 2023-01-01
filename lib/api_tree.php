@@ -72,27 +72,37 @@ function api_tree_copy_node($tree_id, $node_id, $new_parent, $new_position) {
 
 	if (!isset($data['host']) && !isset($data['graph'])) {
 		cacti_log('ERROR: Copy node requires either a host or a graph, Function copy_node', false);
+
 		return;
 	}
 
 	if (isset($data['host']) && ($data['host'] < 0 || !is_numeric($data['host']))) {
 		cacti_log('ERROR: Copy node host data invalid, Function copy_node', false);
+
 		return;
-	} elseif(isset($data['site']) && ($data['site'] < 0 || !is_numeric($data['site']))) {
+	}
+
+	if (isset($data['site']) && ($data['site'] < 0 || !is_numeric($data['site']))) {
 		cacti_log('ERROR: Copy node site data invalid, Function copy_node', false);
+
 		return;
-	} elseif(isset($data['graph']) && ($data['graph'] < 0 || !is_numeric($data['graph']))) {
+	}
+
+	if (isset($data['graph']) && ($data['graph'] < 0 || !is_numeric($data['graph']))) {
 		cacti_log('ERROR: Copy node graph data invalid, Function copy_node', false);
+
 		return;
 	}
 
 	if (!isset($pdata['leaf_id']) || $pdata['leaf_id'] < 0 || !is_numeric($pdata['leaf_id'])) {
 		cacti_log('ERROR: Copy node parent data invalid, Function copy_node', false);
+
 		return;
 	}
 
 	// Check to see if the node already exists
 	$title = '';
+
 	if ($data['host'] > 0) {
 		$exists = db_fetch_cell_prepared('SELECT id
 			FROM graph_tree_items
@@ -103,6 +113,7 @@ function api_tree_copy_node($tree_id, $node_id, $new_parent, $new_position) {
 
 		if ($exists) {
 			print 'tbranch:' . $exists;
+
 			return;
 		}
 	} elseif ($data['graph'] > 0) {
@@ -115,6 +126,7 @@ function api_tree_copy_node($tree_id, $node_id, $new_parent, $new_position) {
 
 		if ($exists) {
 			print 'tbranch:' . $exists;
+
 			return;
 		}
 	} elseif ($data['site'] > 0) {
@@ -127,6 +139,7 @@ function api_tree_copy_node($tree_id, $node_id, $new_parent, $new_position) {
 
 		if ($exists) {
 			print 'tbranch:' . $exists;
+
 			return;
 		}
 	} else {
@@ -135,7 +148,7 @@ function api_tree_copy_node($tree_id, $node_id, $new_parent, $new_position) {
 			WHERE id = ?', array($data['leaf_id']));
 	}
 
-	$save = array();
+	$save                       = array();
 	$save['parent']             = $pdata['leaf_id'];
 	$save['position']           = $new_position;
 	$save['graph_tree_id']      = $tree_id;
@@ -205,6 +218,7 @@ function api_tree_create_node($tree_id, $node_id, $position, $title = '') {
 
 	if ($data['leaf_id'] < 0) {
 		cacti_log("ERROR: Invalid BranchID: '" . (isset($data['leaf_id']) ? $data['leaf_id']:'-') . "', Function create_node", false);
+
 		return;
 	}
 
@@ -212,8 +226,8 @@ function api_tree_create_node($tree_id, $node_id, $position, $title = '') {
 	$found = false;
 	$orig  = $title;
 
-	while(true) {
-		$title = $orig . ($found ? ' (' . $i . ')':'');
+	while (true) {
+		$title     = $orig . ($found ? ' (' . $i . ')':'');
 		$exists_id = api_tree_branch_exists($tree_id, $data['leaf_id'], $title);
 
 		if ($exists_id == false) {
@@ -227,7 +241,7 @@ function api_tree_create_node($tree_id, $node_id, $position, $title = '') {
 	/* watch out for monkey business */
 	input_validate_input_number($data['leaf_id'], 'leaf_id');
 
-	$save = array();
+	$save                       = array();
 	$save['parent']             = $data['leaf_id'];
 	$save['position']           = $position;
 	$save['graph_tree_id']      = $tree_id;
@@ -342,11 +356,13 @@ function api_tree_delete_node($tree_id, $node_id) {
 	// Basic Error Checking
 	if (empty($tree_id) || $tree_id < 0) {
 		cacti_log("ERROR: Invalid TreeID: '$tree_id', Function delete_node", false);
+
 		return;
 	}
 
 	if (empty($node_id)) {
 		cacti_log("ERROR: Invalid NodeID: '$node_id', Function delete_node", false);
+
 		return;
 	}
 
@@ -363,7 +379,7 @@ function api_tree_delete_node($tree_id, $node_id) {
 			array($tree_id, $data['leaf_id']));
 
 		/**
-	 	 * Save the last time a tree branch was created/updated
+		 * Save the last time a tree branch was created/updated
 		 * for Caching.
 		 */
 		set_config_option('time_last_change_branch', time());
@@ -380,7 +396,7 @@ function api_tree_delete_node_content($tree_id, $leaf_id) {
 		WHERE graph_tree_id = ? AND parent = ?', array($tree_id, $leaf_id));
 
 	if (cacti_sizeof($children)) {
-		foreach($children as $child) {
+		foreach ($children as $child) {
 			if ($child['host_id'] == 0 && $child['local_graph_id'] == 0) {
 				api_tree_delete_node_content($tree_id, $child['id']);
 			}
@@ -391,7 +407,7 @@ function api_tree_delete_node_content($tree_id, $leaf_id) {
 				AND id = ?', array($tree_id, $child['id']));
 
 			/**
-	 	 	 * Save the last time a tree branch was created/updated
+			 * Save the last time a tree branch was created/updated
 			 * for Caching.
 			 */
 			set_config_option('time_last_change_branch', time());
@@ -411,18 +427,23 @@ function api_tree_move_node($tree_id, $node_id, $new_parent, $new_position) {
 	// Basic Error Checking
 	if (empty($tree_id) || $tree_id < 0) {
 		cacti_log("ERROR: Invalid TreeID: '$tree_id', Function delete_node", false);
+
 		return;
 	}
 
 	if (empty($node_id)) {
 		cacti_log("ERROR: Invalid NodeID: '$node_id', Function move_node", false);
+
 		return;
 	}
 
 	if (empty($new_parent)) {
 		cacti_log("ERROR: Invalid Parent Node '$new_parent' for NodeID: '$node_id', Function move_node", false);
+
 		return;
-	} elseif ($new_parent == '#') {
+	}
+
+	if ($new_parent == '#') {
 		$pdata['leaf_id'] = 0;
 	} else {
 		$pdata = api_tree_parse_node_data($new_parent);
@@ -444,8 +465,9 @@ function api_tree_move_node($tree_id, $node_id, $new_parent, $new_position) {
 			AND position >= ?', array($pdata['leaf_id'], $data['leaf_id'], $new_position));
 
 		$position = $new_position + 1;
+
 		if (cacti_sizeof($others)) {
-			foreach($others as $other) {
+			foreach ($others as $other) {
 				db_execute_prepared('UPDATE graph_tree_items SET position = ? WHERE id = ?', array($position, $other['id']));
 				$position++;
 			}
@@ -466,15 +488,16 @@ function api_tree_move_node($tree_id, $node_id, $new_parent, $new_position) {
 			position >= ?', array($pdata['leaf_id'], $data['leaf_id'], $new_position));
 
 		$position = $new_position + 1;
+
 		if (cacti_sizeof($others)) {
-			foreach($others as $other) {
+			foreach ($others as $other) {
 				db_execute_prepared('UPDATE graph_tree_items SET position = ? WHERE id = ?', array($position, $other['id']));
 				$position++;
 			}
 		}
 
 		/**
- 	 	 * Save the last time a tree branch was created/updated
+		 * Save the last time a tree branch was created/updated
 		 * for Caching.
 		 */
 		set_config_option('time_last_change_branch', time());
@@ -500,8 +523,9 @@ function api_tree_parse_node_data($variable) {
 	if ($variable != '#') {
 		// Process the 'id' variable
 		$ndata   = explode('_', $variable);
+
 		if (cacti_sizeof($ndata)) {
-			foreach($ndata as $data) {
+			foreach ($ndata as $data) {
 				list($type, $tid) = explode(':', $data);
 
 				/* watch out for monkey business */
@@ -510,15 +534,19 @@ function api_tree_parse_node_data($variable) {
 				switch ($type) {
 					case 'tbranch':
 						$leaf_id  = $tid;
+
 						break;
 					case 'tgraph':
 						$graph_id = $tid;
+
 						break;
 					case 'thost':
 						$host_id  = $tid;
+
 						break;
 					case 'tsite':
 						$site_id  = $tid;
+
 						break;
 				}
 			}
@@ -573,8 +601,9 @@ function api_tree_rename_node($tree_id, $node_id = '', $title = '') {
 
 	// Process the 'id' variable
 	$ndata = explode('_', $node_id);
+
 	if (cacti_sizeof($ndata)) {
-		foreach($ndata as $data) {
+		foreach ($ndata as $data) {
 			if (strpos($data, ':') === false) {
 				cacti_log("ERROR: Invalid NodeID: '" . $node_id . "', Function rename_node", false);
 
@@ -592,15 +621,19 @@ function api_tree_rename_node($tree_id, $node_id = '', $title = '') {
 			switch ($type) {
 				case 'tbranch':
 					$leaf_id  = $tid;
+
 					break;
 				case 'tsite':
 					$site_id = $tid;
+
 					break;
 				case 'tgraph':
 					$graph_id = $tid;
+
 					break;
 				case 'thost':
 					$host_id  = $tid;
+
 					break;
 			}
 		}
@@ -628,6 +661,7 @@ function api_tree_rename_node($tree_id, $node_id = '', $title = '') {
  * @returns - string of the tree items in html format */
 function api_tree_get_main($tree_id, $parent = 0) {
 	$is_root = false;
+
 	if ($parent == -1) {
 		$parent  = 0;
 		$is_root = true;
@@ -643,7 +677,7 @@ function api_tree_get_main($tree_id, $parent = 0) {
 			$hierarchy = draw_dhtml_tree_level_graphing($tree_id, $parent);
 
 			if (cacti_sizeof($hierarchy)) {
-				foreach($hierarchy as $h) {
+				foreach ($hierarchy as $h) {
 					print $h;
 				}
 			}
@@ -651,7 +685,7 @@ function api_tree_get_main($tree_id, $parent = 0) {
 			$hierarchy = draw_dhtml_tree_level_graphing($tree_id, $parent);
 
 			if (cacti_sizeof($hierarchy)) {
-				foreach($hierarchy as $h) {
+				foreach ($hierarchy as $h) {
 					print $h;
 				}
 			}
@@ -660,7 +694,7 @@ function api_tree_get_main($tree_id, $parent = 0) {
 		$hierarchy = draw_dhtml_tree_level_graphing($tree_id, $parent);
 
 		if (cacti_sizeof($hierarchy)) {
-			foreach($hierarchy as $h) {
+			foreach ($hierarchy as $h) {
 				print $h;
 			}
 		}
@@ -688,7 +722,7 @@ function api_tree_get_node($tree_id, $node_id, $editing = false) {
 	}
 
 	if (cacti_sizeof($hierarchy)) {
-		foreach($hierarchy as $h) {
+		foreach ($hierarchy as $h) {
 			print $h;
 		}
 	}
@@ -706,6 +740,17 @@ function api_tree_get_node($tree_id, $node_id, $editing = false) {
  * @arg $host_grouping_type - The sort order for the host under expanded hosts
  * @arg $sort_children_type - The sort type in the case of a leaf
  * @arg $propagate_changes - Whether the changes should be cascaded through all children
+ * @param mixed $id
+ * @param mixed $tree_id
+ * @param mixed $type
+ * @param mixed $parent_tree_item_id
+ * @param mixed $title
+ * @param mixed $local_graph_id
+ * @param mixed $host_id
+ * @param mixed $site_id
+ * @param mixed $host_grouping_type
+ * @param mixed $sort_children_type
+ * @param mixed $propagate_changes
  * @returns - boolean true or false depending on the outcome of the operation */
 function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, $local_graph_id,
 	$host_id, $site_id, $host_grouping_type, $sort_children_type, $propagate_changes) {
@@ -790,7 +835,7 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
 /* api_tree_get_item_type - gets the type of tree item
    @arg $tree_item_id - the id of the tree item to fetch the type for
    @returns - a string representing the type of the tree item. valid return
-     values are 'header', 'graph', and 'host' */
+	 values are 'header', 'graph', and 'host' */
 function api_tree_get_item_type($tree_item_id) {
 	$tree_item = db_fetch_row_prepared('SELECT title, local_graph_id, site_id, host_id
 		FROM graph_tree_items
@@ -799,13 +844,21 @@ function api_tree_get_item_type($tree_item_id) {
 
 	if (!cacti_sizeof($tree_item)) {
 		return '';
-	} elseif ($tree_item['local_graph_id'] > 0) {
+	}
+
+	if ($tree_item['local_graph_id'] > 0) {
 		return 'graph';
-	} elseif ($tree_item['site_id'] > 0) {
+	}
+
+	if ($tree_item['site_id'] > 0) {
 		return 'site';
-	} elseif ($tree_item['host_id'] > 0) {
+	}
+
+	if ($tree_item['host_id'] > 0) {
 		return 'host';
-	} elseif ($tree_item['title'] != '') {
+	}
+
+	if ($tree_item['title'] != '') {
 		return 'header';
 	}
 
@@ -880,7 +933,7 @@ function api_tree_sort_branch($leaf_id, $tree_id = 0, $lock = true) {
 	$sequence = 1;
 
 	if (!is_numeric($leaf_id)) {
-		$data  = api_tree_parse_node_data($leaf_id);
+		$data     = api_tree_parse_node_data($leaf_id);
 		$leaf_id  = $data['leaf_id'];
 	}
 
@@ -896,6 +949,7 @@ function api_tree_sort_branch($leaf_id, $tree_id = 0, $lock = true) {
 		$parent        = 0;
 	} else {
 		cacti_log('Error Sorting Tree');
+
 		return;
 	}
 
@@ -939,7 +993,7 @@ function api_tree_sort_branch($leaf_id, $tree_id = 0, $lock = true) {
 			}
 		}
 
-		foreach($sort_array as $id => $element) {
+		foreach ($sort_array as $id => $element) {
 			$sort = db_fetch_cell_prepared('SELECT sort_children_type
 				FROM graph_tree_items
 				WHERE id = ?',
@@ -999,7 +1053,7 @@ function api_tree_sort_branch($leaf_id, $tree_id = 0, $lock = true) {
 			}
 		}
 
-		foreach($sort_array as $id => $element) {
+		foreach ($sort_array as $id => $element) {
 			$sort = db_fetch_cell_prepared('SELECT sort_children_type
 				FROM graph_tree_items
 				WHERE id = ?',
@@ -1059,7 +1113,7 @@ function api_tree_sort_branch($leaf_id, $tree_id = 0, $lock = true) {
 			}
 		}
 
-		foreach($sort_array as $id => $element) {
+		foreach ($sort_array as $id => $element) {
 			db_execute_prepared('UPDATE graph_tree_items
 				SET position = ?
 				WHERE id = ?',
@@ -1100,7 +1154,7 @@ function api_tree_sort_branch($leaf_id, $tree_id = 0, $lock = true) {
 			}
 		}
 
-		foreach($sort_array as $id => $element) {
+		foreach ($sort_array as $id => $element) {
 			db_execute_prepared('UPDATE graph_tree_items
 				SET position = ?
 				WHERE id = ?',

@@ -27,7 +27,7 @@ ob_start();
 
 $guest_account = true;
 $auth_text     = true;
-$gtype = 'png';
+$gtype         = 'png';
 
 include('./include/auth.php');
 include_once('./lib/rrd.php');
@@ -53,25 +53,32 @@ $graph_data_array = array();
 // Determine the graph type of the output
 if (!isset_request_var('image_format')) {
 	$type   = db_fetch_cell_prepared('SELECT image_format_id FROM graph_templates_graph WHERE local_graph_id = ?', array(get_request_var('local_graph_id')));
+
 	switch($type) {
-	case '1':
-		$gtype = 'png';
-		break;
-	case '3':
-		$gtype = 'svg+xml';
-		break;
+		case '1':
+			$gtype = 'png';
+
+			break;
+		case '3':
+			$gtype = 'svg+xml';
+
+			break;
 	}
 } else {
 	switch(strtolower(get_nfilter_request_var('image_format'))) {
-	case 'png':
-		$gtype = 'png';
-		break;
-	case 'svg':
-		$gtype = 'svg+xml';
-		break;
-	default:
-		$gtype = 'png';
-		break;
+		case 'png':
+			$gtype = 'png';
+
+			break;
+		case 'svg':
+			$gtype = 'svg+xml';
+
+			break;
+
+		default:
+			$gtype = 'png';
+
+			break;
 	}
 }
 
@@ -130,7 +137,7 @@ if (isset_request_var('rra_id')) {
 }
 
 $null_param = array();
-$output = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]);
+$output     = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]);
 
 if ($output !== false && $output != '') {
 	/* flush the headers now */
@@ -145,7 +152,7 @@ if ($output !== false && $output != '') {
 
 	/* get the error string */
 	$graph_data_array['get_error'] = true;
-	$null_param = array();
+	$null_param                    = array();
 	rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]);
 
 	$error = ob_get_contents();
@@ -171,4 +178,3 @@ if ($output !== false && $output != '') {
 		print file_get_contents(__DIR__ . '/images/cacti_error_image.png');
 	}
 }
-

@@ -24,9 +24,9 @@
 
 $guest_account = true;
 include('./include/auth.php');
-include_once($config['library_path'] . '/reports.php');
-include_once($config['library_path'] . '/html_reports.php');
-include_once($config['library_path'] . '/timespan_settings.php');
+include_once(CACTI_PATH_LIBRARY . '/reports.php');
+include_once(CACTI_PATH_LIBRARY . '/html_reports.php');
+include_once(CACTI_PATH_LIBRARY . '/timespan_settings.php');
 
 get_filter_request_var('id');
 get_filter_request_var('tab', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
@@ -48,11 +48,13 @@ switch (get_request_var('action')) {
 		reports_send(get_request_var('id'));
 
 		header('Location: reports_admin.php?action=edit&tab=' . get_request_var('tab') . '&id=' . get_request_var('id'));
+
 		break;
 	case 'ajax_dnd':
 		reports_item_dnd();
 
 		header('Location: reports_admin.php?action=edit&tab=items&id=' . get_request_var('id'));
+
 		break;
 	case 'setvar':
 		$changed = reports_item_validate();
@@ -68,6 +70,7 @@ switch (get_request_var('action')) {
 		reports_item_validate();
 
 		$sql_where = '';
+
 		if (get_request_var('site_id') > 0) {
 			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.site_id = ' . get_request_var('site_id');
 		}
@@ -78,11 +81,12 @@ switch (get_request_var('action')) {
 
 		get_allowed_ajax_hosts(true, 'applyFilter', $sql_where);
 
-        break;
+		break;
 	case 'ajax_graphs':
 		reports_item_validate();
 
 		$sql_where = '';
+
 		if (get_request_var('site_id') > 0) {
 			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.site_id = ' . get_request_var('site_id');
 		}
@@ -101,11 +105,12 @@ switch (get_request_var('action')) {
 
 		get_allowed_ajax_graphs($sql_where);
 
-        break;
+		break;
 	case 'ajax_graph_template':
 		reports_item_validate();
 
 		$sql_where = '';
+
 		if (get_request_var('site_id') > 0) {
 			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.site_id = ' . get_request_var('site_id');
 		}
@@ -120,7 +125,7 @@ switch (get_request_var('action')) {
 
 		get_allowed_ajax_graph_templates(true, true, $sql_where);
 
-        break;
+		break;
 	case 'actions':
 		reports_form_actions();
 
@@ -131,6 +136,7 @@ switch (get_request_var('action')) {
 		reports_item_movedown();
 
 		header('Location: reports_admin.php?action=edit&tab=items&id=' . get_request_var('id'));
+
 		break;
 	case 'item_moveup':
 		get_filter_request_var('id');
@@ -138,6 +144,7 @@ switch (get_request_var('action')) {
 		reports_item_moveup();
 
 		header('Location: reports_admin.php?action=edit&tab=items&id=' . get_request_var('id'));
+
 		break;
 	case 'item_remove':
 		get_filter_request_var('id');
@@ -145,20 +152,25 @@ switch (get_request_var('action')) {
 		reports_item_remove();
 
 		header('Location: reports_admin.php?action=edit&tab=items&id=' . get_request_var('id'));
+
 		break;
 	case 'item_edit':
 		general_header();
 		reports_item_edit();
 		bottom_footer();
+
 		break;
 	case 'edit':
 		general_header();
 		reports_edit();
 		bottom_footer();
+
 		break;
+
 	default:
 		general_header();
 		reports();
 		bottom_footer();
+
 		break;
 }

@@ -27,101 +27,101 @@ global $menu, $menu_glyphs, $graph_sources;
 /* Array of Cacti versions and template hash codes
    Remember to add every version here. */
 $cacti_version_codes = array(
-	'0.8'    => 'NaN',
-	'0.8.1'  => 'NaN',
-	'0.8.2'  => 'NaN',
-	'0.8.2a' => 'NaN',
-	'0.8.3'  => 'NaN',
-	'0.8.3a' => 'NaN',
-	'0.8.4'  => '0000',
-	'0.8.5'  => '0001',
-	'0.8.5a' => '0002',
-	'0.8.6'  => '0003',
-	'0.8.6a' => '0004',
-	'0.8.6b' => '0005',
-	'0.8.6c' => '0006',
-	'0.8.6d' => '0007',
-	'0.8.6e' => '0008',
-	'0.8.6f' => '0009',
-	'0.8.6g' => '0010',
-	'0.8.6h' => '0011',
-	'0.8.6i' => '0012',
-	'0.8.6j' => '0013',
-	'0.8.7'  => '0014',
-	'0.8.7a' => '0015',
-	'0.8.7b' => '0016',
-	'0.8.7c' => '0017',
-	'0.8.7d' => '0018',
-	'0.8.7e' => '0019',
-	'0.8.7f' => '0020',
-	'0.8.7g' => '0021',
-	'0.8.7h' => '0022',
-	'0.8.7i' => '0023',
-	'0.8.8'  => '0024',
-	'0.8.8a' => '0024',
-	'0.8.8b' => '0024',
-	'0.8.8c' => '0025',
-	'0.8.8d' => '0025',
-	'0.8.8e' => '0025',
-	'0.8.8f' => '0025',
-	'0.8.8g' => '0025',
-	'0.8.8h' => '0025',
-	'1.0.0'  => '0100',
-	'1.0.1'  => '0100',
-	'1.0.2'  => '0100',
-	'1.0.3'  => '0100',
-	'1.0.4'  => '0100',
-	'1.0.5'  => '0100',
-	'1.0.6'  => '0100',
-	'1.1.0'  => '0100',
-	'1.1.1'  => '0100',
-	'1.1.2'  => '0100',
-	'1.1.3'  => '0100',
-	'1.1.4'  => '0100',
-	'1.1.5'  => '0100',
-	'1.1.6'  => '0101',
-	'1.1.7'  => '0101',
-	'1.1.8'  => '0101',
-	'1.1.9'  => '0101',
-	'1.1.10' => '0101',
-	'1.1.11' => '0101',
-	'1.1.12' => '0101',
-	'1.1.13' => '0101',
-	'1.1.14' => '0101',
-	'1.1.15' => '0101',
-	'1.1.16' => '0101',
-	'1.1.17' => '0101',
-	'1.1.18' => '0101',
-	'1.1.19' => '0101',
-	'1.1.20' => '0101',
-	'1.1.21' => '0101',
-	'1.1.22' => '0101',
-	'1.1.23' => '0101',
-	'1.1.24' => '0101',
-	'1.1.25' => '0101',
-	'1.1.26' => '0101',
-	'1.1.27' => '0101',
-	'1.1.28' => '0101',
-	'1.1.29' => '0101',
-	'1.1.30' => '0101',
-	'1.1.31' => '0101',
-	'1.1.32' => '0101',
-	'1.1.33' => '0101',
-	'1.1.34' => '0101',
-	'1.1.35' => '0101',
-	'1.1.36' => '0101',
-	'1.1.37' => '0101',
-	'1.1.38' => '0101',
-	'1.2.0'  => '0101',
-	'1.2.1'  => '0101',
-	'1.2.2'  => '0101',
-	'1.2.3'  => '0102',
-	'1.2.4'  => '0102',
-	'1.2.5'  => '0102',
-	'1.2.6'  => '0102',
-	'1.2.7'  => '0102',
-	'1.2.8'  => '0102',
-	'1.2.9'  => '0102',
+	'0.8'     => 'NaN',
+	'0.8.1'   => 'NaN',
+	'0.8.2'   => 'NaN',
+	'0.8.2a'  => 'NaN',
+	'0.8.3'   => 'NaN',
+	'0.8.3a'  => 'NaN',
+	'0.8.4'   => '0000',
+	'0.8.5'   => '0001',
+	'0.8.5a'  => '0002',
+	'0.8.6'   => '0003',
+	'0.8.6a'  => '0004',
+	'0.8.6b'  => '0005',
+	'0.8.6c'  => '0006',
+	'0.8.6d'  => '0007',
+	'0.8.6e'  => '0008',
+	'0.8.6f'  => '0009',
+	'0.8.6g'  => '0010',
+	'0.8.6h'  => '0011',
+	'0.8.6i'  => '0012',
+	'0.8.6j'  => '0013',
+	'0.8.7'   => '0014',
+	'0.8.7a'  => '0015',
+	'0.8.7b'  => '0016',
+	'0.8.7c'  => '0017',
+	'0.8.7d'  => '0018',
+	'0.8.7e'  => '0019',
+	'0.8.7f'  => '0020',
+	'0.8.7g'  => '0021',
+	'0.8.7h'  => '0022',
+	'0.8.7i'  => '0023',
+	'0.8.8'   => '0024',
+	'0.8.8a'  => '0024',
+	'0.8.8b'  => '0024',
+	'0.8.8c'  => '0025',
+	'0.8.8d'  => '0025',
+	'0.8.8e'  => '0025',
+	'0.8.8f'  => '0025',
+	'0.8.8g'  => '0025',
+	'0.8.8h'  => '0025',
+	'1.0.0'   => '0100',
+	'1.0.1'   => '0100',
+	'1.0.2'   => '0100',
+	'1.0.3'   => '0100',
+	'1.0.4'   => '0100',
+	'1.0.5'   => '0100',
+	'1.0.6'   => '0100',
+	'1.1.0'   => '0100',
+	'1.1.1'   => '0100',
+	'1.1.2'   => '0100',
+	'1.1.3'   => '0100',
+	'1.1.4'   => '0100',
+	'1.1.5'   => '0100',
+	'1.1.6'   => '0101',
+	'1.1.7'   => '0101',
+	'1.1.8'   => '0101',
+	'1.1.9'   => '0101',
+	'1.1.10'  => '0101',
+	'1.1.11'  => '0101',
+	'1.1.12'  => '0101',
+	'1.1.13'  => '0101',
+	'1.1.14'  => '0101',
+	'1.1.15'  => '0101',
+	'1.1.16'  => '0101',
+	'1.1.17'  => '0101',
+	'1.1.18'  => '0101',
+	'1.1.19'  => '0101',
+	'1.1.20'  => '0101',
+	'1.1.21'  => '0101',
+	'1.1.22'  => '0101',
+	'1.1.23'  => '0101',
+	'1.1.24'  => '0101',
+	'1.1.25'  => '0101',
+	'1.1.26'  => '0101',
+	'1.1.27'  => '0101',
+	'1.1.28'  => '0101',
+	'1.1.29'  => '0101',
+	'1.1.30'  => '0101',
+	'1.1.31'  => '0101',
+	'1.1.32'  => '0101',
+	'1.1.33'  => '0101',
+	'1.1.34'  => '0101',
+	'1.1.35'  => '0101',
+	'1.1.36'  => '0101',
+	'1.1.37'  => '0101',
+	'1.1.38'  => '0101',
+	'1.2.0'   => '0101',
+	'1.2.1'   => '0101',
+	'1.2.2'   => '0101',
+	'1.2.3'   => '0102',
+	'1.2.4'   => '0102',
+	'1.2.5'   => '0102',
+	'1.2.6'   => '0102',
+	'1.2.7'   => '0102',
+	'1.2.8'   => '0102',
+	'1.2.9'   => '0102',
 	'1.2.10'  => '0102',
 	'1.2.11'  => '0102',
 	'1.2.12'  => '0102',
@@ -136,259 +136,259 @@ $cacti_version_codes = array(
 	'1.2.21'  => '0103',
 	'1.2.22'  => '0103',
 	'1.2.23'  => '0103',
-	'1.3.0'  => '0103',
+	'1.3.0'   => '0103',
 );
 
 $messages = array(
 	1  => array(
 		'message' => __('Save Successful.'),
-		'level' => MESSAGE_LEVEL_INFO),
+		'level'   => MESSAGE_LEVEL_INFO),
 	2  => array(
 		'message' => __('Save Failed.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	3  => array(
 		'message' => __('Save Failed due to field input errors (Check red fields).'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	4  => array(
 		'message' => __('Passwords do not match, please retype.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	5  => array(
 		'message' => __('You must select at least one field.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	6  => array(
 		'message' => __('You must have built in user authentication turned on to use this feature.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	7  => array(
 		'message' => __('XML parse error.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	8  => array(
 		'message' => __('The directory highlighted does not exist.  Please enter a valid directory.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	9  => array(
 		'message' => __('The Cacti log file must have the extension \'.log\''),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	10  => array(
 		'message' => __('Data Input for method does not appear to be whitelisted.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	11  => array(
 		'message' => __('Data Source does not exist.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	12 => array(
 		'message' => __('Username already in use.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	13  => array(
 		'message' => __('The SNMP v3 Privacy Passphrases do not match'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	14  => array(
 		'message' => __('The SNMP v3 Authentication Passphrases do not match'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	15 => array(
 		'message' => __('XML: Cacti version does not exist.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	16 => array(
 		'message' => __('XML: Hash version does not exist.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	17 => array(
 		'message' => __('XML: Generated with a newer version of Cacti.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	18 => array(
 		'message' => __('XML: Cannot locate type code.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	19 => array(
 		'message' => __('Username already exists.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	20 => array(
 		'message' => __('Username change not permitted for designated template or guest user.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	21 => array(
 		'message' => __('User delete not permitted for designated template or guest user.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	22 => array(
 		'message' => __('User delete not permitted for designated graph export user.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	23 => array(
 		'message' => __('Data Template includes deleted Data Source Profile.  Please resave the Data Template with an existing Data Source Profile.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	24 => array(
 		'message' => __('Graph Template includes deleted GPrint Prefix.  Please run database repair script to identify and/or correct.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	25 => array(
 		'message' => __('Graph Template includes deleted CDEFs.  Please run database repair script to identify and/or correct.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	26 => array(
 		'message' => __('Graph Template includes deleted Data Input Method.  Please run database repair script to identify.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	27 => array(
 		'message' => __('Data Template not found during Export.  Please run database repair script to identify.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	28 => array(
 		'message' => __('Device Template not found during Export.  Please run database repair script to identify.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	29 => array(
 		'message' => __('Data Query not found during Export.  Please run database repair script to identify.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	30 => array(
 		'message' => __('Graph Template not found during Export.  Please run database repair script to identify.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	31 => array(
 		'message' => __('Graph not found.  Either it has been deleted or your database needs repair.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	32 => array(
 		'message' => __('SNMPv3 Auth Passphrases must be 8 characters or greater.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	33 => array(
 		'message' => __('Some Graphs not updated. Unable to change device for Data Query based Graphs.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	34 => array(
 		'message' => __('Unable to change device for Data Query based Graphs.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	35 => array(
 		'message' => __('Some settings not saved. Check messages below.  Check red fields for errors.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	36 => array(
 		'message' => __('The file highlighted does not exist.  Please enter a valid file name.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	37 => array(
 		'message' => __('All User Settings have been returned to their default values.'),
-		'level' => MESSAGE_LEVEL_INFO),
+		'level'   => MESSAGE_LEVEL_INFO),
 	38 => array(
 		'message' => __('Suggested Field Name was not entered.  Please enter a field name and try again.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	39 => array(
 		'message' => __('Suggested Value was not entered.  Please enter a suggested value and try again.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	40 => array(
 		'message' => __('You must select at least one object from the list.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	41 => array(
 		'message' => __('Device Template updated.  Remember to Sync Devices to push all changes to Devices that use this Device Template.'),
-		'level' => MESSAGE_LEVEL_INFO),
+		'level'   => MESSAGE_LEVEL_INFO),
 	42 => array(
 		'message' => __('Save Successful. Settings replicated to Remote Data Collectors.'),
-		'level' => MESSAGE_LEVEL_INFO),
+		'level'   => MESSAGE_LEVEL_INFO),
 	43 => array(
 		'message' => __('Save Failed.  Minimum Values must be less than Maximum Value.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	44 => array(
 		'message' => __('Unable to change password.  User account not found.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'input_save_wo_ds' => array(
 		'message' => __('Data Input Saved.  You must update the Data Templates referencing this Data Input Method before creating Graphs or Data Sources.'),
-		'level' => MESSAGE_LEVEL_INFO),
+		'level'   => MESSAGE_LEVEL_INFO),
 	'input_save_w_ds' => array(
 		'message' => __('Data Input Saved.  You must update the Data Templates referencing this Data Input Method before the Data Collectors will start using any new or modified Data Input - Input Fields.'),
-		'level' => MESSAGE_LEVEL_INFO),
+		'level'   => MESSAGE_LEVEL_INFO),
 	'input_field_save_wo_ds' => array(
 		'message' => __('Data Input Field Saved.  You must update the Data Templates referencing this Data Input Method before creating Graphs or Data Sources.'),
-		'level' => MESSAGE_LEVEL_INFO),
+		'level'   => MESSAGE_LEVEL_INFO),
 	'input_field_save_w_ds' => array(
 		'message' => __('Data Input Field Saved.  You must update the Data Templates referencing this Data Input Method before the Data Collectors will start using any new or modified Data Input - Input Fields.'),
-		'level' => MESSAGE_LEVEL_INFO),
+		'level'   => MESSAGE_LEVEL_INFO),
 	'clog_invalid' => array(
 		'message' => __('Log file specified is not a Cacti log or archive file.'),
-		'level' => MESSAGE_LEVEL_INFO),
+		'level'   => MESSAGE_LEVEL_INFO),
 	'clog_remove' => array(
 		'message' => __('Log file specified was Cacti archive file and was removed.'),
-		'level' => MESSAGE_LEVEL_INFO),
+		'level'   => MESSAGE_LEVEL_INFO),
 	'clog_purged' => array(
 		'message' => __('Cacti log purged successfully'),
-		'level' => MESSAGE_LEVEL_INFO),
+		'level'   => MESSAGE_LEVEL_INFO),
 	'password_change' => array(
 		'message' => __('If you force a password change, you must also allow the user to change their password.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'nopassword' => array(
 		'message' => __('You are not allowed to change your password.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'nopasswordlen' => array(
 		'message' => __('Unable to determine size of password field, please check permissions of db user'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'nopasswordinc' => array(
 		'message' => __('Unable to increase size of password field, pleas check permission of db user'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'nodomainpassword' => array(
 		'message' => __('LDAP/AD based password change not supported.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'password_success' => array(
 		'message' => __('Password successfully changed.'),
-		'level' => MESSAGE_LEVEL_INFO),
+		'level'   => MESSAGE_LEVEL_INFO),
 	'clog_permissions' => array(
 		'message' => __('Unable to clear log, no write permissions'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'clog_missing' => array(
 		'message' => __('Unable to clear log, file does not exist'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'csrf_timeout' => array(
 		'message' => __('CSRF Timeout, refreshing page.'),
-		'level' => MESSAGE_LEVEL_CSRF),
+		'level'   => MESSAGE_LEVEL_CSRF),
 	'csrf_ptimeout' => array(
 		'message' => __('CSRF Timeout occurred due to inactivity, page refreshed.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'mg_mailtime_invalid' => array(
 		'message' => __('Invalid timestamp. Select timestamp in the future.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'poller_sync' => array(
 		'message' => __('Data Collector(s) synchronized for offline operation'),
-		'level' => MESSAGE_LEVEL_INFO),
+		'level'   => MESSAGE_LEVEL_INFO),
 	'poller_notfound' => array(
 		'message' => __('Data Collector(s) not found when attempting synchronization'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'poller_noconnect' => array(
 		'message' => __('Unable to establish MySQL connection with Remote Data Collector.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'poller_nosync' => array(
 		'message' => __('Data Collector synchronization must be initiated from the main Cacti server.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'poller_nomain' => array(
 		'message' => __('Synchronization does not include the Central Cacti Database server.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'poller_nodupe' => array(
 		'message' => __('When saving a Remote Data Collector, the Database Hostname must be unique from all others.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'poller_dbhost' => array(
 		'message' => __('Your Remote Database Hostname must be something other than \'localhost\' for each Remote Data Collector.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'poller_paths' => array(
 		'message' => __('Path variables on this page were only saved locally.'),
-		'level' => MESSAGE_LEVEL_INFO),
+		'level'   => MESSAGE_LEVEL_INFO),
 	'reports_save' => array(
 		'message' => __('Report Saved'),
-		'level' => MESSAGE_LEVEL_INFO),
+		'level'   => MESSAGE_LEVEL_INFO),
 	'reports_save_failed' => array(
 		'message' => __('Report Save Failed'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'reports_item_save' => array(
 		'message' => __('Report Item Saved'),
-		'level' => MESSAGE_LEVEL_INFO),
+		'level'   => MESSAGE_LEVEL_INFO),
 	'reports_item_save_failed' => array(
 		'message' => __('Report Item Save Failed'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'reports_graph_not_found' => array(
 		'message' => __('Graph was not found attempting to Add to Report'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'reports_not_owner' => array(
 		'message' => __('Unable to Add Graphs.  Current user is not owner'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'reports_add_error' => array(
 		'message' => __('Unable to Add all Graphs.  See error message for details.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'reports_no_graph' => array(
 		'message' => __('You must select at least one Graph to add to a Report.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'reports_graphs_added' => array(
 		'message' => __('All Graphs have been added to the Report.  Duplicate Graphs with the same Timespan were skipped.'),
-		'level' => MESSAGE_LEVEL_INFO),
+		'level'   => MESSAGE_LEVEL_INFO),
 	'resource_cache_rebuild' => array(
 		'message' => __('Poller Resource Cache cleared.  Main Data Collector will rebuild at the next poller start, and Remote Data Collectors will sync afterwards.'),
-		'level' => MESSAGE_LEVEL_INFO),
+		'level'   => MESSAGE_LEVEL_INFO),
 	'permission_denied' => array(
 		'message' => __('Permission Denied.  You do not have permission to the requested action.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'page_not_defined' => array(
 		'message' => __('Page is not defined.  Therefore, it can not be displayed.'),
-		'level' => MESSAGE_LEVEL_ERROR),
+		'level'   => MESSAGE_LEVEL_ERROR),
 	'custom_error' => array(
 		'message' => __('Unexpected error occurred'),
-		'level' => MESSAGE_LEVEL_ERROR)
+		'level'   => MESSAGE_LEVEL_ERROR)
 );
 
 $cdef_operators = array(1 =>
@@ -460,23 +460,23 @@ $cdef_functions = array(1 =>
 	'ROLL'
 );
 
-$phperrors = array (
-	E_ERROR => 'ERROR',
-	E_WARNING => 'WARNING',
-	E_PARSE => 'PARSE',
-	E_NOTICE => 'NOTICE',
-	E_CORE_ERROR => 'CORE_ERROR',
-	E_CORE_WARNING => 'CORE_WARNING',
-	E_COMPILE_ERROR  => 'COMPILE_ERROR',
-	E_COMPILE_WARNING => 'COMPILE_WARNING',
-	E_USER_ERROR => 'USER_ERROR',
-	E_USER_WARNING => 'USER_WARNING',
-	E_USER_NOTICE  => 'USER_NOTICE',
-	E_STRICT => 'STRICT',
+$phperrors = array(
+	E_ERROR              => 'ERROR',
+	E_WARNING            => 'WARNING',
+	E_PARSE              => 'PARSE',
+	E_NOTICE             => 'NOTICE',
+	E_CORE_ERROR         => 'CORE_ERROR',
+	E_CORE_WARNING       => 'CORE_WARNING',
+	E_COMPILE_ERROR      => 'COMPILE_ERROR',
+	E_COMPILE_WARNING    => 'COMPILE_WARNING',
+	E_USER_ERROR         => 'USER_ERROR',
+	E_USER_WARNING       => 'USER_WARNING',
+	E_USER_NOTICE        => 'USER_NOTICE',
+	E_STRICT             => 'STRICT',
 	E_RECOVERABLE_ERROR  => 'RECOVERABLE_ERROR',
-	E_DEPRECATED => 'DEPRECATED',
-	E_USER_DEPRECATED  => 'USER_DEPRECATED',
-	E_ALL => 'ALL'
+	E_DEPRECATED         => 'DEPRECATED',
+	E_USER_DEPRECATED    => 'USER_DEPRECATED',
+	E_ALL                => 'ALL'
 );
 
 if (cacti_version_compare(get_rrdtool_version(), '1.8.0', '>=')) {
@@ -629,8 +629,8 @@ $image_types = array(
 
 $snmp_security_levels = array(
 	'noAuthNoPriv' => 'noAuthNoPriv',
-	'authNoPriv' => 'authNoPriv',
-	'authPriv' => 'authPriv'
+	'authNoPriv'   => 'authNoPriv',
+	'authPriv'     => 'authPriv'
 );
 
 $snmp_versions = array(0 =>
@@ -827,15 +827,15 @@ $poller_sync_intervals = array(
 );
 
 $device_threads = array(
-	1 => __('1 Thread'),
-	2 => __('%d Threads', 2),
-	3 => __('%d Threads', 3),
-	4 => __('%d Threads', 4),
-	5 => __('%d Threads', 5),
-	6 => __('%d Threads', 6),
-	7 => __('%d Threads', 7),
-	8 => __('%d Threads', 8),
-	9 => __('%d Threads', 9),
+	1  => __('1 Thread'),
+	2  => __('%d Threads', 2),
+	3  => __('%d Threads', 3),
+	4  => __('%d Threads', 4),
+	5  => __('%d Threads', 5),
+	6  => __('%d Threads', 6),
+	7  => __('%d Threads', 7),
+	8  => __('%d Threads', 8),
+	9  => __('%d Threads', 9),
 	10 => __('%d Threads', 10)
 );
 
@@ -908,9 +908,9 @@ $rrdtool_versions = array(
 );
 
 $i18n_modes = array(
-    0 => __('Disabled'),
-    1 => __('Enabled'),
-    2 => __('Enabled (strict mode)'),
+	0 => __('Disabled'),
+	1 => __('Enabled'),
+	2 => __('Enabled (strict mode)'),
 );
 
 $cdef_item_types = array(
@@ -982,7 +982,7 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			'index.php' => __('Console Page')
 			),
 		__('Create') => array(
-			'graphs_new.php' => __('New Graphs'),
+			'graphs_new.php'                   => __('New Graphs'),
 			'host.php?action=edit&create=true' => __('New Device')
 			),
 		__('Management') => array(
@@ -994,7 +994,7 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			'aggregate_graphs.php' => __('Aggregates'),
 			),
 		__('Data Collection') => array(
-			'pollers.php' => __('Data Collectors'),
+			'pollers.php'      => __('Data Collectors'),
 			'data_queries.php' => __('Data Queries'),
 			'data_input.php'   => __('Data Input Methods')
 			),
@@ -1061,18 +1061,18 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 }
 
 $menu_glyphs = array(
-	__('Main Console') => 'fa fa-map',
-	__('Create') => 'fa fa-chart-area',
-	__('Management') => 'fa fa-home',
+	__('Main Console')    => 'fa fa-map',
+	__('Create')          => 'fa fa-chart-area',
+	__('Management')      => 'fa fa-home',
 	__('Data Collection') => 'fa fa-database',
-	__('Templates') => 'fa fa-clone',
-	__('Automation') => 'fab fa-superpowers',
-	__('Presets') => 'fa fa-archive',
-	__('Import/Export') => 'fa fa-exchange-alt',
-	__('Configuration')  => 'fa fa-sliders-h',
-	__('Utilities') => 'fa fa-cogs',
-	__('External Links') => 'fa fa-external-link-alt',
-	__('Support') => 'fa fa-question-circle',
+	__('Templates')       => 'fa fa-clone',
+	__('Automation')      => 'fab fa-superpowers',
+	__('Presets')         => 'fa fa-archive',
+	__('Import/Export')   => 'fa fa-exchange-alt',
+	__('Configuration')   => 'fa fa-sliders-h',
+	__('Utilities')       => 'fa fa-cogs',
+	__('External Links')  => 'fa fa-external-link-alt',
+	__('Support')         => 'fa fa-question-circle',
 	__('Troubleshooting') => 'fa fa-bug'
 );
 
@@ -1110,8 +1110,8 @@ if ((isset($_SESSION[SESS_USER_ID]))) {
 
 		if (cacti_sizeof($consoles)) {
 			foreach ($consoles as $page) {
-				if (!$config['is_web'] || is_realm_allowed($page['id']+10000)) {
-					$menuname = (isset($page['extendedstyle']) && $page['extendedstyle'] != '' ? $page['extendedstyle'] : __('External Links'));
+				if (!$config['is_web'] || is_realm_allowed($page['id'] + 10000)) {
+					$menuname                                      = (isset($page['extendedstyle']) && $page['extendedstyle'] != '' ? $page['extendedstyle'] : __('External Links'));
 					$menu[$menuname]['link.php?id=' . $page['id']] = $page['title'];
 				}
 			}
@@ -1168,7 +1168,8 @@ $item_rows = array(
 
 // Adjust the number of items rows based upon max_input_vars
 $max_size = ini_get('max_input_vars') - 20;
-foreach($item_rows as $index => $row) {
+
+foreach ($item_rows as $index => $row) {
 	if ($index > $max_size) {
 		unset($item_rows[$index]);
 	}
@@ -1257,99 +1258,99 @@ $user_auth_roles = array(
 );
 
 $user_auth_realm_filenames = array(
-	'about.php' => -1,
-	'cdef.php' => 14,
-	'clog.php' => 18,
-	'clog_user.php' => 19,
-	'color.php' => 5,
-	'data_debug.php' => 15,
-	'data_input.php' => 2,
-	'data_sources.php' => 3,
-	'data_source_profiles.php' => 9,
-	'data_templates.php' => 11,
-	'gprint_presets.php' => 5,
-	'graph.php' => 7,
-	'graph_image.php' => 7,
-	'graph_json.php' => 7,
-	'graph_xport.php' => 7,
-	'graph_templates.php' => 10,
+	'about.php'                  => -1,
+	'cdef.php'                   => 14,
+	'clog.php'                   => 18,
+	'clog_user.php'              => 19,
+	'color.php'                  => 5,
+	'data_debug.php'             => 15,
+	'data_input.php'             => 2,
+	'data_sources.php'           => 3,
+	'data_source_profiles.php'   => 9,
+	'data_templates.php'         => 11,
+	'gprint_presets.php'         => 5,
+	'graph.php'                  => 7,
+	'graph_image.php'            => 7,
+	'graph_json.php'             => 7,
+	'graph_xport.php'            => 7,
+	'graph_templates.php'        => 10,
 	'graph_templates_inputs.php' => 10,
-	'graph_templates_items.php' => 10,
-	'graph_view.php' => 7,
-	'graph_realtime.php' => 25,
-	'graphs.php' => 5,
-	'graphs_items.php' => 5,
-	'graphs_new.php' => 5,
-	'sites.php' => 3,
-	'pollers.php' => 3,
-	'host.php' => 3,
-	'host_templates.php' => 12,
-	'index.php' => 8,
-	'install.php' => 26,
-	'step_json.php' => 26,
-	'managers.php' => 15,
-	'rrdcleaner.php' => 15,
-	'rrdcheck.php' => 15,
-	'settings.php' => 15,
-	'links.php' => 15,
-	'data_queries.php' => 13,
-	'templates_export.php' => 16,
-	'templates_import.php' => 17,
-	'package_import.php' => 17,
-	'tree.php' => 4,
-	'user_admin.php' => 1,
-	'user_domains.php' => 1,
-	'user_group_admin.php' => 1,
-	'utilities.php' => 15,
-	'user_log.php' => 15,
-	'vdef.php' => 14,
-	'smtp_servers.php' => 8,
-	'email_templates.php' => 8,
-	'event_queue.php' => 8,
-	'smtp_queue.php' => 8,
-	'logout.php' => -1,
-	'auth_profile.php' => 20,
-	'auth_changepassword.php' => -1,
-	'reports_user.php' => 22,
-	'reports_admin.php' => 21,
+	'graph_templates_items.php'  => 10,
+	'graph_view.php'             => 7,
+	'graph_realtime.php'         => 25,
+	'graphs.php'                 => 5,
+	'graphs_items.php'           => 5,
+	'graphs_new.php'             => 5,
+	'sites.php'                  => 3,
+	'pollers.php'                => 3,
+	'host.php'                   => 3,
+	'host_templates.php'         => 12,
+	'index.php'                  => 8,
+	'install.php'                => 26,
+	'step_json.php'              => 26,
+	'managers.php'               => 15,
+	'rrdcleaner.php'             => 15,
+	'rrdcheck.php'               => 15,
+	'settings.php'               => 15,
+	'links.php'                  => 15,
+	'data_queries.php'           => 13,
+	'templates_export.php'       => 16,
+	'templates_import.php'       => 17,
+	'package_import.php'         => 17,
+	'tree.php'                   => 4,
+	'user_admin.php'             => 1,
+	'user_domains.php'           => 1,
+	'user_group_admin.php'       => 1,
+	'utilities.php'              => 15,
+	'user_log.php'               => 15,
+	'vdef.php'                   => 14,
+	'smtp_servers.php'           => 8,
+	'email_templates.php'        => 8,
+	'event_queue.php'            => 8,
+	'smtp_queue.php'             => 8,
+	'logout.php'                 => -1,
+	'auth_profile.php'           => 20,
+	'auth_changepassword.php'    => -1,
+	'reports_user.php'           => 22,
+	'reports_admin.php'          => 21,
 	'automation_graph_rules.php' => 23,
-	'automation_tree_rules.php' => 23,
-	'automation_templates.php' => 23,
-	'automation_networks.php' => 23,
-	'automation_devices.php' => 23,
-	'automation_snmp.php' => 23,
-	'color_templates.php' => 5,
-	'color_templates_items.php' => 5,
-	'aggregate_templates.php' => 5,
-	'aggregate_graphs.php' => 5,
-	'aggregate_items.php' => 5,
-	'spikekill.php' => 1043,
-	'support.php' => 15,
-	'changelog.php' => 15,
-	'permission_denied.php' => -1,
-	'help.php' => -1
+	'automation_tree_rules.php'  => 23,
+	'automation_templates.php'   => 23,
+	'automation_networks.php'    => 23,
+	'automation_devices.php'     => 23,
+	'automation_snmp.php'        => 23,
+	'color_templates.php'        => 5,
+	'color_templates_items.php'  => 5,
+	'aggregate_templates.php'    => 5,
+	'aggregate_graphs.php'       => 5,
+	'aggregate_items.php'        => 5,
+	'spikekill.php'              => 1043,
+	'support.php'                => 15,
+	'changelog.php'              => 15,
+	'permission_denied.php'      => -1,
+	'help.php'                   => -1
 );
 
 $hash_type_codes = array(
-	'round_robin_archive' => '15',
-	'cdef' => '05',
-	'cdef_item' => '14',
-	'gprint_preset' => '06',
-	'data_input_method' => '03',
-	'data_input_field' => '07',
-	'data_template' => '01',
-	'data_template_item' => '08',
-	'graph_template' => '00',
-	'graph_template_item' => '10',
-	'graph_template_input' => '09',
-	'data_query' => '04',
-	'data_query_graph' => '11',
-	'data_query_sv_graph' => '12',
+	'round_robin_archive'       => '15',
+	'cdef'                      => '05',
+	'cdef_item'                 => '14',
+	'gprint_preset'             => '06',
+	'data_input_method'         => '03',
+	'data_input_field'          => '07',
+	'data_template'             => '01',
+	'data_template_item'        => '08',
+	'graph_template'            => '00',
+	'graph_template_item'       => '10',
+	'graph_template_input'      => '09',
+	'data_query'                => '04',
+	'data_query_graph'          => '11',
+	'data_query_sv_graph'       => '12',
 	'data_query_sv_data_source' => '13',
-	'host_template' => '02',
-	'vdef' => '18',
-	'vdef_item' => '19',
-	'data_source_profile' => '20'
+	'host_template'             => '02',
+	'vdef'                      => '18',
+	'vdef_item'                 => '19',
+	'data_source_profile'       => '20'
 );
 
 $hash_type_names = array(
@@ -1555,9 +1556,9 @@ $dsstats_hourly_avg = array(
 
 $rrdcheck_intervals = array(
 	'boost' => __('After Boost'),
-	'60'  => __('1 Hour'),
-	'240' => __('%d Hours', 4),
-	'1440' => __('%d Hours', 24)
+	'60'    => __('1 Hour'),
+	'240'   => __('%d Hours', 4),
+	'1440'  => __('%d Hours', 24)
 );
 
 $boost_max_rows_per_select = array(
@@ -1609,7 +1610,7 @@ $boost_max_memory = array(
 	'5120' => __('%d GBytes', 5),
 	'6144' => __('%d GBytes', 6),
 	'8192' => __('%d GBytes', 8),
-	'-1' => __('Infinity')
+	'-1'   => __('Infinity')
 );
 
 $realtime_window = array(
@@ -1678,6 +1679,7 @@ if (extension_loaded(REPORTS_EXTENSION_GD)) {
 
 if (read_config_option('reports_allow_ln') != '') {
 	$attach_types[REPORTS_TYPE_INLINE_PNG_LN] = __('Inline PNG Image, LN Style');
+
 	if (extension_loaded(REPORTS_EXTENSION_GD)) {
 		$attach_types[REPORTS_TYPE_INLINE_JPG_LN] = __('Inline JPEG Image, LN Style');
 		$attach_types[REPORTS_TYPE_INLINE_GIF_LN] = __('Inline GIF Image, LN Style');
@@ -1891,18 +1893,18 @@ $no_session_write = array(
 );
 
 $i18n_months = array(
-	'January'	=> __('January'),
-	'February'	=> __('February'),
-	'March'		=> __('March'),
-	'April'		=> __('April'),
-	'May'		=> __('May'),
-	'June'		=> __('June'),
-	'July'		=> __('July'),
-	'August'	=> __('August'),
+	'January'	  => __('January'),
+	'February'	 => __('February'),
+	'March'		   => __('March'),
+	'April'		   => __('April'),
+	'May'		     => __('May'),
+	'June'		    => __('June'),
+	'July'		    => __('July'),
+	'August'	   => __('August'),
 	'September'	=> __('September'),
-	'October'	=> __('October'),
-	'November'	=> __('November'),
-	'December'	=> __('December'),
+	'October'	  => __('October'),
+	'November'	 => __('November'),
+	'December'	 => __('December'),
 );
 
 $i18n_months_short = array(
@@ -1924,26 +1926,26 @@ $i18n_supported_languages = array(
 	CACTI_LANGUAGE_HANDLER_DEFAULT => __('Use the First Handler Found'),
 );
 
-if (is_dir($config['base_path'] . '/include/vendor/phpgettext')) {
+if (is_dir(CACTI_PATH_INCLUDE . '/vendor/phpgettext')) {
 	$i18n_supported_languages[CACTI_LANGUAGE_HANDLER_PHPGETTEXT]  = __('Use the PHP GetText Handler');
 }
 
-if (is_dir($config['base_path'] . '/include/vendor/gettext') && version_compare(PHP_VERSION, '8.0', '<=')) {
+if (is_dir(CACTI_PATH_INCLUDE . '/vendor/gettext') && version_compare(PHP_VERSION, '8.0', '<=')) {
 	$i18n_supported_languages[CACTI_LANGUAGE_HANDLER_OSCAROTERO]  = __('Use the Oscarotero GetText Handler');
 }
 
-if (is_dir($config['base_path'] . '/include/vendor/monotranslator')) {
+if (is_dir(CACTI_PATH_INCLUDE . '/vendor/monotranslator')) {
 	$i18n_supported_languages[CACTI_LANGUAGE_HANDLER_MOTRANSLATOR]  = __('Use the MonoTranslator GetText Handler');
 }
 
 $i18n_weekdays = array(
-	'Sunday'	=> __('Sunday'),
-	'Monday'	=> __('Monday'),
-	'Tuesday'	=> __('Tuesday'),
+	'Sunday'	   => __('Sunday'),
+	'Monday'	   => __('Monday'),
+	'Tuesday'	  => __('Tuesday'),
 	'Wednesday'	=> __('Wednesday'),
-	'Thursday'	=> __('Thursday'),
-	'Friday'	=> __('Friday'),
-	'Saturday'	=> __('Saturday')
+	'Thursday'	 => __('Thursday'),
+	'Friday'	   => __('Friday'),
+	'Saturday'	 => __('Saturday')
 );
 
 $i18n_weekdays_short = array(
@@ -2000,870 +2002,870 @@ $database_statuses = array(
 
 $navigation = array(
 	'auth_profile.php:' => array(
-		'title' => __('User Profile (Edit)'),
+		'title'   => __('User Profile (Edit)'),
 		'mapping' => '',
-		'url' => '',
-		'level' => '0'
+		'url'     => '',
+		'level'   => '0'
 	),
 	'auth_profile.php:edit' => array(
-		'title' => __('User Profile (Edit)'),
+		'title'   => __('User Profile (Edit)'),
 		'mapping' => '',
-		'url' => '',
-		'level' => '0'
+		'url'     => '',
+		'level'   => '0'
 	),
 	'graph_view.php:' => array(
-		'title' => __('Graphs'),
+		'title'   => __('Graphs'),
 		'mapping' => '',
-		'url' => 'graph_view.php',
-		'level' => '0'
+		'url'     => 'graph_view.php',
+		'level'   => '0'
 	),
 	'graph_view.php:tree' => array(
-		'title' => __('Tree Mode'),
+		'title'   => __('Tree Mode'),
 		'mapping' => 'graph_view.php:',
-		'url' => 'graph_view.php?action=tree',
-		'level' => '0'
+		'url'     => 'graph_view.php?action=tree',
+		'level'   => '0'
 	),
 	'graph_view.php:tree_content' => array(
-		'title' => __('Tree Mode'),
+		'title'   => __('Tree Mode'),
 		'mapping' => 'graph_view.php:',
-		'url' => 'graph_view.php?action=tree',
-		'level' => '0'
+		'url'     => 'graph_view.php?action=tree',
+		'level'   => '0'
 	),
 	'graph_view.php:list' => array(
-		'title' => __('List Mode'),
+		'title'   => __('List Mode'),
 		'mapping' => '',
-		'url' => 'graph_view.php?action=list',
-		'level' => '0'
+		'url'     => 'graph_view.php?action=list',
+		'level'   => '0'
 	),
 	'graph_view.php:preview' => array(
-		'title' => __('Preview Mode'),
+		'title'   => __('Preview Mode'),
 		'mapping' => '',
-		'url' => 'graph_view.php?action=preview',
-		'level' => '0'
+		'url'     => 'graph_view.php?action=preview',
+		'level'   => '0'
 	),
 	'graph.php:' => array(
-		'title' => '|current_graph_title|',
+		'title'   => '|current_graph_title|',
 		'mapping' => 'graph_view.php:',
-		'level' => '1'
+		'level'   => '1'
 	),
 	'graph.php:view' => array(
-		'title' => '|current_graph_title|',
+		'title'   => '|current_graph_title|',
 		'mapping' => 'graph_view.php:',
-		'level' => '1'
+		'level'   => '1'
 	),
 	'graph.php:zoom' => array(
-		'title' => '|current_graph_title|',
+		'title'   => '|current_graph_title|',
 		'mapping' => 'graph_view.php:',
-		'level' => '1'
+		'level'   => '1'
 	),
 	'graph.php:update_timespan' => array(
-		'title' => '|current_graph_title|',
+		'title'   => '|current_graph_title|',
 		'mapping' => 'graph_view.php:',
-		'level' => '1'
+		'level'   => '1'
 	),
 	'index.php:' => array(
-		'title' => __('Console'),
+		'title'   => __('Console'),
 		'mapping' => '',
-		'url' => $config['url_path'] . 'index.php',
-		'level' => '0'
+		'url'     => CACTI_PATH_URL . 'index.php',
+		'level'   => '0'
 	),
 	'index.php:login' => array(
-		'title' => __('Console'),
+		'title'   => __('Console'),
 		'mapping' => '',
-		'url' => $config['url_path'] . 'index.php',
-		'level' => '0'
+		'url'     => CACTI_PATH_URL . 'index.php',
+		'level'   => '0'
 	),
 	'graphs.php:' => array(
-		'title' => __('Graph Management'),
+		'title'   => __('Graph Management'),
 		'mapping' => 'index.php:',
-		'url' => 'graphs.php',
-		'level' => '1'
+		'url'     => 'graphs.php',
+		'level'   => '1'
 	),
 	'graphs.php:graph_edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,graphs.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'graphs.php:graph_diff' => array(
-		'title' => __('Change Graph Template'),
+		'title'   => __('Change Graph Template'),
 		'mapping' => 'index.php:,graphs.php:,graphs.php:graph_edit',
-		'url' => '',
-		'level' => '3'
+		'url'     => '',
+		'level'   => '3'
 	),
 	'graphs.php:actions' => array(
-		'title' => __('Actions'),
+		'title'   => __('Actions'),
 		'mapping' => 'index.php:,graphs.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'graphs_items.php:item_edit' => array(
-		'title' => __('Graph Items'),
+		'title'   => __('Graph Items'),
 		'mapping' => 'index.php:,graphs.php:,graphs.php:graph_edit',
-		'url' => '',
-		'level' => '3'
+		'url'     => '',
+		'level'   => '3'
 	),
 	'graphs_new.php:' => array(
-		'title' => __('Create New Graphs'),
+		'title'   => __('Create New Graphs'),
 		'mapping' => 'index.php:',
-		'url' => 'graphs_new.php',
-		'level' => '1'
+		'url'     => 'graphs_new.php',
+		'level'   => '1'
 	),
 	'graphs_new.php:save' => array(
-		'title' => __('Create Graphs from Data Query'),
+		'title'   => __('Create Graphs from Data Query'),
 		'mapping' => 'index.php:,graphs_new.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'gprint_presets.php:' => array(
-		'title' => __('GPRINT Presets'),
+		'title'   => __('GPRINT Presets'),
 		'mapping' => 'index.php:',
-		'url' => 'gprint_presets.php',
-		'level' => '1'
+		'url'     => 'gprint_presets.php',
+		'level'   => '1'
 	),
 	'gprint_presets.php:edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,gprint_presets.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'gprint_presets.php:remove' => array(
-		'title' => __('(Remove)'),
+		'title'   => __('(Remove)'),
 		'mapping' => 'index.php:,gprint_presets.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'cdef.php:' => array(
-		'title' => __('CDEFs'),
+		'title'   => __('CDEFs'),
 		'mapping' => 'index.php:',
-		'url' => 'cdef.php',
-		'level' => '1'
+		'url'     => 'cdef.php',
+		'level'   => '1'
 	),
 	'cdef.php:edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,cdef.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'cdef.php:remove' => array(
-		'title' => __('(Remove)'),
+		'title'   => __('(Remove)'),
 		'mapping' => 'index.php:,cdef.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'cdef.php:item_edit' => array(
-		'title' => __('CDEF Items'),
+		'title'   => __('CDEF Items'),
 		'mapping' => 'index.php:,cdef.php:,cdef.php:edit',
-		'url' => '',
-		'level' => '3'
+		'url'     => '',
+		'level'   => '3'
 	),
 	'cdef.php:actions' => array(
-		'title' => __('Actions'),
+		'title'   => __('Actions'),
 		'mapping' => 'index.php:,cdef.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'clog.php:' => array(
-		'title' => __('View Log'),
+		'title'   => __('View Log'),
 		'mapping' => '',
-		'url' => 'clog.php',
-		'level' => '0'
+		'url'     => 'clog.php',
+		'level'   => '0'
 	),
 	'clog.php:preview' => array(
-		'title' => __('View Log'),
+		'title'   => __('View Log'),
 		'mapping' => '',
-		'url' => 'clog.php',
-		'level' => '0'
+		'url'     => 'clog.php',
+		'level'   => '0'
 	),
 	'clog_user.php:' => array(
-		'title' => __('View Log'),
+		'title'   => __('View Log'),
 		'mapping' => '',
-		'url' => 'clog_user.php',
-		'level' => '0'
+		'url'     => 'clog_user.php',
+		'level'   => '0'
 	),
 	'clog_user.php:preview' => array(
-		'title' => __('View Log'),
+		'title'   => __('View Log'),
 		'mapping' => '',
-		'url' => 'clog_user.php',
-		'level' => '0'
+		'url'     => 'clog_user.php',
+		'level'   => '0'
 	),
 	'tree.php:' => array(
-		'title' => __('Graph Trees'),
+		'title'   => __('Graph Trees'),
 		'mapping' => 'index.php:',
-		'url' => 'tree.php',
-		'level' => '1'
+		'url'     => 'tree.php',
+		'level'   => '1'
 	),
 	'tree.php:edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,tree.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'pollers.php:' => array(
-		'title' => __('Data Collectors'),
+		'title'   => __('Data Collectors'),
 		'mapping' => 'index.php:',
-		'url' => 'pollers.php',
-		'level' => '1'
+		'url'     => 'pollers.php',
+		'level'   => '1'
 	),
 	'pollers.php:edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,pollers.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'links.php:' => array(
-		'title' => __('External Links'),
+		'title'   => __('External Links'),
 		'mapping' => 'index.php:',
-		'url' => 'links.php',
-		'level' => '1'
+		'url'     => 'links.php',
+		'level'   => '1'
 	),
 	'links.php:edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,links.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'color.php:' => array(
-		'title' => __('Colors'),
+		'title'   => __('Colors'),
 		'mapping' => 'index.php:',
-		'url' => 'color.php',
-		'level' => '1'
+		'url'     => 'color.php',
+		'level'   => '1'
 	),
 	'color.php:edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,color.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'graph_templates.php:' => array(
-		'title' => __('Graph Templates'),
+		'title'   => __('Graph Templates'),
 		'mapping' => 'index.php:',
-		'url' => 'graph_templates.php',
-		'level' => '1'
+		'url'     => 'graph_templates.php',
+		'level'   => '1'
 	),
 	'graph_templates.php:template_edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,graph_templates.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'graph_templates.php:actions' => array(
-		'title' => __('Actions'),
+		'title'   => __('Actions'),
 		'mapping' => 'index.php:,graph_templates.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'graph_templates_items.php:item_edit' => array(
-		'title' => __('Graph Template Items'),
+		'title'   => __('Graph Template Items'),
 		'mapping' => 'index.php:,graph_templates.php:,graph_templates.php:template_edit',
-		'url' => '',
-		'level' => '3'
+		'url'     => '',
+		'level'   => '3'
 	),
 	'graph_templates_inputs.php:input_edit' => array(
-		'title' => __('Graph Item Inputs'),
+		'title'   => __('Graph Item Inputs'),
 		'mapping' => 'index.php:,graph_templates.php:,graph_templates.php:template_edit',
-		'url' => '',
-		'level' => '3'
+		'url'     => '',
+		'level'   => '3'
 	),
 	'graph_templates_inputs.php:input_remove' => array(
-		'title' => __('(Remove)'),
+		'title'   => __('(Remove)'),
 		'mapping' => 'index.php:,graph_templates.php:,graph_templates.php:template_edit',
-		'url' => '',
-		'level' => '3'
+		'url'     => '',
+		'level'   => '3'
 	),
 	'host_templates.php:' => array(
-		'title' => __('Device Templates'),
+		'title'   => __('Device Templates'),
 		'mapping' => 'index.php:',
-		'url' => 'host_templates.php',
-		'level' => '1'
+		'url'     => 'host_templates.php',
+		'level'   => '1'
 	),
 	'host_templates.php:edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,host_templates.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'host_templates.php:actions' => array(
-		'title' => __('Actions'),
+		'title'   => __('Actions'),
 		'mapping' => 'index.php:,host_templates.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'data_templates.php:' => array(
-		'title' => __('Data Templates'),
+		'title'   => __('Data Templates'),
 		'mapping' => 'index.php:',
-		'url' => 'data_templates.php',
-		'level' => '1'
+		'url'     => 'data_templates.php',
+		'level'   => '1'
 	),
 	'data_templates.php:template_edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,data_templates.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'data_templates.php:actions' => array(
-		'title' => __('Actions'),
+		'title'   => __('Actions'),
 		'mapping' => 'index.php:,data_templates.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'data_sources.php:' => array(
-		'title' => __('Data Sources'),
+		'title'   => __('Data Sources'),
 		'mapping' => 'index.php:',
-		'url' => 'data_sources.php',
-		'level' => '1'
+		'url'     => 'data_sources.php',
+		'level'   => '1'
 	),
 	'data_sources.php:ds_edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,data_sources.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'data_sources.php:actions' => array(
-		'title' => __('Actions'),
+		'title'   => __('Actions'),
 		'mapping' => 'index.php:,data_sources.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'host.php:' => array(
-		'title' => __('Devices'),
+		'title'   => __('Devices'),
 		'mapping' => 'index.php:',
-		'url' => 'host.php',
-		'level' => '1'
+		'url'     => 'host.php',
+		'level'   => '1'
 	),
 	'host.php:edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,host.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'host.php:actions' => array(
-		'title' => __('Actions'),
+		'title'   => __('Actions'),
 		'mapping' => 'index.php:,host.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'rra.php:' => array(
-		'title' => __('Round Robin Archives'),
+		'title'   => __('Round Robin Archives'),
 		'mapping' => 'index.php:',
-		'url' => 'rra.php',
-		'level' => '1'
+		'url'     => 'rra.php',
+		'level'   => '1'
 	),
 	'rra.php:edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,rra.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'rra.php:remove' => array(
-		'title' => __('(Remove)'),
+		'title'   => __('(Remove)'),
 		'mapping' => 'index.php:,rra.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'data_input.php:' => array(
-		'title' => __('Data Input Methods'),
+		'title'   => __('Data Input Methods'),
 		'mapping' => 'index.php:',
-		'url' => 'data_input.php',
-		'level' => '1'
+		'url'     => 'data_input.php',
+		'level'   => '1'
 	),
 	'data_input.php:actions' => array(
-		'title' => __('Actions'),
+		'title'   => __('Actions'),
 		'mapping' => 'index.php:,data_input.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'data_input.php:edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,data_input.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'data_input.php:remove' => array(
-		'title' => __('(Remove)'),
+		'title'   => __('(Remove)'),
 		'mapping' => 'index.php:,data_input.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'data_input.php:field_edit' => array(
-		'title' => __('Data Input Fields'),
+		'title'   => __('Data Input Fields'),
 		'mapping' => 'index.php:,data_input.php:,data_input.php:edit',
-		'url' => '',
-		'level' => '3'
+		'url'     => '',
+		'level'   => '3'
 	),
 	'data_input.php:field_remove' => array(
-		'title' => __('(Remove Item)'),
+		'title'   => __('(Remove Item)'),
 		'mapping' => 'index.php:,data_input.php:,data_input.php:edit',
-		'url' => '',
-		'level' => '3'
+		'url'     => '',
+		'level'   => '3'
 	),
 	'data_queries.php:' => array(
-		'title' => __('Data Queries'),
+		'title'   => __('Data Queries'),
 		'mapping' => 'index.php:',
-		'url' => 'data_queries.php',
-		'level' => '1'
+		'url'     => 'data_queries.php',
+		'level'   => '1'
 	),
 	'data_queries.php:actions' => array(
-		'title' => __('Actions'),
+		'title'   => __('Actions'),
 		'mapping' => 'index.php:,data_queries.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'data_queries.php:edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,data_queries.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'data_queries.php:item_edit' => array(
-		'title' => __('Associated Graph Templates'),
+		'title'   => __('Associated Graph Templates'),
 		'mapping' => 'index.php:,data_queries.php:,data_queries.php:edit',
-		'url' => '',
-		'level' => '3'
+		'url'     => '',
+		'level'   => '3'
 	),
 	'data_queries.php:item_remove' => array(
-		'title' => __('(Remove Item)'),
+		'title'   => __('(Remove Item)'),
 		'mapping' => 'index.php:,data_queries.php:,data_queries.php:edit',
-		'url' => '',
-		'level' => '3'
+		'url'     => '',
+		'level'   => '3'
 	),
 	'rrdcleaner.php:' => array(
-		'title' => __('RRD Cleaner'),
+		'title'   => __('RRD Cleaner'),
 		'mapping' => 'index.php:,utilities.php:',
-		'url' => 'rrdcleaner.php',
-		'level' => '2'
+		'url'     => 'rrdcleaner.php',
+		'level'   => '2'
 	),
 	'rrdcleaner.php:actions' => array(
-		'title' => __('Actions'),
+		'title'   => __('Actions'),
 		'mapping' => 'index.php:,rrdcleaner.php:',
-		'url' => 'rrdcleaner.php?action=actions',
-		'level' => '2'
+		'url'     => 'rrdcleaner.php?action=actions',
+		'level'   => '2'
 	),
 	'rrdcleaner.php:restart' => array(
-		'title' => __('List unused Files'),
+		'title'   => __('List unused Files'),
 		'mapping' => 'rrdcleaner.php:',
-		'url' => 'rrdcleaner.php?action=restart',
-		'level' => '2'
+		'url'     => 'rrdcleaner.php?action=restart',
+		'level'   => '2'
 	),
 	'rrdcheck.php:' => array(
-		'title' => __('RRD Check'),
+		'title'   => __('RRD Check'),
 		'mapping' => 'index.php:,utilities.php:',
-		'url' => 'rrdcheck.php',
-		'level' => '2'
+		'url'     => 'rrdcheck.php',
+		'level'   => '2'
 	),
 	'support.php' => array(
-		'title' => __('Technical Support'),
+		'title'   => __('Technical Support'),
 		'mapping' => 'index.php:,support.php:',
-		'url' => 'support.php',
-		'level' => '2'
+		'url'     => 'support.php',
+		'level'   => '2'
 	),
 	'user_log.php:' => array(
-		'title' => __('User Log'),
+		'title'   => __('User Log'),
 		'mapping' => 'index.php:',
-		'url' => 'user_log.php',
-		'level' => '1'
+		'url'     => 'user_log.php',
+		'level'   => '1'
 	),
 	'user_log.php:view' => array(
-		'title' => __('View User Log'),
+		'title'   => __('View User Log'),
 		'mapping' => 'index.php:,user_log.php:',
-		'url' => 'user_log.php',
-		'level' => '2'
+		'url'     => 'user_log.php',
+		'level'   => '2'
 	),
 	'user_log.php:clear' => array(
-		'title' => __('Clear User Log'),
+		'title'   => __('Clear User Log'),
 		'mapping' => 'index.php:,user_log.php:',
-		'url' => 'user_log.php',
-		'level' => '2'
+		'url'     => 'user_log.php',
+		'level'   => '2'
 	),
 	'user_log.php:purge' => array(
-		'title' => __('Purge User Log'),
+		'title'   => __('Purge User Log'),
 		'mapping' => 'index.php:,user_log.php:',
-		'url' => 'user_log.php',
-		'level' => '2'
+		'url'     => 'user_log.php',
+		'level'   => '2'
 	),
 	'utilities.php:' => array(
-		'title' => __('Utilities'),
+		'title'   => __('Utilities'),
 		'mapping' => 'index.php:',
-		'url' => 'utilities.php',
-		'level' => '1'
+		'url'     => 'utilities.php',
+		'level'   => '1'
 	),
 	'utilities.php:view_poller_cache' => array(
-		'title' => __('View Poller Cache'),
+		'title'   => __('View Poller Cache'),
 		'mapping' => 'index.php:,utilities.php:',
-		'url' => 'utilities.php',
-		'level' => '2'
+		'url'     => 'utilities.php',
+		'level'   => '2'
 	),
 	'utilities.php:view_snmp_cache' => array(
-		'title' => __('View Data Query Cache'),
+		'title'   => __('View Data Query Cache'),
 		'mapping' => 'index.php:,utilities.php:',
-		'url' => 'utilities.php',
-		'level' => '2'
+		'url'     => 'utilities.php',
+		'level'   => '2'
 	),
 	'utilities.php:clear_poller_cache' => array(
-		'title' => __('View Poller Cache'),
+		'title'   => __('View Poller Cache'),
 		'mapping' => 'index.php:,utilities.php:',
-		'url' => 'utilities.php',
-		'level' => '2'
+		'url'     => 'utilities.php',
+		'level'   => '2'
 	),
 	'utilities.php:view_logfile' => array(
-		'title' => __('View Log'),
+		'title'   => __('View Log'),
 		'mapping' => 'index.php:,utilities.php:',
-		'url' => 'utilities.php',
-		'level' => '2'
+		'url'     => 'utilities.php',
+		'level'   => '2'
 	),
 	'utilities.php:clear_logfile' => array(
-		'title' => __('Clear Log'),
+		'title'   => __('Clear Log'),
 		'mapping' => 'index.php:,utilities.php:',
-		'url' => 'utilities.php',
-		'level' => '2'
+		'url'     => 'utilities.php',
+		'level'   => '2'
 	),
 	'utilities.php:view_boost_status' => array(
-		'title' => __('Boost Status'),
+		'title'   => __('Boost Status'),
 		'mapping' => 'index.php:,utilities.php:',
-		'url' => 'utilities.php',
-		'level' => '2'
+		'url'     => 'utilities.php',
+		'level'   => '2'
 	),
 	'utilities.php:view_snmpagent_cache' => array(
-		'title' => __('View SNMP Agent Cache'),
+		'title'   => __('View SNMP Agent Cache'),
 		'mapping' => 'index.php:,utilities.php:',
-		'url' => 'utilities.php',
-		'level' => '2'
+		'url'     => 'utilities.php',
+		'level'   => '2'
 	),
 	'utilities.php:view_snmpagent_events' => array(
-		'title' => __('View SNMP Agent Notification Log'),
+		'title'   => __('View SNMP Agent Notification Log'),
 		'mapping' => 'index.php:,utilities.php:',
-		'url' => 'utilities.php',
-		'level' => '2'
+		'url'     => 'utilities.php',
+		'level'   => '2'
 	),
 	'vdef.php:' => array(
-		'title' => __('VDEFs'),
+		'title'   => __('VDEFs'),
 		'mapping' => 'index.php:',
-		'url' => 'vdef.php',
-		'level' => '1'
+		'url'     => 'vdef.php',
+		'level'   => '1'
 	),
 	'vdef.php:actions' => array(
-		'title' => __('Actions'),
+		'title'   => __('Actions'),
 		'mapping' => 'index.php:,vdef.php:',
-		'url' => 'vdef.php',
-		'level' => '2'
+		'url'     => 'vdef.php',
+		'level'   => '2'
 	),
 	'vdef.php:edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,vdef.php:',
-		'url' => 'vdef.php',
-		'level' => '2'
+		'url'     => 'vdef.php',
+		'level'   => '2'
 	),
 	'vdef.php:remove' => array(
-		'title' => __('(Remove)'),
+		'title'   => __('(Remove)'),
 		'mapping' => 'index.php:,vdef.php:',
-		'url' => 'vdef.php',
-		'level' => '2'
+		'url'     => 'vdef.php',
+		'level'   => '2'
 	),
 	'vdef.php:item_edit' => array(
-		'title' => __('VDEF Items'),
+		'title'   => __('VDEF Items'),
 		'mapping' => 'index.php:,vdef.php:,vdef.php:edit',
-		'url' => '',
-		'level' => '3'
+		'url'     => '',
+		'level'   => '3'
 	),
 	'managers.php:' => array(
-		'title' => __('View SNMP Notification Receivers'),
+		'title'   => __('View SNMP Notification Receivers'),
 		'mapping' => 'index.php:,utilities.php:',
-		'url' => 'managers.php',
-		'level' => '2'
+		'url'     => 'managers.php',
+		'level'   => '2'
 	),
 	'managers.php:edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,utilities.php:,managers.php:',
-		'url' => '',
-		'level' => '3'
+		'url'     => '',
+		'level'   => '3'
 	),
 	'settings.php:' => array(
-		'title' => __('Cacti Settings'),
+		'title'   => __('Cacti Settings'),
 		'mapping' => 'index.php:',
-		'url' => 'settings.php',
-		'level' => '1'
+		'url'     => 'settings.php',
+		'level'   => '1'
 	),
 	'link.php:' => array(
-		'title' => __('External Link'),
+		'title'   => __('External Link'),
 		'mapping' => 'index.php:',
-		'url' => 'link.php',
-		'level' => '1'
+		'url'     => 'link.php',
+		'level'   => '1'
 	),
 	'user_admin.php:' => array(
-		'title' => __('Users'),
+		'title'   => __('Users'),
 		'mapping' => 'index.php:',
-		'url' => 'user_admin.php',
-		'level' => '1'
+		'url'     => 'user_admin.php',
+		'level'   => '1'
 	),
 	'user_admin.php:user_edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,user_admin.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'user_admin.php:actions' => array(
-		'title' => __('(Action)'),
+		'title'   => __('(Action)'),
 		'mapping' => 'index.php:,user_admin.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'user_domains.php:' => array(
-		'title' => __('User Domains'),
+		'title'   => __('User Domains'),
 		'mapping' => 'index.php:',
-		'url' => 'user_domains.php',
-		'level' => '1'
+		'url'     => 'user_domains.php',
+		'level'   => '1'
 	),
 	'user_domains.php:edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'user_domains.php:,index.php:',
-		'url' => 'user_domains.php',
-		'level' => '2'
+		'url'     => 'user_domains.php',
+		'level'   => '2'
 	),
 	'user_group_admin.php:' => array(
-		'title' => __('User Groups'),
+		'title'   => __('User Groups'),
 		'mapping' => 'index.php:',
-		'url' => 'user_group_admin.php',
-		'level' => '1'
+		'url'     => 'user_group_admin.php',
+		'level'   => '1'
 	),
 	'user_group_admin.php:edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,user_group_admin.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'user_group_admin.php:actions' => array(
-		'title' => __('(Action)'),
+		'title'   => __('(Action)'),
 		'mapping' => 'index.php:,user_group_admin.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'about.php:' => array(
-		'title' => __('About Cacti'),
+		'title'   => __('About Cacti'),
 		'mapping' => '',
-		'url' => 'about.php',
-		'level' => '1'
+		'url'     => 'about.php',
+		'level'   => '1'
 	),
 	'help.php:' => array(
-		'title' => __('Cacti Help'),
+		'title'   => __('Cacti Help'),
 		'mapping' => '',
-		'url' => 'help.php',
-		'level' => '1'
+		'url'     => 'help.php',
+		'level'   => '1'
 	),
 	'templates_export.php:' => array(
-		'title' => __('Export Templates'),
+		'title'   => __('Export Templates'),
 		'mapping' => 'index.php:',
-		'url' => 'templates_export.php',
-		'level' => '1'
+		'url'     => 'templates_export.php',
+		'level'   => '1'
 	),
 	'templates_export.php:save' => array(
-		'title' => __('Export Results'),
+		'title'   => __('Export Results'),
 		'mapping' => 'index.php:,templates_export.php:',
-		'url' => 'templates_export.php',
-		'level' => '2'
+		'url'     => 'templates_export.php',
+		'level'   => '2'
 	),
 	'templates_import.php:' => array(
-		'title' => __('Import Templates'),
+		'title'   => __('Import Templates'),
 		'mapping' => 'index.php:',
-		'url' => 'templates_import.php',
-		'level' => '1'
+		'url'     => 'templates_import.php',
+		'level'   => '1'
 	),
 	'package_import.php:' => array(
-		'title' => __('Import Packages'),
+		'title'   => __('Import Packages'),
 		'mapping' => 'index.php:',
-		'url' => 'package_import.php',
-		'level' => '1'
+		'url'     => 'package_import.php',
+		'level'   => '1'
 	),
 	'reports_admin.php:' => array(
-		'title' => __('Reporting'),
+		'title'   => __('Reporting'),
 		'mapping' => '',
-		'url' => 'reports_admin.php',
-		'level' => '0'
+		'url'     => 'reports_admin.php',
+		'level'   => '0'
 	),
 	'reports_admin.php:actions' => array(
-		'title' => __('Report Add'),
+		'title'   => __('Report Add'),
 		'mapping' => 'reports_admin.php:',
-		'url' => 'reports_admin.php',
-		'level' => '1'
+		'url'     => 'reports_admin.php',
+		'level'   => '1'
 	),
 	'reports_admin.php:delete' => array(
-		'title' => __('Report Delete'),
+		'title'   => __('Report Delete'),
 		'mapping' => 'reports_admin.php:',
-		'url' => 'reports_admin.php',
-		'level' => '1'
+		'url'     => 'reports_admin.php',
+		'level'   => '1'
 	),
 	'reports_admin.php:edit' => array(
-		'title' => __('Report Edit'),
+		'title'   => __('Report Edit'),
 		'mapping' => 'reports_admin.php:',
-		'url' => 'reports_admin.php?action=edit',
-		'level' => '1'
+		'url'     => 'reports_admin.php?action=edit',
+		'level'   => '1'
 	),
 	'reports_admin.php:item_edit' => array(
-		'title' => __('Report Edit Item'),
+		'title'   => __('Report Edit Item'),
 		'mapping' => 'reports_admin.php:,reports_admin.php:edit',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'reports_user.php:' => array(
-		'title' => __('Reporting'),
+		'title'   => __('Reporting'),
 		'mapping' => '',
-		'url' => 'reports_user.php',
-		'level' => '0'
+		'url'     => 'reports_user.php',
+		'level'   => '0'
 	),
 	'reports_user.php:actions' => array(
-		'title' => __('Report Add'),
+		'title'   => __('Report Add'),
 		'mapping' => 'reports_user.php:',
-		'url' => 'reports_user.php',
-		'level' => '1'
+		'url'     => 'reports_user.php',
+		'level'   => '1'
 	),
 	'reports_user.php:delete' => array(
-		'title' => __('Report Delete'),
+		'title'   => __('Report Delete'),
 		'mapping' => 'reports_user.php:',
-		'url' => 'reports_user.php',
-		'level' => '1'
+		'url'     => 'reports_user.php',
+		'level'   => '1'
 	),
 	'reports_user.php:edit' => array(
-		'title' => __('Report Edit'),
+		'title'   => __('Report Edit'),
 		'mapping' => 'reports_user.php:',
-		'url' => 'reports_user.php?action=edit',
-		'level' => '1'
+		'url'     => 'reports_user.php?action=edit',
+		'level'   => '1'
 	),
 	'reports_user.php:item_edit' => array(
-		'title' => __('Report Edit Item'),
+		'title'   => __('Report Edit Item'),
 		'mapping' => 'reports_user.php:,reports_user.php:edit',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'color_templates.php:' => array(
-		'title' => __('Color Templates'),
+		'title'   => __('Color Templates'),
 		'mapping' => 'index.php:',
-		'url' => 'color_templates.php',
-		'level' => '1'
+		'url'     => 'color_templates.php',
+		'level'   => '1'
 	),
 	'color_templates.php:template_edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,color_templates.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'color_templates.php:actions' => array(
-		'title' => __('Actions'),
+		'title'   => __('Actions'),
 		'mapping' => 'index.php:,color_templates.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'color_templates_items.php:item_edit' => array(
-		'title' => __('Color Template Items'),
+		'title'   => __('Color Template Items'),
 		'mapping' => 'index.php:,color_templates.php:,color_templates.php:template_edit',
-		'url' => '',
-		'level' => '3'
+		'url'     => '',
+		'level'   => '3'
 	),
 	'aggregate_templates.php:' => array(
-		'title' => __('Aggregate Templates'),
+		'title'   => __('Aggregate Templates'),
 		'mapping' => 'index.php:',
-		'url' => 'aggregate_templates.php',
-		'level' => '1'
+		'url'     => 'aggregate_templates.php',
+		'level'   => '1'
 	),
 	'aggregate_templates.php:edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,aggregate_templates.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'aggregate_templates.php:actions'=> array(
-		'title' => __('Actions'),
+		'title'   => __('Actions'),
 		'mapping' => 'index.php:,aggregate_templates.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'aggregate_graphs.php:' => array(
-		'title' => __('Aggregate Graphs'),
+		'title'   => __('Aggregate Graphs'),
 		'mapping' => 'index.php:',
-		'url' => 'aggregate_graphs.php',
-		'level' => '1'
+		'url'     => 'aggregate_graphs.php',
+		'level'   => '1'
 	),
 	'aggregate_graphs.php:edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,aggregate_graphs.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'aggregate_graphs.php:actions' => array(
-		'title' => __('Actions'),
+		'title'   => __('Actions'),
 		'mapping' => 'index.php:,aggregate_graphs.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'aggregate_items.php:' => array(
-		'title' => __('Aggregate Items'),
+		'title'   => __('Aggregate Items'),
 		'mapping' => 'index.php:',
-		'url' => 'aggregate_items.php',
-		'level' => '1'
+		'url'     => 'aggregate_items.php',
+		'level'   => '1'
 	),
 	'aggregate_items.php:item_edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,aggregate_graphs.php:,aggregate_items.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'aggregate_items.php:actions' => array(
-		'title' => __('Actions'),
+		'title'   => __('Actions'),
 		'mapping' => 'index.php:,aggregate_items.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'automation_graph_rules.php:' => array(
-		'title' => __('Graph Rules'),
+		'title'   => __('Graph Rules'),
 		'mapping' => 'index.php:',
-		'url' => 'automation_graph_rules.php',
-		'level' => '1'
+		'url'     => 'automation_graph_rules.php',
+		'level'   => '1'
 	),
 	'automation_graph_rules.php:edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,automation_graph_rules.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'automation_graph_rules.php:actions' => array(
-		'title' => __('Actions'),
+		'title'   => __('Actions'),
 		'mapping' => 'index.php:,automation_graph_rules.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'automation_graph_rules.php:item_edit' => array(
-		'title' => __('Graph Rule Items'),
+		'title'   => __('Graph Rule Items'),
 		'mapping' => 'index.php:,automation_graph_rules.php:,automation_graph_rules.php:edit',
-		'url' => '',
-		'level' => '3'
+		'url'     => '',
+		'level'   => '3'
 	),
 	'automation_tree_rules.php:' => array(
-		'title' => __('Tree Rules'),
+		'title'   => __('Tree Rules'),
 		'mapping' => 'index.php:',
-		'url' => 'automation_tree_rules.php',
-		'level' => '1'
+		'url'     => 'automation_tree_rules.php',
+		'level'   => '1'
 	),
 	'automation_tree_rules.php:edit' => array(
-		'title' => __('(Edit)'),
+		'title'   => __('(Edit)'),
 		'mapping' => 'index.php:,automation_tree_rules.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'automation_tree_rules.php:actions' => array(
-		'title' => __('Actions'),
+		'title'   => __('Actions'),
 		'mapping' => 'index.php:,automation_tree_rules.php:',
-		'url' => '',
-		'level' => '2'
+		'url'     => '',
+		'level'   => '2'
 	),
 	'automation_tree_rules.php:item_edit' => array(
-		'title' => __('Tree Rule Items'),
+		'title'   => __('Tree Rule Items'),
 		'mapping' => 'index.php:,automation_tree_rules.php:,automation_tree_rules.php:edit',
-		'url' => '',
-		'level' => '3'
+		'url'     => '',
+		'level'   => '3'
 	),
 	'changelog.php' => array(
-		'title' => __('Change Log'),
+		'title'   => __('Change Log'),
 		'mapping' => 'index.php:,changelog.php:',
-		'url' => 'changelog.php',
-		'level' => '2'
+		'url'     => 'changelog.php',
+		'level'   => '2'
 	),
 );
 
@@ -2883,42 +2885,42 @@ $days_from_time_settings = array(
 	),
 	'text' => array(
 		DAYS_FORMAT_SHORT => array(
-			'd' => 'd',
-		        'h' => 'h',
-		        'm' => 'm',
-			's' => 's',
+			'd'      => 'd',
+				'h'     => 'h',
+				'm'     => 'm',
+			's'      => 's',
 			'suffix' => ':',
 			'prefix' => '',
 		),
 		DAYS_FORMAT_MEDIUM => array(
-			'd' => __('days'),
-			'h' => __('hrs'),
-			'm' => __('mins'),
-			's' => __('secs'),
+			'd'      => __('days'),
+			'h'      => __('hrs'),
+			'm'      => __('mins'),
+			's'      => __('secs'),
 			'suffix' => ', ',
 			'prefix' => ' ',
 		),
 		DAYS_FORMAT_MEDIUM_LOG => array(
-			'd' => 'days',
-			'h' => 'hrs',
-			'm' => 'mins',
-			's' => 'secs',
+			'd'      => 'days',
+			'h'      => 'hrs',
+			'm'      => 'mins',
+			's'      => 'secs',
 			'suffix' => ', ',
 			'prefix' => ' ',
 		),
 		DAYS_FORMAT_LONG => array(
-			'd' => __('days'),
-			'h' => __('hours'),
-			'm' => __('minutes'),
-			's' => __('seconds'),
+			'd'      => __('days'),
+			'h'      => __('hours'),
+			'm'      => __('minutes'),
+			's'      => __('seconds'),
 			'suffix' => ', ',
 			'prefix' => ' ',
 		),
 		DAYS_FORMAT_LONG_LOG => array(
-			'd' => 'days',
-			'h' => 'hours',
-			'm' => 'minutes',
-			's' => 'seconds',
+			'd'      => 'days',
+			'h'      => 'hours',
+			'm'      => 'minutes',
+			's'      => 'seconds',
 			'suffix' => ', ',
 			'prefix' => ' ',
 		),

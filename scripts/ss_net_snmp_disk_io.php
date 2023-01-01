@@ -26,22 +26,24 @@
 global $config;
 
 if (!isset($called_by_script_server)) {
-	include_once(dirname(__FILE__) . '/../include/cli_check.php');
-	include_once(dirname(__FILE__) . '/../lib/snmp.php');
+	include_once(__DIR__ . '/../include/cli_check.php');
+	include_once(__DIR__ . '/../lib/snmp.php');
 
 	array_shift($_SERVER['argv']);
 
 	print call_user_func_array('ss_net_snmp_disk_io', $_SERVER['argv']);
 } else {
-	include_once(dirname(__FILE__) . '/../lib/snmp.php');
+	include_once(__DIR__ . '/../lib/snmp.php');
 }
 
 function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 	global $environ, $poller_id, $config;
 
-	if (empty($host_id_or_hostname) || $host_id_or_hostname === NULL) {
+	if (empty($host_id_or_hostname) || $host_id_or_hostname === null) {
 		return 'reads:0 writes:0';
-	} elseif (!is_numeric($host_id_or_hostname)) {
+	}
+
+	if (!is_numeric($host_id_or_hostname)) {
 		$host_id = db_fetch_cell_prepared('SELECT id
 			FROM host
 			WHERE hostname = ?',
@@ -53,10 +55,10 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 	$tmpdir = sys_get_temp_dir();
 
 	if ($environ != 'realtime') {
-		$tmpdir = $tmpdir . '/cacti/net-snmp-devio';
+		$tmpdir  = $tmpdir . '/cacti/net-snmp-devio';
 		$tmpfile = $host_id . '_io';
 	} else {
-		$tmpdir = $tmpdir . '/cacti-rt/net-snmp-devio';
+		$tmpdir  = $tmpdir . '/cacti-rt/net-snmp-devio';
 		$tmpfile = $host_id . '_' . $poller_id . '_io_rt';
 	}
 
@@ -69,11 +71,11 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 
 	if (file_exists("$tmpdir/$tmpfile")) {
 		$previous = json_decode(file_get_contents("$tmpdir/$tmpfile"), true);
-		$found = true;
+		$found    = true;
 	}
 
 	$indexes = array();
-	$host = db_fetch_row_prepared('SELECT *
+	$host    = db_fetch_row_prepared('SELECT *
 		FROM host
 		WHERE id = ?',
 		array($host_id));
@@ -116,14 +118,14 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 		SNMP_POLLER,
 		$host['snmp_engine_id']);
 
-	foreach($names as $measure) {
+	foreach ($names as $measure) {
 		if (substr($measure['value'],0,2) == 'sd' || substr($measure['value'],0,4) == 'nvme' || substr($measure['value'],0,2) == 'vm') {
 			if (is_numeric(substr(strrev($measure['value']),0,1))) {
 				continue;
 			}
 
-			$parts = explode('.', $measure['oid']);
-			$indexes[$parts[cacti_sizeof($parts)-1]] = $parts[cacti_sizeof($parts)-1];
+			$parts                                     = explode('.', $measure['oid']);
+			$indexes[$parts[cacti_sizeof($parts) - 1]] = $parts[cacti_sizeof($parts) - 1];
 		}
 	}
 
@@ -147,9 +149,9 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 			SNMP_POLLER,
 			$host['snmp_engine_id']);
 
-		foreach($iops as $measure) {
+		foreach ($iops as $measure) {
 			$parts = explode('.', $measure['oid']);
-			$index = $parts[cacti_sizeof($parts)-1];
+			$index = $parts[cacti_sizeof($parts) - 1];
 
 			if (array_key_exists($index, $indexes)) {
 				if (!isset($previous['uptime'])) {
@@ -185,9 +187,9 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 			SNMP_POLLER,
 			$host['snmp_engine_id']);
 
-		foreach($iops as $measure) {
+		foreach ($iops as $measure) {
 			$parts = explode('.', $measure['oid']);
-			$index = $parts[cacti_sizeof($parts)-1];
+			$index = $parts[cacti_sizeof($parts) - 1];
 
 			if (array_key_exists($index, $indexes)) {
 				if (!isset($previous['uptime'])) {
@@ -216,4 +218,3 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 		return 'reads:0 writes:0';
 	}
 }
-

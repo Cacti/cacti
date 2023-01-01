@@ -2,7 +2,7 @@
 
 error_reporting(0);
 
-include(dirname(__FILE__) . '/../include/cli_check.php');
+include(__DIR__ . '/../include/cli_check.php');
 
 if ($database_password == '') {
 	$sql = `mysqladmin -h $database_hostname -u $database_username status | awk '{print $6 }'`;
@@ -11,4 +11,3 @@ if ($database_password == '') {
 }
 
 print trim($sql);
-

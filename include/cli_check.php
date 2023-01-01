@@ -52,4 +52,3 @@ if ($execution_time < $default_time && $execution_time >= 0) {
 }
 
 include(__DIR__ . '/global.php');
-

@@ -23,12 +23,11 @@
 */
 
 global $config;
-include_once($config['base_path'] . "/lib/data_query.php");
-include_once($config["base_path"] . "/lib/import.php");
-include_once($config["base_path"] . "/lib/poller.php");
+include_once(CACTI_PATH_LIBRARY . '/data_query.php');
+include_once(CACTI_PATH_LIBRARY . '/import.php');
+include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 function upgrade_to_0_8_6() {
-
 	db_install_drop_table('snmp_query_field');
 	db_install_drop_table('data_input_data_cache');
 	db_install_drop_table('data_input_data_fcache');
@@ -89,18 +88,18 @@ function upgrade_to_0_8_6() {
 	db_install_execute("UPDATE graph_tree set sort_type = '1';");
 
 	/* update the sort cache */
-	$host_snmp_query_results = db_install_fetch_assoc("select host_id,snmp_query_id from host_snmp_query");
+	$host_snmp_query_results = db_install_fetch_assoc('select host_id,snmp_query_id from host_snmp_query');
 	$host_snmp_query         = $host_snmp_query_results['data'];
 
 	if (cacti_sizeof($host_snmp_query) > 0) {
 		foreach ($host_snmp_query as $item) {
-			update_data_query_sort_cache($item["host_id"], $item["snmp_query_id"]);
-			update_reindex_cache($item["host_id"], $item["snmp_query_id"]);
+			update_data_query_sort_cache($item['host_id'], $item['snmp_query_id']);
+			update_reindex_cache($item['host_id'], $item['snmp_query_id']);
 		}
 	}
 
 	/* script query data input methods */
-	$xml_data = "<cacti>
+	$xml_data = '<cacti>
 			<hash_030003332111d8b54ac8ce939af87a7eac0c06>
 				<name>Get Script Server Data (Indexed)</name>
 				<type_id>6</type_id>
@@ -144,39 +143,39 @@ function upgrade_to_0_8_6() {
 					</hash_0700035be8fa85472d89c621790b43510b5043>
 				</fields>
 			</hash_030003332111d8b54ac8ce939af87a7eac0c06>
-		</cacti>";
+		</cacti>';
 
 	//import_xml_data($xml_data);
 
 	/* update trees to three characters per tier */
-	$trees_results = db_install_fetch_assoc("select id from graph_tree");
+	$trees_results = db_install_fetch_assoc('select id from graph_tree');
 	$trees         = $trees_results['data'];
 
 	if (cacti_sizeof($trees) > 0) {
 		foreach ($trees as $tree) {
-			$tree_items_results = db_install_fetch_assoc("select
+			$tree_items_results = db_install_fetch_assoc('select
 				graph_tree_items.id,
 				graph_tree_items.order_key
 				from graph_tree_items
 				where graph_tree_items.graph_tree_id=?
-				order by graph_tree_items.order_key",
-				array($tree["id"]));
+				order by graph_tree_items.order_key',
+				array($tree['id']));
 			$tree_items = $tree_items_results['data'];
 
 			if ($tree_items !== false && cacti_sizeof($tree_items) > 0) {
 				$_tier = 0;
 
 				/* only do the upgrade once */
-				if ($tree_items[0]["order_key"] == "001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000") {
+				if ($tree_items[0]['order_key'] == '001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000') {
 					return;
 				}
 
 				foreach ($tree_items as $tree_item) {
-					$tier = tree_tier($tree_item["order_key"], 2);
+					$tier = tree_tier($tree_item['order_key'], 2);
 
 					/* back off */
 					if ($tier < $_tier) {
-						for ($i=$_tier; $i>$tier; $i--) {
+						for ($i=$_tier; $i > $tier; $i--) {
 							$tier_counter[$i] = 0;
 						}
 					}
@@ -188,18 +187,22 @@ function upgrade_to_0_8_6() {
 						$tier_counter[$tier]++;
 					}
 
-					$search_key = preg_replace("/0+$/", "", $tree_item["order_key"]);
-					if (strlen($search_key) % 2 != 0) { $search_key .= "0"; }
+					$search_key = preg_replace('/0+$/', '', $tree_item['order_key']);
 
-					$new_search_key = "";
-					for ($i=1; $i<$tier; $i++) {
+					if (strlen($search_key) % 2 != 0) {
+						$search_key .= '0';
+					}
+
+					$new_search_key = '';
+
+					for ($i=1; $i < $tier; $i++) {
 						$new_search_key .= str_pad(strval($tier_counter[$i]),3,'0',STR_PAD_LEFT);
 					}
 
 					/* build the new order key string */
 					$key = str_pad($new_search_key . str_pad(strval($tier_counter[$tier]),3,'0',STR_PAD_LEFT), 90, '0', STR_PAD_RIGHT);
 
-					db_install_execute("update graph_tree_items set order_key=? where id=?", array($key, $tree_item["id"]));
+					db_install_execute('update graph_tree_items set order_key=? where id=?', array($key, $tree_item['id']));
 
 					$_tier = $tier;
 				}

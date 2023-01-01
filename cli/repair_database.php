@@ -40,11 +40,11 @@ $dynamic = false;
 $local   = false;
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -52,36 +52,46 @@ if (cacti_sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--tables':
 				$rtables = true;
+
 				break;
 			case '--force':
 				$force = true;
+
 				break;
 			case '--dynamic':
 				$dynamic = true;
+
 				break;
 			case '--local':
 				$local = true;
+
 				break;
 			case '-form':
 			case '--form':
 				$form = ' USE_FRM';
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -92,9 +102,9 @@ print '------------------------------------------------------------------------'
 if (!$local && $config['poller_id'] > 1) {
 	db_switch_remote_to_main();
 
-	print "NOTE: Repairing Tables for Main Database" . PHP_EOL;
+	print 'NOTE: Repairing Tables for Main Database' . PHP_EOL;
 } else {
-	print "NOTE: Repairing Tables for Local Database" . PHP_EOL;
+	print 'NOTE: Repairing Tables for Local Database' . PHP_EOL;
 }
 
 $tables = db_fetch_assoc('SHOW TABLES FROM ' . $database_default);
@@ -107,15 +117,15 @@ if ($rtables) {
 	$tables = db_fetch_assoc('SHOW TABLES FROM ' . $database_default);
 
 	if (cacti_sizeof($tables)) {
-		foreach($tables AS $table) {
+		foreach ($tables as $table) {
 			print "Repairing Table '" . $table['Tables_in_' . $database_default] . "'";
 			$status = db_execute('REPAIR TABLE ' . $table['Tables_in_' . $database_default] . ' QUICK' . $form);
-			print ($status == 0 ? ' Failed' : ' Successful') . PHP_EOL;
+			print($status == 0 ? ' Failed' : ' Successful') . PHP_EOL;
 
 			if ($dynamic) {
 				print "Changing Table Row Format to Dynamic '" . $table['Tables_in_' . $database_default] . "'";
 				$status = db_execute('ALTER TABLE ' . $table['Tables_in_' . $database_default] . ' ROW_FORMAT=DYNAMIC');
-				print ($status == 0 ? ' Failed' : ' Successful') . PHP_EOL;
+				print($status == 0 ? ' Failed' : ' Successful') . PHP_EOL;
 			}
 		}
 	}
@@ -142,6 +152,7 @@ db_execute('UPDATE graph_local AS gl
 	AND gl.snmp_query_id = 0');
 
 $fixes = db_affected_rows();
+
 if ($fixes) {
 	printf('NOTE: Found and Repaired %s Problems with Data Query IDs and Indexes' . PHP_EOL, $fixes);
 } else {
@@ -174,6 +185,7 @@ db_execute("UPDATE graph_local AS gl
 	AND gl.snmp_query_graph_id != CAST(did.value AS signed)");
 
 $fixes = db_affected_rows();
+
 if ($fixes) {
 	printf('NOTE: Found and Repaired %s Problems with Data Query Graph IDs' . PHP_EOL, $fixes);
 } else {
@@ -204,7 +216,7 @@ $entries = db_fetch_assoc("SELECT did.*, dif.type_code
 $fixes = 0;
 
 if (cacti_sizeof($entries)) {
-	foreach($entries as $e) {
+	foreach ($entries as $e) {
 		$data_template_data = db_fetch_row_prepared('SELECT *
 			FROM data_template_data
 			WHERE id = ?',
@@ -272,6 +284,7 @@ $rows = db_fetch_cell('SELECT COUNT(*)
 	AND graph_templates_item.gprint_id > 0');
 
 $total_rows += $rows;
+
 if ($rows > 0) {
 	if ($force) {
 		db_execute('DELETE FROM graph_templates_item
@@ -294,6 +307,7 @@ $rows = db_fetch_cell('SELECT COUNT(*)
 	WHERE cdef.id IS NULL');
 
 $total_rows += $rows;
+
 if ($rows > 0) {
 	if ($force) {
 		db_execute('DELETE FROM cdef_items
@@ -315,6 +329,7 @@ $rows = db_fetch_cell('SELECT COUNT(*)
 	WHERE data_input.id IS NULL');
 
 $total_rows += $rows;
+
 if ($rows > 0) {
 	if ($force) {
 		db_execute('DELETE FROM data_template_data
@@ -355,12 +370,12 @@ if (cacti_sizeof($rows)) {
 	$total_graphs = 0;
 
 	if ($force) {
-		foreach($rows as $row) {
+		foreach ($rows as $row) {
 			retemplate_graphs($row['graph_template_id'], 0, true);
 			$total_graphs += $row['graphs'];
 		}
 	} else {
-		foreach($rows as $row) {
+		foreach ($rows as $row) {
 			$total_graphs += $row['graphs'];
 		}
 	}
@@ -380,6 +395,7 @@ $rows = db_fetch_cell('SELECT COUNT(*)
 	WHERE data_input.id IS NULL');
 
 $total_rows += $rows;
+
 if ($rows > 0) {
 	if ($force) {
 		db_execute('DELETE FROM data_input_fields
@@ -405,6 +421,7 @@ $rows = db_fetch_cell('SELECT COUNT(*)
 	WHERE data_template_data.id IS NULL');
 
 $total_rows += $rows;
+
 if ($rows > 0) {
 	if ($force) {
 		db_execute('DELETE FROM data_input_data
@@ -425,6 +442,7 @@ $rows = db_fetch_cell('SELECT COUNT(*)
 	WHERE data_input_fields.id IS NULL');
 
 $total_rows += $rows;
+
 if ($rows > 0) {
 	if ($force) {
 		db_execute('DELETE FROM data_input_data
@@ -453,7 +471,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print PHP_EOL . 'usage: repair_database.php [--dynamic] [--debug] [--force] [--form]' . PHP_EOL . PHP_EOL;

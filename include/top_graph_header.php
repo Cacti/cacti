@@ -41,13 +41,13 @@ if (!$is_request_ajax) {?>
 		<div class='cactiConsolePageHeadBackdrop' style='display:none;'></div>
 	</div>
 	<div id='breadCrumbBar' class='breadCrumbBar'>
-		<div id='navBar' class='navBar'><?php echo draw_navigation_text();?></div>
+		<div id='navBar' class='navBar'><?php print draw_navigation_text();?></div>
 		<div class='scrollBar'></div>
-		<?php if (read_config_option('auth_method') != AUTH_METHOD_NONE) {?><div class='infoBar'><?php echo draw_login_status($using_guest_account);?></div><?php }?>
+		<?php if (read_config_option('auth_method') != AUTH_METHOD_NONE) {?><div class='infoBar'><?php print draw_login_status($using_guest_account);?></div><?php }?>
 	</div>
 	<div class='cactiShadow'></div>
 	<?php } else { ?>
-	<div id='navBar' class='navBar'><?php echo draw_navigation_text();?></div>
+	<div id='navBar' class='navBar'><?php print draw_navigation_text();?></div>
 	<title><?php print $page_title;?></title>
 	<?php } ?>
 	<div id='cactiContent' class='cactiContent'>

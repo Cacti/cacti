@@ -24,14 +24,14 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once($config['base_path'] . '/lib/api_automation_tools.php');
-require_once($config['base_path'] . '/lib/api_data_source.php');
-require_once($config['base_path'] . '/lib/api_device.php');
-require_once($config['base_path'] . '/lib/api_graph.php');
-require_once($config['base_path'] . '/lib/data_query.php');
-require_once($config['base_path'] . '/lib/snmp.php');
-require_once($config['base_path'] . '/lib/poller.php');
-require_once($config['base_path'] . '/lib/utility.php');
+require_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
+require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
+require_once(CACTI_PATH_LIBRARY . '/api_device.php');
+require_once(CACTI_PATH_LIBRARY . '/api_graph.php');
+require_once(CACTI_PATH_LIBRARY . '/data_query.php');
+require_once(CACTI_PATH_LIBRARY . '/snmp.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 /* switch to main database for cli's */
 if ($config['poller_id'] > 1) {
@@ -43,7 +43,6 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-
 	/* setup defaults */
 	$description   = '';
 	$ip            = '';
@@ -54,51 +53,55 @@ if (cacti_sizeof($parms)) {
 	$quiet         = false;
 	$debug         = false;
 
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
 		switch ($arg) {
-		case '-d':
-		case '--debug':
-			display_version();
-			$debug = true;
+			case '-d':
+			case '--debug':
+				display_version();
+				$debug = true;
 
-			break;
-		case '--confirm':
-			$confirm=true;
+				break;
+			case '--confirm':
+				$confirm=true;
 
-			break;
-		case '--description':
-			$description = trim($value);
+				break;
+			case '--description':
+				$description = trim($value);
 
-			break;
-		case '--ip':
-			$ip = trim($value);
+				break;
+			case '--ip':
+				$ip = trim($value);
 
-			break;
-		case '--version':
-		case '-V':
-		case '-v':
-			display_version();
-			exit(0);
-		case '--help':
-		case '-H':
-		case '-h':
-			display_help();
-			exit(0);
-		case '--quiet':
-			$quietMode = true;
+				break;
+			case '--version':
+			case '-V':
+			case '-v':
+				display_version();
 
-			break;
-		default:
-			print "ERROR: Invalid Argument: ($arg)\n\n";
-			display_help();
-			exit(1);
+				exit(0);
+			case '--help':
+			case '-H':
+			case '-h':
+				display_help();
+
+				exit(0);
+			case '--quiet':
+				$quietMode = true;
+
+				break;
+
+			default:
+				print "ERROR: Invalid Argument: ($arg)\n\n";
+				display_help();
+
+				exit(1);
 		}
 	}
 
@@ -115,8 +118,10 @@ if (cacti_sizeof($parms)) {
 		}
 
 		$ids_host = preg_array_key_match("/$description/", $hosts);
+
 		if (cacti_sizeof($ids_host) == 0) {
 			print "ERROR: Unable to find host in the database matching description ($description)\n";
+
 			exit(1);
 		}
 	}
@@ -127,14 +132,17 @@ if (cacti_sizeof($parms)) {
 		}
 
 		$ids_ip = preg_array_key_match("/$ip/", $addresses);
+
 		if (cacti_sizeof($ids_ip) == 0) {
 			print "ERROR: Unable to find host in the database matching IP ($ip)\n";
+
 			exit(1);
 		}
 	}
 
 	if (cacti_sizeof($ids_host) == 0 && cacti_sizeof($ids_ip) == 0) {
 		print "ERROR: No matches found, was IP or Description set properly?\n";
+
 		exit(1);
 	}
 
@@ -142,14 +150,17 @@ if (cacti_sizeof($parms)) {
 	$ids = array_unique($ids, SORT_NUMERIC);
 
 	$ids_sql = implode(',',$ids);
+
 	if ($debug) {
 		print "Finding devices with ids $ids_sql\n\n";
 	}
 
-	$hosts = db_fetch_assoc("SELECT id, hostname, description FROM host WHERE id IN ($ids_sql) ORDER by description");
+	$hosts     = db_fetch_assoc("SELECT id, hostname, description FROM host WHERE id IN ($ids_sql) ORDER by description");
 	$ids_found = array();
+
 	if (!$quiet) {
 		printf("%8.s | %30.s | %30.s\n",'id','host','description');
+
 		foreach ($hosts as $host) {
 			printf("%8.d | %30.s | %30.s\n",$host['id'],$host['hostname'],$host['description']);
 			$ids_found[] = $host['id'];
@@ -159,6 +170,7 @@ if (cacti_sizeof($parms)) {
 
 	if ($confirm) {
 		$ids_confirm = implode(', ',$ids_found);
+
 		if (!$quiet) {
 			print "Removing devices with ids: $ids_confirm\n";
 		}
@@ -166,9 +178,11 @@ if (cacti_sizeof($parms)) {
 
 		if (is_error_message()) {
 			print "ERROR: Failed to remove devices\n";
+
 			exit(1);
 		} else {
 			print "Success - removed device-ids: $ids_confirm\n";
+
 			exit(0);
 		}
 	} else {
@@ -176,6 +190,7 @@ if (cacti_sizeof($parms)) {
 	}
 } else {
 	display_help();
+
 	exit(0);
 }
 
@@ -202,7 +217,7 @@ function display_help() {
 
 function preg_array_key_match($needle, $haystack) {
 	global $debug;
-	$matches = array ();
+	$matches = array();
 
 	if (isset($haystack)) {
 		if (!is_array($haystack)) {
@@ -221,7 +236,7 @@ function preg_array_key_match($needle, $haystack) {
 			print " - Key $str => Value $value\n";
 		}
 
-		if (preg_match ($needle, $str, $m)) {
+		if (preg_match($needle, $str, $m)) {
 			if ($debug) {
 				print "   + $str: $value\n";
 			}

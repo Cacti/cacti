@@ -24,7 +24,7 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once($config['base_path'] . '/lib/api_graph.php');
+require_once(CACTI_PATH_LIBRARY . '/api_graph.php');
 
 ini_set('max_execution_time', '0');
 
@@ -42,11 +42,11 @@ $host_id = '';
 $filter  = '';
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -54,34 +54,42 @@ if (cacti_sizeof($parms)) {
 			case '-id':
 			case '--host-id':
 				$host_id = $value;
+
 				break;
 			case '-s':
 			case '--filter':
 				$filter = $value;
+
 				break;
 			case '--debug':
 			case '-d':
 				$debug = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
 } else {
 	print "ERROR: You must supply input parameters\n\n";
 	display_help();
+
 	exit(1);
 }
 
@@ -96,10 +104,10 @@ if ($filter != '') {
 if (strtolower($host_id) == 'all') {
 	/* Act on all graphs */
 } elseif (substr_count($host_id, ',')) {
-	$hosts = explode(',', $host_id);
+	$hosts    = explode(',', $host_id);
 	$host_str = '';
 
-	foreach($hosts as $host) {
+	foreach ($hosts as $host) {
 		if (is_numeric($host) && $host > 0) {
 			$host_str .= ($host_str != '' ? ', ':'') . $host;
 		}
@@ -113,6 +121,7 @@ if (strtolower($host_id) == 'all') {
 } else {
 	print "ERROR: You must specify either a host_id or 'all' to proceed.\n";
 	display_help();
+
 	exit;
 }
 
@@ -134,12 +143,15 @@ print "WARNING: Do not interrupt this script.  Interrupting during rename can ca
 debug("There are '" . cacti_sizeof($graph_list) . "' Graphs to rename");
 
 $i = 1;
+
 foreach ($graph_list as $graph) {
-	if (!$debug) print ".";
-	debug("Graph Name '" . $graph["title_cache"] . "' starting");
-	api_reapply_suggested_graph_title($graph["local_graph_id"]);
-	update_graph_title_cache($graph["local_graph_id"]);
-	debug("Graph Rename Done for Graph '" . $graph["title_cache"] . "'");
+	if (!$debug) {
+		print '.';
+	}
+	debug("Graph Name '" . $graph['title_cache'] . "' starting");
+	api_reapply_suggested_graph_title($graph['local_graph_id']);
+	update_graph_title_cache($graph['local_graph_id']);
+	debug("Graph Rename Done for Graph '" . $graph['title_cache'] . "'");
 	$i++;
 }
 
@@ -150,7 +162,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print "\nusage: poller_graphs_reapply_names.php --host-id=[id|all][N1,N2,...] [--filter=[string] [--debug]\n\n";
@@ -166,6 +178,6 @@ function debug($message) {
 	global $debug;
 
 	if ($debug) {
-		print("DEBUG: " . $message . "\n");
+		print('DEBUG: ' . $message . "\n");
 	}
 }

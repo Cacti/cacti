@@ -24,8 +24,8 @@
 
 function upgrade_to_1_2_17() {
 	// Correct max values in templates and data sources: GAUGE/ABSOLUTE (1,4)
-	db_install_execute("ALTER TABLE graph_templates_graph ROW_FORMAT=Dynamic, DROP INDEX title_cache, ADD INDEX title_cache(title_cache)");
-	db_install_execute("ALTER TABLE data_template_data ROW_FORMAT=Dynamic, DROP INDEX name_cache, ADD INDEX name_cache(name_cache)");
+	db_install_execute('ALTER TABLE graph_templates_graph ROW_FORMAT=Dynamic, DROP INDEX title_cache, ADD INDEX title_cache(title_cache)');
+	db_install_execute('ALTER TABLE data_template_data ROW_FORMAT=Dynamic, DROP INDEX name_cache, ADD INDEX name_cache(name_cache)');
 
 	// LDAP Search filter widening
 	db_install_execute('ALTER TABLE user_domains_ldap MODIFY COLUMN search_filter VARCHAR(512) NOT NULL default ""');
@@ -53,8 +53,8 @@ function upgrade_to_1_2_17() {
 
 	database_fix_mediumint_columns();
 
-    // Fix any 'Damaged Graph' instances
-    db_install_execute("UPDATE graph_local AS gl
+	// Fix any 'Damaged Graph' instances
+	db_install_execute("UPDATE graph_local AS gl
         INNER JOIN (
             SELECT DISTINCT local_graph_id, task_item_id
             FROM graph_templates_item
@@ -124,12 +124,13 @@ function database_fix_mediumint_columns() {
 	$known_columns['graph_id'] = 'graph_id';
 	$known_columns['data_id']  = 'data_id';
 
-	foreach($tables as $table => $columns) {
+	foreach ($tables as $table => $columns) {
 		$columns = explode(',', $columns);
 
 		$sql = 'ALTER TABLE ' . $table;
-		$i = 0;
-		foreach($columns as $c) {
+		$i   = 0;
+
+		foreach ($columns as $c) {
 			$c = trim($c);
 
 			$attribs = database_get_column_attribs($table, $c);
@@ -169,7 +170,7 @@ function database_fix_mediumint_columns() {
 
 	$other_tables = db_fetch_assoc('SHOW TABLES');
 
-	foreach($other_tables as $t) {
+	foreach ($other_tables as $t) {
 		$table   = $t['Tables_in_' . $database_default];
 		$columns = array();
 
@@ -178,11 +179,11 @@ function database_fix_mediumint_columns() {
 			$sql = 'ALTER TABLE ' . $table;
 
 			$columns = array_rekey(
-				db_fetch_assoc("SHOW COLUMNS FROM " . $table),
-					'Field', array('Type', 'Null', 'Key', 'Default', 'Extra')
+				db_fetch_assoc('SHOW COLUMNS FROM ' . $table),
+				'Field', array('Type', 'Null', 'Key', 'Default', 'Extra')
 			);
 
-			foreach($columns as $field => $attribs) {
+			foreach ($columns as $field => $attribs) {
 				if (array_key_exists($field, $known_columns)) {
 					if (strpos($attribs['Type'], 'mediumint') === false) {
 						if (strpos($attribs['Type'], 'int(10) unsigned') !== false) {

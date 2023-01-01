@@ -87,6 +87,7 @@ switch (get_request_var('action')) {
 		item_edit();
 
 		bottom_footer();
+
 		break;
 	case 'edit':
 		top_header();
@@ -94,13 +95,16 @@ switch (get_request_var('action')) {
 		profile_edit();
 
 		bottom_footer();
+
 		break;
+
 	default:
 		top_header();
 
 		profile();
 
 		bottom_footer();
+
 		break;
 }
 
@@ -147,8 +151,9 @@ function form_save() {
 				if (isset_request_var('step')) {
 					// Validate consolidation functions
 					$cfs = get_nfilter_request_var('consolidation_function_id');
+
 					if (cacti_sizeof($cfs) && !empty($cfs)) {
-						foreach($cfs as $cf) {
+						foreach ($cfs as $cf) {
 							input_validate_input_number($cf, 'consolidation_function_id');
 						}
 
@@ -157,11 +162,11 @@ function form_save() {
 							AND consolidation_function_id NOT IN (' . implode(',', $cfs) . ')', array($profile_id));
 					}
 
-
 					// Validate consolidation functions
 					$cfs = get_nfilter_request_var('consolidation_function_id');
+
 					if (cacti_sizeof($cfs) && !empty($cfs)) {
-						foreach($cfs as $cf) {
+						foreach ($cfs as $cf) {
 							db_execute_prepared('REPLACE INTO data_source_profiles_cf
 								(data_source_profile_id, consolidation_function_id)
 								VALUES (?, ?)', array($profile_id, $cf));
@@ -242,7 +247,7 @@ function form_save() {
 }
 
 /* ------------------------
-    The 'actions' function
+	The 'actions' function
    ------------------------ */
 
 function form_actions() {
@@ -267,14 +272,16 @@ function form_actions() {
 		}
 
 		header('Location: data_source_profiles.php');
+
 		exit;
 	}
 
 	/* setup some variables */
-	$profile_list = ''; $i = 0;
+	$profile_list = '';
+	$i            = 0;
 
 	/* loop through each of the graphs selected on the previous page and get more info about them */
-	foreach ($_POST AS $var => $val) {
+	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1], 'chk[1]');
@@ -308,7 +315,9 @@ function form_actions() {
 				<td class='textArea' class='odd'>
 					<p>" . __n('Click \'Continue\' to duplicate the following Data Source Profile. You can optionally change the title format for the new Data Source Profile', 'Click \'Continue\' to duplicate following Data Source Profiles. You can optionally change the title format for the new Data Source Profiles.', cacti_sizeof($profile_array)) . "</p>
 					<div class='itemlist'><ul>$profile_list</ul></div>
-					<p>" . __('Title Format:') . "<br>"; form_text_box('title_format', '<profile_title> (1)', '', '255', '30', 'text'); print "</p>
+					<p>" . __('Title Format:') . '<br>';
+			form_text_box('title_format', '<profile_title> (1)', '', '255', '30', 'text');
+			print "</p>
 				</td>
 			</tr>\n";
 
@@ -317,6 +326,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: data_source_profiles.php');
+
 		exit;
 	}
 
@@ -337,7 +347,7 @@ function form_actions() {
 }
 
 /* --------------------------
-    CDEF Item Functions
+	CDEF Item Functions
    -------------------------- */
 
 function duplicate_data_source_profile($source_profile, $title_format) {
@@ -345,7 +355,7 @@ function duplicate_data_source_profile($source_profile, $title_format) {
 		$source_profile = array($source_profile);
 	}
 
-	foreach($source_profile as $id) {
+	foreach ($source_profile as $id) {
 		$profile = db_fetch_row_prepared('SELECT *
 			FROM data_source_profiles
 			WHERE id = ?',
@@ -356,10 +366,12 @@ function duplicate_data_source_profile($source_profile, $title_format) {
 
 			$save['id']   = 0;
 
-			foreach($profile as $column => $value) {
+			foreach ($profile as $column => $value) {
 				if ($column == 'id') {
 					continue;
-				} elseif ($column == 'hash') {
+				}
+
+				if ($column == 'hash') {
 					$save['hash'] = get_hash_data_source_profile(0);
 				} elseif ($column == 'name') {
 					$save['name'] = str_replace('<profile_title>', $value, $title_format);
@@ -467,7 +479,6 @@ function profile_item_remove() {
 	db_execute_prepared('DELETE FROM data_source_profiles_rra WHERE id = ?', array(get_request_var('id')));
 }
 
-
 function item_edit() {
 	global $fields_profile_rra_edit, $aggregation_levels;
 
@@ -496,7 +507,7 @@ function item_edit() {
 		if ($rra['steps'] == '1') {
 			$fields_profile_rra_edit['steps']['array'] = array('1' => __('Each Insert is New Row'));
 		} else {
-			foreach($aggregation_levels as $interval => $name) {
+			foreach ($aggregation_levels as $interval => $name) {
 				if ($interval <= $sampling_interval) {
 					unset($aggregation_levels[$interval]);
 				}
@@ -520,7 +531,7 @@ function item_edit() {
 				WHERE data_source_profile_id = ?',
 				array($sampling_interval, get_request_var('profile_id')));
 
-			foreach($aggregation_levels as $interval => $name) {
+			foreach ($aggregation_levels as $interval => $name) {
 				if ($interval <= $max) {
 					unset($aggregation_levels[$interval]);
 				}
@@ -556,7 +567,7 @@ function item_edit() {
 
 	var profile_id=<?php print get_request_var('profile_id') != '' ? get_request_var('profile_id'):0;?>;
 	var rows_to = false;
-	var readonly = <?php print ($readonly ? 'true':'false');?>;
+	var readonly = <?php print($readonly ? 'true':'false');?>;
 
 	$(function() {
 		get_span();
@@ -610,7 +621,7 @@ function item_edit() {
 }
 
 /* ---------------------
-    Profile Functions
+	Profile Functions
    --------------------- */
 
 function profile_edit() {
@@ -652,9 +663,9 @@ function profile_edit() {
 
 	if (!isempty_request_var('id')) {
 		if (!$readonly) {
-			html_start_box( __('Data Source Profile RRAs (press save to update timespans)'), '100%', '', '3', 'center', 'data_source_profiles.php?action=item_edit&profile_id=' . $profile['id']);
+			html_start_box(__('Data Source Profile RRAs (press save to update timespans)'), '100%', '', '3', 'center', 'data_source_profiles.php?action=item_edit&profile_id=' . $profile['id']);
 		} else {
-			html_start_box( __('Data Source Profile RRAs (Read Only)'), '100%', '', '3', 'center', '');
+			html_start_box(__('Data Source Profile RRAs (Read Only)'), '100%', '', '3', 'center', '');
 		}
 
 		$display_text = array(
@@ -674,9 +685,11 @@ function profile_edit() {
 			array(get_request_var('id')));
 
 		$i = 0;
+
 		if (cacti_sizeof($profile_rras)) {
 			foreach ($profile_rras as $rra) {
-				form_alternate_row('line' . $rra['id']);$i++;?>
+				form_alternate_row('line' . $rra['id']);
+				$i++;?>
 				<td>
 					<?php print "<a class='linkEditMain' href='" . html_escape('data_source_profiles.php?action=item_edit&id=' . $rra['id'] . '&profile_id=' . $rra['data_source_profile_id']) . "'>" . html_escape($rra['name']) . '</a>';?>
 				</td>
@@ -693,7 +706,7 @@ function profile_edit() {
 					<em><?php print $rra['rows'];?></em>
 				</td>
 				<td class='right'>
-					<?php print (!$readonly ? "<a id='" . $profile['id'] . '_' . $rra['id'] . "' class='delete deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='#'></a>":"");?>
+					<?php print(!$readonly ? "<a id='" . $profile['id'] . '_' . $rra['id'] . "' class='delete deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='#'></a>":'');?>
 				</td>
 				<?php
 				form_end_row();
@@ -816,7 +829,9 @@ function get_size($id, $type, $cfs = '', $rows = 1) {
 			array($id));
 
 		return __('%s KBytes per Data Sources and %s Bytes for the Header', number_format_i18n(($rows * $row * $cfs + $dsheader) / 1000), $header);
-	} elseif ($rows > 0) {
+	}
+
+	if ($rows > 0) {
 		$cfs  = db_fetch_cell_prepared('SELECT COUNT(*)
 			FROM data_source_profiles_cf
 			WHERE data_source_profile_id = ?',
@@ -836,44 +851,44 @@ function get_span($duration) {
 	$output = '';
 
 	if ($duration > 31536000) {
-		if (floor($duration/31536000) > 0) {
-			$years     = floor($duration/31536000);
-			$years	   = ( $years == 1 ) ? __('1 Year') : __('%d Years', $years);
+		if (floor($duration / 31536000) > 0) {
+			$years     = floor($duration / 31536000);
+			$years	    = ($years == 1) ? __('1 Year') : __('%d Years', $years);
 			$duration %= 31536000;
 			$output    = $years;
 		}
 	}
 
 	if ($duration > 2592000) {
-		if (floor($duration/2592000)) {
-			$months    = floor($duration/2592000);
-			$months    = ( $months == 1 ) ? __('%d Month', 1) : __('%d Months', $months);
+		if (floor($duration / 2592000)) {
+			$months    = floor($duration / 2592000);
+			$months    = ($months == 1) ? __('%d Month', 1) : __('%d Months', $months);
 			$duration %= 2592000;
-			$output   .= ($output != '' ? ', ' : '') . $months;
+			$output .= ($output != '' ? ', ' : '') . $months;
 		}
 	}
 
 	if ($duration > 604800) {
-		if (floor($duration/604800) > 0) {
-			$weeks     = floor($duration/604800);
-			$weeks     = ( $weeks == 1 ) ? __('%d Week', 1) : __('%d Weeks', $weeks);
+		if (floor($duration / 604800) > 0) {
+			$weeks     = floor($duration / 604800);
+			$weeks     = ($weeks == 1) ? __('%d Week', 1) : __('%d Weeks', $weeks);
 			$duration %= 604800;
-			$output   .= ($output != '' ? ', ' : '') . $weeks;
+			$output .= ($output != '' ? ', ' : '') . $weeks;
 		}
 	}
 
 	if ($duration > 86400) {
-		if (floor($duration/86400) > 0) {
-			$days      = floor($duration/86400);
-			$days      = ( $days == 1 ) ? __('%d Day', 1) : __('%d Days', $days);
+		if (floor($duration / 86400) > 0) {
+			$days      = floor($duration / 86400);
+			$days      = ($days == 1) ? __('%d Day', 1) : __('%d Days', $days);
 			$duration %= 86400;
-			$output   .= ($output != '' ? ', ' : '') . $days;
+			$output .= ($output != '' ? ', ' : '') . $days;
 		}
 	}
 
-	if (floor($duration/3600) > 0) {
-		$hours   = floor($duration/3600);
-		$hours   = ( $hours == 1 ) ? __('1 Hour') : __('%d Hours', $hours);
+	if (floor($duration / 3600) > 0) {
+		$hours   = floor($duration / 3600);
+		$hours   = ($hours == 1) ? __('1 Hour') : __('%d Hours', $hours);
 		$output .= ($output != '' ? ', ' : '') . $hours;
 	}
 
@@ -886,31 +901,31 @@ function profile() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'step',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'has_data' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => read_config_option('default_has') == 'on' ? 'true':'false'
@@ -926,7 +941,7 @@ function profile() {
 		$rows = get_request_var('rows');
 	}
 
-	html_start_box( __('Data Source Profiles'), '100%', '', '3', 'center', 'data_source_profiles.php?action=edit');
+	html_start_box(__('Data Source Profiles'), '100%', '', '3', 'center', 'data_source_profiles.php?action=edit');
 
 	?>
 	<tr class='even'>
@@ -945,19 +960,23 @@ function profile() {
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
+							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'";
+
+									if (get_request_var('rows') == $key) {
+										print ' selected';
+									} print '>' . html_escape($value) . "</option>\n";
 								}
 							}
-							?>
+	?>
 						</select>
 					</td>
 					<td>
 						<span>
-							<input type='checkbox' id='has_data' <?php print (get_request_var('has_data') == 'true' ? 'checked':'');?>>
+							<input type='checkbox' id='has_data' <?php print(get_request_var('has_data') == 'true' ? 'checked':'');?>>
 							<label for='has_data'><?php print __('Has Data Sources');?></label>
 						</span>
 					</td>
@@ -1034,7 +1053,7 @@ function profile() {
 		) AS rs");
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$profile_list = db_fetch_assoc("SELECT rs.*,
 		SUM(CASE WHEN local_data_id=0 THEN 1 ELSE 0 END) AS templates,
@@ -1055,48 +1074,48 @@ function profile() {
 	$display_text = array(
 		'name' => array(
 			'display' => __('Data Source Profile Name'),
-			'align' => 'left',
-			'sort' => 'ASC',
-			'tip' => __('The name of this CDEF.')
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The name of this CDEF.')
 		),
 		'nosort00' => array(
 			'display' => __('Default'),
-			'align' => 'right',
-			'tip' => __('Is this the default Profile for all new Data Templates?')
+			'align'   => 'right',
+			'tip'     => __('Is this the default Profile for all new Data Templates?')
 		),
 		'nosort01' => array(
 			'display' => __('Deletable'),
-			'align' => 'right',
-			'tip' => __('Profiles that are in use cannot be Deleted. In use is defined as being referenced by a Data Source or a Data Template.')
+			'align'   => 'right',
+			'tip'     => __('Profiles that are in use cannot be Deleted. In use is defined as being referenced by a Data Source or a Data Template.')
 		),
 		'nosort02' => array(
 			'display' => __('Read Only'),
-			'align' => 'right',
-			'tip' => __('Profiles that are in use by Data Sources become read only for now.')
+			'align'   => 'right',
+			'tip'     => __('Profiles that are in use by Data Sources become read only for now.')
 		),
 		'step' => array(
 			'display' => __('Poller Interval'),
-			'align' => 'right',
-			'sort' => 'ASC',
-			'tip' => __('The Polling Frequency for the Profile')
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The Polling Frequency for the Profile')
 		),
 		'heartbeat' => array(
 			'display' => __('Heartbeat'),
-			'align' => 'right',
-			'sort' => 'ASC',
-			'tip' => __('The Amount of Time, in seconds, without good data before Data is stored as Unknown')
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The Amount of Time, in seconds, without good data before Data is stored as Unknown')
 		),
 		'data_sources' => array(
 			'display' => __('Data Sources Using'),
-			'align' => 'right',
-			'sort' => 'DESC',
-			'tip' => __('The number of Data Sources using this Profile.')
+			'align'   => 'right',
+			'sort'    => 'DESC',
+			'tip'     => __('The number of Data Sources using this Profile.')
 		),
 		'templates' => array(
 			'display' => __('Templates Using'),
-			'align' => 'right',
-			'sort' => 'DESC',
-			'tip' => __('The number of Data Templates using this Profile.')
+			'align'   => 'right',
+			'sort'    => 'DESC',
+			'tip'     => __('The number of Data Templates using this Profile.')
 		)
 	);
 
@@ -1111,6 +1130,7 @@ function profile() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
+
 	if (cacti_sizeof($profile_list)) {
 		foreach ($profile_list as $profile) {
 			if ($profile['data_sources'] == 0 && $profile['templates'] == 0) {
@@ -1126,13 +1146,13 @@ function profile() {
 			}
 
 			if ($profile['data_sources'] > 0) {
-				$ds = '<a class="linkEditMain" href="' . $config['url_path'] . 'data_sources.php?reset=true&profile=' . $profile['id'] . '">' . number_format_i18n($profile['data_sources'], '-1') . '</a>';
+				$ds = '<a class="linkEditMain" href="' . CACTI_PATH_URL . 'data_sources.php?reset=true&profile=' . $profile['id'] . '">' . number_format_i18n($profile['data_sources'], '-1') . '</a>';
 			} else {
 				$ds = number_format_i18n($profile['data_sources'], '-1');
 			}
 
 			if ($profile['templates'] > 0) {
-				$dt = '<a class="linkEditMain" href="' . $config['url_path'] . 'data_templates.php?reset=true&profile=' . $profile['id'] . '">' . number_format_i18n($profile['templates'], '-1') . '</a>';
+				$dt = '<a class="linkEditMain" href="' . CACTI_PATH_URL . 'data_templates.php?reset=true&profile=' . $profile['id'] . '">' . number_format_i18n($profile['templates'], '-1') . '</a>';
 			} else {
 				$dt = number_format_i18n($profile['templates'], '-1');
 			}
@@ -1150,7 +1170,7 @@ function profile() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Data Source Profiles Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Data Source Profiles Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
@@ -1164,4 +1184,3 @@ function profile() {
 
 	form_end();
 }
-

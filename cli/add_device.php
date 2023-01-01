@@ -24,16 +24,16 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once($config['base_path'] . '/lib/api_automation_tools.php');
-require_once($config['base_path'] . '/lib/api_device.php');
-require_once($config['base_path'] . '/lib/api_data_source.php');
-require_once($config['base_path'] . '/lib/api_graph.php');
-require_once($config['base_path'] . '/lib/api_tree.php');
-require_once($config['base_path'] . '/lib/data_query.php');
-require_once($config['base_path'] . '/lib/poller.php');
-require_once($config['base_path'] . '/lib/snmp.php');
-require_once($config['base_path'] . '/lib/template.php');
-require_once($config['base_path'] . '/lib/utility.php');
+require_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
+require_once(CACTI_PATH_LIBRARY . '/api_device.php');
+require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
+require_once(CACTI_PATH_LIBRARY . '/api_graph.php');
+require_once(CACTI_PATH_LIBRARY . '/api_tree.php');
+require_once(CACTI_PATH_LIBRARY . '/data_query.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/snmp.php');
+require_once(CACTI_PATH_LIBRARY . '/template.php');
+require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 /* switch to main database for cli's */
 if ($config['poller_id'] > 1) {
@@ -77,247 +77,262 @@ if (cacti_sizeof($parms)) {
 	$max_oids       = read_config_option('max_get_size');
 	$bulk_walk_size = -1;
 	$proxy          = false;
-	$device_threads = read_config_option('device_threads');;
+	$device_threads = read_config_option('device_threads');
 
 	$displayHostTemplates = false;
 	$displayCommunities   = false;
 	$quietMode            = false;
 
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
 		switch ($arg) {
-		case '-d':
-			$debug = true;
+			case '-d':
+				$debug = true;
 
-			break;
-		case '--description':
-			$description = trim($value);
+				break;
+			case '--description':
+				$description = trim($value);
 
-			break;
-		case '--ip':
-			$ip = trim($value);
+				break;
+			case '--ip':
+				$ip = trim($value);
 
-			break;
-		case '--template':
-			$template_id = $value;
+				break;
+			case '--template':
+				$template_id = $value;
 
-			break;
-		case '--community':
-			$community = trim($value);
+				break;
+			case '--community':
+				$community = trim($value);
 
-			break;
-		case '--version':
-			if (cacti_sizeof($parms) == 1) {
+				break;
+			case '--version':
+				if (cacti_sizeof($parms) == 1) {
+					display_version();
+
+					exit(0);
+				} else {
+					$snmp_ver = trim($value);
+				}
+
+				break;
+			case '--notes':
+				$notes = trim($value);
+
+				break;
+			case '--location':
+				$location = trim($value);
+
+				break;
+			case '--site':
+				$site_id = trim($value);
+
+				break;
+			case '--poller':
+				$poller_id = trim($value);
+
+				break;
+			case '--disable':
+				$disable  = $value;
+
+				break;
+			case '--external-id':
+				$external_id  = $value;
+
+				break;
+			case '--username':
+				$snmp_username = trim($value);
+
+				break;
+			case '--password':
+				$snmp_password = trim($value);
+
+				break;
+			case '--authproto':
+				$snmp_auth_protocol = trim($value);
+
+				break;
+			case '--privproto':
+				$snmp_priv_protocol = trim($value);
+
+				break;
+			case '--privpass':
+				$snmp_priv_passphrase = trim($value);
+
+				break;
+			case '--context':
+				$snmp_context = trim($value);
+
+				break;
+			case '--engineid':
+				$snmp_engine_id = trim($value);
+
+				break;
+			case '--port':
+				$snmp_port = $value;
+
+				break;
+			case '--proxy':
+				$proxy = true;
+
+				break;
+			case '--timeout':
+				$snmp_timeout = $value;
+
+				break;
+			case '--ping_timeout':
+				$ping_timeout = $value;
+
+				break;
+			case '--threads':
+				$device_threads = $value;
+
+				break;
+			case '--avail':
+				switch($value) {
+					case 'none':
+						$avail = '0'; /* tried to use AVAIL_NONE, but then preg_match fails on validation, sigh */
+
+						break;
+					case 'ping':
+						$avail = AVAIL_PING;
+
+						break;
+					case 'snmp':
+						$avail = AVAIL_SNMP;
+
+						break;
+					case 'pingsnmp':
+						$avail = AVAIL_SNMP_AND_PING;
+
+						break;
+					case 'pingorsnmp':
+						$avail = AVAIL_SNMP_OR_PING;
+
+						break;
+
+					default:
+						print "ERROR: Invalid Availability Parameter: ($value)\n\n";
+						display_help();
+
+						exit(1);
+				}
+
+				break;
+			case '--ping_method':
+				switch(strtolower($value)) {
+					case 'icmp':
+						$ping_method = PING_ICMP;
+
+						break;
+					case 'tcp':
+						$ping_method = PING_TCP;
+
+						break;
+					case 'udp':
+						$ping_method = PING_UDP;
+
+						break;
+
+					default:
+						print "ERROR: Invalid Ping Method: ($value)\n\n";
+						display_help();
+
+						exit(1);
+				}
+
+				break;
+			case '--ping_port':
+				if (is_numeric($value) && ($value > 0)) {
+					$ping_port = $value;
+				} else {
+					print "ERROR: Invalid Ping Port: ($value)\n\n";
+					display_help();
+
+					exit(1);
+				}
+
+				break;
+			case '--ping_retries':
+				if (is_numeric($value) && ($value > 0)) {
+					$ping_retries = $value;
+				} else {
+					print "ERROR: Invalid Ping Retries: ($value)\n\n";
+					display_help();
+
+					exit(1);
+				}
+
+				break;
+			case '--max_oids':
+				if (is_numeric($value) && ($value > 0)) {
+					$max_oids = $value;
+				} else {
+					print "ERROR: Invalid Max OIDS: ($value)\n\n";
+					display_help();
+
+					exit(1);
+				}
+
+				break;
+			case '--bulk_walk':
+				if (is_numeric($value) && $value >= -1 && $value != 0) {
+					$bulk_walk_size = $value;
+				} else {
+					print "ERROR: Invalid Bulk Walk Size: ($value)\n\n";
+					display_help();
+
+					exit(1);
+				}
+
+			case '--version':
+			case '-V':
+			case '-v':
 				display_version();
+
 				exit(0);
-			} else {
-				$snmp_ver = trim($value);
-			}
+			case '--help':
+			case '-H':
+			case '-h':
+				display_help();
 
-			break;
-		case '--notes':
-			$notes = trim($value);
-
-			break;
-		case '--location':
-			$location = trim($value);
-
-			break;
-		case '--site':
-			$site_id = trim($value);
-
-			break;
-		case '--poller':
-			$poller_id = trim($value);
-
-			break;
-		case '--disable':
-			$disable  = $value;
-
-			break;
-		case '--external-id':
-			$external_id  = $value;
-
-			break;
-		case '--username':
-			$snmp_username = trim($value);
-
-			break;
-		case '--password':
-			$snmp_password = trim($value);
-
-			break;
-		case '--authproto':
-			$snmp_auth_protocol = trim($value);
-
-			break;
-		case '--privproto':
-			$snmp_priv_protocol = trim($value);
-
-			break;
-		case '--privpass':
-			$snmp_priv_passphrase = trim($value);
-
-			break;
-		case '--context':
-			$snmp_context = trim($value);
-
-			break;
-		case '--engineid':
-			$snmp_engine_id = trim($value);
-
-			break;
-		case '--port':
-			$snmp_port = $value;
-
-			break;
-		case '--proxy':
-			$proxy = true;
-
-			break;
-		case '--timeout':
-			$snmp_timeout = $value;
-
-			break;
-		case '--ping_timeout':
-			$ping_timeout = $value;
-
-			break;
-		case '--threads':
-			$device_threads = $value;
-
-			break;
-		case '--avail':
-			switch($value) {
-			case 'none':
-				$avail = '0'; /* tried to use AVAIL_NONE, but then preg_match fails on validation, sigh */
+				exit(0);
+			case '--list-communities':
+				$displayCommunities = true;
 
 				break;
-			case 'ping':
-				$avail = AVAIL_PING;
+			case '--list-host-templates':
+				$displayHostTemplates = true;
 
 				break;
-			case 'snmp':
-				$avail = AVAIL_SNMP;
+			case '--quiet':
+				$quietMode = true;
 
 				break;
-			case 'pingsnmp':
-				$avail = AVAIL_SNMP_AND_PING;
 
-				break;
-			case 'pingorsnmp':
-				$avail = AVAIL_SNMP_OR_PING;
-
-				break;
 			default:
-				print "ERROR: Invalid Availability Parameter: ($value)\n\n";
+				print "ERROR: Invalid Argument: ($arg)\n\n";
 				display_help();
+
 				exit(1);
-			}
-
-			break;
-		case '--ping_method':
-			switch(strtolower($value)) {
-			case 'icmp':
-				$ping_method = PING_ICMP;
-
-				break;
-			case 'tcp':
-				$ping_method = PING_TCP;
-
-				break;
-			case 'udp':
-				$ping_method = PING_UDP;
-
-				break;
-			default:
-				print "ERROR: Invalid Ping Method: ($value)\n\n";
-				display_help();
-				exit(1);
-			}
-
-			break;
-		case '--ping_port':
-			if (is_numeric($value) && ($value > 0)) {
-				$ping_port = $value;
-			} else {
-				print "ERROR: Invalid Ping Port: ($value)\n\n";
-				display_help();
-				exit(1);
-			}
-
-			break;
-		case '--ping_retries':
-			if (is_numeric($value) && ($value > 0)) {
-				$ping_retries = $value;
-			} else {
-				print "ERROR: Invalid Ping Retries: ($value)\n\n";
-				display_help();
-				exit(1);
-			}
-
-			break;
-		case '--max_oids':
-			if (is_numeric($value) && ($value > 0)) {
-				$max_oids = $value;
-			} else {
-				print "ERROR: Invalid Max OIDS: ($value)\n\n";
-				display_help();
-				exit(1);
-			}
-
-			break;
-		case '--bulk_walk':
-			if (is_numeric($value) && $value >= -1 && $value != 0) {
-				$bulk_walk_size = $value;
-			} else {
-				print "ERROR: Invalid Bulk Walk Size: ($value)\n\n";
-				display_help();
-				exit(1);
-			}
-
-		case '--version':
-		case '-V':
-		case '-v':
-			display_version();
-			exit(0);
-		case '--help':
-		case '-H':
-		case '-h':
-			display_help();
-			exit(0);
-		case '--list-communities':
-			$displayCommunities = true;
-
-			break;
-		case '--list-host-templates':
-			$displayHostTemplates = true;
-
-			break;
-		case '--quiet':
-			$quietMode = true;
-
-			break;
-		default:
-			print "ERROR: Invalid Argument: ($arg)\n\n";
-			display_help();
-			exit(1);
 		}
 	}
 
 	if ($displayCommunities) {
 		displayCommunities($quietMode);
+
 		exit(0);
 	}
 
 	if ($displayHostTemplates) {
 		displayHostTemplates(getHostTemplates(), $quietMode);
+
 		exit(0);
 	}
 
@@ -329,6 +344,7 @@ if (cacti_sizeof($parms)) {
 	/* process templates */
 	if (!isset($host_templates[$template_id])) {
 		print "ERROR: Unknown template id ($template_id)\n";
+
 		exit(1);
 	}
 
@@ -336,21 +352,25 @@ if (cacti_sizeof($parms)) {
 	if (isset($hosts[$description])) {
 		db_execute("UPDATE host SET hostname='$ip' WHERE deleted = '' AND id=" . $hosts[$description]);
 		print "This host already exists in the database ($description) device-id: (" . $hosts[$description] . ")\n";
+
 		exit(1);
 	}
 
 	if ($description == '') {
 		print "ERROR: You must supply a description for all hosts!\n";
+
 		exit(1);
 	}
 
 	if ($ip == '') {
 		print "ERROR: You must supply an IP address for all hosts!\n";
+
 		exit(1);
 	}
 
 	if ($snmp_ver > 3 || $snmp_ver < 0 || !is_numeric($snmp_ver)) {
 		print "ERROR: The snmp version must be between 0 and 3.  If you did not specify one, goto Configuration > Settings > Device Defaults and resave your defaults.\n";
+
 		exit(1);
 	}
 
@@ -368,6 +388,7 @@ if (cacti_sizeof($parms)) {
 					// assuming an snmp-proxy
 				} else {
 					print "ERROR: This IP ($id) already exists in the database and --proxy was not specified.\n";
+
 					exit(1);
 				}
 			} else {
@@ -388,6 +409,7 @@ if (cacti_sizeof($parms)) {
 					// assuming a proxy
 				} else {
 					print "ERROR: This IP ($id) already exists in the database and --proxy was not specified.\n";
+
 					exit(1);
 				}
 			} else {
@@ -400,32 +422,40 @@ if (cacti_sizeof($parms)) {
 		if ($fail) {
 			db_execute("UPDATE host SET description = '$description' WHERE deleted = '' AND id = " . $addresses[$ip]);
 			print "ERROR: This IP already exists in the database ($ip) device-id: (" . $addresses[$ip] . ")\n";
+
 			exit(1);
 		}
 	}
 
 	if (!is_numeric($site_id) || $site_id < 0) {
 		print "ERROR: You have specified an invalid site id!\n";
+
 		exit(1);
 	}
 
 	if (!is_numeric($poller_id) || $poller_id < 0) {
 		print "ERROR: You have specified an invalid poller id!\n";
+
 		exit(1);
 	}
 
 	/* process snmp information */
 	if ($snmp_ver < 0 || $snmp_ver > 3) {
 		print "ERROR: Invalid snmp version ($snmp_ver)\n";
- 		exit(1);
-	} elseif ($snmp_ver > 0) {
+
+		exit(1);
+	}
+
+	if ($snmp_ver > 0) {
 		if ($snmp_port <= 1 || $snmp_port > 65534) {
 			print "ERROR: Invalid port.  Valid values are from 1-65534\n";
+
 			exit(1);
 		}
 
 		if ($snmp_timeout <= 0 || $snmp_timeout > 20000) {
 			print "ERROR: Invalid timeout.  Valid values are from 1 to 20000\n";
+
 			exit(1);
 		}
 	}
@@ -434,8 +464,9 @@ if (cacti_sizeof($parms)) {
 	if ($snmp_ver < 3) {
 		/* snmp community can be blank */
 	} else {
-		if ($snmp_username == "" || $snmp_password == "") {
+		if ($snmp_username == '' || $snmp_password == '') {
 			print "ERROR: When using snmpv3 you must supply an username and password\n";
+
 			exit(1);
 		}
 	}
@@ -443,13 +474,14 @@ if (cacti_sizeof($parms)) {
 	/* validate the disable state */
 	if ($disable != 1 && $disable != 0) {
 		print "ERROR: Invalid disable flag ($disable)\n";
+
 		exit(1);
 	}
 
 	if ($disable == 0) {
-		$disable = "";
+		$disable = '';
 	} else {
-		$disable = "on";
+		$disable = 'on';
 	}
 
 	print "Adding $description ($ip) as \"" . $host_templates[$template_id] . "\" using SNMP v$snmp_ver with community \"$community\"\n";
@@ -464,13 +496,16 @@ if (cacti_sizeof($parms)) {
 
 	if (is_error_message()) {
 		print "ERROR: Failed to add this device\n";
+
 		exit(1);
 	} else {
 		print "Success - new device-id: ($host_id)\n";
+
 		exit(0);
 	}
 } else {
 	display_help();
+
 	exit(0);
 }
 

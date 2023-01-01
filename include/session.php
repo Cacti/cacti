@@ -149,4 +149,3 @@ session_set_save_handler(
 );
 
 register_shutdown_function('session_write_close');
-

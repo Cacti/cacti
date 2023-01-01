@@ -50,26 +50,32 @@ switch (get_request_var('action')) {
 		automation_movedown();
 
 		header('Location: automation_templates.php');
+
 		break;
 	case 'moveup':
 		automation_moveup();
 
 		header('Location: automation_templates.php');
+
 		break;
 	case 'remove':
 		automation_remove();
 
 		header('Location: automation_templates.php');
+
 		break;
 	case 'edit':
 		top_header();
 		template_edit();
 		bottom_footer();
+
 		break;
+
 	default:
 		top_header();
 		template();
 		bottom_footer();
+
 		break;
 }
 
@@ -82,7 +88,7 @@ function automation_template_dnd() {
 		$aids     = get_nfilter_request_var('template_ids');
 		$sequence = 1;
 
-		foreach($aids as $id) {
+		foreach ($aids as $id) {
 			$id = str_replace('line', '', $id);
 			input_validate_input_number($id, 'id');
 
@@ -96,6 +102,7 @@ function automation_template_dnd() {
 	}
 
 	header('Location: automation_templates.php');
+
 	exit;
 }
 
@@ -110,7 +117,6 @@ function automation_moveup() {
 function automation_remove() {
 	db_execute_prepared('DELETE FROM automation_templates WHERE id = ?', array(get_filter_request_var('id')));
 }
-
 
 function form_actions() {
 	global $at_actions;
@@ -130,11 +136,13 @@ function form_actions() {
 		}
 
 		header('Location: automation_templates.php');
+
 		exit;
 	}
 
 	/* setup some variables */
-	$at_list = ''; $i = 0;
+	$at_list = '';
+	$i       = 0;
 
 	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
@@ -169,6 +177,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: automation_templates.php');
+
 		exit;
 	}
 
@@ -192,12 +201,13 @@ function form_save() {
 	if (isset_request_var('save_component_template')) {
 		$redirect_back = false;
 
-		$save['id'] = get_nfilter_request_var('id');
-		$save['host_template'] = form_input_validate(get_nfilter_request_var('host_template'), 'host_template', '', false, 3);
+		$save['id']                   = get_nfilter_request_var('id');
+		$save['host_template']        = form_input_validate(get_nfilter_request_var('host_template'), 'host_template', '', false, 3);
 		$save['availability_method']  = form_input_validate(get_nfilter_request_var('availability_method'), 'availability_method', '', false, 3);
-		$save['sysDescr']      = get_nfilter_request_var('sysDescr');
-		$save['sysName']       = get_nfilter_request_var('sysName');
-		$save['sysOid']        = get_nfilter_request_var('sysOid');
+		$save['sysDescr']             = get_nfilter_request_var('sysDescr');
+		$save['sysName']              = get_nfilter_request_var('sysName');
+		$save['sysOid']               = get_nfilter_request_var('sysOid');
+
 		if (function_exists('filter_var')) {
 			$save['sysDescr'] = filter_var($save['sysDescr'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 		} else {
@@ -234,10 +244,10 @@ function automation_get_child_branches($tree_id, $id, $spaces, $headers) {
 	$spaces .= '--';
 
 	if (cacti_sizeof($items)) {
-	foreach($items as $i) {
-		$headers['tr_' . $tree_id . '_bi_' . $i['id']] = $spaces . ' ' . $i['title'];
-		$headers = automation_get_child_branches($tree_id, $i['id'], $spaces, $headers);
-	}
+		foreach ($items as $i) {
+			$headers['tr_' . $tree_id . '_bi_' . $i['id']] = $spaces . ' ' . $i['title'];
+			$headers                                       = automation_get_child_branches($tree_id, $i['id'], $spaces, $headers);
+		}
 	}
 
 	return $headers;
@@ -246,10 +256,11 @@ function automation_get_child_branches($tree_id, $id, $spaces, $headers) {
 function automation_get_tree_headers() {
 	$headers = array();
 	$trees   = db_fetch_assoc('SELECT id, name FROM graph_tree ORDER BY name');
+
 	foreach ($trees as $tree) {
 		$headers['tr_' . $tree['id'] . '_br_0'] = $tree['name'];
-		$spaces = '';
-		$headers = automation_get_child_branches($tree['id'], 0, $spaces, $headers);
+		$spaces                                 = '';
+		$headers                                = automation_get_child_branches($tree['id'], 0, $spaces, $headers);
 	}
 
 	return $headers;
@@ -270,48 +281,48 @@ function template_edit() {
 
 	$fields_automation_template_edit = array(
 		'host_template' => array(
-			'method' => 'drop_array',
+			'method'        => 'drop_array',
 			'friendly_name' => __('Device Template'),
-			'description' => __('Select a Device Template that Devices will be matched to.'),
-			'value' => '|arg1:host_template|',
-			'array' => $template_names,
+			'description'   => __('Select a Device Template that Devices will be matched to.'),
+			'value'         => '|arg1:host_template|',
+			'array'         => $template_names,
 			),
 		'availability_method' => array(
-			'method' => 'drop_array',
+			'method'        => 'drop_array',
 			'friendly_name' => __('Availability Method'),
-			'description' => __('Choose the Availability Method to use for Discovered Devices.'),
-			'value' => '|arg1:availability_method|',
-			'default' => read_config_option('availability_method'),
-			'array' => $availability_options,
+			'description'   => __('Choose the Availability Method to use for Discovered Devices.'),
+			'value'         => '|arg1:availability_method|',
+			'default'       => read_config_option('availability_method'),
+			'array'         => $availability_options,
 			),
 		'sysDescr' => array(
-			'method' => 'textbox',
+			'method'        => 'textbox',
 			'friendly_name' => __('System Description Match'),
-			'description' => __('This is a unique string that will be matched to a devices sysDescr string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
-			'value' => '|arg1:sysDescr|',
-			'max_length' => '255',
+			'description'   => __('This is a unique string that will be matched to a devices sysDescr string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
+			'value'         => '|arg1:sysDescr|',
+			'max_length'    => '255',
 			),
 		'sysName' => array(
-			'method' => 'textbox',
+			'method'        => 'textbox',
 			'friendly_name' => __('System Name Match'),
-			'description' => __('This is a unique string that will be matched to a devices sysName string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
-			'value' => '|arg1:sysName|',
-			'max_length' => '128',
+			'description'   => __('This is a unique string that will be matched to a devices sysName string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
+			'value'         => '|arg1:sysName|',
+			'max_length'    => '128',
 			),
 		'sysOid' => array(
-			'method' => 'textbox',
+			'method'        => 'textbox',
 			'friendly_name' => __('System OID Match'),
-			'description' => __('This is a unique string that will be matched to a devices sysOid string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
-			'value' => '|arg1:sysOid|',
-			'max_length' => '128',
+			'description'   => __('This is a unique string that will be matched to a devices sysOid string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
+			'value'         => '|arg1:sysOid|',
+			'max_length'    => '128',
 			),
 		'id' => array(
 			'method' => 'hidden_zero',
-			'value' => '|arg1:id|'
+			'value'  => '|arg1:id|'
 			),
 		'save_component_template' => array(
 			'method' => 'hidden',
-			'value' => '1'
+			'value'  => '1'
 			)
 		);
 
@@ -357,16 +368,16 @@ function template() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 			)
@@ -400,14 +411,18 @@ function template() {
 					</td>
 					<td>
 						<select id='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
+							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'";
+
+									if (get_request_var('rows') == $key) {
+										print ' selected';
+									} print '>' . html_escape($value) . "</option>\n";
 								}
 							}
-							?>
+	?>
 						</select>
 					</td>
 					<td>
@@ -476,7 +491,7 @@ function template() {
 		ON ht.id=at.host_template
 		$sql_where
 		ORDER BY sequence " .
-		' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
+		' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows);
 
 	$nav = html_nav_bar('automation_templates.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Templates'), 'page', 'main');
 
@@ -500,8 +515,9 @@ function template() {
 
 	html_header_checkbox($display_text, false);
 
-	$i = 1;
+	$i           = 1;
 	$total_items = cacti_sizeof($dts);
+
 	if (cacti_sizeof($dts)) {
 		foreach ($dts as $dt) {
 			if ($dt['name'] == '') {
@@ -519,6 +535,7 @@ function template() {
 
 			if (read_config_option('drag_and_drop') == '') {
 				$add_text = '';
+
 				if ($i < $total_items && $total_items > 1) {
 					$add_text .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('automation_templates.php?action=movedown&id=' . $dt['id']) . '" title="' . __esc('Move Down') . '"></a>';
 				} else {
@@ -540,7 +557,7 @@ function template() {
 			$i++;
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Automation Device Templates Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Automation Device Templates Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
@@ -578,4 +595,3 @@ function template() {
 	</script>
 	<?php
 }
-

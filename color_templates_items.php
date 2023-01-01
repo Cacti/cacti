@@ -46,6 +46,7 @@ switch (get_request_var('action')) {
 		aggregate_color_item_remove();
 
 		header('Location: color_templates.php?action=template_edit&color_template_id=' . get_request_var('id'));
+
 		break;
 	case 'item_movedown':
 		get_filter_request_var('color_template_id');
@@ -53,6 +54,7 @@ switch (get_request_var('action')) {
 		aggregate_color_item_movedown();
 
 		header('Location: color_templates.php?action=template_edit&color_template_id=' . get_request_var('color_template_id'));
+
 		break;
 	case 'item_moveup':
 		get_filter_request_var('color_template_id');
@@ -60,27 +62,29 @@ switch (get_request_var('action')) {
 		aggregate_color_item_moveup();
 
 		header('Location: color_templates.php?action=template_edit&color_template_id=' . get_request_var('color_template_id'));
+
 		break;
 	case 'item_edit':
 		top_header();
 		aggregate_color_item_edit();
 		bottom_footer();
+
 		break;
 	case 'item':
 		top_header();
 		aggregate_color_item();
 		bottom_footer();
+
 		break;
 }
 
 /* --------------------------
-    The Save Function
+	The Save Function
    -------------------------- */
 /**
  * aggregate_color_item_form_save	the save function
  */
 function aggregate_color_item_form_save() {
-
 	if (isset_request_var('save_component_item')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('color_template_id');
@@ -98,12 +102,13 @@ function aggregate_color_item_form_save() {
 			}
 
 			$save['color_template_item_id'] = html_escape_request_var('color_template_item_id');
-			$save['color_template_id'] = html_escape_request_var('color_template_id');
-			$save['color_id'] = form_input_validate((isset($item['color_id']) ? $item['color_id'] : get_nfilter_request_var('color_id')), 'color_id', '', true, 3);
-			$save['sequence'] = $sequence;
+			$save['color_template_id']      = html_escape_request_var('color_template_id');
+			$save['color_id']               = form_input_validate((isset($item['color_id']) ? $item['color_id'] : get_nfilter_request_var('color_id')), 'color_id', '', true, 3);
+			$save['sequence']               = $sequence;
 
 			if (!is_error_message()) {
 				$color_template_item_id = sql_save($save, 'color_template_items', 'color_template_item_id');
+
 				if ($color_template_item_id) {
 					raise_message(1);
 				} else {
@@ -116,33 +121,35 @@ function aggregate_color_item_form_save() {
 
 		if (is_error_message()) {
 			header('Location: color_templates_items.php?action=item_edit&color_template_item_id=' . (empty($color_template_item_id) ? get_nfilter_request_var('color_template_item_id') : $color_template_item_id) . '&color_template_id=' . get_nfilter_request_var('color_template_id'));
+
 			exit;
 		} else {
 			header('Location: color_templates.php?action=template_edit&color_template_id=' . get_nfilter_request_var('color_template_id'));
+
 			exit;
 		}
 	}
 }
 
 /* -----------------------
-    item - Graph Items
+	item - Graph Items
    ----------------------- */
 
 function color_templates_item_dnd() {
-   /* ================= Input validation ================= */
-    get_filter_request_var('id');
-    /* ================= Input validation ================= */
+	/* ================= Input validation ================= */
+	get_filter_request_var('id');
+	/* ================= Input validation ================= */
 
-    if (isset_request_var('color_item') && is_array(get_nfilter_request_var('color_item'))) {
+	if (isset_request_var('color_item') && is_array(get_nfilter_request_var('color_item'))) {
 		$color_items = get_nfilter_request_var('color_item');
 
 		if (cacti_sizeof($color_items)) {
 			$sequence = 1;
 
-		    foreach($color_items as $option_id) {
-        		$option = str_replace('line', '', $option_id);
+			foreach ($color_items as $option_id) {
+				$option = str_replace('line', '', $option_id);
 
-		        db_execute_prepared('UPDATE color_template_items
+				db_execute_prepared('UPDATE color_template_items
 					SET sequence = ?
 					WHERE color_template_item_id = ?',
 					array($sequence, $option));
@@ -150,9 +157,10 @@ function color_templates_item_dnd() {
 				$sequence++;
 			}
 		}
-    }
+	}
 
-    header('Location: color_templates.php?action=template_edit&color_template_id=' . get_request_var('id'));
+	header('Location: color_templates.php?action=template_edit&color_template_id=' . get_request_var('id'));
+
 	exit;
 }
 
@@ -195,7 +203,6 @@ function aggregate_color_item_movedown() {
 		AND color_template_item_id = ?',
 		array($current_sequence['sequence'], get_request_var('color_template_id'), $next_sequence['color_template_item_id']));
 }
-
 
 /**
  * aggregate_color_item_moveup		move item up
@@ -304,7 +311,6 @@ function aggregate_color_item_remove_confirm() {
 	<?php
 }
 
-
 /**
  * aggregate_color_item_remove		remove item
  */
@@ -318,7 +324,6 @@ function aggregate_color_item_remove() {
 		WHERE color_template_item_id = ?',
 		array(get_request_var('color_id')));
 }
-
 
 /**
  * aggregate_color_item_edit		edit item
@@ -345,7 +350,7 @@ function aggregate_color_item_edit() {
 		$header_label = __esc('Color Template Items [edit Report Item: %s]', $template['name']);
 	} else {
 		$template_item = array();
-		$header_label = __esc('Color Template Items [new Report Item: %s]', $template['name']);
+		$header_label  = __esc('Color Template Items [new Report Item: %s]', $template['name']);
 	}
 
 	form_start('color_templates_items.php', 'aggregate_color_item_edit');
@@ -366,4 +371,3 @@ function aggregate_color_item_edit() {
 
 	form_save_button('color_templates.php?action=template_edit&color_template_id=' . get_request_var('color_template_id'), '', 'color_template_item_id');
 }
-

@@ -23,7 +23,7 @@
 */
 
 /* dsstats_debug - this simple routine print's a standard message to the console
-     when running in debug mode.
+	 when running in debug mode.
    @returns - NULL */
 function dsdebug_debug($message) {
 	global $debug;
@@ -34,7 +34,7 @@ function dsdebug_debug($message) {
 }
 
 /* log_dsstats_statistics - provides generic timing message to both the Cacti log and the settings
-     table so that the statistics can be graphed as well.
+	 table so that the statistics can be graphed as well.
    @arg $type - (string) the type of statistics to log, either 'HOURLY', 'DAILY' or 'MAJOR'.
    @returns - null */
 function log_dsdebug_statistics($type, $checks, $issues) {
@@ -43,7 +43,7 @@ function log_dsdebug_statistics($type, $checks, $issues) {
 	/* take time and log performance data */
 	$end = microtime(true);
 
-	$cacti_stats = sprintf('ChecksPerformed:%d, TotalIssues:%d, Time:%01.4f ', $checks, $issues, round($end-$start,4));
+	$cacti_stats = sprintf('ChecksPerformed:%d, TotalIssues:%d, Time:%01.4f ', $checks, $issues, round($end - $start,4));
 
 	/* log to the database */
 	set_config_option('stats_dsdebug_' . $type, $cacti_stats);
@@ -53,14 +53,14 @@ function log_dsdebug_statistics($type, $checks, $issues) {
 }
 
 /* dsstats_error_handler - this routine logs all PHP error transactions
-     to make sure they are properly logged.
+	 to make sure they are properly logged.
    @arg $errno - (int) The errornum reported by the system
    @arg $errmsg - (string) The error message provides by the error
    @arg $filename - (string) The filename that encountered the error
    @arg $linenum - (int) The line number where the error occurred
    @arg $vars - (mixed) The current state of PHP variables.
    @returns - (bool) always returns true for some reason */
-function dsdebug_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
+function dsdebug_error_handler($errno, $errmsg, $filename, $linenum, $vars = array()) {
 	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
 		/* define all error types */
 		$errortype = array(
@@ -88,8 +88,13 @@ function dsdebug_error_handler($errno, $errmsg, $filename, $linenum, $vars = [])
 			"' LINE NO:'" . $linenum . "'";
 
 		/* let's ignore some lesser issues */
-		if (substr_count($errmsg, 'date_default_timezone')) return;
-		if (substr_count($errmsg, 'Only variables')) return;
+		if (substr_count($errmsg, 'date_default_timezone')) {
+			return;
+		}
+
+		if (substr_count($errmsg, 'Only variables')) {
+			return;
+		}
 
 		/* log the error to the Cacti log */
 		cacti_log('PROGERR: ' . $err, false, 'DSDEBUG');
@@ -113,15 +118,16 @@ function dsdebug_poller_output(&$rrd_update_array) {
 
 	/* do not make any calculations unless enabled */
 	$checks = db_fetch_assoc('SELECT * FROM data_debug WHERE `done` = 0');
+
 	if (cacti_sizeof($checks)) {
 		if (cacti_sizeof($rrd_update_array)) {
 			foreach ($checks as $c) {
-				foreach($rrd_update_array as $item) {
+				foreach ($rrd_update_array as $item) {
 					if ($c['datasource'] == $item['local_data_id']) {
 						if (isset($item['times'][key($item['times'])])) {
-							$c['info'] = unserialize($c['info']);
+							$c['info']                = unserialize($c['info']);
 							$c['info']['last_result'] = $item['times'][key($item['times'])];
-							$c['info'] = serialize($c['info']);
+							$c['info']                = serialize($c['info']);
 							db_execute_prepared('UPDATE data_debug SET `info` = ? WHERE `id` = ?', array($c['info'], $c['id']));
 						}
 					}
@@ -157,7 +163,7 @@ function dsdebug_poller_bottom() {
 
 		foreach ($checks as $c) {
 			$c['issue'] = array();
-			$info = unserialize($c['info']);
+			$info       = unserialize($c['info']);
 
 			$dtd = db_fetch_row_prepared('SELECT *
 				FROM data_template_data
@@ -166,7 +172,7 @@ function dsdebug_poller_bottom() {
 
 			if (!isset($dtd['local_data_id'])) {
 				$c['issue'][] = __('Data Source ID %s does not exist', $c['datasource']);
-				$c['done'] = 1;
+				$c['done']    = 1;
 
 				$total_issues++;
 			} else {
@@ -174,7 +180,7 @@ function dsdebug_poller_bottom() {
 					boost_process_poller_output($c['datasource']);
 				}
 
-				$real_path = str_replace('<path_rra>', $config['rra_path'], $dtd['data_source_path']);
+				$real_path = str_replace('<path_rra>', CACTI_PATH_RRA, $dtd['data_source_path']);
 
 				// rrd_folder_writable
 				$info['rrd_folder_writable'] = (is_resource_writable(dirname($real_path) . '/') ? 1 : 0);
@@ -191,10 +197,10 @@ function dsdebug_poller_bottom() {
 				if ($config['cacti_server_os'] == 'win32') {
 					$info['owner'] = '<unable to determine on windows>';
 				} else {
-					$o = posix_getpwuid(fileowner($real_path));
-					$o = $o['name'];
-					$g = posix_getgrgid(filegroup($real_path));
-					$g = $g['name'];
+					$o             = posix_getpwuid(fileowner($real_path));
+					$o             = $o['name'];
+					$g             = posix_getgrgid(filegroup($real_path));
+					$g             = $g['name'];
 					$info['owner'] =  $o . ':' . $g;
 				}
 
@@ -229,7 +235,6 @@ function dsdebug_poller_bottom() {
 				if ($info['rra_timestamp'] != ''
 					&& isset($rrdinfo['last_update'])
 					&& $info['rra_timestamp'] != $rrdinfo['last_update']) {
-
 					$info['rra_timestamp2'] = $rrdinfo['last_update'];
 				}
 
@@ -238,16 +243,17 @@ function dsdebug_poller_bottom() {
 				}
 
 				$c['done'] = 1;
-				$f = array();
+				$f         = array();
+
 				foreach ($info as $k => $v) {
 					if ($v === '') {
 						$c['done'] = 0;
-						$f[] = $k;
+						$f[]       = $k;
 					}
 				}
 
 				if ($c['started'] < time() - ($dtd['rrd_step'] * 5)) {
-					$c['done'] = 1;
+					$c['done']    = 1;
 					$c['issue'][] = __('Debug not completed after 5 pollings');
 					$c['issue'][] = __('Failed fields: ') . implode(', ', $f);
 
@@ -259,7 +265,7 @@ function dsdebug_poller_bottom() {
 				// Log permanent fails first
 				if ($info['active'] != 'on') {
 					$c['issue'][] = __('Data Source is not set as Active');
-					$c['done'] = 1;
+					$c['done']    = 1;
 
 					$total_issues++;
 				}
@@ -267,12 +273,12 @@ function dsdebug_poller_bottom() {
 				// File Permissions
 				if ((!$info['rrd_exists'] || !$info['rrd_writable']) && !$info['rrd_folder_writable']) {
 					$c['issue'][] = __('RRDfile Folder (rra) is not writable by Poller.  Folder owner: %s.  Poller runs as: %s', $o, $info['runas_poller']);
-					$c['done'] = 1;
+					$c['done']    = 1;
 
 					$total_issues++;
 				} elseif (!$info['rrd_writable']) {
 					$c['issue'][] = __('RRDfile is not writable by Poller.  RRDfile owner: %s.  Poller runs as %s', $o, $info['runas_poller']);
-					$c['done'] = 1;
+					$c['done']    = 1;
 
 					$total_issues++;
 				}
@@ -335,10 +341,10 @@ function dsdebug_run_repair($id) {
 
 			if (is_writeable($path)) {
 				$rrdtool_path = read_config_option('path_rrdtool');
-				$failures = 0;
+				$failures     = 0;
 				$failure_data = '';
 
-				foreach($check['info']['rrd_match_array']['tune'] AS $options) {
+				foreach ($check['info']['rrd_match_array']['tune'] as $options) {
 					$command    = $rrdtool_path . ' tune ' . $options;
 
 					$output = rrdtool_execute('tune ' . $options, false, RRDTOOL_OUTPUT_RETURN_STDERR);
@@ -366,4 +372,3 @@ function dsdebug_run_repair($id) {
 
 	return false;
 }
-

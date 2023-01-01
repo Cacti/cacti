@@ -24,9 +24,9 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once($config['base_path'] . '/lib/import.php');
-require_once($config['base_path'] . '/lib/poller.php');
-require_once($config['base_path'] . '/lib/utility.php');
+require_once(CACTI_PATH_LIBRARY . '/import.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 /* switch to main database for cli's */
 if ($config['poller_id'] > 1) {
@@ -47,11 +47,11 @@ if (cacti_sizeof($parms)) {
 	$preview_only    = 0;
 	$profile_id      = '';
 
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -84,19 +84,23 @@ if (cacti_sizeof($parms)) {
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Argument: ($arg)' . PHP_EOL . PHP_EOL;
+
 				exit(1);
 		}
 	}
 
-	if($profile_id > 0) {
+	if ($profile_id > 0) {
 		if ($with_profile) {
 			print "WARNING: '--with-profile' and '--profile-id=N' are exclusive. Ignoring '--with-profile'" . PHP_EOL;
 		} else {
@@ -113,12 +117,13 @@ if (cacti_sizeof($parms)) {
 
 	if (empty($id)) {
 		print 'FATAL: No valid Data Source Profiles found on the system.  Exiting!' . PHP_EOL;
+
 		exit(1);
 	}
 
 	if ($filename != '') {
-		if(file_exists($filename) && is_readable($filename)) {
-			$fp = fopen($filename,'r');
+		if (file_exists($filename) && is_readable($filename)) {
+			$fp       = fopen($filename,'r');
 			$xml_data = fread($fp,filesize($filename));
 			fclose($fp);
 
@@ -129,16 +134,19 @@ if (cacti_sizeof($parms)) {
 			import_display_results($debug_data, array(), $preview_only);
 		} else {
 			print "ERROR: file $filename is not readable, or does not exist" . PHP_EOL . PHP_EOL;
+
 			exit(1);
 		}
 	} else {
 		print 'ERROR: no filename specified' . PHP_EOL . PHP_EOL;
 		display_help();
+
 		exit(1);
 	}
 } else {
 	print 'ERROR: no parameters given' . PHP_EOL . PHP_EOL;
 	display_help();
+
 	exit(1);
 }
 

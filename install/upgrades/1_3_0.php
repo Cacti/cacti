@@ -58,7 +58,7 @@ function upgrade_to_1_3_0() {
 }
 
 function ldap_convert_1_3_0() {
-	$ldap_fields = [
+	$ldap_fields = array(
 		'ldap_server'            => 'server',
 		'ldap_port'              => 'port',
 		'ldap_port_ssl'          => 'port_ssl',
@@ -78,12 +78,13 @@ function ldap_convert_1_3_0() {
 		'ldap_specific_password' => 'specific_password',
 		'cn_full_name'           => 'cn_full_name',
 		'cn_email'               => 'cn_email',
-	];
+	);
 
 	$ldap_server = read_config_option('ldap_server');
 
 	if (!empty($ldap_server)) {
 		$domain_id = db_fetch_cell('SELECT domain_id FROM user_domains WHERE domain_name = \'LDAP\'');
+
 		if (!$domain_id) {
 			cacti_log('NOTE: Creating new LDAP domain', true, 'INSTALL');
 			db_install_execute('INSERT INTO user_domains (domain_name, type, enabled) VALUES (\'LDAP\', 1, \'on\')');
@@ -92,8 +93,10 @@ function ldap_convert_1_3_0() {
 
 		if ($domain_id) {
 			$ldap_id = db_fetch_cell_prepared('SELECT domain_id FROM user_domains_ldap WHERE domain_id = ?', array($domain_id));
+
 			if ($ldap_id != $domain_id) {
-				$ldap_settings = [ 'domain_id' => $domain_id ];
+				$ldap_settings = array( 'domain_id' => $domain_id );
+
 				foreach ($ldap_fields as $old => $new) {
 					$ldap_settings[$new] = read_config_option($old);
 				}

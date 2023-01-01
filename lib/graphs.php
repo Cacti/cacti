@@ -42,7 +42,7 @@ function get_graph_template_details($local_graph_id) {
 		array($local_graph_id));
 
 	if (!empty($aggregate)) {
-		$url = $config['url_path'] . 'aggregate_graphs.php?action=edit&id=';
+		$url = CACTI_PATH_URL . 'aggregate_graphs.php?action=edit&id=';
 
 		if (!empty($aggregate['id'])) {
 			return array(
@@ -69,7 +69,7 @@ function get_graph_template_details($local_graph_id) {
 			'source' => GRAPH_SOURCE_PLAIN,
 		);
 	} elseif ($graph_local['snmp_query_id'] > 0 && $graph_local['snmp_query_graph_id'] > 0) {
-		$url = $config['url_path'] . 'data_queries.php' .
+		$url = CACTI_PATH_URL . 'data_queries.php' .
 			'?action=item_edit' .
 			'&id=' . $graph_local['snmp_query_graph_id'] .
 			'&snmp_query_id=' . $graph_local['snmp_query_id'];
@@ -89,7 +89,7 @@ function get_graph_template_details($local_graph_id) {
 		);
 	} else {
 		if (!empty($graph_local['template_name'])) {
-			$url = $config['url_path'] . 'graph_templates.php?action=template_edit&id=' . $graph_local['graph_template_id'];
+			$url = CACTI_PATH_URL . 'graph_templates.php?action=template_edit&id=' . $graph_local['graph_template_id'];
 
 			return array(
 				'id'     => $graph_local['graph_template_id'],
@@ -107,4 +107,3 @@ function get_graph_template_details($local_graph_id) {
 		}
 	}
 }
-

@@ -24,18 +24,18 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once($config['base_path'] . '/lib/api_automation_tools.php');
-require_once($config['base_path'] . '/lib/api_automation.php');
-require_once($config['base_path'] . '/lib/api_data_source.php');
-require_once($config['base_path'] . '/lib/api_graph.php');
-require_once($config['base_path'] . '/lib/api_device.php');
-require_once($config['base_path'] . '/lib/api_tree.php');
-require_once($config['base_path'] . '/lib/data_query.php');
-require_once($config['base_path'] . '/lib/poller.php');
-require_once($config['base_path'] . '/lib/snmp.php');
-require_once($config['base_path'] . '/lib/sort.php');
-require_once($config['base_path'] . '/lib/template.php');
-require_once($config['base_path'] . '/lib/utility.php');
+require_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
+require_once(CACTI_PATH_LIBRARY . '/api_automation.php');
+require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
+require_once(CACTI_PATH_LIBRARY . '/api_graph.php');
+require_once(CACTI_PATH_LIBRARY . '/api_device.php');
+require_once(CACTI_PATH_LIBRARY . '/api_tree.php');
+require_once(CACTI_PATH_LIBRARY . '/data_query.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/snmp.php');
+require_once(CACTI_PATH_LIBRARY . '/sort.php');
+require_once(CACTI_PATH_LIBRARY . '/template.php');
+require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 ini_set('max_execution_time', '0');
 
@@ -48,18 +48,18 @@ if ($config['poller_id'] > 1) {
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug		= false;
-$host_id	= '';
-$query_id	= 'all';		/* just to mimic the old behaviour */
+$debug		    = false;
+$host_id	   = '';
+$query_id	  = 'all';		/* just to mimic the old behaviour */
 $host_descr	= '';
 $force      = false;
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -67,41 +67,51 @@ if (cacti_sizeof($parms)) {
 			case '-id':
 			case '--id':
 				$host_id = $value;
+
 				break;
 			case '-qid':
 			case '--qid':
 				$query_id = $value;
+
 				break;
 			case '--force':
 				$force = true;
+
 				break;
 			case '-host-descr':
 			case '--host-descr':
 				$host_descr = $value;
+
 				break;
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
+
 				exit(1);
 		}
 	}
 } else {
 	print 'ERROR: You must supply input parameters' . PHP_EOL . PHP_EOL;
 	display_help();
+
 	exit(1);
 }
 
@@ -112,11 +122,12 @@ if (strtolower($host_id) == 'all') {
 	$sql_where = '';
 } elseif (is_numeric($host_id) && $host_id > 0) {
 	$sql_where = 'WHERE host_id = ?';
-	$params[] = $host_id;
+	$params[]  = $host_id;
 } else {
 	print 'ERROR: You must specify either a host_id or \'all\' to proceed.' . PHP_EOL;
 
 	display_help();
+
 	exit;
 }
 
@@ -130,6 +141,7 @@ if (strtolower($query_id) == 'all') {
 	print 'ERROR: You must specify either a query_id or \'all\' to proceed.' . PHP_EOL;
 
 	display_help();
+
 	exit;
 }
 
@@ -154,8 +166,9 @@ $data_queries = db_fetch_assoc_prepared("SELECT h.description, h.hostname, hsq.h
 print 'WARNING: Do not interrupt this script.  Reindexing can take quite some time' . PHP_EOL;
 debug("There are '" . cacti_sizeof($data_queries) . "' data queries to run");
 
-$i = 1;
+$i           = 1;
 $total_start = microtime(true);
+
 if (cacti_sizeof($data_queries)) {
 	foreach ($data_queries as $data_query) {
 		if (!$debug) {
@@ -205,7 +218,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 	print 'usage: poller_reindex_hosts.php --id=[host_id|all] [--qid=[ID|all]]' . PHP_EOL;
 	print '   [--host-descr=[description]] [--debug]' . PHP_EOL . PHP_EOL;

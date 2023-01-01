@@ -30,13 +30,7 @@ include_once('./lib/utility.php');
 
 /* check edit/alter permissions */
 if (!clog_authorized()) {
-	if (isset_request_var('header')) {
-		if ($config['poller_id'] > 1) {
-			print '<div style="display:none">cactiRemoteState</div>';
-		} else {
-			print '<div style="display:none">cactiPermissionDenied</div>';
-		}
-	} elseif ($config['poller_id'] > 1) {
+	if ($config['poller_id'] > 1) {
 		header('Location: logout.php?action=remote');
 	} else {
 		header('Location: permission_denied.php');

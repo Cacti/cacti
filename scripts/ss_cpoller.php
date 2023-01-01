@@ -26,7 +26,7 @@
 error_reporting(0);
 
 if (!isset($called_by_script_server)) {
-	include_once(dirname(__FILE__) . '/../include/cli_check.php');
+	include_once(__DIR__ . '/../include/cli_check.php');
 
 	array_shift($_SERVER['argv']);
 
@@ -72,10 +72,10 @@ function ss_cpoller($cmd = 'index', $arg1 = '', $arg2 = '') {
 				$value = '0';
 				$stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_recache_' . $index . '"'));
 
-				foreach($stats as $_stat) {
+				foreach ($stats as $_stat) {
 					if (preg_match('/^RecacheTime:/', $_stat)) {
 						$parts = explode(':', $_stat);
-						$value = $parts[1];;
+						$value = $parts[1];
 					}
 				}
 
@@ -84,10 +84,10 @@ function ss_cpoller($cmd = 'index', $arg1 = '', $arg2 = '') {
 				$value = '0';
 				$stats = explode(' ', db_fetch_cell('SELECT value FROM settings WHERE name="stats_recache_' . $index . '"'));
 
-				foreach($stats as $_stat) {
+				foreach ($stats as $_stat) {
 					if (preg_match('/^DevicesRecached:/', $_stat)) {
 						$parts = explode(':', $_stat);
-						$value = $parts[1];;
+						$value = $parts[1];
 					}
 				}
 

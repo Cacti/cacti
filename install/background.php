@@ -25,18 +25,18 @@ error_reporting(E_ALL);
 
 define('IN_CACTI_INSTALL', 1);
 
-include_once(dirname(__FILE__) . '/../include/cli_check.php');
-include_once($config['base_path'] . '/install/functions.php');
-include_once($config['base_path'] . '/lib/api_data_source.php');
-include_once($config['base_path'] . '/lib/api_device.php');
-include_once($config['base_path'] . '/lib/api_automation.php');
-include_once($config['base_path'] . '/lib/api_automation_tools.php');
-include_once($config['base_path'] . '/lib/data_query.php');
-include_once($config['base_path'] . '/lib/import.php');
-include_once($config['base_path'] . '/lib/installer.php');
-include_once($config['base_path'] . '/lib/poller.php');
-include_once($config['base_path'] . '/lib/snmp.php');
-include_once($config['base_path'] . '/lib/utility.php');
+include_once(__DIR__ . '/../include/cli_check.php');
+include_once(CACTI_PATH_INSTALL . '/functions.php');
+include_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
+include_once(CACTI_PATH_LIBRARY . '/api_device.php');
+include_once(CACTI_PATH_LIBRARY . '/api_automation.php');
+include_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
+include_once(CACTI_PATH_LIBRARY . '/data_query.php');
+include_once(CACTI_PATH_LIBRARY . '/import.php');
+include_once(CACTI_PATH_LIBRARY . '/installer.php');
+include_once(CACTI_PATH_LIBRARY . '/poller.php');
+include_once(CACTI_PATH_LIBRARY . '/snmp.php');
+include_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 cacti_log('Checking arguments', false, 'INSTALL:');
 /* process calling arguments */
@@ -49,6 +49,7 @@ $cli_install = true;
 
 if (cacti_sizeof($params) == 0) {
 	log_install_always('','no parameters passed' . PHP_EOL);
+
 	exit();
 }
 

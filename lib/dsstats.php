@@ -43,7 +43,9 @@ function get_rrdfile_names($thread_id = 1, $max_threads = 1) {
 			WHERE pi.local_data_id IS NOT NULL
 			AND data_source_path != ""
 			AND dtd.local_data_id != 0');
-	} elseif (sizeof($newrows)) {
+	}
+
+	if (sizeof($newrows)) {
 		return $newrows[$thread_id];
 	} else {
 		$dsses_total = db_fetch_cell('SELECT SUM(rrd_num)
@@ -68,7 +70,7 @@ function get_rrdfile_names($thread_id = 1, $max_threads = 1) {
 		$dsses   = 0;
 		$newrows = array();
 
-		foreach($rows as $row) {
+		foreach ($rows as $row) {
 			$dsses += $row['dsses'];
 
 			if ($dsses > $split_size && $thread < $max_threads) {
@@ -127,6 +129,7 @@ function dsstats_get_and_store_ds_avgpeak_values($interval, $thread_id = 1) {
 	dsstats_debug(sprintf('Processing %s for Thread %s', $interval, $thread_id));
 
 	$max_threads = read_config_option('dsstats_parallel');
+
 	if (empty($max_threads)) {
 		$max_threads = 1;
 		set_config_option('dsstats_parallel', '1');
@@ -143,8 +146,8 @@ function dsstats_get_and_store_ds_avgpeak_values($interval, $thread_id = 1) {
 		$rrdtool_pipe = rrd_init(false);
 	} else {
 		$process_pipes = dsstats_rrdtool_init();
-		$process = $process_pipes[0];
-		$pipes   = $process_pipes[1];
+		$process       = $process_pipes[0];
+		$pipes         = $process_pipes[1];
 	}
 
 	if (cacti_sizeof($rrdfiles)) {
@@ -152,7 +155,7 @@ function dsstats_get_and_store_ds_avgpeak_values($interval, $thread_id = 1) {
 			$dsses += $file['dsses'];
 
 			if ($file['data_source_path'] != '') {
-				$rrdfile = str_replace('<path_rra>', $config['rra_path'], $file['data_source_path']);
+				$rrdfile = str_replace('<path_rra>', CACTI_PATH_RRA, $file['data_source_path']);
 
 				$stats[$file['local_data_id']] = dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes);
 			} else {
@@ -202,7 +205,7 @@ function dsstats_get_and_store_ds_avgpeak_values($interval, $thread_id = 1) {
 function dsstats_write_buffer(&$stats_array, $interval) {
 	/* initialize some variables */
 	$sql_prefix = "INSERT INTO data_source_stats_$interval (local_data_id, rrd_name, average, peak) VALUES";
-	$sql_suffix = " ON DUPLICATE KEY UPDATE average=VALUES(average), peak=VALUES(peak)";
+	$sql_suffix = ' ON DUPLICATE KEY UPDATE average=VALUES(average), peak=VALUES(peak)';
 	$overhead   = strlen($sql_prefix) + strlen($sql_suffix);
 	$outbuf     = '';
 	$out_length = 0;
@@ -211,10 +214,10 @@ function dsstats_write_buffer(&$stats_array, $interval) {
 
 	/* don't attempt to process an empty array */
 	if (cacti_sizeof($stats_array)) {
-		foreach($stats_array as $local_data_id => $stats) {
+		foreach ($stats_array as $local_data_id => $stats) {
 			/* some additional sanity checking */
 			if (is_array($stats) && cacti_sizeof($stats)) {
-				foreach($stats as $rrd_name => $avgpeak_stats) {
+				foreach ($stats as $rrd_name => $avgpeak_stats) {
 					$outbuf .= ($i == 1 ? ' ':', ') . "('" . $local_data_id . "','" .
 						$rrd_name . "','" .
 						$avgpeak_stats['AVG'] . "','" .
@@ -252,7 +255,7 @@ function dsstats_write_buffer(&$stats_array, $interval) {
  *      in the case where the MAX consolidation function is not included in the RRDfile, and then proceeds to
  *      gather data from the RRDfile for the time period in question.  It allows RRDtool to select the RRA to
  *      use by simply limiting the number of rows to be returned to the default.
-
+ *
  *   Once it has all of the information from the RRDfile.  It then decomposes the resulting XML file to its
  *   components and then calculates the AVERAGE and MAX values from that data and returns an array to the calling
  *   function for storage into the respective database table.
@@ -329,20 +332,20 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, &$pipes)
 
 			/* escape the file name if on Windows */
 			if ($config['cacti_server_os'] != 'unix') {
-				$rrdfile = str_replace(':', "\\:", $rrdfile);
+				$rrdfile = str_replace(':', '\\:', $rrdfile);
 			}
 
 			/* setup the graph command by parsing through the internal data source names */
 			if (cacti_sizeof($dsnames)) {
 				foreach ($dsnames as $dsname => $present) {
 					if ($average) {
-						$def .= 'DEF:' . $defs[$j] . $defs[$i] . "=\"" . $rrdfile . "\":" . $dsname . ':AVERAGE ';
+						$def .= 'DEF:' . $defs[$j] . $defs[$i] . '="' . $rrdfile . '":' . $dsname . ':AVERAGE ';
 						$command .= ' VDEF:' . $defs[$j] . $defs[$i] . '_out=' . $defs[$j] . $defs[$i] . ',AVERAGE PRINT:' . $defs[$j] . $defs[$i] . '_out:%lf';
 						$i++;
 					}
 
 					if ($max) {
-						$def .= 'DEF:' . $defs[$j] . $defs[$i] . "=\"" . $rrdfile . "\":" . $dsname . ':MAX ';
+						$def .= 'DEF:' . $defs[$j] . $defs[$i] . '="' . $rrdfile . '":' . $dsname . ':MAX ';
 						$command .= ' VDEF:' . $defs[$j] . $defs[$i] . '_out=' . $defs[$j] . $defs[$i] . ',MAXIMUM PRINT:' . $defs[$j] . $defs[$i] . '_out:%lf';
 						$i++;
 					}
@@ -358,15 +361,19 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, &$pipes)
 			switch($interval) {
 				case 'daily':
 					$interval = 'day';
+
 					break;
 				case 'weekly':
 					$interval = 'week';
+
 					break;
 				case 'monthly':
 					$interval = 'month';
+
 					break;
 				case 'yearly':
 					$interval = 'year';
+
 					break;
 			}
 
@@ -381,11 +388,11 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, &$pipes)
 				$xport_data = dsstats_rrdtool_execute($stats_cmd, $pipes);
 			}
 
-			$position = array();
+			$position   = array();
 			$position[] = array('RETURN' => 'RETURN');
 
 			/* initialize the array of return values */
-			foreach($dsnames as $dsname => $present) {
+			foreach ($dsnames as $dsname => $present) {
 				$dsvalues[$dsname]['AVG'] = 0;
 				$dsvalues[$dsname]['MAX'] = 0;
 
@@ -404,7 +411,7 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, &$pipes)
 				//print_r($xport_array);
 
 				if (cacti_sizeof($xport_array)) {
-					foreach($xport_array as $index => $line) {
+					foreach ($xport_array as $index => $line) {
 						if ($line == '') {
 							continue;
 						}
@@ -416,25 +423,28 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, &$pipes)
 								$parts = explode(' ', $line);
 								//print $line . PHP_EOL;
 
-								foreach($parts as $line) {
+								foreach ($parts as $line) {
 									$sparts = explode(':', $line);
 
 									switch($sparts[0]) {
 										case 'u':
 											$user_time = $sparts[1];
+
 											break;
 										case 's':
 											$system_time = $sparts[1];
+
 											break;
 										case 'r':
 											$real_time = $sparts[1];
+
 											break;
 									}
 								}
 
 								break;
 							} else {
-								foreach($position[$index] as $dsname => $stat) {
+								foreach ($position[$index] as $dsname => $stat) {
 									$dsvalues[$dsname][$stat] = trim($line);
 								}
 							}
@@ -480,29 +490,29 @@ function dsstats_log_statistics($type) {
 	$end = microtime(true);
 
 	if ($sub_type != '') {
-		$rrd_user = db_fetch_cell_prepared("SELECT SUM(value)
+		$rrd_user = db_fetch_cell_prepared('SELECT SUM(value)
 			FROM settings
-			WHERE name LIKE ?",
+			WHERE name LIKE ?',
 			array('dsstats_rrd_user_%' . $sub_type . '%'));
 
-		$rrd_system = db_fetch_cell_prepared("SELECT SUM(value)
+		$rrd_system = db_fetch_cell_prepared('SELECT SUM(value)
 			FROM settings
-			WHERE name LIKE ?",
+			WHERE name LIKE ?',
 			array('dsstats_rrd_system_%' . $sub_type . '%'));
 
-		$rrd_real = db_fetch_cell_prepared("SELECT SUM(value)
+		$rrd_real = db_fetch_cell_prepared('SELECT SUM(value)
 			FROM settings
-			WHERE name LIKE ?",
+			WHERE name LIKE ?',
 			array('dsstats_rrd_real_%' . $sub_type . '%'));
 
-		$rrd_files = db_fetch_cell_prepared("SELECT SUM(value)
+		$rrd_files = db_fetch_cell_prepared('SELECT SUM(value)
 			FROM settings
-			WHERE name LIKE ?",
+			WHERE name LIKE ?',
 			array('dsstats_total_rrds_%' . $sub_type . '%'));
 
-		$dsses = db_fetch_cell_prepared("SELECT SUM(value)
+		$dsses = db_fetch_cell_prepared('SELECT SUM(value)
 			FROM settings
-			WHERE name LIKE ?",
+			WHERE name LIKE ?',
 			array('dsstats_total_dsses_%' . $sub_type . '%'));
 
 		$processes  = read_config_option('dsstats_parallel');
@@ -514,7 +524,7 @@ function dsstats_log_statistics($type) {
 			OR name LIKE 'dsstats_total_rrds_%$sub_type%'
 			OR name LIKE 'dsstats_total_dsses_%$sub_type%'");
 	} else {
-		$cacti_stats = sprintf('Time:%01.2f Type:%s', $end-$start, $type);
+		$cacti_stats = sprintf('Time:%01.2f Type:%s', $end - $start, $type);
 	}
 
 	/* take time and log performance data */
@@ -537,29 +547,29 @@ function dsstats_log_statistics($type) {
  * @return - NULL
  */
 function dsstats_log_child_stats($type, $thread_id, $total_time) {
-	$rrd_user = db_fetch_cell_prepared("SELECT SUM(value)
+	$rrd_user = db_fetch_cell_prepared('SELECT SUM(value)
 		FROM settings
-		WHERE name LIKE ?",
+		WHERE name LIKE ?',
 		array('dsstats_rrd_user_%' . $type . '_' . $thread_id . '%'));
 
-	$rrd_system = db_fetch_cell_prepared("SELECT SUM(value)
+	$rrd_system = db_fetch_cell_prepared('SELECT SUM(value)
 		FROM settings
-		WHERE name LIKE ?",
+		WHERE name LIKE ?',
 		array('dsstats_rrd_system_%' . $type . '_' . $thread_id . '%'));
 
-	$rrd_real = db_fetch_cell_prepared("SELECT SUM(value)
+	$rrd_real = db_fetch_cell_prepared('SELECT SUM(value)
 		FROM settings
-		WHERE name LIKE ?",
+		WHERE name LIKE ?',
 		array('dsstats_rrd_real_%' . $type . '_' . $thread_id . '%'));
 
-	$rrd_files = db_fetch_cell_prepared("SELECT SUM(value)
+	$rrd_files = db_fetch_cell_prepared('SELECT SUM(value)
 		FROM settings
-		WHERE name LIKE ?",
+		WHERE name LIKE ?',
 		array('dsstats_total_rrds_%' . $type . '_' . $thread_id . '%'));
 
-	$dsses = db_fetch_cell_prepared("SELECT SUM(value)
+	$dsses = db_fetch_cell_prepared('SELECT SUM(value)
 		FROM settings
-		WHERE name LIKE ?",
+		WHERE name LIKE ?',
 		array('dsstats_total_dsses_%' . $type . '_' . $thread_id . '%'));
 
 	$cacti_stats = sprintf('Time:%01.2f Type:%s ProcessNumber:%s RRDfiles:%s DSSes:%s RRDUser:%01.2f RRDSystem:%01.2f RRDReal:%01.2f', $total_time, strtoupper($type), $thread_id, $rrd_files, $dsses, $rrd_user, $rrd_system, $rrd_real);
@@ -579,7 +589,7 @@ function dsstats_log_child_stats($type, $thread_id, $total_time) {
  *
  * @returns - (bool) always returns true for some reason
  */
-function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
+function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars = array()) {
 	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
 		/* define all error types */
 		$errortype = array(
@@ -607,8 +617,13 @@ function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars = [])
 			"' LINE NO:'" . $linenum . "'";
 
 		/* let's ignore some lesser issues */
-		if (substr_count($errmsg, 'date_default_timezone')) return;
-		if (substr_count($errmsg, 'Only variables')) return;
+		if (substr_count($errmsg, 'date_default_timezone')) {
+			return;
+		}
+
+		if (substr_count($errmsg, 'Only variables')) {
+			return;
+		}
 
 		/* log the error to the Cacti log */
 		cacti_log('PROGERR: ' . $err, false, 'DSSTATS');
@@ -705,10 +720,11 @@ function dsstats_poller_output(&$rrd_update_array) {
 
 			/* process each array */
 			$n = 1;
-			foreach($rrd_update_array as $data_source) {
+
+			foreach ($rrd_update_array as $data_source) {
 				if (isset($data_source['times'])) {
-					foreach($data_source['times'] as $time => $sample) {
-						foreach($sample as $ds => $value) {
+					foreach ($data_source['times'] as $time => $sample) {
+						foreach ($sample as $ds => $value) {
 							$result['local_data_id'] = $data_source['local_data_id'];
 							$result['rrd_name']      = $ds;
 							$result['time']          = date('Y-m-d H:i:s', $time);
@@ -720,11 +736,11 @@ function dsstats_poller_output(&$rrd_update_array) {
 							} else {
 								$result['output'] = 'NULL';
 
-								cacti_log("ERROR: Output from local_data_id " .
+								cacti_log('ERROR: Output from local_data_id ' .
 									$data_source['local_data_id'] .
 									", for RRDfile DS Name '$ds', is invalid.  " .
 									"It outputs was : '" . $value . "'. " .
-									"Please check your script or data input method for errors.");
+									'Please check your script or data input method for errors.');
 							}
 
 							$lastval = '';
@@ -745,109 +761,108 @@ function dsstats_poller_output(&$rrd_update_array) {
 							}
 
 							switch ($ds_type) {
-							case 2:	// COUNTER
-							case 6:	// DCOUNTER
-								/* get the last values from the database for COUNTER and DERIVE data sources */
-								$ds_last = db_fetch_cell_prepared('SELECT SQL_NO_CACHE `value`
+								case 2:	// COUNTER
+								case 6:	// DCOUNTER
+									/* get the last values from the database for COUNTER and DERIVE data sources */
+									$ds_last = db_fetch_cell_prepared('SELECT SQL_NO_CACHE `value`
 									FROM data_source_stats_hourly_last
 									WHERE local_data_id = ?
 									AND rrd_name = ?',
-									array($result['local_data_id'], $result['rrd_name']));
+										array($result['local_data_id'], $result['rrd_name']));
 
-								if ($ds_last == '' || $ds_last == 'NULL') {
-									$currentval = 'NULL';
-								} elseif ($result['output'] == 'NULL') {
-									$currentval = 'NULL';
-								} elseif ($result['output'] >= $ds_last) {
-									/* everything is normal */
-									$currentval = $result['output'] - $ds_last;
-								} else {
-									$max_value = $ds_types[$result['rrd_name']]['rrd_maximum'];
-
-									/* possible overflow, see if its 32bit or 64bit */
-									if ($ds_last > 4294967295) {
-										$currentval = (18446744073709551615 - $ds_last) + $result['output'];
-									} else {
-										$currentval = (4294967295 - $ds_last) + $result['output'];
-									}
-
-									if ($max_value != 'U' && $currentval > $max_value) {
+									if ($ds_last == '' || $ds_last == 'NULL') {
 										$currentval = 'NULL';
-									}
-								}
+									} elseif ($result['output'] == 'NULL') {
+										$currentval = 'NULL';
+									} elseif ($result['output'] >= $ds_last) {
+										/* everything is normal */
+										$currentval = $result['output'] - $ds_last;
+									} else {
+										$max_value = $ds_types[$result['rrd_name']]['rrd_maximum'];
 
-								if ($currentval != 'NULL') {
-									$currentval = $currentval / $polling_interval;
+										/* possible overflow, see if its 32bit or 64bit */
+										if ($ds_last > 4294967295) {
+											$currentval = (18446744073709551615 - $ds_last) + $result['output'];
+										} else {
+											$currentval = (4294967295 - $ds_last) + $result['output'];
+										}
+
+										if ($max_value != 'U' && $currentval > $max_value) {
+											$currentval = 'NULL';
+										}
+									}
+
+									if ($currentval != 'NULL') {
+										$currentval = $currentval / $polling_interval;
+
+										if ($ds_type == 6) {
+											$currentval = round($currentval, 0);
+										}
+									}
+
+									$lastval = $result['output'];
 
 									if ($ds_type == 6) {
-										$currentval = round($currentval, 0);
+										$lastval = round($lastval, 0);
 									}
-								}
 
-								$lastval = $result['output'];
-
-								if ($ds_type == 6) {
-									$lastval = round($lastval, 0);
-								}
-
-								break;
-							case 3:	// DERIVE
-							case 7:	// DDERIVE
-								/* get the last values from the database for COUNTER and DERIVE data sources */
-								$ds_last = db_fetch_cell_prepared('SELECT SQL_NO_CACHE `value`
+									break;
+								case 3:	// DERIVE
+								case 7:	// DDERIVE
+									/* get the last values from the database for COUNTER and DERIVE data sources */
+									$ds_last = db_fetch_cell_prepared('SELECT SQL_NO_CACHE `value`
 									FROM data_source_stats_hourly_last
 									WHERE local_data_id = ?
 									AND rrd_name = ?', array($result['local_data_id'], $result['rrd_name']));
 
-								if ($ds_last == '') {
-									$currentval = 'NULL';
-								} elseif ($result['output'] != 'NULL') {
-									$currentval = ($result['output'] - $ds_last) / $polling_interval;
+									if ($ds_last == '') {
+										$currentval = 'NULL';
+									} elseif ($result['output'] != 'NULL') {
+										$currentval = ($result['output'] - $ds_last) / $polling_interval;
+
+										if ($ds_type == 7) {
+											$currentval = round($currentval, 0);
+										}
+									} else {
+										$currentval = 'NULL';
+									}
+
+									$lastval = $result['output'];
 
 									if ($ds_type == 7) {
-										$currentval = round($currentval, 0);
+										$lastval = round($lastval, 0);
 									}
-								} else {
-									$currentval = 'NULL';
-								}
 
-								$lastval = $result['output'];
+									break;
+								case 4:	// ABSOLUTE
+									if ($result['output']          != 'NULL' &&
+										$result['output']             != 'U' &&
+										strtolower($result['output']) != 'nan') {
+										$currentval = abs($result['output']);
+										$lastval    = $currentval;
+									} else {
+										$currentval = 'NULL';
+										$lastval    = $currentval;
+									}
 
-								if ($ds_type == 7) {
-									$lastval = round($lastval, 0);
-								}
+									break;
+								case 1:	// GAUGE
+									if ($result['output']          != 'NULL' &&
+										$result['output']             != 'U' &&
+										strtolower($result['output']) != 'nan') {
+										$currentval = $result['output'];
+										$lastval    = $result['output'];
+									} else {
+										$currentval = 'NULL';
+										$lastval    = $currentval;
+									}
 
-								break;
-							case 4:	// ABSOLUTE
-								if ($result['output'] != 'NULL' &&
-									$result['output'] != 'U' &&
-									strtolower($result['output']) != 'nan') {
+									break;
 
-									$currentval = abs($result['output']);
-									$lastval    = $currentval;
-								} else {
-									$currentval = 'NULL';
-									$lastval    = $currentval;
-								}
+								default:
+									cacti_log("WARNING: Unknown RRDtool Data Type '" . $ds_types[$result['rrd_name']]['data_source_type_id'] . "', For '" . $result['rrd_name'] . "'", false, 'DSSTATS');
 
-								break;
-							case 1:	// GAUGE
-								if ($result['output'] != 'NULL' &&
-									$result['output'] != 'U' &&
-									strtolower($result['output']) != 'nan') {
-
-									$currentval = $result['output'];
-									$lastval    = $result['output'];
-								} else {
-									$currentval = 'NULL';
-									$lastval    = $currentval;
-								}
-
-								break;
-							default:
-								cacti_log("WARNING: Unknown RRDtool Data Type '" . $ds_types[$result['rrd_name']]['data_source_type_id'] . "', For '" . $result['rrd_name'] . "'", false, 'DSSTATS');
-
-								break;
+									break;
 							}
 
 							/* when doing bulk inserts, the second record is different */
@@ -883,7 +898,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 									$last_delim . '(' .
 									$result['local_data_id'] . ", '" .
 									$result['rrd_name'] . "', " .
-									$lastval . ", " .
+									$lastval . ', ' .
 									$currentval . ')';
 
 								$last_i++;
@@ -892,7 +907,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 
 							/* if we exceed our output buffer, it's time to write */
 							if ((($out_length + $overhead) > $max_packet) ||
-								(($last_length + $overhead_last) > $max_packet )) {
+								(($last_length + $overhead_last) > $max_packet)) {
 								db_execute($sql_cache_prefix . $cachebuf . $sql_suffix);
 
 								if ($last_i > 1) {
@@ -911,7 +926,9 @@ function dsstats_poller_output(&$rrd_update_array) {
 
 							$n++;
 
-							if (($n % 1000) == 0) print '.';
+							if (($n % 1000) == 0) {
+								print '.';
+							}
 						}
 					}
 				}
@@ -949,7 +966,7 @@ function dsstats_boost_bottom() {
 	$total_dsses  = 0;
 
 	if (read_config_option('dsstats_enable') == 'on') {
-		include_once($config['base_path'] . '/lib/rrd.php');
+		include_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
 		/* run the daily stats. log to database to prevent secondary runs */
 		set_config_option('dsstats_last_daily_run_time', date('Y-m-d G:i:s', time()));
@@ -987,23 +1004,24 @@ function dsstats_memory_limit() {
  *
  * @return - NULL
  */
-function dsstats_poller_bottom () {
+function dsstats_poller_bottom() {
 	global $config;
 
 	if (read_config_option('dsstats_enable') == 'on') {
-		include_once($config['library_path'] . '/poller.php');
+		include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
-		chdir($config['base_path']);
+		chdir(CACTI_PATH_BASE);
 
 		$command_string = read_config_option('path_php_binary');
+
 		if (read_config_option('path_dsstats_log') != '') {
 			if ($config['cacti_server_os'] == 'unix') {
-				$extra_args = '-q ' . $config['base_path'] . '/poller_dsstats.php >> ' . read_config_option('path_dsstats_log') . ' 2>&1';
+				$extra_args = '-q ' . CACTI_PATH_BASE . '/poller_dsstats.php >> ' . read_config_option('path_dsstats_log') . ' 2>&1';
 			} else {
-				$extra_args = '-q ' . $config['base_path'] . '/poller_dsstats.php >> ' . read_config_option('path_dsstats_log');
+				$extra_args = '-q ' . CACTI_PATH_BASE . '/poller_dsstats.php >> ' . read_config_option('path_dsstats_log');
 			}
 		} else {
-			$extra_args = '-q ' . $config['base_path'] . '/poller_dsstats.php';
+			$extra_args = '-q ' . CACTI_PATH_BASE . '/poller_dsstats.php';
 		}
 
 		exec_background($command_string, $extra_args);
@@ -1068,7 +1086,9 @@ function dsstats_rrdtool_execute($command, &$pipes) {
 
 	$stdout = '';
 
-	if ($command == '') return;
+	if ($command == '') {
+		return;
+	}
 
 	$command .= "\r\n";
 	$return_code = fwrite($pipes[0], $command);
@@ -1086,11 +1106,13 @@ function dsstats_rrdtool_execute($command, &$pipes) {
 			}
 		}
 	} elseif (!$broken) {
-		cacti_log("ERROR: RRDtool was unable to fork.  Likely RRDtool can not be found or system out of resources.  Blocking subsequent messages.", false, 'POLLER');
+		cacti_log('ERROR: RRDtool was unable to fork.  Likely RRDtool can not be found or system out of resources.  Blocking subsequent messages.', false, 'POLLER');
 		$broken = true;
 	}
 
-	if (strlen($stdout)) return $stdout;
+	if (strlen($stdout)) {
+		return $stdout;
+	}
 }
 
 /**
@@ -1098,6 +1120,7 @@ function dsstats_rrdtool_execute($command, &$pipes) {
  *   closing the pipes.
  *
  * @return - NULL
+ * @param mixed $process
  */
 function dsstats_rrdtool_close($process) {
 	proc_close($process);
@@ -1131,7 +1154,7 @@ function dsstats_launch_children($type) {
 
 		cacti_log(sprintf('NOTE: Launching DSStats Process Number %s for Type %s', $i, $type), false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
 
-		exec_background($php_binary, $config['base_path'] . "/poller_dsstats.php --type=$sub_type --child=$i" . ($debug ? ' --debug':''));
+		exec_background($php_binary, CACTI_PATH_BASE . "/poller_dsstats.php --type=$sub_type --child=$i" . ($debug ? ' --debug':''));
 	}
 
 	sleep(2);
@@ -1149,12 +1172,15 @@ function dsstats_get_subtype($type) {
 	switch($type) {
 		case 'master':
 			return 'child';
+
 			break;
 		case 'bmaster':
 			return 'bchild';
+
 			break;
 		case 'dmaster':
 			return 'dchild';
+
 			break;
 	}
 }
@@ -1185,7 +1211,7 @@ function dsstats_kill_running_processes() {
 	}
 
 	if (cacti_sizeof($processes)) {
-		foreach($processes as $p) {
+		foreach ($processes as $p) {
 			cacti_log(sprintf('WARNING: Killing DSStats %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'BOOST');
 			posix_kill($p['pid'], SIGTERM);
 
@@ -1217,4 +1243,3 @@ function dsstats_processes_running($type) {
 
 	return $running;
 }
-

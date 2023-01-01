@@ -25,7 +25,7 @@
 function upgrade_to_0_8_7h() {
 	global $config;
 
-	require_once($config['base_path'] . '/lib/poller.php');
+	require_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 	/* speed up the reindexing */
 	db_install_add_column('host_snmp_cache', array('name' => 'present', 'type' => 'tinyint', 'NULL' => false, 'default' => '1', 'after' => 'oid'));

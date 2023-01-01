@@ -39,36 +39,41 @@ $plugin = '';
 $create = true;
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
 		switch ($arg) {
 			case '--table':
 				$table = trim(sql_clean($value));
+
 				break;
 			case '--plugin':
 				$plugin = trim(sql_clean($value));
+
 				break;
 			case '--update':
 				$create = false;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
-				exit(0);
-			default:
 
+				exit(0);
+
+			default:
 		}
 	}
 }
@@ -76,6 +81,7 @@ if (cacti_sizeof($parms)) {
 if ($table == '') {
 	print "ERROR: You must provide a table name\n";
 	display_help();
+
 	exit(1);
 } else {
 	print sqltable_to_php($table, $create, $plugin);
@@ -84,7 +90,7 @@ if ($table == '') {
 function sqltable_to_php($table, $create, $plugin = '') {
 	global $config, $database_default;
 
-	include_once($config['library_path'] . '/database.php');
+	include_once(CACTI_PATH_LIBRARY . '/database.php');
 
 	$result = db_fetch_assoc('SHOW tables FROM `' . $database_default . '`');
 
@@ -92,17 +98,18 @@ function sqltable_to_php($table, $create, $plugin = '') {
 	$text   = '';
 
 	if (cacti_sizeof($result)) {
-		foreach($result as $index => $arr) {
+		foreach ($result as $index => $arr) {
 			foreach ($arr as $t) {
 				$tables[] = $t;
 			}
 		}
 	} else {
 		print "ERROR: Obtaining list of tables from $database_default\n";
+
 		exit;
 	}
 
-	if (in_array($table, $tables)) {
+	if (in_array($table, $tables, true)) {
 		$result = db_fetch_assoc("SHOW FULL columns FROM $table");
 
 		$cols   = array();
@@ -147,10 +154,12 @@ function sqltable_to_php($table, $create, $plugin = '') {
 			}
 		} else {
 			print "ERROR: Obtaining list of columns from $table\n";
+
 			exit;
 		}
 
 		$result = db_fetch_assoc("SHOW INDEX FROM $table");
+
 		if (cacti_sizeof($result)) {
 			foreach ($result as $r) {
 				if ($r['Key_name'] == 'PRIMARY') {
@@ -162,7 +171,7 @@ function sqltable_to_php($table, $create, $plugin = '') {
 
 			if (!empty($pri)) {
 				if ($plugin != '' || $create) {
-					$text .= "\$data['primary'] = '" . implode("`,`", $pri) . "';\n";
+					$text .= "\$data['primary'] = '" . implode('`,`', $pri) . "';\n";
 				} else {
 					$text .= "\$data['primary'] = array('" . implode("','", $pri) . "');\n";
 				}
@@ -171,7 +180,7 @@ function sqltable_to_php($table, $create, $plugin = '') {
 			if (!empty($keys)) {
 				foreach ($keys as $n => $k) {
 					if ($plugin != '') {
-						$text .= "\$data['keys'][] = array('name' => '$n', 'columns' => '" . implode("`,`", $k) . "');\n";
+						$text .= "\$data['keys'][] = array('name' => '$n', 'columns' => '" . implode('`,`', $k) . "');\n";
 					} else {
 						$text .= "\$data['keys'][] = array('name' => '$n', 'columns' => array('" . implode("','", $k) . "'));\n";
 					}
@@ -191,10 +200,12 @@ function sqltable_to_php($table, $create, $plugin = '') {
 		if (cacti_sizeof($result)) {
 			$text .= "\$data['type'] = '" . $result['ENGINE'] . "';\n";
 			$text .= "\$data['charset'] = '" . $result['CHARACTER_SET_NAME'] . "';\n";
+
 			if (!empty($result['TABLE_COMMENT'])) {
 				$text .= "\$data['comment'] = '" . $result['TABLE_COMMENT'] . "';\n";
 			}
 			$text .= "\$data['row_format'] = '" . $result['ROW_FORMAT'] . "';\n";
+
 			if ($create) {
 				if ($plugin != '') {
 					$text .= "api_plugin_db_table_create ('$plugin', '$table', \$data);\n";
@@ -206,6 +217,7 @@ function sqltable_to_php($table, $create, $plugin = '') {
 			}
 		} else {
 			print "ERROR: Unable to get tables details from Information Schema\n";
+
 			exit;
 		}
 	}
@@ -214,7 +226,8 @@ function sqltable_to_php($table, $create, $plugin = '') {
 }
 
 function sql_clean($text) {
-	$text = str_replace(array("\\", '/', "'", '"', '|'), '', $text);
+	$text = str_replace(array('\\', '/', "'", '"', '|'), '', $text);
+
 	return $text;
 }
 
@@ -241,4 +254,3 @@ function display_help() {
 	print "--update           - The utility provides create syntax.  If the update flag is\n";
 	print "                     specified, the utility will provide update syntax\n\n";
 }
-

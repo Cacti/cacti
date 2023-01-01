@@ -62,7 +62,7 @@ function update_data_source_title_cache_from_query($snmp_query_id, $snmp_index) 
    @arg $host_id - (int) the ID of the host to match */
 function update_data_source_title_cache_from_host($host_id, $query_id = 0, $ids = array()) {
 	if ($query_id > 0 && !cacti_sizeof($ids)) {
-	$data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
+		$data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 		FROM data_local
 			WHERE host_id = ?
 			AND snmp_query_id = ?',
@@ -157,7 +157,7 @@ function update_graph_title_cache_from_query($snmp_query_id, $snmp_index) {
    @arg $host_id - (int) the ID of the host to match */
 function update_graph_title_cache_from_host($host_id, $query_id = 0, $ids = array()) {
 	if ($query_id > 0 && !cacti_sizeof($ids)) {
-	$graphs = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
+		$graphs = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 		FROM graph_local
 			WHERE host_id = ?
 			AND snmp_query_id = ?',
@@ -249,6 +249,7 @@ function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
 	);
 
 	$data = api_plugin_hook_function('expand_title', $data);
+
 	if (isset($data['title'])) {
 		$title = $data['title'];
 	}
@@ -262,7 +263,7 @@ function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
 function substitute_script_query_path($path) {
 	global $config;
 
-	$path = clean_up_path(str_replace('|path_cacti|', $config['base_path'], $path));
+	$path = clean_up_path(str_replace('|path_cacti|', CACTI_PATH_BASE, $path));
 	$path = clean_up_path(str_replace('|path_php_binary|', read_config_option('path_php_binary'), $path));
 
 	return $path;
@@ -453,7 +454,7 @@ function substitute_data_input_data($string, $graph, $local_data_id, $max_chars 
 	}
 
 	if (!empty($data_template_data_id)) {
-		$data = db_fetch_assoc_prepared("SELECT " . SQL_NO_CACHE . "
+		$data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . "
 			dif.data_name, did.value
 			FROM data_input_fields AS dif
 			INNER JOIN data_input_data AS did
@@ -477,4 +478,3 @@ function substitute_data_input_data($string, $graph, $local_data_id, $max_chars 
 
 	return $string;
 }
-

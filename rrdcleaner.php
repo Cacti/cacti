@@ -23,15 +23,15 @@
 */
 
 include_once('./include/auth.php');
-include_once($config['library_path'] . '/functions.php');
-include_once($config['library_path'] . '/rrd.php');
+include_once(CACTI_PATH_LIBRARY . '/functions.php');
+include_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
 $ds_actions = array(
 	1 => __x('dropdown action', 'Delete'),
 	3 => __x('dropdown action', 'Archive')
 );
 
-$rra_path = $config['rra_path'] . '/';
+$rra_path = CACTI_PATH_RRA . '/';
 
 /* set default action */
 set_default_action();
@@ -66,6 +66,7 @@ switch (get_request_var('action')) {
 		bottom_footer();
 
 		break;
+
 	default:
 		top_header();
 		/* fill files name table */
@@ -135,8 +136,9 @@ function rrdclean_truncate_tables() {
 /*
  * PHP Error Handler
  */
-function rrdclean_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
+function rrdclean_error_handler($errno, $errmsg, $filename, $linenum, $vars = array()) {
 	global $debug;
+
 	if ($debug) {
 		/* define all error types */
 		$errortype = array(
@@ -153,7 +155,6 @@ function rrdclean_error_handler($errno, $errmsg, $filename, $linenum, $vars = []
 			E_USER_NOTICE       => 'User Notice',
 			#			E_STRICT            => 'Runtime Notice',
 			#			E_RECOVERABLE_ERROR => 'Catchable Fatal Error'
-
 		);
 
 		/* create an error string for the log */
@@ -162,10 +163,13 @@ function rrdclean_error_handler($errno, $errmsg, $filename, $linenum, $vars = []
 			"' LINE NO:'" . $linenum . "'";
 
 		/* let's ignore some lesser issues */
-		if (substr_count($errmsg, 'date_default_timezone'))
+		if (substr_count($errmsg, 'date_default_timezone')) {
 			return;
-		if (substr_count($errmsg, 'Only variables'))
+		}
+
+		if (substr_count($errmsg, 'Only variables')) {
 			return;
+		}
 
 		print('PROGERR: ' . $err . "\n"); # print_r($vars); print('</pre>');
 	}
@@ -187,7 +191,8 @@ function get_files() {
 	set_error_handler('rrdclean_error_handler');
 
 	$files_unused = array();
-	$arc_path = read_config_option('rrd_archive');
+	$arc_path     = read_config_option('rrd_archive');
+
 	if (substr_count($arc_path, $rra_path)) {
 		$archive = true;
 		$arcbase = basename($arc_path);
@@ -208,7 +213,6 @@ function get_files() {
 	$sql  = array();
 
 	if (read_config_option('storage_location')) {
-
 		$rrdtool_pipe = rrd_init();
 		rrdtool_execute('setcnn timeout off', false, RRDTOOL_OUTPUT_NULL, $rrdtool_pipe, $logopt = 'POLLER');
 		$scan = rrdtool_execute('rrd-list', false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, $logopt = 'POLLER');
@@ -216,9 +220,10 @@ function get_files() {
 
 		if ($scan) {
 			$files = explode("\r\n", $scan);
+
 			foreach ($files as $file) {
 				list($pathname, $size, $mtime) = explode(',', $file);
-				$sql[] = "('" . str_replace($rra_path, '', $pathname) . "', " . $size . ", '" . date('Y-m-d H:i:s', $mtime) . "',0)";
+				$sql[]                         = "('" . str_replace($rra_path, '', $pathname) . "', " . $size . ", '" . date('Y-m-d H:i:s', $mtime) . "',0)";
 				$size++;
 
 				if ($size == 400) {
@@ -228,14 +233,13 @@ function get_files() {
 					ON DUPLICATE KEY UPDATE size=VALUES(size), last_mod=VALUES(last_mod)');
 
 					$size = 0;
-					$sql = array();
+					$sql  = array();
 				}
 			}
 		}
 	} else {
-
 		$dir_iterator = new RecursiveDirectoryIterator($rra_path);
-		$iterator = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::SELF_FIRST);
+		$iterator     = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::SELF_FIRST);
 
 		foreach ($iterator as $file) {
 			if (substr($file->getPathname(), -3) == 'rrd' && !($archive && strstr($file->getPathname(), $arcbase . '/') !== false)) {
@@ -249,7 +253,7 @@ function get_files() {
 					ON DUPLICATE KEY UPDATE size=VALUES(size), last_mod=VALUES(last_mod)');
 
 					$size = 0;
-					$sql = array();
+					$sql  = array();
 				}
 			}
 		}
@@ -281,31 +285,31 @@ function list_rrd() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 		),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 		),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 		),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 		),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 		),
 		'age' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '0'
 		)
@@ -329,17 +333,17 @@ function list_rrd() {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where .= ' AND (
-			rc.name LIKE '          . db_qstr('%' . get_request_var('filter') . '%') . '
+			rc.name LIKE '		  . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR rc.name_cache LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR dt.name LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . ')';
+			OR dt.name LIKE '	   . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 
 	$secsback = get_request_var('age');
 
 	if (get_request_var('age') == 0) {
-		$sql_where .= " AND last_mod>='" . date("Y-m-d H:i:s", time() - (86400 * 7)) . "'";
+		$sql_where .= " AND last_mod>='" . date('Y-m-d H:i:s', time() - (86400 * 7)) . "'";
 	} else {
-		$sql_where .= " AND last_mod<='" . date("Y-m-d H:i:s", (time() - $secsback)) . "'";
+		$sql_where .= " AND last_mod<='" . date('Y-m-d H:i:s', (time() - $secsback)) . "'";
 	}
 
 	$total_rows = db_fetch_cell("SELECT COUNT(rc.name)
@@ -366,7 +370,7 @@ function list_rrd() {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar($config['url_path'] . 'rrdcleaner.php?filter' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('RRD Files'), 'page', 'main');
+	$nav = html_nav_bar(CACTI_PATH_URL . 'rrdcleaner.php?filter' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('RRD Files'), 'page', 'main');
 
 	form_start('rrdcleaner.php');
 
@@ -391,7 +395,7 @@ function list_rrd() {
 			$data_template_name = ((empty($file['data_template_name'])) ? '<em>None</em>' : $file['data_template_name']);
 			form_alternate_row('line' . $file['id'], true);
 			form_selectable_cell(filter_value($file['name'], get_request_var('filter')), $file['id']);
-			form_selectable_cell(filter_value($file['name_cache'], get_request_var('filter'), $config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $file['local_data_id']), $file['id']);
+			form_selectable_cell(filter_value($file['name_cache'], get_request_var('filter'), CACTI_PATH_URL . 'data_sources.php?action=ds_edit&id=' . $file['local_data_id']), $file['id']);
 			form_selectable_cell($file['local_data_id'] > 0 ? $file['local_data_id'] : '<i>' . __('Deleted') . '</i>', $file['id']);
 			form_selectable_cell($file['data_template_id'] > 0 ? $file['data_template_id'] : '<i>' . __('Deleted') . '</i>', $file['id']);
 			form_selectable_cell(filter_value($file['data_template_name'], get_request_var('filter')), $file['id']);
@@ -401,7 +405,7 @@ function list_rrd() {
 			form_end_row();
 		}
 	} else {
-		print "<tr><td><em>" . __('No unused RRD Files') . "</em></td></tr>\n";
+		print '<tr><td><em>' . __('No unused RRD Files') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
@@ -477,10 +481,10 @@ function do_rrd() {
 				WHERE id = ?', array($matches[1]));
 
 			/* add to data_source_purge_action table */
-			$sql = "INSERT INTO data_source_purge_action
+			$sql = 'INSERT INTO data_source_purge_action
 				(name, local_data_id, action)
 				VALUES(?, ?, ?)
-				ON DUPLICATE KEY UPDATE local_data_id = VALUES(local_data_id)";
+				ON DUPLICATE KEY UPDATE local_data_id = VALUES(local_data_id)';
 
 			db_execute_prepared($sql, array($unused_file['name'], $unused_file['local_data_id'], get_nfilter_request_var('drp_action')));
 
@@ -496,7 +500,7 @@ function do_rrd() {
 function filter() {
 	global $item_rows;
 
-?>
+	?>
 	<tr class='even'>
 		<td>
 			<form id='form_rrdclean' method='get' action='rrdcleaner.php'>
@@ -529,18 +533,19 @@ function filter() {
 						</td>
 						<td>
 							<select id='rows'>
-								<option value='-1' <?php print (get_request_var('rows') == '-1' ? ' selected>' : '>') . __('Default'); ?></option>
+								<option value='-1' <?php print(get_request_var('rows') == '-1' ? ' selected>' : '>') . __('Default'); ?></option>
 									<?php
-									if (cacti_sizeof($item_rows)) {
-										foreach ($item_rows as $key => $value) {
-											print '<option value="' . $key . '"';
-											if (get_request_var('rows') == $key) {
-												print ' selected';
+										if (cacti_sizeof($item_rows)) {
+											foreach ($item_rows as $key => $value) {
+												print '<option value="' . $key . '"';
+
+												if (get_request_var('rows') == $key) {
+													print ' selected';
+												}
+												print '>' . $value . "</option>\n";
 											}
-											print '>' . $value . "</option>\n";
 										}
-									}
-									?>
+	?>
 							</select>
 						</td>
 						<td>

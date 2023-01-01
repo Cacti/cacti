@@ -31,51 +31,79 @@ define('SPIKE_METHOD_FLOAT',    3);
 class spikekill {
 	/* setup defaults */
 	private $std_kills = false;
+
 	private $var_kills = false;
+
 	private $out_kills = false;
+
 	private $out_set   = false;
+
 	private $username  = '';
+
 	private $user      = '';
+
 	private $user_info = array();
 
 	// Required variables
 	var $rrdfile   = '';
 
 	var $method    = '';
+
 	var $avgnan    = '';
+
 	var $stddev    = '';
 
 	var $out_start = '';
+
 	var $out_end   = '';
+
 	var $outliers  = '';
+
 	var $percent   = '';
+
 	var $numspike  = '';
 
 	// Overridable
 	var $html      = true;
+
 	var $backup    = false;
+
 	var $debug     = false;
+
 	var $dryrun    = false;
 
 	// Defaults from cacti settings
 	private $dmethod   = 1;
+
 	private $dnumspike = 10;
+
 	private $dstddev   = 10;
+
 	private $dpercent  = 500;
+
 	private $doutliers = 5;
+
 	private $davgnan   = 'last';
 
 	// Internal globals
 	private $tempdir     = '';
+
 	private $seed        = '';
+
 	private $strout      = '';
+
 	private $ds_min      = '';
+
 	private $ds_max      = '';
+
 	private $total_kills = 0;
 
 	private $rra_cf      = array();
+
 	private $ds_name     = array();
+
 	private $rra_pdp     = array();
+
 	private $step        = 0;
 
 	// For error handling
@@ -84,7 +112,6 @@ class spikekill {
 	public function __construct($rrdfile = '', $method = '', $avgnan = '', $stddev = '',
 		$out_start = '', $out_end = '', $outliers = '', $percent = '', $numspike = '',
 		$dsfilter = '', $absmax = '') {
-
 		$this->username  = 'OsUser:' . get_current_user();
 		$this->user_info = array();
 
@@ -172,7 +199,7 @@ class spikekill {
 		$output = '';
 
 		if (cacti_sizeof($this->errors)) {
-			foreach($this->errors as $error) {
+			foreach ($this->errors as $error) {
 				$output .= ($output != '' ? ($this->html ? '<br>':"\n"):'') . $error;
 			}
 		}
@@ -187,7 +214,7 @@ class spikekill {
 	private function initialize_spikekill() {
 		/* additional error check */
 		if ($this->rrdfile == '') {
-			$this->set_error("FATAL: You must specify an RRDfile!");
+			$this->set_error('FATAL: You must specify an RRDfile!');
 		}
 
 		if (!file_exists($this->rrdfile)) {
@@ -253,7 +280,7 @@ class spikekill {
 		}
 
 		if (!is_numeric($this->stddev) || ($this->stddev < 1)) {
-			$this->set_error("FATAL: Standard Deviation must be a positive integer.");
+			$this->set_error('FATAL: Standard Deviation must be a positive integer.');
 		}
 
 		if ($this->method == 'float' || $this->method == 'fill') {
@@ -266,11 +293,11 @@ class spikekill {
 			}
 
 			if ($this->out_start === false || $this->out_end === false) {
-				$this->set_error("FATAL: The outlier-start and outlier-end arguments must be in the format of YYYY-MM-DD HH:MM.");
+				$this->set_error('FATAL: The outlier-start and outlier-end arguments must be in the format of YYYY-MM-DD HH:MM.');
 			}
 
 			if (!is_numeric($this->outliers) || ($this->outliers < 1)) {
-				$this->set_error("FATAL: The number of outliers to exclude must be a positive integer.");
+				$this->set_error('FATAL: The number of outliers to exclude must be a positive integer.');
 			}
 
 			$this->out_set = true;
@@ -278,25 +305,25 @@ class spikekill {
 
 		if ($this->percent != '') {
 			if (is_numeric($this->percent) && $this->percent > 0) {
-				$this->percent = $this->percent/100;
+				$this->percent = $this->percent / 100;
 			} else {
-				$this->set_error("FATAL: Percent deviation must be a positive floating point number.");
+				$this->set_error('FATAL: Percent deviation must be a positive floating point number.');
 			}
 		}
 
 		if (!$this->numspike != '') {
 			if (!is_numeric($this->numspike) || ($this->numspike < 1)) {
-				$this->set_error("FATAL: Number of spikes to remove must be a positive integer");
+				$this->set_error('FATAL: Number of spikes to remove must be a positive integer');
 			}
 		}
 
 		if ((!empty($this->out_start) && empty($this->out_end)) || (!empty($this->out_end) && empty($this->out_start))) {
-			$this->set_error("FATAL: Outlier time range requires outlier-start and outlier-end to be specified.");
+			$this->set_error('FATAL: Outlier time range requires outlier-start and outlier-end to be specified.');
 		}
 
 		if (!empty($this->out_start)) {
 			if ($this->out_start >= $this->out_end) {
-				$this->set_error("FATAL: Outlier time range requires outlier-start to be less than outlier-end.");
+				$this->set_error('FATAL: Outlier time range requires outlier-start to be less than outlier-end.');
 			}
 		}
 
@@ -304,16 +331,21 @@ class spikekill {
 			/* the order of the following case statements reflects the order in the spikekill menu in the GUI. */
 			case 'stddev':
 				$this->method = SPIKE_METHOD_STDDEV;
+
 				break;
 			case 'variance':
 				$this->method = SPIKE_METHOD_VARIANCE;
+
 				break;
 			case 'fill':
 				$this->method = SPIKE_METHOD_FILL;
+
 				break;
 			case 'float':
 				$this->method = SPIKE_METHOD_FLOAT;
+
 				break;
+
 			default:
 				$this->set_error("FATAL: You must specify either 'stddev', 'variance', 'float', or 'fill' as methods.");
 		}
@@ -331,6 +363,7 @@ class spikekill {
 			case 'last':
 			case 'nan':
 				break;
+
 			default:
 				$this->set_error("FATAL: You must specify either 'last', 'avg' or 'nan' as a replacement method.");
 		}
@@ -352,18 +385,18 @@ class spikekill {
 
 		if ($config['cacti_server_os'] == 'win32') {
 			$this->tempdir  = read_config_option('spikekill_backupdir');
-			$xmlfile = $this->tempdir . '/' . str_replace('.rrd', '', basename($this->rrdfile)) . '.dump.' . $this->seed;
-			$bakfile = $this->tempdir . '/' . str_replace('.rrd', '', basename($this->rrdfile)) . '.backup.' . $this->seed . '.rrd';
+			$xmlfile        = $this->tempdir . '/' . str_replace('.rrd', '', basename($this->rrdfile)) . '.dump.' . $this->seed;
+			$bakfile        = $this->tempdir . '/' . str_replace('.rrd', '', basename($this->rrdfile)) . '.backup.' . $this->seed . '.rrd';
 		} else {
 			$this->tempdir = read_config_option('spikekill_backupdir');
-			$xmlfile = $this->tempdir . '/' . str_replace('.rrd', '', basename($this->rrdfile)) . '.dump.' . $this->seed;
-			$bakfile = $this->tempdir . '/' . str_replace('.rrd', '', basename($this->rrdfile)) . '.backup.' . $this->seed . '.rrd';
+			$xmlfile       = $this->tempdir . '/' . str_replace('.rrd', '', basename($this->rrdfile)) . '.dump.' . $this->seed;
+			$bakfile       = $this->tempdir . '/' . str_replace('.rrd', '', basename($this->rrdfile)) . '.backup.' . $this->seed . '.rrd';
 		}
 
 		$this->strout = '';
 
 		if (!empty($this->out_start) && !$this->dryrun) {
-			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') . "NOTE: Removing Outliers in Range and Replacing with Last" . ($this->html ? "</p>\n":"\n");
+			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') . 'NOTE: Removing Outliers in Range and Replacing with Last' . ($this->html ? "</p>\n":"\n");
 		}
 
 		/* execute the dump command */
@@ -371,25 +404,30 @@ class spikekill {
 
 		if (!$this->dryrun) {
 			switch ($this->method) {
-			case SPIKE_METHOD_STDDEV:
-				$mm  = 'StdDev';
-				$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm, StdDevs:$this->stddev, AvgNan:$this->avgnan, Kills:$this->numspike, Outliers:$this->outliers";
-				break;
-			case SPIKE_METHOD_VARIANCE:
-				$mm  = 'Variance';
-				$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm, AvgNan:$this->avgnan, Kills:$this->numspike, Outliers:$this->outliers, Percent:" . round($this->percent*100,2) . "%";
-				break;
-			case SPIKE_METHOD_FLOAT:
-				$mm  = 'RangeFloat';
-				$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm, OutStart:$this->out_start, OutEnd:$this->out_end, AvgNan:$this->avgnan";
-				break;
-			case SPIKE_METHOD_FILL:
-				$mm  = 'GapFill';
-				$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm, OutStart:$this->out_start, OutEnd:$this->out_end, AvgNan:$this->avgnan";
-				break;
-			default:
-				$mm  = 'Undefined';
-				$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm";
+				case SPIKE_METHOD_STDDEV:
+					$mm  = 'StdDev';
+					$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm, StdDevs:$this->stddev, AvgNan:$this->avgnan, Kills:$this->numspike, Outliers:$this->outliers";
+
+					break;
+				case SPIKE_METHOD_VARIANCE:
+					$mm  = 'Variance';
+					$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm, AvgNan:$this->avgnan, Kills:$this->numspike, Outliers:$this->outliers, Percent:" . round($this->percent * 100,2) . '%';
+
+					break;
+				case SPIKE_METHOD_FLOAT:
+					$mm  = 'RangeFloat';
+					$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm, OutStart:$this->out_start, OutEnd:$this->out_end, AvgNan:$this->avgnan";
+
+					break;
+				case SPIKE_METHOD_FILL:
+					$mm  = 'GapFill';
+					$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm, OutStart:$this->out_start, OutEnd:$this->out_end, AvgNan:$this->avgnan";
+
+					break;
+
+				default:
+					$mm  = 'Undefined';
+					$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm";
 			}
 
 			cacti_log($mes, false, 'SPIKEKILL');
@@ -404,7 +442,8 @@ class spikekill {
 			/* remove the temp file */
 			unlink($xmlfile);
 		} else {
-			$this->set_error("FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!");
+			$this->set_error('FATAL: RRDtool Command Failed.  Please verify that the RRDtool path is valid in Settings->Paths!');
+
 			return false;
 		}
 
@@ -414,6 +453,7 @@ class spikekill {
 				$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') . "NOTE: RRDfile '$this->rrdfile' backed up to '$bakfile'" . ($this->html ? "</p>\n":"\n");
 			} else {
 				$this->set_error("FATAL: RRDfile Backup of '$this->rrdfile' to '$bakfile' FAILED!");
+
 				return false;
 			}
 		}
@@ -458,7 +498,7 @@ class spikekill {
 		   The we don't need to know the type of rra, only it's number for this analysis
 		   the same applies for the ds' as well.
 		*/
-		$rra     = array();
+		$rra           = array();
 		$this->rra_cf  = array();
 		$this->rra_pdp = array();
 
@@ -486,16 +526,17 @@ class spikekill {
 		 *
 		 */
 		if (cacti_sizeof($output)) {
-			foreach($output as $line) {
+			foreach ($output as $line) {
 				if (substr_count($line, '<v>')) {
 					$linearray = explode('<v>', $line);
 
 					/* get the timestamp */
 					$timestamp_part = $linearray[0];
+
 					if (strpos($timestamp_part, '<timestamp>') !== false) {
 						$timestamp_part = str_replace('<row><timestamp>', '', $timestamp_part);
 						$timestamp_part = str_replace('</timestamp>', '', $timestamp_part);
-						$timestamp = trim($timestamp_part);
+						$timestamp      = trim($timestamp_part);
 					} else {
 						$timestamp = 0;
 					}
@@ -503,7 +544,8 @@ class spikekill {
 					/* discard the first piece of the exploded line */
 					array_shift($linearray);
 					$ds_num = 0;
-					foreach($linearray as $dsvalue) {
+
+					foreach ($linearray as $dsvalue) {
 						/* peel off garbage */
 						$dsvalue = trim(str_replace('</row>', '', str_replace('</v>', '', $dsvalue)));
 
@@ -603,8 +645,8 @@ class spikekill {
 				"NOTE: Searching for Spikes in XML file '$xmlfile'" . ($this->html ? "</p>\n":"\n");
 		} else {
 			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-				"NOTE: Limited to window: " . date('M j, Y H:i:s',$this->out_start) . " thru " . date('M j, Y H:i:s',$this->out_end) . ($this->html ? "</p>\n":"\n");
-			cacti_log("DEBUG: Limited to window: " . date('M j, Y H:i:s',$this->out_start) . " thru " . date('M j, Y H:i:s',$this->out_end), false, 'SPIKE', POLLER_VERBOSITY_DEBUG);
+				'NOTE: Limited to window: ' . date('M j, Y H:i:s',$this->out_start) . ' thru ' . date('M j, Y H:i:s',$this->out_end) . ($this->html ? "</p>\n":"\n");
+			cacti_log('DEBUG: Limited to window: ' . date('M j, Y H:i:s',$this->out_start) . ' thru ' . date('M j, Y H:i:s',$this->out_end), false, 'SPIKE', POLLER_VERBOSITY_DEBUG);
 		}
 
 		$this->calculateOverallStatistics($rra, $samples);
@@ -632,7 +674,7 @@ class spikekill {
 
 				if (!$this->dryrun) {
 					$new_output = $this->updateXML($output, $rra);
-					$output = true;
+					$output     = true;
 				}
 			} elseif (!empty($this->out_start)) {
 				$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
@@ -648,7 +690,7 @@ class spikekill {
 
 				if (!$this->dryrun) {
 					$new_output = $this->updateXML($output, $rra);
-					$output = true;
+					$output     = true;
 				}
 			} elseif (!empty($this->out_start)) {
 				$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
@@ -677,18 +719,18 @@ class spikekill {
 				}
 			} else {
 				$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-					"NOTE: No Spikes Found." . ($this->html ? "</p>\n":"\n");
+					'NOTE: No Spikes Found.' . ($this->html ? "</p>\n":"\n");
 			}
 		} else {
 			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
-				"NOTE: Dryrun requested.  No updates performed" . ($this->html ? "</p>\n":"\n");
+				'NOTE: Dryrun requested.  No updates performed' . ($this->html ? "</p>\n":"\n");
 		}
 
-		$this->strout .= ($this->html ? "</table>":'');
+		$this->strout .= ($this->html ? '</table>':'');
 
 		if ($this->total_kills > 0) {
 			cacti_log("WARNING: Removed '$this->total_kills' Spikes from '$this->rrdfile', Method:'$this->method'", false, 'WEBUI');
-		} elseif($this->debug) {
+		} elseif ($this->debug) {
 			cacti_log("NOTE: Removed '$this->total_kills' Spikes from '$this->rrdfile', Method:'$this->method'", false, 'WEBUI');
 		}
 
@@ -736,14 +778,14 @@ class spikekill {
 		$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
 			"NOTE: Backing Up '$rrdfile' to '" . $backupdir . '/' .  $newfile . "'" . ($this->html ? "</p>\n":"\n");
 
-		return copy($rrdfile, $backupdir . "/" . $newfile);
+		return copy($rrdfile, $backupdir . '/' . $newfile);
 	}
 
 	private function calculateVarianceAverages(&$rra, &$samples) {
 		if (cacti_sizeof($samples)) {
-			foreach($samples as $rra_num => $dses) {
+			foreach ($samples as $rra_num => $dses) {
 				if (cacti_sizeof($dses)) {
-					foreach($dses as $ds_num => $ds) {
+					foreach ($dses as $ds_num => $ds) {
 						if (empty($this->out_start)) {
 							if (cacti_sizeof($ds) < $this->outliers * 3) {
 								$rra[$rra_num][$ds_num]['variance_avg'] = 'NAN';
@@ -788,14 +830,16 @@ class spikekill {
 
 	private function calculateOverallStatistics(&$rra, &$samples) {
 		$rra_num = 0;
+
 		if (cacti_sizeof($rra)) {
-			foreach($rra as $dses) {
+			foreach ($rra as $dses) {
 				$ds_num = 0;
 
 				if (cacti_sizeof($dses)) {
-					foreach($dses as $ds) {
+					foreach ($dses as $ds) {
 						if (isset($samples[$rra_num][$ds_num])) {
 							$rra[$rra_num][$ds_num]['standard_deviation'] = $this->processStandardDeviationCalculation($samples[$rra_num][$ds_num]);
+
 							if ($rra[$rra_num][$ds_num]['standard_deviation'] == 'NAN') {
 								$rra[$rra_num][$ds_num]['standard_deviation'] = 0;
 							}
@@ -811,11 +855,13 @@ class spikekill {
 							}
 
 							$rra[$rra_num][$ds_num]['min_cutoff'] = $rra[$rra_num][$ds_num]['average'] - ($this->stddev * $rra[$rra_num][$ds_num]['standard_deviation']);
+
 							if ($rra[$rra_num][$ds_num]['min_cutoff'] < $this->ds_min[$ds_num]) {
 								$rra[$rra_num][$ds_num]['min_cutoff'] = $this->ds_min[$ds_num];
 							}
 
 							$rra[$rra_num][$ds_num]['max_cutoff'] = $rra[$rra_num][$ds_num]['average'] + ($this->stddev * $rra[$rra_num][$ds_num]['standard_deviation']);
+
 							if ($rra[$rra_num][$ds_num]['max_cutoff'] > $this->ds_max[$ds_num]) {
 								$rra[$rra_num][$ds_num]['max_cutoff'] = $this->ds_max[$ds_num];
 							}
@@ -831,7 +877,7 @@ class spikekill {
 
 							/* count the number of kills required */
 							if (cacti_sizeof($samples[$rra_num][$ds_num])) {
-								foreach($samples[$rra_num][$ds_num] as $timestamp => $sample) {
+								foreach ($samples[$rra_num][$ds_num] as $timestamp => $sample) {
 									if (!empty($this->out_start) && $timestamp >= $this->out_start && $timestamp <= $this->out_end) {
 										if ($this->method == SPIKE_METHOD_FLOAT) {
 											$this->debug(sprintf("Window Float Kill: Value '%.4e', Time '%s'", $sample, date('Y-m-d H:i', $timestamp)));
@@ -839,7 +885,7 @@ class spikekill {
 											$rra[$rra_num][$ds_num]['outwind_killed']++;
 											$this->out_kills = true;
 										} elseif ($this->method == SPIKE_METHOD_FILL) {
-											if ($sample > (1+$this->percent)*$rra[$rra_num][$ds_num]['variance_avg'] || strtolower($sample) == 'nan') {
+											if ($sample > (1 + $this->percent) * $rra[$rra_num][$ds_num]['variance_avg'] || strtolower($sample) == 'nan') {
 												$this->debug(sprintf("Window GapFill Kill: Value '%.4e', Time '%s'", $sample, date('Y-m-d H:i', $timestamp)));
 
 												$rra[$rra_num][$ds_num]['outwind_killed']++;
@@ -849,7 +895,7 @@ class spikekill {
 									} elseif (($sample > $rra[$rra_num][$ds_num]['max_cutoff']) ||
 										($sample < $rra[$rra_num][$ds_num]['min_cutoff'])) {
 										if ($this->method == SPIKE_METHOD_STDDEV) {
-											$this->debug(sprintf("StdDev Kill: Value '%.4e', StandardDev '%.4e', StdDevLimit '%.4e'", $sample, $rra[$rra_num][$ds_num]['standard_deviation'], ($rra[$rra_num][$ds_num]['max_cutoff'] * (1+$this->percent))));
+											$this->debug(sprintf("StdDev Kill: Value '%.4e', StandardDev '%.4e', StdDevLimit '%.4e'", $sample, $rra[$rra_num][$ds_num]['standard_deviation'], ($rra[$rra_num][$ds_num]['max_cutoff'] * (1 + $this->percent))));
 
 											$rra[$rra_num][$ds_num]['stddev_killed']++;
 											$this->std_kills = true;
@@ -863,10 +909,10 @@ class spikekill {
 										/* Already calculated */
 									} elseif ($rra[$rra_num][$ds_num]['variance_avg'] == 'NAN') {
 										/* not enough samples to calculate */
-									} elseif ($sample > ($rra[$rra_num][$ds_num]['variance_avg'] * (1+$this->percent))) {
+									} elseif ($sample > ($rra[$rra_num][$ds_num]['variance_avg'] * (1 + $this->percent))) {
 										if ($this->method == SPIKE_METHOD_VARIANCE) {
 											/* kill based upon variance */
-											$this->debug(sprintf("Var Kill: Value '%.4e', VarianceDev '%.4e', VarianceLimit '%.4e'", $sample, $rra[$rra_num][$ds_num]['variance_avg'], ($rra[$rra_num][$ds_num]['variance_avg'] * (1+$this->percent))));
+											$this->debug(sprintf("Var Kill: Value '%.4e', VarianceDev '%.4e', VarianceLimit '%.4e'", $sample, $rra[$rra_num][$ds_num]['variance_avg'], ($rra[$rra_num][$ds_num]['variance_avg'] * (1 + $this->percent))));
 
 											$rra[$rra_num][$ds_num]['variance_killed']++;
 											$this->var_kills = true;
@@ -923,14 +969,14 @@ class spikekill {
 					'----------', '----------', '----------', '----------', '----------', '----------', '----------',
 					'----------', '----------', '----------');
 
-				foreach($rra as $rra_key => $dses) {
+				foreach ($rra as $rra_key => $dses) {
 					if (cacti_sizeof($dses)) {
-						foreach($dses as $dskey => $ds) {
+						foreach ($dses as $dskey => $ds) {
 							$this->strout .= sprintf('%10s %16s %10s %7s %7s ' .
 								($ds['average'] < 1E6 ? '%10s ':'%10.4e ') .
 								($ds['standard_deviation'] < 1E6 ? '%10s ':'%10.4e ') .
-								(isset($ds['max_value'])  ? ($ds['max_value']  < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
-								(isset($ds['min_value'])  ? ($ds['min_value']  < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
+								(isset($ds['max_value'])  ? ($ds['max_value'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
+								(isset($ds['min_value'])  ? ($ds['min_value'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
 								(isset($ds['max_cutoff']) ? ($ds['max_cutoff'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
 								(isset($ds['min_cutoff']) ? ($ds['min_cutoff'] < 1E6 ? '%10s ':'%10.4e ') : '%10s ') .
 								'%10s %10s %10s ' .
@@ -961,9 +1007,10 @@ class spikekill {
 				$this->strout .= sprintf("<tr class='tableHeader'><th style='width:10%%;'>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>\n",
 					'Size', 'DataSource', 'CF', 'Samples', 'NonNan', 'Avg', 'StdDev',
 					'MaxValue', 'MinValue', 'MaxStdDev', 'MinStdDev', 'StdKilled', 'VarKilled', 'WindFilled', 'StdDevAvg', 'VarAvg');
-				foreach($rra as $rra_key => $dses) {
+
+				foreach ($rra as $rra_key => $dses) {
 					if (cacti_sizeof($dses)) {
-						foreach($dses as $dskey => $ds) {
+						foreach ($dses as $dskey => $ds) {
 							$this->strout .= sprintf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td>' .
 								($ds['average'] < 1E6 ? '<td>%s</td>':'<td>%.4e</td>') .
 								($ds['standard_deviation'] < 1E6 ? '<td>%s</td>':'<td>%.4e</td>') .
@@ -973,7 +1020,7 @@ class spikekill {
 								(isset($ds['min_cutoff']) ? ($ds['min_cutoff'] < 1E6 ? '<td>%s</td>':'<td>%.4e</td>') : '<td>%s</td>') .
 								'<td>%s</td><td>%s</td><td>%s</td>' .
 								(isset($ds['avgnksampled']) ? ($ds['avgnksamples'] < 1E6 ? '<td>%s</td>':'<td>%.4e</td>') : '<td>%s</td>') .
-								(isset($ds['variance_avg']) ? ($ds['variance_avg'] < 1E6 ? "<td>%s</td>":"<td>%.4e</td>") : "<td>%s</td>") .
+								(isset($ds['variance_avg']) ? ($ds['variance_avg'] < 1E6 ? '<td>%s</td>':'<td>%.4e</td>') : '<td>%s</td>') .
 								"</tr>\n\n",
 								$this->displayTime($this->rra_pdp[$rra_key]),
 								$this->ds_name[$dskey],
@@ -981,7 +1028,7 @@ class spikekill {
 								$ds['totalsamples'],
 								(isset($ds['numsamples']) ? $ds['numsamples'] : '0'),
 								($ds['average'] != 'N/A' ? round($ds['average'],2) : $ds['average']),
-									($ds['standard_deviation'] != 'N/A' ? round($ds['standard_deviation'],2) : $ds['standard_deviation']),
+								($ds['standard_deviation'] != 'N/A' ? round($ds['standard_deviation'],2) : $ds['standard_deviation']),
 								(isset($ds['max_value']) ? round($ds['max_value'],2) : 'N/A'),
 								(isset($ds['min_value']) ? round($ds['min_value'],2) : 'N/A'),
 								($ds['max_cutoff'] != 'N/A' ? round($ds['max_cutoff'],2) : $ds['max_cutoff']),
@@ -1006,16 +1053,17 @@ class spikekill {
 		$new_array = array();
 
 		if (cacti_sizeof($output)) {
-			foreach($output as $line) {
+			foreach ($output as $line) {
 				if (substr_count($line, '<v>')) {
 					$linearray = explode('<v>', $line);
 
 					/* get the timestamp */
 					$timestamp_part = $linearray[0];
+
 					if (strpos($timestamp_part, '<timestamp>') !== false) {
 						$timestamp_part = str_replace('<row><timestamp>', '', $timestamp_part);
 						$timestamp_part = str_replace('</timestamp>', '', $timestamp_part);
-						$timestamp = trim($timestamp_part);
+						$timestamp      = trim($timestamp_part);
 					} else {
 						$timestamp = 0;
 					}
@@ -1028,7 +1076,7 @@ class spikekill {
 					$out_row        = '<row>';
 					$kills          = 0;
 
-					foreach($linearray as $dsvalue) {
+					foreach ($linearray as $dsvalue) {
 						/* peel off garbage */
 						$dsvalue = trim(str_replace('</row>', '', str_replace('</v>', '', $dsvalue)));
 
@@ -1049,7 +1097,7 @@ class spikekill {
 									$this->total_kills++;
 								}
 							} elseif ($this->method == SPIKE_METHOD_FILL) {
-								if ($dsvalue > (1+$this->percent)*$rra[$rra_num][$ds_num]['variance_avg'] || strtolower($dsvalue) == 'nan') {
+								if ($dsvalue > (1 + $this->percent) * $rra[$rra_num][$ds_num]['variance_avg'] || strtolower($dsvalue) == 'nan') {
 									if ($this->avgnan == 'avg') {
 										cacti_log("DEBUG: replacing dsvalue {$dsvalue} with variance_avg {$rra[$rra_num][$ds_num]['variance_avg']}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
 										$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
@@ -1097,7 +1145,7 @@ class spikekill {
 									}
 								}
 							}
-						} elseif(strtolower($dsvalue) == 'nan' && isset($last_num[$ds_num])) {
+						} elseif (strtolower($dsvalue) == 'nan' && isset($last_num[$ds_num])) {
 							/**
 							 * We need to ignore this case as it's only a gap file when
 							 * There is a time range
@@ -1112,7 +1160,7 @@ class spikekill {
 							}
 						} else {
 							if ($this->method == SPIKE_METHOD_VARIANCE) {
-								if ($dsvalue > (1+$this->percent)*$rra[$rra_num][$ds_num]['variance_avg']) {
+								if ($dsvalue > (1 + $this->percent) * $rra[$rra_num][$ds_num]['variance_avg']) {
 									if ($kills < $this->numspike) {
 										if ($this->avgnan == 'avg') {
 											cacti_log("DEBUG: replacing dsvalue {$dsvalue} with variance_avg {$rra[$rra_num][$ds_num]['variance_avg']}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
@@ -1188,8 +1236,9 @@ class spikekill {
 
 	private function removeComments(&$output) {
 		if (cacti_sizeof($output)) {
-			foreach($output as $line) {
+			foreach ($output as $line) {
 				$line = trim($line);
+
 				if ($line == '') {
 					continue;
 				} else {
@@ -1197,22 +1246,24 @@ class spikekill {
 					$oline = $line;
 
 					$comment_start = strpos($line, '<!--');
+
 					if ($comment_start === false) {
 						/* do nothing no line */
 					} else {
 						$comment_end = strpos($line, '-->');
+
 						if ($comment_start == 0) {
-							$line = trim(substr($line, $comment_end+3));
+							$line = trim(substr($line, $comment_end + 3));
 						} else {
-							$line = trim(substr($line,0,$comment_start-1) . substr($line,$comment_end+3));
+							$line = trim(substr($line,0,$comment_start - 1) . substr($line,$comment_end + 3));
 						}
 
 						if (strpos($line, '<row>') !== false) {
 							/* capture the timestamp */
-							$stamp     = trim(substr($oline, $comment_start+4, $comment_end-4));
+							$stamp     = trim(substr($oline, $comment_start + 4, $comment_end - 4));
 							$stamp     = explode('/', $stamp);
 							$timestamp = trim($stamp[1]);
-							$line = str_replace('<row><v>', "<row><timestamp> $timestamp </timestamp><v>", $line);
+							$line      = str_replace('<row><v>', "<row><timestamp> $timestamp </timestamp><v>", $line);
 						}
 					}
 
@@ -1261,7 +1312,7 @@ class spikekill {
 		$my_samples = $samples;
 
 		if (!empty($this->out_start)) {
-			foreach($samples as $timestamp => $value) {
+			foreach ($samples as $timestamp => $value) {
 				if ($timestamp < $this->out_start || $timestamp > $this->out_end) {
 					$my_samples[] = $value;
 				}

@@ -24,16 +24,16 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once($config['base_path'] . '/lib/api_automation_tools.php');
-require_once($config['base_path'] . '/lib/api_device.php');
-require_once($config['base_path'] . '/lib/api_data_source.php');
-require_once($config['base_path'] . '/lib/api_graph.php');
-require_once($config['base_path'] . '/lib/api_tree.php');
-require_once($config['base_path'] . '/lib/data_query.php');
-require_once($config['base_path'] . '/lib/poller.php');
-require_once($config['base_path'] . '/lib/snmp.php');
-require_once($config['base_path'] . '/lib/template.php');
-require_once($config['base_path'] . '/lib/utility.php');
+require_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
+require_once(CACTI_PATH_LIBRARY . '/api_device.php');
+require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
+require_once(CACTI_PATH_LIBRARY . '/api_graph.php');
+require_once(CACTI_PATH_LIBRARY . '/api_tree.php');
+require_once(CACTI_PATH_LIBRARY . '/data_query.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/snmp.php');
+require_once(CACTI_PATH_LIBRARY . '/template.php');
+require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -41,6 +41,7 @@ array_shift($parms);
 
 if (! cacti_sizeof($parms)) {
 	display_help();
+
 	exit(0);
 }
 
@@ -52,214 +53,226 @@ $displayCommunities   = false;
 $quietMode            = false;
 
 $overrides = array();
-foreach($parms as $parameter) {
+
+foreach ($parms as $parameter) {
 	if (strpos($parameter, '=')) {
 		list($arg, $value) = explode('=', $parameter);
 	} else {
-		$arg = $parameter;
+		$arg   = $parameter;
 		$value = '';
 	}
 
 	switch ($arg) {
 		case '-d':
 			$debug = true;
-			break;
 
+			break;
 		case '--quiet':
 			$quietMode = true;
-			break;
 
+			break;
 		case '--id':
 			$device_id = trim($value);
-			break;
 
+			break;
 		case '--description':
 			$overrides['description'] = trim($value);
-			break;
 
+			break;
 		case '--ip':
 			$overrides['ip'] = trim($value);
-			break;
 
+			break;
 		case '--template':
 			$overrides['template_id'] = $value;
-			break;
 
+			break;
 		case '--community':
 			$overrides['community'] = trim($value);
-			break;
 
+			break;
 		case '--version':
 			if (cacti_sizeof($parms) == 1) {
 				display_version();
+
 				exit(0);
 			} else {
 				$overrides['snmp_version'] = trim($value);
 			}
-			break;
 
+			break;
 		case '--notes':
 			$overrides['notes'] = trim($value);
-			break;
 
+			break;
 		case '--location':
 			$overrides['location'] = trim($value);
-			break;
 
+			break;
 		case '--site':
 			$overrides['site_id'] = trim($value);
-			break;
 
+			break;
 		case '--poller':
 			$overrides['poller_id'] = trim($value);
-			break;
 
+			break;
 		case '--disable':
 			$value = trim($value);
+
 			if (is_numeric($value)) {
 				$overrides['disabled'] = intval($value) == 0 ? 'on' : '';
 			} else {
 				$overrides['disabled'] = $value == 'on' ? 'on': '';
 			}
-			break;
 
+			break;
 		case '--external-id':
 			$overrides['external_id']  = $value;
-			break;
 
+			break;
 		case '--username':
 			$overrides['snmp_username'] = trim($value);
-			break;
 
+			break;
 		case '--password':
 			$overrides['snmp_password'] = trim($value);
-			break;
 
+			break;
 		case '--authproto':
 			$overrides['snmp_auth_protocol'] = trim($value);
-			break;
 
+			break;
 		case '--privproto':
 			$overrides['snmp_priv_protocol'] = trim($value);
-			break;
 
+			break;
 		case '--privpass':
 			$overrides['snmp_priv_passphrase'] = trim($value);
-			break;
 
+			break;
 		case '--context':
 			$overrides['snmp_context'] = trim($value);
-			break;
 
+			break;
 		case '--engineid':
 			$overrides['snmp_engine_id'] = trim($value);
-			break;
 
+			break;
 		case '--port':
 			$overrides['snmp_port'] = $value;
-			break;
 
+			break;
 		case '--proxy':
 			$proxy = true;
-			break;
 
+			break;
 		case '--timeout':
 			$overrides['snmp_timeout'] = $value;
-			break;
 
+			break;
 		case '--ping_timeout':
 			$overrides['ping_timeout'] = $value;
-			break;
 
+			break;
 		case '--threads':
 			$overrides['device_threads'] = $value;
-			break;
 
+			break;
 		case '--avail':
 			switch($value) {
 				case 'none':
 					$overrides['availability_method'] = '0'; /* tried to use AVAIL_NONE, but then preg_match failes on validation, sigh */
+
 					break;
 				case 'ping':
 					$overrides['availability_method'] = AVAIL_PING;
-					break;
 
+					break;
 				case 'snmp':
 					$overrides['availability_method'] = AVAIL_SNMP;
-					break;
 
+					break;
 				case 'pingsnmp':
 					$overrides['availability_method'] = AVAIL_SNMP_AND_PING;
-					break;
 
+					break;
 				case 'pingorsnmp':
 					$overrides['availability_method'] = AVAIL_SNMP_OR_PING;
+
 					break;
 
 				default:
 					print "ERROR: Invalid Availability Parameter: ($value)\n\n";
 					display_help();
+
 					exit(1);
 			}
-			break;
 
+			break;
 		case '--ping_method':
 			switch(strtolower($value)) {
 				case 'icmp':
 					$overrides['ping_method'] = PING_ICMP;
-					break;
 
+					break;
 				case 'tcp':
 					$overrides['ping_method'] = PING_TCP;
-					break;
 
+					break;
 				case 'udp':
 					$overrides['ping_method'] = PING_UDP;
+
 					break;
 
 				default:
 					print "ERROR: Invalid Ping Method: ($value)\n\n";
 					display_help();
+
 					exit(1);
 			}
-			break;
 
+			break;
 		case '--ping_port':
 			if (is_numeric($value) && ($value > 0)) {
 				$overrides['ping_port'] = $value;
 			} else {
 				print "ERROR: Invalid Ping Port: ($value)\n\n";
 				display_help();
+
 				exit(1);
 			}
-			break;
 
+			break;
 		case '--ping_retries':
 			if (is_numeric($value) && ($value > 0)) {
 				$overrides['ping_retries'] = $value;
 			} else {
 				print "ERROR: Invalid Ping Retries: ($value)\n\n";
 				display_help();
+
 				exit(1);
 			}
-			break;
 
+			break;
 		case '--max_oids':
 			if (is_numeric($value) && ($value > 0)) {
 				$overrides['max_oids'] = $value;
 			} else {
 				print "ERROR: Invalid Max OIDS: ($value)\n\n";
 				display_help();
+
 				exit(1);
 			}
-			break;
 
+			break;
 		case '--bulk_walk':
 			if (is_numeric($value) && $value >= -1 && $value != 0) {
 				$overrides['bulk_walk_size'] = $value;
 			} else {
 				print "ERROR: Invalid Bulk Walk Size: ($value)\n\n";
 				display_help();
+
 				exit(1);
 			}
 
@@ -267,21 +280,25 @@ foreach($parms as $parameter) {
 		case '-V':
 		case '-v':
 			display_version();
+
 			exit(0);
 
 		case '--help':
 		case '-H':
 		case '-h':
 			display_help();
+
 			exit(0);
 
 		case '--quiet':
 			$quietMode = true;
+
 			break;
 
 		default:
 			print "ERROR: Invalid Argument: ($arg)\n\n";
 			display_help();
+
 			exit(1);
 	}
 }
@@ -289,12 +306,15 @@ foreach($parms as $parameter) {
 if (empty($device_id)) {
 	print "ERROR: --id is mandatory parameter.\n";
 	display_help();
+
 	exit(1);
 }
 
 $host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($device_id));
+
 if (!cacti_sizeof($host)) {
 	print "ERROR: device-id $device_id not found.\n";
+
 	exit(1);
 }
 
@@ -308,47 +328,58 @@ $addresses      = getAddresses();
 
 /* process templates */
 if (!isset($host_templates[$host['host_template_id']])) {
-	print "ERROR: Unknown template id (" . $host['host_template_id'] . ")\n";
+	print 'ERROR: Unknown template id (' . $host['host_template_id'] . ")\n";
+
 	exit(1);
 }
 
 if ($host['description'] == '') {
 	print "ERROR: You must supply a description for all hosts!\n";
+
 	exit(1);
 }
 
 if ($host['hostname'] == '') {
 	print "ERROR: You must supply an IP address for all hosts!\n";
+
 	exit(1);
 }
 
 if ($host['snmp_version'] > 3 || $host['snmp_version'] < 0 || !is_numeric($host['snmp_version'])) {
 	print "ERROR: The snmp version must be between 0 and 3.  If you did not specify one, goto Configuration > Settings > Device Defaults and resave your defaults.\n";
+
 	exit(1);
 }
 
 if (!is_numeric($host['site_id']) || $host['site_id'] < 0) {
 	print "ERROR: You have specified an invalid site id!\n";
+
 	exit(1);
 }
 
 if (!is_numeric($host['poller_id']) || $host['poller_id'] < 0) {
 	print "ERROR: You have specified an invalid poller id!\n";
+
 	exit(1);
 }
 
 /* process snmp information */
 if ($host['snmp_version'] < 0 || $host['snmp_version'] > 3) {
 	print "ERROR: Invalid snmp version ({$host['snmp_version']})\n";
+
 	exit(1);
-} elseif ($host['snmp_version'] > 0) {
+}
+
+if ($host['snmp_version'] > 0) {
 	if ($host['snmp_port'] <= 1 || $host['snmp_port'] > 65534) {
 		print "ERROR: Invalid port.  Valid values are from 1-65534\n";
+
 		exit(1);
 	}
 
 	if ($host['snmp_timeout'] <= 0 || $host['snmp_timeout'] > 20000) {
 		print "ERROR: Invalid timeout.  Valid values are from 1 to 20000\n";
+
 		exit(1);
 	}
 }
@@ -357,8 +388,9 @@ if ($host['snmp_version'] < 0 || $host['snmp_version'] > 3) {
 if ($host['snmp_version'] < 3) {
 	/* snmp community can be blank */
 } else {
-	if ($host['snmp_username'] == "" || $host['snmp_password'] == "") {
+	if ($host['snmp_username'] == '' || $host['snmp_password'] == '') {
 		print "ERROR: When using snmpv3 you must supply an username and password\n";
+
 		exit(1);
 	}
 }
@@ -377,14 +409,15 @@ $host_id = api_device_save($device_id, $host['host_template_id'], $host['descrip
 
 if (is_error_message() || $host_id != $device_id) {
 	print "ERROR: Failed to change this device ($device_id-$host_id)\n";
+
 	exit(1);
 } else {
 	if (!$quietMode) {
 		print "Success\n";
 	}
+
 	exit(0);
 }
-
 
 /*  display_version - displays version information */
 function display_version() {

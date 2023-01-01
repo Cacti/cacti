@@ -22,8 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-include_once($config['base_path'] . '/lib/template.php');
-include_once($config['base_path'] . '/lib/utility.php');
+include_once(CACTI_PATH_LIBRARY . '/template.php');
+include_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 function upgrade_to_0_8_3() {
 	if (db_column_exists('user_auth', 'graph_policy')) {
@@ -37,7 +37,7 @@ function upgrade_to_0_8_3() {
 
 	if (!db_column_exists('rra', 'timespan')) {
 		db_install_add_column('rra', array('name' => 'timespan', 'type' => 'int(12) unsigned', 'NULL' => false));
-		db_install_execute("UPDATE rra set timespan=(rows*steps*144);");
+		db_install_execute('UPDATE rra set timespan=(rows*steps*144);');
 	}
 
 	if (!db_table_exists('user_auth_perms')) {
@@ -49,36 +49,36 @@ function upgrade_to_0_8_3() {
 			KEY `user_id` (`user_id`,`type`)
 			)");
 
-		$auth_graph_results = db_install_fetch_assoc("SELECT user_id,local_graph_id FROM user_auth_graph");
+		$auth_graph_results = db_install_fetch_assoc('SELECT user_id,local_graph_id FROM user_auth_graph');
 		$auth_graph         = $auth_graph_results['data'];
 
 		/* update to new 'user_auth_perms' table */
 		if (cacti_sizeof($auth_graph) > 0) {
 			foreach ($auth_graph as $item) {
-				db_install_execute("REPLACE INTO user_auth_perms (user_id,item_id,type) VALUES (?,?,1);",
-					array($item["user_id"],$item["local_graph_id"]),false);
+				db_install_execute('REPLACE INTO user_auth_perms (user_id,item_id,type) VALUES (?,?,1);',
+					array($item['user_id'],$item['local_graph_id']),false);
 			}
 		}
 
-		$auth_tree_results = db_install_fetch_assoc("SELECT user_id,tree_id FROM user_auth_tree");
+		$auth_tree_results = db_install_fetch_assoc('SELECT user_id,tree_id FROM user_auth_tree');
 		$auth_tree         = $auth_tree_results['data'];
 
 		/* update to new 'user_auth_perms' table */
 		if (cacti_sizeof($auth_tree) > 0) {
 			foreach ($auth_tree as $item) {
-				db_install_execute("REPLACE INTO user_auth_perms (user_id,item_id,type) VALUES (?,?,2);",
-					array($item["user_id"],$item["tree_id"]), false);
+				db_install_execute('REPLACE INTO user_auth_perms (user_id,item_id,type) VALUES (?,?,2);',
+					array($item['user_id'],$item['tree_id']), false);
 			}
 		}
 
-		$users_results = db_install_fetch_assoc("SELECT id FROM user_auth");
+		$users_results = db_install_fetch_assoc('SELECT id FROM user_auth');
 		$users         = $users_results['data'];
 
 		/* default all current users to tree view mode 1 (single pane) */
 		if (cacti_sizeof($users) > 0) {
 			foreach ($users as $item) {
 				db_install_execute("REPLACE INTO settings_graphs (user_id,name,value) VALUES (?,'default_tree_view_mode',1);",
-					array($item["id"]), false);
+					array($item['id']), false);
 			}
 		}
 	}
@@ -89,10 +89,10 @@ function upgrade_to_0_8_3() {
 	db_install_drop_table('user_auth_hosts');
 
 	/* bug#72 */
-	db_install_execute("UPDATE graph_templates_item set cdef_id=15 where id=25;");
-	db_install_execute("UPDATE graph_templates_item set cdef_id=15 where id=26;");
-	db_install_execute("UPDATE graph_templates_item set cdef_id=15 where id=27;");
-	db_install_execute("UPDATE graph_templates_item set cdef_id=15 where id=28;");
+	db_install_execute('UPDATE graph_templates_item set cdef_id=15 where id=25;');
+	db_install_execute('UPDATE graph_templates_item set cdef_id=15 where id=26;');
+	db_install_execute('UPDATE graph_templates_item set cdef_id=15 where id=27;');
+	db_install_execute('UPDATE graph_templates_item set cdef_id=15 where id=28;');
 
 	push_out_graph_item(25);
 	push_out_graph_item(26);

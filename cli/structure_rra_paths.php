@@ -27,12 +27,15 @@ require(__DIR__ . '/../include/cli_check.php');
 
 if ($config['poller_id'] > 1) {
 	print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
+
 	exit(1);
 }
 
 $storage_location = read_config_option('storage_location');
+
 if ($storage_location > 0) {
 	print 'FATAL: This utility is designed for local RRDfile storage and is not compatible with the RRDProxy.' . PHP_EOL;
+
 	exit(1);
 }
 
@@ -47,11 +50,11 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -64,21 +67,27 @@ if (cacti_sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
 			case '--host-id':
 				$host_id = $value;
+
 				break;
 			case '--host-template-id':
 				$host_template_id = $value;
+
 				break;
+
 			default:
 				print "ERROR: Invalid Argument: ($arg)" . PHP_DEOL;
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -89,29 +98,33 @@ $start = microtime(true);
 if (read_config_option('boost_rrd_update_enable') !== 'on') {
 	print PHP_EOL . 'FATAL: Cacti\'s Performance Booster required to run this utility.'. PHP_DEOL;
 	display_help();
+
 	exit -1;
 }
 
 if ($host_id !== false && ($host_id <= 0 || !is_numeric($host_id))) {
 	print PHP_EOL . 'FATAL: When specifying a Device ID, you must pick on greater or equal than zero.' . PHP_DEOL;
 	display_help();
+
 	exit -1;
 }
 
 if ($host_template_id !== false && ($host_template_id <= 0 || !is_numeric($host_template_id))) {
 	print PHP_EOL . 'FATAL: When specifying a Device Template ID, you must pick on greater or equal than zero.' . PHP_DEOL;
 	display_help();
+
 	exit -1;
 }
 
 if ($proceed == false) {
 	print PHP_EOL . 'FATAL: You Must Explicitly Instruct This Script to Proceed with the \'--proceed\' Option' . PHP_DEOL;
 	display_help();
+
 	exit -1;
 }
 
 /* check ownership of the current base path */
-$base_rra_path = $config['rra_path'];
+$base_rra_path = CACTI_PATH_RRA;
 $owner_id      = fileowner($base_rra_path);
 $group_id      = filegroup($base_rra_path);
 
@@ -120,6 +133,7 @@ set_config_option('extended_paths', 'on');
 
 $pattern = read_config_option('extended_paths_type');
 $maxdirs = read_config_option('extended_paths_hashes');
+
 if (empty($maxdirs) || $maxdirs < 0 || !is_numeric($maxdirs)) {
 	$maxdirs = 100;
 }
@@ -171,17 +185,17 @@ $data_sources = db_fetch_assoc_prepared("SELECT dtd.local_data_id, dl.host_id % 
 
 /* setup some counters */
 $total_count = cacti_sizeof($data_sources);
-$done_count = 0;
-$warn_count = 0;
-$skip_count = 0;
-$started    = false;
+$done_count  = 0;
+$warn_count  = 0;
+$skip_count  = 0;
+$started     = false;
 
 printf('NOTE: Found:%s Data Sources.  Beginning Process' . PHP_EOL, number_format($total_count));
 
 /* scan all data sources */
 foreach ($data_sources as $info) {
 	if (($done_count + $warn_count + $skip_count) % 100 == 0 && $started) {
-		printf("NOTE: Completed: %d of %d RRDfiles" . PHP_EOL, $done_count + $warn_count + $skip_count, $total_count);
+		printf('NOTE: Completed: %d of %d RRDfiles' . PHP_EOL, $done_count + $warn_count + $skip_count, $total_count);
 	}
 
 	$started = true;
@@ -191,10 +205,10 @@ foreach ($data_sources as $info) {
 	$old_rrd_path  = $info['rrd_path'];
 	$local_data_id = $info['local_data_id'];
 
-    /* acquire lock in order to prevent race conditions */
-    while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds.$local_data_id', 1)")) {
-        usleep(50000);
-    }
+	/* acquire lock in order to prevent race conditions */
+	while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds.$local_data_id', 1)")) {
+		usleep(50000);
+	}
 
 	/* create one subfolder for every host */
 	if (!is_dir($new_base_path)) {
@@ -272,6 +286,7 @@ foreach ($data_sources as $info) {
 						struct_debug("Permissions set for '$new_rrd_path'");
 					} else {
 						print "FATAL: Could not Set Permissions for File '$new_rrd_path'" . PHP_EOL;
+
 						exit -6;
 					}
 				}
@@ -280,6 +295,7 @@ foreach ($data_sources as $info) {
 				update_database($info);
 			} else {
 				print "FATAL: Could not Move RRD File '$old_rrd_path' to '$new_rrd_path'" . PHP_EOL;
+
 				exit -3;
 			}
 		} else {
@@ -287,7 +303,7 @@ foreach ($data_sources as $info) {
 		}
 	}
 
-    db_fetch_cell("SELECT RELEASE_LOCK('boost.single_ds.$local_data_id')");
+	db_fetch_cell("SELECT RELEASE_LOCK('boost.single_ds.$local_data_id')");
 }
 
 $end = microtime(true);
@@ -302,6 +318,7 @@ print "NOTE: RRD Restructure Complete: $stats" . PHP_EOL;
  * struct_debug - Simple debug function for restructuring
  *
  * @param  (string) - The output string
+ * @param mixed $string
  *
  * @return (void)
  */
@@ -436,4 +453,3 @@ function display_help() {
 	print '  2) Move the File to the Structured Path Using the New Name' . PHP_EOL;
 	print '  3) Alter the two Database Tables Required'. PHP_DEOL;
 }
-

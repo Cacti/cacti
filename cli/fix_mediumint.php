@@ -35,11 +35,11 @@ $debug = false;
 $local = false;
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -47,23 +47,29 @@ if (cacti_sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--local':
 				$local = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -123,12 +129,13 @@ function database_fix_mediumint_columns() {
 	$known_columns['graph_id'] = 'graph_id';
 	$known_columns['data_id']  = 'data_id';
 
-	foreach($tables as $table => $columns) {
+	foreach ($tables as $table => $columns) {
 		$columns = explode(',', $columns);
 
 		$sql = 'ALTER TABLE ' . $table;
-		$i = 0;
-		foreach($columns as $c) {
+		$i   = 0;
+
+		foreach ($columns as $c) {
 			$c = trim($c);
 
 			$attribs = database_get_column_attribs($table, $c);
@@ -137,6 +144,7 @@ function database_fix_mediumint_columns() {
 				if (strpos($attribs['Type'], 'mediumint') === false) {
 					if (strpos($attribs['Type'], 'int(10) unsigned') !== false) {
 						debug("Column $c in Table $table already converted.");
+
 						continue;
 					}
 				}
@@ -172,7 +180,7 @@ function database_fix_mediumint_columns() {
 
 	$other_tables = db_fetch_assoc('SHOW TABLES');
 
-	foreach($other_tables as $t) {
+	foreach ($other_tables as $t) {
 		$table   = $t['Tables_in_' . $database_default];
 		$columns = array();
 
@@ -180,15 +188,16 @@ function database_fix_mediumint_columns() {
 
 		if (!array_key_exists($table, $tables)) {
 			$columns = array_rekey(
-				db_fetch_assoc("SHOW COLUMNS FROM " . $table),
-					'Field', array('Type', 'Null', 'Key', 'Default', 'Extra')
+				db_fetch_assoc('SHOW COLUMNS FROM ' . $table),
+				'Field', array('Type', 'Null', 'Key', 'Default', 'Extra')
 			);
 
-			foreach($columns as $field => $attribs) {
+			foreach ($columns as $field => $attribs) {
 				if (array_key_exists($field, $known_columns)) {
 					if (strpos($attribs['Type'], 'mediumint') === false) {
 						if (strpos($attribs['Type'], 'int(10) unsigned') !== false) {
 							debug("Column $field in Table $table already converted.");
+
 							continue;
 						}
 					}
@@ -234,7 +243,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 	print 'usage: fix_mediumint.php [--debug]' . PHP_EOL . PHP_EOL;
 	print 'Options:' . PHP_EOL;
@@ -244,4 +253,3 @@ function display_help () {
 	print 'systems with over a million graphs and that have been in service for years.' . PHP_EOL;
 	print 'After some long amount of time, Cacti can run out of auto_increment fields.' . PHP_EOL;
 }
-

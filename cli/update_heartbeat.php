@@ -28,7 +28,8 @@ require(__DIR__ . '/../include/cli_check.php');
 ini_set('max_execution_time', '0');
 
 if ($config['poller_id'] > 1) {
-	print "FATAL: This utility is designed for the main Data Collector only" . PHP_EOL;
+	print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
+
 	exit(1);
 }
 
@@ -43,23 +44,26 @@ $prev_heartbeat   = false;
 $new_heartbeat    = false;
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
 		switch ($arg) {
 			case '--new-heartbeat':
 				$new_heartbeat = $value;
+
 				break;
 			case '--prev-heartbeat':
 				$prev_heartbeat = $value;
+
 				break;
 			case '--data-template-id':
 				$data_template_id = $value;
+
 				break;
 			case '--list-data-templates':
 				$data_templates = db_fetch_assoc('SELECT id, name
@@ -70,7 +74,7 @@ if (cacti_sizeof($parms)) {
 					print 'ID       Data Template Name' . PHP_EOL;
 					print '------   ----------------------' . PHP_EOL;
 
-					foreach($data_templates as $dt) {
+					foreach ($data_templates as $dt) {
 						printf('%-6s   %-25s' . PHP_EOL, $dt['id'], $dt['name']);
 					}
 
@@ -87,7 +91,7 @@ if (cacti_sizeof($parms)) {
 					print 'Heartbeat   Heartbeat Name' . PHP_EOL;
 					print '---------   --------------' . PHP_EOL;
 
-					foreach($heartbeats as $index => $hb) {
+					foreach ($heartbeats as $index => $hb) {
 						printf('%-12s%-17s' . PHP_EOL, $index, $hb);
 					}
 
@@ -108,7 +112,7 @@ if (cacti_sizeof($parms)) {
 					print 'Heartbeat   Data Source Profile' . PHP_EOL;
 					print '---------   ----------------------' . PHP_EOL;
 
-					foreach($dspheartbeats as $hb) {
+					foreach ($dspheartbeats as $hb) {
 						printf('%-12s%-25s' . PHP_EOL, $hb['heartbeat'], $hb['name']);
 					}
 
@@ -122,29 +126,36 @@ if (cacti_sizeof($parms)) {
 				break;
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--force':
 				$force = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
+
 				exit(1);
 		}
 	}
 } else {
 	print 'ERROR: You must supply input parameters' . PHP_EOL . PHP_EOL;
 	display_help();
+
 	exit(1);
 }
 
@@ -152,6 +163,7 @@ $poller_interval = read_config_option('poller_interval');
 
 if ($poller_interval * 2.0 > $new_heartbeat) {
 	printf('ERROR: Your new heartbeat must be greater or equal than %.0f' . PHP_EOL, $poller_interval * 2);
+
 	exit(1);
 }
 
@@ -160,19 +172,22 @@ $sql_params = array();
 
 if ($data_template_id !== false && $data_template_id > 0) {
 	$sql_params[] = $data_template_id;
-	$sql_where = ' AND dtd.data_template_id = ?';
+	$sql_where    = ' AND dtd.data_template_id = ?';
 } elseif ($data_template_id !== false && ($data_template_id <= 0 || !is_numeric($data_template_id))) {
 	printf('ERROR: Your Data Template ID \'%s\' is invalid' . PHP_EOL, $data_template_id);
+
 	exit(1);
 }
 
 if ($new_heartbeat !== false && (!is_numeric($new_heartbeat) || $new_heartbeat < -1)) {
 	printf('ERROR: Your New Heartbeat \'%s\' must be greater or equal to zero.' . PHP_EOL, $new_heartbeat);
+
 	exit(1);
 }
 
 if (!array_key_exists($new_heartbeat, $heartbeats)) {
 	printf('ERROR: Your New Heartbeat \'%s\' is not a supported Heartbeat.  Use --list-heartbeats to see the list.' . PHP_EOL, $new_heartbeat);
+
 	exit(1);
 }
 
@@ -183,7 +198,7 @@ if ($prev_heartbeat !== false && (!is_numeric($prev_heartbeat) || $prev_heartbea
 	$sql_params[] = $prev_heartbeat;
 }
 
-$sql_params1 = array_merge(array($config['rra_path']), $sql_params);
+$sql_params1 = array_merge(array(CACTI_PATH_RRA), $sql_params);
 
 $rrdfiles = db_fetch_assoc_prepared("SELECT dtr.local_data_id, dtd.name_cache, dt.name,
 	REPLACE(dtd.data_source_path, '<path_rra>', ?) AS rrd,
@@ -216,6 +231,7 @@ if (cacti_sizeof($profile_ids) > 1) {
 	printf('There is %s Data Source Proile Impacted by this change.' . PHP_EOL, cacti_sizeof($profile_ids));
 } else {
 	printf('ERROR: Not RRDfiles found that match your --prev-heartbeat or --data-template-id setting' . PHP_EOL);
+
 	exit(1);
 }
 
@@ -225,7 +241,7 @@ printf('There will be %s RRDfiles updated as a result of this command.' . PHP_EO
 if (!$force) {
 	$exit = false;
 
-	foreach($profile_ids as $pid) {
+	foreach ($profile_ids as $pid) {
 		if ($pid['heartbeat'] != $new_heartbeat) {
 			printf('ERROR: Data Source Profile \'%s\' has a heartbeat of %s which does' . PHP_EOL, $pid['name'], $pid['heartbeat']);
 			printf('       not match the new heartbeat of %s.  Use the --force option to update' . PHP_EOL, $new_heartbeat);
@@ -242,14 +258,15 @@ if (!$force) {
 }
 
 $i = 0;
+
 if (cacti_sizeof($rrdfiles)) {
-	foreach($rrdfiles as $f) {
+	foreach ($rrdfiles as $f) {
 		if (file_exists($f['rrd'])) {
-			$command = sprintf("rrdtool tune %s ", $f['rrd']);
+			$command = sprintf('rrdtool tune %s ', $f['rrd']);
 
 			$data_sources = explode(',', $f['data_sources']);
 
-			foreach($data_sources as $ds) {
+			foreach ($data_sources as $ds) {
 				$command .= " --heartbeat $ds:$new_heartbeat";
 			}
 
@@ -257,14 +274,14 @@ if (cacti_sizeof($rrdfiles)) {
 			$return_code = 0;
 
 			if (1 == 2) {
-				printf("Updating Heartbeat for Data Source:%s, Data Template:%s, RRD:%s from 600 to 900" . PHP_EOL, $f['name_cache'], $f['name'], $f['rrd']);
+				printf('Updating Heartbeat for Data Source:%s, Data Template:%s, RRD:%s from 600 to 900' . PHP_EOL, $f['name_cache'], $f['name'], $f['rrd']);
 				printf("The RRDtool command is '$command'" . PHP_EOL);
 			}
 
 			$result = exec($command, $output, $return_code);
 
 			if ($return_code != 0) {
-				printf("Warning Error Occurred: " . implode(', ', $output) . PHP_EOL);
+				printf('Warning Error Occurred: ' . implode(', ', $output) . PHP_EOL);
 			} else {
 				db_execute_prepared('UPDATE data_template_rrd
 					SET rrd_heartbeat = ?
@@ -278,11 +295,11 @@ if (cacti_sizeof($rrdfiles)) {
 		$i++;
 
 		if ($i % 100 == 0) {
-			printf("Processed %s RRDfiles" . PHP_EOL, $i);
+			printf('Processed %s RRDfiles' . PHP_EOL, $i);
 		}
 	}
 
-	printf("Processed a Total of %s RRDfiles" . PHP_EOL, $i);
+	printf('Processed a Total of %s RRDfiles' . PHP_EOL, $i);
 
 	if ($data_template_id > 0) {
 		db_execute_prepared('UPDATE data_template_rrd
@@ -293,7 +310,7 @@ if (cacti_sizeof($rrdfiles)) {
 	}
 
 	if ($force) {
-		foreach($profile_ids as $pid) {
+		foreach ($profile_ids as $pid) {
 			db_execute_prepared('UPDATE data_source_profiles
 				SET heartbeat = ?
 				WHERE id = ?',
@@ -330,7 +347,7 @@ function display_version() {
  *
  * @return (void)
  */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print "\nusage: update_heartbeat.php --new-heartbeat=N [--data-template-id=id] [--prev-heartbeat=N] [--force] [--debug|-d]\n\n";
@@ -355,7 +372,6 @@ function debug($message) {
 	global $debug;
 
 	if ($debug) {
-		print "DEBUG: " . trim($message) . "\n";
+		print 'DEBUG: ' . trim($message) . "\n";
 	}
 }
-

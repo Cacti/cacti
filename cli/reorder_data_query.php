@@ -24,13 +24,14 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once($config['base_path'] . '/lib/snmp.php');
-require_once($config['base_path'] . '/lib/data_query.php');
+require_once(CACTI_PATH_LIBRARY . '/snmp.php');
+require_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
 ini_set('max_execution_time', '0');
 
 if ($config['poller_id'] > 1) {
-	print "FATAL: This utility is designed for the main Data Collector only" . PHP_EOL;
+	print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
+
 	exit(1);
 }
 
@@ -38,17 +39,17 @@ if ($config['poller_id'] > 1) {
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug		= false;
-$host_id	= 'all';
-$query_id	= '';
+$debug		    = false;
+$host_id	   = 'all';
+$query_id	  = '';
 $host_descr	= '';
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -57,59 +58,68 @@ if (cacti_sizeof($parms)) {
 			case '--id':
 			case '--host-id':
 				$host_id = $value;
+
 				break;
 			case '-qid':
 			case '--qid':
 				$query_id = $value;
+
 				break;
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
 } else {
 	print "ERROR: You must supply input parameters\n\n";
 	display_help();
+
 	exit(1);
 }
-
 
 $sql_where = "WHERE data_input_fields.type_code='output_type'";
 
 /* determine the hosts to reindex */
 if (strtolower($host_id) == 'all') {
 	/* NOP */
-}else if (is_numeric($host_id)) {
-	$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ' ) . 'data_local.host_id = ' . $host_id;
+} elseif (is_numeric($host_id)) {
+	$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'data_local.host_id = ' . $host_id;
 } else {
 	print "ERROR: You must specify either a host_id or 'all' to proceed.\n";
 	display_help();
+
 	exit;
 }
 
 /* determine data queries to rerun */
 if (strtolower($query_id) == 'all') {
 	/* do nothing */
-}else if (is_numeric($query_id)) {
-	$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ' ) . 'data_local.snmp_query_id= ' . $query_id;
+} elseif (is_numeric($query_id)) {
+	$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'data_local.snmp_query_id= ' . $query_id;
 } else {
 	print "ERROR: You must specify either a query_id or 'all' to proceed.\n";
 	display_help();
+
 	exit;
 }
 
@@ -132,9 +142,12 @@ print "WARNING: Do not interrupt this script.  Reordering can take quite some ti
 debug("There are '" . cacti_sizeof($data_queries) . "' data query index items to run");
 
 $i = 1;
+
 if (cacti_sizeof($data_queries)) {
 	foreach ($data_queries as $data_query) {
-		if (!$debug) print '.';
+		if (!$debug) {
+			print '.';
+		}
 		/* fetch current index_order from data_query XML definition and put it into host_snmp_query */
 		update_data_query_sort_cache($data_query['host_id'], $data_query['snmp_query_id']);
 		/* build array required for function call */
@@ -145,7 +158,7 @@ if (cacti_sizeof($data_queries)) {
 			"' SNMP Query Id: '" . $data_query['snmp_query_id'] .
 			"' Index: " . $data_query['snmp_index'] .
 			"' Index On: " . $data_query['snmp_index_on']
-			);
+		);
 		update_snmp_index_order($data_query);
 		$i++;
 	}
@@ -158,7 +171,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print "\nusage: reorder_data_query.php --host-id=[id|all] [--qid=[query_id]] [--debug|-d]\n\n";
@@ -174,6 +187,6 @@ function debug($message) {
 	global $debug;
 
 	if ($debug) {
-		print "DEBUG: " . trim($message) . "\n";
+		print 'DEBUG: ' . trim($message) . "\n";
 	}
 }

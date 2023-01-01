@@ -22,7 +22,7 @@
   +-------------------------------------------------------------------------+
 */
 
-require_once($config['include_path'] .'/vendor/csrf/csrf-conf.php');
+require_once(CACTI_PATH_INCLUDE .'/vendor/csrf/csrf-conf.php');
 
 /* cross site request forgery library */
 function csrf_startup() {
@@ -35,7 +35,7 @@ function csrf_startup() {
 			csrf_conf('path_secret', $config['path_csrf_secret']);
 		}
 
-		csrf_conf('rewrite-js', $config['url_path'] . 'include/vendor/csrf/csrf-magic.js');
+		csrf_conf('rewrite-js', CACTI_PATH_URL . 'include/vendor/csrf/csrf-magic.js');
 		csrf_conf('callback', 'csrf_error_callback');
 		csrf_conf('expires', 7200);
 	} else {
@@ -50,7 +50,8 @@ function csrf_error_callback() {
 	ob_end_clean();
 	header('Location: ' . sanitize_uri($_SERVER['REQUEST_URI']));
 	csrf_log(__FUNCTION__, 'Timeout, redirecting to ' . sanitize_uri($_SERVER['REQUEST_URI']));
+
 	exit;
 }
 
-include_once($config['include_path'] . '/vendor/csrf/csrf-magic.php');
+include_once(CACTI_PATH_INCLUDE . '/vendor/csrf/csrf-magic.php');

@@ -32,10 +32,11 @@ if (function_exists('pcntl_async_signals')) {
 ini_set('output_buffering', 'Off');
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once($config['base_path'] . '/lib/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 if ($config['poller_id'] > 1) {
-	print "FATAL: This utility is designed for the main Data Collector only" . PHP_EOL;
+	print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
+
 	exit(1);
 }
 
@@ -69,110 +70,133 @@ if (function_exists('pcntl_signal')) {
 /* take the start time to log performance data */
 $start = microtime(true);
 
-foreach($parms as $parameter) {
+foreach ($parms as $parameter) {
 	if (strpos($parameter, '=')) {
 		list($arg, $value) = explode('=', $parameter);
 	} else {
-		$arg = $parameter;
+		$arg   = $parameter;
 		$value = '';
 	}
 
 	switch ($arg) {
-	case '--start':
-		$start_time = strtotime($value);
-		break;
-	case '--end':
-		$end_time = strtotime($value);
-		break;
-	case '--threads':
-		$threads = $value;
-		break;
-	case '--method':
-		$method = $value;
-		break;
-	case '--avgnan':
-		$avgnan = $value;
-		break;
-	case '--host-ids':
-		$host_ids = $value;
-		break;
-	case '--child':
-		$child = $value;
-		break;
-	case '-f':
-	case '--force':
-		$force = true;
-		break;
-	case '-d':
-	case '--debug':
-		$debug = true;
-		break;
-	case '-v':
-	case '-V':
-	case '--version':
-		display_version();
-		exit;
-	case '-h':
-	case '-H':
-	case '--help':
-		display_help();
-		exit;
-	default:
-		print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
-		display_help();
-		exit;
+		case '--start':
+			$start_time = strtotime($value);
+
+			break;
+		case '--end':
+			$end_time = strtotime($value);
+
+			break;
+		case '--threads':
+			$threads = $value;
+
+			break;
+		case '--method':
+			$method = $value;
+
+			break;
+		case '--avgnan':
+			$avgnan = $value;
+
+			break;
+		case '--host-ids':
+			$host_ids = $value;
+
+			break;
+		case '--child':
+			$child = $value;
+
+			break;
+		case '-f':
+		case '--force':
+			$force = true;
+
+			break;
+		case '-d':
+		case '--debug':
+			$debug = true;
+
+			break;
+		case '-v':
+		case '-V':
+		case '--version':
+			display_version();
+
+			exit;
+		case '-h':
+		case '-H':
+		case '--help':
+			display_help();
+
+			exit;
+
+		default:
+			print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
+			display_help();
+
+			exit;
 	}
 }
 
 // General time checks
 if ($end_time === false || $start_time === false) {
 	print 'FATAL: You must provide both --start and an --end dates using \'YYYY-MM-DD HH:MM:SS\' format!' . PHP_EOL;
+
 	exit(1);
 }
 
 // Secondary time checks
 if ($end_time < $start_time) {
 	print 'FATAL: End Time is less than start time!' . PHP_EOL;
+
 	exit(1);
 }
 
 // Tertiary and subsequent time checks
 if ($end_time < 0) {
 	print 'FATAL: End Time is less than 0!' . PHP_EOL;
+
 	exit(1);
 }
 
 // Tertiary and subsequent time checks
 if ($start_time < 0) {
 	print 'FATAL: Start Time is less than 0!' . PHP_EOL;
+
 	exit(1);
 }
 
 if ($start_time < strtotime('2019-01-01')) {
 	print 'FATAL: Start Time is less than 2019-01-01!.' . PHP_EOL;
+
 	exit(1);
 }
 
 if ($method != 'fill' && $method != 'float') {
 	print 'FATAL: Invalid --method value.  Options are \'fill\' and \'float\'.' . PHP_EOL;
+
 	exit(1);
 }
 
 if ($avgnan != 'last' && $method != 'avg') {
 	print 'FATAL: Invalid --avgnan value.  Options are \'last\' and \'avg\'.' . PHP_EOL;
+
 	exit(1);
 }
 
 if ($threads <= 0 || $threads > 40) {
 	print 'FATAL: Invalid --threads value.  Threads can be from 1 to 40 inclusive.' . PHP_EOL;
+
 	exit(1);
 }
 
 if ($host_ids !== false) {
 	$host_ids = explode(',', $host_ids);
-	foreach($host_ids as $id) {
+
+	foreach ($host_ids as $id) {
 		if (!is_numeric($id)) {
 			print 'FATAL: The list of --host-ids must be a comma delimited list of numeric Cacti host_ids!' . PHP_EOL;
+
 			exit(1);
 		}
 	}
@@ -191,34 +215,36 @@ if ($child == 0) {
 	$type = 'master';
 
 	if ($force) {
-		printf("NOTE: Looking for and killing running processes." . PHP_EOL);
+		printf('NOTE: Looking for and killing running processes.' . PHP_EOL);
 
 		$running = db_fetch_assoc('SELECT *
 			FROM processes
 			WHERE tasktype = "batchgapfix"');
 
 		if (cacti_sizeof($running)) {
-			printf("NOTE: Found %s running processes found." . PHP_EOL);
+			printf('NOTE: Found %s running processes found.' . PHP_EOL);
 
-			foreach($running as $r) {
+			foreach ($running as $r) {
 				$running = posix_kill($r['pid'], 0);
+
 				if (posix_get_last_error() == 1) {
-					printf("NOTE: Process with PID: %s being killed." . PHP_EOL, $r['pid']);
+					printf('NOTE: Process with PID: %s being killed.' . PHP_EOL, $r['pid']);
 
 					posix_kill($r['pid'], SIGTERM);
 				} else {
-					printf("NOTE: Process with PID: %s, not found likely crashed." . PHP_EOL, $r['pid']);
+					printf('NOTE: Process with PID: %s, not found likely crashed.' . PHP_EOL, $r['pid']);
 				}
 			}
 
 			db_execute('DELETE FROM processes WHERE tasktype = "batchgapfix"');
 		} else {
-			printf("NOTE: No running processes found." . PHP_EOL);
+			printf('NOTE: No running processes found.' . PHP_EOL);
 		}
 	}
 
 	if (!register_process_start('batchgapfix', 'master', 0, 250000)) {
-		print "FATAL: Detected an already running process.  Use --force to override" . PHP_EOL;
+		print 'FATAL: Detected an already running process.  Use --force to override' . PHP_EOL;
+
 		exit(1);
 	}
 
@@ -226,8 +252,9 @@ if ($child == 0) {
 		$running = db_fetch_cell('SELECT COUNT(*) FROM graph_local_spikekill WHERE ended = "0000-00-00"');
 
 		if ($running > 0 && !$force) {
-			print "FATAL: You have requested a start run, and a run appears to be already running" . PHP_EOL;
-			print "FATAL: Check that no processes are running and use the --force option to override." . PHP_EOL;
+			print 'FATAL: You have requested a start run, and a run appears to be already running' . PHP_EOL;
+			print 'FATAL: Check that no processes are running and use the --force option to override.' . PHP_EOL;
+
 			exit(1);
 		} else {
 			db_execute('TRUNCATE TABLE graph_local_spikekill');
@@ -265,11 +292,11 @@ if ($child == 0) {
 
 	db_execute_prepared('UPDATE graph_local_spikekill
 		SET data_source_path = REPLACE(data_source_path, "<path_rra>", ?)',
-		array($config['rra_path']));
+		array(CACTI_PATH_RRA));
 
 	print "NOTE: There are $rrdfiles RRDfiles that will be checked for gaps and fixed" . PHP_EOL;
 
-	$rrds_per_thread = ceil($rrdfiles/$threads);
+	$rrds_per_thread = ceil($rrdfiles / $threads);
 
 	// Distributing RRDfiles into tasks
 	for ($i = 1; $i <= $threads; $i++) {
@@ -282,12 +309,12 @@ if ($child == 0) {
 
 	$now = date('H:i:s');
 
-	printf("NOTE: %s, Database primed for batch gap fill." . PHP_EOL, $now);
+	printf('NOTE: %s, Database primed for batch gap fill.' . PHP_EOL, $now);
 
 	// Fork Child Binaries
-	for($i = 1; $i <= $threads; $i++) {
+	for ($i = 1; $i <= $threads; $i++) {
 		$command = sprintf("%s/cli/batchgapfix.php --start='%s' --end='%s' --method=%s --avgnan=%s --child=%s" . ($force ? ' --force':'') . ($debug ? ' --debug':''),
-			$config['base_path'],
+			CACTI_PATH_BASE,
 			$start_date,
 			$end_date,
 			$method,
@@ -297,7 +324,7 @@ if ($child == 0) {
 
 		$now = date('H:i:s');
 
-		printf("NOTE: %s, Exec in Background: %s %s" . PHP_EOL, $now, $php_bin, $command);
+		printf('NOTE: %s, Exec in Background: %s %s' . PHP_EOL, $now, $php_bin, $command);
 
 		exec_background($php_bin, $command);
 	}
@@ -325,10 +352,11 @@ if ($child == 0) {
 		$now = date('H:i:s');
 
 		if ($not_finished > 0) {
-			printf("NOTE: %s, Status %s of %s RRDfiles processed. Total Time is %.0f." . PHP_EOL, $now, number_format($rrdfiles - $not_finished), number_format($rrdfiles), $end - $start);
-			printf("NOTE: %s, Processing Rate: %s RRDfiles per/second, Estimated Complete in: %s seconds, Sleeping 1 seconds." . PHP_EOL, $now, round($rate, 2), $estimate);
+			printf('NOTE: %s, Status %s of %s RRDfiles processed. Total Time is %.0f.' . PHP_EOL, $now, number_format($rrdfiles - $not_finished), number_format($rrdfiles), $end - $start);
+			printf('NOTE: %s, Processing Rate: %s RRDfiles per/second, Estimated Complete in: %s seconds, Sleeping 1 seconds.' . PHP_EOL, $now, round($rate, 2), $estimate);
 		} else {
-			printf("NOTE: All RRDfiles processed.  Total Time was %.2f seconds." . PHP_EOL, $end - $start);
+			printf('NOTE: All RRDfiles processed.  Total Time was %.2f seconds.' . PHP_EOL, $end - $start);
+
 			break;
 		}
 	}
@@ -347,7 +375,8 @@ if ($child == 0) {
 	$type = 'child';
 
 	if (!register_process_start('batchgapfix', 'child', $child, 250000)) {
-		print "FATAL: Detected an already running process.  Use --force to override" . PHP_EOL;
+		print 'FATAL: Detected an already running process.  Use --force to override' . PHP_EOL;
+
 		exit(1);
 	}
 	// Child Process, remediate spikes
@@ -362,14 +391,14 @@ if ($child == 0) {
 	$succeeded = 0;
 	$failed    = 0;
 
-	foreach($rrdfiles as $rrdfile) {
+	foreach ($rrdfiles as $rrdfile) {
 		$output     = array();
 		$return_var = 0;
 
 		// Format the command
 		$command = sprintf("%s -q %s/cli/removespikes.php --rrdfile='%s' --outlier-start='%s' --outlier-end='%s' --method=%s --avgnan=%s",
 			$php_bin,
-			$config['base_path'],
+			CACTI_PATH_BASE,
 			$rrdfile['data_source_path'],
 			$start_date,
 			$end_date,
@@ -393,17 +422,17 @@ if ($child == 0) {
 			array($return_var, $rrdfile['id']));
 
 		if ($return_var == 0) {
-			printf("SUCCESS: Gap Fills for RRDfile:%s" . PHP_EOL, $rrdfile['data_source_path']);
+			printf('SUCCESS: Gap Fills for RRDfile:%s' . PHP_EOL, $rrdfile['data_source_path']);
 			$succeeded++;
 		} else {
-			printf("FAILED:  Gap Fills failed for RRDfile:%s" . PHP_EOL, $graph['data_source_path']);
+			printf('FAILED:  Gap Fills failed for RRDfile:%s' . PHP_EOL, $graph['data_source_path']);
 			$failed++;
 		}
 	}
 
 	$end = microtime(true);
 
-	printf("NOTE: Batch Fill Process Ended in %s seconds.  Succeeded:%s, Failed:%s" . PHP_EOL, round($end - $start, 2), $succeeded, $failed);
+	printf('NOTE: Batch Fill Process Ended in %s seconds.  Succeeded:%s, Failed:%s' . PHP_EOL, round($end - $start, 2), $succeeded, $failed);
 
 	cacti_log(sprintf('BATCHFIX CHILD STATS: Time:%s, Thread:%s, RRDfiles:%s, Succeeded:%s, Failed:%s', round($end - $start, 2), $child, cacti_sizeof($rrdfiles), $succeeded, $failed), false, 'SYSTEM');
 
@@ -414,6 +443,7 @@ exit(0);
 
 /** sig_handler - provides a generic means to catch exceptions to the Cacti log.
  * @arg $signo  - (int) the signal that was thrown by the interface.
+ * @param mixed $signo
  * @return      - null */
 function sig_handler($signo) {
 	global $child, $type;
@@ -428,7 +458,9 @@ function sig_handler($signo) {
 			}
 
 			exit(1);
+
 			break;
+
 		default:
 			/* ignore all other signals */
 	}
@@ -443,8 +475,8 @@ function debug($string) {
 }
 
 function display_version() {
-    $version = get_cacti_cli_version();
-    print "Cacti Batch Graph Gap Fill Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
+	$version = get_cacti_cli_version();
+	print "Cacti Batch Graph Gap Fill Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 function display_help() {
@@ -467,4 +499,3 @@ function display_help() {
 	print '   --force                         - Kill the current running batch gap fill and start over.' . PHP_EOL;
 	print '   --debug                         - Higher tracing level for select utilities.' . PHP_EOL . PHP_EOL;
 }
-

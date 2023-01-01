@@ -22,17 +22,17 @@
  +-------------------------------------------------------------------------+
 */
 
-include_once ('./include/auth.php');
-include_once ($config['library_path'] . '/functions.php');
+include_once('./include/auth.php');
+include_once(CACTI_PATH_LIBRARY . '/functions.php');
 
-$rra_path = $config['rra_path'] . '/';
+$rra_path = CACTI_PATH_RRA . '/';
 
 top_header();
 
 set_default_action();
 
 if (read_config_option('rrdcheck_enable') != 'on') {
-	html_start_box( __('RRD check'), '100%', '', '3', 'center', '');
+	html_start_box(__('RRD check'), '100%', '', '3', 'center', '');
 	print __('RRD check is disabled, please enable in Configuration -> Settings -> Data');
 	html_end_box();
 }
@@ -40,6 +40,7 @@ if (read_config_option('rrdcheck_enable') != 'on') {
 switch(get_request_var('action')) {
 	case 'purge':
 		rrdcheck_purge();
+
 	default:
 		rrdcheck_display_problems();
 }
@@ -62,31 +63,31 @@ function rrdcheck_display_problems() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'test_date',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'age' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '0'
 			)
@@ -112,14 +113,14 @@ function rrdcheck_display_problems() {
 	$secsback = get_request_var('age');
 
 	if (get_request_var('age') == 0) {
-		$sql_where .= " test_date>='" . date("Y-m-d H:i:s", time()-(7200)) . "'";
+		$sql_where .= " test_date>='" . date('Y-m-d H:i:s', time() - (7200)) . "'";
 	} else {
-		$sql_where .= " test_date<='" . date("Y-m-d H:i:s", (time() - $secsback)) . "'";
+		$sql_where .= " test_date<='" . date('Y-m-d H:i:s', (time() - $secsback)) . "'";
 	}
 
 	if (get_request_var('filter') != '') {
 		$sql_where .= ' AND (
-			message LIKE '          . db_qstr('%' . get_request_var('filter') . '%') . ')';
+			message LIKE '		  . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 
 	$total_rows = db_fetch_cell("SELECT COUNT(local_data_id)
@@ -127,7 +128,7 @@ function rrdcheck_display_problems() {
 		$sql_where");
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$problems = db_fetch_assoc("SELECT h.description, dtd.name_cache, rc.local_data_id, rc.test_date, rc.message
 		FROM rrdcheck AS rc
@@ -141,7 +142,7 @@ function rrdcheck_display_problems() {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar($config['url_path'] . 'rrdcheck.php?filter'. get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('RRDcheck Problems'), 'page', 'main');
+	$nav = html_nav_bar(CACTI_PATH_URL . 'rrdcheck.php?filter'. get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('RRDcheck Problems'), 'page', 'main');
 
 	form_start('rrdcheck.php');
 
@@ -151,24 +152,24 @@ function rrdcheck_display_problems() {
 
 	$display_text = array(
 		'description' => array(
-			'display' =>  __('Host Description'),
+			'display' => __('Host Description'),
 			'sort'    => 'ASC'
 		),
 		'name_cache' => array(
-			'display' =>  __('Data Source'),
+			'display' => __('Data Source'),
 			'sort'    => 'ASC'
 		),
 		'local_data_id' => array(
-			'display' =>  __('Local Data ID'),
+			'display' => __('Local Data ID'),
 			'align'   => 'center',
 			'sort'    => 'ASC'
 		),
 		'message' => array(
-			'display' =>  __('Message'),
+			'display' => __('Message'),
 			'sort'    => 'ASC'
 		),
 		'test_date' => array(
-			'display' =>  __('Date'),
+			'display' => __('Date'),
 			'align'   => 'right',
 			'sort'    => 'DESC'
 		),
@@ -177,7 +178,7 @@ function rrdcheck_display_problems() {
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	if (cacti_sizeof($problems)) {
-		foreach($problems as $problem) {
+		foreach ($problems as $problem) {
 			form_alternate_row('line' . $problem['local_data_id'], true);
 
 			if ($problem['description'] == '') {
@@ -197,7 +198,7 @@ function rrdcheck_display_problems() {
 			form_end_row();
 		}
 	} else {
-		print "<tr><td><em>" . __('No RRDcheck Problems Found') . "</em></td></tr>\n";
+		print '<tr><td><em>' . __('No RRDcheck Problems Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
@@ -211,7 +212,6 @@ function rrdcheck_display_problems() {
 	/* restore original error handler */
 	restore_error_handler();
 }
-
 
 function filter() {
 	global $item_rows;
@@ -233,12 +233,12 @@ function filter() {
 					</td>
 					<td>
 						<select id='age' onChange='refreshForm()'>
-							<option value='0'   <?php print (get_request_var('age') == '0'   ? ' selected':'');?>>&lt; <?php print __('%d hours', 2);?></option>
-							<option value='14400'   <?php print (get_request_var('age') == '14400'   ? ' selected':'');?>>&gt; <?php print __('%d hours', 4);?></option>
-							<option value='43200'  <?php print (get_request_var('age') == '43200'  ? ' selected':'');?>>&gt;  <?php print __('%d hours',12);?></option>
-							<option value='86400'  <?php print (get_request_var('age') == '86400'  ? ' selected':'');?>>&gt;  <?php print __('%d day', 1);?></option>
-							<option value='259200'  <?php print (get_request_var('age') == '259200'  ? ' selected':'');?>>&gt; <?php print __('%d days', 3);?></option>
-							<option value='604800'  <?php print (get_request_var('age') == '604800'  ? ' selected':'');?>>&gt; <?php print __('%d days', 5);?></option>
+							<option value='0'   <?php print(get_request_var('age') == '0'   ? ' selected':'');?>>&lt; <?php print __('%d hours', 2);?></option>
+							<option value='14400'   <?php print(get_request_var('age') == '14400'   ? ' selected':'');?>>&gt; <?php print __('%d hours', 4);?></option>
+							<option value='43200'  <?php print(get_request_var('age') == '43200'  ? ' selected':'');?>>&gt;  <?php print __('%d hours',12);?></option>
+							<option value='86400'  <?php print(get_request_var('age') == '86400'  ? ' selected':'');?>>&gt;  <?php print __('%d day', 1);?></option>
+							<option value='259200'  <?php print(get_request_var('age') == '259200'  ? ' selected':'');?>>&gt; <?php print __('%d days', 3);?></option>
+							<option value='604800'  <?php print(get_request_var('age') == '604800'  ? ' selected':'');?>>&gt; <?php print __('%d days', 5);?></option>
 						</select>
 					</td>
 					<td>
@@ -246,14 +246,18 @@ function filter() {
 					</td>
 					<td>
 						<select id='rows'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
+							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print '<option value="' . $key . '"'; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+									print '<option value="' . $key . '"';
+
+									if (get_request_var('rows') == $key) {
+										print ' selected';
+									} print '>' . $value . "</option>\n";
 								}
 							}
-							?>
+	?>
 						</select>
 					</td>
 					<td>
@@ -301,4 +305,3 @@ function filter() {
 	</tr>
 	<?php
 }
-

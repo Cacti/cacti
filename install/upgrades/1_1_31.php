@@ -68,8 +68,8 @@ function upgrade_to_1_1_31() {
 	}
 
 	$snmp_version = read_config_option('snmp_version');
+
 	if ($snmp_version == '') {
 		db_install_execute('UPDATE settings SET name="snmp_version" WHERE name="snmp_ver"');
 	}
 }
-

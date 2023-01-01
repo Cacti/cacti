@@ -80,8 +80,8 @@ switch (get_request_var('action')) {
 				}
 			} elseif ($field_array['method'] == 'dirpath') {
 				if (get_nfilter_request_var($field_name) != '' && !is_dir(get_nfilter_request_var($field_name))) {
-					$_SESSION[SESS_ERROR_FIELDS][$field_name] = $field_name;
-					$_SESSION[SESS_FIELD_VALUES][$field_name] = get_nfilter_request_var($field_name);
+					$_SESSION[SESS_ERROR_FIELDS][$field_name]   = $field_name;
+					$_SESSION[SESS_FIELD_VALUES][$field_name]   = get_nfilter_request_var($field_name);
 					$errors[8]                                  = 8;
 				} else {
 					if (get_request_var('tab') == 'path' && is_remote_path_setting($field_name)) {
@@ -110,8 +110,8 @@ switch (get_request_var('action')) {
 					get_nfilter_request_var($field_name) != '' &&
 					file_exists(get_nfilter_request_var($field_name)) === false
 				) {
-					$_SESSION[SESS_ERROR_FIELDS][$field_name] = $field_name;
-					$_SESSION[SESS_FIELD_VALUES][$field_name] = get_nfilter_request_var($field_name);
+					$_SESSION[SESS_ERROR_FIELDS][$field_name]   = $field_name;
+					$_SESSION[SESS_FIELD_VALUES][$field_name]   = get_nfilter_request_var($field_name);
 					$errors[36]                                 = 36;
 				} else {
 					$continue = true;
@@ -120,14 +120,14 @@ switch (get_request_var('action')) {
 						$extension = pathinfo(get_nfilter_request_var($field_name), PATHINFO_EXTENSION);
 
 						if ($extension != 'log') {
-							$_SESSION[SESS_ERROR_FIELDS][$field_name] = $field_name;
-							$_SESSION[SESS_FIELD_VALUES][$field_name] = get_nfilter_request_var($field_name);
+							$_SESSION[SESS_ERROR_FIELDS][$field_name]   = $field_name;
+							$_SESSION[SESS_FIELD_VALUES][$field_name]   = get_nfilter_request_var($field_name);
 							$errors[9]                                  = 9;
 							$continue                                   = false;
 						}
 					} elseif (get_nfilter_request_var($field_name) != '' && !is_valid_pathname(get_nfilter_request_var($field_name))) {
-						$_SESSION[SESS_ERROR_FIELDS][$field_name] = $field_name;
-						$_SESSION[SESS_FIELD_VALUES][$field_name] = get_nfilter_request_var($field_name);
+						$_SESSION[SESS_ERROR_FIELDS][$field_name]   = $field_name;
+						$_SESSION[SESS_FIELD_VALUES][$field_name]   = get_nfilter_request_var($field_name);
 						$errors[36]                                 = 36;
 					}
 
@@ -154,8 +154,8 @@ switch (get_request_var('action')) {
 				}
 			} elseif ($field_array['method'] == 'textbox_password') {
 				if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name . '_confirm')) {
-					$_SESSION[SESS_ERROR_FIELDS][$field_name] = $field_name;
-					$_SESSION[SESS_FIELD_VALUES][$field_name] = get_nfilter_request_var($field_name);
+					$_SESSION[SESS_ERROR_FIELDS][$field_name]   = $field_name;
+					$_SESSION[SESS_FIELD_VALUES][$field_name]   = get_nfilter_request_var($field_name);
 					$errors[4]                                  = 4;
 
 					break;
@@ -219,8 +219,8 @@ switch (get_request_var('action')) {
 					}
 
 					if ($value === false) {
-						$_SESSION[SESS_ERROR_FIELDS][$field_name] = $field_name;
-						$_SESSION[SESS_FIELD_VALUES][$field_name] = get_nfilter_request_var($field_name);
+						$_SESSION[SESS_ERROR_FIELDS][$field_name]   = $field_name;
+						$_SESSION[SESS_FIELD_VALUES][$field_name]   = get_nfilter_request_var($field_name);
 						$errors[3]                                  = 3;
 
 						continue;

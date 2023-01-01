@@ -108,6 +108,7 @@ switch (get_request_var('action')) {
 		break;
 	case 'ajax_hosts':
 		$sql_where = '';
+
 		if (get_request_var('site_id') > 0) {
 			$sql_where = 'site_id = ' . get_request_var('site_id');
 		}
@@ -117,6 +118,7 @@ switch (get_request_var('action')) {
 		break;
 	case 'ajax_hosts_noany':
 		$sql_where = '';
+
 		if (get_request_var('site_id') > 0) {
 			$sql_where = 'site_id = ' . get_request_var('site_id');
 		}
@@ -126,6 +128,7 @@ switch (get_request_var('action')) {
 		break;
 	case 'runall':
 		debug_runall_filtered();
+
 	default:
 		$refresh = array(
 			'seconds' => get_request_var('refresh'),
@@ -138,6 +141,7 @@ switch (get_request_var('action')) {
 		top_header();
 		debug_wizard();
 		bottom_footer();
+
 		break;
 }
 
@@ -199,9 +203,13 @@ function debug_process_status($id) {
 
 	if (cacti_sizeof($status) == 0) {
 		return 'notset';
-	} elseif ($status['issue'] == 'waiting') {
+	}
+
+	if ($status['issue'] == 'waiting') {
 		return 'waiting';
-	} elseif ($status['done'] == 1) {
+	}
+
+	if ($status['done'] == 1) {
 		return 'complete';
 	} else {
 		return 'analysis';
@@ -217,6 +225,7 @@ function form_actions() {
 	/* ================= input validation ================= */
 
 	$selected_items = array();
+
 	if (isset_request_var('save_list')) {
 		/* loop through each of the lists selected on the previous page and get more info about them */
 		foreach ($_POST as $var=>$val) {
@@ -263,14 +272,14 @@ function debug_rerun($selected_items) {
 	$info = serialize($info);
 
 	if (!empty($selected_items)) {
-		foreach($selected_items as $id) {
+		foreach ($selected_items as $id) {
 			$exists = db_fetch_cell_prepared('SELECT id
 				FROM data_debug
 				WHERE datasource = ?',
 				array($id));
 
 			if (!$exists) {
-				$save = array();
+				$save               = array();
 				$save['id']         = 0;
 				$save['datasource'] = $id;
 
@@ -296,7 +305,7 @@ function debug_rerun($selected_items) {
 
 function debug_delete($selected_items) {
 	if (!empty($selected_items)) {
-		foreach($selected_items as $id) {
+		foreach ($selected_items as $id) {
 			db_execute_prepared('DELETE
 				FROM data_debug
 				WHERE datasource = ?',
@@ -306,64 +315,64 @@ function debug_delete($selected_items) {
 }
 
 function validate_request_vars() {
-    /* ================= input validation and session storage ================= */
-    $filters = array(
+	/* ================= input validation and session storage ================= */
+	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'refresh' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '60'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'rfilter' => array(
-			'filter' => FILTER_VALIDATE_IS_REGEX,
+			'filter'  => FILTER_VALIDATE_IS_REGEX,
 			'pageset' => true,
 			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'name_cache',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'site_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '-1',
 			'pageset' => true,
 			),
 		'host_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '-1',
 			'pageset' => true,
 			),
 		'template_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '-1',
 			'pageset' => true,
 			),
 		'status' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'profile' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'debug' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '-1',
 			'pageset' => true,
 			)
@@ -525,7 +534,7 @@ function debug_wizard() {
 	data_debug_filter();
 
 	$total_rows = 0;
-	$checks = array();
+	$checks     = array();
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
@@ -551,7 +560,7 @@ function debug_wizard() {
 		$sql_where");
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$checks = db_fetch_assoc("SELECT dd.*, dtd.local_data_id, dtd.name_cache, u.username
 		FROM data_local AS dl
@@ -573,7 +582,7 @@ function debug_wizard() {
 
 	form_start('data_debug.php', 'chk');
 
-    print $nav;
+	print $nav;
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
@@ -594,6 +603,7 @@ function debug_wizard() {
 			}
 
 			$iline  = '';
+
 			if (cacti_sizeof($issues)) {
 				$iline = $issues[0];
 			}
@@ -640,7 +650,7 @@ function debug_wizard() {
 			form_end_row();
 		}
 	} else {
-		print "<tr><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Checks') . "</em></td></tr>";
+		print "<tr><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Checks') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -681,12 +691,13 @@ function debug_view() {
 		array($id));
 
 	if (cacti_sizeof($dtd)) {
-		$real_path = str_replace('<path_rra>', $config['rra_path'], $dtd['data_source_path']);
+		$real_path = str_replace('<path_rra>', CACTI_PATH_RRA, $dtd['data_source_path']);
 	} else {
 		$real_path = __('Not Found');
 	}
 
 	$poller_data = array();
+
 	if (!empty($check['info']['last_result'])) {
 		foreach ($check['info']['last_result'] as $a => $l) {
 			$poller_data[] = "$a = $l";
@@ -695,21 +706,25 @@ function debug_view() {
 	$poller_data = implode('<br>', $poller_data);
 
 	$rra_updated = '';
+
 	if (isset($check['info']['rra_timestamp2'])) {
 		$rra_updated = $check['info']['rra_timestamp2'] != '' ? __('Yes') : '';
 	}
 
 	$rrd_exists = '';
+
 	if (isset($check['info']['rrd_exists'])) {
 		$rrd_exists = $check['info']['rrd_exists'] == '1' ? __('Yes') : __('Not Checked Yet');
 	}
 
 	$active = '';
+
 	if (isset($check['info']['active'])) {
 		$active = $check['info']['active'] == 'on' ? __('Yes') : __('Not Checked Yet');
 	}
 
 	$issue = '';
+
 	if (isset($check['issue'])) {
 		$issue = $check['issue'];
 	}
@@ -724,89 +739,89 @@ function debug_view() {
 		if (isset($check['info']['rrd_match_array']['ds'])) {
 			if ($check['info']['rrd_match'] == 0) {
 				$issue_icon = debug_icon('blah');
-				$issue = __('Issues found!  Waiting on RRDfile update');
+				$issue      = __('Issues found!  Waiting on RRDfile update');
 			} else {
 				$issue_icon = debug_icon('');
-				$issue = __('No Initial found!  Waiting on RRDfile update');
+				$issue      = __('No Initial found!  Waiting on RRDfile update');
 			}
 		} else {
 			$issue_icon = debug_icon('');
-			$issue = __('Waiting on analysis and RRDfile update');
+			$issue      = __('Waiting on analysis and RRDfile update');
 		}
 	}
 
 	$fields = array(
 		array(
-			'name' => 'owner',
+			'name'  => 'owner',
 			'title' => __('RRDfile Owner'),
-			'icon' => '-'
+			'icon'  => '-'
 		),
 		array(
-			'name' => 'runas_website',
+			'name'  => 'runas_website',
 			'title' => __('Website runs as'),
-			'icon' => '-'
+			'icon'  => '-'
 		),
 		array(
-			'name' => 'runas_poller',
+			'name'  => 'runas_poller',
 			'title' => __('Poller runs as'),
-			'icon' => '-'
+			'icon'  => '-'
 		),
 		array(
-			'name' => 'rrd_folder_writable',
+			'name'  => 'rrd_folder_writable',
 			'title' => __('Is RRA Folder writeable by poller?'),
 			'value' => dirname($real_path)
 		),
 		array(
-			'name' => 'rrd_writable',
+			'name'  => 'rrd_writable',
 			'title' => __('Is RRDfile writeable by poller?'),
 			'value' => $real_path
 		),
 		array(
-			'name' => 'rrd_exists',
+			'name'  => 'rrd_exists',
 			'title' => __('Does the RRDfile Exist?'),
 			'value' => $rrd_exists
 		),
 		array(
-			'name' => 'active',
+			'name'  => 'active',
 			'title' => __('Is the Data Source set as Active?'),
 			'value' => $active
 		),
 		array(
-			'name' => 'last_result',
+			'name'  => 'last_result',
 			'title' => __('Did the poller receive valid data?'),
 			'value' => $poller_data
 		),
 		array(
-			'name' => 'rra_updated',
+			'name'  => 'rra_updated',
 			'title' => __('Was the RRDfile updated?'),
 			'value' => '',
-			'icon' => $rra_updated
+			'icon'  => $rra_updated
 		),
 		array(
-			'name' => 'rra_timestamp',
+			'name'  => 'rra_timestamp',
 			'title' => __('First Check TimeStamp'),
-			'icon' => '-'
+			'icon'  => '-'
 		),
 		array(
-			'name' => 'rra_timestamp2',
+			'name'  => 'rra_timestamp2',
 			'title' => __('Second Check TimeStamp'),
-			'icon' => '-'
+			'icon'  => '-'
 		),
 		array(
-			'name' => 'convert_name',
+			'name'  => 'convert_name',
 			'title' => __('Were we able to convert the title?'),
 			'value' => html_escape(get_data_source_title($check['datasource']))
 		),
 		array(
-			'name' => 'rrd_match',
+			'name'  => 'rrd_match',
 			'title' => __('Data Source matches the RRDfile?'),
 			'value' => ''
 		),
 		array(
-			'name' => 'issue',
+			'name'  => 'issue',
 			'title' => __('Issues'),
 			'value' => $issue,
-			'icon' => $issue_icon
+			'icon'  => $issue_icon
 		),
 	);
 
@@ -829,6 +844,7 @@ function debug_view() {
 	);
 
 	$i = 1;
+
 	foreach ($fields as $field) {
 		$field_name = $field['name'];
 
@@ -840,6 +856,7 @@ function debug_view() {
 
 		if (array_key_exists($field_name, $check['info'])) {
 			$value = $check['info'][$field_name];
+
 			if ($field_name == 'last_result') {
 				$icon  = debug_icon_valid_result($value);
 			} else {
@@ -856,6 +873,7 @@ function debug_view() {
 		}
 
 		$value_title = $value;
+
 		if (strlen($value) > 100) {
 			$value = substr($value, 0, 100);
 		}
@@ -881,12 +899,14 @@ function debug_view() {
 
 		if (isset($check['info']['rrd_match_array']['ds'])) {
 			$i = 0;
-			foreach($check['info']['rrd_match_array']['ds'] AS $data_source => $details) {
+
+			foreach ($check['info']['rrd_match_array']['ds'] as $data_source => $details) {
 				form_alternate_row('line2_' . $i, true);
 				form_selectable_cell($data_source, $i);
 
 				$output = '';
-				foreach($details as $attribute => $recommendation) {
+
+				foreach ($details as $attribute => $recommendation) {
 					$output .= __('For attribute \'%s\', issue found \'%s\'', $attribute, $recommendation);
 				}
 
@@ -911,7 +931,8 @@ function debug_view() {
 			$rrdtool_path = read_config_option('path_rrdtool');
 
 			$i = 0;
-			foreach($check['info']['rrd_match_array']['tune'] AS $options) {
+
+			foreach ($check['info']['rrd_match_array']['tune'] as $options) {
 				form_alternate_row('line3_' . $i, true);
 				form_selectable_cell($rrdtool_path . ' tune ' . $options, 'line3_' . $i);
 				form_end_row();
@@ -962,14 +983,16 @@ function debug_icon_valid_result($result) {
 	}
 
 	if (is_array($result)) {
-		foreach($result as $variable => $value) {
+		foreach ($result as $variable => $value) {
 			if (!prepare_validate_result($value)) {
 				return '<i class="fa fa-times" style="color:red"></i>';
 			}
 		}
 
 		return '<i class="fa fa-check" style="color:green"></i>';
-	} elseif (prepare_validate_result($result)) {
+	}
+
+	if (prepare_validate_result($result)) {
 		return '<i class="fa fa-check" style="color:green"></i>';
 	} else {
 		return '<i class="fa fa-times" style="color:red"></i>';
@@ -1037,12 +1060,16 @@ function data_debug_filter() {
 								WHERE data_template_data.local_data_id > 0
 								ORDER BY data_template.name');
 
-							if (cacti_sizeof($templates) > 0) {
-								foreach ($templates as $template) {
-									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . html_escape($template['name']) . '</option>';
-								}
-							}
-							?>
+	if (cacti_sizeof($templates) > 0) {
+		foreach ($templates as $template) {
+			print "<option value='" . $template['id'] . "'";
+
+			if (get_request_var('template_id') == $template['id']) {
+				print ' selected';
+			} print '>' . html_escape($template['name']) . '</option>';
+		}
+	}
+	?>
 
 						</select>
 					</td>
@@ -1063,15 +1090,20 @@ function data_debug_filter() {
 					</td>
 					<td>
 						<select id='profile' name='profile' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('profile') == '-1' ? ' selected>':'>') . __('All');?></option>
+							<option value='-1'<?php print(get_request_var('profile') == '-1' ? ' selected>':'>') . __('All');?></option>
 							<?php
-							$profiles = array_rekey(db_fetch_assoc('SELECT id, name FROM data_source_profiles ORDER BY name'), 'id', 'name');
-							if (cacti_sizeof($profiles)) {
-								foreach ($profiles as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('profile') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
-								}
-							}
-							?>
+	$profiles = array_rekey(db_fetch_assoc('SELECT id, name FROM data_source_profiles ORDER BY name'), 'id', 'name');
+
+	if (cacti_sizeof($profiles)) {
+		foreach ($profiles as $key => $value) {
+			print "<option value='" . $key . "'";
+
+			if (get_request_var('profile') == $key) {
+				print ' selected';
+			} print '>' . html_escape($value) . '</option>';
+		}
+	}
+	?>
 						</select>
 					</td>
 					<td>
@@ -1090,9 +1122,9 @@ function data_debug_filter() {
 					</td>
 					<td>
 						<select id='debug' name='debug' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('debug') == '-1' ? ' selected>':'>') . __('All');?></option>
-							<option value='1'<?php print (get_request_var('debug') == '1' ? ' selected>':'>') . __('Debugging');?></option>
-							<option value='0'<?php print (get_request_var('debug') == '0' ? ' selected>':'>') . __('Not Debugging');?></option>
+							<option value='-1'<?php print(get_request_var('debug') == '-1' ? ' selected>':'>') . __('All');?></option>
+							<option value='1'<?php print(get_request_var('debug') == '1' ? ' selected>':'>') . __('Debugging');?></option>
+							<option value='0'<?php print(get_request_var('debug') == '0' ? ' selected>':'>') . __('Not Debugging');?></option>
 						</select>
 					</td>
 					<td>
@@ -1101,18 +1133,19 @@ function data_debug_filter() {
 					<td>
 						<select id='refresh' name='refresh' onChange='applyFilter()'>
 							<?php
-							unset($page_refresh_interval[5]);
-							unset($page_refresh_interval[10]);
-							unset($page_refresh_interval[20]);
+	unset($page_refresh_interval[5]);
+	unset($page_refresh_interval[10]);
+	unset($page_refresh_interval[20]);
 
-							foreach($page_refresh_interval AS $seconds => $display_text) {
-								print "<option value='" . $seconds . "'";
-								if (get_request_var('refresh') == $seconds) {
-									print ' selected';
-								}
-								print '>' . $display_text . "</option>";
-							}
-							?>
+	foreach ($page_refresh_interval as $seconds => $display_text) {
+		print "<option value='" . $seconds . "'";
+
+		if (get_request_var('refresh') == $seconds) {
+			print ' selected';
+		}
+		print '>' . $display_text . '</option>';
+	}
+	?>
 						</select>
 					</td>
 				</tr>
@@ -1130,14 +1163,18 @@ function data_debug_filter() {
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
+							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (cacti_sizeof($item_rows) > 0) {
-								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
-								}
-							}
-							?>
+	if (cacti_sizeof($item_rows) > 0) {
+		foreach ($item_rows as $key => $value) {
+			print "<option value='" . $key . "'";
+
+			if (get_request_var('rows') == $key) {
+				print ' selected';
+			} print '>' . html_escape($value) . '</option>';
+		}
+	}
+	?>
 						</select>
 					</td>
 				</tr>

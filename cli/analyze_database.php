@@ -37,11 +37,11 @@ $form  = '';
 $start = time();
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -49,23 +49,29 @@ if (cacti_sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--local':
 				$local = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
-				print "ERROR: Invalid Parameter " . $parameter . "\n\n";
+				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -76,15 +82,15 @@ print "NOTE: Analyzing All Cacti Database Tables\n";
 if (!$local && $config['poller_id'] > 1) {
 	db_switch_remote_to_main();
 
-	print "NOTE: Repairing Tables for Main Database" . PHP_EOL;
+	print 'NOTE: Repairing Tables for Main Database' . PHP_EOL;
 } else {
-	print "NOTE: Repairing Tables for Local Database" . PHP_EOL;
+	print 'NOTE: Repairing Tables for Local Database' . PHP_EOL;
 }
 
 $tables = db_fetch_assoc('SHOW TABLES FROM `' . $database_default . '`');
 
 if (cacti_sizeof($tables)) {
-	foreach($tables AS $table) {
+	foreach ($tables as $table) {
 		if (db_binlog_enabled()) {
 			print "NOTE: Analyzing Table -> '" . $table['Tables_in_' . $database_default] . "' without writing to the binlog";
 			$status = db_execute('ANALYZE TABLE NO_WRITE_TO_BINLOG ' . $table['Tables_in_' . $database_default] . $form);
@@ -93,7 +99,7 @@ if (cacti_sizeof($tables)) {
 			$status = db_execute('ANALYZE TABLE ' . $table['Tables_in_' . $database_default] . $form);
 		}
 
-		print ($status == 0 ? ' Failed' : ' Successful') . "\n";
+		print($status == 0 ? ' Failed' : ' Successful') . "\n";
 	}
 
 	cacti_log('ANALYSIS STATS: Analyzing Cacti Tables Complete.  Total time ' . (time() - $start) . ' seconds.', false, 'SYSTEM');
@@ -106,7 +112,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print "\nusage: analyze_database.php [-d|--debug]\n\n";

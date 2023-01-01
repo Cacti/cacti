@@ -68,8 +68,6 @@ $rrdfonts['watermark']['font'] = 'Roboto';
 $rrdfonts['watermark']['size'] = '6';
 
 # Only supported in RRDtool 1.4+
-$rrdborder = 0;
+$rrdborder       = 0;
 $rrdborder_light = 0;
-$rrdborder_dark = 0;
-
-
+$rrdborder_dark  = 0;

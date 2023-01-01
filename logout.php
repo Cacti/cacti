@@ -52,7 +52,7 @@ if (get_request_var('action') == 'timeout' || get_request_var('action') == 'disa
 	if (get_request_var('action') == 'disabled') {
 		$hook   = 'disabled';
 		$reason = __('an Account Suspension');
-	} else if (get_request_var('action') == 'remote') {
+	} elseif (get_request_var('action') == 'remote') {
 		$hook   = 'logout';
 		$reason = __('a change in state of the Remote Data Collector');
 	}

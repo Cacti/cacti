@@ -46,13 +46,25 @@ function upgrade_to_1_2_0() {
 
 		// Ensure value falls in line with what we expect for processes
 		$max_processes = read_config_option('concurrent_processes');
-		if ($max_processes < 1) $max_processes = 1;
-		if ($max_processes > 10) $max_processes = 10;
+
+		if ($max_processes < 1) {
+			$max_processes = 1;
+		}
+
+		if ($max_processes > 10) {
+			$max_processes = 10;
+		}
 
 		// Ensure value falls in line with what we expect for threads
 		$max_threads = read_config_option('max_threads');
-		if ($max_threads < 1) $max_threads = 1;
-		if ($max_threads > 100) $max_threads = 100;
+
+		if ($max_threads < 1) {
+			$max_threads = 1;
+		}
+
+		if ($max_threads > 100) {
+			$max_threads = 100;
+		}
 
 		db_install_execute("UPDATE poller SET processes = $max_processes, threads = $max_threads");
 	}
@@ -85,9 +97,9 @@ function upgrade_to_1_2_0() {
 	}
 
 	db_install_add_column('automation_networks', array('name' => 'notification_enabled', 'type' => 'char(2)', 'default' => '', 'after' => 'enabled'));
-	db_install_add_column('automation_networks', array('name' => 'notification_email', 'type' => 'varchar(255)', 'default' => "", 'after' => 'notification_enabled'));
-	db_install_add_column('automation_networks', array('name' => 'notification_fromname', 'type' => 'varchar(32)', 'default' => "", 'after' => 'notification_email'));
-	db_install_add_column('automation_networks', array('name' => 'notification_fromemail', 'type' => 'varchar(128)', 'default' => "", 'after' => 'notification_fromname'));
+	db_install_add_column('automation_networks', array('name' => 'notification_email', 'type' => 'varchar(255)', 'default' => '', 'after' => 'notification_enabled'));
+	db_install_add_column('automation_networks', array('name' => 'notification_fromname', 'type' => 'varchar(32)', 'default' => '', 'after' => 'notification_email'));
+	db_install_add_column('automation_networks', array('name' => 'notification_fromemail', 'type' => 'varchar(128)', 'default' => '', 'after' => 'notification_fromname'));
 
 	if (db_table_exists('dsdebug')) {
 		db_install_rename_table('dsdebug','data_debug');
@@ -139,7 +151,7 @@ function upgrade_to_1_2_0() {
 	$snmp_queries = $snmp_queries_results['data'];
 
 	if (cacti_sizeof($snmp_queries)) {
-		foreach($snmp_queries as $query) {
+		foreach ($snmp_queries as $query) {
 			db_execute_prepared("UPDATE graph_local AS gl
 				INNER JOIN (
 					SELECT graph_template_id
@@ -163,7 +175,7 @@ function upgrade_to_1_2_0() {
 	$ids = $ids_results['data'];
 
 	if (cacti_sizeof($ids)) {
-		foreach($ids as $id) {
+		foreach ($ids as $id) {
 			$query_graph_id_results = db_install_fetch_cell('SELECT id
 				FROM snmp_query_graph
 				WHERE snmp_query_id = ?

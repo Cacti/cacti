@@ -31,4 +31,3 @@ if ($result != '') {
 } else {
 	print 'fail' . PHP_EOL;
 }
-

@@ -29,7 +29,7 @@ get_filter_request_var('date1', FILTER_CALLBACK, array('options' => 'sanitize_se
 get_filter_request_var('date2', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 /* ==================================================== */
 
-include_once($config['base_path'] . '/lib/time.php');
+include_once(CACTI_PATH_LIBRARY . '/time.php');
 
 /* initialize the timespan array */
 $timespan = array();
@@ -121,7 +121,7 @@ function process_user_input(&$timespan, $timeshift) {
 				$timespan['end_now']               = strtotime($timespan['current_value_date2']);
 
 				$_SESSION['sess_current_timespan'] = GT_CUSTOM;
-				$_SESSION['custom'] = 1;
+				$_SESSION['custom']                = 1;
 
 				set_request_var('predefined_timespan', GT_CUSTOM);
 			} elseif (!isset_request_var('button_clear')) {
@@ -155,7 +155,6 @@ function process_user_input(&$timespan, $timeshift) {
 			!isset($_SESSION['custom']) ||
 			!isset_request_var('predefined_timespan') && ($_SESSION['custom'] == 0) ||
 			!isset($_SESSION['sess_current_date1'])) {
-
 			set_preset_timespan($timespan);
 		} else {
 			$timespan['current_value_date1'] = $_SESSION['sess_current_date1'];
@@ -249,4 +248,3 @@ function set_timeshift() {
 		return DEFAULT_TIMESHIFT;
 	}
 }
-

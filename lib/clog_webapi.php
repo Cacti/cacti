@@ -42,8 +42,9 @@ function clog_validate_filename(&$file, &$filepath, &$filename, $filecheck = fal
 	global $config;
 
 	$logfile = read_config_option('path_cactilog');
+
 	if ($logfile == '') {
-		$logfile = $config['base_path'] . '/log/cacti.log';
+		$logfile = CACTI_PATH_LOG . '/cacti.log';
 	}
 
 	$errfile  = read_config_option('path_stderrlog');
@@ -77,11 +78,12 @@ function clog_purge_logfile() {
 	if (!clog_validate_filename($filename, $logpath, $logname)) {
 		raise_message('clog_invalid');
 		header('Location: ' . get_current_page());
+
 		exit(0);
 	}
 
 	$purgefile = $logpath . '/' . $filename;
-	$logfile = $logpath . '/'. $logname;
+	$logfile   = $logpath . '/'. $logname;
 
 	if (file_exists($purgefile)) {
 		if (is_writable($purgefile)) {
@@ -180,7 +182,7 @@ function clog_view_logfile() {
 
 	$page_nr = get_request_var('page');
 
-	$page = $config['url_path'] . 'clog' . (!$clogAdmin ? '_user' : '') . '.php';
+	$page = CACTI_PATH_URL . 'clog' . (!$clogAdmin ? '_user' : '') . '.php';
 	$page .= '?filename=' . basename($logfile) . '&page=' . $page_nr;
 
 	$refresh = array(
@@ -247,13 +249,14 @@ function clog_view_logfile() {
 
 	if (!$clogAdmin) {
 		$exclude_regex = read_config_option('clog_exclude', true);
+
 		if ($exclude_regex != '') {
 			$ad_filter = __(' - Admin Filter active');
 		} else {
 			$ad_filter = __(' - Admin Unfiltered');
 		}
 	} else {
-		$ad_filter = __(' - Admin view');
+		$ad_filter     = __(' - Admin view');
 		$exclude_regex = '';
 	}
 
@@ -263,7 +266,7 @@ function clog_view_logfile() {
 		$start_string = __('Log [Total Lines: %d %s - Unfiltered]', $total_rows, $ad_filter);
 	}
 
-	$base_url     = $config['url_path'] . 'clog.php';
+	$base_url     = CACTI_PATH_URL . 'clog.php';
 
 	$nav = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 1, __('Entries'), 'page', 'main');
 
@@ -288,12 +291,14 @@ function clog_view_logfile() {
 		AND deleted = ''");
 
 	$hostDescriptions = array();
+
 	foreach ($hosts as $host) {
 		$hostDescriptions[$host['id']] = html_escape($host['description']);
 	}
 
 	foreach ($logcontents as $item) {
 		$new_item = html_escape($item);
+
 		if ($should_expand) {
 			$new_item = text_substitute($new_item, isHtml: true);
 		}
@@ -353,11 +358,13 @@ function filter_sort($a, $b) {
 	$b_parts = explode('-', $b);
 
 	$a_date = '99999999';
+
 	if (cacti_count($a_parts) > 1) {
 		$a_date = $a_parts[1];
 	}
 
 	$b_date = '99999999';
+
 	if (cacti_count($b_parts) > 1) {
 		$b_date = $b_parts[1];
 	}
@@ -371,14 +378,14 @@ function filter_sort($a, $b) {
 function clog_get_logfiles() {
 	global $config;
 
-	$stdFileArray = $stdLogFileArray = $stdErrFileArray = array();
+	$stdFileArray  = $stdLogFileArray = $stdErrFileArray = array();
 	$configLogPath = read_config_option('path_cactilog');
 	$configLogBase = basename($configLogPath);
 	$stderrLogPath = read_config_option('path_stderrlog');
 	$stderrLogBase = basename($stderrLogPath);
 
 	if ($configLogPath == '') {
-		$logPath = $config['base_path'] . '/log/';
+		$logPath = CACTI_PATH_LOG . '/';
 	} else {
 		$logPath = dirname($configLogPath);
 	}
@@ -395,12 +402,14 @@ function clog_get_logfiles() {
 	// After Defaults, do Cacti log first (of archived)
 	if (cacti_sizeof($files)) {
 		$stdLogFileArray = array();
+
 		foreach ($files as $logFile) {
-			if (in_array($logFile, array('.', '..', '.htaccess', $configLogBase, $stderrLogBase))) {
+			if (in_array($logFile, array('.', '..', '.htaccess', $configLogBase, $stderrLogBase), true)) {
 				continue;
 			}
 
 			$explode = explode('.', $logFile);
+
 			if (substr($explode[max(array_keys($explode))], 0, 3) != 'log') {
 				continue;
 			}
@@ -409,7 +418,7 @@ function clog_get_logfiles() {
 				continue;
 			}
 
-			if (!empty($stderrlogbase) && strpos($logFile, $stderrLogBase) === 0){
+			if (!empty($stderrlogbase) && strpos($logFile, $stderrLogBase) === 0) {
 				$stdErrFileArray[] = $logFile;
 			} else {
 				$stdLogFileArray[] = $logFile;
@@ -427,15 +436,18 @@ function clog_get_logfiles() {
 		// After Defaults, do Cacti StdErr log second (of archived)
 		if (dirname($stderrLogPath) != $logPath) {
 			$errFiles = @scandir(dirname($stderrLogPath));
-			$files = $errFiles;
+			$files    = $errFiles;
+
 			if (cacti_sizeof($files)) {
 				$stdErrFileArray = array();
+
 				foreach ($files as $logFile) {
-					if (in_array($logFile, array('.', '..', '.htaccess', $configLogBase, $stderrLogBase))) {
+					if (in_array($logFile, array('.', '..', '.htaccess', $configLogBase, $stderrLogBase), true)) {
 						continue;
 					}
 
 					$explode = explode('.', $logFile);
+
 					if (substr($explode[max(array_keys($explode))], 0, 3) != 'log') {
 						continue;
 					}
@@ -474,39 +486,40 @@ function filter($clogAdmin, $selectedFile) {
 						<?php
 						$logFileArray = clog_get_logfiles();
 
-						if (cacti_sizeof($logFileArray)) {
-							foreach ($logFileArray as $logFile) {
-								print "<option value='" . $logFile . "'";
+	if (cacti_sizeof($logFileArray)) {
+		foreach ($logFileArray as $logFile) {
+			print "<option value='" . $logFile . "'";
 
-								if ($selectedFile == $logFile) {
-									print ' selected';
-								}
+			if ($selectedFile == $logFile) {
+				print ' selected';
+			}
 
-								$logParts = explode('-', $logFile);
+			$logParts = explode('-', $logFile);
 
-								$logDate = cacti_count($logParts) < 2 ? '' : $logParts[1] . (isset($logParts[2]) ? '-' . $logParts[2]:'');
-								$logName = $logParts[0];
+			$logDate = cacti_count($logParts) < 2 ? '' : $logParts[1] . (isset($logParts[2]) ? '-' . $logParts[2]:'');
+			$logName = $logParts[0];
 
-								print '>' . $logName . ($logDate != '' ? ' [' . substr($logDate,4) . ']':'') . "</option>\n";
-							}
-						}
-						?>
+			print '>' . $logName . ($logDate != '' ? ' [' . substr($logDate,4) . ']':'') . "</option>\n";
+		}
+	}
+	?>
 						</select>
 					</td>
 					<td>
-						<?php print (get_request_var('reverse') == 1 ? __('Tail Lines'):__('Head Lines'));?>
+						<?php print(get_request_var('reverse') == 1 ? __('Tail Lines'):__('Head Lines'));?>
 					</td>
 					<td>
 						<select id='tail_lines'>
 							<?php
-							foreach($log_tail_lines AS $tail_lines => $display_text) {
-								print "<option value='" . $tail_lines . "'";
-								if (get_request_var('tail_lines') == $tail_lines) {
-									print ' selected';
-								}
-								print '>' . $display_text . "</option>\n";
-							}
-							?>
+		foreach ($log_tail_lines as $tail_lines => $display_text) {
+			print "<option value='" . $tail_lines . "'";
+
+			if (get_request_var('tail_lines') == $tail_lines) {
+				print ' selected';
+			}
+			print '>' . $display_text . "</option>\n";
+		}
+	?>
 						</select>
 					</td>
 					<td>
@@ -526,34 +539,35 @@ function filter($clogAdmin, $selectedFile) {
 					<td>
 						<select id='message_type'>
 							<?php
-							$message_types = array(
-								'-1' => __('All'),
-								'1'  => __('Stats'),
-								'2'  => __('Warnings'),
-								'3'  => __('Warnings++'),
-								'4'  => __('Errors'),
-								'5'  => __('Errors++'),
-								'6'  => __('Debug'),
-								'7'  => __('SQL Calls'),
-								'8'  => __('AutoM8'),
-								'9'  => __('Non Stats'),
-								'10' => __('Boost'),
-								'11' => __('Device Up/Down'),
-								'12' => __('Recaches'),
-							);
+	$message_types = array(
+		'-1' => __('All'),
+		'1'  => __('Stats'),
+		'2'  => __('Warnings'),
+		'3'  => __('Warnings++'),
+		'4'  => __('Errors'),
+		'5'  => __('Errors++'),
+		'6'  => __('Debug'),
+		'7'  => __('SQL Calls'),
+		'8'  => __('AutoM8'),
+		'9'  => __('Non Stats'),
+		'10' => __('Boost'),
+		'11' => __('Device Up/Down'),
+		'12' => __('Recaches'),
+	);
 
-							if (api_plugin_is_enabled('thold')) {
-								$message_types['99'] = __('Threshold');
-							}
+	if (api_plugin_is_enabled('thold')) {
+		$message_types['99'] = __('Threshold');
+	}
 
-							foreach ($message_types as $index => $type) {
-								print "<option value='" . $index . "'";
-								if (get_request_var('message_type') == $index) {
-									print ' selected';
-								}
-								print '>' . $type . '</option>';
-							}
-							?>
+	foreach ($message_types as $index => $type) {
+		print "<option value='" . $index . "'";
+
+		if (get_request_var('message_type') == $index) {
+			print ' selected';
+		}
+		print '>' . $type . '</option>';
+	}
+	?>
 						</select>
 					</td>
 					<td>
@@ -571,14 +585,15 @@ function filter($clogAdmin, $selectedFile) {
 					<td>
 						<select id='refresh'>
 							<?php
-							foreach($page_refresh_interval AS $seconds => $display_text) {
-								print "<option value='" . $seconds . "'";
-								if (get_request_var('refresh') == $seconds) {
-									print ' selected';
-								}
-								print '>' . $display_text . '</option>';
-							}
-							?>
+	foreach ($page_refresh_interval as $seconds => $display_text) {
+		print "<option value='" . $seconds . "'";
+
+		if (get_request_var('refresh') == $seconds) {
+			print ' selected';
+		}
+		print '>' . $display_text . '</option>';
+	}
+	?>
 						</select>
 					</td>
 				</tr>
@@ -638,70 +653,84 @@ function filter($clogAdmin, $selectedFile) {
 
 function clog_get_regex_array() {
 	cacti_depreciated(__FUNCTION__ . '()');
+
 	return text_get_regex_array();
 }
 
 function clog_regex_replace($id, $link, $url, $matches, $cache) {
 	cacti_depreciated(__FUNCTION__ . '()');
+
 	return text_regex_replace($id, $link, $url, $matches, $cache);
 }
 
 function clog_regex_parser_html($matches) {
 	cacti_depreciated(__FUNCTION__ . '()');
+
 	return text_regex_parser($matches, true);
 }
 
 function clog_regex_parser($matches, $link = false) {
 	cacti_depreciated(__FUNCTION__ . '()');
+
 	return text_regex_parser($matches, $link);
 }
 
 function clog_regex_device($matches, $link = false) {
 	cacti_depreciated(__FUNCTION__ . '()');
+
 	return text_regex_device($matches, $link);
 }
 
 function clog_regex_datasource($matches, $link = false) {
 	cacti_depreciated(__FUNCTION__ . '()');
+
 	return text_regex_datasource($matches, $link);
 }
 
 function clog_regex_poller($matches, $link = false) {
 	cacti_depreciated(__FUNCTION__ . '()');
+
 	return text_regex_poller($matches, $link);
 }
 
 function clog_regex_dataquery($matches, $link = false) {
 	cacti_depreciated(__FUNCTION__ . '()');
+
 	return text_regex_dataquery($matches, $link);
 }
 
 function clog_regex_rra($matches, $link = false) {
 	cacti_depreciated(__FUNCTION__ . '()');
+
 	return text_regex_rra($matches, $link);
 }
 
 function clog_regex_graphs($matches, $link = false) {
 	cacti_depreciated(__FUNCTION__ . '()');
+
 	return text_regex_graphs($matches, $link);
 }
 
 function clog_regex_graphtemplates($matches, $link = false) {
 	cacti_depreciated(__FUNCTION__ . '()');
+
 	return text_regex_graphtemplates($matches, $link);
 }
 
 function clog_regex_users($matches, $link = false) {
 	cacti_depreciated(__FUNCTION__ . '()');
+
 	return text_regex_users($matches, $link);
 }
 
 function clog_regex_rule($matches, $link = false) {
 	cacti_depreciated(__FUNCTION__ . '()');
+
 	return text_regex_rule($matches, $link);
 }
 
 function clog_get_datasource_titles($local_data_ids) {
 	cacti_depreciated(__FUNCTION__ . '()');
+
 	return get_data_source_titles($local_data_ids);
 }

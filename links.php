@@ -102,11 +102,13 @@ switch (get_request_var('action')) {
 			raise_message(1);
 
 			header('Location: links.php');
+
 			exit;
 		} else {
 			raise_message(2);
 
 			header('Location: links.php?action=edit&id=' . (isset_request_var('id') ? get_filter_request_var('id') : ''));
+
 			exit;
 		}
 
@@ -119,6 +121,7 @@ switch (get_request_var('action')) {
 		bottom_footer();
 
 		break;
+
 	default:
 		top_header();
 
@@ -159,12 +162,13 @@ function form_actions() {
 		}
 
 		header('Location: links.php');
+
 		exit;
 	}
 
 	/* setup some variables */
 	$page_list = '';
-	$i = 0;
+	$i         = 0;
 
 	/* loop through each of the pages selected on the previous page and get more info about them */
 	foreach ($_POST as $var => $val) {
@@ -190,8 +194,8 @@ function form_actions() {
 		if (get_request_var('drp_action') == '3') { // Enable Pages
 			print "<tr>
 				<td colspan='2' class='textArea'>
-					<p>" . __('Click \'Continue\' to Enable the following Page(s).') . "</p>
-					<ul>" . $page_list . "</ul>
+					<p>" . __('Click \'Continue\' to Enable the following Page(s).') . '</p>
+					<ul>' . $page_list . "</ul>
 				</td>
 			</tr>\n";
 
@@ -199,8 +203,8 @@ function form_actions() {
 		} elseif (get_request_var('drp_action') == '2') { // Disable Pages
 			print "<tr>
 				<td colspan='2' class='textArea'>
-					<p>" . __('Click \'Continue\' to Disable the following Page(s).') . "</p>
-					<ul>" . $page_list . "</ul>
+					<p>" . __('Click \'Continue\' to Disable the following Page(s).') . '</p>
+					<ul>' . $page_list . "</ul>
 				</td>
 			</tr>\n";
 
@@ -208,8 +212,8 @@ function form_actions() {
 		} elseif (get_request_var('drp_action') == '1') { // Delete Pages
 			print "<tr>
 				<td colspan='2' class='textArea'>
-					<p>" . __('Click \'Continue\' to Delete the following Page(s).') . "</p>
-					<ul>" . $page_list . "</ul>
+					<p>" . __('Click \'Continue\' to Delete the following Page(s).') . '</p>
+					<ul>' . $page_list . "</ul>
 				</td>
 			</tr>\n";
 
@@ -218,6 +222,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: links.php');
+
 		exit;
 	}
 
@@ -243,26 +248,26 @@ function pages() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 		),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 		),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 		),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'sortorder',
 			'options' => array('options' => 'sanitize_search_string')
 		),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 		)
@@ -277,7 +282,7 @@ function pages() {
 		$rows = get_request_var('rows');
 	}
 
-?>
+	?>
 	<script type='text/javascript'>
 		function applyFilter() {
 			strURL = 'links.php?rows=' + $('#rows').val();
@@ -303,7 +308,7 @@ function pages() {
 	</script>
 	<?php
 
-	html_start_box(__('External Links'), '100%', '', '3', 'center', 'links.php?action=edit');
+		html_start_box(__('External Links'), '100%', '', '3', 'center', 'links.php?action=edit');
 	?>
 	<tr class='even noprint'>
 		<td>
@@ -324,9 +329,9 @@ function pages() {
 								<option value=-1 <?php get_request_var('rows') == -1 ? 'selected' : ''; ?>><?php print __('Default'); ?></option>
 								<?php
 								foreach ($item_rows as $key => $row) {
-									echo "<option value='" . $key . "'" . ($key == get_request_var('rows') ? ' selected' : '') . '>' . $row . '</option>';
+									print "<option value='" . $key . "'" . ($key == get_request_var('rows') ? ' selected' : '') . '>' . $row . '</option>';
 								}
-								?>
+	?>
 							</select>
 						</td>
 						<td>
@@ -391,14 +396,15 @@ function pages() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'));
 
 	$i = 0;
+
 	if (cacti_sizeof($pages)) {
 		foreach ($pages as $page) {
 			form_alternate_row('line' . $page['id']);
 
-			$actions = '<a class="pic"  href="' . html_escape('links.php?action=edit&id=' . $page['id']) . '" title="' . __esc('Edit Page') . '"><img src="' . $config['url_path'] . 'images/application_edit.png" alt=""></a>';
+			$actions = '<a class="pic"  href="' . html_escape('links.php?action=edit&id=' . $page['id']) . '" title="' . __esc('Edit Page') . '"><img src="' . CACTI_PATH_URL . 'images/application_edit.png" alt=""></a>';
 
 			if ($page['enabled'] == 'on') {
-				$actions .= '<a class="pic" href="' . html_escape('link.php?id=' . $page['id']) . '" title="' . __esc('View Page') . '"><img src="' . $config['url_path'] . 'images/view_page.png" alt=""></a>';
+				$actions .= '<a class="pic" href="' . html_escape('link.php?id=' . $page['id']) . '" title="' . __esc('View Page') . '"><img src="' . CACTI_PATH_URL . 'images/view_page.png" alt=""></a>';
 			}
 
 			form_selectable_cell($actions, $page['id'], '50');
@@ -454,9 +460,10 @@ function page_delete($id) {
 }
 
 function page_resort() {
-	$pages = db_fetch_assoc("SELECT * FROM external_links ORDER BY sortorder");
+	$pages = db_fetch_assoc('SELECT * FROM external_links ORDER BY sortorder');
 
 	$i = 1;
+
 	if (cacti_sizeof($pages)) {
 		foreach ($pages as $page) {
 			db_execute_prepared('UPDATE external_links SET sortorder = ? WHERE id = ?' . array($i, $page['id']));
@@ -485,7 +492,7 @@ function edit_page() {
 		GROUP BY extendedstyle
 		ORDER BY extendedstyle");
 
-	$sec_ar = array();
+	$sec_ar                   = array();
 	$sec_ar['External Links'] = __('External Links');
 
 	foreach ($sections as $sec) {
@@ -507,73 +514,73 @@ function edit_page() {
 	$field_array = array(
 		'id' => array(
 			'friendly_name' => __('Style'),
-			'method' => 'hidden',
-			'value' => isset_request_var('id') ? get_request_var('id') : 0
+			'method'        => 'hidden',
+			'value'         => isset_request_var('id') ? get_request_var('id') : 0
 		),
 		'style' => array(
 			'friendly_name' => __('Style'),
-			'method' => 'drop_array',
-			'array' => array(
+			'method'        => 'drop_array',
+			'array'         => array(
 				'TAB'        => __('Top Tab'),
 				'CONSOLE'    => __('Console Menu'),
 				'FRONT'      => __('Bottom of Console Page'),
 				'FRONTTOP'   => __('Top of Console Page')
 			),
 			'description' => __('Where should this page appear?'),
-			'value' => (isset($data['style']) ? $data['style'] : '')
+			'value'       => (isset($data['style']) ? $data['style'] : '')
 		),
 		'consolesection' => array(
 			'friendly_name' => __('Console Menu Section'),
-			'method' => 'drop_array',
-			'array' => $sec_ar,
-			'description' => __('Under which Console heading should this item appear? (All External Link menus will appear between Configuration and Utilities)'),
-			'value' => (isset($data['extendedstyle']) ? $data['extendedstyle'] : '')
+			'method'        => 'drop_array',
+			'array'         => $sec_ar,
+			'description'   => __('Under which Console heading should this item appear? (All External Link menus will appear between Configuration and Utilities)'),
+			'value'         => (isset($data['extendedstyle']) ? $data['extendedstyle'] : '')
 		),
 		'consolenewsection' => array(
 			'friendly_name' => __('New Console Section'),
-			'method' => 'textbox',
-			'max_length' => 20,
-			'description' => __('If you don\'t like any of the choices above, type a new title in here.'),
-			'value' => (isset($data['extendedstyle']) ? $data['extendedstyle'] : '')
+			'method'        => 'textbox',
+			'max_length'    => 20,
+			'description'   => __('If you don\'t like any of the choices above, type a new title in here.'),
+			'value'         => (isset($data['extendedstyle']) ? $data['extendedstyle'] : '')
 		),
 		'title' => array(
 			'friendly_name' => __('Tab/Menu Name'),
-			'method' => 'textbox',
-			'max_length' => 20,
-			'description' => __('The text that will appear in the tab or menu.'),
-			'value' => (isset($data['title']) ? $data['title'] : '')
+			'method'        => 'textbox',
+			'max_length'    => 20,
+			'description'   => __('The text that will appear in the tab or menu.'),
+			'value'         => (isset($data['title']) ? $data['title'] : '')
 		),
 		'filename' => array(
 			'friendly_name' => __('Content File/URL'),
-			'method' => 'drop_files',
-			'directory' => $config['base_path'] . '/include/content',
-			'exclusions' => array('README', 'index.php'),
-			'none_value' => __('Web URL Below'),
-			'description' => __('The file that contains the content for this page. This file needs to be in the Cacti \'include/content/\' directory.'),
-			'value' => (isset($data['contentfile']) ? $data['contentfile'] : '')
+			'method'        => 'drop_files',
+			'directory'     => CACTI_PATH_INCLUDE . '/content',
+			'exclusions'    => array('README', 'index.php'),
+			'none_value'    => __('Web URL Below'),
+			'description'   => __('The file that contains the content for this page. This file needs to be in the Cacti \'include/content/\' directory.'),
+			'value'         => (isset($data['contentfile']) ? $data['contentfile'] : '')
 		),
 		'fileurl' => array(
 			'friendly_name' => __('Web URL Location'),
-			'method' => 'textbox',
-			'description' => __('The valid URL to use for this external link.  Must include the type, for example http://www.cacti.net.  Note that many websites do not allow them to be embedded in an iframe from a foreign site, and therefore External Linking may not work.'),
-			'max_length' => 255,
-			'size' => 80,
-			'default' => 'http://www.cacti.net',
-			'value' => (isset($data['contentfile']) ? $data['contentfile'] : '')
+			'method'        => 'textbox',
+			'description'   => __('The valid URL to use for this external link.  Must include the type, for example http://www.cacti.net.  Note that many websites do not allow them to be embedded in an iframe from a foreign site, and therefore External Linking may not work.'),
+			'max_length'    => 255,
+			'size'          => 80,
+			'default'       => 'http://www.cacti.net',
+			'value'         => (isset($data['contentfile']) ? $data['contentfile'] : '')
 		),
 		'enabled' => array(
 			'friendly_name' => __('Enabled'),
-			'method' => 'checkbox',
-			'description' => __('If checked, the page will be available immediately to the admin user.'),
-			'default' => 'on',
-			'value' => (isset($data['enabled']) ? 'on' : '')
+			'method'        => 'checkbox',
+			'description'   => __('If checked, the page will be available immediately to the admin user.'),
+			'default'       => 'on',
+			'value'         => (isset($data['enabled']) ? 'on' : '')
 		),
 		'refresh' => array(
 			'friendly_name' => __('Automatic Page Refresh'),
-			'method' => 'drop_array',
-			'array' => $myrefresh,
-			'description' => __('How often do you wish this page to be refreshed automatically.'),
-			'value' => (isset($data['refresh']) ? $data['refresh'] : '')
+			'method'        => 'drop_array',
+			'array'         => $myrefresh,
+			'description'   => __('How often do you wish this page to be refreshed automatically.'),
+			'value'         => (isset($data['refresh']) ? $data['refresh'] : '')
 		),
 	);
 

@@ -32,9 +32,9 @@ if (function_exists('pcntl_async_signals')) {
 ini_set('output_buffering', 'Off');
 
 require(__DIR__ . '/include/cli_check.php');
-require_once($config['base_path'] . '/lib/poller.php');
-require_once($config['base_path'] . '/lib/boost.php');
-require_once($config['base_path'] . '/lib/dsstats.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/boost.php');
+require_once(CACTI_PATH_LIBRARY . '/dsstats.php');
 
 /*  display_version - displays version information */
 function display_version() {
@@ -43,7 +43,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print "\nusage: poller_recovery.php [--verbose] [--force] [--debug]\n\n";
@@ -65,11 +65,12 @@ function sig_handler($signo) {
 			db_execute("REPLACE INTO settings (name, value) VALUES ('boost_poller_status', 'terminated - end time:" . date('Y-m-d G:i:s') ."')");
 
 			exit;
+
 			break;
+
 		default:
 			/* ignore all other signals */
 	}
-
 }
 
 function debug($string) {
@@ -101,11 +102,11 @@ $verbose        = false;
 $poller_id      = $config['poller_id'];
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -113,27 +114,34 @@ if (cacti_sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '-f':
 			case '--force':
 				$forcerun = true;
+
 				break;
 			case '--verbose':
 				$verbose = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit;
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit;
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit;
 		}
 	}
@@ -142,6 +150,7 @@ if (cacti_sizeof($parms)) {
 /* check for an invalid run location */
 if ($poller_id == 1) {
 	print "ERROR: This command is only to be run on remote Cacti Data Collectors\n";
+
 	exit(1);
 }
 
@@ -165,6 +174,7 @@ debug('About to start recovery processing');
 
 if (!empty($recovery_pid)) {
 	$pid = posix_kill($recovery_pid, 0);
+
 	if ($pid === false) {
 		/* we found a stale PID, so we delete it from the table */
 		db_execute("DELETE FROM settings WHERE name='recovery_pid'", true, $local_db_cnn_id);
@@ -223,8 +233,8 @@ if ($run) {
 				$packet_size = 0;
 				$sql_array   = array();
 
-				foreach($rows as $r) {
-					$sql = '(' . $r['local_data_id'] . ',' . db_qstr($r['rrd_name']) . ',' . db_qstr($r['time']) . ',' . db_qstr($r['output']) . ')';
+				foreach ($rows as $r) {
+					$sql      = '(' . $r['local_data_id'] . ',' . db_qstr($r['rrd_name']) . ',' . db_qstr($r['time']) . ',' . db_qstr($r['output']) . ')';
 					$sql_size = strlen($sql);
 
 					/* if adding a new row would exceed max_allowed_packet, send the current frame to the main poller and start a new frame */
@@ -238,7 +248,7 @@ if ($run) {
 							VALUES ' . implode(',', $sql_array), true, $remote_db_cnn_id);
 
 						$records_inserted += $record_count;
-						$sql_array = array();
+						$sql_array   = array();
 						$packet_size = 0;
 					}
 
@@ -252,9 +262,9 @@ if ($run) {
 
 					cacti_log('RECOVERY: Writing ' . $record_count . ' records (' . $packet_size . ' bytes) to main (last slice).', false, 'POLLER');
 
-					db_execute("INSERT IGNORE INTO poller_output_boost
+					db_execute('INSERT IGNORE INTO poller_output_boost
 						(local_data_id, rrd_name, time, output)
-						VALUES " . implode(',', $sql_array), true, $remote_db_cnn_id);
+						VALUES ' . implode(',', $sql_array), true, $remote_db_cnn_id);
 
 					$records_inserted += $record_count;
 				}
@@ -278,6 +288,7 @@ if ($run) {
 } else {
 	debug('Recovery process still running, exiting');
 	cacti_log('RECOVERY: Recovery process still running for Poller ' . $poller_id . '.  PID is ' . $recovery_pid, false, 'POLLER');
+
 	exit(1);
 }
 

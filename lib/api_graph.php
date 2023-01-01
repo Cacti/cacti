@@ -33,9 +33,9 @@ function api_delete_graphs(&$local_graph_ids, $delete_type) {
 	api_graph_remove_aggregate_items($local_graph_ids);
 
 	switch ($delete_type) {
-	case '2': // delete all data sources referenced by this graph
-		$all_data_sources = array_rekey(
-			db_fetch_assoc('SELECT DISTINCT dtd.local_data_id
+		case '2': // delete all data sources referenced by this graph
+			$all_data_sources = array_rekey(
+				db_fetch_assoc('SELECT DISTINCT dtd.local_data_id
 				FROM data_template_data AS dtd
 				INNER JOIN data_template_rrd AS dtr
 				ON dtd.local_data_id=dtr.local_data_id
@@ -44,12 +44,12 @@ function api_delete_graphs(&$local_graph_ids, $delete_type) {
 				WHERE ' . array_to_sql_or($local_graph_ids, 'gti.local_graph_id') . '
 				AND gti.local_graph_id NOT IN(SELECT local_graph_id FROM aggregate_graphs)
 				AND dtd.local_data_id > 0'),
-			'local_data_id', 'local_data_id'
-		);
+				'local_data_id', 'local_data_id'
+			);
 
-		if (cacti_sizeof($all_data_sources)) {
-			$data_sources = array_rekey(
-				db_fetch_assoc('SELECT dtd.local_data_id,
+			if (cacti_sizeof($all_data_sources)) {
+				$data_sources = array_rekey(
+					db_fetch_assoc('SELECT dtd.local_data_id,
 					COUNT(DISTINCT gti.local_graph_id) AS graphs
 					FROM data_template_data AS dtd
 					INNER JOIN data_template_rrd AS dtr
@@ -61,18 +61,18 @@ function api_delete_graphs(&$local_graph_ids, $delete_type) {
 					GROUP BY dtd.local_data_id
 					HAVING graphs = 1
 					AND ' . array_to_sql_or($all_data_sources, 'local_data_id')),
-				'local_data_id', 'local_data_id'
-			);
+					'local_data_id', 'local_data_id'
+				);
 
-			if (cacti_sizeof($data_sources)) {
-				api_data_source_remove_multi($data_sources);
-			}
+				if (cacti_sizeof($data_sources)) {
+					api_data_source_remove_multi($data_sources);
+				}
 
-			api_graph_remove_multi($local_graph_ids);
+				api_graph_remove_multi($local_graph_ids);
 
-			/* Remove orphaned data sources */
-			$data_sources = array_rekey(
-				db_fetch_assoc('SELECT DISTINCT dtd.local_data_id
+				/* Remove orphaned data sources */
+				$data_sources = array_rekey(
+					db_fetch_assoc('SELECT DISTINCT dtd.local_data_id
 					FROM data_template_data AS dtd
 					INNER JOIN data_template_rrd AS dtr
 					ON dtd.local_data_id=dtr.local_data_id
@@ -82,21 +82,21 @@ function api_delete_graphs(&$local_graph_ids, $delete_type) {
 					AND gti.local_graph_id IS NULL
 					AND gti.local_graph_id NOT IN(SELECT local_graph_id FROM aggregate_graphs)
 					AND dtd.local_data_id > 0'),
-				'local_data_id', 'local_data_id'
-			);
+					'local_data_id', 'local_data_id'
+				);
 
-			if (cacti_sizeof($data_sources)) {
-				api_data_source_remove_multi($data_sources);
+				if (cacti_sizeof($data_sources)) {
+					api_data_source_remove_multi($data_sources);
+				}
+			} else {
+				api_graph_remove_multi($local_graph_ids);
 			}
-		} else {
+
+			break;
+		case '1':
 			api_graph_remove_multi($local_graph_ids);
-		}
 
-		break;
-	case '1':
-		api_graph_remove_multi($local_graph_ids);
-
-		break;
+			break;
 	}
 
 	/**
@@ -110,6 +110,7 @@ function api_graph_remove($local_graph_id) {
 	if (empty($local_graph_id)) {
 		$local_graph_ids = array($local_graph_id);
 		api_graph_remove_bad_graphs($local_graph_ids);
+
 		return;
 	}
 
@@ -132,7 +133,8 @@ function api_graph_remove($local_graph_id) {
 
 function api_graph_remove_bad_graphs(&$local_graph_ids = array()) {
 	if (cacti_sizeof($local_graph_ids)) {
-		$bad_graph = array_search(0, $local_graph_ids);
+		$bad_graph = array_search(0, $local_graph_ids, true);
+
 		if ($bad_graph !== false) {
 			unset($local_graph_ids[$bad_graph]);
 
@@ -161,7 +163,7 @@ function api_graph_remove_aggregate_items($local_graph_ids) {
 		$local_graph_ids = explode(',', $local_graph_ids);
 	}
 
-	foreach($local_graph_ids as $lgid) {
+	foreach ($local_graph_ids as $lgid) {
 		$aggregate_graphs = array_rekey(
 			db_fetch_assoc_prepared('SELECT DISTINCT aggregate_graph_id
 				FROM aggregate_graphs_items
@@ -171,7 +173,7 @@ function api_graph_remove_aggregate_items($local_graph_ids) {
 		);
 
 		if (cacti_sizeof($aggregate_graphs)) {
-			foreach($aggregate_graphs as $ag) {
+			foreach ($aggregate_graphs as $ag) {
 				api_aggregate_disassociate($ag, $lgid);
 			}
 		}
@@ -188,13 +190,13 @@ function api_graph_remove_multi($local_graph_ids) {
 
 	/* initialize variables */
 	$ids_to_delete = '';
-	$i = 0;
+	$i             = 0;
 
 	/* build the array */
 	if (cacti_sizeof($local_graph_ids)) {
 		api_plugin_hook_function('graphs_remove', $local_graph_ids);
 
-		foreach($local_graph_ids as $local_graph_id) {
+		foreach ($local_graph_ids as $local_graph_id) {
 			if ($i == 0) {
 				$ids_to_delete .= $local_graph_id;
 			} else {
@@ -212,7 +214,7 @@ function api_graph_remove_multi($local_graph_ids) {
 				db_execute("DELETE FROM reports_items WHERE local_graph_id IN ($ids_to_delete)");
 				db_execute("DELETE FROM graph_local WHERE id IN ($ids_to_delete)");
 
-				$i = 0;
+				$i             = 0;
 				$ids_to_delete = '';
 			}
 		}
@@ -293,6 +295,7 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 	$matches = array();
 
 	$suggested_values_graph = array();
+
 	if (cacti_sizeof($suggested_values)) {
 		foreach ($suggested_values as $suggested_value) {
 			/* once we find a match; don't try to find more */
@@ -301,7 +304,7 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 
 				/* if there are no '|' characters, all of the substitutions were successful */
 				if (!substr_count($subs_string, '|query')) {
-					if (in_array($suggested_value['field_name'], $matches)) {
+					if (in_array($suggested_value['field_name'], $matches, true)) {
 						continue;
 					}
 
@@ -362,7 +365,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 			array($_local_graph_id));
 
 		/* create new entry: graph_local */
-		$save['id'] = 0;
+		$save['id']                = 0;
 		$save['graph_template_id'] = $graph_local['graph_template_id'];
 		$save['host_id']           = $graph_local['host_id'];
 		$save['snmp_query_id']     = $graph_local['snmp_query_id'];
@@ -413,8 +416,10 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 	$save['title_cache']                   = $graph_template_graph['title_cache'];
 
 	foreach ($struct_graph as $field => $array) {
-		if ($array['method'] == 'spacer') continue;
-		$save[$field] = $graph_template_graph[$field];
+		if ($array['method'] == 'spacer') {
+			continue;
+		}
+		$save[$field]        = $graph_template_graph[$field];
 		$save['t_' . $field] = $graph_template_graph['t_' . $field];
 	}
 
@@ -494,7 +499,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 				WHERE id = ?',
 				array($graph_template_id));
 
-			foreach($data_query_graphs as $dqg) {
+			foreach ($data_query_graphs as $dqg) {
 				/* map the snmp_query_graph */
 				unset($save);
 
@@ -514,7 +519,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 						array($dqg['id']));
 
 					if (cacti_sizeof($snmp_query_graph_rrds)) {
-						foreach($snmp_query_graph_rrds as $sqgr) {
+						foreach ($snmp_query_graph_rrds as $sqgr) {
 							db_execute_prepared('INSERT INTO snmp_query_graph_rrd
 								(snmp_query_graph_id, data_template_id, data_template_rrd_id, snmp_field_name)
 								VALUES (?, ?, ?, ?)',
@@ -536,7 +541,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 					array($dqg['id']));
 
 				if (cacti_sizeof($snames)) {
-					foreach($snames as $sn) {
+					foreach ($snames as $sn) {
 						unset($save);
 
 						$save['id']                  = 0;
@@ -558,7 +563,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 					array($dqg['id']));
 
 				if (cacti_sizeof($snames)) {
-					foreach($snames as $sn) {
+					foreach ($snames as $sn) {
 						unset($save);
 
 						$save['id']                  = 0;
@@ -605,7 +610,7 @@ function api_graph_change_device($local_graph_id, $host_id) {
 			array($local_graph_id));
 
 		if (cacti_sizeof($data_ids)) {
-			foreach($data_ids as $data_id) {
+			foreach ($data_ids as $data_id) {
 				db_execute_prepared('UPDATE data_local
 					SET host_id = ?
 					WHERE id = ?',
@@ -623,4 +628,3 @@ function api_graph_change_device($local_graph_id, $host_id) {
 
 	return false;
 }
-

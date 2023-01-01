@@ -26,6 +26,7 @@ function initialize_realtime_step_and_window() {
 	if (!isset($_SESSION['sess_realtime_dsstep'])) {
 		$_SESSION['sess_realtime_dsstep'] = read_config_option('realtime_interval');
 	}
+
 	if (!isset($_SESSION['sess_realtime_window'])) {
 		$_SESSION['sess_realtime_window'] = read_config_option('realtime_gwindow');
 	}
@@ -36,25 +37,29 @@ function set_default_graph_action() {
 		/* setup the default action */
 		if (!isset($_SESSION['sess_graph_view_action'])) {
 			switch(read_user_setting('default_view_mode')) {
-			case '1':
-				if (is_view_allowed('show_tree')) {
-					set_request_var('action', 'tree');
-				}
-				break;
-			case '2':
-				if (is_view_allowed('show_list')) {
-					set_request_var('action', 'list');
-				}
-				break;
-			case '3':
-				if (is_view_allowed('show_preview')) {
-					set_request_var('action', 'preview');
-				}
-				break;
-			default:
-				break;
+				case '1':
+					if (is_view_allowed('show_tree')) {
+						set_request_var('action', 'tree');
+					}
+
+					break;
+				case '2':
+					if (is_view_allowed('show_list')) {
+						set_request_var('action', 'list');
+					}
+
+					break;
+				case '3':
+					if (is_view_allowed('show_preview')) {
+						set_request_var('action', 'preview');
+					}
+
+					break;
+
+				default:
+					break;
 			}
-		} elseif (in_array($_SESSION['sess_graph_view_action'], array('tree', 'list', 'preview'))) {
+		} elseif (in_array($_SESSION['sess_graph_view_action'], array('tree', 'list', 'preview'), true)) {
 			if (is_view_allowed('show_' . $_SESSION['sess_graph_view_action'])) {
 				set_request_var('action', $_SESSION['sess_graph_view_action']);
 			}
@@ -82,53 +87,53 @@ function html_graph_validate_preview_request_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'graphs' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => read_user_setting('preview_graphs_per_page', 20)
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'graph_template_id' => array(
-			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
+			'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'pageset' => true,
 			'default' => '-1',
 			),
 		'columns' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => read_user_setting('num_columns', '2')
 			),
 		'host_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'rfilter' => array(
-			'filter' => FILTER_VALIDATE_IS_REGEX,
+			'filter'  => FILTER_VALIDATE_IS_REGEX,
 			'pageset' => true,
 			'default' => '',
 			),
 		'thumbnails' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
+			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'default' => read_user_setting('thumbnail_section_preview', '') == 'on' ? 'true':'false'
 			),
 		'graph_list' => array(
-			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
+			'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'default' => ''
 			),
 		'graph_add' => array(
-			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
+			'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'default' => ''
 			),
 		'graph_remove' => array(
-			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
+			'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'default' => ''
 			),
 		'style' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'default' => ''
 			)
 	);
@@ -160,29 +165,31 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 							// suppress total rows collection
 							$total_rows = -1;
 
-							$graph_templates = get_allowed_graph_templates('', 'name', '', $total_rows);
+	$graph_templates = get_allowed_graph_templates('', 'name', '', $total_rows);
 
-							if (cacti_sizeof($graph_templates)) {
-								$selected    = explode(',', get_request_var('graph_template_id'));
-								foreach ($graph_templates as $gt) {
-									$found = db_fetch_cell_prepared('SELECT id
+	if (cacti_sizeof($graph_templates)) {
+		$selected    = explode(',', get_request_var('graph_template_id'));
+
+		foreach ($graph_templates as $gt) {
+			$found = db_fetch_cell_prepared('SELECT id
 										FROM graph_local
 										WHERE graph_template_id = ? LIMIT 1',
-										array($gt['id']));
+				array($gt['id']));
 
-									if ($found) {
-										print "<option value='" . $gt['id'] . "'";
-										if (cacti_sizeof($selected)) {
-											if (in_array($gt['id'], $selected)) {
-												print ' selected';
-											}
-										}
-										print '>';
-										print html_escape($gt['name']) . "</option>\n";
-									}
-								}
-							}
-							?>
+			if ($found) {
+				print "<option value='" . $gt['id'] . "'";
+
+				if (cacti_sizeof($selected)) {
+					if (in_array($gt['id'], $selected, true)) {
+						print ' selected';
+					}
+				}
+				print '>';
+				print html_escape($gt['name']) . "</option>\n";
+			}
+		}
+	}
+	?>
 						</select>
 					</td>
 					<td>
@@ -211,12 +218,16 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					<td>
 						<select id='graphs' onChange='applyGraphFilter()'>
 							<?php
-							if (cacti_sizeof($graphs_per_page)) {
-								foreach ($graphs_per_page as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('graphs') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
-								}
-							}
-							?>
+	if (cacti_sizeof($graphs_per_page)) {
+		foreach ($graphs_per_page as $key => $value) {
+			print "<option value='" . $key . "'";
+
+			if (get_request_var('graphs') == $key) {
+				print ' selected';
+			} print '>' . $value . "</option>\n";
+		}
+	}
+	?>
 						</select>
 					</td>
 					<td>
@@ -234,7 +245,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					</td>
 					<td>
 						<span>
-							<input id='thumbnails' type='checkbox' onClick='applyGraphFilter()' <?php print ((get_request_var('thumbnails') == 'true') ? 'checked':'');?>>
+							<input id='thumbnails' type='checkbox' onClick='applyGraphFilter()' <?php print((get_request_var('thumbnails') == 'true') ? 'checked':'');?>>
 							<label for='thumbnails'><?php print __('Thumbnails');?></label>
 						</span>
 					</td>
@@ -254,17 +265,21 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					<td>
 						<select id='predefined_timespan' onChange='applyGraphTimespan()'>
 							<?php
-							$graph_timespans = array_merge(array(GT_CUSTOM => __('Custom')), $graph_timespans);
+	$graph_timespans = array_merge(array(GT_CUSTOM => __('Custom')), $graph_timespans);
 
-							$start_val = 0;
-							$end_val   = cacti_sizeof($graph_timespans);
+	$start_val = 0;
+	$end_val   = cacti_sizeof($graph_timespans);
 
-							if (cacti_sizeof($graph_timespans)) {
-								foreach($graph_timespans as $value => $text) {
-									print "<option value='$value'"; if ($_SESSION['sess_current_timespan'] == $value) { print ' selected'; } print '>' . html_escape($text) . '</option>';
-								}
-							}
-							?>
+	if (cacti_sizeof($graph_timespans)) {
+		foreach ($graph_timespans as $value => $text) {
+			print "<option value='$value'";
+
+			if ($_SESSION['sess_current_timespan'] == $value) {
+				print ' selected';
+			} print '>' . html_escape($text) . '</option>';
+		}
+	}
+	?>
 						</select>
 					</td>
 					<td>
@@ -272,7 +287,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					</td>
 					<td>
 						<span>
-							<input type='text' class='ui-state-default ui-corner-all' id='date1' size='18' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
+							<input type='text' class='ui-state-default ui-corner-all' id='date1' size='18' value='<?php print(isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
 							<i id='startDate' class='calendar fa fa-calendar-alt' title='<?php print __esc('Start Date Selector');?>'></i>
 						</span>
 					</td>
@@ -281,7 +296,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					</td>
 					<td>
 						<span>
-							<input type='text' class='ui-state-default ui-corner-all' id='date2' size='18' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
+							<input type='text' class='ui-state-default ui-corner-all' id='date2' size='18' value='<?php print(isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
 							<i id='endDate' class='calendar fa fa-calendar-alt' title='<?php print __esc('End Date Selector');?>'></i>
 						</span>
 					</td>
@@ -290,14 +305,19 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 							<i class='shiftArrow fa fa-backward' onClick='timeshiftGraphFilterLeft()' title='<?php print __esc('Shift Time Backward');?>'></i>
 							<select id='predefined_timeshift' name='predefined_timeshift' title='<?php print __esc('Define Shifting Interval');?>'>
 								<?php
-								$start_val = 1;
-								$end_val = cacti_sizeof($graph_timeshifts)+1;
-								if (cacti_sizeof($graph_timeshifts) > 0) {
-									for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
-										print "<option value='$shift_value'"; if ($_SESSION['sess_current_timeshift'] == $shift_value) { print ' selected'; } print '>' . html_escape($graph_timeshifts[$shift_value]) . '</option>';
-									}
-								}
-								?>
+		$start_val = 1;
+	$end_val    = cacti_sizeof($graph_timeshifts) + 1;
+
+	if (cacti_sizeof($graph_timeshifts) > 0) {
+		for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
+			print "<option value='$shift_value'";
+
+			if ($_SESSION['sess_current_timeshift'] == $shift_value) {
+				print ' selected';
+			} print '>' . html_escape($graph_timeshifts[$shift_value]) . '</option>';
+		}
+	}
+	?>
 							</select>
 							<i class='shiftArrow fa fa-forward' onClick='timeshiftGraphFilterRight()' title='<?php print __esc('Shift Time Forward');?>'></i>
 						</span>
@@ -321,7 +341,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						foreach ($realtime_window as $interval => $text) {
 							printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_window'] ? 'selected="selected"' : '', $text);
 						}
-						?>
+	?>
 						</select>
 					</td>
 					<td>
@@ -330,10 +350,10 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					<td>
 						<select name='ds_step' id='ds_step' onChange="realtimeGrapher()">
 							<?php
-							foreach ($realtime_refresh as $interval => $text) {
-								printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_dsstep'] ? ' selected="selected"' : '', $text);
-							}
-							?>
+		foreach ($realtime_refresh as $interval => $text) {
+			printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_dsstep'] ? ' selected="selected"' : '', $text);
+		}
+	?>
 						</select>
 					</td>
 					<td>
@@ -351,7 +371,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 		<script type='text/javascript'>
 
     	var refreshIsLogout = false;
-		var refreshMSeconds = <?php print read_user_setting('page_refresh')*1000;?>;
+		var refreshMSeconds = <?php print read_user_setting('page_refresh') * 1000;?>;
 		var graph_start     = <?php print get_current_graph_start();?>;
 		var graph_end       = <?php print get_current_graph_end();?>;
 		var timeOffset      = <?php print date('Z');?>;
@@ -465,6 +485,7 @@ function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_gra
 		host_new_graphs_save($host_id);
 
 		header('Location: ' . $page . '?host_id=' . $host_id);
+
 		exit;
 	}
 
@@ -490,7 +511,7 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 	/* ==================================================== */
 
 	$num_output_fields = array();
-	$display = false;
+	$display           = false;
 
 	if ($form_type == 'cg') {
 		$graph_template_id   = $form_id1;
@@ -597,4 +618,3 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 
 	return $num_output_fields;
 }
-

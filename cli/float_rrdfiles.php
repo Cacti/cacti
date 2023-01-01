@@ -32,8 +32,8 @@ if (function_exists('pcntl_async_signals')) {
 ini_set('output_buffering', 'Off');
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once($config['base_path'] . '/lib/poller.php');
-require_once($config['base_path'] . '/lib/rrd.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -63,81 +63,85 @@ $resume            = false;
 $forcerun          = false;
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
 		switch ($arg) {
-		case '--force':
-			$forcerun = true;
+			case '--force':
+				$forcerun = true;
 
-			break;
-		case '--debug':
-			$seebug = true;
+				break;
+			case '--debug':
+				$seebug = true;
 
-			break;
-		case '--resume':
-			$resume = true;
+				break;
+			case '--resume':
+				$resume = true;
 
-			break;
-		case '--start':
-			$start_time = $value;
+				break;
+			case '--start':
+				$start_time = $value;
 
-			break;
-		case '--end':
-			$end_time = $value;
+				break;
+			case '--end':
+				$end_time = $value;
 
-			break;
-		case '--type':
-			$type = $value;
+				break;
+			case '--type':
+				$type = $value;
 
-			break;
-		case '--threads':
-			$threads = $value;
+				break;
+			case '--threads':
+				$threads = $value;
 
-			break;
-		case '--child':
-			$thread_id = $value;
+				break;
+			case '--child':
+				$thread_id = $value;
 
-			break;
-		case '--host-id':
-			$host_id = $value;
+				break;
+			case '--host-id':
+				$host_id = $value;
 
-			break;
-		case '--host-template_id':
-			$host_template_id = $value;
+				break;
+			case '--host-template_id':
+				$host_template_id = $value;
 
-			break;
-		case '--graph-template-id':
-			$graph_template_id = $value;
+				break;
+			case '--graph-template-id':
+				$graph_template_id = $value;
 
-			break;
-		case '--graph-ids':
-			$local_graph_ids = explode(',', $value);
+				break;
+			case '--graph-ids':
+				$local_graph_ids = explode(',', $value);
 
-			break;
-		case '--step':
-			$step = $value;
+				break;
+			case '--step':
+				$step = $value;
 
-			break;
-		case '--version':
-		case '-v':
-		case '-V':
-			display_version();
-			exit(0);
-		case '--help':
-		case '-h':
-		case '-H':
-			display_help();
-			exit(0);
-		default:
-			print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
-			display_help();
-			exit(1);
+				break;
+			case '--version':
+			case '-v':
+			case '-V':
+				display_version();
+
+				exit(0);
+			case '--help':
+			case '-h':
+			case '-H':
+				display_help();
+
+				exit(0);
+
+			default:
+				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
+				display_help();
+
+				exit(1);
 		}
 	}
 }
@@ -158,16 +162,18 @@ if (function_exists('pcntl_signal')) {
 
 if ($start_time == false || $end_time == false) {
 	printf('ERROR: Both --start=TS and --end=TS are required and can be a timestamp or in date/time format' . PHP_EOL);
+
 	exit(1);
 }
 
 /* validate the start time */
 if (!is_numeric($start_time)) {
-	$ost = $start_time;
+	$ost        = $start_time;
 	$start_time = strtotime($start_time);
 
 	if ($start_time === false) {
 		printf('ERROR: The Start Time \'%s\' is not a valid date/time' . PHP_EOL, $ost);
+
 		exit(1);
 	}
 }
@@ -180,6 +186,7 @@ if (!is_numeric($end_time)) {
 
 	if ($end_time === false) {
 		printf('ERROR: The End Time \'%s\' is not a valid date/time' . PHP_EOL, $oet);
+
 		exit(1);
 	}
 }
@@ -187,41 +194,47 @@ if (!is_numeric($end_time)) {
 /* validate the start and end times are sane */
 if ($start_time >= $end_time) {
 	printf('ERROR: The Start Time \'%s\' is equal or grater to the End Time \'%s\' is not a valid date/time' . PHP_EOL, date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time));
+
 	exit(1);
 }
 
 /* perform some validation for host-id */
 if ($host_id !== false && ($host_id < 0 || !is_numeric($host_id))) {
 	printf('ERROR: The value of %s for --host-id is invalid!' . PHP_EOL, $host_id);
+
 	exit(1);
 }
 
 /* perform some validation for host-template-id */
 if ($host_template_id !== false && ($host_template_id < 0 || !is_numeric($host_template_id))) {
 	printf('ERROR: The value of %s for --host-template-id is invalid!' . PHP_EOL, $host_template_id);
+
 	exit(1);
 }
 
 /* perform some validation for graph-template-id */
 if ($graph_template_id !== false && ($graph_template_id < 0 || !is_numeric($graph_template_id))) {
 	printf('ERROR: The value of %s for --graph-template-id is invalid!' . PHP_EOL, $graph_template_id);
+
 	exit(1);
 }
 
 /* perform some validation for step value */
 if ($step !== false && ($step < 0 || !is_numeric($step))) {
 	printf('ERROR: The value of %s for --step is invalid!' . PHP_EOL, $step);
+
 	exit(1);
 }
 
 /* perform some validation for step value */
 if (cacti_sizeof($local_graph_ids)) {
-	foreach($local_graph_ids as $index => $value) {
-		$value = trim($value);
+	foreach ($local_graph_ids as $index => $value) {
+		$value                   = trim($value);
 		$local_graph_ids[$index] = $value;
 
 		if (!is_numeric($value) || empty($value) || $value <= 0) {
 			printf('ERROR: One of the values of %s for --graph-ids is invalid!' . PHP_EOL, $value);
+
 			exit(1);
 		}
 	}
@@ -270,11 +283,11 @@ switch ($type) {
 			cacti_log(sprintf('Child Started Process %s with No RRDfiles', $thread_id), true, 'RFLOAT');
 		}
 
-		foreach($rrdfiles as $data) {
+		foreach ($rrdfiles as $data) {
 			print '.';
 
 			/* Update the rrdfile to current */
-			rrdtool_function_fetch($data['local_data_id'], time()-120, time());
+			rrdtool_function_fetch($data['local_data_id'], time() - 120, time());
 
 			float_rrdfile($data['rrd_path'], $data['local_data_id'], $step, $start_time, $end_time);
 
@@ -305,6 +318,11 @@ exit(0);
  * @param  (int)    Any step size smaller than this will be skipped
  * @param  (int)    The float range start time as a unix timestamp
  * @param  (int)    The float range end time as a unix timestamp
+ * @param mixed $rrd_path
+ * @param mixed $local_data_id
+ * @param mixed $step
+ * @param mixed $start_time
+ * @param mixed $end_time
  *
  * @return (bool)   True if successful otherwise false
  */
@@ -336,6 +354,7 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 
 			if ($return != 0) {
 				cacti_log(sprintf('ERROR: Unable to dump file %s to XML', $rrd_path), false, 'RFLOAT');
+
 				return false;
 			}
 
@@ -351,7 +370,7 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 				$prev_data   = '';
 				$curstep     = 0;
 
-				foreach($output as $line) {
+				foreach ($output as $line) {
 					if (strpos($line, '<pdp_per_row>') !== false) {
 						/**
 						 * <pdp_per_row>24</pdp_per_row> <!-- 7200 seconds -->
@@ -392,9 +411,9 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 						} elseif ($prev_data != '') {
 							if ($seebug) {
 								if ($step !== false) {
-									fwrite($lf, sprintf("In Range: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s, Step:%s" . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time, $step));
+									fwrite($lf, sprintf('In Range: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s, Step:%s' . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time, $step));
 								} else {
-									fwrite($lf, sprintf("In Range: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s" . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time));
+									fwrite($lf, sprintf('In Range: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s' . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time));
 								}
 							}
 
@@ -406,14 +425,14 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 								$nline = $db_prefix . implode(' ', $parts) . ' ' .  $prev_data . PHP_EOL;
 
 								if ($seebug) {
-									fwrite($lf, sprintf("Pruning: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s" . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time));
+									fwrite($lf, sprintf('Pruning: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s' . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time));
 									fwrite($lf, sprintf("PreLine: %s\nOldLine: %s\nNewLine: %s\n\n", trim($prev_line), trim($line), trim($nline)));
 								}
 
 								$line = $nline;
 							} else {
 								if ($seebug) {
-									fwrite($lf, sprintf("Not Pruning: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s" . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time));
+									fwrite($lf, sprintf('Not Pruning: CurDate:%s, StartDate:%s, EndDate:%s, Granularity:%s, Delta:%s' . PHP_EOL, date('Y-m-d H:i:s', $timestamp), date('Y-m-d H:i:s', $start_time), date('Y-m-d H:i:s', $end_time), $granularity, $delta_time));
 									fwrite($lf, sprintf("PreLine: %s\nOldLine: %s\n\n", trim($prev_line), trim($line)));
 								}
 
@@ -444,9 +463,11 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 
 				if ($return == 0) {
 					cacti_log(sprintf('NOTE: Range floated for RRDfile %s', $rrd_path), false, 'RFLOAT');
+
 					return true;
 				} else {
 					cacti_log(sprintf('WARNING: Range float FAILED for RRDfile %s.  Message is %s', $rrd_path, $response), false, 'RFLOAT');
+
 					return false;
 				}
 
@@ -456,14 +477,17 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 				}
 			} else {
 				cacti_log(sprintf('WARNING: Unable to open file %s for writing', $tmp_file), false, 'RFLOAT');
+
 				return false;
 			}
 		} else {
 			cacti_log(sprintf('WARNING: Unable to write to RRDfile %s', $rrd_path), false, 'RFLOAT');
+
 			return false;
 		}
 	} else {
 		cacti_log(sprintf('WARNING: RRDfile does not exist %s', $rrd_path), false, 'RFLOAT');
+
 		return false;
 	}
 }
@@ -488,25 +512,25 @@ function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $
 	$sql_params = array();
 
 	if ($host_id !== false) {
-		$sql_where  .= 'WHERE h.id = ?';
+		$sql_where .= 'WHERE h.id = ?';
 		$sql_params[] = $host_id;
 	}
 
 	if ($host_template_id !== false) {
-		$sql_where  .= ($sql_where != '' ? 'AND ':'WHERE ') . 'h.host_template_id = ?';
+		$sql_where .= ($sql_where != '' ? 'AND ':'WHERE ') . 'h.host_template_id = ?';
 		$sql_params[] = $host_template_id;
 	}
 
 	if ($graph_template_id !== false) {
-		$sql_where  .= ($sql_where != '' ? 'AND ':'WHERE ') . 'gti.graph_template_id = ?';
+		$sql_where .= ($sql_where != '' ? 'AND ':'WHERE ') . 'gti.graph_template_id = ?';
 		$sql_params[] = $graph_template_id;
 	}
 
 	if (cacti_sizeof($local_graph_ids)) {
-		$sql_where  .= ($sql_where != '' ? 'AND ':'WHERE ') . '(';
+		$sql_where .= ($sql_where != '' ? 'AND ':'WHERE ') . '(';
 		$inner_where = '';
 
-		foreach($local_graph_ids as $id) {
+		foreach ($local_graph_ids as $id) {
 			$inner_where .= ($inner_where != '' ? ' OR ':'') . 'gti.local_graph_id = ' . $id;
 		}
 
@@ -522,6 +546,7 @@ function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $
 			db_execute('UPDATE poller_float_rrdfiles_not_done SET process = 0');
 		} else {
 			printf('ERROR: There are no outstanding RRDfiles to process!');
+
 			return false;
 		}
 	} else {
@@ -545,7 +570,8 @@ function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $
 	}
 
 	if ($rows == 0) {
-		print "WARNING: There are no RRDfiles to process";
+		print 'WARNING: There are no RRDfiles to process';
+
 		return false;
 	}
 
@@ -553,7 +579,7 @@ function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $
 
 	print "There are $threads and $rrdfiles_per_process RRDfiles to process per thread" . PHP_EOL;
 
-	for($thread_id = 1; $thread_id <= $threads; $thread_id++) {
+	for ($thread_id = 1; $thread_id <= $threads; $thread_id++) {
 		db_execute_prepared("UPDATE poller_float_rrdfiles_not_done
 			SET process = ?
 			WHERE process = 0
@@ -595,6 +621,7 @@ function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $
  * @param $thread_id  (int)    The Thread id to launch
  * @param $start_time (int)    The float window start time as a timestamp
  * @param $end_time   (int)    The float window end time as a timestamp
+ * @param mixed $step
  *
  * @return - NULL
  */
@@ -607,7 +634,7 @@ function float_launch_child($thread_id, $step, $start_time, $end_time) {
 
 	cacti_log(sprintf('NOTE: Launching Float Data Number %s for Type %s', $thread_id, 'child'), false, 'RFLOAT', POLLER_VERBOSITY_MEDIUM);
 
-	exec_background($php_binary, $config['base_path'] . "/cli/float_rrdfiles.php --type=child --child=$thread_id --start=$start_time --end=$end_time" . ($step !== false ? ' --step=' . $step:'') . ($seebug ? ' --debug':''));
+	exec_background($php_binary, CACTI_PATH_CLI . "/float_rrdfiles.php --type=child --child=$thread_id --start=$start_time --end=$end_time" . ($step !== false ? ' --step=' . $step:'') . ($seebug ? ' --debug':''));
 }
 
 /**
@@ -656,7 +683,7 @@ function display_version() {
 /**
  * display_help - generic help screen for utilities
  */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print PHP_EOL . 'usage: float_rrdfiles.php --start=TS --end=TS [--threads=N --host-id=N --host-template-id=N --graph-template-id=N] [--debug]' . PHP_EOL . PHP_EOL;
@@ -708,7 +735,9 @@ function sig_handler($signo) {
 			unregister_process('rfloat', 'rmaster', $thread_id, getmypid());
 
 			exit(1);
+
 			break;
+
 		default:
 			/* ignore all other signals */
 	}
@@ -731,7 +760,7 @@ function float_kill_running_processes() {
 		array(getmypid()));
 
 	if (cacti_sizeof($processes)) {
-		foreach($processes as $p) {
+		foreach ($processes as $p) {
 			cacti_log(sprintf('WARNING: Killing Cleanup %s PID %d due to another due to signal or overrun.', ucfirst($p['taskname']), $p['pid']), false, 'RFLOAT');
 			posix_kill($p['pid'], SIGTERM);
 

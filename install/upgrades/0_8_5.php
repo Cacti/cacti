@@ -35,12 +35,12 @@ function upgrade_to_0_8_5() {
 	db_install_execute("UPDATE data_template_data set name = REPLACE(name,'ifDesc','ifDescr') where data_template_id=40;");
 	db_install_execute("UPDATE data_template_data set name = REPLACE(name,'ifDesc','ifDescr') where data_template_id=41;");
 
-	$data_templates_results = db_install_fetch_assoc("select id from data_template_data where (data_template_id=1 or data_template_id=2 or data_template_id=38 or data_template_id=39 or data_template_id=40 or data_template_id=41);");
+	$data_templates_results = db_install_fetch_assoc('select id from data_template_data where (data_template_id=1 or data_template_id=2 or data_template_id=38 or data_template_id=39 or data_template_id=40 or data_template_id=41);');
 	$data_templates         = $data_templates_results['data'];
 
 	if (cacti_sizeof($data_templates) > 0) {
 		foreach ($data_templates as $item) {
-			db_install_execute("UPDATE data_input_data set value='ifDescr' where value='ifDesc' and data_template_data_id=?",array($item["id"]));
+			db_install_execute("UPDATE data_input_data set value='ifDescr' where value='ifDesc' and data_template_data_id=?",array($item['id']));
 		}
 	}
 
@@ -62,7 +62,7 @@ function upgrade_to_0_8_5() {
 	db_install_execute("UPDATE settings set name='snmp_version' where name='smnp_version';");
 
 	/* allow 'Unit Exponent Value' = 0 */
-	db_install_execute("ALTER TABLE `graph_templates_graph` CHANGE `unit_exponent_value` `unit_exponent_value` VARCHAR( 5 ) NOT NULL;");
+	db_install_execute('ALTER TABLE `graph_templates_graph` CHANGE `unit_exponent_value` `unit_exponent_value` VARCHAR( 5 ) NOT NULL;');
 	db_install_execute("UPDATE graph_templates_graph set unit_exponent_value='' where unit_exponent_value='0';");
 
 	/* allow larger rrd steps */

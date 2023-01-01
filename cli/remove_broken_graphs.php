@@ -24,8 +24,8 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once($config['base_path'] . '/lib/api_data_source.php');
-require_once($config['base_path'] . '/lib/api_graph.php');
+require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
+require_once(CACTI_PATH_LIBRARY . '/api_graph.php');
 
 /* switch to main database for cli's */
 if ($config['poller_id'] > 1) {
@@ -44,7 +44,7 @@ $remove  = false;
 $columns = 80;
 
 if (empty($github_actions) && $config['cacti_server_os'] == 'unix') {
-	$stty = shell_exec('stty size');
+	$stty  = shell_exec('stty size');
 	$sizes = explode(' ', $stty);
 
 	if (!empty($sizes[1])) {
@@ -53,37 +53,44 @@ if (empty($github_actions) && $config['cacti_server_os'] == 'unix') {
 }
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
 		switch ($arg) {
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--report':
 				$report = true;
+
 				break;
 			case '--remove':
 				$remove = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
-				print "ERROR: Invalid Parameter " . $parameter . "\n\n";
+				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -92,6 +99,7 @@ if (cacti_sizeof($parms)) {
 if ($report && $remove) {
 	print 'ERROR: The options --report and --remove are mutually exclusive' . PHP_EOL;
 	display_help();
+
 	exit(1);
 }
 
@@ -128,6 +136,7 @@ if (cacti_sizeof($entries)) {
 
 if (cacti_sizeof($entries)) {
 	print '-------------------------------------------------------------------------------------' . PHP_EOL;
+
 	if ($report) {
 		print 'Broken Graph Report' . PHP_EOL;
 	} else {
@@ -135,23 +144,24 @@ if (cacti_sizeof($entries)) {
 	}
 	print '-------------------------------------------------------------------------------------' . PHP_EOL;
 
-	foreach($entries as $e) {
+	foreach ($entries as $e) {
 		if ($report) {
 			printf('Graph Template: %s, Contains \'%s\' broken Graphs' . PHP_EOL, $e['name'], $e['graphs']);
 			print 'Graphs:' . PHP_EOL;
 			print '-------------------------------------------------------------------------------------' . PHP_EOL;
-			print wordwrap($e['local_graph_ids'], $columns-5, PHP_EOL) . PHP_EOL;
+			print wordwrap($e['local_graph_ids'], $columns - 5, PHP_EOL) . PHP_EOL;
 			print '-------------------------------------------------------------------------------------' . PHP_EOL;
 		} else {
 			print '-------------------------------------------------------------------------------------' . PHP_EOL;
 			$local_graph_ids = explode(', ', $e['local_graph_ids']);
 			printf('Started removing \'%s\' broken Graphs for Graph Template %s' . PHP_EOL, $e['graphs'], $e['name']);
 			print '-------------------------------------------------------------------------------------' . PHP_EOL;
+
 			if (cacti_sizeof($local_graph_ids)) {
-				foreach($local_graph_ids as $local_graph_id) {
+				foreach ($local_graph_ids as $local_graph_id) {
 					$title = get_graph_title_cache($local_graph_id);
 					printf('Removing Graph %s, "%s"' . PHP_EOL, $title, $local_graph_id);
-					$id = array();
+					$id                  = array();
 					$id[$local_graph_id] = $local_graph_id;
 					api_delete_graphs($id, '2');
 				}
@@ -164,12 +174,12 @@ if (cacti_sizeof($entries)) {
 
 /*  display_version - displays version information */
 function display_version() {
-    $version = get_cacti_cli_version();
-    print "Cacti Remove Broken Graphs Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	$version = get_cacti_cli_version();
+	print "Cacti Remove Broken Graphs Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /*  display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print PHP_EOL . 'usage: remove_broken_graphs.php [--report | --remove] [-d|--debug]' . PHP_EOL . PHP_EOL;

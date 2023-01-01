@@ -248,4 +248,3 @@ function upgrade_to_1_1_34() {
 
 	db_install_add_key('version', 'key', 'PRIMARY', array('cacti'), 'BTREE');
 }
-

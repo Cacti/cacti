@@ -29,4 +29,3 @@ function upgrade_to_1_2_22() {
 		MODIFY COLUMN `deleted` CHAR(2) NOT NULL default "",
 		MODIFY COLUMN `disabled` CHAR(2) NOT NULL default ""');
 }
-

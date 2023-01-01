@@ -29,6 +29,7 @@ set_default_action();
 
 if (!isset($_SESSION[SESS_USER_ID])) {
 	header('Location: logout.php');
+
 	exit;
 }
 
@@ -69,6 +70,7 @@ if (get_nfilter_request_var('action') == 'login_2fa') {
 		} else {
 			cacti_log("DEBUG: User '" . $user['username'] . "' attempting to verify 2fa token", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 			$g = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
+
 			if ($g->checkCode($user['tfa_secret'],  $token)) {
 				$_SESSION[SESS_USER_2FA] = time();
 
@@ -115,6 +117,7 @@ if (empty($user['tfa_enabled'])) {
 
 if (!empty($_SESSION[SESS_USER_2FA])) {
 	auth_login_redirect($user['login_opts']);
+
 	exit;
 }
 
@@ -127,7 +130,7 @@ $selectedTheme = get_selected_theme();
 html_auth_header('login_2fa', __('2nd Factor Authentication'), __('2FA Verification'), __('Enter your token'),
 	array(
 		'username' => $user['username'],
-		'action' => get_nfilter_request_var('action')
+		'action'   => get_nfilter_request_var('action')
 	)
 );
 ?>

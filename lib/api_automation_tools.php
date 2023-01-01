@@ -46,7 +46,7 @@ function getHostsByDescription($hostTemplateIds = false) {
 	}
 
 	if ($hostTemplateIds !== false && cacti_sizeof($hostTemplateIds)) {
-		foreach($hostTemplateIds as $id) {
+		foreach ($hostTemplateIds as $id) {
 			if (!is_numeric($id)) {
 				return false;
 			}
@@ -74,7 +74,7 @@ function getHostsByDescription($hostTemplateIds = false) {
 }
 
 function getSites() {
-	$sites = array();
+	$sites    = array();
 	$tmpArray = db_fetch_assoc('SELECT * FROM sites ORDER BY id');
 
 	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
@@ -96,7 +96,7 @@ function getHosts($hostTemplateIds = false) {
 	}
 
 	if ($hostTemplateIds !== false && cacti_sizeof($hostTemplateIds)) {
-		foreach($hostTemplateIds as $id) {
+		foreach ($hostTemplateIds as $id) {
 			if (!is_numeric($id)) {
 				return false;
 			}
@@ -282,7 +282,7 @@ function getGraphTemplatesByHostTemplate($host_template_ids = false) {
 	}
 
 	if ($host_template_ids !== false && cacti_sizeof($host_template_ids)) {
-		foreach($host_template_ids as $id) {
+		foreach ($host_template_ids as $id) {
 			if (!is_numeric($id)) {
 				return false;
 			}
@@ -350,7 +350,7 @@ function displayCommunities($quietMode = false) {
 		FROM host
 		ORDER BY snmp_community');
 
-	if ($communities !== false &&cacti_sizeof($communities)) {
+	if ($communities !== false && cacti_sizeof($communities)) {
 		foreach ($communities as $community) {
 			print $community['snmp_community'] . PHP_EOL;
 		}
@@ -398,7 +398,7 @@ function displaySNMPQueries($queries, $quietMode = false) {
 		print 'Known SNMP Queries: (id, name)' . PHP_EOL;
 	}
 
-	if ($queries !== false &&cacti_sizeof($queries)) {
+	if ($queries !== false && cacti_sizeof($queries)) {
 		foreach ($queries as $id => $name) {
 			print $id . "\t" . $name . PHP_EOL;
 		}
@@ -414,7 +414,7 @@ function displayInputFields($input_fields, $quietMode = false) {
 		print 'Known Input Fields: (name, default, description)' . PHP_EOL;
 	}
 
-	if ($input_fields !== false &&cacti_sizeof($input_fields)) {
+	if ($input_fields !== false && cacti_sizeof($input_fields)) {
 		foreach ($input_fields as $row) {
 			print $row['data_template_id'] . ':' . $row['name'] . "\t" . $row['default'] . "\t" . $row['description'] . PHP_EOL;
 		}
@@ -447,7 +447,7 @@ function displayHosts($hosts, $quietMode = false) {
 	}
 
 	if ($hosts !== false && cacti_sizeof($hosts)) {
-		foreach($hosts as $host) {
+		foreach ($hosts as $host) {
 			print $host['id'] . "\t" . $host['hostname'] . "\t" . $host['host_template_id'] . "\t" . $host['description'] . PHP_EOL;
 		}
 	}
@@ -463,7 +463,7 @@ function displaySites($sites, $quietMode = false) {
 	}
 
 	if ($sites !== false && cacti_sizeof($sites)) {
-		foreach($sites as $site) {
+		foreach ($sites as $site) {
 			print $site['id'] . "\t" . $site['name'] . PHP_EOL;
 		}
 	}
@@ -519,14 +519,21 @@ function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode 
 		foreach ($nodes as $node) {
 			/* taken from tree.php, function item_edit() */
 			$current_type = TREE_ITEM_TYPE_HEADER;
-			if ($node['local_graph_id'] > 0) { $current_type = TREE_ITEM_TYPE_GRAPH; }
-			if ($node['host_id'] > 0) { $current_type = TREE_ITEM_TYPE_HOST; }
+
+			if ($node['local_graph_id'] > 0) {
+				$current_type = TREE_ITEM_TYPE_GRAPH;
+			}
+
+			if ($node['host_id'] > 0) {
+				$current_type = TREE_ITEM_TYPE_HOST;
+			}
 
 			switch ($current_type) {
 				case TREE_ITEM_TYPE_HEADER:
 					if ($nodeType == '' || $nodeType == 'header') {
 						print $tree_item_types[$current_type]."\t";
 						print $node['id']."\t";
+
 						if ($parentNode == 0) {
 							print "N/A\t";
 						} else {
@@ -545,6 +552,7 @@ function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode 
 					if ($nodeType == '' || $nodeType == 'graph') {
 						print $tree_item_types[$current_type] . "\t";
 						print $node['id'] . "\t";
+
 						if ($parentNode == 0) {
 							print "N/A\t";
 						} else {
@@ -565,6 +573,7 @@ function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode 
 					if ($nodeType == '' || $nodeType == 'host') {
 						print $tree_item_types[$current_type] . "\t";
 						print $node['id'] . "\t";
+
 						if ($parentNode == 0) {
 							print "N/A\t";
 						} else {
@@ -577,7 +586,8 @@ function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode 
 						print $host_group_types[$node['host_grouping_type']] . "\t";
 						print PHP_EOL;
 					}
-				break;
+
+					break;
 			}
 		}
 	}
@@ -661,4 +671,3 @@ function displayUsers($quietMode = false) {
 		print PHP_EOL;
 	}
 }
-

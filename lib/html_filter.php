@@ -28,17 +28,26 @@
 
 class CactiTableFilter {
 	public $form_header    = '';
-	public $form_action    = '';
-	public $form_id        = '';
-	public $action_url     = '';
-	public $action_label   = '';
-	public $session_var    = 'sess_default';
-	public $default_filter = array();
-	public $rows_label     = '';
-	public $js_extra       = '';
-	private $item_rows     = array();
-	private $filter_array  = array();
 
+	public $form_action    = '';
+
+	public $form_id        = '';
+
+	public $action_url     = '';
+
+	public $action_label   = '';
+
+	public $session_var    = 'sess_default';
+
+	public $default_filter = array();
+
+	public $rows_label     = '';
+
+	public $js_extra       = '';
+
+	private $item_rows     = array();
+
+	private $filter_array  = array();
 
 	public function __construct($form_header = '', $form_action = '', $form_id = '',
 		$form_width = '', $session_var = '', $action_url = '', $action_label = '') {
@@ -92,7 +101,7 @@ class CactiTableFilter {
 				)
 			),
 			'sort' => array(
-				'sort_column' => 'name',
+				'sort_column'    => 'name',
 				'sort_direction' => 'ASC'
 			)
 		);
@@ -111,9 +120,11 @@ class CactiTableFilter {
 	}
 
 	public function get_filter_row($index) {
-		if ($index === false ) {
+		if ($index === false) {
 			return false;
-		} elseif (array_key_exists($index, $this->filter_array['rows'])) {
+		}
+
+		if (array_key_exists($index, $this->filter_array['rows'])) {
 			return $this->filter_array['rows'][$index];
 		} else {
 			return false;
@@ -130,7 +141,7 @@ class CactiTableFilter {
 
 	public function set_sort_array($sort_column, $sort_direction) {
 		$this->filter_array['sort'] = array(
-			'sort_column' => $sort_column,
+			'sort_column'    => $sort_column,
 			'sort_direction' => $sort_direction
 		);
 	}
@@ -161,38 +172,39 @@ class CactiTableFilter {
 		if (isset($this->form_array['rows'])) {
 			print '<form id="' . $this->filter_id . '" action="' . $this->filter_action . '">' . PHP_EOL;
 
-			foreach($this->form_array['rows'] as $index => $row) {
+			foreach ($this->form_array['rows'] as $index => $row) {
 				print '<div class="filterTable">' . PHP_EOL;
 				print '<div class="formRow">' . PHP_EOL;
 
-				foreach($row as $field_name => $field_array) {
+				foreach ($row as $field_name => $field_array) {
 					switch($field_array['method']) {
-					case 'button':
-						print '<div class="formColumnButton">' . PHP_EOL;
-						print '<input type="button" class="ui-button ui-corner-all ui-widget" id="' . $field_name . '" value="' . html_escape_request_var($field_name) . '"' . (isset($field_array->title) ? ' title="' . html_escape($field_array->title, ENT_QUOTES, 'UTF-8'):'') . '">';
-						print '</div>' . PHP_EOL;
+						case 'button':
+							print '<div class="formColumnButton">' . PHP_EOL;
+							print '<input type="button" class="ui-button ui-corner-all ui-widget" id="' . $field_name . '" value="' . html_escape_request_var($field_name) . '"' . (isset($field_array->title) ? ' title="' . html_escape($field_array->title, ENT_QUOTES, 'UTF-8'):'') . '">';
+							print '</div>' . PHP_EOL;
 
-						break;
-					case 'submit':
-						print '<div class="formColumnButton">' . PHP_EOL;
-						print '<input type="submit" class="ui-button ui-corner-all ui-widget" id="' . $field_name . '" value="' . html_escape_request_var($field_name) . '"' . (isset($field_array->title) ? ' title="' . html_escape($field_array->title):'') . '">';
-						print '</div>' . PHP_EOL;
+							break;
+						case 'submit':
+							print '<div class="formColumnButton">' . PHP_EOL;
+							print '<input type="submit" class="ui-button ui-corner-all ui-widget" id="' . $field_name . '" value="' . html_escape_request_var($field_name) . '"' . (isset($field_array->title) ? ' title="' . html_escape($field_array->title):'') . '">';
+							print '</div>' . PHP_EOL;
 
-						break;
-					case 'timespan':
-						print '<div class="formColumn"><div class="formFieldName">' . __('Presets') . '</div></div>' . PHP_EOL;
+							break;
+						case 'timespan':
+							print '<div class="formColumn"><div class="formFieldName">' . __('Presets') . '</div></div>' . PHP_EOL;
 
-						break;
-					default:
-						if (isset($field_array['friendly_name'])) {
-							print '<div class="formColumn"><div class="formFieldName"><label for="' . $field_name . '">' . $field_array['friendly_name'] . '</label></div></div>' . PHP_EOL;
-						}
+							break;
 
-						print '<div class="formColumn">' . PHP_EOL;
+						default:
+							if (isset($field_array['friendly_name'])) {
+								print '<div class="formColumn"><div class="formFieldName"><label for="' . $field_name . '">' . $field_array['friendly_name'] . '</label></div></div>' . PHP_EOL;
+							}
 
-						draw_edit_control($field_name, $field_array);
+							print '<div class="formColumn">' . PHP_EOL;
 
-						print '</div>' . PHP_EOL;
+							draw_edit_control($field_name, $field_array);
+
+							print '</div>' . PHP_EOL;
 					}
 				}
 
@@ -222,16 +234,17 @@ class CactiTableFilter {
 		$clearFilter .= $separator . 'clear=true"';
 		$changeChain  = '';
 
-		$separator = "\"+\"&";
+		$separator = '"+"&';
 
 		if (isset($this->form_array['rows'])) {
-			foreach($this->form_array['rows'] as $index => $row) {
-				foreach($row as $field_name => $field_array) {
+			foreach ($this->form_array['rows'] as $index => $row) {
+				foreach ($row as $field_name => $field_array) {
 					switch($field_array['method']) {
 						case 'button':
 							if ($field_name == 'clear') {
 								// have to give this some thought
 							}
+
 							break;
 						case 'checkbox':
 							$applyFilter .= $separator . $field_name . "=\"+\"$(\'#" . $field_name . "').is(':checked')";
@@ -254,6 +267,7 @@ class CactiTableFilter {
 							break;
 						case 'submit':
 							break;
+
 						default:
 							break;
 					}
@@ -294,30 +308,31 @@ class CactiTableFilter {
 		$filters = array();
 
 		if (isset($this->form_array['rows'])) {
-			foreach($this->form_array['rows'] as $index => $row) {
-				foreach($row as $field_name => $field_array) {
+			foreach ($this->form_array['rows'] as $index => $row) {
+				foreach ($row as $field_name => $field_array) {
 					switch($field_array['method']) {
-					case 'button':
-					case 'submit':
-						break;
-					default:
-						$filters[$field_name]['filter'] = $field_array['filter'];
+						case 'button':
+						case 'submit':
+							break;
 
-						if (isset($field_array['filter_options'])) {
-							$filters[$field_name]['options'] = $field_array['filter_options'];
-						}
+						default:
+							$filters[$field_name]['filter'] = $field_array['filter'];
 
-						if (isset($field_array['pageset'])) {
-							$filters[$field_name]['pageset'] = $field_array['pageset'];
-						}
+							if (isset($field_array['filter_options'])) {
+								$filters[$field_name]['options'] = $field_array['filter_options'];
+							}
 
-						if (isset($field_array['default'])) {
-							$filters[$field_name]['default'] = $field_array['default'];
-						} else {
-							$filters[$field_name]['default'] = '';
-						}
+							if (isset($field_array['pageset'])) {
+								$filters[$field_name]['pageset'] = $field_array['pageset'];
+							}
 
-						break;
+							if (isset($field_array['default'])) {
+								$filters[$field_name]['default'] = $field_array['default'];
+							} else {
+								$filters[$field_name]['default'] = '';
+							}
+
+							break;
 					}
 				}
 			}

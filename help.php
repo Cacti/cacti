@@ -64,7 +64,7 @@ if (isset_request_var('error')) {
 	if ($response_code != 200) {
 		print json_encode(
 			array(
-				'status' => 'Not Reachable',
+				'status'  => 'Not Reachable',
 				'message' => __('The Document page \'%s\' count not be reached.  The Cacti Documentation site is not reachable.  The http error was \'%s\'.  Consider downloading an official release to obtain the latest documentation and hosting the documentation locally.', $page, $response_code)
 			)
 		);
@@ -82,17 +82,17 @@ if (isset_request_var('error')) {
 				'location' => __esc('The Help File %s was not located on the Cacti Documentation Website.', $page) . '<br><br>' . __esc('Open a ticket at ') . '<a target="_blank" href="https://github.com/cacti/cacti/issues">' . __esc('Cacti GitHub Site') . '</a>.'
 			)
 		);
-	} elseif (file_exists($config['base_path'] . '/docs/' . $page)) {
+	} elseif (file_exists(CACTI_PATH_DOCS . '/' . $page)) {
 		print json_encode(
 			array(
 				'status'   => 'Success',
-				'location' => $config['url_path'] . '/docs/' . $page
+				'location' => CACTI_PATH_URL . '/docs/' . $page
 			)
 		);
 	} else {
 		print json_encode(
 			array(
-				'status' => 'Not Reachable',
+				'status'  => 'Not Reachable',
 				'message' => __('The Document page \'%s\' count not be reached locally.', $page, $response_code)
 			)
 		);

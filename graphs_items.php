@@ -40,6 +40,7 @@ switch (get_request_var('action')) {
 		item_remove();
 
 		header('Location: graphs.php?action=graph_edit&id=' . get_request_var('local_graph_id'));
+
 		break;
 	case 'item_edit':
 		top_header();
@@ -47,6 +48,7 @@ switch (get_request_var('action')) {
 		item_edit();
 
 		bottom_footer();
+
 		break;
 	case 'item_movedown':
 		get_filter_request_var('local_graph_id');
@@ -54,6 +56,7 @@ switch (get_request_var('action')) {
 		item_movedown();
 
 		header('Location: graphs.php?action=graph_edit&id=' . get_request_var('local_graph_id'));
+
 		break;
 	case 'item_moveup':
 		get_filter_request_var('local_graph_id');
@@ -61,6 +64,7 @@ switch (get_request_var('action')) {
 		item_moveup();
 
 		header('Location: graphs.php?action=graph_edit&id=' . get_request_var('local_graph_id'));
+
 		break;
 	case 'ajax_hosts':
 		get_allowed_ajax_hosts();
@@ -87,7 +91,7 @@ switch (get_request_var('action')) {
 }
 
 /* --------------------------
-    The Save Function
+	The Save Function
    -------------------------- */
 
 function form_save() {
@@ -110,25 +114,25 @@ function form_save() {
 			GPRINT LAST/AVERAGE/MAX legends */
 			$items = array(
 				0 => array(
-					'color_id' => '0',
-					'graph_type_id' => '9',
+					'color_id'                  => '0',
+					'graph_type_id'             => '9',
 					'consolidation_function_id' => '4',
-					'text_format' => 'Cur:',
-					'hard_return' => ''
+					'text_format'               => 'Cur:',
+					'hard_return'               => ''
 				),
 				1 => array(
-					'color_id' => '0',
-					'graph_type_id' => '9',
+					'color_id'                  => '0',
+					'graph_type_id'             => '9',
 					'consolidation_function_id' => '1',
-					'text_format' => 'Avg:',
-					'hard_return' => ''
+					'text_format'               => 'Avg:',
+					'hard_return'               => ''
 				),
 				2 => array(
-					'color_id' => '0',
-					'graph_type_id' => '9',
+					'color_id'                  => '0',
+					'graph_type_id'             => '9',
 					'consolidation_function_id' => '3',
-					'text_format' => 'Max:',
-					'hard_return' => 'on'
+					'text_format'               => 'Max:',
+					'hard_return'               => 'on'
 				)
 			);
 		} elseif ($graph_item_types[get_nfilter_request_var('graph_type_id')] == 'LEGEND_CAMM') {
@@ -136,32 +140,32 @@ function form_save() {
 				GPRINT LAST/AVERAGE/MAX legends */
 			$items = array(
 				0 => array(
-					'color_id' => '0',
-					'graph_type_id' => '9',
+					'color_id'                  => '0',
+					'graph_type_id'             => '9',
 					'consolidation_function_id' => '4',
-					'text_format' => __('Cur:'),
-					'hard_return' => ''
+					'text_format'               => __('Cur:'),
+					'hard_return'               => ''
 				),
 				1 => array(
-					'color_id' => '0',
-					'graph_type_id' => '9',
+					'color_id'                  => '0',
+					'graph_type_id'             => '9',
 					'consolidation_function_id' => '1',
-					'text_format' => __('Avg:'),
-					'hard_return' => ''
+					'text_format'               => __('Avg:'),
+					'hard_return'               => ''
 				),
 				2 => array(
-					'color_id' => '0',
-					'graph_type_id' => '9',
+					'color_id'                  => '0',
+					'graph_type_id'             => '9',
 					'consolidation_function_id' => '2',
-					'text_format' => __('Min:'),
-					'hard_return' => ''
+					'text_format'               => __('Min:'),
+					'hard_return'               => ''
 				),
 				3 => array(
-					'color_id' => '0',
-					'graph_type_id' => '9',
+					'color_id'                  => '0',
+					'graph_type_id'             => '9',
 					'consolidation_function_id' => '3',
-					'text_format' => __('Max:'),
-					'hard_return' => 'on'
+					'text_format'               => __('Max:'),
+					'hard_return'               => 'on'
 				)
 			);
 		}
@@ -194,30 +198,34 @@ function form_save() {
 				switch ($save['graph_type_id']) {
 					case GRAPH_ITEM_TYPE_LINE1:
 						$save['line_width'] = 1;
+
 						break;
 					case GRAPH_ITEM_TYPE_LINE2:
 						$save['line_width'] = 2;
+
 						break;
 					case GRAPH_ITEM_TYPE_LINE3:
 						$save['line_width'] = 3;
+
 						break;
+
 					default:
 						$save['line_width'] = 0;
 				}
 			}
 
-			$save['dashes']         = form_input_validate((isset_request_var('dashes') ? get_nfilter_request_var('dashes') : ''), 'dashes', '', true, 3);
-			$save['dash_offset']    = form_input_validate((isset_request_var('dash_offset') ? get_nfilter_request_var('dash_offset') : ''), 'dash_offset', '^[0-9]+$', true, 3);
-			$save['cdef_id']        = form_input_validate(get_nfilter_request_var('cdef_id'), 'cdef_id', '^[0-9]+$', true, 3);
-			$save['vdef_id']        = form_input_validate(get_nfilter_request_var('vdef_id'), 'vdef_id', '^[0-9]+$', true, 3);
-			$save['shift']          = form_input_validate((isset_request_var('shift') ? get_nfilter_request_var('shift') : ''), 'shift', '^((on)|)$', true, 3);
+			$save['dashes']                    = form_input_validate((isset_request_var('dashes') ? get_nfilter_request_var('dashes') : ''), 'dashes', '', true, 3);
+			$save['dash_offset']               = form_input_validate((isset_request_var('dash_offset') ? get_nfilter_request_var('dash_offset') : ''), 'dash_offset', '^[0-9]+$', true, 3);
+			$save['cdef_id']                   = form_input_validate(get_nfilter_request_var('cdef_id'), 'cdef_id', '^[0-9]+$', true, 3);
+			$save['vdef_id']                   = form_input_validate(get_nfilter_request_var('vdef_id'), 'vdef_id', '^[0-9]+$', true, 3);
+			$save['shift']                     = form_input_validate((isset_request_var('shift') ? get_nfilter_request_var('shift') : ''), 'shift', '^((on)|)$', true, 3);
 			$save['consolidation_function_id'] = form_input_validate((isset($item['consolidation_function_id']) ? $item['consolidation_function_id'] : get_nfilter_request_var('consolidation_function_id')), 'consolidation_function_id', '^[0-9]+$', true, 3);
-			$save['textalign']      = form_input_validate((isset_request_var('textalign') ? get_nfilter_request_var('textalign') : ''), 'textalign', '^[a-z]+$', true, 3);
-			$save['text_format']    = form_input_validate((isset($item['text_format']) ? $item['text_format'] : get_nfilter_request_var('text_format')), 'text_format', '', true, 3);
-			$save['value']          = form_input_validate(get_nfilter_request_var('value'), 'value', '', true, 3);
-			$save['hard_return']    = form_input_validate(((isset($item['hard_return']) ? $item['hard_return'] : (isset_request_var('hard_return') ? get_nfilter_request_var('hard_return') : ''))), 'hard_return', '', true, 3);
-			$save['gprint_id']      = form_input_validate(get_nfilter_request_var('gprint_id'), 'gprint_id', '^[0-9]+$', true, 3);
-			$save['sequence']       = $sequence;
+			$save['textalign']                 = form_input_validate((isset_request_var('textalign') ? get_nfilter_request_var('textalign') : ''), 'textalign', '^[a-z]+$', true, 3);
+			$save['text_format']               = form_input_validate((isset($item['text_format']) ? $item['text_format'] : get_nfilter_request_var('text_format')), 'text_format', '', true, 3);
+			$save['value']                     = form_input_validate(get_nfilter_request_var('value'), 'value', '', true, 3);
+			$save['hard_return']               = form_input_validate(((isset($item['hard_return']) ? $item['hard_return'] : (isset_request_var('hard_return') ? get_nfilter_request_var('hard_return') : ''))), 'hard_return', '', true, 3);
+			$save['gprint_id']                 = form_input_validate(get_nfilter_request_var('gprint_id'), 'gprint_id', '^[0-9]+$', true, 3);
+			$save['sequence']                  = $sequence;
 
 			if (!is_error_message()) {
 				$graph_template_item_id = sql_save($save, 'graph_templates_item');
@@ -234,16 +242,18 @@ function form_save() {
 
 		if (is_error_message()) {
 			header('Location: graphs.php?action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? get_nfilter_request_var('graph_template_item_id') : $graph_template_item_id) . '&id=' . get_nfilter_request_var('local_graph_id'));
+
 			exit;
 		} else {
 			header('Location: graphs.php?action=graph_edit&id=' . get_nfilter_request_var('local_graph_id'));
+
 			exit;
 		}
 	}
 }
 
 /* -----------------------
-    item - Graph Items
+	item - Graph Items
    ----------------------- */
 
 function item_movedown() {
@@ -254,7 +264,7 @@ function item_movedown() {
 	get_filter_request_var('local_graph_id');
 	/* ==================================================== */
 
-	$arr = get_graph_group(get_request_var('id'));
+	$arr     = get_graph_group(get_request_var('id'));
 	$next_id = get_graph_parent(get_request_var('id'), 'next');
 
 	if ((!empty($next_id)) && (isset($arr[get_request_var('id')]))) {
@@ -272,7 +282,7 @@ function item_moveup() {
 	get_filter_request_var('local_graph_id');
 	/* ==================================================== */
 
-	$arr = get_graph_group(get_request_var('id'));
+	$arr         = get_graph_group(get_request_var('id'));
 	$previous_id = get_graph_parent(get_request_var('id'), 'previous');
 
 	if ((!empty($previous_id)) && (isset($arr[get_request_var('id')]))) {
@@ -294,15 +304,15 @@ function validate_item_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'host_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '0'
 		),
 		'local_graph_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '0'
 		),
 		'data_template_id' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '0'
 		)
 	);
@@ -343,7 +353,7 @@ function item_edit() {
 
 	html_start_box($header, '100%', '', '3', 'center', '');
 
-?>
+	?>
 	<tr class='even noprint'>
 		<td>
 			<form name='form_graph_items' action='graphs_items.php'>
@@ -360,28 +370,28 @@ function item_edit() {
 								<option value='-1' <?php if (get_request_var('data_template_id') == '-1') { ?> selected<?php } ?>><?php print __('Any'); ?></option>
 								<option value='0' <?php if (get_request_var('data_template_id') == '0') { ?> selected<?php } ?>><?php print __('None'); ?></option>
 								<?php
-								if (get_request_var('host_id') <= 0) {
-									$data_templates = db_fetch_assoc('SELECT id, name
+									if (get_request_var('host_id') <= 0) {
+										$data_templates = db_fetch_assoc('SELECT id, name
 									FROM data_template
 									ORDER BY name');
-								} else {
-									$data_templates = db_fetch_assoc_prepared(
-										'SELECT DISTINCT dt.id, dt.name
+									} else {
+										$data_templates = db_fetch_assoc_prepared(
+											'SELECT DISTINCT dt.id, dt.name
 									FROM data_template AS dt
 									INNER JOIN data_local AS dl
 									ON dl.data_template_id=dt.id
 									WHERE dl.host_id = ?
 									ORDER BY name',
-										array(get_request_var('host_id'))
-									);
-								}
-
-								if (cacti_sizeof($data_templates)) {
-									foreach ($data_templates as $data_template) {
-										print "<option value='" . $data_template['id'] . "'" . (get_request_var('data_template_id') == $data_template['id'] ? ' selected' : '') . '>' . html_escape($data_template['name']) . "</option>\n";
+											array(get_request_var('host_id'))
+										);
 									}
-								}
-								?>
+
+									if (cacti_sizeof($data_templates)) {
+										foreach ($data_templates as $data_template) {
+											print "<option value='" . $data_template['id'] . "'" . (get_request_var('data_template_id') == $data_template['id'] ? ' selected' : '') . '>' . html_escape($data_template['name']) . "</option>\n";
+										}
+									}
+	?>
 							</select>
 						</td>
 					</tr>
@@ -444,7 +454,7 @@ function item_edit() {
 
 		if (isset($template_item['task_item_id'])) {
 			$task_item_id = $template_item['task_item_id'];
-			$value = db_fetch_cell_prepared(
+			$value        = db_fetch_cell_prepared(
 				"SELECT
 				CONCAT_WS('', dtd.name_cache,' (', dtr.data_source_name, ')') as name
 				FROM data_local AS dl
@@ -459,11 +469,12 @@ function item_edit() {
 			);
 		} else {
 			$task_item_id = 0;
-			$value = '';
+			$value        = '';
 		}
 
 		if (get_selected_theme() != 'classic' && read_config_option('autocomplete_enabled') > 0) {
 			$action = 'ajax_graph_items';
+
 			if (get_request_var('host_id') > 0) {
 				$action .= '&host_id=' . get_filter_request_var('host_id');
 			}
@@ -473,14 +484,14 @@ function item_edit() {
 			}
 
 			$struct_graph_item['task_item_id'] = array(
-				'method' => 'drop_callback',
+				'method'        => 'drop_callback',
 				'friendly_name' => __('Data Source'),
-				'description' => __('Choose the Data Source to associate with this Graph Item.'),
-				'sql' => '',
-				'action' => $action,
-				'none_value' => __('None'),
-				'id' => $task_item_id,
-				'value' => $value
+				'description'   => __('Choose the Data Source to associate with this Graph Item.'),
+				'sql'           => '',
+				'action'        => $action,
+				'none_value'    => __('None'),
+				'id'            => $task_item_id,
+				'value'         => $value
 			);
 		}
 
@@ -498,7 +509,7 @@ function item_edit() {
 		/* Make sure we don't limit the list so that the selected DS isn't in the list in edit mode */
 		if ($sql_where != '') {
 			if (!isempty_request_var('id')) {
-				$struct_graph_item['task_item_id']['sql'] .= " WHERE ($sql_where) OR (dtr.id=" . $template_item['task_item_id'] . ")";
+				$struct_graph_item['task_item_id']['sql'] .= " WHERE ($sql_where) OR (dtr.id=" . $template_item['task_item_id'] . ')';
 			} else {
 				$struct_graph_item['task_item_id']['sql'] .= " WHERE $sql_where";
 			}

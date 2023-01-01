@@ -66,13 +66,13 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 		$realm = $frv_realm;
 	}
 
-	cacti_log("DEBUG: User '" . $username . "' attempting to login with realm " . $frv_realm . ", using method " . $auth_method, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+	cacti_log("DEBUG: User '" . $username . "' attempting to login with realm " . $frv_realm . ', using method ' . $auth_method, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 	switch ($auth_method) {
 		case AUTH_METHOD_NONE: // No authentication, should not be reachable
 			$error     = true;
 			$error_msg = __esc('Cacti no longer supports No Authentication mode. Please contact your System Administrator.');
-			cacti_log("FATAL: No authentication attempted and not supported.", false, 'AUTH');
+			cacti_log('FATAL: No authentication attempted and not supported.', false, 'AUTH');
 
 			auth_display_custom_error_message($error_msg);
 
@@ -98,6 +98,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 			$user = domains_login_process($username);
 
 			break;
+
 		default: // Login Realm not determined
 			$error     = true;
 			$error_msg = __esc('Unable to determine user Login Realm or Domain. Please contact your System Administrator.');
@@ -143,6 +144,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 
 			if ($auth_method == AUTH_METHOD_BASIC) {
 				auth_display_custom_error_message($error_msg);
+
 				exit;
 			}
 		}
@@ -167,6 +169,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 
 		/* check if the user account is enabled with the exception of guest users */
 		$user_enabled = true;
+
 		if (!$guest_user && isset($user['enabled'])) {
 			$user_enabled = ($user['enabled'] == 'on' ? true : false);
 		}
@@ -178,6 +181,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 
 			if ($auth_method == AUTH_METHOD_BASIC) {
 				auth_display_custom_error_message($error_msg);
+
 				exit;
 			}
 		}
@@ -187,10 +191,11 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 			$error     = true;
 			$error_msg = __('You do not have access to any area of Cacti.  Contact your administrator.');
 
-			cacti_log(sprintf("LOGIN FAILED: User %s with id %s does not have access to any area of Cacti.", $user['username'], $user['id']), false, 'AUTH');
+			cacti_log(sprintf('LOGIN FAILED: User %s with id %s does not have access to any area of Cacti.', $user['username'], $user['id']), false, 'AUTH');
 
 			if ($auth_method == AUTH_METHOD_BASIC) {
 				auth_display_custom_error_message($error_msg);
+
 				exit;
 			}
 		}
@@ -250,12 +255,16 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 			case '0':
 			case '1':
 				$realm_name = 'Local';
+
 				break;
 			case '2':
 				$realm_name = 'LDAP';
+
 				break;
+
 			default:
 				$realm_name = 'Domains LDAP';
+
 				break;
 		}
 
@@ -317,7 +326,7 @@ if (read_config_option('auth_method') == AUTH_METHOD_LDAP || read_config_option(
 			$realms[$key]['selected'] = ($frv_realm == $key);
 		}
 	}
-?>
+	?>
 	<tr>
 		<td>
 			<label for='realm'><?php print __('Realm'); ?></label>
@@ -325,17 +334,18 @@ if (read_config_option('auth_method') == AUTH_METHOD_LDAP || read_config_option(
 		<td>
 			<select id='realm' name='realm' class='ui-state-default ui-corner-all'>
 				<?php
-					if (cacti_sizeof($realms)) {
-						foreach ($realms as $index => $realm) {
-							print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected="selected"' : '') . '>' . html_escape($realm['name']) . "</option>\n";
+						if (cacti_sizeof($realms)) {
+							foreach ($realms as $index => $realm) {
+								print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected="selected"' : '') . '>' . html_escape($realm['name']) . "</option>\n";
+							}
 						}
-					}
-				?>
+	?>
 			</select>
 		</td>
 	</tr>
 <?php
 }
+
 if (read_config_option('auth_cache_enabled') == 'on') { ?>
 	<tr>
 		<td>&nbsp;</td>
@@ -353,13 +363,15 @@ if (read_config_option('auth_cache_enabled') == 'on') { ?>
 	</td>
 </tr>
 <?php
-$error_message = "";
+$error_message = '';
+
 if ($error_msg) {
 	$error_message = $error_msg;
 } else {
 	if (get_nfilter_request_var('action') == 'login') {
 		$error_message = __('Invalid User Name/Password Please Retype');
 	}
+
 	if ($user_enabled == '0') {
 		$error_message =  __('User Account Disabled');
 	}

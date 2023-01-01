@@ -60,7 +60,7 @@ $modes = array(
 	'movedown'
 );
 
-if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $modes) && isset_request_var('id')) {
+if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $modes, true) && isset_request_var('id')) {
 	get_filter_request_var('id', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9 _]+)$/')));
 
 	$mode = get_nfilter_request_var('mode');
@@ -68,7 +68,7 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 
 	switch ($mode) {
 		case 'install':
-			if (!in_array($id, $plugins_integrated)) {
+			if (!in_array($id, $plugins_integrated, true)) {
 				api_plugin_install($id);
 			}
 
@@ -79,11 +79,12 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 			} else {
 				header('Location: plugins.php');
 			}
+
 			exit;
 
 			break;
 		case 'uninstall':
-			if (!in_array($id, $pluginslist)) {
+			if (!in_array($id, $pluginslist, true)) {
 				break;
 			}
 
@@ -92,75 +93,80 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 			api_plugin_uninstall($id);
 
 			header('Location: plugins.php');
+
 			exit;
 
 			break;
 		case 'disable':
-			if (!in_array($id, $pluginslist)) {
+			if (!in_array($id, $pluginslist, true)) {
 				break;
 			}
 
 			api_plugin_disable($id);
 
 			header('Location: plugins.php');
+
 			exit;
 
 			break;
 		case 'enable':
-			if (!in_array($id, $pluginslist)) {
+			if (!in_array($id, $pluginslist, true)) {
 				break;
 			}
 
-			if (!in_array($id, $plugins_integrated)) {
+			if (!in_array($id, $plugins_integrated, true)) {
 				api_plugin_enable($id);
 			}
 
 			header('Location: plugins.php');
+
 			exit;
 
 			break;
 		case 'check':
-			if (!in_array($id, $pluginslist)) {
+			if (!in_array($id, $pluginslist, true)) {
 				break;
 			}
 
 			break;
 		case 'moveup':
-			if (!in_array($id, $pluginslist)) {
+			if (!in_array($id, $pluginslist, true)) {
 				break;
 			}
 
-			if (in_array($id, $plugins_integrated)) {
+			if (in_array($id, $plugins_integrated, true)) {
 				break;
 			}
 
 			api_plugin_moveup($id);
 
 			header('Location: plugins.php');
+
 			exit;
 
 			break;
 		case 'movedown':
-			if (!in_array($id, $pluginslist)) {
+			if (!in_array($id, $pluginslist, true)) {
 				break;
 			}
 
-			if (in_array($id, $plugins_integrated)) {
+			if (in_array($id, $plugins_integrated, true)) {
 				break;
 			}
 
 			api_plugin_movedown($id);
 
 			header('Location: plugins.php');
+
 			exit;
 
 			break;
 		case 'remote_enable':
-			if (!in_array($id, $pluginslist)) {
+			if (!in_array($id, $pluginslist, true)) {
 				break;
 			}
 
-			if (in_array($id, $plugins_integrated)) {
+			if (in_array($id, $plugins_integrated, true)) {
 				break;
 			}
 
@@ -172,15 +178,16 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 			}
 
 			header('Location: plugins.php' . ($option != '' ? '&' . $option:''));
+
 			exit;
 
 			break;
 		case 'remote_disable':
-			if (!in_array($id, $pluginslist)) {
+			if (!in_array($id, $pluginslist, true)) {
 				break;
 			}
 
-			if (in_array($id, $plugins_integrated)) {
+			if (in_array($id, $plugins_integrated, true)) {
 				break;
 			}
 
@@ -192,6 +199,7 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 			}
 
 			header('Location: plugins.php' . ($option != '' ? '&' . $option:''));
+
 			exit;
 
 			break;
@@ -200,10 +208,12 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 
 function retrieve_plugin_list() {
 	$pluginslist = array();
-	$temp = db_fetch_assoc('SELECT directory FROM plugin_config ORDER BY name');
+	$temp        = db_fetch_assoc('SELECT directory FROM plugin_config ORDER BY name');
+
 	foreach ($temp as $t) {
 		$pluginslist[] = $t['directory'];
 	}
+
 	return $pluginslist;
 }
 
@@ -223,6 +233,7 @@ function plugins_load_temp_table() {
 	$table = 'plugin_temp_table_' . rand();
 
 	$x = 0;
+
 	while ($x < 30) {
 		if (!plugins_temp_table_exists($table)) {
 			$_SESSION['plugin_temp_table'] = $table;
@@ -252,7 +263,7 @@ function plugins_load_temp_table() {
 			FROM plugin_config', false, $local_db_cnn_id);
 
 		if (cacti_sizeof($status)) {
-			foreach($status as $r) {
+			foreach ($status as $r) {
 				$exists = db_fetch_cell_prepared("SELECT id
 					FROM $table
 					WHERE directory = ?",
@@ -280,15 +291,17 @@ function plugins_load_temp_table() {
 		}
 	}
 
-	$path  = $config['base_path'] . '/plugins/';
+	$path  = CACTI_PATH_PLUGINS . '/';
 	$dh    = opendir($path);
 	$cinfo = array();
+
 	if ($dh !== false) {
 		while (($file = readdir($dh)) !== false) {
-			if (is_dir("$path$file") && file_exists("$path$file/setup.php") && !in_array($file, $plugins_integrated)) {
+			if (is_dir("$path$file") && file_exists("$path$file/setup.php") && !in_array($file, $plugins_integrated, true)) {
 				$info_file = "$path$file/INFO";
+
 				if (file_exists($info_file)) {
-					$cinfo[$file] = plugin_load_info_file($info_file);
+					$cinfo[$file]  = plugin_load_info_file($info_file);
 					$pluginslist[] = $file;
 				} else {
 					$cinfo[$file] = plugin_load_info_defaults($info_file, false);
@@ -300,6 +313,7 @@ function plugins_load_temp_table() {
 					array($file));
 
 				$infoname = ($cinfo[$file]['name'] == strtolower($cinfo[$file]['name']) ? ucfirst($cinfo[$file]['name']) : $cinfo[$file]['name']);
+
 				if (!$exists) {
 					db_execute_prepared("INSERT INTO $table
 						(directory, name, status, author, webpage, version, requires, infoname)
@@ -328,11 +342,11 @@ function plugins_load_temp_table() {
 	}
 
 	$found_plugins = array_keys($cinfo);
-	$plugins = db_fetch_assoc('SELECT id, directory, status FROM plugin_config');
+	$plugins       = db_fetch_assoc('SELECT id, directory, status FROM plugin_config');
 
 	if ($plugins !== false && sizeof($plugins)) {
 		foreach ($plugins as $plugin) {
-			if (!in_array($plugin['directory'], $found_plugins)) {
+			if (!in_array($plugin['directory'], $found_plugins, true)) {
 				$plugin['status'] = '-5';
 
 				$exists = db_fetch_cell_prepared("SELECT COUNT(*)
@@ -368,37 +382,37 @@ function plugins_load_temp_table() {
 	return $table;
 }
 
-function update_show_current () {
+function update_show_current() {
 	global $plugins, $pluginslist, $config, $status_names, $actions, $item_rows;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 			),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 			),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'state' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-99'
 			)
@@ -474,14 +488,18 @@ function update_show_current () {
 					</td>
 					<td>
 						<select id='rows' name='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
+							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'";
+
+									if (get_request_var('rows') == $key) {
+										print ' selected';
+									} print '>' . html_escape($value) . "</option>\n";
 								}
 							}
-							?>
+	?>
 						</select>
 					</td>
 					<td>
@@ -514,14 +532,18 @@ function update_show_current () {
 	switch (get_request_var('state')) {
 		case 5:
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' status IN(1,4)';
+
 			break;
 		case -98:
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' status < 0';
+
 			break;
 		case -99:
 			break;
+
 		default:
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' status=' . get_request_var('state');
+
 			break;
 	}
 
@@ -537,7 +559,7 @@ function update_show_current () {
 		$sql_where");
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$sql_order = str_replace('`version` ', 'INET_ATON(`version`) ', $sql_order);
 	$sql_order = str_replace('version ', 'version+0 ', $sql_order);
@@ -562,65 +584,68 @@ function update_show_current () {
 	$display_text = array(
 		'nosort' => array(
 			'display' => __('Actions'),
-			'align' => 'left',
-			'sort' => '',
-			'tip' => __('Actions available include \'Install\', \'Activate\', \'Disable\', \'Enable\', \'Uninstall\'.')
+			'align'   => 'left',
+			'sort'    => '',
+			'tip'     => __('Actions available include \'Install\', \'Activate\', \'Disable\', \'Enable\', \'Uninstall\'.')
 		),
 		'directory' => array(
 			'display' => __('Plugin Name'),
-			'align' => 'left',
-			'sort' => 'ASC',
-			'tip' => __('The name for this Plugin.  The name is controlled by the directory it resides in.')
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The name for this Plugin.  The name is controlled by the directory it resides in.')
 		),
 		'name' => array(
 			'display' => __('Plugin Description'),
-			'align' => 'left',
-			'sort' => 'ASC',
-			'tip' => __('A description that the Plugins author has given to the Plugin.')
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('A description that the Plugins author has given to the Plugin.')
 		),
 		'status' => array(
 			'display' => $config['poller_id'] == 1 ? __('Status'):__('Main / Remote Status'),
-			'align' => 'left',
-			'sort' => 'ASC',
-			'tip' => __('The status of this Plugin.')
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The status of this Plugin.')
 		),
 		'author' => array(
 			'display' => __('Author'),
-			'align' => 'left',
-			'sort' => 'ASC',
-			'tip' => __('The author of this Plugin.')
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The author of this Plugin.')
 		),
 		'requires' => array(
 			'display' => __('Requires'),
-			'align' => 'left',
-			'sort' => 'ASC',
-			'tip' => __('This Plugin requires the following Plugins be installed first.')
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('This Plugin requires the following Plugins be installed first.')
 		),
 		'version' => array(
 			'display' => __('Version'),
-			'align' => 'right',
-			'sort' => 'ASC',
-			'tip' => __('The version of this Plugin.')
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The version of this Plugin.')
 		),
 		'id' => array(
 			'display' => __('Load Order'),
-			'align' => 'right',
-			'sort' => 'ASC',
-			'tip' => __('The load order of the Plugin.  You can change the load order by first sorting by it, then moving a Plugin either up or down.')
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The load order of the Plugin.  You can change the load order by first sorting by it, then moving a Plugin either up or down.')
 		)
 	);
 
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1);
 
 	$i = 0;
+
 	if (cacti_sizeof($plugins)) {
 		$j = 0;
+
 		foreach ($plugins as $plugin) {
-			if ((isset($plugins[$j+1]) && $plugins[$j+1]['status'] < 0) || (!isset($plugins[$j+1]))) {
+			if ((isset($plugins[$j + 1]) && $plugins[$j + 1]['status'] < 0) || (!isset($plugins[$j + 1]))) {
 				$last_plugin = true;
 			} else {
 				$last_plugin = false;
 			}
+
 			if ($plugin['status'] <= 0 || (get_request_var('sort_column') != 'id')) {
 				$load_ordering = false;
 			} else {
@@ -647,7 +672,7 @@ function update_show_current () {
 
 	form_end();
 
-	$uninstall_msg = __('Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click \'Uninstall\' below.  Otherwise click \'Cancel\'');
+	$uninstall_msg   = __('Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click \'Uninstall\' below.  Otherwise click \'Cancel\'');
 	$uninstall_title = __('Are you sure you want to Uninstall?');
 
 	?>
@@ -731,7 +756,8 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $table) {
 
 	if ($plugin['requires'] != '') {
 		$requires = explode(' ', $plugin['requires']);
-		foreach($requires as $r) {
+
+		foreach ($requires as $r) {
 			$nr[] = ucfirst($r);
 		}
 
@@ -746,13 +772,15 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $table) {
 
 	if ($include_ordering) {
 		$row .= "<td class='nowrap right'>";
+
 		if (!$first_plugin) {
-			$row .= "<a class='pic fa fa-caret-up moveArrow' href='" . html_escape($config['url_path'] . 'plugins.php?mode=moveup&id=' . $plugin['directory']) . "' title='" . __esc('Order Before Previous Plugin') . "'></a>";
+			$row .= "<a class='pic fa fa-caret-up moveArrow' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=moveup&id=' . $plugin['directory']) . "' title='" . __esc('Order Before Previous Plugin') . "'></a>";
 		} else {
 			$row .= '<span class="moveArrowNone"></span>';
 		}
+
 		if (!$last_plugin) {
-			$row .= "<a class='pic fa fa-caret-down moveArrow' href='" . html_escape($config['url_path'] . 'plugins.php?mode=movedown&id=' . $plugin['directory']) . "' title='" . __esc('Order After Next Plugin') . "'></a>";
+			$row .= "<a class='pic fa fa-caret-down moveArrow' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=movedown&id=' . $plugin['directory']) . "' title='" . __esc('Order After Next Plugin') . "'></a>";
 		} else {
 			$row .= '<span class="moveArrowNone"></span>';
 		}
@@ -778,7 +806,8 @@ function plugin_required_for_others($plugin, $table) {
 
 	if ($required_for_others) {
 		$parts = explode(',', $required_for_others);
-		foreach($parts as $p) {
+
+		foreach ($parts as $p) {
 			$np[] = ucfirst($p);
 		}
 
@@ -791,6 +820,7 @@ function plugin_required_for_others($plugin, $table) {
 function plugin_required_installed($plugin, $table) {
 	$not_installed = '';
 	api_plugin_can_install($plugin['infoname'], $not_installed);
+
 	return $not_installed;
 }
 
@@ -798,59 +828,71 @@ function plugin_actions($plugin, $table) {
 	global $config, $pluginslist, $plugins_integrated;
 
 	$link = '<td class="nowrap">';
+
 	switch ($plugin['status']) {
 		case '0': // Not Installed
 			$not_installed = plugin_required_installed($plugin, $table);
-		 	if ($not_installed != '') {
-				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Install Plugin.  The following Plugins must be installed first: %s', ucfirst($not_installed)) . "' class='linkEditMain'><img src='" . $config['url_path'] . "images/cog_error.png'></a>";
+
+			if ($not_installed != '') {
+				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Install Plugin.  The following Plugins must be installed first: %s', ucfirst($not_installed)) . "' class='linkEditMain'><img src='" . CACTI_PATH_URL . "images/cog_error.png'></a>";
 			} else {
-				$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=install&id=' . $plugin['directory']) . "' title='" . __esc('Install Plugin') . "' class='piinstall linkEditMain'><img src='" . $config['url_path'] . "images/cog_add.png'></a>";
+				$link .= "<a href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=install&id=' . $plugin['directory']) . "' title='" . __esc('Install Plugin') . "' class='piinstall linkEditMain'><img src='" . CACTI_PATH_URL . "images/cog_add.png'></a>";
 			}
-			$link .= "<img src='" . $config['url_path'] . "images/view_none.gif'>";
+			$link .= "<img src='" . CACTI_PATH_URL . "images/view_none.gif'>";
+
 			break;
 		case '1':	// Currently Active
 			$required = plugin_required_for_others($plugin, $table);
+
 			if ($required != '') {
-				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Uninstall.  This Plugin is required by: %s', ucfirst($required)) . "'><img src='" . $config['url_path'] . "images/cog_error.png'></a>";
+				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Uninstall.  This Plugin is required by: %s', ucfirst($required)) . "'><img src='" . CACTI_PATH_URL . "images/cog_error.png'></a>";
 			} else {
-				$link .= "<a class='piuninstall' href='" . html_escape($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><img src='" . $config['url_path'] . "images/cog_delete.png'></a>";
+				$link .= "<a class='piuninstall' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><img src='" . CACTI_PATH_URL . "images/cog_delete.png'></a>";
 			}
-			$link .= "<a class='pidisable' href='" . html_escape($config['url_path'] . 'plugins.php?mode=disable&id=' . $plugin['directory']) . "' title='" . __esc('Disable Plugin') . "'><img src='" . $config['url_path'] . "images/stop.png'></a>";
+			$link .= "<a class='pidisable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=disable&id=' . $plugin['directory']) . "' title='" . __esc('Disable Plugin') . "'><img src='" . CACTI_PATH_URL . "images/stop.png'></a>";
+
 			break;
 		case '2': // Configuration issues
-			$link .= "<a class='piuninstall' href='" . html_escape($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><img src='" . $config['url_path'] . "images/cog_delete.png'></a>";
+			$link .= "<a class='piuninstall' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><img src='" . CACTI_PATH_URL . "images/cog_delete.png'></a>";
+
 			break;
 		case '4':	// Installed but not active
 			$required = plugin_required_for_others($plugin, $table);
+
 			if ($required != '') {
-				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Uninstall.  This Plugin is required by: %s', ucfirst($required)) . "'><img src='" . $config['url_path'] . "images/cog_error.png'></a>";
+				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Uninstall.  This Plugin is required by: %s', ucfirst($required)) . "'><img src='" . CACTI_PATH_URL . "images/cog_error.png'></a>";
 			} else {
-				$link .= "<a class='piuninstall' href='" . html_escape($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><img src='" . $config['url_path'] . "images/cog_delete.png'></a>";
+				$link .= "<a class='piuninstall' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><img src='" . CACTI_PATH_URL . "images/cog_delete.png'></a>";
 			}
-			$link .= "<a class='pienable' href='" . html_escape($config['url_path'] . 'plugins.php?mode=enable&id=' . $plugin['directory']) . "' title='" . __esc('Enable Plugin') . "'><img src='" . $config['url_path'] . "images/accept.png'></a>";
+			$link .= "<a class='pienable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=enable&id=' . $plugin['directory']) . "' title='" . __esc('Enable Plugin') . "'><img src='" . CACTI_PATH_URL . "images/accept.png'></a>";
+
 			break;
 		case '-5': // Plugin directory missing
 			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory is missing!') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
+
 			break;
 		case '-4': // Plugins should have INFO file since 1.0.0
 			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin is not compatible (Pre-1.x)') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
+
 			break;
 		case '-3': // Plugins can have spaces in their names
 			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directories can not include spaces') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
+
 			break;
 		case '-2': // Naming issues
 			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory is not correct.  Should be \'%s\' but is \'%s\'', strtolower($plugin['infoname']), $plugin['directory']) . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
 
 			break;
+
 		default: // Old PIA
-			$path = $config['base_path'] . '/plugins/' . $plugin['directory'];
+			$path       = CACTI_PATH_PLUGINS . '/' . $plugin['directory'];
 			$directory  = $plugin['name'];
 
 			if (!file_exists("$path/setup.php")) {
 				$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory \'%s\' is missing setup.php', $plugin['directory']) . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
 			} elseif (!file_exists("$path/INFO")) {
 				$link .= "<a class='pierror' href='#' title='" . __esc('Plugin is lacking an INFO file') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
-			} elseif (in_array($directory, $plugins_integrated)) {
+			} elseif (in_array($directory, $plugins_integrated, true)) {
 				$link .= "<a class='pierror' href='#' title='" . __esc('Plugin is integrated into Cacti core') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
 			} else {
 				$link .= "<a class='pierror' href='#' title='" . __esc('Plugin is not compatible') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
@@ -864,10 +906,10 @@ function plugin_actions($plugin, $table) {
 			if ($plugin['remote_status'] == 1) { // Installed and Active
 				// TO-DO: Disabling here does not make much sense as the main will be replicated
 				// with any change of any other plugin thus undoing.  Fix that moving forward
-				//$link .= "<a class='pidisable' href='" . html_escape($config['url_path'] . 'plugins.php?mode=remote_disable&id=' . $plugin['directory']) . "' title='" . __esc('Disable Plugin Locally') . "'><img src='" . $config['url_path'] . "images/stop.png'></a>";
+				//$link .= "<a class='pidisable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=remote_disable&id=' . $plugin['directory']) . "' title='" . __esc('Disable Plugin Locally') . "'><img src='" . CACTI_PATH_URL . "images/stop.png'></a>";
 			} elseif ($plugin['remote_status'] == 4) { // Installed but inactive
 				if ($plugin['status'] == 1) {
-					$link .= "<a class='pienable' href='" . html_escape($config['url_path'] . 'plugins.php?mode=remote_enable&id=' . $plugin['directory']) . "' title='" . __esc('Enable Plugin Locally') . "'><img src='" . $config['url_path'] . "images/accept.png'></a>";
+					$link .= "<a class='pienable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=remote_enable&id=' . $plugin['directory']) . "' title='" . __esc('Enable Plugin Locally') . "'><img src='" . CACTI_PATH_URL . "images/accept.png'></a>";
 				}
 			}
 		}
@@ -877,4 +919,3 @@ function plugin_actions($plugin, $table) {
 
 	return $link;
 }
-

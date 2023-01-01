@@ -1859,7 +1859,7 @@ function user_edit() {
 
 		foreach (array_keys($tabs) as $tab_short_name) {
 			print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") .
-				" href='" . html_escape($config['url_path'] .
+				" href='" . html_escape(CACTI_PATH_URL .
 				'user_admin.php?action=user_edit&id=' . get_request_var('id') .
 				'&tab=' . $tab_short_name) .
 				"'>" . $tabs[$tab_short_name] . '</a></li>';
@@ -2227,7 +2227,7 @@ function user() {
 
 			form_alternate_row('line' . $user['id'], true, $disabled);
 
-			form_selectable_cell(filter_value($user['username'], get_request_var('filter'), $config['url_path'] . 'user_admin.php?action=user_edit&tab=general&id=' . $user['id']), $user['id']);
+			form_selectable_cell(filter_value($user['username'], get_request_var('filter'), CACTI_PATH_URL . 'user_admin.php?action=user_edit&tab=general&id=' . $user['id']), $user['id']);
 			form_selectable_cell($user['id'], $user['id']);
 			form_selectable_cell(filter_value($user['full_name'], get_request_var('filter')), $user['id']);
 			form_selectable_cell($enabled, $user['id']);

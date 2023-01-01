@@ -276,7 +276,7 @@ function boost_fetch_cache_check($local_data_id, $rrdtool_pipe = false) {
 
 	if (read_config_option('boost_rrd_update_enable') == 'on') {
 		/* include poller processing routines */
-		include_once($config['library_path'] . '/poller.php');
+		include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 		/* check to see if boost can do its job */
 		if (!boost_poller_id_check()) {
@@ -340,7 +340,7 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$grap
 	global $config;
 
 	/* include poller processing routines */
-	include_once($config['library_path'] . '/poller.php');
+	include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 	/* suppressnwarnings */
 	if (defined('E_DEPRECATED')) {
@@ -701,7 +701,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 
 	cacti_system_zone_set();
 
-	include_once($config['library_path'] . '/rrd.php');
+	include_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
 	/* suppress warnings */
 	if (defined('E_DEPRECATED')) {
@@ -1115,7 +1115,7 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 	 * @var array $data_source_types
 	 * @var array $consolidation_functions
 	 */
-	include($config['include_path'] . '/global_arrays.php');
+	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
 
 	$data_source_path = get_data_source_path($local_data_id, true);
 
@@ -1226,8 +1226,8 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 	}
 
 	if ($config['cacti_server_os'] != 'win32') {
-		$owner_id = fileowner($config['rra_path']);
-		$group_id = filegroup($config['rra_path']);
+		$owner_id = fileowner(CACTI_PATH_RRA);
+		$group_id = filegroup(CACTI_PATH_RRA);
 	}
 
 	/**
@@ -1242,11 +1242,11 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 				}
 			}
 		} elseif (!is_dir(dirname($data_source_path))) {
-			if ($config['is_web'] == false || is_writable($config['rra_path'])) {
+			if ($config['is_web'] == false || is_writable(CACTI_PATH_RRA)) {
 				if (mkdir(dirname($data_source_path), 0775, true)) {
 					if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
 						$success  = true;
-						$paths    = explode('/', str_replace($config['rra_path'], '/', dirname($data_source_path)));
+						$paths    = explode('/', str_replace(CACTI_PATH_RRA, '/', dirname($data_source_path)));
 						$spath    = '';
 
 						foreach ($paths as $path) {
@@ -1256,19 +1256,19 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 
 							$spath .= '/' . $path;
 
-							$powner_id = fileowner($config['rra_path'] . $spath);
-							$pgroup_id = fileowner($config['rra_path'] . $spath);
+							$powner_id = fileowner(CACTI_PATH_RRA . $spath);
+							$pgroup_id = fileowner(CACTI_PATH_RRA . $spath);
 
 							if ($powner_id != $owner_id) {
-								$success = chown($config['rra_path'] . $spath, $owner_id);
+								$success = chown(CACTI_PATH_RRA . $spath, $owner_id);
 							}
 
 							if ($pgroup_id != $group_id && $success) {
-								$success = chgrp($config['rra_path'] . $spath, $group_id);
+								$success = chgrp(CACTI_PATH_RRA . $spath, $group_id);
 							}
 
 							if (!$success) {
-								cacti_log("ERROR: Unable to set directory permissions for '" . $config['rra_path'] . $spath . "'", false);
+								cacti_log("ERROR: Unable to set directory permissions for '" . CACTI_PATH_RRA . $spath . "'", false);
 
 								break;
 							}
@@ -1361,9 +1361,9 @@ function boost_poller_bottom() {
 	global $config;
 
 	if (read_config_option('boost_rrd_update_enable') == 'on') {
-		include_once($config['library_path'] . '/poller.php');
+		include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
-		chdir($config['base_path']);
+		chdir(CACTI_PATH_BASE);
 
 		$redirect_args = '';
 
@@ -1386,14 +1386,14 @@ function boost_poller_bottom() {
 
 		if ($boost_log != '') {
 			if ($config['cacti_server_os'] == 'unix') {
-				$extra_args    = '-q '  . $config['base_path'] . '/poller_boost.php --debug';
+				$extra_args    = '-q '  . CACTI_PATH_BASE . '/poller_boost.php --debug';
 				$redirect_args =  '>> ' . $boost_log . ' 2>&1';
 			} else {
-				$extra_args    = '-q ' . $config['base_path'] . '/poller_boost.php --debug';
+				$extra_args    = '-q ' . CACTI_PATH_BASE . '/poller_boost.php --debug';
 				$redirect_args = '>> ' . $boost_log;
 			}
 		} else {
-			$extra_args = '-q ' . $config['base_path'] . '/poller_boost.php';
+			$extra_args = '-q ' . CACTI_PATH_BASE . '/poller_boost.php';
 		}
 
 		exec_background($command_string, $extra_args, $redirect_args);

@@ -24,41 +24,45 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once($config['base_path'] . '/lib/poller.php');
-require_once($config['base_path'] . '/lib/data_query.php');
-require_once($config['base_path'] . '/lib/dsstats.php');
-require_once($config['base_path'] . '/lib/dsdebug.php');
-require_once($config['base_path'] . '/lib/boost.php');
-require_once($config['base_path'] . '/lib/rrd.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/data_query.php');
+require_once(CACTI_PATH_LIBRARY . '/dsstats.php');
+require_once(CACTI_PATH_LIBRARY . '/dsdebug.php');
+require_once(CACTI_PATH_LIBRARY . '/boost.php');
+require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
 		switch ($arg) {
-		case '--version':
-		case '-V':
-		case '-v':
-			display_version();
-			exit(0);
-		case '--help':
-		case '-H':
-		case '-h':
-			display_help();
-			exit(0);
-		default:
-			print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
-			display_help();
-			exit(1);
+			case '--version':
+			case '-V':
+			case '-v':
+				display_version();
+
+				exit(0);
+			case '--help':
+			case '-H':
+			case '-h':
+				display_help();
+
+				exit(0);
+
+			default:
+				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				display_help();
+
+				exit(1);
 		}
 	}
 }
@@ -86,7 +90,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print "\nusage: poller_output_empty.php\n\n";

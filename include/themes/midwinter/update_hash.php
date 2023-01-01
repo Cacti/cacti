@@ -27,13 +27,16 @@ function update_hash($file) {
 
 function file_search($folder, $pattern_array) {
 	$return = array();
-	$iti = new RecursiveDirectoryIterator($folder);
-	foreach(new RecursiveIteratorIterator($iti) as $file){
+	$iti    = new RecursiveDirectoryIterator($folder);
+
+	foreach (new RecursiveIteratorIterator($iti) as $file) {
 		$fileParts = explode('.', $file);
-		if (in_array(strtolower(array_pop($fileParts)), $pattern_array)){
+
+		if (in_array(strtolower(array_pop($fileParts)), $pattern_array, true)) {
 			$return[] = $file;
 		}
 	}
+
 	return $return;
 }
 
@@ -50,20 +53,20 @@ function file_hash($match) {
 function file_update($cssFile) {
 	$fileContents = file($cssFile);
 	$fileUpdated  = preg_replace_callback_array(
-		[
+		array(
 			'/(@import url\(\')([^?]*)(\?.*)*(\'\))/' => 'file_hash',
-			'/(@import url\(")([^?]*)(\?.*)*("\))/' => 'file_hash',
-		], $fileContents
+			'/(@import url\(")([^?]*)(\?.*)*("\))/'   => 'file_hash',
+		), $fileContents
 	);
 
 	if ($fileContents != $fileUpdated) {
-		echo "file_update(" . $cssFile . ")\n";
+		print 'file_update(' . $cssFile . ")\n";
 		file_put_contents($cssFile, $fileUpdated);
 	}
 }
 
 global $cssFile;
-$cssFiles = file_search(__DIR__ . '/css', ['css']);
+$cssFiles   = file_search(__DIR__ . '/css', array('css'));
 $cssFiles[] = __DIR__ . '/main.css';
 $cssFiles[] = __DIR__ . '/billboard.midwinter.css';
 
@@ -71,4 +74,4 @@ foreach ($cssFiles as $cssFile) {
 	file_update($cssFile);
 }
 
-echo PHP_EOL;
+print PHP_EOL;

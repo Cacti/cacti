@@ -24,10 +24,10 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once($config['base_path'] . '/lib/data_query.php');
-require_once($config['base_path'] . '/lib/poller.php');
-require_once($config['base_path'] . '/lib/utility.php');
-require_once($config['base_path'] . '/install/functions.php');
+require_once(CACTI_PATH_LIBRARY . '/data_query.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/utility.php');
+require_once(CACTI_PATH_INSTALL . '/functions.php');
 
 ini_set('max_execution_time', '0');
 
@@ -47,38 +47,45 @@ $session     = array();
 $forcever    = '';
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
 		switch ($arg) {
 			case '--local':
 				$local = true;
+
 				break;
 			case '--forcever':
 				$forcever = $value;
+
 				break;
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -109,6 +116,7 @@ if (cacti_version_compare($old_cacti_version,CACTI_VERSION,'=')) {
 	exit_error('You are attempting to install cacti ' . CACTI_VERSION . ' onto a 0.6.x database.' . PHP_EOL . "To continue, you must create a new database, import 'cacti.sql' into it," . PHP_EOL . "and\tupdate 'include/config.php' to point to the new database.");
 } elseif (empty($old_cacti_version)) {
 	exit_error('You have created a new database, but have not yet imported the \'cacti.sql\' file.');
+
 	exit;
 } elseif ($old_version_index == '') {
 	exit_version_error($old_cacti_version, 'Unable to identify version, cannot upgrade.');
@@ -120,14 +128,14 @@ $prev_cacti_version = $old_cacti_version;
 $orig_cacti_version = get_cacti_db_version();
 
 // loop through versions from old version to the current, performing updates for each version in the chain
-foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code)  {
+foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code) {
 	// skip versions old than the database version
 	if (cacti_version_compare($old_cacti_version, $cacti_upgrade_version, '>=')) {
 		continue;
 	}
 
 	// construct version upgrade include path
-	$upgrade_file = $config['base_path'] . '/install/upgrades/' . str_replace('.', '_', $cacti_upgrade_version) . '.php';
+	$upgrade_file     = CACTI_PATH_INSTALL . '/upgrades/' . str_replace('.', '_', $cacti_upgrade_version) . '.php';
 	$upgrade_function = 'upgrade_to_' . str_replace('.', '_', $cacti_upgrade_version);
 
 	// check for upgrade version file, then include, check for function and execute
@@ -136,6 +144,7 @@ foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code)  {
 		print '  - from v' . $prev_cacti_version .' (DB ' . $orig_cacti_version . ')' . PHP_EOL;
 		print '      to v' . $cacti_upgrade_version . PHP_EOL;
 		include($upgrade_file);
+
 		if (function_exists($upgrade_function)) {
 			call_user_func($upgrade_function);
 			$status = db_install_errors($cacti_upgrade_version);
@@ -159,12 +168,14 @@ foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code)  {
 
 	if (cacti_version_compare(CACTI_VERSION, $cacti_upgrade_version, '=')) {
 		db_execute("UPDATE version SET cacti = '" . CACTI_VERSION_FULL . "'");
+
 		break;
 	}
 }
 
 function exit_error($text) {
 	print "ERROR: $text" . PHP_EOL;
+
 	exit;
 }
 
@@ -193,14 +204,15 @@ function db_install_errors($cacti_version) {
 				}
 
 				if ($debug || $status < DB_STATUS_SUCCESS) {
-					$db_status = "[Unknown]";
+					$db_status = '[Unknown]';
+
 					if (isset($database_statuses[$status])) {
 						$db_status = $database_statuses[$status];
 					}
 
 					$sep1 = '################################';
 					$sep2 = '+------------------------------+';
-					printf("%s%s%s%-10s   -   %s%s%s%s%s%s%s%s", PHP_EOL, $sep1, PHP_EOL, $db_status, $error, PHP_EOL, $sep2, PHP_EOL, clean_up_lines($sql), PHP_EOL, $sep1, PHP_EOL);
+					printf('%s%s%s%-10s   -   %s%s%s%s%s%s%s%s', PHP_EOL, $sep1, PHP_EOL, $db_status, $error, PHP_EOL, $sep2, PHP_EOL, clean_up_lines($sql), PHP_EOL, $sep1, PHP_EOL);
 				}
 			}
 		}
@@ -216,7 +228,7 @@ function display_version() {
 }
 
 /*  display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print PHP_EOL . 'usage: upgrade_database.php [--debug] [--forcever=VERSION]' . PHP_EOL . PHP_EOL;

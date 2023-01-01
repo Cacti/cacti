@@ -24,9 +24,9 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once($config['base_path'] . '/lib/utility.php');
-require_once($config['base_path'] . '/lib/api_data_source.php');
-require_once($config['base_path'] . '/lib/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/utility.php');
+require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 /* switch to main database for cli's */
 if ($config['poller_id'] > 1) {
@@ -37,16 +37,16 @@ if ($config['poller_id'] > 1) {
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug = false;
-$host_id = 0;
+$debug            = false;
+$host_id          = 0;
 $host_template_id = 0;
 $data_template_id = 0;
 
-foreach($parms as $parameter) {
+foreach ($parms as $parameter) {
 	if (strpos($parameter, '=')) {
 		list($arg, $value) = explode('=', $parameter);
 	} else {
-		$arg = $parameter;
+		$arg   = $parameter;
 		$value = '';
 	}
 
@@ -56,6 +56,7 @@ foreach($parms as $parameter) {
 
 			if (!is_numeric($host_id)) {
 				print 'ERROR: You must supply a valid Device Id to run this script!' . PHP_EOL;
+
 				exit(1);
 			}
 
@@ -65,6 +66,7 @@ foreach($parms as $parameter) {
 
 			if (!is_numeric($host_template_id)) {
 				print 'ERROR: You must supply a valid Device Template Id to run this script!' . PHP_EOL;
+
 				exit(1);
 			}
 
@@ -74,6 +76,7 @@ foreach($parms as $parameter) {
 
 			if (!is_numeric($data_template_id)) {
 				print 'ERROR: You must supply a valid Data Template Id to run this script!' . PHP_EOL;
+
 				exit(1);
 			}
 
@@ -95,10 +98,12 @@ foreach($parms as $parameter) {
 			display_version();
 
 			exit;
+
 		default:
 			print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 
 			display_help();
+
 			exit;
 	}
 }
@@ -116,7 +121,7 @@ $params    = array();
 
 if ($host_id > 0) {
 	$sql_where = ' AND h.id = ?';
-	$params[] = $host_id;
+	$params[]  = $host_id;
 }
 
 if ($host_template_id > 0) {
@@ -142,12 +147,15 @@ debug("There are '$total_hosts' hosts to push out.");
 /* start rebuilding the poller cache */
 if (cacti_sizeof($hosts) > 0) {
 	foreach ($hosts as $host) {
-		if (!$debug) print '.';
+		if (!$debug) {
+			print '.';
+		}
 		push_out_host($host['id'], 0, $data_template_id);
 		debug("Host ID '" . $host['id'] . "' or '$current_host' of '$total_hosts' updated");
 		$current_host++;
 	}
 }
+
 if (!$debug) {
 	print PHP_EOL;
 }
@@ -159,7 +167,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print PHP_EOL . 'usage: push_out_hosts.php [--host-id=N] [--host-template-id=N] [--debug]' . PHP_EOL . PHP_EOL;

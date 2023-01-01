@@ -32,9 +32,9 @@ if (function_exists('pcntl_async_signals')) {
 ini_set('output_buffering', 'Off');
 
 require(__DIR__ . '/include/cli_check.php');
-require_once($config['base_path'] . '/lib/poller.php');
-require_once($config['base_path'] . '/lib/rrd.php');
-require_once($config['base_path'] . '/lib/dsstats.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/rrd.php');
+require_once(CACTI_PATH_LIBRARY . '/dsstats.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -60,43 +60,51 @@ $real_time    = 0;
 $rrd_files    = 0;
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
 		switch ($arg) {
-		case '-d':
-		case '--debug':
-			$debug = true;
-			break;
-		case '-f':
-		case '--force':
-			$forcerun = true;
-			break;
-		case '--type':
-			$type = $value;
-			break;
-		case '--child':
-			$thread_id = $value;
-			break;
-		case '--version':
-		case '-v':
-		case '-V':
-			display_version();
-			exit(0);
-		case '--help':
-		case '-h':
-		case '-H':
-			display_help();
-			exit(0);
-		default:
-			print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
-			display_help();
-			exit(1);
+			case '-d':
+			case '--debug':
+				$debug = true;
+
+				break;
+			case '-f':
+			case '--force':
+				$forcerun = true;
+
+				break;
+			case '--type':
+				$type = $value;
+
+				break;
+			case '--child':
+				$thread_id = $value;
+
+				break;
+			case '--version':
+			case '-v':
+			case '-V':
+				display_version();
+
+				exit(0);
+			case '--help':
+			case '-h':
+			case '-H':
+				display_help();
+
+				exit(0);
+
+			default:
+				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
+				display_help();
+
+				exit(1);
 		}
 	}
 }
@@ -106,10 +114,10 @@ if (cacti_sizeof($parms)) {
  *
  * pmaster  - the main process launched from the Cacti main poller and will launch child processes
  * pchild   - a child of the master process from the 'master'
-
+ *
  * bmaster  - a boost master process, will perform launch bchild processes
  * bchild   - a child of the boost master process, will launch boost collection
-
+ *
  * dmaster - a daily master process, will perform launch bchild processes
  * dchild  - a child of the daily master process, will launch boost collection
  *
@@ -203,13 +211,13 @@ function dsstats_purge_hourly_cache() {
 
 function dsstats_insert_hourly_data_into_cache() {
 	/* store the current averages into the hourly table */
-	db_execute("INSERT INTO data_source_stats_hourly
+	db_execute('INSERT INTO data_source_stats_hourly
 		(local_data_id, rrd_name, average, peak)
 		SELECT local_data_id, rrd_name, AVG(`value`), MAX(`value`)
 		FROM data_source_stats_hourly_cache
 		WHERE `value` IS NOT NULL
 		GROUP BY local_data_id, rrd_name
-		ON DUPLICATE KEY UPDATE average=VALUES(average), peak=VALUES(peak)");
+		ON DUPLICATE KEY UPDATE average=VALUES(average), peak=VALUES(peak)');
 }
 
 function dsstats_master_handler($forcerun) {
@@ -310,7 +318,7 @@ function display_version() {
 /**
  * display_help - generic help screen for utilities
  */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print PHP_EOL . 'usage: poller_dsstats.php [--force] [--debug]' . PHP_EOL . PHP_EOL;
@@ -355,9 +363,10 @@ function sig_handler($signo) {
 			unregister_process('dsstats', $type, $thread_id, getmypid());
 
 			exit(1);
+
 			break;
+
 		default:
 			/* ignore all other signals */
 	}
 }
-

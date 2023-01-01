@@ -39,4 +39,3 @@ function upgrade_to_1_2_11() {
 		ENGINE=MEMORY
 		COMMENT='Stores Process Status for Cacti Background Processes'");
 }
-

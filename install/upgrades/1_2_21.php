@@ -38,4 +38,3 @@ function upgrade_to_1_2_21() {
 	db_install_drop_key('snmpagent_managers_notifications', 'index', 'manager_id_notification');
 	db_install_drop_key('snmp_query_graph_rrd', 'index', 'snmp_query_graph_id');
 }
-

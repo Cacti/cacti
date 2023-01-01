@@ -33,7 +33,7 @@ $page = db_fetch_row_prepared('SELECT
 // Prevent redirect loops
 if (isset($_SERVER['HTTP_REFERER'])) {
 	if (strpos($_SERVER['HTTP_REFERER'], 'link.php') === false) {
-		$referer = $_SERVER['HTTP_REFERER'];
+		$referer                  = $_SERVER['HTTP_REFERER'];
 		$_SESSION['link_referer'] = $referer;
 	} elseif (isset($_SESSION['link_referer'])) {
 		$referer = sanitize_uri($_SESSION['link_referer']);
@@ -49,16 +49,17 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 if (!cacti_sizeof($page)) {
 	raise_message('page_not_defined');
 	header('Location: ' . $referer);
+
 	exit;
 } else {
 	global $link_nav;
 
-	if (is_realm_allowed($page['id']+10000)) {
-		unset ($refresh);
+	if (is_realm_allowed($page['id'] + 10000)) {
+		unset($refresh);
 
 		if (!empty($page['refresh'])) {
 			$refresh['seconds'] = $page['refresh'];
-			$refresh['page']    = $config['url_path'] . 'link.php?id=' . get_request_var('id');
+			$refresh['page']    = CACTI_PATH_URL . 'link.php?id=' . get_request_var('id');
 		}
 
 		if ($page['style'] == 'TAB') {
@@ -76,7 +77,7 @@ if (!cacti_sizeof($page)) {
 		} else {
 			print '<div id="content">';
 
-			$file = $config['base_path'] . "/include/content/" . $page['contentfile'];
+			$file = CACTI_PATH_INCLUDE . '/content/' . $page['contentfile'];
 
 			if (file_exists($file)) {
 				include_once($file);
@@ -91,7 +92,7 @@ if (!cacti_sizeof($page)) {
 	} else {
 		raise_message('permission_denied');
 		header('Location: ' . $referer);
+
 		exit;
 	}
 }
-

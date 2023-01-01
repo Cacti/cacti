@@ -93,7 +93,7 @@ function api_data_source_remove($local_data_id) {
 		db_execute_prepared('DELETE
 			FROM data_input_data
 			WHERE data_template_data_id = ?',
-				array($data_template_data_id));
+			array($data_template_data_id));
 
 		if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
 			db_execute_prepared('DELETE
@@ -186,11 +186,12 @@ function api_data_source_remove_multi($local_data_ids) {
 	$acmethod  = read_config_option('rrd_autoclean_method');
 
 	$local_data_ids_chunks = array_chunk($local_data_ids, 1000);
+
 	foreach ($local_data_ids_chunks as $ids_to_delete) {
 		$poller_ids = get_remote_poller_ids_from_data_sources($ids_to_delete);
 
 		if (is_array($ids_to_delete)) {
-			cacti_log("Found as an array");
+			cacti_log('Found as an array');
 			$ids_to_delete = implode(', ', $ids_to_delete);
 		}
 
@@ -234,7 +235,6 @@ function api_data_source_remove_multi($local_data_ids) {
 					}
 				}
 			}
-
 		}
 
 		/* core data */
@@ -336,7 +336,7 @@ function api_data_source_enable($local_data_id) {
 	}
 
 	update_poller_cache($local_data_id, true);
- }
+}
 
 function api_data_source_disable($local_data_id) {
 	db_execute_prepared('DELETE FROM poller_item
@@ -368,7 +368,7 @@ function api_data_source_disable($local_data_id) {
 function api_data_source_disable_multi($local_data_ids) {
 	/* initialize variables */
 	$ids_to_disable = '';
-	$i = 0;
+	$i              = 0;
 
 	/* build the array */
 	if (cacti_sizeof($local_data_ids)) {
@@ -398,7 +398,7 @@ function api_data_source_disable_multi($local_data_ids) {
 					}
 				}
 
-				$i = 0;
+				$i              = 0;
 				$ids_to_disable = '';
 			}
 		}
@@ -486,7 +486,7 @@ function api_data_source_get_interface_speed($data_local) {
 
 function api_data_source_change_host($data_sources, $device_id) {
 	if (cacti_sizeof($data_sources)) {
-		foreach($data_sources as $data_source) {
+		foreach ($data_sources as $data_source) {
 			db_execute_prepared('UPDATE data_local
 				SET host_id = ?
 				WHERE id = ?',
@@ -544,12 +544,12 @@ function api_reapply_suggested_data_source_data($local_data_id) {
 		return;
 	}
 
-	$svs = db_fetch_assoc_prepared("SELECT
+	$svs = db_fetch_assoc_prepared('SELECT
 		text, field_name
 		FROM snmp_query_graph_rrd_sv
 		WHERE snmp_query_graph_id = ?
 		AND data_template_id = ?
-		ORDER BY sequence",
+		ORDER BY sequence',
 		array($snmp_query_graph_id, $data_local['data_template_id']));
 
 	$matches = array();
@@ -569,7 +569,7 @@ function api_reapply_suggested_data_source_data($local_data_id) {
 
 			/* if there are no '|query' characters, all of the substitutions were successful */
 			if (strpos($subs_string, '|query') === false) {
-				if (in_array($sv['field_name'], $matches)) {
+				if (in_array($sv['field_name'], $matches, true)) {
 					continue;
 				}
 
@@ -687,6 +687,7 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 			$save['local_data_id']              = (isset($local_data_id) ? $local_data_id : 0);
 			$save['local_data_template_rrd_id'] = (isset($data_template_rrd['local_data_template_rrd_id']) ? $data_template_rrd['local_data_template_rrd_id'] : 0);
 			$save['data_template_id']           = (!empty($_local_data_id) ? $data_template_rrd['data_template_id'] : $data_template_id);
+
 			if ($save['local_data_id'] == 0) {
 				$save['hash']                   = get_hash_data_template($data_template_rrd['local_data_template_rrd_id'], 'data_template_item');
 			} else {
@@ -719,4 +720,3 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 		update_data_source_title_cache($local_data_id);
 	}
 }
-

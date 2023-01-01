@@ -25,7 +25,7 @@
 function upgrade_to_1_2_20() {
 	global $config;
 
-	include_once($config['base_path'] . '/lib/data_query.php');
+	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
 	// Correct bad hostnames and host_id's in the data_input_data table
 	$entries = db_fetch_assoc("SELECT did.*, dif.type_code
@@ -47,7 +47,7 @@ function upgrade_to_1_2_20() {
 		AND value = ''");
 
 	if (cacti_sizeof($entries)) {
-		foreach($entries as $e) {
+		foreach ($entries as $e) {
 			$data_template_data = db_fetch_row_prepared('SELECT *
 				FROM data_template_data
 				WHERE id = ?',
@@ -131,7 +131,7 @@ function upgrade_to_1_2_20() {
 		) AND value = ''");
 
 	if (cacti_sizeof($broken_data_sources)) {
-		foreach($broken_data_sources as $ds) {
+		foreach ($broken_data_sources as $ds) {
 			$data_template_data = db_fetch_row_prepared('SELECT *
 				FROM data_template_data
 				WHERE id = ?',
@@ -159,7 +159,7 @@ function upgrade_to_1_2_20() {
 						array($local_data_id));
 
 					if (cacti_sizeof($local_graph_ids)) {
-						foreach($local_graph_ids as $id) {
+						foreach ($local_graph_ids as $id) {
 							$local_graph = db_fetch_row_prepared('SELECT *
 								FROM graph_local
 								WHERE id = ?',
@@ -198,6 +198,7 @@ function upgrade_to_1_2_20() {
 										WHERE data_input_field_id = ?
 										AND data_template_data_id = ?',
 										array($local_graph['snmp_query_graph_id'], $ds['data_input_field_id'], $ds['data_template_data_id']));
+
 									break;
 							}
 						}
@@ -227,4 +228,3 @@ function upgrade_to_1_2_20() {
 	db_execute('UPDATE reports_items
 		SET graph_template_id = -1 WHERE graph_template_id = 0');
 }
-

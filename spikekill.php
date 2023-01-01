@@ -23,7 +23,7 @@
 */
 
 include('./include/auth.php');
-include_once($config['base_path'] . '/lib/spikekill.php');
+include_once(CACTI_PATH_LIBRARY . '/spikekill.php');
 
 $debug = false;
 
@@ -35,9 +35,12 @@ if (isset_request_var('method')) {
 		case 'float':
 		case 'absolute':
 			break;
+
 		default:
 			print __("FATAL: Spike Kill method '%s' is Invalid", html_escape(get_nfilter_request_var('method'))) . PHP_EOL;
+
 			exit(1);
+
 			break;
 	}
 }
@@ -51,8 +54,9 @@ if (is_realm_allowed(1043)) {
 		array(get_filter_request_var('local_graph_id')));
 
 	$results = '';
+
 	if (cacti_sizeof($local_data_ids)) {
-		foreach($local_data_ids as $local_data_id) {
+		foreach ($local_data_ids as $local_data_id) {
 			$data_source_path = get_data_source_path($local_data_id['local_data_id'], true);
 
 			if ($data_source_path != '') {
@@ -110,6 +114,5 @@ if (is_realm_allowed(1043)) {
 
 	print json_encode(array('local_graph_id' => get_request_var('local_graph_id'), 'results' => $results));
 } else {
-	print __("FATAL: Spike Kill Not Allowed") . PHP_EOL;
+	print __('FATAL: Spike Kill Not Allowed') . PHP_EOL;
 }
-

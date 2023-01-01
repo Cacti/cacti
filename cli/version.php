@@ -27,7 +27,7 @@ require(__DIR__ . '/../include/cli_check.php');
 
 $fail_msg = array();
 define_exit('EXIT_UNKNOWN', -1, "ERROR: Failed due to unknown reason\n");
-define_exit('EXIT_NORMAL',  0, "");
+define_exit('EXIT_NORMAL',  0, '');
 define_exit('EXIT_ARGERR',  1, "ERROR: Invalid Argument: (%s)\n\n");
 
 /* process calling arguments */
@@ -40,32 +40,30 @@ $debug = false;
 $dev   = false;
 
 if (cacti_sizeof($parms)) {
-
 	foreach ($parms as $parameter) {
-
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
 		switch ($arg) {
-
 			case '--dev':
 			case '-d':
 				$dev = true;
+
 				break;
 			case '--debug':
 				display_version();
 				$debug = true;
-				break;
 
+				break;
 			case '-q':
 			case '--quiet':
 				$quiet = true;
-				break;
 
+				break;
 			case '--version':
 			case '-V':
 			case '-v':
@@ -87,10 +85,10 @@ if (cacti_sizeof($parms)) {
 
 if ($debug) {
 	$tests = array(
-		'CACTI_VERSION' => CACTI_VERSION,
-		'CACTI_VERSION_FULL' => CACTI_VERSION_FULL,
+		'CACTI_VERSION'          => CACTI_VERSION,
+		'CACTI_VERSION_FULL'     => CACTI_VERSION_FULL,
 		'get_cacti_db_version()' => get_cacti_db_version(),
-		'is_install_needed()' => is_install_needed(),
+		'is_install_needed()'    => is_install_needed(),
 	);
 
 	foreach ($tests as $name => $value) {
@@ -100,11 +98,11 @@ if ($debug) {
 	print PHP_EOL;
 
 	$tests = array(
-		'CACTI_VERSION_TEXT' => CACTI_VERSION_TEXT,
-		'CACTI_VERSION_TEXT_FULL' => CACTI_VERSION_TEXT_FULL,
-		'CACTI_VERSION_TEXT_CLI' => CACTI_VERSION_TEXT_CLI,
+		'CACTI_VERSION_TEXT'            => CACTI_VERSION_TEXT,
+		'CACTI_VERSION_TEXT_FULL'       => CACTI_VERSION_TEXT_FULL,
+		'CACTI_VERSION_TEXT_CLI'        => CACTI_VERSION_TEXT_CLI,
 		'get_cacti_version_text(false)' => get_cacti_version_text(false),
-		'get_cacti_version_text(true)' => get_cacti_version_text(true),
+		'get_cacti_version_text(true)'  => get_cacti_version_text(true),
 	);
 
 	foreach ($tests as $name => $value) {
@@ -133,12 +131,14 @@ if ($debug) {
 	$sources = $tests;
 
 	$keys = array();
+
 	foreach (array_keys($tests) as $index => $key) {
 		$keys[$key] = chr($index + ord('a'));
 	}
 
 	$matrix = array();
-	$dkeys = $keys;
+	$dkeys  = $keys;
+
 	foreach ($keys as $key) {
 		foreach ($dkeys as $dkey) {
 			$matrix[$key][$dkey] = ' ';
@@ -146,7 +146,7 @@ if ($debug) {
 	}
 
 	foreach ($tests as $test => $version) {
-		$key = $keys[$test];
+		$key       = $keys[$test];
 		$formatted = format_cacti_version($version);
 
 		printf(
@@ -159,7 +159,7 @@ if ($debug) {
 		);
 
 		foreach ($sources as $name => $source) {
-			$dkey = $keys[$name];
+			$dkey                = $keys[$name];
 			$matrix[$key][$dkey] = cacti_version_compare($formatted, $source, '<') ? '+' : '.';
 
 			printf(
@@ -173,6 +173,7 @@ if ($debug) {
 	}
 
 	print '  ';
+
 	foreach ($keys as $key) {
 		print $key . ' ';
 	}
@@ -180,11 +181,13 @@ if ($debug) {
 
 	foreach ($keys as $name => $key) {
 		print $key;
+
 		foreach ($dkeys as $dkey) {
 			print ' ' . $matrix[$key][$dkey];
 		}
 		print ' ' . $name . PHP_EOL;
 	}
+
 	exit;
 }
 
@@ -194,11 +197,11 @@ if ($dev) {
 	print CACTI_VERSION_FULL . PHP_EOL;
 } else {
 	display_version();
-	echo PHP_EOL;
-	print "Full: " . CACTI_VERSION_TEXT_FULL . PHP_EOL;
-	print "Code: " . CACTI_VERSION_FULL . PHP_EOL;
-	print "Data: " . format_cacti_version(get_cacti_db_version()) . PHP_EOL;
-	print "Dev.: " . CACTI_VERSION . '.99.' . time() . PHP_EOL;
+	print PHP_EOL;
+	print 'Full: ' . CACTI_VERSION_TEXT_FULL . PHP_EOL;
+	print 'Code: ' . CACTI_VERSION_FULL . PHP_EOL;
+	print 'Data: ' . format_cacti_version(get_cacti_db_version()) . PHP_EOL;
+	print 'Dev.: ' . CACTI_VERSION . '.99.' . time() . PHP_EOL;
 }
 
 /*  display_version - displays version information */
@@ -223,7 +226,7 @@ function fail($exit_value, $args = array(), $display_help = 0) {
 	if (!$quiet) {
 		if (!isset($args)) {
 			$args = array();
-		} else if (!is_array($args)) {
+		} elseif (!is_array($args)) {
 			$args = array($args);
 		}
 
@@ -250,6 +253,6 @@ function define_exit($name, $value, $text) {
 	}
 
 	define($name, $value);
-	$fail_msg[$name] = $text;
+	$fail_msg[$name]  = $text;
 	$fail_msg[$value] = $text;
 }

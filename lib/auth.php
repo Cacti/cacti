@@ -4436,7 +4436,7 @@ function secpass_check_history($id, $password) {
 function rsa_check_keypair() {
 	global $config;
 
-	set_include_path($config['include_path'] . '/vendor/phpseclib/');
+	set_include_path(CACTI_PATH_INCLUDE . '/vendor/phpseclib/');
 	include('Crypt/Base.php');
 	include('Math/BigInteger.php');
 	include('Crypt/Hash.php');
@@ -4744,12 +4744,12 @@ function auth_login_redirect($login_opts = '') {
 				$referer = $_SERVER['HTTP_REFERER'];
 
 				if (auth_basename($referer) == 'logout.php') {
-					$referer = $config['url_path'] . 'index.php';
-				} elseif (strpos($referer, $config['url_path']) === false) {
+					$referer = CACTI_PATH_URL . 'index.php';
+				} elseif (strpos($referer, CACTI_PATH_URL) === false) {
 					if (!is_realm_allowed(8)) {
-						$referer = $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':'');
+						$referer = CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1':'');
 					} else {
-						$referer = $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':'');
+						$referer = CACTI_PATH_URL . 'index.php' . ($newtheme ? '?newtheme=1':'');
 					}
 				}
 
@@ -4758,12 +4758,12 @@ function auth_login_redirect($login_opts = '') {
 				$referer = sanitize_uri($_SERVER['REQUEST_URI']);
 
 				if (auth_basename($referer) == 'logout.php') {
-					$referer = $config['url_path'] . 'index.php';
+					$referer = CACTI_PATH_URL . 'index.php';
 				}
 
 				cacti_log(sprintf("DEBUG: Referer from REQUEST_URI with Value: '%s', Effective: '%s'", $_SERVER['REQUEST_URI'], $referer), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 			} else {
-				$referer = $config['url_path'] . 'index.php';
+				$referer = CACTI_PATH_URL . 'index.php';
 
 				cacti_log(sprintf("DEBUG: Referer Short Circuit to '%s'", 'index.php'), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 			}
@@ -4788,14 +4788,14 @@ function auth_login_redirect($login_opts = '') {
 			break;
 		case '2': /* default console page */
 			if (!is_realm_allowed(8)) {
-				header('Location: ' . $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
+				header('Location: ' . CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
 			} else {
-				header('Location: ' . $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':''));
+				header('Location: ' . CACTI_PATH_URL . 'index.php' . ($newtheme ? '?newtheme=1':''));
 			}
 
 			break;
 		case '3': /* default graph page */
-			header('Location: ' . $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
+			header('Location: ' . CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
 
 			break;
 
@@ -4987,7 +4987,7 @@ function check_reset_no_authentication($auth_method) {
 
 		$_SESSION[SESS_USER_ID]         = $admin_id;
 		$_SESSION[SESS_CHANGE_PASSWORD] = true;
-		header('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
+		header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?action=force&ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
 
 		exit;
 	}

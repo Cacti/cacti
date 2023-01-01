@@ -23,15 +23,16 @@
  +-------------------------------------------------------------------------+
 */
 
-$dir = dirname(__FILE__);
+$dir = __DIR__;
 chdir($dir);
 
 /* Start Initialization Section */
 require(__DIR__ . '/../include/cli_check.php');
-require_once($config['base_path'] . '/lib/spikekill.php');
+require_once(CACTI_PATH_LIBRARY . '/spikekill.php');
 
 if ($config['poller_id'] > 1) {
-	print "FATAL: This utility is designed for the main Data Collector only" . PHP_EOL;
+	print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
+
 	exit(1);
 }
 
@@ -63,19 +64,25 @@ $dsfilter = read_config_option('spikekill_dsfilter',true);
 switch($method) {
 	case '1':
 		$method = 'stddev';
+
 		break;
 	case '2':
 		$method = 'variance';
+
 		break;
 	case '3':
 		$method = 'float';
+
 		break;
 	case '4':
 		$method = 'fill';
+
 		break;
 	case '5':
 		$method = 'absolute';
+
 		break;
+
 	default:
 		$method = 'variance';
 }
@@ -85,11 +92,11 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -164,11 +171,13 @@ if (cacti_sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
 			case '--absmax':
 				$absmax = $value;
@@ -178,14 +187,17 @@ if (cacti_sizeof($parms)) {
 				$dsfilter = $value;
 
 				break;
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(-3);
 		}
 	}
 } else {
 	display_help();
+
 	exit(0);
 }
 
@@ -212,9 +224,11 @@ $result = $spiker->remove_spikes();
 if (!$result) {
 	print "ERROR: Remove Spikes experienced errors\n";
 	print $spiker->get_errors();
+
 	exit(-1);
 } else {
 	print $spiker->get_output();
+
 	exit(0);
 }
 
@@ -225,7 +239,7 @@ function display_version() {
 }
 
 /* display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print "\nusage: removespikes.php -R|--rrdfile=rrdfile [-M|--method=stddev] [-A|--avgnan] [-S|--stddev=N]\n";

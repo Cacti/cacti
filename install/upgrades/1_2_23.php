@@ -44,4 +44,3 @@ function upgrade_to_1_2_23() {
 		ENGINE=InnoDB
 		ROW_FORMAT=DYNAMIC");
 }
-

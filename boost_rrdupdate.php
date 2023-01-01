@@ -26,8 +26,8 @@
 require(__DIR__ . '/include/cli_check.php');
 
 /* include important functions */
-include_once($config['base_path'] . '/lib/poller.php');
-include_once($config['base_path'] . '/lib/boost.php');
+include_once(CACTI_PATH_LIBRARY . '/poller.php');
+include_once(CACTI_PATH_LIBRARY . '/boost.php');
 
 /* get the boost polling cycle */
 $max_run_duration = read_config_option('boost_rrd_update_max_runtime');
@@ -62,7 +62,7 @@ if (trim($result) == '') {
 	$result_array = explode("\n", $result);
 
 	if (cacti_sizeof($result_array)) {
-		$result = $result_array[cacti_sizeof($result_array)-2];
+		$result = $result_array[cacti_sizeof($result_array) - 2];
 	} else {
 		$result = 'ERROR: Detected unknown error';
 	}
@@ -78,4 +78,3 @@ pclose($handle);
 
 /* return the rrdupdate results */
 return $result;
-

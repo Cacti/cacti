@@ -24,17 +24,17 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once($config['base_path'] . '/lib/api_automation_tools.php');
-require_once($config['base_path'] . '/lib/api_automation.php');
-require_once($config['base_path'] . '/lib/api_data_source.php');
-require_once($config['base_path'] . '/lib/api_graph.php');
-require_once($config['base_path'] . '/lib/api_device.php');
-require_once($config['base_path'] . '/lib/data_query.php');
-require_once($config['base_path'] . '/lib/poller.php');
-require_once($config['base_path'] . '/lib/snmp.php');
-require_once($config['base_path'] . '/lib/sort.php');
-require_once($config['base_path'] . '/lib/template.php');
-require_once($config['base_path'] . '/lib/utility.php');
+require_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
+require_once(CACTI_PATH_LIBRARY . '/api_automation.php');
+require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
+require_once(CACTI_PATH_LIBRARY . '/api_graph.php');
+require_once(CACTI_PATH_LIBRARY . '/api_device.php');
+require_once(CACTI_PATH_LIBRARY . '/data_query.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/snmp.php');
+require_once(CACTI_PATH_LIBRARY . '/sort.php');
+require_once(CACTI_PATH_LIBRARY . '/template.php');
+require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 ini_set('max_execution_time', '0');
 
@@ -51,6 +51,7 @@ array_shift($parms);
 if (cacti_sizeof($parms) == 0) {
 	print "ERROR: You must supply input parameters\n\n";
 	display_help();
+
 	exit(1);
 }
 
@@ -59,11 +60,11 @@ $template = '';
 $hostid   = '';
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -71,30 +72,38 @@ if (cacti_sizeof($parms)) {
 			case '--host-template':
 			case '--host-template-id':
 				$template = $value;
+
 				break;
 			case '--host-id':
 				$host_id = $value;
+
 				break;
 			case '--list-host-templates':
 				displayHostTemplates(getHostTemplates());
+
 				exit(0);
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -108,6 +117,7 @@ if (strtolower($host_id) == 'all') {
 } else {
 	print "ERROR: You must specify either a host_id or 'all' to proceed.\n\n";
 	display_help();
+
 	exit(1);
 }
 
@@ -117,6 +127,7 @@ if (is_numeric($template) && $template > 0) {
 } else {
 	print "ERROR: You must specify a Host Template to proceed.\n\n";
 	display_help();
+
 	exit(1);
 }
 
@@ -130,7 +141,7 @@ if ($exists > 0) {
 	$hosts = db_fetch_assoc("SELECT * FROM host $sql_where");
 
 	if (cacti_sizeof($hosts)) {
-		foreach($hosts as $host) {
+		foreach ($hosts as $host) {
 			print "NOTE: Updating Host '" . $host['description'] . "'\n";
 
 			$snmp_queries = db_fetch_assoc_prepared('SELECT snmp_query_id
@@ -189,7 +200,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print "\nusage: host_update_template.php --host-id=[host-id|all] [--host-template=[ID]] [--debug]\n\n";
@@ -207,6 +218,6 @@ function debug($message) {
 	global $debug;
 
 	if ($debug) {
-		print("DEBUG: " . $message . "\n");
+		print('DEBUG: ' . $message . "\n");
 	}
 }

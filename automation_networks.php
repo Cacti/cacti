@@ -53,6 +53,7 @@ switch (get_request_var('action')) {
 		bottom_footer();
 
 		break;
+
 	default:
 		top_header();
 		networks();
@@ -62,7 +63,7 @@ switch (get_request_var('action')) {
 }
 
 /* --------------------------
-    The Save Function
+	The Save Function
    -------------------------- */
 
 function form_save() {
@@ -153,7 +154,7 @@ function api_networks_discover($network_id, $discover_debug) {
 				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --network=$network_id --force" . $args_debug);
 			} else {
 				$args_debug = ($discover_debug) ? '&debug=true' : '';
-				$hostname = db_fetch_cell_prepared(
+				$hostname   = db_fetch_cell_prepared(
 					'SELECT hostname
 					FROM poller
 					WHERE id = ?',
@@ -161,13 +162,14 @@ function api_networks_discover($network_id, $discover_debug) {
 				);
 
 				$port = read_config_option('remote_agent_port');
+
 				if ($port != '') {
 					$port = ':' . $port;
 				}
 
 				$fgc_contextoption = get_default_contextoption();
 				$fgc_context       = stream_context_create($fgc_contextoption);
-				$response          = @file_get_contents(get_url_type() . '://' . $hostname . $port . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id . $args_debug, false, $fgc_context);
+				$response          = @file_get_contents(get_url_type() . '://' . $hostname . $port . CACTI_PATH_URL . 'remote_agent.php?action=discover&network=' . $network_id . $args_debug, false, $fgc_context);
 			}
 		} else {
 			$_SESSION['automation_message'] = __esc('Can Not Restart Discovery for Discovery in Progress for Network \'%s\'', $name);
@@ -218,7 +220,7 @@ function api_networks_save($post) {
 
 		/* discovery schedule settings */
 		$save['sched_type']    = form_input_validate($post['sched_type'], 'sched_type', '^[0-9]+$', false, 3);
-		$save['start_at']      = form_input_validate($post['start_at'], 'start_at', '', false, 3);;
+		$save['start_at']      = form_input_validate($post['start_at'], 'start_at', '', false, 3);
 
 		// accommodate a schedule start change
 		if ($post['orig_start_at'] != $post['start_at']) {
@@ -240,19 +242,19 @@ function api_networks_save($post) {
 		/* check for bad rules */
 		if ($save['sched_type'] == '3') {
 			if ($save['day_of_week'] == '') {
-				$save['enabled'] = '';
+				$save['enabled']                = '';
 				$_SESSION['automation_message'] = __esc('ERROR: You must specify the day of the week.  Disabling Network %s!.', $save['name']);
 				raise_message('automation_message');
 			}
 		} elseif ($save['sched_type'] == '4') {
 			if ($save['month'] == '' || $save['day_of_month'] == '') {
-				$save['enabled'] = '';
+				$save['enabled']                = '';
 				$_SESSION['automation_message'] = __esc('ERROR: You must specify both the Months and Days of Month.  Disabling Network %s!', $save['name']);
 				raise_message('automation_message');
 			}
 		} elseif ($save['sched_type'] == '5') {
 			if ($save['month'] == '' || $save['monthly_day'] == '' || $save['monthly_week'] == '') {
-				$save['enabled'] = '';
+				$save['enabled']                = '';
 				$_SESSION['automation_message'] = __esc('ERROR: You must specify the Months, Weeks of Months, and Days of Week.  Disabling Network %s!', $save['name']);
 				raise_message('automation_message');
 			}
@@ -266,12 +268,14 @@ function api_networks_save($post) {
 		if (cacti_sizeof($networks)) {
 			foreach ($networks as $net) {
 				$ips = automation_calculate_total_ips($net);
+
 				if ($ips !== false) {
 					$total_ips += $ips;
 				} else {
-					$continue = false;
+					$continue                       = false;
 					$_SESSION['automation_message'] = __esc('ERROR: Network \'%s\' is Invalid.', $net);
 					raise_message('automation_message');
+
 					break;
 				}
 			}
@@ -281,6 +285,7 @@ function api_networks_save($post) {
 			$save['total_ips'] = $total_ips;
 
 			$network_id = 0;
+
 			if (!is_error_message()) {
 				$network_id = sql_save($save, 'automation_networks');
 
@@ -297,7 +302,7 @@ function api_networks_save($post) {
 }
 
 /* ------------------------
-    The 'actions' function
+	The 'actions' function
    ------------------------ */
 
 function form_actions() {
@@ -310,6 +315,7 @@ function form_actions() {
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 				foreach ($selected_items as $item) {
@@ -345,7 +351,7 @@ function form_actions() {
 
 	/* setup some variables */
 	$networks_list = '';
-	$i = 0;
+	$i             = 0;
 
 	/* loop through each of the device types selected on the previous page and get more info about them */
 	foreach ($_POST as $var => $val) {
@@ -395,9 +401,9 @@ function form_actions() {
 				<p>" . __('Click \'Continue\' to discover the following Network(s).') . "</p>
 				<div class='itemlist'><ul>$networks_list</ul></div>
 				<p><input type='checkbox' id='discover_debug' name='discover_debug' value='1'>
-				<label id='discover_debug_label' for='discover_debug'>" . __('Run discover in debug mode') . "</label></p>
+				<label id='discover_debug_label' for='discover_debug'>" . __('Run discover in debug mode') . '</label></p>
 			</td>
-		</tr>";
+		</tr>';
 	} elseif (get_nfilter_request_var('drp_action') == '5') { /* cancel discovery now */
 		print "<tr>
 			<td class='textArea'>
@@ -410,6 +416,7 @@ function form_actions() {
 	if (!isset($networks_array)) {
 		raise_message(40);
 		header('Location: automation_networks.php');
+
 		exit;
 	} else {
 		$save_html = "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' name='save'>";
@@ -421,9 +428,9 @@ function form_actions() {
 			<input type='hidden' name='selected_items' value='" . (isset($networks_array) ? serialize($networks_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>" . ($save_html != '' ? "
 			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()' name='cancel' value='" . __esc('Cancel') . "'>
-			$save_html" : "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()' name='cancel' value='" . __esc('Return') . "'>") . "
+			$save_html" : "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()' name='cancel' value='" . __esc('Return') . "'>") . '
 		</td>
-	</tr>";
+	</tr>';
 
 	html_end_box();
 
@@ -433,7 +440,7 @@ function form_actions() {
 }
 
 function network_edit() {
-	global $config, $ping_methods;;
+	global $config, $ping_methods;
 
 	$ping_methods[PING_SNMP] = __('SNMP Get');
 
@@ -450,7 +457,7 @@ function network_edit() {
 	);
 
 	if (!isempty_request_var('id')) {
-		$network = db_fetch_row_prepared('SELECT * FROM automation_networks WHERE id = ?', array(get_request_var('id')));
+		$network      = db_fetch_row_prepared('SELECT * FROM automation_networks WHERE id = ?', array(get_request_var('id')));
 		$header_label = __esc('Network Discovery Range [edit: %s]', $network['name']);
 	} else {
 		$header_label = __('Network Discovery Range [new]');
@@ -459,73 +466,73 @@ function network_edit() {
 	/* file: mactrack_device_types.php, action: edit */
 	$fields = array(
 		'spacer0' => array(
-			'method' => 'spacer',
+			'method'        => 'spacer',
 			'friendly_name' => __('General Settings'),
-			'collapsible' => 'true'
+			'collapsible'   => 'true'
 		),
 		'name' => array(
-			'method' => 'textbox',
+			'method'        => 'textbox',
 			'friendly_name' => __('Name'),
-			'description' => __('Give this Network a meaningful name.'),
-			'value' => '|arg1:name|',
-			'max_length' => '250',
-			'placeholder' => __('New Network Discovery Range')
+			'description'   => __('Give this Network a meaningful name.'),
+			'value'         => '|arg1:name|',
+			'max_length'    => '250',
+			'placeholder'   => __('New Network Discovery Range')
 		),
 		'poller_id' => array(
-			'method' => 'drop_sql',
+			'method'        => 'drop_sql',
 			'friendly_name' => __('Data Collector'),
-			'description' => __('Choose the Cacti Data Collector/Poller to be used to gather data from this Device.'),
-			'value' => '|arg1:poller_id|',
-			'default' => read_config_option('default_poller'),
-			'sql' => 'SELECT id, name FROM poller ORDER BY name',
+			'description'   => __('Choose the Cacti Data Collector/Poller to be used to gather data from this Device.'),
+			'value'         => '|arg1:poller_id|',
+			'default'       => read_config_option('default_poller'),
+			'sql'           => 'SELECT id, name FROM poller ORDER BY name',
 		),
 		'site_id' => array(
-			'method' => 'drop_sql',
+			'method'        => 'drop_sql',
 			'friendly_name' => __('Associated Site'),
-			'description' => __('Choose the Cacti Site that you wish to associate discovered Devices with.'),
-			'value' => '|arg1:site_id|',
-			'default' => read_config_option('default_site'),
-			'sql' => 'SELECT id, name FROM sites ORDER BY name',
-			'none_value' => __('None')
+			'description'   => __('Choose the Cacti Site that you wish to associate discovered Devices with.'),
+			'value'         => '|arg1:site_id|',
+			'default'       => read_config_option('default_site'),
+			'sql'           => 'SELECT id, name FROM sites ORDER BY name',
+			'none_value'    => __('None')
 		),
 		'subnet_range' => array(
-			'method' => 'textarea',
+			'method'        => 'textarea',
 			'friendly_name' => __('Subnet Range'),
-			'description' => __('Enter valid Network Ranges separated by commas.  You may use an IP address, a Network range such as 192.168.1.0/24 or 192.168.1.0/255.255.255.0, or using wildcards such as 192.168.*.*'),
-			'value' => '|arg1:subnet_range|',
+			'description'   => __('Enter valid Network Ranges separated by commas.  You may use an IP address, a Network range such as 192.168.1.0/24 or 192.168.1.0/255.255.255.0, or using wildcards such as 192.168.*.*'),
+			'value'         => '|arg1:subnet_range|',
 			'textarea_rows' => '4',
 			'textarea_cols' => '80',
-			'max_length' => '1024',
-			'placeholder' => '192.168.1.0/24'
+			'max_length'    => '1024',
+			'placeholder'   => '192.168.1.0/24'
 		),
 		'total_ips' => array(
-			'method' => 'other',
+			'method'        => 'other',
 			'friendly_name' => __('Total IP Addresses'),
-			'description' => __('Total addressable IP Addresses in this Network Range.'),
-			'value' => (isset($network['total_ips']) ? number_format_i18n($network['total_ips']) : 0)
+			'description'   => __('Total addressable IP Addresses in this Network Range.'),
+			'value'         => (isset($network['total_ips']) ? number_format_i18n($network['total_ips']) : 0)
 		),
 		'dns_servers' => array(
-			'method' => 'textbox',
+			'method'        => 'textbox',
 			'friendly_name' => __('Alternate DNS Servers'),
-			'description' => __('A space delimited list of alternate DNS Servers to use for DNS resolution. If blank, the poller OS will be used to resolve DNS names.'),
-			'value' => '|arg1:dns_servers|',
-			'max_length' => '250',
-			'placeholder' => __('Enter IPs or FQDNs of DNS Servers')
+			'description'   => __('A space delimited list of alternate DNS Servers to use for DNS resolution. If blank, the poller OS will be used to resolve DNS names.'),
+			'value'         => '|arg1:dns_servers|',
+			'max_length'    => '250',
+			'placeholder'   => __('Enter IPs or FQDNs of DNS Servers')
 		),
 		'sched_type' => array(
-			'method' => 'drop_array',
+			'method'        => 'drop_array',
 			'friendly_name' => __('Schedule Type'),
-			'description' => __('Define the collection frequency.'),
-			'value' => '|arg1:sched_type|',
-			'array' => $sched_types,
-			'default' => 1
+			'description'   => __('Define the collection frequency.'),
+			'value'         => '|arg1:sched_type|',
+			'array'         => $sched_types,
+			'default'       => 1
 		),
 		'threads' => array(
-			'method' => 'drop_array',
+			'method'        => 'drop_array',
 			'friendly_name' => __('Discovery Threads'),
-			'description' => __('Define the number of threads to use for discovering this Network Range.'),
-			'value' => '|arg1:threads|',
-			'array' => array(
+			'description'   => __('Define the number of threads to use for discovering this Network Range.'),
+			'value'         => '|arg1:threads|',
+			'array'         => array(
 				'1'  => __('%d Thread', 1),
 				'2'  => __('%d Threads', 2),
 				'3'  => __('%d Threads', 3),
@@ -542,11 +549,11 @@ function network_edit() {
 			'default' => 1
 		),
 		'run_limit' => array(
-			'method' => 'drop_array',
+			'method'        => 'drop_array',
 			'friendly_name' => __('Run Limit'),
-			'description' => __('After the selected Run Limit, the discovery process will be terminated.'),
-			'value' => '|arg1:run_limit|',
-			'array' => array(
+			'description'   => __('After the selected Run Limit, the discovery process will be terminated.'),
+			'value'         => '|arg1:run_limit|',
+			'array'         => array(
 				'60'    => __('%d Minute', 1),
 				'300'   => __('%d Minutes', 5),
 				'600'   => __('%d Minutes', 10),
@@ -560,94 +567,94 @@ function network_edit() {
 			'default' => 1200
 		),
 		'enabled' => array(
-			'method' => 'checkbox',
+			'method'        => 'checkbox',
 			'friendly_name' => __('Enabled'),
-			'description' => __('Enable this Network Range.'),
-			'value' => '|arg1:enabled|'
+			'description'   => __('Enable this Network Range.'),
+			'value'         => '|arg1:enabled|'
 		),
 		'enable_netbios' => array(
-			'method' => 'checkbox',
+			'method'        => 'checkbox',
 			'friendly_name' => __('Enable NetBIOS'),
-			'description' => __('Use NetBIOS to attempt to resolve the hostname of up hosts.'),
-			'value' => '|arg1:enable_netbios|',
-			'default' => ''
+			'description'   => __('Use NetBIOS to attempt to resolve the hostname of up hosts.'),
+			'value'         => '|arg1:enable_netbios|',
+			'default'       => ''
 		),
 		'add_to_cacti' => array(
-			'method' => 'checkbox',
+			'method'        => 'checkbox',
 			'friendly_name' => __('Automatically Add to Cacti'),
-			'description' => __('For any newly discovered Devices that are reachable using SNMP and who match a Device Rule, add them to Cacti.'),
-			'value' => '|arg1:add_to_cacti|'
+			'description'   => __('For any newly discovered Devices that are reachable using SNMP and who match a Device Rule, add them to Cacti.'),
+			'value'         => '|arg1:add_to_cacti|'
 		),
 		'same_sysname' => array(
-			'method' => 'checkbox',
+			'method'        => 'checkbox',
 			'friendly_name' => __('Allow same sysName on different hosts'),
-			'description' => __('When discovering devices, allow duplicate sysnames to be added on different hosts'),
-			'value' => '|arg1:same_sysname|'
+			'description'   => __('When discovering devices, allow duplicate sysnames to be added on different hosts'),
+			'value'         => '|arg1:same_sysname|'
 		),
 		'rerun_data_queries' => array(
-			'method' => 'checkbox',
+			'method'        => 'checkbox',
 			'friendly_name' => __('Rerun Data Queries'),
-			'description' => __('If a device previously added to Cacti is found, rerun its data queries.'),
-			'value' => '|arg1:rerun_data_queries|'
+			'description'   => __('If a device previously added to Cacti is found, rerun its data queries.'),
+			'value'         => '|arg1:rerun_data_queries|'
 		),
 		'spacern' => array(
-			'method' => 'spacer',
+			'method'        => 'spacer',
 			'friendly_name' => __('Notification Settings'),
-			'collapsible' => 'true'
+			'collapsible'   => 'true'
 		),
 		'notification_enabled' => array(
-			'method' => 'checkbox',
+			'method'        => 'checkbox',
 			'friendly_name' => __('Notification Enabled'),
-			'description' => __('If checked, when the Automation Network is scanned, a report will be sent to the Notification Email account..'),
-			'value' => '|arg1:notification_enabled|',
-			'default' => ''
+			'description'   => __('If checked, when the Automation Network is scanned, a report will be sent to the Notification Email account..'),
+			'value'         => '|arg1:notification_enabled|',
+			'default'       => ''
 		),
 		'notification_email' => array(
-			'method' => 'textbox',
+			'method'        => 'textbox',
 			'friendly_name' => __('Notification Email'),
-			'description' => __('The Email account to be used to send the Notification Email to.'),
-			'value' => '|arg1:notification_email|',
-			'max_length' => '250',
-			'default' => ''
+			'description'   => __('The Email account to be used to send the Notification Email to.'),
+			'value'         => '|arg1:notification_email|',
+			'max_length'    => '250',
+			'default'       => ''
 		),
 		'notification_fromname' => array(
-			'method' => 'textbox',
+			'method'        => 'textbox',
 			'friendly_name' => __('Notification From Name'),
-			'description' => __('The Email account name to be used as the senders name for the Notification Email.  If left blank, Cacti will use the default Automation Notification Name if specified, otherwise, it will use the Cacti system default Email name'),
-			'value' => '|arg1:notification_fromname|',
-			'max_length' => '32',
-			'size' => '30',
-			'default' => ''
+			'description'   => __('The Email account name to be used as the senders name for the Notification Email.  If left blank, Cacti will use the default Automation Notification Name if specified, otherwise, it will use the Cacti system default Email name'),
+			'value'         => '|arg1:notification_fromname|',
+			'max_length'    => '32',
+			'size'          => '30',
+			'default'       => ''
 		),
 		'notification_fromemail' => array(
-			'method' => 'textbox',
+			'method'        => 'textbox',
 			'friendly_name' => __('Notification From Email Address'),
-			'description' => __('The Email Address to be used as the senders Email for the Notification Email.  If left blank, Cacti will use the default Automation Notification Email Address if specified, otherwise, it will use the Cacti system default Email Address'),
-			'value' => '|arg1:notification_fromemail|',
-			'max_length' => '128',
-			'default' => ''
+			'description'   => __('The Email Address to be used as the senders Email for the Notification Email.  If left blank, Cacti will use the default Automation Notification Email Address if specified, otherwise, it will use the Cacti system default Email Address'),
+			'value'         => '|arg1:notification_fromemail|',
+			'max_length'    => '128',
+			'default'       => ''
 		),
 		'spacer2' => array(
-			'method' => 'spacer',
+			'method'        => 'spacer',
 			'friendly_name' => __('Discovery Timing'),
-			'collapsible' => 'true'
+			'collapsible'   => 'true'
 		),
 		'start_at' => array(
-			'method' => 'textbox',
+			'method'        => 'textbox',
 			'friendly_name' => __('Starting Date/Time'),
-			'description' => __('What time will this Network discover item start?'),
-			'value' => '|arg1:start_at|',
-			'max_length' => '30',
-			'default' => date('Y-m-d H:i:s'),
-			'size' => 20
+			'description'   => __('What time will this Network discover item start?'),
+			'value'         => '|arg1:start_at|',
+			'max_length'    => '30',
+			'default'       => date('Y-m-d H:i:s'),
+			'size'          => 20
 		),
 		'recur_every' => array(
-			'method' => 'drop_array',
+			'method'        => 'drop_array',
 			'friendly_name' => __('Rerun Every'),
-			'description' => __('Rerun discovery for this Network Range every X.'),
-			'value' => '|arg1:recur_every|',
-			'default' => '1',
-			'array' => array(
+			'description'   => __('Rerun discovery for this Network Range every X.'),
+			'value'         => '|arg1:recur_every|',
+			'default'       => '1',
+			'array'         => array(
 				1 => '1',
 				2 => '2',
 				3 => '3',
@@ -658,10 +665,10 @@ function network_edit() {
 			),
 		),
 		'day_of_week' => array(
-			'method' => 'drop_multi',
+			'method'        => 'drop_multi',
 			'friendly_name' => __('Days of Week'),
-			'description' => __('What Day(s) of the week will this Network Range be discovered.'),
-			'array' => array(
+			'description'   => __('What Day(s) of the week will this Network Range be discovered.'),
+			'array'         => array(
 				1 => __('Sunday'),
 				2 => __('Monday'),
 				3 => __('Tuesday'),
@@ -674,19 +681,19 @@ function network_edit() {
 			'class' => 'day_of_week'
 		),
 		'month' => array(
-			'method' => 'drop_multi',
+			'method'        => 'drop_multi',
 			'friendly_name' => __('Months of Year'),
-			'description' => __('What Months(s) of the Year will this Network Range be discovered.'),
-			'array' => array(
-				1 => __('January'),
-				2 => __('February'),
-				3 => __('March'),
-				4 => __('April'),
-				5 => __('May'),
-				6 => __('June'),
-				7 => __('July'),
-				8 => __('August'),
-				9 => __('September'),
+			'description'   => __('What Months(s) of the Year will this Network Range be discovered.'),
+			'array'         => array(
+				1  => __('January'),
+				2  => __('February'),
+				3  => __('March'),
+				4  => __('April'),
+				5  => __('May'),
+				6  => __('June'),
+				7  => __('July'),
+				8  => __('August'),
+				9  => __('September'),
 				10 => __('October'),
 				11 => __('November'),
 				12 => __('December')
@@ -695,31 +702,31 @@ function network_edit() {
 			'class' => 'month'
 		),
 		'day_of_month' => array(
-			'method' => 'drop_multi',
+			'method'        => 'drop_multi',
 			'friendly_name' => __('Days of Month'),
-			'description' => __('What Day(s) of the Month will this Network Range be discovered.'),
-			'array' => array(1 => '1', 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32 => __('Last')),
-			'value' => '|arg1:day_of_month|',
-			'class' => 'days_of_month'
+			'description'   => __('What Day(s) of the Month will this Network Range be discovered.'),
+			'array'         => array(1 => '1', 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32 => __('Last')),
+			'value'         => '|arg1:day_of_month|',
+			'class'         => 'days_of_month'
 		),
 		'monthly_week' => array(
-			'method' => 'drop_multi',
+			'method'        => 'drop_multi',
 			'friendly_name' => __('Week(s) of Month'),
-			'description' => __('What Week(s) of the Month will this Network Range be discovered.'),
-			'array' => array(
-				1 => __('First'),
-				2 => __('Second'),
-				3 => __('Third'),
+			'description'   => __('What Week(s) of the Month will this Network Range be discovered.'),
+			'array'         => array(
+				1    => __('First'),
+				2    => __('Second'),
+				3    => __('Third'),
 				'32' => __('Last')
 			),
 			'value' => '|arg1:monthly_week|',
 			'class' => 'monthly_week'
 		),
 		'monthly_day' => array(
-			'method' => 'drop_multi',
+			'method'        => 'drop_multi',
 			'friendly_name' => __('Day(s) of Week'),
-			'description' => __('What Day(s) of the week will this Network Range be discovered.'),
-			'array' => array(
+			'description'   => __('What Day(s) of the week will this Network Range be discovered.'),
+			'array'         => array(
 				1 => __('Sunday'),
 				2 => __('Monday'),
 				3 => __('Tuesday'),
@@ -732,59 +739,59 @@ function network_edit() {
 			'class' => 'monthly_day'
 		),
 		'spacer1' => array(
-			'method' => 'spacer',
+			'method'        => 'spacer',
 			'friendly_name' => __('Reachability Settings'),
-			'collapsible' => 'true'
+			'collapsible'   => 'true'
 		),
 		'snmp_id' => array(
-			'method' => 'drop_sql',
+			'method'        => 'drop_sql',
 			'friendly_name' => __('SNMP Options'),
-			'description' => __('Select the SNMP Options to use for discovery of this Network Range.'),
-			'value' => '|arg1:snmp_id|',
-			'sql' => 'SELECT id, name FROM automation_snmp ORDER BY name'
+			'description'   => __('Select the SNMP Options to use for discovery of this Network Range.'),
+			'value'         => '|arg1:snmp_id|',
+			'sql'           => 'SELECT id, name FROM automation_snmp ORDER BY name'
 		),
 		'ping_method' => array(
 			'friendly_name' => __('Ping Method'),
-			'description' => __('The type of ping packet to send.'),
-			'value' => '|arg1:ping_method|',
-			'method' => 'drop_array',
-			'default' => read_config_option('ping_method'),
-			'array' => $ping_methods
+			'description'   => __('The type of ping packet to send.'),
+			'value'         => '|arg1:ping_method|',
+			'method'        => 'drop_array',
+			'default'       => read_config_option('ping_method'),
+			'array'         => $ping_methods
 		),
 		'ping_port' => array(
-			'method' => 'textbox',
+			'method'        => 'textbox',
 			'friendly_name' => __('Ping Port'),
-			'value' => '|arg1:ping_port|',
-			'description' => __('TCP or UDP port to attempt connection.'),
-			'default' => read_config_option('ping_port'),
-			'max_length' => 5,
-			'size' => 5
+			'value'         => '|arg1:ping_port|',
+			'description'   => __('TCP or UDP port to attempt connection.'),
+			'default'       => read_config_option('ping_port'),
+			'max_length'    => 5,
+			'size'          => 5
 		),
 		'ping_timeout' => array(
 			'friendly_name' => __('Ping Timeout Value'),
-			'description' => __('The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout value applies for SNMP pings.'),
-			'method' => 'textbox',
-			'value' => '|arg1:ping_timeout|',
-			'default' => read_config_option('ping_timeout'),
-			'max_length' => 5,
-			'size' => 5
+			'description'   => __('The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout value applies for SNMP pings.'),
+			'method'        => 'textbox',
+			'value'         => '|arg1:ping_timeout|',
+			'default'       => read_config_option('ping_timeout'),
+			'max_length'    => 5,
+			'size'          => 5
 		),
 		'ping_retries' => array(
 			'friendly_name' => __('Ping Retry Count'),
-			'description' => __('After an initial failure, the number of ping retries Cacti will attempt before failing.'),
-			'method' => 'textbox',
-			'value' => '|arg1:ping_retries|',
-			'default' => read_config_option('ping_retries'),
-			'max_length' => 5,
-			'size' => 5
+			'description'   => __('After an initial failure, the number of ping retries Cacti will attempt before failing.'),
+			'method'        => 'textbox',
+			'value'         => '|arg1:ping_retries|',
+			'default'       => read_config_option('ping_retries'),
+			'max_length'    => 5,
+			'size'          => 5
 		),
 		'orig_start_at' => array(
 			'method' => 'hidden',
-			'value' => '|arg1:start_at|',
+			'value'  => '|arg1:start_at|',
 		),
 		'orig_sched_type' => array(
 			'method' => 'hidden',
-			'value' => '|arg1:sched_type|',
+			'value'  => '|arg1:sched_type|',
 		)
 	);
 
@@ -806,7 +813,7 @@ function network_edit() {
 
 	form_save_button('automation_networks.php', 'return');
 
-?>
+	?>
 	<script type='text/javascript'>
 		$(function() {
 			$('#day_of_week').multiselect({
@@ -864,7 +871,7 @@ function network_edit() {
 				stepMinute: 5,
 				timeFormat: 'HH:mm',
 				dateFormat: 'yy-mm-dd',
-				minDateTime: new Date(<?php print date("Y") . ', ' . (date("m") - 1) . ', ' . date("d, H") . ', ' . date('i', ceil(time() / 300) * 300) . ', 0, 0'; ?>)
+				minDateTime: new Date(<?php print date('Y') . ', ' . (date('m') - 1) . ', ' . date('d, H') . ', ' . date('i', ceil(time() / 300) * 300) . ', 0, 0'; ?>)
 			});
 
 			$('#sched_type').change(function() {
@@ -969,30 +976,30 @@ function networks() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
 		),
 		'page' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 		),
 		'refresh' => array(
-			'filter' => FILTER_VALIDATE_INT,
+			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '20'
 		),
 		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
 		),
 		'sort_column' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
 		),
 		'sort_direction' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 		)
@@ -1062,9 +1069,9 @@ function networks() {
 	if (cacti_sizeof($networks)) {
 		foreach ($networks as $network) {
 			if ($network['enabled'] == '') {
-				$mystat   = "<span class='disabled'>" . __('Disabled') . "</span>";
-				$progress = "0/0/0";
-				$status   = array();
+				$mystat       = "<span class='disabled'>" . __('Disabled') . '</span>';
+				$progress     = '0/0/0';
+				$status       = array();
 				$updown['up'] = $updown['snmp'] = '0';
 			} else {
 				$running = db_fetch_cell_prepared(
@@ -1084,17 +1091,17 @@ function networks() {
 						FROM automation_ips
 						WHERE network_id = ?', array($network['id']));
 
-					$mystat   = "<span class='running'>" . __('Running') . "</span>";
+					$mystat   = "<span class='running'>" . __('Running') . '</span>';
 
 					if (empty($status['total'])) {
-						$progress = "0/0/0";
+						$progress = '0/0/0';
 					} else {
 						$progress = $status['pending'] . '/' . $status['running'] . '/' . $status['done'];
 					}
 
-					$updown = db_fetch_row_prepared("SELECT SUM(up_hosts) AS up, SUM(snmp_hosts) AS snmp
+					$updown = db_fetch_row_prepared('SELECT SUM(up_hosts) AS up, SUM(snmp_hosts) AS snmp
 						FROM automation_processes
-						WHERE network_id = ?", array($network['id']));
+						WHERE network_id = ?', array($network['id']));
 
 					if (empty($updown['up'])) {
 						$updown['up']   = 0;
@@ -1110,8 +1117,8 @@ function networks() {
 					$updown['up']   = $network['up_hosts'];
 					$updown['snmp'] = $network['snmp_hosts'];
 
-					$mystat   = "<span class='idle'>" . __('Idle') . "</span>";
-					$progress = "0/0/0";
+					$mystat   = "<span class='idle'>" . __('Idle') . '</span>';
+					$progress = '0/0/0';
 				}
 			}
 
@@ -1131,7 +1138,7 @@ function networks() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Networks Found') . "</em></td></tr>";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Networks Found') . '</em></td></tr>';
 	}
 	html_end_box(false);
 
@@ -1149,7 +1156,7 @@ function networks() {
 function networks_filter() {
 	global $item_rows;
 
-?>
+	?>
 	<tr class='even'>
 		<td>
 			<form id='networks' action='automation_networks.php'>
@@ -1168,16 +1175,17 @@ function networks_filter() {
 							<select id='rows' onChange='applyFilter()'>
 								<option value='-1' <?php if (get_request_var('rows') == '-1') { ?> selected<?php } ?>><?php print __('Default'); ?></option>
 								<?php
-								if (cacti_sizeof($item_rows)) {
-									foreach ($item_rows as $key => $value) {
-										print "<option value='" . $key . "'";
-										if (get_request_var('rows') == $key) {
-											print ' selected';
+									if (cacti_sizeof($item_rows)) {
+										foreach ($item_rows as $key => $value) {
+											print "<option value='" . $key . "'";
+
+											if (get_request_var('rows') == $key) {
+												print ' selected';
+											}
+											print '>' . $value . '</option>';
 										}
-										print '>' . $value . "</option>";
 									}
-								}
-								?>
+	?>
 							</select>
 						</td>
 						<td>
@@ -1186,20 +1194,20 @@ function networks_filter() {
 						<td>
 							<select id='refresh' onChange='applyFilter()'>
 								<?php
-								$frequency = array(
-									10  => __('%d Seconds', 10),
-									20  => __('%d Seconds', 20),
-									30  => __('%d Seconds', 30),
-									45  => __('%d Seconds', 45),
-									60  => __('%d Minute', 1),
-									120 => __('%d Minutes', 2),
-									300 => __('%d Minutes', 5)
-								);
+	$frequency = array(
+		10  => __('%d Seconds', 10),
+		20  => __('%d Seconds', 20),
+		30  => __('%d Seconds', 30),
+		45  => __('%d Seconds', 45),
+		60  => __('%d Minute', 1),
+		120 => __('%d Minutes', 2),
+		300 => __('%d Minutes', 5)
+	);
 
-								foreach ($frequency as $r => $row) {
-									echo "<option value='" . $r . "'" . (isset_request_var('refresh') && $r == get_request_var('refresh') ? ' selected' : '') . '>' . $row . '</option>';
-								}
-								?>
+	foreach ($frequency as $r => $row) {
+		print "<option value='" . $r . "'" . (isset_request_var('refresh') && $r == get_request_var('refresh') ? ' selected' : '') . '>' . $row . '</option>';
+	}
+	?>
 							</select>
 						</td>
 						<td>

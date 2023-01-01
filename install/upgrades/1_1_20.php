@@ -51,7 +51,7 @@ function upgrade_to_1_1_20() {
 		MODIFY COLUMN mib VARCHAR(50) NOT NULL,
 		MODIFY COLUMN type VARCHAR(50) NOT NULL');
 
-	db_install_add_key('snmpagent_cache_textual_conventions', 'key', 'PRIMARY', array('name' , 'mib', 'type'));
+	db_install_add_key('snmpagent_cache_textual_conventions', 'key', 'PRIMARY', array('name', 'mib', 'type'));
 
 	/* correct dumplicate notifications */
 	$notifications_results = db_install_fetch_assoc('SELECT *, COUNT(*) AS totals
@@ -61,7 +61,7 @@ function upgrade_to_1_1_20() {
 	$notifications = $notifications_results['data'];
 
 	if (cacti_sizeof($notifications)) {
-		foreach($notifications as $n) {
+		foreach ($notifications as $n) {
 			$totals = $n['totals'];
 
 			db_install_execute("DELETE FROM snmpagent_managers_notifications

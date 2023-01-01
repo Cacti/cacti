@@ -24,10 +24,11 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once($config['base_path'] . '/lib/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 if ($config['poller_id'] > 1) {
-	print "FATAL: This utility is designed for the main Data Collector only" . PHP_EOL;
+	print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
+
 	exit(1);
 }
 
@@ -43,45 +44,52 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
 		switch ($arg) {
-		case '--poller':
-		case '-P':
-		case '-p':
-			$poller_id = $value;
-			break;
-		case '--class':
-		case '-C':
-		case '-c':
-			$class = $value;
-			break;
-		case '--version':
-		case '-V':
-		case '-v':
-			display_version();
-			exit(0);
-		case '--help':
-		case '-H':
-		case '-h':
-			display_help();
-			exit(0);
-		default:
-			print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
-			display_help();
-			exit(1);
+			case '--poller':
+			case '-P':
+			case '-p':
+				$poller_id = $value;
+
+				break;
+			case '--class':
+			case '-C':
+			case '-c':
+				$class = $value;
+
+				break;
+			case '--version':
+			case '-V':
+			case '-v':
+				display_version();
+
+				exit(0);
+			case '--help':
+			case '-H':
+			case '-h':
+				display_help();
+
+				exit(0);
+
+			default:
+				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				display_help();
+
+				exit(1);
 		}
 	}
 }
 
 if (!preg_match('/(all|data|auth|settings)/', $class)) {
 	print 'FATAL: The class ' . $class . ' is NOT valid!' . PHP_EOL;
+
 	exit(1);
 }
 
@@ -90,8 +98,11 @@ $start = microtime(true);
 
 if ($poller_id < 0) {
 	print 'FATAL: The poller needs to be greater than 0!' . PHP_EOL;
+
 	exit(1);
-} elseif ($poller_id == 0) {
+}
+
+if ($poller_id == 0) {
 	$pollers = db_fetch_assoc('SELECT id
 		FROM poller
 		WHERE id > 1
@@ -118,6 +129,7 @@ if (cacti_sizeof($pollers)) {
 	}
 } else {
 	print 'FATAL: The poller specified ' . $poller_id . ' is either disabled, or does not exist!' . PHP_EOL;
+
 	exit(1);
 }
 
@@ -128,7 +140,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print "\nA utility to fully Synchronize Remote Data Collectors.\n\n";

@@ -24,9 +24,9 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once($config['base_path'] . '/lib/api_data_source.php');
-require_once($config['base_path'] . '/lib/poller.php');
-require_once($config['base_path'] . '/lib/utility.php');
+require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 ini_set('max_execution_time', '0');
 
@@ -43,6 +43,7 @@ array_shift($parms);
 if (cacti_sizeof($parms) == 0) {
 	print "ERROR: You must supply input parameters\n\n";
 	display_help();
+
 	exit(1);
 }
 
@@ -55,37 +56,44 @@ if (cacti_sizeof($parms)) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
 		switch ($arg) {
-			case '-id' :
-			case '--id' :
-			case '--host-id' :
+			case '-id':
+			case '--id':
+			case '--host-id':
 				$host_id = $value;
+
 				break;
-			case '-s' :
-			case '--filter' :
+			case '-s':
+			case '--filter':
 				$filter = $value;
+
 				break;
-			case '-d' :
-			case '--debug' :
+			case '-d':
+			case '--debug':
 				$debug = true;
+
 				break;
-			case '--version' :
-			case '-v' :
-			case '-V' :
+			case '--version':
+			case '-v':
+			case '-V':
 				display_version();
+
 				exit(0);
-			case '--help' :
-			case '-H' :
-			case '-h' :
+			case '--help':
+			case '-H':
+			case '-h':
 				display_help();
+
 				exit(0);
-			default :
+
+			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -98,13 +106,13 @@ if ($filter != '') {
 	" OR data_template.name like '%" . $filter . "%'" .
 	" OR data_input.name like '%" . $filter . "%')";
 } else {
-	$sql_where = "";
+	$sql_where = '';
 }
 
 if (strtolower($host_id) == 'all') {
 	/* Act on all graphs */
 } elseif (substr_count($host_id, ',')) {
-	$hosts = explode(',', $host_id);
+	$hosts    = explode(',', $host_id);
 	$host_str = '';
 
 	foreach ($hosts as $host) {
@@ -121,6 +129,7 @@ if (strtolower($host_id) == 'all') {
 } else {
 	print "ERROR: You must specify either a host_id or 'all' to proceed.\n";
 	display_help();
+
 	exit;
 }
 
@@ -142,9 +151,11 @@ if (cacti_sizeof($data_source_list) > 0) {
 	debug("There are '" . cacti_sizeof($data_source_list) . "' Data Sources to rename");
 
 	$i = 1;
+
 	foreach ($data_source_list as $data_source) {
-		if (!$debug)
-			print ".";
+		if (!$debug) {
+			print '.';
+		}
 		debug("Data Source Name '" . $data_source['name_cache'] . "' starting");
 		api_reapply_suggested_data_source_data($data_source['local_data_id']);
 		update_data_source_title_cache($data_source['local_data_id']);
@@ -160,7 +171,7 @@ Data Source Selection SQL:
 $data_source_list_sql
 --------------------------\n\n";
 	}
-	print "WARNING: No Data Sources where found matching the selected criteria.";
+	print 'WARNING: No Data Sources where found matching the selected criteria.';
 }
 
 /*  display_version - displays version information */
@@ -186,6 +197,6 @@ function debug($message) {
 	global $debug;
 
 	if ($debug) {
-		print ('DEBUG: ' . $message . "\n");
+		print('DEBUG: ' . $message . "\n");
 	}
 }

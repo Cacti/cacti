@@ -52,6 +52,7 @@ function push_out_data_source_custom_data($data_template_id) {
 
 	/* get data query custom index fields to ignore */
 	$data_query_field_index_ids = data_input_field_always_checked(0, true);
+
 	if (cacti_sizeof($data_query_field_index_ids)) {
 		$exclude_sql_where = ' AND did.data_input_field_id NOT IN (' . implode(',', $data_query_field_index_ids) . ')';
 	} else {
@@ -111,6 +112,7 @@ function push_out_data_source_custom_data($data_template_id) {
 	$did_cnt   = 0;
 	$ds_in_str = '';
 	$did_vals  = '';
+
 	if (cacti_sizeof($data_sources)) {
 		foreach ($data_sources as $data_source) {
 			if (cacti_sizeof($input_fields)) {
@@ -205,7 +207,9 @@ function push_out_data_source($data_template_data_id) {
 	$data_template_data = db_fetch_row_prepared('SELECT * FROM data_template_data WHERE id = ?', array($data_template_data_id));
 
 	/* must be a data template */
-	if (empty($data_template_data['data_template_id'])) { return 0; }
+	if (empty($data_template_data['data_template_id'])) {
+		return 0;
+	}
 
 	/* loop through each data source column name (from the above array) */
 	foreach ($struct_data_source as $field_name => $field_array) {
@@ -233,6 +237,8 @@ function push_out_data_source($data_template_data_id) {
  *
  * @param data_input_field_id - The data input field
  * @param return_ids - Return an array of special ids
+ * @param mixed $data_input_field_id
+ * @param mixed $return_ids
  * @return boolean - true or false
  */
 function data_input_field_always_checked($data_input_field_id = 0, $return_ids = false) {
@@ -263,7 +269,9 @@ function data_input_field_always_checked($data_input_field_id = 0, $return_ids =
 
 	if ($return_ids) {
 		return $always_checked;
-	} elseif (isset($always_checked[$data_input_field_id])) {
+	}
+
+	if (isset($always_checked[$data_input_field_id])) {
 		return true;
 	} else {
 		return false;
@@ -333,7 +341,7 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 	}
 
 	/* these fields should never be overwritten by the template */
-	$save['data_source_path'] = (isset($data['data_source_path']) ? $data['data_source_path']:'');;
+	$save['data_source_path'] = (isset($data['data_source_path']) ? $data['data_source_path']:'');
 
 	$data_template_data_id = sql_save($save, 'data_template_data');
 
@@ -361,7 +369,7 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 			foreach ($template_rrds_list as $template_rrd) {
 				unset($save);
 
-				$save['id'] = 0;
+				$save['id']                         = 0;
 				$save['local_data_template_rrd_id'] = $template_rrd['id'];
 				$save['local_data_id']              = $local_data_id;
 				$save['data_template_id']           = $template_rrd['data_template_id'];
@@ -471,6 +479,7 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 		WHERE graph_template_input_id = ?', array($graph_template_input_id));
 
 	$i = 0;
+
 	if (cacti_sizeof($graph_input_items)) {
 		foreach ($graph_input_items as $item) {
 			$include_items[$i] = $item['graph_template_item_id'];
@@ -494,6 +503,7 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 			GROUP BY local_graph_id");
 	} else {
 		$i = 0;
+
 		foreach ($session_members as $item_id => $item_id) {
 			$new_session_members[$i] = $item_id;
 			$i++;
@@ -511,8 +521,8 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 			/* this is just an extra check that i threw in to prevent users' graphs from getting really messed up */
 			if (!(($graph_input['column_name'] == 'task_item_id') && (empty($value[$graph_input['column_name']])))) {
 				db_execute('UPDATE graph_templates_item
-					SET ' . $graph_input['column_name'] . "=" . db_qstr($value[$graph_input['column_name']]) . "
-					WHERE local_graph_id=" . $value['local_graph_id'] . "
+					SET ' . $graph_input['column_name'] . '=' . db_qstr($value[$graph_input['column_name']]) . '
+					WHERE local_graph_id=' . $value['local_graph_id'] . "
 					AND local_graph_template_item_id=$graph_template_item_id");
 			}
 		}
@@ -638,7 +648,7 @@ function graph_template_has_override($graph_template_id) {
 
 	// Check the Graph Template first for adherence
 	if (cacti_sizeof($graph_template)) {
-		foreach($graph_template as $field => $value) {
+		foreach ($graph_template as $field => $value) {
 			if (substr($field, 0, 2) == 't_') {
 				if ($value == 'on') {
 					return true;
@@ -661,8 +671,8 @@ function graph_template_has_override($graph_template_id) {
 		array($graph_template_id));
 
 	if (cacti_sizeof($data_templates)) {
-		foreach($data_templates as $dtd) {
-			foreach($dtd as $field => $value) {
+		foreach ($data_templates as $dtd) {
+			foreach ($dtd as $field => $value) {
 				if (substr($field, 0, 2) == 't_') {
 					if ($value == 'on') {
 						return true;
@@ -708,10 +718,12 @@ function graph_template_has_override($graph_template_id) {
 function parse_graph_template_id($value) {
 	if (strpos($value, '_') !== false) {
 		$template_parts = explode('_', $value);
+
 		if (is_numeric($template_parts[0]) && is_numeric($template_parts[1])) {
 			return array('graph_template_id' => $template_parts[0], 'output_type_id' => $template_parts[1]);
 		} else {
 			cacti_log('ERROR: Unable to parse graph_template_id with value ' . $value, false, 'WEBUI');
+
 			exit;
 		}
 	} else {
@@ -728,7 +740,7 @@ function resequence_graphs_simple($graph_template_id) {
 		array($graph_template_id));
 
 	if (cacti_sizeof($template_items)) {
-		foreach($template_items as $item) {
+		foreach ($template_items as $item) {
 			db_execute_prepared('UPDATE graph_templates_item
 				SET sequence = ?
 				WHERE local_graph_template_item_id = ?',
@@ -738,7 +750,7 @@ function resequence_graphs_simple($graph_template_id) {
 }
 
 function resequence_graphs($graph_template_id, $local_graph_id = 0, $force = false) {
-	static $repairs = 0;
+	static $repairs           = 0;
 	static $template_item_ids = array();
 
 	$template_items = db_fetch_assoc_prepared('SELECT *
@@ -766,12 +778,12 @@ function resequence_graphs($graph_template_id, $local_graph_id = 0, $force = fal
 	if (cacti_sizeof($local_graphs)) {
 		// Put all the template item ids into an array
 		if (!isset($template_item_ids[$graph_template_id])) {
-			foreach($template_items as $item) {
+			foreach ($template_items as $item) {
 				$template_item_ids[$graph_template_id][] = $item['id'];
 			}
 		}
 
-		foreach($local_graphs as $local_graph_id) {
+		foreach ($local_graphs as $local_graph_id) {
 			if ($local_graph_id > 0 && $force) {
 				$graph_items = db_fetch_assoc_prepared('SELECT *
 					FROM graph_templates_item
@@ -785,7 +797,7 @@ function resequence_graphs($graph_template_id, $local_graph_id = 0, $force = fal
 					cacti_log(sprintf('WARNING: Graph Item Issue for Graph: %s, Template: %s, Items: %s/%s', $local_graph_id, $graph_template_id, cacti_sizeof($graph_items), cacti_sizeof($template_items)), false);
 
 					// First search the graph_items list for items that don't exist in the template
-					foreach($graph_items as $gitem) {
+					foreach ($graph_items as $gitem) {
 						$found = false;
 
 						if (!in_array($gitem['local_graph_template_item_id'], $template_item_ids[$graph_template_id], true)) {
@@ -796,13 +808,13 @@ function resequence_graphs($graph_template_id, $local_graph_id = 0, $force = fal
 
 					// Next search for duplicated local_graph_template_item_id's and remove the most
 					// recent one basically repairing the graph
-					foreach($template_items as $item) {
+					foreach ($template_items as $item) {
 						$found  = false;
 						$search = $item['id'];
 
 						// If we find a duplicate of any local_graph_template_item_id delete
 						// the most recent
-						foreach($graph_items as $gitem) {
+						foreach ($graph_items as $gitem) {
 							// If we have a match, mark 'found'.  If we have a second or more
 							// matches, then remove that one
 							if ($gitem['local_graph_template_item_id'] == $search) {
@@ -828,7 +840,7 @@ function resequence_graphs($graph_template_id, $local_graph_id = 0, $force = fal
 	}
 
 	if (cacti_sizeof($template_items)) {
-		foreach($template_items as $item) {
+		foreach ($template_items as $item) {
 			if ($local_graph_id == -1) {
 				// Everything including the template
 				db_execute_prepared('UPDATE graph_templates_item
@@ -886,7 +898,7 @@ function retemplate_graphs($graph_template_id, $local_graph_id = 0, $sequence_on
 		}
 
 		if (cacti_sizeof($graphs)) {
-			foreach($graphs as $graph) {
+			foreach ($graphs as $graph) {
 				change_graph_template($graph['id'], $graph_template_id, true);
 			}
 		}
@@ -909,7 +921,7 @@ function retemplate_graphs($graph_template_id, $local_graph_id = 0, $sequence_on
 		);
 
 		if (cacti_sizeof($graphs)) {
-			foreach($graphs as $graph) {
+			foreach ($graphs as $graph) {
 				resequence_graphs($graph_template_id, $graph, true);
 			}
 		}
@@ -953,6 +965,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = fal
 
 	if (!cacti_sizeof($template_graph_list)) {
 		cacti_log(sprintf('WARNING: Graph Template with ID %s Does not have any Graph Items', $graph_template_id), false, 'AUTOM8');
+
 		return false;
 	}
 
@@ -996,7 +1009,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = fal
 	}
 
 	/* some basic field values that ALL graphs should have */
-	$save['id'] = (isset($graph_list['id']) ? $graph_list['id'] : 0);
+	$save['id']                            = (isset($graph_list['id']) ? $graph_list['id'] : 0);
 	$save['local_graph_template_graph_id'] = $template_graph_list['id'];
 	$save['local_graph_id']                = $local_graph_id;
 	$save['graph_template_id']             = $graph_template_id;
@@ -1048,40 +1061,43 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = fal
 
 			/* go through the existing graph_items and look for the matching local_graph_template_item_id */
 			$found = false;
+
 			if (cacti_sizeof($graph_items_list) && $new_save == false) {
-				foreach($graph_items_list as $item) {
+				foreach ($graph_items_list as $item) {
 					if ($item['local_graph_template_item_id'] == $template_item['id']) {
 						$found_item = $item;
-						$found = true;
+						$found      = true;
+
 						break;
 					}
 				}
 			}
 
 			if ($found) {
-				foreach($found_item as $column => $value) {
+				foreach ($found_item as $column => $value) {
 					switch($column) {
-					case 'local_graph_id':
-					case 'hash':
-					case 'local_graph_template_item_id':
-					case 'graph_template_id':
-					case 'sequence':
-						break;
-					default:
-						if (strstr($cols[$column]['type'], 'int') !== false ||
-							strstr($cols[$column]['type'], 'float') !== false ||
-							strstr($cols[$column]['type'], 'decimal') !== false ||
-							strstr($cols[$column]['type'], 'double') !== false) {
-							if (!empty($value)) {
-								$save[$column] = $value;
-							} else {
-								$save[$column] = 0;
-							}
-						} else {
-							$save[$column] = $value;
-						}
+						case 'local_graph_id':
+						case 'hash':
+						case 'local_graph_template_item_id':
+						case 'graph_template_id':
+						case 'sequence':
+							break;
 
-						break;
+						default:
+							if (strstr($cols[$column]['type'], 'int') !== false ||
+								strstr($cols[$column]['type'], 'float') !== false ||
+								strstr($cols[$column]['type'], 'decimal') !== false ||
+								strstr($cols[$column]['type'], 'double') !== false) {
+								if (!empty($value)) {
+									$save[$column] = $value;
+								} else {
+									$save[$column] = 0;
+								}
+							} else {
+								$save[$column] = $value;
+							}
+
+							break;
 					}
 				}
 			} else {
@@ -1119,30 +1135,32 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = fal
 					$save['task_item_id'] = 0;
 				}
 
-				foreach($template_item as $column => $value) {
+				foreach ($template_item as $column => $value) {
 					switch($column) {
-					case 'id':
-					case 'hash':
-					case 'local_graph_id':
-					case 'local_graph_template_item_id':
-					case 'graph_template_id':
-					case 'sequence':
-					case 'task_item_id':
-						break;
-					default:
-						if (strstr($cols[$column]['type'], 'int') !== false ||
-							strstr($cols[$column]['type'], 'float') !== false ||
-							strstr($cols[$column]['type'], 'decimal') !== false ||
-							strstr($cols[$column]['type'], 'double') !== false) {
-							if (!empty($value)) {
-								$save[$column] = $value;
+						case 'id':
+						case 'hash':
+						case 'local_graph_id':
+						case 'local_graph_template_item_id':
+						case 'graph_template_id':
+						case 'sequence':
+						case 'task_item_id':
+							break;
+
+						default:
+							if (strstr($cols[$column]['type'], 'int') !== false ||
+								strstr($cols[$column]['type'], 'float') !== false ||
+								strstr($cols[$column]['type'], 'decimal') !== false ||
+								strstr($cols[$column]['type'], 'double') !== false) {
+								if (!empty($value)) {
+									$save[$column] = $value;
+								} else {
+									$save[$column] = 0;
+								}
 							} else {
-								$save[$column] = 0;
+								$save[$column] = $value;
 							}
-						} else {
-							$save[$column] = $value;
-						}
-						break;
+
+							break;
 					}
 				}
 			}
@@ -1174,6 +1192,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = fal
  * @param $graph_template_item_id - (int) The graph template item id from the template
  * @param $task_item_changes - (boolean) Tells us if this is a new graph item or one that
  *   needs to be pushed to all graphs
+ * @param mixed $task_item_changed
  *
  * @return null
  */
@@ -1193,7 +1212,7 @@ function update_graph_template_items($graph_template_id, $graph_template_item_id
 	if (!$task_item_changed) {
 		if (cacti_sizeof($template_items_list)) {
 			foreach ($template_items_list as $template_item) {
-				foreach($template_item as $column => $value) {
+				foreach ($template_item as $column => $value) {
 					switch($column) {
 						case 'color_id':
 						case 'alpha':
@@ -1214,7 +1233,9 @@ function update_graph_template_items($graph_template_id, $graph_template_item_id
 								SET $column = ?
 								WHERE local_graph_template_item_id = ?",
 								array($value, $graph_template_item_id));
+
 							break;
+
 						default:
 							break;
 					}
@@ -1235,7 +1256,7 @@ function update_graph_template_items($graph_template_id, $graph_template_item_id
 		);
 
 		if (cacti_sizeof($graphs)) {
-			foreach($graphs as $local_graph_id) {
+			foreach ($graphs as $local_graph_id) {
 				$graph_items_list = db_fetch_assoc_prepared('SELECT *
 					FROM graph_templates_item
 					WHERE local_graph_id = ?
@@ -1253,40 +1274,43 @@ function update_graph_template_items($graph_template_id, $graph_template_item_id
 
 						/* go through the existing graph_items and look for the matching local_graph_template_item_id */
 						$found = false;
+
 						if (cacti_sizeof($graph_items_list)) {
-							foreach($graph_items_list as $item) {
+							foreach ($graph_items_list as $item) {
 								if ($item['local_graph_template_item_id'] == $template_item['id']) {
 									$found_item = $item;
-									$found = true;
+									$found      = true;
+
 									break;
 								}
 							}
 						}
 
 						if ($found) {
-							foreach($found_item as $column => $value) {
+							foreach ($found_item as $column => $value) {
 								switch($column) {
-								case 'local_graph_id':
-								case 'hash':
-								case 'local_graph_template_item_id':
-								case 'graph_template_id':
-								case 'sequence':
-									break;
-								default:
-									if (strstr($cols[$column]['type'], 'int') !== false ||
-										strstr($cols[$column]['type'], 'float') !== false ||
-										strstr($cols[$column]['type'], 'decimal') !== false ||
-										strstr($cols[$column]['type'], 'double') !== false) {
-										if (!empty($value)) {
-											$save[$column] = $value;
-										} else {
-											$save[$column] = 0;
-										}
-									} else {
-										$save[$column] = $value;
-									}
+									case 'local_graph_id':
+									case 'hash':
+									case 'local_graph_template_item_id':
+									case 'graph_template_id':
+									case 'sequence':
+										break;
 
-									break;
+									default:
+										if (strstr($cols[$column]['type'], 'int') !== false ||
+											strstr($cols[$column]['type'], 'float') !== false ||
+											strstr($cols[$column]['type'], 'decimal') !== false ||
+											strstr($cols[$column]['type'], 'double') !== false) {
+											if (!empty($value)) {
+												$save[$column] = $value;
+											} else {
+												$save[$column] = 0;
+											}
+										} else {
+											$save[$column] = $value;
+										}
+
+										break;
 								}
 							}
 						} else {
@@ -1324,30 +1348,32 @@ function update_graph_template_items($graph_template_id, $graph_template_item_id
 								$save['task_item_id'] = 0;
 							}
 
-							foreach($template_item as $column => $value) {
+							foreach ($template_item as $column => $value) {
 								switch($column) {
-								case 'id':
-								case 'hash':
-								case 'local_graph_id':
-								case 'local_graph_template_item_id':
-								case 'graph_template_id':
-								case 'sequence':
-								case 'task_item_id':
-									break;
-								default:
-									if (strstr($cols[$column]['type'], 'int') !== false ||
-										strstr($cols[$column]['type'], 'float') !== false ||
-										strstr($cols[$column]['type'], 'decimal') !== false ||
-										strstr($cols[$column]['type'], 'double') !== false) {
-										if (!empty($value)) {
-											$save[$column] = $value;
+									case 'id':
+									case 'hash':
+									case 'local_graph_id':
+									case 'local_graph_template_item_id':
+									case 'graph_template_id':
+									case 'sequence':
+									case 'task_item_id':
+										break;
+
+									default:
+										if (strstr($cols[$column]['type'], 'int') !== false ||
+											strstr($cols[$column]['type'], 'float') !== false ||
+											strstr($cols[$column]['type'], 'decimal') !== false ||
+											strstr($cols[$column]['type'], 'double') !== false) {
+											if (!empty($value)) {
+												$save[$column] = $value;
+											} else {
+												$save[$column] = 0;
+											}
 										} else {
-											$save[$column] = 0;
+											$save[$column] = $value;
 										}
-									} else {
-										$save[$column] = $value;
-									}
-									break;
+
+										break;
 								}
 							}
 						}
@@ -1396,7 +1422,7 @@ function graph_to_graph_template($local_graph_id, $graph_title) {
 		AND local_graph_id=0',
 		array($graph_template_id));
 
-	for ($j=0; $j<cacti_count($items); $j++) {
+	for ($j=0; $j < cacti_count($items); $j++) {
 		db_execute_prepared('UPDATE graph_templates_item
 			SET hash = ? WHERE id= ?',
 			array(get_hash_graph_template($items[$j]['id'], 'graph_template_item'), $items[$j]['id']));
@@ -1445,7 +1471,7 @@ function data_source_to_data_template($local_data_id, $data_source_title) {
 		AND local_data_id=0',
 		array($data_template_id));
 
-	for ($j=0; $j<cacti_count($items); $j++) {
+	for ($j=0; $j < cacti_count($items); $j++) {
 		db_execute_prepared('UPDATE data_template_rrd
 			SET hash = ? WHERE id =?',
 			array(get_hash_data_template($items[$j]['id'], 'data_template_item'), $items[$j]['id']));
@@ -1480,10 +1506,11 @@ function data_source_to_data_template($local_data_id, $data_source_title) {
 function create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, &$suggested_vals) {
 	global $config;
 
-	include_once($config['library_path'] . '/data_query.php');
+	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
 	if (!graph_template_whitelist_check($graph_template_id)) {
 		raise_message(10);
+
 		return false;
 	}
 
@@ -1491,6 +1518,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	if (empty($graph_template_id)) {
 		raise_message('bad_template', __('Attempting to Create Graph from Non-Template'), MESSAGE_LEVEL_ERROR);
 		cacti_log('Attempting to Create Graph from Non-Template', false, 'AUTOM8');
+
 		return false;
 	}
 
@@ -1503,6 +1531,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	if (empty($gt)) {
 		raise_message('bad_template', __('Attempting to Create Graph from Removed Graph Template'), MESSAGE_LEVEL_ERROR);
 		cacti_log('Attempting to Create Graph from Removed Graph Template ' . $graph_template_id, false, 'AUTOM8');
+
 		return false;
 	}
 
@@ -1645,6 +1674,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 					/* validate the data source profile */
 					$profile = array();
+
 					if ($profile_id != 0) {
 						$profile = db_fetch_row_prepared('SELECT *
 							FROM data_source_profiles
@@ -1695,7 +1725,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 							$snmp_query_array['snmp_index_on'], $snmp_query_array['snmp_index']));
 
 					if (cacti_sizeof($data_input_fields)) {
-						foreach($data_input_fields as $type_code => $id) {
+						foreach ($data_input_fields as $type_code => $id) {
 							$checked = data_input_field_always_checked($id) ? 'on':'';
 
 							switch($type_code) {
@@ -1721,6 +1751,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 										(data_input_field_id, data_template_data_id, t_value, value)
 										VALUES (?, ?, ?, ?)',
 										array($id, $data_template_data_id, $checked, $snmp_query_array['snmp_query_graph_id']));
+
 									break;
 							}
 						}
@@ -1866,22 +1897,22 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 		return $compatible;
 	}
 
-	foreach($suggested_vals as $template => $items) {
+	foreach ($suggested_vals as $template => $items) {
 		if (cacti_sizeof($items)) {
-			foreach($items as $type => $item) {
+			foreach ($items as $type => $item) {
 				if (read_config_option('data_source_trace') == 'on') {
 					cacti_log('Type: "' . $type . '"', false, 'DSTRACE');
 					cacti_log('Item Keys: "' . implode('", "', array_keys($item)) . '"', false, 'DSTRACE');
 				}
 
-				foreach($item as $key => $values) {
+				foreach ($item as $key => $values) {
 					if ($type == 'data_template') {
 						if (read_config_option('data_source_trace') == 'on') {
 							cacti_log('Item Element Key1: "' . $key . '"', false, 'DSTRACE');
 						}
 
 						if (is_array($values)) {
-							foreach($values as $vkey => $vvalue) {
+							foreach ($values as $vkey => $vvalue) {
 								if (read_config_option('data_source_trace') == 'on') {
 									cacti_log('Item Sub Element Key: "' . $vkey . '"', false, 'DSTRACE');
 									cacti_log('Item Sub Element Value: "' . $vvalue . '"', false, 'DSTRACE');
@@ -1912,7 +1943,7 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 						}
 
 						if (is_array($values)) {
-							foreach($values as $vkey => $vvalue) {
+							foreach ($values as $vkey => $vvalue) {
 								if (read_config_option('data_source_trace') == 'on') {
 									cacti_log('Item Sub Element Key: "' . $vkey . '"', false, 'DSTRACE');
 									cacti_log('Item Sub Element Value: "' . $vvalue . '"', false, 'DSTRACE');
@@ -1943,7 +1974,7 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 						}
 
 						if (is_array($values)) {
-							foreach($values as $vkey => $vvalue) {
+							foreach ($values as $vkey => $vvalue) {
 								if (read_config_option('data_source_trace') == 'on') {
 									cacti_log('Item Sub Element Key: "' . $vkey . '"', false, 'DSTRACE');
 									cacti_log('Item Sub Element Value: "' . $vvalue . '"', false, 'DSTRACE');
@@ -1954,11 +1985,11 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 									WHERE local_data_id = ?',
 									array($previous_data_source['id']));
 
-								$previous_value = db_fetch_cell_prepared("SELECT value
+								$previous_value = db_fetch_cell_prepared('SELECT value
 									FROM data_input_data
 									WHERE data_template_data_id = ?
 									AND data_input_field_id = ?
-									AND value = ?",
+									AND value = ?',
 									array($data_template_data_id, $vkey, $vvalue));
 
 								if (read_config_option('data_source_trace') == 'on') {
@@ -1976,14 +2007,14 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 						}
 					} elseif (is_numeric($type)) {
 						if (cacti_sizeof($item)) {
-							foreach($item as $ftype => $fitem) {
+							foreach ($item as $ftype => $fitem) {
 								if ($ftype == 'data_template') {
 									if (read_config_option('data_source_trace') == 'on') {
 										cacti_log('Item Element Key4: "' . $key . '"', false, 'DSTRACE');
 									}
 
 									if (is_array($fitem)) {
-										foreach($fitem as $vkey => $vvalue) {
+										foreach ($fitem as $vkey => $vvalue) {
 											if (read_config_option('data_source_trace') == 'on') {
 												cacti_log('Item Sub Element Key: "' . $vkey . '"', false, 'DSTRACE');
 												cacti_log('Item Sub Element Value: "' . $vvalue . '"', false, 'DSTRACE');
@@ -2014,7 +2045,7 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 									}
 
 									if (is_array($fitem)) {
-										foreach($fitem as $vkey => $vvalue) {
+										foreach ($fitem as $vkey => $vvalue) {
 											if (read_config_option('data_source_trace') == 'on') {
 												cacti_log('Item Sub Element Key: "' . $vkey . '"', false, 'DSTRACE');
 												cacti_log('Item Sub Element Value: "' . $vvalue . '"', false, 'DSTRACE');
@@ -2045,7 +2076,7 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 									}
 
 									if (is_array($fitem)) {
-										foreach($fitem as $vkey => $vvalue) {
+										foreach ($fitem as $vkey => $vvalue) {
 											if (read_config_option('data_source_trace') == 'on') {
 												cacti_log('Item Sub Element Key: "' . $vkey . '"', false, 'DSTRACE');
 												cacti_log('Item Sub Element Value: "' . $vvalue . '"', false, 'DSTRACE');
@@ -2056,11 +2087,11 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 												WHERE local_data_id = ?',
 												array($previous_data_source['id']));
 
-											$previous_value = db_fetch_cell_prepared("SELECT value
+											$previous_value = db_fetch_cell_prepared('SELECT value
 												FROM data_input_data
 												WHERE data_template_data_id = ?
 												AND data_input_field_id = ?
-												AND value = ?",
+												AND value = ?',
 												array($data_template_data_id, $vkey, $vvalue));
 
 											if (read_config_option('data_source_trace') == 'on') {
@@ -2103,8 +2134,8 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 
 			$snmp_index_array = $form_array3;
 
-			$snmp_query_array['snmp_query_id'] = $form_id1;
-			$snmp_query_array['snmp_index_on'] = get_best_data_query_index_type($host_id, $form_id1);
+			$snmp_query_array['snmp_query_id']       = $form_id1;
+			$snmp_query_array['snmp_index_on']       = get_best_data_query_index_type($host_id, $form_id1);
 			$snmp_query_array['snmp_query_graph_id'] = $form_id2;
 		}
 
@@ -2116,6 +2147,7 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 
 	if ($form_type == 'cg') {
 		$snmp_query_array = array();
+
 		if (isset($values['cg'][$graph_template_id])) {
 			$params1 = $values['cg'][$graph_template_id];
 		} else {
@@ -2136,7 +2168,7 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 
 				/* lastly push host-specific information to our data sources */
 				if (cacti_sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
-					foreach($return_array['local_data_id'] as $item) {
+					foreach ($return_array['local_data_id'] as $item) {
 						push_out_host($host_id, $item);
 					}
 				} else {
@@ -2170,7 +2202,7 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 
 					/* lastly push host-specific information to our data sources */
 					if (cacti_sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
-						foreach($return_array['local_data_id'] as $item) {
+						foreach ($return_array['local_data_id'] as $item) {
 							push_out_host($host_id, $item);
 						}
 					} else {
@@ -2215,7 +2247,7 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 				cacti_log('Data Source Exists Special Case "' . $input_fields . '"', false, 'DSTRACE');
 			}
 
-			$case_where = "AND input_fields LIKE ?";
+			$case_where = 'AND input_fields LIKE ?';
 			$case_array = array(
 				$host_id,
 				$data_template['id'],
@@ -2229,7 +2261,7 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 				cacti_log('Data Source Exists NOT Special Case "' . $input_fields . '"', false, 'DSTRACE');
 			}
 
-			$case_where = "AND input_fields = ?";
+			$case_where = 'AND input_fields = ?';
 			$case_array = array(
 				$host_id,
 				$data_template['id'],
@@ -2296,9 +2328,11 @@ function verify_data_input($hash, $input_string) {
 
 	if ($input['input_string'] == $input_string) {
 		$input['status'] = true;
+
 		return $input;
 	} else {
 		$input['status'] = false;
+
 		return $input;
 	}
 }
@@ -2308,7 +2342,9 @@ function verify_data_input_whitelist($hash, $input_string) {
 
 	if (!isset($config['input_whitelist'])) {
 		return true;
-	} elseif (isset($config['input_whitelist']) && !file_exists($config['input_whitelist'])) {
+	}
+
+	if (isset($config['input_whitelist']) && !file_exists($config['input_whitelist'])) {
 		return true;
 	}
 
@@ -2329,7 +2365,7 @@ function graph_template_whitelist_check($graph_template_id) {
 	global $config;
 
 	static $data_input_whitelist = null;
-	static $notified = array();
+	static $notified             = array();
 
 	// no whitelist file defined, everything whitelisted
 	if (!isset($config['input_whitelist'])) {
@@ -2344,8 +2380,10 @@ function graph_template_whitelist_check($graph_template_id) {
 	// load whitelist, but only once within process execution
 	if ($data_input_whitelist == null) {
 		$data_input_whitelist = json_decode(file_get_contents($config['input_whitelist']), true);
+
 		if ($data_input_whitelist === null) {
 			cacti_log('ERROR: Failed to parse input whitelist file: ' . $config['input_whitelist']);
+
 			return true;
 		}
 	}
@@ -2364,7 +2402,7 @@ function graph_template_whitelist_check($graph_template_id) {
 
 	if (cacti_sizeof($data_input_ids)) {
 		foreach ($data_input_ids as $dii) {
-			$found = false;
+			$found      = false;
 			$data_input = db_fetch_row_prepared('SELECT *
 				FROM data_input
 				WHERE id = ?',

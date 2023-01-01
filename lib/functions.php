@@ -419,7 +419,7 @@ function is_remote_path_setting(string $config_name):bool {
 function set_config_option(string $config_name, mixed $value, bool $remote = false):void {
 	global $config;
 
-	include_once($config['base_path'] . '/lib/poller.php');
+	include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 	db_execute_prepared('REPLACE INTO settings
 		SET name = ?, value = ?',
@@ -750,7 +750,7 @@ function get_selected_theme():mixed {
 
 	// shortcut if theme is set in session
 	if (isset($_SESSION['selected_theme'])) {
-		if (file_exists($config['base_path'] . '/include/themes/' . $_SESSION['selected_theme'] . '/main.css')) {
+		if (file_exists(CACTI_PATH_INCLUDE . '/themes/' . $_SESSION['selected_theme'] . '/main.css')) {
 			return $_SESSION['selected_theme'];
 		}
 	}
@@ -778,9 +778,9 @@ function get_selected_theme():mixed {
 		}
 	}
 
-	if (!file_exists($config['base_path'] . '/include/themes/' . $theme . '/main.css')) {
+	if (!file_exists(CACTI_PATH_INCLUDE . '/themes/' . $theme . '/main.css')) {
 		foreach ($themes as $t => $name) {
-			if (file_exists($config['base_path'] . '/include/themes/' . $t . '/main.css')) {
+			if (file_exists(CACTI_PATH_INCLUDE . '/themes/' . $t . '/main.css')) {
 				$theme = $t;
 
 				db_execute_prepared('UPDATE settings_user
@@ -814,12 +814,12 @@ function is_valid_theme(?string &$theme, int $set_user = 0):bool {
 	global $themes, $config;
 	$valid = true;
 
-	if ($theme == null || !file_exists($config['base_path'] . '/include/themes/' . $theme . '/main.css')) {
+	if ($theme == null || !file_exists(CACTI_PATH_INCLUDE . '/themes/' . $theme . '/main.css')) {
 		$valid      = false;
 		$user_table = db_table_exists('settings_user');
 
 		foreach ($themes as $t => $name) {
-			if (file_exists($config['base_path'] . '/include/themes/' . $t . '/main.css')) {
+			if (file_exists(CACTI_PATH_INCLUDE . '/themes/' . $t . '/main.css')) {
 				$theme = $t;
 				$valid = true;
 
@@ -1245,13 +1245,11 @@ function array_rekey(array $array, string $key, mixed $key_value): array {
  * cacti_log_file - returns the log filename
  */
 function cacti_log_file() {
-	global $config;
 	$logfile        = read_config_option('path_cactilog');
 
 	if ($logfile == '') {
-		$logfile = $config['base_path'] . '/log/cacti.log';
+		$logfile = CACTI_PATH_LOG . '/cacti.log';
 	}
-	$config['log_path'] = $logfile;
 
 	return $logfile;
 }
@@ -2658,7 +2656,7 @@ function get_full_test_script_path($data_template_id, $host_id) {
 	}
 
 	$search    = array('<path_cacti>', '<path_snmpget>', '<path_php_binary>');
-	$replace   = array($config['base_path'], read_config_option('path_snmpget'), read_config_option('path_php_binary'));
+	$replace   = array(CACTI_PATH_BASE, read_config_option('path_snmpget'), read_config_option('path_php_binary'));
 	$full_path = str_replace($search, $replace, $full_path);
 
 	/**
@@ -2716,7 +2714,7 @@ function get_full_script_path($local_data_id) {
 	}
 
 	$search    = array('<path_cacti>', '<path_snmpget>', '<path_php_binary>');
-	$replace   = array($config['base_path'], read_config_option('path_snmpget'), read_config_option('path_php_binary'));
+	$replace   = array(CACTI_PATH_BASE, read_config_option('path_snmpget'), read_config_option('path_php_binary'));
 	$full_path = str_replace($search, $replace, $full_path);
 
 	/* sometimes a certain input value will not have anything entered... null out these fields
@@ -2795,7 +2793,7 @@ function get_data_source_path($local_data_id, $expand_paths) {
 
 		/* whether to show the "actual" path or the <path_rra> variable name (for edit boxes) */
 		if ($expand_paths == true) {
-			$data_source_path = str_replace('<path_rra>/', $config['rra_path'] . '/', $data_source_path);
+			$data_source_path = str_replace('<path_rra>/', CACTI_PATH_RRA . '/', $data_source_path);
 		}
 
 		$data_source_path_cache[$local_data_id] = $data_source_path;
@@ -3785,7 +3783,7 @@ function draw_login_status($using_guest_account = false) {
 	if (isset($_SESSION[SESS_USER_ID]) && $_SESSION[SESS_USER_ID] === $guest_account) {
 		api_plugin_hook('nav_login_before');
 
-		print __('Logged in as') . " <span id='user' class='user usermenuup'>". __('guest') . "</span></div><div><ul class='menuoptions' style='display:none;'>" . ($auth_method != AUTH_METHOD_BASIC ? "<li><a href='" . $config['url_path'] . "index.php?login=true'>" . __('Login as Regular User') . '</a></li>':"<li><a href='#'>" . __('Logged in a Guest') . '</a></li>');
+		print __('Logged in as') . " <span id='user' class='user usermenuup'>". __('guest') . "</span></div><div><ul class='menuoptions' style='display:none;'>" . ($auth_method != AUTH_METHOD_BASIC ? "<li><a href='" . CACTI_PATH_URL . "index.php?login=true'>" . __('Login as Regular User') . '</a></li>':"<li><a href='#'>" . __('Logged in a Guest') . '</a></li>');
 
 		print "<li class='menuHr'><hr class='menu'></li>";
 		print "<li id='userCommunity'><a href='https://forums.cacti.net' target='_blank' rel='noopener'>" . __('User Community') . '</a></li>';
@@ -3806,8 +3804,8 @@ function draw_login_status($using_guest_account = false) {
 
 		print "<li><a href='#' class='loggedInAs' style='display:none;'>" . __esc('Logged in as %s', $user['username']) . "</a></li><hr class='menu'>";
 
-		print(is_realm_allowed(20) ? "<li><a href='" . html_escape($config['url_path'] . 'auth_profile.php?action=edit') . "'>" . __('Edit Profile') . '</a></li>':'');
-		print($user['password_change'] == 'on' && $user['realm'] == 0 ? "<li><a href='" . html_escape($config['url_path'] . 'auth_changepassword.php') . "'>" . __('Change Password') . '</a></li>':'');
+		print(is_realm_allowed(20) ? "<li><a href='" . html_escape(CACTI_PATH_URL . 'auth_profile.php?action=edit') . "'>" . __('Edit Profile') . '</a></li>':'');
+		print($user['password_change'] == 'on' && $user['realm'] == 0 ? "<li><a href='" . html_escape(CACTI_PATH_URL . 'auth_changepassword.php') . "'>" . __('Change Password') . '</a></li>':'');
 		print((is_realm_allowed(20) || ($user['password_change'] == 'on' && $user['realm'] == 0)) ? "<li class='menuHr'><hr class='menu'></li>":'');
 
 		if (is_realm_allowed(28)) {
@@ -3816,7 +3814,7 @@ function draw_login_status($using_guest_account = false) {
 			print "<li class='menuHr'><hr class='menu'></li>";
 		}
 
-		print($auth_method > AUTH_METHOD_NONE && $auth_method != AUTH_METHOD_BASIC ? "<li><a href='" . html_escape($config['url_path'] . 'logout.php') . "'>" . __('Logout') . '</a></li>':'');
+		print($auth_method > AUTH_METHOD_NONE && $auth_method != AUTH_METHOD_BASIC ? "<li><a href='" . html_escape(CACTI_PATH_URL . 'logout.php') . "'>" . __('Logout') . '</a></li>':'');
 		print '</ul>';
 
 		api_plugin_hook('nav_login_after');
@@ -4014,7 +4012,7 @@ function draw_navigation_text($type = 'url') {
 		if ($style == 'CONSOLE') {
 			$current_nav = "<ul id='breadcrumbs'>
 				<li>
-					<a id='nav_0' href='" . $config['url_path'] . "index.php'>" . __('Console') . '</a>' . (get_selected_theme() == 'classic' ? ' > ':'') .
+					<a id='nav_0' href='" . CACTI_PATH_URL . "index.php'>" . __('Console') . '</a>' . (get_selected_theme() == 'classic' ? ' > ':'') .
 				'</li>';
 
 			$current_nav .= "<li><a id='nav_1' href='#'>" . __('Link %s', html_escape($title)) . '</a></li>';
@@ -4745,9 +4743,9 @@ function cacti_escapeshellcmd($string) {
  * @param $string 	- the string to be escaped
  * @param $quote 	- true: do NOT remove quotes from result; false: do remove quotes
  *
- * @return			- the escaped [quoted|unquoted] string
+ * @return	string	- the escaped [quoted|unquoted] string
  */
-function cacti_escapeshellarg($string, $quote = true) {
+function cacti_escapeshellarg(string $string, bool $quote = true): string {
 	global $config;
 
 	if ($string == '') {
@@ -4818,8 +4816,8 @@ function set_page_refresh($refresh) {
 function bottom_footer() {
 	global $config, $no_session_write;
 
-	include_once($config['base_path'] . '/include/global_session.php');
-	include_once($config['base_path'] . '/include/bottom_footer.php');
+	include_once(CACTI_PATH_INCLUDE . '/global_session.php');
+	include_once(CACTI_PATH_INCLUDE . '/bottom_footer.php');
 
 	/* we use this session var to store field values for when a save fails,
 	   this way we can restore the field's previous values. we reset it here, because
@@ -4842,19 +4840,19 @@ function bottom_footer() {
 function top_header() {
 	global $config;
 
-	include_once($config['base_path'] . '/include/top_header.php');
+	include_once(CACTI_PATH_INCLUDE . '/top_header.php');
 }
 
 function top_graph_header() {
 	global $config;
 
-	include_once($config['base_path'] . '/include/top_graph_header.php');
+	include_once(CACTI_PATH_INCLUDE . '/top_graph_header.php');
 }
 
 function general_header() {
 	global $config;
 
-	include_once($config['base_path'] . '/include/top_general_header.php');
+	include_once(CACTI_PATH_INCLUDE . '/top_general_header.php');
 }
 
 function admin_email($subject, $message) {
@@ -4969,9 +4967,9 @@ function send_mail($to, $from = null, string $subject = null, string $body = nul
 function mailer(null|array|string $from, null|array|string $to, null|array|string $cc = null, null|array|string $bcc = null, null|array|string $replyto = null, string $subject, string $body, ?string $body_text = null, ?array $attachments = array(), ?array $headers = array(), bool $html = true, bool $expandIds = false): string {
 	global $config, $cacti_locale, $mail_methods;
 
-	require_once($config['include_path'] . '/vendor/phpmailer/src/Exception.php');
-	require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
-	require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
+	require_once(CACTI_PATH_INCLUDE . '/vendor/phpmailer/src/Exception.php');
+	require_once(CACTI_PATH_INCLUDE . '/vendor/phpmailer/src/PHPMailer.php');
+	require_once(CACTI_PATH_INCLUDE . '/vendor/phpmailer/src/SMTP.php');
 
 	$start_time = microtime(true);
 
@@ -4989,8 +4987,8 @@ function mailer(null|array|string $from, null|array|string $to, null|array|strin
 
 	$langparts = explode('-', $cacti_locale);
 
-	if (file_exists($config['include_path'] . '/vendor/phpmailer/language/phpmailer.lang-' . $langparts[0] . '.php')) {
-		$mail->setLanguage($langparts[0], $config['include_path'] . '/vendor/phpmailer/language/');
+	if (file_exists(CACTI_PATH_INCLUDE . '/vendor/phpmailer/language/phpmailer.lang-' . $langparts[0] . '.php')) {
+		$mail->setLanguage($langparts[0], CACTI_PATH_INCLUDE . '/vendor/phpmailer/language/');
 	}
 
 	$how = read_config_option('settings_how');
@@ -5430,9 +5428,9 @@ function create_emailtext($e) {
 function ping_mail_server($host, $port, $user, $password, $timeout = 10, $secure = 'none') {
 	global $config;
 
-	require_once($config['include_path'] . '/vendor/phpmailer/src/Exception.php');
-	require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
-	require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
+	require_once(CACTI_PATH_INCLUDE . '/vendor/phpmailer/src/Exception.php');
+	require_once(CACTI_PATH_INCLUDE . '/vendor/phpmailer/src/PHPMailer.php');
+	require_once(CACTI_PATH_INCLUDE . '/vendor/phpmailer/src/SMTP.php');
 
 	//Create a new SMTP instance
 	$smtp = new PHPMailer\PHPMailer\SMTP;
@@ -5697,7 +5695,7 @@ function poller_maintenance() {
 		$command_string = 'php';
 	}
 
-	$extra_args = ' -q ' . cacti_escapeshellarg($config['base_path'] . '/poller_maintenance.php');
+	$extra_args = ' -q ' . cacti_escapeshellarg(CACTI_PATH_BASE . '/poller_maintenance.php');
 
 	exec_background($command_string, $extra_args);
 }
@@ -5765,7 +5763,7 @@ function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limi
 		}
 
 		if (isset($c['file'])) {
-			$file = str_replace($config['base_path'], '', $c['file']) . $line;
+			$file = str_replace(CACTI_PATH_BASE, '', $c['file']) . $line;
 		} else {
 			$file = $line;
 		}
@@ -5980,7 +5978,7 @@ function get_classic_tabimage($text, $down = false) {
 	$wlimit   = 72;
 	$wrapsize = 12;
 
-	if (file_exists($config['base_path'] . '/images/' . $images[$down])) {
+	if (file_exists(CACTI_PATH_IMAGES . '/' . $images[$down])) {
 		foreach ($dejavu_paths as $dejavupath) {
 			if (file_exists($dejavupath)) {
 				$font_path = $dejavupath;
@@ -5990,7 +5988,7 @@ function get_classic_tabimage($text, $down = false) {
 		$originalpath = getenv('GDFONTPATH');
 		putenv('GDFONTPATH=' . $font_path);
 
-		$template = imagecreatefromgif($config['base_path'] . '/images/' . $images[$down]);
+		$template = imagecreatefromgif(CACTI_PATH_IMAGES . '/' . $images[$down]);
 
 		$w = imagesx($template);
 		$h = imagesy($template);
@@ -7229,7 +7227,7 @@ function get_md5_hash($path) {
 
 function get_include_relpath($path) {
 	global $config;
-	$basePath = rtrim($config['base_path'],'/') . '/';
+	$basePath = rtrim(CACTI_PATH_BASE,'/') . '/';
 
 	$npath = '';
 
@@ -7240,9 +7238,9 @@ function get_include_relpath($path) {
 	} elseif (debounce_run_notification('missing:' . $path)) {
 		$npath = str_replace($basePath, '', $path);
 
-		cacti_log(sprintf('WARNING: Key Cacti Include File %s missing.  Please locate and replace this file', $config['base_path'] . '/' . $npath), false, 'WEBUI');
+		cacti_log(sprintf('WARNING: Key Cacti Include File %s missing.  Please locate and replace this file', CACTI_PATH_BASE . '/' . $npath), false, 'WEBUI');
 
-		admin_email(__('Cacti System Warning'), __('WARNING:  Key Cacti Include File %s missing.  Please locate and replace this file', $config['base_path'] . '/' . $npath));
+		admin_email(__('Cacti System Warning'), __('WARNING:  Key Cacti Include File %s missing.  Please locate and replace this file', CACTI_PATH_BASE . '/' . $npath));
 	}
 
 	return $npath;
@@ -7258,9 +7256,9 @@ function get_md5_include_js($path, $async = false) {
 	}
 
 	if ($async) {
-		return '<script type=\'text/javascript\' src=\'' . $config['url_path'] . $relpath . '?' . get_md5_hash($path) . '\' async></script>' . PHP_EOL;
+		return '<script type=\'text/javascript\' src=\'' . CACTI_PATH_URL . $relpath . '?' . get_md5_hash($path) . '\' async></script>' . PHP_EOL;
 	} else {
-		return '<script type=\'text/javascript\' src=\'' . $config['url_path'] . $relpath . '?' . get_md5_hash($path) . '\'></script>' . PHP_EOL;
+		return '<script type=\'text/javascript\' src=\'' . CACTI_PATH_URL . $relpath . '?' . get_md5_hash($path) . '\'></script>' . PHP_EOL;
 	}
 }
 
@@ -7273,7 +7271,7 @@ function get_md5_include_css($path) {
 		return '';
 	}
 
-	return '<link href=\''. $config['url_path'] . $relpath . '?' . get_md5_hash($relpath) . '\' type=\'text/css\' rel=\'stylesheet\'>' . PHP_EOL;
+	return '<link href=\''. CACTI_PATH_URL . $relpath . '?' . get_md5_hash($relpath) . '\' type=\'text/css\' rel=\'stylesheet\'>' . PHP_EOL;
 }
 
 function is_resource_writable($path) {
@@ -7335,7 +7333,7 @@ function get_validated_theme($theme, $defaultTheme) {
 	global $config;
 
 	if (isset($theme) && strlen($theme)) {
-		$themePath = $config['base_path'] . '/include/themes/' . $theme . '/main.css';
+		$themePath = CACTI_PATH_INCLUDE . '/themes/' . $theme . '/main.css';
 
 		if (file_exists($themePath)) {
 			return $theme;
@@ -7728,7 +7726,7 @@ function cacti_cookie_set($session, $val, $timeout = null) {
 
 	if (version_compare(PHP_VERSION, '7.3', '>=')) {
 		$options = array(
-			'path'     => $config['url_path'],
+			'path'     => CACTI_PATH_URL,
 			'expires'  => $timeout ?? (time() + 3600),
 			'domain'   => $domain,
 			'secure'   => $secure,
@@ -7738,7 +7736,7 @@ function cacti_cookie_set($session, $val, $timeout = null) {
 
 		setcookie($session, $val, $options);
 	} else {
-		setcookie($session, $val, time() + 3600, $config['url_path'], $domain, $secure, true);
+		setcookie($session, $val, time() + 3600, CACTI_PATH_URL, $domain, $secure, true);
 	}
 }
 
@@ -7766,7 +7764,7 @@ function cacti_cookie_logout() {
 
 	if (version_compare(PHP_VERSION, '7.3', '>=')) {
 		$options = array(
-			'path'     => $config['url_path'],
+			'path'     => CACTI_PATH_URL,
 			'expires'  => time() - 3600,
 			'domain'   => $domain,
 			'secure'   => $secure,
@@ -7779,7 +7777,7 @@ function cacti_cookie_logout() {
 		}
 	} else {
 		foreach ($cookies as $cookie) {
-			setcookie($cookie, '', time() - 3600, $config['url_path'], $domain, $secure, true);
+			setcookie($cookie, '', time() - 3600, CACTI_PATH_URL, $domain, $secure, true);
 		}
 	}
 
@@ -7813,7 +7811,7 @@ function cacti_cookie_session_set($user, $realm, $nssecret) {
 
 	if (version_compare(PHP_VERSION, '7.3', '>=')) {
 		$options = array(
-			'path'     => $config['url_path'],
+			'path'     => CACTI_PATH_URL,
 			'expires'  => time() + (86400 * 30),
 			'domain'   => $domain,
 			'secure'   => $secure,
@@ -7823,7 +7821,7 @@ function cacti_cookie_session_set($user, $realm, $nssecret) {
 
 		setcookie('cacti_remembers', $user . ',' . $realm . ',' . $nssecret, $options);
 	} else {
-		setcookie('cacti_remembers', $user . ',' . $realm . ',' . $nssecret, time() + (86400 * 30), $config['url_path'], $domain, $secure, true);
+		setcookie('cacti_remembers', $user . ',' . $realm . ',' . $nssecret, time() + (86400 * 30), CACTI_PATH_URL, $domain, $secure, true);
 	}
 }
 
@@ -7849,7 +7847,7 @@ function cacti_cookie_session_logout() {
 
 	if (version_compare(PHP_VERSION, '7.3', '>=')) {
 		$options = array(
-			'path'     => $config['url_path'],
+			'path'     => CACTI_PATH_URL,
 			'expires'  => time() - 3600,
 			'domain'   => $domain,
 			'secure'   => $secure,
@@ -7859,7 +7857,7 @@ function cacti_cookie_session_logout() {
 
 		setcookie('cacti_remembers', '', $options);
 	} else {
-		setcookie('cacti_remembers', '', time() - 3600, $config['url_path'], $domain, $secure, true);
+		setcookie('cacti_remembers', '', time() - 3600, CACTI_PATH_URL, $domain, $secure, true);
 	}
 }
 
@@ -8174,7 +8172,7 @@ function text_regex_replace($id, $link, $url, $matches, $cache) {
 	global $config;
 
 	if ($link) {
-		return $matches[1] . '<a href=\'' . html_escape($config['url_path'] . sprintf($url,  $id)) . '\'>' . (isset($cache[$id]) ? html_escape($cache[$id]) : $id) . '</a>' . $matches[3];
+		return $matches[1] . '<a href=\'' . html_escape(CACTI_PATH_URL . sprintf($url,  $id)) . '\'>' . (isset($cache[$id]) ? html_escape($cache[$id]) : $id) . '</a>' . $matches[3];
 	} else {
 		return $matches[1] . (isset($cache[$id]) ? $cache[$id] : $id) . $matches[3];
 	}
@@ -8405,7 +8403,7 @@ function text_regex_graphs($matches, $link = false) {
 
 	if (cacti_sizeof($graph_ids)) {
 		$result    = '';
-		$graph_add = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
+		$graph_add = CACTI_PATH_URL . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
 
 		$title = '';
 		$i     = 0;

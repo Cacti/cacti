@@ -24,17 +24,17 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once($config['base_path'] . '/lib/api_automation_tools.php');
-require_once($config['base_path'] . '/lib/api_automation.php');
-require_once($config['base_path'] . '/lib/api_data_source.php');
-require_once($config['base_path'] . '/lib/api_graph.php');
-require_once($config['base_path'] . '/lib/api_device.php');
-require_once($config['base_path'] . '/lib/data_query.php');
-require_once($config['base_path'] . '/lib/poller.php');
-require_once($config['base_path'] . '/lib/snmp.php');
-require_once($config['base_path'] . '/lib/sort.php');
-require_once($config['base_path'] . '/lib/template.php');
-require_once($config['base_path'] . '/lib/utility.php');
+require_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
+require_once(CACTI_PATH_LIBRARY . '/api_automation.php');
+require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
+require_once(CACTI_PATH_LIBRARY . '/api_graph.php');
+require_once(CACTI_PATH_LIBRARY . '/api_device.php');
+require_once(CACTI_PATH_LIBRARY . '/data_query.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/snmp.php');
+require_once(CACTI_PATH_LIBRARY . '/sort.php');
+require_once(CACTI_PATH_LIBRARY . '/template.php');
+require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 /* switch to main database for cli's */
 if ($config['poller_id'] > 1) {
@@ -46,19 +46,19 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	$displayHosts 		= false;
+	$displayHosts 		    = false;
 	$displayDataQueries = false;
-	$quietMode			= false;
+	$quietMode			       = false;
 
 	unset($host_id);
 	unset($data_query_id);
 	unset($reindex_method);
 
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -69,16 +69,20 @@ if (cacti_sizeof($parms)) {
 				break;
 			case '--host-id':
 				$host_id = trim($value);
+
 				if (!is_numeric($host_id)) {
 					print "ERROR: You must supply a valid host-id to run this script!\n";
+
 					exit(1);
 				}
 
 				break;
 			case '--data-query-id':
 				$data_query_id = $value;
+
 				if (!is_numeric($data_query_id)) {
 					print "ERROR: You must supply a numeric data-query-id for all hosts!\n";
+
 					exit(1);
 				}
 
@@ -92,44 +96,58 @@ if (cacti_sizeof($parms)) {
 					switch (strtolower($value)) {
 						case 'none':
 							$reindex_method = DATA_QUERY_AUTOINDEX_NONE;
+
 							break;
 						case 'uptime':
 							$reindex_method = DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME;
+
 							break;
 						case 'index':
 							$reindex_method = DATA_QUERY_AUTOINDEX_INDEX_NUM_CHANGE;
+
 							break;
 						case 'fields':
 							$reindex_method = DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION;
+
 							break;
+
 						default:
 							print "ERROR: You must supply a valid reindex method for all hosts!\n";
+
 							exit(1);
 					}
 				}
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
 			case '--list-hosts':
 				$displayHosts = true;
+
 				break;
 			case '--list-data-queries':
 				$displayDataQueries = true;
+
 				break;
 			case '--quiet':
 				$quietMode = true;
+
 				break;
+
 			default:
 				print "ERROR: Invalid Argument: ($arg)\n\n";
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -138,11 +156,14 @@ if (cacti_sizeof($parms)) {
 	if ($displayHosts) {
 		$hosts = getHosts();
 		displayHosts($hosts, $quietMode);
+
 		exit;
 	}
+
 	if ($displayDataQueries) {
 		$data_queries = getSNMPQueries();
 		displaySNMPQueries($data_queries, $quietMode);
+
 		exit;
 	}
 
@@ -152,26 +173,30 @@ if (cacti_sizeof($parms)) {
 	 */
 	if (!isset($host_id)) {
 		print "ERROR: You must supply a valid host-id for all hosts!\n";
+
 		exit(1);
 	}
 
 	if (!isset($data_query_id)) {
 		print "ERROR: You must supply a valid data-query-id for all hosts!\n";
+
 		exit(1);
 	}
 
 	if (!isset($reindex_method)) {
 		print "ERROR: You must supply a valid reindex-method for all hosts!\n";
+
 		exit(1);
 	}
-
 
 	/*
 	 * verify valid host id and get a name for it
 	 */
 	$host_name = db_fetch_cell('SELECT hostname FROM host WHERE id = ' . $host_id);
+
 	if (!isset($host_name)) {
 		print "ERROR: Unknown Host Id ($host_id)\n";
+
 		exit(1);
 	}
 
@@ -179,8 +204,10 @@ if (cacti_sizeof($parms)) {
 	 * verify valid data query and get a name for it
 	 */
 	$data_query_name = db_fetch_cell('SELECT name FROM snmp_query WHERE id = ' . $data_query_id);
+
 	if (!isset($data_query_name)) {
 		print "ERROR: Unknown Data Query Id ($data_query_id)\n";
+
 		exit(1);
 	}
 
@@ -188,9 +215,11 @@ if (cacti_sizeof($parms)) {
 	 * Now, add the data query and run it once to get the cache filled
 	 */
 	$exists_already = db_fetch_cell("SELECT host_id FROM host_snmp_query WHERE host_id=$host_id AND snmp_query_id=$data_query_id AND reindex_method=$reindex_method");
+
 	if ((isset($exists_already)) &&
 		($exists_already > 0)) {
 		print "ERROR: Data Query is already associated for host: ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: " . $reindex_types[$reindex_method] . ")\n";
+
 		exit(1);
 	} else {
 		db_execute('REPLACE INTO host_snmp_query
@@ -206,13 +235,16 @@ if (cacti_sizeof($parms)) {
 
 	if (is_error_message()) {
 		print "ERROR: Failed to add this data query for host ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: " . $reindex_types[$reindex_method] . ")\n";
+
 		exit(1);
 	} else {
 		print "Success - Host ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: " . $reindex_types[$reindex_method] . ")\n";
+
 		exit;
 	}
 } else {
 	display_help();
+
 	exit;
 }
 

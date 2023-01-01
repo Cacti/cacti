@@ -90,11 +90,11 @@ switch (get_request_var('action')) {
 		$tabs = array(
 			'general'  => array(
 				'display' => __('General'),
-				'url'     => $config['url_path'] . 'auth_profile.php?tab=general'
+				'url'     => CACTI_PATH_URL . 'auth_profile.php?tab=general'
 			),
 			'2fa' => array(
 				'display' => __('2FA'),
-				'url'     => $config['url_path'] . 'auth_profile.php?tab=2fa'
+				'url'     => CACTI_PATH_URL . 'auth_profile.php?tab=2fa'
 			),
 		);
 

@@ -49,78 +49,93 @@ if (cacti_sizeof($parms)) {
 
 	$options = getopt($shortopts, $longopts);
 
-	foreach($options as $arg => $value) {
+	foreach ($options as $arg => $value) {
 		switch($arg) {
-		case 'plugin':
-			$plugins = $value;
-			break;
+			case 'plugin':
+				$plugins = $value;
 
-		case 'install':
-			$install = true;
-			break;
+				break;
+			case 'install':
+				$install = true;
 
-		case 'uninstall':
-			$uninstall = true;
+				break;
+			case 'uninstall':
+				$uninstall = true;
 
-			break;
-		case 'disable':
-			$disable = true;
+				break;
+			case 'disable':
+				$disable = true;
 
-			break;
-		case 'enable':
-			$enable = true;
+				break;
+			case 'enable':
+				$enable = true;
 
-			break;
-		case 'allperms':
-			$allperms = true;
+				break;
+			case 'allperms':
+				$allperms = true;
 
-			break;
-		case 'version':
-		case 'V':
-		case 'v':
-			display_version();
-			exit(0);
-		case 'help':
-		case 'H':
-		case 'h':
-			display_help();
-			exit(0);
-		default:
-			print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
-			display_help();
-			exit(1);
+				break;
+			case 'version':
+			case 'V':
+			case 'v':
+				display_version();
+
+				exit(0);
+			case 'help':
+			case 'H':
+			case 'h':
+				display_help();
+
+				exit(0);
+
+			default:
+				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
+				display_help();
+
+				exit(1);
 		}
 	}
 
 	// Sanity checks
 	if ($enable && $disable) {
 		print 'FATAL: Options --enable and --disable are mutually exclusive' . PHP_EOL;
+
 		exit(1);
-	} elseif ($install && $uninstall) {
+	}
+
+	if ($install && $uninstall) {
 		print 'FATAL: Options --install and --uninstall are mutually exclusive' . PHP_EOL;
+
 		exit(1);
-	} elseif ($install && $disable) {
+	}
+
+	if ($install && $disable) {
 		print 'FATAL: Options --install and --disable are mutually exclusive' . PHP_EOL;
+
 		exit(1);
-	} elseif ($uninstall && $enable) {
+	}
+
+	if ($uninstall && $enable) {
 		print 'FATAL: Options --uninstall and --enable are mutually exclusive' . PHP_EOL;
+
 		exit(1);
 	}
 } else {
 	display_help();
+
 	exit(1);
 }
 
 print 'NOTE: ' . cacti_sizeof($plugins) . ' Plugins to be acted on.' . PHP_EOL;
 
 if (cacti_sizeof($plugins)) {
-	foreach($plugins as $plugin) {
+	foreach ($plugins as $plugin) {
 		print "NOTE: Plugin '$plugin' processing started" . PHP_EOL;
 
 		if ($install) {
 			$installed = false;
 
-			if (is_dir($config['base_path'] . '/plugins/' . $plugin)) {
+			if (is_dir(CACTI_PATH_PLUGINS . '/' . $plugin)) {
 				print "NOTE: Plugin directory for Plugin $plugin exists" . PHP_EOL;
 
 				if (!api_plugin_installed($plugin)) {
@@ -139,7 +154,6 @@ if (cacti_sizeof($plugins)) {
 
 								print "NOTE: Plugin $plugin enabled." . PHP_EOL;
 							}
-
 						}
 					} else {
 						print "WARNING: Plugin '$plugin' can not install.  Message is: $message" . PHP_EOL;
@@ -161,7 +175,7 @@ if (cacti_sizeof($plugins)) {
 					WHERE plugin = ?',
 					array($plugin));
 
-				foreach($realms as $realm) {
+				foreach ($realms as $realm) {
 					api_plugin_register_realm($plugin, $realm['file'], $realm['display'], 1);
 				}
 			}
@@ -190,10 +204,10 @@ function display_version() {
 /**
  *display_help - displays the usage of the function
  */
-function display_help () {
+function display_help() {
 	print 'usage: plugin_manage.php [--plugin=S] [--install --enable --allperms] [--uninstall ] [--disable]' . PHP_EOL . PHP_EOL;
 
-	print  'A utility to install/uninstall a Cacti plugin or plugins' . PHP_EOL . PHP_EOL;
+	print 'A utility to install/uninstall a Cacti plugin or plugins' . PHP_EOL . PHP_EOL;
 
 	print 'Required:' . PHP_EOL;
 	print '  --plugin=S   - The plugin to install.  Use the option multiple time for more plugins' . PHP_EOL . PHP_EOL;

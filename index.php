@@ -36,14 +36,14 @@ function render_external_links($style = 'FRONT') {
 		AND style = ?', array($style));
 
 	if (cacti_sizeof($consoles)) {
-		foreach($consoles as $page) {
+		foreach ($consoles as $page) {
 			if (is_realm_allowed($page['id'] + 10000)) {
 				if (preg_match('/^((((ht|f)tp(s?))\:\/\/){1}\S+)/i', $page['contentfile'])) {
 					print '<iframe class="content" src="' . $page['contentfile'] . '" frameborder="0"></iframe>';
 				} else {
 					print '<div id="content">';
 
-					$file = $config['base_path'] . "/include/content/" . $page['contentfile'];
+					$file = CACTI_PATH_INCLUDE . '/content/' . $page['contentfile'];
 
 					if (file_exists($file)) {
 						include_once($file);
@@ -61,7 +61,7 @@ function render_external_links($style = 'FRONT') {
 render_external_links('FRONTTOP');
 
 if (read_config_option('hide_console') != 'on') {
-?>
+	?>
 <table class='cactiTable'>
 	<tr class='tableRow'>
 		<td class='textAreaNotes top left'>
@@ -70,7 +70,7 @@ if (read_config_option('hide_console') != 'on') {
 			<ul>
 				<li><?php print __('<a href="%s">Create devices</a> for network', 'host.php');?></li>
 				<li><?php print __('<a href="%s">Create graphs</a> for your new devices', 'graphs_new.php');?></li>
-				<li><?php print __('<a href="%s">View</a> your new graphs', $config['url_path'] . 'graph_view.php');?></li>
+				<li><?php print __('<a href="%s">View</a> your new graphs', CACTI_PATH_URL . 'graph_view.php');?></li>
 			</ul>
 		</td>
 		<td class='textAreaNotes top right'>
@@ -122,4 +122,3 @@ function resizeWindow() {
 <?php
 
 bottom_footer();
-

@@ -30,13 +30,13 @@ error_reporting(E_ALL);
 /* allow the script to hang around. */
 set_time_limit(0);
 
-chdir(dirname(__FILE__));
+chdir(__DIR__);
 
-$last_time = time()-30;
+$last_time = time() - 30;
 $cache     = array();
 
-$path_mibcache      = $config['base_path'] . '/cache/mibcache/mibcache.tmp';
-$path_mibcache_lock = $config['base_path'] . '/cache/mibcache/mibcache.lock';
+$path_mibcache      = CACTI_PATH_CACHE. '/mibcache/mibcache.tmp';
+$path_mibcache_lock = CACTI_PATH_CACHE. '/mibcache/mibcache.lock';
 
 /* check mib cache table status */
 $mibcache_changed = db_fetch_cell_prepared("SHOW TABLE STATUS
@@ -45,13 +45,13 @@ $mibcache_changed = db_fetch_cell_prepared("SHOW TABLE STATUS
 	array($last_time));
 
 if ($mibcache_changed !== null || file_exists($path_mibcache) === false) {
-	$objects = db_fetch_assoc("SELECT `oid`, LOWER(type) as type, `otype`, `max-access`, `value`
-		FROM snmpagent_cache");
+	$objects = db_fetch_assoc('SELECT `oid`, LOWER(type) as type, `otype`, `max-access`, `value`
+		FROM snmpagent_cache');
 
 	if (cacti_sizeof($objects)) {
 		$oids = array();
 
-		foreach($objects as &$object) {
+		foreach ($objects as &$object) {
 			$oids[] = $object['oid'];
 
 			$object = ($object['otype'] == 'DATA' && $object['max-access'] != 'not-accessible') ? array('type' => $object['type'], 'value' => $object['value']) : false;
@@ -60,17 +60,17 @@ if ($mibcache_changed !== null || file_exists($path_mibcache) === false) {
 		/* natural sorting with MySQL is not available - especially not for OIDs */
 		natsort($oids);
 
-		$last_accessible_object = false;
+		$last_accessible_object          = false;
 		$next_accessible_object_required = array();
 
-		foreach($oids as $key => $oid) {
+		foreach ($oids as $key => $oid) {
 			if ($objects[$key]) {
 				if ($last_accessible_object) {
 					$cache[$last_accessible_object]['next'] = $oid;
 				}
 
-				if (cacti_sizeof($next_accessible_object_required)>0) {
-					foreach($next_accessible_object_required as $next_accessible_object_required_oid) {
+				if (cacti_sizeof($next_accessible_object_required) > 0) {
+					foreach ($next_accessible_object_required as $next_accessible_object_required_oid) {
 						$cache[$next_accessible_object_required_oid]['next'] = $oid;
 					}
 

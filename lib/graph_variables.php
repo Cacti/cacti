@@ -35,7 +35,9 @@ function nth_percentile($local_data_ids, $start_seconds, $end_seconds, $percenti
 	if ($peak) {
 		if (array_key_exists('peak', $stats)) {
 			return $stats['peak'];
-		} else if (array_key_exists('avg', $stats)) {
+		}
+
+		if (array_key_exists('avg', $stats)) {
 			return $stats['avg'];
 		} else {
 			return $stats;
@@ -43,7 +45,9 @@ function nth_percentile($local_data_ids, $start_seconds, $end_seconds, $percenti
 	} else {
 		if (array_key_exists('avg', $stats)) {
 			return $stats['avg'];
-		} else if (array_key_exists('peak', $stats)) {
+		}
+
+		if (array_key_exists('peak', $stats)) {
 			return $stats['peak'];
 		} else {
 			return $stats;
@@ -62,7 +66,7 @@ function nth_percentile($local_data_ids, $start_seconds, $end_seconds, $percenti
 function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $percentile = 95, $resolution = 0, $peak = false) {
 	global $config;
 
-	include_once($config['library_path'] . '/rrd.php');
+	include_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
 	if (!is_array($local_data_ids)) {
 		return json_encode(array());
@@ -109,7 +113,7 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 			/* discard the unused data sources, we will figure it out ourselves */
 			foreach ($fetch_array_avg[$ldi]['data_source_names'] as $index => $name) {
 				/* clean up DS items that aren't defined on the graph */
-				if (!in_array($name, $local_data_ids[$ldi])) {
+				if (!in_array($name, $local_data_ids[$ldi], true)) {
 					if (isset($fetch_array_avg[$ldi]['data_source_names'][$index])) {
 						unset($fetch_array_avg[$ldi]['data_source_names'][$index]);
 					}
@@ -134,7 +138,7 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 			/* discard the unused data sources, we will figure it out ourselves */
 			foreach ($fetch_array_max[$ldi]['data_source_names'] as $index => $name) {
 				/* clean up DS items that aren't defined on the graph */
-				if (!in_array($name, $local_data_ids[$ldi])) {
+				if (!in_array($name, $local_data_ids[$ldi], true)) {
 					if (isset($fetch_array_max[$ldi]['data_source_names'][$index])) {
 						unset($fetch_array_max[$ldi]['data_source_names'][$index]);
 					}
@@ -191,6 +195,7 @@ function nth_percentile_fetch_statistics($percentile, &$local_data_ids, &$fetch_
 
 	/* next get the max values of all the data sources */
 	$max_values_array = array();
+
 	if (cacti_sizeof($asum_array)) {
 		foreach ($asum_array as $ds_name => $sum_by_timestamp) {
 			foreach ($sum_by_timestamp as $timestamp => $data) {
@@ -208,6 +213,7 @@ function nth_percentile_fetch_statistics($percentile, &$local_data_ids, &$fetch_
 
 	/* get the sum data now across all data sources */
 	$sum_values_array = array();
+
 	if (cacti_sizeof($asum_array)) {
 		foreach ($asum_array as $ds_name => $sum_by_timestamp) {
 			if ($ds_name == 'nth_percentile_maximum') {
@@ -228,17 +234,16 @@ function nth_percentile_fetch_statistics($percentile, &$local_data_ids, &$fetch_
 	$asum_array['nth_percentile_sum'] = $sum_values_array;
 
 	/* get some nice analytical statistics about the data */
-	$stats = array();
+	$stats     = array();
 	$agg_total = 0;
 
 	foreach ($asum_array as $ds_name => $data_by_timestamp) {
 		$cstats['stats_' . $ds_name] = cacti_stats_calc($data_by_timestamp, $percentile);
-		$stats[$ds_name] = $cstats['stats_' . $ds_name]['p' . $percentile . 'n'];
+		$stats[$ds_name]             = $cstats['stats_' . $ds_name]['p' . $percentile . 'n'];
 
 		/* scan all non built-in data sources for aggregate total data */
 		if ($ds_name != 'nth_percentile_sum' &&
-			$ds_name != 'nth_percentile_maximum') {
-
+			$ds_name    != 'nth_percentile_maximum') {
 			if ($agg_total < $cstats['stats_' . $ds_name]['p' . $percentile . 'n']) {
 				$agg_total = $cstats['stats_' . $ds_name]['p' . $percentile . 'n'];
 			}
@@ -250,7 +255,7 @@ function nth_percentile_fetch_statistics($percentile, &$local_data_ids, &$fetch_
 
 	$stats += $cstats;
 
-	return($stats);
+	return ($stats);
 }
 
 function cacti_stats_calc($array, $ptile = 95) {
@@ -279,7 +284,7 @@ function cacti_stats_calc($array, $ptile = 95) {
 
 	$variance = 0;
 	$sum      = array_sum($array);
-	$average  = $sum/$elements;
+	$average  = $sum / $elements;
 	$var      = 'p' . $ptile . 'n';
 
 	if ($var == 'p95n') {
@@ -290,7 +295,7 @@ function cacti_stats_calc($array, $ptile = 95) {
 		$variance += pow(abs($number - $average), 2);
 	}
 
-	$ptile_index = ceil($elements * (1 - ($ptile/100)));
+	$ptile_index = ceil($elements * (1 - ($ptile / 100)));
 	$p95n_index  = ceil($elements * 0.05);
 	$p90n_index  = ceil($elements * 0.1);
 	$p75n_index  = ceil($elements * 0.25);
@@ -307,7 +312,7 @@ function cacti_stats_calc($array, $ptile = 95) {
 		'sum'      => $sum,
 		'elements' => $elements,
 		'variance' => $variance,
-		'stddev'   => sqrt($variance/$elements)
+		'stddev'   => sqrt($variance / $elements)
 	);
 
 	if ($var != '') {
@@ -318,15 +323,15 @@ function cacti_stats_calc($array, $ptile = 95) {
 }
 
 /* bandwidth_summation - given a data source, sums all data in the rrd for a given
-     time period
+	 time period
    @arg $local_data_id - the data source to perform the summation for
    @arg $start_time - the start time to use for the data calculation. this value can
-     either be absolute (unix timestamp) or relative (to now)
+	 either be absolute (unix timestamp) or relative (to now)
    @arg $end_time - the end time to use for the data calculation. this value can
-     either be absolute (unix timestamp) or relative (to now)
+	 either be absolute (unix timestamp) or relative (to now)
    @arg $resolution - the accuracy of the data measured in seconds
    @arg $rra_steps - how many periods each sample in the RRA counts for, values above '1'
-     result in an averaged summation
+	 result in an averaged summation
    @arg $ds_steps - how many seconds each period represents
    @returns - (array) an array containing each data source item, and its sum */
 function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps, $ds_steps) {
@@ -339,7 +344,7 @@ function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps,
 	$return_array = array();
 
 	/* loop through each regexp determined above (or each data source) */
-	for ($i=0; $i<cacti_count($fetch_array['data_source_names']); $i++) {
+	for ($i=0; $i < cacti_count($fetch_array['data_source_names']); $i++) {
 		if (isset($fetch_array['values'][$i])) {
 			$sum = array_sum($fetch_array['values'][$i]);
 
@@ -366,24 +371,24 @@ function is_graphable_item($item) {
 }
 
 /* variable_nth_percentile - given a Nth percentile variable, calculate the Nth percentile
-     and format it for display on the graph
+	 and format it for display on the graph
    @arg $regexp_match_array - the array that contains each argument in the Nth percentile variable. it
-     should be formatted like so:
-       $arr[0] // full variable string
-       $arr[1] // Nth percentile
-       $arr[2] // bits or bytes
-       $arr[3] // power of 10 divisor
-       $arr[4] // current, total, max, total_peak, all_max_current, all_max_peak
-       $arr[5] // digits of floating point precision
+	 should be formatted like so:
+	   $arr[0] // full variable string
+	   $arr[1] // Nth percentile
+	   $arr[2] // bits or bytes
+	   $arr[3] // power of 10 divisor
+	   $arr[4] // current, total, max, total_peak, all_max_current, all_max_peak
+	   $arr[5] // digits of floating point precision
    @arg $graph - an array that contains the current graph data
    @arg $graph_item - an array that contains the current graph item
    @arg $graph_items - an array that contains all graph items
    @arg $graph_start - the start time to use for the data calculation. this value can
-     either be absolute (unix timestamp) or relative (to now)
+	 either be absolute (unix timestamp) or relative (to now)
    @arg $graph_end - the end time to use for the data calculation. this value can
-     either be absolute (unix timestamp) or relative (to now)
+	 either be absolute (unix timestamp) or relative (to now)
    @arg $seconds_between_graph_updates - the number of seconds between each update on the graph which
-     varies depending on the RRA in use
+	 varies depending on the RRA in use
    @returns - a string containing the Nth percentile suitable for placing on the graph */
 function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$graph_items, $graph_start, $graph_end) {
 	global $graph_item_types;
@@ -424,6 +429,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 	}
 
 	$gi = array();
+
 	if (cacti_sizeof($graph_items)) {
 		foreach ($graph_items as $item) {
 			if ($item['local_data_id'] > 0 && $item['data_source_name'] != '') {
@@ -437,7 +443,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 
 		foreach ($gi as $data_source => $true) {
 			list($data_source_name, $local_data_id) = explode('|||', $data_source);
-			$local_data_array[$local_data_id][] = $data_source_name;
+			$local_data_array[$local_data_id][]     = $data_source_name;
 		}
 	}
 
@@ -447,13 +453,13 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 			case 'current':
 				// Query data for the individual case
 				$local_data_array = array_intersect_key($local_data_array, array_flip(array($graph_item['local_data_id'])));
-				$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile);
+				$nth_cache        = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile);
 
 				break;
 			case 'max':
 				// Query data for the individual case
 				$local_data_array = array_intersect_key($local_data_array, array_flip(array($graph_item['local_data_id'])));
-				$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, 0, true);
+				$nth_cache        = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, 0, true);
 
 				break;
 			case 'total':
@@ -486,13 +492,13 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 				break;
 			case 'aggregate_current':
 				$local_data_array = array();
+
 				if (!empty($graph_item['data_source_name'])) {
 					foreach ($graph_items as $graph_element) {
 						if ($graph_item['data_source_name'] == $graph_element['data_source_name'] &&
 							!empty($graph_element['data_template_rrd_id']) &&
 							!empty($graph_element['local_data_id']) &&
 							is_graphable_item($graph_item_types[$graph_element['graph_type_id']])) {
-
 							$local_data_array[$graph_element['local_data_id']][] = $graph_element['data_source_name'];
 						}
 					}
@@ -556,25 +562,25 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 }
 
 /* variable_bandwidth_summation - given a bandwidth summation variable, calculate the summation
-     and format it for display on the graph
+	 and format it for display on the graph
    @arg $regexp_match_array - the array that contains each argument in the bandwidth summation variable. it
-     should be formatted like so:
-       $arr[0] // full variable string
-       $arr[1] // power of 10 divisor or 'auto'
-       $arr[2] // current, total
-       $arr[3] // digits of floating point precision
-       $arr[4] // seconds to perform the calculation for or 'auto'
+	 should be formatted like so:
+	   $arr[0] // full variable string
+	   $arr[1] // power of 10 divisor or 'auto'
+	   $arr[2] // current, total
+	   $arr[3] // digits of floating point precision
+	   $arr[4] // seconds to perform the calculation for or 'auto'
    @arg $graph - an array that contains the current graph data
    @arg $graph_item - an array that contains the current graph item
    @arg $graph_items - an array that contains all graph items
    @arg $graph_start - the start time to use for the data calculation. this value can
-     either be absolute (unix timestamp) or relative (to now)
+	 either be absolute (unix timestamp) or relative (to now)
    @arg $graph_end - the end time to use for the data calculation. this value can
-     either be absolute (unix timestamp) or relative (to now)
+	 either be absolute (unix timestamp) or relative (to now)
    @arg $seconds_between_graph_updates - the number of seconds between each update on the graph which
-     varies depending on the RRA in use
+	 varies depending on the RRA in use
    @arg $rra_step - how many periods each sample in the RRA counts for, values above '1' result in an
-     averaged summation
+	 averaged summation
    @arg $ds_step - how many seconds each period represents
    @returns - a string containing the bandwidth summation suitable for placing on the graph */
 function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_item, &$graph_items, $graph_start, $graph_end, $rra_step, $ds_step) {
@@ -586,7 +592,7 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_ite
 
 	if (empty($graph_item['local_data_id'])) {
 		$graph_item['local_data_id'] = 0;
-		$regexp_match_array[2] = 'total';
+		$regexp_match_array[2]       = 'total';
 	}
 
 	if ($graph['base_value'] == 1024) {
@@ -602,6 +608,7 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_ite
 	}
 
 	$summation_cache = array();
+
 	switch($regexp_match_array[2]) {
 		case 'current':
 			$summation_cache[$graph_item['local_data_id']] = bandwidth_summation($graph_item['local_data_id'], $summation_timespan_start, $graph_end, $rra_step, $ds_step);
@@ -699,4 +706,3 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_ite
 		return sprintf('%10s', number_format_i18n($summation, $round_to));
 	}
 }
-

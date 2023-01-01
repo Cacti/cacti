@@ -48,33 +48,44 @@ $config['is_web']          = CACTI_WEB;
 /* used for includes */
 if ($config['cacti_server_os'] == 'win32') {
 	$config['base_path']    = str_replace('\\', '/', substr(__DIR__,0,-8));
-	$config['library_path'] = $config['base_path'] . '/lib';
 } else {
 	$config['base_path']    = preg_replace("/(.*)[\/]include/", '\\1', __DIR__);
-	$config['library_path'] = preg_replace("/(.*[\/])include/", '\\1lib', __DIR__);
 }
 
-$config['include_path'] = __DIR__;
+define('CACTI_PATH_BASE',     $config['base_path']);
 
-/* if the rra path needs to be different, set it */
-if (isset($rra_path)) {
-	$config['rra_path'] = $rra_path;
-} else {
-	$config['rra_path'] = $config['base_path'] . '/rra';
-}
+/* if the cli path needs to be different, set it */
+$config['cache_path']    = $cache_path ?? CACTI_PATH_BASE . '/cache';
+$config['cli_path']      = $cli_path ?? CACTI_PATH_BASE . '/cli';
+$config['docs_path']     = $docs_path ?? CACTI_PATH_BASE . '/docs';
+$config['formats_path']  = $formats_path ?? CACTI_PATH_BASE . '/formats';
+$config['images_path']   = $images_path ?? CACTI_PATH_BASE . '/images';
+$config['include_path']  = $include_path ?? CACTI_PATH_BASE . '/include';
+$config['install_path']  = $install_path ?? CACTI_PATH_BASE . '/install';
+$config['library_path']  = $library_path ?? CACTI_PATH_BASE . '/lib';
+$config['locales_path']  = $locales_path ?? CACTI_PATH_BASE . '/locales';
+$config['log_path']      = $log_path ?? CACTI_PATH_BASE . '/log';
+$config['mibs_path']     = $mibs_path ?? CACTI_PATH_BASE . '/mibs';
+$config['plugins_path']  = $plugins_path ?? CACTI_PATH_BASE . '/plugins';
+$config['resource_path'] = $resource_path ?? CACTI_PATH_BASE . '/resource';
+$config['rra_path']      = $rra_path ?? CACTI_PATH_BASE . '/rra';
+$config['scripts_path']  = $scripts_path ?? CACTI_PATH_BASE . '/scripts';
 
-/* for multiple pollers, we need to know this location */
-if (!isset($scripts_path)) {
-	$config['scripts_path'] = $config['base_path'] . '/scripts';
-} else {
-	$config['scripts_path'] = $scripts_path;
-}
-
-if (!isset($resource_path)) {
-	$config['resource_path'] = $config['base_path'] . '/resource';
-} else {
-	$config['resource_path'] = $resource_path;
-}
+define('CACTI_PATH_CACHE',    $config['cache_path']);
+define('CACTI_PATH_CLI',      $config['cli_path']);
+define('CACTI_PATH_DOCS',     $config['docs_path']);
+define('CACTI_PATH_FORMATS',  $config['formats_path']);
+define('CACTI_PATH_IMAGES',   $config['images_path']);
+define('CACTI_PATH_INCLUDE',  $config['include_path']);
+define('CACTI_PATH_INSTALL',  $config['install_path']);
+define('CACTI_PATH_LIBRARY',  $config['library_path']);
+define('CACTI_PATH_LOCALES',  $config['locales_path']);
+define('CACTI_PATH_LOG',      $config['log_path']);
+define('CACTI_PATH_PLUGINS',  $config['plugins_path']);
+define('CACTI_PATH_RESOURCE', $config['resource_path']);
+define('CACTI_PATH_RRA',      $config['rra_path']);
+define('CACTI_PATH_SCRIPTS',  $config['scripts_path']);
+define('CACTI_PATH_URL',      $config['url_path']);
 
 /* load cacti version from file */
 $cacti_version_file = __DIR__ . '/cacti_version';
@@ -149,6 +160,15 @@ if (isset($config['cacti_version'])) {
 	exit;
 }
 
+/* set URL path */
+if (empty($url_path)) {
+	/* define default url path */
+	$url_path = '/';
+}
+
+$config['url_path'] = $url_path;
+define('URL_PATH', $url_path);
+
 /* Should we allow proxy ip headers? */
 $config['proxy_headers'] = $proxy_headers ?? null;
 
@@ -199,11 +219,6 @@ if (!empty($db_missing_vars)) {
 	die("config.php is $db_missing_vars" . PHP_EOL);
 }
 
-if (empty($url_path)) {
-	/* define default url path */
-	$url_path = '/';
-}
-
 /* set the local for international users */
 setlocale(LC_CTYPE, 'en_US.UTF-8');
 
@@ -239,27 +254,35 @@ if (empty($database_port)) {
 	$database_port = '3306';
 }
 
-/* set URL path */
-if (!isset($url_path)) {
-	$url_path = '';
-}
-$config['url_path'] = $url_path;
-define('URL_PATH', $url_path);
-
 if (isset($input_whitelist)) {
 	$config['input_whitelist'] = $input_whitelist;
 }
 
+/* define required path as constants */
+
+/* define any additional paths as constants */
+foreach ($config as $key => $value) {
+	if (substr($key, -5) == '_path') {
+		$path_name     = substr($key, 0, -5);
+		$constant_name = 'CACTI_PATH_' . strtoupper($path_name);
+
+		if (!defined($constant_name)) {
+			define($constant_name, $value);
+		}
+	}
+}
+
 /* include base modules */
-include_once($config['library_path'] . '/database.php');
-include_once($config['library_path'] . '/functions.php');
-include_once($config['include_path'] . '/global_constants.php');
+include_once(CACTI_PATH_LIBRARY . '/database.php');
+include_once(CACTI_PATH_LIBRARY . '/functions.php');
+include_once(CACTI_PATH_INCLUDE . '/global_constants.php');
+
 define('CACTI_VERSION', format_cacti_version($cacti_version, CACTI_VERSION_FORMAT_SHORT));
 define('CACTI_VERSION_FULL', format_cacti_version($cacti_version, CACTI_VERSION_FORMAT_FULL));
 
-include_once($config['library_path'] . '/html.php');
-include_once($config['library_path'] . '/html_utility.php');
-include_once($config['library_path'] . '/html_validate.php');
+include_once(CACTI_PATH_LIBRARY . '/html.php');
+include_once(CACTI_PATH_LIBRARY . '/html_utility.php');
+include_once(CACTI_PATH_LIBRARY . '/html_validate.php');
 
 $filename = get_current_page();
 
@@ -415,12 +438,14 @@ $log_filename = cacti_log_file();
 if (!is_resource_writable($log_filename)) {
 	print $ps . 'FATAL: System log file is not available for writing. Please ensure: ' . $ul;
 	print $li . 'the log folder is correctly set.' . $il;
+
 	if (CACTI_CLI) {
 		print $li . 'the script was run as the website user. ' . $il;
 	}
 	print $li . 'the log folder is writable by the website user.' . $il;
 	print $li . 'there is enough disk space.' . $il;
 	print $lu . $sp;
+
 	if (CACTI_CLI) {
 		print $ps . 'To run as the website user, use sudo -u <website user> php -q <script file>' . $sp;
 	}
@@ -463,12 +488,12 @@ if ($config['is_web']) {
 
 	/* add additional cookie directives */
 	ini_set('session.cookie_httponly', true);
-	ini_set('session.cookie_path', $config['url_path']);
+	ini_set('session.cookie_path', CACTI_PATH_URL);
 	ini_set('session.use_strict_mode', true);
 
 	$options = array(
 		COOKIE_OPTIONS_HTTPONLY => true,
-		COOKIE_OPTIONS_PATH     => $config['url_path'],
+		COOKIE_OPTIONS_PATH     => CACTI_PATH_URL,
 		COOKIE_OPTIONS_STRICT   => true
 	);
 
@@ -522,9 +547,9 @@ if ($config['is_web']) {
 
 	/* make sure to start only Cacti session at a time */
 	if (!isset($_SESSION[CACTI_CWD])) {
-		$_SESSION[CACTI_CWD] = $config['base_path'];
+		$_SESSION[CACTI_CWD] = CACTI_PATH_BASE;
 	} else {
-		if ($_SESSION[CACTI_CWD] != $config['base_path']) {
+		if ($_SESSION[CACTI_CWD] != CACTI_PATH_BASE) {
 			cacti_session_destroy();
 		}
 	}
@@ -562,7 +587,7 @@ if ((bool)ini_get('register_globals')) {
 
 define('CACTI_DATE_TIME_FORMAT', date_time_format());
 
-include_once($config['include_path'] . '/global_languages.php');
+include_once(CACTI_PATH_INCLUDE . '/global_languages.php');
 
 define('CACTI_VERSION_BRIEF', get_cacti_version_text(false,CACTI_VERSION));
 define('CACTI_VERSION_BRIEF_FULL', get_cacti_version_text(false,CACTI_VERSION_FULL));
@@ -570,23 +595,23 @@ define('CACTI_VERSION_TEXT', get_cacti_version_text(true,CACTI_VERSION));
 define('CACTI_VERSION_TEXT_FULL', get_cacti_version_text(true,CACTI_VERSION_FULL));
 define('CACTI_VERSION_TEXT_CLI', get_cacti_cli_version(true,CACTI_VERSION_FULL));
 
-include_once($config['library_path'] . '/auth.php');
-include_once($config['library_path'] . '/plugins.php');
-include_once($config['include_path'] . '/plugins.php');
-include_once($config['include_path'] . '/global_arrays.php');
-include_once($config['include_path'] . '/global_settings.php');
-include_once($config['include_path'] . '/global_form.php');
-include_once($config['library_path'] . '/html_form.php');
-include_once($config['library_path'] . '/html_filter.php');
-include_once($config['library_path'] . '/variables.php');
-include_once($config['library_path'] . '/mib_cache.php');
-include_once($config['library_path'] . '/poller.php');
-include_once($config['library_path'] . '/snmpagent.php');
-include_once($config['library_path'] . '/aggregate.php');
-include_once($config['library_path'] . '/api_automation.php');
+include_once(CACTI_PATH_LIBRARY . '/auth.php');
+include_once(CACTI_PATH_LIBRARY . '/plugins.php');
+include_once(CACTI_PATH_INCLUDE . '/plugins.php');
+include_once(CACTI_PATH_INCLUDE . '/global_arrays.php');
+include_once(CACTI_PATH_INCLUDE . '/global_settings.php');
+include_once(CACTI_PATH_INCLUDE . '/global_form.php');
+include_once(CACTI_PATH_LIBRARY . '/html_form.php');
+include_once(CACTI_PATH_LIBRARY . '/html_filter.php');
+include_once(CACTI_PATH_LIBRARY . '/variables.php');
+include_once(CACTI_PATH_LIBRARY . '/mib_cache.php');
+include_once(CACTI_PATH_LIBRARY . '/poller.php');
+include_once(CACTI_PATH_LIBRARY . '/snmpagent.php');
+include_once(CACTI_PATH_LIBRARY . '/aggregate.php');
+include_once(CACTI_PATH_LIBRARY . '/api_automation.php');
 
 if ($config['is_web']) {
-	include_once($config['include_path'] . '/csrf.php');
+	include_once(CACTI_PATH_INCLUDE . '/csrf.php');
 
 	/* raise a message and perform a page refresh if we've changed modes */
 	if ($config['poller_id'] > 1) {

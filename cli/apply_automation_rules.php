@@ -24,18 +24,18 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once($config['base_path'] . '/lib/api_automation_tools.php');
-require_once($config['base_path'] . '/lib/api_automation.php');
-require_once($config['base_path'] . '/lib/api_data_source.php');
-require_once($config['base_path'] . '/lib/api_graph.php');
-require_once($config['base_path'] . '/lib/api_device.php');
-require_once($config['base_path'] . '/lib/api_tree.php');
-require_once($config['base_path'] . '/lib/data_query.php');
-require_once($config['base_path'] . '/lib/functions.php');
-require_once($config['base_path'] . '/lib/poller.php');
-require_once($config['base_path'] . '/lib/reports.php');
-require_once($config['base_path'] . '/lib/template.php');
-require_once($config['base_path'] . '/lib/utility.php');
+require_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
+require_once(CACTI_PATH_LIBRARY . '/api_automation.php');
+require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
+require_once(CACTI_PATH_LIBRARY . '/api_graph.php');
+require_once(CACTI_PATH_LIBRARY . '/api_device.php');
+require_once(CACTI_PATH_LIBRARY . '/api_tree.php');
+require_once(CACTI_PATH_LIBRARY . '/data_query.php');
+require_once(CACTI_PATH_LIBRARY . '/functions.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/reports.php');
+require_once(CACTI_PATH_LIBRARY . '/template.php');
+require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 ini_set('max_execution_time', '0');
 
@@ -56,11 +56,11 @@ $description = '';
 $ids         = array();
 
 if (cacti_sizeof($parms)) {
-	foreach($parms as $parameter) {
+	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg = $parameter;
+			$arg   = $parameter;
 			$value = '';
 		}
 
@@ -68,29 +68,37 @@ if (cacti_sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
+
 				break;
 			case '--hostname':
 				$hostname = $value;
+
 				break;
 			case '--description':
 				$description = $value;
+
 				break;
 			case '--ids':
 				$ids = explode(' ', $value);
+
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
+
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
+
 				exit(0);
+
 			default:
-				print "ERROR: Invalid Parameter " . $parameter . PHP_EOL . PHP_EOL;
+				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -99,6 +107,7 @@ if (cacti_sizeof($parms)) {
 // Check for matching like/regex
 if (!cacti_sizeof($ids) && $hostname == '' && $description == '') {
 	print 'FATAL: You must specify either ids, a hostname or host description pattern' . PHP_EOL;
+
 	exit(1);
 }
 
@@ -106,9 +115,10 @@ $sql_where = '';
 
 // Check device id range
 if (cacti_sizeof($ids)) {
-	foreach($ids as $id) {
+	foreach ($ids as $id) {
 		if (!is_numeric($id) || $id <= 0) {
 			print 'FATAL: Device id ' . $id . ' is not a valid device.  Can not continue.' . PHP_EOL;
+
 			exit(1);
 		}
 	}
@@ -131,6 +141,7 @@ if ($hostname != '') {
 }
 
 $dregex = false;
+
 if ($description != '') {
 	$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . '(';
 	$regex = false;
@@ -154,7 +165,7 @@ if (cacti_sizeof($devices)) {
 		print 'DEBUG: Found ' . cacti_sizeof($devices) . ' devices to run automation on' . PHP_EOL;
 	}
 
-	foreach($devices as $device_id) {
+	foreach ($devices as $device_id) {
 		if ($debug) {
 			print 'DEBUG: Running automation for Device ID ' . $device_id . PHP_EOL;
 		}
@@ -178,7 +189,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help () {
+function display_help() {
 	display_version();
 
 	print PHP_EOL;

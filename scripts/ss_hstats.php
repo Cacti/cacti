@@ -26,7 +26,7 @@
 error_reporting(0);
 
 if (!isset($called_by_script_server)) {
-	include_once(dirname(__FILE__) . '/../include/cli_check.php');
+	include_once(__DIR__ . '/../include/cli_check.php');
 
 	array_shift($_SERVER['argv']);
 
@@ -37,28 +37,37 @@ function ss_hstats($host_id = 0, $stat = '') {
 	switch ($stat) {
 		case 'polling_time':
 			$column = $stat;
+
 			break;
 		case 'min_time':
 			$column = $stat;
+
 			break;
 		case 'max_time':
 			$column = $stat;
+
 			break;
 		case 'cur_time':
 			$column = $stat;
+
 			break;
 		case 'avg_time':
 			$column = $stat;
+
 			break;
 		case 'uptime':
 			$column = 'snmp_sysUpTimeInstance';
+
 			break;
 		case 'failed_polls':
 			$column = $stat;
+
 			break;
 		case 'availability':
 			$column = $stat;
+
 			break;
+
 		default:
 			return '0';
 	}

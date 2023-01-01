@@ -33,7 +33,7 @@ function upgrade_to_1_1_36() {
 	$users_to_update = $users_to_update_results['data'];
 
 	if (cacti_sizeof($users_to_update)) {
-		foreach($users_to_update as $user) {
+		foreach ($users_to_update as $user) {
 			if (strpos($user['value'], '-') === false) {
 				$locale = repair_locale($user['value']);
 
@@ -52,7 +52,7 @@ function upgrade_to_1_1_36() {
 	$groups_to_update = $groups_to_update_results['data'];
 
 	if (cacti_sizeof($groups_to_update)) {
-		foreach($groups_to_update as $group) {
+		foreach ($groups_to_update as $group) {
 			if (strpos($group['value'], '-') === false) {
 				$locale = repair_locale($group['value']);
 
@@ -65,4 +65,3 @@ function upgrade_to_1_1_36() {
 		}
 	}
 }
-
