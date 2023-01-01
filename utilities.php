@@ -107,18 +107,18 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'purge_data_source_statistics':
-	purge_data_source_statistics();
-	raise_message('purge_dss', __('Data Source Statistics Purged.'), MESSAGE_LEVEL_INFO);
-	header('Location: utilities.php');
+		purge_data_source_statistics();
+		raise_message('purge_dss', __('Data Source Statistics Purged.'), MESSAGE_LEVEL_INFO);
+		header('Location: utilities.php');
 
-	break;
+		break;
 	case 'rebuild_snmpagent_cache':
-	snmpagent_cache_rebuilt();
-	header('Location: utilities.php?action=view_snmpagent_cache');
+		snmpagent_cache_rebuilt();
+		header('Location: utilities.php?action=view_snmpagent_cache');
 
-	exit;
+		exit;
 
-	break;
+		break;
 	case 'view_snmpagent_events':
 		top_header();
 		snmpagent_utilities_run_eventlog();

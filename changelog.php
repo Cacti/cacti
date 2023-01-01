@@ -187,9 +187,9 @@ function changelog_view() {
 							break;
 
 						default:
-						$icon = '<i class="far fa-question-circle"></i>';
+							$icon = '<i class="far fa-question-circle"></i>';
 
-						break;
+							break;
 					}
 
 					if ($current_tab == 'full' || $highlight) {

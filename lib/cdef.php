@@ -34,19 +34,19 @@ function get_cdef_item_name($cdef_item_id) {
 	switch ($cdef_item['type']) {
 		case '1': return $cdef_functions[$current_cdef_value];
 
-		break;
+			break;
 		case '2': return $cdef_operators[$current_cdef_value];
 
-		break;
+			break;
 		case '4': return $current_cdef_value;
 
-		break;
+			break;
 		case '5': return db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', array($current_cdef_value));
 
-		break;
+			break;
 		case '6': return $current_cdef_value;
 
-		break;
+			break;
 	}
 }
 

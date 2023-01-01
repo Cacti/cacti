@@ -44,48 +44,6 @@ if (defined('CACTI_CLI_ONLY') && CACTI_WEB) {
 $config['cacti_server_os'] = (strstr(PHP_OS, 'WIN')) ? 'win32' : 'unix';
 $config['is_web']          = CACTI_WEB;
 
-/* define cacti version */
-/* used for includes */
-if ($config['cacti_server_os'] == 'win32') {
-	$config['base_path']    = str_replace('\\', '/', substr(__DIR__,0,-8));
-} else {
-	$config['base_path']    = preg_replace("/(.*)[\/]include/", '\\1', __DIR__);
-}
-
-define('CACTI_PATH_BASE',     $config['base_path']);
-
-/* if the cli path needs to be different, set it */
-$config['cache_path']    = $cache_path ?? CACTI_PATH_BASE . '/cache';
-$config['cli_path']      = $cli_path ?? CACTI_PATH_BASE . '/cli';
-$config['docs_path']     = $docs_path ?? CACTI_PATH_BASE . '/docs';
-$config['formats_path']  = $formats_path ?? CACTI_PATH_BASE . '/formats';
-$config['images_path']   = $images_path ?? CACTI_PATH_BASE . '/images';
-$config['include_path']  = $include_path ?? CACTI_PATH_BASE . '/include';
-$config['install_path']  = $install_path ?? CACTI_PATH_BASE . '/install';
-$config['library_path']  = $library_path ?? CACTI_PATH_BASE . '/lib';
-$config['locales_path']  = $locales_path ?? CACTI_PATH_BASE . '/locales';
-$config['log_path']      = $log_path ?? CACTI_PATH_BASE . '/log';
-$config['mibs_path']     = $mibs_path ?? CACTI_PATH_BASE . '/mibs';
-$config['plugins_path']  = $plugins_path ?? CACTI_PATH_BASE . '/plugins';
-$config['resource_path'] = $resource_path ?? CACTI_PATH_BASE . '/resource';
-$config['rra_path']      = $rra_path ?? CACTI_PATH_BASE . '/rra';
-$config['scripts_path']  = $scripts_path ?? CACTI_PATH_BASE . '/scripts';
-
-define('CACTI_PATH_CACHE',    $config['cache_path']);
-define('CACTI_PATH_CLI',      $config['cli_path']);
-define('CACTI_PATH_DOCS',     $config['docs_path']);
-define('CACTI_PATH_FORMATS',  $config['formats_path']);
-define('CACTI_PATH_IMAGES',   $config['images_path']);
-define('CACTI_PATH_INCLUDE',  $config['include_path']);
-define('CACTI_PATH_INSTALL',  $config['install_path']);
-define('CACTI_PATH_LIBRARY',  $config['library_path']);
-define('CACTI_PATH_LOCALES',  $config['locales_path']);
-define('CACTI_PATH_LOG',      $config['log_path']);
-define('CACTI_PATH_PLUGINS',  $config['plugins_path']);
-define('CACTI_PATH_RESOURCE', $config['resource_path']);
-define('CACTI_PATH_RRA',      $config['rra_path']);
-define('CACTI_PATH_SCRIPTS',  $config['scripts_path']);
-
 /* load cacti version from file */
 $cacti_version_file = __DIR__ . '/cacti_version';
 
@@ -159,16 +117,8 @@ if (isset($config['cacti_version'])) {
 	exit;
 }
 
-/* set URL path */
-if (empty($url_path)) {
-	/* define default url path */
-	$url_path = '/';
-}
-
-$config['url_path'] = $url_path;
-
-define('URL_PATH',       $url_path);
-define('CACTI_PATH_URL', $url_path);
+/* Define global paths */
+include_once(__DIR__ . '/global_path.php');
 
 /* Should we allow proxy ip headers? */
 $config['proxy_headers'] = $proxy_headers ?? null;
@@ -688,16 +638,6 @@ if ($config['is_web']) {
 
 		cacti_time_zone_set($gmt_offset);
 	}
-}
-
-$path_php = read_config_option('path_php_binary');
-
-if ($path_php != '') {
-	define('CACTI_PATH_PHP', $path_php);
-} elseif ($config['cacti_server_os'] == 'unix') {
-	define('CACTI_PATH_PHP', '/usr/bin/php');
-} else {
-	define('CACTI_PATH_PHP', 'C:/php/php.exe');
 }
 
 api_plugin_hook('config_insert');

@@ -36,10 +36,11 @@ set_error_handler('error_handler');
 ini_set('max_execution_time', '0');
 
 // define base path of Cacti
-define('CACTI_PATH', str_replace('/tests/tools', '', dirname(__FILE__)));
+define('CACTI_PATH', str_replace('/tests/tools', '', str_replace('\\','/', __DIR__)));
 
 global $config;
 $config = array('base_path' => CACTI_PATH);
+include_once(CACTI_PATH . '/include/global_path.php');
 
 // pre-flush output buffer to avoid header warning
 flush();

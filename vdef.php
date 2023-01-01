@@ -336,7 +336,7 @@ function vdef_item_remove_confirm() {
 			<p><?php print __('Click \'Continue\' to delete the following VDEF\'s.'); ?></p>
 			<p><?php print __esc('VDEF Name: %s', $vdef['name']);?><br>
 			<em><?php $vdef_item_type = $vdef_item['type'];
-			print $vdef_item_types[$vdef_item_type];?></em>: <strong><?php print html_escape(get_vdef_item_name($vdef_item['id']));?></strong></p>
+	print $vdef_item_types[$vdef_item_type];?></em>: <strong><?php print html_escape(get_vdef_item_name($vdef_item['id']));?></strong></p>
 		</td>
 	</tr>
 	<tr>
@@ -635,23 +635,23 @@ function vdef_edit() {
 				</td>
 				<td>
 					<em><?php $vdef_item_type = $vdef_item['type'];
-					print $vdef_item_types[$vdef_item_type];?></em>: <strong><?php print html_escape(get_vdef_item_name($vdef_item['id']));?></strong>
+				print $vdef_item_types[$vdef_item_type];?></em>: <strong><?php print html_escape(get_vdef_item_name($vdef_item['id']));?></strong>
 				</td>
 				<td class='right'>
 					<?php
-					if (read_config_option('drag_and_drop') == '') {
-						if ($i < $total_items && $total_items > 1) {
-							print '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('vdef.php?action=item_movedown&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Down') . '"></a>';
-						} else {
-							print '<span class="moveArrowNone"></span>';
-						}
-
-						if ($i > 1 && $i <= $total_items) {
-							print '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('vdef.php?action=item_moveup&id=' . $vdef_item['id'] .	'&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
-						} else {
-							print '<span class="moveArrowNone"></span>';
-						}
+				if (read_config_option('drag_and_drop') == '') {
+					if ($i < $total_items && $total_items > 1) {
+						print '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('vdef.php?action=item_movedown&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Down') . '"></a>';
+					} else {
+						print '<span class="moveArrowNone"></span>';
 					}
+
+					if ($i > 1 && $i <= $total_items) {
+						print '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('vdef.php?action=item_moveup&id=' . $vdef_item['id'] .	'&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
+					} else {
+						print '<span class="moveArrowNone"></span>';
+					}
+				}
 				?>
 					<a id='<?php print $vdef['id'] . '_' . $vdef_item['id'];?>' class='delete deleteMarker fa fa-times' title='<?php print __esc('Delete VDEF Item');?>'></a>
 				</td>

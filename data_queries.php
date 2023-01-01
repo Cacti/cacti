@@ -750,7 +750,7 @@ function data_query_item_edit() {
 									</td>
 									<td class='right'>
 										<?php form_checkbox('dsdt_' . $data_template['id'] . '_' . $data_template_rrd['id'] . '_check', $old_value, '', '', '', get_request_var('id'), '', __('If this Graph Template requires the Data Template Data Source to the left, select the correct XML output column and then to enable the mapping either check or toggle here.'));
-										print '<br>';?>
+						print '<br>';?>
 									</td>
 								</tr>
 							</table>
