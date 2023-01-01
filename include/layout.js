@@ -2042,7 +2042,7 @@ function menuShow() {
 	var storage = Storages.localStorage;
 	var myClass = '';
 
-	if (!userMenuNavigationExists(pageName)) {
+	if (!userMenuNavigationExists(pageName) && pageName != 'graph_view.php') {
 		$('#navigation').hide();
 		storage.set('menuState_' + pageName, 'hidden');
 		return;
