@@ -85,7 +85,6 @@ define('CACTI_PATH_PLUGINS',  $config['plugins_path']);
 define('CACTI_PATH_RESOURCE', $config['resource_path']);
 define('CACTI_PATH_RRA',      $config['rra_path']);
 define('CACTI_PATH_SCRIPTS',  $config['scripts_path']);
-define('CACTI_PATH_URL',      $config['url_path']);
 
 /* load cacti version from file */
 $cacti_version_file = __DIR__ . '/cacti_version';
@@ -167,7 +166,8 @@ if (empty($url_path)) {
 }
 
 $config['url_path'] = $url_path;
-define('URL_PATH', $url_path);
+define('URL_PATH',       $url_path);
+define('CACTI_PATH_URL', $url_path);
 
 /* Should we allow proxy ip headers? */
 $config['proxy_headers'] = $proxy_headers ?? null;
