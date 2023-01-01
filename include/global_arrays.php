@@ -979,11 +979,11 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 	$menu = array(
 		__('Main Console') => array(
 			'index.php' => __('Console Page')
-			),
+		),
 		__('Create') => array(
 			'graphs_new.php'                   => __('New Graphs'),
 			'host.php?action=edit&create=true' => __('New Device')
-			),
+		),
 		__('Management') => array(
 			'host.php'             => __('Devices'),
 			'sites.php'            => __('Sites'),
@@ -991,19 +991,19 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			'graphs.php'           => __('Graphs'),
 			'data_sources.php'     => __('Data Sources'),
 			'aggregate_graphs.php' => __('Aggregates'),
-			),
+		),
 		__('Data Collection') => array(
 			'pollers.php'      => __('Data Collectors'),
 			'data_queries.php' => __('Data Queries'),
 			'data_input.php'   => __('Data Input Methods')
-			),
+		),
 		__('Templates') => array(
 			'host_templates.php'      => __('Device'),
 			'graph_templates.php'     => __('Graph'),
 			'data_templates.php'      => __('Data Source'),
 			'aggregate_templates.php' => __('Aggregate'),
 			'color_templates.php'     => __('Color')
-			),
+		),
 		__('Automation') => array(
 			'automation_networks.php'    => __('Networks'),
 			'automation_devices.php'     => __('Discovered Devices'),
@@ -1011,30 +1011,30 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			'automation_graph_rules.php' => __('Graph Rules'),
 			'automation_tree_rules.php'  => __('Tree Rules'),
 			'automation_snmp.php'        => __('SNMP Options'),
-			),
+		),
 		__('Presets') => array(
 			'data_source_profiles.php' => __('Data Profiles'),
 			'cdef.php'                 => __('CDEFs'),
 			'vdef.php'                 => __('VDEFs'),
 			'color.php'                => __('Colors'),
 			'gprint_presets.php'       => __('GPRINTs')
-			),
+		),
 		__('Import/Export') => array(
 			'templates_import.php' => __('Import Templates'),
 			'package_import.php'   => __('Import Packages'),
 			'templates_export.php' => __('Export Templates')
-			),
+		),
 		__('Configuration')  => array(
 			'settings.php'         => __('Settings'),
 			'user_admin.php'       => __('Users'),
 			'user_group_admin.php' => __('User Groups'),
 			'user_domains.php'     => __('User Domains')
-			),
+		),
 		__('Utilities') => array(
 			'utilities.php'  => __('System Utilities'),
 			'links.php'      => __('External Links'),
 			'user_log.php'   => __('User Log'),
-			),
+		),
 		__('Troubleshooting') => array(
 			'data_debug.php' => __('Data Sources'),
 			'support.php'    => __('Technical Info'),
@@ -1045,17 +1045,17 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 	$menu = array(
 		__('Management') => array(
 			'host.php' => __('Devices'),
-			),
+		),
 		__('Data Collection') => array(
 			'pollers.php' => __('Data Collectors'),
-			),
+		),
 		__('Configuration')  => array(
 			'settings.php' => __('Settings'),
-			),
+		),
 		__('Utilities') => array(
 			'utilities.php' => __('System Utilities'),
 			'user_log.php'  => __('User Log'),
-			)
+		)
 	);
 }
 
