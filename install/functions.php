@@ -190,7 +190,17 @@ function db_install_execute($sql, $params = array(), $log = true) {
 	return $status;
 }
 
-function db_install_fetch_function($func, $sql, $params = array(), $log = true) {
+/**
+ * Provides databaase fetch functions during install
+ *
+ * @param  string   $func
+ * @param  string   $sql
+ * @param  array    $params
+ * @param  boolean  $log
+ *
+ * @return array
+ */
+function db_install_fetch_function(string $func, string $sql, array $params = array(), bool $log = true): array {
 	global $database_last_error;
 
 	$database_last_error = false;
