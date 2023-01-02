@@ -4855,7 +4855,7 @@ function general_header() {
 	include_once(CACTI_PATH_INCLUDE . '/top_general_header.php');
 }
 
-function admin_email($subject, $message) {
+function admin_email(string $subject, string $message) : bool {
 	$result = false;
 
 	if (read_config_option('admin_user') > 0) {
@@ -4896,7 +4896,7 @@ function admin_email($subject, $message) {
 	return $result;
 }
 
-function send_mail($to, $from = null, string $subject = null, string $body = null, ?array $attachments = array(), ?array $headers = array(), bool $html = false, $expandIds = false): string {
+function send_mail(array|string $to, string|array|null $from = null, string $subject = null, string $body = null, ?array $attachments = array(), ?array $headers = array(), bool $html = false, $expandIds = false): string {
 	$fromname = '';
 
 	if (is_array($from)) {
@@ -4926,22 +4926,7 @@ function send_mail($to, $from = null, string $subject = null, string $body = nul
 }
 
 /**
- * mailer - function to send mails to users
- *
- * @param $from        - single contact (see below)
- * @param $to          - single or multiple contacts (see below)
- * @param $cc          - none, single or multiple contacts (see below)
- * @param $bcc         - none, single or multiple contacts (see below)
- * @param $replyto     - none, single or multiple contacts (see below)
- *                       note that this value is used when hitting reply (overriding the default of using from)
- * @param $subject     - the email subject
- * @param $body        - the email body, in HTML format.  If content_text is not set, the function will attempt to extract
- *                       from the HTML format.
- * @param $body_text   - the email body in TEXT format.  If set, it will override the stripping tags method
- * @param $attachments - the emails attachments as an array
- * @param $headers     - an array of name value pairs representing custom headers.
- * @param $html        - if set to true, html is the default, otherwise text format will be used
- * @param $expandIds   - Find log style xxx[nn] and expand to full names
+ * function to send mails to users
  *
  * For contact parameters, they can accept arrays containing zero or more values in the forms of:
  *     'email@email.com,email2@email.com,email3@email.com'
@@ -4963,15 +4948,34 @@ function send_mail($to, $from = null, string $subject = null, string $body = nul
  *               and requires $body parameter is HTML containing one of those values)
  * inline      : Whether to attach 'inline' (default for graph mode) or as 'attachment' (default for all others)
  * encoding    : Encoding type, normally base64
+ *
+ * @param  array|string           $from                Email/name to send form
+ * @param  array|string           $to                  single or multiple contacts in array or string form
+ * @param  null|array|string      $cc                  none, single or multiple contacts
+ * @param  null|array|string      $bcc                 none, single or multiple contacts
+ * @param  null|array|string      $replyto             none, single or multiple contacts
+ * @param  null|string            $subject             Messgae subject
+ * @param  null|string            $body                Message body, in HTML format
+ * @param  null|string            $body_text           Messgae body, in TEXT format
+ * @param  null|array             $attachments         Attachments to send
+ * @param  null|array             $headers             Custom headers
+ * @param  boolean                $html                Assume HTML format
+ * @param  boolean                $expandIds           Find log style xxx[nn] and expand to full names
+ *
+ * @return string
+ *
  */
-function mailer(null|array|string $from, null|array|string $to, null|array|string $cc = null, null|array|string $bcc = null, null|array|string $replyto = null, string $subject, string $body, ?string $body_text = null, ?array $attachments = array(), ?array $headers = array(), bool $html = true, bool $expandIds = false): string {
-	global $config, $cacti_locale, $mail_methods;
+function mailer(array|string $from, array|string $to, null|array|string $cc = null, null|array|string $bcc = null, null|array|string $replyto = null, null|string $subject = null, null|string $body = null, null|string $body_text = null, null|array $attachments = array(), null|array $headers = array(), bool $html = true, bool $expandIds = false): string {
+	global $cacti_locale, $mail_methods;
 
 	require_once(CACTI_PATH_INCLUDE . '/vendor/phpmailer/src/Exception.php');
 	require_once(CACTI_PATH_INCLUDE . '/vendor/phpmailer/src/PHPMailer.php');
 	require_once(CACTI_PATH_INCLUDE . '/vendor/phpmailer/src/SMTP.php');
 
 	$start_time = microtime(true);
+
+	$subject = $subject ?? '';
+	$body    = $body    ?? '';
 
 	// Create the PHPMailer instance
 	$mail = new PHPMailer\PHPMailer\PHPMailer;
