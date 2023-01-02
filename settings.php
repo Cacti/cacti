@@ -809,7 +809,7 @@ switch (get_request_var('action')) {
 					var smtpMode = $('#settings_how').val();
 					if (smtpMode == '0') {
 						$('#settings_sendmail_path').val('');
-					} else if (smptMode == '1') {
+					} else if (smtpMode == '1') {
 						if (smtpPath != '') {
 							$('#settings_sendmail_path').val(smtpPath);
 						}
