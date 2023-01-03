@@ -24,35 +24,60 @@
 # Ignore vim swap files
 *.swp
 *.rnd
+
 # Ignore Cacti config
 include/config.php
+
 # Ignore Cacti log files/folders
 log/**
+
 # Ignore Cacti rrd files/folders
 rra/**
+
 # Ignore Cacti cache files/folders
 cache/**
+*.cache
+
 # Ignore Cacti plugin files/folders
 plugins/**
+
 # Ignore Cacti script files/folders
 scripts/**
+
 # Ignore Custom Cacti theme folders
 include/themes/*
+
 # Ignore custom stylesheet (applied on all themes)
 include/themes/custom.css
+
 # Do not ignore standard Cacti theme folders
+!include/themes/cacti
+!include/themes/carrot
 !include/themes/classic
 !include/themes/dark
+!include/themes/hollyberry
 !include/themes/modern
 !include/themes/paper-plane
 !include/themes/paw
+!include/themes/raspberry
 !include/themes/sunrise
 !include/themes/midwinter
+
 # Ignore any mac DS_Store files
 .DS_Store
-# Ignore locales
+
+# Ignore .well-known folders (certbot)
+.well-known
+
+# Ignore language files
 locales/po/*.mo
-# Ignore CSRF secret
+
+# Ignore CSRF secret file
 include/vendor/csrf/csrf-secret.php
-# Ignore visual studio code 
+
+# Ignore visual studio code
 .vscode/**
+
+# Ignore vendor folders
+include/vendor/*
+vendor/*
