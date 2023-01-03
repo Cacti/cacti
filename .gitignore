@@ -23,6 +23,7 @@
 
 # Ignore vim swap files
 *.swp
+*.rnd
 # Ignore Cacti config
 include/config.php
 # Ignore Cacti log files/folders
@@ -49,5 +50,9 @@ include/themes/custom.css
 !include/themes/midwinter
 # Ignore any mac DS_Store files
 .DS_Store
+# Ignore locales
 locales/po/*.mo
+# Ignore CSRF secret
 include/vendor/csrf/csrf-secret.php
+# Ignore visual studio code 
+.vscode/**

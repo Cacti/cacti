@@ -6,6 +6,11 @@ labels: 'bug,unverified'
 assignees: ''
 
 ---
+<!--
+ #
+ # Copyright (C) 2004-2023 The Cacti Group
+ #
+-->
 # Describe the bug
 
 A clear and concise description of what the bug is.
