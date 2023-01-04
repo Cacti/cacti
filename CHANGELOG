@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.2.24
+-issue#5127: Importing Local_Linux_Machine.xml.gz template raises PHP error
+
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
 -security#5119: CVE-2022-46169 Unauthenticated Command Injection in Remote Agent
