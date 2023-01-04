@@ -2456,7 +2456,8 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 				continue;
 			}
 
-			print PHP_EOL . "<p><strong>" . $hash_type_names[$type] . "</strong></p>" . PHP_EOL;
+			$type_name = !empty($hash_type_names[$type]) ? $hash_type_names[$type] : "Unknown type: $type";
+			print PHP_EOL . "<p><strong>" . $type_name . "</strong></p>" . PHP_EOL;
 
 			foreach ($type_array as $index => $vals) {
 				if ($vals['result'] == 'success') {
