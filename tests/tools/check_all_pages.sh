@@ -224,7 +224,7 @@ save_log_files() {
 			cp -f "$logFile1" "${logBase}/wget_error.log"
 		fi
 
-		chmod a+r "${logBase}/*.log"
+		chmod a+r -R "${logBase}/"
 
 		if [ $DEBUG -eq 1 ];then
 			echo "DEBUG: Dumping ${CACTI_LOG}"
