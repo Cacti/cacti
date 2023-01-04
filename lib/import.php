@@ -2489,29 +2489,34 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 
 		if (cacti_sizeof($filestatus)) {
 			if ($preview) {
-				print "<tr class='odd'><td><p class='textArea'>" . __('Cacti would make the following changes if the Package was imported:') . '</p>';
+				print "<tr class='odd'><td><p class='textArea'>" . __('Cacti would make the following changes if the Package was imported:') . '</p>' . PHP_EOL;
 			} else {
-				print "<tr class='odd'><td><p class='textArea'>" . __('Cacti has imported the following items for the Package:') . '</p>';
+				print "<tr class='odd'><td><p class='textArea'>" . __('Cacti has imported the following items for the Package:') . '</p>' . PHP_EOL;
 			}
 
-			print '<p><strong>' . __('Package Files') . '</strong></p>';
+			print "<p><strong>" . __('Package Files') . "</strong></p>" . PHP_EOL;
 
-			print '<ul>';
+			print '<ul>' . PHP_EOL;
 
-			foreach ($filestatus as $filename => $status) {
-				print '<li>' . ($preview ? __('[preview] '):'') . html_escape($filename) . ' [' . $status . ']</li>';
+			foreach($filestatus as $filename => $status) {
+				print '<li>' . ($preview ? __("[preview] "):"") . html_escape($filename) . ' [' . $status . ']</li>' . PHP_EOL;
 			}
-			print '</ul>';
+
+			print '</ul>' . PHP_EOL;
 		} else {
 			if ($preview) {
-				print "<tr class='odd'><td><p class='textArea'>" . __('Cacti would make the following changes if the Template was imported:') . '</p>';
+				print "<tr class='odd'><td><p class='textArea'>" . __('Cacti would make the following changes if the Template was imported:') . '</p>' . PHP_EOL;
 			} else {
-				print "<tr class='odd'><td><p class='textArea'>" . __('Cacti has imported the following items for the Template:') . '</p>';
+				print "<tr class='odd'><td><p class='textArea'>" . __('Cacti has imported the following items for the Template:') . '</p>' . PHP_EOL;
 			}
 		}
 
 		foreach ($import_debug_info as $type => $type_array) {
-			print '<p><strong>' . $hash_type_names[$type] . '</strong></p>';
+			if ($type == 'files') {
+				continue;
+			}
+
+			print PHP_EOL . "<p><strong>" . $hash_type_names[$type] . "</strong></p>" . PHP_EOL;
 
 			foreach ($type_array as $index => $vals) {
 				if ($vals['result'] == 'success') {
@@ -2523,40 +2528,43 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 				}
 
 				if ($vals['type'] == 'updated') {
-					$type_text = "<span class='updateObject'>" . __('[updated]') . '</span>';
+					$type_text = "<span class='updateObject'>" . __('[updated]') . '</span>' . PHP_EOL;
 				} elseif ($vals['type'] == 'new') {
-					$type_text = "<span class='newObject'>" . __('[new]') . '</span>';
+					$type_text = "<span class='newObject'>" . __('[new]') . '</span>' . PHP_EOL;
 				} else {
-					$type_text = "<span class='deviceUp'>" . __('[unchanged]') . '</span>';
+					$type_text = "<span class='deviceUp'>" . __('[unchanged]') . '</span>' . PHP_EOL;
 				}
 
-				print "<span class='monoSpace'>$result_text " . html_escape($vals['title']) . " $type_text</span><br>";
+				print "<span class='monoSpace'>$result_text " . html_escape($vals['title']) . " $type_text</span><br>" . PHP_EOL;
 
 				if (isset($vals['orphans'])) {
-					print '<ul class="monoSpace">';
+					print '<ul class="monoSpace">' . PHP_EOL;
 
-					foreach ($vals['orphans'] as $orphan) {
-						print '<li>' . html_escape($orphan) . '</li>';
+					foreach($vals['orphans'] as $orphan) {
+						print '<li>' . html_escape($orphan) . '</li>' . PHP_EOL;
 					}
-					print '</ul>';
+
+					print '</ul>' . PHP_EOL;
 				}
 
 				if (isset($vals['new_items'])) {
-					print '<ul class="monoSpace">';
+					print '<ul class="monoSpace">' . PHP_EOL;
 
-					foreach ($vals['new_items'] as $item) {
-						print '<li>' . html_escape($item) . '</li>';
+					foreach($vals['new_items'] as $item) {
+						print '<li>' . html_escape($item) . '</li>' . PHP_EOL;
 					}
-					print '</ul>';
+
+					print '</ul>' . PHP_EOL;
 				}
 
 				if (isset($vals['differences'])) {
-					print '<ul class="monoSpace">';
+					print '<ul class="monoSpace">' . PHP_EOL;
 
-					foreach ($vals['differences'] as $diff) {
-						print '<li>' . $diff . '</li>';
+					foreach($vals['differences'] as $diff) {
+						print '<li>' . $diff . '</li>' . PHP_EOL;
 					}
-					print '</ul>';
+
+					print '</ul>' . PHP_EOL;
 				}
 
 				if (!$preview) {
@@ -2566,13 +2574,13 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 					if ((isset($vals['dep'])) && (cacti_sizeof($vals['dep']) > 0)) {
 						foreach ($vals['dep'] as $dep_hash => $dep_status) {
 							if ($dep_status == 'met') {
-								$dep_status_text = "<span class='foundDependency'>" . __('Found Dependency:') . '</span>';
+								$dep_status_text = "<span class='foundDependency'>" . __('Found Dependency:') . '</span>' . PHP_EOL;
 							} elseif (array_search($dep_hash, $ignorable_hashes, true) === false) {
-								$dep_status_text = "<span class='unmetDependency'>" . __('Unmet Dependency:') . '</span>';
+								$dep_status_text = "<span class='unmetDependency'>" . __('Unmet Dependency:') . '</span>' . PHP_EOL;
 								$dep_errors      = true;
 							}
 
-							$dep_text .= "<span class='monoSpace'>&nbsp;&nbsp;&nbsp;+ $dep_status_text " . hash_to_friendly_name($dep_hash, true) . '</span><br>';
+							$dep_text .= "<span class='monoSpace'>&nbsp;&nbsp;&nbsp;+ $dep_status_text " . hash_to_friendly_name($dep_hash, true) . "</span><br>" . PHP_EOL;
 						}
 					}
 
@@ -2584,7 +2592,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 			}
 		}
 
-		print '</td></tr>';
+		print '</td></tr>' . PHP_EOL;
 
 		html_end_box();
 	}
@@ -2600,7 +2608,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 				$line = trim(str_replace('&nbsp;', '', strip_tags($line)));
 
 				if ($line != '') {
-					print $line . "\n";
+					print $line . PHP_EOL;
 				}
 			}
 		}
