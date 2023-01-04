@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////
 /* UAParser.js v1.0.2
-   Copyright © 2012-2021 Faisal Salman <f@faisalman.com>
+   Copyright © 2004-2023 Faisal Salman <f@faisalman.com>
    MIT License *//*
    Detect Browser, Engine, OS, CPU, and Device type/model from User-Agent data.
    Supports browser & node.js environment. 

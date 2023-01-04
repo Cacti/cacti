@@ -12,6 +12,9 @@
 
 ## Reporting a Vulnerability
 
-Please use either GitHub's private vulnerability reporting or send an email to developers@cacti.net.  We will aim to respond within a few days and accept any PoC's that demonstrate how to test for the vulnerability.  
+Please use either GitHub's private vulnerability reporting or send an email to developers@cacti.net.  We will aim to respond within a few days and accept any PoC's that demonstrate how to test for the vulnerability.
 
 We wlil remove an PoC from published advisory's were possible and will advise to this effect when doing so.
+
+---
+Copyright (c) 2004-2023 - The Cacti Group, Inc.
