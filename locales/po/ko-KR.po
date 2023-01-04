@@ -13053,7 +13053,7 @@ msgstr "이메일이 표시 될 실제 이름입니다."
 
 #: include/global_settings.php:1894
 msgid "Word Wrap"
-msgstr "(c) 2000- 2005 Kate ìì±ì"
+msgstr "(c) 2004-2023 Kate ìì±ì"
 
 #: include/global_settings.php:1895
 #, fuzzy
