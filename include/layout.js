@@ -755,7 +755,11 @@ function applySkin() {
 
 		// debounce submits
 		$('form').submit(function () {
-			$('input[type="submit"], button[type="submit"]').not('.import, .export').button('disable');
+			if (theme != 'classic') {
+				$('input[type="submit"], button[type="submit"]').not('.import, .export').button('disable');
+			} else {
+				$('input[type="submit"], button[type="submit"]').not('.import, .export').prop('disabled', true);
+			}
 		});
 	}
 
@@ -4659,7 +4663,6 @@ function checkSNMPPassphraseConfirm(type) {
 }
 
 (function ($) {
-
 	$.textMetrics = function (el) {
 
 		var h = 0, w = 0;
@@ -4692,7 +4695,6 @@ function checkSNMPPassphraseConfirm(type) {
 
 		return ret;
 	}
-
 })(jQuery);
 
 function basename(path) {
@@ -4739,11 +4741,19 @@ function formValidate(formId, href) {
 				$(element).parents("div.formData").removeClass("txtErrorTextBox"); // .removeClass(errorClass).addClass(validClass);
 			},
 			submitHandler: function (form) {
-				$('input[type="submit"], button[type="submit"]').not('.import, .export').button('disable');
+				if (theme != 'classic') {
+					$('input[type="submit"], button[type="submit"]').not('.import, .export').button('disable');
+				} else {
+					$('input[type="submit"], button[type="submit"]').not('.import, .export').prop('disabled', true);
+				}
 
 				var json = $(form).serializeObject();
 				postUrl({ url: href }, json).always(function () {
-					$('input[type="submit"], button[type="submit"]').not('.import, .export').button('enable');
+					if (theme != 'classic') {
+						$('input[type="submit"], button[type="submit"]').not('.import, .export').button('enable');
+					} else {
+						$('input[type="submit"], button[type="submit"]').not('.import, .export').prop('disabled', false);
+					}
 				});
 			},
 			invalidHandler: function (event, validator) {
@@ -4758,7 +4768,12 @@ function formValidate(formId, href) {
 				} else {
 					$("div.error").hide();
 				}
-				$('input[type="submit"], button[type="submit"]').not('.import, .export').button('enabled');
+
+				if (theme != 'classic') {
+					$('input[type="submit"], button[type="submit"]').not('.import, .export').button('enabled');
+				} else {
+					$('input[type="submit"], button[type="submit"]').not('.import, .export').prop('disabled', false);
+				}
 			}
 		});
 	}
