@@ -387,7 +387,7 @@ html_auth_footer('login', $error_message, "
 			$('.cactiAuthLeft').css('width',parseInt($(window).width()*0.33)+'px');
 			$('.cactiAuthRight').css('width',parseInt($(window).width()*0.33)+'px');
 			$('#login_${focus_control}').focus();
-		$(function() {
+
 			if (storage.isSet('user_realm')) {
 				var preferredRealm = storage.get('user_realm');
 			} else {
