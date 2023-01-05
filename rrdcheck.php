@@ -92,7 +92,7 @@ function rrdcheck_display_problems() {
 			)
 	);
 
-	validate_store_request_vars($filters, 'sess_rrdc');
+	validate_store_request_vars($filters, 'sess_rrdcr');
 
 	/* ================= input validation and session storage ================= */
 

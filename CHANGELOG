@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.24
 -issue#5127: Importing Local_Linux_Machine.xml.gz template raises PHP error
+-issue#5135: Error in using RRDcleaner an RRDcheck causing SQL errors
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
