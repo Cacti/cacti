@@ -49,6 +49,12 @@ Cacti CHANGELOG
 -feature#5083: Make user log ask for confirmation on purge
 -feature#5120: Define cacti system paths as constants for better code checking
 
+1.2.24
+-issue#5127: Importing Local_Linux_Machine.xml.gz template raises PHP error
+-issue#5134: Display of "Memory Limit" on Boost Status page shows -1 and not "Unlimited"
+-issue#5135: Error in using RRDcleaner an RRDcheck causing SQL errors
+-issue#5137: When attempting to update structured paths, SQL errors occur
+
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
 -security#XXXX: CVE-2022-46169 Unauthenticated Command Injection in Remote Agent

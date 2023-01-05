@@ -1609,7 +1609,7 @@ $boost_max_memory = array(
 	'5120' => __('%d GBytes', 5),
 	'6144' => __('%d GBytes', 6),
 	'8192' => __('%d GBytes', 8),
-	'-1'   => __('Infinity')
+	'-1'   => __('Unlimited')
 );
 
 $realtime_window = array(

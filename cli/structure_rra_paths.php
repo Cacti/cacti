@@ -238,7 +238,7 @@ foreach ($data_sources as $info) {
 	 */
 	if (!file_exists($old_rrd_path)) {
 		/* check for file in other path */
-		$data_source_name = db_fetch_cell('SELECT data_source_name
+		$data_source_name = db_fetch_cell_prepared('SELECT data_source_name
 			FROM data_template_rrd
 			WHERE local_data_id = ?
 			LIMIT 1',
