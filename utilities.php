@@ -2732,7 +2732,18 @@ function boost_display_run_status() {
 		print '<td class="utilityPick">' . __('Peak Poller Memory:') . '</td><td>' . ((read_config_option('boost_peak_memory') != '' && is_numeric(read_config_option('boost_peak_memory'))) ? (round(read_config_option('boost_peak_memory')/1024/1024,2)) . ' ' . __('MBytes') : __('N/A')) . '</td>';
 
 		form_alternate_row();
-		print '<td class="utilityPick">' . __('Max Poller Memory Allowed:') . '</td><td>' . ((read_config_option('boost_poller_mem_limit') != '') ? (read_config_option('boost_poller_mem_limit')) . ' ' . __('MBytes') : __('N/A')) . '</td>';
+
+		$memory_limit = read_config_option('boost_poller_mem_limit');
+
+		if ($memory_limit == -1) {
+			$memory_limit = __('Unlimited');
+		} elseif ($memory_limit != '') {
+			$memory_limit = __('%s MBytes', number_format_i18n($memory_limit) );
+		} else {
+			$memory_limit = __('N/A');
+		}
+
+		print '<td class="utilityPick">' . __('Max Poller Memory Allowed:') . '</td><td>' . $memory_limit . '</td>';
 
 		/* boost last runtime display */
 		html_section_header(__('Detailed Runtime Statistics'), 2);
