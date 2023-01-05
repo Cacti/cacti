@@ -19,8 +19,8 @@
         "17": "| about.php and/or the AUTHORS file for specific developer information.   |",
         "18": "+-------------------------------------------------------------------------+",
         "19": "| http://www.cacti.net/                                                   |",
-        "20": "+-------------------------------------------------------------------------+",
-	},
+        "20": "+-------------------------------------------------------------------------+"
+    },
     "name": "cacti/cacti",
     "description": "Cacti Network Monitoring Framework",
     "type": "composer-plugin",

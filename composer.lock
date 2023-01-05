@@ -19,8 +19,8 @@
         "17": "| about.php and/or the AUTHORS file for specific developer information.   |",
         "18": "+-------------------------------------------------------------------------+",
         "19": "| http://www.cacti.net/                                                   |",
-        "20": "+-------------------------------------------------------------------------+",
-	},
+        "20": "+-------------------------------------------------------------------------+"
+    },
     "_readme": [
         "This file locks the dependencies of your project to a known state",
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
