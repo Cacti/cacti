@@ -788,7 +788,7 @@ function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 	}
 
 	if ($number == null) {
-		$number = '';
+		$number = 0;
 	} elseif ($decimals == -1 || $decimals == null) {
 		$number = number_format($number, 0, $locale['decimal_point'], $locale['thousands_sep']);
 	} elseif ($number>=pow($baseu, 4)) {
