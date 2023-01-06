@@ -1354,7 +1354,13 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 }
 
 function boost_memory_limit() {
-	ini_set('memory_limit', read_config_option('boost_poller_mem_limit') . 'M');
+	$memory_limit = read_config_option('boost_poller_mem_limit');
+
+	if ($memory_limit != '-1') {
+		ini_set('memory_limit', $memory_limit . 'M');
+	} else {
+		ini_set('memory_limit', -1);
+	}
 }
 
 function boost_poller_bottom() {
