@@ -520,7 +520,7 @@ function __() {
 			$args[0] = __gettext($args[0]);
 		}
 
-		$valid_args = array('%%', '%b', '%c', '%d', '%e', '%E', '%f', '%F', '%g', '%G', '%h', '%H', '%o', '%s', '%u', '%x', 'X');
+		$valid_args = array('%%', '%b', '%c', '%d', '%e', '%E', '%f', '%F', '%g', '%G', '%h', '%H', '%o', '%s', '%u', '%x', '%X');
 
 		if (array_search($args[0], $valid_args) !== false) {
 			/* process return string against input arguments */
