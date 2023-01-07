@@ -911,6 +911,45 @@ function setupButtonStyle() {
 	}
 }
 
+function raiseMessage(title, header, detail, level) {
+	var origErrorReasonTitle    = errorReasonTitle;
+	var origErrorOnPage         = errorOnPage;
+	var origMixedReasonTitle    = mixedReasonTitle;;
+	var origMixedOnPage         = mixedOnPage;;
+	var origSessionMessageTitle = sessionMessageTitle;
+	var origSessionMessageSave  = sessionMessageSave;
+	var origSessionMessage      = sessionMessage;
+
+	sessionMessage.message = detail;
+	sessionMessage.level   = level;
+
+	if (level == MESSAGE_LEVEL_ERROR) {
+		errorReasonTitle  = title;
+		errorOnPage       = header;
+	} else if (level == MESSAGE_LEVEL_MIXED) {
+		mixedOnPage       = header;
+		mixedReasonTitle  = title;
+	} else {
+		sessionMessageTitle = title;
+		sessionMessageSave  = header;
+	}
+
+	displayMessages();
+
+	if (level == MESSAGE_LEVEL_ERROR) {
+		errorReasonTitle  = origErrorReasonTitle;
+		errorOnPage       = origErrorOnPage;
+	} else if (level == MESSAGE_LEVEL_MIXED) {
+		mixedOnPage      = origMixedOnPage;
+		mixedReasonTitle = origMixedReasonTitle;
+	} else {
+		sessionMessageTitle = sessionMessageTitle;
+		sessionMessageSave  = sessionMessageSave;
+	}
+
+	sessionMessage = origSessionMessage;
+}
+
 function displayMessages() {
 	var error   = false;
 	var title   = '';

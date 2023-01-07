@@ -476,12 +476,15 @@ default:
 	?>
 	<script type='text/javascript'>
 
-	var themeChanged = false;
-	var currentTheme = '';
+	var themeChanged   = false;
+	var currentTheme   = '';
 	var rrdArchivePath = '';
-	var smtpPath = '';
-	var currentTab = '<?php print $current_tab;?>';
+	var smtpPath       = '';
+	var currentTab     = '<?php print $current_tab;?>';
 	var dataCollectors = '<?php print $data_collectors;?>';
+	var permsTitle     = '<?php print __esc('Changing Permission Model Warning');?>';
+	var permsHeader    = '<?php print __esc('Changing Permission Model will alter a users effective Graph permissions.');?>';
+	var permsMessage   = '<?php print __esc('After you change the Graph Permission Model you should audit the permission levels for the various levels to ensure that you still have adequate control of your Graphs.  NOTE: If you want to restrict all Graphs at the Device or Graph Template Graph Permission Model, the default Graph Policy should be set to \'Deny\'.');?>';
 
 	$(function() {
 		$('.subTab').find('a').click(function(event) {
@@ -514,6 +517,8 @@ default:
 		});
 
 		if (currentTab == 'general') {
+			currentPerms = $('#graph_auth_method').val();
+
 			$('#selective_plugin_debug').multiselect({
 				menuHeight: $(window).height()*.7,
 				menuWidth: 'auto',
@@ -556,6 +561,10 @@ default:
 				label: '<?php print __('Search');?>',
 				placeholder: '<?php print __('Enter keyword');?>',
 				width: '150'
+			});
+
+			$('#graph_auth_method').change(function() {
+				permsChanger();
 			});
 		} else if (currentTab == 'spikes') {
 			$('#spikekill_templates').multiselect({
@@ -848,6 +857,12 @@ default:
 			themeChanged = true;
 		} else {
 			themeChanged = false;
+		}
+	}
+
+	function permsChanger() {
+		if ($('#graph_auth_method').val() != currentPerms) {
+			raiseMessage(permsTitle, permsHeader, permsMessage, MESSAGE_LEVEL_MIXED);
 		}
 	}
 

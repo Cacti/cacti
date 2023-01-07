@@ -1837,6 +1837,14 @@ function user_edit() {
 		'settings' => __('User Settings')
 	);
 
+	$permission_model = read_config_option('graph_auth_method');
+
+	if ($permission_model == 3) { // Device Based
+		unset($tabs['permste']);
+	} elseif ($permission_model == 4) { // Graph Template Based
+		unset($tabs['permsd']);
+	}
+
 	/* set the default tab */
 	load_current_session_value('tab', 'sess_user_admin_tab', 'general');
 	$current_tab = get_nfilter_request_var('tab');
