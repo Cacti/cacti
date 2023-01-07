@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -issue#5135: Error in using RRDcleaner an RRDcheck causing SQL errors
 -issue#5136: Function number_format_i18n should return a valid number '0' for NULL input
 -issue#5137: When attempting to update structured paths, SQL errors occur
+-issue#5140: Cacti PHP 8.2 SNMP Errors with php-snmp Installed
 -issue#5142: Correct issues with permission model including display of authorization UI elements and warnings
 -issue#5143: When a Device has zero Graphs or Data Sources, it does not display the correct value
 
