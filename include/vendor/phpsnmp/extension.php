@@ -31,8 +31,5 @@ namespace phpsnmp;
 
 class SNMP extends \SNMP {
 	public $bulk_walk_size;
-
-	public function getType(): string {
-		return "SNMP extension";
-	}
 }
+

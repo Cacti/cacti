@@ -1725,6 +1725,14 @@ function group_edit() {
 		'settings' => __('User Settings')
 	);
 
+	$permission_model = read_config_option('graph_auth_method');
+
+	if ($permission_model == 3) { // Device Based
+		unset($tabs['permste']);
+	} elseif ($permission_model == 4) { // Graph Template Based
+		unset($tabs['permsd']);
+	}
+
 	if (!isempty_request_var('id')) {
 		$group        = db_fetch_row_prepared('SELECT * FROM user_auth_group WHERE id = ?', array(get_request_var('id')));
 		$header_label = __esc('User Group Management [edit: %s]', $group['name']);
