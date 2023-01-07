@@ -504,7 +504,7 @@ function __() {
 		return __gettext($args[0]);
 
 	/* convert pure text strings by using a different textdomain */
-	} elseif ($num == 2 && isset($i18n[ (string) $args[1]]) && $args[1] != 'cacti') {
+	} elseif ($num == 2 && isset($i18n[(string)$args[1]]) && $args[1] != 'cacti') {
 		return __gettext($args[0], $args[1]);
 
 	/* convert stings including one or more placeholders */
@@ -512,15 +512,23 @@ function __() {
 		/* only the last argument is allowed to initiate
 		   the use of a different textdomain */
 
-		/* get gettext string */
-		if (isset($i18n[ (string) $args[$num-1]]) && $args[$num-1] != 'cacti') {
+		/* check plugin context */
+		if (isset($i18n[(string)$args[$num-1]]) && $args[$num-1] != 'cacti') {
 			$args[0] = __gettext($args[0], $args[$num-1]);
 		} else {
+			/* cacti context */
 			$args[0] = __gettext($args[0]);
 		}
 
-		/* process return string against input arguments */
-		return __uf(call_user_func_array('sprintf', $args));
+		$valid_args = array('%%', '%b', '%c', '%d', '%e', '%E', '%f', '%F', '%g', '%G', '%h', '%H', '%o', '%s', '%u', '%x', 'X');
+
+		if (array_search($args[0], $valid_args) !== false) {
+			/* process return string against input arguments */
+
+			return __uf(call_user_func_array('sprintf', $args));
+		} else {
+			return $args[0];
+		}
 	}
 }
 
