@@ -518,7 +518,11 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 
 		$sql .= ') ENGINE = ' . $data['type'];
 
-		if (isset($data['row_format']) && db_get_global_variable('innodb_file_format') == 'Barracuda') {
+		if (isset($data['charset'])) {
+			$sql .= ' DEFAULT CHARSET = ' . $data['charset'];
+		}
+
+		if (isset($data['row_format']) && strtolower(db_get_global_variable('innodb_file_format')) == 'barracuda') {
 			$sql .= ' ROW_FORMAT = ' . $data['row_format'];
 		}
 
@@ -534,10 +538,6 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 
 			if (isset($data['collate'])) {
 				db_execute("ALTER TABLE `$table` COLLATE = " . $data['collate']);
-			}
-
-			if (isset($data['charset'])) {
-				db_execute("ALTER TABLE `$table` CHARSET = " . $data['charset']);
 			}
 		}
 	}
