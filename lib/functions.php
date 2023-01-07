@@ -6168,8 +6168,10 @@ function CactiErrorHandler($level, $message, $file, $line, $context = array()) {
 	$plugin = (is_array($output_array) && isset($output_array[1]) ? $output_array[1] : '');
 	$error  = 'Unknown error occurred';
 
-	if (!empty($phperrors[$level])) {
+	if ($level !== null && isset($phperrors[$level])) {
 		$error  = 'PHP ' . $phperrors[$level] . ($plugin != '' ? " in  Plugin '$plugin'" : '') . ": $message in file: $file  on line: $line";
+	} else {
+		$error  = 'PHP Unknown Error' . ($plugin != '' ? " in  Plugin '$plugin'" : '') . ": $message in file: $file  on line: $line";
 	}
 
 	switch ($level) {
@@ -6262,9 +6264,15 @@ function CactiShutdownHandler() {
 
 					$plugin = (isset($output_array[1]) ? $output_array[1] : '');
 
-					$message = 'PHP ' . $phperrors[$error['type']] .
-						($plugin != '' ? " in  Plugin '$plugin'" : '') . ': ' . $error['message'] .
-						' in file: ' .  $error['file'] . ' on line: ' . $error['line'];
+					if ($error['type'] !== null && isset($phperrors[$error['type']])) {
+						$message = 'PHP ' . $phperrors[$error['type']] .
+							($plugin != '' ? " in  Plugin '$plugin'" : '') . ': ' . $error['message'] .
+							' in file: ' .  $error['file'] . ' on line: ' . $error['line'];
+					} else {
+						$message = 'PHP Unknown Error' .
+							($plugin != '' ? " in  Plugin '$plugin'" : '') . ': ' . $error['message'] .
+							' in file: ' .  $error['file'] . ' on line: ' . $error['line'];
+					}
 
 					cacti_log($message, false, 'ERROR');
 					cacti_debug_backtrace('PHP ERROR', false, true, 0, 1);
