@@ -4552,6 +4552,7 @@ function setSNMP() {
 			$('#row_snmp_port').hide();
 			$('#row_snmp_timeout').hide();
 			$('#row_max_oids').hide();
+			$('#row_bulk_walk_size').hide();
 
 			if ($('#row_snmp_engine_id')) {
 				$('#row_snmp_engine_id').hide();
@@ -4577,6 +4578,7 @@ function setSNMP() {
 			$('#row_snmp_port').show();
 			$('#row_snmp_timeout').show();
 			$('#row_max_oids').show();
+			$('#row_bulk_walk_size').show();
 
 			if ($('#row_snmp_engine_id')) {
 				$('#row_snmp_engine_id').hide();
@@ -4601,6 +4603,7 @@ function setSNMP() {
 			$('#row_snmp_port').show();
 			$('#row_snmp_timeout').show();
 			$('#row_max_oids').show();
+			$('#row_bulk_walk_size').show();
 
 			if ($('#row_snmp_engine_id')) {
 				$('#row_snmp_engine_id').show();
