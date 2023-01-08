@@ -4832,10 +4832,6 @@ function setAvailability() {
 }
 
 function setPing() {
-	if ($('#row_host_avail_head').hasClass('collapsed')) {
-		return false;
-	}
-
 	availability_method = $('#availability_method').val();
 	ping_method = $('#ping_method').val();
 	use_snmp = availability_method == 2 || availability_method == 5 || availability_method == 6;
