@@ -7420,12 +7420,16 @@ function get_theme_paths(string $format, string $path, ?string $theme = null, ?s
 			// Add path + theme to see if there is a themed version
 			$paths[] = $path . $themePath;
 
-			// Add include + theme to see if there is a themed version
+			// If we aren't expliciting include themes, check them
 			if ($path !== 'include/themes/') {
-				$paths[] = 'include/themes/' . $themePath;
+				// Add default theme include location
+				$paths[] = 'include/themes/';
+
+				// Add include + theme + path to see if there is a themed version
+				$paths[] = 'include/themes/' . $themePath . $path;
 
 				// Add include + theme to see if there is a themed version
-				$paths[] = 'include/themes/' . $themePath . $path;
+				$paths[] = 'include/themes/' . $themePath;
 			}
 		}
 	}

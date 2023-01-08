@@ -2062,7 +2062,7 @@ function html_graph_tabs_right() {
 		if (is_view_allowed('show_tree')) {
 			$tabs_right[] = array(
 				'title' => __('Tree View'),
-				'image' => 'include/themes/' . $theme . '/images/tab_tree.gif',
+				'image' => 'include/css/' . $theme . '/images/tab_tree.gif',
 				'id'    => 'tree',
 				'url'   => 'graph_view.php?action=tree',
 			);
@@ -2071,7 +2071,7 @@ function html_graph_tabs_right() {
 		if (is_view_allowed('show_list')) {
 			$tabs_right[] = array(
 				'title' => __('List View'),
-				'image' => 'include/themes/' . $theme . '/images/tab_list.gif',
+				'image' => 'include/css/' . $theme . '/images/tab_list.gif',
 				'id'    => 'list',
 				'url'   => 'graph_view.php?action=list',
 			);
@@ -2080,7 +2080,7 @@ function html_graph_tabs_right() {
 		if (is_view_allowed('show_preview')) {
 			$tabs_right[] = array(
 				'title' => __('Preview'),
-				'image' => 'include/themes/' . $theme . '/images/tab_preview.gif',
+				'image' => 'include/css/' . $theme . '/images/tab_preview.gif',
 				'id'    => 'preview',
 				'url'   => 'graph_view.php?action=preview',
 			);
@@ -2724,17 +2724,18 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_icon('images', theme: $selectedTheme, file: 'cacti_logo.gif', rel: 'icon', sizes: '96x96');
 
 	/* Theme-based styles */
-	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery.zoom.css');
-	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery-ui.css');
-	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'default/style.css');
-	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery.toast.css');
-	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery.multiselect.css');
-	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery.multiselect.filter.css');
-	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery.timepicker.css');
-	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery.colorpicker.css');
-	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'billboard.css');
-	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'pace.css');
-	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'Diff.css');
+	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'jquery.zoom.css');
+	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'jquery-ui.css');
+	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'default/style.css');
+	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'jquery.multiselect.css');
+	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'jquery.multiselect.filter.css');
+	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'jquery.timepicker.css');
+	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'jquery.colorpicker.css');
+	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'billboard.css');
+	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'pace.css');
+	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'Diff.css');
+	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'jquery.toast.css');
+	print get_md5_include_css('include/css/', theme: $selectedTheme, file: 'main.css');
 
 	/* Global styles */
 	print get_md5_include_css('include/fa/css/all.css');
@@ -2742,7 +2743,6 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css');
 
 	/* Main theme based style (included last to allow overrides) */
-	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'main.css');
 
 	/* Global scripts */
 	print get_md5_include_js('include/js/screenfull.js', true);
@@ -2775,7 +2775,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/ui-notices.js');
 
 	/* Main theme based scripts (included last to allow overrides) */
-	print get_md5_include_js('include/themes/', theme: $selectedTheme, file: 'main.js');
+	print get_md5_include_js('include/css/', theme: $selectedTheme, file: 'main.js');
 
 	/* Language based scripts */
 	if (isset($path2calendar) && file_exists($path2calendar)) {
@@ -2798,8 +2798,8 @@ function html_common_header($title, $selectedTheme = '') {
 		print get_md5_include_js($path2msfilter);
 	}
 
-	if (file_exists('include/themes/custom.css')) {
-		print get_md5_include_css('include/themes/custom.css');
+	if (file_exists('include/css/custom.css')) {
+		print get_md5_include_css('include/css/custom.css');
 	}
 
 	api_plugin_hook('page_head');

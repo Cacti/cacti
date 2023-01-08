@@ -3,13 +3,13 @@ $.toastPopup = function(options) {
         stack: 50,
         textAlign: 'left',
         allowToastClose: true,
-        position: 'bottom-right',
+        position: 'bottom-center',
         showHideTransition: 'fade',
     }
 
     var defaultOptions = {
         text: "No text was set, please check the usage of showToast",
-        hideAfter: 5000,
+        hideAfter: false,
         loader: true,
     }
 
