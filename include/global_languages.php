@@ -533,9 +533,29 @@ function __() {
 			$args[0] = __gettext($args[0]);
 		}
 
-		$valid_args = array('%%', '%b', '%c', '%d', '%e', '%E', '%f', '%F', '%g', '%G', '%h', '%H', '%o', '%s', '%u', '%x', '%X');
+		$valid_args = array(
+			'%%', // Escaped percentage
+			'%b', // Binary
+			'%c', // Single Character
+			'%d', // Decimal
+			'%e', // Scientific notation (lowercase)
+			'%E', // Scientific notation (uppercase)
+			'%f', // Floating point (locale aware)
+			'%F', // Floating point (non-locale aware)
+			'%g', // General format (uses E and f styling if precision involved)
+			'%G', // General format (docs say same as g but uses E and f, yet it already does???)
+			'%h', // General format (like g but uses F)
+			'%H', // General format (like g but uses E and F)
+			'%o', // Integer as Octal
+			'%s', // String
+			'%u', // Integer as Unsigned Decimal
+			'%x', // Integer as hex (lowercase)
+			'%X', // Integer as hex (uppercase)
+		);
 
-		if (array_search($args[0], $valid_args, true) !== false) {
+		$valid_regexp = '/(' . implode(')|(', $valid_args) . ')/';
+
+		if (preg_match($valid_regexp, $args[0])) {
 			/* process return string against input arguments */
 
 			return __uf(call_user_func_array('sprintf', $args));
