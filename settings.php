@@ -484,7 +484,7 @@ default:
 	var dataCollectors = '<?php print $data_collectors;?>';
 	var permsTitle     = '<?php print __esc('Changing Permission Model Warning');?>';
 	var permsHeader    = '<?php print __esc('Changing Permission Model will alter a users effective Graph permissions.');?>';
-	var permsMessage   = '<?php print __esc('After you change the Graph Permission Model you should audit the permission levels for the various levels to ensure that you still have adequate control of your Graphs.  NOTE: If you want to restrict all Graphs at the Device or Graph Template Graph Permission Model, the default Graph Policy should be set to \'Deny\'.');?>';
+	var permsMessage   = '<?php print __esc('After you change the Graph Permission Model you should audit your Users and User Groups Effective Graph permission to ensure that you still have adequate control of your Graphs.  NOTE: If you want to restrict all Graphs at the Device or Graph Template Graph Permission Model, the default Graph Policy should be set to \'Deny\'.');?>';
 
 	$(function() {
 		$('.subTab').find('a').click(function(event) {
