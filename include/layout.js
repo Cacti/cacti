@@ -873,6 +873,8 @@ function applySkin() {
 
 	applySelectorVisibilityAndActions();
 
+	makeCallbacks();
+
 	$('.helpPage').off('click').on('click', function (event) {
 		event.stopPropagation();
 		getCactiHelp($(this).attr('data-page'));
@@ -3182,8 +3184,6 @@ $(function () {
 	setupEllipsis();
 
 	handleUserMenu();
-
-	makeCallbacks();
 
 	$('#navigation_right').show();
 
