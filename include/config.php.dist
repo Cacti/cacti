@@ -147,23 +147,31 @@ $disable_log_rotation = false;
 /*
  * Debug the read_config_option program flow
  */
-# define('DEBUG_READ_CONFIG_OPTION', true);
+#if (!defined('DEBUG_READ_CONFIG_OPTION')) {
+#	define('DEBUG_READ_CONFIG_OPTION', true);
+#}
 
 /*
  * Automatically suppress the DEBUG_READ_CONFIG_OPTION
  */
-# define('DEBUG_READ_CONFIG_OPTION_DB_OPEN', true);
+#if (!defined('DEBUG_READ_CONFIG_OPTION_DB_OPEN')) {
+#	define('DEBUG_READ_CONFIG_OPTION_DB_OPEN', true);
+#}
 
 /*
  * Always write the SQL command to the cacti log file
  */
-# define('DEBUG_SQL_CMD', true);
+#if (!defined('DEBUG_SQL_CMD')) {
+#	define('DEBUG_SQL_CMD', true);
+#}
 
 /*
  * Debug the flow of calls to the db_xxx functions that
  * are defined in lib/database.php
  */
-# define('DEBUG_SQL_FLOW', true);
+#if (!defined('DEBUG_SQL_FLOW')) {
+#	define('DEBUG_SQL_FLOW', true);
+#}
 
 /*
  * Allow the use of Proxy IPs when searching for client
