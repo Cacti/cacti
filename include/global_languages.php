@@ -601,8 +601,7 @@ function __() {
 		/* process return string against input arguments */
 		return __uf(call_user_func_array('sprintf', $args));
 	} else {
-		cacti_log($valid_regexp);
-		return 'nc:' . $args[0];
+		return $args[0];
 	}
 }
 
