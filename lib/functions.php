@@ -923,8 +923,14 @@ function is_error_message() {
 		return false;
 	}
 }
-
-function get_message_level($current_message) {
+/**
+ * Get the level for the current message
+ *
+ * @param  array $current_message
+ *
+ * @return int
+ */
+function get_message_level(array $current_message):int {
 	$current_level = MESSAGE_LEVEL_NONE;
 
 	if (isset($current_message['level'])) {
@@ -943,6 +949,34 @@ function get_message_level($current_message) {
 	}
 
 	return $current_level;
+}
+
+/**
+ * Get the title for the current message
+ *
+ * @param  array       $current_message
+ *
+ * @return string|null
+ */
+function get_message_title(array $current_message):?string {
+	$current_title = null;
+
+	if (isset($current_message['title'])) {
+		$current_title = $current_message['title'];
+	} elseif (isset($current_message['type'])) {
+		switch ($current_message['type']) {
+			case 'error':
+				$current_title = __('Error');
+
+				break;
+			case 'info':
+				$current_title = __('Information');
+
+				break;
+		}
+	}
+
+	return $current_title;
 }
 
 /**
@@ -1001,25 +1035,27 @@ function get_format_message_instance($current_message): string {
  *
  * @return mixed the message type 'info', 'warn', 'error' or 'csrf'
  */
-function get_message_max_type() {
+function get_message_max_type(?array $output_messages = null) {
 	global $messages;
 
 	$level = MESSAGE_LEVEL_NONE;
 
-	if (isset($_SESSION[SESS_MESSAGES])) {
-		if (is_array($_SESSION[SESS_MESSAGES])) {
-			foreach ($_SESSION[SESS_MESSAGES] as $current_message_id => $current_message) {
-				$current_level = get_message_level($current_message);
+	if ($output_messages === null && isset($_SESSION[SESS_MESSAGES])) {
+		$ouptut_messages = $_SESSION[SESS_MESSAGES];
+	}
 
-				if ($current_level == MESSAGE_LEVEL_NONE && isset($messages[$current_message_id])) {
-					$current_level = get_message_level($messages[$current_message_id]);
-				}
+	if (is_array($output_messages)) {
+		foreach ($output_messages as $current_message_id => $current_message) {
+			$current_level = get_message_level($current_message);
 
-				if ($current_level != $level && $level != MESSAGE_LEVEL_NONE) {
-					$level = MESSAGE_LEVEL_MIXED;
-				} else {
-					$level = $current_level;
-				}
+			if ($current_level == MESSAGE_LEVEL_NONE && isset($messages[$current_message_id])) {
+				$current_level = get_message_level($messages[$current_message_id]);
+			}
+
+			if ($current_level != $level && $level != MESSAGE_LEVEL_NONE) {
+				$level = MESSAGE_LEVEL_MIXED;
+			} else {
+				$level = $current_level;
 			}
 		}
 	}
@@ -1028,13 +1064,14 @@ function get_message_max_type() {
 }
 
 /**
- * raise_message - mark a message to be displayed to the user once display_output_messages() is called
+ * Message to be displayed to the user once display_output_messages() is called
  *
- * @param $message_id - the ID of the message to raise as defined in $messages in 'include/global_arrays.php'
- * @param mixed $message
- * @param mixed $message_level
+ * @param string|int  $message_id     ID of the message as defined in $messages in 'include/global_arrays.php'
+ * @param string      $message        Text of the message to be displayed
+ * @param int         $message_level  Level of the message to be displayed
+ * @param string|null $message_title  Title of the message to be displayed
  */
-function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVEL_NONE) {
+function raise_message(string|int $message_id, string $message = '', int $message_level = MESSAGE_LEVEL_NONE, ?string $message_title = null) {
 	global $config, $messages, $no_http_headers;
 
 	// This function should always exist, if not its an invalid install
@@ -1057,6 +1094,8 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
 			if ($message_level == MESSAGE_LEVEL_NONE) {
 				$message_level = get_message_level($predefined);
 			}
+
+			$message_title = get_message_title($predefined);
 		} else {
 			if (isset($_SESSION[$message_id])) {
 				/*
@@ -1078,6 +1117,8 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
 					if (!empty($sessMessage['level'])) {
 						$message_level = $sessMessage['level'];
 					}
+				} else {
+					$message = $sessMessage;
 				}
 			}
 
@@ -1097,7 +1138,9 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
 		$_SESSION[SESS_MESSAGES] = array();
 	}
 
-	$_SESSION[SESS_MESSAGES][$message_id] = array('message' => $message, 'level' => $message_level);
+	$final_message = array('message' => $message, 'level' => $message_level, 'title' => $message_title);
+	$final_message['title'] = get_message_title($final_message);
+	$_SESSION[SESS_MESSAGES][$message_id] = $final_message;
 
 	if ($need_session) {
 		cacti_session_close();
@@ -1109,20 +1152,21 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
  * as the result of an server side error that can not be captured
  * normally.
  *
- * @param  (string) The title for the dialog title bar
- * @param  (string) Header section for the message
- * @param  (string) The actual error message to display
- * @param mixed $title
- * @param mixed $header
- * @param mixed $message
+ * Note, this function assumes strings are already escaped when being
+ * called.
  *
- * @return (void)
+ * @param string The title for the dialog title bar
+ * @param string Header section for the message
+ * @param string The actual error message to display
+ * @param int    The level to be displayed at
+ *
+ * @return void
  */
-function raise_message_javascript($title, $header, $message) {
+function raise_message_javascript(string $title, string $header, string $message, int $level = MESSAGE_LEVEL_MIXED) {
 	?>
 	<script type='text/javascript'>
 	$(function() {
-		raiseMessage(mixedReasonTitle, mixedOnPage, '<?= htmlspecialchars($message)?>', MESSAGE_LEVEL_MIXED)
+		raiseMessage('<?=$title?>', '<?=$header?>', '<?= $message ?>', <?=$level?>)
 	});
 	</script>
 	<?php
@@ -1135,28 +1179,52 @@ function raise_message_javascript($title, $header, $message) {
  * the message cache
  */
 function display_output_messages() {
-	global $messages;
+	$debug_message   = debug_log_return('new_graphs');
+	$final_message   = array();
+	$output_messages = array();
 
-	$omessage      = array();
-	$debug_message = debug_log_return('new_graphs');
+    if (isset($_SESSION[SESS_MESSAGES])) {
+		if (!is_array($_SESSION[SESS_MESSAGES])) {
+			$output_messages = array(
+				'custom_error' => array(
+					'level' => MESSAGE_LEVEL_ERROR,
+					'message' => $_SESSION[SESS_MESSAGES]
+				)
+			);
+		} else {
+			$output_messages = $_SESSION[SESS_MESSAGES];
+		}
+	}
 
 	if ($debug_message != '') {
-		$omessage['level']    = MESSAGE_LEVEL_NONE;
-		$omessage['message']  = $debug_message;
+		$output_messages['debug_message'] = [
+			'level'   => MESSAGE_LEVEL_NONE,
+			'message' => $debug_message,
+		];
 
 		debug_log_clear('new_graphs');
-	} elseif (isset($_SESSION[SESS_MESSAGES])) {
-		if (!is_array($_SESSION[SESS_MESSAGES])) {
-			$_SESSION[SESS_MESSAGES] = array('custom_error' => array('level' => MESSAGE_LEVEL_ERROR, 'message' => $_SESSION[SESS_MESSAGES]));
-		}
+	}
 
-		$omessage['level'] = get_message_max_type();
+	if (!empty($output_messages)) {
+		$final_message = [
+			'title'   => null,
+			'level'   => get_message_max_type($output_messages),
+			'message' => '',
+		];
 
-		foreach ($_SESSION[SESS_MESSAGES] as $current_message_id => $current_message) {
+		foreach ($output_messages as $current_message_id => &$current_message) {
+			if (!is_array($current_message)) {
+				$current_message = array(
+					'level'   => MESSAGE_LEVEL_ERROR,
+					'message' => $_SESSION[SESS_MESSAGES],
+					'title'   => null,
+				);
+
+			}
+
 			$message = get_format_message_instance($current_message);
-
 			if (!empty($message)) {
-				$omessage['message'] = (isset($omessage['message']) && $omessage['message'] != '' ? $omessage['message'] . '<br>':'') . $message;
+				$final_message['message'] .= (!empty($final_message['message']) ? '<br>':'') . $message;
 			} else {
 				cacti_log("ERROR: Cacti Error Message Id '$current_message_id' Not Defined", false, 'WEBUI');
 			}
@@ -1165,7 +1233,7 @@ function display_output_messages() {
 
 	clear_messages();
 
-	return json_encode($omessage);
+	return json_encode($final_message);
 }
 
 function display_custom_error_message($message) {
@@ -8739,82 +8807,3 @@ function text_regex_rule($matches, $link = false) {
 
 	return $result;
 }
-
-// /**
-//  * Add a UI-based notificatoin
-//  *
-//  * @param  integer     $messageType Must be a valid type listed in $ui_notice_types
-//  * @param  string      $message     Message to be displayed
-//  * @param  string|null $messageId   ID to be used if a specific ID is required
-//  *
-//  * @return string The message ID that was set
-//  */
-// function add_ui_notification(int $messageType, string $message, ?string $messageId = null):string {
-//     global $ui_notice_types;
-
-//     $notices = $_SESSION[SESS_UI_NOTICES] ?? [];
-//     if ($messageId === null) {
-//         $messageId = SESS_UI_NOTICES . '_' . (cacti_sizeof($notices) + 1);
-//     }
-
-//     if (!array_key_exists($messageType, $ui_notice_types)) {
-//         $messageType = E_CORE_ERROR;
-//     }
-
-//     $notices[$messageId] = ['type' => $messageType, 'text' => $message];
-
-//     $_SESSION[SESS_UI_NOTICES] = $notices;
-//     return $messageId;
-// }
-
-// /**
-//  * Gets the currently set UI notifications
-//  *
-//  * @param  boolean $clear When true, empties the current notifications on return
-//  *
-//  * @return array
-//  */
-// function get_ui_notifications(bool $clear = false):array {
-//     $result = $_SESSION[SESS_UI_NOTICES] ?? [];
-//     if ($clear) {
-//         $_SESSION[SESS_UI_NOTICES] = [];
-//     }
-
-//     return $result;
-// }
-
-// /**
-//  * Adds a UI-based error notification
-//  *
-//  * @param  string      $message     Message to be displayed
-//  * @param  string|null $messageId   ID to be used if a specific ID is required
-//  *
-//  * @return string The message ID that was set
-//  */
-// function add_error_ui_notification(string $message, ?string $messageId = null):string {
-//     return add_ui_notification(E_ERROR, $message, $messageId);
-// }
-
-// /**
-//  * Adds a UI-based warning notification
-//  *
-//  * @param  string      $message     Message to be displayed
-//  * @param  string|null $messageId   ID to be used if a specific ID is required
-//  *
-//  * @return string The message ID that was set
-//  */
-// function add_warning_ui_notification(string $message, ?string $messageId = null):string {
-//     return add_ui_notification(E_WARNING, $message, $messageId);
-// }
-
-// /**
-//  * Adds a UI-based info notification
-//  *
-//  * @param  string      $message     Message to be displayed
-//  * @param  string|null $messageId   ID to be used if a specific ID is required
-//  *
-//  * @return string The message ID that was set
-//  */
-// function add_info_ui_notification(string $message, ?string $messageId = null):string {
-//     return add_ui_notification(E_NOTICE, $message, $messageId);
-// }

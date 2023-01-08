@@ -1114,7 +1114,6 @@ function raiseMessage(title, header, detail, level) {
 }
 
 function displayMessages() {
-	var error = false;
 	var title = '';
 	var header = '';
 
