@@ -55,4 +55,4 @@ if (!$is_request_ajax) {?>
 		<div style='display:none;' id='navigation' class='cactiTreeNavigationArea'><?php grow_dhtml_trees();?></div>
 		<?php } ?>
 		<div id='navigation_right' class='cactiGraphContentArea'>
-			<main style='position:relative;display:none;' id='main'>
+			<main id='main'>

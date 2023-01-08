@@ -62,4 +62,4 @@ if (!$is_request_ajax) {?>
 			</table>
 		</div>
 		<div id='navigation_right' class='cactiConsoleContentArea'>
-			<main style='position:relative;display:none;' id='main'>
+			<main id='main'>
