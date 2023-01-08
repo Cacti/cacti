@@ -2727,7 +2727,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery.zoom.css');
 	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery-ui.css');
 	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'default/style.css');
-	//print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jqueri.toast.css');
+	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery.toast.css');
 	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery.multiselect.css');
 	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery.multiselect.filter.css');
 	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery.timepicker.css');
@@ -2752,7 +2752,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/jquery.cookie.js');
 	print get_md5_include_js('include/js/js.storage.js');
 	print get_md5_include_js('include/js/jstree.js');
-	//print get_md5_include_js('include/js/jquery.toast.js');
+	print get_md5_include_js('include/js/jquery.toast.js');
 	print get_md5_include_js('include/js/jquery.hotkeys.js', true);
 	print get_md5_include_js('include/js/jquery.tablednd.js', true);
 	print get_md5_include_js('include/js/jquery.zoom.js', true);
@@ -2772,6 +2772,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/layout.js');
 	print get_md5_include_js('include/js/pace.js');
 	print get_md5_include_js('include/realtime.js');
+	print get_md5_include_js('include/js/ui-notices.js');
 
 	/* Main theme based scripts (included last to allow overrides) */
 	print get_md5_include_js('include/themes/', theme: $selectedTheme, file: 'main.js');

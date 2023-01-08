@@ -138,6 +138,7 @@ if (isset($_SESSION[SESS_USER_ID]) && $_SESSION[SESS_USER_ID] == read_config_opt
 	var refreshMSeconds=<?php print $myrefresh['seconds'] * 1000;?>;
 	var urlPath='<?php print CACTI_PATH_URL;?>';
 	var previousPage='';
-	var sessionMessage=<?php print display_output_messages(false);?>;
+	var sessionNotices=<?php print display_output_messages();?>;
+    var sessionMessage={};
 	var csrfMagicToken='<?php print csrf_get_tokens();?>';
 </script>

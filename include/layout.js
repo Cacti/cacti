@@ -961,7 +961,8 @@ function applySkin() {
 
 	keepWindowSize();
 
-	displayMessages();
+	sessionMessageDisplay();
+	sessionNoticesDisplay();
 
 	renderLanguages();
 }
@@ -1097,7 +1098,7 @@ function raiseMessage(title, header, detail, level) {
 		sessionMessageSave  = header;
 	}
 
-	displayMessages();
+	sessionMessageDisplay();
 
 	if (level == MESSAGE_LEVEL_ERROR) {
 		errorReasonTitle  = origErrorReasonTitle;
@@ -1113,7 +1114,65 @@ function raiseMessage(title, header, detail, level) {
 	sessionMessage = origSessionMessage;
 }
 
-function displayMessages() {
+function sessionNoticesDisplay() {
+	if (typeof sessionNotices !== 'undefined' && Array.isArray(sessionNotices) && sessionNotices.length > 0) {
+		var currentNotices = sessionNotices;
+		sessionNotices = {};
+
+		currentNotices.forEach(function (notice, index) {
+			var level   = MESSAGE_LEVEL_NONE;
+			var message = 'No message';
+			var title   = '';
+			var id      = '';
+
+			if (typeof notice.message !== 'undefined') {
+				message = notice.message;
+			}
+
+			if (typeof notice.title !== 'undefined') {
+				titLe = notice.tite;
+			}
+
+			if (typeof notice.level !== 'undefined') {
+				level = notice.level;
+			}
+
+			if (typeof notice.id !== 'undefined') {
+				id = '-' + notice.id;
+			}
+
+			switch (notice.level) {
+				case MESSAGE_LEVEL_CSRF:
+					location.reload();
+
+					break;
+				case MESSAGE_LEVEL_INFO:
+					PopupNotice(message, title);
+
+					break;
+				case MESSAGE_LEVEL_MIXED:
+					PopupUnknown(message, title);
+
+					break;
+				case MESSAGE_LEVEL_ERROR:
+					PopupError(message, title);
+
+					break;
+				case MESSAGE_LEVEL_WARN:
+					PopupWarning(message, title);
+
+					break;
+
+				default:
+					console.log('');
+					console.log('noticeDisplay(' + index + id + ') - Failed to find correct popup function for level ' + level + ': ' + message);
+					console.log('');
+			}
+		});
+	}
+}
+
+function sessionMessageDisplay() {
 	var title = '';
 	var header = '';
 

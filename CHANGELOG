@@ -50,6 +50,7 @@ Cacti CHANGELOG
 -feature#5120: Define cacti system paths as constants for better code checking
 -feature#5148: Allow theme-based include paths with master location
 -feature#5149: Allow CSS files to be loaded async #5149
+-feature: Allow messages to be popup notifications
 
 1.2.24
 -issue#5127: Importing Local_Linux_Machine.xml.gz template raises PHP error

@@ -1180,8 +1180,8 @@ function raise_message_javascript(string $title, string $header, string $message
  */
 function display_output_messages() {
 	$debug_message   = debug_log_return('new_graphs');
-	$final_message   = array();
 	$output_messages = array();
+	$final_messages  = array();
 
     if (isset($_SESSION[SESS_MESSAGES])) {
 		if (!is_array($_SESSION[SESS_MESSAGES])) {
@@ -1194,6 +1194,8 @@ function display_output_messages() {
 		} else {
 			$output_messages = $_SESSION[SESS_MESSAGES];
 		}
+
+		clear_messages();
 	}
 
 	if ($debug_message != '') {
@@ -1206,13 +1208,7 @@ function display_output_messages() {
 	}
 
 	if (!empty($output_messages)) {
-		$final_message = [
-			'title'   => null,
-			'level'   => get_message_max_type($output_messages),
-			'message' => '',
-		];
-
-		foreach ($output_messages as $current_message_id => &$current_message) {
+		foreach ($output_messages as $current_message_id => $current_message) {
 			if (!is_array($current_message)) {
 				$current_message = array(
 					'level'   => MESSAGE_LEVEL_ERROR,
@@ -1224,16 +1220,21 @@ function display_output_messages() {
 
 			$message = get_format_message_instance($current_message);
 			if (!empty($message)) {
-				$final_message['message'] .= (!empty($final_message['message']) ? '<br>':'') . $message;
+				$current_message['message'] = $message;
+				$current_message['title']   = get_message_title($current_message);
+				$final_messages[] = [
+					'id'      => $current_message_id,
+					'level'   => $current_message['level'],
+					'title'   => get_message_title($current_message),
+					'message' => $message,
+				];
 			} else {
 				cacti_log("ERROR: Cacti Error Message Id '$current_message_id' Not Defined", false, 'WEBUI');
 			}
 		}
 	}
 
-	clear_messages();
-
-	return json_encode($final_message);
+	return json_encode($final_messages);
 }
 
 function display_custom_error_message($message) {
