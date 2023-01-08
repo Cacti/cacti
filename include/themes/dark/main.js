@@ -21,14 +21,7 @@
   +-------------------------------------------------------------------------+
 */
 
-// Host Autocomplete Magic
-var pageName = basename($(location).attr('pathname'));
-
 function themeReady() {
-	var hostTimer = false;
-	var clickTimeout = false;
-	var hostOpen = false;
-
 	$('body').css('height', $(window).height());
 	$('.formItemDescription').hide();
 

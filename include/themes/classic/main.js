@@ -21,9 +21,6 @@
   +-------------------------------------------------------------------------+
 */
 
-// Host Autocomplete Magic
-var pageName = basename($(location).attr('pathname'));
-
 function themeReady() {
 	height = get_height();
 	$('#navigation, .cactiConsoleNavigationArea').css('height', height);

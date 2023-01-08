@@ -476,11 +476,6 @@ function toggleCactiNavigationBox(event) {
 }
 
 function setupDefaultElements() {
-	var pageName = basename($(location).attr('pathname'));
-	var hostTimer = false;
-	var clickTimeout = false;
-	var hostOpen = false;
-
 	// duplicate cactiConsolePageHeadBackdrop for compact mode
 	if ($('#cactiConsoleBackdrop').length === 0 ) {
 		$('<div id="cactiConsoleBackdrop"></div>'+
