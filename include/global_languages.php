@@ -554,60 +554,55 @@ function __() {
 		/* convert pure text strings by using a different textdomain */
 	}
 
-	if ($num == 2 && isset($i18n[(string) $args[1]]) && $args[1] != 'cacti') {
-		return __gettext($args[0], $args[1]);
-		/* convert stings including one or more placeholders */
+	/* only the last argument is allowed to initiate
+	   the use of a different textdomain */
+
+	/* get gettext string */
+	if (isset($i18n[(string) $args[$num - 1]]) && $args[$num - 1] != 'cacti') {
+		$args[0] = __gettext($args[0], $args[$num - 1]);
 	} else {
-		/* only the last argument is allowed to initiate
-		   the use of a different textdomain */
+		$args[0] = __gettext($args[0]);
+	}
 
-		/* get gettext string */
-		if (isset($i18n[(string) $args[$num - 1]]) && $args[$num - 1] != 'cacti') {
-			$args[0] = __gettext($args[0], $args[$num - 1]);
-		} else {
-			$args[0] = __gettext($args[0]);
-		}
+	$regex_num = '%([-]{0,1}[0-9]+([.][0-9]+){0,1}){0,1}';
+	$regex_str = '%([-]{0,1}[0-9]+){0,1}';
 
-		$regex_num = '%([-]{0,1}[0-9]+([.][0-9]+){0,1})';
-		$regex_str = '%([-]{0,1}[0-9]+)';
+	$array_str = [
+		'b', // Binary
+		'o', // Integer as Octal
+		's', // String
+		'u', // Integer as Unsigned Decimal
+		'x', // Integer as hex (lowercase)
+		'X', // Integer as hex (uppercase)
+	];
 
-		$array_str = [
-			'b', // Binary
-			'o', // Integer as Octal
-			's', // String
-			'u', // Integer as Unsigned Decimal
-			'x', // Integer as hex (lowercase)
-			'X', // Integer as hex (uppercase)
-		];
+	$array_num = [
+		'd', // Decimal
+		'e', // Scientific notation (lowercase)
+		'E', // Scientific notation (uppercase)
+		'f', // Floating point (locale aware)
+		'F', // Floating point (non-locale aware)
+		'g', // General format (uses E and f styling if precision involved)
+		'G', // General format (docs say same as g but uses E and f, yet it already does???)
+		'h', // General format (like g but uses F)
+		'H', // General format (like g but uses E and F)
+	];
 
-		$array_num = [
-			'd', // Decimal
-			'e', // Scientific notation (lowercase)
-			'E', // Scientific notation (uppercase)
-			'f', // Floating point (locale aware)
-			'F', // Floating point (non-locale aware)
-			'g', // General format (uses E and f styling if precision involved)
-			'G', // General format (docs say same as g but uses E and f, yet it already does???)
-			'h', // General format (like g but uses F)
-			'H', // General format (like g but uses E and F)
-		];
+	$valid_args = array(
+		'%%', // Escaped percentage (literal)
+		'%c', // Single Character
+		$regex_num . '[' . implode('', $array_num) . ']',
+		$regex_str . '[' . implode('', $array_str) . ']',
+	);
 
-		$valid_args = array(
-			'%%', // Escaped percentage (literal)
-			'%c', // Single Character
-			$regex_num . '[' . implode('', $array_num) . ']',
-			$regex_str . '[' . implode('', $array_str) . ']',
-		);
+	$valid_regexp = '/(' . implode(')|(', $valid_args) . ')/';
 
-		$valid_regexp = '/(' . implode(')|(', $valid_args) . ')/';
-
-		if (preg_match($valid_regexp, $args[0])) {
-			/* process return string against input arguments */
-
-			return __uf(call_user_func_array('sprintf', $args));
-		} else {
-			return $args[0];
-		}
+	if (preg_match($valid_regexp, $args[0])) {
+		/* process return string against input arguments */
+		return __uf(call_user_func_array('sprintf', $args));
+	} else {
+		cacti_log($valid_regexp);
+		return 'nc:' . $args[0];
 	}
 }
 
