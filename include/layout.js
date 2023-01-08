@@ -914,8 +914,8 @@ function setupButtonStyle() {
 function raiseMessage(title, header, detail, level) {
 	var origErrorReasonTitle    = errorReasonTitle;
 	var origErrorOnPage         = errorOnPage;
-	var origMixedReasonTitle    = mixedReasonTitle;;
-	var origMixedOnPage         = mixedOnPage;;
+	var origMixedReasonTitle    = mixedReasonTitle;
+	var origMixedOnPage         = mixedOnPage;
 	var origSessionMessageTitle = sessionMessageTitle;
 	var origSessionMessageSave  = sessionMessageSave;
 	var origSessionMessage      = sessionMessage;
@@ -943,8 +943,8 @@ function raiseMessage(title, header, detail, level) {
 		mixedOnPage      = origMixedOnPage;
 		mixedReasonTitle = origMixedReasonTitle;
 	} else {
-		sessionMessageTitle = sessionMessageTitle;
-		sessionMessageSave  = sessionMessageSave;
+		sessionMessageTitle = origSessionMessageTitle;
+		sessionMessageSave  = origSessionMessageSave;
 	}
 
 	sessionMessage = origSessionMessage;
