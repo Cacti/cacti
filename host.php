@@ -793,7 +793,7 @@ function host_edit() {
 
 	html_end_box(true, true);
 
-	device_javascript();
+	device_javascript(!empty($host['id']));
 
 	if (!empty($host['id'])) {
 		html_start_box(__('Associated Graph Templates'), '100%', '', '3', 'center', '');
@@ -1123,7 +1123,7 @@ function device_change_javascript() {
 <?php
 }
 
-function device_javascript() {
+function device_javascript(bool $hasHost = true) {
 	?>
 	<script type='text/javascript'>
 		// default snmp information
@@ -1155,6 +1155,9 @@ function device_javascript() {
 			// Need to set this for global snmpv3 functions to remain sane between edits
 			snmp_security_initialized = false;
 
+			<?php if (!$hasHost) { ?>
+			$('#row_created').hide();
+			<?php } ?>
 			if (typeof hostInfoHeight != 'undefined') {
 				if ($(window).scrollTop() == 0) {
 					$('.hostInfoHeader').css('height', '');
@@ -1275,14 +1278,12 @@ function device_javascript() {
 				$('#location').val($('#location_input').val());
 			});
 
-			$.get(urlPath + 'host.php?action=ping_host&id=' + $('#id').val())
-				.done(function(data) {
-					$('#ping_results').html(data);
-					hostInfoHeight = $('.hostInfoHeader').height();
-				})
-				.fail(function(data) {
-					getPresentHTTPError(data);
-				});
+			loadUrl({
+				url: urlPath + 'host.php?action=ping_host&id=' + $('#id').val(),
+				elementId: 'ping_results',
+				noState: true,
+				funcEnd: 'ping_results_finalize',
+			});
 
 			$('input[id^="reindex_"]').change(function() {
 				strURL = urlPath + 'host.php?action=query_change';
@@ -1294,12 +1295,17 @@ function device_javascript() {
 
 				loadUrl({
 					url: strURL,
+					noState: true,
 					scroll: true
 				})
 
 				$('.hostInfoHeader').css('height', height);
 			});
 		});
+
+		function ping_results_finalize(options, html) {
+			hostInfoHeight = $('.hostInfoHeader').height();
+		}
 	</script>
 <?php
 }

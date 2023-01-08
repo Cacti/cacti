@@ -2442,10 +2442,15 @@ function postUrl(options, data) {
 }
 
 function findElement(htmlObject, element) {
-	wanted = htmlObject.find(element);
-	if (typeof wanted == 'undefined' || wanted.length == 0) {
-		wanted = htmlObject.filter(element);
+	var wanted = $();
+
+	if (htmlObject !== null) {
+		wanted = htmlObject.find(element);
+		if (typeof wanted == 'undefined' || wanted.length == 0) {
+			wanted = htmlObject.filter(element);
+		}
 	}
+
 	return wanted;
 }
 
@@ -2531,8 +2536,17 @@ function handleAjaxResponse(html, options) {
 	if (options.handle && options.redirect.trim() == '') {
 		elementId = '#' + options.elementId;
 
-		var htmlObject = $(html);
-		var matches = html.match(/<title>(.*?)<\/title>/);
+		var htmlObject = null;
+		try {
+			htmlObject = $(html);
+		} catch (Exception) {
+			htmlObject = null;
+		}
+
+		var matches = null;
+		if (typeof html.match !== 'undefined') {
+			matches = html.match(/<title>(.*?)<\/title>/);
+		}
 
 		if (matches != null) {
 			var htmlTitle = matches[1];
