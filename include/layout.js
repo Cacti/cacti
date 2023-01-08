@@ -2570,7 +2570,6 @@ function handleAjaxResponse(html, options) {
 
 		if (html !== null && html.length > 0) {
 			$(elementId).empty().hide();
-			$('div[class^="ui-"]').remove();
 			$(elementId).html(htmlContent);
 			$(elementId).show();
 		}
