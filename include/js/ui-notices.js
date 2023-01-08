@@ -30,6 +30,7 @@ PopupWarning = function(message, heading, currentToast) {
         text: message,
         heading: heading,
         icon: 'warning',
+		hideAfter: 10,
     }, currentToast);
 }
 
@@ -38,7 +39,7 @@ PopupUnknown = function(message, heading, currentToast) {
         text: message,
         heading: heading,
         icon: 'info',
-        hideAfter: 3000,
+		hideAfter: false,
     }, currentToast);
 }
 
