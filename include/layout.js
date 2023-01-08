@@ -908,7 +908,9 @@ function applySkin() {
 
 	$('i, a, th, img, input, label, select, button, .drillDown, .checkboxSlider')
 		.tooltip({
-			close: true
+			close: function () {
+				$("[role=log].ui-helper-hidden-accessible").remove();
+			}
 		})
 		.on('focus', function () {
 			if ($(this).tooltip('instance')) {
@@ -922,6 +924,9 @@ function applySkin() {
 		});
 
 	$(document).tooltip({
+		close: function () {
+			$("[role=log].ui-helper-hidden-accessible").remove();
+		},
 		items: 'div.cactiTooltipHint, span.cactiTooltipHint, .checkboxSlider',
 		content: function () {
 			var element = $(this);

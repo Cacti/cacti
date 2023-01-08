@@ -30,7 +30,7 @@ PopupWarning = function(message, heading, currentToast) {
         text: message,
         heading: heading,
         icon: 'warning',
-		hideAfter: false,
+		hideAfter: 10000,
     }, currentToast);
 }
 

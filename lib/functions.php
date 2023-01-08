@@ -1218,15 +1218,13 @@ function display_output_messages() {
 
 			}
 
-			$message = get_format_message_instance($current_message);
-			if (!empty($message)) {
-				$current_message['message'] = $message;
+			if (!empty($current_message['message'])) {
 				$current_message['title']   = get_message_title($current_message);
 				$final_messages[] = [
 					'id'      => $current_message_id,
 					'level'   => $current_message['level'],
+					'message' => $current_message['message'],
 					'title'   => get_message_title($current_message),
-					'message' => $message,
 				];
 			} else {
 				cacti_log("ERROR: Cacti Error Message Id '$current_message_id' Not Defined", false, 'WEBUI');
