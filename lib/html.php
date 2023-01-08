@@ -2570,7 +2570,7 @@ function html_spikekill_js() {
    @arg selectedTheme - optionally sets a specific theme over the current one
 */
 function html_common_header($title, $selectedTheme = '') {
-	global $config, $path2calendar, $path2timepicker, $path2colorpicker, $path2ms, $path2msfilter;
+	global $path2calendar, $path2timepicker, $path2colorpicker, $path2ms, $path2msfilter;
 
 	if ($selectedTheme == '') {
 		$selectedTheme = get_selected_theme();
@@ -2718,12 +2718,16 @@ function html_common_header($title, $selectedTheme = '') {
 		var zoom_i18n_zoom_out_factor = '<?php print __esc('Zoom Out Factor');?>';
 		var zoom_i18n_zoom_out_positioning = '<?php print __esc('Zoom Out Positioning');?>';
 	</script>
-	<link href='<?php print CACTI_PATH_URL; ?>include/themes/<?php print $selectedTheme;?>/images/favicon.ico' rel='shortcut icon'>
-	<link href='<?php print CACTI_PATH_URL; ?>include/themes/<?php print $selectedTheme;?>/images/cacti_logo.gif' rel='icon' sizes='96x96'>
 	<?php
+	/* Global icons */
+	print get_md5_include_icon('images', theme: $selectedTheme, file: 'favicon.ico', rel: 'shortcut icon');
+	print get_md5_include_icon('images', theme: $selectedTheme, file: 'cacti_logo.gif', rel: 'icon', sizes: '96x96');
+
+	/* Theme-based styles */
 	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery.zoom.css');
 	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery-ui.css');
 	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'default/style.css');
+	//print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jqueri.toast.css');
 	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery.multiselect.css');
 	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery.multiselect.filter.css');
 	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery.timepicker.css');
@@ -2731,10 +2735,16 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'billboard.css');
 	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'pace.css');
 	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'Diff.css');
+
+	/* Global styles */
 	print get_md5_include_css('include/fa/css/all.css');
 	print get_md5_include_css('include/fa/css/fontawesome.css');
 	print get_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css');
+
+	/* Main theme based style (included last to allow overrides) */
 	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'main.css');
+
+	/* Global scripts */
 	print get_md5_include_js('include/js/screenfull.js', true);
 	print get_md5_include_js('include/js/jquery.js');
 	print get_md5_include_js('include/js/jquery-ui.js');
@@ -2742,6 +2752,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/jquery.cookie.js');
 	print get_md5_include_js('include/js/js.storage.js');
 	print get_md5_include_js('include/js/jstree.js');
+	//print get_md5_include_js('include/js/jquery.toast.js');
 	print get_md5_include_js('include/js/jquery.hotkeys.js', true);
 	print get_md5_include_js('include/js/jquery.tablednd.js', true);
 	print get_md5_include_js('include/js/jquery.zoom.js', true);
@@ -2761,8 +2772,11 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/layout.js');
 	print get_md5_include_js('include/js/pace.js');
 	print get_md5_include_js('include/realtime.js');
+
+	/* Main theme based scripts (included last to allow overrides) */
 	print get_md5_include_js('include/themes/', theme: $selectedTheme, file: 'main.js');
 
+	/* Language based scripts */
 	if (isset($path2calendar) && file_exists($path2calendar)) {
 		print get_md5_include_js($path2calendar);
 	}

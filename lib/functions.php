@@ -1057,12 +1057,35 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
 			if ($message_level == MESSAGE_LEVEL_NONE) {
 				$message_level = get_message_level($predefined);
 			}
-		} elseif (isset($_SESSION[$message_id])) {
-			$message       = $_SESSION[$message_id];
-			$message_level = MESSAGE_LEVEL_ERROR;
 		} else {
-			$message       = __('Message Not Found.');
-			$message_level = MESSAGE_LEVEL_ERROR;
+			if (isset($_SESSION[$message_id])) {
+				/*
+				 * A message was set at the session level
+				 * but rather than just assume it's an error
+				 * lets see if it is
+				 */
+				$message_level = MESSAGE_LEVEL_ERROR;
+				$sessMessage   = $_SESSION[$message_id];
+
+				/* Is the message an array ? */
+				if (is_array($sessMessage)) {
+					/* Do we have the message element to set the text ? */
+					if (!empty($sessMessage['message'])) {
+						$message = $sessMessage['message'];
+					}
+
+					/* Do we have the level element to set the level ? */
+					if (!empty($sessMessage['level'])) {
+						$message_level = $sessMessage['level'];
+					}
+				}
+			}
+
+			/* The message is still empty? */
+			if (empty($message)) {
+				$message       = __('Message Not Found.');
+				$message_level = MESSAGE_LEVEL_ERROR;
+			}
 		}
 	}
 
@@ -1098,15 +1121,8 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
 function raise_message_javascript($title, $header, $message) {
 	?>
 	<script type='text/javascript'>
-	var mixedReasonTitle = '<?php print $title;?>';
-	var mixedOnPage      = '<?php print $header;?>';
-	sessionMessage   = {
-		message: '<?php print $message;?>',
-		level: MESSAGE_LEVEL_MIXED
-	};
-
 	$(function() {
-		displayMessages();
+		raiseMessage(mixedReasonTitle, mixedOnPage, '<?= htmlspecialchars($message)?>', MESSAGE_LEVEL_MIXED)
 	});
 	</script>
 	<?php
@@ -1131,7 +1147,7 @@ function display_output_messages() {
 		debug_log_clear('new_graphs');
 	} elseif (isset($_SESSION[SESS_MESSAGES])) {
 		if (!is_array($_SESSION[SESS_MESSAGES])) {
-			$_SESSION[SESS_MESSAGES] = array('custom_error' => array('level' => 3, 'message' => $_SESSION[SESS_MESSAGES]));
+			$_SESSION[SESS_MESSAGES] = array('custom_error' => array('level' => MESSAGE_LEVEL_ERROR, 'message' => $_SESSION[SESS_MESSAGES]));
 		}
 
 		$omessage['level'] = get_message_max_type();
@@ -7408,6 +7424,32 @@ function get_md5_include_css(string $path, bool $async = false, ?string $theme =
 }
 
 /**
+ * Formatted output of images include with MD5 hash for uniqueness
+ *
+ * @param  string      $path    Path to include
+ * @param  boolean     $async   Load asynchronously
+ * @param  string|null $theme   Theme to use
+ * @param  string|null $file    File to inlcude
+ * @param  string|null $rel     Rel type output when not null (eg, icon, shortcut icon)
+ * @param  string|null $sizes   Sizes output when not null (eg, 96x96)
+ *
+ * @return void
+ */
+function get_md5_include_icon(string $path, bool $async = false, ?string $theme = null, ?string $file = null, ?string $rel = null, ?string $sizes = null) {
+	$format = '<link href=\'%s\' type=\'text/css\' %s%s>';
+
+	if (!empty($rel)) {
+		$rel = " rel='" . htmlspecialchars($rel) . "'";
+	}
+
+	if (!empty($sizes)) {
+		$sizes = " sizes='" . htmlspecialchars($sizes) . "'";
+	}
+
+	return get_theme_paths($format, $path, $theme, $file, true, $rel, $sizes);
+}
+
+/**
  * Is the resource available to be written to?
  *
  * @param  string  $path
@@ -8695,3 +8737,82 @@ function text_regex_rule($matches, $link = false) {
 
 	return $result;
 }
+
+// /**
+//  * Add a UI-based notificatoin
+//  *
+//  * @param  integer     $messageType Must be a valid type listed in $ui_notice_types
+//  * @param  string      $message     Message to be displayed
+//  * @param  string|null $messageId   ID to be used if a specific ID is required
+//  *
+//  * @return string The message ID that was set
+//  */
+// function add_ui_notification(int $messageType, string $message, ?string $messageId = null):string {
+//     global $ui_notice_types;
+
+//     $notices = $_SESSION[SESS_UI_NOTICES] ?? [];
+//     if ($messageId === null) {
+//         $messageId = SESS_UI_NOTICES . '_' . (cacti_sizeof($notices) + 1);
+//     }
+
+//     if (!array_key_exists($messageType, $ui_notice_types)) {
+//         $messageType = E_CORE_ERROR;
+//     }
+
+//     $notices[$messageId] = ['type' => $messageType, 'text' => $message];
+
+//     $_SESSION[SESS_UI_NOTICES] = $notices;
+//     return $messageId;
+// }
+
+// /**
+//  * Gets the currently set UI notifications
+//  *
+//  * @param  boolean $clear When true, empties the current notifications on return
+//  *
+//  * @return array
+//  */
+// function get_ui_notifications(bool $clear = false):array {
+//     $result = $_SESSION[SESS_UI_NOTICES] ?? [];
+//     if ($clear) {
+//         $_SESSION[SESS_UI_NOTICES] = [];
+//     }
+
+//     return $result;
+// }
+
+// /**
+//  * Adds a UI-based error notification
+//  *
+//  * @param  string      $message     Message to be displayed
+//  * @param  string|null $messageId   ID to be used if a specific ID is required
+//  *
+//  * @return string The message ID that was set
+//  */
+// function add_error_ui_notification(string $message, ?string $messageId = null):string {
+//     return add_ui_notification(E_ERROR, $message, $messageId);
+// }
+
+// /**
+//  * Adds a UI-based warning notification
+//  *
+//  * @param  string      $message     Message to be displayed
+//  * @param  string|null $messageId   ID to be used if a specific ID is required
+//  *
+//  * @return string The message ID that was set
+//  */
+// function add_warning_ui_notification(string $message, ?string $messageId = null):string {
+//     return add_ui_notification(E_WARNING, $message, $messageId);
+// }
+
+// /**
+//  * Adds a UI-based info notification
+//  *
+//  * @param  string      $message     Message to be displayed
+//  * @param  string|null $messageId   ID to be used if a specific ID is required
+//  *
+//  * @return string The message ID that was set
+//  */
+// function add_info_ui_notification(string $message, ?string $messageId = null):string {
+//     return add_ui_notification(E_NOTICE, $message, $messageId);
+// }

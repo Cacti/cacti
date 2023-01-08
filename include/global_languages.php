@@ -241,7 +241,9 @@ switch ($i18n_handler) {
 		break;
 }
 
-define('CACTI_LANGUAGE_HANDLER', $i18n_handler);
+set_language_constants(array(
+	'HANDLER' => $i18n_handler
+));
 
 i18n_debug('require(2): Handler ' . CACTI_LANGUAGE_HANDLER);
 
@@ -275,10 +277,12 @@ if (CACTI_LANGUAGE_HANDLER != CACTI_LANGUAGE_HANDLER_DEFAULT) {
 }
 
 /* load standard wrappers */
-define('CACTI_LOCALE', $cacti_locale);
-define('CACTI_COUNTRY', $cacti_country);
-define('CACTI_LANGUAGE', $lang2locale[CACTI_LOCALE]['language']);
-define('CACTI_LANGUAGE_FILE', $catalogue);
+set_language_constants(array(
+	'LOCALE'   => $cacti_locale,
+	'COUNTRY'  => $cacti_country,
+	'LANGUAGE' => $lang2locale[CACTI_LOCALE]['language'],
+	'FILE'     => $catalogue,
+));
 
 function load_gettext_original($domain) {
 	global $cacti_textdomains;
@@ -454,11 +458,42 @@ function load_fallback_procedure() {
 	$_SESSION[SESS_USER_LANGUAGE] = '';
 
 	$cacti_textdomains = array();
-	define('CACTI_LOCALE', 'en-US');
-	define('CACTI_COUNTRY', 'us');
-	define('CACTI_LANGUAGE', 'English');
-	define('CACTI_LANGUAGE_FILE', 'english_usa');
-	define('CACTI_LANGUAGE_HANDLER', CACTI_LANGUAGE_HANDLER_DEFAULT);
+	set_language_constants(array(
+		'LOCALE'   => 'en-US',
+		'COUNTRY'  => 'us',
+		'LANGUAGE' => 'English',
+		'FILE'     => 'english_usa',
+		'HANDLER'  => CACTI_LANGUAGE_HANDLER_DEFAULT,
+	));
+}
+
+function set_language_constants(array $constants) {
+	foreach ($constants as $key => $value) {
+		$upperKey = strtoupper($key);
+
+		switch ($upperKey) {
+			case 'LOCALE':
+				define('CACTI_LOCALE', $value);
+
+				break;
+			case 'COUNTRY':
+				define('CACTI_COUNTRY', $value);
+
+				break;
+			case 'LANGUAGE':
+				define('CACTI_LANGUAGE', $value);
+
+				break;
+			case 'FILE':
+				define('CACTI_LANGUAGE_FILE', $value);
+
+				break;
+			case 'HANDLER':
+				define('CACTI_LANGUAGE_HANDLER', $value);
+
+				break;
+		}
+	}
 }
 
 function __gettext($text, $domain = 'cacti') {

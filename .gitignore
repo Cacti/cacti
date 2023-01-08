@@ -63,23 +63,23 @@ plugins/**
 scripts/**
 
 # Ignore Custom Cacti theme folders
-include/themes/*
+include/themes/*/*
 
 # Ignore custom stylesheet (applied on all themes)
 include/themes/custom.css
 
 # Do not ignore standard Cacti theme folders
-!include/themes/cacti
-!include/themes/carrot
-!include/themes/classic
-!include/themes/dark
-!include/themes/hollyberry
-!include/themes/modern
-!include/themes/paper-plane
-!include/themes/paw
-!include/themes/raspberry
-!include/themes/sunrise
-!include/themes/midwinter
+!include/themes/cacti/*
+!include/themes/carrot/*
+!include/themes/classic/*
+!include/themes/dark/*
+!include/themes/hollyberry/*
+!include/themes/modern/*
+!include/themes/paper-plane/*
+!include/themes/paw/*
+!include/themes/raspberry/*
+!include/themes/sunrise/*
+!include/themes/midwinter/*
 
 # Ignore any mac DS_Store files
 .DS_Store

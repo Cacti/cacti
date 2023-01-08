@@ -1077,8 +1077,8 @@ function setupButtonStyle() {
 function raiseMessage(title, header, detail, level) {
 	var origErrorReasonTitle    = errorReasonTitle;
 	var origErrorOnPage         = errorOnPage;
-	var origMixedReasonTitle    = mixedReasonTitle;;
-	var origMixedOnPage         = mixedOnPage;;
+	var origMixedReasonTitle    = mixedReasonTitle;
+	var origMixedOnPage         = mixedOnPage;
 	var origSessionMessageTitle = sessionMessageTitle;
 	var origSessionMessageSave  = sessionMessageSave;
 	var origSessionMessage      = sessionMessage;
@@ -1106,8 +1106,8 @@ function raiseMessage(title, header, detail, level) {
 		mixedOnPage      = origMixedOnPage;
 		mixedReasonTitle = origMixedReasonTitle;
 	} else {
-		sessionMessageTitle = sessionMessageTitle;
-		sessionMessageSave  = sessionMessageSave;
+		sessionMessageTitle = origSessionMessageTitle;
+		sessionMessageSave  = origSessionMessageSave;
 	}
 
 	sessionMessage = origSessionMessage;
@@ -2447,10 +2447,10 @@ function findElement(htmlObject, element) {
 	var wanted = $();
 
 	if (htmlObject !== null) {
-		wanted = htmlObject.find(element);
-		if (typeof wanted == 'undefined' || wanted.length == 0) {
-			wanted = htmlObject.filter(element);
-		}
+        wanted = htmlObject.find(element);
+        if (typeof wanted == 'undefined' || wanted.length == 0) {
+            wanted = htmlObject.filter(element);
+        }
 	}
 
 	return wanted;
