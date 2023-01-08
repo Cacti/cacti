@@ -2494,12 +2494,12 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 				print "<tr class='odd'><td><p class='textArea'>" . __('Cacti has imported the following items for the Package:') . '</p>' . PHP_EOL;
 			}
 
-			print "<p><strong>" . __('Package Files') . "</strong></p>" . PHP_EOL;
+			print '<p><strong>' . __('Package Files') . '</strong></p>' . PHP_EOL;
 
 			print '<ul>' . PHP_EOL;
 
-			foreach($filestatus as $filename => $status) {
-				print '<li>' . ($preview ? __("[preview] "):"") . html_escape($filename) . ' [' . $status . ']</li>' . PHP_EOL;
+			foreach ($filestatus as $filename => $status) {
+				print '<li>' . ($preview ? __('[preview] '):'') . html_escape($filename) . ' [' . $status . ']</li>' . PHP_EOL;
 			}
 
 			print '</ul>' . PHP_EOL;
@@ -2516,7 +2516,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 				continue;
 			}
 
-			print PHP_EOL . "<p><strong>" . $hash_type_names[$type] . "</strong></p>" . PHP_EOL;
+			print PHP_EOL . '<p><strong>' . $hash_type_names[$type] . '</strong></p>' . PHP_EOL;
 
 			foreach ($type_array as $index => $vals) {
 				if ($vals['result'] == 'success') {
@@ -2540,7 +2540,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 				if (isset($vals['orphans'])) {
 					print '<ul class="monoSpace">' . PHP_EOL;
 
-					foreach($vals['orphans'] as $orphan) {
+					foreach ($vals['orphans'] as $orphan) {
 						print '<li>' . html_escape($orphan) . '</li>' . PHP_EOL;
 					}
 
@@ -2550,7 +2550,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 				if (isset($vals['new_items'])) {
 					print '<ul class="monoSpace">' . PHP_EOL;
 
-					foreach($vals['new_items'] as $item) {
+					foreach ($vals['new_items'] as $item) {
 						print '<li>' . html_escape($item) . '</li>' . PHP_EOL;
 					}
 
@@ -2560,7 +2560,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 				if (isset($vals['differences'])) {
 					print '<ul class="monoSpace">' . PHP_EOL;
 
-					foreach($vals['differences'] as $diff) {
+					foreach ($vals['differences'] as $diff) {
 						print '<li>' . $diff . '</li>' . PHP_EOL;
 					}
 
@@ -2580,7 +2580,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 								$dep_errors      = true;
 							}
 
-							$dep_text .= "<span class='monoSpace'>&nbsp;&nbsp;&nbsp;+ $dep_status_text " . hash_to_friendly_name($dep_hash, true) . "</span><br>" . PHP_EOL;
+							$dep_text .= "<span class='monoSpace'>&nbsp;&nbsp;&nbsp;+ $dep_status_text " . hash_to_friendly_name($dep_hash, true) . '</span><br>' . PHP_EOL;
 						}
 					}
 

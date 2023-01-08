@@ -535,7 +535,7 @@ function __() {
 
 		$valid_args = array('%%', '%b', '%c', '%d', '%e', '%E', '%f', '%F', '%g', '%G', '%h', '%H', '%o', '%s', '%u', '%x', '%X');
 
-		if (array_search($args[0], $valid_args) !== false) {
+		if (array_search($args[0], $valid_args, true) !== false) {
 			/* process return string against input arguments */
 
 			return __uf(call_user_func_array('sprintf', $args));

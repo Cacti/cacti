@@ -3763,6 +3763,7 @@ class Installer implements JsonSerializable {
 
 	public static function formatModuleStatus(&$module, $name, $badColor = 'red') {
 		$pcntl_special = false;
+
 		if ($name == 'pcntl') {
 			if (!$module['web']) {
 				$pcntl_special = true;
@@ -3771,12 +3772,17 @@ class Installer implements JsonSerializable {
 
 		if ($module['installed']) {
 			return '<font color=green>' . __('Yes') . '</font>';
-		} elseif (!($module['web'] || $module['cli'])) {
+		}
+
+		if (!($module['web'] || $module['cli'])) {
 			return '<font color=' . $badColor . '>' . __('No - %s', __('Both')) . '</font>';
-		} elseif (!$module['web']) {
+		}
+
+		if (!$module['web']) {
 			if ($pcntl_special) {
-				$module['web'] = true;
+				$module['web']       = true;
 				$module['installed'] = true;
+
 				return '<font color=orange>' . __('%s - N/A', __('Web')) . '</font>';
 			} else {
 				return '<font color=orange>' . __('%s - No', __('Web')) . '</font>';

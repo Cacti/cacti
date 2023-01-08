@@ -266,6 +266,14 @@ $.fn.replaceOptions = function (options, selected) {
 	});
 };
 
+/**
+ * Enable or disable options that match the values passed
+ *
+ * @param {array} values            The values to be updated
+ * @param {bool} optionEnabled      Whether to enable or disable
+ * @param {function} valueCheckFunc The function be to called if anything changes
+ * @returns element
+ */
 $.fn.enableDisableOptions = function (values, optionEnabled, valueCheckFunc) {
 	var hasChanged = false;
 
@@ -324,9 +332,25 @@ $.fn.enableDisableOptions = function (values, optionEnabled, valueCheckFunc) {
 	return $(this);
 };
 
+/**
+ * Enable options that match the values passed
+ *
+ * @param {array} values            The values to be updated
+ * @param {function} valueCheckFunc The function be to called if anything changes
+ * @returns
+ */
+
 $.fn.disableOptions = function (values, valueCheckFunc) {
    return $(this).enableDisableOptions(values, false, valueCheckFunc);
 }
+
+/**
+ * Disable options that match the values passed
+ *
+ * @param {array} values            The values to be updated
+ * @param {function} valueCheckFunc The function be to called if anything changes
+ * @returns
+ */
 
 $.fn.enableOptions = function (values, valueCheckFunc) {
    return $(this).enableDisableOptions(values, true, valueCheckFunc);

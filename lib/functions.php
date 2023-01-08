@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+use PHPMailer\PHPMailer\Exception;
+
 /**
  * title_trim - takes a string of text, truncates it to $max_length and appends
  * three periods onto the end
@@ -532,9 +534,9 @@ function read_default_config_option(string $config_name):mixed {
 /**
  * Cache the common configuration settings
  *
- * @return void
+ * @return array
  */
-function cache_common_config_settings() {
+function cache_common_config_settings():array {
 	global $config;
 
 	//$start = microtime(true);
@@ -659,11 +661,11 @@ function cache_common_config_settings() {
 		foreach ($settings as $name => $value) {
 			$$set_var[$set_key][$name] = $value;
 		}
+
+		return $$set_var;
 	}
 
-	//$end = microtime(true);
-
-	//cacti_log('The Total common load time:' . round($end - $start, 4));
+	return array();
 }
 
 /**
@@ -1242,9 +1244,14 @@ function array_rekey(array $array, string $key, mixed $key_value): array {
 }
 
 /**
- * cacti_log_file - returns the log filename
  */
-function cacti_log_file() {
+
+/**
+ * cacti_log_file - returns the log filename
+ *
+ * @return string
+ */
+function cacti_log_file():string {
 	$logfile        = read_config_option('path_cactilog');
 
 	if ($logfile == '') {
@@ -1254,7 +1261,16 @@ function cacti_log_file() {
 	return $logfile;
 }
 
-function get_selective_log_level() {
+/**
+ * Gets the selective log level for the current script
+ *
+ * Note that the results of this function are cached
+ * internally so do not refresh if called again after
+ * updating the value.
+ *
+ * @return null|int
+ */
+function get_selective_log_level(): ?int {
 	static $force_level = null;
 
 	if ($force_level !== null) {
@@ -1275,7 +1291,6 @@ function get_selective_log_level() {
 		$dir_name     = __DIR__;
 	}
 
-	$force_level = '';
 	$debug_files = read_config_option('selective_debug');
 
 	if ($debug_files != '') {
@@ -1301,6 +1316,9 @@ function get_selective_log_level() {
 			}
 		}
 	}
+
+	// Did we set a level ? If not, read the default level
+	$force_level = $force_level ?? read_config_option('log_verbosity');
 
 	return $force_level;
 }
@@ -1994,6 +2012,16 @@ function is_mac_address($result) {
 	}
 }
 
+/**
+ * Determines if string is a hex value
+ *
+ * WARNING: The passed parameter may be altered by
+ * this function
+ *
+ * @param  string  $result
+ *
+ * @return boolean
+ */
 function is_hex_string(&$result) {
 	if ($result == '') {
 		return false;
@@ -2604,16 +2632,16 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 }
 
 /**
- * get_full_test_script_path - gets the full path to the script to execute to obtain data for a
- * given data template for testing. this function does not work on SNMP actions, only
- * script-based actions
+ * Gets the full path to the script to execute to obtain data for a
+ * given data template for testing. this function does not work on
+ * SNMP actions, only script-based actions
  *
- * @param $data_template_id - (int) the ID of the data template
- * @param mixed $host_id
+ * @param int $data_template_id - (int) the ID of the data template
+ * @param int $host_id
  *
- * @return mixed the full script path or (bool) false for an error
+ * @return string|bool the full script path or (bool) false for an error
  */
-function get_full_test_script_path($data_template_id, $host_id) {
+function get_full_test_script_path(int $data_template_id, int $host_id):string|false {
 	global $config;
 
 	$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
@@ -2670,11 +2698,11 @@ function get_full_test_script_path($data_template_id, $host_id) {
  * get_full_script_path - gets the full path to the script to execute to obtain data for a
  * given data source. this function does not work on SNMP actions, only script-based actions
  *
- * @param $local_data_id - (int) the ID of the data source
+ * @param int $local_data_id The ID of the data source
  *
- * @return mixed the full script path or (bool) false for an error
+ * @return string|false the full script path or (bool) false for an error
  */
-function get_full_script_path($local_data_id) {
+function get_full_script_path(int $local_data_id):string|false {
 	global $config;
 
 	$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' dtd.id, dtd.data_input_id,
@@ -2726,11 +2754,11 @@ function get_full_script_path($local_data_id) {
  * get_data_source_item_name - gets the name of a data source item or generates a new one if one does not
  * already exist
  *
- * @param $data_template_rrd_id - (int) the ID of the data source item
+ * @param int $data_template_rrd_id - (int) the ID of the data source item
  *
- * @return mixed the name of the data source item or an empty string for an error
+ * @return string|false the name of the data source item or an empty string for an error
  */
-function get_data_source_item_name($data_template_rrd_id) {
+function get_data_source_item_name(int $data_template_rrd_id):string|false {
 	if (empty($data_template_rrd_id)) {
 		return '';
 	}
@@ -2748,7 +2776,7 @@ function get_data_source_item_name($data_template_rrd_id) {
 	if (empty($data_source['data_source_name'])) {
 		/* limit input to 19 characters */
 		$data_source_name = clean_up_name($data_source['name']);
-		$data_source_name = substr(strtolower($data_source_name), 0, (19 - strlen($data_template_rrd_id))) . $data_template_rrd_id;
+		$data_source_name = substr(strtolower($data_source_name), 0, (19 - strlen('' .$data_template_rrd_id))) . $data_template_rrd_id;
 
 		return $data_source_name;
 	} else {
@@ -2757,15 +2785,14 @@ function get_data_source_item_name($data_template_rrd_id) {
 }
 
 /**
- * get_data_source_path - gets the full path to the .rrd file associated with a given data source
+ * Gets the full path to the .rrd file associated with a given data source
  *
- * @param $local_data_id - (int) the ID of the data source
- * @param $expand_paths - (bool) whether to expand the <path_rra> variable into its full path or not
+ * @param int  $local_data_id  The ID of the data source
+ * @param bool $expand_paths   Whether to expand the <path_rra> variable into its full path or not
  *
- * @return mixed the full path to the data source or an empty string for an error
+ * @return string the full path to the data source or an empty string for an error
  */
-function get_data_source_path($local_data_id, $expand_paths) {
-	global $config;
+function get_data_source_path(int $local_data_id, bool $expand_paths): string {
 	static $data_source_path_cache = array();
 
 	if (empty($local_data_id)) {
@@ -2800,18 +2827,20 @@ function get_data_source_path($local_data_id, $expand_paths) {
 
 		return $data_source_path;
 	}
+
+	return '';
 }
 
 /**
  * stri_replace - a case insensitive string replace
  *
- * @param $find - needle
- * @param $replace - replace needle with this
- * @param $string - haystack
+ * @param string $find - needle
+ * @param string $replace - replace needle with this
+ * @param string $string - haystack
  *
- * @return mixed the original string with '$find' replaced by '$replace'
+ * @return string the original string with '$find' replaced by '$replace'
  */
-function stri_replace($find, $replace, $string) {
+function stri_replace(string $find, string $replace, string $string):string {
 	$parts = explode(strtolower($find), strtolower($string));
 
 	$pos = 0;
@@ -2829,12 +2858,12 @@ function stri_replace($find, $replace, $string) {
 }
 
 /**
- * clean_up_lines - runs a string through a regular expression designed to remove
+ * Parses a string using a regular expression designed to remove
  * new lines and the spaces around them
  *
- * @param $string - the string to modify/clean
+ * @param null|string $string the string to modify/clean
  *
- * @return mixed the modified string
+ * @return null|string the modified string
  */
 function clean_up_lines(?string $string): ?string {
 	if ($string !== null) {
@@ -2845,12 +2874,12 @@ function clean_up_lines(?string $string): ?string {
 }
 
 /**
- * clean_up_name - runs a string through a series of regular expressions designed to
+ * Parses a string using a series of regular expressions designed to
  * eliminate "bad" characters
  *
- * @param $string - the string to modify/clean
+ * @param null|string $string the string to modify/clean
  *
- * @return mixed the modified string
+ * @return null|string the modified string
  */
 function clean_up_name(?string $string): ?string {
 	if ($string !== null) {
@@ -2863,12 +2892,12 @@ function clean_up_name(?string $string): ?string {
 }
 
 /**
- * clean_up_file name - runs a string through a series of regular expressions designed to
+ * Parses a string using a series of regular expressions designed to
  * eliminate "bad" characters
  *
- * @param $string - the string to modify/clean
+ * @param null|string $string - the string to modify/clean
  *
- * @return mixed the modified string
+ * @return null|string the modified string
  */
 function clean_up_file_name(?string $string): ?string {
 	if ($string !== null) {
@@ -2881,12 +2910,12 @@ function clean_up_file_name(?string $string): ?string {
 }
 
 /**
- * clean_up_path - takes any path and makes sure it contains the correct directory
+ * Parses a string and makes sure it contains the correct directory
  * separators based on the current operating system
  *
- * @param $path - the path to modify
+ * @param null|string $path - the path to modify
  *
- * @return mixed the modified path
+ * @return null|string the modified path
  */
 function clean_up_path(?string $path): ?string {
 	global $config;
@@ -2903,13 +2932,13 @@ function clean_up_path(?string $path): ?string {
 }
 
 /**
- * get_data_source_title - returns the title of a data source without using the title cache
+ * Returns the title of a data source without using the title cache
  *
- * @param $local_data_id - (int) the ID of the data source to get a title for
+ * @param int $local_data_id - (int) the ID of the data source to get a title for
  *
- * @return mixed the data source title
+ * @return string the data source title
  */
-function get_data_source_title($local_data_id) {
+function get_data_source_title(int $local_data_id):string {
 	$data = db_fetch_row_prepared('SELECT
 		dl.host_id, dl.snmp_query_id, dl.snmp_index, dl.data_template_id,
 		dtd.name, dtd.id as template_id
@@ -2971,26 +3000,28 @@ function get_data_source_titles(array $local_data_ids) {
 }
 
 /**
- * get_device_name - returns the description of the device in cacti host table
+ * Gets the description of the device in cacti host table
  *
- * @param $host_id - (int) the ID of the device to get a description for
+ * @param int $host_id the ID of the device to get a description for
  *
- * @return mixed the device name
+ * @return string|false the device name
  */
-function get_device_name($host_id) {
+function get_device_name(int $host_id):string|false {
 	return db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($host_id));
 }
 
 /**
- * get_color - returns the hex color value from the cacti colors table
+ * Gets the hex color value from the cacti colors table
  *
- * @param $color_id - (int) the ID of the cacti color
- * @return mixed the hex color value
+ * @param int $color_id the ID of the cacti color
+ * @return string|false the hex color value
  *
  */
-function get_color($color_id) {
+function get_color(int $color_id):string|false {
 	return db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($color_id));
 }
+
+// TODO: This marker is to identifer where to resume typing and PHPDoc syntax updating
 
 /**
  * get_graph_title_cache - returns the title of the graph using the title cache
@@ -4975,7 +5006,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	$start_time = microtime(true);
 
 	$subject = $subject ?? '';
-	$body    = $body    ?? '';
+	$body    = $body ?? '';
 
 	// Create the PHPMailer instance
 	$mail = new PHPMailer\PHPMailer\PHPMailer;
@@ -7256,11 +7287,25 @@ function get_include_relpath(string $path, $basePath = null) {
 	return $npath;
 }
 
+/**
+ * Returns a formatted output based on found paths.  If no paths are found
+ * output will be blank
+ *
+ * @param  string      $format       The format to be used when a path/file exists
+ * @param  string      $path         The base path to be used. Must include file if theme and file are not set
+ * @param  null|string $theme        The theme to be used. If not set, current theme is assumed
+ * @param  null|string $file         The file to be used.  If not set, extracted as last element of path
+ * @param  bool        $pathFirst    Whether the `path` + `file` should be included first or last
+ * @param  mixed       $args         Extra arguments to be passed when applying format
+ * @return string
+ * @throws Exception
+ */
 function get_theme_paths(string $format, string $path, ?string $theme = null, ?string $file = null, bool $pathFirst = false, ... $args) {
-	$output = [];
-	$paths  = [];
+	$output = array();
+	$paths  = array();
 
 	$noFile = ($file === null);
+
 	if ($noFile) {
 		// Split the path up into elements
 		$parts = explode('/', $path);
@@ -7330,17 +7375,46 @@ function get_theme_paths(string $format, string $path, ?string $theme = null, ?s
 	return implode(PHP_EOL, $output);
 }
 
+/**
+ * Formatted output of javascript include with MD5 hash for uniqueness
+ *
+ * @param  string      $path    Path to include
+ * @param  boolean     $async   Load asynchronously
+ * @param  string|null $theme   Theme to use
+ * @param  string|null $file    File to inlcude
+ *
+ * @return void
+ */
 function get_md5_include_js(string $path, bool $async = false, ?string $theme = null, ?string $file = null) {
 	$format = '<script type=\'text/javascript\' src=\'%s\'%s></script>';
+
 	return get_theme_paths($format, $path, $theme, $file, true, $async ? ' async' : '');
 }
 
+/**
+ * Formatted output of stylesheet include with MD5 hash for uniqueness
+ *
+ * @param  string      $path    Path to include
+ * @param  boolean     $async   Load asynchronously
+ * @param  string|null $theme   Theme to use
+ * @param  string|null $file    File to inlcude
+ *
+ * @return void
+ */
 function get_md5_include_css(string $path, bool $async = false, ?string $theme = null, ?string $file = null) {
 	$format = '<link href=\'%s\' type=\'text/css\' rel=\'stylesheet\'%s>';
+
 	return get_theme_paths($format, $path, $theme, $file, true, $async ? ' media=\'print\' online="this.media=\'all\'"' : '');
 }
 
-function is_resource_writable($path) {
+/**
+ * Is the resource available to be written to?
+ *
+ * @param  string  $path
+ *
+ * @return boolean
+ */
+function is_resource_writable(string $path) {
 	if (empty($path)) {
 		return false;
 	}
@@ -7369,7 +7443,18 @@ function is_resource_writable($path) {
 	return false;
 }
 
-function recursive_chown($path, $uid, $gid) {
+/**
+ * Recursively change ownership of files/directories.  It should be
+ * noted that this function exits on the first failure that it finds
+ * and returns false.
+ *
+ * @param  string         $path   Path to be updated
+ * @param  string|integer $uid    String or integer of user to set
+ * @param  string|integer $gid    String or integer of group to set
+ *
+ * @return boolean
+ */
+function recursive_chown(string $path, string|int $uid, string|int $gid): bool {
 	$d = opendir($path);
 
 	while (($file = readdir($d)) !== false) {
@@ -7395,7 +7480,16 @@ function recursive_chown($path, $uid, $gid) {
 	return true;
 }
 
-function get_validated_theme($theme, $defaultTheme) {
+/**
+ * Verifies that a theme exists.  If the theme does exist
+ * return its name, otherwise returns the default theme.
+ *
+ * @param  string|null $theme
+ * @param  string      $defaultTheme
+ *
+ * @return void
+ */
+function get_validated_theme(?string $theme, string $defaultTheme) {
 	global $config;
 
 	if (isset($theme) && strlen($theme)) {
@@ -7409,6 +7503,16 @@ function get_validated_theme($theme, $defaultTheme) {
 	return $defaultTheme;
 }
 
+/**
+ * Verifies that a language exists.  If the language
+ * does exist, returns its name, otherwise returns
+ * the default language.
+ *
+ * @param  [type] $language
+ * @param  [type] $defaultLanguage
+ *
+ * @return void
+ */
 function get_validated_language($language, $defaultLanguage) {
 	if (isset($language) && strlen($language)) {
 		return $language;
@@ -7417,9 +7521,13 @@ function get_validated_language($language, $defaultLanguage) {
 	return $defaultLanguage;
 }
 
-function get_running_user() {
-	global $config;
-
+/**
+ * Attempts to return the currently running user
+ * via a number of methods.
+ *
+ * @return string
+ */
+function get_running_user():string {
 	static $tmp_user = '';
 
 	if (empty($tmp_user)) {
@@ -7449,7 +7557,6 @@ function get_running_user() {
 
 		if (empty($f_owner) && function_exists('posix_getuid')) {
 			$f_owner  = posix_getuid();
-			$f_source = 'posix';
 		}
 
 		if (!empty($f_owner) && function_exists('posix_getpwuid1')) {
@@ -7467,17 +7574,6 @@ function get_running_user() {
 				$tmp_user = trim($o['0']);
 			}
 		}
-
-		/*** Code left here for future development, don't think it is right ***
-		 *
-		if (empty($tmp_user) && !empty($f_owner) && is_readable('/etc/passwd'))
-		{
-			exec(sprintf('grep :%s: /etc/passwd | cut -d: -f1', (int) $uid), $o, $r);
-			if ($r == 0) {
-				$tmp_user = 'passwd-' . trim($o['0']);
-			}
-		}
-		 */
 
 		// Easy way first
 		if (empty($tmp_user)) {
@@ -7509,14 +7605,28 @@ function get_running_user() {
 	return (empty($tmp_user) ? 'apache' : $tmp_user);
 }
 
-function get_debug_prefix() {
+/**
+ * Returns a string for debugging purposes
+ *
+ * @return string
+ */
+function get_debug_prefix():string {
 	$dateTime = new DateTime('NOW');
 	$dateTime = $dateTime->format('Y-m-d H:i:s.u');
 
 	return sprintf('<[ %s | %7d ]> -- ', $dateTime, getmypid());
 }
 
-function get_client_addr() {
+/**
+ * Gets the current client addr
+ *
+ * This function relies on an administrator to set
+ * the appropriate proxy headers that are allowed
+ * in the `config.php` include.
+ *
+ * @return string|false
+ */
+function get_client_addr():string|false {
 	global $config, $allowed_proxy_headers;
 
 	$proxy_headers = $config['proxy_headers'] ?? null;

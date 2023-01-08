@@ -1677,7 +1677,7 @@ function boost_display_run_status() {
 		if ($memory_limit == -1) {
 			$memory_limit = __('Unlimited');
 		} elseif ($memory_limit != '') {
-			$memory_limit = __('%s MBytes', number_format_i18n($memory_limit) );
+			$memory_limit = __('%s MBytes', number_format_i18n($memory_limit));
 		} else {
 			$memory_limit = __('N/A');
 		}
