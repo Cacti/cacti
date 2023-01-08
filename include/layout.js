@@ -4886,6 +4886,7 @@ function setAvailability() {
 
 	var availability_method = $('#availability_method').val();
 	var canPing = true;
+
 	if (availability_method == 0 ||
 		availability_method == 2 ||
 		availability_method == 5 ||
@@ -4903,15 +4904,16 @@ function setAvailability() {
 }
 
 function setPing() {
-	availability_method = $('#availability_method').val();
-	ping_method = $('#ping_method').val();
-	use_snmp = availability_method == 2 || availability_method == 5 || availability_method == 6;
+	var availability_method = $('#availability_method').val();
+	var ping_method = $('#ping_method').val();
+	var show_ping_port = (availability_method == 1 || availability_method == 4 || availability_method == 3) && ping_method != 1;
+	var show_ping_method = availability_method == 1 || availability_method == 3 || availability_method == 4;
 
 	toggleFields({
-		ping_method: !use_snmp && ping_method >= 1,
-		ping_port: !use_snmp && ping_method > 1,
-		ping_timeout: use_snmp || ping_method >= 1,
-		ping_retries: use_snmp || ping_method >= 1,
+		ping_method: show_ping_method,
+		ping_port: show_ping_port,
+		ping_timeout: availability_method > 0,
+		ping_retries: availability_method > 0
 	});
 }
 
