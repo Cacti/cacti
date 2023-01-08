@@ -2166,16 +2166,16 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 				$devices = get_allowed_devices($sql_where);
 
-		if (cacti_sizeof($devices)) {
-			foreach ($devices as $device) {
-				print "<option value='" . $device['id'] . "'";
+				if (cacti_sizeof($devices)) {
+					foreach ($devices as $device) {
+						print "<option value='" . $device['id'] . "'";
 
-				if ($host_id == $device['id']) {
-					print ' selected';
-				} print '>' . html_escape(strip_domain($device['description'])) . '</option>';
-			}
-		}
-		?>
+						if ($host_id == $device['id']) {
+							print ' selected';
+						} print '>' . html_escape(strip_domain($device['description'])) . '</option>';
+					}
+				}
+				?>
 			</select>
 		</td>
 		<?php
@@ -2195,14 +2195,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 			<?php print __('Device');?>
 		</td>
 		<td>
-			<span id='host_wrapper' style='width:200px;' class='ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-corner-all ui-button ui-widget'>
-				<span id='host_click' class='ui-selectmenu-icon ui-icon ui-icon-triangle-1-s'></span>
-				<span class='ui-select-text'>
-					<input type='text' size='28' id='host' value='<?php print html_escape($hostname);?>'>
-				</span>
-			</span>
-			<input type='hidden' id='host_id' name='host_id' value='<?php print $host_id;?>'>
-			<input type='hidden' id='call_back' value='<?php print $call_back;?>'>
+			<?php print "<input id='host_id' name='host_id' type='text' class='drop-callback ui-state-default ui-corner-all' data-action='ajax_hosts' data-callback='$call_back' data-callback-id='host_id' data-value='" . html_escape($hostname) . "' value='" . html_escape($host_id) . "'>";?>
 		</td>
 	<?php
 	}
@@ -2231,16 +2224,18 @@ function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 			$sites = get_allowed_sites($sql_where);
 
-	if (cacti_sizeof($sites)) {
-		foreach ($sites as $site) {
-			print "<option value='" . $site['id'] . "'";
+			if (cacti_sizeof($sites)) {
+				foreach ($sites as $site) {
+					print "<option value='" . $site['id'] . "'";
 
-			if ($site_id == $site['id']) {
-				print ' selected';
-			} print '>' . html_escape($site['name']) . '</option>';
-		}
-	}
-	?>
+					if ($site_id == $site['id']) {
+						print ' selected';
+					}
+
+					print '>' . html_escape($site['name']) . '</option>';
+				}
+			}
+			?>
 		</select>
 	</td>
 	<?php

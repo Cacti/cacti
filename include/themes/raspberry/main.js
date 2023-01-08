@@ -166,37 +166,6 @@ function themeReady() {
 		}
 	});
 
-	$('#host').unbind().autocomplete({
-		source: pageName+'?action=ajax_hosts',
-		autoFocus: true,
-		minLength: 0,
-		select: function(event,ui) {
-			$('#host_id').val(ui.item.id);
-
-			var callBack = $('#call_back').val();
-
-			if (callBack != 'undefined') {
-				callBack = callBack.replace('(', '').replace(')', '');
-
-				executeFunctionByName(callBack, window);
-			} else if (typeof applyGraphFilter === 'function') {
-				applyGraphFilter();
-			} else {
-				applyFilter();
-			}
-		}
-	}).addClass('ui-state-default ui-selectmenu-text').css('border', 'none').css('background-color', 'transparent');
-
-	$('#host, #host_click').click(function() {
-		if (!hostOpen) {
-			$('#host').autocomplete('option', 'minLength', 0).autocomplete('search', '');
-			hostOpen = true;
-		} else {
-			$('#host').autocomplete('close');
-			hostOpen = false;
-		}
-	});
-
 	/* End clean up */
 
 	/* Notification Handler */
