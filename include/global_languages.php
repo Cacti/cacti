@@ -520,28 +520,39 @@ function __() {
 			$args[0] = __gettext($args[0]);
 		}
 
-		$valid_args = array(
-			'%%', // Escaped percentage
-			'%b', // Binary
-			'%c', // Single Character
-			'%d', // Decimal
-			'%e', // Scientific notation (lowercase)
-			'%E', // Scientific notation (uppercase)
-			'%f', // Floating point (locale aware)
-			'%F', // Floating point (non-locale aware)
-			'%g', // General format (uses E and f styling if precision involved)
-			'%G', // General format (docs say same as g but uses E and f, yet it already does???)
-			'%o', // Integer as Octal
-			'%s', // String
-			'%u', // Integer as Unsigned Decimal
-			'%x', // Integer as hex (lowercase)
-			'%X', // Integer as hex (uppercase)
-		);
+		$regex_num = '%([-]{0,1}[0-9]+([.][0-9]+){0,1})';
+		$regex_str = '%([-]{0,1}[0-9]+)';
+
+		$array_str = [
+			'b', // Binary
+			'o', // Integer as Octal
+			's', // String
+			'u', // Integer as Unsigned Decimal
+			'x', // Integer as hex (lowercase)
+			'X', // Integer as hex (uppercase)
+		];
+
+		$array_num = [
+			'd', // Decimal
+			'e', // Scientific notation (lowercase)
+			'E', // Scientific notation (uppercase)
+			'f', // Floating point (locale aware)
+			'F', // Floating point (non-locale aware)
+			'g', // General format (uses E and f styling if precision involved)
+			'G', // General format (docs say same as g but uses E and f, yet it already does???)
+		];
 
 		if (version_compare(PHP_VERSION, '8.0', '>=')) {
-			$valid_args[] = '%h'; // General format (like g but uses F)
-			$valid_args[] = '%H'; // General format (like g but uses E and F)
+			$array_num[] = 'h'; // General format (like g but uses F)
+			$array_num[] = 'H'; // General format (like g but uses E and F)
 		}
+
+		$valid_args = array(
+			'%%', // Escaped percentage (literal)
+			'%c', // Single Character
+			$regex_num . '[' . implode('', $array_num) . ']',
+			$regex_str . '[' . implode('', $array_str) . ']',
+		);
 
 		$valid_regexp = '/(' . implode(')|(', $valid_args) . ')/';
 
