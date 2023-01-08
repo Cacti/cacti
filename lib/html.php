@@ -2661,14 +2661,14 @@ function html_common_header($title, $selectedTheme = '') {
 		var mixedOnPage = '<?php print __esc('Note, we could not process all your actions.  Details are below.');?>';
 		var mixedReasonTitle = '<?php print __esc('Some Actions failed');?>';
 		var noFileSelected = '<?php print __esc('No file selected');?>';
-        var passwordMinChars = <?php print read_config_option('secpass_minlen');?>;
+		var passwordMinChars = <?php print read_config_option('secpass_minlen');?>;
 		var passwordMatch = '<?php print __esc('Passphrases match');?>';
 		var passwordMatchTooShort = '<?php print __esc('Passphrase matches but too short');?>';
 		var passwordNotMatch = '<?php print __esc('Passphrases do not match');?>';
 		var passwordNotMatchTooShort = '<?php print __esc('Passphrase too short and not matching');?>';
 		var passwordPass = '<?php print __esc('Passphrase length meets 8 character minimum');?>';
 		var passwordTooShort = '<?php print __esc('Passphrase too short');?>';
-        var passwordValid = '<?php print __esc('Password Validation Passes');?>';
+		var passwordValid = '<?php print __esc('Password Validation Passes');?>';
 		var previewView = '<?php print __esc('Preview View');?>';
 		var realtimeClickOff = '<?php print __esc('Click again to take this Graph out of Realtime');?>';
 		var realtimeClickOn = '<?php print __esc('Click to view just this Graph in Realtime');?>';
@@ -2726,20 +2726,20 @@ function html_common_header($title, $selectedTheme = '') {
 	<link href='<?php print CACTI_PATH_URL; ?>include/themes/<?php print $selectedTheme;?>/images/favicon.ico' rel='shortcut icon'>
 	<link href='<?php print CACTI_PATH_URL; ?>include/themes/<?php print $selectedTheme;?>/images/cacti_logo.gif' rel='icon' sizes='96x96'>
 	<?php
-	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.zoom.css');
-	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery-ui.css');
-	print get_md5_include_css('include/themes/' . $selectedTheme .'/default/style.css');
-	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.multiselect.css');
-	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.multiselect.filter.css');
-	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.timepicker.css');
-	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.colorpicker.css');
-	print get_md5_include_css('include/themes/' . $selectedTheme .'/billboard.css');
-	print get_md5_include_css('include/themes/' . $selectedTheme .'/pace.css');
-	print get_md5_include_css('include/themes/' . $selectedTheme .'/Diff.css');
+	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery.zoom.css');
+	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery-ui.css');
+	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'default/style.css');
+	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery.multiselect.css');
+	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery.multiselect.filter.css');
+	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery.timepicker.css');
+	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'jquery.colorpicker.css');
+	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'billboard.css');
+	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'pace.css');
+	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'Diff.css');
 	print get_md5_include_css('include/fa/css/all.css');
 	print get_md5_include_css('include/fa/css/fontawesome.css');
 	print get_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css');
-	print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');
+	print get_md5_include_css('include/themes/', theme: $selectedTheme, file: 'main.css');
 	print get_md5_include_js('include/js/screenfull.js', true);
 	print get_md5_include_js('include/js/jquery.js');
 	print get_md5_include_js('include/js/jquery-ui.js');
@@ -2766,7 +2766,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/layout.js');
 	print get_md5_include_js('include/js/pace.js');
 	print get_md5_include_js('include/realtime.js');
-	print get_md5_include_js('include/themes/' . $selectedTheme .'/main.js');
+	print get_md5_include_js('include/themes/', theme: $selectedTheme, file: 'main.js');
 
 	if (isset($path2calendar) && file_exists($path2calendar)) {
 		print get_md5_include_js($path2calendar);

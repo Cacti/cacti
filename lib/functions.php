@@ -7237,53 +7237,107 @@ function get_md5_hash($path) {
 	return $md5;
 }
 
-function get_include_relpath($path) {
-	global $config;
-	$basePath = rtrim(CACTI_PATH_BASE,'/') . '/';
+function get_include_relpath(string $path, $basePath = null) {
+	if ($basePath === null) {
+		$basePath = CACTI_PATH_BASE;
+	}
+	$basePath = rtrim($basePath,'/') . '/';
 
 	$npath = '';
 
-	if (file_exists($path)) {
-		$npath = str_replace($basePath, '', $path);
-	} elseif (file_exists($basePath . $path)) {
-		$npath = $path;
-	} elseif (debounce_run_notification('missing:' . $path)) {
-		$npath = str_replace($basePath, '', $path);
-
-		cacti_log(sprintf('WARNING: Key Cacti Include File %s missing.  Please locate and replace this file', CACTI_PATH_BASE . '/' . $npath), false, 'WEBUI');
-
-		admin_email(__('Cacti System Warning'), __('WARNING:  Key Cacti Include File %s missing.  Please locate and replace this file', CACTI_PATH_BASE . '/' . $npath));
+	if (!empty($path)) {
+		if (file_exists($path)) {
+			$npath = str_replace($basePath, '', $path);
+		} elseif (file_exists($basePath . $path)) {
+			$npath = $path;
+		}
 	}
 
 	return $npath;
 }
 
-function get_md5_include_js($path, $async = false) {
-	global $config;
+function get_theme_paths(string $format, string $path, ?string $theme = null, ?string $file = null, bool $pathFirst = false, ... $args) {
+	$output = [];
+	$paths  = [];
 
-	$relpath = get_include_relpath($path);
+	$noFile = ($file === null);
+	if ($noFile) {
+		// Split the path up into elements
+		$parts = explode('/', $path);
 
-	if (empty($relpath)) {
-		return '';
+		// Pop the last element as that will be the file
+		$file  = array_pop($parts);
+
+		// Combine the remaining parts
+		$path  = implode('/', $parts);
 	}
 
-	if ($async) {
-		return '<script type=\'text/javascript\' src=\'' . CACTI_PATH_URL . $relpath . '?' . get_md5_hash($path) . '\' async></script>' . PHP_EOL;
-	} else {
-		return '<script type=\'text/javascript\' src=\'' . CACTI_PATH_URL . $relpath . '?' . get_md5_hash($path) . '\'></script>' . PHP_EOL;
+	$path = rtrim($path, '/') . '/';
+
+	if ($pathFirst) {
+		// Add the base path first;
+		$paths[] = $path;
 	}
+
+	if (!$noFile) {
+		if (empty($theme)) {
+			// We were passed a file but no theme, so get the current theme
+			$theme = get_selected_theme();
+		}
+
+		if (!empty($theme)) {
+			$themePath = rtrim($theme, '/') . '/';
+			// Add path + theme to see if there is a themed version
+			$paths[] = $path . $themePath;
+
+			// Add include + theme to see if there is a themed version
+			if ($path !== 'include/themes/') {
+				$paths[] = 'include/themes/' . $themePath;
+
+				// Add include + theme to see if there is a themed version
+				$paths[] = 'include/themes/' . $themePath . $path;
+			}
+		}
+	}
+
+	if (!$pathFirst) {
+		// Add the base path last;
+		$paths[] = $path;
+	}
+
+	foreach ($paths as $index => $srcPath) {
+		$srcFile = $srcPath . $file;
+		$relFile = get_include_relpath($srcFile);
+
+		if (!empty($relFile)) {
+			$output[] = sprintf($format, CACTI_PATH_URL . $relFile  . '?' . get_md5_hash($relFile), ...$args);
+		}
+	}
+
+	if (empty($output) && debounce_run_notification('missing: ' . $file)) {
+		foreach ($paths as &$srcpath) {
+			$srcpath = CACTI_PATH_BASE . str_replace(CACTI_PATH_BASE, '', $srcpath);
+		}
+
+		$npath = implode('", "', $paths);
+		$ntext = sprintf('WARNING: Key Cacti Include File "%s" missing.  Please locate and replace this file as we checked in "%s"', $file, $npath);
+		$itext = __('WARNING: Key Cacti Include File "%s" missing.  Please locate and replace this file as we checked in "%s"', $file, $npath);
+
+		cacti_log($ntext, false, 'WEBUI');
+		admin_email(__('Cacti System Warning'), $itext);
+	}
+
+	return implode(PHP_EOL, $output);
 }
 
-function get_md5_include_css($path) {
-	global $config;
+function get_md5_include_js(string $path, bool $async = false, ?string $theme = null, ?string $file = null) {
+	$format = '<script type=\'text/javascript\' src=\'%s\'%s></script>';
+	return get_theme_paths($format, $path, $theme, $file, true, $async ? ' async' : '');
+}
 
-	$relpath = get_include_relpath($path);
-
-	if (empty($relpath)) {
-		return '';
-	}
-
-	return '<link href=\''. CACTI_PATH_URL . $relpath . '?' . get_md5_hash($relpath) . '\' type=\'text/css\' rel=\'stylesheet\'>' . PHP_EOL;
+function get_md5_include_css(string $path, bool $async = false, ?string $theme = null, ?string $file = null) {
+	$format = '<link href=\'%s\' type=\'text/css\' rel=\'stylesheet\'%s>';
+	return get_theme_paths($format, $path, $theme, $file, true, $async ? ' media=\'print\' online="this.media=\'all\'"' : '');
 }
 
 function is_resource_writable($path) {

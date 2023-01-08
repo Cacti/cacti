@@ -266,6 +266,72 @@ $.fn.replaceOptions = function (options, selected) {
 	});
 };
 
+$.fn.enableDisableOptions = function (values, optionEnabled, valueCheckFunc) {
+	var hasChanged = false;
+
+	if ($(this).length > 0) {
+		var self = $(this)[0];
+
+		$.each(self.options, function (index, option) {
+			var optionValue = $(this).val();
+			var optionDisabled = $(this).prop('disabled');
+			var optionIncluded = values.includes(optionValue);
+
+			/*
+			console.log('option ' + index + ' Name     = ' + $(this).name);
+			console.log('option ' + index + ' Value    = ' + optionValue);
+			console.log();
+			*/
+
+			var optionFinally = '---';
+			if (optionIncluded && optionDisabled == optionEnabled) {
+				hasChanged = true;
+				$(this).prop('disabled', !optionEnabled);
+				optionFinally = ($(this).prop('disabled') ? 'Yes':'No ');
+			}
+
+			/*
+			console.log('## option ' + index + ' (' + optionValue + ')' +
+				', Enabled = ' + (optionEnabled ? 'Yes' : 'No ') +
+				', Included = ' + (optionIncluded ? 'Yes' : 'No ') +
+				', Disabled = ' + (optionDisabled ? 'Yes' : 'No ') +
+				', Finally = ' + (optionFinally)
+			);
+			*/
+		});
+	}
+
+	/*
+	console.log('hasChanged = ' + hasChanged);
+	console.log();
+	*/
+
+	if (hasChanged) {
+		if (typeof valueCheckFunc == 'function') {
+			valueCheckFunc();
+		}
+
+		var selectMenu = $(this).selectmenu('instance');
+		if (typeof selectMenu != 'undefined') {
+			$(this).selectmenu('refresh');
+		}
+
+		if ($(this).hasClass("select2-hidden-accessible")) {
+			$(this).trigger('change.select2');
+		}
+	}
+
+	return $(this);
+};
+
+$.fn.disableOptions = function (values, valueCheckFunc) {
+   return $(this).enableDisableOptions(values, false, valueCheckFunc);
+}
+
+$.fn.enableOptions = function (values, valueCheckFunc) {
+   return $(this).enableDisableOptions(values, true, valueCheckFunc);
+}
+
 /** textWidth - This function will return the natural width of a string
  *  without any wrapping. */
 $.fn.textWidth = function (text) {
@@ -4627,6 +4693,7 @@ function setSNMP() {
 		snmp_timeout: snmp_basic,
 		snmp_retries: snmp_basic || snmp_advanced,
 		max_oids: snmp_basic || snmp_advanced,
+		bulk_walk_size: snmp_basic || snmp_advanced,
 	});
 
 	selectmenu = ($('#snmp_security_level').selectmenu('instance') !== undefined);
@@ -4700,6 +4767,63 @@ function checkSNMPPassphraseConfirm(type) {
 		}
 	}
 }
+
+// 0 - None
+// 1 - Ping and SNMP Uptime
+// 4 - Ping or SNMP Uptime
+// 2 - SNMP Uptime
+// 5 - SNMP Desc
+// 6 - SNMP GetNext
+// 3 - Ping
+const availabilityToggleOptions = ['1', '2', '4', '5', '6'];
+
+function setAvailability() {
+   var hasChanged = false;
+	if ($('#snmp_version').val() == '0') {
+		$('#availability_method').disableOptions(availabilityToggleOptions, function() {
+			if ($('#availability_method').val() != '3' && $('#availability_method').val() != '0') {
+				$('#availability_method').val('3');
+			}
+		});
+	} else {
+		$('#availability_method').enableOptions(availabilityToggleOptions);
+	}
+
+	var availability_method = $('#availability_method').val();
+	var canPing = true;
+	if (availability_method == 0 ||
+		availability_method == 2 ||
+		availability_method == 5 ||
+		availability_method == 6) {
+		$('#ping_method').val('1');
+		canPing = false;
+	}
+
+	toggleFields({
+		ping_method: availability_method != 1 && availability_method != 3 && availability_method != 4,
+		ping_timeout: canPing,
+		ping_port: canPing,
+		ping_retries: canPing,
+	})
+}
+
+function setPing() {
+	if ($('#row_host_avail_head').hasClass('collapsed')) {
+		return false;
+	}
+
+	availability_method = $('#availability_method').val();
+	ping_method = $('#ping_method').val();
+	use_snmp = availability_method == 2 || availability_method == 5 || availability_method == 6;
+
+	toggleFields({
+		ping_method: !use_snmp && ping_method >= 1,
+		ping_port: !use_snmp && ping_method > 1,
+		ping_timeout: use_snmp || ping_method >= 1,
+		ping_retries: use_snmp || ping_method >= 1,
+	});
+}
+
 
 (function ($) {
 	$.textMetrics = function (el) {
