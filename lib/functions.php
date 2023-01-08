@@ -1307,6 +1307,10 @@ function get_selective_log_level(): ?int {
 		$dir_name     = __DIR__;
 	}
 
+	/* initialize the force level to unset */
+	$force_level = -1;
+
+	/* see if any Cacti files are in debug level, and set the level */
 	$debug_files = read_config_option('selective_debug');
 
 	if ($debug_files != '') {
@@ -1317,6 +1321,7 @@ function get_selective_log_level(): ?int {
 		}
 	}
 
+	/* Check for Plugin files in debug next */
 	if (strpos($dir_name, 'plugins') !== false) {
 		$debug_plugins = read_config_option('selective_plugin_debug');
 
@@ -1332,9 +1337,6 @@ function get_selective_log_level(): ?int {
 			}
 		}
 	}
-
-	// Did we set a level ? If not, read the default level
-	$force_level = $force_level ?? read_config_option('log_verbosity');
 
 	return $force_level;
 }
@@ -1367,7 +1369,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	$omessage     = '';
 
 	/* only log if the specific level is reached, developer debug is special low + specific devdbg calls */
-	if ($force_level == '') {
+	if ($force_level == -1) {
 		if ($level != '') {
 			$logVerbosity = read_config_option('log_verbosity');
 
