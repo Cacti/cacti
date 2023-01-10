@@ -383,7 +383,7 @@ $selectedTheme = get_selected_theme();
 				?>
 			</div>
 		</div>
-		<div class='versionInfo'><?php print __('Version %1$s | %2$s', $version, COPYRIGHT_YEARS_SHORT);?></div>
+		<div class='versionInfo'><?php print __('Version %s | %s', $version, COPYRIGHT_YEARS_SHORT);?></div>
 	</div>
 	<div class='loginRight'></div>
 	<script type='text/javascript'>
