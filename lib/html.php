@@ -2923,7 +2923,7 @@ function html_auth_footer($section, $error = '', $html = '') {
 				<?php print $error; ?>
 			</div>
 			<div class='versionInfo'>
-				<?php print __('Version %1$s | %2$s', CACTI_VERSION_BRIEF, COPYRIGHT_YEARS_SHORT);?>
+				<?php print __('Version %s | %s', CACTI_VERSION_BRIEF, COPYRIGHT_YEARS_SHORT);?>
 			</div>
 		</div>
 	</div>
