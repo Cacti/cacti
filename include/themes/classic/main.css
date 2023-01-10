@@ -824,12 +824,17 @@ ul#breadcrumbs {
 }
 
 .cactiAuthCenter {
+	width: 350px;
+}
+
+.cactiAuthCenter hr {
+	display:none;
 }
 
 .cactiAuthArea {
 	-moz-border-radius: 10px;
 	border-radius: 10px;
-	padding: 15px;
+	padding: 15px 15px 0px 15px;
 	background-color: white;
 	top: 30%;
 	max-width: 360px;
@@ -838,6 +843,18 @@ ul#breadcrumbs {
 	background-size: contain;
 	color: #fff;
 	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.cactiAuthArea hr {
+	display:none;
+}
+
+.cactiAuthArea form {
+	margin-top: 10px;
+}
+
+.cactiAuthArea input {
+  border: 1px solid #BBBBBB !important;
 }
 
 .cactiAuthTitle {
@@ -881,7 +898,6 @@ legend {
 	text-shadow: none;
 	padding-top: 5px;
 	float: right;
-	margin-top: 15px;
 	color: black;
 }
 

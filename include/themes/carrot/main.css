@@ -763,6 +763,14 @@ label {
 	margin-bottom: -20px;
 }
 
+.cactiAuthCenter {
+	width: 300px;
+}
+
+.cactiAuthCenter hr {
+	display:none;
+}
+
 .cactiAuthArea {
 	-moz-border-radius: 10px;
 	border-radius: 10px;

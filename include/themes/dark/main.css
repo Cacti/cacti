@@ -937,6 +937,10 @@ ul#breadcrumbs {
 	margin-bottom: -20px;
 }
 
+.cactiAuthCenter {
+	width: 350px;
+}
+
 .cactiAuthArea {
 	-moz-border-radius: 10px;
 	border-radius: 10px;
@@ -953,6 +957,10 @@ ul#breadcrumbs {
 	background: -webkit-linear-gradient(top, #363636 0%, #071204 100%);
 	background: linear-gradient(to bottom, #363636 0%, #071204 100%);
 	text-shadow: 1px 1px 1px rgba(9, 61, 16, 0.66);
+}
+
+.cactiAuthArea hr {
+	margin-right: 60px;
 }
 
 .cactiAuthTitle {
@@ -997,7 +1005,6 @@ legend {
 .versionInfo {
 	padding-top: 5px;
 	float: right;
-	margin-top: 15px;
 	color: white;
 }
 

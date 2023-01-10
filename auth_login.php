@@ -348,8 +348,7 @@ if (read_config_option('auth_method') == AUTH_METHOD_LDAP || read_config_option(
 
 if (read_config_option('auth_cache_enabled') == 'on') { ?>
 	<tr>
-		<td>&nbsp;</td>
-		<td>
+		<td colspan='2'>
 			<input style='vertical-align:-3px;' type='checkbox' id='remember_me' name='remember_me' <?php print(isset($_COOKIE['cacti_remembers']) || !isempty_request_var('remember_me') ? 'checked' : ''); ?>>
 			<label for='remember_me'><?php print __('Keep me signed in'); ?></label>
 		</td>
@@ -357,8 +356,7 @@ if (read_config_option('auth_cache_enabled') == 'on') { ?>
 <?php
 } ?>
 <tr>
-	<td>&nbsp;</td>
-	<td>
+	<td colspan='2'>
 		<input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Login'); ?>'>
 	</td>
 </tr>

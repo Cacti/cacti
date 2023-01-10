@@ -2926,8 +2926,8 @@ function html_auth_footer($section, $error = '', $html = '') {
 				<?php print __('Version %s | %s', CACTI_VERSION_BRIEF, COPYRIGHT_YEARS_SHORT);?>
 			</div>
 		</div>
+		<div class='cactiAuthLogo'></div>
 	</div>
-	<div class='cactiAuthLogo'></div>
 <?php
 	print $html;
 	include_once(__DIR__ . '/../include/global_session.php');

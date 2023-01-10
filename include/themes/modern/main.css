@@ -946,6 +946,10 @@ ul#breadcrumbs {
 	text-shadow: 1px 1px 1px rgba(9, 61, 16, 0.66);
 }
 
+.cactiAuthCenter {
+	width: 350px;
+}
+
 .cactiAuthCenter legend {
 
 }
@@ -969,6 +973,10 @@ ul#breadcrumbs {
 	-moz-border-radius: 10px;
 	border-radius: 10px;
 	position: relative;
+}
+
+.cactiAuthArea hr {
+	margin-right: 60px;
 }
 
 .cactiAuthTable td {
@@ -1008,7 +1016,6 @@ legend {
 .versionInfo {
 	padding-top: 5px;
 	float: right;
-	margin-top: 15px;
 	color: snow;
 }
 
