@@ -145,62 +145,35 @@ if (empty($i18n_handler) && !empty($config['i18n_language_handler'])) {
 	$i18n_handler = $config['i18n_language_handler'];
 }
 
-if (empty($i18n_handler)) {
-	i18n_debug('Handler: not specified in config or settings, autodetection is now in progress');
-	if (file_exists($config['include_path'] . '/vendor/gettext/src/Translator.php') && version_compare(PHP_VERSION, '8.0', '<=')) {
-		$i18n_handler = CACTI_LANGUAGE_HANDLER_OSCAROTERO;
-	} elseif (file_exists($config['include_path'] . '/vendor/phpgettext/streams.php')) {
-		$i18n_handler = CACTI_LANGUAGE_HANDLER_PHPGETTEXT;
-	} elseif (file_exists($config['include_path'] . '/vendor/motranslator/src/Translator.php')) {
-		$i18n_handler = CACTI_LANGUAGE_HANDLER_MOTRANSLATOR;
-	}
+i18n_debug("require(1): Defined handler $i18n_handler");
+
+$i18n_provider = null;
+if (!empty($i18n_handler)) {
+	$i18n_provider = get_src_language_files($i18n_handler);
 }
 
-i18n_debug("require(1): Handler $i18n_handler");
+if ($i18n_provider === null) {
+	$i18n_provider = get_src_language_files(null);
+}
 
-switch ($i18n_handler) {
-	case CACTI_LANGUAGE_HANDLER_OSCAROTERO:
-		if (file_exists($config['include_path'] . '/vendor/gettext/src/autoloader.php')) {
-			require_once($config['include_path'] . '/vendor/gettext/src/autoloader.php');
-			require_once($config['include_path'] . '/vendor/cldr-to-gettext-plural-rules/src/autoloader.php');
-		} else {
-			$i18n_handler = CACTI_LANGUAGE_HANDLER_DEFAULT;
+$i18n_handler = CACTI_LANGUAGE_HANDLER_DEFAULT;
+
+if ($i18n_provider !== null) {
+	$i18n_handler = $i18n_provider['handler'];
+	i18n_debug("require(1): Selected handler $i18n_handler");
+
+	foreach ($i18n_provider['paths'] as $providerPath) {
+		foreach ($i18n_provider['files'] as $providerFile) {
+			$providerFull = $providerPath . $providerFile;
+			i18n_debug("require(1): Requiring $providerFull");
+			require_once($providerFull);
 		}
-
-		break;
-	case CACTI_LANGUAGE_HANDLER_PHPGETTEXT:
-		if (file_exists($config['include_path'] . '/vendor/phpgettext/streams.php')) {
-			require_once($config['include_path'] . '/vendor/phpgettext/streams.php');
-			require_once($config['include_path'] . '/vendor/phpgettext/gettext.php');
-		} else {
-			$i18n_handler = CACTI_LANGUAGE_HANDLER_DEFAULT;
-		}
-
-		break;
-	case CACTI_LANGUAGE_HANDLER_MOTRANSLATOR:
-		if (file_exists($config['include_path'] . '/vendor/MoTranslator/Translator.php')) {
-			require_once($config['include_path'] . '/vendor/MoTranslator/Translator.php');
-			require_once($config['include_path'] . '/vendor/MoTranslator/StringReader.php');
-		} elseif (file_exists($config['include_path'] . '/vendor/motranslator/Translator.php')) {
-			require_once($config['include_path'] . '/vendor/motranslator/Translator.php');
-			require_once($config['include_path'] . '/vendor/motranslator/StringReader.php');
-		} elseif (file_exists($config['include_path'] . '/vendor/motranslator/src/Translator.php')) {
-			require_once($config['include_path'] . '/vendor/motranslator/src/Translator.php');
-			require_once($config['include_path'] . '/vendor/motranslator/src/StringReader.php');
-		} else {
-			$i18n_handler = CACTI_LANGUAGE_HANDLER_DEFAULT;
-		}
-
-		break;
-	default:
-		$i18n_handler = CACTI_LANGUAGE_HANDLER_DEFAULT;
-
-		break;
+	}
 }
 
 define('CACTI_LANGUAGE_HANDLER', $i18n_handler);
 
-i18n_debug('require(2): Handler ' . CACTI_LANGUAGE_HANDLER);
+i18n_debug('require(2): Final handler ' . CACTI_LANGUAGE_HANDLER);
 
 if (CACTI_LANGUAGE_HANDLER != CACTI_LANGUAGE_HANDLER_DEFAULT) {
 	/* prefetch all language files to work in memory only,
@@ -278,6 +251,93 @@ function get_language_file($extension, $prefix, $names, $base_path = null) {
 
 	return '';
 }
+
+function get_src_language_files($i18n_handler) {
+	global $config;
+
+	$i18n_providers = [];
+
+	if (empty($i18n_handler) || $i18n_handler === CACTI_LANGUAGE_HANDLER_PHPGETTEXT) {
+		$i18n_providers[] = [
+			'handler' => CACTI_LANGUAGE_HANDLER_PHPGETTEXT,
+			'paths'   => [ $config['include_path'] . '/vendor/phpgettext/' ],
+			'files'   => ['streams.php', 'gettext.php'],
+		];
+	}
+
+	if (empty($i18n_handler) || $i18n_handler === CACTI_LANGUAGE_HANDLER_MOTRANSLATOR) {
+		$i18n_providers[] = [
+			'handler' => CACTI_LANGUAGE_HANDLER_MOTRANSLATOR,
+			'paths' => [
+				$config['include_path'] . '/vendor/MoTranslator/',
+				$config['include_path'] . '/vendor/motranslator/',
+				$config['include_path'] . '/vendor/motranslator/src/',
+			],
+			'files' => ['Translator.php', 'StringReader.php' ],
+		];
+	}
+
+	if (version_compare(PHP_VERSION, '8.0', '<=')) {
+		if (empty($i18n_handler) || $i18n_handler === CACTI_LANGUAGE_HANDLER_OSCAROTERO) {
+			array_unshift($i18n_providers, [
+				'handler' => CACTI_LANGUAGE_HANDLER_OSCAROTERO,
+				'paths'   => [
+					$config['include_path'] . '/vendor/gettext/src/',
+					$config['include_path'] . '/vendor/cldr-to-gettext-plural-rules/src/',
+				],
+				'files'   => [ 'autoloader.php' ],
+				'all'     => true,
+			]);
+		}
+	}
+
+	$i18n_handler_text = ($i18n_handler === null) ? 'null' : $i18n_handler;
+	foreach ($i18n_providers as $i18n_provider) {
+		$found = true;
+		$all   = !empty($i18n_provider['all']);
+
+		foreach ($i18n_provider['paths'] as $path) {
+			if (!$all) {
+				$found = true;
+			}
+
+			foreach ($i18n_provider['files'] as $file) {
+				$fullPath = $path . $file;
+				$fullExists = file_exists($fullPath);
+				$fullYesNo  = $fullExists ? 'Yes' : 'No ';
+
+				i18n_debug("get_src_language_provider($i18n_handler_text) : {$i18n_provider['handler']} - $fullYesNo - $fullPath");
+				if (!$fullExists) {
+					$found = false;
+					break;
+				}
+
+				if (!$all) {
+					break;
+				}
+			}
+
+			if ($all && !$found) {
+				i18n_debug("get_src_language_provider($i18n_handler_text) : {$i18n_provider['handler']} - Requires all locations for all files, but missing one, skipped");
+				break;
+			}
+
+			if ($found) {
+				$i18n_return = $i18n_provider;
+				if (!$all) {
+					$i18n_return['paths'] = [ $path ];
+				}
+
+				i18n_debug("get_src_language_provider($i18n_handler_text) : {$i18n_provider['handler']} - Selecting with " . count($i18n_return['paths']) . " paths");
+				return $i18n_return;
+			}
+		}
+	}
+
+	return null;
+}
+
+
 
 function load_gettext_original($domain) {
 	global $cacti_textdomains;
@@ -476,7 +536,7 @@ function __gettext($text, $domain = 'cacti') {
 	if (!isset($translated)) {
 		$translated = $text;
 	} else {
-		i18n_debug("__gettext($domain):\n	Original: $text\n	Translated: $translated", FILE_APPEND);
+		i18n_text_debug("__gettext($domain):\n	Original: $text\n	Translated: $translated", FILE_APPEND);
 	}
 
 	return __uf($translated);
@@ -876,9 +936,17 @@ function get_new_user_default_language() {
 }
 
 function i18n_debug($text, $mode = FILE_APPEND, $eol = PHP_EOL) {
-	if (is_dir('/share/') && is_writeable('/share/i18n.log')) {
-		file_put_contents('/share/i18n.log', $text . $eol, $mode);
-	} elseif (file_exists('/tmp/i18n.log') && is_writeable('/tmp/i18n.log')) {
-		file_put_contents('/tmp/i18n.log', $text . $eol, $mode);
+	global $config;
+
+	if (!empty($config['i18n_log']) && is_writeable($config['i18n_log'])) {
+		file_put_contents($config['i18n_log'], $text . $eol, $mode);
+	}
+}
+
+function i18n_text_debug($text, $mode = FILE_APPEND, $eol = PHP_EOL) {
+	global $config;
+
+	if (!empty($config['i18n_text_log']) && is_writeable($config['i18n_log'])) {
+		file_put_contents($config['i18n_text_log'], $text . $eol, $mode);
 	}
 }

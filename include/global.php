@@ -96,7 +96,7 @@ if (isset($config['cacti_version'])) {
 }
 
 /* Should we allow proxy ip headers? */
-$config['proxy_headers'] = (isset($proxy_headers) ? $proxy_headers : null);
+$config['proxy_headers'] = (isset($proxy_headers) ? $proxy_headers : []);
 
 /* Set the poller_id */
 if (isset($poller_id)) {
@@ -259,6 +259,14 @@ if (isset($input_whitelist)) {
 
 if (isset($i18n_handler)) {
 	$config['i18n_language_handler'] = $i18n_handler;
+}
+
+if (isset($i18n_log)) {
+	$config['i18n_log'] = $i18n_log;
+}
+
+if (isset($i18n_text_log)) {
+	$config['i18n_text_log'] = $i18n_text_log;
 }
 
 /* include base modules */
