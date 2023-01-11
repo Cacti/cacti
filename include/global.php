@@ -257,6 +257,10 @@ if (isset($input_whitelist)) {
 	$config['input_whitelist'] = $input_whitelist;
 }
 
+if (isset($i18n_handler)) {
+	$config['i18n_language_handler'] = $i18n_handler;
+}
+
 /* include base modules */
 include_once($config['library_path'] . '/database.php');
 include_once($config['library_path'] . '/functions.php');
@@ -613,4 +617,3 @@ api_plugin_hook('config_insert');
 
 /* set config cacti_version for plugins */
 $config['cacti_version'] = CACTI_VERSION;
-
