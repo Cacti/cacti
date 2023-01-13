@@ -207,6 +207,13 @@ $proxy_headers = null;
  */
 $i18n_handler = null;
 
+/*
+ * Set this to define ignore everything else and force a
+ * specific language.  Should be in the format of a string
+ * such as 'es-ES'
+ */
+$i18n_force_language = null;
+
 /**
  * Define the location to log general i18n function calls
  * to for debugging purposes.  Note that if you use /tmp
