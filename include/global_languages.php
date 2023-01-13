@@ -212,8 +212,8 @@ function get_js_language_file($names, $prefix = null, $base_path = null, $extens
 	global $config;
 
 	$extension = empty($extension) ? 'js' : $extension;
-	$prefix    = empty($prefix)    ? '/js/LC_MESSAGES/' : $prefix;
-	$base_path = empty($bsae_path) ? '' : $base_path;
+	$prefix    = empty($prefix)    ? '' : $prefix;
+	$base_path = empty($base_path) ? '/js/LC_MESSAGES/' : $base_path;
 
 	return get_language_file($extension, $prefix, $names, $config['include_path'] . $base_path);
 }
@@ -222,8 +222,8 @@ function get_mo_language_file($names, $prefix = null, $base_path = null, $extens
 	global $config;
 
 	$extension = empty($extension) ? 'mo' : $extension;
-	$prefix    = empty($prefix)    ? '/locales/LC_MESSAGES/' : $prefix;
-	$base_path = empty($bsae_path) ? '' : $base_path;
+	$prefix    = empty($prefix)    ? '' : $prefix;
+	$base_path = empty($base_path) ? '/locales/LC_MESSAGES/' : $base_path;
 
 	return get_language_file($extension, $prefix, $names, $config['base_path'] . $base_path);
 }
@@ -238,6 +238,7 @@ function get_language_file($extension, $prefix, $names, $base_path = null) {
 	}
 
 	$base_path = empty($base_path) ? $config['base_path'] : $base_path;
+	$base_path = rtrim($base_path, '/') . '/';
 
 	foreach ($names as $name) {
 		$file   = $base_path . $prefix . $name . $extension;
