@@ -42,14 +42,18 @@ if (!read_config_option('i18n_language_support') && read_config_option('i18n_lan
 }
 
 /* Repair legacy language support */
-if (isset($_REQUEST['language'])) {
+if (!empty($config['i18n_force_language'])) {
+	$_REQUEST['language'] = $config['i18n_force_language'];
+}
+
+if (!empty($_REQUEST['language'])) {
 	$_REQUEST['language'] = repair_locale($_REQUEST['language']);
 }
 
 /* determine whether or not we can support the language */
 $user_locale = '';
 
-if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']])) {
+if (!empty($_REQUEST['language']) && !empty($lang2locale[$_REQUEST['language']])) {
 	/* user requests another language */
 	$user_locale = apply_locale($_REQUEST['language']);
 	unset($_SESSION['sess_current_date1']);
@@ -57,7 +61,7 @@ if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']])) 
 
 	/* save customized language setting (authenticated users only) */
 	set_user_setting('language', $user_locale);
-} elseif (isset($_SESSION['sess_user_language']) && isset($lang2locale[$_SESSION['sess_user_language']])) {
+} elseif (!empty($_SESSION['sess_user_language']) && !empty($lang2locale[$_SESSION['sess_user_language']])) {
 	/* language definition stored in the SESSION */
 	$user_locale = apply_locale($_SESSION['sess_user_language']);
 } else {
@@ -213,9 +217,10 @@ function get_js_language_file($names, $prefix = null, $base_path = null, $extens
 
 	$extension = empty($extension) ? 'js' : $extension;
 	$prefix    = empty($prefix)    ? '' : $prefix;
-	$base_path = empty($base_path) ? '/js/LC_MESSAGES/' : $base_path;
+	$base_path = (empty($base_path) ? $config['include_path'] : $base_path) . '/js/LC_MESSAGES/';
 
-	return get_language_file($extension, $prefix, $names, $config['include_path'] . $base_path);
+	i18n_debug('get_js_language_file("' . $prefix . '", "' . $base_path . '", "' . $extension . '")');
+	return get_language_file($extension, $prefix, $names, $base_path);
 }
 
 function get_mo_language_file($names, $prefix = null, $base_path = null, $extension = null) {
@@ -223,9 +228,10 @@ function get_mo_language_file($names, $prefix = null, $base_path = null, $extens
 
 	$extension = empty($extension) ? 'mo' : $extension;
 	$prefix    = empty($prefix)    ? '' : $prefix;
-	$base_path = empty($base_path) ? '/locales/LC_MESSAGES/' : $base_path;
+	$base_path = (empty($base_path) ? $config['base_path'] : $base_path) . '/locales/LC_MESSAGES/';
 
-	return get_language_file($extension, $prefix, $names, $config['base_path'] . $base_path);
+	i18n_debug('get_mo_language_file("' . $prefix . '", "' . $base_path . '", "' . $extension . '")');
+	return get_language_file($extension, $prefix, $names, $base_path);
 }
 
 function get_language_file($extension, $prefix, $names, $base_path = null) {
@@ -274,7 +280,12 @@ function get_src_language_files($i18n_handler) {
 				$config['include_path'] . '/vendor/motranslator/',
 				$config['include_path'] . '/vendor/motranslator/src/',
 			],
-			'files' => ['Translator.php', 'StringReader.php' ],
+			/*
+			 * This was 'files' => ['Translator.php', 'StringReader.php' ],
+			 * but has been replaced with autoload.php to suppor Debian
+			 * bullseye which has an updated version of MoTranslator
+			 */
+			'files' => ['autoload.php', ],
 		];
 	}
 

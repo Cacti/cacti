@@ -261,6 +261,10 @@ if (isset($i18n_handler)) {
 	$config['i18n_language_handler'] = $i18n_handler;
 }
 
+if (isset($i18n_force_language)) {
+	$config['i18n_force_language'] = $i18n_force_language;
+}
+
 if (isset($i18n_log)) {
 	$config['i18n_log'] = $i18n_log;
 }
