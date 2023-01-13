@@ -218,7 +218,7 @@ $i18n_force_language = null;
  * Define the location to log general i18n function calls
  * to for debugging purposes.  Note that if you use /tmp
  * some systemd systems will remap that folder to special
- * locations under /tmp/systemd*/tmp
+ * locations under /tmp/systemd<uniqueid>/tmp
  */
 $i18n_log = null;
 
@@ -226,6 +226,6 @@ $i18n_log = null;
  * Define the location to log translation i18n function calls
  * to for debugging purposes.  Note that if you use /tmp
  * some systemd systems will remap that folder to special
- * locations under /tmp/systemd*/tmp
+ * locations under /tmp/systemd<uniqueid>/tmp
  */
 $i18n_text_log = null;
