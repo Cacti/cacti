@@ -43,14 +43,18 @@ if (!read_config_option('i18n_language_support') && read_config_option('i18n_lan
 }
 
 /* Repair legacy language support */
-if (isset($_REQUEST['language'])) {
+if (!empty($config['i18n_force_language'])) {
+	$_REQUEST['language'] = $config['i18n_force_language'];
+}
+
+if (!empty($_REQUEST['language'])) {
 	$_REQUEST['language'] = repair_locale($_REQUEST['language']);
 }
 
 /* determine whether or not we can support the language */
 $user_locale = '';
 
-if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']])) {
+if (!empty($_REQUEST['language']) && !empty($lang2locale[$_REQUEST['language']])) {
 	/* user requests another language */
 	$user_locale = apply_locale($_REQUEST['language']);
 	unset($_SESSION['sess_current_date1']);
@@ -58,7 +62,7 @@ if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']])) 
 
 	/* save customized language setting (authenticated users only) */
 	set_user_setting('language', $user_locale);
-} elseif (isset($_SESSION[SESS_USER_LANGUAGE]) && isset($lang2locale[$_SESSION[SESS_USER_LANGUAGE]])) {
+} elseif (!empty($_SESSION['sess_user_language']) && !empty($lang2locale[$_SESSION['sess_user_language']])) {
 	/* language definition stored in the SESSION */
 	$user_locale = apply_locale($_SESSION[SESS_USER_LANGUAGE]);
 } else {
@@ -74,68 +78,12 @@ if ($user_locale !== false && $user_locale !== '') {
 }
 
 /* define the path to the language file */
-i18n_debug('search(1): ' . CACTI_PATH_LOCALES . '/LC_MESSAGES/' . $cacti_locale . '.mo');
-i18n_debug('search(2): ' . CACTI_PATH_LOCALES . '/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo');
-
-if (file_exists(CACTI_PATH_LOCALES . '/LC_MESSAGES/' . $cacti_locale . '.mo')) {
-	$path2catalogue = CACTI_PATH_LOCALES . '/LC_MESSAGES/' . $cacti_locale . '.mo';
-} elseif (file_exists(CACTI_PATH_LOCALES . '/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo')) {
-	$path2catalogue = CACTI_PATH_LOCALES . '/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo';
-} else {
-	$path2catalogue = '';
-}
-
-$catalogue = $path2catalogue;
-
-/* define the path to the language file of the DHTML calendar */
-if ($cacti_locale != '') {
-	$lang_parts = explode('-', $cacti_locale);
-
-	// Detect the calendar path
-	if (file_exists(CACTI_PATH_INCLUDE . '/js/LC_MESSAGES/jquery-ui-datepicker-' . $cacti_locale . '.js')) {
-		$path2calendar = CACTI_PATH_INCLUDE . '/js/LC_MESSAGES/jquery-ui-datepicker-' . $cacti_locale . '.js';
-	} elseif (file_exists(CACTI_PATH_INCLUDE . '/js/LC_MESSAGES/jquery-ui-datepicker-' . $lang_parts[0] . '.js')) {
-		$path2calendar = CACTI_PATH_INCLUDE . '/js/LC_MESSAGES/jquery-ui-datepicker-' . $lang_parts[0] . '.js';
-	} else {
-		$path2calendar = '';
-	}
-
-	// Detect the timepicker path
-	if (file_exists(CACTI_PATH_INCLUDE . '/js/LC_MESSAGES/jquery-ui-timepicker-' . $cacti_locale . '.js')) {
-		$path2timepicker = CACTI_PATH_INCLUDE . '/js/LC_MESSAGES/jquery-ui-timepicker-' . $cacti_locale . '.js';
-	} elseif (file_exists(CACTI_PATH_INCLUDE . '/js/LC_MESSAGES/jquery-ui-timepicker-' . $lang_parts[0] . '.js')) {
-		$path2timepicker = CACTI_PATH_INCLUDE . '/js/LC_MESSAGES/jquery-ui-timepicker-' . $lang_parts[0] . '.js';
-	} else {
-		$path2timepicker = '';
-	}
-
-	// Detect the colorpicker path
-	if (file_exists(CACTI_PATH_INCLUDE . '/js/LC_MESSAGES/jquery.ui.colorpicker-' . $cacti_locale . '.js')) {
-		$path2colorpicker = CACTI_PATH_INCLUDE . '/js/LC_MESSAGES/jquery.ui.colorpicker-' . $cacti_locale . '.js';
-	} elseif (file_exists(CACTI_PATH_INCLUDE . '/js/LC_MESSAGES/jquery.ui.colorpicker-' . $lang_parts[0] . '.js')) {
-		$path2colorpicker = CACTI_PATH_INCLUDE . '/js/LC_MESSAGES/jquery.ui.colorpicker-' . $lang_parts[0] . '.js';
-	} else {
-		$path2colorpicker = '';
-	}
-
-	// Detect the multiselect path
-	if (file_exists(CACTI_PATH_INCLUDE . '/js/LC_MESSAGES/jquery-multiselect-' . $cacti_locale . '.js')) {
-		$path2ms       = CACTI_PATH_INCLUDE . '/js/LC_MESSAGES/jquery-multiselect-' . $cacti_locale . '.js';
-		$path2msfilter = CACTI_PATH_INCLUDE . '/js/LC_MESSAGES/jquery-multiselect-filter-' . $cacti_locale . '.js';
-	} elseif (file_exists(CACTI_PATH_INCLUDE . '/js/LC_MESSAGES/jquery-multiselect-' . $lang_parts[0] . '.js')) {
-		$path2ms       = CACTI_PATH_INCLUDE . '/js/LC_MESSAGES/jquery-multiselect-' . $lang_parts[0] . '.js';
-		$path2msfilter = CACTI_PATH_INCLUDE . '/js/LC_MESSAGES/jquery-multiselect-filter-' . $lang_parts[0] . '.js';
-	} else {
-		$path2ms       = '';
-		$path2msfilter = '';
-	}
-} else {
-	$path2timepicker  = '';
-	$path2calendar    = '';
-	$path2ms          = '';
-	$path2msfiler     = '';
-	$path2colorpicker = '';
-}
+$path2catalogue   = get_mo_language_file([$cacti_locale, $lang2locale[$cacti_locale]['filename']]);
+$path2calendar    = get_js_language_file($lang_names, 'jquery-ui-datepicker-');
+$path2timepicker  = get_js_language_file($lang_names, 'jquery-ui-timepicker-');
+$path2colorpicker = get_js_language_file($lang_names, 'jquery.ui.colorpicker-');
+$path2ms          = get_js_language_file($lang_names, 'jquery-ui-multiselect-');
+$path2msfilter    = get_js_language_file($lang_names, 'jquery-ui-multiselect-filter-');
 
 /* use fallback procedure if requested language is not available */
 if (file_exists($path2catalogue)) {
@@ -153,16 +101,13 @@ $plugins = db_fetch_assoc('SELECT `directory`
 	ORDER BY id');
 
 if ($plugins && cacti_sizeof($plugins)) {
+	$lang_names = [$cacti_locale, $lang2locale[$cacti_locale]['filename']];
+
 	foreach ($plugins as $plugin) {
 		$plugin = $plugin['directory'];
 
-		if (file_exists(CACTI_PATH_PLUGINS . '/' . $plugin . '/locales/LC_MESSAGES/' . $cacti_locale . '.mo')) {
-			$path2catalogue = CACTI_PATH_PLUGINS . '/' . $plugin . '/locales/LC_MESSAGES/' . $cacti_locale . '.mo';
-		} elseif (file_exists(CACTI_PATH_PLUGINS . '/' . $plugin . '/locales/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo')) {
-			$path2catalogue = CACTI_PATH_PLUGINS . '/' . $plugin . '/locales/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo';
-		}
-
-		if (file_exists($path2catalogue)) {
+		$path2catalogue = get_mo_language_file($lang_names, null, CACTI_PATH_PLUGINS . '/' . $plugin);
+		if (!empty($path2catalogue) && file_exists($path2catalogue)) {
 			$cacti_textdomains[$plugin]['path2catalogue'] = $path2catalogue;
 		}
 	}
@@ -178,7 +123,7 @@ if ($plugins && cacti_sizeof($plugins)) {
 	}
 }
 
-i18n_debug('require(1)');
+i18n_debug('Attempt to find the handler');
 
 /* load php-gettext class if present */
 $i18n = array();
@@ -188,64 +133,41 @@ $i18n_handler = read_config_option('i18n_language_handler');
 
 // Is the handler defined in the config but not the db?
 if (empty($i18n_handler) && !empty($config['i18n_language_handler'])) {
-	i18n_debug('Handler: not specified in settings');
+	i18n_debug('Handler: specified in config, not in settings');
 	$i18n_handler = $config['i18n_language_handler'];
 }
 
-if (empty($i18n_handler)) {
-	i18n_debug('Handler: not specified in config, autodetection is now in progress');
+i18n_debug("require(1): Defined handler $i18n_handler");
 
-	if (file_exists(CACTI_PATH_INCLUDE . '/vendor/gettext/src/Translator.php') && version_compare(PHP_VERSION, '8.0', '<=')) {
-		$i18n_handler = CACTI_LANGUAGE_HANDLER_OSCAROTERO;
-	} elseif (file_exists(CACTI_PATH_INCLUDE . '/vendor/phpgettext/streams.php')) {
-		$i18n_handler = CACTI_LANGUAGE_HANDLER_PHPGETTEXT;
-	} elseif (file_exists(CACTI_PATH_INCLUDE . '/vendor/motranslator/src/Translator.php')) {
-		$i18n_handler = CACTI_LANGUAGE_HANDLER_MOTRANSLATOR;
-	}
+$i18n_provider = null;
+if (!empty($i18n_handler)) {
+	$i18n_provider = get_src_language_files($i18n_handler);
 }
 
-i18n_debug("require(1): Handler $i18n_handler");
+if ($i18n_provider === null) {
+	$i18n_provider = get_src_language_files(null);
+}
 
-switch ($i18n_handler) {
-	case CACTI_LANGUAGE_HANDLER_OSCAROTERO:
-		if (file_exists(CACTI_PATH_INCLUDE . '/vendor/gettext/src/autoloader.php')) {
-			require_once(CACTI_PATH_INCLUDE . '/vendor/gettext/src/autoloader.php');
-			require_once(CACTI_PATH_INCLUDE . '/vendor/cldr-to-gettext-plural-rules/src/autoloader.php');
-		} else {
-			$i18n_handler = CACTI_LANGUAGE_HANDLER_DEFAULT;
+$i18n_handler = CACTI_LANGUAGE_HANDLER_DEFAULT;
+
+if ($i18n_provider !== null) {
+	$i18n_handler = $i18n_provider['handler'];
+	i18n_debug("require(1): Selected handler $i18n_handler");
+
+	foreach ($i18n_provider['paths'] as $providerPath) {
+		foreach ($i18n_provider['files'] as $providerFile) {
+			$providerFull = $providerPath . $providerFile;
+			i18n_debug("require(1): Requiring $providerFull");
+			require_once($providerFull);
 		}
-
-		break;
-	case CACTI_LANGUAGE_HANDLER_PHPGETTEXT:
-		if (file_exists(CACTI_PATH_INCLUDE . '/vendor/phpgettext/streams.php')) {
-			require_once(CACTI_PATH_INCLUDE . '/vendor/phpgettext/streams.php');
-			require_once(CACTI_PATH_INCLUDE . '/vendor/phpgettext/gettext.php');
-		} else {
-			$i18n_handler = CACTI_LANGUAGE_HANDLER_DEFAULT;
-		}
-
-		break;
-	case CACTI_LANGUAGE_HANDLER_MOTRANSLATOR:
-		if (file_exists(CACTI_PATH_INCLUDE . '/vendor/motranslator/src/Translator.php')) {
-			require_once(CACTI_PATH_INCLUDE . '/vendor/motranslator/src/Translator.php');
-			require_once(CACTI_PATH_INCLUDE . '/vendor/motranslator/src/StringReader.php');
-		} else {
-			$i18n_handler = CACTI_LANGUAGE_HANDLER_DEFAULT;
-		}
-
-		break;
-
-	default:
-		$i18n_handler = CACTI_LANGUAGE_HANDLER_DEFAULT;
-
-		break;
+	}
 }
 
 set_language_constants(array(
 	'HANDLER' => $i18n_handler
 ));
 
-i18n_debug('require(2): Handler ' . CACTI_LANGUAGE_HANDLER);
+i18n_debug('require(2): Final handler ' . CACTI_LANGUAGE_HANDLER);
 
 if (CACTI_LANGUAGE_HANDLER != CACTI_LANGUAGE_HANDLER_DEFAULT) {
 	/* prefetch all language files to work in memory only,
@@ -283,6 +205,145 @@ set_language_constants(array(
 	'LANGUAGE' => $lang2locale[CACTI_LOCALE]['language'],
 	'FILE'     => $catalogue,
 ));
+
+function get_js_language_file($names, $prefix = null, $base_path = null, $extension = null) {
+	global $config;
+
+	$extension = empty($extension) ? 'js' : $extension;
+	$prefix    = empty($prefix)    ? '' : $prefix;
+	$base_path = (empty($base_path) ? CACTI_PATH_INCLUDE : $base_path) . '/js/LC_MESSAGES/';
+
+	i18n_debug('get_js_language_file("' . $prefix . '", "' . $base_path . '", "' . $extension . '")');
+	return get_language_file($extension, $prefix, $names, $base_path);
+}
+
+function get_mo_language_file($names, $prefix = null, $base_path = null, $extension = null) {
+	global $config;
+
+	$extension = empty($extension) ? 'mo' : $extension;
+	$prefix    = empty($prefix)    ? '' : $prefix;
+	$base_path = (empty($base_path) ? CACTI_PATH_BASE : $base_path) . '/locales/LC_MESSAGES/';
+
+	i18n_debug('get_mo_language_file("' . $prefix . '", "' . $base_path . '", "' . $extension . '")');
+	return get_language_file($extension, $prefix, $names, $base_path);
+}
+
+function get_language_file($extension, $prefix, $names, $base_path = null) {
+	global $config;
+
+	if (empty($extension)) {
+		$extension = '';
+	} else {
+		$extension = '.' . ltrim($extension, '. ');
+	}
+
+	$base_path = empty($base_path) ? CACTI_PATH_BASE : $base_path;
+	$base_path = rtrim($base_path, '/') . '/';
+
+	foreach ($names as $name) {
+		$file   = $base_path . $prefix . $name . $extension;
+		$exists = file_exists($file);
+
+		i18n_debug('get_language_file("' . $extension . '", "' . $prefix . '", "' . $base_path . '"): ' . ($exists ? 'Yes' : 'No') . ' - "' . $file . '"');
+		if ($exists) {
+			return $file;
+		}
+	}
+
+	return '';
+}
+
+function get_src_language_files($i18n_handler) {
+	global $config;
+
+	$i18n_providers = [];
+
+	if (empty($i18n_handler) || $i18n_handler === CACTI_LANGUAGE_HANDLER_PHPGETTEXT) {
+		$i18n_providers[] = [
+			'handler' => CACTI_LANGUAGE_HANDLER_PHPGETTEXT,
+			'paths'   => [ CACTI_PATH_INCLUDE . '/vendor/phpgettext/' ],
+			'files'   => ['streams.php', 'gettext.php'],
+		];
+	}
+
+	if (empty($i18n_handler) || $i18n_handler === CACTI_LANGUAGE_HANDLER_MOTRANSLATOR) {
+		$i18n_providers[] = [
+			'handler' => CACTI_LANGUAGE_HANDLER_MOTRANSLATOR,
+			'paths' => [
+				CACTI_PATH_INCLUDE . '/vendor/MoTranslator/',
+				CACTI_PATH_INCLUDE . '/vendor/motranslator/',
+				CACTI_PATH_INCLUDE . '/vendor/motranslator/src/',
+			],
+			/*
+			 * This was 'files' => ['Translator.php', 'StringReader.php' ],
+			 * but has been replaced with autoload.php to support Debian
+			 * bullseye which has an updated version of MoTranslator
+			 */
+			'files' => ['autoload.php', ],
+		];
+	}
+
+	if (version_compare(PHP_VERSION, '8.0', '<=')) {
+		if (empty($i18n_handler) || $i18n_handler === CACTI_LANGUAGE_HANDLER_OSCAROTERO) {
+			array_unshift($i18n_providers, [
+				'handler' => CACTI_LANGUAGE_HANDLER_OSCAROTERO,
+				'paths'   => [
+					CACTI_PATH_INCLUDE . '/vendor/gettext/src/',
+					CACTI_PATH_INCLUDE . '/vendor/cldr-to-gettext-plural-rules/src/',
+				],
+				'files'   => [ 'autoloader.php' ],
+				'all'     => true,
+			]);
+		}
+	}
+
+	$i18n_handler_text = ($i18n_handler === null) ? 'null' : $i18n_handler;
+	foreach ($i18n_providers as $i18n_provider) {
+		$found = true;
+		$all   = !empty($i18n_provider['all']);
+
+		foreach ($i18n_provider['paths'] as $path) {
+			if (!$all) {
+				$found = true;
+			}
+
+			foreach ($i18n_provider['files'] as $file) {
+				$fullPath = $path . $file;
+				$fullExists = file_exists($fullPath);
+				$fullYesNo  = $fullExists ? 'Yes' : 'No ';
+
+				i18n_debug("get_src_language_provider($i18n_handler_text) : {$i18n_provider['handler']} - $fullYesNo - $fullPath");
+				if (!$fullExists) {
+					$found = false;
+					break;
+				}
+
+				if (!$all) {
+					break;
+				}
+			}
+
+			if ($all && !$found) {
+				i18n_debug("get_src_language_provider($i18n_handler_text) : {$i18n_provider['handler']} - Requires all locations for all files, but missing one, skipped");
+				break;
+			}
+
+			if ($found) {
+				$i18n_return = $i18n_provider;
+				if (!$all) {
+					$i18n_return['paths'] = [ $path ];
+				}
+
+				i18n_debug("get_src_language_provider($i18n_handler_text) : {$i18n_provider['handler']} - Selecting with " . count($i18n_return['paths']) . " paths");
+				return $i18n_return;
+			}
+		}
+	}
+
+	return null;
+}
+
+
 
 function load_gettext_original($domain) {
 	global $cacti_textdomains;
@@ -517,7 +578,7 @@ function __gettext($text, $domain = 'cacti') {
 	if (!isset($translated)) {
 		$translated = $text;
 	} else {
-		i18n_debug("__gettext($domain):\n	Original: $text\n	Translated: $translated", FILE_APPEND);
+		i18n_text_debug("__gettext($domain):\n	Original: $text\n	Translated: $translated", FILE_APPEND);
 	}
 
 	return __uf($translated);
@@ -924,9 +985,17 @@ function get_new_user_default_language() {
 }
 
 function i18n_debug($text, $mode = FILE_APPEND, $eol = PHP_EOL) {
-	if (is_dir('/share/') && is_writeable('/share/i18n.log')) {
-		file_put_contents('/share/i18n.log', $text . $eol, $mode);
-	} elseif (file_exists('/tmp/i18n.log') && is_writeable('/tmp/i18n.log')) {
-		file_put_contents('/tmp/i18n.log', $text . $eol, $mode);
+	global $config;
+
+	if (!empty($config['i18n_log']) && is_writeable($config['i18n_log'])) {
+		file_put_contents($config['i18n_log'], $text . $eol, $mode);
+	}
+}
+
+function i18n_text_debug($text, $mode = FILE_APPEND, $eol = PHP_EOL) {
+	global $config;
+
+	if (!empty($config['i18n_text_log']) && is_writeable($config['i18n_log'])) {
+		file_put_contents($config['i18n_text_log'], $text . $eol, $mode);
 	}
 }

@@ -198,3 +198,35 @@ $disable_log_rotation = false;
  *		'REMOTE_ADDR',
  */
 $proxy_headers = null;
+
+/*
+ * Set this to define the default i18n handler if not set
+ * in the database.  For valid values, see CACTI_LANGUAGE_HANDLER
+ * constants but only use the value not the constant name
+ * here because we have not included global_constants.php
+ * yet
+ */
+$i18n_handler = null;
+
+/*
+ * Set this to define ignore everything else and force a
+ * specific language.  Should be in the format of a string
+ * such as 'es-ES'
+ */
+$i18n_force_language = null;
+
+/**
+ * Define the location to log general i18n function calls
+ * to for debugging purposes.  Note that if you use /tmp
+ * some systemd systems will remap that folder to special
+ * locations under /tmp/systemd*/tmp
+ */
+$i18n_log = null;
+
+/**
+ * Define the location to log translation i18n function calls
+ * to for debugging purposes.  Note that if you use /tmp
+ * some systemd systems will remap that folder to special
+ * locations under /tmp/systemd*/tmp
+ */
+$i18n_text_log = null;
