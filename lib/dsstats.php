@@ -129,6 +129,7 @@ function dsstats_get_and_store_ds_avgpeak_values($interval, $thread_id = 1) {
 	dsstats_debug(sprintf('Processing %s for Thread %s', $interval, $thread_id));
 
 	$max_threads = read_config_option('dsstats_parallel');
+	$mode        = read_config_option('dsstats_mode');
 
 	if (empty($max_threads)) {
 		$max_threads = 1;
@@ -155,9 +156,14 @@ function dsstats_get_and_store_ds_avgpeak_values($interval, $thread_id = 1) {
 			$dsses += $file['dsses'];
 
 			if ($file['data_source_path'] != '') {
-				$rrdfile = str_replace('<path_rra>', CACTI_PATH_RRA, $file['data_source_path']);
+				$rrdfile       = str_replace('<path_rra>', CACTI_PATH_RRA, $file['data_source_path']);
+				$local_data_id = $file['local_data_id'];
 
-				$stats[$file['local_data_id']] = dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes);
+				if ($mode == 0) {
+					$stats[$local_data_id] = dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes);
+				} else {
+					$stats[$local_data_id] = dsstats_obtain_data_source_advanced_values($local_data_id, $rrdfile, $interval, $pipes);
+				}
 			} else {
 				$data_source_name = db_fetch_cell_prepared('SELECT name_cache
 					FROM data_template_data
@@ -242,6 +248,51 @@ function dsstats_write_buffer(&$stats_array, $interval) {
 	/* flush the buffer if it still has elements in it */
 	if ($out_length > 0) {
 		db_execute($sql_prefix . $outbuf . $sql_suffix);
+	}
+}
+
+function dsstats_obtain_data_source_advanced_values($rrdfile, $interval, $pipes) {
+	global $config, $user_time, $system_time, $real_time;
+
+	static $end = null;
+
+	$use_proxy = (read_config_option('storage_location') ? true : false);
+
+	if ($use_proxy) {
+		$file_exists = rrdtool_execute("file_exists $rrdfile", true, RRDTOOL_OUTPUT_BOOLEAN, false, 'DSSTATS');
+	} else {
+		clearstatcache();
+		$file_exists = file_exists($rrdfile);
+	}
+
+
+	if ($end == null) {
+		$poller_interval = read_config_option('poller_interval');
+
+		$end = time() - $poller_interval;
+	}
+
+	/* don't attempt to get information if the file does not exist */
+	if ($file_exists) {
+		/* change the interval to something RRDtool understands */
+		switch($interval) {
+			case 'daily':
+				$start = $end - 86400;
+
+				break;
+			case 'weekly':
+				$start = $end - (7 * 86400);
+
+				break;
+			case 'monthly':
+				$start = $end - (30 * 86400);
+
+				break;
+			case 'yearly':
+				$start = $end - (365 * 86400);
+
+				break;
+		}
 	}
 }
 

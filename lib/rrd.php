@@ -277,7 +277,7 @@ function rrdtool_execute() {
 	return call_user_func_array($function, $args);
 }
 
-function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pipe = false, $logopt = 'WEBLOG') {
+function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pipe = null, $logopt = 'WEBLOG') {
 	global $config;
 
 	static $last_command;
@@ -620,7 +620,7 @@ function rrdtool_function_interface_speed($data_local) {
 	return $speed;
 }
 
-function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = false) {
+function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = null) {
 	global $config, $data_source_types, $consolidation_functions, $encryption;
 
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
@@ -815,7 +815,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 	}
 }
 
-function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false) {
+function rrdtool_function_update($update_cache_array, $rrdtool_pipe = null) {
 	/* lets count the number of rrd files processed */
 	$rrds_processed = 0;
 
@@ -924,36 +924,39 @@ function rrdtool_function_tune($rrd_tune_array) {
 	}
 }
 
-/* rrdtool_function_fetch - given a data source, return all of its data in an array
-   @arg $local_data_id - the data source to fetch data for
-   @arg $start_time - the start time to use for the data calculation. this value can
-	 either be absolute (unix timestamp) or relative (to now)
-   @arg $end_time - the end time to use for the data calculation. this value can
-	 either be absolute (unix timestamp) or relative (to now)
-   @arg $resolution - the accuracy of the data measured in seconds
-   @arg $show_unknown - Show unknown 'NAN' values in the output as 'U'
-   @arg $rrdtool_file - Don't force Cacti to calculate the file
-   @arg $cf - Specify the consolidation function to use
-   @arg $rrdtool_pipe - a pipe to an rrdtool command
-   @returns - (array) an array containing all data in this data source broken down
-	 by each data source item. the maximum of all data source items is included in
-	 an item called 'nth_percentile_maximum'.  The array will look as follows:
+/**
+ * rrdtool_function_fetch - given a data source, return all of its data in an array
+ *
+ * @param $local_data_id - the data source to fetch data for
+ * @param $start_time - the start time to use for the data calculation. this value can
+ *   either be absolute (unix timestamp) or relative (to now)
+ * @param $end_time - the end time to use for the data calculation. this value can
+ *   either be absolute (unix timestamp) or relative (to now)
+ * @param $resolution - the accuracy of the data measured in seconds
+ * @param $show_unknown - Show unknown 'NAN' values in the output as 'U'
+ * @param $rrdtool_file - Don't force Cacti to calculate the file
+ * @param $cf - Specify the consolidation function to use
+ * @param $rrdtool_pipe - a pipe to an rrdtool command
+ *
+ * @return - (array) an array containing all data in this data source broken down
+ *   by each data source item. the maximum of all data source items is included in
+ *   an item called 'nth_percentile_maximum'.  The array will look as follows:
+ *
+ *   $fetch_array['data_source_names'][0] = 'ds1'
+ *   $fetch_array['data_source_names'][1] = 'ds2'
+ *   $fetch_array['data_source_names'][2] = 'nth_percentile_maximum'
+ *   $fetch_array['start_time'] = $timestamp;
+ *   $fetch_array['end_time']   = $timestamp;
+ *   $fetch_array['values'][$dsindex1][...]  = $value;
+ *   $fetch_array['values'][$dsindex2][...]  = $value;
+ *   $fetch_array['values'][$nth_index][...] = $value;
 
-	 $fetch_array['data_source_names'][0] = 'ds1'
-	 $fetch_array['data_source_names'][1] = 'ds2'
-	 $fetch_array['data_source_names'][2] = 'nth_percentile_maximum'
-	 $fetch_array['start_time'] = $timestamp;
-	 $fetch_array['end_time']   = $timestamp;
-	 $fetch_array['values'][$dsindex1][...]  = $value;
-	 $fetch_array['values'][$dsindex2][...]  = $value;
-	 $fetch_array['values'][$nth_index][...] = $value;
-
-	 Again, the 'nth_percentile_maximum' will have the maximum value amongst all the
-	 data sources for each set of data.  So, if you have traffic_in and traffic_out,
-	 each member element in the array will have the maximum of traffic_in and traffic_out
-	 in it.
+ *   Again, the 'nth_percentile_maximum' will have the maximum value amongst all the
+ *   data sources for each set of data.  So, if you have traffic_in and traffic_out,
+ *   each member element in the array will have the maximum of traffic_in and traffic_out
+ *   in it.
  */
-function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0, $show_unknown = false, $rrdtool_file = null, $cf = 'AVERAGE', $rrdtool_pipe = false) {
+function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0, $show_unknown = false, $rrdtool_file = null, $cf = 'AVERAGE', $rrdtool_pipe = null) {
 	global $config;
 
 	include_once(CACTI_PATH_LIBRARY . '/boost.php');
@@ -1349,7 +1352,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 	return $graph_opts;
 }
 
-function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rrdtool_pipe = false, &$xport_meta = array(), $user = 0) {
+function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rrdtool_pipe = null, &$xport_meta = array(), $user = 0) {
 	global $config, $consolidation_functions, $graph_item_types, $encryption;
 
 	include_once(CACTI_PATH_LIBRARY . '/cdef.php');
@@ -2808,17 +2811,18 @@ function rrdtool_function_get_resstep($local_data_ids, $graph_start, $graph_end,
 /**
  * rrdtool_function_info - given a data source id, return rrdtool info array
  *
- * @param  (int)   $local_data_id - data source id
+ * @param  (int)      $local_data_id - data source id
+ * @param  (res|null) $rrdtool_pipe - the rrdtool pipe if available
  *
  * @return (array) an array containing all data from rrdtool info command
  */
-function rrdtool_function_info($local_data_id) {
+function rrdtool_function_info($local_data_id, $rrdtool_pipe = null) {
 	/* Get the path to rrdtool file */
 	$data_source_path = get_data_source_path($local_data_id, true);
 
 	/* Execute rrdtool info command */
 	$cmd_line = ' info ' . $data_source_path;
-	$output   = rrdtool_execute($cmd_line, RRDTOOL_OUTPUT_NULL, RRDTOOL_OUTPUT_STDOUT);
+	$output   = rrdtool_execute($cmd_line, RRDTOOL_OUTPUT_NULL, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe);
 
 	if ($output == '') {
 		return false;
@@ -2860,13 +2864,14 @@ function rrdtool_function_info($local_data_id) {
 /**
  * rrdtool_function_contains_cf  verifies if the RRDfile contains the 'MAX' consolidation function
  *
- * @param  (int)  $local_data_id - the id of the data source
- * @param  (int)  $cf - the consolidation function to search for
+ * @param  (int)      $local_data_id - the id of the data source
+ * @param  (int)      $cf - the consolidation function to search for
+ * @param  (res|null) $rrdtool_pipe - the rrdtool pipe if available
  *
  * @return (bool) true or false depending on the result
  */
-function rrdtool_function_contains_cf($local_data_id, $cf) {
-	$info = rrdtool_function_info($local_data_id);
+function rrdtool_function_contains_cf($local_data_id, $cf, $rrdtool_pipe = null) {
+	$info = rrdtool_function_info($local_data_id, $rrdtool_pipe);
 
 	if (cacti_sizeof($info)) {
 		if (isset($info['rra'])) {

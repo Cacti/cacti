@@ -22,13 +22,17 @@
  +-------------------------------------------------------------------------+
 */
 
-/* nth_percentile - given a data source, calculate the Nth percentile for a given over a time period
-   @arg $local_data_ids - the data source array to perform the Nth percentile calculation
-   @arg $start_seconds - start seconds of time range
-   @arg $stop_seconds - stop seconds of time range
-   @arg $percentile - Nth Percentile to calculate, integer between 1 and 99
-   @arg $resolution - the accuracy of the data measured in seconds
-   @returns - (array) an array containing each data source item, and its 95th percentile */
+/**
+ * nth_percentile - given a data source, calculate the Nth percentile for a given over a time period
+ *
+ * @param (int|array) $local_data_ids - the data source array to perform the Nth percentile calculation
+ * @param (int)       $start_seconds - start seconds of time range
+ * @param (int)       $stop_seconds - stop seconds of time range
+ * @param (int)       $percentile - Nth Percentile to calculate, integer between 1 and 99
+ * @param (int)       $resolution - the accuracy of the data measured in seconds
+ *
+ * @return (double)   an array containing each data source item, and its 95th percentile
+ */
 function nth_percentile($local_data_ids, $start_seconds, $end_seconds, $percentile = 95, $resolution = 0, $peak = false) {
 	$stats = json_decode(rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $percentile, $resolution, $peak), true);
 
@@ -55,15 +59,20 @@ function nth_percentile($local_data_ids, $start_seconds, $end_seconds, $percenti
 	}
 }
 
-/* rrdtool_function_stats - given a data source, calculate a number of statistics for an RRDfile or files
-   over a specified time period
-   @arg $local_data_ids - the data source array to perform the Nth percentile calculation
-   @arg $start_seconds - start seconds of time range
-   @arg $stop_seconds - stop seconds of time range
-   @arg $percentile - Nth Percentile to calculate, integer between 1 and 99
-   @arg $resolution - the accuracy of the data measured in seconds
-   @returns - (array) an array containing each data source item, and its 95th percentile */
-function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $percentile = 95, $resolution = 0, $peak = false) {
+/**
+ * rrdtool_function_stats - given a data source, calculate a number of statistics for an RRDfile or files
+ * over a specified time period
+ *
+ * @param (int)      $local_data_ids - the data source array to perform the Nth percentile calculation
+ * @param (int)      $start_seconds - start seconds of time range
+ * @param (int)      $stop_seconds - stop seconds of time range
+ * @param (int)      $percentile - Nth Percentile to calculate, integer between 1 and 99
+ * @param (int)      $resolution - the accuracy of the data measured in seconds
+ * @param (res|null) $rrdtool_pipe - the RRDtool socket connection if there is one
+ *
+ * @return (array) an array containing each data source item, and its 95th percentile
+ */
+function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $percentile = 95, $resolution = 0, $peak = false, $rrdtool_pipe = null) {
 	global $config;
 
 	include_once(CACTI_PATH_LIBRARY . '/rrd.php');
@@ -91,13 +100,13 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 		}
 
 		// See if the RRDfile contains the MAX consolidation function, if so prime the array with the fetch data
-		if (rrdtool_function_contains_cf($ldi, 'MAX')) {
-			$fetch_array_max[$ldi] = @rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution, false, null, 'MAX');
+		if (rrdtool_function_contains_cf($ldi, 'MAX', $rrdtool_pipe)) {
+			$fetch_array_max[$ldi] = rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution, false, null, 'MAX', $rrdtool_pipe);
 		}
 
 		// See if the RRDfile contains the AVERAGE consolidation function, if so prime the array with the fetch data
-		if (rrdtool_function_contains_cf($ldi, 'AVERAGE')) {
-			$fetch_array_avg[$ldi] = @rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution);
+		if (rrdtool_function_contains_cf($ldi, 'AVERAGE', $rrdtool_pipe)) {
+			$fetch_array_avg[$ldi] = rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution, false, null, 'AVERAGE', $rrdtool_pipe);
 		}
 
 		/* clean up unwanted data source items from the AVERAGE cf data */
