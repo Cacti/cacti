@@ -2168,6 +2168,16 @@ $settings['data'] = array(
 		'method'        => 'checkbox',
 		'default'       => ''
 	),
+	'dsstats_mode' => array(
+		'friendly_name' => __('Data Collection Method'),
+		'description'   => __('Data Source Statistics can use a legacy method where it will determine peak and average values, or an advanced mode which will calculated several additional statistical values in addition to peak and average.  Using All Statistical Metrics can place additional CPU and IO load on the system.'),
+		'default'       => '0',
+		'method'        => 'drop_array',
+		'array'         => array(
+			0  => __('Peak/Average Only'),
+			1  => __('All Statistical Metrics')
+		)
+	),
 	'dsstats_parallel' => array(
 		'friendly_name' => __('Number of DSStats Processes'),
 		'description'   => __('The number of concurrent DSStats processes to use to use to process all of the Data Sources.'),

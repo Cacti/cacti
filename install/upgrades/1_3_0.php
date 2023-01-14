@@ -113,4 +113,52 @@ function ldap_convert_1_3_0() {
 
 		set_config_option('install_ldap_builtin', $domain_id);
 	}
+
+	$columns = array(
+		'p95n',
+		'p90n',
+		'p75n',
+		'p50n',
+		'p25n',
+		'sum',
+		'elements',
+		'variance',
+		'stddev'
+	);
+
+	$tables = array(
+		'data_source_stats_hourly',
+		'data_source_stats_daily',
+		'data_source_stats_weekly',
+		'data_source_stats_monthly',
+		'data_source_stats_yearly'
+	);
+
+	foreach($tables as $table) {
+		if (!db_column_exists($table, 'cf')) {
+			$sql = "ALTER TABLE $table
+				ADD COLUMN cf TINYINT UNSIGNED NOT NULL DEFAULT '0' AFTER rrd_name";
+			$suffix = ', DROP PRIMARY KEY,
+				ADD PRIMARY KEY(local_data_id, rrd_name, cf)';
+		} else {
+			$sql = "ALTER TABLE $table ";
+
+			$suffix = '';
+		}
+
+		foreach($columns as $index => $column) {
+			if ($column == 'elements') {
+				$type = "INT UNSIGNED NOT NULL DEFAULT '0'";
+			} else {
+				$type = 'DOUBLE';
+			}
+
+			if (!db_column_exists($table, $column)) {
+				$sql .= ($index == 0 ? '':', ') . " ADD COLUMN $column $type";
+			}
+		}
+
+		db_execute("$sql $suffix");
+	}
 }
+

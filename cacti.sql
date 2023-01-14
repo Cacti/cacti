@@ -1469,7 +1469,6 @@ CREATE TABLE `data_source_purge_temp` (
   ROW_FORMAT=Dynamic
   COMMENT='RRD Cleaner File Repository';
 
-
 --
 -- Table structure for table `data_source_stats_daily`
 --
@@ -1477,10 +1476,20 @@ CREATE TABLE `data_source_purge_temp` (
 CREATE TABLE `data_source_stats_daily` (
   `local_data_id` int(10) unsigned NOT NULL,
   `rrd_name` varchar(19) NOT NULL,
-  `average` DOUBLE DEFAULT NULL,
-  `peak` DOUBLE DEFAULT NULL,
-  PRIMARY KEY (`local_data_id`,`rrd_name`)
-  ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
+  `cf` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `average` double DEFAULT NULL,
+  `peak` double DEFAULT NULL,
+  `p95n` double DEFAULT NULL,
+  `p90n` double DEFAULT NULL,
+  `p75n` double DEFAULT NULL,
+  `p50n` double DEFAULT NULL,
+  `p25n` double DEFAULT NULL,
+  `sum` double DEFAULT NULL,
+  `elements` double DEFAULT NULL,
+  `variance` double DEFAULT NULL,
+  `stddev` double DEFAULT NULL,
+  PRIMARY KEY (`local_data_id`,`rrd_name`,`cf`)
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
 
 --
 -- Table structure for table `data_source_stats_hourly`
@@ -1489,10 +1498,20 @@ CREATE TABLE `data_source_stats_daily` (
 CREATE TABLE `data_source_stats_hourly` (
   `local_data_id` int(10) unsigned NOT NULL,
   `rrd_name` varchar(19) NOT NULL,
-  `average` DOUBLE DEFAULT NULL,
-  `peak` DOUBLE DEFAULT NULL,
-  PRIMARY KEY (`local_data_id`,`rrd_name`)
-  ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
+  `cf` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `average` double DEFAULT NULL,
+  `peak` double DEFAULT NULL,
+  `p95n` double DEFAULT NULL,
+  `p90n` double DEFAULT NULL,
+  `p75n` double DEFAULT NULL,
+  `p50n` double DEFAULT NULL,
+  `p25n` double DEFAULT NULL,
+  `sum` double DEFAULT NULL,
+  `elements` double DEFAULT NULL,
+  `variance` double DEFAULT NULL,
+  `stddev` double DEFAULT NULL,
+  PRIMARY KEY (`local_data_id`,`rrd_name`,`cf`)
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
 
 --
 -- Table structure for table `data_source_stats_hourly_cache`
@@ -1526,10 +1545,20 @@ CREATE TABLE `data_source_stats_hourly_last` (
 CREATE TABLE `data_source_stats_monthly` (
   `local_data_id` int(10) unsigned NOT NULL,
   `rrd_name` varchar(19) NOT NULL,
-  `average` DOUBLE DEFAULT NULL,
-  `peak` DOUBLE DEFAULT NULL,
-  PRIMARY KEY (`local_data_id`,`rrd_name`)
-  ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
+  `cf` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `average` double DEFAULT NULL,
+  `peak` double DEFAULT NULL,
+  `p95n` double DEFAULT NULL,
+  `p90n` double DEFAULT NULL,
+  `p75n` double DEFAULT NULL,
+  `p50n` double DEFAULT NULL,
+  `p25n` double DEFAULT NULL,
+  `sum` double DEFAULT NULL,
+  `elements` double DEFAULT NULL,
+  `variance` double DEFAULT NULL,
+  `stddev` double DEFAULT NULL,
+  PRIMARY KEY (`local_data_id`,`rrd_name`,`cf`)
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
 
 --
 -- Table structure for table `data_source_stats_weekly`
@@ -1538,10 +1567,20 @@ CREATE TABLE `data_source_stats_monthly` (
 CREATE TABLE `data_source_stats_weekly` (
   `local_data_id` int(10) unsigned NOT NULL,
   `rrd_name` varchar(19) NOT NULL,
-  `average` DOUBLE DEFAULT NULL,
-  `peak` DOUBLE DEFAULT NULL,
-  PRIMARY KEY (`local_data_id`,`rrd_name`)
-  ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
+  `cf` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `average` double DEFAULT NULL,
+  `peak` double DEFAULT NULL,
+  `p95n` double DEFAULT NULL,
+  `p90n` double DEFAULT NULL,
+  `p75n` double DEFAULT NULL,
+  `p50n` double DEFAULT NULL,
+  `p25n` double DEFAULT NULL,
+  `sum` double DEFAULT NULL,
+  `elements` double DEFAULT NULL,
+  `variance` double DEFAULT NULL,
+  `stddev` double DEFAULT NULL,
+  PRIMARY KEY (`local_data_id`,`rrd_name`,`cf`)
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
 
 --
 -- Table structure for table `data_source_stats_yearly`
@@ -1550,10 +1589,20 @@ CREATE TABLE `data_source_stats_weekly` (
 CREATE TABLE `data_source_stats_yearly` (
   `local_data_id` int(10) unsigned NOT NULL,
   `rrd_name` varchar(19) NOT NULL,
-  `average` DOUBLE DEFAULT NULL,
-  `peak` DOUBLE DEFAULT NULL,
-  PRIMARY KEY (`local_data_id`,`rrd_name`)
-  ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
+  `cf` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `average` double DEFAULT NULL,
+  `peak` double DEFAULT NULL,
+  `p95n` double DEFAULT NULL,
+  `p90n` double DEFAULT NULL,
+  `p75n` double DEFAULT NULL,
+  `p50n` double DEFAULT NULL,
+  `p25n` double DEFAULT NULL,
+  `sum` double DEFAULT NULL,
+  `elements` double DEFAULT NULL,
+  `variance` double DEFAULT NULL,
+  `stddev` double DEFAULT NULL,
+  PRIMARY KEY (`local_data_id`,`rrd_name`,`cf`)
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
 
 --
 -- Table structure for table `data_template`
