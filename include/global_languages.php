@@ -934,9 +934,9 @@ function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 		$locale['thousands_sep'] = ',';
 	}
 
-	if ($number === null) {
-		$number = '';
-	} elseif ($decimals == -1 || $decimals === null) {
+	if ($number == null) {
+		$number = 0;
+	} elseif ($decimals == -1 || $decimals == null) {
 		$number = number_format($number, 0, $locale['decimal_point'], $locale['thousands_sep']);
 	} elseif ($number >= pow($baseu, 4)) {
 		$number = number_format($number / pow($baseu, 4), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
