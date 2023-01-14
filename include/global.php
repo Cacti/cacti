@@ -121,7 +121,7 @@ if (isset($config['cacti_version'])) {
 include_once(__DIR__ . '/global_path.php');
 
 /* Should we allow proxy ip headers? */
-$config['proxy_headers'] = $proxy_headers ?? [];
+$config['proxy_headers'] = $proxy_headers ?? array();
 
 /* Set the poller_id */
 if (isset($poller_id)) {

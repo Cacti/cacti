@@ -2166,16 +2166,16 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 				$devices = get_allowed_devices($sql_where);
 
-				if (cacti_sizeof($devices)) {
-					foreach ($devices as $device) {
-						print "<option value='" . $device['id'] . "'";
+		if (cacti_sizeof($devices)) {
+			foreach ($devices as $device) {
+				print "<option value='" . $device['id'] . "'";
 
-						if ($host_id == $device['id']) {
-							print ' selected';
-						} print '>' . html_escape(strip_domain($device['description'])) . '</option>';
-					}
-				}
-				?>
+				if ($host_id == $device['id']) {
+					print ' selected';
+				} print '>' . html_escape(strip_domain($device['description'])) . '</option>';
+			}
+		}
+		?>
 			</select>
 		</td>
 		<?php
@@ -2224,18 +2224,18 @@ function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 			$sites = get_allowed_sites($sql_where);
 
-			if (cacti_sizeof($sites)) {
-				foreach ($sites as $site) {
-					print "<option value='" . $site['id'] . "'";
+	if (cacti_sizeof($sites)) {
+		foreach ($sites as $site) {
+			print "<option value='" . $site['id'] . "'";
 
-					if ($site_id == $site['id']) {
-						print ' selected';
-					}
-
-					print '>' . html_escape($site['name']) . '</option>';
-				}
+			if ($site_id == $site['id']) {
+				print ' selected';
 			}
-			?>
+
+			print '>' . html_escape($site['name']) . '</option>';
+		}
+	}
+	?>
 		</select>
 	</td>
 	<?php

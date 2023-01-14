@@ -1138,8 +1138,8 @@ function raise_message(string|int $message_id, string $message = '', int $messag
 		$_SESSION[SESS_MESSAGES] = array();
 	}
 
-	$final_message = array('message' => $message, 'level' => $message_level, 'title' => $message_title);
-	$final_message['title'] = get_message_title($final_message);
+	$final_message                        = array('message' => $message, 'level' => $message_level, 'title' => $message_title);
+	$final_message['title']               = get_message_title($final_message);
 	$_SESSION[SESS_MESSAGES][$message_id] = $final_message;
 
 	if ($need_session) {
@@ -1166,7 +1166,7 @@ function raise_message_javascript(string $title, string $header, string $message
 	?>
 	<script type='text/javascript'>
 	$(function() {
-		raiseMessage('<?=$title?>', '<?=$header?>', '<?= $message ?>', <?=$level?>)
+		raiseMessage('<?= $title?>', '<?= $header?>', '<?= $message ?>', <?= $level?>)
 	});
 	</script>
 	<?php
@@ -1183,11 +1183,11 @@ function display_output_messages() {
 	$output_messages = array();
 	$final_messages  = array();
 
-    if (isset($_SESSION[SESS_MESSAGES])) {
+	if (isset($_SESSION[SESS_MESSAGES])) {
 		if (!is_array($_SESSION[SESS_MESSAGES])) {
 			$output_messages = array(
 				'custom_error' => array(
-					'level' => MESSAGE_LEVEL_ERROR,
+					'level'   => MESSAGE_LEVEL_ERROR,
 					'message' => $_SESSION[SESS_MESSAGES]
 				)
 			);
@@ -1199,10 +1199,10 @@ function display_output_messages() {
 	}
 
 	if ($debug_message != '') {
-		$output_messages['debug_message'] = [
+		$output_messages['debug_message'] = array(
 			'level'   => MESSAGE_LEVEL_NONE,
 			'message' => $debug_message,
-		];
+		);
 
 		debug_log_clear('new_graphs');
 	}
@@ -1215,17 +1215,16 @@ function display_output_messages() {
 					'message' => $_SESSION[SESS_MESSAGES],
 					'title'   => null,
 				);
-
 			}
 
 			if (!empty($current_message['message'])) {
 				$current_message['title']   = get_message_title($current_message);
-				$final_messages[] = [
+				$final_messages[]           = array(
 					'id'      => $current_message_id,
 					'level'   => $current_message['level'],
 					'message' => $current_message['message'],
 					'title'   => get_message_title($current_message),
-				];
+				);
 			} else {
 				cacti_log("ERROR: Cacti Error Message Id '$current_message_id' Not Defined", false, 'WEBUI');
 			}

@@ -134,7 +134,7 @@ function ldap_convert_1_3_0() {
 		'data_source_stats_yearly'
 	);
 
-	foreach($tables as $table) {
+	foreach ($tables as $table) {
 		if (!db_column_exists($table, 'cf')) {
 			$sql = "ALTER TABLE $table
 				ADD COLUMN cf TINYINT UNSIGNED NOT NULL DEFAULT '0' AFTER rrd_name";
@@ -146,7 +146,7 @@ function ldap_convert_1_3_0() {
 			$suffix = '';
 		}
 
-		foreach($columns as $index => $column) {
+		foreach ($columns as $index => $column) {
 			if ($column == 'elements') {
 				$type = "INT UNSIGNED NOT NULL DEFAULT '0'";
 			} else {
@@ -161,4 +161,3 @@ function ldap_convert_1_3_0() {
 		db_execute("$sql $suffix");
 	}
 }
-
