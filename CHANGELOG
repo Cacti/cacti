@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -issue#5143: When a Device has zero Graphs or Data Sources, it does not display the correct value
 -issue#5145: Changing SNMP settings to None leaves Bulk Walk Maximum Repititions visible
 -issue#5147: Error 500 on apache when changing languages
+-issue#5150: The Import Package cli script displays the wrong 'info' parameter
 -issue#5155: Local Linux Machine Device Package Damaged
 -issue#5159: Cannot turn on publishing when editing
 -issue#5160: Translations on debian 'Bullseye' systems may cause server errors
