@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -issue#5147: Error 500 on apache when changing languages
 -issue#5155: Local Linux Machine Device Package Damaged
 -issue#5160: Translations on debian 'Bullseye' systems may cause server errors
+-issue#5161: Switching language in the settings only becomes active after removal of session cookie
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
