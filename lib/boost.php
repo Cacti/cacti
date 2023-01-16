@@ -271,7 +271,7 @@ function boost_poller_id_check() {
 	return true;
 }
 
-function boost_fetch_cache_check($local_data_id, $rrdtool_pipe = false) {
+function boost_fetch_cache_check($local_data_id, $rrdtool_pipe = null) {
 	global $config;
 
 	if (read_config_option('boost_rrd_update_enable') == 'on') {
@@ -296,9 +296,9 @@ function boost_fetch_cache_check($local_data_id, $rrdtool_pipe = false) {
 		/* process input parameters */
 		if (!is_resource($rrdtool_pipe)) {
 			$rrdtool_pipe = rrd_init();
-			$close_pipe   = true;
+			$close_pipe  = true;
 		} else {
-			$close_pipe = false;
+			$close_pipe  = false;
 		}
 
 		/* get the information to populate into the rrd files */
@@ -336,7 +336,7 @@ function boost_return_cached_image(&$graph_data_array) {
 	}
 }
 
-function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$graph_data_array, $return = true) {
+function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe = null, &$graph_data_array = array(), $return = true) {
 	global $config;
 
 	/* include poller processing routines */
@@ -686,14 +686,12 @@ function boost_get_arch_table_names($latest_table = '') {
  * 4) Merge the results together
  * 5) Process the entire result set
  *
- * @param  (int)      local_data_id - the local data id to update
- * @param  (resourse) rrdtool_pipe - a pointer to the rrdtool process
- * @param mixed $local_data_id
- * @param mixed $rrdtool_pipe
+ * @param  int      local_data_id - the local data id to update
+ * @param  res|null rrdtool_pipe - a pointer to the rrdtool process
  *
- * @return (void)
+ * @return void
  */
-function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
+function boost_process_poller_output($local_data_id, $rrdtool_pipe = null) {
 	global $config, $database_default, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used;
 
 	static $archive_table = false;
@@ -815,11 +813,11 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 	}
 
 	if (cacti_sizeof($results)) {
-		$rrdp_auto_close = false;
+		$local_init = false;
 
 		if (!$rrdtool_pipe) {
-			$rrdtool_pipe    = rrd_init();
-			$rrdp_auto_close = true;
+			$rrdtool_pipe = rrd_init();
+			$local_init   = true;
 		}
 
 		/* create an array keyed off of each .rrd file */
@@ -995,7 +993,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 
 		boost_timer('results_cycle', BOOST_TIMER_END);
 
-		if ($rrdp_auto_close) {
+		if ($local_init) {
 			rrd_close($rrdtool_pipe);
 		}
 	}
@@ -1006,7 +1004,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 	return cacti_sizeof($results);
 }
 
-function boost_rrdtool_get_last_update_time($rrd_path, &$rrdtool_pipe) {
+function boost_rrdtool_get_last_update_time($rrd_path, $rrdtool_pipe) {
 	$return_value = 0;
 
 	/* check if the rrd_path is empty
@@ -1019,7 +1017,7 @@ function boost_rrdtool_get_last_update_time($rrd_path, &$rrdtool_pipe) {
 		return time();
 	}
 
-	if (read_config_option('storage_location')) {
+	if (read_config_option('storage_location') > 0) {
 		$file_exists = rrdtool_execute("file_exists $rrd_path" , true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST');
 	} else {
 		$file_exists = file_exists($rrd_path);
@@ -1108,7 +1106,7 @@ function boost_get_rrd_filename_and_template($local_data_id) {
 	return array('rrd_path' => $rrd_path, 'rrd_template' => trim($rrd_template));
 }
 
-function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_pipe) {
+function boost_rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe) {
 	global $config;
 
 	/**
@@ -1122,7 +1120,7 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 	/* ok, if that passes lets check to make sure an rra does not already
 	exist, the last thing we want to do is overwrite data! */
 	if ($show_source != true) {
-		if (read_config_option('storage_location')) {
+		if (read_config_option('storage_location') > 0) {
 			$file_exists = rrdtool_execute("file_exists $data_source_path" , true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER');
 		} else {
 			$file_exists = file_exists($data_source_path);
@@ -1297,12 +1295,15 @@ function boost_rrdtool_function_create($local_data_id, $show_source, &$rrdtool_p
 }
 
 /* boost_rrdtool_function_update - a re-write of the Cacti rrdtool update command
-   specifically designed for bulk updates.
-   @arg $local_data_id - the data source to obtain information from
-   @arg $rrd_path      - the path to the RRD file
-   @arg $rrd_update_template  - the order in which values need to be added
-   @arg $rrd_update_values    - values to include in the database */
-function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_template, &$rrd_update_values, &$rrdtool_pipe) {
+ * specifically designed for bulk updates.
+ *
+ * @param $local_data_id        - the data source to obtain information from
+ * @param $rrd_path             - the path to the RRD file
+ * @param $rrd_update_template  - the order in which values need to be added
+ * @param $rrd_update_values    - values to include in the database
+ * @param $rrdtool_pipe         - the proess structure from rrd_init
+ */
+function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_template, &$rrd_update_values, $rrdtool_pipe = null) {
 	/* lets count the number of rrd files processed */
 	$rrds_processed = 0;
 
@@ -1318,7 +1319,7 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 	}
 
 	/* create the rrd if one does not already exist */
-	if (read_config_option('storage_location')) {
+	if (read_config_option('storage_location') > 0) {
 		$file_exists = rrdtool_execute("file_exists $rrd_path" , true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST');
 	} else {
 		$file_exists = file_exists($rrd_path);

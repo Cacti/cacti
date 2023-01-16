@@ -1714,10 +1714,10 @@ function graph_edit() {
 		<div class='cactiTable'>
 			<div style='float:left'>
 				<span class='textInfo'><?php print __('RRDtool Command:');?></span><br>
-				<pre><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]);?></pre>
+				<pre><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, null, $null_param, $_SESSION[SESS_USER_ID]);?></pre>
 				<span class='textInfo'><?php print __('RRDtool Says:');?></span><br>
 				<?php unset($graph_data_array['print_source']);?>
-				<pre><?php print($config['poller_id'] == 1 ? @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]):__esc('Not Checked'));?></pre>
+				<pre><?php print($config['poller_id'] == 1 ? @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, null, $null_param, $_SESSION[SESS_USER_ID]):__esc('Not Checked'));?></pre>
 			</div>
 		<?php
 		}

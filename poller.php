@@ -218,6 +218,9 @@ $poller_interval = read_config_option('poller_interval');
 // retrieve the last time the poller ran
 $poller_lastrun  = read_config_option('poller_lastrun_' . $poller_id);
 
+// is boost enabled
+$boost_enabled   = read_config_option('boost_rrd_update_enable') == 'on' ? true:false;
+
 // collect the system mibs every 4 hours
 if ($poller_lastrun % 14440 < $current_time % 14440 || empty($poller_lastrun)) {
 	$mibs = true;
@@ -685,13 +688,15 @@ while ($poller_runs_completed < $poller_runs) {
 				set_config_option('date', date('Y-m-d H:i:s'));
 
 				// open a pipe to rrdtool for writing
-				$rrdtool_pipe = rrd_init();
+				if (!$boost_enabled) {
+					$rrdtool_pipe = rrd_init();
+				}
 			}
 
 			$rrds_processed              = 0;
 			$poller_finishing_dispatched = false;
 
-			while (1) {
+			while (true) {
 				$finished_processes = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . " count(*)
 					FROM poller_time
 					WHERE poller_id = ?
@@ -754,7 +759,7 @@ while ($poller_runs_completed < $poller_runs) {
 			}
 		}
 
-		if ($poller_id == 1) {
+		if ($poller_id == 1 && !$boost_enabled) {
 			rrd_close($rrdtool_pipe);
 		}
 

@@ -121,8 +121,6 @@ function ldap_convert_1_3_0() {
 		'p50n',
 		'p25n',
 		'sum',
-		'elements',
-		'variance',
 		'stddev'
 	);
 
@@ -147,11 +145,7 @@ function ldap_convert_1_3_0() {
 		}
 
 		foreach ($columns as $index => $column) {
-			if ($column == 'elements') {
-				$type = "INT UNSIGNED NOT NULL DEFAULT '0'";
-			} else {
-				$type = 'DOUBLE';
-			}
+			$type = 'DOUBLE';
 
 			if (!db_column_exists($table, $column)) {
 				$sql .= ($index == 0 ? '':', ') . " ADD COLUMN $column $type";
@@ -160,4 +154,6 @@ function ldap_convert_1_3_0() {
 
 		db_execute("$sql $suffix");
 	}
+
+	db_execute('ALTER TABLE data_source_stats_hourly_cache ENGINE=InnoDB ROW_FORMAT=Dynamic');
 }

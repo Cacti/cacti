@@ -3333,12 +3333,11 @@ function generate_data_source_path($local_data_id) {
  * the list of available consolidation functions for the consolidation functions and returns
  * the most appropriate.  Typically, this will be the requested value
  *
- *  @param $data_template_id
- *  @param $requested_cf
- *  @param $ds_step
  * @param mixed $local_data_id
+ * @param $requested_cf
+ * @param $ds_step
  *
- *  @return mixed the best cf to use
+ * @return mixed the best cf to use
  */
 function generate_graph_best_cf($local_data_id, $requested_cf, int $ds_step = 60): string {
 	static $best_cf;
@@ -3385,7 +3384,7 @@ function get_rrd_cfs($local_data_id) {
 
 	$rrdfile = get_data_source_path($local_data_id, true);
 
-	$output = @rrdtool_execute("info $rrdfile", false, RRDTOOL_OUTPUT_STDOUT);
+	$output = rrdtool_execute("info $rrdfile", false, RRDTOOL_OUTPUT_STDOUT);
 
 	/* search for
 	 * 		rra[0].cf = 'LAST'

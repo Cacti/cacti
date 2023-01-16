@@ -535,9 +535,9 @@ function boost_time_to_run($forcerun, $current_time, $last_run_time, $next_run_t
 function boost_output_rrd_data($child) {
 	global $start, $archive_table, $max_run_duration, $config, $database_default, $debug, $get_memory, $memory_used;
 
-	$rrd_updates       = 0;
-	$rrdtool_pipe      = rrd_init();
-	$runtime_exceeded  = false;
+	$rrd_updates      = 0;
+	$rrdtool_pipe     = rrd_init();
+	$runtime_exceeded = false;
 
 	/* let's set and track memory usage will we */
 	if (!function_exists('memory_get_peak_usage')) {

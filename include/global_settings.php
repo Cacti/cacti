@@ -2178,6 +2178,12 @@ $settings['data'] = array(
 			1  => __('All Statistical Metrics')
 		)
 	),
+	'dsstats_peak' => array(
+		'friendly_name' => __('Calculate Peaks Stats in Addition to Average Stats'),
+		'description'   => __('This option will double the data collection time.  If will use the MAX consolidation function and calculate statistics from the max values in each of the respective time ranges.'),
+		'method'        => 'checkbox',
+		'default'       => ''
+	),
 	'dsstats_parallel' => array(
 		'friendly_name' => __('Number of DSStats Processes'),
 		'description'   => __('The number of concurrent DSStats processes to use to use to process all of the Data Sources.'),

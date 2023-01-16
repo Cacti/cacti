@@ -50,6 +50,8 @@ Cacti CHANGELOG
 -feature#5120: Define cacti system paths as constants for better code checking
 -feature#5148: Allow theme-based include paths with master location
 -feature#5149: Allow CSS files to be loaded async #5149
+-feature#5163: DSSTATS - Add Additional Data Source Statics to Cacti
+-feature#5165: DSSTATS - Change data_source_stats_hourly_cache from Memory to INNODB
 -feature: Allow messages to be popup notifications
 
 1.2.24

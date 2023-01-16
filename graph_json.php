@@ -164,7 +164,8 @@ $graph_data_array['image_format'] = $gtype;
 
 if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
 	$xport_meta = array();
-	$output     = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $xport_meta, $_SESSION[SESS_USER_ID]);
+
+	$output = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, null, $xport_meta, $_SESSION[SESS_USER_ID]);
 
 	ob_end_clean();
 } else {
@@ -234,7 +235,7 @@ if ($output !== false && $output != '' && strpos($output, 'image = ') !== false)
 	$graph_data_array['get_error'] = true;
 
 	$null_param = array();
-	rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]);
+	rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, null, $null_param, $_SESSION[SESS_USER_ID]);
 
 	$error = ob_get_contents();
 

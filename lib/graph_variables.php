@@ -94,19 +94,52 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 	 * been retrieved from the RRDfiles.
 	 */
 	foreach ($local_data_ids as $ldi => $data_source_name) {
+		global $user_time, $system_time, $real_time;
+		global $total_user, $total_system, $total_real;
+
 		/* more error checking for invalid data */
 		if ($ldi == 0) {
 			continue;
 		}
 
+		if (empty($total_user)) {
+			(double) $total_user = 0;
+		}
+
+		if (empty($total_system)) {
+			(double) $total_system = 0;
+		}
+
+		if (empty($total_real)) {
+			(double) $total_real = 0;
+		}
+
 		// See if the RRDfile contains the MAX consolidation function, if so prime the array with the fetch data
-		if (rrdtool_function_contains_cf($ldi, 'MAX', $rrdtool_pipe)) {
-			$fetch_array_max[$ldi] = rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution, false, null, 'MAX', $rrdtool_pipe);
+		if ($peak) {
+			if (rrdtool_function_contains_cf($ldi, 'MAX', $rrdtool_pipe)) {
+				$total_user   += $user_time;
+				$total_system += $system_time;
+				$total_real   += $real_time;
+
+				$fetch_array_max[$ldi] = rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution, false, null, 'MAX', $rrdtool_pipe);
+
+				$total_user   += $user_time;
+				$total_system += $system_time;
+				$total_real   += $real_time;
+			}
 		}
 
 		// See if the RRDfile contains the AVERAGE consolidation function, if so prime the array with the fetch data
 		if (rrdtool_function_contains_cf($ldi, 'AVERAGE', $rrdtool_pipe)) {
+			$total_user   += $user_time;
+			$total_system += $system_time;
+			$total_real   += $real_time;
+
 			$fetch_array_avg[$ldi] = rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution, false, null, 'AVERAGE', $rrdtool_pipe);
+
+			$total_user   += $user_time;
+			$total_system += $system_time;
+			$total_real   += $real_time;
 		}
 
 		/* clean up unwanted data source items from the AVERAGE cf data */
@@ -167,14 +200,16 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 		return json_encode(array());
 	}
 
-	$stats = $stats_max = array();
+	$stats = array();
 
 	if (cacti_sizeof($fetch_array_avg)) {
 		$stats['avg'] = nth_percentile_fetch_statistics($percentile, $local_data_ids, $fetch_array_avg, 'AVERAGE');
 	}
 
-	if (cacti_sizeof($fetch_array_max)) {
+	if ($peak && cacti_sizeof($fetch_array_max)) {
 		$stats['peak'] = nth_percentile_fetch_statistics($percentile, $local_data_ids, $fetch_array_max, 'MAX');
+	} else {
+		$stats['peak'] = array();
 	}
 
 	return json_encode($stats);
@@ -280,6 +315,7 @@ function cacti_stats_calc($array, $ptile = 95) {
 			'p50n'     => 0,
 			'p25n'     => 0,
 			'average'  => 0,
+			'peak'     => 0,
 			'sum'      => 0,
 			'elements' => 0,
 			'variance' => 0,
@@ -291,8 +327,9 @@ function cacti_stats_calc($array, $ptile = 95) {
 		return $results;
 	}
 
-	$variance = 0;
+	$rsquared = 0;
 	$sum      = array_sum($array);
+	$peak     = max($array);
 	$average  = $sum / $elements;
 	$var      = 'p' . $ptile . 'n';
 
@@ -301,8 +338,10 @@ function cacti_stats_calc($array, $ptile = 95) {
 	}
 
 	foreach ($array as $number) {
-		$variance += pow(abs($number - $average), 2);
+		$rsquared += pow($number - $average, 2);
 	}
+
+	$variance = $rsquared / $elements;
 
 	$ptile_index = ceil($elements * (1 - ($ptile / 100)));
 	$p95n_index  = ceil($elements * 0.05);
@@ -318,10 +357,11 @@ function cacti_stats_calc($array, $ptile = 95) {
 		'p50n'     => (isset($array[$p50n_index]) ? $array[$p50n_index] : 0),
 		'p25n'     => (isset($array[$p25n_index]) ? $array[$p25n_index] : 0),
 		'average'  => $average,
+		'peak'     => $peak,
 		'sum'      => $sum,
 		'elements' => $elements,
 		'variance' => $variance,
-		'stddev'   => sqrt($variance / $elements)
+		'stddev'   => sqrt($rsquared / $elements)
 	);
 
 	if ($var != '') {

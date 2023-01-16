@@ -34,6 +34,7 @@ ini_set('output_buffering', 'Off');
 require(__DIR__ . '/include/cli_check.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/rrd.php');
+require_once(CACTI_PATH_LIBRARY . '/graph_variables.php');
 require_once(CACTI_PATH_LIBRARY . '/dsstats.php');
 
 /* process calling arguments */
@@ -48,9 +49,9 @@ $thread_id      = 0;
 global $rrd_files, $total_system, $total_user, $total_real, $total_dsses;
 global $user_time, $system_time, $real_time;
 
-$total_system = 0;
-$total_user   = 0;
-$total_real   = 0;
+(double) $total_system = 0;
+(double) $total_user   = 0;
+(double) $total_real   = 0;
 $total_dsses  = 0;
 
 $system_time  = 0;

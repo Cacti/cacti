@@ -1485,8 +1485,6 @@ CREATE TABLE `data_source_stats_daily` (
   `p50n` double DEFAULT NULL,
   `p25n` double DEFAULT NULL,
   `sum` double DEFAULT NULL,
-  `elements` double DEFAULT NULL,
-  `variance` double DEFAULT NULL,
   `stddev` double DEFAULT NULL,
   PRIMARY KEY (`local_data_id`,`rrd_name`,`cf`)
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
@@ -1507,8 +1505,6 @@ CREATE TABLE `data_source_stats_hourly` (
   `p50n` double DEFAULT NULL,
   `p25n` double DEFAULT NULL,
   `sum` double DEFAULT NULL,
-  `elements` double DEFAULT NULL,
-  `variance` double DEFAULT NULL,
   `stddev` double DEFAULT NULL,
   PRIMARY KEY (`local_data_id`,`rrd_name`,`cf`)
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
@@ -1524,7 +1520,7 @@ CREATE TABLE `data_source_stats_hourly_cache` (
   `value` DOUBLE DEFAULT NULL,
   PRIMARY KEY (`local_data_id`,`time`,`rrd_name`),
   KEY `time` USING BTREE (`time`)
-  ) ENGINE=MEMORY;
+  ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Table structure for table `data_source_stats_hourly_last`
@@ -1554,8 +1550,6 @@ CREATE TABLE `data_source_stats_monthly` (
   `p50n` double DEFAULT NULL,
   `p25n` double DEFAULT NULL,
   `sum` double DEFAULT NULL,
-  `elements` double DEFAULT NULL,
-  `variance` double DEFAULT NULL,
   `stddev` double DEFAULT NULL,
   PRIMARY KEY (`local_data_id`,`rrd_name`,`cf`)
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
@@ -1576,8 +1570,6 @@ CREATE TABLE `data_source_stats_weekly` (
   `p50n` double DEFAULT NULL,
   `p25n` double DEFAULT NULL,
   `sum` double DEFAULT NULL,
-  `elements` double DEFAULT NULL,
-  `variance` double DEFAULT NULL,
   `stddev` double DEFAULT NULL,
   PRIMARY KEY (`local_data_id`,`rrd_name`,`cf`)
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
@@ -1598,8 +1590,6 @@ CREATE TABLE `data_source_stats_yearly` (
   `p50n` double DEFAULT NULL,
   `p25n` double DEFAULT NULL,
   `sum` double DEFAULT NULL,
-  `elements` double DEFAULT NULL,
-  `variance` double DEFAULT NULL,
   `stddev` double DEFAULT NULL,
   PRIMARY KEY (`local_data_id`,`rrd_name`,`cf`)
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;

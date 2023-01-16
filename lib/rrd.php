@@ -73,9 +73,11 @@ function rrdtool_reset_language() {
 function rrd_init($output_to_term = true) {
 	global $config;
 
-	$args                         = func_get_args();
-	$force_storage_location_local = (isset($config['force_storage_location_local']) && $config['force_storage_location_local'] === true) ? true : false;
-	$function                     = ($force_storage_location_local === false && read_config_option('storage_location')) ? '__rrd_proxy_init' : '__rrd_init';
+	$args = func_get_args();
+
+	$local_storage = (isset($config['local_storage']) && $config['local_storage'] === true) ? true : false;
+
+	$function = ($local_storage === false && read_config_option('storage_location')) ? '__rrd_proxy_init' : '__rrd_init';
 
 	return call_user_func_array($function, $args);
 }
@@ -194,9 +196,12 @@ function __rrd_proxy_init($logopt = 'WEBLOG') {
 
 function rrd_close() {
 	global $config;
-	$args                         = func_get_args();
-	$force_storage_location_local = (isset($config['force_storage_location_local']) && $config['force_storage_location_local'] === true) ? true : false;
-	$function                     = ($force_storage_location_local === false && read_config_option('storage_location')) ? '__rrd_proxy_close' : '__rrd_close';
+
+	$args = func_get_args();
+
+	$local_storage = (isset($config['local_storage']) && $config['local_storage'] === true) ? true : false;
+
+	$function = ($local_storage === false && read_config_option('storage_location')) ? '__rrd_proxy_close' : '__rrd_close';
 
 	return call_user_func_array($function, $args);
 }
@@ -270,9 +275,11 @@ function decrypt($input) {
 function rrdtool_execute() {
 	global $config;
 
-	$args                         = func_get_args();
-	$force_storage_location_local = (isset($config['force_storage_location_local']) && $config['force_storage_location_local'] === true) ? true : false;
-	$function                     = ($force_storage_location_local === false && read_config_option('storage_location')) ? '__rrd_proxy_execute' : '__rrd_execute';
+	$args = func_get_args();
+
+	$local_storage = (isset($config['local_storage']) && $config['local_storage'] === true) ? true : false;
+
+	$function = ($local_storage === false && read_config_option('storage_location')) ? '__rrd_proxy_execute' : '__rrd_execute';
 
 	return call_user_func_array($function, $args);
 }
@@ -351,7 +358,7 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 	} else {
 		$i = 0;
 
-		while (1) {
+		while (true) {
 			if (fwrite($rrdtool_pipe, escape_command(" $command_line") . "\r\n") === false) {
 				cacti_log("ERROR: Detected RRDtool Crash on '$command_line'.  Last command was '$last_command'");
 
@@ -439,6 +446,8 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 }
 
 function rrdtool_trim_output(&$output) {
+	global $user_time, $system_time, $real_time;
+
 	/* When using RRDtool with proc_open for long strings
 	 * and using the '-' to handle standard in from inside
 	 * the process, RRDtool automatically appends stderr
@@ -449,8 +458,31 @@ function rrdtool_trim_output(&$output) {
 	$okpos = strrpos($output, 'OK u:');
 
 	if ($okpos !== false) {
-		$output = substr($output, 0, $okpos);
+		$stats  = substr($output, $okpos);
+		$line   = trim($stats, ' OK');
+		$parts  = explode(' ', $line);
+
+		foreach ($parts as $line) {
+			$sparts = explode(':', $line);
+
+			switch($sparts[0]) {
+				case 'u':
+					$user_time = $sparts[1];
+
+					break;
+				case 's':
+					$system_time = $sparts[1];
+
+					break;
+				case 'r':
+					$real_time = $sparts[1];
+
+					break;
+			}
+		}
 	}
+
+	$output = substr($output, 0, $okpos);
 }
 
 function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp='', $logopt = 'WEBLOG') {
