@@ -56,7 +56,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 			return $info_array;
 		}
 
-		if (!cacti_sizeof($import_hashes) || in_array($parsed_hash['hash'], $import_hashes)) {
+		if (!cacti_sizeof($import_hashes) || in_array($parsed_hash['hash'], $import_hashes, true)) {
 			if (isset($dep_hash_cache[$parsed_hash['type']])) {
 				array_push($dep_hash_cache[$parsed_hash['type']], $parsed_hash);
 			} else {
@@ -1609,15 +1609,15 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache, &$host_template_
 
 	if (cacti_sizeof($host_template_data)) {
 		foreach ($host_template_data as $type => $data) {
-			foreach ($data as $hash => $name) {
+			foreach ($data as $dhash => $dname) {
 				if ($type == 'graph_template') {
 					$exists1 = db_fetch_cell_prepared('SELECT id
 						FROM graph_templates
 						WHERE hash = ?',
-						array($hash));
+						array($dhash));
 
 					if (!$exists1) {
-						$import_debug_info['differences'][] = __('New Graph Template: %s', $name);
+						$import_debug_info['differences'][] = __('New Graph Template: %s', $dname);
 						$status++;
 					} elseif ($save['id']) {
 						// For existing, we have to perform two checks
@@ -1634,7 +1634,7 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache, &$host_template_
 								array($exists1));
 
 							if (!$data_query_id) {
-								$import_debug_info['differences'][] = __('New Graph Template: %s', $name);
+								$import_debug_info['differences'][] = __('New Graph Template: %s', $dname);
 								$status++;
 							}
 						}
@@ -1643,10 +1643,10 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache, &$host_template_
 					$exists = db_fetch_cell_prepared('SELECT id
 						FROM snmp_query
 						WHERE hash = ?',
-						array($hash));
+						array($dhash));
 
 					if (!$exists) {
-						$import_debug_info['differences'][] = __('New Data Query: %s', $name);
+						$import_debug_info['differences'][] = __('New Data Query: %s', $dname);
 						$status++;
 					} elseif ($save['id']) {
 						$exists = db_fetch_cell_prepared('SELECT COUNT(*)
@@ -1656,7 +1656,7 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache, &$host_template_
 							array($save['id'], $exists));
 
 						if (!$exists) {
-							$import_debug_info['differences'][] = __('New Data Query: %s', $name);
+							$import_debug_info['differences'][] = __('New Data Query: %s', $dname);
 							$status++;
 						}
 					}
