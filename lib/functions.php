@@ -1653,30 +1653,23 @@ function update_host_status($status, $host_id, &$ping, $ping_availability, $prin
 
 				$issue_log_message = true;
 
-				/* update the failure date only if the failure count is 1 */
-				if ($host['status_event_count'] == $ping_failure_count) {
-					$host['status_fail_date'] = time();
-				}
-			/* host is down, but not ready to issue log message */
-			} else {
-				/* host down for the first time, set event date */
-				if ($host['status_event_count'] == $ping_failure_count) {
-					$host['status_fail_date'] = time();
-				}
+				$host['status_fail_date'] = time();
+
+				$host['status_event_count'] = 0;
 			}
-		/* host is recovering, put back in failed state */
 		} elseif ($host['status'] == HOST_RECOVERING) {
+			/* host is recovering, put back in failed state */
 			$host['status_event_count'] = 1;
 			$host['status'] = HOST_DOWN;
-		/* host was unknown and now is down */
 		} elseif ($host['status'] == HOST_UNKNOWN) {
+			/* host was unknown and now is down */
 			$host['status'] = HOST_DOWN;
 			$host['status_event_count'] = 0;
 		} else {
 			$host['status_event_count']++;
 		}
 	} else {
-		/* host is back up!  Update total polls and availability */
+		/* host is up.  Update total polls and availability */
 		$host['total_polls']++;
 		$host['availability'] = 100 * ($host['total_polls'] - $host['failed_polls']) / $host['total_polls'];
 
