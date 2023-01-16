@@ -1875,7 +1875,7 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 			$host['status_event_count']++;
 		}
 	} else {
-		/* host is up!  Update total polls and availability */
+		/* host is back up!  Update total polls and availability */
 		$host['total_polls']++;
 		$host['availability'] = 100 * ($host['total_polls'] - $host['failed_polls']) / $host['total_polls'];
 
@@ -1934,7 +1934,7 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 		}
 
 		/* the host was down, now it's recovering */
-		if (($host['status'] == HOST_DOWN) || ($host['status'] == HOST_RECOVERING)) {
+		if ($host['status'] == HOST_DOWN || $host['status'] == HOST_RECOVERING) {
 			/* just up, change to recovering */
 			if ($host['status'] == HOST_DOWN) {
 				$host['status']             = HOST_RECOVERING;
