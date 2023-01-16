@@ -1866,16 +1866,16 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 		} elseif ($host['status'] == HOST_RECOVERING) {
 			/* host is recovering, put back in failed state */
 			$host['status_event_count'] = 1;
-			$host['status']             = HOST_DOWN;
+			$host['status'] = HOST_DOWN;
 		} elseif ($host['status'] == HOST_UNKNOWN) {
 			/* host was unknown and now is down */
-			$host['status']             = HOST_DOWN;
+			$host['status'] = HOST_DOWN;
 			$host['status_event_count'] = 0;
 		} else {
 			$host['status_event_count']++;
 		}
 	} else {
-		/* host is back up!  Update total polls and availability */
+		/* host is up.  Update total polls and availability */
 		$host['total_polls']++;
 		$host['availability'] = 100 * ($host['total_polls'] - $host['failed_polls']) / $host['total_polls'];
 
