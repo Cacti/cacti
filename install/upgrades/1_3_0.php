@@ -125,7 +125,6 @@ function ldap_convert_1_3_0() {
 	);
 
 	$tables = array(
-		'data_source_stats_hourly',
 		'data_source_stats_daily',
 		'data_source_stats_weekly',
 		'data_source_stats_monthly',

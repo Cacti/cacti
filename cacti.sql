@@ -1499,13 +1499,6 @@ CREATE TABLE `data_source_stats_hourly` (
   `cf` tinyint(3) unsigned NOT NULL DEFAULT 0,
   `average` double DEFAULT NULL,
   `peak` double DEFAULT NULL,
-  `p95n` double DEFAULT NULL,
-  `p90n` double DEFAULT NULL,
-  `p75n` double DEFAULT NULL,
-  `p50n` double DEFAULT NULL,
-  `p25n` double DEFAULT NULL,
-  `sum` double DEFAULT NULL,
-  `stddev` double DEFAULT NULL,
   PRIMARY KEY (`local_data_id`,`rrd_name`,`cf`)
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
 
