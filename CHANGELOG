@@ -18,6 +18,7 @@ Cacti CHANGELOG
 -issue#5160: Translations on debian 'Bullseye' systems may cause server errors
 -issue#5161: Switching language in the settings only becomes active after removal of session cookie
 -issue#5167: Graph template for NetSNMP lmsensors missing
+-issue#5169: Host table status_fail_date and Status_rec_date can appear wrong
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
