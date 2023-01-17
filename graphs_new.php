@@ -529,7 +529,7 @@ function graphs() {
 	$script = "<script type='text/javascript'>\nvar created_graphs = new Array();\n";
 
 	if (get_request_var('graph_type') < 0) {
-		html_start_box(__('New Graph Template'), '', '100%', '', '3', 'center', '');
+		html_start_box(__('New Graph Template'), '100%', '', '3', 'center', '');
 
 		$available_graph_templates = db_fetch_assoc_prepared('SELECT gt.id, gt.name
 			FROM graph_templates AS gt
