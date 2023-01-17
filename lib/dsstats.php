@@ -204,11 +204,9 @@ function dsstats_write_buffer(&$stats_array, $interval, $mode) {
 	$i          = 1;
 	$max_packet = 256000;
 
-	cacti_log("The interval is $interval");
-
 	// Format $stats[ldi][avg|max][rrd_name][metric] = $value
 	if ($mode == 1) {
-		$sql_prefix = "INSERT INTO data_source_stats_$interval (local_data_id, rrd_name, cf, average, peak, p95n, p90n, p75n, p50n, p25n, sum, stddev) VALUES";
+		$sql_prefix = "INSERT INTO data_source_stats_$interval (local_data_id, rrd_name, cf, average, peak, p95n, p90n, p75n, p50n, p25n, sum, stddev, lslslope, lslint, lslcorrel) VALUES";
 
 		$sql_suffix = ' ON DUPLICATE KEY UPDATE
 			average=VALUES(average),
@@ -219,7 +217,10 @@ function dsstats_write_buffer(&$stats_array, $interval, $mode) {
 			p50n=VALUES(p50n),
 			p25n=VALUES(p25n),
 			sum=VALUES(sum),
-			stddev=VALUES(stddev)';
+			stddev=VALUES(stddev),
+			lslslope=VALUES(lslslope),
+			lslint=VALUES(lslint),
+			lslcorrel=VALUES(lslcorrel)';
 	} else {
 		$sql_prefix = "INSERT INTO data_source_stats_$interval (local_data_id, rrd_name, cf, average, peak) VALUES";
 
@@ -244,25 +245,28 @@ function dsstats_write_buffer(&$stats_array, $interval, $mode) {
 				foreach($cf_stats as $rrd_name => $stats) {
 					if ($mode == 0) {
 						$outbuf .= ($i == 1 ? ' ':', ') . "('" .
-							$local_data_id   . "','" .
-							$rrd_name        . "','" .
-							$mycf            . "','" .
-							$stats['avg']    . "','" .
-							$stats['peak']   . "')";
+							$local_data_id      . "','" .
+							$rrd_name           . "','" .
+							$mycf               . "','" .
+							$stats['avg']       . "','" .
+							$stats['peak']      . "')";
 					} else {
 						$outbuf .= ($i == 1 ? ' ':', ') . "('" .
-							$local_data_id   . "','" .
-							$rrd_name        . "','" .
-							$mycf            . "','" .
-							$stats['avg']    . "','" .
-							$stats['peak']   . "','" .
-							$stats['p95n']   . "','" .
-							$stats['p90n']   . "','" .
-							$stats['p75n']   . "','" .
-							$stats['p50n']   . "','" .
-							$stats['p25n']   . "','" .
-							$stats['sum']    . "','" .
-							$stats['stddev'] . "')";
+							$local_data_id      . "','" .
+							$rrd_name           . "','" .
+							$mycf               . "','" .
+							$stats['avg']       . "','" .
+							$stats['peak']      . "','" .
+							$stats['p95n']      . "','" .
+							$stats['p90n']      . "','" .
+							$stats['p75n']      . "','" .
+							$stats['p50n']      . "','" .
+							$stats['p25n']      . "','" .
+							$stats['sum']       . "','" .
+							$stats['stddev']    . "','" .
+							$stats['lslslope']  . "','" .
+							$stats['lslint']    . "','" .
+							$stats['lslcorrel'] . "')";
 					}
 
 					$out_length += strlen($outbuf);
@@ -413,6 +417,15 @@ function dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $in
 
 							// STDDEV
 							$command .= " VDEF:{$mydata_avg}_stddev=$mydata_avg,STDEV PRINT:{$mydata_avg}_stddev:{$dsname}-stddev_avg=%lf";
+
+							// LSLSLOPE
+							$command .= " VDEF:{$mydata_avg}_lslslope=$mydata_avg,LSLSLOPE PRINT:{$mydata_avg}_lslslope:{$dsname}-lslslope_avg=%lf";
+
+							// LSLINT
+							$command .= " VDEF:{$mydata_avg}_lslint=$mydata_avg,LSLINT PRINT:{$mydata_avg}_lslint:{$dsname}-lslint_avg=%lf";
+
+							// LSLCORREL
+							$command .= " VDEF:{$mydata_avg}_lslcorrel=$mydata_avg,LSLCORREL PRINT:{$mydata_avg}_lslcorrel:{$dsname}-lslcorrel_avg=%lf";
 						}
 
 						if ($max && $peak) {
@@ -425,6 +438,15 @@ function dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $in
 
 							// STDDEV
 							$command .= " VDEF:{$mydata_max}_stddev=$mydata_max,STDEV PRINT:{$mydata_max}_stddev:{$dsname}-stddev_max=%lf";
+
+							// LSLSLOPE
+							$command .= " VDEF:{$mydata_max}_lslslope=$mydata_max,LSLSLOPE PRINT:{$mydata_max}_lslslope:{$dsname}-lslslope_max=%lf";
+
+							// LSLINT
+							$command .= " VDEF:{$mydata_max}_lslint=$mydata_max,LSLINT PRINT:{$mydata_max}_lslint:{$dsname}-lslint_max=%lf";
+
+							// LSLCORREL
+							$command .= " VDEF:{$mydata_max}_lslcorrel=$mydata_max,LSLCORREL PRINT:{$mydata_max}_lslcorrel:{$dsname}-lslcorrel_max=%lf";
 						}
 					}
 
@@ -458,7 +480,7 @@ function dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $in
 			/* now execute the graph command */
 			$stats_cmd = 'graph x --start now-1' . $interval . ' --end now ' . trim($def) . ' ' . trim($command);
 
-			//print $stats_cmd . PHP_EOL . PHP_EOL . PHP_EOL;
+			//print $stats_cmd . PHP_EOL . PHP_EOL;
 
 			if ($use_proxy) {
 				$xport_data = rrdtool_execute($stats_cmd, false, RRDTOOL_OUTPUT_STDOUT, false, 'DSSTATS');
@@ -521,7 +543,11 @@ function dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $in
 								$metric   = $parts[0];
 								$amode    = $parts[1];
 
-								$dsvalues[$amode][$rrd_name][$metric] = $value;
+								if (stripos($value, 'nan') === false) {
+									$dsvalues[$amode][$rrd_name][$metric] = $value;
+								} else {
+									$dsvalues[$amode][$rrd_name][$metric] = 'NULL';
+								}
 							}
 						}
 					}

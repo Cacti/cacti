@@ -1486,6 +1486,9 @@ CREATE TABLE `data_source_stats_daily` (
   `p25n` double DEFAULT NULL,
   `sum` double DEFAULT NULL,
   `stddev` double DEFAULT NULL,
+  `lslslope` double DEFAULT NULL,
+  `lslint` double DEFAULT NULL,
+  `lslcorrel` double DEFAULT NULL,
   PRIMARY KEY (`local_data_id`,`rrd_name`,`cf`)
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
 
@@ -1544,6 +1547,9 @@ CREATE TABLE `data_source_stats_monthly` (
   `p25n` double DEFAULT NULL,
   `sum` double DEFAULT NULL,
   `stddev` double DEFAULT NULL,
+  `lslslope` double DEFAULT NULL,
+  `lslint` double DEFAULT NULL,
+  `lslcorrel` double DEFAULT NULL,
   PRIMARY KEY (`local_data_id`,`rrd_name`,`cf`)
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
 
@@ -1564,6 +1570,9 @@ CREATE TABLE `data_source_stats_weekly` (
   `p25n` double DEFAULT NULL,
   `sum` double DEFAULT NULL,
   `stddev` double DEFAULT NULL,
+  `lslslope` double DEFAULT NULL,
+  `lslint` double DEFAULT NULL,
+  `lslcorrel` double DEFAULT NULL,
   PRIMARY KEY (`local_data_id`,`rrd_name`,`cf`)
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
 
@@ -1584,6 +1593,9 @@ CREATE TABLE `data_source_stats_yearly` (
   `p25n` double DEFAULT NULL,
   `sum` double DEFAULT NULL,
   `stddev` double DEFAULT NULL,
+  `lslslope` double DEFAULT NULL,
+  `lslint` double DEFAULT NULL,
+  `lslcorrel` double DEFAULT NULL,
   PRIMARY KEY (`local_data_id`,`rrd_name`,`cf`)
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
 

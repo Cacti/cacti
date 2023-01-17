@@ -121,7 +121,10 @@ function ldap_convert_1_3_0() {
 		'p50n',
 		'p25n',
 		'sum',
-		'stddev'
+		'stddev',
+		'lslslope',
+		'lslint',
+		'lslcorrel'
 	);
 
 	$tables = array(
@@ -143,11 +146,15 @@ function ldap_convert_1_3_0() {
 			$suffix = '';
 		}
 
+		$i = 0;
+
 		foreach ($columns as $index => $column) {
 			$type = 'DOUBLE';
 
 			if (!db_column_exists($table, $column)) {
-				$sql .= ($index == 0 ? '':', ') . " ADD COLUMN $column $type";
+				$sql .= ($i == 0 ? '':', ') . " ADD COLUMN $column $type";
+
+				$i++;
 			}
 		}
 
