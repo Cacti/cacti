@@ -17,6 +17,7 @@ Cacti CHANGELOG
 -issue#5159: Cannot turn on publishing when editing
 -issue#5160: Translations on debian 'Bullseye' systems may cause server errors
 -issue#5161: Switching language in the settings only becomes active after removal of session cookie
+-issue#5166: Plugin permission is not shown in correct role section
 -issue#5167: Graph template for NetSNMP lmsensors missing
 -issue#5168: Import Package is misleading when reviewing Device Template Changes
 -issue#5169: Host table status_fail_date and Status_rec_date can appear wrong
