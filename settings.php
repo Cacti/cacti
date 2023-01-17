@@ -477,7 +477,9 @@ default:
 	<script type='text/javascript'>
 
 	var themeChanged   = false;
+	var langChanged    = false;
 	var currentTheme   = '';
+	var currentLang    = '';
 	var rrdArchivePath = '';
 	var smtpPath       = '';
 	var currentTab     = '<?php print $current_tab;?>';
@@ -504,14 +506,14 @@ default:
 				return false;
 			}
 
-			if (themeChanged != true) {
+			if (themeChanged == true || langChanged == true) {
 				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').prop('disabled', false).serialize()).done(function(data) {
-					$('#main').hide().html(data);
-					applySkin();
+					document.location = 'settings.php?newtheme=1&tab='+$('#tab').val();
 				});
 			} else {
 				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').prop('disabled', false).serialize()).done(function(data) {
-					document.location = 'settings.php?newtheme=1&tab='+$('#tab').val();
+					$('#main').hide().html(data);
+					applySkin();
 				});
 			}
 		});
@@ -565,6 +567,10 @@ default:
 
 			$('#graph_auth_method').change(function() {
 				permsChanger();
+			});
+
+			$('#i18n_auto_detection').change(function() {
+				langDetectionChanger();
 			});
 		} else if (currentTab == 'spikes') {
 			$('#spikekill_templates').multiselect({
@@ -857,6 +863,14 @@ default:
 			themeChanged = true;
 		} else {
 			themeChanged = false;
+		}
+	}
+
+	function langDetectionChanger() {
+		if ($('#i18n_auto_detection').val() != currentLang) {
+			langChanged = true;
+		} else {
+			langChanged = false;
 		}
 	}
 

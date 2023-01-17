@@ -1435,7 +1435,7 @@ function tree_edit($partial = false) {
 						__csrf_magic: csrfMagicToken
 					}
 
-					postUrl(options, data);
+					loadPageUsingPost('tree.php', data);
 				}
 			});
 

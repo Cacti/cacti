@@ -11,9 +11,17 @@ Cacti CHANGELOG
 -issue#5143: When a Device has zero Graphs or Data Sources, it does not display the correct value
 -issue#5145: Changing SNMP settings to None leaves Bulk Walk Maximum Repititions visible
 -issue#5147: Error 500 on apache when changing languages
+-issue#5150: The Import Package cli script displays the wrong 'info' parameter
+-issue#5151: Templates appear to lose their suggested name values
 -issue#5155: Local Linux Machine Device Package Damaged
+-issue#5159: Cannot turn on publishing when editing
 -issue#5160: Translations on debian 'Bullseye' systems may cause server errors
+-issue#5161: Switching language in the settings only becomes active after removal of session cookie
 -issue#5166: Plugin permission is not shown in correct role section
+-issue#5167: Graph template for NetSNMP lmsensors missing
+-issue#5168: Import Package is misleading when reviewing Device Template Changes
+-issue#5169: Host table status_fail_date and Status_rec_date can appear wrong
+-issue#5170: Prevent remote polling functionality from running unless remote pollers are configured
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder

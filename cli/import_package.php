@@ -84,7 +84,7 @@ if (cacti_sizeof($parms)) {
 				$preview_only = true;
 
 				break;
-			case '--info-only':
+			case '--info':
 				$info_only = true;
 
 				break;
@@ -179,12 +179,12 @@ function display_version() {
 function display_help() {
 	display_version();
 
-	print PHP_EOL . 'usage: import_package.php --filename=[filename] [--only-info] [--remove-orphans] [--replace-svalues] [--with-profile] [--profile-id=N' . PHP_EOL . PHP_EOL;
+	print PHP_EOL . 'usage: import_package.php --filename=[filename] [--info] [--remove-orphans] [--replace-svalues] [--with-profile] [--profile-id=N' . PHP_EOL . PHP_EOL;
 	print 'A utility to allow signed Cacti Packages to be imported from the command line.' . PHP_EOL . PHP_EOL;
 	print 'Required:' . PHP_EOL;
 	print '    --filename              The name of the gzipped package file to import' . PHP_EOL . PHP_EOL;
 	print 'Optional:' . PHP_EOL;
-	print '    --only-info       Output the info section of the package, do not import' . PHP_EOL;
+	print '    --info            Output the info section of the package, do not import' . PHP_EOL;
 	print '    --preview         Preview the Template Import, do not import' . PHP_EOL;
 	print '    --with-profile    Use the default system Data Source Profile' . PHP_EOL;
 	print '    --profile-id=N    Use the specific profile id when importing' . PHP_EOL;
