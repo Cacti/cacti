@@ -52,6 +52,7 @@ Cacti CHANGELOG
 -feature#5149: Allow CSS files to be loaded async #5149
 -feature#5163: DSSTATS - Add Additional Data Source Statics to Cacti
 -feature#5165: DSSTATS - Change data_source_stats_hourly_cache from Memory to INNODB
+-feature#5178: DSSTATS - Allow Retention of Daily, Weekly, Monthly and Yearly data for varying periods
 -feature: Allow messages to be popup notifications
 
 1.2.24

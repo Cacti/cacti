@@ -2241,6 +2241,45 @@ $settings['data'] = array(
 		'default'       => '1024',
 		'array'         => $dsstats_max_memory
 	),
+	'dsstats_dr_header' => array(
+		'friendly_name' => __('Data Source Retention Settings'),
+		'collapsible'   => 'true',
+		'method'        => 'spacer',
+	),
+	'dsstats_gdg_enable' => array(
+		'friendly_name' => __('Save Historical Data in Database Tables'),
+		'description'   => __('Check this setting in order to keep a table for each day, week, month, and year data.  The times that these tables will be created will be based upon the following formula: Daily - One partition per day, Weekly - One Partition per Week, Monthly - One partition per Month, Yearly - One Partition per Year.  All tables will have the following suffixes by type Daily: YYYYDDD, Weekly: YYYYWW, Monthly: YYYYMM, and Yearly: YYYY suffixes.'),
+		'method'        => 'checkbox',
+		'default'       => ''
+	),
+	'dsstats_daily_retention' => array(
+		'friendly_name' => __('Daily Partition Retention'),
+		'description'   => __('The number of Days, Weeks, Months, or Years to keep daily statistics.'),
+		'method'        => 'drop_array',
+		'default'       => '2618784',
+		'array'         => $timespans
+	),
+	'dsstats_weekly_retention' => array(
+		'friendly_name' => __('Weekly Partition Retention'),
+		'description'   => __('The number of Days, Weeks, Months, or Years to keep weekly statistics.'),
+		'method'        => 'drop_array',
+		'default'       => '10475136',
+		'array'         => $timespans
+	),
+	'dsstats_monthly_retention' => array(
+		'friendly_name' => __('Monthly Partition Retention'),
+		'description'   => __('The number of Days, Weeks, Months, or Years to keep monthly statistics.'),
+		'method'        => 'drop_array',
+		'default'       => '31536000',
+		'array'         => $timespans
+	),
+	'dsstats_yearly_retention' => array(
+		'friendly_name' => __('Yearly Partition Retention'),
+		'description'   => __('The number of Days, Weeks, Months, or Years to keep yearly statistics.'),
+		'method'        => 'drop_array',
+		'default'       => '157680000',
+		'array'         => $timespans
+	),
 	'rrdcheck_hq_header' => array(
 		'friendly_name' => __('RRDfile Check'),
 		'collapsible'   => 'true',
