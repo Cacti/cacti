@@ -242,7 +242,7 @@ function get_site_locations() {
 	}
 
 	if (!cacti_sizeof($return)) {
-		$return[] = array('label' => __('None'), 'value' => __('None'), 'id' => __('None'));
+		$return[] = array('label' => __('None'), 'value' => '', 'id' => __('None'));
 	}
 
 	print json_encode($return);
