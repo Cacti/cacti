@@ -1067,19 +1067,12 @@ function package_prepare_import_array(&$templates, &$files, $package_name, $pack
 				foreach ($type_array as $index => $vals) {
 					$hash = $vals['hash'];
 
-					if (!isset($templates[$hash])) {
-						$templates[$hash]['package']      = $package_name;
-						$templates[$hash]['package_file'] = $package_filename;
-						$templates[$hash]['status']       = $vals['type'];
-					} else {
-						$templates[$hash]['package'] .= '<br>' . $package_name;
-						$templates[$hash]['package_file'] .= '<br>' . $package_filename;
-						$templates[$hash]['status'] .= '<br>' . $vals['type'];
-					}
-
-					$templates[$hash]['type']      = $type;
-					$templates[$hash]['type_name'] = $hash_type_names[$type];
-					$templates[$hash]['name']      = $vals['title'];
+					$templates[$hash]['package']      = $package_name;
+					$templates[$hash]['package_file'] = $package_filename;
+					$templates[$hash]['status']       = $vals['type'];
+					$templates[$hash]['type']         = $type;
+					$templates[$hash]['type_name']    = $hash_type_names[$type];
+					$templates[$hash]['name']         = $vals['title'];
 
 					unset($vals['title']);
 					unset($vals['result']);
