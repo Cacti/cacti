@@ -520,6 +520,7 @@ default:
 
 		if (currentTab == 'general') {
 			currentPerms = $('#graph_auth_method').val();
+			currentLang  = $('#i18n_auto_detection').val();
 
 			$('#selective_plugin_debug').multiselect({
 				menuHeight: $(window).height()*.7,
