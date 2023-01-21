@@ -325,7 +325,7 @@ function repair_database($run = true) {
 				AND TABLE_NAME = ?',
 				array($table));
 
-			if ($tblinfo['ENGINE'] = 'MyISAM') {
+			if ($tblinfo['ENGINE'] == 'MyISAM') {
 				$suffix = ",\n   ENGINE=InnoDB ROW_FORMAT=Dynamic CHARSET=" . $tblinfo['COLLATION'];
 			} else {
 				$suffix = ",\n   ROW_FORMAT=Dynamic CHARSET=" . $tblinfo['COLLATION'];
