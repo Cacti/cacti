@@ -310,7 +310,7 @@ function plugin_installed($plugin) {
 }
 
 function repair_database($run = true) {
-	global $altersopt;
+	global $altersopt, $database_default;
 
 	$alters = report_audit_results(false);
 
@@ -321,9 +321,9 @@ function repair_database($run = true) {
 		foreach($alters as $table => $changes) {
 			$tblinfo = db_fetch_row_prepared('SELECT ENGINE, SUBSTRING_INDEX(TABLE_COLLATION, "_", 1) AS COLLATION
 				FROM information_schema.tables
-				WHERE TABLE_SCHEMA="cacti"
+				WHERE TABLE_SCHEMA = ?
 				AND TABLE_NAME = ?',
-				array($table));
+				array($database_default, $table));
 
 			if ($tblinfo['ENGINE'] == 'MyISAM') {
 				$suffix = ",\n   ENGINE=InnoDB ROW_FORMAT=Dynamic CHARSET=" . $tblinfo['COLLATION'];
