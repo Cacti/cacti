@@ -24,6 +24,7 @@ Cacti CHANGELOG
 -issue#5170: Prevent remote polling functionality from running unless remote pollers are configured
 -issue#5174: Empty Location when adding new device
 -issue#5180: Audit Database has issues with storage engine compare
+-issue#5181: Poller functions can cause SQL errors in some cases when working with remote data collectors
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder

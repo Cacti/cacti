@@ -1852,6 +1852,7 @@ function poller_push_reindex_data_to_poller($device_id = 0, $data_query_id = 0, 
 	$sql_params1 = array();
 	$sql_where   = '';
 	$sql_where1  = '';
+	$sql_where2  = '';
 
 	if ($device_id > 0) {
 		$sql_where  .= 'WHERE host_id = ?';
@@ -1859,14 +1860,14 @@ function poller_push_reindex_data_to_poller($device_id = 0, $data_query_id = 0, 
 
 		$sql_params[]  = $device_id;
 		$sql_params1[] = $device_id;
-
-		$sql_params[]  = $data_query_id;
-		$sql_params1[] = $data_query_id;
 	}
 
 	if ($data_query_id > 0) {
 		$sql_where  .= ($sql_where  != '' ? ' AND':'WHERE') . ' snmp_query_id = ?';
 		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' snmp_query_id = ?';
+
+		$sql_params[]  = $data_query_id;
+		$sql_params1[] = $data_query_id;
 	}
 
 	// Give the snmp query up to an hour to run
@@ -1876,14 +1877,15 @@ function poller_push_reindex_data_to_poller($device_id = 0, $data_query_id = 0, 
 		$sql_params);
 
 	if (!$force) {
-		$sql_where1   .= ($sql_where1 != '' ? ' AND':'WHERE') . ' UNIX_TIMESTAMP(last_updated) > ?';
-		$sql_params1[] = $min_reindex_cache;
+		$sql_where2    = $sql_where1 . ($sql_where1 != '' ? ' AND':'WHERE') . ' UNIX_TIMESTAMP(last_updated) > ?';
+		$sql_params2   = $sql_params1;
+		$sql_params2[] = $min_reindex_cache;
 
 		$recache_hosts = array_rekey(
 			db_fetch_assoc_prepared("SELECT DISTINCT host_id
 				FROM host_snmp_cache
-				$sql_where1",
-				$sql_params1),
+				$sql_where2",
+				$sql_params2),
 			'host_id', 'host_id'
 		);
 	} else {
