@@ -7755,7 +7755,7 @@ function get_client_addr():string|false {
 	 */
 	if ($proxy_headers === true) {
 		$proxy_headers = $allowed_proxy_headers;
-	} elseif (is_array($proxy_headers)) {
+	} elseif (is_array($proxy_headers) && is_array($allowed_proxy_headers)) {
 		$proxy_headers = array_intersect($proxy_headers, $allowed_proxy_headers);
 	}
 
