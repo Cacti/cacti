@@ -636,8 +636,8 @@ function auth_augment_roles($role_name, $files) {
 				$user_auth_roles[$role_name][] = $user_auth_realm_filenames[$file];
 			}
 		} else {
-			if (isset($_SESSION[SESS_AUTH_NAMES][$role_name])) {
-				$realm_id = $_SESSION[SESS_AUTH_NAMES][$role_name];
+			if (isset($_SESSION[SESS_AUTH_NAMES][$file])) {
+				$realm_id = $_SESSION[SESS_AUTH_NAMES][$file];
 			} else {
 				$realm_id = db_fetch_cell_prepared('SELECT id+100 AS realm
 					FROM plugin_realms
@@ -654,7 +654,7 @@ function auth_augment_roles($role_name, $files) {
 				);
 
 				if ($realm_id > 0) {
-					$_SESSION[SESS_AUTH_NAMES][$role_name] = $realm_id;
+					$_SESSION[SESS_AUTH_NAMES][$file] = $realm_id;
 				}
 			}
 
