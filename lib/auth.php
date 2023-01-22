@@ -1327,6 +1327,10 @@ function get_policies($user_id) {
  * @return (array) Array of tree header graphs to display
  */
 function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '', $sql_order = 'gti.position', $sql_limit = '', &$total_rows = 0, $user_id = 0) {
+	if (!auth_valid_user($user_id)) {
+		return array();
+	}
+
 	if (!is_numeric($tree_id)) {
 		return array();
 	}
@@ -1431,6 +1435,10 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
  * @return (array) Array of allowed graphs
  */
 function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sql_limit = '', &$total_rows = 0, $user_id = 0, $graph_id = 0) {
+	if (!auth_valid_user($user_id)) {
+		return array();
+	}
+
 	if ($sql_limit != '') {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
@@ -1535,6 +1543,10 @@ function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sq
  * @return (array) Array of allowed graphs
  */
 function get_allowed_aggregate_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sql_limit = '', &$total_rows = 0, $user_id = 0, $graph_id = 0) {
+	if (!auth_valid_user($user_id)) {
+		return array();
+	}
+
 	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
@@ -1815,6 +1827,10 @@ function get_simple_graph_template_perms($user_id) {
  * @return (array)  An array of permitted Graph Templates
  */
 function get_allowed_graph_templates($sql_where = '', $sql_order = 'gt.name', $sql_limit = '', &$total_rows = 0, $user_id = 0, $graph_template_id = 0) {
+	if (!auth_valid_user($user_id)) {
+		return array();
+	}
+
 	if ($user_id == 0) {
 		if (isset($_SESSION[SESS_USER_ID])) {
 			$user_id = $_SESSION[SESS_USER_ID];
@@ -2478,6 +2494,10 @@ function get_permission_string(&$graph, &$policies) {
  * @return (string|array)  An array of permitted Trees or the SQL to gather them
  */
 function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', $sql_order = 'name', $sql_limit = '', &$total_rows = 0, $user_id = 0) {
+	if (!auth_valid_user($user_id)) {
+		return array();
+	}
+
 	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
@@ -2597,6 +2617,9 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
  */
 function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit = '', &$total_rows = 0, $user_id = 0) {
 	$sql_join = '';
+	if (!auth_valid_user($user_id)) {
+		return array();
+	}
 
 	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
@@ -2768,6 +2791,10 @@ function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit =
  * @return (array)  An array of permitted devices
  */
 function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_limit = '', &$total_rows = 0, $user_id = 0, $device_id = 0) {
+	if (!auth_valid_user($user_id)) {
+		return array();
+	}
+
 	if ($user_id == -1) {
 		$auth_method = AUTH_METHOD_NONE;
 	} else {
@@ -2888,6 +2915,10 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
  * @return (array)  An array of permitted sites
  */
 function get_allowed_sites($sql_where = '', $sql_order = 'name', $sql_limit = '', &$total_rows = 0, $user_id = 0, $site_id = 0) {
+	if (!auth_valid_user($user_id)) {
+		return array();
+	}
+
 	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
@@ -2959,6 +2990,10 @@ function get_allowed_sites($sql_where = '', $sql_order = 'name', $sql_limit = ''
  * @return (array)  An array of permitted site devices
  */
 function get_allowed_site_devices($site_id, $sql_where = '', $sql_order = 'description', $sql_limit = '', &$total_rows = 0, $user_id = 0) {
+	if (!auth_valid_user($user_id)) {
+		return array();
+	}
+
 	if ($user_id == -1) {
 		$auth_method = AUTH_METHOD_NONE;
 	} else {
@@ -3072,6 +3107,10 @@ function get_allowed_site_devices($site_id, $sql_where = '', $sql_order = 'descr
  * @return (array)  An array of permitted and normalized graph templates
  */
 function get_allowed_graph_templates_normalized($sql_where = '', $sql_order = 'name', $sql_limit = '', &$total_rows = 0, $user_id = 0, $graph_template_id = 0) {
+	if (!auth_valid_user($user_id)) {
+		return array();
+	}
+
 	$templates = array_rekey(get_allowed_graph_templates($sql_where, $sql_order, $sql_limit, $total_rows, $user_id, $graph_template_id), 'id', 'name');
 
 	if (!cacti_sizeof($templates)) {
@@ -3109,6 +3148,44 @@ function get_allowed_graph_templates_normalized($sql_where = '', $sql_order = 'n
 		$sql_limit");
 
 	return $templates;
+}
+
+/**
+ * auth_valid_user - Returns true or false depending on if the user is valid for the system
+ *   users with an id of 0 or -1 are special cases.  All non-zero users should be found in the
+ *   user_auth table.
+ *
+ * @param  int   A valid or invalid user.
+ *
+ * @return bool  True is valid otherwise false
+ */
+function auth_valid_user($user_id) {
+	static $users = array();
+
+	// perform a check if the user exists
+	if ($user_id > 0) {
+		if (isset($users[$user_id]) && $users[$user_id] == true) {
+			return true;
+		} elseif (isset($users[$user_id])) {
+			return false;
+		} else {
+			$exists = db_fetch_cell_prepared('SELECT id FROM user_auth WHERE id = ?', array($user_id));
+
+			if (empty($exists)) {
+				cacti_log(sprintf('ERROR: Invalid Cacti User ID %d is being used in a permission that does not exist', $user_id), false, 'AUTH');
+
+				cacti_debug_backtrace('Invalid User Accound');
+
+				$users[$user_id] = false;
+
+				return false;
+			}
+
+			$users[$user_id] = true;
+		}
+	}
+
+	return true;
 }
 
 /**
@@ -3216,6 +3293,10 @@ function get_host_array() {
  *   settings
  */
 function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_where = '') {
+	if (!auth_valid_user($user_id)) {
+		return array();
+	}
+
 	$return = array();
 
 	$term = get_filter_request_var('term', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
@@ -3266,6 +3347,10 @@ function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_
  *   settings
  */
 function get_allowed_ajax_graph_templates($include_any = true, $include_none = true, $sql_where = '') {
+	if (!auth_valid_user($user_id)) {
+		return array();
+	}
+
 	$return = array();
 
 	$term = get_filter_request_var('term', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
@@ -3312,6 +3397,9 @@ function get_allowed_ajax_graph_templates($include_any = true, $include_none = t
  */
 function get_allowed_ajax_graph_items($include_none = true, $sql_where = '') {
 	$return    = array();
+	if (!auth_valid_user($user_id)) {
+		return array();
+	}
 
 	$term = get_filter_request_var('term', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 
@@ -3350,6 +3438,10 @@ function get_allowed_ajax_graph_items($include_none = true, $sql_where = '') {
  *   settings
  */
 function get_allowed_ajax_graphs($sql_where = '') {
+	if (!auth_valid_user($user_id)) {
+		return array();
+	}
+
 	$return = array();
 
 	$term = get_filter_request_var('term', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
@@ -3388,6 +3480,10 @@ function get_allowed_ajax_graphs($sql_where = '') {
  * @return (array) An array of permitted graph items
  */
 function get_allowed_graph_items($sql_where, $sql_order = 'name', $sql_limit = 20, $user_id = 0) {
+	if (!auth_valid_user($user_id)) {
+		return array();
+	}
+
 	$return = array();
 
 	if ($user_id == 0 && isset($_SESSION[SESS_USER_ID])) {
