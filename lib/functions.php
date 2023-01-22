@@ -1845,15 +1845,9 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 
 				$issue_log_message = true;
 
-				/* update the failure date only if the failure count is 1 */
-				if ($host['status_event_count'] == $ping_failure_count) {
-					$host['status_fail_date'] = time();
-				}
-			} else {
-				/* host down for the first time, set event date */
-				if ($host['status_event_count'] == $ping_failure_count) {
-					$host['status_fail_date'] = time();
-				}
+				$host['status_fail_date'] = time();
+
+				$host['status_event_count'] = 0;
 			}
 		} elseif ($host['status'] == HOST_RECOVERING) {
 			/* host is recovering, put back in failed state */
@@ -1867,8 +1861,7 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 			$host['status_event_count']++;
 		}
 	} else {
-		/* host is up!! */
-		/* update total polls and availability */
+		/* host is up!  Update total polls and availability */
 		$host['total_polls']++;
 		$host['availability'] = 100 * ($host['total_polls'] - $host['failed_polls']) / $host['total_polls'];
 
@@ -1943,34 +1936,25 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 
 				$issue_log_message = true;
 
-				/* update the recovery date only if the recovery count is 1 */
-				if ($host['status_event_count'] == $ping_recovery_count) {
-					$host['status_rec_date'] = time();
-				}
-
-				/* reset the event counter */
+				$host['status_rec_date']    = time();
 				$host['status_event_count'] = 0;
-			} else {
-				/* host recovering for the first time, set event date */
-				if ($host['status_event_count'] == $ping_recovery_count) {
-					$host['status_rec_date'] = time();
-				}
 			}
 		} else {
 			/* host was unknown and now is up */
-			$host['status']             = HOST_UP;
+			$host['status'] = HOST_UP;
+
 			$host['status_event_count'] = 0;
 		}
 	}
 
 	/* if the user wants a flood of information then flood them */
-	if (($host['status'] == HOST_UP) || ($host['status'] == HOST_RECOVERING)) {
+	if ($host['status'] == HOST_UP || $host['status'] == HOST_RECOVERING) {
 		/* log ping result if we are to use a ping for reachability testing */
 		if ($ping_availability == AVAIL_SNMP_AND_PING) {
 			cacti_log("Device[$host_id] PING: " . $ping->ping_response, $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
 			cacti_log("Device[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
 		} elseif ($ping_availability == AVAIL_SNMP) {
-			if (($host['snmp_community'] == '') && ($host['snmp_version'] != 3)) {
+			if ($host['snmp_community'] == '' && $host['snmp_version'] != 3) {
 				cacti_log("Device[$host_id] SNMP: Device does not require SNMP", $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
 			} else {
 				cacti_log("Device[$host_id] SNMP: " . $ping->snmp_response, $print_data_to_stdout, 'PING', POLLER_VERBOSITY_HIGH);
