@@ -6768,7 +6768,7 @@ function get_client_addr() {
 	/* IMPORTANT: The null default for 1.2.x is true, but this will change in future version */
 	if ($proxy_headers === null || $proxy_headers === true) {
 		$proxy_headers = $allowed_proxy_headers;
-	} elseif (is_array($proxy_headers)) {
+	} elseif (is_array($proxy_headers) && is_array($allowed_proxy_headers)) {
 		$proxy_headers = array_intersect($proxy_headers, $allowed_proxy_headers);
 	}
 
