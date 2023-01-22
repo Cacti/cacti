@@ -534,7 +534,7 @@ switch (get_request_var('action')) {
 		?>
 		<script type='text/javascript'>
 			var themeChanged   = false;
-			var langChanged    = false;
+			var langRefresh    = false;
 			var currentTheme   = '';
 			var currentLang    = '';
 			var rrdArchivePath = '';
@@ -570,7 +570,7 @@ switch (get_request_var('action')) {
 						url: 'settings.php?tab=' + $('#tab').val(),
 					}
 
-					if (themeChanged == true || langChanged == true) {
+					if (themeChanged == true || langRefresh == true) {
 						options.redirect = options.url;
 					}
 
@@ -580,7 +580,10 @@ switch (get_request_var('action')) {
 				});
 
 				if (currentTab == 'general') {
-					currentPerms = $('#graph_auth_method').val();
+					currentPerms       = $('#graph_auth_method').val();
+					currentLangDetect  = $('#i18n_auto_detection').val();
+					currentLanguage    = $('#i18n_default_language').val();
+					currentLangSupport = $('#i18n_language_support').val();
 
 					$('#selective_plugin_debug').multiselect({
 						menuHeight: $(window).height() * .7,
@@ -874,10 +877,14 @@ switch (get_request_var('action')) {
 			}
 
 			function langDetectionChanger() {
-				if ($('#i18n_auto_detection').val() != currentLang) {
-					langChanged = true;
+				var changed = currentLanguage != $('#i18n_default_language').val() ||
+					currentLangDetect         != $('#i18n_auto_detection').val() ||
+					currentLangSupport        != $('#i18n_language_support').val();
+
+				if (changed) {
+					langRefresh = true;
 				} else {
-					langChanged = false;
+					langRefresh = false;
 				}
 			}
 
