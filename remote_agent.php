@@ -142,10 +142,6 @@ function remote_client_authorized() {
 		return false;
 	}
 
-	if ($config['poller_id'] == 1) {
-		return false;
-	}
-
 	if (!filter_var($client_addr, FILTER_VALIDATE_IP)) {
 		cacti_log('ERROR: Invalid remote agent client IP Address.  Exiting');
 
