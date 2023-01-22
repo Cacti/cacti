@@ -72,6 +72,7 @@ Cacti CHANGELOG
 -issue#5181: Poller functions can cause SQL errors in some cases when working with remote data collectors
 -issue#5182: Graph Image does not have check for Remote Agent
 -issue#5184: Cacti permission checks generate SQL errors is the user has been deleted
+-issue#5185: Repair Database does not prune old Poller Item Records
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
