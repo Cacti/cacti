@@ -52,7 +52,10 @@ $graph_data_array = array();
 
 // Determine the graph type of the output
 if (!isset_request_var('image_format')) {
-	$type   = db_fetch_cell_prepared('SELECT image_format_id FROM graph_templates_graph WHERE local_graph_id = ?', array(get_request_var('local_graph_id')));
+	$type   = db_fetch_cell_prepared('SELECT image_format_id
+		FROM graph_templates_graph
+		WHERE local_graph_id = ?',
+		array(get_request_var('local_graph_id')));
 
 	switch($type) {
 		case '1':
@@ -136,8 +139,35 @@ if (isset_request_var('rra_id')) {
 	$rra_id = null;
 }
 
-$null_param = array();
-$output     = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, null, $null_param, $_SESSION[SESS_USER_ID]);
+if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
+	$null_param = array();
+	$output = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
+} else {
+	$hostname = db_fetch_cell('SELECT hostname FROM poller WHERE id = 1');
+
+	$url  = get_url_type() . '://' . $hostname . $config['url_path'] . 'remote_agent.php?action=graph_json';
+	$url .= '&local_graph_id=' . get_request_var('local_graph_id');
+	$url .= '&rra_id=' . $rra_id;
+
+	foreach($graph_data_array as $variable => $value) {
+		$url .= '&' . $variable . '=' . $value;
+	}
+
+	$fgc_contextoption = get_default_contextoption();
+	$fgc_context       = stream_context_create($fgc_contextoption);
+	$output            = @file_get_contents($url, false, $fgc_context);
+
+	if (is_array($output) && isset($output['image'])) {
+		$output = $output['image'];
+	}
+
+	// Find the beginning of the image definition row
+	$image_begin_pos  = strpos($output, 'image = ');
+	// Find the end of the line of the image definition row, after this the raw image data will come
+	$image_data_pos   = strpos($output, "\n" , $image_begin_pos) + 1;
+	// Insert the raw image data to the array
+	$output  = substr($output, $image_data_pos);
+}
 
 if ($output !== false && $output != '') {
 	/* flush the headers now */
@@ -152,8 +182,10 @@ if ($output !== false && $output != '') {
 
 	/* get the error string */
 	$graph_data_array['get_error'] = true;
-	$null_param                    = array();
-	rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, null, $null_param, $_SESSION[SESS_USER_ID]);
+
+	$null_param = array();
+
+	rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, null, $null_param, $_SESSION['sess_user_id']);
 
 	$error = ob_get_contents();
 
