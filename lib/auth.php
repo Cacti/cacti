@@ -2616,10 +2616,11 @@ function get_allowed_trees($edit = false, $return_sql = false, $sql_where = '', 
  * @return (array)  An array of permitted Tree branches
  */
 function get_allowed_branches($sql_where = '', $sql_order = 'name', $sql_limit = '', &$total_rows = 0, $user_id = 0) {
-	$sql_join = '';
 	if (!auth_valid_user($user_id)) {
 		return array();
 	}
+
+	$sql_join = '';
 
 	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
