@@ -961,6 +961,10 @@ function api_plugin_movedown($plugin) {
 function api_plugin_register_hook($plugin, $hook, $function, $file, $enable = false) {
 	$status = 0;
 
+	if (!api_plugin_valid_entrypoint($plugin, __FUNCTION__)) {
+		return false;
+	}
+
 	$exists = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM plugin_hooks
 		WHERE name = ?
@@ -1048,8 +1052,25 @@ function api_plugin_disable_hooks_all($plugin) {
 	api_plugin_replicate_config();
 }
 
+function api_plugin_valid_entrypoint($plugin, $function) {
+	// Check for invalid entrypoint install/upgrade
+	$backtrace = debug_backtrace();
+	if (cacti_sizeof($backtrace)) {
+		if (!preg_match('/(install|upgrade)/i', $backtrace[2]['function'])) {
+			cacti_log(sprintf('WARNING: Plugin \'%s\' is attempting to call \'%s\' improperly in function \'%s\'', $plugin, $function, $backtrace[2]['function']), false, 'PLUGIN');
+			return false;
+		}
+	}
+
+	return true;
+}
+
 function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 	$files = explode(',', $file);
+
+	if (!api_plugin_valid_entrypoint($plugin, __FUNCTION__)) {
+		return false;
+	}
 
 	$i = 0;
 	$sql_where = '(';
