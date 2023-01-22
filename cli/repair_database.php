@@ -255,6 +255,21 @@ if ($fixes) {
 	print 'NOTE: Found No Data Input Data hostname or host_id Type Code issues' . PHP_EOL;
 }
 
+print 'NOTE: Repairing orphaned Poller Items.' . PHP_EOL;
+
+db_execute('DELETE pi
+	FROM poller_item AS pi
+	LEFT JOIN data_local AS dl
+	ON pi.local_data_id = dl.id
+	WHERE dl.id IS NULL');
+
+$fixes = db_affected_rows();
+if ($fixes) {
+	printf('NOTE: Found and Repaired %s Poller Items' . PHP_EOL, $fixes);
+} else {
+	print 'NOTE: Found No Problems with orphaned Poller Items' . PHP_EOL;
+}
+
 print PHP_EOL . '------------------------------------------------------------------------' . PHP_EOL;
 print 'Detailed Checks.  Use --force to repair if found.' . PHP_EOL . PHP_EOL;
 
