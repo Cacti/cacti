@@ -56,8 +56,7 @@ function api_plugin_hook($name) {
 
 	if (!isset($hook_cache[$name])) {
 		/* order the plugins by order */
-		$result = db_fetch_assoc_prepared(
-			'SELECT ph.name, ph.file, ph.function
+		$result = db_fetch_assoc_prepared('SELECT ph.name, ph.file, ph.function
 			FROM plugin_hooks AS ph
 			LEFT JOIN plugin_config AS pc
 			ON pc.directory = ph.name
@@ -113,8 +112,7 @@ function api_plugin_hook_function($name, $parm = null) {
 
 	if (!isset($hook_cache[$name])) {
 		/* order the plugins by order */
-		$result = db_fetch_assoc_prepared(
-			'SELECT ph.name, ph.file, ph.function
+		$result = db_fetch_assoc_prepared('SELECT ph.name, ph.file, ph.function
 			FROM plugin_hooks AS ph
 			LEFT JOIN plugin_config AS pc
 			ON pc.directory = ph.name
@@ -329,12 +327,10 @@ function api_plugin_get_dependencies($plugin) {
 
 function api_plugin_minimum_version($plugin, $version) {
 	if (strlen($version)) {
-		$plugin_version = db_fetch_cell_prepared(
-			'SELECT version
+		$plugin_version = db_fetch_cell_prepared('SELECT version
 			FROM plugin_config
 			WHERE directory = ?',
-			array($plugin)
-		);
+			array($plugin));
 
 		$result = cacti_version_compare($version, $plugin_version, '<=');
 	} else {
@@ -346,12 +342,10 @@ function api_plugin_minimum_version($plugin, $version) {
 }
 
 function api_plugin_installed($plugin) {
-	$plugin_data = db_fetch_row_prepared(
-		'SELECT directory, status
+	$plugin_data = db_fetch_row_prepared('SELECT directory, status
 		FROM plugin_config
 		WHERE directory = ?',
-		array($plugin)
-	);
+		array($plugin));
 
 	if (cacti_sizeof($plugin_data)) {
 		if ($plugin_data['status'] >= 1) {
@@ -551,12 +545,10 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 		}
 
 		if (db_execute($sql)) {
-			db_execute_prepared(
-				"REPLACE INTO plugin_db_changes
+			db_execute_prepared("REPLACE INTO plugin_db_changes
 				(plugin, `table`, `column`, `method`)
 				VALUES (?, ?, '', 'create')",
-				array($plugin, $table)
-			);
+				array($plugin, $table));
 
 			if (isset($data['collate'])) {
 				db_execute("ALTER TABLE `$table` COLLATE = " . $data['collate']);
@@ -572,14 +564,11 @@ function api_plugin_drop_table($table) {
 }
 
 function api_plugin_db_changes_remove($plugin) {
-	$tables = db_fetch_assoc_prepared(
-		"SELECT `table`
+	$tables = db_fetch_assoc_prepared("SELECT `table`
 		FROM plugin_db_changes
 		WHERE plugin = ?
 		AND method ='create'",
-		array($plugin),
-		false
-	);
+		array($plugin), false);
 
 	if (cacti_count($tables)) {
 		foreach ($tables as $table) {
@@ -588,36 +577,27 @@ function api_plugin_db_changes_remove($plugin) {
 
 		api_plugin_drop_remote_table($table['table']);
 
-		db_execute_prepared(
-			"DELETE FROM plugin_db_changes
+		db_execute_prepared("DELETE FROM plugin_db_changes
 			WHERE plugin = ?
 			AND method ='create'",
-			array($plugin),
-			false
-		);
+			array($plugin), false);
 	}
 
-	$columns = db_fetch_assoc_prepared(
-		"SELECT `table`, `column`
+	$columns = db_fetch_assoc_prepared("SELECT `table`, `column`
 		FROM plugin_db_changes
 		WHERE plugin = ?
 		AND method ='addcolumn'",
-		array($plugin),
-		false
-	);
+		array($plugin), false);
 
 	if (cacti_count($columns)) {
 		foreach ($columns as $column) {
 			db_execute('ALTER TABLE `' . $column['table'] . '` DROP `' . $column['column'] . '`');
 		}
 
-		db_execute_prepared(
-			"DELETE FROM plugin_db_changes
+		db_execute_prepared("DELETE FROM plugin_db_changes
 			WHERE plugin = ?
 			AND method = 'addcolumn'",
-			array($plugin),
-			false
-		);
+			array($plugin), false);
 	}
 }
 
@@ -674,12 +654,10 @@ function api_plugin_db_add_column($plugin, $table, $column) {
 		}
 
 		if (db_execute($sql)) {
-			db_execute_prepared(
-				"INSERT INTO plugin_db_changes
+			db_execute_prepared("INSERT INTO plugin_db_changes
 				(plugin, `table`, `column`, `method`)
 				VALUES (?, ?, ?, 'addcolumn')",
-				array($plugin, $table, $column['name'])
-			);
+				array($plugin, $table, $column['name']));
 		}
 	}
 }
@@ -730,20 +708,15 @@ function api_plugin_install($plugin) {
 
 	include_once(CACTI_PATH_PLUGINS . "/$plugin/setup.php");
 
-	$exists = db_fetch_assoc_prepared(
-		'SELECT id
+	$exists = db_fetch_assoc_prepared('SELECT id
 		FROM plugin_config
 		WHERE directory = ?',
-		array($plugin),
-		false
-	);
+		array($plugin), false);
 
 	if (cacti_sizeof($exists)) {
-		db_execute_prepared(
-			'DELETE FROM plugin_config
+		db_execute_prepared('DELETE FROM plugin_config
 			WHERE directory = ?',
-			array($plugin)
-		);
+			array($plugin));
 	}
 
 	$name     = $author = $webpage = $version = '';
@@ -765,12 +738,10 @@ function api_plugin_install($plugin) {
 		$version = $info['version'];
 	}
 
-	db_execute_prepared(
-		'INSERT INTO plugin_config
+	db_execute_prepared('INSERT INTO plugin_config
 		(directory, name, author, webpage, version)
 		VALUES (?, ?, ?, ?, ?)',
-		array($plugin, $name, $author, $webpage, $version)
-	);
+		array($plugin, $name, $author, $webpage, $version));
 
 	$function = 'plugin_' . $plugin . '_install';
 
@@ -780,20 +751,16 @@ function api_plugin_install($plugin) {
 
 		if ($ready) {
 			// Set the plugin as "disabled" so it can go live
-			db_execute_prepared(
-				'UPDATE plugin_config
+			db_execute_prepared('UPDATE plugin_config
 				SET status = 4
 				WHERE directory = ?',
-				array($plugin)
-			);
+				array($plugin));
 		} else {
 			// Set the plugin as "needs configuration"
-			db_execute_prepared(
-				'UPDATE plugin_config
+			db_execute_prepared('UPDATE plugin_config
 				SET status = 2
 				WHERE directory = ?',
-				array($plugin)
-			);
+				array($plugin));
 		}
 	}
 
@@ -1011,6 +978,10 @@ function api_plugin_movedown($plugin) {
 function api_plugin_register_hook($plugin, $hook, $function, $file, $enable = false) {
 	$status = 0;
 
+	if (!api_plugin_valid_entrypoint($plugin, __FUNCTION__)) {
+		return false;
+	}
+
 	$exists = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM plugin_hooks
 		WHERE name = ?
@@ -1098,10 +1069,27 @@ function api_plugin_disable_hooks_all($plugin) {
 	api_plugin_replicate_config();
 }
 
-function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
-	$files = explode(',', $file);
+function api_plugin_valid_entrypoint($plugin, $function) {
+	// Check for invalid entrypoint install/upgrade
+	$backtrace = debug_backtrace();
+	if (cacti_sizeof($backtrace)) {
+		if (!preg_match('/(install|upgrade)/i', $backtrace[2]['function'])) {
+			cacti_log(sprintf('WARNING: Plugin \'%s\' is attempting to call \'%s\' improperly in function \'%s\'', $plugin, $function, $backtrace[2]['function']), false, 'PLUGIN');
+			return false;
+		}
+	}
 
-	$i         = 0;
+	return true;
+}
+
+function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
+	if (!api_plugin_valid_entrypoint($plugin, __FUNCTION__)) {
+		return false;
+	}
+
+	$files = explode(',', $file);
+	$i     = 0;
+
 	$sql_where = '(';
 
 	foreach ($files as $tfile) {
