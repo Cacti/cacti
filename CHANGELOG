@@ -69,6 +69,7 @@ Cacti CHANGELOG
 -issue#5160: Translations on debian 'Bullseye' systems may cause server errors
 -issue#5169: Host table status_fail_date and Status_rec_date can appear wrong
 -issue#5180: Audit Database has issues with storage engine compare
+-issue#5181: Poller functions can cause SQL errors in some cases when working with remote data collectors
 -issue#5184: Cacti permission checks generate SQL errors is the user has been deleted
 
 1.2.23
