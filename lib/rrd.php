@@ -1058,8 +1058,10 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 						if ($show_unknown) {
 							$fetch_array['values'][$index][$timestamp] = 'U';
 						}
-					} else {
-						$fetch_array['values'][$index][$timestamp] = $number + 0;
+					} elseif (is_numeric($number)) {
+						$fetch_array['values'][$index][$timestamp] = $number;
+					} elseif ($show_unknown) {
+						$fetch_array['values'][$index][$timestamp] = 'U';
 					}
 				}
 			}
