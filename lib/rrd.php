@@ -210,7 +210,7 @@ function __rrd_proxy_close($rrdp) {
 function encrypt($output, $rsa_key) {
 	global $encryption;
 
-	if($encryption) {
+	if ($encryption) {
 		$rsa = new \phpseclib\Crypt\RSA();
 		$aes = new \phpseclib\Crypt\Rijndael();
 		$aes_key = \phpseclib\Crypt\Random::string(192);
@@ -222,15 +222,15 @@ function encrypt($output, $rsa_key) {
 		$aes_key_length = str_pad(dechex(strlen($aes_key)),3,'0',STR_PAD_LEFT);
 
 		return $aes_key_length . $aes_key . $ciphertext;
-	}else {
+	} else {
 		return $output;
 	}
 }
 
-function decrypt($input){
+function decrypt($input) {
 	global $encryption;
 
-	if($encryption) {
+	if ($encryption) {
 		$rsa = new \phpseclib\Crypt\RSA();
 		$aes = new \phpseclib\Crypt\Rijndael();
 
@@ -246,7 +246,7 @@ function decrypt($input){
 		$plaintext = $aes->decrypt($ciphertext);
 
 		return $plaintext;
-	}else {
+	} else {
 		return $input;
 	}
 }
@@ -499,11 +499,11 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 				foreach ($transactions as $transaction) {
 					$packet = $transaction;
 					$transaction = decrypt($transaction);
-					if($transaction === false){
+					if ($transaction === false) {
 						cacti_log("CACTI2RRDP ERROR: Proxy message decryption failed: ###". $packet . '###', $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
 						break 2;
 					}
-					if(strpos($transaction, "\x1f\x8b") === 0) {
+					if (strpos($transaction, "\x1f\x8b") === 0) {
 						$transaction = gzdecode($transaction);
 					}
 					$output .= $transaction;
@@ -2135,7 +2135,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 						$max = read_config_option('max_title_length') - 20;
 						if (strlen($comment_arg) > $max) {
 							$comments = explode("\n", wordwrap($comment_arg, $max));
-						}else{
+						} else {
 							$comments[] = $comment_arg;
 						}
 
@@ -2224,8 +2224,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 					if (read_config_option('enable_rrdtool_gradient_support') == 'on') {
 						/* End color is a 40% (0.4) darkened (negative number) version of the original color */
-						$end_color        = colourBrightness( "#" . $graph_item[ "hex" ], -0.4 );
-						$txt_graph_items .= gradient($data_source_name, $graph_item_color_code, $end_color . $graph_item['alpha'], cacti_escapeshellarg($graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id]), 20, false, $graph_item[ "alpha" ]);
+						$end_color        = colourBrightness('#' . $graph_item['hex'], -0.4);
+						$txt_graph_items .= gradient($data_source_name, $graph_item_color_code, $end_color . $graph_item['alpha'], cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]), 20, false, $graph_item['alpha']);
 					} else {
 						$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ' ';
 					}
@@ -2237,7 +2237,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 					break;
 				case GRAPH_ITEM_TYPE_STACK:
-					$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id],$pad_number):''));
+					$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id], $pad_number):''));
 
 					$txt_graph_items .= 'AREA:' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ':STACK';
 
@@ -2486,7 +2486,7 @@ function rrdtool_function_theme_font_options(&$graph_data_array) {
 		$rrdversion = get_rrdtool_version();
 		include($rrdtheme);
 
-		if(isset($_COOKIE['CactiColorMode']) && in_array($_COOKIE['CactiColorMode'], array('dark', 'light', 'dark-dimmed'))) {
+		if (isset($_COOKIE['CactiColorMode']) && in_array($_COOKIE['CactiColorMode'], array('dark', 'light', 'dark-dimmed'))) {
 				$themecolors = 'rrdcolors_' . $_COOKIE['CactiColorMode'];
 				$themeborder = 'rrdborder_' . $_COOKIE['CactiColorMode'];
 				if (!isset($$themecolors) || !is_array($$themecolors)) {
@@ -2595,8 +2595,8 @@ function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 	$txt_graph_item = substitute_host_data($txt_graph_item, '|', '|', $host_id);
 
 	/* replace query variables in graph elements */
-	if (strpos($txt_graph_item, '|query_') !== false){
-		if(isset($graph_item['snmp_query_id'])) {
+	if (strpos($txt_graph_item, '|query_') !== false) {
+		if (isset($graph_item['snmp_query_id'])) {
 			$txt_graph_item = substitute_snmp_query_data($txt_graph_item, $host_id, $graph_item['snmp_query_id'], $graph_item['snmp_index']);
 		} else if (isset($graph['snmp_query_id'])) {
 			$txt_graph_item = substitute_snmp_query_data($txt_graph_item, $host_id, $graph['snmp_query_id'], $graph['snmp_index']);
@@ -3256,7 +3256,7 @@ function rrd_datasource_add($file_array, $ds_array, $debug) {
 		}
 
 		if ($debug) {
-			echo $dom->saveXML();
+			print $dom->saveXML();
 		} else {
 			/* for rrdtool restore, we need a file, so write the XML to disk */
 			$xml_file = $file . '.xml';
@@ -3314,7 +3314,7 @@ function rrd_rra_delete($file_array, $rra_array, $debug) {
 		}
 
 		if ($debug) {
-			echo $dom->saveXML();
+			print $dom->saveXML();
 		} else {
 			/* for rrdtool restore, we need a file, so write the XML to disk */
 			$xml_file = $file . '.xml';
@@ -3373,7 +3373,7 @@ function rrd_rra_clone($file_array, $cf, $rra_array, $debug) {
 		}
 
 		if ($debug) {
-			echo $dom->saveXML();
+			print $dom->saveXML();
 		} else {
 			/* for rrdtool restore, we need a file, so write the XML to disk */
 			$xml_file = $file . '.xml';
@@ -3446,7 +3446,7 @@ function rrd_append_ds($dom, $version, $name, $type, $min_hb, $min, $max) {
 
 	/* create a node element from new document */
 	$new_node = $new_dom->getElementsByTagName('ds')->item(0);
-	#echo $new_dom->saveXML();	# print new node
+	#print $new_dom->saveXML();	# print new node
 
 	/* get XPATH notation required for positioning */
 	#$xpath = new DOMXPath($dom);
@@ -3883,61 +3883,61 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
  * License: GPLv2
  * Original Code: https://github.com/lingej/pnp4nagios/blob/master/share/pnp/application/helpers/rrd.php
  */
-function gradient($vname=FALSE, $start_color='#0000a0', $end_color='#f0f0f0', $label=FALSE, $steps=20, $lower=FALSE, $alpha='FF'){
+function gradient($vname = false, $start_color = '#0000a0', $end_color = '#f0f0f0', $label = false, $steps = 20, $lower = false, $alpha = 'FF') {
 	$label = preg_replace("/'/", "", $label);
 	$label = preg_replace("/:/", "\:", $label);
 
 	if (preg_match('/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i',$start_color,$matches)) {
-		$r1=hexdec($matches[1]);
-		$g1=hexdec($matches[2]);
-		$b1=hexdec($matches[3]);
+		$r1 = hexdec($matches[1]);
+		$g1 = hexdec($matches[2]);
+		$b1 = hexdec($matches[3]);
 	}
 
 	if (preg_match('/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i',$end_color,$matches)) {
-		$r2=hexdec($matches[1]);
-		$g2=hexdec($matches[2]);
-		$b2=hexdec($matches[3]);
+		$r2 = hexdec($matches[1]);
+		$g2 = hexdec($matches[2]);
+		$b2 = hexdec($matches[3]);
 	}
 
-	$diff_r=$r2-$r1;
-	$diff_g=$g2-$g1;
-	$diff_b=$b2-$b1;
-	$spline =  "";
-	$spline_vname = "var".substr(sha1(rand()),1,4);
-	$vnamet = $vname.substr(sha1(rand()),1,4);
+	$diff_r = $r2 - $r1;
+	$diff_g = $g2 - $g1;
+	$diff_b = $b2 - $b1;
+	$spline =  '';
+	$spline_vname = 'var' . substr(sha1(rand()), 1, 4);
+	$vnamet = $vname.substr(sha1(rand()), 1, 4);
 
-	if(preg_match('/^([0-9]{1,3})%$/', $lower, $matches)) {
+	if (preg_match('/^([0-9]{1,3})%$/', $lower, $matches)) {
 		$lower   = $matches[1];
-		$spline .= sprintf("CDEF:%sminimum=%s,100,/,%d,* ".RRD_NL, $vnamet, $vname, $lower);
+		$spline .= sprintf("CDEF:%sminimum=%s,100,/,%d,* " . RRD_NL, $vnamet, $vname, $lower);
 	} elseif (preg_match('/^([0-9]+)$/', $lower, $matches)) {
 		$lower   = $matches[1];
-		$spline .= sprintf("CDEF:%sminimum=%s,%d,- ".RRD_NL, $vnamet, $vname, $lower);
+		$spline .= sprintf("CDEF:%sminimum=%s,%d,- " . RRD_NL, $vnamet, $vname, $lower);
 	} else {
 		$lower   = 0;
-		$spline .= sprintf("CDEF:%sminimum=%s,%s,- ".RRD_NL, $vnamet, $vname, $vname);
+		$spline .= sprintf("CDEF:%sminimum=%s,%s,- " . RRD_NL, $vnamet, $vname, $vname);
 	}
 
-	for ($i=$steps; $i>0; $i--){
-		$spline .=  sprintf("CDEF:%s%d=%s,%sminimum,-,%d,/,%d,*,%sminimum,+ ".RRD_NL,$spline_vname,$i,$vname,$vnamet,$steps,$i,$vnamet);
+	for ($i = $steps; $i > 0; $i--) {
+		$spline .=  sprintf("CDEF:%s%d=%s,%sminimum,-,%d,/,%d,*,%sminimum,+ " . RRD_NL, $spline_vname, $i, $vname, $vnamet, $steps, $i, $vnamet);
 	}
 
 	// We don't use alpha blending for the area right now
 	$alpha = 'ff';
 
-	for ($i=$steps; $i>0; $i--){
-		$factor=$i / $steps;
-		$r=round($r1 + $diff_r * $factor);
-		$g=round($g1 + $diff_g * $factor);
-		$b=round($b1 + $diff_b * $factor);
+	for ($i = $steps; $i > 0; $i--) {
+		$factor = $i / $steps;
+		$r = round($r1 + $diff_r * $factor);
+		$g = round($g1 + $diff_g * $factor);
+		$b = round($b1 + $diff_b * $factor);
 
-		if (($i == $steps) && ($label != false) && (strlen($label) > 2)) {
-			$spline .=  sprintf("AREA:%s%d#%02X%02X%02X%s:\"%s\" ".RRD_NL, $spline_vname,$i,$r,$g,$b,$alpha,$label);
+		if ($i == $steps && $label != false && strlen($label) > 2) {
+			$spline .=  sprintf("AREA:%s%d#%02X%02X%02X%s:\"%s\" " . RRD_NL, $spline_vname, $i, $r, $g, $b, $alpha, $label);
 		} else {
-			$spline .=  sprintf("AREA:%s%d#%02X%02X%02X%s ".RRD_NL, $spline_vname,$i,$r,$g,$b,$alpha);
+			$spline .=  sprintf("AREA:%s%d#%02X%02X%02X%s " . RRD_NL, $spline_vname, $i, $r, $g, $b, $alpha);
 		}
 	}
 
-	$spline .=  sprintf("AREA:%s%d#%02X%02X%02X%s ".RRD_NL, $spline_vname,$steps,$r2,$g2,$b2,'00',$label);
+	$spline .=  sprintf("AREA:%s%d#%02X%02X%02X%s " . RRD_NL, $spline_vname, $steps, $r2, $g2, $b2, '00', $label);
 
 	return $spline;
 }
@@ -3957,23 +3957,23 @@ function colourBrightness($hex, $percent) {
  	// Work out if hash given
 	$hash = '';
 
-	if (stristr($hex,'#')) {
-		$hex = str_replace('#','',$hex);
+	if (stristr($hex, '#')) {
+		$hex  = str_replace('#', '', $hex);
 		$hash = '#';
 	}
 
 	/// HEX TO RGB
-	$rgb = array(hexdec(substr($hex,0,2)), hexdec(substr($hex,2,2)), hexdec(substr($hex,4,2)));
+	$rgb = array(hexdec(substr($hex, 0, 2)), hexdec(substr($hex, 2, 2)), hexdec(substr($hex, 4, 2)));
 
 	//// CALCULATE
-	for ($i=0; $i<3; $i++) { // See if brighter or darker
+	for ($i = 0; $i < 3; $i++) { // See if brighter or darker
 		if ($percent > 0) {
 			// Lighter
-			$rgb[$i] = round($rgb[$i] * $percent) + round(255 * (1-$percent));
+			$rgb[$i] = round($rgb[$i] * $percent) + round(255 * (1 - $percent));
 		} else {
 			// Darker
 			$positivePercent = $percent - ($percent*2);
-			$rgb[$i] = round($rgb[$i] * (1-$positivePercent)); // round($rgb[$i] * (1-$positivePercent));
+			$rgb[$i] = round($rgb[$i] * (1 - $positivePercent)); // round($rgb[$i] * (1-$positivePercent));
 		}
 
 		// In case rounding up causes us to go to 256
@@ -4022,8 +4022,8 @@ function add_business_hours($data) {
         preg_match('/(\d+)\:(\d+)/',read_config_option('business_hours_start'), $bh_start_matches);
         preg_match('/(\d+)\:(\d+)/',read_config_option('business_hours_end'), $bh_end_matches);
 
-        $start_bh_time = mktime( $bh_start_matches[1],$bh_start_matches[2],0,date('m',$bh_graph_start),date('d',$bh_graph_start),date('Y',$bh_graph_start));
-        $end_bh_time   = mktime( $bh_end_matches[1],$bh_end_matches[2],0,date('m',$bh_graph_end),date('d',$bh_graph_end),date('Y',$bh_graph_end));
+        $start_bh_time = mktime($bh_start_matches[1], $bh_start_matches[2], 0, date('m', $bh_graph_start), date('d', $bh_graph_start), date('Y', $bh_graph_start));
+        $end_bh_time   = mktime($bh_end_matches[1], $bh_end_matches[2], 0, date('m', $bh_graph_end), date('d', $bh_graph_end), date('Y', $bh_graph_end));
 
         if ($start_bh_time < $bh_graph_start) {
             if ($start_bh_time < $end_bh_time) {
@@ -4039,8 +4039,8 @@ function add_business_hours($data) {
 
         if ($num_of_days <= read_config_option('business_hours_max_days')) {
             for ($day=0; $day<$num_of_days; $day++ ) {
-                $current_start_bh_time = mktime($bh_start_matches[1],$bh_start_matches[2],0,date('m',$start_bh_time),date('d',$start_bh_time)+$day,date('Y',$start_bh_time));
-                $current_end_bh_time   = mktime( $bh_end_matches[1],$bh_end_matches[2],0,date('m',$start_bh_time),date('d',$start_bh_time)+$day,date('Y',$start_bh_time));
+                $current_start_bh_time = mktime($bh_start_matches[1], $bh_start_matches[2], 0, date('m', $start_bh_time), date('d', $start_bh_time) + $day, date('Y',$start_bh_time));
+                $current_end_bh_time   = mktime($bh_end_matches[1], $bh_end_matches[2], 0, date('m', $start_bh_time), date('d', $start_bh_time) + $day, date('Y', $start_bh_time));
 
                 if ($current_start_bh_time < $bh_graph_start) {
                     $current_start_bh_time = $bh_graph_start;
