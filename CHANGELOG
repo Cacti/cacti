@@ -29,6 +29,7 @@ Cacti CHANGELOG
 -issue#5184: Cacti permission checks generate SQL errors is the user has been deleted
 -issue#5185: Repair Database does not prune old Poller Item Records
 -issue#5187: Getting SQL errors in the Cacti due to plugin calling register function in wrong location
+-issue#5188: Device Template Filter broken
 -issue#5190: When using Gradient Support GPRINT Text Format is misaligned
 
 1.2.23

@@ -811,20 +811,18 @@ function template() {
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
+	$sql_where = '';
+
 	if (get_request_var('filter') != '') {
-		$sql_where = 'WHERE (host_template.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
-	} else {
-		$sql_where = '';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . '(host_template.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 
 	if (get_request_var('class') != '-1') {
-		$sql_where = 'WHERE (host_template.class = ' . db_qstr(get_request_var('class')) . ')';
-	} else {
-		$sql_where = '';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . '(host_template.class = ' . db_qstr(get_request_var('class')) . ')';
 	}
 
 	if (get_request_var('has_hosts') == 'true') {
-		$sql_having = 'HAVING hosts>0';
+		$sql_having = 'HAVING hosts > 0';
 	} else {
 		$sql_having = '';
 	}
