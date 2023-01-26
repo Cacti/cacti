@@ -740,7 +740,15 @@ class spikekill {
 								$rra[$rra_num][$ds_num]['variance_avg'] = 'NAN';
 							} else {
 								$myds = $ds;
-								$myds = array_filter($myds, array($this, 'removeNanFromSamples'));
+
+								/* remove NaN entries from the data set */
+								if (cacti_sizeof($myds)) {
+									foreach($myds as $timestamp => $value) {
+										if (stripos($value, 'nan') !== false) {
+											unset($myds[$timestamp]);
+										}
+									}
+								}
 
 								/* remove high outliers */
 								rsort($myds, SORT_NUMERIC);
@@ -771,10 +779,6 @@ class spikekill {
 				}
 			}
 		}
-	}
-
-	private function removeNanFromSamples(&$string) {
-		return stripos($string, 'nan') === false;
 	}
 
 	private function calculateOverallStatistics(&$rra, &$samples) {
