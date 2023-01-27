@@ -36,6 +36,7 @@ Cacti CHANGELOG
 -issue#5197: Realtime graph on remote poller not working in 1.2.23
 -issue#5198: PHP Diff Renderer throws warnings
 -issue#5199: Failures to call fgets generate errors in the Cacti.log
+-issue#5200: Cacti function throws errors when attempting to render classic images in PHP8 
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
