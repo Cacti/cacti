@@ -2225,7 +2225,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					if (read_config_option('enable_rrdtool_gradient_support') == 'on') {
 						/* End color is a 40% (0.4) darkened (negative number) version of the original color */
 						$end_color        = colourBrightness('#' . $graph_item['hex'], -0.4);
-						$txt_graph_items .= gradient($data_source_name, $graph_item_color_code, $end_color . $graph_item['alpha'], cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]), 20, false, $graph_item['alpha']);
+						$txt_graph_items .= gradient($data_source_name, $graph_item_color_code, $end_color . $graph_item['alpha'], $text_format, 20, false, $graph_item['alpha']);
 					} else {
 						$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ' ';
 					}
