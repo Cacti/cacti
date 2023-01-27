@@ -33,6 +33,7 @@ Cacti CHANGELOG
 -issue#5190: When using Gradient Support GPRINT Text Format is misaligned
 -issue#5195: Spikekill Backtrace Argument #1 ($string) must be passed by reference, value given
 -issue#5196: Gradient support breaks certain Graphs with special characters in them
+-issue#5197: Realtime graph on remote poller not working in 1.2.23
 -issue#5198: PHP Diff Renderer throws warnings
 -issue#5199: Failures to call fgets generate errors in the Cacti.log
 
