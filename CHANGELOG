@@ -37,6 +37,7 @@ Cacti CHANGELOG
 -issue#5198: PHP Diff Renderer throws warnings
 -issue#5199: Failures to call fgets generate errors in the Cacti.log
 -issue#5200: Cacti function throws errors when attempting to render classic images in PHP8 
+-issue#5201: Minor issues in modern and dark prevent weathermaps from rendering correctly
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
