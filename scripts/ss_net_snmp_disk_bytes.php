@@ -160,9 +160,17 @@ function ss_net_snmp_disk_bytes($host_id_or_hostname = '') {
 				} elseif (!isset($previous["br$index"])) {
 					$bytesread = 'U';
 				} elseif ($previous["br$index"] > $measure['value']) {
-					$bytesread += $measure['value'] + 18446744073709551615 - $previous["br$index"] - $previous["br$index"];
+					if ($bytesread != 'U') {
+						$bytesread += $measure['value'] + 18446744073709551615 - $previous["br$index"] - $previous["br$index"];
+					} else {
+						$bytesread = $measure['value'] + 18446744073709551615 - $previous["br$index"] - $previous["br$index"];
+					}
 				} else {
-					$bytesread += $measure['value'] - $previous["br$index"];
+					if ($bytesread != 'U') {
+						$bytesread += $measure['value'] - $previous["br$index"];
+					} else {
+						$bytesread = $measure['value'] - $previous["br$index"];
+					}
 				}
 
 				$current["br$index"] = $measure['value'];
@@ -198,9 +206,17 @@ function ss_net_snmp_disk_bytes($host_id_or_hostname = '') {
 				} elseif (!isset($previous["bw$index"])) {
 					$byteswritten = 'U';
 				} elseif ($previous["bw$index"] > $measure['value']) {
-					$byteswritten += $measure['value'] + 18446744073709551615 - $previous["bw$index"] - $previous["bw$index"];
+					if ($byteswritten != 'U') {
+						$byteswritten += $measure['value'] + 18446744073709551615 - $previous["bw$index"] - $previous["bw$index"];
+					} else {
+						$byteswritten = $measure['value'] + 18446744073709551615 - $previous["bw$index"] - $previous["bw$index"];
+					}
 				} else {
-					$byteswritten += $measure['value'] - $previous["bw$index"];
+					if ($byteswritten != 'U') {
+						$byteswritten += $measure['value'] - $previous["bw$index"];
+					} else {
+						$byteswritten = $measure['value'] - $previous["bw$index"];
+					}
 				}
 
 				$current["bw$index"] = $measure['value'];
