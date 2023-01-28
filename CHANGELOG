@@ -40,6 +40,7 @@ Cacti CHANGELOG
 -issue#5201: Minor issues in modern and dark prevent weathermaps from rendering correctly
 -issue#5202: Importing package with Graph Size does not update the Graph Templates
 -issue#5203: Scripts ss_net_snmp_device_io.php and ss_net_snmp_device_bytes.php break when using HMIB plugin and PHP8.1
+-issue#5204: Audit Database throws error during runtime on PHP8
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
