@@ -272,6 +272,8 @@ function display_template_data(&$templates) {
 
 		html_header_checkbox($display_text, false, '', true, 'import');
 
+		$templates = array_reverse($templates);
+
 		foreach($templates as $hash => $detail) {
 			$id = base64_encode(
 				json_encode(
@@ -331,15 +333,13 @@ function display_template_data(&$templates) {
 				$diff_array   = array();
 				$orphan_array = array();
 
-				foreach($detail['vals'] as $package => $diffs) {
-					if (isset($diffs['differences'])) {
-						foreach($diffs['differences'] as $item) {
+				foreach($detail['vals'] as $type => $diffs) {
+					if ($type == 'differences') {
+						foreach($diffs as $item) {
 							$diff_array[$item] = $item;
 						}
-					}
-
-					if (isset($diffs['orphans'])) {
-						foreach($diffs['orphans'] as $item) {
+					} elseif ($type == 'orphans') {
+						foreach($diffs as $item) {
 							$orphan_array[$item] = $item;
 						}
 					}
