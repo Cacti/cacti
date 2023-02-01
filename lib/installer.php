@@ -2665,7 +2665,7 @@ class Installer implements JsonSerializable {
 			'<table width="100%"><tr>' .
 				'<td class="cactiInstallProgressLeft">Refresh in</td>' .
 				'<td class="cactiInstallProgressCenter">&nbsp;</td>' .
-				'<td class="cactiInstallProgressRight">Progress<span style=\'float:right\'>Last updated: ' . date('H:i:s', $time) . '</span></td>' .
+				'<td class="cactiInstallProgressRight">Progress<span style=\'float:right\'>Last updated: ' . date('H:i:s', intval($time)) . '</span></td>' .
 			'</tr><tr>' .
 				'<td class="cactiInstallProgressLeft">'.
 					'<div id="cactiInstallProgressCountdown"><div></div></div>' .

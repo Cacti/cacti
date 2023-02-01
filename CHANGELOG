@@ -42,6 +42,7 @@ Cacti CHANGELOG
 -issue#5203: Scripts ss_net_snmp_device_io.php and ss_net_snmp_device_bytes.php break when using HMIB plugin and PHP8.1
 -issue#5204: Audit Database throws error during runtime on PHP8
 -issue#5205: Cacti CSS file for Diff.css does look correct in all Cacti Themes
+-issue#5207: Deprecated error message during installation routine
 -issue#5208: Package form objects use the wrong text domain in their i18n strings
 -issue#5211: Undefined variable $user_id when creating new graph
 
