@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Cacti 1.2.23\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-11-12 15:22-0500\n"
-"PO-Revision-Date: 2022-12-18 11:40+0000\n"
-"Last-Translator: Rostyslav Haitkulov <info@ubilling.net.ua>\n"
+"PO-Revision-Date: 2023-02-01 21:55+0000\n"
+"Last-Translator: Liubomyr Reshetniak <lyubomir.reshetnyak@gmail.com>\n"
 "Language-Team: Ukrainian <http://translate.cacti.net/projects/cacti/core/uk/>"
 "\n"
 "Language: uk-UA\n"
@@ -474,7 +474,7 @@ msgstr "Пошук"
 #: user_group_admin.php:874 user_group_admin.php:1028 user_group_admin.php:2292
 #: utilities.php:320
 msgid "Graphs"
-msgstr "графіки"
+msgstr "Графіки"
 
 #: aggregate_graphs.php:1318 aggregate_graphs.php:1614
 #: aggregate_templates.php:607 automation_devices.php:559
@@ -1095,7 +1095,7 @@ msgstr "Видалити пристрій"
 #: lib/api_automation.php:173 lib/api_automation.php:1099
 #: lib/html_utility.php:924 pollers.php:47
 msgid "Down"
-msgstr "Вниз"
+msgstr "Офлайн"
 
 #: automation_devices.php:55 automation_devices.php:300
 #: automation_devices.php:411 automation_devices.php:421
@@ -1103,7 +1103,7 @@ msgstr "Вниз"
 #: lib/api_automation.php:172 lib/api_automation.php:1098
 #: lib/html_utility.php:930
 msgid "Up"
-msgstr "Вгору"
+msgstr "Онлайн"
 
 #: automation_devices.php:107
 msgid "Added manually through device automation interface."
@@ -1406,7 +1406,7 @@ msgstr "Запит даних"
 #: user_group_admin.php:695 user_group_admin.php:2012 utilities.php:2071
 #: utilities.php:2828
 msgid "Enabled"
-msgstr "Увімкнути"
+msgstr "Увімкнено"
 
 #: automation_graph_rules.php:777 automation_graph_rules.php:915
 #: automation_networks.php:1092 automation_tree_rules.php:822
@@ -4750,7 +4750,10 @@ msgstr "Назва графіка"
 
 #: graph_view.php:740 graph_view.php:768 graphs.php:2240
 msgid "The Title of this Graph.  Generally programmatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual."
-msgstr "Заголовок цього графіка. Зазвичай генерується програмним шляхом із визначення шаблону графіка або рекомендованих правил іменування. Максимальна довжина заголовка контролюється в меню «Параметри->Візуальний»."
+msgstr ""
+"Заголовок цього графіка. Зазвичай генерується програмним шляхом із "
+"визначення шаблону графіка або рекомендованих правил іменування. Максимальна "
+"довжина заголовка контролюється в меню «Параметри->Візуальні»."
 
 #: graph_view.php:745
 msgid "The device for this Graph."
@@ -5550,7 +5553,7 @@ msgstr "Експорт пристроїв"
 
 #: host.php:1634 lib/api_automation.php:171 lib/api_automation.php:1097
 msgid "Not Up"
-msgstr "Не вгору"
+msgstr "Не онлайн"
 
 #: host.php:1637 lib/api_automation.php:174 lib/api_automation.php:1100
 #: lib/html_utility.php:927 pollers.php:49
@@ -6621,7 +6624,7 @@ msgstr "Нові графіки"
 #: include/global_arrays.php:951 include/global_arrays.php:1007
 #: include/global_arrays.php:1025
 msgid "Management"
-msgstr "управління"
+msgstr "Управління"
 
 #: include/global_arrays.php:953 sites.php:490 sites.php:505 sites.php:587
 #: tree.php:830 tree.php:2088
@@ -6632,7 +6635,7 @@ msgstr "Сайти"
 #: tree.php:1966 tree.php:2030 user_admin.php:1422 user_admin.php:2946
 #: user_admin.php:3043 user_group_admin.php:1297 user_group_admin.php:2602
 msgid "Trees"
-msgstr "дерева"
+msgstr "Дерева"
 
 #: include/global_arrays.php:959 include/global_arrays.php:1010
 #: include/global_arrays.php:1026
@@ -6827,7 +6830,7 @@ msgstr "Усі лінії"
 #: include/global_arrays.php:1091 include/global_arrays.php:1092
 #, php-format
 msgid "%d Lines"
-msgstr "%d ліній"
+msgstr "%d рядків"
 
 #: include/global_arrays.php:1170
 msgid "Console Access"
@@ -7822,7 +7825,7 @@ msgstr "Перегляд приймачів сповіщень SNMP"
 
 #: include/global_arrays.php:2541
 msgid "Cacti Settings"
-msgstr "Налаштування кактусів"
+msgstr "Налаштування Cacti"
 
 #: include/global_arrays.php:2547
 msgid "External Link"
@@ -9340,7 +9343,7 @@ msgstr " K"
 
 #: include/global_settings.php:39
 msgid "Paths"
-msgstr "Стежки"
+msgstr "Шляхи"
 
 #: include/global_settings.php:40
 msgid "Device Defaults"
@@ -9356,7 +9359,7 @@ msgstr "Дані"
 
 #: include/global_settings.php:43
 msgid "Visual"
-msgstr "Візуальний"
+msgstr "Візуальні"
 
 #: include/global_settings.php:44 lib/functions.php:5212 lib/functions.php:5217
 msgid "Authentication"
@@ -9408,7 +9411,7 @@ msgstr "Необхідні шляхи інструментів"
 
 #: include/global_settings.php:117
 msgid "snmpwalk Binary Path"
-msgstr "двійковий шлях snmpwalk"
+msgstr "Шлях до snmpwalk"
 
 #: include/global_settings.php:118
 msgid "The path to your snmpwalk binary."
@@ -9424,7 +9427,7 @@ msgstr "Шлях до двійкового файлу snmpget."
 
 #: include/global_settings.php:131
 msgid "snmpbulkwalk Binary Path"
-msgstr "Двійковий шлях snmpbulkwalk"
+msgstr "Шлях до snmpbulkwalk"
 
 #: include/global_settings.php:132
 msgid "The path to your snmpbulkwalk binary."
@@ -9432,7 +9435,7 @@ msgstr "Шлях до вашого двійкового файлу snmpbulkwalk.
 
 #: include/global_settings.php:138
 msgid "snmpgetnext Binary Path"
-msgstr "snmpgetnext двійковий шлях"
+msgstr "Шлях до snmpgetnext"
 
 #: include/global_settings.php:139
 msgid "The path to your snmpgetnext binary."
@@ -9440,7 +9443,7 @@ msgstr "Шлях до двійкового файлу snmpgetnext."
 
 #: include/global_settings.php:145
 msgid "snmptrap Binary Path"
-msgstr "Двійковий шлях snmptrap"
+msgstr "Шлях до snmptrap"
 
 #: include/global_settings.php:146
 msgid "The path to your snmptrap binary."
@@ -9448,7 +9451,7 @@ msgstr "Шлях до двійкового файлу snmptrap."
 
 #: include/global_settings.php:152
 msgid "RRDtool Binary Path"
-msgstr "Двійковий шлях RRDtool"
+msgstr "Шлях до RRDtool"
 
 #: include/global_settings.php:153
 msgid "The path to the rrdtool binary."
@@ -9456,7 +9459,7 @@ msgstr "Шлях до двійкового файлу rrdtool."
 
 #: include/global_settings.php:159
 msgid "PHP Binary Path"
-msgstr "Двійковий шлях PHP"
+msgstr "Шлях до PHP"
 
 #: include/global_settings.php:160
 msgid "The path to your PHP binary file (may require a php recompile to get this file)."
@@ -9468,7 +9471,7 @@ msgstr "Ведення журналу подій"
 
 #: include/global_settings.php:171
 msgid "Cacti Log Path"
-msgstr "Cactis Log Path"
+msgstr "Шлях до файлу журналу Cacti"
 
 #: include/global_settings.php:172
 msgid "The path to your Cacti log file (if blank, defaults to &lt;path_cacti&gt;/log/cacti.log)"
@@ -9484,7 +9487,7 @@ msgstr "Якщо у вас виникли проблеми із збирачам
 
 #: include/global_settings.php:191
 msgid "Rotate the Cacti Log"
-msgstr "Обертайте колоду кактусів"
+msgstr "Обертати файл журналу"
 
 #: include/global_settings.php:192
 msgid "This option will rotate the Cacti Log periodically."
@@ -10102,7 +10105,7 @@ msgstr "Кількість разів, коли Cacti намагатиметьс
 
 #: include/global_settings.php:806
 msgid "Up/Down Settings"
-msgstr "Налаштування вгору/вниз"
+msgstr "Налаштування онлайн/офлайн"
 
 #: include/global_settings.php:811
 msgid "Failure Count"
@@ -12661,7 +12664,7 @@ msgstr "Головні лінії"
 
 #: lib/clog_webapi.php:512 utilities.php:1419
 msgid "Tail Lines"
-msgstr "Лінії хвоста"
+msgstr "Останніх рядків"
 
 #: lib/clog_webapi.php:546 utilities.php:1447
 msgid "Stats"
@@ -12697,7 +12700,7 @@ msgstr "Підвищити"
 
 #: lib/clog_webapi.php:556
 msgid "Device Up/Down"
-msgstr "Пристрій вгору/вниз"
+msgstr "Пристрій онлайн/офлайн"
 
 #: lib/clog_webapi.php:557
 msgid "Recaches"
@@ -12709,7 +12712,7 @@ msgstr "Граничне значення"
 
 #: lib/clog_webapi.php:575 tree.php:826
 msgid "Display"
-msgstr "Дисплей"
+msgstr "Показувати"
 
 #: lib/clog_webapi.php:579 utilities.php:1459
 msgid "Newest First"
@@ -17447,7 +17450,7 @@ msgstr "ПРИМІТКА. Параметри шляху на цій вкладц
 #: settings.php:381
 #, php-format
 msgid "Cacti Settings (%s)%s"
-msgstr "Налаштування кактусів (%s)%s"
+msgstr "Налаштування Cacti (%s)%s"
 
 #: settings.php:498
 msgid "Poller Interval must be less than Cron Interval"
