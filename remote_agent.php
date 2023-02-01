@@ -302,7 +302,7 @@ function poll_for_data() {
 	$return         = array();
 
 	/* ensure we have a valid poller_id */
-	if (!preg_match('/[^A-Z\0-9]/i', $poller_id)) {
+	if (!preg_match('/^[a-z0-9]+$/i', $poller_id)) {
 		return array();
 	}
 
