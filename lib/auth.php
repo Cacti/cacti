@@ -3179,6 +3179,8 @@ function get_host_array() {
  *   settings
  */
 function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_where = '') {
+	$user_id = $_SESSION['sess_user_id'];
+
 	if (!auth_valid_user($user_id)) {
 		return array();
 	}
@@ -3228,6 +3230,8 @@ function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_
  *   settings
  */
 function get_allowed_ajax_graph_templates($include_any = true, $include_none = true, $sql_where = '') {
+	$user_id = $_SESSION['sess_user_id'];
+
 	if (!auth_valid_user($user_id)) {
 		return array();
 	}
@@ -3272,6 +3276,8 @@ function get_allowed_ajax_graph_templates($include_any = true, $include_none = t
  *   settings
  */
 function get_allowed_ajax_graph_items($include_none = true, $sql_where = '') {
+	$user_id = $_SESSION['sess_user_id'];
+
 	if (!auth_valid_user($user_id)) {
 		return array();
 	}
@@ -3312,6 +3318,8 @@ function get_allowed_ajax_graph_items($include_none = true, $sql_where = '') {
  *   settings
  */
 function get_allowed_ajax_graphs($sql_where = '') {
+	$user_id = $_SESSION['sess_user_id'];
+
 	if (!auth_valid_user($user_id)) {
 		return array();
 	}
