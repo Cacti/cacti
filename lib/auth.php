@@ -4341,7 +4341,6 @@ function secpass_login_process($username) {
 	}
 
 	if (cacti_sizeof($user)) {
-
                 if ($user['enabled'] != 'on') {
                         $error     = true;
                         $error_msg = __('Access Denied!  Login Failed.');
