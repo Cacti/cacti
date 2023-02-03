@@ -47,6 +47,7 @@ Cacti CHANGELOG
 -issue#5211: Undefined variable $user_id when creating new graph
 -issue#5223: Drop callback function sometimes puts name in the form input instead of the id
 -issue#5224: When poller run is exceeded by only a short period of time, Cacti does not round the number in the error
+-issue#5227: Data Source Debug throws and error when the Debug runs before the RRDfile is created
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
