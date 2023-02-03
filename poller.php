@@ -799,8 +799,8 @@ while ($poller_runs_completed < $poller_runs) {
 			api_plugin_hook('poller_top');
 		}
 	} else {
-		cacti_log('WARNING: Cacti Polling Cycle Exceeded Poller Interval by ' . ($loop_end-$loop_start-$poller_interval) . ' seconds', true, 'POLLER', $level);
-                admin_email(__('Cacti System Warning'), __('WARNING: Cacti Polling Cycle Exceeded Poller Interval by ' . ($loop_end-$loop_start-$poller_interval) . ' seconds', true, 'POLLER', $level));
+		cacti_log('WARNING: Cacti Polling Cycle Exceeded Poller Interval by ' . round($loop_end-$loop_start-$poller_interval, 2) . ' seconds', true, 'POLLER', $level);
+                admin_email(__('Cacti System Warning'), __('WARNING: Cacti Polling Cycle Exceeded Poller Interval by ' . round($loop_end-$loop_start-$poller_interval, 2) . ' seconds', true, 'POLLER', $level));
 	}
 
 	if (!$logged) {
