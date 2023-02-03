@@ -856,7 +856,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 
 		$(function() {
 		    $('#<?php print $form_name;?>_input').autocomplete({
-		        source: '<?php print get_current_page();?>?action=<?php print $callback;?>',
+				source: '<?php print get_current_page();?>?action=<?php print $callback;?>',
 				autoFocus: true,
 				minLength: 0,
 				select: function(event,ui) {
@@ -888,8 +888,6 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 					}, 200);
 				}
 				$('#<?php print $form_name;?>_input').select();
-			}).on('keyup', function() {
-				$('#<?php print $form_name;?>').val($('#<?php print $form_name;?>_input').val());
 			}).on('mouseleave', function() {
 				<?php print $form_name;?>Timer = setTimeout(function() { $('#<?php print $form_name;?>_input').autocomplete('close'); }, 800);
 			});
