@@ -31,6 +31,7 @@ Cacti CHANGELOG
 -issue#5187: Getting SQL errors in the Cacti due to plugin calling register function in wrong location
 -issue#5188: Device Template Filter broken
 -issue#5190: When using Gradient Support GPRINT Text Format is misaligned
+-issue#5194: CSRF directory needs to be writeable for creating the csrf-secret.php file
 -issue#5195: Spikekill Backtrace Argument #1 ($string) must be passed by reference, value given
 -issue#5196: Gradient support breaks certain Graphs with special characters in them
 -issue#5197: Realtime graph on remote poller not working in 1.2.23

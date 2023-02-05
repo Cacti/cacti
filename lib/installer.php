@@ -511,6 +511,12 @@ class Installer implements JsonSerializable {
 			$config['base_path'] . '/scripts',
 		);
 
+		if (isset($config['path_csrf_secret'])) {
+			$install_paths[] = $config['path_csrf_secret'];
+		} else {
+			$install_paths[] = $config['base_path'] . '/include/vendor/csrf/csrf-secret.php';
+		}
+
 		$always_paths = array(
 			sys_get_temp_dir(),
 			$config['base_path'] . '/log',
