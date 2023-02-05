@@ -4106,22 +4106,29 @@ function secpass_login_process($username) {
 	}
 
 	if (db_column_exists('user_auth', 'lastfail')) {
-		$user = db_fetch_row_prepared("SELECT id, username, lastfail, failed_attempts, `locked`, password
+		$user = db_fetch_row_prepared("SELECT id, username, lastfail, failed_attempts, `locked`, enabled, password
 			FROM user_auth
 			WHERE username = ?
-			AND realm = 0
-			AND enabled = 'on'",
+			AND realm = 0",
 			array($username));
 	} else {
-		$user = db_fetch_row_prepared("SELECT id, username, password
+		$user = db_fetch_row_prepared("SELECT id, username, password, enabled
 			FROM user_auth
 			WHERE username = ?
-			AND realm = 0
-			AND enabled = 'on'",
+			AND realm = 0",
 			array($username));
 	}
 
 	if (cacti_sizeof($user)) {
+		if ($user['enabled'] != 'on') {
+			$error     = true;
+			$error_msg = __('Access Denied!  Login Failed.');
+
+			cacti_log(sprintf('LOGIN FAILED: User %s, account disabled.', $username), false, 'AUTH');
+
+			return array();
+		}
+
 		if (trim($password) == '') {
 			/* error */
 			$error     = true;
