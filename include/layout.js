@@ -2905,6 +2905,8 @@ function appendHeaderSuppression(url) {
 		url += (url.indexOf('?') > 0 ? '&header=false':'?header=false');
 	}
 
+	url = url.replace('?&', '?').replace('&&', '&');
+
 	return url;
 }
 
