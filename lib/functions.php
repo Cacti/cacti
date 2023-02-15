@@ -6745,29 +6745,9 @@ function get_debug_prefix() {
 function get_client_addr() {
 	global $config, $allowed_proxy_headers;
 
-	$proxy_headers = (isset($config['proxy_headers']) ? $config['proxy_headers'] : null);
-	if ($proxy_headers === null) {
-		$last_time = read_config_option('proxy_alert');
-		if (empty($last_time)) {
-			$last_time = date('Y-m-d');
-		}
+	$proxy_headers = (isset($config['proxy_headers']) ? $config['proxy_headers'] : []);
 
-		$last_date = new DateTime($last_time);
-		$this_date = new Datetime();
-
-		$this_diff = $this_date->diff($last_date);
-		$this_days = $this_diff->format('%a');
-
-		if ($this_days) {
-			cacti_log('WARNING: Configuration option "proxy_headers" will be automatically false in future releases.  Please set if you require proxy IPs to be used', false, 'AUTH');
-			set_config_option('proxy_alert', date('Y-m-d'));
-		}
-
-		$proxy_headers = true;
-	}
-
-	/* IMPORTANT: The null default for 1.2.x is true, but this will change in future version */
-	if ($proxy_headers === null || $proxy_headers === true) {
+	if ($proxy_headers === true) {
 		$proxy_headers = $allowed_proxy_headers;
 	} elseif (is_array($proxy_headers) && is_array($allowed_proxy_headers)) {
 		$proxy_headers = array_intersect($proxy_headers, $allowed_proxy_headers);
