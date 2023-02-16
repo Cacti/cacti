@@ -51,6 +51,7 @@ Cacti CHANGELOG
 -issue#5223: Drop callback function sometimes puts name in the form input instead of the id
 -issue#5224: When poller run is exceeded by only a short period of time, Cacti does not round the number in the error
 -issue#5227: Data Source Debug throws and error when the Debug runs before the RRDfile is created
+-issue#5238: Searching for Poller Items Generates SQL Errors
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
