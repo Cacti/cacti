@@ -269,7 +269,9 @@ if (cacti_sizeof($ds_needing_fixes)) {
  * agent on a host.
  */
 $total_ports = db_fetch_cell('SELECT COUNT(DISTINCT snmp_port)
-	FROM poller_item');
+	FROM poller_item
+	WHERE snmp_port > 0');
+
 set_config_option('total_snmp_ports', $total_ports);
 
 /**
@@ -279,6 +281,7 @@ set_config_option('total_snmp_ports', $total_ports);
 $active_profiles = db_fetch_cell('SELECT COUNT(DISTINCT data_source_profile_id)
 	FROM data_template_data
 	WHERE local_data_id > 0');
+
 set_config_option('active_profiles', $active_profiles);
 
 /* assume a scheduled task of either 60 or 300 seconds */
@@ -294,6 +297,7 @@ if (!empty($poller_interval)) {
 	define('MAX_POLLER_RUNTIME', $poller_runs * $poller_interval - 2);
 } else {
 	$sql_where       = "WHERE pi.poller_id = $poller_id AND h.disabled = ''";
+
 	$poller_runs     = 1;
 	$poller_interval = 300;
 	define('MAX_POLLER_RUNTIME', 298);
@@ -305,18 +309,21 @@ $num_polling_items = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
 	ON h.id = pi.host_id ' . $sql_where);
 
 if (isset($concurrent_processes) && $concurrent_processes > 1) {
-	$items_perhost = array_rekey(db_fetch_assoc("SELECT " . SQL_NO_CACHE . " host_id,
-		COUNT(local_data_id) AS data_sources
-		FROM poller_item AS pi
-		INNER JOIN host AS h
-		ON h.id = pi.host_id
-		$sql_where
-		GROUP BY host_id
-		ORDER BY host_id"), 'host_id', 'data_sources');
+	$items_perhost = array_rekey(
+		db_fetch_assoc("SELECT " . SQL_NO_CACHE . " host_id,
+			COUNT(local_data_id) AS data_sources
+			FROM poller_item AS pi
+			INNER JOIN host AS h
+			ON h.id = pi.host_id
+			$sql_where
+			GROUP BY host_id
+			ORDER BY host_id"),
+		'host_id', 'data_sources'
+	);
 }
 
 if (isset($items_perhost) && cacti_sizeof($items_perhost)) {
-	$items_per_process   = floor($num_polling_items / $concurrent_processes);
+	$items_per_process = floor($num_polling_items / $concurrent_processes);
 
 	if ($items_per_process == 0) {
 		$process_leveling = 'off';
@@ -380,14 +387,43 @@ ini_set('memory_limit', '-1');
 $poller_runs_completed = 0;
 $poller_items_total    = 0;
 
+/**
+ * Update poller statistics once per poller run
+ */
+$script = $server = $snmp = 0;
+
+$totals = db_fetch_assoc_prepared('SELECT action, COUNT(*) AS totals
+	FROM poller_item AS pi
+	WHERE pi.poller_id = ?
+	GROUP BY action',
+	array($poller_id));
+
+if (cacti_sizeof($totals)) {
+	foreach($totals as $value) {
+		switch($value['action']) {
+		case '0': // SNMP
+			$snmp = $value['totals'];
+			break;
+		case '1': // Script
+			$script = $value['totals'];
+			break;
+		case '2': // Server
+			$server = $value['totals'];
+			break;
+		}
+	}
+}
+
+// update statistics
+db_execute_prepared('INSERT INTO poller (id, snmp, script, server, last_status, status)
+	VALUES (?, ?, ?, ?, NOW(), 1)
+	ON DUPLICATE KEY UPDATE snmp=VALUES(snmp), script=VALUES(script),
+	server=VALUES(server), last_status=VALUES(last_status), status=VALUES(status)',
+	array($poller_id, $snmp, $script, $server), true, $poller_db_cnn_id);
+
 while ($poller_runs_completed < $poller_runs) {
 	// record the start time for this loop
 	$loop_start = microtime(true);
-
-	$num_polling_items = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
-		FROM poller_item AS pi
-		INNER JOIN host AS h
-		ON h.id = pi.host_id ' . $sql_where);
 
 	if ($poller_id == '1') {
 		$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
@@ -416,39 +452,7 @@ while ($poller_runs_completed < $poller_runs) {
 	$hosts_per_process = 0;
 	$method = 'disabled';
 
-	$script = $server = $snmp = 0;
-
-	$totals = db_fetch_assoc_prepared('SELECT action, COUNT(*) AS totals
-		FROM poller_item AS pi
-		INNER JOIN host AS h
-		ON h.id = pi.host_id
-		WHERE pi.poller_id = ?
-		AND disabled = ""
-		GROUP BY action',
-		array($poller_id));
-
-	if (cacti_sizeof($totals)) {
-		foreach($totals as $value) {
-			switch($value['action']) {
-			case '0': // SNMP
-				$snmp = $value['totals'];
-				break;
-			case '1': // Script
-				$script = $value['totals'];
-				break;
-			case '2': // Server
-				$server = $value['totals'];
-				break;
-			}
-		}
-	}
-
-	// update statistics
-	db_execute_prepared('INSERT INTO poller (id, snmp, script, server, last_status, status)
-		VALUES (?, ?, ?, ?, NOW(), 1)
-		ON DUPLICATE KEY UPDATE snmp=VALUES(snmp), script=VALUES(script),
-		server=VALUES(server), last_status=VALUES(last_status), status=VALUES(status)',
-		array($poller_id, $snmp, $script, $server), true, $poller_db_cnn_id);
+	$total_polling_hosts = cacti_sizeof($polling_hosts);
 
 	// calculate overhead time
 	if ($overhead_time == 0) {
@@ -502,57 +506,96 @@ while ($poller_runs_completed < $poller_runs) {
 		WHERE poller_id = ?',
 		array($poller_id), true, $poller_db_cnn_id);
 
-	/* only report issues for the main poller or from bad local
+	/**
+	 * only report issues for the main poller or from bad local
 	 * data ids, other pollers may insert somewhat asynchronously
 	 */
-	$issues = [];
 	$issues_limit = 20;
-	$issues_check = ( $poller_id == 1 || $config['connection'] == 'online');
-	$issues_param = [ $current_time, $poller_id, $poller_id ];
 
-	$issues_sql = '
+	if ($poller_id == 1) {
+		$issues = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' local_data_id, rrd_name
+			FROM poller_output AS po
+			LEFT JOIN data_local AS dl
+			ON po.local_data_id = dl.id
+			LEFT JOIN host AS h
+			ON dl.host_id = h.id
+			WHERE h.poller_id = ? OR h.id IS NULL
+			LIMIT ' . $issues_limit,
+			array($poller_id));
+	} elseif ($config['connection'] == 'online') {
+		$issues = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' local_data_id, rrd_name
 		FROM poller_output AS po
 		LEFT JOIN data_local AS dl
 		ON po.local_data_id = dl.id
 		LEFT JOIN host AS h
 		ON dl.host_id = h.id
-		WHERE time < FROM_UNIXTIME(? - 600)
-		AND (h.poller_id = ? OR h.id IS NULL or ? = 1)';
-
-	if ($issues_check) {
-		$issues = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
-			local_data_id, rrd_name' . $issues_sql . '
+			WHERE (h.poller_id = ? OR h.id IS NULL)
+			AND time < FROM_UNIXTIME(UNIX_TIMESTAMP()-600)
 			LIMIT ' . $issues_limit,
-			$issues_param);
+			array($poller_id));
+	} else{
+		$issues = array();
 	}
 
 	if (cacti_sizeof($issues)) {
-		$count  = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . '
-			COUNT(*)' . $issues_sql,
-			$issues_param);
+		$count  = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
+			FROM poller_output AS po
+			LEFT JOIN data_local AS dl
+			ON po.local_data_id = dl.id
+			LEFT JOIN host AS h
+			ON dl.host_id = h.id
+			WHERE h.poller_id = ? OR h.id IS NULL',
+			array($poller_id));
 
-		$issues_list = [];
+		if (cacti_sizeof($issues)) {
+			$issue_list =  'DS[';
+			$i = 0;
 		foreach($issues as $issue) {
-			$issues_list []= $issue['local_data_id'];
+				$issue_list .= ($i > 0 ? ', ' : '') . $issue['local_data_id'];
+				$i++;
+			}
+			$issue_list .= ']';
 		}
-		$issue_list = 'DS[' . implode(', ', $issues_list) . ']';
 
 		if ($count > $issues_limit) {
 			$issue_list .= ", Additional Issues Remain.  Only showing first $issues_limit";
 		}
 
 		cacti_log("WARNING: Poller Output Table not Empty.  Issues: $count, $issue_list", true, 'POLLER');
-
 		admin_email(__('Cacti System Warning'), __('WARNING: Poller Output Table not empty for poller id %d.  Issues: %d, %s.', $poller_id, $count, $issue_list));
 
-		db_execute_prepared('DELETE po ' . $issues_sql, $issues_param);
+		db_execute_prepared('DELETE po
+			FROM poller_output AS po
+			LEFT JOIN data_local AS dl
+			ON po.local_data_id = dl.id
+			LEFT JOIN host AS h
+			ON dl.host_id = h.id
+			WHERE h.poller_id = ?
+			OR h.id IS NULL',
+			array($poller_id));
 	}
 
+	/**
+	 * adjust for recent memory table problems in MariaDB and memory tables
+	 * being pushed into swap
+	 */
+	if ($poller_id == 1) {
+		db_execute('CREATE TABLE IF NOT EXISTS po LIKE poller_output');
+		db_execute('RENAME TABLE poller_output TO poold, po TO poller_output');
+		db_execute('DROP TABLE IF EXISTS poold');
+		db_execute('ALTER TABLE poller_output ENGINE=MEMORY');
+
+		// catch the unlikely event that the poller_output_boost is missing
+		if (!db_table_exists('poller_output_boost')) {
+			db_execute('CREATE TABLE poller_output_boost LIKE poller_output');
+			db_execute('ALTER TABLE poller_output_boost ENGINE=InnoDB');
+		}
+	}
 
 	// mainline
 	if (read_config_option('poller_enabled') == 'on') {
 		// determine the number of hosts to process per file
-		$hosts_per_process = ceil(($poller_id == '1' ? cacti_sizeof($polling_hosts)-1 : cacti_sizeof($polling_hosts)) / $concurrent_processes );
+		$hosts_per_process = ceil(($poller_id == '1' ? $total_polling_hosts - 1 : $total_polling_hosts) / $concurrent_processes );
 
 		$items_launched    = 0;
 
@@ -681,7 +724,7 @@ while ($poller_runs_completed < $poller_runs) {
 					}
 
 					log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
-						($poller_id == '1' ? cacti_sizeof($polling_hosts) - 1 : cacti_sizeof($polling_hosts)), $hosts_per_process, $num_polling_items, $rrds_processed);
+						($poller_id == '1' ? $total_polling_hosts - 1 : $total_polling_hosts), $hosts_per_process, $num_polling_items, $rrds_processed);
 
 					break;
 				} else {
@@ -707,8 +750,9 @@ while ($poller_runs_completed < $poller_runs) {
 						snmpagent_poller_exiting();
 
 						api_plugin_hook_function('poller_exiting');
+
 						log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
-							($poller_id == '1' ? cacti_sizeof($polling_hosts) - 1 : cacti_sizeof($polling_hosts)), $hosts_per_process, $num_polling_items, $rrds_processed);
+							($poller_id == '1' ? $total_polling_hosts - 1 : $total_polling_hosts), $hosts_per_process, $num_polling_items, $rrds_processed);
 
 						break;
 					} elseif (microtime(true) - $mtb < 1) {
@@ -805,7 +849,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 	if (!$logged) {
 		log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
-			($poller_id == '1' ? cacti_sizeof($polling_hosts) - 1 : cacti_sizeof($polling_hosts)), $hosts_per_process, $num_polling_items, $rrds_processed);
+			($poller_id == '1' ? $total_polling_hosts - 1 : $total_polling_hosts), $hosts_per_process, $num_polling_items, $rrds_processed);
 	}
 }
 
