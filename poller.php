@@ -414,12 +414,27 @@ if (cacti_sizeof($totals)) {
 	}
 }
 
-// update statistics
+/**
+ * Update poller data source statistics in the poller table
+ */
 db_execute_prepared('INSERT INTO poller (id, snmp, script, server, last_status, status)
 	VALUES (?, ?, ?, ?, NOW(), 1)
 	ON DUPLICATE KEY UPDATE snmp=VALUES(snmp), script=VALUES(script),
 	server=VALUES(server), last_status=VALUES(last_status), status=VALUES(status)',
 	array($poller_id, $snmp, $script, $server), true, $poller_db_cnn_id);
+
+/**
+ * Freshen the field mappings in cases where they
+ * may have gotten out of sync
+ */
+db_execute('INSERT IGNORE INTO poller_data_template_field_mappings
+	SELECT dtr.data_template_id, dif.data_name,
+	GROUP_CONCAT(dtr.data_source_name ORDER BY dtr.data_source_name) AS data_source_names, NOW()
+	FROM data_template_rrd AS dtr
+	INNER JOIN data_input_fields AS dif
+	ON dtr.data_input_field_id = dif.id
+	WHERE dtr.local_data_id = 0
+	GROUP BY dtr.data_template_id, dif.data_name');
 
 while ($poller_runs_completed < $poller_runs) {
 	// record the start time for this loop
