@@ -1188,7 +1188,6 @@ $settings = array(
 			'default' => 1,
 			'array' => $poller_options,
 		),
-
 		'poller_sync_interval' => array(
 			'friendly_name' => __('Poller Sync Interval'),
 			'description' => __('The default polling sync interval to use when creating a poller.  This setting will affect how often remote pollers are checked and updated.'),
@@ -1238,7 +1237,7 @@ $settings = array(
 				10 => __('%d Seconds', 10),
 				15 => __('%d Seconds', 15),
 				20 => __('%d Seconds', 20)
-				)
+			)
 		),
 		'snmp_bulk_walk_size' => array(
 			'friendly_name' => __('SNMP Bulkwalk Fetch Size'),
@@ -1257,7 +1256,8 @@ $settings = array(
 				'90' => '90',
 				'100' => '100',
 				'150' => '150',
-				'200' => '200')
+				'200' => '200'
+			)
 		),
 		'max_get_size' => array(
 			'friendly_name' => __('SNMP Get OID Limit'),
@@ -1266,6 +1266,12 @@ $settings = array(
 			'default' => '10',
 			'max_length' => '10',
 			'size' => '5'
+		),
+		'poller_refresh_output_table' => array(
+			'friendly_name' => __('Refresh Poller Table Per Cycle'),
+			'description' => __('This setting is for a single poller systems only to rebuild the poller output table on each polling cycle to prevent the memory table from swapping on very large systems with large databases that could use swap.'),
+			'method' => 'checkbox',
+			'default' => '',
 		),
 		'disable_cache_replication' => array(
 			'friendly_name' => __('Disable Resource Cache Replication'),

@@ -539,11 +539,11 @@ while ($poller_runs_completed < $poller_runs) {
 			array($poller_id));
 	} elseif ($config['connection'] == 'online') {
 		$issues = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' local_data_id, rrd_name
-		FROM poller_output AS po
-		LEFT JOIN data_local AS dl
-		ON po.local_data_id = dl.id
-		LEFT JOIN host AS h
-		ON dl.host_id = h.id
+			FROM poller_output AS po
+			LEFT JOIN data_local AS dl
+			ON po.local_data_id = dl.id
+			LEFT JOIN host AS h
+			ON dl.host_id = h.id
 			WHERE (h.poller_id = ? OR h.id IS NULL)
 			AND time < FROM_UNIXTIME(UNIX_TIMESTAMP()-600)
 			LIMIT ' . $issues_limit,
@@ -565,10 +565,12 @@ while ($poller_runs_completed < $poller_runs) {
 		if (cacti_sizeof($issues)) {
 			$issue_list =  'DS[';
 			$i = 0;
-		foreach($issues as $issue) {
+
+			foreach($issues as $issue) {
 				$issue_list .= ($i > 0 ? ', ' : '') . $issue['local_data_id'];
 				$i++;
 			}
+
 			$issue_list .= ']';
 		}
 
@@ -594,7 +596,7 @@ while ($poller_runs_completed < $poller_runs) {
 	 * adjust for recent memory table problems in MariaDB and memory tables
 	 * being pushed into swap
 	 */
-	if ($poller_id == 1) {
+	if ($poller_id == 1 && read_config_option('poller_refresh_output_table') == 'on' && $total_pollers == 1) {
 		db_execute('CREATE TABLE IF NOT EXISTS po LIKE poller_output');
 		db_execute('RENAME TABLE poller_output TO poold, po TO poller_output');
 		db_execute('DROP TABLE IF EXISTS poold');
@@ -625,9 +627,9 @@ while ($poller_runs_completed < $poller_runs) {
 		if ($poller_type == '2') {
 			$command_string = cacti_escapeshellcmd(read_config_option('path_spine'));
 			if (read_config_option('path_spine_config') != '' && file_exists(read_config_option('path_spine_config'))) {
-				$extra_args     = ' -C ' . cacti_escapeshellarg(read_config_option('path_spine_config'));
+				$extra_args = ' -C ' . cacti_escapeshellarg(read_config_option('path_spine_config'));
 			} else {
-				$extra_args     = '';
+				$extra_args = '';
 			}
 
 			$method         = 'spine';
