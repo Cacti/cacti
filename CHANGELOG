@@ -53,6 +53,7 @@ Cacti CHANGELOG
 -issue#5232: On large systems statistics gathering at the beginning of a poller run lead to excessive polling times
 -issue#5236: Edit Graph Template link missing base_url
 -issue#5238: Searching for Poller Items Generates SQL Errors
+-issue#5243: Template Export missing Graph Template columns multiple and test_source
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder

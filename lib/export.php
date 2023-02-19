@@ -31,7 +31,7 @@ function graph_template_to_xml($graph_template_id) {
 	$hash['graph_template'] = get_hash_version('graph_template') . get_hash_graph_template($graph_template_id);
 	$xml_text = '';
 
-	$graph_template = db_fetch_row_prepared('SELECT id, name
+	$graph_template = db_fetch_row_prepared('SELECT *
 		FROM graph_templates
 		WHERE id = ?',
 		array($graph_template_id));
@@ -64,7 +64,12 @@ function graph_template_to_xml($graph_template_id) {
 		return;
 	}
 
-	$xml_text .= '<hash_' . $hash['graph_template'] . ">\n\t<name>" . xml_character_encode($graph_template['name']) . "</name>\n\t<graph>\n";
+	$xml_text .= '<hash_' . $hash['graph_template'] . ">\n";
+	$xml_text .= "\t<name>"        . xml_character_encode($graph_template['name'])        . "</name>\n";
+	$xml_text .= "\t<multiple>"    . xml_character_encode($graph_template['multiple'])    . "</multiple>\n";
+	$xml_text .= "\t<test_source>" . xml_character_encode($graph_template['test_source']) . "</test_source>\n";
+
+	$xml_text .= "\t<graph>\n";
 
 	/* XML Branch: <graph> */
 	foreach ($struct_graph as $field_name => $field_array) {
