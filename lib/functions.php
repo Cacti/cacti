@@ -1975,6 +1975,7 @@ function prepare_validate_result(&$result) {
 
 		if ($result === false) {
 			$result = 'U';
+
 			return false;
 		} else {
 			return true;
@@ -2222,6 +2223,8 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 
 			if (!is_numeric($output)) {
 				if ($output == 'U') {
+					return false;
+				} elseif (strpos($output, ':U') !== false) {
 					return false;
 				} elseif (prepare_validate_result($output) === false) {
 					return false;
