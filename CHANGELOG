@@ -51,6 +51,7 @@ Cacti CHANGELOG
 -issue#5224: When poller run is exceeded by only a short period of time, Cacti does not round the number in the error
 -issue#5227: Data Source Debug throws and error when the Debug runs before the RRDfile is created
 -issue#5232: On large systems statistics gathering at the beginning of a poller run lead to excessive polling times
+-issue#5236: Edit Graph Template link missing base_url
 -issue#5238: Searching for Poller Items Generates SQL Errors
 
 1.2.23
