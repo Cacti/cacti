@@ -102,6 +102,7 @@ Cacti CHANGELOG
 -issue#5214: Basic Auth is timing out and logging users off automatically
 -issue#5223: When using callback form functions, name and id field may not be correctly set
 -issue#5224: When poller runtime is exceeded, time should be display as a rounded number
+-issue#5227: When debugging a data source, errors may be shown if no RRDfile created yet
 -issue#5232: On large systems statistics gathering at the beginning of a poller run lead to excessive polling times
 -issue#5236: Edit Graph Template link missing base_url
 -issue#5238: Searching for Poller Items Generates SQL Errors
