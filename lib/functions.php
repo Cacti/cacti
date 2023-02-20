@@ -6204,9 +6204,9 @@ function get_classic_tabimage($text, $down = false) {
 
 		foreach ($lines as $line) {
 			if ($ttf_functions) {
-				imagettftext($tab, $line[2], 0, $line[3], $line[4], $white, $line[1], $line[0]);
+				imagettftext($tab, $line[2], 0, intval($line[3]), intval($line[4]), $white, $line[1], $line[0]);
 			} else {
-				imagestring($tab, $line[1], $line[3], $line[4], $line[0], $white);
+				imagestring($tab, $line[1], intval($line[3]), intval($line[4]), $line[0], $white);
 			}
 		}
 
