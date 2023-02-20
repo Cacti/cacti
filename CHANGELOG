@@ -13,7 +13,6 @@ Cacti CHANGELOG
 -issue#5147: Error 500 on apache when changing languages
 -issue#5150: The Import Package cli script displays the wrong 'info' parameter
 -issue#5151: Templates appear to lose their suggested name values
--issue#5155: Local Linux Machine Device Package Damaged
 -issue#5159: Cannot turn on publishing when editing
 -issue#5160: Translations on debian 'Bullseye' systems may cause server errors
 -issue#5161: Switching language in the settings only becomes active after removal of session cookie
@@ -51,6 +50,10 @@ Cacti CHANGELOG
 -issue#5223: Drop callback function sometimes puts name in the form input instead of the id
 -issue#5224: When poller run is exceeded by only a short period of time, Cacti does not round the number in the error
 -issue#5227: Data Source Debug throws and error when the Debug runs before the RRDfile is created
+-issue#5232: On large systems statistics gathering at the beginning of a poller run lead to excessive polling times
+-issue#5236: Edit Graph Template link missing base_url
+-issue#5238: Searching for Poller Items Generates SQL Errors
+-issue#5243: Template Export missing Graph Template columns multiple and test_source
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
