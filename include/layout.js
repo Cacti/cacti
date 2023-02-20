@@ -4453,8 +4453,6 @@ function makeCallbacks() {
 				}, 200);
 			}
 			$(dcInput).select();
-		}).on('keyup', function() {
-			$(dcId).val($(dcInput).val());
 		}).on('mouseleave', function() {
 			var cn = $(dcId).attr('data-callback-id');
 
