@@ -1173,7 +1173,7 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 				$display = $color['name'] . ' (' . $color['hex'] . ')';
 			}
 
-			print "<option data-color='" . $color['hex'] . "' style='background-color: #" . $color['hex'] . ";' value='" . $color['id'] . "'";
+			print "<option data-color='" . html_escape($color['hex']) . "' style='background-color: #" . html_escape($color['hex']) . ";' value='" . $color['id'] . "'";
 
 			if ($form_previous_value == $color['id']) {
 				print ' selected';
