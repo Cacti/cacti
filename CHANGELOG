@@ -83,6 +83,7 @@ Cacti CHANGELOG
 -issue#5184: Cacti permission checks generate SQL errors is the user has been deleted
 -issue#5185: Repair Database does not prune old Poller Item Records
 -issue#5187: Getting SQL errors in the Cacti due to plugin calling register function in wrong location
+-issue#5239: SNMP-Options - Bulk Walk Maximum Repetitions ignored
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
