@@ -280,7 +280,9 @@ if (cacti_sizeof($ds_needing_fixes)) {
  * agent on a host.
  */
 $total_ports = db_fetch_cell('SELECT COUNT(DISTINCT snmp_port)
-	FROM poller_item');
+	FROM poller_item
+	WHERE snmp_port > 0');
+
 set_config_option('total_snmp_ports', $total_ports);
 
 /**
@@ -290,6 +292,7 @@ set_config_option('total_snmp_ports', $total_ports);
 $active_profiles = db_fetch_cell('SELECT COUNT(DISTINCT data_source_profile_id)
 	FROM data_template_data
 	WHERE local_data_id > 0');
+
 set_config_option('active_profiles', $active_profiles);
 
 /* assume a scheduled task of either 60 or 300 seconds */
@@ -305,6 +308,7 @@ if (!empty($poller_interval)) {
 	define('MAX_POLLER_RUNTIME', $poller_runs * $poller_interval - 2);
 } else {
 	$sql_where       = "WHERE pi.poller_id = $poller_id AND h.disabled = ''";
+
 	$poller_runs     = 1;
 	$poller_interval = 300;
 	define('MAX_POLLER_RUNTIME', 298);
@@ -316,18 +320,21 @@ $num_polling_items = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
 	ON h.id = pi.host_id ' . $sql_where);
 
 if (isset($concurrent_processes) && $concurrent_processes > 1) {
-	$items_perhost = array_rekey(db_fetch_assoc('SELECT ' . SQL_NO_CACHE . " host_id,
-		COUNT(local_data_id) AS data_sources
-		FROM poller_item AS pi
-		INNER JOIN host AS h
-		ON h.id = pi.host_id
-		$sql_where
-		GROUP BY host_id
-		ORDER BY host_id"), 'host_id', 'data_sources');
+	$items_perhost = array_rekey(
+		db_fetch_assoc('SELECT ' . SQL_NO_CACHE . " host_id,
+			COUNT(local_data_id) AS data_sources
+			FROM poller_item AS pi
+			INNER JOIN host AS h
+			ON h.id = pi.host_id
+			$sql_where
+			GROUP BY host_id
+			ORDER BY host_id"),
+		'host_id', 'data_sources'
+	);
 }
 
 if (isset($items_perhost) && cacti_sizeof($items_perhost)) {
-	$items_per_process   = floor($num_polling_items / $concurrent_processes);
+	$items_per_process = floor($num_polling_items / $concurrent_processes);
 
 	if ($items_per_process == 0) {
 		$process_leveling = 'off';
@@ -393,14 +400,58 @@ ini_set('memory_limit', '-1');
 $poller_runs_completed = 0;
 $poller_items_total    = 0;
 
+/**
+ * Update poller statistics once per poller run
+ */
+$script = $server = $snmp = 0;
+
+$totals = db_fetch_assoc_prepared('SELECT action, COUNT(*) AS totals
+	FROM poller_item AS pi
+	WHERE pi.poller_id = ?
+	GROUP BY action',
+	array($poller_id));
+
+if (cacti_sizeof($totals)) {
+	foreach($totals as $value) {
+		switch($value['action']) {
+		case '0': // SNMP
+			$snmp = $value['totals'];
+			break;
+		case '1': // Script
+			$script = $value['totals'];
+			break;
+		case '2': // Server
+			$server = $value['totals'];
+			break;
+		}
+	}
+}
+
+/**
+ * Update poller data source statistics in the poller table
+ */
+db_execute_prepared('INSERT INTO poller (id, snmp, script, server, last_status, status)
+	VALUES (?, ?, ?, ?, NOW(), 1)
+	ON DUPLICATE KEY UPDATE snmp=VALUES(snmp), script=VALUES(script),
+	server=VALUES(server), last_status=VALUES(last_status), status=VALUES(status)',
+	array($poller_id, $snmp, $script, $server), true, $poller_db_cnn_id);
+
+/**
+ * Freshen the field mappings in cases where they
+ * may have gotten out of sync
+ */
+db_execute('INSERT IGNORE INTO poller_data_template_field_mappings
+	SELECT dtr.data_template_id, dif.data_name,
+	GROUP_CONCAT(dtr.data_source_name ORDER BY dtr.data_source_name) AS data_source_names, NOW()
+	FROM data_template_rrd AS dtr
+	INNER JOIN data_input_fields AS dif
+	ON dtr.data_input_field_id = dif.id
+	WHERE dtr.local_data_id = 0
+	GROUP BY dtr.data_template_id, dif.data_name');
+
 while ($poller_runs_completed < $poller_runs) {
 	// record the start time for this loop
 	$loop_start = microtime(true);
-
-	$num_polling_items = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
-		FROM poller_item AS pi
-		INNER JOIN host AS h
-		ON h.id = pi.host_id ' . $sql_where);
 
 	if (db_column_exists('sites', 'disabled')) {
 		$sql_where = "AND IFNULL(s.disabled, '') != 'on'";
@@ -408,19 +459,21 @@ while ($poller_runs_completed < $poller_runs) {
 		$sql_where = '';
 	}
 
-	$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . " h.id
-		FROM host h
-		LEFT JOIN sites s
-		ON s.id = h.site_id
-		WHERE poller_id = ?
-		AND h.deleted = ''
-		AND IFNULL(h.disabled,'') != 'on'
-		$sql_where
-		ORDER BY id",
-		array($poller_id));
-
 	if ($poller_id == '1') {
-		if (cacti_sizeof($polling_hosts)) {
+		$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . " h.id
+			FROM host h
+			LEFT JOIN sites s
+			ON s.id = h.site_id
+			WHERE poller_id = ?
+			AND h.deleted = ''
+			AND IFNULL(h.disabled,'') != 'on'
+			$sql_where
+			ORDER BY id",
+			array($poller_id));
+
+		$total_polling_hosts = cacti_sizeof($polling_hosts);
+
+		if ($total_polling_hosts) {
 			$polling_hosts = array_merge(array(0 => array('id' => '0')), $polling_hosts);
 		} else {
 			$polling_hosts = array(0 => array('id' => '0'));
@@ -436,51 +489,12 @@ while ($poller_runs_completed < $poller_runs) {
 			$sql_where
 			ORDER BY id",
 			array($poller_id));
+
+		$total_polling_hosts = cacti_sizeof($polling_hosts);
 	}
 
 	$hosts_per_process = 0;
 	$method            = 'disabled';
-
-	$script = $server = $snmp = 0;
-
-	$totals = db_fetch_assoc_prepared("SELECT action, COUNT(*) AS totals
-		FROM poller_item AS pi
-		INNER JOIN host AS h
-		ON h.id = pi.host_id
-		LEFT JOIN sites s
-		ON s.id = h.site_id
-		WHERE h.poller_id = ?
-		AND h.deleted = ''
-		AND IFNULL(h.disabled, '') != 'on'
-		$sql_where
-		GROUP BY action",
-		array($poller_id));
-
-	if (cacti_sizeof($totals)) {
-		foreach ($totals as $value) {
-			switch($value['action']) {
-				case '0': // SNMP
-					$snmp = $value['totals'];
-
-					break;
-				case '1': // Script
-					$script = $value['totals'];
-
-					break;
-				case '2': // Server
-					$server = $value['totals'];
-
-					break;
-			}
-		}
-	}
-
-	// update statistics
-	db_execute_prepared('INSERT INTO poller (id, snmp, script, server, last_status, status)
-		VALUES (?, ?, ?, ?, NOW(), 1)
-		ON DUPLICATE KEY UPDATE snmp=VALUES(snmp), script=VALUES(script),
-		server=VALUES(server), last_status=VALUES(last_status), status=VALUES(status)',
-		array($poller_id, $snmp, $script, $server), true, $poller_db_cnn_id);
 
 	// calculate overhead time
 	if ($overhead_time == 0) {
@@ -534,10 +548,12 @@ while ($poller_runs_completed < $poller_runs) {
 		WHERE poller_id = ?',
 		array($poller_id), true, $poller_db_cnn_id);
 
-	/* only report issues for the main poller or from bad local
+	/**
+	 * only report issues for the main poller or from bad local
 	 * data ids, other pollers may insert somewhat asynchronously
 	 */
 	$issues       = array();
+
 	$issues_limit = 20;
 	$issues_check = ($poller_id == 1 || $config['connection'] == 'online');
 	$issues_param = array( $current_time, $poller_id, $poller_id );
@@ -581,16 +597,34 @@ while ($poller_runs_completed < $poller_runs) {
 		db_execute_prepared('DELETE po ' . $issues_sql, $issues_param);
 	}
 
+	/**
+	 * adjust for recent memory table problems in MariaDB and memory tables
+	 * being pushed into swap
+	 */
+	if ($poller_id == 1 && read_config_option('poller_refresh_output_table') == 'on' && $total_pollers == 1) {
+		db_execute('CREATE TABLE IF NOT EXISTS po LIKE poller_output');
+		db_execute('RENAME TABLE poller_output TO poold, po TO poller_output');
+		db_execute('DROP TABLE IF EXISTS poold');
+		db_execute('ALTER TABLE poller_output ENGINE=MEMORY');
+
+		// catch the unlikely event that the poller_output_boost is missing
+		if (!db_table_exists('poller_output_boost')) {
+			db_execute('CREATE TABLE poller_output_boost LIKE poller_output');
+			db_execute('ALTER TABLE poller_output_boost ENGINE=InnoDB');
+		}
+	}
+
 	// mainline
 	if (read_config_option('poller_enabled') == 'on') {
 		// determine the number of hosts to process per file
-		$hosts_per_process = ceil(($poller_id == '1' ? cacti_sizeof($polling_hosts) - 1 : cacti_sizeof($polling_hosts)) / $concurrent_processes);
+		$hosts_per_process = ceil(($poller_id == '1' ? $total_polling_hosts - 1 : $total_polling_hosts) / $concurrent_processes);
 
 		$items_launched    = 0;
 
 		// exit poller if spine is selected and file does not exist
 		if (($poller_type == '2') && (!file_exists(read_config_option('path_spine')))) {
 			cacti_log('ERROR: The spine path: ' . read_config_option('path_spine') . ' is invalid.  Poller can not continue!', true, 'POLLER');
+
 			admin_email(__('Cacti System Warning'), __('ERROR: The spine path: %s is invalid for Poller[%d].  Poller can not continue!', read_config_option('path_spine'), $poller_id));
 
 			exit;
@@ -632,7 +666,7 @@ while ($poller_runs_completed < $poller_runs) {
 		}
 
 		/* Populate each execution file with appropriate information */
-		if (cacti_sizeof($polling_hosts)) {
+		if ($total_polling_hosts) {
 			foreach ($polling_hosts as $item) {
 				if ($host_count == 1) {
 					$first_host = $item['id'];
@@ -718,7 +752,7 @@ while ($poller_runs_completed < $poller_runs) {
 					}
 
 					log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
-						($poller_id == '1' ? cacti_sizeof($polling_hosts) - 1 : cacti_sizeof($polling_hosts)), $hosts_per_process, $num_polling_items, $rrds_processed);
+						($poller_id == '1' ? $total_polling_hosts - 1 : $total_polling_hosts), $hosts_per_process, $num_polling_items, $rrds_processed);
 					poller_run_stats($loop_start);
 
 					break;
@@ -746,7 +780,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 						api_plugin_hook_function('poller_exiting');
 						log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
-							($poller_id == '1' ? cacti_sizeof($polling_hosts) - 1 : cacti_sizeof($polling_hosts)), $hosts_per_process, $num_polling_items, $rrds_processed);
+							($poller_id == '1' ? $total_polling_hosts - 1 : $total_polling_hosts), $hosts_per_process, $num_polling_items, $rrds_processed);
 						poller_run_stats($loop_start);
 
 						break;
@@ -847,7 +881,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 	if (!$logged) {
 		log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
-			($poller_id == '1' ? cacti_sizeof($polling_hosts) - 1 : cacti_sizeof($polling_hosts)), $hosts_per_process, $num_polling_items, $rrds_processed);
+			($poller_id == '1' ? $totalpolling_hosts - 1 : $total_polling_hosts), $hosts_per_process, $num_polling_items, $rrds_processed);
 		poller_run_stats($loop_start);
 	}
 }
