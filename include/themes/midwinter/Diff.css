@@ -8,79 +8,99 @@
 .Differences thead th {
 	text-align: left;
 	border-bottom: 1px solid #000;
-	background: #aaa;
-	color: #000;
+	background: rgba(255, 255, 255, 0.2);
+	color: rgb(214, 215, 219);
 	padding: 4px;
+	font-size: 11px;
+	font-weight: normal;
 }
 
 .Differences tbody th {
 	text-align: right;
-	background: #ccc;
+	background: rgb(35, 37, 52);
 	width: 4em;
 	padding: 1px 2px;
 	border-right: 1px solid #000;
 	vertical-align: top;
-	font-size: 13px;
+	font-size: 11px;
+	font-weight: normal;
 }
 
 .Differences td {
 	padding: 1px 2px;
 	font-family: Consolas, monospace;
-	font-size: 13px;
+	font-size: 11px;
 }
 
 .DifferencesSideBySide .ChangeInsert td.Left {
-	background: #dfd;
+	background: rgba(46, 160, 67, 0.15);
+	color: snow;
 }
 
 .DifferencesSideBySide .ChangeInsert td.Right {
-	background: #cfc;
+	background: rgba(46, 160, 67, 0.15);
+	color: snow;
 }
 
 .DifferencesSideBySide .ChangeDelete td.Left {
-	background: #f88;
+	background: rgba(248, 81, 73, 0.15);
+	color: snow;
 }
 
 .DifferencesSideBySide .ChangeDelete td.Right {
-	background: #faa;
+	background: rgba(46, 160, 67, 0.15);
+	color: snow;
 }
 
 .DifferencesSideBySide .ChangeReplace .Left {
-	background: #fe9;
+	background: rgba(248, 81, 73, 0.15);
+	color: snow;
 }
 
 .DifferencesSideBySide .ChangeReplace .Right {
-	background: #fd8;
+	background: rgba(46, 160, 67, 0.15);
+	color: snow;
 }
 
 .Differences ins, .Differences del {
 	text-decoration: none;
 }
 
-.DifferencesSideBySide .ChangeReplace ins, .DifferencesSideBySide .ChangeReplace del {
-	background: #fc0;
+.DifferencesSideBySide .ChangeReplace td.Left del {
+	background: rgba(248, 81, 73, 0.40);
+	color: snow;
+}
+
+.DifferencesSideBySide .ChangeReplace td.Right ins {
+	background: rgba(46, 160, 67, 0.40);
+	color: snow;
 }
 
 .Differences .Skipped {
-	background: #f7f7f7;
+	background: rgba(47, 47, 47, 0.6);
+	color: snow;
 }
 
 .DifferencesInline .ChangeReplace .Left,
 .DifferencesInline .ChangeDelete .Left {
-	background: #fdd;
+	background: rgba(248, 81, 73, 0.15);
+	color: snow;
 }
 
 .DifferencesInline .ChangeReplace .Right,
 .DifferencesInline .ChangeInsert .Right {
-	background: #dfd;
+	background: rgba(46, 160, 67, 0.15);
+	color: snow;
 }
 
 .DifferencesInline .ChangeReplace ins {
-	background: #9e9;
+	background: rgba(46, 160, 67, 0.40);
+	color: snow;
 }
 
 .DifferencesInline .ChangeReplace del {
-	background: #e99;
+	background: rgba(248, 81, 73, 0.40);
+	color: snow;
 }
 
 pre {
