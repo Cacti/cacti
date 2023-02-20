@@ -84,6 +84,7 @@ Cacti CHANGELOG
 -issue#5185: Repair Database does not prune old Poller Item Records
 -issue#5187: Getting SQL errors in the Cacti due to plugin calling register function in wrong location
 -issue#5239: SNMP-Options - Bulk Walk Maximum Repetitions ignored
+-issue#5243: Template Export missing Graph Template columns multiple and test_source
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder
