@@ -647,14 +647,6 @@ INSERT INTO `table_columns` VALUES ('host_template_graph',1,'host_template_id','
 INSERT INTO `table_columns` VALUES ('host_template_graph',2,'graph_template_id','mediumint(8) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('host_template_snmp_query',1,'host_template_id','mediumint(8) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('host_template_snmp_query',2,'snmp_query_id','mediumint(8) unsigned','NO','PRI','0','');
-INSERT INTO `table_columns` VALUES ('package_repositories',1,'id','int(10) unsigned','NO','PRI',NULL,'auto_increment');
-INSERT INTO `table_columns` VALUES ('package_repositories',2,'name','varchar(32)','NO','','','');
-INSERT INTO `table_columns` VALUES ('package_repositories',3,'enabled','char(2)','NO','','on','');
-INSERT INTO `table_columns` VALUES ('package_repositories',4,'default','char(2)','NO','','','');
-INSERT INTO `table_columns` VALUES ('package_repositories',5,'repo_type','tinyint(3) unsigned','NO','','0','');
-INSERT INTO `table_columns` VALUES ('package_repositories',6,'repo_location','varchar(128)','NO','MUL','','');
-INSERT INTO `table_columns` VALUES ('package_repositories',7,'repo_branch','varchar(20)','NO','','','');
-INSERT INTO `table_columns` VALUES ('package_repositories',8,'repo_api_key','varchar(100)','NO','','','');
 INSERT INTO `table_columns` VALUES ('plugin_config',1,'id','mediumint(8) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('plugin_config',2,'directory','varchar(32)','NO','MUL','','');
 INSERT INTO `table_columns` VALUES ('plugin_config',3,'name','varchar(64)','NO','','','');
@@ -1278,9 +1270,6 @@ INSERT INTO `table_indexes` VALUES ('host_template_graph',0,'PRIMARY',1,'host_te
 INSERT INTO `table_indexes` VALUES ('host_template_graph',0,'PRIMARY',2,'graph_template_id','A',96,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('host_template_snmp_query',0,'PRIMARY',1,'host_template_id','A',18,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('host_template_snmp_query',0,'PRIMARY',2,'snmp_query_id','A',37,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('package_repositories',0,'location_branch',1,'repo_location','A',2,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('package_repositories',0,'location_branch',2,'repo_branch','A',2,NULL,NULL,'','BTREE','');
-INSERT INTO `table_indexes` VALUES ('package_repositories',0,'PRIMARY',1,'id','A',2,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('plugin_config',1,'directory',1,'directory','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('plugin_config',0,'PRIMARY',1,'id','A',0,NULL,NULL,'','BTREE','');
 INSERT INTO `table_indexes` VALUES ('plugin_config',1,'status',1,'status','A',0,NULL,NULL,'','BTREE','');
