@@ -86,6 +86,7 @@ Cacti CHANGELOG
 -issue#5188: Device Template Filter broken
 -issue#5190: When using Gradient Support GPRINT Text Format is misaligned
 -issue#5195: Spikekill Backtrace Argument #1 ($string) must be passed by reference, value given
+-issue#5196: Gradient support breaks certain Graphs with special characters in them
 -issue#5232: On large systems statistics gathering at the beginning of a poller run lead to excessive polling times
 -issue#5236: Edit Graph Template link missing base_url
 -issue#5238: Searching for Poller Items Generates SQL Errors
