@@ -57,6 +57,7 @@ Cacti CHANGELOG
 -issue#5241: "Balance Process Load" dont work after upgrade to 1.2.23
 -issue#5243: Template Export missing Graph Template columns multiple and test_source
 -issue#5245: Add additional security to Cacti's use of the the unserialize function
+-issue#5247: Rebuilding Poller Cache from Utilities does not respect poller interval due to lack or ordering
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder

@@ -185,6 +185,7 @@ if (function_exists('pcntl_signal')) {
 // record the start time
 $start = microtime(true);
 $poller_interval = read_config_option('poller_interval');
+$cron_interval   = read_config_option('cron_interval');
 $active_profiles = read_config_option('active_profiles');
 
 // check arguments
@@ -195,7 +196,7 @@ if ($allhost) {
 
 	$params1    = array($poller_id);
 	$params2    = array($poller_id, POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT);
-	$params3    = array($poller_interval, $poller_interval, $poller_interval, $poller_id);
+	$params3    = array($poller_interval, $poller_interval, 0, $poller_interval, $poller_id);
 } else {
 	$sql_where0 = 'WHERE poller_id > ?';
 	$sql_where1 = ' AND ((h.id >= ? AND h.id <= ?) OR h.id IS NULL)';
@@ -204,7 +205,12 @@ if ($allhost) {
 
 	$params1    = array($poller_id, $first, $last);
 	$params2    = array($poller_id, POLLER_ACTION_SCRIPT_PHP, POLLER_ACTION_SCRIPT_PHP_COUNT, $first, $last);
-	$params3    = array($poller_interval, $poller_interval, $poller_interval, $poller_id, $first, $last);
+
+	if ($cron_interval == $poller_interval) {
+		$params3    = array($poller_interval, $poller_interval, 0, $poller_interval, $poller_id, $first, $last);
+	} else {
+		$params3    = array($poller_interval, $poller_interval, $poller_interval, $poller_interval, $poller_id, $first, $last);
+	}
 }
 
 if ($debug) {
@@ -250,7 +256,7 @@ if ($active_profiles != 1) {
 
 	// setup next polling interval
 	db_execute_prepared("UPDATE poller_item AS pi
-		SET rrd_next_step = IF(rrd_step = ?, 0, IF(rrd_next_step - ? < 0, rrd_step, rrd_next_step - ?))
+		SET rrd_next_step = IF(rrd_step = ?, 0, IF(rrd_next_step - ? < 0, rrd_step - ?, rrd_next_step - ?))
 		WHERE poller_id = ?
 		$sql_where3",
 		$params3);
