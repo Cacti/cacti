@@ -427,9 +427,9 @@ function report_audit_results($output = true) {
 			$status  = db_fetch_row('SHOW TABLE STATUS LIKE "' . $table_name . '"');
 
 			if ($status['Collation'] == 'utf8mb4_unicode_ci' || $status['Collation'] == 'utf8_general_ci') {
-				$text = 'mediumtext';
+				$collation = 'utf8';
 			} else {
-				$text = 'text';
+				$collation = 'latin';
 			}
 
 			if ($output) {
@@ -516,8 +516,8 @@ function report_audit_results($output = true) {
 						} else {
 							foreach ($cols as $dbcol => $col) {
 								if ($col == 'Type' && $dbc[$dbcol] == 'text') {
-									if ($text == 'mediumtext') {
-										$dbc[$dbcol] = $text;
+									if ($collation == 'latin') {
+										$dbc[$dbcol] = 'mediumtext';
 									}
 								}
 
@@ -741,9 +741,14 @@ function report_audit_results($output = true) {
 function make_column_props(&$dbc) {
 	$alter_cmd = '';
 
-	$dbc['table_default'] = str_replace('current_timestamp()', 'CURRENT_TIMESTAMP', $dbc['table_default']);
-	$dbc['table_extra']   = str_replace('current_timestamp()', 'CURRENT_TIMESTAMP', $dbc['table_extra']);
-	$dbc['table_extra']   = trim(str_replace('DEFAULT_GENERATED', '', $dbc['table_extra']));
+	if (isset($dbc['table_default'])) {
+		$dbc['table_default'] = str_replace('current_timestamp()', 'CURRENT_TIMESTAMP', $dbc['table_default']);
+	}
+
+	if (isset($dbc['table_extra'])) {
+		$dbc['table_extra']   = str_replace('current_timestamp()', 'CURRENT_TIMESTAMP', $dbc['table_extra']);
+		$dbc['table_extra']   = trim(str_replace('DEFAULT_GENERATED', '', $dbc['table_extra']));
+	}
 
 	if ($dbc['table_null'] == 'YES') {
 		if ($dbc['table_default'] == 'NULL') {

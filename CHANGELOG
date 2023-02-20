@@ -94,6 +94,7 @@ Cacti CHANGELOG
 -issue#5201: Minor issues in modern and dark prevent weathermaps from rendering correctly
 -issue#5202: When importing packages, Graph Size does not get updated to Graph Templates
 -issue#5203: Scripts ss_net_snmp_device_io.php and ss_net_snmp_device_bytes.php break when using HMIB plugin and PHP8.1
+-issue#5204: Compatibility improvements for Audit Database under PHP 8.x
 -issue#5232: On large systems statistics gathering at the beginning of a poller run lead to excessive polling times
 -issue#5236: Edit Graph Template link missing base_url
 -issue#5238: Searching for Poller Items Generates SQL Errors
