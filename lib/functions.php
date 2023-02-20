@@ -6263,6 +6263,7 @@ function IgnoreErrorHandler($message) {
 	$general_ignore = array(
 		'unable to read from socket',  # ping.php line 387 socket refusal
 		'Maximum execution time of',
+		'transport read',
 	);
 
 	foreach ($general_ignore as $i) {
