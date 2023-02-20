@@ -278,9 +278,13 @@ set_config_option('total_snmp_ports', $total_ports);
  * determine the number of active profiles to improve poller performance
  * under some circumstances.  Save this data for spine and cmd.php.
  */
-$active_profiles = db_fetch_cell('SELECT COUNT(DISTINCT data_source_profile_id)
-	FROM data_template_data
-	WHERE local_data_id > 0');
+if ($cron_interval == $poller_interval) {
+	$active_profiles = db_fetch_cell('SELECT COUNT(DISTINCT data_source_profile_id)
+		FROM data_template_data
+		WHERE local_data_id > 0');
+} else {
+	$active_profiles = db_fetch_cell('SELECT COUNT(DISTINCT rrd_next_step) FROM poller_item');
+}
 
 set_config_option('active_profiles', $active_profiles);
 
@@ -858,6 +862,11 @@ while ($poller_runs_completed < $poller_runs) {
 			}
 
 			api_plugin_hook('poller_top');
+
+			$num_polling_items = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
+				FROM poller_item AS pi
+				INNER JOIN host AS h
+				ON h.id = pi.host_id ' . $sql_where);
 		}
 	} else {
 		cacti_log('WARNING: Cacti Polling Cycle Exceeded Poller Interval by ' . round($loop_end-$loop_start-$poller_interval, 2) . ' seconds', true, 'POLLER', $level);

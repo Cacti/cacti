@@ -54,6 +54,7 @@ Cacti CHANGELOG
 -issue#5236: Edit Graph Template link missing base_url
 -issue#5238: Searching for Poller Items Generates SQL Errors
 -issue#5239: SNMP-Options - Bulk Walk Maximum Repetitions ignored
+-issue#5241: "Balance Process Load" dont work after upgrade to 1.2.23
 -issue#5243: Template Export missing Graph Template columns multiple and test_source
 -issue#5245: Add additional security to Cacti's use of the the unserialize function
 
