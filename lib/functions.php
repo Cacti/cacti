@@ -7299,4 +7299,3 @@ function debounce_run_notification($id, $freqnency = 1200) {
 
 	return false;
 }
-
