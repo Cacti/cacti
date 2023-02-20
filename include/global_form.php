@@ -1694,7 +1694,7 @@ $fields_template_import = array(
 		'method'        => 'file'
 	),
 	'data_header' => array(
-		'friendly_name' => __('Data Source Overrides', 'package'),
+		'friendly_name' => __('Data Source Overrides'),
 		'collapsible'   => 'true',
 		'method'        => 'spacer',
 	),
@@ -1708,7 +1708,7 @@ $fields_template_import = array(
 		'default'       => '1'
 	),
 	'graph_header' => array(
-		'friendly_name' => __('Graph/Data Template Overrides', 'package'),
+		'friendly_name' => __('Graph/Data Template Overrides'),
 		'collapsible'   => 'true',
 		'method'        => 'spacer',
 	),
@@ -1727,23 +1727,23 @@ $fields_template_import = array(
 		'default'       => ''
 	),
 	'image_format' => array(
-		'friendly_name' => __('Graph Template Image Format', 'package'),
-		'description'   => __('The Image Format to be used when importing or updating Graph Templates.', 'package'),
+		'friendly_name' => __('Graph Template Image Format'),
+		'description'   => __('The Image Format to be used when importing or updating Graph Templates.'),
 		'method'        => 'drop_array',
 		'default'       => read_config_option('default_image_format'),
 		'array'         => $image_types,
 	),
 	'graph_height' => array(
 		'friendly_name' => __('Graph Template Height', 'pagkage'),
-		'description'   => __('The Height to be used when importing or updating Graph Templates.', 'package'),
+		'description'   => __('The Height to be used when importing or updating Graph Templates.'),
 		'method'        => 'textbox',
 		'default'       => read_config_option('default_graph_height'),
 		'size'          => '5',
 		'max_length'    => '5'
 	),
 	'graph_width' => array(
-		'friendly_name' => __('Graph Template Width', 'package'),
-		'description'   => __('The Width to be used when importing or updating Graph Templates.', 'package'),
+		'friendly_name' => __('Graph Template Width'),
+		'description'   => __('The Width to be used when importing or updating Graph Templates.'),
 		'method'        => 'textbox',
 		'default'       => read_config_option('default_graph_width'),
 		'size'          => '5',
