@@ -304,7 +304,7 @@ set_config_option('active_profiles', $active_profiles);
 if (!empty($poller_interval)) {
 	$poller_runs = intval($cron_interval / $poller_interval);
 
-	if ($active_profiles != 1 || $max_step != $poller_interval) {
+	if ($active_profiles != 1) {
 		$sql_where   = "WHERE rrd_next_step - $poller_interval <= 0 AND h.disabled = '' AND pi.poller_id = $poller_id";
 	} else {
 		$sql_where   = "WHERE pi.poller_id = $poller_id AND h.disabled = ''";
