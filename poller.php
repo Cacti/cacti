@@ -228,6 +228,14 @@ if ($cron_interval != 60) {
 	$cron_interval = 300;
 }
 
+// get max step.  If it's not equal to the poller
+// interval, we have to force active profiles
+// greater than 1.
+$max_step = db_fetch_cell('SELECT MAX(dsp.step)
+	FROM data_source_profiles AS dsp
+	INNER JOIN data_template_data AS dtd
+	ON dtd.data_source_profile_id = dsp.id');
+
 // see if the user wishes to use process leveling
 $process_leveling = read_config_option('process_leveling');
 
@@ -277,8 +285,12 @@ set_config_option('total_snmp_ports', $total_ports);
 /**
  * determine the number of active profiles to improve poller performance
  * under some circumstances.  Save this data for spine and cmd.php.
+ * In the case where the $max_step does not equal the poller interval
+ * we have to artificially set the $active_profiles > 1
  */
-if ($cron_interval == $poller_interval) {
+if ($poller_interval != $max_step) {
+	$active_profiles = 2;
+} elseif ($cron_interval == $poller_interval) {
 	$active_profiles = db_fetch_cell('SELECT COUNT(DISTINCT data_source_profile_id)
 		FROM data_template_data
 		WHERE local_data_id > 0');
@@ -292,7 +304,7 @@ set_config_option('active_profiles', $active_profiles);
 if (!empty($poller_interval)) {
 	$poller_runs = intval($cron_interval / $poller_interval);
 
-	if ($active_profiles != 1) {
+	if ($active_profiles != 1 || $max_step != $poller_interval) {
 		$sql_where   = "WHERE rrd_next_step - $poller_interval <= 0 AND h.disabled = '' AND pi.poller_id = $poller_id";
 	} else {
 		$sql_where   = "WHERE pi.poller_id = $poller_id AND h.disabled = ''";
@@ -380,7 +392,13 @@ if ((($poller_start - $poller_lastrun - 5) > MAX_POLLER_RUNTIME) && ($poller_las
 	admin_email(__('Cacti System Warning'), __('WARNING: %s is out of sync with the Poller Interval for poller id %d!  The Poller Interval is %d seconds, with a maximum of a %d seconds, but %d seconds have passed since the last poll!', $task_type, $poller_id, $poller_interval, $min_period, number_format_i18n($poller_start - $poller_lastrun, 1)));
 }
 
+/* used for current implementation for individual pollers */
 set_config_option('poller_lastrun_' . $poller_id, (int)$poller_start);
+
+if ($poller_id == 1) {
+	/* used for legacy implementation for the main poller */
+	set_config_option('poller_lastrun', (int)$poller_start);
+}
 
 /* let PHP only run 1 second longer than the max runtime,
  * plus the poller needs lot's of memory
