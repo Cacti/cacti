@@ -2241,9 +2241,7 @@ function dsv_log($message, $data, $level = POLLER_VERBOSITY_LOW) {
 	if (read_config_option('data_source_trace') == 'on') {
 		$verbosity = read_config_option('log_verbosity');
 
-		if ($verbosity >= $level) {
-			cacti_log(($message . ' = ') . (is_array($data) ? json_encode($data) : $data), false, 'DSTRACE');
-		}
+		cacti_log(($message . ' = ') . (is_array($data) ? json_encode($data) : $data), false, 'DSTRACE', $level);
 	}
 }
 
