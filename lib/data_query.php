@@ -1585,7 +1585,7 @@ function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite
 	@arg $value - value to be translated
 	@arg $map - translation map in serialize()/array form
 	@returns - rewritten value if possible, original one otherwise*/
-function rewrite_snmp_enum_value($field_name, $value=null, $map=null) {
+function rewrite_snmp_enum_value($field_name, $value = null, $map = null) {
 	static $mapcache = array();
 
 	if ($field_name === null) {
@@ -1596,6 +1596,7 @@ function rewrite_snmp_enum_value($field_name, $value=null, $map=null) {
 
 	if (is_array($map)) { # produced from XML, needs to be reformatted
 		$newmap = array();
+
 		foreach ($map as $index => $item) {
 			if (!isset($item['match']) || !isset($item['replace'])) {
 				debug_log_insert('data_query', "Bogus rewrite_value item found, index='$index'");
@@ -1607,7 +1608,7 @@ function rewrite_snmp_enum_value($field_name, $value=null, $map=null) {
 
 		$map = $newmap;
 	} else {
-		$map = unserialize($map);
+		$map = unserialize($map, array('allowed_classes' => false));
 	}
 
 	if ($map === false || !is_array($map)) {

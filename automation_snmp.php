@@ -125,22 +125,23 @@ function form_automation_snmp_save() {
 		/* ==================================================== */
 
 		$save = array();
-		$save['id']						= form_input_validate(get_nfilter_request_var('item_id'), '', '^[0-9]+$', false, 3);
-		$save['snmp_id'] 				= form_input_validate(get_nfilter_request_var('id'), 'snmp_id', '^[0-9]+$', false, 3);
-		$save['sequence'] 				= form_input_validate(get_nfilter_request_var('sequence'), 'sequence', '^[0-9]+$', false, 3);
-		$save['snmp_community'] 		= form_input_validate(get_nfilter_request_var('snmp_community'), 'snmp_community', '', false, 3);
-		$save['snmp_version'] 			= form_input_validate(get_nfilter_request_var('snmp_version'), 'snmp_version', '', false, 3);
-		$save['snmp_username']			= form_input_validate(get_nfilter_request_var('snmp_username'), 'snmp_username', '', true, 3);
-		$save['snmp_password']			= form_input_validate(get_nfilter_request_var('snmp_password'), 'snmp_password', '', true, 3);
-		$save['snmp_auth_protocol']		= form_input_validate(get_nfilter_request_var('snmp_auth_protocol'), 'snmp_auth_protocol', '', true, 3);
-		$save['snmp_priv_passphrase']	= form_input_validate(get_nfilter_request_var('snmp_priv_passphrase'), 'snmp_priv_passphrase', '', true, 3);
-		$save['snmp_priv_protocol']		= form_input_validate(get_nfilter_request_var('snmp_priv_protocol'), 'snmp_priv_protocol', '', true, 3);
-		$save['snmp_context']			= form_input_validate(get_nfilter_request_var('snmp_context'), 'snmp_context', '', true, 3);
-		$save['snmp_engine_id']			= form_input_validate(get_nfilter_request_var('snmp_engine_id'), 'snmp_engine_id', '', true, 3);
-		$save['snmp_port']				= form_input_validate(get_nfilter_request_var('snmp_port'), 'snmp_port', '^[0-9]+$', false, 3);
-		$save['snmp_timeout']			= form_input_validate(get_nfilter_request_var('snmp_timeout'), 'snmp_timeout', '^[0-9]+$', false, 3);
-		$save['snmp_retries']			= form_input_validate(get_nfilter_request_var('snmp_retries'), 'snmp_retries', '^[0-9]+$', false, 3);
-		$save['max_oids']				= form_input_validate(get_nfilter_request_var('max_oids'), 'max_oids', '^[0-9]+$', false, 3);
+		$save['id']                   = form_input_validate(get_nfilter_request_var('item_id'), '', '^[0-9]+$', false, 3);
+		$save['snmp_id']              = form_input_validate(get_nfilter_request_var('id'), 'snmp_id', '^[0-9]+$', false, 3);
+		$save['sequence']             = form_input_validate(get_nfilter_request_var('sequence'), 'sequence', '^[0-9]+$', false, 3);
+		$save['snmp_community']       = form_input_validate(get_nfilter_request_var('snmp_community'), 'snmp_community', '', false, 3);
+		$save['snmp_version']         = form_input_validate(get_nfilter_request_var('snmp_version'), 'snmp_version', '', false, 3);
+		$save['snmp_username']        = form_input_validate(get_nfilter_request_var('snmp_username'), 'snmp_username', '', true, 3);
+		$save['snmp_password']        = form_input_validate(get_nfilter_request_var('snmp_password'), 'snmp_password', '', true, 3);
+		$save['snmp_auth_protocol']   = form_input_validate(get_nfilter_request_var('snmp_auth_protocol'), 'snmp_auth_protocol', '', true, 3);
+		$save['snmp_priv_passphrase'] = form_input_validate(get_nfilter_request_var('snmp_priv_passphrase'), 'snmp_priv_passphrase', '', true, 3);
+		$save['snmp_priv_protocol']   = form_input_validate(get_nfilter_request_var('snmp_priv_protocol'), 'snmp_priv_protocol', '', true, 3);
+		$save['snmp_context']         = form_input_validate(get_nfilter_request_var('snmp_context'), 'snmp_context', '', true, 3);
+		$save['snmp_engine_id']       = form_input_validate(get_nfilter_request_var('snmp_engine_id'), 'snmp_engine_id', '', true, 3);
+		$save['snmp_port']            = form_input_validate(get_nfilter_request_var('snmp_port'), 'snmp_port', '^[0-9]+$', false, 3);
+		$save['snmp_timeout']         = form_input_validate(get_nfilter_request_var('snmp_timeout'), 'snmp_timeout', '^[0-9]+$', false, 3);
+		$save['snmp_retries']         = form_input_validate(get_nfilter_request_var('snmp_retries'), 'snmp_retries', '^[0-9]+$', false, 3);
+		$save['max_oids']             = form_input_validate(get_nfilter_request_var('max_oids'), 'max_oids', '^[0-9]+$', false, 3);
+		$save['bulk_walk_size']       = form_input_validate(get_nfilter_request_var('bulk_walk_size'), 'bulk_walk_size', '^[\-0-9]+$', false, 3);
 
 		if (!is_error_message()) {
 			$item_id = sql_save($save, 'automation_snmp_items');

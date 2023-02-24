@@ -193,7 +193,7 @@ function host_reload_query() {
    ------------------- */
 
 function host_new_graphs_save($host_id) {
-	$selected_graphs_array = unserialize(stripslashes(get_nfilter_request_var('selected_graphs_array')));
+	$selected_graphs_array = unserialize(stripslashes(get_nfilter_request_var('selected_graphs_array')), array('allowed_classes' => false));
 
 	$values = array();
 	$form_data = array();

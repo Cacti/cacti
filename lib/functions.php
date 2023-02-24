@@ -1941,18 +1941,21 @@ function prepare_validate_result(&$result) {
 
 	/* clean off ugly non-numeric data */
 	if (is_numeric($result)) {
-		dsv_log('prepare_validate_result','data is numeric');
+		dsv_log('prepare_validate_result','data is numeric', POLLER_VERBOSITY_MEDIUM);
+
 		return true;
 	} elseif ($result == 'U') {
-		dsv_log('prepare_validate_result', 'data is U');
+		dsv_log('prepare_validate_result', 'data is U', POLLER_VERBOSITY_MEDIUM);
+
 		return true;
 	} elseif (is_hexadecimal($result)) {
-		dsv_log('prepare_validate_result', 'data is hex');
+		dsv_log('prepare_validate_result', 'data is hex', POLLER_VERBOSITY_MEDIUM);
+
 		return hexdec($result);
 	} elseif (substr_count($result, ':') || substr_count($result, '!')) {
 		/* looking for name value pairs */
 		if (substr_count($result, ' ') == 0) {
-			dsv_log('prepare_validate_result', 'data has no spaces');
+			dsv_log('prepare_validate_result', 'data has no spaces', POLLER_VERBOSITY_MEDIUM);
 
 			return true;
 		} else {
@@ -1966,7 +1969,7 @@ function prepare_validate_result(&$result) {
 
 			$space_cnt = substr_count(trim($result), ' ');
 
-			dsv_log('prepare_validate_result', "data has $space_cnt spaces and $delim_cnt fields which is " . (($space_cnt + 1 == $delim_cnt) ? '' : 'NOT') . ' okay');
+			dsv_log('prepare_validate_result', "data has $space_cnt spaces and $delim_cnt fields which is " . (($space_cnt + 1 == $delim_cnt) ? '' : 'NOT') . ' okay', POLLER_VERBOSITY_MEDIUM);
 
 			return ($space_cnt+1 == $delim_cnt);
 		}
@@ -2022,11 +2025,12 @@ function is_valid_pathname($path) {
  * dsv_log - provides debug logging when tracing Graph/Data Source creation
  *
  * @param $message - the message to output to the log
- * @param $data  - the data to be carried with the message
+ * @param $data    - the data to be carried with the message
+ * @param $level   - the level to log the dsv_log at or above
 */
-function dsv_log($message,$data) {
+function dsv_log($message, $data, $level = POLLER_VERBOSITY_LOW) {
 	if (read_config_option('data_source_trace') == 'on') {
-		cacti_log(($message . ' = ') . (is_array($data) ? json_encode($data) : $data), false, 'DSTRACE');
+		cacti_log(($message . ' = ') . (is_array($data) ? json_encode($data) : $data), false, 'DSTRACE', $level);
 	}
 }
 
@@ -2269,7 +2273,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 					$value = $field['value'];
 
 					dsv_log('SNMP field', $field);
-					//dsv_log('SNMP suggested_val', $suggested_vals['custom_data'][$data_template_id]);
+					dsv_log('SNMP suggested_val', $suggested_vals['custom_data'][$data_template_id]);
 
 					if (!empty($suggested_vals['custom_data'][$data_template_id][$field['id']])) {
 						$value = $suggested_vals['custom_data'][$data_template_id][$field['id']];
@@ -2338,15 +2342,19 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 				foreach ($data_template_data as $field) {
 					$key   = $field['type_code'];
 					$value = $field['value'];
+
 					dsv_log('SNMP_QUERY field', $field);
-					//dsv_log('SNMP_QUERY suggested_val', $suggested_vals['custom_data'][$data_template_id]);
+					dsv_log('SNMP_QUERY suggested_val', $suggested_vals['custom_data'][$data_template_id]);
+
 					if (!empty($suggested_vals['custom_data'][$data_template_id][$field['id']])) {
 						$value = $suggested_vals['custom_data'][$data_template_id][$field['id']];
+
 						dsv_log("SNMP_QUERY value replace suggested $key", $value);
 					}
 
 					if (!empty($value) && !isset($host_fields[$key])) {
 						$host_fields[$key] = $value;
+
 						dsv_log("SNMP_QUERY value replace template $key", $value);
 					}
 				}
@@ -2429,15 +2437,19 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 				foreach ($data_template_data as $field) {
 					$key = $field['type_code'];
 					$value = $field['value'];
+
 					dsv_log('SCRIPT field', $field);
-					//dsv_log('SCRIPT suggested_val', $suggested_vals['custom_data'][$data_template_id]);
+					dsv_log('SCRIPT suggested_val', $suggested_vals['custom_data'][$data_template_id]);
+
 					if (!empty($suggested_vals['custom_data'][$data_template_id][$field['id']])) {
 						$value = $suggested_vals['custom_data'][$data_template_id][$field['id']];
+
 						dsv_log("SCRIPT value replace suggested $key", $value);
 					}
 
 					if (!empty($value) && !isset($host_fields[$key])) {
 						$host_fields[$key] = $value;
+
 						dsv_log("SCRIPT value replace template $key", $value);
 					}
 				}
@@ -4451,7 +4463,7 @@ function sanitize_unserialize_selected_items($items) {
 
 		// validate that sanitized string is correctly formatted
 		if (preg_match('/^a:[0-9]+:{/', $unstripped) && !preg_match('/(^|;|{|})O:\+?[0-9]+:"/', $unstripped)) {
-			$items = unserialize($unstripped);
+			$items = unserialize($unstripped, array('allowed_classes' => false));
 
 			if (is_array($items)) {
 				foreach ($items as $item) {
@@ -7283,4 +7295,3 @@ function debounce_run_notification($id, $freqnency = 1200) {
 
 	return false;
 }
-

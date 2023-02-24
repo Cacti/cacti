@@ -119,7 +119,7 @@ function dsdebug_poller_output(&$rrd_update_array) {
 				foreach($rrd_update_array as $item) {
 					if ($c['datasource'] == $item['local_data_id']) {
 						if (isset($item['times'][key($item['times'])])) {
-							$c['info'] = unserialize($c['info']);
+							$c['info'] = unserialize($c['info'], array('allowed_classes' => false));
 							$c['info']['last_result'] = $item['times'][key($item['times'])];
 							$c['info'] = serialize($c['info']);
 							db_execute_prepared('UPDATE data_debug SET `info` = ? WHERE `id` = ?', array($c['info'], $c['id']));
@@ -157,7 +157,7 @@ function dsdebug_poller_bottom() {
 
 		foreach ($checks as $c) {
 			$c['issue'] = array();
-			$info = unserialize($c['info']);
+			$info = unserialize($c['info'], array('allowed_classes' => false));
 
 			$dtd = db_fetch_row_prepared('SELECT *
 				FROM data_template_data
@@ -334,7 +334,7 @@ function dsdebug_run_repair($id) {
 		array($id));
 
 	if (cacti_sizeof($check)) {
-		$check['info'] = unserialize($check['info']);
+		$check['info'] = unserialize($check['info'], array('allowed_classes' => false));
 
 		if (isset($check['info']['rrd_match_array']['tune'])) {
 			$path = get_data_source_path($id, true);
