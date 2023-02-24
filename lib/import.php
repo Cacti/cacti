@@ -696,18 +696,26 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array['graph'][$field_name])) {
-			/**
-			 * Cacti pre 0.8.5 did handle a unit_exponent=0 differently
-			 * so we need to know the version of the current hash code we're just working on
-			 */
-			if (($field_name == 'unit_exponent_value') && (get_version_index($hash_version) < get_version_index('0.8.5')) && ($xml_array['graph'][$field_name] == '0')) { /* backwards compatability */
+			if ($field_name == 'unit_exponent_value' && $xml_array['graph'][$field_name] == '0') {
 				$save[$field_name] = '';
-			} elseif ($field_name == 'graph_width' && isset_request_var('graph_width')) {
-				$save[$field_name] = get_filter_request_var('graph_width');
-			} elseif ($field_name == 'graph_height' && isset_request_var('graph_height')) {
-				$save[$field_name] = get_filter_request_var('graph_height');
-			} elseif ($field_name == 'image_format_id' && isset_request_var('image_format')) {
-				$save[$field_name] = get_filter_request_var('image_format');
+			} elseif ($field_name == 'graph_width') {
+				if (isset_request_var('graph_width') && !isempty_request_var('graph_width')) {
+					$save[$field_name] = get_filter_request_var('graph_width');
+				} else {
+					$save[$field_name] = read_config_option('default_graph_width');
+				}
+			} elseif ($field_name == 'graph_height') {
+				if (isset_request_var('graph_height') && !isempty_request_var('graph_height')) {
+					$save[$field_name] = get_filter_request_var('graph_height');
+				} else {
+					$save[$field_name] = read_config_option('default_graph_height');
+				}
+			} elseif ($field_name == 'image_format_id') {
+				if (isset_request_var('image_format') && !isempty_request_var('image_format')) {
+					$save[$field_name] = get_filter_request_var('image_format');
+				} else {
+					$save[$field_name] = read_config_option('default_image_format');
+				}
 			} else {
 				$save[$field_name] = xml_character_decode($xml_array['graph'][$field_name]);
 			}

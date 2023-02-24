@@ -2400,7 +2400,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 						if (read_config_option('enable_rrdtool_gradient_support') == 'on') {
 							/* End color is a 40% (0.4) darkened (negative number) version of the original color */
 							$end_color        = colourBrightness('#' . $graph_item['hex'], -0.4);
-							$txt_graph_items .= gradient($data_source_name, $graph_item_color_code, $end_color . $graph_item['alpha'], cacti_escapeshellarg($graph_variables['text_format'][$graph_item_id] . $hardreturn[$graph_item_id]), 20, false, $graph_item['alpha']);
+							$txt_graph_items .= gradient($data_source_name, $graph_item_color_code, $end_color . $graph_item['alpha'], cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]), 20, false, $graph_item['alpha']);
 						} else {
 							$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ' ';
 						}
@@ -2412,7 +2412,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 						break;
 					case GRAPH_ITEM_TYPE_STACK:
-						$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id],$pad_number):''));
+						$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id], $pad_number):''));
 
 						$txt_graph_items .= 'AREA:' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ':STACK';
 
@@ -4097,28 +4097,25 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
  * License: GPLv2
  * Original Code: https://github.com/lingej/pnp4nagios/blob/master/share/pnp/application/helpers/rrd.php
  */
-function gradient($vname=false, $start_color='#0000a0', $end_color='#f0f0f0', $label=false, $steps=20, $lower=false, $alpha='FF') {
-	$label = preg_replace("/'/", '', $label);
-	$label = preg_replace('/:/', "\:", $label);
-
-	if (preg_match('/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i',$start_color,$matches)) {
-		$r1=hexdec($matches[1]);
-		$g1=hexdec($matches[2]);
-		$b1=hexdec($matches[3]);
+function gradient($vname = false, $start_color = '#0000a0', $end_color = '#f0f0f0', $label = false, $steps = 20, $lower = false, $alpha = 'FF') {
+	if (preg_match('/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i', $start_color, $matches)) {
+		$r1 = hexdec($matches[1]);
+		$g1 = hexdec($matches[2]);
+		$b1 = hexdec($matches[3]);
 	}
 
-	if (preg_match('/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i',$end_color,$matches)) {
-		$r2=hexdec($matches[1]);
-		$g2=hexdec($matches[2]);
-		$b2=hexdec($matches[3]);
+	if (preg_match('/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i', $end_color, $matches)) {
+		$r2 = hexdec($matches[1]);
+		$g2 = hexdec($matches[2]);
+		$b2 = hexdec($matches[3]);
 	}
 
-	$diff_r       =$r2 - $r1;
-	$diff_g       =$g2 - $g1;
-	$diff_b       =$b2 - $b1;
+	$diff_r       = $r2 - $r1;
+	$diff_g       = $g2 - $g1;
+	$diff_b       = $b2 - $b1;
 	$spline       =  '';
-	$spline_vname = 'var'.substr(sha1(rand()),1,4);
-	$vnamet       = $vname.substr(sha1(rand()),1,4);
+	$spline_vname = 'var'  . substr(sha1(rand()), 1, 4);
+	$vnamet       = $vname . substr(sha1(rand()), 1, 4);
 
 	if (preg_match('/^([0-9]{1,3})%$/', $lower, $matches)) {
 		$lower   = $matches[1];
@@ -4131,27 +4128,28 @@ function gradient($vname=false, $start_color='#0000a0', $end_color='#f0f0f0', $l
 		$spline .= sprintf('CDEF:%sminimum=%s,%s,- '.RRD_NL, $vnamet, $vname, $vname);
 	}
 
-	for ($i=$steps; $i > 0; $i--) {
-		$spline .= sprintf('CDEF:%s%d=%s,%sminimum,-,%d,/,%d,*,%sminimum,+ '.RRD_NL,$spline_vname,$i,$vname,$vnamet,$steps,$i,$vnamet);
+	for ($i = $steps; $i > 0; $i--) {
+		$spline .= sprintf('CDEF:%s%d=%s,%sminimum,-,%d,/,%d,*,%sminimum,+ ' . RRD_NL, $spline_vname, $i, $vname, $vnamet, $steps, $i, $vnamet);
 	}
 
 	// We don't use alpha blending for the area right now
 	$alpha = 'ff';
 
 	for ($i=$steps; $i > 0; $i--) {
-		$factor=$i / $steps;
-		$r     =round($r1 + $diff_r * $factor);
-		$g     =round($g1 + $diff_g * $factor);
-		$b     =round($b1 + $diff_b * $factor);
+		$factor = $i / $steps;
 
-		if (($i == $steps) && ($label != false) && (strlen($label) > 2)) {
-			$spline .= sprintf('AREA:%s%d#%02X%02X%02X%s:"%s" '.RRD_NL, $spline_vname,$i,$r,$g,$b,$alpha,$label);
+		$r = round($r1 + $diff_r * $factor);
+		$g = round($g1 + $diff_g * $factor);
+		$b = round($b1 + $diff_b * $factor);
+
+		if ($i == $steps && $label != false && strlen($label) > 2) {
+			$spline .= sprintf('AREA:%s%d#%02X%02X%02X%s:"%s" ' . RRD_NL, $spline_vname, $i, $r, $g, $b, $alpha, $label);
 		} else {
-			$spline .= sprintf('AREA:%s%d#%02X%02X%02X%s '.RRD_NL, $spline_vname,$i,$r,$g,$b,$alpha);
+			$spline .= sprintf('AREA:%s%d#%02X%02X%02X%s ' . RRD_NL, $spline_vname, $i, $r, $g, $b, $alpha);
 		}
 	}
 
-	$spline .= sprintf('AREA:%s%d#%02X%02X%02X%s '.RRD_NL, $spline_vname,$steps,$r2,$g2,$b2,'00',$label);
+	$spline .= sprintf('AREA:%s%d#%02X%02X%02X%s ' . RRD_NL, $spline_vname, $steps, $r2, $g2, $b2, '00', $label);
 
 	return $spline;
 }
@@ -4171,16 +4169,16 @@ function colourBrightness($hex, $percent) {
 	// Work out if hash given
 	$hash = '';
 
-	if (stristr($hex,'#')) {
-		$hex  = str_replace('#','',$hex);
+	if (stristr($hex, '#')) {
+		$hex  = str_replace('#', '', $hex);
 		$hash = '#';
 	}
 
 	/// HEX TO RGB
-	$rgb = array(hexdec(substr($hex,0,2)), hexdec(substr($hex,2,2)), hexdec(substr($hex,4,2)));
+	$rgb = array(hexdec(substr($hex, 0, 2)), hexdec(substr($hex, 2, 2)), hexdec(substr($hex, 4, 2)));
 
 	//// CALCULATE
-	for ($i=0; $i < 3; $i++) { // See if brighter or darker
+	for ($i = 0; $i < 3; $i++) { // See if brighter or darker
 		if ($percent > 0) {
 			// Lighter
 			$rgb[$i] = round($rgb[$i] * $percent) + round(255 * (1 - $percent));
@@ -4199,7 +4197,7 @@ function colourBrightness($hex, $percent) {
 	//// RBG to Hex
 	$hex = '';
 
-	for ($i=0; $i < 3; $i++) {
+	for ($i = 0; $i < 3; $i++) {
 		// Convert the decimal digit to hex
 		$hexDigit = dechex($rgb[$i]);
 
@@ -4236,8 +4234,8 @@ function add_business_hours($data) {
 		preg_match('/(\d+)\:(\d+)/',read_config_option('business_hours_start'), $bh_start_matches);
 		preg_match('/(\d+)\:(\d+)/',read_config_option('business_hours_end'), $bh_end_matches);
 
-		$start_bh_time = mktime($bh_start_matches[1],$bh_start_matches[2],0,date('m',$bh_graph_start),date('d',$bh_graph_start),date('Y',$bh_graph_start));
-		$end_bh_time   = mktime($bh_end_matches[1],$bh_end_matches[2],0,date('m',$bh_graph_end),date('d',$bh_graph_end),date('Y',$bh_graph_end));
+		$start_bh_time = mktime($bh_start_matches[1], $bh_start_matches[2], 0, date('m', $bh_graph_start), date('d', $bh_graph_start), date('Y', $bh_graph_start));
+		$end_bh_time   = mktime($bh_end_matches[1], $bh_end_matches[2], 0, date('m', $bh_graph_end), date('d', $bh_graph_end), date('Y', $bh_graph_end));
 
 		if ($start_bh_time < $bh_graph_start) {
 			if ($start_bh_time < $end_bh_time) {
@@ -4253,8 +4251,8 @@ function add_business_hours($data) {
 
 		if ($num_of_days <= read_config_option('business_hours_max_days')) {
 			for ($day=0; $day < $num_of_days; $day++) {
-				$current_start_bh_time = mktime($bh_start_matches[1],$bh_start_matches[2],0,date('m',$start_bh_time),date('d',$start_bh_time) + $day,date('Y',$start_bh_time));
-				$current_end_bh_time   = mktime($bh_end_matches[1],$bh_end_matches[2],0,date('m',$start_bh_time),date('d',$start_bh_time) + $day,date('Y',$start_bh_time));
+				$current_start_bh_time = mktime($bh_start_matches[1], $bh_start_matches[2], 0, date('m', $start_bh_time), date('d', $start_bh_time) + $day, date('Y', $start_bh_time));
+				$current_end_bh_time   = mktime($bh_end_matches[1], $bh_end_matches[2], 0, date('m', $start_bh_time), date('d', $start_bh_time) + $day, date('Y', $start_bh_time));
 
 				if ($current_start_bh_time < $bh_graph_start) {
 					$current_start_bh_time = $bh_graph_start;
@@ -4267,18 +4265,18 @@ function add_business_hours($data) {
 				$data['graph_defs'] .= 'CDEF:officehours' . $day . '=a,POP,TIME,' . $current_start_bh_time . ',LT,1,0,IF,TIME,' . $current_end_bh_time . ',GT,1,0,IF,MAX,0,GT,0,1,IF' . RRD_NL;
 				$data['graph_defs'] .= 'CDEF:dslimit' . $day . '=INF,officehours' . $day . ',*' . RRD_NL;
 
-				if (preg_match('/[0-9A-Fa-f]{6,8}/',read_config_option('business_hours_color'))) {
+				if (preg_match('/[0-9A-Fa-f]{6,8}/', read_config_option('business_hours_color'))) {
 					$bh_color = read_config_option('business_hours_color');
 				} else {
 					$bh_color = 'ccccccff';
 				}
 
-				if (date('N',$current_start_bh_time) < 6) {
+				if (date('N', $current_start_bh_time) < 6) {
 					$data['graph_defs'] .= 'AREA:dslimit' . $day . '#' . $bh_color . RRD_NL;
 				}
 
-				if ((date('N',$current_start_bh_time) > 5) && (read_config_option('business_hours_hideWeekends') == '')) {
-					$data['graph_defs'] .= 'AREA:dslimit' . $day . '#'.$bh_color . RRD_NL;
+				if (date('N', $current_start_bh_time) > 5 && read_config_option('business_hours_hideWeekends') == '') {
+					$data['graph_defs'] .= 'AREA:dslimit' . $day . '#'. $bh_color . RRD_NL;
 				}
 			}
 		}

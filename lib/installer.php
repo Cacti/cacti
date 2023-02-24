@@ -569,12 +569,18 @@ class Installer implements JsonSerializable {
 
 		$always_paths = array(
 			sys_get_temp_dir(),
-			CACTI_PATH_LOG . '',
-			CACTI_PATH_CACHE. '/boost',
-			CACTI_PATH_CACHE. '/mibcache',
-			CACTI_PATH_CACHE. '/realtime',
-			CACTI_PATH_CACHE. '/spikekill'
+			CACTI_PATH_LOG   . '',
+			CACTI_PATH_CACHE . '/boost',
+			CACTI_PATH_CACHE . '/mibcache',
+			CACTI_PATH_CACHE . '/realtime',
+			CACTI_PATH_CACHE . '/spikekill'
 		);
+
+		if (isset($config['path_csrf_secret'])) {
+			$install_paths[] = $config['path_csrf_secret'];
+		} else {
+			$install_paths[] = CACTI_PATH_INCLUDE . '/vendor/csrf/csrf-secret.php';
+		}
 
 		$csrf_paths = array();
 
@@ -590,12 +596,15 @@ class Installer implements JsonSerializable {
 
 		foreach ($install_paths as $path) {
 			if (is_dir($path)) {
-				$valid                                  = (is_resource_writable($path . '/'));
+				$valid = (is_resource_writable($path . '/'));
+
 				$permissions[$install_key][$path . '/'] = $valid;
 			} else {
-				$valid                            = (is_resource_writable($path));
+				$valid = (is_resource_writable($path));
+
 				$permissions[$install_key][$path] = $valid;
 			}
+
 			log_install_debug('permission', "$path = $valid ($install_key)");
 
 			if (!$valid) {
@@ -2865,7 +2874,7 @@ class Installer implements JsonSerializable {
 			'<table width="100%"><tr>' .
 				'<td class="cactiInstallProgressLeft">Refresh in</td>' .
 				'<td class="cactiInstallProgressCenter">&nbsp;</td>' .
-				'<td class="cactiInstallProgressRight">Progress<span style=\'float:right\'>Last updated: ' . date('H:i:s', $time) . '</span></td>' .
+				'<td class="cactiInstallProgressRight">Progress<span style=\'float:right\'>Last updated: ' . date('H:i:s', intval($time)) . '</span></td>' .
 			'</tr><tr>' .
 			'<td class="cactiInstallProgressLeft">' .
 			'<div id="cactiInstallProgressCountdown"><div></div></div>' .

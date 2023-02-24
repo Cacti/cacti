@@ -83,6 +83,34 @@ Cacti CHANGELOG
 -issue#5184: Cacti permission checks generate SQL errors is the user has been deleted
 -issue#5185: Repair Database does not prune old Poller Item Records
 -issue#5187: Getting SQL errors in the Cacti due to plugin calling register function in wrong location
+-issue#5188: Device Template Filter broken
+-issue#5190: When using Gradient Support GPRINT Text Format is misaligned
+-issue#5194: CSRF directory needs to be writeable for creating the csrf-secret.php file
+-issue#5195: Spikekill Backtrace Argument #1 ($string) must be passed by reference, value given
+-issue#5196: Gradient support breaks certain Graphs with special characters in them
+-issue#5197: Realtime graph on remote poller not working in 1.2.23
+-issue#5198: PHP Diff Renderer throws warnings
+-issue#5199: When trying to obtain data, cacti should not log Transport Read errors
+-issue#5200: Cacti function throws errors when attempting to render classic images in PHP8
+-issue#5201: Minor issues in modern and dark prevent weathermaps from rendering correctly
+-issue#5202: When importing packages, Graph Size does not get updated to Graph Templates
+-issue#5203: Scripts ss_net_snmp_device_io.php and ss_net_snmp_device_bytes.php break when using HMIB plugin and PHP8.1
+-issue#5204: Compatibility improvements for Audit Database under PHP 8.x
+-issue#5205: When using Diff Viewer, rendering is not always correct under certain themes
+-issue#5207: Compatibility improvements for Installer under PHP 8.x
+-issue#5208: Package form objects use the wrong text domain in their i18n strings
+-issue#5211: Undefined variable $user_id when creating new graph
+-issue#5214: Basic Auth is timing out and logging users off automatically
+-issue#5223: When using callback form functions, name and id field may not be correctly set
+-issue#5224: When poller runtime is exceeded, time should be display as a rounded number
+-issue#5227: When debugging a data source, errors may be shown if no RRDfile created yet
+-issue#5232: On large systems statistics gathering at the beginning of a poller run lead to excessive polling times
+-issue#5236: Edit Graph Template link missing base_url
+-issue#5238: Searching for Poller Items Generates SQL Errors
+-issue#5239: SNMP-Options - Bulk Walk Maximum Repetitions ignored
+-issue#5241: "Balance Process Load" dont work after upgrade to 1.2.23
+-issue#5243: Template Export missing Graph Template columns multiple and test_source
+-issue#5247: Rebuilding Poller Cache from Utilities does not respect poller interval due to lack or ordering
 
 1.2.23
 -security#4920: Add .htaccess file to scripts folder

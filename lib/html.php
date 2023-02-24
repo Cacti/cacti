@@ -509,7 +509,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 	}
 
 	if (is_realm_allowed(10) && $graph_template_id > 0) {
-		print "<a class='iconLink' role='link' title='" . __esc('Edit Graph Template') . "' href='" . html_escape(CACTI_PATH_URL . '/graph_templates.php?action=template_edit&id=' . $graph_template_id) . "'><img src='" . html_escape(CACTI_PATH_URL . 'images/template_edit.png') . "'></img></a>";
+		print "<a class='iconLink' role='link' title='" . __esc('Edit Graph Template') . "' href='" . html_escape(CACTI_PATH_URL . 'graph_templates.php?action=template_edit&id=' . $graph_template_id) . "'><img src='" . html_escape(CACTI_PATH_URL . 'images/template_edit.png') . "'></img></a>";
 		print '<br/>';
 	}
 

@@ -305,8 +305,13 @@ function poll_for_data() {
 
 	$local_data_ids = get_nfilter_request_var('local_data_ids');
 	$host_id        = get_filter_request_var('host_id');
-	$poller_id      = get_filter_request_var('poller_id');
+	$poller_id      = get_nfilter_request_var('poller_id');
 	$return         = array();
+
+	/* ensure we have a valid poller_id */
+	if (!preg_match('/^[a-z0-9]+$/i', $poller_id)) {
+		return array();
+	}
 
 	$i = 0;
 

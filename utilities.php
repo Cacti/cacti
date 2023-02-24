@@ -1070,7 +1070,7 @@ function utilities_view_poller_cache() {
 		if (get_request_var('host_id') > 0) {
 			$sql_where .= ($sql_where != '' ? ' AND ':' WHERE') . ' (
 				dtd.name_cache LIKE '   . db_qstr('%' . get_request_var('filter') . '%') . '
-				OR pi.arg1 LIKE '	   . db_qstr('%' . get_request_var('filter') . '%') . '
+				OR pi.arg1 LIKE '	   . db_qstr('%' . get_request_var('filter') . '%') . '
 				OR pi.rrd_path  LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . ')';
 		} else {
 			$sql_where .= ($sql_where != '' ? ' AND ':' WHERE') . ' (

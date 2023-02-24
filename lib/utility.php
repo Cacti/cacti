@@ -44,7 +44,7 @@ function repopulate_poller_cache() {
 		INNER JOIN host AS h
 		ON dl.host_id=h.id
 		WHERE dl.snmp_query_id = 0 OR (dl.snmp_query_id > 0 AND dl.snmp_index != "")
-		ORDER BY h.poller_id ASC');
+		ORDER BY h.poller_id ASC, h.id ASC');
 
 	$poller_items   = array();
 	$local_data_ids = array();

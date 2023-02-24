@@ -855,7 +855,7 @@ ul#breadcrumbs {
 	background: #161616 none repeat scroll 0 0;
 	width: 100%;
 	vertical-align: top;
-	padding-top: 56px;
+	padding-top: 62px;
 }
 
 .cactiTreeNavigationArea {
@@ -1089,7 +1089,7 @@ legend {
 
 .cactiGraphContentArea {
 	background: #161616;
-	padding-top: 10px;
+	padding-top: 5px;
 	padding-right: 5px;
 	padding-left: 5px;
 	display: none;
@@ -1102,7 +1102,7 @@ legend {
 .cactiGraphContentAreaPreview {
 	height: 100vh;
 	background: #161616;
-	padding-top: 10px;
+	padding-top: 5px;
 	padding-right: 5px;
 	padding-left: 5px;
 	display: none;
@@ -1113,7 +1113,7 @@ legend {
 
 .cactiConsoleContentArea {
 	background: #161616;
-	padding-top: 10px;
+	padding-top: 5px;
 	padding-right: 5px;
 	padding-left: 5px;
 	vertical-align: top;

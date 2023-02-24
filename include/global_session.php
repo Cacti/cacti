@@ -127,6 +127,13 @@ if (isset($_SESSION[SESS_USER_ID]) && $_SESSION[SESS_USER_ID] == read_config_opt
 	$refreshIsLogout      = 'false';
 }
 
+/* basic auth times out when the auth provider times out */
+if (read_config_option('auth_method') == 2) {
+	$myrefresh['seconds'] = 99999999;
+	$myrefresh['page']    = sanitize_uri($_SERVER['REQUEST_URI']);
+	$refreshIsLogout = 'false';
+}
+
 ?>
 <script type='text/javascript'>
 	var cactiVersion='<?php print $config['cacti_version'];?>';
