@@ -1,62 +1,62 @@
 Cacti CHANGELOG
 
 1.2.24
--issue#5127: Importing Local_Linux_Machine.xml.gz template raises PHP error
--issue#5134: Display of "Memory Limit" on Boost Status page shows -1 and not "Unlimited"
--issue#5135: Error in using RRDcleaner an RRDcheck causing SQL errors
--issue#5136: Function number_format_i18n should return a valid number '0' for NULL input
--issue#5137: When attempting to update structured paths, SQL errors occur
--issue#5140: Cacti PHP 8.2 SNMP Errors with php-snmp Installed
--issue#5142: Correct issues with permission model including display of authorization UI elements and warnings
--issue#5143: When a Device has zero Graphs or Data Sources, it does not display the correct value
+-issue#5127: Unable to import Local Linux Machine template
+-issue#5134: Maximum Memory shows -1 instead of Unlimited
+-issue#5135: RRDcleaner and RRDcheck share the same filter details causing errors
+-issue#5136: When passed a null value, number_format_i18n() can return a invalid number by ddb4github
+-issue#5137: When attempting to update structured paths, SQL errors can occur
+-issue#5140: Compatibility changes for SNMP under PHP 8.2
+-issue#5142: Fix issues with permission model and warnings
+-issue#5143: When a Device has zero Graphs or Data Sources, it does not display a value
 -issue#5145: Changing SNMP settings to None leaves Bulk Walk Maximum Repititions visible
--issue#5147: Error 500 on apache when changing languages
--issue#5150: The Import Package cli script displays the wrong 'info' parameter
+-issue#5147: Language handlers may not always be loaded properly
+-issue#5150: Wrong parameters are shown for the Import Package script
 -issue#5151: Templates appear to lose their suggested name values
--issue#5159: Cannot turn on publishing when editing
--issue#5160: Translations on debian 'Bullseye' systems may cause server errors
--issue#5161: Switching language in the settings only becomes active after removal of session cookie
--issue#5166: Plugin permission is not shown in correct role section
+-issue#5159: When editing a tree, the tree can not be set to published
+-issue#5160: Translations on debian 'bookworm' systems may cause server errors
+-issue#5161: Switching language in the settings does not immediately become active
+-issue#5166: Plugin permissions may sometimes appear in the wrong section by ddb4github
 -issue#5167: Graph template for NetSNMP lmsensors missing
 -issue#5168: Import Package is misleading when reviewing Device Template Changes
--issue#5169: Host table status_fail_date and Status_rec_date can appear wrong
--issue#5170: Prevent remote polling functionality from running unless remote pollers are configured
--issue#5174: Empty Location when adding new device
+-issue#5169: Device failure and recovery dates can be misleading
+-issue#5170: Prevent remote polling functionality from running on main poller
+-issue#5174: When adding a new device, location is not being saved
 -issue#5180: Audit Database has issues with storage engine compare
--issue#5181: Poller functions can cause SQL errors in some cases when working with remote data collectors
+-issue#5181: When working with remote data collectors, some errors may be logged
 -issue#5182: Graph Image does not have check for Remote Agent
--issue#5184: Cacti permission checks generate SQL errors is the user has been deleted
+-issue#5184: When a user has been deleted, checking permissions can cause errors
 -issue#5185: Repair Database does not prune old Poller Item Records
--issue#5187: Getting SQL errors in the Cacti due to plugin calling register function in wrong location
--issue#5188: Device Template Filter broken
+-issue#5187: When calling plugin functions, errors can appear if they are not present
+-issue#5188: When filtering Device Templates, valid matches are not always shown
 -issue#5190: When using Gradient Support GPRINT Text Format is misaligned
 -issue#5194: CSRF directory needs to be writeable for creating the csrf-secret.php file
--issue#5195: Spikekill Backtrace Argument #1 ($string) must be passed by reference, value given
--issue#5196: Gradient support breaks certain Graphs with special characters in them
--issue#5197: Realtime graph on remote poller not working in 1.2.23
--issue#5198: PHP Diff Renderer throws warnings
--issue#5199: Failures to call fgets generate errors in the Cacti.log
--issue#5200: Cacti function throws errors when attempting to render classic images in PHP8 
--issue#5201: Minor issues in modern and dark prevent weathermaps from rendering correctly
--issue#5202: Importing package with Graph Size does not update the Graph Templates
--issue#5203: Scripts ss_net_snmp_device_io.php and ss_net_snmp_device_bytes.php break when using HMIB plugin and PHP8.1
--issue#5204: Audit Database throws error during runtime on PHP8
--issue#5205: Cacti CSS file for Diff.css does look correct in all Cacti Themes
--issue#5207: Deprecated error message during installation routine
--issue#5208: Package form objects use the wrong text domain in their i18n strings
--issue#5209: Add account disable log message for disabled users attempting to login
--issue#5211: Undefined variable $user_id when creating new graph
+-issue#5195: When removing spikes, errors can be recorded for NaN samples
+-issue#5196: Gradient support can break Graphs containing special characters
+-issue#5197: Unable to obtain realtime graph from remote poller
+-issue#5198: Compability Improvements for PHP Diff under PHP 8.x
+-issue#5199: When trying to obtain data, cacti should not long Transport Read errors
+-issue#5200: Compatibility improvements for Classic Tab images under PHP 8.x
+-issue#5201: Weathermaps can have issues rendering with some themes
+-issue#5202: When importing packages, Graph Size does not get updated to Graph Templates
+-issue#5203: Host Mib Device package can cause errors with NetSNMP scripts
+-issue#5204: Compatibility improvements for Audit Database under PHP 8.x
+-issue#5205: When using Diff Viewer, rendering is not always correct under certain themes
+-issue#5207: Compatibility improvements for Installer under PHP 8.x
+-issue#5208: Some i18n strings are not properly translated
+-issue#5209: When disabling a user, no log is recorded by xmacan
+-issue#5211: When creating a new graph, undefined variable errors may be recorded
 -issue#5214: Basic Auth is timing out and logging users off automatically
--issue#5223: Drop callback function sometimes puts name in the form input instead of the id
--issue#5224: When poller run is exceeded by only a short period of time, Cacti does not round the number in the error
--issue#5227: Data Source Debug throws and error when the Debug runs before the RRDfile is created
--issue#5232: On large systems statistics gathering at the beginning of a poller run lead to excessive polling times
--issue#5236: Edit Graph Template link missing base_url
--issue#5238: Searching for Poller Items Generates SQL Errors
--issue#5239: SNMP-Options - Bulk Walk Maximum Repetitions ignored
--issue#5241: "Balance Process Load" dont work after upgrade to 1.2.23
--issue#5243: Template Export missing Graph Template columns multiple and test_source
--issue#5245: Add additional security to Cacti's use of the the unserialize function
+-issue#5223: When using callback form functions, name and id field may not be correctly set
+-issue#5224: When poller runtime is exceeded, time should be display as a rounded number
+-issue#5227: When debugging a data source, errors may be shown if no RRDfile created yet
+-issue#5232: Polling can appear delayed due to early statistics gathering
+-issue#5236: When viewing a graph, Edit Graph Template link may open wrong url
+-issue#5238: Searching for Poller Items can generates SQL Errors
+-issue#5239: Bulk Walk Maximum Repetitions may sometimes be ignored
+-issue#5241: Balance Process Load does not always apply properly
+-issue#5243: Template Export missing Graph Template columns `multiple` and `test_source`
+-issue#5245: Add additional security to the unserialize function by TheWitness
 -issue#5247: Rebuilding Poller Cache from Utilities does not respect poller interval due to lack or ordering
 
 1.2.23
