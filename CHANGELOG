@@ -54,6 +54,8 @@ Cacti CHANGELOG
 -feature#5165: DSSTATS - Change data_source_stats_hourly_cache from Memory to INNODB
 -feature#5178: DSSTATS - Allow Retention of Daily, Weekly, Monthly and Yearly data for varying periods
 -feature: Allow messages to be popup notifications
+-feature: Upgrade billboard.js to version 3.7.4
+-feature: Upgrade d3.js to version 7.8.2
 
 1.2.24
 -issue#5127: Importing Local_Linux_Machine.xml.gz template raises PHP error
