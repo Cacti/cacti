@@ -4,19 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-12-17 15:36-0500\n"
-"PO-Revision-Date: 2022-03-14 20:47-0400\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: el_GR\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.0.1\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-12-17 15:36-0500\nPO-Revision-Date: 2023-03-07 13:25+0000\nLast-Translator: Anonymous <anonymous@cacti.net>\nLanguage-Team: Greek <http://translate.cacti.net/projects/cacti/core-v1-2-x/el/>\nLanguage: el-GR\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2605 lib/html.php:2491
 #, fuzzy
