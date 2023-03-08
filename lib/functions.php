@@ -2028,9 +2028,9 @@ function is_valid_pathname($path) {
  * @param $data    - the data to be carried with the message
  * @param $level   - the level to log the dsv_log at or above
 */
-function dsv_log($message, $data, $level = POLLER_VERBOSITY_LOW) {
+function dsv_log($message, $data = null, $level = POLLER_VERBOSITY_LOW) {
 	if (read_config_option('data_source_trace') == 'on') {
-		cacti_log(($message . ' = ') . (is_array($data) ? json_encode($data) : $data), false, 'DSTRACE', $level);
+		cacti_log(($message . ' = ') . (is_array($data) ? json_encode($data) : ($data === null ? 'NULL' : $data)), false, 'DSTRACE', $level);
 	}
 }
 
@@ -2344,7 +2344,6 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 					$value = $field['value'];
 
 					dsv_log('SNMP_QUERY field', $field);
-					dsv_log('SNMP_QUERY suggested_val', $suggested_vals['custom_data'][$data_template_id]);
 
 					if (!empty($suggested_vals['custom_data'][$data_template_id][$field['id']])) {
 						$value = $suggested_vals['custom_data'][$data_template_id][$field['id']];
@@ -2439,7 +2438,6 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 					$value = $field['value'];
 
 					dsv_log('SCRIPT field', $field);
-					dsv_log('SCRIPT suggested_val', $suggested_vals['custom_data'][$data_template_id]);
 
 					if (!empty($suggested_vals['custom_data'][$data_template_id][$field['id']])) {
 						$value = $suggested_vals['custom_data'][$data_template_id][$field['id']];
