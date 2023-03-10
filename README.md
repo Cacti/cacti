@@ -61,6 +61,10 @@ In the sections below, you can find some important first steps before installing
 either the Cacti 1.2.x version of the pending Cacti 1.3.x version.  Good luck
 and enjoy Cacti.
 
+Most modern browsers are supported with the exception of ALL Internet Explorer
+versions as of Cacti version 1.2.x.  Do NOT attempt to use Internet Explorer
+of any version with Cacti 1.2.x and above.
+
 # Running Cacti from the `develop` Branch
 
 ## IMPORTANT
