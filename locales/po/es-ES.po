@@ -1,17 +1,5 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti 1\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2022-12-17 15:36-0500\n"
-"PO-Revision-Date: 2022-03-14 20:48-0400\n"
-"Last-Translator: Tadeo Briceño <tadeobriceno@vencable.com>\n"
-"Language-Team: Spanish <http://translate.cacti.net/projects/cacti/core-v1-2-x/es/>\n"
-"Language: es_ES\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 3.0.1\n"
+msgstr "Project-Id-Version: Cacti 1\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-12-17 15:36-0500\nPO-Revision-Date: 2023-03-07 13:25+0000\nLast-Translator: Tadeo Briceño <tadeobriceno@vencable.com>\nLanguage-Team: Spanish <http://translate.cacti.net/projects/cacti/core-v1-2-x/es/>\nLanguage: es-ES\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2605 lib/html.php:2491
 msgid "About Cacti"
@@ -8267,9 +8255,7 @@ msgstr "Tamaño de archivo RRD (en Bytes)"
 
 #: include/global_form.php:264
 msgid "Based upon the number of Rows in all RRAs and the number of Consolidation Functions selected, the size of this entire in the RRDfile."
-msgstr ""
-"Basado en el número de filas en todos los RRAs y el número de funciones de \n"
-"consolidación seleccionadas, el tamaño de todo esto en el archivo RRD."
+msgstr "Basado en el número de filas en todos los RRAs y el número de funciones de \nconsolidación seleccionadas, el tamaño de todo esto en el archivo RRD."
 
 #: include/global_form.php:286
 msgid "New Profile RRA"
@@ -15479,9 +15465,7 @@ msgstr "Configuración en solo lectura!"
 
 #: lib/installer.php:2098
 msgid "Your config.php file must be writable by the web server during install in order to configure the Remote poller.  Once installation is complete, you must set this file to Read Only to prevent possible security issues."
-msgstr ""
-"Tu archivo config.php debe ser escribible por el servidor web durante la instalación para configurar la Sonda remota. Una vez  la instalación este completa, debes configurar este archivo como Solo lectura, para prevenir \n"
-"posibles problemas de seguridad."
+msgstr "Tu archivo config.php debe ser escribible por el servidor web durante la instalación para configurar la Sonda remota. Una vez  la instalación este completa, debes configurar este archivo como Solo lectura, para prevenir \nposibles problemas de seguridad."
 
 #: lib/installer.php:2102
 msgid "Configuration of Poller"
