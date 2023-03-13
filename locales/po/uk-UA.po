@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Cacti 1.2.23\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-11-12 15:22-0500\n"
-"PO-Revision-Date: 2023-02-01 21:55+0000\n"
-"Last-Translator: Liubomyr Reshetniak <lyubomir.reshetnyak@gmail.com>\n"
+"PO-Revision-Date: 2023-03-14 01:57+0000\n"
+"Last-Translator: Rostyslav Haitkulov <info@ubilling.net.ua>\n"
 "Language-Team: Ukrainian <http://translate.cacti.net/projects/cacti/core/uk/>"
 "\n"
 "Language: uk-UA\n"
@@ -1095,7 +1095,7 @@ msgstr "Видалити пристрій"
 #: lib/api_automation.php:173 lib/api_automation.php:1099
 #: lib/html_utility.php:924 pollers.php:47
 msgid "Down"
-msgstr "Офлайн"
+msgstr "Оффлайн"
 
 #: automation_devices.php:55 automation_devices.php:300
 #: automation_devices.php:411 automation_devices.php:421
@@ -4451,11 +4451,11 @@ msgstr "Натисніть, щоб переглянути лише цей гра
 
 #: graph.php:266 lib/html.php:2451
 msgid "Utility View"
-msgstr "Перегляд службових програм"
+msgstr "Утилітарний Перегляд"
 
 #: graph.php:386
 msgid "Graph Utility View"
-msgstr "Перегляд утиліти Graph"
+msgstr "Утилітарний Перегляд Графіку"
 
 #: graph.php:399
 msgid "Graph Source/Properties"
@@ -5306,7 +5306,10 @@ msgstr "Вимкнути пристрій(а)"
 
 #: host.php:401
 msgid "Click 'Continue' to change the Device options below for multiple Device(s).  Please check the box next to the fields you want to update, and then fill in the new value."
-msgstr "Натисніть «Продовжити», щоб змінити параметри пристрою нижче для кількох пристроїв. Поставте прапорець біля полів, які потрібно оновити, а потім заповніть нове значення."
+msgstr ""
+"Клацніть 'Продовжити' для того, щоб змінити налаштування Пристрою для "
+"декількох Пристроїв. Відмітьте чекбокси, біля полів, які потрібно оновити, а "
+"потім заповніть нові значення."
 
 #: host.php:429
 msgid "Update this Field"
@@ -5314,51 +5317,57 @@ msgstr "Оновіть це поле"
 
 #: host.php:452
 msgid "Change Device(s) SNMP Options"
-msgstr "Змінити параметри SNMP пристрою(ів)."
+msgstr "Зміна налаштувань SNMP Пристрою(їв)"
 
 #: host.php:456
 msgid "Click 'Continue' to clear the counters for the following Device(s)."
-msgstr "Натисніть «Продовжити», щоб очистити лічильники для наступних пристроїв."
+msgstr "Клацніть 'Продовжити' щоб очистити лічильники для наступних Пристроїв."
 
 #: host.php:461
 msgid "Clear Statistics on Device(s)"
-msgstr "Очистити статистику на пристрої(ах)"
+msgstr "Очистити Статистику Пристрою(їв)"
 
 #: host.php:465
 msgid "Click 'Continue' to Synchronize the following Device(s) to their Device Template."
-msgstr "Натисніть «Продовжити», щоб синхронізувати наступний(і) пристрій(а) із їхнім шаблоном пристрою."
+msgstr ""
+"Клацніть 'Продовжити', щоб Синхронізувати наступні Пристрої з їх Шаблонами "
+"Пристроїв."
 
 #: host.php:470
 msgid "Synchronize Device(s)"
-msgstr "Синхронізація пристрою(ів)"
+msgstr "Синхронізація Пристроїв"
 
 #: host.php:474
 msgid "Click 'Continue' to delete the following Device(s)."
-msgstr "Натисніть «Продовжити», щоб видалити наступні пристрої."
+msgstr "Клацніть 'Продовжити', щоб видалити наступні Пристрої."
 
 #: host.php:477
 msgid "Leave all Graph(s) and Data Source(s) untouched.  Data Source(s) will be disabled however."
-msgstr "Залиште всі графіки та джерела даних недоторканими. Однак джерело даних буде вимкнено."
+msgstr ""
+"Залишити всі Графіки та Джерела Даних в спокої. Джерела даних буде вимкнено."
 
 #: host.php:478
 msgid "Delete all associated Graph(s) and Data Source(s)."
-msgstr "Видаліть усі пов’язані графіки та джерела даних."
+msgstr "Видалити всі пов'язані Графіки та Джерела Даних."
 
 #: host.php:488
 msgid "Click 'Continue' to place the following Device(s) under the branch selected below."
-msgstr "Клацніть «Продовжити», щоб розмістити наступні пристрої під гілкою, вибраною нижче."
+msgstr ""
+"Клацніть 'Продовжити', щоб розмістити наступні Пристрої в обраній гілці."
 
 #: host.php:498
 msgid "Place Device(s) on Tree"
-msgstr "Розмістіть пристрій (пристрої) на дереві"
+msgstr "Розмістити Пристрій(ї) в Дереві"
 
 #: host.php:502
 msgid "Click 'Continue' to apply Automation Rules to the following Devices(s)."
-msgstr "Натисніть «Продовжити», щоб застосувати правила автоматизації до наступних пристроїв."
+msgstr ""
+"Клацніть 'Продовжити', щоб застосувати Правила Автоматизації для наступних "
+"Пристроїв."
 
 #: host.php:507
 msgid "Run Automation on Device(s)"
-msgstr "Запуск автоматизації на пристрої(ах)"
+msgstr "Запустити Автоматизацію на Пристроях"
 
 #: host.php:536
 msgid "Add Devices to Report"
@@ -5375,19 +5384,19 @@ msgstr "Пристрій [новий]"
 #: host.php:690
 #, php-format
 msgid "Device [edit: %s]"
-msgstr "Пристрій [редагувати: %s]"
+msgstr "Пристрій [редагування:%s]"
 
 #: host.php:692
 msgid "Disable Device Debug"
-msgstr "Вимкнути налагодження пристрою"
+msgstr "Вимкнути Відлагодження Пристрою"
 
 #: host.php:694
 msgid "Enable Device Debug"
-msgstr "Увімкнути налагодження пристрою"
+msgstr "Увімкнути Відлагодження Пристрою"
 
 #: host.php:697
 msgid "Repopulate Poller Cache"
-msgstr "Повторно заповнити кеш Poller"
+msgstr "Перезібрати Кеш Поллера"
 
 #: host.php:698 include/global_arrays.php:2433 include/global_arrays.php:2445
 #: utilities.php:2276
@@ -5396,55 +5405,55 @@ msgstr "Переглянути кеш Poller"
 
 #: host.php:713
 msgid "Create Graphs for this Device"
-msgstr "Створення графіків для цього пристрою"
+msgstr "Створити Графіки для цього Пристрою"
 
 #: host.php:714
 msgid "Re-Index Device"
-msgstr "Переіндексувати пристрій"
+msgstr "Переіндексувати Пристрій"
 
 #: host.php:717
 msgid "Data Source List"
-msgstr "Список джерел даних"
+msgstr "Список Джерел Даних"
 
 #: host.php:718
 msgid "Graph List"
-msgstr "Список графіків"
+msgstr "Список Графіків"
 
 #: host.php:724
 msgid "Contacting Device"
-msgstr "Контактний пристрій"
+msgstr "Зв'язок з пристроєм"
 
 #: host.php:815 tree.php:1530 tree.php:1604 tree.php:1712
 msgid "Edit"
-msgstr "Редагувати"
+msgstr "Редагування"
 
 #: host.php:815
 msgid "Is Being Graphed"
-msgstr "Відображається на графіку"
+msgstr "Графіки Відмальовуються"
 
 #: host.php:815
 msgid "Not Being Graphed"
-msgstr "Не відображається на графіку"
+msgstr "Графіки не Відмальовуються"
 
 #: host.php:818
 msgid "Delete Graph Template Association"
-msgstr "Видалити асоціацію шаблону графіка"
+msgstr "Видалити зв'язок Шаблону Графіків"
 
 #: host.php:825 host_templates.php:514
 msgid "No associated graph templates."
-msgstr "Немає пов’язаних шаблонів графіків."
+msgstr "Немає пов'язаних шаблонів графіків."
 
 #: host.php:834 host_templates.php:523
 msgid "Add Graph Template"
-msgstr "Додайте шаблон графіка"
+msgstr "Додати Шаблон Графіків"
 
 #: host.php:840
 msgid "Add Graph Template to Device"
-msgstr "Додайте шаблон графіка на пристрій"
+msgstr "Додати Шаблон Графіків до Пристрою"
 
 #: host.php:856
 msgid "Data Query Debug Information"
-msgstr "Інформація про налагодження запиту даних"
+msgstr "Відлагоджувальна Інформація Запиту Даних"
 
 #: host.php:860 lib/functions.php:4213 tree.php:1552 tree.php:1626
 #: tree.php:1734 user_admin.php:29 user_group_admin.php:31
@@ -5457,11 +5466,11 @@ msgstr "Сховати"
 
 #: host.php:876 host_templates.php:546
 msgid "Associated Data Queries"
-msgstr "Запити пов’язаних даних"
+msgstr "Пов'язані Запити Даних"
 
 #: host.php:881 host.php:977
 msgid "Re-Index Method"
-msgstr "Метод повторного індексування"
+msgstr "Метод Переіндексування"
 
 #: host.php:883 include/global_arrays.php:2067 include/global_arrays.php:2133
 #: include/global_arrays.php:2223 include/global_arrays.php:2259
@@ -5480,7 +5489,7 @@ msgstr "Дії"
 #: host.php:944
 #, php-format
 msgid " [%d Items, %d Rows]"
-msgstr " [Елементів: %d, рядків: %d]"
+msgstr " [%d Елементів, %d Рядків]"
 
 #: host.php:944
 msgid "Fail"
@@ -5492,39 +5501,39 @@ msgstr "Успіх"
 
 #: host.php:947
 msgid "Reload Query"
-msgstr "Перезавантажити запит"
+msgstr "Перезавантажити Запит"
 
 #: host.php:948
 msgid "Verbose Query"
-msgstr "Детальний запит"
+msgstr "Детальний Запит"
 
 #: host.php:949
 msgid "Remove Query"
-msgstr "Видалити запит"
+msgstr "Видалити Запит"
 
 #: host.php:955
 msgid "No Associated Data Queries."
-msgstr "Немає пов’язаних запитів даних."
+msgstr "Немає пов'язаних Запитів Даних."
 
 #: host.php:971 host_templates.php:580
 msgid "Add Data Query"
-msgstr "Додати запит даних"
+msgstr "Додати Запит Даних"
 
 #: host.php:983
 msgid "Add Data Query to Device"
-msgstr "Додати запит даних на пристрій"
+msgstr "Додати Запит Даних до Пристрою"
 
 #: host.php:1149 host.php:1162 include/global_arrays.php:659
 msgid "Ping"
-msgstr "Пінґ"
+msgstr "Ping"
 
 #: host.php:1160 include/global_arrays.php:654
 msgid "Ping and SNMP Uptime"
-msgstr "Ping і SNMP Uptime"
+msgstr "Ping та SNMP Uptime"
 
 #: host.php:1161 include/global_arrays.php:656
 msgid "SNMP Uptime"
-msgstr "Час роботи SNMP"
+msgstr "SNMP Uptime"
 
 #: host.php:1163 include/global_arrays.php:655
 msgid "Ping or SNMP Uptime"
@@ -5532,7 +5541,7 @@ msgstr "Ping або SNMP Uptime"
 
 #: host.php:1164 include/global_arrays.php:657
 msgid "SNMP Desc"
-msgstr "Опис SNMP"
+msgstr "SNMP Desc"
 
 #: host.php:1165
 msgid "SNMP GetNext"
@@ -5540,25 +5549,25 @@ msgstr "SNMP GetNext"
 
 #: host.php:1424 host.php:1596
 msgid "Undefined"
-msgstr "Невизначено"
+msgstr "Не визначено"
 
 #: host.php:1528 include/global_settings.php:601 lib/html.php:2107
 #: lib/html_reports.php:990
 msgid "Site"
-msgstr "Сайт"
+msgstr "Вузол"
 
 #: host.php:1613
 msgid "Export Devices"
-msgstr "Експорт пристроїв"
+msgstr "Експорт Пристроїв"
 
 #: host.php:1634 lib/api_automation.php:171 lib/api_automation.php:1097
 msgid "Not Up"
-msgstr "Не онлайн"
+msgstr "Оффлайн"
 
 #: host.php:1637 lib/api_automation.php:174 lib/api_automation.php:1100
 #: lib/html_utility.php:927 pollers.php:49
 msgid "Recovering"
-msgstr "Відновлюється"
+msgstr "Відновлення"
 
 #: host.php:1638 lib/api_automation.php:175 lib/api_automation.php:1101
 #: lib/auth.php:2359 lib/html_utility.php:936 lib/import.php:319
@@ -5570,11 +5579,11 @@ msgstr "Невідомо"
 
 #: host.php:1714 lib/api_automation.php:570 tree.php:902 utilities.php:2190
 msgid "Device Description"
-msgstr "Опис пристрою"
+msgstr "Опис Пристрою"
 
 #: host.php:1717
 msgid "The name by which this Device will be referred to."
-msgstr "Назва, під якою цей пристрій буде називатися."
+msgstr "Ім'я яке буде використовуватись для цього Пристрою."
 
 #: host.php:1720 include/global_form.php:1193 include/global_form.php:1762
 #: lib/api_automation.php:279 lib/api_automation.php:571
@@ -5582,63 +5591,75 @@ msgstr "Назва, під якою цей пристрій буде назив�
 #: pollers.php:130 pollers.php:1007 user_admin.php:1144
 #: user_group_admin.php:1028
 msgid "Hostname"
-msgstr "Назва хоста"
+msgstr "Ім'я хоста"
 
 #: host.php:1723
 msgid "Either an IP address, or hostname.  If a hostname, it must be resolvable by either DNS, or from your hosts file."
-msgstr "Або IP-адреса, або ім’я хоста. Якщо це ім’я хоста, його має бути розпізнано через DNS або з вашого файлу hosts."
+msgstr ""
+"IP-адреса, чи ім'я хоста. Якщо це ім’я хоста, воно має бути резолвитись за "
+"допомогою DNS чи вашого файлу hosts."
 
 #: host.php:1729
 msgid "The internal database ID for this Device.  Useful when performing automation or debugging."
-msgstr "Ідентифікатор внутрішньої бази даних для цього пристрою. Корисно під час виконання автоматизації або налагодження."
+msgstr ""
+"Внутрішній ID бази даних для цього Пристрою. Корисно для автоматизації та "
+"відлагодження."
 
 #: host.php:1735
 msgid "The total number of Graphs generated from this Device."
-msgstr "Загальна кількість графіків, згенерованих цим пристроєм."
+msgstr "Загальна кількість Графіків, згенерованих з цього Пристрою."
 
 #: host.php:1741
 msgid "The total number of Data Sources generated from this Device."
-msgstr "Загальна кількість Джерел даних, згенерованих цим Пристроєм."
+msgstr "Загальна кількість Джерел Даних, що згенерованих з цього Пристрою."
 
 #: host.php:1747
 msgid "The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname \"localhost\", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an \"Unknown\" state."
-msgstr "Статус моніторингу Пристрою на основі результатів ping. Якщо цей Пристрій є Пристроєм особливого типу, через використання імені хоста \"localhost\" або через налаштування, що не виконує перевірку доступності, він завжди залишатиметься в роботі. Під час використання збирача даних cmd.php пристрій без графів не перевіряється збирачем даних і залишатиметься в стані «Невідомо»."
+msgstr ""
+"Статус моніторингу Пристрою на основі результатів ping. Якщо цей Пристрій є "
+"Пристроєм особливого типу, через використання імені хоста \"localhost\" або "
+"через налаштування, що не виконує перевірку доступності, він завжди "
+"залишатиметься в роботі. Під час використання збирача даних cmd.php пристрій "
+"без Графіків не пінгатиметься збирачем даних і залишатиметься в стані "
+"\"Невідомо\"."
 
 #: host.php:1750
 msgid "In State"
-msgstr "У штаті"
+msgstr "В стані"
 
 #: host.php:1753
 msgid "The amount of time that this Device has been in its current state."
-msgstr "Час, протягом якого цей пристрій перебував у поточному стані."
+msgstr "Час, протягом якого цей Пристрій перебував у поточному стані."
 
 #: host.php:1759
 msgid "The current amount of time that the host has been up."
-msgstr "Поточний час роботи хоста."
+msgstr "Час, протягом якого цей Пристрій перебував у стані онлайн."
 
 #: host.php:1762
 msgid "Poll Time"
-msgstr "Час опитування"
+msgstr "Час Опитування"
 
 #: host.php:1765
 msgid "The amount of time it takes to collect data from this Device."
-msgstr "Кількість часу, необхідного для збору даних із цього Пристрою."
+msgstr "Кількість часу, витрачена для збору даних із цього Пристрою."
 
 #: host.php:1768
 msgid "Current (ms)"
-msgstr "Струм (мс)"
+msgstr "Поточний (ms)"
 
 #: host.php:1771
 msgid "The current ping time in milliseconds to reach the Device."
-msgstr "Поточний час ping у мілісекундах для досягнення Пристрою."
+msgstr "Поточний час ping у мілісекундах відклику від Пристрою."
 
 #: host.php:1774
 msgid "Average (ms)"
-msgstr "Середнє (мс)"
+msgstr "Середній (ms)"
 
 #: host.php:1777
 msgid "The average ping time in milliseconds to reach the Device since the counters were cleared for this Device."
-msgstr "Середній час ping у мілісекундах для досягнення Пристрою з моменту очищення лічильників для цього Пристрою."
+msgstr ""
+"Середній час ping у мілісекундах відклику Пристрою з моменту очищення "
+"лічильників для цього Пристрою."
 
 #: host.php:1780
 msgid "Availability"
@@ -5650,23 +5671,25 @@ msgstr "Відсоток доступності на основі результ
 
 #: host_templates.php:37
 msgid "Sync Devices"
-msgstr "Пристрої синхронізації"
+msgstr "Синхронізація Пристроїв"
 
 #: host_templates.php:266
 msgid "Click 'Continue' to delete the following Device Template(s)."
-msgstr "Натисніть «Продовжити», щоб видалити наступні шаблони пристроїв."
+msgstr "Клацніть 'Продовжити', щоб видалити наступні Шаблони Пристроїв."
 
 #: host_templates.php:271
 msgid "Delete Device Template(s)"
-msgstr "Видалити шаблон(и) пристрою"
+msgstr "Видалити Шаблони Пристроїв"
 
 #: host_templates.php:275
 msgid "Click 'Continue' to duplicate the following Device Template(s).  Optionally change the title for the new Device Template(s)."
-msgstr "Натисніть «Продовжити», щоб скопіювати наступні шаблони пристроїв. За бажанням змініть назву для нового шаблону(ів) пристрою."
+msgstr ""
+"Клацніть 'Продовжити', щоб скопіювати наступні Шаблони Пристроїв. За "
+"бажанням ви можете змінити заголовок для нових Шаблонів Пристроїв."
 
 #: host_templates.php:285
 msgid "Duplicate Device Template(s)"
-msgstr "Повторювані шаблони пристроїв"
+msgstr "Скопіювати Шаблони Пристроїв"
 
 #: host_templates.php:289
 msgid "Click 'Continue' to Synchronize Devices associated with the selected Device Template(s).  Note that this action may take some time depending on the number of Devices mapped to the Device Template."
@@ -5713,7 +5736,7 @@ msgstr "Додайте шаблон графіка до шаблону прис�
 
 #: host_templates.php:571
 msgid "No associated data queries."
-msgstr "Немає пов’язаних запитів даних."
+msgstr "Немає пов'язаних Запитів Даних."
 
 #: host_templates.php:590
 msgid "Add Data Query to Device Template"
@@ -6341,7 +6364,7 @@ msgstr "Тільки системний журнал/журнал подій"
 
 #: include/global_arrays.php:658
 msgid "SNMP getNext"
-msgstr "SNMP getNext"
+msgstr "SNMP GetNext"
 
 #: include/global_arrays.php:663
 msgid "ICMP Ping"
