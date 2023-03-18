@@ -186,19 +186,19 @@ if ($child == false) {
 				set_config_option('boost_last_run_time', $last_run_time);
 			}
 
-			/* cleanup - remove empty arch tables*/
-			$tables = db_fetch_assoc("SELECT table_name AS name
-				FROM information_schema.tables
-				WHERE TABLE_SCHEMA = SCHEMA()
-				AND TABLE_NAME LIKE 'poller_output_boost_arch_%'");
+			if ($rrd_updated > 0) {
+				/* cleanup - remove empty arch tables*/
+				$tables = db_fetch_assoc("SELECT table_name AS name
+					FROM information_schema.tables
+					WHERE TABLE_SCHEMA = SCHEMA()
+					AND TABLE_NAME LIKE 'poller_output_boost_arch_%'");
 
-			if (cacti_sizeof($tables)) {
-				foreach($tables as $table) {
-					db_execute('DROP TABLE IF EXISTS ' . $table['name']);
+				if (cacti_sizeof($tables)) {
+					foreach($tables as $table) {
+						db_execute('DROP TABLE IF EXISTS ' . $table['name']);
+					}
 				}
-			}
 
-			if ($rrd_updates > 0) {
 				dsstats_boost_bottom();
 				rrdcheck_boost_bottom();
 
