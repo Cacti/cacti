@@ -917,9 +917,11 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 				$first_tmpl = true;
 				$multi_ok   = false;
 
-				for ($i=0; $i<cacti_count($values); $i++) {
-					if (preg_match("/^([a-zA-Z0-9_\.-]+):([eE0-9Uu\+\.-]+)$/", $values[$i], $matches)) {
-						if (isset($rrd_field_names[$matches[1]])) {
+				if (cacti_sizeof($values)) {
+					foreach($values as $value) {
+						$matches = explode(':', $value);
+
+						if (isset($rrd_field_names[$matches[0]])) {
 							$multi_ok = true;
 
 							if (!$multi_vals_set) {
@@ -931,12 +933,12 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 								$first_tmpl = false;
 							}
 
-							if (is_numeric($matches[2]) || ($matches[2] == 'U')) {
-								$output  = ':' . $matches[2];
+							if (is_numeric($matches[1]) || ($matches[1] == 'U')) {
+								$output  = ':' . $matches[1];
 								$outbuf .= $output;
 								$outlen += strlen($output);
 							} elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($matches[2]))) {
-								$output  = ':' . hexdec($matches[2]);
+								$output  = ':' . hexdec($matches[1]);
 								$outbuf .= $output;
 								$outlen += strlen($output);
 							} else {
