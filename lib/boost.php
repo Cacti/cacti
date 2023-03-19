@@ -900,16 +900,20 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 				$outlen += strlen($output);
 				$vals_in_buffer++;
 			} elseif ($value != '') {
-				/* break out multiple value output to an array */
-				$values = explode(' ', $value);
+				$values = preg_split('/\s+/', $value);
 
 				if (!$multi_vals_set) {
-					$rrd_field_names = array_rekey(db_fetch_assoc_prepared('SELECT
-						data_template_rrd.data_source_name,
-						data_input_fields.data_name
-						FROM (data_template_rrd, data_input_fields)
-						WHERE data_template_rrd.data_input_field_id = data_input_fields.id
-						AND data_template_rrd.local_data_id = ?', array($item['local_data_id'])), 'data_name', 'data_source_name');
+					$rrd_field_names = array_rekey(
+						db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
+							FROM graph_templates_item AS gti
+							INNER JOIN data_template_rrd AS dtr
+							ON gti.task_item_id = dtr.id
+							INNER JOIN data_input_fields AS dif
+							ON dtr.data_input_field_id = dif.id
+							WHERE dtr.local_data_id = ?',
+							array($item['local_data_id'])),
+						'data_name', 'data_source_name'
+					);
 
 					$rrd_tmpl = '';
 				}
@@ -929,7 +933,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 									$rrd_tmpl .= ':';
 								}
 
-								$rrd_tmpl  .= $rrd_field_names[$matches[1]];
+								$rrd_tmpl  .= $rrd_field_names[$matches[0]];
 								$first_tmpl = false;
 							}
 
@@ -937,7 +941,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 								$output  = ':' . $matches[1];
 								$outbuf .= $output;
 								$outlen += strlen($output);
-							} elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($matches[2]))) {
+							} elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($matches[1]))) {
 								$output  = ':' . hexdec($matches[1]);
 								$outbuf .= $output;
 								$outlen += strlen($output);

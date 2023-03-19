@@ -620,11 +620,14 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 						} else {
 							// Handle data source without a data template
 							$nt_rrd_field_names = array_rekey(
-								db_fetch_assoc_prepared('SELECT dtr.data_source_name, dif.data_name
-									FROM data_template_rrd AS dtr
+								db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
+									FROM graph_templates_item AS gti
+									INNER JOIN data_template_rrd AS dtr
+									ON gti.task_item_id = dtr.id
 									INNER JOIN data_input_fields AS dif
 									ON dtr.data_input_field_id=dif.id
-									WHERE dtr.local_data_id = ?', array($item['local_data_id'])),
+									WHERE dtr.local_data_id = ?',
+									array($item['local_data_id'])),
 								'data_name', 'data_source_name'
 							);
 
