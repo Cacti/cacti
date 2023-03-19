@@ -123,7 +123,7 @@ function form_save() {
 		$save['hash']          = get_hash_data_query(get_nfilter_request_var('id'));
 		$save['name']          = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 		$save['description']   = form_input_validate(get_nfilter_request_var('description'), 'description', '', true, 3);
-		$save['xml_path']      = form_input_validate(get_nfilter_request_var('xml_path'), 'xml_path', '', false, 3);
+		$save['xml_path']      = form_input_validate(trim(get_nfilter_request_var('xml_path')), 'xml_path', '', false, 3);
 		$save['data_input_id'] = get_request_var('data_input_id');
 
 		// Detect changing input id

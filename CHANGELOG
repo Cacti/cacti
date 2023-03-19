@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.25
+-issue#5255: Data query xml path with space problem
 -issue#5259: When the Data Template contains more Data Sources than the Graph Template RRDfiles won't update
 -issue#5263: Warnings in Cacti log when re-indexing devices
 -issue#5272: Boost continues to loose data when archive tables are missed due to overloaded MariaDB
