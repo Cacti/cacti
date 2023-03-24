@@ -958,6 +958,7 @@ function graph_edit() {
 					'#right_axis_label',
 					'#right_axis_format',
 					'#right_axis_formatter',
+					'#left_axis_format',
 					'#left_axis_formatter',
 					'#no_gridfit',
 					'#unit_length',
