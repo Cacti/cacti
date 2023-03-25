@@ -1,7 +1,7 @@
 # Cacti ™
 
 [![Build Status -
-Develop](https://travis-ci.org/Cacti/cacti.svg?branch=develop)](https://travis-ci.org/Cacti/cacti)
+Develop](https://travis-ci.com/Cacti/cacti.svg?branch=develop)](https://travis-ci.org/Cacti/cacti)
 [![Project
 Status](http://opensource.box.com/badges/active.svg)](http://opensource.box.com/badges)
 [![Translation
