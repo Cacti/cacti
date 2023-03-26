@@ -66,10 +66,14 @@ function ss_host_cpu($hostname = '', $host_id = 0, $snmp_auth = '', $cmd = 'inde
 	$oids = array(
 		'index' => '.1.3.6.1.2.1.25.3.3.1.2',
 		'usage' => '.1.3.6.1.2.1.25.3.3.1.2'
-		);
+	);
 
 	if (($cmd == 'index')) {
-		$value = api_plugin_hook_function('hmib_get_cpu_indexes', array('host_id' => $host_id));
+		if (db_table_exists('plugin_hmib_hrProcessor')) {
+			$value = api_plugin_hook_function('hmib_get_cpu_indexes', array('host_id' => $host_id));
+		} else {
+			$value = array();
+		}
 
 		if (is_array($value)) {
 			$arr_index = ss_host_cpu_get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids);
@@ -86,7 +90,11 @@ function ss_host_cpu($hostname = '', $host_id = 0, $snmp_auth = '', $cmd = 'inde
 			}
 		}
 	} elseif (($cmd == 'num_indexes')) {
-		$value = api_plugin_hook_function('hmib_get_cpu_indexes', array('host_id' => $host_id));
+		if (db_table_exists('plugin_hmib_hrProcessor')) {
+			$value = api_plugin_hook_function('hmib_get_cpu_indexes', array('host_id' => $host_id));
+		} else {
+			$value = array();
+		}
 
 		if (is_array($value)) {
 			$arr_index = ss_host_cpu_get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids);
@@ -97,7 +105,11 @@ function ss_host_cpu($hostname = '', $host_id = 0, $snmp_auth = '', $cmd = 'inde
 			return cacti_sizeof($indexes);
 		}
 	} elseif ($cmd == 'query') {
-		$value = api_plugin_hook_function('hmib_get_cpu_indexes', array('host_id' => $host_id));
+		if (db_table_exists('plugin_hmib_hrProcessor')) {
+			$value = api_plugin_hook_function('hmib_get_cpu_indexes', array('host_id' => $host_id));
+		} else {
+			$value = array();
+		}
 
 		if (is_array($value)) {
 			$arg = $arg1;
@@ -124,7 +136,11 @@ function ss_host_cpu($hostname = '', $host_id = 0, $snmp_auth = '', $cmd = 'inde
 		$arg = $arg1;
 		$index = rtrim($arg2);
 
-		$value = api_plugin_hook_function('hmib_get_cpu', array('host_id' => $host_id, 'arg' => $arg, 'index' => $index));
+		if (db_table_exists('plugin_hmib_hrProcessor')) {
+			$value = api_plugin_hook_function('hmib_get_cpu', array('host_id' => $host_id, 'arg' => $arg, 'index' => $index));
+		} else {
+			$value = array();
+		}
 
 		if (is_array($value)) {
 			$arr_index = ss_host_cpu_get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids);
