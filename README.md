@@ -1,6 +1,6 @@
 # Cacti ™
 
-[![Build Status - Develop](https://github.com/Cacti/cacti/actions/workflows/syntax.yml/batch.svg)
+![Build Status - Develop](https://github.com/Cacti/cacti/actions/workflows/syntax.yml/batch.svg)
 [![Project Status](http://opensource.box.com/badges/active.svg)](http://opensource.box.com/badges)
 [![Translation Status](https://translate.cacti.net/widgets/cacti/-/core/svg-badge.svg)](https://translate.cacti.net
 "Translation Status") 
