@@ -902,6 +902,14 @@ $struct_graph = array(
 		'none_value'    => __('None'),
 		'description'   => __('When you setup the right axis labeling, apply a rule to the data format.  Supported formats include "numeric" where data is treated as numeric, "timestamp" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is "%Y-%m-%d %H:%M:%S").  See also --units-length and --right-axis-format.  Finally "duration" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT.'),
 		),
+	'left_axis_format'  => array(
+		'friendly_name' => __('Left Axis Format (--left-axis-format &lt;format&gt;)'),
+		'method'        => 'drop_sql',
+		'sql'           => 'SELECT id, name FROM graph_templates_gprint ORDER BY name',
+		'default'       => '',
+		'none_value'    => __('None'),
+		'description'   => __('By default, the format of the axis labels gets determined automatically.  If you want to do this yourself, use this option with the same %lf arguments you know from the PRINT and GPRINT commands.'),
+		),
 	'left_axis_formatter' => array(
 		'friendly_name' => __('Left Axis Formatter (--left-axis-formatter &lt;formatname&gt;)'),
 		'method'        => 'drop_array',

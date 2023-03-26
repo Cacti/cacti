@@ -8510,6 +8510,10 @@ msgstr ""
 msgid "Right Axis Format (--right-axis-format &lt;format&gt;)"
 msgstr ""
 
+#: include/global_form.php:905
+msgid "Left Axis Format (--left-axis-format &lt;format&gt;)"
+msgstr ""
+
 #: include/global_form.php:895
 #, php-format
 msgid "By default, the format of the axis labels gets determined automatically.  If you want to do this yourself, use this option with the same %lf arguments you know from the PRINT and GPRINT commands."

@@ -571,6 +571,7 @@ function aggregate_validate_graph_params($posted, $has_override = false) {
 		'grouping'             => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
 		'height'               => array('type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => '^[0-9]+$'),
 		'image_format_id'      => array('type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => ''),
+		'left_axis_format'     => array('type' => 'int',  'allow_empty' => true,  'default' => '', 'regex' => '^[0-9]+$'),
 		'left_axis_formatter'  => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
 		'legend_direction'     => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
 		'legend_position'      => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),

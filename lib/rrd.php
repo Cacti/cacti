@@ -1291,6 +1291,13 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 				}
 
 				break;
+			case "left_axis_format":
+				if (!empty($value)) {
+					$format = db_fetch_cell_prepared('SELECT gprint_text from graph_templates_gprint WHERE id = ?', array($value));
+					$graph_opts .= "--left-axis-format " . cacti_escapeshellarg(trim(str_replace('%s', '', $format))) . RRD_NL;
+				}
+
+				break;
 			case 'no_gridfit':
 				if ($value == CHECKED) {
 					$graph_opts .= '--no-gridfit' . RRD_NL;
@@ -1513,7 +1520,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		gtg.right_axis, gtg.right_axis_label, gtg.right_axis_format, gtg.no_gridfit,
 		gtg.unit_length, gtg.tab_width, gtg.dynamic_labels, gtg.force_rules_legend,
 		gtg.legend_position, gtg.legend_direction, gtg.right_axis_formatter,
-		gtg.left_axis_formatter
+		gtg.left_axis_format, gtg.left_axis_formatter
 		FROM graph_templates_graph AS gtg
 		INNER JOIN graph_local AS gl
 		ON gl.id=gtg.local_graph_id
