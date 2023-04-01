@@ -133,7 +133,6 @@ switch (get_request_var('action')) {
 		get_allowed_ajax_hosts(false);
 
 		break;
-
 	default:
 		if (!api_plugin_hook_function('utilities_action', get_request_var('action'))) {
 			top_header();
@@ -296,23 +295,23 @@ function utilities_view_logfile() {
 							<?php
 							$logFileArray = clog_get_logfiles();
 
-	if (cacti_sizeof($logFileArray)) {
-		foreach ($logFileArray as $logFile) {
-			print "<option value='" . html_escape($logFile) . "'";
+							if (cacti_sizeof($logFileArray)) {
+								foreach ($logFileArray as $logFile) {
+									print "<option value='" . html_escape($logFile) . "'";
 
-			if (get_nfilter_request_var('filename') == $logFile) {
-				print ' selected';
-			}
+									if (get_nfilter_request_var('filename') == $logFile) {
+										print ' selected';
+									}
 
-			$logParts = explode('-', $logFile);
+									$logParts = explode('-', $logFile);
 
-			$logDate = cacti_count($logParts) < 2 ? '' : $logParts[1] . (isset($logParts[2]) ? '-' . $logParts[2]:'');
-			$logName = $logParts[0];
+									$logDate = cacti_count($logParts) < 2 ? '' : $logParts[1] . (isset($logParts[2]) ? '-' . $logParts[2]:'');
+									$logName = $logParts[0];
 
-			print '>' . html_escape($logName . ($logDate != '' ? ' [' . substr($logDate,4) . ']':'')) . '</option>';
-		}
-	}
-	?>
+									print '>' . html_escape($logName . ($logDate != '' ? ' [' . substr($logDate,4) . ']':'')) . '</option>';
+								}
+							}
+							?>
 						</select>
 					</td>
 					<td>
@@ -321,14 +320,14 @@ function utilities_view_logfile() {
 					<td>
 						<select id='tail_lines' onChange='applyFilter()'>
 							<?php
-	foreach ($log_tail_lines as $tail_lines => $display_text) {
-		print "<option value='" . $tail_lines . "'";
+							foreach ($log_tail_lines as $tail_lines => $display_text) {
+								print "<option value='" . $tail_lines . "'";
 
-		if (get_request_var('tail_lines') == $tail_lines) {
-			print ' selected';
-		} print '>' . $display_text . '</option>';
-	}
-	?>
+								if (get_request_var('tail_lines') == $tail_lines) {
+									print ' selected';
+								} print '>' . $display_text . '</option>';
+							}
+							?>
 						</select>
 					</td>
 					<td>
@@ -370,14 +369,14 @@ function utilities_view_logfile() {
 					<td>
 						<select id='refresh' onChange='applyFilter()'>
 							<?php
-	foreach ($page_refresh_interval as $seconds => $display_text) {
-		print "<option value='" . $seconds . "'";
+							foreach ($page_refresh_interval as $seconds => $display_text) {
+								print "<option value='" . $seconds . "'";
 
-		if (get_request_var('refresh') == $seconds) {
-			print ' selected';
-		} print '>' . $display_text . '</option>';
-	}
-	?>
+								if (get_request_var('refresh') == $seconds) {
+									print ' selected';
+								} print '>' . $display_text . '</option>';
+							}
+							?>
 						</select>
 					</td>
 				</tr>
@@ -1556,28 +1555,28 @@ function boost_display_run_status() {
 	}
 
 	form_alternate_row();
-	print '<td>' . __('Total Poller Items:') . '</td><td>' . number_format_i18n($poller_items, -1) . '</td>';
+	print '<td>' . __('Total Poller Items:') . '</td><td>' . number_format_i18n($poller_items) . '</td>';
 
 	$premaining = ($data_sources ? (round(($pending_ds / $data_sources) * 100, 1)) : 0);
 
 	if ($total_records) {
 		form_alternate_row();
-		print '<td>' . __('Total Data Sources:') . '</td><td>' . number_format_i18n($data_sources, -1) . '</td>';
+		print '<td>' . __('Total Data Sources:') . '</td><td>' . number_format_i18n($data_sources) . '</td>';
 
 		if ($config['connection'] == 'online') {
 			form_alternate_row();
-			print '<td>' . __('Remaining Data Sources:') . '</td><td>' . ($pending_ds > 0 ? number_format_i18n($pending_ds, -1) . " ($premaining %)":__('TBD')) . '</td>';
+			print '<td>' . __('Remaining Data Sources:') . '</td><td>' . ($pending_ds > 0 ? number_format_i18n($pending_ds) . " ($premaining %)":__('TBD')) . '</td>';
 		}
 
 		form_alternate_row();
-		print '<td>' . __('Queued Boost Records:') . '</td><td>' . number_format_i18n($pending_records, -1) . '</td>';
+		print '<td>' . __('Queued Boost Records:') . '</td><td>' . number_format_i18n($pending_records) . '</td>';
 
 		if ($config['connection'] == 'online') {
 			form_alternate_row();
-			print '<td>' . __('Approximate in Process:') . '</td><td>' . number_format_i18n($remaining, -1) . '</td>';
+			print '<td>' . __('Approximate in Process:') . '</td><td>' . number_format_i18n($remaining) . '</td>';
 
 			form_alternate_row();
-			print '<td>' . __('Total Boost Records:') . '</td><td>' . number_format_i18n($total_records, -1) . '</td>';
+			print '<td>' . __('Total Boost Records:') . '</td><td>' . number_format_i18n($total_records) . '</td>';
 		}
 	}
 
@@ -1665,7 +1664,7 @@ function boost_display_run_status() {
 		print '</td>';
 
 		form_alternate_row();
-		print '<td class="utilityPick">' . __('RRD Updates:') . '</td><td>' . ($boost_rrds_updated != '' ? number_format_i18n($boost_rrds_updated, -1):'-') . '</td>';
+		print '<td class="utilityPick">' . __('RRD Updates:') . '</td><td>' . ($boost_rrds_updated != '' ? number_format_i18n($boost_rrds_updated):'-') . '</td>';
 
 		form_alternate_row();
 		print '<td class="utilityPick">' . __('Peak Poller Memory:') . '</td><td>' . ((read_config_option('boost_peak_memory') != '' && is_numeric(read_config_option('boost_peak_memory'))) ? (round(read_config_option('boost_peak_memory') / 1024 / 1024,2)) . ' ' . __('MBytes') : __('N/A')) . '</td>';
@@ -1768,7 +1767,7 @@ function boost_display_run_status() {
 		print '<td class="utilityPick">' . __('Next Start Time:') . '</td><td>' . (is_numeric($next_run_time) ? date('Y-m-d H:i:s', $next_run_time):$next_run_time) . '</td>';
 
 		form_alternate_row();
-		print '<td class="utilityPick">' . __('Maximum Records:') . '</td><td>' . number_format_i18n($max_records, -1) . ' ' . __('Records') . '</td>';
+		print '<td class="utilityPick">' . __('Maximum Records:') . '</td><td>' . number_format_i18n($max_records) . ' ' . __('Records') . '</td>';
 
 		form_alternate_row();
 		print '<td class="utilityPick">' . __('Maximum Allowed Runtime:') . '</td><td>' . $boost_max_runtime[$max_runtime] . '</td>';
