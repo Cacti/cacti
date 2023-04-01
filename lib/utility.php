@@ -769,7 +769,10 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 						$field = 'id';
 					}
 
-					if (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $template_field['type_code']) && $template_field['t_value'] != 'on') {
+					// Only override if the template value is null at this point
+					if (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $template_field['type_code']) &&
+						$template_field['t_value'] != 'on' && $template_field['value'] == '') {
+
 						// It's a valid host type-code
 						$update = true;
 
