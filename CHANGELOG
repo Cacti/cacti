@@ -62,6 +62,7 @@ Cacti CHANGELOG
 -issue#5255: Data query xml path with space problem
 -issue#5258: Warnings occur when installing thold plugin and as such thold will not upgrade correctly
 -issue#5259: When the Data Template contains more Data Sources than the Graph Template RRDfiles won't update
+-issue#5263: Warnings in Cacti log when re-indexing devices
 -issue#5272: Boost continues to loose data when archive tables are missed due to overloaded MariaDB
 -issue#5275: Boost stats can display odd values when running
 -issue#5277: Boost should not attempt to start if there are no poller_output_boost records
