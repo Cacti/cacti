@@ -1073,7 +1073,7 @@ function api_plugin_valid_entrypoint($plugin, $function) {
 	// Check for invalid entrypoint install/upgrade
 	$backtrace = debug_backtrace();
 	if (cacti_sizeof($backtrace)) {
-		if (!preg_match('/(install|upgrade)/i', $backtrace[2]['function'])) {
+		if (!preg_match('/(install|upgrade|setup)/i', $backtrace[2]['function'])) {
 			cacti_log(sprintf('WARNING: Plugin \'%s\' is attempting to call \'%s\' improperly in function \'%s\'', $plugin, $function, $backtrace[2]['function']), false, 'PLUGIN');
 			return false;
 		}
