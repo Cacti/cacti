@@ -120,44 +120,45 @@ if (cacti_sizeof($pollers)) {
 	print 'NOTE:  Do not interrupt this script.  Rebuilding the Poller Cache can take quite some time' . PHP_EOL;
 
 	foreach($pollers as $poller_id) {
-		/* get the data_local Id's for the poller cache */
-		$poller_data  = db_fetch_assoc_prepared("SELECT dl.*, h.description
-			FROM data_local AS dl
-			INNER JOIN host AS h
-			ON dl.host_id = h.id
-			$sql_where
-			AND poller_id = $poller_id
-			ORDER BY dl.host_id",
-			$params);
+		/* get the hosts for this poller_id */
+		$hosts  = array_rekey(
+			db_fetch_assoc_prepared("SELECT DISTINCT dl.host_id
+				FROM data_local AS dl
+				INNER JOIN host AS h
+				ON dl.host_id = h.id
+				$sql_where
+				AND poller_id = $poller_id
+				ORDER BY dl.host_id",
+				$params),
+			'host_id', 'host_id'
+		);
 
-		/* initialize some variables */
-		$current_ds   = 1;
-		$current_host = -1;
-		$total_ds     = cacti_sizeof($poller_data);
-
-		/* setting local_data_ids to an empty array saves time during updates */
-		$local_data_ids = array();
-		$poller_items   = array();
+		/* add special host 0 */
+		if ($poller_id == 1) {
+			$hosts[0] = 0;
+		}
 
 		/* issue warnings and start message if applicable */
-		debug("There are '" . cacti_sizeof($poller_data) . "' data source elements to update for poller id number $poller_id.");
+		debug("There are '" . cacti_sizeof($hosts) . "' Devices to rebuild poller items for on poller $poller_id.");
 
 		/* start rebuilding the poller cache */
-		if (cacti_sizeof($poller_data)) {
-			foreach ($poller_data as $data) {
-				if ($data['host_id'] != $current_host) {
-					print "NOTE:  Processing Device:'{$data['description']}' with Poller:'$poller_id'" . PHP_EOL;
+		if (cacti_sizeof($hosts)) {
+			foreach ($hosts as $host_id) {
+				if ($host_id > 0) {
+					$description = db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($host_id));
+				} else {
+					$description = 'Special Host Zero';
 				}
 
-				$local_data_ids[] = $data['id'];
-				$poller_items     = array_merge($poller_items, update_poller_cache($data));
+				$data_sources = db_fetch_cell_prepared('SELECT COUNT(*) FROM data_local WHERE host_id = ?', array($host_id));
 
-				$current_ds++;
-				$current_host = $data['host_id'];
-			}
-
-			if (cacti_sizeof($local_data_ids)) {
-				poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
+				if ($data_sources > 0) {
+					print "NOTE:  Processing Device:'$description' on Poller:'$poller_id' having $data_sources Data Sources." . PHP_EOL;
+					push_out_host($host_id);
+				} else {
+					print "NOTE:  Removing Poller Cache Items for Device:'$description' on Poller:'$poller_id' as it has no Data Sources." . PHP_EOL;
+					db_execute_prepared('DELETE FROM poller_item WHERE host_id = ?', array($host_id));
+				}
 			}
 		}
 	}
