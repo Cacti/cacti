@@ -2273,7 +2273,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 					$value = $field['value'];
 
 					dsv_log('SNMP field', $field);
-					dsv_log('SNMP value', $velue);
+					dsv_log('SNMP value', $value);
 
 					if (!empty($suggested_vals['custom_data'][$data_template_id][$field['id']])) {
 						$value = $suggested_vals['custom_data'][$data_template_id][$field['id']];
