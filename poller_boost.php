@@ -140,8 +140,8 @@ if ($child == false) {
 		 * Check to see if there are any poller items to process and if not
 		 * exit cleanly
 		 */
-		$poller_items = db_fetch_cell('SELECT * FROM poller_output_boost LIMIT 1');
-		if ($poller_items == 0) {
+		$poller_items = db_fetch_row('SELECT * FROM poller_output_boost LIMIT 1');
+		if (!cacti_sizeof($poller_items)) {
 			exit(0);
 		}
 
