@@ -136,6 +136,15 @@ if ($child == false) {
 	$run_now = boost_time_to_run($forcerun, $current_time, $last_run_time, $next_run_time);
 
 	if ($run_now) {
+		/**
+		 * Check to see if there are any poller items to process and if not
+		 * exit cleanly
+		 */
+		$poller_items = db_fetch_cell('SELECT * FROM poller_output_boost LIMIT 1');
+		if ($poller_items == 0) {
+			exit(0);
+		}
+
 		/* we will warn if the process is taking extra long */
 		if (!register_process_start('boost', 'master', $config['poller_id'], read_config_option('boost_rrd_update_max_runtime') * 3)) {
 			exit(0);
