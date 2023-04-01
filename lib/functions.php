@@ -2311,7 +2311,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 
 	$called_by_script_server = true;
 
-	dsv_log('test_data_source', array( 'data_template_id' => $data_template_id, 'host_id' => $host_id, 'snmp_query_id' => $snmp_query_id, 'snmp_index' => $snmp_index, 'suggested_vals' => $suggested_vals));
+	dsv_log('test_data_source', array('data_template_id' => $data_template_id, 'host_id' => $host_id, 'snmp_query_id' => $snmp_query_id, 'snmp_index' => $snmp_index, 'suggested_vals' => $suggested_vals));
 
 	$data_input = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
 		di.id, di.type_id, dtd.id AS data_template_data_id,
@@ -2390,7 +2390,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 				AND input_output = "out"
 				AND update_rra="on"';
 
-			dsv_log('num_output_fields_sql',$num_output_fields_sql);
+			dsv_log('num_output_fields_sql', $num_output_fields_sql);
 
 			$num_output_fields = cacti_sizeof(db_fetch_assoc_prepared($num_output_fields_sql, array($data_input['id'])));
 
@@ -2466,7 +2466,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 				AND did.data_template_data_id = ?
 				AND did.value != ""';
 
-			dsv_log('host_fields_sql',$host_fields_sql);
+			dsv_log('host_fields_sql', $host_fields_sql);
 			dsv_log('host_fields_sql_params', array('data_template_data_id' => $data_template_data_id));
 
 			$host_fields = array_rekey(
@@ -2493,7 +2493,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 					$value = $field['value'];
 
 					dsv_log('SNMP field', $field);
-					dsv_log('SNMP suggested_val', $suggested_vals['custom_data'][$data_template_id]);
+					dsv_log('SNMP value', $value);
 
 					if (!empty($suggested_vals['custom_data'][$data_template_id][$field['id']])) {
 						$value = $suggested_vals['custom_data'][$data_template_id][$field['id']];

@@ -59,6 +59,7 @@ Cacti CHANGELOG
 
 1.2.25
 -issue#5279: Rebuild poller cache does not work as expected
+-issue#5283: Trying to access array offset on value of type null in file lib/functions.php on line: 2276
 
 1.2.24
 -issue#5127: Importing Local_Linux_Machine.xml.gz template raises PHP error
