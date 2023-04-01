@@ -109,41 +109,60 @@ if ($host_template_id > 0) {
 	$params[] = $host_template_id;
 }
 
-/* get the data_local Id's for the poller cache */
-$poller_data  = db_fetch_assoc_prepared("SELECT dl.*
-	FROM data_local AS dl
-	INNER JOIN host AS h
-	ON dl.host_id = h.id
-	$sql_where",
-	$params);
+$pollers = array_rekey(
+	db_fetch_assoc('SELECT DISTINCT poller_id
+		FROM host
+		WHERE disabled = ""'),
+	'poller_id', 'poller_id'
+);
 
-/* initialize some variables */
-$current_ds = 1;
-$total_ds = cacti_sizeof($poller_data);
+if (cacti_sizeof($pollers)) {
+	print 'NOTE:  Do not interrupt this script.  Rebuilding the Poller Cache can take quite some time' . PHP_EOL;
 
-/* setting local_data_ids to an empty array saves time during updates */
-$local_data_ids = array();
-$poller_items   = array();
+	foreach($pollers as $poller_id) {
+		/* get the data_local Id's for the poller cache */
+		$poller_data  = db_fetch_assoc_prepared("SELECT dl.*, h.description
+			FROM data_local AS dl
+			INNER JOIN host AS h
+			ON dl.host_id = h.id
+			$sql_where
+			AND poller_id = $poller_id
+			ORDER BY dl.host_id",
+			$params);
 
-/* issue warnings and start message if applicable */
-print 'WARNING: Do not interrupt this script.  Rebuilding the Poller Cache can take quite some time' . PHP_EOL;
-debug("There are '" . cacti_sizeof($poller_data) . "' data source elements to update.");
+		/* initialize some variables */
+		$current_ds   = 1;
+		$current_host = -1;
+		$total_ds     = cacti_sizeof($poller_data);
 
-/* start rebuilding the poller cache */
-if (cacti_sizeof($poller_data)) {
-	foreach ($poller_data as $data) {
-		if (!$debug) print '.';
-		$local_data_ids[] = $data['id'];
-		$poller_items = array_merge($poller_items, update_poller_cache($data));
+		/* setting local_data_ids to an empty array saves time during updates */
+		$local_data_ids = array();
+		$poller_items   = array();
 
-		debug("Data Source Item '$current_ds' of '$total_ds' updated");
-		$current_ds++;
-	}
+		/* issue warnings and start message if applicable */
+		debug("There are '" . cacti_sizeof($poller_data) . "' data source elements to update for poller id number $poller_id.");
 
-	if (cacti_sizeof($local_data_ids)) {
-		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
+		/* start rebuilding the poller cache */
+		if (cacti_sizeof($poller_data)) {
+			foreach ($poller_data as $data) {
+				if ($data['host_id'] != $current_host) {
+					print "NOTE:  Processing Device:'{$data['description']}' with Poller:'$poller_id'" . PHP_EOL;
+				}
+
+				$local_data_ids[] = $data['id'];
+				$poller_items     = array_merge($poller_items, update_poller_cache($data));
+
+				$current_ds++;
+				$current_host = $data['host_id'];
+			}
+
+			if (cacti_sizeof($local_data_ids)) {
+				poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
+			}
+		}
 	}
 }
+
 if (!$debug) {
 	print PHP_EOL;
 }
