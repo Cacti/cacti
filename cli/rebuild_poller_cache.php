@@ -29,7 +29,6 @@ require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 if ($config['poller_id'] > 1) {
 	print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
-
 	exit(1);
 }
 
@@ -37,16 +36,16 @@ if ($config['poller_id'] > 1) {
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug            = false;
-$host_id          = 0;
+$debug = false;
+$host_id = 0;
 $host_template_id = 0;
 
 if (cacti_sizeof($parms)) {
-	foreach ($parms as $parameter) {
+	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
 		} else {
-			$arg   = $parameter;
+			$arg = $parameter;
 			$value = '';
 		}
 
@@ -54,14 +53,12 @@ if (cacti_sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
-
 				break;
 			case '--host-id':
 				$host_id = trim($value);
 
 				if (!is_numeric($host_id)) {
 					print 'ERROR: You must supply a valid device id to run this script!' . PHP_EOL;
-
 					exit(1);
 				}
 
@@ -71,7 +68,6 @@ if (cacti_sizeof($parms)) {
 
 				if (!is_numeric($host_id)) {
 					print 'ERROR: You must supply a valid device template id to run this script!' . PHP_EOL;
-
 					exit(1);
 				}
 
@@ -80,19 +76,15 @@ if (cacti_sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
-
 				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
-
 				exit(0);
-
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
-
 				exit(1);
 		}
 	}
@@ -109,7 +101,7 @@ $params    = array();
 
 if ($host_id > 0) {
 	$sql_where = 'WHERE dl.host_id = ?';
-	$params[]  = $host_id;
+	$params[] = $host_id;
 }
 
 if ($host_template_id > 0) {
@@ -117,48 +109,58 @@ if ($host_template_id > 0) {
 	$params[] = $host_template_id;
 }
 
-/* get the data_local Id's for the poller cache */
-$poller_data  = db_fetch_assoc_prepared("SELECT dl.*
-	FROM data_local AS dl
-	INNER JOIN host AS h
-	ON dl.host_id = h.id
-	$sql_where",
-	$params);
+$pollers = array_rekey(
+	db_fetch_assoc('SELECT DISTINCT poller_id
+		FROM host
+		WHERE disabled = ""'),
+	'poller_id', 'poller_id'
+);
 
-/* initialize some variables */
-$current_ds = 1;
-$total_ds   = cacti_sizeof($poller_data);
+if (cacti_sizeof($pollers)) {
+	print 'NOTE:  Do not interrupt this script.  Rebuilding the Poller Cache can take quite some time' . PHP_EOL;
 
-/* setting local_data_ids to an empty array saves time during updates */
-$local_data_ids = array();
-$poller_items   = array();
+	foreach($pollers as $poller_id) {
+		/* get the hosts for this poller_id */
+		$hosts  = array_rekey(
+			db_fetch_assoc_prepared("SELECT DISTINCT dl.host_id
+				FROM data_local AS dl
+				INNER JOIN host AS h
+				ON dl.host_id = h.id
+				$sql_where
+				AND poller_id = $poller_id
+				ORDER BY dl.host_id",
+				$params),
+			'host_id', 'host_id'
+		);
 
-/* issue warnings and start message if applicable */
-print 'WARNING: Do not interrupt this script.  Rebuilding the Poller Cache can take quite some time' . PHP_EOL;
-debug("There are '" . cacti_sizeof($poller_data) . "' data source elements to update.");
-
-/* start rebuilding the poller cache */
-if (cacti_sizeof($poller_data)) {
-	if (!$debug) {
-		$tcount = 0;
-		print '\n';
-	}
-
-	foreach ($poller_data as $data) {
-		if (!$debug) {
-			$tcount++;
-			print CLI_CSI . CLI_EL_WHOLE . CLI_CR . "$tcount / " . count($poller_data) .
-			' (' . round($tcount / count($poller_data) * 100,1) .  '%)';
+		/* add special host 0 */
+		if ($poller_id == 1) {
+			$hosts[0] = 0;
 		}
-		$local_data_ids[] = $data['id'];
-		$poller_items     = array_merge($poller_items, update_poller_cache($data));
 
-		debug("Data Source Item '$current_ds' of '$total_ds' updated");
-		$current_ds++;
-	}
+		/* issue warnings and start message if applicable */
+		debug("There are '" . cacti_sizeof($hosts) . "' Devices to rebuild poller items for on poller $poller_id.");
 
-	if (cacti_sizeof($local_data_ids)) {
-		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
+		/* start rebuilding the poller cache */
+		if (cacti_sizeof($hosts)) {
+			foreach ($hosts as $host_id) {
+				if ($host_id > 0) {
+					$description = db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($host_id));
+				} else {
+					$description = 'Special Host Zero';
+				}
+
+				$data_sources = db_fetch_cell_prepared('SELECT COUNT(*) FROM data_local WHERE host_id = ?', array($host_id));
+
+				if ($data_sources > 0) {
+					print "NOTE:  Processing Device:'$description' on Poller:'$poller_id' having $data_sources Data Sources." . PHP_EOL;
+					push_out_host($host_id);
+				} else {
+					print "NOTE:  Removing Poller Cache Items for Device:'$description' on Poller:'$poller_id' as it has no Data Sources." . PHP_EOL;
+					db_execute_prepared('DELETE FROM poller_item WHERE host_id = ?', array($host_id));
+				}
+			}
+		}
 	}
 }
 
@@ -176,7 +178,7 @@ function display_version() {
 }
 
 /*	display_help - displays the usage of the function */
-function display_help() {
+function display_help () {
 	display_version();
 
 	print PHP_EOL . 'usage: rebuild_poller_cache.php [--host-id=ID] [--debug]' . PHP_EOL . PHP_EOL;

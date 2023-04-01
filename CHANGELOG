@@ -57,6 +57,9 @@ Cacti CHANGELOG
 -feature: Upgrade billboard.js to version 3.7.4
 -feature: Upgrade d3.js to version 7.8.2
 
+1.2.25
+-issue#5279: Rebuild poller cache does not work as expected
+
 1.2.24
 -issue#5127: Importing Local_Linux_Machine.xml.gz template raises PHP error
 -issue#5134: Display of "Memory Limit" on Boost Status page shows -1 and not "Unlimited"
