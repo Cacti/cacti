@@ -462,13 +462,16 @@ db_execute_prepared('INSERT INTO poller (id, snmp, script, server, last_status, 
  * Freshen the field mappings in cases where they
  * may have gotten out of sync
  */
-db_execute('INSERT IGNORE INTO poller_data_template_field_mappings
+db_execute('REPLACE IGNORE INTO poller_data_template_field_mappings
 	SELECT dtr.data_template_id, dif.data_name,
-	GROUP_CONCAT(dtr.data_source_name ORDER BY dtr.data_source_name) AS data_source_names, NOW()
-	FROM data_template_rrd AS dtr
+	GROUP_CONCAT(DISTINCT dtr.data_source_name ORDER BY dtr.data_source_name) AS data_source_names, NOW()
+	ROM graph_templates_item AS gti
+	INNER JOIN data_template_rrd AS dtr
+	ON gti.task_item_id = dtr.id
 	INNER JOIN data_input_fields AS dif
 	ON dtr.data_input_field_id = dif.id
 	WHERE dtr.local_data_id = 0
+	AND gti.local_graph_id = 0
 	GROUP BY dtr.data_template_id, dif.data_name');
 
 while ($poller_runs_completed < $poller_runs) {

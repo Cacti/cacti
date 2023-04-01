@@ -60,6 +60,7 @@ Cacti CHANGELOG
 1.2.25
 -issue#5254: Created a data source template to specify the snmp port, but it doesn't seem to work properly
 -issue#5258: Warnings occur when installing thold plugin and as such thold will not upgrade correctly
+-issue#5259: When the Data Template contains more Data Sources than the Graph Template RRDfiles won't update
 -issue#5275: Boost stats can display odd values when running
 -issue#5277: Boost should not attempt to start if there are no poller_output_boost records
 -issue#5279: Rebuild poller cache does not work as expected

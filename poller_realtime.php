@@ -258,21 +258,28 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 			/* single one value output */
 			if ((is_numeric($value)) || ($value == 'U')) {
 				$rrd_update_array[$item['rrd_path']]['times'][$unix_time][$item['rrd_name']] = $value;
-				/* multiple value output */
 			} else {
-				$values = explode(' ', $value);
+				/* multiple value output */
+				$values = preg_split('/\s+/', $value);
 
-				$rrd_field_names = array_rekey(db_fetch_assoc_prepared('SELECT
-					data_template_rrd.data_source_name,
-					data_input_fields.data_name
-					FROM (data_template_rrd,data_input_fields)
-					WHERE data_template_rrd.data_input_field_id=data_input_fields.id
-					AND data_template_rrd.local_data_id = ?', array($item['local_data_id'])), 'data_name', 'data_source_name');
+				$rrd_field_names = array_rekey(
+					db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
+						FROM graph_templates_item AS gti
+						INNER JOIN data_template_rrd AS dtr
+						ON gti.task_item_id = dtr.id
+						INNER JOIN data_input_fields AS dif
+						ON dtr.data_input_field_id = dif.id
+						AND dtr.local_data_id = ?',
+						array($item['local_data_id'])),
+					'data_name', 'data_source_name'
+				);
 
-				for ($i=0; $i < cacti_count($values); $i++) {
-					if (preg_match('/^([a-zA-Z0-9_\.-]+):([eE0-9\+\.-]+)$/', $values[$i], $matches)) {
-						if (isset($rrd_field_names[$matches[1]])) {
-							$rrd_update_array[$item['rrd_path']]['times'][$unix_time][$rrd_field_names[$matches[1]]] = $matches[2];
+				if (cacti_sizeof($values)) {
+					foreach($values as $value) {
+						$matches = explode(':', $value);
+
+						if (isset($rrd_field_names[$matches[0]])) {
+							$rrd_update_array[$item['rrd_path']]['times'][$unix_time][$rrd_field_names[$matches[0]]] = $matches[1];
 						}
 					}
 				}

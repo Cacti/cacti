@@ -805,11 +805,16 @@ function dsstats_poller_output(&$rrd_update_array) {
 			/* make the association between the multi-part name value pairs and the RRDfile internal
 			 * data source names.
 			 */
-			$ds_multi = array_rekey(db_fetch_assoc('SELECT DISTINCT data_name, data_source_name
-				FROM data_template_rrd AS dtr
-				INNER JOIN data_input_fields AS dif
-				ON dif.id = dtr.data_input_field_id
-				WHERE dtr.data_input_field_id != 0'), 'data_name', 'data_source_name');
+			$ds_multi = array_rekey(
+				db_fetch_assoc('SELECT DISTINCT data_name, data_source_name
+					FROM graph_templates_item AS gti
+					INNER JOIN data_template_rrd AS dtr
+					ON gti.task_item_id = dtr.id
+					INNER JOIN data_input_fields AS dif
+					ON dif.id = dtr.data_input_field_id
+					WHERE dtr.data_input_field_id != 0'),
+				'data_name', 'data_source_name'
+			);
 
 			/* required for updating tables */
 			$cache_i      = 1;

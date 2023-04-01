@@ -336,14 +336,16 @@ function form_save() {
 					array($data_template_id));
 
 				db_execute_prepared('REPLACE INTO poller_data_template_field_mappings
-					SELECT dtr.data_template_id,
-					dif.data_name,
-					GROUP_CONCAT(dtr.data_source_name ORDER BY dtr.data_source_name) AS data_source_names,
+					SELECT dtr.data_template_id, dif.data_name,
+					GROUP_CONCAT(DISTINCT dtr.data_source_name ORDER BY dtr.data_source_name) AS data_source_names,
 					NOW() AS last_updated
-					FROM data_template_rrd AS dtr
+					FROM graph_templates_item AS gti
+					INNER JOIN data_template_rrd AS dtr
+					gti.task_item_id = dtr.id
 					INNER JOIN data_input_fields AS dif
 					ON dtr.data_input_field_id = dif.id
 					WHERE dtr.local_data_id = 0
+					AND gti.local_graph_id = 0
 					AND dtr.data_template_id = ?
 					GROUP BY dtr.data_template_id, dif.data_name',
 					array($data_template_id));
