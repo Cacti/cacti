@@ -58,6 +58,7 @@ Cacti CHANGELOG
 -feature: Upgrade d3.js to version 7.8.2
 
 1.2.25
+-issue#5247: Rebuilding Poller Cache from Utilities does not respect poller interval due to lack or ordering
 -issue#5254: Created a data source template to specify the snmp port, but it doesn't seem to work properly
 -issue#5255: Data query xml path with space problem
 -issue#5258: Warnings occur when installing thold plugin and as such thold will not upgrade correctly
