@@ -2912,9 +2912,6 @@ function html_auth_footer($section, $error = '', $html = '') {
 						</div>
 						<?php api_plugin_hook("{$section}_after"); ?>
 					</form>
-					<div class='cactiAuthErrors'>
-						<?php print $error; ?>
-					</div>
 				</div>
 				<?php api_plugin_hook("{$section}_after"); ?>
 			</form>
