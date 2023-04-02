@@ -735,7 +735,8 @@ function install_file_paths() {
 		array(
 			'unix'  => '/bin/php',
 			'win32' => 'c:/php/php.exe'
-		));
+		)
+	);
 
 	// Workaround to support xampp
 	if ($config['cacti_server_os'] == 'win32') {
@@ -753,57 +754,73 @@ function install_file_paths() {
 	/* RRDtool Binary Path */
 	$input['path_rrdtool'] = install_tool_path('rrdtool',
 		array(
-			'unix'  => '/usr/local/bin/rrdtool',
+			'unix'  => '/usr/bin/rrdtool',
 			'win32' => 'c:/rrdtool/rrdtool.exe'
-		));
+		)
+	);
 
 	/* snmpwalk Binary Path */
 	$input['path_snmpwalk'] = install_tool_path('snmpwalk',
 		array(
-			'unix'  => '/usr/local/bin/snmpwalk',
+			'unix'  => '/usr/bin/snmpwalk',
 			'win32' => 'c:/net-snmp/bin/snmpwalk.exe'
-		));
+		)
+	);
 
 	/* snmpget Binary Path */
 	$input['path_snmpget'] = install_tool_path('snmpget',
 		array(
-			'unix'  => '/usr/local/bin/snmpget',
+			'unix'  => '/usr/bin/snmpget',
 			'win32' => 'c:/net-snmp/bin/snmpget.exe'
-		));
+		)
+	);
 
 	/* snmpbulkwalk Binary Path */
 	$input['path_snmpbulkwalk'] = install_tool_path('snmpbulkwalk',
 		array(
-			'unix'  => '/usr/local/bin/snmpbulkwalk',
+			'unix'  => '/usr/bin/snmpbulkwalk',
 			'win32' => 'c:/net-snmp/bin/snmpbulkwalk.exe'
-		));
+		)
+	);
 
 	/* snmpgetnext Binary Path */
 	$input['path_snmpgetnext'] = install_tool_path('snmpgetnext',
 		array(
-			'unix'  => '/usr/local/bin/snmpgetnext',
+			'unix'  => '/usr/bin/snmpgetnext',
 			'win32' => 'c:/net-snmp/bin/snmpgetnext.exe'
-		));
+		)
+	);
 
 	/* snmptrap Binary Path */
 	$input['path_snmptrap'] = install_tool_path('snmptrap',
 		array(
-			'unix'  => '/usr/local/bin/snmptrap',
+			'unix'  => '/usr/bin/snmptrap',
 			'win32' => 'c:/net-snmp/bin/snmptrap.exe'
-		));
+		)
+	);
+
+	/* fping Binary Path */
+	$input['path_fping'] = install_tool_path('fping',
+		array(
+			'unix'  => '/usr/sbin/fping',
+			'win32' => 'c:/fping/fping.exe'
+		)
+	);
 
 	/* sendmail Binary Path */
 	$input['settings_sendmail_path'] = install_tool_path('settings_sendmail_path',
 		array(
 			'unix'  => '/usr/sbin/sendmail',
-		));
+		)
+	);
 
 	/* spine Binary Path */
 	$input['path_spine'] = install_tool_path('spine',
 		array(
 			'unix'  => '/usr/local/spine/bin/spine',
 			'win32' => 'c:/spine/bin/spine.exe'
-		));
+		)
+	);
 
 	// Workaround to support *BSD systems
 	if ($config['cacti_server_os'] == 'unix') {

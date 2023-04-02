@@ -171,43 +171,53 @@ class Net_Ping {
 			/* we have to use the real ping, in cases where windows failed or while using UNIX/Linux */
 			$pattern  = bin2hex('cacti-monitoring-system'); // the actual test data
 
-			/* host timeout given in ms, recalculate to sec, but make it an integer
-			 * we might consider to use escapeshellarg on hostname,
-			 * but this field has already been verified.
-			 * The other fields are numerical fields only and thus
-			 * not vulnerable for command injection */
-			if (substr_count(strtolower(PHP_OS), 'sun')) {
-				$result = shell_exec('ping ' . $this->host['hostname']);
-			} elseif (substr_count(strtolower(PHP_OS), 'hpux')) {
-				$result = shell_exec('ping -m ' . ceil($this->timeout / 1000) . ' -n ' . $this->retries . ' ' . $this->host['hostname']);
-			} elseif (substr_count(strtolower(PHP_OS), 'mac')) {
-				$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
-			} elseif (substr_count(strtolower(PHP_OS), 'freebsd')) {
-				if (strpos($this->host['hostname'], ':') !== false) {
-					$result = shell_exec('ping6 -X ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
-				} else {
-					$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
-				}
-			} elseif (substr_count(strtolower(PHP_OS), 'darwin')) {
-				$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
-			} elseif (substr_count(strtolower(PHP_OS), 'bsd')) {
-				$result = shell_exec('ping -w ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
-			} elseif (substr_count(strtolower(PHP_OS), 'aix')) {
-				$result = shell_exec('ping -i ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
-			} elseif (substr_count(strtolower(PHP_OS), 'winnt')) {
-				$result = shell_exec('chcp 437 && ping -w ' . $this->timeout . ' -n ' . $this->retries . ' ' . $this->host['hostname']);
-			} else {
-				/* please know, that when running SELinux, httpd will throw
-				 * ping: cap_set_proc: Permission denied
-				 * as it now tries to open an ICMP socket and fails
-				 * $result will be empty, then. */
-				if (strpos($host_ip, ':') !== false) {
-					$result = shell_exec('ping6 -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname']);
-				} else {
-					$result = shell_exec('ping -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname'] . ' 2>&1');
+			$fping = read_config_option('path_fping');
 
-					if ((strpos($result, 'unknown host') !== false || strpos($result, 'Address family') !== false) && file_exists('/bin/ping6')) {
+			if ($fping != '' && file_exists($fping) && is_executable($fping)) {
+				if (strpos($this->host['hostname'], ':') !== false) {
+					$result = shell_exec('/usr/sbin/fping6 -q -t ' . $this->timeout . ' -c 1 -r ' . $this->retries . ' ' . $this->host['hostname'] . ' 2>&1');
+				} else {
+					$result = shell_exec($fping . ' -q -t ' . $this->timeout . ' -c 1 -r ' . $this->retries . ' ' . $this->host['hostname'] . ' 2>&1');
+				}
+			} else {
+				/* host timeout given in ms, recalculate to sec, but make it an integer
+				 * we might consider to use escapeshellarg on hostname,
+				 * but this field has already been verified.
+				 * The other fields are numerical fields only and thus
+				 * not vulnerable for command injection */
+				if (substr_count(strtolower(PHP_OS), 'sun')) {
+					$result = shell_exec('ping ' . $this->host['hostname']);
+				} elseif (substr_count(strtolower(PHP_OS), 'hpux')) {
+					$result = shell_exec('ping -m ' . ceil($this->timeout / 1000) . ' -n ' . $this->retries . ' ' . $this->host['hostname']);
+				} elseif (substr_count(strtolower(PHP_OS), 'mac')) {
+					$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
+				} elseif (substr_count(strtolower(PHP_OS), 'freebsd')) {
+					if (strpos($this->host['hostname'], ':') !== false) {
+						$result = shell_exec('ping6 -X ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
+					} else {
+						$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
+					}
+				} elseif (substr_count(strtolower(PHP_OS), 'darwin')) {
+					$result = shell_exec('ping -t ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
+				} elseif (substr_count(strtolower(PHP_OS), 'bsd')) {
+					$result = shell_exec('ping -w ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
+				} elseif (substr_count(strtolower(PHP_OS), 'aix')) {
+					$result = shell_exec('ping -i ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
+				} elseif (substr_count(strtolower(PHP_OS), 'winnt')) {
+					$result = shell_exec('chcp 437 && ping -w ' . $this->timeout . ' -n ' . $this->retries . ' ' . $this->host['hostname']);
+				} else {
+					/* please know, that when running SELinux, httpd will throw
+					 * ping: cap_set_proc: Permission denied
+					 * as it now tries to open an ICMP socket and fails
+					 * $result will be empty, then. */
+					if (strpos($host_ip, ':') !== false) {
 						$result = shell_exec('ping6 -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname']);
+					} else {
+						$result = shell_exec('ping -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname'] . ' 2>&1');
+
+						if ((strpos($result, 'unknown host') !== false || strpos($result, 'Address family') !== false) && file_exists('/bin/ping6')) {
+							$result = shell_exec('ping6 -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname']);
+						}
 					}
 				}
 			}

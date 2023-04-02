@@ -207,6 +207,13 @@ $settings['path'] = array(
 		'file_type'     => 'binary',
 		'max_length'    => '255'
 	),
+	'path_fping' => array(
+		'friendly_name' => __('FPing Binary Path'),
+		'description'   => __('The path to the FPing binary file which provides for a more precise ping command.'),
+		'method'        => 'filepath',
+		'file_type'     => 'binary',
+		'max_length'    => '255'
+	),
 	'logging_header' => array(
 		'friendly_name' => __('Logging'),
 		'collapsible'   => 'true',
