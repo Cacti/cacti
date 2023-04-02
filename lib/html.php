@@ -2885,8 +2885,8 @@ function html_auth_header($section, $browser_title, $legend, $title, $hook_args 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<!-- <?php print "${section}_title"; ?> -->
-	<?php html_common_header(api_plugin_hook_function("${section}_title", $browser_title));?>
+	<!-- <?php print "{$section}_title"; ?> -->
+	<?php html_common_header(api_plugin_hook_function("{$section}_title", $browser_title));?>
 </head>
 <body>
 <div class='cactiAuthBody'>
@@ -2895,7 +2895,7 @@ function html_auth_header($section, $browser_title, $legend, $title, $hook_args 
 			<legend><?php print $legend;?></legend><hr />
 			<form name='auth' method='post' action='<?php print get_current_page();?>'>
 				<input type='hidden' name='action' value='<?php print $section; ?>'>
-				<?php api_plugin_hook_function("${section}_before", $hook_args);	?>
+				<?php api_plugin_hook_function("{$section}_before", $hook_args);	?>
 				<div class='cactiAuthTitle'>
 					<table class='cactiAuthTable'>
 						<tr><td><?php print $title; ?></td></tr>
@@ -2910,13 +2910,13 @@ function html_auth_footer($section, $error = '', $html = '') {
 	?>
 							</table>
 						</div>
-						<?php api_plugin_hook("${section}_after"); ?>
+						<?php api_plugin_hook("{$section}_after"); ?>
 					</form>
 					<div class='cactiAuthErrors'>
 						<?php print $error; ?>
 					</div>
 				</div>
-				<?php api_plugin_hook("${section}_after"); ?>
+				<?php api_plugin_hook("{$section}_after"); ?>
 			</form>
 			<hr />
 			<div class='cactiAuthErrors'>
