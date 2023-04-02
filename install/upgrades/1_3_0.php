@@ -84,6 +84,16 @@ function ldap_convert_1_3_0() {
 		'cn_email'               => 'cn_email',
 	);
 
+	db_execute('ALTER TABLE user_domains_ldap
+		MODIFY COLUMN dn varchar(128) NOT NULL default "",
+		MODIFY COLUMN group_require char(2) NOT NULL default "",
+		MODIFY COLUMN group_dn varchar(128) NOT NULL default "",
+		MODIFY COLUMN group_attrib varchar(128) NOT NULL default "",
+		MODIFY COLUMN search_base varchar(128) NOT NULL default "",
+		MODIFY COLUMN search_filter varchar(128) NOT NULL default "",
+		MODIFY COLUMN specific_dn varchar(128) NOT NULL default "",
+		MODIFY COLUMN specific_password varchar(128) NOT NULL default ""');
+
 	$ldap_server = read_config_option('ldap_server');
 
 	if (!empty($ldap_server)) {
