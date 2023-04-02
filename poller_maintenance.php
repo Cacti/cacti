@@ -124,6 +124,9 @@ logrotate_check($force);
 // Remove deleted devices
 remove_aged_row_cache();
 
+// Remove expired host value cache
+purge_host_value_cache();
+
 if ($config['poller_id'] > 1) {
 	api_plugin_hook('poller_remote_maint');
 }
@@ -137,6 +140,12 @@ cacti_log(sprintf('MAINT STATS: Time:%0.2f', $end - $start), false, 'SYSTEM');
 unregister_process('maintenance', 'master', $config['poller_id']);
 
 exit(0);
+
+function purge_host_value_cache() {
+	db_execute('DELETE FROM host_value_cache
+		WHERE time_to_live > 0
+		AND UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_updated) > time_to_live');
+}
 
 function reindex_devices() {
 	global $config;

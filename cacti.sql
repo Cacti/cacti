@@ -2098,6 +2098,23 @@ CREATE TABLE host_snmp_query (
 --
 
 --
+-- Table structure for table `host_value_cache`
+--
+
+CREATE TABLE host_value_cache (
+  host_id mediumint(8) unsigned NOT NULL default '0',
+  dimension varchar(40) NOT NULL default '',
+  value varchar(8192) NOT NULL default '',
+  time_to_live int(11) NOT NULL default '-1',
+  last_updated TIMESTAMP default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (host_id, dimension)
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
+
+--
+-- Dumping data for table `host_value_cache`
+--
+
+--
 -- Table structure for table `host_template`
 --
 

@@ -59,6 +59,16 @@ function upgrade_to_1_3_0() {
 	if (!$ldap_converted) {
 		ldap_convert_1_3_0();
 	}
+
+	db_install_execute("CREATE TABLE IF NOT EXISTS host_value_cache (
+		host_id mediumint(8) unsigned NOT NULL default '0',
+		dimension varchar(40) NOT NULL default '',
+		value varchar(8192) NOT NULL default '',
+  		time_to_live int(11) NOT NULL default '-1',
+  		last_updated TIMESTAMP default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+		PRIMARY KEY (host_id, dimension))
+		ENGINE=InnoDB
+		ROW_FORMAT=Dynamic");
 }
 
 function ldap_convert_1_3_0() {

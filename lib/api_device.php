@@ -62,6 +62,7 @@ function api_device_remove(int $device_id) {
 	db_execute_prepared('DELETE FROM host_graph       WHERE host_id = ?', array($device_id));
 	db_execute_prepared('DELETE FROM host_snmp_query  WHERE host_id = ?', array($device_id));
 	db_execute_prepared('DELETE FROM host_snmp_cache  WHERE host_id = ?', array($device_id));
+	db_execute_prepared('DELETE FROM host_value_cache WHERE host_id = ?', array($device_id));
 	db_execute_prepared('DELETE FROM poller_item      WHERE host_id = ?', array($device_id));
 	db_execute_prepared('DELETE FROM poller_reindex   WHERE host_id = ?', array($device_id));
 	db_execute_prepared('DELETE FROM graph_tree_items WHERE host_id = ?', array($device_id));
@@ -112,6 +113,7 @@ function api_device_purge_from_remote($device_ids, $poller_id = 0) {
 				db_execute('DELETE FROM host_graph       WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
 				db_execute('DELETE FROM host_snmp_query  WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
 				db_execute('DELETE FROM host_snmp_cache  WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
+				db_execute('DELETE FROM host_value_cache WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
 				db_execute('DELETE FROM poller_item      WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
 				db_execute('DELETE FROM poller_reindex   WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
 				db_execute('DELETE FROM graph_tree_items WHERE host_id IN (' . implode(', ', $device_ids) . ')', true, $rcnn_id);
@@ -157,6 +159,7 @@ function api_device_purge_deleted_devices() {
 			db_execute_prepared('DELETE FROM host_graph       WHERE host_id = ?', array($d['id']));
 			db_execute_prepared('DELETE FROM host_snmp_query  WHERE host_id = ?', array($d['id']));
 			db_execute_prepared('DELETE FROM host_snmp_cache  WHERE host_id = ?', array($d['id']));
+			db_execute_prepared('DELETE FROM host_value_cache WHERE host_id = ?', array($d['id']));
 			db_execute_prepared('DELETE FROM poller_item      WHERE host_id = ?', array($d['id']));
 			db_execute_prepared('DELETE FROM poller_reindex   WHERE host_id = ?', array($d['id']));
 			db_execute_prepared('DELETE FROM graph_tree_items WHERE host_id = ?', array($d['id']));
@@ -236,6 +239,7 @@ function api_device_remove_multi($device_ids, $delete_type = 2) {
 		db_execute("DELETE FROM host_graph       WHERE host_id IN ($devices_to_delete)");
 		db_execute("DELETE FROM host_snmp_query  WHERE host_id IN ($devices_to_delete)");
 		db_execute("DELETE FROM host_snmp_cache  WHERE host_id IN ($devices_to_delete)");
+		db_execute("DELETE FROM host_value_cache WHERE host_id IN ($devices_to_delete)");
 		db_execute("DELETE FROM graph_tree_items WHERE host_id IN ($devices_to_delete)");
 		db_execute("DELETE FROM reports_items    WHERE host_id IN ($devices_to_delete)");
 
@@ -809,6 +813,17 @@ function api_device_replicate_out($device_id, $poller_id = 1) {
 
 	if ($poller_id > 1) {
 		replicate_table_to_poller($rcnn_id, $data, 'host_snmp_cache', $poller_id);
+	}
+
+	$data = db_fetch_assoc_prepared('SELECT hsc.*
+		FROM host_value_cache AS hsc
+		INNER JOIN host AS h
+		ON h.id=hsc.host_id
+		WHERE h.id = ?',
+		array($device_id));
+
+	if ($poller_id > 1) {
+		replicate_table_to_poller($rcnn_id, $data, 'host_value_cache', $poller_id);
 	}
 
 	$data = db_fetch_assoc_prepared('SELECT pri.*

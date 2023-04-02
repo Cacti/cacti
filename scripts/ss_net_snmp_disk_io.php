@@ -54,24 +54,52 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 
 	$tmpdir = sys_get_temp_dir();
 
-	if ($environ != 'realtime') {
-		$tmpdir  = $tmpdir . '/cacti/net-snmp-devio';
-		$tmpfile = $host_id . '_io';
-	} else {
-		$tmpdir  = $tmpdir . '/cacti-rt/net-snmp-devio';
-		$tmpfile = $host_id . '_' . $poller_id . '_io_rt';
-	}
+	if (!db_table_exists('host_value_cache')) {
+		if ($environ != 'realtime') {
+			$tmpdir  = $tmpdir . '/cacti/net-snmp-devio';
+			$tmpfile = $host_id . '_io';
+		} else {
+			$tmpdir  = $tmpdir . '/cacti-rt/net-snmp-devio';
+			$tmpfile = $host_id . '_' . $poller_id . '_io_rt';
+		}
 
-	if (!is_dir($tmpdir)) {
-		mkdir($tmpdir, 0777, true);
+		if (!is_dir($tmpdir)) {
+			mkdir($tmpdir, 0777, true);
+		}
+	} else {
+		$tmpdir = null;
+
+		if ($environ != 'realtime') {
+			$dimension = $host_id . '_io';
+			$ttl = -1;
+		} else {
+			$dimension = $host_id . '_' . $poller_id . '_io_rt';
+			$ttl = 300;
+		}
 	}
 
 	$previous = array();
 	$found    = false;
 
-	if (file_exists("$tmpdir/$tmpfile")) {
-		$previous = json_decode(file_get_contents("$tmpdir/$tmpfile"), true);
-		$found    = true;
+	if (!db_table_exists('host_value_cache')) {
+		if (file_exists("$tmpdir/$tmpfile")) {
+			$previous = json_decode(file_get_contents("$tmpdir/$tmpfile"), true);
+			$found    = true;
+		}
+	} else {
+		$previous = json_decode(
+			db_fetch_cell_prepared('SELECT value
+				FROM host_value_cache
+				WHERE host_id = ?
+				AND dimension = ?',
+				array($host_id, $dimension)), true
+		);
+
+		if (!empty($previous)) {
+			$found = true;
+		} else {
+			$found = false;
+		}
 	}
 
 	$indexes = array();
@@ -224,8 +252,18 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 			}
 		}
 
-		$data = "'" . json_encode($current) . "'";
-		shell_exec("echo $data > $tmpdir/$tmpfile");
+
+		if (!db_table_exists('host_value_cache')) {
+			$data = "'" . json_encode($current) . "'";
+
+			shell_exec("echo $data > $tmpdir/$tmpfile");
+		} else {
+			$data = json_encode($current);
+
+			db_execute_prepared('REPLACE INTO host_value_cache (host_id, dimension, value, time_to_live)
+				VALUES (?, ?, ?, ?)',
+				array($host_id, $dimension, $data, $ttl));
+		}
 	}
 
 	if ($found) {
