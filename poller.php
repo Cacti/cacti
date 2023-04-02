@@ -462,10 +462,10 @@ db_execute_prepared('INSERT INTO poller (id, snmp, script, server, last_status, 
  * Freshen the field mappings in cases where they
  * may have gotten out of sync
  */
-db_execute('REPLACE IGNORE INTO poller_data_template_field_mappings
+db_execute('REPLACE INTO poller_data_template_field_mappings
 	SELECT dtr.data_template_id, dif.data_name,
 	GROUP_CONCAT(DISTINCT dtr.data_source_name ORDER BY dtr.data_source_name) AS data_source_names, NOW()
-	ROM graph_templates_item AS gti
+	FROM graph_templates_item AS gti
 	INNER JOIN data_template_rrd AS dtr
 	ON gti.task_item_id = dtr.id
 	INNER JOIN data_input_fields AS dif
