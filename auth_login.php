@@ -376,6 +376,7 @@ if ($error_msg) {
 }
 
 $focus_control = (empty($username)) ? 'username' : 'password';
+
 html_auth_footer('login', $error_message, "
 	<script>
 		var storage = Storages.localStorage;
@@ -407,12 +408,12 @@ html_auth_footer('login', $error_message, "
 			}
 
 			// Control submit in order to store preferred realm
-			$('#login').submit(function(event) {
+			$('#auth').submit(function(event) {
 				event.preventDefault();
 				if ($('#realm').length) {
 					storage.set('user_realm', $('#realm').val());
 				}
-				$('#login').off('submit').trigger('submit');
+				$('#auth').off('submit').trigger('submit');
 			});
 
 		});
