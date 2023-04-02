@@ -751,7 +751,7 @@ function get_selected_theme():mixed {
 	global $config, $themes;
 
 	// shortcut if theme is set in session
-	if (isset($_SESSION['selected_theme'])) {
+	if (isset($_SESSION['selected_theme']) && isset($_SESSION[SESS_USER_ID])) {
 		if (file_exists(CACTI_PATH_INCLUDE . '/themes/' . $_SESSION['selected_theme'] . '/main.css')) {
 			return $_SESSION['selected_theme'];
 		}
@@ -775,7 +775,7 @@ function get_selected_theme():mixed {
 			array($_SESSION[SESS_USER_ID]), '', false);
 
 		// user has a theme
-		if (! empty($user_theme)) {
+		if (!empty($user_theme)) {
 			$theme = $user_theme;
 		}
 	}
@@ -796,7 +796,7 @@ function get_selected_theme():mixed {
 		}
 	}
 
-	if (is_valid_theme($theme, true)) {
+	if (is_valid_theme($theme, true) && isset($_SESSION[SESS_USER_ID])) {
 		// update session
 		$_SESSION['selected_theme'] = $theme;
 	}
