@@ -485,7 +485,7 @@ function rrdtool_trim_output(&$output) {
 	$output = substr($output, 0, $okpos);
 }
 
-function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp='', $logopt = 'WEBLOG') {
+function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp = '', $logopt = 'WEBLOG') {
 	global $config, $encryption;
 
 	static $last_command;

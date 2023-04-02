@@ -321,7 +321,7 @@ function dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $in
 	$use_proxy = (read_config_option('storage_location') ? true : false);
 
 	if ($use_proxy) {
-		$file_exists = rrdtool_execute("file_exists $rrdfile", true, RRDTOOL_OUTPUT_BOOLEAN, false, 'DSSTATS');
+		$file_exists = rrdtool_execute("file_exists $rrdfile", true, RRDTOOL_OUTPUT_BOOLEAN, $rrd_process, 'DSSTATS');
 	} else {
 		clearstatcache();
 		$file_exists = file_exists($rrdfile);
@@ -365,7 +365,7 @@ function dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $in
 			//print $stats_cmd . PHP_EOL . PHP_EOL;
 
 			if ($use_proxy) {
-				$xport_data = rrdtool_execute($stats_cmd, false, RRDTOOL_OUTPUT_STDOUT, false, 'DSSTATS');
+				$xport_data = rrdtool_execute($stats_cmd, false, RRDTOOL_OUTPUT_STDOUT, $rrd_process, 'DSSTATS');
 			} else {
 				$xport_data = dsstats_rrdtool_execute($stats_cmd, $rrd_process);
 			}
@@ -451,7 +451,7 @@ function dsstats_get_stats_command($local_data_id, $rrdfile, $use_proxy, $mode, 
 
 	/* high speed or snail speed */
 	if ($use_proxy) {
-		$info = rrdtool_execute("info $rrdfile", false, RRDTOOL_OUTPUT_STDOUT, false, 'DSSTATS');
+		$info = rrdtool_execute("info $rrdfile", false, RRDTOOL_OUTPUT_STDOUT, $rrd_process, 'DSSTATS');
 	} else {
 		$info = dsstats_rrdtool_execute("info $rrdfile", $rrd_process);
 	}
@@ -1221,7 +1221,7 @@ function dsstats_rrdtool_execute($command, $rrd_process) {
 	$use_proxy  = (read_config_option('storage_location') > 0 ? true : false);
 
 	if ($use_proxy) {
-		$output = rrdtool_function_execute($command, false, RRDTOOL_OUTPUT_STDOUT, false, 'DSSTATS');
+		$output = rrdtool_function_execute($command, false, RRDTOOL_OUTPUT_STDOUT, $rrd_process, 'DSSTATS');
 	} else {
 		$stdout = '';
 
