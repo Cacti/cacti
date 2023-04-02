@@ -326,8 +326,7 @@ function settings() {
 
 	html_start_box(__('User Account Details'), '100%', true, '3', 'center', '');
 
-	$current_user = db_fetch_row_prepared(
-		'SELECT *
+	$current_user = db_fetch_row_prepared('SELECT *
 		FROM user_auth
 		WHERE id = ?',
 		array($_SESSION[SESS_USER_ID])
@@ -445,8 +444,7 @@ function settings() {
 							$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
 						}
 
-						$form_array[$field_name]['items'][$sub_field_name]['value'] =  db_fetch_cell_prepared(
-							'SELECT value
+						$form_array[$field_name]['items'][$sub_field_name]['value'] =  db_fetch_cell_prepared('SELECT value
 							FROM settings_user
 							WHERE name = ?
 							AND user_id = ?',
@@ -458,8 +456,7 @@ function settings() {
 						$form_array[$field_name]['form_id'] = 1;
 					}
 
-					$user_row = db_fetch_row_prepared(
-						'SELECT value
+					$user_row = db_fetch_row_prepared('SELECT value
 						FROM settings_user
 						WHERE name = ?
 						AND user_id = ?',
@@ -493,7 +490,15 @@ function settings() {
 
 	form_hidden_box('save_component_graph_config', '1', '');
 
-	form_save_buttons(array(array('id' => 'return', 'value' => __esc('Return'))), '', 'save');
+	$buttons = array(
+		array(
+			'id'     => 'return',
+			'value'  => __('Return'),
+			'method' => 'return'
+		)
+	);
+
+	form_save_buttons($buttons);
 
 	form_end();
 }
@@ -528,8 +533,7 @@ function settings_2fa() {
 
 	html_start_box(__('2FA Settings'), '100%', true, '3', 'center', '');
 
-	$current_user = db_fetch_row_prepared(
-		'SELECT *
+	$current_user = db_fetch_row_prepared('SELECT *
 		FROM user_auth
 		WHERE id = ?',
 		array($_SESSION[SESS_USER_ID])
@@ -592,7 +596,15 @@ function settings_2fa() {
 
 	html_end_box(true, true);
 
-	form_save_buttons(array(array('id' => 'return', 'value' => __esc('Return'))), '', 'save');
+	$buttons = array(
+		array(
+			'id'     => 'return',
+			'value'  => __('Return'),
+			'method' => 'return'
+		)
+	);
+
+	form_save_buttons($bottons);
 
 	?>
 	<script type='text/javascript'>
@@ -661,13 +673,11 @@ function settings_2fa() {
 					set2FAText(data.text, 'tfa_error', 'textError');
 				});
 			});
-			$('#return').click(function() {
-				document.location = '<?php print $_SESSION['profile_referer']; ?>';
-			});
 		});
 	</script>
-<?php
-		form_end();
+	<?php
+
+	form_end();
 }
 
 function settings_javascript() {
@@ -865,13 +875,10 @@ function settings_javascript() {
 				postUrl(options, data);
 			});
 
-			$('#return').click(function() {
-				document.location = '<?php print $_SESSION['profile_referer']; ?>';
-			});
-
 			// set the buttons active
 			$('#clear_settings, #private_data, #logout_everywhere').addClass('ui-state-active');
 		});
 	</script>
-<?php
+	<?php
 }
+

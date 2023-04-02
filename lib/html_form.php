@@ -1245,7 +1245,7 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
 	}
 
 	?>
-	<table style='width:100%;text-align:center;'>
+	<table class='cactiTable'>
 		<tr>
 			<td class='saveRow'>
 				<input type='hidden' name='action' value='save'>
@@ -1254,54 +1254,55 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
 			</td>
 		</tr>
 	</table>
-<?php
+	<?php
 
-		form_end($ajax);
+	form_end($ajax);
 }
 
-/* form_save_buttons - draws a set of buttons at the end of a form
-	 an html edit form
-   @arg $buttons - an array of 'id', 'name' buttons */
-function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_field = 'id', $ajax = true) {
-	$calt = __('Cancel');
-
-	if (empty($force_type) || $force_type == 'return') {
-		if (isempty_request_var($key_field)) {
-			$alt = __esc('Create');
-		} else {
-			$alt = __esc('Save');
-
-			if ($force_type != '') {
-				$calt   = __esc('Return');
-			} else {
-				$calt   = __esc('Cancel');
-			}
-		}
-	} elseif ($force_type == 'save') {
-		$alt = __esc('Save');
-	} elseif ($force_type == 'create') {
-		$alt = __esc('Create');
-	} elseif ($force_type == 'close') {
-		$alt = __esc('Close');
-	} elseif ($force_type == 'import') {
-		$alt = __esc('Import');
-	} elseif ($force_type == 'export') {
-		$alt = __esc('Export');
-	}
-
-	if ($force_type != 'import' && $force_type != 'export' && $force_type != 'save' && $force_type != 'close' && $cancel_url != '') {
-		$cancel_action = "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo(\"" . html_escape($cancel_url, ENT_QUOTES) . "\")' value='" . $calt . "'>";
+/**
+ * form_save_buttons - draws a set of buttons at the end of an
+ * edit form.
+ *
+ * This function constructs a set of form buttons using the following
+ * array structure:
+ *
+ * id     = An id for the button or submit object
+ * type   = Either 'button' or 'submit'.  If unset 'button'
+ * value  = A human readable button name
+ * method = As set of methods for form actions
+ *
+ * methods include:
+ *
+ * return - Return from whence you came
+ * get    - Submit with a get action
+ * post   - Submit with a post action
+ * url    - A URL to get, post, or cancel to
+ * data   - A JSON encoded structure of post or get data
+ *
+ * @param $buttons - an array of 'id', 'value', 'method', 'type'
+ *
+ * return null
+ */
+function form_save_buttons($buttons) {
+	if (isset($_SERVER['HTTP_REFERER'])) {
+		$cancel_url = basename($_SERVER['HTTP_REFERER']);
 	} else {
-		$cancel_action = '';
+		$cancel_url = '';
 	}
 
 	?>
-	<table style='width:100%;text-align:center;'>
+	<table class='cactiTable'>
 		<tr>
 			<td class='saveRow'>
 				<input type='hidden' name='action' value='save'>
 				<?php foreach ($buttons as $b) {
-					print "<input type='button' class='ui-button ui-corner-all ui-widget' id='" . $b['id'] . "1' value='" . html_escape($b['value']) . "'";
+					$type = 'button';
+					if (isset($b['type']) && $b['type'] == 'submit') {
+						$type = 'submit';
+					}
+
+					print "<input type='$type' class='ui-button ui-corner-all ui-widget' id='" . $b['id'] . "' value='" . html_escape($b['value']) . "'";
+
 					$onclick = '';
 
 					if (!empty($b['method'])) {
@@ -1310,6 +1311,10 @@ function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_fi
 
 						switch ($b['method']) {
 							case 'return':
+								if ($url == '') {
+									$url = $cancel_url;
+								}
+
 								$onclick = 'cactiReturnTo("' . $url . '")';
 
 								break;
@@ -1327,14 +1332,15 @@ function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_fi
 					if (!empty($onclick)) {
 						print " onclick='" . html_escape($onclick, ENT_QUOTES) . "'";
 					}
-					print ">\n";
+
+					print '>' . PHP_EOL;
 				} ?>
-				<?php print $cancel_action; ?>
-				<input type='submit' class='<?php print $force_type; ?> ui-button ui-corner-all ui-widget' id='submit' value='<?php print $alt; ?>'>
 			</td>
 		</tr>
 	</table>
 	<?php
+
+	form_end(true);
 }
 
 /* form_start - draws post form start. To be combined with form_end()

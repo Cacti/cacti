@@ -781,7 +781,7 @@ function poller_edit() {
 					$('#results').empty().show().html(data).fadeOut(5000);
 				}
 			</script>
-		<?php
+			<?php
 		} else {
 			?>
 			<script type='text/javascript'>
@@ -793,7 +793,7 @@ function poller_edit() {
 					}
 				});
 			</script>
-	<?php
+			<?php
 		}
 	}
 
@@ -803,24 +803,15 @@ function poller_edit() {
 		array(
 			'id'     => 'return',
 			'value'  => __esc('Return'),
+			'url'    => 'pollers.php',
 			'method' => 'return',
 		),
+		array(
+			'id'     => 'save',
+			'value'  => __esc('Save'),
+			'type'   => 'submit'
+		)
 	);
-
-	if ($poller['id'] > 1) {
-		$form_buttons[] = array(
-			'id'     => 'delete',
-			'value'  => __esc('Delete'),
-			'method' => 'post',
-			'url'    => 'pollers.php',
-			'data'   => json_encode(array(
-				'action'               => 'actions',
-				'drp_action'           => POLLER_DELETE,
-				'chk_' . $poller['id'] => 'on',
-				'__csrf_magic'         => csrf_get_tokens(),
-			)),
-		);
-	}
 
 	form_save_buttons($form_buttons);
 }
