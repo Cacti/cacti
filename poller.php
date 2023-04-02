@@ -899,10 +899,13 @@ while ($poller_runs_completed < $poller_runs) {
 
 			api_plugin_hook('poller_top');
 
-			$num_polling_items = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
+			$num_polling_items = db_fetch_cell('SELECT ' . SQL_NO_CACHE . " COUNT(*)
 				FROM poller_item AS pi
 				INNER JOIN host AS h
-				ON h.id = pi.host_id ' . $sql_where);
+				ON h.id = pi.host_id
+				LEFT JOIN sites AS s
+				ON h.site_id = s.id
+				$sql_where");
 		}
 	} else {
 		cacti_log('WARNING: Cacti Polling Cycle Exceeded Poller Interval by ' . round($loop_end - $loop_start - $poller_interval, 2) . ' seconds', true, 'POLLER', $level);
