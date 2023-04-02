@@ -2062,7 +2062,7 @@ function html_graph_tabs_right() {
 		if (is_view_allowed('show_tree')) {
 			$tabs_right[] = array(
 				'title' => __('Tree View'),
-				'image' => 'include/css/' . $theme . '/images/tab_tree.gif',
+				'image' => file_exists('include/' . $theme . '/images/tab_tree.gif') ? 'include/' . $theme . '/images/tab_tree.gif':'images/tab_tree.gif',
 				'id'    => 'tree',
 				'url'   => 'graph_view.php?action=tree',
 			);
@@ -2071,7 +2071,7 @@ function html_graph_tabs_right() {
 		if (is_view_allowed('show_list')) {
 			$tabs_right[] = array(
 				'title' => __('List View'),
-				'image' => 'include/css/' . $theme . '/images/tab_list.gif',
+				'image' => file_exists('include/' . $theme . '/images/tab_list.gif') ? 'include/' . $theme . '/images/tab_list.gif':'images/tab_list.gif',
 				'id'    => 'list',
 				'url'   => 'graph_view.php?action=list',
 			);
@@ -2080,7 +2080,7 @@ function html_graph_tabs_right() {
 		if (is_view_allowed('show_preview')) {
 			$tabs_right[] = array(
 				'title' => __('Preview'),
-				'image' => 'include/css/' . $theme . '/images/tab_preview.gif',
+				'image' => file_exists('include/' . $theme . '/images/tab_preview.gif') ? 'include/' . $theme . '/images/tab_preview.gif':'image/tab_preview.gif',
 				'id'    => 'preview',
 				'url'   => 'graph_view.php?action=preview',
 			);
