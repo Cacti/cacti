@@ -820,7 +820,8 @@ function cactiReturnTo(href) {
 	if (typeof href !== 'string' || href.trim() == '') {
 		href = document.referrer;
 	}
-	loadUrl({ url: href });
+
+	loadUrl({ url: href, force: true });
 }
 
 /** applySkin - This function re-asserts all javascript behavior to a page
