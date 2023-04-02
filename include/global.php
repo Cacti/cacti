@@ -483,7 +483,7 @@ if ($config['is_web']) {
 	$config[COOKIE_OPTIONS]     = $options;
 	$config[CACTI_SESSION_NAME] = $cacti_session_name;
 
-	if (isset($cacti_db_session) && $cacti_db_session && db_table_exists('sessions') && $config['conneciton'] == 'online') {
+	if (isset($cacti_db_session) && $cacti_db_session && db_table_exists('sessions') && $config['connection'] == 'online') {
 		include(__DIR__ . '/session.php');
 	} else {
 		$cacti_db_session = false;
