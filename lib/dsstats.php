@@ -329,134 +329,16 @@ function dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $in
 
 	/* don't attempt to get information if the file does not exist */
 	if ($file_exists) {
-		/* high speed or snail speed */
-		if ($use_proxy) {
-			$info = rrdtool_execute("info $rrdfile", false, RRDTOOL_OUTPUT_STDOUT, false, 'DSSTATS');
-		} else {
-			$info = dsstats_rrdtool_execute("info $rrdfile", $rrd_process);
+		$stats_command = db_fetch_cell_prepared('SELECT stats_command
+			FROM data_source_stats_command_cache
+			WHERE local_data_id = ?',
+			array($local_data_id));
+
+		if ($stats_command == '') {
+			$stats_command = dsstats_get_stats_command($local_data_id, $rrdfile, $use_proxy, $mode, $peak, $rrd_process);
 		}
 
-		/* don't do anything if RRDfile did not return data */
-		if ($info != '') {
-			$info_array = explode("\n", $info);
-
-			$average = false;
-			$max     = false;
-			$dsnames = array();
-
-			/* figure out what is in this RRDfile.  Assume CF Uniformity as Cacti does not allow async rrdfiles.
-			 * also verify the consolidation functions in the RRDfile for average and max calculations.
-			 */
-			if (cacti_sizeof($info_array)) {
-				foreach ($info_array as $line) {
-					if (substr_count($line, 'ds[')) {
-						$parts  = explode(']', $line);
-						$parts2 = explode('[', $parts[0]);
-
-						$dsnames[trim($parts2[1])] = 1;
-					} elseif (substr_count($line, '.cf')) {
-						$parts = explode('=', $line);
-
-						if (substr_count($parts[1], 'AVERAGE')) {
-							$average = true;
-						} elseif (substr_count($parts[1], 'MAX')) {
-							$max = true;
-						}
-					} elseif (substr_count($line, 'step')) {
-						$parts = explode('=', $line);
-
-						$poller_interval = trim($parts[1]);
-					}
-				}
-			}
-
-			/* create the command syntax to get data */
-			/* assume that an RRDfile has not more than 62 data sources */
-			$defs     = 'abcdefghijklmnopqrstuvwxyz012345789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-			$i        = 0;
-			$j        = 0;
-			$def      = '';
-			$command  = '';
-			$dsvalues = array();
-
-			/* escape the file name if on Windows */
-			if ($config['cacti_server_os'] != 'unix') {
-				$rrdfile = str_replace(':', '\\:', $rrdfile);
-			}
-
-			/* setup the graph command by parsing through the internal data source names */
-			if (cacti_sizeof($dsnames)) {
-				foreach ($dsnames as $dsname => $present) {
-					$mydata_avg = $defs[$j] . $defs[$i] . '_a';
-					$mydata_max = $defs[$j] . $defs[$i] . '_m';
-
-					if ($average) {
-						$def .= 'DEF:' . $mydata_avg . '="' . $rrdfile . '":' . $dsname . ':AVERAGE ';
-						$command .= " VDEF:{$mydata_avg}_aa=$mydata_avg,AVERAGE PRINT:{$mydata_avg}_aa:{$dsname}-avg_avg=%lf";
-						$command .= " VDEF:{$mydata_avg}_am=$mydata_avg,MAXIMUM PRINT:{$mydata_avg}_am:{$dsname}-peak_avg=%lf";
-						$i++;
-					}
-
-					if ($max && $peak) {
-						$def .= 'DEF:' . $mydata_max . '="' . $rrdfile . '":' . $dsname . ':MAX ';
-						$command .= " VDEF:{$mydata_max}_ma=$mydata_max,AVERAGE PRINT:{$mydata_max}_ma:{$dsname}-avg_max=%lf";
-						$command .= " VDEF:{$mydata_max}_mm=$mydata_max,MAXIMUM PRINT:{$mydata_max}_mm:{$dsname}-peak_max=%lf";
-						$i++;
-					}
-
-					if ($mode == 1) {
-						$pt = array('95', '90', '75', '50', '25');
-
-						if ($average) {
-							foreach($pt as $s) {
-								$command .= " VDEF:{$mydata_avg}_p{$s}n={$mydata_avg},$s,PERCENTNAN PRINT:{$mydata_avg}_p{$s}n:{$dsname}-p{$s}n_avg=%lf";
-							}
-
-							// TOTAL
-							$command .= " VDEF:{$mydata_avg}_sum=$mydata_avg,TOTAL PRINT:{$mydata_avg}_sum:{$dsname}-sum_avg=%lf";
-
-							// STDDEV
-							$command .= " VDEF:{$mydata_avg}_stddev=$mydata_avg,STDEV PRINT:{$mydata_avg}_stddev:{$dsname}-stddev_avg=%lf";
-
-							// LSLSLOPE
-							$command .= " VDEF:{$mydata_avg}_lslslope=$mydata_avg,LSLSLOPE PRINT:{$mydata_avg}_lslslope:{$dsname}-lslslope_avg=%lf";
-
-							// LSLINT
-							$command .= " VDEF:{$mydata_avg}_lslint=$mydata_avg,LSLINT PRINT:{$mydata_avg}_lslint:{$dsname}-lslint_avg=%lf";
-
-							// LSLCORREL
-							$command .= " VDEF:{$mydata_avg}_lslcorrel=$mydata_avg,LSLCORREL PRINT:{$mydata_avg}_lslcorrel:{$dsname}-lslcorrel_avg=%lf";
-						}
-
-						if ($max && $peak) {
-							foreach($pt as $s) {
-								$command .= " VDEF:{$mydata_max}_p{$s}n={$mydata_max},$s,PERCENTNAN PRINT:{$mydata_max}_p{$s}n:{$dsname}-p{$s}n_max=%lf";
-							}
-
-							// TOTAL
-							$command .= " VDEF:{$mydata_max}_sum=$mydata_max,TOTAL PRINT:{$mydata_max}_sum:{$dsname}-sum_max=%lf";
-
-							// STDDEV
-							$command .= " VDEF:{$mydata_max}_stddev=$mydata_max,STDEV PRINT:{$mydata_max}_stddev:{$dsname}-stddev_max=%lf";
-
-							// LSLSLOPE
-							$command .= " VDEF:{$mydata_max}_lslslope=$mydata_max,LSLSLOPE PRINT:{$mydata_max}_lslslope:{$dsname}-lslslope_max=%lf";
-
-							// LSLINT
-							$command .= " VDEF:{$mydata_max}_lslint=$mydata_max,LSLINT PRINT:{$mydata_max}_lslint:{$dsname}-lslint_max=%lf";
-
-							// LSLCORREL
-							$command .= " VDEF:{$mydata_max}_lslcorrel=$mydata_max,LSLCORREL PRINT:{$mydata_max}_lslcorrel:{$dsname}-lslcorrel_max=%lf";
-						}
-					}
-
-					if ($i > 50) {
-						$j++;
-						$i = 0;
-					}
-				}
-			}
-
+		if ($stats_command !== false) {
 			/* change the interval to something RRDtool understands */
 			switch($interval) {
 				case 'daily':
@@ -478,7 +360,7 @@ function dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $in
 			}
 
 			/* now execute the graph command */
-			$stats_cmd = 'graph x --start now-1' . $interval . ' --end now ' . trim($def) . ' ' . trim($command);
+			$stats_cmd = 'graph x --start now-1' . $interval . ' --end now ' . trim($stats_command);
 
 			//print $stats_cmd . PHP_EOL . PHP_EOL;
 
@@ -562,6 +444,152 @@ function dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $in
 			cacti_log("WARNING: File '" . $rrdfile . "' Does not exist", false, 'DSSTATS');
 		}
 	}
+}
+
+function dsstats_get_stats_command($local_data_id, $rrdfile, $use_proxy, $mode, $peak, $rrd_process) {
+	global $config, $user_time, $system_time, $real_time;
+
+	/* high speed or snail speed */
+	if ($use_proxy) {
+		$info = rrdtool_execute("info $rrdfile", false, RRDTOOL_OUTPUT_STDOUT, false, 'DSSTATS');
+	} else {
+		$info = dsstats_rrdtool_execute("info $rrdfile", $rrd_process);
+	}
+
+	$command = '';
+
+	/* don't do anything if RRDfile did not return data */
+	if ($info != '') {
+		$info_array = explode("\n", $info);
+
+		$average = false;
+		$max     = false;
+		$dsnames = array();
+
+		/* figure out what is in this RRDfile.  Assume CF Uniformity as Cacti does not allow async rrdfiles.
+		 * also verify the consolidation functions in the RRDfile for average and max calculations.
+		 */
+		if (cacti_sizeof($info_array)) {
+			foreach ($info_array as $line) {
+				if (substr_count($line, 'ds[')) {
+					$parts  = explode(']', $line);
+					$parts2 = explode('[', $parts[0]);
+
+					$dsnames[trim($parts2[1])] = 1;
+				} elseif (substr_count($line, '.cf')) {
+					$parts = explode('=', $line);
+
+					if (substr_count($parts[1], 'AVERAGE')) {
+						$average = true;
+					} elseif (substr_count($parts[1], 'MAX')) {
+						$max = true;
+					}
+				} elseif (substr_count($line, 'step')) {
+					$parts = explode('=', $line);
+
+					$poller_interval = trim($parts[1]);
+				}
+			}
+		}
+
+		/* create the command syntax to get data */
+		/* assume that an RRDfile has not more than 62 data sources */
+		$defs     = 'abcdefghijklmnopqrstuvwxyz012345789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		$i        = 0;
+		$j        = 0;
+		$def      = '';
+		$command  = '';
+		$dsvalues = array();
+
+		/* escape the file name if on Windows */
+		if ($config['cacti_server_os'] != 'unix') {
+			$rrdfile = str_replace(':', '\\:', $rrdfile);
+		}
+
+		/* setup the graph command by parsing through the internal data source names */
+		if (cacti_sizeof($dsnames)) {
+			foreach ($dsnames as $dsname => $present) {
+				$mydata_avg = $defs[$j] . $defs[$i] . '_a';
+				$mydata_max = $defs[$j] . $defs[$i] . '_m';
+
+				if ($average) {
+					$def .= 'DEF:' . $mydata_avg . '="' . $rrdfile . '":' . $dsname . ':AVERAGE ';
+					$command .= " VDEF:{$mydata_avg}_aa=$mydata_avg,AVERAGE PRINT:{$mydata_avg}_aa:{$dsname}-avg_avg=%lf";
+					$command .= " VDEF:{$mydata_avg}_am=$mydata_avg,MAXIMUM PRINT:{$mydata_avg}_am:{$dsname}-peak_avg=%lf";
+					$i++;
+				}
+
+				if ($max && $peak) {
+					$def .= 'DEF:' . $mydata_max . '="' . $rrdfile . '":' . $dsname . ':MAX ';
+					$command .= " VDEF:{$mydata_max}_ma=$mydata_max,AVERAGE PRINT:{$mydata_max}_ma:{$dsname}-avg_max=%lf";
+					$command .= " VDEF:{$mydata_max}_mm=$mydata_max,MAXIMUM PRINT:{$mydata_max}_mm:{$dsname}-peak_max=%lf";
+					$i++;
+				}
+
+				if ($mode == 1) {
+					$pt = array('95', '90', '75', '50', '25');
+
+					if ($average) {
+						foreach($pt as $s) {
+							$command .= " VDEF:{$mydata_avg}_p{$s}n={$mydata_avg},$s,PERCENTNAN PRINT:{$mydata_avg}_p{$s}n:{$dsname}-p{$s}n_avg=%lf";
+						}
+
+						// TOTAL
+						$command .= " VDEF:{$mydata_avg}_sum=$mydata_avg,TOTAL PRINT:{$mydata_avg}_sum:{$dsname}-sum_avg=%lf";
+
+						// STDDEV
+						$command .= " VDEF:{$mydata_avg}_stddev=$mydata_avg,STDEV PRINT:{$mydata_avg}_stddev:{$dsname}-stddev_avg=%lf";
+
+						// LSLSLOPE
+						$command .= " VDEF:{$mydata_avg}_lslslope=$mydata_avg,LSLSLOPE PRINT:{$mydata_avg}_lslslope:{$dsname}-lslslope_avg=%lf";
+
+						// LSLINT
+						$command .= " VDEF:{$mydata_avg}_lslint=$mydata_avg,LSLINT PRINT:{$mydata_avg}_lslint:{$dsname}-lslint_avg=%lf";
+
+						// LSLCORREL
+						$command .= " VDEF:{$mydata_avg}_lslcorrel=$mydata_avg,LSLCORREL PRINT:{$mydata_avg}_lslcorrel:{$dsname}-lslcorrel_avg=%lf";
+					}
+
+					if ($max && $peak) {
+						foreach($pt as $s) {
+							$command .= " VDEF:{$mydata_max}_p{$s}n={$mydata_max},$s,PERCENTNAN PRINT:{$mydata_max}_p{$s}n:{$dsname}-p{$s}n_max=%lf";
+						}
+
+						// TOTAL
+						$command .= " VDEF:{$mydata_max}_sum=$mydata_max,TOTAL PRINT:{$mydata_max}_sum:{$dsname}-sum_max=%lf";
+
+						// STDDEV
+						$command .= " VDEF:{$mydata_max}_stddev=$mydata_max,STDEV PRINT:{$mydata_max}_stddev:{$dsname}-stddev_max=%lf";
+
+						// LSLSLOPE
+						$command .= " VDEF:{$mydata_max}_lslslope=$mydata_max,LSLSLOPE PRINT:{$mydata_max}_lslslope:{$dsname}-lslslope_max=%lf";
+
+						// LSLINT
+						$command .= " VDEF:{$mydata_max}_lslint=$mydata_max,LSLINT PRINT:{$mydata_max}_lslint:{$dsname}-lslint_max=%lf";
+
+						// LSLCORREL
+						$command .= " VDEF:{$mydata_max}_lslcorrel=$mydata_max,LSLCORREL PRINT:{$mydata_max}_lslcorrel:{$dsname}-lslcorrel_max=%lf";
+					}
+				}
+
+				if ($i > 50) {
+					$j++;
+					$i = 0;
+				}
+			}
+		}
+
+		$command = trim($def) . ' ' . $command;
+
+		db_execute_prepared('REPLACE INTO data_source_stats_command_cache
+			(local_data_id, stats_command)
+			VALUES(?, ?)',
+			array($local_data_id, $command));
+
+		return $command;
+	}
+
+	return false;
 }
 
 /**

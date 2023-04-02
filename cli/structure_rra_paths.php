@@ -192,6 +192,9 @@ $started     = false;
 
 printf('NOTE: Found:%s Data Sources.  Beginning Process' . PHP_EOL, number_format($total_count));
 
+/* truncate the data source command stats table */
+db_execute('TRUNCATE TABLE data_source_stats_command_cache');
+
 /* scan all data sources */
 foreach ($data_sources as $info) {
 	if (($done_count + $warn_count + $skip_count) % 100 == 0 && $started) {

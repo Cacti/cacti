@@ -141,6 +141,9 @@ function api_data_source_remove($local_data_id) {
 	db_execute_prepared('DELETE FROM data_source_stats_yearly
 		WHERE local_data_id = ?', array($local_data_id));
 
+	db_execute_prepared('DELETE FROM data_source_stats_command_cache
+		WHERE local_data_id = ?', array($local_data_id));
+
 	/* boost */
 	db_execute_prepared('DELETE FROM poller_output
 		WHERE local_data_id = ?', array($local_data_id));
