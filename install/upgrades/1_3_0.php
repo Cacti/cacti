@@ -72,7 +72,7 @@ function upgrade_to_1_3_0() {
 
 	db_install_execute("CREATE TABLE `data_source_stats_command_cache` (
 		`local_data_id` int(10) unsigned NOT NULL DEFAULT 0,
-		`stats_command` varchar(8192) NOT NULL DEFAULT '',
+		`stats_command` varchar(16384) NOT NULL DEFAULT '',
 		PRIMARY KEY (`local_data_id`))
 		ENGINE=InnoDB
 		ROW_FORMAT=DYNAMIC
