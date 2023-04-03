@@ -7045,7 +7045,7 @@ function is_install_needed($version = null) {
 	if ($mode == '==') {
 		return !$result;
 	} else {
-		return $results;
+		return $result;
 	}
 }
 
