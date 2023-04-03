@@ -285,7 +285,7 @@ function dsstats_write_buffer(&$stats_array, $interval, $mode) {
 					}
 				}
 			} else {
-				cacti_log("WARNING: Problem with DSSTATS data, Local Data ID:$local_data_id, Interval:" . ucfirst($interval), false, 'DSSTATS');
+				cacti_log("WARNING: Problem with Local Data ID:$local_data_id, Interval:" . ucfirst($interval), false, 'DSSTATS');
 			}
 		}
 
