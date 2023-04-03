@@ -74,7 +74,7 @@ function upgrade_to_1_3_0() {
 		ENGINE=InnoDB
 		ROW_FORMAT=Dynamic");
 
-	db_install_execute("CREATE TABLE `data_source_stats_command_cache` (
+	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_stats_command_cache` (
 		`local_data_id` int(10) unsigned NOT NULL DEFAULT 0,
 		`stats_command` varchar(16384) NOT NULL DEFAULT '',
 		PRIMARY KEY (`local_data_id`))
@@ -190,19 +190,22 @@ function upgrade_dsstats() {
 			$type = 'DOUBLE';
 
 			if (!db_column_exists($table, $column)) {
-				$sql .= ($i == 0 ? '':', ') . " ADD COLUMN $column $type";
+				$sql .= ", ADD COLUMN $column $type";
 
 				$i++;
 			}
 		}
 
+		cacti_log("$sql $suffix");
 		db_install_execute("$sql $suffix");
 	}
 
-	db_install_execute('ALTER TABLE data_source_stats_hourly
-		ADD column cf tinyint(3) unsigned not null default "0" AFTER rrd_name,
-		DROP PRIMARY KEY,
-		ADD PRIMARY KEY (local_data_id, rrd_name, cf)');
+	if (!db_column_exists('data_source_stats_hourly', 'cf')) {
+		db_install_execute('ALTER TABLE data_source_stats_hourly
+			ADD column cf tinyint(3) unsigned not null default "0" AFTER rrd_name,
+			DROP PRIMARY KEY,
+			ADD PRIMARY KEY (local_data_id, rrd_name, cf)');
+	}
 
-	db_execute('ALTER TABLE data_source_stats_hourly_cache ENGINE=InnoDB ROW_FORMAT=Dynamic');
+	db_install_execute('ALTER TABLE data_source_stats_hourly_cache ENGINE=InnoDB ROW_FORMAT=Dynamic');
 }
