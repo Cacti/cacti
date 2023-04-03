@@ -49,6 +49,7 @@ function repopulate_poller_cache() {
 	$poller_items   = array();
 	$local_data_ids = array();
 	$poller_prev    = 1;
+
 	$i = 0;
 	$j = 0;
 
@@ -62,7 +63,9 @@ function repopulate_poller_cache() {
 
 			if ($i > 500 || $poller_prev != $poller_id) {
 				poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_prev);
+
 				$i = 0;
+
 				$local_data_ids = array();
 				$poller_items   = array();
 			}
@@ -70,6 +73,7 @@ function repopulate_poller_cache() {
 			$poller_prev      = $poller_id;
 			$poller_items     = array_merge($poller_items, update_poller_cache($data));
 			$local_data_ids[] = $data['id'];
+
 			$i++;
 			$j++;
 		}
@@ -95,11 +99,14 @@ function repopulate_poller_cache() {
 	db_execute('TRUNCATE TABLE poller_data_template_field_mappings');
 	db_execute('INSERT IGNORE INTO poller_data_template_field_mappings
 		SELECT dtr.data_template_id, dif.data_name,
-		GROUP_CONCAT(dtr.data_source_name ORDER BY dtr.data_source_name) AS data_source_names, NOW()
-		FROM data_template_rrd AS dtr
+		GROUP_CONCAT(DISTINCT dtr.data_source_name ORDER BY dtr.data_source_name) AS data_source_names, NOW()
+		FROM graph_templates_item AS gti
+		INNER JOIN data_template_rrd AS dtr
+		ON gti.task_item_id = dtr.id
 		INNER JOIN data_input_fields AS dif
 		ON dtr.data_input_field_id = dif.id
 		WHERE dtr.local_data_id = 0
+		AND gti.local_graph_id = 0
 		GROUP BY dtr.data_template_id, dif.data_name');
 
 	if (isset($_SESSION['sess_user_id'])) {
