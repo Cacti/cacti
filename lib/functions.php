@@ -7042,7 +7042,11 @@ function is_install_needed($version = null) {
 		log_install_medium('step', "$result = (cacti_version_compare($db, $version, $mode)");
 	}
 
-	return $result;
+	if ($mode == '==') {
+		return !$result;
+	} else {
+		return $results;
+	}
 }
 
 function is_cacti_develop($version = null) {
