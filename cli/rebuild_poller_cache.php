@@ -134,7 +134,7 @@ if (cacti_sizeof($pollers)) {
 		);
 
 		/* add special host 0 */
-		if ($poller_id == 1) {
+		if ($poller_id == 1 && $host_template_id == 0 && $host_id == 0) {
 			$hosts[0] = 0;
 		}
 
