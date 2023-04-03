@@ -60,6 +60,10 @@ function upgrade_to_1_3_0() {
 		ldap_convert_1_3_0();
 	}
 
+	if (!db_column_exists('data_source_stats_daily', 'cf')) {
+		upgrade_dsstats();
+	}
+
 	db_install_execute("CREATE TABLE IF NOT EXISTS host_value_cache (
 		host_id mediumint(8) unsigned NOT NULL default '0',
 		dimension varchar(40) NOT NULL default '',
@@ -145,7 +149,9 @@ function ldap_convert_1_3_0() {
 
 		set_config_option('install_ldap_builtin', $domain_id);
 	}
+}
 
+function upgrade_dsstats() {
 	$columns = array(
 		'p95n',
 		'p90n',
@@ -190,8 +196,13 @@ function ldap_convert_1_3_0() {
 			}
 		}
 
-		db_execute("$sql $suffix");
+		db_install_execute("$sql $suffix");
 	}
+
+	db_install_execute('ALTER TABLE data_source_stats_hourly
+		ADD column cf tinyint(3) unsigned not null default "0" AFTER rrd_name,
+		DROP PRIMARY KEY,
+		ADD PRIMARY KEY (local_data_id, rrd_name, cf)');
 
 	db_execute('ALTER TABLE data_source_stats_hourly_cache ENGINE=InnoDB ROW_FORMAT=Dynamic');
 }
