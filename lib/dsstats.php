@@ -206,7 +206,8 @@ function dsstats_write_buffer(&$stats_array, $interval, $mode) {
 
 	// Format $stats[ldi][avg|max][rrd_name][metric] = $value
 	if ($mode == 1) {
-		$sql_prefix = "INSERT INTO data_source_stats_$interval (local_data_id, rrd_name, cf, average, peak, p95n, p90n, p75n, p50n, p25n, sum, stddev, lslslope, lslint, lslcorrel) VALUES";
+		$sql_prefix = "INSERT INTO data_source_stats_$interval
+			(local_data_id, rrd_name, cf, average, peak, p95n, p90n, p75n, p50n, p25n, sum, stddev, lslslope, lslint, lslcorrel) VALUES";
 
 		$sql_suffix = ' ON DUPLICATE KEY UPDATE
 			average=VALUES(average),
@@ -235,52 +236,56 @@ function dsstats_write_buffer(&$stats_array, $interval, $mode) {
 	/* Format $stats[ldi][avg|max][rrd_name][metric] = $value */
 	if (cacti_sizeof($stats_array)) {
 		foreach ($stats_array as $local_data_id => $ldi_stats) {
-			foreach ($ldi_stats as $cf => $cf_stats) {
-				if ($cf == 'avg') {
-					$mycf = '0';
-				} else {
-					$mycf = '1';
-				}
-
-				foreach($cf_stats as $rrd_name => $stats) {
-					if ($mode == 0) {
-						$outbuf .= ($i == 1 ? ' ':', ') . "('" .
-							$local_data_id      . "','" .
-							$rrd_name           . "','" .
-							$mycf               . "','" .
-							$stats['avg']       . "','" .
-							$stats['peak']      . "')";
+			if (cacti_sizeof($ldi_stats)) {
+				foreach ($ldi_stats as $cf => $cf_stats) {
+					if ($cf == 'avg') {
+						$mycf = '0';
 					} else {
-						$outbuf .= ($i == 1 ? ' ':', ') . "('" .
-							$local_data_id      . "','" .
-							$rrd_name           . "','" .
-							$mycf               . "','" .
-							$stats['avg']       . "','" .
-							$stats['peak']      . "','" .
-							$stats['p95n']      . "','" .
-							$stats['p90n']      . "','" .
-							$stats['p75n']      . "','" .
-							$stats['p50n']      . "','" .
-							$stats['p25n']      . "','" .
-							$stats['sum']       . "','" .
-							$stats['stddev']    . "','" .
-							$stats['lslslope']  . "','" .
-							$stats['lslint']    . "','" .
-							$stats['lslcorrel'] . "')";
+						$mycf = '1';
 					}
 
-					$out_length += strlen($outbuf);
+					foreach($cf_stats as $rrd_name => $stats) {
+						if ($mode == 0) {
+							$outbuf .= ($i == 1 ? ' ':', ') . "('" .
+								$local_data_id      . "','" .
+								$rrd_name           . "','" .
+								$mycf               . "','" .
+								$stats['avg']       . "','" .
+								$stats['peak']      . "')";
+						} else {
+							$outbuf .= ($i == 1 ? ' ':', ') . "('" .
+								$local_data_id      . "','" .
+								$rrd_name           . "','" .
+								$mycf               . "','" .
+								$stats['avg']       . "','" .
+								$stats['peak']      . "','" .
+								$stats['p95n']      . "','" .
+								$stats['p90n']      . "','" .
+								$stats['p75n']      . "','" .
+								$stats['p50n']      . "','" .
+								$stats['p25n']      . "','" .
+								$stats['sum']       . "','" .
+								$stats['stddev']    . "','" .
+								$stats['lslslope']  . "','" .
+								$stats['lslint']    . "','" .
+								$stats['lslcorrel'] . "')";
+						}
 
-					if (($out_length + $overhead) > $max_packet) {
-						db_execute($sql_prefix . $outbuf . $sql_suffix);
+						$out_length += strlen($outbuf);
 
-						$outbuf     = '';
-						$out_length = 0;
-						$i          = 1;
-					} else {
-						$i++;
+						if (($out_length + $overhead) > $max_packet) {
+							db_execute($sql_prefix . $outbuf . $sql_suffix);
+
+							$outbuf     = '';
+							$out_length = 0;
+							$i          = 1;
+						} else {
+							$i++;
+						}
 					}
 				}
+			} else {
+				cacti_log("WARNING: Problem with DSSTATS data, Local Data ID:$local_data_id, Interval:" . ucfirst($interval), false, 'DSSTATS');
 			}
 		}
 
