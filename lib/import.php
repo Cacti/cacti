@@ -1190,7 +1190,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 			GROUP_CONCAT(DISTINCT dtr.data_source_name ORDER BY dtr.data_source_name) AS data_source_names,
 			NOW() AS last_updated
 			FROM graph_templates_item AS gti
-			INNER data_template_rrd AS dtr
+			INNER JOIN data_template_rrd AS dtr
 			ON gti.task_item_id = dtr.id
 			INNER JOIN data_input_fields AS dif
 			ON dtr.data_input_field_id = dif.id
