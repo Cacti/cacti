@@ -6233,6 +6233,7 @@ function IgnoreErrorHandler($message) {
 
 	$snmp_ignore = array(
 		'No response from',
+		'No route to host',
 		'noSuchName',
 		'No Such Object',
 		'Error in packet',
