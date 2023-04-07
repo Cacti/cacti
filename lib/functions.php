@@ -7244,7 +7244,11 @@ function char_to_dec($part) {
  * @param mixed $type
  */
 function cacti_gethostinfo($hostname, $type = DNS_ALL) {
-	return dns_get_record($hostname, $type);
+	if ($hostname != '') {
+		return dns_get_record($hostname, $type);
+	} else {
+		return false;
+	}
 }
 
 /**
@@ -7548,7 +7552,7 @@ function is_resource_writable(string $path) {
 	}
 
 	if (file_exists($path)) {
-		if (($f = @fopen($path, 'a'))) {
+		if (is_writable($path) && ($f = @fopen($path, 'a'))) {
 			fclose($f);
 
 			return true;
@@ -7557,7 +7561,7 @@ function is_resource_writable(string $path) {
 		return false;
 	}
 
-	if (($f = @fopen($path, 'w'))) {
+	if (is_writable($path) && ($f = @fopen($path, 'w'))) {
 		fclose($f);
 		unlink($path);
 
