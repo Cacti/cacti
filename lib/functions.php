@@ -7554,7 +7554,9 @@ function is_resource_writable(string $path) {
 	}
 
 	if (file_exists($path)) {
-		if (is_writable($path) && ($f = @fopen($path, 'a'))) {
+		if (is_writable($path)) {
+			return true;
+		} elseif ($f = @fopen($path, 'a')) {
 			fclose($f);
 
 			return true;
@@ -7563,7 +7565,9 @@ function is_resource_writable(string $path) {
 		return false;
 	}
 
-	if (is_writable($path) && ($f = @fopen($path, 'w'))) {
+	if (is_writable($path)) {
+		return true;
+	} elseif ($f = @fopen($path, 'w')) {
 		fclose($f);
 		unlink($path);
 
