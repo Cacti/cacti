@@ -23,10 +23,13 @@
 set -x
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 cd "${SCRIPTPATH}/../../"
-chmod -R 777 log
 FILES1=$(find cli -name \*.php | grep -v "index.php" | sort)
 FILES2=$(ls -1 poller*.php | egrep -v "(index.php|pollers.php)" | sort)
 FILES3="cactid.php cmd.php"
+WEBUSER=$(ps -ef | egrep '(httpd|apache2|apache)' | grep -v `whoami` | grep -v root | head -n1 | awk '{print $1}')
+
+chmod -R 777 log
+chown -R $WEBUSER
 
 FAILED=0
 HEADER="#!/usr/bin/env php"
@@ -47,7 +50,7 @@ for script in $FILES1 $FILES2 $FILES3; do
 		echo "       -     found '${script_output}'"
 	fi
 
-	script_output=$(php -q "${script}" --version)
+	script_output=$(sudo -u ${WEBUSER} php -q "${script}" --version)
 	script_result=$?
 	script_lines=$(echo "${script_output}" | wc -l)
 
