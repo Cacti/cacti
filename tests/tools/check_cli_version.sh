@@ -30,6 +30,7 @@ WEBUSER=$(ps -ef | egrep '(httpd|apache2|apache)' | grep -v `whoami` | grep -v r
 
 chmod -R 777 *
 chown -R $WEBUSER *
+ls -altr /home/runner/work/cacti/cacti/cli/../include/cli_check.php
 
 FAILED=0
 HEADER="#!/usr/bin/env php"
