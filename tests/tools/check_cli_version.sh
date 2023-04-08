@@ -28,14 +28,15 @@ FILES2=$(ls -1 poller*.php | egrep -v "(index.php|pollers.php)" | sort)
 FILES3="cactid.php cmd.php"
 WEBUSER=$(ps -ef | egrep '(httpd|apache2|apache)' | grep -v `whoami` | grep -v root | head -n1 | awk '{print $1}')
 
-chmod -R 777 *
-chown -R $WEBUSER *
-ls -altr /home/runner/work/cacti/cacti/cli/../include/cli_check.php
+#chmod -R 777 *
+#chown -R $WEBUSER *
+#ls -altr /home/runner/work/cacti/cacti/cli/../include/cli_check.php
 
 FAILED=0
 HEADER="#!/usr/bin/env php"
 
 echo "Current User is: $(whoami)"
+echo "Web User is: ${WEBUSER}"
 
 for script in $FILES1 $FILES2 $FILES3; do
     script_output=""
@@ -53,7 +54,7 @@ for script in $FILES1 $FILES2 $FILES3; do
 		echo "       -     found '${script_output}'"
 	fi
 
-	script_output=$(sudo -u ${WEBUSER} php -q ${script} --version)
+	script_output=$(php -q ${script} --version)
 	script_result=$?
 	script_lines=$(echo "${script_output}" | wc -l)
 
@@ -79,7 +80,7 @@ for script in $FILES1 $FILES2 $FILES3; do
 		echo "   ==============================================================================="
 	fi
 
-	script_output=$(sudo -u ${WEBUSER} php -q ${script} --help)
+	script_output=$(php -q ${script} --help)
 	script_result=$?
 	script_lines=$(echo "${script_output}" | wc -l)
 
