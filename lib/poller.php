@@ -1577,6 +1577,17 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			array($remote_poller_id));
 		replicate_out_table($rcnn_id, $data, 'host_snmp_cache', $remote_poller_id);
 
+		$data = db_fetch_assoc_prepared('SELECT hvc.*
+			FROM host_value_cache AS hvc
+			INNER JOIN host AS h
+			ON h.id = hvc.host_id
+			WHERE h.poller_id = ?
+			AND h.deleted = ""
+			UNION
+			SELECT 0, "dummy", 0, 30, NOW()',
+			array($remote_poller_id));
+		replicate_out_table($rcnn_id, $data, 'host_value_cache', $remote_poller_id);
+
 		// Special class of 'update' for the table following tables 'poller_reindex', 'poller_item'
 		$data = db_fetch_assoc_prepared('SELECT pri.*
 			FROM poller_reindex AS pri

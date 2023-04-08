@@ -142,9 +142,11 @@ unregister_process('maintenance', 'master', $config['poller_id']);
 exit(0);
 
 function purge_host_value_cache() {
-	db_execute('DELETE FROM host_value_cache
-		WHERE time_to_live > 0
-		AND UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_updated) > time_to_live');
+	if (db_table_exists('host_value_cache')) {
+		db_execute('DELETE FROM host_value_cache
+			WHERE time_to_live > 0
+			AND UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_updated) > time_to_live');
+	}
 }
 
 function reindex_devices() {
