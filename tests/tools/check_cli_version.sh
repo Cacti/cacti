@@ -28,6 +28,9 @@ FILES3="cactid.php cmd.php"
 
 FAILED=0
 HEADER="#!/usr/bin/env php"
+
+echo "Current User is: $(whoami)"
+
 for script in $FILES1 $FILES2 $FILES3; do
 	if [[ $script == "index.php" ]]; then
 		continue;
