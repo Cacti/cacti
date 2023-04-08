@@ -1039,7 +1039,7 @@ function f_log($msg) {
 
 function display_version() {
 	$version = get_cacti_cli_version();
-	print "RRDfile Reassign Data Template, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
+	print "Cacti RRDfile Reassign Data Template, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 function display_help() {
@@ -1053,4 +1053,3 @@ function display_help() {
 	print '    --list-data-templates       list all data templates' . PHP_EOL . PHP_EOL;
 }
 
-?>
