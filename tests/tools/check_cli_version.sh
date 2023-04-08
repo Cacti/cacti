@@ -27,16 +27,19 @@ FILES1=$(find cli -name \*.php | grep -v "index.php" | sort)
 FILES2=$(ls -1 poller*.php | egrep -v "(index.php|pollers.php)" | sort)
 FILES3="cactid.php cmd.php"
 WEBUSER=$(ps -ef | egrep '(httpd|apache2|apache)' | grep -v `whoami` | grep -v root | head -n1 | awk '{print $1}')
+PWD=`pwd`
 
-#chmod -R 777 *
-#chown -R $WEBUSER *
-#ls -altr /home/runner/work/cacti/cacti/cli/../include/cli_check.php
+#--------------------------------------------------------------------------------
+# Empty the Cacti log before beginning
+#--------------------------------------------------------------------------------
+> log/cacti.log
 
 FAILED=0
 HEADER="#!/usr/bin/env php"
 
 echo "Current User is: $(whoami)"
 echo "Web User is: ${WEBUSER}"
+echo "Working Directory: ${PWD}"
 
 for script in $FILES1 $FILES2 $FILES3; do
     script_output=""
