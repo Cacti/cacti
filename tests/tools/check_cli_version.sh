@@ -20,7 +20,6 @@
 #| http://www.cacti.net/                                                   |
 #+-------------------------------------------------------------------------+
 
-set -x
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 cd "${SCRIPTPATH}/../../"
 FILES1=$(find cli -name \*.php | grep -v "index.php" | sort)
@@ -37,8 +36,6 @@ echo "Web User is: ${WEBUSER}"
 echo "Working Directory: ${PWD}"
 
 for script in $FILES1 $FILES2 $FILES3; do
-    script_output=""
-
 	if [[ $script == "index.php" ]]; then
 		continue;
 	fi

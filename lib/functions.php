@@ -7563,15 +7563,15 @@ function is_resource_writable(string $path) {
 		}
 
 		return false;
-	}
+	} else {
+		if (is_writable(dirname($path))) {
+			return true;
+		} elseif ($f = @fopen($path, 'w')) {
+			fclose($f);
+			unlink($path);
 
-	if (is_writable($path)) {
-		return true;
-	} elseif ($f = @fopen($path, 'w')) {
-		fclose($f);
-		unlink($path);
-
-		return true;
+			return true;
+		}
 	}
 
 	return false;
