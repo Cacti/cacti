@@ -20,6 +20,7 @@
 #| http://www.cacti.net/                                                   |
 #+-------------------------------------------------------------------------+
 
+set -v
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 cd "${SCRIPTPATH}/../../"
 chmod -R 777 log
