@@ -27,12 +27,7 @@ FILES1=$(find cli -name \*.php | grep -v "index.php" | sort)
 FILES2=$(ls -1 poller*.php | egrep -v "(index.php|pollers.php)" | sort)
 FILES3="cactid.php cmd.php"
 WEBUSER=$(ps -ef | egrep '(httpd|apache2|apache)' | grep -v `whoami` | grep -v root | head -n1 | awk '{print $1}')
-PWD=`pwd`
-
-#--------------------------------------------------------------------------------
-# Empty the Cacti log before beginning
-#--------------------------------------------------------------------------------
-> log/cacti.log
+PWD=$(pwd)
 
 FAILED=0
 HEADER="#!/usr/bin/env php"
