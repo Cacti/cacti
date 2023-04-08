@@ -51,7 +51,7 @@ for script in $FILES1 $FILES2 $FILES3; do
 		echo "       -     found '${script_output}'"
 	fi
 
-	script_output=$(sudo -u ${WEBUSER} php -q "${script}" --version)
+	script_output=$(sudo -u ${WEBUSER} "php -q ${script} --version")
 	script_result=$?
 	script_lines=$(echo "${script_output}" | wc -l)
 
