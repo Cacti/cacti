@@ -6233,7 +6233,6 @@ function IgnoreErrorHandler($message) {
 
 	$snmp_ignore = array(
 		'No response from',
-		'No route to host',
 		'noSuchName',
 		'No Such Object',
 		'Error in packet',
@@ -6256,7 +6255,9 @@ function IgnoreErrorHandler($message) {
 	}
 
 	$general_ignore = array(
-		'unable to read from socket',  # ping.php line 387 socket refusal
+		'unable to read from socket',        // ping.php socket refusal
+		'No route to host',                  // fsocketopen
+		'A temporary server error occurred', // dns_get_record
 		'Maximum execution time of',
 		'transport read',
 	);
