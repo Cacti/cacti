@@ -76,6 +76,7 @@ Cacti CHANGELOG
 -issue#5282: Script ss_host_cpu.php does not work as expected when on a remote data collector with hmib enabled
 -issue#5283: Trying to access array offset on value of type null in file lib/functions.php on line: 2276
 -issue#5291: Error thrown when imstalling packages
+-issue#5298: Cacti cli plugin_manage.php mishandles the --plugin option
 -feature: Upgrade billboard.js to version 3.7.4
 -feature: Upgrade d3.js to version 7.8.2
 
