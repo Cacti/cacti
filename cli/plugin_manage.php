@@ -52,7 +52,7 @@ if (cacti_sizeof($parms)) {
 	foreach($options as $arg => $value) {
 		switch($arg) {
 		case 'plugin':
-			$plugins = $value;
+			$plugins[] = $value;
 			break;
 
 		case 'install':
