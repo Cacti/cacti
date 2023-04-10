@@ -168,16 +168,7 @@ if (cacti_sizeof($plugins)) {
 			}
 
 			if ($installed && $allperms) {
-				print "NOTE: Enabling Plugin '$plugin' permissions for administrative accounts" . PHP_EOL;
-
-				$realms = db_fetch_assoc_prepared('SELECT *
-					FROM plugin_realms
-					WHERE plugin = ?',
-					array($plugin));
-
-				foreach ($realms as $realm) {
-					api_plugin_register_realm($plugin, $realm['file'], $realm['display'], 1);
-				}
+				plugin_manage_install_allrealms($plugin);
 			}
 		} elseif ($uninstall || $disable) {
 			if ($disable) {
@@ -190,6 +181,19 @@ if (cacti_sizeof($plugins)) {
 				api_plugin_uninstall($plugin);
 			}
 		}
+	}
+}
+
+function plugin_manage_install_allrealms($plugin) {
+	print "NOTE: Enabling Plugin '$plugin' permissions for administrative accounts" . PHP_EOL;
+
+	$realms = db_fetch_assoc_prepared('SELECT *
+		FROM plugin_realms
+		WHERE plugin = ?',
+		array($plugin));
+
+	foreach($realms as $realm) {
+		api_plugin_register_realm($plugin, $realm['file'], $realm['display'], 1);
 	}
 }
 
