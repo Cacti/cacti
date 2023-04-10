@@ -14,6 +14,7 @@ Cacti CHANGELOG
 -issue#5283: Trying to access array offset on value of type null in file lib/functions.php on line: 2276
 -issue#5291: Error thrown when installing package
 -issue#5298: Cacti cli plugin_manage.php mishandles the --plugin option
+-issue#5299: QA: Cacti automated install throwing error message
 -feature: Upgrade billboard.js to version 3.7.4
 -feature: Upgrade d3.js to version 7.8.2
 
