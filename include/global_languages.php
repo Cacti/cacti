@@ -219,7 +219,7 @@ if (CACTI_LANGUAGE_HANDLER != CACTI_LANGUAGE_HANDLER_DEFAULT) {
 set_language_constants(array(
 	'LOCALE'   => $cacti_locale,
 	'COUNTRY'  => $cacti_country,
-	'LANGUAGE' => $lang2locale[CACTI_LOCALE]['language'],
+	'LANGUAGE' => $lang2locale[$cacti_locale]['language'],
 	'FILE'     => $catalogue,
 ));
 
