@@ -6042,6 +6042,7 @@ function get_daysfromtime($time, $secs = false, $pad = '', $format = DAYS_FORMAT
 				if ($mod < 1 || !is_numeric($mod)) {
 					$mod = 1;
 				}
+
 				$val   = floor($time / $mod);
 				$time %= $mod;
 			} else {
@@ -6055,7 +6056,7 @@ function get_daysfromtime($time, $secs = false, $pad = '', $format = DAYS_FORMAT
 		}
 	}
 
-	return (int) trim($result, $text['suffix']);
+	return trim($result, $text['suffix']);
 }
 
 function padleft($pad = '', $value = '', $min = 2) {
