@@ -4461,7 +4461,11 @@ function sanitize_unserialize_selected_items($items) {
 
 		// validate that sanitized string is correctly formatted
 		if (preg_match('/^a:[0-9]+:{/', $unstripped) && !preg_match('/(^|;|{|})O:\+?[0-9]+:"/', $unstripped)) {
-			$items = unserialize($unstripped, array('allowed_classes' => false));
+			if(version_compare(PHP_VERSION, '7.0.0', '>=')) {
+				$items = unserialize($unstripped, array('allowed_classes' => false));
+			} else {
+				$items = unserialize($unstripped);
+			}
 
 			if (is_array($items)) {
 				foreach ($items as $item) {
