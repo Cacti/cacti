@@ -69,7 +69,32 @@ switch (get_request_var('action')) {
 		bottom_footer();
 
 		break;
+	case 'item_remove':
+		item_remove();
 
+		header('Location: aggregate_graphs.php?action=edit&id=' . get_filter_request_var('local_graph_id'));
+
+		break;
+	case 'item_edit':
+		top_header();
+
+		item_edit();
+
+		bottom_footer();
+
+		break;
+	case 'item_movedown':
+		item_movedown();
+
+		header('Location: aggregate_graphs.php?action=edit&id=' . get_filter_request_var('local_graph_id'));
+
+		break;
+	case 'item_moveup':
+		item_moveup();
+
+		header('Location: aggregate_graphs.php?action=edit&id=' . get_filter_request_var('local_graph_id'));
+
+		break;
 	default:
 		top_header();
 		aggregate_graph();
@@ -92,181 +117,573 @@ function add_tree_names_to_actions_array() {
 }
 
 function form_save() {
-	if (!isset_request_var('save_component_graph')) {
+	if (!isset_request_var('save_component_graph') && !isset_request_var('save_component_input')) {
 		header('Location: aggregate_graphs.php?action=edit&id=' . get_nfilter_request_var('id'));
 
 		return null;
 	}
 
-	/* remember some often used values */
-	$local_graph_id        = get_nfilter_request_var('local_graph_id', 0);
-	$graph_template_id     = get_nfilter_request_var('graph_template_id', 0);
-	$aggregate_template_id = get_nfilter_request_var('aggregate_template_id', 0);
-	$graph_title           = form_input_validate(get_nfilter_request_var('title_format'), 'title_format', '', false, 3);
+	if (isset_request_var('save_component_graph')) {
+		/* remember some often used values */
+		$local_graph_id        = get_nfilter_request_var('local_graph_id', 0);
+		$graph_template_id     = get_nfilter_request_var('graph_template_id', 0);
+		$aggregate_template_id = get_nfilter_request_var('aggregate_template_id', 0);
+		$graph_title           = form_input_validate(get_nfilter_request_var('title_format'), 'title_format', '', false, 3);
 
-	if (is_error_message()) {
-		raise_message(2);
-		header('Location: aggregate_graphs.php?action=edit&id=' . $local_graph_id);
+		if (is_error_message()) {
+			raise_message(2);
+			header('Location: aggregate_graphs.php?action=edit&id=' . $local_graph_id);
 
-		return null;
-	}
+			return null;
+		}
 
-	/* get the aggregate graph id */
-	$aggregate_graph_id  = db_fetch_cell_prepared('SELECT id
-		FROM aggregate_graphs
-		WHERE local_graph_id = ?', array($local_graph_id));
+		/* get the aggregate graph id */
+		$aggregate_graph_id  = db_fetch_cell_prepared('SELECT id
+			FROM aggregate_graphs
+			WHERE local_graph_id = ?', array($local_graph_id));
 
-	/* if user disabled template propagation we need to get graph data from form */
-	if (!isset_request_var('template_propogation')) {
-		$aggregate_template_id = 0;
-		$new_data              = aggregate_validate_graph_params($_POST, false);
-	} else {
-		$new_data = array();
-	}
+		/* if user disabled template propagation we need to get graph data from form */
+		if (!isset_request_var('template_propogation')) {
+			$aggregate_template_id = 0;
+			$new_data              = aggregate_validate_graph_params($_POST, false);
+		} else {
+			$new_data = array();
+		}
 
-	if (is_error_message()) {
-		raise_message(2);
-		header('Location: aggregate_graphs.php?action=edit&id=' . $local_graph_id);
+		if (is_error_message()) {
+			raise_message(2);
+			header('Location: aggregate_graphs.php?action=edit&id=' . $local_graph_id);
 
-		return null;
-	}
+			return null;
+		}
 
-	/* save graph data to cacti tables */
-	$graph_templates_graph_id = aggregate_graph_templates_graph_save(
-		$local_graph_id,
-		$graph_template_id,
-		$graph_title,
-		$aggregate_template_id,
-		$new_data
-	);
+		/* save graph data to cacti tables */
+		$graph_templates_graph_id = aggregate_graph_templates_graph_save(
+			$local_graph_id,
+			$graph_template_id,
+			$graph_title,
+			$aggregate_template_id,
+			$new_data
+		);
 
-	/* update title in aggregate graphs table */
-	db_execute_prepared(
-		'UPDATE aggregate_graphs
-		SET title_format = ?
-		WHERE id = ?',
-		array($graph_title, $aggregate_graph_id)
-	);
+		/* update title in aggregate graphs table */
+		db_execute_prepared(
+			'UPDATE aggregate_graphs
+			SET title_format = ?
+			WHERE id = ?',
+			array($graph_title, $aggregate_graph_id)
+		);
 
-	/* next lets see if any of the aggregate has changed and save as applicable
-	 * if the graph is templates, we can simply ignore.  A simple check will
-	 * determine if aggregation propagation is enabled
-	 */
-	if (!isset_request_var('template_propogation')) {
-		/* template propagation is disabled */
-		$save                          = array();
-		$save['id']                    = $aggregate_graph_id;
-		$save['aggregate_template_id'] = $aggregate_template_id;
-		$save['template_propogation']  = '';
-		$save['gprint_prefix']         = get_nfilter_request_var('gprint_prefix');
-		$save['gprint_format']         = isset_request_var('gprint_format') ? 'on' : '';
-		$save['total_prefix']          = get_nfilter_request_var('total_prefix');
+		/* next lets see if any of the aggregate has changed and save as applicable
+		 * if the graph is templates, we can simply ignore.  A simple check will
+		 * determine if aggregation propagation is enabled
+		 */
+		if (!isset_request_var('template_propogation')) {
+			/* template propagation is disabled */
+			$save                          = array();
+			$save['id']                    = $aggregate_graph_id;
+			$save['aggregate_template_id'] = $aggregate_template_id;
+			$save['template_propogation']  = '';
+			$save['gprint_prefix']         = get_nfilter_request_var('gprint_prefix');
+			$save['gprint_format']         = isset_request_var('gprint_format') ? 'on' : '';
+			$save['total_prefix']          = get_nfilter_request_var('total_prefix');
 
-		$save['total']                 = get_filter_request_var('total');
-		$save['graph_type']            = get_filter_request_var('graph_type');
-		$save['total_type']            = get_filter_request_var('total_type');
-		$save['order_type']            = get_filter_request_var('order_type');
+			$save['total']                 = get_filter_request_var('total');
+			$save['graph_type']            = get_filter_request_var('graph_type');
+			$save['total_type']            = get_filter_request_var('total_type');
+			$save['order_type']            = get_filter_request_var('order_type');
 
-		/* see if anything changed, if so, we will have to push out the aggregate */
-		if (!empty($aggregate_graph_id)) {
-			$old = db_fetch_row_prepared(
-				'SELECT *
-				FROM aggregate_graphs
-				WHERE id = ?',
-				array($aggregate_graph_id)
-			);
+			/* see if anything changed, if so, we will have to push out the aggregate */
+			if (!empty($aggregate_graph_id)) {
+				$old = db_fetch_row_prepared(
+					'SELECT *
+					FROM aggregate_graphs
+					WHERE id = ?',
+					array($aggregate_graph_id)
+				);
 
-			$save_me = 0;
+				$save_me = 0;
 
-			$save_me += ($old['aggregate_template_id'] != $save['aggregate_template_id']);
-			$save_me += ($old['template_propogation']  != $save['template_propogation']);
-			$save_me += ($old['gprint_prefix']         != $save['gprint_prefix']);
-			$save_me += ($old['gprint_format']         != $save['gprint_format']);
-			$save_me += ($old['graph_type']            != $save['graph_type']);
-			$save_me += ($old['total']                 != $save['total']);
-			$save_me += ($old['total_type']            != $save['total_type']);
-			$save_me += ($old['total_prefix']          != $save['total_prefix']);
-			$save_me += ($old['order_type']            != $save['order_type']);
+				$save_me += ($old['aggregate_template_id'] != $save['aggregate_template_id']);
+				$save_me += ($old['template_propogation']  != $save['template_propogation']);
+				$save_me += ($old['gprint_prefix']         != $save['gprint_prefix']);
+				$save_me += ($old['gprint_format']         != $save['gprint_format']);
+				$save_me += ($old['graph_type']            != $save['graph_type']);
+				$save_me += ($old['total']                 != $save['total']);
+				$save_me += ($old['total_type']            != $save['total_type']);
+				$save_me += ($old['total_prefix']          != $save['total_prefix']);
+				$save_me += ($old['order_type']            != $save['order_type']);
 
-			if ($save_me) {
-				$aggregate_graph_id = sql_save($save, 'aggregate_graphs');
-			}
-
-			/* save the template items now */
-			/* get existing item ids and sequences from graph template */
-			$graph_templates_items = array_rekey(
-				db_fetch_assoc_prepared('SELECT id, sequence
-					FROM graph_templates_item
-					WHERE local_graph_id=0
-					AND graph_template_id = ?
-					ORDER BY sequence', array($graph_template_id)),
-				'id',
-				array('sequence')
-			);
-			/* get existing aggregate template items */
-			$aggregate_graph_items_old = array_rekey(
-				db_fetch_assoc_prepared('SELECT *
-					FROM aggregate_graphs_graph_item
-					WHERE aggregate_graph_id = ?
-					ORDER BY sequence', array($aggregate_graph_id)),
-				'graph_templates_item_id',
-				array('aggregate_graph_id', 'graph_templates_item_id', 'sequence', 'color_template', 't_graph_type_id', 'graph_type_id', 't_cdef_id', 'cdef_id', 'item_skip', 'item_total')
-			);
-
-			/* update graph template item values with posted values */
-			aggregate_validate_graph_items($_POST, $graph_templates_items);
-
-			$items_changed = false;
-			$items_to_save = array();
-			$sequence      = 1;
-
-			foreach ($graph_templates_items as $item_id => $data) {
-				$item_new                            = array();
-				$item_new['aggregate_graph_id']      = $aggregate_graph_id;
-				$item_new['graph_templates_item_id'] = $item_id;
-
-				$item_new['color_template'] = isset($data['color_template']) ? $data['color_template'] : 0;
-				$item_new['item_skip']      = isset($data['item_skip']) ? 'on' : '';
-				$item_new['item_total']     = isset($data['item_total']) ? 'on' : '';
-				$item_new['sequence']       = $sequence;
-
-				/* compare with old item to see if we need to push out. */
-				if (!isset($aggregate_graph_items_old[$item_id])) {
-					/* this item does not yet exist */
-					$items_changed = true;
-				} else {
-					/* compare data from user to data from DB */
-					foreach ($item_new as $field => $new_value) {
-						if ($aggregate_graph_items_old[$item_id][$field] != $new_value) {
-							$items_changed = true;
-						}
-					}
-					/* fill in missing fields with db values */
-					$item_new = array_merge($aggregate_graph_items_old[$item_id], $item_new);
+				if ($save_me) {
+					$aggregate_graph_id = sql_save($save, 'aggregate_graphs');
 				}
-				$items_to_save[] = $item_new;
 
-				$sequence++;
+				/* save the template items now */
+				/* get existing item ids and sequences from graph template */
+				$graph_templates_items = array_rekey(
+					db_fetch_assoc_prepared('SELECT id, sequence
+						FROM graph_templates_item
+						WHERE local_graph_id=0
+						AND graph_template_id = ?
+						ORDER BY sequence', array($graph_template_id)),
+					'id',
+					array('sequence')
+				);
+
+				/* get existing aggregate template items */
+				$aggregate_graph_items_old = array_rekey(
+					db_fetch_assoc_prepared('SELECT *
+						FROM aggregate_graphs_graph_item
+						WHERE aggregate_graph_id = ?
+						ORDER BY sequence', array($aggregate_graph_id)),
+					'graph_templates_item_id',
+					array('aggregate_graph_id', 'graph_templates_item_id', 'sequence', 'color_template', 't_graph_type_id', 'graph_type_id', 't_cdef_id', 'cdef_id', 'item_skip', 'item_total')
+				);
+
+				/* update graph template item values with posted values */
+				aggregate_validate_graph_items($_POST, $graph_templates_items);
+
+				$items_changed = false;
+				$items_to_save = array();
+				$sequence      = 1;
+
+				foreach ($graph_templates_items as $item_id => $data) {
+					$item_new                            = array();
+					$item_new['aggregate_graph_id']      = $aggregate_graph_id;
+					$item_new['graph_templates_item_id'] = $item_id;
+
+					$item_new['color_template'] = isset($data['color_template']) ? $data['color_template'] : 0;
+					$item_new['item_skip']      = isset($data['item_skip']) ? 'on' : '';
+					$item_new['item_total']     = isset($data['item_total']) ? 'on' : '';
+					$item_new['sequence']       = $sequence;
+
+					/* compare with old item to see if we need to push out. */
+					if (!isset($aggregate_graph_items_old[$item_id])) {
+						/* this item does not yet exist */
+						$items_changed = true;
+					} else {
+						/* compare data from user to data from DB */
+						foreach ($item_new as $field => $new_value) {
+							if ($aggregate_graph_items_old[$item_id][$field] != $new_value) {
+								$items_changed = true;
+							}
+						}
+						/* fill in missing fields with db values */
+						$item_new = array_merge($aggregate_graph_items_old[$item_id], $item_new);
+					}
+					$items_to_save[] = $item_new;
+
+					$sequence++;
+				}
+
+				if ($items_changed) {
+					aggregate_graph_items_save($items_to_save, 'aggregate_graphs_graph_item');
+				}
+
+				if ($save_me || $items_changed) {
+					push_out_aggregates(0, $local_graph_id);
+				}
+			}
+		}
+
+		raise_message(1);
+
+		header('Location: aggregate_graphs.php?action=edit&id=' . $local_graph_id);
+	} elseif (isset_request_var('save_component_item')) {
+		global $graph_item_types;
+
+		$items[0] = array();
+
+		// handle saving aggregate graph items in separate function
+		if (get_request_var('aggregate_template_id') > 0 || get_request_var('aggregate_graph_id') > 0) {
+			form_save_aggregate();
+		}
+
+		if ($graph_item_types[get_request_var('graph_type_id')] == 'LEGEND') {
+			/* this can be a major time saver when creating lots of graphs with the typical
+			GPRINT LAST/AVERAGE/MAX legends */
+			$items = array(
+				0 => array(
+					'color_id'                  => '0',
+					'graph_type_id'             => '9',
+					'consolidation_function_id' => '4',
+					'text_format'               => 'Current:',
+					'hard_return'               => ''
+					),
+				1 => array(
+					'color_id'                  => '0',
+					'graph_type_id'             => '9',
+					'consolidation_function_id' => '1',
+					'text_format'               => 'Average:',
+					'hard_return'               => ''
+					),
+				2 => array(
+					'color_id'                  => '0',
+					'graph_type_id'             => '9',
+					'consolidation_function_id' => '3',
+					'text_format'               => 'Maximum:',
+					'hard_return'               => 'on'
+					));
+		}
+
+		foreach ($items as $item) {
+			/* generate a new sequence if needed */
+			if (isempty_request_var('sequence')) {
+				$sequence = get_filter_request_var('sequence');
+				set_request_var('sequence', get_sequence($sequence, 'sequence', 'graph_templates_item', 'local_graph_id=' . get_request_var('local_graph_id')));
+			}
+			$save['id']                           = get_filter_request_var('graph_template_item_id');
+			$save['graph_template_id']            = get_filter_request_var('graph_template_id');
+			$save['local_graph_template_item_id'] = get_filter_request_var('local_graph_template_item_id');
+			$save['local_graph_id']               = get_filter_request_var('local_graph_id');
+			$save['task_item_id']                 = form_input_validate(get_filter_request_var('task_item_id'), 'task_item_id', '', true, 3);
+			$save['color_id']                     = form_input_validate((isset($item['color_id']) ? $item['color_id'] : get_filter_request_var('color_id')), 'color_id', '', true, 3);
+
+			/* if alpha is disabled, use invisible_alpha instead */
+			if (!isset_request_var('alpha')) {
+				set_request_var('alpha', get_nfilter_request_var('invisible_alpha'));
 			}
 
-			if ($items_changed) {
-				aggregate_graph_items_save($items_to_save, 'aggregate_graphs_graph_item');
+			$save['alpha']                        = form_input_validate((isset($item['alpha']) ? $item['alpha'] : get_nfilter_request_var('alpha')), 'alpha', '', true, 3);
+			$save['graph_type_id']                = form_input_validate((isset($item['graph_type_id']) ? $item['graph_type_id'] : get_filter_request_var('graph_type_id')), 'graph_type_id', '', true, 3);
+			$save['cdef_id']                      = form_input_validate(get_filter_request_var('cdef_id'), 'cdef_id', '', true, 3);
+			$save['consolidation_function_id']    = form_input_validate((isset($item['consolidation_function_id']) ? $item['consolidation_function_id'] : get_filter_request_var('consolidation_function_id')), 'consolidation_function_id', '', true, 3);
+			$save['text_format']                  = form_input_validate((isset($item['text_format']) ? $item['text_format'] : get_nfilter_request_var('text_format')), 'text_format', '', true, 3);
+			$save['value']                        = form_input_validate(get_nfilter_request_var('value'), 'value', '', true, 3);
+			$save['hard_return']                  = form_input_validate(((isset($item['hard_return']) ? $item['hard_return'] : (isset_request_var('hard_return') ? get_nfilter_request_var('hard_return') : ''))), 'hard_return', '', true, 3);
+			$save['gprint_id']                    = form_input_validate(get_filter_request_var('gprint_id'), 'gprint_id', '', true, 3);
+			$save['sequence']                     = get_filter_request_var('sequence');
+
+			if (!is_error_message()) {
+				$graph_template_item_id = sql_save($save, 'graph_templates_item');
+
+				if ($graph_template_item_id) {
+					raise_message(1);
+				} else {
+					raise_message(2);
+				}
 			}
 
-			if ($save_me || $items_changed) {
-				push_out_aggregates(0, $local_graph_id);
+			set_request_var('sequence', 0);
+		}
+
+		if (is_error_message()) {
+			header('Location: ' . CACTI_PATH_URL . 'aggregate_graphs.php?action=item_edit&graph_template_item_id=' . (empty($graph_template_item_id) ? get_filter_request_var('graph_template_item_id') : $graph_template_item_id) . '&id=' . get_filter_request_var('local_graph_id'));
+
+			exit;
+		} else {
+			header('Location: ' . CACTI_PATH_URL . 'aggregate_graphs.php?action=edit&id=' . get_filter_request_var('local_graph_id'));
+
+			exit;
+		}
+	}
+}
+
+/* -----------------------
+	save aggregate graph item
+	This saves any overrides to item properties from graph template item.
+	Inserting new items here is not possible. Just editing existing ones.
+   ----------------------- */
+function form_save_aggregate() {
+	global $config;
+
+	if (!isset_request_var('save_component_item')) {
+		return;
+	}
+
+	// two possible tables to save to - aggregate template or aggregate graph
+	// with different key column combination
+	$save_to          = 'aggregate_graph_templates_item';
+	$key_cols         = array('aggregate_template_id', 'graph_templates_item_id');
+	$location_success = 'aggregate_templates.php?action=edit&id=' . get_filter_request_var('aggregate_template_id');
+	$location_failure = 'aggregate_graphs.php?action=item_edit&aggregate_template_id=' . get_filter_request_var('aggregate_template_id') . '&id=' . get_filter_request_var('graph_template_item_id');
+
+	if (get_filter_request_var('aggregate_graph_id') > 0) {
+		$save_to          = 'aggregate_graphs_graph_item';
+		$key_cols         = array('aggregate_graph_id', 'graph_templates_item_id');
+		$location_success = 'aggregate_graphs.php?action=edit&id=' . get_filter_request_var('local_graph_id');
+		$location_failure = 'aggregate_graphs.php?action=item_edit&aggregate_graph_id=' . get_filter_request_var('aggregate_graph_id') . '&id=' . get_filter_request_var('graph_template_item_id');
+	}
+
+	// only some properties can be saved here
+	$save                    = array();
+	$save['t_graph_type_id'] = form_input_validate((isset_request_var('t_graph_type_id') ? get_nfilter_request_var('t_graph_type_id') : ''), 't_graph_type_id', '', true, 3);
+	$save['graph_type_id']   = form_input_validate((($save['t_graph_type_id']) ? get_filter_request_var('graph_type_id') : 0), 'graph_type_id', '', true, 3);
+	$save['t_cdef_id']       = form_input_validate((isset_request_var('t_cdef_id') ? get_nfilter_request_var('t_cdef_id') : ''), 't_cdef_id', '', true, 3);
+	$save['cdef_id']         = form_input_validate((($save['t_cdef_id']) ? get_filter_request_var('cdef_id') : 0), 'cdef_id', '', true, 3);
+
+	if (!is_error_message()) {
+		// sql_save will not give useful return values when row key is
+		// composed from multiple columns. need to manually build query
+		$sql_set = 'SET ';
+
+		foreach ($save as $key => $value) {
+			$sql_set .= $key . '=' . db_qstr($value) . ', ';
+		}
+		$sql_set = substr($sql_set, 0, -2);
+
+		$sql_where = 'graph_templates_item_id = ' . get_filter_request_var('graph_template_item_id') . ' AND ';
+
+		if ($save_to == 'aggregate_graph_templates_item') {
+			$sql_where .= 'aggregate_template_id=' . get_filter_request_var('aggregate_template_id');
+		} else {
+			$sql_where .= 'aggregate_graph_id=' . get_filter_request_var('aggregate_graph_id');
+		}
+		$sql     = "UPDATE $save_to $sql_set WHERE $sql_where LIMIT 1";
+		$success = db_execute($sql);
+
+		if ($success) {
+			raise_message(1);
+		} else {
+			raise_message(2);
+		}
+
+		// update existing graphs with the changes to this item
+		if ($save_to == 'aggregate_graphs_graph_item') {
+			push_out_aggregates(0, get_filter_request_var('local_graph_id'));
+		} elseif ($save_to == 'aggregate_graph_templates_item') {
+			push_out_aggregates(get_filter_request_var('aggregate_template_id'));
+		}
+	}
+
+	if (is_error_message()) {
+		header('Location: ' . CACTI_PATH_URL . $location_failure);
+
+		exit;
+	} else {
+		header('Location: ' . CACTI_PATH_URL . $location_success);
+
+		exit;
+	}
+}
+
+function item_movedown() {
+	global $graph_item_types;
+
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	get_filter_request_var('local_graph_id');
+	/* ==================================================== */
+
+	$arr     = get_graph_group(get_request_var('id'));
+	$next_id = get_graph_parent(get_request_var('id'), 'next');
+
+	if ((!empty($next_id)) && (isset($arr[get_request_var('id')]))) {
+		move_graph_group(get_request_var('id'), $arr, $next_id, 'next');
+	} elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types[db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))])) {
+		move_item_down('graph_templates_item', get_request_var('id'), 'local_graph_id=' . get_request_var('local_graph_id'));
+	}
+}
+
+function item_moveup() {
+	global $graph_item_types;
+
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	get_filter_request_var('local_graph_id');
+	/* ==================================================== */
+
+	$arr         = get_graph_group(get_request_var('id'));
+	$previous_id = get_graph_parent(get_request_var('id'), 'previous');
+
+	if ((!empty($previous_id)) && (isset($arr[get_request_var('id')]))) {
+		move_graph_group(get_request_var('id'), $arr, $previous_id, 'previous');
+	} elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types[db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))])) {
+		move_item_up('graph_templates_item', get_request_var('id'), 'local_graph_id=' . get_request_var('local_graph_id'));
+	}
+}
+
+function item_remove() {
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	/* ==================================================== */
+
+	db_execute_prepared('DELETE FROM graph_templates_item WHERE id = ?', array(get_request_var('id')));
+}
+
+function item_edit() {
+	global $config, $struct_graph_item, $graph_item_types, $consolidation_functions;
+
+	// Remove filter item
+	unset($struct_graph_item['data_template_id']);
+
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	get_filter_request_var('local_graph_id');
+	get_filter_request_var('aggregate_graph_id');
+	get_filter_request_var('aggregate_template_id');
+	/* ==================================================== */
+
+	/* remember these search fields in session vars so we don't have to keep passing them around */
+	load_current_session_value('local_graph_id', 'sess_local_graph_id', '');
+
+	$id = (!isempty_request_var('id') ? '&id=' . get_request_var('id') : '');
+
+	/* this editor can work on aggregate template graph item or aggregate item */
+	if (!isempty_request_var('aggregate_graph_id')) {
+		$id_field   = 'aggregate_graph_id';
+		$table_name = 'aggregate_graphs_graph_item';
+		$page_name  = 'aggregate_graphs.php';
+	} elseif (!isempty_request_var('aggregate_template_id')) {
+		$id_field   = 'aggregate_template_id';
+		$table_name = 'aggregate_graph_templates_item';
+		$page_name  = 'aggregate_templates.php';
+	} else {
+		/* TODO redirect somewhere and show an error message, rather than die */
+		die('We should have redirected somewhere but we ended up here instead' . PHP_EOL);
+	}
+
+	if (!isempty_request_var('id')) {
+		$template_item = db_fetch_row_prepared('SELECT *
+			FROM graph_templates_item
+			WHERE id = ?',
+			array(get_request_var('id')));
+	}
+
+	/* override some template_item values from aggregate tables */
+	$item_overrides = db_fetch_row_prepared("SELECT *
+		FROM $table_name
+		WHERE $id_field = ?
+		AND graph_templates_item_id = ?",
+		array(get_request_var($id_field), get_request_var('id')));
+
+	if (cacti_sizeof($item_overrides) == 0) {
+		/* this item is not currently in aggregate tables
+		 * item editor will not work in this case, so let's
+		 * save it now
+		 */
+		$item_new = array(
+			$id_field                 => get_request_var($id_field),
+			'graph_templates_item_id' => get_request_var('id'),
+			'sequence'                => $template_item['sequence']
+		);
+
+		aggregate_graph_items_save(array($item_new), $table_name);
+
+		$item_overrides = db_fetch_row_prepared("SELECT *
+			FROM $table_name
+			WHERE $id_field = ?
+			AND graph_templates_item_id = ?",
+			array(get_request_var($id_field), get_request_var('id')));
+	}
+
+	foreach (array_keys($template_item) as $field_name) {
+		if (!array_key_exists($field_name, $item_overrides)) {
+			continue;
+		}
+		# t_<field_name> column in aggregate table must be "on" to override
+		if (array_key_exists('t_'.$field_name, $item_overrides) && $item_overrides['t_'.$field_name] == 'on') {
+			$template_item[$field_name] = $item_overrides[$field_name];
+		}
+	}
+
+	html_start_box(__('Override Values for Graph Item'), '100%', true, '3', 'center', '');
+
+	$form_array = array();
+
+	foreach ($struct_graph_item as $field_name => $field_array) {
+		$form_array += array($field_name => $struct_graph_item[$field_name]);
+
+		/* should we draw an override checkbox */
+		if (array_key_exists('t_' . $field_name, $item_overrides)) {
+			$form_array[$field_name]['sub_checkbox']  = array(
+				'name'          => 't_' . $field_name,
+				'friendly_name' => __esc('Override this Value') . '<br>',
+				'value'         => ($item_overrides['t_'.$field_name] == 'on' ? 'on' : ''),
+				'on_change'     => 'toggleFieldEnabled(this.id);'
+			);
+		}
+
+		$form_array[$field_name]['value']   = (isset($template_item) ? $template_item[$field_name] : '');
+		$form_array[$field_name]['form_id'] = (isset($template_item) ? $template_item['id'] : '0');
+	}
+
+	draw_edit_form(
+		array(
+			'config' => array(
+				'post_to' => CACTI_PATH_URL . 'aggregate_graphs.php'
+			),
+			'fields' => $form_array
+		)
+	);
+
+	form_hidden_box('local_graph_id', get_request_var('local_graph_id'), '0');
+	form_hidden_box('graph_template_item_id', (isset($template_item) ? $template_item['id'] : '0'), '');
+	form_hidden_box('local_graph_template_item_id', (isset($template_item) ? $template_item['local_graph_template_item_id'] : '0'), '');
+	form_hidden_box('graph_template_id', (isset($template_item) ? $template_item['graph_template_id'] : '0'), '');
+	form_hidden_box('sequence', (isset($template_item) ? $template_item['sequence'] : '0'), '');
+	form_hidden_box('_graph_type_id', (isset($template_item) ? $template_item['graph_type_id'] : '0'), '');
+	form_hidden_box('save_component_item', '1', '');
+	form_hidden_box('invisible_alpha', $form_array['alpha']['value'], 'FF');
+	form_hidden_box('rrdtool_version', get_rrdtool_version(), '');
+	form_hidden_box('aggregate_graph_id', get_request_var('aggregate_graph_id'), '0');
+	form_hidden_box('aggregate_template_id', get_request_var('aggregate_template_id'), '0');
+
+	html_end_box(true, true);
+
+	form_save_button(CACTI_PATH_URL . "$page_name?action=edit&id=" . get_request_var('local_graph_id'));
+
+	//Now we need some javascript to make it dynamic
+	?>
+	<script type='text/javascript'>
+
+	$(function() {
+		dynamic();
+		setFieldsDisabled();
+	});
+
+	function dynamic() {
+		$('#alpha').prop('disabled', true);
+		if ($('#color_id').val() != 0) {
+			$('#alpha').prop('disabled', true);
+		}
+	}
+
+	function changeColorId() {
+		if ($('#color_id').attr('selectedIndex') != 0) {
+			$('#alpha').prop('disabled', true);
+		}
+	}
+
+	// disable all items with sub-checkboxes except
+	// where sub-checkbox checked
+	function setFieldsDisabled() {
+		$('input[id^="t_"]').each(function() {
+			if (!$(this).is(':checked')) {
+				var fieldId = $(this).attr('id').substr(2);
+
+				$('#'+fieldId).prop('disabled', true);
+				$('#'+fieldId).addClass('ui-state-disabled');
+
+				if ($('#'+fieldId).selectmenu('instance')) {
+					$('#'+fieldId).selectmenu('disable');
+				}
+			}
+		});
+	}
+
+	// enable or disable form field based on state of corresponding checkbox
+	function toggleFieldEnabled(toggleFieldId) {
+		fieldId  = toggleFieldId.substr(2);
+
+		if ($('#'+fieldId).hasClass('ui-state-disabled')) {
+			$('#'+fieldId).prop('disabled', false).removeClass('ui-state-disabled');
+
+			if ($('#'+fieldId).selectmenu('instance')) {
+				$('#'+fieldId).selectmenu('enable');
+			}
+		} else {
+			$('#'+fieldId).prop('disabled', true).addClass('ui-state-disabled');
+
+			if ($('#'+fieldId).selectmenu('instance')) {
+				$('#'+fieldId).selectmenu('disable');
 			}
 		}
 	}
 
-	raise_message(1);
-
-	header('Location: aggregate_graphs.php?action=edit&id=' . $local_graph_id);
+	</script>
+	<?php
 }
-
-/* ------------------------
-	The "actions" function
-   ------------------------ */
 
 function form_actions() {
 	global $graph_actions, $agg_item_actions;
@@ -579,10 +996,6 @@ function form_actions() {
 	bottom_footer();
 }
 
-/* -----------------------
-	item - Graph Items
-   ----------------------- */
-
 function item() {
 	global $consolidation_functions, $graph_item_types, $struct_graph_item;
 
@@ -632,13 +1045,13 @@ function item() {
 		WHERE id = ?', array(get_request_var('id')));
 
 	if (empty($graph_template_id)) {
-		$add_text = 'aggregate_items.php?action=item_edit&local_graph_id=' . get_request_var('id');
+		$add_text = 'aggregate_graphs.php?action=item_edit&local_graph_id=' . get_request_var('id');
 	} else {
 		$add_text = '';
 	}
 
 	html_start_box($header_label, '100%', '', '3', 'center', $add_text);
-	draw_graph_items_list($template_item_list, 'aggregate_items.php', 'local_graph_id=' . get_request_var('id'), (empty($graph_template_id) ? false : true));
+	draw_graph_items_list($template_item_list, 'aggregate_graphs.php', 'local_graph_id=' . get_request_var('id'), (empty($graph_template_id) ? false : true));
 	html_end_box(false);
 }
 

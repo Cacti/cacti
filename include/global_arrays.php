@@ -1318,10 +1318,8 @@ $user_auth_realm_filenames = array(
 	'automation_devices.php'     => 23,
 	'automation_snmp.php'        => 23,
 	'color_templates.php'        => 5,
-	'color_templates_items.php'  => 5,
 	'aggregate_templates.php'    => 5,
 	'aggregate_graphs.php'       => 5,
-	'aggregate_items.php'        => 5,
 	'spikekill.php'              => 1043,
 	'support.php'                => 15,
 	'changelog.php'              => 15,
@@ -2751,7 +2749,7 @@ $navigation = array(
 		'url'     => '',
 		'level'   => '2'
 	),
-	'color_templates_items.php:item_edit' => array(
+	'color_templates.php:item_edit' => array(
 		'title'   => __('Color Template Items'),
 		'mapping' => 'index.php:,color_templates.php:,color_templates.php:template_edit',
 		'url'     => '',
@@ -2793,21 +2791,15 @@ $navigation = array(
 		'url'     => '',
 		'level'   => '2'
 	),
-	'aggregate_items.php:' => array(
+	'aggregate_graphs.php:' => array(
 		'title'   => __('Aggregate Items'),
 		'mapping' => 'index.php:',
-		'url'     => 'aggregate_items.php',
+		'url'     => 'aggregate_graphs.php',
 		'level'   => '1'
 	),
-	'aggregate_items.php:item_edit' => array(
+	'aggregate_graphs.php:item_edit' => array(
 		'title'   => __('(Edit)'),
-		'mapping' => 'index.php:,aggregate_graphs.php:,aggregate_items.php:',
-		'url'     => '',
-		'level'   => '2'
-	),
-	'aggregate_items.php:actions' => array(
-		'title'   => __('Actions'),
-		'mapping' => 'index.php:,aggregate_items.php:',
+		'mapping' => 'index.php:,aggregate_graphs.php:,aggregate_graphs.php:',
 		'url'     => '',
 		'level'   => '2'
 	),

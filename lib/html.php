@@ -1388,13 +1388,6 @@ function is_menu_pick_active($menu_url) {
 		} else {
 			return false;
 		}
-	} elseif (strpos($_SERVER['REQUEST_URI'], 'color_templates_items.php') !== false) {
-		/* special case for Color Templates items edit */
-		if (strpos($menu_url, 'color_templates.php') !== false) {
-			return true;
-		} else {
-			return false;
-		}
 	} elseif (!is_array($url_array) || (is_array($url_array) && !cacti_sizeof($url_array))) {
 		/* break out the URL and variables */
 		$url_array = parse_url($_SERVER['REQUEST_URI']);

@@ -60,6 +60,7 @@ Cacti CHANGELOG
 -feature#5215: DSSTATS - Cache the RRDtool Logic in a table to speed calculation of the staticis gathering
 -feature#5273: Add support for RRD --left-axis-format Options
 -feature#5278: Enhance Cacti's ping to use fping if it's installed to take advantage of sub-second timeouts
+-feature#5305: Remove files aggregate_items.php and color_templates_items.php and consolidate into their parents
 -feature: Allow messages to be popup notifications
 -feature: Upgrade billboard.js to version 3.7.4
 -feature: Upgrade d3.js to version 7.8.2
