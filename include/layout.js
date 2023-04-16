@@ -2656,10 +2656,6 @@ function handleAjaxResponse(html, options) {
 				$('#menu').find('.pic').removeClass('selected');
 				$('#menu').find("a[href*='/" + options.pageName + "']").addClass('selected');
 			}
-
-			if (options.pageName == 'graph_templates_items.php' || options.pageName == 'graph_templates_inputs.php') {
-				$('#menu').find('a[href*="graph_templates.php"]').addClass('selected');
-			}
 		}
 
 		applySkin()

@@ -1388,20 +1388,6 @@ function is_menu_pick_active($menu_url) {
 		} else {
 			return false;
 		}
-	} elseif (strpos($_SERVER['REQUEST_URI'], 'graph_templates_items.php') !== false) {
-		/* special case for Graph Template items edit */
-		if (strpos($menu_url, 'graph_templates.php') !== false) {
-			return true;
-		} else {
-			return false;
-		}
-	} elseif (strpos($_SERVER['REQUEST_URI'], 'graph_items.php') !== false) {
-		/* special case for Graph items edit */
-		if (strpos($menu_url, 'graphs.php') !== false) {
-			return true;
-		} else {
-			return false;
-		}
 	} elseif (strpos($_SERVER['REQUEST_URI'], 'color_templates_items.php') !== false) {
 		/* special case for Color Templates items edit */
 		if (strpos($menu_url, 'color_templates.php') !== false) {
@@ -2833,8 +2819,6 @@ function html_help_page($page) {
 		'graph_view.php'              => 'Graph-Overview.html',
 		'automation_graph_rules.php'  => 'Graph-Rules.html',
 		'graph_templates.php'         => 'Graph-Templates.html',
-		'graph_templates_items.php'   => 'Graph-Templates.html',
-		'graph_templates_inputs.php'  => 'Graph-Templates.html',
 		'graphs.php'                  => 'Graphs.html',
 		'templates_import.php'        => 'Import-Template.html',
 		'plugins.php'                 => 'Plugins.html',

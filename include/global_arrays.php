@@ -1275,12 +1275,9 @@ $user_auth_realm_filenames = array(
 	'graph_json.php'             => 7,
 	'graph_xport.php'            => 7,
 	'graph_templates.php'        => 10,
-	'graph_templates_inputs.php' => 10,
-	'graph_templates_items.php'  => 10,
 	'graph_view.php'             => 7,
 	'graph_realtime.php'         => 25,
 	'graphs.php'                 => 5,
-	'graphs_items.php'           => 5,
 	'graphs_new.php'             => 5,
 	'sites.php'                  => 3,
 	'pollers.php'                => 3,
@@ -2100,7 +2097,7 @@ $navigation = array(
 		'url'     => '',
 		'level'   => '2'
 	),
-	'graphs_items.php:item_edit' => array(
+	'graphs.php:item_edit' => array(
 		'title'   => __('Graph Items'),
 		'mapping' => 'index.php:,graphs.php:,graphs.php:graph_edit',
 		'url'     => '',
@@ -2256,19 +2253,19 @@ $navigation = array(
 		'url'     => '',
 		'level'   => '2'
 	),
-	'graph_templates_items.php:item_edit' => array(
+	'graph_templates.php:item_edit' => array(
 		'title'   => __('Graph Template Items'),
 		'mapping' => 'index.php:,graph_templates.php:,graph_templates.php:template_edit',
 		'url'     => '',
 		'level'   => '3'
 	),
-	'graph_templates_inputs.php:input_edit' => array(
+	'graph_templates.php:input_edit' => array(
 		'title'   => __('Graph Item Inputs'),
 		'mapping' => 'index.php:,graph_templates.php:,graph_templates.php:template_edit',
 		'url'     => '',
 		'level'   => '3'
 	),
-	'graph_templates_inputs.php:input_remove' => array(
+	'graph_templates.php:input_remove' => array(
 		'title'   => __('(Remove)'),
 		'mapping' => 'index.php:,graph_templates.php:,graph_templates.php:template_edit',
 		'url'     => '',
