@@ -254,8 +254,10 @@ function dsstats_master_handler($forcerun) {
 
 	/* handle partition creation and pruning before we start */
 	if (read_config_option('dsstats_gdg_enable') == 'on') {
-		dsstats_create_partitions($last_major_time, $current_time);
-		dsstats_remove_old_partitions($current_time);
+		if (date('z', $last_major_time) != date('z', $current_time)) {
+			dsstats_create_partitions($last_major_time, $current_time);
+			dsstats_remove_old_partitions($current_time);
+		}
 	}
 
 	if ($boost_active == 'on') {
