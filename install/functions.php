@@ -82,6 +82,15 @@ function install_create_csrf_secret($file) {
 	return true;
 }
 
+function install_unlink($file) {
+	if (file_exists(CACTI_PATH_BASE . '/' . $file) && is_writable(CACTI_PATH_BASE . '/' . $file)) {
+		log_install_high('file', "Unlinking file: $file");
+		unlink(CACTI_PATH_BASE . '/' . $file);
+	} else {
+		log_install_high('file', "Unlinking file: $file failed due to permission errors.");
+	}
+}
+
 function install_test_local_database_connection() {
 	global $database_type, $database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca;
 

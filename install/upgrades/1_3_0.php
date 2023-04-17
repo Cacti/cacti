@@ -208,4 +208,10 @@ function upgrade_dsstats() {
 	}
 
 	db_install_execute('ALTER TABLE data_source_stats_hourly_cache ENGINE=InnoDB ROW_FORMAT=Dynamic');
+
+	install_unlink('aggregate_items.php');
+	install_unlink('color_template_items.php');
+	install_unlink('graphs_items.php');
+	install_unlink('graph_templates_items.php');
+	install_unlink('graph_templates_inputs.php');
 }
