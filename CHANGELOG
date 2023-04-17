@@ -52,6 +52,7 @@ Cacti CHANGELOG
 -feature#5039: Add host_poller_id replacement variable
 -feature#5083: Make user log ask for confirmation on purge
 -feature#5120: Define cacti system paths as constants for better code checking
+-feature#5129: Add an option to skip table sync to remote pollers during upgrade process of Cacti
 -feature#5148: Allow theme-based include paths with master location
 -feature#5149: Allow CSS files to be loaded async #5149
 -feature#5163: DSSTATS - Add Additional Data Source Statics to Cacti

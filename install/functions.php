@@ -1247,17 +1247,21 @@ function install_full_sync() {
 			} elseif ($poller['gap'] < $gap_time) {
 				log_install_medium('sync', 'Replicating to Poller ' . $poller['id']);
 
-				if (replicate_out($poller['id'])) {
-					log_install_debug('sync', 'Completed replication to Poller ' . $poller['id']);
-					$success[] = $poller['id'];
+				if (read_config_option('disable_full_sync_on_upgrade') == '') {
+					if (replicate_out($poller['id'])) {
+						log_install_debug('sync', 'Completed replication to Poller ' . $poller['id']);
+						$success[] = $poller['id'];
 
-					db_execute_prepared('UPDATE poller
-						SET last_sync = NOW()
-						WHERE id = ?',
-						array($poller['id']));
+						db_execute_prepared('UPDATE poller
+							SET last_sync = NOW()
+							WHERE id = ?',
+							array($poller['id']));
+					} else {
+						log_install_debug('sync', 'Failed replication to Poller ' . $poller['id']);
+						$failed[] = $poller['id'];
+					}
 				} else {
-					log_install_debug('sync', 'Failed replication to Poller ' . $poller['id']);
-					$failed[] = $poller['id'];
+					log_install_low('sync', 'Database replication skipped for Poller ' . $poller['id']);
 				}
 			} else {
 				$timeout[] = $poller['id'];

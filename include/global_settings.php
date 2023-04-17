@@ -1277,13 +1277,6 @@ $settings['poller'] = array(
 		'default'       => 1,
 		'array'         => $poller_options,
 	),
-	'poller_sync_interval' => array(
-		'friendly_name' => __('Poller Sync Interval'),
-		'description'   => __('The default polling sync interval to use when creating a poller.  This setting will affect how often remote pollers are checked and updated.'),
-		'method'        => 'drop_array',
-		'default'       => 7200,
-		'array'         => $poller_sync_intervals,
-	),
 	'poller_interval' => array(
 		'friendly_name' => __('Poller Interval'),
 		'description'   => __('The polling interval in use.  This setting will affect how often RRDfiles are checked and updated.  <strong><u>NOTE: If you change this value, you must re-populate the poller cache.  Failure to do so, may result in lost data.</u></strong>'),
@@ -1362,9 +1355,27 @@ $settings['poller'] = array(
 		'method' => 'checkbox',
 		'default' => '',
 	),
+	'poller_replication_header' => array(
+		'friendly_name' => __('Data Collector Replication'),
+		'collapsible'   => 'true',
+		'method'        => 'spacer',
+	),
+	'poller_sync_interval' => array(
+		'friendly_name' => __('Poller Sync Interval'),
+		'description'   => __('The default polling sync interval to use when creating a poller.  This setting will affect how often remote pollers are checked and updated.'),
+		'method'        => 'drop_array',
+		'default'       => 7200,
+		'array'         => $poller_sync_intervals,
+	),
 	'disable_cache_replication' => array(
 		'friendly_name' => __('Disable Resource Cache Replication'),
 		'description'   => __('By default, the main Cacti Data Collector will cache the entire web site and plugins into a Resource Cache.  Then, periodically the Remote Data Collectors will update themselves with any updates from the main Cacti Data Collector.  This Resource Cache essentially allows Remote Data Collectors to self upgrade.  If you do not wish to use this option, you can disable it using this setting.'),
+		'method'        => 'checkbox',
+		'default'       => ''
+	),
+	'disable_full_sync_on_upgrade' => array(
+		'friendly_name' => __('Disable Automatic Full Sync on Upgrade'),
+		'description'   => __('By default, upon upgrading the Main Cacti system, it will perform a Full Sync to all Data Collectors.  This process may be time consuming.  Therefore, to allow upgrades to be completed quicker, we provide this option.  Note that if this is disabled, the Cacti administrator must force this process from the Data Collectors interface after upgrade.'),
 		'method'        => 'checkbox',
 		'default'       => ''
 	),
