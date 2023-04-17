@@ -431,6 +431,19 @@ if ($config['poller_id'] > 1) {
 	if ($timezone != '') {
 		db_execute_prepared('SET time_zone = ?', array($timezone));
 	}
+
+	if (db_column_exists('poller', 'log_level')) {
+		$poller_log_level = db_fetch_cell_prepared('SELECT log_level
+			FROM poller
+			WHERE id = ?',
+			array($config['poller_id']));
+
+		define('POLLER_LOG_LEVEL', $poller_log_level);
+	} else {
+		define('POLLER_LOG_LEVEL', '-1');
+	}
+} else {
+	define('POLLER_LOG_LEVEL', '-1');
 }
 
 if (!defined('IN_CACTI_INSTALL')) {

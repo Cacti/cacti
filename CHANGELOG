@@ -22,6 +22,7 @@ Cacti CHANGELOG
 -feature#2550: Enable use of authenticator codes for Two-Factor Authentication
 -feature#2607: Allow adding sites from command line
 -feature#2767: Plugins should be temporarily disabled if a required plugin is also disabled
+-feature#3048: Allow different log settings for remote pollers
 -feature#3139: Added option in CLI tool remove_graphs for deletion of single graph
 -feature#3187: Feature: rra path should be configurable
 -feature#3260: When a device is added, populate the created date/time

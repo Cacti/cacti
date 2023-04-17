@@ -49,6 +49,9 @@ $poller_status = array(
 	POLLER_STATUS_HEARTBEAT  => '<div class="deviceDown">'       . __('Heartbeat')    . '</div>',
 );
 
+
+$logfile_verbosity = array_merge(array(-1 => __('Use Cacti Log Level')), $logfile_verbosity);
+
 /* file: pollers.php, action: edit */
 $fields_poller_edit = array(
 	'spacer0' => array(
@@ -72,6 +75,14 @@ $fields_poller_edit = array(
 		'size'          => '50',
 		'default'       => '',
 		'max_length'    => '100'
+	),
+	'log_level' => array(
+		'method'        => 'drop_array',
+		'friendly_name' => __('Custom Log Level'),
+		'description'   => __('In Cases where you need to perform debugging for a single Data Collector Only, you can change it\'s log level here.'),
+		'value'         => '|arg1:log_level|',
+		'default'       => '-1',
+		'array'         => $logfile_verbosity,
 	),
 	'timezone' => array(
 		'method'        => 'drop_callback',
@@ -279,11 +290,12 @@ switch (get_request_var('action')) {
 function form_save() {
 	if (isset_request_var('save_component_poller')) {
 		// Common data
-		$save['id']       = get_filter_request_var('id');
-		$save['name']     = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
-		$save['hostname'] = form_input_validate(get_nfilter_request_var('hostname'), 'hostname', '', false, 3);
-		$save['timezone'] = form_input_validate(get_nfilter_request_var('timezone'), 'timezone', '', false, 3);
-		$save['notes']    = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
+		$save['id']        = get_filter_request_var('id');
+		$save['name']      = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['hostname']  = form_input_validate(get_nfilter_request_var('hostname'), 'hostname', '', false, 3);
+		$save['log_level'] = form_input_validate(get_nfilter_request_var('log_level'), 'log_level', '', false, 3);
+		$save['timezone']  = form_input_validate(get_nfilter_request_var('timezone'), 'timezone', '', false, 3);
+		$save['notes']     = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
 
 		// Process settings
 		$save['processes'] = form_input_validate(get_nfilter_request_var('processes'), 'processes', '^[0-9]+$', false, 3);
@@ -691,6 +703,8 @@ function poller_edit() {
 			unset($fields_poller_edit['dbsslkey']);
 			unset($fields_poller_edit['dbsslcert']);
 			unset($fields_poller_edit['dbsslca']);
+
+			$fields_poller_edit['log_level']['method'] = 'hidden';
 		}
 
 		if ($poller['timezone'] == '') {

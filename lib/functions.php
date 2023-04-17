@@ -1434,6 +1434,10 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	$oprefix      = '';
 	$omessage     = '';
 
+	if (defined('POLLER_LOG_LEVEL') && POLLER_LOG_LEVEL != -1) {
+		$level = POLLER_LOG_LEVEL;
+	}
+
 	/* only log if the specific level is reached, developer debug is special low + specific devdbg calls */
 	if ($force_level == -1) {
 		if ($level != '') {

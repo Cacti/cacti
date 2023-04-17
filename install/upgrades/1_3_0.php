@@ -26,7 +26,7 @@ function upgrade_to_1_3_0() {
 	db_install_change_column('version', array('name' => 'cacti', 'type' => 'char(30)', 'null' => false, 'default' => ''));
 	db_install_add_column('user_auth', array('name' => 'tfa_enabled', 'type' => 'char(3)', 'null' => false, 'default' => ''));
 	db_install_add_column('user_auth', array('name' => 'tfa_secret', 'type' => 'char(50)', 'null' => false, 'default' => ''));
-	db_install_add_column('poller', array('name' => 'log_level', 'type' => 'int', 'null' => false, 'default' => '-1'));
+	db_install_add_column('poller', array('name' => 'log_level', 'type' => 'int', 'null' => false, 'default' => '-1', 'after' => 'status'));
 	db_install_add_column('host', array('name' => 'created', 'type' => 'timestamp', 'default' => 'CURRENT_TIMESTAMP'));
 	db_install_add_column('sites', array('name' => 'disabled', 'type' => 'char(2)', 'null' => false, 'default' => '', 'after' => 'name'));
 	db_install_add_column('user_domains_ldap', array('name' => 'tls_certificate', 'type' => 'tinyint(3)', 'unsigned' => true, 'null' => false, 'default' => '3'));
@@ -81,6 +81,12 @@ function upgrade_to_1_3_0() {
 		ENGINE=InnoDB
 		ROW_FORMAT=DYNAMIC
 		COMMENT='Holds the RRDfile Stats Commands'");
+
+	install_unlink('aggregate_items.php');
+	install_unlink('color_template_items.php');
+	install_unlink('graphs_items.php');
+	install_unlink('graph_templates_items.php');
+	install_unlink('graph_templates_inputs.php');
 }
 
 function ldap_convert_1_3_0() {
@@ -208,10 +214,4 @@ function upgrade_dsstats() {
 	}
 
 	db_install_execute('ALTER TABLE data_source_stats_hourly_cache ENGINE=InnoDB ROW_FORMAT=Dynamic');
-
-	install_unlink('aggregate_items.php');
-	install_unlink('color_template_items.php');
-	install_unlink('graphs_items.php');
-	install_unlink('graph_templates_items.php');
-	install_unlink('graph_templates_inputs.php');
 }
