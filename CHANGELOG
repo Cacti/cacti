@@ -60,6 +60,7 @@ Cacti CHANGELOG
 -feature#5165: DSSTATS - Change data_source_stats_hourly_cache from Memory to INNODB
 -feature#5178: DSSTATS - Allow Retention of Daily, Weekly, Monthly and Yearly data for varying periods
 -feature#5215: DSSTATS - Cache the RRDtool Logic in a table to speed calculation of the staticis gathering
+-feature#5225: When your Database server has TB of memory, memory calculation returns incorrect data in Cacti
 -feature#5231: When editing a Device show in state/uptime as a date in the header
 -feature#5273: Add support for RRD --left-axis-format Options
 -feature#5278: Enhance Cacti's ping to use fping if it's installed to take advantage of sub-second timeouts

@@ -1064,16 +1064,16 @@ function utilities_get_mysql_recommendations() {
 			'comment' => __('When executing subqueries, having a larger temporary table size, keep those temporary tables in memory.')
 			),
 		'join_buffer_size' => array(
-			'value'   => '80',
-			'measure' => 'cmem',
+			'value'   => '262144',
+			'measure' => 'ge',
 			'class'   => 'warning',
-			'comment' => __('When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80%.  If the recommendation is negative, you must decrease this and or the sort_buffer_size until the recommendation fits within the allowable memory.')
+			'comment' => __('If this number is negative, reduce the innodb_buffer_pool_size until the join_buffer_size turns positive, but allocate approximately from between 25%-50% of memory to the innodb_buffer_pool_size if the database is hosted on the Cacti server, or upto 80% of the systems memory if the database is separate from the Cacti web server.  However, try to not go below the default of 262,144.  When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80% if the database is hosted on the Cacti web server and less if you intend to have very large RRDfiles or hundreds of thousands to millions long term.')
 			),
 		'sort_buffer_size' => array(
-			'value'   => '80',
-			'measure' => 'cmem',
+			'value'   => '2097152',
+			'measure' => 'ge',
 			'class'   => 'warning',
-			'comment' => __('When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80%.  If the recommendation is negative, you must decrease this and or the sort_buffer_size until the recommendation fits within the allowable memory.')
+			'comment' => __('If this number is negative, reduce the innodb_buffer_pool_size until the sort_buffer_size turns positive, but allocate approximately from between 25%-50% of memory to the innodb_buffer_pool_size if the database is hosted on the Cacti server, or upto 80% of the system memory if the database is separate from the Cacti web server.  However, try to not go below the default setting of 2,097,152.  A sort buffer performs sorts for some queries using ORDER BY or GROUP BY. Configuring sort_buffer_size decides how much memory will be allocated for sort queries.  The sort_buffer_size may need to be adjusted from the default if the workload requires a significant number of sort queries. The sort_buffer_size is defined on a per-session variable.  Use the same equation as that of the join_buffer_size to determine the per connection possible memory.')
 			),
 		'innodb_file_per_table' => array(
 			'value'   => 'ON',
@@ -1097,7 +1097,7 @@ function utilities_get_mysql_recommendations() {
 			'value'   => '25',
 			'measure' => 'pmem',
 			'class'   => 'warning',
-			'comment' => __('InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.')
+			'comment' => __('InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.  If you database is very large or remote, you can consider increasing this size.  If remote, it can by as high as 80% of the systems memory.  However, cautions must be taken to reduce the swapiness of the system, or to remove swap to keep the system from swapping.')
 			),
 		'innodb_doublewrite' => array(
 			'value'   => 'ON',

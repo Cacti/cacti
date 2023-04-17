@@ -40,7 +40,7 @@ support_view_tech();
    ----------------------- */
 
 function support_view_tech() {
-	global $config, $poller_options, $input_types, $local_db_cnn_id;
+	global $config, $database_hostname, $poller_options, $input_types, $local_db_cnn_id;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-z_A-Z]+)$/')));
@@ -451,6 +451,14 @@ function support_view_tech() {
 		$version   = $mysql_info['version'];
 		$link_ver  = $mysql_info['link_ver'];
 		$variables = $mysql_info['variables'];
+		$myhost    = php_uname('n');
+		$dbhost    = $database_hostname;
+
+		if ($dbhost == 'localhost' || $myhost == $dbhost) {
+			$local_db = true;
+		} else {
+			$local_db = false;
+		}
 
 		// Get Maximum Memory in GB for MySQL/MariaDB
 		if ($config['poller_id'] == 1) {
@@ -561,7 +569,7 @@ function support_view_tech() {
 
 		html_section_header(__('MySQL/MariaDB Memory Statistics (Source: MySQL Tuner)'), 2);
 
-		if ($total_memory > 0) {
+		if ($total_memory > 0 && $local_db) {
 			if ($maxPossibleMyMemory > ($total_memory * 0.8)) {
 				form_alternate_row();
 				print '<td>' . __('Max Total Memory Possible') . '</td>';
@@ -584,7 +592,7 @@ function support_view_tech() {
 			form_end_row();
 		}
 
-		if ($total_memory > 0) {
+		if ($total_memory > 0 && $local_db) {
 			if ($systemMemory > ($total_memory * 0.8)) {
 				form_alternate_row();
 				print '<td>' . __('Max Core Memory Possible') . '</td>';
@@ -621,12 +629,22 @@ function support_view_tech() {
 		} else {
 			form_alternate_row();
 			print '<td>' . __('Max Core Memory Possible') . '</td>';
-			print '<td class="deviceUp">' . __('%0.2f GB', number_format_i18n($systemMemory, 2, 1000)) . '</td>';
+			print '<td>' . __('%0.2f GB', number_format_i18n($systemMemory, 2, 1000)) . '</td>';
+			form_end_row();
+
+			form_alternate_row();
+			print '<td>' . __('Calculation Formula') . '</td>';
+			print '<td>SELECT @@GLOBAL.key_buffer_size + <br>@@GLOBAL.query_cache_size + <br>@@GLOBAL.tmp_table_size + <br>@@GLOBAL.innodb_buffer_pool_size + <br>@@GLOBAL.innodb_log_buffer_size</td>';
 			form_end_row();
 
 			form_alternate_row();
 			print '<td>' . __('Max Connection Memory Possible') . '</td>';
 			print '<td>' . __('%0.2f GB', number_format_i18n($clientMemory, 2, 1000)) . '</td>';
+			form_end_row();
+
+			form_alternate_row();
+			print '<td>' . __('Calculation Formula') . '</td>';
+			print '<td>SELECT @@GLOBAL.max_connections * (<br>@@GLOBAL.sort_buffer_size + <br>@@GLOBAL.read_buffer_size + <br>@@GLOBAL.read_rnd_buffer_size + <br>@@GLOBAL.join_buffer_size + <br>@@GLOBAL.thread_stack + <br>@@GLOBAL.binlog_cache_size)</td>';
 			form_end_row();
 		}
 
@@ -702,11 +720,15 @@ function support_view_tech() {
 			if ((ini_get('memory_limit') == -1)) {
 				print __("You've set memory limit to 'unlimited'.") . '<br>';
 			}
+
 			print __('It is highly suggested that you alter you php.ini memory_limit to %s or higher.', memory_readable($memory_suggestion)) . ' <br/>' .
 				__('This suggested memory value is calculated based on the number of data source present and is only to be used as a suggestion, actual values may vary system to system based on requirements.');
+
 			print '</span><br>';
 		}
+
 		print '</td>';
+
 		form_end_row();
 
 		utilities_get_mysql_recommendations();
@@ -753,6 +775,7 @@ function support_view_tech() {
 			if (($r % 2) == 1) {
 				form_end_row();
 			}
+
 			$r++;
 		}
 
@@ -779,6 +802,7 @@ function support_view_tech() {
 			if (strlen($s['Value']) > 70) {
 				$s['Value'] = str_replace(',', ', ', $s['Value']);
 			}
+
 			print '<td>' . (is_numeric($s['Value']) ? number_format_i18n($s['Value'], -1):html_escape($s['Value'])) . '</td>';
 			form_end_row();
 		}
