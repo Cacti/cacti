@@ -348,10 +348,10 @@ function dsstats_create_partitions($last_major_time, $current_time) {
 }
 
 function dsstats_remove_old_partitions($current_time) {
-	$daily_retention  = read_config_option('dsstats_daily_retention');
-	$weekly_retention = read_config_option('dsstats_weekly_retention');
-	$montly_retention = read_config_option('dsstats_monthly_retention');
-	$yearly_retention = read_config_option('dsstats_yearly_retention');
+	$daily_retention   = read_config_option('dsstats_daily_retention');
+	$weekly_retention  = read_config_option('dsstats_weekly_retention');
+	$monthly_retention = read_config_option('dsstats_monthly_retention');
+	$yearly_retention  = read_config_option('dsstats_yearly_retention');
 
 	dsstats_prune_partitions('data_source_stats_daily', $daily_retention);
 	dsstats_prune_partitions('data_source_stats_weekly', $weekly_retention);
@@ -360,7 +360,7 @@ function dsstats_remove_old_partitions($current_time) {
 }
 
 function dsstats_prune_partitions($table_name, $partitions_to_keep) {
-	$tables = db_fetch_assoc("SHOW TABLE LIKE {$table_name}_v%");
+	$tables = db_fetch_assoc("SHOW TABLES LIKE '{$table_name}_v%'");
 
 	if (cacti_sizeof($tables) > $partitions_to_keep) {
 		$partitions_to_delete = cacti_sizeof($tables) - $partitions_to_keep;
