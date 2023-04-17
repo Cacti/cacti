@@ -285,7 +285,12 @@ function dsstats_write_buffer(&$stats_array, $interval, $mode) {
 					}
 				}
 			} else {
-				cacti_log("WARNING: Problem with Local Data ID:$local_data_id, Interval:" . ucfirst($interval), false, 'DSSTATS');
+				$host_id = db_fetch_cell_prepared('SELECT host_id
+					FROM data_local
+					WHERE id = ?',
+					array($local_data_id));
+
+				cacti_log(sprintf("WARNING: Problem with Data Source for Device[%s], DS[%s], Interval[%s]", $host_id, $local_data_id, ucfirst($interval)), false, 'DSSTATS');
 			}
 		}
 
