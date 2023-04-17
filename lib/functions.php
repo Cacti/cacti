@@ -5988,7 +5988,7 @@ function calculate_percentiles($data, $percentile = 95, $whisker = false) {
 	return $results;
 }
 
-function get_timeinstate(array $host): string {
+function get_timeinstate(array $host, bool $return_as_date = false): string {
 	$interval = read_config_option('poller_interval');
 
 	if ($host['availability_method'] == 0) {
@@ -6011,11 +6011,31 @@ function get_timeinstate(array $host): string {
 		$time = 0;
 	}
 
-	return ($time > 0) ? get_daysfromtime($time) : __('N/A');
+	if (!$return_as_date) {
+		return ($time > 0) ? get_daysfromtime($time) : __('N/A');
+	} elseif ($time == 0) {
+		return __('Since Install');
+	} else {
+		if (defined('CACTI_DATE_TIME_FORMAT')) {
+			return date(CACTI_DATE_TIME_FORMAT, time() - $time);
+		} else {
+			return date('Y-m-d H:i:s', time() - $time);
+		}
+	}
 }
 
-function get_uptime(array $host): string {
-	return ($host['snmp_sysUpTimeInstance'] > 0) ? get_daysfromtime(intval($host['snmp_sysUpTimeInstance'] / 100)) : __('N/A');
+function get_uptime(array $host, bool $return_as_date = false): string {
+	if (!$return_as_date) {
+		return ($host['snmp_sysUpTimeInstance'] > 0) ? get_daysfromtime(intval($host['snmp_sysUpTimeInstance'] / 100)) : __('N/A');
+	} elseif ($host['snmp_sysUpTimeInstance'] == 0) {
+		return __('Unknown');
+	} else {
+		if (defined('CACTI_DATE_TIME_FORMAT')) {
+			return date(CACTI_DATE_TIME_FORMAT, time() - intval($host['snmp_sysUpTimeInstance'] / 100));
+		} else {
+			return date('Y-m-d H:i:s', time() - intval($host['snmp_sysUpTimeInstance'] / 100));
+		}
+	}
 }
 
 function get_daysfromtime($time, $secs = false, $pad = '', $format = DAYS_FORMAT_SHORT, $all = false) {
