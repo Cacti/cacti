@@ -2282,28 +2282,28 @@ $settings['data'] = array(
 		'description'   => __('The number of Days, Weeks, Months, or Years to keep daily statistics.'),
 		'method'        => 'drop_array',
 		'default'       => '2618784',
-		'array'         => $timespans
+		'array'         => $daily_timespans
 	),
 	'dsstats_weekly_retention' => array(
 		'friendly_name' => __('Weekly Partition Retention'),
 		'description'   => __('The number of Days, Weeks, Months, or Years to keep weekly statistics.'),
 		'method'        => 'drop_array',
 		'default'       => '10475136',
-		'array'         => $timespans
+		'array'         => $weekly_timespans
 	),
 	'dsstats_monthly_retention' => array(
 		'friendly_name' => __('Monthly Partition Retention'),
 		'description'   => __('The number of Days, Weeks, Months, or Years to keep monthly statistics.'),
 		'method'        => 'drop_array',
 		'default'       => '31536000',
-		'array'         => $timespans
+		'array'         => $monthly_timespans
 	),
 	'dsstats_yearly_retention' => array(
 		'friendly_name' => __('Yearly Partition Retention'),
 		'description'   => __('The number of Days, Weeks, Months, or Years to keep yearly statistics.'),
 		'method'        => 'drop_array',
 		'default'       => '157680000',
-		'array'         => $timespans
+		'array'         => $yearly_timespans
 	),
 	'rrdcheck_hq_header' => array(
 		'friendly_name' => __('RRDfile Check'),

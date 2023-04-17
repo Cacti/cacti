@@ -808,6 +808,56 @@ $timespans = array(
 	315360000 => __('%d Years', 10)
 );
 
+$daily_timespans   = array(
+	7   => __('%d Week', 1),
+	14  => __('%d Weeks', 2),
+	21  => __('%d Weeks', 3),
+	30  => __('%d Month', 1),
+	60  => __('%d Months', 2),
+	90  => __('%d Months', 3),
+	182 => __('%d Months', 6),
+	365 => __('%d Year', 1),
+);
+
+$weekly_timespans  = array(
+	1   => __('%d Week', 1),
+	2   => __('%d Weeks', 2),
+	3   => __('%d Weeks', 3),
+	4   => __('%d Month', 1),
+	8   => __('%d Months', 2),
+	13  => __('%d Months', 3),
+	17  => __('%d Months', 4),
+	26  => __('%d Months', 6),
+	52  => __('%d Year', 1),
+	104 => __('%d Year', 2),
+	156 => __('%d Year', 3),
+	208 => __('%d Year', 4),
+);
+
+$monthly_timespans = array(
+	1  => __('%d Month', 1),
+	2  => __('%d Months', 2),
+	3  => __('%d Months', 3),
+	6  => __('%d Months', 6),
+	12 => __('%d Year', 1),
+	24 => __('%d Year', 2),
+	36 => __('%d Year', 3),
+	48 => __('%d Year', 4),
+);
+
+$yearly_timespans  = array(
+	1  => __('%d Year', 1),
+	2  => __('%d Years', 2),
+	3  => __('%d Years', 3),
+	4  => __('%d Years', 4),
+	5  => __('%d Years', 5),
+	6  => __('%d Years', 6),
+	7  => __('%d Years', 7),
+	8  => __('%d Years', 8),
+	9  => __('%d Years', 9),
+	10 => __('%d Years', 10),
+);
+
 $poller_intervals = array(
 	10  => __('Every %d Seconds', 10),
 	15  => __('Every %d Seconds', 15),

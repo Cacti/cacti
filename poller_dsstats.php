@@ -229,8 +229,14 @@ function dsstats_master_handler($forcerun) {
 	$daily_interval = read_config_option('dsstats_daily_interval');
 
 	/* check to see when the daily averages were updated last */
-	$last_run_daily = read_config_option('dsstats_last_daily_run_time');
-	$last_run_major = read_config_option('dsstats_last_major_run_time');
+	$last_run_daily  = read_config_option('dsstats_last_daily_run_time');
+	$last_run_major  = read_config_option('dsstats_last_major_run_time');
+
+	if (!empty($last_run_major)) {
+		$last_major_time = strtotime($last_run_major);
+	} else {
+		$last_major_time = time();
+	}
 
 	// Purge the cache
 	dsstats_purge_hourly_cache();
@@ -245,6 +251,12 @@ function dsstats_master_handler($forcerun) {
 
 	/* next let's see if it's time to update the daily interval */
 	$current_time = time();
+
+	/* handle partition creation and pruning before we start */
+	if (read_config_option('dsstats_gdg_enable') == 'on') {
+		dsstats_create_partitions($last_major_time, $current_time);
+		dsstats_remove_old_partitions($current_time);
+	}
 
 	if ($boost_active == 'on') {
 		/* boost will spawn the collector */
@@ -305,6 +317,80 @@ function dsstats_master_handler($forcerun) {
 		}
 
 		dsstats_log_statistics('MAJOR');
+	}
+}
+
+function dsstats_create_partitions($last_major_time, $current_time) {
+	$last_day     = date('z', $last_major_time);
+	$last_week    = date('W', $last_major_time);
+	$last_month   = date('n', $last_major_time);
+	$last_year    = date('Y', $last_major_time);
+
+	// Create partition for daily numbers
+	if ($last_day != date('z', $current_time)) {
+		dsstats_create_partiton_from_table('data_source_stats_daily', '_v' . "$last_year$last_day");
+	}
+
+	// Create partition for weekly numbers
+	if ($last_week != date('W', $current_time)) {
+		dsstats_create_partiton_from_table('data_source_stats_weekly', '_v' . "$last_year$last_week");
+	}
+
+	// Create partition for monthly numbers
+	if ($last_month != date('n', $current_time)) {
+		dsstats_create_partiton_from_table('data_source_stats_monthly', '_v' . "$last_year$last_month");
+	}
+
+	// Create partition for yearly numbers
+	if ($last_year != date('Y', $current_time)) {
+		dsstats_create_partiton_from_table('data_source_stats_yearly', '_v' . "$last_year$last_month");
+	}
+}
+
+function dsstats_remove_old_partitions($current_time) {
+	$daily_retention  = read_config_option('dsstats_daily_retention');
+	$weekly_retention = read_config_option('dsstats_weekly_retention');
+	$montly_retention = read_config_option('dsstats_monthly_retention');
+	$yearly_retention = read_config_option('dsstats_yearly_retention');
+
+	dsstats_prune_partitions('data_source_stats_daily', $daily_retention);
+	dsstats_prune_partitions('data_source_stats_weekly', $weekly_retention);
+	dsstats_prune_partitions('data_source_stats_monthly', $monthly_retention);
+	dsstats_prune_partitions('data_source_stats_yearly', $yearly_retention);
+}
+
+function dsstats_prune_partitions($table_name, $partitions_to_keep) {
+	$tables = db_fetch_assoc("SHOW TABLE LIKE {$table_name}_v%");
+
+	if (cacti_sizeof($tables) > $partitions_to_keep) {
+		$partitions_to_delete = cacti_sizeof($tables) - $partitions_to_keep;
+
+		$partitions = array();
+
+		foreach($tables as $table) {
+			$tname = $table[0];
+			$parts = explode('_v', $tname);
+			$partitions[] = $parts[1];
+		}
+
+		sort($partitions);
+
+		$i = 0;
+
+		while($i < $partitions_to_delete) {
+			$remove_table = $table_name . '_v' . $partitions[$i];
+
+			if (db_table_exists($remove_table)) {
+				db_execute("DROP TABLE $remove_table");
+			}
+		}
+	}
+}
+
+function dsstats_create_partiton_from_table($table_name, $suffix) {
+	if (db_table_exists($table_name)) {
+		db_execute("CREATE TABLE dsstats_temp_table LIKE $table_name;
+			RENAME TABLE dsstats_temp_table TO $table_name$suffix, dsstats_temp_table TO $table_name");
 	}
 }
 
