@@ -383,6 +383,8 @@ function dsstats_prune_partitions($table_name, $partitions_to_keep) {
 			$remove_table = $table_name . '_v' . $partitions[$i];
 
 			if (db_table_exists($remove_table)) {
+				cacti_log("NOTE: Dropping old partition $table_name", false, 'DSSTATS');
+
 				db_execute("DROP TABLE $remove_table");
 			}
 
@@ -393,6 +395,8 @@ function dsstats_prune_partitions($table_name, $partitions_to_keep) {
 
 function dsstats_create_partiton_from_table($table_name, $suffix) {
 	if (db_table_exists($table_name)) {
+		cacti_log("NOTE: Creating new partition $table_name", false, 'DSSTATS');
+
 		db_execute("CREATE TABLE dsstats_temp_table LIKE $table_name;
 			RENAME TABLE dsstats_temp_table TO $table_name$suffix, dsstats_temp_table TO $table_name");
 	}
