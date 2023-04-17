@@ -385,6 +385,8 @@ function dsstats_prune_partitions($table_name, $partitions_to_keep) {
 			if (db_table_exists($remove_table)) {
 				db_execute("DROP TABLE $remove_table");
 			}
+
+			$i++;
 		}
 	}
 }
