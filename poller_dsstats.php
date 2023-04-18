@@ -42,7 +42,8 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 $debug          = false;
-$forcerun       = false;
+$force          = false;
+$fpartition     = false; // Only to be used for QA
 $type           = 'pmaster';
 $thread_id      = 0;
 
@@ -77,9 +78,13 @@ if (cacti_sizeof($parms)) {
 				break;
 			case '-f':
 			case '--force':
-				$forcerun = true;
+				$force = true;
 
 				break;
+			case '-p':
+			case '--partition':
+				$fpartition = true;
+
 			case '--type':
 				$type = $value;
 
@@ -141,7 +146,7 @@ dsstats_memory_limit();
 dsstats_debug('Polling Starting');
 
 /* silently end if the registered process is still running */
-if (!$forcerun) {
+if (!$force) {
 	if (!register_process_start('dsstats', $type, $thread_id, read_config_option('dsstats_timeout'))) {
 		exit(0);
 	}
@@ -150,8 +155,8 @@ if (!$forcerun) {
 // Collect data as determined by the type
 switch ($type) {
 	case 'pmaster':
-		if (read_config_option('dsstats_enable') == 'on' || $forcerun) {
-			dsstats_master_handler($forcerun);
+		if (read_config_option('dsstats_enable') == 'on' || $force) {
+			dsstats_master_handler($force);
 		}
 
 		break;
@@ -195,7 +200,7 @@ switch ($type) {
 
 dsstats_debug('Polling Ending');
 
-if (!$forcerun) {
+if (!$force) {
 	unregister_process('dsstats', $type, $thread_id);
 }
 
@@ -221,7 +226,7 @@ function dsstats_insert_hourly_data_into_cache() {
 		ON DUPLICATE KEY UPDATE average=VALUES(average), peak=VALUES(peak)');
 }
 
-function dsstats_master_handler($forcerun) {
+function dsstats_master_handler($force) {
 	global $type;
 
 	/* read some important settings relative to timing from the database */
@@ -254,9 +259,9 @@ function dsstats_master_handler($forcerun) {
 
 	/* handle partition creation and pruning before we start */
 	if (read_config_option('dsstats_gdg_enable') == 'on') {
-		if (date('z', $last_major_time) != date('z', $current_time)) {
-			dsstats_create_partitions($last_major_time, $current_time);
-			dsstats_remove_old_partitions($current_time);
+		if (date('z', $last_major_time) != date('z', $current_time) || $fpartition) {
+			dsstats_create_partitions($last_major_time, $current_time, $fpartition);
+			dsstats_remove_old_partitions($current_time, $fpartition);
 		}
 	}
 
@@ -279,7 +284,7 @@ function dsstats_master_handler($forcerun) {
 		}
 
 		/* if it's time to update daily statistics, do so now */
-		if ((!empty($last_run_daily) && ((strtotime($last_run_daily) + ($daily_interval * 60)) < $current_time)) || $forcerun) {
+		if ((!empty($last_run_daily) && ((strtotime($last_run_daily) + ($daily_interval * 60)) < $current_time)) || $force) {
 			set_config_option('dsstats_last_daily_run_time', date('Y-m-d G:i:s', $current_time));
 
 			/* run the daily stats */
@@ -305,7 +310,7 @@ function dsstats_master_handler($forcerun) {
 	}
 
 	/* if its time to run major statistics, do so now */
-	if ((!empty($last_run_major) && ($next_major_day < $current_time)) || $forcerun) {
+	if ((!empty($last_run_major) && ($next_major_day < $current_time)) || $force) {
 		/* run the major stats, log first to keep other processes from running */
 		set_config_option('dsstats_last_major_run_time', date('Y-m-d G:i:s', $current_time));
 
@@ -322,34 +327,37 @@ function dsstats_master_handler($forcerun) {
 	}
 }
 
-function dsstats_create_partitions($last_major_time, $current_time) {
+function dsstats_create_partitions($last_major_time, $current_time, $fpartition = false) {
 	$last_day     = date('z', $last_major_time);
 	$last_week    = date('W', $last_major_time);
 	$last_month   = date('n', $last_major_time);
 	$last_year    = date('Y', $last_major_time);
 
 	// Create partition for daily numbers
-	if ($last_day != date('z', $current_time)) {
-		dsstats_create_partiton_from_table('data_source_stats_daily', '_v' . "$last_year$last_day");
+	if ($last_day != date('z', $current_time) || $fpartition) {
+		$last_day = substr('00' . $last_day, -3);
+		dsstats_create_partition_from_table('data_source_stats_daily', '_v' . "$last_year$last_day");
 	}
 
 	// Create partition for weekly numbers
-	if ($last_week != date('W', $current_time)) {
-		dsstats_create_partiton_from_table('data_source_stats_weekly', '_v' . "$last_year$last_week");
+	if ($last_week != date('W', $current_time) || $fpartition) {
+		$last_week = substr('00' . $last_week, -3);
+		dsstats_create_partition_from_table('data_source_stats_weekly', '_v' . "$last_year$last_week");
 	}
 
 	// Create partition for monthly numbers
-	if ($last_month != date('n', $current_time)) {
-		dsstats_create_partiton_from_table('data_source_stats_monthly', '_v' . "$last_year$last_month");
+	if ($last_month != date('n', $current_time) || $fpartition) {
+		$last_month = substr('00' . $last_month, -3);
+		dsstats_create_partition_from_table('data_source_stats_monthly', '_v' . "$last_year$last_month");
 	}
 
 	// Create partition for yearly numbers
-	if ($last_year != date('Y', $current_time)) {
-		dsstats_create_partiton_from_table('data_source_stats_yearly', '_v' . "$last_year$last_month");
+	if ($last_year != date('Y', $current_time) || $fpartition) {
+		dsstats_create_partition_from_table('data_source_stats_yearly', '_v' . "$last_year");
 	}
 }
 
-function dsstats_remove_old_partitions($current_time) {
+function dsstats_remove_old_partitions($current_time, $fpartition = false) {
 	$daily_retention   = read_config_option('dsstats_daily_retention');
 	$weekly_retention  = read_config_option('dsstats_weekly_retention');
 	$monthly_retention = read_config_option('dsstats_monthly_retention');
@@ -393,12 +401,16 @@ function dsstats_prune_partitions($table_name, $partitions_to_keep) {
 	}
 }
 
-function dsstats_create_partiton_from_table($table_name, $suffix) {
+function dsstats_create_partition_from_table($table_name, $suffix) {
 	if (db_table_exists($table_name)) {
 		cacti_log("NOTE: Creating new partition $table_name", false, 'DSSTATS');
 
+		if (db_table_exists('dsstats_temp_table')) {
+			db_execute('DROP TABLE dsstats_temp_table');
+		}
+
 		db_execute("CREATE TABLE dsstats_temp_table LIKE $table_name;
-			RENAME TABLE dsstats_temp_table TO $table_name$suffix, dsstats_temp_table TO $table_name");
+			RENAME TABLE $table_name TO $table_name$suffix, dsstats_temp_table TO $table_name");
 	}
 }
 
