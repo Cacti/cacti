@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-12-17 15:36-0500\nPO-Revision-Date: 2023-04-17 07:00+0000\nLast-Translator: Сергей <zersh@mail.ru>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-12-17 15:36-0500\nPO-Revision-Date: 2023-04-18 10:47+0000\nLast-Translator: Сергей <zersh@mail.ru>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2605 lib/html.php:2491
 msgid "About Cacti"
@@ -228,11 +228,11 @@ msgstr "Для того, чтобы перевести приведенные н
 
 #: aggregate_graphs.php:436
 msgid "Please press 'Return' to continue."
-msgstr "Пожалуйста нажмите 'Вернуть' для продолжения"
+msgstr "Пожалуйста нажмите 'Вернуть' для продолжения."
 
 #: aggregate_graphs.php:447
 msgid "Click 'Continue' to combine the following Aggregate Graph(s) into a single Aggregate Graph."
-msgstr "Нажмите \"Продолжить\", чтобы объединить следующие Агрегированные Графы в один."
+msgstr "Нажмите \"Продолжить\", чтобы объединить следующие Агрегированные График(и) в один."
 
 #: aggregate_graphs.php:452
 msgid "Aggregate Name:"
@@ -586,9 +586,8 @@ msgid "ID"
 msgstr "ИД"
 
 #: aggregate_graphs.php:1364
-#, fuzzy
 msgid "Included in Aggregate"
-msgstr "Включается в состав агрегированных показателей"
+msgstr "Включено в Агрегацию"
 
 #: aggregate_graphs.php:1365 aggregate_graphs.php:1695 graph_templates.php:854
 #: graph_view.php:758 graph_view.php:771 graphs.php:2258
@@ -834,14 +833,13 @@ msgid "Must include at least 1 number"
 msgstr "Должен включать не менее 1 числа"
 
 #: auth_changepassword.php:300
-#, fuzzy
 msgid "Must include at least 1 special character"
 msgstr "Должен включать по крайней мере 1 специальный символ"
 
 #: auth_changepassword.php:304
-#, fuzzy, php-format
+#, php-format
 msgid "Cannot be reused for %d password changes"
-msgstr "Невозможно повторно использовать для смены %d пароля."
+msgstr "Невозможно повторно использовать для смены %d пароля"
 
 #: auth_changepassword.php:315 auth_changepassword.php:322
 #: include/global_form.php:1567 lib/functions.php:3635 lib/html.php:2460
@@ -849,9 +847,8 @@ msgid "Change Password"
 msgstr "Изменить пароль"
 
 #: auth_changepassword.php:332
-#, fuzzy
 msgid "Please enter your current password and your new<br>Cacti password."
-msgstr "Пожалуйста, введите ваш текущий пароль и новый <br>Cacti пароль."
+msgstr "Пожалуйста, введите ваш текущий и новый <br>Cacti пароль."
 
 #: auth_changepassword.php:334
 msgid "Please enter your new Cacti password."
@@ -881,7 +878,7 @@ msgid "Save"
 msgstr "Сохранить"
 
 #: auth_changepassword.php:367 auth_login.php:386
-#, fuzzy, php-format
+#, php-format
 msgid "Version %1$s | %2$s"
 msgstr "Версия %1$s | %2$s"
 
@@ -892,32 +889,27 @@ msgstr "Слишком короткий пароль"
 #: auth_changepassword.php:386 user_admin.php:1917
 #, fuzzy
 msgid "Password Validation Passes"
-msgstr "Подтверждение пароля Пассы проверки пароля"
+msgstr "Проверка пароля"
 
 #: auth_changepassword.php:402 user_admin.php:1931
-#, fuzzy
 msgid "Passwords do Not Match"
 msgstr "Пароли не совпадают"
 
 #: auth_changepassword.php:406 user_admin.php:1934
-#, fuzzy
 msgid "Passwords Match"
-msgstr "Соответствие паролей"
+msgstr "Пароли совпадают"
 
 #: auth_login.php:75
-#, fuzzy
 msgid "Cacti no longer supports No Authentication mode. Please contact your System Administrator."
-msgstr "Доступ запрещен, пожалуйста, свяжитесь с администратором кактусов."
+msgstr "Cacti больше не поддерживает аутентификацию без пароля. Пожалуйста свяжитесь со своим Администратором."
 
 #: auth_login.php:110
-#, fuzzy
 msgid "Unable to determine user Login Realm or Domain. Please contact your System Administrator."
-msgstr "Доступ запрещен, пожалуйста, свяжитесь с администратором кактусов."
+msgstr "Невозможно определить область входа пользователя Login Realm или Domain . Пожалуйста свяжитесь со своим Администратором."
 
 #: auth_login.php:138
-#, fuzzy
 msgid "User was Authenticated, but the Template Account is disabled.  Using Guest Account"
-msgstr "Пользователь прошел аутентификацию, но учетная запись шаблона отключена. Использование гостевой учетной записи"
+msgstr "Пользователь прошел аутентификацию, но учетная запись шаблона отключена. Используется гостевая учетная запись"
 
 #: auth_login.php:145
 #, php-format
@@ -925,26 +917,22 @@ msgid "Access Denied!  Guest user id %s does not exist.  Please contact your Adm
 msgstr "Доступ запрещен! Пользовательский ID %s не существует. Пожалуйста свяжитесь с администратором."
 
 #: auth_login.php:180
-#, fuzzy
 msgid "Access Denied!  User account disabled."
 msgstr "Доступ запрещен, учетная запись пользователя отключена."
 
 #: auth_login.php:191
-#, fuzzy
 msgid "You do not have access to any area of Cacti.  Contact your administrator."
-msgstr "Если вы считаете, что это ошибка. Пожалуйста, свяжитесь с администратором Cacti."
+msgstr "У вас не определён доступ ни к одной области Cacti. Пожалуйста, свяжитесь с администратором."
 
 #: auth_login.php:279 lib/html_tree.php:164
-#, fuzzy
 msgid "Login to Cacti"
-msgstr "Вход на сайт Cacti"
+msgstr "Вход на Cacti"
 
 #: auth_login.php:286
 msgid "User Login"
 msgstr "Аутентификация"
 
 #: auth_login.php:300
-#, fuzzy
 msgid "Enter your Username and Password below"
 msgstr "Введите имя пользователя и пароль ниже"
 
@@ -982,7 +970,6 @@ msgid "General"
 msgstr "Общие"
 
 #: auth_profile.php:286
-#, fuzzy
 msgid "User Account Details"
 msgstr "Данные учетной записи пользователя"
 
@@ -1007,9 +994,8 @@ msgid "User Name"
 msgstr "Имя Пользователя"
 
 #: auth_profile.php:322 include/global_form.php:1511
-#, fuzzy
 msgid "The login name for this user."
-msgstr "Имя пользователя для входа в систему."
+msgstr "Логин для этого пользователя."
 
 #: auth_profile.php:329 include/global_form.php:1518
 #: include/global_settings.php:1822 user_admin.php:2226 user_domains.php:497
@@ -1018,7 +1004,6 @@ msgid "Full Name"
 msgstr "Полное Имя"
 
 #: auth_profile.php:330 include/global_form.php:1519
-#, fuzzy
 msgid "A more descriptive name for this user, that can include spaces or special characters."
 msgstr "Более описательное имя для этого пользователя, которое может включать пробелы или специальные символы."
 
@@ -1027,17 +1012,14 @@ msgid "Email Address"
 msgstr "Адрес электронной почты"
 
 #: auth_profile.php:338
-#, fuzzy
 msgid "An Email Address you be reached at."
-msgstr "Адрес электронной почты, по которому вы можете связаться."
+msgstr "Адрес электронной почты, по которому с вами можно связаться."
 
 #: auth_profile.php:345 auth_profile.php:347
-#, fuzzy
 msgid "Clear User Settings"
 msgstr "Очистить пользовательские настройки"
 
 #: auth_profile.php:346
-#, fuzzy
 msgid "Return all User Settings to Default values."
 msgstr "Восстановление значений по умолчанию для всех пользовательских настроек."
 
@@ -1046,41 +1028,34 @@ msgid "Clear Private Data"
 msgstr "Очистить конфиденциальные данные"
 
 #: auth_profile.php:353
-#, fuzzy
 msgid "Clear Private Data including Column sizing."
 msgstr "Очистить конфиденциальные данные, включая размер колонок."
 
 #: auth_profile.php:363 auth_profile.php:365
-#, fuzzy
 msgid "Logout Everywhere"
 msgstr "Выход из системы Повсюду"
 
 #: auth_profile.php:364
-#, fuzzy
 msgid "Clear all your Login Session Tokens."
-msgstr "Очистите все свои жетоны сеанса входа в систему."
+msgstr "Очистить все свои сеансовые токены входа в систему."
 
 #: auth_profile.php:385 user_admin.php:1837 user_group_admin.php:1719
 msgid "User Settings"
 msgstr "Настройки"
 
 #: auth_profile.php:475
-#, fuzzy
 msgid "Private Data Cleared"
-msgstr "Частные данные очищены"
+msgstr "Приватные данные очищены"
 
 #: auth_profile.php:475
-#, fuzzy
 msgid "Your Private Data has been cleared."
 msgstr "Ваши личные данные были удалены."
 
 #: auth_profile.php:497
-#, fuzzy
 msgid "All your login sessions have been cleared."
 msgstr "Все ваши сеансы входа в систему были очищены."
 
 #: auth_profile.php:497
-#, fuzzy
 msgid "User Sessions Cleared"
 msgstr "Пользовательские сеансы Очищены"
 
@@ -1093,9 +1068,8 @@ msgid "Add Device"
 msgstr "Добавить устройство"
 
 #: automation_devices.php:46
-#, fuzzy
 msgid "Delete Device"
-msgstr "Удалить устройство(ы)"
+msgstr "Удалить устройство"
 
 #: automation_devices.php:54 automation_devices.php:300
 #: automation_devices.php:409 automation_devices.php:419
@@ -1114,7 +1088,6 @@ msgid "Up"
 msgstr "Вверх"
 
 #: automation_devices.php:107
-#, fuzzy
 msgid "Added manually through device automation interface."
 msgstr "Добавлено вручную через интерфейс автоматизации устройства."
 
@@ -1129,14 +1102,12 @@ msgid "Device %s Not Added to Cacti"
 msgstr "%s устройств не было добавлено в Cacti"
 
 #: automation_devices.php:135
-#, fuzzy
 msgid "Devices Removed from Cacti Automation database"
 msgstr "Устройства, удаленные из базы данных Cacti Automation"
 
 #: automation_devices.php:196
-#, fuzzy
 msgid "Click 'Continue' to add the following Discovered device(s)."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы добавить следующее обнаруженное устройство (устройства)."
+msgstr "Нажмите \"Продолжить\", чтобы добавить следующее обнаруженное устройство (устройства)."
 
 #: automation_devices.php:202 pollers.php:985
 msgid "Pollers"
@@ -1148,24 +1119,20 @@ msgstr "Выбрать шаблон"
 
 #: automation_devices.php:212 automation_templates.php:281
 #: automation_templates.php:492
-#, fuzzy
 msgid "Availability Method"
-msgstr "Метод доступности"
+msgstr "Доступные Методы"
 
 #: automation_devices.php:218
-#, fuzzy
 msgid "Add Device(s)"
-msgstr "Добавить устройство(ы)"
+msgstr "Добавить устройство(а)"
 
 #: automation_devices.php:222
-#, fuzzy
 msgid "Click 'Continue' to Delete the following Discovered device(s)."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы добавить следующее обнаруженное устройство (устройства)."
+msgstr "Нажмите \"Продолжить\", чтобы Удалить следующее Обнаруженное устройство (устройства)."
 
 #: automation_devices.php:227 host.php:484
-#, fuzzy
 msgid "Delete Device(s)"
-msgstr "Удалить устройство(ы)"
+msgstr "Удалить устройство(а)"
 
 #: automation_devices.php:268 automation_devices.php:555 host.php:1518
 #: host.php:1642 host.php:1792 include/global_arrays.php:972
@@ -1187,9 +1154,8 @@ msgid "IP"
 msgstr "IP"
 
 #: automation_devices.php:279
-#, fuzzy
 msgid "SNMP Name"
-msgstr "Имя SNMP Name"
+msgstr "Имя SNMP"
 
 #: automation_devices.php:280 host.php:1584 include/global_form.php:1201
 #: include/global_settings.php:2270
@@ -1249,7 +1215,6 @@ msgid "No Devices Found"
 msgstr "Устройства не найдены"
 
 #: automation_devices.php:465
-#, fuzzy
 msgid "Discovery Filters"
 msgstr "Фильтры обнаружения"
 
@@ -1276,9 +1241,8 @@ msgid "Purge"
 msgstr "Удалить"
 
 #: automation_devices.php:502
-#, fuzzy
 msgid "Purge Discovered Devices"
-msgstr "Очистка Открытые устройства"
+msgstr "Очистить обнаруженные устройства"
 
 #: automation_devices.php:670 automation_networks.php:1151
 #: automation_snmp.php:563 automation_snmp.php:564 automation_snmp.php:565
@@ -1320,14 +1284,12 @@ msgid "Disable"
 msgstr "Выключить"
 
 #: automation_graph_rules.php:256
-#, fuzzy
 msgid "Press 'Continue' to delete the following Graph Rules."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующие правила отображения графиков."
+msgstr "Нажмите \"Продолжить\", чтобы удалить следующие правила отображения Графиков."
 
 #: automation_graph_rules.php:263
-#, fuzzy
 msgid "Click 'Continue' to duplicate the following Rule(s). You can optionally change the title format for the new Graph Rules."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы скопировать следующее правило (правила). Вы также можете изменить формат заголовка для новых правил отображения графиков."
+msgstr "Нажмите \"Продолжить\", чтобы дублировать следующее Правило (правила). Вы также можете изменить формат заголовка для новых правил отображения графиков."
 
 #: automation_graph_rules.php:265 automation_tree_rules.php:267 graphs.php:938
 #: graphs.php:949
@@ -1339,22 +1301,18 @@ msgid "rule_name"
 msgstr "rule_name"
 
 #: automation_graph_rules.php:271 automation_tree_rules.php:273
-#, fuzzy
 msgid "Click 'Continue' to enable the following Rule(s)."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы включить следующее правило (правила)."
+msgstr "Нажмите \"Продолжить\", чтобы включить следующее правило (правила)."
 
 #: automation_graph_rules.php:273 automation_tree_rules.php:275
-#, fuzzy
 msgid "Make sure, that those rules have successfully been tested!"
 msgstr "Убедитесь, что эти правила успешно протестированы!"
 
 #: automation_graph_rules.php:279 automation_tree_rules.php:281
-#, fuzzy
 msgid "Click 'Continue' to disable the following Rule(s)."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы отключить следующее правило (правила)."
+msgstr "Нажмите \"Продолжить\", чтобы отключить следующее правило (правила)."
 
 #: automation_graph_rules.php:290 automation_tree_rules.php:292
-#, fuzzy
 msgid "Apply requested action"
 msgstr "Применить запрошенное действие"
 
@@ -1363,17 +1321,16 @@ msgid "Are You Sure?"
 msgstr "Вы уверены?"
 
 #: automation_graph_rules.php:420
-#, fuzzy, php-format
+#, php-format
 msgid "Are you sure you want to delete the Rule '%s'?"
 msgstr "Вы уверены, что хотите удалить правило '%s'?"
 
 #: automation_graph_rules.php:535
-#, fuzzy, php-format
+#, php-format
 msgid "Rule Selection [edit: %s]"
 msgstr "Выбор правила [редактирование: %s]"
 
 #: automation_graph_rules.php:541
-#, fuzzy
 msgid "Rule Selection [new]"
 msgstr "Правило Выбор [новый]"
 
@@ -1384,12 +1341,10 @@ msgid "Don't Show"
 msgstr "Не показывать"
 
 #: automation_graph_rules.php:551
-#, fuzzy
 msgid "Rule Details."
 msgstr "Детали правил."
 
 #: automation_graph_rules.php:566
-#, fuzzy
 msgid "Matching Devices."
 msgstr "Совпадающие устройства."
 
@@ -1399,27 +1354,23 @@ msgid "Matching Objects."
 msgstr "Объекты совпадения."
 
 #: automation_graph_rules.php:622
-#, fuzzy
 msgid "Device Selection Criteria"
 msgstr "Критерии выбора устройства"
 
 #: automation_graph_rules.php:628
-#, fuzzy
 msgid "Graph Creation Criteria"
-msgstr "Критерии создания графиков"
+msgstr "Критерии создания Графиков"
 
 #: automation_graph_rules.php:734 automation_graph_rules.php:781
 #: automation_graph_rules.php:886 include/global_arrays.php:995
 #: include/global_arrays.php:2779
-#, fuzzy
 msgid "Graph Rules"
-msgstr "Правила построения графиков"
+msgstr "Правила построения Графиков"
 
 #: automation_graph_rules.php:749 automation_graph_rules.php:897
 #: graphs.php:2056 include/global_arrays.php:1343
 #: include/global_arrays.php:2888 include/global_form.php:1660
 #: include/global_form.php:2222
-#, fuzzy
 msgid "Data Query"
 msgstr "Запрос данных"
 
@@ -1463,14 +1414,12 @@ msgid "Rule Name"
 msgstr "Имя правила"
 
 #: automation_graph_rules.php:895
-#, fuzzy
 msgid "The name of this rule."
-msgstr "Название этого правила."
+msgstr "Название правила."
 
 #: automation_graph_rules.php:896
-#, fuzzy
 msgid "The internal database ID for this rule.  Useful in performing debugging and automation."
-msgstr "Идентификатор внутренней базы данных для этого правила.  Полезен для выполнения отладки и автоматизации."
+msgstr "Идентификатор внутренней базы данных для этого правила. Полезен для выполнения отладки и автоматизации."
 
 #: automation_graph_rules.php:898 include/global_form.php:1847
 #: include/global_form.php:1933 include/global_form.php:2038
@@ -1479,28 +1428,26 @@ msgid "Graph Type"
 msgstr "Тип диаграммы"
 
 #: automation_graph_rules.php:921
-#, fuzzy
 msgid "No Graph Rules Found"
-msgstr "Правила построения графиков не найдены"
+msgstr "Правила построения Графиков не найдены"
 
 #: automation_networks.php:34
 msgid "Discover Now"
 msgstr "Открыть сейчас"
 
 #: automation_networks.php:35
-#, fuzzy
 msgid "Cancel Discovery"
-msgstr "Отмена открытия"
+msgstr "Отмена Обнаружения"
 
 #: automation_networks.php:148
-#, fuzzy, php-format
+#, php-format
 msgid "Can Not Restart Discovery for Discovery in Progress for Network '%s'"
-msgstr "Can Not Restart Discovery for Discovery in Progress for Network '%s' (Невозможно перезапустить обнаружение в сети)"
+msgstr "Не удается перезапустить Обнаружение для Обнаружения в процессе для сети '%s'"
 
 #: automation_networks.php:152
-#, fuzzy, php-format
+#, php-format
 msgid "Can Not Perform Discovery for Disabled Network '%s'"
-msgstr "Невозможно выполнить обнаружение для отключенных сетей '%s'."
+msgstr "Невозможно выполнить обнаружение для отключенных сетей '%s'"
 
 #: automation_networks.php:219
 #, php-format
@@ -1508,49 +1455,43 @@ msgid "ERROR: You must specify the day of the week.  Disabling Network %s!."
 msgstr "ERRROR: Вы должны указать день недели. Отключение сети %s!."
 
 #: automation_networks.php:225
-#, fuzzy, php-format
+#, php-format
 msgid "ERROR: You must specify both the Months and Days of Month.  Disabling Network %s!"
-msgstr "ОШИБКА: Вы должны указать как месяцы, так и дни месяца.  Отключение сети %s!"
+msgstr "ОШИБКА: Вы должны указать как месяцы, так и дни месяца. Отключение сети %s!"
 
 #: automation_networks.php:231
-#, fuzzy, php-format
+#, php-format
 msgid "ERROR: You must specify the Months, Weeks of Months, and Days of Week.  Disabling Network %s!"
-msgstr "ERRROR: Вы должны указать месяцы, недели месяцев и дни недели.  Отключение сети %s!"
+msgstr "ERRROR: Вы должны указать месяцы, недели месяцев и дни недели. Отключение сети %s!"
 
 #: automation_networks.php:248
-#, fuzzy, php-format
+#, php-format
 msgid "ERROR: Network '%s' is Invalid."
-msgstr "ERRROR: Сетевые '%s' недействительны."
+msgstr "ОШИБКА: Сеть '%s' недействительна."
 
 #: automation_networks.php:348
-#, fuzzy
 msgid "Click 'Continue' to delete the following Network(s)."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующую сеть (сети)."
+msgstr "Нажмите \"Продолжить\", чтобы удалить следующую сеть (сети)."
 
 #: automation_networks.php:355
-#, fuzzy
 msgid "Click 'Continue' to enable the following Network(s)."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы включить следующую сеть (сети)."
+msgstr "Нажмите \"Продолжить\", чтобы включить следующую сеть (сети)."
 
 #: automation_networks.php:362
-#, fuzzy
 msgid "Click 'Continue' to disable the following Network(s)."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы отключить следующую сеть (сети)."
+msgstr "Нажмите \"Продолжить\", чтобы отключить следующую сеть (сети)."
 
 #: automation_networks.php:369
-#, fuzzy
 msgid "Click 'Continue' to discover the following Network(s)."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы открыть следующую сеть (сети)."
+msgstr "Нажмите \"Продолжить\", чтобы обнаружить следующую сеть (сети)."
 
 #: automation_networks.php:372
-#, fuzzy
 msgid "Run discover in debug mode"
 msgstr "Запуск обнаружения в режиме отладки"
 
 #: automation_networks.php:378
-#, fuzzy
 msgid "Click 'Continue' to cancel on going Network Discovery(s)."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы отменить запуск Network Discovery(ов)."
+msgstr "Нажмите Продолжить\", чтобы отменить запуск Network Discovery."
 
 #: automation_networks.php:412 data_input.php:591 include/global_arrays.php:511
 #, fuzzy
@@ -1650,9 +1591,8 @@ msgid "Subnet Range"
 msgstr "Диапазон подсети"
 
 #: automation_networks.php:467
-#, fuzzy
 msgid "Enter valid Network Ranges separated by commas.  You may use an IP address, a Network range such as 192.168.1.0/24 or 192.168.1.0/255.255.255.0, or using wildcards such as 192.168.*.*"
-msgstr "Введите допустимые диапазоны сети, разделенные запятыми.  Вы можете использовать IP-адрес, диапазон сети, такой как 192.168.1.0/24 или 192.168.1.0/255.255.255.0, или использовать символы подстановки, такие как 192.168.*.*."
+msgstr "Введите допустимые диапазоны сети, разделенные запятыми.  Вы можете использовать IP-адрес, диапазон сети, такой как 192.168.1.0/24 или 192.168.1.0/255.255.255.0, или использовать символы подстановки, такие как 192.168.*.*"
 
 #: automation_networks.php:476
 #, fuzzy
@@ -1675,9 +1615,8 @@ msgid "A space delimited list of alternate DNS Servers to use for DNS resolution
 msgstr "Ограниченный список альтернативных DNS-серверов, используемых для разрешения DNS. Если значение пустое, то для разрешения DNS имен будет использоваться операционная система опроса."
 
 #: automation_networks.php:486
-#, fuzzy
 msgid "Enter IPs or FQDNs of DNS Servers"
-msgstr "Введите IP-адреса или FQDN-адреса DNS-серверов."
+msgstr "Введите IP-адреса или FQDN-адреса DNS-серверов"
 
 #: automation_networks.php:490
 msgid "Schedule Type"
@@ -1818,9 +1757,8 @@ msgid "Allow same sysName on different hosts"
 msgstr "Разрешить одно и то же sysName на разных хостах"
 
 #: automation_networks.php:557
-#, fuzzy
 msgid "When discovering devices, allow duplicate sysnames to be added on different hosts"
-msgstr "При обнаружении устройств позволяйте добавлять дублирующие имена систем на разных хостах."
+msgstr "При обнаружении устройств, разрешить добавлять дублирующие имена систем на разных хостах"
 
 #: automation_networks.php:562
 #, fuzzy
@@ -1860,9 +1798,8 @@ msgid "Notification From Name"
 msgstr "Уведомление пользователя от имени"
 
 #: automation_networks.php:589
-#, fuzzy
 msgid "The Email account name to be used as the senders name for the Notification Email.  If left blank, Cacti will use the default Automation Notification Name if specified, otherwise, it will use the Cacti system default Email name"
-msgstr "Имя учетной записи электронной почты, которое будет использоваться в качестве имени отправителя для сообщения электронной почты с уведомлением.  Если оставить пустым, Cacti будет использовать имя автоматического уведомления по умолчанию, если указано, в противном случае будет использовать имя электронной почты системы Cacti по умолчанию."
+msgstr "Имя учетной записи электронной почты, которое будет использоваться в качестве имени отправителя для уведомлений электронной почты. Если оставить пустым, Cacti будет использовать имя автоматического уведомления по умолчанию, если указано, в противном случае будет использовать имя электронной почты системы Cacti по умолчанию"
 
 #: automation_networks.php:597
 #, fuzzy
@@ -1870,9 +1807,8 @@ msgid "Notification From Email Address"
 msgstr "Уведомление с адреса электронной почты"
 
 #: automation_networks.php:598
-#, fuzzy
 msgid "The Email Address to be used as the senders Email for the Notification Email.  If left blank, Cacti will use the default Automation Notification Email Address if specified, otherwise, it will use the Cacti system default Email Address"
-msgstr "Адрес электронной почты, который будет использоваться в качестве адреса электронной почты отправителя для сообщения об уведомлении.  Если оставить пустым, Cacti будет использовать адрес электронной почты по умолчанию Automation Notification Email Address, если он указан, иначе будет использовать системный адрес электронной почты по умолчанию Cacti."
+msgstr "Адрес электронной почты, который будет использоваться в качестве адреса электронной почты отправителя для уведомлений. Если оставить пустым, Cacti будет использовать адрес электронной почты по умолчанию Automation Notification Email Address, если он указан, иначе будет использовать системный адрес электронной почты по умолчанию Cacti"
 
 #: automation_networks.php:605
 #, fuzzy
@@ -2106,19 +2042,16 @@ msgid "Select the days(s) of the week"
 msgstr "Выберите дни недели"
 
 #: automation_networks.php:797
-#, fuzzy
 msgid "Select the month(s) of the year"
-msgstr "Выберите месяц(ы) года."
+msgstr "Выберите месяц(ы) года"
 
 #: automation_networks.php:807
-#, fuzzy
 msgid "Select the day(s) of the month"
-msgstr "Выберите день(ы) месяца."
+msgstr "Выберите день(дни) месяца"
 
 #: automation_networks.php:817
-#, fuzzy
 msgid "Select the week(s) of the month"
-msgstr "Выберите неделю (недели) месяца."
+msgstr "Выберите неделю (недели) месяца"
 
 #: automation_networks.php:827
 #, fuzzy
@@ -2131,9 +2064,8 @@ msgid "every X Days"
 msgstr "каждые X дней"
 
 #: automation_networks.php:921 automation_networks.php:938
-#, fuzzy
 msgid "every X Weeks"
-msgstr "каждую неделю."
+msgstr "каждую Х неделю"
 
 #: automation_networks.php:922
 #, fuzzy
@@ -2284,9 +2216,8 @@ msgid "name"
 msgstr "имя"
 
 #: automation_snmp.php:294
-#, fuzzy
 msgid "Automation SNMP Options has been Duplicated."
-msgstr "Опции SNMP автоматизации"
+msgstr "Опции SNMP автоматизации имеют дубликаты."
 
 #: automation_snmp.php:296
 #, fuzzy
@@ -2342,9 +2273,9 @@ msgid "Sequence of Item."
 msgstr "Последовательность пунктов."
 
 #: automation_snmp.php:491
-#, fuzzy, php-format
+#, php-format
 msgid "SNMP Option Set [edit: %s]"
-msgstr "Параметр SNMP Установить [Изменить: %s]."
+msgstr "Установить Параметры SNMP [Изменить: %s]"
 
 #: automation_snmp.php:493
 #, fuzzy
@@ -2624,9 +2555,9 @@ msgid "Created Trees"
 msgstr "Созданные деревья"
 
 #: automation_tree_rules.php:486
-#, fuzzy, php-format
+#, php-format
 msgid "Are you sure you want to DELETE the Rule '%s'?"
-msgstr "Ты уверен, что хочешь УДАЛИТЬ Правило '%s'?"
+msgstr "Вы уверены, что хотите удалить правило '%s'?"
 
 #: automation_tree_rules.php:544
 #, fuzzy
@@ -2738,11 +2669,10 @@ msgid "Notice: Cacti Daemon PID["
 msgstr "Примечание: Cacti Daemon PID ["
 
 #: cdef.php:271
-#, fuzzy
 msgid "Click 'Continue' to delete the following CDEF."
 msgid_plural "Click 'Continue' to delete all following CDEFs."
-msgstr[0] "Нажмите кнопку \"Продолжить\", чтобы удалить следующий CDEF."
-msgstr[1] "Вы уверены что хотите удалить следующие VDEF"
+msgstr[0] "Нажмите \"Продолжить\", чтобы удалить следующий CDEF."
+msgstr[1] "Нажмите \"Продолжить\", чтобы удалить следующие CDEFs."
 msgstr[2] ""
 
 #: cdef.php:276
@@ -2893,20 +2823,18 @@ msgid "No CDEFs"
 msgstr "Нет CDEFs"
 
 #: clog.php:34 clog_user.php:33
-#, fuzzy
 msgid "FATAL: YOU DO NOT HAVE ACCESS TO THIS AREA OF CACTI"
-msgstr "ФАТАЛЬНО: У ВАС НЕТ ДОСТУПА К ЭТОЙ ОБЛАСТИ КАКТУСОВ."
+msgstr "ФАТАЛЬНО: У ВАС НЕТ ДОСТУПА К ЭТОЙ ОБЛАСТИ CACTI"
 
 #: color.php:170
 msgid "Unnamed Color"
 msgstr "Без имени"
 
 #: color.php:187
-#, fuzzy
 msgid "Click 'Continue' to delete the following Color"
 msgid_plural "Click 'Continue' to delete the following Colors"
-msgstr[0] "Нажмите кнопку \"Продолжить\", чтобы удалить следующий цвет."
-msgstr[1] "Вы уверены что хотите удалить этих пользователей?"
+msgstr[0] "Нажмите \"Продолжить\", чтобы удалить следующий цвет"
+msgstr[1] "Нажмите \"Продолжить\", чтобы удалить следующие цвета"
 msgstr[2] ""
 
 #: color.php:192
@@ -3083,11 +3011,10 @@ msgid "No Items"
 msgstr "Нет элементов"
 
 #: color_templates.php:238
-#, fuzzy
 msgid "Click 'Continue' to delete the following Color Template"
 msgid_plural "Click 'Continue' to delete following Color Templates"
-msgstr[0] "Нажмите кнопку \"Продолжить\", чтобы удалить следующий цветовой шаблон."
-msgstr[1] ""
+msgstr[0] "Нажмите \"Продолжить\", чтобы удалить следующий цветовой шаблон"
+msgstr[1] "Нажмите \"Продолжить\", чтобы удалить следующие цветовые шаблоны"
 msgstr[2] ""
 
 #: color_templates.php:243
@@ -3221,9 +3148,8 @@ msgid "Delete Check"
 msgstr "Убрать проверку"
 
 #: data_debug.php:52
-#, fuzzy
 msgid "Data Source debug started."
-msgstr "Отладка источника данных"
+msgstr "Отладка источника данных."
 
 #: data_debug.php:55
 #, fuzzy
