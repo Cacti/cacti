@@ -156,7 +156,7 @@ if (!$force) {
 switch ($type) {
 	case 'pmaster':
 		if (read_config_option('dsstats_enable') == 'on' || $force) {
-			dsstats_master_handler($force);
+			dsstats_master_handler($force, $fpartition);
 		}
 
 		break;
@@ -226,7 +226,7 @@ function dsstats_insert_hourly_data_into_cache() {
 		ON DUPLICATE KEY UPDATE average=VALUES(average), peak=VALUES(peak)');
 }
 
-function dsstats_master_handler($force) {
+function dsstats_master_handler($force, $fpartition) {
 	global $type;
 
 	/* read some important settings relative to timing from the database */
