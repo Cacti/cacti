@@ -8,15 +8,17 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-11-12 15:22-0500\n"
-"PO-Revision-Date: 2022-03-14 20:56-0400\n"
-"Last-Translator: Luís Silva <luis.m.ribeiro.silva@tecnico.ulisboa.pt>\n"
-"Language-Team: Portuguese (Brazil) <http://translate.cacti.net/projects/cacti/core-v1-2-x/pt_BR/>\n"
-"Language: pt_BR\n"
+"PO-Revision-Date: 2023-04-20 18:53+0000\n"
+"Last-Translator: Ede Willians dos Santos Cavalcante <edewillians10@gmail.com>"
+"\n"
+"Language-Team: Portuguese (Brazil) <http://translate.cacti.net/projects/"
+"cacti/core/pt_BR/>\n"
+"Language: pt-BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2601 lib/html.php:2491
 #, fuzzy
@@ -1209,7 +1211,7 @@ msgstr "Eliminar dispositivo(s)"
 #: lib/api_automation.php:173 lib/api_automation.php:1099
 #: lib/html_utility.php:924 pollers.php:47
 msgid "Down"
-msgstr "Baixo"
+msgstr "Down"
 
 #: automation_devices.php:55 automation_devices.php:300
 #: automation_devices.php:411 automation_devices.php:421
@@ -1217,7 +1219,7 @@ msgstr "Baixo"
 #: lib/api_automation.php:172 lib/api_automation.php:1098
 #: lib/html_utility.php:930
 msgid "Up"
-msgstr "Acima"
+msgstr "Up"
 
 #: automation_devices.php:107
 #, fuzzy
@@ -14480,7 +14482,7 @@ msgstr "Tempo ativo:"
 
 #: lib/api_device.php:1548
 msgid "Hostname:"
-msgstr "Servidor:"
+msgstr "Hostname: "
 
 #: lib/api_device.php:1549
 msgid "Location:"
@@ -18115,9 +18117,8 @@ msgid "Web"
 msgstr "Web"
 
 #: lib/installer.php:3446
-#, fuzzy
 msgid "Cli"
-msgstr "Clássico"
+msgstr "CLI"
 
 #: lib/installer.php:3451
 #, fuzzy, php-format
@@ -18256,7 +18257,7 @@ msgstr "Endereço de destino não especificado"
 
 #: lib/ping.php:334 lib/ping.php:471
 msgid "default"
-msgstr "padrão"
+msgstr "Padrão"
 
 #: lib/ping.php:362 lib/ping.php:371 lib/ping.php:499 lib/ping.php:508
 #, fuzzy
@@ -22220,9 +22221,8 @@ msgid "User:"
 msgstr "Usuário:"
 
 #: utilities.php:2226
-#, fuzzy
 msgid "Script:"
-msgstr "Script"
+msgstr "Script:"
 
 #: utilities.php:2228
 #, fuzzy
