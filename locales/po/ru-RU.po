@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-11-12 15:22-0500\n"
-"PO-Revision-Date: 2023-04-18 10:47+0000\n"
+"PO-Revision-Date: 2023-04-20 18:53+0000\n"
 "Last-Translator: Сергей <zersh@mail.ru>\n"
 "Language-Team: Russian <http://translate.cacti.net/projects/cacti/core/ru/>\n"
 "Language: ru-RU\n"
@@ -1402,7 +1402,7 @@ msgstr "Вы уверены?"
 #: automation_graph_rules.php:420
 #, php-format
 msgid "Are you sure you want to delete the Rule '%s'?"
-msgstr "Вы уверены, что хотите удалить правило '%s'?"
+msgstr "Вы уверены, что хотите Удалить правило '%s'?"
 
 #: automation_graph_rules.php:535
 #, php-format
@@ -1579,7 +1579,6 @@ msgid "Click 'Continue' to cancel on going Network Discovery(s)."
 msgstr "Нажмите Продолжить\", чтобы отменить запуск Network Discovery."
 
 #: automation_networks.php:412 data_input.php:591 include/global_arrays.php:492
-#, fuzzy
 msgid "SNMP Get"
 msgstr "SNMP Получить"
 
@@ -1603,7 +1602,6 @@ msgid "Monthly"
 msgstr "Ежемесячно"
 
 #: automation_networks.php:423 automation_networks.php:1069
-#, fuzzy
 msgid "Monthly on Day"
 msgstr "Ежемесячно в день недели"
 
@@ -1613,7 +1611,6 @@ msgid "Network Discovery Range [edit: %s]"
 msgstr "Диапазон обнаружения сети [редактирование: %s]"
 
 #: automation_networks.php:429
-#, fuzzy
 msgid "Network Discovery Range [new]"
 msgstr "Диапазон обнаружения сети [новый]"
 
@@ -1642,36 +1639,33 @@ msgid "Name"
 msgstr "Имя"
 
 #: automation_networks.php:442
-#, fuzzy
 msgid "Give this Network a meaningful name."
-msgstr "Придайте этой Сети значимое имя."
+msgstr "Придайте этой Сети осмысленное имя."
 
 #: automation_networks.php:445
-#, fuzzy
 msgid "New Network Discovery Range"
-msgstr "Новый диапазон обнаружения сети"
+msgstr "Новый диапазон обнаружения Сети"
 
 #: automation_networks.php:449 automation_networks.php:1074 host.php:1546
 msgid "Data Collector"
 msgstr "Сборщик данных"
 
 #: automation_networks.php:450 include/global_form.php:1212
-#, fuzzy
 msgid "Choose the Cacti Data Collector/Poller to be used to gather data from this Device."
-msgstr "Выберите Сборщик/Поллер данных Cacti, который будет использоваться для сбора данных с этого устройства."
+msgstr ""
+"Выберите Сборщик/Пуллер данных Cacti, который будет использоваться для сбора "
+"данных с этого Устройства."
 
 #: automation_networks.php:457
-#, fuzzy
 msgid "Associated Site"
 msgstr "Ассоциированный сайт"
 
 #: automation_networks.php:458
-#, fuzzy
 msgid "Choose the Cacti Site that you wish to associate discovered Devices with."
-msgstr "Выберите сайт Cacti, с которым вы хотите связать обнаруженные устройства."
+msgstr ""
+"Выберите сайт Cacti, с которым вы хотите связать обнаруженные устройства."
 
 #: automation_networks.php:466
-#, fuzzy
 msgid "Subnet Range"
 msgstr "Диапазон подсети"
 
@@ -1683,24 +1677,23 @@ msgstr ""
 "0/255.255.255.0, или использовать символы подстановки, такие как 192.168.*.*"
 
 #: automation_networks.php:476
-#, fuzzy
 msgid "Total IP Addresses"
 msgstr "Итого IP-адреса"
 
 #: automation_networks.php:477
-#, fuzzy
 msgid "Total addressable IP Addresses in this Network Range."
-msgstr "Общее количество адресуемых IP-адресов в этом сетевом диапазоне."
+msgstr "Общее количество IP-адресов в этом сетевом диапазоне."
 
 #: automation_networks.php:482
-#, fuzzy
 msgid "Alternate DNS Servers"
 msgstr "Альтернативные DNS-серверы"
 
 #: automation_networks.php:483
-#, fuzzy
 msgid "A space delimited list of alternate DNS Servers to use for DNS resolution. If blank, the poller OS will be used to resolve DNS names."
-msgstr "Ограниченный список альтернативных DNS-серверов, используемых для разрешения DNS. Если значение пустое, то для разрешения DNS имен будет использоваться операционная система опроса."
+msgstr ""
+"Разделенный пробелами список альтернативных DNS-серверов, которые можно "
+"использовать для разрешения DNS. Если значение пустое, то для разрешения DNS "
+"имен будет использоваться резолвер ОС."
 
 #: automation_networks.php:486
 msgid "Enter IPs or FQDNs of DNS Servers"
@@ -1711,24 +1704,23 @@ msgid "Schedule Type"
 msgstr "Тип Расписания"
 
 #: automation_networks.php:491
-#, fuzzy
 msgid "Define the collection frequency."
-msgstr "Определите частоту сбора."
+msgstr "Определите частоту опроса."
 
 #: automation_networks.php:498
-#, fuzzy
 msgid "Discovery Threads"
-msgstr "Открытие Нитей"
+msgstr "Открытие Тредов"
 
 #: automation_networks.php:499
-#, fuzzy
 msgid "Define the number of threads to use for discovering this Network Range."
-msgstr "Определите количество потоков, которые будут использоваться для обнаружения этого диапазона сети."
+msgstr ""
+"Определите количество потоков, которые будут использоваться для обнаружения "
+"этого диапазона Сети."
 
 #: automation_networks.php:502
-#, fuzzy, php-format
+#, php-format
 msgid "%d Thread"
-msgstr "%d Резьба"
+msgstr "%d Поток"
 
 #: automation_networks.php:503 automation_networks.php:504
 #: automation_networks.php:505 automation_networks.php:506
@@ -1740,19 +1732,17 @@ msgstr "%d Резьба"
 #: include/global_arrays.php:801 include/global_arrays.php:802
 #: include/global_arrays.php:803 include/global_arrays.php:804
 #: include/global_arrays.php:805 include/global_arrays.php:806
-#, fuzzy, php-format
+#, php-format
 msgid "%d Threads"
-msgstr "%d Резьба"
+msgstr "%d Потоков"
 
 #: automation_networks.php:519
-#, fuzzy
 msgid "Run Limit"
-msgstr "Лимит работы"
+msgstr "Лимит выполнения"
 
 #: automation_networks.php:520
-#, fuzzy
 msgid "After the selected Run Limit, the discovery process will be terminated."
-msgstr "После выбора Лимита пробега процесс обнаружения будет завершен."
+msgstr "После выбора Лимит выполнения процесс обнаружения будет завершен."
 
 #: automation_networks.php:523 automation_networks.php:1213 pollers.php:911
 #, php-format
@@ -1814,32 +1804,29 @@ msgid "%d Hours"
 msgstr "%d Часа(ов)"
 
 #: automation_networks.php:538
-#, fuzzy
 msgid "Enable this Network Range."
-msgstr "Включите этот диапазон сети."
+msgstr "Включить этот диапазон сети."
 
 #: automation_networks.php:543
-#, fuzzy
 msgid "Enable NetBIOS"
 msgstr "Включить NetBIOS"
 
 #: automation_networks.php:544
-#, fuzzy
 msgid "Use NetBIOS to attempt to resolve the hostname of up hosts."
-msgstr "Используйте NetBIOS, чтобы попытаться разрешить имя хоста вышестоящих хостов."
+msgstr ""
+"Используйте NetBIOS, чтобы попытаться разрешить имя хоста вышестоящих хостов."
 
 #: automation_networks.php:550
-#, fuzzy
 msgid "Automatically Add to Cacti"
-msgstr "Автоматически добавлять в Кактусы"
+msgstr "Автоматически добавлять в Cacti"
 
 #: automation_networks.php:551
-#, fuzzy
 msgid "For any newly discovered Devices that are reachable using SNMP and who match a Device Rule, add them to Cacti."
-msgstr "Для всех вновь обнаруженных устройств, доступных по протоколу SNMP и соответствующих правилу устройства, добавьте их в Cacti."
+msgstr ""
+"Для всех вновь обнаруженных устройств, доступных по протоколу SNMP и "
+"соответствующих правилу устройства, добавьте их в Cacti."
 
 #: automation_networks.php:556
-#, fuzzy
 msgid "Allow same sysName on different hosts"
 msgstr "Разрешить одно и то же sysName на разных хостах"
 
@@ -1850,37 +1837,38 @@ msgstr ""
 "разных хостах"
 
 #: automation_networks.php:562
-#, fuzzy
 msgid "Rerun Data Queries"
-msgstr "Перезапустить запросы данных"
+msgstr "Перезапустить Запросы Данных"
 
 #: automation_networks.php:563
-#, fuzzy
 msgid "If a device previously added to Cacti is found, rerun its data queries."
-msgstr "Если устройство, ранее добавленное в Cacti, найдено, перезапустите его запросы данных."
+msgstr ""
+"Если устройство, ранее добавленное в Cacti, найдено, перезапустите его "
+"запросы данных."
 
 #: automation_networks.php:568
 msgid "Notification Settings"
 msgstr "Настройки уведомлений"
 
 #: automation_networks.php:573
-#, fuzzy
 msgid "Notification Enabled"
 msgstr "Уведомление включено"
 
 #: automation_networks.php:574
-#, fuzzy
 msgid "If checked, when the Automation Network is scanned, a report will be sent to the Notification Email account.."
-msgstr "Если этот флажок установлен, при сканировании сети автоматизации отчет будет отправлен в учетную запись электронной почты с уведомлением..."
+msgstr ""
+"Если этот флажок установлен, при сканировании сети автоматизации отчет будет "
+"отправлено уведомление в учетную запись электронной почты..."
 
 #: automation_networks.php:580
 msgid "Notification Email"
 msgstr "Уведомление по электронной почте"
 
 #: automation_networks.php:581
-#, fuzzy
 msgid "The Email account to be used to send the Notification Email to."
-msgstr "Учетная запись электронной почты, на которую будет отправляться электронное уведомление."
+msgstr ""
+"Учетная запись электронной почты, на которую будет отправляться электронное "
+"уведомление."
 
 #: automation_networks.php:588
 msgid "Notification From Name"
@@ -1896,7 +1884,6 @@ msgstr ""
 "электронной почты системы Cacti по умолчанию"
 
 #: automation_networks.php:597
-#, fuzzy
 msgid "Notification From Email Address"
 msgstr "Уведомление с адреса электронной почты"
 
@@ -1910,38 +1897,33 @@ msgstr ""
 "системный адрес электронной почты по умолчанию Cacti"
 
 #: automation_networks.php:605
-#, fuzzy
 msgid "Discovery Timing"
-msgstr "Время открытия"
+msgstr "Время обнаружения"
 
 #: automation_networks.php:610
-#, fuzzy
 msgid "Starting Date/Time"
 msgstr "Дата/время начала работы"
 
 #: automation_networks.php:611
-#, fuzzy
 msgid "What time will this Network discover item start?"
 msgstr "Во сколько начнется обнаружение данного элемента сети?"
 
 #: automation_networks.php:619
-#, fuzzy
 msgid "Rerun Every"
-msgstr "Повторный запуск Каждый"
+msgstr "Повторять каждые"
 
 #: automation_networks.php:620
-#, fuzzy
 msgid "Rerun discovery for this Network Range every X."
-msgstr "Повторно запускайте обнаружение для этого диапазона сети через каждые X."
+msgstr ""
+"Повторно запускайте обнаружение для этого диапазона сети через каждые X."
 
 #: automation_networks.php:635
 msgid "Days of Week"
 msgstr "Дни недели"
 
 #: automation_networks.php:636 automation_networks.php:694
-#, fuzzy
 msgid "What Day(s) of the week will this Network Range be discovered."
-msgstr "В какой(ые) день(ы) недели будет обнаружен(ые) этот диапазон сети."
+msgstr "В какой день(дни) недели будет обнаружен этот диапазон сети."
 
 #: automation_networks.php:638 automation_networks.php:696
 #: include/global_arrays.php:1894
@@ -1979,14 +1961,12 @@ msgid "Saturday"
 msgstr "Суббота"
 
 #: automation_networks.php:651
-#, fuzzy
 msgid "Months of Year"
-msgstr "Месяцы лет"
+msgstr "Месяцы года"
 
 #: automation_networks.php:652
-#, fuzzy
 msgid "What Months(s) of the Year will this Network Range be discovered."
-msgstr "Какие месяцы года будет открыт этот диапазон сети."
+msgstr "В какие месяцы года будет открыт этот сетевой диапазон."
 
 #: automation_networks.php:654 include/global_arrays.php:1848
 msgid "January"
@@ -2041,21 +2021,18 @@ msgid "Days of Month"
 msgstr "Дни месяца"
 
 #: automation_networks.php:673
-#, fuzzy
 msgid "What Day(s) of the Month will this Network Range be discovered."
-msgstr "В какой(ые) день(ы) месяца будет обнаружен(ые) этот диапазон сети."
+msgstr "В какой день (дни) месяца будет обнаружен этот сетевой диапазон."
 
 #: automation_networks.php:674 automation_networks.php:686
 msgid "Last"
 msgstr "Последний"
 
 #: automation_networks.php:680
-#, fuzzy
 msgid "Week(s) of Month"
 msgstr "Неделя (недели) месяца"
 
 #: automation_networks.php:681
-#, fuzzy
 msgid "What Week(s) of the Month will this Network Range be discovered."
 msgstr "Какие недели месяца будет открыт этот диапазон сети."
 
@@ -2072,71 +2049,64 @@ msgid "Third"
 msgstr "Третий"
 
 #: automation_networks.php:693
-#, fuzzy
 msgid "Day(s) of Week"
 msgstr "День недели"
 
 #: automation_networks.php:709
-#, fuzzy
 msgid "Reachability Settings"
 msgstr "Настройки доступности"
 
 #: automation_networks.php:714 include/global_arrays.php:977
 #: include/global_form.php:1253 include/global_form.php:1786
-#, fuzzy
 msgid "SNMP Options"
 msgstr "Параметры SNMP"
 
 #: automation_networks.php:715
-#, fuzzy
 msgid "Select the SNMP Options to use for discovery of this Network Range."
-msgstr "Выберите Параметры SNMP, которые будут использоваться для обнаружения этого диапазона сети."
+msgstr ""
+"Выберите Параметры SNMP, которые будут использоваться для обнаружения этого "
+"диапазона сети."
 
 #: automation_networks.php:720 include/global_form.php:1271
-#, fuzzy
 msgid "Ping Method"
 msgstr "Метод пинга"
 
 #: automation_networks.php:721
-#, fuzzy
 msgid "The type of ping packet to send."
 msgstr "Тип посылаемого ping-пакета."
 
 #: automation_networks.php:729 include/global_form.php:1281
 #: include/global_settings.php:782
-#, fuzzy
 msgid "Ping Port"
 msgstr "Пинг-порт"
 
 #: automation_networks.php:731 include/global_form.php:1283
-#, fuzzy
 msgid "TCP or UDP port to attempt connection."
 msgstr "TCP или UDP порт для попытки соединения."
 
 #: automation_networks.php:737 include/global_form.php:1289
 #: include/global_settings.php:790
-#, fuzzy
 msgid "Ping Timeout Value"
-msgstr "Значение тайм-аута пинга"
+msgstr "Ping таймаут"
 
 #: automation_networks.php:738 include/global_form.php:1290
-#, fuzzy
 msgid "The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout value applies for SNMP pings."
-msgstr "Значение таймаута, используемое для ICMP и UDP пинга хоста.  Это значение таймаута SNMP хоста применяется для пингов SNMP."
+msgstr ""
+"Значение таймаута, используемое для ICMP и UDP пинга хоста.  Это значение "
+"времени ожидания SNMP хоста применяется для эхо-запросов SNMP."
 
 #: automation_networks.php:746 include/global_form.php:1298
 #: include/global_settings.php:798
-#, fuzzy
 msgid "Ping Retry Count"
-msgstr "Пинг-рецидив счетчик повторов"
+msgstr "Ping количество попыток"
 
 #: automation_networks.php:747 include/global_form.php:1299
-#, fuzzy
 msgid "After an initial failure, the number of ping retries Cacti will attempt before failing."
-msgstr "После первоначального сбоя, количество повторных попыток пинга выполнит Cacti перед неудачей."
+msgstr ""
+"После первоначального сбоя, количество повторных попыток пинга выполнит "
+"Cacti перед неудачей."
 
 #: automation_networks.php:787
-#, fuzzy
 msgid "Select the days(s) of the week"
 msgstr "Выберите дни недели"
 
@@ -2153,12 +2123,10 @@ msgid "Select the week(s) of the month"
 msgstr "Выберите неделю (недели) месяца"
 
 #: automation_networks.php:827
-#, fuzzy
 msgid "Select the day(s) of the week"
-msgstr "Выберите день(ы) недели"
+msgstr "Выберите день(дни) недели"
 
 #: automation_networks.php:921 automation_networks.php:938
-#, fuzzy
 msgid "every X Days"
 msgstr "каждые X дней"
 
@@ -2167,19 +2135,16 @@ msgid "every X Weeks"
 msgstr "каждую Х неделю"
 
 #: automation_networks.php:922
-#, fuzzy
 msgid "every X Days."
 msgstr "каждые X дней."
 
 #: automation_networks.php:922 automation_networks.php:939
-#, fuzzy
 msgid "every X."
 msgstr "каждый X."
 
 #: automation_networks.php:939
-#, fuzzy
 msgid "every X Weeks."
-msgstr "каждую неделю."
+msgstr "каждые X недель."
 
 #: automation_networks.php:1046
 #, fuzzy
@@ -2200,47 +2165,40 @@ msgid "Schedule"
 msgstr "Расписание"
 
 #: automation_networks.php:1076
-#, fuzzy
 msgid "Total IPs"
-msgstr "Всего КН"
+msgstr "Всего IP"
 
 #: automation_networks.php:1077
-#, fuzzy
 msgid "The Current Status of this Networks Discovery"
 msgstr "Текущее состояние этого Обнаружения сетей"
 
 #: automation_networks.php:1078
-#, fuzzy
 msgid "Pending/Running/Done"
-msgstr "Ожидание / Работа / Выполнение / Готово"
+msgstr "Ожидание/Выполнение/Готово"
 
 #: automation_networks.php:1078
 msgid "Progress"
 msgstr "Прогресс"
 
 #: automation_networks.php:1079
-#, fuzzy
 msgid "Up/SNMP Hosts"
-msgstr "Up/SNMP Hosts Up/SNMP Hosts"
+msgstr "Up/SNMP Hosts"
 
 #: automation_networks.php:1080 pollers.php:109
 msgid "Threads"
 msgstr "Темы"
 
 #: automation_networks.php:1081
-#, fuzzy
 msgid "Last Runtime"
 msgstr "Последнее время работы"
 
 #: automation_networks.php:1082
-#, fuzzy
 msgid "Next Start"
 msgstr "Следующий старт"
 
 #: automation_networks.php:1083
-#, fuzzy
 msgid "Last Started"
-msgstr "Последний раз я начинал"
+msgstr "Последний запуск"
 
 #: automation_networks.php:1112 pollers.php:45 utilities.php:2533
 msgid "Running"
@@ -2257,9 +2215,8 @@ msgid "Never"
 msgstr "Никогда"
 
 #: automation_networks.php:1157
-#, fuzzy
 msgid "No Networks Found"
-msgstr "Нет сетей найдено"
+msgstr "Сети не найдены"
 
 #: automation_networks.php:1203 data_debug.php:1087 lib/clog_webapi.php:584
 #: lib/html_graph.php:307 lib/html_tree.php:1130 lib/html_tree.php:1151
@@ -2287,7 +2244,7 @@ msgstr "Обновить"
 #: include/global_settings.php:2593 include/global_settings.php:2594
 #: include/global_settings.php:2595 pollers.php:906 pollers.php:907
 #: pollers.php:908 pollers.php:909 pollers.php:910
-#, fuzzy, php-format
+#, php-format
 msgid "%d Seconds"
 msgstr "%d секунд"
 
@@ -2297,14 +2254,14 @@ msgid "Clear Filtered"
 msgstr "Очистить Отфильтрованные"
 
 #: automation_snmp.php:234
-#, fuzzy
 msgid "Click 'Continue' to delete the following SNMP Option(s)."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующие опции SNMP."
+msgstr "Нажмите \"Продолжить\", чтобы удалить следующие опции SNMP."
 
 #: automation_snmp.php:241
-#, fuzzy
 msgid "Click 'Continue' to duplicate the following SNMP Options. You can optionally change the title format for the new SNMP Options."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы скопировать следующие параметры SNMP. Можно также изменить формат заголовка для новых параметров SNMP."
+msgstr ""
+"Нажмите \"Продолжить\", чтобы скопировать следующие параметры SNMP. Можно "
+"также изменить формат заголовка для новых параметров SNMP."
 
 #: automation_snmp.php:243
 msgid "Name Format"
@@ -2319,42 +2276,38 @@ msgid "Automation SNMP Options has been Duplicated."
 msgstr "Опции SNMP автоматизации имеют дубликаты."
 
 #: automation_snmp.php:296
-#, fuzzy
 msgid "Automation Item does not exist.  Can not Duplicate."
 msgstr "Предмет автоматизации не существует. Не может дублироваться."
 
 #: automation_snmp.php:360
-#, fuzzy
 msgid "Click 'Continue' to delete the following SNMP Option Item."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующий элемент опции SNMP."
+msgstr ""
+"Нажмите кнопку \"Продолжить\", чтобы удалить следующий элемент опции SNMP."
 
 #: automation_snmp.php:361
-#, fuzzy
 msgid "SNMP Option:"
-msgstr "Опция SNMP:"
+msgstr "SNMP Опция:"
 
 #: automation_snmp.php:362
-#, fuzzy, php-format
+#, php-format
 msgid "SNMP Version: <b>%s</b>"
-msgstr "Версия SNMP: <b>%s</b>s</b>"
+msgstr "Версия SNMP: <b>%s</b>"
 
 #: automation_snmp.php:363
-#, fuzzy, php-format
+#, php-format
 msgid "SNMP Community/Username: <b>%s</b>"
-msgstr "Сообщество/Имя пользователя SNMP: <b>%s</b>s</b>"
+msgstr "SNMP Community/Username: <b>%s</b>"
 
 #: automation_snmp.php:369
-#, fuzzy
 msgid "Remove SNMP Item"
 msgstr "Удалить элемент SNMP"
 
 #: automation_snmp.php:427
-#, fuzzy, php-format
+#, php-format
 msgid "SNMP Options [edit: %s]"
 msgstr "Параметры SNMP [Редактировать: %s]"
 
 #: automation_snmp.php:429
-#, fuzzy
 msgid "SNMP Options [new]"
 msgstr "Параметры SNMP [новые]"
 
@@ -2367,7 +2320,6 @@ msgid "Sequence"
 msgstr "*Sequence* (секвенция)"
 
 #: automation_snmp.php:449 lib/html_reports.php:1085
-#, fuzzy
 msgid "Sequence of Item."
 msgstr "Последовательность пунктов."
 
@@ -2377,12 +2329,10 @@ msgid "SNMP Option Set [edit: %s]"
 msgstr "Установить Параметры SNMP [Изменить: %s]"
 
 #: automation_snmp.php:493
-#, fuzzy
 msgid "SNMP Option Set [new]"
-msgstr "Опция SNMP Установить [new] (новый)"
+msgstr "Опция SNMP Установить [new]"
 
 #: automation_snmp.php:505
-#, fuzzy
 msgid "Fill in the name of this SNMP Option Set."
 msgstr "Введите имя этого набора опций SNMP."
 
@@ -2419,34 +2369,28 @@ msgid "Retries"
 msgstr "Попытки"
 
 #: automation_snmp.php:539
-#, fuzzy
 msgid "Max OIDS"
-msgstr "Макс ОСПИД"
+msgstr "Макс OIDS"
 
 #: automation_snmp.php:540
-#, fuzzy
 msgid "Auth Username"
-msgstr "Имя пользователя Auth Имя пользователя"
+msgstr "Имя пользователя авторизации"
 
 #: automation_snmp.php:541
-#, fuzzy
 msgid "Auth Password"
-msgstr "Auth Password"
+msgstr "Пароль авторизации"
 
 #: automation_snmp.php:542
-#, fuzzy
 msgid "Auth Protocol"
-msgstr "Авторский протокол"
+msgstr "Протокол авторизации"
 
 #: automation_snmp.php:543
-#, fuzzy
 msgid "Priv Passphrase"
 msgstr "Частная парольная фраза"
 
 #: automation_snmp.php:544
-#, fuzzy
 msgid "Priv Protocol"
-msgstr "Частный протокол"
+msgstr "Приватный протокол"
 
 #: automation_snmp.php:545
 msgid "Context"
@@ -2458,7 +2402,7 @@ msgstr "Действие"
 
 #: automation_snmp.php:556 lib/api_automation.php:1304
 #: lib/api_automation.php:1366 lib/api_automation.php:1434
-#, fuzzy, php-format
+#, php-format
 msgid "Item#%d"
 msgstr "Пункт #%d"
 
@@ -2483,106 +2427,97 @@ msgid "Move Up"
 msgstr "Движение вверх"
 
 #: automation_snmp.php:593
-#, fuzzy
 msgid "No SNMP Items"
 msgstr "Элементы SNMP отсутствуют"
 
 #: automation_snmp.php:632
-#, fuzzy
 msgid "Delete SNMP Option Item"
 msgstr "Удалить элемент опции SNMP"
 
 #: automation_snmp.php:701
-#, fuzzy
 msgid "SNMP Rules"
 msgstr "Правила SNMP"
 
 #: automation_snmp.php:793
-#, fuzzy
 msgid "SNMP Option Sets"
-msgstr "Опции SNMP Установки параметров SNMP"
+msgstr "Установки параметров SNMP"
 
 #: automation_snmp.php:802
-#, fuzzy
 msgid "SNMP Option Set"
-msgstr "Набор параметров SNMP Опций"
+msgstr "SNMP установка параметра"
 
 #: automation_snmp.php:803
-#, fuzzy
 msgid "Networks Using"
 msgstr "Сети Использование"
 
 #: automation_snmp.php:804
-#, fuzzy
 msgid "SNMP Entries"
 msgstr "SNMP-записи"
 
 #: automation_snmp.php:805
-#, fuzzy
 msgid "V1 Entries"
-msgstr "V1 Вводы"
+msgstr "V1 Записи"
 
 #: automation_snmp.php:806
-#, fuzzy
 msgid "V2 Entries"
-msgstr "V2 Вводы"
+msgstr "V2 Записи"
 
 #: automation_snmp.php:807
-#, fuzzy
 msgid "V3 Entries"
-msgstr "V3 Вводы"
+msgstr "V3 Записи"
 
 #: automation_snmp.php:827
-#, fuzzy
 msgid "No SNMP Option Sets Found"
-msgstr "Нет наборов параметров SNMP Не найдено"
+msgstr "SNMP параметры не найдены"
 
 #: automation_templates.php:162
-#, fuzzy
 msgid "Click 'Continue' to delete the following Automation Template(s)."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить шаблон(ы) автоматизации фоллинга."
+msgstr ""
+"Нажмите \"Продолжить\", чтобы удалить шаблон(ы) автоматизации Автоматизации."
 
 #: automation_templates.php:167
-#, fuzzy
 msgid "Delete Automation Template(s)"
 msgstr "Удалить шаблон(ы) автоматизации"
 
 #: automation_templates.php:274 include/global_arrays.php:1322
 #: include/global_form.php:1228 include/global_form.php:1645
 #: lib/html_reports.php:999
-#, fuzzy
 msgid "Device Template"
-msgstr "Шаблон Устройства:"
+msgstr "Шаблон Устройства"
 
 #: automation_templates.php:275
-#, fuzzy
 msgid "Select a Device Template that Devices will be matched to."
-msgstr "Выберите шаблон устройства, к которому будут привязаны устройства."
+msgstr "Выберите шаблон устройств, к которому будут сопоставляться устройства."
 
 #: automation_templates.php:282
-#, fuzzy
 msgid "Choose the Availability Method to use for Discovered Devices."
-msgstr "Выберите метод доступности для использования с обнаруженными устройствами."
+msgstr ""
+"Выберите метод доступности, который будет использоваться для обнаруженных "
+"устройств."
 
 #: automation_templates.php:289 automation_templates.php:493
-#, fuzzy
 msgid "System Description Match"
 msgstr "Соответствие описания системы"
 
 #: automation_templates.php:290
-#, fuzzy
 msgid "This is a unique string that will be matched to a devices sysDescr string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression."
-msgstr "Это уникальная строка, которая будет сопоставлена со строкой sysDescr устройств, чтобы связать ее с этим шаблоном автоматизации.  Любое регулярное выражение Perl может быть использовано в дополнение к любому выражению SQL Where."
+msgstr ""
+"Это уникальная строка, которая будет сопоставлена со строкой sysDescr "
+"устройств, чтобы связать ее с этим шаблоном автоматизации. Любое регулярное "
+"выражение Perl может быть использовано в дополнение к любому выражению SQL "
+"Where."
 
 #: automation_templates.php:296 automation_templates.php:494
-#, fuzzy
 msgid "System Name Match"
 msgstr "Соответствие имени системы"
 
 #: automation_templates.php:297
-#, fuzzy
 msgid "This is a unique string that will be matched to a devices sysName string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression."
-msgstr "Это уникальная строка, которая будет сопоставлена со строкой sysName устройства для сопряжения с этим шаблоном автоматизации.  Любое регулярное выражение Perl может быть использовано в дополнение к любому выражению SQL Where."
+msgstr ""
+"Это уникальная строка, которая будет сопоставлена со строкой sysName "
+"устройства для сопряжения с этим шаблоном автоматизации.  Любое регулярное "
+"выражение Perl может быть использовано в дополнение к любому выражению SQL "
+"Where."
 
 #: automation_templates.php:303
 #, fuzzy
@@ -2590,27 +2525,27 @@ msgid "System OID Match"
 msgstr "Соответствие OID-массива системы"
 
 #: automation_templates.php:304
-#, fuzzy
 msgid "This is a unique string that will be matched to a devices sysOid string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression."
-msgstr "Это уникальная строка, которая будет сопоставлена со строкой sysOid устройств для сопряжения с этим шаблоном автоматизации.  Любое регулярное выражение Perl может быть использовано в дополнение к любому выражению SQL Where."
+msgstr ""
+"Это уникальная строка, которая будет сопоставлена со строкой sysOid "
+"устройств для сопряжения с этим шаблоном автоматизации.  Любое регулярное "
+"выражение Perl может быть использовано в дополнение к любому выражению SQL "
+"Where."
 
 #: automation_templates.php:329
-#, fuzzy, php-format
+#, php-format
 msgid "Automation Templates [edit: %s]"
 msgstr "Шаблоны автоматизации [Изменить: %s]"
 
 #: automation_templates.php:331
-#, fuzzy
 msgid "Automation Templates for [Deleted Template]"
 msgstr "Шаблоны автоматизации для [Удаленный шаблон]"
 
 #: automation_templates.php:334
-#, fuzzy
 msgid "Automation Templates [new]"
 msgstr "Шаблоны автоматизации [новые]"
 
 #: automation_templates.php:384
-#, fuzzy
 msgid "Device Automation Templates"
 msgstr "Шаблоны автоматизации устройства"
 
@@ -2620,9 +2555,8 @@ msgid "Template Name"
 msgstr "Имя Шаблона"
 
 #: automation_templates.php:495
-#, fuzzy
 msgid "System ObjectId Match"
-msgstr "Совпадение объектов системы"
+msgstr "Совпадение объектов id системы"
 
 #: automation_templates.php:499 data_queries.php:759 data_queries.php:864
 #: links.php:384 tree.php:2070
@@ -2634,29 +2568,27 @@ msgid "Unknown Template"
 msgstr "Неизвестный шаблон"
 
 #: automation_templates.php:544
-#, fuzzy
 msgid "No Automation Device Templates Found"
-msgstr "Отсутствие найденных шаблонов устройств автоматизации"
+msgstr "Шаблоны Устройств Автоматизации не найдены"
 
 #: automation_tree_rules.php:258
-#, fuzzy
 msgid "Click 'Continue' to delete the following Rule(s)."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующее правило (правила)."
+msgstr "Нажмите \"Продолжить\", чтобы удалить следующее правило (правила)."
 
 #: automation_tree_rules.php:265
-#, fuzzy
 msgid "Click 'Continue' to duplicate the following Rule(s). You can optionally change the title format for the new Rules."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы скопировать следующее правило (правила). Вы можете изменить формат заголовка для новых Правил."
+msgstr ""
+"Нажмите кнопку \"Продолжить\", чтобы дублировать следующее правило (правила)"
+". Вы можете изменить формат заголовка для новых Правил."
 
 #: automation_tree_rules.php:394
-#, fuzzy
 msgid "Created Trees"
 msgstr "Созданные деревья"
 
 #: automation_tree_rules.php:486
 #, php-format
 msgid "Are you sure you want to DELETE the Rule '%s'?"
-msgstr "Вы уверены, что хотите удалить правило '%s'?"
+msgstr "Вы уверены, что хотите Удалить правило '%s'?"
 
 #: automation_tree_rules.php:544
 #, fuzzy
