@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-12-17 15:36-0500\nPO-Revision-Date: 2023-03-07 13:30+0000\nLast-Translator: Anonymous <anonymous@cacti.net>\nLanguage-Team: Portuguese (Brazil) <http://translate.cacti.net/projects/cacti/core-v1-2-x/pt_BR/>\nLanguage: pt-BR\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n > 1;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-12-17 15:36-0500\nPO-Revision-Date: 2023-04-20 18:53+0000\nLast-Translator: Ede Willians dos Santos Cavalcante <edewillians10@gmail.com>\nLanguage-Team: Portuguese (Brazil) <http://translate.cacti.net/projects/cacti/core-v1-2-x/pt_BR/>\nLanguage: pt-BR\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n > 1;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2605 lib/html.php:2491
 #, fuzzy
@@ -1197,7 +1197,7 @@ msgstr "Eliminar dispositivo(s)"
 #: lib/api_automation.php:173 lib/api_automation.php:1099
 #: lib/html_utility.php:924 pollers.php:47
 msgid "Down"
-msgstr "Baixo"
+msgstr "Down"
 
 #: automation_devices.php:55 automation_devices.php:300
 #: automation_devices.php:411 automation_devices.php:421
@@ -1205,7 +1205,7 @@ msgstr "Baixo"
 #: lib/api_automation.php:172 lib/api_automation.php:1098
 #: lib/html_utility.php:930
 msgid "Up"
-msgstr "Acima"
+msgstr "Up"
 
 #: automation_devices.php:107
 #, fuzzy
@@ -14506,7 +14506,7 @@ msgstr "Tempo ativo:"
 
 #: lib/api_device.php:1548
 msgid "Hostname:"
-msgstr "Servidor:"
+msgstr "Hostname: "
 
 #: lib/api_device.php:1549
 msgid "Location:"
@@ -18162,9 +18162,8 @@ msgid "Web"
 msgstr "Web"
 
 #: lib/installer.php:3496
-#, fuzzy
 msgid "Cli"
-msgstr "Clássico"
+msgstr "CLI"
 
 #: lib/installer.php:3501
 #, fuzzy, php-format
@@ -18303,7 +18302,7 @@ msgstr "Endereço de destino não especificado"
 
 #: lib/ping.php:334 lib/ping.php:471
 msgid "default"
-msgstr "padrão"
+msgstr "Padrão"
 
 #: lib/ping.php:362 lib/ping.php:371 lib/ping.php:499 lib/ping.php:508
 #, fuzzy
@@ -22266,9 +22265,8 @@ msgid "User:"
 msgstr "Usuário:"
 
 #: utilities.php:2226
-#, fuzzy
 msgid "Script:"
-msgstr "Script"
+msgstr "Script:"
 
 #: utilities.php:2228
 #, fuzzy
