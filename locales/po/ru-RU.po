@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-11-12 15:22-0500\n"
-"PO-Revision-Date: 2023-04-21 11:08+0000\n"
+"PO-Revision-Date: 2023-04-23 15:12+0000\n"
 "Last-Translator: Сергей <zersh@mail.ru>\n"
 "Language-Team: Russian <http://translate.cacti.net/projects/cacti/core/ru/>\n"
 "Language: ru-RU\n"
@@ -3286,97 +3286,85 @@ msgid "No Initial found!  Waiting on RRDfile update"
 msgstr "Инициалы не найдены!  Ожидание обновления RRD-файла"
 
 #: data_debug.php:722
-#, fuzzy
 msgid "Waiting on analysis and RRDfile update"
-msgstr "Обновился ли RRD-файл?"
+msgstr "Ожидание анализа и обновления RRDfile"
 
 #: data_debug.php:729
-#, fuzzy
 msgid "RRDfile Owner"
 msgstr "Владелец файла RRD"
 
 #: data_debug.php:734
-#, fuzzy
 msgid "Website runs as"
-msgstr "Веб-сайт работает как"
+msgstr "Веб-сайт запущен как"
 
 #: data_debug.php:739
-#, fuzzy
 msgid "Poller runs as"
-msgstr "Поллер работает как"
+msgstr "Пуллер запущен как"
 
 #: data_debug.php:744
-#, fuzzy
 msgid "Is RRA Folder writeable by poller?"
-msgstr "Можно ли записать папку RRA с помощью опроса?"
+msgstr "Папка RRA доступна для записи poller?"
 
 #: data_debug.php:749
-#, fuzzy
 msgid "Is RRDfile writeable by poller?"
-msgstr "Можно ли записать RRD-файл с помощью опроса?"
+msgstr "Является ли RRDfile доступным для записи poller?"
 
 #: data_debug.php:754
-#, fuzzy
 msgid "Does the RRDfile Exist?"
 msgstr "Существует ли файл RRD?"
 
 #: data_debug.php:759
-#, fuzzy
 msgid "Is the Data Source set as Active?"
-msgstr "Активен ли источник данных?"
+msgstr "Активен ли Источник Данных?"
 
 #: data_debug.php:764
-#, fuzzy
 msgid "Did the poller receive valid data?"
-msgstr "Получил ли избиратель достоверные данные?"
+msgstr "Получил ли poller достоверные данные?"
 
 #: data_debug.php:769
-#, fuzzy
 msgid "Was the RRDfile updated?"
 msgstr "Обновился ли RRD-файл?"
 
 #: data_debug.php:775
-#, fuzzy
 msgid "First Check TimeStamp"
-msgstr "Метка времени первой проверкиШтампа времени"
+msgstr "Метка времени первой проверки"
 
 #: data_debug.php:780
-#, fuzzy
 msgid "Second Check TimeStamp"
-msgstr "Метка времени второй проверкиОтметка времени второй проверки"
+msgstr "Метка времени второй проверки"
 
 #: data_debug.php:785
-#, fuzzy
 msgid "Were we able to convert the title?"
 msgstr "Смогли ли мы преобразовать название?"
 
 #: data_debug.php:790
-#, fuzzy
 msgid "Data Source matches the RRDfile?"
-msgstr "Источник данных не был опрошен"
+msgstr "Источник данных соответствует файлу RRD?"
 
 #: data_debug.php:804
-#, fuzzy, php-format
+#, php-format
 msgid "Data Source Troubleshooter [ Auto Refreshing till Complete ] %s"
-msgstr "Поиск и устранение неисправностей [%s] Источник данных"
+msgstr ""
+"Источник Данных Поиск и устранение неисправностей [Автоматическое обновление "
+"до завершения] %s"
 
 #: data_debug.php:804 data_debug.php:806
-#, fuzzy
 msgid "Refresh Now"
 msgstr "Обновить"
 
 #: data_debug.php:806
-#, fuzzy, php-format
+#, php-format
 msgid "Data Source Troubleshooter [ Auto Refreshing till RRDfile Update ] %s"
-msgstr "Поиск и устранение неисправностей [%s] Источник данных"
+msgstr ""
+"Источник Данных Поиск и устранение неисправностей [Автоматическое обновление "
+"до обновления RRD] %s"
 
 #: data_debug.php:808
-#, fuzzy, php-format
+#, php-format
 msgid "Data Source Troubleshooter [ Analysis Complete! %s ]"
-msgstr "Поиск и устранение неисправностей [%s] Источник данных"
+msgstr "Источник данных Поиск и устранение неисправностей [Анализ завершен! %s]"
 
 #: data_debug.php:808
-#, fuzzy
 msgid "Rerun Analysis"
 msgstr "Повторный анализ"
 
@@ -12785,7 +12773,6 @@ msgid "SMTP Port"
 msgstr "SMTP порт"
 
 #: include/global_settings.php:1912
-#, fuzzy
 msgid "The port on the SMTP Server to use."
 msgstr "Порт на SMTP-сервере для использования."
 
@@ -12794,18 +12781,20 @@ msgid "SMTP Username"
 msgstr "SMTP Имя пользователя"
 
 #: include/global_settings.php:1920
-#, fuzzy
 msgid "The username to authenticate with when sending via SMTP. (Leave blank if you do not require authentication.)"
-msgstr "Имя пользователя для аутентификации при отправке по SMTP. (Оставьте пустым, если аутентификация не требуется.)"
+msgstr ""
+"Имя пользователя для аутентификации при отправке по SMTP. (Оставьте пустым, "
+"если аутентификация не требуется.)"
 
 #: include/global_settings.php:1925
 msgid "SMTP Password"
 msgstr "SMTP Пароль"
 
 #: include/global_settings.php:1926
-#, fuzzy
 msgid "The password to authenticate with when sending via SMTP. (Leave blank if you do not require authentication.)"
-msgstr "Пароль для аутентификации при отправке по SMTP. (Оставьте пустым, если аутентификация не требуется.)"
+msgstr ""
+"Пароль для аутентификации при отправке по SMTP. (Оставьте пустым, если "
+"аутентификация не требуется.)"
 
 #: include/global_settings.php:1931
 msgid "SMTP Security"
@@ -12813,7 +12802,7 @@ msgstr "SMTP Безопасность"
 
 #: include/global_settings.php:1932
 msgid "The encryption method to use for the Email."
-msgstr "Метод шифрования для Email"
+msgstr "Метод шифрования для Email."
 
 #: include/global_settings.php:1936
 msgid "SSL"
@@ -12828,32 +12817,28 @@ msgid "SMTP Timeout"
 msgstr "SMTP таймаут"
 
 #: include/global_settings.php:1943
-#, fuzzy
 msgid "Please enter the SMTP timeout in seconds."
 msgstr "Пожалуйста, введите время ожидания SMTP в секундах."
 
 #: include/global_settings.php:1950
-#, fuzzy
 msgid "Reporting Presets"
 msgstr "Предварительные настройки отчетности"
 
 #: include/global_settings.php:1955
-#, fuzzy
 msgid "Default Graph Image Format"
 msgstr "Формат изображения График по умолчанию"
 
 #: include/global_settings.php:1956
-#, fuzzy
 msgid "When creating a new report, what image type should be used for the inline graphs."
-msgstr "При создании нового отчета, какой тип изображения следует использовать для построения последовательных графиков."
+msgstr ""
+"При создании нового отчета, какой тип изображения следует использовать для "
+"построения последовательных графиков."
 
 #: include/global_settings.php:1962
-#, fuzzy
 msgid "Maximum E-Mail Size"
-msgstr "Максимальный размер электронной почты"
+msgstr "Максимальный размер E-Mail"
 
 #: include/global_settings.php:1963
-#, fuzzy
 msgid "The maximum size of the E-Mail message including all attachments."
 msgstr "Максимальный размер сообщения электронной почты, включая все вложения."
 
@@ -12903,7 +12888,6 @@ msgid "Enter the secondary DNS IP Address to utilize for reverse lookups."
 msgstr "Введите вторичный IP-адрес DNS, который будет использоваться для обратного поиска."
 
 #: include/global_settings.php:2001
-#, fuzzy
 msgid "DNS Timeout"
 msgstr "Таймаут DNS"
 
@@ -12978,197 +12962,186 @@ msgid "To optimize performance, the boost RRD updater needs to know how many Dat
 msgstr "Для оптимизации производительности программа ускоренного обновления RRD должна знать, сколько Элементов Источника Данных должно быть получено за один проход.  Пожалуйста, будьте осторожны, не устанавливайте слишком высокую производительность графиков во время основных обновлений, так как это может поставить под угрозу производительность графиков.  Если во время обновления вы сталкиваетесь с замедлением графика или опроса, уменьшите это число.  Значение по умолчанию - 50000."
 
 #: include/global_settings.php:2078
-#, fuzzy
 msgid "Maximum Argument Length"
-msgstr "Максимальная длина аргументации"
+msgstr "Максимальная длина аргументов"
 
 #: include/global_settings.php:2079
-#, fuzzy
 msgid "When boost sends update commands to RRDtool, it must not exceed the operating systems Maximum Argument Length.  This varies by operating system and kernel level.  For example: Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23++ unlimited"
-msgstr "Когда boost посылает команды обновления в RRDtool, он не должен превышать максимальную длину аргументации операционной системы.  Это зависит от операционной системы и уровня ядра.  Например Windows 2000 <= 2048, FreeBSD <= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23+++ неограниченное число пользователей."
+msgstr ""
+"Когда boost посылает команды обновления в RRDtool, он не должен превышать "
+"максимальную длину аргументов операционной системы.  Это зависит от "
+"операционной системы и уровня ядра.  Например Windows 2000 <= 2048, FreeBSD "
+"<= 65535, Linux 2.6.22-- <= 131072, Linux 2.6.23+++ неограниченное число."
 
 #: include/global_settings.php:2086
-#, fuzzy
 msgid "Memory Limit for Boost and Poller"
 msgstr "Ограничение памяти для Boost и Poller"
 
 #: include/global_settings.php:2087
-#, fuzzy
 msgid "The maximum amount of memory for the Cacti Poller and Boosts Poller"
-msgstr "Максимальный объем памяти для Cacti Poller и увеличивает производительность Poller."
+msgstr "Максимальный объем памяти для Cacti Poller и Boosts Poller"
 
 #: include/global_settings.php:2093
-#, fuzzy
 msgid "Maximum RRD Update Script Run Time"
 msgstr "Максимальное время выполнения скрипта для обновления RRD"
 
 #: include/global_settings.php:2094
-#, fuzzy
 msgid "If the boost poller exceeds this runtime, a warning will be placed in the cacti log,"
-msgstr "Если активный опрос выполнится во время выполнения, в журнал кактусов будет помещено предупреждение,"
+msgstr ""
+"Если активный опрос выполнится во время выполнения, в журнал кактусов будет "
+"помещено предупреждение,"
 
 #: include/global_settings.php:2100
-#, fuzzy
 msgid "Enable direct population of poller_output_boost table"
-msgstr "Включение прямой популяции таблицы Poler_output_boost_boost"
+msgstr "Включить прямое заполнение таблицы poller_output_boost"
 
 #: include/global_settings.php:2101
-#, fuzzy
 msgid "Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle."
-msgstr "Позволяет напрямую вставлять записи в выходные данные избирателя, что приводит к сокращению времени опроса на 25% в каждом цикле."
+msgstr ""
+"Обеспечивает прямую вставку записей в ускорение выходных данных опросчика, "
+"что приводит к сокращению времени на 25 % в каждом цикле опроса."
 
 #: include/global_settings.php:2106
-#, fuzzy
 msgid "Boost Debug Log"
 msgstr "Усилить журнал отладки"
 
 #: include/global_settings.php:2107
-#, fuzzy
 msgid "If this field is non-blank, Boost will log RRDUpdate output from the boost\tpoller process."
-msgstr "Если это поле не пустое, Boost будет записывать в журнал RRDupdate выходные данные, полученные в процессе форсированного опроса."
+msgstr ""
+"Если это поле не пустое, Boost будет записывать в журнал RRDupdate выходные "
+"данные, полученные в процессе форсированного опроса."
 
 #: include/global_settings.php:2114 utilities.php:2825
-#, fuzzy
 msgid "Image Caching"
 msgstr "Кэширование изображений"
 
 #: include/global_settings.php:2119
-#, fuzzy
 msgid "Enable Image Caching"
 msgstr "Включить кэширование изображений"
 
 #: include/global_settings.php:2120
-#, fuzzy
 msgid "Should image caching be enabled?"
 msgstr "Должно ли быть включено кэширование изображений?"
 
 #: include/global_settings.php:2125
-#, fuzzy
 msgid "Location for Image Files"
 msgstr "Местоположение файлов изображений"
 
 #: include/global_settings.php:2126
-#, fuzzy
 msgid "Specify the location where Boost should place your image files.  These files will be automatically purged by the poller when they expire."
-msgstr "Укажите место, куда Boost должен поместить файлы изображений.  Эти файлы будут автоматически удалены опросом по истечении срока действия."
+msgstr ""
+"Укажите место, куда Boost должен поместить файлы изображений.  Эти файлы "
+"будут автоматически удалены опросом по истечении срока действия."
 
 #: include/global_settings.php:2134
-#, fuzzy
 msgid "Data Sources Statistics"
-msgstr "Источники данных Статистика"
+msgstr "Статистика Источников Данных"
 
 #: include/global_settings.php:2139
-#, fuzzy
 msgid "Enable Data Source Statistics Collection"
-msgstr "Разрешить сбор статистических данных из источников данных"
+msgstr "Разрешить сбор статистических данных Источников Данных"
 
 #: include/global_settings.php:2140
-#, fuzzy
 msgid "Should Data Source Statistics be collected for this Cacti system?"
-msgstr "Следует ли собирать статистические данные по источникам данных для системы Cacti?"
+msgstr ""
+"Следует ли собирать статистические данные по Источникам Данных для этой "
+"системы Cacti?"
 
 #: include/global_settings.php:2145
-#, fuzzy
 msgid "Number of DSStats Processes"
-msgstr "Количество ускоряющих процессов"
+msgstr "Количество DSStats процессов"
 
 #: include/global_settings.php:2146
-#, fuzzy
 msgid "The number of concurrent DSStats processes to use to use to process all of the Data Sources."
-msgstr "Количество одновременных процессов форсирования, используемых для обработки всех RRD в таблице форсирования."
+msgstr ""
+"Количество одновременных процессов DSStats, используемых для обработки всех "
+"Источников Данных."
 
 #: include/global_settings.php:2173
-#, fuzzy
 msgid "Daily Update Frequency"
-msgstr "Ежедневное обновление Частота обновления"
+msgstr "Частота Ежедневных обновлений"
 
 #: include/global_settings.php:2174
-#, fuzzy
 msgid "How frequent should Daily Stats be updated?"
 msgstr "Как часто следует обновлять ежедневную статистику?"
 
 #: include/global_settings.php:2180
-#, fuzzy
 msgid "Hourly Average Window"
-msgstr "Среднее почасовое окно"
+msgstr "Среднее часовое окно"
 
 #: include/global_settings.php:2181
-#, fuzzy
 msgid "The number of consecutive hours that represent the hourly average.  Keep in mind that a setting too high can result in very large memory tables"
-msgstr "Количество часов подряд, представляющих собой среднее почасовое значение.  Имейте в виду, что слишком высокая настройка может привести к очень большим таблицам памяти."
+msgstr ""
+"Количество часов подряд, представляющих собой среднее почасовое значение.  "
+"Имейте в виду, что слишком высокая настройка может привести к очень большим "
+"таблицам памяти"
 
 #: include/global_settings.php:2187
-#, fuzzy
 msgid "Maintenance Time"
 msgstr "Время обслуживания"
 
 #: include/global_settings.php:2188
-#, fuzzy
 msgid "What time of day should Weekly, Monthly, and Yearly Data be updated?  Format is HH:MM [am/pm]"
-msgstr "В какое время суток следует обновлять еженедельные, месячные и годовые данные?  Формат HH:MM [am/pm]"
+msgstr ""
+"В какое время суток следует обновлять еженедельные, месячные и годовые "
+"данные?  Формат HH:MM [am/pm]"
 
 #: include/global_settings.php:2195
-#, fuzzy
 msgid "Memory Limit for Data Source Statistics Data Collector"
-msgstr "Ограничение объема памяти для сбора статистических данных из источников данных Сборщик статистических данных"
+msgstr ""
+"Ограничение объема памяти для сбора статистических данных из Источников "
+"Данных Сборщик статистически"
 
 #: include/global_settings.php:2196
-#, fuzzy
 msgid "The maximum amount of memory for the Cacti Poller and Data Source Statistics Poller"
-msgstr "Максимальный объем памяти для Cacti Poller и Data Source Statistics Poller."
+msgstr ""
+"Максимальный объем памяти для Cacti Poller и Data Source Statistics Poller"
 
 #: include/global_settings.php:2202
 msgid "RRDfile Check"
 msgstr "Проверка RRDfile"
 
 #: include/global_settings.php:2207
-#, fuzzy
 msgid "Enable RRDfile check"
-msgstr "Включить правило"
+msgstr "Включить проверку RRD-файла"
 
 #: include/global_settings.php:2208
-#, fuzzy
 msgid "Should RRDfile check be enabled for this Cacti system?"
-msgstr "Следует ли собирать статистические данные по источникам данных для системы Cacti?"
+msgstr "Должна ли быть включена проверка RRDfile для этой системы Cacti?"
 
 #: include/global_settings.php:2213
-#, fuzzy
 msgid "Number of RRDfile check Processes"
-msgstr "Количество ускоряющих процессов"
+msgstr "Количество процессов проверки RRDfile"
 
 #: include/global_settings.php:2214
-#, fuzzy
 msgid "The number of concurrent RRDfile check processes to use to use to process all of rrd files."
-msgstr "Количество одновременных процессов форсирования, используемых для обработки всех RRD в таблице форсирования."
+msgstr ""
+"Количество одновременных процессов проверки RRDfile, используемых для "
+"обработки всех файлов RRD."
 
 #: include/global_settings.php:2241
-#, fuzzy
-#| msgid "Frequency"
 msgid "Check Frequency"
-msgstr "Частота"
+msgstr "Частота проверки"
 
 #: include/global_settings.php:2242
-#, fuzzy
 msgid "How frequent should RRD be checked ?"
-msgstr "Как часто следует обновлять ежедневную статистику?"
+msgstr "Как часто следует обновлять RRD?"
 
 #: include/global_settings.php:2248
-#, fuzzy
 msgid "Data Storage Settings"
 msgstr "Настройки хранения данных"
 
 #: include/global_settings.php:2254
-#, fuzzy
 msgid "Choose if RRDs will be stored locally or being handled by an external RRDtool proxy server."
-msgstr "Выберите, будут ли RRDs храниться локально или обрабатываться внешним прокси-сервером RRDtool."
+msgstr ""
+"Выберите, будут ли RRDs храниться локально или обрабатываться внешним прокси-"
+"сервером RRDtool."
 
 #: include/global_settings.php:2259 include/global_settings.php:2293
-#, fuzzy
 msgid "RRDtool Proxy Server"
-msgstr "Прокси-сервер RRDtool Прокси-сервер"
+msgstr "Прокси-сервер RRDtool"
 
 #: include/global_settings.php:2263
-#, fuzzy
 msgid "Structured RRDfile Paths"
 msgstr "Структурированные пути RRD"
 
@@ -13179,21 +13152,35 @@ msgstr "Метод"
 #: include/global_settings.php:2269
 msgid "Use a separate subfolder for each hosts RRD files.  The naming of the RRDfiles will be one of the following:<br><ul><li>&lt;path_cacti&gt;/rra/host_id/local_data_id.rrd,</li><li>&lt;path_cacti&gt;/rra/device_id/data_query_id/local_data_id.rrd,</li><li>&lt;path_cacti&gt;/rra/device_hash/device_id/local_data_id.rrd,</li><li>&lt;path_cacti&gt;/rra/device_hash/device_id/data_query_id/local_data_id.rrd.</li></ul><br>You can make this change after install by running the CLI script <b>structure_rra_paths.php</b> after you make the change.  NOTE: If you change Max Directories value to decrease the number of directories, or if you change the Directory Pattern, empty directories will not be pruned after you rerun the <b>structure_rra_paths.php</b> script."
 msgstr ""
+"Используйте отдельную подпапку для каждого RRD-файла хоста.Именование файлов "
+"RRD будет одним из следующих:<br><ul><li>&lt;path_cacti&gt;/rra/host_id/"
+"local_data_id.rrd,</li><li>&lt;path_cacti&gt;/rra/device_id/data_query_id/"
+"local_data_id.rrd,</li><li>&lt;path_cacti&gt;/rra/device_hash/device_id/"
+"local_data_id.rrd,</li><li>&lt;path_cacti&gt;/rra/device_hash/device_id/"
+"data_query_id/local_data_id.rrd.</li></ul><br>Вы можете внести это изменение "
+"после установки, запустив сценарий CLI <b>structure_rra_paths.php</b>после "
+"внесения изменений. ПРИМЕЧАНИЕ. Если вы измените значение Max Directorys, "
+"чтобы уменьшить количество каталогов, или если вы измените шаблон каталога, "
+"пустые каталоги не будут удалены после повторного запуска "
+"сценария<b>structure_rra_paths.php</b>."
 
 #: include/global_settings.php:2273
-#, fuzzy
 msgid "Directory Pattern"
-msgstr "Справочник найден"
+msgstr "Шаблон каталога"
 
 #: include/global_settings.php:2274
 msgid "Which Directory Pattern do you wish to use for Structured RRD Paths.  'Device ID' is the default.  The setting 'Device ID/Data Query ID' should be used when you have Devices with thousands of Graphs.  After Changing the Directory Pattern, you must run the Structured Path CLI script again to modify the RRDfile paths to the new Pattern."
 msgstr ""
+"Какой шаблон каталога вы хотите использовать для структурированных путей "
+"RRD.  По умолчанию используется 'Идентификатор устройства'.  Параметр "
+"'Идентификатор устройства/Идентификатор запроса данных' следует "
+"использовать, если у вас есть устройства с тысячами графиков.  После "
+"изменения шаблона каталога необходимо снова запустить сценарий Structured "
+"Path CLI, чтобы изменить пути к RRD-файлам в соответствии с новым шаблоном."
 
 #: include/global_settings.php:2278
-#, fuzzy
-#| msgid "Device"
 msgid "Device ID"
-msgstr "Устройство"
+msgstr "ID Устройства"
 
 #: include/global_settings.php:2279
 #, fuzzy
