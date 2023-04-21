@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-12-17 15:36-0500\nPO-Revision-Date: 2023-04-20 18:53+0000\nLast-Translator: Сергей <zersh@mail.ru>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2022-12-17 15:36-0500\nPO-Revision-Date: 2023-04-21 12:27+0000\nLast-Translator: Сергей <zersh@mail.ru>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2605 lib/html.php:2491
 msgid "About Cacti"
@@ -2448,32 +2448,27 @@ msgid "Are you sure you want to DELETE the Rule '%s'?"
 msgstr "Вы уверены, что хотите Удалить правило '%s'?"
 
 #: automation_tree_rules.php:544
-#, fuzzy
 msgid "Eligible Objects"
-msgstr "Приемлемые объекты"
+msgstr "Допустимые объекты"
 
 #: automation_tree_rules.php:557
-#, fuzzy, php-format
+#, php-format
 msgid "Tree Rule Selection [edit: %s]"
-msgstr "Выбор правила дерева [Редактировать: %s]"
+msgstr "Дерево Выбор Правил [Редактировать: %s]"
 
 #: automation_tree_rules.php:559
-#, fuzzy
 msgid "Tree Rules Selection [new]"
-msgstr "Выбор правил дерева [новые]"
+msgstr "Дерево Выбор правил [новые]"
 
 #: automation_tree_rules.php:610
-#, fuzzy
 msgid "Object Selection Criteria"
-msgstr "Критерии выбора объекта исследования"
+msgstr "Критерии выбора объекта"
 
 #: automation_tree_rules.php:616
-#, fuzzy
 msgid "Tree Creation Criteria"
-msgstr "Критерии создания деревьев"
+msgstr "Критерии создания дерева"
 
 #: automation_tree_rules.php:703
-#, fuzzy
 msgid "Change Leaf Type"
 msgstr "Изменить тип листа"
 
@@ -2483,53 +2478,44 @@ msgid "WARNING:"
 msgstr "ВНИМАНИЕ:"
 
 #: automation_tree_rules.php:707
-#, fuzzy
 msgid "You are changing the leaf type to \"Device\" which does not support Graph-based object matching/creation."
-msgstr "Вы изменяете тип листа на \"Устройство\", которое не поддерживает согласование/создание графических объектов."
+msgstr "Вы изменяете тип листа на \"Устройство\", которое не поддерживает сопоставление/создание объекта на основе Графика."
 
 #: automation_tree_rules.php:708
-#, fuzzy
 msgid "By changing the leaf type, all invalid rules will be automatically removed and will not be recoverable."
-msgstr "При изменении типа листа, все недействительные правила будут автоматически удалены и не будут восстановлены."
+msgstr "При изменении типа листа, все недействительные правила будут автоматически удалены и не подлежат восстановлению."
 
 #: automation_tree_rules.php:709
-#, fuzzy
 msgid "Are you sure you wish to continue?"
 msgstr "Ты уверен, что хочешь продолжить?"
 
 #: automation_tree_rules.php:801 automation_tree_rules.php:826
 #: automation_tree_rules.php:926 include/global_arrays.php:996
 #: include/global_arrays.php:2803
-#, fuzzy
 msgid "Tree Rules"
-msgstr "Правила работы с деревом"
+msgstr "Правила Дерева"
 
 #: automation_tree_rules.php:937
-#, fuzzy
 msgid "Hook into Tree"
-msgstr "Зацепиться за дерево"
+msgstr "Hook в Дереве"
 
 #: automation_tree_rules.php:938
-#, fuzzy
 msgid "At Subtree"
-msgstr "На Субтрее"
+msgstr "В поддереве"
 
 #: automation_tree_rules.php:939
-#, fuzzy
 msgid "This Type"
 msgstr "Тип"
 
 #: automation_tree_rules.php:940
-#, fuzzy
 msgid "Using Grouping"
 msgstr "Использование группировки"
 
 #: automation_tree_rules.php:949
 msgid "ROOT"
-msgstr "ROOT - объектно-ориентированный набор библиотек для анализа масштабируемых данных"
+msgstr "ROOT"
 
 #: automation_tree_rules.php:965
-#, fuzzy
 msgid "No Tree Rules Found"
 msgstr "Правила для деревьев не найдены"
 
@@ -2537,24 +2523,20 @@ msgstr "Правила для деревьев не найдены"
 #: lib/functions.php:6550 poller.php:369 poller.php:498 poller.php:546
 #: poller.php:562 poller.php:704 poller.php:803 poller_automation.php:53
 #: poller_boost.php:313
-#, fuzzy
 msgid "Cacti System Warning"
-msgstr "Система предупреждения кактусов"
+msgstr "Система предупреждения Cacti"
 
 #: cactid.php:44
-#, fuzzy
 msgid "WARNING: Cacti Daemon PID["
 msgstr "ВНИМАНИЕ: Cacti Daemon PID ["
 
 #: cactid.php:131
-#, fuzzy
 msgid "Cacti System Notice"
-msgstr "Утилиты Cacti"
+msgstr "Системное уведомление Cacti"
 
 #: cactid.php:131
-#, fuzzy
 msgid "Notice: Cacti Daemon PID["
-msgstr "Примечание: Cacti Daemon PID ["
+msgstr "Уведомление: Cacti Daemon PID ["
 
 #: cdef.php:271
 msgid "Click 'Continue' to delete the following CDEF."
@@ -2564,149 +2546,127 @@ msgstr[1] "Нажмите \"Продолжить\", чтобы удалить с
 msgstr[2] ""
 
 #: cdef.php:276
-#, fuzzy
 msgid "Delete CDEF"
 msgid_plural "Delete CDEFs"
 msgstr[0] "Удалить CDEF"
-msgstr[1] "Удалить"
+msgstr[1] "Удалить CDEFs"
 msgstr[2] ""
 
 #: cdef.php:280
-#, fuzzy
 msgid "Click 'Continue' to duplicate the following CDEF. You can optionally change the title format for the new CDEF."
 msgid_plural "Click 'Continue' to duplicate the following CDEFs. You can optionally change the title format for the new CDEFs."
-msgstr[0] "Нажмите кнопку \"Продолжить\", чтобы скопировать следующий CDEF. Вы можете изменить формат заголовка для нового CDEF."
-msgstr[1] ""
+msgstr[0] "Нажмите \"Продолжить\", чтобы скопировать следующий CDEF. Вы можете изменить формат заголовка для нового CDEF."
+msgstr[1] "Нажмите \"Продолжить\", чтобы скопировать следующие CDEFs. Вы можете изменить формат заголовка для новых CDEFs."
 msgstr[2] ""
 
 #: cdef.php:282 color_templates.php:249 data_source_profiles.php:311
 #: data_templates.php:471 graph_templates.php:382 host_templates.php:277
 #: vdef.php:276
-#, fuzzy
 msgid "Title Format:"
-msgstr "Формат заголовка"
+msgstr "Формат заголовка:"
 
 #: cdef.php:287
-#, fuzzy
 msgid "Duplicate CDEF"
 msgid_plural "Duplicate CDEFs"
 msgstr[0] "Дублировать CDEF"
-msgstr[1] "Дублировать"
+msgstr[1] "Дублировать CDEFs"
 msgstr[2] ""
 
 #: cdef.php:336
-#, fuzzy
 msgid "Click 'Continue' to delete the following CDEF Item."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующий пункт CDEF."
+msgstr "Нажмите \"Продолжить\", чтобы удалить следующий пункт CDEF."
 
 #: cdef.php:337
-#, fuzzy, php-format
+#, php-format
 msgid "CDEF Name: %s"
-msgstr "CDEF имя: %s"
+msgstr "CDEF Имя: %s"
 
 #: cdef.php:344
-#, fuzzy
 msgid "Remove CDEF Item"
 msgstr "Удалить элемент CDEF"
 
 #: cdef.php:411
-#, fuzzy
 msgid "CDEF Preview"
 msgstr "Предварительный просмотр CDEF"
 
 #: cdef.php:422
-#, fuzzy, php-format
+#, php-format
 msgid "CDEF Items [edit: %s]"
 msgstr "Элементы CDEF [редактировать: %s]"
 
 #: cdef.php:435
-#, fuzzy
 msgid "CDEF Item Type"
 msgstr "Тип элемента CDEF"
 
 #: cdef.php:436
-#, fuzzy
 msgid "Choose what type of CDEF item this is."
 msgstr "Выберите тип элемента CDEF."
 
 #: cdef.php:442
-#, fuzzy
 msgid "CDEF Item Value"
 msgstr "Значение элемента CDEF"
 
 #: cdef.php:443
-#, fuzzy
 msgid "Enter a value for this CDEF item."
 msgstr "Введите значение для этого элемента CDEF."
 
 #: cdef.php:559
-#, fuzzy, php-format
+#, php-format
 msgid "CDEF [edit: %s]"
 msgstr "CDEF [редактирование: %s]"
 
 #: cdef.php:561
-#, fuzzy
 msgid "CDEF [new]"
-msgstr "CDEF [new]"
+msgstr "CDEF [новый]"
 
 #: cdef.php:582 include/global_arrays.php:2131
-#, fuzzy
 msgid "CDEF Items"
-msgstr "Пункты CDEF"
+msgstr "Элементы CDEF"
 
 #: cdef.php:586 vdef.php:583
 msgid "Item Value"
-msgstr "Значение позиции"
+msgstr "Значение элемента"
 
 #: cdef.php:603 vdef.php:602
-#, fuzzy, php-format
+#, php-format
 msgid "Item #%d"
-msgstr "Пункт #%d"
+msgstr "Элемент #%d"
 
 #: cdef.php:678
-#, fuzzy
 msgid "Delete CDEF Item"
-msgstr "Удалить пункт CDEF"
+msgstr "Удалить элемент CDEF"
 
 #: cdef.php:738 cdef.php:753 cdef.php:875 include/global_arrays.php:1001
 #: include/global_arrays.php:2113
-#, fuzzy
 msgid "CDEFs"
-msgstr "CDEF"
+msgstr "CDEFs"
 
 #: cdef.php:884
-#, fuzzy
 msgid "CDEF Name"
-msgstr "CDEF Name"
+msgstr "CDEF Имя"
 
 #: cdef.php:884 data_source_profiles.php:1034
-#, fuzzy
 msgid "The name of this CDEF."
 msgstr "Название этого CDEF."
 
 #: cdef.php:885
-#, fuzzy
 msgid "CDEFs that are in use cannot be Deleted.  In use is defined as being referenced by a Graph or a Graph Template."
-msgstr "Использованные CDEF не могут быть удалены.  Используемый определяется как ссылка на используемый график или шаблон графика."
+msgstr "Используемые CDEF не могут быть удалены. Используемый определяется как ссылка на используемый График или Шаблон Графика."
 
 #: cdef.php:886
-#, fuzzy
 msgid "The number of Graphs using this CDEF."
-msgstr "Количество графиков, использующих этот CDEF."
+msgstr "Количество Графиков, использующих этот CDEF."
 
 #: cdef.php:887 color.php:705 data_input.php:948 data_queries.php:1400
 #: data_source_profiles.php:1070 gprint_presets.php:408 vdef.php:893
-#, fuzzy
 msgid "Templates Using"
 msgstr "Использование шаблонов"
 
 #: cdef.php:887
-#, fuzzy
 msgid "The number of Graphs Templates using this CDEF."
-msgstr "Количество графиков Шаблоны с использованием этого CDEF."
+msgstr "Количество Графических Шаблонов использующие этот CDEF."
 
 #: cdef.php:909
-#, fuzzy
 msgid "No CDEFs"
 msgstr "Нет CDEFs"
 
@@ -2716,7 +2676,7 @@ msgstr "ФАТАЛЬНО: У ВАС НЕТ ДОСТУПА К ЭТОЙ ОБЛАС
 
 #: color.php:170
 msgid "Unnamed Color"
-msgstr "Без имени"
+msgstr "Безымянный Цвет"
 
 #: color.php:187
 msgid "Click 'Continue' to delete the following Color"
@@ -2726,30 +2686,25 @@ msgstr[1] "Нажмите \"Продолжить\", чтобы удалить с
 msgstr[2] ""
 
 #: color.php:192
-#, fuzzy
 msgid "Delete Color"
 msgid_plural "Delete Colors"
 msgstr[0] "Удалить цвет"
-msgstr[1] "Удалить"
+msgstr[1] "Удалить цвета"
 msgstr[2] ""
 
 #: color.php:352
-#, fuzzy
 msgid "Cacti has imported the following items:"
-msgstr "Кактусы импортировали следующие товары:"
+msgstr "Cacti импортировал следующие элементы:"
 
 #: color.php:366 color.php:569
-#, fuzzy
 msgid "Import Colors"
-msgstr "Импорт цветов"
+msgstr "Импорт Цветов"
 
 #: color.php:369
-#, fuzzy
 msgid "Import Colors from Local File"
-msgstr "Импорт цветов из локального файла"
+msgstr "Импорт Цветов из локального файла"
 
 #: color.php:370
-#, fuzzy
 msgid "Please specify the location of the CSV file containing your Color information."
 msgstr "Пожалуйста, укажите местоположение файла CSV, содержащего информацию о цвете."
 
@@ -2758,47 +2713,39 @@ msgid "Select a File"
 msgstr "Выбрать файл"
 
 #: color.php:381
-#, fuzzy
 msgid "Overwrite Existing Data?"
 msgstr "Перезаписать существующие данные?"
 
 #: color.php:382
-#, fuzzy
 msgid "Should the import process be allowed to overwrite existing data?  Please note, this does not mean delete old rows, only update duplicate rows."
-msgstr "Должен ли процесс импорта быть разрешен для перезаписи существующих данных?  Обратите внимание, что это не означает удаление старых, а только обновление дублирующих друг друга рядов."
+msgstr "Должен ли процесс импорта быть разрешен для перезаписи существующих данных?  Обратите внимание, что это не означает удаление старых, а только обновление дублирующих друг друга строк."
 
 #: color.php:385
-#, fuzzy
 msgid "Allow Existing Rows to be Updated?"
 msgstr "Разрешить обновление существующих строк?"
 
 #: color.php:390
-#, fuzzy
 msgid "Required File Format Notes"
 msgstr "Примечания к требуемому формату файла"
 
 #: color.php:393
-#, fuzzy
 msgid "The file must contain a header row with the following column headings."
 msgstr "Файл должен содержать строку заголовка со следующими заголовками столбцов."
 
 #: color.php:395
-#, fuzzy
 msgid "<strong>name</strong> - The Color Name"
-msgstr "<strong>name</strong> - Имя цвета Имя цвета"
+msgstr "<strong>name</strong> - Название цвета"
 
 #: color.php:396
-#, fuzzy
 msgid "<strong>hex</strong> - The Hex Value"
-msgstr "<strong>hex</strong> - Значение Hex Value"
+msgstr "<strong>hex</strong> - Hex Значение"
 
 #: color.php:417
-#, fuzzy, php-format
+#, php-format
 msgid "Colors [edit: %s]"
 msgstr "Цвета [Редактировать: %s]"
 
 #: color.php:419
-#, fuzzy
 msgid "Colors [new]"
 msgstr "Цвета [новые]"
 
@@ -2816,7 +2763,6 @@ msgid "Import"
 msgstr "Импорт"
 
 #: color.php:570
-#, fuzzy
 msgid "Export Colors"
 msgstr "Цвета экспорта"
 
@@ -2825,16 +2771,14 @@ msgid "Hex"
 msgstr "Шестнадцатеричный"
 
 #: color.php:699
-#, fuzzy
 msgid "The Hex Value for this Color."
-msgstr "Значение гексагона для этого цвета."
+msgstr "Значение Hex для этого цвета."
 
 #: color.php:700
 msgid "Color Name"
 msgstr "Название Цвета"
 
 #: color.php:700
-#, fuzzy
 msgid "The name of this Color definition."
 msgstr "Название этого определения Цвета."
 
@@ -2844,7 +2788,6 @@ msgid "Is this color a named color which are read only."
 msgstr "Этот цвет называется цветом, который можно только читать."
 
 #: color.php:701
-#, fuzzy
 msgid "Named Color"
 msgstr "Названный цвет"
 
@@ -2854,44 +2797,38 @@ msgid "Color"
 msgstr "Цвет"
 
 #: color.php:702
-#, fuzzy
 msgid "The Color as shown on the screen."
 msgstr "Цвет, как показано на экране."
 
 #: color.php:703
-#, fuzzy
 msgid "Colors in use cannot be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template."
-msgstr "Используемые цвета удалить нельзя.  Используемый определяется как ссылка либо на используемый график, либо на шаблон графика."
+msgstr "Используемые цвета удалить нельзя.  Используемый определяется как ссылка либо на используемый График, либо на Шаблон Графика."
 
 #: color.php:704
-#, fuzzy
 msgid "The number of Graph using this Color."
 msgstr "Количество Графиков, использующих этот цвет."
 
 #: color.php:705
-#, fuzzy
 msgid "The number of Graph Templates using this Color."
-msgstr "Количество шаблонов графиков, использующих этот цвет."
+msgstr "Количество Шаблонов Графиков, использующих этот цвет."
 
 #: color.php:735
-#, fuzzy
 msgid "No Colors Found"
-msgstr "Нет цветов найдено"
+msgstr "Цвета не найдены"
 
 #: color_templates.php:30
-#, fuzzy
 msgid "Sync Aggregates"
-msgstr "Агрегаты"
+msgstr "Синхронизация Агрегаций"
 
 #: color_templates.php:73
 msgid "Color Item"
-msgstr "Цвет элементов при прилипании"
+msgstr "Цвет элемента"
 
 #: color_templates.php:94 lib/api_aggregate.php:1798 lib/api_aggregate.php:1801
 #: lib/api_aggregate.php:1806 lib/html.php:1183 lib/html_reports.php:1735
-#, fuzzy, php-format
+#, php-format
 msgid "Item # %d"
-msgstr "Пункт # %d"
+msgstr "Элемент # %d"
 
 #: color_templates.php:133 graph_templates_inputs.php:235
 #: lib/api_aggregate.php:1858 lib/html.php:1284
@@ -2901,12 +2838,11 @@ msgstr "Нет элементов"
 #: color_templates.php:238
 msgid "Click 'Continue' to delete the following Color Template"
 msgid_plural "Click 'Continue' to delete following Color Templates"
-msgstr[0] "Нажмите \"Продолжить\", чтобы удалить следующий цветовой шаблон"
-msgstr[1] "Нажмите \"Продолжить\", чтобы удалить следующие цветовые шаблоны"
+msgstr[0] "Нажмите \"Продолжить\", чтобы удалить следующий Цветовой Шаблон"
+msgstr[1] "Нажмите \"Продолжить\", чтобы удалить следующие Цветовые Шаблоны"
 msgstr[2] ""
 
 #: color_templates.php:243
-#, fuzzy
 msgid "Delete Color Template"
 msgid_plural "Delete Color Templates"
 msgstr[0] "Удалить цветовой шаблон"
@@ -2914,15 +2850,13 @@ msgstr[1] "Удалить шаблоны графиков"
 msgstr[2] ""
 
 #: color_templates.php:247
-#, fuzzy
 msgid "Click 'Continue' to duplicate the following Color Template. You can optionally change the title format for the new color template."
 msgid_plural "Click 'Continue' to duplicate following Color Templates. You can optionally change the title format for the new color templates."
 msgstr[0] "Нажмите кнопку \"Продолжить\", чтобы скопировать следующий цветовой шаблон. Можно также изменить формат заголовка для нового цветового шаблона."
-msgstr[1] ""
+msgstr[1] "Нажмите кнопку \"Продолжить\", чтобы скопировать следующие цветовые шаблоны. Можно также изменить формат заголовка для новых цветовых шаблонов."
 msgstr[2] ""
 
 #: color_templates.php:255
-#, fuzzy
 msgid "Duplicate Color Template"
 msgid_plural "Duplicate Color Templates"
 msgstr[0] "Дублировать цветовой шаблон"
@@ -2930,86 +2864,75 @@ msgstr[1] "Продублировать шаблоны графиков"
 msgstr[2] ""
 
 #: color_templates.php:259
-#, fuzzy
 msgid "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Template."
 msgid_plural "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Templates."
-msgstr[0] "Нажмите кнопку \"Продолжить\", чтобы создать Агрегированный график из выбранных графиков."
-msgstr[1] "Нажмите кнопку \"Продолжить\", чтобы создать Агрегированный график из выбранных графиков."
-msgstr[2] "Нажмите кнопку \"Продолжить\", чтобы создать Агрегированный график из выбранных графиков."
+msgstr[0] "Нажмите \"Продолжить\", чтобы создать Агрегированный График из выбранного Цветового Шаблона."
+msgstr[1] "Нажмите \"Продолжить\", чтобы создать Агрегированные Графики из выбранных Цветовых Шаблонов."
+msgstr[2] ""
 
 #: color_templates.php:264
-#, fuzzy
 msgid "Synchronize Color Template"
 msgid_plural "Synchronize Color Templates"
-msgstr[0] "Синхронизация графиков с шаблонами графиков"
-msgstr[1] "Синхронизация графиков с шаблонами графиков"
-msgstr[2] "Синхронизация графиков с шаблонами графиков"
+msgstr[0] "Синхронизировать Цветовой Шаблон"
+msgstr[1] "Синхронизировать Цветовые Шаблоны"
+msgstr[2] ""
 
 #: color_templates.php:301
-#, fuzzy
 msgid "Color Template Items [new]"
 msgstr "Цветовые шаблоны Элементы [новые]"
 
 #: color_templates.php:317
-#, fuzzy, php-format
+#, php-format
 msgid "Color Template Items [edit: %s]"
 msgstr "Элементы цветового шаблона [Редактировать: %s]"
 
 #: color_templates.php:354
-#, fuzzy
 msgid "Delete Color Item"
-msgstr "Удалить цветной элемент"
+msgstr "Удалить Цветовой элемент"
 
 #: color_templates.php:387
-#, fuzzy, php-format
+#, php-format
 msgid "Color Template [edit: %s]"
-msgstr "Цветовой шаблон [Изменить: %s]"
+msgstr "Цветовой Шаблон [Изменить: %s]"
 
 #: color_templates.php:389
-#, fuzzy
 msgid "Color Template [new]"
-msgstr "Цветовой шаблон [новый]"
+msgstr "Цветовой Шаблон [новый]"
 
 #: color_templates.php:465
-#, php-format
+#, fuzzy, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
 msgstr "Цветовой шаблон '%s' вытеснено %d агрегированных шаблонов и %d не шаблонных агрегаций"
 
 #: color_templates.php:467
-#, fuzzy, php-format
+#, php-format
 msgid "Color Template '%s' had no Aggregate Templates or Graphs using this Color Template."
 msgstr "Цветовой шаблон \"%s\" не содержал шаблонов или графиков с использованием этого цветового шаблона."
 
 #: color_templates.php:521 color_templates.php:535 color_templates.php:630
 #: include/global_arrays.php:2701
-#, fuzzy
 msgid "Color Templates"
 msgstr "Цветовые шаблоны"
 
 #: color_templates.php:646
-#, fuzzy
 msgid "Color Templates that are in use cannot be Deleted. In use is defined as being referenced by an Aggregate Template."
-msgstr "Используемые цветовые шаблоны удалить нельзя. Используемый определяется как ссылка на используемый Обобщающий шаблон."
+msgstr "Используемые цветовые шаблоны удалить нельзя. Используемый определяется как ссылка на используемый Агрегированный Шаблон."
 
 #: color_templates.php:680
-#, fuzzy
 msgid "No Color Templates Found"
 msgstr "Цветовые шаблоны не найдены"
 
 #: color_templates_items.php:268
-#, fuzzy
 msgid "Click 'Continue' to delete the following Color Template Color."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующий цвет шаблона."
+msgstr "Нажмите \"Продолжить\", чтобы удалить следующий цвет цветового шаблона."
 
 #: color_templates_items.php:269
-#, fuzzy
 msgid "Color Name:"
-msgstr "Название Цвета"
+msgstr "Название Цвета:"
 
 #: color_templates_items.php:270
-#, fuzzy
 msgid "Color Hex:"
-msgstr "Цветной гекс:"
+msgstr "Hex значение:"
 
 #: color_templates_items.php:276
 #, fuzzy
@@ -3017,17 +2940,16 @@ msgid "Remove Color Item"
 msgstr "Удалить цветной элемент"
 
 #: color_templates_items.php:341
-#, fuzzy, php-format
+#, php-format
 msgid "Color Template Items [edit Report Item: %s]"
-msgstr "Элементы цветового шаблона [Изменить параметр отчета: %s]"
+msgstr "Элементы цветового шаблона [Изменить элемент отчета: %s]"
 
 #: color_templates_items.php:344
-#, fuzzy, php-format
+#, php-format
 msgid "Color Template Items [new Report Item: %s]"
 msgstr "Элементы цветового шаблона [новый элемент отчета: %s]"
 
 #: data_debug.php:30
-#, fuzzy
 msgid "Run Check"
 msgstr "Проверить"
 
@@ -3037,32 +2959,27 @@ msgstr "Убрать проверку"
 
 #: data_debug.php:52
 msgid "Data Source debug started."
-msgstr "Отладка источника данных."
+msgstr "Отладка Источника Данных запущена."
 
 #: data_debug.php:55
-#, fuzzy
 msgid "Data Source debug received an invalid Data Source ID."
-msgstr "При отладке источника данных был получен неверный ID источника данных."
+msgstr "При отладке Источника Данных был получен неверный ID Источника Данных."
 
 #: data_debug.php:64
-#, fuzzy
 msgid "All RRDfile repairs succeeded."
 msgstr "Все работы по ремонту RRD-файла увенчались успехом."
 
 #: data_debug.php:66
-#, fuzzy
 msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
-msgstr "Неудачно отремонтирован один или несколько RRD-файлов.  Ошибки см. в журнале кактусов."
+msgstr "Неудачно отремонтирован один или несколько RRD-файлов.  Ошибки см. в журнале Cacti."
 
 #: data_debug.php:74
-#, fuzzy
 msgid "Automatic Data Source debug being rerun after repair."
-msgstr "Автоматическая отладка источника данных при повторном запуске после ремонта."
+msgstr "Автоматическая отладка Источника Данных перезапускается после ремонта."
 
 #: data_debug.php:78
-#, fuzzy
 msgid "Data Source repair received an invalid Data Source ID."
-msgstr "Восстановление источника данных получило неверный ID источника данных."
+msgstr "Восстановление Источника Данных получило неверный ID Источника Данных."
 
 #: data_debug.php:443 data_debug.php:877 data_queries.php:713
 #: data_sources.php:1013 data_templates.php:678 graphs_items.php:466
@@ -3072,16 +2989,14 @@ msgid "Data Source"
 msgstr "Источник Данных"
 
 #: data_debug.php:445
-#, fuzzy
 msgid "The Data Source to Debug"
-msgstr "Источник данных для отладки"
+msgstr "Источник Данных для отладки"
 
 #: data_debug.php:448 lib/html.php:2477 utilities.php:1031 utilities.php:1150
 msgid "User"
 msgstr "Пользователь"
 
 #: data_debug.php:450
-#, fuzzy
 msgid "The User who requested the Debug."
 msgstr "Пользователь, запросивший отладку."
 
@@ -3090,38 +3005,33 @@ msgid "Started"
 msgstr "Запущено"
 
 #: data_debug.php:456
-#, fuzzy
 msgid "The Date that the Debug was Started."
 msgstr "Дата начала отладки."
 
 #: data_debug.php:462
-#, fuzzy
 msgid "The Data Source internal ID."
-msgstr "Внутренний идентификатор источника данных."
+msgstr "Внутренний ID Источника Данных."
 
 #: data_debug.php:468
-#, fuzzy
 msgid "The Status of the Data Source Debug Check."
-msgstr "Проверка состояния отладки источника данных."
+msgstr "Проверка состояния отладки Источника Данных."
 
 #: data_debug.php:471 lib/installer.php:2255 lib/installer.php:2287
 #: package_import.php:537
 msgid "Writable"
-msgstr "Записи"
+msgstr "Доступно для записи"
 
 #: data_debug.php:474
-#, fuzzy
 msgid "Determines if the Data Collector or the Web Site have Write access."
-msgstr "Определяет, имеет ли Сборщик данных или Веб-сайт доступ на запись."
+msgstr "Определяет, имеет ли Сборщик Данных или Веб-сайт доступ на запись."
 
 #: data_debug.php:477 templates_import.php:234
 msgid "Exists"
 msgstr "Существует"
 
 #: data_debug.php:480
-#, fuzzy
 msgid "Determines if the Data Source is located in the Poller Cache."
-msgstr "Определяет, находится ли Источник данных в кэше Poller Cache."
+msgstr "Определяет, находится ли Источник Данных в кэше Poller Cache."
 
 #: data_debug.php:483 data_sources.php:1661 data_templates.php:1257
 #: plugins.php:39 plugins.php:471
@@ -3129,37 +3039,30 @@ msgid "Active"
 msgstr "Активный"
 
 #: data_debug.php:486
-#, fuzzy
 msgid "Determines if the Data Source is Enabled."
-msgstr "Определяет, включен ли источник данных."
+msgstr "Определяет, включен ли Источник Данных."
 
 #: data_debug.php:489
-#, fuzzy
 msgid "RRD Match"
-msgstr "RRD Match"
+msgstr "RRD Совпадение"
 
 #: data_debug.php:492
-#, fuzzy
 msgid "Determines if the RRDfile matches the Data Source Template."
-msgstr "Определяет, соответствует ли RRD-файл Шаблону источника данных."
+msgstr "Определяет, соответствует ли RRD-файл Шаблону Источника Данных."
 
 #: data_debug.php:495
-#, fuzzy
 msgid "Valid Data"
-msgstr "Действительные данные"
+msgstr "Действительные Данные"
 
 #: data_debug.php:498
-#, fuzzy
 msgid "Determines if the RRDfile has been getting good recent Data."
 msgstr "Определяет, получал ли RRD-файл хорошие последние данные."
 
 #: data_debug.php:501
-#, fuzzy
 msgid "RRD Updated"
 msgstr "RRD Обновлено"
 
 #: data_debug.php:504
-#, fuzzy
 msgid "Determines if the RRDfile has been written to properly."
 msgstr "Определяет, правильно ли был записан RRD-файл."
 
@@ -3181,14 +3084,12 @@ msgid "Data Sources"
 msgstr "Источники Данных"
 
 #: data_debug.php:627 data_debug.php:1095
-#, fuzzy
 msgid "Not Debugging"
-msgstr "Отладка"
+msgstr "Без Отладки"
 
 #: data_debug.php:643
-#, fuzzy
 msgid "No Checks"
-msgstr "Проверки"
+msgstr "Без Проверки"
 
 #: data_debug.php:686 lib/api_automation.php:761 lib/graphs.php:79
 #: lib/graphs.php:103 templates_import.php:238
@@ -3196,12 +3097,10 @@ msgid "Not Found"
 msgstr "Не найдено"
 
 #: data_debug.php:704 data_debug.php:709
-#, fuzzy
 msgid "Not Checked Yet"
-msgstr "Нет Чеков"
+msgstr "Еще не проверено"
 
 #: data_debug.php:727
-#, fuzzy
 msgid "Issues found!  Waiting on RRDfile update"
 msgstr "Проблемы найдены!  Ожидание обновления RRD-файла"
 
@@ -18216,7 +18115,7 @@ msgstr "Папка RRA"
 
 #: lib/rrd.php:3698
 msgid "Root"
-msgstr "Корень"
+msgstr "ROOT"
 
 #: lib/rrd.php:3807
 #, fuzzy
