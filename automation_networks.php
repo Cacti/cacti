@@ -31,6 +31,7 @@ $network_actions = array(
 	1 => __('Delete'),
 	2 => __('Disable'),
 	3 => __('Enable'),
+	6 => __('Export'),
 	4 => __('Discover Now'),
 	5 => __('Cancel Discovery')
 );
@@ -45,6 +46,9 @@ switch (get_request_var('action')) {
 		break;
 	case 'actions':
 		form_actions();
+
+		break;
+	case 'import':
 
 		break;
 	case 'edit':
@@ -1195,26 +1199,27 @@ function networks_filter() {
 						<td>
 							<select id='refresh' onChange='applyFilter()'>
 								<?php
-	$frequency = array(
-		10  => __('%d Seconds', 10),
-		20  => __('%d Seconds', 20),
-		30  => __('%d Seconds', 30),
-		45  => __('%d Seconds', 45),
-		60  => __('%d Minute', 1),
-		120 => __('%d Minutes', 2),
-		300 => __('%d Minutes', 5)
-	);
+								$frequency = array(
+									10  => __('%d Seconds', 10),
+									20  => __('%d Seconds', 20),
+									30  => __('%d Seconds', 30),
+									45  => __('%d Seconds', 45),
+									60  => __('%d Minute', 1),
+									120 => __('%d Minutes', 2),
+									300 => __('%d Minutes', 5)
+								);
 
-	foreach ($frequency as $r => $row) {
-		print "<option value='" . $r . "'" . (isset_request_var('refresh') && $r == get_request_var('refresh') ? ' selected' : '') . '>' . $row . '</option>';
-	}
-	?>
+								foreach ($frequency as $r => $row) {
+									print "<option value='" . $r . "'" . (isset_request_var('refresh') && $r == get_request_var('refresh') ? ' selected' : '') . '>' . $row . '</option>';
+								}
+								?>
 							</select>
 						</td>
 						<td>
 							<span>
 								<input type='button' class='ui-button ui-corner-all ui-widget' id='go' title='<?php print __esc('Search'); ?>' value='<?php print __esc('Go'); ?>'>
 								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' title='<?php print __esc('Clear Filtered'); ?>' value='<?php print __esc('Clear'); ?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='import' title='<?php print __esc('Import Networks'); ?>' value='<?php print __esc('Import'); ?>'>
 							</span>
 						</td>
 					</tr>
@@ -1239,6 +1244,14 @@ function networks_filter() {
 					})
 				}
 
+				function importNetworks() {
+					strURL = '?import=true';
+
+					loadUrl({
+						url: strURL
+					})
+				}
+
 				$(function() {
 					$('#go').click(function() {
 						applyFilter();
@@ -1246,6 +1259,10 @@ function networks_filter() {
 
 					$('#clear').click(function() {
 						clearFilter();
+					});
+
+					$('#import').click(function() {
+						importNetworks();
 					});
 
 					$('#networks').submit(function(event) {
@@ -1256,5 +1273,5 @@ function networks_filter() {
 			</script>
 		</td>
 	</tr>
-<?php
+	<?php
 }

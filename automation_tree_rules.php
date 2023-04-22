@@ -28,6 +28,7 @@ include_once('./lib/data_query.php');
 $automation_tree_rules_actions = array(
 	AUTOMATION_ACTION_TREE_DUPLICATE => __('Duplicate'),
 	AUTOMATION_ACTION_TREE_ENABLE    => __('Enable'),
+	AUTOMATION_ACTION_TREE_EXPORT    => __('Export'),
 	AUTOMATION_ACTION_TREE_DISABLE   => __('Disable'),
 	AUTOMATION_ACTION_TREE_DELETE    => __('Delete'),
 );
@@ -38,6 +39,9 @@ set_default_action();
 switch (get_request_var('action')) {
 	case 'save':
 		automation_tree_rules_form_save();
+
+		break;
+	case 'import':
 
 		break;
 	case 'actions':
@@ -855,6 +859,7 @@ function automation_tree_rules() {
 							<span>
 								<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>'>
 								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='import' value='<?php print __esc('Import');?>'>
 							</span>
 						</td>
 					</tr>
@@ -875,6 +880,11 @@ function automation_tree_rules() {
 				loadUrl({url:strURL})
 			}
 
+			function importTemplate() {
+				strURL = 'automation_tree_rules.php?import=1';
+				loadUrl({url:strURL})
+			}
+
 			$(function() {
 				$('#rows, #status').change(function() {
 					applyFilter();
@@ -886,6 +896,10 @@ function automation_tree_rules() {
 
 				$('#clear').click(function() {
 					clearFilter();
+				});
+
+				$('#import').click(function() {
+					importTemplate();
 				});
 
 				$('#form_automation').submit(function(event) {

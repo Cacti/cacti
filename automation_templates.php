@@ -27,7 +27,8 @@ include_once('./lib/poller.php');
 include_once('./lib/utility.php');
 
 $at_actions = array(
-	1 => __('Delete')
+	1 => __('Delete'),
+	2 => __('Export')
 );
 
 /* set default action */
@@ -36,6 +37,9 @@ set_default_action();
 switch (get_request_var('action')) {
 	case 'save':
 		form_save();
+
+		break;
+	case 'import':
 
 		break;
 	case 'ajax_dnd':
@@ -430,6 +434,7 @@ function template() {
 						<span>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Import');?>' title='<?php print __esc('Import Device Automation Template');?>'>
 						</span>
 					</td>
 				</tr>
@@ -449,6 +454,11 @@ function template() {
 				loadUrl({url:strURL})
 			}
 
+			function importTemplate() {
+				strURL = 'automation_templates.php?import=1';
+				loadUrl({url:strURL})
+			}
+
 			$(function() {
 				$('#refresh').click(function() {
 					applyFilter();
@@ -456,6 +466,10 @@ function template() {
 
 				$('#clear').click(function() {
 					clearFilter();
+				});
+
+				$('#import').click(function() {
+					importTemplate();
 				});
 
 				$('#form_at').submit(function(event) {

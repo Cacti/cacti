@@ -28,6 +28,7 @@ include_once('./lib/data_query.php');
 $automation_graph_rules_actions = array(
 	AUTOMATION_ACTION_GRAPH_DUPLICATE => __('Duplicate'),
 	AUTOMATION_ACTION_GRAPH_ENABLE    => __('Enable'),
+	AUTOMATION_ACTION_GRAPH_EXPORT    => __('Export'),
 	AUTOMATION_ACTION_GRAPH_DISABLE   => __('Disable'),
 	AUTOMATION_ACTION_GRAPH_DELETE    => __('Delete'),
 );
@@ -42,6 +43,9 @@ switch (get_request_var('action')) {
 		break;
 	case 'actions':
 		automation_graph_rules_form_actions();
+
+		break;
+	case 'import':
 
 		break;
 	case 'item_movedown':
@@ -812,6 +816,7 @@ function automation_graph_rules() {
 							<span>
 								<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' name='go' value='<?php print __esc('Go');?>'>
 								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>'></td>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='import' value='<?php print __esc('Import');?>'></td>
 							</span>
 					</tr>
 				</table>
@@ -831,6 +836,11 @@ function automation_graph_rules() {
 			loadUrl({url:strURL})
 		}
 
+		function templateImport() {
+			strURL = 'automation_graph_rules.php?import=1';
+			loadUrl({url:strURL})
+		}
+
 		$(function() {
 			$('#refresh, #rules, #rows, #status, #snmp_query_id').change(function() {
 				applyFilter();
@@ -838,6 +848,10 @@ function automation_graph_rules() {
 
 			$('#clear').click(function() {
 				clearFilter();
+			});
+
+			$('#import').click(function() {
+				importTemplate();
 			});
 
 			$('#form_automation').submit(function(event) {

@@ -28,6 +28,7 @@ include_once('./lib/snmp.php');
 $automation_snmp_actions = array(
 	1 => __('Delete'),
 	2 => __('Duplicate'),
+	3 => __('Export'),
 );
 
 /* set default action */
@@ -41,6 +42,9 @@ if (isset_request_var('cancel')) {
 switch (get_request_var('action')) {
 	case 'save':
 		form_automation_snmp_save();
+
+		break;
+	case 'import':
 
 		break;
 	case 'actions':
@@ -750,6 +754,7 @@ function automation_snmp() {
 						<span>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='import' value='<?php print __esc('Import');?>' title='<?php print __esc('Import SNMP Options');?>'>
 						</span>
 					</td>
 				</tr>
@@ -770,6 +775,11 @@ function automation_snmp() {
 		loadUrl({url:strURL})
 	}
 
+	function importTemplate() {
+		strURL = 'automation_snmp.php?import=1';
+		loadUrl({url:strURL})
+	}
+
 	$(function() {
 		$('#refresh').click(function() {
 			applyFilter();
@@ -777,6 +787,10 @@ function automation_snmp() {
 
 		$('#clear').click(function() {
 			clearFilter();
+		});
+
+		$('#import').click(function() {
+			importTemplate();
 		});
 
 		$('#snmp_form').submit(function(event) {
