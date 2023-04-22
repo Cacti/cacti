@@ -4470,6 +4470,27 @@ function get_hash_gprint($gprint_id) {
 }
 
 /**
+ * get_hash_automation - returns the current unique hash for a automation objects
+ *
+ * @param $unique_id - (int) the ID of the gprint preset to return a hash for
+ * @param $table - (string) the table we are capturing for
+ *
+ * @return mixed a 128-bit, hexadecimal hash
+ */
+function get_hash_automation($unique_id, $table) {
+	$hash = db_fetch_cell_prepared("SELECT hash
+		FROM $table
+		WHERE id = ?",
+		array($unique_id));
+
+	if (strlen($hash) == 32 && ctype_xdigit($hash)) {
+		return $hash;
+	} else {
+		return generate_hash();
+	}
+}
+
+/**
  * returns the current unique hash for a vdef
  *
  * @param $graph_template_id - the ID of the vdef to return a hash for

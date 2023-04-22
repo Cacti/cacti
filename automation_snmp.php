@@ -112,7 +112,8 @@ function form_automation_snmp_save() {
 		get_filter_request_var('id');
 		/* ==================================================== */
 
-		$save['id']     = get_nfilter_request_var('id');
+		$save['id']     = get_request_var('id');
+		$save['hash']   = get_hash_automation(get_request_var('id'), 'automation_snmp');
 		$save['name']   = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 
 		if (!is_error_message()) {
@@ -134,7 +135,8 @@ function form_automation_snmp_save() {
 
 		$save = array();
 
-		$save['id']                   = form_input_validate(get_nfilter_request_var('item_id'), '', '^[0-9]+$', false, 3);
+		$save['id']                   = form_input_validate(get_request_var('item_id'), '', '^[0-9]+$', false, 3);
+		$save['hash']                 = get_hash_automation(get_request_var('item_id'), 'automation_snmp_items');
 		$save['snmp_id']              = form_input_validate(get_nfilter_request_var('id'), 'snmp_id', '^[0-9]+$', false, 3);
 		$save['sequence']             = form_input_validate(get_nfilter_request_var('sequence'), 'sequence', '^[0-9]+$', false, 3);
 		$save['snmp_community']       = form_input_validate(get_nfilter_request_var('snmp_community'), 'snmp_community', '', false, 3);
@@ -289,21 +291,24 @@ function automation_duplicate_snmp_option($id, $new_name) {
 	$new_name = str_replace('<name>', $name, $new_name);
 
 	$save['id']   = 0;
+	$save['hash'] = generate_hash();
 	$save['name'] = $new_name;
 
 	$newid = sql_save($save, 'automation_snmp');
 
 	if ($newid > 0 && $id > 0) {
+		$hash = get_hash_automation($newid, 'automation_snmp_items');
+
 		db_execute_prepared("INSERT INTO automation_snmp_items
-		(snmp_id, sequence, snmp_version, snmp_community, snmp_port, snmp_timeout,
-        snmp_retries, max_oids, snmp_username, snmp_password, snmp_auth_protocol,
-		snmp_priv_passphrase, snmp_priv_protocol, snmp_context, snmp_engine_id)
-		SELECT $newid AS snmp_id, sequence, snmp_version, snmp_community, snmp_port, snmp_timeout,
-        snmp_retries, max_oids, snmp_username, snmp_password, snmp_auth_protocol,
-        snmp_priv_passphrase, snmp_priv_protocol, snmp_context, snmp_engine_id
-		FROM automation_snmp_items
-		WHERE snmp_id = ?",
-			array($id));
+			(hash, snmp_id, sequence, snmp_version, snmp_community, snmp_port, snmp_timeout,
+			snmp_retries, max_oids, snmp_username, snmp_password, snmp_auth_protocol,
+			snmp_priv_passphrase, snmp_priv_protocol, snmp_context, snmp_engine_id)
+			SELECT ?, $newid AS snmp_id, sequence, snmp_version, snmp_community, snmp_port, snmp_timeout,
+			snmp_retries, max_oids, snmp_username, snmp_password, snmp_auth_protocol,
+			snmp_priv_passphrase, snmp_priv_protocol, snmp_context, snmp_engine_id
+			FROM automation_snmp_items
+			WHERE snmp_id = ?",
+			array($hahs, $id));
 
 		raise_message('option_duplicated', __('Automation SNMP Options has been Duplicated.'), MESSAGE_LEVEL_INFO);
 	} else {

@@ -87,6 +87,38 @@ function upgrade_to_1_3_0() {
 	install_unlink('graphs_items.php');
 	install_unlink('graph_templates_items.php');
 	install_unlink('graph_templates_inputs.php');
+
+	/* add automation hashes */
+	$tables = array(
+		'automation_graph_rule_items',
+		'automation_graph_rules',
+		'automation_match_rule_items',
+		'automation_networks',
+		'automation_snmp',
+		'automation_snmp_items'
+	);
+
+	foreach($tables as $table) {
+		if (!db_column_exists($table, 'hash')) {
+			db_install_execute("ALTER TABLE $table
+				ADD COLUMN hash VARCHAR(32) NOT NULL DEFAULT '' AFTER id");
+
+			$rows = db_fetch_assoc("SELECT id
+				FROM $table
+				WHERE hash = ''");
+
+			if (cacti_sizeof($rows)) {
+				foreach($rows as $row) {
+					$hash = generate_hash();
+
+					db_execute_prepared("UPDATE $table
+						SET hash = ?
+						WHERE id = ?",
+						array($hash, $row['id']));
+				}
+			}
+		}
+	}
 }
 
 function ldap_convert_1_3_0() {

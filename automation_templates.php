@@ -202,6 +202,7 @@ function form_save() {
 		$redirect_back = false;
 
 		$save['id']                   = get_nfilter_request_var('id');
+		$save['hash']                 = get_hash_automation(get_request_var('id'), 'automation_templates');
 		$save['host_template']        = form_input_validate(get_nfilter_request_var('host_template'), 'host_template', '', false, 3);
 		$save['availability_method']  = form_input_validate(get_nfilter_request_var('availability_method'), 'availability_method', '', false, 3);
 		$save['sysDescr']             = get_nfilter_request_var('sysDescr');

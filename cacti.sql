@@ -288,6 +288,7 @@ CREATE TABLE `automation_devices` (
 
 CREATE TABLE `automation_graph_rule_items` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `hash` varchar(32) NOT NULL DEFAULT '',
   `rule_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `sequence` smallint(3) unsigned NOT NULL DEFAULT '0',
   `operation` smallint(3) unsigned NOT NULL DEFAULT '0',
@@ -301,7 +302,7 @@ CREATE TABLE `automation_graph_rule_items` (
 -- Dumping data for table `automation_graph_rule_items`
 --
 
-INSERT INTO `automation_graph_rule_items` VALUES (1,1,1,0,'ifOperStatus',7,'Up'),(2,1,2,1,'ifIP',16,''),(3,1,3,1,'ifHwAddr',16,''),(4,2,1,0,'ifOperStatus',7,'Up'),(5,2,2,1,'ifIP',16,''),(6,2,3,1,'ifHwAddr',16,'');
+INSERT INTO `automation_graph_rule_items` VALUES (1,'',1,1,0,'ifOperStatus',7,'Up'),(2,'',1,2,1,'ifIP',16,''),(3,'',1,3,1,'ifHwAddr',16,''),(4,'',2,1,0,'ifOperStatus',7,'Up'),(5,'',2,2,1,'ifIP',16,''),(6,'',2,3,1,'ifHwAddr',16,'');
 
 --
 -- Table structure for table `automation_graph_rules`
@@ -309,6 +310,7 @@ INSERT INTO `automation_graph_rule_items` VALUES (1,1,1,0,'ifOperStatus',7,'Up')
 
 CREATE TABLE `automation_graph_rules` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `hash` varchar(32) NOT NULL DEFAULT '',
   `name` varchar(255) NOT NULL DEFAULT '',
   `snmp_query_id` smallint(3) unsigned NOT NULL DEFAULT '0',
   `graph_type_id` smallint(3) unsigned NOT NULL DEFAULT '0',
@@ -321,7 +323,7 @@ CREATE TABLE `automation_graph_rules` (
 -- Dumping data for table `automation_graph_rules`
 --
 
-INSERT INTO `automation_graph_rules` VALUES (1,'Traffic 64 bit Server',1,12,'on'),(2,'Traffic 64 bit Server Linux',1,12,'on'),(3,'Disk Space',3,17,'on');
+INSERT INTO `automation_graph_rules` VALUES (1,'','Traffic 64 bit Server',1,12,'on'),(2,'','Traffic 64 bit Server Linux',1,12,'on'),(3,'','Disk Space',3,17,'on');
 
 --
 -- Table structure for table `automation_ips`
@@ -344,6 +346,7 @@ CREATE TABLE `automation_ips` (
 
 CREATE TABLE `automation_match_rule_items` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `hash` varchar(32) NOT NULL DEFAULT '',
   `rule_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `rule_type` smallint(3) unsigned NOT NULL DEFAULT '0',
   `sequence` smallint(3) unsigned NOT NULL DEFAULT '0',
@@ -358,7 +361,7 @@ CREATE TABLE `automation_match_rule_items` (
 -- Dumping data for table `automation_match_rule_items`
 --
 
-INSERT INTO `automation_match_rule_items` VALUES (1,1,1,1,0,'h.snmp_sysDescr',8,''),(2,1,1,2,1,'h.snmp_version',12,'2'),(3,1,3,1,0,'ht.name',1,'Linux'),(4,2,1,1,0,'ht.name',1,'Linux'),(5,2,1,2,1,'h.snmp_version',12,'2'),(6,2,3,1,0,'ht.name',1,'SNMP'),(7,2,3,2,1,'gt.name',1,'Traffic'),(8,1,1,3,1,'h.snmp_sysDescr',2,'Windows');
+INSERT INTO `automation_match_rule_items` VALUES (1,'',1,1,1,0,'h.snmp_sysDescr',8,''),(2,'',1,1,2,1,'h.snmp_version',12,'2'),(3,'',1,3,1,0,'ht.name',1,'Linux'),(4,'',2,1,1,0,'ht.name',1,'Linux'),(5,'',2,1,2,1,'h.snmp_version',12,'2'),(6,'',2,3,1,0,'ht.name',1,'SNMP'),(7,'',2,3,2,1,'gt.name',1,'Traffic'),(8,'',1,1,3,1,'h.snmp_sysDescr',2,'Windows');
 
 --
 -- Table structure for table `automation_networks`
@@ -366,6 +369,7 @@ INSERT INTO `automation_match_rule_items` VALUES (1,1,1,1,0,'h.snmp_sysDescr',8,
 
 CREATE TABLE `automation_networks` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `hash` varchar(32) NOT NULL DEFAULT '',
   `poller_id` int(10) unsigned DEFAULT '1',
   `site_id` int(10) unsigned DEFAULT '1',
   `name` varchar(128) NOT NULL DEFAULT '' COMMENT 'The name for this network',
@@ -410,7 +414,7 @@ CREATE TABLE `automation_networks` (
 -- Dumping data for table `automation_networks`
 --
 
-INSERT INTO `automation_networks` VALUES (1,1,0,'Test Network','192.168.1.0/24','','on','','','','',1,'on','on','',254,0,0,1,22,400,1,2,10,1200,'0000-00-00 00:00:00','0000-00-00 00:00:00',2,'4','','','','',0,'0000-00-00 00:00:00','','on');
+INSERT INTO `automation_networks` VALUES (1,'',1,0,'Test Network','192.168.1.0/24','','on','','','','',1,'on','on','',254,0,0,1,22,400,1,2,10,1200,'0000-00-00 00:00:00','0000-00-00 00:00:00',2,'4','','','','',0,'0000-00-00 00:00:00','','on');
 
 --
 -- Table structure for table `automation_processes`
@@ -435,6 +439,7 @@ CREATE TABLE `automation_processes` (
 
 CREATE TABLE `automation_snmp` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `hash` varchar(32) NOT NULL DEFAULT '',
   `name` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Group of SNMP Option Sets';
@@ -443,7 +448,7 @@ CREATE TABLE `automation_snmp` (
 -- Dumping data for table `automation_snmp`
 --
 
-INSERT INTO `automation_snmp` VALUES (1,'Default Option Set');
+INSERT INTO `automation_snmp` VALUES (1,'','Default Option Set');
 
 --
 -- Table structure for table `automation_snmp_items`
@@ -451,6 +456,7 @@ INSERT INTO `automation_snmp` VALUES (1,'Default Option Set');
 
 CREATE TABLE `automation_snmp_items` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `hash` varchar(32) NOT NULL DEFAULT '',
   `snmp_id` int(10) unsigned NOT NULL DEFAULT '0',
   `sequence` int(10) unsigned NOT NULL DEFAULT '0',
   `snmp_version` tinyint(3) unsigned NOT NULL DEFAULT '1',
@@ -474,7 +480,7 @@ CREATE TABLE `automation_snmp_items` (
 -- Dumping data for table `automation_snmp_items`
 --
 
-INSERT INTO `automation_snmp_items` VALUES (1,1,1,'2','public',161,1000,3,10,-1,'admin','baseball','MD5','','DES','',''),(2,1,2,'2','private',161,1000,3,10,-1,'admin','baseball','MD5','','DES','','');
+INSERT INTO `automation_snmp_items` VALUES (1,'',1,1,'2','public',161,1000,3,10,-1,'admin','baseball','MD5','','DES','',''),(2,'',1,2,'2','private',161,1000,3,10,-1,'admin','baseball','MD5','','DES','','');
 
 --
 -- Table structure for table `automation_templates`
@@ -482,6 +488,7 @@ INSERT INTO `automation_snmp_items` VALUES (1,1,1,'2','public',161,1000,3,10,-1,
 
 CREATE TABLE `automation_templates` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `hash` varchar(32) NOT NULL DEFAULT '',
   `host_template` int(10) unsigned NOT NULL DEFAULT '0',
   `availability_method` int(10) unsigned DEFAULT '2',
   `sysDescr` varchar(255) DEFAULT '',
@@ -495,7 +502,7 @@ CREATE TABLE `automation_templates` (
 -- Dumping data for table `automation_templates`
 --
 
-INSERT INTO `automation_templates` VALUES (1,3,2,'Linux','','',2),(2,1,2,'HP ETHERNET','','',1);
+INSERT INTO `automation_templates` VALUES (1,'',3,2,'Linux','','',2),(2,'',1,2,'HP ETHERNET','','',1);
 
 --
 -- Table structure for table `automation_tree_rule_items`
@@ -503,6 +510,7 @@ INSERT INTO `automation_templates` VALUES (1,3,2,'Linux','','',2),(2,1,2,'HP ETH
 
 CREATE TABLE `automation_tree_rule_items` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `hash` varchar(32) NOT NULL DEFAULT '',
   `rule_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `sequence` smallint(3) unsigned NOT NULL DEFAULT '0',
   `field` varchar(255) NOT NULL DEFAULT '',
@@ -517,7 +525,7 @@ CREATE TABLE `automation_tree_rule_items` (
 -- Dumping data for table `automation_tree_rule_items`
 --
 
-INSERT INTO `automation_tree_rule_items` VALUES (1,1,1,'ht.name',1,'','^(.*)\\s*Linux\\s*(.*)$','${1}\\n${2}'),(2,1,2,'h.hostname',1,'','^(\\w*)\\s*(\\w*)\\s*(\\w*).*$',''),(3,2,1,'0',2,'on','Traffic',''),(4,2,2,'gtg.title_cache',1,'','^(.*)\\s*-\\s*Traffic -\\s*(.*)$','${1}\\n${2}');
+INSERT INTO `automation_tree_rule_items` VALUES (1,'',1,1,'ht.name',1,'','^(.*)\\s*Linux\\s*(.*)$','${1}\\n${2}'),(2,'',1,2,'h.hostname',1,'','^(\\w*)\\s*(\\w*)\\s*(\\w*).*$',''),(3,'',2,1,'0',2,'on','Traffic',''),(4,'',2,2,'gtg.title_cache',1,'','^(.*)\\s*-\\s*Traffic -\\s*(.*)$','${1}\\n${2}');
 
 --
 -- Table structure for table `automation_tree_rules`
@@ -525,6 +533,7 @@ INSERT INTO `automation_tree_rule_items` VALUES (1,1,1,'ht.name',1,'','^(.*)\\s*
 
 CREATE TABLE `automation_tree_rules` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `hash` varchar(32) NOT NULL DEFAULT '',
   `name` varchar(255) NOT NULL DEFAULT '',
   `tree_id` smallint(3) unsigned NOT NULL DEFAULT '0',
   `tree_item_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -539,7 +548,7 @@ CREATE TABLE `automation_tree_rules` (
 -- Dumping data for table `automation_tree_rules`
 --
 
-INSERT INTO `automation_tree_rules` VALUES (1,'New Device',1,0,3,1,'on'),(2,'New Graph',1,0,2,1,'');
+INSERT INTO `automation_tree_rules` VALUES (1,'','New Device',1,0,3,1,'on'),(2,'','New Graph',1,0,2,1,'');
 
 --
 -- Table structure for table `cdef`

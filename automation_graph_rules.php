@@ -106,6 +106,7 @@ function save() {
 		/* ==================================================== */
 
 		$save['id']            = get_nfilter_request_var('id');
+		$save['hash']          = get_hash_automation(get_request_var('id'), 'automation_graph_rules');
 		$save['name']          = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 		$save['snmp_query_id'] = form_input_validate(get_nfilter_request_var('snmp_query_id'), 'snmp_query_id', '^[0-9]+$', false, 3);
 		$save['graph_type_id'] = (isset_request_var('graph_type_id')) ? form_input_validate(get_nfilter_request_var('graph_type_id'), 'graph_type_id', '^[0-9]+$', false, 3) : 0;
@@ -130,6 +131,7 @@ function save() {
 
 		$save              = array();
 		$save['id']        = form_input_validate(get_request_var('item_id'), 'item_id', '^[0-9]+$', false, 3);
+		$save['hash']      = get_hash_automation(get_request_var('id_item'), 'automation_graph_rule_items');
 		$save['rule_id']   = form_input_validate(get_request_var('id'), 'id', '^[0-9]+$', false, 3);
 		$save['sequence']  = form_input_validate(get_nfilter_request_var('sequence'), 'sequence', '^[0-9]+$', false, 3);
 		$save['operation'] = form_input_validate(get_nfilter_request_var('operation'), 'operation', '^[-0-9]+$', true, 3);
@@ -160,6 +162,7 @@ function save() {
 
 		unset($save);
 		$save['id']        = form_input_validate(get_request_var('item_id'), 'item_id', '^[0-9]+$', false, 3);
+		$save['hash']      = get_hash_automation(get_request_var('item_idid'), 'automation_match_rule_items');
 		$save['rule_id']   = form_input_validate(get_request_var('id'), 'id', '^[0-9]+$', false, 3);
 		$save['rule_type'] = AUTOMATION_RULE_TYPE_GRAPH_MATCH;
 		$save['sequence']  = form_input_validate(get_nfilter_request_var('sequence'), 'sequence', '^[0-9]+$', false, 3);

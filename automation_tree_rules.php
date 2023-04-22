@@ -106,6 +106,7 @@ function automation_tree_rules_form_save() {
 		/* ==================================================== */
 
 		$save['id']                 = get_request_var('id');
+		$save['hash']               = get_hash_automation(get_request_var('id'), 'automation_tree_rules');
 		$save['name']               = form_input_validate(get_nfilter_request_var('name'), 'name', '', true, 3);
 		$save['tree_id']            = form_input_validate(get_nfilter_request_var('tree_id'), 'tree_id', '^[0-9]+$', false, 3);
 		$save['tree_item_id']       = isset_request_var('tree_item_id') ? form_input_validate(get_nfilter_request_var('tree_item_id'), 'tree_item_id', '^[0-9]+$', false, 3) : 0;
@@ -132,6 +133,7 @@ function automation_tree_rules_form_save() {
 
 		$save              = array();
 		$save['id']        = form_input_validate(get_request_var('item_id'), 'item_id', '^[0-9]+$', false, 3);
+		$save['hash']      = get_hash_automation(get_request_var('item_id'), 'automation_match_rule_items');
 		$save['rule_id']   = form_input_validate(get_request_var('id'), 'id', '^[0-9]+$', false, 3);
 		$save['rule_type'] = AUTOMATION_RULE_TYPE_TREE_MATCH;
 		$save['sequence']  = form_input_validate(get_nfilter_request_var('sequence'), 'sequence', '^[0-9]+$', false, 3);
@@ -163,6 +165,7 @@ function automation_tree_rules_form_save() {
 
 		unset($save);
 		$save['id']                = form_input_validate(get_request_var('item_id'), 'item_id', '^[0-9]+$', false, 3);
+		$save['hash']              = get_hash_automation(get_request_var('item_id'), 'automation_tree_rule_items');
 		$save['rule_id']           = form_input_validate(get_request_var('id'), 'id', '^[0-9]+$', false, 3);
 		$save['sequence']          = form_input_validate(get_nfilter_request_var('sequence'), 'sequence', '^[0-9]+$', false, 3);
 		$save['field']             = form_input_validate((isset_request_var('field') ? get_nfilter_request_var('field') : ''), 'field', '', true, 3);

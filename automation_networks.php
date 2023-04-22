@@ -186,6 +186,7 @@ function api_networks_discover($network_id, $discover_debug) {
 function api_networks_save($post) {
 	if (empty($post['network_id'])) {
 		$save['id']            = form_input_validate($post['id'], 'id', '^[0-9]+$', false, 3);
+		$save['hash']          = get_hash_automation($post['id'], 'automation_networks');
 
 		/* general information */
 		$save['name']          = form_input_validate($post['name'], 'name', '', false, 3);
