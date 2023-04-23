@@ -468,14 +468,21 @@ function form_actions() {
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to discover the following Network(s).') . "</p>
 				<div class='itemlist'><ul>$networks_list</ul></div>
-				<p>
-					<input type='checkbox' id='discover_dryrun' name='discover_dryrun' value=''>
-					<label id='discover_dryrun_label for='discover_dryrun'>" . __('Perform a Dry Run.  Do not add Devices') . "</label><br>
-					<input type='checkbox' id='discover_debug' name='discover_debug' value=''>
-					<label id='discover_debug_label' for='discover_debug'>" . __('Enable Debug Logging') . '</label>
-				</p>
+				<span class='nowrap'>
+					<label class='checkboxSwitch' id='discover_dryrun_label' for='discover_dryrun' title='" . __esc('Perform a Dry Run.  Do not add Devices') . "'>
+						<input class='formCheckbox' type='checkbox' id='discover_dryrun' name='discover_dryrun' value=''>
+						<span class='checkboxSlider checkboxRound'></span>
+					</label>
+					<label class='checkboxLabel checkboxLabelWanted' for='discover_dryrun'>" . __esc('Perform a Dry Run.  Do not add Devices') . "</label>
+					<br>
+					<label class='checkboxSwitch' id='discover_debug_label' for='discover_debug' title='" . __esc('Enable Debug Logging') . "'>
+						<input class='formCheckbox' type='checkbox' id='discover_debug' name='discover_debug' value=''>
+						<span class='checkboxSlider checkboxRound'></span>
+					</label>
+					<label class='checkboxLabel checkboxLabelWanted' for='discover_debug'>" . __esc('Enable Debug Logging') . "</label>
+				</span>
 			</td>
-		</tr>';
+		</tr>";
 	} elseif (get_nfilter_request_var('drp_action') == '5') { /* cancel discovery now */
 		print "<tr>
 			<td class='textArea'>
