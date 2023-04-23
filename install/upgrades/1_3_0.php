@@ -132,6 +132,10 @@ function upgrade_to_1_3_0() {
 	if (!db_column_exists('automation_templates', 'populate_location')) {
 		db_install_execute("ALTER TABLE automation_templates ADD COLUMN populate_location char(2) DEFAULT '' AFTER description_pattern");
 	}
+
+	if (!db_column_exists('automation_networks', 'ignore_ips')) {
+		db_install_execute("ALTER TABLE automation_networks ADD COLUMN ignore_ips varchar(1024) NOT NULL DEFAULT '' AFTER subnet_range");
+	}
 }
 
 function ldap_convert_1_3_0() {

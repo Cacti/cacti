@@ -45,6 +45,7 @@ Cacti CHANGELOG
 -feature#3738: Ability to see MySQL permissions associated with current database user
 -feature#3740: Ability to disable a site
 -feature#3749: Clone a network automation
+-feature#3832: Exclude IP addresses in Automation Networks
 -feature#3833: Dry-run Automation Device Rule
 -feature#3845: Allow non-standard Remote Agent port to be used
 -feature#3904: Enhance automation to allow someone to view all recently discovered devices

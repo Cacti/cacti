@@ -254,6 +254,7 @@ function api_networks_save($post) {
 		$save['poller_id']     = form_input_validate($post['poller_id'], 'poller_id', '^[0-9]+$', false, 3);
 		$save['site_id']       = form_input_validate($post['site_id'], 'site_id', '^[0-9]+$', false, 3);
 		$save['subnet_range']  = form_input_validate($post['subnet_range'], 'subnet_range', '', false, 3);
+		$save['ignore_ips']    = form_input_validate($post['ignore_ips'], 'ignore_ips', '', false, 3);
 		$save['dns_servers']   = form_input_validate($post['dns_servers'], 'dns_servers', '', true, 3);
 
 		$save['threads']       = form_input_validate($post['threads'], 'threads', '^[0-9]+$', false, 3);
@@ -631,6 +632,16 @@ function network_get_field_array($network = array()) {
 			'textarea_cols' => '80',
 			'max_length'    => '1024',
 			'placeholder'   => '192.168.1.0/24'
+		),
+		'ignore_ips' => array(
+			'method'        => 'textarea',
+			'friendly_name' => __('IP Addresses to Ignore'),
+			'description'   => __('Enter valid comma separated list command of IP Addresses from this range to ignore.'),
+			'value'         => '|arg1:ignore_ips|',
+			'textarea_rows' => '2',
+			'textarea_cols' => '80',
+			'max_length'    => '1024',
+			'placeholder'   => __('Comma delimited list of IP Addresses to not scan')
 		),
 		'total_ips' => array(
 			'method'        => 'other',

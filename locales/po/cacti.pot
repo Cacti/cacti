@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2023-04-23 11:25-0400\n"
+"POT-Creation-Date: 2023-04-23 14:48-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Cacti Developers <developers@cacti.net>>\n"
 "Language-Team: Cacti Developers <developers@cacti.net>\n"
@@ -155,32 +155,32 @@ msgstr ""
 #: aggregate_graphs.php:960 aggregate_graphs.php:973
 #: aggregate_templates.php:347 automation_devices.php:227
 #: automation_devices.php:236 automation_graph_rules.php:311
-#: automation_networks.php:435 automation_snmp.php:274 automation_snmp.php:392
-#: automation_templates.php:179 automation_tree_rules.php:309 cdef.php:283
-#: cdef.php:295 cdef.php:353 color.php:198 color_templates.php:326
-#: color_templates.php:338 color_templates.php:347 color_templates.php:516
-#: data_input.php:314 data_input.php:367 data_queries.php:396
-#: data_queries.php:560 data_source_profiles.php:312
-#: data_source_profiles.php:324 data_source_profiles.php:435
-#: data_sources.php:548 data_sources.php:560 data_sources.php:569
-#: data_sources.php:578 data_sources.php:587 data_sources.php:593
-#: data_templates.php:476 data_templates.php:488 data_templates.php:504
-#: gprint_presets.php:158 graph_templates.php:1105 graph_templates.php:1117
-#: graph_templates.php:1139 graph_templates.php:1148 graph_templates.php:1157
-#: graph_view.php:1001 graphs.php:1565 graphs.php:1581 graphs.php:1592
-#: graphs.php:1603 graphs.php:1618 graphs.php:1632 graphs.php:1641
-#: graphs.php:1843 graphs.php:1886 graphs.php:1908 graphs.php:1937
-#: graphs.php:1949 graphs.php:2488 host.php:429 host.php:438 host.php:494
-#: host.php:503 host.php:512 host.php:528 host.php:542 host.php:551
-#: host.php:582 host.php:594 host_templates.php:280 host_templates.php:294
-#: host_templates.php:305 host_templates.php:355 host_templates.php:419
-#: lib/clog_webapi.php:210 lib/html.php:2653 lib/html_form.php:1203
-#: lib/html_form.php:1215 lib/html_form.php:1226 links.php:202 links.php:211
-#: links.php:220 managers.php:1038 managers.php:1097 plugins.php:689
-#: pollers.php:601 pollers.php:610 pollers.php:619 pollers.php:628
-#: pollers.php:637 sites.php:398 sites.php:410 tree.php:736 tree.php:745
-#: tree.php:754 tree.php:763 user_admin.php:362 user_admin.php:402
-#: user_admin.php:413 user_admin.php:424 user_admin.php:447
+#: automation_networks.php:554 automation_networks.php:571
+#: automation_snmp.php:274 automation_snmp.php:392 automation_templates.php:179
+#: automation_tree_rules.php:309 cdef.php:283 cdef.php:295 cdef.php:353
+#: color.php:198 color_templates.php:326 color_templates.php:338
+#: color_templates.php:347 color_templates.php:516 data_input.php:314
+#: data_input.php:367 data_queries.php:396 data_queries.php:560
+#: data_source_profiles.php:312 data_source_profiles.php:324
+#: data_source_profiles.php:435 data_sources.php:548 data_sources.php:560
+#: data_sources.php:569 data_sources.php:578 data_sources.php:587
+#: data_sources.php:593 data_templates.php:476 data_templates.php:488
+#: data_templates.php:504 gprint_presets.php:158 graph_templates.php:1105
+#: graph_templates.php:1117 graph_templates.php:1139 graph_templates.php:1148
+#: graph_templates.php:1157 graph_view.php:1001 graphs.php:1565 graphs.php:1581
+#: graphs.php:1592 graphs.php:1603 graphs.php:1618 graphs.php:1632
+#: graphs.php:1641 graphs.php:1843 graphs.php:1886 graphs.php:1908
+#: graphs.php:1937 graphs.php:1949 graphs.php:2488 host.php:429 host.php:438
+#: host.php:494 host.php:503 host.php:512 host.php:528 host.php:542
+#: host.php:551 host.php:582 host.php:594 host_templates.php:280
+#: host_templates.php:294 host_templates.php:305 host_templates.php:355
+#: host_templates.php:419 lib/clog_webapi.php:210 lib/html.php:2653
+#: lib/html_form.php:1203 lib/html_form.php:1215 lib/html_form.php:1226
+#: links.php:202 links.php:211 links.php:220 managers.php:1038
+#: managers.php:1097 plugins.php:689 pollers.php:601 pollers.php:610
+#: pollers.php:619 pollers.php:628 pollers.php:637 sites.php:398 sites.php:410
+#: tree.php:736 tree.php:745 tree.php:754 tree.php:763 user_admin.php:362
+#: user_admin.php:402 user_admin.php:413 user_admin.php:424 user_admin.php:447
 #: user_domains.php:239 user_domains.php:248 user_domains.php:257
 #: user_domains.php:266 user_group_admin.php:468 user_group_admin.php:487
 #: user_group_admin.php:498 user_group_admin.php:509 user_log.php:397
@@ -193,30 +193,31 @@ msgstr ""
 #: aggregate_graphs.php:960 aggregate_graphs.php:973
 #: aggregate_templates.php:347 automation_devices.php:227
 #: automation_devices.php:236 automation_graph_rules.php:311
-#: automation_networks.php:427 automation_snmp.php:247 automation_snmp.php:393
-#: automation_templates.php:179 automation_tree_rules.php:309 cdef.php:283
-#: cdef.php:295 cdef.php:354 color.php:198 color_templates.php:326
-#: color_templates.php:338 color_templates.php:347 color_templates.php:517
-#: data_input.php:314 data_input.php:368 data_queries.php:396
-#: data_queries.php:561 data_source_profiles.php:312
-#: data_source_profiles.php:324 data_source_profiles.php:436
-#: data_sources.php:548 data_sources.php:560 data_sources.php:569
-#: data_sources.php:578 data_sources.php:587 data_sources.php:593
-#: data_templates.php:476 data_templates.php:488 data_templates.php:504
-#: gprint_presets.php:158 graph_templates.php:1105 graph_templates.php:1117
-#: graph_templates.php:1139 graph_templates.php:1148 graph_templates.php:1157
-#: graphs.php:1565 graphs.php:1581 graphs.php:1592 graphs.php:1603
-#: graphs.php:1618 graphs.php:1632 graphs.php:1641 graphs.php:1843
-#: graphs.php:1886 graphs.php:1908 graphs.php:1937 graphs.php:1949 host.php:429
-#: host.php:438 host.php:494 host.php:503 host.php:512 host.php:528
-#: host.php:542 host.php:551 host.php:582 host.php:594 host_templates.php:280
-#: host_templates.php:294 host_templates.php:305 host_templates.php:356
-#: host_templates.php:420 lib/clog_webapi.php:211 lib/html.php:2654
-#: lib/html_reports.php:517 links.php:202 links.php:211 links.php:220
-#: managers.php:1038 managers.php:1097 pollers.php:601 pollers.php:610
-#: pollers.php:619 pollers.php:628 pollers.php:637 sites.php:398 sites.php:410
-#: tree.php:736 tree.php:745 tree.php:754 tree.php:763 user_admin.php:362
-#: user_admin.php:402 user_admin.php:413 user_admin.php:424 user_admin.php:447
+#: automation_networks.php:554 automation_networks.php:563
+#: automation_snmp.php:247 automation_snmp.php:393 automation_templates.php:179
+#: automation_tree_rules.php:309 cdef.php:283 cdef.php:295 cdef.php:354
+#: color.php:198 color_templates.php:326 color_templates.php:338
+#: color_templates.php:347 color_templates.php:517 data_input.php:314
+#: data_input.php:368 data_queries.php:396 data_queries.php:561
+#: data_source_profiles.php:312 data_source_profiles.php:324
+#: data_source_profiles.php:436 data_sources.php:548 data_sources.php:560
+#: data_sources.php:569 data_sources.php:578 data_sources.php:587
+#: data_sources.php:593 data_templates.php:476 data_templates.php:488
+#: data_templates.php:504 gprint_presets.php:158 graph_templates.php:1105
+#: graph_templates.php:1117 graph_templates.php:1139 graph_templates.php:1148
+#: graph_templates.php:1157 graphs.php:1565 graphs.php:1581 graphs.php:1592
+#: graphs.php:1603 graphs.php:1618 graphs.php:1632 graphs.php:1641
+#: graphs.php:1843 graphs.php:1886 graphs.php:1908 graphs.php:1937
+#: graphs.php:1949 host.php:429 host.php:438 host.php:494 host.php:503
+#: host.php:512 host.php:528 host.php:542 host.php:551 host.php:582
+#: host.php:594 host_templates.php:280 host_templates.php:294
+#: host_templates.php:305 host_templates.php:356 host_templates.php:420
+#: lib/clog_webapi.php:211 lib/html.php:2654 lib/html_reports.php:517
+#: links.php:202 links.php:211 links.php:220 managers.php:1038
+#: managers.php:1097 pollers.php:601 pollers.php:610 pollers.php:619
+#: pollers.php:628 pollers.php:637 sites.php:398 sites.php:410 tree.php:736
+#: tree.php:745 tree.php:754 tree.php:763 user_admin.php:362 user_admin.php:402
+#: user_admin.php:413 user_admin.php:424 user_admin.php:447
 #: user_domains.php:239 user_domains.php:248 user_domains.php:257
 #: user_domains.php:266 user_group_admin.php:468 user_group_admin.php:487
 #: user_group_admin.php:498 user_group_admin.php:509 user_log.php:398
@@ -239,7 +240,7 @@ msgstr ""
 
 #: aggregate_graphs.php:834 aggregate_graphs.php:884 aggregate_graphs.php:932
 #: auth_changepassword.php:371 auth_profile.php:496 auth_profile.php:602
-#: automation_networks.php:436 automation_snmp.php:274 graphs.php:1845
+#: automation_networks.php:572 automation_snmp.php:274 graphs.php:1845
 #: graphs.php:1895 graphs.php:1898 graphs.php:1940 host.php:585
 #: include/auth.php:296 lib/api_aggregate.php:1635 lib/api_aggregate.php:1650
 #: lib/html_form.php:1224 managers.php:1100 permission_denied.php:30
@@ -464,9 +465,9 @@ msgstr ""
 
 #: aggregate_graphs.php:1774 aggregate_graphs.php:2059
 #: aggregate_templates.php:621 automation_devices.php:521
-#: automation_graph_rules.php:763 automation_networks.php:1171
-#: automation_networks.php:1220 automation_snmp.php:729
-#: automation_templates.php:409 automation_tree_rules.php:828 cdef.php:786
+#: automation_graph_rules.php:763 automation_networks.php:1320
+#: automation_networks.php:1369 automation_snmp.php:729
+#: automation_templates.php:435 automation_tree_rules.php:828 cdef.php:786
 #: color.php:538 color_templates.php:847 data_debug.php:1156 data_input.php:863
 #: data_queries.php:1303 data_source_profiles.php:953 data_sources.php:1489
 #: data_templates.php:1058 gprint_presets.php:268 graph_templates.php:1446
@@ -505,8 +506,8 @@ msgstr ""
 
 #: aggregate_graphs.php:1784 aggregate_graphs.php:2096
 #: aggregate_templates.php:637 automation_devices.php:622
-#: automation_graph_rules.php:805 automation_networks.php:1181
-#: automation_snmp.php:739 automation_templates.php:419
+#: automation_graph_rules.php:805 automation_networks.php:1330
+#: automation_snmp.php:739 automation_templates.php:445
 #: automation_tree_rules.php:848 cdef.php:796 color.php:548
 #: color_templates.php:863 data_debug.php:1166 data_input.php:873
 #: data_queries.php:1313 data_source_profiles.php:963
@@ -535,8 +536,8 @@ msgstr ""
 
 #: aggregate_graphs.php:1807 aggregate_graphs.php:2113
 #: aggregate_templates.php:660 automation_devices.php:546
-#: automation_graph_rules.php:817 automation_networks.php:1220
-#: automation_snmp.php:755 automation_templates.php:435
+#: automation_graph_rules.php:817 automation_networks.php:1369
+#: automation_snmp.php:755 automation_templates.php:461
 #: automation_tree_rules.php:860 cdef.php:818 color.php:576
 #: color_templates.php:886 data_debug.php:1078 data_input.php:889
 #: data_queries.php:1329 data_source_profiles.php:985 data_sources.php:1438
@@ -556,7 +557,7 @@ msgstr ""
 
 #: aggregate_graphs.php:1807 aggregate_graphs.php:2113
 #: automation_devices.php:546 automation_snmp.php:755
-#: automation_templates.php:435 cdef.php:818 color.php:576 data_debug.php:1078
+#: automation_templates.php:461 cdef.php:818 color.php:576 data_debug.php:1078
 #: data_input.php:889 data_queries.php:1329 data_source_profiles.php:985
 #: data_sources.php:1438 data_templates.php:1111 gprint_presets.php:300
 #: graph_templates.php:1459 graph_view.php:651 graphs.php:2669
@@ -575,8 +576,8 @@ msgstr ""
 
 #: aggregate_graphs.php:1808 aggregate_graphs.php:2114
 #: aggregate_templates.php:661 automation_devices.php:547
-#: automation_graph_rules.php:818 automation_networks.php:1221
-#: automation_snmp.php:756 automation_templates.php:436
+#: automation_graph_rules.php:818 automation_networks.php:1370
+#: automation_snmp.php:756 automation_templates.php:462
 #: automation_tree_rules.php:861 cdef.php:819 color.php:577
 #: color_templates.php:887 data_debug.php:1079 data_input.php:890
 #: data_queries.php:1330 data_source_profiles.php:986 data_sources.php:1439
@@ -595,7 +596,7 @@ msgid "Clear"
 msgstr ""
 
 #: aggregate_graphs.php:1808 aggregate_graphs.php:2114 automation_snmp.php:756
-#: automation_templates.php:436 cdef.php:819 color.php:577 data_debug.php:1079
+#: automation_templates.php:462 cdef.php:819 color.php:577 data_debug.php:1079
 #: data_input.php:890 data_queries.php:1330 data_source_profiles.php:986
 #: data_sources.php:1439 data_templates.php:1112 gprint_presets.php:301
 #: graph_templates.php:1460 graph_view.php:652 graphs.php:2670
@@ -714,7 +715,7 @@ msgstr ""
 
 #: aggregate_graphs.php:2070 aggregate_graphs.php:2194
 #: automation_graph_rules.php:934 automation_graph_rules.php:935
-#: automation_networks.php:501 automation_tree_rules.php:975
+#: automation_networks.php:624 automation_tree_rules.php:975
 #: data_debug.php:1053 data_sources.php:973 data_sources.php:1413
 #: data_sources.php:1737 data_templates.php:1285 graph_templates.php:85
 #: graphs.php:753 graphs.php:874 graphs.php:2244 graphs.php:2253
@@ -790,8 +791,8 @@ msgstr ""
 msgid "Aggregate Templates"
 msgstr ""
 
-#: aggregate_templates.php:627 automation_templates.php:415
-#: automation_templates.php:511 color_templates.php:974
+#: aggregate_templates.php:627 automation_templates.php:441
+#: automation_templates.php:537 color_templates.php:974
 #: include/global_arrays.php:1052 include/global_arrays.php:1119
 #: lib/installer.php:2690 user_admin.php:2834 user_group_admin.php:2533
 msgid "Templates"
@@ -1125,7 +1126,7 @@ msgid "Verify the 2FA App token entered above"
 msgstr ""
 
 #: auth_profile.php:612 auth_profile.php:657 automation_graph_rules.php:797
-#: automation_graph_rules.php:943 automation_networks.php:1077
+#: automation_graph_rules.php:943 automation_networks.php:1226
 #: automation_tree_rules.php:840 automation_tree_rules.php:986
 #: data_debug.php:1117 data_sources.php:1474 data_templates.php:1287
 #: host.php:1648 include/global_arrays.php:962 include/global_arrays.php:1623
@@ -1144,7 +1145,7 @@ msgstr ""
 
 #: auth_profile.php:612 automation_graph_rules.php:796
 #: automation_graph_rules.php:927 automation_graph_rules.php:943
-#: automation_networks.php:576 automation_tree_rules.php:839
+#: automation_networks.php:701 automation_tree_rules.php:839
 #: automation_tree_rules.php:968 automation_tree_rules.php:986
 #: data_debug.php:1116 data_sources.php:1473 host.php:1647
 #: include/global_arrays.php:963 include/global_form.php:1558
@@ -1238,8 +1239,8 @@ msgstr ""
 msgid "Select Template"
 msgstr ""
 
-#: automation_devices.php:221 automation_templates.php:297
-#: automation_templates.php:521
+#: automation_devices.php:221 automation_templates.php:303
+#: automation_templates.php:547
 msgid "Availability Method"
 msgstr ""
 
@@ -1317,7 +1318,7 @@ msgid "SNMP"
 msgstr ""
 
 #: automation_devices.php:299 automation_devices.php:561
-#: automation_graph_rules.php:791 automation_networks.php:1061
+#: automation_graph_rules.php:791 automation_networks.php:1210
 #: automation_tree_rules.php:834 data_debug.php:474 data_debug.php:1110
 #: data_sources.php:1468 data_templates.php:1250 host.php:812 host.php:942
 #: host.php:1642 host.php:1804 lib/api_automation.php:167
@@ -1364,7 +1365,7 @@ msgid "Reset fields to defaults"
 msgstr ""
 
 #: automation_devices.php:552 automation_graph_rules.php:31
-#: automation_networks.php:34 automation_snmp.php:31
+#: automation_networks.php:36 automation_snmp.php:31
 #: automation_templates.php:31 automation_tree_rules.php:31 color.php:583
 #: host.php:1628 lib/html_form.php:1238
 msgid "Export"
@@ -1383,7 +1384,7 @@ msgstr ""
 msgid "Purge Discovered Devices"
 msgstr ""
 
-#: automation_devices.php:738 automation_networks.php:1140
+#: automation_devices.php:738 automation_networks.php:1289
 #: automation_snmp.php:597 automation_snmp.php:598 automation_snmp.php:599
 #: automation_snmp.php:600 automation_snmp.php:601 automation_snmp.php:602
 #: data_debug.php:634 data_source_profiles.php:73 host.php:1885
@@ -1397,15 +1398,16 @@ msgstr ""
 msgid "N/A"
 msgstr ""
 
-#: automation_graph_rules.php:29 automation_snmp.php:30
-#: automation_tree_rules.php:29 cdef.php:30 color_templates.php:29
-#: data_input.php:33 data_source_profiles.php:31 data_templates.php:35
-#: graph_templates.php:38 graphs.php:66 host_templates.php:36
-#: include/global_arrays.php:1699 sites.php:29 vdef.php:30
+#: automation_graph_rules.php:29 automation_networks.php:34
+#: automation_snmp.php:30 automation_tree_rules.php:29 cdef.php:30
+#: color_templates.php:29 data_input.php:33 data_source_profiles.php:31
+#: data_templates.php:35 graph_templates.php:38 graphs.php:66
+#: host_templates.php:36 include/global_arrays.php:1699 sites.php:29
+#: vdef.php:30
 msgid "Duplicate"
 msgstr ""
 
-#: automation_graph_rules.php:30 automation_networks.php:33
+#: automation_graph_rules.php:30 automation_networks.php:35
 #: automation_tree_rules.php:30 data_sources.php:40 host.php:42
 #: include/global_arrays.php:1700 links.php:29 managers.php:29 managers.php:35
 #: plugins.php:31 pollers.php:34 user_admin.php:30 user_domains.php:32
@@ -1511,8 +1513,8 @@ msgstr ""
 msgid "Data Query"
 msgstr ""
 
-#: automation_graph_rules.php:819 automation_networks.php:1222
-#: automation_snmp.php:757 automation_templates.php:437
+#: automation_graph_rules.php:819 automation_networks.php:1371
+#: automation_snmp.php:757 automation_templates.php:463
 #: automation_tree_rules.php:862 color.php:582 lib/html_form.php:1236
 msgid "Import"
 msgstr ""
@@ -1539,111 +1541,125 @@ msgstr ""
 msgid "No Graph Rules Found"
 msgstr ""
 
-#: automation_networks.php:35
+#: automation_networks.php:33
+msgid "Change Network Settings"
+msgstr ""
+
+#: automation_networks.php:37
 msgid "Discover Now"
 msgstr ""
 
-#: automation_networks.php:36
+#: automation_networks.php:38
 msgid "Cancel Discovery"
 msgstr ""
 
-#: automation_networks.php:179
+#: automation_networks.php:42 tree.php:1696
+msgid "Manual"
+msgstr ""
+
+#: automation_networks.php:43 include/global_arrays.php:1930
+#: include/global_settings.php:1432
+msgid "Daily"
+msgstr ""
+
+#: automation_networks.php:44 include/global_arrays.php:1931
+msgid "Weekly"
+msgstr ""
+
+#: automation_networks.php:45 include/global_arrays.php:1932
+msgid "Monthly"
+msgstr ""
+
+#: automation_networks.php:46
+msgid "Monthly on Day"
+msgstr ""
+
+#: automation_networks.php:236
 #, php-format
 msgid "Can Not Restart Discovery for Discovery in Progress for Network '%s'"
 msgstr ""
 
-#: automation_networks.php:183
+#: automation_networks.php:240
 #, php-format
 msgid "Can Not Perform Discovery for Disabled Network '%s'"
 msgstr ""
 
-#: automation_networks.php:251
+#: automation_networks.php:309
 #, php-format
 msgid "ERROR: You must specify the day of the week.  Disabling Network %s!."
 msgstr ""
 
-#: automation_networks.php:257
+#: automation_networks.php:315
 #, php-format
 msgid "ERROR: You must specify both the Months and Days of Month.  Disabling Network %s!"
 msgstr ""
 
-#: automation_networks.php:263
+#: automation_networks.php:321
 #, php-format
 msgid "ERROR: You must specify the Months, Weeks of Months, and Days of Week.  Disabling Network %s!"
 msgstr ""
 
-#: automation_networks.php:281
+#: automation_networks.php:339
 #, php-format
 msgid "ERROR: Network '%s' is Invalid."
 msgstr ""
 
-#: automation_networks.php:385
+#: automation_networks.php:448
 msgid "Click 'Continue' to delete the following Network(s)."
 msgstr ""
 
-#: automation_networks.php:392
+#: automation_networks.php:455
 msgid "Click 'Continue' to enable the following Network(s)."
 msgstr ""
 
-#: automation_networks.php:399
+#: automation_networks.php:462
 msgid "Click 'Continue' to disable the following Network(s)."
 msgstr ""
 
-#: automation_networks.php:406
+#: automation_networks.php:469
 msgid "Click 'Continue' to discover the following Network(s)."
 msgstr ""
 
-#: automation_networks.php:409
-msgid "Run discover in debug mode"
+#: automation_networks.php:473
+msgid "Perform a Dry Run.  Do not add Devices"
 msgstr ""
 
-#: automation_networks.php:415
+#: automation_networks.php:475
+msgid "Enable Debug Logging"
+msgstr ""
+
+#: automation_networks.php:482
 msgid "Click 'Continue' to cancel on going Network Discovery(s)."
 msgstr ""
 
-#: automation_networks.php:450 data_input.php:617 include/global_arrays.php:514
+#: automation_networks.php:489
+msgid "Click 'Continue' to Duplicate the following Network(s)."
+msgstr ""
+
+#: automation_networks.php:496
+msgid "Click 'Continue' to Change Network options for multiple Network(s).  Please check the box next to the fields you want to update, and then fill in the new value."
+msgstr ""
+
+#: automation_networks.php:538 host.php:471
+msgid "Update this Field"
+msgstr ""
+
+#: automation_networks.php:554
+msgid "Change Newtork(s) Options"
+msgstr ""
+
+#: automation_networks.php:592 automation_networks.php:1075 data_input.php:617
+#: include/global_arrays.php:514
 msgid "SNMP Get"
 msgstr ""
 
-#: automation_networks.php:457 automation_networks.php:1049 tree.php:1696
-msgid "Manual"
-msgstr ""
-
-#: automation_networks.php:458 automation_networks.php:1050
-#: include/global_arrays.php:1930 include/global_settings.php:1432
-msgid "Daily"
-msgstr ""
-
-#: automation_networks.php:459 automation_networks.php:1051
-#: include/global_arrays.php:1931
-msgid "Weekly"
-msgstr ""
-
-#: automation_networks.php:460 automation_networks.php:1052
-#: include/global_arrays.php:1932
-msgid "Monthly"
-msgstr ""
-
-#: automation_networks.php:461 automation_networks.php:1053
-msgid "Monthly on Day"
-msgstr ""
-
-#: automation_networks.php:466
-#, php-format
-msgid "Network Discovery Range [edit: %s]"
-msgstr ""
-
-#: automation_networks.php:468
-msgid "Network Discovery Range [new]"
-msgstr ""
-
-#: automation_networks.php:475 include/global_form.php:1911
+#: automation_networks.php:598 include/global_form.php:1911
 #: include/global_form.php:2014 include/global_settings.php:52
 #: lib/html_reports.php:30
 msgid "General Settings"
 msgstr ""
 
-#: automation_networks.php:480 automation_snmp.php:538 data_input.php:666
+#: automation_networks.php:603 automation_snmp.php:538 data_input.php:666
 #: data_input.php:733 data_queries.php:777 data_queries.php:883
 #: data_queries.php:1144 data_source_profiles.php:672 graph_templates.php:1230
 #: include/global_form.php:215 include/global_form.php:281
@@ -1661,85 +1677,89 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: automation_networks.php:481
+#: automation_networks.php:604
 msgid "Give this Network a meaningful name."
 msgstr ""
 
-#: automation_networks.php:484
+#: automation_networks.php:607
 msgid "New Network Discovery Range"
 msgstr ""
 
-#: automation_networks.php:488 automation_networks.php:1058 host.php:1546
+#: automation_networks.php:611 automation_networks.php:1207 host.php:1546
 msgid "Data Collector"
 msgstr ""
 
-#: automation_networks.php:489 include/global_form.php:1220
+#: automation_networks.php:612 include/global_form.php:1220
 msgid "Choose the Cacti Data Collector/Poller to be used to gather data from this Device."
 msgstr ""
 
-#: automation_networks.php:496
+#: automation_networks.php:619
 msgid "Associated Site"
 msgstr ""
 
-#: automation_networks.php:497
+#: automation_networks.php:620
 msgid "Choose the Cacti Site that you wish to associate discovered Devices with."
 msgstr ""
 
-#: automation_networks.php:505
+#: automation_networks.php:628
 msgid "Subnet Range"
 msgstr ""
 
-#: automation_networks.php:506
+#: automation_networks.php:629
 msgid "Enter valid Network Ranges separated by commas.  You may use an IP address, a Network range such as 192.168.1.0/24 or 192.168.1.0/255.255.255.0, or using wildcards such as 192.168.*.*"
 msgstr ""
 
-#: automation_networks.php:515
+#: automation_networks.php:638
+msgid "IP Addresses to Ignore"
+msgstr ""
+
+#: automation_networks.php:639
+msgid "Enter valid comma separated list command of IP Addresses from this range to ignore."
+msgstr ""
+
+#: automation_networks.php:644
+msgid "Comma delimited list of IP Addresses to not scan"
+msgstr ""
+
+#: automation_networks.php:648
 msgid "Total IP Addresses"
 msgstr ""
 
-#: automation_networks.php:516
+#: automation_networks.php:649
 msgid "Total addressable IP Addresses in this Network Range."
 msgstr ""
 
-#: automation_networks.php:521
+#: automation_networks.php:654
 msgid "Alternate DNS Servers"
 msgstr ""
 
-#: automation_networks.php:522
+#: automation_networks.php:655
 msgid "A space delimited list of alternate DNS Servers to use for DNS resolution. If blank, the poller OS will be used to resolve DNS names."
 msgstr ""
 
-#: automation_networks.php:525
+#: automation_networks.php:658
 msgid "Enter IPs or FQDNs of DNS Servers"
 msgstr ""
 
-#: automation_networks.php:529
-msgid "Schedule Type"
-msgstr ""
-
-#: automation_networks.php:530
-msgid "Define the collection frequency."
-msgstr ""
-
-#: automation_networks.php:537
+#: automation_networks.php:662
 msgid "Discovery Threads"
 msgstr ""
 
-#: automation_networks.php:538
+#: automation_networks.php:663
 msgid "Define the number of threads to use for discovering this Network Range."
 msgstr ""
 
-#: automation_networks.php:541
+#: automation_networks.php:666
 #, php-format
 msgid "%d Thread"
 msgstr ""
 
-#: automation_networks.php:542 automation_networks.php:543
-#: automation_networks.php:544 automation_networks.php:545
-#: automation_networks.php:546 automation_networks.php:547
-#: automation_networks.php:548 automation_networks.php:549
-#: automation_networks.php:550 automation_networks.php:551
-#: automation_networks.php:552 include/global_arrays.php:883
+#: automation_networks.php:667 automation_networks.php:668
+#: automation_networks.php:669 automation_networks.php:670
+#: automation_networks.php:671 automation_networks.php:672
+#: automation_networks.php:673 automation_networks.php:674
+#: automation_networks.php:675 automation_networks.php:676
+#: automation_networks.php:677 include/global_arrays.php:883
 #: include/global_arrays.php:884 include/global_arrays.php:885
 #: include/global_arrays.php:886 include/global_arrays.php:887
 #: include/global_arrays.php:888 include/global_arrays.php:889
@@ -1748,22 +1768,22 @@ msgstr ""
 msgid "%d Threads"
 msgstr ""
 
-#: automation_networks.php:558
+#: automation_networks.php:683
 msgid "Run Limit"
 msgstr ""
 
-#: automation_networks.php:559
+#: automation_networks.php:684
 msgid "After the selected Run Limit, the discovery process will be terminated."
 msgstr ""
 
-#: automation_networks.php:562 automation_networks.php:1207 pollers.php:985
+#: automation_networks.php:687 automation_networks.php:1356 pollers.php:985
 #, php-format
 msgid "%d Minute"
 msgstr ""
 
-#: automation_networks.php:563 automation_networks.php:564
-#: automation_networks.php:565 automation_networks.php:566
-#: automation_networks.php:1208 automation_networks.php:1209
+#: automation_networks.php:688 automation_networks.php:689
+#: automation_networks.php:690 automation_networks.php:691
+#: automation_networks.php:1357 automation_networks.php:1358
 #: data_sources.php:1246 include/global_arrays.php:724
 #: include/global_arrays.php:725 include/global_arrays.php:726
 #: include/global_arrays.php:727 include/global_arrays.php:764
@@ -1788,15 +1808,15 @@ msgstr ""
 msgid "%d Minutes"
 msgstr ""
 
-#: automation_networks.php:567 include/global_arrays.php:773
+#: automation_networks.php:692 include/global_arrays.php:773
 #: include/global_arrays.php:783 include/global_arrays.php:1504
 #: include/global_settings.php:1730
 #, php-format
 msgid "%d Hour"
 msgstr ""
 
-#: automation_networks.php:568 automation_networks.php:569
-#: automation_networks.php:570 data_source_profiles.php:891
+#: automation_networks.php:693 automation_networks.php:694
+#: automation_networks.php:695 data_source_profiles.php:891
 #: include/global_arrays.php:729 include/global_arrays.php:730
 #: include/global_arrays.php:731 include/global_arrays.php:732
 #: include/global_arrays.php:733 include/global_arrays.php:774
@@ -1821,400 +1841,417 @@ msgstr ""
 msgid "%d Hours"
 msgstr ""
 
-#: automation_networks.php:577
+#: automation_networks.php:702
 msgid "Enable this Network Range."
 msgstr ""
 
-#: automation_networks.php:582
+#: automation_networks.php:707
 msgid "Enable NetBIOS"
 msgstr ""
 
-#: automation_networks.php:583
+#: automation_networks.php:708
 msgid "Use NetBIOS to attempt to resolve the hostname of up hosts."
 msgstr ""
 
-#: automation_networks.php:589
+#: automation_networks.php:714
 msgid "Automatically Add to Cacti"
 msgstr ""
 
-#: automation_networks.php:590
+#: automation_networks.php:715
 msgid "For any newly discovered Devices that are reachable using SNMP and who match a Device Rule, add them to Cacti."
 msgstr ""
 
-#: automation_networks.php:595
+#: automation_networks.php:720
 msgid "Allow same sysName on different hosts"
 msgstr ""
 
-#: automation_networks.php:596
+#: automation_networks.php:721
 msgid "When discovering devices, allow duplicate sysnames to be added on different hosts"
 msgstr ""
 
-#: automation_networks.php:601
+#: automation_networks.php:726
 msgid "Rerun Data Queries"
 msgstr ""
 
-#: automation_networks.php:602
+#: automation_networks.php:727
 msgid "If a device previously added to Cacti is found, rerun its data queries."
 msgstr ""
 
-#: automation_networks.php:607
-msgid "Notification Settings"
-msgstr ""
-
-#: automation_networks.php:612
-msgid "Notification Enabled"
-msgstr ""
-
-#: automation_networks.php:613
-msgid "If checked, when the Automation Network is scanned, a report will be sent to the Notification Email account.."
-msgstr ""
-
-#: automation_networks.php:619
-msgid "Notification Email"
-msgstr ""
-
-#: automation_networks.php:620
-msgid "The Email account to be used to send the Notification Email to."
-msgstr ""
-
-#: automation_networks.php:627
-msgid "Notification From Name"
-msgstr ""
-
-#: automation_networks.php:628
-msgid "The Email account name to be used as the senders name for the Notification Email.  If left blank, Cacti will use the default Automation Notification Name if specified, otherwise, it will use the Cacti system default Email name"
-msgstr ""
-
-#: automation_networks.php:636
-msgid "Notification From Email Address"
-msgstr ""
-
-#: automation_networks.php:637
-msgid "The Email Address to be used as the senders Email for the Notification Email.  If left blank, Cacti will use the default Automation Notification Email Address if specified, otherwise, it will use the Cacti system default Email Address"
-msgstr ""
-
-#: automation_networks.php:644
+#: automation_networks.php:732
 msgid "Discovery Timing"
 msgstr ""
 
-#: automation_networks.php:649
+#: automation_networks.php:737
+msgid "Schedule Type"
+msgstr ""
+
+#: automation_networks.php:738
+msgid "Define the collection frequency."
+msgstr ""
+
+#: automation_networks.php:745
 msgid "Starting Date/Time"
 msgstr ""
 
-#: automation_networks.php:650
+#: automation_networks.php:746
 msgid "What time will this Network discover item start?"
 msgstr ""
 
-#: automation_networks.php:658
+#: automation_networks.php:754
 msgid "Rerun Every"
 msgstr ""
 
-#: automation_networks.php:659
+#: automation_networks.php:755
 msgid "Rerun discovery for this Network Range every X."
 msgstr ""
 
-#: automation_networks.php:674
+#: automation_networks.php:770
 msgid "Days of Week"
 msgstr ""
 
-#: automation_networks.php:675 automation_networks.php:733
+#: automation_networks.php:771 automation_networks.php:829
 msgid "What Day(s) of the week will this Network Range be discovered."
 msgstr ""
 
-#: automation_networks.php:677 automation_networks.php:735
+#: automation_networks.php:773 automation_networks.php:831
 #: include/global_arrays.php:1988
 msgid "Sunday"
 msgstr ""
 
-#: automation_networks.php:678 automation_networks.php:736
+#: automation_networks.php:774 automation_networks.php:832
 #: include/global_arrays.php:1989
 msgid "Monday"
 msgstr ""
 
-#: automation_networks.php:679 automation_networks.php:737
+#: automation_networks.php:775 automation_networks.php:833
 #: include/global_arrays.php:1990
 msgid "Tuesday"
 msgstr ""
 
-#: automation_networks.php:680 automation_networks.php:738
+#: automation_networks.php:776 automation_networks.php:834
 #: include/global_arrays.php:1991
 msgid "Wednesday"
 msgstr ""
 
-#: automation_networks.php:681 automation_networks.php:739
+#: automation_networks.php:777 automation_networks.php:835
 #: include/global_arrays.php:1992
 msgid "Thursday"
 msgstr ""
 
-#: automation_networks.php:682 automation_networks.php:740
+#: automation_networks.php:778 automation_networks.php:836
 #: include/global_arrays.php:1993
 msgid "Friday"
 msgstr ""
 
-#: automation_networks.php:683 automation_networks.php:741
+#: automation_networks.php:779 automation_networks.php:837
 #: include/global_arrays.php:1994
 msgid "Saturday"
 msgstr ""
 
-#: automation_networks.php:690
+#: automation_networks.php:786
 msgid "Months of Year"
 msgstr ""
 
-#: automation_networks.php:691
+#: automation_networks.php:787
 msgid "What Months(s) of the Year will this Network Range be discovered."
 msgstr ""
 
-#: automation_networks.php:693 include/global_arrays.php:1942
+#: automation_networks.php:789 include/global_arrays.php:1942
 msgid "January"
 msgstr ""
 
-#: automation_networks.php:694 include/global_arrays.php:1943
+#: automation_networks.php:790 include/global_arrays.php:1943
 msgid "February"
 msgstr ""
 
-#: automation_networks.php:695 include/global_arrays.php:1944
+#: automation_networks.php:791 include/global_arrays.php:1944
 msgid "March"
 msgstr ""
 
-#: automation_networks.php:696 include/global_arrays.php:1945
+#: automation_networks.php:792 include/global_arrays.php:1945
 msgid "April"
 msgstr ""
 
-#: automation_networks.php:697 include/global_arrays.php:1946
+#: automation_networks.php:793 include/global_arrays.php:1946
 msgid "May"
 msgstr ""
 
-#: automation_networks.php:698 include/global_arrays.php:1947
+#: automation_networks.php:794 include/global_arrays.php:1947
 msgid "June"
 msgstr ""
 
-#: automation_networks.php:699 include/global_arrays.php:1948
+#: automation_networks.php:795 include/global_arrays.php:1948
 msgid "July"
 msgstr ""
 
-#: automation_networks.php:700 include/global_arrays.php:1949
+#: automation_networks.php:796 include/global_arrays.php:1949
 msgid "August"
 msgstr ""
 
-#: automation_networks.php:701 include/global_arrays.php:1950
+#: automation_networks.php:797 include/global_arrays.php:1950
 msgid "September"
 msgstr ""
 
-#: automation_networks.php:702 include/global_arrays.php:1951
+#: automation_networks.php:798 include/global_arrays.php:1951
 msgid "October"
 msgstr ""
 
-#: automation_networks.php:703 include/global_arrays.php:1952
+#: automation_networks.php:799 include/global_arrays.php:1952
 msgid "November"
 msgstr ""
 
-#: automation_networks.php:704 include/global_arrays.php:1953
+#: automation_networks.php:800 include/global_arrays.php:1953
 msgid "December"
 msgstr ""
 
-#: automation_networks.php:711
+#: automation_networks.php:807
 msgid "Days of Month"
 msgstr ""
 
-#: automation_networks.php:712
+#: automation_networks.php:808
 msgid "What Day(s) of the Month will this Network Range be discovered."
 msgstr ""
 
-#: automation_networks.php:713 automation_networks.php:725
+#: automation_networks.php:809 automation_networks.php:821
 msgid "Last"
 msgstr ""
 
-#: automation_networks.php:719
+#: automation_networks.php:815
 msgid "Week(s) of Month"
 msgstr ""
 
-#: automation_networks.php:720
+#: automation_networks.php:816
 msgid "What Week(s) of the Month will this Network Range be discovered."
 msgstr ""
 
-#: automation_networks.php:722
+#: automation_networks.php:818
 msgid "First"
 msgstr ""
 
-#: automation_networks.php:723
+#: automation_networks.php:819
 msgid "Second"
 msgstr ""
 
-#: automation_networks.php:724
+#: automation_networks.php:820
 msgid "Third"
 msgstr ""
 
-#: automation_networks.php:732
+#: automation_networks.php:828
 msgid "Day(s) of Week"
 msgstr ""
 
-#: automation_networks.php:748
+#: automation_networks.php:844
+msgid "Notification Settings"
+msgstr ""
+
+#: automation_networks.php:849
+msgid "Notification Enabled"
+msgstr ""
+
+#: automation_networks.php:850
+msgid "If checked, when the Automation Network is scanned, a report will be sent to the Notification Email account.."
+msgstr ""
+
+#: automation_networks.php:856
+msgid "Notification Email"
+msgstr ""
+
+#: automation_networks.php:857
+msgid "The Email account to be used to send the Notification Email to."
+msgstr ""
+
+#: automation_networks.php:864
+msgid "Notification From Name"
+msgstr ""
+
+#: automation_networks.php:865
+msgid "The Email account name to be used as the senders name for the Notification Email.  If left blank, Cacti will use the default Automation Notification Name if specified, otherwise, it will use the Cacti system default Email name"
+msgstr ""
+
+#: automation_networks.php:873
+msgid "Notification From Email Address"
+msgstr ""
+
+#: automation_networks.php:874
+msgid "The Email Address to be used as the senders Email for the Notification Email.  If left blank, Cacti will use the default Automation Notification Email Address if specified, otherwise, it will use the Cacti system default Email Address"
+msgstr ""
+
+#: automation_networks.php:881
 msgid "Reachability Settings"
 msgstr ""
 
-#: automation_networks.php:753 include/global_arrays.php:1072
+#: automation_networks.php:886 include/global_arrays.php:1072
 #: include/global_form.php:1261 include/global_form.php:1802
 msgid "SNMP Options"
 msgstr ""
 
-#: automation_networks.php:754
+#: automation_networks.php:887
 msgid "Select the SNMP Options to use for discovery of this Network Range."
 msgstr ""
 
-#: automation_networks.php:759 include/global_form.php:1279
+#: automation_networks.php:892 include/global_form.php:1279
 msgid "Ping Method"
 msgstr ""
 
-#: automation_networks.php:760
+#: automation_networks.php:893
 msgid "The type of ping packet to send."
 msgstr ""
 
-#: automation_networks.php:768 include/global_form.php:1289
+#: automation_networks.php:901 include/global_form.php:1289
 #: include/global_settings.php:876
 msgid "Ping Port"
 msgstr ""
 
-#: automation_networks.php:770 include/global_form.php:1291
+#: automation_networks.php:903 include/global_form.php:1291
 msgid "TCP or UDP port to attempt connection."
 msgstr ""
 
-#: automation_networks.php:776 include/global_form.php:1297
+#: automation_networks.php:909 include/global_form.php:1297
 #: include/global_settings.php:884
 msgid "Ping Timeout Value"
 msgstr ""
 
-#: automation_networks.php:777 include/global_form.php:1298
+#: automation_networks.php:910 include/global_form.php:1298
 msgid "The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout value applies for SNMP pings."
 msgstr ""
 
-#: automation_networks.php:785 include/global_form.php:1306
+#: automation_networks.php:918 include/global_form.php:1306
 #: include/global_settings.php:892
 msgid "Ping Retry Count"
 msgstr ""
 
-#: automation_networks.php:786 include/global_form.php:1307
+#: automation_networks.php:919 include/global_form.php:1307
 msgid "After an initial failure, the number of ping retries Cacti will attempt before failing."
 msgstr ""
 
-#: automation_networks.php:826
+#: automation_networks.php:945
 msgid "Select the days(s) of the week"
 msgstr ""
 
-#: automation_networks.php:836
+#: automation_networks.php:955
 msgid "Select the month(s) of the year"
 msgstr ""
 
-#: automation_networks.php:846
+#: automation_networks.php:965
 msgid "Select the day(s) of the month"
 msgstr ""
 
-#: automation_networks.php:856
+#: automation_networks.php:975
 msgid "Select the week(s) of the month"
 msgstr ""
 
-#: automation_networks.php:866
+#: automation_networks.php:985
 msgid "Select the day(s) of the week"
 msgstr ""
 
-#: automation_networks.php:937 automation_networks.php:944
+#: automation_networks.php:1055 automation_networks.php:1062
 msgid "every X Days"
 msgstr ""
 
-#: automation_networks.php:937 automation_networks.php:944
+#: automation_networks.php:1055 automation_networks.php:1062
 msgid "every X Weeks"
 msgstr ""
 
-#: automation_networks.php:938
+#: automation_networks.php:1056
 msgid "every X Days."
 msgstr ""
 
-#: automation_networks.php:938 automation_networks.php:945
+#: automation_networks.php:1056 automation_networks.php:1063
 msgid "every X."
 msgstr ""
 
-#: automation_networks.php:945
+#: automation_networks.php:1063
 msgid "every X Weeks."
 msgstr ""
 
-#: automation_networks.php:1030
+#: automation_networks.php:1083
+#, php-format
+msgid "Network Discovery Range [edit: %s]"
+msgstr ""
+
+#: automation_networks.php:1085
+msgid "Network Discovery Range [new]"
+msgstr ""
+
+#: automation_networks.php:1187
 msgid "Network Filters"
 msgstr ""
 
-#: automation_networks.php:1040 automation_networks.php:1177
+#: automation_networks.php:1197 automation_networks.php:1326
 #: include/global_arrays.php:1060
 msgid "Networks"
 msgstr ""
 
-#: automation_networks.php:1057
+#: automation_networks.php:1206
 msgid "Network Name"
 msgstr ""
 
-#: automation_networks.php:1059
+#: automation_networks.php:1208
 msgid "Schedule"
 msgstr ""
 
-#: automation_networks.php:1060
+#: automation_networks.php:1209
 msgid "Total IPs"
 msgstr ""
 
-#: automation_networks.php:1061
+#: automation_networks.php:1210
 msgid "The Current Status of this Networks Discovery"
 msgstr ""
 
-#: automation_networks.php:1062
+#: automation_networks.php:1211
 msgid "Pending/Running/Done"
 msgstr ""
 
-#: automation_networks.php:1062
+#: automation_networks.php:1211
 msgid "Progress"
 msgstr ""
 
-#: automation_networks.php:1063
+#: automation_networks.php:1212
 msgid "Up/SNMP Hosts"
 msgstr ""
 
-#: automation_networks.php:1064 host.php:1786 pollers.php:119
+#: automation_networks.php:1213 host.php:1786 pollers.php:119
 msgid "Threads"
 msgstr ""
 
-#: automation_networks.php:1065
+#: automation_networks.php:1214
 msgid "Last Runtime"
 msgstr ""
 
-#: automation_networks.php:1066
+#: automation_networks.php:1215
 msgid "Next Start"
 msgstr ""
 
-#: automation_networks.php:1067
+#: automation_networks.php:1216
 msgid "Last Started"
 msgstr ""
 
-#: automation_networks.php:1099 pollers.php:44 utilities.php:1469
+#: automation_networks.php:1248 pollers.php:44 utilities.php:1469
 msgid "Running"
 msgstr ""
 
-#: automation_networks.php:1125 pollers.php:45 utilities.php:1467
+#: automation_networks.php:1274 pollers.php:45 utilities.php:1467
 msgid "Idle"
 msgstr ""
 
-#: automation_networks.php:1141 include/global_arrays.php:937
+#: automation_networks.php:1290 include/global_arrays.php:937
 #: include/global_arrays.php:1261 include/global_settings.php:2655
 #: lib/html_reports.php:2022
 msgid "Never"
 msgstr ""
 
-#: automation_networks.php:1146
+#: automation_networks.php:1295
 msgid "No Networks Found"
 msgstr ""
 
-#: automation_networks.php:1197 data_debug.php:1131 lib/clog_webapi.php:583
+#: automation_networks.php:1346 data_debug.php:1131 lib/clog_webapi.php:583
 #: lib/html_graph.php:327 lib/html_tree.php:1227 lib/html_tree.php:1248
 #: pollers.php:974 utilities.php:367 utilities.php:1392
 msgid "Refresh"
 msgstr ""
 
-#: automation_networks.php:1203 automation_networks.php:1204
-#: automation_networks.php:1205 automation_networks.php:1206
+#: automation_networks.php:1352 automation_networks.php:1353
+#: automation_networks.php:1354 automation_networks.php:1355
 #: data_sources.php:1240 include/global_arrays.php:722
 #: include/global_arrays.php:758 include/global_arrays.php:759
 #: include/global_arrays.php:760 include/global_arrays.php:761
@@ -2239,11 +2276,11 @@ msgstr ""
 msgid "%d Seconds"
 msgstr ""
 
-#: automation_networks.php:1221
+#: automation_networks.php:1370
 msgid "Clear Filtered"
 msgstr ""
 
-#: automation_networks.php:1222
+#: automation_networks.php:1371
 msgid "Import Networks"
 msgstr ""
 
@@ -2401,7 +2438,7 @@ msgstr ""
 msgid "none"
 msgstr ""
 
-#: automation_snmp.php:607 automation_templates.php:555 cdef.php:651
+#: automation_snmp.php:607 automation_templates.php:581 cdef.php:651
 #: color_templates.php:155 data_queries.php:810 data_queries.php:918
 #: lib/api_automation.php:1395 lib/api_automation.php:1458
 #: lib/api_automation.php:1527 lib/html.php:1346 lib/html_reports.php:1783
@@ -2409,7 +2446,7 @@ msgstr ""
 msgid "Move Down"
 msgstr ""
 
-#: automation_snmp.php:613 automation_templates.php:561 cdef.php:657
+#: automation_snmp.php:613 automation_templates.php:587 cdef.php:657
 #: color_templates.php:161 data_queries.php:815 data_queries.php:923
 #: lib/api_automation.php:1401 lib/api_automation.php:1464
 #: lib/api_automation.php:1533 lib/html.php:1352 lib/html_reports.php:1785
@@ -2473,84 +2510,108 @@ msgstr ""
 msgid "Delete Automation Template(s)"
 msgstr ""
 
-#: automation_templates.php:290 include/global_arrays.php:1415
+#: automation_templates.php:292
+msgid "Matching Settings"
+msgstr ""
+
+#: automation_templates.php:296 include/global_arrays.php:1415
 #: include/global_form.php:1236 include/global_form.php:1661
 #: lib/html_reports.php:1053
 msgid "Device Template"
 msgstr ""
 
-#: automation_templates.php:291
+#: automation_templates.php:297
 msgid "Select a Device Template that Devices will be matched to."
 msgstr ""
 
-#: automation_templates.php:298
+#: automation_templates.php:304
 msgid "Choose the Availability Method to use for Discovered Devices."
 msgstr ""
 
-#: automation_templates.php:305 automation_templates.php:522
+#: automation_templates.php:311 automation_templates.php:548
 msgid "System Description Match"
 msgstr ""
 
-#: automation_templates.php:306
+#: automation_templates.php:312
 msgid "This is a unique string that will be matched to a devices sysDescr string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression."
 msgstr ""
 
-#: automation_templates.php:312 automation_templates.php:523
+#: automation_templates.php:318 automation_templates.php:549
 msgid "System Name Match"
 msgstr ""
 
-#: automation_templates.php:313
+#: automation_templates.php:319
 msgid "This is a unique string that will be matched to a devices sysName string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression."
 msgstr ""
 
-#: automation_templates.php:319
+#: automation_templates.php:325
 msgid "System OID Match"
 msgstr ""
 
-#: automation_templates.php:320
+#: automation_templates.php:326
 msgid "This is a unique string that will be matched to a devices sysOid string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression."
 msgstr ""
 
+#: automation_templates.php:332
+msgid "Device Creation Defaults"
+msgstr ""
+
+#: automation_templates.php:336
+msgid "Device Description Pattern"
+msgstr ""
+
+#: automation_templates.php:337
+msgid "Represents the final desired Device description to be used in Cacti.  The following replacement values can be used: |sysName|, |ipAddress|, |dnsName|, |dnsShortName|, |sysLocation|.  The following functions can also be used: CONCAT(), SUBSTRING(), SUBSTRING_INDEX().  See the MySQL/MariaDB documentation for examples on how to use these functions.  An example would be: CONCAT('|sysName|', SUBSTRING('|sysLocation|',1,3)).  Take care to include quoting around the variables names when used in the supported MySQL/MariaDB function examples."
+msgstr ""
+
 #: automation_templates.php:345
+msgid "Populate Location with sysLocation"
+msgstr ""
+
+#: automation_templates.php:346
+msgid "If checked, when the Automation Network is scanned if a Device is found that will be added to Cacti, its Location will be updated to match the Devices sysLocation."
+msgstr ""
+
+#: automation_templates.php:371
 #, php-format
 msgid "Automation Templates [edit: %s]"
 msgstr ""
 
-#: automation_templates.php:347
+#: automation_templates.php:373
 msgid "Automation Templates for [Deleted Template]"
 msgstr ""
 
-#: automation_templates.php:350
+#: automation_templates.php:376
 msgid "Automation Templates [new]"
 msgstr ""
 
-#: automation_templates.php:400
+#: automation_templates.php:426
 msgid "Device Automation Templates"
 msgstr ""
 
-#: automation_templates.php:437
+#: automation_templates.php:463
 msgid "Import Device Automation Template"
 msgstr ""
 
-#: automation_templates.php:520 data_sources.php:1705 package_import.php:578
+#: automation_templates.php:546 data_sources.php:1705 package_import.php:578
 #: templates_import.php:263 user_admin.php:1314 user_group_admin.php:1201
 msgid "Template Name"
 msgstr ""
 
-#: automation_templates.php:524
+#: automation_templates.php:550
 msgid "System ObjectId Match"
 msgstr ""
 
-#: automation_templates.php:528 data_queries.php:778 data_queries.php:884
+#: automation_templates.php:554 data_queries.php:778 data_queries.php:884
 #: links.php:393 tree.php:2292
 msgid "Order"
 msgstr ""
 
-#: automation_templates.php:539
+#: automation_templates.php:565
 msgid "Unknown Template"
 msgstr ""
 
-#: automation_templates.php:575
+#: automation_templates.php:601
 msgid "No Automation Device Templates Found"
 msgstr ""
 
@@ -5410,10 +5471,6 @@ msgstr ""
 
 #: host.php:442
 msgid "Click 'Continue' to change the Device options below for multiple Device(s).  Please check the box next to the fields you want to update, and then fill in the new value."
-msgstr ""
-
-#: host.php:471
-msgid "Update this Field"
 msgstr ""
 
 #: host.php:494
@@ -12651,11 +12708,11 @@ msgstr ""
 msgid "Rule Item [new rule item for %s: %s]"
 msgstr ""
 
-#: lib/api_automation.php:3149
+#: lib/api_automation.php:3152
 msgid "Added by Cacti Automation"
 msgstr ""
 
-#: lib/api_automation.php:3409
+#: lib/api_automation.php:3412
 msgid "ERROR: IP ranges in the form of range1-range2 are no longer supported."
 msgstr ""
 
@@ -17377,11 +17434,11 @@ msgstr ""
 msgid "WARNING: Main Cacti database offline or in recovery"
 msgstr ""
 
-#: poller_automation.php:1007 poller_automation.php:1061
+#: poller_automation.php:1033 poller_automation.php:1087
 msgid "Cacti Primary Admin"
 msgstr ""
 
-#: poller_automation.php:1159
+#: poller_automation.php:1185
 msgid "Cacti Automation Report requires an html based Email client"
 msgstr ""
 

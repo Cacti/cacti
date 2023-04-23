@@ -3501,8 +3501,23 @@ function automation_primeIPAddressTable($network_id) {
 		WHERE id = ?',
 		array($network_id));
 
+	$ignore_ips = db_fetch_cell_prepared('SELECT ignore_ips
+		FROM automation_networks
+		WHERE id = ?',
+		array($network_id));
+
 	$subNets    = explode(',', trim($subNets));
 	$total      = 0;
+
+	if ($ignore_ips != '') {
+		$ignore_ips = explode(',', $ignore_ips);
+
+		foreach($ignore_ips as $index => $ip) {
+			$ignore_ips[$index] = trim($ip);
+		}
+	} else {
+		$ignore_ips = array();
+	}
 
 	if (cacti_sizeof($subNets)) {
 		foreach ($subNets as $position => $subNet) {
@@ -3513,17 +3528,17 @@ function automation_primeIPAddressTable($network_id) {
 
 			$start = automation_calculate_start($subNet);
 
-			if ($start != '') {
+			if ($start != '' && !in_array($start, $ignore_ips)) {
 				$sql[] = "('$start', '', $network_id, '0', '0', '0')";
 			}
 
 			while ($count < $subNetTotal) {
 				$ip = automation_get_next_host($start, $subNetTotal, $count, $subNet);
 
-				$count++;
-
-				if ($ip != '') {
+				if ($ip != '' && !in_array($ip, $ignore_ips)) {
 					$sql[] = "('$ip', '', $network_id, '0', '0', '0')";
+
+					$count++;
 				}
 
 				if ($count % 1000 == 0) {

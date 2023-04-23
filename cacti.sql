@@ -375,6 +375,7 @@ CREATE TABLE `automation_networks` (
   `site_id` int(10) unsigned DEFAULT '1',
   `name` varchar(128) NOT NULL DEFAULT '' COMMENT 'The name for this network',
   `subnet_range` varchar(1024) NOT NULL DEFAULT '' COMMENT 'Defined subnet ranges for discovery',
+  `ignore_ips` varchar(1024) NOT NULL DEFAULT '' COMMENT 'IP addresses to skip during discovery',
   `dns_servers` varchar(128) NOT NULL DEFAULT '' COMMENT 'DNS Servers to use for name resolution',
   `enabled` char(2) DEFAULT '',
   `notification_enabled` char(2) DEFAULT '',
