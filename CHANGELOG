@@ -29,6 +29,8 @@ Cacti CHANGELOG
 -feature#3260: When a device is added, populate the created date/time
 -feature#3332: Remove files graph_items.php and graph_templates_items.php
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
+-feature#3417: Add worst poller hosts to support page, log and email warning when poller time reached defined threshold
+-feature#3430: Automation should report on devices added 
 -feature#3558: Allow copy_user cli script to set various additional fields
 -feature#3584: Verify passwords against Pwned databases using API
 -feature#3585: CLI script to show database permissions that Cacti has
@@ -39,8 +41,8 @@ Cacti CHANGELOG
 -feature#3725: Create the ability for Spikekill to modify only certain DSes within an RRD
 -feature#3738: Ability to see MySQL permissions associated with current database user
 -feature#3740: Ability to disable a site
--feature#3417: Add worst poller hosts to support page, log and email warning when poller time reached defined threshold
 -feature#3845: Allow non-standard Remote Agent port to be used
+-feature#3904: Enhance automation to allow someone to view all recently discovered devices
 -feature#3943: Add hooks for plugins to show customize graph source and customize template url (List View)
 -feature#4157: Allow admin emails to utilise CLOG-style ID to name/link replacements
 -feature#4202: Editing State=Down device - mark online when editing device when responding by all required probes
