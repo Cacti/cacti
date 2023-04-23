@@ -601,6 +601,12 @@ $settings['general'] = array(
 		'method'        => 'spacer',
 		'collapsible'   => 'true'
 	),
+	'automation_serial_scans' => array(
+		'method'        => 'checkbox',
+		'friendly_name' => __('Force Serial Automation Scans'),
+		'description'   => __('When enabled, Cacti Automation will scan one network at a time not in Parallel.  This setting can be useful when your Cacti Web Servers have limited cores for performing Automation checks.'),
+		'default'       => '',
+	),
 	'automation_graphs_enabled' => array(
 		'method'        => 'checkbox',
 		'friendly_name' => __('Enable Automatic Graph Creation'),

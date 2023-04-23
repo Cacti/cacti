@@ -134,12 +134,13 @@ chdir($dir);
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$debug      = false;
-$force      = false;
-$network_id = 0;
-$poller_id  = $config['poller_id'];
-$thread     = 0;
-$master     = false;
+$debug        = false;
+$force        = false;
+$network_id   = 0;
+$poller_id    = $config['poller_id'];
+$thread       = 0;
+$master       = false;
+$serial_scans = read_config_option('automation_serial_scans') == 'on' ? true:false;
 
 global $debug, $poller_id, $network_id, $thread, $master;
 
@@ -248,10 +249,22 @@ if ($master) {
 				continue;
 			}
 
+			if ($serial_scans && countCurrentTasks() > 0) {
+				automation_debug("Serial automation enabled and an existing automation scan is in process.");
+
+				exit(0);
+			}
+
 			if (api_automation_is_time_to_start($network['id']) || $force) {
 				automation_debug("Launching Network Master for '" . $network['name'] . "'\n");
 				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . '/poller_automation.php --poller=' . $poller_id . ' --network=' . $network['id'] . ($force ? ' --force':'') . ($debug ? ' --debug':''));
 				$launched++;
+
+				if ($serial_scans) {
+					automation_debug("Serial automation enabled.  No other discoveries started this pass.");
+
+					break;
+				}
 			} else {
 				automation_debug("Not time to Run Discovery for '" . $network['name'] . "'\n");
 			}
@@ -952,6 +965,11 @@ function endTask($network_id, $pid) {
 		WHERE pid = ?
 		AND network_id = ?",
 		array($pid, $network_id));
+}
+
+function countCurrentTasks() {
+	return db_fetch_cell('SELECT COUNT(*)
+		FROM automation_processes');
 }
 
 function addUpDevice($network_id, $pid) {

@@ -28,13 +28,14 @@ Cacti CHANGELOG
 -feature#3187: Feature: rra path should be configurable
 -feature#3260: When a device is added, populate the created date/time
 -feature#3332: Remove files graph_items.php and graph_templates_items.php
--feature#3513: Add hooks for plugins to show customize graph source and customize template url
+-feature#3333: Allow sequential network scans via AUTOM8
 -feature#3417: Add worst poller hosts to support page, log and email warning when poller time reached defined threshold
 -feature#3430: Automation should report on devices added 
+-feature#3513: Add hooks for plugins to show customize graph source and customize template url
 -feature#3558: Allow copy_user cli script to set various additional fields
+-feature#3568; Allow exclusion of snmp fields / value(s) when adding graphs via CLI
 -feature#3584: Verify passwords against Pwned databases using API
 -feature#3585: CLI script to show database permissions that Cacti has
--feature#3568; Allow exclusion of snmp fields / value(s) when adding graphs via CLI
 -feature#3677: Relocate the delete button for collectors to the edit page
 -feature#3679: Allow searching logs by name, not just id
 -feature#3724: Create Spikekill method to kill values over an absolute maximum
