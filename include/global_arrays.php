@@ -1062,14 +1062,14 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			'automation_templates.php'   => __('Device Rules'),
 			'automation_graph_rules.php' => __('Graph Rules'),
 			'automation_tree_rules.php'  => __('Tree Rules'),
-			'automation_snmp.php'        => __('SNMP Options'),
 		),
 		__('Presets') => array(
 			'data_source_profiles.php' => __('Data Profiles'),
 			'cdef.php'                 => __('CDEFs'),
 			'vdef.php'                 => __('VDEFs'),
 			'color.php'                => __('Colors'),
-			'gprint_presets.php'       => __('GPRINTs')
+			'gprint_presets.php'       => __('GPRINTs'),
+			'automation_snmp.php'      => __('SNMP Options')
 		),
 		__('Import/Export') => array(
 			'templates_import.php' => __('Import Templates'),
