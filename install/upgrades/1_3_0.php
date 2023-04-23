@@ -161,25 +161,48 @@ function ldap_convert_1_3_0() {
 	$ldap_server = read_config_option('ldap_server');
 
 	if (!empty($ldap_server)) {
-		$domain_id = db_fetch_cell('SELECT domain_id FROM user_domains WHERE domain_name = \'LDAP\'');
+		$domain = db_fetch_row('SELECT * FROM user_domains WHERE domain_name = \'LDAP\'');
 
-		if (!$domain_id) {
+		if (!cacti_sizeof($domain)) {
 			cacti_log('NOTE: Creating new LDAP domain', true, 'INSTALL');
 			db_install_execute('INSERT INTO user_domains (domain_name, type, enabled) VALUES (\'LDAP\', 1, \'on\')');
-			$domain_id = db_fetch_cell('SELECT domain_id FROM user_domains WHERE domain_name = \'LDAP\'');
+
+			$domain = db_fetch_row('SELECT * FROM user_domains WHERE domain_name = \'LDAP\'');
 		}
 
-		if ($domain_id) {
-			$ldap_id = db_fetch_cell_prepared('SELECT domain_id FROM user_domains_ldap WHERE domain_id = ?', array($domain_id));
+		if (cacti_sizeof($domain)) {
+			$ldap_settings = array();
 
-			if ($ldap_id != $domain_id) {
-				$ldap_settings = array( 'domain_id' => $domain_id );
+			$ldap = db_fetch_row_prepared('SELECT *
+				FROM user_domains_ldap
+				WHERE domain_id = ?',
+				array($domain['domain_id']));
 
-				foreach ($ldap_fields as $old => $new) {
-					$ldap_settings[$new] = read_config_option($old);
+			if (!cacti_sizeof($ldap)) {
+				$columns = db_get_table_column_types('user_domains_ldap');
+
+				$ldap_settings['domain_id'] = $domain['domain_id'];
+
+				foreach ($columns as $column => $attribs) {
+					if ($column != 'domain_id' && $column != 'proto_version') {
+						$setting = read_config_option('ldap_' . $column);
+
+						if ($setting != '') {
+							$ldap_settings[$column] = $setting;
+						}
+					} elseif ($column == 'proto_version') {
+						$setting = read_config_option('ldap_version');
+
+						if ($setting != '') {
+							$ldap_settings[$column] = $setting;
+						} else {
+							$ldap_settings[$column] = '3';
+						}
+					}
 				}
 
-				$ldap_sql = 'INSERT INTO user_domains_ldap (' . implode(', ', array_keys($ldap_settings)) . ') VALUES (' . implode(', ', explode(' ', trim(str_repeat('? ', count($ldap_settings))))) . ')';
+				$ldap_sql = 'INSERT INTO user_domains_ldap (' . implode(', ', array_keys($ldap_settings)) . ')
+					VALUES (' . implode(', ', explode(' ', trim(str_repeat('? ', count($ldap_settings))))) . ')';
 
 				db_install_execute($ldap_sql, array_values($ldap_settings));
 			}
