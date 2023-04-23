@@ -778,8 +778,8 @@ label {
 	width: 130px;
         height: 148px;
 	z-index: 2;
-	margin-top: -195px;
-	margin-left: -80px;
+	margin-top: -210px;
+	margin-left: 0px;
 	margin-bottom: -20px;
 }
 
@@ -797,7 +797,7 @@ label {
 	padding: 15px;
 	background-color: white;
 	top: 30%;
-	max-width: 360px;
+	width: 360px;
 	max-height: 300px;
 	background: rgba(255,255,255,1);
 	background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);

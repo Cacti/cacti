@@ -934,7 +934,7 @@ ul#breadcrumbs {
 	padding: 15px;
 	background-color: snow;
 	top: 30%;
-	max-width: 360px;
+	max-width: 460px;
 	max-height: 300px;
 	background: rgba(255,255,255,1);
 	background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
