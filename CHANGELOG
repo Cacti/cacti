@@ -43,6 +43,7 @@ Cacti CHANGELOG
 -feature#3725: Create the ability for Spikekill to modify only certain DSes within an RRD
 -feature#3738: Ability to see MySQL permissions associated with current database user
 -feature#3740: Ability to disable a site
+-feature#3749: Clone a network automation
 -feature#3845: Allow non-standard Remote Agent port to be used
 -feature#3904: Enhance automation to allow someone to view all recently discovered devices
 -feature#3943: Add hooks for plugins to show customize graph source and customize template url (List View)

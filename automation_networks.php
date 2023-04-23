@@ -30,6 +30,7 @@ include_once('./lib/poller.php');
 $network_actions = array(
 	1 => __('Delete'),
 	2 => __('Disable'),
+	7 => __('Duplicate'),
 	3 => __('Enable'),
 	6 => __('Export'),
 	4 => __('Discover Now'),
@@ -118,6 +119,27 @@ function api_networks_cancel($network_id) {
 		AND network_id = ?',
 		array($network_id)
 	);
+}
+
+function api_networks_duplicate($network_id) {
+	$save = db_fetch_row_prepared('SELECT *
+		FROM automation_networks
+		WHERE id = ?',
+		array($network_id));
+
+	if (cacti_sizeof($save)) {
+		$save['id']           = 0;
+		$save['name']         = $save['name'] . ' (Duplicate)';
+		$save['enabled']      = '';
+		$save['up_hosts']     = 0;
+		$save['snmp_hosts']   = 0;
+		$save['next_start']   = '0000-00-00';
+		$save['last_runtime'] = 0;
+		$save['last_started'] = '0000-00-00';
+		$save['last_status']  = '';
+
+		$network_id = sql_save($save, 'automation_networks');
+	}
 }
 
 function api_networks_discover($network_id, $discover_debug) {
@@ -306,10 +328,6 @@ function api_networks_save($post) {
 	}
 }
 
-/* ------------------------
-	The 'actions' function
-   ------------------------ */
-
 function form_actions() {
 	global $config, $network_actions, $fields_networkss_edit;
 
@@ -345,6 +363,10 @@ function form_actions() {
 			} elseif (get_nfilter_request_var('drp_action') == '5') { /* cancel */
 				foreach ($selected_items as $item) {
 					api_networks_cancel($item);
+				}
+			} elseif (get_nfilter_request_var('drp_action') == '7') { /* dupliciate */
+				foreach ($selected_items as $item) {
+					api_networks_duplicate($item);
 				}
 			}
 		}
@@ -413,6 +435,13 @@ function form_actions() {
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to cancel on going Network Discovery(s).') . "</p>
+				<div class='itemlist'><ul>$networks_list</ul></div>
+			</td>
+		</tr>";
+	} elseif (get_nfilter_request_var('drp_action') == '7') { /* duplicate network */
+		print "<tr>
+			<td class='textArea'>
+				<p>" . __('Click \'Continue\' to Duplicate the following Network(s).') . "</p>
 				<div class='itemlist'><ul>$networks_list</ul></div>
 			</td>
 		</tr>";
