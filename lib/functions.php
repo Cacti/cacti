@@ -1629,6 +1629,12 @@ function tail_file(string $file_name, int $number_of_lines, ?int $message_type =
 	$line_no    = 0;
 
 	while (($line = fgets($fp)) !== false) {
+		if (!isset($display_line[$line_no + 1])) {
+			$line_no++;
+
+			continue;
+		}
+
 		$display = $display_line[$line_no++];
 
 		if ($display === false) {
