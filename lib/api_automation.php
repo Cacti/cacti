@@ -3130,7 +3130,10 @@ function automation_add_device($device, $web = false) {
 
 	$template_id          = $device['host_template'];
 	$snmp_sysName         = $device['snmp_sysName'];
-	$description          = ($snmp_sysName != '' ? $snmp_sysName : ($device['hostname'] == '' ? $device['ip'] : $device['hostname']));
+
+	$description          = isset($device['description']) ?
+		$device['description'] : ($snmp_sysName != '' ? $snmp_sysName : ($device['hostname'] == '' ? $device['ip'] : $device['hostname']));
+
 	$poller_id            = isset($device['poller_id']) ? $device['poller_id'] : read_config_option('default_poller');
 	$site_id              = isset($device['site_id']) ? $device['site_id'] : read_config_option('default_site');
 	$ip                   = isset($device['ip']) ? $device['ip']:$device['ip_address'];
@@ -3212,7 +3215,7 @@ function automation_find_os($sysDescr, $sysObject, $sysName) {
 	$sql_where .= trim($sysObject) != '' ? ($sql_where != '' ? ' AND':'WHERE') . ' (sysOID REGEXP "(' . preg_quote($qsysObject) . ')" OR ' . db_qstr($sysObject) . ' LIKE CONCAT("%", sysOid, "%"))':'';
 	$sql_where .= trim($sysName)   != '' ? ($sql_where != '' ? ' AND':'WHERE') . ' (sysName REGEXP "(' . preg_quote($qsysName) . ')" OR ' . db_qstr($sysName) . ' LIKE CONCAT("%", sysName, "%"))':'';
 
-	$result = db_fetch_row("SELECT at.*,ht.name
+	$result = db_fetch_row("SELECT at.*, ht.name
 		FROM automation_templates AS at
 		INNER JOIN host_template AS ht
 		ON ht.id=at.host_template

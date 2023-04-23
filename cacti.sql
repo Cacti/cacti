@@ -495,6 +495,8 @@ CREATE TABLE `automation_templates` (
   `sysDescr` varchar(255) DEFAULT '',
   `sysName` varchar(255) DEFAULT '',
   `sysOid` varchar(60) DEFAULT '',
+  `description_pattern` varchar(128) DEFAULT '',
+  `populate_location` char(2) DEFAULT '',
   `sequence` int(10) unsigned DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Templates of SNMP Sys variables used for automation';

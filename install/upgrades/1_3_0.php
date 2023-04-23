@@ -94,6 +94,7 @@ function upgrade_to_1_3_0() {
 		'automation_graph_rules',
 		'automation_match_rule_items',
 		'automation_networks',
+		'automation_templates',
 		'automation_snmp',
 		'automation_snmp_items'
 	);
@@ -122,6 +123,14 @@ function upgrade_to_1_3_0() {
 
 	if (!db_column_exists('automation_devices', 'host_id')) {
 		db_install_execute("ALTER TABLE automation_devices ADD COLUMN host_id INT UNSIGNED NOT NULL DEFAULT '0' AFTER network_id");
+	}
+
+	if (!db_column_exists('automation_templates', 'description_pattern')) {
+		db_install_execute("ALTER TABLE automation_templates ADD COLUMN description_pattern varchar(128) DEFAULT '' AFTER sysOid");
+	}
+
+	if (!db_column_exists('automation_templates', 'populate_location')) {
+		db_install_execute("ALTER TABLE automation_templates ADD COLUMN populate_location char(2) DEFAULT '' AFTER description_pattern");
 	}
 }
 

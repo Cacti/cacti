@@ -175,7 +175,7 @@ function api_networks_change_options($network_ids, $post) {
 	}
 }
 
-function api_networks_discover($network_id, $discover_debug) {
+function api_networks_discover($network_id, $discover_debug, $discover_dryrun) {
 	global $config;
 
 	$enabled   = db_fetch_cell_prepared(
@@ -209,10 +209,12 @@ function api_networks_discover($network_id, $discover_debug) {
 	if ($enabled == 'on') {
 		if (!$running) {
 			if ($config['poller_id'] == $poller_id) {
-				$args_debug = ($discover_debug) ? ' --debug' : '';
+				$args_debug  = ($discover_debug) ? ' --debug' : '';
+				$args_debug .= ($discover_dryrun) ? ' --dryrun' : '';
 				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --network=$network_id --force" . $args_debug);
 			} else {
-				$args_debug = ($discover_debug) ? '&debug=true' : '';
+				$args_debug  = ($discover_debug) ? '&debug=true' : '';
+				$args_debug .= ($discover_dryrun) ? '&dryrun=true' : '';
 				$hostname   = db_fetch_cell_prepared(
 					'SELECT hostname
 					FROM poller
@@ -386,10 +388,11 @@ function form_actions() {
 					api_networks_disable($item);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '4') { /* run now */
-				$discover_debug = isset_request_var('discover_debug');
+				$discover_debug  = isset_request_var('discover_debug');
+				$discover_dryrun = isset_request_var('discover_dryrun');
 
 				foreach ($selected_items as $item) {
-					api_networks_discover($item, $discover_debug);
+					api_networks_discover($item, $discover_debug, $discover_dryrun);
 				}
 
 				sleep(2);
@@ -464,8 +467,12 @@ function form_actions() {
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to discover the following Network(s).') . "</p>
 				<div class='itemlist'><ul>$networks_list</ul></div>
-				<p><input type='checkbox' id='discover_debug' name='discover_debug' value='1'>
-				<label id='discover_debug_label' for='discover_debug'>" . __('Run discover in debug mode') . '</label></p>
+				<p>
+					<input type='checkbox' id='discover_dryrun' name='discover_dryrun' value=''>
+					<label id='discover_dryrun_label for='discover_dryrun'>" . __('Perform a Dry Run.  Do not add Devices') . "</label><br>
+					<input type='checkbox' id='discover_debug' name='discover_debug' value=''>
+					<label id='discover_debug_label' for='discover_debug'>" . __('Enable Debug Logging') . '</label>
+				</p>
 			</td>
 		</tr>';
 	} elseif (get_nfilter_request_var('drp_action') == '5') { /* cancel discovery now */

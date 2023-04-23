@@ -212,6 +212,8 @@ function form_save() {
 		$save['sysDescr']             = get_nfilter_request_var('sysDescr');
 		$save['sysName']              = get_nfilter_request_var('sysName');
 		$save['sysOid']               = get_nfilter_request_var('sysOid');
+		$save['description_pattern']  = get_nfilter_request_var('description_pattern');
+		$save['populate_location']    = isset_request_var('populate_location') ? 'on':'';
 
 		if (function_exists('filter_var')) {
 			$save['sysDescr'] = filter_var($save['sysDescr'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -285,13 +287,17 @@ function template_edit() {
 	}
 
 	$fields_automation_template_edit = array(
+		'spacer0' => array(
+			'method'        => 'spacer',
+			'friendly_name' => __('Matching Settings'),
+		),
 		'host_template' => array(
 			'method'        => 'drop_array',
 			'friendly_name' => __('Device Template'),
 			'description'   => __('Select a Device Template that Devices will be matched to.'),
 			'value'         => '|arg1:host_template|',
 			'array'         => $template_names,
-			),
+		),
 		'availability_method' => array(
 			'method'        => 'drop_array',
 			'friendly_name' => __('Availability Method'),
@@ -299,37 +305,57 @@ function template_edit() {
 			'value'         => '|arg1:availability_method|',
 			'default'       => read_config_option('availability_method'),
 			'array'         => $availability_options,
-			),
+		),
 		'sysDescr' => array(
 			'method'        => 'textbox',
 			'friendly_name' => __('System Description Match'),
 			'description'   => __('This is a unique string that will be matched to a devices sysDescr string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
 			'value'         => '|arg1:sysDescr|',
 			'max_length'    => '255',
-			),
+		),
 		'sysName' => array(
 			'method'        => 'textbox',
 			'friendly_name' => __('System Name Match'),
 			'description'   => __('This is a unique string that will be matched to a devices sysName string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
 			'value'         => '|arg1:sysName|',
 			'max_length'    => '128',
-			),
+		),
 		'sysOid' => array(
 			'method'        => 'textbox',
 			'friendly_name' => __('System OID Match'),
 			'description'   => __('This is a unique string that will be matched to a devices sysOid string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
 			'value'         => '|arg1:sysOid|',
 			'max_length'    => '128',
-			),
+		),
+		'spacer1' => array(
+			'method'        => 'spacer',
+			'friendly_name' => __('Device Creation Defaults'),
+		),
+		'description_pattern' => array(
+			'method'        => 'textbox',
+			'friendly_name' => __('Device Description Pattern'),
+			'description'   => __('Represents the final desired Device description to be used in Cacti.  The following replacement values can be used: |sysName|, |ipAddress|, |dnsName|, |dnsShortName|, |sysLocation|.  The following functions can also be used: CONCAT(), SUBSTRING(), SUBSTRING_INDEX().  See the MySQL/MariaDB documentation for examples on how to use these functions.  An example would be: CONCAT(\'|sysName|\', SUBSTRING(\'|sysLocation|\',1,3)).  Take care to include quoting around the variables names when used in the supported MySQL/MariaDB function examples.'),
+			'value'         => '|arg1:description_pattern|',
+			'default'       => '|sysName|',
+			'max_length'    => '128',
+			'size'          => '80'
+		),
+		'populate_location' => array(
+			'method'        => 'checkbox',
+			'friendly_name' => __('Populate Location with sysLocation'),
+			'description'   => __('If checked, when the Automation Network is scanned if a Device is found that will be added to Cacti, its Location will be updated to match the Devices sysLocation.'),
+			'value'         => '|arg1:populate_location|',
+			'default'       => ''
+		),
 		'id' => array(
 			'method' => 'hidden_zero',
 			'value'  => '|arg1:id|'
-			),
+		),
 		'save_component_template' => array(
 			'method' => 'hidden',
 			'value'  => '1'
-			)
-		);
+		)
+	);
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');

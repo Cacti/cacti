@@ -136,6 +136,7 @@ array_shift($parms);
 
 $debug        = false;
 $force        = false;
+$dryrun       = false;
 $network_id   = 0;
 $poller_id    = $config['poller_id'];
 $thread       = 0;
@@ -159,6 +160,9 @@ if (cacti_sizeof($parms)) {
 				$debug = true;
 
 				break;
+			case '--dryrun':
+				$dryrun = true;
+
 			case '-M':
 			case '--master':
 				$master = true;
@@ -411,11 +415,6 @@ function discoverDevices($network_id, $thread) {
 		FROM automation_networks
 		WHERE id = ?',
 		array($network_id));
-
-	$temp = db_fetch_assoc('SELECT automation_templates.*, host_template.name
-		FROM automation_templates
-		LEFT JOIN host_template
-		ON (automation_templates.host_template=host_template.id)');
 
 	$dns = trim($network['dns_servers']);
 
@@ -725,17 +724,42 @@ function discoverDevices($network_id, $thread) {
 								}
 
 								$stats['snmp']++;
+
 								addSNMPDevice($network_id, getmypid());
 
 								automation_debug(' Responded');
 
 								$fos = automation_find_os($device['snmp_sysDescr'], $device['snmp_sysObjectID'], $device['snmp_sysName']);
 
-								if ($fos != false && $network['add_to_cacti'] == 'on') {
+								if ($fos != false && $network['add_to_cacti'] == 'on' && $dryrun != false) {
 									automation_debug(', Template: ' . $fos['name'] . "\n");
 									$device['os']                   = $fos['name'];
 									$device['host_template']        = $fos['host_template'];
 									$device['availability_method']  = $fos['availability_method'];
+
+									if ($fos['populate_location'] == 'on') {
+										$device['location'] = $device['snmp_sysLocation'];
+									}
+
+									if ($fos['description_pattern'] != '') {
+										$sysName     = $device['snmp_sysName'];
+										$ip_address  = $device['ip_address'];
+										$dnsname     = $device['dnsname'];
+										$shortname   = $device['dnsname_short'];
+										$sysLocation = $device['snmp_sysLocation'];
+
+										$pattern = str_replace(
+											array('|sysName|', '|ipAddress|', '|dnsName|', '|dnsShortName|', '|sysLocation|'),
+											array($sysName, $ip_address, $dnsname, $dns_shortname, $sysLocation),
+											$fos['description_pattern']
+										);
+
+										$description = db_fetch_cell("SELECT $pattern");
+
+										if ($description != '') {
+											$device['description'] = $description;
+										}
+									}
 
 									$host_id = automation_add_device($device);
 
@@ -788,6 +812,8 @@ function discoverDevices($network_id, $thread) {
 									$stats['added']++;
 								} elseif ($fos == false) {
 									automation_debug(", Template: Not found, Not adding to Cacti\n");
+								} elseif ($dryrun) {
+									automation_debug(", Not adding to Cacti - Dryrun Mode\n");
 								} else {
 									automation_debug(', Template: ' . $fos['name']);
 									$device['os'] = $fos['name'];
