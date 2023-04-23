@@ -30,6 +30,7 @@ Cacti CHANGELOG
 -feature#3332: Remove files graph_items.php and graph_templates_items.php
 -feature#3333: Allow sequential network scans via AUTOM8
 -feature#3417: Add worst poller hosts to support page, log and email warning when poller time reached defined threshold
+-feature#3419: Automation should show network in discovered devices
 -feature#3430: Automation should report on devices added 
 -feature#3513: Add hooks for plugins to show customize graph source and customize template url
 -feature#3558: Allow copy_user cli script to set various additional fields

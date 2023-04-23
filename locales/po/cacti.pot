@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2023-04-23 11:10-0400\n"
+"POT-Creation-Date: 2023-04-23 11:25-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Cacti Developers <developers@cacti.net>>\n"
 "Language-Team: Cacti Developers <developers@cacti.net>\n"
@@ -463,7 +463,7 @@ msgid "Matching Graphs"
 msgstr ""
 
 #: aggregate_graphs.php:1774 aggregate_graphs.php:2059
-#: aggregate_templates.php:621 automation_devices.php:504
+#: aggregate_templates.php:621 automation_devices.php:521
 #: automation_graph_rules.php:763 automation_networks.php:1171
 #: automation_networks.php:1220 automation_snmp.php:729
 #: automation_templates.php:409 automation_tree_rules.php:828 cdef.php:786
@@ -504,7 +504,7 @@ msgid "Graphs"
 msgstr ""
 
 #: aggregate_graphs.php:1784 aggregate_graphs.php:2096
-#: aggregate_templates.php:637 automation_devices.php:605
+#: aggregate_templates.php:637 automation_devices.php:622
 #: automation_graph_rules.php:805 automation_networks.php:1181
 #: automation_snmp.php:739 automation_templates.php:419
 #: automation_tree_rules.php:848 cdef.php:796 color.php:548
@@ -534,7 +534,7 @@ msgid "Part of Aggregate"
 msgstr ""
 
 #: aggregate_graphs.php:1807 aggregate_graphs.php:2113
-#: aggregate_templates.php:660 automation_devices.php:529
+#: aggregate_templates.php:660 automation_devices.php:546
 #: automation_graph_rules.php:817 automation_networks.php:1220
 #: automation_snmp.php:755 automation_templates.php:435
 #: automation_tree_rules.php:860 cdef.php:818 color.php:576
@@ -555,7 +555,7 @@ msgid "Go"
 msgstr ""
 
 #: aggregate_graphs.php:1807 aggregate_graphs.php:2113
-#: automation_devices.php:529 automation_snmp.php:755
+#: automation_devices.php:546 automation_snmp.php:755
 #: automation_templates.php:435 cdef.php:818 color.php:576 data_debug.php:1078
 #: data_input.php:889 data_queries.php:1329 data_source_profiles.php:985
 #: data_sources.php:1438 data_templates.php:1111 gprint_presets.php:300
@@ -574,7 +574,7 @@ msgid "Set/Refresh Filters"
 msgstr ""
 
 #: aggregate_graphs.php:1808 aggregate_graphs.php:2114
-#: aggregate_templates.php:661 automation_devices.php:530
+#: aggregate_templates.php:661 automation_devices.php:547
 #: automation_graph_rules.php:818 automation_networks.php:1221
 #: automation_snmp.php:756 automation_templates.php:436
 #: automation_tree_rules.php:861 cdef.php:819 color.php:577
@@ -691,9 +691,9 @@ msgstr ""
 msgid "Template"
 msgstr ""
 
-#: aggregate_graphs.php:2069 automation_devices.php:514
-#: automation_devices.php:548 automation_devices.php:567
-#: automation_devices.php:586 automation_graph_rules.php:773
+#: aggregate_graphs.php:2069 automation_devices.php:531
+#: automation_devices.php:565 automation_devices.php:584
+#: automation_devices.php:603 automation_graph_rules.php:773
 #: automation_graph_rules.php:795 automation_tree_rules.php:838
 #: data_debug.php:1052 data_sources.php:1412 graph_templates.php:812
 #: graph_templates.php:1491 graph_templates.php:1512 graphs.php:752
@@ -1192,17 +1192,17 @@ msgstr ""
 msgid "Delete Device"
 msgstr ""
 
-#: automation_devices.php:54 automation_devices.php:313
-#: automation_devices.php:439 automation_devices.php:449
-#: automation_devices.php:699 automation_devices.php:700 host.php:1651
+#: automation_devices.php:54 automation_devices.php:314
+#: automation_devices.php:456 automation_devices.php:466
+#: automation_devices.php:716 automation_devices.php:717 host.php:1651
 #: lib/api_automation.php:176 lib/api_automation.php:1152
 #: lib/html_utility.php:1003 pollers.php:46
 msgid "Down"
 msgstr ""
 
-#: automation_devices.php:55 automation_devices.php:313
-#: automation_devices.php:441 automation_devices.php:451
-#: automation_devices.php:699 automation_devices.php:700 host.php:1650
+#: automation_devices.php:55 automation_devices.php:314
+#: automation_devices.php:458 automation_devices.php:468
+#: automation_devices.php:716 automation_devices.php:717 host.php:1650
 #: lib/api_automation.php:175 lib/api_automation.php:1151
 #: lib/html_utility.php:1011
 msgid "Up"
@@ -1255,7 +1255,7 @@ msgstr ""
 msgid "Delete Device(s)"
 msgstr ""
 
-#: automation_devices.php:279 automation_devices.php:601 host.php:1513
+#: automation_devices.php:279 automation_devices.php:618 host.php:1513
 #: host.php:1689 host.php:1864 include/global_arrays.php:1040
 #: include/global_arrays.php:1099 include/global_arrays.php:2377
 #: lib/api_automation.php:182 lib/api_automation.php:292
@@ -1278,20 +1278,24 @@ msgstr ""
 msgid "IP"
 msgstr ""
 
-#: automation_devices.php:291
+#: automation_devices.php:291 automation_devices.php:527
+msgid "Network"
+msgstr ""
+
+#: automation_devices.php:292
 msgid "SNMP Name"
 msgstr ""
 
-#: automation_devices.php:292 host.php:1594 include/global_form.php:1209
+#: automation_devices.php:293 host.php:1594 include/global_form.php:1209
 #: include/global_settings.php:2366
 msgid "Location"
 msgstr ""
 
-#: automation_devices.php:293
+#: automation_devices.php:294
 msgid "Contact"
 msgstr ""
 
-#: automation_devices.php:294 include/global_form.php:1158
+#: automation_devices.php:295 include/global_form.php:1158
 #: include/global_form.php:1194 include/global_form.php:1394
 #: include/global_form.php:1770 lib/api_automation.php:299
 #: lib/api_automation.php:1296 lib/installer.php:1979 lib/installer.php:2691
@@ -1300,19 +1304,19 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: automation_devices.php:295 automation_devices.php:563
+#: automation_devices.php:296 automation_devices.php:580
 msgid "OS"
 msgstr ""
 
-#: automation_devices.php:296 host.php:1822 include/global_arrays.php:529
+#: automation_devices.php:297 host.php:1822 include/global_arrays.php:529
 msgid "Uptime"
 msgstr ""
 
-#: automation_devices.php:297 automation_devices.php:582 utilities.php:1005
+#: automation_devices.php:298 automation_devices.php:599 utilities.php:1005
 msgid "SNMP"
 msgstr ""
 
-#: automation_devices.php:298 automation_devices.php:544
+#: automation_devices.php:299 automation_devices.php:561
 #: automation_graph_rules.php:791 automation_networks.php:1061
 #: automation_tree_rules.php:834 data_debug.php:474 data_debug.php:1110
 #: data_sources.php:1468 data_templates.php:1250 host.php:812 host.php:942
@@ -1327,59 +1331,59 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: automation_devices.php:299
+#: automation_devices.php:300
 msgid "Last Check"
 msgstr ""
 
-#: automation_devices.php:322 automation_devices.php:691
+#: automation_devices.php:324 automation_devices.php:708
 msgid "Not Detected"
 msgstr ""
 
-#: automation_devices.php:341 host.php:1919
+#: automation_devices.php:344 host.php:1919
 msgid "No Devices Found"
 msgstr ""
 
-#: automation_devices.php:363
+#: automation_devices.php:366 automation_devices.php:380
 msgid "Removed from Cacti"
 msgstr ""
 
-#: automation_devices.php:368
+#: automation_devices.php:371
 msgid "Not In Cacti"
 msgstr ""
 
-#: automation_devices.php:495
+#: automation_devices.php:385
+msgid "Invalid Network"
+msgstr ""
+
+#: automation_devices.php:512
 msgid "Discovery Filters"
 msgstr ""
 
-#: automation_devices.php:510
-msgid "Network"
-msgstr ""
-
-#: automation_devices.php:530
+#: automation_devices.php:547
 msgid "Reset fields to defaults"
 msgstr ""
 
-#: automation_devices.php:535 automation_graph_rules.php:31
+#: automation_devices.php:552 automation_graph_rules.php:31
 #: automation_networks.php:34 automation_snmp.php:31
 #: automation_templates.php:31 automation_tree_rules.php:31 color.php:583
 #: host.php:1628 lib/html_form.php:1238
 msgid "Export"
 msgstr ""
 
-#: automation_devices.php:535
+#: automation_devices.php:552
 msgid "Export to a file"
 msgstr ""
 
-#: automation_devices.php:536 data_debug.php:1080 lib/clog_webapi.php:201
+#: automation_devices.php:553 data_debug.php:1080 lib/clog_webapi.php:201
 #: lib/clog_webapi.php:529 managers.php:772
 msgid "Purge"
 msgstr ""
 
-#: automation_devices.php:536
+#: automation_devices.php:553
 msgid "Purge Discovered Devices"
 msgstr ""
 
-#: automation_devices.php:721 automation_networks.php:1140
+#: automation_devices.php:738 automation_networks.php:1140
 #: automation_snmp.php:597 automation_snmp.php:598 automation_snmp.php:599
 #: automation_snmp.php:600 automation_snmp.php:601 automation_snmp.php:602
 #: data_debug.php:634 data_source_profiles.php:73 host.php:1885

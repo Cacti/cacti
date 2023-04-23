@@ -288,6 +288,7 @@ function display_discovery_page() {
 		'host_id'     => array('display' => __('Imported Device'), 'align' => 'left', 'sort' => 'ASC'),
 		'hostname'    => array('display' => __('Device Name'),  'align' => 'left', 'sort' => 'ASC'),
 		'ip'          => array('display' => __('IP'),           'align' => 'left', 'sort' => 'ASC'),
+		'network_id'  => array('display' => __('Network'),      'align' => 'left', 'sort' => 'ASC'),
 		'sysName'     => array('display' => __('SNMP Name'),    'align' => 'left', 'sort' => 'ASC'),
 		'sysLocation' => array('display' => __('Location'),     'align' => 'left', 'sort' => 'ASC'),
 		'sysContact'  => array('display' => __('Contact'),      'align' => 'left', 'sort' => 'ASC'),
@@ -315,6 +316,7 @@ function display_discovery_page() {
 	if (cacti_sizeof($results)) {
 		foreach ($results as $host) {
 			$description = get_device_description($host['host_id']);
+			$network     = get_network_description($host['network_id']);
 
 			form_alternate_row('line' . base64_encode($host['ip']), true);
 
@@ -325,6 +327,7 @@ function display_discovery_page() {
 			form_selectable_cell(filter_value($description, ''), $host['id']);
 			form_selectable_cell(filter_value($host['hostname'], get_request_var('filter')), $host['id']);
 			form_selectable_cell(filter_value($host['ip'], get_request_var('filter')), $host['id']);
+			form_selectable_cell(filter_value($network, ''), $host['id']);
 			form_selectable_cell(filter_value(snmp_data($host['sysName']), get_request_var('filter')), $host['id'], '', 'text-align:left');
 			form_selectable_cell(filter_value(snmp_data($host['sysLocation']), get_request_var('filter')), $host['id'], '', 'text-align:left');
 			form_selectable_cell(filter_value(snmp_data($host['sysContact']), get_request_var('filter')), $host['id'], '', 'text-align:left');
@@ -366,6 +369,20 @@ function get_device_description($id) {
 		}
 	} else {
 		return __('Not In Cacti');
+	}
+}
+
+function get_network_description($id) {
+	if ($id > 0) {
+		$description = db_fetch_cell_prepared('SELECT name FROM automation_networks WHERE id = ?', array($id));
+
+		if (empty($description)) {
+			return __('Removed from Cacti');
+		} else {
+			return $description;
+		}
+	} else {
+		return __('Invalid Network');
 	}
 }
 
