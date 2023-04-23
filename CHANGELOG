@@ -26,6 +26,7 @@ Cacti CHANGELOG
 -feature#3048: Allow different log settings for remote pollers
 -feature#3139: Added option in CLI tool remove_graphs for deletion of single graph
 -feature#3187: Feature: rra path should be configurable
+-feature#3192: Add ability to change options in AUTOM8 networks
 -feature#3260: When a device is added, populate the created date/time
 -feature#3332: Remove files graph_items.php and graph_templates_items.php
 -feature#3333: Allow sequential network scans via AUTOM8

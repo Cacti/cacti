@@ -30,11 +30,20 @@ include_once('./lib/poller.php');
 $network_actions = array(
 	1 => __('Delete'),
 	2 => __('Disable'),
+	8 => __('Change Network Settings'),
 	7 => __('Duplicate'),
 	3 => __('Enable'),
 	6 => __('Export'),
 	4 => __('Discover Now'),
 	5 => __('Cancel Discovery')
+);
+
+$sched_types = array(
+	'1' => __('Manual'),
+	'2' => __('Daily'),
+	'3' => __('Weekly'),
+	'4' => __('Monthly'),
+	'5' => __('Monthly on Day')
 );
 
 /* set default action */
@@ -66,10 +75,6 @@ switch (get_request_var('action')) {
 
 		break;
 }
-
-/* --------------------------
-	The Save Function
-   -------------------------- */
 
 function form_save() {
 	if (isset_request_var('save_component_network')) {
@@ -139,6 +144,34 @@ function api_networks_duplicate($network_id) {
 		$save['last_status']  = '';
 
 		$network_id = sql_save($save, 'automation_networks');
+	}
+}
+
+/**
+ * api_networks_change_options - Given a network_id and the post
+ *   variable, update a series of Network settings
+ *
+ * @param (mixed) A network id or an array of network ids
+ * @param (array) An array of post variables
+ *
+ * @return (void)
+ */
+function api_networks_change_options($network_ids, $post) {
+	if (!is_array($network_ids)) {
+		$network_ids = array($network_ids);
+	}
+
+	$fields = network_get_field_array($network_id);
+
+	foreach ($network_ids as $network_id) {
+		foreach ($fields as $field_name => $field_array) {
+			if (isset($post["t_$field_name"])) {
+				db_execute_prepared("UPDATE automation_networks
+					SET $field_name = ?
+					WHERE id = ?",
+					array(get_nfilter_request_var($field_name), $network_id));
+			}
+		}
 	}
 }
 
@@ -329,7 +362,7 @@ function api_networks_save($post) {
 }
 
 function form_actions() {
-	global $config, $network_actions, $fields_networkss_edit;
+	global $config, $network_actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action');
@@ -367,6 +400,10 @@ function form_actions() {
 			} elseif (get_nfilter_request_var('drp_action') == '7') { /* dupliciate */
 				foreach ($selected_items as $item) {
 					api_networks_duplicate($item);
+				}
+			} elseif (get_nfilter_request_var('drp_action') == '8') { /* change options */
+				foreach ($selected_items as $item) {
+					api_networks_change_options($item, $_POST);
 				}
 			}
 		}
@@ -445,6 +482,68 @@ function form_actions() {
 				<div class='itemlist'><ul>$networks_list</ul></div>
 			</td>
 		</tr>";
+	} elseif (get_nfilter_request_var('drp_action') == '8') { /* change network options */
+		print "<tr>
+			<td class='textArea'>
+				<p>" . __('Click \'Continue\' to Change Network options for multiple Network(s).  Please check the box next to the fields you want to update, and then fill in the new value.') . "</p>
+				<div class='itemlist'><ul>$networks_list</ul></div>
+			</td>
+		</tr>";
+
+		$form_array = array();
+
+		$fields = network_get_field_array();
+
+		foreach($fields as $field_name => $field_array) {
+			if ((preg_match('/^notification_/', $field_name)) ||
+				(preg_match('/^ping_/', $field_name)) ||
+				($field_name == 'poller_id') ||
+				($field_name == 'site_id') ||
+				($field_name == 'dns_servers') ||
+				($field_name == 'enabled') ||
+				($field_name == 'snmp_id') ||
+				($field_name == 'enable_netbios') ||
+				($field_name == 'add_to_cacti') ||
+				($field_name == 'same_sysname') ||
+				($field_name == 'sched_type') ||
+				($field_name == 'threads') ||
+				($field_name == 'run_limit') ||
+				($field_name == 'recur_every') ||
+				($field_name == 'day_of_week') ||
+				($field_name == 'month') ||
+				($field_name == 'day_of_month') ||
+				($field_name == 'monthly_week') ||
+				($field_name == 'monthly_day')
+			) {
+
+				$form_array += array($field_name => $fields[$field_name]);
+
+				$form_array[$field_name]['value'] = '';
+
+				if (read_config_option('hide_form_description') == 'on') {
+					$form_array[$field_name]['description'] = '';
+				}
+
+				$form_array[$field_name]['form_id']      = 0;
+				$form_array[$field_name]['sub_checkbox'] = array(
+					'name'          => 't_' . $field_name,
+					'friendly_name' => __('Update this Field'),
+					'class'         => 'ui-state-disabled',
+					'value'         => ''
+				);
+			}
+		}
+
+		draw_edit_form(
+			array(
+				'config' => array('no_form_tag' => true),
+				'fields' => $form_array
+			)
+		);
+
+		network_edit_javascript();
+
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Change Newtork(s) Options') . "'>";
 	}
 
 	if (!isset($networks_array)) {
@@ -473,29 +572,16 @@ function form_actions() {
 	bottom_footer();
 }
 
-function network_edit() {
-	global $config, $ping_methods;
+function network_javascript() {
+}
+
+function network_change_javascript() {
+}
+
+function network_get_field_array($network = array()) {
+	global $config, $ping_methods, $sched_types;
 
 	$ping_methods[PING_SNMP] = __('SNMP Get');
-
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	/* ==================================================== */
-
-	$sched_types = array(
-		'1' => __('Manual'),
-		'2' => __('Daily'),
-		'3' => __('Weekly'),
-		'4' => __('Monthly'),
-		'5' => __('Monthly on Day')
-	);
-
-	if (!isempty_request_var('id')) {
-		$network      = db_fetch_row_prepared('SELECT * FROM automation_networks WHERE id = ?', array(get_request_var('id')));
-		$header_label = __esc('Network Discovery Range [edit: %s]', $network['name']);
-	} else {
-		$header_label = __('Network Discovery Range [new]');
-	}
 
 	/* file: mactrack_device_types.php, action: edit */
 	$fields = array(
@@ -552,14 +638,6 @@ function network_edit() {
 			'value'         => '|arg1:dns_servers|',
 			'max_length'    => '250',
 			'placeholder'   => __('Enter IPs or FQDNs of DNS Servers')
-		),
-		'sched_type' => array(
-			'method'        => 'drop_array',
-			'friendly_name' => __('Schedule Type'),
-			'description'   => __('Define the collection frequency.'),
-			'value'         => '|arg1:sched_type|',
-			'array'         => $sched_types,
-			'default'       => 1
 		),
 		'threads' => array(
 			'method'        => 'drop_array',
@@ -631,47 +709,18 @@ function network_edit() {
 			'description'   => __('If a device previously added to Cacti is found, rerun its data queries.'),
 			'value'         => '|arg1:rerun_data_queries|'
 		),
-		'spacern' => array(
-			'method'        => 'spacer',
-			'friendly_name' => __('Notification Settings'),
-			'collapsible'   => 'true'
-		),
-		'notification_enabled' => array(
-			'method'        => 'checkbox',
-			'friendly_name' => __('Notification Enabled'),
-			'description'   => __('If checked, when the Automation Network is scanned, a report will be sent to the Notification Email account..'),
-			'value'         => '|arg1:notification_enabled|',
-			'default'       => ''
-		),
-		'notification_email' => array(
-			'method'        => 'textbox',
-			'friendly_name' => __('Notification Email'),
-			'description'   => __('The Email account to be used to send the Notification Email to.'),
-			'value'         => '|arg1:notification_email|',
-			'max_length'    => '250',
-			'default'       => ''
-		),
-		'notification_fromname' => array(
-			'method'        => 'textbox',
-			'friendly_name' => __('Notification From Name'),
-			'description'   => __('The Email account name to be used as the senders name for the Notification Email.  If left blank, Cacti will use the default Automation Notification Name if specified, otherwise, it will use the Cacti system default Email name'),
-			'value'         => '|arg1:notification_fromname|',
-			'max_length'    => '32',
-			'size'          => '30',
-			'default'       => ''
-		),
-		'notification_fromemail' => array(
-			'method'        => 'textbox',
-			'friendly_name' => __('Notification From Email Address'),
-			'description'   => __('The Email Address to be used as the senders Email for the Notification Email.  If left blank, Cacti will use the default Automation Notification Email Address if specified, otherwise, it will use the Cacti system default Email Address'),
-			'value'         => '|arg1:notification_fromemail|',
-			'max_length'    => '128',
-			'default'       => ''
-		),
 		'spacer2' => array(
 			'method'        => 'spacer',
 			'friendly_name' => __('Discovery Timing'),
 			'collapsible'   => 'true'
+		),
+		'sched_type' => array(
+			'method'        => 'drop_array',
+			'friendly_name' => __('Schedule Type'),
+			'description'   => __('Define the collection frequency.'),
+			'value'         => '|arg1:sched_type|',
+			'array'         => $sched_types,
+			'default'       => 1
 		),
 		'start_at' => array(
 			'method'        => 'textbox',
@@ -772,6 +821,43 @@ function network_edit() {
 			'value' => '|arg1:monthly_day|',
 			'class' => 'monthly_day'
 		),
+		'spacern' => array(
+			'method'        => 'spacer',
+			'friendly_name' => __('Notification Settings'),
+			'collapsible'   => 'true'
+		),
+		'notification_enabled' => array(
+			'method'        => 'checkbox',
+			'friendly_name' => __('Notification Enabled'),
+			'description'   => __('If checked, when the Automation Network is scanned, a report will be sent to the Notification Email account..'),
+			'value'         => '|arg1:notification_enabled|',
+			'default'       => ''
+		),
+		'notification_email' => array(
+			'method'        => 'textbox',
+			'friendly_name' => __('Notification Email'),
+			'description'   => __('The Email account to be used to send the Notification Email to.'),
+			'value'         => '|arg1:notification_email|',
+			'max_length'    => '250',
+			'default'       => ''
+		),
+		'notification_fromname' => array(
+			'method'        => 'textbox',
+			'friendly_name' => __('Notification From Name'),
+			'description'   => __('The Email account name to be used as the senders name for the Notification Email.  If left blank, Cacti will use the default Automation Notification Name if specified, otherwise, it will use the Cacti system default Email name'),
+			'value'         => '|arg1:notification_fromname|',
+			'max_length'    => '32',
+			'size'          => '30',
+			'default'       => ''
+		),
+		'notification_fromemail' => array(
+			'method'        => 'textbox',
+			'friendly_name' => __('Notification From Email Address'),
+			'description'   => __('The Email Address to be used as the senders Email for the Notification Email.  If left blank, Cacti will use the default Automation Notification Email Address if specified, otherwise, it will use the Cacti system default Email Address'),
+			'value'         => '|arg1:notification_fromemail|',
+			'max_length'    => '128',
+			'default'       => ''
+		),
 		'spacer1' => array(
 			'method'        => 'spacer',
 			'friendly_name' => __('Reachability Settings'),
@@ -829,24 +915,10 @@ function network_edit() {
 		)
 	);
 
-	form_start('automation_networks.php', 'form_network');
+	return $fields;
+}
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
-
-	draw_edit_form(
-		array(
-			'config' => array('no_form_tag' => 'true'),
-			'fields' => inject_form_variables($fields, (isset($network) ? $network : array()))
-		)
-	);
-
-	html_end_box(true, true);
-
-	form_hidden_box('save_component_network', '1', '');
-	form_hidden_box('id', !isempty_request_var('id') ? get_request_var('id') : 0, 0);
-
-	form_save_button('automation_networks.php', 'return');
-
+function network_edit_javascript() {
 	?>
 	<script type='text/javascript'>
 		$(function() {
@@ -951,7 +1023,6 @@ function network_edit() {
 			var schedType = $('#sched_type').val();
 			toggleFields({
 				start_at: schedType > 1,
-				spacer2: schedType > 1,
 				recur_every: schedType > 1 && schedType < 4,
 				day_of_week: schedType == 3,
 				month: schedType > 3,
@@ -977,7 +1048,46 @@ function network_edit() {
 			}
 		}
 	</script>
-<?php
+	<?php
+}
+
+function network_edit() {
+	global $config, $ping_methods;
+
+	$ping_methods[PING_SNMP] = __('SNMP Get');
+
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	/* ==================================================== */
+
+	if (!isempty_request_var('id')) {
+		$network      = db_fetch_row_prepared('SELECT * FROM automation_networks WHERE id = ?', array(get_request_var('id')));
+		$header_label = __esc('Network Discovery Range [edit: %s]', $network['name']);
+	} else {
+		$header_label = __('Network Discovery Range [new]');
+	}
+
+	$fields = network_get_field_array($network);
+
+	form_start('automation_networks.php', 'form_network');
+
+	html_start_box($header_label, '100%', true, '3', 'center', '');
+
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => 'true'),
+			'fields' => inject_form_variables($fields, (isset($network) ? $network : array()))
+		)
+	);
+
+	html_end_box(true, true);
+
+	form_hidden_box('save_component_network', '1', '');
+	form_hidden_box('id', !isempty_request_var('id') ? get_request_var('id') : 0, 0);
+
+	form_save_button('automation_networks.php', 'return');
+
+	network_edit_javascript();
 }
 
 function get_networks(&$sql_where, $rows, $apply_limits = true) {
@@ -1005,7 +1115,7 @@ function get_networks(&$sql_where, $rows, $apply_limits = true) {
 }
 
 function networks() {
-	global $network_actions, $networkss, $config, $item_rows;
+	global $network_actions, $networkss, $config, $item_rows, $sched_types;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -1073,14 +1183,6 @@ function networks() {
 	print $nav;
 
 	html_start_box('', '100%', '', '3', 'center', '');
-
-	$sched_types = array(
-		'1' => __('Manual'),
-		'2' => __('Daily'),
-		'3' => __('Weekly'),
-		'4' => __('Monthly'),
-		'5' => __('Monthly on Day')
-	);
 
 	$display_text = array(
 		'name'           => array('display' => __('Network Name'), 'align' => 'left', 'sort' => 'ASC'),
