@@ -255,6 +255,7 @@ CREATE TABLE `aggregate_graphs_items` (
 CREATE TABLE `automation_devices` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `network_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `host_id` int(10) unsigned NOT NULL DEFAULT '0',
   `hostname` varchar(100) NOT NULL DEFAULT '',
   `ip` varchar(17) NOT NULL DEFAULT '',
   `snmp_community` varchar(100) NOT NULL DEFAULT '',

@@ -285,17 +285,19 @@ function display_discovery_page() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'hostname'    => array('display' => __('Device Name'), 'align' => 'left', 'sort' => 'ASC'),
-		'ip'          => array('display' => __('IP'),          'align' => 'left', 'sort' => 'ASC'),
-		'sysName'     => array('display' => __('SNMP Name'),   'align' => 'left', 'sort' => 'ASC'),
-		'sysLocation' => array('display' => __('Location'),    'align' => 'left', 'sort' => 'ASC'),
-		'sysContact'  => array('display' => __('Contact'),     'align' => 'left', 'sort' => 'ASC'),
-		'sysDescr'    => array('display' => __('Description'), 'align' => 'left', 'sort' => 'ASC'),
-		'os'          => array('display' => __('OS'),          'align' => 'left', 'sort' => 'ASC'),
-		'time'        => array('display' => __('Uptime'),      'align' => 'right', 'sort' => 'DESC'),
-		'snmp'        => array('display' => __('SNMP'),        'align' => 'right', 'sort' => 'DESC'),
-		'up'          => array('display' => __('Status'),      'align' => 'right', 'sort' => 'ASC'),
-		'mytime'      => array('display' => __('Last Check'),  'align' => 'right', 'sort' => 'DESC'));
+		'host_id'     => array('display' => __('Imported Device'), 'align' => 'left', 'sort' => 'ASC'),
+		'hostname'    => array('display' => __('Device Name'),  'align' => 'left', 'sort' => 'ASC'),
+		'ip'          => array('display' => __('IP'),           'align' => 'left', 'sort' => 'ASC'),
+		'sysName'     => array('display' => __('SNMP Name'),    'align' => 'left', 'sort' => 'ASC'),
+		'sysLocation' => array('display' => __('Location'),     'align' => 'left', 'sort' => 'ASC'),
+		'sysContact'  => array('display' => __('Contact'),      'align' => 'left', 'sort' => 'ASC'),
+		'sysDescr'    => array('display' => __('Description'),  'align' => 'left', 'sort' => 'ASC'),
+		'os'          => array('display' => __('OS'),           'align' => 'left', 'sort' => 'ASC'),
+		'time'        => array('display' => __('Uptime'),       'align' => 'right', 'sort' => 'DESC'),
+		'snmp'        => array('display' => __('SNMP'),         'align' => 'right', 'sort' => 'DESC'),
+		'up'          => array('display' => __('Status'),       'align' => 'right', 'sort' => 'ASC'),
+		'mytime'      => array('display' => __('Last Check'),   'align' => 'right', 'sort' => 'DESC')
+	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -312,12 +314,15 @@ function display_discovery_page() {
 
 	if (cacti_sizeof($results)) {
 		foreach ($results as $host) {
+			$description = get_device_description($host['host_id']);
+
 			form_alternate_row('line' . base64_encode($host['ip']), true);
 
 			if ($host['hostname'] == '') {
 				$host['hostname'] = __('Not Detected');
 			}
 
+			form_selectable_cell(filter_value($description, ''), $host['id']);
 			form_selectable_cell(filter_value($host['hostname'], get_request_var('filter')), $host['id']);
 			form_selectable_cell(filter_value($host['ip'], get_request_var('filter')), $host['id']);
 			form_selectable_cell(filter_value(snmp_data($host['sysName']), get_request_var('filter')), $host['id'], '', 'text-align:left');
@@ -348,6 +353,20 @@ function display_discovery_page() {
 	form_end();
 
 	bottom_footer();
+}
+
+function get_device_description($id) {
+	if ($id > 0) {
+		$description = db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($id));
+
+		if (empty($description)) {
+			return __('Removed from Cacti');
+		} else {
+			return $description;
+		}
+	} else {
+		return __('Not In Cacti');
+	}
 }
 
 function process_request_vars() {

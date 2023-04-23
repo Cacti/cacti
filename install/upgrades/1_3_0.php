@@ -119,6 +119,10 @@ function upgrade_to_1_3_0() {
 			}
 		}
 	}
+
+	if (!db_column_exists('automation_devices', 'host_id')) {
+		db_install_execute("ALTER TABLE automation_devices ADD COLUMN host_id INT UNSIGNED NOT NULL DEFAULT '0' AFTER network_id");
+	}
 }
 
 function ldap_convert_1_3_0() {

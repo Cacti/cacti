@@ -782,30 +782,33 @@ function discoverDevices($network_id, $thread) {
 								}
 							}
 
-							// if the devices template is not discovered, add to found table
-							if ($host_id == 0) {
-								db_execute('REPLACE INTO automation_devices
-									(network_id, hostname, ip, snmp_community, snmp_version, snmp_port, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, sysName, sysLocation, sysContact, sysDescr, sysUptime, os, snmp, up, time) VALUES ('
-									. $network_id                              . ', '
-									. db_qstr($device['dnsname'])              . ', '
-									. db_qstr($device['ip_address'])           . ', '
-									. db_qstr($device['snmp_community'])       . ', '
-									. db_qstr($device['snmp_version'])         . ', '
-									. db_qstr($device['snmp_port'])            . ', '
-									. db_qstr($device['snmp_username'])        . ', '
-									. db_qstr($device['snmp_password'])        . ', '
-									. db_qstr($device['snmp_auth_protocol'])   . ', '
-									. db_qstr($device['snmp_priv_passphrase']) . ', '
-									. db_qstr($device['snmp_priv_protocol'])   . ', '
-									. db_qstr($device['snmp_context'])         . ', '
-									. db_qstr($device['snmp_sysName'])         . ', '
-									. db_qstr($device['snmp_sysLocation'])     . ', '
-									. db_qstr($device['snmp_sysContact'])      . ', '
-									. db_qstr($device['snmp_sysDescr'])        . ', '
-									. db_qstr($device['snmp_sysUptime'])       . ', '
-									. db_qstr($device['os'])                   . ', '
-									. '1, 1,' . time() . ')');
+							if ($host_id > 0) {
+								db_execute_prepared('DELETE FROM automation_devices WHERE host_id = ?', array($host_id));
 							}
+
+							// if the devices template is not discovered, add to found table
+							db_execute('REPLACE INTO automation_devices
+								(network_id, host_id, hostname, ip, snmp_community, snmp_version, snmp_port, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, sysName, sysLocation, sysContact, sysDescr, sysUptime, os, snmp, up, time) VALUES ('
+								. $network_id                              . ', '
+								. $host_id                                 . ', '
+								. db_qstr($device['dnsname'])              . ', '
+								. db_qstr($device['ip_address'])           . ', '
+								. db_qstr($device['snmp_community'])       . ', '
+								. db_qstr($device['snmp_version'])         . ', '
+								. db_qstr($device['snmp_port'])            . ', '
+								. db_qstr($device['snmp_username'])        . ', '
+								. db_qstr($device['snmp_password'])        . ', '
+								. db_qstr($device['snmp_auth_protocol'])   . ', '
+								. db_qstr($device['snmp_priv_passphrase']) . ', '
+								. db_qstr($device['snmp_priv_protocol'])   . ', '
+								. db_qstr($device['snmp_context'])         . ', '
+								. db_qstr($device['snmp_sysName'])         . ', '
+								. db_qstr($device['snmp_sysLocation'])     . ', '
+								. db_qstr($device['snmp_sysContact'])      . ', '
+								. db_qstr($device['snmp_sysDescr'])        . ', '
+								. db_qstr($device['snmp_sysUptime'])       . ', '
+								. db_qstr($device['os'])                   . ', '
+								. '1, 1,' . time() . ')');
 
 							markIPDone($device['ip_address'], $network_id);
 						}
