@@ -88,6 +88,19 @@ function upgrade_to_1_3_0() {
 	install_unlink('graph_templates_items.php');
 	install_unlink('graph_templates_inputs.php');
 
+	/* create new automation template rules table */
+	db_install_execute("CREATE TABLE IF NOT EXISTS `automation_templates_rules` (
+		`automation_template_id` int(10) unsigned NOT NULL DEFAULT 0,
+		`automation_object_type` tinyint(3) unsigned NOT NULL DEFAULT 0,
+		`automation_rule_id` int(10) unsigned NOT NULL DEFAULT 0,
+		`hash` varchar(32) NOT NULL DEFAULT '',
+		`sequence` tinyint(3) unsigned NOT NULL DEFAULT 1,
+		`exit_rules` char(2) NOT NULL DEFAULT '',
+		PRIMARY KEY (`automation_template_id`,`automation_object_type`,`automation_rule_id`))
+		ENGINE=InnoDB
+		ROW_FORMAT=DYNAMIC
+		COMMENT='Holds mappings of Automation Templates to Rules'");
+
 	/* add automation hashes */
 	$tables = array(
 		'automation_graph_rule_items',
@@ -96,7 +109,9 @@ function upgrade_to_1_3_0() {
 		'automation_networks',
 		'automation_templates',
 		'automation_snmp',
-		'automation_snmp_items'
+		'automation_snmp_items',
+		'automation_tree_rules',
+		'automation_tree_rule_items'
 	);
 
 	foreach($tables as $table) {
