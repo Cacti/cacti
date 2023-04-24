@@ -286,7 +286,7 @@ function template_edit() {
 		}
 	}
 
-	$fields_automation_template_edit = array(
+	$fields = array(
 		'spacer0' => array(
 			'method'        => 'spacer',
 			'friendly_name' => __('Matching Settings'),
@@ -362,13 +362,13 @@ function template_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$host_template = db_fetch_row_prepared('SELECT *
+		$template = db_fetch_row_prepared('SELECT *
 			FROM automation_templates
 			WHERE id = ?',
 			array(get_request_var('id')));
 
-		if (isset($template_names[$host_template['host_template']])) {
-			$header_label = __esc('Automation Templates [edit: %s]', $template_names[$host_template['host_template']]);
+		if (isset($template_names[$template['host_template']])) {
+			$header_label = __esc('Automation Templates [edit: %s]', $template_names[$template['host_template']]);
 		} else {
 			$header_label = __('Automation Templates for [Deleted Template]');
 		}
@@ -379,16 +379,143 @@ function template_edit() {
 
 	form_start('automation_templates.php', 'form_network');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	draw_edit_form(
 		array(
 			'config' => array('no_form_tag' => 'true'),
-			'fields' => inject_form_variables($fields_automation_template_edit, (isset($host_template) ? $host_template : array()))
+			'fields' => inject_form_variables($fields, (isset($template) ? $template : array()))
 		)
 	);
 
-	html_end_box(true, true);
+	html_end_box();
+
+	if (!isempty_request_var('id')) {
+		html_start_box(__('Associated Graph Rules'), '100%', '', '3', 'center', '');
+
+		$graph_rules = db_fetch_assoc_prepared('SELECT *
+			FROM automation_templates_rules AS atr
+			INNER JOIN automation_graph_rules AS gr
+			ON atr.rule_id = gr.id
+			AND atr.rule_type = 1
+			WHERE template_id = ?',
+			array(get_request_var('id')));
+
+		$i = 1;
+
+		$header = array(__('Graph Rule Name'), __('Sequence'), __('Actions'));
+
+		html_header($header, false);
+
+		if (cacti_sizeof($graph_rules)) {
+			foreach($graph_rules as $rule) {
+				form_alternate_row("gr$i", true);
+
+				form_selectable_cell($item['name'], $i);
+				form_selectable_cell($item['sequence'], $i);
+				form_selectable_cell("<a class='delete deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape('automation_templates.php?action=item_remove_agr_confirm&id=' . get_request_var('id') . '&item_id=' . $item['id']) . "'></a>", $i, '40');
+
+				form_end_row();
+
+				$i++;
+			}
+		} else {
+			print '<tr><td><em>' . __('No Associated Graph Rules') . '</em></td></tr>';
+		}
+
+		html_end_box();
+
+		html_start_box('', '100%', '', '3', 'center', '');
+
+		?>
+		<tr class='odd'>
+			<td colspan='2'>
+				<table>
+					<tr style='line-height:10px'>
+						<td class='nowrap templateAdd'>
+							<?php print __('Add Graph Rule');?>
+						</td>
+						<td class='noHide'>
+							<?php form_dropdown('graph_rule', db_fetch_assoc_prepared('SELECT ar.id, ar.name
+								FROM automation_graph_rules AS ar
+								LEFT JOIN automation_templates_rules AS art
+								ON ar.id = art.rule_id
+								AND art.rule_type = 1
+								WHERE ar.id NOT IN (SELECT rule_id FROM automation_templates_rules WHERE rule_type = 1 AND rule_id = ?)
+								ORDER BY ar.name', array(get_request_var('id'))),'name','id','','','');?>
+						</td>
+						<td class='noHide'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Add');?>' id='add_agr' title='<?php print __esc('Add Graph Rule to Automation Template');?>'>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+
+		<?php
+		html_end_box();
+
+		html_start_box(__('Associated Tree Rules'), '100%', '', '3', 'center', '');
+
+		$tree_rules = db_fetch_assoc_prepared('SELECT *
+			FROM automation_templates_rules AS atr
+			INNER JOIN automation_tree_rules AS tr
+			ON atr.rule_id = tr.id
+			AND atr.rule_type = 2
+			WHERE template_id = ?',
+			array(get_request_var('id')));
+
+		$i = 1;
+
+		$header = array(__('Tree Rule Name'), __('Exit On'), __('Sequence'), __('Actions'));
+
+		html_header($header, false);
+
+		if (cacti_sizeof($tree_rules)) {
+			foreach($tree_rules as $rule) {
+				form_alternate_row("tr$i", true);
+
+				form_selectable_cell($item['name'], $i);
+				form_selectable_cell($item['exit_rules'], $i);
+				form_selectable_cell($item['sequence'], $i);
+				form_selectable_cell("<a class='delete deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape('automation_templates.php?action=item_remove_atr_confirm&id=' . get_request_var('id') . '&item_id=' . $item['id']) . "'></a>", $i, '40');
+
+				form_end_row();
+
+				$i++;
+			}
+		} else {
+			print '<tr><td><em>' . __('No Associated Tree Rules') . '</em></td></tr>';
+		}
+
+		?>
+		<tr class='odd'>
+			<td colspan='2'>
+				<table>
+					<tr style='line-height:10px'>
+						<td class='nowrap templateAdd'>
+							<?php print __('Add Tree Rule');?>
+						</td>
+						<td class='noHide'>
+							<?php form_dropdown('tree_rule', db_fetch_assoc_prepared('SELECT ar.id, ar.name
+								FROM automation_tree_rules AS ar
+								LEFT JOIN automation_templates_rules AS art
+								ON ar.id = art.rule_id
+								AND art.rule_type = 2
+								WHERE ar.id NOT IN (SELECT rule_id FROM automation_templates_rules WHERE rule_type = 2 AND rule_id = ?)
+								ORDER BY ar.name', array(get_request_var('id'))),'name','id','','','');?>
+						</td>
+						<td class='noHide'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Add');?>' id='add_atr' title='<?php print __esc('Add Tree Rule to Automation Template');?>'>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+
+		<?php
+		html_end_box();
+	}
 
 	form_save_button('automation_templates.php');
 }
