@@ -416,7 +416,7 @@ CREATE TABLE `automation_networks` (
 -- Dumping data for table `automation_networks`
 --
 
-INSERT INTO `automation_networks` VALUES (1,'',1,0,'Test Network','192.168.1.0/24','','on','','','','',1,'on','on','',254,0,0,1,22,400,1,2,10,1200,'0000-00-00 00:00:00','0000-00-00 00:00:00',2,'4','','','','',0,'0000-00-00 00:00:00','','on');
+INSERT INTO `automation_networks` VALUES (1,'',1,0,'Test Network','192.168.1.0/24','','','on','','','','',1,'on','on','',254,0,0,1,22,400,1,2,10,1200,'0000-00-00 00:00:00','0000-00-00 00:00:00',2,'4','','','','',0,'0000-00-00 00:00:00','','on');
 
 --
 -- Table structure for table `automation_processes`
@@ -506,23 +506,23 @@ CREATE TABLE `automation_templates` (
 -- Dumping data for table `automation_templates`
 --
 
-INSERT INTO `automation_templates` VALUES (1,'',3,2,'Linux','','',2),(2,'',1,2,'Windows','','',1),(3,'',2,2,'(Cisco Internetwork Operating System Software|IOS)','','',3);
+INSERT INTO `automation_templates` VALUES (1,'',3,2,'Linux','','','','',2),(2,'',1,2,'Windows','','','','',1),(3,'',2,2,'(Cisco Internetwork Operating System Software|IOS)','','','','',3);
 
 --
 -- Table structure for table `automation_templates_rules`
 --
 
-CREATE TABLE IF NOT EXISTS `automation_templates_rules` (
+CREATE TABLE `automation_templates_rules` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `hash` varchar(32) NOT NULL DEFAULT '',
-  `automation_template_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `automation_object_type` tinyint(3) unsigned NOT NULL DEFAULT 0,
-  `automation_rule_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `template_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `rule_type` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `rule_id` int(10) unsigned NOT NULL DEFAULT 0,
   `sequence` tinyint(3) unsigned NOT NULL DEFAULT 1,
   `exit_rules` char(2) NOT NULL DEFAULT '',
-  PRIMARY KEY (`automation_template_id`,`automation_object_type`,`automation_rule_id`),
-  KEY `id`(`id`)
-) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Holds mappings of Automation Templates to Rules'
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_key` (`template_id`,`rule_type`,`rule_id`)
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Holds mappings of Automation Templates to Rules';
 
 --
 -- Dumping data for table `automation_templates_rules`

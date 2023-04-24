@@ -92,13 +92,13 @@ function upgrade_to_1_3_0() {
 	db_install_execute("CREATE TABLE IF NOT EXISTS `automation_templates_rules` (
 		`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 		`hash` varchar(32) NOT NULL DEFAULT '',
-		`automation_template_id` int(10) unsigned NOT NULL DEFAULT 0,
-		`automation_object_type` tinyint(3) unsigned NOT NULL DEFAULT 0,
-		`automation_rule_id` int(10) unsigned NOT NULL DEFAULT 0,
+		`template_id` int(10) unsigned NOT NULL DEFAULT 0,
+		`rule_type` tinyint(3) unsigned NOT NULL DEFAULT 0,
+		`rule_id` int(10) unsigned NOT NULL DEFAULT 0,
 		`sequence` tinyint(3) unsigned NOT NULL DEFAULT 1,
 		`exit_rules` char(2) NOT NULL DEFAULT '',
-		PRIMARY KEY (`automation_template_id`,`automation_object_type`,`automation_rule_id`),
-		KEY `id` (`id`))
+		PRIMARY KEY (`id`),
+		UNIQUE KEY `unique_key` (`template_id`,`rule_type`,`rule_id`))
 		ENGINE=InnoDB
 		ROW_FORMAT=DYNAMIC
 		COMMENT='Holds mappings of Automation Templates to Rules'");
