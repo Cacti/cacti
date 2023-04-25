@@ -133,7 +133,7 @@ function remote_agent_strip_domain($host) {
 }
 
 function remote_client_authorized() {
-	global $config, $poller_db_cnn_id;
+	global $config, $poller_db_cnn_id, $remote_agent_whitelist;
 
 	/* don't allow to run from the command line */
 	$client_addr = get_client_addr();
@@ -165,6 +165,10 @@ function remote_client_authorized() {
 			}
 
 			if ($poller['hostname'] == $client_addr) {
+				return true;
+			}
+
+			if (in_array($client_addr,$remote_agent_whitelist)) {
 				return true;
 			}
 		}

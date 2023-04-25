@@ -230,3 +230,15 @@ $i18n_log = null;
  * locations under /tmp/systemd<uniqueid>/tmp
  */
 $i18n_text_log = null;
+
+/**
+ * Define the array of IP addresses whitelisted for
+ * remote agent communication.
+ *
+ * Example:
+ *
+ * $remote_agent_whitelist = ['1.2.3.4'];
+ *
+ */
+
+$remote_agent_whitelist = array();
