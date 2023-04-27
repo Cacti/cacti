@@ -50,6 +50,38 @@ switch (get_request_var('action')) {
 		form_actions();
 
 		break;
+	case 'item_add_agr':
+		automation_add_graph_rule();
+
+		header('Location: automation_templates.php?action=edit&id=' . get_filter_request_var('automation_template_id'));
+
+		break;
+	case 'item_remove_agr_confirm':
+		automation_remove_agr_confirm();
+
+		break;
+	case 'item_remove_agr':
+		automation_remove_agr();
+
+		header('Location: automation_templates.php?action=edit&id=' . get_filter_request_var('automation_template_id'));
+
+		break;
+	case 'item_add_atr':
+		automation_add_tree_rule();
+
+		header('Location: automation_templates.php?action=edit&id=' . get_filter_request_var('automation_template_id'));
+
+		break;
+	case 'item_remove_atr_confirm':
+		automation_remove_atr_confirm();
+
+		break;
+	case 'item_remove_atr':
+		automation_remove_atr();
+
+		header('Location: automation_templates.php?action=edit&id=' . get_filter_request_var('automation_template_id'));
+
+		break;
 	case 'movedown':
 		automation_movedown();
 
@@ -122,6 +154,52 @@ function automation_remove() {
 	db_execute_prepared('DELETE FROM automation_templates WHERE id = ?', array(get_filter_request_var('id')));
 }
 
+function automation_add_graph_rule() {
+	/* ================= input validation ================= */
+	get_filter_request_var('automation_template_id');
+	get_filter_request_var('rule_id');
+	/* ==================================================== */
+
+	$save = array();
+
+	$save['id']          = 0;
+	$save['hash']        = get_hash_automation(0, 'automation_templates_rules');
+	$save['template_id'] = get_request_var('automation_template_id');
+	$save['rule_type']   = 1;
+	$save['rule_id']     = get_request_var('rule_id');
+	$save['sequence']    = db_fetch_cell('SELECT MAX(sequence)+1 FROM automation_templates_rules WHERE rule_type = 1');
+	$save['exit_rules']  = 0;
+
+	sql_save($save, 'automation_templates_rules');
+
+	automation_resequence_rules(get_request_var('automation_template_id'));
+
+	raise_message('rule_save', __('The Graph Rule has been added to the Device Rule'), MESSAGE_LEVEL_INFO);
+}
+
+function automation_add_tree_rule() {
+	/* ================= input validation ================= */
+	get_filter_request_var('automation_template_id');
+	get_filter_request_var('rule_id');
+	/* ==================================================== */
+
+	$save = array();
+
+	$save['id']          = 0;
+	$save['hash']        = get_hash_automation(0, 'automation_templates_rules');
+	$save['template_id'] = get_request_var('automation_template_id');
+	$save['rule_type']   = 2;
+	$save['rule_id']     = get_request_var('rule_id');
+	$save['sequence']    = db_fetch_cell('SELECT MAX(sequence)+1 FROM automation_templates_rules WHERE rule_type = 2');
+	$save['exit_rules']  = 0;
+
+	sql_save($save, 'automation_templates_rules');
+
+	automation_resequence_rules(get_request_var('automation_template_id'));
+
+	raise_message('rule_save', __('The Tree Rule has been added to the Device Rule'), MESSAGE_LEVEL_INFO);
+}
+
 function form_actions() {
 	global $at_actions;
 
@@ -171,12 +249,12 @@ function form_actions() {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>" . __('Click \'Continue\' to delete the following Automation Template(s).') . "</p>
+					<p>" . __('Click \'Continue\' to delete the following Device Rule(s).') . "</p>
 					<div class='itemlist'><ul>$at_list</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Automation Template(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Device Rule(s)') . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -239,12 +317,191 @@ function form_save() {
 	}
 }
 
+function automation_remove_agr_confirm() {
+	/* ================= input validation ================= */
+	get_filter_request_var('rule_id');
+	get_filter_request_var('automation_template_id');
+	/* ==================================================== */
+
+	form_start('automation_templates.php?action=edit&id=' . get_request_var('automation_template_id'));
+
+	html_start_box('', '100%', '', '3', 'center', '');
+
+	$rule = db_fetch_row_prepared('SELECT *
+		FROM automation_graph_rules
+		WHERE id = ?',
+		array(get_request_var('rule_id')));
+
+	?>
+	<tr>
+		<td class='topBoxAlt'>
+			<p><?php print __('Click \'Continue\' to Delete the following Graph Rule will be disassociated from the Device Rule.');?></p>
+			<p><?php print __('Graph Rule Name: %s', html_escape($rule['name']));?>'<br>
+		</td>
+	</tr>
+	<tr>
+		<td class='right'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close")' name='cancel'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Graph Rule');?>'>
+		</td>
+	</tr>
+	<?php
+
+	html_end_box();
+
+	form_end();
+
+	?>
+	<script type='text/javascript'>
+	$('#continue').click(function(data) {
+		var options = {
+			url: 'automation_templates.php?action=item_remove_agr'
+		}
+
+		var data = {
+			__csrf_magic: csrfMagicToken,
+			automation_template_id: <?php print get_request_var('automation_template_id');?>,
+			rule_id: <?php print get_request_var('rule_id');?>
+		}
+
+		postUrl(options, data);
+	});
+	</script>
+	<?php
+}
+
+function automation_remove_agr() {
+	/* ================= input validation ================= */
+	get_filter_request_var('rule_id');
+	get_filter_request_var('automation_template_id');
+	/* ==================================================== */
+
+	db_execute_prepared('DELETE FROM automation_templates_rules
+		WHERE rule_id = ?
+		AND rule_type = 1
+		AND template_id = ?',
+		array(get_request_var('rule_id'), get_request_var('automation_template_id')));
+
+	automation_resequence_rules(get_request_var('automation_template_id'));
+
+	raise_message('rule_remove', __('The Graph Rule has been removed from the Device Rule'), MESSAGE_LEVEL_INFO);
+}
+
+function automation_resequence_rules($template_id) {
+	$gr_seq = db_fetch_assoc_prepared('SELECT *
+		FROM automation_templates_rules
+		WHERE template_id = ?
+		AND rule_type = 1
+		ORDER BY sequence',
+		array($template_id));
+
+	if (cacti_sizeof($gr_seq)) {
+		$sequence = 1;
+
+		foreach($gr_seq as $s) {
+			db_execute_prepared('UPDATE automation_templates_rules
+				SET `sequence` = ?
+				WHERE id = ?',
+				array($sequence, $s['id']));
+
+			$sequence++;
+		}
+	}
+
+	$tr_seq = db_fetch_assoc_prepared('SELECT *
+		FROM automation_templates_rules
+		WHERE template_id = ?
+		AND rule_type = 2
+		ORDER BY sequence',
+		array($template_id));
+
+	if (cacti_sizeof($tr_seq)) {
+		$sequence = 1;
+
+		foreach($tr_seq as $s) {
+			db_execute_prepared('UPDATE automation_templates_rules
+				SET `sequence` = ?
+				WHERE id = ?',
+				array($sequence, $s['id']));
+
+			$sequence++;
+		}
+	}
+}
+
+function automation_remove_atr_confirm() {
+	/* ================= input validation ================= */
+	get_filter_request_var('rule_id');
+	get_filter_request_var('automation_template_id');
+	/* ==================================================== */
+
+	form_start('automation_templates.php?action=edit&id=' . get_request_var('automation_template_id'));
+
+	html_start_box('', '100%', '', '3', 'center', '');
+
+	$rule = db_fetch_row_prepared('SELECT * FROM automation_tree_rules WHERE id = ?', array(get_request_var('rule_id')));
+
+	?>
+	<tr>
+		<td class='topBoxAlt'>
+			<p><?php print __('Click \'Continue\' to Delete the following Tree Rule(s) will be disassociated from the Device Rule.');?></p>
+			<p><?php print __('Tree Rule Name: %s', html_escape($query['name']));?>'<br>
+		</td>
+	</tr>
+	<tr>
+		<td class='right'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close")' name='cancel'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Tree Rule');?>'>
+		</td>
+	</tr>
+	<?php
+
+	html_end_box();
+
+	form_end();
+
+	?>
+	<script type='text/javascript'>
+	$('#continue').click(function(data) {
+		var options = {
+			url: 'automation_templates.php?action=item_remove_atr'
+		}
+
+		var data = {
+			__csrf_magic: csrfMagicToken,
+			automation_template_id: <?php print get_request_var('automation_template_id');?>,
+			rule_id: <?php print get_request_var('rule_id');?>
+		}
+
+		postUrl(options, data);
+	});
+	</script>
+	<?php
+}
+
+function automation_remove_atr() {
+	/* ================= input validation ================= */
+	get_filter_request_var('rule_id');
+	get_filter_request_var('automation_template_id');
+	/* ==================================================== */
+
+	db_execute_prepared('DELETE FROM automation_templates_rules
+		WHERE rule_id = ?
+		AND rule_type = 2
+		AND template_id = ?',
+		array(get_request_var('rule_id'), get_request_var('automation_template_id')));
+
+	automation_resequence_rules();
+
+	raise_message('rule_remove', __('The Tree Rule has been removed from the Device Rule'), MESSAGE_LEVEL_INFO);
+}
+
 function automation_get_child_branches($tree_id, $id, $spaces, $headers) {
 	$items = db_fetch_assoc_prepared('SELECT id, title
 		FROM graph_tree_items
 		WHERE graph_tree_id = ?
-		AND host_id=0
-		AND local_graph_id=0
+		AND host_id = 0
+		AND local_graph_id = 0
 		AND parent = ?
 		ORDER BY position', array($tree_id, $id));
 
@@ -309,21 +566,21 @@ function template_edit() {
 		'sysDescr' => array(
 			'method'        => 'textbox',
 			'friendly_name' => __('System Description Match'),
-			'description'   => __('This is a unique string that will be matched to a devices sysDescr string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
+			'description'   => __('This is a unique string that will be matched to a devices sysDescr string to pair it to this Device Rule.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
 			'value'         => '|arg1:sysDescr|',
 			'max_length'    => '255',
 		),
 		'sysName' => array(
 			'method'        => 'textbox',
 			'friendly_name' => __('System Name Match'),
-			'description'   => __('This is a unique string that will be matched to a devices sysName string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
+			'description'   => __('This is a unique string that will be matched to a devices sysName string to pair it to this Device Rule.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
 			'value'         => '|arg1:sysName|',
 			'max_length'    => '128',
 		),
 		'sysOid' => array(
 			'method'        => 'textbox',
 			'friendly_name' => __('System OID Match'),
-			'description'   => __('This is a unique string that will be matched to a devices sysOid string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
+			'description'   => __('This is a unique string that will be matched to a devices sysOid string to pair it to this Device Rule.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
 			'value'         => '|arg1:sysOid|',
 			'max_length'    => '128',
 		),
@@ -368,12 +625,12 @@ function template_edit() {
 			array(get_request_var('id')));
 
 		if (isset($template_names[$template['host_template']])) {
-			$header_label = __esc('Automation Templates [edit: %s]', $template_names[$template['host_template']]);
+			$header_label = __esc('Device Rules [edit: %s]', $template_names[$template['host_template']]);
 		} else {
-			$header_label = __('Automation Templates for [Deleted Template]');
+			$header_label = __('Device Rules for [Deleted Template]');
 		}
 	} else {
-		$header_label = __('Automation Templates [new]');
+		$header_label = __('Device Rules [new]');
 		set_request_var('id', 0);
 	}
 
@@ -398,22 +655,36 @@ function template_edit() {
 			INNER JOIN automation_graph_rules AS gr
 			ON atr.rule_id = gr.id
 			AND atr.rule_type = 1
-			WHERE template_id = ?',
+			WHERE template_id = ?
+			ORDER BY sequence',
 			array(get_request_var('id')));
 
 		$i = 1;
 
-		$header = array(__('Graph Rule Name'), __('Sequence'), __('Actions'));
+		$display_text = array(
+			array(
+				'display' => __('Graph Rule Name'),
+				'align'   => 'left',
+			),
+			array(
+				'display' => __('Sequence'),
+				'align'   => 'right',
+			),
+			array(
+				'display' => __('Actions'),
+				'align'   => 'right',
+			)
+		);
 
-		html_header($header, false);
+		html_header($display_text, false);
 
 		if (cacti_sizeof($graph_rules)) {
 			foreach($graph_rules as $rule) {
 				form_alternate_row("gr$i", true);
 
-				form_selectable_cell($item['name'], $i);
-				form_selectable_cell($item['sequence'], $i);
-				form_selectable_cell("<a class='delete deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape('automation_templates.php?action=item_remove_agr_confirm&id=' . get_request_var('id') . '&item_id=' . $item['id']) . "'></a>", $i, '40');
+				form_selectable_cell($rule['name'], $i);
+				form_selectable_cell($rule['sequence'], $i, '', 'right');
+				form_selectable_cell("<a class='delete deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape('automation_templates.php?action=item_remove_agr_confirm&automation_template_id=' . get_request_var('id') . '&rule_id=' . $rule['id']) . "'></a>", $i, '40', 'right');
 
 				form_end_row();
 
@@ -441,11 +712,12 @@ function template_edit() {
 								LEFT JOIN automation_templates_rules AS art
 								ON ar.id = art.rule_id
 								AND art.rule_type = 1
-								WHERE ar.id NOT IN (SELECT rule_id FROM automation_templates_rules WHERE rule_type = 1 AND rule_id = ?)
-								ORDER BY ar.name', array(get_request_var('id'))),'name','id','','','');?>
+								WHERE ar.id NOT IN (SELECT rule_id FROM automation_templates_rules WHERE rule_type = 1 AND template_id = ?)
+								ORDER BY ar.name',
+								array(get_request_var('id'))), 'name', 'id', '', '', '');?>
 						</td>
 						<td class='noHide'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Add');?>' id='add_agr' title='<?php print __esc('Add Graph Rule to Automation Template');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Add');?>' id='add_agr' title='<?php print __esc('Add Graph Rule to Device Rule');?>'>
 						</td>
 					</tr>
 				</table>
@@ -462,23 +734,41 @@ function template_edit() {
 			INNER JOIN automation_tree_rules AS tr
 			ON atr.rule_id = tr.id
 			AND atr.rule_type = 2
-			WHERE template_id = ?',
+			WHERE template_id = ?
+			ORDER BY sequence',
 			array(get_request_var('id')));
 
 		$i = 1;
 
-		$header = array(__('Tree Rule Name'), __('Exit On'), __('Sequence'), __('Actions'));
+		$display_text = array(
+			array(
+				'display' => __('Tree Rule Name'),
+				'align'   => 'left',
+			),
+			array(
+				'display' => __('Exit On'),
+				'align'   => 'left',
+			),
+			array(
+				'display' => __('Sequence'),
+				'align'   => 'right',
+			),
+			array(
+				'display' => __('Actions'),
+				'align'   => 'right',
+			)
+		);
 
-		html_header($header, false);
+		html_header($display_text, false);
 
 		if (cacti_sizeof($tree_rules)) {
 			foreach($tree_rules as $rule) {
 				form_alternate_row("tr$i", true);
 
-				form_selectable_cell($item['name'], $i);
-				form_selectable_cell($item['exit_rules'], $i);
-				form_selectable_cell($item['sequence'], $i);
-				form_selectable_cell("<a class='delete deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape('automation_templates.php?action=item_remove_atr_confirm&id=' . get_request_var('id') . '&item_id=' . $item['id']) . "'></a>", $i, '40');
+				form_selectable_cell($rule['name'], $i);
+				form_selectable_cell($rule['exit_rules'], $i);
+				form_selectable_cell($rule['sequence'], $i, '', 'right');
+				form_selectable_cell("<a class='delete deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape('automation_templates.php?action=item_remove_atr_confirm&automation_template_id=' . get_request_var('id') . '&rule_id=' . $rule['id']) . "'></a>", $i, '40', 'right');
 
 				form_end_row();
 
@@ -502,11 +792,12 @@ function template_edit() {
 								LEFT JOIN automation_templates_rules AS art
 								ON ar.id = art.rule_id
 								AND art.rule_type = 2
-								WHERE ar.id NOT IN (SELECT rule_id FROM automation_templates_rules WHERE rule_type = 2 AND rule_id = ?)
-								ORDER BY ar.name', array(get_request_var('id'))),'name','id','','','');?>
+								WHERE ar.id NOT IN (SELECT rule_id FROM automation_templates_rules WHERE rule_type = 2 AND template_id = ?)
+								ORDER BY ar.name',
+								array(get_request_var('id'))), 'name', 'id', '', '', '');?>
 						</td>
 						<td class='noHide'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Add');?>' id='add_atr' title='<?php print __esc('Add Tree Rule to Automation Template');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Add');?>' id='add_atr' title='<?php print __esc('Add Tree Rule to Device Rule');?>'>
 						</td>
 					</tr>
 				</table>
@@ -518,6 +809,67 @@ function template_edit() {
 	}
 
 	form_save_button('automation_templates.php');
+
+	?>
+	<script type='text/javascript'>
+
+	$(function() {
+		$('#cdialog').remove();
+		$('#main').append("<div id='cdialog' class='cdialog'></div>");
+
+		$('.delete').click(function (event) {
+			event.preventDefault();
+
+			request = $(this).attr('href');
+			$.get(request)
+				.done(function(data) {
+					$('#cdialog').html(data);
+
+					applySkin();
+
+					$('#cdialog').dialog({
+						title: '<?php print __('Delete Item from Device Rule');?>',
+						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
+						minHeight: 80,
+						minWidth: 500
+					})
+				})
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
+		}).css('cursor', 'pointer');
+
+		$('#add_agr').click(function() {
+			var options = {
+				url: 'automation_templates.php?action=item_add_agr'
+			}
+
+			var data = {
+				automation_template_id: $('#id').val(),
+				rule_id: $('#graph_rule').val(),
+				__csrf_magic: csrfMagicToken
+			}
+
+			postUrl(options, data);
+		});
+
+		$('#add_atr').click(function() {
+			var options = {
+				url: 'automation_templates.php?action=item_add_atr'
+			}
+
+			var data = {
+				automation_template_id: $('#id').val(),
+				rule_id: $('#tree_rule').val(),
+				__csrf_magic: csrfMagicToken
+			}
+
+			postUrl(options, data);
+		});
+	});
+
+	</script>
+	<?php
 }
 
 function template() {
@@ -550,7 +902,7 @@ function template() {
 		$rows = get_request_var('rows');
 	}
 
-	html_start_box(__('Device Automation Templates'), '100%', '', '3', 'center', 'automation_templates.php?action=edit');
+	html_start_box(__('Device Rules'), '100%', '', '3', 'center', 'automation_templates.php?action=edit');
 
 	?>
 	<tr class='even'>
@@ -587,7 +939,7 @@ function template() {
 						<span>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Import');?>' title='<?php print __esc('Import Device Automation Template');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Import');?>' title='<?php print __esc('Import Device Rules');?>'>
 						</span>
 					</td>
 				</tr>
