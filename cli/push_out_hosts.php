@@ -374,8 +374,7 @@ function pushout_debug($message) {
  * display_version - displays version information
  */
 function display_version() {
-	$version = get_cacti_version();
-	print "Cacti Push out hosts Tool, Version $version " . COPYRIGHT_YEARS . PHP_EOL;
+	print 'Cacti Push out hosts/repopulate poller cache Tool, Version ' . CACTI_VERSION . ' ' . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 /**
