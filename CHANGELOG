@@ -75,6 +75,7 @@ Cacti CHANGELOG
 -feature#5273: Add support for RRD --left-axis-format Options
 -feature#5278: Enhance Cacti's ping to use fping if it's installed to take advantage of sub-second timeouts
 -feature#5305: Remove files aggregate_items.php and color_templates_items.php and consolidate into their parents
+-feature#2959: Add multi threading for push out hosts (cli)
 -feature: Allow messages to be popup notifications
 -feature: Upgrade billboard.js to version 3.7.4
 -feature: Upgrade d3.js to version 7.8.2
