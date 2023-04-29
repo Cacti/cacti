@@ -17,6 +17,7 @@ Cacti CHANGELOG
 -issue#5299: QA: Cacti automated install throwing error message
 -issue#5300: QA: When performing automated plugin install via plugin_manage.php warnings are thrown
 -issue#5315: automation library references "ghost" table
+-issue#5317: Data Source Info Mode produces invalid recommendations
 -feature: Upgrade billboard.js to version 3.7.4
 -feature: Upgrade d3.js to version 7.8.2
 

@@ -1180,12 +1180,14 @@ function ds_edit() {
 
 				if (cacti_sizeof($rrd_info['rra'])) {
 					$diff = rrdtool_cacti_compare(get_request_var('id'), $rrd_info);
+
 					rrdtool_info2html($rrd_info, $diff);
+
 					if (cacti_sizeof($diff)) {
 						html_start_box(__('RRDtool Tune Info'), '100%', '', '3', 'center', '');
-						print '<tr><td style="padding:4px;">';
+
 						rrdtool_tune($rrd_info['filename'], $diff, true);
-						print '</td></tr>';
+
 						html_end_box();
 					}
 				}

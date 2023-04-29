@@ -4335,18 +4335,23 @@ function debug_log_return($type) {
 	if ($type == 'new_graphs') {
 		if (isset($_SESSION['debug_log'][$type])) {
 			$log_text .= "<table style='width:100%;'>";
-			for ($i=0; $i<cacti_count($_SESSION['debug_log'][$type]); $i++) {
-				$log_text .= '<tr><td>' . $_SESSION['debug_log'][$type][$i] . '</td></tr>';
+
+			for ($i=0; $i < cacti_count($_SESSION['debug_log'][$type]); $i++) {
+				$log_text .= '<tr><td>' . html_escape($_SESSION['debug_log'][$type][$i]) . '</td></tr>';
 			}
+
 			$log_text .= '</table>';
 		}
 	} else {
 		if (isset($_SESSION['debug_log'][$type])) {
 			$log_text .= "<table style='width:100%;'>";
+
 			foreach($_SESSION['debug_log'][$type] as $key => $val) {
-				$log_text .= "<tr><td>$val</td></tr>\n";
+				$log_text .= '<tr><td>' . html_escape($val) . '</td></tr>';
+
 				unset($_SESSION['debug_log'][$type][$key]);
 			}
+
 			$log_text .= '</table>';
 		}
 	}
