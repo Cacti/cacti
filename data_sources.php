@@ -1200,19 +1200,20 @@ function ds_edit() {
 				<td><?php
 				$rrd_info = rrdtool_function_info(get_request_var('id'));
 
-		if (cacti_sizeof($rrd_info['rra'])) {
-			$diff = rrdtool_cacti_compare(get_request_var('id'), $rrd_info);
-			rrdtool_info2html($rrd_info, $diff);
+				if (cacti_sizeof($rrd_info['rra'])) {
+					$diff = rrdtool_cacti_compare(get_request_var('id'), $rrd_info);
 
-			if (cacti_sizeof($diff)) {
-				html_start_box(__('RRDtool Tune Info'), '100%', '', '3', 'center', '');
-				print '<tr><td style="padding:4px;">';
-				rrdtool_tune($rrd_info['filename'], $diff, true);
-				print '</td></tr>';
-				html_end_box();
-			}
-		}
-		?></td>
+					rrdtool_info2html($rrd_info, $diff);
+
+					if (cacti_sizeof($diff)) {
+						html_start_box(__('RRDtool Tune Info'), '100%', '', '3', 'center', '');
+
+						rrdtool_tune($rrd_info['filename'], $diff, true);
+
+						html_end_box();
+					}
+				}
+				?></td>
 			</tr>
 		</table>
 		<?php
