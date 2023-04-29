@@ -1533,6 +1533,7 @@ function graph_edit() {
 						if (!empty($graph['graph_template_id'])) {
 							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('graph_templates.php?action=template_edit&id=' . (isset($graph['graph_template_id']) ? $graph['graph_template_id'] : '0'));?>'><?php print __('Edit Graph Template.');?></a><br><?php
 						}
+
 						if (cacti_sizeof($data_sources)) {
 							foreach($data_sources as $ds) {
 								$name = db_fetch_cell_prepared('SELECT name_cache
@@ -1540,12 +1541,14 @@ function graph_edit() {
 									WHERE local_data_id = ?',
 									array($ds['local_data_id']));
 
-							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_sources.php?action=ds_edit&id=' . $ds['local_data_id']);?>'><?php print __('Edit Data Source: \'%s\'.', $name);?></a><br><?php
+								?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_sources.php?action=ds_edit&id=' . $ds['local_data_id']);?>'><?php print __esc('Edit Data Source: \'%s\'.', $name);?></a><br><?php
 							}
 						}
+
 						if (!isempty_request_var('host_id') || !empty($host_id)) {
 							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('host.php?action=edit&id=' . ($host_id > 0 ? $host_id : get_request_var('host_id')));?>'><?php print __('Edit Device.');?></a><br><?php
 						}
+
 						if ($locked) {
 							?><span class='linkMarker'>*</span><a href='#' class='hyperLink' id='unlockid'><?php print __('Unlock Graph.');?></a><?php
 						} else {

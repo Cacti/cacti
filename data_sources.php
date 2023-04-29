@@ -863,7 +863,7 @@ function ds_edit() {
 									WHERE local_graph_id = ?',
 									array($id['local_graph_id']));
 
-								?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('graphs.php?action=graph_edit&id=' . $id['local_graph_id']);?>'><?php print __('Edit Graph: \'%s\'.', $name);?></a><br><?php
+								?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('graphs.php?action=graph_edit&id=' . $id['local_graph_id']);?>'><?php print __esc('Edit Graph: \'%s\'.', $name);?></a><br><?php
 							}
 						}
 						if (!empty($data_local['host_id'])) {
@@ -1163,7 +1163,7 @@ function ds_edit() {
 			<tr>
 				<td>
 					<span class='textInfo'><?php print __('Data Source Debug');?></span><br>
-					<pre><?php print @rrdtool_function_create(get_request_var('id'), true);?></pre>
+					<pre><?php print html_escape(rrdtool_function_create(get_request_var('id'), true));?></pre>
 				</td>
 			</tr>
 		</table>
