@@ -2194,7 +2194,7 @@ function graph_edit() {
 									WHERE local_data_id = ?',
 									array($ds['local_data_id']));
 
-								?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_sources.php?action=ds_edit&id=' . $ds['local_data_id']);?>'><?php print __('Edit Data Source: \'%s\'.', $name);?></a><br><?php
+								?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_sources.php?action=ds_edit&id=' . $ds['local_data_id']);?>'><?php print __esc('Edit Data Source: \'%s\'.', $name);?></a><br><?php
 							}
 						}
 
