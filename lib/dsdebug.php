@@ -324,9 +324,9 @@ function dsdebug_poller_bottom() {
 					WHERE id = ?',
 					array($c['done'], $info, trim(implode("\n", $c['issue'])), $c['id']));
 			}
-
-			log_dsdebug_statistics('poller', cacti_sizeof($checks), $total_issues);
 		}
+
+		log_dsdebug_statistics('poller', cacti_sizeof($checks), $total_issues);
 	}
 
 	restore_error_handler();
