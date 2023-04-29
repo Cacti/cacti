@@ -1598,10 +1598,12 @@ function tail_file(string $file_name, int $number_of_lines, ?int $message_type =
 			}
 		}
 
-		$display_line[$line_no++] = $display;
+		$display_line[$line_no] = $display;
+
+		$line_no++;
 
 		if ($display) {
-			++$total_rows;
+			$total_rows++;
 		}
 	}
 
@@ -1629,20 +1631,22 @@ function tail_file(string $file_name, int $number_of_lines, ?int $message_type =
 	$line_no    = 0;
 
 	while (($line = fgets($fp)) !== false) {
-		if (!isset($display_line[$line_no + 1])) {
+		if (!isset($display_line[$line_no])) {
 			$line_no++;
 
 			continue;
 		}
 
-		$display = $display_line[$line_no++];
+		$display = $display_line[$line_no];
+
+		$line_no++;
 
 		if ($display === false) {
 			continue;
 		}
 
 		if ($i < $start) {
-			++$i;
+			$i++;
 
 			continue;
 		}
@@ -1651,7 +1655,8 @@ function tail_file(string $file_name, int $number_of_lines, ?int $message_type =
 			break;
 		}
 
-		++$i;
+		$i++;
+
 		$file_array[$i] = $line;
 	}
 
