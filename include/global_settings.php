@@ -351,6 +351,12 @@ $settings['general'] = array(
 		'method'        => 'checkbox',
 		'default'       => ''
 	),
+	'log_ignored_errors' => array(
+		'friendly_name' => __('Log Ignored General Errors'),
+		'description'   => __('Cacti will mask certain errors that are often times considered fatal and that would otherwise disable plugins and additionally confuse some users.  If you wish to see these errors instead, check the checkbox.'),
+		'method'        => 'checkbox',
+		'default'       => ''
+	),
 	'selective_debug' => array(
 		'friendly_name' => __('Selective File Debug'),
 		'description'   => __('Select which files you wish to place in Debug mode regardless of the Generic Log Level setting.  Any files selected will be treated as they are in Debug mode.'),

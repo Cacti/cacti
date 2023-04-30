@@ -1476,13 +1476,13 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 
 	/* format the message */
 	if ($environ == 'POLLER') {
-		$prefix = "$date - " . $environ . ': Poller[' . $config['poller_id'] . '] PID[' . getmypid() . '] ';
+		$prefix = "$date - " . ($environ != '' ? "$environ: ":'') . 'Poller[' . $config['poller_id'] . '] PID[' . getmypid() . '] ';
 
 		if ($output) {
 			$oprefix = sprintf('Total[%3.4f] ', microtime(true) - $start);
 		}
 	} else {
-		$prefix  = "$date - " . $environ . ' ';
+		$prefix  = "$date - " . ($environ != '' ? $environ . ' ':'');
 
 		if ($output) {
 			$oprefix = $prefix;
@@ -1530,11 +1530,11 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 			}
 
 			if ($log_type == 'err' && read_config_option('log_perror')) {
-				syslog(LOG_CRIT, $environ . ': ' . $string);
+				syslog(LOG_CRIT, ($environ != '' ? $environ . ': ':'') . $string);
 			} elseif ($log_type == 'warn' && read_config_option('log_pwarn')) {
-				syslog(LOG_WARNING, $environ . ': ' . $string);
+				syslog(LOG_WARNING, ($environ != '' ? $environ . ': ':'') . $string);
 			} elseif (($log_type == 'stat' || $log_type == 'note') && read_config_option('log_pstats')) {
-				syslog(LOG_INFO, $environ . ': ' . $string);
+				syslog(LOG_INFO, ($environ != '' ? $environ . ': ':'') . $string);
 			}
 
 			closelog();
@@ -5946,7 +5946,7 @@ function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limi
 			print "<table style='width:100%;text-align:center;'><tr><td>$s</td></tr></table>\n";
 		}
 
-		cacti_log(trim("$entry Backtrace: " . clean_up_lines($s)), false);
+		cacti_log(trim("$entry Backtrace: " . clean_up_lines($s)), false, '');
 	} else {
 		if (!empty($entry)) {
 			return trim("$entry Backtrace: " . clean_up_lines($s));
@@ -6285,8 +6285,10 @@ function cacti_oid_numeric_format() {
 	}
 }
 
-function IgnoreErrorHandler($message) {
+function IgnoreErrorHandler($message, $file = '', $line = null) {
 	global $snmp_error;
+
+	$log_ignored_errors = read_config_option('log_ignored_errors');
 
 	$snmp_ignore = array(
 		'No response from',
@@ -6321,6 +6323,13 @@ function IgnoreErrorHandler($message) {
 
 	foreach ($general_ignore as $i) {
 		if (stripos($message, $i) !== false) {
+			$message = trim($message, "\\\n\t ");
+
+			if ($log_ignored_errors) {
+				cacti_log("ERROR: '$message' in $file:$line", false, 'IGNORE');
+				cacti_debug_backtrace('IGNORE ERROR', false, true, 0, 1);
+			}
+
 			return true;
 		}
 	}
@@ -6335,7 +6344,7 @@ function CactiErrorHandler($level, $message, $file, $line, $context = array()) {
 		return true;
 	}
 
-	if (IgnoreErrorHandler($message)) {
+	if (IgnoreErrorHandler($message, $file, $line)) {
 		return true;
 	}
 
