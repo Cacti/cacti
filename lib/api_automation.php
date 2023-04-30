@@ -1355,7 +1355,7 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 	global $automation_op_array, $automation_oper, $automation_tree_header_types;
 
 	$items = db_fetch_assoc_prepared('SELECT *
-		FROM automation_match_rule_items
+		FROM automation_match_rule_items AS mri
 		WHERE rule_id = ?
 		AND rule_type = ?
 		ORDER BY sequence',
@@ -4401,3 +4401,513 @@ function automation_change_tree_rule_leaf_type($leaf_type, $rule_id) {
 			array($leaf_type, $rule_id));
 	}
 }
+
+function automation_type_to_table($type) {
+	$table = '';
+
+	switch($type) {
+		case 'network':
+			$table = 'automation_networks';
+			break;
+		case 'device':
+			$table = 'automation_templates';
+			break;
+		case 'device_rules':
+			$table = 'automation_templates_rules';
+			break;
+		case 'graph':
+			$table = 'automation_graph_rules';
+			break;
+		case 'graph_items':
+			$table = 'automation_graph_rule_items';
+			break;
+		case 'tree':
+			$table = 'automation_tree_rules';
+			break;
+		case 'tree_items':
+			$table = 'automation_tree_rule_items';
+			break;
+		case 'snmp':
+			$table = 'automation_snmp';
+			break;
+		case 'snmp_items':
+			$table = 'automation_snmp_items';
+			break;
+	}
+
+	return $table;
+}
+
+function automation_id_to_hash($type, $id) {
+	$table = automation_type_to_table($table);
+
+	if ($table != '') {
+		return db_fetch_cell_prepared("SELECT hash FROM $table WHERE id = ?", array($id));
+	}
+
+	return false;
+}
+
+function automation_hash_to_id($type, $hash) {
+	$table = automation_type_to_table($table);
+
+	if ($table != '') {
+		return db_fetch_cell_prepared("SELECT id
+			FROM $table
+			WHERE hash = ?",
+			array($hash));
+	}
+
+	return false;
+}
+
+function automation_network_export($network_ids) {
+	if (!is_array($network_ids)) {
+		$export_name = db_fetch_cell_prepared("SELECT CONCAT('automation_network_', name, '.json')
+			FROM automation_networks
+			WHERE id = ?",
+			array($network_ids));
+
+		$network_ids = array($network_ids);
+	} else {
+		$export_name = 'automation_network_multiple.json';
+	}
+
+	$json_array = array();
+
+	$json_array['name'] = clean_up_name(strtolower($export_name));
+
+	if (cacti_sizeof($network_ids)) {
+		$networks = array();
+
+		foreach($network_ids as $id) {
+			/* get the row of data */
+			$network = db_fetch_row_prepared('SELECT *
+				FROM automation_networks
+				WHERE id = ?',
+				array($id));
+
+			$snmp_id = $network['snmp_id'];
+
+			$network['snmp_id'] = db_fetch_cell_prepared('SELECT hash
+				FROM automation_snmp
+				WHERE id = ?', array($network['snmp_id']));
+
+			/* set some safe defaults */
+			$network['poller_id'] = 1;
+
+			/* remove objects that have a hash */
+			unset($network['id']);
+			unset($network['up_hosts']);
+			unset($network['snmp_hosts']);
+			unset($network['last_runtime']);
+			unset($network['last_started']);
+			unset($network['last_status']);
+
+			/* get the snmp options data */
+			$snmp = db_fetch_row_prepared('SELECT *
+				FROM automation_snmp
+				WHERE id = ?',
+				array($snmp_id));
+
+			/* remove objects that have a hash */
+			unset($snmp['id']);
+
+			/* get the snmp options item data */
+			$snmp_items = db_fetch_assoc_prepared('SELECT *
+				FROM automation_snmp_items
+				WHERE snmp_id = ?',
+				array($snmp_id));
+
+			/* remove objects that have a hash */
+			foreach($snmp_items as $index => $item) {
+				unset($snmp_items[$index]['id']);
+				unset($snmp_items[$index]['snmp_id']);
+			}
+
+			/* collapse the snmp items into snmp */
+			$snmp['snmp_items'] = $snmp_items;
+
+			/* collapse the snmp object into the network */
+			$network['snmp'] = $snmp;
+
+			/* collapse the data object into the json object */
+			$networks[] = $network;
+		}
+
+		$json_array['network'] = $networks;
+	}
+
+	return $json_array;
+}
+
+function automation_device_rule_export($template_ids) {
+	if (!is_array($template_ids)) {
+		$export_name = db_fetch_cell_prepared("SELECT CONCAT('automation_device_rule_', name, '.json')
+			FROM automation_templates AS at
+			INNER JOIN host_template AS ht
+			ON at.host_template = ht.id
+			WHERE at.id = ?",
+			array($template_ids));
+
+		$template_ids = array($template_ids);
+	} else {
+		$export_name = 'automation_device_rules_multiple.json';
+	}
+
+	$json_array = array();
+
+	$json_array['name'] = clean_up_name(strtolower($export_name));
+
+	if (cacti_sizeof($template_ids)) {
+		$devices = array();
+
+		foreach($template_ids as $id) {
+			/* get the row of data */
+			$device = db_fetch_row_prepared('SELECT *
+				FROM automation_templates
+				WHERE id = ?',
+				array($id));
+
+			$device['host_template'] = db_fetch_cell_prepared('SELECT hash
+				FROM host_template
+				WHERE id = ?',
+				array($device['host_template']));
+
+			/* remove objects that have a hash */
+			unset($device['id']);
+
+			/* get the snmp options data */
+			$device_rule_items = db_fetch_assoc_prepared('SELECT *
+				FROM automation_templates_rules
+				WHERE template_id = ?',
+				array($id));
+
+			foreach($device_rule_items as $index => $rule) {
+				if ($rule['rule_type'] == 1) {
+					$device_rule_items[$index]['rule_id'] = db_fetch_cell_prepared('SELECT hash
+						FROM automation_graph_rules
+						WHERE id = ?',
+						array($rule['rule_id']));
+				} else {
+					$device_rule_items[$index]['rule_id'] = db_fetch_cell_prepared('SELECT hash
+						FROM automation_tree_rules
+						WHERE id = ?',
+						array($rule['rule_id']));
+				}
+
+				unset($device_rule_items[$index]['id']);
+				unset($device_rule_items[$index]['template_id']);
+			}
+
+			$device['device_rules'] = $device_rules;
+
+			/* get the snmp options item data */
+			$graph_rules = db_fetch_assoc_prepared('SELECT *
+				FROM automation_graph_rules
+				WHERE id IN (SELECT rule_id FROM automation_templates_rules WHERE rule_type = 1 AND template_id = ?)',
+				array($id));
+
+			/* remove objects that have a hash */
+			foreach($graph_rules as $index => $rule) {
+				$rule_id = $rule['id'];
+
+				$graph_rules[$index]['snmp_query_id'] = db_fetch_cell_prepared('SELECT hash
+					FROM snmp_query
+					WHERE id = ?',
+					array($rule['snmp_query_id']));
+
+				$graph_rules[$index]['graph_type_id'] = db_fetch_cell_prepared('SELECT hash
+					FROM snmp_query_graph
+					WHERE id = ?',
+					array($rule['graph_type_id']));
+
+				unset($graph_rules[$index]['id']);
+
+				/* get the snmp options item data */
+				$graph_rule_items = db_fetch_assoc_prepared('SELECT gri.*
+					FROM automation_graph_rule_items AS gri
+					WHERE gri.rule_id = ?',
+					array($rule_id));
+
+				/* remove objects that have a hash */
+				foreach($graph_rule_items as $grindex => $rule_item) {
+					unset($graph_rule_items[$grindex]['id']);
+					unset($graph_rule_items[$grindex]['rule_id']);
+				}
+
+				/* collapse the graph rule items */
+				$graph_rules[$index]['graph_rule_items'] = $graph_rule_items;
+
+				/* match items */
+				$graph_match_items = db_fetch_assoc_prepared('SELECT mri.*
+					FROM automation_match_rule_items AS mri
+					WHERE mri.rule_id = ?
+					AND mri.rule_type IN (1,2)',
+					array($rule_id));
+
+				/* remove objects that have a hash */
+				foreach($graph_match_items as $gmindex => $rule_item) {
+					unset($graph_match_items[$gmindex]['id']);
+					unset($graph_match_items[$gmindex]['rule_id']);
+				}
+
+				$graph_rules[$index]['graph_match_items'] = $graph_match_items;
+			}
+
+			$device['graph_rules'] = $graph_rules;
+
+			/* get the snmp options item data */
+			$tree_rules = db_fetch_assoc_prepared('SELECT *
+				FROM automation_tree_rules
+				WHERE id IN (SELECT rule_id FROM automation_templates_rules WHERE rule_type = 2 AND template_id = ?)',
+				array($id));
+
+			/* remove objects that have a hash */
+			foreach($tree_rules as $index => $rule) {
+				$rule_id = $rule['id'];
+
+				/* get the snmp options item data */
+				$tree_rule_items = db_fetch_assoc_prepared('SELECT gri.*
+					FROM automation_tree_rule_items AS gri
+					WHERE gri.rule_id = ?',
+					array($rule_id));
+
+				/* remove objects that have a hash */
+				foreach($tree_rule_items as $trindex => $rule_item) {
+					unset($tree_rule_items[$trindex]['id']);
+				}
+
+				/* unset the rule id */
+				unset($tree_rules[$index]['id']);
+
+				/* collapse the tree rule items */
+				$tree_rules[$index]['tree_rule_items'] = $tree_rule_items;
+
+				/* match items */
+				$tree_match_items = db_fetch_assoc_prepared('SELECT mri.*
+					FROM automation_match_rule_items AS mri
+					WHERE mri.rule_id = ?
+					AND mri.rule_type IN (3,4)',
+					array($rule_id));
+
+				/* remove objects that have a hash */
+				foreach($tree_match_items as $tmindex => $rule_item) {
+					unset($tree_match_items[$tmindex]['id']);
+					unset($tree_match_items[$tmindex]['rule_id']);
+				}
+
+				$tree_rules[$index]['tree_match_items'] = $tree_match_items;
+			}
+
+			$device['tree_rules'] = $tree_rules;
+
+			/* collapse the data object into the json object */
+			$devices[] = $device;
+		}
+
+		$json_array['device'] = $devices;
+	}
+
+	return $json_array;
+}
+
+function automation_graph_rule_export($graph_rule_ids) {
+	if (!is_array($graph_rule_ids)) {
+		$export_name = db_fetch_cell_prepared("SELECT CONCAT('automation_graphs_rule_', name, '.json')
+			FROM automation_graph_rules
+			WHERE id = ?",
+			array($graph_rule_ids));
+
+		$graph_rule_ids = array($graph_rule_ids);
+	} else {
+		$export_name = 'automation_graph_rules_multiple.json';
+	}
+
+	$json_array = array();
+
+	$json_array['name'] = clean_up_name(strtolower($export_name));
+
+	if (cacti_sizeof($graph_rule_ids)) {
+		$graph_rules = array();
+
+		foreach($graph_rule_ids as $rule_id) {
+			/* get the snmp options item data */
+			$graph_rule = db_fetch_row_prepared('SELECT *
+				FROM automation_graph_rules
+				WHERE id = ?',
+				array($rule_id));
+
+			$graph_rule['snmp_query_id'] = db_fetch_cell_prepared('SELECT hash
+				FROM snmp_query
+				WHERE id = ?',
+				array($graph_rule['snmp_query_id']));
+
+			$graph_rule['graph_type_id'] = db_fetch_cell_prepared('SELECT hash
+				FROM snmp_query_graph
+				WHERE id = ?',
+				array($graph_rule['graph_type_id']));
+
+			/* get the snmp options item data */
+			$graph_rule_items = db_fetch_assoc_prepared('SELECT gri.*
+				FROM automation_graph_rule_items AS gri
+				WHERE gri.rule_id = ?',
+				array($rule_id));
+
+			/* remove objects that have a hash */
+			foreach($graph_rule_items as $grindex => $rule_item) {
+				unset($graph_rule_items[$grindex]['id']);
+				unset($graph_rule_items[$grindex]['rule_id']);
+			}
+
+			/* unset the rule id */
+			unset($graph_rule['id']);
+
+			/* collapse the graph rule items */
+			$graph_rule['graph_rule_items'] = $graph_rule_items;
+
+			/* match items */
+			$graph_match_items = db_fetch_assoc_prepared('SELECT mri.*
+				FROM automation_match_rule_items AS mri
+				WHERE mri.rule_id = ?
+				AND mri.rule_type IN (1,2)',
+				array($rule_id));
+
+			/* remove objects that have a hash */
+			foreach($graph_match_items as $gmindex => $rule_item) {
+				unset($graph_match_items[$gmindex]['id']);
+				unset($graph_match_items[$gmindex]['rule_id']);
+			}
+
+			$graph_rule['graph_match_items'] = $graph_match_items;
+
+			$graph_rules[] = $graph_rule;
+		}
+
+		$json_array['graph_rules'] = $graph_rules;
+	}
+
+	return $json_array;
+}
+
+function automation_tree_rule_export($tree_rule_ids) {
+	if (!is_array($tree_rule_ids)) {
+		$export_name = db_fetch_cell_prepared("SELECT CONCAT('automation_tree_rule_', name, '.json')
+			FROM automation_tree_rules
+			WHERE id = ?",
+			array($tree_rule_ids));
+
+		$tree_rule_ids = array($tree_rule_ids);
+	} else {
+		$export_name = 'automation_tree_rules_multiple.json';
+	}
+
+	$json_array = array();
+
+	$json_array['name'] = clean_up_name(strtolower($export_name));
+
+	if (cacti_sizeof($tree_rule_ids)) {
+		$tree_rules = array();
+
+		foreach($tree_rule_ids as $rule_id) {
+			/* get the snmp options item data */
+			$tree_rule = db_fetch_row_prepared('SELECT *
+				FROM automation_tree_rules
+				WHERE id = ?',
+				array($rule_id));
+
+			/* get the snmp options item data */
+			$tree_rule_items = db_fetch_assoc_prepared('SELECT gri.*
+				FROM automation_tree_rule_items AS gri
+				WHERE gri.rule_id = ?',
+				array($rule_id));
+
+			/* remove objects that have a hash */
+			foreach($tree_rule_items as $trindex => $rule_item) {
+				unset($tree_rule_items[$trindex]['id']);
+				unset($tree_rule_items[$trindex]['rule_id']);
+			}
+
+			/* unset the rule id */
+			unset($tree_rule['id']);
+
+			/* collapse the graph rule items */
+			$tree_rule['tree_rule_items'] = $tree_rule_items;
+
+			/* match items */
+			$tree_match_items = db_fetch_assoc_prepared('SELECT mri.*
+				FROM automation_match_rule_items AS mri
+				WHERE mri.rule_id = ?
+				AND mri.rule_type IN (3,4)',
+				array($rule_id));
+
+			/* remove objects that have a hash */
+			foreach($tree_match_items as $tmindex => $rule_item) {
+				unset($tree_match_items[$tmindex]['id']);
+				unset($tree_match_items[$tmindex]['rule_id']);
+			}
+
+			$tree_rule['tree_match_items'] = $tree_match_items;
+
+			$tree_rules[] = $tree_rule;
+		}
+
+		$json_array['tree_rules'] = $tree_rules;
+	}
+
+	return $json_array;
+}
+
+function automation_snmp_option_export($snmp_option_ids) {
+	if (!is_array($snmp_option_ids)) {
+		$export_name = db_fetch_cell_prepared("SELECT CONCAT('automation_snmp_option_', name, '.json')
+			FROM automation_snmp
+			WHERE id = ?",
+			array($snmp_option_ids));
+
+		$snmp_option_ids = array($snmp_option_ids);
+	} else {
+		$export_name = 'automation_snmp_options_multiple.json';
+	}
+
+	$json_array = array();
+
+	$json_array['name'] = clean_up_name(strtolower($export_name));
+
+	if (cacti_sizeof($snmp_option_ids)) {
+		$options = array();
+
+		foreach($snmp_option_ids as $option) {
+			/* get the snmp options data */
+			$snmp_option = db_fetch_row_prepared('SELECT *
+				FROM automation_snmp
+				WHERE id = ?',
+				array($option));
+
+			/* remove objects that have a hash */
+			unset($snmp_option['id']);
+
+			/* get the snmp options item data */
+			$snmp_items = db_fetch_assoc_prepared('SELECT *
+				FROM automation_snmp_items
+				WHERE snmp_id = ?',
+				array($option));
+
+			/* remove objects that have a hash */
+			foreach($snmp_items as $index => $item) {
+				unset($snmp_items[$index]['id']);
+				unset($snmp_items[$index]['snmp_id']);
+			}
+
+			/* collapse the snmp items into snmp */
+			$snmp_option['snmp_items'] = $snmp_items;
+
+			$options[] = $snmp_option;
+		}
+
+		$json_array['snmp_options'] = $options;
+	}
+
+	return $json_array;
+}
+

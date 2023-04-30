@@ -61,6 +61,10 @@ switch (get_request_var('action')) {
 	case 'import':
 
 		break;
+	case 'export':
+		automation_export();
+
+		break;
 	case 'edit':
 		top_header();
 		network_edit();
@@ -74,6 +78,36 @@ switch (get_request_var('action')) {
 		bottom_footer();
 
 		break;
+}
+
+function automation_export() {
+	/* if we are to save this form, instead of display it */
+	if (isset_request_var('selected_items')) {
+		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+
+		if ($selected_items != false) {
+			if(cacti_sizeof($selected_items) == 1) {
+				$export_data = automation_network_export($selected_items[0]);
+			} else {
+				foreach($selected_items as $id) {
+					$snmp_option_ids[] = $id;
+				}
+
+				$export_data = automation_network_export($snmp_option_ids);
+			}
+
+			if (cacti_sizeof($export_data)) {
+				$export_file_name = $export_data['name'];
+
+				header('Content-type: application/json');
+				header('Content-Disposition: attachment; filename=' . $export_file_name);
+
+				$output = json_encode($export_data, JSON_PRETTY_PRINT);
+
+				print $output;
+			}
+		}
+	}
 }
 
 function form_save() {
@@ -401,6 +435,27 @@ function form_actions() {
 				foreach ($selected_items as $item) {
 					api_networks_cancel($item);
 				}
+			} elseif (get_nfilter_request_var('drp_action') == '6') { /* export */
+				top_header();
+
+				print '<script text="text/javascript">
+					function DownloadStart(url) {
+						document.getElementById("download_iframe").src = url;
+						setTimeout(function() {
+							document.location = "automation_networks.php";
+							Pace.stop();
+						}, 500);
+					}
+
+					$(function() {
+						//debugger;
+						DownloadStart(\'automation_networks.php?action=export&selected_items=' . get_nfilter_request_var('selected_items') . '\');
+					});
+				</script>
+				<iframe id="download_iframe" style="display:none;"></iframe>';
+
+				bottom_footer();
+				exit;
 			} elseif (get_nfilter_request_var('drp_action') == '7') { /* dupliciate */
 				foreach ($selected_items as $item) {
 					api_networks_duplicate($item);
@@ -487,6 +542,13 @@ function form_actions() {
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to cancel on going Network Discovery(s).') . "</p>
+				<div class='itemlist'><ul>$networks_list</ul></div>
+			</td>
+		</tr>";
+	} elseif (get_nfilter_request_var('drp_action') == '6') { /* export */
+		print "<tr>
+			<td class='textArea'>
+				<p>" . __('Click \'Continue\' to Export the following Network(s).') . "</p>
 				<div class='itemlist'><ul>$networks_list</ul></div>
 			</td>
 		</tr>";

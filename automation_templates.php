@@ -42,6 +42,10 @@ switch (get_request_var('action')) {
 	case 'import':
 
 		break;
+	case 'export':
+		automation_export();
+
+		break;
 	case 'ajax_dnd':
 		automation_template_dnd();
 
@@ -137,6 +141,36 @@ switch (get_request_var('action')) {
 		bottom_footer();
 
 		break;
+}
+
+function automation_export() {
+	/* if we are to save this form, instead of display it */
+	if (isset_request_var('selected_items')) {
+		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+
+		if ($selected_items != false) {
+			if(cacti_sizeof($selected_items) == 1) {
+				$export_data = automation_device_rule_export($selected_items[0]);
+			} else {
+				foreach($selected_items as $id) {
+					$snmp_option_ids[] = $id;
+				}
+
+				$export_data = automation_device_rule_export($snmp_option_ids);
+			}
+
+			if (cacti_sizeof($export_data)) {
+				$export_file_name = $export_data['name'];
+
+				header('Content-type: application/json');
+				header('Content-Disposition: attachment; filename=' . $export_file_name);
+
+				$output = json_encode($export_data, JSON_PRETTY_PRINT);
+
+				print $output;
+			}
+		}
+	}
 }
 
 function automation_template_dnd() {
@@ -381,6 +415,27 @@ function form_actions() {
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 				db_execute('DELETE FROM automation_templates WHERE ' . array_to_sql_or($selected_items, 'id'));
+			} elseif (get_nfilter_request_var('drp_action') == '2') { /* export */
+				top_header();
+
+				print '<script text="text/javascript">
+					function DownloadStart(url) {
+						document.getElementById("download_iframe").src = url;
+						setTimeout(function() {
+							document.location = "automation_templates.php";
+							Pace.stop();
+						}, 500);
+					}
+
+					$(function() {
+						//debugger;
+						DownloadStart(\'automation_templates.php?action=export&selected_items=' . get_nfilter_request_var('selected_items') . '\');
+					});
+				</script>
+				<iframe id="download_iframe" style="display:none;"></iframe>';
+
+				bottom_footer();
+				exit;
 			}
 		}
 
@@ -422,6 +477,15 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Device Rule(s)') . "'>";
+		} elseif (get_nfilter_request_var('drp_action') == '2') { /* export */
+			print "<tr>
+				<td class='textArea' class='odd'>
+					<p>" . __('Click \'Continue\' to Export the following Device Rule(s).') . "</p>
+					<div class='itemlist'><ul>$at_list</ul></div>
+				</td>
+			</tr>\n";
+
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Export Device Rule(s)') . "'>";
 		}
 	} else {
 		raise_message(40);

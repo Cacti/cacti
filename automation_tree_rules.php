@@ -44,6 +44,10 @@ switch (get_request_var('action')) {
 	case 'import':
 
 		break;
+	case 'export':
+		automation_export();
+
+		break;
 	case 'actions':
 		automation_tree_rules_form_actions();
 
@@ -99,9 +103,35 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
- The Save Function
- -------------------------- */
+function automation_export() {
+	/* if we are to save this form, instead of display it */
+	if (isset_request_var('selected_items')) {
+		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+
+		if ($selected_items != false) {
+			if(cacti_sizeof($selected_items) == 1) {
+				$export_data = automation_tree_rule_export($selected_items[0]);
+			} else {
+				foreach($selected_items as $id) {
+					$snmp_option_ids[] = $id;
+				}
+
+				$export_data = automation_tree_rule_export($snmp_option_ids);
+			}
+
+			if (cacti_sizeof($export_data)) {
+				$export_file_name = $export_data['name'];
+
+				header('Content-type: application/json');
+				header('Content-Disposition: attachment; filename=' . $export_file_name);
+
+				$output = json_encode($export_data, JSON_PRETTY_PRINT);
+
+				print $output;
+			}
+		}
+	}
+}
 
 function automation_tree_rules_form_save() {
 	if (isset_request_var('save_component_automation_tree_rule')) {
@@ -236,6 +266,27 @@ function automation_tree_rules_form_actions() {
 
 					db_execute_prepared("UPDATE automation_tree_rules SET enabled='' WHERE id = ?", array($selected_items[$i]));
 				}
+			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_EXPORT) { /* export */
+				top_header();
+
+				print '<script text="text/javascript">
+					function DownloadStart(url) {
+						document.getElementById("download_iframe").src = url;
+						setTimeout(function() {
+							document.location = "automation_tree_rules.php";
+							Pace.stop();
+						}, 500);
+					}
+
+					$(function() {
+						//debugger;
+						DownloadStart(\'automation_tree_rules.php?action=export&selected_items=' . get_nfilter_request_var('selected_items') . '\');
+					});
+				</script>
+				<iframe id="download_iframe" style="display:none;"></iframe>';
+
+				bottom_footer();
+				exit;
 			}
 		}
 
@@ -295,6 +346,13 @@ function automation_tree_rules_form_actions() {
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to disable the following Rule(s).') . "</p>
+				<div class='itemlist'><ul>$automation_tree_rules_list</ul></div>
+			</td>
+		</tr>\n";
+	} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_EXPORT) { /* export */
+		print "<tr>
+			<td class='textArea'>
+				<p>" . __('Click \'Continue\' to Export the following Rule(s).') . "</p>
 				<div class='itemlist'><ul>$automation_tree_rules_list</ul></div>
 			</td>
 		</tr>\n";

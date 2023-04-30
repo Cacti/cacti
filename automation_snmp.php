@@ -47,6 +47,10 @@ switch (get_request_var('action')) {
 	case 'import':
 
 		break;
+	case 'export':
+		snmp_export();
+
+		break;
 	case 'actions':
 		form_automation_snmp_actions();
 
@@ -108,6 +112,38 @@ switch (get_request_var('action')) {
 		bottom_footer();
 
 		break;
+}
+
+function snmp_export() {
+	/* if we are to save this form, instead of display it */
+	if (isset_request_var('selected_items')) {
+		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+
+		if ($selected_items != false) {
+			if(cacti_sizeof($selected_items) == 1) {
+				$export_data = automation_snmp_option_export($selected_items[0]);
+			} else {
+				foreach($selected_items as $id) {
+					$snmp_option_ids[] = $id;
+				}
+
+				$export_data = automation_snmp_option_export($snmp_option_ids);
+			}
+
+			if (cacti_sizeof($export_data)) {
+				$export_file_name = $export_data['name'];
+
+				header('Content-type: application/json');
+				header('Content-Disposition: attachment; filename=' . $export_file_name);
+
+				$output = json_encode($export_data, JSON_PRETTY_PRINT);
+
+				print $output;
+			} else {
+
+			}
+		}
+	}
 }
 
 function form_automation_snmp_save() {
@@ -201,6 +237,27 @@ function form_automation_snmp_actions() {
 				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					automation_duplicate_snmp_option($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
+			} elseif (get_nfilter_request_var('drp_action') == '3') { /* export */
+				top_header();
+
+				print '<script text="text/javascript">
+					function DownloadStart(url) {
+						document.getElementById("download_iframe").src = url;
+						setTimeout(function() {
+							document.location = "automation_snmp.php";
+							Pace.stop();
+						}, 500);
+					}
+
+					$(function() {
+						//debugger;
+						DownloadStart(\'automation_snmp.php?action=export&selected_items=' . get_nfilter_request_var('selected_items') . '\');
+					});
+				</script>
+				<iframe id="download_iframe" style="display:none;"></iframe>';
+
+				bottom_footer();
+				exit;
 			}
 		}
 
@@ -210,7 +267,7 @@ function form_automation_snmp_actions() {
 	}
 
 	/* setup some variables */
-	$snmp_groups = '';
+	$snmp_options = '';
 	$i           = 0;
 	/* loop through each of the graphs selected on the previous page and get more info about them */
 	foreach ($_POST as $var => $val) {
@@ -218,7 +275,7 @@ function form_automation_snmp_actions() {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1], 'chk[1]');
 			/* ==================================================== */
-			$snmp_groups .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM automation_snmp WHERE id = ?', array($matches[1]))) . '</li>';
+			$snmp_options .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM automation_snmp WHERE id = ?', array($matches[1]))) . '</li>';
 			$automation_array[$i] = $matches[1];
 			$i++;
 		}
@@ -250,19 +307,27 @@ function form_automation_snmp_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the following SNMP Option(s).') . "</p>
-					<div class='itemlist'><ul>$snmp_groups</ul></div>
+					<div class='itemlist'><ul>$snmp_options</ul></div>
 				</td>
 			</tr>";
 		} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to duplicate the following SNMP Options. You can optionally change the title format for the new SNMP Options.') . "</p>
-					<div class='itemlist'><ul>$snmp_groups</ul></div>
+					<div class='itemlist'><ul>$snmp_options</ul></div>
 					<p>" . __('Name Format') . '<br>';
 			form_text_box('name_format', '<' . __('name') . '> (1)', '', '255', '30', 'text');
+
 			print '</p>
 				</td>
 			</tr>';
+		} elseif (get_nfilter_request_var('drp_action') == '3') { /* export */
+			print "<tr>
+				<td class='textArea'>
+					<p>" . __('Click \'Continue\' to Export the following SNMP Options.') . "</p>
+					<div class='itemlist'><ul>$snmp_options</ul></div>
+				</td>
+			</tr>";
 		}
 	}
 
@@ -517,12 +582,12 @@ function automation_snmp_edit() {
 	/* ==================================================== */
 
 	/* display the mactrack snmp option set */
-	$snmp_group = array();
+	$snmp_option = array();
 
 	if (!isempty_request_var('id')) {
-		$snmp_group = db_fetch_row_prepared('SELECT * FROM automation_snmp where id = ?', array(get_request_var('id')));
+		$snmp_option = db_fetch_row_prepared('SELECT * FROM automation_snmp where id = ?', array(get_request_var('id')));
 		# setup header
-		$header_label = __esc('SNMP Option Set [edit: %s]', $snmp_group['name']);
+		$header_label = __esc('SNMP Option Set [edit: %s]', $snmp_option['name']);
 	} else {
 		$header_label = __('SNMP Option Set [new]');
 	}
@@ -546,7 +611,7 @@ function automation_snmp_edit() {
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),
-		'fields' => inject_form_variables($fields_automation_snmp_edit, $snmp_group)
+		'fields' => inject_form_variables($fields_automation_snmp_edit, $snmp_option)
 	));
 
 	html_end_box(true, true);
@@ -823,7 +888,7 @@ function automation_snmp() {
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
-	$snmp_groups = db_fetch_assoc("SELECT asnmp.*, COUNT(anw.id) AS networks,
+	$snmp_options = db_fetch_assoc("SELECT asnmp.*, COUNT(anw.id) AS networks,
 		COUNT(asnmpi.snmp_id) AS totals,
 		SUM(CASE WHEN asnmpi.snmp_version=1 THEN 1 ELSE 0 END) AS v1entries,
 		SUM(CASE WHEN asnmpi.snmp_version=2 THEN 1 ELSE 0 END) AS v2entries,
@@ -857,17 +922,17 @@ function automation_snmp() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	if (cacti_sizeof($snmp_groups)) {
-		foreach ($snmp_groups as $snmp_group) {
-			form_alternate_row('line' . $snmp_group['id'], true);
+	if (cacti_sizeof($snmp_options)) {
+		foreach ($snmp_options as $snmp_option) {
+			form_alternate_row('line' . $snmp_option['id'], true);
 
-			form_selectable_cell(filter_value($snmp_group['name'], get_request_var('filter'), 'automation_snmp.php?action=edit&id=' . $snmp_group['id'] . '&page=1'), $snmp_group['id']);
-			form_selectable_cell($snmp_group['networks'], $snmp_group['id'], '', 'text-align:right;');
-			form_selectable_cell($snmp_group['totals'], $snmp_group['id'], '', 'text-align:right;');
-			form_selectable_cell($snmp_group['v1entries'], $snmp_group['id'], '', 'text-align:right;');
-			form_selectable_cell($snmp_group['v2entries'], $snmp_group['id'], '', 'text-align:right;');
-			form_selectable_cell($snmp_group['v3entries'], $snmp_group['id'], '', 'text-align:right;');
-			form_checkbox_cell($snmp_group['name'], $snmp_group['id']);
+			form_selectable_cell(filter_value($snmp_option['name'], get_request_var('filter'), 'automation_snmp.php?action=edit&id=' . $snmp_option['id'] . '&page=1'), $snmp_option['id']);
+			form_selectable_cell($snmp_option['networks'], $snmp_option['id'], '', 'text-align:right;');
+			form_selectable_cell($snmp_option['totals'], $snmp_option['id'], '', 'text-align:right;');
+			form_selectable_cell($snmp_option['v1entries'], $snmp_option['id'], '', 'text-align:right;');
+			form_selectable_cell($snmp_option['v2entries'], $snmp_option['id'], '', 'text-align:right;');
+			form_selectable_cell($snmp_option['v3entries'], $snmp_option['id'], '', 'text-align:right;');
+			form_checkbox_cell($snmp_option['name'], $snmp_option['id']);
 
 			form_end_row();
 		}
@@ -877,7 +942,7 @@ function automation_snmp() {
 
 	html_end_box(false);
 
-	if (cacti_sizeof($snmp_groups)) {
+	if (cacti_sizeof($snmp_options)) {
 		print $nav;
 	}
 
