@@ -58,6 +58,18 @@ switch (get_request_var('action')) {
 		automation_template_tree_exit_on_change();
 
 		break;
+	case 'item_movedown':
+		automation_templates_item_movedown();
+
+		header('Location: automation_templates.php?action=edit&id=' . get_filter_request_var('template_id'));
+
+		break;
+	case 'item_moveup':
+		automation_templates_item_moveup();
+
+		header('Location: automation_templates.php?action=edit&id=' . get_filter_request_var('template_id'));
+
+		break;
 	case 'actions':
 		form_actions();
 
@@ -152,6 +164,74 @@ function automation_template_dnd() {
 	header('Location: automation_templates.php');
 
 	exit;
+}
+
+function automation_templates_item_movedown() {
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	get_filter_request_var('template_id');
+	get_filter_request_var('rule_type');
+	/* ==================================================== */
+
+	$cur_sequence = db_fetch_cell_prepared('SELECT sequence
+		FROM automation_templates_rules
+		WHERE template_id = ?
+		AND rule_type = ?
+		AND id = ?',
+		array(get_request_var('template_id'), get_request_var('rule_type'), get_request_var('id')));
+
+	$other_id = db_fetch_cell_prepared('SELECT id
+		FROM automation_templates_rules
+		WHERE template_id = ?
+		AND rule_type = ?
+		AND sequence = ?',
+		array(get_request_var('template_id'), get_request_var('rule_type'), $cur_sequence + 1));
+
+	db_execute_prepared('UPDATE automation_templates_rules
+		SET sequence = ?
+		WHERE id = ?',
+		array($cur_sequence + 1, get_request_var('id')));
+
+	db_execute_prepared('UPDATE automation_templates_rules
+		SET sequence = ?
+		WHERE id = ?',
+		array($cur_sequence, $other_id));
+
+	automation_resequence_rules(get_request_var('template_id'));
+}
+
+function automation_templates_item_moveup() {
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	get_filter_request_var('template_id');
+	get_filter_request_var('rule_type');
+	/* ==================================================== */
+
+	$cur_sequence = db_fetch_cell_prepared('SELECT sequence
+		FROM automation_templates_rules
+		WHERE template_id = ?
+		AND rule_type = ?
+		AND id = ?',
+		array(get_request_var('template_id'), get_request_var('rule_type'), get_request_var('id')));
+
+	$other_id = db_fetch_cell_prepared('SELECT id
+		FROM automation_templates_rules
+		WHERE template_id = ?
+		AND rule_type = ?
+		AND sequence = ?',
+		array(get_request_var('template_id'), get_request_var('rule_type'), $cur_sequence - 1));
+
+	db_execute_prepared('UPDATE automation_templates_rules
+		SET sequence = ?
+		WHERE id = ?',
+		array($cur_sequence - 1, get_request_var('id')));
+
+	db_execute_prepared('UPDATE automation_templates_rules
+		SET sequence = ?
+		WHERE id = ?',
+		array($cur_sequence, $other_id));
+
+	automation_resequence_rules(get_request_var('template_id'));
 }
 
 function automation_template_graph_item_dnd() {
@@ -765,16 +845,39 @@ function template_edit() {
 
 		html_header($display_text, false);
 
+		$dnd = read_config_option('drag_and_drop') == 'on' ? true:false;
+
 		if (cacti_sizeof($graph_rules)) {
+			$i = 0;
+
 			foreach($graph_rules as $rule) {
 				$id = "gr{$rule['id']}";
+
 				form_alternate_row($id, true);
 
 				form_selectable_cell($rule['name'], $id);
 				form_selectable_cell($rule['sequence'], $id, '', 'right');
-				form_selectable_cell("<a class='delete deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape('automation_templates.php?action=item_remove_agr_confirm&automation_template_id=' . get_request_var('id') . '&rule_id=' . $rule['id']) . "'></a>", $id, '40', 'right');
+
+				$action = '';
+				if (!$dnd) {
+					if ($i != cacti_sizeof($graph_rules) - 1) {
+						$action .= '<a class="pic fa fa-caret-down moveArrow" style="width:16px" href="' . html_escape('automation_templates.php?action=item_movedown&template_id=' . get_request_var('id') . '&id=' . $rule['id'] . '&rule_type=1') . '" title="' . __esc('Move Down') . '"></a>';
+					} else {
+						$action .= '<a href="#" class="moveArrowNone" style="width:16px"></a>';
+					}
+
+					if ($i > 0) {
+						$action .= '<a class="pic fa fa-caret-up moveArrow" style="width:16px" href="' . html_escape('automation_templates.php?action=item_moveup&template_id=' . get_request_var('id') . '&id=' . $rule['id'] . '&rule_type=1') . '" title="' . __esc('Move Up') . '"></a>';
+					} else {
+						$action .= '<a href="#" class="moveArrowNone" style="width:16px"></a>';
+					}
+				}
+
+				form_selectable_cell("$action<a class='delete deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape('automation_templates.php?action=item_remove_agr_confirm&automation_template_id=' . get_request_var('id') . '&rule_id=' . $rule['id']) . "'></a>", $id, '40', 'right');
 
 				form_end_row();
+
+				$i++;
 			}
 		} else {
 			print '<tr><td><em>' . __('No Associated Graph Rules') . '</em></td></tr>';
@@ -847,7 +950,11 @@ function template_edit() {
 
 		html_header($display_text, false);
 
+		$dnd = read_config_option('drag_and_drop') == 'on' ? true:false;
+
 		if (cacti_sizeof($tree_rules)) {
+			$i = 0;
+
 			foreach($tree_rules as $rule) {
 				$id = "tr{$rule['id']}";
 
@@ -864,7 +971,23 @@ function template_edit() {
 				form_selectable_cell($rule['name'], $id);
 				form_selectable_cell(filter_value($exit_text, '', $exit_on_url), $id);
 				form_selectable_cell($rule['sequence'], $id, '', 'right');
-				form_selectable_cell("<a class='delete deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape('automation_templates.php?action=item_remove_atr_confirm&automation_template_id=' . get_request_var('id') . '&rule_id=' . $rule['id']) . "'></a>", $id, '40', 'right');
+
+				$action = '';
+				if (!$dnd) {
+					if ($i != cacti_sizeof($tree_rules) - 1) {
+						$action .= '<a class="pic fa fa-caret-down moveArrow" style="width:16px" href="' . html_escape('automation_templates.php?action=item_movedown&template_id=' . get_request_var('id') . '&id=' . $rule['id'] . '&rule_type=2') . '" title="' . __esc('Move Down') . '"></a>';
+					} else {
+						$action .= '<a href="#" class="moveArrowNone" style="width:16px"></a>';
+					}
+
+					if ($i > 0) {
+						$action .= '<a class="pic fa fa-caret-up moveArrow" style="width:16px" href="' . html_escape('automation_templates.php?action=item_moveup&template_id=' . get_request_var('id') . '&id=' . $rule['id'] . '&rule_type=2') . '" title="' . __esc('Move Up') . '"></a>';
+					} else {
+						$action .= '<a href="#" class="moveArrowNone" style="width:16px"></a>';
+					}
+				}
+
+				form_selectable_cell("$action<a class='delete deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape('automation_templates.php?action=item_remove_atr_confirm&automation_template_id=' . get_request_var('id') . '&rule_id=' . $rule['id']) . "'></a>", $id, '40', 'right');
 
 				form_end_row();
 
