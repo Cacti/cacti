@@ -151,16 +151,16 @@ function display_matching_hosts($rule, $rule_type, $url) {
 								<?php
 								$host_templates = db_fetch_assoc('SELECT id,name FROM host_template ORDER BY name');
 
-	if (cacti_sizeof($host_templates)) {
-		foreach ($host_templates as $host_template) {
-			print "<option value='" . $host_template['id'] . "'";
+								if (cacti_sizeof($host_templates)) {
+									foreach ($host_templates as $host_template) {
+										print "<option value='" . $host_template['id'] . "'";
 
-			if (get_request_var('host_template_id') == $host_template['id']) {
-				print ' selected';
-			} print '>' . html_escape($host_template['name']) . '</option>';
-		}
-	}
-	?>
+										if (get_request_var('host_template_id') == $host_template['id']) {
+											print ' selected';
+										} print '>' . html_escape($host_template['name']) . '</option>';
+									}
+								}
+								?>
 							</select>
 						</td>
 						<td>
@@ -185,16 +185,16 @@ function display_matching_hosts($rule, $rule_type, $url) {
 							<select id='rowsd' onChange='applyDeviceFilter()'>
 								<option value='-1'<?php if (get_request_var('rowsd') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 								<?php
-	if (cacti_sizeof($item_rows)) {
-		foreach ($item_rows as $key => $value) {
-			print "<option value='". $key . "'";
+								if (cacti_sizeof($item_rows)) {
+									foreach ($item_rows as $key => $value) {
+										print "<option value='". $key . "'";
 
-			if (get_request_var('rowsd') == $key) {
-				print ' selected';
-			} print '>' . $value . '</option>';
-		}
-	}
-	?>
+										if (get_request_var('rowsd') == $key) {
+											print ' selected';
+										} print '>' . $value . '</option>';
+									}
+								}
+								?>
 							</select>
 						</td>
 						<td>
@@ -228,7 +228,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 		$host_where_disabled = "(IFNULL(TRIM(h.disabled),'') == 'on')";
 	}
 
-	$host_where_status   = get_request_var('host_status');
+	$host_where_status = get_request_var('host_status');
 
 	if ($host_where_status == '-1') {
 		/* Show all items */
@@ -1161,16 +1161,16 @@ function display_matching_trees($rule_id, $rule_type, $item, $url) {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 							<?php
-	if (cacti_sizeof($item_rows)) {
-		foreach ($item_rows as $key => $value) {
-			print "<option value='" . $key . "'";
+							if (cacti_sizeof($item_rows)) {
+								foreach ($item_rows as $key => $value) {
+									print "<option value='" . $key . "'";
 
-			if (get_request_var('rows') == $key) {
-				print ' selected';
-			} print '>' . $value . '</option>';
-		}
-	}
-	?>
+									if (get_request_var('rows') == $key) {
+										print ' selected';
+									} print '>' . $value . '</option>';
+								}
+							}
+							?>
 						</select>
 					</td>
 					<td>
@@ -1941,7 +1941,7 @@ function get_created_graphs($rule) {
 		INNER JOIN data_template_rrd AS dtr
 		ON gti.task_item_id = dtr.id
 		INNER JOIN data_local AS dl
-		on dtr.local_data_id = dl.id
+		ON dtr.local_data_id = dl.id
 		INNER JOIN data_template_data AS dtd
 		ON dl.id=dtd.local_data_id
 		LEFT JOIN host As h
@@ -1952,9 +1952,9 @@ function get_created_graphs($rule) {
 		ON dtd.id=did.data_template_data_id
 		LEFT JOIN data_input_fields AS dif
 		ON did.data_input_field_id=dif.id
-		WHERE dl.id=dtd.local_data_id
-		AND dif.type_code='output_type'
-		AND gl.snmp_query_graph_id='" . $snmp_query_graph_id . "'
+		WHERE dl.id = dtd.local_data_id
+		AND dif.type_code = 'output_type'
+		AND gl.snmp_query_graph_id = '" . $snmp_query_graph_id . "'
 		AND ($sql_where)";
 
 	$graphs = db_fetch_assoc($sql, false);
@@ -2319,17 +2319,42 @@ function automation_execute_data_query($host_id, $snmp_query_id) {
 	global $config;
 
 	$function = automation_function_with_pid(__FUNCTION__);
+
 	cacti_log($function . ' Device[' . $host_id . "] - start - data query: $snmp_query_id", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
-	# get all related rules for that data query that are enabled
-	$sql = 'SELECT agr.id, agr.name,
-		agr.snmp_query_id, agr.graph_type_id
-		FROM automation_graph_rules AS agr
-		INNER JOIN host_snmp_query AS hsq
-		ON agr.snmp_query_id = hsq.snmp_query_id
-		WHERE agr.snmp_query_id = ?
-		AND hsq.host_id = ?
-		AND enabled="on"';
+	$rules = db_fetch_cell_prepared('SELECT atr.*
+		FROM automation_templates_rules AS atr
+		INNER JOIN automation_templates AS at
+		ON atr.template_id = at.id
+		INNER JOIN host AS h
+		ON at.host_template_id = h.host_template_id
+		WHERE h.id = ?
+		AND rule_type = 1',
+		array($host_id));
+
+	/* see if this is a new style automation or legacy */
+	if (cacti_sizeof($rules)) {
+		$sql = 'SELECT agr.id, agr.name,
+			agr.snmp_query_id, agr.graph_type_id
+			FROM automation_graph_rules AS agr
+			INNER JOIN automation_templates_rules AS atr
+			ON agr.id = atr.rule_id
+			AND atr.rule_type = 1
+			INNER JOIN host_snmp_query AS hsq
+			ON agr.snmp_query_id = hsq.snmp_query_id
+			WHERE agr.snmp_query_id = ?
+			AND hsq.host_id = ?
+			AND enabled = "on"';
+	} else {
+		$sql = 'SELECT agr.id, agr.name,
+			agr.snmp_query_id, agr.graph_type_id
+			FROM automation_graph_rules AS agr
+			INNER JOIN host_snmp_query AS hsq
+			ON agr.snmp_query_id = hsq.snmp_query_id
+			WHERE agr.snmp_query_id = ?
+			AND hsq.host_id = ?
+			AND enabled = "on"';
+	}
 
 	$rules = db_fetch_assoc_prepared($sql, array($snmp_query_id, $host_id));
 
@@ -2560,38 +2585,63 @@ function automation_execute_graph_template($host_id, $graph_template_id) {
 function automation_execute_device_create_tree($host_id) {
 	global $config;
 
-	/* the $data array holds all information about the host we're just working on
-	 * even if we selected multiple hosts, the calling code will scan through the list
-	 * so we only have a single host here
-	 */
-
 	$function = automation_function_with_pid(__FUNCTION__);
 
 	cacti_log($function . " Device[$host_id] called", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
-	/*
-	 * find all active Tree Rules
-	 * checking whether a specific rule matches the selected host
-	 * has to be done later
+	/**
+	 * find all active Tree Rules checking to see if there is a device rule that matches
+	 * the Device.  If there is one, limit the Tree Rules to just those that match.
 	 */
-	$sql = "SELECT atr.id, atr.name, atr.tree_id, atr.tree_item_id,
-		atr.leaf_type, atr.host_grouping_type
-		FROM automation_tree_rules AS atr
-		WHERE enabled='on'
-		AND leaf_type=" . TREE_ITEM_TYPE_HOST;
+	$rules = db_fetch_cell_prepared('SELECT atr.*
+		FROM automation_templates_rules AS atr
+		INNER JOIN automation_templates AS at
+		ON atr.template_id = at.id
+		INNER JOIN host AS h
+		ON at.host_template_id = h.host_template_id
+		WHERE h.id = ?
+		AND rule_type = 2',
+		array($host_id));
 
-	$rules = db_fetch_assoc($sql);
+	$host_template_id = db_fetch_cell_prepared('SELECT host_template_id
+		FROM host
+		WHERE id = ?',
+		array($host_id));
+
+	if (cacti_sizeof($rules)) {
+		$sql = "SELECT atr.id, atr.name, atr.tree_id, atr.tree_item_id,
+			atr.leaf_type, atr.host_grouping_type, aatr.exit_rules, aatr.sequence
+			FROM automation_tree_rules AS atr
+			INNER JOIN automation_templates_rules AS aatr
+			ON atr.id = aatr.rule_id
+			AND aatr.rule_type = 2
+			WHERE enabled = 'on'
+			AND leaf_type = " . TREE_ITEM_TYPE_HOST . "
+			AND host_template_id = ?
+			ORDER BY aatr.sequence";
+
+		$rules = db_fetch_assoc_prepared($sql, array($host_template_id));
+	} else {
+		$sql = "SELECT atr.id, atr.name, atr.tree_id, atr.tree_item_id, '0' AS exit_rules, '1' AS sequence,
+			atr.leaf_type, atr.host_grouping_type
+			FROM automation_tree_rules AS atr
+			WHERE enabled='on'
+			AND leaf_type=" . TREE_ITEM_TYPE_HOST;
+
+		$rules = db_fetch_assoc($sql);
+	}
 
 	cacti_log($function . ' Device[' . $host_id . '], matching rule sql: ' . str_replace("\n",'',$sql) . ' matches: ' . cacti_sizeof($rules), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
 
-	/* now walk all rules
-	 */
+	/* now walk all rules */
 	if (cacti_sizeof($rules)) {
 		foreach ($rules as $rule) {
 			cacti_log($function . " Device[$host_id], rule: " . $rule['id'] . ' name: ' . $rule['name'] . ' type: ' . $rule['leaf_type'], false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
-			/* does the rule apply to the current host?
-			 * test 'eligible objects' rule items */
+			/**
+			 * does the rule apply to the current host?
+			 * test 'eligible objects' rule items
+			 */
 			$matches = get_matching_hosts($rule, AUTOMATION_RULE_TYPE_TREE_MATCH, 'h.id=' . $host_id);
 
 			cacti_log($function . " Device[$host_id], rule: " . $rule['id'] . ', matching hosts: ' . json_encode($matches), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -2600,12 +2650,18 @@ function automation_execute_device_create_tree($host_id) {
 			if (cacti_sizeof($matches)) {
 				/* create the bunch of header nodes */
 				$parent = create_all_header_nodes($host_id, $rule);
+
 				cacti_log($function . " Device[$host_id], rule: " . $rule['id'] . ', parent: ' . $parent, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
 				/* now that all rule items have been executed, add the item itself */
 				$node = create_device_node($host_id, $parent, $rule);
 
 				cacti_log($function . " Device[$host_id], rule: " . $rule['id'] . ', node: ' . $node, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
+
+				/* if the rule is setup to exit after the first match, exit */
+				if ($rule['exit_rules'] == 1) {
+					return;
+				}
 			}
 		}
 	}
@@ -2619,31 +2675,62 @@ function automation_execute_device_create_tree($host_id) {
 function automation_execute_graph_create_tree($graph_id) {
 	global $config;
 
-	/* the $data array holds all information about the graph we're just working on
-	 * even if we selected multiple graphs, the calling code will scan through the list
-	 * so we only have a single graph here
-	 */
-
 	$function = automation_function_with_pid(__FUNCTION__);
+
 	cacti_log($function . ' Graph[' . $graph_id . '] called', false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
-	/*
+	$host_id = db_fetch_cell_prepared('SELECT host_id
+		FROM graph_local
+		WHERE id = ?',
+		array($graph_id));
+
+	$host_template_id = db_fetch_cell_prepared('SELECT host_template_id
+		FROM host
+		WHERE id = ?',
+		array($host_id));
+
+	/**
 	 * find all active Tree Rules
 	 * checking whether a specific rule matches the selected graph
 	 * has to be done later
 	 */
-	$sql = "SELECT atr.id, atr.name, atr.tree_id, atr.tree_item_id,
-		atr.leaf_type, atr.host_grouping_type
-		FROM automation_tree_rules AS atr
-		WHERE enabled='on'
-		AND leaf_type=" . TREE_ITEM_TYPE_GRAPH;
+	$rules = db_fetch_cell_prepared('SELECT atr.*
+		FROM automation_templates_rules AS atr
+		INNER JOIN automation_templates AS at
+		ON atr.template_id = at.id
+		INNER JOIN host AS h
+		ON at.host_template_id = h.host_template_id
+		WHERE h.id = ?
+		AND rule_type = 2',
+		array($host_id));
 
-	$rules = db_fetch_assoc($sql);
+	if (cacti_sizeof($rules)) {
+		$sql = "SELECT atr.id, atr.name, atr.tree_id, atr.tree_item_id, aatr.exit_rules, aatr.sequence,
+			atr.leaf_type, atr.host_grouping_type
+			FROM automation_tree_rules AS atr
+			INNER JOIN automation_templates_rules AS aatr
+			ON atr.id = aatr.rule_id
+			AND aatr.rule_type = 2
+			WHERE enabled = 'on'
+			AND leaf_type = " . TREE_ITEM_TYPE_GRAPH . "
+			AND host_template_id = ?
+			ORDER BY aatr.sequence";
+
+		$rules = db_fetch_assoc_prepared($sql, array($host_template_id));
+	} else {
+		$sql = "SELECT atr.id, atr.name, atr.tree_id, atr.tree_item_id, '0' AS exit_rules, '0' AS sequence,
+			atr.leaf_type, atr.host_grouping_type
+			FROM automation_tree_rules AS atr
+			WHERE enabled='on'
+			AND leaf_type=" . TREE_ITEM_TYPE_GRAPH;
+
+		$rules = db_fetch_assoc($sql);
+	}
+
 
 	cacti_log($function . ' Graph[' . $graph_id . '], Matching rule sql: ' . str_replace("\n",' ', $sql) . ' matches: ' . cacti_sizeof($rules), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
 
-	/* now walk all rules
-	 */
+	/* now walk all rules */
 	if (cacti_sizeof($rules)) {
 		foreach ($rules as $rule) {
 			cacti_log($function  . ' Graph[' . $graph_id . '], rule: ' . $rule['id'] . ', name: ' . $rule['name'] . ', type: ' . $rule['leaf_type'], false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -2663,6 +2750,11 @@ function automation_execute_graph_create_tree($graph_id) {
 				/* now that all rule items have been executed, add the item itself */
 				$node = create_graph_node($graph_id, $parent, $rule);
 				cacti_log($function . ' Graph[' . $graph_id . '], Rule: ' . $rule['id'] . ', Node: ' . $node, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
+
+				/* if the rule is setup to exit after the first match, exit */
+				if ($rule['exit_rules'] == 1) {
+					return;
+				}
 			}
 		}
 	}
