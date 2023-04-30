@@ -46,6 +46,18 @@ switch (get_request_var('action')) {
 		automation_template_dnd();
 
 		break;
+	case 'graph_dnd':
+		automation_template_graph_item_dnd();
+
+		break;
+	case 'tree_dnd':
+		automation_template_tree_item_dnd();
+
+		break;
+	case 'exitonchange':
+		automation_template_tree_exit_on_change();
+
+		break;
 	case 'actions':
 		form_actions();
 
@@ -140,6 +152,81 @@ function automation_template_dnd() {
 	header('Location: automation_templates.php');
 
 	exit;
+}
+
+function automation_template_graph_item_dnd() {
+	/* ================= Input validation ================= */
+	get_filter_request_var('id');
+	/* ================= Input validation ================= */
+
+	if (isset_request_var('graph_rules') && is_array(get_nfilter_request_var('graph_rules'))) {
+		$aids        = get_nfilter_request_var('graph_rules');
+		$sequence    = 1;
+		$template_id = get_request_var('id');
+
+		foreach ($aids as $id) {
+			$id = str_replace('gr', '', $id);
+
+			input_validate_input_number($id, 'id');
+
+			db_execute_prepared('UPDATE automation_templates_rules
+				SET sequence = ?
+				WHERE template_id = ?
+				AND id = ?
+				AND rule_type = 1',
+				array($sequence, $template_id, $id));
+
+			$sequence++;
+		}
+	}
+
+	header('Location: automation_templates.php?action=edit&id=' . get_request_var('id'));
+
+	exit;
+}
+
+function automation_template_tree_item_dnd() {
+	/* ================= Input validation ================= */
+	get_filter_request_var('id');
+	/* ================= Input validation ================= */
+
+	if (isset_request_var('template_ids') && is_array(get_nfilter_request_var('template_ids'))) {
+		$aids     = get_nfilter_request_var('template_ids');
+		$sequence = 1;
+		$template_id = get_request_var('id');
+
+		foreach ($aids as $id) {
+			$id = str_replace('tr', '', $id);
+
+			input_validate_input_number($id, 'id');
+
+			db_execute_prepared('UPDATE automation_templates_rules
+				SET sequence = ?
+				WHERE template_id = ?
+				AND id = ?
+				AND rule_type = 2',
+				array($sequence, $template_id, $id));
+
+			$sequence++;
+		}
+	}
+
+	header('Location: automation_templates.php?action=edit&id=' . get_request_var('id'));
+
+	exit;
+}
+
+function automation_template_tree_exit_on_change() {
+	$id          = get_filter_request_var('id');
+	$newvalue    = get_filter_request_var('current') == 0 ? 1:0;
+	$template_id = get_filter_request_var('template_id');
+
+	db_execute_prepared('UPDATE automation_templates_rules
+		SET exit_rules = ?
+		WHERE id = ?',
+		array($newvalue, $id));
+
+	header('Location: automation_templates.php?action=edit&id=' . $template_id);
 }
 
 function automation_movedown() {
@@ -531,7 +618,7 @@ function automation_get_tree_headers() {
 }
 
 function template_edit() {
-	global $availability_options;
+	global $availability_options, $config;
 
 	$host_template_names = db_fetch_assoc('SELECT id, name FROM host_template');
 
@@ -650,7 +737,7 @@ function template_edit() {
 	if (!isempty_request_var('id')) {
 		html_start_box(__('Associated Graph Rules'), '100%', '', '3', 'center', '');
 
-		$graph_rules = db_fetch_assoc_prepared('SELECT *
+		$graph_rules = db_fetch_assoc_prepared('SELECT atr.*, gr.name
 			FROM automation_templates_rules AS atr
 			INNER JOIN automation_graph_rules AS gr
 			ON atr.rule_id = gr.id
@@ -680,15 +767,14 @@ function template_edit() {
 
 		if (cacti_sizeof($graph_rules)) {
 			foreach($graph_rules as $rule) {
-				form_alternate_row("gr$i", true);
+				$id = "gr{$rule['id']}";
+				form_alternate_row($id, true);
 
-				form_selectable_cell($rule['name'], $i);
-				form_selectable_cell($rule['sequence'], $i, '', 'right');
-				form_selectable_cell("<a class='delete deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape('automation_templates.php?action=item_remove_agr_confirm&automation_template_id=' . get_request_var('id') . '&rule_id=' . $rule['id']) . "'></a>", $i, '40', 'right');
+				form_selectable_cell($rule['name'], $id);
+				form_selectable_cell($rule['sequence'], $id, '', 'right');
+				form_selectable_cell("<a class='delete deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape('automation_templates.php?action=item_remove_agr_confirm&automation_template_id=' . get_request_var('id') . '&rule_id=' . $rule['id']) . "'></a>", $id, '40', 'right');
 
 				form_end_row();
-
-				$i++;
 			}
 		} else {
 			print '<tr><td><em>' . __('No Associated Graph Rules') . '</em></td></tr>';
@@ -729,7 +815,7 @@ function template_edit() {
 
 		html_start_box(__('Associated Tree Rules'), '100%', '', '3', 'center', '');
 
-		$tree_rules = db_fetch_assoc_prepared('SELECT *
+		$tree_rules = db_fetch_assoc_prepared('SELECT atr.*, tr.name
 			FROM automation_templates_rules AS atr
 			INNER JOIN automation_tree_rules AS tr
 			ON atr.rule_id = tr.id
@@ -746,7 +832,7 @@ function template_edit() {
 				'align'   => 'left',
 			),
 			array(
-				'display' => __('Exit On'),
+				'display' => __('Exit On Match'),
 				'align'   => 'left',
 			),
 			array(
@@ -763,12 +849,22 @@ function template_edit() {
 
 		if (cacti_sizeof($tree_rules)) {
 			foreach($tree_rules as $rule) {
-				form_alternate_row("tr$i", true);
+				$id = "tr{$rule['id']}";
 
-				form_selectable_cell($rule['name'], $i);
-				form_selectable_cell($rule['exit_rules'], $i);
-				form_selectable_cell($rule['sequence'], $i, '', 'right');
-				form_selectable_cell("<a class='delete deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape('automation_templates.php?action=item_remove_atr_confirm&automation_template_id=' . get_request_var('id') . '&rule_id=' . $rule['id']) . "'></a>", $i, '40', 'right');
+				$exit_on_url = html_escape($config['url_path'] . 'automation_templates.php' .
+					'?action=exitonchange' .
+					'&template_id='. get_request_var('id') .
+					'&id='         . $rule['id'] .
+					'&current='    . $rule['exit_rules']);
+
+				$exit_text   = $rule['exit_rules'] == 0 ? __('No'):__('Yes');
+
+				form_alternate_row($id, true);
+
+				form_selectable_cell($rule['name'], $id);
+				form_selectable_cell(filter_value($exit_text, '', $exit_on_url), $id);
+				form_selectable_cell($rule['sequence'], $id, '', 'right');
+				form_selectable_cell("<a class='delete deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape('automation_templates.php?action=item_remove_atr_confirm&automation_template_id=' . get_request_var('id') . '&rule_id=' . $rule['id']) . "'></a>", $id, '40', 'right');
 
 				form_end_row();
 
@@ -812,6 +908,8 @@ function template_edit() {
 
 	?>
 	<script type='text/javascript'>
+
+	var dnd = <?php print read_config_option('drag_and_drop') == 'on' ? 'true':'false';?>;
 
 	$(function() {
 		$('#cdialog').remove();
@@ -866,8 +964,27 @@ function template_edit() {
 
 			postUrl(options, data);
 		});
-	});
 
+		$('#automation_templates_edit2_child').attr('id', 'graph_rules');
+		$('#automation_templates_edit4_child').attr('id', 'tree_rules');
+
+		if (dnd) {
+			$('#graph_rules').find('tr:first').addClass('nodrag').addClass('nodrop');
+			$('#tree_rules').find('tr:first').addClass('nodrag').addClass('nodrop');
+
+			$('#graph_rules').tableDnD({
+				onDrop: function(table, row) {
+					loadUrl({url:'automation_templates.php?action=graph_dnd&id='+$('#id').val()+'&'+$.tableDnD.serialize()});
+				}
+			});
+
+			$('#tree_rules').tableDnD({
+				onDrop: function(table, row) {
+					loadUrl({url:'automation_templates.php?action=tree_dnd&id='+$('#id').val()+'&'+$.tableDnD.serialize()});
+				}
+			});
+		}
+	});
 	</script>
 	<?php
 }
