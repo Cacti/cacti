@@ -4525,6 +4525,18 @@ function automation_network_export($network_ids) {
 				unset($snmp_items[$index]['snmp_id']);
 			}
 
+			if ($item['snmp_version'] == 3) {
+				unset($snmp_items[$index]['snmp_community']);
+			} else {
+				unset($snmp_items[$index]['snmp_username']);
+				unset($snmp_items[$index]['snmp_password']);
+				unset($snmp_items[$index]['snmp_auth_protocol']);
+				unset($snmp_items[$index]['snmp_priv_protocol']);
+				unset($snmp_items[$index]['snmp_priv_passphrase']);
+				unset($snmp_items[$index]['snmp_contect']);
+				unset($snmp_items[$index]['snmp_engine_id']);
+			}
+
 			/* collapse the snmp items into snmp */
 			$snmp['snmp_items'] = $snmp_items;
 
