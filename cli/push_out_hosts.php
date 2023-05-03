@@ -37,18 +37,6 @@ ini_set('memory_limit', '-1');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-/* optional parameters for host selection */
-$debug            = false;
-$host_id          = false;
-$host_template_id = false;
-$data_template_id = false;
-
-/* optional for threading and verbose display */
-$threads           = 5;
-
-/* optional for force handing and resume */
-$forcerun          = false;
-
 $php_binary = read_config_option('path_php_binary');
 
 $parameters = implode(' ', $parms);
