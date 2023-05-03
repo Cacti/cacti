@@ -38,7 +38,11 @@ set_default_action();
 
 switch (get_request_var('action')) {
 	case 'save':
-		save();
+		if (isset_request_var('save_component_import')) {
+			automation_import_process();
+		} else {
+			form_save();
+		}
 
 		break;
 	case 'actions':
@@ -46,6 +50,9 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'import':
+		top_header();
+		automation_import();
+		bottom_footer();
 
 		break;
 	case 'export':
@@ -133,7 +140,113 @@ function automation_export() {
 	}
 }
 
-function save() {
+function automation_import() {
+	$form_data = array(
+		'import_file' => array(
+			'friendly_name' => __('Import Graph Rules from Local File',),
+			'description' => __('If the JSON file containing the Graph Rules data is located on your local machine, select it here.'),
+			'method' => 'file',
+			'accept' => '.json'
+		),
+		'import_text' => array(
+			'method' => 'textarea',
+			'friendly_name' => __('Import Graph Rules from Text'),
+			'description' => __('If you have the JSON file containing the Graph Rules data as text, you can paste it into this box to import it.'),
+			'value' => '',
+			'default' => '',
+			'textarea_rows' => '10',
+			'textarea_cols' => '80',
+			'class' => 'textAreaNotes'
+		)
+	);
+
+	form_start('automation_graph_rules.php', 'chk', true);
+
+	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
+		html_start_box(__('Import Results'), '80%', '', '3', 'center', '');
+
+		print '<tr class="tableHeader"><th>' . __('Cacti has Imported the following Graph Rules'). '</th></tr>';
+
+		foreach ($_SESSION['import_debug_info'] as $line) {
+			print '<tr><td>' . $line . '</td></tr>';
+		}
+
+		html_end_box();
+
+		kill_session_var('import_debug_info');
+	}
+
+	html_start_box(__('Import Graph Rules'), '80%', false, '3', 'center', '');
+
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => $form_data
+		)
+	);
+
+	form_hidden_box('save_component_import', '1', '');
+
+	print "	<tr><td><hr/></td></tr><tr>
+		<td class='saveRow'>
+			<input type='hidden' name='action' value='save'>
+			<input type='submit' value='" . __esc('Import') . "' title='" . __esc('Import Graph Rules') . "' class='ui-button ui-corner-all ui-widget ui-state-active'>
+		</td>
+		<script type='text/javascript'>
+		$(function() {
+			clearAllTimeouts();
+		});
+		</script>
+	</tr>";
+
+	html_end_box();
+}
+
+function automation_import_process() {
+	$json_data = json_decode(get_nfilter_request_var('import_text'), true);
+
+	// If we have text, then we were trying to import text, otherwise we are uploading a file for import
+	if (empty($json_data)) {
+		$json_data = automation_validate_upload();
+	}
+
+	if (is_array($json_data) && cacti_sizeof($json_data) && isset($json_data['graph_rules'])) {
+		foreach($json_data['graph_rules'] as $graph_rule) {
+			$return_data += automation_graph_rule_import($graph_rule);
+		}
+	}
+
+	if (sizeof($return_data) && isset($return_data['success'])) {
+		foreach ($return_data['success'] as $message) {
+			$debug_data[] = '<span class="deviceUp">' . __('NOTE:') . '</span> ' . $message;
+			cacti_log('NOTE: Automation Graph Rules Import Succeeded!.  Message: '. $message, false, 'AUTOM8');
+		}
+	}
+
+	if (isset($return_data['errors'])) {
+		foreach ($return_data['errors'] as $error) {
+			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $error;
+			cacti_log('NOTE: Automation Graph Rules Import Error!.  Message: '. $message, false, 'AUTOM8');
+		}
+	}
+
+	if (isset($return_data['failure'])) {
+		foreach ($return_data['failure'] as $message) {
+			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $message;
+			cacti_log('NOTE: Automation Graph Rules Import Failed!.  Message: '. $message, false, 'AUTOM8');
+		}
+	}
+
+	if (cacti_sizeof($debug_data)) {
+		$_SESSION['import_debug_info'] = $debug_data;
+	}
+
+	header('Location: automation_graph_rules.php?action=import');
+
+	exit();
+}
+
+function form_save() {
 	if (isset_request_var('save_component_automation_graph_rule')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
@@ -873,8 +986,8 @@ function automation_graph_rules() {
 						<td>
 							<span>
 								<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' name='go' value='<?php print __esc('Go');?>'>
-								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>'></td>
-								<input type='button' class='ui-button ui-corner-all ui-widget' id='import' value='<?php print __esc('Import');?>'></td>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='import' value='<?php print __esc('Import');?>'>
 							</span>
 					</tr>
 				</table>
@@ -894,8 +1007,8 @@ function automation_graph_rules() {
 			loadUrl({url:strURL})
 		}
 
-		function templateImport() {
-			strURL = 'automation_graph_rules.php?import=1';
+		function importTemplate() {
+			strURL = 'automation_graph_rules.php?action=import';
 			loadUrl({url:strURL})
 		}
 

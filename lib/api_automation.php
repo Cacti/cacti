@@ -4449,7 +4449,7 @@ function automation_id_to_hash($type, $id) {
 }
 
 function automation_hash_to_id($type, $hash) {
-	$table = automation_type_to_table($table);
+	$table = automation_type_to_table($type);
 
 	if ($table != '') {
 		return db_fetch_cell_prepared("SELECT id
@@ -4463,7 +4463,7 @@ function automation_hash_to_id($type, $hash) {
 
 function automation_network_export($network_ids) {
 	if (!is_array($network_ids)) {
-		$export_name = db_fetch_cell_prepared("SELECT CONCAT('automation_network_', name, '.json')
+		$export_name = db_fetch_cell_prepared("SELECT CONCAT('automation_network_', name)
 			FROM automation_networks
 			WHERE id = ?",
 			array($network_ids));
@@ -4523,18 +4523,18 @@ function automation_network_export($network_ids) {
 			foreach($snmp_items as $index => $item) {
 				unset($snmp_items[$index]['id']);
 				unset($snmp_items[$index]['snmp_id']);
-			}
 
-			if ($item['snmp_version'] == 3) {
-				unset($snmp_items[$index]['snmp_community']);
-			} else {
-				unset($snmp_items[$index]['snmp_username']);
-				unset($snmp_items[$index]['snmp_password']);
-				unset($snmp_items[$index]['snmp_auth_protocol']);
-				unset($snmp_items[$index]['snmp_priv_protocol']);
-				unset($snmp_items[$index]['snmp_priv_passphrase']);
-				unset($snmp_items[$index]['snmp_contect']);
-				unset($snmp_items[$index]['snmp_engine_id']);
+				if ($item['snmp_version'] == 3) {
+					unset($snmp_items[$index]['snmp_community']);
+				} else {
+					unset($snmp_items[$index]['snmp_username']);
+					unset($snmp_items[$index]['snmp_password']);
+					unset($snmp_items[$index]['snmp_auth_protocol']);
+					unset($snmp_items[$index]['snmp_priv_protocol']);
+					unset($snmp_items[$index]['snmp_priv_passphrase']);
+					unset($snmp_items[$index]['snmp_context']);
+					unset($snmp_items[$index]['snmp_engine_id']);
+				}
 			}
 
 			/* collapse the snmp items into snmp */
@@ -4555,7 +4555,7 @@ function automation_network_export($network_ids) {
 
 function automation_device_rule_export($template_ids) {
 	if (!is_array($template_ids)) {
-		$export_name = db_fetch_cell_prepared("SELECT CONCAT('automation_device_rule_', name, '.json')
+		$export_name = db_fetch_cell_prepared("SELECT CONCAT('automation_device_rule_', name)
 			FROM automation_templates AS at
 			INNER JOIN host_template AS ht
 			ON at.host_template = ht.id
@@ -4726,7 +4726,7 @@ function automation_device_rule_export($template_ids) {
 
 function automation_graph_rule_export($graph_rule_ids) {
 	if (!is_array($graph_rule_ids)) {
-		$export_name = db_fetch_cell_prepared("SELECT CONCAT('automation_graphs_rule_', name, '.json')
+		$export_name = db_fetch_cell_prepared("SELECT CONCAT('automation_graphs_rule_', name)
 			FROM automation_graph_rules
 			WHERE id = ?",
 			array($graph_rule_ids));
@@ -4804,7 +4804,7 @@ function automation_graph_rule_export($graph_rule_ids) {
 
 function automation_tree_rule_export($tree_rule_ids) {
 	if (!is_array($tree_rule_ids)) {
-		$export_name = db_fetch_cell_prepared("SELECT CONCAT('automation_tree_rule_', name, '.json')
+		$export_name = db_fetch_cell_prepared("SELECT CONCAT('automation_tree_rule_', name)
 			FROM automation_tree_rules
 			WHERE id = ?",
 			array($tree_rule_ids));
@@ -4872,7 +4872,7 @@ function automation_tree_rule_export($tree_rule_ids) {
 
 function automation_snmp_option_export($snmp_option_ids) {
 	if (!is_array($snmp_option_ids)) {
-		$export_name = db_fetch_cell_prepared("SELECT CONCAT('automation_snmp_option_', name, '.json')
+		$export_name = db_fetch_cell_prepared("SELECT CONCAT('automation_snmp_option_', name)
 			FROM automation_snmp
 			WHERE id = ?",
 			array($snmp_option_ids));
@@ -4909,6 +4909,18 @@ function automation_snmp_option_export($snmp_option_ids) {
 			foreach($snmp_items as $index => $item) {
 				unset($snmp_items[$index]['id']);
 				unset($snmp_items[$index]['snmp_id']);
+
+				if ($item['snmp_version'] == 3) {
+					unset($snmp_items[$index]['snmp_community']);
+				} else {
+					unset($snmp_items[$index]['snmp_username']);
+					unset($snmp_items[$index]['snmp_password']);
+					unset($snmp_items[$index]['snmp_auth_protocol']);
+					unset($snmp_items[$index]['snmp_priv_protocol']);
+					unset($snmp_items[$index]['snmp_priv_passphrase']);
+					unset($snmp_items[$index]['snmp_context']);
+					unset($snmp_items[$index]['snmp_engine_id']);
+				}
 			}
 
 			/* collapse the snmp items into snmp */
@@ -4917,9 +4929,245 @@ function automation_snmp_option_export($snmp_option_ids) {
 			$options[] = $snmp_option;
 		}
 
-		$json_array['snmp_options'] = $options;
+		$json_array['snmp'] = $options;
 	}
 
 	return $json_array;
+}
+
+function automation_validate_upload() {
+	/* check file tranfer if used */
+	if (isset($_FILES['import_file'])) {
+		/* check for errors first */
+		if ($_FILES['import_file']['error'] != 0) {
+			switch ($_FILES['import_file']['error']) {
+				case 1:
+					raise_message('ftb', __('The file is too big.'), MESSAGE_LEVEL_ERROR);
+					break;
+				case 2:
+					raise_message('ftb2', __('The file is too big.'), MESSAGE_LEVEL_ERROR);
+					break;
+				case 3:
+					raise_message('ift', __('Incomplete file transfer.'), MESSAGE_LEVEL_ERROR);
+					break;
+				case 4:
+					raise_message('nfu', __('No file uploaded.'), MESSAGE_LEVEL_ERROR);
+					break;
+				case 6:
+					raise_message('tfm', __('Temporary folder missing.'), MESSAGE_LEVEL_ERROR);
+					break;
+				case 7:
+					raise_message('ftwf', __('Failed to write file to disk'), MESSAGE_LEVEL_ERROR);
+					break;
+				case 8:
+					raise_message('fusbe', __('File upload stopped by extension'), MESSAGE_LEVEL_ERROR);
+					break;
+			}
+
+			if (is_error_message()) {
+				return false;
+			}
+		}
+
+		/* check mine type of the uploaded file */
+		if ($_FILES['import_file']['type'] != 'application/json') {
+			raise_message('ife', __('Invalid file extension.'), MESSAGE_LEVEL_ERROR);
+
+			return false;
+		}
+
+		return json_decode(file_get_contents($_FILES['import_file']['tmp_name']), true);
+	}
+
+	raise_message('nfu2', __('No file uploaded.'), MESSAGE_LEVEL_ERROR);
+
+	return false;
+}
+
+function automation_snmp_option_import($snmp) {
+	global $config;
+
+	$debug_data = array();
+
+	foreach($snmp as $column => $coldata) {
+		switch($column) {
+			case 'hash':
+				$save['id']   = automation_hash_to_id('snmp', $coldata);
+				$save['hash'] = $coldata;
+
+				break;
+			case 'name':
+				$save['name'] = $coldata;
+				$snmp_id = sql_save($save, 'automation_snmp');
+
+				if ($snmp_id) {
+					if ($config['is_web']) {
+						$debug_data['success'][] = __esc('Automation Network SNMP Rule \'%s\' %s!', $save['name'], ($save['id'] > 0 ? __('Updated'):__('Imported')));
+					} else {
+						$debug_data['success'][] = __('Automation Network SNMP Rule \'%s\' %s!', $save['name'], ($save['id'] > 0 ? __('Updated'):__('Imported')));
+					}
+				} else {
+					if ($config['is_web']) {
+						$debug_data['failure'][] = __esc('Automation Network SNMP Rule \'%s\' %s Failed!', $save['name'], ($save['id'] > 0 ? __('Update'):__('Import')));
+					} else {
+						$debug_data['failure'][] = __('Automation Network SNMP Rule \'%s\' %s Failed!', $save['name'], ($save['id'] > 0 ? __('Update'):__('Import')));
+					}
+				}
+
+				break;
+			case 'snmp_items':
+				foreach($coldata as $snmp_options) {
+					$save = array();
+
+					$save['snmp_id'] = $snmp_id;
+
+					foreach($snmp_options as $option => $optdata) {
+						switch($option) {
+							case 'hash':
+								$save['id']   = automation_hash_to_id('snmp_items', $optdata);
+								$save['hash'] = $optdata;
+
+								break;
+							default:
+								$save[$option] = $optdata;
+								break;
+						}
+					}
+
+					$opt_id = sql_save($save, 'automation_snmp_items');
+
+					if ($opt_id) {
+						if ($config['is_web']) {
+							$debug_data['success'][] = __esc('Automation Network SNMP Option %s!', ($save['id'] > 0 ? __('Updated'):__('Imported')));
+						} else {
+							$debug_data['success'][] = __('Automation Network SNMP Option %s!', ($save['id'] > 0 ? __('Updated'):__('Imported')));
+						}
+					} else {
+						if ($config['is_web']) {
+							$debug_data['failure'][] = __esc('Automation Network SNMP Option %s Failed!', ($save['id'] > 0 ? __('Update'):__('Import')));
+						} else {
+							$debug_data['failure'][] = __('Automation Network SNMP Option %s Failed!', ($save['id'] > 0 ? __('Update'):__('Import')));
+						}
+					}
+				}
+
+				break;
+		}
+	}
+
+	return $debug_data;
+}
+
+function automation_network_import($json_data) {
+	global $config;
+
+	$debug_data = array();
+
+	/**
+	 * This routine will work from the bottom up so that we can maintain hash to id rules
+	 * all the way up the rules.  So, in this case we will import the snmp_options first
+	 * followed by the network's.
+	 */
+	if (is_array($json_data) && cacti_sizeof($json_data) && isset($json_data['network'])) {
+		$error = false;
+		$save  = array();
+
+		foreach ($json_data['network'] as $netowrk => $data) {
+			if (isset($data['snmp'])) {
+				$debug_data += automation_snmp_option_import($data['snmp']);
+				unset($data['snmp']);
+
+				$save  = array();
+			} else {
+				$error = true;
+				$debug_data['errors'][] = __('The Automation Network Rule does not include any SNMP Options!');
+			}
+
+			if (!automation_validate_import_columns('automation_networks', $data, $debug_data)) {
+				$debug_data['errors'][] = __('The Automation Network Rule import columns do not match the database schema');
+				$error = true;
+			}
+
+			if (!$error) {
+				foreach($data as $column => $coldata) {
+					switch($column) {
+						case 'hash':
+							$save['id']   = automation_hash_to_id('network', $coldata);
+							$save['hash'] = $coldata;
+
+							break;
+						case 'snmp_id':
+							$save['snmp_id'] = automation_hash_to_id('snmp', $coldata);
+
+							break;
+						case 'host_template':
+							$template = db_fetch_row_prepared('SELECT id, name
+								FROM host_templates
+								WHERE hash = ?',
+								array($coldata));
+
+							if (!cacti_sizeof($save['host_template'])) {
+								$debug_data['errors'][] = __('The Device Template related to the Network Rule is not loaded in this Cacti System.  Please edit this Network and set the Device Template, or Import the Device Template and then re-import this Automation Rule.');
+
+								$error = true;
+
+								$save['host_template'] = 0;
+
+								$tname = __('Unknown Device Template');
+							} else {
+								$save['host_template'] = $template['id'];
+
+								$name = $template['name'];
+							}
+
+							break;
+						default:
+							$save[$column] = $coldata;
+
+							break;
+					}
+				}
+
+				/* save the automation network first */
+				$id = sql_save($save, 'automation_networks');
+
+				if ($id) {
+					if ($config['is_web']) {
+						$debug_data['success'][] = __esc('Automation Network Rule \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
+					} else {
+						$debug_data['success'][] = __('Automation Network Rule \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
+					}
+				} else {
+					if ($config['is_web']) {
+						$debug_data['failure'][] = __esc('Automation Network Rule \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
+					} else {
+						$debug_data['failure'][] = __('Automation Network Rule \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
+					}
+				}
+			}
+		}
+	} else {
+		$debug_data['failure'][] = __('Automation Network Rule Import data is either for another object type or not JSON formatted.');
+	}
+
+	return $debug_data;
+}
+
+function automation_validate_import_columns($table, &$data, &$debug_data) {
+	if (cacti_sizeof($data)) {
+		foreach($data as $column => $data) {
+			if (!db_column_exists($table, $column)) {
+				$debug_data['errors'][] = __('Template column \'' . $column . '\' is not valid column.');
+
+				cacti_log('Template column \'' . $column . '\' is not valid column.', false, 'AUTOM8');
+
+				return false;
+			}
+		}
+	} else {
+		return false;
+	}
+
+	return true;
 }
 
