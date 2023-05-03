@@ -180,10 +180,10 @@ if ($host_template_id > 0) {
 }
 
 /* issue warnings and start message if applicable */
-print 'WARNING: Do not interrupt this script.  Rebuilding the Push out hosts/Poller Cache can take quite some time' . PHP_EOL;
+print 'WARNING: Do not interrupt this script.  Rebuilding Poller Cache can take quite some time' . PHP_EOL;
 
 /* send a gentle message to the log and stdout */
-pushout_debug('Push out hosts starting');
+pushout_debug('Rebuild poller cache starting');
 
 /* silently end if the registered process is still running  */
 if (!$forcerun) {
@@ -327,11 +327,11 @@ function pushout_launch_child($thread_id, $threads) {
 
 	$php_binary = read_config_option('path_php_binary');
 
-	pushout_debug(sprintf('Launching Push out hosts Process Number %s for Type %s', $thread_id, 'child'));
+	pushout_debug(sprintf('Launching Rebuild poller cache Process Number %s for Type %s', $thread_id, 'child'));
 
-	cacti_log(sprintf('NOTE: Launching Push out hosts Number %s for Type %s', $thread_id, 'child'), true, 'PUSHOUT', POLLER_VERBOSITY_MEDIUM);
+	cacti_log(sprintf('NOTE: Launching Rebuild poller cache Number %s for Type %s', $thread_id, 'child'), true, 'PUSHOUT', POLLER_VERBOSITY_MEDIUM);
 
-	exec_background($php_binary, CACTI_PATH_CLI . "/push_out_hosts.php --type=child --threads=$threads --child=$thread_id " . ($debug ? " --debug":"") . ($host_template_id ? " --host-template-id=$host_template_id":"") . ($data_template_id ? " --data-template-id=$data_template_id":""));
+	exec_background($php_binary, CACTI_PATH_CLI . "/rebuild_poller_cache.php --type=child --threads=$threads --child=$thread_id " . ($debug ? " --debug":"") . ($host_template_id ? " --host-template-id=$host_template_id":"") . ($data_template_id ? " --data-template-id=$data_template_id":""));
 
 }
 
@@ -374,7 +374,7 @@ function pushout_debug($message) {
  * display_version - displays version information
  */
 function display_version() {
-	print 'Cacti Push out hosts/repopulate poller cache Tool, Version ' . CACTI_VERSION . ' ' . COPYRIGHT_YEARS . PHP_EOL;
+	print 'Cacti Rebuild poller cache Tool, Version ' . CACTI_VERSION . ' ' . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 /**
@@ -383,7 +383,7 @@ function display_version() {
 function display_help() {
 	display_version();
 
-	print PHP_EOL . 'usage: push_out_hosts.php [--host-id=N] [--host-template-id=N] [--data-template-id=N] [--debug]' . PHP_EOL . PHP_EOL;
+	print PHP_EOL . 'usage: rebuild_poller_cache.php [--host-id=N] [--host-template-id=N] [--data-template-id=N] [--debug]' . PHP_EOL . PHP_EOL;
 
 	print 'Cacti\'s repopulate poller cache tool.  This CLI script will ' . PHP_EOL;
 	print 'repopulate poller cache for all or specified hosts.' . PHP_EOL . PHP_EOL;
@@ -397,7 +397,7 @@ function display_help() {
         print ' --debug               - Display verbose output during execution' . PHP_EOL . PHP_EOL;
 
 	print 'System Controlled:' . PHP_EOL;
-	print '    --type      - The type and subtype of the push out hosts process' . PHP_EOL;
+	print '    --type      - The type and subtype of the rebuild poller cache process' . PHP_EOL;
 	print '    --child     - The thread id of the child process' . PHP_EOL . PHP_EOL;
 }
 
@@ -414,7 +414,7 @@ function sig_handler($signo) {
 	switch ($signo) {
 		case SIGTERM:
 		case SIGINT:
-			cacti_log('WARNING: Push out hosts terminated by user', false, 'PUSHOUT');
+			cacti_log('WARNING: Rebuild poller cache terminated by user', false, 'PUSHOUT');
 
 			if (strpos($type, 'rmaster') !== false) {
 				pushout_kill_running_processes();
