@@ -77,6 +77,7 @@ Cacti CHANGELOG
 -feature#5278: Enhance Cacti's ping to use fping if it's installed to take advantage of sub-second timeouts
 -feature#5294: Allow Ignored Errors to be Logged such as 'No Route to host'
 -feature#5305: Remove files aggregate_items.php and color_templates_items.php and consolidate into their parents
+-feature#5321: cli/push_out_hosts.php is deprecated, redirect to rebuild_poller.cache.php
 -feature: Allow messages to be popup notifications
 -feature: Upgrade billboard.js to version 3.7.4
 -feature: Upgrade d3.js to version 7.8.2
