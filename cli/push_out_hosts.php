@@ -41,11 +41,11 @@ $php_binary = read_config_option('path_php_binary');
 
 $parameters = implode(' ', $parms);
 
-cacti_log('WARNING: Deprecated script push_out_hosts.php. Please use rebuild_poller_cache.php.', true, 'PUSHOUT');
+cacti_log('WARNING: Deprecated script push_out_hosts.php. Please use rebuild_poller_cache.php.', false, 'PUSHOUT');
 
 if (in_array('-v', $parms) || in_array('-V', $parms) || in_array('--version', $parms)) {
 	// exception for github tests
-	print 'Cacti Push out hosts/repopulate poller cache Tool, Version ' . CACTI_VERSION . ' ' . COPYRIGHT_YEARS . PHP_EOL;
+	print 'Cacti Repopulate poller cache Tool, Version ' . CACTI_VERSION . ' ' . COPYRIGHT_YEARS . PHP_EOL;
 }
 else {
 	print 'WARNING: Deprecated script push_out_hosts.php. Please use rebuild_poller_cache.php.' . PHP_EOL;
