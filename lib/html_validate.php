@@ -51,8 +51,8 @@ function die_html_input_error($variable = null, $value = null, $message = '') {
 		$message = __('Validation error for variable %s with a value of %s.  See backtrace below for more details.', $variable, $value);
 	}
 
-	$variable = ($variable !== null ? ', Variable:' . $$func($variable) : '');
-	$value    = ($value !== null ? ', Value:'    . $$func($value)    : '');
+	$variable = ($variable !== null ? ', Variable:' . $func($variable) : '');
+	$value    = ($value !== null ? ', Value:'    . $func($value)    : '');
 
 	$isWeb = CACTI_WEB || isset_request_var('json');
 	cacti_debug_backtrace('Validation Error' . $variable . $value, $isWeb);
