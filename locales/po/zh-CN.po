@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2023-04-29 16:24-0400\n"
+"POT-Creation-Date: 2023-05-04 07:58-0400\n"
 "PO-Revision-Date: 2023-03-07 13:33+0000\n"
 "Last-Translator: Anonymous <anonymous@cacti.net>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\n"
@@ -935,7 +935,7 @@ msgid "Cannot be reused for %d password changes"
 msgstr "最近 %d 次使用过的密码无法重复使用"
 
 #: auth_changepassword.php:315 auth_changepassword.php:322
-#: include/global_form.php:1567 lib/functions.php:3653 lib/html.php:2481
+#: include/global_form.php:1567 lib/functions.php:3657 lib/html.php:2481
 msgid "Change Password"
 msgstr "更改密码"
 
@@ -949,7 +949,7 @@ msgid "Please enter your new Cacti password."
 msgstr "请输入您的Cacti新密码."
 
 #: auth_changepassword.php:342 auth_login.php:306 auth_login.php:309
-#: include/global_settings.php:1792 lib/functions.php:5279
+#: include/global_settings.php:1792 lib/functions.php:5283
 msgid "Username"
 msgstr "用户名"
 
@@ -1034,7 +1034,7 @@ msgstr "用户登录"
 msgid "Enter your Username and Password below"
 msgstr "在下面输入您的用户名和密码"
 
-#: auth_login.php:314 include/global_form.php:1534 lib/functions.php:5280
+#: auth_login.php:314 include/global_form.php:1534 lib/functions.php:5284
 msgid "Password"
 msgstr "密码"
 
@@ -1355,7 +1355,7 @@ msgstr "清空已发现的设备"
 #: automation_snmp.php:564 automation_snmp.php:565 automation_snmp.php:566
 #: automation_snmp.php:567 automation_snmp.php:568 automation_snmp.php:569
 #: data_debug.php:624 data_source_profiles.php:73 host.php:1817
-#: lib/functions.php:5625 lib/functions.php:5629 lib/html.php:1182
+#: lib/functions.php:5629 lib/functions.php:5633 lib/html.php:1182
 #: lib/html.php:1248 lib/html_reports.php:1632 lib/html_reports.php:1658
 #: lib/html_reports.php:1729 lib/html_reports.php:1730
 #: lib/html_reports.php:1731 plugins.php:732 pollers.php:1121 support.php:646
@@ -2343,7 +2343,7 @@ msgstr "版本"
 msgid "Community"
 msgstr "团体名"
 
-#: automation_snmp.php:537 lib/functions.php:5275
+#: automation_snmp.php:537 lib/functions.php:5279
 msgid "Port"
 msgstr "端口"
 
@@ -2637,8 +2637,8 @@ msgstr "ROOT"
 msgid "No Tree Rules Found"
 msgstr "未找到树规则"
 
-#: cactid.php:44 help.php:38 lib/functions.php:5906 lib/functions.php:5975
-#: lib/functions.php:6585 poller.php:392 poller.php:542 poller.php:607
+#: cactid.php:44 help.php:38 lib/functions.php:5910 lib/functions.php:5979
+#: lib/functions.php:6589 poller.php:392 poller.php:542 poller.php:607
 #: poller.php:647 poller.php:789 poller.php:894 poller_automation.php:53
 #: poller_boost.php:322
 msgid "Cacti System Warning"
@@ -4202,7 +4202,7 @@ msgstr "给这个数据模板的名字。 请注意，您只能将图形模板�
 #: data_sources.php:950 graph_view.php:743 graphs.php:1592
 #: include/global_arrays.php:938 include/global_arrays.php:987
 #: include/global_arrays.php:1669 include/global_arrays.php:1838
-#: lib/api_automation.php:425 lib/functions.php:5274 lib/html.php:2067
+#: lib/api_automation.php:425 lib/functions.php:5278 lib/html.php:2067
 #: lib/html.php:2099 lib/html_reports.php:1009 utilities.php:1870
 msgid "Device"
 msgstr "设备"
@@ -5615,7 +5615,7 @@ msgstr "将图形模板添加到设备"
 msgid "Data Query Debug Information"
 msgstr "数据查询调试信息"
 
-#: host.php:866 lib/functions.php:4268 tree.php:1725 tree.php:1799
+#: host.php:866 lib/functions.php:4272 tree.php:1725 tree.php:1799
 #: tree.php:1907 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "复制"
@@ -5655,7 +5655,7 @@ msgstr " [%d 个项目, %d 列]"
 msgid "Fail"
 msgstr "失败"
 
-#: host.php:950 lib/functions.php:5289 lib/functions.php:5294
+#: host.php:950 lib/functions.php:5293 lib/functions.php:5298
 msgid "Success"
 msgstr "成功"
 
@@ -5962,16 +5962,16 @@ msgstr "FATAL: 您必须先登录才能访问Cacti 的那个区域."
 msgid "Login Again"
 msgstr "重新登录"
 
-#: include/auth.php:272 lib/functions.php:6936 permission_denied.php:45
+#: include/auth.php:272 lib/functions.php:6940 permission_denied.php:45
 #: permission_denied.php:52
 msgid "Permission Denied"
 msgstr "没有权限"
 
-#: include/auth.php:273 lib/functions.php:6937 permission_denied.php:54
+#: include/auth.php:273 lib/functions.php:6941 permission_denied.php:54
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr "如果您觉得这是一个报错,请联系Cacti 管理员."
 
-#: include/auth.php:273 lib/functions.php:6937 permission_denied.php:54
+#: include/auth.php:273 lib/functions.php:6941 permission_denied.php:54
 msgid "You are not permitted to access this section of Cacti."
 msgstr "您不能访问Cacti 的这个部分."
 
@@ -7965,7 +7965,7 @@ msgid "List Mode"
 msgstr "列表模式"
 
 #: include/global_arrays.php:2043 include/global_arrays.php:2049
-#: lib/functions.php:3860 lib/html.php:1698 lib/html.php:1775 lib/html.php:2491
+#: lib/functions.php:3864 lib/html.php:1698 lib/html.php:1775 lib/html.php:2491
 #: links.php:344 user_admin.php:1551 user_group_admin.php:1433
 msgid "Console"
 msgstr "控制台"
@@ -9653,7 +9653,7 @@ msgstr "数据"
 msgid "Visual"
 msgstr "外观"
 
-#: include/global_settings.php:44 lib/functions.php:5278 lib/functions.php:5283
+#: include/global_settings.php:44 lib/functions.php:5282 lib/functions.php:5287
 msgid "Authentication"
 msgstr "认证"
 
@@ -9689,11 +9689,11 @@ msgstr "图形字体"
 msgid "PHP Mail() Function"
 msgstr "PHP Mail() 函数"
 
-#: include/global_settings.php:85 lib/functions.php:5261
+#: include/global_settings.php:85 lib/functions.php:5265
 msgid "Sendmail"
 msgstr "Sendmail"
 
-#: include/global_settings.php:86 lib/functions.php:5266
+#: include/global_settings.php:86 lib/functions.php:5270
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -11672,7 +11672,7 @@ msgstr "这是在电子邮件中的一行被自动换行之前允许多少个字
 msgid "Sendmail Options"
 msgstr "Sendmail 选项"
 
-#: include/global_settings.php:1913 lib/functions.php:5261
+#: include/global_settings.php:1913 lib/functions.php:5265
 msgid "Sendmail Path"
 msgstr "Sendmail 路径"
 
@@ -12036,7 +12036,7 @@ msgstr "RRDtool 代理服务器"
 msgid "Structured RRDfile Paths"
 msgstr "结构化RRD 路径"
 
-#: include/global_settings.php:2291 lib/functions.php:5250
+#: include/global_settings.php:2291 lib/functions.php:5254
 msgid "Method"
 msgstr "方法"
 
@@ -12967,8 +12967,8 @@ msgstr "位置:"
 msgid "Contact:"
 msgstr "联系人:"
 
-#: lib/api_device.php:1581 lib/functions.php:5292 lib/functions.php:5294
-#: lib/functions.php:5298
+#: lib/api_device.php:1581 lib/functions.php:5296 lib/functions.php:5298
+#: lib/functions.php:5302
 msgid "Ping Results"
 msgstr "Ping 结果"
 
@@ -13791,161 +13791,161 @@ msgstr "未找到警报消息。"
 msgid "Error %s is not readable"
 msgstr "出错: %s 不可读"
 
-#: lib/functions.php:3631
+#: lib/functions.php:3635
 #, fuzzy
 #| msgid "Logged in as"
 msgid "Logged in a Guest"
 msgstr "当前登录的用户为:"
 
-#: lib/functions.php:3631 lib/functions.php:3647
+#: lib/functions.php:3635 lib/functions.php:3651
 msgid "Logged in as"
 msgstr "当前登录的用户为:"
 
-#: lib/functions.php:3631
+#: lib/functions.php:3635
 msgid "Login as Regular User"
 msgstr "以普通用户身份登录"
 
-#: lib/functions.php:3631
+#: lib/functions.php:3635
 msgid "guest"
 msgstr "guest"
 
-#: lib/functions.php:3634 lib/functions.php:3657 lib/html.php:2497
+#: lib/functions.php:3638 lib/functions.php:3661 lib/html.php:2497
 msgid "User Community"
 msgstr "社区"
 
-#: lib/functions.php:3635 lib/functions.php:3658 lib/html.php:2499
+#: lib/functions.php:3639 lib/functions.php:3662 lib/html.php:2499
 #: lib/utility.php:1244
 msgid "Documentation"
 msgstr "文档"
 
-#: lib/functions.php:3650
+#: lib/functions.php:3654
 #, php-format
 msgid "Logged in as %s"
 msgstr "登入为 %s"
 
-#: lib/functions.php:3652 lib/html.php:2478
+#: lib/functions.php:3656 lib/html.php:2478
 msgid "Edit Profile"
 msgstr "编辑个人资料"
 
-#: lib/functions.php:3662 lib/html.php:2482
+#: lib/functions.php:3666 lib/html.php:2482
 msgid "Logout"
 msgstr "退出"
 
-#: lib/functions.php:3807
+#: lib/functions.php:3811
 msgid "Leaf"
 msgstr "叶子"
 
-#: lib/functions.php:3827 lib/html_tree.php:663 lib/html_tree.php:699
+#: lib/functions.php:3831 lib/html_tree.php:663 lib/html_tree.php:699
 #: lib/html_tree.php:928 lib/html_tree.php:936 lib/html_tree.php:1510
 msgid "Non Query Based"
 msgstr "Non Query Based"
 
-#: lib/functions.php:3863
+#: lib/functions.php:3867
 #, php-format
 msgid "Link %s"
 msgstr "链接 %s"
 
-#: lib/functions.php:4892
+#: lib/functions.php:4896
 #, fuzzy
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
 msgstr "Mailer Error: 没有设置<b> 收件人 </b>地址!! 如果使用 <i>邮件测试</i> 链接,请设置<b> 报警邮件 </b>设置."
 
-#: lib/functions.php:5225
+#: lib/functions.php:5229
 #, php-format
 msgid "Authentication failed: %s"
 msgstr "认证失败: %s"
 
-#: lib/functions.php:5229
+#: lib/functions.php:5233
 #, php-format
 msgid "HELO failed: %s"
 msgstr "HELO 失败: %s"
 
-#: lib/functions.php:5232
+#: lib/functions.php:5236
 #, php-format
 msgid "Connect failed: %s"
 msgstr "连接失败: %s"
 
-#: lib/functions.php:5235
+#: lib/functions.php:5239
 msgid "SMTP error: "
 msgstr "SMTP error:"
 
-#: lib/functions.php:5248
+#: lib/functions.php:5252
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
 msgstr "这是从Cacti 生成的测试消息. 发送此邮件是为了测试您的邮件设置的配置."
 
-#: lib/functions.php:5249
+#: lib/functions.php:5253
 msgid "Your email settings are currently set as follows"
 msgstr "您的电子邮件设置目前设置如下"
 
-#: lib/functions.php:5252
+#: lib/functions.php:5256
 msgid "Checking Configuration...<br>"
 msgstr "检查配置... <br>"
 
-#: lib/functions.php:5259
+#: lib/functions.php:5263
 msgid "PHP's Mailer Class"
 msgstr "PHP Mailer 的类"
 
-#: lib/functions.php:5265
+#: lib/functions.php:5269
 msgid "Method: SMTP"
 msgstr "方法: SMTP"
 
-#: lib/functions.php:5280
+#: lib/functions.php:5284
 msgid "Not Shown for Security Reasons"
 msgstr "由于安全原因没有显示"
 
-#: lib/functions.php:5281
+#: lib/functions.php:5285
 msgid "Security"
 msgstr "安全"
 
-#: lib/functions.php:5289
+#: lib/functions.php:5293
 msgid "Ping Results:"
 msgstr "Ping 结果:"
 
-#: lib/functions.php:5298
+#: lib/functions.php:5302
 msgid "Bypassed"
 msgstr "Bypassed"
 
-#: lib/functions.php:5306
+#: lib/functions.php:5310
 msgid "Creating Message Text..."
 msgstr "创建消息文本..."
 
-#: lib/functions.php:5309
+#: lib/functions.php:5313
 msgid "Sending Message..."
 msgstr "正在发送消息..."
 
-#: lib/functions.php:5313
+#: lib/functions.php:5317
 msgid "Cacti Test Message"
 msgstr "Cacti 测试消息"
 
-#: lib/functions.php:5315
+#: lib/functions.php:5319
 msgid "Success!"
 msgstr "成功!"
 
-#: lib/functions.php:5318
+#: lib/functions.php:5322
 msgid "Message Not Sent due to ping failure."
 msgstr "由于ping 失败,邮件未发送."
 
-#: lib/functions.php:5906 lib/functions.php:5975
+#: lib/functions.php:5910 lib/functions.php:5979
 #, fuzzy, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr "Cacti 禁用了插件 %s 因为以下错误: %s! 更多详细信息,请参考Cacti 日志文件."
 
-#: lib/functions.php:6369 lib/functions.php:6371
+#: lib/functions.php:6373 lib/functions.php:6375
 #, php-format
 msgid "- Beta %s"
 msgstr "- Beta %s"
 
-#: lib/functions.php:6369
+#: lib/functions.php:6373
 #, php-format
 msgid "Version %s %s"
 msgstr "版本 %s %s"
 
-#: lib/functions.php:6371
+#: lib/functions.php:6375
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
 
-#: lib/functions.php:6585
+#: lib/functions.php:6589
 #, php-format
 msgid "WARNING:  Key Cacti Include File %s missing.  Please locate and replace this file"
 msgstr ""
@@ -20147,7 +20147,9 @@ msgid "Rebuild Poller Cache"
 msgstr "重建poller 缓存"
 
 #: utilities.php:2287
-msgid "The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems.  <i class=\"deviceDown\">NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run 'php -q cli/rebuild_poller_cache.php --help' at the command line for more information.</i>"
+#, fuzzy
+#| msgid "The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems.  <i class=\"deviceDown\">NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run 'php -q cli/rebuild_poller_cache.php --help' at the command line for more information.</i>"
+msgid "The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems.  NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run 'php -q cli/rebuild_poller_cache.php --help' at the command line for more information."
 msgstr "如果您选择此选项,则将重新生成poller 缓存.如果在崩溃后遇到问题并且已经运行数据库修复工具,则只有在发生数据库崩溃的情况下才使用此选项;或者,如果您遇到问题 使用特定的设备,只需重新保存该设备以重建其poller 缓存即可.还有一个与此命令等效的命令行界面,建议用于大型系统.<i class=\"deviceDown\"> 注意: 在大型系统 ,这个命令可能需要几分钟到几个小时才能完成,因此不应该从Cacti 界面运行.您可以在命令行运行 'php -q cli/rebuild_poller_cache.php --help' 以获取更多信息.</ i>"
 
 #: utilities.php:2289
