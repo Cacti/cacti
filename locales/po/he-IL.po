@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2023-04-29 16:24-0400\n"
+"POT-Creation-Date: 2023-05-04 07:58-0400\n"
 "PO-Revision-Date: 2023-03-07 13:26+0000\n"
 "Last-Translator: Anonymous <anonymous@cacti.net>\n"
 "Language-Team: Hebrew (Israel) <http://translate.cacti.net/projects/cacti/core-v1-2-x/he_IL/>\n"
@@ -1000,7 +1000,7 @@ msgid "Cannot be reused for %d password changes"
 msgstr "לא ניתן לעשות בו שימוש חוזר לשינויים ב-% d"
 
 #: auth_changepassword.php:315 auth_changepassword.php:322
-#: include/global_form.php:1567 lib/functions.php:3653 lib/html.php:2481
+#: include/global_form.php:1567 lib/functions.php:3657 lib/html.php:2481
 msgid "Change Password"
 msgstr "שנה סיסמה"
 
@@ -1015,7 +1015,7 @@ msgid "Please enter your new Cacti password."
 msgstr "הזן את הסיסמה הנוכחית ואת החדש <br> סיסמת קקט."
 
 #: auth_changepassword.php:342 auth_login.php:306 auth_login.php:309
-#: include/global_settings.php:1792 lib/functions.php:5279
+#: include/global_settings.php:1792 lib/functions.php:5283
 msgid "Username"
 msgstr "שם משתמש"
 
@@ -1106,7 +1106,7 @@ msgstr "פרטי הכניסה של המשתמש"
 msgid "Enter your Username and Password below"
 msgstr "הזן את שם המשתמש והסיסמה שלך למטה"
 
-#: auth_login.php:314 include/global_form.php:1534 lib/functions.php:5280
+#: auth_login.php:314 include/global_form.php:1534 lib/functions.php:5284
 msgid "Password"
 msgstr "סיסמה"
 
@@ -1456,7 +1456,7 @@ msgstr "טיהור התגלה התקנים"
 #: automation_snmp.php:564 automation_snmp.php:565 automation_snmp.php:566
 #: automation_snmp.php:567 automation_snmp.php:568 automation_snmp.php:569
 #: data_debug.php:624 data_source_profiles.php:73 host.php:1817
-#: lib/functions.php:5625 lib/functions.php:5629 lib/html.php:1182
+#: lib/functions.php:5629 lib/functions.php:5633 lib/html.php:1182
 #: lib/html.php:1248 lib/html_reports.php:1632 lib/html_reports.php:1658
 #: lib/html_reports.php:1729 lib/html_reports.php:1730
 #: lib/html_reports.php:1731 plugins.php:732 pollers.php:1121 support.php:646
@@ -2558,7 +2558,7 @@ msgstr "גרסה"
 msgid "Community"
 msgstr "קהילה"
 
-#: automation_snmp.php:537 lib/functions.php:5275
+#: automation_snmp.php:537 lib/functions.php:5279
 msgid "Port"
 msgstr "פורט"
 
@@ -2899,8 +2899,8 @@ msgstr "‫Root"
 msgid "No Tree Rules Found"
 msgstr "לא נמצאו כללי עץ"
 
-#: cactid.php:44 help.php:38 lib/functions.php:5906 lib/functions.php:5975
-#: lib/functions.php:6585 poller.php:392 poller.php:542 poller.php:607
+#: cactid.php:44 help.php:38 lib/functions.php:5910 lib/functions.php:5979
+#: lib/functions.php:6589 poller.php:392 poller.php:542 poller.php:607
 #: poller.php:647 poller.php:789 poller.php:894 poller_automation.php:53
 #: poller_boost.php:322
 #, fuzzy
@@ -4760,7 +4760,7 @@ msgstr "השם שניתן לתבנית נתונים זו. לידיעתך, תוכ
 #: data_sources.php:950 graph_view.php:743 graphs.php:1592
 #: include/global_arrays.php:938 include/global_arrays.php:987
 #: include/global_arrays.php:1669 include/global_arrays.php:1838
-#: lib/api_automation.php:425 lib/functions.php:5274 lib/html.php:2067
+#: lib/api_automation.php:425 lib/functions.php:5278 lib/html.php:2067
 #: lib/html.php:2099 lib/html_reports.php:1009 utilities.php:1870
 msgid "Device"
 msgstr "התקן"
@@ -6370,7 +6370,7 @@ msgstr "הוסף תבנית גרף להתקן"
 msgid "Data Query Debug Information"
 msgstr "מידע על ניקוי באגים של שאילתת נתונים"
 
-#: host.php:866 lib/functions.php:4268 tree.php:1725 tree.php:1799
+#: host.php:866 lib/functions.php:4272 tree.php:1725 tree.php:1799
 #: tree.php:1907 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "העתק"
@@ -6412,7 +6412,7 @@ msgstr "[% d פריטים,% d שורות]"
 msgid "Fail"
 msgstr "נכשל"
 
-#: host.php:950 lib/functions.php:5289 lib/functions.php:5294
+#: host.php:950 lib/functions.php:5293 lib/functions.php:5298
 msgid "Success"
 msgstr "הצלחה"
 
@@ -6776,17 +6776,17 @@ msgstr "פתאל: עליך להיות מחובר כדי לגשת לאזור זה
 msgid "Login Again"
 msgstr "היכנס שוב"
 
-#: include/auth.php:272 lib/functions.php:6936 permission_denied.php:45
+#: include/auth.php:272 lib/functions.php:6940 permission_denied.php:45
 #: permission_denied.php:52
 msgid "Permission Denied"
 msgstr "ההרשאה נדחתה"
 
-#: include/auth.php:273 lib/functions.php:6937 permission_denied.php:54
+#: include/auth.php:273 lib/functions.php:6941 permission_denied.php:54
 #, fuzzy
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr "אם אתה מרגיש שזאת טעות. אנא צור קשר עם מנהל Cacti שלך."
 
-#: include/auth.php:273 lib/functions.php:6937 permission_denied.php:54
+#: include/auth.php:273 lib/functions.php:6941 permission_denied.php:54
 #, fuzzy
 msgid "You are not permitted to access this section of Cacti."
 msgstr "אינך מורשה לגשת לקטע זה של Cacti."
@@ -9000,7 +9000,7 @@ msgid "List Mode"
 msgstr "מצב רשימה"
 
 #: include/global_arrays.php:2043 include/global_arrays.php:2049
-#: lib/functions.php:3860 lib/html.php:1698 lib/html.php:1775 lib/html.php:2491
+#: lib/functions.php:3864 lib/html.php:1698 lib/html.php:1775 lib/html.php:2491
 #: links.php:344 user_admin.php:1551 user_group_admin.php:1433
 msgid "Console"
 msgstr "מסוף"
@@ -11012,7 +11012,7 @@ msgstr "נתונים"
 msgid "Visual"
 msgstr "חזותי"
 
-#: include/global_settings.php:44 lib/functions.php:5278 lib/functions.php:5283
+#: include/global_settings.php:44 lib/functions.php:5282 lib/functions.php:5287
 msgid "Authentication"
 msgstr "שיטת האימות לא חוקי"
 
@@ -11054,11 +11054,11 @@ msgstr "גופני תרשים"
 msgid "PHP Mail() Function"
 msgstr "PHP PHP () פונקציה"
 
-#: include/global_settings.php:85 lib/functions.php:5261
+#: include/global_settings.php:85 lib/functions.php:5265
 msgid "Sendmail"
 msgstr "& Sendmail@ option"
 
-#: include/global_settings.php:86 lib/functions.php:5266
+#: include/global_settings.php:86 lib/functions.php:5270
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -13282,7 +13282,7 @@ msgstr "זה כמה תווים יהיה מותר לפני שורה בדוא&quot
 msgid "Sendmail Options"
 msgstr "אפשרויות Sendmail"
 
-#: include/global_settings.php:1913 lib/functions.php:5261
+#: include/global_settings.php:1913 lib/functions.php:5265
 #, fuzzy
 msgid "Sendmail Path"
 msgstr "נתיב Sendmail"
@@ -13703,7 +13703,7 @@ msgstr "RRDtool שרת פרוקסי"
 msgid "Structured RRDfile Paths"
 msgstr "נתיבי RRD מובנים"
 
-#: include/global_settings.php:2291 lib/functions.php:5250
+#: include/global_settings.php:2291 lib/functions.php:5254
 msgid "Method"
 msgstr "שיטה"
 
@@ -14763,8 +14763,8 @@ msgstr "מיקום:"
 msgid "Contact:"
 msgstr "איש קשר:"
 
-#: lib/api_device.php:1581 lib/functions.php:5292 lib/functions.php:5294
-#: lib/functions.php:5298
+#: lib/api_device.php:1581 lib/functions.php:5296 lib/functions.php:5298
+#: lib/functions.php:5302
 #, fuzzy
 msgid "Ping Results"
 msgstr "תוצאות פינג"
@@ -15613,177 +15613,177 @@ msgstr "ההודעה לא נמצאה."
 msgid "Error %s is not readable"
 msgstr "שגיאה %s אינה ניתנת לקריאה"
 
-#: lib/functions.php:3631
+#: lib/functions.php:3635
 #, fuzzy
 #| msgid "Logged in as"
 msgid "Logged in a Guest"
 msgstr "התחבר כ"
 
-#: lib/functions.php:3631 lib/functions.php:3647
+#: lib/functions.php:3635 lib/functions.php:3651
 msgid "Logged in as"
 msgstr "התחבר כ"
 
-#: lib/functions.php:3631
+#: lib/functions.php:3635
 #, fuzzy
 msgid "Login as Regular User"
 msgstr "התחבר כמשתמש רגיל"
 
-#: lib/functions.php:3631
+#: lib/functions.php:3635
 msgid "guest"
 msgstr "אורח"
 
-#: lib/functions.php:3634 lib/functions.php:3657 lib/html.php:2497
+#: lib/functions.php:3638 lib/functions.php:3661 lib/html.php:2497
 #, fuzzy
 msgid "User Community"
 msgstr "קהילת המשתמשים"
 
-#: lib/functions.php:3635 lib/functions.php:3658 lib/html.php:2499
+#: lib/functions.php:3639 lib/functions.php:3662 lib/html.php:2499
 #: lib/utility.php:1244
 msgid "Documentation"
 msgstr "תיעוד"
 
-#: lib/functions.php:3650
+#: lib/functions.php:3654
 #, php-format
 msgid "Logged in as %s"
 msgstr "מחובר כ %s"
 
-#: lib/functions.php:3652 lib/html.php:2478
+#: lib/functions.php:3656 lib/html.php:2478
 msgid "Edit Profile"
 msgstr "ערוך פרופיל"
 
-#: lib/functions.php:3662 lib/html.php:2482
+#: lib/functions.php:3666 lib/html.php:2482
 msgid "Logout"
 msgstr "התנתק"
 
-#: lib/functions.php:3807
+#: lib/functions.php:3811
 msgid "Leaf"
 msgstr "עלה"
 
-#: lib/functions.php:3827 lib/html_tree.php:663 lib/html_tree.php:699
+#: lib/functions.php:3831 lib/html_tree.php:663 lib/html_tree.php:699
 #: lib/html_tree.php:928 lib/html_tree.php:936 lib/html_tree.php:1510
 #, fuzzy
 msgid "Non Query Based"
 msgstr "מבוסס על שאילתה"
 
-#: lib/functions.php:3863
+#: lib/functions.php:3867
 #, fuzzy, php-format
 msgid "Link %s"
 msgstr "קשר %s"
 
-#: lib/functions.php:4892
+#: lib/functions.php:4896
 #, fuzzy
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
 msgstr "שגיאת מיילר: לא כתובת <b>TO</b> מוגדר! <br> אם אתה משתמש בקישור <i>Test Mail (דואר בדיקה)</i> , הגדר את הגדרת <b>הדואר האלקטרוני של ההתראה</b> ."
 
-#: lib/functions.php:5225
+#: lib/functions.php:5229
 #, php-format
 msgid "Authentication failed: %s"
 msgstr "האימות נכשל: %s"
 
-#: lib/functions.php:5229
+#: lib/functions.php:5233
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "HELO נכשל: %s"
 
-#: lib/functions.php:5232
+#: lib/functions.php:5236
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "החיבור נכשל: %s"
 
-#: lib/functions.php:5235
+#: lib/functions.php:5239
 #, fuzzy
 msgid "SMTP error: "
 msgstr "שגיאת SMTP:"
 
-#: lib/functions.php:5248
+#: lib/functions.php:5252
 #, fuzzy
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
 msgstr "זוהי הודעת בדיקה שנוצרה על ידי Cacti. הודעה זו נשלחה לבדיקת התצורה של הגדרות הדואר שלך."
 
-#: lib/functions.php:5249
+#: lib/functions.php:5253
 #, fuzzy
 msgid "Your email settings are currently set as follows"
 msgstr "הגדרות הדוא&quot;ל שלך מוגדרות באופן הבא"
 
-#: lib/functions.php:5252
+#: lib/functions.php:5256
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "בודק את התצורה ... <br>"
 
-#: lib/functions.php:5259
+#: lib/functions.php:5263
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "בכיתה מיילר של PHP"
 
-#: lib/functions.php:5265
+#: lib/functions.php:5269
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "שיטה: SMTP"
 
-#: lib/functions.php:5280
+#: lib/functions.php:5284
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "לא מוצג מסיבות אבטחה"
 
-#: lib/functions.php:5281
+#: lib/functions.php:5285
 msgid "Security"
 msgstr "אבטחה"
 
-#: lib/functions.php:5289
+#: lib/functions.php:5293
 #, fuzzy
 msgid "Ping Results:"
 msgstr "פינג תוצאות:"
 
-#: lib/functions.php:5298
+#: lib/functions.php:5302
 #, fuzzy
 msgid "Bypassed"
 msgstr "עקף"
 
-#: lib/functions.php:5306
+#: lib/functions.php:5310
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "יוצר טקסט הודעה ..."
 
-#: lib/functions.php:5309
+#: lib/functions.php:5313
 #, fuzzy
 msgid "Sending Message..."
 msgstr "לשלוח הודעה..."
 
-#: lib/functions.php:5313
+#: lib/functions.php:5317
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "הודעה מבחן קקטוסים"
 
-#: lib/functions.php:5315
+#: lib/functions.php:5319
 msgid "Success!"
 msgstr "הצלחה!"
 
-#: lib/functions.php:5318
+#: lib/functions.php:5322
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "ההודעה לא נשלחה עקב כשל ב- ping."
 
-#: lib/functions.php:5906 lib/functions.php:5975
+#: lib/functions.php:5910 lib/functions.php:5979
 #, fuzzy, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr "Cacti מושבת plugin %s עקב השגיאה הבאה: %s! לקבלת מידע נוסף, עיין בקובץ ה- Cacti logfile."
 
-#: lib/functions.php:6369 lib/functions.php:6371
+#: lib/functions.php:6373 lib/functions.php:6375
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "- ביטא %s"
 
-#: lib/functions.php:6369
+#: lib/functions.php:6373
 #, fuzzy, php-format
 msgid "Version %s %s"
 msgstr "%s %s %s"
 
-#: lib/functions.php:6371
+#: lib/functions.php:6375
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
 
-#: lib/functions.php:6585
+#: lib/functions.php:6589
 #, php-format
 msgid "WARNING:  Key Cacti Include File %s missing.  Please locate and replace this file"
 msgstr ""
@@ -22788,7 +22788,7 @@ msgstr "לבנות מחדש את המטמון מטמון"
 
 #: utilities.php:2287
 #, fuzzy
-msgid "The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems.  <i class=\"deviceDown\">NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run 'php -q cli/rebuild_poller_cache.php --help' at the command line for more information.</i>"
+msgid "The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems.  NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run 'php -q cli/rebuild_poller_cache.php --help' at the command line for more information."
 msgstr "מטמון ה- Poller ייווצר מחדש אם תבחר באפשרות זו. השתמש באפשרות זו רק במקרה של קריסת מסד נתונים אם אתה נתקל בבעיות לאחר ההתרסקות וכבר הפעלת את כלי תיקון הנתונים. לחלופין, אם אתה נתקל בבעיות בהתקן מסוים, פשוט שמור מחדש את ההתקן כדי לבנות מחדש את מטמון ה- Poller שלו. יש גם ממשק שורת פקודה שווה פקודה זו, כי הוא מומלץ עבור מערכות גדולות. <i class=\"deviceDown\">הערה: במערכות גדולות, פקודה זו עשויה להימשך מספר דקות עד שעות על מנת להשלים ולכן לא צריך להיות מופעל מתוך ממשק המשתמש Cacti. אתה יכול פשוט להפעיל &#39;PHP -q cli / rebuild_poller_cache.php --help&#39; בשורת הפקודה לקבלת מידע נוסף.</i>"
 
 #: utilities.php:2289
