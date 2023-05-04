@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.25
 -SECURITY#5318: Multiple minor stored XSS vulnerabilities in Cacti 1.2.24
+-issue#2959: Multi-threaded cli/rebuild_poller_cache.php, deprecated push_out_hosts.php 
 -issue#5254: Created a data source template to specify the snmp port, but it doesn't seem to work properly
 -issue#5255: Data query xml path with space problem
 -issue#5258: Warnings occur when installing thold plugin and as such thold will not upgrade correctly
@@ -20,7 +21,7 @@ Cacti CHANGELOG
 -issue#5315: automation library references "ghost" table
 -issue#5317: Data Source Info Mode produces invalid recommendations
 -issue#5319: Data Source Debug 'Run All' generates too many log messages
--issue#2959: Multi-threaded cli/rebuild_poller_cache.php, deprecated push_out_hosts.php 
+-issue#5323: Cosmetic error in the system utilities - rebuild poller cache - description
 -feature: Upgrade billboard.js to version 3.7.4
 -feature: Upgrade d3.js to version 7.8.2
 
