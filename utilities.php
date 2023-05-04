@@ -1213,7 +1213,8 @@ function utilities() {
 		__('Rebuild Poller Cache') => array(
 			'link'        => 'utilities.php?action=clear_poller_cache',
 			'mode'        => 'online',
-			'description' => __('The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems.  <i class="deviceDown">NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run \'php -q cli/rebuild_poller_cache.php --help\' at the command line for more information.</i>')
+			'description' => __('The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems.'),
+			'note'        => __('NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run \'php -q cli/rebuild_poller_cache.php --help\' at the command line for more information.')
 		),
 		__('Rebuild Resource Cache') => array(
 			'link'        => 'utilities.php?action=rebuild_resource_cache',
@@ -1296,6 +1297,11 @@ function utilities() {
 				print '</td>';
 				print '<td>';
 				print html_escape($details['description']);
+
+				if(isset($details['note'])) {
+					print '<br/><i class="deviceDown">' . html_escape($details['note']) . '</i>';
+				}
+
 				print '</td>';
 				form_end_row();
 
