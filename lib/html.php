@@ -683,7 +683,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		break;
 	}
 
-	print "<tr class='tableHeader'>";
+	print "<thead><tr class='tableHeader'>";
 
 	$i = 1;
 
@@ -802,7 +802,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		$i++;
 	}
 
-	print '</tr>';
+	print '</tr></thead>';
 }
 
 /* html_header_sort_checkbox - draws a header row with a 'select all' checkbox in the last cell
@@ -855,7 +855,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		$form_action = get_current_page();
 	}
 
-	print "<tr class='tableHeader'>";
+	print "<thead><tr class='tableHeader'>";
 
 	foreach ($header_items as $db_column => $display_array) {
 		$isSort = '';
@@ -973,17 +973,17 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	}
 
 	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='selectAll(\"$prefix\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='$prefix' name='$prefix' method='post' action='$form_action'></th>":'');
-	print '</tr>';
+	print '</tr></thead>';
 
 	$page++;
 }
 
-/* html_header - draws a header row suitable for display inside of a box element
+/* html_header - draws a header row suitable for display inside a box element
    @arg $header_items - an array containing a list of items to be included in the header
 		alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
    @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
 function html_header($header_items, $last_item_colspan = 1) {
-	print "<tr class='tableHeader " . (!$last_item_colspan > 1 ? 'tableFixed':'') . "'>";
+	print "<thead><tr class='tableHeader " . (!$last_item_colspan > 1 ? 'tableFixed':'') . "'>";
 
 	$i = 0;
 
@@ -1015,10 +1015,10 @@ function html_header($header_items, $last_item_colspan = 1) {
 		$i++;
 	}
 
-	print '</tr>';
+	print '</tr></thead>';
 }
 
-/* html_section_header - draws a header row suitable for display inside of a box element
+/* html_section_header - draws a header row suitable for display inside a box element
 		 but for display as a section title and not as a series of table header columns
    @arg $header_name - an array of the display name of the header for the section and
 		optional alignment.
@@ -1036,7 +1036,7 @@ function html_section_header($header_item, $last_item_colspan = 1) {
 }
 
 /* html_header_checkbox - draws a header row with a 'select all' checkbox in the last cell
-		suitable for display inside of a box element
+		suitable for display inside a box element
    @arg $header_items - an array containing a list of items to be included in the header
 		alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
    @arg $form_action - the url to post the 'select all' form to */
@@ -1046,7 +1046,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 		$form_action = get_current_page();
 	}
 
-	print "<tr class='tableHeader " . (!$resizable ? 'tableFixed':'') . "'>";
+	print "<thead><tr class='tableHeader " . (!$resizable ? 'tableFixed':'') . "'>";
 
 	foreach ($header_items as $item) {
 		if (is_array($item)) {
@@ -1075,10 +1075,10 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 	}
 
 	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='selectAll(\"$prefix\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='$prefix' name='$prefix' method='post' action='$form_action'></th>":'');
-	print '</tr>';
+	print '</tr></thead>';
 }
 
-/* html_create_list - draws the items for an html dropdown given an array of data
+/* html_create_list - draws the items for a html dropdown given an array of data
    @arg $form_data - an array containing data for this dropdown. it can be formatted
 		in one of two ways:
 		$array["id"] = "value";
