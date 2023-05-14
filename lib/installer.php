@@ -505,80 +505,79 @@ class Installer implements JsonSerializable {
 		$permissions = array('install' => array(), 'always' => array());
 
 		$install_paths = array(
-			$config['base_path'] . '/resource/snmp_queries',
-			$config['base_path'] . '/resource/script_server',
-			$config['base_path'] . '/resource/script_queries',
-			$config['base_path'] . '/scripts',
+			'snmp_queries'   => $config['base_path'] . '/resource/snmp_queries',
+			'script_server'  => $config['base_path'] . '/resource/script_server',
+			'script_queries' => $config['base_path'] . '/resource/script_queries',
+			'scripts'        => $config['base_path'] . '/scripts',
 		);
 
-		if (isset($config['path_csrf_secret'])) {
-			$install_paths[] = $config['path_csrf_secret'];
-		} else {
-			$install_paths[] = $config['base_path'] . '/include/vendor/csrf/csrf-secret.php';
+		$csrf_path = $config['base_path'] . '/include/vendor/csrf/csrf-secret.php';
+		if (!empty($config['path_csrf_secret'])) {
+			$csrf_path = $config['path_csrf_secret'];
 		}
 
-		$always_paths = array(
-			sys_get_temp_dir(),
-			$config['base_path'] . '/log',
-			$config['base_path'] . '/cache/boost',
-			$config['base_path'] . '/cache/mibcache',
-			$config['base_path'] . '/cache/realtime',
-			$config['base_path'] . '/cache/spikekill'
-		);
+		if (is_dir($csrf_path)) {
+			$csrf_path = rtrim($csrf_path ?? '', '/') . '/csrf-secret.php';
+		}
 
-		$csrf_paths = array();
+		$install_paths['csrf'] = $csrf_path;
+
+		$always_paths = array(
+			'sys_temp'  => sys_get_temp_dir(),
+			'log'       => $config['base_path'] . '/log',
+			'boost'     => $config['base_path'] . '/cache/boost',
+			'mibcache'  => $config['base_path'] . '/cache/mibcache',
+			'realtime'  => $config['base_path'] . '/cache/realtime',
+			'spikekill' => $config['base_path'] . '/cache/spikekill'
+		);
 
 		$install_key = 'always';
 		if ($this->mode != Installer::MODE_POLLER) {
 			$install_key = 'install';
-
-			if (!empty($config['path_csrf_secret'])) {
-				$csrf_paths[] = $config['path_csrf_secret'];
-			}
 		}
 
-		foreach ($install_paths as $path) {
+		foreach ($install_paths as $name => $path) {
 			if (is_dir($path)) {
 				$valid = (is_resource_writable($path . '/'));
 				$permissions[$install_key][$path . '/'] = $valid;
 			} else {
-				$valid = (is_resource_writable($path));
+				$valid = false;
+
+				// Lets see if this is the CSRF secret
+				if ($name == 'csrf') {
+
+					// Does it exist?
+					if (file_exists($path)) {
+
+						// Lets get the contents and make sure we have something at least
+						$csrf_secret = file_get_contents($path);
+						$valid = !empty($csrf_secret);
+					}
+				}
+
+				// If we aren't valid at this point, we aren't CSRF
+				// or the CSRF was empty
+				if (!$valid) {
+					// Lets me sure this path is writable
+					$valid = (is_resource_writable($path));
+				}
+
 				$permissions[$install_key][$path] = $valid;
 			}
-			log_install_debug('permission',"$path = $valid ($install_key)");
+
+			log_install_debug('permission',"($name) $path = $valid ($install_key)");
 			if (!$valid) {
-				$this->addError(Installer::STEP_PERMISSION_CHECK, 'Permission', $path, __('Path was not writable'));
+				$this->addError(Installer::STEP_PERMISSION_CHECK, 'Permission', $name.':'.$path, __('Path was not writable'));
 			}
 		}
 
-		foreach ($always_paths as $path) {
-			$valid = (is_resource_writable($path . '/'));
-			$permissions['always'][$path . '/'] = $valid;
-			log_install_debug('permission',"$path = $valid (always)");
+		foreach ($always_paths as $name => $path) {
+			$path = rtrim($path, '/') . '/';
+			$valid = (is_resource_writable($path));
+			$permissions['always'][$path] = $valid;
+			log_install_debug('permission',"($name) $path = $valid (always)");
 			if (!$valid) {
-				$this->addError(Installer::STEP_PERMISSION_CHECK, 'Permission', $path, __('Path is not writable'));
-			}
-		}
-
-		foreach ($csrf_paths as $path) {
-			if (is_dir($path)) {
-				$path .= '/csrf-secret.php';
-			}
-
-			$valid = file_exists($path);
-			if ($valid) {
-				$csrf_secret = file_get_contents($path);
-				$valid = !empty($csrf_secret);
-			}
-
-			if (!$valid) {
-				$valid = (is_resource_writable($path));
-			}
-			$permissions['install'][$path] = $valid;
-
-			log_install_debug('permission',"$path = $valid (csrf)");
-			if (!$valid) {
-				$this->addError(Installer::STEP_PERMISSION_CHECK, 'Permission', $path, __('Path was not writable'));
+				$this->addError(Installer::STEP_PERMISSION_CHECK, 'Permission', $name.':'.$path, __('Path is not writable'));
 			}
 		}
 
