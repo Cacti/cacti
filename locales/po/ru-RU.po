@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-11-12 15:22-0500\n"
-"PO-Revision-Date: 2023-04-23 15:12+0000\n"
+"PO-Revision-Date: 2023-05-15 12:06+0000\n"
 "Last-Translator: Сергей <zersh@mail.ru>\n"
 "Language-Team: Russian <http://translate.cacti.net/projects/cacti/core/ru/>\n"
 "Language: ru-RU\n"
@@ -13183,71 +13183,67 @@ msgid "Device ID"
 msgstr "ID Устройства"
 
 #: include/global_settings.php:2279
-#, fuzzy
 msgid "Device ID/Data Query ID"
-msgstr "Удалить запрос данных"
+msgstr "ID Устройства/Запроса"
 
 #: include/global_settings.php:2280
-#, fuzzy
-#| msgid "Device Name"
 msgid "Device Hash/Device ID"
-msgstr "Имя устройства"
+msgstr "Хэш устройства/ ID устройства"
 
 #: include/global_settings.php:2281
 msgid "Device Hash/Device ID/Data Query ID"
-msgstr ""
+msgstr "Хэш устройства/ID устройства/ID запроса"
 
 #: include/global_settings.php:2285
 msgid "Max Device Hash Directories"
-msgstr ""
+msgstr "Максимальное количество хэш-каталогов устройств"
 
 #: include/global_settings.php:2286
 msgid "The maximum number of Device Directories to be created based upon hashed Device ID's."
 msgstr ""
+"Максимальное количество каталогов устройств, которое будет создано на основе "
+"хешированных идентификаторов устройств."
 
 #: include/global_settings.php:2298 include/global_settings.php:2330
 msgid "Proxy Server"
-msgstr "Proxy Server"
+msgstr "Прокси Сервер"
 
 #: include/global_settings.php:2299
-#, fuzzy
 msgid "The DNS hostname or IP address of the RRDtool proxy server."
 msgstr "Имя узла DNS или IP-адрес прокси-сервера RRDtool."
 
 #: include/global_settings.php:2304 include/global_settings.php:2336
-#, fuzzy
 msgid "Proxy Port Number"
-msgstr "Номер порта прокси-сервера"
+msgstr "Порт прокси-сервера"
 
 #: include/global_settings.php:2305
-#, fuzzy
 msgid "TCP port for encrypted communication."
 msgstr "TCP-порт для шифрования связи."
 
 #: include/global_settings.php:2312 include/global_settings.php:2344
 #: utilities.php:282
-#, fuzzy
 msgid "RSA Fingerprint"
-msgstr "Отпечатки пальцев RSA"
+msgstr "Отпечаток RSA"
 
 #: include/global_settings.php:2313
-#, fuzzy
 msgid "The fingerprint of the current public RSA key the proxy is using. This is required to establish a trusted connection."
-msgstr "Отпечаток пальца текущего открытого ключа RSA, используемого прокси-сервером. Это необходимо для установления надежного соединения."
+msgstr ""
+"Отпечаток текущего открытого ключа RSA, используемого прокси-сервером. Это "
+"необходимо для установления надежного соединения."
 
 #: include/global_settings.php:2320
-#, fuzzy
 msgid "RRDtool Proxy Server - Backup"
-msgstr "Прокси-сервер RRDtool - Резервное копирование"
+msgstr "Прокси-сервер RRDtool - Бэкап"
 
 #: include/global_settings.php:2325
 msgid "Load Balancing"
-msgstr "Выравнивание нагрузки"
+msgstr "Распределение нагрузки"
 
 #: include/global_settings.php:2326
-#, fuzzy
 msgid "If both main and backup proxy are receivable this option allows to spread all requests against RRDtool."
-msgstr "Если основной и резервный прокси-серверы являются приемлемыми, эта опция позволяет распределить все запросы против RRDtool."
+msgstr ""
+"Если основной и резервный прокси-серверы доступны, эта опция позволяет "
+"распределить все запросы на RRDtool."
 
 #: include/global_settings.php:2331
 #, fuzzy
