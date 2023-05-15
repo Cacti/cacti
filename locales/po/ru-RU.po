@@ -1,17 +1,5 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti Russian Language File\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2023-05-04 07:58-0400\n"
-"PO-Revision-Date: 2023-04-23 21:26+0000\n"
-"Last-Translator: Сергей <zersh@mail.ru>\n"
-"Language-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\n"
-"Language: ru-RU\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2023-05-04 07:58-0400\nPO-Revision-Date: 2023-05-15 12:06+0000\nLast-Translator: Сергей <zersh@mail.ru>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2607 lib/html.php:2512
 msgid "About Cacti"
@@ -13061,71 +13049,61 @@ msgid "Device ID"
 msgstr "ID Устройства"
 
 #: include/global_settings.php:2302
-#, fuzzy
 msgid "Device ID/Data Query ID"
-msgstr "Удалить запрос данных"
+msgstr "ID Устройства/Запроса"
 
 #: include/global_settings.php:2303
-#, fuzzy
-#| msgid "Device Name"
 msgid "Device Hash/Device ID"
-msgstr "Имя устройства"
+msgstr "Хэш устройства/ ID устройства"
 
 #: include/global_settings.php:2304
 msgid "Device Hash/Device ID/Data Query ID"
-msgstr ""
+msgstr "Хэш устройства/ID устройства/ID запроса"
 
 #: include/global_settings.php:2308
 msgid "Max Device Hash Directories"
-msgstr ""
+msgstr "Максимальное количество хэш-каталогов устройств"
 
 #: include/global_settings.php:2309
 msgid "The maximum number of Device Directories to be created based upon hashed Device ID's."
-msgstr ""
+msgstr "Максимальное количество каталогов устройств, которое будет создано на основе хешированных идентификаторов устройств."
 
 #: include/global_settings.php:2321 include/global_settings.php:2353
 msgid "Proxy Server"
-msgstr "Proxy Server"
+msgstr "Прокси Сервер"
 
 #: include/global_settings.php:2322
-#, fuzzy
 msgid "The DNS hostname or IP address of the RRDtool proxy server."
 msgstr "Имя узла DNS или IP-адрес прокси-сервера RRDtool."
 
 #: include/global_settings.php:2327 include/global_settings.php:2359
-#, fuzzy
 msgid "Proxy Port Number"
-msgstr "Номер порта прокси-сервера"
+msgstr "Порт прокси-сервера"
 
 #: include/global_settings.php:2328
-#, fuzzy
 msgid "TCP port for encrypted communication."
 msgstr "TCP-порт для шифрования связи."
 
 #: include/global_settings.php:2335 include/global_settings.php:2367
 #: support.php:190 utilities.php:282
-#, fuzzy
 msgid "RSA Fingerprint"
-msgstr "Отпечатки пальцев RSA"
+msgstr "Отпечаток RSA"
 
 #: include/global_settings.php:2336
-#, fuzzy
 msgid "The fingerprint of the current public RSA key the proxy is using. This is required to establish a trusted connection."
-msgstr "Отпечаток пальца текущего открытого ключа RSA, используемого прокси-сервером. Это необходимо для установления надежного соединения."
+msgstr "Отпечаток текущего открытого ключа RSA, используемого прокси-сервером. Это необходимо для установления надежного соединения."
 
 #: include/global_settings.php:2343
-#, fuzzy
 msgid "RRDtool Proxy Server - Backup"
-msgstr "Прокси-сервер RRDtool - Резервное копирование"
+msgstr "Прокси-сервер RRDtool - Бэкап"
 
 #: include/global_settings.php:2348
 msgid "Load Balancing"
-msgstr "Выравнивание нагрузки"
+msgstr "Распределение нагрузки"
 
 #: include/global_settings.php:2349
-#, fuzzy
 msgid "If both main and backup proxy are receivable this option allows to spread all requests against RRDtool."
-msgstr "Если основной и резервный прокси-серверы являются приемлемыми, эта опция позволяет распределить все запросы против RRDtool."
+msgstr "Если основной и резервный прокси-серверы доступны, эта опция позволяет распределить все запросы на RRDtool."
 
 #: include/global_settings.php:2354
 #, fuzzy
