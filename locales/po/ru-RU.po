@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2023-05-04 07:58-0400\nPO-Revision-Date: 2023-05-15 12:06+0000\nLast-Translator: Сергей <zersh@mail.ru>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2023-05-04 07:58-0400\nPO-Revision-Date: 2023-05-20 05:26+0000\nLast-Translator: Сергей <zersh@mail.ru>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2607 lib/html.php:2512
 msgid "About Cacti"
@@ -13106,32 +13106,26 @@ msgid "If both main and backup proxy are receivable this option allows to spread
 msgstr "Если основной и резервный прокси-серверы доступны, эта опция позволяет распределить все запросы на RRDtool."
 
 #: include/global_settings.php:2354
-#, fuzzy
 msgid "The DNS hostname or IP address of the RRDtool backup proxy server if proxy is running in MSR mode."
 msgstr "Имя узла DNS или IP-адрес резервного прокси-сервера RRDtool, если прокси-сервер работает в режиме MSR."
 
 #: include/global_settings.php:2360
-#, fuzzy
 msgid "TCP port for encrypted communication with the backup proxy."
 msgstr "TCP-порт для шифрования связи с резервным прокси-сервером."
 
 #: include/global_settings.php:2368
-#, fuzzy
 msgid "The fingerprint of the current public RSA key the backup proxy is using. This required to establish a trusted connection."
-msgstr "Отпечаток пальца текущего открытого ключа RSA, используемого резервным прокси-сервером. Это необходимо для установления надежного соединения."
+msgstr "Отпечаток текущего открытого ключа RSA, используемого резервным прокси-сервером. Это необходимо для установления надежного соединения."
 
 #: include/global_settings.php:2377
-#, fuzzy
 msgid "Spike Kill Settings"
-msgstr "Настройки убийства Спайк Килл"
+msgstr "Настройки прерывания(kill) Spike"
 
 #: include/global_settings.php:2382
-#, fuzzy
 msgid "Removal Method"
 msgstr "Способ удаления"
 
 #: include/global_settings.php:2383
-#, fuzzy
 msgid "There are two removal methods.  The first, Standard Deviation, will remove any sample that is X number of standard deviations away from the average of samples.  The second method, Variance, will remove any sample that is X% more than the Variance average.  The Variance method takes into account a certain number of 'outliers'.  Those are exceptional samples, like the spike, that need to be excluded from the Variance Average calculation."
 msgstr "Существует два способа удаления.  Первое, Стандартное отклонение, удалит любой образец, число стандартных отклонений которого равно X, от среднего значения по образцам.  Второй метод, Разница, удалит любую выборку, которая на X% больше, чем средняя Разница.  Метод разницы учитывает определенное число \"отклонений\".  Это исключительные выборки, такие как пик, которые необходимо исключить из расчета отклонения среднего значения."
 
@@ -13140,17 +13134,14 @@ msgid "Standard Deviation"
 msgstr "Стандартное отклонение"
 
 #: include/global_settings.php:2388
-#, fuzzy
 msgid "Variance Based w/Outliers Removed"
-msgstr "Клещи на основе отклонений w/Outliers Удалены"
+msgstr "Клещи на основе отклонений w/Выбросы (Outliers) Удалены"
 
 #: include/global_settings.php:2392 lib/html.php:2223
-#, fuzzy
 msgid "Replacement Method"
 msgstr "Метод замены"
 
 #: include/global_settings.php:2393
-#, fuzzy
 msgid "There are three replacement methods.  The first method replaces the spike with the average of the data source in question.  The second method replaces the spike with a 'NaN'.  The last replaces the spike with the last known good value found."
 msgstr "Существует три метода замены.  Первый метод заменяет всплеск средним значением по данному источнику данных.  Второй метод заменяет шип на \"NaN\".  Последний заменяет всплеск последним известным хорошим значением."
 
@@ -13159,22 +13150,18 @@ msgid "Average"
 msgstr "Средне"
 
 #: include/global_settings.php:2398 lib/html.php:2220
-#, fuzzy
 msgid "NaN's"
 msgstr "NaN's"
 
 #: include/global_settings.php:2399 lib/html.php:2221
-#, fuzzy
 msgid "Last Known Good"
-msgstr "Последнее известное добро"
+msgstr "Последнее известное хорошее"
 
 #: include/global_settings.php:2403
-#, fuzzy
 msgid "Number of Standard Deviations"
 msgstr "Количество стандартных отклонений"
 
 #: include/global_settings.php:2404
-#, fuzzy
 msgid "Any value that is this many standard deviations above the average will be excluded.  A good number will be dependent on the type of data to be operated on.  We recommend a number no lower than 5 Standard Deviations."
 msgstr "Любое значение, содержащее столько стандартных отклонений выше среднего, будет исключено.  Хорошее число будет зависеть от типа данных, с которыми необходимо работать.  Мы рекомендуем число не менее 5 стандартных отклонений."
 
@@ -13185,29 +13172,26 @@ msgstr "Любое значение, содержащее столько ста�
 #: include/global_settings.php:2416 include/global_settings.php:2417
 #: include/global_settings.php:2418 include/global_settings.php:2419
 #: include/global_settings.php:2420
-#, fuzzy, php-format
+#, php-format
 msgid "%d Standard Deviations"
-msgstr "d Стандартные отклонения"
+msgstr "%d Стандартные отклонения"
 
 #: include/global_settings.php:2424 lib/html.php:2235
-#, fuzzy
 msgid "Variance Percentage"
-msgstr "Разница Процентная доля"
+msgstr "Процент отклонения"
 
 #: include/global_settings.php:2425
-#, fuzzy, php-format
+#, php-format
 msgid "This value represents the percentage above the adjusted sample average once outliers have been removed from the sample.  For example, a Variance Percentage of 100%% on an adjusted average of 50 would remove any sample above the quantity of 100 from the graph."
-msgstr "Это значение представляет собой процентное соотношение, превышающее скорректированное среднее по выборке после того, как выбросы были удалены из выборки.  Например, изменение процентной доли в размере 100% при скорректированном среднем значении 50 удалит из графика любую выборку, превышающую значение 100."
+msgstr "Это значение представляет собой процентное соотношение, превышающее скорректированное среднее по выборке после того, как выбросы были удалены из выборки.  Например, изменение процентной доли в размере 100%% при скорректированном среднем значении 50 удалит из графика любую выборку, превышающую значение 100."
 
 #: include/global_settings.php:2448
-#, fuzzy
 msgid "Variance Number of Outliers"
 msgstr "Разница в количестве выбросов"
 
 #: include/global_settings.php:2449
-#, fuzzy
 msgid "This value represents the number of high and low average samples will be removed from the sample set prior to calculating the Variance Average.  If you choose an outlier value of 5, then both the top and bottom 5 averages are removed."
-msgstr "Это значение представляет собой число высоких и низких средних выборок, которые будут удалены из набора выборок до вычисления среднего отклонения.  Если выбрано значение отклонения 5, то удаляются как верхнее, так и нижнее 5-е средние значения."
+msgstr "Это значение представляет собой число высоких и низких средних выборок, которые будут удалены из набора выборок до вычисления среднего отклонения.  Если выбрано значение отклонения 5, то удаляются как верхнее, так и нижние 5 средние значения."
 
 #: include/global_settings.php:2453 include/global_settings.php:2454
 #: include/global_settings.php:2455 include/global_settings.php:2456
@@ -13216,17 +13200,15 @@ msgstr "Это значение представляет собой число �
 #: include/global_settings.php:2461 include/global_settings.php:2462
 #: include/global_settings.php:2463 include/global_settings.php:2464
 #: include/global_settings.php:2465
-#, fuzzy, php-format
+#, php-format
 msgid "%d High/Low Samples"
-msgstr "d Высоко/низкопробные образцы"
+msgstr "%d Высокие/низкие образцы"
 
 #: include/global_settings.php:2469
-#, fuzzy
 msgid "Max Kills Per RRA"
-msgstr "Макс убивает одного человека за RRA."
+msgstr "Макс. убийств за RRA"
 
 #: include/global_settings.php:2470
-#, fuzzy
 msgid "This value represents the maximum number of spikes to remove from a Graph RRA."
 msgstr "Это значение представляет собой максимальное количество шипов, которое необходимо удалить из графика RRA."
 
@@ -13236,32 +13218,27 @@ msgstr "Это значение представляет собой максим
 #: include/global_settings.php:2480 include/global_settings.php:2481
 #: include/global_settings.php:2482 include/global_settings.php:2483
 #: include/global_settings.php:2484 include/global_settings.php:2485
-#, fuzzy, php-format
+#, php-format
 msgid "%d Spikes"
-msgstr "d шипы"
+msgstr "%d Шипы"
 
 #: include/global_settings.php:2489
-#, fuzzy
 msgid "RRDfile Backup Directory"
 msgstr "Каталог резервного копирования файлов RRD"
 
 #: include/global_settings.php:2490
-#, fuzzy
 msgid "If this directory is not empty, then your original RRDfiles will be backed up to this location."
 msgstr "Если этот каталог не пуст, то резервная копия оригинальных RRD-файлов будет сохранена в этом месте."
 
 #: include/global_settings.php:2497
-#, fuzzy
 msgid "Batch Spike Kill Settings"
-msgstr "Настройки убийств с пакетным всплеском"
+msgstr "Настройки останова(kill) в пакетном режиме"
 
 #: include/global_settings.php:2502
-#, fuzzy
 msgid "Removal Schedule"
-msgstr "График вывоза из страны"
+msgstr "График удаления"
 
 #: include/global_settings.php:2503
-#, fuzzy
 msgid "Do you wish to periodically remove spikes from your graphs?  If so, select the frequency below."
 msgstr "Вы хотите периодически удалять шипы из графиков?  Если да, выберите частоту ниже."
 
@@ -13278,27 +13255,22 @@ msgid "Base Time"
 msgstr "Базовое время"
 
 #: include/global_settings.php:2516
-#, fuzzy
 msgid "The Base Time for Spike removal to occur.  For example, if you use '12:00am' and you choose once per day, the batch removal would begin at approximately midnight every day."
-msgstr "Базовое время для удаления колышков.  Например, если вы используете '12:00 утра' и выбираете один раз в день, удаление партии начнется примерно в полночь каждый день."
+msgstr "Базовое время для удаления шипов.  Например, если вы используете '00:00' и выбираете один раз в день, удаление начнется примерно в полночь каждый день."
 
 #: include/global_settings.php:2523
-#, fuzzy
 msgid "Graph Templates to Spike Kill"
-msgstr "График Шаблоны для убийства Спайк-Килла"
+msgstr "Шаблон График для Spike Kill"
 
 #: include/global_settings.php:2525
-#, fuzzy
 msgid "When performing batch spike removal, only the templates selected below will be acted on."
-msgstr "При выполнении пакетного удаления колышков будут действовать только те шаблоны, которые выбраны ниже."
+msgstr "При выполнении пакетного удаления шипов(всплесков) будут действовать только те шаблоны, которые выбраны ниже."
 
 #: include/global_settings.php:2529
-#, fuzzy
 msgid "Backup Retention"
-msgstr "Сохранение данных"
+msgstr "Сохранение резервной копии"
 
 #: include/global_settings.php:2530
-#, fuzzy
 msgid "When SpikeKill kills spikes in graphs, it makes a backup of the RRDfile.  How long should these backup files be retained?"
 msgstr "Когда SpikeKill уничтожает пики на графиках, он создает резервную копию RRD-файла. Как долго должны храниться эти резервные файлы?"
 
