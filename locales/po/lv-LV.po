@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.2.20\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-11-12 15:22-0500\n"
-"PO-Revision-Date: 2022-12-30 06:32+0000\n"
+"PO-Revision-Date: 2023-05-22 11:41+0000\n"
 "Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core/lv/>\n"
 "Language: lv-LV\n"
@@ -12005,7 +12005,9 @@ msgstr "Dublējuma saglabāšana"
 
 #: include/global_settings.php:2507
 msgid "When SpikeKill kills spikes in graphs, it makes a backup of the RRDfile.  How long should these backup files be retained?"
-msgstr "Kad SpikeKill iznīcina diagrammas tapas, tas izveido RRD faila dublējumu. Cik ilgi šie dublējuma faili ir jāsaglabā?"
+msgstr ""
+"Kad SpikeKill novāc grafikas pīķus, tas izveido RRD faila kopiju.  Cik ilgi "
+"šos kopijas failus uzglabāt?"
 
 #: include/global_settings.php:2526
 msgid "Default View Mode"
