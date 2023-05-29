@@ -440,7 +440,7 @@ function settings() {
 
 				if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
-						if (graph_config_value_exists($sub_field_name, $_SESSION[SESS_USER_ID])) {
+						if (user_setting_exists($sub_field_name, $_SESSION[SESS_USER_ID])) {
 							$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
 						}
 
@@ -452,7 +452,7 @@ function settings() {
 						);
 					}
 				} else {
-					if (graph_config_value_exists($field_name, $_SESSION[SESS_USER_ID])) {
+					if (user_setting_exists($field_name, $_SESSION[SESS_USER_ID])) {
 						$form_array[$field_name]['form_id'] = 1;
 					}
 
@@ -604,7 +604,7 @@ function settings_2fa() {
 		)
 	);
 
-	form_save_buttons($bottons);
+	form_save_buttons($buttons);
 
 	?>
 	<script type='text/javascript'>
