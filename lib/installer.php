@@ -1615,7 +1615,7 @@ class Installer implements JsonSerializable {
 				/* upgrade - if user upgrades send to settings check */
 				if ($this->isPre_v0_8_UpgradeNeeded()) {
 					/* upgrade - if user runs old version send to upgrade-oldversion */
-					$this->stepNext = Installer::STEP_INSTALL_OLD;
+					$this->stepNext = Installer::STEP_INSTALL_OLDVERSION;
 				} else {
 					$this->stepNext = Installer::STEP_INSTALL;
 				}
@@ -2808,6 +2808,7 @@ class Installer implements JsonSerializable {
 			$file = fopen($cacheFile, "r");
 			if ($file !== false) {
 				$version_last = '';
+				$sectionStatus = null;
 				$line = 0;
 				while (!feof($file)) {
 					$line++;

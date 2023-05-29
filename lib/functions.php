@@ -665,7 +665,7 @@ function prime_common_config_settings() {
  * @param $config_name - the name of the configuration setting as specified $settings array
  *   in 'include/global_settings.php'
  *
- * @return - the current value of the configuration option
+ * @return string|false the current value of the configuration option
  */
 function read_config_option($config_name, $force = false) {
 	global $config, $database_hostname, $database_default, $database_port, $database_sessions;
@@ -1131,11 +1131,11 @@ function kill_session_var($var_name) {
 
 	/* register_global = off: reset local settings cache so the user sees the new settings */
 	/* session_unregister is deprecated in PHP 5.3.0, unset is sufficient */
+	$func = 'unset';
 	if (version_compare(PHP_VERSION, '5.3.0', '<')) {
-		session_unregister($var_name);
-	} else {
-		unset($var_name);
+		$func = 'session_unregister';
 	}
+	$func($var_name);
 }
 
 /**
@@ -1159,15 +1159,14 @@ function force_session_data() {
 /**
  * array_rekey - changes an array in the form:
  *
- * '$arr[0] = array('id' => 23, 'name' => 'blah')'
- * to the form
+ * '$arr[0] = array('id' => 23, 'name' => 'blah')' to the form
  * '$arr = array(23 => 'blah')'
  *
- * @param $array - (array) the original array to manipulate
- * @param $key - the name of the key
- * @param $key_value - the name of the key value
+ * @param array  $array		The original array to manipulate
+ * @param string $key		The name of the key
+ * @param string $key_value	The name of the key value
  *
- * @return - the modified array
+ * @return array the modified array
  */
 function array_rekey($array, $key, $key_value) {
 	$ret_array = array();
@@ -1176,12 +1175,12 @@ function array_rekey($array, $key, $key_value) {
 		foreach ($array as $item) {
 			$item_key = $item[$key];
 
-			if (is_array($key_value)) {
-				foreach ($key_value as $value) {
-					$ret_array[$item_key][$value] = $item[$value];
-				}
-			} else {
-				$ret_array[$item_key] = $item[$key_value];
+			if (!is_array($key_value)) {
+				$key_value = [$key_value];
+			}
+
+			foreach ($key_value as $value) {
+				$ret_array[$item_key][$value] = $item[$value];
 			}
 		}
 	}
@@ -2505,7 +2504,7 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
  *
  * @param $data_template_id - (int) the ID of the data template
  *
- * @return - the full script path or (bool) false for an error
+ * @return string - the full script path or (bool) false for an error
  */
 function get_full_test_script_path($data_template_id, $host_id) {
 	global $config;
@@ -2727,7 +2726,7 @@ function stri_replace($find, $replace, $string) {
  *
  * @param $string - the string to modify/clean
  *
- * @return - the modified string
+ * @return string	The modified string
  */
 function clean_up_lines($string) {
 	if ($string != '') {
@@ -2743,7 +2742,7 @@ function clean_up_lines($string) {
  *
  * @param $string - the string to modify/clean
  *
- * @return - the modified string
+ * @return string	The modified string
  */
 function clean_up_name($string) {
 	if ($string != '') {
@@ -2761,7 +2760,7 @@ function clean_up_name($string) {
  *
  * @param $string - the string to modify/clean
  *
- * @return - the modified string
+ * @return string	The modified string
  */
 function clean_up_file_name($string) {
 	if ($string != '') {
@@ -2871,7 +2870,7 @@ function get_graph_title_cache($local_graph_id) {
  *
  * @param $local_graph_id - (int) the ID of the graph to get a title for
  *
- * @return - the graph title
+ * @return string	The graph title
  */
 function get_graph_title($local_graph_id) {
 	$graph = db_fetch_row_prepared('SELECT gl.host_id, gl.snmp_query_id,
@@ -3977,7 +3976,7 @@ function get_browser_query_string() {
 /**
  * get_current_page - returns the basename of the current page in a web server friendly way
  *
- * @return - the basename of the current script file
+ * @return string	The basename of the current script file
  */
 function get_current_page($basename = true) {
 	if (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME'] != '') {
@@ -4456,9 +4455,9 @@ function sanitize_cdef($cdef) {
 /**
  * verifies all selected items are numeric to guard against injection
  *
- * @param array $items   - an array of serialized items from a post
+ * @param string $items   An array of serialized items from a post
  *
- * @return array      - the sanitized selected items array
+ * @return array          The sanitized selected items array
  */
 function sanitize_unserialize_selected_items($items) {
 	if ($items != '') {
@@ -5202,13 +5201,9 @@ function ping_mail_server($host, $port, $user, $password, $timeout = 10, $secure
 	$smtp = new PHPMailer\PHPMailer\SMTP;
 
 	if (!empty($secure) && $secure != 'none') {
-		$smtp->SMTPSecure = $secure;
 		if (substr_count($host, ':') == 0) {
 			$host = $secure . '://' . $host;
 		}
-	} else {
-		$smtp->SMTPAutoTLS = false;
-		$smtp->SMTPSecure = false;
 	}
 
 	//Enable connection-level debug output
@@ -6370,9 +6365,9 @@ function get_cacti_version() {
  */
 function get_cacti_version_text($include_version = true) {
 	if ($include_version) {
-		return trim(__('Version %s %s', CACTI_VERSION, (defined('CACTI_VERSION_BETA') ? __('- Beta %s', CACTI_VERSION_BETA):'')));
+		return trim(__('Version %s %s', CACTI_VERSION, (defined('CACTI_VERSION_BETA') ? __('- Beta %s', constant('CACTI_VERSION_BETA')):'')));
 	} else {
-		return trim(__('%s %s', CACTI_VERSION, (defined('CACTI_VERSION_BETA') ? __('- Beta %s', CACTI_VERSION_BETA):'')));
+		return trim(__('%s %s', CACTI_VERSION, (defined('CACTI_VERSION_BETA') ? __('- Beta %s', constant('CACTI_VERSION_BETA')):'')));
 	}
 }
 
