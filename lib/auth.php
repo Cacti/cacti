@@ -178,12 +178,12 @@ function check_auth_cookie() {
  *   the guest and template accounts, or a user that is specified by a plugin as a
  *   template account.
  *
- * @param  int|string user_id is either the user_id or a username
+ * @param  null|int|string user_id is either the user_id or a username
  *
  * @return bool true if template account, false otherwise
  */
-function is_template_account(int|string $user_id):bool {
-	if (!is_numeric($user_id)) {
+function is_template_account(null|int|string $user_id):bool {
+	if (is_string($user_id)) {
 		$user_id = db_fetch_cell_prepared('SELECT id FROM user_auth WHERE username = ?', array($user_id));
 	}
 
