@@ -3023,8 +3023,7 @@ class Installer implements JsonSerializable {
 
 			if ($file !== false) {
 				$version_last = '';
-				$line         = 0;
-
+				$line = 0;
 				while (!feof($file)) {
 					$line++;
 					$change = fgets($file);

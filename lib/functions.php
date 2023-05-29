@@ -671,13 +671,13 @@ function cache_common_config_settings():array {
 /**
  * Finds the current value of a Cacti configuration setting
  *
- * @param  string       $config_name  the name of the configuration setting as
+ * @param  string       $config_name  The name of the configuration setting as
  *                                    specified $settings array in
  *                                    'include/global_settings.php'
  *
- * @return mixed the current value of the configuration option
+ * @return string|false               The current value of the configuration option
  */
-function read_config_option(string $config_name, bool $force = false):mixed {
+function read_config_option(string $config_name, bool $force = false):string|false {
 	global $config, $database_hostname, $database_default, $database_port, $database_sessions;
 
 	$loaded = false;
@@ -1295,15 +1295,14 @@ function force_session_data() {
 /**
  * array_rekey - changes an array in the form:
  *
- * '$arr[0] = array('id' => 23, 'name' => 'blah')'
- * to the form
+ * '$arr[0] = array('id' => 23, 'name' => 'blah')' to the form
  * '$arr = array(23 => 'blah')'
  *
- * @param $array - (array) the original array to manipulate
- * @param $key - the name of the key
- * @param $key_value - the name of the key value
+ * @param array  $array		The original array to manipulate
+ * @param string $key		The name of the key
+ * @param string $key_value	The name of the key value
  *
- * @return mixed the modified array
+ * @return array the modified array
  */
 function array_rekey(array $array, string $key, mixed $key_value): array {
 	$ret_array = array();
@@ -1312,12 +1311,12 @@ function array_rekey(array $array, string $key, mixed $key_value): array {
 		foreach ($array as $item) {
 			$item_key = $item[$key];
 
-			if (is_array($key_value)) {
-				foreach ($key_value as $value) {
-					$ret_array[$item_key][$value] = $item[$value];
-				}
-			} else {
-				$ret_array[$item_key] = $item[$key_value];
+			if (!is_array($key_value)) {
+				$key_value = [$key_value];
+			}
+
+			foreach ($key_value as $value) {
+				$ret_array[$item_key][$value] = $item[$value];
 			}
 		}
 	}
@@ -2741,8 +2740,8 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
  * given data template for testing. this function does not work on
  * SNMP actions, only script-based actions
  *
- * @param int $data_template_id - (int) the ID of the data template
- * @param int $host_id
+ * @param int $data_template_id    The ID of the data template
+ * @param int $host_id             The ID of the host device
  *
  * @return string|bool the full script path or (bool) false for an error
  */
@@ -3143,11 +3142,11 @@ function get_graph_title_cache($local_graph_id) {
 }
 
 /**
- * get_graph_title - returns the title of a graph without using the title cache
+ * Returns the title of a graph without using the title cache
  *
- * @param $local_graph_id - (int) the ID of the graph to get a title for
+ * @param $local_graph_id   The ID of the graph to get a title for
  *
- * @return mixed the graph title
+ * @return string|false     The graph title
  */
 function get_graph_title($local_graph_id) {
 	$graph = db_fetch_row_prepared('SELECT gl.host_id, gl.snmp_query_id,
@@ -4298,12 +4297,13 @@ function get_browser_query_string() {
 }
 
 /**
- * get_current_page - returns the basename of the current page in a web server friendly way
+ * Returns the basename of the current page in a web server friendly way
  *
- * @return mixed the basename of the current script file
- * @param mixed $basename
+ * @param  bool $basename   Whether to return only the filename
+ *
+ * @return string|false     The basename of the current script file
  */
-function get_current_page($basename = true) {
+function get_current_page(bool $basename = true) {
 	if (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME'] != '') {
 		if ($basename) {
 			return basename($_SERVER['SCRIPT_NAME']);
@@ -4834,9 +4834,9 @@ function sanitize_cdef($cdef) {
 /**
  * verifies all selected items are numeric to guard against injection
  *
- * @param string $items   - an array of serialized items from a post
+ * @param null|string $items   An array of serialized items from a post
  *
- * @return array      - the sanitized selected items array
+ * @return array               The sanitized selected items array
  */
 function sanitize_unserialize_selected_items(?string $items): array {
 	$return_items = false;
@@ -5596,14 +5596,9 @@ function ping_mail_server($host, $port, $user, $password, $timeout = 10, $secure
 	$smtp = new PHPMailer\PHPMailer\SMTP;
 
 	if (!empty($secure) && $secure != 'none') {
-		$smtp->SMTPSecure = $secure;
-
 		if (substr_count($host, ':') == 0) {
 			$host = $secure . '://' . $host;
 		}
-	} else {
-		$smtp->SMTPAutoTLS = false;
-		$smtp->SMTPSecure  = false;
 	}
 
 	//Enable connection-level debug output
@@ -8049,7 +8044,9 @@ function cacti_session_start() {
 		$session_restart = 're';
 	}
 
-	$session_result = session_start($config[COOKIE_OPTIONS]);
+	/** @var array */
+	$session_options = $config[COOKIE_OPTIONS];
+	$session_result = session_start($session_options);
 
 	if (!$session_result) {
 		cacti_log('Session "' . session_id() . '" ' . $session_restart . 'start failed! ' . cacti_debug_backtrace('', false, false, 0, 1), false, 'WARNING:');
