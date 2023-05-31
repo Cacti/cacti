@@ -1311,12 +1311,12 @@ function array_rekey(array $array, string $key, mixed $key_value): array {
 		foreach ($array as $item) {
 			$item_key = $item[$key];
 
-			if (!is_array($key_value)) {
-				$key_value = [$key_value];
-			}
-
-			foreach ($key_value as $value) {
-				$ret_array[$item_key][$value] = $item[$value];
+			if (is_array($key_value)) {
+				foreach ($key_value as $value) {
+					$ret_array[$item_key][$value] = $item[$value];
+				}
+			} else {
+				$ret_array[$item_key] = $item[$key_value];
 			}
 		}
 	}
