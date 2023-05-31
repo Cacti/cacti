@@ -2327,7 +2327,7 @@ function automation_execute_data_query($host_id, $snmp_query_id) {
 		INNER JOIN automation_templates AS at
 		ON atr.template_id = at.id
 		INNER JOIN host AS h
-		ON at.host_template_id = h.host_template_id
+		ON at.host_template = h.host_template_id
 		WHERE h.id = ?
 		AND rule_type = 1',
 		array($host_id));
@@ -2598,7 +2598,7 @@ function automation_execute_device_create_tree($host_id) {
 		INNER JOIN automation_templates AS at
 		ON atr.template_id = at.id
 		INNER JOIN host AS h
-		ON at.host_template_id = h.host_template_id
+		ON at.host_template = h.host_template_id
 		WHERE h.id = ?
 		AND rule_type = 2',
 		array($host_id));
@@ -2699,7 +2699,7 @@ function automation_execute_graph_create_tree($graph_id) {
 		INNER JOIN automation_templates AS at
 		ON atr.template_id = at.id
 		INNER JOIN host AS h
-		ON at.host_template_id = h.host_template_id
+		ON at.host_template = h.host_template_id
 		WHERE h.id = ?
 		AND rule_type = 2',
 		array($host_id));
