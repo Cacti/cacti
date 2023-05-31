@@ -675,7 +675,7 @@ function cache_common_config_settings():array {
  *                                    specified $settings array in
  *                                    'include/global_settings.php'
  *
- * @return string|false               The current value of the configuration option
+ * @return string|false|null          The current value of the configuration option
  */
 function read_config_option(string $config_name, bool $force = false):string|false|null {
 	global $config, $database_hostname, $database_default, $database_port, $database_sessions;
