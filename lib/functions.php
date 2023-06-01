@@ -660,14 +660,15 @@ function prime_common_config_settings() {
 }
 
 /**
- * read_config_option - finds the current value of a Cacti configuration setting
+ * Finds the current value of a Cacti configuration setting
  *
- * @param $config_name - the name of the configuration setting as specified $settings array
- *   in 'include/global_settings.php'
+ * @param $config_name    The name of the configuration setting as specified
+ *                        as a key in $settings array in
+ *                        'include/global_settings.php'
  *
- * @return string|false the current value of the configuration option
+ * @return string|false   The current value of the configuration option
  */
-function read_config_option($config_name, $force = false) {
+function read_config_option(string $config_name, bool $force = false): string|false {
 	global $config, $database_hostname, $database_default, $database_port, $database_sessions;
 
 	$loaded = false;
@@ -6945,6 +6946,7 @@ function raise_ajax_permission_denied() {
  * @return - null
  */
 function cacti_session_start() {
+	/** @var array */
 	global $config;
 
 	/* initialize php session */

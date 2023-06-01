@@ -517,7 +517,7 @@ class Installer implements JsonSerializable {
 		}
 
 		if (is_dir($csrf_path)) {
-			$csrf_path = rtrim($csrf_path ?? '', '/') . '/csrf-secret.php';
+			$csrf_path = rtrim($csrf_path === null ? '' : $csrf_path, '/') . '/csrf-secret.php';
 		}
 
 		$install_paths['csrf'] = $csrf_path;
