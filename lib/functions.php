@@ -668,7 +668,7 @@ function prime_common_config_settings() {
  *
  * @return string|false   The current value of the configuration option
  */
-function read_config_option(string $config_name, bool $force = false): string|false {
+function read_config_option($config_name, $force = false) {
 	global $config, $database_hostname, $database_default, $database_port, $database_sessions;
 
 	$loaded = false;
