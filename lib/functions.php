@@ -1131,11 +1131,12 @@ function kill_session_var($var_name) {
 
 	/* register_global = off: reset local settings cache so the user sees the new settings */
 	/* session_unregister is deprecated in PHP 5.3.0, unset is sufficient */
-	$func = 'unset';
+
 	if (version_compare(PHP_VERSION, '5.3.0', '<')) {
-		$func = 'session_unregister';
+		session_unregister($var_name);
+	} else {
+		unset($var_name);
 	}
-	$func($var_name);
 }
 
 /**
@@ -1175,12 +1176,12 @@ function array_rekey($array, $key, $key_value) {
 		foreach ($array as $item) {
 			$item_key = $item[$key];
 
-			if (!is_array($key_value)) {
-				$key_value = [$key_value];
-			}
-
-			foreach ($key_value as $value) {
-				$ret_array[$item_key][$value] = $item[$value];
+			if (is_array($key_value)) {
+				foreach ($key_value as $value) {
+					$ret_array[$item_key][$value] = $item[$value];
+				}
+			} else {
+				$ret_array[$item_key] = $item[$key_value];
 			}
 		}
 	}
