@@ -816,11 +816,12 @@ while ($poller_runs_completed < $poller_runs) {
 					}
 				}
 			}
+
+			if ($poller_id == 1 && !$boost_enabled) {
+				rrd_close($rrdtool_pipe);
+			}
 		}
 
-		if ($poller_id == 1 && !$boost_enabled) {
-			rrd_close($rrdtool_pipe);
-		}
 
 		// process poller commands
 		$commands = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
@@ -914,7 +915,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 	if (!$logged) {
 		log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
-			($poller_id == '1' ? $totalpolling_hosts - 1 : $total_polling_hosts), $hosts_per_process, $num_polling_items, $rrds_processed);
+			($poller_id == '1' ? $total_polling_hosts - 1 : $total_polling_hosts), $hosts_per_process, $num_polling_items, $rrds_processed);
 		poller_run_stats($loop_start);
 	}
 }
