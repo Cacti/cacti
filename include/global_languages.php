@@ -469,7 +469,6 @@ function repair_locale($language) {
 
 	/* Repair legacy language support */
 	if ($language != '' && $language != null) {
-		$found_locale = '';
 		$locale = str_replace('_','-', $language);
 		if (array_key_exists($locale, $lang2locale)) {
 			$language = $locale;
@@ -717,7 +716,7 @@ function __date($format, $timestamp = false, $domain = 'cacti') {
 /**
  * get_list_of_locales - returns the default settings being used for i18n
  *
- * @return - a multi-dimensional array with the locale code as main key
+ * @return array a multi-dimensional array with the locale code as main key
  */
 function get_list_of_locales() {
 	$lang2locale = array(
