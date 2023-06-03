@@ -817,7 +817,7 @@ while ($poller_runs_completed < $poller_runs) {
 				}
 			}
 
-			if ($poller_id == 1 && !$boost_enabled) {
+			if ($poller_id == 1) {
 				rrd_close($rrdtool_pipe);
 			}
 		}
