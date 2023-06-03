@@ -802,11 +802,12 @@ while ($poller_runs_completed < $poller_runs) {
 					}
 				}
 			}
+
+			if ($poller_id == 1) {
+				rrd_close($rrdtool_pipe);
+			}
 		}
 
-		if ($poller_id == 1) {
-			rrd_close($rrdtool_pipe);
-		}
 
 		// process poller commands
 		$commands = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
