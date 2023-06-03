@@ -365,16 +365,13 @@ function grow_dhtml_trees() {
 			});
 		});
 
-		$('#searcher').keyup(function() {
-			if(search_to) { clearTimeout(search_to); }
-			search_to = setTimeout(function() {
-				var v = $('#searcher').val();
-				if (v.length >= 3) {
-					$('#jstree').jstree('search', v, false);
-				}else {
-                    $('#jstree').jstree('search', '', false);
-                }
-			}, 250);
+		$('#searcher').delayKeyup(function() {
+			var v = $('#searcher').val();
+			if (v.length >= 3) {
+				$('#jstree').jstree('search', v, false);
+			}else {
+				$('#jstree').jstree('search', '', false);
+			}
 		});
 
 		<?php print api_plugin_hook_function('top_graph_jquery_function');?>

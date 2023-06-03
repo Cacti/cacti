@@ -223,6 +223,10 @@ function getQueryString(name) {
  *  @args name - the variable name to return */
 $.fn.delayKeyup = function (callback, ms) {
 	var timer = 0;
+	if (typeof ms === 'undefined' || ms < 500) {
+		ms = keyup_delay;
+	}
+
 	$(this).keyup(function () {
 		clearTimeout(timer);
 		timer = setTimeout(callback, ms);
@@ -956,12 +960,12 @@ function applySkin() {
 		return dfd;
 	});
 
-	$('#password').keyup(function () {
+	$('#password').delayKeyup(function () {
 		var url = window.location.href.split('?')[0] + '?action=checkpass';
 		checkPassword(url);
 	});
 
-	$('#password_confirm').keyup(function () {
+	$('#password_confirm').delayKeyup(function () {
 		checkPasswordConfirm();
 	});
 
@@ -4648,19 +4652,19 @@ function setSNMPSecurity() {
 				$('#snmp_security_level').selectmenu('refresh');
 			}
 
-			$('#snmp_password').keyup(function () {
+			$('#snmp_password').delayKeyup(function () {
 				checkSNMPPassphrase('auth');
 			});
 
-			$('#snmp_password_confirm').keyup(function () {
+			$('#snmp_password_confirm').delayKeyup(function () {
 				checkSNMPPassphraseConfirm('auth');
 			});
 
-			$('#snmp_priv_passphrase').keyup(function () {
+			$('#snmp_priv_passphrase').delayKeyup(function () {
 				checkSNMPPassphrase('priv');
 			});
 
-			$('#snmp_priv_passphrase_confirm').keyup(function () {
+			$('#snmp_priv_passphrase_confirm').delayKeyup(function () {
 				checkSNMPPassphraseConfirm('priv');
 			});
 		}

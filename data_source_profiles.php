@@ -566,7 +566,6 @@ function item_edit() {
 	<script type='text/javascript'>
 
 	var profile_id=<?php print get_request_var('profile_id') != '' ? get_request_var('profile_id'):0;?>;
-	var rows_to = false;
 	var readonly = <?php print($readonly ? 'true':'false');?>;
 
 	$(function() {
@@ -578,9 +577,9 @@ function item_edit() {
 			get_size();
 		});
 
-        $('#rows').keyup(function() {
-            if (rows_to) { clearTimeout(rows_to); }
-            rows_to = setTimeout(function () { get_span(); get_size() }, 250);
+        $('#rows').delayKeyup(function() {
+            get_span();
+			get_size();
         });
 
 		if (readonly) {

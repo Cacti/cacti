@@ -8925,3 +8925,12 @@ function text_regex_rule($matches, $link = false) {
 
 	return $result;
 }
+
+function get_keyup_delay() {
+	$keyup_delay = intval(read_user_setting('autocomplete_delay'));
+	if ($keyup_delay < 500) {
+		$keyup_delay = 500;
+	}
+
+	return $keyup_delay;
+}

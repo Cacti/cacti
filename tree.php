@@ -1014,9 +1014,6 @@ function tree_edit($partial = false) {
 		}
 		?>
 
-		var graphMeTimer;
-		var hostMeTimer;
-		var siteMeTimer;
 		var hostSortInfo   = {};
 		var branchSortInfo = {};
 		var selectedItem   = {};
@@ -1372,20 +1369,11 @@ function tree_edit($partial = false) {
 		}
 
 		function enableKeyups() {
-			$('#grfilter').keyup(function(data) {
-				graphMeTimer && clearTimeout(graphMeTimer);
-				graphMeTimer = setTimeout(getGraphData, 300);
-			});
+			$('#grfilter').delayKeyup(getGraphData);
 
-			$('#hfilter').keyup(function(data) {
-				hostMeTimer && clearTimeout(hostMeTimer);
-				hostMeTimer = setTimeout(getHostData, 300);
-			});
+			$('#hfilter').delayKeyup(getHostData);
 
-			$('#sfilter').keyup(function(data) {
-				siteMeTimer && clearTimeout(siteMeTimer);
-				siteMeTimer = setTimeout(getSiteData, 300);
-			});
+			$('#sfilter').delayKeyup(getSiteData);
 		}
 
 		function resizer() {

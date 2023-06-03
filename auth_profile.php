@@ -822,7 +822,7 @@ function settings_javascript() {
 				}
 			});
 
-		$('select, input:not([data-scope="theme"], [type="button"])').unbind().keyup(function() {
+		$('select, input:not([data-scope="theme"], [type="button"])').unbind().delayKeyup(function() {
 				name = $(this).attr('id');
 				if ($(this).attr('type') == 'checkbox') {
 					if ($(this).is(':checked')) {

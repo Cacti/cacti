@@ -2616,6 +2616,7 @@ function html_common_header($title, $selectedTheme = '') {
 		var clipboardNotUpdated = '<?php print __esc('Sorry, your clipboard could not be updated at this time');?>';
 		var clipboardUpdated = '<?php print __esc('Clipboard has been updated');?>';
 		var compactGraphicalUserInterface = '<?php print __esc('Compact Mode');?>';
+		var keyup_delay = <?php print get_keyup_delay(); ?>;
 		var darkColorMode = '<?php print __esc('Dark Color Mode');?>';
 		var defaultSNMPAuthProtocol = '<?php print read_config_option('snmp_auth_protocol');?>';
 		var defaultSNMPPrivProtocol = '<?php print read_config_option('snmp_priv_protocol');?>';
