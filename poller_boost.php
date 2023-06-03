@@ -310,7 +310,7 @@ function boost_prepare_process_table() {
 	$boost_poller_status = read_config_option('boost_poller_status');
 	if (!$boost_poller_status) {
 		$boost_poller_status = 'not started';
-	]
+	}
 
 	/* detect a process that has overrun it's warning time */
 	if (substr_count($boost_poller_status, 'running')) {
