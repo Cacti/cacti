@@ -318,7 +318,7 @@ function grow_dhtml_trees() {
 				}else {
                     $('#jstree').jstree('search', '', false);
                 }
-			}, 250);
+			}, 500);
 		});
 
 		<?php print api_plugin_hook_function('top_graph_jquery_function');?>
