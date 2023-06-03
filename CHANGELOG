@@ -23,7 +23,7 @@ Cacti CHANGELOG
 -issue#5319: Data Source Debug 'Run All' generates too many log messages
 -issue#5323: Cosmetic error in the system utilities - rebuild poller cache - description
 -issue#5329: Upon displaying a form with errors, the session error fields variable isn't cleared
--issue#5338:
+-issue#5338: Compatibility changes for Boost under PHP 8.1
 -feature: Upgrade billboard.js to version 3.7.4
 -feature: Upgrade d3.js to version 7.8.2
 

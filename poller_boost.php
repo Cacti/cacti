@@ -119,15 +119,15 @@ if ($child == false) {
 	/* find out if it's time to collect device information
 	 * support both old and new formats.
 	 */
-	$boost_last_run_time = read_config_option('boost_last_run_time') ?? '';
-	if (!is_numeric($boost_last_run_time)) {
+	$boost_last_run_time = read_config_option('boost_last_run_time');
+	if (!empty($boost_last_run_time) && !is_numeric($boost_last_run_time)) {
 		$last_run_time = strtotime($boost_last_run_time);
 	} else {
 		$last_run_time = $boost_last_run_time;
 	}
 
-	$boost_next_run_time = read_config_option('boost_next_run_time') ?? '';
-	if (!is_numeric($boost_next_run_time)) {
+	$boost_next_run_time = read_config_option('boost_next_run_time');
+	if (!empty($boost_next_run_time) && !is_numeric($boost_next_run_time)) {
 		$next_run_time = strtotime($boost_next_run_time);
 	} else {
 		$next_run_time = $boost_next_run_time;
