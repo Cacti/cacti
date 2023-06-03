@@ -784,7 +784,7 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false) {
 		if (is_array($rrd_fields['times']) && cacti_sizeof($rrd_fields['times'])) {
 			/* create the rrd if one does not already exist */
 			if (read_config_option('storage_location') > 0) {
-				$file_exists = rrdtool_execute("file_exists $rrd_path" , true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER');
+				$file_exists = rrdtool_execute("file_exists $rrd_path", true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER');
 			} else {
 				$file_exists = file_exists($rrd_path);
 			}
@@ -810,7 +810,7 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false) {
 				foreach ($field_array as $field_name => $value) {
 					if ($rrd_update_template != '') {
 						$rrd_update_template .= ':';
-						$rrd_update_values .= ':';
+						$rrd_update_values   .= ':';
 					}
 
 					$rrd_update_template .= $field_name;
@@ -823,10 +823,14 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false) {
 					$rrd_update_values .= $value;
 				}
 
-				if (cacti_version_compare(get_rrdtool_version(),'1.5','>=')) {
-					$update_options='--skip-past-updates';
+				if (cacti_version_compare(get_rrdtool_version(), '1.5', '>=')) {
+					$update_options = '--skip-past-updates';
 				} else {
-					$update_options='';
+					$update_options = '';
+				}
+
+				if (isset($rrd_fields['template'])) {
+					$rrd_update_template = $rrd_fields['template'];
 				}
 
 				rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');

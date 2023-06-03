@@ -249,8 +249,6 @@ if ($child == false) {
 function sig_handler($signo) {
 	global $child, $config, $current_lock;
 
-	$rrdtool_version = read_config_option('rrdtool_version');
-
 	switch ($signo) {
 		case SIGTERM:
 		case SIGINT:
@@ -271,7 +269,7 @@ function sig_handler($signo) {
 			/* ignore all other signals */
 	}
 
-	if (cacti_version_compare($rrdtool_version, '1.5', '<')) {
+	if (cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
 		if ($current_lock !== false && $child) {
 			db_execute("SELECT RELEASE_LOCK('boost.single_ds.$current_lock')");
 		} elseif (!$child) {
@@ -667,7 +665,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 			cacti_log('NOTE: Updating Stored RRDtool version to installed version ' . $rrdtool_ins_version, false, 'BOOST');
 
 			set_config_option('rrdtool_version', $rrdtool_ins_version);
-			$rrdtool_version = $rrdtool_ins_version;
+			$rrdtool_version = get_rrdtool_version(true);
 		}
 	}
 
@@ -801,7 +799,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 				$rrd_path    = $rrd_data['rrd_path'];
 				boost_timer('rrd_filename_and_template', BOOST_TIMER_END);
 
-				if (cacti_version_compare($rrdtool_version, '1.5', '<')) {
+				if (cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
 					boost_timer('rrd_lastupdate', BOOST_TIMER_START);
 					$last_update = boost_rrdtool_get_last_update_time($rrd_path, $rrdtool_pipe);
 					boost_timer('rrd_lastupdate', BOOST_TIMER_END);
@@ -814,7 +812,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 				$local_data_id = $item['local_data_id'];
 				$time          = $item['timestamp'];
 
-				if ($time > $last_update || cacti_version_compare($rrdtool_version, '1.5', '>=')) {
+				if ($time > $last_update || cacti_version_compare(get_rrdtool_version(), '1.5', '>=')) {
 					$buflen += strlen(' ' . $time);
 				}
 
@@ -823,7 +821,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 			}
 
 			/* don't generate error messages if the RRD has already been updated */
-			if ($time < $last_update && cacti_version_compare($rrdtool_version, '1.5', '<')) {
+			if ($time < $last_update && cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
 				cacti_log("WARNING: Stale Poller Data Found! Item Time:'" . $time . "', RRD Time:'" . $last_update . "' Ignoring Value!", false, 'BOOST', POLLER_VERBOSITY_HIGH);
 				$value = 'DNP';
 			} else {
@@ -944,7 +942,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 		}
 
 		/* release the last lock */
-		if (cacti_version_compare($rrdtool_version, '1.5', '<')) {
+		if (cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
 			db_execute("SELECT RELEASE_LOCK('boost.single_ds." . $item['local_data_id'] . "')");
 		}
 

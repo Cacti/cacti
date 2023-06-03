@@ -187,14 +187,17 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 
 	/* create/update the rrd files */
 	$results = db_fetch_assoc_prepared('SELECT port.output, port.time, port.local_data_id,
-		poller_item.rrd_path, poller_item.rrd_name, poller_item.rrd_num
-		FROM (poller_output_realtime AS port, poller_item)
-		WHERE (port.local_data_id=poller_item.local_data_id
-		AND port.rrd_name=poller_item.rrd_name)
-		AND port.poller_id = ?',
+		pi.rrd_path, pi.rrd_name, pi.rrd_num, dl.data_template_id
+		FROM poller_output_realtime AS port
+		INNER JOIN poller_item AS pi
+		ON port.local_data_id = pi.local_data_id
+		AND port.rrd_name = pi.rrd_name
+		INNER JOIN data_local AS dl
+		ON dl.id = port.local_data_id
+		WHERE port.poller_id = ?',
 		array($poller_id));
 
-	if (cacti_sizeof($results) > 0) {
+	if (cacti_sizeof($results)) {
 		/* create an array keyed off of each .rrd file */
 		foreach ($results as $item) {
 			$rt_graph_path    = read_config_option('realtime_cache_path') . '/user_' . $poller_id . '_' . $item['local_data_id'] . '.rrd';
@@ -235,8 +238,8 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 			$item['rrd_path'] = $rt_graph_path;
 
 			/* cleanup the value */
-			$value            = trim($item['output']);
-			$unix_time        = strtotime($item['time']);
+			$value     = trim($item['output']);
+			$unix_time = strtotime($item['time']);
 
 			$rrd_update_array[$item['rrd_path']]['local_data_id'] = $item['local_data_id'];
 

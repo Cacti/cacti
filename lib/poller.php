@@ -572,30 +572,36 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 			$unix_time = $item['unix_time'];
 			$rrd_path  = $item['rrd_path'];
 			$rrd_name  = $item['rrd_name'];
+			$rrd_tmpl  = '';
 
 			$rrd_update_array[$rrd_path]['local_data_id'] = $item['local_data_id'];
 
-			/* single one value output */
 			if ((is_numeric($value)) || ($value == 'U')) {
+				/* single one value output */
 				$rrd_update_array[$rrd_path]['times'][$unix_time][$rrd_name] = $value;
-			/* special case of one value output: hexadecimal to decimal conversion */
 			} elseif (is_hexadecimal($value)) {
-				/* attempt to accomodate 32bit and 64bit systems */
+				/**
+				 * special case of one value output: hexadecimal to decimal conversion
+				 * attempt to accomodate 32bit and 64bit systems
+				 */
 				$value = str_replace(' ', '', $value);
+
 				if (strlen($value) <= 8 || ((2147483647+1) == intval(2147483647+1))) {
 					$rrd_update_array[$rrd_path]['times'][$unix_time][$rrd_name] = hexdec($value);
 				} elseif (function_exists('bcpow')) {
-					$dec = 0;
+					$dec    = 0;
 					$vallen = strlen($value);
+
 					for ($i = 1; $i <= $vallen; $i++) {
 						$dec = bcadd($dec, bcmul(strval(hexdec($value[$i - 1])), bcpow('16', strval($vallen - $i))));
 					}
+
 					$rrd_update_array[$rrd_path]['times'][$unix_time][$rrd_name] = $dec;
 				} else {
 					$rrd_update_array[$rrd_path]['times'][$unix_time][$rrd_name] = 'U';
 				}
-			/* multiple value output */
 			} elseif (strpos($value, ':') !== false) {
+				/* multiple value output */
 				$values = preg_split('/\s+/', $value);
 
 				foreach($values as $value) {
@@ -616,7 +622,11 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 							foreach($fields as $field) {
 								cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $field . ']' , true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_HIGH));
 								$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = $matches[1];
+
+								$rrd_tmpl .= ($rrd_tmpl != '' ? ':':'') . $field;
 							}
+
+							$rrd_update_array[$rrd_path]['template'] = $rrd_tmpl;
 						} else {
 							// Handle data source without a data template
 							$nt_rrd_field_names = array_rekey(
@@ -637,7 +647,11 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 
 									$rrd_update_array[$item['rrd_path']]['times'][$unix_time][$nt_rrd_field_names[$matches[0]]] = $matches[1];
 								}
+
+								$rrd_tmpl .= ($rrd_tmpl != '' ? ':':'') . $nt_rrd_field_names[$matches[0]];
 							}
+
+							$rrd_update_array[$rrd_path]['template'] = $rrd_tmpl;
 						}
 					}
 				}
@@ -652,8 +666,9 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 		}
 
 		/* make sure each .rrd file has complete data */
-		$k = 0;
+		$k        = 0;
 		$data_ids = array();
+
 		foreach ($results as $item) {
 			$unix_time = $item['unix_time'];
 			$rrd_path  = $item['rrd_path'];

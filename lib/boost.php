@@ -678,7 +678,6 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 
 	static $archive_table = false;
 	static $warning_issued;
-	static $rrdtool_version = null;
 
 	cacti_system_zone_set();
 
@@ -694,12 +693,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 	/* install the boost error handler */
 	set_error_handler('boost_error_handler');
 
-	/* acquire lock in order to prevent race conditions */
-	if ($rrdtool_version === null) {
-		$rrdtool_version = read_config_option('rrdtool_version');
-	}
-
-	if (cacti_version_compare($rrdtool_version, '1.5', '<')) {
+	if (cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
 		while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds.$local_data_id', 1)")) {
 			usleep(50000);
 		}
@@ -790,7 +784,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 
 	boost_timer('delete', BOOST_TIMER_END);
 
-	if (cacti_version_compare($rrdtool_version, '1.5', '<')) {
+	if (cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
 		db_execute("SELECT RELEASE_LOCK('boost.single_ds.$local_data_id')");
 	}
 
@@ -1330,9 +1324,9 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 	}
 
 	if (cacti_version_compare(get_rrdtool_version(), '1.5', '>=')) {
-		$update_options='--skip-past-updates';
+		$update_options = '--skip-past-updates';
 	} else {
-		$update_options='';
+		$update_options = '';
 	}
 
 	if ($valid_entry) {
@@ -1342,6 +1336,7 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 			cacti_log("update $rrd_path $update_options $rrd_update_values", false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
 			rrdtool_execute("update $rrd_path $update_options $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
 		}
+
 		return 'OK';
 	}
 }
