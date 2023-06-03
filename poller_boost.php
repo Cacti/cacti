@@ -308,7 +308,7 @@ function boost_prepare_process_table() {
 	boost_debug('Parallel Process Setup Begins.');
 
 	$boost_poller_status = read_config_option('boost_poller_status');
-	if (!$boost_poller_status) [
+	if (!$boost_poller_status) {
 		$boost_poller_status = 'not started';
 	]
 
