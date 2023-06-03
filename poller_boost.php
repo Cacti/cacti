@@ -119,14 +119,14 @@ if ($child == false) {
 	/* find out if it's time to collect device information
 	 * support both old and new formats.
 	 */
-	$boost_last_run_time = read_config_option('boost_last_run_time');
+	$boost_last_run_time = read_config_option('boost_last_run_time') ?? '';
 	if (!is_numeric($boost_last_run_time)) {
 		$last_run_time = strtotime($boost_last_run_time);
 	} else {
 		$last_run_time = $boost_last_run_time;
 	}
 
-	$boost_next_run_time = read_config_option('boost_next_run_time');
+	$boost_next_run_time = read_config_option('boost_next_run_time') ?? '';
 	if (!is_numeric($boost_next_run_time)) {
 		$next_run_time = strtotime($boost_next_run_time);
 	} else {
@@ -308,6 +308,9 @@ function boost_prepare_process_table() {
 	boost_debug('Parallel Process Setup Begins.');
 
 	$boost_poller_status = read_config_option('boost_poller_status');
+	if (!$boost_poller_status) [
+		$boost_poller_status = 'not started';
+	]
 
 	/* detect a process that has overrun it's warning time */
 	if (substr_count($boost_poller_status, 'running')) {
