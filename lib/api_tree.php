@@ -181,15 +181,18 @@ function api_tree_get_lock($lockname, $timeout = 10) {
 	input_validate_input_number($timeout, 'timeout');
 	$lockname = sanitize_search_string($lockname);
 
-	while (true) {
-		$locked = db_fetch_cell("SELECT GET_LOCK('$lockname', $timeout)");
+	$count = 0;
 
-		if ($locked) {
+	while ($count < 5) {
+		if (register_process('tree_lock', $lockname, 0, $timeout)) {
 			return true;
-		} else {
+		} else
+			$count++;
 			sleep(1);
 		}
 	}
+
+	return false;
 }
 
 /* api_tree_release_lock - given a lock name, release that lock.
@@ -197,8 +200,7 @@ function api_tree_get_lock($lockname, $timeout = 10) {
  * @arg $lockname - The name of the lock to be released
  * @returns - true or false depending on outcome */
 function api_tree_release_lock($lockname) {
-	$lockname = sanitize_search_string($lockname);
-	$unlocked = db_fetch_cell("SELECT RELEASE_LOCK('$lockname')");
+	unregister_process('tree_lock', $lockname, 0);
 }
 
 /* api_tree_create_node - given a tree, a destination leaf_id, order position, and title, create a branch/leaf.
