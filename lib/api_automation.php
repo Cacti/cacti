@@ -3312,7 +3312,7 @@ function automation_find_os($sysDescr, $sysObject, $sysName) {
 	$result = db_fetch_row("SELECT at.*, ht.name
 		FROM automation_templates AS at
 		INNER JOIN host_template AS ht
-		ON ht.id=at.host_template
+		ON ht.id = at.host_template
 		$sql_where
 		ORDER BY sequence LIMIT 1");
 
