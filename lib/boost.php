@@ -678,6 +678,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 
 	static $archive_table = false;
 	static $warning_issued;
+	static $rrdtool_version = null;
 
 	cacti_system_zone_set();
 
@@ -694,8 +695,14 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 	set_error_handler('boost_error_handler');
 
 	/* acquire lock in order to prevent race conditions */
-	while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds.$local_data_id', 1)")) {
-		usleep(50000);
+	if ($rrdtool_version === null) {
+		$rrdtool_version = read_config_option('rrdtool_version');
+	}
+
+	if (cacti_version_compare($rrdtool_version, '1.5', '<')) {
+		while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds.$local_data_id', 1)")) {
+			usleep(50000);
+		}
 	}
 
 	$data_ids_to_get = read_config_option('boost_rrd_update_max_records_per_select');
@@ -783,7 +790,9 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 
 	boost_timer('delete', BOOST_TIMER_END);
 
-	db_execute("SELECT RELEASE_LOCK('boost.single_ds.$local_data_id')");
+	if (cacti_version_compare($rrdtool_version, '1.5', '<')) {
+		db_execute("SELECT RELEASE_LOCK('boost.single_ds.$local_data_id')");
+	}
 
 	/* log memory */
 	if ($get_memory) {

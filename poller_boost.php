@@ -249,6 +249,8 @@ if ($child == false) {
 function sig_handler($signo) {
 	global $child, $config, $current_lock;
 
+	$rrdtool_version = read_config_option('rrdtool_version');
+
 	switch ($signo) {
 		case SIGTERM:
 		case SIGINT:
@@ -269,10 +271,12 @@ function sig_handler($signo) {
 			/* ignore all other signals */
 	}
 
-	if ($current_lock !== false && $child) {
-		db_execute("SELECT RELEASE_LOCK('boost.single_ds.$current_lock')");
-	} elseif (!$child) {
-		db_execute("SELECT RELEASE_ALL_LOCKS()");
+	if (cacti_version_compare($rrdtool_version, '1.5', '<')) {
+		if ($current_lock !== false && $child) {
+			db_execute("SELECT RELEASE_LOCK('boost.single_ds.$current_lock')");
+		} elseif (!$child) {
+			db_execute("SELECT RELEASE_ALL_LOCKS()");
+		}
 	}
 }
 
@@ -641,7 +645,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 
 	/* cache this call as it takes time */
 	static $archive_tables  = false;
-	static $rrdtool_version = '';
+	static $rrdtool_version = null;
 
 	include_once($config['library_path'] . '/rrd.php');
 
@@ -653,9 +657,10 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 	}
 
 	/* gather, repair if required and cache the rrdtool version */
-	if ($rrdtool_version == '') {
+	if ($rrdtool_version === null) {
 		$rrdtool_ins_version = get_installed_rrdtool_version();
-		$rrdtool_version = get_rrdtool_version();
+		$rrdtool_version     = get_rrdtool_version();
+
 		if ($rrdtool_ins_version != $rrdtool_version) {
 			boost_debug('NOTE: Updating Stored RRDtool version to installed version ' . $rrdtool_ins_version);
 
@@ -735,8 +740,10 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 
 			if (!$locked) {
 				/* acquire lock in order to prevent race conditions, only a problem pre-rrdtool 1.5 */
-				while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds." . $item['local_data_id'] . "', 1)")) {
-					usleep(50000);
+				if (cacti_version_compare($rrdtool_version, '1.5', '<')) {
+					while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds." . $item['local_data_id'] . "', 1)")) {
+						usleep(50000);
+					}
 				}
 
 				$current_lock = $item['local_data_id'];
@@ -749,13 +756,17 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 			 */
 			if ($local_data_id != $item['local_data_id']) {
 				/* release the previous lock */
-				db_execute("SELECT RELEASE_LOCK('boost.single_ds.$local_data_id')");
+				if (cacti_version_compare($rrdtool_version, '1.5', '<')) {
+					db_execute("SELECT RELEASE_LOCK('boost.single_ds.$local_data_id')");
+				}
 
 				$current_lock = false;
 
 				/* acquire lock in order to prevent race conditions, only a problem pre-rrdtool 1.5 */
-				while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds." . $item['local_data_id'] . "', 1)")) {
-					usleep(50000);
+				if (cacti_version_compare($rrdtool_version, '1.5', '<')) {
+					while (!db_fetch_cell("SELECT GET_LOCK('boost.single_ds." . $item['local_data_id'] . "', 1)")) {
+						usleep(50000);
+					}
 				}
 
 				$current_lock = $item['local_data_id'];
@@ -933,7 +944,9 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 		}
 
 		/* release the last lock */
-		db_execute("SELECT RELEASE_LOCK('boost.single_ds." . $item['local_data_id'] . "')");
+		if (cacti_version_compare($rrdtool_version, '1.5', '<')) {
+			db_execute("SELECT RELEASE_LOCK('boost.single_ds." . $item['local_data_id'] . "')");
+		}
 
 		$current_lock = false;
 
