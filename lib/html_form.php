@@ -31,7 +31,7 @@
      the html form. see the arrays contained in include/global_settings.php
      for the extract syntax of this array */
 function draw_edit_form($array) {
-	if (cacti_sizeof($array) > 0) {
+	if (cacti_sizeof($array)) {
 		foreach ($array as $top_branch => $top_children) {
 			if ($top_branch == 'config') {
 				$config_array = $top_children;
@@ -41,7 +41,7 @@ function draw_edit_form($array) {
 		}
 	}
 
-	if (cacti_sizeof($fields_array) > 0) {
+	if (cacti_sizeof($fields_array)) {
 		if (!isset($config_array['no_form_tag'])) {
 			print "<form class='cactiForm' method='post' autocomplete='off' action='" . ((isset($config_array['post_to'])) ? $config_array['post_to'] : get_current_page()) . "'" . ((isset($config_array['form_name'])) ? " name='" . $config_array['form_name'] . "'" : '') . ((isset($config_array['enctype'])) ? " enctype='" . $config_array['enctype'] . "'" : '') . ">\n";
 		}
@@ -121,6 +121,10 @@ function draw_edit_form($array) {
 			}
 
 			$i++;
+		}
+
+		if (isset($_SESSION['sess_error_fields'])) {
+			kill_session_var('sess_error_fields');
 		}
 	}
 }
@@ -1165,7 +1169,7 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 		print "<option value='0'>$form_none_entry</option>";
 	}
 
-	if (cacti_sizeof($colors_list) > 0) {
+	if (cacti_sizeof($colors_list)) {
 		foreach ($colors_list as $color) {
 			if ($color['name'] == '') {
 				$display = __('Cacti Color (%s)', $color['hex']);
