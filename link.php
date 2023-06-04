@@ -76,12 +76,12 @@ if (!cacti_sizeof($page)) {
 		} else {
 			print '<div id="content">';
 
-			$file = $config['base_path'] . "/include/content/" . $page['contentfile'];
+			$file = $config['base_path'] . "/include/content/" . str_replace('../', '', $page['contentfile']);
 
 			if (file_exists($file)) {
 				include_once($file);
 			} else {
-				print '<h1>The file \'' . $page['contentfile'] . '\' does not exist!!</h1>';
+				print '<h1>The file \'' . html_escape($page['contentfile']) . '\' does not exist!!</h1>';
 			}
 
 			print '</div>';

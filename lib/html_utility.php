@@ -857,6 +857,19 @@ function validate_is_regex($regex) {
 		return true;
 	}
 
+	/**
+	 * Prevent exploits from encoded Regular expressions that can cause
+	 * injections in MariaDB and MySQL.  We do this by limiting the
+	 * length of the regular expression to 50 bytes or less.
+	 */
+	if (strlen($regex) > 50) {
+		return __('Cacti regular expressions are limited to 50 characters only for security reasons.');
+	}
+
+	if (strpos($regex, ';') !== false) {
+		return __('Cacti regular expressions can not includes the semi-color character.');
+	}
+
 	restore_error_handler();
 
 	$track_errors = ini_get('track_errors');
