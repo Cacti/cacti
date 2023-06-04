@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti German Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2023-05-04 07:58-0400\n"
+"POT-Creation-Date: 2023-06-04 14:39-0400\n"
 "PO-Revision-Date: 2023-03-07 13:24+0000\n"
 "Last-Translator: lena <binder.lena@googlemail.com>\n"
 "Language-Team: German <http://translate.cacti.net/projects/cacti/core-v1-2-x/de/>\n"
@@ -95,7 +95,7 @@ msgstr "Lizenz"
 msgid "Cacti is licensed under the GNU GPL:"
 msgstr "Cacti ist lizensiert unter der GNU GPL:"
 
-#: about.php:99 lib/installer.php:1702
+#: about.php:99 lib/installer.php:1701
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
 msgstr "Dieses Programm ist freie Software: Sie können sie weitergeben und/oder verändern unter den Bedingungen der GNU General Public License, wie von der Free Software Foundation veröffentlicht; entweder Version 2 der Lizenz oder (nach Ihrer Wahl) jeder späteren Version."
 
@@ -117,7 +117,7 @@ msgstr "Dieses Programm wird verteilt in der Hoffnung, dass es nützlich ist, ab
 #: host_templates.php:563 include/global_arrays.php:1633
 #: include/global_settings.php:248 lib/api_automation.php:1327
 #: lib/api_automation.php:1389 lib/api_automation.php:1457 lib/html.php:1295
-#: lib/html_form.php:1271 lib/html_reports.php:1751 links.php:28
+#: lib/html_form.php:1275 lib/html_reports.php:1751 links.php:28
 #: managers.php:28 pollers.php:33 sites.php:28 tree.php:1609 tree.php:1762
 #: tree.php:1822 tree.php:1843 user_admin.php:28 user_domains.php:30
 #: user_group_admin.php:30 vdef.php:29
@@ -177,12 +177,12 @@ msgstr "Klicken Sie auf \"Weiter\", um die folgende(n) Aggregat-Graph(en) zu lö
 #: graph_view.php:966 graphs.php:916 graphs.php:932 graphs.php:943
 #: graphs.php:954 graphs.php:969 graphs.php:983 graphs.php:992 graphs.php:1192
 #: graphs.php:1235 graphs.php:1257 graphs.php:1286 graphs.php:1298
-#: graphs.php:1831 host.php:394 host.php:403 host.php:458 host.php:467
-#: host.php:476 host.php:490 host.php:504 host.php:513 host.php:542
-#: host.php:554 host_templates.php:271 host_templates.php:285
+#: graphs.php:1831 host.php:395 host.php:404 host.php:459 host.php:468
+#: host.php:477 host.php:491 host.php:505 host.php:514 host.php:543
+#: host.php:555 host_templates.php:271 host_templates.php:285
 #: host_templates.php:296 host_templates.php:345 host_templates.php:408
-#: lib/clog_webapi.php:228 lib/html.php:2546 lib/html_form.php:1270
-#: lib/html_form.php:1282 lib/html_form.php:1293 links.php:197 links.php:206
+#: lib/clog_webapi.php:228 lib/html.php:2546 lib/html_form.php:1274
+#: lib/html_form.php:1286 lib/html_form.php:1297 links.php:197 links.php:206
 #: links.php:215 managers.php:1004 managers.php:1065 plugins.php:670
 #: pollers.php:559 pollers.php:568 pollers.php:577 pollers.php:586
 #: pollers.php:595 sites.php:382 sites.php:392 tree.php:687 tree.php:696
@@ -214,9 +214,9 @@ msgstr "Abbrechen"
 #: graph_templates.php:408 graph_templates.php:417 graph_templates.php:426
 #: graphs.php:916 graphs.php:932 graphs.php:943 graphs.php:954 graphs.php:969
 #: graphs.php:983 graphs.php:992 graphs.php:1192 graphs.php:1235
-#: graphs.php:1257 graphs.php:1286 graphs.php:1298 host.php:394 host.php:403
-#: host.php:458 host.php:467 host.php:476 host.php:490 host.php:504
-#: host.php:513 host.php:542 host.php:554 host_templates.php:271
+#: graphs.php:1257 graphs.php:1286 graphs.php:1298 host.php:395 host.php:404
+#: host.php:459 host.php:468 host.php:477 host.php:491 host.php:505
+#: host.php:514 host.php:543 host.php:555 host_templates.php:271
 #: host_templates.php:285 host_templates.php:296 host_templates.php:346
 #: host_templates.php:409 lib/clog_webapi.php:229 lib/html.php:2545
 #: lib/html_reports.php:499 links.php:197 links.php:206 links.php:215
@@ -247,8 +247,8 @@ msgstr "Um die untenstehenden Aggregatdiagramme in ein vorlagenbasiertes Aggrega
 #: aggregate_graphs.php:393 aggregate_graphs.php:441 aggregate_graphs.php:487
 #: auth_changepassword.php:359 auth_profile.php:447 automation_networks.php:398
 #: automation_snmp.php:255 graphs.php:1194 graphs.php:1244 graphs.php:1247
-#: graphs.php:1289 host.php:545 include/auth.php:265 lib/api_aggregate.php:1592
-#: lib/api_aggregate.php:1607 lib/html_form.php:1291 managers.php:1068
+#: graphs.php:1289 host.php:546 include/auth.php:265 lib/api_aggregate.php:1592
+#: lib/api_aggregate.php:1607 lib/html_form.php:1295 managers.php:1068
 #: permission_denied.php:30 permission_denied.php:32
 msgid "Return"
 msgstr "Zurück"
@@ -295,21 +295,21 @@ msgstr "Aggregatname:"
 msgid "New Aggregate"
 msgstr "Neues Aggregat"
 
-#: aggregate_graphs.php:468 graphs.php:1270 host.php:526
+#: aggregate_graphs.php:468 graphs.php:1270 host.php:527
 msgid "Click 'Continue' to add the selected Graphs to the Report below."
 msgstr "Klicken Sie auf 'Weiter', um die ausgewählten Diagramme zum Bericht unten hinzuzufügen."
 
-#: aggregate_graphs.php:472 graph_view.php:827 graphs.php:1274 host.php:530
+#: aggregate_graphs.php:472 graph_view.php:827 graphs.php:1274 host.php:531
 #: lib/html_reports.php:35 lib/html_reports.php:1931
 msgid "Report Name"
 msgstr "Name des Berichts"
 
-#: aggregate_graphs.php:476 graph_view.php:834 graphs.php:1278 host.php:534
+#: aggregate_graphs.php:476 graph_view.php:834 graphs.php:1278 host.php:535
 #: lib/html_reports.php:1613
 msgid "Timespan"
 msgstr "Zeitspanne"
 
-#: aggregate_graphs.php:480 graph_view.php:841 graphs.php:1282 host.php:538
+#: aggregate_graphs.php:480 graph_view.php:841 graphs.php:1282 host.php:539
 msgid "Align"
 msgstr "Ausrichten"
 
@@ -355,7 +355,7 @@ msgstr "Dissoziierte Grafik(en)"
 msgid "Click 'Continue' to place the following Aggregate Graph(s) under the Tree Branch."
 msgstr "Klicken Sie auf \"Weiter\", um die folgenden Aggregatdiagramme unter dem Baumzweig zu platzieren."
 
-#: aggregate_graphs.php:521 host.php:496
+#: aggregate_graphs.php:521 host.php:497
 msgid "Destination Branch:"
 msgstr "Ziel Zweig:"
 
@@ -496,12 +496,12 @@ msgstr "Keine passenden Diagramme gefunden"
 #: color.php:529 color_templates.php:529 data_debug.php:1123 data_input.php:826
 #: data_queries.php:1279 data_source_profiles.php:912 data_sources.php:1457
 #: data_templates.php:1041 gprint_presets.php:262 graph_templates.php:703
-#: graph_view.php:621 graphs.php:2046 graphs_new.php:457 host.php:1627
+#: graph_view.php:621 graphs.php:2046 graphs_new.php:457 host.php:1629
 #: host_templates.php:727 lib/api_automation.php:140 lib/api_automation.php:473
 #: lib/api_automation.php:707 lib/api_automation.php:1066
 #: lib/clog_webapi.php:604 lib/html.php:266 lib/html_filter.php:63
 #: lib/html_graph.php:203 lib/html_reports.php:1836 lib/html_tree.php:136
-#: lib/html_tree.php:982 links.php:310 managers.php:149 managers.php:493
+#: lib/html_tree.php:983 links.php:310 managers.php:149 managers.php:493
 #: managers.php:725 plugins.php:459 pollers.php:879 rrdcheck.php:226
 #: rrdcleaner.php:507 settings.php:544 settings.php:566 settings.php:625
 #: sites.php:499 tree.php:860 tree.php:895 tree.php:930 tree.php:2128
@@ -511,19 +511,19 @@ msgstr "Keine passenden Diagramme gefunden"
 #: user_group_admin.php:2272 user_group_admin.php:2392
 #: user_group_admin.php:2507 user_group_admin.php:2604
 #: user_group_admin.php:2701 user_log.php:212 utilities.php:1087
-#: utilities.php:1480 utilities.php:1773 utilities.php:2060 utilities.php:2955
-#: utilities.php:3207 vdef.php:704
+#: utilities.php:1480 utilities.php:1773 utilities.php:2060 utilities.php:2964
+#: utilities.php:3216 vdef.php:704
 msgid "Search"
 msgstr "Suche"
 
 #: aggregate_graphs.php:1314 aggregate_graphs.php:1357
 #: aggregate_graphs.php:1610 color_templates.php:649 data_sources.php:1645
 #: data_sources.php:1779 graph_view.php:485 graph_view.php:680
-#: graph_view.php:729 graphs.php:2063 graphs.php:2227 host.php:1738
+#: graph_view.php:729 graphs.php:2063 graphs.php:2227 host.php:1740
 #: include/global_arrays.php:977 include/global_arrays.php:1209
 #: include/global_arrays.php:1993 lib/api_automation.php:283 lib/html.php:1707
 #: lib/html.php:1709 lib/html.php:1787 lib/html_graph.php:209
-#: lib/html_tree.php:1037 lib/html_tree.php:1366 support.php:228 tree.php:839
+#: lib/html_tree.php:1038 lib/html_tree.php:1367 support.php:228 tree.php:839
 #: tree.php:2274 user_admin.php:877 user_admin.php:1144 user_admin.php:2547
 #: user_group_admin.php:874 user_group_admin.php:1028 user_group_admin.php:2300
 #: utilities.php:320
@@ -539,7 +539,7 @@ msgstr "Diagramme"
 #: data_queries.php:1289 data_source_profiles.php:922
 #: data_source_profiles.php:1037 data_sources.php:1467 data_templates.php:1067
 #: gprint_presets.php:272 graph_templates.php:713 graph_view.php:684
-#: graphs.php:2067 graphs_new.php:467 host.php:1652 host_templates.php:752
+#: graphs.php:2067 graphs_new.php:467 host.php:1654 host_templates.php:752
 #: include/global_form.php:256 lib/api_automation.php:183
 #: lib/api_automation.php:483 lib/api_automation.php:717
 #: lib/api_automation.php:1109 lib/html_reports.php:1856 links.php:320
@@ -551,8 +551,8 @@ msgstr "Diagramme"
 #: user_domains.php:752 user_group_admin.php:1948 user_group_admin.php:2304
 #: user_group_admin.php:2420 user_group_admin.php:2517
 #: user_group_admin.php:2614 user_group_admin.php:2711 user_log.php:190
-#: utilities.php:1065 utilities.php:1783 utilities.php:2091 utilities.php:2980
-#: utilities.php:3243 vdef.php:714
+#: utilities.php:1065 utilities.php:1783 utilities.php:2091 utilities.php:2989
+#: utilities.php:3252 vdef.php:714
 msgid "Default"
 msgstr "Voreinstellung"
 
@@ -570,11 +570,11 @@ msgstr "Teil des Aggregats"
 #: color_templates.php:567 data_debug.php:1051 data_input.php:848
 #: data_queries.php:1301 data_source_profiles.php:940 data_sources.php:1410
 #: data_templates.php:1085 gprint_presets.php:290 graph_templates.php:731
-#: graph_view.php:629 graphs.php:2037 graphs_new.php:446 host.php:1617
+#: graph_view.php:629 graphs.php:2037 graphs_new.php:446 host.php:1619
 #: host_templates.php:770 lib/api_automation.php:195 lib/api_automation.php:464
 #: lib/api_automation.php:729 lib/api_automation.php:1121
 #: lib/clog_webapi.php:529 lib/html.php:1559 lib/html_filter.php:80
-#: lib/html_graph.php:190 lib/html_reports.php:1867 lib/html_tree.php:1024
+#: lib/html_graph.php:190 lib/html_reports.php:1867 lib/html_tree.php:1025
 #: links.php:330 managers.php:171 managers.php:515 managers.php:745
 #: plugins.php:495 pollers.php:924 sites.php:521 tree.php:2150
 #: user_admin.php:2175 user_admin.php:2569 user_admin.php:2666
@@ -589,7 +589,7 @@ msgstr "Los"
 #: data_input.php:848 data_queries.php:1301 data_source_profiles.php:940
 #: data_sources.php:1410 data_templates.php:1085 gprint_presets.php:290
 #: graph_templates.php:731 graph_view.php:629 graphs.php:2037
-#: graphs_new.php:446 host.php:1617 host_templates.php:770
+#: graphs_new.php:446 host.php:1619 host_templates.php:770
 #: lib/html_graph.php:190 managers.php:171 managers.php:515 managers.php:745
 #: plugins.php:495 pollers.php:924 sites.php:521 tree.php:2150
 #: user_admin.php:2175 user_admin.php:2569 user_admin.php:2666
@@ -598,8 +598,8 @@ msgstr "Los"
 #: user_group_admin.php:2322 user_group_admin.php:2438
 #: user_group_admin.php:2535 user_group_admin.php:2632
 #: user_group_admin.php:2729 user_log.php:202 utilities.php:1077
-#: utilities.php:1432 utilities.php:1764 utilities.php:2051 utilities.php:2992
-#: utilities.php:3255
+#: utilities.php:1432 utilities.php:1764 utilities.php:2051 utilities.php:3001
+#: utilities.php:3264
 msgid "Set/Refresh Filters"
 msgstr "Filter setzen/auffrischen"
 
@@ -612,12 +612,12 @@ msgstr "Filter setzen/auffrischen"
 #: color_templates.php:568 data_debug.php:1052 data_input.php:849
 #: data_queries.php:1302 data_source_profiles.php:941 data_sources.php:1411
 #: data_templates.php:1086 gprint_presets.php:291 graph_templates.php:732
-#: graph_view.php:630 graphs.php:2038 graphs_new.php:447 host.php:1618
+#: graph_view.php:630 graphs.php:2038 graphs_new.php:447 host.php:1620
 #: host_templates.php:771 lib/api_automation.php:196 lib/api_automation.php:465
 #: lib/api_automation.php:730 lib/api_automation.php:1122
 #: lib/clog_webapi.php:530 lib/html_filter.php:85 lib/html_graph.php:191
-#: lib/html_graph.php:308 lib/html_reports.php:1868 lib/html_tree.php:1025
-#: lib/html_tree.php:1136 links.php:331 managers.php:172 managers.php:516
+#: lib/html_graph.php:308 lib/html_reports.php:1868 lib/html_tree.php:1026
+#: lib/html_tree.php:1137 links.php:331 managers.php:172 managers.php:516
 #: managers.php:746 plugins.php:496 pollers.php:925 sites.php:522 tree.php:2151
 #: user_admin.php:2176 user_admin.php:2570 user_admin.php:2667
 #: user_admin.php:2783 user_admin.php:2880 user_admin.php:2977
@@ -630,8 +630,8 @@ msgstr "Löschen"
 #: data_input.php:849 data_queries.php:1302 data_source_profiles.php:941
 #: data_sources.php:1411 data_templates.php:1086 gprint_presets.php:291
 #: graph_templates.php:732 graph_view.php:630 graphs.php:2038
-#: graphs_new.php:447 host.php:1618 host_templates.php:771
-#: lib/html_graph.php:191 lib/html_tree.php:1025 managers.php:172
+#: graphs_new.php:447 host.php:1620 host_templates.php:771
+#: lib/html_graph.php:191 lib/html_tree.php:1026 managers.php:172
 #: managers.php:516 managers.php:746 plugins.php:496 pollers.php:925
 #: sites.php:522 tree.php:2151 user_admin.php:2176 user_admin.php:2570
 #: user_admin.php:2667 user_admin.php:2783 user_admin.php:2880
@@ -640,7 +640,7 @@ msgstr "Löschen"
 #: user_group_admin.php:2439 user_group_admin.php:2536
 #: user_group_admin.php:2633 user_group_admin.php:2730 user_log.php:203
 #: utilities.php:1078 utilities.php:1433 utilities.php:1765 utilities.php:2052
-#: utilities.php:2993 utilities.php:3256
+#: utilities.php:3002 utilities.php:3265
 msgid "Clear Filters"
 msgstr "Filter löschen"
 
@@ -653,7 +653,7 @@ msgstr "Graph Titel"
 #: automation_graph_rules.php:896 automation_tree_rules.php:936
 #: data_debug.php:459 data_input.php:931 data_queries.php:1383
 #: data_sources.php:1639 data_templates.php:1194 graph_templates.php:837
-#: graphs.php:2243 host.php:1732 host_templates.php:868
+#: graphs.php:2243 host.php:1734 host_templates.php:868
 #: lib/api_automation.php:282 pollers.php:1001 sites.php:597 support.php:864
 #: support.php:907 tree.php:2214 user_admin.php:885 user_admin.php:999
 #: user_admin.php:1144 user_admin.php:1291 user_admin.php:1430
@@ -694,7 +694,7 @@ msgstr "Nein"
 #: data_templates.php:1255 gprint_presets.php:437 graph_templates.php:894
 #: host_templates.php:916 include/global_settings.php:501
 #: include/global_settings.php:858 include/global_settings.php:1883
-#: lib/api_automation.php:1438 lib/installer.php:1896 lib/installer.php:1924
+#: lib/api_automation.php:1438 lib/installer.php:1895 lib/installer.php:1923
 #: lib/installer.php:3503 links.php:404 support.php:736 tree.php:2307
 #: tree.php:2308 user_admin.php:2254 user_domains.php:767 user_domains.php:771
 #: user_group_admin.php:2028 vdef.php:909
@@ -717,9 +717,9 @@ msgid "Aggregate Graphs"
 msgstr "Die ausgewählten Aggregatdiagramme stellen Elemente aus mehr als einer Grafikvorlage dar."
 
 #: aggregate_graphs.php:1588 data_debug.php:1025 data_sources.php:1384
-#: graph_view.php:642 graphs.php:2002 host.php:1569
+#: graph_view.php:642 graphs.php:2002 host.php:1571
 #: include/global_arrays.php:2891 include/global_settings.php:593
-#: lib/api_automation.php:442 lib/html_graph.php:153 lib/html_tree.php:988
+#: lib/api_automation.php:442 lib/html_graph.php:153 lib/html_tree.php:989
 #: rrdcleaner.php:383 user_admin.php:2525 user_admin.php:2742
 #: user_group_admin.php:2278 user_group_admin.php:2398 utilities.php:2021
 msgid "Template"
@@ -730,8 +730,8 @@ msgstr "Vorlage"
 #: automation_devices.php:544 automation_graph_rules.php:753
 #: automation_graph_rules.php:775 automation_tree_rules.php:820
 #: data_debug.php:1029 data_sources.php:1388 graph_templates_items.php:543
-#: graphs.php:2006 graphs_items.php:357 host.php:1538 host.php:1556
-#: host.php:1573 host.php:1637 lib/api_automation.php:150
+#: graphs.php:2006 graphs_items.php:357 host.php:1540 host.php:1558
+#: host.php:1575 host.php:1639 lib/api_automation.php:150
 #: lib/api_automation.php:168 lib/api_automation.php:429
 #: lib/api_automation.php:446 lib/api_automation.php:1076
 #: lib/api_automation.php:1094 lib/auth.php:3200 lib/auth.php:3248
@@ -741,7 +741,7 @@ msgstr "Vorlage"
 #: managers.php:735 user_admin.php:2529 user_admin.php:2746
 #: user_group_admin.php:2282 user_group_admin.php:2402 user_log.php:178
 #: utilities.php:1053 utilities.php:1734 utilities.php:2025 utilities.php:2070
-#: utilities.php:2080 utilities.php:2965 utilities.php:3217 utilities.php:3230
+#: utilities.php:2080 utilities.php:2974 utilities.php:3226 utilities.php:3239
 msgid "Any"
 msgstr "Beliebig"
 
@@ -751,8 +751,8 @@ msgstr "Beliebig"
 #: data_debug.php:1030 data_sources.php:952 data_sources.php:1389
 #: data_sources.php:1700 data_templates.php:1257 graph_templates_items.php:66
 #: graphs.php:1587 graphs.php:1596 graphs.php:2007 graphs_items.php:358
-#: graphs_items.php:470 host.php:245 host.php:1154 host.php:1165 host.php:1539
-#: host.php:1574 include/global_arrays.php:527 include/global_arrays.php:585
+#: graphs_items.php:470 host.php:246 host.php:1155 host.php:1166 host.php:1541
+#: host.php:1576 include/global_arrays.php:527 include/global_arrays.php:585
 #: include/global_arrays.php:674 include/global_arrays.php:869
 #: include/global_arrays.php:1722 include/global_form.php:588
 #: include/global_form.php:894 include/global_form.php:902
@@ -768,7 +768,7 @@ msgstr "Beliebig"
 #: lib/api_automation.php:447 lib/api_automation.php:589
 #: lib/api_automation.php:1077 lib/auth.php:3203 lib/auth.php:3251
 #: lib/auth.php:3296 lib/html.php:226 lib/html.php:2072 lib/html.php:2092
-#: lib/html.php:2133 lib/html_form.php:331 lib/html_reports.php:888
+#: lib/html.php:2133 lib/html_form.php:335 lib/html_reports.php:888
 #: lib/html_reports.php:892 lib/html_reports.php:922 lib/html_reports.php:996
 #: lib/html_reports.php:1002 lib/html_reports.php:1006
 #: lib/html_reports.php:1014 lib/html_reports.php:1025
@@ -844,7 +844,7 @@ msgstr "Die ausgewählten Aggregatgrafiken scheinen keine passenden Aggregatvorl
 #: aggregate_templates.php:597 automation_templates.php:399
 #: automation_templates.php:482 color_templates.php:654
 #: include/global_arrays.php:986 include/global_arrays.php:1049
-#: lib/installer.php:2498 user_admin.php:2857 user_group_admin.php:2513
+#: lib/installer.php:2497 user_admin.php:2857 user_group_admin.php:2513
 msgid "Templates"
 msgstr "Schablonen"
 
@@ -975,7 +975,7 @@ msgid "Cannot be reused for %d password changes"
 msgstr "Kann nicht für %d Passwortänderungen wiederverwendet werden."
 
 #: auth_changepassword.php:315 auth_changepassword.php:322
-#: include/global_form.php:1567 lib/functions.php:3657 lib/html.php:2481
+#: include/global_form.php:1567 lib/functions.php:3660 lib/html.php:2481
 msgid "Change Password"
 msgstr "Kennwort ändern"
 
@@ -990,7 +990,7 @@ msgid "Please enter your new Cacti password."
 msgstr "Bitte Benutzernamen und Kennwort eingeben:"
 
 #: auth_changepassword.php:342 auth_login.php:306 auth_login.php:309
-#: include/global_settings.php:1792 lib/functions.php:5283
+#: include/global_settings.php:1792 lib/functions.php:5287
 msgid "Username"
 msgstr "Benutzername"
 
@@ -1007,8 +1007,8 @@ msgid "Confirm new password"
 msgstr "Neues Passwort bestätigen"
 
 #: auth_changepassword.php:358 auth_profile.php:564 graphs_new.php:448
-#: lib/html_form.php:1288 lib/html_form.php:1297 lib/html_graph.php:193
-#: lib/html_tree.php:1027 settings.php:499
+#: lib/html_form.php:1292 lib/html_form.php:1301 lib/html_graph.php:193
+#: lib/html_tree.php:1028 settings.php:499
 msgid "Save"
 msgstr "Speichern"
 
@@ -1077,7 +1077,7 @@ msgstr "Benutzer anmelden"
 msgid "Enter your Username and Password below"
 msgstr "Geben Sie Ihren Benutzernamen und Kennwort ein"
 
-#: auth_login.php:314 include/global_form.php:1534 lib/functions.php:5284
+#: auth_login.php:314 include/global_form.php:1534 lib/functions.php:5288
 msgid "Password"
 msgstr "Kennwort"
 
@@ -1228,17 +1228,17 @@ msgstr "Gerät löschen"
 
 #: automation_devices.php:54 automation_devices.php:300
 #: automation_devices.php:409 automation_devices.php:419
-#: automation_devices.php:648 automation_devices.php:649 host.php:1642
+#: automation_devices.php:648 automation_devices.php:649 host.php:1644
 #: lib/api_automation.php:173 lib/api_automation.php:1099
-#: lib/html_utility.php:924 pollers.php:47
+#: lib/html_utility.php:937 pollers.php:47
 msgid "Down"
 msgstr "Runter"
 
 #: automation_devices.php:55 automation_devices.php:300
 #: automation_devices.php:411 automation_devices.php:421
-#: automation_devices.php:648 automation_devices.php:649 host.php:1641
+#: automation_devices.php:648 automation_devices.php:649 host.php:1643
 #: lib/api_automation.php:172 lib/api_automation.php:1098
-#: lib/html_utility.php:930
+#: lib/html_utility.php:943
 msgid "Up"
 msgstr "Hoch"
 
@@ -1291,13 +1291,13 @@ msgstr "Gerät(e) hinzufügen"
 msgid "Click 'Continue' to Delete the following Discovered device(s)."
 msgstr "Klicken Sie auf \"Weiter\", um die folgenden erkannten Geräte hinzuzufügen."
 
-#: automation_devices.php:227 host.php:490
+#: automation_devices.php:227 host.php:491
 #, fuzzy
 msgid "Delete Device(s)"
 msgstr "Gerät(e) löschen"
 
-#: automation_devices.php:268 automation_devices.php:555 host.php:1524
-#: host.php:1648 host.php:1798 include/global_arrays.php:974
+#: automation_devices.php:268 automation_devices.php:555 host.php:1526
+#: host.php:1650 host.php:1800 include/global_arrays.php:974
 #: include/global_arrays.php:1030 include/global_arrays.php:2307
 #: lib/api_automation.php:179 lib/api_automation.php:271
 #: lib/api_automation.php:479 lib/api_automation.php:563
@@ -1319,7 +1319,7 @@ msgstr "IP"
 msgid "SNMP Name"
 msgstr "SNMP-Name"
 
-#: automation_devices.php:280 host.php:1590 include/global_form.php:1201
+#: automation_devices.php:280 host.php:1592 include/global_form.php:1201
 #: include/global_settings.php:2276
 msgid "Location"
 msgstr "Standort"
@@ -1331,7 +1331,7 @@ msgstr "Kontakt"
 #: automation_devices.php:282 include/global_form.php:1150
 #: include/global_form.php:1186 include/global_form.php:1379
 #: include/global_form.php:1754 lib/api_automation.php:278
-#: lib/api_automation.php:1218 lib/installer.php:1816 lib/installer.php:2499
+#: lib/api_automation.php:1218 lib/installer.php:1815 lib/installer.php:2498
 #: managers.php:216 support.php:863 support.php:906 user_admin.php:999
 #: user_admin.php:1144 user_group_admin.php:1028 user_group_admin.php:2016
 msgid "Description"
@@ -1341,7 +1341,7 @@ msgstr "Beschreibung"
 msgid "OS"
 msgstr "Betriebsystem"
 
-#: automation_devices.php:284 host.php:1762 include/global_arrays.php:528
+#: automation_devices.php:284 host.php:1764 include/global_arrays.php:528
 msgid "Uptime"
 msgstr "Laufzeit"
 
@@ -1352,11 +1352,11 @@ msgstr "SNMP"
 #: automation_devices.php:286 automation_devices.php:510
 #: automation_graph_rules.php:771 automation_networks.php:1077
 #: automation_tree_rules.php:816 data_debug.php:465 data_debug.php:1078
-#: data_sources.php:1436 data_templates.php:1223 host.php:763 host.php:888
-#: host.php:1633 host.php:1750 lib/api_automation.php:164
+#: data_sources.php:1436 data_templates.php:1223 host.php:764 host.php:889
+#: host.php:1635 host.php:1752 lib/api_automation.php:164
 #: lib/api_automation.php:280 lib/api_automation.php:573
 #: lib/api_automation.php:1090 lib/api_automation.php:1221
-#: lib/html_reports.php:1842 lib/installer.php:1816 managers.php:218
+#: lib/html_reports.php:1842 lib/installer.php:1815 managers.php:218
 #: package_import.php:492 package_import.php:577 plugins.php:465
 #: plugins.php:588 pollers.php:1013 templates_import.php:224
 #: templates_import.php:263 user_admin.php:1144 user_group_admin.php:1028
@@ -1373,7 +1373,7 @@ msgstr "Letzte Prüfung"
 msgid "Not Detected"
 msgstr "Nicht erkannt"
 
-#: automation_devices.php:324 host.php:1848
+#: automation_devices.php:324 host.php:1850
 #, fuzzy
 msgid "No Devices Found"
 msgstr "Keine Geräte gefunden"
@@ -1392,8 +1392,8 @@ msgstr "Netzwerk"
 msgid "Reset fields to defaults"
 msgstr "Felder auf Standardwerte zurücksetzen"
 
-#: automation_devices.php:501 color.php:570 host.php:1619
-#: lib/html_form.php:1305
+#: automation_devices.php:501 color.php:570 host.php:1621
+#: lib/html_form.php:1309
 msgid "Export"
 msgstr "Exportieren"
 
@@ -1414,14 +1414,14 @@ msgstr "Entdeckte Geräte bereinigen"
 #: automation_devices.php:670 automation_networks.php:1151
 #: automation_snmp.php:564 automation_snmp.php:565 automation_snmp.php:566
 #: automation_snmp.php:567 automation_snmp.php:568 automation_snmp.php:569
-#: data_debug.php:624 data_source_profiles.php:73 host.php:1817
-#: lib/functions.php:5629 lib/functions.php:5633 lib/html.php:1182
+#: data_debug.php:624 data_source_profiles.php:73 host.php:1819
+#: lib/functions.php:5633 lib/functions.php:5637 lib/html.php:1182
 #: lib/html.php:1248 lib/html_reports.php:1632 lib/html_reports.php:1658
 #: lib/html_reports.php:1729 lib/html_reports.php:1730
 #: lib/html_reports.php:1731 plugins.php:732 pollers.php:1121 support.php:646
 #: user_admin.php:2248 user_log.php:305 utilities.php:738 utilities.php:1180
-#: utilities.php:2602 utilities.php:2724 utilities.php:2732 utilities.php:2743
-#: utilities.php:2754 utilities.php:2777 utilities.php:2823 utilities.php:3057
+#: utilities.php:2611 utilities.php:2733 utilities.php:2741 utilities.php:2752
+#: utilities.php:2763 utilities.php:2786 utilities.php:2832 utilities.php:3066
 msgid "N/A"
 msgstr "Nicht verfügbar"
 
@@ -1557,7 +1557,7 @@ msgstr "Datenabfrage"
 #: automation_graph_rules.php:915 automation_networks.php:537
 #: automation_tree_rules.php:821 automation_tree_rules.php:941
 #: automation_tree_rules.php:959 data_debug.php:1084 data_sources.php:1441
-#: host.php:1638 include/global_arrays.php:901 include/global_form.php:1542
+#: host.php:1640 include/global_arrays.php:901 include/global_form.php:1542
 #: include/global_settings.php:361 include/global_settings.php:377
 #: lib/api_automation.php:169 lib/api_automation.php:1095
 #: lib/html_reports.php:1847 lib/html_reports.php:1939
@@ -1566,14 +1566,14 @@ msgstr "Datenabfrage"
 #: user_admin.php:1011 user_admin.php:2235 user_domains.php:350
 #: user_domains.php:756 user_group_admin.php:87 user_group_admin.php:680
 #: user_group_admin.php:695 user_group_admin.php:2020 utilities.php:2071
-#: utilities.php:2841
+#: utilities.php:2850
 msgid "Enabled"
 msgstr "Aktiviert"
 
 #: automation_graph_rules.php:777 automation_graph_rules.php:915
 #: automation_networks.php:1092 automation_tree_rules.php:822
 #: automation_tree_rules.php:959 data_debug.php:1085 data_sources.php:1442
-#: data_templates.php:1259 host.php:1639 include/global_arrays.php:900
+#: data_templates.php:1259 host.php:1641 include/global_arrays.php:900
 #: include/global_arrays.php:1554 include/global_arrays.php:1846
 #: include/global_settings.php:360 include/global_settings.php:376
 #: include/global_settings.php:1325 include/global_settings.php:1587
@@ -1581,10 +1581,10 @@ msgstr "Aktiviert"
 #: include/global_settings.php:1639 include/global_settings.php:1653
 #: include/global_settings.php:1743 include/global_settings.php:2507
 #: lib/api_automation.php:170 lib/api_automation.php:1096 lib/html.php:2571
-#: lib/html_reports.php:1848 lib/html_reports.php:1986 lib/html_utility.php:920
+#: lib/html_reports.php:1848 lib/html_reports.php:1986 lib/html_utility.php:933
 #: links.php:500 managers.php:243 managers.php:598 pollers.php:48
 #: user_admin.php:1011 user_domains.php:412 user_group_admin.php:695
-#: utilities.php:2072 utilities.php:2544 utilities.php:2841
+#: utilities.php:2072 utilities.php:2553 utilities.php:2850
 msgid "Disabled"
 msgstr "Deaktiviert"
 
@@ -1737,10 +1737,10 @@ msgstr "Basis Einstellungen"
 #: include/global_form.php:1343 include/global_form.php:1371
 #: include/global_form.php:1444 include/global_form.php:1472
 #: include/global_form.php:2116 include/global_form.php:2214
-#: include/global_form.php:2259 lib/installer.php:1816 lib/installer.php:1889
-#: lib/installer.php:1919 lib/installer.php:2499 lib/installer.php:2578
+#: include/global_form.php:2259 lib/installer.php:1815 lib/installer.php:1888
+#: lib/installer.php:1918 lib/installer.php:2498 lib/installer.php:2577
 #: lib/vdef.php:74 managers.php:562 pollers.php:61 sites.php:41 support.php:805
-#: user_admin.php:999 user_domains.php:326 utilities.php:864 utilities.php:3037
+#: user_admin.php:999 user_domains.php:326 utilities.php:864 utilities.php:3046
 msgid "Name"
 msgstr "Name"
 
@@ -1754,7 +1754,7 @@ msgstr "Geben Sie diesem Netzwerk einen aussagekräftigen Namen."
 msgid "New Network Discovery Range"
 msgstr "Neue Reihe von Network Discovery Produkten"
 
-#: automation_networks.php:449 automation_networks.php:1074 host.php:1552
+#: automation_networks.php:449 automation_networks.php:1074 host.php:1554
 msgid "Data Collector"
 msgstr "Feldrechner"
 
@@ -2337,11 +2337,11 @@ msgstr "Nächste Startzeit:"
 msgid "Last Started"
 msgstr "Letzter Start"
 
-#: automation_networks.php:1112 pollers.php:45 utilities.php:2535
+#: automation_networks.php:1112 pollers.php:45 utilities.php:2544
 msgid "Running"
 msgstr "Läuft"
 
-#: automation_networks.php:1136 pollers.php:46 utilities.php:2533
+#: automation_networks.php:1136 pollers.php:46 utilities.php:2542
 msgid "Idle"
 msgstr "Leerlauf"
 
@@ -2357,8 +2357,8 @@ msgid "No Networks Found"
 msgstr "Keine Netzwerke gefunden"
 
 #: automation_networks.php:1203 data_debug.php:1099 lib/clog_webapi.php:584
-#: lib/html_graph.php:307 lib/html_tree.php:1135 lib/html_tree.php:1156
-#: pollers.php:900 utilities.php:1464 utilities.php:2459
+#: lib/html_graph.php:307 lib/html_tree.php:1136 lib/html_tree.php:1157
+#: pollers.php:900 utilities.php:1464 utilities.php:2468
 msgid "Refresh"
 msgstr "Aktualisieren"
 
@@ -2502,7 +2502,7 @@ msgstr "Version"
 msgid "Community"
 msgstr "Gemeinschaft"
 
-#: automation_snmp.php:537 lib/functions.php:5279
+#: automation_snmp.php:537 lib/functions.php:5283
 msgid "Port"
 msgstr "Port"
 
@@ -2783,8 +2783,8 @@ msgstr "Kriterien für die Erstellung von Bäumen"
 msgid "Change Leaf Type"
 msgstr "Blatttyp ändern"
 
-#: automation_tree_rules.php:706 lib/installer.php:3698 utilities.php:2597
-#: utilities.php:2598 utilities.php:2601 utilities.php:2602
+#: automation_tree_rules.php:706 lib/installer.php:3698 utilities.php:2606
+#: utilities.php:2607 utilities.php:2610 utilities.php:2611
 msgid "WARNING:"
 msgstr "WARNUNG:"
 
@@ -2838,10 +2838,10 @@ msgstr "Stammverzeichnis"
 msgid "No Tree Rules Found"
 msgstr "Keine Baumregeln gefunden"
 
-#: cactid.php:44 help.php:38 lib/functions.php:5910 lib/functions.php:5979
-#: lib/functions.php:6589 poller.php:392 poller.php:542 poller.php:607
-#: poller.php:647 poller.php:789 poller.php:894 poller_automation.php:53
-#: poller_boost.php:322
+#: cactid.php:44 help.php:38 lib/functions.php:5914 lib/functions.php:5983
+#: lib/functions.php:6593 poller.php:392 poller.php:542 poller.php:607
+#: poller.php:647 poller.php:789 poller.php:895 poller_automation.php:53
+#: poller_boost.php:342
 #, fuzzy
 msgid "Cacti System Warning"
 msgstr "Warnung vor dem Kaktus-System"
@@ -3064,7 +3064,7 @@ msgstr "Farben aus lokaler Datei importieren"
 msgid "Please specify the location of the CSV file containing your Color information."
 msgstr "Bitte geben Sie den Speicherort der CSV-Datei mit Ihren Farbinformationen an."
 
-#: color.php:374 lib/html_form.php:509
+#: color.php:374 lib/html_form.php:513
 msgid "Select a File"
 msgstr "Datei wählen"
 
@@ -3123,7 +3123,7 @@ msgstr "Farben"
 msgid "Named Colors"
 msgstr "Benannte Farben"
 
-#: color.php:569 lib/html_form.php:1303
+#: color.php:569 lib/html_form.php:1307
 msgid "Import"
 msgstr "Daten importieren"
 
@@ -3410,7 +3410,7 @@ msgstr "Die interne ID der Datenquelle."
 msgid "The Status of the Data Source Debug Check."
 msgstr "Der Status der Datenquellen-Debug-Prüfung."
 
-#: data_debug.php:471 lib/installer.php:2261 lib/installer.php:2293
+#: data_debug.php:471 lib/installer.php:2260 lib/installer.php:2292
 #: package_import.php:546
 msgid "Writable"
 msgstr "Schreibbar"
@@ -3479,7 +3479,7 @@ msgid "Summary of issues found for the Data Source."
 msgstr "Alle zusammenfassenden Probleme, die für die Datenquelle gefunden wurden."
 
 #: data_debug.php:572 data_debug.php:1129 data_sources.php:1463
-#: data_sources.php:1623 host.php:1744 include/global_arrays.php:978
+#: data_sources.php:1623 host.php:1746 include/global_arrays.php:978
 #: include/global_arrays.php:1024 include/global_arrays.php:2289
 #: lib/api_automation.php:284 support.php:233 user_admin.php:1144
 #: user_group_admin.php:1028 utilities.php:325
@@ -3614,9 +3614,9 @@ msgstr "Wiederholungsanalyse"
 msgid "Check"
 msgstr "Prüfe"
 
-#: data_debug.php:826 include/global_form.php:1028 lib/rrd.php:3094
+#: data_debug.php:826 include/global_form.php:1028 lib/rrd.php:3098
 #: support.php:706 support.php:723 support.php:725 support.php:756
-#: utilities.php:798 utilities.php:815 utilities.php:3037
+#: utilities.php:798 utilities.php:815 utilities.php:3046
 msgid "Value"
 msgstr "Wert"
 
@@ -3700,7 +3700,7 @@ msgstr "Profil"
 
 #: data_debug.php:1066 data_debug.php:1082 data_debug.php:1093
 #: data_sources.php:1423 data_sources.php:1440 data_templates.php:1051
-#: graphs.php:2056 graphs_new.php:424 host.php:1594 host_templates.php:737
+#: graphs.php:2056 graphs_new.php:424 host.php:1596 host_templates.php:737
 #: lib/clog_webapi.php:545 lib/html.php:225 lib/html_reports.php:977
 #: lib/html_reports.php:2073 plugins.php:469 settings.php:536 settings.php:558
 #: settings.php:594 tree.php:836 user_admin.php:2151 user_log.php:160
@@ -4003,7 +4003,7 @@ msgstr "Feldname"
 msgid "Suggested Value"
 msgstr "Vorgeschlagener Wert"
 
-#: data_queries.php:834 data_queries.php:942 host.php:846 host.php:989
+#: data_queries.php:834 data_queries.php:942 host.php:847 host.php:990
 #: host_templates.php:536 host_templates.php:590 lib/html.php:67
 #: lib/html_filter.php:55
 msgid "Add"
@@ -4042,13 +4042,13 @@ msgstr "XML-Datei wurde gefunden"
 msgid "Could not locate XML file."
 msgstr "XML-Datei konnte nicht gefunden werden."
 
-#: data_queries.php:1117 host.php:758 host_templates.php:487
+#: data_queries.php:1117 host.php:759 host_templates.php:487
 #: include/global_arrays.php:2397
 msgid "Associated Graph Templates"
 msgstr "Zugeordnete Graph Templates"
 
 #: data_queries.php:1121 graph_templates.php:831 graphs_new.php:565
-#: host.php:762 lib/api_automation.php:576
+#: host.php:763 lib/api_automation.php:576
 msgid "Graph Template Name"
 msgstr "Name des Graph Templates"
 
@@ -4082,7 +4082,7 @@ msgstr "Zugehörige Grafik löschen"
 msgid "Data Queries"
 msgstr "Datenabfragen"
 
-#: data_queries.php:1377 host.php:886 utilities.php:1870
+#: data_queries.php:1377 host.php:887 utilities.php:1870
 msgid "Data Query Name"
 msgstr "Name von Daten Abfragen"
 
@@ -4223,8 +4223,8 @@ msgid "Steps"
 msgstr "Schritte"
 
 #: data_source_profiles.php:639 graphs_new.php:463 include/global_form.php:298
-#: lib/html.php:550 lib/html_filter.php:72 lib/installer.php:2578
-#: lib/rrd.php:3148 support.php:807 utilities.php:866 utilities.php:1779
+#: lib/html.php:550 lib/html_filter.php:72 lib/installer.php:2577
+#: lib/rrd.php:3152 support.php:807 utilities.php:866 utilities.php:1779
 msgid "Rows"
 msgstr "Zeilen"
 
@@ -4592,7 +4592,7 @@ msgstr "Der Name, der dieser Datenvorlage gegeben wurde.  Bitte beachten Sie, da
 #: data_sources.php:950 graph_view.php:743 graphs.php:1592
 #: include/global_arrays.php:938 include/global_arrays.php:987
 #: include/global_arrays.php:1669 include/global_arrays.php:1838
-#: lib/api_automation.php:425 lib/functions.php:5278 lib/html.php:2067
+#: lib/api_automation.php:425 lib/functions.php:5282 lib/html.php:2067
 #: lib/html.php:2099 lib/html_reports.php:1009 utilities.php:1870
 msgid "Device"
 msgstr "Zielsysteme"
@@ -5061,7 +5061,7 @@ msgid "Cacti Real-time Graphing"
 msgstr "Cacti Echtzeit-Grafik"
 
 #: graph_realtime.php:411 lib/html_graph.php:238 lib/html_reports.php:124
-#: lib/html_tree.php:1066
+#: lib/html_tree.php:1067
 msgid "Thumbnails"
 msgstr "Vorschaubilder"
 
@@ -5192,7 +5192,7 @@ msgstr "Aktivieren Sie dieses Kontrollkästchen, wenn Sie dem Benutzer erlauben 
 
 #: graph_templates.php:694 graph_templates.php:709 graph_templates.php:873
 #: graphs_new.php:562 include/global_arrays.php:1216
-#: include/global_arrays.php:2217 lib/html_tree.php:556 user_admin.php:1283
+#: include/global_arrays.php:2217 lib/html_tree.php:557 user_admin.php:1283
 #: user_group_admin.php:1165
 msgid "Graph Templates"
 msgstr "Graph-Templates"
@@ -5337,14 +5337,14 @@ msgid "Report"
 msgstr "Melden"
 
 #: graph_view.php:646 lib/html.php:211 lib/html.php:216 lib/html_graph.php:157
-#: lib/html_tree.php:992
+#: lib/html_tree.php:993
 #, fuzzy
 msgid "All Graphs & Templates"
 msgstr "Alle Grafiken & Vorlagen"
 
 #: graph_view.php:647 include/global_arrays.php:2889 lib/graphs.php:58
 #: lib/graphs.php:67 lib/html.php:219 lib/html_graph.php:158
-#: lib/html_tree.php:993
+#: lib/html_tree.php:994
 #, fuzzy
 msgid "Not Templated"
 msgstr "Nicht templatisiert"
@@ -5795,7 +5795,7 @@ msgstr "Filter speichern"
 msgid "Edit this Device"
 msgstr "Dieses Gerät bearbeiten"
 
-#: graphs_new.php:482 host.php:718
+#: graphs_new.php:482 host.php:719
 #, fuzzy
 msgid "Create New Device"
 msgstr "Neues Gerät erstellen"
@@ -5805,7 +5805,7 @@ msgid "(Select a graph type to create)"
 msgstr "(Wählen Sie einen Diagrammtyp aus)"
 
 #: graphs_new.php:556 include/global_arrays.php:969
-#: include/global_arrays.php:1046 lib/html_form.php:1286 lib/html_form.php:1299
+#: include/global_arrays.php:1046 lib/html_form.php:1290 lib/html_form.php:1303
 #: tree.php:1583
 msgid "Create"
 msgstr "Erzeugen"
@@ -5965,218 +5965,218 @@ msgstr "FEHLER: Ungültige Anzahl der Threads für Zielsysteme: (%s)"
 msgid "Device Reindex Completed in %0.2f seconds.  There were %d items updated."
 msgstr "Geräte-Neuindizierung in% 0,2 f Sekunden abgeschlossen. Es wurden% d Elemente aktualisiert."
 
-#: host.php:322
+#: host.php:323
 #, fuzzy, php-format
 msgid "Unable to add some Devices to Report '%s'"
 msgstr "Verbindung zum Server nicht möglich"
 
-#: host.php:389
+#: host.php:390
 #, fuzzy
 msgid "Click 'Continue' to enable the following Device(s)."
 msgstr "Klicken Sie auf \"Fortfahren\", um die folgenden Geräte zu aktivieren."
 
-#: host.php:394
+#: host.php:395
 #, fuzzy
 msgid "Enable Device(s)"
 msgstr "Gerät(e) aktivieren"
 
-#: host.php:398
+#: host.php:399
 #, fuzzy
 msgid "Click 'Continue' to disable the following Device(s)."
 msgstr "Klicken Sie auf \"Weiter\", um die folgenden Geräte zu deaktivieren."
 
-#: host.php:403
+#: host.php:404
 #, fuzzy
 msgid "Disable Device(s)"
 msgstr "Gerät(e) deaktivieren"
 
-#: host.php:407
+#: host.php:408
 #, fuzzy
 msgid "Click 'Continue' to change the Device options below for multiple Device(s).  Please check the box next to the fields you want to update, and then fill in the new value."
 msgstr "Klicken Sie auf \"Weiter\", um die folgenden Geräteoptionen für mehrere Geräte zu ändern.  Bitte kreuzen Sie das Kästchen neben den Feldern an, die Sie aktualisieren möchten, und geben Sie dann den neuen Wert ein."
 
-#: host.php:435
+#: host.php:436
 msgid "Update this Field"
 msgstr "Dieses Feld aktualisieren"
 
-#: host.php:458
+#: host.php:459
 #, fuzzy
 msgid "Change Device(s) SNMP Options"
 msgstr "Ändern der SNMP-Optionen für Geräte(s)"
 
-#: host.php:462
+#: host.php:463
 #, fuzzy
 msgid "Click 'Continue' to clear the counters for the following Device(s)."
 msgstr "Klicken Sie auf \"Weiter\", um die Zähler für die folgenden Geräte zu löschen."
 
-#: host.php:467
+#: host.php:468
 #, fuzzy
 msgid "Clear Statistics on Device(s)"
 msgstr "Statistiken auf Geräten löschen"
 
-#: host.php:471
+#: host.php:472
 #, fuzzy
 msgid "Click 'Continue' to Synchronize the following Device(s) to their Device Template."
 msgstr "Klicken Sie auf \"Weiter\", um die folgenden Geräte mit ihrer Gerätevorlage zu synchronisieren."
 
-#: host.php:476
+#: host.php:477
 #, fuzzy
 msgid "Synchronize Device(s)"
 msgstr "Gerät(e) synchronisieren"
 
-#: host.php:480
+#: host.php:481
 #, fuzzy
 msgid "Click 'Continue' to delete the following Device(s)."
 msgstr "Klicken Sie auf \"Weiter\", um die folgenden Geräte zu löschen."
 
-#: host.php:483
+#: host.php:484
 #, fuzzy
 msgid "Leave all Graph(s) and Data Source(s) untouched.  Data Source(s) will be disabled however."
 msgstr "Lassen Sie alle Grafiken und Datenquellen unberührt.  Datenquelle(n) werden jedoch deaktiviert."
 
-#: host.php:484
+#: host.php:485
 #, fuzzy
 msgid "Delete all associated Graph(s) and Data Source(s)."
 msgstr "Alle zugehörigen Grafiken und Datenquellen löschen."
 
-#: host.php:494
+#: host.php:495
 #, fuzzy
 msgid "Click 'Continue' to place the following Device(s) under the branch selected below."
 msgstr "Klicken Sie auf \"Weiter\", um das/die folgende(n) Gerät(e) unter den unten ausgewählten Zweig zu platzieren."
 
-#: host.php:504
+#: host.php:505
 #, fuzzy
 msgid "Place Device(s) on Tree"
 msgstr "Gerät(e) auf Baum platzieren"
 
-#: host.php:508
+#: host.php:509
 #, fuzzy
 msgid "Click 'Continue' to apply Automation Rules to the following Devices(s)."
 msgstr "Klicken Sie auf \"Weiter\", um die Automatisierungsregeln auf die folgenden Geräte anzuwenden."
 
-#: host.php:513
+#: host.php:514
 #, fuzzy
 msgid "Run Automation on Device(s)"
 msgstr "Automatisierung auf Gerät(en) ausführen"
 
-#: host.php:542
+#: host.php:543
 #, fuzzy
 msgid "Add Devices to Report"
 msgstr "Zu Bericht hinzufügen"
 
-#: host.php:544
+#: host.php:545
 #, fuzzy
 msgid "You currently have no Reports defined."
 msgstr "Sie haben derzeit keine Berichte definiert."
 
-#: host.php:684
+#: host.php:685
 #, fuzzy
 msgid "Device [new]"
 msgstr "Gerät[neu]"
 
-#: host.php:696
+#: host.php:697
 #, fuzzy, php-format
 msgid "Device [edit: %s]"
 msgstr "Gerät [bearbeiten: %s]"
 
-#: host.php:698
+#: host.php:699
 #, fuzzy
 msgid "Disable Device Debug"
 msgstr "Geräte-Debug deaktivieren"
 
-#: host.php:700
+#: host.php:701
 #, fuzzy
 msgid "Enable Device Debug"
 msgstr "Geräte-Debug aktivieren"
 
-#: host.php:703
+#: host.php:704
 #, fuzzy
 msgid "Repopulate Poller Cache"
 msgstr "Neugenerieren des Poller Speichers"
 
-#: host.php:704 include/global_arrays.php:2439 include/global_arrays.php:2451
+#: host.php:705 include/global_arrays.php:2439 include/global_arrays.php:2451
 #: utilities.php:2276
 msgid "View Poller Cache"
 msgstr "Ansehen des Poller Speichers"
 
-#: host.php:719
+#: host.php:720
 #, fuzzy
 msgid "Create Graphs for this Device"
 msgstr "Erstellen von Grafiken für dieses Gerät"
 
-#: host.php:720
+#: host.php:721
 #, fuzzy
 msgid "Re-Index Device"
 msgstr "Art der Re-Indizierung"
 
-#: host.php:723
+#: host.php:724
 #, fuzzy
 msgid "Data Source List"
 msgstr "Datenquellenliste"
 
-#: host.php:724
+#: host.php:725
 #, fuzzy
 msgid "Graph List"
 msgstr "Grafikliste"
 
-#: host.php:730
+#: host.php:731
 #, fuzzy
 msgid "Contacting Device"
 msgstr "Kontaktierendes Gerät"
 
 # unclear, comment required
-#: host.php:821 tree.php:1703 tree.php:1777 tree.php:1885
+#: host.php:822 tree.php:1703 tree.php:1777 tree.php:1885
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: host.php:821
+#: host.php:822
 msgid "Is Being Graphed"
 msgstr "Wird graphisch dargestellt"
 
-#: host.php:821
+#: host.php:822
 msgid "Not Being Graphed"
 msgstr "Wird nicht graphisch dargestellt"
 
-#: host.php:824
+#: host.php:825
 msgid "Delete Graph Template Association"
 msgstr "Lösche Zuordnung zur Diagramm Schablone"
 
-#: host.php:831 host_templates.php:514
+#: host.php:832 host_templates.php:514
 msgid "No associated graph templates."
 msgstr "Keine zugeordneten Diagramm Schablonen."
 
-#: host.php:840 host_templates.php:523
+#: host.php:841 host_templates.php:523
 #, fuzzy
 msgid "Add Graph Template"
 msgstr "Grafikvorlage hinzufügen"
 
-#: host.php:846
+#: host.php:847
 #, fuzzy
 msgid "Add Graph Template to Device"
 msgstr "Grafikvorlage zum Gerät hinzufügen"
 
-#: host.php:862
+#: host.php:863
 msgid "Data Query Debug Information"
 msgstr "Informationen zur Fehlersuche bei Datenabfragen"
 
-#: host.php:866 lib/functions.php:4272 tree.php:1725 tree.php:1799
+#: host.php:867 lib/functions.php:4275 tree.php:1725 tree.php:1799
 #: tree.php:1907 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "Kopieren"
 
-#: host.php:867
+#: host.php:868
 msgid "Hide"
 msgstr "Verstecken"
 
-#: host.php:882 host_templates.php:546
+#: host.php:883 host_templates.php:546
 msgid "Associated Data Queries"
 msgstr "Zugeordnete Datenabfragen"
 
-#: host.php:887 host.php:983
+#: host.php:888 host.php:984
 msgid "Re-Index Method"
 msgstr "Art der Re-Indizierung"
 
-#: host.php:889 include/global_arrays.php:2073 include/global_arrays.php:2139
+#: host.php:890 include/global_arrays.php:2073 include/global_arrays.php:2139
 #: include/global_arrays.php:2229 include/global_arrays.php:2265
 #: include/global_arrays.php:2283 include/global_arrays.php:2301
 #: include/global_arrays.php:2319 include/global_arrays.php:2349
@@ -6190,116 +6190,116 @@ msgstr "Art der Re-Indizierung"
 msgid "Actions"
 msgstr "Aktionen"
 
-#: host.php:950
+#: host.php:951
 #, fuzzy, php-format
 msgid " [%d Items, %d Rows]"
 msgstr " (%d Gegenstände, %d Zeilen)"
 
-#: host.php:950
+#: host.php:951
 msgid "Fail"
 msgstr "Fehlschlag"
 
-#: host.php:950 lib/functions.php:5293 lib/functions.php:5298
+#: host.php:951 lib/functions.php:5297 lib/functions.php:5302
 msgid "Success"
 msgstr "Erfolgreich"
 
-#: host.php:953
+#: host.php:954
 #, fuzzy
 msgid "Reload Query"
 msgstr "Abfrage neu laden"
 
-#: host.php:954
+#: host.php:955
 msgid "Verbose Query"
 msgstr "Detaillierte Abfrage"
 
-#: host.php:955
+#: host.php:956
 #, fuzzy
 msgid "Remove Query"
 msgstr "Abfrage entfernen"
 
-#: host.php:961
+#: host.php:962
 #, fuzzy
 msgid "No Associated Data Queries."
 msgstr "Keine zugeordneten Daten-Abfragen."
 
-#: host.php:977 host_templates.php:580
+#: host.php:978 host_templates.php:580
 msgid "Add Data Query"
 msgstr "Datenabfrage hinzufügen"
 
-#: host.php:989
+#: host.php:990
 #, fuzzy
 msgid "Add Data Query to Device"
 msgstr "Datenabfrage zum Gerät hinzufügen"
 
-#: host.php:1155 host.php:1168 include/global_arrays.php:680
+#: host.php:1156 host.php:1169 include/global_arrays.php:680
 msgid "Ping"
 msgstr "Ping"
 
-#: host.php:1166 include/global_arrays.php:675
+#: host.php:1167 include/global_arrays.php:675
 #, fuzzy
 msgid "Ping and SNMP Uptime"
 msgstr "Ping- und SNMP-Verfügbarkeit"
 
-#: host.php:1167 include/global_arrays.php:677
+#: host.php:1168 include/global_arrays.php:677
 #, fuzzy
 msgid "SNMP Uptime"
 msgstr "SNMP Betriebszeit"
 
-#: host.php:1169 include/global_arrays.php:676
+#: host.php:1170 include/global_arrays.php:676
 #, fuzzy
 msgid "Ping or SNMP Uptime"
 msgstr "Ping oder SNMP Uptime"
 
-#: host.php:1170 include/global_arrays.php:678
+#: host.php:1171 include/global_arrays.php:678
 #, fuzzy
 msgid "SNMP Desc"
 msgstr "SNMP Beschreibung"
 
-#: host.php:1171
+#: host.php:1172
 msgid "SNMP GetNext"
 msgstr "SNMP GetNext"
 
-#: host.php:1430 host.php:1602
+#: host.php:1432 host.php:1604
 msgid "Undefined"
 msgstr "Undefiniert"
 
-#: host.php:1534 include/global_settings.php:601 lib/html.php:2128
+#: host.php:1536 include/global_settings.php:601 lib/html.php:2128
 #: lib/html_reports.php:990
 msgid "Site"
 msgstr "Standort"
 
-#: host.php:1619
+#: host.php:1621
 #, fuzzy
 msgid "Export Devices"
 msgstr "Exportgeräte"
 
-#: host.php:1640 lib/api_automation.php:171 lib/api_automation.php:1097
+#: host.php:1642 lib/api_automation.php:171 lib/api_automation.php:1097
 msgid "Not Up"
 msgstr "Nicht aktiv"
 
-#: host.php:1643 lib/api_automation.php:174 lib/api_automation.php:1100
-#: lib/html.php:81 lib/html_utility.php:927 pollers.php:49
+#: host.php:1645 lib/api_automation.php:174 lib/api_automation.php:1100
+#: lib/html.php:81 lib/html_utility.php:940 pollers.php:49
 msgid "Recovering"
 msgstr "Wiederherstellend"
 
-#: host.php:1644 lib/api_automation.php:175 lib/api_automation.php:1101
-#: lib/auth.php:2399 lib/html_utility.php:936 lib/import.php:327
-#: lib/plugins.php:1281 lib/plugins.php:1282 lib/rrd.php:3119 lib/rrd.php:3131
+#: host.php:1646 lib/api_automation.php:175 lib/api_automation.php:1101
+#: lib/auth.php:2399 lib/html_utility.php:949 lib/import.php:327
+#: lib/plugins.php:1281 lib/plugins.php:1282 lib/rrd.php:3123 lib/rrd.php:3135
 #: package_import.php:550 support.php:119 support.php:120 utilities.php:211
-#: utilities.php:212 utilities.php:2598
+#: utilities.php:212 utilities.php:2607
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: host.php:1720 lib/api_automation.php:570 tree.php:909 utilities.php:2190
+#: host.php:1722 lib/api_automation.php:570 tree.php:909 utilities.php:2190
 msgid "Device Description"
 msgstr "Gerätebeschreibung"
 
-#: host.php:1723
+#: host.php:1725
 #, fuzzy
 msgid "The name by which this Device will be referred to."
 msgstr "Der Name, unter dem auf dieses Gerät verwiesen wird."
 
-#: host.php:1726 include/global_form.php:1193 include/global_form.php:1762
+#: host.php:1728 include/global_form.php:1193 include/global_form.php:1762
 #: lib/api_automation.php:279 lib/api_automation.php:571
 #: lib/api_automation.php:884 lib/api_automation.php:1219 managers.php:219
 #: pollers.php:130 pollers.php:1007 user_admin.php:1144
@@ -6307,78 +6307,78 @@ msgstr "Der Name, unter dem auf dieses Gerät verwiesen wird."
 msgid "Hostname"
 msgstr "Zielsystemname"
 
-#: host.php:1729
+#: host.php:1731
 #, fuzzy
 msgid "Either an IP address, or hostname.  If a hostname, it must be resolvable by either DNS, or from your hosts file."
 msgstr "Entweder eine IP-Adresse oder ein Hostname.  Wenn ein Hostname, muss er entweder durch DNS oder aus der Hosts-Datei auflösbar sein."
 
-#: host.php:1735
+#: host.php:1737
 #, fuzzy
 msgid "The internal database ID for this Device.  Useful when performing automation or debugging."
 msgstr "Die interne Datenbank-ID für dieses Gerät.  Nützlich bei der Automatisierung oder beim Debuggen."
 
-#: host.php:1741
+#: host.php:1743
 #, fuzzy
 msgid "The total number of Graphs generated from this Device."
 msgstr "Die Gesamtzahl der von diesem Gerät erzeugten Grafiken."
 
-#: host.php:1747
+#: host.php:1749
 #, fuzzy
 msgid "The total number of Data Sources generated from this Device."
 msgstr "Die Gesamtzahl der von diesem Gerät erzeugten Datenquellen."
 
-#: host.php:1753
+#: host.php:1755
 #, fuzzy
 msgid "The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname \"localhost\", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an \"Unknown\" state."
 msgstr "Der Überwachungszustand des Geräts basierend auf den Ping-Ergebnissen.  Wenn es sich bei diesem Gerät um ein spezielles Gerät handelt, das unter dem Hostnamen \"localhost\" oder aufgrund der Einstellung, keine Verfügbarkeitsprüfung durchzuführen, immer Up bleibt.  Bei der Verwendung des cmd.php-Datensammlers wird ein Gerät ohne Grafiken nicht vom Datensammler gepinnt und bleibt im Zustand \"Unbekannt\"."
 
-#: host.php:1756
+#: host.php:1758
 #, fuzzy
 msgid "In State"
 msgstr "Bundesland"
 
-#: host.php:1759
+#: host.php:1761
 #, fuzzy
 msgid "The amount of time that this Device has been in its current state."
 msgstr "Die Zeitspanne, in der sich dieses Gerät im aktuellen Zustand befindet."
 
-#: host.php:1765
+#: host.php:1767
 #, fuzzy
 msgid "The current amount of time that the host has been up."
 msgstr "Die aktuelle Zeitspanne, in der der Host hochgefahren ist."
 
-#: host.php:1768
+#: host.php:1770
 msgid "Poll Time"
 msgstr "Pollerzeit"
 
-#: host.php:1771
+#: host.php:1773
 #, fuzzy
 msgid "The amount of time it takes to collect data from this Device."
 msgstr "Die Zeit, die benötigt wird, um Daten von diesem Gerät zu sammeln."
 
-#: host.php:1774
+#: host.php:1776
 msgid "Current (ms)"
 msgstr "Aktuell (ms)"
 
-#: host.php:1777
+#: host.php:1779
 #, fuzzy
 msgid "The current ping time in milliseconds to reach the Device."
 msgstr "Die aktuelle Pingzeit in Millisekunden, um das Gerät zu erreichen."
 
-#: host.php:1780
+#: host.php:1782
 msgid "Average (ms)"
 msgstr "Mittel (ms)"
 
-#: host.php:1783
+#: host.php:1785
 #, fuzzy
 msgid "The average ping time in milliseconds to reach the Device since the counters were cleared for this Device."
 msgstr "Die durchschnittliche Ping-Zeit in Millisekunden, um das Gerät zu erreichen, seit die Zähler für dieses Gerät gelöscht wurden."
 
-#: host.php:1786
+#: host.php:1788
 msgid "Availability"
 msgstr "Verfügbarkeit"
 
-#: host.php:1789
+#: host.php:1791
 #, fuzzy
 msgid "The availability percentage based upon ping results since the counters were cleared for this Device."
 msgstr "Der Verfügbarkeitsprozentsatz basiert auf Ping-Ergebnissen, da die Zähler für dieses Gerät gelöscht wurden."
@@ -6551,17 +6551,17 @@ msgstr "FATAL: Du musst eingeloggt sein, um Zugang zu diesem Bereich der Kakteen
 msgid "Login Again"
 msgstr "Neu Anmelden"
 
-#: include/auth.php:272 lib/functions.php:6940 permission_denied.php:45
+#: include/auth.php:272 lib/functions.php:6944 permission_denied.php:45
 #: permission_denied.php:52
 msgid "Permission Denied"
 msgstr "Erlaubnis verweigert"
 
-#: include/auth.php:273 lib/functions.php:6941 permission_denied.php:54
+#: include/auth.php:273 lib/functions.php:6945 permission_denied.php:54
 #, fuzzy
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr "Wenn du denkst, dass dies ein Fehler ist. Bitte wenden Sie sich an Ihren Kakteen-Administrator."
 
-#: include/auth.php:273 lib/functions.php:6941 permission_denied.php:54
+#: include/auth.php:273 lib/functions.php:6945 permission_denied.php:54
 #, fuzzy
 msgid "You are not permitted to access this section of Cacti."
 msgstr "Es ist Ihnen nicht gestattet, auf diesen Bereich von Kakteen zuzugreifen."
@@ -6581,12 +6581,12 @@ msgstr "Nur Kakteen-Administratoren mit der Berechtigung Install/Upgrade dürfen
 msgid "There is an Installation or Upgrade in progress."
 msgstr "Es ist eine Installation oder ein Upgrade im Gange."
 
-#: include/global.php:571
+#: include/global.php:570
 #, fuzzy
 msgid "The Main Data Collector has returned to an Online Status"
 msgstr "Das letzte Mal, als dieser Datensammler vollständig mit der Hauptseite von Cacti synchronisiert wurde."
 
-#: include/global.php:575
+#: include/global.php:574
 msgid "The Main Data Collector has gone to an Offline or Recovering Status"
 msgstr ""
 
@@ -7403,7 +7403,7 @@ msgstr "Natürliche Sortierung"
 msgid "Numeric Ordering"
 msgstr "Numerische Sortierung"
 
-#: include/global_arrays.php:936 lib/rrd.php:3060
+#: include/global_arrays.php:936 lib/rrd.php:3064
 msgid "Header"
 msgstr "Header"
 
@@ -7539,7 +7539,7 @@ msgstr "Geräteregeln"
 
 #: include/global_arrays.php:1001 include/global_arrays.php:1051
 #: include/global_arrays.php:1214 lib/html_filter.php:177
-#: lib/html_graph.php:252 lib/html_tree.php:1080
+#: lib/html_graph.php:252 lib/html_tree.php:1081
 msgid "Presets"
 msgstr "Voreinstellungen"
 
@@ -8085,8 +8085,8 @@ msgstr "%s Stunden"
 msgid "%d GByte"
 msgstr "%d GByte"
 
-#: include/global_arrays.php:1590 utilities.php:2695 utilities.php:2696
-#: utilities.php:2739
+#: include/global_arrays.php:1590 utilities.php:2704 utilities.php:2705
+#: utilities.php:2748
 msgid "Unlimited"
 msgstr "Unbegrenzt"
 
@@ -8682,7 +8682,7 @@ msgid "List Mode"
 msgstr "Listen Ansicht"
 
 #: include/global_arrays.php:2043 include/global_arrays.php:2049
-#: lib/functions.php:3864 lib/html.php:1698 lib/html.php:1775 lib/html.php:2491
+#: lib/functions.php:3867 lib/html.php:1698 lib/html.php:1775 lib/html.php:2491
 #: links.php:344 user_admin.php:1551 user_group_admin.php:1433
 msgid "Console"
 msgstr "Konsole"
@@ -8790,17 +8790,17 @@ msgstr "Benutzerprotokoll löschen"
 msgid "Technical Support"
 msgstr "Technischer Support"
 
-#: include/global_arrays.php:2487 utilities.php:2432
+#: include/global_arrays.php:2487 utilities.php:2441
 #, fuzzy
 msgid "Boost Status"
 msgstr "Boost-Status"
 
-#: include/global_arrays.php:2493 utilities.php:2328
+#: include/global_arrays.php:2493 utilities.php:2332
 #, fuzzy
 msgid "View SNMP Agent Cache"
 msgstr "SNMP Agent Cache anzeigen"
 
-#: include/global_arrays.php:2499 utilities.php:2338
+#: include/global_arrays.php:2499 utilities.php:2342
 #, fuzzy
 msgid "View SNMP Agent Notification Log"
 msgstr "Anzeigen des Benachrichtigungsprotokolls für SNMP-Agenten"
@@ -9110,7 +9110,7 @@ msgstr "Die Häufigkeit, mit der Daten aus der Datenquelle gesammelt werden?"
 msgid "How long can data be missing before RRDtool records unknown data.  Increase this value if your Data Source is unstable and you wish to carry forward old data rather than show gaps in your graphs.  This value is multiplied by the X-Files Factor to determine the actual amount of time."
 msgstr "Wie lange können Daten fehlen, bis RRDtool unbekannte Daten aufzeichnet.  Erhöhen Sie diesen Wert, wenn Ihre Datenquelle instabil ist und Sie alte Daten übertragen möchten, anstatt Lücken in Ihren Diagrammen zu zeigen.  Dieser Wert wird mit dem X-Files-Faktor multipliziert, um die tatsächliche Zeitspanne zu bestimmen."
 
-#: include/global_form.php:240 lib/rrd.php:3151
+#: include/global_form.php:240 lib/rrd.php:3155
 #, fuzzy
 msgid "X-Files Factor"
 msgstr "X-Files Faktor"
@@ -9773,7 +9773,7 @@ msgstr "Deckkraft/Alpha-Kanal"
 msgid "The opacity/alpha channel of the color."
 msgstr "Der Opazitäts-/Alpha-Kanal der Farbe."
 
-#: include/global_form.php:999 lib/rrd.php:3147
+#: include/global_form.php:999 lib/rrd.php:3151
 msgid "Consolidation Function"
 msgstr "Konsolidierungsfunktion"
 
@@ -10569,19 +10569,19 @@ msgstr "Ersatzmuster"
 msgid "The Replacement String Pattern for use as a Tree Header.<br>Refer to a Match by e.g. <strong>\\${1}</strong> for the first match!"
 msgstr "Das Ersetzungszeichenkettenmuster zur Verwendung als Baumüberschrift.<br>Verweis auf ein Match durch z.B. <strong>\\${1}</strong> für das erste Match!"
 
-#: include/global_languages.php:907
+#: include/global_languages.php:906
 msgid " T"
 msgstr "T"
 
-#: include/global_languages.php:909
+#: include/global_languages.php:908
 msgid " G"
 msgstr "G"
 
-#: include/global_languages.php:911
+#: include/global_languages.php:910
 msgid " M"
 msgstr "M"
 
-#: include/global_languages.php:913
+#: include/global_languages.php:912
 msgid " K"
 msgstr "K"
 
@@ -10607,7 +10607,7 @@ msgstr "Daten"
 msgid "Visual"
 msgstr "Visuell"
 
-#: include/global_settings.php:44 lib/functions.php:5282 lib/functions.php:5287
+#: include/global_settings.php:44 lib/functions.php:5286 lib/functions.php:5291
 msgid "Authentication"
 msgstr "LDAP Authentifizierung"
 
@@ -10647,11 +10647,11 @@ msgstr "Schriftart für Diagramme"
 msgid "PHP Mail() Function"
 msgstr "PHP Mail() Funktion"
 
-#: include/global_settings.php:85 lib/functions.php:5265
+#: include/global_settings.php:85 lib/functions.php:5269
 msgid "Sendmail"
 msgstr "Sendmail"
 
-#: include/global_settings.php:86 lib/functions.php:5270
+#: include/global_settings.php:86 lib/functions.php:5274
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -12820,7 +12820,7 @@ msgstr "So viele Zeichen sind erlaubt, bevor eine Zeile in der E-Mail automatisc
 msgid "Sendmail Options"
 msgstr "Sendmail-Optionen"
 
-#: include/global_settings.php:1913 lib/functions.php:5265
+#: include/global_settings.php:1913 lib/functions.php:5269
 msgid "Sendmail Path"
 msgstr "Pfad zu Sendmail"
 
@@ -13090,7 +13090,7 @@ msgstr "Debug-Protokoll verbessern"
 msgid "If this field is non-blank, Boost will log RRDUpdate output from the boost\tpoller process."
 msgstr "Wenn dieses Feld nicht leer ist, protokolliert Boost die RRDupdate-Ausgabe des Boost-Poller-Prozesses."
 
-#: include/global_settings.php:2137 utilities.php:2838
+#: include/global_settings.php:2137 utilities.php:2847
 #, fuzzy
 msgid "Image Caching"
 msgstr "Status:"
@@ -13235,7 +13235,7 @@ msgstr "RRDtool Proxy-Server"
 msgid "Structured RRDfile Paths"
 msgstr "Strukturierte RRD-Pfade"
 
-#: include/global_settings.php:2291 lib/functions.php:5254
+#: include/global_settings.php:2291 lib/functions.php:5258
 msgid "Method"
 msgstr "Methode"
 
@@ -13712,9 +13712,9 @@ msgstr "1 Spalte"
 #: include/global_settings.php:2721 include/global_settings.php:2722
 #: include/global_settings.php:2723 include/global_settings.php:2724
 #: lib/html_graph.php:228 lib/html_graph.php:229 lib/html_graph.php:230
-#: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1056
-#: lib/html_tree.php:1057 lib/html_tree.php:1058 lib/html_tree.php:1059
-#: lib/html_tree.php:1060
+#: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1057
+#: lib/html_tree.php:1058 lib/html_tree.php:1059 lib/html_tree.php:1060
+#: lib/html_tree.php:1061
 #, php-format
 msgid "%d Columns"
 msgstr "%d Spalten"
@@ -14030,8 +14030,8 @@ msgstr "Passende Geräte"
 
 #: lib/api_automation.php:146 lib/api_automation.php:1072
 #: lib/clog_webapi.php:539 lib/html_reports.php:956 lib/html_reports.php:1611
-#: lib/html_reports.php:1938 lib/html_reports.php:1949 lib/rrd.php:3089
-#: support.php:264 utilities.php:356 utilities.php:1442 utilities.php:3037
+#: lib/html_reports.php:1938 lib/html_reports.php:1949 lib/rrd.php:3093
+#: support.php:264 utilities.php:356 utilities.php:1442 utilities.php:3046
 msgid "Type"
 msgstr "Typ"
 
@@ -14255,8 +14255,8 @@ msgstr "Umgebung:"
 msgid "Contact:"
 msgstr "Kontakt:"
 
-#: lib/api_device.php:1581 lib/functions.php:5296 lib/functions.php:5298
-#: lib/functions.php:5302
+#: lib/api_device.php:1581 lib/functions.php:5300 lib/functions.php:5302
+#: lib/functions.php:5306
 msgid "Ping Results"
 msgstr "Ping Ergebnisse"
 
@@ -14265,7 +14265,7 @@ msgstr "Ping Ergebnisse"
 msgid "No Ping or SNMP Availability Check in Use"
 msgstr "Keine Ping- oder SNMP-Verfügbarkeitsprüfung im Einsatz"
 
-#: lib/api_tree.php:201
+#: lib/api_tree.php:204
 msgid "New Branch"
 msgstr "Neue Niederlassung"
 
@@ -14327,7 +14327,7 @@ msgstr "Eingeschränkt"
 msgid "Branch:"
 msgstr "Filiale:"
 
-#: lib/auth.php:2636 lib/auth.php:2670 lib/html_tree.php:964
+#: lib/auth.php:2636 lib/auth.php:2670 lib/html_tree.php:965
 #: lib/reports.php:1048
 msgid "Device:"
 msgstr "Zielsystem:"
@@ -14422,7 +14422,7 @@ msgstr "Kakteenprotokoll gelöscht"
 msgid "Authentication was previously not set.  Attempted to set to Local Authentication, but no Administrative account was found."
 msgstr "Die Authentifizierung war zuvor nicht eingestellt. Es wurde versucht, die lokale Authentifizierung festzulegen, aber es wurde kein Administratorkonto gefunden."
 
-#: lib/boost.php:63 utilities.php:2741
+#: lib/boost.php:63 utilities.php:2750
 #, fuzzy, php-format
 msgid "%s MBytes"
 msgstr "%d MByte"
@@ -14483,7 +14483,7 @@ msgid "Log [Total Lines: %d %s - Unfiltered]"
 msgstr "Protokoll[Gesamtzeilen: %d %s - ungefiltert]"
 
 #: lib/clog_webapi.php:292 utilities.php:1518 utilities.php:1864
-#: utilities.php:2087 utilities.php:2182 utilities.php:3031 utilities.php:3239
+#: utilities.php:2087 utilities.php:2182 utilities.php:3040 utilities.php:3248
 msgid "Entries"
 msgstr "Einträge"
 
@@ -14987,6 +14987,20 @@ msgstr "Index des gefundenen Elements[%s='%s']: %s[aus regexp oid parse]"
 msgid "Found item [%s='%s'] index: %s [from regexp oid value parse]"
 msgstr "Index des gefundenen Elements[%s='%s']: %s[von regexp oid value parse]"
 
+#: lib/data_query.php:1602
+#, php-format
+msgid "Bogus rewrite_value item found, index='%s'"
+msgstr ""
+
+#: lib/data_query.php:1615
+msgid "Could not parse translation map (rewrite_value)"
+msgstr ""
+
+#: lib/data_query.php:1639
+#, fuzzy, php-format
+msgid "rewrite_value: '%s' => '%s'"
+msgstr "oid_rewrite bei OID: '%s' neue OID: '%s' neue OID: '%s'."
+
 #: lib/data_query.php:1761
 #, fuzzy
 msgid "Re-Indexing Data Query complete"
@@ -15085,182 +15099,182 @@ msgstr "Einstellungen im Datensammler speichern %d Fehlerhaft."
 msgid "Settings save to Data Collector %d Failed."
 msgstr "Einstellungen im Datensammler speichern %d Fehlerhaft."
 
-#: lib/functions.php:919 lib/functions.php:1010
+#: lib/functions.php:926 lib/functions.php:1017
 msgid "Message Not Found."
 msgstr "Nachricht nicht gefunden."
 
-#: lib/functions.php:1406
+#: lib/functions.php:1413
 #, fuzzy, php-format
 msgid "Error %s is not readable"
 msgstr "Fehler %s ist nicht lesbar."
 
-#: lib/functions.php:3635
+#: lib/functions.php:3638
 #, fuzzy
 #| msgid "Logged in as"
 msgid "Logged in a Guest"
 msgstr "Angemeldet als"
 
-#: lib/functions.php:3635 lib/functions.php:3651
+#: lib/functions.php:3638 lib/functions.php:3654
 msgid "Logged in as"
 msgstr "Angemeldet als"
 
-#: lib/functions.php:3635
+#: lib/functions.php:3638
 #, fuzzy
 msgid "Login as Regular User"
 msgstr "Als normaler Benutzer anmelden"
 
-#: lib/functions.php:3635
+#: lib/functions.php:3638
 msgid "guest"
 msgstr "Gast"
 
-#: lib/functions.php:3638 lib/functions.php:3661 lib/html.php:2497
+#: lib/functions.php:3641 lib/functions.php:3664 lib/html.php:2497
 msgid "User Community"
 msgstr "Benutzer-Community"
 
-#: lib/functions.php:3639 lib/functions.php:3662 lib/html.php:2499
+#: lib/functions.php:3642 lib/functions.php:3665 lib/html.php:2499
 #: lib/utility.php:1244
 msgid "Documentation"
 msgstr "Dokumentation"
 
-#: lib/functions.php:3654
+#: lib/functions.php:3657
 #, php-format
 msgid "Logged in as %s"
 msgstr "Angemeldet als %s"
 
-#: lib/functions.php:3656 lib/html.php:2478
+#: lib/functions.php:3659 lib/html.php:2478
 msgid "Edit Profile"
 msgstr "Profil bearbeiten"
 
-#: lib/functions.php:3666 lib/html.php:2482
+#: lib/functions.php:3669 lib/html.php:2482
 msgid "Logout"
 msgstr "Abmelden"
 
-#: lib/functions.php:3811
+#: lib/functions.php:3814
 msgid "Leaf"
 msgstr "Blatt"
 
-#: lib/functions.php:3831 lib/html_tree.php:663 lib/html_tree.php:699
-#: lib/html_tree.php:928 lib/html_tree.php:936 lib/html_tree.php:1510
+#: lib/functions.php:3834 lib/html_tree.php:664 lib/html_tree.php:700
+#: lib/html_tree.php:929 lib/html_tree.php:937 lib/html_tree.php:1511
 #, fuzzy
 msgid "Non Query Based"
 msgstr "Nicht abfragebasiert"
 
-#: lib/functions.php:3867
+#: lib/functions.php:3870
 #, php-format
 msgid "Link %s"
 msgstr "%s verbinden"
 
-#: lib/functions.php:4896
+#: lib/functions.php:4904
 #, fuzzy
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
 msgstr "Mailer-Fehler: Nein <b>TO</b>Adresse gesetzt!<br>Wenn Sie den Link <i>Test Mail</i> verwenden, setzen Sie bitte die Einstellung <b>Alarmmail</b>."
 
-#: lib/functions.php:5229
+#: lib/functions.php:5233
 #, php-format
 msgid "Authentication failed: %s"
 msgstr "Authentifizierung fehlgeschlagen:% s"
 
-#: lib/functions.php:5233
+#: lib/functions.php:5237
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "HELO fehlgeschlagen: %s"
 
-#: lib/functions.php:5236
+#: lib/functions.php:5240
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "Verbindung fehlgeschlagen: %s"
 
-#: lib/functions.php:5239
+#: lib/functions.php:5243
 #, fuzzy
 msgid "SMTP error: "
 msgstr "SMTP-Fehler:"
 
-#: lib/functions.php:5252
+#: lib/functions.php:5256
 #, fuzzy
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
 msgstr "Dies ist eine von Cacti generierte Testnachricht.  Diese Nachricht wurde gesendet, um die Konfiguration Ihrer Mail-Einstellungen zu testen."
 
-#: lib/functions.php:5253
+#: lib/functions.php:5257
 msgid "Your email settings are currently set as follows"
 msgstr "Ihre e-Mail-Einstellungen sind derzeit wie folgt festgelegt"
 
-#: lib/functions.php:5256
+#: lib/functions.php:5260
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "Konfiguration prüfen....<br><br>"
 
-#: lib/functions.php:5263
+#: lib/functions.php:5267
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "PHP's Mailer-Klasse"
 
-#: lib/functions.php:5269
+#: lib/functions.php:5273
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "Methode: SMTP"
 
-#: lib/functions.php:5284
+#: lib/functions.php:5288
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "Aus Sicherheitsgründen nicht angezeigt"
 
-#: lib/functions.php:5285
+#: lib/functions.php:5289
 msgid "Security"
 msgstr "Sicherheit"
 
-#: lib/functions.php:5293
+#: lib/functions.php:5297
 #, fuzzy
 msgid "Ping Results:"
 msgstr "Ping Ergebnisse"
 
-#: lib/functions.php:5302
+#: lib/functions.php:5306
 msgid "Bypassed"
 msgstr "Bypass"
 
-#: lib/functions.php:5310
+#: lib/functions.php:5314
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "Nachrichtentext erstellen....."
 
-#: lib/functions.php:5313
+#: lib/functions.php:5317
 msgid "Sending Message..."
 msgstr "Nachricht wird gesendet…"
 
-#: lib/functions.php:5317
+#: lib/functions.php:5321
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "Kakteen-Testmeldung"
 
-#: lib/functions.php:5319
+#: lib/functions.php:5323
 msgid "Success!"
 msgstr "Erfolgreich!"
 
-#: lib/functions.php:5322
+#: lib/functions.php:5326
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "Nachricht nicht gesendet aufgrund eines Ping-Fehlers."
 
-#: lib/functions.php:5910 lib/functions.php:5979
+#: lib/functions.php:5914 lib/functions.php:5983
 #, fuzzy, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr "Cacti hat das Plugin %s aufgrund des folgenden Fehlers deaktiviert: %s!  Weitere Informationen finden Sie in der Cacti-Logdatei."
 
-#: lib/functions.php:6373 lib/functions.php:6375
+#: lib/functions.php:6377 lib/functions.php:6379
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "- Beta %s"
 
-#: lib/functions.php:6373
+#: lib/functions.php:6377
 #, php-format
 msgid "Version %s %s"
 msgstr "Version %s %s"
 
-#: lib/functions.php:6375
+#: lib/functions.php:6379
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
 
-#: lib/functions.php:6589
+#: lib/functions.php:6593
 #, php-format
 msgid "WARNING:  Key Cacti Include File %s missing.  Please locate and replace this file"
 msgstr ""
@@ -15321,7 +15335,7 @@ msgstr "Gerät bearbeiten"
 msgid "Kill Spikes in Graphs"
 msgstr "Töten von Spikes in Diagrammen"
 
-#: lib/html.php:563 lib/html.php:592 lib/installer.php:1565
+#: lib/html.php:563 lib/html.php:592 lib/installer.php:1564
 msgid "Previous"
 msgstr "Voriges"
 
@@ -15330,7 +15344,7 @@ msgstr "Voriges"
 msgid "%d to %d of %s [ %s ]"
 msgstr "%d bis %d von %s [ %s [ %s ]"
 
-#: lib/html.php:569 lib/html.php:598 lib/installer.php:1564
+#: lib/html.php:569 lib/html.php:598 lib/installer.php:1563
 msgid "Next"
 msgstr "Weiter"
 
@@ -15787,7 +15801,7 @@ msgstr "Beginnen Sie mit"
 msgid "End with"
 msgstr "Enddatum"
 
-#: lib/html.php:2572 lib/html_form.php:1301
+#: lib/html.php:2572 lib/html_form.php:1305
 msgid "Close"
 msgstr "Schließen"
 
@@ -15806,67 +15820,67 @@ msgstr "Filter auf Tabelle anwenden"
 msgid "Reset filter to default values"
 msgstr "Filter auf Standardwerte zurücksetzen"
 
-#: lib/html_form.php:572
+#: lib/html_form.php:576
 #, fuzzy
 msgid "File Found"
 msgstr "Datei gefunden"
 
-#: lib/html_form.php:576
+#: lib/html_form.php:580
 #, fuzzy
 msgid "Path is a Directory and not a File"
 msgstr "Pfad ist ein Verzeichnis und keine Datei."
 
-#: lib/html_form.php:580
+#: lib/html_form.php:584
 #, fuzzy
 msgid "File is Not Found"
 msgstr "Datei wurde nicht gefunden"
 
-#: lib/html_form.php:591
+#: lib/html_form.php:595
 #, fuzzy
 msgid "Enter a valid file path"
 msgstr "Geben Sie einen gültigen Dateipfad ein"
 
-#: lib/html_form.php:629
+#: lib/html_form.php:633
 #, fuzzy
 msgid "Directory Found"
 msgstr "Verzeichnis gefunden"
 
-#: lib/html_form.php:631
+#: lib/html_form.php:635
 #, fuzzy
 msgid "Path is a File and not a Directory"
 msgstr "Der Pfad ist eine Datei und kein Verzeichnis."
 
-#: lib/html_form.php:635
+#: lib/html_form.php:639
 #, fuzzy
 msgid "Directory is Not found"
 msgstr "Verzeichnis wurde nicht gefunden"
 
-#: lib/html_form.php:638
+#: lib/html_form.php:642
 #, fuzzy
 msgid "Enter a valid directory path"
 msgstr "Geben Sie einen gültigen Verzeichnispfad ein"
 
-#: lib/html_form.php:1171
+#: lib/html_form.php:1175
 #, fuzzy, php-format
 msgid "Cacti Color (%s)"
 msgstr "Kakteenfarbe (%s)"
 
-#: lib/html_form.php:1231
+#: lib/html_form.php:1235
 #, fuzzy
 msgid "NO FONT VERIFICATION POSSIBLE"
 msgstr "KEINE SCHRIFTVERIFIZIERUNG MÖGLICH"
 
-#: lib/html_form.php:1378
+#: lib/html_form.php:1382
 #, fuzzy
 msgid "Warning Unsaved Form Data"
 msgstr "Warnung vor nicht gespeicherten Formulardaten"
 
-#: lib/html_form.php:1380
+#: lib/html_form.php:1384
 #, fuzzy
 msgid "Unsaved Changes Detected"
 msgstr "Nicht gespeicherte Änderungen erkannt"
 
-#: lib/html_form.php:1381
+#: lib/html_form.php:1385
 #, fuzzy
 msgid "You have unsaved changes on this form.  If you press &#39;Continue&#39; these changes will be discarded.  Press &#39;Cancel&#39; to continue editing the form."
 msgstr "Du hast nicht gespeicherte Änderungen an diesem Formular vorgenommen.  Wenn Sie &#39;Continue&#39; drücken, werden diese Änderungen verworfen.  Drücken Sie &#39;Cancel&#39;um die Bearbeitung des Formulars fortzusetzen."
@@ -15876,67 +15890,67 @@ msgstr "Du hast nicht gespeicherte Änderungen an diesem Formular vorgenommen.  
 msgid "Data Query Data Sources must be created through %s"
 msgstr "Datenabfrage Datenquellen müssen durch %s erstellt werden."
 
-#: lib/html_graph.php:193 lib/html_tree.php:1027
+#: lib/html_graph.php:193 lib/html_tree.php:1028
 #, fuzzy
 msgid "Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile"
 msgstr "Speichern Sie die aktuellen Einstellungen für Grafiken, Spalten, Miniaturansichten, Voreinstellungen und Zeitversatz in Ihrem Profil."
 
-#: lib/html_graph.php:223 lib/html_tree.php:1051
+#: lib/html_graph.php:223 lib/html_tree.php:1052
 msgid "Columns"
 msgstr "Spalten"
 
-#: lib/html_graph.php:227 lib/html_tree.php:1055
+#: lib/html_graph.php:227 lib/html_tree.php:1056
 #, php-format
 msgid "%d Column"
 msgstr "%d Spalte"
 
-#: lib/html_graph.php:257 lib/html_tree.php:1085
+#: lib/html_graph.php:257 lib/html_tree.php:1086
 msgid "Custom"
 msgstr "Eigenes"
 
 #: lib/html_graph.php:271 lib/html_reports.php:1936 lib/html_reports.php:1947
-#: lib/html_tree.php:1099
+#: lib/html_tree.php:1100
 msgid "From"
 msgstr "Von"
 
-#: lib/html_graph.php:276 lib/html_tree.php:1104
+#: lib/html_graph.php:276 lib/html_tree.php:1105
 msgid "Start Date Selector"
 msgstr "Datumsanfang Auswahl"
 
 #: lib/html_graph.php:280 lib/html_reports.php:1937 lib/html_reports.php:1948
-#: lib/html_tree.php:1108
+#: lib/html_tree.php:1109
 msgid "To"
 msgstr "An"
 
-#: lib/html_graph.php:285 lib/html_tree.php:1113
+#: lib/html_graph.php:285 lib/html_tree.php:1114
 msgid "End Date Selector"
 msgstr "Datumsende Auswahl"
 
-#: lib/html_graph.php:290 lib/html_tree.php:1118
+#: lib/html_graph.php:290 lib/html_tree.php:1119
 #, fuzzy
 msgid "Shift Time Backward"
 msgstr "Zeitverschiebung rückwärts"
 
-#: lib/html_graph.php:291 lib/html_tree.php:1119
+#: lib/html_graph.php:291 lib/html_tree.php:1120
 msgid "Define Shifting Interval"
 msgstr "Verschiebungs-Intervall definieren"
 
-#: lib/html_graph.php:302 lib/html_tree.php:1130
+#: lib/html_graph.php:302 lib/html_tree.php:1131
 #, fuzzy
 msgid "Shift Time Forward"
 msgstr "Umschaltzeit vorwärts"
 
-#: lib/html_graph.php:307 lib/html_tree.php:1135
+#: lib/html_graph.php:307 lib/html_tree.php:1136
 #, fuzzy
 msgid "Refresh selected time span"
 msgstr "Aktualisieren der ausgewählten Zeitspanne"
 
-#: lib/html_graph.php:308 lib/html_tree.php:1136
+#: lib/html_graph.php:308 lib/html_tree.php:1137
 #, fuzzy
 msgid "Return to the default time span"
 msgstr "Zurück zur Standardzeitspanne"
 
-#: lib/html_graph.php:316 lib/html_tree.php:1144
+#: lib/html_graph.php:316 lib/html_tree.php:1145
 msgid "Window"
 msgstr "Fenster"
 
@@ -15944,7 +15958,7 @@ msgstr "Fenster"
 msgid "Interval"
 msgstr "Intervall"
 
-#: lib/html_graph.php:340 lib/html_tree.php:1168
+#: lib/html_graph.php:340 lib/html_tree.php:1169
 msgid "Stop"
 msgstr "Stop"
 
@@ -16514,50 +16528,50 @@ msgstr "Ungültig"
 msgid "No Reports Found"
 msgstr "Keine Berichte gefunden"
 
-#: lib/html_tree.php:920 lib/html_tree.php:928 lib/html_tree.php:936
+#: lib/html_tree.php:921 lib/html_tree.php:929 lib/html_tree.php:937
 msgid "Graph Template:"
 msgstr "Diagramm Schablone:"
 
-#: lib/html_tree.php:936
+#: lib/html_tree.php:937
 #, fuzzy
 msgid "Template Based"
 msgstr "Name des Graph-Templates"
 
-#: lib/html_tree.php:942 lib/reports.php:1269
+#: lib/html_tree.php:943 lib/reports.php:1269
 msgid "Tree:"
 msgstr "Baum:"
 
-#: lib/html_tree.php:947
+#: lib/html_tree.php:948
 msgid "Site:"
 msgstr "Standort:"
 
-#: lib/html_tree.php:953
+#: lib/html_tree.php:954
 msgid "Leaf:"
 msgstr "Blatt:"
 
-#: lib/html_tree.php:959
+#: lib/html_tree.php:960
 msgid "Device Template:"
 msgstr "Zielsystem Schablone:"
 
-#: lib/html_tree.php:973
+#: lib/html_tree.php:974
 msgid "Applied"
 msgstr "Übernommen"
 
-#: lib/html_tree.php:973
+#: lib/html_tree.php:974
 msgid "Filter"
 msgstr "Filter"
 
-#: lib/html_tree.php:973
+#: lib/html_tree.php:974
 #, fuzzy
 msgid "Graph Filters"
 msgstr "Grafikfilter"
 
-#: lib/html_tree.php:1024
+#: lib/html_tree.php:1025
 #, fuzzy
 msgid "Set/Refresh Filter"
 msgstr "Filter setzen/auffrischen"
 
-#: lib/html_tree.php:1446
+#: lib/html_tree.php:1447
 #, fuzzy
 msgid "(Non Graph Template)"
 msgstr "(Nicht grafische Vorlage)"
@@ -16571,32 +16585,40 @@ msgstr "Ausgewählt"
 msgid "The regular expression \"%s\" is not valid. Error is %s"
 msgstr "Der Suchbegriff \"%s\" ist nicht gültig. Fehler ist %s"
 
-#: lib/html_utility.php:877
+#: lib/html_utility.php:866
+msgid "Cacti regular expressions are limited to 50 characters only for security reasons."
+msgstr ""
+
+#: lib/html_utility.php:870
+msgid "Cacti regular expressions can not includes the semi-color character."
+msgstr ""
+
+#: lib/html_utility.php:890
 #, fuzzy
 msgid "There was an internal error!"
 msgstr "Es gab einen internen Fehler!"
 
-#: lib/html_utility.php:878
+#: lib/html_utility.php:891
 #, fuzzy
 msgid "Backtrack limit was exhausted!"
 msgstr "Die Backtrack-Grenze war ausgeschöpft!"
 
-#: lib/html_utility.php:879
+#: lib/html_utility.php:892
 #, fuzzy
 msgid "Recursion limit was exhausted!"
 msgstr "Die Rekursionsgrenze war erschöpft!"
 
-#: lib/html_utility.php:880
+#: lib/html_utility.php:893
 #, fuzzy
 msgid "Bad UTF-8 error!"
 msgstr "Schlechter UTF-8-Fehler!"
 
-#: lib/html_utility.php:881
+#: lib/html_utility.php:894
 #, fuzzy
 msgid "Bad UTF-8 offset error!"
 msgstr "Schlechter UTF-8 Offsetfehler!"
 
-#: lib/html_utility.php:933 lib/installer.php:1857 lib/installer.php:3620
+#: lib/html_utility.php:946 lib/installer.php:1856 lib/installer.php:3620
 msgid "Error"
 msgstr "Fehler"
 
@@ -16711,923 +16733,923 @@ msgstr "Abhängigkeit gefunden:"
 msgid "Unmet Dependency:"
 msgstr "Ungelöste Abhängigkeit gefunden:"
 
-#: lib/installer.php:550 lib/installer.php:581
+#: lib/installer.php:570
 #, fuzzy
 msgid "Path was not writable"
 msgstr "Yükleme dizini salt okunur. Lütfen desteğe başvurun"
 
-#: lib/installer.php:559
+#: lib/installer.php:580
 msgid "Path is not writable"
 msgstr "Yükleme dizini salt okunur. Lütfen desteğe başvurun"
 
-#: lib/installer.php:708
+#: lib/installer.php:707
 #, fuzzy, php-format
 msgid "Failed to set specified %sRRDTool version: %s"
 msgstr "Die angegebene %sRRRDTool-Version konnte nicht gesetzt werden: %s"
 
-#: lib/installer.php:754
+#: lib/installer.php:753
 #, fuzzy
 msgid "Invalid Theme Specified"
 msgstr "Ungültiges Thema angegeben"
 
-#: lib/installer.php:808
+#: lib/installer.php:807
 #, fuzzy
 msgid "Resource is not writable"
 msgstr "Ressource ist nicht beschreibbar"
 
-#: lib/installer.php:813
+#: lib/installer.php:812
 msgid "File not found"
 msgstr "Datei nicht gefunden"
 
-#: lib/installer.php:825
+#: lib/installer.php:824
 #, fuzzy
 msgid "PHP did not return expected result"
 msgstr "PHP hat das erwartete Ergebnis nicht zurückgegeben."
 
-#: lib/installer.php:839
+#: lib/installer.php:838
 #, fuzzy
 msgid "Unexpected path parameter"
 msgstr "Unerwarteter Pfadparameter"
 
-#: lib/installer.php:873
+#: lib/installer.php:872
 #, fuzzy, php-format
 msgid "Failed to apply specified profile %s != %s"
 msgstr "Das angegebene Profil konnte nicht angewendet werden %s != %s"
 
-#: lib/installer.php:913
+#: lib/installer.php:912
 #, fuzzy, php-format
 msgid "Failed to apply specified mode: %s"
 msgstr "Der angegebene Modus konnte nicht angewendet werden: %s"
 
-#: lib/installer.php:935
+#: lib/installer.php:934
 #, fuzzy, php-format
 msgid "Failed to apply specified automation override: %s"
 msgstr "Die angegebene Automatisierungsüberschreibung konnte nicht angewendet werden: %s"
 
-#: lib/installer.php:955
+#: lib/installer.php:954
 #, fuzzy
 msgid "Failed to apply specified cron interval"
 msgstr "Das angegebene Kronenintervall konnte nicht angewendet werden."
 
-#: lib/installer.php:999
+#: lib/installer.php:998
 #, fuzzy, php-format
 msgid "Failed to apply '%s' as Automation Range"
 msgstr "Der angegebene Automatisierungsbereich konnte nicht angewendet werden."
 
-#: lib/installer.php:1074
+#: lib/installer.php:1073
 #, fuzzy
 msgid "No matching snmp option exists"
 msgstr "Keine passende snmp-Option vorhanden"
 
-#: lib/installer.php:1189
+#: lib/installer.php:1188
 #, fuzzy
 msgid "No matching template exists"
 msgstr "Es existiert keine passende Vorlage"
 
-#: lib/installer.php:1511
+#: lib/installer.php:1510
 #, fuzzy
 msgid "The Installer could not proceed due to an unexpected error."
 msgstr "Das Installationsprogramm konnte aufgrund eines unerwarteten Fehlers nicht fortfahren."
 
-#: lib/installer.php:1512
+#: lib/installer.php:1511
 #, fuzzy
 msgid "Please report this to the Cacti Group."
 msgstr "Bitte melden Sie dies der Cacti Group."
 
-#: lib/installer.php:1513
+#: lib/installer.php:1512
 #, fuzzy, php-format
 msgid "Unknown Reason: %s"
 msgstr "Unbekannter Grund: %s"
 
-#: lib/installer.php:1520
+#: lib/installer.php:1519
 #, fuzzy, php-format
 msgid "You are attempting to install Cacti %s onto a 0.6.x database. Unfortunately, this can not be performed."
 msgstr "Sie versuchen, Cacti %s auf einer 0.6.x-Datenbank zu installieren. Leider kann dies nicht durchgeführt werden."
 
-#: lib/installer.php:1521
+#: lib/installer.php:1520
 #, fuzzy
 msgid "To be able continue, you <b>MUST</b> create a new database, import \"cacti.sql\" into it:"
 msgstr "Um fortfahren zu können, erstellen Sie eine neue Datenbank, importieren Sie \"cacti.sql\" in diese:"
 
-#: lib/installer.php:1523
+#: lib/installer.php:1522
 #, fuzzy
 msgid "You <b>MUST</b> then update \"include/config.php\" to point to the new database."
 msgstr "Sie müssen dann \"include/config.php\" aktualisieren, um auf die neue Datenbank zu verweisen."
 
-#: lib/installer.php:1524
+#: lib/installer.php:1523
 #, fuzzy
 msgid "NOTE: Your existing data will not be modified, nor will it or any history be available to the new install"
 msgstr "HINWEIS: Ihre bestehenden Daten werden nicht geändert, noch werden sie oder ein Verlauf für die neue Installation verfügbar sein."
 
-#: lib/installer.php:1531
+#: lib/installer.php:1530
 #, fuzzy
 msgid "You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:"
 msgstr "Sie haben eine neue Datenbank erstellt, aber noch nicht die Datei'cacti.sql' importiert. Führen Sie auf der Befehlszeile Folgendes aus, um fortzufahren:"
 
-#: lib/installer.php:1533
+#: lib/installer.php:1532
 #, fuzzy
 msgid "This error may also be generated if the cacti database user does not have correct permissions on the Cacti database. Please ensure that the Cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database."
 msgstr "Dieser Fehler kann auch dann auftreten, wenn der Benutzer der Kakteen-Datenbank keine korrekten Berechtigungen für die Kakteen-Datenbank hat. Bitte stellen Sie sicher, dass der Cacti-Datenbankbenutzer die Möglichkeit hat, in der Cacti-Datenbank SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX auszuwählen."
 
-#: lib/installer.php:1534
+#: lib/installer.php:1533
 #, fuzzy
 msgid "You <b>MUST</b> also import MySQL TimeZone information into MySQL and grant the Cacti user SELECT access to the mysql.time_zone_name table"
 msgstr "Sie müssen auch MySQL TimeZone Informationen in MySQL importieren und dem Cacti Benutzer SELECT Zugriff auf die mysql.time_zone_name Tabelle gewähren."
 
-#: lib/installer.php:1537
+#: lib/installer.php:1536
 #, fuzzy
 msgid "On Linux/UNIX, run the following as 'root' in a shell:"
 msgstr "Führen Sie unter Linux/UNIX das Folgende als \"root\" in einer Shell aus:"
 
-#: lib/installer.php:1540
+#: lib/installer.php:1539
 #, fuzzy
 msgid "On Windows, you must follow the instructions here <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>Time zone description table</a>.  Once that is complete, you can issue the following command to grant the Cacti user access to the tables:"
 msgstr "Unter Windows müssen Sie den Anweisungen hier folgen <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>Zeitzonenbeschreibungstabelle</a>.  Sobald dies abgeschlossen ist, können Sie den folgenden Befehl ausführen, um dem Cacti-Benutzer Zugriff auf die Tabellen zu gewähren:"
 
-#: lib/installer.php:1543
+#: lib/installer.php:1542
 #, fuzzy
 msgid "Then run the following within MySQL as an administrator:"
 msgstr "Führen Sie dann innerhalb von MySQL als Administrator Folgendes aus:"
 
-#: lib/installer.php:1561 pollers.php:683
+#: lib/installer.php:1560 pollers.php:683
 msgid "Test Connection"
 msgstr "Verbindung prüfen"
 
-#: lib/installer.php:1572
+#: lib/installer.php:1571
 msgid "Begin"
 msgstr "Anfang"
 
-#: lib/installer.php:1578 lib/installer.php:1996 lib/installer.php:2006
-#: lib/installer.php:2631
+#: lib/installer.php:1577 lib/installer.php:1995 lib/installer.php:2005
+#: lib/installer.php:2630
 msgid "Upgrade"
 msgstr "Upgrade"
 
-#: lib/installer.php:1580 lib/installer.php:2635
+#: lib/installer.php:1579 lib/installer.php:2634
 msgid "Downgrade"
 msgstr "Downgrade"
 
-#: lib/installer.php:1681 support.php:180 utilities.php:272
+#: lib/installer.php:1680 support.php:180 utilities.php:272
 msgid "Cacti Version"
 msgstr "Cacti Version"
 
-#: lib/installer.php:1681
+#: lib/installer.php:1680
 msgid "License Agreement"
 msgstr "Lizenzvertrag"
 
-#: lib/installer.php:1684
+#: lib/installer.php:1683
 #, fuzzy, php-format
 msgid "This version of Cacti (%s) does not appear to have a valid version code, please contact the Cacti Development Team to ensure this is corrected.  If you are seeing this error in a release, please raise a report immediately on GitHub"
 msgstr "Diese Version von Cacti (%s) scheint keinen gültigen Versionscode zu haben, bitte kontaktieren Sie das Cacti Development Team, um sicherzustellen, dass dieser korrekt ist.  Wenn Sie diesen Fehler in einer Version sehen, melden Sie bitte sofort einen Bericht über GitHub."
 
-#: lib/installer.php:1687
+#: lib/installer.php:1686
 msgid "Thanks for taking the time to download and install Cacti, the complete graphing solution for your network. Before you can start making cool graphs, there are a few pieces of data that Cacti needs to know."
 msgstr "Vielen Dank, dass Sie sich die Zeit genommen haben Cacti, die graphische Komplettlösung für Ihr Netzwerk, herunterzuladen und zu installieren. Bevor Sie beginnen können, coole Diagramme zu erzeugen, gibt es ein paar Daten, die Cacti von Ihnen wissen muss."
 
-#: lib/installer.php:1688
+#: lib/installer.php:1687
 #, php-format
 msgid "Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href=\"%1$s\">Unix</a> and <a href=\"%2$s\">Win32</a>-based operating systems."
 msgstr "Stellen Sie sicher, dass Sie die erforderlichen Schritte um Cacti zu installieren gelesen und befolgt haben bevor Sie fortfahren. Informationen zur Installation finden Sie hier für <a href=\"%1$s\">Unix</a> und <a href=\"%2$s\">Win32</a>-basierte Betriebssysteme."
 
-#: lib/installer.php:1691
+#: lib/installer.php:1690
 #, fuzzy, php-format
 msgid "This process will guide you through the steps for upgrading from version '%s'. "
 msgstr "Dieser Prozess führt Sie durch die Schritte für das Upgrade von der Version'%s'."
 
-#: lib/installer.php:1692
+#: lib/installer.php:1691
 #, fuzzy, php-format
 msgid "Also, if this is an upgrade, be sure to read the <a href=\"%s\">Upgrade</a> information file."
 msgstr "Auch, wenn es sich um ein Upgrade handelt, achten Sie bitte darauf die <a href=\"%s\">Upgrade</a>-Informationsdatei zu lesen."
 
-#: lib/installer.php:1696
+#: lib/installer.php:1695
 #, fuzzy
 msgid "It is NOT recommended to downgrade as the database structure may be inconsistent"
 msgstr "Es wird NICHT empfohlen, ein Downgrade durchzuführen, da die Datenbankstruktur inkonsistent sein kann."
 
-#: lib/installer.php:1699
+#: lib/installer.php:1698
 msgid "Cacti is licensed under the GNU General Public License, you must agree to its provisions before continuing:"
 msgstr "Cacti ist lizenziert unter den Bedingungen der GNU General Public License, welcher Sie zustimmen müssen bevor Sie fortfahren:"
 
-#: lib/installer.php:1703
+#: lib/installer.php:1702
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."
 msgstr "Dieses Programm wird verteilt in der Hoffnung, dass es nützlich ist, aber OHNE JEDE GARANTIE; sogar ohne die implizite Garantie der MARKTGÄNGIGKEIT oder EIGNUNG FÜR EINEN BESTIMMTEN ZWECK. Weitere Details finden Sie in der GNU General Public License."
 
-#: lib/installer.php:1740
+#: lib/installer.php:1739
 msgid "Accept GPL License Agreement"
 msgstr "GPL Lizenz Vereinbarung akzeptieren"
 
-#: lib/installer.php:1740
+#: lib/installer.php:1739
 #, fuzzy
 msgid "Select default theme: "
 msgstr "Wählen Sie das Standard-Thema:"
 
-#: lib/installer.php:1763
+#: lib/installer.php:1762
 msgid "Pre-installation Checks"
 msgstr "Vor-Installations Prüfung"
 
-#: lib/installer.php:1764
+#: lib/installer.php:1763
 #, fuzzy
 msgid "Location checks"
 msgstr "Standortprüfungen"
 
-#: lib/installer.php:1800 lib/installer.php:1945 lib/installer.php:1949
-#: lib/installer.php:2104 lib/installer.php:2109 lib/installer.php:3717
+#: lib/installer.php:1799 lib/installer.php:1944 lib/installer.php:1948
+#: lib/installer.php:2103 lib/installer.php:2108 lib/installer.php:3717
 msgid "ERROR:"
 msgstr "FEHLER:"
 
-#: lib/installer.php:1800
+#: lib/installer.php:1799
 #, fuzzy
 msgid "Please update config.php with the correct relative URI location of Cacti (url_path)."
 msgstr "Bitte aktualisieren Sie config.php mit der korrekten relativen URI-Position von Cacti (url_path)."
 
-#: lib/installer.php:1803
+#: lib/installer.php:1802
 #, fuzzy
 msgid "Your Cacti configuration has the relative correct path (url_path) in config.php."
 msgstr "Deine Cacti-Konfiguration hat den relativ richtigen Pfad (url_path) in config.php."
 
-#: lib/installer.php:1811
+#: lib/installer.php:1810
 #, fuzzy, php-format
 msgid "PHP - Recommendations (%s)"
 msgstr "PHP - Empfehlungen"
 
-#: lib/installer.php:1815
+#: lib/installer.php:1814
 #, fuzzy
 msgid "PHP Recommendations ("
 msgstr "PHP-Empfehlungen"
 
-#: lib/installer.php:1816
+#: lib/installer.php:1815
 msgid "Current"
 msgstr "Aktuell"
 
-#: lib/installer.php:1816
+#: lib/installer.php:1815
 msgid "Recommended"
 msgstr "Empfohlen"
 
-#: lib/installer.php:1823
+#: lib/installer.php:1822
 #, fuzzy
 msgid "PHP Binary"
 msgstr "PHP Binärpfad"
 
-#: lib/installer.php:1826
+#: lib/installer.php:1825
 #, fuzzy
 msgid "The PHP binary location is not valid and must be updated."
 msgstr "Der binäre PHP-Speicherort ist ungültig und muss aktualisiert werden."
 
-#: lib/installer.php:1833
+#: lib/installer.php:1832
 #, fuzzy
 msgid "Update the path_php_binary value in the settings table."
 msgstr "Aktualisieren Sie den Wert path_php_binary in der Einstellungstabelle."
 
-#: lib/installer.php:1842
+#: lib/installer.php:1841
 msgid "Passed"
 msgstr "Bestanden"
 
-#: lib/installer.php:1845
+#: lib/installer.php:1844
 msgid "Warning"
 msgstr "Warnung"
 
-#: lib/installer.php:1851
+#: lib/installer.php:1850
 #, fuzzy
 #| msgid "Required"
 msgid "Restart Required"
 msgstr "Erforderlich"
 
-#: lib/installer.php:1851
+#: lib/installer.php:1850
 msgid "The specificed value appears to be different in the running config versus the INI file."
 msgstr ""
 
-#: lib/installer.php:1881
+#: lib/installer.php:1880
 #, fuzzy
 msgid "PHP - Module Support (Required)"
 msgstr "PHP - Modulunterstützung (erforderlich)"
 
-#: lib/installer.php:1882
+#: lib/installer.php:1881
 msgid "Cacti requires several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected. In addition, for optimal system performance Cacti should be run with certain MySQL system variables set.  Please follow the MySQL recommendations at your discretion.  Always seek the MySQL documentation if you have any questions."
 msgstr "Cacti erfordert mehrere PHP-Module, die installiert sein müssen, um ordnungsgemäß zu funktionieren. Falls diese noch nicht installiert sind, kann mit der Installation nicht fortgefahren werden. Darüber hinaus sollte für optimale Systemleistung Cacti mit bestimmten MySQL Systemvariablen ausgeführt werden.  Bitte folgen Sie den Empfehlungen zu MySQL in Ihrem Ermessen.  Konsoltieren Sie die Dokumentation von MySQL, wenn Sie irgendwelche Fragen haben."
 
-#: lib/installer.php:1884
+#: lib/installer.php:1883
 msgid "The following PHP extensions are mandatory, and MUST be installed before continuing your Cacti install."
 msgstr "Die folgenden PHP-Erweiterungen sind obligatorisch und müssen installiert werden, bevor Sie mit der Installation fortfahren."
 
-#: lib/installer.php:1888
+#: lib/installer.php:1887
 msgid "Required PHP Modules"
 msgstr "Erforderliche PHP Module"
 
-#: lib/installer.php:1889 lib/installer.php:1919 plugins.php:42 plugins.php:472
+#: lib/installer.php:1888 lib/installer.php:1918 plugins.php:42 plugins.php:472
 msgid "Installed"
 msgstr "Installiert"
 
-#: lib/installer.php:1889
+#: lib/installer.php:1888
 msgid "Required"
 msgstr "Erforderlich"
 
-#: lib/installer.php:1912
+#: lib/installer.php:1911
 #, fuzzy
 msgid "PHP - Module Support (Optional)"
 msgstr "PHP - Modulunterstützung (optional)"
 
-#: lib/installer.php:1914
+#: lib/installer.php:1913
 #, fuzzy
 msgid "The following PHP extensions are recommended, and should be installed before continuing your Cacti install.  NOTE: If you are planning on supporting SNMPv3 with IPv6, you should not install the php-snmp module at this time."
 msgstr "Die folgenden PHP-Erweiterungen werden empfohlen und sollten vor der Fortsetzung der Cacti-Installation installiert werden.  HINWEIS: Wenn Sie planen, SNMPv3 mit IPv6 zu unterstützen, sollten Sie das php-snmp-Modul zu diesem Zeitpunkt nicht installieren."
 
-#: lib/installer.php:1918
+#: lib/installer.php:1917
 msgid "Optional Modules"
 msgstr "Optionale Module"
 
-#: lib/installer.php:1919
+#: lib/installer.php:1918
 msgid "Optional"
 msgstr "Optional"
 
-#: lib/installer.php:1940
+#: lib/installer.php:1939
 #, fuzzy
 msgid "MySQL - TimeZone Support"
 msgstr "MySQL - TimeZone Unterstützung"
 
-#: lib/installer.php:1945
+#: lib/installer.php:1944
 msgid "Your MySQL TimeZone database is not populated.  Please populate this database before proceeding."
 msgstr "Ihre MySQL Zeitzonen Datenbank wurde nicht aufgefüllt.  Bitte füllen Sie diese Datenbank, bevor Sie fortfahren."
 
-#: lib/installer.php:1949
+#: lib/installer.php:1948
 msgid "Your Cacti database login account does not have access to the MySQL TimeZone database.  Please provide the Cacti database account \"select\" access to the \"time_zone_name\" table in the \"mysql\" database, and populate MySQL's TimeZone information before proceeding."
 msgstr "Ihr Cacti Datenbank Konto hat keinen Zugriff auf die MySQL Zeitzonen Datenbank.  Bitte gewähren Sie diesem Konto das Privileg \"select\" auf die Tabelle \"time_zone_name\" innerhalb der \"mysql\" Datenbank und pflegen Sie MySQL's Zeitzonen Informationen ein bevor Sie fortfahren."
 
-#: lib/installer.php:1954
+#: lib/installer.php:1953
 msgid "Your Cacti database account has access to the MySQL TimeZone database and that database is populated with global TimeZone information."
 msgstr "Ihr Cacti Datenbank Account hat Zugriff auf die MySQL Zeitzonen Datenbank, welche mit Information hinsichtlich globaler Zeitzonen gefüllt ist."
 
-#: lib/installer.php:1959
+#: lib/installer.php:1958
 #, fuzzy
 msgid "MySQL - Settings"
 msgstr "MySQL - Einstellungen"
 
-#: lib/installer.php:1960
+#: lib/installer.php:1959
 msgid "These MySQL performance tuning settings will help your Cacti system perform better without issues for a longer time."
 msgstr "Nachfolgende Einstellungen zur Leistungsabstimmung von MySQL werden Ihrem Cacti System helfen, langfristig fehlerfrei und besser zu laufen."
 
-#: lib/installer.php:1962
+#: lib/installer.php:1961
 msgid "Recommended MySQL System Variable Settings"
 msgstr "Empfohlene Einstellungen für MySQL Systemvariablen"
 
-#: lib/installer.php:1991
+#: lib/installer.php:1990
 msgid "Installation Type"
 msgstr "Installationsart"
 
-#: lib/installer.php:1997
+#: lib/installer.php:1996
 #, fuzzy, php-format
 msgid "Upgrade from <strong>%s</strong> to <strong>%s</strong>"
 msgstr "Upgrade von <stark>%s</stark> auf <stark>%s</stark>"
 
-#: lib/installer.php:1999
+#: lib/installer.php:1998
 #, fuzzy
 msgid "In the event of issues, It is highly recommended that you clear your browser cache, closing then reopening your browser (not just the tab Cacti is on) and retrying, before raising an issue with The Cacti Group"
 msgstr "Im Falle von Problemen wird dringend empfohlen, dass Sie Ihren Browser-Cache leeren, schließen, dann Ihren Browser wieder öffnen (nicht nur die Registerkarte Kakteen ist eingeschaltet) und erneut versuchen, bevor Sie ein Problem mit The Cacti Group aufwerfen."
 
-#: lib/installer.php:2000
+#: lib/installer.php:1999
 #, fuzzy
 msgid "On rare occasions, we have had reports from users who experience some minor issues due to changes in the code.  These issues are caused by the browser retaining pre-upgrade code and whilst we have taken steps to minimise the chances of this, it may still occur.  If you need instructions on how to clear your browser cache, <a href='https://www.refreshyourcache.com' target='_blank'>https://www.refreshyourcache.com/</a> is a good starting point."
 msgstr "In seltenen Fällen haben wir Berichte von Benutzern erhalten, die aufgrund von Änderungen im Code kleinere Probleme haben.  Diese Probleme werden dadurch verursacht, dass der Browser den Pre-Upgrade-Code beibehält, und obwohl wir Schritte unternommen haben, um die Chancen dafür zu minimieren, kann es dennoch vorkommen.  Wenn Sie Anweisungen zum Löschen Ihres Browser-Cache benötigen, ist <a href='https://www.refreshyourcache.com' target='_blank'>https://www.refreshyourcache.com/</a> ein guter Ausgangspunkt."
 
-#: lib/installer.php:2001
+#: lib/installer.php:2000
 #, fuzzy
 msgid "If after clearing your cache and restarting your browser, you still experience issues, please raise the issue with us and we will try to identify the cause of it."
 msgstr "Wenn nach dem Leeren des Caches und dem Neustart des Browsers immer noch Probleme auftreten, wenden Sie sich bitte an uns, und wir werden versuchen, die Ursache zu ermitteln."
 
-#: lib/installer.php:2007
+#: lib/installer.php:2006
 #, fuzzy, php-format
 msgid "Downgrade from <strong>%s</strong> to <strong>%s</strong>"
 msgstr "Herabstufung von <stark>%s</stark> auf <stark>%s</stark>"
 
-#: lib/installer.php:2008
+#: lib/installer.php:2007
 #, fuzzy
 msgid "You appear to be downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues."
 msgstr "Sie scheinen auf eine frühere Version heruntergestuft zu werden.  Datenbankänderungen, die für die neuere Version vorgenommen wurden, werden nicht rückgängig gemacht und <i>könnte</i> Probleme verursachen."
 
-#: lib/installer.php:2013
+#: lib/installer.php:2012
 msgid "Please select the type of installation"
 msgstr "Bitte wählen Sie die Art der Installation aus"
 
-#: lib/installer.php:2014
+#: lib/installer.php:2013
 msgid "Installation options:"
 msgstr "Installationsoptionen:"
 
-#: lib/installer.php:2018
+#: lib/installer.php:2017
 #, fuzzy
 msgid "Choose this for the Primary site."
 msgstr "Wählen Sie dies für die Primärseite."
 
-#: lib/installer.php:2018 lib/installer.php:2069
+#: lib/installer.php:2017 lib/installer.php:2068
 msgid "New Primary Server"
 msgstr "Neuer Primär Server"
 
-#: lib/installer.php:2019 lib/installer.php:2070
+#: lib/installer.php:2018 lib/installer.php:2069
 msgid "New Remote Poller"
 msgstr "Neuer Remote Server"
 
-#: lib/installer.php:2019
+#: lib/installer.php:2018
 #, fuzzy
 msgid "Remote Pollers are used to access networks that are not readily accessible to the Primary site."
 msgstr "Remote Poller werden verwendet, um auf Netzwerke zuzugreifen, die für den primären Standort nicht leicht zugänglich sind."
 
-#: lib/installer.php:2074
+#: lib/installer.php:2073
 #, fuzzy
 msgid "The following information has been determined from Cacti's configuration file. If it is not correct, please edit \"include/config.php\" before continuing."
 msgstr "Die folgenden Informationen wurden aus der Konfigurationsdatei von Cacti ermittelt. Wenn es nicht korrekt ist, bearbeiten Sie bitte \"include/config.php\", bevor Sie fortfahren."
 
-#: lib/installer.php:2078
+#: lib/installer.php:2077
 #, fuzzy
 msgid "Local Database Connection Information"
 msgstr "Informationen zur lokalen Datenbankverbindung"
 
-#: lib/installer.php:2081 lib/installer.php:2093
+#: lib/installer.php:2080 lib/installer.php:2092
 #, fuzzy, php-format
 msgid "Database: <b>%s</b>"
 msgstr "Datenbank: <b>%s</b>"
 
-#: lib/installer.php:2082 lib/installer.php:2094
+#: lib/installer.php:2081 lib/installer.php:2093
 #, fuzzy, php-format
 msgid "Database User: <b>%s</b>"
 msgstr "Datenbankbenutzer: <b>%s</b>"
 
-#: lib/installer.php:2083 lib/installer.php:2095
+#: lib/installer.php:2082 lib/installer.php:2094
 #, fuzzy, php-format
 msgid "Database Hostname: <b>%s</b>"
 msgstr "Datenbank-Hostname: <b>%s</b>"
 
-#: lib/installer.php:2084 lib/installer.php:2096
+#: lib/installer.php:2083 lib/installer.php:2095
 #, fuzzy, php-format
 msgid "Port: <b>%s</b>"
 msgstr "Port: <b>%s</b>"
 
-#: lib/installer.php:2085 lib/installer.php:2097
+#: lib/installer.php:2084 lib/installer.php:2096
 #, fuzzy, php-format
 msgid "Server Operating System Type: <b>%s</b>"
 msgstr "Server-Betriebssystemtyp: <b>%s</b>"
 
-#: lib/installer.php:2090
+#: lib/installer.php:2089
 #, fuzzy
 msgid "Central Database Connection Information"
 msgstr "Informationen zur zentralen Datenbankverbindung"
 
-#: lib/installer.php:2102
+#: lib/installer.php:2101
 #, fuzzy
 msgid "Configuration Readonly!"
 msgstr "Konfiguration schreibgeschützt!"
 
-#: lib/installer.php:2104
+#: lib/installer.php:2103
 #, fuzzy
 msgid "Your config.php file must be writable by the web server during install in order to configure the Remote poller.  Once installation is complete, you must set this file to Read Only to prevent possible security issues."
 msgstr "Ihre Datei config.php muss während der Installation vom Webserver beschreibbar sein, um den Remote Poller zu konfigurieren.  Nach Abschluss der Installation müssen Sie diese Datei auf Nur Lesen setzen, um mögliche Sicherheitsprobleme zu vermeiden."
 
-#: lib/installer.php:2108
+#: lib/installer.php:2107
 #, fuzzy
 msgid "Configuration of Poller"
 msgstr "Konfiguration des Pollers"
 
-#: lib/installer.php:2109
+#: lib/installer.php:2108
 #, fuzzy
 msgid "Your Remote Cacti Poller information has not been included in your config.php file.  Please review the config.php.dist, and set the variables: <i>$rdatabase_default, $rdatabase_username</i>, etc.  These variables must be set and point back to your Primary Cacti database server.  Correct this and try again."
 msgstr "Ihre Remote Cacti Poller Informationen wurden nicht in Ihre config.php Datei aufgenommen.  Bitte überprüfen Sie die config.php.dist und setzen Sie die Variablen: <i>$rdatabase_default, $rdatabase_username</i>, etc.  Diese Variablen müssen gesetzt sein und auf Ihren Primary Cacti Datenbankserver verweisen.  Korrigieren Sie dies und versuchen Sie es erneut."
 
-#: lib/installer.php:2113
+#: lib/installer.php:2112
 #, fuzzy
 msgid "Remote Poller Variables"
 msgstr "Remote Poller Variablen"
 
-#: lib/installer.php:2115
+#: lib/installer.php:2114
 #, fuzzy
 msgid "The variables that must be set in the config.php file include the following:"
 msgstr "Zu den Variablen, die in der Datei config.php gesetzt werden müssen, gehören die folgenden:"
 
-#: lib/installer.php:2126
+#: lib/installer.php:2125
 #, fuzzy
 msgid "The Installer automatically assigns a $poller_id and adds it to the config.php file."
 msgstr "Der Installer weist automatisch eine $poller_id zu und fügt sie der Datei config.php hinzu."
 
-#: lib/installer.php:2128
+#: lib/installer.php:2127
 #, fuzzy
 msgid "Once the variables are all set in the config.php file, you must also grant the $rdatabase_username access to the main Cacti database server.  Follow the same procedure you would with any other Cacti install.  You may then press the 'Test Connection' button.  If the test is successful you will be able to proceed and complete the install."
 msgstr "Sobald die Variablen alle in der Datei config.php gesetzt sind, müssen Sie dem $rdatabase_username auch Zugriff auf den Haupt-Cacti-Datenbankserver gewähren.  Befolgen Sie die gleiche Vorgehensweise wie bei jeder anderen Cacti-Installation.  Sie können dann auf die Schaltfläche \"Verbindung testen\" klicken.  Wenn der Test erfolgreich war, können Sie die Installation fortsetzen und abschließen."
 
-#: lib/installer.php:2132
+#: lib/installer.php:2131
 #, fuzzy
 msgid "Additional Steps After Installation"
 msgstr "Zusätzliche Schritte nach der Installation"
 
-#: lib/installer.php:2134
+#: lib/installer.php:2133
 #, fuzzy
 msgid "It is essential that the Central Cacti server can communicate via MySQL to each remote Cacti database server.  Once the install is complete, you must edit the Remote Data Collector and ensure the settings are correct.  You can verify using the 'Test Connection' when editing the Remote Data Collector."
 msgstr "Es ist wichtig, dass der Central Cacti Server über MySQL mit jedem entfernten Cacti Datenbankserver kommunizieren kann.  Nach Abschluss der Installation müssen Sie den Remote Data Collector bearbeiten und sicherstellen, dass die Einstellungen korrekt sind.  Sie können die Verwendung der'Testverbindung' beim Bearbeiten des Remote Data Collectors überprüfen."
 
-#: lib/installer.php:2147
+#: lib/installer.php:2146
 #, fuzzy
 msgid "Critical Binary Locations and Versions"
 msgstr "Kritische binäre Speicherorte und Versionen"
 
-#: lib/installer.php:2148
+#: lib/installer.php:2147
 #, fuzzy
 msgid "Make sure all of these values are correct before continuing."
 msgstr "Stellen Sie sicher, dass alle diese Werte korrekt sind, bevor Sie fortfahren."
 
-#: lib/installer.php:2151
+#: lib/installer.php:2150
 #, fuzzy
 msgid "One or more paths appear to be incorrect, unable to proceed"
 msgstr "Ein oder mehrere Pfade scheinen falsch zu sein, können nicht fortgesetzt werden."
 
-#: lib/installer.php:2228
+#: lib/installer.php:2227
 #, fuzzy
 msgid "Directory Permission Checks"
 msgstr "Verzeichnisberechtigungsprüfungen"
 
-#: lib/installer.php:2229
+#: lib/installer.php:2228
 #, fuzzy
 msgid "Please ensure the directory permissions below are correct before proceeding.  During the install, these directories need to be owned by the Web Server user.  These permission changes are required to allow the Installer to install Device Template packages which include XML and script files that will be placed in these directories.  If you choose not to install the packages, there is an 'install_package.php' cli script that can be used from the command line after the install is complete."
 msgstr "Bitte stellen Sie sicher, dass die untenstehenden Verzeichnisberechtigungen korrekt sind, bevor Sie fortfahren.  Während der Installation müssen diese Verzeichnisse dem Webserver-Benutzer gehören.  Diese Berechtigungsänderungen sind erforderlich, damit der Installer Gerätevorlagenpakete installieren kann, die XML- und Skriptdateien enthalten, die in diesen Verzeichnissen abgelegt werden.  Wenn Sie sich dafür entscheiden, die Pakete nicht zu installieren, gibt es ein Clipskript \"install_package.php\", das nach Abschluss der Installation von der Befehlszeile aus verwendet werden kann."
 
-#: lib/installer.php:2232
+#: lib/installer.php:2231
 #, fuzzy
 msgid "After the install is complete, you can make some of these directories read only to increase security."
 msgstr "Nachdem die Installation abgeschlossen ist, können Sie einige dieser Verzeichnisse nur noch lesend machen, um die Sicherheit zu erhöhen."
 
-#: lib/installer.php:2234
+#: lib/installer.php:2233
 #, fuzzy
 msgid "These directories will be required to stay read writable after the install so that the Cacti remote synchronization process can update them as the Main Cacti Web Site changes"
 msgstr "Diese Verzeichnisse müssen nach der Installation lesbar bleiben, damit der Cacti-Fernsynchronisationsprozess sie aktualisieren kann, wenn sich die Haupt-Kakteen-Website ändert."
 
-#: lib/installer.php:2238
+#: lib/installer.php:2237
 #, fuzzy
 msgid "If you are installing packages, once the packages are installed, you should change the scripts directory back to read only as this presents some exposure to the web site."
 msgstr "Wenn Sie Pakete installieren, sollten Sie nach der Installation der Pakete das Skriptverzeichnis zurücksetzen, um nur lesen zu können, da dies eine gewisse Belastung für die Website darstellt."
 
-#: lib/installer.php:2240
+#: lib/installer.php:2239
 #, fuzzy
 msgid "For remote pollers, it is critical that the paths that you will be updating frequently, including the plugins, scripts, and resources paths have read/write access as the data collector will have to update these paths from the main web server content."
 msgstr "Für Remote-Poller ist es wichtig, dass die Pfade, die Sie häufig aktualisieren werden, einschließlich der Plugins, Skripte und Ressourcenpfade, Lese-/Schreibrechte haben, da der Datensammler diese Pfade aus dem Inhalt des Haupt-Webservers aktualisieren muss."
 
-#: lib/installer.php:2246
+#: lib/installer.php:2245
 #, fuzzy
 msgid "Required Writable at Install Time Only"
 msgstr "Erforderlich Beschreibbar nur zur Installationszeit"
 
-#: lib/installer.php:2265 lib/installer.php:2297 package_import.php:544
+#: lib/installer.php:2264 lib/installer.php:2296 package_import.php:544
 #, fuzzy
 msgid "Not Writable"
 msgstr "Schreibbar"
 
-#: lib/installer.php:2277
+#: lib/installer.php:2276
 #, fuzzy
 msgid "Required Writable after Install Complete"
 msgstr "Erforderliche Beschreibbarkeit nach der Installation abgeschlossen"
 
-#: lib/installer.php:2308
+#: lib/installer.php:2307
 #, fuzzy
 msgid "Potential permission issues"
 msgstr "Mögliche Berechtigungsprobleme"
 
-#: lib/installer.php:2317
+#: lib/installer.php:2316
 #, fuzzy
 msgid "Please make sure that your webserver has read/write access to the cacti folders that show errors below."
 msgstr "Bitte stellen Sie sicher, dass Ihr Webserver Lese-/Schreibzugriff auf die Kakteenordner hat, die untenstehende Fehler aufweisen."
 
-#: lib/installer.php:2320
+#: lib/installer.php:2319
 #, fuzzy
 msgid "If SELinux is enabled on your server, you can either permanently disable this, or temporarily disable it and then add the appropriate permissions using the SELinux command-line tools."
 msgstr "Wenn SELinux auf Ihrem Server aktiviert ist, können Sie dies entweder dauerhaft deaktivieren oder vorübergehend deaktivieren und dann die entsprechenden Berechtigungen mit den SELinux-Kommandozeilentools hinzufügen."
 
-#: lib/installer.php:2329
+#: lib/installer.php:2328
 #, fuzzy, php-format
 msgid "The user '%s' should have MODIFY permission to enable read/write."
 msgstr "Der Benutzer'%s' sollte die Berechtigung MODIFY haben, um Lesen/Schreiben zu ermöglichen."
 
-#: lib/installer.php:2338
+#: lib/installer.php:2337
 #, fuzzy
 msgid "An example of how to set folder permissions is shown here, though you may need to adjust this depending on your operating system, user accounts and desired permissions."
 msgstr "Ein Beispiel für das Festlegen von Ordnerrechten ist hier dargestellt, wobei Sie dies je nach Betriebssystem, Benutzerkonten und gewünschten Berechtigungen anpassen müssen."
 
-#: lib/installer.php:2339
+#: lib/installer.php:2338
 msgid "EXAMPLE:"
 msgstr "BEISPIEL:"
 
-#: lib/installer.php:2340
+#: lib/installer.php:2339
 #, fuzzy
 msgid "Once installation has completed the CSRF path, should be set to read-only."
 msgstr "Nach Abschluss der Installation sollte der CSRF-Pfad auf schreibgeschützt gesetzt werden."
 
-#: lib/installer.php:2342
+#: lib/installer.php:2341
 #, fuzzy
 msgid "All folders are writable"
 msgstr "Alle Ordner sind beschreibbar"
 
-#: lib/installer.php:2354
+#: lib/installer.php:2353
 #, fuzzy
 msgid "Input Validation Whitelist Protection"
 msgstr "Schutz der Eingabevalidierungs-Whitelist"
 
-#: lib/installer.php:2355
+#: lib/installer.php:2354
 #, fuzzy
 msgid "Cacti Data Input methods that call a script can be exploited in ways that a non-administrator can perform damage to either files owned by the poller account, and in cases where someone runs the Cacti poller as root, can compromise the operating system allowing attackers to exploit your infrastructure."
 msgstr "Cacti-Dateneingabemethoden, die ein Skript aufrufen, können so ausgenutzt werden, dass ein Nichtadministrator beide Dateien des Poller-Kontos beschädigen kann. In Fällen, in denen jemand den Cacti-Poller als Root ausführt, kann dies das Betriebssystem gefährden, das Angreifern dies ermöglicht Nutzen Sie Ihre Infrastruktur."
 
-#: lib/installer.php:2356
+#: lib/installer.php:2355
 #, fuzzy
 msgid "Therefore, several versions ago, Cacti was enhanced to provide Whitelist capabilities on the these types of Data Input Methods.  Though this does secure Cacti more thoroughly, it does increase the amount of work required by the Cacti administrator to import and manage Templates and Packages."
 msgstr "Daher wurde Cacti vor einigen Versionen erweitert, um Whitelist-Funktionen für diese Arten von Dateneingabemethoden bereitzustellen. Dies sichert Cacti zwar gründlicher, erhöht jedoch den Arbeitsaufwand, den der Cacti-Administrator zum Importieren und Verwalten von Vorlagen und Paketen benötigt."
 
-#: lib/installer.php:2357
+#: lib/installer.php:2356
 #, fuzzy
 msgid "The way that the Whitelisting works is that when you first import a Data Input Method, or you re-import a Data Input Method, and the script and or arguments change in any way, the Data Input Method, and all the corresponding Data Sources will be immediatly disabled until the administrator validates that the Data Input Method is valid."
 msgstr "Die Whitelist funktioniert so, dass beim ersten Importieren einer Dateneingabemethode oder beim erneuten Importieren einer Dateneingabemethode das Skript und / oder die Dokumente in irgendeiner Weise die Dateneingabemethode und alle entsprechenden Datenquellen ändern sofort deaktiviert werden, bis der Administrator überprüft, ob die Dateneingabemethode gültig ist."
 
-#: lib/installer.php:2358
+#: lib/installer.php:2357
 #, fuzzy
 msgid "To make identifying Data Input Methods in this state, we have provided a validation script in Cacti's CLI directory that can be run with the following options:"
 msgstr "Um die Identifizierung von Dateneingabemethoden in diesem Status zu ermöglichen, haben wir im CLI-Verzeichnis von Cacti ein Validierungsskript bereitgestellt, das mit den folgenden Optionen ausgeführt werden kann:"
 
-#: lib/installer.php:2362
+#: lib/installer.php:2361
 #, fuzzy
 msgid "This script option will search for any Data Input Methods that are currently banned and provide details as to why."
 msgstr "Diese Skriptoption sucht nach Dateneingabemethoden, die derzeit gesperrt sind, und gibt Auskunft darüber, warum."
 
-#: lib/installer.php:2363
+#: lib/installer.php:2362
 #, fuzzy
 msgid "This script option un-ban the Data Input Methods that are currently banned."
 msgstr "Mit dieser Skriptoption werden die derzeit gesperrten Dateneingabemethoden gesperrt."
 
-#: lib/installer.php:2364
+#: lib/installer.php:2363
 #, fuzzy
 msgid "This script option will re-enable any disabled Data Sources."
 msgstr "Diese Skriptoption aktiviert alle deaktivierten Datenquellen wieder."
 
-#: lib/installer.php:2368
+#: lib/installer.php:2367
 #, fuzzy
 msgid "It is strongly suggested that you update your config.php to enable this feature by uncommenting the <b>$input_whitelist</b> variable and then running the three CLI script options above after the web based install has completed."
 msgstr "Es wird dringend empfohlen, die Datei config.php zu aktualisieren, um diese Funktion zu aktivieren, indem Sie die Variable <b>$ input_whitelist auskommentieren</b> und nach Abschluss der webbasierten Installation die drei oben genannten CLI- <b>Skriptoptionen ausführen</b> ."
 
-#: lib/installer.php:2370
+#: lib/installer.php:2369
 #, fuzzy
 msgid "Check the Checkbox below to acknowledge that you have read and understand this security concern"
 msgstr "Aktivieren Sie das Kontrollkästchen unten, um zu bestätigen, dass Sie diese Sicherheitsbedenken gelesen und verstanden haben"
 
-#: lib/installer.php:2372
+#: lib/installer.php:2371
 #, fuzzy
 msgid "I have read this statement"
 msgstr "Ich habe diese Aussage gelesen"
 
-#: lib/installer.php:2388 lib/installer.php:2394
+#: lib/installer.php:2387 lib/installer.php:2393
 msgid "Default Profile"
 msgstr "Standardprofile"
 
-#: lib/installer.php:2389
+#: lib/installer.php:2388
 #, fuzzy
 msgid "Please select the default Data Source Profile to be used for polling sources.  This is the maximum amount of time between scanning devices for information so the lower the polling interval, the more work is placed on the Cacti Server host.  Also, select the intended, or configured Cron interval that you wish to use for Data Collection."
 msgstr "Bitte wählen Sie das Standard-Datenquellenprofil aus, das für die Abfrage von Quellen verwendet werden soll.  Dies ist die maximale Zeitspanne zwischen den Scannern nach Informationen. Je niedriger das Polling-Intervall, desto mehr Arbeit wird auf dem Cacti Server-Host geleistet.  Wählen Sie außerdem das gewünschte oder konfigurierte Cron-Intervall, das Sie für die Datenerfassung verwenden möchten."
 
-#: lib/installer.php:2400
+#: lib/installer.php:2399
 msgid "Cron Interval"
 msgstr "Cron-Intervall"
 
-#: lib/installer.php:2421
+#: lib/installer.php:2420
 #, fuzzy
 msgid "Default Automation Network"
 msgstr "Standard-Automatisierungsnetzwerk"
 
-#: lib/installer.php:2422
+#: lib/installer.php:2421
 #, fuzzy
 msgid "Cacti can automatically scan the network once installation has completed. This will utilise the network range below to work out the range of IPs that can be scanned.  A predefined set of options are defined for scanning which include using both 'public' and 'private' communities."
 msgstr "Kakteen können das Netzwerk nach Abschluss der Installation automatisch scannen. Dabei wird der untenstehende Netzwerkbereich verwendet, um den Bereich der IPs zu ermitteln, die gescannt werden können.  Für das Scannen werden vordefinierte Optionen definiert, die sowohl die Verwendung von \"öffentlichen\" als auch von \"privaten\" Communities beinhalten."
 
-#: lib/installer.php:2423
+#: lib/installer.php:2422
 #, fuzzy
 msgid "If your devices require a different set of options to be used first, you may define them below and they will be utilized before the defaults"
 msgstr "Wenn Ihre Geräte eine andere Anzahl von Optionen benötigen, die zuerst verwendet werden sollen, können Sie diese unten definieren und sie werden vor den Standardeinstellungen verwendet."
 
-#: lib/installer.php:2424
+#: lib/installer.php:2423
 #, fuzzy
 msgid "All options may be adjusted post installation"
 msgstr "Alle Optionen können nach der Installation angepasst werden."
 
-#: lib/installer.php:2428
+#: lib/installer.php:2427
 msgid "Default Options"
 msgstr "Standardeinstellungen"
 
-#: lib/installer.php:2432
+#: lib/installer.php:2431
 msgid "Scan Mode"
 msgstr "Scan-Modus"
 
-#: lib/installer.php:2437
+#: lib/installer.php:2436
 #, fuzzy
 msgid "Network Range"
 msgstr "Netzwerkbereich"
 
-#: lib/installer.php:2443
+#: lib/installer.php:2442
 #, fuzzy
 msgid "Additional Defaults"
 msgstr "Zusätzliche Standardeinstellungen"
 
-#: lib/installer.php:2464
+#: lib/installer.php:2463
 #, fuzzy
 msgid "Additional SNMP Options"
 msgstr "Zusätzliche SNMP-Optionen"
 
-#: lib/installer.php:2477
+#: lib/installer.php:2476
 #, fuzzy
 msgid "Error Locating Profiles"
 msgstr "Fehler beim Lokalisieren von Profilen"
 
-#: lib/installer.php:2478
+#: lib/installer.php:2477
 #, fuzzy
 msgid "The installation cannot continue because no profiles could be found."
 msgstr "Die Installation kann nicht fortgesetzt werden, da keine Profile gefunden werden konnten."
 
-#: lib/installer.php:2479
+#: lib/installer.php:2478
 #, fuzzy
 msgid "This may occur if you have a blank database and have not yet imported the cacti.sql file"
 msgstr "Dies kann vorkommen, wenn Sie eine leere Datenbank haben und die Datei cacti.sql noch nicht importiert haben."
 
-#: lib/installer.php:2487
+#: lib/installer.php:2486
 msgid "Template Setup"
 msgstr "Vorlagen-Einstellung"
 
-#: lib/installer.php:2490
+#: lib/installer.php:2489
 #, fuzzy
 msgid "Please select the Device Templates that you wish to update during the Upgrade."
 msgstr "Wählen Sie den Vorlagentyp aus, den Sie aus Kakteen exportieren möchten."
 
-#: lib/installer.php:2491
+#: lib/installer.php:2490
 #, fuzzy
 msgid "Updating Templates that you have already made modifications to is not advisable.  The Upgrade of the Templates will NOT remove modifications to Graph and Data Templates, and can lead to unexpected behavior.  However, if you have not made changes to any Graph, Data Query, or Data Template, reimporting the Package should not have any affect.  In that case, you would have to 'Sync Graphs' to from the Templates after update."
 msgstr "Es ist nicht ratsam, Vorlagen zu aktualisieren, an denen Sie bereits Änderungen vorgenommen haben. Das Upgrade der Vorlagen entfernt KEINE Änderungen an Diagramm- und Datenvorlagen und kann zu unerwartetem Verhalten führen. Wenn Sie jedoch keine Änderungen an einem Diagramm, einer Datenabfrage oder einer Datenvorlage vorgenommen haben, sollte das erneute Importieren des Pakets keine Auswirkungen haben. In diesem Fall müssten Sie nach dem Update die Grafiken mit den Vorlagen synchronisieren."
 
-#: lib/installer.php:2493
+#: lib/installer.php:2492
 #, fuzzy
 msgid "Please select the Device Templates that you wish to use after the Install.  If you Operating System is Windows, you need to ensure that you select the 'Windows Device' Template.  If your Operating System is Linux/UNIX, make sure you select the 'Local Linux Machine' Device Template."
 msgstr "Bitte wählen Sie die Gerätevorlagen aus, die Sie nach der Installation verwenden möchten.  Wenn Sie ein Windows-Betriebssystem verwenden, müssen Sie sicherstellen, dass Sie die Vorlage \"Windows-Gerät\" auswählen.  Wenn Ihr Betriebssystem Linux/UNIX ist, stellen Sie sicher, dass Sie die Gerätevorlage'Local Linux Machine' auswählen."
 
-#: lib/installer.php:2499 package_import.php:450 plugins.php:594
+#: lib/installer.php:2498 package_import.php:450 plugins.php:594
 msgid "Author"
 msgstr "Autor"
 
-#: lib/installer.php:2499 package_import.php:453
+#: lib/installer.php:2498 package_import.php:453
 msgid "Homepage"
 msgstr "Startseite"
 
-#: lib/installer.php:2517
+#: lib/installer.php:2516
 #, fuzzy
 msgid "Device Templates allow you to monitor and graph a vast assortment of data within Cacti.  After you select the desired Device Templates, press 'Next' and the installation will complete.  Please be patient on this step, as the importation of the Device Templates can take a few minutes."
 msgstr "Gerätevorlagen ermöglichen es Ihnen, eine große Auswahl an Daten innerhalb von Cacti zu überwachen und darzustellen.  Nachdem Sie die gewünschten Gerätevorlagen ausgewählt haben, drücken Sie auf \"Fertigstellen\" und die Installation wird abgeschlossen.  Bitte haben Sie Geduld mit diesem Schritt, da der Import der Gerätevorlagen einige Minuten dauern kann."
 
-#: lib/installer.php:2525
+#: lib/installer.php:2524
 #, fuzzy
 msgid "Server Collation"
 msgstr "Server-Sammlung"
 
-#: lib/installer.php:2532
+#: lib/installer.php:2531
 #, fuzzy
 msgid "Your server collation appears to be UTF8 compliant"
 msgstr "Ihre Server-Sammlung scheint UTF8-konform zu sein."
 
-#: lib/installer.php:2535
+#: lib/installer.php:2534
 #, fuzzy
 msgid "Your server collation does NOT appear to be fully UTF8 compliant. "
 msgstr "Ihre Server-Sammlung scheint NICHT vollständig UTF8-konform zu sein."
 
-#: lib/installer.php:2536
+#: lib/installer.php:2535
 #, fuzzy
 msgid "Under the [mysqld] section, locate the entries named 'character-set-server' and 'collation-server' and set them as follows:"
 msgstr "Suchen Sie im Abschnitt [mysqld] die Einträge mit den Namen'character&#8209;set&#8209;server' und'collation&#8209;server' und setzen Sie sie wie folgt:"
 
-#: lib/installer.php:2543
+#: lib/installer.php:2542
 msgid "Database Collation"
 msgstr "Datenbank Collation"
 
-#: lib/installer.php:2548
+#: lib/installer.php:2547
 #, fuzzy
 msgid "Your database default collation appears to be UTF8 compliant"
 msgstr "Ihre Datenbank-Standardsortierung scheint UTF8-konform zu sein."
 
-#: lib/installer.php:2551
+#: lib/installer.php:2550
 #, fuzzy
 msgid "Your database default collation does NOT appear to be full UTF8 compliant. "
 msgstr "Ihre Datenbank-Standardsortierung scheint NICHT vollständig UTF8-konform zu sein."
 
-#: lib/installer.php:2552
+#: lib/installer.php:2551
 #, fuzzy
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
 msgstr "Alle Tabellen, die von Plugins erstellt werden, können Probleme mit Cacti Core Tabellen haben, wenn die Sortierung nicht übereinstimmt.   Bitte stellen Sie sicher, dass Ihre Datenbank auf'utf8mb4_unicode_ci' geändert wird, indem Sie Folgendes ausführen:"
 
-#: lib/installer.php:2559
+#: lib/installer.php:2558
 #, fuzzy
 msgid "Table Setup"
 msgstr "Tabelleneinrichtung"
 
-#: lib/installer.php:2570
+#: lib/installer.php:2569
 #, fuzzy, php-format
 msgid "You have more tables than your PHP configuration will allow us to display/convert.  Please modify the max_input_vars setting in php.ini to a value above %s"
 msgstr "Sie haben mehr Tabellen, als Ihre PHP-Konfiguration für die Anzeige / Konvertierung zulässt. Bitte ändern Sie die Einstellung max_input_vars in php.ini auf einen Wert über%s"
 
-#: lib/installer.php:2573
+#: lib/installer.php:2572
 #, fuzzy
 msgid "Conversion of tables may take some time especially on larger tables.  The conversion of these tables will occur in the background but will not prevent the installer from completing.  This may slow down some servers if there are not enough resources for MySQL to handle the conversion."
 msgstr "Die Konvertierung von Tabellen kann insbesondere bei größeren Tabellen einige Zeit in Anspruch nehmen.  Die Konvertierung dieser Tabellen erfolgt im Hintergrund, hindert den Installer jedoch nicht daran, die Installation abzuschließen.  Dies kann einige Server verlangsamen, wenn nicht genügend Ressourcen für MySQL zur Verfügung stehen, um die Konvertierung durchzuführen."
 
-#: lib/installer.php:2577
+#: lib/installer.php:2576
 msgid "Tables"
 msgstr "Tabellen"
 
-#: lib/installer.php:2578 support.php:811 utilities.php:870
+#: lib/installer.php:2577 support.php:811 utilities.php:870
 msgid "Collation"
 msgstr "Sortierfolge"
 
-#: lib/installer.php:2578 support.php:806 utilities.php:865
+#: lib/installer.php:2577 support.php:806 utilities.php:865
 msgid "Engine"
 msgstr "Speicher Engine"
 
-#: lib/installer.php:2578 support.php:812 utilities.php:871
+#: lib/installer.php:2577 support.php:812 utilities.php:871
 msgid "Row Format"
 msgstr "Zeilenformat"
 
-#: lib/installer.php:2610
+#: lib/installer.php:2609
 #, fuzzy
 msgid "One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: "
 msgstr "Eine oder mehrere Tabellen sind zu groß, um während der Installation konvertiert zu werden.  Sie sollten das Skript cli/convert_tables.php verwenden, um die Konvertierung durchzuführen, und dann diese Seite aktualisieren. Zum Beispiel:"
 
-#: lib/installer.php:2614
+#: lib/installer.php:2613
 #, fuzzy
 msgid "The following tables should be converted to UTF8 and InnoDB with a Dynamic row format.  Please select the tables that you wish to convert during the installation process."
 msgstr "Die folgenden Tabellen sollten in UTF8 und InnoDB umgewandelt werden.  Bitte wählen Sie die Tabellen aus, die Sie während der Installation konvertieren möchten."
 
-#: lib/installer.php:2620
+#: lib/installer.php:2619
 #, fuzzy
 msgid "All your tables appear to be UTF8 and Dynamic row format compliant"
 msgstr "Alle Ihre Tabellen scheinen UTF8-konform zu sein."
 
-#: lib/installer.php:2630
+#: lib/installer.php:2629
 #, fuzzy
 msgid "Confirm Upgrade"
 msgstr "Upgrade bestätigen"
 
-#: lib/installer.php:2634
+#: lib/installer.php:2633
 msgid "Confirm Downgrade"
 msgstr "Downgrade bestätigen"
 
-#: lib/installer.php:2638
+#: lib/installer.php:2637
 #, fuzzy
 msgid "Confirm Installation"
 msgstr "Installation bestätigen"
 
-#: lib/installer.php:2639 plugins.php:30
+#: lib/installer.php:2638 plugins.php:30
 msgid "Install"
 msgstr "Installieren"
 
-#: lib/installer.php:2644
+#: lib/installer.php:2643
 #, fuzzy
 msgid "DOWNGRADE DETECTED"
 msgstr "HERABSTUFUNG ERKANNT"
 
-#: lib/installer.php:2645
+#: lib/installer.php:2644
 #, fuzzy
 msgid "YOU MUST MANUALLY CHANGE THE CACTI DATABASE TO REVERT ANY UPGRADE CHANGES THAT HAVE BEEN MADE.<br/>THE INSTALLER HAS NO METHOD TO DO THIS AUTOMATICALLY FOR YOU"
 msgstr "Sie müssen die KACTI-Datenbank MANAUELL ändern, um alle Aktualisierungen, die vorgenommen wurden, rückgängig zu machen.<br/>Der Installateur hat KEINE METHODE, dies automatisch für Sie zu tun."
 
-#: lib/installer.php:2646
+#: lib/installer.php:2645
 #, fuzzy
 msgid "Downgrading should only be performed when absolutely necessary and doing so may break your installation"
 msgstr "Eine Herabstufung sollte nur dann durchgeführt werden, wenn es unbedingt erforderlich ist, und dies kann Ihre Installation beeinträchtigen."
 
-#: lib/installer.php:2649
+#: lib/installer.php:2648
 #, fuzzy
 msgid "Your Cacti Server is almost ready.  Please check that you are happy to proceed."
 msgstr "Dein Kakteen-Server ist fast fertig.  Bitte überprüfen Sie, ob Sie zufrieden sind."
 
-#: lib/installer.php:2652
+#: lib/installer.php:2651
 #, fuzzy, php-format
 msgid "Press '%s' then click '%s' to complete the installation process after selecting your Device Templates."
 msgstr "Drücken Sie'%s' und klicken Sie dann auf'%s', um den Installationsprozess abzuschließen, nachdem Sie Ihre Gerätevorlagen ausgewählt haben."
 
-#: lib/installer.php:2668
+#: lib/installer.php:2667
 #, fuzzy, php-format
 msgid "Installing Cacti Server v%s"
 msgstr "Installation von Cacti Server v%s"
 
-#: lib/installer.php:2669
+#: lib/installer.php:2668
 #, fuzzy
 msgid "Your Cacti Server is now installing"
 msgstr "Ihr Cacti Server installiert sich gerade."
 
-#: lib/installer.php:2756
+#: lib/installer.php:2755
 #, fuzzy, php-format
 msgid "Spawning background process: %s %s"
 msgstr "Hintergrundprozess beim Laichen:%s%s"
 
-#: lib/installer.php:2782
+#: lib/installer.php:2781
 msgid "Complete"
 msgstr "Abgeschlossen"
 
-#: lib/installer.php:2783
+#: lib/installer.php:2782
 #, fuzzy, php-format
 msgid "Your Cacti Server v%s has been installed/updated.  You may now start using the software."
 msgstr "Ihr Cacti Server v%s wurde installiert bzw. aktualisiert.  Sie können nun mit der Nutzung der Software beginnen."
 
-#: lib/installer.php:2787
+#: lib/installer.php:2786
 #, fuzzy, php-format
 msgid "Your Cacti Server v%s has been installed/updated with errors"
 msgstr "Ihr Cacti Server v%s wurde mit Fehlern installiert bzw. aktualisiert."
@@ -18155,188 +18177,188 @@ msgstr "Das Hinzufügen von Berichtsgrafiken ist fehlgeschlagen '<i>%s</i>' ist 
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
 msgstr "Übersprungenes Berichtsgrafikelement '<i>%s</i>' Bereits vorhanden"
 
-#: lib/rrd.php:2854
+#: lib/rrd.php:2858
 #, fuzzy, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
 msgstr "Die erforderliche RRD-Schrittweite ist'%s'."
 
-#: lib/rrd.php:2914
+#: lib/rrd.php:2918
 #, fuzzy, php-format
 msgid "Type for Data Source '%s' should be '%s'"
 msgstr "Typ für Datenquelle '%s' sollte '%s' sein."
 
-#: lib/rrd.php:2920
+#: lib/rrd.php:2924
 #, fuzzy, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
 msgstr "Heartbeat für Datenquelle '%s' sollte '%s' sein."
 
-#: lib/rrd.php:2932
+#: lib/rrd.php:2936
 #, fuzzy, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "RRD-Minimum für die Datenquelle '%s' sollte '%s' sein."
 
-#: lib/rrd.php:2941
+#: lib/rrd.php:2945
 #, fuzzy, php-format
 msgid "DS '%s' missing in Cacti definition"
 msgstr "DS'%s' fehlt in der Kakteendefinition."
 
-#: lib/rrd.php:2955 lib/rrd.php:2956
+#: lib/rrd.php:2959 lib/rrd.php:2960
 #, fuzzy, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "Kakteen RRA'%s' hat die gleichen CF/Schritte (%s, %s) wie'%s'."
 
-#: lib/rrd.php:2969 lib/rrd.php:2970
+#: lib/rrd.php:2973 lib/rrd.php:2974
 #, fuzzy, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "Die Datei RRA '%s' hat die gleichen CF/Schritte (%s, %s) wie '%s'."
 
-#: lib/rrd.php:3002
+#: lib/rrd.php:3006
 #, php-format
 msgid "The pdp_per_row of '%s' is invalid for RRA '%s' should be '%s'.  Consider deleting and allowing Cacti to re-create RRDfile."
 msgstr ""
 
-#: lib/rrd.php:3006
+#: lib/rrd.php:3010
 #, fuzzy, php-format
 msgid "The XFF for Cacti RRA id is '%s' but should be '%s'"
 msgstr "XFF für Kakteen RRA id '%s' sollte '%s' sein."
 
-#: lib/rrd.php:3010
+#: lib/rrd.php:3014
 #, fuzzy, php-format
 msgid "The number of rows for Cacti RRA id '%s' is incorrect.  The number of rows are '%s' but should be '%s'"
 msgstr "Anzahl der Zeilen für Cacti RRA id '%s' sollte '%s' sein."
 
-#: lib/rrd.php:3028
+#: lib/rrd.php:3032
 #, fuzzy, php-format
 msgid "The RRA '%s' missing in the existing Cacti RRDfile"
 msgstr "RRA'%s' fehlt in RRDatei"
 
-#: lib/rrd.php:3035
+#: lib/rrd.php:3039
 #, fuzzy, php-format
 msgid "RRA '%s' missing in Cacti definition"
 msgstr "RRA'%s' fehlt in der Kakteendefinition."
 
-#: lib/rrd.php:3056
+#: lib/rrd.php:3060
 msgid "RRD File Information"
 msgstr "RRD Datei Information"
 
-#: lib/rrd.php:3088
+#: lib/rrd.php:3092
 msgid "Data Source Items"
 msgstr "Element der Datenquellen"
 
-#: lib/rrd.php:3090
+#: lib/rrd.php:3094
 msgid "Minimal Heartbeat"
 msgstr "Kleinster Wert für 'Heartbeat'"
 
-#: lib/rrd.php:3091
+#: lib/rrd.php:3095
 msgid "Min"
 msgstr "Minimum"
 
-#: lib/rrd.php:3092
+#: lib/rrd.php:3096
 msgid "Max"
 msgstr "Maximum"
 
-#: lib/rrd.php:3093
+#: lib/rrd.php:3097
 msgid "Last DS"
 msgstr "Letzte Datenquelle"
 
-#: lib/rrd.php:3095
+#: lib/rrd.php:3099
 #, fuzzy
 msgid "Unknown Sec"
 msgstr "Unbekannter Sec"
 
-#: lib/rrd.php:3146
+#: lib/rrd.php:3150
 msgid "Round Robin Archive"
 msgstr "Round Robin Archive"
 
-#: lib/rrd.php:3149
+#: lib/rrd.php:3153
 msgid "Cur Row"
 msgstr "Akt. Zeile"
 
-#: lib/rrd.php:3150
+#: lib/rrd.php:3154
 #, fuzzy
 msgid "PDP per Row"
 msgstr "PDP pro Zeile"
 
-#: lib/rrd.php:3152
+#: lib/rrd.php:3156
 msgid "CDP Prep Value (0)"
 msgstr "Wert des CDEF Elementes"
 
-#: lib/rrd.php:3153
+#: lib/rrd.php:3157
 #, fuzzy
 msgid "CDP Unknown Data points (0)"
 msgstr "CDP Unbekannt Datenpunkte (0)"
 
-#: lib/rrd.php:3211
+#: lib/rrd.php:3215
 #, fuzzy
 #| msgid "No %s Found"
 msgid "Errors Found"
 msgstr "Keine %s gefunden"
 
-#: lib/rrd.php:3223
+#: lib/rrd.php:3227
 #, fuzzy
 msgid "Optional Tuning Recommendations"
 msgstr "Daten-Schablone Auswahl"
 
-#: lib/rrd.php:3248 lib/rrd.php:3251
+#: lib/rrd.php:3252 lib/rrd.php:3255
 #, fuzzy, php-format
 msgid "rename %s to %s"
 msgstr "Umbenennen von %s in %s"
 
-#: lib/rrd.php:3317
+#: lib/rrd.php:3321
 #, fuzzy
 msgid "Error while parsing the XML of rrdtool dump"
 msgstr "Fehler beim Parsen des XML von rrdtool dump"
 
-#: lib/rrd.php:3349 lib/rrd.php:3407 lib/rrd.php:3466
+#: lib/rrd.php:3353 lib/rrd.php:3411 lib/rrd.php:3470
 #, php-format
 msgid "ERROR while writing XML file: %s"
 msgstr "FEHLER bei schreiben der XML Datei: %s"
 
-#: lib/rrd.php:3360 lib/rrd.php:3418 lib/rrd.php:3477
+#: lib/rrd.php:3364 lib/rrd.php:3422 lib/rrd.php:3481
 #, fuzzy, php-format
 msgid "ERROR: RRDfile %s not writeable"
 msgstr "FEHLER: RRDatei %s nicht beschreibbar"
 
-#: lib/rrd.php:3390 lib/rrd.php:3449
+#: lib/rrd.php:3394 lib/rrd.php:3453
 #, fuzzy
 msgid "Error while parsing the XML of RRDtool dump"
 msgstr "Fehler beim Parsen des XML des RRDtool-Dumps"
 
-#: lib/rrd.php:3697
+#: lib/rrd.php:3701
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
 msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) aus der RRD-Datei entfernt.\n"
 
-#: lib/rrd.php:3734
+#: lib/rrd.php:3738
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
 msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) Hinzufügen zur RRD-Datei\n"
 
-#: lib/rrd.php:3764 lib/rrd.php:3778
+#: lib/rrd.php:3768 lib/rrd.php:3782
 #, fuzzy, php-format
 msgid "Website does not have write access to %s, may be unable to create/update RRDs"
 msgstr "Die Website hat keinen Schreibzugriff auf %s, kann möglicherweise keine RRDs erstellen/aktualisieren."
 
-#: lib/rrd.php:3774
+#: lib/rrd.php:3778
 #, fuzzy
 msgid "(Custom)"
 msgstr "Eigenes"
 
-#: lib/rrd.php:3780
+#: lib/rrd.php:3784
 #, fuzzy
 msgid "Failed to open data file, poller may not have run yet"
 msgstr "Datendatei konnte nicht geöffnet werden, der Poller ist möglicherweise noch nicht gestartet."
 
-#: lib/rrd.php:3783
+#: lib/rrd.php:3787
 #, fuzzy
 msgid "RRA Folder"
 msgstr "RRA-Ordner"
 
-#: lib/rrd.php:3783
+#: lib/rrd.php:3787
 msgid "Root"
 msgstr "Stammverzeichnis"
 
-#: lib/rrd.php:3892
+#: lib/rrd.php:3896
 #, fuzzy
 msgid "Unknown RRDtool Error"
 msgstr "Unbekannter RRDtool-Fehler"
@@ -18362,14 +18384,14 @@ msgid "ERROR: Whitelist Validation Failed. Check Data Input Method"
 msgstr "FEHLER: Whitelist-Validierung fehlgeschlagen. Dateneingabemethode prüfen"
 
 #: lib/template.php:2159
-#, fuzzy
-msgid "Graph Not created for "
+#, fuzzy, php-format
+msgid "Graph Not created for %s due to bad data"
 msgstr "Letzes Update"
 
 #: lib/template.php:2188
-#, fuzzy
-msgid "NOTE: Graph not added for Data Query "
-msgstr "HINWEIS: Datenabfrage Id aktualisieren"
+#, php-format
+msgid "NOTE: Graph not added for Data Query %s and index %s due to Data Source verification failure"
+msgstr ""
 
 #: lib/utility.php:954
 #, fuzzy
@@ -18801,7 +18823,7 @@ msgstr "Bitte schließen Sie Ihren Browser oder %sLogin Again%s."
 msgid "Notifications"
 msgstr "Benachrichtigungen"
 
-#: managers.php:140 utilities.php:2343
+#: managers.php:140 utilities.php:2347
 #, fuzzy
 msgid "SNMP Notification Receivers"
 msgstr "SNMP-Benachrichtigungsempfänger"
@@ -18829,12 +18851,12 @@ msgstr "SNMP-Benachrichtigungsempfänger[Bearbeiten: %s]"
 msgid "SNMP Notification Receiver [new]"
 msgstr "SNMP-Benachrichtigungsempfänger[neu]"
 
-#: managers.php:478 managers.php:564 utilities.php:2961 utilities.php:3037
+#: managers.php:478 managers.php:564 utilities.php:2970 utilities.php:3046
 #, fuzzy
 msgid "MIB"
 msgstr "MIB"
 
-#: managers.php:563 utilities.php:1870 utilities.php:3037
+#: managers.php:563 utilities.php:1870 utilities.php:3046
 msgid "OID"
 msgstr "OID"
 
@@ -18842,7 +18864,7 @@ msgstr "OID"
 msgid "Kind"
 msgstr "Kategorie"
 
-#: managers.php:566 utilities.php:3037
+#: managers.php:566 utilities.php:3046
 #, fuzzy
 msgid "Max-Access"
 msgstr "Max-Zugang"
@@ -18857,24 +18879,24 @@ msgstr "Unkontrolliert"
 msgid "No SNMP Notifications"
 msgstr "Keine SNMP-Benachrichtigungen"
 
-#: managers.php:731 utilities.php:3213
+#: managers.php:731 utilities.php:3222
 msgid "Severity"
 msgstr "Schwere"
 
-#: managers.php:747 utilities.php:3257
+#: managers.php:747 utilities.php:3266
 #, fuzzy
 msgid "Purge Notification Log"
 msgstr "Benachrichtigungsprotokoll bereinigen"
 
-#: managers.php:794 utilities.php:3313
+#: managers.php:794 utilities.php:3322
 msgid "Time"
 msgstr "Zeit"
 
-#: managers.php:795 utilities.php:3313
+#: managers.php:795 utilities.php:3322
 msgid "Notification"
 msgstr "Benachrichtigung"
 
-#: managers.php:796 utilities.php:3313
+#: managers.php:796 utilities.php:3322
 #, fuzzy
 msgid "Varbinds"
 msgstr "Varbinds"
@@ -18883,7 +18905,7 @@ msgstr "Varbinds"
 msgid "Severity Level"
 msgstr "Fehlergrenzstufe"
 
-#: managers.php:830 utilities.php:3335
+#: managers.php:830 utilities.php:3344
 #, fuzzy
 msgid "No SNMP Notification Log Entries"
 msgstr "Keine SNMP-Benachrichtigungsprotokolleinträge"
@@ -19321,17 +19343,17 @@ msgstr "FEHLER: Der Wirbelsäulenpfad: %s ist ungültig.  Poller kann nicht fort
 msgid "Maximum runtime of %d seconds exceeded for poller id %d. Exiting."
 msgstr "Maximale Laufzeit von %d Sekunden überschritten. Aufregend."
 
-#: poller.php:894
+#: poller.php:895
 #, fuzzy
 msgid "WARNING: Cacti Polling Cycle Exceeded Poller Interval by "
 msgstr "WARNUNG: Polling-Zyklus für Kakteen hat das Poller-Intervall um . überschritten"
 
-#: poller.php:1152
+#: poller.php:1153
 #, fuzzy
 msgid "Cacti System Notification"
 msgstr "Systemwerkzeuge"
 
-#: poller.php:1152
+#: poller.php:1153
 #, fuzzy
 msgid "NOTE: A second Cacti data collector has been added.  Therefore, enabling boost automatically!"
 msgstr "HINWEIS: Ein zweiter Cacti-Datenkollektor wurde hinzugefügt. Aktivieren Sie daher automatisch den Boost!"
@@ -19351,7 +19373,7 @@ msgstr "Kakteen Primary Admin"
 msgid "Cacti Automation Report requires an html based Email client"
 msgstr "Der Cacti Automation Report benötigt einen html-basierten E-Mail-Client."
 
-#: poller_boost.php:322
+#: poller_boost.php:342
 #, fuzzy
 msgid "WARNING: Detected Poller Boost Overrun, Possible Boost Poller Crash"
 msgstr "WARNUNG: Poller-Boost-Überlauf erkannt, möglicher Boost-Poller-Absturz"
@@ -19764,7 +19786,7 @@ msgstr "Laufprüfung"
 msgid "RRD check is disabled, please enable in Configuration -> Settings -> Data"
 msgstr ""
 
-#: rrdcheck.php:105 utilities.php:2318
+#: rrdcheck.php:105 utilities.php:2322
 #, fuzzy
 msgid "RRDfile Checker"
 msgstr "RRDfile Reiniger"
@@ -21832,19 +21854,19 @@ msgstr "Versuche"
 
 # Button?
 #: user_log.php:202 utilities.php:1077 utilities.php:1432 utilities.php:1764
-#: utilities.php:2051 utilities.php:2992 utilities.php:3255 vdef.php:732
+#: utilities.php:2051 utilities.php:3001 utilities.php:3264 vdef.php:732
 msgctxt "Button: use filter settings"
 msgid "Go"
 msgstr "Los"
 
 # Button?
 #: user_log.php:203 utilities.php:1078 utilities.php:1433 utilities.php:1765
-#: utilities.php:2052 utilities.php:2993 utilities.php:3256 vdef.php:733
+#: utilities.php:2052 utilities.php:3002 utilities.php:3265 vdef.php:733
 msgctxt "Button: reset filter settings"
 msgid "Clear"
 msgstr "Zurücksetzen"
 
-#: user_log.php:204 utilities.php:1079 utilities.php:1434 utilities.php:3257
+#: user_log.php:204 utilities.php:1079 utilities.php:1434 utilities.php:3266
 msgctxt "Button: delete all table entries"
 msgid "Purge"
 msgstr "Leeren"
@@ -22007,356 +22029,360 @@ msgstr "Neugenerieren des Poller Speichers"
 
 #: utilities.php:2287
 #, fuzzy
-msgid "The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems.  NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run 'php -q cli/rebuild_poller_cache.php --help' at the command line for more information."
+msgid "The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems."
 msgstr "Der Poller-Cache wird neu generiert, wenn Sie diese Option auswählen. Verwenden Sie diese Option nur im Falle eines Datenbankabsturzes, wenn Sie nach dem Absturz Probleme haben und die Datenbankreparaturwerkzeuge bereits ausgeführt haben.  Alternativ, wenn Sie Probleme mit einem bestimmten Gerät haben, speichern Sie dieses Gerät einfach erneut, um seinen Poller-Cache neu aufzubauen.  Es gibt auch eine Befehlszeilenschnittstelle, die diesem Befehl entspricht und für große Systeme empfohlen wird.  <i class=\"deviceDown\">HINWEIS: Auf großen Systemen kann die Ausführung dieses Befehls mehrere Minuten bis Stunden dauern und sollte daher nicht über die Benutzeroberfläche von Cacti ausgeführt werden.  Du kannst einfach 'php -q cli/rebuild_poller_cache.php --help' in der Befehlszeile ausführen, um weitere Informationen zu erhalten.</i>"
 
 #: utilities.php:2289
+msgid "NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run 'php -q cli/rebuild_poller_cache.php --help' at the command line for more information."
+msgstr ""
+
+#: utilities.php:2293
 #, fuzzy
 msgid "Rebuild Resource Cache"
 msgstr "Ressourcen-Cache neu aufbauen"
 
-#: utilities.php:2292
+#: utilities.php:2296
 #, fuzzy
 msgid "When operating multiple Data Collectors in Cacti, Cacti will attempt to maintain state for key files on all Data Collectors.  This includes all core, non-install related website and plugin files.  When you force a Resource Cache rebuild, Cacti will clear the local Resource Cache, and then rebuild it at the next scheduled poller start.  This will trigger all Remote Data Collectors to recheck their website and plugin files for consistency."
 msgstr "Wenn Sie mehrere Datensammler in Cacti betreiben, wird Cacti versuchen, den Status für Schlüsseldateien auf allen Datensammlern aufrechtzuerhalten.  Dazu gehören alle Core-Dateien, die sich nicht auf die Installation von Websites und Plugins beziehen.  Wenn Sie einen Resource Cache Neuaufbau erzwingen, löscht Cacti den lokalen Resource Cache und baut ihn dann beim nächsten geplanten Poller-Start wieder auf.  Dies veranlasst alle Remote Data Collectors, ihre Website und Plugin-Dateien erneut auf Konsistenz zu überprüfen."
 
-#: utilities.php:2296
+#: utilities.php:2300
 #, fuzzy
 msgid "Boost Utilities"
 msgstr "Erhöhen Sie die Leistung von Versorgungsunternehmen"
 
-#: utilities.php:2297
+#: utilities.php:2301
 #, fuzzy
 msgid "View Boost Status"
 msgstr "Anzeigen des Boost-Status"
 
-#: utilities.php:2299
+#: utilities.php:2303
 #, fuzzy
 msgid "This menu pick allows you to view various boost settings and statistics associated with the current running Boost configuration."
 msgstr "Mit dieser Menüauswahl können Sie verschiedene Boost-Einstellungen und Statistiken anzeigen, die mit der aktuell laufenden Boost-Konfiguration verknüpft sind."
 
-#: utilities.php:2303
+#: utilities.php:2307
 #, fuzzy
 msgid "Data Source Statistics Utilities"
 msgstr "Datenquellen-Statistik"
 
-#: utilities.php:2304
+#: utilities.php:2308
 #, fuzzy
 msgid "Purge Data Source Statistics"
 msgstr "Datenquellen-Statistik"
 
-#: utilities.php:2307
+#: utilities.php:2311
 #, fuzzy
 msgid "This menu pick will purge all existing Data Source Statistics from the Database.  If Data Source Statistics is enabled, the Data Sources Statistics will start collection again on the next Data Collector pass."
 msgstr "Diese Menüauswahl löscht alle vorhandenen Datenquellenstatistiken aus der Datenbank. Wenn die Datenquellenstatistik aktiviert ist, beginnt die Datenquellenstatistik beim nächsten Datenkollektordurchlauf erneut mit der Erfassung."
 
-#: utilities.php:2312
+#: utilities.php:2316
 #, fuzzy
 msgid "RRD Utilities"
 msgstr "RRD Versorgungsunternehmen"
 
-#: utilities.php:2313
+#: utilities.php:2317
 #, fuzzy
 msgid "RRDfile Cleaner"
 msgstr "RRDfile Reiniger"
 
-#: utilities.php:2316
+#: utilities.php:2320
 #, fuzzy
 msgid "When you delete Data Sources from Cacti, the corresponding RRDfiles are not removed automatically.  Use this utility to facilitate the removal of these old files."
 msgstr "Wenn Sie Datenquellen aus Cacti löschen, werden die entsprechenden RRD-Dateien nicht automatisch entfernt.  Verwenden Sie dieses Tool, um das Entfernen dieser alten Dateien zu erleichtern."
 
-#: utilities.php:2321
+#: utilities.php:2325
 msgid "Use this utility to display problems with missing rrd files or missing values in rrdfiles. You need enable rrdcheck in Configuration->Settings->Data"
 msgstr ""
 
-#: utilities.php:2327
+#: utilities.php:2331
 #, fuzzy
 msgid "SNMP Agent Utilities"
 msgstr "SNMPAgent Dienstprogramme"
 
-#: utilities.php:2331
+#: utilities.php:2335
 #, fuzzy
 msgid "This shows all objects being handled by the SNMP Agent."
 msgstr "Hier werden alle Objekte angezeigt, die vom SNMPAgent verarbeitet werden."
 
-#: utilities.php:2333
+#: utilities.php:2337
 #, fuzzy
 msgid "Rebuild SNMP Agent Cache"
 msgstr "SNMPAgent Cache neu erstellen"
 
-#: utilities.php:2336
+#: utilities.php:2340
 #, fuzzy
 msgid "The SNMP cache will be cleared and re-generated if you select this option. Note that it takes another poller run to restore the SNMP cache completely."
 msgstr "Der SNMP-Cache wird geleert und neu generiert, wenn Sie diese Option wählen. Beachten Sie, dass ein weiterer Poller-Lauf erforderlich ist, um den SNMP-Cache vollständig wiederherzustellen."
 
-#: utilities.php:2341
+#: utilities.php:2345
 #, fuzzy
 msgid "This menu pick allows you to view the latest events SNMP Agent has handled in relation to the registered notification receivers."
 msgstr "Mit dieser Menüoption können Sie die neuesten Ereignisse anzeigen, die SNMPAgent in Bezug auf die registrierten Benachrichtigungsempfänger behandelt hat."
 
-#: utilities.php:2346
+#: utilities.php:2350
 msgid "Allows Administrators to maintain SNMP notification receivers."
 msgstr "Ermöglicht Administratoren, Empfänger von SNMP Mitteilungen zu verwalten."
 
-#: utilities.php:2353
+#: utilities.php:2357
 msgid "Cacti System Utilities"
 msgstr "Systemwerkzeuge"
 
-#: utilities.php:2448
+#: utilities.php:2457
 msgid "Refresh Interval"
 msgstr "Zeit zwischen Aktualisierungen"
 
-#: utilities.php:2537
+#: utilities.php:2546
 msgid "Overrun Warning"
 msgstr "Überlauf-Warnung"
 
-#: utilities.php:2539
+#: utilities.php:2548
 msgid "Timed Out"
 msgstr "Zeitlimit überschritten"
 
-#: utilities.php:2541
+#: utilities.php:2550
 msgid "Other"
 msgstr "Sonstige"
 
-#: utilities.php:2597
+#: utilities.php:2606
 msgid "Cannot open directory"
 msgstr "Verzeichnis kann nicht geöffnet werden"
 
-#: utilities.php:2601
+#: utilities.php:2610
 msgid "Directory Does NOT Exist!!"
 msgstr "Das Verzeichnis existiert nicht!!"
 
-#: utilities.php:2610
+#: utilities.php:2619
 msgid "Current Boost Status"
 msgstr "Aktueller Boost Status"
 
-#: utilities.php:2614
+#: utilities.php:2623
 msgid "Boost On-demand Updating:"
 msgstr "Boost Aktualisierung nach Bedarf:"
 
-#: utilities.php:2618
+#: utilities.php:2627
 #, fuzzy
 msgid "Running Processes:"
 msgstr "Laufende Prozesse"
 
-#: utilities.php:2623
+#: utilities.php:2632
 #, fuzzy
 msgid "Total Poller Items:"
 msgstr "Poller Speicherelemente"
 
-#: utilities.php:2629
+#: utilities.php:2638
 msgid "Total Data Sources:"
 msgstr "Gesamtzahl Datenquellen:"
 
-#: utilities.php:2633
+#: utilities.php:2642
 #, fuzzy
 msgid "Remaining Data Sources:"
 msgstr "Debuggen der Datenquelle"
 
-#: utilities.php:2633
+#: utilities.php:2642
 msgid "TBD"
 msgstr "TBD"
 
-#: utilities.php:2637
+#: utilities.php:2646
 #, fuzzy
 msgid "Queued Boost Records:"
 msgstr "Ausstehende Boost Datensätze:"
 
-#: utilities.php:2641
+#: utilities.php:2650
 #, fuzzy
 msgid "Approximate in Process:"
 msgstr "Ungefähr in Bearbeitung:"
 
-#: utilities.php:2644
+#: utilities.php:2653
 msgid "Total Boost Records:"
 msgstr "Gesamtzahl Boost Datensätze:"
 
-#: utilities.php:2649
+#: utilities.php:2658
 msgid "Boost Storage Statistics"
 msgstr "Boost Speicherstatistik"
 
-#: utilities.php:2653
+#: utilities.php:2662
 msgid "Database Engine:"
 msgstr "Datenbank-Engine:"
 
-#: utilities.php:2657
+#: utilities.php:2666
 msgid "Current Boost Table(s) Size:"
 msgstr "Aktuelle Boost-Tabellengröße:"
 
-#: utilities.php:2661
+#: utilities.php:2670
 msgid "Avg Bytes/Record:"
 msgstr "Durchschnittliche Bytes pro Datensatz:"
 
-#: utilities.php:2689
+#: utilities.php:2698
 #, php-format
 msgid "%d Bytes"
 msgstr "%d Byte"
 
-#: utilities.php:2689
+#: utilities.php:2698
 msgid "Max Record Length:"
 msgstr "Max. Datensatzlänge:"
 
-#: utilities.php:2701
+#: utilities.php:2710
 msgid "Max Allowed Boost Table Size:"
 msgstr "Maximal zulässige Boost Tabellengröße:"
 
-#: utilities.php:2705
+#: utilities.php:2714
 msgid "Estimated Maximum Records:"
 msgstr "Geschätzte maximale Anzahl Datensätze:"
 
-#: utilities.php:2709
+#: utilities.php:2718
 #, fuzzy
 #| msgid "Runtime Statistics"
 msgid "Previous Runtime Statistics"
 msgstr "Laufzeit-Statistiken"
 
-#: utilities.php:2712
+#: utilities.php:2721
 msgid "Last Start Time:"
 msgstr "Letzte Startzeit:"
 
-#: utilities.php:2715
+#: utilities.php:2724
 msgid "Last Run Duration:"
 msgstr "Dauer der letzten Ausführung:"
 
-#: utilities.php:2718
+#: utilities.php:2727
 #, php-format
 msgid "%d minutes"
 msgstr "%d Minuten"
 
-#: utilities.php:2718
+#: utilities.php:2727
 #, php-format
 msgid "%d seconds"
 msgstr "%d Sekunden"
 
-#: utilities.php:2721
+#: utilities.php:2730
 #, fuzzy, php-format
 msgid "%0.2f percent of update frequency)"
 msgstr "%0,2f Prozent der Aktualisierungsfrequenz)"
 
-#: utilities.php:2729
+#: utilities.php:2738
 msgid "RRD Updates:"
 msgstr "Anzahl aktualisierter RRDs:"
 
-#: utilities.php:2732
+#: utilities.php:2741
 msgid "MBytes"
 msgstr "MByte"
 
-#: utilities.php:2732
+#: utilities.php:2741
 msgid "Peak Poller Memory:"
 msgstr "Höchste gemessene Speicherbelegung:"
 
-#: utilities.php:2746
+#: utilities.php:2755
 msgid "Max Poller Memory Allowed:"
 msgstr "Maximal zulässige Speicherbelegung:"
 
-#: utilities.php:2749
+#: utilities.php:2758
 #, fuzzy
 msgid "Detailed Runtime Statistics"
 msgstr "Laufzeit-Statistiken"
 
-#: utilities.php:2766
+#: utilities.php:2775
 #, php-format
 msgid "Records: %s (ds rows), Time: %s (secs), GetRows: %s (secs), ResultsCycle: %s (secs), FileAndTemplate: %s (secs), LastUpdate: %s (secs), RRDUpdate: %s (secs), Delete: %s (secs)"
 msgstr ""
 
-#: utilities.php:2777
+#: utilities.php:2786
 #, fuzzy
 #| msgid "Detailed Runtime Timers:"
 msgid "Previous Runtime Timers:"
 msgstr "Detaillierte Laufzeitwerte:"
 
-#: utilities.php:2812 utilities.php:2814
+#: utilities.php:2821 utilities.php:2823
 #, fuzzy, php-format
 msgid "Process: %d"
 msgstr "1 Prozess"
 
-#: utilities.php:2812
+#: utilities.php:2821
 #, php-format
 msgid "Status: <span class=\"deviceUp\"><b>Running</b></span>, Remaining: %s (dses), CurrentRuntime: %s (secs), PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)"
 msgstr ""
 
-#: utilities.php:2814
+#: utilities.php:2823
 #, php-format
 msgid "Status: <span class=\"deviceRecovering\"><b>Idle</b></span>, PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)"
 msgstr ""
 
-#: utilities.php:2820
+#: utilities.php:2829
 msgid "Run Time Configuration"
 msgstr "Laufzeit-Konfiguration"
 
-#: utilities.php:2823
+#: utilities.php:2832
 msgid "Update Frequency:"
 msgstr "Aktualisierungsturnus:"
 
-#: utilities.php:2826
+#: utilities.php:2835
 #, fuzzy
 msgid "Concurrent Processes:"
 msgstr "Gleichzeitige Prozesse"
 
-#: utilities.php:2829
+#: utilities.php:2838
 msgid "Next Start Time:"
 msgstr "Nächste Startzeit:"
 
-#: utilities.php:2832
+#: utilities.php:2841
 msgid "Maximum Records:"
 msgstr "Maximal zulässige Anzahl Datensätze:"
 
-#: utilities.php:2832
+#: utilities.php:2841
 msgid "Records"
 msgstr "Datensätze"
 
-#: utilities.php:2835
+#: utilities.php:2844
 msgid "Maximum Allowed Runtime:"
 msgstr "Maximal zulässige Laufzeit:"
 
-#: utilities.php:2841
+#: utilities.php:2850
 msgid "Image Caching Status:"
 msgstr "Status:"
 
-#: utilities.php:2844
+#: utilities.php:2853
 msgid "Cache Directory:"
 msgstr "Cache Verzeichnis:"
 
-#: utilities.php:2847
+#: utilities.php:2856
 msgid "Cached Files:"
 msgstr "Gesamtzahl gepufferter Dateien:"
 
-#: utilities.php:2850
+#: utilities.php:2859
 msgid "Cached Files Size:"
 msgstr "Cache Größe:"
 
-#: utilities.php:2946
+#: utilities.php:2955
 #, fuzzy
 msgid "SNMP Agent Cache"
 msgstr "SNMPAgent Cache"
 
-#: utilities.php:2976
+#: utilities.php:2985
 #, fuzzy
 msgid "OIDs"
 msgstr "OIDs"
 
-#: utilities.php:3057
+#: utilities.php:3066
 msgid "Column Data"
 msgstr "Spaltendaten"
 
-#: utilities.php:3057
+#: utilities.php:3066
 msgid "Scalar"
 msgstr "Skalar"
 
-#: utilities.php:3198
+#: utilities.php:3207
 #, fuzzy
 msgid "SNMP Agent Notification Log"
 msgstr "SNMPAgent Benachrichtigungsprotokoll"
 
-#: utilities.php:3226 utilities.php:3313
+#: utilities.php:3235 utilities.php:3322
 msgid "Receiver"
 msgstr "Empfänger"
 
-#: utilities.php:3305
+#: utilities.php:3314
 msgid "Log Entries"
 msgstr "Aufzeichnungseinträge"
 
-#: utilities.php:3320
+#: utilities.php:3329
 #, fuzzy, php-format
 msgid "Severity Level: %s"
 msgstr "Schweregrad: %s"
@@ -22479,6 +22505,10 @@ msgstr "Die Anzahl der Grafikvorlagen, die diesen VDEF verwenden."
 #, fuzzy
 msgid "No VDEFs"
 msgstr "VDEFs"
+
+#, fuzzy
+#~ msgid "NOTE: Graph not added for Data Query "
+#~ msgstr "HINWEIS: Datenabfrage Id aktualisieren"
 
 #, fuzzy
 #~ msgid "FATAL: YOU DO NOT HAVE ACCESS TO THIS AREA OF CACTI"
