@@ -3476,7 +3476,6 @@ function cleanHeader(href) {
 function pushState(myTitle, myHref) {
 	if (myHref.indexOf('nostate') < 0) {
 		if (statePushed == false) {
-console.log('My Href:'+myHref);
 			if (typeof window.history.pushState != 'undefined') {
 				var myObject = { Page: myTitle, Url: cleanHeader(myHref) };
 				window.history.pushState(myObject, myObject.Page, myObject.Url);
