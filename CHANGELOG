@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.2.25
 -SECURITY#5318: Multiple minor stored XSS vulnerabilities in Cacti 1.2.24
 -issue#2959: Multi-threaded cli/rebuild_poller_cache.php, deprecated push_out_hosts.php
+-issue#4045: When searching tree or list views, the URL does not update after changes
 -issue#5254: Created a data source template to specify the snmp port, but it doesn't seem to work properly
 -issue#5255: Data query xml path with space problem
 -issue#5258: Warnings occur when installing thold plugin and as such thold will not upgrade correctly

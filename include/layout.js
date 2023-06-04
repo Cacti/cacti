@@ -3425,13 +3425,23 @@ function saveGraphFilter(section) {
 }
 
 function applyGraphFilter() {
-	var href = appendHeaderSuppression(graphPage+'?action='+pageAction+
-		'&rfilter=' + base64_encode($('#rfilter').val())+
-		(typeof $('#host_id').val() != 'undefined' ? '&host_id='+$('#host_id').val():'')+
-		'&columns='+$('#columns').val()+
-		'&graphs='+$('#graphs').val()+
-		'&graph_template_id='+$('#graph_template_id').val()+
-		'&thumbnails='+$('#thumbnails').is(':checked'));
+	statePushed = false;
+
+	var href = appendHeaderSuppression(graphPage+'?action='+pageAction +
+		'&rfilter=' + base64_encode($('#rfilter').val()) +
+		(typeof $('#host_id').val() != 'undefined' ? '&host_id=' + $('#host_id').val():'') +
+		'&columns=' + $('#columns').val() +
+		'&graphs='  + $('#graphs').val() +
+		'&graph_template_id=' + $('#graph_template_id').val() +
+		'&thumbnails=' + $('#thumbnails').is(':checked'));
+
+	/* replace myHref parameter for address bar update */
+	const urlParams = new URLSearchParams(myHref);
+	urlParams.set('rfilter', base64_encode($('#rfilter').val()));
+	if (typeof $('#host_id').val() != 'undefined') {
+		urlParams.set('host_id', $('#host_id').val());
+	}
+	myHref = urlParams.toString();
 
 	closeDateFilters();
 
