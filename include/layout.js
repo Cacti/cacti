@@ -3436,12 +3436,14 @@ function applyGraphFilter() {
 		'&thumbnails=' + $('#thumbnails').is(':checked'));
 
 	/* replace myHref parameter for address bar update */
-	const urlParams = new URLSearchParams(myHref);
+	var urlParts  = myHref.split('?');
+	var urlParams = new URLSearchParams(urlParts[1]);
+
 	urlParams.set('rfilter', base64_encode($('#rfilter').val()));
 	if (typeof $('#host_id').val() != 'undefined') {
 		urlParams.set('host_id', $('#host_id').val());
 	}
-	myHref = urlParams.toString();
+	myHref = urlParts[0]+ '?' + urlParams.toString();
 
 	closeDateFilters();
 
@@ -3474,6 +3476,7 @@ function cleanHeader(href) {
 function pushState(myTitle, myHref) {
 	if (myHref.indexOf('nostate') < 0) {
 		if (statePushed == false) {
+console.log('My Href:'+myHref);
 			if (typeof window.history.pushState != 'undefined') {
 				var myObject = { Page: myTitle, Url: cleanHeader(myHref) };
 				window.history.pushState(myObject, myObject.Page, myObject.Url);
