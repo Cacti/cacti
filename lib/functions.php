@@ -4280,7 +4280,7 @@ function debug_log_insert_section_start($type, $text, $allowcopy = false) {
  * @param $type - the 'category' or type of debug message
  */
 function debug_log_insert_section_end($type) {
-	debug_log_insert($type, "</div></td></tr></table></td></tr></td></table>");
+	debug_log_insert($type, '</div></td></tr></table></td></tr></td></table>');
 }
 
 /**
@@ -4324,7 +4324,8 @@ function debug_log_clear($type = '') {
 }
 
 /**
- * debug_log_return - returns the debug log for a particular category
+ * debug_log_return - returns the debug log for a particular category.
+ *   NOTE: Escaping is done in the insert functions.
  *
  * @param $type - the 'category' to return the debug log for.
  *
@@ -4337,8 +4338,8 @@ function debug_log_return($type) {
 		if (isset($_SESSION['debug_log'][$type])) {
 			$log_text .= "<table style='width:100%;'>";
 
-			for ($i=0; $i < cacti_count($_SESSION['debug_log'][$type]); $i++) {
-				$log_text .= '<tr><td>' . html_escape($_SESSION['debug_log'][$type][$i]) . '</td></tr>';
+			foreach($_SESSION['debug_log'][$type] as $key => $val) {
+				$log_text .= '<tr><td>' . $val . '</td></tr>';
 			}
 
 			$log_text .= '</table>';
@@ -4348,7 +4349,7 @@ function debug_log_return($type) {
 			$log_text .= "<table style='width:100%;'>";
 
 			foreach($_SESSION['debug_log'][$type] as $key => $val) {
-				$log_text .= '<tr><td>' . html_escape($val) . '</td></tr>';
+				$log_text .= '<tr><td>' . $val . '</td></tr>';
 
 				unset($_SESSION['debug_log'][$type][$key]);
 			}

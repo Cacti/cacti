@@ -249,7 +249,7 @@ function form_save() {
 		$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $suggested_values);
 
 		if ($return_array !== false) {
-			debug_log_insert('new_graphs', __('Created graph: %s', get_graph_title($return_array['local_graph_id'])));
+			debug_log_insert('new_graphs', __esc('Created graph: %s', get_graph_title($return_array['local_graph_id'])));
 
 			/* lastly push host-specific information to our data sources */
 			if (cacti_sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
@@ -257,7 +257,7 @@ function form_save() {
 					push_out_host($host_id, $item);
 				}
 			} else {
-				debug_log_insert('new_graphs', __('ERROR: No Data Source associated. Check Template'));
+				debug_log_insert('new_graphs', __esc('ERROR: No Data Source associated. Check Template'));
 			}
 		}
 

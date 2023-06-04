@@ -1261,6 +1261,7 @@ function device_javascript() {
 		});
 
 		$('[id^="verbose"]').click(function(data) {
+			$(this).addClass('fa-spin');
 			var strURL = 'host.php?action=query_verbose&id='+$(this).attr('data-id')+'&host_id='+$('#id').val()+'&nostate=true';
 			loadPageNoHeader(strURL, true);
 		});

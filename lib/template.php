@@ -2140,7 +2140,7 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 						push_out_host($host_id, $item);
 					}
 				} else {
-					debug_log_insert('new_graphs', __('ERROR: No Data Source associated. Check Template'));
+					debug_log_insert('new_graphs', __esc('ERROR: No Data Source associated. Check Template'));
 				}
 
 				db_execute_prepared('INSERT IGNORE INTO host_graph
@@ -2148,7 +2148,7 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 					VALUES(?, ?)',
 					array($host_id, $graph_template_id));
 			} else {
-				debug_log_insert('new_graphs', __('ERROR: Whitelist Validation Failed. Check Data Input Method'));
+				debug_log_insert('new_graphs', __esc('ERROR: Whitelist Validation Failed. Check Data Input Method'));
 			}
 		} else {
 			$name = db_fetch_cell_prepared('SELECT name
@@ -2156,7 +2156,7 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 				WHERE id = ?',
 				array($graph_template_id));
 
-			debug_log_insert('new_graphs', __('Graph Not created for ' . $name . ' due to bad data'));
+			debug_log_insert('new_graphs', __esc('Graph Not created for %s due to bad data', $name));
 		}
 	} elseif ($form_type == 'sg') {
 		foreach ($snmp_index_array as $snmp_index => $true) {
@@ -2174,10 +2174,10 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 							push_out_host($host_id, $item);
 						}
 					} else {
-						debug_log_insert('new_graphs', __('ERROR: No Data Source associated. Check Template'));
+						debug_log_insert('new_graphs', __esc('ERROR: No Data Source associated. Check Template'));
 					}
 				} else {
-					debug_log_insert('new_graphs', __('ERROR: Whitelist Validation Failed. Check Data Input Method'));
+					debug_log_insert('new_graphs', __esc('ERROR: Whitelist Validation Failed. Check Data Input Method'));
 				}
 			} else {
 				$name = db_fetch_cell_prepared('SELECT name
@@ -2185,7 +2185,7 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 					WHERE id = ?',
 					array($snmp_query_array['snmp_query_id']));
 
-				debug_log_insert('new_graphs', __('NOTE: Graph not added for Data Query ' . $name . ' and index ' .  $snmp_query_array['snmp_index'] . ' due to Data Source verification failure.'));
+				debug_log_insert('new_graphs', __esc('NOTE: Graph not added for Data Query %s and index %s due to Data Source verification failure', $name, $snmp_query_array['snmp_index']));
 			}
 		}
 	}

@@ -22,6 +22,7 @@ Cacti CHANGELOG
 -issue#5317: Data Source Info Mode produces invalid recommendations
 -issue#5319: Data Source Debug 'Run All' generates too many log messages
 -issue#5323: Cosmetic error in the system utilities - rebuild poller cache - description
+-issue#5324: Reindex device from GUI - debug info broken due to over escaping
 -issue#5329: Upon displaying a form with errors, the session error fields variable isn't cleared
 -issue#5333: MariaDB stopped supporting GET_LOCK in cluster
 -issue#5336: RRDtool update failures when Data Template data sources don't match Graph Template data sources in use
