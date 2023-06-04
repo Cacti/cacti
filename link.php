@@ -77,12 +77,12 @@ if (!cacti_sizeof($page)) {
 		} else {
 			print '<div id="content">';
 
-			$file = CACTI_PATH_INCLUDE . '/content/' . $page['contentfile'];
+			$file = CACTI_PATH_INCLUDE . '/content/' . str_replace('../', '', $page['contentfile']);
 
 			if (file_exists($file)) {
 				include_once($file);
 			} else {
-				print '<h1>The file \'' . $page['contentfile'] . '\' does not exist!!</h1>';
+				print '<h1>The file \'' . html_escape($page['contentfile']) . '\' does not exist!!</h1>';
 			}
 
 			print '</div>';
