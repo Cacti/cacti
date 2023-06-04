@@ -1065,13 +1065,16 @@ function boost_get_rrd_filename_and_template($local_data_id) {
 	$ds_null      = array();
 	$ds_nnull     = array();
 
-	$ds_names = db_fetch_assoc_prepared("SELECT data_source_name, rrd_name, rrd_path
+	$ds_names = db_fetch_assoc_prepared("SELECT DISTINCT data_source_name, rrd_name, rrd_path
 		FROM data_template_rrd AS dtr
+		INNER JOIN graph_templates_item AS gti
+		ON gti.task_item_id = dtr.id
 		INNER JOIN poller_item AS pi
-		ON (pi.local_data_id = dtr.local_data_id
-		AND (pi.rrd_name = dtr.data_source_name OR pi.rrd_name = ''))
+		ON pi.local_data_id = dtr.local_data_id
+		AND (pi.rrd_name = dtr.data_source_name OR pi.rrd_name = '')
 		WHERE dtr.local_data_id = ?
-		ORDER BY data_source_name ASC", array($local_data_id));
+		ORDER BY data_source_name ASC",
+		array($local_data_id));
 
 	if (cacti_sizeof($ds_names)) {
 		foreach($ds_names as $ds_name) {
