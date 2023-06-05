@@ -4871,6 +4871,33 @@ function sanitize_unserialize_selected_items(?string $items): array {
 	return $return_items;
 }
 
+
+/**
+ * verifies all selected graphs only contain numeric and string values
+ *
+ * @param string $items   - an array of serialized items from a post
+ *
+ * @return array      - the sanitized selected graphs array
+ */
+function sanitize_unserialize_selected_graphs(?string $items): array {
+	$return_items = false;
+
+	if (!empty($items) && is_string($items)) {
+		$unstripped = stripslashes($items);
+
+		// validate that sanitized string is correctly formatted
+		if (preg_match('/^a:[0-9]+:{/', $unstripped) && !preg_match('/(^|;|{|})O:\+?[0-9]+:"/', $unstripped)) {
+			$items = unserialize($unstripped);
+
+			if (is_array($items)) {
+				$return_items = $items;
+			}
+		}
+	}
+
+	return $return_items;
+}
+
 function cacti_escapeshellcmd($string) {
 	global $config;
 
