@@ -522,7 +522,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 	}
 
 	if (is_realm_allowed(1043)) {
-		print "<span class='iconLink spikekill' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_sk'><img id='sk" . $local_graph_id . "' class='drillDown' src='" . CACTI_PATH_URL . "images/spikekill.gif' title='" . __esc('Kill Spikes in Graphs') . "'></span>";
+		print "<span class='iconLink spikekill' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_sk'><img id='sk" . $local_graph_id . "' class='drillDown' src='" . get_theme_paths('%s', 'images/spikekill.gif') . "' title='" . __esc('Kill Spikes in Graphs') . "'></span>";
 		print '<br/>';
 	}
 
@@ -1614,7 +1614,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	?>
 	<div class='actionsDropdown'>
 		<div>
-			<span class='actionsDropdownArrow'><img src='<?php print CACTI_PATH_URL; ?>images/arrow.gif' alt=''></span>
+			<span class='actionsDropdownArrow'><img src='<?php print get_theme_paths('%s', 'images/arrow.gif') ?>' alt=''></span>
 			<?php form_dropdown('drp_action', $actions_array, '', '', '0', '', '');?>
 			<span class='actionsDropdownButton'><input type='submit' class='ui-button ui-corner-all ui-widget' id='submit' value='<?php print __esc('Go');?>' title='<?php print __esc('Execute Action');?>'></span>
 		</div>
@@ -1755,7 +1755,9 @@ function html_show_tabs_left() {
 
 	if (get_selected_theme() == 'classic') {
 		if ($show_console_tab == true) {
-			?><a id='tab-console' <?php print(is_console_page(get_current_page()) ? " class='selected'":'');?> href='<?php print CACTI_PATH_URL; ?>index.php'><img src='<?php print CACTI_PATH_URL; ?>images/tab_console<?php print(is_console_page(get_current_page()) ? '_down':'');?>.gif' alt='<?php print __('Console');?>'></a><?php
+			$console_selected = (is_console_page(get_current_page()) ? " class='selected'":'');
+			$console_image    = (is_console_page(get_current_page()) ? 'images/tab_console.gif':'images/tab_console_down.gif');
+			?><a id='tab-console' <?=$console_selected?> href='<?php print CACTI_PATH_URL; ?>index.php'><img src='<?=get_theme_paths('%s', $console_image)?>' alt='<?php print __('Console');?>'></a><?php
 		}
 
 		if ($realm_allowed[7]) {
@@ -1765,7 +1767,7 @@ function html_show_tabs_left() {
 				$file = get_current_page();
 
 				if ($file == 'graph_view.php' || $file == 'graph.php') {
-					print "<a id='tab-graphs' class='selected' href='" . html_escape(CACTI_PATH_URL . 'graph_view.php') . "'><img src='" . CACTI_PATH_URL . "images/tab_graphs_down.gif' alt='" . __('Graphs') . "'></a>";
+					print "<a id='tab-graphs' class='selected' href='" . html_escape(CACTI_PATH_URL . 'graph_view.php') . "'><img src='" . get_theme_paths('%s', 'images/tab_graphs_down.gif') . " alt='" . __('Graphs') . "'></a>";
 				} else {
 					print "<a id='tab-graphs' href='" . html_escape(CACTI_PATH_URL . 'graph_view.php') . "'><img src='" . CACTI_PATH_URL . "images/tab_graphs.gif' alt='" . __('Graphs') . "'></a>";
 				}
@@ -2041,7 +2043,7 @@ function html_graph_tabs_right() {
 		if (is_view_allowed('show_tree')) {
 			$tabs_right[] = array(
 				'title' => __('Tree View'),
-				'image' => file_exists('include/themes/' . $theme . '/images/tab_tree.gif') ? 'include/themes/' . $theme . '/images/tab_tree.gif':'images/tab_tree.gif',
+				'image' => get_theme_paths('%s', 'images/tab_tree.gif'),
 				'id'    => 'tree',
 				'url'   => 'graph_view.php?action=tree',
 			);
@@ -2050,7 +2052,7 @@ function html_graph_tabs_right() {
 		if (is_view_allowed('show_list')) {
 			$tabs_right[] = array(
 				'title' => __('List View'),
-				'image' => file_exists('include/themes/' . $theme . '/images/tab_list.gif') ? 'include/themes/' . $theme . '/images/tab_list.gif':'images/tab_list.gif',
+				'image' => get_theme_paths('%s', 'images/tab_list.gif'),
 				'id'    => 'list',
 				'url'   => 'graph_view.php?action=list',
 			);
@@ -2059,7 +2061,7 @@ function html_graph_tabs_right() {
 		if (is_view_allowed('show_preview')) {
 			$tabs_right[] = array(
 				'title' => __('Preview'),
-				'image' => file_exists('include/themes/' . $theme . '/images/tab_preview.gif') ? 'include/themes/' . $theme . '/images/tab_preview.gif':'images/tab_preview.gif',
+				'image' => get_theme_paths('%s', 'images/tab_preview.gif'),
 				'id'    => 'preview',
 				'url'   => 'graph_view.php?action=preview',
 			);
