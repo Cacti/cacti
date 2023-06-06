@@ -1024,6 +1024,24 @@ function get_colored_device_status($disabled, $status) {
 	}
 }
 
+/**
+ * Given a device's status, return the colored text in HTML format suitable for display
+ *
+ * @param bool   $disabled    When true, the device is disabled, false is it is not
+ * @param string $site_name   The name of the site to display
+ *
+ * @return string  Returns a string containing html that represents the site's current
+ *                 status and name
+ */
+function get_colored_site_status(bool $disabled, ?string $site_name) {
+	$class = '';
+	if ($disabled) {
+		$class = 'deviceDown';
+	}
+
+	return "<span class='$class'>" . __esc($site_name) . '</span>';
+}
+
 /* get_current_graph_start - determine the correct graph start time selected using
 	 the timespan selector
    @returns - the number of seconds relative to now where the graph should begin */

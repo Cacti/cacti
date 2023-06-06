@@ -1471,7 +1471,9 @@ function get_device_records(&$total_rows, $rows) {
 			IF(UNIX_TIMESTAMP(status_rec_date) < 943916400 AND status IN (0, 3), total_polls*$poller_interval,
 			IF(UNIX_TIMESTAMP(status_rec_date) > 943916400, UNIX_TIMESTAMP() - UNIX_TIMESTAMP(status_rec_date),
 			IF(snmp_sysUptimeInstance>0 AND snmp_version > 0, snmp_sysUptimeInstance/100, UNIX_TIMESTAMP()
-		))))) AS unsigned) AS instate
+		))))) AS unsigned) AS instate,
+		s.name as site_name,
+		s.disabled as site_disabled
 		FROM host
 		LEFT JOIN sites AS s
 		ON host.site_id = s.id
@@ -1806,6 +1808,12 @@ function host() {
 			'sort'    => 'ASC',
 			'tip'     => __('The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname "localhost", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an "Unknown" state.')
 		),
+		'site' => array(
+			'display' => __('Site'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The site associated to this Device'),
+		),
 		'availability_method' => array(
 			'display' => __('Service Check'),
 			'align'   => 'right',
@@ -1885,6 +1893,7 @@ function host() {
 				$uptime    = __('N/A');
 			}
 
+			$sites_url       = CACTI_PATH_URL . 'sites.php?action=edit&id=' . $host['site_id'];
 			$graphs_url      = CACTI_PATH_URL . 'graphs.php?reset=1&host_id=' . $host['id'];
 			$data_source_url = CACTI_PATH_URL . 'data_sources.php?reset=1&host_id=' . $host['id'];
 
@@ -1904,6 +1913,7 @@ function host() {
 			form_selectable_cell('<a class="linkEditMain" href="' . $graphs_url . '">' . number_format_i18n($host['graphs'], '-1') . '</a>', $host['id'], '', 'right');
 			form_selectable_cell('<a class="linkEditMain" href="' . $data_source_url . '">' . number_format_i18n($host['data_sources'], '-1') . '</a>', $host['id'], '', 'right');
 			form_selectable_cell(get_colored_device_status(($host['disabled'] == 'on' ? true : false), $host['status']), $host['id'], '', 'center');
+			form_selectable_cell('<a class="linkEditMain" href="' . $sites_url . '">' . get_colored_site_status(($host['site_disabled'] == 'on' ? true : false), $host['site_name']) .'</a>', $host['id'], '', '');
 			form_selectable_cell($availability_options[$host['availability_method']], $host['id'], '', 'right');
 			form_selectable_cell(get_timeinstate($host), $host['id'], '', 'right');
 			form_selectable_cell($uptime, $host['id'], '', 'right');
