@@ -581,8 +581,10 @@ function set_language_constants(array $constants) {
 	}
 }
 
-function __gettext($text, $domain = 'cacti') {
+function __gettext(?string $text, string $domain = 'cacti') {
 	global $i18n;
+
+	$text = $text ?? '';
 
 	// Assume translation fails or is not defined
 	if (isset($i18n[$domain])) {
@@ -608,8 +610,11 @@ function __gettext($text, $domain = 'cacti') {
 	return __uf($translated);
 }
 
-function __n($singular, $plural, $number, $domain = 'cacti') {
+function __n(?string $singular, ?string $plural, $number, string $domain = 'cacti') {
 	global $i18n;
+
+	$singular = $singular ?? '';
+	$plural   = $plural   ?? '';
 
 	if (isset($i18n[$domain])) {
 		return __uf($i18n[$domain]->ngettext($singular, $plural, $number));
@@ -618,8 +623,8 @@ function __n($singular, $plural, $number, $domain = 'cacti') {
 	}
 }
 
-function __uf($text) {
-	return str_replace('%%', '%', $text);
+function __uf(?string $text) {
+	return str_replace('%%', '%', $text ?? '');
 }
 
 function __() {
