@@ -7289,13 +7289,20 @@ function cacti_time_zone_set($gmt_offset) {
 	}
 }
 
-function debounce_run_notification($id, $freqnency = 1200) {
+function debounce_run_notification($id, $frequency = 7200) {
+	$full = 'debounce_' . $id;
+	$key   = substr($full, 0, 50);
+
+	if ($full !== $key) {
+		cacti_debug_backtrace("ERROR: debounce key was truncated from $full to $key");
+	}
+
 	/* debounce admin emails */
-	$last = read_config_option('debounce_' . $id);
+	$last = read_config_option($key);
 	$now  = time();
 
-	if (empty($last) || $now - $last > 7200) {
-		set_config_option('debounce_' . $id, $now);
+	if (empty($last) || $now - $last > $frequency) {
+		set_config_option($key, $now);
 		return true;
 	}
 
