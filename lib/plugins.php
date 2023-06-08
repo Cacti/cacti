@@ -74,21 +74,22 @@ function api_plugin_hook($name) {
 
 	if (!empty($result)) {
 		foreach ($result as $hdata) {
-			if (!in_array($hdata['name'], $plugins_integrated, true)) {
-				$message = '';
+			$plugin_name = $hdata['name'];
 
-				if (api_plugin_can_install($hdata['name'], $message)) {
-					if (file_exists(CACTI_PATH_PLUGINS . '/' . $hdata['name'] . '/' . $hdata['file'])) {
-						include_once(CACTI_PATH_PLUGINS . '/' . $hdata['name'] . '/' . $hdata['file']);
-					}
+			if (!in_array($plugin_name, $plugins_integrated, true)) {
+				$plugin_func = $hdata['function'];
+				$plugin_file = $hdata['file'];
+				$full_path   = CACTI_PATH_PLUGINS . '/' . $plugin_name . '/' . $plugin_file;
+				$debounce    = 'mpf_' . $plugin_name . '_' . $plugin_func;
 
-					$function = $hdata['function'];
+				if (file_exists($full_path)) {
+					include_once($full_path);
+				}
 
-					if (function_exists($function)) {
-						api_plugin_run_plugin_hook($name, $hdata['name'], $function, $args);
-					} else {
-						cacti_log(sprintf('WARNING: Function does not exist %s with function %s' . PHP_EOL, $name, $hdata['function']), false, 'PLUGIN', POLLER_VERBOSITY_MEDIUM);
-					}
+				if (function_exists($plugin_func)) {
+					api_plugin_run_plugin_hook($name, $plugin_name, $plugin_func, $args);
+				} else if (debounce_run_notification($debounce)) {
+					cacti_log(sprintf('WARNING: Function "%s" does not exist in %s/%s for hook "%s"' . PHP_EOL, $plugin_func, $plugin_name, $plugin_file, $name), false, 'PLUGIN', POLLER_VERBOSITY_MEDIUM);
 				}
 			}
 		}
