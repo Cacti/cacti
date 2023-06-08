@@ -104,7 +104,7 @@
 	display: none;
 	position: absolute;
 	z-index:auto;
-	color: var(--text-color-lighter);;
+	color: var(--text-color-lighter);
 }
 
 .zoom-marker-tooltip-value{
@@ -136,7 +136,7 @@
 	height: 0;
 	border-top: 4px solid transparent;
 	border-bottom: 4px solid transparent;
-	border-right: 8px solid var(--background-content);;
+	border-right: 8px solid var(--background-content);
 	z-index: auto;
 }
 
@@ -166,7 +166,7 @@
 .zoom-menu {
 	color: var(--text-color-normal);
 	position: absolute;
-	background: var(--background-content);;
+	background: var(--background-content);
 	display: none;
 	z-index: auto;
 	border: 1px solid var(--border-color);
