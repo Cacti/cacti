@@ -36,6 +36,7 @@ Cacti CHANGELOG
 -issue#5356: Improve downed Device detection
 -feature: Upgrade billboard.js to version 3.7.4
 -feature: Upgrade d3.js to version 7.8.2
+-feature: Upgrade ua-parser.js to version 1.0.35
 
 1.2.24
 -issue#5127: Unable to import Local Linux Machine template
