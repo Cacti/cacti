@@ -324,6 +324,16 @@ class Net_Ping {
 			return false;
 		}
 
+		$result = $this->get_snmp_result($session, $oid);
+		if (!$result && $oid == '.1.3.6.1.2.1.1.3.0') {
+			$result = $this->get_snmp_result($session, '.1.3.6.1.6.3.10.2.1.3.0');
+		}
+
+		$session->close();
+		return $result;
+	}
+
+	function get_snmp_result($session, $oid) {
 		/* getnext does not work in php versions less than 5 */
 		if (($this->avail_method == AVAIL_SNMP_GET_NEXT) &&
 			(version_compare('5', phpversion(), '<'))) {
@@ -331,8 +341,6 @@ class Net_Ping {
 		} else {
 			$output = cacti_snmp_session_get($session, $oid);
 		}
-
-		$session->close();
 
 		/* determine total time +- ~10% */
 		$this->time = $this->get_time($this->precision);
@@ -662,19 +670,25 @@ class Net_Ping {
 		}
 
 		/* snmp test */
-		if (($avail_method == AVAIL_SNMP_OR_PING) && ($ping_result == true)) {
-			$snmp_result       = true;
-			$this->snmp_status = 0.000;
-		} elseif (($avail_method == AVAIL_SNMP_AND_PING) && ($ping_result == false)) {
-			$snmp_result = false;
-		} elseif (($avail_method == AVAIL_SNMP) || ($avail_method == AVAIL_SNMP_AND_PING) || ($avail_method == AVAIL_SNMP_OR_PING) || ($avail_method == AVAIL_SNMP_GET_SYSDESC) || ($avail_method == AVAIL_SNMP_GET_NEXT)) {
-			if (($this->host['snmp_community'] == '') && ($this->host['snmp_version'] != 3)) {
-				/* snmp version 1/2 without community string assume SNMP test to be successful
-				   due to backward compatibility issues */
-				$snmp_result       = true;
-				$this->snmp_status = 0.000;
+		if (($avail_method == AVAIL_SNMP) ||
+		   ($avail_method == AVAIL_SNMP_GET_SYSDESC) ||
+		   ($avail_method == AVAIL_SNMP_GET_NEXT) ||
+		   ($avail_method == AVAIL_SNMP_AND_PING) ||
+		   ($avail_method == AVAIL_SNMP_OR_PING)) {
+
+			/* If we are in AND mode and already have a failed ping result, we don't need SNMP */
+			if (!$ping_result && $avail_method == AVAIL_SNMP_AND_PING) {
+				$snmp_result = $ping_result;
 			} else {
-				$snmp_result = $this->ping_snmp();
+				/* Lets assume the host is up because if we are in OR mode then we have already
+				* pinged the host successfully, or some when silly people have not entered an
+				* snmp_community under v1/2, we assume that this was successfully anyway */
+				$snmp_result = true;
+				$this->snmp_status = 0.000;
+				if ($avail_method != AVAIL_SNMP_OR_PING &&
+				   (strlen($this->host['snmp_community']) > 0 || $this->host['snmp_version'] >= 3)) {
+					$snmp_result = $this->ping_snmp();
+				}
 			}
 		}
 
@@ -682,46 +696,15 @@ class Net_Ping {
 
 		switch ($avail_method) {
 			case AVAIL_SNMP_OR_PING:
-				if (($this->host['snmp_community'] == '') && ($this->host['snmp_version'] != 3)) {
-					if ($ping_result) {
-						return true;
-					} else {
-						return false;
-					}
-				} elseif ($snmp_result) {
-					return true;
-				} elseif ($ping_result) {
-					return true;
-				} else {
-					return false;
-				}
+				return ($snmp_result || $ping_result);
 			case AVAIL_SNMP_AND_PING:
-				if (($this->host['snmp_community'] == '') && ($this->host['snmp_version'] != 3)) {
-					if ($ping_result) {
-						return true;
-					} else {
-						return false;
-					}
-				} elseif (($snmp_result) && ($ping_result)) {
-					return true;
-				} else {
-					return false;
-				}
+				return ($snmp_result && $ping_result);
 			case AVAIL_SNMP:
 			case AVAIL_SNMP_GET_NEXT:
 			case AVAIL_SNMP_GET_SYSDESC:
-				if ($snmp_result) {
-					return true;
-				} else {
-					return false;
-				}
+				return $snmp_result;
 			case AVAIL_PING:
-				if ($ping_result) {
-					return true;
-				} else {
-					return false;
-				}
-
+				return $ping_result;
 			default:
 				return false;
 		}
