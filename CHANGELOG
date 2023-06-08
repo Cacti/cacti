@@ -31,6 +31,7 @@ Cacti CHANGELOG
 -issue#5338: Compatibility changes for Boost under PHP 8.1
 -issue#5342: Increase keyup delay when searching the tree
 -issue#5347: Device form location drop down not populating
+-issue#5354: Realtime graphs can report undefined variable
 -feature: Upgrade billboard.js to version 3.7.4
 -feature: Upgrade d3.js to version 7.8.2
 
