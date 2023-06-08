@@ -1002,8 +1002,7 @@ function ping_and_reindex_check(&$item, $mibs, $script_timeout) {
 
 					// spike kill logic
 					if (($assert_fail) &&
-						(($index_item['op'] == '<') || ($index_item['arg1'] == '.1.3.6.1.2.1.1.3.0'))
-					) {
+						(($index_item['op'] == '<') || ($index_item['arg1'] == '.1.3.6.1.2.1.1.3.0' || $index_item['arg1'] == '.1.3.6.1.6.3.10.2.1.3.0'))) {
 						// don't spike kill unless we are certain
 						if (!empty($output)) {
 							$set_spike_kill = true;
