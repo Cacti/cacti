@@ -646,9 +646,9 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 									cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $nt_rrd_field_names[$matches[0]] . ']' , true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_HIGH));
 
 									$rrd_update_array[$item['rrd_path']]['times'][$unix_time][$nt_rrd_field_names[$matches[0]]] = $matches[1];
-
-									$rrd_tmpl .= ($rrd_tmpl != '' ? ':':'') . $nt_rrd_field_names[$matches[0]];
 								}
+
+								$rrd_tmpl .= ($rrd_tmpl != '' ? ':':'') . $nt_rrd_field_names[$matches[0]];
 							}
 
 							$rrd_update_array[$rrd_path]['template'] = $rrd_tmpl;
