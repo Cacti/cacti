@@ -397,6 +397,12 @@ $settings = array(
 			'collapsible' => 'true',
 			'method' => 'spacer',
 		),
+		'site_location_filter' => array(
+			'friendly_name' => __('Show only site specific locations'),
+			'description' => __('Show only locations that are available at a devices selected site.'),
+			'method' => 'checkbox',
+			'default' => '',
+		),
 		'default_has' => array(
 			'friendly_name' => __('Has Graphs/Data Sources Checked'),
 			'description' => __('Should the Has Graphs and Has Data Sources be Checked by Default.'),
