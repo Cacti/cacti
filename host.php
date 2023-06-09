@@ -226,23 +226,26 @@ function get_site_locations() {
 	$term    = get_nfilter_request_var('term');
 	$host_id = $_SESSION['cur_device_id'];
 
-	$site_id = db_fetch_cell_prepared(
-		'SELECT site_id
-		FROM host
-		WHERE id = ?',
-		array($host_id)
-	);
+	$args  = ["%$term%"];
+	$where = '';
 
-	$locations = db_fetch_assoc_prepared(
-		'SELECT DISTINCT location
+	if (read_config_option('site_location_filter') && $_SESSION['cur_device_id']) {
+		$site_id = db_fetch_cell_prepared('SELECT site_id
+			FROM host
+			WHERE id = ?',
+			array($host_id));
+		$args []= $site_id;
+		$where = 'AND site_id = ?';
+	}
+
+	$locations = db_fetch_assoc_prepared("SELECT DISTINCT location
 		FROM host
-		WHERE site_id = ?
-		AND location LIKE ?
-		AND location != ""
+		WHERE location LIKE ?
+		AND location != ''
 		AND location IS NOT NULL
-		ORDER BY location',
-		array($site_id, "%$term%")
-	);
+		$where
+		ORDER BY location",
+		$args);
 
 	if (cacti_sizeof($locations)) {
 		foreach ($locations as $l) {
