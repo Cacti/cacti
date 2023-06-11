@@ -344,216 +344,299 @@ switch (get_request_var('action')) {
 
 		header('Location: settings.php?tab=' . get_request_var('tab'));
 
-		break;
-	case 'send_test':
-		email_test();
+	break;
+case 'send_test':
+	email_test();
+	break;
+case 'search':
+	settings_search();
+	break;
+default:
+	top_header();
 
-		break;
+	html_start_box(__('Cacti Settings'), '100%', '', '3', 'left', '');
 
-	default:
-		top_header();
+	validate_settings_filter();
 
-		/* set the default settings category */
-		if (!isset_request_var('tab')) {
-			/* there is no selected tab; select the first one */
-			if (isset($_SESSION['sess_settings_tab'])) {
-				$current_tab = $_SESSION['sess_settings_tab'];
-			} else {
-				$current_tab = array_keys($tabs);
-				$current_tab = $current_tab[0];
-			}
+	print '<tr><td>';
+	print '<table class="filterTable">';
+	print '<td>' . __('Search') . '</td>';
+	print '<td><input type="text" size="25" id="filter" value="' . get_request_var('filter') . '"></td>';
+	print '<td><span><input type="button" id="clear" value="' . __esc('Clear') . '"></span></td>';
+	print '</tr></table>';
+	print '</td></tr>';
+
+	html_end_box();
+
+	/* set the default settings category */
+	if (!isset_request_var('tab')) {
+		/* there is no selected tab; select the first one */
+		if (isset($_SESSION['sess_settings_tab'])) {
+			$current_tab = $_SESSION['sess_settings_tab'];
 		} else {
 			$current_tab = get_request_var('tab');
 		}
+	} else {
+		$current_tab = get_request_var('tab');
+	}
 
-		// If the tab no longer exists, use the first
-		if (!isset($tabs[$current_tab])) {
-			$current_tab = array_keys($tabs);
-			$current_tab = $current_tab[0];
+	// If the tab no longer exists, use the first
+	if (!isset($tabs[$current_tab])) {
+		$current_tab = array_keys($tabs);
+		$current_tab = $current_tab[0];
+	}
+
+	$_SESSION['sess_settings_tab'] = $current_tab;
+
+	set_request_var('tab', $current_tab);
+
+	$data_collectors = db_fetch_cell('SELECT COUNT(*) FROM poller WHERE disabled=""');
+
+	if ($data_collectors > 1) {
+		set_config_option('boost_rrd_update_enable', 'on');
+		set_config_option('boost_redirect', 'on');
+	}
+
+	$system_tabs = array(
+		'general',
+		'path',
+		'snmp',
+		'poller',
+		'data',
+		'visual',
+		'authentication',
+		'boost',
+		'spikes',
+		'mail'
+	);
+
+	/* draw the categories tabs on the top of the page */
+	print "<div>";
+	print "<div id='settings' class='tabs' style='float:left'><nav style='display:none'><ul role='tablist'>\n";
+
+	if (cacti_sizeof($tabs)) {
+		$i = 0;
+
+		foreach (array_keys($tabs) as $tab_short_name) {
+			print "<li id='$tab_short_name' class='subTab" . (!in_array($tab_short_name, $system_tabs) ? ' pluginTab':'') . "'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . html_escape("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . "</a></li>\n";
+
+			$i++;
 		}
+	}
 
-		$_SESSION['sess_settings_tab'] = $current_tab;
+	print "</ul></nav></div>";
+	print "</div>";
+	print "<div id='form_settings_wrap' style='display:none'>";
 
-		set_request_var('tab', $current_tab);
+	form_start('settings.php', 'form_settings');
 
-		$data_collectors = db_fetch_cell('SELECT COUNT(*) FROM poller WHERE disabled=""');
+	if ($config['poller_id'] > 1 && $current_tab == 'path') {
+		$suffix = ' [<span class="deviceDown">' . __('NOTE: Path Settings on this Tab are only saved locally!') . '</span>]';
+	} else {
+		$suffix = '';
+	}
 
-		if ($data_collectors > 1) {
-			set_config_option('boost_rrd_update_enable', 'on');
-			set_config_option('boost_redirect', 'on');
-		}
+	html_start_box(__('Cacti Settings (%s)%s', $tabs[$current_tab], $suffix), '100%', true, '3', 'center', '');
 
-		$system_tabs = array(
-			'general',
-			'path',
-			'snmp',
-			'poller',
-			'data',
-			'visual',
-			'authentication',
-			'boost',
-			'spikes',
-			'mail'
-		);
+	$form_array = array();
 
-		/* draw the categories tabs on the top of the page */
-		print "<div>\n";
-		print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>\n";
+	// Remove log rotation is disabled by package maintainer
+	if (isset($disable_log_rotation) && $disable_log_rotation == true) {
+		unset($settings['path']['logrotate_enabled']);
+		unset($settings['path']['logrotate_frequency']);
+		unset($settings['path']['logrotate_retain']);
+	}
 
-		if (cacti_sizeof($tabs) > 0) {
-			$i = 0;
+	// RRDtool is not required for remote data collectors
+	if ($config['poller_id'] > 1) {
+		$settings['path']['path_rrdtool']['method'] = 'other';
+	}
 
-			foreach (array_keys($tabs) as $tab_short_name) {
-				print "<li class='subTab" . (!in_array($tab_short_name, $system_tabs, true) ? ' pluginTab' : '') . "'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . html_escape("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . "</a></li>\n";
+	if (isset($settings[$current_tab])) {
+		foreach ($settings[$current_tab] as $field_name => $field_array) {
+			$form_array += array($field_name => $field_array);
 
-				$i++;
-			}
-		}
-
-		print "</ul></nav></div>\n";
-		print "</div>\n";
-
-		form_start('settings.php', 'form_settings');
-
-		if ($config['poller_id'] > 1 && $current_tab == 'path') {
-			$suffix = ' [<span class="deviceDown">' . __('NOTE: Path Settings on this Tab are only saved locally!') . '</span>]';
-		} else {
-			$suffix = '';
-		}
-
-		html_start_box(__('Cacti Settings (%s)%s', $tabs[$current_tab], $suffix), '100%', true, '3', 'center', '');
-
-		$form_array = array();
-
-		// Remove log rotation is disabled by package maintainer
-		if (isset($disable_log_rotation) && $disable_log_rotation == true) {
-			unset($settings['path']['logrotate_enabled']);
-			unset($settings['path']['logrotate_frequency']);
-			unset($settings['path']['logrotate_retain']);
-		}
-
-		// RRDtool is not required for remote data collectors
-		if ($config['poller_id'] > 1) {
-			$settings['path']['path_rrdtool']['method'] = 'other';
-		}
-
-		if (isset($settings[$current_tab])) {
-			foreach ($settings[$current_tab] as $field_name => $field_array) {
-				$form_array += array($field_name => $field_array);
-
-				if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
-					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
-						if (config_value_exists($sub_field_name)) {
-							$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
-						}
-
-						if ($current_tab == 'path' && is_remote_path_setting($field_name)) {
-							$form_array[$field_name]['items'][$sub_field_name]['value'] = db_fetch_cell_prepared(
-								'SELECT value
-							FROM settings
-							WHERE name = ?',
-								array($sub_field_name),
-								'',
-								true,
-								$local_db_cnn_id
-							);
-						} else {
-							$form_array[$field_name]['items'][$sub_field_name]['value'] = db_fetch_cell_prepared(
-								'SELECT value
-							FROM settings
-							WHERE name = ?',
-								array($sub_field_name)
-							);
-						}
-					}
-				} else {
-					if (config_value_exists($field_name)) {
-						$form_array[$field_name]['form_id'] = 1;
+			if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
+				foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
+					if (config_value_exists($sub_field_name)) {
+						$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
 					}
 
 					if ($current_tab == 'path' && is_remote_path_setting($field_name)) {
-						$form_array[$field_name]['value'] = db_fetch_cell_prepared(
+						$form_array[$field_name]['items'][$sub_field_name]['value'] = db_fetch_cell_prepared(
 							'SELECT value
 						FROM settings
 						WHERE name = ?',
-							array($field_name),
+							array($sub_field_name),
 							'',
 							true,
 							$local_db_cnn_id
 						);
 					} else {
-						$form_array[$field_name]['value'] = db_fetch_cell_prepared(
+						$form_array[$field_name]['items'][$sub_field_name]['value'] = db_fetch_cell_prepared(
 							'SELECT value
 						FROM settings
 						WHERE name = ?',
-							array($field_name)
+							array($sub_field_name)
 						);
 					}
 				}
-			}
-		}
-
-		// Cache this setting as on large systems
-		// this query runs long
-		if ($current_tab == 'spikes') {
-			if (!isset($_SESSION['sk_templates'])) {
-				$spikekill_templates = array_rekey(
-					db_fetch_assoc('SELECT DISTINCT gt.id, gt.name
-					FROM graph_templates AS gt
-					INNER JOIN graph_templates_item AS gti
-					ON gt.id=gti.graph_template_id
-					INNER JOIN data_template_rrd AS dtr
-					ON gti.task_item_id=dtr.id
-					WHERE gti.local_graph_id=0 AND data_source_type_id IN (3,2)
-					ORDER BY name'),
-					'id',
-					'name'
-				);
-
-				$_SESSION['sk_templates'] = $spikekill_templates;
 			} else {
-				$spikekill_templates = $_SESSION['sk_templates'];
-			}
+				if (config_value_exists($field_name)) {
+					$form_array[$field_name]['form_id'] = 1;
+				}
 
-			$form_array['spikekill_templates']['array'] = $spikekill_templates;
+				if ($current_tab == 'path' && is_remote_path_setting($field_name)) {
+					$form_array[$field_name]['value'] = db_fetch_cell_prepared(
+						'SELECT value
+					FROM settings
+					WHERE name = ?',
+						array($field_name),
+						'',
+						true,
+						$local_db_cnn_id
+					);
+				} else {
+					$form_array[$field_name]['value'] = db_fetch_cell_prepared(
+						'SELECT value
+					FROM settings
+					WHERE name = ?',
+						array($field_name)
+					);
+				}
+			}
+		}
+	}
+
+	// Cache this setting as on large systems
+	// this query runs long
+	if ($current_tab == 'spikes') {
+		if (!isset($_SESSION['sk_templates'])) {
+			$spikekill_templates = array_rekey(
+				db_fetch_assoc('SELECT DISTINCT gt.id, gt.name
+				FROM graph_templates AS gt
+				INNER JOIN graph_templates_item AS gti
+				ON gt.id=gti.graph_template_id
+				INNER JOIN data_template_rrd AS dtr
+				ON gti.task_item_id=dtr.id
+				WHERE gti.local_graph_id=0 AND data_source_type_id IN (3,2)
+				ORDER BY name'),
+				'id',
+				'name'
+			);
+
+			$_SESSION['sk_templates'] = $spikekill_templates;
+		} else {
+			$spikekill_templates = $_SESSION['sk_templates'];
 		}
 
-		draw_edit_form(
-			array(
-				'config' => array('no_form_tag' => true),
-				'fields' => $form_array
-			)
-		);
+		$form_array['spikekill_templates']['array'] = $spikekill_templates;
+	}
 
-		html_end_box(true, true);
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => $form_array
+		)
+	);
 
-		form_hidden_box('tab', $current_tab, '');
+	html_end_box(true, true);
 
-		form_save_button('', 'save');
+	form_hidden_box('tab', $current_tab, '');
 
-		?>
-		<script type='text/javascript'>
-			var themeChanged   = false;
-			var langRefresh    = false;
-			var currentTheme   = '';
-			var currentLang    = '';
-			var rrdArchivePath = '';
-			var smtpPath       = '';
-			var currentTab     = '<?php print $current_tab; ?>';
-			var dataCollectors = '<?php print $data_collectors; ?>';
-			var permsTitle     = '<?php print __esc('Changing Permission Model Warning');?>';
-			var permsHeader    = '<?php print __esc('Changing Permission Model will alter a users effective Graph permissions.');?>';
-			var permsMessage   = '<?php print __esc('After you change the Graph Permission Model you should audit your Users and User Groups Effective Graph permission to ensure that you still have adequate control of your Graphs.  NOTE: If you want to restrict all Graphs at the Device or Graph Template Graph Permission Model, the default Graph Policy should be set to \'Deny\'.');?>';
+	form_save_button('', 'save');
 
-			$(function() {
-				$('.subTab').find('a').click(function(event) {
-					event.preventDefault();
-					strURL = $(this).attr('href');
-					strURL += (strURL.indexOf('?') > 0 ? '&' : '?');
-					loadUrl({
-						url: strURL,
-						scroll: true
-					});
+	?>
+	<script type='text/javascript'>
+
+	var themeChanged   = false;
+	var langRefresh    = false;
+	var currentTheme   = '';
+	var currentLang    = '';
+	var rrdArchivePath = '';
+	var prevSearch     = $('#filter').val();
+	var smtpPath       = '';
+	var currentTab     = '<?php print $current_tab;?>';
+	var dataCollectors = '<?php print $data_collectors;?>';
+	var permsTitle     = '<?php print __esc('Changing Permission Model Warning');?>';
+	var permsHeader    = '<?php print __esc('Changing Permission Model will alter a users effective Graph permissions.');?>';
+	var permsMessage   = '<?php print __esc('After you change the Graph Permission Model you should audit your Users and User Groups Effective Graph permission to ensure that you still have adequate control of your Graphs.  NOTE: If you want to restrict all Graphs at the Device or Graph Template Graph Permission Model, the default Graph Policy should be set to \'Deny\'.');?>';
+
+	function setupForm() {
+		if ($('#filter').val().length >= 1 && $('#filter').val != prevSearch) {
+			$.getJSON('settings.php?action=search&filter='+$('#filter').val(), function(data) {
+				if (data.tabs.length == 1 && data.tabs[0] != currentTab) {
+					loadPage('settings.php?tab='+data.tabs[0]+'&filter='+$('#filter').val());
+					return false;
+				} else if (data.tabs.length > 0) {
+					if (data.tabs.indexOf(currentTab) == -1) {
+						loadPage('settings.php?tab='+data.tabs[0]+'&filter='+$('#filter').val());
+						return false;
+					}
+
+					$('#settings').find('nav').show();
+					$('#settings').find('.subTab').hide();
+					$('#form_settings').find('div[id^="settings_"]').hide();
+					$('#form_settings').find('[id^="row"]').hide();
+
+					for (index of data.tabs) {
+						$('#settings').find('#'+index+'.subTab').show();
+						$('#form_settings').find('div[id^="settings_'+index+'"]').show();
+					}
+
+					for (index of data.spacers) {
+						$('#form_settings').find('#row_'+index).show();
+					}
+
+					for (index of data.rows) {
+						$('#form_settings').find('#row_'+index).show();
+					}
+				} else {
+					$('#settings').find('nav').show();
+					$('#settings').find('.subTab').show();
+					$('#form_settings').find('div[id^="settings_"]').show();
+					$('#form_settings').find('tr[id^="row_"]').show();
+				}
+
+				$('#saveRowParent').show();
+				$('#form_settings_wrap').show();
+				$('#filter').focus();
+			});
+
+			prevSearch = $('#filter').val();
+		} else {
+			$('#settings').find('nav').show();
+			$('#saveRowParent').show();
+			$('#settings').find('.subTab').show();
+			$('#form_settings_wrap').show();
+			$('#filter').focus();
+		}
+	}
+
+	$(function() {
+		$('#filter').delayKeyup(function() {
+			setupForm();
+		});
+
+		setupForm();
+
+		$('#clear').click(function(event) {
+			loadPage('settings.php?clear=true&filter=');
+		});
+
+		$('.subTab').find('a').click(function(event) {
+			event.preventDefault();
+			strURL = $(this).attr('href');
+			strURL += (strURL.indexOf('?') > 0 ? '&':'?') + 'header=false';
+			loadPageNoHeader(strURL, true, false);
+		});
+
+		$('input[value="<?php print __esc('Save');?>"]').unbind().click(function(event) {
+			event.preventDefault();
+
+			if (parseInt($('#cron_interval').val()) < parseInt($('#poller_interval').val())) {
+				$('#message_container').html('<div id="message" class="textError messageBox"><?php print __('Poller Interval must be less than Cron Interval');?></div>').show().delay(4000).slideUp('fast', function() {
+					$('#message_container').empty();
 				});
 
 				$('input[value="<?php print __esc('Save'); ?>"]').unbind().click(function(event) {
@@ -1004,4 +1087,61 @@ switch (get_request_var('action')) {
 				bottom_footer();
 
 		break;
+}
+
+function validate_settings_filter() {
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'filter' => array(
+			'filter' => FILTER_DEFAULT,
+			'pageset' => true,
+			'default' => ''
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_settings');
+	/* ================= input validation ================= */
+}
+
+function settings_search() {
+	global $settings;
+
+	validate_settings_filter();
+
+	$filter = get_request_var('filter');
+
+	$response = array(
+		'tabs'    => array(),
+		'rows'    => array(),
+		'spacers' => array()
+	);
+
+	$last_spacer = '';
+	$tabs        = array();
+	$spacers     = array();
+
+	foreach($settings as $tab => $page) {
+		foreach($page as $field_name => $field_array) {
+			if ($field_array['method'] == 'spacer') {
+				$last_spacer = $field_name;
+			} elseif (stristr($field_array['friendly_name'], $filter) !== false || stristr($field_array['description'], $filter) !== false) {
+				$tabs[] = $tab;
+				$response['rows'][] = $field_name;
+
+				if ($last_spacer != '') {
+					$spacers[] = $last_spacer;
+				}
+			}
+		}
+	}
+
+	if (cacti_sizeof($tabs)) {
+		$response['tabs'] = array_values(array_unique($tabs, SORT_STRING));
+	}
+
+	if (cacti_sizeof($spacers)) {
+		$response['spacers'] = array_values(array_unique($spacers, SORT_STRING));
+	}
+
+	print json_encode($response);
 }
