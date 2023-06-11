@@ -36,6 +36,7 @@ Cacti CHANGELOG
 -issue#5356: Improve downed Device detection
 -issue#5360: Plugin missing functions warning should be debounced
 -issue#5364: Cactid, on initial startup reports that the database connection went away which is erroneous
+-issue#5366: RRDcheck does not log using proper case
 -feature: Upgrade billboard.js to version 3.7.4
 -feature: Upgrade d3.js to version 7.8.2
 -feature: Upgrade ua-parser.js to version 1.0.35

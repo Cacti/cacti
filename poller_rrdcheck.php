@@ -192,7 +192,7 @@ function rrdcheck_master_handler($forcerun) {
 		rrdcheck_debug('Skipping Periodic Rollup - Boost will handle the Periodic Roll-up Cycle');
 	} else {
 		if ($run_interval == 'boost') {
-			cacti_log("WARNING: RRDcheck interval set to 'boost' and boost not enabled, reseting to default of 4 hours", false, 'rrdcheck');
+			cacti_log("WARNING: RRDcheck interval set to 'boost' and boost not enabled, reseting to default of 4 hours", false, 'RRDCHECK');
 
 			set_config_option('rrdcheck_interval', 240);
 
@@ -267,7 +267,7 @@ function sig_handler($signo) {
 	switch ($signo) {
 		case SIGTERM:
 		case SIGINT:
-			cacti_log('WARNING: rrdcheck Poller terminated by user', false, 'rrdcheck');
+			cacti_log('WARNING: rrdcheck Poller terminated by user', false, 'RRDCHECK');
 
 			/* tell the main poller that we are done */
 			if ($type == 'master') {

@@ -154,7 +154,7 @@ function do_rrdcheck($thread_id = 1) {
 			$file = $rrdval['data_source_path'];
 
 			if ($use_proxy) {
-				$file_exists = rrdtool_execute("file_exists $file", true, RRDTOOL_OUTPUT_BOOLEAN, false, 'rrdcheck');
+				$file_exists = rrdtool_execute("file_exists $file", true, RRDTOOL_OUTPUT_BOOLEAN, false, 'RRDCHECK');
 			} else {
 				clearstatcache();
 				$file_exists = file_exists($file);
@@ -205,7 +205,7 @@ function do_rrdcheck($thread_id = 1) {
 				}
 
 				if ($use_proxy) {
-					$output = rrdtool_execute("info $file", false, RRDTOOL_OUTPUT_STDOUT, false, 'rrdcheck');
+					$output = rrdtool_execute("info $file", false, RRDTOOL_OUTPUT_STDOUT, false, 'RRDCHECK');
 				} else {
 					$output = rrdcheck_rrdtool_execute("info $file", $pipes);
 				}
@@ -359,7 +359,7 @@ function do_rrdcheck($thread_id = 1) {
 				$one_hour_limit = ($duration - 3600) / $step;
 
 				if ($use_proxy) {
-					$info_array = rrdtool_execute("fetch $file LAST -s $pstart -e $pend ", false, RRDTOOL_OUTPUT_STDOUT, false, 'rrdcheck');
+					$info_array = rrdtool_execute("fetch $file LAST -s $pstart -e $pend ", false, RRDTOOL_OUTPUT_STDOUT, false, 'RRDCHECK');
 				} else {
 					$info_array = rrdcheck_rrdtool_execute("fetch $file LAST -s $pstart -e $pend", $pipes);
 				}
@@ -506,7 +506,7 @@ function do_rrdcheck($thread_id = 1) {
 						}
 					}
 				} else {
-					cacti_log("WARNING: RRDcheck - no rrd data returned - '$file'", false, 'rrdcheck');
+					cacti_log("WARNING: RRDcheck - no rrd data returned - '$file'", false, 'RRDCHECK');
 				}
 			} else {	// rrdfile does not exist
 				db_execute_prepared ('INSERT INTO rrdcheck
@@ -691,7 +691,7 @@ function rrdcheck_error_handler($errno, $errmsg, $filename, $linenum, $vars = []
 		if (substr_count($errmsg, 'Only variables')) return;
 
 		/* log the error to the Cacti log */
-		cacti_log('PROGERR: ' . $err, false, 'rrdcheck');
+		cacti_log('PROGERR: ' . $err, false, 'RRDCHECK');
 	}
 
 	return;
