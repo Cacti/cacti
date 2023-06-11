@@ -3990,7 +3990,7 @@ function api_automation_is_time_to_start($network_id) {
 		case '5':
 			$next = calculateNextStart($net, $now);
 
-			db_execute_prepared('UPDATE analytics_report_templates
+			db_execute_prepared('UPDATE automation_networks
 			SET next_start = ?
 			WHERE id = ?',
 				array(date('Y-m-d H:i', $next), $network_id));
