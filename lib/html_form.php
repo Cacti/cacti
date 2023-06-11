@@ -1316,7 +1316,7 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
 	}
 
 	?>
-	<table style='width:100%;text-align:center;'>
+	<table class='saveRowParent' style='width:100%;text-align:center;'>
 		<tr>
 			<td class='saveRow'>
 				<input type='hidden' name='action' value='save'>
@@ -1335,7 +1335,7 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
    @arg $buttons - an array of 'id', 'name' buttons */
 function form_save_buttons($buttons) {
 	?>
-	<table style='width:100%;text-align:center;'>
+	<table class='saveRowParent' style='width:100%;text-align:center;'>
 		<tr>
 			<td class='saveRow'>
 				<input type='hidden' name='action' value='save'>
