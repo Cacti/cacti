@@ -222,7 +222,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 	return false;
 }
 
-function db_check_reconnect($db_conn = false) {
+function db_check_reconnect($db_conn = false, $log = true) {
 	global $config, $database_details;
 
 	include($config['base_path'] . '/include/config.php');
@@ -261,7 +261,9 @@ function db_check_reconnect($db_conn = false) {
 	}
 
 	if ($version === false) {
-		syslog(LOG_ALERT, 'CACTI: Database Connection went away.  Attempting to reconnect!');
+		if ($log) {
+			syslog(LOG_ALERT, 'CACTI: Database Connection went away.  Attempting to reconnect!');
+		}
 
 		db_close();
 
