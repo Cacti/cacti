@@ -66,6 +66,7 @@ ini_set('max_execution_time', '-1');
 $hostname   = gethostname();
 $debug      = false;
 $foreground = false;
+$firstuse   = true;
 
 chdir(__DIR__);
 include_once('./include/cli_check.php');
@@ -153,7 +154,10 @@ sleep(2);
 while (true) {
 	wait_for_start($frequency);
 
-	db_check_reconnect();
+	if (!$firstuse) {
+		db_check_reconnect();
+		$firstuse = false;
+	}
 
 	run_poller();
 
