@@ -129,7 +129,7 @@ function rrdcheck_display_problems() {
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$problems = db_fetch_assoc("SELECT h.description, dtd.name_cache, rc.local_data_id, rc.test_date, rc.message
+	$problems = db_fetch_assoc("SELECT h.description, dtd.name_cache, rc.local_data_id, gtg.title_cache, gtg.local_graph_id, rc.test_date, rc.message
 		FROM rrdcheck AS rc
 		LEFT JOIN data_local AS dl
 		ON rc.local_data_id = dl.id
@@ -137,9 +137,12 @@ function rrdcheck_display_problems() {
 		ON rc.local_data_id = dtd.local_data_id
 		LEFT JOIN host AS h
 		ON dl.host_id = h.id
+		LEFT JOIN graph_templates_graph as gtg
+		ON gtg.local_graph_id = rc.local_graph_id
 		$sql_where
 		$sql_order
 		$sql_limit");
+
 
 	$nav = html_nav_bar($config['url_path'] . 'rrdcheck.php?filter'. get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('RRDcheck Problems'), 'page', 'main');
 
@@ -158,9 +161,8 @@ function rrdcheck_display_problems() {
 			'display' =>  __('Data Source'),
 			'sort'    => 'ASC'
 		),
-		'local_data_id' => array(
-			'display' =>  __('Local Data ID'),
-			'align'   => 'center',
+		'local_graph_id' => array(
+			'display' =>  __('Graph'),
 			'sort'    => 'ASC'
 		),
 		'message' => array(
@@ -188,9 +190,13 @@ function rrdcheck_display_problems() {
 				$problem['name_cache'] = __('Deleted');
 			}
 
-			form_selectable_cell(filter_value($problem['description'], get_request_var('filter')), $problem['local_data_id']);
-			form_selectable_cell(filter_value($problem['name_cache'], get_request_var('filter')), $problem['local_data_id']);
-			form_selectable_cell(filter_value($problem['local_data_id'], get_request_var('filter')), $problem['local_data_id'], '', 'center');
+			if (empty($problem['title_cache'])) {
+				$problem['title_cache'] = __('Empty Graph');
+			}
+
+			print '<td>' . filter_value($problem['description'], get_request_var('filter')) . '</td>';
+			print '<td>' . filter_value(title_trim($problem['name_cache'], read_config_option('max_title_length')), get_request_var('filter'), 'data_sources.php?action=ds_edit&id=' . $problem['local_data_id'] ) . '</td>';
+			print '<td>' . filter_value(title_trim($problem['title_cache'], read_config_option('max_title_length')), get_request_var('filter'), 'graphs.php?action=graph_edit&id=' . $problem['local_graph_id'] ) . '</td>';
 			form_selectable_cell(filter_value($problem['message'], get_request_var('filter')), $problem['local_data_id']);
 			form_selectable_cell($problem['test_date'], $file['local_data_id'], '', 'right');
 
