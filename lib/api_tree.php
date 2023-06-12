@@ -186,7 +186,7 @@ function api_tree_get_lock($lockname, $timeout = 10) {
 	while ($count < 5) {
 		if (register_process('tree_lock', $lockname, 0, $timeout)) {
 			return true;
-		} else
+		} else {
 			$count++;
 			sleep(1);
 		}
