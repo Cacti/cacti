@@ -242,7 +242,7 @@ switch (get_request_var('action')) {
 		if (empty($output) && empty($error)) {
 			$graph_data_array['get_error'] = true;
 			$null_param                    = array();
-			rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]);
+			rrdtool_function_graph(get_request_var('local_graph_id'), '', $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]);
 
 			$error = ob_get_contents();
 
