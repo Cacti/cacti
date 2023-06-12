@@ -629,16 +629,6 @@ class Installer implements JsonSerializable {
 			}
 		}
 
-		foreach ($always_paths as $path) {
-			$valid                              = (is_resource_writable($path . '/'));
-			$permissions['always'][$path . '/'] = $valid;
-			log_install_debug('permission', "$path = $valid (always)");
-
-			if (!$valid) {
-				$this->addError(Installer::STEP_PERMISSION_CHECK, 'Permission', $path, __('Path is not writable'));
-			}
-		}
-
 		foreach ($always_paths as $name => $path) {
 			$path = rtrim($path, '/') . '/';
 			$valid = (is_resource_writable($path));
