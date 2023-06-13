@@ -3587,8 +3587,8 @@ function auth_process_lockout($username, $realm) {
 					$error     = true;
 					$error_msg = __('Access Denied!  Login Failed.');
 				}
-			} elseif ($user['locked'] == 'on') {
-				cacti_log("LOGIN FAILED: Local Login Failed for user '" . $username . "' from IP Address '" . get_client_addr() . "'.", false, 'AUTH');
+			} else {
+				cacti_log("LOGIN FAILED: Local Login Failed to find user '" . $username . "' from IP Address '" . get_client_addr() . "'.", false, 'AUTH');
 
 				$error     = true;
 				$error_msg = __('Access Denied!  Login Failed.');
