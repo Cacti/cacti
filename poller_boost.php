@@ -659,7 +659,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 	/* cache this call as it takes time */
 	static $archive_tables  = false;
 	static $rrdtool_version = null;
-	static $rrd_filed_names = array();
+	static $rrd_field_names = array();
 
 	include_once($config['library_path'] . '/rrd.php');
 
