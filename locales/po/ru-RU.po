@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-11-12 15:22-0500\n"
-"PO-Revision-Date: 2023-05-20 05:26+0000\n"
+"PO-Revision-Date: 2023-06-15 02:28+0000\n"
 "Last-Translator: Сергей <zersh@mail.ru>\n"
 "Language-Team: Russian <http://translate.cacti.net/projects/cacti/core/ru/>\n"
 "Language: ru-RU\n"
@@ -13456,34 +13456,34 @@ msgid "Default View Mode"
 msgstr "Режим просмотра по умолчанию"
 
 #: include/global_settings.php:2527
-#, fuzzy
 msgid "Which Graph mode you want displayed by default when you first visit the Graphs page?"
-msgstr "Какой режим отображения графиков вы хотите отобразить по умолчанию при первом посещении страницы Графики?"
+msgstr ""
+"Какой режим отображения графиков вы хотите отобразить по умолчанию при "
+"первом посещении страницы Графики?"
 
 #: include/global_settings.php:2533
-#, fuzzy
 msgid "TimeZone Support"
-msgstr "MySQL - Поддержка часовых поясов"
+msgstr "Поддержка часовых поясов"
 
 #: include/global_settings.php:2534
 msgid "How would you like Cacti to present dates?  This setting will also change the way that Cacti Graphs dates are represented."
 msgstr ""
+"Как бы вы хотели, чтобы Cacti отображал даты? Этот параметр также изменит "
+"способ представления дат Графиков."
 
 #: include/global_settings.php:2537
-#, fuzzy
 msgid "Cacti Server Timezone"
-msgstr "Cacti Server vs - Техническое обслуживание"
+msgstr "Часовой пояс сервера (Timezone)"
 
 #: include/global_settings.php:2538
 msgid "My Browsers Timezone"
-msgstr ""
+msgstr "Часовой пояс браузера"
 
 #: include/global_settings.php:2543
 msgid "User Language"
 msgstr "Язык пользователя"
 
 #: include/global_settings.php:2544
-#, fuzzy
 msgid "Defines the preferred GUI language."
 msgstr "Определяет предпочтительный язык графического интерфейса пользователя."
 
@@ -13492,153 +13492,140 @@ msgid "Show Graph Title"
 msgstr "Показать название графика"
 
 #: include/global_settings.php:2551
-#, fuzzy
 msgid "Display the graph title on the page so that it may be searched using the browser."
-msgstr "Отобразите название графика на странице, чтобы его можно было искать с помощью браузера."
+msgstr ""
+"Отобразите название графика на странице, чтобы его можно было искать с "
+"помощью браузера."
 
 #: include/global_settings.php:2556
-#, fuzzy
 msgid "Hide Disabled"
-msgstr "Скрыть Инвалидов"
+msgstr "Скрыть Отключённые"
 
 #: include/global_settings.php:2557
-#, fuzzy
 msgid "Hides Disabled Devices and Graphs when viewing outside of Console tab."
-msgstr "Скрытие отключенных устройств и графиков при просмотре вне вкладки \"Консоль\"."
+msgstr ""
+"Скрытие отключенных устройств и графиков при просмотре вне вкладки \"Консоль"
+"\"."
 
 #: include/global_settings.php:2562
-#, fuzzy
 msgid "Show Device Aggregates"
-msgstr "Детали устройства"
+msgstr "Показать агрегированные устройства"
 
 #: include/global_settings.php:2563
-#, fuzzy
 msgid "If a Device Data Source is included in an Aggregate Graph, show that Graph along with other Device Graphs"
-msgstr "Если источник данных устройства включен в сводный график, покажите этот график вместе с другими графиками устройств"
+msgstr ""
+"Если источник данных устройства включен в сводный график, показать этот "
+"график вместе с другими графиками устройств"
 
 #: include/global_settings.php:2568
-#, fuzzy
 msgid "Enable Horizontal Scrolling"
-msgstr "Включить горизонтальную авто прокрутку графика"
+msgstr "Включить горизонтальную прокрутку"
 
 #: include/global_settings.php:2569
-#, fuzzy
 msgid "Enable Horizontal Scrolling of Tables, Disabling Responsive Column Visibility."
-msgstr "Включение горизонтальной прокрутки таблиц, отключение видимости адаптивных столбцов."
+msgstr ""
+"Включение горизонтальной прокрутки таблиц, отключение видимости адаптивных "
+"столбцов."
 
 #: include/global_settings.php:2575
-#, fuzzy
 msgid "The date format to use in Cacti."
 msgstr "Формат даты для использования в Cacti."
 
 #: include/global_settings.php:2582
-#, fuzzy
 msgid "The date separator to be used in Cacti."
-msgstr "Разделитель дат, который будет использоваться в Какти."
+msgstr "Разделитель дат, который будет использоваться в Cacti."
 
 #: include/global_settings.php:2588
 msgid "Page Refresh"
 msgstr "Обновить страницу"
 
 #: include/global_settings.php:2589
-#, fuzzy
 msgid "The number of seconds between automatic page refreshes."
 msgstr "Количество секунд между автоматическим обновлением страницы."
 
 #: include/global_settings.php:2601
-#, fuzzy
 msgid "Preview Graphs Per Page"
 msgstr "Предварительный просмотр графиков на страницу"
 
 #: include/global_settings.php:2602 include/global_settings.php:2731
-#, fuzzy
 msgid "The number of graphs to display on one page in preview mode."
-msgstr "Количество графиков для отображения на одной странице в режиме предварительного просмотра."
+msgstr ""
+"Количество графиков для отображения на одной странице в режиме "
+"предварительного просмотра."
 
 #: include/global_settings.php:2610
-#, fuzzy
 msgid "Default Time Range"
 msgstr "Диапазон времени по умолчанию"
 
 #: include/global_settings.php:2611
-#, fuzzy
 msgid "The default RRA to use in rare occasions."
 msgstr "RRA по умолчанию используется в редких случаях."
 
 #: include/global_settings.php:2618
-#, fuzzy
 msgid "The default Timespan displayed when viewing Graphs and other time specific data."
-msgstr "Время по умолчанию отображается при просмотре графиков и других временных данных."
+msgstr ""
+"Время по умолчанию отображается при просмотре графиков и других временных "
+"данных."
 
 #: include/global_settings.php:2624
-#, fuzzy
 msgid "Default Timeshift"
 msgstr "Временной сдвиг по умолчанию"
 
 #: include/global_settings.php:2625
-#, fuzzy
 msgid "The default Timeshift displayed when viewing Graphs and other time specific data."
-msgstr "Значение по умолчанию Timeshift отображается при просмотре Графиков и других временных данных."
+msgstr ""
+"Значение по умолчанию Timeshift отображается при просмотре Графиков и других "
+"временных данных."
 
 #: include/global_settings.php:2631
-#, fuzzy
 msgid "Allow Graph to extend to Future"
 msgstr "Позволить графику распространяться на будущее"
 
 #: include/global_settings.php:2632
-#, fuzzy
 msgid "When displaying Graphs, allow Graph Dates to extend 'to future'"
-msgstr "При отображении графиков позвольте датам расширяться \"в будущее\"."
+msgstr "При отображении графиков позвольте датам расширяться \"в будущее\""
 
 #: include/global_settings.php:2637
-#, fuzzy
 msgid "First Day of the Week"
 msgstr "Первый день недели"
 
 #: include/global_settings.php:2638
-#, fuzzy
 msgid "The first Day of the Week for weekly Graph Displays"
 msgstr "Первый день недели для отображения еженедельных графиков"
 
 #: include/global_settings.php:2644
-#, fuzzy
 msgid "Start of Daily Shift"
 msgstr "Начало ежедневной смены"
 
 #: include/global_settings.php:2645
-#, fuzzy
 msgid "Start Time of the Daily Shift."
 msgstr "Время начала ежедневной смены."
 
 #: include/global_settings.php:2652
-#, fuzzy
 msgid "End of Daily Shift"
 msgstr "Конец ежедневной смены"
 
 #: include/global_settings.php:2653
-#, fuzzy
 msgid "End Time of the Daily Shift."
 msgstr "Время окончания ежедневной смены."
 
 #: include/global_settings.php:2662
-#, fuzzy
 msgid "Thumbnail Sections"
 msgstr "Разделы эскизов"
 
 #: include/global_settings.php:2663
-#, fuzzy
 msgid "Which portions of Cacti display Thumbnails by default."
-msgstr "Какие части кактусов отображаются миниатюры по умолчанию."
+msgstr "Какие части Cacti отображают миниатюры по умолчанию."
 
 #: include/global_settings.php:2677
-#, fuzzy
 msgid "Preview Thumbnail Columns"
-msgstr "Колонки предварительного просмотра Колонки эскизов"
+msgstr "Колонки предварительного просмотра"
 
 #: include/global_settings.php:2678
-#, fuzzy
 msgid "The number of columns to use when displaying Thumbnail graphs in Preview mode."
-msgstr "Количество столбцов, используемых при отображении миниатюрных графиков в режиме предварительного просмотра."
+msgstr ""
+"Количество столбцов, используемых при отображении миниатюрных графиков в "
+"режиме предварительного просмотра."
 
 #: include/global_settings.php:2682 include/global_settings.php:2696
 msgid "1 Column"
@@ -13658,21 +13645,20 @@ msgid "%d Columns"
 msgstr "%d шт."
 
 #: include/global_settings.php:2691
-#, fuzzy
 msgid "Tree View Thumbnail Columns"
-msgstr "Колонки миниатюр в виде деревьев"
+msgstr "Столбцы миниатюр древовидного представления"
 
 #: include/global_settings.php:2692
-#, fuzzy
 msgid "The number of columns to use when displaying Thumbnail graphs in Tree mode."
-msgstr "Количество столбцов, используемых при отображении миниатюрных графиков в режиме Дерево."
+msgstr ""
+"Количество столбцов, используемых при отображении миниатюрных графиков в "
+"режиме Дерево."
 
 #: include/global_settings.php:2705
 msgid "Thumbnail Height"
 msgstr "Высота миниатюры"
 
 #: include/global_settings.php:2706
-#, fuzzy
 msgid "The height of Thumbnail graphs in pixels."
 msgstr "Высота миниатюрных графиков в пикселях."
 
@@ -13681,7 +13667,6 @@ msgid "Thumbnail Width"
 msgstr "Ширина миниатюр"
 
 #: include/global_settings.php:2714
-#, fuzzy
 msgid "The width of Thumbnail graphs in pixels."
 msgstr "Ширина миниатюрных графиков в пикселях."
 
@@ -13690,91 +13675,83 @@ msgid "Default Tree"
 msgstr "Дерево по умолчанию"
 
 #: include/global_settings.php:2724
-#, fuzzy
 msgid "The default graph tree to use when displaying graphs in tree mode."
-msgstr "Дерево графиков по умолчанию, используемое при отображении графиков в режиме дерева."
+msgstr ""
+"Дерево графиков по умолчанию, используемое при отображении графиков в режиме "
+"дерева."
 
 #: include/global_settings.php:2730
-#, fuzzy
 msgid "Graphs Per Page"
 msgstr "Графики на страницу"
 
 #: include/global_settings.php:2737
-#, fuzzy
 msgid "Expand Devices"
-msgstr "Расширить устройства"
+msgstr "Развернуть устройства"
 
 #: include/global_settings.php:2738
-#, fuzzy
 msgid "Choose whether to expand the Graph Templates and Data Queries used by a Device on Tree."
-msgstr "Выберите, следует ли расширять шаблоны графиков и запросы данных, используемые устройством в дереве."
+msgstr ""
+"Выберите, следует ли разворачивать шаблоны графиков и запросы данных, "
+"используемые устройством в дереве."
 
 #: include/global_settings.php:2743
-#, fuzzy
 msgid "Tree History"
-msgstr "История паролей"
+msgstr "История дерева"
 
 #: include/global_settings.php:2744
-#, fuzzy
 msgid "If enabled, Cacti will remember your Tree History between logins and when you return to the Graphs page."
-msgstr "Если этот параметр включен, Cacti запоминает историю дерева между логинами и при возврате на страницу «Графики»."
+msgstr ""
+"Если эта функция включена, Cacti будет помнить вашу историю дерева между "
+"входами в систему и при возврате на страницу графиков."
 
 #: include/global_settings.php:2767
 msgid "Use Custom Fonts"
 msgstr "Использовать свои шрифты"
 
 #: include/global_settings.php:2768
-#, fuzzy
 msgid "Choose whether to use your own custom fonts and font sizes or utilize the system defaults."
-msgstr "Выберите, использовать ли собственные пользовательские шрифты и размеры шрифтов или использовать системные настройки по умолчанию."
+msgstr ""
+"Выберите, использовать ли собственные пользовательские шрифты и размеры "
+"шрифтов или использовать системные настройки по умолчанию."
 
 #: include/global_settings.php:2781
-#, fuzzy
 msgid "Title Font File"
 msgstr "Название Файл шрифта"
 
 #: include/global_settings.php:2782
-#, fuzzy
 msgid "The font file to use for Graph Titles"
 msgstr "Файл шрифта для заголовков графиков"
 
 #: include/global_settings.php:2794
-#, fuzzy
 msgid "Legend Font File"
-msgstr "Легендарный файл шрифта"
+msgstr "Файл легенд шрифта"
 
 #: include/global_settings.php:2795
-#, fuzzy
 msgid "The font file to be used for Graph Legend items"
 msgstr "Файл шрифта, который будет использоваться для элементов Graph Legend"
 
 #: include/global_settings.php:2807
-#, fuzzy
 msgid "Axis Font File"
 msgstr "Осевой файл шрифта"
 
 #: include/global_settings.php:2808
-#, fuzzy
 msgid "The font file to be used for Graph Axis items"
 msgstr "Файл шрифта, который будет использоваться для элементов оси графика"
 
 #: include/global_settings.php:2820
-#, fuzzy
 msgid "Unit Font File"
-msgstr "Единичный файл шрифта"
+msgstr "Файл шрифта устройства"
 
 #: include/global_settings.php:2821
-#, fuzzy
 msgid "The font file to be used for Graph Unit items"
-msgstr "Файл шрифта, который будет использоваться для элементов графического модуля"
+msgstr ""
+"Файл шрифта, который будет использоваться для элементов графического модуля"
 
 #: include/global_settings.php:2835
-#, fuzzy
 msgid "Realtime View Mode"
 msgstr "Режим просмотра в реальном времени"
 
 #: include/global_settings.php:2836
-#, fuzzy
 msgid "How do you wish to view Realtime Graphs?"
 msgstr "Как вы хотите просматривать графики в режиме реального времени?"
 
@@ -13787,7 +13764,6 @@ msgid "New Window"
 msgstr "Новое окно"
 
 #: include/global_settings.php:2855
-#, fuzzy
 msgid "System Setting"
 msgstr "Настройки"
 
@@ -13796,14 +13772,17 @@ msgid "1 Week"
 msgstr "1 Неделя"
 
 #: include/global_settings.php:2876
-#, fuzzy
 msgid "Auto Log Out Time"
-msgstr "Автоматический выход из системы"
+msgstr "Время автоматического выхода из системы"
 
 #: include/global_settings.php:2877
-#, fuzzy
 msgid "For users with Console access only, how long this user can stay logged in before being automatically logged out.  Note that if you have not been active in more than an hour, you may have to refresh your browser.  Also note that this setting has no affect when Authentication Cookies are enabled."
-msgstr "Для пользователей с доступом только через консоль: как долго этот пользователь может оставаться в системе до автоматического выхода. Обратите внимание: если вы не проявляли активности более часа, возможно, вам придется обновить страницу в браузере. Также обратите внимание, что этот параметр не влияет на использование файлов cookie аутентификации."
+msgstr ""
+"Для пользователей с доступом только через консоль: как долго этот "
+"пользователь может оставаться в системе до автоматического выхода. Обратите "
+"внимание: если вы не проявляли активности более часа, возможно, вам придется "
+"обновить страницу в браузере. Также обратите внимание, что этот параметр не "
+"влияет на использование файлов cookie аутентификации."
 
 #: index.php:68
 #, php-format
@@ -13838,19 +13817,27 @@ msgid "Recovery"
 msgstr "Восстанавливается"
 
 #: index.php:82
-#, fuzzy
 msgid "Remote Data Collector Status:"
-msgstr "Состояние удаленного сбора данных:"
+msgstr "Состояние Удалённого Сборщика Данных:"
 
 #: index.php:84
-#, fuzzy
 msgid "Number of Offline Records:"
 msgstr "Количество автономных записей:"
 
 #: index.php:89
-#, fuzzy
 msgid "<strong>NOTE:</strong> You are logged into a Remote Data Collector.  When <b>'online'</b>, you will be able to view and control much of the Main Cacti Web Site just as if you were logged into it.  Also, it's important to note that Remote Data Collectors are required to use the Cacti's Performance Boosting Services <b>'On Demand Updating'</b> feature, and we always recommend using Spine.  When the Remote Data Collector is <b>'offline'</b>, the Remote Data Collectors Web Site will contain much less information.  However, it will cache all updates until the Main Cacti Database and Web Server are reachable.  Then it will dump it's Boost table output back to the Main Cacti Database for updating."
-msgstr "<strong>NOTE:</strong> Вы вошли в удаленный сборщик данных.  Когда <b>'online'</b>, вы сможете просматривать и контролировать большую часть веб-сайта Main Cacti так же, как если бы вы вошли на него.  Также важно отметить, что удаленные сборщики данных должны использовать функцию Cacti's Performance Boosting Services <b>'On Demand Updating' </b>, и мы всегда рекомендуем использовать Spine.  Когда удаленный сборщик данных <b>'offline'</b>, вебсайт удаленных сборщиков данных будет содержать гораздо меньше информации.  Однако, он будет кэшировать все обновления до тех пор, пока Главная база данных Cacti и Web-сервер не станут доступны.  Затем он сбросит данные таблицы Boost обратно в главную базу данных Cacti для обновления."
+msgstr ""
+"<strong>NOTE:</strong> Вы вошли в удаленный сборщик данных.  Когда "
+"<b>'online'</b>, вы сможете просматривать и контролировать большую часть веб-"
+"сайта основного Cacti так же, как если бы вы вошли на него. Также важно "
+"отметить, что удаленные сборщики данных должны использовать функцию Cacti's "
+"Performance Boosting Services <b>'Обновление по требованию' </b>, и мы "
+"всегда рекомендуем использовать Spine. Когда удаленный сборщик данных "
+"<b>'offline'</b>, вебсайт удаленных сборщиков данных будет содержать гораздо "
+"меньше информации. Однако, он будет кэшировать все обновления до тех пор, "
+"пока Главная база данных Cacti и Web-сервер не станут доступны. Затем он "
+"сбросит данные таблицы Boost обратно в главную базу данных Cacti для "
+"обновления."
 
 #: index.php:94
 #, fuzzy
