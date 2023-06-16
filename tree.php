@@ -930,7 +930,7 @@ function tree_edit($partial = false) {
 							<?php print __('Search'); ?>
 						</td>
 						<td>
-							<input type='text'  class='ui-state-default ui-corner-all' id='grfilter' name='grfilter' size='25' value='<?php print html_escape_request_var('grfilter');?>'>
+							<input type='text'  class='ui-state-default ui-corner-all' id='gfilter' name='gfilter' size='25' value='<?php print html_escape_request_var('gfilter');?>'>
 						</td>
 					</tr>
 				</table>
@@ -1000,7 +1000,7 @@ function tree_edit($partial = false) {
 		}
 
 		function getGraphData() {
-			$.get('tree.php?action=graphs&filter='+$('#grfilter').val()
+			$.get('tree.php?action=graphs&filter='+$('#gfilter').val()
 				+ '&site_id=' + (selectedItem.site_id ? selectedItem.site_id:'')
 				+ '&host_id=' + (selectedItem.host_id ? selectedItem.host_id:''))
 				.done(function(data) {
@@ -1321,7 +1321,7 @@ function tree_edit($partial = false) {
 		}
 
 		function enableKeyups() {
-			$('#grfilter').keyup(function(data) {
+			$('#gfilter').keyup(function(data) {
 				graphMeTimer && clearTimeout(graphMeTimer);
 				graphMeTimer = setTimeout(getGraphData, 300);
 			});
