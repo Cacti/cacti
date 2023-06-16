@@ -2533,10 +2533,14 @@ function boost_display_run_status() {
 	$avg_row_length = ($total_records ? intval($data_length / $total_records) : 0);
 
 	$boost_status = read_config_option('boost_poller_status', true);
-	if ($boost_status != '' && $boost_status != 'Disabled') {
+	if ($boost_status != '' && $boost_status != 'disabled') {
 		$boost_status_array = explode(':', $boost_status);
 
-		$boost_status_date  = $boost_status_array[1];
+		if (isset($boost_status_array[1])) {
+			$boost_status_date = $boost_status_array[1];
+		} else {
+			$boost_status_date = null;
+		}
 
 		if (substr_count($boost_status_array[0], 'complete')) {
 			$status = '<span class="deviceRecovering">' . __('Idle') . '</span>';
@@ -2551,7 +2555,7 @@ function boost_display_run_status() {
 		}
 	} else {
 		$status = '<span class="deviceDisabled">' . __('Disabled') . '</span>';
-		$boost_status_date = '';
+		$boost_status_date = null;
 	}
 
 	$stats_boost = read_config_option('stats_boost', true);
@@ -2719,6 +2723,12 @@ function boost_display_run_status() {
 
 		form_alternate_row();
 		print '<td class="utilityPick">' . __('Last Start Time:') . '</td><td>' . (is_numeric($last_run_time) ? date('Y-m-d H:i:s', $last_run_time):$last_run_time) . '</td>';
+
+		/* get the last end time */
+		$last_end_time = read_config_option('boost_last_end_time', true);
+
+		form_alternate_row();
+		print '<td class="utilityPick">' . __('Last End Time:') . '</td><td>' . ($last_end_time != '' ? date('Y-m-d H:i:s', $last_end_time):__('Never Run')) . '</td>';
 
 		form_alternate_row();
 		print '<td class="utilityPick">' . __('Last Run Duration:') . '</td><td>';
