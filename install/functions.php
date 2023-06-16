@@ -470,12 +470,16 @@ function install_setup_get_templates() {
 
 	$templates = array(
 		'Apache_Webserver.xml.gz',
+		'Aruba_Instant_AP_Cluster.xml.gz',
 		'Cacti_Stats.xml.gz',
 		'Cisco_Router.xml.gz',
 		'Citrix_NetScaler_VPX.xml.gz',
 		'ESXi_Device.xml.gz',
+		'Fortigate.xml.gz',
 		'Generic_SNMP_Device.xml.gz',
 		'Local_Linux_Machine.xml.gz',
+		'MikroTik_Device.xml.gz',
+		'MikroTik_Switch_SWOS.xml.gz',
 		'NetSNMP_Device.xml.gz',
 		'PING_Advanced_Ping.xml.gz',
 		'Synology_NAS.xml.gz',
