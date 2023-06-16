@@ -226,6 +226,11 @@ if ($child == false) {
 		}
 
 		unregister_process('boost', 'master', $config['poller_id'], getmypid());
+
+		/* log the end time of the process */
+		set_config_option('boost_last_end_time', time());
+	} else {
+		set_config_option('boost_poller_status', 'complete');
 	}
 
 	/* store the next run time so that people understand */
