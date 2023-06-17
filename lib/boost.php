@@ -982,7 +982,6 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 					$vals_in_buffer++;
 				}
 			} else {
-				cacti_log(sprintf('WARNING: Output of MULTI output DS[%d] is not valid output is [%s]', $item['local_data_id'], $value), false, 'POLLER');
 
 				if (!$multi_vals_set) {
 					$rrd_field_names = array_rekey(
@@ -1010,11 +1009,15 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 					$rrd_tmpl = '';
 				}
 
+				$expected = '';
+
 				if (cacti_sizeof($nt_rrd_field_names)) {
 					foreach($nt_rrd_field_names as $field) {
 						if (cacti_sizeof($unused_data_source_names) && isset($unused_data_source_names[$field])) {
 							continue;
 						}
+
+						$expected .= ($expected != '' ? ' ':'') . "$field:value";
 
 						if ($reset_template) {
 							$rrd_tmpl .= ($rrd_tmpl != '' ? ':':'') . $field;
@@ -1024,6 +1027,8 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 						$buflen += 2;
 					}
 				}
+
+				cacti_log(sprintf('WARNING: Invalid output! MULTI DS[%d] Encountered [%s] Expected [%s]', $item['local_data_id'], $value, $expected), false, 'POLLER');
 
 				$vals_in_buffer++;
 				$multi_vals_set = true;

@@ -1015,8 +1015,6 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 					}
 				}
 			} else {
-				cacti_log(sprintf('WARNING: Output of MULTI output DS[%d] is not valid output is [%s]', $item['local_data_id'], $value), false, 'POLLER');
-
 				if ($reset_template) {
 					$unused_data_source_names = array_rekey(
 						db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
@@ -1041,11 +1039,15 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 					);
 				}
 
+				$expected = '';
+
 				if (cacti_sizeof($nt_rrd_field_names)) {
 					foreach($nt_rrd_field_names as $field) {
 						if (cacti_sizeof($unused_data_source_names) && isset($unused_data_source_names[$field])) {
 							continue;
 						}
+
+						$expected .= ($expected != '' ? ' ':'') . "$field:value";
 
 						if ($reset_template) {
 							$rrd_tmpl .= ($rrd_tmpl != '' ? ':':'') . $field;
@@ -1055,6 +1057,8 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 						$buflen += 2;
 					}
 				}
+
+				cacti_log(sprintf('WARNING: Invalid output! MULTI DS[%d] Encountered [%s] Expected[%s]', $item['local_data_id'], $value, $expected), false, 'POLLER');
 			}
 		}
 

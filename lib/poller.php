@@ -683,8 +683,6 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 					}
 				}
 			} else {
-				cacti_log(sprintf('WARNING: Output of MULTI output DS[%d] is not valid output is [%s]', $item['local_data_id'], $value), false, 'POLLER');
-
 				$unused_data_source_names = array_rekey(
 					db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
 						FROM data_template_rrd AS dtr
@@ -708,11 +706,15 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 					'data_name', 'data_source_name'
 				);
 
+				$expected = '';
+
 				if (cacti_sizeof($nt_rrd_field_names)) {
 					foreach($nt_rrd_field_names as $field) {
 						if (cacti_sizeof($unused_data_source_names) && isset($unused_data_source_names[$field])) {
 							continue;
 						}
+
+						$expected .= ($expected != '' ? ' ':'') . "$field:value";
 
 						$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = 'U';
 						$rrd_tmpl .= ($rrd_tmpl != '' ? ':':'') . $field;
@@ -720,6 +722,8 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 
 					$rrd_update_array[$rrd_path]['template'] = $rrd_tmpl;
 				}
+
+				cacti_log(sprintf('WARNING: Invalid output! MULTI DS[%d] Encountered [%s] Expected[%s]', $item['local_data_id'], $value, $expected), false, 'POLLER');
 			}
 
 			/* fallback values */
