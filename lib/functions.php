@@ -4705,6 +4705,9 @@ function debug_log_clear($type = '') {
 /**
  * debug_log_return - returns the debug log for a particular category
  *
+ * NOTE: The escaping happens on the insert side and not the
+ * return side.
+ *
  * @param $type - the 'category' to return the debug log for.
  *
  * @return mixed the full debug log for a particular category
@@ -4716,8 +4719,8 @@ function debug_log_return($type) {
 		if (isset($_SESSION['debug_log'][$type])) {
 			$log_text .= "<table style='width:100%;'>";
 
-			for ($i=0; $i < cacti_count($_SESSION['debug_log'][$type]); $i++) {
-				$log_text .= '<tr><td>' . html_escape($_SESSION['debug_log'][$type][$i]) . '</td></tr>';
+			foreach($_SESSION['debug_log'][$type] as $key => $val) {
+				$log_text .= '<tr><td>' . $val . '</td></tr>';
 			}
 
 			$log_text .= '</table>';
@@ -4727,7 +4730,7 @@ function debug_log_return($type) {
 			$log_text .= "<table style='width:100%;'>";
 
 			foreach($_SESSION['debug_log'][$type] as $key => $val) {
-				$log_text .= '<tr><td>' . html_escape($val) . '</td></tr>';
+				$log_text .= '<tr><td>' . $val . '</td></tr>';
 
 				unset($_SESSION['debug_log'][$type][$key]);
 			}
