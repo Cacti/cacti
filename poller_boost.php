@@ -787,6 +787,10 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 			if ($local_data_id != $item['local_data_id']) {
 				$reset_template = true;
 
+				if (isset($nt_rrd_field_names)) {
+					unset($nt_rrd_field_names);
+				}
+
 				/* release the previous lock */
 				if (cacti_version_compare($rrdtool_version, '1.5', '<')) {
 					db_execute("SELECT RELEASE_LOCK('boost.single_ds.$local_data_id')");
@@ -891,7 +895,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 			/* single one value output */
 			if (strpos($value, 'DNP') !== false) {
 				/* continue, bad time */
-			} elseif ((is_numeric($value)) || ($value == 'U')) {
+			} elseif ((is_numeric($value)) || ($value == 'U' && $item['rrd_name'] !== '')) {
 				$tv_tmpl[$item['rrd_name']] = $value;
 				$buflen += strlen(':' . $value);
 				$vals_in_buffer++;
@@ -906,30 +910,83 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 
 				if (!$reset_template) {
 					$rrd_tmpl = '';
+				} else {
+					$unused_data_source_names = array_rekey(
+						db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
+							FROM data_template_rrd AS dtr
+							LEFT JOIN graph_templates_item AS gti
+							ON dtr.id = gti.task_item_id
+							WHERE dtr.local_data_id = ? AND gti.task_item_id IS NULL',
+							array($item['local_data_id'])),
+						'data_source_name', 'data_source_name'
+					);
 				}
 
-				if (cacti_sizeof($values)) {
-					foreach($values as $value) {
-						$matches = explode(':', $value);
+				foreach($values as $value) {
+					$matches = explode(':', $value);
 
-						if (cacti_sizeof($matches) == 2) {
-							$fields = array();
+					if (cacti_sizeof($matches) == 2) {
+						if (isset($rrd_field_names[$item['data_template_id'] . '_' . $matches[0]])) {
+							$field = $rrd_field_names[$item['data_template_id'] . '_' . $matches[0]]['data_source_name'];
 
-							if (isset($rrd_field_names[$item['data_template_id'] . '_' . $matches[0]])) {
-								$field_map = $rrd_field_names[$item['data_template_id'] . '_' . $matches[0]]['data_source_name'];
+							if (cacti_sizeof($unused_data_source_names) && isset($unused_data_source_names[$field])) {
+								continue;
+							}
 
-								if (strpos($field_map, ',') !== false) {
-									$fields = explode(',', $field_map);
-								} else {
-									$fields[] = $field_map;
+							if ($reset_template) {
+								cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $field . "' [map " . $matches[0] . '->' . $field . ']', false, 'BOOST', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_HIGH));
+
+								if (trim(read_config_option('path_boost_log')) != '') {
+									print "DEBUG: Parsed MULTI output field in path 1 '" . $matches[0] . "' [map " . $field . '->' . $field . ']' . PHP_EOL;
 								}
 
-								foreach($fields as $field) {
+								$rrd_tmpl .= ($rrd_tmpl != '' ? ':':'') . $field;
+							}
+
+							if (is_numeric($matches[1]) || ($matches[1] == 'U')) {
+								$tv_tmpl[$field] = $matches[1];
+								$buflen += strlen(':' . $matches[1]);
+							} elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($matches[1]))) {
+								$tval = hexdec($matches[1]);
+								$tv_tmpl[$field] = $tval;
+								$buflen += strlen(':' . $tval);
+							} else {
+								$tv_tmpl[$field] = 'U';
+								$buflen += 2;
+							}
+
+							$vals_in_buffer++;
+						} else {
+							/**
+							 * Handle data source without a data template
+							 * This section of the code should not be reached
+							 * if there is no issue in the database.
+							 */
+							$nt_rrd_field_names = array_rekey(
+								db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
+									FROM graph_templates_item AS gti
+									INNER JOIN data_template_rrd AS dtr
+									ON gti.task_item_id = dtr.id
+									INNER JOIN data_input_fields AS dif
+									ON dtr.data_input_field_id=dif.id
+									WHERE dtr.local_data_id = ?',
+									array($item['local_data_id'])),
+								'data_name', 'data_source_name'
+							);
+
+							if (cacti_sizeof($nt_rrd_field_names)) {
+								if (isset($nt_rrd_field_names[$matches[0]])) {
+									$field = $nt_rrd_field_names[$matches[0]];
+
+									if (cacti_sizeof($unused_data_source_names) && isset($unused_data_source_names[$field])) {
+										continue;
+									}
+
 									if ($reset_template) {
-										cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $field . "' [map " . $matches[0] . '->' . $field . ']', false, 'BOOST', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_HIGH));
+										cacti_log("Parsed MULTI output field in path 2 '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $field . ']', false, 'BOOOST', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_HIGH));
 
 										if (trim(read_config_option('path_boost_log')) != '') {
-											print "DEBUG: Parsed MULTI output field in path 1 '" . $matches[0] . "' [map " . $field . '->' . $field . ']' . PHP_EOL;
+											print "DEBUG: Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . '->' . $field . ']' . PHP_EOL;
 										}
 
 										$rrd_tmpl .= ($rrd_tmpl != '' ? ':':'') . $field;
@@ -946,60 +1003,58 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 										$tv_tmpl[$field] = 'U';
 										$buflen += 2;
 									}
+
+									if (trim(read_config_option('path_boost_log')) != '') {
+										print "DEBUG: Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . '->' . $nt_rrd_field_names[$matches[1]] . ']' . PHP_EOL;
+									}
 								}
 
 								$vals_in_buffer++;
-							} else {
-								// Handle data source without a data template
-								$nt_rrd_field_names = array_rekey(
-									db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
-										FROM graph_templates_item AS gti
-										INNER JOIN data_template_rrd AS dtr
-										ON gti.task_item_id = dtr.id
-										INNER JOIN data_input_fields AS dif
-										ON dtr.data_input_field_id=dif.id
-										WHERE dtr.local_data_id = ?',
-										array($item['local_data_id'])),
-									'data_name', 'data_source_name'
-								);
-
-								if (cacti_sizeof($nt_rrd_field_names)) {
-									if (isset($nt_rrd_field_names[$matches[0]])) {
-										if ($reset_template) {
-											cacti_log("Parsed MULTI output field in path 2 '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $nt_rrd_field_names[$matches[0]] . ']', false, 'BOOOST', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_HIGH));
-
-											if (trim(read_config_option('path_boost_log')) != '') {
-												print "DEBUG: Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . '->' . $nt_rrd_field_names[$matches[0]] . ']' . PHP_EOL;
-											}
-
-											$rrd_tmpl .= ($rrd_tmpl != '' ? ':':'') . $nt_rrd_field_names[$matches[0]];
-										}
-
-										if (is_numeric($matches[1]) || ($matches[1] == 'U')) {
-											$tv_tmpl[$nt_rrd_field_names[$matches[0]]] = $matches[1];
-											$buflen += strlen(':' . $matches[1]);
-										} elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($matches[1]))) {
-											$tval = hexdec($matches[1]);
-											$tv_tmpl[$nt_rrd_field_names[$matches[0]]] = $tval;
-											$buflen += strlen(':' . $tval);
-										} else {
-											$tv_tmpl[$nt_rrd_field_names[$matches[0]]] = 'U';
-											$buflen += 2;
-										}
-
-										if (trim(read_config_option('path_boost_log')) != '') {
-											print "DEBUG: Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . '->' . $rrd_field_names[$matches[1]] . ']' . PHP_EOL;
-										}
-									}
-
-									$vals_in_buffer++;
-								}
 							}
 						}
 					}
 				}
 			} else {
-				cacti_log('WARNING: Local Data Id [' . $item['local_data_id'] . '] Contains an empty value', false, 'BOOST');
+				cacti_log(sprintf('WARNING: Output of MULTI output DS[%d] is not valid output is [%s]', $item['local_data_id'], $value), false, 'POLLER');
+
+				if ($reset_template) {
+					$unused_data_source_names = array_rekey(
+						db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
+							FROM data_template_rrd AS dtr
+							LEFT JOIN graph_templates_item AS gti
+							ON dtr.id = gti.task_item_id
+							WHERE dtr.local_data_id = ? AND gti.task_item_id IS NULL',
+							array($item['local_data_id'])),
+						'data_source_name', 'data_source_name'
+					);
+
+					$nt_rrd_field_names = array_rekey(
+						db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
+							FROM graph_templates_item AS gti
+							INNER JOIN data_template_rrd AS dtr
+							ON gti.task_item_id = dtr.id
+							INNER JOIN data_input_fields AS dif
+							ON dtr.data_input_field_id=dif.id
+							WHERE dtr.local_data_id = ?',
+							array($item['local_data_id'])),
+						'data_name', 'data_source_name'
+					);
+				}
+
+				if (cacti_sizeof($nt_rrd_field_names)) {
+					foreach($nt_rrd_field_names as $field) {
+						if (cacti_sizeof($unused_data_source_names) && isset($unused_data_source_names[$field])) {
+							continue;
+						}
+
+						if ($reset_template) {
+							$rrd_tmpl .= ($rrd_tmpl != '' ? ':':'') . $field;
+						}
+
+						$tv_tmpl[$field] = 'U';
+						$buflen += 2;
+					}
+				}
 			}
 		}
 
