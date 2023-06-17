@@ -4325,7 +4325,8 @@ function debug_log_clear($type = '') {
 
 /**
  * debug_log_return - returns the debug log for a particular category.
- *   NOTE: Escaping is done in the insert functions.
+ *
+ * NOTE: Escaping is done in the insert functions.
  *
  * @param $type - the 'category' to return the debug log for.
  *
