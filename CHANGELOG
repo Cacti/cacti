@@ -117,9 +117,16 @@ Cacti CHANGELOG
 -issue#5342: Increase keyup delay when searching the tree
 -issue#5347: Device form location drop down not populating
 -issue#5354: Realtime graphs can report undefined variable
+-issue#5355: SNMP Uptime is not always ignored for spikekills
+-issue#5356: Improve downed Device detection
+-issue#5360: Plugin missing functions warning should be debounced
+-issue#5364: Cactid, on initial startup reports that the database connection went away which is erroneous
+-issue#5366: RRDcheck does not log using proper case
+-issue#5371: Orphaned Data Source Link not Working
 -issue#5372: PHP configuration file may not have expected settings
 -issue#5376: Auth attempts to check for a user lockout when there is no user
 -issue#5377: When attempting to edit a tree, the search filter for Graphs remains disabled
+-issue#5381: Once a Data Source is orphaned there are cases where it will not become un-orphaned upon reindex
 -feature#5375: Add template for Fortinet firewall and Aruba Instant cluster
 -feature: Upgrade billboard.js to version 3.7.4
 -feature: Upgrade d3.js to version 7.8.2
