@@ -188,8 +188,10 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 		AND dl.host_id = ?',
 		array($snmp_query_id, $host_id));
 
-	$changed_ids = array();
+	$changed_ids  = array();
 	$orphaned_ids = array();
+	$push_out     = array();
+
 	if (cacti_sizeof($local_data)) {
 		query_debug_timer_offset('data_query', __esc('Found %s Local Data ID\'s to Verify', cacti_sizeof($local_data)));
 
@@ -294,6 +296,13 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 						array($current_index, $data_source['local_data_id']));
 
 					$changed_ids[] = $data_source['local_data_id'];
+				} elseif ($data_source['orphan'] == 1) {
+					db_execute_prepared('UPDATE data_local
+						SET orphan = 0
+						WHERE id = ?',
+						array($data_source['local_data_id']));
+
+					$push_out[$data_source['local_data_id']] = $data_source['local_data_id'];
 				}
 			} elseif ($data_source['snmp_index'] != '' && !$forced_type) {
 				if (isset($query_array['index_transient']) && $query_array['index_transient'] == 'true') {
@@ -325,6 +334,13 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 					WHERE data_input_field_id = ?
 					AND data_template_data_id = ?',
 					array($new_sort_field, $previous_did['data_input_field_id'], $previous_did['data_template_data_id']));
+			}
+		}
+
+		/* if we've resolved orphan issues, push out the data source */
+		if (cacti_sizeof($push_out)) {
+			foreach($push_out as $po_local_data_id) {
+				push_out_host($host_id, $po_local_data_id);
 			}
 		}
 

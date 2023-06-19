@@ -1542,27 +1542,20 @@ function ds() {
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	if (get_request_var('orphans') == 'true') {
-		$sql_where1 .= ($sql_where1 != '' ? ' AND ':'WHERE ') . '((dl.snmp_index = "" AND dl.snmp_query_id > 0) OR dtr.local_graph_id IS NULL)';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND ':'WHERE ') . '((dl.snmp_index = "" AND dl.snmp_query_id > 0) OR graph_items = 0 IS NULL OR dl.orphan = 1)';
 
-		$orphan_join = "INNER JOIN (
-			SELECT DISTINCT dtr.local_data_id, task_item_id, local_graph_id
-			FROM graph_templates_item AS gti
+		$orphan_join = "LEFT JOIN (
+			SELECT dtr.local_data_id, COUNT(DISTINCT gti.task_item_id) AS graph_items
+			FROM data_template_rrd AS dtr
+			LEFT JOIN graph_templates_item AS gti
+			ON dtr.id = gti.task_item_id
 			INNER JOIN graph_local AS gl
 			ON gl.id = gti.local_graph_id
-			LEFT JOIN data_template_rrd AS dtr
-			ON dtr.id = gti.task_item_id
 			LEFT JOIN host AS h
 			ON h.id = gl.host_id
-			WHERE graph_type_id IN (4,5,6,7,8,20)
-			AND task_item_id IS NULL
-			AND cdef_id NOT IN (
-				SELECT c.id
-				FROM cdef AS c
-				INNER JOIN cdef_items AS ci
-				ON c.id = ci.cdef_id
-				WHERE (ci.type = 4 OR (ci.type = 6 AND value LIKE '%DATA_SOURCE%'))
-			)
+			WHERE dtr.local_data_id > 0
 			$sql_where2
+			GROUP BY local_data_id
 		) AS dtr
 		ON dl.id = dtr.local_data_id";
 
@@ -1579,7 +1572,7 @@ function ds() {
 
 		$total_rows = get_total_row_data($_SESSION['sess_user_id'], $sql, array(), 'data_source');
 
-		$data_sources = db_fetch_assoc("SELECT dtr.local_graph_id, dtd.local_data_id,
+		$data_sources = db_fetch_assoc("SELECT dtd.local_data_id,
 			dtd.name_cache, dtd.active, dtd.rrd_step, dt.name AS data_template_name,
 			dl.host_id, dtd.data_source_profile_id
 			FROM data_local AS dl
