@@ -850,7 +850,7 @@ function preProcessXML(&$output) {
 					$row = strpos($line, '<row>');
 
 					if ($row > 0) {
-						$date = trim(substr($line,$comment_start+30,11));
+						$date = trim(substr($line,strpos($line,'/')+1,11));
 					}
 
 					if ($comment_start == 0) {
