@@ -757,12 +757,14 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = null) {
 
 	$arch_results = cacti_sizeof($results);
 
-	$tresults = db_fetch_assoc_prepared('SELECT local_data_id,
-		UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
-		FROM poller_output_boost
-		WHERE local_data_id = ?
-		AND time < FROM_UNIXTIME(?)
-		ORDER BY time, rrd_name',
+	$tresults = db_fetch_assoc_prepared("SELECT po.local_data_id, dl.data_template_id,
+		UNIX_TIMESTAMP(po.time) AS timestamp, po.rrd_name, po.output
+		FROM poller_output_boost AS po
+		INNER JOIN data_local AS dl
+		ON po.local_data_id = dl.id
+		WHERE po.local_data_id = ?
+		AND po.time < FROM_UNIXTIME(?)
+		ORDER BY po.time, po.rrd_name",
 		array($local_data_id, $timestamp));
 
 	$boost_results = cacti_sizeof($tresults);
@@ -925,27 +927,47 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = null) {
 				$values = preg_split('/\s+/', $value);
 
 				if (!$multi_vals_set) {
-					$rrd_field_names = array_rekey(
-						db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
-							FROM graph_templates_item AS gti
-							INNER JOIN data_template_rrd AS dtr
-							ON gti.task_item_id = dtr.id
-							INNER JOIN data_input_fields AS dif
-							ON dtr.data_input_field_id = dif.id
-							WHERE dtr.local_data_id = ?',
-							array($item['local_data_id'])),
-						'data_name', 'data_source_name'
-					);
+					if ($item['data_template_id'] > 0) {
+						$rrd_field_names = array_rekey(
+							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
+								FROM graph_templates_item AS gti
+								INNER JOIN data_template_rrd AS dtr
+								ON gti.task_item_id = dtr.id
+								INNER JOIN data_input_fields AS dif
+								ON dtr.data_input_field_id = dif.id
+								WHERE dtr.local_data_id = ?',
+								array($item['local_data_id'])),
+							'data_name', 'data_source_name'
+						);
 
-					$unused_data_source_names = array_rekey(
-						db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
-							FROM data_template_rrd AS dtr
-							LEFT JOIN graph_templates_item AS gti
-							ON dtr.id = gti.task_item_id
-							WHERE dtr.local_data_id = ? AND gti.task_item_id IS NULL',
-							array($item['local_data_id'])),
-						'data_source_name', 'data_source_name'
-					);
+						$unused_data_source_names = array_rekey(
+							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
+								FROM data_template_rrd AS dtr
+								LEFT JOIN graph_templates_item AS gti
+								ON dtr.id = gti.task_item_id
+								WHERE dtr.local_data_id = ? AND gti.task_item_id IS NULL',
+								array($item['local_data_id'])),
+							'data_source_name', 'data_source_name'
+						);
+					} else {
+						$rrd_field_names = array_rekey(
+							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
+								FROM data_template_rrd AS dtr
+								INNER JOIN data_input_fields AS dif
+								ON dtr.data_input_field_id = dif.id
+								WHERE dtr.local_data_id = ?',
+								array($item['local_data_id'])),
+							'data_name', 'data_source_name'
+						);
+
+						$unused_data_source_names = array_rekey(
+							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
+								FROM data_template_rrd AS dtr
+								WHERE dtr.local_data_id = ? AND gti.task_item_id IS NULL',
+								array($item['local_data_id'])),
+							'data_source_name', 'data_source_name'
+						);
+					}
 
 					$rrd_tmpl = '';
 				}
@@ -1001,29 +1023,48 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = null) {
 					$vals_in_buffer++;
 				}
 			} else {
-
 				if (!$multi_vals_set) {
-					$rrd_field_names = array_rekey(
-						db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
-							FROM graph_templates_item AS gti
-							INNER JOIN data_template_rrd AS dtr
-							ON gti.task_item_id = dtr.id
-							INNER JOIN data_input_fields AS dif
-							ON dtr.data_input_field_id = dif.id
-							WHERE dtr.local_data_id = ?',
-							array($item['local_data_id'])),
-						'data_name', 'data_source_name'
-					);
+					if ($item['data_template_id'] > 0) {
+						$rrd_field_names = array_rekey(
+							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
+								FROM graph_templates_item AS gti
+								INNER JOIN data_template_rrd AS dtr
+								ON gti.task_item_id = dtr.id
+								INNER JOIN data_input_fields AS dif
+								ON dtr.data_input_field_id = dif.id
+								WHERE dtr.local_data_id = ?',
+								array($item['local_data_id'])),
+							'data_name', 'data_source_name'
+						);
 
-					$unused_data_source_names = array_rekey(
-						db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
-							FROM data_template_rrd AS dtr
-							LEFT JOIN graph_templates_item AS gti
-							ON dtr.id = gti.task_item_id
-							WHERE dtr.local_data_id = ? AND gti.task_item_id IS NULL',
-							array($item['local_data_id'])),
-						'data_source_name', 'data_source_name'
-					);
+						$unused_data_source_names = array_rekey(
+							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
+								FROM data_template_rrd AS dtr
+								LEFT JOIN graph_templates_item AS gti
+								ON dtr.id = gti.task_item_id
+								WHERE dtr.local_data_id = ? AND gti.task_item_id IS NULL',
+								array($item['local_data_id'])),
+							'data_source_name', 'data_source_name'
+						);
+					} else {
+						$rrd_field_names = array_rekey(
+							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
+								FROM data_template_rrd AS dtr
+								INNER JOIN data_input_fields AS dif
+								ON dtr.data_input_field_id = dif.id
+								WHERE dtr.local_data_id = ?',
+								array($item['local_data_id'])),
+							'data_name', 'data_source_name'
+						);
+
+						$unused_data_source_names = array_rekey(
+							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
+								FROM data_template_rrd AS dtr
+								WHERE dtr.local_data_id = ? AND gti.task_item_id IS NULL',
+								array($item['local_data_id'])),
+							'data_source_name', 'data_source_name'
+						);
+					}
 
 					$rrd_tmpl = '';
 				}
@@ -1149,16 +1190,32 @@ function boost_get_rrd_filename_and_template($local_data_id) {
 	$ds_null      = array();
 	$ds_nnull     = array();
 
-	$ds_names = db_fetch_assoc_prepared("SELECT DISTINCT data_source_name, rrd_name, rrd_path
-		FROM data_template_rrd AS dtr
-		INNER JOIN graph_templates_item AS gti
-		ON gti.task_item_id = dtr.id
-		INNER JOIN poller_item AS pi
-		ON pi.local_data_id = dtr.local_data_id
-		AND (pi.rrd_name = dtr.data_source_name OR pi.rrd_name = '')
-		WHERE dtr.local_data_id = ?
-		ORDER BY data_source_name ASC",
+	$data_template_id = db_fetch_cell_prepared('SELECT data_template_id
+		FROM data_local
+		WHERE id = ?',
 		array($local_data_id));
+
+	if ($data_template_id > 0) {
+		$ds_names = db_fetch_assoc_prepared("SELECT DISTINCT data_source_name, rrd_name, rrd_path
+			FROM data_template_rrd AS dtr
+			INNER JOIN graph_templates_item AS gti
+			ON gti.task_item_id = dtr.id
+			INNER JOIN poller_item AS pi
+			ON pi.local_data_id = dtr.local_data_id
+			AND (pi.rrd_name = dtr.data_source_name OR pi.rrd_name = '')
+			WHERE dtr.local_data_id = ?
+			ORDER BY data_source_name ASC",
+			array($local_data_id));
+	} else {
+		$ds_names = db_fetch_assoc_prepared("SELECT DISTINCT data_source_name, rrd_name, rrd_path
+			FROM data_template_rrd AS dtr
+			INNER JOIN poller_item AS pi
+			ON pi.local_data_id = dtr.local_data_id
+			AND (pi.rrd_name = dtr.data_source_name OR pi.rrd_name = '')
+			WHERE dtr.local_data_id = ?
+			ORDER BY data_source_name ASC",
+			array($local_data_id));
+	}
 
 	if (cacti_sizeof($ds_names)) {
 		foreach ($ds_names as $ds_name) {
@@ -1244,18 +1301,31 @@ function boost_rrdtool_function_create($local_data_id, $show_source, $rrdtool_pi
 	$create_ds = RRD_NL . '--start 0 --step '. $rras[0]['rrd_step'] . ' ' . RRD_NL;
 
 	/**
-	 * Only use the Data Sources that are included in the Graph in the case that there
-	 * is a Data Template that includes more Data Sources than there Graph Template
-	 * uses.
-	 */
-	$data_sources = db_fetch_assoc_prepared('SELECT DISTINCT dtr.id, dtr.data_source_name, dtr.rrd_heartbeat,
-		dtr.rrd_minimum, dtr.rrd_maximum, dtr.data_source_type_id
-		FROM data_template_rrd AS dtr
-		INNER JOIN graph_templates_item AS gti
-		ON dtr.id = gti.task_item_id
-		WHERE dtr.local_data_id = ?
-		ORDER BY local_data_template_rrd_id',
+	 * We have to check for Non-Templated Data Source first as they may not include
+	 * a graph.  So, for that case, we need the RRDfile to include all data sources
+     */
+	$data_template_id = db_fetch_cell_prepared('SELECT data_template_id
+		FROM data_local
+		WHERE id = ?',
 		array($local_data_id));
+
+	if ($data_template_id > 0) {
+		$data_sources = db_fetch_assoc_prepared('SELECT DISTINCT dtr.id, dtr.data_source_name, dtr.rrd_heartbeat,
+			dtr.rrd_minimum, dtr.rrd_maximum, dtr.data_source_type_id
+			FROM data_template_rrd AS dtr
+			INNER JOIN graph_templates_item AS gti
+			ON dtr.id = gti.task_item_id
+			WHERE dtr.local_data_id = ?
+			ORDER BY local_data_template_rrd_id',
+			array($local_data_id));
+	} else {
+		$data_sources = db_fetch_assoc_prepared('SELECT DISTINCT dtr.id, dtr.data_source_name, dtr.rrd_heartbeat,
+			dtr.rrd_minimum, dtr.rrd_maximum, dtr.data_source_type_id
+			FROM data_template_rrd AS dtr
+			WHERE dtr.local_data_id = ?
+			ORDER BY local_data_template_rrd_id',
+			array($local_data_id));
+	}
 
 	/**
 	 * ONLY make a new DS entry if:
@@ -1422,11 +1492,11 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 
 	if ($valid_entry) {
 		if ($rrd_update_template != '') {
-			cacti_log("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
+			cacti_log("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", true, 'BOOST', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_HIGH));
 
 			rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
 		} else {
-			cacti_log("update $rrd_path $update_options $rrd_update_values", false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
+			cacti_log("update $rrd_path $update_options $rrd_update_values", true, 'BOOST', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_HIGH));
 
 			rrdtool_execute("update $rrd_path $update_options $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
 		}

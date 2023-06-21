@@ -705,19 +705,33 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = n
 	$create_ds = RRD_NL . '--start 0 --step '. $rras[0]['rrd_step'] . ' ' . RRD_NL;
 
 	/**
-	 * Only use the Data Sources that are included in the Graph in the case that there
-	 * is a Data Template that includes more Data Sources than there Graph Template
-	 * uses.
+	 * We have to check for Non-Templated Data Source first as they may not include
+	 * a graph.  So, for that case, we need the RRDfile to include all data sources
 	 */
-	$data_sources = db_fetch_assoc_prepared('SELECT DISTINCT dtr.id, dtr.data_source_name, dtr.rrd_heartbeat,
-		dtr.rrd_minimum, dtr.rrd_maximum, dtr.data_source_type_id
-		FROM data_template_rrd AS dtr
-		INNER JOIN graph_templates_item AS gti
-		ON dtr.id = gti.task_item_id
-		WHERE local_data_id = ?
-		ORDER BY local_data_template_rrd_id',
-		array($local_data_id)
-	);
+	$data_template_id = db_fetch_cell_prepared('SELECT data_template_id
+		FROM data_local
+		WHERE id = ?',
+		array($local_data_id));
+
+	if ($data_template_id > 0) {
+		$data_sources = db_fetch_assoc_prepared('SELECT DISTINCT dtr.id, dtr.data_source_name, dtr.rrd_heartbeat,
+			dtr.rrd_minimum, dtr.rrd_maximum, dtr.data_source_type_id
+			FROM data_template_rrd AS dtr
+			INNER JOIN graph_templates_item AS gti
+			ON dtr.id = gti.task_item_id
+			WHERE local_data_id = ?
+			ORDER BY local_data_template_rrd_id',
+			array($local_data_id)
+		);
+	} else {
+		$data_sources = db_fetch_assoc_prepared('SELECT DISTINCT dtr.id, dtr.data_source_name, dtr.rrd_heartbeat,
+			dtr.rrd_minimum, dtr.rrd_maximum, dtr.data_source_type_id
+			FROM data_template_rrd AS dtr
+			WHERE local_data_id = ?
+			ORDER BY local_data_template_rrd_id',
+			array($local_data_id)
+		);
+	}
 
 	/**
 	 * ONLY make a new DS entry if:
@@ -868,6 +882,20 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = null) {
 				$times = array_keys($rrd_fields['times']);
 				rrdtool_function_create($rrd_fields['local_data_id'], false, $rrdtool_pipe);
 				$create_rrd_file = true;
+			}
+
+			if ($rrd_fields['data_template_id'] > 0) {
+				$unused_data_source_names = array_rekey(
+					db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
+						FROM data_template_rrd AS dtr
+						LEFT JOIN graph_templates_item AS gti
+						ON dtr.id = gti.task_item_id
+						WHERE dtr.local_data_id = ? AND gti.task_item_id IS NULL',
+						array($rrd_fields['local_data_id'])),
+					'data_source_name', 'data_source_name'
+				);
+			} else {
+				$unused_data_source_names = array();
 			}
 
 			foreach ($rrd_fields['times'] as $update_time => $field_array) {
@@ -2918,14 +2946,27 @@ function rrdtool_function_info_from_ds($data_source_id) {
 		WHERE local_data_id = ?',
 		array($data_source_id));
 
-	/* get cacti DS information */
-	$cacti_ds_array = db_fetch_assoc_prepared('SELECT DISTINCT dtr.id, dtr.data_source_name, dtr.data_source_type_id,
-		dtr.rrd_heartbeat, dtr.rrd_maximum, dtr.rrd_minimum
-		FROM data_template_rrd AS dtr
-		INNER JOIN graph_templates_item AS gti
-		ON dtr.id = gti.task_item_id
-		WHERE local_data_id = ?',
+	$data_template_id = db_fetch_cell_prepared('SELECT data_template_id
+		FROM data_local
+		WHERE id = ?',
 		array($data_source_id));
+
+	/* get cacti DS information */
+	if ($data_template_id > 0) {
+		$cacti_ds_array = db_fetch_assoc_prepared('SELECT DISTINCT dtr.id, dtr.data_source_name, dtr.data_source_type_id,
+			dtr.rrd_heartbeat, dtr.rrd_maximum, dtr.rrd_minimum
+			FROM data_template_rrd AS dtr
+			INNER JOIN graph_templates_item AS gti
+			ON dtr.id = gti.task_item_id
+			WHERE local_data_id = ?',
+			array($data_source_id));
+	} else {
+		$cacti_ds_array = db_fetch_assoc_prepared('SELECT DISTINCT dtr.id, dtr.data_source_name, dtr.data_source_type_id,
+			dtr.rrd_heartbeat, dtr.rrd_maximum, dtr.rrd_minimum
+			FROM data_template_rrd AS dtr
+			WHERE local_data_id = ?',
+			array($data_source_id));
+	}
 
 	if (cacti_sizeof($cacti_header_array) && cacti_sizeof($cacti_ds_array)) {
 		$info_array['step'] = $cacti_header_array['rrd_step'];
