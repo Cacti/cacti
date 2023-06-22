@@ -383,31 +383,6 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 		query_debug_timer_offset('data_query', __esc('Update Poller Cache for Query complete'));
 	} else {
 		query_debug_timer_offset('data_query', __esc('No Index Changes Detected, Skipping Re-Index and Poller Cache Re-population'));
-
-		$existing_orphans = db_fetch_cell_prepared('SELECT COUNT(*)
-			FROM data_local
-			WHERE snmp_query_id = ?
-			AND host_id = ?
-			AND orphan = 1',
-			array($snmp_query_id, $host_id));
-
-		if ($existing_orphans) {
-			$data_template_id = db_fetch_cell_prepared('SELECT data_template_id
-				FROM data_local
-				WHERE snmp_query_id = ?
-				LIMIT 1',
-				array($snmp_query_id));
-
-			db_execute_prepared('UPDATE data_local
-				SET orphan = 0
-				WHERE snmp_query_id = ?
-				AND host_id = ?',
-				array($snmp_query_id, $host_id));
-
-			if (isset($query_array['index_orphan_removal']) && $query_array['index_orphan_removal'] == 'true') {
-				push_out_host($host_id, 0, $data_template_id);
-			}
-		}
 	}
 
 	if (cacti_sizeof($orphaned_ids) &&
