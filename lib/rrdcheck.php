@@ -45,7 +45,12 @@ function get_rrdfiles($thread_id = 1, $max_threads = 1) {
 		ON dtr.id = gti.task_item_id
 		INNER JOIN data_source_profiles AS dsp
 		ON dtd.data_source_profile_id = dsp.id
-		WHERE dtd.local_data_id != 0
+		INNER JOIN graph_local AS gl
+		ON gl.id = gti.local_graph_id
+		INNER JOIN host as h
+		ON h.id = gl.host_id
+		WHERE dtd.local_data_id != 0 
+		AND h.disabled != "on"
 		GROUP BY dtd.local_data_id',
 		array($config['rra_path']));
 
