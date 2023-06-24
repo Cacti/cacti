@@ -129,6 +129,7 @@ Cacti CHANGELOG
 -issue#5381: Once a Data Source is orphaned there are cases where it will not become un-orphaned upon reindex
 -issue#5382: Splice rrd could in some cases incorrectly detect the date and cause php errors
 -issue#5384: Untemplated Data Sources can fail to update due to lack of an assigned Graph
+-issue#5386: RRDCheck processes disabled hosts
 -feature#5375: Add template for Fortinet firewall and Aruba Instant cluster
 -feature: Upgrade billboard.js to version 3.7.4
 -feature: Upgrade d3.js to version 7.8.2
