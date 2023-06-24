@@ -47,7 +47,7 @@ function get_rrdfiles($thread_id = 1, $max_threads = 1) {
 		ON dtd.data_source_profile_id = dsp.id
 		INNER JOIN graph_local AS gl
 		ON gl.id = gti.local_graph_id
-		INNER JOIN host as h
+		LEFT JOIN host as h
 		ON h.id = gl.host_id
 		WHERE dtd.local_data_id != 0 
 		AND h.disabled != "on"
