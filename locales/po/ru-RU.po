@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-11-12 15:22-0500\n"
-"PO-Revision-Date: 2023-06-15 02:28+0000\n"
-"Last-Translator: Сергей <zersh@mail.ru>\n"
+"PO-Revision-Date: 2023-06-27 16:06+0000\n"
+"Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Russian <http://translate.cacti.net/projects/cacti/core/ru/>\n"
 "Language: ru-RU\n"
 "MIME-Version: 1.0\n"
@@ -1618,7 +1618,7 @@ msgstr "Диапазон обнаружения сети [новый]"
 #: include/global_form.php:1998 include/global_settings.php:51
 #: lib/html_reports.php:30
 msgid "General Settings"
-msgstr "Основные Настройки"
+msgstr "Общие Настройки"
 
 #: automation_networks.php:441 automation_snmp.php:504 data_input.php:636
 #: data_input.php:697 data_queries.php:758 data_queries.php:863
@@ -18567,7 +18567,7 @@ msgstr "Сбросить фильтры"
 #: links.php:345 links.php:513 user_admin.php:1552 user_group_admin.php:1434
 #, fuzzy
 msgid "Top Tab"
-msgstr "Верхняя вкладка"
+msgstr "Верхняя Вкладка"
 
 #: links.php:346 user_admin.php:1553 user_group_admin.php:1435
 #, fuzzy
