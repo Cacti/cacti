@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.2.20\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-11-12 15:22-0500\n"
-"PO-Revision-Date: 2023-05-22 11:41+0000\n"
+"PO-Revision-Date: 2023-06-25 13:10+0000\n"
 "Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core/lv/>\n"
 "Language: lv-LV\n"
@@ -562,7 +562,6 @@ msgstr "Daļa no Agregāta"
 #: user_admin.php:2167 user_admin.php:2561 user_admin.php:2658
 #: user_admin.php:2774 user_admin.php:2871 user_admin.php:2968
 #: user_admin.php:3065
-#, fuzzy
 msgid "Go"
 msgstr "Doties"
 
