@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.2.20\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-11-12 15:22-0500\n"
-"PO-Revision-Date: 2023-06-25 13:10+0000\n"
+"PO-Revision-Date: 2023-06-27 16:06+0000\n"
 "Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core/lv/>\n"
 "Language: lv-LV\n"
@@ -1192,7 +1192,6 @@ msgstr ""
 "ierīci(-es)."
 
 #: automation_devices.php:202 pollers.php:985
-#, fuzzy
 msgid "Pollers"
 msgstr "Aptaujātaji (Pollers)"
 
@@ -1651,14 +1650,13 @@ msgstr "Jauns tīkla atklāšanas diapazons"
 
 #: automation_networks.php:449 automation_networks.php:1074 host.php:1546
 msgid "Data Collector"
-msgstr "Datu ievācējs"
+msgstr "Datu apkopotājs"
 
 #: automation_networks.php:450 include/global_form.php:1212
-#, fuzzy
 msgid "Choose the Cacti Data Collector/Poller to be used to gather data from this Device."
 msgstr ""
-"Izvēlieties Cacti Data Collector/aptaujātaju, kas tiks izmantots šīs ierīces "
-"datu vākšanai."
+"Izvēlieties Cacti datu apkopotāju/aptaujātaju, kas tiks izmantots šīs "
+"ierīces datu vākšanai."
 
 #: automation_networks.php:457
 msgid "Associated Site"
@@ -1689,9 +1687,11 @@ msgid "Alternate DNS Servers"
 msgstr "Alternatīvie DNS serveri"
 
 #: automation_networks.php:483
-#, fuzzy
 msgid "A space delimited list of alternate DNS Servers to use for DNS resolution. If blank, the poller OS will be used to resolve DNS names."
-msgstr "Alternatīvo DNS serveru saraksts ar atstarpi, ko izmantot DNS noteikšanai. Ja lauku atstāsiet tukšus, DNS nosaukumu noteikšanai tiks izmantota aptaujātaja (poller) operētājsistēma."
+msgstr ""
+"Alternatīvais DNS serveru saraksts ar atstarpi, ko izmantot DNS noteikšanai. "
+"Ja lauku atstāsiet tukšus, DNS nosaukumu noteikšanai tiks izmantota "
+"aptaujātaja (poller) operētājsistēmas iestatījumi."
 
 #: automation_networks.php:486
 msgid "Enter IPs or FQDNs of DNS Servers"
@@ -2777,14 +2777,14 @@ msgstr "Nenosaukta krāsa"
 #: color.php:187
 msgid "Click 'Continue' to delete the following Color"
 msgid_plural "Click 'Continue' to delete the following Colors"
-msgstr[0] ""
-msgstr[1] "Klikšķiniet 'Turpināt', lai dzēstu šo krāsu"
-msgstr[2] "Klikšķiniet 'Turpināt', lai dzēstu šīs krāsas"
+msgstr[0] "Klikšķiniet 'Turpināt', lai dzēstu norādīto krāsu"
+msgstr[1] "Klikšķiniet 'Turpināt', lai dzēstu norādīto krāsu"
+msgstr[2] "Klikšķiniet 'Turpināt', lai dzēstu norādītās krāsas"
 
 #: color.php:192
 msgid "Delete Color"
 msgid_plural "Delete Colors"
-msgstr[0] ""
+msgstr[0] "Dzēst krāsu"
 msgstr[1] "Dzēst krāsu"
 msgstr[2] "Dzēst krāsas"
 
@@ -2965,6 +2965,8 @@ msgstr[2] ""
 msgid "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Template."
 msgid_plural "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Templates."
 msgstr[0] ""
+"Noklikšķiniet uz 'Turpināt', lai sinhronizētu visus apkopotos grafikus ar "
+"atlasīto krāsu veidni."
 msgstr[1] ""
 "Noklikšķiniet uz 'Turpināt', lai sinhronizētu visus apkopotos grafikus ar "
 "atlasīto krāsu veidni."
@@ -3164,8 +3166,6 @@ msgid "RRD Updated"
 msgstr "RRD atjaunināts"
 
 #: data_debug.php:492
-#, fuzzy
-#| msgid "Determines if the RRDfile has been writted to properly."
 msgid "Determines if the RRDfile has been written to properly."
 msgstr "Nosaka, vai RRDfile tika pareizi ierakstīts."
 
@@ -3358,7 +3358,6 @@ msgid "Delete All Checks"
 msgstr "Dzēst visus čekus"
 
 #: data_debug.php:1042
-#, fuzzy
 msgid "Run All"
 msgstr "Palaist visu"
 
@@ -4028,7 +4027,7 @@ msgstr[2] ""
 #: data_sources.php:526
 msgid "Leave the <strong>Graph</strong> untouched."
 msgid_plural "Leave all <strong>Graphs</strong> untouched."
-msgstr[0] ""
+msgstr[0] "Atstāt <strong>grafiku</strong> neskartu."
 msgstr[1] "Atstāt <strong>grafiku</strong> neskartu."
 msgstr[2] "Atstāt visus <strong>grafikus</strong> neskartus."
 
@@ -4036,6 +4035,7 @@ msgstr[2] "Atstāt visus <strong>grafikus</strong> neskartus."
 msgid "Delete all <strong>Graph Items</strong> that reference this Data Source."
 msgid_plural "Delete all <strong>Graph Items</strong> that reference these Data Sources."
 msgstr[0] ""
+"Dzēst visus <strong>grafika vienumus</strong>, kas atsaucas uz šo datu avotu."
 msgstr[1] ""
 "Dzēst visus <strong>grafika vienumus</strong>, kas atsaucas uz šo datu avotu."
 msgstr[2] ""
@@ -4045,7 +4045,7 @@ msgstr[2] ""
 #: data_sources.php:528
 msgid "Delete all <strong>Graphs</strong> that reference this Data Source."
 msgid_plural "Delete all <strong>Graphs</strong> that reference these Data Sources."
-msgstr[0] ""
+msgstr[0] "Dzēst visus <strong>grafikus</strong>, kas atsaucas uz šo datu avotu."
 msgstr[1] "Dzēst visus <strong>grafikus</strong>, kas atsaucas uz šo datu avotu."
 msgstr[2] ""
 "Dzēst visus <strong>grafikus</strong>, kas atsaucas uz šiem datu avotiem."
@@ -4854,10 +4854,11 @@ msgid "Graph Name"
 msgstr "Grafika nosaukums"
 
 #: graph_view.php:740 graph_view.php:768 graphs.php:2240
-#, fuzzy
-#| msgid "The Title of this Graph.  Generally programatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual."
 msgid "The Title of this Graph.  Generally programmatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual."
-msgstr "Šīs diagrammas nosaukums. Parasti programmatiski ģenerēts, izmantojot diagrammas veidnes definīciju vai ieteiktos nosaukumu piešķiršanas noteikumus. Maksimālais virsraksta garums tiek kontrolēts sadaļā Iestatījumi-> Vizuāls."
+msgstr ""
+"Šī grafika nosaukums.  Parasti ģenerē no grafika veidnes definīciju vai "
+"ieteikto nosaukumu piešķiršanas noteikumiem.  Maksimālo nosaukuma garumu var "
+"izmainīt zem Iestatījumi->Vizuāls sadaļas."
 
 #: graph_view.php:745
 msgid "The device for this Graph."
@@ -5383,9 +5384,8 @@ msgid "Device Debugging Disabled for Device."
 msgstr "Ierīces atkļūdošana ir atspējota ierīcei."
 
 #: host.php:161
-#, fuzzy
 msgid "Poller Cache for Device Refreshed."
-msgstr "Aptaujātāja kešatmiņa ierīcei ir atsvaidzināta."
+msgstr "Aptaujātaja kešatmiņa šai ierīcei ir atsvaidzināta."
 
 #: host.php:163
 msgid "ERROR: Invalid Device ID."
@@ -5715,8 +5715,14 @@ msgid "The total number of Data Sources generated from this Device."
 msgstr "Kopējais datu avotu skaits, kas ģenerēti no šīs ierīces."
 
 #: host.php:1747
+#, fuzzy
 msgid "The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname \"localhost\", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an \"Unknown\" state."
-msgstr "Ierīces uzraudzības statuss, pamatojoties uz ping rezultātiem. Ja šī ierīce ir īpaša veida ierīce, izmantojot resursdatora nosaukumu “localhost” vai iestatījuma dēļ neveikt pieejamības pārbaudi, tā vienmēr paliks Up. Lietojot cmd.php datu savācēju, datu savācējs nepiesaista ierīci bez diagrammām, un tā paliks stāvoklī \"Nezināms\"."
+msgstr ""
+"Ierīces uzraudzības statuss, pamatojoties uz ping rezultātiem.  Ja šī ierīce "
+"ir īpaša tipa ierīce, izmantojot resursdatora nosaukumu “localhost” vai "
+"iestatījuma dēļ neveikt pieejamības pārbaudi, tā vienmēr paliks Up. Lietojot "
+"cmd.php datu apkopotāju, datu savācējs nepiesaista ierīci bez diagrammām, un "
+"tā paliks stāvoklī \"Nezināms\"."
 
 #: host.php:1750
 msgid "In State"
@@ -5843,10 +5849,8 @@ msgid "Device Templates"
 msgstr "Ierīču veidnes"
 
 #: host_templates.php:733 host_templates.php:864
-#, fuzzy
-#| msgid "Device Rules"
 msgid "Device Class"
-msgstr "Ierīces noteikumi"
+msgstr "Ierīces klase"
 
 #: host_templates.php:765
 msgid "Has Devices"
@@ -5864,6 +5868,7 @@ msgstr "Šīs ierīces veidnes nosaukums."
 #: host_templates.php:867
 msgid "The Class of this Device Template.  The Class Name should be representative of it's function."
 msgstr ""
+"Šīs ierīču veidnes klase.  Klases nosaukumam vajadzētu atbilst tā funkcijai."
 
 #: host_templates.php:873
 msgid "The internal database ID for this Device Template.  Useful when performing automation or debugging."
@@ -6186,19 +6191,19 @@ msgstr "Nederīgs laikspiedols. Izvēlieties laika zīmogu nākotnē."
 
 #: include/global_arrays.php:329
 msgid "Data Collector(s) synchronized for offline operation"
-msgstr "Datu savācējs(-i), kas sinhronizēti darbībai bezsaistē"
+msgstr "Datu apkopotājs(-i), kas sinhronizēts(-i) darbībai bezsaistē"
 
 #: include/global_arrays.php:332
 msgid "Data Collector(s) not found when attempting synchronization"
-msgstr "Mēģinot sinhronizēt, datu savācējs(-i) netika atrasts(-i)."
+msgstr "Mēģinot sinhronizēt, datu apkopotājs(-i) netika atrasts(-i)"
 
 #: include/global_arrays.php:335
 msgid "Unable to establish MySQL connection with Remote Data Collector."
-msgstr "Nevar izveidot MySQL savienojumu ar Remote Data Collector."
+msgstr "Nevar izveidot MySQL savienojumu ar attālo datu apkopotāju."
 
 #: include/global_arrays.php:338
 msgid "Data Collector synchronization must be initiated from the main Cacti server."
-msgstr "Data Collector sinhronizācija ir jāuzsāk no galvenā Cacti servera."
+msgstr "Datu apkopotāja sinhronizācija ir jāuzsāk no galvenā Cacti servera."
 
 #: include/global_arrays.php:341
 msgid "Synchronization does not include the Central Cacti Database server."
@@ -6206,11 +6211,15 @@ msgstr "Sinhronizācija neietver centrālās kaktusu datu bāzes serveri."
 
 #: include/global_arrays.php:344
 msgid "When saving a Remote Data Collector, the Database Hostname must be unique from all others."
-msgstr "Saglabājot attālo datu savācēju, datu bāzes resursdatora nosaukumam ir jābūt unikālam no visiem citiem."
+msgstr ""
+"Saglabājot attālo datu apkopotāju, datubāzes resursdatora nosaukumam ir "
+"jābūt unikālam salīdzinot ar visiem pārējiem."
 
 #: include/global_arrays.php:347
 msgid "Your Remote Database Hostname must be something other than 'localhost' for each Remote Data Collector."
-msgstr "Jūsu attālās datu bāzes resursdatora nosaukumam ir jābūt citam, nevis “localhost” katram attālajam datu apkopotājam."
+msgstr ""
+"Jūsu attālās datubāzes resursdatora nosaukumam ir jābūt kaut kam citam, "
+"nevis 'localhost'. Tas ir spēkā katram attālajam datu apkopotājam."
 
 #: include/global_arrays.php:350
 msgid "Path variables on this page were only saved locally."
@@ -6253,9 +6262,11 @@ msgid "All Graphs have been added to the Report.  Duplicate Graphs with the same
 msgstr "Visi grafiki ir pievienoti pārskatam. Diagrammu dublikāti ar tādu pašu laika posmu tika izlaisti."
 
 #: include/global_arrays.php:380
-#, fuzzy
 msgid "Poller Resource Cache cleared.  Main Data Collector will rebuild at the next poller start, and Remote Data Collectors will sync afterwards."
-msgstr "Aptaujātāja resursa kešatmiņa ir iztīrīta.  Galvenais datu apkopotājs tiks pārbūvēts nākamajā aptaujāšanas sākšanas reizē, un attālie datu apkopotāji pēc tam sinhronizēs."
+msgstr ""
+"Aptaujātaja resursu kešatmiņa iztīrīta.  Galvenais datu apkopotājs tiks "
+"pārbūvēts nākamajā aptaujāšanas reizē, un attālie datu apkopotāji pēc tam "
+"sinhronizēsies."
 
 #: include/global_arrays.php:383
 msgid "Permission Denied.  You do not have permission to the requested action."
@@ -10100,7 +10111,9 @@ msgstr "Ierīces pavedieni"
 
 #: include/global_settings.php:618
 msgid "The default number of Device Threads.  This is only applicable when using the Spine Data Collector."
-msgstr "Ierīces pavedienu noklusējuma skaits. Tas attiecas tikai uz Spine Data Collector izmantošanu."
+msgstr ""
+"Ierīces pavedienu noklusējuma skaits.  Tas attiecas tikai uz Spine datu "
+"apkopotāju."
 
 #: include/global_settings.php:622
 #, php-format
@@ -10689,7 +10702,11 @@ msgstr "Cron/Daemon intervāls"
 
 #: include/global_settings.php:1208
 msgid "The frequency that the Cacti data collector will be started.  You can use either crontab, a scheduled task (for windows), or the cactid systemd service to control launching the Cacti data collector.  For instructions on using the cactid daemon, review the README.md file in the service directory."
-msgstr "Biežums, kad tiks palaists Cacti datu savācējs. Lai kontrolētu Cacti datu savācēja palaišanu, varat izmantot crontab, ieplānotu uzdevumu (Windows) vai cactid systemd pakalpojumu. Lai iegūtu norādījumus par cactid dēmona lietošanu, pārskatiet failu README.md pakalpojumu direktorijā."
+msgstr ""
+"Cacti datu apkopotāja palaišanas intervāls.  Lai kontrolētu Cacti datu "
+"apkopotāja palaišanu, varat izmantot crontab, ieplānotu uzdevumu (Windows) "
+"vai cactid systemd pakalpojumu.  Instrukcijas, kā izmantot cactid dēmonu, "
+"variet atrast README.md failā, kurš atrodas service mapē."
 
 #: include/global_settings.php:1214
 msgid "Balance Process Load"
