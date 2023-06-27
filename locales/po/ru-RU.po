@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2023-06-04 14:39-0400\nPO-Revision-Date: 2023-06-15 02:28+0000\nLast-Translator: Сергей <zersh@mail.ru>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2023-06-04 14:39-0400\nPO-Revision-Date: 2023-06-27 16:06+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2607 lib/html.php:2512
 msgid "About Cacti"
@@ -1596,7 +1596,7 @@ msgstr "Диапазон обнаружения сети [новый]"
 #: include/global_form.php:1998 include/global_settings.php:51
 #: lib/html_reports.php:30
 msgid "General Settings"
-msgstr "Основные Настройки"
+msgstr "Общие Настройки"
 
 #: automation_networks.php:441 automation_snmp.php:505 data_input.php:636
 #: data_input.php:697 data_queries.php:758 data_queries.php:863
@@ -18405,7 +18405,7 @@ msgstr "Сбросить фильтры"
 #: links.php:345 links.php:513 user_admin.php:1552 user_group_admin.php:1434
 #, fuzzy
 msgid "Top Tab"
-msgstr "Верхняя вкладка"
+msgstr "Верхняя Вкладка"
 
 #: links.php:346 user_admin.php:1553 user_group_admin.php:1435
 #, fuzzy
