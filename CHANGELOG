@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.25
+-Feature - Update Cisco Device Template to include HSRP graph template
 -SECURITY#5318: Multiple minor stored XSS vulnerabilities in Cacti 1.2.24
 -SECURITY#5348: Unchecked Regular expressions can lead to privilege escalation and data leakage
 -issue#2959: Multi-threaded cli/rebuild_poller_cache.php, deprecated push_out_hosts.php
