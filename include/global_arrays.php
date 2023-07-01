@@ -511,12 +511,13 @@ $custom_vdef_data_source_types = array( // this may change as soon as RRDtool su
 );
 
 $input_types = array(
-	DATA_INPUT_TYPE_SNMP                => __('SNMP Get'), // Action 0:
+	DATA_INPUT_TYPE_SNMP                => __('SNMP Get'),        // Action 0:
 	DATA_INPUT_TYPE_SNMP_QUERY          => __('SNMP Query'),
 	DATA_INPUT_TYPE_SCRIPT              => __('Script/Command'),  // Action 1:
-	DATA_INPUT_TYPE_SCRIPT_QUERY        => __('Script Query'), // Action 1:
+	DATA_INPUT_TYPE_SCRIPT_QUERY        => __('Script Query'),    // Action 1:
 	DATA_INPUT_TYPE_PHP_SCRIPT_SERVER   => __('Script Server'),
-	DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER => __('Script Server Query')
+	DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER => __('Script Server Query'),
+	DATA_INPUT_TYPE_STREAM              => __('Stream Data')
 );
 
 $input_types_script = array(
@@ -1440,7 +1441,8 @@ $hash_system_data_inputs = array(
 	'3eb92bb845b9660a7445cf9740726522', // Get SNMP Data
 	'bf566c869ac6443b0c75d1c32b5a350e', // Get SNMP Data (Indexed)
 	'80e9e4c4191a5da189ae26d0e237f015', // Get Script Data (Indexed)
-	'332111d8b54ac8ce939af87a7eac0c06'  // Get Script Server Data (Indexed)
+	'332111d8b54ac8ce939af87a7eac0c06', // Get Script Server Data (Indexed)
+	'7ed649bfa9cd627d7482b7700e88db53'  // Stream Data
 );
 
 $host_struc = array(
