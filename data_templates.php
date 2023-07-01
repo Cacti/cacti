@@ -341,7 +341,7 @@ function form_save() {
 					NOW() AS last_updated
 					FROM graph_templates_item AS gti
 					INNER JOIN data_template_rrd AS dtr
-					gti.task_item_id = dtr.id
+					ON gti.task_item_id = dtr.id
 					INNER JOIN data_input_fields AS dif
 					ON dtr.data_input_field_id = dif.id
 					WHERE dtr.local_data_id = 0
