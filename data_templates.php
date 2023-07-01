@@ -245,9 +245,9 @@ function form_save() {
 		if (!is_error_message()) {
 			/* Lets make sure we don't have any fields not set */
 			$data_template_fields = db_fetch_assoc_prepared('SELECT
-					dt.id, dt.name, dtd.name, di.hash, di.name, di.type_id,
-					dtr.id dtr_id, dtr.data_source_name, dif.id dif_id, dif.name, dif.data_name,
-					dif.input_output, dif.update_rra
+				dt.id, dt.name, dtd.name, di.hash, di.name, di.type_id,
+				dtr.id dtr_id, dtr.data_source_name, dif.id dif_id, dif.name, dif.data_name,
+				dif.input_output, dif.update_rra
 				FROM data_template dt
 				INNER JOIN data_template_data dtd
 				ON dt.id = dtd.data_template_id
@@ -609,6 +609,26 @@ function template_rrd_add() {
 	header('Location: data_templates.php?action=template_edit&id=' . get_request_var('id') . "&view_rrd=$data_template_rrd_id");
 }
 
+function data_template_is_stream($data_input_id) {
+	$id = db_fetch_cell_prepared('SELECT id
+		FROM data_input
+		WHERE hash = "7ed649bfa9cd627d7482b7700e88db53"
+		AND id = ?',
+		array($data_input_id));
+
+	return !empty($id) ? true:false;
+}
+
+function data_template_is_snmp($data_input_id) {
+	$id = db_fetch_cell_prepared('SELECT id
+		FROM data_input
+		WHERE hash = "3eb92bb845b9660a7445cf9740726522"
+		AND id = ?',
+		array($data_input_id));
+
+	return !empty($id) ? true:false;
+}
+
 function template_edit() {
 	global $struct_data_source, $struct_data_source_item, $data_source_types, $fields_data_template_template_edit, $fields_host_edit, $hash_system_data_inputs;
 
@@ -618,6 +638,7 @@ function template_edit() {
 	/* ==================================================== */
 
 	$isSNMPGet = false;
+	$isStream  = false;
 
 	if (!isempty_request_var('id')) {
 		$template_data = db_fetch_row_prepared('SELECT dtd.*, data_sources
@@ -638,15 +659,8 @@ function template_edit() {
 			array(get_request_var('id')));
 
 		if (cacti_sizeof($template_data)) {
-			$snmp_data = db_fetch_row_prepared('SELECT *
-				FROM data_input
-				WHERE hash="3eb92bb845b9660a7445cf9740726522"
-				AND id = ?',
-				array($template_data['data_input_id']));
-
-			if (cacti_sizeof($snmp_data)) {
-				$isSNMPGet = true;
-			}
+			$isSNMPGet = data_template_is_snmp($template_data['data_input_id']);
+			$isStream  = data_template_is_stream($template_data['data_input_id']);
 		}
 
 		$header_label = __esc('Data Templates [edit: %s]', $template['name']);
@@ -821,6 +835,10 @@ function template_edit() {
 		);
 	}
 
+	if ($isStream) {
+		unset($form_array['data_input_field_id']);
+	}
+
 	draw_edit_form(
 		array(
 			'config' => array('no_form_tag' => true),
@@ -837,7 +855,7 @@ function template_edit() {
 
 	$i = 0;
 
-	if (!isempty_request_var('id')) {
+	if (!isempty_request_var('id') && !$isStream) {
 		/* get each INPUT field for this data input source */
 		$fields = db_fetch_assoc_prepared('SELECT *
 			FROM data_input_fields
@@ -853,7 +871,7 @@ function template_edit() {
 		html_start_box(__('Custom Data [data input: %s]', html_escape($name)), '100%', true, '3', 'center', '');
 
 		/* loop through each field found */
-		if (cacti_sizeof($fields) > 0) {
+		if (cacti_sizeof($fields)) {
 			$class = 'odd';
 
 			foreach ($fields as $field) {
