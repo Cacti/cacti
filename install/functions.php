@@ -482,6 +482,7 @@ function install_setup_get_templates() {
 		'MikroTik_Switch_SWOS.xml.gz',
 		'NetSNMP_Device.xml.gz',
 		'PING_Advanced_Ping.xml.gz',
+		'SNMP_Printer.xml.gz',
 		'Synology_NAS.xml.gz',
 		'Windows_Device.xml.gz'
 	);
