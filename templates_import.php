@@ -290,6 +290,8 @@ function display_template_data(&$templates) {
 				$status = "<span class='updateObject'>" . __('Updated') . '</span>';
 			} elseif ($detail['status'] == 'new') {
 				$status = "<span class='newObject'>" . __('New') . '</span>';
+			} elseif ($detail['status'] == 'damaged') {
+				$status = "<span class='deviceDown'>" . __('Damaged') . '</span>';
 			} else {
 				$status = "<span class='deviceUp'>" . __('Unchanged') . '</span>';
 			}
@@ -328,7 +330,9 @@ function display_template_data(&$templates) {
 				form_selectable_cell(__('None'), $id);
 			}
 
-			if (isset($detail['vals'])) {
+			if ($detail['status'] == 'damaged') {
+				form_selectable_cell(__('Some CDEF Items will not import due to an export error! Contact Template provider for an updated export.'), $id);
+			} elseif (isset($detail['vals'])) {
 				$diff_details = '';
 				$diff_array   = array();
 				$orphan_array = array();

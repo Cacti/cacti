@@ -249,7 +249,10 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 					$hash_cache += xml_to_gprint_preset($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
 					break;
 				case 'cdef':
-					$hash_cache += xml_to_cdef($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
+					$return = xml_to_cdef($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
+					if ($return !== false) {
+						$hash_cache += $return;
+					}
 					break;
 				case 'vdef':
 					$hash_cache += xml_to_vdef($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
@@ -1786,9 +1789,13 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 		$hash_cache['cdef'][$hash] = $_cdef_id;
 	}
 
+	$damaged_items = false;
+
 	/* import into: cdef_items */
 	if (is_array($xml_array['items'])) {
 		foreach ($xml_array['items'] as $item_hash => $item_array) {
+			$damaged_item = false;
+
 			/* parse information from the hash */
 			$parsed_hash = parse_xml_hash($item_hash);
 
@@ -1831,15 +1838,18 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 
 						/* invalid/wrong hash */
 						if ($parsed_item_hash == false) {
-							return false;
+							$damaged_item  = true;
+							$damaged_items = true;
 						}
 
-						$_cdef_id = db_fetch_cell_prepared('SELECT id
-							FROM cdef
-							WHERE hash = ?',
-							array($parsed_item_hash['hash']));
+						if (!$damaged_item) {
+							$_cdef_id = db_fetch_cell_prepared('SELECT id
+								FROM cdef
+								WHERE hash = ?',
+								array($parsed_item_hash['hash']));
 
-						$save[$field_name] = $_cdef_id;
+							$save[$field_name] = $_cdef_id;
+						}
 					} else {
 						$save[$field_name] = xml_character_decode($item_array[$field_name]);
 					}
@@ -1850,9 +1860,11 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 			$status += compare_data($save, $previous_data, 'cdef_items');
 
 			if (!$preview_only) {
-				$cdef_item_id = sql_save($save, 'cdef_items');
+				if (!$damaged_item) {
+					$cdef_item_id = sql_save($save, 'cdef_items');
 
-				$hash_cache['cdef_item'][$parsed_hash['hash']] = $cdef_item_id;
+					$hash_cache['cdef_item'][$parsed_hash['hash']] = $cdef_item_id;
+				}
 			} else {
 				$hash_cache['cdef_item'][$parsed_hash['hash']] = $_cdef_item_id;
 			}
@@ -1860,10 +1872,17 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 	}
 
 	/* status information that will be presented to the user */
-	$import_debug_info['type']   = (empty($_cdef_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
-	$import_debug_info['hash']   = $hash;
-	$import_debug_info['title']  = $xml_array['name'];
-	$import_debug_info['result'] = ($preview_only ? 'preview':(empty($cdef_id) ? 'fail' : 'success'));
+	if (!$damaged_items) {
+		$import_debug_info['type']   = (empty($_cdef_id) ? 'new' : ($status > 0 ? 'updated':'unchanged'));
+		$import_debug_info['hash']   = $hash;
+		$import_debug_info['title']  = $xml_array['name'];
+		$import_debug_info['result'] = ($preview_only ? 'preview':(empty($cdef_id) ? 'fail' : 'success'));
+	} else {
+		$import_debug_info['type']   = 'damaged';
+		$import_debug_info['hash']   = $hash;
+		$import_debug_info['title']  = $xml_array['name'];
+		$import_debug_info['result'] = ($preview_only ? 'preview':(empty($cdef_id) ? 'fail' : 'success'));
+	}
 
 	return $hash_cache;
 }
