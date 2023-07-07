@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-11-12 15:22-0500\n"
-"PO-Revision-Date: 2023-06-27 16:06+0000\n"
-"Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
+"PO-Revision-Date: 2023-07-08 03:54+0000\n"
+"Last-Translator: Сергей <zersh@mail.ru>\n"
 "Language-Team: Russian <http://translate.cacti.net/projects/cacti/core/ru/>\n"
 "Language: ru-RU\n"
 "MIME-Version: 1.0\n"
@@ -13840,39 +13840,41 @@ msgstr ""
 "обновления."
 
 #: index.php:94
-#, fuzzy
 msgid "<strong>NOTE:</strong> None of the Core Cacti Plugins, to date, have been re-designed to work with Remote Data Collectors.  Therefore, Plugins such as MacTrack, and HMIB, which require direct access to devices will not work with Remote Data Collectors at this time.  However, plugins such as Thold will work so long as the Remote Data Collector is in <b>'online'</b> mode."
-msgstr "<strong>NOTE:</strong> На сегодняшний день ни один из модулей Core Cacti не был перепроектирован для работы с удаленными сборщиками данных.  Поэтому подключаемые модули, такие как MacTrack и HMIB, которые требуют прямого доступа к устройствам, в настоящее время не будут работать с удаленными сборщиками данных.  Однако плагины, такие как Thold, будут работать до тех пор, пока удаленный сборщик данных находится в режиме <b>'online' </b>."
+msgstr ""
+"<strong>NOTE:</strong> На сегодняшний день ни один из модулей Core Cacti не "
+"был перепроектирован для работы с удаленными сборщиками данных.  Поэтому "
+"подключаемые модули, такие как MacTrack и HMIB, которые требуют прямого "
+"доступа к устройствам, в настоящее время не будут работать с удаленными "
+"сборщиками данных.  Однако плагины, такие как Thold, будут работать до тех "
+"пор, пока удаленный сборщик данных находится в режиме <b>'online' </b>."
 
 #: install/functions.php:596
-#, fuzzy, php-format
+#, php-format
 msgid "Path for %s"
 msgstr "Путь к %s"
 
 #: install/functions.php:807
-#, fuzzy
 msgid "New Poller"
-msgstr "Новый Поллер"
+msgstr "Новый Poller"
 
 #: install/install.php:89
-#, fuzzy
 msgid "Cacti Install Help"
 msgstr "Активные/установленные"
 
 #: install/install.php:97
-#, fuzzy, php-format
+#, php-format
 msgid "Cacti Server v%s - Maintenance"
-msgstr "Cacti Server vs - Техническое обслуживание"
+msgstr "Cacti Server v%s - Техническое обслуживание"
 
 #: install/install.php:107
-#, fuzzy, php-format
+#, php-format
 msgid "Cacti Server v%s - Installation Wizard"
-msgstr "Кактусовый сервер v%s - мастер установки"
+msgstr "Cacti сервер v%s - мастер установки"
 
 #: install/install.php:107
-#, fuzzy
 msgid "Refresh current page"
-msgstr "ÐÐ½ÑÐµÑÐ²Ð°Ð» Ð¾Ð±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ñ"
+msgstr "Обновить текущую страницу"
 
 #: install/install.php:113
 msgid "Initializing"
