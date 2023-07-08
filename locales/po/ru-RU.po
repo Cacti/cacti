@@ -1,17 +1,5 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti Russian Language File\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2023-07-01 12:00-0400\n"
-"PO-Revision-Date: 2023-06-27 16:06+0000\n"
-"Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
-"Language-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\n"
-"Language: ru-RU\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2023-07-01 12:00-0400\nPO-Revision-Date: 2023-07-08 03:54+0000\nLast-Translator: Сергей <zersh@mail.ru>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2607 lib/html.php:2512
 msgid "About Cacti"
@@ -13637,39 +13625,35 @@ msgid "<strong>NOTE:</strong> You are logged into a Remote Data Collector.  When
 msgstr "<strong>NOTE:</strong> Вы вошли в удаленный сборщик данных.  Когда <b>'online'</b>, вы сможете просматривать и контролировать большую часть веб-сайта основного Cacti так же, как если бы вы вошли на него. Также важно отметить, что удаленные сборщики данных должны использовать функцию Cacti's Performance Boosting Services <b>'Обновление по требованию' </b>, и мы всегда рекомендуем использовать Spine. Когда удаленный сборщик данных <b>'offline'</b>, вебсайт удаленных сборщиков данных будет содержать гораздо меньше информации. Однако, он будет кэшировать все обновления до тех пор, пока Главная база данных Cacti и Web-сервер не станут доступны. Затем он сбросит данные таблицы Boost обратно в главную базу данных Cacti для обновления."
 
 #: index.php:94
-#, fuzzy
 msgid "<strong>NOTE:</strong> None of the Core Cacti Plugins, to date, have been re-designed to work with Remote Data Collectors.  Therefore, Plugins such as MacTrack, and HMIB, which require direct access to devices will not work with Remote Data Collectors at this time.  However, plugins such as Thold will work so long as the Remote Data Collector is in <b>'online'</b> mode."
 msgstr "<strong>NOTE:</strong> На сегодняшний день ни один из модулей Core Cacti не был перепроектирован для работы с удаленными сборщиками данных.  Поэтому подключаемые модули, такие как MacTrack и HMIB, которые требуют прямого доступа к устройствам, в настоящее время не будут работать с удаленными сборщиками данных.  Однако плагины, такие как Thold, будут работать до тех пор, пока удаленный сборщик данных находится в режиме <b>'online' </b>."
 
 #: install/functions.php:603
-#, fuzzy, php-format
+#, php-format
 msgid "Path for %s"
 msgstr "Путь к %s"
 
 #: install/functions.php:814
-#, fuzzy
 msgid "New Poller"
-msgstr "Новый Поллер"
+msgstr "Новый Poller"
 
 #: install/install.php:89
-#, fuzzy
 msgid "Cacti Install Help"
 msgstr "Активные/установленные"
 
 #: install/install.php:97
-#, fuzzy, php-format
+#, php-format
 msgid "Cacti Server v%s - Maintenance"
-msgstr "Cacti Server vs - Техническое обслуживание"
+msgstr "Cacti Server v%s - Техническое обслуживание"
 
 #: install/install.php:107
-#, fuzzy, php-format
+#, php-format
 msgid "Cacti Server v%s - Installation Wizard"
-msgstr "Кактусовый сервер v%s - мастер установки"
+msgstr "Cacti сервер v%s - мастер установки"
 
 #: install/install.php:107
-#, fuzzy
 msgid "Refresh current page"
-msgstr "ÐÐ½ÑÐµÑÐ²Ð°Ð» Ð¾Ð±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ñ"
+msgstr "Обновить текущую страницу"
 
 #: install/install.php:113
 msgid "Initializing"
@@ -13681,7 +13665,6 @@ msgid "Please wait while the installation system for Cacti Version %s initialize
 msgstr "Пожалуйста, подождите, пока инициализируется система установки Cacti Version %s. Для того чтобы JavaScript работал, он должен быть включен."
 
 #: install/install.php:118
-#, fuzzy
 msgid "FATAL: We are unable to continue with this installation. In order to install Cacti, PHP must be at version 5.4 or later."
 msgstr "FATAL: Мы не можем продолжить установку. Для того чтобы установить Cacti, PHP должен быть версии 5.4 или более поздней."
 
