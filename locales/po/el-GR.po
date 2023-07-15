@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2023-07-01 12:00-0400\n"
+"POT-Creation-Date: 2023-07-15 19:39-0400\n"
 "PO-Revision-Date: 2023-03-07 13:25+0000\n"
 "Last-Translator: Anonymous <anonymous@cacti.net>\n"
 "Language-Team: Greek <http://translate.cacti.net/projects/cacti/core-v1-2-x/el/>\n"
@@ -182,7 +182,7 @@ msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; γ�
 #: host.php:484 host.php:498 host.php:512 host.php:521 host.php:550
 #: host.php:562 host_templates.php:271 host_templates.php:285
 #: host_templates.php:296 host_templates.php:345 host_templates.php:408
-#: lib/clog_webapi.php:228 lib/html.php:2546 lib/html_form.php:1274
+#: lib/clog_webapi.php:232 lib/html.php:2546 lib/html_form.php:1274
 #: lib/html_form.php:1286 lib/html_form.php:1297 links.php:197 links.php:206
 #: links.php:215 managers.php:1004 managers.php:1065 plugins.php:670
 #: pollers.php:559 pollers.php:568 pollers.php:577 pollers.php:586
@@ -219,7 +219,7 @@ msgstr "Ακύρωση"
 #: host.php:466 host.php:475 host.php:484 host.php:498 host.php:512
 #: host.php:521 host.php:550 host.php:562 host_templates.php:271
 #: host_templates.php:285 host_templates.php:296 host_templates.php:346
-#: host_templates.php:409 lib/clog_webapi.php:229 lib/html.php:2545
+#: host_templates.php:409 lib/clog_webapi.php:233 lib/html.php:2545
 #: lib/html_reports.php:499 links.php:197 links.php:206 links.php:215
 #: managers.php:1004 managers.php:1065 pollers.php:559 pollers.php:568
 #: pollers.php:577 pollers.php:586 pollers.php:595 sites.php:382 sites.php:392
@@ -517,7 +517,7 @@ msgstr "Ταίριασμα των γραφημάτων"
 #: graph_view.php:621 graphs.php:2046 graphs_new.php:457 host.php:1636
 #: host_templates.php:727 lib/api_automation.php:140 lib/api_automation.php:473
 #: lib/api_automation.php:707 lib/api_automation.php:1066
-#: lib/clog_webapi.php:604 lib/html.php:266 lib/html_filter.php:63
+#: lib/clog_webapi.php:608 lib/html.php:266 lib/html_filter.php:63
 #: lib/html_graph.php:203 lib/html_reports.php:1836 lib/html_tree.php:136
 #: lib/html_tree.php:982 links.php:310 managers.php:149 managers.php:493
 #: managers.php:725 plugins.php:459 pollers.php:879 rrdcheck.php:226
@@ -590,7 +590,7 @@ msgstr "Μέρος του συνόλου"
 #: graph_view.php:629 graphs.php:2037 graphs_new.php:446 host.php:1626
 #: host_templates.php:770 lib/api_automation.php:195 lib/api_automation.php:464
 #: lib/api_automation.php:729 lib/api_automation.php:1121
-#: lib/clog_webapi.php:529 lib/html.php:1559 lib/html_filter.php:80
+#: lib/clog_webapi.php:533 lib/html.php:1559 lib/html_filter.php:80
 #: lib/html_graph.php:190 lib/html_reports.php:1867 lib/html_tree.php:1024
 #: links.php:330 managers.php:171 managers.php:515 managers.php:745
 #: plugins.php:495 pollers.php:924 sites.php:521 tree.php:2150
@@ -632,7 +632,7 @@ msgstr "Ρύθμιση / Ανανέωση φίλτρων"
 #: graph_view.php:630 graphs.php:2038 graphs_new.php:447 host.php:1627
 #: host_templates.php:771 lib/api_automation.php:196 lib/api_automation.php:465
 #: lib/api_automation.php:730 lib/api_automation.php:1122
-#: lib/clog_webapi.php:530 lib/html_filter.php:85 lib/html_graph.php:191
+#: lib/clog_webapi.php:534 lib/html_filter.php:85 lib/html_graph.php:191
 #: lib/html_graph.php:308 lib/html_reports.php:1868 lib/html_tree.php:1025
 #: lib/html_tree.php:1136 links.php:331 managers.php:172 managers.php:516
 #: managers.php:746 plugins.php:496 pollers.php:925 sites.php:522 tree.php:2151
@@ -995,7 +995,7 @@ msgid "Cannot be reused for %d password changes"
 msgstr "Δεν είναι δυνατή η επαναχρησιμοποίηση για αλλαγές% d κωδικών"
 
 #: auth_changepassword.php:315 auth_changepassword.php:322
-#: include/global_form.php:1567 lib/functions.php:3654 lib/html.php:2481
+#: include/global_form.php:1567 lib/functions.php:3667 lib/html.php:2481
 msgid "Change Password"
 msgstr "Αλλαγή Κωδικού"
 
@@ -1010,7 +1010,7 @@ msgid "Please enter your new Cacti password."
 msgstr "Εισαγάγετε τον τρέχοντα κωδικό σας και τον νέο σας κωδικό <br> Ο κωδικός Cacti."
 
 #: auth_changepassword.php:342 auth_login.php:306 auth_login.php:309
-#: include/global_settings.php:1798 lib/functions.php:5282
+#: include/global_settings.php:1798 lib/functions.php:5295
 msgid "Username"
 msgstr "Όνομα Χρήστη"
 
@@ -1032,10 +1032,10 @@ msgstr "Επιβεβαίωση νέου κωδικού/συνθηματικού 
 msgid "Save"
 msgstr "Αποθήκευση"
 
-#: auth_changepassword.php:367
+#: auth_changepassword.php:367 auth_login.php:386
 #, fuzzy, php-format
-msgid "Version %1$s | %2$s"
-msgstr "Έκδοση%1$s | %2$s"
+msgid "Version %s | %s"
+msgstr "Έκδοση %s %s"
 
 #: auth_changepassword.php:380 user_admin.php:1920
 #, fuzzy
@@ -1101,7 +1101,7 @@ msgstr "Είσοδος χρήστη"
 msgid "Enter your Username and Password below"
 msgstr "Εισαγάγετε το όνομα χρήστη και τον κωδικό σας παρακάτω"
 
-#: auth_login.php:314 include/global_form.php:1534 lib/functions.php:5283
+#: auth_login.php:314 include/global_form.php:1534 lib/functions.php:5296
 msgid "Password"
 msgstr "Κωδικός"
 
@@ -1127,11 +1127,6 @@ msgstr "Να παραμείνω συνδεδεμένος/η"
 #: auth_login.php:371
 msgid "Login"
 msgstr "Σύνδεση"
-
-#: auth_login.php:386
-#, fuzzy, php-format
-msgid "Version %s | %s"
-msgstr "Έκδοση %s %s"
 
 #: auth_profile.php:76 include/global_settings.php:38
 #: include/global_settings.php:1173 include/global_settings.php:1482
@@ -1436,8 +1431,8 @@ msgstr "Εξαγωγή"
 msgid "Export to a file"
 msgstr "Εξαγωγή σε αρχείο"
 
-#: automation_devices.php:502 data_debug.php:1053 lib/clog_webapi.php:219
-#: lib/clog_webapi.php:531 managers.php:747
+#: automation_devices.php:502 data_debug.php:1053 lib/clog_webapi.php:223
+#: lib/clog_webapi.php:535 managers.php:747
 msgid "Purge"
 msgstr "Διαγραφή"
 
@@ -1450,7 +1445,7 @@ msgstr "Κατεβάστε τις ανακαλυφθείσες συσκευές"
 #: automation_snmp.php:564 automation_snmp.php:565 automation_snmp.php:566
 #: automation_snmp.php:567 automation_snmp.php:568 automation_snmp.php:569
 #: data_debug.php:624 data_source_profiles.php:73 host.php:1826
-#: lib/functions.php:5628 lib/functions.php:5632 lib/html.php:1182
+#: lib/functions.php:5641 lib/functions.php:5645 lib/html.php:1182
 #: lib/html.php:1248 lib/html_reports.php:1632 lib/html_reports.php:1658
 #: lib/html_reports.php:1729 lib/html_reports.php:1730
 #: lib/html_reports.php:1731 plugins.php:732 pollers.php:1121 support.php:646
@@ -2402,7 +2397,7 @@ msgstr "Ποτέ"
 msgid "No Networks Found"
 msgstr "Δεν βρέθηκαν δίκτυα"
 
-#: automation_networks.php:1203 data_debug.php:1099 lib/clog_webapi.php:584
+#: automation_networks.php:1203 data_debug.php:1099 lib/clog_webapi.php:588
 #: lib/html_graph.php:307 lib/html_tree.php:1135 lib/html_tree.php:1156
 #: pollers.php:900 utilities.php:1464 utilities.php:2468
 msgid "Refresh"
@@ -2548,7 +2543,7 @@ msgstr "Έκδοση"
 msgid "Community"
 msgstr "Κοινότητα"
 
-#: automation_snmp.php:537 lib/functions.php:5278
+#: automation_snmp.php:537 lib/functions.php:5291
 msgid "Port"
 msgstr "Θύρα"
 
@@ -2887,8 +2882,8 @@ msgstr "Ρίζα"
 msgid "No Tree Rules Found"
 msgstr "Δεν βρέθηκαν κανάλια δέντρων"
 
-#: cactid.php:44 help.php:38 lib/functions.php:5909 lib/functions.php:5978
-#: lib/functions.php:6588 poller.php:392 poller.php:542 poller.php:607
+#: cactid.php:44 help.php:38 lib/functions.php:5922 lib/functions.php:5991
+#: lib/functions.php:6601 poller.php:392 poller.php:542 poller.php:607
 #: poller.php:647 poller.php:789 poller.php:895 poller_automation.php:53
 #: poller_boost.php:347
 #, fuzzy
@@ -3766,7 +3761,7 @@ msgstr "Προφίλ"
 #: data_debug.php:1066 data_debug.php:1082 data_debug.php:1093
 #: data_sources.php:1423 data_sources.php:1440 data_templates.php:1051
 #: graphs.php:2056 graphs_new.php:424 host.php:1603 host_templates.php:737
-#: lib/clog_webapi.php:545 lib/html.php:225 lib/html_reports.php:977
+#: lib/clog_webapi.php:549 lib/html.php:225 lib/html_reports.php:977
 #: lib/html_reports.php:2073 plugins.php:469 settings.php:536 settings.php:558
 #: settings.php:594 tree.php:836 user_admin.php:2151 user_log.php:160
 #: utilities.php:1035 utilities.php:1446
@@ -4679,7 +4674,7 @@ msgstr "Το όνομα που δίνεται σε αυτό το πρότυπο 
 #: data_sources.php:950 graph_view.php:743 graphs.php:1592
 #: include/global_arrays.php:938 include/global_arrays.php:987
 #: include/global_arrays.php:1669 include/global_arrays.php:1838
-#: lib/api_automation.php:425 lib/functions.php:5277 lib/html.php:2067
+#: lib/api_automation.php:425 lib/functions.php:5290 lib/html.php:2067
 #: lib/html.php:2099 lib/html_reports.php:1009 utilities.php:1870
 msgid "Device"
 msgstr "Συσκευή"
@@ -6290,7 +6285,7 @@ msgstr "Προσθήκη πρότυπου γραφήματος στη συσκε
 msgid "Data Query Debug Information"
 msgstr "Στοιχεία εντοπισμού σφαλμάτων δεδομένων ερωτήματος"
 
-#: host.php:874 lib/functions.php:4269 tree.php:1725 tree.php:1799
+#: host.php:874 lib/functions.php:4282 tree.php:1725 tree.php:1799
 #: tree.php:1907 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "Αντιγραφή"
@@ -6332,7 +6327,7 @@ msgstr "[% d Στοιχεία,% d Γραμμές]"
 msgid "Fail"
 msgstr "Αποτυχία"
 
-#: host.php:958 lib/functions.php:5292 lib/functions.php:5297
+#: host.php:958 lib/functions.php:5305 lib/functions.php:5310
 msgid "Success"
 msgstr "Επιτυχία"
 
@@ -6692,17 +6687,17 @@ msgstr "FATAL: Πρέπει να είστε συνδεδεμένοι για να
 msgid "Login Again"
 msgstr "Σύνδεση Ξανά"
 
-#: include/auth.php:272 lib/functions.php:6939 permission_denied.php:45
+#: include/auth.php:272 lib/functions.php:6952 permission_denied.php:45
 #: permission_denied.php:52
 msgid "Permission Denied"
 msgstr "Δεν επιτρέπεται η πρόσβαση"
 
-#: include/auth.php:273 lib/functions.php:6940 permission_denied.php:54
+#: include/auth.php:273 lib/functions.php:6953 permission_denied.php:54
 #, fuzzy
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr "Αν νομίζετε ότι αυτό είναι λάθος. Επικοινωνήστε με τον διαχειριστή του Cacti."
 
-#: include/auth.php:273 lib/functions.php:6940 permission_denied.php:54
+#: include/auth.php:273 lib/functions.php:6953 permission_denied.php:54
 #, fuzzy
 msgid "You are not permitted to access this section of Cacti."
 msgstr "Δεν επιτρέπεται η πρόσβαση σε αυτήν την ενότητα του Cacti."
@@ -8910,7 +8905,7 @@ msgid "List Mode"
 msgstr "Λειτουργία λίστας"
 
 #: include/global_arrays.php:2043 include/global_arrays.php:2049
-#: lib/functions.php:3861 lib/html.php:1698 lib/html.php:1775 lib/html.php:2491
+#: lib/functions.php:3874 lib/html.php:1698 lib/html.php:1775 lib/html.php:2491
 #: links.php:344 user_admin.php:1551 user_group_admin.php:1433
 #, fuzzy
 msgid "Console"
@@ -10919,7 +10914,7 @@ msgstr "Ημερομηνία"
 msgid "Visual"
 msgstr "Οπτικό"
 
-#: include/global_settings.php:44 lib/functions.php:5281 lib/functions.php:5286
+#: include/global_settings.php:44 lib/functions.php:5294 lib/functions.php:5299
 msgid "Authentication"
 msgstr "Πιστοποίηση"
 
@@ -10961,12 +10956,12 @@ msgstr "Γραμματοσειρές γραφήματος"
 msgid "PHP Mail() Function"
 msgstr "Λειτουργία PHP Mail ()"
 
-#: include/global_settings.php:85 lib/functions.php:5264
+#: include/global_settings.php:85 lib/functions.php:5277
 #, fuzzy
 msgid "Sendmail"
 msgstr "Sendmail"
 
-#: include/global_settings.php:86 lib/functions.php:5269
+#: include/global_settings.php:86 lib/functions.php:5282
 msgid "SMTP"
 msgstr "SMTP (απλό πρωτόκολλο μεταφοράς ταχυδρομείου)"
 
@@ -11245,11 +11240,11 @@ msgstr "Όταν χρησιμοποιείτε το Syslog / Eventlog για κα
 msgid "Statistics"
 msgstr "Στατιστικά"
 
-#: include/global_settings.php:326 lib/clog_webapi.php:547 utilities.php:1448
+#: include/global_settings.php:326 lib/clog_webapi.php:551 utilities.php:1448
 msgid "Warnings"
 msgstr "Προειδοποιήσεις"
 
-#: include/global_settings.php:330 lib/clog_webapi.php:549 utilities.php:1449
+#: include/global_settings.php:330 lib/clog_webapi.php:553 utilities.php:1449
 msgid "Errors"
 msgstr "Σφάλματα"
 
@@ -13191,7 +13186,7 @@ msgstr "Αυτός είναι ο αριθμός των χαρακτήρων πο
 msgid "Sendmail Options"
 msgstr "Επιλογές Sendmail"
 
-#: include/global_settings.php:1919 lib/functions.php:5264
+#: include/global_settings.php:1919 lib/functions.php:5277
 #, fuzzy
 msgid "Sendmail Path"
 msgstr "Διαδρομή Sendmail"
@@ -13611,7 +13606,7 @@ msgstr "RRDtool διακομιστή μεσολάβησης"
 msgid "Structured RRDfile Paths"
 msgstr "Δομημένες διαδρομές RRD"
 
-#: include/global_settings.php:2297 lib/functions.php:5253
+#: include/global_settings.php:2297 lib/functions.php:5266
 msgid "Method"
 msgstr "Μέθοδος"
 
@@ -14314,12 +14309,12 @@ msgstr "<strong>ΣΗΜΕΙΩΣΗ:</strong> Έχετε συνδεθεί σε έν
 msgid "<strong>NOTE:</strong> None of the Core Cacti Plugins, to date, have been re-designed to work with Remote Data Collectors.  Therefore, Plugins such as MacTrack, and HMIB, which require direct access to devices will not work with Remote Data Collectors at this time.  However, plugins such as Thold will work so long as the Remote Data Collector is in <b>'online'</b> mode."
 msgstr "<strong>ΣΗΜΕΙΩΣΗ:</strong> Καμία από τις προσθήκες Core Cacti, μέχρι σήμερα, δεν έχει ξανασχεδιαστεί για να λειτουργήσει με απομακρυσμένους συλλέκτες δεδομένων. Επομένως, προσθήκες όπως το MacTrack και το HMIB, οι οποίες απαιτούν άμεση πρόσβαση σε συσκευές, δεν θα λειτουργούν με τους συλλέκτες απομακρυσμένων δεδομένων αυτή τη στιγμή. Ωστόσο, plugins όπως το Thold θα λειτουργούν όσο ο απομακρυσμένος συλλέκτης δεδομένων βρίσκεται σε λειτουργία <b>&quot;σε απευθείας σύνδεση&quot;</b> ."
 
-#: install/functions.php:603
+#: install/functions.php:604
 #, fuzzy, php-format
 msgid "Path for %s"
 msgstr "Διαδρομή για το %s"
 
-#: install/functions.php:814
+#: install/functions.php:815
 #, fuzzy
 msgid "New Poller"
 msgstr "Νέο Poller"
@@ -14438,7 +14433,7 @@ msgid "Matching Devices"
 msgstr "Συσκευές αντιστοίχισης"
 
 #: lib/api_automation.php:146 lib/api_automation.php:1072
-#: lib/clog_webapi.php:539 lib/html_reports.php:956 lib/html_reports.php:1611
+#: lib/clog_webapi.php:543 lib/html_reports.php:956 lib/html_reports.php:1611
 #: lib/html_reports.php:1938 lib/html_reports.php:1949 lib/rrd.php:3148
 #: support.php:264 utilities.php:356 utilities.php:1442 utilities.php:3056
 msgid "Type"
@@ -14665,8 +14660,8 @@ msgstr "Τοποθεσία:"
 msgid "Contact:"
 msgstr "Επαφή"
 
-#: lib/api_device.php:1581 lib/functions.php:5295 lib/functions.php:5297
-#: lib/functions.php:5301
+#: lib/api_device.php:1581 lib/functions.php:5308 lib/functions.php:5310
+#: lib/functions.php:5314
 #, fuzzy
 msgid "Ping Results"
 msgstr "Αποτελέσματα Ping"
@@ -14857,129 +14852,140 @@ msgstr "%s GBytes"
 msgid "%s - WEBUI NOTE: Cacti Log Cleared from Web Management Interface."
 msgstr "%s - WEBUI ΣΗΜΕΙΩΣΗ: Το ημερολόγιο Cacti καταργήθηκε από το Web Management Interface."
 
-#: lib/clog_webapi.php:223
+#: lib/clog_webapi.php:227
 #, fuzzy
 msgid "Click 'Continue' to purge the Log File.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog."
 msgstr "Κάντε κλικ στο κουμπί &quot;Συνέχεια&quot; για να καθαρίσετε το αρχείο καταγραφής. <br><br><br> Σημείωση: Εάν η καταγραφή έχει οριστεί σε Cacti και Syslog, οι πληροφορίες καταγραφής θα παραμείνουν στο Syslog."
 
-#: lib/clog_webapi.php:229 user_log.php:384 utilities.php:1434
+#: lib/clog_webapi.php:233 user_log.php:384 utilities.php:1434
 #, fuzzy
 msgid "Purge Log"
 msgstr "Κατεβάστε το ημερολόγιο"
 
-#: lib/clog_webapi.php:253 utilities.php:1383
+#: lib/clog_webapi.php:257 utilities.php:1383
 #, fuzzy
 msgid "Log Filters"
 msgstr "Φίλτρα καταγραφής"
 
-#: lib/clog_webapi.php:270
+#: lib/clog_webapi.php:274
 #, fuzzy
 msgid " - Admin Filter active"
 msgstr "- Φίλτρο διαχειριστή ενεργό"
 
-#: lib/clog_webapi.php:272
+#: lib/clog_webapi.php:276
 #, fuzzy
 msgid " - Admin Unfiltered"
 msgstr "- Διαχειριστής χωρίς φιλτράρισμα"
 
-#: lib/clog_webapi.php:275
+#: lib/clog_webapi.php:279
 #, fuzzy
 msgid " - Admin view"
 msgstr "- Προβολή διαχειριστή"
 
-#: lib/clog_webapi.php:280
+#: lib/clog_webapi.php:284
 #, fuzzy, php-format
 msgid "Log [Total Lines: %d %s - Filter active]"
 msgstr "Αρχείο καταγραφής [Συνολικές γραμμές:% d %s - Φίλτρο ενεργό]"
 
-#: lib/clog_webapi.php:282
+#: lib/clog_webapi.php:286
 #, fuzzy, php-format
 msgid "Log [Total Lines: %d %s - Unfiltered]"
 msgstr "Αρχειοθέτηση [Συνολικές γραμμές:% d %s - Μη φιλτραρισμένες]"
 
-#: lib/clog_webapi.php:292 utilities.php:1518 utilities.php:1864
+#: lib/clog_webapi.php:296 utilities.php:1518 utilities.php:1864
 #: utilities.php:2087 utilities.php:2182 utilities.php:3050 utilities.php:3258
 msgid "Entries"
 msgstr "Εγγραφές"
 
-#: lib/clog_webapi.php:485 utilities.php:1392
+#: lib/clog_webapi.php:489 utilities.php:1392
 msgid "File"
 msgstr "Αρχείο"
 
-#: lib/clog_webapi.php:512
+#: lib/clog_webapi.php:516
 #, fuzzy
 msgid "Head Lines"
 msgstr "% d Γραμμές"
 
-#: lib/clog_webapi.php:512 utilities.php:1419
+#: lib/clog_webapi.php:516 utilities.php:1419
 #, fuzzy
 msgid "Tail Lines"
 msgstr "Γραμμές ουράς"
 
-#: lib/clog_webapi.php:546 utilities.php:1447
+#: lib/clog_webapi.php:550 utilities.php:1447
 msgid "Stats"
 msgstr "Στατιστικά"
 
-#: lib/clog_webapi.php:548
+#: lib/clog_webapi.php:552
 #, fuzzy
 msgid "Warnings++"
 msgstr "Προειδοποιήσεις"
 
-#: lib/clog_webapi.php:550
+#: lib/clog_webapi.php:554
 #, fuzzy
 msgid "Errors++"
 msgstr "Σφάλματα"
 
-#: lib/clog_webapi.php:551 utilities.php:1450
+#: lib/clog_webapi.php:555 utilities.php:1450
 msgid "Debug"
 msgstr "Εντοπισμός σφαλμάτων"
 
-#: lib/clog_webapi.php:552 utilities.php:1451
+#: lib/clog_webapi.php:556 utilities.php:1451
 #, fuzzy
 msgid "SQL Calls"
 msgstr "SQL κλήσεις"
 
-#: lib/clog_webapi.php:553
+#: lib/clog_webapi.php:557
 #, fuzzy
 msgid "AutoM8"
 msgstr "Αυτόματα"
 
-#: lib/clog_webapi.php:554
+#: lib/clog_webapi.php:558
 #, fuzzy
 msgid "Non Stats"
 msgstr "Δεν αναφέρεται"
 
-#: lib/clog_webapi.php:555
+#: lib/clog_webapi.php:559
 msgid "Boost"
 msgstr "Ενισχύστε "
 
-#: lib/clog_webapi.php:556
+#: lib/clog_webapi.php:560
 #, fuzzy
 msgid "Device Up/Down"
 msgstr "Συσκευές που χρησιμοποιούν"
 
-#: lib/clog_webapi.php:557
+#: lib/clog_webapi.php:561
 #, fuzzy
 msgid "Recaches"
 msgstr "ταξίδια"
 
-#: lib/clog_webapi.php:561
+#: lib/clog_webapi.php:565
 msgid "Threshold"
 msgstr "Όριο"
 
-#: lib/clog_webapi.php:575 tree.php:833
+#: lib/clog_webapi.php:579 tree.php:833
 msgid "Display"
 msgstr "Εμφάνιση"
 
-#: lib/clog_webapi.php:579 utilities.php:1459
+#: lib/clog_webapi.php:583 utilities.php:1459
 msgid "Newest First"
 msgstr "Τα νεώτερα πρώτα"
 
-#: lib/clog_webapi.php:580 utilities.php:1460
+#: lib/clog_webapi.php:584 utilities.php:1460
 msgid "Oldest First"
 msgstr "Τα παλαιότερα πρώτα"
 
-#: lib/clog_webapi.php:728
+#: lib/clog_webapi.php:612
+#, fuzzy
+#| msgid "matches"
+msgid "Matches"
+msgstr "ταξίδια"
+
+#: lib/clog_webapi.php:613
+#, fuzzy
+msgid "Does Not Match"
+msgstr "Οι κωδικοί πρόσβασης δεν ταιριάζουν"
+
+#: lib/clog_webapi.php:739
 #, fuzzy
 msgid "System Device"
 msgstr "Συγχρονισμός συσκευών"
@@ -15529,182 +15535,182 @@ msgstr "Οι ρυθμίσεις αποθηκεύονται στον συλλέκ
 msgid "Message Not Found."
 msgstr "Το μήνυμα δε βρέθηκε."
 
-#: lib/functions.php:1407
+#: lib/functions.php:1408
 #, fuzzy, php-format
 msgid "Error %s is not readable"
 msgstr "Το σφάλμα %s δεν είναι αναγνώσιμο"
 
-#: lib/functions.php:3632
+#: lib/functions.php:3645
 #, fuzzy
 #| msgid "Logged in as"
 msgid "Logged in a Guest"
 msgstr "Συνδεδεμένος ως"
 
-#: lib/functions.php:3632 lib/functions.php:3648
+#: lib/functions.php:3645 lib/functions.php:3661
 msgid "Logged in as"
 msgstr "Συνδεδεμένος ως"
 
-#: lib/functions.php:3632
+#: lib/functions.php:3645
 #, fuzzy
 msgid "Login as Regular User"
 msgstr "Είσοδος ως τακτικός χρήστης"
 
-#: lib/functions.php:3632
+#: lib/functions.php:3645
 msgid "guest"
 msgstr "άτομο"
 
-#: lib/functions.php:3635 lib/functions.php:3658 lib/html.php:2497
+#: lib/functions.php:3648 lib/functions.php:3671 lib/html.php:2497
 #, fuzzy
 msgid "User Community"
 msgstr "Κοινότητα χρηστών"
 
-#: lib/functions.php:3636 lib/functions.php:3659 lib/html.php:2499
+#: lib/functions.php:3649 lib/functions.php:3672 lib/html.php:2499
 #: lib/utility.php:1244
 msgid "Documentation"
 msgstr "Τεκμηρίωση"
 
-#: lib/functions.php:3651
+#: lib/functions.php:3664
 #, php-format
 msgid "Logged in as %s"
 msgstr "Συνδεδεμένος ως %s"
 
-#: lib/functions.php:3653 lib/html.php:2478
+#: lib/functions.php:3666 lib/html.php:2478
 msgid "Edit Profile"
 msgstr "Επεξεργασία Προφίλ"
 
-#: lib/functions.php:3663 lib/html.php:2482
+#: lib/functions.php:3676 lib/html.php:2482
 msgid "Logout"
 msgstr "Αποσύνδεση"
 
-#: lib/functions.php:3808
+#: lib/functions.php:3821
 msgid "Leaf"
 msgstr "Φύλλο"
 
-#: lib/functions.php:3828 lib/html_tree.php:663 lib/html_tree.php:699
+#: lib/functions.php:3841 lib/html_tree.php:663 lib/html_tree.php:699
 #: lib/html_tree.php:928 lib/html_tree.php:936 lib/html_tree.php:1510
 #, fuzzy
 msgid "Non Query Based"
 msgstr "Μη βασισμένο σε ερωτήματα"
 
-#: lib/functions.php:3864
+#: lib/functions.php:3877
 #, fuzzy, php-format
 msgid "Link %s"
 msgstr "Συνδέσεις"
 
-#: lib/functions.php:4899
+#: lib/functions.php:4912
 #, fuzzy
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
 msgstr "Mailer Σφάλμα: Δεν <b>Για την</b> αντιμετώπιση που !! <br> Εάν χρησιμοποιείτε το σύνδεσμο <i>Δοκιμαστική αλληλογραφία</i> , ορίστε τη ρύθμιση <b>E-mail ειδοποίησης</b> ."
 
-#: lib/functions.php:5228
+#: lib/functions.php:5241
 #, fuzzy, php-format
 msgid "Authentication failed: %s"
 msgstr "Ο έλεγχος ταυτότητας απέτυχε: %s"
 
-#: lib/functions.php:5232
+#: lib/functions.php:5245
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "HELO απέτυχε: %s"
 
-#: lib/functions.php:5235
+#: lib/functions.php:5248
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "Η σύνδεση απέτυχε: %s"
 
-#: lib/functions.php:5238
+#: lib/functions.php:5251
 #, fuzzy
 msgid "SMTP error: "
 msgstr "Σφάλμα SMTP:"
 
-#: lib/functions.php:5251
+#: lib/functions.php:5264
 #, fuzzy
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
 msgstr "Αυτό είναι ένα μήνυμα δοκιμής που δημιουργήθηκε από το Cacti. Αυτό το μήνυμα εστάλη για να ελέγξει τη διαμόρφωση των ρυθμίσεων αλληλογραφίας σας."
 
-#: lib/functions.php:5252
+#: lib/functions.php:5265
 #, fuzzy
 msgid "Your email settings are currently set as follows"
 msgstr "Οι ρυθμίσεις email σας ρυθμίζονται αυτήν τη στιγμή ως εξής"
 
-#: lib/functions.php:5255
+#: lib/functions.php:5268
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "Έλεγχος διαμόρφωσης ... <br>"
 
-#: lib/functions.php:5262
+#: lib/functions.php:5275
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "Η τάξη Mailer της PHP"
 
-#: lib/functions.php:5268
+#: lib/functions.php:5281
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "Μέθοδος: SMTP"
 
-#: lib/functions.php:5283
+#: lib/functions.php:5296
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "Δεν εμφανίζεται για λόγους ασφάλειας"
 
-#: lib/functions.php:5284
+#: lib/functions.php:5297
 msgid "Security"
 msgstr "Ασφάλεια"
 
-#: lib/functions.php:5292
+#: lib/functions.php:5305
 #, fuzzy
 msgid "Ping Results:"
 msgstr "Αποτελέσματα Ping:"
 
-#: lib/functions.php:5301
+#: lib/functions.php:5314
 #, fuzzy
 msgid "Bypassed"
 msgstr "Παράκαμψη"
 
-#: lib/functions.php:5309
+#: lib/functions.php:5322
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "Δημιουργία κειμένου μηνύματος ..."
 
-#: lib/functions.php:5312
+#: lib/functions.php:5325
 #, fuzzy
 msgid "Sending Message..."
 msgstr "Αποστολή μηνύματος ..."
 
-#: lib/functions.php:5316
+#: lib/functions.php:5329
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "Μήνυμα δοκιμής κάκτων"
 
-#: lib/functions.php:5318
+#: lib/functions.php:5331
 msgid "Success!"
 msgstr "Επιτυχία!"
 
-#: lib/functions.php:5321
+#: lib/functions.php:5334
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "Μήνυμα δεν έχει σταλεί λόγω βλάβης του ping."
 
-#: lib/functions.php:5909 lib/functions.php:5978
+#: lib/functions.php:5922 lib/functions.php:5991
 #, fuzzy, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr "Το plugin Cacti έχει απενεργοποιηθεί %s λόγω του ακόλουθου σφάλματος: %s! Δείτε το αρχείο καταγραφής Cacti για περισσότερες λεπτομέρειες."
 
-#: lib/functions.php:6372 lib/functions.php:6374
+#: lib/functions.php:6385 lib/functions.php:6387
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "- Beta %s"
 
-#: lib/functions.php:6372
+#: lib/functions.php:6385
 #, fuzzy, php-format
 msgid "Version %s %s"
 msgstr "Έκδοση %s %s"
 
-#: lib/functions.php:6374
+#: lib/functions.php:6387
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
 
-#: lib/functions.php:6588
+#: lib/functions.php:6601
 #, php-format
 msgid "WARNING:  Key Cacti Include File %s missing.  Please locate and replace this file"
 msgstr ""
@@ -17377,7 +17383,7 @@ msgstr "Σας ευχαριστούμε που αφιερώσατε χρόνο �
 
 #: lib/installer.php:1687
 #, fuzzy, php-format
-msgid "Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href=\"%1$s\">Unix</a> and <a href=\"%2$s\">Win32</a>-based operating systems."
+msgid "Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href=\"%s\">Unix</a> and <a href=\"%s\">Win32</a>-based operating systems."
 msgstr "Βεβαιωθείτε ότι έχετε διαβάσει και ακολουθήσει τα απαραίτητα βήματα που απαιτούνται για την εγκατάσταση του Cacti προτού συνεχίσετε. Μπορούν να βρεθούν πληροφορίες εγκατάστασης για λειτουργικά συστήματα που βασίζονται σε <a href=\"%1$s\">Unix</a> και <a href=\"%2$s\">Win32</a> ."
 
 #: lib/installer.php:1690
@@ -21425,7 +21431,7 @@ msgstr "Ολοκλήρωση δέντρου επεξεργασίας"
 
 #: tree.php:803
 #, fuzzy, php-format
-msgid "This tree has been locked for Editing on %1$s by %2$s."
+msgid "This tree has been locked for Editing on %s by %s."
 msgstr "Αυτό το δέντρο έχει κλειδωθεί για επεξεργασία στο%1$s από%2$s."
 
 #: tree.php:808
@@ -23158,6 +23164,10 @@ msgstr "Ο αριθμός των προτύπων γραφημάτων που χ
 #, fuzzy
 msgid "No VDEFs"
 msgstr "Δεν υπάρχουν VDEF"
+
+#, fuzzy
+#~ msgid "Version %1$s | %2$s"
+#~ msgstr "Έκδοση%1$s | %2$s"
 
 #, fuzzy
 #~ msgid "NOTE: Graph not added for Data Query "
