@@ -1559,8 +1559,10 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
  * @param $filter       - (char) the filtering expression to search for
  * @param $page_nr      - (int) the page we want to show rows for
  * @param $total_rows   - (int) the total number of rows in the logfile
+ * @param $matches      - (bool) match or does not match the filter
+ * @param $expand_text  - (bool) expand text to perform replacements
  */
-function tail_file(string $file_name, int $number_of_lines, ?int $message_type = -1, ?string $filter = '', ?int &$page_nr = 1, ?int &$total_rows = 0, ?bool $expand_text = false): array {
+function tail_file(string $file_name, int $number_of_lines, ?int $message_type = -1, ?string $filter = '', ?int &$page_nr = 1, ?int &$total_rows = 0, ?bool $matches = true, ?bool $expand_text = false): array {
 	if (!file_exists($file_name)) {
 		touch($file_name);
 
@@ -1586,14 +1588,14 @@ function tail_file(string $file_name, int $number_of_lines, ?int $message_type =
 	}
 
 	while (($line = fgets($fp)) !== false) {
-		$display = (determine_display_log_entry($message_type, $line, $filter));
+		$display = (determine_display_log_entry($message_type, $line, $filter, $matches));
 
 		if ($should_expand && !$display) {
 			$expanded = text_substitute($line, isHtml: false);
 
 			if ($expanded != $line) {
 				// expand line different so lets see if we want it now after all
-				$display = determine_display_log_entry($message_type, $expanded, $filter);
+				$display = determine_display_log_entry($message_type, $expanded, $filter, $matches);
 			}
 		}
 
@@ -1670,10 +1672,11 @@ function tail_file(string $file_name, int $number_of_lines, ?int $message_type =
  * @param $message_type
  * @param $line
  * @param $filter
+ * @param $matches
  *
  * @return mixed should the entry be displayed
  */
-function determine_display_log_entry($message_type, $line, $filter) {
+function determine_display_log_entry($message_type, $line, $filter, $matches = true) {
 	static $thold_enabled = null;
 
 	if ($thold_enabled == null) {
@@ -1779,12 +1782,20 @@ function determine_display_log_entry($message_type, $line, $filter) {
 
 	/* match any lines that match the search string */
 	if ($display === true && $filter != '') {
-		if (stripos($line, $filter) !== false) {
-			return $line;
-		}
-
-		if (validate_is_regex($filter) && preg_match('/' . $filter . '/i', $line)) {
-			return $line;
+		if ($matches) {
+			if (validate_is_regex($filter) && preg_match('/' . $filter . '/i', $line)) {
+				return $line;
+			} elseif (stripos($line, $filter) !== false) {
+				return $line;
+			}
+		} else {
+			if (validate_is_regex($filter)) {
+				if (!preg_match('/' . $filter . '/i', $line)) {
+					return $line;
+				}
+			} elseif (!stripos($line, $filter) !== false) {
+				return $line;
+			}
 		}
 
 		return false;
