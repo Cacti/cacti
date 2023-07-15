@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2023-07-01 12:00-0400\n"
+"POT-Creation-Date: 2023-07-15 19:39-0400\n"
 "PO-Revision-Date: 2023-03-07 13:29+0000\n"
 "Last-Translator: Anonymous <anonymous@cacti.net>\n"
 "Language-Team: Dutch <http://translate.cacti.net/projects/cacti/core-v1-2-x/nl/>\n"
@@ -177,7 +177,7 @@ msgstr "Klik op 'Volgende' om de volgende geaggregeerde grafiek te verwijderen."
 #: host.php:484 host.php:498 host.php:512 host.php:521 host.php:550
 #: host.php:562 host_templates.php:271 host_templates.php:285
 #: host_templates.php:296 host_templates.php:345 host_templates.php:408
-#: lib/clog_webapi.php:228 lib/html.php:2546 lib/html_form.php:1274
+#: lib/clog_webapi.php:232 lib/html.php:2546 lib/html_form.php:1274
 #: lib/html_form.php:1286 lib/html_form.php:1297 links.php:197 links.php:206
 #: links.php:215 managers.php:1004 managers.php:1065 plugins.php:670
 #: pollers.php:559 pollers.php:568 pollers.php:577 pollers.php:586
@@ -214,7 +214,7 @@ msgstr "Annuleer"
 #: host.php:466 host.php:475 host.php:484 host.php:498 host.php:512
 #: host.php:521 host.php:550 host.php:562 host_templates.php:271
 #: host_templates.php:285 host_templates.php:296 host_templates.php:346
-#: host_templates.php:409 lib/clog_webapi.php:229 lib/html.php:2545
+#: host_templates.php:409 lib/clog_webapi.php:233 lib/html.php:2545
 #: lib/html_reports.php:499 links.php:197 links.php:206 links.php:215
 #: managers.php:1004 managers.php:1065 pollers.php:559 pollers.php:568
 #: pollers.php:577 pollers.php:586 pollers.php:595 sites.php:382 sites.php:392
@@ -486,7 +486,7 @@ msgstr "Overeenkomende grafieken"
 #: graph_view.php:621 graphs.php:2046 graphs_new.php:457 host.php:1636
 #: host_templates.php:727 lib/api_automation.php:140 lib/api_automation.php:473
 #: lib/api_automation.php:707 lib/api_automation.php:1066
-#: lib/clog_webapi.php:604 lib/html.php:266 lib/html_filter.php:63
+#: lib/clog_webapi.php:608 lib/html.php:266 lib/html_filter.php:63
 #: lib/html_graph.php:203 lib/html_reports.php:1836 lib/html_tree.php:136
 #: lib/html_tree.php:982 links.php:310 managers.php:149 managers.php:493
 #: managers.php:725 plugins.php:459 pollers.php:879 rrdcheck.php:226
@@ -558,7 +558,7 @@ msgstr "Onderdeel van aggregatie"
 #: graph_view.php:629 graphs.php:2037 graphs_new.php:446 host.php:1626
 #: host_templates.php:770 lib/api_automation.php:195 lib/api_automation.php:464
 #: lib/api_automation.php:729 lib/api_automation.php:1121
-#: lib/clog_webapi.php:529 lib/html.php:1559 lib/html_filter.php:80
+#: lib/clog_webapi.php:533 lib/html.php:1559 lib/html_filter.php:80
 #: lib/html_graph.php:190 lib/html_reports.php:1867 lib/html_tree.php:1024
 #: links.php:330 managers.php:171 managers.php:515 managers.php:745
 #: plugins.php:495 pollers.php:924 sites.php:521 tree.php:2150
@@ -599,7 +599,7 @@ msgstr "Stel in/vernieuw filters"
 #: graph_view.php:630 graphs.php:2038 graphs_new.php:447 host.php:1627
 #: host_templates.php:771 lib/api_automation.php:196 lib/api_automation.php:465
 #: lib/api_automation.php:730 lib/api_automation.php:1122
-#: lib/clog_webapi.php:530 lib/html_filter.php:85 lib/html_graph.php:191
+#: lib/clog_webapi.php:534 lib/html_filter.php:85 lib/html_graph.php:191
 #: lib/html_graph.php:308 lib/html_reports.php:1868 lib/html_tree.php:1025
 #: lib/html_tree.php:1136 links.php:331 managers.php:172 managers.php:516
 #: managers.php:746 plugins.php:496 pollers.php:925 sites.php:522 tree.php:2151
@@ -936,7 +936,7 @@ msgid "Cannot be reused for %d password changes"
 msgstr "Kan niet worden hergebruikt voor %d wachtwoord wijzigingen"
 
 #: auth_changepassword.php:315 auth_changepassword.php:322
-#: include/global_form.php:1567 lib/functions.php:3654 lib/html.php:2481
+#: include/global_form.php:1567 lib/functions.php:3667 lib/html.php:2481
 msgid "Change Password"
 msgstr "Wijzig wachtwoord"
 
@@ -950,7 +950,7 @@ msgid "Please enter your new Cacti password."
 msgstr "Voer alstublieft uw huidige en uw nieuwe<br>Cacti wachtwoord in."
 
 #: auth_changepassword.php:342 auth_login.php:306 auth_login.php:309
-#: include/global_settings.php:1798 lib/functions.php:5282
+#: include/global_settings.php:1798 lib/functions.php:5295
 msgid "Username"
 msgstr "Gebruikersnaam"
 
@@ -972,10 +972,11 @@ msgstr "Bevestig nieuw wachtwoord"
 msgid "Save"
 msgstr "Opslaan"
 
-#: auth_changepassword.php:367
-#, php-format
-msgid "Version %1$s | %2$s"
-msgstr "Versie %1$s | %2$s"
+#: auth_changepassword.php:367 auth_login.php:386
+#, fuzzy, php-format
+#| msgid "Version %s %s"
+msgid "Version %s | %s"
+msgstr "Versie %s %s"
 
 #: auth_changepassword.php:380 user_admin.php:1920
 msgid "Password Too Short"
@@ -1035,7 +1036,7 @@ msgstr "Gebruikerlogin"
 msgid "Enter your Username and Password below"
 msgstr "Voer uw gebruikersnaam en wachtwoord in"
 
-#: auth_login.php:314 include/global_form.php:1534 lib/functions.php:5283
+#: auth_login.php:314 include/global_form.php:1534 lib/functions.php:5296
 msgid "Password"
 msgstr "Wachtwoord"
 
@@ -1060,12 +1061,6 @@ msgstr "Houd mij ingelogd"
 #: auth_login.php:371
 msgid "Login"
 msgstr "Login"
-
-#: auth_login.php:386
-#, fuzzy, php-format
-#| msgid "Version %s %s"
-msgid "Version %s | %s"
-msgstr "Versie %s %s"
 
 #: auth_profile.php:76 include/global_settings.php:38
 #: include/global_settings.php:1173 include/global_settings.php:1482
@@ -1346,8 +1341,8 @@ msgstr "Exporteer"
 msgid "Export to a file"
 msgstr "Exporteer naar een bestand"
 
-#: automation_devices.php:502 data_debug.php:1053 lib/clog_webapi.php:219
-#: lib/clog_webapi.php:531 managers.php:747
+#: automation_devices.php:502 data_debug.php:1053 lib/clog_webapi.php:223
+#: lib/clog_webapi.php:535 managers.php:747
 msgid "Purge"
 msgstr "Legen"
 
@@ -1359,7 +1354,7 @@ msgstr "Ontdekte apparaten verwijderen"
 #: automation_snmp.php:564 automation_snmp.php:565 automation_snmp.php:566
 #: automation_snmp.php:567 automation_snmp.php:568 automation_snmp.php:569
 #: data_debug.php:624 data_source_profiles.php:73 host.php:1826
-#: lib/functions.php:5628 lib/functions.php:5632 lib/html.php:1182
+#: lib/functions.php:5641 lib/functions.php:5645 lib/html.php:1182
 #: lib/html.php:1248 lib/html_reports.php:1632 lib/html_reports.php:1658
 #: lib/html_reports.php:1729 lib/html_reports.php:1730
 #: lib/html_reports.php:1731 plugins.php:732 pollers.php:1121 support.php:646
@@ -2214,7 +2209,7 @@ msgstr "Nooit"
 msgid "No Networks Found"
 msgstr "Geen netwerken gevonden"
 
-#: automation_networks.php:1203 data_debug.php:1099 lib/clog_webapi.php:584
+#: automation_networks.php:1203 data_debug.php:1099 lib/clog_webapi.php:588
 #: lib/html_graph.php:307 lib/html_tree.php:1135 lib/html_tree.php:1156
 #: pollers.php:900 utilities.php:1464 utilities.php:2468
 msgid "Refresh"
@@ -2349,7 +2344,7 @@ msgstr "Versie"
 msgid "Community"
 msgstr "Community"
 
-#: automation_snmp.php:537 lib/functions.php:5278
+#: automation_snmp.php:537 lib/functions.php:5291
 msgid "Port"
 msgstr "Poort"
 
@@ -2642,8 +2637,8 @@ msgstr "ROOT"
 msgid "No Tree Rules Found"
 msgstr "Geen boomstructuur regels gevonden"
 
-#: cactid.php:44 help.php:38 lib/functions.php:5909 lib/functions.php:5978
-#: lib/functions.php:6588 poller.php:392 poller.php:542 poller.php:607
+#: cactid.php:44 help.php:38 lib/functions.php:5922 lib/functions.php:5991
+#: lib/functions.php:6601 poller.php:392 poller.php:542 poller.php:607
 #: poller.php:647 poller.php:789 poller.php:895 poller_automation.php:53
 #: poller_boost.php:347
 #, fuzzy
@@ -3455,7 +3450,7 @@ msgstr "Profiel"
 #: data_debug.php:1066 data_debug.php:1082 data_debug.php:1093
 #: data_sources.php:1423 data_sources.php:1440 data_templates.php:1051
 #: graphs.php:2056 graphs_new.php:424 host.php:1603 host_templates.php:737
-#: lib/clog_webapi.php:545 lib/html.php:225 lib/html_reports.php:977
+#: lib/clog_webapi.php:549 lib/html.php:225 lib/html_reports.php:977
 #: lib/html_reports.php:2073 plugins.php:469 settings.php:536 settings.php:558
 #: settings.php:594 tree.php:836 user_admin.php:2151 user_log.php:160
 #: utilities.php:1035 utilities.php:1446
@@ -4263,7 +4258,7 @@ msgstr "De naam van dit data template. Let op dat u alleen grafiek templates kun
 #: data_sources.php:950 graph_view.php:743 graphs.php:1592
 #: include/global_arrays.php:938 include/global_arrays.php:987
 #: include/global_arrays.php:1669 include/global_arrays.php:1838
-#: lib/api_automation.php:425 lib/functions.php:5277 lib/html.php:2067
+#: lib/api_automation.php:425 lib/functions.php:5290 lib/html.php:2067
 #: lib/html.php:2099 lib/html_reports.php:1009 utilities.php:1870
 msgid "Device"
 msgstr "Apparaat"
@@ -5687,7 +5682,7 @@ msgstr "Grafiektemplate toevoegen aan apparaat"
 msgid "Data Query Debug Information"
 msgstr "Data query debug informatie"
 
-#: host.php:874 lib/functions.php:4269 tree.php:1725 tree.php:1799
+#: host.php:874 lib/functions.php:4282 tree.php:1725 tree.php:1799
 #: tree.php:1907 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "Kopiëren"
@@ -5727,7 +5722,7 @@ msgstr " [%d items, %d rijen]"
 msgid "Fail"
 msgstr "Mislukt"
 
-#: host.php:958 lib/functions.php:5292 lib/functions.php:5297
+#: host.php:958 lib/functions.php:5305 lib/functions.php:5310
 msgid "Success"
 msgstr "Gelukt"
 
@@ -6034,16 +6029,16 @@ msgstr "FATALE FOUT: U dient ingelogd te zijn om dit deel van Cacti te gebruiken
 msgid "Login Again"
 msgstr "Log nogmaals in"
 
-#: include/auth.php:272 lib/functions.php:6939 permission_denied.php:45
+#: include/auth.php:272 lib/functions.php:6952 permission_denied.php:45
 #: permission_denied.php:52
 msgid "Permission Denied"
 msgstr "Toegang geweigerd"
 
-#: include/auth.php:273 lib/functions.php:6940 permission_denied.php:54
+#: include/auth.php:273 lib/functions.php:6953 permission_denied.php:54
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr "Als u van mening bent dat dit foutief is, neem dan alstublieft contact op met uw Cacti beheerder."
 
-#: include/auth.php:273 lib/functions.php:6940 permission_denied.php:54
+#: include/auth.php:273 lib/functions.php:6953 permission_denied.php:54
 msgid "You are not permitted to access this section of Cacti."
 msgstr "U heeft geen toestemming voor dit deel van Cacti."
 
@@ -8067,7 +8062,7 @@ msgid "List Mode"
 msgstr "Lijst modus"
 
 #: include/global_arrays.php:2043 include/global_arrays.php:2049
-#: lib/functions.php:3861 lib/html.php:1698 lib/html.php:1775 lib/html.php:2491
+#: lib/functions.php:3874 lib/html.php:1698 lib/html.php:1775 lib/html.php:2491
 #: links.php:344 user_admin.php:1551 user_group_admin.php:1433
 msgid "Console"
 msgstr "Console"
@@ -9891,7 +9886,7 @@ msgstr "Data"
 msgid "Visual"
 msgstr "Visueel"
 
-#: include/global_settings.php:44 lib/functions.php:5281 lib/functions.php:5286
+#: include/global_settings.php:44 lib/functions.php:5294 lib/functions.php:5299
 msgid "Authentication"
 msgstr "Authenticatie"
 
@@ -9928,11 +9923,11 @@ msgstr "Grafiek lettertypes"
 msgid "PHP Mail() Function"
 msgstr "PHP mail() functie"
 
-#: include/global_settings.php:85 lib/functions.php:5264
+#: include/global_settings.php:85 lib/functions.php:5277
 msgid "Sendmail"
 msgstr "Sendmail"
 
-#: include/global_settings.php:86 lib/functions.php:5269
+#: include/global_settings.php:86 lib/functions.php:5282
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -10183,11 +10178,11 @@ msgstr "Bij het gebruik van Syslog/Eventlog voor het loggen, de Cacti logbericht
 msgid "Statistics"
 msgstr "Statistieken"
 
-#: include/global_settings.php:326 lib/clog_webapi.php:547 utilities.php:1448
+#: include/global_settings.php:326 lib/clog_webapi.php:551 utilities.php:1448
 msgid "Warnings"
 msgstr "Waarschuwingen"
 
-#: include/global_settings.php:330 lib/clog_webapi.php:549 utilities.php:1449
+#: include/global_settings.php:330 lib/clog_webapi.php:553 utilities.php:1449
 msgid "Errors"
 msgstr "Foutmeldingen"
 
@@ -12032,7 +12027,7 @@ msgstr "Dit is het aantal karakters dat wordt toegestaan voordat een regel in de
 msgid "Sendmail Options"
 msgstr "Sendmail opties"
 
-#: include/global_settings.php:1919 lib/functions.php:5264
+#: include/global_settings.php:1919 lib/functions.php:5277
 msgid "Sendmail Path"
 msgstr "Sendmail path"
 
@@ -12424,7 +12419,7 @@ msgstr "RRDtool proxy server"
 msgid "Structured RRDfile Paths"
 msgstr "Gestructureerde RRD paden"
 
-#: include/global_settings.php:2297 lib/functions.php:5253
+#: include/global_settings.php:2297 lib/functions.php:5266
 msgid "Method"
 msgstr "Methode"
 
@@ -13103,12 +13098,12 @@ msgstr "<strong>LET OP:</strong> U bent ingelogd in een Remote Data Collector. A
 msgid "<strong>NOTE:</strong> None of the Core Cacti Plugins, to date, have been re-designed to work with Remote Data Collectors.  Therefore, Plugins such as MacTrack, and HMIB, which require direct access to devices will not work with Remote Data Collectors at this time.  However, plugins such as Thold will work so long as the Remote Data Collector is in <b>'online'</b> mode."
 msgstr "<strong>LET OP:</strong> Tot op heden zijn geen van de basis Cacti plugins bijgewerkt om met remote pollers te werken. Daarom zullen plugins zoals bijvoorbeeld MacTrack en HMIB, die directe toegang nodig hebben op apparaten, op dit moment niet werken met Remote Data Collectors. Echter, plugins als Thold zullen wél werken zolang de Remote Data Collector in <b>'online'</b> modus is."
 
-#: install/functions.php:603
+#: install/functions.php:604
 #, fuzzy, php-format
 msgid "Path for %s"
 msgstr "Pad voor %s"
 
-#: install/functions.php:814
+#: install/functions.php:815
 #, fuzzy
 msgid "New Poller"
 msgstr "Nieuwe Poller"
@@ -13223,7 +13218,7 @@ msgid "Matching Devices"
 msgstr "Overeenkomende apparaten"
 
 #: lib/api_automation.php:146 lib/api_automation.php:1072
-#: lib/clog_webapi.php:539 lib/html_reports.php:956 lib/html_reports.php:1611
+#: lib/clog_webapi.php:543 lib/html_reports.php:956 lib/html_reports.php:1611
 #: lib/html_reports.php:1938 lib/html_reports.php:1949 lib/rrd.php:3148
 #: support.php:264 utilities.php:356 utilities.php:1442 utilities.php:3056
 msgid "Type"
@@ -13435,8 +13430,8 @@ msgstr "Locatie:"
 msgid "Contact:"
 msgstr "Contactpersoon:"
 
-#: lib/api_device.php:1581 lib/functions.php:5295 lib/functions.php:5297
-#: lib/functions.php:5301
+#: lib/api_device.php:1581 lib/functions.php:5308 lib/functions.php:5310
+#: lib/functions.php:5314
 msgid "Ping Results"
 msgstr "Ping resultaten"
 
@@ -13619,125 +13614,137 @@ msgstr "%s GBytes"
 msgid "%s - WEBUI NOTE: Cacti Log Cleared from Web Management Interface."
 msgstr "%s - WEBUI OPMERKING: Cactielogboek gewist van de webbeheerinterface."
 
-#: lib/clog_webapi.php:223
+#: lib/clog_webapi.php:227
 msgid "Click 'Continue' to purge the Log File.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog."
 msgstr "Klik op 'Volgende' om het Cacti log bestand te legen.<br><br><br>Let op: Als logging is ingesteld op Cacti en Syslog, dan zal de log informatie beschikbaar blijven in de Syslog."
 
-#: lib/clog_webapi.php:229 user_log.php:384 utilities.php:1434
+#: lib/clog_webapi.php:233 user_log.php:384 utilities.php:1434
 msgid "Purge Log"
 msgstr "Logbestand legen"
 
-#: lib/clog_webapi.php:253 utilities.php:1383
+#: lib/clog_webapi.php:257 utilities.php:1383
 msgid "Log Filters"
 msgstr "Log filters"
 
-#: lib/clog_webapi.php:270
+#: lib/clog_webapi.php:274
 #, fuzzy
 msgid " - Admin Filter active"
 msgstr " - Admin Filter actief"
 
-#: lib/clog_webapi.php:272
+#: lib/clog_webapi.php:276
 #, fuzzy
 msgid " - Admin Unfiltered"
 msgstr " - Admin Ongefilterd"
 
-#: lib/clog_webapi.php:275
+#: lib/clog_webapi.php:279
 #, fuzzy
 msgid " - Admin view"
 msgstr " - Admin bekijken"
 
-#: lib/clog_webapi.php:280
+#: lib/clog_webapi.php:284
 #, fuzzy, php-format
 msgid "Log [Total Lines: %d %s - Filter active]"
 msgstr "Logboek [Totaal aantal regels: %d %s - Filter actief]"
 
-#: lib/clog_webapi.php:282
+#: lib/clog_webapi.php:286
 #, fuzzy, php-format
 msgid "Log [Total Lines: %d %s - Unfiltered]"
 msgstr "Logboek [Totaal aantal lijnen: %d %s - ongefilterd]"
 
-#: lib/clog_webapi.php:292 utilities.php:1518 utilities.php:1864
+#: lib/clog_webapi.php:296 utilities.php:1518 utilities.php:1864
 #: utilities.php:2087 utilities.php:2182 utilities.php:3050 utilities.php:3258
 msgid "Entries"
 msgstr "Regels"
 
-#: lib/clog_webapi.php:485 utilities.php:1392
+#: lib/clog_webapi.php:489 utilities.php:1392
 msgid "File"
 msgstr "Bestand"
 
-#: lib/clog_webapi.php:512
+#: lib/clog_webapi.php:516
 #, fuzzy
 #| msgid "%d Lines"
 msgid "Head Lines"
 msgstr "%d Regels"
 
-#: lib/clog_webapi.php:512 utilities.php:1419
+#: lib/clog_webapi.php:516 utilities.php:1419
 msgid "Tail Lines"
 msgstr "Aantal rijen"
 
-#: lib/clog_webapi.php:546 utilities.php:1447
+#: lib/clog_webapi.php:550 utilities.php:1447
 msgid "Stats"
 msgstr "Statistieken"
 
-#: lib/clog_webapi.php:548
+#: lib/clog_webapi.php:552
 #, fuzzy
 msgid "Warnings++"
 msgstr "Waarschuwingen"
 
-#: lib/clog_webapi.php:550
+#: lib/clog_webapi.php:554
 #, fuzzy
 msgid "Errors++"
 msgstr "Foutmeldingen"
 
-#: lib/clog_webapi.php:551 utilities.php:1450
+#: lib/clog_webapi.php:555 utilities.php:1450
 msgid "Debug"
 msgstr "Debug"
 
-#: lib/clog_webapi.php:552 utilities.php:1451
+#: lib/clog_webapi.php:556 utilities.php:1451
 msgid "SQL Calls"
 msgstr "SQL commando's"
 
-#: lib/clog_webapi.php:553
+#: lib/clog_webapi.php:557
 #, fuzzy
 msgid "AutoM8"
 msgstr "Automatisch"
 
-#: lib/clog_webapi.php:554
+#: lib/clog_webapi.php:558
 #, fuzzy
 msgid "Non Stats"
 msgstr "Niet vermeld"
 
-#: lib/clog_webapi.php:555
+#: lib/clog_webapi.php:559
 msgid "Boost"
 msgstr "Boost"
 
-#: lib/clog_webapi.php:556
+#: lib/clog_webapi.php:560
 #, fuzzy
 msgid "Device Up/Down"
 msgstr "Gebruikt door apparaten"
 
-#: lib/clog_webapi.php:557
+#: lib/clog_webapi.php:561
 #, fuzzy
 msgid "Recaches"
 msgstr "komt overeen"
 
-#: lib/clog_webapi.php:561
+#: lib/clog_webapi.php:565
 msgid "Threshold"
 msgstr "Drempel"
 
-#: lib/clog_webapi.php:575 tree.php:833
+#: lib/clog_webapi.php:579 tree.php:833
 msgid "Display"
 msgstr "Scherm"
 
-#: lib/clog_webapi.php:579 utilities.php:1459
+#: lib/clog_webapi.php:583 utilities.php:1459
 msgid "Newest First"
 msgstr "Nieuwste eerst"
 
-#: lib/clog_webapi.php:580 utilities.php:1460
+#: lib/clog_webapi.php:584 utilities.php:1460
 msgid "Oldest First"
 msgstr "Oudste eerst"
 
-#: lib/clog_webapi.php:728
+#: lib/clog_webapi.php:612
+#, fuzzy
+#| msgid "matches"
+msgid "Matches"
+msgstr "komt overeen"
+
+#: lib/clog_webapi.php:613
+#, fuzzy
+#| msgid "Passwords do Not Match"
+msgid "Does Not Match"
+msgstr "Wachtwoorden komen niet overeen"
+
+#: lib/clog_webapi.php:739
 #, fuzzy
 #| msgid "Sync Devices"
 msgid "System Device"
@@ -14286,170 +14293,170 @@ msgstr "Instellingen opslaan op Dataverzamelaar %d Mislukt."
 msgid "Message Not Found."
 msgstr "Bericht niet gevonden."
 
-#: lib/functions.php:1407
+#: lib/functions.php:1408
 #, php-format
 msgid "Error %s is not readable"
 msgstr "Fout %s is niet leesbaar"
 
-#: lib/functions.php:3632
+#: lib/functions.php:3645
 #, fuzzy
 #| msgid "Logged in as"
 msgid "Logged in a Guest"
 msgstr "Ingelogd als"
 
-#: lib/functions.php:3632 lib/functions.php:3648
+#: lib/functions.php:3645 lib/functions.php:3661
 msgid "Logged in as"
 msgstr "Ingelogd als"
 
-#: lib/functions.php:3632
+#: lib/functions.php:3645
 msgid "Login as Regular User"
 msgstr "Log in als reguliere gebruiker"
 
-#: lib/functions.php:3632
+#: lib/functions.php:3645
 msgid "guest"
 msgstr "gast"
 
-#: lib/functions.php:3635 lib/functions.php:3658 lib/html.php:2497
+#: lib/functions.php:3648 lib/functions.php:3671 lib/html.php:2497
 #, fuzzy
 msgid "User Community"
 msgstr "Gebruikersgemeenschap"
 
-#: lib/functions.php:3636 lib/functions.php:3659 lib/html.php:2499
+#: lib/functions.php:3649 lib/functions.php:3672 lib/html.php:2499
 #: lib/utility.php:1244
 msgid "Documentation"
 msgstr "Documentatie"
 
-#: lib/functions.php:3651
+#: lib/functions.php:3664
 #, php-format
 msgid "Logged in as %s"
 msgstr "Ingelogd als %s"
 
-#: lib/functions.php:3653 lib/html.php:2478
+#: lib/functions.php:3666 lib/html.php:2478
 msgid "Edit Profile"
 msgstr "Wijzig profiel"
 
-#: lib/functions.php:3663 lib/html.php:2482
+#: lib/functions.php:3676 lib/html.php:2482
 msgid "Logout"
 msgstr "Uitloggen"
 
-#: lib/functions.php:3808
+#: lib/functions.php:3821
 msgid "Leaf"
 msgstr "Blad"
 
-#: lib/functions.php:3828 lib/html_tree.php:663 lib/html_tree.php:699
+#: lib/functions.php:3841 lib/html_tree.php:663 lib/html_tree.php:699
 #: lib/html_tree.php:928 lib/html_tree.php:936 lib/html_tree.php:1510
 msgid "Non Query Based"
 msgstr "Niet query gebaseerd"
 
-#: lib/functions.php:3864
+#: lib/functions.php:3877
 #, php-format
 msgid "Link %s"
 msgstr "Link %s"
 
-#: lib/functions.php:4899
+#: lib/functions.php:4912
 #, fuzzy
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
 msgstr "Fout in de mailer: Nee <b>TO</b> adres ingesteld! <br>Als u de link <i>Test Mail</i> gebruikt, stelt u de instelling <b>Alert e-mail</b> in."
 
-#: lib/functions.php:5228
+#: lib/functions.php:5241
 #, php-format
 msgid "Authentication failed: %s"
 msgstr "Authenticatie mislukt: %s"
 
-#: lib/functions.php:5232
+#: lib/functions.php:5245
 #, php-format
 msgid "HELO failed: %s"
 msgstr "HELO mislukt: %s"
 
-#: lib/functions.php:5235
+#: lib/functions.php:5248
 #, php-format
 msgid "Connect failed: %s"
 msgstr "Mislukte verbindingen: %s"
 
-#: lib/functions.php:5238
+#: lib/functions.php:5251
 msgid "SMTP error: "
 msgstr "SMTP fout: "
 
-#: lib/functions.php:5251
+#: lib/functions.php:5264
 #, fuzzy
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
 msgstr "Dit is een testbericht van Cacti.  Dit bericht werd verzonden om de configuratie van uw e-mailinstellingen te testen."
 
-#: lib/functions.php:5252
+#: lib/functions.php:5265
 msgid "Your email settings are currently set as follows"
 msgstr "Uw e-mail instellingen zijn momenteel als volgt"
 
-#: lib/functions.php:5255
+#: lib/functions.php:5268
 msgid "Checking Configuration...<br>"
 msgstr "Configuratie controleren…<br>"
 
-#: lib/functions.php:5262
+#: lib/functions.php:5275
 msgid "PHP's Mailer Class"
 msgstr "PHP's Mailer Class"
 
-#: lib/functions.php:5268
+#: lib/functions.php:5281
 msgid "Method: SMTP"
 msgstr "Methode: SMTP"
 
-#: lib/functions.php:5283
+#: lib/functions.php:5296
 msgid "Not Shown for Security Reasons"
 msgstr "Wordt vanwege beveiligingsredenen niet getoond"
 
-#: lib/functions.php:5284
+#: lib/functions.php:5297
 msgid "Security"
 msgstr "Beveiliging"
 
-#: lib/functions.php:5292
+#: lib/functions.php:5305
 msgid "Ping Results:"
 msgstr "Ping resultaten:"
 
-#: lib/functions.php:5301
+#: lib/functions.php:5314
 msgid "Bypassed"
 msgstr "Overgeslagen"
 
-#: lib/functions.php:5309
+#: lib/functions.php:5322
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "Berichttekst maken....."
 
-#: lib/functions.php:5312
+#: lib/functions.php:5325
 msgid "Sending Message..."
 msgstr "Bericht wordt verstuurt..."
 
-#: lib/functions.php:5316
+#: lib/functions.php:5329
 msgid "Cacti Test Message"
 msgstr "Cacti testbericht"
 
-#: lib/functions.php:5318
+#: lib/functions.php:5331
 msgid "Success!"
 msgstr "Gelukt!"
 
-#: lib/functions.php:5321
+#: lib/functions.php:5334
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "Bericht Niet verzonden als gevolg van een pingstoring."
 
-#: lib/functions.php:5909 lib/functions.php:5978
+#: lib/functions.php:5922 lib/functions.php:5991
 #, fuzzy, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr "Cactussen uitgeschakeld plugin %s als gevolg van de volgende fout: %s!  Zie het Cacti logbestand voor meer details."
 
-#: lib/functions.php:6372 lib/functions.php:6374
+#: lib/functions.php:6385 lib/functions.php:6387
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "- Beta %s"
 
-#: lib/functions.php:6372
+#: lib/functions.php:6385
 #, php-format
 msgid "Version %s %s"
 msgstr "Versie %s %s"
 
-#: lib/functions.php:6374
+#: lib/functions.php:6387
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
 
-#: lib/functions.php:6588
+#: lib/functions.php:6601
 #, php-format
 msgid "WARNING:  Key Cacti Include File %s missing.  Please locate and replace this file"
 msgstr ""
@@ -15999,8 +16006,9 @@ msgid "Thanks for taking the time to download and install Cacti, the complete gr
 msgstr "Bedankt dat u de tijd heeft genomen om Cacti te downloaden en te installeren. Cacti is de complete grafiek oplossing voor uw netwerk. Voordat u kunt beginnen met het maken van grafieken, zijn hier een paar zaken over Cacti die u moete weten."
 
 #: lib/installer.php:1687
-#, php-format
-msgid "Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href=\"%1$s\">Unix</a> and <a href=\"%2$s\">Win32</a>-based operating systems."
+#, fuzzy, php-format
+#| msgid "Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href=\"%1$s\">Unix</a> and <a href=\"%2$s\">Win32</a>-based operating systems."
+msgid "Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href=\"%s\">Unix</a> and <a href=\"%s\">Win32</a>-based operating systems."
 msgstr "Zorg ervoor dat u de benodigde stappen heeft gelezen en gevolgd voor het installeren en Cacti. Installatieinstructies kunnen worden gevonden voor <a href=\"%1$s\">Unix</a> en <a href=\"%2$s\">Win32</a>-gebaseerde besturingssystemen."
 
 #: lib/installer.php:1690
@@ -19874,7 +19882,7 @@ msgstr "Beëindig het uitgeven van de boom"
 
 #: tree.php:803
 #, fuzzy, php-format
-msgid "This tree has been locked for Editing on %1$s by %2$s."
+msgid "This tree has been locked for Editing on %s by %s."
 msgstr "Deze boom is vergrendeld voor Bewerken op %1$s met %2$s."
 
 #: tree.php:808
@@ -21484,6 +21492,9 @@ msgstr "Het aantal grafiektemplates die deze VDEF gebruiken."
 #: vdef.php:916
 msgid "No VDEFs"
 msgstr "Geen VDEF's"
+
+#~ msgid "Version %1$s | %2$s"
+#~ msgstr "Versie %1$s | %2$s"
 
 #, fuzzy
 #~ msgid "NOTE: Graph not added for Data Query "
