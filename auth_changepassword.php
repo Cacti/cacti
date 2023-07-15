@@ -364,7 +364,7 @@ if ($skip_current) {
 			</form>
 			<div class='loginErrors'><?php print $errorMessage ?></div>
 		</div>
-		<div class='versionInfo'><?php __('Version %1$s | %2$s', $version, COPYRIGHT_YEARS_SHORT); ?></div>
+		<div class='versionInfo'><?php __('Version %s | %s', $version, COPYRIGHT_YEARS_SHORT); ?></div>
 	</div>
 	<div class='loginRight'></div>
 	<script type='text/javascript'>
