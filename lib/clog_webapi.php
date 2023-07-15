@@ -168,6 +168,10 @@ function clog_view_logfile() {
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
 		),
+		'matches' => array(
+			'filter'  => FILTER_VALIDATE_INT,
+			'default' => '1'
+		),
 		'rfilter' => array(
 			'filter'  => FILTER_VALIDATE_IS_REGEX,
 			'default' => '',
@@ -258,7 +262,7 @@ function clog_view_logfile() {
 	$total_rows      = 0;
 	$number_of_lines = get_request_var('tail_lines') < 0 ? read_config_option('max_display_rows') : get_request_var('tail_lines');
 
-	$logcontents = tail_file($logfile, $number_of_lines, get_request_var('message_type'), get_request_var('rfilter'), $page_nr, $total_rows);
+	$logcontents = tail_file($logfile, $number_of_lines, get_request_var('message_type'), get_request_var('rfilter'), $page_nr, $total_rows, get_request_var('matches'));
 
 	if (get_request_var('reverse') == 1) {
 		$logcontents = array_reverse($logcontents);
@@ -604,6 +608,12 @@ function filter($clogAdmin, $selectedFile) {
 						<?php print __('Search');?>
 					</td>
 					<td>
+						<select id='matches'>
+							<option value='1'<?php if (get_request_var('matches') == '1') {?> selected<?php }?>><?php print __('Matches');?></option>
+							<option value='0'<?php if (get_request_var('matches') == '0') {?> selected<?php }?>><?php print __('Does Not Match');?></option>
+						</select>
+					</td>
+					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='75' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
 				</tr>
@@ -612,7 +622,7 @@ function filter($clogAdmin, $selectedFile) {
 		<script type='text/javascript'>
 
 		$(function() {
-			$('#rfilter, #reverse, #refresh, #message_type, #filename, #tail_lines').unbind().change(function() {
+			$('#rfilter, #reverse, #refresh, #message_type, #filename, #tail_lines, #matches').unbind().change(function() {
 				applyFilter();
 			});
 
@@ -639,6 +649,7 @@ function filter($clogAdmin, $selectedFile) {
 				'?rfilter=' + base64_encode($('#rfilter').val())+
 				'&reverse='+$('#reverse').val()+
 				'&refresh='+$('#refresh').val()+
+				'&matches='+$('#matches').val()+
 				'&message_type='+$('#message_type').val()+
 				'&tail_lines='+$('#tail_lines').val()+
 				'&filename='+$('#filename').val()+

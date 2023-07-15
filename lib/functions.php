@@ -1396,8 +1396,9 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
  * @param $filter       - (char) the filtering expression to search for
  * @param $page_nr      - (int) the page we want to show rows for
  * @param $total_rows   - (int) the total number of rows in the logfile
+ * @param $matches      - (bool) match or does not match the filter
  */
-function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '', &$page_nr = 1, &$total_rows = 0) {
+function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '', &$page_nr = 1, &$total_rows = 0, $matches = true) {
 	if (!file_exists($file_name)) {
 		touch($file_name);
 		return array();
@@ -1414,7 +1415,7 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 	/* Count all lines in the logfile */
 	$total_rows = 0;
 	while (($line = fgets($fp)) !== false) {
-		if (determine_display_log_entry($message_type, $line, $filter)) {
+		if (determine_display_log_entry($message_type, $line, $filter, $matches)) {
 			++$total_rows;
 		}
 	}
@@ -1441,7 +1442,7 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 	$file_array = array();
 	$i = 0;
 	while (($line = fgets($fp)) !== false) {
-		$display = determine_display_log_entry($message_type, $line, $filter);
+		$display = determine_display_log_entry($message_type, $line, $filter, $matches);
 
 		if ($display === false) {
 			continue;
@@ -1469,10 +1470,11 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
  * @param $message_type
  * @param $line
  * @param $filter
+ * @param $matches
  *
  * @return - should the entry be displayed
  */
-function determine_display_log_entry($message_type, $line, $filter) {
+function determine_display_log_entry($message_type, $line, $filter, $matches = true) {
 	static $thold_enabled = null;
 
 	if ($thold_enabled == null) {
@@ -1577,11 +1579,22 @@ function determine_display_log_entry($message_type, $line, $filter) {
 
 	/* match any lines that match the search string */
 	if ($display === true && $filter != '') {
-		if (stripos($line, $filter) !== false) {
-			return $line;
-		} elseif (validate_is_regex($filter) && preg_match('/' . $filter . '/i', $line)) {
-			return $line;
+		if ($matches) {
+			if (validate_is_regex($filter) && preg_match('/' . $filter . '/i', $line)) {
+				return $line;
+			} elseif (stripos($line, $filter) !== false) {
+				return $line;
+			}
+		} else {
+			if (validate_is_regex($filter)) {
+				if (!preg_match('/' . $filter . '/i', $line)) {
+					return $line;
+				}
+			} elseif (!stripos($line, $filter) !== false) {
+				return $line;
+			}
 		}
+
 		return false;
 	}
 
