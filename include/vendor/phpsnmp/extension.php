@@ -31,5 +31,6 @@ namespace phpsnmp;
 
 class SNMP extends \SNMP {
 	public $bulk_walk_size;
+	public $value_output_format;
 }
 
