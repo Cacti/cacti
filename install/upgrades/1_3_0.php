@@ -153,6 +153,12 @@ function upgrade_to_1_3_0() {
 	if (!db_column_exists('automation_networks', 'ignore_ips')) {
 		db_install_execute("ALTER TABLE automation_networks ADD COLUMN ignore_ips varchar(1024) NOT NULL DEFAULT '' AFTER subnet_range");
 	}
+
+	if (!db_column_exists('poller_output_boost', 'last_updated')) {
+		db_install_execute('ALTER TABLE poller_output_boost
+			ADD COLUMN last_updated timestamp NOT NULL default current_timestamp,
+			ADD INDEX last_updated(last_updated)');
+	}
 }
 
 function ldap_convert_1_3_0() {

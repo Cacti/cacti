@@ -2402,7 +2402,9 @@ CREATE TABLE `poller_output_boost` (
   `rrd_name` varchar(19) NOT NULL default '',
   `time` timestamp NOT NULL default '0000-00-00 00:00:00',
   `output` varchar(512) NOT NULL,
-  PRIMARY KEY USING BTREE (`local_data_id`, `time`, `rrd_name`)
+  `last_updated` timestamp NOT NULL default current_timestamp,
+  PRIMARY KEY USING BTREE (`local_data_id`, `time`, `rrd_name`),
+  KEY `last_updated` (`last_updated`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
