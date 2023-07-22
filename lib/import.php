@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphans = false, $replace_svalues = false, $import_hashes = array()) {
+function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphans = false, $replace_svalues = false, $import_hashes = array(), $class = '') {
 	global $config, $hash_type_codes, $cacti_version_codes, $ignorable_hashes, $preview_only;
 	global $import_debug_info, $import_messages, $legacy_template;
 
@@ -236,7 +236,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 					$repair++;
 					break;
 				case 'host_template':
-					$hash_cache += xml_to_host_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $host_template_data);
+					$hash_cache += xml_to_host_template($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache, $host_template_data, $class);
 					break;
 				case 'data_input_method':
 					$hash_cache += xml_to_data_input_method($dep_hash_cache[$type][$i]['hash'], $hash_array, $hash_cache);
@@ -350,6 +350,10 @@ function import_package_get_details($xmlfile) {
 		$return['public_key_name'] = base64_decode($pkgarr['publickeyname']);
 	}
 
+	if (isset($pkgarr['class'])) {
+		$return['class'] = $pkgarr['class'];
+	}
+
 	if (!isset($return['name']) || is_array($return['name'])) {
 		$return['name'] = 'Unknown';
 	}
@@ -451,10 +455,11 @@ function import_read_package_data($xmlfile, &$public_key) {
  *                       packages.
  * @param  (array)       $import_hashes - The hashes to import from the package
  * @param  (array)       $import_files - The XML resource files and script files to import from the package
+ * @param  (string)      $class - The Class of the Package in the case of a Device Template
  *
  */
 function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $replace_svalues = false,
-	$preview = false, $info_only = false, $limitex = true, $import_hashes = array(), $import_files = array()) {
+	$preview = false, $info_only = false, $limitex = true, $import_hashes = array(), $import_files = array(), $class = '') {
 
 	global $config, $preview_only;
 
@@ -587,7 +592,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 				cacti_log('Previewing XML Data for ' . $name, false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 			}
 
-			$debug_data = import_xml_data($fdata, false, $profile_id, $remove_orphans, $replace_svalues, $import_hashes);
+			$debug_data = import_xml_data($fdata, false, $profile_id, $remove_orphans, $replace_svalues, $import_hashes, $class);
 
 			if ($debug_data === false) {
 				return false;
@@ -1586,7 +1591,7 @@ function xml_to_data_source_profile($hash, &$xml_array, &$hash_cache, $import_as
 
 }
 
-function xml_to_host_template($hash, &$xml_array, &$hash_cache, &$host_template_data) {
+function xml_to_host_template($hash, &$xml_array, &$hash_cache, &$host_template_data, $class = '') {
 	global $fields_host_template_edit, $preview_only, $import_debug_info;
 
 	/* track changes */
@@ -1610,10 +1615,20 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache, &$host_template_
 	$save['id']   = (empty($_host_template_id) ? '0' : $_host_template_id);
 	$save['hash'] = $hash;
 
+	/* take the package class if available */
+	if ($class != '' && db_column_exists('host_template', 'class')) {
+		$save['class'] = $class;
+	}
+
 	foreach ($fields_host_template_edit as $field_name => $field_array) {
 		/* make sure this field exists in the xml array first */
 		if (isset($xml_array[$field_name])) {
-			$save[$field_name] = xml_character_decode($xml_array[$field_name]);
+			/* allow the package class to override the template */
+			if ($field_name == 'class' && $xml_array[$field_name] == '') {
+				continue;
+			} else {
+				$save[$field_name] = xml_character_decode($xml_array[$field_name]);
+			}
 		}
 	}
 

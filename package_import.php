@@ -184,8 +184,15 @@ function form_save() {
 
 		$package_name = import_package_get_name($xmlfile);
 
+		$details = import_package_get_details($xmlfile);
+		if (isset($details['class'])) {
+			$class = $details['class'];
+		} else {
+			$class = '';
+		}
+
 		/* obtain debug information if it's set */
-		$data = import_package($xmlfile, $profile_id, $remove_orphans, $replace_svalues, $preview_only, false, false, $hashes, $files);
+		$data = import_package($xmlfile, $profile_id, $remove_orphans, $replace_svalues, $preview_only, false, false, $hashes, $files, $class);
 
 		if ($preview_only) {
 			package_prepare_import_array($templates, $files, $package_name, $xmlfile, $data);
