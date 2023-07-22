@@ -887,7 +887,7 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
 		}
 
 		$_SESSION[SESS_ERROR_FIELDS][$field_name] = $custom_message ?? $message_id;
-		raise_message($message_id, $custom_message, MESSAGE_LEVEL_ERROR);
+		raise_message($message_id, $custom_message ?? _("One or more fields failed validation"), MESSAGE_LEVEL_ERROR);
 	}
 
 	return $field_value;
