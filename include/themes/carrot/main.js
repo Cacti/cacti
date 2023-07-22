@@ -134,7 +134,7 @@ function themeReady() {
 
 	$('select.colordropdown').dropcolor();
 
-	$('select').not('.colordropdown').each(function() {
+	$('select').not('.colordropdown, #user_language').each(function() {
 		if ($(this).prop('multiple') != true) {
 			$(this).each(function() {
 				id = $(this).attr('id');
@@ -158,6 +158,7 @@ function themeReady() {
 		}
 	});
 
+	renderLanguages();
 	/* End clean up */
 
 	/* Notification Handler */

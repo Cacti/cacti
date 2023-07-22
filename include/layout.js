@@ -1042,34 +1042,33 @@ function checkPasswordConfirm() {
 function renderLanguages() {
 	if ($('select#user_language').selectmenu('instance') !== undefined) {
 		$('select#user_language').selectmenu('destroy');
-
-		$('select#user_language').languageselect({
-			width: '220',
-			change: function () {
-				var name = $(this).attr('id');
-				var value = $(this).val();
-				var page = basename(location.pathname);
-				if (page == 'auth_profile.php') {
-					postUrl({
-						url: 'auth_profile.php?tab=' + currentTab + '&action=update_data',
-						funcEnd: 'finalizeAuthProfile'
-					}, {
-						__csrf_magic: csrfMagicToken,
-						name: name,
-						value: value,
-					});
-				}
-			}
-		}).languageselect('menuWidget').addClass('ui-menu-icons customicons');
 	}
+	$('select#user_language').languageselect({
+		width: '220',
+		change: function () {
+			var name = $(this).attr('id');
+			var value = $(this).val();
+			var page = basename(location.pathname);
+			if (page == 'auth_profile.php') {
+				postUrl({
+					url: 'auth_profile.php?tab=' + currentTab + '&action=update_data',
+					funcEnd: 'finalizeAuthProfile'
+				}, {
+					__csrf_magic: csrfMagicToken,
+					name: name,
+					value: value,
+				});
+			}
+		}
+	}).languageselect('menuWidget').addClass('ui-menu-icons customicons');
 
 	if ($('select#i18n_default_language').selectmenu('instance') !== undefined) {
 		$('select#i18n_default_language').selectmenu('destroy');
-
-		$('select#i18n_default_language').languageselect({
-			width: '220'
-		}).languageselect('menuWidget').addClass('ui-menu-icons customicons');
 	}
+
+	$('select#i18n_default_language').languageselect({
+		width: '220'
+	}).languageselect('menuWidget').addClass('ui-menu-icons customicons');
 
 	$('#user_language-menu').css('max-height', '200px');
 	$('#i18n_default_language-menu').css('max-height', '200px');
@@ -2294,7 +2293,7 @@ function menuShow() {
 
 function loadTopTab(href, id, force) {
 	var stack = ''; //getStackTrace(); // new Error().stack;
-	var url   = href + (href.indexOf('?') > 0 ? '&' : '?') + 'headercontent=true';
+	var url   = href;// + (href.indexOf('?') > 0 ? '&' : '?') + 'headercontent=true';
 
 	return loadUrl({
 		url: url,
