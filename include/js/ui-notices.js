@@ -30,7 +30,7 @@ PopupWarning = function(message, heading, currentToast) {
         text: message,
         heading: heading,
         icon: 'warning',
-		hideAfter: 10000,
+		hideAfter: 20000,
     }, currentToast);
 }
 
@@ -57,5 +57,6 @@ PopupNotice = function(message, heading, currentToast) {
         text: message,
         heading: heading,
         icon: 'success',
+		hideAfter: 10000,
     }, currentToast);
 }

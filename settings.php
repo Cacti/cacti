@@ -506,16 +506,16 @@ default:
 				return false;
 			}
 
-			if (themeChanged == true || langRefresh == true) {
-				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').prop('disabled', false).serialize()).done(function(data) {
-					document.location = 'settings.php?newtheme=1&tab='+$('#tab').val();
-				});
-			} else {
-				$.post('settings.php?tab='+$('#tab').val()+'&header=false', $('input, select, textarea').prop('disabled', false).serialize()).done(function(data) {
-					$('#main').hide().html(data);
-					applySkin();
-				});
+			event.preventDefault();
+			var options = {
+				url: 'settings.php?tab='+$('#tab'),
+				redirect: (themeChanged == true || langRefresh == true) ?
+					'auth_profile.php?action=noreturn' : '',
 			}
+
+			var data = $('input, select, textarea').prop('disabled', false).serialize();
+
+			postUrl(options, data);
 		});
 
 		if (currentTab == 'general') {
