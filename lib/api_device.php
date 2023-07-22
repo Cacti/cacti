@@ -1378,6 +1378,10 @@ function api_device_update_host_template($device_id, $device_template_id) {
 			}
 		}
 	}
+
+	$data = array('device_id' => $device_id, 'device_template_id' => $device_template_id);
+
+	api_plugin_hook_function('device_template_change', $data);
 }
 
 /**
