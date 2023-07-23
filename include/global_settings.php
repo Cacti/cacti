@@ -867,7 +867,7 @@ $settings = array(
 		),
 		'autocomplete_rows' => array(
 			'friendly_name' => __('Autocomplete Rows'),
-			'description' => __('The default number of rows to return from an autocomplete based select pattern match.'),
+			'description' => __('The default number of rows to return from an autocomplete based select pattern match.') . ' ' . __('.  This is limited by the php setting \'max_input_vars\', currently:') .  ' ' . ini_get('max_input_vars'),
 			'method' => 'drop_array',
 			'default' => '30',
 			'array' => $item_rows
@@ -887,7 +887,7 @@ $settings = array(
 		),
 		'max_tree_width' => array(
 			'friendly_name' => __('Maximum Tree Width'),
-			'description' => __('The Maximum width of the Tree to expand to, after which time, Tree branches will scroll on the page.'),
+			'description' => __('The Maximum width of the Tree to expand to, after which time, Tree branches will scroll on the page.') . ' ' . __( '.  This is limited by the php setting \'max_input_vars\', currently:') .  ' ' . ini_get('max_input_vars'),
 			'method' => 'textbox',
 			'default' => '300',
 			'max_length' => '5',
