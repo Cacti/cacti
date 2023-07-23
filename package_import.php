@@ -443,7 +443,7 @@ function package_validate_signature($xmlfile) {
 }
 
 function import_display_package_data($templates, $files, $package_name, $xmlfile, $data) {
-	global $config;
+	global $config, $device_classes;
 
 	$details = import_package_get_details($xmlfile);
 
@@ -458,6 +458,9 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 		),
 		array(
 			'display' => __('Email')
+		),
+		array(
+			'display' => __('Device class')
 		),
 		array(
 			'display' => __('Version')
@@ -475,6 +478,11 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 	form_selectable_cell($details['author'], $id);
 	form_selectable_cell($details['homepage'], $id);
 	form_selectable_cell($details['email'], $id);
+	if (isset($details['class']) && array_key_exists($details['class'], $device_classes)) {
+		form_selectable_cell($device_classes[$details['class']], $id);
+	} else {
+		form_selectable_cell(__('Unknown'), $id);
+	}
 	form_selectable_cell($details['version'], $id);
 	form_selectable_cell($details['copyright'], $id);
 	form_end_row();
