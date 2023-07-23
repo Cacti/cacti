@@ -5484,12 +5484,12 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	$end_time = microtime(true);
 
 	if ($error != '') {
-		$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', and took %2.2f seconds, Subject '%s'%s",
-			$rtype, $rmsg, $method, $fromText, $toText, $ccText, ($end_time - $start_time), $subject,
+		$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', bcc '%s', and took %2.2f seconds, Subject '%s'%s",
+			$rtype, $rmsg, $method, $fromText, $toText, $ccText, $bccText, ($end_time - $start_time), $subject,
 			", Error: $error");
 	} else {
-		$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', and took %2.2f seconds, Subject '%s'",
-			$rtype, $rmsg, $method, $fromText, $toText, $ccText, ($end_time - $start_time), $subject);
+		$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', bcc '%s', and took %2.2f seconds, Subject '%s'",
+			$rtype, $rmsg, $method, $fromText, $toText, $ccText, $bccText, ($end_time - $start_time), $subject);
 	}
 
 	cacti_log($message, false, 'MAILER');
