@@ -299,7 +299,7 @@ function form_save() {
    ------------------------ */
 
 function form_actions() {
-	global $device_actions, $fields_host_edit;
+	global $device_actions, $device_change_fields, $fields_host_edit;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
@@ -420,15 +420,7 @@ function form_actions() {
 			$form_array = array();
 
 			foreach ($fields_host_edit as $field_name => $field_array) {
-				if ((preg_match('/^snmp_/', $field_name)) ||
-					(preg_match('/^ping_/', $field_name)) ||
-					($field_name == 'poller_id') ||
-					($field_name == 'site_id') ||
-					($field_name == 'host_template_id') ||
-					($field_name == 'availability_method') ||
-					($field_name == 'device_threads') ||
-					($field_name == 'location') ||
-					($field_name == 'max_oids')) {
+				if (api_device_change_field_match($field_name)) {
 					$form_array += array($field_name => $fields_host_edit[$field_name]);
 
 					$form_array[$field_name]['value'] = '';

@@ -50,6 +50,7 @@ Cacti CHANGELOG
 -issue#5402: Cacti translations including less compatible language replacement characters in a few locations
 -issue#5403: Cacti Log regular expression filters can not calculate 'does not match' properly
 -issue#5413: Rows Per Page - Not all options are available
+-issue#5414: Plugins are unable to modify fields in the setting 'Change Device Settings'
 -feature#5375: Add template for Fortinet firewall and Aruba Instant cluster
 -feature#5393: Add template for SNMP printer
 -feature: Update Cisco Device Template to include HSRP graph template
