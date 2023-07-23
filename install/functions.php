@@ -566,8 +566,13 @@ function install_setup_get_templates() {
 	}
 
 	$templates = array(
+		'ACME.xml.gz',
+		'AKCP_Device.xml.gz',
+		'APC_InfraStruXure_InRow_CRAC.xml.gz',
+		'APC_InfraStruXure_PDU.xml.gz',
 		'Apache_Webserver.xml.gz',
 		'Aruba_Instant_AP_Cluster.xml.gz',
+		'BayTech_PDU.xml.gz',
 		'Cacti_Stats.xml.gz',
 		'Cisco_Router.xml.gz',
 		'Citrix_NetScaler_VPX.xml.gz',
@@ -577,9 +582,11 @@ function install_setup_get_templates() {
 		'Local_Linux_Machine.xml.gz',
 		'MikroTik_Device.xml.gz',
 		'MikroTik_Switch_SWOS.xml.gz',
+		'Motorola_SB6141.xml.gz',
 		'NetSNMP_Device.xml.gz',
 		'PING_Advanced_Ping.xml.gz',
 		'SNMP_Printer.xml.gz',
+		'SNMP_UPS.xml.gz',
 		'Synology_NAS.xml.gz',
 		'Windows_Device.xml.gz'
 	);
