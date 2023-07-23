@@ -1443,6 +1443,45 @@ function api_device_update_host_template(int $device_id, int $device_template_id
 			}
 		}
 	}
+
+	$data = array('device_id' => $device_id, 'device_template_id' => $device_template_id);
+
+	api_plugin_hook_function('device_template_change', $data);
+}
+
+/**
+ * api_device_change_field_match - Checks the global $device_change_fileds array
+ *   against the field name and returns true or false if it matches the rule
+ *
+ * This function can be used by plugins to allow the modification of additional
+ * device fields from the change device rule.
+ *
+ * @param  string      The field name to check
+ *
+ * @return bool        True or false if it matches one of the rules
+ */
+function api_device_change_field_match($field_name) {
+	global $device_change_fields;
+
+	$matches = false;
+
+	foreach($device_change_fields as $rule_type => $rules) {
+		foreach($rules as $field_rule) {
+			if ($rule_type == 'preg_field') {
+				if (preg_match($field_rule, $field_name)) {
+					$matches = true;
+					break 2;
+				}
+			} elseif ($rule_type == 'match_field') {
+				if ($field_rule == $field_name) {
+					$matches = true;
+					break 2;
+				}
+			}
+		}
+	}
+
+	return $matches;
 }
 
 /**

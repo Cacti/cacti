@@ -891,6 +891,22 @@ $device_threads = array(
 	10 => __('%d Threads', 10)
 );
 
+$device_change_fields = array(
+	'preg_field' => array(
+		'/^snmp_/',
+		'/^ping_/'
+	),
+	'match_field' => array(
+		'poller_id',
+		'site_id',
+		'host_template_id',
+		'availability_method',
+		'device_threads',
+		'location',
+		'max_oids'
+	)
+);
+
 $cron_intervals = array(
 	60  => __('Every Minute'),
 	300 => __('Every %d Minutes', 5)

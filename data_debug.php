@@ -865,7 +865,7 @@ function debug_view() {
 		}
 
 		if (array_key_exists('value', $field)) {
-			$value = $field['value'];
+			$value = html_escape($field['value']);
 		}
 
 		if (array_key_exists('icon', $field)) {

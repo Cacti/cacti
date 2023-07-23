@@ -887,7 +887,7 @@ function form_input_validate($field_value, $field_name, $regexp_match, $allow_nu
 		}
 
 		$_SESSION[SESS_ERROR_FIELDS][$field_name] = $custom_message ?? $message_id;
-		raise_message($message_id, $custom_message, MESSAGE_LEVEL_ERROR);
+		raise_message($message_id, $custom_message ?? _("One or more fields failed validation"), MESSAGE_LEVEL_ERROR);
 	}
 
 	return $field_value;
@@ -1559,8 +1559,10 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
  * @param $filter       - (char) the filtering expression to search for
  * @param $page_nr      - (int) the page we want to show rows for
  * @param $total_rows   - (int) the total number of rows in the logfile
+ * @param $matches      - (bool) match or does not match the filter
+ * @param $expand_text  - (bool) expand text to perform replacements
  */
-function tail_file(string $file_name, int $number_of_lines, ?int $message_type = -1, ?string $filter = '', ?int &$page_nr = 1, ?int &$total_rows = 0, ?bool $expand_text = false): array {
+function tail_file(string $file_name, int $number_of_lines, ?int $message_type = -1, ?string $filter = '', ?int &$page_nr = 1, ?int &$total_rows = 0, ?bool $matches = true, ?bool $expand_text = false): array {
 	if (!file_exists($file_name)) {
 		touch($file_name);
 
@@ -1586,14 +1588,14 @@ function tail_file(string $file_name, int $number_of_lines, ?int $message_type =
 	}
 
 	while (($line = fgets($fp)) !== false) {
-		$display = (determine_display_log_entry($message_type, $line, $filter));
+		$display = (determine_display_log_entry($message_type, $line, $filter, $matches));
 
 		if ($should_expand && !$display) {
 			$expanded = text_substitute($line, isHtml: false);
 
 			if ($expanded != $line) {
 				// expand line different so lets see if we want it now after all
-				$display = determine_display_log_entry($message_type, $expanded, $filter);
+				$display = determine_display_log_entry($message_type, $expanded, $filter, $matches);
 			}
 		}
 
@@ -1670,10 +1672,11 @@ function tail_file(string $file_name, int $number_of_lines, ?int $message_type =
  * @param $message_type
  * @param $line
  * @param $filter
+ * @param $matches
  *
  * @return mixed should the entry be displayed
  */
-function determine_display_log_entry($message_type, $line, $filter) {
+function determine_display_log_entry($message_type, $line, $filter, $matches = true) {
 	static $thold_enabled = null;
 
 	if ($thold_enabled == null) {
@@ -1779,12 +1782,20 @@ function determine_display_log_entry($message_type, $line, $filter) {
 
 	/* match any lines that match the search string */
 	if ($display === true && $filter != '') {
-		if (stripos($line, $filter) !== false) {
-			return $line;
-		}
-
-		if (validate_is_regex($filter) && preg_match('/' . $filter . '/i', $line)) {
-			return $line;
+		if ($matches) {
+			if (validate_is_regex($filter) && preg_match('/' . $filter . '/i', $line)) {
+				return $line;
+			} elseif (stripos($line, $filter) !== false) {
+				return $line;
+			}
+		} else {
+			if (validate_is_regex($filter)) {
+				if (!preg_match('/' . $filter . '/i', $line)) {
+					return $line;
+				}
+			} elseif (!stripos($line, $filter) !== false) {
+				return $line;
+			}
 		}
 
 		return false;
@@ -4705,6 +4716,9 @@ function debug_log_clear($type = '') {
 /**
  * debug_log_return - returns the debug log for a particular category
  *
+ * NOTE: The escaping happens on the insert side and not the
+ * return side.
+ *
  * @param $type - the 'category' to return the debug log for.
  *
  * @return mixed the full debug log for a particular category
@@ -4716,19 +4730,22 @@ function debug_log_return($type) {
 		if (isset($_SESSION['debug_log'][$type])) {
 			$log_text .= "<table style='width:100%;'>";
 
-			for ($i=0; $i < cacti_count($_SESSION['debug_log'][$type]); $i++) {
-				$log_text .= '<tr><td>' . $_SESSION['debug_log'][$type][$i] . '</td></tr>';
+			foreach($_SESSION['debug_log'][$type] as $key => $val) {
+				$log_text .= '<tr><td>' . $val . '</td></tr>';
 			}
+
 			$log_text .= '</table>';
 		}
 	} else {
 		if (isset($_SESSION['debug_log'][$type])) {
 			$log_text .= "<table style='width:100%;'>";
 
-			foreach ($_SESSION['debug_log'][$type] as $key => $val) {
-				$log_text .= "<tr><td>$val</td></tr>\n";
+			foreach($_SESSION['debug_log'][$type] as $key => $val) {
+				$log_text .= '<tr><td>' . $val . '</td></tr>';
+
 				unset($_SESSION['debug_log'][$type][$key]);
 			}
+
 			$log_text .= '</table>';
 		}
 	}
@@ -5467,12 +5484,12 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	$end_time = microtime(true);
 
 	if ($error != '') {
-		$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', and took %2.2f seconds, Subject '%s'%s",
-			$rtype, $rmsg, $method, $fromText, $toText, $ccText, ($end_time - $start_time), $subject,
+		$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', bcc '%s', and took %2.2f seconds, Subject '%s'%s",
+			$rtype, $rmsg, $method, $fromText, $toText, $ccText, $bccText, ($end_time - $start_time), $subject,
 			", Error: $error");
 	} else {
-		$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', and took %2.2f seconds, Subject '%s'",
-			$rtype, $rmsg, $method, $fromText, $toText, $ccText, ($end_time - $start_time), $subject);
+		$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', bcc '%s', and took %2.2f seconds, Subject '%s'",
+			$rtype, $rmsg, $method, $fromText, $toText, $ccText, $bccText, ($end_time - $start_time), $subject);
 	}
 
 	cacti_log($message, false, 'MAILER');

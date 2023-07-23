@@ -1249,7 +1249,7 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
 	}
 
 	?>
-	<table class='cactiTable'>
+	<table class='cactiTable saveRowParent'>
 		<tr>
 			<td class='saveRow'>
 				<input type='hidden' name='action' value='save'>
@@ -1295,7 +1295,7 @@ function form_save_buttons($buttons) {
 	}
 
 	?>
-	<table class='cactiTable'>
+	<table class='cactiTable saveRowParent'>
 		<tr>
 			<td class='saveRow'>
 				<input type='hidden' name='action' value='save'>

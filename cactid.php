@@ -66,6 +66,7 @@ ini_set('max_execution_time', '-1');
 $hostname   = gethostname();
 $debug      = false;
 $foreground = false;
+$logrecon   = false;
 
 chdir(__DIR__);
 include_once('./include/cli_check.php');
@@ -153,12 +154,13 @@ sleep(2);
 while (true) {
 	wait_for_start($frequency);
 
-	db_check_reconnect();
+	db_check_reconnect(false, $logrecon);
 
 	run_poller();
 
 	// Force Cacti to check the service start frequency dynamically
 	$frequency = -1;
+	$logrecon  = true;
 }
 
 function wait_for_start($frequency = -1) {

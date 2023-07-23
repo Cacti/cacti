@@ -199,7 +199,8 @@ function api_auth_clear_user_setting($name) {
 							array($name, $settings[$name]['default'], $user)
 						);
 
-						print $settings[$name]['default'];
+						header('Content-Type: application/json');
+						print json_encode(['id' => $name, 'value' => $settings[$name]['default']]);
 
 						kill_session_var(OPTIONS_USER);
 
@@ -326,7 +327,8 @@ function settings() {
 
 	html_start_box(__('User Account Details'), '100%', true, '3', 'center', '');
 
-	$current_user = db_fetch_row_prepared('SELECT *
+	$current_user = db_fetch_row_prepared(
+		'SELECT *
 		FROM user_auth
 		WHERE id = ?',
 		array($_SESSION[SESS_USER_ID])
@@ -444,7 +446,8 @@ function settings() {
 							$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
 						}
 
-						$form_array[$field_name]['items'][$sub_field_name]['value'] =  db_fetch_cell_prepared('SELECT value
+						$form_array[$field_name]['items'][$sub_field_name]['value'] =  db_fetch_cell_prepared(
+							'SELECT value
 							FROM settings_user
 							WHERE name = ?
 							AND user_id = ?',
@@ -456,7 +459,8 @@ function settings() {
 						$form_array[$field_name]['form_id'] = 1;
 					}
 
-					$user_row = db_fetch_row_prepared('SELECT value
+					$user_row = db_fetch_row_prepared(
+						'SELECT value
 						FROM settings_user
 						WHERE name = ?
 						AND user_id = ?',
@@ -533,7 +537,8 @@ function settings_2fa() {
 
 	html_start_box(__('2FA Settings'), '100%', true, '3', 'center', '');
 
-	$current_user = db_fetch_row_prepared('SELECT *
+	$current_user = db_fetch_row_prepared(
+		'SELECT *
 		FROM user_auth
 		WHERE id = ?',
 		array($_SESSION[SESS_USER_ID])
@@ -606,7 +611,7 @@ function settings_2fa() {
 
 	form_save_buttons($buttons);
 
-	?>
+?>
 	<script type='text/javascript'>
 		var tfa_enabled = <?php print $current_user['tfa_enabled'] != '' ? 'true' : 'false'; ?>;
 		var tfa_text = '<?php print $current_user['tfa_enabled']   != '' ? __('Enabled') : __('Disabled'); ?>';
@@ -675,7 +680,7 @@ function settings_2fa() {
 			});
 		});
 	</script>
-	<?php
+<?php
 
 	form_end();
 }
@@ -683,7 +688,7 @@ function settings_2fa() {
 function settings_javascript() {
 	global $config;
 
-	?>
+?>
 	<script type='text/javascript'>
 		var themeFonts = <?php print read_config_option('font_method'); ?>;
 		var currentTab = '<?php print get_nfilter_request_var('tab'); ?>';
@@ -692,9 +697,11 @@ function settings_javascript() {
 		var authMethod = '<?php print read_config_option('auth_method'); ?>';
 
 		function clearUserSettings() {
-			$.get('auth_profile.php?action=clear_user_settings', function() {
-				document.location = 'auth_profile.php?newtheme=1';
-				$('#clear_settings').blur();
+			$('#clear_settings').blur();
+
+			loadUrl({
+				url: 'auth_profile.php?action=clear_user_settings',
+				redirect: 'auth_profile.php?newtheme=1',
 			});
 		}
 
@@ -759,6 +766,24 @@ function settings_javascript() {
 			});
 		}
 
+		function resetUserSettingsFinalise(options, data) {
+			var item = $('#' + data.id);
+
+			if (item.is(':checkbox')) {
+				if (data.value == 'on') {
+					item.prop('checked', true);
+				} else {
+					item.prop('checked', false);
+				}
+			} else {
+				item.val(data.value);
+				if (item.selectmenu('instance')) {
+					item.selectmenu('refresh');
+				}
+			}
+		}
+
+
 		$(function() {
 			graphSettings();
 
@@ -781,7 +806,7 @@ function settings_javascript() {
 				$('#row_logout_everywhere').hide();
 			}
 
-			$('#auth_profile_edit2 .formData, #auth_profile_noreturn2 .formData').each(function() {
+			$('#auth_profile_general2 .formData, #auth_profile_edit2 .formData, #auth_profile_noreturn2 .formData').each(function() {
 				if ($(this).find('select, input[type!="button"]').length) {
 					$(this).parent().hover(
 						function() {
@@ -794,24 +819,18 @@ function settings_javascript() {
 								var id = $(this).attr('data-id');
 
 								if (id != undefined) {
-									$.get('auth_profile.php?tab=' + currentTab + '&action=reset_default&name=' + id, function(data) {
-										if (id != 'selected_theme' && id != 'user_language' && id != 'enable_hscroll') {
-											if ($('#' + id).is(':checkbox')) {
-												if (data == 'on') {
-													$('#' + id).prop('checked', true);
-												} else {
-													$('#' + id).prop('checked', false);
-												}
-											} else {
-												$('#' + id).val(data);
-												if ($('#' + id).selectmenu('instance')) {
-													$('#' + id).selectmenu('refresh');
-												}
-											}
-										} else {
-											document.location = 'auth_profile.php?action=edit';
-										}
-									});
+									var resetOptions = {
+										url: 'auth_profile.php?tab=' + currentTab + '&action=reset_default&name=' + id,
+										noState: true,
+									};
+
+									if (id != 'selected_theme' && id != 'user_language' && id != 'enable_hscroll') {
+										resetOptions.funcEnd = 'resetUserSettingsFinalise';
+									} else {
+										resetOptions.redirect = 'auth_profile.php?action=edit';
+									}
+
+									loadUrl(resetOptions);
 								}
 							});
 						},
@@ -822,7 +841,7 @@ function settings_javascript() {
 				}
 			});
 
-		$('select, input:not([data-scope="theme"], [type="button"])').unbind().delayKeyup(function() {
+			$('select, input:not([data-scope="theme"], [type="button"])').unbind().delayKeyup(function() {
 				name = $(this).attr('id');
 				if ($(this).attr('type') == 'checkbox') {
 					if ($(this).is(':checked')) {
@@ -879,6 +898,5 @@ function settings_javascript() {
 			$('#clear_settings, #private_data, #logout_everywhere').addClass('ui-state-active');
 		});
 	</script>
-	<?php
+<?php
 }
-
