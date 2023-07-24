@@ -493,10 +493,16 @@ function cacti_snmp_session_get($session, $oid, $strip_alpha = false) {
 		cacti_log('Empty OID!', false);
 
 		return array();
+	} elseif (is_array($oid)) {
+		foreach($oid as $index => $o) {
+			$oid[$index] = trim($o);
+		}
+	} else {
+		$oid = trim($oid);
 	}
 
 	try {
-		$out = @$session->get(trim($oid));
+		$out = @$session->get($oid);
 	} catch (Exception $e) {
 		$out = false;
 	}
