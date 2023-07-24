@@ -52,6 +52,7 @@ Cacti CHANGELOG
 -issue#5413: Rows Per Page - Not all options are available
 -issue#5414: Plugins are unable to modify fields in the setting 'Change Device Settings'
 -issue#5417: Cacti mailer log message misses 'bcc' addresses in log notification
+-issue#5420: PHP8.1.x, PHP-SNMP and snmp->get() errors due to improper use of trim() function
 -feature#5375: Add template for Fortinet firewall and Aruba Instant cluster
 -feature#5393: Add template for SNMP printer
 -feature#5418: Display device class before package import 

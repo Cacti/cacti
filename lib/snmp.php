@@ -491,10 +491,16 @@ function cacti_snmp_session_get($session, $oid, $strip_alpha = false) {
 	if (is_array($oid) && cacti_sizeof($oid) == 0) {
 		cacti_log('Empty OID!', false);
 		return array();
+	} elseif (is_array($oid)) {
+		foreach($oid as $index => $o) {
+			$oid[$index] = trim($o);
+		}
+	} else {
+		$oid = trim($oid);
 	}
 
 	try {
-		$out = @$session->get(trim($oid));
+		$out = @$session->get($oid);
 	} catch (Exception $e) {
 		$out = false;
 	}
@@ -507,6 +513,7 @@ function cacti_snmp_session_get($session, $oid, $strip_alpha = false) {
 		if ($session->getErrno() == SNMP::ERRNO_TIMEOUT) {
 			cacti_log('WARNING: SNMP Error:\'Timeout (' . round($info['timeout']/1000,0) . " ms)', Device:'" . $info['hostname'] . "', OID:'$oid'", false, 'SNMP', POLLER_VERBOSITY_HIGH);
 		}
+
 		return false;
 	}
 
