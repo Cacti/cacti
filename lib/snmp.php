@@ -443,6 +443,14 @@ function cacti_snmp_session_walk($session, $oid, $dummy = false, $max_repetition
 		return array();
 	}
 
+	if (is_array($oid)) {
+		foreach($oid as $index => $o) {
+			$oid[$index] = trim($o);
+		}
+	} else {
+		$oid = trim($oid);
+	}
+
 	$session->value_output_format = $value_output_format;
 
 	if ($non_repeaters === null) {
@@ -458,7 +466,7 @@ function cacti_snmp_session_walk($session, $oid, $dummy = false, $max_repetition
 	}
 
 	try {
-		$out = @$session->walk(trim($oid), false, $max_repetitions, $non_repeaters);
+		$out = @$session->walk($oid, false, $max_repetitions, $non_repeaters);
 	} catch (Exception $e) {
 		$out = false;
 	}
@@ -478,9 +486,17 @@ function cacti_snmp_session_walk($session, $oid, $dummy = false, $max_repetition
 	}
 
 	if (cacti_sizeof($out)) {
-		foreach ($out as $oid => $value) {
-			$out[$oid] = format_snmp_string($value, false, $value_output_format);
+		foreach($out as $oid => $value){
+			if (is_array($value)) {
+				foreach($value as $index => $sval) {
+					$out[$oid][$index] = format_snmp_string($sval, false, $value_output_format);
+				}
+			} elseif ($out[$oid] !== false) {
+				$out[$oid] = format_snmp_string($value, false, $value_output_format);
+			}
 		}
+	} else {
+		$out = format_snmp_string($oid, false, $value_output_format);
 	}
 
 	return $out;
@@ -539,8 +555,16 @@ function cacti_snmp_session_getnext($session, $oid) {
 		return array();
 	}
 
+	if (is_array($oid)) {
+		foreach($oid as $index => $o) {
+			$oid[$index] = trim($o);
+		}
+	} else {
+		$oid = trim($oid);
+	}
+
 	try {
-		$out = @$session->getnext(trim($oid));
+		$out = @$session->getnext($oid);
 	} catch (Exception $e) {
 		$out = false;
 	}
