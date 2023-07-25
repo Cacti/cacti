@@ -361,7 +361,7 @@ function template_item_remove_gt_confirm() {
 	<tr>
 		<td class='right'>
 			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel'); ?>' onClick='$("#cdialog").dialog("close")' name='cancel'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue'); ?>' name='continue' title='<?php print __esc('Remove Graph Template Item'); ?>'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue'); ?>' name='continue' title='<?php print __esc('Remove Graph Template'); ?>'>
 		</td>
 	</tr>
 	<?php
@@ -427,7 +427,7 @@ function template_item_remove_dq_confirm() {
 	<tr>
 		<td class='right'>
 			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel'); ?>' onClick='$("#cdialog").dialog("close")' name='cancel'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue'); ?>' name='continue' title='<?php print __esc('Remove Data Input Field'); ?>'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue'); ?>' name='continue' title='<?php print __esc('Remove Data Query'); ?>'>
 		</td>
 	</tr>
 	<?php
