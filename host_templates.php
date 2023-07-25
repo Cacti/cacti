@@ -656,7 +656,7 @@ function template_edit() {
 					url: $(this).attr('href'),
 					state: false,
 					funcEnd: 'deleteFinalize',
-					element: 'cdialog',
+					elementId: 'cdialog',
 				};
 
 				loadUrl(options);
