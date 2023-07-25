@@ -169,9 +169,12 @@ function basename(path, suffix) {
 	var b = path;
 	var lastChar = b.charAt(b.length - 1);
 
+	// Don't remove trailing slash for now //
+	/*
 	if (lastChar === '/' || lastChar === '\\\\') {
 		b = b.slice(0, -1);
 	}
+	*/
 
 	if (b.indexOf('?') > 0) {
 		var questionPosition = b.indexOf('?');
@@ -182,6 +185,10 @@ function basename(path, suffix) {
 
 	if (suffix !== undefined && b.substr(b.length - suffix.length) == suffix) {
 		b = b.substr(0, b.length - suffix.length);
+	}
+
+	if (b.length == 0) {
+		b = "index.php";
 	}
 
 	return b;
@@ -2917,7 +2924,7 @@ function closeUserMenu() {
 }
 
 function handleConsole(pageName) {
-	if (pageName == null) {
+	if (pageName == null || pageName.length == 0) {
 		pageName = basename($(location).attr('pathname'));
 	}
 
@@ -4961,10 +4968,6 @@ function setPing() {
 		return ret;
 	}
 })(jQuery);
-
-function basename(path) {
-	return path.split('/').reverse()[0];
-}
 
 function formValidate(formId, href) {
 	changed = false;
