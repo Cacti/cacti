@@ -442,7 +442,7 @@ function template_item_remove_dq_confirm() {
 		$('#continue').click(function(data) {
 			var options = {
 				url: 'host_templates.php?action=item_remove_dq',
-				noStatE: true,
+				noState: true,
 			}
 
 			var data = {
