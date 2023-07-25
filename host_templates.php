@@ -374,7 +374,8 @@ function template_item_remove_gt_confirm() {
 	<script type='text/javascript'>
 		$('#continue').click(function(data) {
 			var options = {
-				url: 'host_templates.php?action=item_remove_gt'
+				url: 'host_templates.php?action=item_remove_gt',
+				noState: true,
 			}
 
 			var data = {
@@ -440,7 +441,8 @@ function template_item_remove_dq_confirm() {
 	<script type='text/javascript'>
 		$('#continue').click(function(data) {
 			var options = {
-				url: 'host_templates.php?action=item_remove_dq'
+				url: 'host_templates.php?action=item_remove_dq',
+				noStatE: true,
 			}
 
 			var data = {
@@ -654,8 +656,8 @@ function template_edit() {
 
 				var options = {
 					url: $(this).attr('href'),
-					state: false,
-					funcEnd: 'deleteFinalize',
+					noState: true,
+					funcEnd: 'deleteFinialize',
 					elementId: 'cdialog',
 				};
 
@@ -664,7 +666,8 @@ function template_edit() {
 
 			$('#add_dq').click(function() {
 				var options = {
-					url: 'host_templates.php?action=item_add_dq'
+					url: 'host_templates.php?action=item_add_dq',
+					noState: true,
 				}
 
 				var data = {
@@ -679,7 +682,8 @@ function template_edit() {
 
 			$('#add_gt').click(function() {
 				var options = {
-					url: 'host_templates.php?action=item_add_gt'
+					url: 'host_templates.php?action=item_add_gt',
+					noState: true,
 				}
 
 				var data = {
