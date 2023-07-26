@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Cacti 1.2.23\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-11-12 15:22-0500\n"
-"PO-Revision-Date: 2023-07-26 12:53+0000\n"
-"Last-Translator: Prodan <akapulko@gmail.com>\n"
+"PO-Revision-Date: 2023-07-27 15:12+0000\n"
+"Last-Translator: Vladyslav V. Prodan <akapulko@gmail.com>\n"
 "Language-Team: Ukrainian <http://translate.cacti.net/projects/cacti/core/uk/>"
 "\n"
 "Language: uk-UA\n"
@@ -1722,7 +1722,7 @@ msgstr "%d година"
 #: include/global_settings.php:2861
 #, php-format
 msgid "%d Hours"
-msgstr "%d годин"
+msgstr "%d Годин"
 
 #: automation_networks.php:538
 msgid "Enable this Network Range."
@@ -3800,7 +3800,7 @@ msgstr "%d Місяць"
 #: rrdcleaner.php:524
 #, php-format
 msgid "%d Months"
-msgstr "%d Місяця"
+msgstr "%d Місяців"
 
 #: data_source_profiles.php:833 include/global_arrays.php:701
 #: include/global_arrays.php:756 include/global_arrays.php:1420
@@ -4873,7 +4873,7 @@ msgstr "Немає пристрою -"
 #: graphs.php:252
 #, php-format
 msgid "Created graph: %s"
-msgstr "Створено графік: %s"
+msgstr "Створений графік: %s"
 
 #: graphs.php:260 lib/template.php:2143 lib/template.php:2177
 msgid "ERROR: No Data Source associated. Check Template"
@@ -14868,7 +14868,7 @@ msgstr "Здано"
 
 #: lib/installer.php:1801
 msgid "Warning"
-msgstr "Попередження"
+msgstr "Застереження"
 
 #: lib/installer.php:1807
 msgid "Restart Required"
@@ -17348,7 +17348,7 @@ msgstr "Вік"
 #: rrdcheck.php:227 rrdcheck.php:228 rrdcheck.php:229
 #, php-format
 msgid "%d hours"
-msgstr "%d годин"
+msgstr "%d Годин"
 
 #: rrdcheck.php:230
 #, php-format
