@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Cacti 1.2.23\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-11-12 15:22-0500\n"
-"PO-Revision-Date: 2023-03-14 01:57+0000\n"
-"Last-Translator: Rostyslav Haitkulov <info@ubilling.net.ua>\n"
+"PO-Revision-Date: 2023-07-26 12:53+0000\n"
+"Last-Translator: Prodan <akapulko@gmail.com>\n"
 "Language-Team: Ukrainian <http://translate.cacti.net/projects/cacti/core/uk/>"
 "\n"
 "Language: uk-UA\n"
@@ -1424,7 +1424,7 @@ msgstr "Увімкнено"
 #: user_domains.php:412 user_group_admin.php:695 utilities.php:2072
 #: utilities.php:2542 utilities.php:2828
 msgid "Disabled"
-msgstr "Вимкнено"
+msgstr "Вимкнен"
 
 #: automation_graph_rules.php:895 automation_tree_rules.php:935
 msgid "Rule Name"
@@ -1668,7 +1668,7 @@ msgstr "Після вибраного ліміту запуску процес �
 #: automation_networks.php:523 automation_networks.php:1213 pollers.php:911
 #, php-format
 msgid "%d Minute"
-msgstr "%d хвилина"
+msgstr "%d Хвилина"
 
 #: automation_networks.php:524 automation_networks.php:525
 #: automation_networks.php:526 automation_networks.php:527
@@ -3790,7 +3790,7 @@ msgstr "1 Рік"
 #: include/global_arrays.php:1422 rrdcleaner.php:521
 #, php-format
 msgid "%d Month"
-msgstr "%d місяць"
+msgstr "%d Місяць"
 
 #: data_source_profiles.php:824 include/global_arrays.php:760
 #: include/global_arrays.php:761 include/global_arrays.php:762
@@ -3800,7 +3800,7 @@ msgstr "%d місяць"
 #: rrdcleaner.php:524
 #, php-format
 msgid "%d Months"
-msgstr "%d місяців"
+msgstr "%d Місяця"
 
 #: data_source_profiles.php:833 include/global_arrays.php:701
 #: include/global_arrays.php:756 include/global_arrays.php:1420
@@ -4794,7 +4794,7 @@ msgstr "Додайте вибрані графіки до звіту"
 
 #: graph_view.php:972 lib/html.php:2522
 msgid "Ok"
-msgstr "Ok"
+msgstr "Ок"
 
 #: graph_xport.php:120 graph_xport.php:158 include/global_form.php:1824
 #: include/global_form.php:2092 lib/html.php:1829 links.php:381
@@ -6429,7 +6429,7 @@ msgstr "Кожні %d хвилин"
 
 #: include/global_arrays.php:715 include/global_arrays.php:788
 msgid "Every Hour"
-msgstr "Щогодини"
+msgstr "Кожну годину"
 
 #: include/global_arrays.php:716 include/global_arrays.php:717
 #: include/global_arrays.php:718 include/global_arrays.php:719
@@ -6441,7 +6441,7 @@ msgstr "Щогодини"
 #: include/global_settings.php:2486
 #, php-format
 msgid "Every %d Hours"
-msgstr "Кожні %d год"
+msgstr "Кожні %d годин"
 
 #: include/global_arrays.php:720
 #, php-format
@@ -6457,7 +6457,7 @@ msgstr "%0.1f хвилин"
 #: include/global_settings.php:1569 rrdcleaner.php:525
 #, php-format
 msgid "%d Year"
-msgstr "%d рік"
+msgstr "%d Рік"
 
 #: include/global_arrays.php:786
 msgid "Disabled/Manual"
@@ -7465,12 +7465,12 @@ msgstr "Кожен день"
 
 #: include/global_arrays.php:1830
 msgid "Every Week"
-msgstr "Щотижня"
+msgstr "Кожний тиждень"
 
 #: include/global_arrays.php:1831 include/global_arrays.php:1832
 #, php-format
 msgid "Every %d Weeks"
-msgstr "Кожні %d тижнів"
+msgstr "Кожний %d тиждень"
 
 #: include/global_arrays.php:1863
 msgctxt "A short textual representation of a month, three letters"
@@ -14868,7 +14868,7 @@ msgstr "Здано"
 
 #: lib/installer.php:1801
 msgid "Warning"
-msgstr "Увага"
+msgstr "Попередження"
 
 #: lib/installer.php:1807
 msgid "Restart Required"
@@ -17851,7 +17851,7 @@ msgstr "Імпортувати шаблон"
 
 #: templates_import.php:373
 msgid "ERROR"
-msgstr "ПОМИЛКА"
+msgstr "Помилка"
 
 #: templates_import.php:373
 msgid "Failed to access temporary folder, import functionality is disabled"
