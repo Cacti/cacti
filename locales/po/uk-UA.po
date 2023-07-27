@@ -4,7 +4,7 @@
 # Rostyslav Haitkulov <info@ubilling.net.ua>, 2022.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti 1.3.0.-1\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2023-07-15 19:39-0400\nPO-Revision-Date: 2023-07-26 12:52+0000\nLast-Translator: Prodan <akapulko@gmail.com>\nLanguage-Team: Ukrainian <http://translate.cacti.net/projects/cacti/core-v1-2-x/uk/>\nLanguage: uk-UA\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti 1.3.0.-1\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2023-07-15 19:39-0400\nPO-Revision-Date: 2023-07-27 15:11+0000\nLast-Translator: Vladyslav V. Prodan <akapulko@gmail.com>\nLanguage-Team: Ukrainian <http://translate.cacti.net/projects/cacti/core-v1-2-x/uk/>\nLanguage: uk-UA\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2607 lib/html.php:2512
 msgid "About Cacti"
@@ -3874,7 +3874,7 @@ msgstr "%d Місяць"
 #: rrdcleaner.php:524
 #, php-format
 msgid "%d Months"
-msgstr "%d Місяця"
+msgstr "%d Місяців"
 
 #: data_source_profiles.php:833 include/global_arrays.php:722
 #: include/global_arrays.php:778 include/global_arrays.php:1444
@@ -4956,7 +4956,7 @@ msgstr "Немає Пристрою - "
 #: graphs.php:252
 #, php-format
 msgid "Created graph: %s"
-msgstr "Створено графік: %s"
+msgstr "Створений графік: %s"
 
 #: graphs.php:260 lib/template.php:2143 lib/template.php:2177
 msgid "ERROR: No Data Source associated. Check Template"
@@ -15155,7 +15155,7 @@ msgstr ""
 
 #: lib/installer.php:1815
 msgid "Current"
-msgstr ""
+msgstr "Поточний"
 
 #: lib/installer.php:1815
 msgid "Recommended"
@@ -15179,7 +15179,7 @@ msgstr ""
 
 #: lib/installer.php:1844
 msgid "Warning"
-msgstr "Попередження"
+msgstr "Застереження"
 
 #: lib/installer.php:1850
 msgid "Restart Required"
@@ -16800,7 +16800,7 @@ msgstr ""
 
 #: managers.php:40 managers.php:220 managers.php:571
 msgid "Notifications"
-msgstr ""
+msgstr "Сповіщення"
 
 #: managers.php:140 utilities.php:2347
 msgid "SNMP Notification Receivers"
@@ -17704,8 +17704,7 @@ msgid "Age"
 msgstr ""
 
 #: rrdcheck.php:236 rrdcheck.php:237 rrdcheck.php:238
-#, fuzzy, php-format
-#| msgid "%d Hours"
+#, php-format
 msgid "%d hours"
 msgstr "%d Годин"
 
