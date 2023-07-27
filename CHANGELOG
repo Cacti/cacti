@@ -136,6 +136,7 @@ Cacti CHANGELOG
 -issue#5390: Fix SQL error when saving DS template
 -issue#5392: Template import should not end with php error
 -issue#5403: Cacti Log regular expression filters can not calculate 'does not match' properly
+-issue#5409: Enabling a plugin can have no response
 -issue#5413: Rows Per Page - Not all options are available
 -issue#5414: Plugins are unable to modify fields in the setting 'Change Device Settings'
 -issue#5417: Cacti mailer log message misses 'bcc' addresses in log notification
