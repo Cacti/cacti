@@ -1165,8 +1165,23 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 				unset($save);
 				$save['data_template_data_id'] = $data_template_data_id;
 				$save['data_input_field_id']   = resolve_hash_to_id($item_array['data_input_field_id'], $hash_cache, 'data_input_data');
-				$save['t_value']               = $item_array['t_value'];
-				$save['value']                 = xml_character_decode($item_array['value']);
+
+				/**
+				 * fix legacy broken input fields for type_code (index_type, index_value, output_type) which
+				 * should always be checked
+				 */
+				$type_code = db_fetch_cell_prepared('SELECT type_code
+					FROM data_input_fields
+					WHERE id = ?',
+					array($save['data_input_field_id']));
+
+				if ($type_code == 'index_type' || $type_code == 'index_value' || $type_code == 'output_type') {
+					$save['t_value'] = 'on';
+				} else {
+					$save['t_value'] = $item_array['t_value'];
+				}
+
+				$save['value'] = xml_character_decode($item_array['value']);
 
 				if (!empty($save['data_input_field_id'])) {
 					sql_save($save, 'data_input_data', array('data_template_data_id', 'data_input_field_id'), false);
