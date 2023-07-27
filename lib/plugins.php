@@ -727,6 +727,12 @@ function api_plugin_install($plugin) {
 
 		$author  = $info['author'];
 		$version = $info['version'];
+	} elseif (strpos($plugin, 'plugin_') !== false) {
+		raise_message('directory_error', __('The Plugin directory \'%s\' needs to be renamed to remove \'plugin_\' from the name before it can be installed.', $plugin), MESSAGE_LEVEL_ERROR);
+		return false;
+	} else {
+		raise_message('version_error', __('The Plugin in the directory \'%s\' does not include an version function \'%s()\'.  This function must exist for the plugin to be installed.', $plugin, $function), MESSAGE_LEVEL_ERROR);
+		return false;
 	}
 
 	db_execute_prepared('INSERT INTO plugin_config
@@ -751,6 +757,9 @@ function api_plugin_install($plugin) {
 				WHERE directory = ?',
 				array($plugin));
 		}
+	} else {
+		raise_message('install_error', __('The Plugin in the directory \'%s\' does not include an install function \'%s()\'.  This function must exist for the plugin to be installed.', $plugin, $function), MESSAGE_LEVEL_ERROR);
+		return false;
 	}
 
 	api_plugin_replicate_config();
