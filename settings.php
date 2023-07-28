@@ -1351,6 +1351,8 @@ default:
 	</script>
 	<?php
 
+	api_plugin_hook('settings_bottom');
+
 	bottom_footer();
 
 	break;
