@@ -65,7 +65,7 @@ switch (get_request_var('action')) {
 	break;
 }
 
-function manager(){
+function manager() {
 	global $config, $manager_actions, $item_rows;
 
 	/* ================= input validation and session storage ================= */
@@ -291,9 +291,9 @@ function manager_edit() {
 		print "<div class='tabs'><nav><ul role='tablist'>";
 
 		foreach (array_keys($tabs_manager_edit) as $tab_short_name) {
-			if (($id == 0 && $tab_short_name != 'general')){
+			if (($id == 0 && $tab_short_name != 'general')) {
 				print "<li class='subTab'><a href='#' " . (($tab_short_name == get_request_var('tab')) ? "class='selected'" : '') . "'>" . $tabs_manager_edit[$tab_short_name] . '</a></li>';
-			}else {
+			} else {
 				print "<li class='subTab'><a " . (($tab_short_name == get_request_var('tab')) ? "class='selected'" : '') .
 					" href='" . html_escape($config['url_path'] .
 					'managers.php?action=edit&id=' . get_request_var('id') .
@@ -322,7 +322,7 @@ function manager_edit() {
 		<?php }
 	}
 
-	switch(get_request_var('tab')){
+	switch(get_request_var('tab')) {
 		case 'notifications':
 			manager_notifications($id, $header_label);
 
@@ -439,7 +439,7 @@ function manager_notifications($id, $header_label) {
 	<script type='text/javascript'>
 
 	function applyFilter() {
-		strURL  = 'managers.php?action=edit&tab=notifications&id=<?php echo $id; ?>';
+		strURL  = 'managers.php?action=edit&tab=notifications&id=<?php print $id; ?>';
 		strURL += '&mib=' + $('#mib').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&filter=' + $('#filter').val();
@@ -449,7 +449,7 @@ function manager_notifications($id, $header_label) {
 	}
 
 	function clearFilter() {
-		strURL = 'managers.php?action=edit&tab=notifications&id=<?php echo $id; ?>&clear=1&header=false';
+		strURL = 'managers.php?action=edit&tab=notifications&id=<?php print $id; ?>&clear=1&header=false';
 		loadPageNoHeader(strURL);
 	}
 
@@ -587,7 +587,7 @@ function manager_notifications($id, $header_label) {
 
 			if ($item['description']) {
 				print '<td><a href="#" title="<div class=\'header\'>' . $name . '</div><div class=\'content preformatted\'>' . $item['description']. '</div>" class="tooltip">' . $name . '</a></td>';
-			}else {
+			} else {
 				form_selectable_cell($name, $row_id);
 			}
 
@@ -707,10 +707,10 @@ function manager_logs($id, $header_label) {
 		div.style.display = 'none';
 	}
 
-	function highlightStatus(selectID){
+	function highlightStatus(selectID) {
 		if ($('#status_' + selectID).val() == 'ON') {
 			$('#status_' + selectID).css('background-color', 'LawnGreen');
-		}else {
+		} else {
 			$('#status_' + selectID).css('background-color', 'OrangeRed');
 		}
 	}
@@ -820,7 +820,7 @@ function manager_logs($id, $header_label) {
 					$description .= html_escape(trim($line)) . '<br>';
 				}
 				print '<td><a href="#" onMouseOut="hideTooltip(snmpagentTooltip)" onMouseMove="showTooltip(event, snmpagentTooltip, \'' . $item['notification'] . '\', \'' . $description . '\')">' . $item['notification'] . '</a></td>';
-			}else {
+			} else {
 				print "<td>{$item['notification']}</td>";
 			}
 			print "<td>$varbinds</td>";
@@ -854,7 +854,7 @@ function form_save() {
 	}
 	/* ================= input validation ================= */
 
-	switch(get_nfilter_request_var('tab')){
+	switch(get_nfilter_request_var('tab')) {
 		case 'notifications':
 			header('Location: managers.php?action=edit&tab=notifications&id=' . get_request_var('id'));
 			break;
@@ -908,12 +908,16 @@ function form_save() {
 	header('Location: managers.php?action=edit&header=false&id=' . (empty($manager_id) ? get_nfilter_request_var('id') : $manager_id) );
 }
 
-function form_actions(){
+function form_actions() {
 	global $manager_actions, $manager_notification_actions;
 
 	if (isset_request_var('selected_items')) {
 		if (isset_request_var('action_receivers')) {
-			$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+			if (version_compare(PHP_VERSION, '7.0.0', '>=')) {
+				$selected_items = unserialize(stripslashes(get_nfilter_request_var('selected_graphs_array')), array('allowed_classes' => false));
+			} else {
+				$selected_items = unserialize(stripslashes(get_nfilter_request_var('selected_graphs_array')));
+			}
 
 			if ($selected_items != false) {
 				if (get_nfilter_request_var('drp_action') == '1') { // delete
@@ -963,7 +967,7 @@ function form_actions(){
 			header('Location: managers.php?action=edit&id=' . get_nfilter_request_var('id') . '&tab=notifications&header=false');
 			exit;
 		}
-	}else {
+	} else {
 		if (isset_request_var('action_receivers')) {
 			$selected_items = array();
 			$list = '';
@@ -1023,7 +1027,7 @@ function form_actions(){
 			form_end();
 
 			bottom_footer();
-		}else {
+		} else {
 			$selected_items = array();
 			$list = '';
 

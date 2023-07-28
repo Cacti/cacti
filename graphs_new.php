@@ -193,7 +193,7 @@ function host_reload_query() {
    ------------------- */
 
 function host_new_graphs_save($host_id) {
-	if(version_compare(PHP_VERSION, '7.0.0', '>=')) {
+	if (version_compare(PHP_VERSION, '7.0.0', '>=')) {
 		$selected_graphs_array = unserialize(stripslashes(get_nfilter_request_var('selected_graphs_array')), array('allowed_classes' => false));
 	} else {
 		$selected_graphs_array = unserialize(stripslashes(get_nfilter_request_var('selected_graphs_array')));
@@ -519,7 +519,7 @@ function graphs() {
 		}
 
 		load_current_session_value('page' . get_request_var('graph_type'), 'sess_grn_page' . get_request_var('graph_type'), '1');
-	}else if (get_request_var('graph_type') == -2) {
+	} else if (get_request_var('graph_type') == -2) {
 		foreach($snmp_queries as $query) {
 			/* validate the page filter */
 			if (isset_request_var('page' . $query['id'])) {
@@ -778,9 +778,9 @@ function graphs() {
 						if (isset($xml_array['index_order_type'])) {
 							if ($xml_array['index_order_type'] == 'numeric') {
 								$sql_order = 'ORDER BY CAST(snmp_index AS unsigned)';
-							}else if ($xml_array['index_order_type'] == 'alphabetic') {
+							} else if ($xml_array['index_order_type'] == 'alphabetic') {
 								$sql_order = 'ORDER BY snmp_index';
-							}else if ($xml_array['index_order_type'] == 'natural') {
+							} else if ($xml_array['index_order_type'] == 'natural') {
 								$sql_order = 'ORDER BY INET_ATON(snmp_index)';
 							} else {
 								$sql_order = '';
