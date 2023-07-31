@@ -175,8 +175,10 @@ setlocale(LC_CTYPE, 'en_US.UTF-8');
 
 $colors = array();
 
-/* this should be auto-detected, set it manually if needed */
-$config['cacti_server_os'] = (strstr(PHP_OS, 'WIN')) ? 'win32' : 'unix';
+/* required for Windows */
+if ($config['cacti_server_os'] == 'win32') {
+	putenv('MIB_DIRS=c:/usr/share/snmp/mibs');
+}
 
 if (!empty($path_csrf_secret)) {
 	$config['path_csrf_secret'] = $path_csrf_secret;
