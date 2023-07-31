@@ -724,14 +724,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 						'data_name', 'data_source_name'
 					);
 				} else {
-					$unused_data_source_names = array_rekey(
-						db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
-							FROM data_template_rrd AS dtr
-							WHERE dtr.local_data_id = ?
-							AND gti.task_item_id IS NULL',
-							array($local_data_id)),
-						'data_source_name', 'data_source_name'
-					);
+					$unused_data_source_names = array();
 
 					$nt_rrd_field_names = array_rekey(
 						db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name

@@ -917,7 +917,8 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 								FROM data_template_rrd AS dtr
 								LEFT JOIN graph_templates_item AS gti
 								ON dtr.id = gti.task_item_id
-								WHERE dtr.local_data_id = ? AND gti.task_item_id IS NULL',
+								WHERE dtr.local_data_id = ?
+								AND gti.task_item_id IS NULL',
 								array($item['local_data_id'])),
 							'data_source_name', 'data_source_name'
 						);
@@ -1037,7 +1038,8 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 								FROM data_template_rrd AS dtr
 								LEFT JOIN graph_templates_item AS gti
 								ON dtr.id = gti.task_item_id
-								WHERE dtr.local_data_id = ? AND gti.task_item_id IS NULL',
+								WHERE dtr.local_data_id = ?
+								AND gti.task_item_id IS NULL',
 								array($item['local_data_id'])),
 							'data_source_name', 'data_source_name'
 						);
@@ -1054,13 +1056,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 							'data_name', 'data_source_name'
 						);
 					} else {
-						$unused_data_source_names = array_rekey(
-							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
-								FROM data_template_rrd AS dtr
-								WHERE dtr.local_data_id = ? AND gti.task_item_id IS NULL',
-								array($item['local_data_id'])),
-							'data_source_name', 'data_source_name'
-						);
+						$unused_data_source_names = array();
 
 						$nt_rrd_field_names = array_rekey(
 							db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dif.data_name
