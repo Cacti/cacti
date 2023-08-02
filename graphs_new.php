@@ -853,7 +853,7 @@ function graphs() {
 							if (($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') && cacti_sizeof($field_names)) {
 								foreach($field_names as $row) {
 									if ($row['field_name'] == $field_name) {
-										$html_dq_header .= "<th class='tableSubHeaderColumn'>" . $field_array['name'] . '</th>';
+										$html_dq_header .= "<th class='tableSubHeaderColumn wrap'>" . $field_array['name'] . '</th>';
 										break;
 									}
 								}
