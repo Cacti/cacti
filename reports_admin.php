@@ -29,6 +29,11 @@ include_once($config['library_path'] . '/html_reports.php');
 include_once($config['library_path'] . '/timespan_settings.php');
 
 get_filter_request_var('id');
+get_filter_request_var('tree_id');
+get_filter_request_var('site_id');
+get_filter_request_var('host_id');
+get_filter_request_var('host_template_id');
+get_filter_request_var('graph_template_id');
 get_filter_request_var('tab', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 
 /* set a longer execution time for large reports */
@@ -43,7 +48,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'send':
-		get_filter_request_var('id');
+		get_request_var('id');
 
 		reports_send(get_request_var('id'));
 
@@ -126,21 +131,21 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'item_movedown':
-		get_filter_request_var('id');
+		get_request_var('id');
 
 		reports_item_movedown();
 
 		header('Location: reports_admin.php?action=edit&tab=items&id=' . get_request_var('id'));
 		break;
 	case 'item_moveup':
-		get_filter_request_var('id');
+		get_request_var('id');
 
 		reports_item_moveup();
 
 		header('Location: reports_admin.php?action=edit&tab=items&id=' . get_request_var('id'));
 		break;
 	case 'item_remove':
-		get_filter_request_var('id');
+		get_request_var('id');
 
 		reports_item_remove();
 
