@@ -1192,7 +1192,7 @@ function aggregate_items() {
 	if (get_request_var('rfilter') == '') {
 		$sql_where = '';
 	} elseif (validate_is_regex(get_request_var('rfilter'))) {
-		$sql_where = 'WHERE gtg.title_cache RLIKE "' . get_request_var('rfilter') . '"';
+		$sql_where = "WHERE gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'";
 	} else {
 		$filters = explode(' ', get_request_var('rfilter'));
 		$sql_where = '';
