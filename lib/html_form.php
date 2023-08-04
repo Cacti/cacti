@@ -1243,7 +1243,7 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
 	}
 
 	if ($force_type != 'import' && $force_type != 'export' && $force_type != 'save' && $force_type != 'close' && $cancel_url != '') {
-		$cancel_action = "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo(\"" . html_escape($cancel_url, ENT_QUOTES) . "\")' value='" . $calt . "'>";
+		$cancel_action = "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo(\"" . html_escape(sanitize_uri($cancel_url)) . "\")' value='" . $calt . "'>";
 	} else {
 		$cancel_action = '';
 	}
