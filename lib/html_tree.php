@@ -1372,7 +1372,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$sql_where = '';
 
 		if (get_request_var('rfilter') != '') {
-			$sql_where .= ' (gtg.title_cache RLIKE "' . get_request_var('rfilter') . '" OR gtg.title RLIKE "' . get_request_var('rfilter') . '")';
+			$sql_where .= " (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "' OR gtg.title RLIKE '" . get_request_var('rfilter') . "')";
 		}
 
 		if (isset_request_var('graph_template_id') && get_request_var('graph_template_id') >= 0) {
@@ -1428,7 +1428,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		}
 
 		if (get_request_var('rfilter') != '') {
-			$sql_where .= ($sql_where != '' ? ' AND ':'') . '(gtg.title_cache RLIKE "' . get_request_var('rfilter') . '")';
+			$sql_where .= ($sql_where != '' ? ' AND ':'') . "(gtg.title_cache RLIKE '" . get_request_var('rfilter') . "')";
 		}
 
 		if (isset_request_var('graph_template_id') && get_request_var('graph_template_id') >= 0) {
@@ -1549,7 +1549,7 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 			$sql_where = '';
 
 			if (get_request_var('rfilter') != '') {
-				$sql_where = ' (gtg.title_cache RLIKE "' . get_request_var('rfilter') . '")';
+				$sql_where = " (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "')";
 			}
 
 			if ($host_id > 0) {
@@ -1619,7 +1619,7 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 				$sfd = get_formatted_data_query_indexes($host_id, $data_query['id']);
 
 				if (get_request_var('rfilter') != '') {
-					$sql_where = ' (gtg.title_cache RLIKE "' . get_request_var('rfilter') . '")';
+					$sql_where = " (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "')";
 				}
 
 				/* grab a list of all graphs for this host/data query combination */
