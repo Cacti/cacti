@@ -62,7 +62,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'ajax_get_branches':
-		print reports_get_branch_select(get_request_var('tree_id'));
+		print reports_get_branch_select(get_filter_request_var('tree_id'));
 
 		break;
 	case 'ajax_hosts':
