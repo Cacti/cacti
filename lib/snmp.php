@@ -949,7 +949,7 @@ function snmp_escape_string($string) {
 
 			return SNMP_ESCAPE_CHARACTER . $string . SNMP_ESCAPE_CHARACTER;
 		} else {
-			return cacti_escape_shell_arg($string);
+			return cacti_escapeshellarg($string);
 		}
 	}
 }
