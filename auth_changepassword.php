@@ -332,6 +332,17 @@ $selectedTheme = get_selected_theme();
 
 $skip_current = (empty($user['password']));
 
+if (isset_request_var('ref')) {
+	$server_ref  = gethostbyname(parse_url(get_nfilter_request_var('ref'), PHP_URL_HOST));
+	$server_addr = $_SERVER['SERVER_ADDR'];
+
+	if ($server_ref != $server_addr) {
+		raise_message('problems_with_page', __('There are problems with the Change Password page.  Contact your Cacti administrator right away.'), MESSAGE_LEVEL_ERROR);
+		header('Location:index.php');
+		exit;
+	}
+}
+
 if ($skip_current) {
 	$title_message = __('Please enter your current password and your new<br>Cacti password.');
 } else {
