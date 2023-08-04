@@ -990,7 +990,7 @@ function graphs() {
 	}
 
 	if (isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], 'graphs_new') === false) {
-		set_request_var('returnto', basename($_SERVER['HTTP_REFERER']));
+		set_request_var('returnto', basename(sanitize_uri($_SERVER['HTTP_REFERER'])));
 	}
 
 	load_current_session_value('returnto', 'sess_grn_returnto', '');
