@@ -942,16 +942,16 @@ function snmp_escape_string($string) {
 	if (! defined('SNMP_ESCAPE_CHARACTER')) {
 		if ($config['cacti_server_os'] == 'win32') {
 			define('SNMP_ESCAPE_CHARACTER', '"');
+
+			if (substr_count($string, SNMP_ESCAPE_CHARACTER)) {
+				$string = str_replace(SNMP_ESCAPE_CHARACTER, "\\" . SNMP_ESCAPE_CHARACTER, $string);
+			}
+
+			return SNMP_ESCAPE_CHARACTER . $string . SNMP_ESCAPE_CHARACTER;
 		} else {
-			define('SNMP_ESCAPE_CHARACTER', "'");
+			return cacti_escape_shell_arg($string);
 		}
 	}
-
-	if (substr_count($string, SNMP_ESCAPE_CHARACTER)) {
-		$string = str_replace(SNMP_ESCAPE_CHARACTER, '\\' . SNMP_ESCAPE_CHARACTER, $string);
-	}
-
-	return SNMP_ESCAPE_CHARACTER . $string . SNMP_ESCAPE_CHARACTER;
 }
 
 function snmp_get_method($type = 'walk', $version = 1, $context = '', $engineid = '',

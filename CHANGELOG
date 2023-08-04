@@ -92,6 +92,7 @@ Cacti CHANGELOG
 -SECURITY#5318: Multiple minor stored XSS vulnerabilities in Cacti 1.2.24
 -SECURITY#5348: Unchecked Regular expressions can lead to privilege escalation and data leakage
 -SECURITY: Protect against certain SQL Injection attacks
+-SECURITY: Protect against certain command level injections in snmp functions
 -issue#2959: Multi-threaded cli/rebuild_poller_cache.php, deprecated push_out_hosts.php
 -issue#4045: When searching tree or list views, the URL does not update after changes
 -issue#5254: Created a data source template to specify the snmp port, but it doesn't seem to work properly
