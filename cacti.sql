@@ -78,7 +78,7 @@ END //
 
 DELIMITER ;
 
-SET @sqlmode= "NO_ENGINE_SUBSTITUTIION";
+SET @sqlmode= "";
 SET SESSION sql_mode = @sqlmode;
 
 --

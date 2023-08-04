@@ -131,6 +131,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 				'NO_ZERO_IN_DATE',
 				'ONLY_FULL_GROUP_BY',
 				'NO_AUTO_VALUE_ON_ZERO',
+				'NO_ENGINE_SUBSTITUTION',
 				'NO_AUTO_CREATE_USER'
 			);
 
