@@ -1787,8 +1787,11 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 				}
 			} elseif (empty($value)) {
 				$array_items[$key] = 0;
-			} else {
+			} elseif (is_numeric($value)) {
 				$array_items[$key] = $value;
+			} else {
+				cacti_log('ERROR: Column: ' . $key . ' contains and invald value: ' . $value, false, 'DBCALL');
+				$array_items[$key] = 0;
 			}
 		} else {
 			$array_items[$key] = db_qstr($value);
