@@ -27,9 +27,6 @@
 
 DELIMITER //
 
---- Remove this legacy function if it exists
-DROP FUNCTION IF EXISTS NOAUTOCREATENEEDED//
-
 SET @sqlmode= "";
 SET SESSION sql_mode = @sqlmode;
 
