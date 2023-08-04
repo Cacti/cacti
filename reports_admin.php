@@ -29,6 +29,11 @@ include_once(CACTI_PATH_LIBRARY . '/html_reports.php');
 include_once(CACTI_PATH_LIBRARY . '/timespan_settings.php');
 
 get_filter_request_var('id');
+get_filter_request_var('tree_id');
+get_filter_request_var('site_id');
+get_filter_request_var('host_id');
+get_filter_request_var('host_template_id');
+get_filter_request_var('graph_template_id');
 get_filter_request_var('tab', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 
 /* set a longer execution time for large reports */
@@ -43,7 +48,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'send':
-		get_filter_request_var('id');
+		get_request_var('id');
 
 		reports_send(get_request_var('id'));
 
@@ -131,7 +136,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'item_movedown':
-		get_filter_request_var('id');
+		get_request_var('id');
 
 		reports_item_movedown();
 
@@ -139,7 +144,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'item_moveup':
-		get_filter_request_var('id');
+		get_request_var('id');
 
 		reports_item_moveup();
 
@@ -147,7 +152,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'item_remove':
-		get_filter_request_var('id');
+		get_request_var('id');
 
 		reports_item_remove();
 
