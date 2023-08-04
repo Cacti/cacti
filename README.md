@@ -55,7 +55,7 @@ join_buffer_size = XXX
 sort_buffer_size = XXX
 
 # important for compatibility
-sql_mode=NO_ENGINE_SUBSTITUTION,NO_AUTO_CREATE_USER
+sql_mode=NO_ENGINE_SUBSTITUTION
 
 # innodb settings - Cacti provides recommendations at upgrade time
 innodb_buffer_pool_instances = XXX
