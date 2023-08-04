@@ -308,6 +308,17 @@ $secpass_tooltip .= $secpass_body;
 
 $selectedTheme = get_selected_theme();
 
+if (isset_request_var('ref')) {
+	$server_ref  = gethostbyname(parse_url(get_nfilter_request_var('ref'), PHP_URL_HOST));
+	$server_addr = $_SERVER['SERVER_ADDR'];
+
+	if ($server_ref != $server_addr) {
+		raise_message('problems_with_page', __('There are problems with the Change Password page.  Contact your Cacti administrator right away.'), MESSAGE_LEVEL_ERROR);
+		header('Location:index.php');
+		exit;
+	}
+}
+
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
