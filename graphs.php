@@ -92,7 +92,7 @@ switch (get_request_var('action')) {
 	case 'ajax_hosts':
 		$sql_where = '';
 		if (get_request_var('site_id') > 0) {
-			$sql_where = 'site_id = ' . get_request_var('site_id');
+			$sql_where = 'site_id = ' . get_filter_request_var('site_id');
 		}
 
 		get_allowed_ajax_hosts(true, 'applyFilter', $sql_where);
@@ -101,7 +101,7 @@ switch (get_request_var('action')) {
 	case 'ajax_hosts_noany':
 		$sql_where = '';
 		if (get_request_var('site_id') > 0) {
-			$sql_where = 'site_id = ' . get_request_var('site_id');
+			$sql_where = 'site_id = ' . get_filter_request_var('site_id');
 		}
 
 		get_allowed_ajax_hosts(false, 'applyFilter', $sql_where);
