@@ -115,9 +115,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 				'NO_ZERO_DATE',
 				'NO_ZERO_IN_DATE',
 				'ONLY_FULL_GROUP_BY',
-				'NO_AUTO_VALUE_ON_ZERO',
-				'NO_ENGINE_SUBSTITUTION',
-				'NO_AUTO_CREATE_USER'
+				'NO_AUTO_VALUE_ON_ZERO'
 			);
 
 			$database_sessions["$odevice:$port:$db_name"] = $cnn_id;
@@ -145,12 +143,18 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			if (strpos($ver, 'MariaDB') !== false) {
 				$srv = 'MariaDB';
 				$ver  = str_replace('-MariaDB', '', $ver);
+				$required_modes[] = 'NO_ENGINE_SUBSTITUTION';
 			} else {
 				$srv = 'MySQL';
-			}
 
-			if (version_compare('8.0.0', $ver, '<=')) {
-				$bad_modes[] = 'NO_AUTO_CREATE_USER';
+				if (version_compare('8.0.0', $ver, '<=')) {
+					$bad_modes[] = 'NO_AUTO_CREATE_USER';
+					$required_modes[] = 'NO_ENGINE_SUBSTITUTION';
+				}
+
+				if (version_compare('8.1.0', $ver, '<=')) {
+					$bad_modes[] = 'NO_ENGINE_SUBSTITUTION';
+				}
 			}
 
 			// Get rid of bad modes
@@ -165,7 +169,6 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 			// Add Required modes
 			$required_modes[] = 'ALLOW_INVALID_DATES';
-			$required_modes[] = 'NO_ENGINE_SUBSTITUTION';
 
 			foreach($required_modes as $mode) {
 				if (array_search($mode, $new_modes) === false) {
