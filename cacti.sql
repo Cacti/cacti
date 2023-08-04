@@ -27,56 +27,8 @@
 
 DELIMITER //
 
+--- Remove this legacy function if it exists
 DROP FUNCTION IF EXISTS NOAUTOCREATENEEDED//
-CREATE FUNCTION NOAUTOCREATENEEDED()
-RETURNS BOOL
-READS SQL DATA
-DETERMINISTIC
-BEGIN
-
-DECLARE ret BOOL;
-DECLARE ismaria BOOL;
-
-DECLARE majv INT;
-DECLARE medv INT;
-DECLARE minv INT;
-
-DECLARE realversion VARCHAR(16);
-
-DECLARE majn INT;
-DECLARE medn INT;
-DECLARE minn INT;
-
-SET ret = TRUE;
-
-
-SELECT LOCATE('MariaDB', @@version) > 0 INTO ismaria;
-
-IF ismaria THEN
-        -- MariaDB version NO_AUTO_CREATE_USER started to be default
-        SET majn = 10;
-        SET medn = 1;
-        SET minn = 7;
-ELSE
-        -- MySQL version it started to be default (8.0.11)
-        SET majn = 8;
-        SET medn = 0;
-        SET minn = 11;
-END IF;
-
-SELECT SUBSTRING_INDEX(SUBSTRING_INDEX(@@VERSION, '.', 3),'-',1) INTO realversion;
-SELECT CONVERT(SUBSTRING_INDEX(realversion, '.', 1), SIGNED INTEGER) INTO majv;
-SELECT CONVERT(SUBSTRING_INDEX(SUBSTRING_INDEX(realversion, '.', 2), '.', -1), SIGNED INTEGER) INTO medv;
-SELECT CONVERT(SUBSTRING_INDEX(SUBSTRING_INDEX(realversion, '.', 3), '.', -1), SIGNED INTEGER) INTO minv;
-
-IF majv >= majn AND medv >= medn AND minv >= minn THEN
-        SET ret = FALSE;
-END IF;
-
-RETURN ret;
-END //
-
-DELIMITER ;
 
 SET @sqlmode= "";
 SET SESSION sql_mode = @sqlmode;
