@@ -309,10 +309,23 @@ $secpass_tooltip .= $secpass_body;
 $selectedTheme = get_selected_theme();
 
 if (isset_request_var('ref')) {
-	$server_ref  = gethostbyname(parse_url(get_nfilter_request_var('ref'), PHP_URL_HOST));
+	$ref_parts   = parse_url(get_nfilter_request_var('ref'));
 	$server_addr = $_SERVER['SERVER_ADDR'];
+	$valid       = true;
 
-	if ($server_ref != $server_addr) {
+	if (isset($ref_parts['username']) || isset($ref_parts['password'])) {
+		$valid = false;
+	} elseif (isset($ref_parts['hostname'])) {
+		$server_ref  = gethostbyname($ref_parts['hostname']);
+
+		if ($server_ref != $server_addr) {
+			$valid = false;
+		}
+	} else {
+		$valid = false;
+	}
+
+	if (!$valid) {
 		raise_message('problems_with_page', __('There are problems with the Change Password page.  Contact your Cacti administrator right away.'), MESSAGE_LEVEL_ERROR);
 		header('Location:index.php');
 		exit;
