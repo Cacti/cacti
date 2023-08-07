@@ -1089,6 +1089,7 @@ $device_classes = array(
 	'switch'       => __('Network Switch'),
 	'router'       => __('Network Router'),
 	'firewall'     => __('Network Firewall'),
+	'print'        => __('Printer Related'),
 	'storage'      => __('Storage Related'),
 	'telephony'    => __('Telco Related'),
 	'webserver'    => __('Web Server Related'),
