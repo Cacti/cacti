@@ -455,29 +455,33 @@ function rrdtool_trim_output(&$output) {
 	 * string.  So, therefore, we have to prune that
 	 * output.
 	 */
-	$okpos = strrpos($output, 'OK u:');
+	 if ($config['cacti_server_os'] == 'win32') {
+		 $output = rtrim($output, "OK \n\r");
+	} else {
+		$okpos = strrpos($output, 'OK u:');
 
-	if ($okpos !== false) {
-		$stats  = substr($output, $okpos);
-		$line   = trim($stats, ' OK');
-		$parts  = explode(' ', $line);
+		if ($okpos !== false) {
+			$stats  = substr($output, $okpos);
+			$line   = trim($stats, ' OK');
+			$parts  = explode(' ', $line);
 
-		foreach ($parts as $line) {
-			$sparts = explode(':', $line);
+			foreach ($parts as $line) {
+				$sparts = explode(':', $line);
 
-			switch($sparts[0]) {
-				case 'u':
-					$user_time = $sparts[1];
+				switch($sparts[0]) {
+					case 'u':
+						$user_time = $sparts[1];
 
-					break;
-				case 's':
-					$system_time = $sparts[1];
+						break;
+					case 's':
+						$system_time = $sparts[1];
 
-					break;
-				case 'r':
-					$real_time = $sparts[1];
+						break;
+					case 'r':
+						$real_time = $sparts[1];
 
-					break;
+						break;
+				}
 			}
 		}
 	}
