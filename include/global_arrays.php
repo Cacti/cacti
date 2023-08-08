@@ -1088,6 +1088,7 @@ $device_classes = array(
 	'loadbalancer' => __('Load Balancer'),
 	'switch'       => __('Network Switch'),
 	'router'       => __('Network Router'),
+	'nassan'       => __('NAS/SAN Related'),
 	'firewall'     => __('Network Firewalls'),
 	'power'        => __('Power Related PDUs/STS, etc.'),
 	'printer'      => __('Printer Related'),
