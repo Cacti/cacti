@@ -419,6 +419,8 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 }
 
 function rrdtool_trim_output(&$output) {
+	global $config;
+
 	/* When using RRDtool with proc_open for long strings
 	 * and using the '-' to handle standard in from inside
 	 * the process, RRDtool automatically appends stderr
@@ -426,9 +428,13 @@ function rrdtool_trim_output(&$output) {
 	 * string.  So, therefore, we have to prune that
 	 * output.
 	 */
-	$okpos = strrpos($output, 'OK u:');
-	if ($okpos !== false) {
-		$output = substr($output, 0, $okpos);
+	if ($config['cacti_server_os'] == 'win32') {
+		$output = rtrim($output, "OK \n\r");
+	} else {
+		$okpos = strrpos($output, 'OK u:');
+		if ($okpos !== false) {
+			$output = substr($output, 0, $okpos);
+		}
 	}
 }
 
