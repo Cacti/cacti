@@ -944,7 +944,7 @@ function form_actions() {
 
 	if (isset_request_var('selected_items')) {
 		if (isset_request_var('action_receivers')) {
-			$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+			$selected_items = cacti_unserialize(stripslashes(get_nfilter_request_var('selected_graphs_array')));
 
 			if ($selected_items != false) {
 				if (get_nfilter_request_var('drp_action') == '1') { // delete
@@ -966,7 +966,7 @@ function form_actions() {
 			get_filter_request_var('id');
 			/* ==================================================== */
 
-			$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
+			$selected_items = cacti_unserialize(stripslashes(get_nfilter_request_var('selected_items')));
 
 			if ($selected_items !== false) {
 				if (get_nfilter_request_var('drp_action') == '1') { // disable

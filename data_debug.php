@@ -591,7 +591,7 @@ function debug_wizard() {
 	if (cacti_sizeof($checks)) {
 		foreach ($checks as $check) {
 			if (isset($check['info']) && $check['info'] != '') {
-				$info = unserialize($check['info']);
+				$info = cacti_unserialize($check['info']);
 			} else {
 				$info = '';
 			}
@@ -682,7 +682,7 @@ function debug_view() {
 	$check_exists = cacti_sizeof($check);
 
 	if (isset($check) && is_array($check)) {
-		$check['info'] = unserialize($check['info']);
+		$check['info'] = cacti_unserialize($check['info']);
 	}
 
 	$dtd = db_fetch_row_prepared('SELECT *

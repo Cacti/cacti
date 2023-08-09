@@ -1715,7 +1715,7 @@ function rewrite_snmp_enum_value($field_name, $value=null, $map=null) {
 
 		$map = $newmap;
 	} else {
-		$map = unserialize($map);
+		$map = cacti_unserialize($map);
 	}
 
 	if ($map === false || !is_array($map)) {
