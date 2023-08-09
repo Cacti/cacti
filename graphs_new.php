@@ -193,11 +193,7 @@ function host_reload_query() {
    ------------------- */
 
 function host_new_graphs_save($host_id) {
-	if (version_compare(PHP_VERSION, '7.0.0', '>=')) {
-		$selected_graphs_array = unserialize(stripslashes(get_nfilter_request_var('selected_graphs_array')), array('allowed_classes' => false));
-	} else {
-		$selected_graphs_array = unserialize(stripslashes(get_nfilter_request_var('selected_graphs_array')));
-	}
+	$selected_graphs_array = cacti_unserialize(stripslashes(get_nfilter_request_var('selected_graphs_array')));
 
 	$values = array();
 	$form_data = array();

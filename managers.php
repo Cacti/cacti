@@ -913,11 +913,7 @@ function form_actions() {
 
 	if (isset_request_var('selected_items')) {
 		if (isset_request_var('action_receivers')) {
-			if (version_compare(PHP_VERSION, '7.0.0', '>=')) {
-				$selected_items = unserialize(stripslashes(get_nfilter_request_var('selected_graphs_array')), array('allowed_classes' => false));
-			} else {
-				$selected_items = unserialize(stripslashes(get_nfilter_request_var('selected_graphs_array')));
-			}
+			$selected_items = cacti_unserialize(stripslashes(get_nfilter_request_var('selected_graphs_array')));
 
 			if ($selected_items != false) {
 				if (get_nfilter_request_var('drp_action') == '1') { // delete
@@ -938,7 +934,7 @@ function form_actions() {
 			get_filter_request_var('id');
 			/* ==================================================== */
 
-			$selected_items = unserialize(stripslashes(get_nfilter_request_var('selected_items')), array('allowed_classes' => false));
+			$selected_items = cacti_unserialize(stripslashes(get_nfilter_request_var('selected_items')));
 
 			if ($selected_items !== false) {
 				if (get_nfilter_request_var('drp_action') == '1') { // disable
