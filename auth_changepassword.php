@@ -334,16 +334,32 @@ $skip_current = (empty($user['password']));
 
 if (isset_request_var('ref')) {
 	$ref_parts   = parse_url(get_nfilter_request_var('ref'));
-	$server_addr = $_SERVER['SERVER_ADDR'];
 	$valid       = true;
 
 	if (isset($ref_parts['username']) || isset($ref_parts['password'])) {
 		$valid = false;
 	} elseif (isset($ref_parts['hostname'])) {
+		$server_addr = $_SERVER['SERVER_ADDR'];
+		$server_info = get_dns_record($_SERVER['SERVER_NAME'], DNS_ANY);
 		$server_ref  = gethostbyname($ref_parts['hostname']);
 
 		if ($server_ref != $server_addr) {
 			$valid = false;
+		}
+
+		if (!$valid && sizeof($server_info)) {
+			foreach($server_info as $record) {
+				if (isset($record['host']) && $record['host'] == $server_ref) {
+					$valid = true;
+					break;
+				} elseif (isset($record['target']) && $record['target'] == $server_ref) {
+					$valid = true;
+					break;
+				} elseif (isset($record['id']) && $record['ip'] == $server_addr) {
+					$valid = true;
+					break;
+				}
+			}
 		}
 	} else {
 		$valid = false;
