@@ -338,6 +338,8 @@ if (isset_request_var('ref')) {
 
 	if (isset($ref_parts['username']) || isset($ref_parts['password'])) {
 		$valid = false;
+	} elseif (!isset($ref_parts['hostname'])) {
+		$value = true;
 	} elseif (isset($ref_parts['hostname'])) {
 		$server_addr = $_SERVER['SERVER_ADDR'];
 		$server_info = get_dns_record($_SERVER['SERVER_NAME'], DNS_ANY);
@@ -366,6 +368,8 @@ if (isset_request_var('ref')) {
 	}
 
 	if (!$valid) {
+		cacti_log('WARNING: User attempted to access Cacti from unkonwn URL', false, 'AUTH');
+
 		raise_message('problems_with_page', __('There are problems with the Change Password page.  Contact your Cacti administrator right away.'), MESSAGE_LEVEL_ERROR);
 		header('Location:index.php');
 		exit;
