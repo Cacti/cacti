@@ -159,6 +159,8 @@ function upgrade_to_1_3_0() {
 			ADD COLUMN last_updated timestamp NOT NULL default current_timestamp,
 			ADD INDEX last_updated(last_updated)');
 	}
+
+	db_install_execute("ALTER TABLE `settings` MODIFY `name` varchar(75) not null default ''");
 }
 
 function ldap_convert_1_3_0() {
