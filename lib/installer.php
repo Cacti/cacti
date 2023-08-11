@@ -1106,7 +1106,7 @@ class Installer implements JsonSerializable {
 		}
 
 		$db_templates = array_rekey(
-			db_fetch_assoc('SELECT name, value FROM settings WHERE name LIKE \'install_template_%\''),
+			db_fetch_assoc('SELECT name, value FROM settings WHERE name LIKE \'install_tp_%\''),
 			'name', 'value'
 		);
 
@@ -1119,7 +1119,7 @@ class Installer implements JsonSerializable {
 		foreach ($known_templates as $known) {
 			$filename    = $known['filename'];
 			$key_base    = str_replace('.', '_', $filename);
-			$key_install = 'install_template_' . $key_base;
+			$key_install = 'install_tp_' . $key_base;
 			$key_check   = 'chk_template_' . $key_base;
 
 			log_install_high('templates','getTemplates(): Checking template ' . $known['name'] . ' using base: ' . $key_base);
@@ -1156,7 +1156,7 @@ class Installer implements JsonSerializable {
 	 *         passed that is not expected */
 	private function setTemplates($param_templates = array()) {
 		if (is_array($param_templates)) {
-			db_execute('DELETE FROM settings WHERE name like \'install_template_%\'');
+			db_execute('DELETE FROM settings WHERE name like \'install_tp_%\'');
 			$known_templates = install_setup_get_templates();
 
 			log_install_medium('templates',"setTemplates(): Updating templates");
@@ -1192,7 +1192,7 @@ class Installer implements JsonSerializable {
 					$this->setTrueFalse($enabled, $set, $key, false);
 					$use = ($set) || ($param_all);
 					$value = ($use) ? $template['filename'] : '';
-					log_install_high('templates',"setTemplates(): Use: $use, Set: $set, All: $param_all, key: install_template_$key = " . $value);
+					log_install_high('templates',"setTemplates(): Use: $use, Set: $set, All: $param_all, key: install_tp_$key = " . $value);
 
 					// Don't default install templates if upgrade
 					if ($this->getMode() == Installer::MODE_DOWNGRADE) {
@@ -1200,7 +1200,7 @@ class Installer implements JsonSerializable {
 						$use   = false;
 					}
 
-					set_config_option("install_template_$key", $value);
+					set_config_option("install_tp_$key", $value);
 					$this->templates[$name] = $use;
 				}
 			}
@@ -2988,7 +2988,7 @@ class Installer implements JsonSerializable {
 
 		$templates = db_fetch_assoc("SELECT value
 			FROM settings
-			WHERE name LIKE 'install_template_%'
+			WHERE name LIKE 'install_tp_%'
 			AND value <> ''");
 
 		$this->setProgress(Installer::PROGRESS_TEMPLATES_BEGIN);
