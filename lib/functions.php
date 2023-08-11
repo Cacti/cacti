@@ -423,6 +423,10 @@ function set_config_option(string $config_name, mixed $value, bool $remote = fal
 
 	include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
+	if (strlen($config_name) > 75) {
+		cacti_log("ERROR: Config option name '$config_name' is too long, will be truncated", false, 'SYSTEM');
+	}
+
 	db_execute_prepared('REPLACE INTO settings
 		SET name = ?, value = ?',
 		array($config_name, $value));
