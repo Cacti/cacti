@@ -207,6 +207,10 @@ function set_user_setting($config_name, $value, $user = -1) {
 
 		cacti_log('NOTE: Attempt to set user setting \'' . $config_name . '\', with no user id: ' . cacti_debug_backtrace('', false, false, 0, 1), false, $mode, POLLER_VERBOSITY_MEDIUM);
 	} elseif (db_table_exists('settings_user')) {
+		if (strlen($config_name) > 75) {
+			cacti_log("ERROR: User setting name '$config_name' is too long, will be truncated", false, 'SYSTEM');
+		}
+		
 		db_execute_prepared('REPLACE INTO settings_user
 			SET user_id = ?,
 			name = ?,
