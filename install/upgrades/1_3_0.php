@@ -161,6 +161,7 @@ function upgrade_to_1_3_0() {
 	}
 
 	db_install_execute("ALTER TABLE `settings` MODIFY `name` varchar(75) not null default ''");
+	db_install_execute("ALTER TABLE `settings_user` MODIFY `name` varchar(75) not null default ''");
 }
 
 function ldap_convert_1_3_0() {

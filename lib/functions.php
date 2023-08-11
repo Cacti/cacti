@@ -216,6 +216,10 @@ function set_user_setting(string $config_name, mixed $value, ?int $user = null):
 		$mode = isset($_SESSION[SESS_USER_ID]) ? 'WEBUI' : 'POLLER';
 		cacti_log('NOTE: Attempt to set user setting \'' . $config_name . '\', with no valid user id: ' . cacti_debug_backtrace('', false, false, 0, 1), false, $mode, POLLER_VERBOSITY_MEDIUM);
 	} elseif (db_table_exists('settings_user')) {
+		if (strlen($config_name) > 75) {
+			cacti_log("ERROR: User setting name '$config_name' is too long, will be truncated", false, 'SYSTEM');
+		}
+		
 		db_execute_prepared('REPLACE INTO settings_user
 			SET user_id = ?,
 			name = ?,

@@ -2553,7 +2553,7 @@ INSERT INTO settings VALUES ('selected_theme', 'modern');
 
 CREATE TABLE settings_user (
   user_id smallint(8) unsigned NOT NULL default '0',
-  name varchar(50) NOT NULL default '',
+  name varchar(75) NOT NULL default '',
   value varchar(2048) NOT NULL default '',
   PRIMARY KEY (user_id, name)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
