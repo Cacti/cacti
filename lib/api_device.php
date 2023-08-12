@@ -1626,3 +1626,60 @@ function api_device_ping_device($device_id, $from_remote = false) {
 	}
 }
 
+/**
+ * api_duplicate_device_template - given a device_template_id, and a title, duplicate it.
+ *
+ * @param (int)    The Device Template id to duplicate
+ * @param (string) The name of the new Device Template
+ *
+ * @return (void)
+ */
+function api_duplicate_device_template($_host_template_id, $host_template_title) {
+	global $fields_host_template_edit;
+
+	$host_template              = db_fetch_row_prepared('SELECT * FROM host_template WHERE id = ?', array($_host_template_id));
+	$host_template_graphs       = db_fetch_assoc_prepared('SELECT * FROM host_template_graph WHERE host_template_id = ?', array($_host_template_id));
+	$host_template_data_queries = db_fetch_assoc_prepared('SELECT * FROM host_template_snmp_query WHERE host_template_id = ?', array($_host_template_id));
+
+	if (cacti_sizeof($host_template)) {
+		/* substitute the title variable */
+		$host_template['name'] = str_replace('<template_title>', $host_template['name'], $host_template_title);
+
+		/* create new entry: host_template */
+		$save['id']   = 0;
+		$save['hash'] = get_hash_host_template(0);
+
+		foreach ($fields_host_template_edit as $field => $array) {
+			if (!preg_match('/^hidden/', $array['method'])) {
+				$save[$field] = $host_template[$field];
+			}
+		}
+
+		$host_template_id = sql_save($save, 'host_template');
+
+		/* create new entry(s): host_template_graph */
+		if (cacti_sizeof($host_template_graphs)) {
+			foreach ($host_template_graphs as $host_template_graph) {
+				db_execute_prepared('INSERT INTO host_template_graph
+					(host_template_id,graph_template_id)
+					VALUES (?, ?)',
+					array($host_template_id, $host_template_graph['graph_template_id']));
+			}
+		}
+
+		/* create new entry(s): host_template_snmp_query */
+		if (cacti_sizeof($host_template_data_queries)) {
+			foreach ($host_template_data_queries as $host_template_data_query) {
+				db_execute_prepared('INSERT INTO host_template_snmp_query
+					(host_template_id,snmp_query_id)
+					VALUES (?, ?)',
+					array($host_template_id, $host_template_data_query['snmp_query_id']));
+			}
+		}
+
+		return $host_template_id;
+	} else {
+		return false;
+	}
+}
+
