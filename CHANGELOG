@@ -70,6 +70,7 @@ Cacti CHANGELOG
 -feature#5418: Display device class before package import 
 -feature#5442: Table settings - extend column size, log error when variable name is truncated
 -feature#5444: Table settings_user - extend column size, log error when variable name is truncated
+-feature#5448: Data Queries do not have a Duplication function
 -feature: Update Cisco Device Template to include HSRP graph template
 -feature: Upgrade billboard.js to version 3.7.4
 -feature: Upgrade d3.js to version 7.8.2

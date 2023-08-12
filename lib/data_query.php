@@ -2486,3 +2486,98 @@ function api_data_query_errors($snmp_query_graph_id, $post) {
 
 	return $errors;
 }
+
+/**
+ * data_query_duplicate - Duplicate a Data query
+ *
+ * @param int - The original Data Query id
+ * @param string - The new name of the Data Query
+ *
+ * @return int|false - The id of the new data query or false on failure
+ */
+function data_query_duplicate($_data_query_id, $data_query_name) {
+	$data_query = db_fetch_row_prepared('SELECT *
+		FROM snmp_query
+		WHERE id = ?',
+		array($_data_query_id));
+
+	if (!cacti_sizeof($data_query)) {
+		return false;
+	}
+
+	$data_query_name = str_replace('<dataquery_name>', $data_query['name'], $data_query_name);
+
+	$save         = $data_query;
+	$save['id']   = 0;
+	$save['hash'] = generate_hash();
+	$save['name'] = $data_query_name;
+
+	$data_query_id = sql_save($save, 'snmp_query');
+
+	$_snmp_query_graph = db_fetch_assoc_prepared('SELECT *
+		FROM snmp_query_graph
+		WHERE snmp_query_id = ?',
+		array($_data_query_id));
+
+	if (cacti_sizeof($_snmp_query_graph)) {
+		foreach($_snmp_query_graph as $_sqg) {
+			$save                  = $_sqg;
+			$save['id']            = 0;
+			$save['hash']          = generate_hash();
+			$save['snmp_query_id'] = $data_query_id;
+			$sqg_id = sql_save($save, 'snmp_query_graph');
+
+			$_snmp_query_graph_rrd = db_fetch_assoc_prepared('SELECT *
+				FROM snmp_query_graph_rrd
+				WHERE snmp_query_graph_id = ?',
+				array($_sqg['id']));
+
+			if (cacti_sizeof($_snmp_query_graph_rrd)) {
+				foreach($_snmp_query_graph_rrd as $_sqgr) {
+					$save = $_sqgr;
+
+					$save['snmp_query_graph_id'] = $sqg_id;
+
+					sql_save($save, 'snmp_query_graph_rrd');
+				}
+			}
+
+			$_snmp_query_graph_rrd_sv = db_fetch_assoc_prepared('SELECT *
+				FROM snmp_query_graph_rrd_sv
+				WHERE snmp_query_graph_id = ?',
+				array($_sqg['id']));
+
+			if (cacti_sizeof($_snmp_query_graph_rrd_sv)) {
+				foreach($_snmp_query_graph_rrd_sv as $_sqgrs) {
+					$save         = $_sqgrs;
+					$save['id']   = 0;
+					$save['hash'] = generate_hash();
+
+					$save['snmp_query_graph_id'] = $sqg_id;
+
+					sql_save($save, 'snmp_query_graph_rrd_sv');
+				}
+			}
+
+			$_snmp_query_graph_sv = db_fetch_assoc_prepared('SELECT *
+				FROM snmp_query_graph_sv
+				WHERE snmp_query_graph_id = ?',
+				array($_sqg['id']));
+
+			if (cacti_sizeof($_snmp_query_graph_sv)) {
+				foreach($_snmp_query_graph_sv as $_sqgs) {
+					$save         = $_sqgs;
+					$save['id']   = 0;
+					$save['hash'] = generate_hash();
+
+					$save['snmp_query_graph_id'] = $sqg_id;
+
+					sql_save($save, 'snmp_query_graph_sv');
+				}
+			}
+		}
+
+		return $data_query_id;
+	}
+}
+
