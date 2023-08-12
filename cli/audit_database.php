@@ -350,10 +350,16 @@ function repair_database($run = true) {
 				AND TABLE_NAME = ?',
 				array($database_default, $table));
 
-			if ($tblinfo['ENGINE'] == 'MyISAM') {
-				$suffix = ",\n   ENGINE=InnoDB ROW_FORMAT=Dynamic CHARSET=" . $tblinfo['COLLATION'];
+			if (isset($tblinfo['COLLATION'])) {
+				$collation = $tblinfo['COLLATION'];
 			} else {
-				$suffix = ",\n   ROW_FORMAT=Dynamic CHARSET=" . $tblinfo['COLLATION'];
+				$collation = 'utf8mb4';
+			}
+
+			if ($tblinfo['ENGINE'] == 'MyISAM') {
+				$suffix = ",\n   ENGINE=InnoDB ROW_FORMAT=Dynamic CHARSET=" . $collation;
+			} else {
+				$suffix = ",\n   ROW_FORMAT=Dynamic CHARSET=" . $collation;
 			}
 
 			$sql = 'ALTER TABLE `' . $table . "`\n   " . implode(",\n   ", $changes) . $suffix . ';';

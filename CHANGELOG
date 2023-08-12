@@ -152,6 +152,7 @@ Cacti CHANGELOG
 -issue#5440: Device class not saved when importing a template during a new installation
 -issue#5446: Duplication functions for Graph/Template and Data Source/Template do not return an id
 -issue#5447: Duplication of Device Templates happens in the base Cacti file and not in an API file
+-issue#5450: Unable to bulk convert to latin1 if desired
 -feature#5375: Add template for Fortinet firewall and Aruba Instant cluster
 -feature#5393: Add template for SNMP printer
 -feature#5418: Display device class before package import
