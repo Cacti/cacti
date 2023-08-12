@@ -33,6 +33,7 @@ global $debug;
 
 $innodb      = false;
 $utf8        = false;
+$latin       = false;
 $debug       = false;
 $size        = 1000000;
 $force       = false;
@@ -79,6 +80,10 @@ if (cacti_sizeof($parms)) {
 			case '--innodb':
 				$innodb = true;
 				break;
+			case '-l':
+			case '--latin1':
+				$latin = true;
+				break;
 			case '-n':
 			case '--skip-innodb':
 				$skip_tables = explode(' ', $value);
@@ -119,8 +124,8 @@ if (cacti_sizeof($skip_tables) && $table_name != '') {
 	exit;
 }
 
-if (!($innodb || $utf8)) {
-	print_or_log($installer,  "ERROR: Must select either UTF8 or InnoDB conversion.\n\n");
+if (!($innodb || $utf8 || $latin)) {
+	print_or_log($installer,  "ERROR: Must select either UTF8, LATIN1 or InnoDB conversion.\n\n");
 	display_help();
 	exit;
 }
@@ -191,6 +196,10 @@ if (cacti_sizeof($tables)) {
 			$canConvert = $table['Collation'] != 'utf8mb4_unicode_ci';
 		}
 
+		if (!$canConvert && $latin) {
+			$canConvert = $table['Collation'] != 'latin1';
+		}
+
 		if ($dynamic && $table['Row_format'] == 'Compact') {
 			$canConvert = true;
 		}
@@ -202,6 +211,8 @@ if (cacti_sizeof($tables)) {
 				$sql = '';
 				if ($utf8) {
 					$sql .= ' CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci';
+				} elseif ($latin) {
+					$sql .= ' CONVERT TO CHARACTER SET latin1';
 				}
 
 				if ($innodb && $canInnoDB) {
@@ -252,12 +263,13 @@ function display_version() {
 function display_help () {
 	display_version();
 
-	print "\nusage: convert_tables.php [--debug] [--innodb] [--utf8] [--table=N] [--size=N] [--rebuild] [--dynamic]\n\n";
+	print "\nusage: convert_tables.php [--debug] [--innodb] [--utf8] [--latin1] [--table=N] [--size=N] [--rebuild] [--dynamic]\n\n";
 	print "A utility to convert a Cacti Database from MyISAM to the InnoDB table format.\n";
 	print "MEMORY tables are not converted to InnoDB in this process.\n\n";
 	print "Required (one or more):\n";
 	print "-i | --innodb  - Convert any MyISAM tables to InnoDB\n";
-	print "-u | --utf8    - Convert any non-UTF8 tables to utf8mb4_unicode_ci\n\n";
+	print "-u | --utf8    - Convert any non-UTF8 tables to utf8mb4_unicode_ci\n";
+	print "-l | --latin1  - Convert any non-latin1 tables to latin1\n\n";
 	print "Optional:\n";
 	print "-t | --table=S - The name of a single table to change\n";
 	print "-n | --skip-innodb=\"table1 table2 ...\" - Skip converting tables to InnoDB\n";
