@@ -2299,21 +2299,17 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 	} else {
 		/* create each data source, but don't duplicate */
 		$data_source = db_fetch_row_prepared('SELECT dl.*
-			FROM data_template AS dt
-			INNER JOIN data_local AS dl
-			ON dl.data_template_id=dt.id
+			FROM data_local AS dl
 			INNER JOIN data_template_rrd AS dtr
-			ON dtr.data_template_id=dt.id
+			ON dtr.data_template_id = dl.data_template_id
+			AND dtr.local_data_id = dl.id
 			INNER JOIN graph_templates_item AS gti
-			ON gti.task_item_id=dtr.id
-			WHERE dtr.local_data_id > 0
-			AND dl.host_id = ?
+			ON gti.task_item_id = dtr.id
+			WHERE dl.host_id = ?
 			AND dl.data_template_id = ?
 			AND dtr.data_source_name = ?
-			AND gti.local_graph_id > 0
 			AND gti.graph_template_id = ?
-			GROUP BY dt.id
-			ORDER BY dt.name',
+			LIMIT 1',
 			array($host_id, $data_template['id'], $data_template['data_source_name'], $graph_template_id));
 
 		return $data_source;
