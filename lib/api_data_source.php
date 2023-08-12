@@ -600,10 +600,14 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 	global $struct_data_source, $struct_data_source_item;
 
 	if (!empty($_local_data_id)) {
-		$data_local         = db_fetch_row_prepared('SELECT *
+		$data_local = db_fetch_row_prepared('SELECT *
 			FROM data_local
 			WHERE id = ?',
 			array($_local_data_id));
+
+		if (!cacti_sizeof($data_local)) {
+			return false;
+		}
 
 		$data_template_data = db_fetch_row_prepared('SELECT *
 			FROM data_template_data
@@ -631,10 +635,14 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 
 		$data_template_data['name'] = str_replace('<ds_title>', $data_template_data['name'], $data_source_title);
 	} elseif (!empty($_data_template_id)) {
-		$data_template      = db_fetch_row_prepared('SELECT *
+		$data_template = db_fetch_row_prepared('SELECT *
 			FROM data_template
 			WHERE id = ?',
 			array($_data_template_id));
+
+		if (!cacti_sizeof($data_template)) {
+			return false;
+		}
 
 		$data_template_data = db_fetch_row_prepared('SELECT *
 			FROM data_template_data
@@ -648,7 +656,7 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 			AND local_data_id=0',
 			array($_data_template_id));
 
-		$data_input_datas   = db_fetch_assoc_prepared('SELECT *
+		$data_input_datas = db_fetch_assoc_prepared('SELECT *
 			FROM data_input_data
 			WHERE data_template_data_id = ?',
 			array($data_template_data['id']));
@@ -692,7 +700,7 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 			$save['data_template_id']           = (!empty($_local_data_id) ? $data_template_rrd['data_template_id'] : $data_template_id);
 
 			if ($save['local_data_id'] == 0) {
-				$save['hash']                   = get_hash_data_template($data_template_rrd['local_data_template_rrd_id'], 'data_template_item');
+				$save['hash'] = get_hash_data_template($data_template_rrd['local_data_template_rrd_id'], 'data_template_item');
 			} else {
 				$save['hash'] = '';
 			}
@@ -721,5 +729,13 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 
 	if (!empty($_local_data_id)) {
 		update_data_source_title_cache($local_data_id);
+	}
+
+	if ($_local_data_id > 0) {
+		return $local_data_id;
+	} elseif ($_date_template_id > 0) {
+		return $data_template_id;
+	} else {
+		return false;
 	}
 }

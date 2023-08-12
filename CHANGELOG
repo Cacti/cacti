@@ -152,6 +152,7 @@ Cacti CHANGELOG
 -issue#5427: Unable to hook the settings.php page with JavaScript action
 -issue#5434: Remove SQL Mode NO_AUTO_CREATE_USER as it's deprecated and removed from recent MySQL releases
 -issue#5440: Device class not saved when importing a template during a new installation 
+-issue#5446: Duplication functions for Graph/Template and Data Source/Template do not return an id
 -feature#5375: Add template for Fortinet firewall and Aruba Instant cluster
 -feature#5393: Add template for SNMP printer
 -feature#5418: Display device class before package import 
