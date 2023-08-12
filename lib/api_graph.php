@@ -351,6 +351,10 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 			WHERE id = ?',
 			array($_local_graph_id));
 
+		if (!cacti_sizeof($graph_local)) {
+			return false;
+		}
+
 		$graph_template_graph = db_fetch_row_prepared('SELECT *
 			FROM graph_templates_graph
 			WHERE local_graph_id = ?',
@@ -376,6 +380,10 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 			FROM graph_templates
 			WHERE id = ?',
 			array($_graph_template_id));
+
+		if (!cacti_sizeof($graph_template)) {
+			return false;
+		}
 
 		$graph_template_graph  = db_fetch_row_prepared('SELECT *
 			FROM graph_templates_graph
@@ -580,6 +588,14 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 	 * for Caching.
 	 */
 	set_config_option('time_last_change_graph', time());
+
+	if ($_local_graph_id > 0) {
+		return $local_graph_id;
+	} elseif ($_graph_template_id > 0) {
+		return $graph_template_id;
+	} else {
+		return false;
+	}
 }
 
 function api_graph_change_device($local_graph_id, $host_id) {
