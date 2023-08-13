@@ -62,6 +62,7 @@ Cacti CHANGELOG
 -issue#5426: Importing a legacy Data Query Template can result in the Template being unusable
 -issue#5427: Unable to hook the settings.php page with JavaScript action
 -issue#5434: Remove SQL Mode NO_AUTO_CREATE_USER as it's deprecated and removed from recent MySQL releases
+-issue#5439: DSStats - missing values in log message
 -issue#5440: Device class not saved when importing a template during a new installation 
 -issue#5446: Duplication functions for Graph/Template and Data Source/Template do not return an id
 -issue#5447: Duplication of Device Templates happens in the base Cacti file and not in an API file
