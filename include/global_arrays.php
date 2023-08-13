@@ -1081,11 +1081,11 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 		),
 		__('Presets') => array(
 			'data_source_profiles.php' => __('Data Profiles'),
+			'automation_snmp.php'      => __('SNMP'),
 			'cdef.php'                 => __('CDEFs'),
 			'vdef.php'                 => __('VDEFs'),
 			'color.php'                => __('Colors'),
 			'gprint_presets.php'       => __('GPRINTs'),
-			'automation_snmp.php'      => __('SNMP Options')
 		),
 		__('Import/Export') => array(
 			'templates_import.php' => __('Import Templates'),
