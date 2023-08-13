@@ -156,7 +156,7 @@ if (!$force) {
 switch ($type) {
 	case 'pmaster':
 		if (read_config_option('dsstats_enable') == 'on' || $force) {
-			dsstats_master_handler($force, $fpartition);
+			dsstats_master_handler($type, $force, $fpartition);
 		}
 
 		break;
@@ -176,7 +176,7 @@ switch ($type) {
 	case 'bchild': // Launched by the boost process
 		$child_start = microtime(true);
 
-		dsstats_get_and_store_ds_avgpeak_values('daily', $thread_id);
+		dsstats_get_and_store_ds_avgpeak_values('daily', $type, $thread_id);
 
 		$total_time = microtime(true) - $child_start;
 
@@ -187,9 +187,9 @@ switch ($type) {
 		$child_start = microtime(true);
 
 		dsstats_debug(sprintf('Daily Stats Master Child %s Executing', $thread_id));
-		dsstats_get_and_store_ds_avgpeak_values('weekly', $thread_id);
-		dsstats_get_and_store_ds_avgpeak_values('monthly', $thread_id);
-		dsstats_get_and_store_ds_avgpeak_values('yearly', $thread_id);
+		dsstats_get_and_store_ds_avgpeak_values('weekly', $type, $thread_id);
+		dsstats_get_and_store_ds_avgpeak_values('monthly', $type, $thread_id);
+		dsstats_get_and_store_ds_avgpeak_values('yearly', $type, $thread_id);
 
 		$total_time = microtime(true) - $child_start;
 
@@ -226,9 +226,7 @@ function dsstats_insert_hourly_data_into_cache() {
 		ON DUPLICATE KEY UPDATE average=VALUES(average), peak=VALUES(peak)');
 }
 
-function dsstats_master_handler($force, $fpartition) {
-	global $type;
-
+function dsstats_master_handler($type, $force, $fpartition) {
 	/* read some important settings relative to timing from the database */
 	$major_time     = date('H:i:s', strtotime(read_config_option('dsstats_major_update_time')));
 	$daily_interval = read_config_option('dsstats_daily_interval');
@@ -249,7 +247,7 @@ function dsstats_master_handler($force, $fpartition) {
 	// Insert new rows into cache
 	dsstats_insert_hourly_data_into_cache();
 
-	dsstats_log_statistics('HOURLY');
+	dsstats_log_statistics('HOURLY', $type);
 
 	/* see if boost is active or not */
 	$boost_active = read_config_option('boost_rrd_update_enable');
@@ -296,7 +294,7 @@ function dsstats_master_handler($force, $fpartition) {
 				sleep(2);
 			}
 
-			dsstats_log_statistics('DAILY');
+			dsstats_log_statistics('DAILY', $type);
 		}
 	}
 

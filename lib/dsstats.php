@@ -104,12 +104,13 @@ function dsstats_debug($message) {
  *   and stores that information into the various database tables.
  *
  * @param $interval  - (string) either 'daily', 'weekly', 'monthly', or 'yearly'
+ * @param $type      - (string) the statistics type to store
  * @param $thread_id - (int) the dsstats parallel thread id
  *
  * @return - NULL
  */
-function dsstats_get_and_store_ds_avgpeak_values($interval, $thread_id = 1) {
-	global $config, $type;
+function dsstats_get_and_store_ds_avgpeak_values($interval, $type, $thread_id = 1) {
+	global $config;
 
 	global $total_user, $total_system, $total_real, $total_dsses;
 	global $user_time, $system_time, $real_time, $rrd_files;
@@ -660,8 +661,8 @@ function dsstats_log_statistics($type) {
 
 		db_execute("DELETE FROM settings
 			WHERE name LIKE 'dsstats_rrd_%$sub_type%'
-			OR name LIKE 'dsstats_total_rrds_%$sub_type%'
-			OR name LIKE 'dsstats_total_dsses_%$sub_type%'");
+			OR name LIKE 'dsstats_total_rrds%_$sub_type%'
+			OR name LIKE 'dsstats_total_dsses%_$sub_type%'");
 	} else {
 		$cacti_stats = sprintf('Time:%01.2f Type:%s', $end - $start, $type);
 	}
@@ -1124,7 +1125,7 @@ function dsstats_boost_bottom() {
 			sleep(2);
 		}
 
-		dsstats_get_and_store_ds_avgpeak_values('daily');
+		dsstats_get_and_store_ds_avgpeak_values('daily', 'child', 0);
 
 		dsstats_log_statistics('DAILY');
 	}
@@ -1327,6 +1328,7 @@ function dsstats_launch_children($type) {
 function dsstats_get_subtype($type) {
 	switch($type) {
 		case 'master':
+		case 'pmaster':
 			return 'child';
 
 			break;
