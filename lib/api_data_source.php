@@ -737,3 +737,51 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 	}
 }
 
+function duplicate_data_input($_data_input_id, $input_title) {
+	$orig_input = db_fetch_row_prepared('SELECT *
+		FROM data_input
+		WHERE id = ?',
+		array($_data_input_id));
+
+	if (cacti_sizeof($orig_input)) {
+		unset($save);
+		$save['id']           = 0;
+		$save['hash']         = get_hash_data_input(0);
+		$save['name']         = str_replace('<input_title>', $orig_input['name'], $input_title);
+		$save['input_string'] = $orig_input['input_string'];
+		$save['type_id']      = $orig_input['type_id'];
+
+		$data_input_id = sql_save($save, 'data_input');
+
+		if (!empty($data_input_id)) {
+			$data_input_fields = db_fetch_assoc_prepared('SELECT *
+				FROM data_input_fields
+				WHERE data_input_id = ?',
+				array($_data_input_id));
+
+			if (cacti_sizeof($data_input_fields)) {
+				foreach($data_input_fields as $dif) {
+					unset($save);
+					$save['id']            = 0;
+					$save['hash']          = get_hash_data_input(0, 'data_input_field');
+					$save['data_input_id'] = $data_input_id;
+					$save['name']          = $dif['name'];
+					$save['data_name']     = $dif['data_name'];
+					$save['input_output']  = $dif['input_output'];
+					$save['update_rra']    = $dif['update_rra'];
+					$save['sequence']      = $dif['sequence'];
+					$save['type_code']     = $dif['type_code'];
+					$save['regexp_match']  = $dif['regexp_match'];
+					$save['allow_nulls']   = $dif['allow_nulls'];
+
+					$data_input_field_id = sql_save($save, 'data_input_fields');
+				}
+			}
+		}
+
+		return $data_input_id;
+	}
+
+	return false;
+}
+
