@@ -1471,7 +1471,7 @@ function data_query() {
 
 	if (cacti_sizeof($snmp_queries)) {
 		foreach ($snmp_queries as $snmp_query) {
-			if ($snmp_query['graphs'] == 0 && $snmp_query['templates'] == 0) {
+			if ($snmp_query['graphs'] == 0) {
 				$disabled = false;
 			} else {
 				$disabled = true;

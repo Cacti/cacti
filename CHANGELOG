@@ -159,6 +159,7 @@ Cacti CHANGELOG
 -issue#5453: Templates without copyright, cleaning SNMP printer package
 -issue#5454: Cacti Orphan Graphs Selector missing column 'orphan' in SQL selector
 -issue#5457: Enable 'Re-Index All Device Schedule' causes a lot of reindex processes  
+-issue#5458: Unable to delete a Data Query when there are no Graphs using it
 -feature#5375: Add template for Fortinet firewall and Aruba Instant cluster
 -feature#5393: Add template for SNMP printer
 -feature#5418: Display device class before package import
