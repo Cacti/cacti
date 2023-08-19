@@ -71,6 +71,7 @@ Cacti CHANGELOG
 -issue#5452: The default 'bulk_walk_size' is -1 which means a device will never find it's optimal bulk walk size
 -issue#5453: Templates without copyright, cleaning SNMP printer package
 -issue#5454: Cacti Orphan Graphs Selector missing column 'orphan' in SQL selector
+-issue#5457: Enable 'Re-Index All Device Schedule' causes a lot of reindex processes  
 -feature#5375: Add template for Fortinet firewall and Aruba Instant cluster
 -feature#5393: Add template for SNMP printer
 -feature#5418: Display device class before package import
