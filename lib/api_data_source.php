@@ -737,7 +737,7 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 	}
 }
 
-function duplicate_data_input($_data_input_id, $input_title) {
+function api_duplicate_data_input($_data_input_id, $input_title) {
 	$orig_input = db_fetch_row_prepared('SELECT *
 		FROM data_input
 		WHERE id = ?',
@@ -783,5 +783,48 @@ function duplicate_data_input($_data_input_id, $input_title) {
 	}
 
 	return false;
+}
+
+function api_data_input_remove($id) {
+	$data_input_fields = db_fetch_assoc_prepared('SELECT id
+		FROM data_input_fields
+		WHERE data_input_id = ?',
+		array($id));
+
+	if (is_array($data_input_fields)) {
+		foreach ($data_input_fields as $data_input_field) {
+			db_execute_prepared('DELETE FROM data_input_data
+				WHERE data_input_field_id = ?',
+				array($data_input_field['id']));
+		}
+	}
+
+	db_execute_prepared('DELETE FROM data_input
+		WHERE id = ?',
+		array($id));
+
+	db_execute_prepared('DELETE FROM data_input_fields
+		WHERE data_input_id = ?',
+		array($id));
+
+	update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
+	update_replication_crc(0, 'poller_replicate_data_input_crc');
+}
+
+function api_data_input_more_inputs($id, $input_string) {
+	$input_string = str_replace('<path_cacti>', '', $input_string);
+	$inputs = substr_count($input_string, '<');
+
+	$existing = db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM data_input_fields
+		WHERE data_input_id = ?
+		AND input_output = "in"',
+		array($id));
+
+	if ($inputs > $existing) {
+		return true;
+	} else {
+		return false;
+	}
 }
 

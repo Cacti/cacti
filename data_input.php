@@ -201,11 +201,11 @@ function form_actions() {
 		if ($selected_items != false) {
 			if (get_request_var('drp_action') == '1') { // delete
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
-					data_remove($selected_items[$i]);
+					api_data_input_remove($selected_items[$i]);
 				}
 			} elseif (get_request_var('drp_action') == '2') { // duplicate
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
-					duplicate_data_input($selected_items[$i], get_nfilter_request_var('input_title'));
+					api_data_input_duplicate($selected_items[$i], get_nfilter_request_var('input_title'));
 				}
 			}
 		}
@@ -345,7 +345,10 @@ function field_remove() {
 	/* ==================================================== */
 
 	/* get information about the field we're going to delete so we can re-order the seqs */
-	$field = db_fetch_row_prepared('SELECT input_output,data_input_id FROM data_input_fields WHERE id = ?', array(get_request_var('id')));
+	$field = db_fetch_row_prepared('SELECT input_output, data_input_id
+		FROM data_input_fields
+		WHERE id = ?',
+		array(get_request_var('id')));
 
 	db_execute_prepared('DELETE FROM data_input_fields WHERE id = ?', array(get_request_var('id')));
 	db_execute_prepared('DELETE FROM data_input_data WHERE data_input_field_id = ?', array(get_request_var('id')));
@@ -399,11 +402,13 @@ function field_edit() {
 			if (in_array($matches[1][$i], $registered_cacti_names) == false) {
 				$current_field_name = $matches[1][$i];
 				$array_field_names[$current_field_name] = $current_field_name;
+
 				if (!isset($field)) {
 					$field_id = db_fetch_cell_prepared('SELECT id FROM data_input_fields
 						WHERE data_name = ?
 						AND data_input_id = ?',
 						array($current_field_name, get_filter_request_var('data_input_id')));
+
 					if (!$field_id > 0) {
 						$field = array();
 						$field['name'] = ucwords($current_field_name);
@@ -469,42 +474,6 @@ function field_edit() {
 /* -----------------------
     Data Input Functions
    ----------------------- */
-
-function data_remove($id) {
-	$data_input_fields = db_fetch_assoc_prepared('SELECT id
-		FROM data_input_fields
-		WHERE data_input_id = ?',
-		array($id));
-
-	if (is_array($data_input_fields)) {
-		foreach ($data_input_fields as $data_input_field) {
-			db_execute_prepared('DELETE FROM data_input_data WHERE data_input_field_id = ?', array($data_input_field['id']));
-		}
-	}
-
-	db_execute_prepared('DELETE FROM data_input WHERE id = ?', array($id));
-	db_execute_prepared('DELETE FROM data_input_fields WHERE data_input_id = ?', array($id));
-
-	update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
-	update_replication_crc(0, 'poller_replicate_data_input_crc');
-}
-
-function data_input_more_inputs($id, $input_string) {
-	$input_string = str_replace('<path_cacti>', '', $input_string);
-	$inputs = substr_count($input_string, '<');
-
-	$existing = db_fetch_cell_prepared('SELECT COUNT(*)
-		FROM data_input_fields
-		WHERE data_input_id = ?
-		AND input_output = "in"',
-		array($id));
-
-	if ($inputs > $existing) {
-		return true;
-	} else {
-		return false;
-	}
-}
 
 function data_edit() {
 	global $config, $fields_data_input_edit;
@@ -579,7 +548,7 @@ function data_edit() {
 	html_end_box(true, true);
 
 	if (!isempty_request_var('id')) {
-		if (data_input_more_inputs(get_request_var('id'), $data_input['input_string'])) {
+		if (api_data_input_more_inputs(get_request_var('id'), $data_input['input_string'])) {
 			$url = 'data_input.php?action=field_edit&type=in&data_input_id=' . get_request_var('id');
 		} else {
 			$url = '';
