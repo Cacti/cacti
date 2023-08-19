@@ -166,7 +166,15 @@ $data_queries = db_fetch_assoc_prepared("SELECT h.description, h.hostname, hsq.h
 print 'WARNING: Do not interrupt this script.  Reindexing can take quite some time' . PHP_EOL;
 debug("There are '" . cacti_sizeof($data_queries) . "' data queries to run");
 
-$i           = 1;
+/* silently end if the registered process is still running  */
+if (!$force) {
+	if (!register_process_start('reindex', 'master', 0, 86400)) {
+		print "FATAL: Detected an already running process.  Use --force to override" . PHP_EOL;
+		exit(0);
+	}
+}
+
+$i = 1;
 $total_start = microtime(true);
 
 if (cacti_sizeof($data_queries)) {
@@ -210,6 +218,9 @@ if (cacti_sizeof($data_queries)) {
 
 		$i++;
 	}
+
+	unregister_process('reindex', 'master');
+
 }
 
 function display_version() {
