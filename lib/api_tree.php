@@ -172,7 +172,7 @@ function api_tree_get_lock($lockname, $timeout = 10) {
 	$count = 0;
 
 	while ($count < 5) {
-		if (register_process('tree_lock', $lockname, 0, $timeout)) {
+		if (register_process_start('tree_lock', $lockname, 0, $timeout)) {
 			return true;
 		} else {
 			$count++;
