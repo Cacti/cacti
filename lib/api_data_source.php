@@ -733,7 +733,7 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 
 	if ($_local_data_id > 0) {
 		return $local_data_id;
-	} elseif ($_date_template_id > 0) {
+	} elseif ($_data_template_id > 0) {
 		return $data_template_id;
 	} else {
 		return false;
