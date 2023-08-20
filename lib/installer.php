@@ -3024,12 +3024,6 @@ class Installer implements JsonSerializable {
 				}
 			}
 
-			// If we are Windows, switch everything to PNG
-			if ($config['cacti_server_os'] != 'unix') {
-				db_execute('UPDATE graph_templates_graph SET image_format_id = 1');
-				set_config_option('default_image_format', '1');
-			}
-
 			// Repair automation rules if broken
 			repair_automation();
 
