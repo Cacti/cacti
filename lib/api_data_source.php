@@ -644,13 +644,13 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 		$data_template_data = db_fetch_row_prepared('SELECT *
 			FROM data_template_data
 			WHERE data_template_id = ?
-			AND local_data_id=0',
+			AND local_data_id = 0',
 			array($_data_template_id));
 
 		$data_template_rrds = db_fetch_assoc_prepared('SELECT *
 			FROM data_template_rrd
 			WHERE data_template_id = ?
-			AND local_data_id=0',
+			AND local_data_id = 0',
 			array($_data_template_id));
 
 		$data_input_datas = db_fetch_assoc_prepared('SELECT *
@@ -717,7 +717,7 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 	/* create new entry(s): data_input_data */
 	if (cacti_sizeof($data_input_datas)) {
 		foreach ($data_input_datas as $data_input_data) {
-			db_execute_prepared('INSERT INTO data_input_data
+			db_execute_prepared('INSERT IGNORE INTO data_input_data
 				(data_input_field_id, data_template_data_id, t_value, value)
 				VALUES (?, ?, ?, ?)',
 				array($data_input_data['data_input_field_id'], $data_template_data_id, $data_input_data['t_value'], $data_input_data['value']));

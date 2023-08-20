@@ -74,6 +74,7 @@ Cacti CHANGELOG
 -issue#5457: Enable 'Re-Index All Device Schedule' causes a lot of reindex processes  
 -issue#5458: Unable to delete a Data Query when there are no Graphs using it
 -issue#5459: There is no option to not duplicate Graph Template Data Query association when duplicating a Graph Template
+-issue#5460: When duplicating a Data Template errors can appear in the Cacti log
 -feature#5375: Add template for Fortinet firewall and Aruba Instant cluster
 -feature#5393: Add template for SNMP printer
 -feature#5418: Display device class before package import
