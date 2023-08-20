@@ -569,14 +569,14 @@ $settings = array(
 			'friendly_name' => __('Graph Template Image Format'),
 			'description' => __('The default Image Format to be used for all new Graph Templates.'),
 			'method' => 'drop_array',
-			'default' => '1',
+			'default' => '3',
 			'array' => $image_types,
 		),
 		'default_graph_height' => array(
 			'friendly_name' => __('Graph Template Height'),
 			'description' => __('The default Graph Height to be used for all new Graph Templates.'),
 			'method' => 'textbox',
-			'default' => '150',
+			'default' => '200',
 			'size' => '5',
 			'max_length' => '5'
 		),
@@ -584,7 +584,7 @@ $settings = array(
 			'friendly_name' => __('Graph Template Width'),
 			'description' => __('The default Graph Width to be used for all new Graph Templates.'),
 			'method' => 'textbox',
-			'default' => '500',
+			'default' => '700',
 			'size' => '5',
 			'max_length' => '5'
 		)
