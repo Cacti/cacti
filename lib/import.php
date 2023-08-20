@@ -918,8 +918,8 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 	if (isset($orphaned_items) && cacti_sizeof($orphaned_items)) {
 		$orphan_text = array();
 
-		foreach ($orphaned_items as $item) {
-			if ($remove_orphans) {
+		foreach($orphaned_items as $item) {
+			if (!$preview_only && $remove_orphans) {
 				$orphan_text[] = 'Removed Orphaned Graph Items, Type: ' . $graph_item_types[$item['graph_type_id']] . ', Text Format: ' . $item['text_format'] . ', Value: ' . $item['value'];
 
 				db_execute_prepared('DELETE FROM graph_templates_item
@@ -936,7 +936,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 
 		$import_debug_info['orphans'] = $orphan_text;
 
-		if ($remove_orphans) {
+		if (!$preview_only && $remove_orphans) {
 			retemplate_graphs($graph_template_id);
 		}
 	}
