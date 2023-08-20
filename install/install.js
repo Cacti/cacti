@@ -756,6 +756,8 @@ function performStep(installStep, suppressRefresh, forceReload) {
 						}
 					}
 				}
+
+				applySelectorVisibilityAndActions();
 			});
 		})
 		.fail(function(data) {
