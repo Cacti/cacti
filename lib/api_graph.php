@@ -342,7 +342,7 @@ function api_get_graphs_from_datasource($local_data_id) {
 		AND data_template_rrd.local_data_id = ?', array($local_data_id)), 'id', 'name');
 }
 
-function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title) {
+function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title, $map_to_data_query = true) {
 	global $struct_graph, $struct_graph_item;
 
 	if (!empty($_local_graph_id)) {
@@ -487,7 +487,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 
 	if (!empty($_local_graph_id)) {
 		update_graph_title_cache($local_graph_id);
-	} else {
+	} elseif ($map_to_data_query) {
 		// Graph Template, Check for Data Query Associated Graph Template
 		$data_query_graphs = db_fetch_assoc_prepared('SELECT *
 			FROM snmp_query_graph
