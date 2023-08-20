@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2023-07-27 18:28-0400\n"
+"POT-Creation-Date: 2023-08-20 15:05-0400\n"
 "PO-Revision-Date: 2023-03-07 13:32+0000\n"
 "Last-Translator: San IPE <sanipe1949@krunsea.com>\n"
 "Language-Team: Turkish <http://translate.cacti.net/projects/cacti/core-v1-2-x/tr/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.8.1\n"
 
-#: about.php:29 include/global_arrays.php:2623 lib/html.php:2512
+#: about.php:29 include/global_arrays.php:2626 lib/html.php:2512
 #, fuzzy
 msgid "About Cacti"
 msgstr "Cacti hakkında"
@@ -103,13 +103,13 @@ msgstr "Bu program yararlı olması ümidiyle, ancak HİÇBİR GARANTİ OLMAKSIZ
 #: automation_snmp.php:29 automation_snmp.php:586 automation_templates.php:30
 #: automation_tree_rules.php:32 cdef.php:29 cdef.php:624 color.php:28
 #: color_templates.php:28 color_templates.php:123 data_input.php:32
-#: data_input.php:685 data_input.php:727 data_queries.php:31
-#: data_queries.php:804 data_queries.php:911 data_queries.php:1161
+#: data_input.php:609 data_input.php:651 data_queries.php:31
+#: data_queries.php:823 data_queries.php:930 data_queries.php:1180
 #: data_source_profiles.php:30 data_source_profiles.php:670 data_sources.php:37
 #: data_sources.php:1088 data_templates.php:34 data_templates.php:748
 #: gprint_presets.php:28 graph_templates.php:37 graph_templates.php:515
-#: graphs.php:46 host.php:41 host_templates.php:35 host_templates.php:506
-#: host_templates.php:563 include/global_arrays.php:1649
+#: graphs.php:46 host.php:41 host_templates.php:35 host_templates.php:463
+#: host_templates.php:520 include/global_arrays.php:1652
 #: include/global_settings.php:248 lib/api_automation.php:1327
 #: lib/api_automation.php:1389 lib/api_automation.php:1457 lib/html.php:1295
 #: lib/html_form.php:1275 lib/html_reports.php:1751 links.php:28
@@ -165,21 +165,21 @@ msgstr "Aşağıdaki Toplam Grafiği / Grafikleri silmek için &#39;Devam Et&#39
 #: automation_templates.php:167 automation_tree_rules.php:292 cdef.php:276
 #: cdef.php:287 cdef.php:343 color.php:192 color_templates.php:243
 #: color_templates.php:255 color_templates.php:264
-#: color_templates_items.php:275 data_input.php:305 data_input.php:357
-#: data_queries.php:408 data_queries.php:571 data_source_profiles.php:305
-#: data_source_profiles.php:315 data_source_profiles.php:423
-#: data_sources.php:535 data_sources.php:545 data_sources.php:554
-#: data_sources.php:563 data_sources.php:572 data_sources.php:578
-#: data_templates.php:467 data_templates.php:477 data_templates.php:493
-#: gprint_presets.php:153 graph_templates.php:376 graph_templates.php:386
-#: graph_templates.php:408 graph_templates.php:417 graph_templates.php:426
-#: graph_view.php:966 graphs.php:916 graphs.php:932 graphs.php:943
-#: graphs.php:954 graphs.php:969 graphs.php:983 graphs.php:992 graphs.php:1192
-#: graphs.php:1235 graphs.php:1257 graphs.php:1286 graphs.php:1298
-#: graphs.php:1831 host.php:402 host.php:411 host.php:458 host.php:467
-#: host.php:476 host.php:490 host.php:504 host.php:513 host.php:542
-#: host.php:554 host_templates.php:271 host_templates.php:285
-#: host_templates.php:296 host_templates.php:345 host_templates.php:408
+#: color_templates_items.php:275 data_input.php:260 data_input.php:312
+#: data_queries.php:412 data_queries.php:426 data_queries.php:590
+#: data_source_profiles.php:305 data_source_profiles.php:315
+#: data_source_profiles.php:423 data_sources.php:535 data_sources.php:545
+#: data_sources.php:554 data_sources.php:563 data_sources.php:572
+#: data_sources.php:578 data_templates.php:467 data_templates.php:477
+#: data_templates.php:493 gprint_presets.php:153 graph_templates.php:376
+#: graph_templates.php:386 graph_templates.php:408 graph_templates.php:417
+#: graph_templates.php:426 graph_view.php:966 graphs.php:916 graphs.php:932
+#: graphs.php:943 graphs.php:954 graphs.php:969 graphs.php:983 graphs.php:992
+#: graphs.php:1192 graphs.php:1235 graphs.php:1257 graphs.php:1286
+#: graphs.php:1298 graphs.php:1831 host.php:402 host.php:411 host.php:458
+#: host.php:467 host.php:476 host.php:490 host.php:504 host.php:513
+#: host.php:542 host.php:554 host_templates.php:228 host_templates.php:242
+#: host_templates.php:253 host_templates.php:302 host_templates.php:365
 #: lib/clog_webapi.php:232 lib/html.php:2546 lib/html_form.php:1274
 #: lib/html_form.php:1286 lib/html_form.php:1297 links.php:197 links.php:206
 #: links.php:215 managers.php:1004 managers.php:1065 plugins.php:670
@@ -203,21 +203,21 @@ msgstr "İptal"
 #: automation_templates.php:167 automation_tree_rules.php:292 cdef.php:276
 #: cdef.php:287 cdef.php:344 color.php:192 color_templates.php:243
 #: color_templates.php:255 color_templates.php:264
-#: color_templates_items.php:276 data_input.php:305 data_input.php:358
-#: data_queries.php:408 data_queries.php:572 data_source_profiles.php:305
-#: data_source_profiles.php:315 data_source_profiles.php:424
-#: data_sources.php:535 data_sources.php:545 data_sources.php:554
-#: data_sources.php:563 data_sources.php:572 data_sources.php:578
-#: data_templates.php:467 data_templates.php:477 data_templates.php:493
-#: gprint_presets.php:153 graph_templates.php:376 graph_templates.php:386
-#: graph_templates.php:408 graph_templates.php:417 graph_templates.php:426
-#: graphs.php:916 graphs.php:932 graphs.php:943 graphs.php:954 graphs.php:969
-#: graphs.php:983 graphs.php:992 graphs.php:1192 graphs.php:1235
-#: graphs.php:1257 graphs.php:1286 graphs.php:1298 host.php:402 host.php:411
-#: host.php:458 host.php:467 host.php:476 host.php:490 host.php:504
-#: host.php:513 host.php:542 host.php:554 host_templates.php:271
-#: host_templates.php:285 host_templates.php:296 host_templates.php:346
-#: host_templates.php:409 lib/clog_webapi.php:233 lib/html.php:2545
+#: color_templates_items.php:276 data_input.php:260 data_input.php:313
+#: data_queries.php:412 data_queries.php:426 data_queries.php:591
+#: data_source_profiles.php:305 data_source_profiles.php:315
+#: data_source_profiles.php:424 data_sources.php:535 data_sources.php:545
+#: data_sources.php:554 data_sources.php:563 data_sources.php:572
+#: data_sources.php:578 data_templates.php:467 data_templates.php:477
+#: data_templates.php:493 gprint_presets.php:153 graph_templates.php:376
+#: graph_templates.php:386 graph_templates.php:408 graph_templates.php:417
+#: graph_templates.php:426 graphs.php:916 graphs.php:932 graphs.php:943
+#: graphs.php:954 graphs.php:969 graphs.php:983 graphs.php:992 graphs.php:1192
+#: graphs.php:1235 graphs.php:1257 graphs.php:1286 graphs.php:1298 host.php:402
+#: host.php:411 host.php:458 host.php:467 host.php:476 host.php:490
+#: host.php:504 host.php:513 host.php:542 host.php:554 host_templates.php:228
+#: host_templates.php:242 host_templates.php:253 host_templates.php:303
+#: host_templates.php:366 lib/clog_webapi.php:233 lib/html.php:2545
 #: lib/html_reports.php:499 links.php:197 links.php:206 links.php:215
 #: managers.php:1004 managers.php:1065 pollers.php:559 pollers.php:568
 #: pollers.php:577 pollers.php:586 pollers.php:595 sites.php:382 sites.php:392
@@ -247,7 +247,7 @@ msgid "In order to migrate the Aggregate Graphs below to a Template based Aggreg
 msgstr "Aşağıdaki Toplam Grafikleri, Şablon tabanlı bir Toplam&#39;a geçirmek için, yalnızca bir Grafik Şablonu kullanmaları gerekir. Lütfen &#39;Geri Dön&#39; düğmesine basın ve yalnızca aynı Grafik Şablonunu kullanan Toplam Grafiği seçin."
 
 #: aggregate_graphs.php:393 aggregate_graphs.php:441 aggregate_graphs.php:487
-#: auth_changepassword.php:359 auth_profile.php:447 automation_networks.php:398
+#: auth_changepassword.php:403 auth_profile.php:447 automation_networks.php:398
 #: automation_snmp.php:255 graphs.php:1194 graphs.php:1244 graphs.php:1247
 #: graphs.php:1289 host.php:545 include/auth.php:265 lib/api_aggregate.php:1592
 #: lib/api_aggregate.php:1607 lib/html_form.php:1295 managers.php:1068
@@ -509,11 +509,11 @@ msgstr "Grafik Eşleştirme"
 #: automation_graph_rules.php:743 automation_networks.php:1182
 #: automation_networks.php:1226 automation_snmp.php:696
 #: automation_templates.php:393 automation_tree_rules.php:810 cdef.php:747
-#: color.php:529 color_templates.php:529 data_debug.php:1123 data_input.php:826
-#: data_queries.php:1279 data_source_profiles.php:912 data_sources.php:1457
+#: color.php:529 color_templates.php:529 data_debug.php:1123 data_input.php:750
+#: data_queries.php:1298 data_source_profiles.php:912 data_sources.php:1457
 #: data_templates.php:1041 gprint_presets.php:262 graph_templates.php:703
 #: graph_view.php:621 graphs.php:2046 graphs_new.php:457 host.php:1628
-#: host_templates.php:727 lib/api_automation.php:140 lib/api_automation.php:473
+#: host_templates.php:684 lib/api_automation.php:140 lib/api_automation.php:473
 #: lib/api_automation.php:707 lib/api_automation.php:1066
 #: lib/clog_webapi.php:608 lib/html.php:266 lib/html_filter.php:63
 #: lib/html_graph.php:203 lib/html_reports.php:1836 lib/html_tree.php:136
@@ -535,9 +535,9 @@ msgstr "Ara"
 #: aggregate_graphs.php:1314 aggregate_graphs.php:1357
 #: aggregate_graphs.php:1610 color_templates.php:649 data_sources.php:1638
 #: data_sources.php:1772 graph_view.php:485 graph_view.php:680
-#: graph_view.php:729 graphs.php:2063 graphs.php:2227 host.php:1739
-#: include/global_arrays.php:993 include/global_arrays.php:1225
-#: include/global_arrays.php:2009 lib/api_automation.php:283 lib/html.php:1707
+#: graph_view.php:729 graphs.php:2063 graphs.php:2229 host.php:1739
+#: include/global_arrays.php:993 include/global_arrays.php:1228
+#: include/global_arrays.php:2012 lib/api_automation.php:283 lib/html.php:1707
 #: lib/html.php:1709 lib/html.php:1787 lib/html_graph.php:209
 #: lib/html_tree.php:1037 lib/html_tree.php:1366 support.php:228 tree.php:839
 #: tree.php:2274 user_admin.php:877 user_admin.php:1144 user_admin.php:2547
@@ -551,11 +551,11 @@ msgstr "Grafikler"
 #: automation_graph_rules.php:785 automation_networks.php:1192
 #: automation_snmp.php:706 automation_templates.php:403
 #: automation_tree_rules.php:830 cdef.php:757 color.php:539
-#: color_templates.php:545 data_debug.php:1133 data_input.php:836
-#: data_queries.php:1289 data_source_profiles.php:922
+#: color_templates.php:545 data_debug.php:1133 data_input.php:760
+#: data_queries.php:1308 data_source_profiles.php:922
 #: data_source_profiles.php:1037 data_sources.php:1467 data_templates.php:1067
 #: gprint_presets.php:272 graph_templates.php:713 graph_view.php:684
-#: graphs.php:2067 graphs_new.php:467 host.php:1653 host_templates.php:752
+#: graphs.php:2067 graphs_new.php:467 host.php:1653 host_templates.php:709
 #: include/global_form.php:256 lib/api_automation.php:183
 #: lib/api_automation.php:483 lib/api_automation.php:717
 #: lib/api_automation.php:1109 lib/html_reports.php:1856 links.php:320
@@ -582,11 +582,11 @@ msgstr "Toplamın Bir Parçası"
 #: automation_graph_rules.php:797 automation_networks.php:1226
 #: automation_snmp.php:718 automation_templates.php:415
 #: automation_tree_rules.php:842 cdef.php:775 color.php:563
-#: color_templates.php:567 data_debug.php:1051 data_input.php:848
-#: data_queries.php:1301 data_source_profiles.php:940 data_sources.php:1410
+#: color_templates.php:567 data_debug.php:1051 data_input.php:772
+#: data_queries.php:1320 data_source_profiles.php:940 data_sources.php:1410
 #: data_templates.php:1085 gprint_presets.php:290 graph_templates.php:731
 #: graph_view.php:629 graphs.php:2037 graphs_new.php:446 host.php:1618
-#: host_templates.php:770 lib/api_automation.php:195 lib/api_automation.php:464
+#: host_templates.php:727 lib/api_automation.php:195 lib/api_automation.php:464
 #: lib/api_automation.php:729 lib/api_automation.php:1121
 #: lib/clog_webapi.php:533 lib/html.php:1559 lib/html_filter.php:80
 #: lib/html_graph.php:190 lib/html_reports.php:1867 lib/html_tree.php:1024
@@ -601,10 +601,10 @@ msgstr "Git"
 #: aggregate_graphs.php:1336 aggregate_graphs.php:1626
 #: automation_devices.php:495 automation_snmp.php:718
 #: automation_templates.php:415 cdef.php:775 color.php:563 data_debug.php:1051
-#: data_input.php:848 data_queries.php:1301 data_source_profiles.php:940
+#: data_input.php:772 data_queries.php:1320 data_source_profiles.php:940
 #: data_sources.php:1410 data_templates.php:1085 gprint_presets.php:290
 #: graph_templates.php:731 graph_view.php:629 graphs.php:2037
-#: graphs_new.php:446 host.php:1618 host_templates.php:770
+#: graphs_new.php:446 host.php:1618 host_templates.php:727
 #: lib/html_graph.php:190 managers.php:171 managers.php:515 managers.php:745
 #: plugins.php:495 pollers.php:924 sites.php:521 tree.php:2150
 #: user_admin.php:2175 user_admin.php:2569 user_admin.php:2666
@@ -623,11 +623,11 @@ msgstr "Filtreleri Ayarla / Yenile"
 #: automation_graph_rules.php:798 automation_networks.php:1227
 #: automation_snmp.php:719 automation_templates.php:416
 #: automation_tree_rules.php:843 cdef.php:776 color.php:564
-#: color_templates.php:568 data_debug.php:1052 data_input.php:849
-#: data_queries.php:1302 data_source_profiles.php:941 data_sources.php:1411
+#: color_templates.php:568 data_debug.php:1052 data_input.php:773
+#: data_queries.php:1321 data_source_profiles.php:941 data_sources.php:1411
 #: data_templates.php:1086 gprint_presets.php:291 graph_templates.php:732
 #: graph_view.php:630 graphs.php:2038 graphs_new.php:447 host.php:1619
-#: host_templates.php:771 lib/api_automation.php:196 lib/api_automation.php:465
+#: host_templates.php:728 lib/api_automation.php:196 lib/api_automation.php:465
 #: lib/api_automation.php:730 lib/api_automation.php:1122
 #: lib/clog_webapi.php:534 lib/html_filter.php:85 lib/html_graph.php:191
 #: lib/html_graph.php:308 lib/html_reports.php:1868 lib/html_tree.php:1025
@@ -641,10 +641,10 @@ msgstr "Temizle"
 
 #: aggregate_graphs.php:1337 aggregate_graphs.php:1627 automation_snmp.php:719
 #: automation_templates.php:416 cdef.php:776 color.php:564 data_debug.php:1052
-#: data_input.php:849 data_queries.php:1302 data_source_profiles.php:941
+#: data_input.php:773 data_queries.php:1321 data_source_profiles.php:941
 #: data_sources.php:1411 data_templates.php:1086 gprint_presets.php:291
 #: graph_templates.php:732 graph_view.php:630 graphs.php:2038
-#: graphs_new.php:447 host.php:1619 host_templates.php:771
+#: graphs_new.php:447 host.php:1619 host_templates.php:728
 #: lib/html_graph.php:191 lib/html_tree.php:1025 managers.php:172
 #: managers.php:516 managers.php:746 plugins.php:496 pollers.php:925
 #: sites.php:522 tree.php:2151 user_admin.php:2176 user_admin.php:2570
@@ -666,9 +666,9 @@ msgstr "Grafik Başlığı"
 
 #: aggregate_graphs.php:1363 aggregate_graphs.php:1693
 #: automation_graph_rules.php:896 automation_tree_rules.php:936
-#: data_debug.php:459 data_input.php:931 data_queries.php:1383
+#: data_debug.php:459 data_input.php:855 data_queries.php:1402
 #: data_sources.php:1632 data_templates.php:1194 graph_templates.php:837
-#: graphs.php:2243 host.php:1733 host_templates.php:868
+#: graphs.php:2245 host.php:1733 host_templates.php:825
 #: lib/api_automation.php:282 pollers.php:1001 sites.php:597 support.php:864
 #: support.php:907 tree.php:2214 user_admin.php:885 user_admin.php:999
 #: user_admin.php:1144 user_admin.php:1291 user_admin.php:1430
@@ -683,16 +683,16 @@ msgid "Included in Aggregate"
 msgstr "Toplamda Bulunan"
 
 #: aggregate_graphs.php:1365 aggregate_graphs.php:1695 graph_templates.php:854
-#: graph_view.php:758 graph_view.php:771 graphs.php:2261
+#: graph_view.php:758 graph_view.php:771 graphs.php:2263
 msgid "Size"
 msgstr "Boyut"
 
 #: aggregate_graphs.php:1381 aggregate_templates.php:709
 #: automation_tree_rules.php:689 cdef.php:902 color.php:726 color.php:728
-#: color_templates.php:673 data_input.php:975 data_queries.php:1435
+#: color_templates.php:673 data_input.php:899 data_queries.php:1454
 #: data_source_profiles.php:1117 data_source_profiles.php:1118
 #: data_sources.php:1719 data_sources.php:1720 data_templates.php:1255
-#: gprint_presets.php:437 graph_templates.php:894 host_templates.php:916
+#: gprint_presets.php:437 graph_templates.php:894 host_templates.php:873
 #: include/global_settings.php:506 include/global_settings.php:865
 #: include/global_settings.php:1890 lib/api_automation.php:1438 links.php:404
 #: support.php:736 tree.php:2307 tree.php:2308 user_admin.php:2256
@@ -703,20 +703,20 @@ msgstr "Hayır"
 #: aggregate_graphs.php:1381 aggregate_templates.php:709
 #: automation_tree_rules.php:682 cdef.php:902 color.php:726 color.php:728
 #: color_templates.php:673 data_debug.php:699 data_debug.php:704
-#: data_debug.php:709 data_input.php:975 data_queries.php:1435
+#: data_debug.php:709 data_input.php:899 data_queries.php:1454
 #: data_source_profiles.php:1116 data_source_profiles.php:1117
 #: data_source_profiles.php:1118 data_sources.php:1719 data_sources.php:1720
 #: data_templates.php:1255 gprint_presets.php:437 graph_templates.php:894
-#: host_templates.php:916 include/global_settings.php:507
+#: host_templates.php:873 include/global_settings.php:507
 #: include/global_settings.php:864 include/global_settings.php:1889
 #: lib/api_automation.php:1438 lib/installer.php:1895 lib/installer.php:1923
-#: lib/installer.php:3503 links.php:404 support.php:736 tree.php:2307
+#: lib/installer.php:3499 links.php:404 support.php:736 tree.php:2307
 #: tree.php:2308 user_admin.php:2254 user_domains.php:767 user_domains.php:771
 #: user_group_admin.php:2028 vdef.php:909
 msgid "Yes"
 msgstr "Evet"
 
-#: aggregate_graphs.php:1387 graphs.php:2303 lib/api_automation.php:601
+#: aggregate_graphs.php:1387 graphs.php:2305 lib/api_automation.php:601
 #, fuzzy
 msgid "No Graphs Found"
 msgstr "Grafik Bulunamadı"
@@ -727,14 +727,14 @@ msgid " [ Custom Graphs List Applied - Clear to Reset ]"
 msgstr "[Uygulanan Özel Grafik Listesi - Listeden Filtrele]"
 
 #: aggregate_graphs.php:1573 aggregate_graphs.php:1683
-#: include/global_arrays.php:2761
+#: include/global_arrays.php:2764
 #, fuzzy
 msgid "Aggregate Graphs"
 msgstr "Toplam Grafikler"
 
 #: aggregate_graphs.php:1588 data_debug.php:1025 data_sources.php:1384
 #: graph_view.php:642 graphs.php:2002 host.php:1570
-#: include/global_arrays.php:2907 include/global_settings.php:599
+#: include/global_arrays.php:2910 include/global_settings.php:599
 #: lib/api_automation.php:442 lib/html_graph.php:153 lib/html_tree.php:988
 #: rrdcleaner.php:383 user_admin.php:2525 user_admin.php:2742
 #: user_group_admin.php:2278 user_group_admin.php:2398 utilities.php:2021
@@ -770,7 +770,7 @@ msgstr "Herhangi"
 #: graphs_items.php:470 host.php:253 host.php:1154 host.php:1165 host.php:1540
 #: host.php:1575 include/global_arrays.php:527 include/global_arrays.php:585
 #: include/global_arrays.php:674 include/global_arrays.php:885
-#: include/global_arrays.php:1738 include/global_form.php:588
+#: include/global_arrays.php:1741 include/global_form.php:588
 #: include/global_form.php:894 include/global_form.php:902
 #: include/global_form.php:910 include/global_form.php:948
 #: include/global_form.php:955 include/global_form.php:981
@@ -789,7 +789,7 @@ msgstr "Herhangi"
 #: lib/html_reports.php:1002 lib/html_reports.php:1006
 #: lib/html_reports.php:1014 lib/html_reports.php:1025
 #: lib/html_reports.php:1045 lib/html_reports.php:1299
-#: lib/html_reports.php:1304 lib/html_reports.php:1309 package_import.php:654
+#: lib/html_reports.php:1304 lib/html_reports.php:1309 package_import.php:662
 #: settings.php:537 settings.php:559 settings.php:595 templates_import.php:330
 #: templates_import.php:362 user_admin.php:2530 user_admin.php:2747
 #: user_group_admin.php:2283 user_group_admin.php:2403 utilities.php:2026
@@ -852,7 +852,7 @@ msgid "Aggregate Template [new]"
 msgstr "Toplu Şablon [yeni]"
 
 #: aggregate_templates.php:583 aggregate_templates.php:682
-#: include/global_arrays.php:2743
+#: include/global_arrays.php:2746
 #, fuzzy
 msgid "Aggregate Templates"
 msgstr "Toplu Şablonlar"
@@ -881,23 +881,23 @@ msgid "Aggregate Templates that are in use can not be Deleted.  In use is define
 msgstr "Kullanımdaki Toplu Şablonlar Silinemez. Kullanımda, bir Agrega tarafından referans olarak tanımlanır."
 
 #: aggregate_templates.php:692 cdef.php:885 color.php:703
-#: color_templates.php:644 data_input.php:937 data_queries.php:1389
+#: color_templates.php:644 data_input.php:861 data_queries.php:1408
 #: data_source_profiles.php:1042 data_sources.php:1650 data_templates.php:1200
-#: gprint_presets.php:397 graph_templates.php:843 host_templates.php:874
+#: gprint_presets.php:397 graph_templates.php:843 host_templates.php:831
 #: vdef.php:891
 #, fuzzy
 msgid "Deletable"
 msgstr "silinebilir"
 
-#: aggregate_templates.php:693 cdef.php:886 color.php:704 data_queries.php:1122
-#: data_queries.php:1394 gprint_presets.php:402 graph_templates.php:848
+#: aggregate_templates.php:693 cdef.php:886 color.php:704 data_queries.php:1141
+#: data_queries.php:1413 gprint_presets.php:402 graph_templates.php:848
 #: vdef.php:892
 #, fuzzy
 msgid "Graphs Using"
 msgstr "Kullanarak Grafikler"
 
 #: aggregate_templates.php:694 graphs.php:2058 include/global_arrays.php:958
-#: include/global_arrays.php:1358 include/global_form.php:1415
+#: include/global_arrays.php:1361 include/global_form.php:1415
 #: include/global_form.php:1650 lib/html_reports.php:1020 tree.php:1865
 #, fuzzy
 msgid "Graph Template"
@@ -993,65 +993,69 @@ msgstr "En az 1 özel karakter içermelidir"
 msgid "Cannot be reused for %d password changes"
 msgstr "% D şifre değişikliği için tekrar kullanılamaz"
 
-#: auth_changepassword.php:315 auth_changepassword.php:322
-#: include/global_form.php:1567 lib/functions.php:3667 lib/html.php:2481
+#: auth_changepassword.php:349
+msgid "There are problems with the Change Password page.  Contact your Cacti administrator right away."
+msgstr ""
+
+#: auth_changepassword.php:359 auth_changepassword.php:366
+#: include/global_form.php:1567 lib/functions.php:3675 lib/html.php:2481
 msgid "Change Password"
 msgstr "Şifre Değiştir"
 
-#: auth_changepassword.php:332
+#: auth_changepassword.php:376
 #, fuzzy
 msgid "Please enter your current password and your new<br>Cacti password."
 msgstr "Lütfen mevcut şifrenizi ve yeni şifrenizi girin <br> Kaktüsler şifre."
 
-#: auth_changepassword.php:334
+#: auth_changepassword.php:378
 #, fuzzy
 msgid "Please enter your new Cacti password."
 msgstr "Lütfen mevcut şifrenizi ve yeni şifrenizi girin <br> Kaktüsler şifre."
 
-#: auth_changepassword.php:342 auth_login.php:306 auth_login.php:309
-#: include/global_settings.php:1798 lib/functions.php:5295
+#: auth_changepassword.php:386 auth_login.php:306 auth_login.php:309
+#: include/global_settings.php:1798 lib/functions.php:5303
 msgid "Username"
 msgstr "Kullanıcı Adı"
 
-#: auth_changepassword.php:345
+#: auth_changepassword.php:389
 msgid "Current password"
 msgstr "Şimdiki Şifre"
 
-#: auth_changepassword.php:350
+#: auth_changepassword.php:394
 msgid "New password"
 msgstr "Yeni şifre"
 
-#: auth_changepassword.php:354
+#: auth_changepassword.php:398
 msgid "Confirm new password"
 msgstr "Yeni şifreyi onayla"
 
-#: auth_changepassword.php:358 auth_profile.php:564 graphs_new.php:448
+#: auth_changepassword.php:402 auth_profile.php:564 graphs_new.php:448
 #: lib/html_form.php:1292 lib/html_form.php:1301 lib/html_graph.php:193
 #: lib/html_tree.php:1027 settings.php:499
 msgid "Save"
 msgstr "Kaydet"
 
-#: auth_changepassword.php:367 auth_login.php:386
+#: auth_changepassword.php:411 auth_login.php:386
 #, fuzzy, php-format
 msgid "Version %s | %s"
 msgstr "Sürüm %s %s"
 
-#: auth_changepassword.php:380 user_admin.php:1920
+#: auth_changepassword.php:424 user_admin.php:1920
 #, fuzzy
 msgid "Password Too Short"
 msgstr "Şifre çok kısa"
 
-#: auth_changepassword.php:386 user_admin.php:1925
+#: auth_changepassword.php:430 user_admin.php:1925
 #, fuzzy
 msgid "Password Validation Passes"
 msgstr "Şifre Doğrulama Geçti"
 
-#: auth_changepassword.php:402 user_admin.php:1939
+#: auth_changepassword.php:446 user_admin.php:1939
 #, fuzzy
 msgid "Passwords do Not Match"
 msgstr "Parolalar uyuşmuyor"
 
-#: auth_changepassword.php:406 user_admin.php:1942
+#: auth_changepassword.php:450 user_admin.php:1942
 #, fuzzy
 msgid "Passwords Match"
 msgstr "Şifre uyuşması"
@@ -1100,7 +1104,7 @@ msgstr "Kullanıcı Girişi"
 msgid "Enter your Username and Password below"
 msgstr "Kullanıcı adınızı ve şifrenizi aşağıya girin"
 
-#: auth_login.php:314 include/global_form.php:1534 lib/functions.php:5296
+#: auth_login.php:314 include/global_form.php:1534 lib/functions.php:5304
 msgid "Password"
 msgstr "Şifre"
 
@@ -1323,7 +1327,7 @@ msgstr "Aygıtları Sil"
 
 #: automation_devices.php:268 automation_devices.php:555 host.php:1525
 #: host.php:1649 host.php:1799 include/global_arrays.php:990
-#: include/global_arrays.php:1046 include/global_arrays.php:2323
+#: include/global_arrays.php:1046 include/global_arrays.php:2326
 #: lib/api_automation.php:179 lib/api_automation.php:271
 #: lib/api_automation.php:479 lib/api_automation.php:563
 #: lib/api_automation.php:1211 pollers.php:1037 sites.php:598 support.php:223
@@ -1371,7 +1375,8 @@ msgstr "OS"
 msgid "Uptime"
 msgstr "Çalışma Süresi"
 
-#: automation_devices.php:285 automation_devices.php:540 utilities.php:2081
+#: automation_devices.php:285 automation_devices.php:540
+#: include/global_arrays.php:1018 utilities.php:2081
 msgid "SNMP"
 msgstr "SNMP"
 
@@ -1383,7 +1388,7 @@ msgstr "SNMP"
 #: lib/api_automation.php:280 lib/api_automation.php:573
 #: lib/api_automation.php:1090 lib/api_automation.php:1221
 #: lib/html_reports.php:1842 lib/installer.php:1815 managers.php:218
-#: package_import.php:499 package_import.php:584 plugins.php:465
+#: package_import.php:507 package_import.php:592 plugins.php:465
 #: plugins.php:588 pollers.php:1013 templates_import.php:224
 #: templates_import.php:263 user_admin.php:1144 user_group_admin.php:1028
 #: utilities.php:2066
@@ -1441,7 +1446,7 @@ msgstr "Keşfedilen Cihazları Temizle"
 #: automation_snmp.php:564 automation_snmp.php:565 automation_snmp.php:566
 #: automation_snmp.php:567 automation_snmp.php:568 automation_snmp.php:569
 #: data_debug.php:624 data_source_profiles.php:73 host.php:1818
-#: lib/functions.php:5641 lib/functions.php:5645 lib/html.php:1182
+#: lib/functions.php:5649 lib/functions.php:5653 lib/html.php:1182
 #: lib/html.php:1248 lib/html_reports.php:1632 lib/html_reports.php:1658
 #: lib/html_reports.php:1729 lib/html_reports.php:1730
 #: lib/html_reports.php:1731 plugins.php:732 pollers.php:1121 support.php:646
@@ -1453,15 +1458,16 @@ msgstr "Yok"
 
 #: automation_graph_rules.php:29 automation_snmp.php:30
 #: automation_tree_rules.php:29 cdef.php:30 color_templates.php:29
-#: data_input.php:33 data_source_profiles.php:31 data_templates.php:35
-#: graph_templates.php:38 graphs.php:66 host_templates.php:36
-#: include/global_arrays.php:1646 sites.php:29 vdef.php:30
+#: data_input.php:33 data_queries.php:32 data_source_profiles.php:31
+#: data_templates.php:35 graph_templates.php:38 graphs.php:66
+#: host_templates.php:36 include/global_arrays.php:1649 sites.php:29
+#: vdef.php:30
 msgid "Duplicate"
 msgstr "Kopyala"
 
 #: automation_graph_rules.php:30 automation_networks.php:33
 #: automation_tree_rules.php:30 data_sources.php:40 host.php:42
-#: include/global_arrays.php:1647 include/global_settings.php:1750 links.php:29
+#: include/global_arrays.php:1650 include/global_settings.php:1750 links.php:29
 #: managers.php:29 managers.php:35 plugins.php:31 pollers.php:35
 #: user_admin.php:30 user_domains.php:32 user_domains.php:412
 #: user_group_admin.php:32
@@ -1470,7 +1476,7 @@ msgstr "Etkinleştir"
 
 #: automation_graph_rules.php:31 automation_networks.php:32
 #: automation_tree_rules.php:31 data_sources.php:41 host.php:43
-#: include/global_arrays.php:1648 links.php:30 managers.php:30 managers.php:34
+#: include/global_arrays.php:1651 links.php:30 managers.php:30 managers.php:34
 #: plugins.php:32 pollers.php:34 user_admin.php:31 user_domains.php:31
 #: user_group_admin.php:33
 msgid "Disable"
@@ -1568,14 +1574,14 @@ msgstr "Grafik Oluşturma Kriterleri"
 
 #: automation_graph_rules.php:734 automation_graph_rules.php:781
 #: automation_graph_rules.php:886 include/global_arrays.php:1013
-#: include/global_arrays.php:2797
+#: include/global_arrays.php:2800
 #, fuzzy
 msgid "Graph Rules"
 msgstr "Grafik Kuralları"
 
 #: automation_graph_rules.php:749 automation_graph_rules.php:897
-#: graphs.php:2059 include/global_arrays.php:1361
-#: include/global_arrays.php:2906 include/global_form.php:1660
+#: graphs.php:2059 include/global_arrays.php:1364
+#: include/global_arrays.php:2909 include/global_form.php:1660
 #: include/global_form.php:2222
 msgid "Data Query"
 msgstr "Veri sorgusu"
@@ -1601,7 +1607,7 @@ msgstr "Etkin"
 #: automation_networks.php:1092 automation_tree_rules.php:822
 #: automation_tree_rules.php:959 data_debug.php:1085 data_sources.php:1442
 #: data_templates.php:1259 host.php:1640 include/global_arrays.php:916
-#: include/global_arrays.php:1570 include/global_arrays.php:1862
+#: include/global_arrays.php:1573 include/global_arrays.php:1865
 #: include/global_settings.php:360 include/global_settings.php:376
 #: include/global_settings.php:1331 include/global_settings.php:1593
 #: include/global_settings.php:1607 include/global_settings.php:1620
@@ -1709,7 +1715,7 @@ msgstr "Discover&#39;ı hata ayıklama modunda çalıştır"
 msgid "Click 'Continue' to cancel on going Network Discovery(s)."
 msgstr "Ağ Bulma (larını) iptal etmeyi iptal etmek için &#39;Devam Et&#39;i tıklayın."
 
-#: automation_networks.php:412 data_input.php:591 include/global_arrays.php:513
+#: automation_networks.php:412 data_input.php:515 include/global_arrays.php:513
 #, fuzzy
 msgid "SNMP Get"
 msgstr "SNMP Al"
@@ -1719,17 +1725,17 @@ msgid "Manual"
 msgstr "Manuel"
 
 #: automation_networks.php:420 automation_networks.php:1066
-#: include/global_arrays.php:1876 include/global_settings.php:1332
+#: include/global_arrays.php:1879 include/global_settings.php:1332
 msgid "Daily"
 msgstr "Günlük"
 
 #: automation_networks.php:421 automation_networks.php:1067
-#: include/global_arrays.php:1877
+#: include/global_arrays.php:1880
 msgid "Weekly"
 msgstr "Haftalık"
 
 #: automation_networks.php:422 automation_networks.php:1068
-#: include/global_arrays.php:1878
+#: include/global_arrays.php:1881
 msgid "Monthly"
 msgstr "Aylık"
 
@@ -1754,9 +1760,9 @@ msgstr "Ağ Bulma Aralığı [yeni]"
 msgid "General Settings"
 msgstr "Genel Ayarlar"
 
-#: automation_networks.php:441 automation_snmp.php:505 data_input.php:636
-#: data_input.php:697 data_queries.php:758 data_queries.php:863
-#: data_queries.php:1120 data_source_profiles.php:635 graph_templates.php:498
+#: automation_networks.php:441 automation_snmp.php:505 data_input.php:560
+#: data_input.php:621 data_queries.php:777 data_queries.php:882
+#: data_queries.php:1139 data_source_profiles.php:635 graph_templates.php:498
 #: include/global_form.php:215 include/global_form.php:281
 #: include/global_form.php:338 include/global_form.php:358
 #: include/global_form.php:399 include/global_form.php:529
@@ -1898,13 +1904,13 @@ msgstr "% d dakika"
 #: include/global_arrays.php:752 include/global_arrays.php:754
 #: include/global_arrays.php:755 include/global_arrays.php:756
 #: include/global_arrays.php:757 include/global_arrays.php:758
-#: include/global_arrays.php:759 include/global_arrays.php:1204
-#: include/global_arrays.php:1205 include/global_arrays.php:1577
-#: include/global_arrays.php:1581 include/global_arrays.php:1589
-#: include/global_arrays.php:1590 include/global_arrays.php:1614
-#: include/global_arrays.php:1615 include/global_arrays.php:1616
-#: include/global_arrays.php:1617 include/global_arrays.php:1618
-#: include/global_arrays.php:1631 include/global_settings.php:1661
+#: include/global_arrays.php:759 include/global_arrays.php:1207
+#: include/global_arrays.php:1208 include/global_arrays.php:1580
+#: include/global_arrays.php:1584 include/global_arrays.php:1592
+#: include/global_arrays.php:1593 include/global_arrays.php:1617
+#: include/global_arrays.php:1618 include/global_arrays.php:1619
+#: include/global_arrays.php:1620 include/global_arrays.php:1621
+#: include/global_arrays.php:1634 include/global_settings.php:1661
 #: include/global_settings.php:1662 include/global_settings.php:1663
 #: include/global_settings.php:1664 include/global_settings.php:1665
 #: include/global_settings.php:2626 include/global_settings.php:2885
@@ -1915,7 +1921,7 @@ msgid "%d Minutes"
 msgstr "%d Dakika"
 
 #: automation_networks.php:528 include/global_arrays.php:760
-#: include/global_arrays.php:770 include/global_arrays.php:1451
+#: include/global_arrays.php:770 include/global_arrays.php:1454
 #, php-format
 msgid "%d Hour"
 msgstr "%d Saat"
@@ -1928,15 +1934,15 @@ msgstr "%d Saat"
 #: include/global_arrays.php:762 include/global_arrays.php:763
 #: include/global_arrays.php:764 include/global_arrays.php:771
 #: include/global_arrays.php:772 include/global_arrays.php:773
-#: include/global_arrays.php:774 include/global_arrays.php:1452
-#: include/global_arrays.php:1453 include/global_arrays.php:1454
-#: include/global_arrays.php:1455 include/global_arrays.php:1522
-#: include/global_arrays.php:1523 include/global_arrays.php:1524
-#: include/global_arrays.php:1525 include/global_arrays.php:1526
-#: include/global_arrays.php:1543 include/global_arrays.php:1544
-#: include/global_arrays.php:1545 include/global_arrays.php:1546
-#: include/global_arrays.php:1547 include/global_arrays.php:1553
-#: include/global_arrays.php:1554 include/global_settings.php:1667
+#: include/global_arrays.php:774 include/global_arrays.php:1455
+#: include/global_arrays.php:1456 include/global_arrays.php:1457
+#: include/global_arrays.php:1458 include/global_arrays.php:1525
+#: include/global_arrays.php:1526 include/global_arrays.php:1527
+#: include/global_arrays.php:1528 include/global_arrays.php:1529
+#: include/global_arrays.php:1546 include/global_arrays.php:1547
+#: include/global_arrays.php:1548 include/global_arrays.php:1549
+#: include/global_arrays.php:1550 include/global_arrays.php:1556
+#: include/global_arrays.php:1557 include/global_settings.php:1667
 #: include/global_settings.php:1668 include/global_settings.php:1669
 #: include/global_settings.php:1670 include/global_settings.php:2889
 #: include/global_settings.php:2890
@@ -2067,37 +2073,37 @@ msgid "What Day(s) of the week will this Network Range be discovered."
 msgstr "Bu Ağ Aralığı keşfedilecek haftanın hangi günü."
 
 #: automation_networks.php:638 automation_networks.php:696
-#: include/global_arrays.php:1934
+#: include/global_arrays.php:1937
 msgid "Sunday"
 msgstr "Pazar"
 
 #: automation_networks.php:639 automation_networks.php:697
-#: include/global_arrays.php:1935
+#: include/global_arrays.php:1938
 msgid "Monday"
 msgstr "Pazartesi"
 
 #: automation_networks.php:640 automation_networks.php:698
-#: include/global_arrays.php:1936
+#: include/global_arrays.php:1939
 msgid "Tuesday"
 msgstr "Salı"
 
 #: automation_networks.php:641 automation_networks.php:699
-#: include/global_arrays.php:1937
+#: include/global_arrays.php:1940
 msgid "Wednesday"
 msgstr "Çarşamba"
 
 #: automation_networks.php:642 automation_networks.php:700
-#: include/global_arrays.php:1938
+#: include/global_arrays.php:1941
 msgid "Thursday"
 msgstr "Perşembe"
 
 #: automation_networks.php:643 automation_networks.php:701
-#: include/global_arrays.php:1939
+#: include/global_arrays.php:1942
 msgid "Friday"
 msgstr "Cuma"
 
 #: automation_networks.php:644 automation_networks.php:702
-#: include/global_arrays.php:1940
+#: include/global_arrays.php:1943
 msgid "Saturday"
 msgstr "Cumartesi"
 
@@ -2110,51 +2116,51 @@ msgstr "Yılın ayları"
 msgid "What Months(s) of the Year will this Network Range be discovered."
 msgstr "Bu ağ aralığı, yılın hangi ay(lar)ında keşfedilecek."
 
-#: automation_networks.php:654 include/global_arrays.php:1888
+#: automation_networks.php:654 include/global_arrays.php:1891
 msgid "January"
 msgstr "Ocak"
 
-#: automation_networks.php:655 include/global_arrays.php:1889
+#: automation_networks.php:655 include/global_arrays.php:1892
 msgid "February"
 msgstr "Şubat"
 
-#: automation_networks.php:656 include/global_arrays.php:1890
+#: automation_networks.php:656 include/global_arrays.php:1893
 msgid "March"
 msgstr "Mart"
 
-#: automation_networks.php:657 include/global_arrays.php:1891
+#: automation_networks.php:657 include/global_arrays.php:1894
 msgid "April"
 msgstr "Nisan"
 
-#: automation_networks.php:658 include/global_arrays.php:1892
+#: automation_networks.php:658 include/global_arrays.php:1895
 msgid "May"
 msgstr "Mayıs"
 
-#: automation_networks.php:659 include/global_arrays.php:1893
+#: automation_networks.php:659 include/global_arrays.php:1896
 msgid "June"
 msgstr "Haziran"
 
-#: automation_networks.php:660 include/global_arrays.php:1894
+#: automation_networks.php:660 include/global_arrays.php:1897
 msgid "July"
 msgstr "Temmuz"
 
-#: automation_networks.php:661 include/global_arrays.php:1895
+#: automation_networks.php:661 include/global_arrays.php:1898
 msgid "August"
 msgstr "Ağustos"
 
-#: automation_networks.php:662 include/global_arrays.php:1896
+#: automation_networks.php:662 include/global_arrays.php:1899
 msgid "September"
 msgstr "Eylül"
 
-#: automation_networks.php:663 include/global_arrays.php:1897
+#: automation_networks.php:663 include/global_arrays.php:1900
 msgid "October"
 msgstr "Ekim"
 
-#: automation_networks.php:664 include/global_arrays.php:1898
+#: automation_networks.php:664 include/global_arrays.php:1901
 msgid "November"
 msgstr "Kasım"
 
-#: automation_networks.php:665 include/global_arrays.php:1899
+#: automation_networks.php:665 include/global_arrays.php:1902
 msgid "December"
 msgstr "Aralık"
 
@@ -2202,8 +2208,8 @@ msgstr "Haftanın günleri"
 msgid "Reachability Settings"
 msgstr "Erişilebilirlik Ayarları"
 
-#: automation_networks.php:714 include/global_arrays.php:1015
-#: include/global_form.php:1253 include/global_form.php:1786
+#: automation_networks.php:714 include/global_form.php:1253
+#: include/global_form.php:1786
 #, fuzzy
 msgid "SNMP Options"
 msgstr "SNMP Seçenekleri"
@@ -2374,7 +2380,7 @@ msgid "Idle"
 msgstr "Boşta"
 
 #: automation_networks.php:1152 include/global_arrays.php:891
-#: include/global_arrays.php:1206 include/global_settings.php:2539
+#: include/global_arrays.php:1209 include/global_settings.php:2539
 #: lib/html_reports.php:1981
 msgid "Never"
 msgstr "Asla"
@@ -2396,15 +2402,15 @@ msgstr "Yenile"
 #: include/global_arrays.php:745 include/global_arrays.php:746
 #: include/global_arrays.php:747 include/global_arrays.php:748
 #: include/global_arrays.php:749 include/global_arrays.php:750
-#: include/global_arrays.php:1199 include/global_arrays.php:1200
-#: include/global_arrays.php:1201 include/global_arrays.php:1202
-#: include/global_arrays.php:1571 include/global_arrays.php:1572
-#: include/global_arrays.php:1573 include/global_arrays.php:1574
-#: include/global_arrays.php:1575 include/global_arrays.php:1610
-#: include/global_arrays.php:1611 include/global_arrays.php:1623
-#: include/global_arrays.php:1624 include/global_arrays.php:1625
-#: include/global_arrays.php:1626 include/global_arrays.php:1627
-#: include/global_arrays.php:1628 include/global_arrays.php:1629
+#: include/global_arrays.php:1202 include/global_arrays.php:1203
+#: include/global_arrays.php:1204 include/global_arrays.php:1205
+#: include/global_arrays.php:1574 include/global_arrays.php:1575
+#: include/global_arrays.php:1576 include/global_arrays.php:1577
+#: include/global_arrays.php:1578 include/global_arrays.php:1613
+#: include/global_arrays.php:1614 include/global_arrays.php:1626
+#: include/global_arrays.php:1627 include/global_arrays.php:1628
+#: include/global_arrays.php:1629 include/global_arrays.php:1630
+#: include/global_arrays.php:1631 include/global_arrays.php:1632
 #: include/global_settings.php:1242 include/global_settings.php:1243
 #: include/global_settings.php:1244 include/global_settings.php:1245
 #: include/global_settings.php:2622 include/global_settings.php:2623
@@ -2522,7 +2528,7 @@ msgid "Item"
 msgstr "Öğe"
 
 #: automation_snmp.php:535 include/auth.php:297 include/global_settings.php:668
-#: package_import.php:466 permission_denied.php:59 plugins.php:606
+#: package_import.php:469 permission_denied.php:59 plugins.php:606
 msgid "Version"
 msgstr "Versiyon"
 
@@ -2530,7 +2536,7 @@ msgstr "Versiyon"
 msgid "Community"
 msgstr "Topluluk"
 
-#: automation_snmp.php:537 lib/functions.php:5291
+#: automation_snmp.php:537 lib/functions.php:5299
 msgid "Port"
 msgstr "Port"
 
@@ -2576,7 +2582,7 @@ msgstr "Priv Protokolü"
 msgid "Context"
 msgstr "Bağlam"
 
-#: automation_snmp.php:547 data_queries.php:1124 utilities.php:2076
+#: automation_snmp.php:547 data_queries.php:1143 utilities.php:2076
 msgid "Action"
 msgstr "Aksiyon"
 
@@ -2591,7 +2597,7 @@ msgid "none"
 msgstr "yok"
 
 #: automation_snmp.php:574 automation_templates.php:524 cdef.php:612
-#: color_templates.php:111 data_queries.php:790 data_queries.php:897
+#: color_templates.php:111 data_queries.php:809 data_queries.php:916
 #: lib/api_automation.php:1314 lib/api_automation.php:1376
 #: lib/api_automation.php:1444 lib/html.php:1280 lib/html_reports.php:1744
 #: lib/html_reports.php:1746 tree.php:2292 tree.php:2299 vdef.php:611
@@ -2599,7 +2605,7 @@ msgid "Move Down"
 msgstr "Aşağı al"
 
 #: automation_snmp.php:580 automation_templates.php:530 cdef.php:618
-#: color_templates.php:117 data_queries.php:795 data_queries.php:902
+#: color_templates.php:117 data_queries.php:814 data_queries.php:921
 #: lib/api_automation.php:1320 lib/api_automation.php:1382
 #: lib/api_automation.php:1450 lib/html.php:1286 lib/html_reports.php:1746
 #: lib/html_reports.php:1748 tree.php:2296 tree.php:2300 vdef.php:617
@@ -2671,7 +2677,7 @@ msgstr "Katlanan Otomasyon Şablonlarını silmek için &#39;Devam Et&#39;i tık
 msgid "Delete Automation Template(s)"
 msgstr "Otomasyon Şablonlarını Sil"
 
-#: automation_templates.php:274 include/global_arrays.php:1362
+#: automation_templates.php:274 include/global_arrays.php:1365
 #: include/global_form.php:1228 include/global_form.php:1645
 #: lib/html_reports.php:999
 #, fuzzy
@@ -2738,7 +2744,7 @@ msgstr "Otomasyon Şablonları [yeni]"
 msgid "Device Automation Templates"
 msgstr "Cihaz Otomasyonu Şablonları"
 
-#: automation_templates.php:491 data_sources.php:1662 package_import.php:581
+#: automation_templates.php:491 data_sources.php:1662 package_import.php:589
 #: templates_import.php:260 user_admin.php:1291 user_group_admin.php:1173
 msgid "Template Name"
 msgstr "Şablon Adı"
@@ -2748,7 +2754,7 @@ msgstr "Şablon Adı"
 msgid "System ObjectId Match"
 msgstr "Sistem Nesnesi Eşleşmesi"
 
-#: automation_templates.php:499 data_queries.php:759 data_queries.php:864
+#: automation_templates.php:499 data_queries.php:778 data_queries.php:883
 #: links.php:384 tree.php:2238
 msgid "Order"
 msgstr "Sipariş"
@@ -2813,7 +2819,7 @@ msgstr "Ağaç Yaratma Kriterleri"
 msgid "Change Leaf Type"
 msgstr "Yaprak Tipini Değiştir"
 
-#: automation_tree_rules.php:706 lib/installer.php:3698 utilities.php:2610
+#: automation_tree_rules.php:706 lib/installer.php:3694 utilities.php:2610
 #: utilities.php:2611 utilities.php:2614 utilities.php:2615
 msgid "WARNING:"
 msgstr "UYARI:"
@@ -2835,7 +2841,7 @@ msgstr "Devam etmek istediğinize emin misiniz?"
 
 #: automation_tree_rules.php:801 automation_tree_rules.php:826
 #: automation_tree_rules.php:926 include/global_arrays.php:1014
-#: include/global_arrays.php:2821
+#: include/global_arrays.php:2824
 #, fuzzy
 msgid "Tree Rules"
 msgstr "Ağaç kuralları"
@@ -2869,8 +2875,8 @@ msgstr "KÖK"
 msgid "No Tree Rules Found"
 msgstr "Ağaç Kuralı Bulunamadı"
 
-#: cactid.php:44 help.php:38 lib/functions.php:5922 lib/functions.php:5991
-#: lib/functions.php:6601 poller.php:392 poller.php:542 poller.php:607
+#: cactid.php:44 help.php:38 lib/functions.php:5930 lib/functions.php:5999
+#: lib/functions.php:6609 poller.php:392 poller.php:542 poller.php:607
 #: poller.php:647 poller.php:789 poller.php:895 poller_automation.php:53
 #: poller_boost.php:347
 #, fuzzy
@@ -2914,7 +2920,7 @@ msgstr[0] "Aşağıdaki CDEF&#39;yi kopyalamak için &#39;Devam Et&#39;i tıklay
 msgstr[1] "Aşağıdaki CDEF&#39;leri kopyalamak için &#39;Devam Et&#39;i tıklayın. İsteğe bağlı olarak yeni CDEF&#39;ler için başlık formatını değiştirebilirsiniz."
 
 #: cdef.php:282 color_templates.php:249 data_source_profiles.php:311
-#: data_templates.php:473 graph_templates.php:382 host_templates.php:277
+#: data_templates.php:473 graph_templates.php:382 host_templates.php:234
 #: vdef.php:276
 msgid "Title Format:"
 msgstr "Başlık Formatı:"
@@ -2981,7 +2987,7 @@ msgstr "CDEF [değiştir: %s]"
 msgid "CDEF [new]"
 msgstr "CDEF [yeni]"
 
-#: cdef.php:582 include/global_arrays.php:2149
+#: cdef.php:582 include/global_arrays.php:2152
 #, fuzzy
 msgid "CDEF Items"
 msgstr "CDEF Öğeleri"
@@ -3002,7 +3008,7 @@ msgid "Delete CDEF Item"
 msgstr "CDEF Öğesini Sil"
 
 #: cdef.php:738 cdef.php:753 cdef.php:875 include/global_arrays.php:1019
-#: include/global_arrays.php:2131
+#: include/global_arrays.php:2134
 #, fuzzy
 msgid "CDEFs"
 msgstr "CDEFs"
@@ -3027,7 +3033,7 @@ msgstr "Kullanımda olan CDEF&#39;ler Silinemez. Kullanımda, bir Grafik veya Gr
 msgid "The number of Graphs using this CDEF."
 msgstr "Bu CDEF&#39;i kullanan Grafiklerin sayısı."
 
-#: cdef.php:887 color.php:705 data_input.php:948 data_queries.php:1400
+#: cdef.php:887 color.php:705 data_input.php:872 data_queries.php:1419
 #: data_source_profiles.php:1070 gprint_presets.php:408 vdef.php:893
 #, fuzzy
 msgid "Templates Using"
@@ -3152,7 +3158,7 @@ msgid "Colors [new]"
 msgstr "Renkler [yeni]"
 
 #: color.php:520 color.php:535 color.php:690 include/global_arrays.php:1021
-#: include/global_arrays.php:2221
+#: include/global_arrays.php:2224
 msgid "Colors"
 msgstr "Renkler"
 
@@ -3326,7 +3332,7 @@ msgid "Color Template '%s' had no Aggregate Templates or Graphs using this Color
 msgstr "'%s' Renk Şablonu'nda, bu Renk Şablonu kullanan Toplu Şablonlar veya Grafikler yoktu."
 
 #: color_templates.php:521 color_templates.php:535 color_templates.php:630
-#: include/global_arrays.php:2719
+#: include/global_arrays.php:2722
 #, fuzzy
 msgid "Color Templates"
 msgstr "Renk Şablonları"
@@ -3409,7 +3415,7 @@ msgstr "Otomatik Veri Kaynağı hata ayıklama onarımdan sonra yeniden çalış
 msgid "Data Source repair received an invalid Data Source ID."
 msgstr "Veri Kaynağı onarımı geçersiz bir Veri Kaynağı Kimliği aldı."
 
-#: data_debug.php:443 data_debug.php:877 data_queries.php:713
+#: data_debug.php:443 data_debug.php:877 data_queries.php:732
 #: data_sources.php:1013 data_templates.php:680 graphs_items.php:466
 #: include/global_arrays.php:1005 include/global_form.php:970
 #: lib/api_aggregate.php:1712 lib/html.php:1160 rrdcheck.php:158
@@ -3451,7 +3457,7 @@ msgid "The Status of the Data Source Debug Check."
 msgstr "Veri Kaynağı Hata Ayıklama Kontrolü Durumu."
 
 #: data_debug.php:471 lib/installer.php:2260 lib/installer.php:2292
-#: package_import.php:553
+#: package_import.php:561
 msgid "Writable"
 msgstr "Yazılabilir"
 
@@ -3520,7 +3526,7 @@ msgstr "Veri Kaynağı için bulunan tüm özet konular."
 
 #: data_debug.php:572 data_debug.php:1129 data_sources.php:1463
 #: data_sources.php:1616 host.php:1745 include/global_arrays.php:994
-#: include/global_arrays.php:1040 include/global_arrays.php:2305
+#: include/global_arrays.php:1040 include/global_arrays.php:2308
 #: lib/api_automation.php:284 support.php:233 user_admin.php:1144
 #: user_group_admin.php:1028 utilities.php:325
 msgid "Data Sources"
@@ -3655,7 +3661,7 @@ msgstr "Tekrar Çalıştırma Analizi"
 msgid "Check"
 msgstr "Kontrol"
 
-#: data_debug.php:826 include/global_form.php:1028 lib/rrd.php:3153
+#: data_debug.php:826 include/global_form.php:1028 lib/rrd.php:3159
 #: support.php:706 support.php:723 support.php:725 support.php:756
 #: utilities.php:798 utilities.php:815 utilities.php:3056
 msgid "Value"
@@ -3742,7 +3748,7 @@ msgstr "Profil"
 
 #: data_debug.php:1066 data_debug.php:1082 data_debug.php:1093
 #: data_sources.php:1423 data_sources.php:1440 data_templates.php:1051
-#: graphs.php:2056 graphs_new.php:424 host.php:1595 host_templates.php:737
+#: graphs.php:2056 graphs_new.php:424 host.php:1595 host_templates.php:694
 #: lib/clog_webapi.php:549 lib/html.php:225 lib/html_reports.php:977
 #: lib/html_reports.php:2073 plugins.php:469 settings.php:536 settings.php:558
 #: settings.php:594 tree.php:836 user_admin.php:2151 user_log.php:160
@@ -3759,423 +3765,442 @@ msgstr "Başarısız"
 msgid "Debugging"
 msgstr "Hata Ayıklama"
 
-#: data_input.php:291
+#: data_input.php:246
 #, fuzzy
 msgid "Click 'Continue' to delete the following Data Input Method"
 msgid_plural "Click 'Continue' to delete the following Data Input Method"
 msgstr[0] "Aşağıdaki Veri Girişi Yöntemini silmek için &#39;Devam Et&#39;i tıklayın."
 msgstr[1] "Aşağıdaki Veri Girişi Yöntemini silmek için &#39;Devam Et&#39;i tıklayın."
 
-#: data_input.php:298
+#: data_input.php:253
 #, fuzzy
 msgid "Click 'Continue' to duplicate the following Data Input Method(s). You can optionally change the title format for the new Data Input Method(s)."
 msgstr "Aşağıdaki Veri Girişi Yöntemlerini çoğaltmak için &#39;Devam Et&#39;i tıklayın. İsteğe bağlı olarak yeni Veri Giriş Yöntemi (ler) i için başlık formatını değiştirebilirsiniz."
 
-#: data_input.php:300
+#: data_input.php:255
 #, fuzzy
 msgid "Input Name:"
 msgstr "İsim girin:"
 
-#: data_input.php:305
+#: data_input.php:260
 #, fuzzy
 msgid "Delete Data Input Method"
 msgid_plural "Delete Data Input Methods"
 msgstr[0] "Veri Girişi Yöntemi Sil"
 msgstr[1] "Veri Girişi Yöntemlerini Sil"
 
-#: data_input.php:350
+#: data_input.php:305
 #, fuzzy
 msgid "Click 'Continue' to delete the following Data Input Field."
 msgstr "Aşağıdaki Veri Girişi Alanını silmek için &#39;Devam Et&#39;i tıklayın."
 
-#: data_input.php:351
+#: data_input.php:306
 #, fuzzy, php-format
 msgid "Field Name: %s"
 msgstr "Alan Adı: %s"
 
-#: data_input.php:352
+#: data_input.php:307
 #, fuzzy, php-format
 msgid "Friendly Name: %s"
 msgstr "Kolay Ad: %s"
 
-#: data_input.php:358 host_templates.php:346 host_templates.php:409
+#: data_input.php:313 host_templates.php:303 host_templates.php:366
 #, fuzzy
 msgid "Remove Data Input Field"
 msgstr "Veri Girişi Alanını Kaldır"
 
-#: data_input.php:464
+#: data_input.php:424
 #, fuzzy
 msgid "This script appears to have no input values, therefore there is nothing to add."
 msgstr "Bu betiğin giriş değeri yok gibi görünüyor, bu nedenle eklenecek bir şey yok."
 
-#: data_input.php:470
+#: data_input.php:430
 #, fuzzy, php-format
 msgid "Output Fields [edit: %s]"
 msgstr "Çıktı Alanları [değiştir: %s]"
 
-#: data_input.php:471 include/global_form.php:660
+#: data_input.php:431 include/global_form.php:660
 #, fuzzy
 msgid "Output Field"
 msgstr "Çıkış alanı"
 
-#: data_input.php:473
+#: data_input.php:433
 #, fuzzy, php-format
 msgid "Input Fields [edit: %s]"
 msgstr "Giriş Alanları [değiştir: %s]"
 
-#: data_input.php:474
+#: data_input.php:434
 msgid "Input Field"
 msgstr "Giriş Alanı"
 
-#: data_input.php:573
+#: data_input.php:497
 #, fuzzy, php-format
 msgid "Data Input Method [edit: %s]"
 msgstr "Veri Girişi Yöntemleri [değiştir: %s]"
 
-#: data_input.php:577
+#: data_input.php:501
 #, fuzzy
 msgid "Data Input Method [new]"
 msgstr "Veri Girişi Yöntemleri [yeni]"
 
-#: data_input.php:594 include/global_arrays.php:514
+#: data_input.php:518 include/global_arrays.php:514
 #, fuzzy
 msgid "SNMP Query"
 msgstr "SNMP Sorgusu"
 
-#: data_input.php:597 include/global_arrays.php:516
+#: data_input.php:521 include/global_arrays.php:516
 #, fuzzy
 msgid "Script Query"
 msgstr "Komut Dosyası Sorgusu"
 
-#: data_input.php:600 include/global_arrays.php:518
+#: data_input.php:524 include/global_arrays.php:518
 #, fuzzy
 msgid "Script Server Query"
 msgstr "Komut Dosyası Sunucusu"
 
-#: data_input.php:608
+#: data_input.php:532
 #, fuzzy
 msgid "White List Verification Succeeded."
 msgstr "Beyaz Liste Doğrulaması Başarılı."
 
-#: data_input.php:610
+#: data_input.php:534
 #, fuzzy
 msgid "White List Verification Failed.  Run CLI script input_whitelist.php to correct."
 msgstr "Beyaz Liste Doğrulaması Başarısız Oldu. Düzeltmek için CLI betiğini input_whitelist.php çalıştırın."
 
-#: data_input.php:612
+#: data_input.php:536
 #, fuzzy
 msgid "Input String does not exist in White List.  Run CLI script input_whitelist.php to correct."
 msgstr "Giriş Dizesi Beyaz Liste&#39;de mevcut değil. Düzeltmek için CLI betiğini input_whitelist.php çalıştırın."
 
-#: data_input.php:633
+#: data_input.php:557
 #, fuzzy
 msgid "Input Fields"
 msgstr "Giriş Alanları"
 
-#: data_input.php:637 data_input.php:698 include/global_form.php:465
+#: data_input.php:561 data_input.php:622 include/global_form.php:465
 msgid "Friendly Name"
 msgstr "Kolay İsim"
 
-#: data_input.php:638
+#: data_input.php:562
 msgid "Field Order"
 msgstr "Alan Sırası"
 
-#: data_input.php:682
+#: data_input.php:606
 #, fuzzy
 msgid "(Not In Use)"
 msgstr "Özel Yazı Tiplerini Kullan"
 
-#: data_input.php:691
+#: data_input.php:615
 #, fuzzy
 msgid "No Input Fields"
 msgstr "Giriş Alanı Yok"
 
-#: data_input.php:695
+#: data_input.php:619
 #, fuzzy
 msgid "Output Fields"
 msgstr "Çıkış alanları"
 
-#: data_input.php:699
+#: data_input.php:623
 #, fuzzy
 msgid "Update RRA"
 msgstr "RRA&#39;yı Güncelle"
 
-#: data_input.php:725
+#: data_input.php:649
 #, fuzzy
 msgid "Output Fields can not be removed when Data Sources are present"
 msgstr "Veri Kaynakları varken Çıktı Alanları kaldırılamaz"
 
-#: data_input.php:734
+#: data_input.php:658
 #, fuzzy
 msgid "No Output Fields"
 msgstr "Çıktı Alanı Yok"
 
-#: data_input.php:760
+#: data_input.php:684
 #, fuzzy
 msgid "Delete Data Input Field"
 msgstr "Veri Girişi Alanını Sil"
 
-#: data_input.php:817 include/global_arrays.php:1000
-#: include/global_arrays.php:1221 include/global_arrays.php:2359
+#: data_input.php:741 include/global_arrays.php:1000
+#: include/global_arrays.php:1224 include/global_arrays.php:2362
 #, fuzzy
 msgid "Data Input Methods"
 msgstr "Veri Girişi Yöntemleri"
 
-#: data_input.php:832 data_input.php:920
+#: data_input.php:756 data_input.php:844
 #, fuzzy
 msgid "Input Methods"
 msgstr "Giriş Yöntemleri"
 
-#: data_input.php:929
+#: data_input.php:853
 #, fuzzy
 msgid "Data Input Name"
 msgstr "Veri Girişi Adı"
 
-#: data_input.php:929
+#: data_input.php:853
 #, fuzzy
 msgid "The name of this Data Input Method."
 msgstr "Bu Veri Giriş Yöntemi&#39;nin adı."
 
-#: data_input.php:934
+#: data_input.php:858
 #, fuzzy
 msgid "The internal database ID for this Data Input Method.  Useful when performing automation or debugging."
 msgstr "Bu Veri Şablonu için dahili veritabanı kimliği. Otomasyon veya hata ayıklama yaparken kullanışlıdır."
 
-#: data_input.php:939
+#: data_input.php:863
 #, fuzzy
 msgid "Data Inputs that are in use cannot be Deleted. In use is defined as being referenced either by a Data Source or a Data Template."
 msgstr "Kullanımdaki Veri Girişleri Silinemez. Kullanımda, bir Veri Kaynağı veya Veri Şablonu tarafından referans alındığı tanımlanır."
 
-#: data_input.php:942 data_source_profiles.php:1064 data_templates.php:1205
+#: data_input.php:866 data_source_profiles.php:1064 data_templates.php:1205
 #, fuzzy
 msgid "Data Sources Using"
 msgstr "Veri Kaynakları Kullanımı"
 
-#: data_input.php:945
+#: data_input.php:869
 #, fuzzy
 msgid "The number of Data Sources that use this Data Input Method."
 msgstr "Bu Veri Girişi Yöntemi&#39;ni kullanan Veri Kaynağı sayısı."
 
-#: data_input.php:951
+#: data_input.php:875
 #, fuzzy
 msgid "The number of Data Templates that use this Data Input Method."
 msgstr "Bu Veri Girişi Yöntemi&#39;ni kullanan Veri Şablonlarının sayısı."
 
-#: data_input.php:954 data_queries.php:1406 include/global_arrays.php:1354
+#: data_input.php:878 data_queries.php:1425 include/global_arrays.php:1357
 #: include/global_form.php:584 include/global_form.php:1396
 #, fuzzy
 msgid "Data Input Method"
 msgstr "Veri Girişi Yöntemi"
 
-#: data_input.php:957
+#: data_input.php:881
 #, fuzzy
 msgid "The method used to gather information for this Data Input Method."
 msgstr "Bu Veri Giriş Yöntemi için bilgi toplamak için kullanılan yöntem."
 
-#: data_input.php:983
+#: data_input.php:907
 #, fuzzy
 msgid "No Data Input Methods Found"
 msgstr "Veri Giriş Yöntemi Bulunamadı"
 
-#: data_queries.php:402
+#: data_queries.php:407
 #, fuzzy
-msgid "Click 'Continue' to delete the following Data Query."
-msgid_plural "Click 'Continue' to delete following Data Queries."
+msgid "Click 'Continue' to Delete the following Data Query."
+msgid_plural "Click 'Continue' to Delete following Data Queries."
 msgstr[0] "Aşağıdaki Veri Sorgusunu silmek için &#39;Devam Et&#39;i tıklayın."
 msgstr[1] "Aşağıdaki Veri Sorgularını silmek için &#39;Devam Et&#39;i tıklayın."
 
-#: data_queries.php:408
+#: data_queries.php:412
 #, fuzzy
 msgid "Delete Data Query"
-msgid_plural "Delete Data Query"
+msgid_plural "Delete Data Queries"
 msgstr[0] "Veri Sorgusunu Sil"
 msgstr[1] "Veri Sorgusunu Sil"
 
-#: data_queries.php:565
+#: data_queries.php:416
+#, fuzzy
+msgid "Click 'Continue' to duplicate the following Data Query."
+msgid_plural "Click 'Continue' to duplicate following Data Queries."
+msgstr[0] "Aşağıdaki Veri Sorgusunu silmek için &#39;Devam Et&#39;i tıklayın."
+msgstr[1] "Aşağıdaki Veri Sorgularını silmek için &#39;Devam Et&#39;i tıklayın."
+
+#: data_queries.php:418 lib/html_reports.php:520
+#, fuzzy
+msgid "Name Format:"
+msgstr "İsim biçimi"
+
+#: data_queries.php:426
+#, fuzzy
+msgid "Duplicate Data Query"
+msgid_plural "Duplicate Data Queries"
+msgstr[0] "Veri Sorgusunu Sil"
+msgstr[1] "Veri Sorgusunu Sil"
+
+#: data_queries.php:584
 #, fuzzy
 msgid "Click 'Continue' to delete the following Data Query Graph Association."
 msgstr "Aşağıdaki Veri Sorgusu Grafiği Birliği&#39;ni silmek için &#39;Devam Et&#39;i tıklayın."
 
-#: data_queries.php:566
+#: data_queries.php:585
 #, fuzzy, php-format
 msgid "Graph Name: %s"
 msgstr "Grafik Adı: %s"
 
-#: data_queries.php:572
+#: data_queries.php:591
 #, fuzzy
 msgid "Remove Data Query Graph Template"
 msgstr "Grafik Şablonuna Dönüştür"
 
-#: data_queries.php:630
+#: data_queries.php:649
 #, fuzzy, php-format
 msgid "Associated Graph/Data Templates [edit: %s]"
 msgstr "İlişkili Grafik / Veri Şablonları [değiştir: %s]"
 
-#: data_queries.php:632
+#: data_queries.php:651
 #, fuzzy
 msgid "Associated Graph/Data Templates [new]"
 msgstr "İlişkili Grafik / Veri Şablonları [değiştir: %s]"
 
-#: data_queries.php:667
+#: data_queries.php:686
 #, fuzzy
 msgid "Associated Data Templates"
 msgstr "İlişkili Veri Şablonları"
 
-#: data_queries.php:683
+#: data_queries.php:702
 #, fuzzy, php-format
 msgid "Data Template - %s"
 msgstr "Veri Şablonu - %s"
 
-#: data_queries.php:734
+#: data_queries.php:753
 #, fuzzy
 msgid "If this Graph Template requires the Data Template Data Source to the left, select the correct XML output column and then to enable the mapping either check or toggle here."
 msgstr "Bu Grafik Şablonu, Veri Şablonu Veri Kaynağını sola gerektiriyorsa, doğru XML çıktı sütununu seçin ve ardından eşlemeyi burada kontrol etmek veya değiştirmek için etkinleştirin."
 
-#: data_queries.php:748
+#: data_queries.php:767
 #, fuzzy
 msgid "Suggested Values - Graphs"
 msgstr "Önerilen Değerler - Grafikler"
 
-#: data_queries.php:760 data_queries.php:865
+#: data_queries.php:779 data_queries.php:884
 msgid "Equation"
 msgstr "denklem"
 
-#: data_queries.php:813 data_queries.php:921
+#: data_queries.php:832 data_queries.php:940
 #, fuzzy
 msgid "No Suggested Values Found"
 msgstr "Önerilen Değer Bulunamadı"
 
-#: data_queries.php:822 data_queries.php:930 include/global_form.php:2139
+#: data_queries.php:841 data_queries.php:949 include/global_form.php:2139
 #: include/global_form.php:2181 lib/api_automation.php:1417 utilities.php:1870
 msgid "Field Name"
 msgstr "Alan Adı"
 
-#: data_queries.php:828 data_queries.php:936
+#: data_queries.php:847 data_queries.php:955
 #, fuzzy
 msgid "Suggested Value"
 msgstr "Önerilen değer"
 
-#: data_queries.php:834 data_queries.php:942 host.php:846 host.php:989
-#: host_templates.php:536 host_templates.php:590 lib/html.php:67
+#: data_queries.php:853 data_queries.php:961 host.php:846 host.php:989
+#: host_templates.php:493 host_templates.php:547 lib/html.php:67
 #: lib/html_filter.php:55
 msgid "Add"
 msgstr "Ekle"
 
-#: data_queries.php:834
+#: data_queries.php:853
 #, fuzzy
 msgid "Add Graph Title Suggested Name"
 msgstr "Grafik Başlığı Önerilen Ad Ekle"
 
-#: data_queries.php:844
+#: data_queries.php:863
 #, fuzzy
 msgid "Suggested Values - Data Sources"
 msgstr "Önerilen Değerler - Veri Kaynakları"
 
-#: data_queries.php:942
+#: data_queries.php:961
 #, fuzzy
 msgid "Add Data Source Name Suggested Name"
 msgstr "Veri Kaynağı Adı Ekle Önerilen İsim"
 
-#: data_queries.php:1082
+#: data_queries.php:1101
 #, fuzzy, php-format
 msgid "Data Queries [edit: %s]"
 msgstr "Veri Sorguları [değiştir: %s]"
 
-#: data_queries.php:1084
+#: data_queries.php:1103
 #, fuzzy
 msgid "Data Queries [new]"
 msgstr "Veri Sorguları [yeni]"
 
-#: data_queries.php:1106
+#: data_queries.php:1125
 #, fuzzy
 msgid "Successfully located XML file"
 msgstr "Başarıyla bulunan XML dosyası"
 
-#: data_queries.php:1109
+#: data_queries.php:1128
 #, fuzzy
 msgid "Could not locate XML file."
 msgstr "XML dosyası bulunamadı."
 
-#: data_queries.php:1117 host.php:758 host_templates.php:487
-#: include/global_arrays.php:2413
+#: data_queries.php:1136 host.php:758 host_templates.php:444
+#: include/global_arrays.php:2416
 #, fuzzy
 msgid "Associated Graph Templates"
 msgstr "İlişkili Grafik Şablonları"
 
-#: data_queries.php:1121 graph_templates.php:831 graphs_new.php:565
+#: data_queries.php:1140 graph_templates.php:831 graphs_new.php:565
 #: host.php:762 lib/api_automation.php:576
 #, fuzzy
 msgid "Graph Template Name"
 msgstr "Grafik Şablonu Adı"
 
-#: data_queries.php:1123
+#: data_queries.php:1142
 #, fuzzy
 msgid "Mapping ID"
 msgstr "Harita Kimliği"
 
-#: data_queries.php:1148
+#: data_queries.php:1167
 #, fuzzy
 msgid "Association Read Only until XML file located"
 msgstr "XML dosyası bulunana kadar İlişkilendirme Salt Okunur"
 
-#: data_queries.php:1165
+#: data_queries.php:1184
 #, fuzzy
 msgid "Mapped Graph Templates with Graphs are read only"
 msgstr "Grafikli Eşlenmiş Grafik Şablonları sadece okunur"
 
-#: data_queries.php:1172
+#: data_queries.php:1191
 #, fuzzy
 msgid "No Graph Templates Defined."
 msgstr "Tanımlanmış Grafik Şablonu Yok."
 
-#: data_queries.php:1214
+#: data_queries.php:1233
 #, fuzzy
 msgid "Delete Associated Graph"
 msgstr "İlişkili Grafiği Sil"
 
-#: data_queries.php:1270 data_queries.php:1285 data_queries.php:1413
-#: include/global_arrays.php:999 include/global_arrays.php:1222
-#: include/global_arrays.php:2395 lib/api_automation.php:1105
+#: data_queries.php:1289 data_queries.php:1304 data_queries.php:1432
+#: include/global_arrays.php:999 include/global_arrays.php:1225
+#: include/global_arrays.php:2398 lib/api_automation.php:1105
 #, fuzzy
 msgid "Data Queries"
 msgstr "Veri Sorguları"
 
-#: data_queries.php:1377 host.php:886 utilities.php:1870
+#: data_queries.php:1396 host.php:886 utilities.php:1870
 #, fuzzy
 msgid "Data Query Name"
 msgstr "Veri Sorgu Adı"
 
-#: data_queries.php:1380
+#: data_queries.php:1399
 #, fuzzy
 msgid "The name of this Data Query."
 msgstr "Bu Veri Sorgusunun adı."
 
-#: data_queries.php:1386 graph_templates.php:840
+#: data_queries.php:1405 graph_templates.php:840
 #, fuzzy
 msgid "The internal ID for this Graph Template.  Useful when performing automation or debugging."
 msgstr "Bu Grafik Şablonunun dahili kimliği. Otomasyon veya hata ayıklama yaparken kullanışlıdır."
 
-#: data_queries.php:1391
+#: data_queries.php:1410
 #, fuzzy
 msgid "Data Queries that are in use cannot be Deleted. In use is defined as being referenced by either a Graph or a Graph Template."
 msgstr "Kullanımdaki Veri Sorguları Silinemez. Kullanımda, bir Grafik veya Grafik Şablonu tarafından referans olarak tanımlanır."
 
-#: data_queries.php:1397
+#: data_queries.php:1416
 #, fuzzy
 msgid "The number of Graphs using this Data Query."
 msgstr "Bu Veri Sorgusunu kullanan Grafiklerin sayısı."
 
-#: data_queries.php:1403
+#: data_queries.php:1422
 #, fuzzy
 msgid "The number of Graphs Templates using this Data Query."
 msgstr "Bu Veri Sorgusunu kullanan Grafik Şablonları sayısı."
 
-#: data_queries.php:1409
+#: data_queries.php:1428
 #, fuzzy
 msgid "The Data Input Method used to collect data for Data Sources associated with this Data Query."
 msgstr "Bu Veri Sorgusu ile ilişkili Veri Kaynakları için veri toplamak için kullanılan Veri Girişi Yöntemi."
 
-#: data_queries.php:1443
+#: data_queries.php:1462
 #, fuzzy
 msgid "No Data Queries Found"
 msgstr "Veri Sorgusu Bulunamadı"
@@ -4283,7 +4308,7 @@ msgstr "Adımlar"
 
 #: data_source_profiles.php:639 graphs_new.php:463 include/global_form.php:298
 #: lib/html.php:550 lib/html_filter.php:72 lib/installer.php:2577
-#: lib/rrd.php:3207 support.php:807 utilities.php:866 utilities.php:1779
+#: lib/rrd.php:3213 support.php:807 utilities.php:866 utilities.php:1779
 msgid "Rows"
 msgstr "Satırlar"
 
@@ -4316,7 +4341,7 @@ msgstr ""
 #: include/global_arrays.php:790 include/global_arrays.php:791
 #: include/global_arrays.php:792 include/global_arrays.php:793
 #: include/global_arrays.php:794 include/global_arrays.php:795
-#: include/global_arrays.php:1468 include/global_settings.php:1599
+#: include/global_arrays.php:1471 include/global_settings.php:1599
 #, php-format
 msgid "%d Years"
 msgstr "%d Yıl"
@@ -4326,30 +4351,30 @@ msgid "1 Year"
 msgstr "1 Yıl"
 
 #: data_source_profiles.php:824 include/global_arrays.php:781
-#: include/global_arrays.php:1462 rrdcleaner.php:521
+#: include/global_arrays.php:1465 rrdcleaner.php:521
 #, php-format
 msgid "%d Month"
 msgstr "%d Ay"
 
 #: data_source_profiles.php:824 include/global_arrays.php:782
 #: include/global_arrays.php:783 include/global_arrays.php:784
-#: include/global_arrays.php:785 include/global_arrays.php:1463
-#: include/global_arrays.php:1464 include/global_arrays.php:1465
-#: include/global_arrays.php:1466 rrdcleaner.php:522 rrdcleaner.php:523
+#: include/global_arrays.php:785 include/global_arrays.php:1466
+#: include/global_arrays.php:1467 include/global_arrays.php:1468
+#: include/global_arrays.php:1469 rrdcleaner.php:522 rrdcleaner.php:523
 #: rrdcleaner.php:524
 #, php-format
 msgid "%d Months"
 msgstr "%d Ay"
 
 #: data_source_profiles.php:833 include/global_arrays.php:722
-#: include/global_arrays.php:778 include/global_arrays.php:1460
+#: include/global_arrays.php:778 include/global_arrays.php:1463
 #: rrdcleaner.php:517 rrdcleaner.php:518
 #, fuzzy, php-format
 msgid "%d Week"
 msgstr "% d Hafta"
 
 #: data_source_profiles.php:833 include/global_arrays.php:779
-#: include/global_arrays.php:780 include/global_arrays.php:1461
+#: include/global_arrays.php:780 include/global_arrays.php:1464
 #: include/global_settings.php:2893 include/global_settings.php:2894
 #: include/global_settings.php:2895 rrdcleaner.php:519 rrdcleaner.php:520
 #, php-format
@@ -4358,15 +4383,15 @@ msgstr "%d Hafta"
 
 #: data_source_profiles.php:842 include/global_arrays.php:721
 #: include/global_arrays.php:765 include/global_arrays.php:775
-#: include/global_arrays.php:1456
+#: include/global_arrays.php:1459
 #, php-format
 msgid "%d Day"
 msgstr "%d Gün"
 
 #: data_source_profiles.php:842 include/global_arrays.php:766
 #: include/global_arrays.php:776 include/global_arrays.php:777
-#: include/global_arrays.php:1457 include/global_arrays.php:1458
-#: include/global_arrays.php:1459 include/global_settings.php:1594
+#: include/global_arrays.php:1460 include/global_arrays.php:1461
+#: include/global_arrays.php:1462 include/global_settings.php:1594
 #: include/global_settings.php:1595 include/global_settings.php:1596
 #: include/global_settings.php:1597 include/global_settings.php:1608
 #: include/global_settings.php:1609 include/global_settings.php:1610
@@ -4376,15 +4401,15 @@ msgid "%d Days"
 msgstr "%d Gün"
 
 #: data_source_profiles.php:850 include/global_arrays.php:715
-#: include/global_arrays.php:1521 include/global_arrays.php:1542
-#: include/global_arrays.php:1552 include/global_arrays.php:1582
-#: include/global_arrays.php:1591 include/global_arrays.php:1619
+#: include/global_arrays.php:1524 include/global_arrays.php:1545
+#: include/global_arrays.php:1555 include/global_arrays.php:1585
+#: include/global_arrays.php:1594 include/global_arrays.php:1622
 #: include/global_settings.php:1367 include/global_settings.php:1382
 #: include/global_settings.php:1666 include/global_settings.php:2888
 msgid "1 Hour"
 msgstr "1 Saat"
 
-#: data_source_profiles.php:903 include/global_arrays.php:1229
+#: data_source_profiles.php:903 include/global_arrays.php:1232
 #, fuzzy
 msgid "Data Source Profiles"
 msgstr "Veri Kaynağı Profilleri"
@@ -4654,8 +4679,8 @@ msgstr "Bu veri şablonuna verilen isim. Lütfen Grafik Şablonlarını yalnızc
 
 #: data_sources.php:950 graph_view.php:743 graphs.php:1592
 #: include/global_arrays.php:954 include/global_arrays.php:1003
-#: include/global_arrays.php:1685 include/global_arrays.php:1854
-#: lib/api_automation.php:425 lib/functions.php:5290 lib/html.php:2067
+#: include/global_arrays.php:1688 include/global_arrays.php:1857
+#: lib/api_automation.php:425 lib/functions.php:5298 lib/html.php:2067
 #: lib/html.php:2099 lib/html_reports.php:1009 utilities.php:1870
 msgid "Device"
 msgstr "Cihaz"
@@ -4689,8 +4714,8 @@ msgstr "Özel Veriler"
 msgid "Data Source Item %s"
 msgstr "Veri Kaynağı Öğesi %s"
 
-#: data_sources.php:1106 data_templates.php:772 package_import.php:555
-#: package_import.php:614 templates_import.php:292
+#: data_sources.php:1106 data_templates.php:772 package_import.php:563
+#: package_import.php:622 templates_import.php:292
 msgid "New"
 msgstr "Yeni"
 
@@ -4709,8 +4734,8 @@ msgid "External"
 msgstr "Dış"
 
 #: data_sources.php:1219 include/global_arrays.php:710
-#: include/global_arrays.php:1203 include/global_arrays.php:1576
-#: include/global_arrays.php:1612 include/global_arrays.php:1630
+#: include/global_arrays.php:1206 include/global_arrays.php:1579
+#: include/global_arrays.php:1615 include/global_arrays.php:1633
 #: include/global_settings.php:1660 include/global_settings.php:2625
 msgid "1 Minute"
 msgstr "1 dakika boyu"
@@ -4929,7 +4954,7 @@ msgid "After you uncheck this checkbox and then Save the Data Template, any exis
 msgstr "Bu onay kutusunun işaretini kaldırdıktan ve ardından Veri Şablonunu Kaydettikten sonra, bu Veri Şablonunu temel alan mevcut Veri Kaynakları Özel Verilerini kaybeder. Bu, Veri Toplama ve Grafiklerin bozulmasına neden olabilir"
 
 #: data_templates.php:1032 data_templates.php:1063 data_templates.php:1230
-#: include/global_arrays.php:1233 include/global_arrays.php:2287
+#: include/global_arrays.php:1236 include/global_arrays.php:2290
 #, fuzzy
 msgid "Data Templates"
 msgstr "Veri Şablonları"
@@ -5007,7 +5032,7 @@ msgstr "GPRINT Presets [değiştir: %s]"
 msgid "GPRINT Presets [new]"
 msgstr "GPRINT Hazır Ayarları [yeni]"
 
-#: gprint_presets.php:253 include/global_arrays.php:2113
+#: gprint_presets.php:253 include/global_arrays.php:2116
 #, fuzzy
 msgid "GPRINT Presets"
 msgstr "GPRINT Hazır Ayarları"
@@ -5238,7 +5263,7 @@ msgstr "Grafiklerinizi aşağıdaki Grafik Şablonları ile Senkronize etmek iç
 msgid "Graph Template Items [edit: %s]"
 msgstr "Grafik Şablonu Öğeleri [değiştir: %s]"
 
-#: graph_templates.php:495 include/global_arrays.php:2257
+#: graph_templates.php:495 include/global_arrays.php:2260
 #, fuzzy
 msgid "Graph Item Inputs"
 msgstr "Grafik Öğesi Girdileri"
@@ -5269,8 +5294,8 @@ msgid "Check this checkbox if you wish to allow the user to override the value o
 msgstr "Grafik oluşturma sırasında kullanıcının sağdaki değeri geçersiz kılmasına izin vermek istiyorsanız bu onay kutusunu işaretleyin."
 
 #: graph_templates.php:694 graph_templates.php:709 graph_templates.php:873
-#: graphs_new.php:562 include/global_arrays.php:1232
-#: include/global_arrays.php:2233 lib/html_tree.php:556 user_admin.php:1283
+#: graphs_new.php:562 include/global_arrays.php:1235
+#: include/global_arrays.php:2236 lib/html_tree.php:556 user_admin.php:1283
 #: user_group_admin.php:1165
 #, fuzzy
 msgid "Graph Templates"
@@ -5406,7 +5431,7 @@ msgstr "[Uygulanan Özel Grafik Listesi - Listeden Filtrele]"
 msgid "View"
 msgstr "Görünüm"
 
-#: graph_view.php:631 graph_view.php:855 include/global_arrays.php:1211
+#: graph_view.php:631 graph_view.php:855 include/global_arrays.php:1214
 #, fuzzy
 msgid "View Graphs"
 msgstr "Grafikleri Görüntüle"
@@ -5426,20 +5451,20 @@ msgstr "Rapor"
 msgid "All Graphs & Templates"
 msgstr "Tüm Grafikler ve Şablonlar"
 
-#: graph_view.php:647 include/global_arrays.php:2905 lib/graphs.php:58
+#: graph_view.php:647 include/global_arrays.php:2908 lib/graphs.php:58
 #: lib/graphs.php:67 lib/html.php:219 lib/html_graph.php:158
 #: lib/html_tree.php:993
 #, fuzzy
 msgid "Not Templated"
 msgstr "Tapınaklı Değil"
 
-#: graph_view.php:738 graph_view.php:766 graphs.php:2237
+#: graph_view.php:738 graph_view.php:766 graphs.php:2239
 #: include/global_form.php:1899 lib/html_reports.php:1040 tree.php:943
 #, fuzzy
 msgid "Graph Name"
 msgstr "Grafik Adı"
 
-#: graph_view.php:740 graph_view.php:768 graphs.php:2240
+#: graph_view.php:740 graph_view.php:768 graphs.php:2242
 #, fuzzy
 msgid "The Title of this Graph.  Generally programmatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual."
 msgstr "Bu Grafiğin Başlığı. Genel olarak programlı olarak Grafik Şablonu tanımından veya Önerilen Adlandırma kurallarından oluşturulur. Başlığın maksimum uzunluğu Ayarlar-&gt; Görsel altında kontrol edilir."
@@ -5449,25 +5474,25 @@ msgstr "Bu Grafiğin Başlığı. Genel olarak programlı olarak Grafik Şablonu
 msgid "The device for this Graph."
 msgstr "Bu grubun adı."
 
-#: graph_view.php:748 graphs.php:2249
+#: graph_view.php:748 graphs.php:2251
 msgid "Source Type"
 msgstr "Kaynak Türü"
 
-#: graph_view.php:750 graphs.php:2252
+#: graph_view.php:750 graphs.php:2254
 #, fuzzy
 msgid "The underlying source that this Graph was based upon."
 msgstr "Bu Grafiğin dayandığı temel kaynak."
 
-#: graph_view.php:753 graphs.php:2255
+#: graph_view.php:753 graphs.php:2257
 msgid "Source Name"
 msgstr "Kaynak adı"
 
-#: graph_view.php:755 graphs.php:2258
+#: graph_view.php:755 graphs.php:2260
 #, fuzzy
 msgid "The Graph Template or Data Query that this Graph was based upon."
 msgstr "Grafik Şablonu veya Bu Grafiğin dayandığı Veri Sorgusu."
 
-#: graph_view.php:760 graph_view.php:773 graphs.php:2264
+#: graph_view.php:760 graph_view.php:773 graphs.php:2266
 #, fuzzy
 msgid "The size of this Graph when not in Preview mode."
 msgstr "Önizleme modunda değilken bu Grafiğin boyutu."
@@ -5477,7 +5502,7 @@ msgstr "Önizleme modunda değilken bu Grafiğin boyutu."
 msgid "Select the Report to add the selected Graphs to."
 msgstr "Seçili Grafikleri eklemek için Raporu seçin."
 
-#: graph_view.php:919 include/global_arrays.php:2033
+#: graph_view.php:919 include/global_arrays.php:2036
 #: include/global_settings.php:2696
 msgid "Preview Mode"
 msgstr "Önizleme modu"
@@ -5545,7 +5570,7 @@ msgstr "Özet Detaylar"
 msgid "Download"
 msgstr "İndir"
 
-#: graphs.php:51 graphs.php:932 include/global_arrays.php:2083
+#: graphs.php:51 graphs.php:932 include/global_arrays.php:2086
 #, fuzzy
 msgid "Change Graph Template"
 msgstr "Grafik Şablonunu Değiştir"
@@ -5808,12 +5833,12 @@ msgstr "Grafik, Veri Kaynağı"
 msgid "Non Templated"
 msgstr "Tapınaklı Değil"
 
-#: graphs.php:2246
+#: graphs.php:2248
 #, fuzzy
 msgid "The internal database ID for this Graph.  Useful when performing automation or debugging."
 msgstr "Bu Grafik için dahili veritabanı kimliği. Otomasyon veya hata ayıklama yaparken kullanışlıdır."
 
-#: graphs.php:2290
+#: graphs.php:2292
 #, fuzzy
 msgid "Empty Graph"
 msgstr "Grafiği kopyala"
@@ -5828,7 +5853,7 @@ msgstr "Veri Kaynakları [Aygıt Yok]"
 msgid "Data Sources [%s]"
 msgstr "Veri Kaynakları [ %s]"
 
-#: graphs_items.php:353 include/global_arrays.php:1353
+#: graphs_items.php:353 include/global_arrays.php:1356
 #: include/global_form.php:1655
 #, fuzzy
 msgid "Data Template"
@@ -6188,7 +6213,7 @@ msgstr "Aygıt Hata Ayıklamasını Etkinleştir"
 msgid "Repopulate Poller Cache"
 msgstr "Poller Cache&#39;i Yeniden Oluştur"
 
-#: host.php:704 include/global_arrays.php:2455 include/global_arrays.php:2467
+#: host.php:704 include/global_arrays.php:2458 include/global_arrays.php:2470
 #: utilities.php:2276
 #, fuzzy
 msgid "View Poller Cache"
@@ -6238,12 +6263,12 @@ msgstr "Üzülmemek"
 msgid "Delete Graph Template Association"
 msgstr "Grafik Şablonu Birliğini Sil"
 
-#: host.php:831 host_templates.php:514
+#: host.php:831 host_templates.php:471
 #, fuzzy
 msgid "No associated graph templates."
 msgstr "İlişkili grafik şablonu yok."
 
-#: host.php:840 host_templates.php:523
+#: host.php:840 host_templates.php:480
 #, fuzzy
 msgid "Add Graph Template"
 msgstr "Grafik Şablonu Ekle"
@@ -6258,7 +6283,7 @@ msgstr "Cihaza Grafik Şablonu Ekleme"
 msgid "Data Query Debug Information"
 msgstr "Veri Sorgu Hata Ayıklama Bilgisi"
 
-#: host.php:866 lib/functions.php:4282 tree.php:1725 tree.php:1799
+#: host.php:866 lib/functions.php:4290 tree.php:1725 tree.php:1799
 #: tree.php:1907 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "Kopya"
@@ -6267,7 +6292,7 @@ msgstr "Kopya"
 msgid "Hide"
 msgstr "Gizle"
 
-#: host.php:882 host_templates.php:546
+#: host.php:882 host_templates.php:503
 #, fuzzy
 msgid "Associated Data Queries"
 msgstr "İlişkili Veri Sorguları"
@@ -6277,15 +6302,15 @@ msgstr "İlişkili Veri Sorguları"
 msgid "Re-Index Method"
 msgstr "Yeniden Dizin Yöntemi"
 
-#: host.php:889 include/global_arrays.php:2089 include/global_arrays.php:2155
-#: include/global_arrays.php:2245 include/global_arrays.php:2281
-#: include/global_arrays.php:2299 include/global_arrays.php:2317
-#: include/global_arrays.php:2335 include/global_arrays.php:2365
-#: include/global_arrays.php:2401 include/global_arrays.php:2431
-#: include/global_arrays.php:2527 include/global_arrays.php:2731
-#: include/global_arrays.php:2755 include/global_arrays.php:2773
-#: include/global_arrays.php:2791 include/global_arrays.php:2809
-#: include/global_arrays.php:2833 lib/api_automation.php:1293
+#: host.php:889 include/global_arrays.php:2092 include/global_arrays.php:2158
+#: include/global_arrays.php:2248 include/global_arrays.php:2284
+#: include/global_arrays.php:2302 include/global_arrays.php:2320
+#: include/global_arrays.php:2338 include/global_arrays.php:2368
+#: include/global_arrays.php:2404 include/global_arrays.php:2434
+#: include/global_arrays.php:2530 include/global_arrays.php:2734
+#: include/global_arrays.php:2758 include/global_arrays.php:2776
+#: include/global_arrays.php:2794 include/global_arrays.php:2812
+#: include/global_arrays.php:2836 lib/api_automation.php:1293
 #: lib/api_automation.php:1355 lib/api_automation.php:1422
 #: lib/html_reports.php:1616 links.php:379 plugins.php:570
 msgid "Actions"
@@ -6300,7 +6325,7 @@ msgstr "[% d Öğeler,% d Satırlar]"
 msgid "Fail"
 msgstr "Başarısız"
 
-#: host.php:950 lib/functions.php:5305 lib/functions.php:5310
+#: host.php:950 lib/functions.php:5313 lib/functions.php:5318
 msgid "Success"
 msgstr "Başarılı"
 
@@ -6324,7 +6349,7 @@ msgstr "Sorguyu Kaldır"
 msgid "No Associated Data Queries."
 msgstr "İlişkili Veri Sorgusu Yok."
 
-#: host.php:977 host_templates.php:580
+#: host.php:977 host_templates.php:537
 #, fuzzy
 msgid "Add Data Query"
 msgstr "Veri Sorgusu Ekleme"
@@ -6390,9 +6415,9 @@ msgstr "kurtarma"
 
 #: host.php:1645 lib/api_automation.php:175 lib/api_automation.php:1101
 #: lib/auth.php:2399 lib/html_utility.php:949 lib/import.php:330
-#: lib/plugins.php:1296 lib/plugins.php:1297 lib/rrd.php:3178 lib/rrd.php:3190
-#: package_import.php:557 support.php:119 support.php:120 utilities.php:211
-#: utilities.php:212 utilities.php:2611
+#: lib/plugins.php:1296 lib/plugins.php:1297 lib/rrd.php:3184 lib/rrd.php:3196
+#: package_import.php:487 package_import.php:565 support.php:119
+#: support.php:120 utilities.php:211 utilities.php:212 utilities.php:2611
 msgid "Unknown"
 msgstr "Bilinmeyen"
 
@@ -6497,147 +6522,147 @@ msgstr "Bu Aygıt için sayaçları temizlediğinden beri ping sonuçlarına gö
 msgid "Sync Devices"
 msgstr "Cihazları Eşitle"
 
-#: host_templates.php:266
+#: host_templates.php:223
 #, fuzzy
 msgid "Click 'Continue' to delete the following Device Template(s)."
 msgstr "Aşağıdaki Cihaz Şablonlarını silmek için &#39;Devam Et&#39;i tıklayın."
 
-#: host_templates.php:271
+#: host_templates.php:228
 #, fuzzy
 msgid "Delete Device Template(s)"
 msgstr "Aygıt Şablonlarını Sil"
 
-#: host_templates.php:275
+#: host_templates.php:232
 #, fuzzy
 msgid "Click 'Continue' to duplicate the following Device Template(s).  Optionally change the title for the new Device Template(s)."
 msgstr "Aşağıdaki Cihaz Şablonlarını çoğaltmak için &#39;Devam Et&#39;i tıklayın. İsteğe bağlı olarak yeni Aygıt Şablonları için başlığı değiştirin."
 
-#: host_templates.php:285
+#: host_templates.php:242
 #, fuzzy
 msgid "Duplicate Device Template(s)"
 msgstr "Yinelenen Aygıt Şablonları"
 
-#: host_templates.php:289
+#: host_templates.php:246
 #, fuzzy
 msgid "Click 'Continue' to Synchronize Devices associated with the selected Device Template(s).  Note that this action may take some time depending on the number of Devices mapped to the Device Template."
 msgstr "Seçili Cihaz Şablonlarıyla İlişkili Cihazları Senkronize Etmek için &#39;Devam Et&#39;i tıklayın. Bu işlemin, Aygıt Şablonuyla eşlenen Aygıt sayısına bağlı olarak biraz zaman alabileceğini unutmayın."
 
-#: host_templates.php:296
+#: host_templates.php:253
 #, fuzzy
 msgid "Sync Devices to Device Template(s)"
 msgstr "Aygıtları Aygıt Şablonlarıyla Eşitle"
 
-#: host_templates.php:339
+#: host_templates.php:296
 #, fuzzy
 msgid "Click 'Continue' to delete the following Graph Template will be disassociated from the Device Template."
 msgstr "Aşağıdaki Grafik Şablonunu silmek için &#39;Devam Et&#39;i tıklayın, Aygıt Şablonundan ayrıştırılacak."
 
-#: host_templates.php:340
+#: host_templates.php:297
 #, fuzzy, php-format
 msgid "Graph Template Name: %s"
 msgstr "Grafik Şablonu Adı: %s"
 
-#: host_templates.php:402
+#: host_templates.php:359
 #, fuzzy
 msgid "Click 'Continue' to delete the following Data Queries will be disassociated from the Device Template."
 msgstr "Aşağıdaki Veri Sorgularını silmek için &#39;Devam Et&#39;i tıklayın, Cihaz Şablonundan ayrılacaksınız."
 
-#: host_templates.php:403
+#: host_templates.php:360
 #, fuzzy, php-format
 msgid "Data Query Name: %s"
 msgstr "Veri Sorgu Adı: %s"
 
-#: host_templates.php:463
+#: host_templates.php:420
 #, fuzzy, php-format
 msgid "Device Templates [edit: %s]"
 msgstr "Cihaz Şablonları [edit: %s]"
 
-#: host_templates.php:465
+#: host_templates.php:422
 #, fuzzy
 msgid "Device Templates [new]"
 msgstr "Cihaz Şablonları [yeni]"
 
-#: host_templates.php:482
+#: host_templates.php:439
 #, fuzzy
 msgid "Default Submit Button"
 msgstr "Varsayılan Gönder Düğmesi"
 
-#: host_templates.php:536
+#: host_templates.php:493
 #, fuzzy
 msgid "Add Graph Template to Device Template"
 msgstr "Aygıt Şablonuna Grafik Şablonu Ekle"
 
-#: host_templates.php:571
+#: host_templates.php:528
 #, fuzzy
 msgid "No associated data queries."
 msgstr "İlişkili veri sorgusu yok."
 
-#: host_templates.php:590
+#: host_templates.php:547
 #, fuzzy
 msgid "Add Data Query to Device Template"
 msgstr "Aygıt Şablonuna Veri Sorgusu Ekleme"
 
-#: host_templates.php:624
+#: host_templates.php:581
 #, fuzzy
 msgid "Delete Item from Device Template"
 msgstr "Aygıt Şablonlarını Sil"
 
-#: host_templates.php:718 host_templates.php:748 host_templates.php:887
-#: include/global_arrays.php:1234 include/global_arrays.php:2269
+#: host_templates.php:675 host_templates.php:705 host_templates.php:844
+#: include/global_arrays.php:1237 include/global_arrays.php:2272
 #, fuzzy
 msgid "Device Templates"
 msgstr "Cihaz Şablonları"
 
-#: host_templates.php:733 host_templates.php:862
+#: host_templates.php:690 host_templates.php:819
 #, fuzzy
 msgid "Device Class"
 msgstr "Cihaz Kuralları"
 
-#: host_templates.php:765
+#: host_templates.php:722
 #, fuzzy
 msgid "Has Devices"
 msgstr "Cihazlar var"
 
-#: host_templates.php:856 lib/api_automation.php:281 lib/api_automation.php:572
+#: host_templates.php:813 lib/api_automation.php:281 lib/api_automation.php:572
 #: lib/api_automation.php:1220
 #, fuzzy
 msgid "Device Template Name"
 msgstr "Cihaz Şablonu Adı"
 
-#: host_templates.php:859
+#: host_templates.php:816
 #, fuzzy
 msgid "The name of this Device Template."
 msgstr "Bu Cihaz Şablonunun adı."
 
-#: host_templates.php:865
+#: host_templates.php:822
 msgid "The Class of this Device Template.  The Class Name should be representative of it's function."
 msgstr ""
 
-#: host_templates.php:871
+#: host_templates.php:828
 #, fuzzy
 msgid "The internal database ID for this Device Template.  Useful when performing automation or debugging."
 msgstr "Bu Aygıt Şablonu için dahili veritabanı kimliği. Otomasyon veya hata ayıklama yaparken kullanışlıdır."
 
-#: host_templates.php:877
+#: host_templates.php:834
 #, fuzzy
 msgid "Device Templates in use cannot be Deleted.  In use is defined as being referenced by a Device."
 msgstr "Kullanılan Cihaz Şablonları Silinemez. Kullanımda, bir Cihaz tarafından referans olarak tanımlanır."
 
-#: host_templates.php:880
+#: host_templates.php:837
 #, fuzzy
 msgid "Devices Using"
 msgstr "Kullanılan Aygıtlar"
 
-#: host_templates.php:883
+#: host_templates.php:840
 #, fuzzy
 msgid "The number of Devices using this Device Template."
 msgstr "Bu Cihaz Şablonunu kullanan Cihazların sayısı."
 
-#: host_templates.php:912 include/global_arrays.php:1097
+#: host_templates.php:869 include/global_arrays.php:1100
 msgid "Unassigned"
 msgstr ""
 
-#: host_templates.php:922
+#: host_templates.php:879
 #, fuzzy
 msgid "No Device Templates Found"
 msgstr "Aygıt Şablonu Bulunamadı"
@@ -6656,23 +6681,23 @@ msgstr "Bu kaktüslere erişmek için giriş yapmalısınız."
 msgid "FATAL: You must be logged in to access this area of Cacti."
 msgstr "FATAL: Bu kaktüsler alanına erişmek için giriş yapmalısınız."
 
-#: include/auth.php:265 include/auth.php:267 lib/auth.php:4539
+#: include/auth.php:265 include/auth.php:267 lib/auth.php:4540
 #: permission_denied.php:30 permission_denied.php:32
 #, fuzzy
 msgid "Login Again"
 msgstr "Tekrar giriş yap"
 
-#: include/auth.php:272 lib/functions.php:6952 permission_denied.php:45
+#: include/auth.php:272 lib/functions.php:6960 permission_denied.php:45
 #: permission_denied.php:52
 msgid "Permission Denied"
 msgstr "Izin reddedildi"
 
-#: include/auth.php:273 lib/functions.php:6953 permission_denied.php:54
+#: include/auth.php:273 lib/functions.php:6961 permission_denied.php:54
 #, fuzzy
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr "Bunun bir hata olduğunu düşünüyorsanız. Lütfen Cacti Yöneticinizle görüşün."
 
-#: include/auth.php:273 lib/functions.php:6953 permission_denied.php:54
+#: include/auth.php:273 lib/functions.php:6961 permission_denied.php:54
 #, fuzzy
 msgid "You are not permitted to access this section of Cacti."
 msgstr "Kaktüslerin bu bölümüne erişmene izin verilmiyor."
@@ -6692,12 +6717,12 @@ msgstr "Şu anda yalnızca Yükleme / Yükseltme ayrıcalıklarına sahip Cacti 
 msgid "There is an Installation or Upgrade in progress."
 msgstr "Devam eden bir Kurulum veya Yükseltme var."
 
-#: include/global.php:570
+#: include/global.php:571
 #, fuzzy
 msgid "The Main Data Collector has returned to an Online Status"
 msgstr "Bu Veri Toplayıcı&#39;nın en son ana Cacti sitesiyle tam olarak eşitlendiği."
 
-#: include/global.php:574
+#: include/global.php:575
 msgid "The Main Data Collector has gone to an Offline or Recovering Status"
 msgstr ""
 
@@ -7415,9 +7440,9 @@ msgstr "Her Saat"
 #: include/global_arrays.php:739 include/global_arrays.php:740
 #: include/global_arrays.php:811 include/global_arrays.php:812
 #: include/global_arrays.php:813 include/global_arrays.php:814
-#: include/global_arrays.php:1864 include/global_arrays.php:1865
-#: include/global_arrays.php:1866 include/global_arrays.php:1867
-#: include/global_arrays.php:1868 include/global_settings.php:2514
+#: include/global_arrays.php:1867 include/global_arrays.php:1868
+#: include/global_arrays.php:1869 include/global_arrays.php:1870
+#: include/global_arrays.php:1871 include/global_settings.php:2514
 #: include/global_settings.php:2515
 #, fuzzy, php-format
 msgid "Every %d Hours"
@@ -7434,7 +7459,7 @@ msgstr "Her% 1 günde"
 msgid "%0.1f Minutes"
 msgstr "%d Dakika"
 
-#: include/global_arrays.php:786 include/global_arrays.php:1467
+#: include/global_arrays.php:786 include/global_arrays.php:1470
 #: include/global_settings.php:1598 rrdcleaner.php:525
 #, php-format
 msgid "%d Year"
@@ -7560,12 +7585,12 @@ msgstr "Doğal Sipariş"
 msgid "Numeric Ordering"
 msgstr "Sayısal Sipariş"
 
-#: include/global_arrays.php:952 lib/rrd.php:3119
+#: include/global_arrays.php:952 lib/rrd.php:3125
 msgid "Header"
 msgstr "Başlık"
 
 #: include/global_arrays.php:953 include/global_arrays.php:1004
-#: include/global_arrays.php:1684 include/global_arrays.php:1853
+#: include/global_arrays.php:1687 include/global_arrays.php:1856
 #: lib/html.php:2558
 msgid "Graph"
 msgstr "Grafik"
@@ -7671,7 +7696,7 @@ msgstr "Kullanıcı Yonetimi"
 msgid "Sites"
 msgstr "Siteler"
 
-#: include/global_arrays.php:992 include/global_arrays.php:1226 tree.php:2119
+#: include/global_arrays.php:992 include/global_arrays.php:1229 tree.php:2119
 #: tree.php:2134 tree.php:2198 user_admin.php:1422 user_admin.php:2954
 #: user_admin.php:3051 user_group_admin.php:1297 user_group_admin.php:2610
 msgid "Trees"
@@ -7683,17 +7708,17 @@ msgid "Data Collection"
 msgstr "Veri Koleksiyonu"
 
 #: include/global_arrays.php:998 include/global_arrays.php:1049
-#: include/global_arrays.php:2197 pollers.php:870
+#: include/global_arrays.php:2200 pollers.php:870
 #, fuzzy
 msgid "Data Collectors"
 msgstr "Veri Toplayıcıları"
 
-#: include/global_arrays.php:1006 include/global_arrays.php:2908
+#: include/global_arrays.php:1006 include/global_arrays.php:2911
 msgid "Aggregate"
 msgstr "Toplam"
 
 #: include/global_arrays.php:1009 include/global_arrays.php:1066
-#: include/global_arrays.php:1218 include/global_settings.php:519
+#: include/global_arrays.php:1221 include/global_settings.php:519
 msgid "Automation"
 msgstr "Otomasyon"
 
@@ -7707,18 +7732,18 @@ msgstr "Keşfedilen Cihazlar"
 msgid "Device Rules"
 msgstr "Cihaz Kuralları"
 
-#: include/global_arrays.php:1017 include/global_arrays.php:1067
-#: include/global_arrays.php:1230 lib/html_filter.php:177
+#: include/global_arrays.php:1016 include/global_arrays.php:1067
+#: include/global_arrays.php:1233 lib/html_filter.php:177
 #: lib/html_graph.php:252 lib/html_tree.php:1080
 msgid "Presets"
 msgstr "Hazır ayarlar"
 
-#: include/global_arrays.php:1018
+#: include/global_arrays.php:1017
 #, fuzzy
 msgid "Data Profiles"
 msgstr "Veri profilleri"
 
-#: include/global_arrays.php:1020 include/global_arrays.php:2521 vdef.php:696
+#: include/global_arrays.php:1020 include/global_arrays.php:2524 vdef.php:696
 #: vdef.php:710 vdef.php:881
 #, fuzzy
 msgid "VDEFs"
@@ -7728,19 +7753,19 @@ msgstr "VDEFs"
 msgid "Import/Export"
 msgstr "İçe Aktar/Dışa Aktar"
 
-#: include/global_arrays.php:1025 include/global_arrays.php:1237
-#: include/global_arrays.php:2647
+#: include/global_arrays.php:1025 include/global_arrays.php:1240
+#: include/global_arrays.php:2650
 msgid "Import Templates"
 msgstr "İçe Aktarma Şablonları"
 
-#: include/global_arrays.php:1026 include/global_arrays.php:2653
+#: include/global_arrays.php:1026 include/global_arrays.php:2656
 #, fuzzy
 #| msgid "Import Templates"
 msgid "Import Packages"
 msgstr "İçe Aktarma Şablonları"
 
-#: include/global_arrays.php:1027 include/global_arrays.php:1236
-#: include/global_arrays.php:2635 templates_export.php:159
+#: include/global_arrays.php:1027 include/global_arrays.php:1239
+#: include/global_arrays.php:2638 templates_export.php:159
 msgid "Export Templates"
 msgstr "Şablonları Dışa Aktar"
 
@@ -7754,24 +7779,24 @@ msgstr "Yapılandırma"
 msgid "Settings"
 msgstr "Ayarlar"
 
-#: include/global_arrays.php:1031 include/global_arrays.php:2575
+#: include/global_arrays.php:1031 include/global_arrays.php:2578
 #: user_admin.php:2159 user_admin.php:2223 user_group_admin.php:672
 #: user_group_admin.php:2707
 msgid "Users"
 msgstr "Kullanıcılar"
 
-#: include/global_arrays.php:1032 include/global_arrays.php:2605
+#: include/global_arrays.php:1032 include/global_arrays.php:2608
 msgid "User Groups"
 msgstr "Kullanıcı Grupları"
 
-#: include/global_arrays.php:1033 include/global_arrays.php:2593
+#: include/global_arrays.php:1033 include/global_arrays.php:2596
 #: user_domains.php:649 user_domains.php:741
 #, fuzzy
 msgid "User Domains"
 msgstr "Kullanıcı Etki Alanları"
 
 #: include/global_arrays.php:1035 include/global_arrays.php:1054
-#: include/global_arrays.php:1070 include/global_arrays.php:2449
+#: include/global_arrays.php:1070 include/global_arrays.php:2452
 msgid "Utilities"
 msgstr "Araçlar"
 
@@ -7781,8 +7806,8 @@ msgid "System Utilities"
 msgstr "Sistem Araçları"
 
 #: include/global_arrays.php:1037 include/global_arrays.php:1071
-#: include/global_arrays.php:1111 include/global_arrays.php:1214
-#: include/global_arrays.php:2209 links.php:91 links.php:302 links.php:372
+#: include/global_arrays.php:1114 include/global_arrays.php:1217
+#: include/global_arrays.php:2212 links.php:91 links.php:302 links.php:372
 #: links.php:403 links.php:485 user_admin.php:1580 user_group_admin.php:1462
 msgid "External Links"
 msgstr "Dış bağlantılar"
@@ -7861,422 +7886,435 @@ msgid "Network Router"
 msgstr "Ağ Filtreleri"
 
 #: include/global_arrays.php:1091
-#, fuzzy
-msgid "Network Firewall"
-msgstr "Ağ Filtreleri"
+msgid "NAS/SAN Related"
+msgstr ""
 
 #: include/global_arrays.php:1092
+#, fuzzy
+msgid "Network Firewalls"
+msgstr "Ağ Filtreleri"
+
+#: include/global_arrays.php:1093
+msgid "Power Related PDUs/STS, etc."
+msgstr ""
+
+#: include/global_arrays.php:1094
+#, fuzzy
+msgid "Printer Related"
+msgstr "Veritabanı"
+
+#: include/global_arrays.php:1095
 msgid "Storage Related"
 msgstr ""
 
-#: include/global_arrays.php:1093
+#: include/global_arrays.php:1096
 #, fuzzy
 #| msgid "Select Template"
 msgid "Telco Related"
 msgstr "Şablonu Seç"
 
-#: include/global_arrays.php:1094
+#: include/global_arrays.php:1097
 msgid "Web Server Related"
 msgstr ""
 
-#: include/global_arrays.php:1095
+#: include/global_arrays.php:1098
 msgid "Windows Related"
 msgstr ""
 
-#: include/global_arrays.php:1096
+#: include/global_arrays.php:1099
 msgid "UPS Related"
 msgstr ""
 
-#: include/global_arrays.php:1120
+#: include/global_arrays.php:1123
 #, fuzzy
 msgid "All Lines"
 msgstr "Tüm Hatlar"
 
-#: include/global_arrays.php:1121 include/global_arrays.php:1122
-#: include/global_arrays.php:1123 include/global_arrays.php:1124
-#: include/global_arrays.php:1125 include/global_arrays.php:1126
-#: include/global_arrays.php:1127 include/global_arrays.php:1128
-#: include/global_arrays.php:1129 include/global_arrays.php:1130
-#: include/global_arrays.php:1131 include/global_arrays.php:1132
+#: include/global_arrays.php:1124 include/global_arrays.php:1125
+#: include/global_arrays.php:1126 include/global_arrays.php:1127
+#: include/global_arrays.php:1128 include/global_arrays.php:1129
+#: include/global_arrays.php:1130 include/global_arrays.php:1131
+#: include/global_arrays.php:1132 include/global_arrays.php:1133
+#: include/global_arrays.php:1134 include/global_arrays.php:1135
 #, fuzzy, php-format
 msgid "%d Lines"
 msgstr "% d Satır"
 
-#: include/global_arrays.php:1210
+#: include/global_arrays.php:1213
 #, fuzzy
 msgid "Console Access"
 msgstr "Konsol Erişimi"
 
-#: include/global_arrays.php:1212
+#: include/global_arrays.php:1215
 #, fuzzy
 msgid "Realtime Graphs"
 msgstr "Gerçek Zamanlı Grafikler"
 
-#: include/global_arrays.php:1213
+#: include/global_arrays.php:1216
 msgid "Update Profile"
 msgstr "Profili Güncelle"
 
-#: include/global_arrays.php:1216
+#: include/global_arrays.php:1219
 #, fuzzy
 msgid "Users/Groups"
 msgstr "Kullanıcı Grupları"
 
-#: include/global_arrays.php:1217
+#: include/global_arrays.php:1220
 #, fuzzy
 msgid "Settings/Utilities"
 msgstr "Ayarlar / Kamu"
 
-#: include/global_arrays.php:1219
+#: include/global_arrays.php:1222
 #, fuzzy
 msgid "Installation/Upgrades"
 msgstr "Kurulum / Yükseltmeler"
 
-#: include/global_arrays.php:1224
+#: include/global_arrays.php:1227
 #, fuzzy
 msgid "Sites/Devices/Data"
 msgstr "Siteler / Cihazlar / Veri"
 
-#: include/global_arrays.php:1227
+#: include/global_arrays.php:1230
 #, fuzzy
 msgid "Spike Handling"
 msgstr "Spike Kill Ayarları"
 
-#: include/global_arrays.php:1239 utilities.php:2265
+#: include/global_arrays.php:1242 utilities.php:2265
 #, fuzzy
 msgid "Log Administration"
 msgstr "Günlük Yönetimi"
 
-#: include/global_arrays.php:1240
+#: include/global_arrays.php:1243
 #, fuzzy
 msgid "Log Viewing"
 msgstr "Günlük görüntüleme"
 
-#: include/global_arrays.php:1242
+#: include/global_arrays.php:1245
 #, fuzzy
 msgid "Reports Administration"
 msgstr "Günlük Yönetimi"
 
-#: include/global_arrays.php:1243
+#: include/global_arrays.php:1246
 #, fuzzy
 msgid "Reports Creation"
 msgstr "Rapor Oluşturma"
 
-#: include/global_arrays.php:1244
+#: include/global_arrays.php:1247
 #, fuzzy
 msgid "Show Graph Action Icons"
 msgstr "Grafik Başlığını Göster"
 
-#: include/global_arrays.php:1245
+#: include/global_arrays.php:1248
 #, fuzzy
 msgid "Show User Help Links"
 msgstr "Kullanıcı Yardım Bağlantılarını Göster"
 
-#: include/global_arrays.php:1246
+#: include/global_arrays.php:1249
 #, fuzzy
 msgid "Plugin Administration"
 msgstr "Günlük Yönetimi"
 
-#: include/global_arrays.php:1250
+#: include/global_arrays.php:1253
 msgid "Normal User"
 msgstr "Normal Kullanıcı"
 
-#: include/global_arrays.php:1251
+#: include/global_arrays.php:1254
 #, fuzzy
 msgid "Template Editor"
 msgstr "Şablon Düzenleyici"
 
-#: include/global_arrays.php:1252
+#: include/global_arrays.php:1255
 #, fuzzy
 msgid "General Administration"
 msgstr "Genel Yönetim"
 
-#: include/global_arrays.php:1253
+#: include/global_arrays.php:1256
 msgid "System Administration"
 msgstr "Sistem Yönetimi"
 
-#: include/global_arrays.php:1350 lib/html.php:1164
+#: include/global_arrays.php:1353 lib/html.php:1164
 #, fuzzy
 msgid "CDEF"
 msgstr "CDEF"
 
-#: include/global_arrays.php:1351
+#: include/global_arrays.php:1354
 #, fuzzy
 msgid "CDEF Item"
 msgstr "CDEF Öğesi"
 
-#: include/global_arrays.php:1352
+#: include/global_arrays.php:1355
 #, fuzzy
 msgid "GPRINT Preset"
 msgstr "GPRINT Hazır Ayarı"
 
-#: include/global_arrays.php:1355
+#: include/global_arrays.php:1358
 #, fuzzy
 msgid "Data Input Field"
 msgstr "Veri Giriş Alanı"
 
-#: include/global_arrays.php:1356 include/global_form.php:593
-#: include/global_form.php:1694 package_import.php:830
+#: include/global_arrays.php:1359 include/global_form.php:593
+#: include/global_form.php:1694 package_import.php:838
 #, fuzzy
 msgid "Data Source Profile"
 msgstr "Veri Kaynağı Profili"
 
-#: include/global_arrays.php:1357
+#: include/global_arrays.php:1360
 #, fuzzy
 msgid "Data Template Item"
 msgstr "Veri Şablonu Öğesi"
 
-#: include/global_arrays.php:1359
+#: include/global_arrays.php:1362
 #, fuzzy
 msgid "Graph Template Item"
 msgstr "Grafik Şablonu Öğesi"
 
-#: include/global_arrays.php:1360
+#: include/global_arrays.php:1363
 #, fuzzy
 msgid "Graph Template Input"
 msgstr "Grafik Şablonu Girişi"
 
-#: include/global_arrays.php:1363 lib/html.php:1165
+#: include/global_arrays.php:1366 lib/html.php:1165
 #, fuzzy
 msgid "VDEF"
 msgstr "VDEF"
 
-#: include/global_arrays.php:1364
+#: include/global_arrays.php:1367
 #, fuzzy
 msgid "VDEF Item"
 msgstr "VDEF Öğesi"
 
-#: include/global_arrays.php:1418
+#: include/global_arrays.php:1421
 #, fuzzy
 msgid "Last Half Hour"
 msgstr "Son Yarım Saat"
 
-#: include/global_arrays.php:1419
+#: include/global_arrays.php:1422
 msgid "Last Hour"
 msgstr "Son Saat"
 
-#: include/global_arrays.php:1420 include/global_arrays.php:1421
-#: include/global_arrays.php:1422 include/global_arrays.php:1423
+#: include/global_arrays.php:1423 include/global_arrays.php:1424
+#: include/global_arrays.php:1425 include/global_arrays.php:1426
 #, fuzzy, php-format
 msgid "Last %d Hours"
 msgstr "Son% d Saat"
 
-#: include/global_arrays.php:1424
+#: include/global_arrays.php:1427
 msgid "Last Day"
 msgstr "Son Gün"
 
-#: include/global_arrays.php:1425 include/global_arrays.php:1426
-#: include/global_arrays.php:1427
+#: include/global_arrays.php:1428 include/global_arrays.php:1429
+#: include/global_arrays.php:1430
 #, php-format
 msgid "Last %d Days"
 msgstr "Son %d Gün"
 
-#: include/global_arrays.php:1428
+#: include/global_arrays.php:1431
 msgid "Last Week"
 msgstr "Geçen hafta"
 
-#: include/global_arrays.php:1429
+#: include/global_arrays.php:1432
 #, fuzzy, php-format
 msgid "Last %d Weeks"
 msgstr "Son% d Hafta"
 
-#: include/global_arrays.php:1430
+#: include/global_arrays.php:1433
 msgid "Last Month"
 msgstr "Geçen Ay"
 
-#: include/global_arrays.php:1431 include/global_arrays.php:1432
-#: include/global_arrays.php:1433 include/global_arrays.php:1434
+#: include/global_arrays.php:1434 include/global_arrays.php:1435
+#: include/global_arrays.php:1436 include/global_arrays.php:1437
 #, fuzzy, php-format
 msgid "Last %d Months"
 msgstr "Son% d Ay"
 
-#: include/global_arrays.php:1435
+#: include/global_arrays.php:1438
 msgid "Last Year"
 msgstr "Geçen Yıl"
 
-#: include/global_arrays.php:1436
+#: include/global_arrays.php:1439
 #, fuzzy, php-format
 msgid "Last %d Years"
 msgstr "Son% d Yıllar"
 
-#: include/global_arrays.php:1437
+#: include/global_arrays.php:1440
 #, fuzzy
 msgid "Day Shift"
 msgstr "Gündüz vardiyası"
 
-#: include/global_arrays.php:1438
+#: include/global_arrays.php:1441
 #, fuzzy
 msgid "This Day"
 msgstr "Son Gün"
 
-#: include/global_arrays.php:1439
+#: include/global_arrays.php:1442
 msgid "This Week"
 msgstr "Bu Hafta"
 
-#: include/global_arrays.php:1440
+#: include/global_arrays.php:1443
 msgid "This Month"
 msgstr "Bu Ay"
 
-#: include/global_arrays.php:1441
+#: include/global_arrays.php:1444
 msgid "This Year"
 msgstr "Bu Yıl"
 
-#: include/global_arrays.php:1442
+#: include/global_arrays.php:1445
 msgid "Previous Day"
 msgstr "Önceki Gün"
 
-#: include/global_arrays.php:1443
+#: include/global_arrays.php:1446
 msgid "Previous Week"
 msgstr "Önceki Hafta"
 
-#: include/global_arrays.php:1444
+#: include/global_arrays.php:1447
 msgid "Previous Month"
 msgstr "Önceki Ay"
 
-#: include/global_arrays.php:1445
+#: include/global_arrays.php:1448
 msgid "Previous Year"
 msgstr "Geçen yıl"
 
-#: include/global_arrays.php:1450
+#: include/global_arrays.php:1453
 #, fuzzy, php-format
 msgid "%d Min"
 msgstr "% d Min"
 
-#: include/global_arrays.php:1505
+#: include/global_arrays.php:1508
 #, fuzzy
 msgid "Month Number, Day, Year"
 msgstr "Ay Numarası, Gün, Yıl"
 
-#: include/global_arrays.php:1506
+#: include/global_arrays.php:1509
 #, fuzzy
 msgid "Month Name, Day, Year"
 msgstr "Ay Adı, Gün, Yıl"
 
-#: include/global_arrays.php:1507
+#: include/global_arrays.php:1510
 #, fuzzy
 msgid "Day, Month Number, Year"
 msgstr "Gün, Ay Numarası, Yıl"
 
-#: include/global_arrays.php:1508
+#: include/global_arrays.php:1511
 #, fuzzy
 msgid "Day, Month Name, Year"
 msgstr "Gün, Ay Adı, Yıl"
 
-#: include/global_arrays.php:1509
+#: include/global_arrays.php:1512
 #, fuzzy
 msgid "Year, Month Number, Day"
 msgstr "Yıl, Ay Numarası, Gün"
 
-#: include/global_arrays.php:1510
+#: include/global_arrays.php:1513
 #, fuzzy
 msgid "Year, Month Name, Day"
 msgstr "Yıl, Ay Adı, Gün"
 
-#: include/global_arrays.php:1520 include/global_arrays.php:1551
+#: include/global_arrays.php:1523 include/global_arrays.php:1554
 #, fuzzy
 msgid "After Boost"
 msgstr "Arttırdıktan Sonra"
 
-#: include/global_arrays.php:1530 include/global_arrays.php:1531
-#: include/global_arrays.php:1532 include/global_arrays.php:1533
-#: include/global_arrays.php:1534 include/global_arrays.php:1596
-#: include/global_arrays.php:1597
+#: include/global_arrays.php:1533 include/global_arrays.php:1534
+#: include/global_arrays.php:1535 include/global_arrays.php:1536
+#: include/global_arrays.php:1537 include/global_arrays.php:1599
+#: include/global_arrays.php:1600
 #, fuzzy, php-format
 msgid "%d MBytes"
 msgstr "% d MBbayt"
 
-#: include/global_arrays.php:1535
+#: include/global_arrays.php:1538
 #, fuzzy
 msgid "1 GByte"
 msgstr "1 GByte"
 
-#: include/global_arrays.php:1536 include/global_arrays.php:1599
+#: include/global_arrays.php:1539 include/global_arrays.php:1602
 #: lib/boost.php:61
 #, fuzzy, php-format
 msgid "%s GBytes"
 msgstr "%s GBytes"
 
-#: include/global_arrays.php:1537 include/global_arrays.php:1538
-#: include/global_arrays.php:1600 include/global_arrays.php:1601
-#: include/global_arrays.php:1602 include/global_arrays.php:1603
-#: include/global_arrays.php:1604 include/global_arrays.php:1605
+#: include/global_arrays.php:1540 include/global_arrays.php:1541
+#: include/global_arrays.php:1603 include/global_arrays.php:1604
+#: include/global_arrays.php:1605 include/global_arrays.php:1606
+#: include/global_arrays.php:1607 include/global_arrays.php:1608
 #, fuzzy, php-format
 msgid "%d GBytes"
 msgstr "% d GBytes"
 
-#: include/global_arrays.php:1558
+#: include/global_arrays.php:1561
 #, fuzzy
 msgid "2,000 Data Source Items"
 msgstr "2.000 Veri Kaynağı Öğesi"
 
-#: include/global_arrays.php:1559
+#: include/global_arrays.php:1562
 #, fuzzy
 msgid "5,000 Data Source Items"
 msgstr "5.000 Veri Kaynağı Öğesi"
 
-#: include/global_arrays.php:1560
+#: include/global_arrays.php:1563
 #, fuzzy
 msgid "10,000 Data Source Items"
 msgstr "10.000 Veri Kaynağı Öğesi"
 
-#: include/global_arrays.php:1561
+#: include/global_arrays.php:1564
 #, fuzzy
 msgid "15,000 Data Source Items"
 msgstr "15.000 Veri Kaynağı Öğesi"
 
-#: include/global_arrays.php:1562
+#: include/global_arrays.php:1565
 #, fuzzy
 msgid "25,000 Data Source Items"
 msgstr "25.000 Veri Kaynağı Öğesi"
 
-#: include/global_arrays.php:1563
+#: include/global_arrays.php:1566
 #, fuzzy
 msgid "50,000 Data Source Items (Default)"
 msgstr "50.000 Veri Kaynağı Öğesi (Varsayılan)"
 
-#: include/global_arrays.php:1564
+#: include/global_arrays.php:1567
 #, fuzzy
 msgid "100,000 Data Source Items"
 msgstr "100.000 Veri Kaynağı Öğesi"
 
-#: include/global_arrays.php:1565
+#: include/global_arrays.php:1568
 #, fuzzy
 msgid "200,000 Data Source Items"
 msgstr "200.000 Veri Kaynağı Öğesi"
 
-#: include/global_arrays.php:1566
+#: include/global_arrays.php:1569
 #, fuzzy
 msgid "400,000 Data Source Items"
 msgstr "400.000 Veri Kaynağı Öğesi"
 
-#: include/global_arrays.php:1583
+#: include/global_arrays.php:1586
 msgid "2 Hours"
 msgstr "2 Saat"
 
-#: include/global_arrays.php:1584
+#: include/global_arrays.php:1587
 msgid "4 Hours"
 msgstr "4 Saat"
 
-#: include/global_arrays.php:1585
+#: include/global_arrays.php:1588
 msgid "6 Hours"
 msgstr "6 Saat"
 
-#: include/global_arrays.php:1592 include/global_settings.php:1452
+#: include/global_arrays.php:1595 include/global_settings.php:1452
 #: include/global_settings.php:1453 include/global_settings.php:1454
 #, php-format
 msgid "%s Hours"
 msgstr "%s saat"
 
-#: include/global_arrays.php:1598
+#: include/global_arrays.php:1601
 #, fuzzy, php-format
 msgid "%d GByte"
 msgstr "% d GBytes"
 
-#: include/global_arrays.php:1606 utilities.php:2708 utilities.php:2709
+#: include/global_arrays.php:1609 utilities.php:2708 utilities.php:2709
 #: utilities.php:2758
 msgid "Unlimited"
 msgstr "Sınırsız"
 
-#: include/global_arrays.php:1613 include/global_settings.php:1349
+#: include/global_arrays.php:1616 include/global_settings.php:1349
 #: include/global_settings.php:1350 include/global_settings.php:1351
 #: include/global_settings.php:1352 include/global_settings.php:1362
 #: include/global_settings.php:1363 include/global_settings.php:1364
@@ -8294,820 +8332,820 @@ msgstr "Sınırsız"
 msgid "%s Minutes"
 msgstr "%s Dakika"
 
-#: include/global_arrays.php:1635
+#: include/global_arrays.php:1638
 #, fuzzy
 msgid "1 Megabyte"
 msgstr "1 Megabayt"
 
-#: include/global_arrays.php:1636 include/global_arrays.php:1637
-#: include/global_arrays.php:1638 include/global_arrays.php:1639
-#: include/global_arrays.php:1640 include/global_arrays.php:1641
+#: include/global_arrays.php:1639 include/global_arrays.php:1640
+#: include/global_arrays.php:1641 include/global_arrays.php:1642
+#: include/global_arrays.php:1643 include/global_arrays.php:1644
 #, fuzzy, php-format
 msgid "%d Megabytes"
 msgstr "% d Megabayt"
 
-#: include/global_arrays.php:1645
+#: include/global_arrays.php:1648
 msgid "Send Now"
 msgstr "Şimdi Gönder"
 
-#: include/global_arrays.php:1653
+#: include/global_arrays.php:1656
 #, fuzzy
 msgid "Take Ownership"
 msgstr "Sahipliğini almak"
 
-#: include/global_arrays.php:1657
+#: include/global_arrays.php:1660
 #, fuzzy
 msgid "Inline PNG Image"
 msgstr "Satır içi PNG Görüntüsü"
 
-#: include/global_arrays.php:1662
+#: include/global_arrays.php:1665
 #, fuzzy
 msgid "Inline JPEG Image"
 msgstr "Satır içi JPEG Resmi"
 
-#: include/global_arrays.php:1663
+#: include/global_arrays.php:1666
 #, fuzzy
 msgid "Inline GIF Image"
 msgstr "Satır içi GIF Resmi"
 
-#: include/global_arrays.php:1666
+#: include/global_arrays.php:1669
 #, fuzzy
 msgid "Attached PNG Image"
 msgstr "Ekli PNG Görüntüsü"
 
-#: include/global_arrays.php:1669
+#: include/global_arrays.php:1672
 #, fuzzy
 msgid "Attached JPEG Image"
 msgstr "Ekli JPEG Resmi"
 
-#: include/global_arrays.php:1670
+#: include/global_arrays.php:1673
 #, fuzzy
 msgid "Attached GIF Image"
 msgstr "Ekli GIF Resmi"
 
-#: include/global_arrays.php:1674
+#: include/global_arrays.php:1677
 #, fuzzy
 msgid "Inline PNG Image, LN Style"
 msgstr "Satır içi PNG Görüntüsü, LN Stili"
 
-#: include/global_arrays.php:1676
+#: include/global_arrays.php:1679
 #, fuzzy
 msgid "Inline JPEG Image, LN Style"
 msgstr "Satır içi JPEG resmi, LN stili"
 
-#: include/global_arrays.php:1677
+#: include/global_arrays.php:1680
 #, fuzzy
 msgid "Inline GIF Image, LN Style"
 msgstr "Satır içi GIF resmi, LN stili"
 
-#: include/global_arrays.php:1682
+#: include/global_arrays.php:1685
 msgid "Text"
 msgstr "Metin"
 
-#: include/global_arrays.php:1683 include/global_form.php:2267
+#: include/global_arrays.php:1686 include/global_form.php:2267
 msgid "Tree"
 msgstr "Ağaç"
 
-#: include/global_arrays.php:1686
+#: include/global_arrays.php:1689
 msgid "Horizontal Rule"
 msgstr "Yatay Kural"
 
-#: include/global_arrays.php:1690
+#: include/global_arrays.php:1693
 msgid "left"
 msgstr "sol"
 
-#: include/global_arrays.php:1691
+#: include/global_arrays.php:1694
 msgid "center"
 msgstr "merkez"
 
-#: include/global_arrays.php:1692
+#: include/global_arrays.php:1695
 msgid "right"
 msgstr "sağ"
 
-#: include/global_arrays.php:1696
+#: include/global_arrays.php:1699
 msgid "Minute(s)"
 msgstr "Dakika(lar)"
 
-#: include/global_arrays.php:1697
+#: include/global_arrays.php:1700
 msgid "Hour(s)"
 msgstr "Saat"
 
-#: include/global_arrays.php:1698
+#: include/global_arrays.php:1701
 msgid "Day(s)"
 msgstr "Gün"
 
-#: include/global_arrays.php:1699
+#: include/global_arrays.php:1702
 msgid "Week(s)"
 msgstr "Hafta"
 
-#: include/global_arrays.php:1700
+#: include/global_arrays.php:1703
 #, fuzzy
 msgid "Month(s), Day of Month"
 msgstr "Ay (lar), Ayın Günü"
 
-#: include/global_arrays.php:1701
+#: include/global_arrays.php:1704
 #, fuzzy
 msgid "Month(s), Day of Week"
 msgstr "Ay (lar), Haftanın Günü"
 
-#: include/global_arrays.php:1702
+#: include/global_arrays.php:1705
 msgid "Year(s)"
 msgstr "Yıl"
 
-#: include/global_arrays.php:1706
+#: include/global_arrays.php:1709
 #, fuzzy
 msgid "Keep Graph Types"
 msgstr "Grafik Türlerini Koru"
 
-#: include/global_arrays.php:1707
+#: include/global_arrays.php:1710
 #, fuzzy
 msgid "Keep Type and STACK"
 msgstr "Türü ve YAKIN TUTUN"
 
-#: include/global_arrays.php:1708
+#: include/global_arrays.php:1711
 #, fuzzy
 msgid "Convert to AREA/STACK Graph"
 msgstr "AREA / STACK Grafiğine Dönüştür"
 
-#: include/global_arrays.php:1709
+#: include/global_arrays.php:1712
 #, fuzzy
 msgid "Convert to LINE1 Graph"
 msgstr "LINE1 Grafiğine Dönüştür"
 
-#: include/global_arrays.php:1710
+#: include/global_arrays.php:1713
 #, fuzzy
 msgid "Convert to LINE2 Graph"
 msgstr "LINE2 Grafiğine Dönüştür"
 
-#: include/global_arrays.php:1711
+#: include/global_arrays.php:1714
 #, fuzzy
 msgid "Convert to LINE3 Graph"
 msgstr "LINE3 Grafiğine Dönüştür"
 
-#: include/global_arrays.php:1712
+#: include/global_arrays.php:1715
 #, fuzzy
 msgid "Convert to LINE1/STACK Graph"
 msgstr "LINE1 Grafiğine Dönüştür"
 
-#: include/global_arrays.php:1713
+#: include/global_arrays.php:1716
 #, fuzzy
 msgid "Convert to LINE2/STACK Graph"
 msgstr "LINE2 Grafiğine Dönüştür"
 
-#: include/global_arrays.php:1714
+#: include/global_arrays.php:1717
 #, fuzzy
 msgid "Convert to LINE3/STACK Graph"
 msgstr "LINE3 Grafiğine Dönüştür"
 
-#: include/global_arrays.php:1718
+#: include/global_arrays.php:1721
 #, fuzzy
 msgid "No Totals"
 msgstr "Toplam yok"
 
-#: include/global_arrays.php:1719
+#: include/global_arrays.php:1722
 #, fuzzy
 msgid "Print All Legend Items"
 msgstr "Tüm Legend Öğelerini Yazdır"
 
-#: include/global_arrays.php:1720
+#: include/global_arrays.php:1723
 #, fuzzy
 msgid "Print Totaling Legend Items Only"
 msgstr "Yalnızca toplam Legend Öğelerini Yazdır"
 
-#: include/global_arrays.php:1724
+#: include/global_arrays.php:1727
 #, fuzzy
 msgid "Total Similar Data Sources"
 msgstr "Toplam Benzer Veri Kaynakları"
 
-#: include/global_arrays.php:1725
+#: include/global_arrays.php:1728
 #, fuzzy
 msgid "Total All Data Sources"
 msgstr "Toplam Tüm Veri Kaynakları"
 
-#: include/global_arrays.php:1729
+#: include/global_arrays.php:1732
 #, fuzzy
 msgid "No Reordering"
 msgstr "Yeniden sıralama yok"
 
-#: include/global_arrays.php:1730
+#: include/global_arrays.php:1733
 #, fuzzy
 msgid "Data Source, Graph"
 msgstr "Veri Kaynağı, Grafik"
 
-#: include/global_arrays.php:1731
+#: include/global_arrays.php:1734
 #, fuzzy
 msgid "Graph, Data Source"
 msgstr "Grafik, Veri Kaynağı"
 
-#: include/global_arrays.php:1732
+#: include/global_arrays.php:1735
 #, fuzzy
 msgid "Base Graph Order"
 msgstr "Grafikleri var"
 
-#: include/global_arrays.php:1739
+#: include/global_arrays.php:1742
 msgid "contains"
 msgstr "şunu içeren"
 
-#: include/global_arrays.php:1740
+#: include/global_arrays.php:1743
 msgid "does not contain"
 msgstr "içermez"
 
-#: include/global_arrays.php:1741
+#: include/global_arrays.php:1744
 msgid "begins with"
 msgstr "ile başlar"
 
-#: include/global_arrays.php:1742
+#: include/global_arrays.php:1745
 #, fuzzy
 msgid "does not begin with"
 msgstr "ile başlamıyor"
 
-#: include/global_arrays.php:1743
+#: include/global_arrays.php:1746
 msgid "ends with"
 msgstr "ile biter"
 
-#: include/global_arrays.php:1744
+#: include/global_arrays.php:1747
 msgid "does not end with"
 msgstr "bitmiyorsa"
 
-#: include/global_arrays.php:1745
+#: include/global_arrays.php:1748
 msgid "matches"
 msgstr "maçlar"
 
-#: include/global_arrays.php:1746
+#: include/global_arrays.php:1749
 msgid "is not equal to"
 msgstr "değer eşitse"
 
-#: include/global_arrays.php:1747
+#: include/global_arrays.php:1750
 msgid "is less than"
 msgstr "şundan küçük olan"
 
-#: include/global_arrays.php:1748
+#: include/global_arrays.php:1751
 msgid "is less than or equal"
 msgstr "Küçük veya eşittir"
 
-#: include/global_arrays.php:1749
+#: include/global_arrays.php:1752
 msgid "is greater than"
 msgstr "şundan büyük olan"
 
-#: include/global_arrays.php:1750
+#: include/global_arrays.php:1753
 msgid "is greater than or equal"
 msgstr "Büyük veya eşittir"
 
-#: include/global_arrays.php:1751
+#: include/global_arrays.php:1754
 msgid "is unknown"
 msgstr "bilinmiyen"
 
-#: include/global_arrays.php:1752
+#: include/global_arrays.php:1755
 #, fuzzy
 msgid "is not unknown"
 msgstr "bilinmiyen"
 
-#: include/global_arrays.php:1753
+#: include/global_arrays.php:1756
 msgid "is empty"
 msgstr "boş"
 
-#: include/global_arrays.php:1754
+#: include/global_arrays.php:1757
 msgid "is not empty"
 msgstr "boş değil"
 
-#: include/global_arrays.php:1755
+#: include/global_arrays.php:1758
 msgid "matches regular expression"
 msgstr "düzenli ifadeye uygun"
 
-#: include/global_arrays.php:1756
+#: include/global_arrays.php:1759
 #, fuzzy
 msgid "does not match regular expression"
 msgstr "normal ifadeyle eşleşmiyor"
 
-#: include/global_arrays.php:1858
+#: include/global_arrays.php:1861
 #, fuzzy
 msgid "Fixed String"
 msgstr "Sabit Dize"
 
-#: include/global_arrays.php:1863
+#: include/global_arrays.php:1866
 #, fuzzy
 msgid "Every 1 Hour"
 msgstr "Her 1 saat"
 
-#: include/global_arrays.php:1869
+#: include/global_arrays.php:1872
 msgid "Every Day"
 msgstr "Her Gün"
 
-#: include/global_arrays.php:1870
+#: include/global_arrays.php:1873
 msgid "Every Week"
 msgstr "Her Hafta"
 
-#: include/global_arrays.php:1871 include/global_arrays.php:1872
+#: include/global_arrays.php:1874 include/global_arrays.php:1875
 #, fuzzy, php-format
 msgid "Every %d Weeks"
 msgstr "Her% d Hafta"
 
-#: include/global_arrays.php:1903
+#: include/global_arrays.php:1906
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jan"
 msgstr "Ocak"
 
-#: include/global_arrays.php:1904
+#: include/global_arrays.php:1907
 msgctxt "A short textual representation of a month, three letters"
 msgid "Feb"
 msgstr "Şubat"
 
-#: include/global_arrays.php:1905
+#: include/global_arrays.php:1908
 msgctxt "A short textual representation of a month, three letters"
 msgid "Mar"
 msgstr "Mart"
 
-#: include/global_arrays.php:1906
+#: include/global_arrays.php:1909
 msgctxt "A short textual representation of a month, three letters"
 msgid "Apr"
 msgstr "Nisan"
 
-#: include/global_arrays.php:1907
+#: include/global_arrays.php:1910
 msgctxt "A short textual representation of a month, three letters"
 msgid "May"
 msgstr "Mayıs"
 
-#: include/global_arrays.php:1908
+#: include/global_arrays.php:1911
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jun"
 msgstr "Haz"
 
-#: include/global_arrays.php:1909
+#: include/global_arrays.php:1912
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jul"
 msgstr "Tem"
 
-#: include/global_arrays.php:1910
+#: include/global_arrays.php:1913
 msgctxt "A short textual representation of a month, three letters"
 msgid "Aug"
 msgstr "Ağustos"
 
-#: include/global_arrays.php:1911
+#: include/global_arrays.php:1914
 msgctxt "A short textual representation of a month, three letters"
 msgid "Sep"
 msgstr "Eyl"
 
-#: include/global_arrays.php:1912
+#: include/global_arrays.php:1915
 msgctxt "A short textual representation of a month, three letters"
 msgid "Oct"
 msgstr "Ekim"
 
-#: include/global_arrays.php:1913
+#: include/global_arrays.php:1916
 msgctxt "A short textual representation of a month, three letters"
 msgid "Nov"
 msgstr "Kas"
 
-#: include/global_arrays.php:1914
+#: include/global_arrays.php:1917
 msgctxt "A short textual representation of a month, three letters"
 msgid "Dec"
 msgstr "Aralık"
 
-#: include/global_arrays.php:1918
+#: include/global_arrays.php:1921
 #, fuzzy
 msgid "Use the First Handler Found"
 msgstr "PHP GetText İşleyicisini kullanın"
 
-#: include/global_arrays.php:1922
+#: include/global_arrays.php:1925
 #, fuzzy
 msgid "Use the PHP GetText Handler"
 msgstr "PHP GetText İşleyicisini kullanın"
 
-#: include/global_arrays.php:1926
+#: include/global_arrays.php:1929
 #, fuzzy
 msgid "Use the Oscarotero GetText Handler"
 msgstr "Oscarotero GetText İşleyicisini kullanın"
 
-#: include/global_arrays.php:1930
+#: include/global_arrays.php:1933
 #, fuzzy
 msgid "Use the MonoTranslator GetText Handler"
 msgstr "MonoTranslator GetText İşleyicisini kullanın"
 
-#: include/global_arrays.php:1944
+#: include/global_arrays.php:1947
 msgctxt "A textual representation of a day, three letters"
 msgid "Sun"
 msgstr "Paz"
 
-#: include/global_arrays.php:1945
+#: include/global_arrays.php:1948
 msgctxt "A textual representation of a day, three letters"
 msgid "Mon"
 msgstr "Pzt"
 
-#: include/global_arrays.php:1946
+#: include/global_arrays.php:1949
 msgctxt "A textual representation of a day, three letters"
 msgid "Tue"
 msgstr "Sal"
 
-#: include/global_arrays.php:1947
+#: include/global_arrays.php:1950
 msgctxt "A textual representation of a day, three letters"
 msgid "Wed"
 msgstr "Çar"
 
-#: include/global_arrays.php:1948
+#: include/global_arrays.php:1951
 msgctxt "A textual representation of a day, three letters"
 msgid "Thu"
 msgstr "Per"
 
-#: include/global_arrays.php:1949
+#: include/global_arrays.php:1952
 msgctxt "A textual representation of a day, three letters"
 msgid "Fri"
 msgstr "Cum"
 
-#: include/global_arrays.php:1950
+#: include/global_arrays.php:1953
 msgctxt "A textual representation of a day, three letters"
 msgid "Sat"
 msgstr "Cmt"
 
-#: include/global_arrays.php:1954
+#: include/global_arrays.php:1957
 msgid "Arabic"
 msgstr "Arapça"
 
-#: include/global_arrays.php:1955
+#: include/global_arrays.php:1958
 msgid "Bulgarian"
 msgstr "Bulgarca"
 
-#: include/global_arrays.php:1956
+#: include/global_arrays.php:1959
 msgid "Chinese (China)"
 msgstr "Çince (Çin)"
 
-#: include/global_arrays.php:1957
+#: include/global_arrays.php:1960
 msgid "Chinese (Taiwan)"
 msgstr "Çince (Tayvan)"
 
-#: include/global_arrays.php:1958
+#: include/global_arrays.php:1961
 msgid "Dutch"
 msgstr "Flemenkçe"
 
-#: include/global_arrays.php:1959
+#: include/global_arrays.php:1962
 msgid "English"
 msgstr "İngilizce"
 
-#: include/global_arrays.php:1960
+#: include/global_arrays.php:1963
 msgid "French"
 msgstr "Fransızca"
 
-#: include/global_arrays.php:1961
+#: include/global_arrays.php:1964
 msgid "German"
 msgstr "Almanca"
 
-#: include/global_arrays.php:1962
+#: include/global_arrays.php:1965
 msgid "Greek"
 msgstr "Yunan"
 
-#: include/global_arrays.php:1963
+#: include/global_arrays.php:1966
 msgid "Hebrew"
 msgstr "İbranice"
 
-#: include/global_arrays.php:1964
+#: include/global_arrays.php:1967
 msgid "Hindi"
 msgstr "Hintçe"
 
-#: include/global_arrays.php:1965
+#: include/global_arrays.php:1968
 msgid "Italian"
 msgstr "İtalyanca"
 
-#: include/global_arrays.php:1966
+#: include/global_arrays.php:1969
 msgid "Japanese"
 msgstr "Japonca"
 
-#: include/global_arrays.php:1967
+#: include/global_arrays.php:1970
 msgid "Korean"
 msgstr "Korece"
 
-#: include/global_arrays.php:1968
+#: include/global_arrays.php:1971
 msgid "Polish"
 msgstr "Lehçe"
 
-#: include/global_arrays.php:1969
+#: include/global_arrays.php:1972
 msgid "Portuguese"
 msgstr "Portekizce"
 
-#: include/global_arrays.php:1970
+#: include/global_arrays.php:1973
 msgid "Portuguese (Brazil)"
 msgstr "Portuguese (Brazil)"
 
-#: include/global_arrays.php:1971
+#: include/global_arrays.php:1974
 msgid "Russian"
 msgstr "Rusça"
 
-#: include/global_arrays.php:1972
+#: include/global_arrays.php:1975
 msgid "Spanish"
 msgstr "İspanyolca"
 
-#: include/global_arrays.php:1973
+#: include/global_arrays.php:1976
 msgid "Swedish"
 msgstr "Swedish"
 
-#: include/global_arrays.php:1974
+#: include/global_arrays.php:1977
 msgid "Turkish"
 msgstr "Türkçe"
 
-#: include/global_arrays.php:1975
+#: include/global_arrays.php:1978
 msgid "Vietnamese"
 msgstr "Vietnam"
 
-#: include/global_arrays.php:1979
+#: include/global_arrays.php:1982
 msgid "Classic"
 msgstr "Klasik"
 
-#: include/global_arrays.php:1980
+#: include/global_arrays.php:1983
 msgid "Modern"
 msgstr "Modern"
 
-#: include/global_arrays.php:1981
+#: include/global_arrays.php:1984
 msgid "Dark"
 msgstr "Koyu"
 
-#: include/global_arrays.php:1982
+#: include/global_arrays.php:1985
 #, fuzzy
 msgid "Paper-plane"
 msgstr "Kağıt uçak"
 
-#: include/global_arrays.php:1983
+#: include/global_arrays.php:1986
 msgid "Paw"
 msgstr "El"
 
-#: include/global_arrays.php:1984
+#: include/global_arrays.php:1987
 msgid "Sunrise"
 msgstr "Gündoğumu"
 
-#: include/global_arrays.php:1988
+#: include/global_arrays.php:1991
 #, fuzzy
 msgid "[Fail]"
 msgstr "Başarısız"
 
-#: include/global_arrays.php:1989
+#: include/global_arrays.php:1992
 #, fuzzy
 msgid "[Warning]"
 msgstr "UYARI:"
 
-#: include/global_arrays.php:1990
+#: include/global_arrays.php:1993
 #, fuzzy
 #| msgid "Restricted"
 msgid "[Restart]"
 msgstr "Kısıtlı"
 
-#: include/global_arrays.php:1991
+#: include/global_arrays.php:1994
 #, fuzzy
 msgid "[Success]"
 msgstr "Başarılı!"
 
-#: include/global_arrays.php:1992
+#: include/global_arrays.php:1995
 #, fuzzy
 msgid "[Skipped]"
 msgstr "[Atlandı]"
 
-#: include/global_arrays.php:1997 include/global_arrays.php:2003
+#: include/global_arrays.php:2000 include/global_arrays.php:2006
 #, fuzzy
 msgid "User Profile (Edit)"
 msgstr "Kullanıcı Profili (Düzenle)"
 
-#: include/global_arrays.php:2015 include/global_arrays.php:2021
+#: include/global_arrays.php:2018 include/global_arrays.php:2024
 #, fuzzy
 msgid "Tree Mode"
 msgstr "Ağaç modu"
 
-#: include/global_arrays.php:2027
+#: include/global_arrays.php:2030
 #, fuzzy
 msgid "List Mode"
 msgstr "Liste Modu"
 
-#: include/global_arrays.php:2059 include/global_arrays.php:2065
-#: lib/functions.php:3874 lib/html.php:1698 lib/html.php:1775 lib/html.php:2491
+#: include/global_arrays.php:2062 include/global_arrays.php:2068
+#: lib/functions.php:3882 lib/html.php:1698 lib/html.php:1775 lib/html.php:2491
 #: links.php:344 user_admin.php:1551 user_group_admin.php:1433
 msgid "Console"
 msgstr "Konsol"
 
-#: include/global_arrays.php:2071
+#: include/global_arrays.php:2074
 #, fuzzy
 msgid "Graph Management"
 msgstr "Grafik Yönetimi"
 
-#: include/global_arrays.php:2077 include/global_arrays.php:2119
-#: include/global_arrays.php:2137 include/global_arrays.php:2191
-#: include/global_arrays.php:2203 include/global_arrays.php:2215
-#: include/global_arrays.php:2227 include/global_arrays.php:2239
-#: include/global_arrays.php:2275 include/global_arrays.php:2293
-#: include/global_arrays.php:2311 include/global_arrays.php:2329
-#: include/global_arrays.php:2347 include/global_arrays.php:2371
-#: include/global_arrays.php:2407 include/global_arrays.php:2533
-#: include/global_arrays.php:2557 include/global_arrays.php:2581
-#: include/global_arrays.php:2599 include/global_arrays.php:2611
-#: include/global_arrays.php:2725 include/global_arrays.php:2749
-#: include/global_arrays.php:2767 include/global_arrays.php:2785
-#: include/global_arrays.php:2803 include/global_arrays.php:2827
+#: include/global_arrays.php:2080 include/global_arrays.php:2122
+#: include/global_arrays.php:2140 include/global_arrays.php:2194
+#: include/global_arrays.php:2206 include/global_arrays.php:2218
+#: include/global_arrays.php:2230 include/global_arrays.php:2242
+#: include/global_arrays.php:2278 include/global_arrays.php:2296
+#: include/global_arrays.php:2314 include/global_arrays.php:2332
+#: include/global_arrays.php:2350 include/global_arrays.php:2374
+#: include/global_arrays.php:2410 include/global_arrays.php:2536
+#: include/global_arrays.php:2560 include/global_arrays.php:2584
+#: include/global_arrays.php:2602 include/global_arrays.php:2614
+#: include/global_arrays.php:2728 include/global_arrays.php:2752
+#: include/global_arrays.php:2770 include/global_arrays.php:2788
+#: include/global_arrays.php:2806 include/global_arrays.php:2830
 msgid "(Edit)"
 msgstr "(Düzenle)"
 
-#: include/global_arrays.php:2095 lib/api_aggregate.php:1707
+#: include/global_arrays.php:2098 lib/api_aggregate.php:1707
 #, fuzzy
 msgid "Graph Items"
 msgstr "Grafik Öğeleri"
 
-#: include/global_arrays.php:2101
+#: include/global_arrays.php:2104
 #, fuzzy
 msgid "Create New Graphs"
 msgstr "Yeni Grafikler Oluştur"
 
-#: include/global_arrays.php:2107
+#: include/global_arrays.php:2110
 #, fuzzy
 msgid "Create Graphs from Data Query"
 msgstr "Veri Sorgulamadan Grafik Oluşturma"
 
-#: include/global_arrays.php:2125 include/global_arrays.php:2143
-#: include/global_arrays.php:2263 include/global_arrays.php:2353
-#: include/global_arrays.php:2377 include/global_arrays.php:2539
+#: include/global_arrays.php:2128 include/global_arrays.php:2146
+#: include/global_arrays.php:2266 include/global_arrays.php:2356
+#: include/global_arrays.php:2380 include/global_arrays.php:2542
 msgid "(Remove)"
 msgstr "(Çıkar)"
 
-#: include/global_arrays.php:2161 include/global_arrays.php:2167
-#: include/global_arrays.php:2173 include/global_arrays.php:2179
-#: include/global_arrays.php:2473
+#: include/global_arrays.php:2164 include/global_arrays.php:2170
+#: include/global_arrays.php:2176 include/global_arrays.php:2182
+#: include/global_arrays.php:2476
 msgid "View Log"
 msgstr "Günlüğe Göster"
 
-#: include/global_arrays.php:2185
+#: include/global_arrays.php:2188
 #, fuzzy
 msgid "Graph Trees"
 msgstr "Grafik Ağaçları"
 
-#: include/global_arrays.php:2251 lib/api_aggregate.php:1707
+#: include/global_arrays.php:2254 lib/api_aggregate.php:1707
 #, fuzzy
 msgid "Graph Template Items"
 msgstr "Grafik Şablonu Öğeleri"
 
-#: include/global_arrays.php:2341
+#: include/global_arrays.php:2344
 #, fuzzy
 msgid "Round Robin Archives"
 msgstr "Round Robin Arşivi"
 
-#: include/global_arrays.php:2383
+#: include/global_arrays.php:2386
 #, fuzzy
 msgid "Data Input Fields"
 msgstr "Veri Giriş Alanları"
 
-#: include/global_arrays.php:2389 include/global_arrays.php:2419
+#: include/global_arrays.php:2392 include/global_arrays.php:2422
 #, fuzzy
 msgid "(Remove Item)"
 msgstr "(Öğeyi kaldırmak)"
 
-#: include/global_arrays.php:2425 include/global_settings.php:233
+#: include/global_arrays.php:2428 include/global_settings.php:233
 #: rrdcleaner.php:325
 #, fuzzy
 msgid "RRD Cleaner"
 msgstr "RRD Temizleyici"
 
-#: include/global_arrays.php:2437
+#: include/global_arrays.php:2440
 #, fuzzy
 msgid "List unused Files"
 msgstr "Kullanılmayan Dosyaları Listele"
 
-#: include/global_arrays.php:2443
+#: include/global_arrays.php:2446
 #, fuzzy
 msgid "RRD Check"
 msgstr "Denetimi Çalıştır"
 
-#: include/global_arrays.php:2461 utilities.php:2280
+#: include/global_arrays.php:2464 utilities.php:2280
 #, fuzzy
 msgid "View Data Query Cache"
 msgstr "Veri Sorgu Önbelleğini Görüntüle"
 
-#: include/global_arrays.php:2479
+#: include/global_arrays.php:2482
 msgid "Clear Log"
 msgstr "Kayıtları temizle"
 
-#: include/global_arrays.php:2485 utilities.php:2269
+#: include/global_arrays.php:2488 utilities.php:2269
 #, fuzzy
 msgid "View User Log"
 msgstr "Kullanıcı Günlüğünü Göster"
 
-#: include/global_arrays.php:2491
+#: include/global_arrays.php:2494
 #, fuzzy
 msgid "Clear User Log"
 msgstr "Kullanıcı Günlüğünü Temizle"
 
-#: include/global_arrays.php:2497 utilities.php:2260 utilities.php:2261
+#: include/global_arrays.php:2500 utilities.php:2260 utilities.php:2261
 msgid "Technical Support"
 msgstr "Teknik destek"
 
-#: include/global_arrays.php:2503 utilities.php:2441
+#: include/global_arrays.php:2506 utilities.php:2441
 #, fuzzy
 msgid "Boost Status"
 msgstr "Yükseltme Durumu"
 
-#: include/global_arrays.php:2509 utilities.php:2332
+#: include/global_arrays.php:2512 utilities.php:2332
 #, fuzzy
 msgid "View SNMP Agent Cache"
 msgstr "SNMP Ajan Önbelleğini Göster"
 
-#: include/global_arrays.php:2515 utilities.php:2342
+#: include/global_arrays.php:2518 utilities.php:2342
 #, fuzzy
 msgid "View SNMP Agent Notification Log"
 msgstr "SNMP Aracısı Bildirim Günlüğünü Göster"
 
-#: include/global_arrays.php:2545 vdef.php:579
+#: include/global_arrays.php:2548 vdef.php:579
 #, fuzzy
 msgid "VDEF Items"
 msgstr "VDEF Öğeleri"
 
-#: include/global_arrays.php:2551
+#: include/global_arrays.php:2554
 #, fuzzy
 msgid "View SNMP Notification Receivers"
 msgstr "SNMP Bildirim Alıcılarını Görüntüleyin"
 
-#: include/global_arrays.php:2563
+#: include/global_arrays.php:2566
 #, fuzzy
 msgid "Cacti Settings"
 msgstr "Kaktüs Ayarları"
 
-#: include/global_arrays.php:2569
+#: include/global_arrays.php:2572
 msgid "External Link"
 msgstr "Dış Bağlantı"
 
-#: include/global_arrays.php:2587 include/global_arrays.php:2617
+#: include/global_arrays.php:2590 include/global_arrays.php:2620
 #, fuzzy
 msgid "(Action)"
 msgstr "Eylem:"
 
-#: include/global_arrays.php:2629
+#: include/global_arrays.php:2632
 #, fuzzy
 msgid "Cacti Help"
 msgstr "Kaktüsler Ana Sayfa"
 
-#: include/global_arrays.php:2641
+#: include/global_arrays.php:2644
 msgid "Export Results"
 msgstr "Dışa aktarma sonuçları"
 
-#: include/global_arrays.php:2659 include/global_arrays.php:2689
+#: include/global_arrays.php:2662 include/global_arrays.php:2692
 #: lib/html.php:1719 lib/html.php:1721 lib/html.php:1800
 msgid "Reporting"
 msgstr "Raporlama"
 
-#: include/global_arrays.php:2665 include/global_arrays.php:2695
+#: include/global_arrays.php:2668 include/global_arrays.php:2698
 #, fuzzy
 msgid "Report Add"
 msgstr "Rapor Ekleme"
 
-#: include/global_arrays.php:2671 include/global_arrays.php:2701
+#: include/global_arrays.php:2674 include/global_arrays.php:2704
 #, fuzzy
 msgid "Report Delete"
 msgstr "Rapor Sil"
 
-#: include/global_arrays.php:2677 include/global_arrays.php:2707
+#: include/global_arrays.php:2680 include/global_arrays.php:2710
 #, fuzzy
 msgid "Report Edit"
 msgstr "Rapor Düzenleme"
 
-#: include/global_arrays.php:2683 include/global_arrays.php:2713
+#: include/global_arrays.php:2686 include/global_arrays.php:2716
 #, fuzzy
 msgid "Report Edit Item"
 msgstr "Öğe Düzenle Rapor Et"
 
-#: include/global_arrays.php:2737
+#: include/global_arrays.php:2740
 #, fuzzy
 msgid "Color Template Items"
 msgstr "Renk Şablonu Öğeleri"
 
-#: include/global_arrays.php:2779
+#: include/global_arrays.php:2782
 #, fuzzy
 msgid "Aggregate Items"
 msgstr "Toplam Öğeler"
 
-#: include/global_arrays.php:2815
+#: include/global_arrays.php:2818
 #, fuzzy
 msgid "Graph Rule Items"
 msgstr "Grafik Kuralı Öğeleri"
 
-#: include/global_arrays.php:2839
+#: include/global_arrays.php:2842
 #, fuzzy
 msgid "Tree Rule Items"
 msgstr "Ağaç Kuralı Öğeleri"
 
-#: include/global_arrays.php:2870 include/global_arrays.php:2886
+#: include/global_arrays.php:2873 include/global_arrays.php:2889
 #: lib/api_device.php:1586
 msgid "days"
 msgstr "gün"
 
-#: include/global_arrays.php:2871
+#: include/global_arrays.php:2874
 msgid "hrs"
 msgstr "saat"
 
-#: include/global_arrays.php:2872
+#: include/global_arrays.php:2875
 msgid "mins"
 msgstr "dk"
 
-#: include/global_arrays.php:2873
+#: include/global_arrays.php:2876
 msgid "secs"
 msgstr "sn"
 
-#: include/global_arrays.php:2887 lib/api_device.php:1586
+#: include/global_arrays.php:2890 lib/api_device.php:1586
 msgid "hours"
 msgstr "saat"
 
-#: include/global_arrays.php:2888 lib/api_device.php:1586
+#: include/global_arrays.php:2891 lib/api_device.php:1586
 msgid "minutes"
 msgstr "dakika"
 
-#: include/global_arrays.php:2889
+#: include/global_arrays.php:2892
 msgid "seconds"
 msgstr "saniye"
 
@@ -9329,7 +9367,7 @@ msgstr "Verilerin Veri Kaynağından toplanma sıklığı?"
 msgid "How long can data be missing before RRDtool records unknown data.  Increase this value if your Data Source is unstable and you wish to carry forward old data rather than show gaps in your graphs.  This value is multiplied by the X-Files Factor to determine the actual amount of time."
 msgstr "RRDtool bilinmeyen verileri kaydetmeden önce verilerin ne kadar süreyle eksik olabileceği. Veri Kaynağınız kararsızsa ve grafiklerinizdeki boşlukları göstermek yerine eski verileri ilerletmek istiyorsanız bu değeri artırın. Bu değer, gerçek zaman miktarını belirlemek için X Dosyaları Faktörü ile çarpılır."
 
-#: include/global_form.php:240 lib/rrd.php:3210
+#: include/global_form.php:240 lib/rrd.php:3216
 #, fuzzy
 msgid "X-Files Factor"
 msgstr "X Dosyaları Faktörü"
@@ -9548,7 +9586,7 @@ msgid "The script/source used to gather data for this data source."
 msgstr "Bu veri kaynağı için veri toplamak için kullanılan komut dosyası / kaynak."
 
 #: include/global_form.php:595 include/global_form.php:1696
-#: package_import.php:832
+#: package_import.php:840
 #, fuzzy
 msgid "Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources."
 msgstr "Veri Kaynağı Profilini seçin. Veri Kaynağı Profili, ortaya çıkan Veri Kaynakları için yoklama aralığını, veri toplanmasını ve saklama ilkesini kontrol eder."
@@ -10009,7 +10047,7 @@ msgstr "Opaklık / Alfa Kanalı"
 msgid "The opacity/alpha channel of the color."
 msgstr "Rengin opaklık / alfa kanalı."
 
-#: include/global_form.php:999 lib/rrd.php:3206
+#: include/global_form.php:999 lib/rrd.php:3212
 #, fuzzy
 msgid "Consolidation Function"
 msgstr "Birleştirme İşlevi"
@@ -10457,32 +10495,32 @@ msgstr "Şablonu Yerel Dosyadan İçe Aktar"
 msgid "If the XML file containing template data is located on your local machine, select it here."
 msgstr "Şablon verilerini içeren XML dosyası yerel makinenizdeyse, buradan seçin."
 
-#: include/global_form.php:1689 package_import.php:825
+#: include/global_form.php:1689 package_import.php:833
 #, fuzzy
 msgid "Data Source Overrides"
 msgstr "Veri Kaynağı Profilleri"
 
-#: include/global_form.php:1698 package_import.php:834
+#: include/global_form.php:1698 package_import.php:842
 #, fuzzy
 msgid "Create New from Template"
 msgstr "Şablondan Yeni Yarat"
 
-#: include/global_form.php:1703 package_import.php:839
+#: include/global_form.php:1703 package_import.php:847
 #, fuzzy
 msgid "Graph/Data Template Overrides"
 msgstr "Grafik Şablonu Seçenekleri"
 
-#: include/global_form.php:1708 package_import.php:844
+#: include/global_form.php:1708 package_import.php:852
 #, fuzzy
 msgid "Remove Orphaned Graph Items"
 msgstr "Artık Grafik Öğelerini Kaldır"
 
-#: include/global_form.php:1710 package_import.php:846
+#: include/global_form.php:1710 package_import.php:854
 #, fuzzy
 msgid "If checked, Cacti will delete any Graph Items from both the Graph Template and associated Graphs that are not included in the imported Graph Template."
 msgstr "İşaretlenirse, Cacti, hem Grafik Şablonundan hem de İçe Aktarılan Grafik Şablonunda bulunmayan ilişkili Grafiklerden Grafik Öğelerini siler."
 
-#: include/global_form.php:1715 package_import.php:851
+#: include/global_form.php:1715 package_import.php:859
 msgid "Replace Data Query Suggested Value Patterns"
 msgstr ""
 
@@ -10491,34 +10529,34 @@ msgid "Replace Data Source and Graph Template Suggested Value Records for Data Q
 msgstr ""
 
 #: include/global_form.php:1722 include/global_settings.php:569
-#: package_import.php:858
+#: package_import.php:866
 #, fuzzy
 msgid "Graph Template Image Format"
 msgstr "Grafik Şablonu Resim Biçimi"
 
-#: include/global_form.php:1723 package_import.php:859
+#: include/global_form.php:1723 package_import.php:867
 #, fuzzy
 msgid "The Image Format to be used when importing or updating Graph Templates."
 msgstr "Tüm yeni Grafik Şablonları için kullanılacak varsayılan Görüntü Formatı."
 
 #: include/global_form.php:1729 include/global_settings.php:576
-#: package_import.php:866
+#: package_import.php:874
 #, fuzzy
 msgid "Graph Template Height"
 msgstr "Grafik Şablon Yüksekliği"
 
-#: include/global_form.php:1730 package_import.php:867
+#: include/global_form.php:1730 package_import.php:875
 #, fuzzy
 msgid "The Height to be used when importing or updating Graph Templates."
 msgstr "Tüm yeni Grafik Şablonları için kullanılacak varsayılan Grafik Genişliği."
 
 #: include/global_form.php:1737 include/global_settings.php:584
-#: package_import.php:875
+#: package_import.php:883
 #, fuzzy
 msgid "Graph Template Width"
 msgstr "Grafik Şablon Genişliği"
 
-#: include/global_form.php:1738 package_import.php:876
+#: include/global_form.php:1738 package_import.php:884
 #, fuzzy
 msgid "The Width to be used when importing or updating Graph Templates."
 msgstr "Tüm yeni Grafik Şablonları için kullanılacak varsayılan Grafik Genişliği."
@@ -10877,7 +10915,7 @@ msgstr "Veri"
 msgid "Visual"
 msgstr "Görsel"
 
-#: include/global_settings.php:44 lib/functions.php:5294 lib/functions.php:5299
+#: include/global_settings.php:44 lib/functions.php:5302 lib/functions.php:5307
 msgid "Authentication"
 msgstr "Doğrulama"
 
@@ -10919,11 +10957,11 @@ msgstr "Grafik Yazı Tipleri"
 msgid "PHP Mail() Function"
 msgstr "PHP Mail () İşlevi"
 
-#: include/global_settings.php:85 lib/functions.php:5277
+#: include/global_settings.php:85 lib/functions.php:5285
 msgid "Sendmail"
 msgstr "Sendmail"
 
-#: include/global_settings.php:86 lib/functions.php:5282
+#: include/global_settings.php:86 lib/functions.php:5290
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -11849,6 +11887,10 @@ msgstr "Çok büyük sistemlerde, seçilen listeler kullanıcı arabirimini öne
 #, fuzzy
 msgid "Autocomplete Rows"
 msgstr "Otomatik Tamamlama Satırları"
+
+#: include/global_settings.php:870 include/global_settings.php:890
+msgid ".  This is limited by the php setting 'max_input_vars', currently:"
+msgstr ""
 
 #: include/global_settings.php:870
 #, fuzzy
@@ -13135,7 +13177,7 @@ msgstr "E-postadaki bir satır otomatik olarak sözcük sarılmadan önce kaç k
 msgid "Sendmail Options"
 msgstr "Sendmail Seçenekleri"
 
-#: include/global_settings.php:1919 lib/functions.php:5277
+#: include/global_settings.php:1919 lib/functions.php:5285
 msgid "Sendmail Path"
 msgstr "Sendmail Yolu"
 
@@ -13552,7 +13594,7 @@ msgstr "RRDtool Proxy Sunucusu"
 msgid "Structured RRDfile Paths"
 msgstr "Yapılandırılmış RRD Yolları"
 
-#: include/global_settings.php:2297 lib/functions.php:5266
+#: include/global_settings.php:2297 lib/functions.php:5274
 msgid "Method"
 msgstr "Yöntem"
 
@@ -14252,12 +14294,12 @@ msgstr "<strong>NOT:</strong> Uzak Veri Toplayıcıya giriş yaptınız. <b>&#39
 msgid "<strong>NOTE:</strong> None of the Core Cacti Plugins, to date, have been re-designed to work with Remote Data Collectors.  Therefore, Plugins such as MacTrack, and HMIB, which require direct access to devices will not work with Remote Data Collectors at this time.  However, plugins such as Thold will work so long as the Remote Data Collector is in <b>'online'</b> mode."
 msgstr "<strong>NOT:</strong> Bugüne kadar, Core Cacti Eklentilerinden hiçbiri Uzak Veri Toplayıcılarla çalışmak üzere yeniden tasarlanmamıştır. Bu nedenle, cihazlara doğrudan erişim gerektiren MacTrack ve HMIB gibi Eklentiler şu anda Uzak Veri Toplayıcılarla çalışmaz. Ancak, Thold gibi eklentiler, Uzak Veri Toplayıcı <b>&#39;çevrimiçi&#39;</b> modda olduğu sürece çalışacaktır."
 
-#: install/functions.php:604
+#: install/functions.php:611
 #, fuzzy, php-format
 msgid "Path for %s"
 msgstr "%s yolu"
 
-#: install/functions.php:815
+#: install/functions.php:822
 #, fuzzy
 msgid "New Poller"
 msgstr "Yeni Poller"
@@ -14376,7 +14418,7 @@ msgstr "Eşleşen Cihazlar"
 
 #: lib/api_automation.php:146 lib/api_automation.php:1072
 #: lib/clog_webapi.php:543 lib/html_reports.php:956 lib/html_reports.php:1611
-#: lib/html_reports.php:1938 lib/html_reports.php:1949 lib/rrd.php:3148
+#: lib/html_reports.php:1938 lib/html_reports.php:1949 lib/rrd.php:3154
 #: support.php:264 utilities.php:356 utilities.php:1442 utilities.php:3056
 msgid "Type"
 msgstr "Tip"
@@ -14603,8 +14645,8 @@ msgstr "Konum:"
 msgid "Contact:"
 msgstr "İletişim:"
 
-#: lib/api_device.php:1620 lib/functions.php:5308 lib/functions.php:5310
-#: lib/functions.php:5314
+#: lib/api_device.php:1620 lib/functions.php:5316 lib/functions.php:5318
+#: lib/functions.php:5322
 #, fuzzy
 msgid "Ping Results"
 msgstr "Ping Sonuçları"
@@ -14683,93 +14725,93 @@ msgstr "Şube:"
 msgid "Device:"
 msgstr "Cihaz:"
 
-#: lib/auth.php:3504 lib/auth.php:3581
+#: lib/auth.php:3505 lib/auth.php:3582
 #, fuzzy
 msgid "Your account has been locked.  Please contact your Administrator."
 msgstr "Erişim Engellendi, lütfen Cacti Yönetici ile iletişime geçin."
 
-#: lib/auth.php:3544
+#: lib/auth.php:3545
 #, fuzzy
 msgid "Access Denied!  Login Disabled."
 msgstr "Erişim Reddedildi, kullanıcı hesabı devre dışı bırakıldı."
 
-#: lib/auth.php:3587 lib/auth.php:3593 lib/auth.php:3710 lib/auth.php:3795
-#: lib/auth.php:4094 lib/auth.php:4124 lib/auth.php:4158
+#: lib/auth.php:3588 lib/auth.php:3594 lib/auth.php:3711 lib/auth.php:3796
+#: lib/auth.php:4095 lib/auth.php:4125 lib/auth.php:4159
 #, fuzzy
 msgid "Access Denied!  Login Failed."
 msgstr "Erişim Reddedildi, kullanıcı hesabı devre dışı bırakıldı."
 
-#: lib/auth.php:3615
+#: lib/auth.php:3616
 #, fuzzy
 msgid "Web Basic Authentication configured, but no username was passed from the web server. Please make sure you have authentication enabled on the web server."
 msgstr "Web Temel Kimlik Doğrulaması yapılandırıldı, ancak web sunucusundan kullanıcı adı geçilmedi. Lütfen web sunucusunda kimlik doğrulamanın etkin olduğundan emin olun."
 
-#: lib/auth.php:3629
+#: lib/auth.php:3630
 #, fuzzy, php-format
 msgid "%s authenticated by Web Server, but both Template and Guest Users are not defined in Cacti."
 msgstr "%s Web Sunucusu tarafından doğrulandı, ancak hem Şablon hem de Konuk Kullanıcılar Cacti&#39;de tanımlanmadı."
 
-#: lib/auth.php:3735
+#: lib/auth.php:3736
 #, fuzzy, php-format
 msgid "Access Denied!  LDAP Search Error: %s"
 msgstr "LDAP Arama Hatası: %s"
 
-#: lib/auth.php:3756 lib/auth.php:3919
+#: lib/auth.php:3757 lib/auth.php:3920
 #, fuzzy, php-format
 msgid "Access Denied!  LDAP Error: %s"
 msgstr "LDAP Hatası: %s"
 
-#: lib/auth.php:3768 lib/auth.php:3931 lib/auth.php:4134
+#: lib/auth.php:3769 lib/auth.php:3932 lib/auth.php:4135
 #, fuzzy
 msgid "Access Denied!  No password provided by user."
 msgstr "Erişim reddedildi! Kullanıcı tarafından sağlanan şifre yok."
 
-#: lib/auth.php:3818
+#: lib/auth.php:3819
 #, fuzzy, php-format
 msgid "LDAP Search Error: %s"
 msgstr "LDAP Arama Hatası: %s"
 
-#: lib/auth.php:3911 lib/auth.php:4733
+#: lib/auth.php:3912 lib/auth.php:4734
 #, fuzzy, php-format
 msgid "Access Denied!  Template user id %s does not exist.  Please contact your Administrator."
 msgstr "Erişim Engellendi, lütfen Cacti Yönetici ile iletişime geçin."
 
-#: lib/auth.php:4150
+#: lib/auth.php:4151
 #, fuzzy
 msgid "Access Denied! Login failed."
 msgstr "Erişim Reddedildi, kullanıcı hesabı devre dışı bırakıldı."
 
-#: lib/auth.php:4179
+#: lib/auth.php:4180
 #, fuzzy
 msgid "Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now."
 msgstr "Kaktüs yöneticiniz girişler için karmaşık şifreleri zorladı ve mevcut Kaktüs şifreniz yeni gereksinimlere uymuyor. Bu nedenle, şimdi şifrenizi değiştirmeniz gerekir."
 
-#: lib/auth.php:4210
+#: lib/auth.php:4211
 #, fuzzy, php-format
 msgid "Password must be at least %d characters!"
 msgstr "Şifre en az% d karakter olmalı!"
 
-#: lib/auth.php:4216
+#: lib/auth.php:4217
 #, fuzzy
 msgid "Your password must contain at least 1 numerical character!"
 msgstr "Şifreniz en az 1 sayısal karakter içermelidir!"
 
-#: lib/auth.php:4220
+#: lib/auth.php:4221
 #, fuzzy
 msgid "Your password must contain a mix of lower case and upper case characters!"
 msgstr "Şifreniz küçük harf ve büyük harflerden oluşan bir karışım içermelidir!"
 
-#: lib/auth.php:4226
+#: lib/auth.php:4227
 #, fuzzy
 msgid "Your password must contain at least 1 special character!"
 msgstr "Şifreniz en az 1 özel karakter içermelidir!"
 
-#: lib/auth.php:4532
+#: lib/auth.php:4533
 #, fuzzy
 msgid "Cacti Login Failure"
 msgstr "Kaktüs Günlüğü Temizlendi"
 
-#: lib/auth.php:4808
+#: lib/auth.php:4809
 #, fuzzy
 msgid "Authentication was previously not set.  Attempted to set to Local Authentication, but no Administrative account was found."
 msgstr "Kimlik doğrulama önceden ayarlanmamıştı. Yerel Kimlik Doğrulamaya ayarlanmaya çalışıldı, ancak Yönetici hesabı bulunamadı."
@@ -15391,12 +15433,12 @@ msgstr "' %s' Veri Kaynağı için bir XML çıktı sütunu seçmeli ve onay kut
 msgid "Your Graph Template has not Data Templates in use.  Please correct your Graph Template"
 msgstr "Grafik Şablonunuz kullanımda Veri Şablonları içermiyor. Lütfen Grafik Şablonunuzu düzeltin"
 
-#: lib/database.php:1937
+#: lib/database.php:1945
 #, fuzzy
 msgid "Failed to determine password field length, can not continue as may corrupt password"
 msgstr "Şifre alanı uzunluğu belirlenemedi, şifreyi bozabileceğinden devam edemiyor"
 
-#: lib/database.php:1944
+#: lib/database.php:1952
 #, fuzzy
 msgid "Failed to alter password field length, can not continue as may corrupt password"
 msgstr "Şifre alanı uzunluğu değiştirilemedi, şifreyi bozabileceğinden devam edemiyor"
@@ -15461,196 +15503,196 @@ msgstr "Sorun bulunamadı"
 msgid "RRDfile not created yet"
 msgstr "RRD dosyası yoklamadan sonra güncellenmedi"
 
-#: lib/functions.php:441 settings.php:268
+#: lib/functions.php:449 settings.php:268
 #, fuzzy, php-format
 msgid "Settings save to Data Collector %d skipped due to heartbeat."
 msgstr "Ayarlar Veri Toplayıcıya kaydedildi% d Başarısız."
 
-#: lib/functions.php:453 settings.php:280
+#: lib/functions.php:461 settings.php:280
 #, fuzzy, php-format
 msgid "Settings save to Data Collector %d Failed."
 msgstr "Ayarlar Veri Toplayıcıya kaydedildi% d Başarısız."
 
-#: lib/functions.php:920 lib/functions.php:1011
+#: lib/functions.php:928 lib/functions.php:1019
 #, fuzzy
 msgid "Message Not Found."
 msgstr "Mesaj bulunamadı."
 
-#: lib/functions.php:1408
+#: lib/functions.php:1416
 #, fuzzy, php-format
 msgid "Error %s is not readable"
 msgstr "%s hatası okunamıyor"
 
-#: lib/functions.php:3645
+#: lib/functions.php:3653
 #, fuzzy
 #| msgid "Logged in as"
 msgid "Logged in a Guest"
 msgstr "olarak giriş yaptı"
 
-#: lib/functions.php:3645 lib/functions.php:3661
+#: lib/functions.php:3653 lib/functions.php:3669
 msgid "Logged in as"
 msgstr "olarak giriş yaptı"
 
-#: lib/functions.php:3645
+#: lib/functions.php:3653
 #, fuzzy
 msgid "Login as Regular User"
 msgstr "Düzenli Kullanıcı Olarak Giriş Yapın"
 
-#: lib/functions.php:3645
+#: lib/functions.php:3653
 msgid "guest"
 msgstr "misafir"
 
-#: lib/functions.php:3648 lib/functions.php:3671 lib/html.php:2497
+#: lib/functions.php:3656 lib/functions.php:3679 lib/html.php:2497
 #, fuzzy
 msgid "User Community"
 msgstr "Kullanıcı Topluluğu"
 
-#: lib/functions.php:3649 lib/functions.php:3672 lib/html.php:2499
+#: lib/functions.php:3657 lib/functions.php:3680 lib/html.php:2499
 #: lib/utility.php:1244
 msgid "Documentation"
 msgstr "Belgeler"
 
-#: lib/functions.php:3664
+#: lib/functions.php:3672
 #, php-format
 msgid "Logged in as %s"
 msgstr "%s olarak giriş yaptınız"
 
-#: lib/functions.php:3666 lib/html.php:2478
+#: lib/functions.php:3674 lib/html.php:2478
 msgid "Edit Profile"
 msgstr "Profili Düzenle"
 
-#: lib/functions.php:3676 lib/html.php:2482
+#: lib/functions.php:3684 lib/html.php:2482
 msgid "Logout"
 msgstr "Çıkış"
 
-#: lib/functions.php:3821
+#: lib/functions.php:3829
 msgid "Leaf"
 msgstr "Yaprak"
 
-#: lib/functions.php:3841 lib/html_tree.php:663 lib/html_tree.php:699
+#: lib/functions.php:3849 lib/html_tree.php:663 lib/html_tree.php:699
 #: lib/html_tree.php:928 lib/html_tree.php:936 lib/html_tree.php:1510
 #, fuzzy
 msgid "Non Query Based"
 msgstr "Sorgu Tabanlı Olmayan"
 
-#: lib/functions.php:3877
+#: lib/functions.php:3885
 #, php-format
 msgid "Link %s"
 msgstr "Bağlantı %s"
 
-#: lib/functions.php:4912
+#: lib/functions.php:4920
 #, fuzzy
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
 msgstr "Mailer Hata: set adrese <b>İÇİN</b> !! <br> <i>Posta Testi</i> bağlantısını kullanıyorsanız, lütfen <b>Uyarı e-posta</b> ayarını ayarlayın."
 
-#: lib/functions.php:5241
+#: lib/functions.php:5249
 #, fuzzy, php-format
 msgid "Authentication failed: %s"
 msgstr "Kimlik doğrulama başarısız oldu: %s"
 
-#: lib/functions.php:5245
+#: lib/functions.php:5253
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "HELO başarısız oldu: %s"
 
-#: lib/functions.php:5248
+#: lib/functions.php:5256
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "Bağlantı kurulamadı: %s"
 
-#: lib/functions.php:5251
+#: lib/functions.php:5259
 #, fuzzy
 msgid "SMTP error: "
 msgstr "SMTP hatası:"
 
-#: lib/functions.php:5264
+#: lib/functions.php:5272
 #, fuzzy
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
 msgstr "Bu Cacti&#39;den üretilen bir test mesajıdır. Bu mesaj, Posta Ayarlarınızın yapılandırmasını test etmek için gönderildi."
 
-#: lib/functions.php:5265
+#: lib/functions.php:5273
 #, fuzzy
 msgid "Your email settings are currently set as follows"
 msgstr "E-posta ayarlarınız şu anda aşağıdaki gibi ayarlanmış"
 
-#: lib/functions.php:5268
+#: lib/functions.php:5276
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "Yapılandırma Denetleniyor ... <br>"
 
-#: lib/functions.php:5275
+#: lib/functions.php:5283
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "PHP&#39;nin Mailer Sınıfı"
 
-#: lib/functions.php:5281
+#: lib/functions.php:5289
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "Yöntem: SMTP"
 
-#: lib/functions.php:5296
+#: lib/functions.php:5304
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "Güvenlik Sebepleri Gösterilmemiştir"
 
-#: lib/functions.php:5297
+#: lib/functions.php:5305
 msgid "Security"
 msgstr "Güvenlik"
 
-#: lib/functions.php:5305
+#: lib/functions.php:5313
 #, fuzzy
 msgid "Ping Results:"
 msgstr "Ping Sonuçları:"
 
-#: lib/functions.php:5314
+#: lib/functions.php:5322
 #, fuzzy
 msgid "Bypassed"
 msgstr "baypas"
 
-#: lib/functions.php:5322
+#: lib/functions.php:5330
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "Mesaj Metni Oluşturuluyor ..."
 
-#: lib/functions.php:5325
+#: lib/functions.php:5333
 msgid "Sending Message..."
 msgstr "Mesaj Gönderiliyor..."
 
-#: lib/functions.php:5329
+#: lib/functions.php:5337
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "Kaktüsler Test Mesajı"
 
-#: lib/functions.php:5331
+#: lib/functions.php:5339
 msgid "Success!"
 msgstr "Başarılı!"
 
-#: lib/functions.php:5334
+#: lib/functions.php:5342
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "Ping hatası nedeniyle gönderilemedi."
 
-#: lib/functions.php:5922 lib/functions.php:5991
+#: lib/functions.php:5930 lib/functions.php:5999
 #, fuzzy, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr "Cacti, şu hata nedeniyle %s eklentisini devre dışı bıraktı: %s! Daha fazla ayrıntı için Cacti günlük dosyasına bakın."
 
-#: lib/functions.php:6385 lib/functions.php:6387
+#: lib/functions.php:6393 lib/functions.php:6395
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "- Beta %s"
 
-#: lib/functions.php:6385
+#: lib/functions.php:6393
 #, fuzzy, php-format
 msgid "Version %s %s"
 msgstr "Sürüm %s %s"
 
-#: lib/functions.php:6387
+#: lib/functions.php:6395
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
 
-#: lib/functions.php:6601
+#: lib/functions.php:6609
 #, php-format
 msgid "WARNING:  Key Cacti Include File %s missing.  Please locate and replace this file"
 msgstr ""
@@ -16604,11 +16646,6 @@ msgstr "Aşağıdaki Raporlara sahip olmak için &#39;Devam Et&#39;i tıklayın.
 msgid "Click 'Continue' to duplicate the following Report(s).  You may optionally change the title for the new Reports"
 msgstr "Aşağıdaki Raporları çoğaltmak için &#39;Devam Et&#39;i tıklayın. İsteğe bağlı olarak yeni Raporların başlığını değiştirebilirsiniz"
 
-#: lib/html_reports.php:520
-#, fuzzy
-msgid "Name Format:"
-msgstr "İsim biçimi"
-
 #: lib/html_reports.php:530
 #, fuzzy
 msgid "Click 'Continue' to enable the following Report(s)."
@@ -17014,7 +17051,7 @@ msgstr "Kötü UTF-8 hatası!"
 msgid "Bad UTF-8 offset error!"
 msgstr "Kötü UTF-8 ofset hatası!"
 
-#: lib/html_utility.php:946 lib/installer.php:1856 lib/installer.php:3620
+#: lib/html_utility.php:946 lib/installer.php:1856 lib/installer.php:3616
 msgid "Error"
 msgstr "Hata"
 
@@ -17360,7 +17397,7 @@ msgid "Location checks"
 msgstr "Yer kontrolleri"
 
 #: lib/installer.php:1799 lib/installer.php:1944 lib/installer.php:1948
-#: lib/installer.php:2103 lib/installer.php:2108 lib/installer.php:3717
+#: lib/installer.php:2103 lib/installer.php:2108 lib/installer.php:3713
 msgid "ERROR:"
 msgstr "HATA:"
 
@@ -17710,7 +17747,7 @@ msgstr "Uzak oylayıcılar için, eklentiler, komut dosyaları ve kaynaklar yoll
 msgid "Required Writable at Install Time Only"
 msgstr "Yalnızca Yükleme Zamanında Gerekli Yazılabilir"
 
-#: lib/installer.php:2264 lib/installer.php:2296 package_import.php:551
+#: lib/installer.php:2264 lib/installer.php:2296 package_import.php:559
 msgid "Not Writable"
 msgstr "Yazılabilir değil"
 
@@ -18108,224 +18145,224 @@ msgstr "Yüklenecek%s şablon bulundu"
 msgid "About to import Package #%s '%s'."
 msgstr "#%s '%s' Paketini içe aktarmak üzere."
 
-#: lib/installer.php:3014
+#: lib/installer.php:3016
 #, fuzzy, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' succeeded"
 msgstr "'%s' Profili altındaki #%s '%s' Paketinin İçe Aktarılması başarılı oldu"
 
-#: lib/installer.php:3020
+#: lib/installer.php:3022
 #, fuzzy, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' failed"
 msgstr "'%s' Profili altındaki #%s '%s' Paketinin İçe Aktarılması başarısız oldu"
 
-#: lib/installer.php:3041
+#: lib/installer.php:3037
 #, fuzzy, php-format
 msgid "Mapping Automation Template for Device Template '%s'"
 msgstr "[Silinen Şablon] için Otomasyon Şablonları"
 
-#: lib/installer.php:3058
+#: lib/installer.php:3054
 #, fuzzy
 msgid "No templates were selected for import"
 msgstr "İçe aktarma için şablon seçilmedi"
 
-#: lib/installer.php:3067
+#: lib/installer.php:3063
 #, fuzzy
 msgid "Updating remote configuration file"
 msgstr "Yapılandırma bekleniyor"
 
-#: lib/installer.php:3099
+#: lib/installer.php:3095
 #, fuzzy, php-format
 msgid "Setting default data source profile to %s (%s)"
 msgstr "Bu Veri Şablonu için varsayılan Veri Kaynağı Profili."
 
-#: lib/installer.php:3121
+#: lib/installer.php:3117
 #, fuzzy, php-format
 msgid "Failed to find selected profile (%s), no changes were made"
 msgstr "%s belirtilen profil uygulanamadı! = %s"
 
-#: lib/installer.php:3130
+#: lib/installer.php:3126
 #, fuzzy, php-format
 msgid "Updating automation network (%s), mode \"%s\" => \"%s\", subnet \"%s\" => %s\""
 msgstr "Otomasyon ağını güncelleme (%s), mod \"%s\" => \"%s\", alt ağ \"%s\" =>%s \""
 
-#: lib/installer.php:3140
+#: lib/installer.php:3136
 #, fuzzy
 msgid "Failed to find automation network, no changes were made"
 msgstr "Otomasyon ağı bulunamadı, değişiklik yapılmadı"
 
-#: lib/installer.php:3144
+#: lib/installer.php:3140
 #, fuzzy
 msgid "Adding extra snmp settings for automation"
 msgstr "Otomasyon için ekstra snmp ayarları ekleme"
 
-#: lib/installer.php:3150
+#: lib/installer.php:3146
 #, fuzzy, php-format
 msgid "Selecting Automation Option Set %s"
 msgstr "Otomasyon Şablonlarını Sil"
 
-#: lib/installer.php:3163
+#: lib/installer.php:3159
 #, fuzzy, php-format
 msgid "Updating Automation Option Set %s"
 msgstr "Otomasyon SNMP Seçenekleri"
 
-#: lib/installer.php:3166
+#: lib/installer.php:3162
 #, fuzzy, php-format
 msgid "Successfully updated Automation Option Set %s"
 msgstr "%s Otomasyon Seçenek Kümesi başarıyla güncellendi"
 
-#: lib/installer.php:3168
+#: lib/installer.php:3164
 #, fuzzy, php-format
 msgid "Resequencing Automation Option Set %s"
 msgstr "Cihazlarda Otomasyonu Çalıştır"
 
-#: lib/installer.php:3174
+#: lib/installer.php:3170
 #, fuzzy, php-format
 msgid "Failed to updated Automation Option Set %s"
 msgstr "Belirtilen Otomasyon Aralığı uygulanamadı"
 
-#: lib/installer.php:3177
+#: lib/installer.php:3173
 #, fuzzy
 msgid "Failed to find any automation option set"
 msgstr "Kopyalanacak veri bulunamadı!"
 
-#: lib/installer.php:3207
+#: lib/installer.php:3203
 #, fuzzy, php-format
 msgid "Device Template for First Cacti Device is %s"
 msgstr "Cihaz Şablonları [edit: %s]"
 
-#: lib/installer.php:3233
+#: lib/installer.php:3229
 #, fuzzy
 msgid "Creating Graphs for Default Device"
 msgstr "Bu Cihaz için Grafik Oluştur"
 
-#: lib/installer.php:3240
+#: lib/installer.php:3236
 #, fuzzy
 msgid "Adding Device to Default Tree"
 msgstr "Aygıt Varsayılanları"
 
-#: lib/installer.php:3248
+#: lib/installer.php:3244
 #, fuzzy
 msgid "No templated graphs for Default Device were found"
 msgstr "Varsayılan Cihaz için şablon grafik bulunamadı"
 
-#: lib/installer.php:3252
+#: lib/installer.php:3248
 #, fuzzy
 msgid "WARNING: Device Template for your Operating System Not Found.  You will need to import Device Templates or Cacti Packages to monitor your Cacti server."
 msgstr "UYARI: İşletim Sisteminizin Aygıt Şablonu Bulunamadı. Cacti sunucunuzu izlemek için Aygıt Şablonlarını veya Kaktüs Paketlerini içe aktarmanız gerekir."
 
-#: lib/installer.php:3259
+#: lib/installer.php:3255
 #, fuzzy
 msgid "Running first-time data query for local host"
 msgstr "Yerel ana bilgisayar için ilk kez veri sorgusu çalıştırma"
 
-#: lib/installer.php:3267
+#: lib/installer.php:3263
 #, fuzzy
 msgid "Repopulating poller cache"
 msgstr "Poller Cache&#39;i Yeniden Oluştur"
 
-#: lib/installer.php:3272
+#: lib/installer.php:3268
 #, fuzzy
 msgid "Repopulating SNMP Agent cache"
 msgstr "SNMPAgent Önbelleğini Yeniden Oluştur"
 
-#: lib/installer.php:3277
+#: lib/installer.php:3273
 #, fuzzy
 msgid "Generating RSA Key Pair"
 msgstr "RSA Anahtar Çifti Oluşturma"
 
-#: lib/installer.php:3289
+#: lib/installer.php:3285
 #, fuzzy, php-format
 msgid "Found %s tables to convert"
 msgstr "Dönüştürülecek%s tablo bulundu"
 
-#: lib/installer.php:3296
+#: lib/installer.php:3292
 #, fuzzy, php-format
 msgid "Converting Table #%s '%s'"
 msgstr "Dönüştürme Tablosu #%s '%s'"
 
-#: lib/installer.php:3311
+#: lib/installer.php:3307
 #, fuzzy
 msgid "No tables where found or selected for conversion"
 msgstr "Dönüşüm için bulunduğu veya seçildiği yerlerde tablo yok"
 
-#: lib/installer.php:3322
+#: lib/installer.php:3318
 #, fuzzy, php-format
 msgid "Switched from %s to %s"
 msgstr "%s iken%s olarak değiştirildi"
 
-#: lib/installer.php:3326
+#: lib/installer.php:3322
 #, fuzzy, php-format
 msgid "NOTE: Using temporary file for db cache: %s"
 msgstr "NOT: db önbelleği için geçici dosya kullanma:%s"
 
-#: lib/installer.php:3348
+#: lib/installer.php:3344
 #, fuzzy, php-format
 msgid "Upgrading from v%s (DB %s) to v%s"
 msgstr "V%s'den (DB%s) v%s'ye yükseltme"
 
-#: lib/installer.php:3356
+#: lib/installer.php:3352
 #, fuzzy, php-format
 msgid "WARNING: Failed to find upgrade function for v%s"
 msgstr "UYARI: v%s için yükseltme işlevi bulunamadı"
 
-#: lib/installer.php:3415
+#: lib/installer.php:3411
 #, fuzzy
 msgid "Install aborted due to no EULA acceptance"
 msgstr "EULA kabulü olmadığından yükleme iptal edildi"
 
-#: lib/installer.php:3438
+#: lib/installer.php:3434
 #, fuzzy, php-format
 msgid "Background was already started at %s, this attempt at %s was skipped"
 msgstr "Arka plan zaten%s'de başlatıldı,%s'deki bu deneme atlandı"
 
-#: lib/installer.php:3461
+#: lib/installer.php:3457
 #, fuzzy, php-format
 msgid "Exception occurred during installation: #%s - %s"
 msgstr "Yükleme sırasında istisna oluştu: #"
 
-#: lib/installer.php:3470
+#: lib/installer.php:3466
 #, fuzzy, php-format
 msgid "Installation was started at %s, completed at %s"
 msgstr "Kuruluma %s ile başlandı, %s ile tamamlandı."
 
-#: lib/installer.php:3505
+#: lib/installer.php:3501
 msgid "Both"
 msgstr "Her ikisi de"
 
-#: lib/installer.php:3505
+#: lib/installer.php:3501
 #, fuzzy, php-format
 msgid "No - %s"
 msgstr "%s saat"
 
-#: lib/installer.php:3510
+#: lib/installer.php:3506
 #, fuzzy, php-format
 msgid "%s - N/A"
 msgstr "%s saat"
 
-#: lib/installer.php:3510 lib/installer.php:3512
+#: lib/installer.php:3506 lib/installer.php:3508
 msgid "Web"
 msgstr "Web"
 
-#: lib/installer.php:3512 lib/installer.php:3515
+#: lib/installer.php:3508 lib/installer.php:3511
 #, fuzzy, php-format
 msgid "%s - No"
 msgstr "%s saat"
 
-#: lib/installer.php:3515
+#: lib/installer.php:3511
 msgid "Cli"
 msgstr "komut satırı"
 
-#: lib/installer.php:3520
+#: lib/installer.php:3516
 #, fuzzy, php-format
 msgid "Setting PHP Option %s = %s"
 msgstr "PHP Seçeneğini Ayarlama%s =%s"
 
-#: lib/installer.php:3526
+#: lib/installer.php:3522
 #, fuzzy, php-format
 msgid "Failed to set PHP option %s, is %s (should be %s)"
 msgstr "%s PHP seçeneği ayarlanamadı,%s (%s olmalı)"
 
-#: lib/installer.php:3545
+#: lib/installer.php:3541
 #, fuzzy
 msgid "No Remote Data Collectors found for full synchronization"
 msgstr "Eşitleme denenirken Veri Toplayıcıları bulunamadı"
@@ -18617,195 +18654,195 @@ msgstr "Rapor Grafiği Öğesi Eklenemedi &#39; <i> %s</i> &#39; Zaten Var"
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
 msgstr "Atlanan Rapor Grafiği Öğesi &#39; <i> %s</i> &#39; Zaten Var"
 
-#: lib/rrd.php:2913
+#: lib/rrd.php:2919
 #, fuzzy, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
 msgstr "Gerekli RRD adım boyutu &#39; %s&#39;"
 
-#: lib/rrd.php:2973
+#: lib/rrd.php:2979
 #, fuzzy, php-format
 msgid "Type for Data Source '%s' should be '%s'"
 msgstr "Veri Kaynağı Türü &#39; %s&#39; &#39; %s&#39; olmalıdır"
 
-#: lib/rrd.php:2979
+#: lib/rrd.php:2985
 #, fuzzy, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
 msgstr "&#39; %s&#39; Veri Kaynağı İçin Kalp Atışı &#39; %s&#39; olmalıdır"
 
-#: lib/rrd.php:2991
+#: lib/rrd.php:2997
 #, fuzzy, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "&#39; %s&#39; Veri Kaynağı için minimum RRD &#39; %s&#39; olmalıdır"
 
-#: lib/rrd.php:3000
+#: lib/rrd.php:3006
 #, fuzzy, php-format
 msgid "DS '%s' missing in Cacti definition"
 msgstr "DS &#39; %s&#39; Cacti tanımında eksik"
 
-#: lib/rrd.php:3014 lib/rrd.php:3015
+#: lib/rrd.php:3020 lib/rrd.php:3021
 #, fuzzy, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "Cacti RRA &#39; %s&#39;, &#39; %s&#39; ile aynı CF / adımlara ( %s, %s) sahip"
 
-#: lib/rrd.php:3028 lib/rrd.php:3029
+#: lib/rrd.php:3034 lib/rrd.php:3035
 #, fuzzy, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "RRA &#39; %s&#39; dosyasında CF / adımları ( %s, %s) &#39; %s&#39; ile aynı"
 
-#: lib/rrd.php:3061
+#: lib/rrd.php:3067
 #, php-format
 msgid "The pdp_per_row of '%s' is invalid for RRA '%s' should be '%s'.  Consider deleting and allowing Cacti to re-create RRDfile."
 msgstr ""
 
-#: lib/rrd.php:3065
+#: lib/rrd.php:3071
 #, fuzzy, php-format
 msgid "The XFF for Cacti RRA id is '%s' but should be '%s'"
 msgstr "Kaktüsler için XFF RRA kimliği &#39; %s&#39; &#39; %s&#39; olmalıdır"
 
-#: lib/rrd.php:3069
+#: lib/rrd.php:3075
 #, fuzzy, php-format
 msgid "The number of rows for Cacti RRA id '%s' is incorrect.  The number of rows are '%s' but should be '%s'"
 msgstr "Cacti RRA kimliği &#39; %s&#39; için satır sayısı &#39; %s&#39; olmalıdır"
 
-#: lib/rrd.php:3087
+#: lib/rrd.php:3093
 #, fuzzy, php-format
 msgid "The RRA '%s' missing in the existing Cacti RRDfile"
 msgstr "RRA &#39; %s&#39;, RRD dosyasında eksik"
 
-#: lib/rrd.php:3094
+#: lib/rrd.php:3100
 #, fuzzy, php-format
 msgid "RRA '%s' missing in Cacti definition"
 msgstr "Cacti tanımında RRA &#39; %s&#39; eksik"
 
-#: lib/rrd.php:3115
+#: lib/rrd.php:3121
 #, fuzzy
 msgid "RRD File Information"
 msgstr "RDR Dosya Bilgileri"
 
-#: lib/rrd.php:3147
+#: lib/rrd.php:3153
 #, fuzzy
 msgid "Data Source Items"
 msgstr "Veri Kaynağı Öğeleri"
 
-#: lib/rrd.php:3149
+#: lib/rrd.php:3155
 #, fuzzy
 msgid "Minimal Heartbeat"
 msgstr "Minimal Kalp Atışı"
 
-#: lib/rrd.php:3150
+#: lib/rrd.php:3156
 msgid "Min"
 msgstr "Min"
 
-#: lib/rrd.php:3151
+#: lib/rrd.php:3157
 msgid "Max"
 msgstr "Maksimum"
 
-#: lib/rrd.php:3152
+#: lib/rrd.php:3158
 #, fuzzy
 msgid "Last DS"
 msgstr "Son DS"
 
-#: lib/rrd.php:3154
+#: lib/rrd.php:3160
 #, fuzzy
 msgid "Unknown Sec"
 msgstr "Bilinmeyen Sn"
 
-#: lib/rrd.php:3205
+#: lib/rrd.php:3211
 #, fuzzy
 msgid "Round Robin Archive"
 msgstr "Round Robin Arşivi"
 
-#: lib/rrd.php:3208
+#: lib/rrd.php:3214
 #, fuzzy
 msgid "Cur Row"
 msgstr "Cur Row"
 
-#: lib/rrd.php:3209
+#: lib/rrd.php:3215
 #, fuzzy
 msgid "PDP per Row"
 msgstr "Satır başına PDP"
 
-#: lib/rrd.php:3211
+#: lib/rrd.php:3217
 #, fuzzy
 msgid "CDP Prep Value (0)"
 msgstr "CDP Hazırlık Değeri (0)"
 
-#: lib/rrd.php:3212
+#: lib/rrd.php:3218
 #, fuzzy
 msgid "CDP Unknown Data points (0)"
 msgstr "CDP Bilinmeyen Veri noktaları (0)"
 
-#: lib/rrd.php:3270
+#: lib/rrd.php:3276
 #, fuzzy
 #| msgid "No %s Found"
 msgid "Errors Found"
 msgstr "%s Bulunamadı"
 
-#: lib/rrd.php:3282
+#: lib/rrd.php:3288
 #, fuzzy
 msgid "Optional Tuning Recommendations"
 msgstr "Veri Kaynağı Alanları"
 
-#: lib/rrd.php:3307 lib/rrd.php:3310
+#: lib/rrd.php:3313 lib/rrd.php:3316
 #, fuzzy, php-format
 msgid "rename %s to %s"
 msgstr "%s adını %s olarak değiştir"
 
-#: lib/rrd.php:3376
+#: lib/rrd.php:3382
 #, fuzzy
 msgid "Error while parsing the XML of rrdtool dump"
 msgstr "Rrdtool dökümü XML&#39;sini ayrıştırırken hata oluştu"
 
-#: lib/rrd.php:3408 lib/rrd.php:3466 lib/rrd.php:3525
+#: lib/rrd.php:3414 lib/rrd.php:3472 lib/rrd.php:3531
 #, fuzzy, php-format
 msgid "ERROR while writing XML file: %s"
 msgstr "XML dosyası yazarken HATA: %s"
 
-#: lib/rrd.php:3419 lib/rrd.php:3477 lib/rrd.php:3536
+#: lib/rrd.php:3425 lib/rrd.php:3483 lib/rrd.php:3542
 #, fuzzy, php-format
 msgid "ERROR: RRDfile %s not writeable"
 msgstr "HATA:% RRDdosyası yazılabilir değil"
 
-#: lib/rrd.php:3449 lib/rrd.php:3508
+#: lib/rrd.php:3455 lib/rrd.php:3514
 #, fuzzy
 msgid "Error while parsing the XML of RRDtool dump"
 msgstr "RRDtool dökümü XML&#39;sini ayrıştırırken hata oluştu"
 
-#: lib/rrd.php:3756
+#: lib/rrd.php:3762
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
 msgstr "RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF =% 1.2f) RRD dosyasından kaldırıldı"
 
-#: lib/rrd.php:3793
+#: lib/rrd.php:3799
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
 msgstr "RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF =% 1.2f) RRD dosyasına eklendi"
 
-#: lib/rrd.php:3823 lib/rrd.php:3837
+#: lib/rrd.php:3829 lib/rrd.php:3843
 #, fuzzy, php-format
 msgid "Website does not have write access to %s, may be unable to create/update RRDs"
 msgstr "Web sitesi %s dosyasına yazma erişimine sahip değil, RRD oluşturamıyor / güncelleyemiyor olabilir"
 
-#: lib/rrd.php:3833
+#: lib/rrd.php:3839
 #, fuzzy
 msgid "(Custom)"
 msgstr "Özel"
 
-#: lib/rrd.php:3839
+#: lib/rrd.php:3845
 #, fuzzy
 msgid "Failed to open data file, poller may not have run yet"
 msgstr "Veri dosyası açılamadı, anket henüz çalıştırılmamış olabilir."
 
-#: lib/rrd.php:3842
+#: lib/rrd.php:3848
 #, fuzzy
 msgid "RRA Folder"
 msgstr "RRA Klasörü"
 
-#: lib/rrd.php:3842
+#: lib/rrd.php:3848
 msgid "Root"
 msgstr "Kök"
 
-#: lib/rrd.php:3951
+#: lib/rrd.php:3957
 #, fuzzy
 msgid "Unknown RRDtool Error"
 msgstr "Bilinmeyen RRDtool Hatası"
@@ -19479,92 +19516,97 @@ msgstr ""
 msgid "Packages Details"
 msgstr "Paket Dosyaları"
 
-#: package_import.php:469
+#: package_import.php:466
+#, fuzzy
+msgid "Device class"
+msgstr "Cihaz Kuralları"
+
+#: package_import.php:472
 #, fuzzy
 #| msgid "right"
 msgid "Copyright"
 msgstr "sağ"
 
-#: package_import.php:489
+#: package_import.php:497
 msgid "Import Package Filenames [ None selected imports all, Check to import selectively ]"
 msgstr ""
 
-#: package_import.php:493
+#: package_import.php:501
 #, fuzzy
 #| msgid "Package Files"
 msgid "Package"
 msgstr "Paket Dosyaları"
 
-#: package_import.php:496
+#: package_import.php:504
 #, fuzzy
 #| msgid "Rename"
 msgid "Filename"
 msgstr "Yeniden Adlandır"
 
-#: package_import.php:547 package_import.php:645 templates_import.php:353
+#: package_import.php:555 package_import.php:653 templates_import.php:353
 msgid "Differences"
 msgstr ""
 
-#: package_import.php:549 package_import.php:616 templates_import.php:296
+#: package_import.php:557 package_import.php:624 templates_import.php:296
 #, fuzzy
 msgid "Unchanged"
 msgstr "Değişemedi"
 
-#: package_import.php:574
+#: package_import.php:582
 msgid "Import Package Templates [ None selected imports all, Check to import selectively ]"
 msgstr ""
 
-#: package_import.php:578 templates_import.php:257
+#: package_import.php:586 templates_import.php:257
 #, fuzzy
 #| msgid "Template Title"
 msgid "Template Type"
 msgstr "Şablon Başlığı"
 
-#: package_import.php:587 templates_import.php:269
+#: package_import.php:595 templates_import.php:269
 #, fuzzy
 msgid "Changes/Diffferences"
 msgstr "Cihazı Değiştir"
 
-#: package_import.php:612 templates_import.php:290
+#: package_import.php:620 templates_import.php:290
 #, fuzzy
 #| msgid "Update"
 msgid "Updated"
 msgstr "Güncelle"
 
-#: package_import.php:649 templates_import.php:357
+#: package_import.php:657 templates_import.php:357
 #, fuzzy
 #| msgid "Orphaned"
 msgid "Orphans"
 msgstr "Öksüz ve yetim"
 
-#: package_import.php:702
+#: package_import.php:710
 msgid "File Differences for: "
 msgstr ""
 
-#: package_import.php:809
+#: package_import.php:817
 #, fuzzy
 #| msgid "Package Files"
 msgid "Local Package Import File"
 msgstr "Paket Dosyaları"
 
-#: package_import.php:810
+#: package_import.php:818
 msgid "The *.xml.gz file located on your Local machine to Upload and Import."
 msgstr ""
 
-#: package_import.php:815
+#: package_import.php:823
 #, fuzzy
 msgid "Automatically Trust Signer"
 msgstr "Kaktüslere Otomatik Olarak Ekle"
 
-#: package_import.php:817
+#: package_import.php:825
 msgid "If checked, Cacti will automatically Trust the Signer for this and any future Packages by that author."
 msgstr ""
 
-#: package_import.php:853
+#: package_import.php:861
 msgid "Replace Data Source and Graph Template Suggested Value Records.  Graphs and Data Sources will take on new names after either a Data Query Reindex or by using the forced Replace Suggested Values process."
 msgstr ""
 
-#: package_import.php:924
+#: package_import.php:932
 #, fuzzy
 #| msgid "Import"
 msgid "Package Import"
