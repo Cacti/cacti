@@ -210,7 +210,7 @@ function set_user_setting($config_name, $value, $user = -1) {
 		if (strlen($config_name) > 75) {
 			cacti_log("ERROR: User setting name '$config_name' is too long, will be truncated", false, 'SYSTEM');
 		}
-		
+
 		db_execute_prepared('REPLACE INTO settings_user
 			SET user_id = ?,
 			name = ?,
@@ -1278,6 +1278,10 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 
 	if (!isset($database_log)) {
 		$database_log = false;
+	}
+
+	if (trim($string) == '') {
+		return false;
 	}
 
 	$last_log     = $database_log;
@@ -5086,8 +5090,13 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	}
 
 	cacti_log($message, false, 'MAILER');
+
 	if ($result == false) {
-		cacti_log(cacti_debug_backtrace($rtype), false, 'MAILER');
+		$backtrace = trim(cacti_debug_backtrace($rtype));
+
+		if ($backtrace != '') {
+			cacti_log($backtrace, false, 'MAILER');
+		}
 	}
 
 	return $error;
