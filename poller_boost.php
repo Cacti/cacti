@@ -142,6 +142,8 @@ if ($child == false) {
 		$next_run_time = $boost_next_run_time;
 	}
 
+	$seconds_offset = read_config_option('boost_rrd_update_interval') * 60;
+
 	$run_now = boost_time_to_run($forcerun, $current_time, $last_run_time, $next_run_time);
 
 	if ($run_now) {
@@ -207,8 +209,6 @@ if ($child == false) {
 			/* output all the rrd data to the rrd files */
 			$rrd_updates = db_fetch_cell('SELECT SUM(status) FROM poller_output_boost_processes');
 
-			$seconds_offset = read_config_option('boost_rrd_update_interval') * 60;
-
 			if ($rrd_updates > 0) {
 				boost_log_statistics($rrd_updates);
 				$next_run_time = $current_time + $seconds_offset;
@@ -249,6 +249,10 @@ if ($child == false) {
 
 	/* store the next run time so that people understand */
 	if ($rrd_updates > 0 || $rrd_updates == -1) {
+		if (empty($next_run_time)) {
+			$next_run_time = time() + $seconds_offset;
+		}
+
 		set_config_option('boost_next_run_time', $next_run_time);
 	}
 
