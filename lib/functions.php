@@ -5507,7 +5507,7 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	cacti_log($message, false, 'MAILER');
 
 	if ($result == false) {
-		$backtrace = trim(cacti_debug_backtrace($rtype));
+		$backtrace = cacti_debug_backtrace($rtype);
 
 		if ($backtrace != '') {
 			cacti_log($backtrace, false, 'MAILER');
