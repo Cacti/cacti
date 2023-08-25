@@ -661,7 +661,7 @@ class Ldap {
 					 * And the patch against latest PHP release:
 					 * http://cvsweb.netbsd.org/bsdweb.cgi/pkgsrc/databases/php-ldap/files/ldap-ctrl-exop.patch
 					*/
-					$true_dn_result = ldap_search($ldap_conn, $this->search_base, 'userPrincipalName=' . $this->dn, array('dn'));
+					$true_dn_result = ldap_search($ldap_conn, $this->search_base, '(|(uid=' . $this->dn . ')(cn=' . $this->dn . ')(userPrincipalName=' . $this->dn . '))', array('dn'));
 					$first_entry    = ldap_first_entry($ldap_conn, $true_dn_result);
 
 					/* we will test in two ways */
