@@ -5092,7 +5092,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	cacti_log($message, false, 'MAILER');
 
 	if ($result == false) {
-		$backtrace = trim(cacti_debug_backtrace($rtype));
+		$backtrace = cacti_debug_backtrace($rtype);
 
 		if ($backtrace != '') {
 			cacti_log($backtrace, false, 'MAILER');
