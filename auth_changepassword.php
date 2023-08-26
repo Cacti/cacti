@@ -336,14 +336,14 @@ if (isset_request_var('ref')) {
 	$ref_parts   = parse_url(get_nfilter_request_var('ref'));
 	$valid       = true;
 
-	if (isset($ref_parts['username']) || isset($ref_parts['password'])) {
+	if (isset($ref_parts['user']) || isset($ref_parts['pass'])) {
 		$valid = false;
-	} elseif (!isset($ref_parts['hostname'])) {
+	} elseif (!isset($ref_parts['host'])) {
 		$value = true;
-	} elseif (isset($ref_parts['hostname'])) {
+	} elseif (isset($ref_parts['host'])) {
 		$server_addr = $_SERVER['SERVER_ADDR'];
 		$server_info = get_dns_record($_SERVER['SERVER_NAME'], DNS_ANY);
-		$server_ref  = gethostbyname($ref_parts['hostname']);
+		$server_ref  = gethostbyname($ref_parts['host']);
 
 		if ($server_ref != $server_addr) {
 			$valid = false;
