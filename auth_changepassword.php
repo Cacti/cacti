@@ -342,7 +342,7 @@ if (isset_request_var('ref')) {
 		$value = true;
 	} elseif (isset($ref_parts['host'])) {
 		$server_addr = $_SERVER['SERVER_ADDR'];
-		$server_info = get_dns_record($_SERVER['SERVER_NAME'], DNS_ANY);
+		$server_info = dns_get_record($_SERVER['SERVER_NAME'], DNS_ANY);
 		$server_ref  = gethostbyname($ref_parts['host']);
 
 		if ($server_ref != $server_addr) {
