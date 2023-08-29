@@ -952,7 +952,7 @@ function utilities_get_mysql_recommendations() {
 			'class' => 'warning',
 			'measure' => 'ge',
 			'comment' => __('MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability.')
-			)
+		)
 	);
 
 	if (isset($variables['innodb_version']) && version_compare($variables['innodb_version'], '5.6', '<')) {
@@ -993,7 +993,9 @@ function utilities_get_mysql_recommendations() {
 		);
 	} else {
 		if (version_compare($link_ver, '5.2', '>=')) {
-			if (!isset($variables['innodb_version'])) {
+			if (!isset($variables['innodb_version']) && 
+				($database == 'MySQL' || ($database == 'MariaDB' && version_compare($link_ver, '11.0', '<')))) {
+
 				$recommendations += array(
 					'innodb' => array(
 						'value' => 'ON',
