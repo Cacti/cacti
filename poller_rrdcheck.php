@@ -167,6 +167,8 @@ switch ($type) {
 
 rrdcheck_debug('Polling Ending');
 
+set_config_option('rrdchecker_last_run_time', date('Y-m-d G:i:s', time()));
+
 if (!$forcerun) {
 	unregister_process('rrdcheck', $type, $thread_id);
 }
