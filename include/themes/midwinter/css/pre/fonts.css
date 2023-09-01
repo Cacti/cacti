@@ -1,45 +1,49 @@
 html {
     /* font-size variables */
-    --fs-tiny: 0.5625rem;
+    --fs-tiny:       0.5625rem;
     --fs-extrasmall: 0.625rem;
-    --fs-small: 0.75rem;
-    --fs-semismall: 0.8125rem;
-    --fs-medium: 0.875rem;
-    --fs-regular: 1rem;
-    --fs-big: 1.125rem;
-    --fs-semilarge: 1.25rem;
-    --fs-large: 1.375rem;
-    --fs-semihuge: 1.5rem;
-    --fs-huge: 1.625rem;
-    --fs-king: 3.875rem;
+    --fs-small:      0.75rem;
+    --fs-semismall:  0.8125rem;
+    --fs-medium:     0.875rem;
+    --fs-regular:    1.0rem;
+    --fs-big:        1.125rem;
+    --fs-semilarge:  1.25rem;
+    --fs-large:      1.375rem;
+    --fs-semihuge:   1.5rem;
+    --fs-huge:       1.625rem;
+    --fs-king:       3.875rem;
 
     /* default font size */
     font-size: 87.5%;
 
     /* font-weight variables */
-    --fw-thin: 100;
+    --fw-thin:       100;
     --fw-extralight: 200;
-    --fw-light: 300;
-    --fw-semilight: 350;
-    --fw-normal: 400;
-    --fw-medium: 500;
-    --fw-semibold: 600;
-    --fw-bold: 700;
-    --fw-extrabold: 800;
-    --fw-heavy: 900;
+    --fw-light:      300;
+    --fw-semilight:  350;
+    --fw-normal:     400;
+    --fw-medium:     500;
+    --fw-semibold:   600;
+    --fw-bold:       700;
+    --fw-extrabold:  800;
+    --fw-heavy:      900;
 
     /* default font weight */
     font-weight: 500;
 }
 
-html[data-zoom-level='small'] {
-    font-size: 75%;
-}
-
-html[data-zoom-level='regular'] {
-    font-size: 87.5%;
-}
-
-html[data-zoom-level='large'] {
-    font-size: 100%;
-}
+html[data-zoom-level='65'  ] { font-size: 65.0%; }
+html[data-zoom-level='67.5'] { font-size: 67.5%; }
+html[data-zoom-level='70'  ] { font-size: 70.0%; }
+html[data-zoom-level='72.5'] { font-size: 72.5%; }
+html[data-zoom-level='75'  ] { font-size: 75.0%; }
+html[data-zoom-level='77.5'] { font-size: 77.5%; }
+html[data-zoom-level='80'  ] { font-size: 80.0%; }
+html[data-zoom-level='82.5'] { font-size: 82.5%; }
+html[data-zoom-level='85'  ] { font-size: 85.0%; }
+html[data-zoom-level='87.5'] { font-size: 87.5%; }
+html[data-zoom-level='90'  ] { font-size: 90.0%; }
+html[data-zoom-level='92.5'] { font-size: 92.5%; }
+html[data-zoom-level='95'  ] { font-size: 95.0%; }
+html[data-zoom-level='97.5'] { font-size: 97.5%; }
+html[data-zoom-level='100' ] { font-size:100.0%; }

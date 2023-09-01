@@ -1,56 +1,57 @@
 /* Compact BreadCrumbBar with Cacti Logo */
-html[data-theme-mode='compact'] .breadCrumbBar {
+#mdw-ConsolePageHead {
     display: flex;
     height: 4rem;
-    width: 5rem;                                                    /* <=== changed */
+    width: 3rem;                                                    /* <=== changed */
     background-color: var(--background-content);
     flex-direction: column;
     flex-wrap: wrap;
     align-content: flex-start;
 }
 
-html[data-theme-mode='compact'] .breadCrumbBar * {                  /*equal*/
+#mdw-ConsolePageHead * {                  /*equal*/
     background-color: var(--background-content);
     float: left;
     padding-bottom: 0px;
 }
 
-html[data-theme-mode='compact'] #navTitle {
+#navBreadCrumb {
     display: none;                                                  /* changed, but optional see core.css */
 }
 
-html[data-theme-mode='compact'] #cactiConsoleBackdrop {
+#navBackdrop {
     display: block;
     background: transparent url(./../../images/cacti_logo.svg) no-repeat scroll 50% 50% / 20px auto;
     background-color: var(--background-navigation);
     padding-bottom: 0;
     float: left;
-    width: 5rem;
+    width: 4rem;
     height: 4rem;
     cursor: pointer;
 }
 
 /* Main Content Area */
-html[data-theme-mode='compact'] .cactiContent {                     /*equal*/
-    height: calc(100vh - 4rem) !important;
+.cactiContent {                     /*equal*/
+    height: calc(100vh - 4rem - 1px) !important;
+    border-top: 1px solid var(--background-menu);
 }
 
 /* Console Navigation Area */
-html[data-theme-mode='compact'] .cactiConsoleNavigationArea {
+.cactiConsoleNavigationArea {
     display: flex !important;
     flex-direction: row;
     overflow-y: visible !important;
-    width: calc(100vw - 5rem) !important;
+    width: calc(100vw - 4rem) !important;
     height: 4rem !important;
     position: absolute;
     top: 0;
-    left: 5rem;
+    left: 4rem;
     justify-content: space-between;
     padding: 0;             /* reset core */
     border-top: 0;          /* reset core */
 }
 
-html[data-theme-mode='compact'] .cactiConsoleNavigationArea .compact {
+.cactiConsoleNavigationArea .compact {
     display: flex;
     width: 100%;
     flex-direction: row;
@@ -58,82 +59,39 @@ html[data-theme-mode='compact'] .cactiConsoleNavigationArea .compact {
     justify-content: flex-start;
 }
 
-html[data-theme-mode='compact'] .cactiConsoleNavigationArea .compact#compact_user_menu {
+.cactiConsoleNavigationArea .compact#compact_user_menu {
     justify-content: flex-end;
     margin-right: 0.5rem;
 }
 
-html[data-theme-mode='compact'] .cactiConsoleNavigationBox {
+[class^="cactiConsoleNavigation"] [class$="Box"] {
     box-sizing: border-box;
-    width: 100vw;
     position: fixed !important;
     top: 4rem !important;
     left: 0;
-    height: calc(100vh - 4rem) !important;
-    z-index: 1000 !important;
-    background-color: var(--background-menu) !important;
-    box-shadow: 5px 0 5px -5px var(--box-shadow-color) !important;
-    border-top: 1px solid var(--background-navigation);
-    border-right: 1px solid var(--background-navigation);
-    border-bottom: 1px solid var(--background-navigation);
-}
-
-html[data-theme-mode='compact'] .cactiConsoleNavigationUserBox {
-    box-sizing: border-box;
-    width: 100vw;
-    position: fixed;
-    left: 0;
-    bottom: 0;
     height: calc(100vh - 4rem);
-    z-index: 1000;
+    width: 100vw;
     background-color: var(--background-menu);
-    box-shadow: 5px 0 5px -5px var(--box-shadow-color);
     border-top: 1px solid var(--background-navigation);
-    border-right: 1px solid var(--background-navigation);
-    border-bottom: 1px solid var(--background-navigation);
+    z-index: 1000;
 }
 
-html[data-theme-mode='compact'] .cactiConsoleNavigationBox .fa,
-html[data-theme-mode='compact'] .cactiConsoleNavigationUserBox .fa{
+.mdw-ConsoleNavigationBox .fa,
+.cactiConsoleNavigationBoxSmall .fa{
     padding-right: 0;
 }
 
-html[data-theme-mode='compact'] #nav li ul,
-html[data-theme-mode='compact'] .nav li ul {
+#nav li ul,
+.nav li ul {
     padding-left: 3.5rem;
 }
 
-html[data-theme-mode='compact'] #nav li a,
-html[data-theme-mode='compact'] .nav li a {
+#nav li a,
+.nav li a {
     padding: unset;
 }
 
-html[data-theme-mode='compact'] .cactiFlexBoxContainer {
-    display: flex;
-    flex-flow: row wrap;
-    align-content: flex-start;
-}
-
-html[data-theme-mode='compact'] .cactiFlexBoxContentBox {
-    width: 16rem;
-    height: 16rem;
-    box-sizing: border-box;
-}
-
-html[data-theme-mode='compact'] .cactiFlexBoxContentBox .header {
-    font-size: var(--fs-large);
-    text-align: center;
-    padding: 0.5rem 0;
-}
-
-html[data-theme-mode='compact'] .cactiFlexBoxContentBox .content {
-    font-size: 4rem;
-    text-align: center;
-    padding: 0.5rem 0;
-}
-
-
-html[data-theme-mode='compact'] .cactiConsoleNavigationArea .header {
+.cactiConsoleNavigationArea .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -143,57 +101,59 @@ html[data-theme-mode='compact'] .cactiConsoleNavigationArea .header {
     color: var(--text-color-navigation-highlight);
 }
 
-html[data-theme-mode='compact'] .cactiConsoleNavigationArea .header > div {
+.cactiConsoleNavigationArea .header > div {
     width: 16rem;
     padding-left: 1rem;
 }
 
-html[data-theme-mode='compact'] .cactiConsoleNavigationArea .header > div > span {
+.cactiConsoleNavigationArea .header > div > span {
     margin-left: 3.5rem;
 }
 
-html[data-theme-mode='compact'] .cactiConsoleNavigationArea .header > div:nth-child(2) {
+.cactiConsoleNavigationArea .header > div:nth-child(2) {
     width: 16rem;
 }
 
-html[data-theme-mode='compact'] .cactiConsoleNavigationBox ul.nav,
-html[data-theme-mode='compact'] .cactiConsoleNavigationBox ul#nav,
-html[data-theme-mode='compact'] .cactiConsoleNavigationUserBox ul.nav {
+.mdw-ConsoleNavigationBox ul.nav,
+.mdw-ConsoleNavigationBox ul#nav,
+.cactiConsoleNavigationBoxSmall ul.nav {
     display: flex;
     flex-flow: row wrap;
-    align-content: flex-start;
     writing-mode: vertical-lr;
-    margin-top: 1rem;
-    height: calc(100% - 4rem - 2px);
+    margin: 0.5rem 0;
+    height: calc(100% - 5rem - 2px);
     max-width: 100%;
-    overflow-y: hidden;
-    overflow-x: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex-direction: column;
+    align-content: flex-start;
 }
 
-html[data-theme-mode='compact'] .cactiConsoleNavigationArea #menu::-webkit-scrollbar {
+.cactiConsoleNavigationArea #menu::-webkit-scrollbar {
     /* WebKit */
     width: 0;
     height: 0;
 }
 
-html[data-theme-mode='compact'] .cactiConsoleNavigationArea .compact_nav_icon {
+.cactiConsoleNavigationArea .compact_nav_icon {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 3rem;
+    height: 4rem;
     font-size: var(--fs-semilarge);
     cursor: pointer;
 }
 
-html[data-theme-mode='compact'] .compact_nav_icon.mdw_logout {
+.compact_nav_icon.mdw_logout {
     display: none;
 }
 
-html[data-theme-mode='compact'] .cactiConsoleNavigationArea .compact_nav_icon > span {
+.cactiConsoleNavigationArea .compact_nav_icon > span {
     display: none;
 }
 
-html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menu_glyph {
+.cactiConsoleNavigationArea .menu_glyph {
     color: var(--text-color-navigation-highlight);
     font-size: var(--fs-big);
     font-weight: var(--fw-semibold);
@@ -201,7 +161,7 @@ html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menu_glyph {
     width: 1.5rem;
 }
 
-html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menu_parent {
+.cactiConsoleNavigationArea .menu_parent {
     display: flex !important;
     flex-direction: row;
     flex-shrink: 1;
@@ -210,35 +170,37 @@ html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menu_parent {
     pointer-events: none;
 }
 
-html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menu_parent:not(.active) {
+.cactiConsoleNavigationArea .menu_parent:not(.active) {
     #color: #3d3d3d;
 }
 
-html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menuitem {
+.cactiConsoleNavigationArea .menuitem {
     position: relative;
-    width: 16rem;
+    width: calc(100vw - 2rem);
     overflow: hidden;
+    margin: 0.5rem;
     padding: 1rem 0 1rem 1rem;
     writing-mode: initial;
+    background: var(--background-content);
 }
 
-html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menuitem:hover {
+.cactiConsoleNavigationArea .menuitem:hover {
 }
 
-html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menuitem span{
+.cactiConsoleNavigationArea .menuitem span{
     #TODO: color
 }
 
-html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menuitem:hover span {
+.cactiConsoleNavigationArea .menuitem:hover span {
     display: inline-block !important;
     animation: dropdown-anim .15s ease-in-out .1s forwards;
 }
 
-html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menuitem ul {
+.cactiConsoleNavigationArea .menuitem ul {
     display: block !important;
     border-left: none !important;
 }
 
-html[data-theme-mode='compact'] .cactiConsoleNavigationArea .menuitem:hover ul {
+.cactiConsoleNavigationArea .menuitem:hover ul {
     display: inline-block !important;
 }

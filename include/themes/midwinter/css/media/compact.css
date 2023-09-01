@@ -1,20 +1,149 @@
-/* hide standard mode elements */
-html[data-theme-mode='compact'] .cactiPageHead,
-html[data-theme-mode='compact'] .cactiPageBottom,
-html[data-theme-mode='compact'] #navBar {
+/* hide standard mode elements till MidWinter finally dropped them */
+.cactiPageHead,
+.cactiPageBottom,
+#navBar,
+.scrollBar,
+.infoBar {
     display: none;
 }
 
 /* kiosk mode */
-html[data-theme-mode='compact'] [class~=fullscreen],
-html[data-theme-mode='compact'] [class~=fullscreen] > div {
+[class~=fullscreen],
+[class~=fullscreen] > div {
     height: 100vh !important;
 }
 
-html[data-theme-mode='compact'] .hide {
+.hide {
     display: none !important;
 }
 
-html[data-theme-mode='compact'] .show {
+.show {
     display: block;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+#navFilter {
+    visibility: hidden;
+}
+
+#navFilter.visible {
+    visibility: visible !important;
+}
+
+.compact_nav_icon:hover {
+    color:var(--text-color-high-contrast);
+}
+
+.compact_nav_icon.active {
+    color: var(--text-color-high-contrast);
+    background: var(--background-progress);
+}
+
+.no-col1 th:nth-child(1), .no-col1 td:nth-child(1),
+.no-col2 th:nth-child(2), .no-col2 td:nth-child(2),
+.no-col3 th:nth-child(3), .no-col3 td:nth-child(3),
+.no-col4 th:nth-child(4), .no-col4 td:nth-child(4),
+.no-col5 th:nth-child(5), .no-col5 td:nth-child(5),
+.no-col6 th:nth-child(6), .no-col6 td:nth-child(6),
+.no-col7 th:nth-child(7), .no-col7 td:nth-child(7),
+.no-col8 th:nth-child(8), .no-col8 td:nth-child(8),
+.no-col9 th:nth-child(9), .no-col9 td:nth-child(9),
+.no-col10 th:nth-child(10), .no-col10 td:nth-child(10),
+.no-col11 th:nth-child(11), .no-col11 td:nth-child(11),
+.no-col12 th:nth-child(12), .no-col12 td:nth-child(12),
+.no-col13 th:nth-child(13), .no-col13 td:nth-child(13),
+.no-col14 th:nth-child(14), .no-col14 td:nth-child(14),
+.no-col15 th:nth-child(15), .no-col15 td:nth-child(15),
+.no-col16 th:nth-child(16), .no-col16 td:nth-child(16),
+.no-col17 th:nth-child(17), .no-col17 td:nth-child(17),
+.no-col18 th:nth-child(18), .no-col18 td:nth-child(18),
+.no-col19 th:nth-child(19), .no-col19 td:nth-child(19),
+.no-col20 th:nth-child(20), .no-col20 td:nth-child(20),
+.no-col16 th:nth-child(21), .no-col21 td:nth-child(21),
+.no-col17 th:nth-child(22), .no-col22 td:nth-child(22),
+.no-col18 th:nth-child(23), .no-col23 td:nth-child(23),
+.no-col19 th:nth-child(24), .no-col24 td:nth-child(24),
+.no-col20 th:nth-child(25), .no-col25 td:nth-child(25) {
+    display: none !important;
+}
+
+
+/* Tabs mit radio-Buttons */
+.tabbed {
+    width: 100%;
+    height: 100%;
+    padding: 0 0.5rem;
+    box-sizing: border-box;
+}
+
+.tabbed figure {
+    display: block;
+    width: 100%;
+    clear: both;
+    height: calc(100% - 3rem);
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.tabbed > input,
+.tabbed figure > div { display: none; }
+
+.tabbed figure > div {
+    width: 100%;
+    height: calc(100% - 2.5rem);
+    line-height: 3.5em;
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color-semilight);
+}
+
+.tab-columns div:nth-child(2n+1) {
+    float: left;
+    width: 70%;
+    box-sizing: border-box;
+    padding-left: 1rem;
+}
+
+.tab-columns div:nth-child(2n+0) {
+    float: left;
+    width: 30%;
+    box-sizing: border-box;
+    text-align: right;
+}
+
+
+#tab-filters:checked ~ figure .tab-filters,
+#tab-columns:checked ~ figure .tab-columns { display: block; }
+
+nav label {
+    float: left;
+    width: 50%;
+    height: 3rem;
+    box-sizing: border-box;
+    text-align: center;
+    padding: 15px 15px;
+    border-bottom: 3px solid transparent;
+}
+
+nav label:hover { border-bottom-color: var(--border-color); }
+
+#tab-filters:checked ~ nav label[for="tab-filters"],
+#tab-columns:checked ~ nav label[for="tab-columns"] {
+    position: relative;
+    border-bottom-color: var(--background-progress);
+}
+
+#tab-filters:checked ~ nav label[for="tab-filters"]:after,
+#tab-columns:checked ~ nav label[for="tab-columns"]:after {
+    content: "";
+    display: block;
+    position: absolute;
+    height: 2px;
+    width: 100%;
+    left: 0;
+    bottom: -1px;
 }

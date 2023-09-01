@@ -166,7 +166,7 @@
 .zoom-menu {
 	color: var(--text-color-normal);
 	position: absolute;
-	background: var(--background-content);;
+	background: var(--background-content);
 	display: none;
 	z-index: auto;
 	border: 1px solid var(--border-color);
