@@ -279,7 +279,7 @@ function rrdfile_purge($force) {
 
 		/* record the start time */
 		$poller_end = microtime(true);
-		set_config_option('rrdcleaner_last_run_time', date('Y-m-d G:i:s', time()));
+		set_config_option('rrdcleaner_last_run_time', time());
 		$string = sprintf('RRDMAINT STATS: Time:%4.4f Purged:%s Archived:%s', ($poller_end - $poller_start), $purged, $archived);
 		cacti_log($string, true, 'SYSTEM');
 	}
