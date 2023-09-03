@@ -2289,12 +2289,12 @@ $settings = array(
 			)
 		),
 		'extended_paths_header' => array(
-			'friendly_name' => __('Structured RRDfile Paths'),
+			'friendly_name' => __('Structure RRDfile Paths'),
 			'method' => 'spacer',
 			'collapsible' => 'true'
 		),
 		'extended_paths' => array(
-			'friendly_name' => __('Method'),
+			'friendly_name' => __('Enable Structured Paths'),
 			'description' => __('Use a separate subfolder for each hosts RRD files.  The naming of the RRDfiles will be one of the following:<br><ul><li>&lt;path_cacti&gt;/rra/host_id/local_data_id.rrd,</li><li>&lt;path_cacti&gt;/rra/device_id/data_query_id/local_data_id.rrd,</li><li>&lt;path_cacti&gt;/rra/device_hash/device_id/local_data_id.rrd,</li><li>&lt;path_cacti&gt;/rra/device_hash/device_id/data_query_id/local_data_id.rrd.</li></ul><br>You can make this change after install by running the CLI script <b>structure_rra_paths.php</b> after you make the change.  NOTE: If you change Max Directories value to decrease the number of directories, or if you change the Directory Pattern, empty directories will not be pruned after you rerun the <b>structure_rra_paths.php</b> script.'),
 			'method' => 'checkbox'
 		),

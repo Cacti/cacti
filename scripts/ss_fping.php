@@ -84,15 +84,32 @@ function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port =
 
 	$i = 0;
 	while ($i < $ping_sweeps) {
+		$start  = microtime(true);
 		$result = $ping->ping(AVAIL_PING, $method, $ping_timeout, 1);
+		$end    = microtime(true);
 
 		if (!$result) {
+			// Error response
 			$failed_results++;
-		} else {
-			$time[$i] = $ping->ping_status;
+
+			$time[$i]    = $end - $start;
+			$total_time += $end - $start;
+		} elseif (is_numeric($ping->ping_status)) {
+			$time[$i]    = $ping->ping_status;
 			$total_time += $ping->ping_status;
-			if ($ping->ping_status < $min) $min = $ping->ping_status;
-			if ($ping->ping_status > $max) $max = $ping->ping_status;
+			if ($ping->ping_status < $min) {
+				$min = $ping->ping_status;
+			}
+
+			if ($ping->ping_status > $max) {
+				$max = $ping->ping_status;
+			}
+		} else {
+			// Down response
+			$failed_results++;
+
+			$time[$i]    = $end - $start;
+			$total_time += $end - $start;
 		}
 
 		$i++;
