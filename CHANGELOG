@@ -165,6 +165,7 @@ Cacti CHANGELOG
 -issue#5462: Package preview aparantely making changes to Cacti Templates or there is a Caching issue
 -issue#5466: When enabling boost on a fresh install, we get a single error in the Cacti log
 -issue#5467: Cacti logging throws error when attempting to generate a log message from empty log string in PHP 8.x
+-issue#5475: PHP 8.x error - Unsupported operand types: float + string
 -feature#5375: Add template for Fortinet firewall and Aruba Instant cluster
 -feature#5393: Add template for SNMP printer
 -feature#5418: Display device class before package import
