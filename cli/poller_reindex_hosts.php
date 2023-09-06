@@ -204,6 +204,7 @@ if (cacti_sizeof($data_queries)) {
 		$i++;
 	}
 
+	set_config_option('reindex_last_run_time', time());
 	unregister_process('reindex', 'master');
 
 }
