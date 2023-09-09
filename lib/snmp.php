@@ -744,6 +744,10 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 function format_snmp_string($string, $snmp_oid_included, $value_output_format = SNMP_STRING_OUTPUT_GUESS, $strip_alpha = false) {
 	global $banned_snmp_strings;
 
+	if ($string === null) {
+		return '';
+	}
+
 	$string = preg_replace(REGEXP_SNMP_TRIM, '', trim($string));
 
 	if ($snmp_oid_included) {
