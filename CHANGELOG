@@ -1,5 +1,9 @@
 Cacti CHANGELOG
 
+1.2.26
+-issue#5481: Attempting to edit a Data Query that does not exist throws warnings and not an GUI error
+-issue#548e: cacti 1.2.25 ubuntu server 22.04.3 php8.1 add device error
+
 1.2.25
 -security#GHSA-77rf-774j-6h3p: Protect against Insecure deserialization of filter data
 -security#GHSA-gx8c-xvjh-9qh4: Protect against Cross-Site Scripting vulnerability when creating new graphs

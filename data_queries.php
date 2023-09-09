@@ -1097,7 +1097,17 @@ function data_query_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$snmp_query = db_fetch_row_prepared('SELECT * FROM snmp_query WHERE id = ?', array(get_request_var('id')));
+		$snmp_query = db_fetch_row_prepared('SELECT *
+			FROM snmp_query WHERE
+			id = ?',
+			array(get_request_var('id')));
+
+		if (!cacti_sizeof($snmp_query)) {
+			raise_message('data_query_missing', __('The Data Query ID [%s] that you are trying to Edit does not exist.  Please run the repair_database.php CLI script to resolve this database issue.', get_request_var('id')), MESSAGE_LEVEL_ERROR);
+			header('Location: data_queries.php');
+			exit;
+		}
+
 		$header_label = __esc('Data Queries [edit: %s]', $snmp_query['name']);
 	} else {
 		$header_label = __('Data Queries [new]');
