@@ -526,7 +526,7 @@ default:
 
 			$('#selective_plugin_debug').multiselect({
 				menuHeight: $(window).height()*.7,
-				menuWidth: 'auto',
+				menuWidth: 230,
 				linkInfo: faIcons,
 				noneSelectedText: '<?php print __('Select Plugin(s)');?>',
 				selectedText: function(numChecked, numTotal, checkedItems) {
@@ -548,7 +548,7 @@ default:
 
 			$('#selective_debug').multiselect({
 				menuHeight: $(window).height()*.7,
-				menuWidth: 'auto',
+				menuWidth: 230,
 				linkInfo: faIcons,
 				noneSelectedText: '<?php print __('Select File(s)');?>',
 				selectedText: function(numChecked, numTotal, checkedItems) {
