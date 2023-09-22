@@ -126,6 +126,10 @@ if (cacti_sizeof($parms)) {
 			$host_ids = $value;
 
 			break;
+		case 'preserve':
+			$preserve = true;
+
+			break;
 		case 'all':
 			$all = true;
 
