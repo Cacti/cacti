@@ -121,6 +121,14 @@ if (cacti_sizeof($parms)) {
 				$host_template_ids = $value;
 
 				break;
+			case 'preserve':
+				$preserve = true;
+
+				break;
+			case 'all':
+				$all = true;
+
+				break;
 			case 'graph-id':
 				if (!is_array($value)) {
 					$value = array($value);
