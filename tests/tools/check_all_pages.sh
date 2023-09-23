@@ -32,6 +32,7 @@ set -x
 # On a hunch
 sudo systemctl restart apache2
 sudo systemctl status apache2
+sudo systemctl stop firewalld
 
 echo "---------------------------------------------------------------------"
 echo "NOTE: Check all Pages Script Starting"
@@ -368,7 +369,7 @@ magic=$(grep "name='__csrf_magic' value=" "{$tmpFile1}" | sed "s/.*__csrf_magic'
 postData="action=login&login_username=${WAUSER}&login_password=${WAPASS}&__csrf_magic=${magic}"
 
 echo "NOTE: Logging into the Cacti User Interface"
-wget -q $loadSaveCookie --post-data="${postData}" --output-document="${tmpFile2}" "${WEBHOST}"/index.php
+wget $loadSaveCookie --post-data="${postData}" --output-document="${tmpFile2}" "${WEBHOST}"/index.php
 
 # ------------------------------------------------------------------------------
 # Now loop over all the available links (but don't log out and don't delete or
