@@ -659,7 +659,7 @@ function utilities_view_snmp_cache() {
 									INNER JOIN host AS h
 									ON hsc.host_id = h.id
 									WHERE h.id = ?
-									ORDER by sq.name",
+									ORDER by sq.name',
 									array(get_request_var('host_id')));
 							}
 
