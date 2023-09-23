@@ -52,7 +52,11 @@ if (cacti_sizeof($parms)) {
 	foreach ($options as $arg => $value) {
 		switch($arg) {
 			case 'plugin':
-				$plugins[] = $value;
+				if (is_array($value)) {
+					$plugins = $value;
+				} else {
+					$plugins[] = $value;
+				}
 
 				break;
 			case 'install':
@@ -79,19 +83,15 @@ if (cacti_sizeof($parms)) {
 			case 'V':
 			case 'v':
 				display_version();
-
 				exit(0);
 			case 'help':
 			case 'H':
 			case 'h':
 				display_help();
-
 				exit(0);
-
 			default:
 				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 				display_help();
-
 				exit(1);
 		}
 	}
