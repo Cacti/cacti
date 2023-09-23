@@ -1737,18 +1737,20 @@ function utilities_view_snmp_cache() {
 								$snmp_queries = db_fetch_assoc('SELECT DISTINCT sq.id, sq.name
 									FROM host_snmp_cache AS hsc
 									INNER JOIN snmp_query AS sq
-									ON hsc.snmp_query_id=sq.id
+									ON hsc.snmp_query_id = sq.id
 									INNER JOIN host AS h
-									ON hsc.host_id=h.id
+									ON hsc.host_id = h.id
 									ORDER by sq.name');
 							} else {
 								$snmp_queries = db_fetch_assoc_prepared("SELECT DISTINCT sq.id, sq.name
 									FROM host_snmp_cache AS hsc
 									INNER JOIN snmp_query AS sq
-									ON hsc.snmp_query_id=sq.id
+									ON hsc.snmp_query_id = sq.id
 									INNER JOIN host AS h
-									ON hsc.host_id=h.id
-									ORDER by sq.name", array(get_request_var('host_id')));
+									ON hsc.host_id = h.id
+									WHERE h.id = ?
+									ORDER by sq.name",
+									array(get_request_var('host_id')));
 							}
 
 							if (cacti_sizeof($snmp_queries)) {

@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.2.26
 -issue#5481: Attempting to edit a Data Query that does not exist throws warnings and not an GUI error
 -issue#5483: cacti 1.2.25 ubuntu server 22.04.3 php8.1 add device error
+-issue#5485: Selecting a host device in System Utilities - View Data Query Cache raises error in cacti log
 -issue#5489: remove_graphs.php does not handle "--preserve" option
 -issue#5493: Multi select drop down list box not rendered correctly in Chrome and Edge
 -issue#5494: typo error in name used in inserts array for selective_plugin_debug
