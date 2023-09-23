@@ -220,7 +220,7 @@ case 'save':
 		}
 
 		if (!isset_request_var('selective_plugin_debug')) {
-			$inserts[] = '("selective_debug_plugin", "")';
+			$inserts[] = '("selective_plugin_debug", "")';
 			db_execute('REPLACE INTO settings
 				(name, value)
 				VALUES ("selective_plugin_debug", "")');
