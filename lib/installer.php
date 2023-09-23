@@ -3586,7 +3586,7 @@ class Installer implements JsonSerializable {
 					if ($integrated) {
 						cacti_log("Removing $plugin version $version as it is now integrated with Cacti " . CACTI_VERSION);
 					} else {
-						cacti_log("Disabling $plugin version $version as it is not compatible with Cacti " . CACTI_VERSION);
+						cacti_log("Disabling $plugin version $version as it is missing or not compatible with Cacti " . CACTI_VERSION);
 					}
 					api_plugin_disable_all($plugin);
 				}
