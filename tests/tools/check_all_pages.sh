@@ -30,10 +30,8 @@
 set -x
 
 # On a hunch
-sudo systemctl start apache2
+sudo systemctl restart apache2
 sudo systemctl status apache2
-sudo systemctl start php-fpm
-sudo systemctl status php-fpm
 
 echo "---------------------------------------------------------------------"
 echo "NOTE: Check all Pages Script Starting"
