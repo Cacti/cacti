@@ -1081,7 +1081,11 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						$ip_value = '';
 
 						foreach($parts as $idx => $part) {
-							$parts[$idx] = substr(strtoupper('00' . dechex($part)), -2);
+							if (is_numeric($part)) {
+								$parts[$idx] = substr(strtoupper('00' . dechex($part)), -2);
+							} else {
+								$parts[$idx] = substr(strtoupper('00' . $part), -2);
+							}
 
 							if ($idx % 2 == 0 && $idx > 0) {
 								$ip_value .= ':' . $parts[$idx];
