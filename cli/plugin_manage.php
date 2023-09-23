@@ -51,44 +51,48 @@ if (cacti_sizeof($parms)) {
 
 	foreach($options as $arg => $value) {
 		switch($arg) {
-		case 'plugin':
-			$plugins[] = $value;
-			break;
+			case 'plugin':
+				if (is_array($value)) {
+					$plugins = $value;
+				} else {
+					$plugins[] = $value;
+				}
 
-		case 'install':
-			$install = true;
-			break;
+				break;
+			case 'install':
+				$install = true;
 
-		case 'uninstall':
-			$uninstall = true;
+				break;
+			case 'uninstall':
+				$uninstall = true;
 
-			break;
-		case 'disable':
-			$disable = true;
+				break;
+			case 'disable':
+				$disable = true;
 
-			break;
-		case 'enable':
-			$enable = true;
+				break;
+			case 'enable':
+				$enable = true;
 
-			break;
-		case 'allperms':
-			$allperms = true;
+				break;
+			case 'allperms':
+				$allperms = true;
 
-			break;
-		case 'version':
-		case 'V':
-		case 'v':
-			display_version();
-			exit(0);
-		case 'help':
-		case 'H':
-		case 'h':
-			display_help();
-			exit(0);
-		default:
-			print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
-			display_help();
-			exit(1);
+				break;
+			case 'version':
+			case 'V':
+			case 'v':
+				display_version();
+				exit(0);
+			case 'help':
+			case 'H':
+			case 'h':
+				display_help();
+				exit(0);
+			default:
+				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
+				display_help();
+				exit(1);
 		}
 	}
 
