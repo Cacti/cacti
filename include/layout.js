@@ -4205,7 +4205,7 @@ $.widget('custom.languageselect', $.ui.selectmenu, {
 
 		$('<span>', {
 			style: item.element.attr('data-style') + ';float:right',
-			'class': 'right flag-icon flag-icon-squared ' + item.element.attr('data-class')
+			'class': 'right fi fis ' + item.element.attr('data-class')
 		}).appendTo(wrapper);
 
 		return li.append(wrapper).appendTo(ul);

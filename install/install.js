@@ -373,7 +373,7 @@ function processStepWelcome(StepData) {
 
 				$( "<span>", {
 					style: item.element.attr( "data-style" ),
-					"class": "flag-icon flag-icon-squared " + item.element.attr( "data-class" )
+					"class": "fi fis " + item.element.attr( "data-class" )
 				}).appendTo( wrapper );
 
 				return li.append( wrapper ).appendTo( ul );
