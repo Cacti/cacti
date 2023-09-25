@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-11-12 15:22-0500\n"
-"PO-Revision-Date: 2023-07-25 18:32+0000\n"
-"Last-Translator: Сергей <zersh@mail.ru>\n"
+"PO-Revision-Date: 2023-09-26 01:21+0000\n"
+"Last-Translator: Vladyslav V. Prodan <akapulko@gmail.com>\n"
 "Language-Team: Russian <http://translate.cacti.net/projects/cacti/core/ru/>\n"
 "Language: ru-RU\n"
 "MIME-Version: 1.0\n"
@@ -905,11 +905,11 @@ msgstr "Изменить пароль"
 
 #: auth_changepassword.php:332
 msgid "Please enter your current password and your new<br>Cacti password."
-msgstr "Пожалуйста, введите ваш текущий и новый <br>Cacti пароль."
+msgstr "Пожалуйста, введите ваши текущий и новый <br>Cacti пароль."
 
 #: auth_changepassword.php:334
 msgid "Please enter your new Cacti password."
-msgstr "Пожалуйста, введите новый пароль Cacti."
+msgstr "Пожалуйста, введите ваш новый пароль Cacti."
 
 #: auth_changepassword.php:342 auth_login.php:306 auth_login.php:309
 #: include/global_settings.php:1769 lib/functions.php:5213
@@ -1149,7 +1149,7 @@ msgstr "Удалить устройство"
 #: lib/api_automation.php:173 lib/api_automation.php:1099
 #: lib/html_utility.php:924 pollers.php:47
 msgid "Down"
-msgstr "Вниз"
+msgstr "Выкл"
 
 #: automation_devices.php:55 automation_devices.php:300
 #: automation_devices.php:411 automation_devices.php:421
@@ -1157,7 +1157,7 @@ msgstr "Вниз"
 #: lib/api_automation.php:172 lib/api_automation.php:1098
 #: lib/html_utility.php:930
 msgid "Up"
-msgstr "Вверх"
+msgstr "Вкл"
 
 #: automation_devices.php:107
 msgid "Added manually through device automation interface."
