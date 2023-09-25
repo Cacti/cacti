@@ -1,17 +1,5 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti Russian Language File\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2023-08-20 15:05-0400\n"
-"PO-Revision-Date: 2023-07-25 18:31+0000\n"
-"Last-Translator: Сергей <zersh@mail.ru>\n"
-"Language-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\n"
-"Language: ru-RU\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2023-08-20 15:05-0400\nPO-Revision-Date: 2023-09-25 21:24+0000\nLast-Translator: Vladyslav V. Prodan <akapulko@gmail.com>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2626 lib/html.php:2512
 msgid "About Cacti"
@@ -921,11 +909,11 @@ msgstr "Изменить пароль"
 
 #: auth_changepassword.php:376
 msgid "Please enter your current password and your new<br>Cacti password."
-msgstr "Пожалуйста, введите ваш текущий и новый <br>Cacti пароль."
+msgstr "Пожалуйста, введите ваши текущий и новый <br>Cacti пароль."
 
 #: auth_changepassword.php:378
 msgid "Please enter your new Cacti password."
-msgstr "Пожалуйста, введите новый пароль Cacti."
+msgstr "Пожалуйста, введите ваш новый пароль Cacti."
 
 #: auth_changepassword.php:386 auth_login.php:306 auth_login.php:309
 #: include/global_settings.php:1798 lib/functions.php:5303
@@ -1151,7 +1139,7 @@ msgstr "Удалить устройство"
 #: lib/api_automation.php:173 lib/api_automation.php:1099
 #: lib/html_utility.php:937 pollers.php:47
 msgid "Down"
-msgstr "Вниз"
+msgstr "Выкл"
 
 #: automation_devices.php:55 automation_devices.php:300
 #: automation_devices.php:411 automation_devices.php:421
@@ -1159,7 +1147,7 @@ msgstr "Вниз"
 #: lib/api_automation.php:172 lib/api_automation.php:1098
 #: lib/html_utility.php:943
 msgid "Up"
-msgstr "Вверх"
+msgstr "Вкл"
 
 #: automation_devices.php:107
 msgid "Added manually through device automation interface."
