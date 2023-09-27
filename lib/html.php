@@ -2727,8 +2727,8 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/fa/css/all.css');
 	print get_md5_include_css('include/fa/css/fontawesome.css');
 	print get_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css');
-
-	/* Main theme based style (included last to allow overrides) */
+	print get_md5_include_css('include/vendor/flag-icons/css/flag-icons.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');
 
 	/* Global scripts */
 	print get_md5_include_js('include/js/screenfull.js', true);

@@ -1869,7 +1869,7 @@ class Installer implements JsonSerializable {
 			} else {
 				$flagName = strtolower($flags[0]);
 			}
-			$langOutput .= '<option value=\'' . $key . '\'' . $selected . ' data-class=\'flag-icon-' . $flagName . '\'><span class="flag-icon flag-icon-squared flag-icon-' . $flagName . '"></span>' . $value . '</option>';
+			$langOutput .= '<option value=\'' . $key . '\'' . $selected . ' data-class=\'fi-' . $flagName . '\'><span class="fi fis fi-'.$flagName.'"></span>' . $value . '</option>';
 		}
 		$langOutput .= '</select>';
 
