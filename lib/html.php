@@ -630,6 +630,8 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
    @arg $url - a base url to redirect sort actions to
    @arg $return_to - the id of the object to inject output into as a result of the sort action */
 function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1, $url = '', $return_to = '') {
+	static $page_count = 0;
+
 	/* reverse the sort direction */
 	if ($sort_direction == 'ASC') {
 		$new_sort_direction = 'DESC';
@@ -637,7 +639,8 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		$new_sort_direction = 'ASC';
 	}
 
-	$page = str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
+	$page = $page_count . '_' . str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
+
 	if (isset_request_var('action')) {
 		$page .= '_' . get_request_var('action');
 	}
@@ -771,6 +774,8 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 	}
 
 	print '</tr>';
+
+	$page_count++;
 }
 
 /* html_header_sort_checkbox - draws a header row with a 'select all' checkbox in the last cell
@@ -787,7 +792,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
    @arg $form_action - the url to post the 'select all' form to
    @arg $return_to - the id of the object to inject output into as a result of the sort action */
 function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $include_form = true, $form_action = '', $return_to = '', $prefix = 'chk') {
-	static $page = 0;
+	static $page_count = 0;
 
 	/* reverse the sort direction */
 	if ($sort_direction == 'ASC') {
@@ -796,7 +801,8 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		$new_sort_direction = 'ASC';
 	}
 
-	$page = str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
+	$page = $page_count . '_' . str_replace('.php', '', basename($_SERVER['SCRIPT_NAME']));
+
 	if (isset_request_var('action')) {
 		$page .= '_' . get_request_var('action');
 	}
@@ -933,7 +939,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='selectAll(\"$prefix\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='$prefix' name='$prefix' method='post' action='$form_action'></th>":'');
 	print '</tr>';
 
-	$page++;
+	$page_count++;
 }
 
 /* html_header - draws a header row suitable for display inside of a box element
