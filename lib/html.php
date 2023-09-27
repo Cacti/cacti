@@ -2593,7 +2593,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/pace.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/Diff.css');
 	print get_md5_include_css('include/fa/css/all.css');
-	print get_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css');
+	print get_md5_include_css('include/vendor/flag-icons/css/flag-icons.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');
 	print get_md5_include_js('include/js/screenfull.js', true);
 	print get_md5_include_js('include/js/jquery.js');

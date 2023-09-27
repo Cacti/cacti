@@ -800,7 +800,7 @@ function form_droplanguage($form_name, $column_display, $column_id, $form_previo
 			$flagName = strtolower($flags[0]);
 		}
 
-		print '<option value=\'' . $key . '\'' . $selected . ' data-class=\'flag-icon-' . $flagName . '\'><span class="flag-icon flag-icon-squared flag-icon-' . $flagName . '"></span>' . __($value) . '</option>';
+		print '<option value=\'' . $key . '\'' . $selected . ' data-class=\'fi-' . $flagName . '\'><span class="fi fis fi-' . $flagName . '"></span>' . __($value) . '</option>';
 	}
 
 	print '</select>';
