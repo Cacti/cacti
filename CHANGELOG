@@ -98,6 +98,7 @@ Cacti CHANGELOG
 -issue#5494: typo error in name used in inserts array for selective_plugin_debug
 -issue#5495: Upon upgrade, cacti falsely assumes that a plugin is not compatible, when it could simply not be present
 -issue#5496: Plugin Management CLI does not work when multiple plugins are specified
+-issue#5502: Errors related to php 8.3 and page generation including a checkbox
 
 1.2.25
 -security#GHSA-77rf-774j-6h3p: Protect against Insecure deserialization of filter data
