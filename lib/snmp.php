@@ -944,19 +944,17 @@ function snmp_escape_string($string) {
 	global $config;
 
 	if (!defined('SNMP_ESCAPE_CHARACTER')) {
-		if ($config['cacti_server_os'] == 'win32') {
-			define('SNMP_ESCAPE_CHARACTER', '"');
-		}
+		define('SNMP_ESCAPE_CHARACTER', '"');
+	}
 
+	if ($config['cacti_server_os'] == 'win32') {
 		if (substr_count($string, SNMP_ESCAPE_CHARACTER)) {
 			$string = str_replace(SNMP_ESCAPE_CHARACTER, "\\" . SNMP_ESCAPE_CHARACTER, $string);
 			return SNMP_ESCAPE_CHARACTER . $string . SNMP_ESCAPE_CHARACTER;
-		} else {
-			return cacti_escapeshellarg($string);
 		}
-	} else {
-		return cacti_escapeshellarg($string);
 	}
+
+	return cacti_escapeshellarg($string);
 }
 
 function snmp_get_method($type = 'walk', $version = 1, $context = '', $engineid = '',
