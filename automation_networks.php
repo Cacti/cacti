@@ -397,7 +397,7 @@ function api_networks_save($post) {
 		$save['poller_id']     = form_input_validate($post['poller_id'], 'poller_id', '^[0-9]+$', false, 3);
 		$save['site_id']       = form_input_validate($post['site_id'], 'site_id', '^[0-9]+$', false, 3);
 		$save['subnet_range']  = form_input_validate($post['subnet_range'], 'subnet_range', '', false, 3);
-		$save['ignore_ips']    = form_input_validate($post['ignore_ips'], 'ignore_ips', '', false, 3);
+		$save['ignore_ips']    = form_input_validate($post['ignore_ips'], 'ignore_ips', '', true, 3);
 		$save['dns_servers']   = form_input_validate($post['dns_servers'], 'dns_servers', '', true, 3);
 
 		$save['threads']       = form_input_validate($post['threads'], 'threads', '^[0-9]+$', false, 3);
