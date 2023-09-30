@@ -96,6 +96,7 @@ Cacti CHANGELOG
 -issue#5483: cacti 1.2.25 ubuntu server 22.04.3 php8.1 add device error
 -issue#5485: Selecting a host device in System Utilities - View Data Query Cache raises error in cacti log
 -issue#5489: remove_graphs.php does not handle "--preserve" option
+-issue#5492: Cacti 1.2.25 ss_host_cpu.php CPU graphs not updating anymore on Windows servers
 -issue#5493: Multi select drop down list box not rendered correctly in Chrome and Edge
 -issue#5494: typo error in name used in inserts array for selective_plugin_debug
 -issue#5495: Upon upgrade, cacti falsely assumes that a plugin is not compatible, when it could simply not be present
