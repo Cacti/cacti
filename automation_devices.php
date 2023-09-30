@@ -285,19 +285,71 @@ function display_discovery_page() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'host_id'     => array('display' => __('Imported Device'), 'align' => 'left', 'sort' => 'ASC'),
-		'hostname'    => array('display' => __('Device Name'),  'align' => 'left', 'sort' => 'ASC'),
-		'ip'          => array('display' => __('IP'),           'align' => 'left', 'sort' => 'ASC'),
-		'network_id'  => array('display' => __('Network'),      'align' => 'left', 'sort' => 'ASC'),
-		'sysName'     => array('display' => __('SNMP Name'),    'align' => 'left', 'sort' => 'ASC'),
-		'sysLocation' => array('display' => __('Location'),     'align' => 'left', 'sort' => 'ASC'),
-		'sysContact'  => array('display' => __('Contact'),      'align' => 'left', 'sort' => 'ASC'),
-		'sysDescr'    => array('display' => __('Description'),  'align' => 'left', 'sort' => 'ASC'),
-		'os'          => array('display' => __('OS'),           'align' => 'left', 'sort' => 'ASC'),
-		'time'        => array('display' => __('Uptime'),       'align' => 'right', 'sort' => 'DESC'),
-		'snmp'        => array('display' => __('SNMP'),         'align' => 'right', 'sort' => 'DESC'),
-		'up'          => array('display' => __('Status'),       'align' => 'right', 'sort' => 'ASC'),
-		'mytime'      => array('display' => __('Last Check'),   'align' => 'right', 'sort' => 'DESC')
+		'host_id' => array(
+			'display' => __('Imported Device'),
+			'align' => 'left',
+			'sort' => 'ASC'
+		),
+		'hostname' => array(
+			'display' => __('Device Name'),
+			'align' => 'left',
+			'sort' => 'ASC'
+		),
+		'ip' => array(
+			'display' => __('IP'),
+			'align' => 'left',
+			'sort' => 'ASC'
+		),
+		'network_id' => array(
+			'display' => __('Network'),
+			'align' => 'left',
+			'sort' => 'ASC'
+		),
+		'sysName' => array(
+			'display' => __('SNMP Name'),
+			'align' => 'left',
+			'sort' => 'ASC'
+		),
+		'sysLocation' => array(
+			'display' => __('Location'),
+			'align' => 'left',
+			'sort' => 'ASC'
+		),
+		'sysContact' => array(
+			'display' => __('Contact'),
+			'align' => 'left',
+			'sort' => 'ASC'
+		),
+		'sysDescr' => array(
+			'display' => __('Description'),
+			'align' => 'left',
+			'sort' => 'ASC'
+		),
+		'os' => array(
+			'display' => __('OS'),
+			'align' => 'left',
+			'sort' => 'ASC'
+		),
+		'time' => array(
+			'display' => __('Uptime'),
+			'align' => 'right',
+			'sort' => 'DESC'
+		),
+		'snmp' => array(
+			'display' => __('SNMP'),
+			'align' => 'right',
+			'sort' => 'DESC'
+		),
+		'up' => array(
+			'display' => __('Status'),
+			'align' => 'right',
+			'sort' => 'ASC'
+		),
+		'mytime' => array(
+			'display' => __('Last Check'),
+			'align' => 'right',
+			'sort' => 'DESC'
+		)
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
@@ -439,7 +491,7 @@ function process_request_vars() {
 		)
 	);
 
-	validate_store_request_vars($filters, 'sess_autom');
+	validate_store_request_vars($filters, 'sess_autom_device');
 	/* ================= input validation ================= */
 }
 
@@ -480,7 +532,7 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 			OR sysDescr LIKE ' . db_qstr('%' . $filter . '%') . '
 			OR sysLocation LIKE ' . db_qstr('%' . $filter . '%') . '
 			OR sysContact LIKE ' . db_qstr('%' . $filter . '%') . '
-			)';
+		)';
 	}
 
 	if ($export) {
@@ -491,8 +543,7 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 			FROM automation_devices
 			$sql_where");
 
-		$page = get_request_var('page');
-
+		$page      = get_request_var('page');
 		$sql_order = get_order_string();
 		$sql_limit = ' LIMIT ' . ($rows * ($page - 1)) . ',' . $rows;
 
