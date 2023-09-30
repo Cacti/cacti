@@ -435,8 +435,10 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, &$pipes)
 
 								break;
 							} else {
-								foreach($position[$index] as $dsname => $stat) {
-									$dsvalues[$dsname][$stat] = trim($line);
+								if (isset($position[$index]) && cacti_sizeof($position[$index])) {
+									foreach($position[$index] as $dsname => $stat) {
+										$dsvalues[$dsname][$stat] = trim($line);
+									}
 								}
 							}
 						}

@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -issue#5496: Plugin Management CLI does not work when multiple plugins are specified
 -issue#5502: Errors related to php 8.3 and page generation including a checkbox
 -issue#5503: Note, we could not process all your actions. Details are below
+-issue#5514: DS Stats issues warnings when the RRDfile has not been initialized 
 
 1.2.25
 -security#GHSA-77rf-774j-6h3p: Protect against Insecure deserialization of filter data
