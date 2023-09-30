@@ -727,7 +727,7 @@ function read_config_option($config_name, $force = false) {
 		    isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 
 			// Get the database setting
-			$db_result = db_fetch_row_prepared('SELECT value FROM settings WHERE name = ?', array($config_name));
+			$db_result = db_fetch_row_prepared('SELECT value FROM settings WHERE name = ?', array($config_name), false);
 
 			if (cacti_sizeof($db_result)) {
 				$value = $db_result['value'];
