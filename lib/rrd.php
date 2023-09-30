@@ -3217,6 +3217,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 			foreach($info['rra'] as $index => $rra) {
 				$cf    = $rra['cf'];
 				$steps = $rra['pdp_per_row'];
+				$i     = 0;
 
 				foreach($info['rra'] as $file_rra_id => $file_rra) {
 					if (($cf == $file_rra['cf']) && ($steps == $file_rra['pdp_per_row']) && ($index != $file_rra_id)) {
@@ -3225,6 +3226,8 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 
 						$resize = false;
 					}
+
+					$i++;
 				}
 			}
 

@@ -91,6 +91,7 @@ Cacti CHANGELOG
 -feature: Upgrade ua-parser.js to version 1.0.35
 
 1.2.26
+-issue#5464: PHP warning when view Data Source Info mode with new Data Source
 -issue#5481: Attempting to edit a Data Query that does not exist throws warnings and not an GUI error
 -issue#5483: cacti 1.2.25 ubuntu server 22.04.3 php8.1 add device error
 -issue#5485: Selecting a host device in System Utilities - View Data Query Cache raises error in cacti log
