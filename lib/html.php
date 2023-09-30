@@ -2726,7 +2726,6 @@ function html_common_header($title, $selectedTheme = '') {
 	/* Global styles */
 	print get_md5_include_css('include/fa/css/all.css');
 	print get_md5_include_css('include/fa/css/fontawesome.css');
-	print get_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css');
 	print get_md5_include_css('include/vendor/flag-icons/css/flag-icons.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');
 
