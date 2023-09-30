@@ -143,7 +143,7 @@ $thread       = 0;
 $master       = false;
 $serial_scans = read_config_option('automation_serial_scans') == 'on' ? true:false;
 
-global $debug, $poller_id, $network_id, $thread, $master;
+global $debug, $poller_id, $network_id, $thread, $master, $dryrun;
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
@@ -411,6 +411,8 @@ if (!$master && $thread == 0) {
 exit(0);
 
 function discoverDevices($network_id, $thread) {
+	global $dryrun;
+
 	$network = db_fetch_row_prepared('SELECT *
 		FROM automation_networks
 		WHERE id = ?',
