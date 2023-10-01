@@ -924,14 +924,32 @@ function cdef() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'name'      => array('display' => __('CDEF Name'),       'align' => 'left',  'sort' => 'ASC', 'tip' => __('The name of this CDEF.')),
-		'nosort'    => array('display' => __('Deletable'),       'align' => 'right', 'tip'  => __('CDEFs that are in use cannot be Deleted.  In use is defined as being referenced by a Graph or a Graph Template.')),
-		'graphs'    => array('display' => __('Graphs Using'),    'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs using this CDEF.')),
-		'templates' => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs Templates using this CDEF.')));
+		'name' => array(
+			'display' => __('CDEF Name'),
+			'align' => 'left',
+			'sort' => 'ASC',
+			'tip' => __('The name of this CDEF.')
+		),
+		'nosort' => array(
+			'display' => __('Deletable'),
+			'align' => 'right',
+			'tip'  => __('CDEFs that are in use cannot be Deleted.  In use is defined as being referenced by a Graph or a Graph Template.')
+		),
+		'graphs' => array(
+			'display' => __('Graphs Using'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The number of Graphs using this CDEF.')
+		),
+		'templates' => array(
+			'display' => __('Templates Using'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The number of Graphs Templates using this CDEF.')
+		)
+	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
-
-	$i = 0;
 
 	if (cacti_sizeof($cdef_list)) {
 		foreach ($cdef_list as $cdef) {
