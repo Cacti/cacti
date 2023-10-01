@@ -245,7 +245,21 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 function db_check_reconnect(object|false $db_conn = false, $log = true) {
 	global $config, $database_details;
 
-	include(CACTI_PATH_INCLUDE . '/config.php');
+	if (file_exists(CACTI_PATH_INCLUDE . '/config.php')) {
+		include(CACTI_PATH_INCLUDE . '/config.php');
+	} else {
+		global $database_hostname;
+		global $database_username;
+		global $database_password;
+		global $database_default;
+		global $database_type;
+		global $database_port;
+		global $database_retries;
+		global $database_ssl;
+		global $database_ssl_key;
+		global $database_ssl_cert;
+		global $database_ssl_ca;
+	}
 
 	if (cacti_sizeof($database_details) && $db_conn !== false) {
 		foreach ($database_details as $det) {
