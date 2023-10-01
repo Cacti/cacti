@@ -163,6 +163,7 @@ if (cacti_sizeof($parms)) {
 			case '--dryrun':
 				$dryrun = true;
 
+				break;
 			case '-M':
 			case '--master':
 				$master = true;
@@ -195,7 +196,6 @@ if (cacti_sizeof($parms)) {
 				display_help();
 
 				exit(0);
-
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
@@ -733,7 +733,7 @@ function discoverDevices($network_id, $thread) {
 
 								$fos = automation_find_os($device['snmp_sysDescr'], $device['snmp_sysObjectID'], $device['snmp_sysName']);
 
-								if ($fos != false && $network['add_to_cacti'] == 'on' && $dryrun != false) {
+								if (is_array($fos) && $network['add_to_cacti'] == 'on' && $dryrun == false) {
 									automation_debug(', Template: ' . $fos['name'] . "\n");
 									$device['os']                   = $fos['name'];
 									$device['host_template']        = $fos['host_template'];
