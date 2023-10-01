@@ -269,7 +269,7 @@ function vdef_form_actions() {
 						<p>" . __n('Click \'Continue\' to delete the following VDEF.', 'Click \'Continue\' to delete following VDEFs.', cacti_sizeof($vdef_array)) . "</p>
 						<div class='itemlist'><ul>$vdef_list</ul></div>
 					</td>
-				</tr>\n";
+				</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc_n('Delete VDEF', 'Delete VDEFs', cacti_sizeof($vdef_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') === '2') { // duplicate
@@ -281,7 +281,7 @@ function vdef_form_actions() {
 			form_text_box('title_format', '<vdef_title> (1)', '', '255', '30', 'text');
 			print "</p>
 					</td>
-				</tr>\n";
+				</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc_n('Duplicate VDEF', 'Duplicate VDEFs', cacti_sizeof($vdef_array)) . "'>";
 		}
@@ -299,7 +299,7 @@ function vdef_form_actions() {
             <input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
             $save_html
         </td>
-    </tr>\n";
+    </tr>";
 
 	html_end_box();
 
@@ -752,7 +752,7 @@ function vdef_filter() {
 
 									if (get_request_var('rows') == $key) {
 										print ' selected';
-									} print '>' . $value . "</option>\n";
+									} print '>' . $value . "</option>";
 								}
 							}
 	?>
@@ -924,15 +924,32 @@ function vdef($refresh = true) {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'name'      => array('display' => __('VDEF Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __esc('The name of this VDEF.') ),
-		'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __esc('VDEFs that are in use cannot be Deleted. In use is defined as being referenced by a Graph or a Graph Template.') ),
-		'graphs'    => array('display' => __('Graphs Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __esc('The number of Graphs using this VDEF.') ),
-		'templates' => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __esc('The number of Graphs Templates using this VDEF.') )
+		'name' => array(
+			'display' => __('VDEF Name'),
+			'align' => 'left',
+			'sort' => 'ASC',
+			'tip' => __esc('The name of this VDEF.')
+		),
+		'nosort' => array(
+			'display' => __('Deletable'),
+			'align' => 'right',
+			'tip' => __esc('VDEFs that are in use cannot be Deleted. In use is defined as being referenced by a Graph or a Graph Template.')
+		),
+		'graphs' => array(
+			'display' => __('Graphs Using'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __esc('The number of Graphs using this VDEF.')
+		),
+		'templates' => array(
+			'display' => __('Templates Using'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __esc('The number of Graphs Templates using this VDEF.')
+		)
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
-
-	$i = 0;
 
 	if (cacti_sizeof($vdefs)) {
 		foreach ($vdefs as $vdef) {
@@ -951,7 +968,7 @@ function vdef($refresh = true) {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No VDEFs') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No VDEFs') . "</em></td></tr>";
 	}
 
 	html_end_box(false);

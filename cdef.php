@@ -278,7 +278,7 @@ function form_actions() {
 					<p>" . __n('Click \'Continue\' to delete the following CDEF.', 'Click \'Continue\' to delete all following CDEFs.', cacti_sizeof($cdef_array)) . "</p>
 					<div class='itemlist'><ul>$cdef_list</ul></div>
 				</td>
-			</tr>\n";
+			</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete CDEF', 'Delete CDEFs', cacti_sizeof($cdef_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
@@ -290,7 +290,7 @@ function form_actions() {
 			form_text_box('title_format', '<cdef_title> (1)', '', '255', '30', 'text');
 			print "</p>
 				</td>
-			</tr>\n";
+			</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate CDEF', 'Duplicate CDEFs', cacti_sizeof($cdef_array)) . "'>";
 		}
@@ -801,7 +801,7 @@ function cdef() {
 
 									if (get_request_var('rows') == $key) {
 										print ' selected';
-									} print '>' . html_escape($value) . "</option>\n";
+									} print '>' . html_escape($value) . "</option>";
 								}
 							}
 	?>
@@ -968,7 +968,7 @@ function cdef() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No CDEFs') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No CDEFs') . "</em></td></tr>";
 	}
 
 	html_end_box(false);
