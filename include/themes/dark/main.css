@@ -938,7 +938,7 @@ ul#breadcrumbs {
 }
 
 .cactiAuthCenter {
-	width: 350px;
+	width: 450px;
 }
 
 .cactiAuthArea {
@@ -971,6 +971,7 @@ ul#breadcrumbs {
 .cactiAuthTable td {
 	padding-bottom: 6px;
 	padding-right: 6px;
+	white-space: nowrap;
 }
 
 .cactiAuthErrors {

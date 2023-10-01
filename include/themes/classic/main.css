@@ -824,7 +824,7 @@ ul#breadcrumbs {
 }
 
 .cactiAuthCenter {
-	width: 350px;
+	width: 450px;
 }
 
 .cactiAuthCenter hr {
@@ -867,6 +867,7 @@ ul#breadcrumbs {
 	text-shadow: none;
 	padding-bottom: 6px;
 	padding-right: 6px;
+	white-space: nowrap;
 }
 
 .cactiAuthErrors {

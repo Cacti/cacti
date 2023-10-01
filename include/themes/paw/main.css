@@ -812,6 +812,7 @@ label {
 .cactiAuthTable td {
 	padding-bottom: 6px;
 	padding-right: 6px;
+	white-space: nowrap;
 }
 
 .cactiAuthErrors {

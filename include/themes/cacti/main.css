@@ -828,7 +828,7 @@ label {
 }
 
 .cactiAuthCenter {
-	width: 300px;
+	width: 450px;
 }
 
 .cactiAuthCenter hr {
@@ -861,6 +861,7 @@ label {
 .cactiAuthTable td {
 	padding-bottom: 6px;
 	padding-right: 6px;
+	white-space: nowrap;
 }
 
 .cactiAuthErrors {

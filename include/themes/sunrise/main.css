@@ -951,7 +951,7 @@ label.ui-state-hover > span {
 .cactiAuthCenter {
 	position: absolute;
 	background-color: transparent;
-	width: 300px;
+	width: 450px;
 	height: 200px;
 	top: 45%;
 	left: 50%;
@@ -978,6 +978,7 @@ label.ui-state-hover > span {
 .cactiAuthTable td {
 	padding-bottom: 6px;
 	padding-right: 6px;
+	white-space: nowrap;
 }
 
 .cactiAuthErrors {

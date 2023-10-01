@@ -406,20 +406,19 @@ html_auth_header('change_password', __('Change Password'), __('Change Password')
 		<td class='nowrap'><input type='hidden' id='current' name='current_password' value=''><?php print $user['username'];?></td>
 <?php } else { ?>
 		<td><?php print __('Current password');?></td>
-		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='current' name='current_password' autocomplete='off' size='20' placeholder='********'></td>
+		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='current' name='current_password' autocomplete='off' size='15' maxlength='25' placeholder='********'></td>
 <?php } ?>
 	</tr>
 	<tr>
 		<td><?php print __('New password');?></td>
-		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='20' placeholder='********'><?php display_tooltip($secpass_tooltip);?></td>
+		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='15' maxlength='25'  placeholder='********'><?php display_tooltip($secpass_tooltip);?></td>
 	</tr>
 	<tr>
-		<td><?php print __('Confirm new password');?></td>
-		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password_confirm' name='password_confirm' autocomplete='off' size='20' placeholder='********'></td>
+		<td><?php print __('Confirm password');?></td>
+		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password_confirm' name='password_confirm' autocomplete='off' size='15' maxlength='25' placeholder='********'></td>
 	</tr>
 	<tr>
-		<td>&nbsp;</td>
-		<td class='nowrap'><input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Save'); ?>'>
+		<td colspan='2' class='nowrap'><input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Save'); ?>'>
 			<?php print $user['must_change_password'] != 'on' ? "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='window.history.go(-1)' value='".  __esc('Return') . "'>":'';?>
 		</td>
 	</tr>

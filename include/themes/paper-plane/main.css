@@ -883,7 +883,7 @@ label {
 .cactiAuthCenter {
 	position: absolute;
 	background-color: transparent;
-	width: 300px;
+	width: 450px;
 	height: 200px;
 	top: 45%;
 	left: 50%;
@@ -906,6 +906,7 @@ label {
 .cactiAuthTable td {
 	padding-bottom: 6px;
 	padding-right: 6px;
+	white-space: nowrap;
 }
 
 .cactiAuthTable input.ui-button {
