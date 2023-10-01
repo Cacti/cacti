@@ -41,7 +41,6 @@ switch ($action) {
 		exit;
 
 		break;
-
 	default:
 		// If the user is not logged in, redirect them to the login page
 		if (!isset($_SESSION[SESS_USER_ID])) {
@@ -411,7 +410,7 @@ html_auth_header('change_password', __('Change Password'), __('Change Password')
 	</tr>
 	<tr>
 		<td><?php print __('New password');?></td>
-		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='15' maxlength='25'  placeholder='********'><?php display_tooltip($secpass_tooltip);?></td>
+		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='15' maxlength='25' placeholder='********'><?php print display_tooltip($secpass_tooltip);?></td>
 	</tr>
 	<tr>
 		<td><?php print __('Confirm password');?></td>
@@ -426,7 +425,7 @@ html_auth_header('change_password', __('Change Password'), __('Change Password')
 $secpass_minlen = read_config_option('secpass_minlen');
 
 html_auth_footer('change_password', $errorMessage, "
-	<script>
+	<script type='text/javascript'>
 	var password_change = $('#password_change').is(':checked');
 
 	$(function() {

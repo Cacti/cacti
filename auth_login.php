@@ -305,7 +305,7 @@ html_auth_header(
 		<label for='login_username'><?php print __('Username'); ?></label>
 	</td>
 	<td>
-		<input type='text' class='ui-state-default ui-corner-all' id='login_username' name='login_username' value='<?php print html_escape($username); ?>' placeholder='<?php print __esc('Username'); ?>'>
+		<input type='text' class='ui-state-default ui-corner-all' id='login_username' name='login_username' size='15' maxlength='25' value='<?php print html_escape($username); ?>' placeholder='<?php print __esc('Username'); ?>'>
 	</td>
 </tr>
 <tr>
@@ -313,7 +313,7 @@ html_auth_header(
 		<label for='login_password'><?php print __('Password'); ?></label>
 	</td>
 	<td>
-		<input type='password' autocomplete='new-password' class='ui-state-default ui-corner-all' id='login_password' name='login_password' placeholder='********'>
+		<input type='password' autocomplete='new-password' class='ui-state-default ui-corner-all' id='login_password' name='login_password' size='15' maxlength='25' placeholder='********'>
 	</td>
 </tr>
 <?php

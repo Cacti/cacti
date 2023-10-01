@@ -1027,7 +1027,7 @@ function checkPasswordFinalize(options, data) {
 	}
 
 	$('#pass').remove();
-	$('#password').after('<span id="pass"><i class="fa ' + className + '"></i><span style="padding-left:4px;">' + data + '</span></span>');
+	$('#password').after('<div id="pass" class="fa ' + className + '" title="' + data + '"></div>');
 	$('#password').tooltip();
 	checkPasswordConfirm();
 }
@@ -1036,10 +1036,10 @@ function checkPasswordConfirm() {
 	if ($('#password_confirm').val().length > 0) {
 		if ($('#password').val() != $('#password_confirm').val()) {
 			$('#passconfirm').remove();
-			$('#password_confirm').after('<span id="passconfirm"><i class="badpassword fa fa-times"></i><span style="padding-left:4px;">' + passwordNotMatch + '</span></span>');
+			$('#password_confirm').after('<div id="passconfirm" class="badpassword fa fa-times" title="' + passwordNotMatch + '"></div>');
 		} else {
 			$('#passconfirm').remove();
-			$('#password_confirm').after('<span id="passconfirm"><i class="goodpassword fa fa-check"></i><span style="padding-left:4px;">' + passwordMatch + '</span></span>');
+			$('#password_confirm').after('<div id="passconfirm" class="goodpassword fa fa-check" title="' + passwordMatch + '"></div>');
 		}
 	} else {
 		$('#passconfirm').remove();
