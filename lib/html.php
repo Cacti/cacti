@@ -558,7 +558,7 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 		$object = __('Rows');
 	}
 
-	if ($total_rows > $rows_per_page && $page_count) {
+	if ($total_rows >= $rows_per_page && $page_count) {
 		if (substr_count($base_url, '?') == 0) {
 			$base_url = trim($base_url) . '?';
 		} else {
