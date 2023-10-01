@@ -5,6 +5,9 @@ $.toastPopup = function(options) {
         allowToastClose: true,
         position: 'bottom-center',
         showHideTransition: 'fade',
+		afterHidden: function () {
+           $('.jq-toast-wrap').remove();
+		}
     }
 
     var defaultOptions = {
