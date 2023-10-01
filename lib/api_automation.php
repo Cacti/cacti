@@ -1681,11 +1681,21 @@ function build_data_query_sql($rule) {
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . ' called: ' . json_encode($rule), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
+	/* build magic query, for matching hosts JOIN tables host and host_template */
+	if (db_column_exists('sites', 'disabled')) {
+		$sdisabled = 's.disabled AS site_disabled,';
+	} else {
+		$sdisabled = "'' AS site_disabled,";
+	}
+
 	$field_names = get_field_names($rule['snmp_query_id']);
+
 	$sql_query = "SELECT h.hostname AS automation_host, host_id,
 		h.disabled AS disabled, $sdisabled
 		h.status, snmp_query_id, snmp_index ";
+
 	$i = 0;
+
 	$sql_query   = "\n\tSELECT h.hostname AS automation_host, host_id, \n\th.disabled, $sdisabled \n\th.status, snmp_query_id, snmp_index ";
 
 	if (cacti_sizeof($field_names) > 0) {
