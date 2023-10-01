@@ -252,6 +252,7 @@ define('CACTI_VERSION_FULL', format_cacti_version($cacti_version, CACTI_VERSION_
 include_once(CACTI_PATH_LIBRARY . '/html.php');
 include_once(CACTI_PATH_LIBRARY . '/html_utility.php');
 include_once(CACTI_PATH_LIBRARY . '/html_validate.php');
+include_once(CACTI_PATH_LIBRARY . '/html_filter.php');
 
 $filename = get_current_page();
 
