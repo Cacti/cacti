@@ -2099,7 +2099,7 @@ function html_graph_tabs_right() {
 			switch($tab['id']) {
 				case 'tree':
 					if (isset($tab['image']) && $tab['image'] != '') {
-						print "<li><a id='treeview' role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . CACTI_PATH_URL . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
+						print "<li><a id='treeview' role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
 					} else {
 						print "<li><a role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
 					}
@@ -2107,7 +2107,7 @@ function html_graph_tabs_right() {
 					break;
 				case 'list':
 					if (isset($tab['image']) && $tab['image'] != '') {
-						print "<li><a id='listview' role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . CACTI_PATH_URL . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
+						print "<li><a id='listview' role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
 					} else {
 						print "<li><a role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
 					}
@@ -2115,7 +2115,7 @@ function html_graph_tabs_right() {
 					break;
 				case 'preview':
 					if (isset($tab['image']) && $tab['image'] != '') {
-						print "<li><a role='tab' id='preview' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . CACTI_PATH_URL . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
+						print "<li><a role='tab' id='preview' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
 					} else {
 						print "<li><a role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
 					}
