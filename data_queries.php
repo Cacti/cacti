@@ -1407,25 +1407,18 @@ function data_query() {
 		COUNT(*)
 		FROM snmp_query AS sq
 		INNER JOIN data_input AS di
-		ON (sq.data_input_id=di.id)
+		ON sq.data_input_id=di.id
 		$sql_where");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
-	$snmp_queries = db_fetch_assoc("SELECT sq.id, sq.name,
-		di.name AS data_input_method,
-		COUNT(DISTINCT gl.id) AS graphs,
-		COUNT(DISTINCT sqg.graph_template_id) AS templates
+	$snmp_queries = db_fetch_assoc("SELECT sq.id, sq.name, sq.graphs, sq.templates,
+		di.name AS data_input_method
 		FROM snmp_query AS sq
-		LEFT JOIN snmp_query_graph AS sqg
-		ON sq.id=sqg.snmp_query_id
 		LEFT JOIN data_input AS di
-		ON (sq.data_input_id=di.id)
-		LEFT JOIN graph_local AS gl
-		ON gl.snmp_query_id=sq.id
+		ON sq.data_input_id=di.id
 		$sql_where
-		GROUP BY sq.id
 		$sql_order
 		$sql_limit");
 
@@ -1476,8 +1469,6 @@ function data_query() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
-
-	$i = 0;
 
 	if (cacti_sizeof($snmp_queries)) {
 		foreach ($snmp_queries as $snmp_query) {

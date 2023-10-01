@@ -1596,43 +1596,22 @@ function template() {
 		$sql_having = '';
 	}
 
-	$total_rows = db_fetch_cell("SELECT COUNT(`rows`)
-		FROM (SELECT
-			COUNT(gt.id) AS `rows`,
-			COUNT(gl.id) AS graphs
-			FROM graph_templates AS gt
-			LEFT JOIN graph_local AS gl
-			ON gt.id=gl.graph_template_id
-			LEFT JOIN graph_templates_item AS gti
-			ON gti.graph_template_id=gt.id
-			INNER JOIN (
-				SELECT *
-				FROM graph_templates_graph AS gtg
-				WHERE gtg.local_graph_id=0
-			) AS gtg
-			ON gtg.graph_template_id = gt.id
-			$sql_where
-			GROUP BY gt.id
-			$sql_having
-		) AS rs");
+	$total_rows = db_fetch_cell("SELECT COUNT(*)
+		FROM graph_templates
+		$sql_where
+		$sql_having");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$template_list = db_fetch_assoc("SELECT
-		gt.id, gt.name, gl.snmp_query_id AS dqid,
-		CONCAT(gtg.height,'x',gtg.width) AS size, gtg.vertical_label,
-		gtg.image_format_id, COUNT(gl.id) AS graphs
+		gt.id, gt.name, gt.graphs,
+		CONCAT(gtg.height, 'x', gtg.width) AS size, gtg.vertical_label, gtg.image_format_id
 		FROM graph_templates AS gt
 		INNER JOIN graph_templates_graph AS gtg
 		ON gtg.graph_template_id = gt.id
 		AND gtg.local_graph_id = 0
-		LEFT JOIN graph_local AS gl
-		ON gt.id = gl.graph_template_id
-		LEFT JOIN graph_templates_item AS gti
-		ON gti.graph_template_id = gt.id
 		$sql_where
-		GROUP BY gt.id
 		$sql_having
 		$sql_order
 		$sql_limit");

@@ -1049,12 +1049,9 @@ function pollers() {
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
-	$pollers = db_fetch_assoc("SELECT poller.*, UNIX_TIMESTAMP() - UNIX_TIMESTAMP(poller.last_status) as heartbeat, count(h.id) AS hosts
+	$pollers = db_fetch_assoc("SELECT poller.*, UNIX_TIMESTAMP() - UNIX_TIMESTAMP(poller.last_status) as heartbeat, devices AS hosts
 		FROM poller
-		LEFT JOIN host AS h
-		ON h.poller_id=poller.id
 		$sql_where
-		GROUP BY poller.id
 		$sql_order
 		$sql_limit");
 

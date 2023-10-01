@@ -862,21 +862,16 @@ function data() {
 
 	$sql_where  = api_plugin_hook_function('data_input_sql_where', $sql_where);
 
-	$total_rows = db_fetch_cell("SELECT count(*)
+	$total_rows = db_fetch_cell("SELECT COUNT(*)
 		FROM data_input AS di
 		$sql_where");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
-	$data_inputs = db_fetch_assoc("SELECT di.*,
-		SUM(CASE WHEN dtd.local_data_id=0 THEN 1 ELSE 0 END) AS templates,
-		SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
+	$data_inputs = db_fetch_assoc("SELECT di.*
 		FROM data_input AS di
-		LEFT JOIN data_template_data AS dtd
-		ON di.id=dtd.data_input_id
 		$sql_where
-		GROUP BY di.id
 		$sql_order
 		$sql_limit");
 

@@ -59,6 +59,7 @@ Cacti CHANGELOG
 -feature#4300: Allow GPrint/CDef/VDef to be visibile in graph template item lists
 -feature#4339: Change CLI progress output for rebuilding poller cache
 -feature#4778: Add devices sysName and sysLocation name as a Device description
+-feature#4811: Performance Issues on Template and Presets Pages on Large Installs and Drilldowns
 -feature#5020: Introduce script timeout for cmd.php
 -feature#5021: Allow form input validation to be reported to GUI
 -feature#5025: Add Least Squares Special Data Types to Cacti

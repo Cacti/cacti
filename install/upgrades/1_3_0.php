@@ -162,6 +162,93 @@ function upgrade_to_1_3_0() {
 
 	db_install_execute("ALTER TABLE `settings` MODIFY `name` varchar(75) not null default ''");
 	db_install_execute("ALTER TABLE `settings_user` MODIFY `name` varchar(75) not null default ''");
+
+	$tables = array(
+		'aggregate_graph_templates' => array(
+			'after' => 'user_id',
+			'columns' => 'graphs',
+		),
+		'cdef' => array(
+			'after' => 'name',
+			'columns' => 'graphs, templates',
+		),
+		'colors' => array(
+			'after' => 'read_only',
+			'columns' => 'graphs, templates',
+		),
+		'color_templates' => array(
+			'after' => 'name',
+			'columns' => 'graphs, templates',
+		),
+		'data_input' => array(
+			'after' => 'type_id',
+			'columns' => 'data_sources, templates',
+		),
+		'data_source_profiles' => array(
+			'after' => 'default',
+			'columns' => 'data_sources, templates',
+		),
+		'data_template' => array(
+			'after' => 'name',
+			'columns' => 'data_sources',
+		),
+		'graph_templates' => array(
+			'after' => 'test_source',
+			'columns' => 'graphs',
+		),
+		'graph_templates_gprint' => array(
+			'after' => 'gprint_text',
+			'columns' => 'graphs, templates',
+		),
+		'host_template' => array(
+			'after' => 'class',
+			'columns' => 'devices',
+		),
+		'sites' => array(
+			'after' => 'nodes',
+			'columns' => 'devices',
+		),
+		'snmp_query' => array(
+			'after' => 'data_input_id',
+			'columns' => 'graphs, templates',
+		),
+		'vdef' => array(
+			'after' => 'name',
+			'columns' => 'graphs, templates',
+		),
+	);
+
+	foreach($tables as $table_name => $attribs) {
+		$columns = explode(',', $attribs['columns']);
+		$after   = $attribs['after'];
+		$alter   = '';
+		$count   = 0;
+
+		foreach($columns as $column) {
+			$column = trim($column);
+
+			if (!db_column_exists($table_name, $column)) {
+				if ($alter == '') {
+					$alter .= 'ALTER TABLE `' . $table_name . '`';
+				}
+
+				$alter .= ($count > 0 ? ',':'') . " ADD COLUMN `$column` int(10) UNSIGNED NOT NULL default '0' AFTER `$after`";
+
+				$count++;
+
+				$after = $column;
+			}
+		}
+
+		if ($alter != '') {
+			db_execute($alter);
+		}
+	}
+
+	update_device_totals();
+	update_data_source_totals();
+	update_graph_totals();
+	update_aggregate_totals();
 }
 
 function ldap_convert_1_3_0() {

@@ -1000,7 +1000,7 @@ function utilities_get_mysql_recommendations() {
 		);
 	} else {
 		if (version_compare($link_ver, '5.2', '>=')) {
-			if (!isset($variables['innodb_version']) && 
+			if (!isset($variables['innodb_version']) &&
 				($database == 'MySQL' || ($database == 'MariaDB' && version_compare($link_ver, '11.0', '<')))) {
 
 				$recommendations += array(
@@ -1900,3 +1900,553 @@ function utility_php_set_installed(&$extensions) {
 		$extensions[$name]['installed'] = $extension['web'] && $extension['cli'];
 	}
 }
+
+function update_device_totals() {
+	$tables = array(
+		'host_template',
+		'poller',
+		'sites',
+	);
+
+	foreach($tables as $table) {
+		switch($table) {
+			case 'host_template':
+				// 'devices'
+				$items = array_rekey(
+					db_fetch_assoc('SELECT host_template_id AS id, COUNT(*) AS devices
+						FROM host
+						GROUP BY host_template_id'),
+					'id', 'devices'
+				);
+
+				$templates = db_fetch_assoc('SELECT id FROM host_template');
+
+				if (cacti_sizeof($templates)) {
+					foreach($templates as $t) {
+						if (!isset($items[$t['id']])) {
+							db_execute_prepared('UPDATE host_template
+								SET devices = 0
+								WHERE id = ?',
+								array($t['id']));
+						} else {
+							db_execute_prepared('UPDATE host_template
+								SET devices = ?
+								WHERE id = ?',
+								array(
+									$items[$t['id']],
+									$t['id']
+								)
+							);
+						}
+					}
+				}
+
+				break;
+			case 'poller':
+				// 'devices'
+				$items = array_rekey(
+					db_fetch_assoc('SELECT poller_id AS id, COUNT(*) AS devices
+						FROM host
+						GROUP BY poller_id'),
+					'id', 'devices'
+				);
+
+				$pollers = db_fetch_assoc('SELECT id FROM poller');
+
+				if (cacti_sizeof($pollers)) {
+					foreach($pollers as $p) {
+						if (!isset($items[$p['id']])) {
+							db_execute_prepared('UPDATE poller
+								SET devices = 0
+								WHERE id = ?',
+								array($p['id']));
+						} else {
+							db_execute_prepared('UPDATE poller
+								SET devices = ?
+								WHERE id = ?',
+								array(
+									$items[$p['id']],
+									$p['id']
+								)
+							);
+						}
+					}
+				}
+
+				break;
+			case 'sites':
+				// 'devices'
+				$items = array_rekey(
+					db_fetch_assoc('SELECT site_id AS id, COUNT(*) AS devices
+						FROM host
+						GROUP BY site_id'),
+					'id', 'devices'
+				);
+
+				$sites = db_fetch_assoc('SELECT id FROM sites');
+
+				if (cacti_sizeof($sites)) {
+					foreach($sites as $s) {
+						if (!isset($items[$s['id']])) {
+							db_execute_prepared('UPDATE sites
+								SET devices = 0
+								WHERE id = ?',
+								array($s['id']));
+						} else {
+							db_execute_prepared('UPDATE sites
+								SET devices = ?
+								WHERE id = ?',
+								array(
+									$items[$s['id']],
+									$s['id']
+								)
+							);
+						}
+					}
+				}
+
+				break;
+		}
+	}
+}
+
+function update_data_source_totals() {
+	$tables = array(
+		'data_input',
+		'data_source_profiles',
+		'data_template',
+	);
+
+	foreach($tables as $table) {
+		switch($table) {
+			case 'data_input':
+				// 'data_sources', 'templates'
+				$items = array_rekey(
+					db_fetch_assoc('SELECT data_input_id AS id,
+						SUM(CASE WHEN local_data_id > 0 THEN 1 ELSE 0 END) AS data_sources,
+						SUM(CASE WHEN local_data_id = 0 THEN 1 ELSE 0 END) AS templates
+						FROM (SELECT DISTINCT data_input_id, local_data_id FROM data_template_data WHERE data_input_id > 0) AS rs
+						GROUP BY data_input_id'),
+					'id', array('data_sources', 'templates')
+				);
+
+				$inputs = db_fetch_assoc('SELECT id FROM data_input');
+
+				if (cacti_sizeof($inputs)) {
+					foreach($inputs as $i) {
+						if (!isset($items[$i['id']])) {
+							db_execute_prepared('UPDATE data_input
+								SET data_sources = 0, templates = 0
+								WHERE id = ?',
+								array($i['id']));
+						} else {
+							db_execute_prepared('UPDATE data_input
+								SET data_sources = ?, templates = ?
+								WHERE id = ?',
+								array(
+									$items[$i['id']]['data_sources'],
+									$items[$i['id']]['templates'],
+									$i['id']
+								)
+							);
+						}
+					}
+				}
+
+				break;
+			case 'data_source_profiles':
+				// 'data_sources', 'templates'
+				$items = array_rekey(
+					db_fetch_assoc('SELECT data_source_profile_id AS id,
+						SUM(CASE WHEN local_data_id > 0 THEN 1 ELSE 0 END) AS data_sources,
+						SUM(CASE WHEN local_data_id = 0 THEN 1 ELSE 0 END) AS templates
+						FROM (SELECT DISTINCT data_source_profile_id, local_data_id FROM data_template_data WHERE data_source_profile_id > 0) AS rs
+						GROUP BY data_source_profile_id'),
+					'id', array('data_sources', 'templates')
+				);
+
+				$profiles = db_fetch_assoc('SELECT id FROM data_source_profiles');
+
+				if (cacti_sizeof($profiles)) {
+					foreach($profiles as $p) {
+						if (!isset($items[$p['id']])) {
+							db_execute_prepared('UPDATE data_source_profiles
+								SET data_sources = 0, templates = 0
+								WHERE id = ?',
+								array($p['id']));
+						} else {
+							db_execute_prepared('UPDATE data_source_profiles
+								SET data_sources = ?, templates = ?
+								WHERE id = ?',
+								array(
+									$items[$p['id']]['data_sources'],
+									$items[$p['id']]['templates'],
+									$p['id']
+								)
+							);
+						}
+					}
+				}
+
+				break;
+			case 'data_template':
+				// 'data_sources'
+				$items = array_rekey(
+					db_fetch_assoc('SELECT data_template_id AS id, COUNT(*) AS data_sources
+						FROM data_local
+						GROUP BY data_template_id'),
+					'id', 'data_sources'
+				);
+
+				$templates = db_fetch_assoc('SELECT id FROM data_template');
+
+				if (cacti_sizeof($templates)) {
+					foreach($templates as $t) {
+						if (!isset($items[$t['id']])) {
+							db_execute_prepared('UPDATE data_template
+								SET data_sources = 0
+								WHERE id = ?',
+								array($t['id']));
+						} else {
+							db_execute_prepared('UPDATE data_template
+								SET data_sources = ?
+								WHERE id = ?',
+								array(
+									$items[$t['id']],
+									$t['id']
+								)
+							);
+						}
+					}
+				}
+
+				break;
+		}
+	}
+}
+
+function update_graph_totals() {
+	$tables = array(
+		'cdef',
+		'colors',
+		'graph_templates',
+		'graph_templates_gprint',
+		'snmp_query',
+		'vdef'
+	);
+
+	foreach($tables as $table) {
+		switch($table) {
+			case 'cdef':
+				// 'graphs', 'templates'
+				$items = array_rekey(
+					db_fetch_assoc('SELECT cdef_id AS id,
+						SUM(CASE WHEN local_graph_id > 0 THEN 1 ELSE 0 END) AS graphs,
+						SUM(CASE WHEN local_graph_id = 0 THEN 1 ELSE 0 END) AS templates
+						FROM (SELECT DISTINCT cdef_id, local_graph_id FROM graph_templates_item WHERE cdef_id > 0) AS rs
+						GROUP BY cdef_id'),
+					'id', array('graphs', 'templates')
+				);
+
+				$cdefs = db_fetch_assoc('SELECT id FROM cdef');
+
+				if (cacti_sizeof($cdefs)) {
+					foreach($cdefs as $c) {
+						if (!isset($items[$c['id']])) {
+							db_execute_prepared('UPDATE cdef
+								SET graphs = 0, templates = 0
+								WHERE id = ?',
+								array($c['id']));
+						} else {
+							db_execute_prepared('UPDATE cdef
+								SET graphs = ?, templates = ?
+								WHERE id = ?',
+								array(
+									$items[$c['id']]['graphs'],
+									$items[$c['id']]['templates'],
+									$c['id']
+								)
+							);
+						}
+					}
+				}
+
+				break;
+			case 'colors':
+				// 'graphs', 'templates'
+				$items = array_rekey(
+					db_fetch_assoc('SELECT color_id AS id,
+						SUM(CASE WHEN local_graph_id > 0 THEN 1 ELSE 0 END) AS graphs,
+						SUM(CASE WHEN local_graph_id = 0 THEN 1 ELSE 0 END) AS templates
+						FROM (SELECT DISTINCT color_id, local_graph_id FROM graph_templates_item WHERE color_id > 0) AS rs
+						GROUP BY color_id'),
+					'id', array('graphs', 'templates')
+				);
+
+				$colors = db_fetch_assoc('SELECT id FROM colors');
+
+				if (cacti_sizeof($colors)) {
+					foreach($colors as $c) {
+						if (!isset($items[$c['id']])) {
+							db_execute_prepared('UPDATE colors
+								SET graphs = 0, templates = 0
+								WHERE id = ?',
+								array($c['id']));
+						} else {
+							db_execute_prepared('UPDATE colors
+								SET graphs = ?, templates = ?
+								WHERE id = ?',
+								array(
+									$items[$c['id']]['graphs'],
+									$items[$c['id']]['templates'],
+									$c['id']
+								)
+							);
+						}
+					}
+				}
+
+				break;
+			case 'graph_templates':
+				// 'graph'
+				$items = array_rekey(
+					db_fetch_assoc('SELECT graph_template_id AS id, COUNT(*) AS graphs
+						FROM graph_local
+						GROUP BY graph_template_id'),
+					'id', 'graphs'
+				);
+
+				$templates = db_fetch_assoc('SELECT id FROM graph_templates');
+
+				if (cacti_sizeof($templates)) {
+					foreach($templates as $t) {
+						if (!isset($items[$t['id']])) {
+							db_execute_prepared('UPDATE graph_templates
+								SET graphs = 0
+								WHERE id = ?',
+								array($t['id']));
+						} else {
+							db_execute_prepared('UPDATE graph_templates
+								SET graphs = ?
+								WHERE id = ?',
+								array(
+									$items[$t['id']],
+									$t['id']
+								)
+							);
+						}
+					}
+				}
+
+				break;
+			case 'graph_templates_gprint':
+				// 'graphs', 'templates'
+				$items = array_rekey(
+					db_fetch_assoc('SELECT gprint_id AS id,
+						SUM(CASE WHEN local_graph_id > 0 THEN 1 ELSE 0 END) AS graphs,
+						SUM(CASE WHEN local_graph_id = 0 THEN 1 ELSE 0 END) AS templates
+						FROM (SELECT DISTINCT gprint_id, local_graph_id FROM graph_templates_item WHERE gprint_id > 0) AS rs
+						GROUP BY gprint_id'),
+					'id', array('graphs', 'templates')
+				);
+
+				$gprints = db_fetch_assoc('SELECT id FROM graph_templates_gprint');
+
+				if (cacti_sizeof($gprints)) {
+					foreach($gprints as $g) {
+						if (!isset($items[$g['id']])) {
+							db_execute_prepared('UPDATE graph_templates_gprint
+								SET graphs = 0, templates = 0
+								WHERE id = ?',
+								array($g['id']));
+						} else {
+							db_execute_prepared('UPDATE graph_templates_gprint
+								SET graphs = ?, templates = ?
+								WHERE id = ?',
+								array(
+									$items[$g['id']]['graphs'],
+									$items[$g['id']]['templates'],
+									$g['id']
+								)
+							);
+						}
+					}
+				}
+
+				break;
+			case 'snmp_query':
+				// 'graphs', 'templates'
+				$items = array_rekey(
+					db_fetch_assoc('SELECT sq.id,
+						COUNT(DISTINCT gl.id) AS graphs,
+						COUNT(DISTINCT sqg.graph_template_id) AS templates
+						FROM snmp_query AS sq
+						LEFT JOIN snmp_query_graph AS sqg
+						ON sq.id = sqg.snmp_query_id
+						LEFT JOIN data_input AS di
+						ON sq.data_input_id = di.id
+						LEFT JOIN graph_local AS gl
+						ON gl.snmp_query_id = sq.id
+						GROUP BY sq.id'),
+					'id', array('graphs', 'templates')
+				);
+
+				$data_queries = db_fetch_assoc('SELECT id FROM snmp_query');
+
+				if (cacti_sizeof($data_queries)) {
+					foreach($data_queries as $q) {
+						if (!isset($items[$q['id']])) {
+							db_execute_prepared('UPDATE snmp_query
+								SET graphs = 0, templates = 0
+								WHERE id = ?',
+								array($q['id']));
+						} else {
+							db_execute_prepared('UPDATE snmp_query
+								SET graphs = ?, templates = ?
+								WHERE id = ?',
+								array(
+									$items[$q['id']]['graphs'],
+									$items[$q['id']]['templates'],
+									$q['id']
+								)
+							);
+						}
+					}
+				}
+
+				break;
+			case 'vdef':
+				// 'graphs', 'templates'
+				$items = array_rekey(
+					db_fetch_assoc('SELECT vdef_id AS id,
+						SUM(CASE WHEN local_graph_id > 0 THEN 1 ELSE 0 END) AS graphs,
+						SUM(CASE WHEN local_graph_id = 0 THEN 1 ELSE 0 END) AS templates
+						FROM (SELECT DISTINCT vdef_id, local_graph_id FROM graph_templates_item WHERE vdef_id > 0) AS rs
+						GROUP BY vdef_id'),
+					'id', array('graphs', 'templates')
+				);
+
+				$vdefs = db_fetch_assoc('SELECT id FROM vdef');
+
+				if (cacti_sizeof($vdefs)) {
+					foreach($vdefs as $v) {
+						if (!isset($items[$v['id']])) {
+							db_execute_prepared('UPDATE vdef
+								SET graphs = 0, templates = 0
+								WHERE id = ?',
+								array($v['id']));
+						} else {
+							db_execute_prepared('UPDATE vdef
+								SET graphs = ?, templates = ?
+								WHERE id = ?',
+								array(
+									$items[$v['id']]['graphs'],
+									$items[$v['id']]['templates'],
+									$v['id']
+								)
+							);
+						}
+					}
+				}
+
+				break;
+		}
+	}
+}
+
+function update_aggregate_totals() {
+	$tables = array(
+		'aggregate_graph_templates',
+		'color_templates',
+	);
+
+	foreach($tables as $table) {
+		switch($table) {
+			case 'aggregate_graph_templates':
+				// 'graphs'
+				$items = array_rekey(
+					db_fetch_assoc('SELECT aggregate_template_id AS id, COUNT(*) AS graphs
+						FROM aggregate_graphs
+						WHERE aggregate_template_id > 0
+						GROUP BY aggregate_template_id'),
+					'id', 'graphs'
+				);
+
+				$templates = db_fetch_assoc('SELECT id FROM aggregate_graph_templates');
+
+				if (cacti_sizeof($templates)) {
+					foreach($templates as $t) {
+						$graphs = 0;
+
+						if (isset($items[$t['id']])) {
+							$graphs = $items[$t['id']];
+						}
+
+						db_execute_prepared('UPDATE aggregate_graph_templates
+							SET graphs = ?
+							WHERE id = ?',
+							array(
+								$graphs,
+								$t['id']
+							)
+						);
+					}
+				}
+
+				break;
+			case 'color_templates':
+				// 'graphs', 'templates'
+				$gitems = array_rekey(
+					db_fetch_assoc('SELECT color_template AS id, COUNT(*) AS graphs
+						FROM (
+							SELECT DISTINCT color_template, aggregate_graph_id
+							FROM aggregate_graphs_graph_item
+							WHERE color_template > 0
+						) AS rs
+						GROUP BY color_template'),
+					'id', 'graphs'
+				);
+
+				$titems = array_rekey(
+					db_fetch_assoc('SELECT aggregate_template_id AS id, COUNT(*) AS templates
+						FROM (
+							SELECT DISTINCT color_template, aggregate_template_id
+							FROM aggregate_graph_templates_item
+							WHERE color_template > 0
+						) AS rs
+						GROUP BY color_template'),
+					'id', 'templates'
+				);
+
+				$templates = db_fetch_assoc('SELECT color_template_id AS id FROM color_templates');
+
+				if (cacti_sizeof($templates)) {
+					foreach($templates as $t) {
+						$graphs    = 0;
+						$templates = 0;
+
+						if (isset($gitems[$t['id']])) {
+							$graphs = $gitems[$t['id']];
+						}
+
+						if (isset($titems[$t['id']])) {
+							$templates = $titems[$t['id']];
+						}
+
+						db_execute_prepared('UPDATE color_templates
+							SET graphs = ?, templates = ?
+							WHERE color_template_id = ?',
+							array(
+								$graphs,
+								$templates,
+								$t['id']
+							)
+						);
+					}
+				}
+
+				break;
+		}
+	}
+}
+

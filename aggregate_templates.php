@@ -679,35 +679,22 @@ function aggregate_template() {
 	}
 
 	if (get_request_var('has_graphs') == 'true') {
-		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'graphs.graphs>0';
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . 'graphs > 0';
 	}
 
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(pgt.id)
+	$total_rows = db_fetch_cell("SELECT COUNT(*)
 		FROM aggregate_graph_templates AS pgt
-		LEFT JOIN (
-			SELECT aggregate_template_id, COUNT(*) AS graphs
-			FROM aggregate_graphs
-			GROUP BY aggregate_template_id
-		) AS graphs
-		ON pgt.id=graphs.aggregate_template_id
 		LEFT JOIN graph_templates AS gt
-		ON gt.id=pgt.graph_template_id
+		ON pgt.graph_template_id = gt.id
 		$sql_where");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
-	$template_list = db_fetch_assoc("SELECT pgt.*, graphs.graphs, gt.name AS graph_template_name
+	$template_list = db_fetch_assoc("SELECT pgt.*, gt.name AS graph_template_name
 		FROM aggregate_graph_templates AS pgt
-		LEFT JOIN (
-			SELECT aggregate_template_id, COUNT(*) AS graphs
-			FROM aggregate_graphs
-			GROUP BY aggregate_template_id
-		) AS graphs
-		ON pgt.id=graphs.aggregate_template_id
 		LEFT JOIN graph_templates AS gt
-		ON gt.id=pgt.graph_template_id
+		ON pgt.graph_template_id = gt.id
 		$sql_where
 		$sql_order
 		$sql_limit");

@@ -831,26 +831,18 @@ function template() {
 		$sql_having = '';
 	}
 
-	$total_rows = db_fetch_cell("SELECT COUNT(`rows`)
-		FROM (
-			SELECT
-			COUNT(host_template.id) AS `rows`, COUNT(DISTINCT host.id) AS hosts
-			FROM host_template
-			LEFT JOIN host ON host.host_template_id=host_template.id
-			$sql_where
-			GROUP BY host_template.id
-			$sql_having
-		) AS rs");
+	$total_rows = db_fetch_cell("SELECT COUNT(*)
+		FROM host_template
+		$sql_where
+		$sql_having");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$template_list = db_fetch_assoc("SELECT
-		host_template.id, host_template.name, host_template.class, COUNT(DISTINCT host.id) AS hosts
+		host_template.id, host_template.name, host_template.class, devices AS hosts
 		FROM host_template
-		LEFT JOIN host ON host.host_template_id=host_template.id
 		$sql_where
-		GROUP BY host_template.id
 		$sql_having
 		$sql_order
 		$sql_limit");

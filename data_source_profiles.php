@@ -1038,34 +1038,17 @@ function profile() {
 		$sql_having = '';
 	}
 
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(`rows`)
-		FROM (
-			SELECT dsp.id AS `rows`,
-			SUM(CASE WHEN local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
-			FROM data_source_profiles AS dsp
-			LEFT JOIN data_template_data AS dtd
-			ON dsp.id=dtd.data_source_profile_id
-			$sql_where
-			GROUP BY dsp.id
-			$sql_having
-		) AS rs");
+	$total_rows = db_fetch_cell("SELECT COUNT(*)
+		FROM data_source_profiles
+		$sql_where
+		$sql_having");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
-	$profile_list = db_fetch_assoc("SELECT rs.*,
-		SUM(CASE WHEN local_data_id=0 THEN 1 ELSE 0 END) AS templates,
-		SUM(CASE WHEN local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
-		FROM (
-			SELECT dsp.*, dtd.local_data_id
-			FROM data_source_profiles AS dsp
-			LEFT JOIN data_template_data AS dtd
-			ON dsp.id=dtd.data_source_profile_id
-			$sql_where
-			GROUP BY dsp.id, dtd.data_template_id, dtd.local_data_id
-		) AS rs
-		GROUP BY rs.id
+	$profile_list = db_fetch_assoc("SELECT *
+		FROM data_source_profiles
+		$sql_where
 		$sql_having
 		$sql_order
 		$sql_limit");

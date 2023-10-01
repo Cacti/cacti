@@ -876,41 +876,17 @@ function cdef() {
 		$sql_having = '';
 	}
 
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(`rows`)
-		FROM (
-			SELECT cd.id AS `rows`,
-			SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs
-			FROM cdef AS cd
-			LEFT JOIN (
-				SELECT DISTINCT cdef_id, local_graph_id, graph_template_id
-				FROM graph_templates_item
-			) AS gti
-			ON gti.cdef_id=cd.id
-			$sql_where
-			GROUP BY cd.id
-			$sql_having
-		) AS rs");
+	$total_rows = db_fetch_cell("SELECT COUNT(*)
+		FROM cdef
+		$sql_where
+		$sql_having");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
-	$cdef_list = db_fetch_assoc("SELECT rs.*,
-		SUM(CASE WHEN local_graph_id=0 THEN 1 ELSE 0 END) AS templates,
-		SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs
-		FROM (
-			SELECT cd.*, gti.local_graph_id
-			FROM cdef AS cd
-			LEFT JOIN (
-				SELECT DISTINCT cdef_id, local_graph_id, graph_template_id
-				FROM graph_templates_item
-			) AS gti
-			ON gti.cdef_id=cd.id
-			WHERE `system` = 0
-			GROUP BY cd.id, gti.graph_template_id, gti.local_graph_id
-		) AS rs
+	$cdef_list = db_fetch_assoc("SELECT *
+		FROM cdef
 		$sql_where
-		GROUP BY rs.id
 		$sql_having
 		$sql_order
 		$sql_limit");

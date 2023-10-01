@@ -1183,7 +1183,7 @@ function template() {
 	}
 
 	if (get_request_var('profile') != '-1') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' dsp.id=' . get_request_var('profile');
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' dtd.data_source_profile_id=' . get_request_var('profile');
 	}
 
 	if (get_request_var('has_data') == 'true') {
@@ -1192,40 +1192,36 @@ function template() {
 		$sql_having = '';
 	}
 
-	$total_rows = db_fetch_cell("SELECT COUNT(`rows`)
-		FROM (SELECT
-			COUNT(dt.id) `rows`,
-			SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
-			FROM data_template AS dt
-			INNER JOIN data_template_data AS dtd
-			ON dt.id=dtd.data_template_id
-			LEFT JOIN data_source_profiles AS dsp
-			ON dtd.data_source_profile_id=dsp.id
-			LEFT JOIN data_input AS di
-			ON dtd.data_input_id=di.id
-			$sql_where
-			GROUP BY dt.id
-			$sql_having
-		) AS rs");
+	$total_rows = db_fetch_cell("SELECT COUNT(*)
+		FROM data_template AS dt
+		INNER JOIN data_template_data AS dtd
+		ON dt.id = dtd.data_template_id
+		AND dtd.local_data_id = 0
+		INNER JOIN data_input AS di
+		ON dtd.data_input_id = di.id
+		LEFT JOIN data_source_profiles AS dsp
+		ON dtd.data_source_profile_id = dsp.id
+		$sql_where
+		$sql_having");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
-	$template_list_sql = "SELECT dt.id, dt.name,
-		di.name AS data_input_method, dtd.active AS active, dsp.name AS profile_name,
-		SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
+	$template_list_sql = "SELECT dt.id, dt.name, dt.data_sources,
+		di.name AS data_input_method, dtd.active AS active, dsp.name AS profile_name
 		FROM data_template AS dt
 		INNER JOIN data_template_data AS dtd
-		ON dt.id=dtd.data_template_id
+		ON dt.id = dtd.data_template_id
+		AND dtd.local_data_id = 0
 		LEFT JOIN data_source_profiles AS dsp
-		ON dtd.data_source_profile_id=dsp.id
+		ON dtd.data_source_profile_id = dsp.id
 		LEFT JOIN data_input AS di
-		ON dtd.data_input_id=di.id
+		ON dtd.data_input_id = di.id
 		$sql_where
-		GROUP BY dt.id
 		$sql_having
 		$sql_order
 		$sql_limit";
+
 	$template_list = db_fetch_assoc($template_list_sql);
 
 	$display_text = array(

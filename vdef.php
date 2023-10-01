@@ -829,34 +829,17 @@ function get_vdef_records(&$total_rows, &$rows) {
 		$sql_having = '';
 	}
 
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(`rows`)
-        FROM (
-            SELECT vd.id AS `rows`, vd.name,
-            SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs
-            FROM vdef AS vd
-            LEFT JOIN graph_templates_item AS gti
-            ON gti.vdef_id=vd.id
-            GROUP BY vd.id
-			$sql_having
-        ) AS rs
+	$total_rows = db_fetch_cell("SELECT COUNT(*)
+        FROM vdef
+		$sql_having
         $sql_where");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
-	return db_fetch_assoc("SELECT rs.*,
-		SUM(CASE WHEN local_graph_id=0 THEN 1 ELSE 0 END) AS templates,
-        SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs
-        FROM (
-            SELECT vd.*, gti.local_graph_id
-            FROM vdef AS vd
-            LEFT JOIN graph_templates_item AS gti
-            ON gti.vdef_id=vd.id
-            GROUP BY vd.id, gti.graph_template_id, gti.local_graph_id
-        ) AS rs
+	return db_fetch_assoc("SELECT *
+		FROM vdef
 		$sql_where
-		GROUP BY rs.id
 		$sql_having
 		$sql_order
 		$sql_limit");

@@ -83,7 +83,6 @@ if (cacti_sizeof($parms)) {
 				$debug = true;
 
 				break;
-
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
@@ -124,6 +123,9 @@ logrotate_check($force);
 // Remove deleted devices
 remove_aged_row_cache();
 
+// Update Object Totals Caches
+update_graphs_data_source_templates_totals($force);
+
 // Remove expired host value cache
 purge_host_value_cache();
 
@@ -147,6 +149,22 @@ function purge_host_value_cache() {
 			WHERE time_to_live > 0
 			AND UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_updated) > time_to_live');
 	}
+}
+
+function update_graphs_data_source_templates_totals($force) {
+	// Don't run this script too often
+	$last_run = read_config_option('maintenance_totals_update');
+
+	if (!empty($last_run) && time() - $last_run < 3600 && !$force) {
+		return false;
+	}
+
+	set_config_option('maintenance_totals_update', time());
+
+	update_device_totals();
+	update_data_source_totals();
+	update_graph_totals();
+	update_aggregate_totals();
 }
 
 function reindex_devices() {

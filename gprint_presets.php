@@ -358,34 +358,17 @@ function gprint_presets() {
 		$sql_having = '';
 	}
 
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(`rows`)
-		FROM (
-			SELECT gp.id AS `rows`,
-			SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs
-			FROM graph_templates_gprint AS gp
-			LEFT JOIN graph_templates_item AS gti
-			ON gti.gprint_id=gp.id
-			$sql_where
-			GROUP BY gp.id
-			$sql_having
-		) AS rs");
+	$total_rows = db_fetch_cell("SELECT COUNT(*)
+		FROM graph_templates_gprint
+		$sql_where
+		$sql_having");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
-	$gprint_list = db_fetch_assoc("SELECT rs.*,
-		SUM(CASE WHEN local_graph_id=0 THEN 1 ELSE 0 END) AS templates,
-		SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs
-		FROM (
-			SELECT gp.*, gti.local_graph_id
-			FROM graph_templates_gprint AS gp
-			LEFT JOIN graph_templates_item AS gti
-			ON gti.gprint_id=gp.id
-			GROUP BY gp.id, gti.graph_template_id, gti.local_graph_id
-		) AS rs
+	$gprint_list = db_fetch_assoc("SELECT *
+		FROM graph_templates_gprint
 		$sql_where
-		GROUP BY rs.id
 		$sql_having
 		$sql_order
 		$sql_limit");

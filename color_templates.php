@@ -908,41 +908,15 @@ function color_template() {
 		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . ' (templates>0 OR graphs>0)';
 	}
 
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(ct.color_template_id)
+	$total_rows = db_fetch_cell("SELECT COUNT(*)
 		FROM color_templates AS ct
-		LEFT JOIN (
-			SELECT color_template, COUNT(*) AS templates
-			FROM aggregate_graph_templates_item
-			GROUP BY color_template
-		) AS templates
-		ON ct.color_template_id=templates.color_template
-		LEFT JOIN (
-			SELECT color_template, COUNT(*) AS graphs
-			FROM aggregate_graphs_graph_item
-			GROUP BY color_template
-		) AS graphs
-		ON ct.color_template_id=graphs.color_template
 		$sql_where");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
-	$template_list = db_fetch_assoc("SELECT
-		ct.color_template_id, ct.name, templates.templates, graphs.graphs
+	$template_list = db_fetch_assoc("SELECT *
 		FROM color_templates AS ct
-		LEFT JOIN (
-			SELECT color_template, COUNT(*) AS templates
-			FROM aggregate_graph_templates_item
-			GROUP BY color_template
-		) AS templates
-		ON ct.color_template_id=templates.color_template
-		LEFT JOIN (
-			SELECT color_template, COUNT(*) AS graphs
-			FROM aggregate_graphs_graph_item
-			GROUP BY color_template
-		) AS graphs
-		ON ct.color_template_id=graphs.color_template
 		$sql_where
 		$sql_order
 		$sql_limit");

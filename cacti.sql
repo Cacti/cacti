@@ -47,6 +47,7 @@ CREATE TABLE `aggregate_graph_templates` (
   `order_type` int(10) unsigned NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user_id` int(10) unsigned NOT NULL,
+  `graphs` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (`id`),
   KEY `graph_template_id` (`graph_template_id`),
   KEY `user_id` (`user_id`)
@@ -531,6 +532,8 @@ CREATE TABLE cdef (
   `hash` varchar(32) NOT NULL default '',
   `system` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) NOT NULL default '',
+  `graphs` int(10) unsigned NOT NULL default '0',
+  `templates` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (id),
   KEY `hash` (`hash`),
   KEY `name` (`name`(171))
@@ -540,12 +543,12 @@ CREATE TABLE cdef (
 -- Dumping data for table `cdef`
 --
 
-INSERT INTO cdef VALUES (3,'3d352eed9fa8f7b2791205b3273708c7',0,'Make Stack Negative');
-INSERT INTO cdef VALUES (4,'e961cc8ec04fda6ed4981cf5ad501aa5',0,'Make Per 5 Minutes');
-INSERT INTO cdef VALUES (12,'f1ac79f05f255c02f914c920f1038c54',0,'Total All Data Sources');
-INSERT INTO cdef VALUES (2,'73f95f8b77b5508157d64047342c421e',0,'Turn Bytes into Bits');
-INSERT INTO cdef VALUES (14,'634a23af5e78af0964e8d33b1a4ed26b',0,'Multiply by 1024');
-INSERT INTO cdef VALUES (15,'068984b5ccdfd2048869efae5166f722',0,'Total All Data Sources, Multiply by 1024');
+INSERT INTO cdef VALUES (3,'3d352eed9fa8f7b2791205b3273708c7',0,'Make Stack Negative',0,0);
+INSERT INTO cdef VALUES (4,'e961cc8ec04fda6ed4981cf5ad501aa5',0,'Make Per 5 Minutes',0,0);
+INSERT INTO cdef VALUES (12,'f1ac79f05f255c02f914c920f1038c54',0,'Total All Data Sources',0,0);
+INSERT INTO cdef VALUES (2,'73f95f8b77b5508157d64047342c421e',0,'Turn Bytes into Bits',0,0);
+INSERT INTO cdef VALUES (14,'634a23af5e78af0964e8d33b1a4ed26b',0,'Multiply by 1024',0,0);
+INSERT INTO cdef VALUES (15,'068984b5ccdfd2048869efae5166f722',0,'Total All Data Sources, Multiply by 1024',0,0);
 
 --
 -- Table structure for table `cdef_items`
@@ -587,6 +590,8 @@ INSERT INTO cdef_items VALUES (23,'204423d4b2598f1f7252eea19458345c',15,3,2,'3')
 CREATE TABLE `color_templates` (
   `color_template_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
+  `graphs` int(10) unsigned NOT NULL default '0',
+  `templates` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (`color_template_id`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Color Templates';
 
@@ -594,10 +599,10 @@ CREATE TABLE `color_templates` (
 -- Dumping data for table `color_templates`
 --
 
-INSERT INTO `color_templates` VALUES (1,'Yellow: light -> dark, 4 colors');
-INSERT INTO `color_templates` VALUES (2,'Red: light yellow > dark red, 8 colors');
-INSERT INTO `color_templates` VALUES (3,'Red: light -> dark, 16 colors');
-INSERT INTO `color_templates` VALUES (4,'Green: dark -> light, 16 colors');
+INSERT INTO `color_templates` VALUES (1,'Yellow: light -> dark, 4 colors', 0, 0);
+INSERT INTO `color_templates` VALUES (2,'Red: light yellow > dark red, 8 colors', 0, 0);
+INSERT INTO `color_templates` VALUES (3,'Red: light -> dark, 16 colors', 0, 0);
+INSERT INTO `color_templates` VALUES (4,'Green: dark -> light, 16 colors', 0, 0);
 
 --
 -- Table structure for table `color_template_items`
@@ -665,10 +670,12 @@ INSERT INTO `color_template_items` VALUES (44,4,92,16);
 --
 
 CREATE TABLE colors (
-  id mediumint(8) unsigned NOT NULL auto_increment,
-  name varchar(40) default '',
-  hex varchar(6) NOT NULL default '',
-  read_only char(2) default '',
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
+  `name` varchar(40) default '',
+  `hex` varchar(6) NOT NULL default '',
+  `read_only` char(2) default '',
+  `graphs` int(10) unsigned NOT NULL default '0',
+  `templates` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (id),
   UNIQUE KEY hex (hex)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
@@ -677,441 +684,441 @@ CREATE TABLE colors (
 -- Dumping data for table `colors`
 --
 
-INSERT INTO colors VALUES (1,'Black','000000','on');
-INSERT INTO colors VALUES (2,'White','FFFFFF','on');
-INSERT INTO colors VALUES (4,'','FAFD9E','');
-INSERT INTO colors VALUES (5,'','C0C0C0','');
-INSERT INTO colors VALUES (6,'','74C366','');
-INSERT INTO colors VALUES (7,'','6DC8FE','');
-INSERT INTO colors VALUES (8,'','EA8F00','');
-INSERT INTO colors VALUES (9,'Red','FF0000','on');
-INSERT INTO colors VALUES (10,'','4444FF','');
-INSERT INTO colors VALUES (11,'Magenta','FF00FF','on');
-INSERT INTO colors VALUES (12,'Green','00FF00','on');
-INSERT INTO colors VALUES (13,'','8D85F3','');
-INSERT INTO colors VALUES (14,'','AD3B6E','');
-INSERT INTO colors VALUES (15,'','EACC00','');
-INSERT INTO colors VALUES (16,'','12B3B5','');
-INSERT INTO colors VALUES (17,'','157419','');
-INSERT INTO colors VALUES (18,'','C4FD3D','');
-INSERT INTO colors VALUES (19,'','817C4E','');
-INSERT INTO colors VALUES (20,'','002A97','');
-INSERT INTO colors VALUES (21,'','0000FF','');
-INSERT INTO colors VALUES (22,'','00CF00','');
-INSERT INTO colors VALUES (24,'','F9FD5F','');
-INSERT INTO colors VALUES (25,'','FFF200','');
-INSERT INTO colors VALUES (26,'','CCBB00','');
-INSERT INTO colors VALUES (27,'','837C04','');
-INSERT INTO colors VALUES (28,'','EAAF00','');
-INSERT INTO colors VALUES (29,'','FFD660','');
-INSERT INTO colors VALUES (30,'','FFC73B','');
-INSERT INTO colors VALUES (31,'','FFAB00','');
-INSERT INTO colors VALUES (33,'','FF7D00','');
-INSERT INTO colors VALUES (34,'','ED7600','');
-INSERT INTO colors VALUES (35,'','FF5700','');
-INSERT INTO colors VALUES (36,'','EE5019','');
-INSERT INTO colors VALUES (37,'','B1441E','');
-INSERT INTO colors VALUES (38,'','FFC3C0','');
-INSERT INTO colors VALUES (39,'','FF897C','');
-INSERT INTO colors VALUES (40,'','FF6044','');
-INSERT INTO colors VALUES (41,'','FF4105','');
-INSERT INTO colors VALUES (42,'','DA4725','');
-INSERT INTO colors VALUES (43,'','942D0C','');
-INSERT INTO colors VALUES (44,'','FF3932','');
-INSERT INTO colors VALUES (45,'','862F2F','');
-INSERT INTO colors VALUES (46,'','FF5576','');
-INSERT INTO colors VALUES (47,'','562B29','');
-INSERT INTO colors VALUES (48,'','F51D30','');
-INSERT INTO colors VALUES (49,'','DE0056','');
-INSERT INTO colors VALUES (50,'','ED5394','');
-INSERT INTO colors VALUES (51,'','B90054','');
-INSERT INTO colors VALUES (52,'','8F005C','');
-INSERT INTO colors VALUES (53,'','F24AC8','');
-INSERT INTO colors VALUES (54,'','E8CDEF','');
-INSERT INTO colors VALUES (55,'','D8ACE0','');
-INSERT INTO colors VALUES (56,'','A150AA','');
-INSERT INTO colors VALUES (57,'','750F7D','');
-INSERT INTO colors VALUES (58,'','8D00BA','');
-INSERT INTO colors VALUES (59,'','623465','');
-INSERT INTO colors VALUES (60,'','55009D','');
-INSERT INTO colors VALUES (61,'','3D168B','');
-INSERT INTO colors VALUES (62,'','311F4E','');
-INSERT INTO colors VALUES (63,'','D2D8F9','');
-INSERT INTO colors VALUES (64,'','9FA4EE','');
-INSERT INTO colors VALUES (65,'','6557D0','');
-INSERT INTO colors VALUES (66,'','4123A1','');
-INSERT INTO colors VALUES (67,'','4668E4','');
-INSERT INTO colors VALUES (68,'','0D006A','');
-INSERT INTO colors VALUES (69,'','00004D','');
-INSERT INTO colors VALUES (70,'','001D61','');
-INSERT INTO colors VALUES (71,'','00234B','');
-INSERT INTO colors VALUES (72,'','002A8F','');
-INSERT INTO colors VALUES (73,'','2175D9','');
-INSERT INTO colors VALUES (74,'','7CB3F1','');
-INSERT INTO colors VALUES (75,'','005199','');
-INSERT INTO colors VALUES (76,'','004359','');
-INSERT INTO colors VALUES (77,'','00A0C1','');
-INSERT INTO colors VALUES (78,'','007283','');
-INSERT INTO colors VALUES (79,'','00BED9','');
-INSERT INTO colors VALUES (80,'','AFECED','');
-INSERT INTO colors VALUES (81,'','55D6D3','');
-INSERT INTO colors VALUES (82,'','00BBB4','');
-INSERT INTO colors VALUES (83,'','009485','');
-INSERT INTO colors VALUES (84,'','005D57','');
-INSERT INTO colors VALUES (85,'','008A77','');
-INSERT INTO colors VALUES (86,'','008A6D','');
-INSERT INTO colors VALUES (87,'','00B99B','');
-INSERT INTO colors VALUES (88,'','009F67','');
-INSERT INTO colors VALUES (89,'','00694A','');
-INSERT INTO colors VALUES (90,'','00A348','');
-INSERT INTO colors VALUES (91,'','00BF47','');
-INSERT INTO colors VALUES (92,'','96E78A','');
-INSERT INTO colors VALUES (93,'','00BD27','');
-INSERT INTO colors VALUES (94,'','35962B','');
-INSERT INTO colors VALUES (95,'','7EE600','');
-INSERT INTO colors VALUES (96,'','6EA100','');
-INSERT INTO colors VALUES (97,'','CAF100','');
-INSERT INTO colors VALUES (98,'','F5F800','');
-INSERT INTO colors VALUES (99,'','CDCFC4','');
-INSERT INTO colors VALUES (100,'','BCBEB3','');
-INSERT INTO colors VALUES (101,'','AAABA1','');
-INSERT INTO colors VALUES (102,'','8F9286','');
-INSERT INTO colors VALUES (103,'','797C6E','');
-INSERT INTO colors VALUES (104,'','2E3127','');
-INSERT INTO colors VALUES (105,'Night','0C090A','on');
-INSERT INTO colors VALUES (106,'Gunmetal','2C3539','on');
-INSERT INTO colors VALUES (107,'Midnight','2B1B17','on');
-INSERT INTO colors VALUES (108,'Charcoal','34282C','on');
-INSERT INTO colors VALUES (109,'Dark Slate Grey','25383C','on');
-INSERT INTO colors VALUES (110,'Oil','3B3131','on');
-INSERT INTO colors VALUES (111,'Black Cat','413839','on');
-INSERT INTO colors VALUES (112,'Iridium','3D3C3A','on');
-INSERT INTO colors VALUES (113,'Black Eel','463E3F','on');
-INSERT INTO colors VALUES (114,'Black Cow','4C4646','on');
-INSERT INTO colors VALUES (115,'Gray Wolf','504A4B','on');
-INSERT INTO colors VALUES (116,'Vampire Gray','565051','on');
-INSERT INTO colors VALUES (117,'Gray Dolphin','5C5858','on');
-INSERT INTO colors VALUES (118,'Carbon Gray','625D5D','on');
-INSERT INTO colors VALUES (119,'Ash Gray','666362','on');
-INSERT INTO colors VALUES (120,'Cloudy Gray','6D6968','on');
-INSERT INTO colors VALUES (121,'Smokey Gray','726E6D','on');
-INSERT INTO colors VALUES (122,'Gray','736F6E','on');
-INSERT INTO colors VALUES (123,'Granite','837E7C','on');
-INSERT INTO colors VALUES (124,'Battleship Gray','848482','on');
-INSERT INTO colors VALUES (125,'Gray Cloud','B6B6B4','on');
-INSERT INTO colors VALUES (126,'Gray Goose','D1D0CE','on');
-INSERT INTO colors VALUES (127,'Platinum','E5E4E2','on');
-INSERT INTO colors VALUES (128,'Metallic Silver','BCC6CC','on');
-INSERT INTO colors VALUES (129,'Blue Gray','98AFC7','on');
-INSERT INTO colors VALUES (130,'Light Slate Gray','6D7B8D','on');
-INSERT INTO colors VALUES (131,'Slate Gray','657383','on');
-INSERT INTO colors VALUES (132,'Jet Gray','616D7E','on');
-INSERT INTO colors VALUES (133,'Mist Blue','646D7E','on');
-INSERT INTO colors VALUES (134,'Marble Blue','566D7E','on');
-INSERT INTO colors VALUES (135,'Slate Blue','737CA1','on');
-INSERT INTO colors VALUES (136,'Steel Blue','4863A0','on');
-INSERT INTO colors VALUES (137,'Blue Jay','2B547E','on');
-INSERT INTO colors VALUES (138,'Dark Slate Blue','2B3856','on');
-INSERT INTO colors VALUES (139,'Midnight Blue','151B54','on');
-INSERT INTO colors VALUES (140,'Navy Blue','000080','on');
-INSERT INTO colors VALUES (141,'Blue Whale','342D7E','on');
-INSERT INTO colors VALUES (142,'Lapis Blue','15317E','on');
-INSERT INTO colors VALUES (143,'Cornflower Blue','151B8D','on');
-INSERT INTO colors VALUES (144,'Earth Blue','0000A0','on');
-INSERT INTO colors VALUES (145,'Cobalt Blue','0020C2','on');
-INSERT INTO colors VALUES (146,'Blueberry Blue','0041C2','on');
-INSERT INTO colors VALUES (147,'Sapphire Blue','2554C7','on');
-INSERT INTO colors VALUES (148,'Blue Eyes','1569C7','on');
-INSERT INTO colors VALUES (149,'Royal Blue','2B60DE','on');
-INSERT INTO colors VALUES (150,'Blue Orchid','1F45FC','on');
-INSERT INTO colors VALUES (151,'Blue Lotus','6960EC','on');
-INSERT INTO colors VALUES (152,'Light Slate Blue','736AFF','on');
-INSERT INTO colors VALUES (153,'Slate Blue','357EC7','on');
-INSERT INTO colors VALUES (154,'Glacial Blue Ice','368BC1','on');
-INSERT INTO colors VALUES (155,'Silk Blue','488AC7','on');
-INSERT INTO colors VALUES (156,'Blue Ivy','3090C7','on');
-INSERT INTO colors VALUES (157,'Blue Koi','659EC7','on');
-INSERT INTO colors VALUES (158,'Columbia Blue','87AFC7','on');
-INSERT INTO colors VALUES (159,'Baby Blue','95B9C7','on');
-INSERT INTO colors VALUES (160,'Light Steel Blue','728FCE','on');
-INSERT INTO colors VALUES (161,'Ocean Blue','2B65EC','on');
-INSERT INTO colors VALUES (162,'Blue Ribbon','306EFF','on');
-INSERT INTO colors VALUES (163,'Blue Dress','157DEC','on');
-INSERT INTO colors VALUES (164,'Dodger Blue','1589FF','on');
-INSERT INTO colors VALUES (165,'Cornflower Blue','6495ED','on');
-INSERT INTO colors VALUES (166,'Sky Blue','6698FF','on');
-INSERT INTO colors VALUES (167,'Butterfly Blue','38ACEC','on');
-INSERT INTO colors VALUES (168,'Iceberg','56A5EC','on');
-INSERT INTO colors VALUES (169,'Crystal Blue','5CB3FF','on');
-INSERT INTO colors VALUES (170,'Deep Sky Blue','3BB9FF','on');
-INSERT INTO colors VALUES (171,'Denim Blue','79BAEC','on');
-INSERT INTO colors VALUES (172,'Light Sky Blue','82CAFA','on');
-INSERT INTO colors VALUES (173,'Day Sky Blue','82CAFF','on');
-INSERT INTO colors VALUES (174,'Jeans Blue','A0CFEC','on');
-INSERT INTO colors VALUES (175,'Blue Angel','B7CEEC','on');
-INSERT INTO colors VALUES (176,'Pastel Blue','B4CFEC','on');
-INSERT INTO colors VALUES (177,'Sea Blue','C2DFFF','on');
-INSERT INTO colors VALUES (178,'Powder Blue','C6DEFF','on');
-INSERT INTO colors VALUES (179,'Coral Blue','AFDCEC','on');
-INSERT INTO colors VALUES (180,'Light Blue','ADDFFF','on');
-INSERT INTO colors VALUES (181,'Robin Egg Blue','BDEDFF','on');
-INSERT INTO colors VALUES (182,'Pale Blue Lily','CFECEC','on');
-INSERT INTO colors VALUES (183,'Light Cyan','E0FFFF','on');
-INSERT INTO colors VALUES (184,'Water','EBF4FA','on');
-INSERT INTO colors VALUES (185,'Alice Blue','F0F8FF','on');
-INSERT INTO colors VALUES (186,'Azure','F0FFFF','on');
-INSERT INTO colors VALUES (187,'Light Slate','CCFFFF','on');
-INSERT INTO colors VALUES (188,'Light Aquamarine','93FFE8','on');
-INSERT INTO colors VALUES (189,'Electric Blue','9AFEFF','on');
-INSERT INTO colors VALUES (190,'Aquamarine','7FFFD4','on');
-INSERT INTO colors VALUES (191,'Cyan or Aqua','00FFFF','on');
-INSERT INTO colors VALUES (192,'Tron Blue','7DFDFE','on');
-INSERT INTO colors VALUES (193,'Blue Zircon','57FEFF','on');
-INSERT INTO colors VALUES (194,'Blue Lagoon','8EEBEC','on');
-INSERT INTO colors VALUES (195,'Celeste','50EBEC','on');
-INSERT INTO colors VALUES (196,'Blue Diamond','4EE2EC','on');
-INSERT INTO colors VALUES (197,'Tiffany Blue','81D8D0','on');
-INSERT INTO colors VALUES (198,'Cyan Opaque','92C7C7','on');
-INSERT INTO colors VALUES (199,'Blue Hosta','77BFC7','on');
-INSERT INTO colors VALUES (200,'Northern Lights Blue','78C7C7','on');
-INSERT INTO colors VALUES (201,'Medium Turquoise','48CCCD','on');
-INSERT INTO colors VALUES (202,'Turquoise','43C6DB','on');
-INSERT INTO colors VALUES (203,'Jellyfish','46C7C7','on');
-INSERT INTO colors VALUES (204,'Macaw Blue Green','43BFC7','on');
-INSERT INTO colors VALUES (205,'Light Sea Green','3EA99F','on');
-INSERT INTO colors VALUES (206,'Dark Turquoise','3B9C9C','on');
-INSERT INTO colors VALUES (207,'Sea Turtle Green','438D80','on');
-INSERT INTO colors VALUES (208,'Medium Aquamarine','348781','on');
-INSERT INTO colors VALUES (209,'Greenish Blue','307D7E','on');
-INSERT INTO colors VALUES (210,'Grayish Turquoise','5E7D7E','on');
-INSERT INTO colors VALUES (211,'Beetle Green','4C787E','on');
-INSERT INTO colors VALUES (212,'Teal','008080','on');
-INSERT INTO colors VALUES (213,'Sea Green','4E8975','on');
-INSERT INTO colors VALUES (214,'Camouflage Green','78866B','on');
-INSERT INTO colors VALUES (215,'Sage Green','848b79','on');
-INSERT INTO colors VALUES (216,'Hazel Green','617C58','on');
-INSERT INTO colors VALUES (217,'Venom Green','728C00','on');
-INSERT INTO colors VALUES (218,'Fern Green','667C26','on');
-INSERT INTO colors VALUES (219,'Dark Forrest Green','254117','on');
-INSERT INTO colors VALUES (220,'Medium Sea Green','306754','on');
-INSERT INTO colors VALUES (221,'Medium Forest Green','347235','on');
-INSERT INTO colors VALUES (222,'Seaweed Green','437C17','on');
-INSERT INTO colors VALUES (223,'Pine Green','387C44','on');
-INSERT INTO colors VALUES (224,'Jungle Green','347C2C','on');
-INSERT INTO colors VALUES (225,'Shamrock Green','347C17','on');
-INSERT INTO colors VALUES (226,'Medium Spring Green','348017','on');
-INSERT INTO colors VALUES (227,'Forest Green','4E9258','on');
-INSERT INTO colors VALUES (228,'Green Onion','6AA121','on');
-INSERT INTO colors VALUES (229,'Spring Green','4AA02C','on');
-INSERT INTO colors VALUES (230,'Lime Green','41A317','on');
-INSERT INTO colors VALUES (231,'Clover Green','3EA055','on');
-INSERT INTO colors VALUES (232,'Green Snake','6CBB3C','on');
-INSERT INTO colors VALUES (233,'Alien Green','6CC417','on');
-INSERT INTO colors VALUES (234,'Green Apple','4CC417','on');
-INSERT INTO colors VALUES (235,'Yellow Green','52D017','on');
-INSERT INTO colors VALUES (236,'Kelly Green','4CC552','on');
-INSERT INTO colors VALUES (237,'Zombie Green','54C571','on');
-INSERT INTO colors VALUES (238,'Frog Green','99C68E','on');
-INSERT INTO colors VALUES (239,'Green Peas','89C35C','on');
-INSERT INTO colors VALUES (240,'Dollar Bill Green','85BB65','on');
-INSERT INTO colors VALUES (241,'Dark Sea Green','8BB381','on');
-INSERT INTO colors VALUES (242,'Iguana Green','9CB071','on');
-INSERT INTO colors VALUES (243,'Avocado Green','B2C248','on');
-INSERT INTO colors VALUES (244,'Pistachio Green','9DC209','on');
-INSERT INTO colors VALUES (245,'Salad Green','A1C935','on');
-INSERT INTO colors VALUES (246,'Hummingbird Green','7FE817','on');
-INSERT INTO colors VALUES (247,'Nebula Green','59E817','on');
-INSERT INTO colors VALUES (248,'Stoplight Go Green','57E964','on');
-INSERT INTO colors VALUES (249,'Algae Green','64E986','on');
-INSERT INTO colors VALUES (250,'Jade Green','5EFB6E','on');
-INSERT INTO colors VALUES (251,'Emerald Green','5FFB17','on');
-INSERT INTO colors VALUES (252,'Lawn Green','87F717','on');
-INSERT INTO colors VALUES (253,'Chartreuse','8AFB17','on');
-INSERT INTO colors VALUES (254,'Dragon Green','6AFB92','on');
-INSERT INTO colors VALUES (255,'Mint green','98FF98','on');
-INSERT INTO colors VALUES (256,'Green Thumb','B5EAAA','on');
-INSERT INTO colors VALUES (257,'Light Jade','C3FDB8','on');
-INSERT INTO colors VALUES (258,'Tea Green','CCFB5D','on');
-INSERT INTO colors VALUES (259,'Green Yellow','B1FB17','on');
-INSERT INTO colors VALUES (260,'Slime Green','BCE954','on');
-INSERT INTO colors VALUES (261,'Goldenrod','EDDA74','on');
-INSERT INTO colors VALUES (262,'Harvest Gold','EDE275','on');
-INSERT INTO colors VALUES (263,'Sun Yellow','FFE87C','on');
-INSERT INTO colors VALUES (264,'Yellow','FFFF00','on');
-INSERT INTO colors VALUES (265,'Corn Yellow','FFF380','on');
-INSERT INTO colors VALUES (266,'Parchment','FFFFC2','on');
-INSERT INTO colors VALUES (267,'Cream','FFFFCC','on');
-INSERT INTO colors VALUES (268,'Lemon Chiffon','FFF8C6','on');
-INSERT INTO colors VALUES (269,'Cornsilk','FFF8DC','on');
-INSERT INTO colors VALUES (270,'Beige','F5F5DC','on');
-INSERT INTO colors VALUES (271,'Blonde','FBF6D9','on');
-INSERT INTO colors VALUES (272,'Antique White','FAEBD7','on');
-INSERT INTO colors VALUES (273,'Champagne','F7E7CE','on');
-INSERT INTO colors VALUES (274,'Blanched Almond','FFEBCD','on');
-INSERT INTO colors VALUES (275,'Vanilla','F3E5AB','on');
-INSERT INTO colors VALUES (276,'Tan Brown','ECE5B6','on');
-INSERT INTO colors VALUES (277,'Peach','FFE5B4','on');
-INSERT INTO colors VALUES (278,'Mustard','FFDB58','on');
-INSERT INTO colors VALUES (279,'Rubber Ducky Yellow','FFD801','on');
-INSERT INTO colors VALUES (280,'Bright Gold','FDD017','on');
-INSERT INTO colors VALUES (281,'Golden Brown','EAC117','on');
-INSERT INTO colors VALUES (282,'Macaroni and Cheese','F2BB66','on');
-INSERT INTO colors VALUES (283,'Saffron','FBB917','on');
-INSERT INTO colors VALUES (284,'Beer','FBB117','on');
-INSERT INTO colors VALUES (285,'Cantaloupe','FFA62F','on');
-INSERT INTO colors VALUES (286,'Bee Yellow','E9AB17','on');
-INSERT INTO colors VALUES (287,'Brown Sugar','E2A76F','on');
-INSERT INTO colors VALUES (288,'BurlyWood','DEB887','on');
-INSERT INTO colors VALUES (289,'Deep Peach','FFCBA4','on');
-INSERT INTO colors VALUES (290,'Ginger Brown','C9BE62','on');
-INSERT INTO colors VALUES (291,'School Bus Yellow','E8A317','on');
-INSERT INTO colors VALUES (292,'Sandy Brown','EE9A4D','on');
-INSERT INTO colors VALUES (293,'Fall Leaf Brown','C8B560','on');
-INSERT INTO colors VALUES (294,'Orange Gold','D4A017','on');
-INSERT INTO colors VALUES (295,'Sand','C2B280','on');
-INSERT INTO colors VALUES (296,'Cookie Brown','C7A317','on');
-INSERT INTO colors VALUES (297,'Caramel','C68E17','on');
-INSERT INTO colors VALUES (298,'Brass','B5A642','on');
-INSERT INTO colors VALUES (299,'Khaki','ADA96E','on');
-INSERT INTO colors VALUES (300,'Camel Brown','C19A6B','on');
-INSERT INTO colors VALUES (301,'Bronze','CD7F32','on');
-INSERT INTO colors VALUES (302,'Tiger Orange','C88141','on');
-INSERT INTO colors VALUES (303,'Cinnamon','C58917','on');
-INSERT INTO colors VALUES (304,'Bullet Shell','AF9B60','on');
-INSERT INTO colors VALUES (305,'Dark Goldenrod','AF7817','on');
-INSERT INTO colors VALUES (306,'Copper','B87333','on');
-INSERT INTO colors VALUES (307,'Wood','966F33','on');
-INSERT INTO colors VALUES (308,'Oak Brown','806517','on');
-INSERT INTO colors VALUES (309,'Moccasin','827839','on');
-INSERT INTO colors VALUES (310,'Army Brown','827B60','on');
-INSERT INTO colors VALUES (311,'Sandstone','786D5F','on');
-INSERT INTO colors VALUES (312,'Mocha','493D26','on');
-INSERT INTO colors VALUES (313,'Taupe','483C32','on');
-INSERT INTO colors VALUES (314,'Coffee','6F4E37','on');
-INSERT INTO colors VALUES (315,'Brown Bear','835C3B','on');
-INSERT INTO colors VALUES (316,'Red Dirt','7F5217','on');
-INSERT INTO colors VALUES (317,'Sepia','7F462C','on');
-INSERT INTO colors VALUES (318,'Orange Salmon','C47451','on');
-INSERT INTO colors VALUES (319,'Rust','C36241','on');
-INSERT INTO colors VALUES (320,'Red Fox','C35817','on');
-INSERT INTO colors VALUES (321,'Chocolate','C85A17','on');
-INSERT INTO colors VALUES (322,'Sedona','CC6600','on');
-INSERT INTO colors VALUES (323,'Papaya Orange','E56717','on');
-INSERT INTO colors VALUES (324,'Halloween Orange','E66C2C','on');
-INSERT INTO colors VALUES (325,'Pumpkin Orange','F87217','on');
-INSERT INTO colors VALUES (326,'Construction Cone Orange','F87431','on');
-INSERT INTO colors VALUES (327,'Sunrise Orange','E67451','on');
-INSERT INTO colors VALUES (328,'Mango Orange','FF8040','on');
-INSERT INTO colors VALUES (329,'Dark Orange','F88017','on');
-INSERT INTO colors VALUES (330,'Coral','FF7F50','on');
-INSERT INTO colors VALUES (331,'Basket Ball Orange','F88158','on');
-INSERT INTO colors VALUES (332,'Light Salmon','F9966B','on');
-INSERT INTO colors VALUES (333,'Tangerine','E78A61','on');
-INSERT INTO colors VALUES (334,'Dark Salmon','E18B6B','on');
-INSERT INTO colors VALUES (335,'Light Coral','E77471','on');
-INSERT INTO colors VALUES (336,'Bean Red','F75D59','on');
-INSERT INTO colors VALUES (337,'Valentine Red','E55451','on');
-INSERT INTO colors VALUES (338,'Shocking Orange','E55B3C','on');
-INSERT INTO colors VALUES (339,'Scarlet','FF2400','on');
-INSERT INTO colors VALUES (340,'Ruby Red','F62217','on');
-INSERT INTO colors VALUES (341,'Ferrari Red','F70D1A','on');
-INSERT INTO colors VALUES (342,'Fire Engine Red','F62817','on');
-INSERT INTO colors VALUES (343,'Lava Red','E42217','on');
-INSERT INTO colors VALUES (344,'Love Red','E41B17','on');
-INSERT INTO colors VALUES (345,'Grapefruit','DC381F','on');
-INSERT INTO colors VALUES (346,'Chestnut Red','C34A2C','on');
-INSERT INTO colors VALUES (347,'Cherry Red','C24641','on');
-INSERT INTO colors VALUES (348,'Mahogany','C04000','on');
-INSERT INTO colors VALUES (349,'Chilli Pepper','C11B17','on');
-INSERT INTO colors VALUES (350,'Cranberry','9F000F','on');
-INSERT INTO colors VALUES (351,'Red Wine','990012','on');
-INSERT INTO colors VALUES (352,'Burgundy','8C001A','on');
-INSERT INTO colors VALUES (353,'Chestnut','954535','on');
-INSERT INTO colors VALUES (354,'Blood Red','7E3517','on');
-INSERT INTO colors VALUES (355,'Sienna','8A4117','on');
-INSERT INTO colors VALUES (356,'Sangria','7E3817','on');
-INSERT INTO colors VALUES (357,'Firebrick','800517','on');
-INSERT INTO colors VALUES (358,'Maroon','810541','on');
-INSERT INTO colors VALUES (359,'Plum Pie','7D0541','on');
-INSERT INTO colors VALUES (360,'Velvet Maroon','7E354D','on');
-INSERT INTO colors VALUES (361,'Plum Velvet','7D0552','on');
-INSERT INTO colors VALUES (362,'Rosy Finch','7F4E52','on');
-INSERT INTO colors VALUES (363,'Puce','7F5A58','on');
-INSERT INTO colors VALUES (364,'Dull Purple','7F525D','on');
-INSERT INTO colors VALUES (365,'Rosy Brown','B38481','on');
-INSERT INTO colors VALUES (366,'Khaki Rose','C5908E','on');
-INSERT INTO colors VALUES (367,'Pink Bow','C48189','on');
-INSERT INTO colors VALUES (368,'Lipstick Pink','C48793','on');
-INSERT INTO colors VALUES (369,'Rose','E8ADAA','on');
-INSERT INTO colors VALUES (370,'Desert Sand','EDC9AF','on');
-INSERT INTO colors VALUES (371,'Pig Pink','FDD7E4','on');
-INSERT INTO colors VALUES (372,'Cotton Candy','FCDFFF','on');
-INSERT INTO colors VALUES (373,'Pink Bubblegum','FFDFDD','on');
-INSERT INTO colors VALUES (374,'Misty Rose','FBBBB9','on');
-INSERT INTO colors VALUES (375,'Pink','FAAFBE','on');
-INSERT INTO colors VALUES (376,'Light Pink','FAAFBA','on');
-INSERT INTO colors VALUES (377,'Flamingo Pink','F9A7B0','on');
-INSERT INTO colors VALUES (378,'Pink Rose','E7A1B0','on');
-INSERT INTO colors VALUES (379,'Pink Daisy','E799A3','on');
-INSERT INTO colors VALUES (380,'Cadillac Pink','E38AAE','on');
-INSERT INTO colors VALUES (381,'Carnation Pink','F778A1','on');
-INSERT INTO colors VALUES (382,'Blush Red','E56E94','on');
-INSERT INTO colors VALUES (383,'Hot Pink','F660AB','on');
-INSERT INTO colors VALUES (384,'Watermelon Pink','FC6C85','on');
-INSERT INTO colors VALUES (385,'Violet Red','F6358A','on');
-INSERT INTO colors VALUES (386,'Deep Pink','F52887','on');
-INSERT INTO colors VALUES (387,'Pink Cupcake','E45E9D','on');
-INSERT INTO colors VALUES (388,'Pink Lemonade','E4287C','on');
-INSERT INTO colors VALUES (389,'Neon Pink','F535AA','on');
-INSERT INTO colors VALUES (390,'Dimorphotheca Magenta','E3319D','on');
-INSERT INTO colors VALUES (391,'Bright Neon Pink','F433FF','on');
-INSERT INTO colors VALUES (392,'Pale Violet Red','D16587','on');
-INSERT INTO colors VALUES (393,'Tulip Pink','C25A7C','on');
-INSERT INTO colors VALUES (394,'Medium Violet Red','CA226B','on');
-INSERT INTO colors VALUES (395,'Rogue Pink','C12869','on');
-INSERT INTO colors VALUES (396,'Burnt Pink','C12267','on');
-INSERT INTO colors VALUES (397,'Bashful Pink','C25283','on');
-INSERT INTO colors VALUES (398,'Carnation Pink','C12283','on');
-INSERT INTO colors VALUES (399,'Plum','B93B8F','on');
-INSERT INTO colors VALUES (400,'Viola Purple','7E587E','on');
-INSERT INTO colors VALUES (401,'Purple Iris','571B7E','on');
-INSERT INTO colors VALUES (402,'Plum Purple','583759','on');
-INSERT INTO colors VALUES (403,'Indigo','4B0082','on');
-INSERT INTO colors VALUES (404,'Purple Monster','461B7E','on');
-INSERT INTO colors VALUES (405,'Purple Haze','4E387E','on');
-INSERT INTO colors VALUES (406,'Eggplant','614051','on');
-INSERT INTO colors VALUES (407,'Grape','5E5A80','on');
-INSERT INTO colors VALUES (408,'Purple Jam','6A287E','on');
-INSERT INTO colors VALUES (409,'Dark Orchid','7D1B7E','on');
-INSERT INTO colors VALUES (410,'Purple Flower','A74AC7','on');
-INSERT INTO colors VALUES (411,'Medium Orchid','B048B5','on');
-INSERT INTO colors VALUES (412,'Purple Amethyst','6C2DC7','on');
-INSERT INTO colors VALUES (413,'Dark Violet','842DCE','on');
-INSERT INTO colors VALUES (414,'Violet','8D38C9','on');
-INSERT INTO colors VALUES (415,'Purple Sage Bush','7A5DC7','on');
-INSERT INTO colors VALUES (416,'Lovely Purple','7F38EC','on');
-INSERT INTO colors VALUES (417,'Purple','8E35EF','on');
-INSERT INTO colors VALUES (418,'Aztech Purple','893BFF','on');
-INSERT INTO colors VALUES (419,'Medium Purple','8467D7','on');
-INSERT INTO colors VALUES (420,'Jasmine Purple','A23BEC','on');
-INSERT INTO colors VALUES (421,'Purple Daffodil','B041FF','on');
-INSERT INTO colors VALUES (422,'Tyrian Purple','C45AEC','on');
-INSERT INTO colors VALUES (423,'Crocus Purple','9172EC','on');
-INSERT INTO colors VALUES (424,'Purple Mimosa','9E7BFF','on');
-INSERT INTO colors VALUES (425,'Heliotrope Purple','D462FF','on');
-INSERT INTO colors VALUES (426,'Crimson','E238EC','on');
-INSERT INTO colors VALUES (427,'Purple Dragon','C38EC7','on');
-INSERT INTO colors VALUES (428,'Lilac','C8A2C8','on');
-INSERT INTO colors VALUES (429,'Blush Pink','E6A9EC','on');
-INSERT INTO colors VALUES (430,'Mauve','E0B0FF','on');
-INSERT INTO colors VALUES (431,'Wisteria Purple','C6AEC7','on');
-INSERT INTO colors VALUES (432,'Blossom Pink','F9B7FF','on');
-INSERT INTO colors VALUES (433,'Thistle','D2B9D3','on');
-INSERT INTO colors VALUES (434,'Periwinkle','E9CFEC','on');
-INSERT INTO colors VALUES (435,'Lavender Pinocchio','EBDDE2','on');
-INSERT INTO colors VALUES (436,'Lavender Blue','E3E4FA','on');
-INSERT INTO colors VALUES (437,'Pearl','FDEEF4','on');
-INSERT INTO colors VALUES (438,'SeaShell','FFF5EE','on');
+INSERT INTO colors VALUES (1,'Black','000000','on', 0, 0);
+INSERT INTO colors VALUES (2,'White','FFFFFF','on', 0, 0);
+INSERT INTO colors VALUES (4,'','FAFD9E','', 0, 0);
+INSERT INTO colors VALUES (5,'','C0C0C0','', 0, 0);
+INSERT INTO colors VALUES (6,'','74C366','', 0, 0);
+INSERT INTO colors VALUES (7,'','6DC8FE','', 0, 0);
+INSERT INTO colors VALUES (8,'','EA8F00','', 0, 0);
+INSERT INTO colors VALUES (9,'Red','FF0000','on', 0, 0);
+INSERT INTO colors VALUES (10,'','4444FF','', 0, 0);
+INSERT INTO colors VALUES (11,'Magenta','FF00FF','on', 0, 0);
+INSERT INTO colors VALUES (12,'Green','00FF00','on', 0, 0);
+INSERT INTO colors VALUES (13,'','8D85F3','', 0, 0);
+INSERT INTO colors VALUES (14,'','AD3B6E','', 0, 0);
+INSERT INTO colors VALUES (15,'','EACC00','', 0, 0);
+INSERT INTO colors VALUES (16,'','12B3B5','', 0, 0);
+INSERT INTO colors VALUES (17,'','157419','', 0, 0);
+INSERT INTO colors VALUES (18,'','C4FD3D','', 0, 0);
+INSERT INTO colors VALUES (19,'','817C4E','', 0, 0);
+INSERT INTO colors VALUES (20,'','002A97','', 0, 0);
+INSERT INTO colors VALUES (21,'','0000FF','', 0, 0);
+INSERT INTO colors VALUES (22,'','00CF00','', 0, 0);
+INSERT INTO colors VALUES (24,'','F9FD5F','', 0, 0);
+INSERT INTO colors VALUES (25,'','FFF200','', 0, 0);
+INSERT INTO colors VALUES (26,'','CCBB00','', 0, 0);
+INSERT INTO colors VALUES (27,'','837C04','', 0, 0);
+INSERT INTO colors VALUES (28,'','EAAF00','', 0, 0);
+INSERT INTO colors VALUES (29,'','FFD660','', 0, 0);
+INSERT INTO colors VALUES (30,'','FFC73B','', 0, 0);
+INSERT INTO colors VALUES (31,'','FFAB00','', 0, 0);
+INSERT INTO colors VALUES (33,'','FF7D00','', 0, 0);
+INSERT INTO colors VALUES (34,'','ED7600','', 0, 0);
+INSERT INTO colors VALUES (35,'','FF5700','', 0, 0);
+INSERT INTO colors VALUES (36,'','EE5019','', 0, 0);
+INSERT INTO colors VALUES (37,'','B1441E','', 0, 0);
+INSERT INTO colors VALUES (38,'','FFC3C0','', 0, 0);
+INSERT INTO colors VALUES (39,'','FF897C','', 0, 0);
+INSERT INTO colors VALUES (40,'','FF6044','', 0, 0);
+INSERT INTO colors VALUES (41,'','FF4105','', 0, 0);
+INSERT INTO colors VALUES (42,'','DA4725','', 0, 0);
+INSERT INTO colors VALUES (43,'','942D0C','', 0, 0);
+INSERT INTO colors VALUES (44,'','FF3932','', 0, 0);
+INSERT INTO colors VALUES (45,'','862F2F','', 0, 0);
+INSERT INTO colors VALUES (46,'','FF5576','', 0, 0);
+INSERT INTO colors VALUES (47,'','562B29','', 0, 0);
+INSERT INTO colors VALUES (48,'','F51D30','', 0, 0);
+INSERT INTO colors VALUES (49,'','DE0056','', 0, 0);
+INSERT INTO colors VALUES (50,'','ED5394','', 0, 0);
+INSERT INTO colors VALUES (51,'','B90054','', 0, 0);
+INSERT INTO colors VALUES (52,'','8F005C','', 0, 0);
+INSERT INTO colors VALUES (53,'','F24AC8','', 0, 0);
+INSERT INTO colors VALUES (54,'','E8CDEF','', 0, 0);
+INSERT INTO colors VALUES (55,'','D8ACE0','', 0, 0);
+INSERT INTO colors VALUES (56,'','A150AA','', 0, 0);
+INSERT INTO colors VALUES (57,'','750F7D','', 0, 0);
+INSERT INTO colors VALUES (58,'','8D00BA','', 0, 0);
+INSERT INTO colors VALUES (59,'','623465','', 0, 0);
+INSERT INTO colors VALUES (60,'','55009D','', 0, 0);
+INSERT INTO colors VALUES (61,'','3D168B','', 0, 0);
+INSERT INTO colors VALUES (62,'','311F4E','', 0, 0);
+INSERT INTO colors VALUES (63,'','D2D8F9','', 0, 0);
+INSERT INTO colors VALUES (64,'','9FA4EE','', 0, 0);
+INSERT INTO colors VALUES (65,'','6557D0','', 0, 0);
+INSERT INTO colors VALUES (66,'','4123A1','', 0, 0);
+INSERT INTO colors VALUES (67,'','4668E4','', 0, 0);
+INSERT INTO colors VALUES (68,'','0D006A','', 0, 0);
+INSERT INTO colors VALUES (69,'','00004D','', 0, 0);
+INSERT INTO colors VALUES (70,'','001D61','', 0, 0);
+INSERT INTO colors VALUES (71,'','00234B','', 0, 0);
+INSERT INTO colors VALUES (72,'','002A8F','', 0, 0);
+INSERT INTO colors VALUES (73,'','2175D9','', 0, 0);
+INSERT INTO colors VALUES (74,'','7CB3F1','', 0, 0);
+INSERT INTO colors VALUES (75,'','005199','', 0, 0);
+INSERT INTO colors VALUES (76,'','004359','', 0, 0);
+INSERT INTO colors VALUES (77,'','00A0C1','', 0, 0);
+INSERT INTO colors VALUES (78,'','007283','', 0, 0);
+INSERT INTO colors VALUES (79,'','00BED9','', 0, 0);
+INSERT INTO colors VALUES (80,'','AFECED','', 0, 0);
+INSERT INTO colors VALUES (81,'','55D6D3','', 0, 0);
+INSERT INTO colors VALUES (82,'','00BBB4','', 0, 0);
+INSERT INTO colors VALUES (83,'','009485','', 0, 0);
+INSERT INTO colors VALUES (84,'','005D57','', 0, 0);
+INSERT INTO colors VALUES (85,'','008A77','', 0, 0);
+INSERT INTO colors VALUES (86,'','008A6D','', 0, 0);
+INSERT INTO colors VALUES (87,'','00B99B','', 0, 0);
+INSERT INTO colors VALUES (88,'','009F67','', 0, 0);
+INSERT INTO colors VALUES (89,'','00694A','', 0, 0);
+INSERT INTO colors VALUES (90,'','00A348','', 0, 0);
+INSERT INTO colors VALUES (91,'','00BF47','', 0, 0);
+INSERT INTO colors VALUES (92,'','96E78A','', 0, 0);
+INSERT INTO colors VALUES (93,'','00BD27','', 0, 0);
+INSERT INTO colors VALUES (94,'','35962B','', 0, 0);
+INSERT INTO colors VALUES (95,'','7EE600','', 0, 0);
+INSERT INTO colors VALUES (96,'','6EA100','', 0, 0);
+INSERT INTO colors VALUES (97,'','CAF100','', 0, 0);
+INSERT INTO colors VALUES (98,'','F5F800','', 0, 0);
+INSERT INTO colors VALUES (99,'','CDCFC4','', 0, 0);
+INSERT INTO colors VALUES (100,'','BCBEB3','', 0, 0);
+INSERT INTO colors VALUES (101,'','AAABA1','', 0, 0);
+INSERT INTO colors VALUES (102,'','8F9286','', 0, 0);
+INSERT INTO colors VALUES (103,'','797C6E','', 0, 0);
+INSERT INTO colors VALUES (104,'','2E3127','', 0, 0);
+INSERT INTO colors VALUES (105,'Night','0C090A','on', 0, 0);
+INSERT INTO colors VALUES (106,'Gunmetal','2C3539','on', 0, 0);
+INSERT INTO colors VALUES (107,'Midnight','2B1B17','on', 0, 0);
+INSERT INTO colors VALUES (108,'Charcoal','34282C','on', 0, 0);
+INSERT INTO colors VALUES (109,'Dark Slate Grey','25383C','on', 0, 0);
+INSERT INTO colors VALUES (110,'Oil','3B3131','on', 0, 0);
+INSERT INTO colors VALUES (111,'Black Cat','413839','on', 0, 0);
+INSERT INTO colors VALUES (112,'Iridium','3D3C3A','on', 0, 0);
+INSERT INTO colors VALUES (113,'Black Eel','463E3F','on', 0, 0);
+INSERT INTO colors VALUES (114,'Black Cow','4C4646','on', 0, 0);
+INSERT INTO colors VALUES (115,'Gray Wolf','504A4B','on', 0, 0);
+INSERT INTO colors VALUES (116,'Vampire Gray','565051','on', 0, 0);
+INSERT INTO colors VALUES (117,'Gray Dolphin','5C5858','on', 0, 0);
+INSERT INTO colors VALUES (118,'Carbon Gray','625D5D','on', 0, 0);
+INSERT INTO colors VALUES (119,'Ash Gray','666362','on', 0, 0);
+INSERT INTO colors VALUES (120,'Cloudy Gray','6D6968','on', 0, 0);
+INSERT INTO colors VALUES (121,'Smokey Gray','726E6D','on', 0, 0);
+INSERT INTO colors VALUES (122,'Gray','736F6E','on', 0, 0);
+INSERT INTO colors VALUES (123,'Granite','837E7C','on', 0, 0);
+INSERT INTO colors VALUES (124,'Battleship Gray','848482','on', 0, 0);
+INSERT INTO colors VALUES (125,'Gray Cloud','B6B6B4','on', 0, 0);
+INSERT INTO colors VALUES (126,'Gray Goose','D1D0CE','on', 0, 0);
+INSERT INTO colors VALUES (127,'Platinum','E5E4E2','on', 0, 0);
+INSERT INTO colors VALUES (128,'Metallic Silver','BCC6CC','on', 0, 0);
+INSERT INTO colors VALUES (129,'Blue Gray','98AFC7','on', 0, 0);
+INSERT INTO colors VALUES (130,'Light Slate Gray','6D7B8D','on', 0, 0);
+INSERT INTO colors VALUES (131,'Slate Gray','657383','on', 0, 0);
+INSERT INTO colors VALUES (132,'Jet Gray','616D7E','on', 0, 0);
+INSERT INTO colors VALUES (133,'Mist Blue','646D7E','on', 0, 0);
+INSERT INTO colors VALUES (134,'Marble Blue','566D7E','on', 0, 0);
+INSERT INTO colors VALUES (135,'Slate Blue','737CA1','on', 0, 0);
+INSERT INTO colors VALUES (136,'Steel Blue','4863A0','on', 0, 0);
+INSERT INTO colors VALUES (137,'Blue Jay','2B547E','on', 0, 0);
+INSERT INTO colors VALUES (138,'Dark Slate Blue','2B3856','on', 0, 0);
+INSERT INTO colors VALUES (139,'Midnight Blue','151B54','on', 0, 0);
+INSERT INTO colors VALUES (140,'Navy Blue','000080','on', 0, 0);
+INSERT INTO colors VALUES (141,'Blue Whale','342D7E','on', 0, 0);
+INSERT INTO colors VALUES (142,'Lapis Blue','15317E','on', 0, 0);
+INSERT INTO colors VALUES (143,'Cornflower Blue','151B8D','on', 0, 0);
+INSERT INTO colors VALUES (144,'Earth Blue','0000A0','on', 0, 0);
+INSERT INTO colors VALUES (145,'Cobalt Blue','0020C2','on', 0, 0);
+INSERT INTO colors VALUES (146,'Blueberry Blue','0041C2','on', 0, 0);
+INSERT INTO colors VALUES (147,'Sapphire Blue','2554C7','on', 0, 0);
+INSERT INTO colors VALUES (148,'Blue Eyes','1569C7','on', 0, 0);
+INSERT INTO colors VALUES (149,'Royal Blue','2B60DE','on', 0, 0);
+INSERT INTO colors VALUES (150,'Blue Orchid','1F45FC','on', 0, 0);
+INSERT INTO colors VALUES (151,'Blue Lotus','6960EC','on', 0, 0);
+INSERT INTO colors VALUES (152,'Light Slate Blue','736AFF','on', 0, 0);
+INSERT INTO colors VALUES (153,'Slate Blue','357EC7','on', 0, 0);
+INSERT INTO colors VALUES (154,'Glacial Blue Ice','368BC1','on', 0, 0);
+INSERT INTO colors VALUES (155,'Silk Blue','488AC7','on', 0, 0);
+INSERT INTO colors VALUES (156,'Blue Ivy','3090C7','on', 0, 0);
+INSERT INTO colors VALUES (157,'Blue Koi','659EC7','on', 0, 0);
+INSERT INTO colors VALUES (158,'Columbia Blue','87AFC7','on', 0, 0);
+INSERT INTO colors VALUES (159,'Baby Blue','95B9C7','on', 0, 0);
+INSERT INTO colors VALUES (160,'Light Steel Blue','728FCE','on', 0, 0);
+INSERT INTO colors VALUES (161,'Ocean Blue','2B65EC','on', 0, 0);
+INSERT INTO colors VALUES (162,'Blue Ribbon','306EFF','on', 0, 0);
+INSERT INTO colors VALUES (163,'Blue Dress','157DEC','on', 0, 0);
+INSERT INTO colors VALUES (164,'Dodger Blue','1589FF','on', 0, 0);
+INSERT INTO colors VALUES (165,'Cornflower Blue','6495ED','on', 0, 0);
+INSERT INTO colors VALUES (166,'Sky Blue','6698FF','on', 0, 0);
+INSERT INTO colors VALUES (167,'Butterfly Blue','38ACEC','on', 0, 0);
+INSERT INTO colors VALUES (168,'Iceberg','56A5EC','on', 0, 0);
+INSERT INTO colors VALUES (169,'Crystal Blue','5CB3FF','on', 0, 0);
+INSERT INTO colors VALUES (170,'Deep Sky Blue','3BB9FF','on', 0, 0);
+INSERT INTO colors VALUES (171,'Denim Blue','79BAEC','on', 0, 0);
+INSERT INTO colors VALUES (172,'Light Sky Blue','82CAFA','on', 0, 0);
+INSERT INTO colors VALUES (173,'Day Sky Blue','82CAFF','on', 0, 0);
+INSERT INTO colors VALUES (174,'Jeans Blue','A0CFEC','on', 0, 0);
+INSERT INTO colors VALUES (175,'Blue Angel','B7CEEC','on', 0, 0);
+INSERT INTO colors VALUES (176,'Pastel Blue','B4CFEC','on', 0, 0);
+INSERT INTO colors VALUES (177,'Sea Blue','C2DFFF','on', 0, 0);
+INSERT INTO colors VALUES (178,'Powder Blue','C6DEFF','on', 0, 0);
+INSERT INTO colors VALUES (179,'Coral Blue','AFDCEC','on', 0, 0);
+INSERT INTO colors VALUES (180,'Light Blue','ADDFFF','on', 0, 0);
+INSERT INTO colors VALUES (181,'Robin Egg Blue','BDEDFF','on', 0, 0);
+INSERT INTO colors VALUES (182,'Pale Blue Lily','CFECEC','on', 0, 0);
+INSERT INTO colors VALUES (183,'Light Cyan','E0FFFF','on', 0, 0);
+INSERT INTO colors VALUES (184,'Water','EBF4FA','on', 0, 0);
+INSERT INTO colors VALUES (185,'Alice Blue','F0F8FF','on', 0, 0);
+INSERT INTO colors VALUES (186,'Azure','F0FFFF','on', 0, 0);
+INSERT INTO colors VALUES (187,'Light Slate','CCFFFF','on', 0, 0);
+INSERT INTO colors VALUES (188,'Light Aquamarine','93FFE8','on', 0, 0);
+INSERT INTO colors VALUES (189,'Electric Blue','9AFEFF','on', 0, 0);
+INSERT INTO colors VALUES (190,'Aquamarine','7FFFD4','on', 0, 0);
+INSERT INTO colors VALUES (191,'Cyan or Aqua','00FFFF','on', 0, 0);
+INSERT INTO colors VALUES (192,'Tron Blue','7DFDFE','on', 0, 0);
+INSERT INTO colors VALUES (193,'Blue Zircon','57FEFF','on', 0, 0);
+INSERT INTO colors VALUES (194,'Blue Lagoon','8EEBEC','on', 0, 0);
+INSERT INTO colors VALUES (195,'Celeste','50EBEC','on', 0, 0);
+INSERT INTO colors VALUES (196,'Blue Diamond','4EE2EC','on', 0, 0);
+INSERT INTO colors VALUES (197,'Tiffany Blue','81D8D0','on', 0, 0);
+INSERT INTO colors VALUES (198,'Cyan Opaque','92C7C7','on', 0, 0);
+INSERT INTO colors VALUES (199,'Blue Hosta','77BFC7','on', 0, 0);
+INSERT INTO colors VALUES (200,'Northern Lights Blue','78C7C7','on', 0, 0);
+INSERT INTO colors VALUES (201,'Medium Turquoise','48CCCD','on', 0, 0);
+INSERT INTO colors VALUES (202,'Turquoise','43C6DB','on', 0, 0);
+INSERT INTO colors VALUES (203,'Jellyfish','46C7C7','on', 0, 0);
+INSERT INTO colors VALUES (204,'Macaw Blue Green','43BFC7','on', 0, 0);
+INSERT INTO colors VALUES (205,'Light Sea Green','3EA99F','on', 0, 0);
+INSERT INTO colors VALUES (206,'Dark Turquoise','3B9C9C','on', 0, 0);
+INSERT INTO colors VALUES (207,'Sea Turtle Green','438D80','on', 0, 0);
+INSERT INTO colors VALUES (208,'Medium Aquamarine','348781','on', 0, 0);
+INSERT INTO colors VALUES (209,'Greenish Blue','307D7E','on', 0, 0);
+INSERT INTO colors VALUES (210,'Grayish Turquoise','5E7D7E','on', 0, 0);
+INSERT INTO colors VALUES (211,'Beetle Green','4C787E','on', 0, 0);
+INSERT INTO colors VALUES (212,'Teal','008080','on', 0, 0);
+INSERT INTO colors VALUES (213,'Sea Green','4E8975','on', 0, 0);
+INSERT INTO colors VALUES (214,'Camouflage Green','78866B','on', 0, 0);
+INSERT INTO colors VALUES (215,'Sage Green','848b79','on', 0, 0);
+INSERT INTO colors VALUES (216,'Hazel Green','617C58','on', 0, 0);
+INSERT INTO colors VALUES (217,'Venom Green','728C00','on', 0, 0);
+INSERT INTO colors VALUES (218,'Fern Green','667C26','on', 0, 0);
+INSERT INTO colors VALUES (219,'Dark Forrest Green','254117','on', 0, 0);
+INSERT INTO colors VALUES (220,'Medium Sea Green','306754','on', 0, 0);
+INSERT INTO colors VALUES (221,'Medium Forest Green','347235','on', 0, 0);
+INSERT INTO colors VALUES (222,'Seaweed Green','437C17','on', 0, 0);
+INSERT INTO colors VALUES (223,'Pine Green','387C44','on', 0, 0);
+INSERT INTO colors VALUES (224,'Jungle Green','347C2C','on', 0, 0);
+INSERT INTO colors VALUES (225,'Shamrock Green','347C17','on', 0, 0);
+INSERT INTO colors VALUES (226,'Medium Spring Green','348017','on', 0, 0);
+INSERT INTO colors VALUES (227,'Forest Green','4E9258','on', 0, 0);
+INSERT INTO colors VALUES (228,'Green Onion','6AA121','on', 0, 0);
+INSERT INTO colors VALUES (229,'Spring Green','4AA02C','on', 0, 0);
+INSERT INTO colors VALUES (230,'Lime Green','41A317','on', 0, 0);
+INSERT INTO colors VALUES (231,'Clover Green','3EA055','on', 0, 0);
+INSERT INTO colors VALUES (232,'Green Snake','6CBB3C','on', 0, 0);
+INSERT INTO colors VALUES (233,'Alien Green','6CC417','on', 0, 0);
+INSERT INTO colors VALUES (234,'Green Apple','4CC417','on', 0, 0);
+INSERT INTO colors VALUES (235,'Yellow Green','52D017','on', 0, 0);
+INSERT INTO colors VALUES (236,'Kelly Green','4CC552','on', 0, 0);
+INSERT INTO colors VALUES (237,'Zombie Green','54C571','on', 0, 0);
+INSERT INTO colors VALUES (238,'Frog Green','99C68E','on', 0, 0);
+INSERT INTO colors VALUES (239,'Green Peas','89C35C','on', 0, 0);
+INSERT INTO colors VALUES (240,'Dollar Bill Green','85BB65','on', 0, 0);
+INSERT INTO colors VALUES (241,'Dark Sea Green','8BB381','on', 0, 0);
+INSERT INTO colors VALUES (242,'Iguana Green','9CB071','on', 0, 0);
+INSERT INTO colors VALUES (243,'Avocado Green','B2C248','on', 0, 0);
+INSERT INTO colors VALUES (244,'Pistachio Green','9DC209','on', 0, 0);
+INSERT INTO colors VALUES (245,'Salad Green','A1C935','on', 0, 0);
+INSERT INTO colors VALUES (246,'Hummingbird Green','7FE817','on', 0, 0);
+INSERT INTO colors VALUES (247,'Nebula Green','59E817','on', 0, 0);
+INSERT INTO colors VALUES (248,'Stoplight Go Green','57E964','on', 0, 0);
+INSERT INTO colors VALUES (249,'Algae Green','64E986','on', 0, 0);
+INSERT INTO colors VALUES (250,'Jade Green','5EFB6E','on', 0, 0);
+INSERT INTO colors VALUES (251,'Emerald Green','5FFB17','on', 0, 0);
+INSERT INTO colors VALUES (252,'Lawn Green','87F717','on', 0, 0);
+INSERT INTO colors VALUES (253,'Chartreuse','8AFB17','on', 0, 0);
+INSERT INTO colors VALUES (254,'Dragon Green','6AFB92','on', 0, 0);
+INSERT INTO colors VALUES (255,'Mint green','98FF98','on', 0, 0);
+INSERT INTO colors VALUES (256,'Green Thumb','B5EAAA','on', 0, 0);
+INSERT INTO colors VALUES (257,'Light Jade','C3FDB8','on', 0, 0);
+INSERT INTO colors VALUES (258,'Tea Green','CCFB5D','on', 0, 0);
+INSERT INTO colors VALUES (259,'Green Yellow','B1FB17','on', 0, 0);
+INSERT INTO colors VALUES (260,'Slime Green','BCE954','on', 0, 0);
+INSERT INTO colors VALUES (261,'Goldenrod','EDDA74','on', 0, 0);
+INSERT INTO colors VALUES (262,'Harvest Gold','EDE275','on', 0, 0);
+INSERT INTO colors VALUES (263,'Sun Yellow','FFE87C','on', 0, 0);
+INSERT INTO colors VALUES (264,'Yellow','FFFF00','on', 0, 0);
+INSERT INTO colors VALUES (265,'Corn Yellow','FFF380','on', 0, 0);
+INSERT INTO colors VALUES (266,'Parchment','FFFFC2','on', 0, 0);
+INSERT INTO colors VALUES (267,'Cream','FFFFCC','on', 0, 0);
+INSERT INTO colors VALUES (268,'Lemon Chiffon','FFF8C6','on', 0, 0);
+INSERT INTO colors VALUES (269,'Cornsilk','FFF8DC','on', 0, 0);
+INSERT INTO colors VALUES (270,'Beige','F5F5DC','on', 0, 0);
+INSERT INTO colors VALUES (271,'Blonde','FBF6D9','on', 0, 0);
+INSERT INTO colors VALUES (272,'Antique White','FAEBD7','on', 0, 0);
+INSERT INTO colors VALUES (273,'Champagne','F7E7CE','on', 0, 0);
+INSERT INTO colors VALUES (274,'Blanched Almond','FFEBCD','on', 0, 0);
+INSERT INTO colors VALUES (275,'Vanilla','F3E5AB','on', 0, 0);
+INSERT INTO colors VALUES (276,'Tan Brown','ECE5B6','on', 0, 0);
+INSERT INTO colors VALUES (277,'Peach','FFE5B4','on', 0, 0);
+INSERT INTO colors VALUES (278,'Mustard','FFDB58','on', 0, 0);
+INSERT INTO colors VALUES (279,'Rubber Ducky Yellow','FFD801','on', 0, 0);
+INSERT INTO colors VALUES (280,'Bright Gold','FDD017','on', 0, 0);
+INSERT INTO colors VALUES (281,'Golden Brown','EAC117','on', 0, 0);
+INSERT INTO colors VALUES (282,'Macaroni and Cheese','F2BB66','on', 0, 0);
+INSERT INTO colors VALUES (283,'Saffron','FBB917','on', 0, 0);
+INSERT INTO colors VALUES (284,'Beer','FBB117','on', 0, 0);
+INSERT INTO colors VALUES (285,'Cantaloupe','FFA62F','on', 0, 0);
+INSERT INTO colors VALUES (286,'Bee Yellow','E9AB17','on', 0, 0);
+INSERT INTO colors VALUES (287,'Brown Sugar','E2A76F','on', 0, 0);
+INSERT INTO colors VALUES (288,'BurlyWood','DEB887','on', 0, 0);
+INSERT INTO colors VALUES (289,'Deep Peach','FFCBA4','on', 0, 0);
+INSERT INTO colors VALUES (290,'Ginger Brown','C9BE62','on', 0, 0);
+INSERT INTO colors VALUES (291,'School Bus Yellow','E8A317','on', 0, 0);
+INSERT INTO colors VALUES (292,'Sandy Brown','EE9A4D','on', 0, 0);
+INSERT INTO colors VALUES (293,'Fall Leaf Brown','C8B560','on', 0, 0);
+INSERT INTO colors VALUES (294,'Orange Gold','D4A017','on', 0, 0);
+INSERT INTO colors VALUES (295,'Sand','C2B280','on', 0, 0);
+INSERT INTO colors VALUES (296,'Cookie Brown','C7A317','on', 0, 0);
+INSERT INTO colors VALUES (297,'Caramel','C68E17','on', 0, 0);
+INSERT INTO colors VALUES (298,'Brass','B5A642','on', 0, 0);
+INSERT INTO colors VALUES (299,'Khaki','ADA96E','on', 0, 0);
+INSERT INTO colors VALUES (300,'Camel Brown','C19A6B','on', 0, 0);
+INSERT INTO colors VALUES (301,'Bronze','CD7F32','on', 0, 0);
+INSERT INTO colors VALUES (302,'Tiger Orange','C88141','on', 0, 0);
+INSERT INTO colors VALUES (303,'Cinnamon','C58917','on', 0, 0);
+INSERT INTO colors VALUES (304,'Bullet Shell','AF9B60','on', 0, 0);
+INSERT INTO colors VALUES (305,'Dark Goldenrod','AF7817','on', 0, 0);
+INSERT INTO colors VALUES (306,'Copper','B87333','on', 0, 0);
+INSERT INTO colors VALUES (307,'Wood','966F33','on', 0, 0);
+INSERT INTO colors VALUES (308,'Oak Brown','806517','on', 0, 0);
+INSERT INTO colors VALUES (309,'Moccasin','827839','on', 0, 0);
+INSERT INTO colors VALUES (310,'Army Brown','827B60','on', 0, 0);
+INSERT INTO colors VALUES (311,'Sandstone','786D5F','on', 0, 0);
+INSERT INTO colors VALUES (312,'Mocha','493D26','on', 0, 0);
+INSERT INTO colors VALUES (313,'Taupe','483C32','on', 0, 0);
+INSERT INTO colors VALUES (314,'Coffee','6F4E37','on', 0, 0);
+INSERT INTO colors VALUES (315,'Brown Bear','835C3B','on', 0, 0);
+INSERT INTO colors VALUES (316,'Red Dirt','7F5217','on', 0, 0);
+INSERT INTO colors VALUES (317,'Sepia','7F462C','on', 0, 0);
+INSERT INTO colors VALUES (318,'Orange Salmon','C47451','on', 0, 0);
+INSERT INTO colors VALUES (319,'Rust','C36241','on', 0, 0);
+INSERT INTO colors VALUES (320,'Red Fox','C35817','on', 0, 0);
+INSERT INTO colors VALUES (321,'Chocolate','C85A17','on', 0, 0);
+INSERT INTO colors VALUES (322,'Sedona','CC6600','on', 0, 0);
+INSERT INTO colors VALUES (323,'Papaya Orange','E56717','on', 0, 0);
+INSERT INTO colors VALUES (324,'Halloween Orange','E66C2C','on', 0, 0);
+INSERT INTO colors VALUES (325,'Pumpkin Orange','F87217','on', 0, 0);
+INSERT INTO colors VALUES (326,'Construction Cone Orange','F87431','on', 0, 0);
+INSERT INTO colors VALUES (327,'Sunrise Orange','E67451','on', 0, 0);
+INSERT INTO colors VALUES (328,'Mango Orange','FF8040','on', 0, 0);
+INSERT INTO colors VALUES (329,'Dark Orange','F88017','on', 0, 0);
+INSERT INTO colors VALUES (330,'Coral','FF7F50','on', 0, 0);
+INSERT INTO colors VALUES (331,'Basket Ball Orange','F88158','on', 0, 0);
+INSERT INTO colors VALUES (332,'Light Salmon','F9966B','on', 0, 0);
+INSERT INTO colors VALUES (333,'Tangerine','E78A61','on', 0, 0);
+INSERT INTO colors VALUES (334,'Dark Salmon','E18B6B','on', 0, 0);
+INSERT INTO colors VALUES (335,'Light Coral','E77471','on', 0, 0);
+INSERT INTO colors VALUES (336,'Bean Red','F75D59','on', 0, 0);
+INSERT INTO colors VALUES (337,'Valentine Red','E55451','on', 0, 0);
+INSERT INTO colors VALUES (338,'Shocking Orange','E55B3C','on', 0, 0);
+INSERT INTO colors VALUES (339,'Scarlet','FF2400','on', 0, 0);
+INSERT INTO colors VALUES (340,'Ruby Red','F62217','on', 0, 0);
+INSERT INTO colors VALUES (341,'Ferrari Red','F70D1A','on', 0, 0);
+INSERT INTO colors VALUES (342,'Fire Engine Red','F62817','on', 0, 0);
+INSERT INTO colors VALUES (343,'Lava Red','E42217','on', 0, 0);
+INSERT INTO colors VALUES (344,'Love Red','E41B17','on', 0, 0);
+INSERT INTO colors VALUES (345,'Grapefruit','DC381F','on', 0, 0);
+INSERT INTO colors VALUES (346,'Chestnut Red','C34A2C','on', 0, 0);
+INSERT INTO colors VALUES (347,'Cherry Red','C24641','on', 0, 0);
+INSERT INTO colors VALUES (348,'Mahogany','C04000','on', 0, 0);
+INSERT INTO colors VALUES (349,'Chilli Pepper','C11B17','on', 0, 0);
+INSERT INTO colors VALUES (350,'Cranberry','9F000F','on', 0, 0);
+INSERT INTO colors VALUES (351,'Red Wine','990012','on', 0, 0);
+INSERT INTO colors VALUES (352,'Burgundy','8C001A','on', 0, 0);
+INSERT INTO colors VALUES (353,'Chestnut','954535','on', 0, 0);
+INSERT INTO colors VALUES (354,'Blood Red','7E3517','on', 0, 0);
+INSERT INTO colors VALUES (355,'Sienna','8A4117','on', 0, 0);
+INSERT INTO colors VALUES (356,'Sangria','7E3817','on', 0, 0);
+INSERT INTO colors VALUES (357,'Firebrick','800517','on', 0, 0);
+INSERT INTO colors VALUES (358,'Maroon','810541','on', 0, 0);
+INSERT INTO colors VALUES (359,'Plum Pie','7D0541','on', 0, 0);
+INSERT INTO colors VALUES (360,'Velvet Maroon','7E354D','on', 0, 0);
+INSERT INTO colors VALUES (361,'Plum Velvet','7D0552','on', 0, 0);
+INSERT INTO colors VALUES (362,'Rosy Finch','7F4E52','on', 0, 0);
+INSERT INTO colors VALUES (363,'Puce','7F5A58','on', 0, 0);
+INSERT INTO colors VALUES (364,'Dull Purple','7F525D','on', 0, 0);
+INSERT INTO colors VALUES (365,'Rosy Brown','B38481','on', 0, 0);
+INSERT INTO colors VALUES (366,'Khaki Rose','C5908E','on', 0, 0);
+INSERT INTO colors VALUES (367,'Pink Bow','C48189','on', 0, 0);
+INSERT INTO colors VALUES (368,'Lipstick Pink','C48793','on', 0, 0);
+INSERT INTO colors VALUES (369,'Rose','E8ADAA','on', 0, 0);
+INSERT INTO colors VALUES (370,'Desert Sand','EDC9AF','on', 0, 0);
+INSERT INTO colors VALUES (371,'Pig Pink','FDD7E4','on', 0, 0);
+INSERT INTO colors VALUES (372,'Cotton Candy','FCDFFF','on', 0, 0);
+INSERT INTO colors VALUES (373,'Pink Bubblegum','FFDFDD','on', 0, 0);
+INSERT INTO colors VALUES (374,'Misty Rose','FBBBB9','on', 0, 0);
+INSERT INTO colors VALUES (375,'Pink','FAAFBE','on', 0, 0);
+INSERT INTO colors VALUES (376,'Light Pink','FAAFBA','on', 0, 0);
+INSERT INTO colors VALUES (377,'Flamingo Pink','F9A7B0','on', 0, 0);
+INSERT INTO colors VALUES (378,'Pink Rose','E7A1B0','on', 0, 0);
+INSERT INTO colors VALUES (379,'Pink Daisy','E799A3','on', 0, 0);
+INSERT INTO colors VALUES (380,'Cadillac Pink','E38AAE','on', 0, 0);
+INSERT INTO colors VALUES (381,'Carnation Pink','F778A1','on', 0, 0);
+INSERT INTO colors VALUES (382,'Blush Red','E56E94','on', 0, 0);
+INSERT INTO colors VALUES (383,'Hot Pink','F660AB','on', 0, 0);
+INSERT INTO colors VALUES (384,'Watermelon Pink','FC6C85','on', 0, 0);
+INSERT INTO colors VALUES (385,'Violet Red','F6358A','on', 0, 0);
+INSERT INTO colors VALUES (386,'Deep Pink','F52887','on', 0, 0);
+INSERT INTO colors VALUES (387,'Pink Cupcake','E45E9D','on', 0, 0);
+INSERT INTO colors VALUES (388,'Pink Lemonade','E4287C','on', 0, 0);
+INSERT INTO colors VALUES (389,'Neon Pink','F535AA','on', 0, 0);
+INSERT INTO colors VALUES (390,'Dimorphotheca Magenta','E3319D','on', 0, 0);
+INSERT INTO colors VALUES (391,'Bright Neon Pink','F433FF','on', 0, 0);
+INSERT INTO colors VALUES (392,'Pale Violet Red','D16587','on', 0, 0);
+INSERT INTO colors VALUES (393,'Tulip Pink','C25A7C','on', 0, 0);
+INSERT INTO colors VALUES (394,'Medium Violet Red','CA226B','on', 0, 0);
+INSERT INTO colors VALUES (395,'Rogue Pink','C12869','on', 0, 0);
+INSERT INTO colors VALUES (396,'Burnt Pink','C12267','on', 0, 0);
+INSERT INTO colors VALUES (397,'Bashful Pink','C25283','on', 0, 0);
+INSERT INTO colors VALUES (398,'Carnation Pink','C12283','on', 0, 0);
+INSERT INTO colors VALUES (399,'Plum','B93B8F','on', 0, 0);
+INSERT INTO colors VALUES (400,'Viola Purple','7E587E','on', 0, 0);
+INSERT INTO colors VALUES (401,'Purple Iris','571B7E','on', 0, 0);
+INSERT INTO colors VALUES (402,'Plum Purple','583759','on', 0, 0);
+INSERT INTO colors VALUES (403,'Indigo','4B0082','on', 0, 0);
+INSERT INTO colors VALUES (404,'Purple Monster','461B7E','on', 0, 0);
+INSERT INTO colors VALUES (405,'Purple Haze','4E387E','on', 0, 0);
+INSERT INTO colors VALUES (406,'Eggplant','614051','on', 0, 0);
+INSERT INTO colors VALUES (407,'Grape','5E5A80','on', 0, 0);
+INSERT INTO colors VALUES (408,'Purple Jam','6A287E','on', 0, 0);
+INSERT INTO colors VALUES (409,'Dark Orchid','7D1B7E','on', 0, 0);
+INSERT INTO colors VALUES (410,'Purple Flower','A74AC7','on', 0, 0);
+INSERT INTO colors VALUES (411,'Medium Orchid','B048B5','on', 0, 0);
+INSERT INTO colors VALUES (412,'Purple Amethyst','6C2DC7','on', 0, 0);
+INSERT INTO colors VALUES (413,'Dark Violet','842DCE','on', 0, 0);
+INSERT INTO colors VALUES (414,'Violet','8D38C9','on', 0, 0);
+INSERT INTO colors VALUES (415,'Purple Sage Bush','7A5DC7','on', 0, 0);
+INSERT INTO colors VALUES (416,'Lovely Purple','7F38EC','on', 0, 0);
+INSERT INTO colors VALUES (417,'Purple','8E35EF','on', 0, 0);
+INSERT INTO colors VALUES (418,'Aztech Purple','893BFF','on', 0, 0);
+INSERT INTO colors VALUES (419,'Medium Purple','8467D7','on', 0, 0);
+INSERT INTO colors VALUES (420,'Jasmine Purple','A23BEC','on', 0, 0);
+INSERT INTO colors VALUES (421,'Purple Daffodil','B041FF','on', 0, 0);
+INSERT INTO colors VALUES (422,'Tyrian Purple','C45AEC','on', 0, 0);
+INSERT INTO colors VALUES (423,'Crocus Purple','9172EC','on', 0, 0);
+INSERT INTO colors VALUES (424,'Purple Mimosa','9E7BFF','on', 0, 0);
+INSERT INTO colors VALUES (425,'Heliotrope Purple','D462FF','on', 0, 0);
+INSERT INTO colors VALUES (426,'Crimson','E238EC','on', 0, 0);
+INSERT INTO colors VALUES (427,'Purple Dragon','C38EC7','on', 0, 0);
+INSERT INTO colors VALUES (428,'Lilac','C8A2C8','on', 0, 0);
+INSERT INTO colors VALUES (429,'Blush Pink','E6A9EC','on', 0, 0);
+INSERT INTO colors VALUES (430,'Mauve','E0B0FF','on', 0, 0);
+INSERT INTO colors VALUES (431,'Wisteria Purple','C6AEC7','on', 0, 0);
+INSERT INTO colors VALUES (432,'Blossom Pink','F9B7FF','on', 0, 0);
+INSERT INTO colors VALUES (433,'Thistle','D2B9D3','on', 0, 0);
+INSERT INTO colors VALUES (434,'Periwinkle','E9CFEC','on', 0, 0);
+INSERT INTO colors VALUES (435,'Lavender Pinocchio','EBDDE2','on', 0, 0);
+INSERT INTO colors VALUES (436,'Lavender Blue','E3E4FA','on', 0, 0);
+INSERT INTO colors VALUES (437,'Pearl','FDEEF4','on', 0, 0);
+INSERT INTO colors VALUES (438,'SeaShell','FFF5EE','on', 0, 0);
 INSERT INTO colors VALUES (439,'Milk White','FEFCFF','on');
 
 --
@@ -1119,11 +1126,13 @@ INSERT INTO colors VALUES (439,'Milk White','FEFCFF','on');
 --
 
 CREATE TABLE data_input (
-  id mediumint(8) unsigned NOT NULL auto_increment,
-  hash varchar(32) NOT NULL default '',
-  name varchar(200) NOT NULL default '',
-  input_string varchar(512) default NULL,
-  type_id tinyint(3) unsigned NOT NULL default '0',
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
+  `hash` varchar(32) NOT NULL default '',
+  `name` varchar(200) NOT NULL default '',
+  `input_string` varchar(512) default NULL,
+  `type_id` tinyint(3) unsigned NOT NULL default '0',
+  `data_sources` int(10) unsigned NOT NULL default '0',
+  `templates` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (id),
   KEY `name_type_id` (`name`(171), `type_id`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
@@ -1132,18 +1141,18 @@ CREATE TABLE data_input (
 -- Dumping data for table `data_input`
 --
 
-INSERT INTO data_input VALUES (1,'3eb92bb845b9660a7445cf9740726522','Get SNMP Data','',2);
-INSERT INTO data_input VALUES (2,'bf566c869ac6443b0c75d1c32b5a350e','Get SNMP Data (Indexed)','',3);
-INSERT INTO data_input VALUES (3,'274f4685461170b9eb1b98d22567ab5e','Unix - Get Free Disk Space','<path_cacti>/scripts/diskfree.sh <partition>',1);
-INSERT INTO data_input VALUES (4,'95ed0993eb3095f9920d431ac80f4231','Unix - Get Load Average','perl <path_cacti>/scripts/loadavg_multi.pl',1);
-INSERT INTO data_input VALUES (5,'79a284e136bb6b061c6f96ec219ac448','Unix - Get Logged In Users','perl <path_cacti>/scripts/unix_users.pl <username>',1);
-INSERT INTO data_input VALUES (6,'362e6d4768937c4f899dd21b91ef0ff8','Linux - Get Memory Usage','perl <path_cacti>/scripts/linux_memory.pl <grepstr>',1);
-INSERT INTO data_input VALUES (7,'a637359e0a4287ba43048a5fdf202066','Unix - Get System Processes','perl <path_cacti>/scripts/unix_processes.pl',1);
-INSERT INTO data_input VALUES (8,'47d6bfe8be57a45171afd678920bd399','Unix - Get TCP Connections','perl <path_cacti>/scripts/unix_tcp_connections.pl <grepstr>',1);
-INSERT INTO data_input VALUES (9,'cc948e4de13f32b6aea45abaadd287a3','Unix - Get Web Hits','perl <path_cacti>/scripts/webhits.pl <log_path>',1);
-INSERT INTO data_input VALUES (10,'8bd153aeb06e3ff89efc73f35849a7a0','Unix - Ping Host','perl <path_cacti>/scripts/ping.pl <ip>',1);
-INSERT INTO data_input VALUES (11,'80e9e4c4191a5da189ae26d0e237f015','Get Script Data (Indexed)','',4);
-INSERT INTO data_input VALUES (12,'332111d8b54ac8ce939af87a7eac0c06','Get Script Server Data (Indexed)','',6);
+INSERT INTO data_input VALUES (1,'3eb92bb845b9660a7445cf9740726522','Get SNMP Data','',2, 0, 0);
+INSERT INTO data_input VALUES (2,'bf566c869ac6443b0c75d1c32b5a350e','Get SNMP Data (Indexed)','',3, 0, 0);
+INSERT INTO data_input VALUES (3,'274f4685461170b9eb1b98d22567ab5e','Unix - Get Free Disk Space','<path_cacti>/scripts/diskfree.sh <partition>',1, 0, 0);
+INSERT INTO data_input VALUES (4,'95ed0993eb3095f9920d431ac80f4231','Unix - Get Load Average','perl <path_cacti>/scripts/loadavg_multi.pl',1, 0, 0);
+INSERT INTO data_input VALUES (5,'79a284e136bb6b061c6f96ec219ac448','Unix - Get Logged In Users','perl <path_cacti>/scripts/unix_users.pl <username>',1, 0, 0);
+INSERT INTO data_input VALUES (6,'362e6d4768937c4f899dd21b91ef0ff8','Linux - Get Memory Usage','perl <path_cacti>/scripts/linux_memory.pl <grepstr>',1, 0, 0);
+INSERT INTO data_input VALUES (7,'a637359e0a4287ba43048a5fdf202066','Unix - Get System Processes','perl <path_cacti>/scripts/unix_processes.pl',1, 0, 0);
+INSERT INTO data_input VALUES (8,'47d6bfe8be57a45171afd678920bd399','Unix - Get TCP Connections','perl <path_cacti>/scripts/unix_tcp_connections.pl <grepstr>',1, 0, 0);
+INSERT INTO data_input VALUES (9,'cc948e4de13f32b6aea45abaadd287a3','Unix - Get Web Hits','perl <path_cacti>/scripts/webhits.pl <log_path>',1, 0, 0);
+INSERT INTO data_input VALUES (10,'8bd153aeb06e3ff89efc73f35849a7a0','Unix - Ping Host','perl <path_cacti>/scripts/ping.pl <ip>',1, 0, 0);
+INSERT INTO data_input VALUES (11,'80e9e4c4191a5da189ae26d0e237f015','Get Script Data (Indexed)','',4, 0, 0);
+INSERT INTO data_input VALUES (12,'332111d8b54ac8ce939af87a7eac0c06','Get Script Server Data (Indexed)','',6, 0, 0);
 
 --
 -- Table structure for table `data_input_data`
@@ -1344,6 +1353,8 @@ CREATE TABLE `data_source_profiles` (
   `heartbeat` int(10) unsigned NOT NULL DEFAULT '600',
   `x_files_factor` double DEFAULT '0.5',
   `default` char(2) DEFAULT '',
+  `data_sources` int(10) unsigned NOT NULL default '0',
+  `templates` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`(171))
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Stores Data Source Profiles';
@@ -1352,9 +1363,9 @@ CREATE TABLE `data_source_profiles` (
 -- Dumping data for table `data_source_profiles`
 --
 
-INSERT INTO `data_source_profiles` VALUES (1,'d62c52891f4f9688729a5bc9fad91b18','5 Minute Collection',300,600,0.5,'on');
-INSERT INTO `data_source_profiles` VALUES (2,'c0dd0e46b9ca268e7ed4162d329f9215','30 Second Collection',30,1200,0.5,'');
-INSERT INTO `data_source_profiles` VALUES (3,'66d35da8f75c912ede3dbe901fedcae0','1 Minute Collection',60,600,0.5,'');
+INSERT INTO `data_source_profiles` VALUES (1,'d62c52891f4f9688729a5bc9fad91b18','5 Minute Collection',300,600,0.5,'on',0,0);
+INSERT INTO `data_source_profiles` VALUES (2,'c0dd0e46b9ca268e7ed4162d329f9215','30 Second Collection',30,1200,0.5,'',0,0);
+INSERT INTO `data_source_profiles` VALUES (3,'66d35da8f75c912ede3dbe901fedcae0','1 Minute Collection',60,600,0.5,'',0,0);
 
 --
 -- Table structure for table `data_source_profiles_cf`
@@ -1599,9 +1610,11 @@ CREATE TABLE `data_source_stats_yearly` (
 --
 
 CREATE TABLE data_template (
-  id mediumint(8) unsigned NOT NULL auto_increment,
-  hash varchar(32) NOT NULL default '',
-  name varchar(150) NOT NULL default '',
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
+  `hash` varchar(32) NOT NULL default '',
+  `name` varchar(150) NOT NULL default '',
+  `data_sources` int(10) unsigned NOT NULL default '0',
+  `templates` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (id),
   KEY `name` (`name`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
@@ -1750,6 +1763,8 @@ CREATE TABLE graph_templates (
   `name` char(255) NOT NULL default '',
   `multiple` char(2) NOT NULL default '',
   `test_source` char(2) NOT NULL default '',
+  `graphs` int(10) unsigned NOT NULL default '0',
+  `templates` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (`id`),
   KEY `multiple_name` (`multiple`, `name`),
   KEY `name` (`name`)
@@ -1764,10 +1779,12 @@ CREATE TABLE graph_templates (
 --
 
 CREATE TABLE graph_templates_gprint (
-  id mediumint(8) unsigned NOT NULL auto_increment,
-  hash varchar(32) NOT NULL default '',
-  name varchar(100) NOT NULL default '',
-  gprint_text varchar(255) default NULL,
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
+  `hash` varchar(32) NOT NULL default '',
+  `name` varchar(100) NOT NULL default '',
+  `gprint_text` varchar(255) default NULL,
+  `graphs` int(10) unsigned NOT NULL default '0',
+  `templates` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (id),
   KEY `name` (`name`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
@@ -1776,9 +1793,9 @@ CREATE TABLE graph_templates_gprint (
 -- Dumping data for table `graph_templates_gprint`
 --
 
-INSERT INTO graph_templates_gprint VALUES (2,'e9c43831e54eca8069317a2ce8c6f751','Normal','%8.2lf %s');
-INSERT INTO graph_templates_gprint VALUES (3,'19414480d6897c8731c7dc6c5310653e','Exact Numbers','%8.0lf');
-INSERT INTO graph_templates_gprint VALUES (4,'304a778405392f878a6db435afffc1e9','Load Average','%8.2lf');
+INSERT INTO graph_templates_gprint VALUES (2,'e9c43831e54eca8069317a2ce8c6f751','Normal','%8.2lf %s', 0, 0);
+INSERT INTO graph_templates_gprint VALUES (3,'19414480d6897c8731c7dc6c5310653e','Exact Numbers','%8.0lf', 0, 0);
+INSERT INTO graph_templates_gprint VALUES (4,'304a778405392f878a6db435afffc1e9','Load Average','%8.2lf', 0, 0);
 
 --
 -- Table structure for table `graph_templates_graph`
@@ -2112,10 +2129,11 @@ CREATE TABLE host_value_cache (
 --
 
 CREATE TABLE host_template (
-  id mediumint(8) unsigned NOT NULL auto_increment,
-  hash varchar(32) NOT NULL default '',
-  name varchar(100) NOT NULL default '',
-  class varchar(40) NOT NULL default '',
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
+  `hash` varchar(32) NOT NULL default '',
+  `name` varchar(100) NOT NULL default '',
+  `class` varchar(40) NOT NULL default '',
+  `devices` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (id),
   KEY `name` (`name`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
@@ -2255,6 +2273,7 @@ CREATE TABLE `poller` (
   `last_status` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `last_sync` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `requires_sync` char(2) DEFAULT '',
+  `devices` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `disabled` (`disabled`)
@@ -2595,13 +2614,15 @@ CREATE TABLE settings_tree (
 --
 
 CREATE TABLE snmp_query (
-  id mediumint(8) unsigned NOT NULL auto_increment,
-  hash varchar(32) NOT NULL default '',
-  xml_path varchar(255) NOT NULL default '',
-  name varchar(100) NOT NULL default '',
-  description varchar(255) default NULL,
-  graph_template_id mediumint(8) unsigned NOT NULL default '0',
-  data_input_id mediumint(8) unsigned NOT NULL default '0',
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
+  `hash` varchar(32) NOT NULL default '',
+  `xml_path` varchar(255) NOT NULL default '',
+  `name` varchar(100) NOT NULL default '',
+  `description` varchar(255) default NULL,
+  `graph_template_id` mediumint(8) unsigned NOT NULL default '0',
+  `data_input_id` mediumint(8) unsigned NOT NULL default '0',
+  `graphs` int(10) unsigned NOT NULL default '0',
+  `templates` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (id),
   KEY name (name)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
@@ -3011,6 +3032,7 @@ CREATE TABLE `sites` (
   `zoom` tinyint(3) unsigned DEFAULT NULL,
   `alternate_id` varchar(30) DEFAULT '',
   `notes` varchar(1024),
+  `devices` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `city` (`city`),
@@ -3024,8 +3046,8 @@ CREATE TABLE `sites` (
 -- Dumping data for table `sites`
 --
 
-INSERT INTO `sites` VALUES (1,'Edge','','','','','','','','',0.0000000000,0.0000000000,'','','');
-INSERT INTO `sites` VALUES (2,'Core','','','','','','','','',0.0000000000,0.0000000000,'','','');
+INSERT INTO `sites` VALUES (1,'Edge','','','','','','','','',0.0000000000,0.0000000000,'','','', 0);
+INSERT INTO `sites` VALUES (2,'Core','','','','','','','','',0.0000000000,0.0000000000,'','','', 0);
 
 --
 -- Table structure for table `snmpagent_cache`
@@ -3169,9 +3191,11 @@ CREATE TABLE `snmpagent_notifications_log` (
 --
 
 CREATE TABLE vdef (
-  id mediumint(8) unsigned NOT NULL auto_increment,
-  hash varchar(32) NOT NULL default '',
-  name varchar(255) NOT NULL default '',
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
+  `hash` varchar(32) NOT NULL default '',
+  `name` varchar(255) NOT NULL default '',
+  `graphs` int(10) unsigned NOT NULL default '0',
+  `templates` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (id),
   KEY `hash` (`hash`),
   KEY `name` (`name`(171))
@@ -3181,13 +3205,13 @@ CREATE TABLE vdef (
 -- Dumping data for table `vdef`
 --
 
-INSERT INTO vdef VALUES(1, 'e06ed529238448773038601afb3cf278', 'Maximum');
-INSERT INTO vdef VALUES(2, 'e4872dda82092393d6459c831a50dc3b', 'Minimum');
-INSERT INTO vdef VALUES(3, '5ce1061a46bb62f36840c80412d2e629', 'Average');
-INSERT INTO vdef VALUES(4, '06bd3cbe802da6a0745ea5ba93af554a', 'Last (Current)');
-INSERT INTO vdef VALUES(5, '631c1b9086f3979d6dcf5c7a6946f104', 'First');
-INSERT INTO vdef VALUES(6, '6b5335843630b66f858ce6b7c61fc493', 'Total: Current Data Source');
-INSERT INTO vdef VALUES(7, 'c80d12b0f030af3574da68b28826cd39', '95th Percentage: Current Data Source');
+INSERT INTO vdef VALUES(1, 'e06ed529238448773038601afb3cf278', 'Maximum',0,0);
+INSERT INTO vdef VALUES(2, 'e4872dda82092393d6459c831a50dc3b', 'Minimum',0,0);
+INSERT INTO vdef VALUES(3, '5ce1061a46bb62f36840c80412d2e629', 'Average',0,0);
+INSERT INTO vdef VALUES(4, '06bd3cbe802da6a0745ea5ba93af554a', 'Last (Current)',0,0);
+INSERT INTO vdef VALUES(5, '631c1b9086f3979d6dcf5c7a6946f104', 'First',0,0);
+INSERT INTO vdef VALUES(6, '6b5335843630b66f858ce6b7c61fc493', 'Total: Current Data Source',0,0);
+INSERT INTO vdef VALUES(7, 'c80d12b0f030af3574da68b28826cd39', '95th Percentage: Current Data Source',0,0);
 
 --
 -- Table structure for table `vdef_items`

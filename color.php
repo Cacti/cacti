@@ -659,43 +659,17 @@ function color() {
 		$sql_having = '';
 	}
 
-	$total_rows = db_fetch_cell("SELECT
-		COUNT(color)
-		FROM (
-			SELECT
-			c.id AS color,
-			SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs,
-			SUM(CASE WHEN local_graph_id=0 THEN 1 ELSE 0 END) AS templates
-			FROM colors AS c
-			LEFT JOIN (
-				SELECT DISTINCT color_id, graph_template_id, local_graph_id
-				FROM graph_templates_item
-				WHERE color_id>0
-			) AS gti
-			ON gti.color_id=c.id
-			$sql_where
-			GROUP BY c.id
-			$sql_having
-		) AS rs");
+	$total_rows = db_fetch_cell("SELECT COUNT(*)
+		FROM colors
+		$sql_where
+		$sql_having");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
-	$colors = db_fetch_assoc("SELECT *,
-        SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs,
-        SUM(CASE WHEN local_graph_id=0 THEN 1 ELSE 0 END) AS templates
-        FROM (
-			SELECT c.*, local_graph_id
-			FROM colors AS c
-			LEFT JOIN (
-				SELECT DISTINCT color_id, graph_template_id, local_graph_id
-				FROM graph_templates_item
-				WHERE color_id>0
-			) AS gti
-			ON c.id=gti.color_id
-		) AS rs
+	$colors = db_fetch_assoc("SELECT *
+		FROM colors
 		$sql_where
-		GROUP BY rs.id
 		$sql_having
 		$sql_order
 		$sql_limit");
@@ -709,13 +683,48 @@ function color() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'hex'       => array('display' => __('Hex'), 'align' => 'left', 'sort' => 'DESC', 'tip' => __('The Hex Value for this Color.')),
-		'name'      => array('display' => __('Color Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Color definition.')),
-		'read_only' => array('display' => __('Named Color'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('Is this color a named color which are read only.')),
-		'nosort1'   => array('display' => __('Color'), 'align' => 'center', 'sort' => 'DESC', 'tip' => __('The Color as shown on the screen.')),
-		'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'sort' => '', 'tip' => __('Colors in use cannot be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template.')),
-		'graphs'    => array('display' => __('Graphs Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graph using this Color.')),
-		'templates' => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graph Templates using this Color.'))
+		'hex' => array(
+			'display' => __('Hex'),
+			'align' => 'left',
+			'sort' => 'DESC',
+			'tip' => __('The Hex Value for this Color.')
+		),
+		'name' => array(
+			'display' => __('Color Name'),
+			'align' => 'left',
+			'sort' => 'ASC',
+			'tip' => __('The name of this Color definition.')
+		),
+		'read_only' => array(
+			'display' => __('Named Color'),
+			'align' => 'left',
+			'sort' => 'ASC',
+			'tip' => __('Is this color a named color which are read only.')
+		),
+		'nosort1' => array(
+			'display' => __('Color'),
+			'align' => 'center',
+			'sort' => 'DESC',
+			'tip' => __('The Color as shown on the screen.')
+		),
+		'nosort' => array(
+			'display' => __('Deletable'),
+			'align' => 'right',
+			'sort' => '',
+			'tip' => __('Colors in use cannot be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template.')
+		),
+		'graphs' => array(
+			'display' => __('Graphs Using'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The number of Graph using this Color.')
+		),
+		'templates' => array(
+			'display' => __('Templates Using'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The number of Graph Templates using this Color.')
+		)
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
