@@ -795,18 +795,11 @@ function automation_tree_rules_edit() {
 	 * display the rule items -------------------------------------------------------------------------------
 	 */
 	if (!empty($rule['id'])) {
-		# display tree rules for host match
-		display_match_rule_items(__('Object Selection Criteria'),
-			$rule['id'],
-			AUTOMATION_RULE_TYPE_TREE_MATCH,
-			'automation_tree_rules.php');
+		// display tree rules for host match
+		display_match_rule_items(__('Object Selection Criteria'), $rule, AUTOMATION_RULE_TYPE_TREE_MATCH, 'automation_tree_rules.php');
 
-		# fetch tree action rules
-		display_tree_rule_items(__('Tree Creation Criteria'),
-			$rule['id'],
-			$rule['leaf_type'],
-			AUTOMATION_RULE_TYPE_TREE_ACTION,
-			'automation_tree_rules.php');
+		// fetch tree action rules
+		display_tree_rule_items(__('Tree Creation Criteria'), $rule, $rule['leaf_type'], AUTOMATION_RULE_TYPE_TREE_ACTION, 'automation_tree_rules.php');
 	}
 
 	form_save_button('automation_tree_rules.php', 'return');

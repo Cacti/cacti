@@ -739,13 +739,12 @@ function automation_graph_rules_edit() {
 	 */
 	if (!isempty_request_var('id')) {
 		?>
-<table style='width:100%;text-align:center;'>
-	<tr>
-		<td class='textInfo right' style='vertical-align:top;'><span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print html_escape('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_rule=') . ($_SESSION['automation_graph_rules_show_rule'] == true ? '0' : '1');?>'><?php print($_SESSION['automation_graph_rules_show_rule'] == true ? __('Don\'t Show'):__('Show'));?> <?php print __('Rule Details.');?></a><br>
-		</td>
-	</tr>
-</table>
-
+		<table class='cactiTable'>
+			<tr>
+				<td class='textInfo right' style='vertical-align:top;'><span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print html_escape('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_rule=') . ($_SESSION['automation_graph_rules_show_rule'] == true ? '0' : '1');?>'><?php print($_SESSION['automation_graph_rules_show_rule'] == true ? __('Don\'t Show'):__('Show'));?> <?php print __('Rule Details.');?></a><br>
+				</td>
+			</tr>
+		</table>
 		<?php
 	}
 
@@ -754,13 +753,12 @@ function automation_graph_rules_edit() {
 	 */
 	if (!isempty_request_var('id')) {
 		?>
-<table style='width:100%;text-align:center;'>
-	<tr>
-		<td class='textInfo right' style='vertical-align:top;'><span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print html_escape('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_hosts=') . (isset($_SESSION['automation_graph_rules_show_hosts']) ? '0' : '1');?>'><?php print(isset($_SESSION['automation_graph_rules_show_hosts']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Matching Devices.');?></a><br>
-		</td>
-	</tr>
-</table>
-
+		<table class='cactiTable'>
+			<tr>
+				<td class='textInfo right' style='vertical-align:top;'><span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print html_escape('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_hosts=') . (isset($_SESSION['automation_graph_rules_show_hosts']) ? '0' : '1');?>'><?php print(isset($_SESSION['automation_graph_rules_show_hosts']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Matching Devices.');?></a><br>
+				</td>
+			</tr>
+		</table>
 		<?php
 	}
 
@@ -769,13 +767,13 @@ function automation_graph_rules_edit() {
 	 */
 	if (!empty($rule['graph_type_id']) && $rule['graph_type_id'] > 0) {
 		?>
-<table style='width:100%;text-align:center;'>
-	<tr>
-		<td class='textInfo right' style='vertical-align:top;'>
-			<span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print html_escape('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_graphs=') . (isset($_SESSION['automation_graph_rules_show_graphs']) ? '0' : '1');?>'><?php print(isset($_SESSION['automation_graph_rules_show_graphs']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Matching Objects.');?></a><br>
-		</td>
-	</tr>
-</table>
+		<table class='cactiTable'>
+			<tr>
+				<td class='textInfo right' style='vertical-align:top;'>
+					<span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print html_escape('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_graphs=') . (isset($_SESSION['automation_graph_rules_show_graphs']) ? '0' : '1');?>'><?php print(isset($_SESSION['automation_graph_rules_show_graphs']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Matching Objects.');?></a><br>
+				</td>
+			</tr>
+		</table>
 		<?php
 	}
 
@@ -812,16 +810,10 @@ function automation_graph_rules_edit() {
 		 */
 		if (!empty($rule['id'])) {
 			# display graph rules for host match
-			display_match_rule_items(__('Device Selection Criteria'),
-				$rule['id'],
-				AUTOMATION_RULE_TYPE_GRAPH_MATCH,
-				'automation_graph_rules.php');
+			display_match_rule_items(__('Device Selection Criteria'), $rule, AUTOMATION_RULE_TYPE_GRAPH_MATCH, 'automation_graph_rules.php');
 
 			# fetch graph action rules
-			display_graph_rule_items(__('Graph Creation Criteria'),
-				$rule['id'],
-				AUTOMATION_RULE_TYPE_GRAPH_ACTION,
-				'automation_graph_rules.php');
+			display_graph_rule_items(__('Graph Creation Criteria'), $rule, AUTOMATION_RULE_TYPE_GRAPH_ACTION, 'automation_graph_rules.php');
 		}
 
 		form_save_button('automation_graph_rules.php', 'return');
@@ -862,6 +854,26 @@ function automation_graph_rules_edit() {
 		strURL += '&graph_type_id=' + $('#graph_type_id').val();
 		loadUrl({url:strURL})
 	}
+
+	$(function() {
+		$('#show_device_sql').click(function(event) {
+			event.stopPropagation();
+			$('#sql_device_query').dialog({
+				'title': '<?php print __('SQL Debug Output');?>',
+				'autoOpen': true,
+				'width': 700
+			});
+		});
+
+		$('#show_sql').click(function(event) {
+			event.stopPropagation();
+			$('#sql_query').dialog({
+				'title': '<?php print __('SQL Debug Output');?>',
+				'autoOpen': true,
+				'width': 700
+			});
+		});
+	});
 	</script>
 	<?php
 }

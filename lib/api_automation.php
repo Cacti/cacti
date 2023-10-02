@@ -25,107 +25,7 @@
 function display_matching_hosts($rule, $rule_type, $url) {
 	global $device_actions, $item_rows;
 
-	if (isset_request_var('cleard')) {
-		set_request_var('clear', 'true');
-	}
-
-	/* ================= input validation and session storage ================= */
-	$filters = array(
-		'rowsd' => array(
-			'filter'  => FILTER_VALIDATE_INT,
-			'pageset' => true,
-			'default' => '-1'
-			),
-		'paged' => array(
-			'filter'  => FILTER_VALIDATE_INT,
-			'default' => '1'
-			),
-		'host_status' => array(
-			'filter'  => FILTER_VALIDATE_INT,
-			'pageset' => true,
-			'default' => '-1'
-			),
-		'host_template_id' => array(
-			'filter'  => FILTER_VALIDATE_INT,
-			'pageset' => true,
-			'default' => '-1'
-			),
-		'filterd' => array(
-			'filter'  => FILTER_DEFAULT,
-			'pageset' => true,
-			'default' => ''
-			),
-		'sort_column' => array(
-			'filter'  => FILTER_CALLBACK,
-			'default' => 'description',
-			'options' => array('options' => 'sanitize_search_string')
-			),
-		'sort_direction' => array(
-			'filter'  => FILTER_CALLBACK,
-			'default' => 'ASC',
-			'options' => array('options' => 'sanitize_search_string')
-			),
-		'has_graphs' => array(
-			'filter'  => FILTER_VALIDATE_REGEXP,
-			'options' => array('options' => array('regexp' => '(true|false)')),
-			'pageset' => true,
-			'default' => 'true'
-			)
-	);
-
-	validate_store_request_vars($filters, 'sess_auto');
-	/* ================= input validation ================= */
-
-	if (isset_request_var('cleard')) {
-		unset_request_var('clear');
-	}
-
-	/* if the number of rows is -1, set it to the default */
-	if (get_request_var('rowsd') == -1) {
-		$rows = read_config_option('num_rows_table');
-	} else {
-		$rows = get_request_var('rowsd');
-	}
-
-	if ((!empty($_SESSION['sess_automation_host_status'])) && (!isempty_request_var('host_status'))) {
-		if ($_SESSION['sess_automation_host_status'] != get_request_var('host_status')) {
-			set_request_var('paged', '1');
-		}
-	}
-
-	?>
-	<script type='text/javascript'>
-	function applyDeviceFilter() {
-		strURL  = '<?php print $url;?>' + '&host_status=' + $('#host_status').val();
-		strURL += '&host_template_id=' + $('#host_template_id').val();
-		strURL += '&rowsd=' + $('#rowsd').val();
-		strURL += '&filterd=' + $('#filterd').val();
-		loadUrl({url:strURL})
-	}
-
-	function clearDeviceFilter() {
-		strURL = '<?php print $url;?>&cleard=true';
-		loadUrl({url:strURL})
-	}
-
-	$(function() {
-		$('#refresh').click(function() {
-			applyDeviceFilter();
-		});
-
-		$('#clear').click(function() {
-			clearDeviceFilter();
-		});
-
-		$('#form_automation_host').submit(function(event) {
-			event.preventDefault();
-			applyDeviceFilter();
-		});
-
-		setupSpecialKeys('filterd');
-	});
-	</script>
-	<?php
+	$details = automation_get_matching_device_sql($rule, $rule_type);
 
 	html_start_box(__('Matching Devices'), '100%', '', '3', 'center', '');
 
@@ -206,11 +106,184 @@ function display_matching_hosts($rule, $rule_type, $url) {
 					</tr>
 				</table>
 			</form>
+			<script type='text/javascript'>
+			function applyDeviceFilter() {
+				strURL  = '<?php print $url;?>' + '&host_status=' + $('#host_status').val();
+				strURL += '&host_template_id=' + $('#host_template_id').val();
+				strURL += '&rowsd=' + $('#rowsd').val();
+				strURL += '&filterd=' + $('#filterd').val();
+				loadUrl({url:strURL})
+			}
+
+			function clearDeviceFilter() {
+				strURL = '<?php print $url;?>&cleard=true';
+				loadUrl({url:strURL})
+			}
+
+			$(function() {
+				$('#refresh').click(function() {
+					applyDeviceFilter();
+				});
+
+				$('#clear').click(function() {
+					clearDeviceFilter();
+				});
+
+				$('#form_automation_host').submit(function(event) {
+					event.preventDefault();
+					applyDeviceFilter();
+				});
+
+				setupSpecialKeys('filterd');
+			});
+			</script>
 		</td>
 	</tr>
 	<?php
 
 	html_end_box();
+
+	$host_graphs = array_rekey(
+		db_fetch_assoc('SELECT host_id, COUNT(*) AS graphs
+			FROM graph_local
+			GROUP BY host_id'),
+		'host_id', 'graphs'
+	);
+
+	$host_data_sources = array_rekey(
+		db_fetch_assoc('SELECT host_id, COUNT(*) AS data_sources
+			FROM data_local
+			GROUP BY host_id'),
+		'host_id', 'data_sources'
+	);
+
+	$total_rows = cacti_sizeof(db_fetch_assoc($details['rows_query'], false));
+	$sortby     = $details['sortby'];
+	$sql_query  = $details['rows_query'] .
+		' ORDER BY ' . $sortby . ' ' . get_request_var('sort_direction') .
+		' LIMIT ' . ($details['rows'] * (get_request_var('paged') - 1)) . ',' . $details['rows'];
+
+	$hosts = db_fetch_assoc($sql_query, false);
+
+	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('paged'), $details['rows'], $total_rows, 7, __('Devices'), 'paged', 'main');
+
+	print $nav;
+
+	html_start_box('', '100%', '', '3', 'center', '');
+
+	$display_text = array(
+		'description'        => array(__('Description'), 'ASC'),
+		'hostname'           => array(__('Hostname'), 'ASC'),
+		'status'             => array(__('Status'), 'ASC'),
+		'host_template_name' => array(__('Device Template Name'), 'ASC'),
+		'id'                 => array(__('ID'), 'ASC'),
+		'nosort1'            => array(__('Graphs'), 'ASC'),
+		'nosort2'            => array(__('Data Sources'), 'ASC'),
+	);
+
+	html_header_sort(
+		$display_text,
+		get_request_var('sort_column'),
+		get_request_var('sort_direction'),
+		'1',
+		$url . '?action=edit&id=' . get_request_var('id') . '&paged=' . get_request_var('paged')
+	);
+
+	if (cacti_sizeof($hosts)) {
+		foreach ($hosts as $host) {
+			form_alternate_row('line' . $host['host_id'], true);
+
+			form_selectable_cell(filter_value($host['description'], get_request_var('filterd'), 'host.php?action=edit&id=' . $host['host_id']), $host['host_id']);
+			form_selectable_cell(filter_value($host['hostname'], get_request_var('filterd')), $host['host_id']);
+			form_selectable_cell(get_colored_device_status((($host['disabled'] == 'on' || $host['site_disabled'] == 'on') ? true : false), $host['status']), $host['host_id']);
+			form_selectable_cell(filter_value($host['host_template_name'], get_request_var('filterd')), $host['host_id']);
+			form_selectable_cell(round(($host['host_id']), 2), $host['host_id']);
+			form_selectable_cell((isset($host_graphs[$host['host_id']]) ? $host_graphs[$host['host_id']] : 0), $host['host_id']);
+			form_selectable_cell((isset($host_data_sources[$host['host_id']]) ? $host_data_sources[$host['host_id']] : 0), $host['host_id']);
+
+			form_end_row();
+		}
+	} else {
+		print "<tr><td colspan='8'><em>" . __('No Matching Devices') . '</em></td></tr>';
+	}
+
+	html_end_box(false);
+
+	if (cacti_sizeof($hosts)) {
+		print $nav;
+	}
+
+	form_end();
+}
+
+function automation_get_matching_device_sql(&$rule, $rule_type) {
+	if (isset_request_var('cleard')) {
+		set_request_var('clear', 'true');
+	}
+
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'rowsd' => array(
+			'filter'  => FILTER_VALIDATE_INT,
+			'pageset' => true,
+			'default' => '-1'
+			),
+		'paged' => array(
+			'filter'  => FILTER_VALIDATE_INT,
+			'default' => '1'
+			),
+		'host_status' => array(
+			'filter'  => FILTER_VALIDATE_INT,
+			'pageset' => true,
+			'default' => '-1'
+			),
+		'host_template_id' => array(
+			'filter'  => FILTER_VALIDATE_INT,
+			'pageset' => true,
+			'default' => '-1'
+			),
+		'filterd' => array(
+			'filter'  => FILTER_DEFAULT,
+			'pageset' => true,
+			'default' => ''
+			),
+		'sort_column' => array(
+			'filter'  => FILTER_CALLBACK,
+			'default' => 'description',
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'sort_direction' => array(
+			'filter'  => FILTER_CALLBACK,
+			'default' => 'ASC',
+			'options' => array('options' => 'sanitize_search_string')
+			),
+		'has_graphs' => array(
+			'filter'  => FILTER_VALIDATE_REGEXP,
+			'options' => array('options' => array('regexp' => '(true|false)')),
+			'pageset' => true,
+			'default' => 'true'
+			)
+	);
+
+	validate_store_request_vars($filters, 'sess_auto');
+	/* ================= input validation ================= */
+
+	if (isset_request_var('cleard')) {
+		unset_request_var('clear');
+	}
+
+	/* if the number of rows is -1, set it to the default */
+	if (get_request_var('rowsd') == -1) {
+		$rows = read_config_option('num_rows_table');
+	} else {
+		$rows = get_request_var('rowsd');
+	}
+
+	if ((!empty($_SESSION['sess_automation_host_status'])) && (!isempty_request_var('host_status'))) {
+		if ($_SESSION['sess_automation_host_status'] != get_request_var('host_status')) {
+			set_request_var('paged', '1');
+		}
+	}
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filterd') != '') {
@@ -250,8 +323,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'h.host_template_id=' . get_request_var('host_template_id');
 	}
 
-	$host_graphs       = array_rekey(db_fetch_assoc('SELECT host_id, count(*) as graphs FROM graph_local GROUP BY host_id'), 'host_id', 'graphs');
-	$host_data_sources = array_rekey(db_fetch_assoc('SELECT host_id, count(*) as data_sources FROM data_local GROUP BY host_id'), 'host_id', 'data_sources');
+	$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'h.deleted = ""';
 
 	/* build magic query, for matching hosts JOIN tables host and host_template */
 	if (db_column_exists('sites', 'disabled')) {
@@ -264,12 +336,10 @@ function display_matching_hosts($rule, $rule_type, $url) {
 		h.disabled AS disabled, $sdisabled
 		h.status, ht.name AS host_template_name
 		FROM host AS h
-		LEFT JOIN sites s
+		LEFT JOIN sites AS s
 		ON s.id = h.site_id
 		LEFT JOIN host_template AS ht
 		ON h.host_template_id = ht.id ";
-
-	$hosts = db_fetch_assoc($sql_query . 'WHERE h.deleted = ""');
 
 	/* get the WHERE clause for matching hosts */
 	$sql_filter = ($sql_where != '' ? ' AND (' : ' WHERE (') . build_matching_objects_filter($rule['id'], $rule_type) . ')';
@@ -284,105 +354,56 @@ function display_matching_hosts($rule, $rule_type, $url) {
 		$sortby = 'INET_ATON(hostname)';
 	}
 
-	$sql_query = $rows_query .
-		' ORDER BY ' . $sortby . ' ' . get_request_var('sort_direction') .
-		' LIMIT ' . ($rows * (get_request_var('paged') - 1)) . ',' . $rows;
-	$hosts = db_fetch_assoc($sql_query, false);
-
-	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('paged'), $rows, $total_rows, 7, __('Devices'), 'paged', 'main');
-
-	print $nav;
-
-	html_start_box('', '100%', '', '3', 'center', '');
-
-	$display_text = array(
-		'description'        => array(__('Description'), 'ASC'),
-		'hostname'           => array(__('Hostname'), 'ASC'),
-		'status'             => array(__('Status'), 'ASC'),
-		'host_template_name' => array(__('Device Template Name'), 'ASC'),
-		'id'                 => array(__('ID'), 'ASC'),
-		'nosort1'            => array(__('Graphs'), 'ASC'),
-		'nosort2'            => array(__('Data Sources'), 'ASC'),
+	return array(
+		'rows_query'  => $rows_query,
+		'sortby'      => $sortby,
+		'rows'        => $rows
 	);
-
-	html_header_sort(
-		$display_text,
-		get_request_var('sort_column'),
-		get_request_var('sort_direction'),
-		'1',
-		$url . '?action=edit&id=' . get_request_var('id') . '&paged=' . get_request_var('paged')
-	);
-
-	if (cacti_sizeof($hosts)) {
-		foreach ($hosts as $host) {
-			form_alternate_row('line' . $host['host_id'], true);
-			form_selectable_cell(filter_value($host['description'], get_request_var('filterd'), 'host.php?action=edit&id=' . $host['host_id']), $host['host_id']);
-			form_selectable_cell(filter_value($host['hostname'], get_request_var('filterd')), $host['host_id']);
-			form_selectable_cell(get_colored_device_status((($host['disabled'] == 'on' || $host['site_disabled'] == 'on') ? true : false), $host['status']), $host['host_id']);
-			form_selectable_cell(filter_value($host['host_template_name'], get_request_var('filterd')), $host['host_id']);
-			form_selectable_cell(round(($host['host_id']), 2), $host['host_id']);
-			form_selectable_cell((isset($host_graphs[$host['host_id']]) ? $host_graphs[$host['host_id']] : 0), $host['host_id']);
-			form_selectable_cell((isset($host_data_sources[$host['host_id']]) ? $host_data_sources[$host['host_id']] : 0), $host['host_id']);
-			form_end_row();
-		}
-	} else {
-		print "<tr><td colspan='8'><em>" . __('No Matching Devices') . '</em></td></tr>';
-	}
-
-	html_end_box(false);
-
-	if (cacti_sizeof($hosts)) {
-		print $nav;
-	}
-
-	form_end();
 }
 
-function display_matching_graphs($rule, $rule_type, $url) {
-	global $graph_actions, $item_rows;
-
+function automation_get_matching_graphs_sql($rule, $rule_type) {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
 		'page' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
-			),
+		),
 		'host_id' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
 		'template_id' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
 		'filter' => array(
 			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
-			),
+		),
 		'sort_column' => array(
 			'filter'  => FILTER_CALLBACK,
 			'default' => 'title_cache',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'sort_direction' => array(
 			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'has_graphs' => array(
 			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => 'true'
-			)
+		)
 	);
 
 	validate_store_request_vars($filters, 'sess_autog');
@@ -395,148 +416,11 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		$rows = get_request_var('rows');
 	}
 
-	?>
-	<script type='text/javascript'>
-
-	function applyFilter() {
-		strURL  = '<?php print $url;?>' + '&host_id=' + $('#host_id').val();
-		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + $('#filter').val();
-		strURL += '&template_id=' + $('#template_id').val();
-		loadUrl({url:strURL})
-	}
-
-	function clearFilter() {
-		strURL = '<?php print $url;?>&clear=true';
-		loadUrl({url:strURL})
-	}
-
-	$(function() {
-		$('#host_id, #template_id, #rows, #filter').change(function() {
-			applyFilter();
-		});
-
-		$('#refresh').click(function() {
-			applyFilter();
-		});
-
-		$('#clear').click(function() {
-			clearFilter();
-		});
-
-		$('#form_graphs').submit(function(event) {
-			event.preventDefault();
-			applyFilter();
-		});
-	});
-
-	</script>
-	<?php
-
-	html_start_box(__('Matching Objects'), '100%', '', '3', 'center', '');
-
-	?>
-	<tr class='even'>
-		<td>
-			<form id='form_graphs' action='<?php print html_escape($url);?>'>
-				<table class='filterTable'>
-					<tr>
-						<td>
-							<?php print __('Device');?>
-						</td>
-						<td>
-							<select id='host_id'>
-								<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
-								<option value='0'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
-								<?php
-								$hosts = get_allowed_devices();
-
-	if (cacti_sizeof($hosts)) {
-		foreach ($hosts as $host) {
-			print "<option value='" . $host['id'] . "'";
-
-			if (get_request_var('host_id') == $host['id']) {
-				print ' selected';
-			} print '>' . html_escape($host['description']) . '</option>';
-		}
-	}
-	?>
-							</select>
-						</td>
-						<td>
-							<?php print __('Template');?>
-						</td>
-						<td>
-							<select id='template_id'>
-								<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
-								<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
-								<?php
-	// suppress total rows collection
-	$total_rows = -1;
-
-	$templates = get_allowed_graph_templates('', 'name', '', $total_rows);
-
-	if (cacti_sizeof($templates) > 0) {
-		foreach ($templates as $template) {
-			print "<option value=' " . $template['id'] . "'";
-
-			if (get_request_var('template_id') == $template['id']) {
-				print ' selected';
-			} print '>' . html_escape($template['name']) . '</option>';
-		}
-	}
-	?>
-							</select>
-						</td>
-						<td>
-							<span>
-								<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>'>
-								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>'>
-							</span>
-						</td>
-					</tr>
-				</table>
-				<table class='filterTable'>
-					<tr>
-						<td>
-							<?php print __('Search');?>
-						</td>
-						<td>
-							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
-						</td>
-						<td>
-							<?php print __('Devices');?>
-						</td>
-						<td>
-							<select id='rows'>
-								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
-								<?php
-	if (cacti_sizeof($item_rows)) {
-		foreach ($item_rows as $key => $value) {
-			print "<option value='" . $key . "'";
-
-			if (get_request_var('rows') == $key) {
-				print ' selected';
-			} print '>' . $value . '</option>';
-		}
-	}
-	?>
-							</select>
-						</td>
-					</tr>
-				</table>
-			</form>
-		</td>
-	</tr>
-	<?php
-
-	html_end_box(false);
-
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where = 'WHERE (
 			gtg.title_cache LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR gt.name LIKE '	   . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR gt.name LIKE '	    . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR h.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR h.hostname LIKE '	. db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
@@ -562,7 +446,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	/* get the WHERE clause for matching graphs */
 	$sql_where .= ($sql_where != '' ? ' AND ':' WHERE ') . build_matching_objects_filter($rule['id'], $rule_type);
 
-	$total_rows = db_fetch_cell("SELECT COUNT(gtg.id)
+	$total_rows_query = "SELECT COUNT(gtg.id)
 		FROM graph_local AS gl
 		INNER JOIN graph_templates_graph AS gtg
 		ON gl.id=gtg.local_graph_id
@@ -572,7 +456,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		ON gl.host_id=h.id
 		LEFT JOIN host_template AS ht
 		ON h.host_template_id=ht.id
-		$sql_where", '', false);
+		$sql_where";
 
 	if (db_column_exists('sites', 'disabled')) {
 		$sdisabled = 's.disabled AS site_disabled,';
@@ -580,7 +464,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		$sdisabled = "'' AS site_disabled,";
 	}
 
-	$sql = "SELECT h.id AS host_id, h.hostname, h.description,
+	$rows_query = "SELECT h.id AS host_id, h.hostname, h.description,
 		h.disabled AS disabled, $sdisabled
 		h.status, ht.name AS host_template_name,
 		gtg.id, gtg.local_graph_id, gtg.height, gtg.width,
@@ -600,7 +484,153 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
 		LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
-	$graph_list = db_fetch_assoc($sql, false);
+	return array(
+		'rows_query' => $rows_query,
+		'total_rows' => $total_rows_query,
+		'rows'       => $rows
+	);
+}
+
+function display_matching_graphs($rule, $rule_type, $url) {
+	global $graph_actions, $item_rows;
+
+	html_start_box(__('Matching Objects'), '100%', '', '3', 'center', '');
+
+	?>
+	<tr class='even'>
+		<td>
+			<form id='form_graphs' action='<?php print html_escape($url);?>'>
+				<table class='filterTable'>
+					<tr>
+						<td>
+							<?php print __('Device');?>
+						</td>
+						<td>
+							<select id='host_id'>
+								<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
+								<option value='0'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
+								<?php
+								$hosts = get_allowed_devices();
+
+								if (cacti_sizeof($hosts)) {
+									foreach ($hosts as $host) {
+										print "<option value='" . $host['id'] . "'";
+
+										if (get_request_var('host_id') == $host['id']) {
+											print ' selected';
+										} print '>' . html_escape($host['description']) . '</option>';
+									}
+								}
+								?>
+							</select>
+						</td>
+						<td>
+							<?php print __('Template');?>
+						</td>
+						<td>
+							<select id='template_id'>
+								<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
+								<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
+								<?php
+								// suppress total rows collection
+								$total_rows = -1;
+
+								$templates = get_allowed_graph_templates('', 'name', '', $total_rows);
+
+								if (cacti_sizeof($templates) > 0) {
+									foreach ($templates as $template) {
+										print "<option value=' " . $template['id'] . "'";
+
+										if (get_request_var('template_id') == $template['id']) {
+											print ' selected';
+										} print '>' . html_escape($template['name']) . '</option>';
+									}
+								}
+								?>
+							</select>
+						</td>
+						<td>
+							<span>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>'>
+							</span>
+						</td>
+					</tr>
+				</table>
+				<table class='filterTable'>
+					<tr>
+						<td>
+							<?php print __('Search');?>
+						</td>
+						<td>
+							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						</td>
+						<td>
+							<?php print __('Devices');?>
+						</td>
+						<td>
+							<select id='rows'>
+								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
+								<?php
+								if (cacti_sizeof($item_rows)) {
+									foreach ($item_rows as $key => $value) {
+										print "<option value='" . $key . "'";
+
+										if (get_request_var('rows') == $key) {
+											print ' selected';
+										} print '>' . $value . '</option>';
+									}
+								}
+								?>
+							</select>
+						</td>
+					</tr>
+				</table>
+			</form>
+			<script type='text/javascript'>
+			function applyFilter() {
+				strURL  = '<?php print $url;?>' + '&host_id=' + $('#host_id').val();
+				strURL += '&rows=' + $('#rows').val();
+				strURL += '&filter=' + $('#filter').val();
+				strURL += '&template_id=' + $('#template_id').val();
+				loadUrl({url:strURL})
+			}
+
+			function clearFilter() {
+				strURL = '<?php print $url;?>&clear=true';
+				loadUrl({url:strURL})
+			}
+
+			$(function() {
+				$('#host_id, #template_id, #rows, #filter').change(function() {
+					applyFilter();
+				});
+
+				$('#refresh').click(function() {
+					applyFilter();
+				});
+
+				$('#clear').click(function() {
+					clearFilter();
+				});
+
+				$('#form_graphs').submit(function(event) {
+					event.preventDefault();
+					applyFilter();
+				});
+			});
+			</script>
+		</td>
+	</tr>
+	<?php
+
+	html_end_box(false);
+
+	$details = automation_get_matching_graphs_sql($rule, $rule_type);
+
+	$rows       = $details['rows'];
+	$total_rows = db_fetch_cell($details['total_rows_sql'], false);
+	$graph_list = db_fetch_assoc($details['rows_query'], false);
 
 	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Devices'), 'page', 'main');
 
@@ -629,7 +659,9 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	if (cacti_sizeof($graph_list)) {
 		foreach ($graph_list as $graph) {
 			$template_name = ((empty($graph['name'])) ? '<em>' . __('None') . '</em>' : html_escape($graph['name']));
+
 			form_alternate_row('line' . $graph['local_graph_id'], true);
+
 			form_selectable_cell(filter_value($graph['description'], get_request_var('filter'), 'host.php?action=edit&id=' . $graph['host_id']), $graph['local_graph_id']);
 			form_selectable_cell(filter_value($graph['hostname'], get_request_var('filter')), $graph['local_graph_id']);
 			form_selectable_cell(filter_value($graph['host_template_name'], get_request_var('filter')), $graph['local_graph_id']);
@@ -637,6 +669,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 			form_selectable_cell(filter_value(title_trim($graph['title_cache'], read_config_option('max_title_length')), get_request_var('filter'), 'graphs.php?action=graph_edit&id=' . $graph['local_graph_id']), $graph['local_graph_id']);
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id']);
 			form_selectable_cell(filter_value($template_name, get_request_var('filter')), $graph['local_graph_id']);
+
 			form_end_row();
 		}
 	} else {
@@ -649,11 +682,14 @@ function display_matching_graphs($rule, $rule_type, $url) {
 		print $nav;
 	}
 
-	form_end();
+//	form_end();
 }
 
-function display_new_graphs($rule, $url) {
-	global $config, $item_rows;
+function automation_get_new_graphs_sql($rule) {
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	get_filter_request_var('snmp_query_id');
+	/* ==================================================== */
 
 	if (isset_request_var('oclear')) {
 		set_request_var('clear', 'true');
@@ -665,26 +701,26 @@ function display_new_graphs($rule, $url) {
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
 		'page' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
-			),
+		),
 		'filter' => array(
 			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
-			),
+		),
 		'sort_column' => array(
 			'filter'  => FILTER_CALLBACK,
 			'default' => 'description',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'sort_direction' => array(
 			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
-			)
+		)
 	);
 
 	validate_store_request_vars($filters, 'sess_autog');
@@ -700,90 +736,6 @@ function display_new_graphs($rule, $url) {
 	} else {
 		$rows = get_request_var('rows');
 	}
-
-	?>
-	<script type='text/javascript'>
-	function applyObjectFilter() {
-		strURL  = '<?php print $url;?>';
-		strURL += '&rows=' + $('#orows').val();
-		strURL += '&filter=' + $('#filter').val();
-		loadUrl({url:strURL})
-	}
-
-	function clearObjectFilter() {
-		strURL = '<?php print $url;?>&oclear=true';
-		loadUrl({url:strURL})
-	}
-
-	$(function() {
-		$('#orefresh').click(function() {
-			applyObjectFilter();
-		});
-
-		$('#oclear').click(function() {
-			clearObjectFilter();
-		});
-
-		$('#orows').change(function() {
-			applyObjectFilter();
-		});
-
-		$('#form_automation_objects').submit(function(event) {
-			event.preventDefault();
-			applyObjectFilter();
-		});
-	});
-	</script>
-	<?php
-
-	html_start_box(__('Matching Objects') . '&nbsp;<i id="show_sql" title="' . __esc('Show SQL Query Debug') . '" class="cactiTooltipHint fas fa-stethoscope" style="cursor:pointer"></i>', '100%', '', '3', 'center', '');
-
-	?>
-	<tr class='even'>
-		<td>
-			<form id='form_automation_objects' action='<?php print html_escape($url);?>'>
-				<table class='filterTable'>
-					<tr>
-						<td>
-							<?php print __('Search');?>
-						</td>
-						<td>
-							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
-						</td>
-						<td>
-							<?php print __('Objects');?>
-						</td>
-						<td>
-							<select id='orows'>
-								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
-								<?php
-								if (cacti_sizeof($item_rows)) {
-									foreach ($item_rows as $key => $value) {
-										print "<option value='". $key . "'" . (get_request_var('rows') == $key ? ' selected':'') . '>' . $value . '</option>';
-									}
-								}
-								?>
-							</select>
-						</td>
-						<td>
-							<span>
-								<input type='button' class='ui-button ui-corner-all ui-widget' id='orefresh' value='<?php print __esc('Go');?>'>
-								<input type='button' class='ui-button ui-corner-all ui-widget' id='oclear' value='<?php print __esc('Clear');?>'>
-							</span>
-						</td>
-					</tr>
-				</table>
-			</form>
-		</td>
-	</tr>
-	<?php
-
-	html_end_box();
-
-	/* ================= input validation ================= */
-	get_filter_request_var('id');
-	get_filter_request_var('snmp_query_id');
-	/* ==================================================== */
 
 	$rule_items     = array();
 	$created_graphs = array();
@@ -804,7 +756,7 @@ function display_new_graphs($rule, $url) {
 		$name = $snmp_query['name'];
 	}
 
-	/*
+	/**
 	 * determine number of input fields, if any
 	 * for a dropdown selection
 	 */
@@ -832,10 +784,10 @@ function display_new_graphs($rule, $url) {
 	}
 
 	if (cacti_sizeof($xml_array)) {
-		$html_dq_header     = '';
-		$sql_filter         = '';
-		$sql_having         = '';
-		$snmp_query_indexes = array();
+		$dq_header  = '';
+		$sql_filter = '';
+		$sql_having = '';
+		$dq_indexes = array();
 
 		$rule_items = db_fetch_assoc_prepared('SELECT *
 			FROM automation_graph_rule_items
@@ -898,20 +850,120 @@ function display_new_graphs($rule, $url) {
 
 			/* now we build up a new query for counting the rows */
 			$rows_query = "SELECT * \nFROM (\n\t" . trim($sql_query) . "\n) AS `a` " . ($sql_filter != '' ? "\nWHERE (\n\t" . trim($sql_filter) . "\n)":'') . $sql_having;
-			$total_rows = cacti_sizeof(db_fetch_assoc($rows_query, false));
 
-			if ($total_rows < (get_request_var('rows') * (get_request_var('page') - 1)) + 1) {
-				set_request_var('page', '1');
+			$indexes_query = $rows_query . "\nLIMIT " . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
+		} else {
+			$rows_query = array();
+
+			$indexes_query = array();
+		}
+
+		return array(
+			'rows_query'    => $rows_query,
+			'indexes_query' => $indexes_query,
+			'xml_array'     => $xml_array,
+			'dq_header'     => $dq_header,
+			'rows'          => $rows,
+			'name'          => $name
+		);
+	} else {
+		return false;
+	}
+}
+
+function display_new_graphs($rule, $url) {
+	global $config, $item_rows;
+
+	html_start_box(__('Matching Objects'), '100%', '', '3', 'center', '');
+
+	?>
+	<tr class='even'>
+		<td>
+			<form id='form_automation_objects' action='<?php print html_escape($url);?>'>
+				<table class='filterTable'>
+					<tr>
+						<td>
+							<?php print __('Search');?>
+						</td>
+						<td>
+							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						</td>
+						<td>
+							<?php print __('Objects');?>
+						</td>
+						<td>
+							<select id='orows'>
+								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
+								<?php
+								if (cacti_sizeof($item_rows)) {
+									foreach ($item_rows as $key => $value) {
+										print "<option value='". $key . "'" . (get_request_var('rows') == $key ? ' selected':'') . '>' . $value . '</option>';
+									}
+								}
+								?>
+							</select>
+						</td>
+						<td>
+							<span>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='orefresh' value='<?php print __esc('Go');?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='oclear' value='<?php print __esc('Clear');?>'>
+							</span>
+						</td>
+					</tr>
+				</table>
+			</form>
+			<script type='text/javascript'>
+			function applyObjectFilter() {
+				strURL  = '<?php print $url;?>';
+				strURL += '&rows=' + $('#orows').val();
+				strURL += '&filter=' + $('#filter').val();
+				loadUrl({url:strURL})
 			}
 
-			$sql_query = $rows_query . "\nLIMIT " . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
+			function clearObjectFilter() {
+				strURL = '<?php print $url;?>&oclear=true';
+				loadUrl({url:strURL})
+			}
 
-			$snmp_query_indexes = db_fetch_assoc($sql_query, false);
-		} else {
-			$total_rows = 0;
+			$(function() {
+				$('#orefresh').click(function() {
+					applyObjectFilter();
+				});
 
-			$snmp_query_indexes = array();
+				$('#oclear').click(function() {
+					clearObjectFilter();
+				});
+
+				$('#orows').change(function() {
+					applyObjectFilter();
+				});
+
+				$('#form_automation_objects').submit(function(event) {
+					event.preventDefault();
+					applyObjectFilter();
+				});
+			});
+			</script>
+		</td>
+	</tr>
+	<?php
+
+	html_end_box();
+
+	$details = automation_get_new_graphs_sql($rule);
+
+	if (is_array($details)) {
+		$total_rows = cacti_sizeof(db_fetch_assoc($details['rows_query'], false));
+
+		if ($total_rows < (get_request_var('rows') * (get_request_var('page') - 1)) + 1) {
+			set_request_var('page', '1');
 		}
+
+		$dq_indexes = db_fetch_assoc($details['indexes_query'], false);
+		$xml_array  = $details['xml_array'];
+
+		$rows = $details['rows'];
+		$name = $details['name'];
 
 		$nav = html_nav_bar('automation_graph_rules.php?action=edit&id=' . $rule['id'], MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 30, __('Matching Objects'), 'page', 'main');
 
@@ -950,20 +1002,18 @@ function display_new_graphs($rule, $url) {
 
 		html_header($display_text);
 
-		if (!cacti_sizeof($snmp_query_indexes)) {
+		if (!cacti_sizeof($dq_indexes)) {
 			print "<tr colspan='6'><td>" . __('There are no Objects that match this rule.') . '</td></tr>';
 		} else {
-			print "<tr colspan='6'>" . $html_dq_header . '</tr>';
+			print "<tr colspan='6'>" . $details['dq_header'] . '</tr>';
 		}
-
-		print '<div id="sql_query" style="display:none"><div style="white-space:pre">' . str_replace(array("\n"), array('<br>'), $sql_query) . '</div><br><hr><br><div>' . db_error() . '</div></div>';
 
 		/* list of all entries */
 		$row_counter = 0;
 		$fields      = array_rekey($field_names, 'field_name', 'field_name');
 
-		if (cacti_sizeof($snmp_query_indexes)) {
-			foreach ($snmp_query_indexes as $row) {
+		if (cacti_sizeof($dq_indexes)) {
+			foreach ($dq_indexes as $row) {
 				form_alternate_row("line$row_counter", true);
 
 				if (isset($created_graphs[$row['host_id']][$row['snmp_index']])) {
@@ -1085,40 +1135,6 @@ function display_matching_trees($rule_id, $rule_type, $item, $url) {
 		}
 	}
 
-	?>
-	<script type='text/javascript'>
-
-	function applyFilter() {
-		strURL  = '<?php print $url;?>' + '&host_status=' + $('#host_status').val();
-		strURL += '&host_template_id=' + $('#host_template_id').val();
-		strURL += '&rows=' + $('#rows').val();
-		strURL += '&filter=' + $('#filter').val();
-		loadUrl({url:strURL})
-	}
-
-	function clearFilter() {
-		strURL = '<?php print $url;?>&clear=true';
-		loadUrl({url:strURL})
-	}
-
-	$(function() {
-		$('#refresh').click(function() {
-			applyFilter();
-		});
-
-		$('#clear').click(function() {
-			clearFilter();
-		});
-
-		$('#form_automation_tree').submit(function(event) {
-			event.preventDefault();
-			applyFilter();
-		});
-	});
-
-	</script>
-	<?php
-
 	print "<form method='post' id='form_automation_tree' action='" . html_escape($url) . "'>";
 
 	html_start_box(__('Matching Items'), '100%', '', '3', 'center', '');
@@ -1144,16 +1160,16 @@ function display_matching_trees($rule_id, $rule_type, $item, $url) {
 							<?php
 							$host_templates = db_fetch_assoc('select id,name from host_template order by name');
 
-	if (cacti_sizeof($host_templates)) {
-		foreach ($host_templates as $host_template) {
-			print "<option value='" . $host_template['id'] . "'";
+							if (cacti_sizeof($host_templates)) {
+								foreach ($host_templates as $host_template) {
+									print "<option value='" . $host_template['id'] . "'";
 
-			if (get_request_var('host_template_id') == $host_template['id']) {
-				print ' selected';
-			} print '>' . html_escape($host_template['name']) . '</option>';
-		}
-	}
-	?>
+									if (get_request_var('host_template_id') == $host_template['id']) {
+										print ' selected';
+									} print '>' . html_escape($host_template['name']) . '</option>';
+								}
+							}
+							?>
 						</select>
 					</td>
 					<td>
@@ -1194,6 +1210,37 @@ function display_matching_trees($rule_id, $rule_type, $item, $url) {
 					</td>
 				</tr>
 			</table>
+			<script type='text/javascript'>
+
+			function applyFilter() {
+				strURL  = '<?php print $url;?>' + '&host_status=' + $('#host_status').val();
+				strURL += '&host_template_id=' + $('#host_template_id').val();
+				strURL += '&rows=' + $('#rows').val();
+				strURL += '&filter=' + $('#filter').val();
+				loadUrl({url:strURL})
+			}
+
+			function clearFilter() {
+				strURL = '<?php print $url;?>&clear=true';
+				loadUrl({url:strURL})
+			}
+
+			$(function() {
+				$('#refresh').click(function() {
+					applyFilter();
+				});
+
+				$('#clear').click(function() {
+					clearFilter();
+				});
+
+				$('#form_automation_tree').submit(function(event) {
+					event.preventDefault();
+					applyFilter();
+				});
+			});
+
+			</script>
 		</td>
 	</tr>
 	<?php
@@ -1322,13 +1369,11 @@ function display_matching_trees($rule_id, $rule_type, $item, $url) {
 		$url . '?action=edit&id=' . get_request_var('id') . '&page=' . get_request_var('page')
 	);
 
-	$i = 0;
-
 	if (cacti_sizeof($templates)) {
 		foreach ($templates as $template) {
 			cacti_log($function . ' template: ' . json_encode($template), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
+
 			$replacement = automation_string_replace($item['search_pattern'], $item['replace_pattern'], $template['source']);
-			/* build multiline <td> entry */
 
 			$repl = '';
 
@@ -1340,15 +1385,18 @@ function display_matching_trees($rule_id, $rule_type, $item, $url) {
 					$repl  = array_shift($replacement);
 				}
 			}
+
 			cacti_log($function . " replacement: $repl", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
 			form_alternate_row('line' . $template['host_id'], true);
+
 			form_selectable_cell(filter_value($template['description'], get_request_var('filter'), 'host.php?action=edit&id=' . $template['host_id']), $template['host_id']);
 			form_selectable_cell(filter_value($template['hostname'], get_request_var('filter')), $template['host_id']);
 			form_selectable_cell(filter_value($template['host_template_name'], get_request_var('filter')), $template['host_id']);
 			form_selectable_cell(get_colored_device_status(($template['disabled'] == 'on' ? true : false), $template['status']), $template['host_id']);
 			form_selectable_cell($template['source'], $template['host_id']);
 			form_selectable_cell($repl, $template['host_id']);
+
 			form_end_row();
 		}
 	} else {
@@ -1364,8 +1412,10 @@ function display_matching_trees($rule_id, $rule_type, $item, $url) {
 	print '</form>';
 }
 
-function display_match_rule_items($title, $rule_id, $rule_type, $module) {
+function display_match_rule_items($title, &$rule, $rule_type, $module) {
 	global $automation_op_array, $automation_oper, $automation_tree_header_types;
+
+	$rule_id = $rule['id'];
 
 	$items = db_fetch_assoc_prepared('SELECT *
 		FROM automation_match_rule_items AS mri
@@ -1374,7 +1424,7 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 		ORDER BY sequence',
 		array($rule_id, $rule_type));
 
-	html_start_box($title, '100%', '', '3', 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
+	html_start_box($title . '&nbsp;<i id="show_device_sql" title="' . __esc('Show Matching Device SQL Query') . '" class="cactiTooltipHint fas fa-stethoscope" style="cursor:pointer"></i>', '100%', '', '3', 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
 
 	$display_text = array(
 		array('display' => __('Item'),      'align' => 'left'),
@@ -1395,33 +1445,52 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 			$operation = ($item['operation'] != 0) ? $automation_oper[$item['operation']] : '&nbsp;';
 
 			form_alternate_row();
-			$form_data = '<td><a class="linkEditMain" href="' . html_escape($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">' . __('Item#%d', $i+1) . '</a></td>';
-			$form_data .= '<td>' . 	$item['sequence'] . '</td>';
-			$form_data .= '<td>' . 	$operation . '</td>';
-			$form_data .= '<td>' . 	html_escape($item['field']) . '</td>';
-			$form_data .= '<td>' . 	((isset($item['operator']) && $item['operator'] > 0) ? $automation_op_array['display'][$item['operator']] : '') . '</td>';
-			$form_data .= '<td>' . 	html_escape($item['pattern']) . '</td>';
 
-			$form_data .= '<td class="right nowrap">';
+			$url = $module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type;
+
+			form_selectable_cell(filter_value(__('Item#%d', $i+1), '', $url), $i);
+			form_selectable_cell($item['sequence'], $i);
+			form_selectable_cell($operation, $i);
+			form_selectable_cell(html_escape($item['field']), $i);
+
+			if (isset($item['operator']) && $item['operator'] > 0) {
+				form_selectable_cell($automation_op_array['display'][$item['operator']], $i);
+			} else {
+				form_selectable_cell('', $i);
+			}
+
+			form_selectable_cell(html_escape($item['pattern']), $i);
+
+			$form_data = '';
 
 			if ($i != cacti_sizeof($items)-1) {
-				$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type) . '" title="' . __esc('Move Down') . '"></a>';
+				$url = $module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type;
+
+				$form_data .= '<a class="pic fa fa-caret-down moveArrow"
+					href="' . html_escape($url) . '" title="' . __esc('Move Down') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 
 			if ($i > 0) {
-				$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Up') . '"></a>';
+				$url = $module . '?action=item_moveup&item_id=' . $item['id'] .   '&id=' . $rule_id . '&rule_type=' . $rule_type;
+
+				$form_data .= '<a class="pic fa fa-caret-up moveArrow"
+					href="' . html_escape($url) . '" title="' . __esc('Move Up') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
-			$form_data .= '</td>';
 
-			$form_data .= '<td style="width:1%;">
-				<a class="pid deleteMarker fa fa-times" href="' . html_escape($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a></td>
-			</tr>';
+			form_selectable_cell($form_data, $i, '32px', 'right nowrap');
 
-			print $form_data;
+			$url = $module . '?action=item_remove&item_id=' . $item['id'] .    '&id=' . $rule_id . '&rule_type=' . $rule_type;
+
+			$form_data = '<a class="pid deleteMarker fa fa-times"
+				href="' . html_escape($url) . '" title="' . __esc('Delete') . '"></a>';
+
+			form_selectable_cell($form_data, $i, '16px', 'right nowrap');
+
+			form_end_row();
 
 			$i++;
 		}
@@ -1429,15 +1498,26 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 		print "<tr><td colspan='8'><em>" . __('No Device Selection Criteria') . '</em></td></tr>';
 	}
 
+	$details = automation_get_matching_device_sql($rule, $rule_type);
+	$data    = db_fetch_assoc($details['rows_query']);
+
 	html_end_box(true);
+
+	print '<div id="sql_device_query" style="display:none"><div style="white-space:pre">' . str_replace(array("\n", "\t"), array('<br>', ''), $details['rows_query']) . '</div><br><hr><br><div>' . db_error() . '</div></div>';
 }
 
-function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
+function display_graph_rule_items($title, &$rule, $rule_type, $module) {
 	global $automation_op_array, $automation_oper, $automation_tree_header_types;
 
-	$items = db_fetch_assoc_prepared('SELECT * FROM automation_graph_rule_items WHERE rule_id = ? ORDER BY sequence', array($rule_id));
+	$rule_id = $rule['id'];
 
-	html_start_box($title, '100%', '', '3', 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
+	$items = db_fetch_assoc_prepared('SELECT *
+		FROM automation_graph_rule_items
+		WHERE rule_id = ?
+		ORDER BY sequence',
+		array($rule_id));
+
+	html_start_box($title . '&nbsp;<i id="show_sql" title="' . __esc('Show Matching Objects SQL Query') . '" class="cactiTooltipHint fas fa-stethoscope" style="cursor:pointer"></i>', '100%', '', '3', 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
 
 	$display_text = array(
 		array('display' => __('Item'),      'align' => 'left'),
@@ -1458,14 +1538,23 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 			$operation = ($item['operation'] != 0) ? $automation_oper[$item['operation']] : '&nbsp;';
 
 			form_alternate_row();
-			$form_data = '<td><a class="linkEditMain" href="' . html_escape($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">' . __('Item#%d', $i+1) . '</a></td>';
-			$form_data .= '<td>' . 	$item['sequence'] . '</td>';
-			$form_data .= '<td>' . 	$operation . '</td>';
-			$form_data .= '<td>' . 	html_escape($item['field']) . '</td>';
-			$form_data .= '<td>' . 	(($item['operator'] > 0 || $item['operator'] == '') ? $automation_op_array['display'][$item['operator']] : '') . '</td>';
-			$form_data .= '<td>' . 	html_escape($item['pattern']) . '</td>';
 
-			$form_data .= '<td class="right nowrap">';
+			$url = $module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type;
+
+			form_selectable_cell(filter_value(__('Item#%d', $i+1), '', $url), $i);
+			form_selectable_cell($item['sequence'], $i);
+			form_selectable_cell($operation, $i);
+			form_selectable_cell(html_escape($item['field']), $i);
+
+			if ($item['operator'] > 0 || $item['operator'] == '') {
+				form_selectable_cell($automation_op_array['display'][$item['operator']], $i);
+			} else {
+				form_selectable_cell('', $i);
+			}
+
+			form_selectable_cell(html_escape($item['pattern']), $i);
+
+			$form_data = '';
 
 			if ($i != cacti_sizeof($items)-1) {
 				$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Down') . '"></a>';
@@ -1478,13 +1567,16 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
-			$form_data .= '</td>';
 
-			$form_data .= '<td class="right nowrap">
-				<a class="pic deleteMarker fa fa-times" href="' . html_escape($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a></td>
-			</tr>';
+			form_selectable_cell($form_data, $i, '32px', 'right nowrap');
 
-			print $form_data;
+			$form_data = '<a class="pic deleteMarker fa fa-times"
+				href="' . html_escape($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a>';
+
+			form_selectable_cell($form_data, $i, '16px', 'right nowrap');
+
+			form_end_row();
+
 			$i++;
 		}
 	} else {
@@ -1493,10 +1585,16 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 
 	html_end_box(true);
 
+	$details = automation_get_new_graphs_sql($rule);
+	$data    = db_fetch_assoc($details['indexes_query']);
+
+	print '<div id="sql_query" style="display:none"><div style="white-space:pre">' . str_replace(array("\n"), array('<br>'), $details['rows_query']) . '</div><br><hr><br><div>' . db_error() . '</div></div>';
 }
 
-function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $module) {
+function display_tree_rule_items($title, $rule, $item_type, $rule_type, $module) {
 	global $automation_tree_header_types, $tree_sort_types, $host_group_types;
+
+	$rule_id = $rule['id'];
 
 	$items = db_fetch_assoc_prepared('SELECT *
 		FROM automation_tree_rule_items
@@ -1523,37 +1621,54 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 
 	if (cacti_sizeof($items)) {
 		foreach ($items as $item) {
-			#print '<pre>'; print_r($item); print '</pre>';
-			$field_name = ($item['field'] === AUTOMATION_TREE_ITEM_TYPE_STRING) ? $automation_tree_header_types[AUTOMATION_TREE_ITEM_TYPE_STRING] : $item['field'];
+			if ($item['field'] === AUTOMATION_TREE_ITEM_TYPE_STRING) {
+				$field_name = $automation_tree_header_types[AUTOMATION_TREE_ITEM_TYPE_STRING];
+			} else {
+				$field_name = $item['field'];
+			}
 
 			form_alternate_row();
-			$form_data = '<td><a class="linkEditMain" href="' . html_escape($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">' . __('Item#%d', $i+1) . '</a></td>';
-			$form_data .= '<td>' . 	$item['sequence'] . '</td>';
-			$form_data .= '<td>' . 	$field_name . '</td>';
-			$form_data .= '<td>' . 	$tree_sort_types[$item['sort_type']] . '</td>';
-			$form_data .= '<td>' . 	($item['propagate_changes'] ? __('Yes'):__('No')) . '</td>';
-			$form_data .= '<td>' . 	html_escape($item['search_pattern']) . '</td>';
-			$form_data .= '<td>' . 	html_escape($item['replace_pattern']) . '</td>';
 
-			$form_data .= '<td class="right">';
+			$url = $module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type;
+
+			form_selectable_cell(filter_value(__('Item#%d', $i+1), '', $url), $i);
+			form_selectable_cell($item['sequence'], $i);
+			form_selectable_cell($field_name, $i);
+			form_selectable_cell($tree_sort_types[$item['sort_type']], $i);
+			form_selectable_cell(($item['propagate_changes'] ? __('Yes'):__('No')), $i);
+			form_selectable_cell(html_escape($item['search_pattern']), $i);
+			form_selectable_cell(html_escape($item['replace_pattern']), $i);
+
+			$form_data = '';
+
 			if ($i != cacti_sizeof($items)-1) {
-				$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Down') . '"></a>';
+				$url = $module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type;
+
+				$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' .
+					html_escape($url) . '" title="' . __esc('Move Down') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
 
 			if ($i > 0) {
-				$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape($module . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Up') . '"></a>';
+				$url = $module . '?action=item_moveup&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type;
+
+				$form_data .= '<a class="pic fa fa-caret-up moveArrow" href="' .
+					html_escape($url) . '" title="' . __esc('Move Up') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone" style="width:16px"></span>';
 			}
-			$form_data .= '</td>';
 
-			$form_data .= '<td class="nowrap" style="width:1%;">
-				<a class="pic deleteMarker fa fa-times" href="' . html_escape($module . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a></td>
-			</tr>';
+			form_selectable_cell($form_data, $i, '32px', 'right nowrap');
 
-			print $form_data;
+			$url = $module . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $rule_id .  '&rule_type=' . $rule_type;
+
+			$form_data = '<a class="pic deleteMarker fa fa-times"
+				href="' . html_escape($url) . '" title="' . __esc('Delete') . '"></a>';
+
+			form_selectable_cell($form_data, $i, '16px', 'right nowrap');
+
+			form_end_row();
 
 			$i++;
 		}
@@ -1567,11 +1682,24 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 function duplicate_automation_graph_rules($_id, $_title) {
 	global $fields_automation_graph_rules_edit1, $fields_automation_graph_rules_edit2, $fields_automation_graph_rules_edit3;
 
-	$rule        = db_fetch_row_prepared('SELECT * FROM automation_graph_rules WHERE id = ?', array($_id));
-	$match_items = db_fetch_assoc_prepared('SELECT * FROM automation_match_rule_items WHERE rule_id = ? AND rule_type = ?', array($_id, AUTOMATION_RULE_TYPE_GRAPH_MATCH));
-	$rule_items  = db_fetch_assoc_prepared('SELECT * FROM automation_graph_rule_items WHERE rule_id = ?', array($_id));
+	$rule = db_fetch_row_prepared('SELECT *
+		FROM automation_graph_rules
+		WHERE id = ?',
+		array($_id));
 
-	$fields_automation_graph_rules_edit = $fields_automation_graph_rules_edit1 + $fields_automation_graph_rules_edit2 + $fields_automation_graph_rules_edit3;
+	$match_items = db_fetch_assoc_prepared('SELECT *
+		FROM automation_match_rule_items
+		WHERE rule_id = ?
+		AND rule_type = ?',
+		array($_id, AUTOMATION_RULE_TYPE_GRAPH_MATCH));
+
+	$rule_items  = db_fetch_assoc_prepared('SELECT *
+		FROM automation_graph_rule_items
+		WHERE rule_id = ?',
+		array($_id));
+
+	$fields_automation_graph_rules_edit = $fields_automation_graph_rules_edit1 +
+		$fields_automation_graph_rules_edit2 + $fields_automation_graph_rules_edit3;
 
 	$save = array();
 
@@ -1583,6 +1711,7 @@ function duplicate_automation_graph_rules($_id, $_title) {
 
 	/* substitute the title variable */
 	$save['name'] = str_replace('<rule_name>', $rule['name'], $_title);
+
 	/* create new rule */
 	$save['enabled'] = '';	# no new rule accidentally taking action immediately
 	$save['id']      = 0;
@@ -1612,11 +1741,24 @@ function duplicate_automation_graph_rules($_id, $_title) {
 function duplicate_automation_tree_rules($_id, $_title) {
 	global $fields_automation_tree_rules_edit1, $fields_automation_tree_rules_edit2, $fields_automation_tree_rules_edit3;
 
-	$rule        = db_fetch_row_prepared('SELECT * FROM automation_tree_rules WHERE id = ?', array($_id));
-	$match_items = db_fetch_assoc_prepared('SELECT * FROM automation_match_rule_items WHERE rule_id = ? AND rule_type = ?', array($_id, AUTOMATION_RULE_TYPE_TREE_MATCH));
-	$rule_items  = db_fetch_assoc_prepared('SELECT * FROM automation_tree_rule_items WHERE rule_id = ?', array($_id));
+	$rule = db_fetch_row_prepared('SELECT *
+		FROM automation_tree_rules
+		WHERE id = ?',
+		array($_id));
 
-	$fields_automation_tree_rules_edit = $fields_automation_tree_rules_edit1 + $fields_automation_tree_rules_edit2 + $fields_automation_tree_rules_edit3;
+	$match_items = db_fetch_assoc_prepared('SELECT *
+		FROM automation_match_rule_items
+		WHERE rule_id = ?
+		AND rule_type = ?',
+		array($_id, AUTOMATION_RULE_TYPE_TREE_MATCH));
+
+	$rule_items = db_fetch_assoc_prepared('SELECT *
+		FROM automation_tree_rule_items
+		WHERE rule_id = ?',
+		array($_id));
+
+	$fields_automation_tree_rules_edit = $fields_automation_tree_rules_edit1 +
+		$fields_automation_tree_rules_edit2 + $fields_automation_tree_rules_edit3;
 
 	$save = array();
 
@@ -1663,7 +1805,8 @@ function build_graph_object_sql_having($rule, $filter) {
 
 		if (cacti_sizeof($field_names)) {
 			$sql_having = ' HAVING (';
-			$i          = 0;
+
+			$i = 0;
 
 			foreach ($field_names as $column) {
 				$sql_having .= ($i == 0 ? '':' OR ') . '`' . implode('`.`', explode('.', $column['field_name'])) . '`' . ' LIKE "%' . $filter . '%"';
@@ -1689,13 +1832,6 @@ function build_data_query_sql($rule) {
 	}
 
 	$field_names = get_field_names($rule['snmp_query_id']);
-
-	$sql_query = "SELECT h.hostname AS automation_host, host_id,
-		h.disabled AS disabled, $sdisabled
-		h.status, snmp_query_id, snmp_index ";
-
-	$i = 0;
-
 	$sql_query   = "\n\tSELECT h.hostname AS automation_host, host_id, \n\th.disabled, $sdisabled \n\th.status, snmp_query_id, snmp_index ";
 
 	if (cacti_sizeof($field_names) > 0) {
@@ -1712,6 +1848,8 @@ function build_data_query_sql($rule) {
 	$sql_query .= "\n\tFROM host_snmp_cache AS hsc";
 	$sql_query .= "\n\tLEFT JOIN host AS h";
 	$sql_query .= "\n\tON hsc.host_id = h.id";
+	$sql_query .= "\n\tLEFT JOIN sites AS s";
+	$sql_query .= "\n\tON s.id = h.site_id";
 	$sql_query .= "\n\tLEFT JOIN host_template AS ht";
 	$sql_query .= "\n\tON h.host_template_id = ht.id";
 	$sql_query .= "\n\tWHERE snmp_query_id = " . $rule['snmp_query_id'];
@@ -1730,7 +1868,8 @@ function build_matching_objects_filter($rule_id, $rule_type) {
 
 	$sql_filter = '';
 
-	/* create an SQL which queries all host related tables in a huge join
+	/**
+	 * create an SQL which queries all host related tables in a huge join
 	 * this way, we may add any where clause that might be added via
 	 *  'Matching Device' match
 	 */
@@ -1740,8 +1879,6 @@ function build_matching_objects_filter($rule_id, $rule_type) {
 		AND rule_type = ?
 		ORDER BY sequence',
 		array($rule_id, $rule_type));
-
-	#print '<pre>Items: $sql<br>'; print_r($rule_items); print '</pre>';
 
 	if (cacti_sizeof($rule_items)) {
 		$sql_filter	= build_rule_item_filter($rule_items);
@@ -1895,9 +2032,11 @@ function get_matching_hosts($rule, $rule_type, $sql_where='') {
 
 /**
  * get an array of graphs matching a graph_match rule
+ *
  * @param array $rule		- rule
  * @param int $rule_type	- rule type
  * @param string $sql_where - additional where clause
+ *
  * @return array			- matching graphs
  */
 function get_matching_graphs($rule, $rule_type, $sql_where = '') {
@@ -1942,8 +2081,10 @@ function get_matching_graphs($rule, $rule_type, $sql_where = '') {
 
 /*
  * get_created_graphs
- * @arg $rule		provide snmp_query_id, graph_type_id
- * return			all graphs that have already been created for the given selection
+ *
+ * @param $rule - provide snmp_query_id, graph_type_id
+ *
+ * @return all graphs that have already been created for the given selection
  */
 function get_created_graphs($rule) {
 	$function = automation_function_with_pid(__FUNCTION__);
@@ -2050,8 +2191,10 @@ function get_query_fields($table, $excluded_fields) {
 
 /*
  * get_field_names
- * @arg $snmp_query_id	snmp query id
- * return				all field names for that snmp query, taken from snmp_cache
+ *
+ * @param $snmp_query_id - snmp query id
+ *
+ * @return all field names for that snmp query, taken from snmp_cache
  */
 function get_field_names($snmp_query_id) {
 	$function = automation_function_with_pid(__FUNCTION__);
@@ -2295,13 +2438,17 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 
 /**
  * hook executed for a graph template
+ *
  * @param $host_id - the host to perform automation on
  * @param $graph_template_id - the graph_template_id to perform automation on
+ *
+ * @return null
  */
 function automation_hook_graph_template($host_id, $graph_template_id) {
 	global $config;
 
 	$function = automation_function_with_pid(__FUNCTION__);
+
 	cacti_log($function . ' called: Device[' . $host_id . '], GT[' . $graph_template_id . ']', false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
 	if (read_config_option('automation_graphs_enabled') == '') {
@@ -2315,7 +2462,10 @@ function automation_hook_graph_template($host_id, $graph_template_id) {
 
 /**
  * hook executed for a new graph on a tree
+ *
  * @param $data - data passed from hook
+ *
+ * @return null|array
  */
 function automation_hook_graph_create_tree($data) {
 	global $config;
@@ -2338,9 +2488,12 @@ function automation_hook_graph_create_tree($data) {
 
 /**
  * run rules for a data query
+ *
  * @param $data - data passed from hook
  * @param mixed $host_id
  * @param mixed $snmp_query_id
+ *
+ * @return null
  */
 function automation_execute_data_query($host_id, $snmp_query_id) {
 	global $config;
@@ -2437,7 +2590,7 @@ function automation_execute_data_query($host_id, $snmp_query_id) {
  *
  * @param $graph_template_id
  *
- * @return boolean eligibility
+ * @return bool eligibility
  */
 function automation_graph_automation_eligible($graph_template_id) {
 	$graph_template = db_fetch_row_prepared('SELECT *
@@ -2517,9 +2670,12 @@ function automation_graph_automation_eligible($graph_template_id) {
 
 /**
  * run rules for a graph template
+ *
  * @param $data - data passed from hook
  * @param mixed $host_id
  * @param mixed $graph_template_id
+ *
+ * @return null
  */
 function automation_execute_graph_template($host_id, $graph_template_id) {
 	global $config;
@@ -2607,7 +2763,10 @@ function automation_execute_graph_template($host_id, $graph_template_id) {
 
 /**
  * run rules for a new device in a tree
+ *
  * @param $host_id - the host id of the device
+ *
+ * @return null
  */
 function automation_execute_device_create_tree($host_id) {
 	global $config;
@@ -2858,7 +3017,8 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 	}
 
 	$num_visible_fields = cacti_sizeof($field_names);
-	$i                  = 0;
+
+	$i = 0;
 
 	if (cacti_sizeof($field_names) > 0) {
 		foreach ($field_names as $column) {
@@ -2886,10 +3046,10 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 	$sql_query = "SELECT *\nFROM (\n" . $sql_query . ") AS `a`\n$sql_filter";
 
 	/* fetch snmp indices */
-	$snmp_query_indexes = db_fetch_assoc($sql_query);
+	$dq_indexes = db_fetch_assoc($sql_query);
 
 	# now create the graphs
-	if (cacti_sizeof($snmp_query_indexes)) {
+	if (cacti_sizeof($dq_indexes)) {
 		$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id
 			FROM snmp_query_graph
 			WHERE id = ?',
@@ -2897,7 +3057,7 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 
 		cacti_log($function . ' Found Template for Device[' . $host_id . '] - GT[' . $graph_template_id . ']', false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
-		foreach ($snmp_query_indexes as $snmp_index) {
+		foreach ($dq_indexes as $snmp_index) {
 			$snmp_query_array['snmp_index'] = $snmp_index['snmp_index'];
 
 			cacti_log($function . ' Device[' . $host_id . '] - checking index: ' . $snmp_index['snmp_index'], false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -3048,16 +3208,12 @@ function create_all_header_nodes($item_id, $rule) {
  *   - this may return an array of new header items
  *   - walk that array to create all header items for this single rule item
  *
- * @arg $target     string (name) of the object; e.g. ht.name
- * @arg $rule       rule
- * @arg $tree_item  rule item; replacement_pattern may result in multi-line replacement
- * @arg $parent_tree_item_id  parent tree item id
- *
- * *return          id of the header that was hooked in
  * @param mixed $object
  * @param mixed $rule
  * @param mixed $tree_item
  * @param mixed $parent_tree_item_id
+ *
+ * @return int id of the header that was hooked in
  */
 function create_multi_header_node($object, $rule, $tree_item, $parent_tree_item_id) {
 	global $config;
