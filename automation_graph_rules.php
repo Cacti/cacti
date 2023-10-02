@@ -885,12 +885,12 @@ function automation_graph_rules() {
 									ON ar.snmp_query_id=sq.id
 									ORDER BY sq.name');
 
-	if (cacti_sizeof($available_data_queries)) {
-		foreach ($available_data_queries as $data_query) {
-			print "<option value='" . $data_query['id'] . "'" . (get_request_var('snmp_query_id') == $data_query['id'] ? ' selected':'') .  '>' . html_escape($data_query['name']) . "</option>\n";
-		}
-	}
-	?>
+								if (cacti_sizeof($available_data_queries)) {
+									foreach ($available_data_queries as $data_query) {
+										print "<option value='" . $data_query['id'] . "'" . (get_request_var('snmp_query_id') == $data_query['id'] ? ' selected':'') .  '>' . html_escape($data_query['name']) . "</option>";
+									}
+								}
+								?>
 							</select>
 						</td>
 						<td>
@@ -910,12 +910,12 @@ function automation_graph_rules() {
 							<select id='rows'>
 								<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 								<?php
-	if (cacti_sizeof($item_rows) > 0) {
-		foreach ($item_rows as $key => $value) {
-			print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected':'') . '>' . $value . "</option>\n";
-		}
-	}
-	?>
+								if (cacti_sizeof($item_rows) > 0) {
+									foreach ($item_rows as $key => $value) {
+										print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected':'') . '>' . $value . "</option>";
+									}
+								}
+								?>
 							</select>
 						</td>
 						<td>

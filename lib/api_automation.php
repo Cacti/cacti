@@ -32,7 +32,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	?>
 	<tr class='even'>
 		<td>
-			<form method='post' id='form_automation_host' action='<?php print html_escape($url);?>'>
+			<form id='form_automation_host' action='<?php print html_escape($url);?>'>
 				<table class='filterTable'>
 					<tr>
 						<td>
@@ -212,8 +212,6 @@ function display_matching_hosts($rule, $rule_type, $url) {
 	if (cacti_sizeof($hosts)) {
 		print $nav;
 	}
-
-	form_end();
 }
 
 function automation_get_matching_device_sql(&$rule, $rule_type) {
@@ -322,8 +320,6 @@ function automation_get_matching_device_sql(&$rule, $rule_type) {
 	} elseif (!isempty_request_var('host_template_id')) {
 		$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'h.host_template_id=' . get_request_var('host_template_id');
 	}
-
-	$sql_where .= ($sql_where != '' ? ' AND ' : ' WHERE ') . 'h.deleted = ""';
 
 	/* build magic query, for matching hosts JOIN tables host and host_template */
 	if (db_column_exists('sites', 'disabled')) {
@@ -681,8 +677,6 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	if (cacti_sizeof($graph_list)) {
 		print $nav;
 	}
-
-//	form_end();
 }
 
 function automation_get_new_graphs_sql($rule) {
@@ -849,13 +843,13 @@ function automation_get_new_graphs_sql($rule) {
 			$sql_having = build_graph_object_sql_having($rule, get_request_var('filter'));
 
 			/* now we build up a new query for counting the rows */
-			$rows_query = "SELECT * \nFROM (\n\t" . trim($sql_query) . "\n) AS `a` " . ($sql_filter != '' ? "\nWHERE (\n\t" . trim($sql_filter) . "\n)":'') . $sql_having;
+			$rows_query    = "SELECT * \nFROM (\n\t" . trim($sql_query) . "\n) AS `a` " . ($sql_filter != '' ? "\nWHERE (\n\t" . trim($sql_filter) . "\n)":'') . $sql_having;
 
+			/* construct the indexes query */
 			$indexes_query = $rows_query . "\nLIMIT " . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 		} else {
-			$rows_query = array();
-
-			$indexes_query = array();
+			$rows_query    = '';
+			$indexes_query = '';
 		}
 
 		return array(
@@ -952,7 +946,7 @@ function display_new_graphs($rule, $url) {
 
 	$details = automation_get_new_graphs_sql($rule);
 
-	if (is_array($details)) {
+	if (isset($details['rows_query']) && $details['rows_query'] != '') {
 		$total_rows = cacti_sizeof(db_fetch_assoc($details['rows_query'], false));
 
 		if ($total_rows < (get_request_var('rows') * (get_request_var('page') - 1)) + 1) {
@@ -1058,21 +1052,6 @@ function display_new_graphs($rule, $url) {
 	}
 
 	print '</table>';
-	print '<br>';
-	?>
-	<script type='text/javascript'>
-	$(function() {
-		$('#show_sql').click(function(event) {
-			event.stopPropagation();
-			$('#sql_query').dialog({
-				'title': '<?php print __('SQL Debug Output');?>',
-				'autoOpen': true,
-				'width': 700
-			});
-		});
-	});
-	</script>
-	<?php
 }
 
 function display_matching_trees($rule_id, $rule_type, $item, $url) {
@@ -1135,81 +1114,81 @@ function display_matching_trees($rule_id, $rule_type, $item, $url) {
 		}
 	}
 
-	print "<form method='post' id='form_automation_tree' action='" . html_escape($url) . "'>";
-
 	html_start_box(__('Matching Items'), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
 		<td>
-			<table class='filterTable'>
-				<tr>
-					<td>
-						<?php print __('Search');?>
-					</td>
-					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
-					</td>
-					<td>
-						<?php print __('Type');?>
-					</td>
-					<td>
-						<select id='host_template_id' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('host_template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
-							<option value='0'<?php if (get_request_var('host_template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
-							<?php
-							$host_templates = db_fetch_assoc('select id,name from host_template order by name');
+			<form id='form_filter' action='<?php print $url;?>'>
+				<table class='filterTable'>
+					<tr>
+						<td>
+							<?php print __('Search');?>
+						</td>
+						<td>
+							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						</td>
+						<td>
+							<?php print __('Type');?>
+						</td>
+						<td>
+							<select id='host_template_id' onChange='applyFilter()'>
+								<option value='-1'<?php if (get_request_var('host_template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
+								<option value='0'<?php if (get_request_var('host_template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
+								<?php
+								$host_templates = db_fetch_assoc('select id,name from host_template order by name');
 
-							if (cacti_sizeof($host_templates)) {
-								foreach ($host_templates as $host_template) {
-									print "<option value='" . $host_template['id'] . "'";
+								if (cacti_sizeof($host_templates)) {
+									foreach ($host_templates as $host_template) {
+										print "<option value='" . $host_template['id'] . "'";
 
-									if (get_request_var('host_template_id') == $host_template['id']) {
-										print ' selected';
-									} print '>' . html_escape($host_template['name']) . '</option>';
+										if (get_request_var('host_template_id') == $host_template['id']) {
+											print ' selected';
+										} print '>' . html_escape($host_template['name']) . '</option>';
+									}
 								}
-							}
-							?>
-						</select>
-					</td>
-					<td>
-						<?php print __('Status');?>
-					</td>
-					<td>
-						<select id='host_status' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('host_status') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
-							<option value='-3'<?php if (get_request_var('host_status') == '-3') {?> selected<?php }?>><?php print __('Enabled');?></option>
-							<option value='-2'<?php if (get_request_var('host_status') == '-2') {?> selected<?php }?>><?php print __('Disabled');?></option>
-							<option value='-4'<?php if (get_request_var('host_status') == '-4') {?> selected<?php }?>><?php print __('Not Up');?></option>
-							<option value='3'<?php if (get_request_var('host_status') == '3') {?> selected<?php }?>><?php print __('Up');?></option>
-							<option value='1'<?php if (get_request_var('host_status') == '1') {?> selected<?php }?>><?php print __('Down');?></option>
-							<option value='2'<?php if (get_request_var('host_status') == '2') {?> selected<?php }?>><?php print __('Recovering');?></option>
-							<option value='0'<?php if (get_request_var('host_status') == '0') {?> selected<?php }?>><?php print __('Unknown');?></option>
-						</select>
-					</td>
-					<td>
-						<?php print __('Data Queries');?>
-					</td>
-					<td>
-						<select id='rows' onChange='applyFilter()'>
-							<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
-							<?php
-							if (cacti_sizeof($item_rows)) {
-								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected':'') . '>' . $value . '</option>';
+								?>
+							</select>
+						</td>
+						<td>
+							<?php print __('Status');?>
+						</td>
+						<td>
+							<select id='host_status' onChange='applyFilter()'>
+								<option value='-1'<?php if (get_request_var('host_status') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
+								<option value='-3'<?php if (get_request_var('host_status') == '-3') {?> selected<?php }?>><?php print __('Enabled');?></option>
+								<option value='-2'<?php if (get_request_var('host_status') == '-2') {?> selected<?php }?>><?php print __('Disabled');?></option>
+								<option value='-4'<?php if (get_request_var('host_status') == '-4') {?> selected<?php }?>><?php print __('Not Up');?></option>
+								<option value='3'<?php if (get_request_var('host_status') == '3') {?> selected<?php }?>><?php print __('Up');?></option>
+								<option value='1'<?php if (get_request_var('host_status') == '1') {?> selected<?php }?>><?php print __('Down');?></option>
+								<option value='2'<?php if (get_request_var('host_status') == '2') {?> selected<?php }?>><?php print __('Recovering');?></option>
+								<option value='0'<?php if (get_request_var('host_status') == '0') {?> selected<?php }?>><?php print __('Unknown');?></option>
+							</select>
+						</td>
+						<td>
+							<?php print __('Data Queries');?>
+						</td>
+						<td>
+							<select id='rows' onChange='applyFilter()'>
+								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
+								<?php
+								if (cacti_sizeof($item_rows)) {
+									foreach ($item_rows as $key => $value) {
+										print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected':'') . '>' . $value . '</option>';
+									}
 								}
-							}
-							?>
-						</select>
-					</td>
-					<td>
-						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>'>
-						</span>
-					</td>
-				</tr>
-			</table>
+								?>
+							</select>
+						</td>
+						<td>
+							<span>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>'>
+							</span>
+						</td>
+					</tr>
+				</table>
+			</form>
 			<script type='text/javascript'>
 
 			function applyFilter() {
@@ -1408,8 +1387,6 @@ function display_matching_trees($rule_id, $rule_type, $item, $url) {
 	if (cacti_sizeof($templates)) {
 		print $nav;
 	}
-
-	print '</form>';
 }
 
 function display_match_rule_items($title, &$rule, $rule_type, $module) {
@@ -1586,9 +1563,15 @@ function display_graph_rule_items($title, &$rule, $rule_type, $module) {
 	html_end_box(true);
 
 	$details = automation_get_new_graphs_sql($rule);
-	$data    = db_fetch_assoc($details['indexes_query']);
 
-	print '<div id="sql_query" style="display:none"><div style="white-space:pre">' . str_replace(array("\n"), array('<br>'), $details['rows_query']) . '</div><br><hr><br><div>' . db_error() . '</div></div>';
+	if (isset($details['indexes_query']) && $details['indexes_query'] != '') {
+		$data = db_fetch_assoc(trim($details['indexes_query']));
+
+		print '<div id="sql_query" style="display:none"><div style="white-space:pre">' . str_replace(array("\n"), array('<br>'), $details['indexes_query']) . '</div><br><hr><br><div>' . db_error() . '</div></div>';
+	} else {
+		print '<div id="sql_query" style="display:none"><div style="white-space:pre">' . __('Warning matching Graph Rule returned no matches') . '</div><br><hr><br><div>' . db_error() . '</div></div>';
+	}
+
 }
 
 function display_tree_rule_items($title, $rule, $item_type, $rule_type, $module) {
