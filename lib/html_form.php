@@ -1372,7 +1372,13 @@ function form_end($ajax = true) {
 
 	print '</form>' . PHP_EOL;
 
-	if ($ajax) { ?>
+	if ($ajax) {
+		if ($form_id == null) {
+			cacti_log('WARNING: Function: form_end() called without a form_start() called first', false);
+			cacti_debug_backtrace('FORM', false, true);
+			$form_id = 'empty';
+		}
+		?>
 		<script type='text/javascript'>
 			var formArray = [];
 			var changed = false;
@@ -1448,6 +1454,6 @@ function form_end($ajax = true) {
 				formValidate('#<?php print $form_id; ?>', '<?php print $form_action; ?>');
 			});
 		</script>
-<?php
+		<?php
 	}
 }
