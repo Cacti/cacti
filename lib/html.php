@@ -185,6 +185,66 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 	$table_suffix++;
 }
 
+/**
+ * html_sub_tabs - Creates a memory persistent sub-tab interface
+ *   for a page or pages using a simple method to lay those tabs
+ *   out.
+ *
+ * @param array  - An associative array of tab variables and names
+ * @param string - A string of URL parameters like 'action=edit&id=x'
+ * @param string - An option session variable to use to store
+ *                 the current tab status.  Defaults to the page
+ *                 name and the suffic of current_tab
+ * @return null  - Output is printed to standard output
+ */
+function html_sub_tabs($tabs, $uri = '', $session_var = '') {
+	/* determine the session variables if not set */
+	if ($session_var == '') {
+		$session_var = basename(get_current_page(), '.php') . '_current_tab';
+	}
+
+	$page_name = get_current_page() . '?' . $uri . ($uri != '' ? '&':'');
+
+	/* set the default settings category */
+	if (!isset_request_var('tab')) {
+		/* there is no selected tab; select the first one */
+		if (isset($_SESSION[$session_var])) {
+			$current_tab = $_SESSION[$session_var];
+		} else {
+			$current_tab = array_keys($tabs)[0];
+		}
+	} else {
+		$current_tab = get_request_var('tab');
+	}
+
+	/* Check to see if the tab exists, and if not, use the default */
+	if (!isset($tabs[$current_tab])) {
+		$current_tab = array_keys($tabs)[0];
+	}
+
+	$_SESSION[$session_var] = $current_tab;
+
+	set_request_var('tab', $current_tab);
+
+	/* draw the categories tabs on the top of the page */
+	print '<div>';
+	print "<div class='tabs' style='float:left;'>
+		<nav>
+			<ul role='tablist'>";
+
+	if (cacti_sizeof($tabs)) {
+		foreach ($tabs as $id => $name) {
+			print "<li class='subTab'>
+				<a class='pic" . ($id == $current_tab ? ' selected' : '') . "'
+				href='" . html_escape($page_name . 'tab=' . $id) . "'>" . $name . '</a>
+			</li>';
+		}
+	}
+
+	print '</ul></nav></div>';
+	print '</div>';
+}
+
 /* html_end_box - draws the end of an HTML box
    @arg $trailing_br (bool) - whether to draw a trailing <br> tag after ending
    @arg $div (bool) - whether type of box is div or table */

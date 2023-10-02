@@ -665,126 +665,59 @@ function automation_change_query_type() {
 
 function automation_graph_rules_edit() {
 	global $config;
-	global $fields_automation_graph_rules_edit1, $fields_automation_graph_rules_edit2, $fields_automation_graph_rules_edit3;
+	global $fields_automation_graph_rules_edit1;
+	global $fields_automation_graph_rules_edit2;
+	global $fields_automation_graph_rules_edit3;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
 	get_filter_request_var('snmp_query_id');
 	get_filter_request_var('graph_type_id');
-
-	get_filter_request_var('show_graphs');
-	get_filter_request_var('show_hosts');
-	get_filter_request_var('show_rule');
 	/* ==================================================== */
 
-	/* clean up rule name */
-	if (isset_request_var('name')) {
-		set_request_var('name', sanitize_search_string(get_request_var('name')));
-	}
-
-	/* handle show_rule mode */
-	if (isset_request_var('show_rule')) {
-		if (get_request_var('show_rule') == '0') {
-			kill_session_var('automation_graph_rules_show_rule');
-			$_SESSION['automation_graph_rules_show_rule'] = false;
-		} elseif (get_request_var('show_rule') == '1') {
-			$_SESSION['automation_graph_rules_show_rule'] = true;
-		}
-	} elseif (!isset($_SESSION['automation_graph_rules_show_rule'])) {
-		$_SESSION['automation_graph_rules_show_rule'] = true;
-	}
-
-	/* handle show_graphs mode */
-	if (isset_request_var('show_graphs')) {
-		if (get_request_var('show_graphs') == '0') {
-			kill_session_var('automation_graph_rules_show_graphs');
-		} elseif (get_request_var('show_graphs') == '1') {
-			$_SESSION['automation_graph_rules_show_graphs'] = true;
-		}
-	}
-
-	/* handle show_hosts mode */
-	if (isset_request_var('show_hosts')) {
-		if (get_request_var('show_hosts') == '0') {
-			kill_session_var('automation_graph_rules_show_hosts');
-		} elseif (get_request_var('show_hosts') == '1') {
-			$_SESSION['automation_graph_rules_show_hosts'] = true;
-		}
-	}
-
-	/*
-	 * display the rule -------------------------------------------------------------------------------------
-	 */
-	$rule = array();
-
 	if (!isempty_request_var('id')) {
-		$rule = db_fetch_row_prepared('SELECT * FROM automation_graph_rules where id = ?', array(get_request_var('id')));
+		$rule = db_fetch_row_prepared('SELECT *
+			FROM automation_graph_rules
+			WHERE id = ?',
+			array(get_request_var('id')));
 
 		if (!isempty_request_var('graph_type_id')) {
-			$rule['graph_type_id'] = get_request_var('graph_type_id'); # set query_type for display
+			$rule['graph_type_id'] = get_request_var('graph_type_id');
 		}
 
-		# setup header
 		$header_label = __esc('Rule Selection [edit: %s]', $rule['name']);
+
+		$tabs = array(
+			'rule'    => __('Rule'),
+			'hosts'   => __('Matching Hosts'),
+			'objects' => __('Matching Objects')
+		);
+
+		html_sub_tabs($tabs, 'action=edit&id=' . get_request_var('id'));
 	} else {
 		$rule = array(
-				'name'          => get_request_var('name'),
-				'snmp_query_id' => get_request_var('snmp_query_id'),
-				);
+			'name'          => get_request_var('name'),
+			'snmp_query_id' => get_request_var('snmp_query_id'),
+		);
+
 		$header_label = __('Rule Selection [new]');
+
+		$tabs = array(
+			'rule'    => __('Rule')
+		);
+
+		html_sub_tabs($tabs, 'action=edit&id=' . get_request_var('id'));
 	}
 
-	/*
-	 * show rule? ------------------------------------------------------------------------------------------
-	 */
-	if (!isempty_request_var('id')) {
-		?>
-		<table class='cactiTable'>
-			<tr>
-				<td class='textInfo right' style='vertical-align:top;'><span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print html_escape('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_rule=') . ($_SESSION['automation_graph_rules_show_rule'] == true ? '0' : '1');?>'><?php print($_SESSION['automation_graph_rules_show_rule'] == true ? __('Don\'t Show'):__('Show'));?> <?php print __('Rule Details.');?></a><br>
-				</td>
-			</tr>
-		</table>
-		<?php
-	}
-
-	/*
-	 * show hosts? ------------------------------------------------------------------------------------------
-	 */
-	if (!isempty_request_var('id')) {
-		?>
-		<table class='cactiTable'>
-			<tr>
-				<td class='textInfo right' style='vertical-align:top;'><span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print html_escape('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_hosts=') . (isset($_SESSION['automation_graph_rules_show_hosts']) ? '0' : '1');?>'><?php print(isset($_SESSION['automation_graph_rules_show_hosts']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Matching Devices.');?></a><br>
-				</td>
-			</tr>
-		</table>
-		<?php
-	}
-
-	/*
-	 * show graphs? -----------------------------------------------------------------------------------------
-	 */
-	if (!empty($rule['graph_type_id']) && $rule['graph_type_id'] > 0) {
-		?>
-		<table class='cactiTable'>
-			<tr>
-				<td class='textInfo right' style='vertical-align:top;'>
-					<span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print html_escape('automation_graph_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_graphs=') . (isset($_SESSION['automation_graph_rules_show_graphs']) ? '0' : '1');?>'><?php print(isset($_SESSION['automation_graph_rules_show_graphs']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Matching Objects.');?></a><br>
-				</td>
-			</tr>
-		</table>
-		<?php
-	}
-
-	if ($_SESSION['automation_graph_rules_show_rule']) {
+	if (get_request_var('tab') == 'rule') {
 		form_start('automation_graph_rules.php', 'chk');
 
 		html_start_box($header_label, '100%', true, '3', 'center', '');
 
 		if (!isempty_request_var('id')) {
 			/* display whole rule */
-			$form_array = $fields_automation_graph_rules_edit1 + $fields_automation_graph_rules_edit2 + $fields_automation_graph_rules_edit3;
+			$form_array = $fields_automation_graph_rules_edit1 +
+				$fields_automation_graph_rules_edit2 + $fields_automation_graph_rules_edit3;
 		} else {
 			/* display first part of rule only and request user to proceed */
 			$form_array = $fields_automation_graph_rules_edit1;
@@ -794,10 +727,12 @@ function automation_graph_rules_edit() {
 			$rule['name'] = get_request_var('name');
 		}
 
-		draw_edit_form(array(
-			'config' => array('no_form_tag' => true),
-			'fields' => inject_form_variables($form_array, (isset($rule) ? $rule : array()))
-		));
+		draw_edit_form(
+			array(
+				'config' => array('no_form_tag' => true),
+				'fields' => inject_form_variables($form_array, (isset($rule) ? $rule : array()))
+			)
+		);
 
 		html_end_box(true, true);
 
@@ -819,22 +754,10 @@ function automation_graph_rules_edit() {
 		form_save_button('automation_graph_rules.php', 'return');
 
 		print '<br>';
-	}
-
-	if (!empty($rule['id'])) {
-		/* display list of matching hosts */
-		if (isset($_SESSION['automation_graph_rules_show_hosts'])) {
-			if ($_SESSION['automation_graph_rules_show_hosts']) {
-				display_matching_hosts($rule, AUTOMATION_RULE_TYPE_GRAPH_MATCH, 'automation_graph_rules.php?action=edit&id=' . get_request_var('id'));
-			}
-		}
-
-		/* display list of new graphs */
-		if (isset($_SESSION['automation_graph_rules_show_graphs'])) {
-			if ($_SESSION['automation_graph_rules_show_graphs']) {
-				display_new_graphs($rule, 'automation_graph_rules.php?action=edit&id=' . get_request_var('id'));
-			}
-		}
+	} elseif (get_request_var('tab') == 'hosts') {
+		display_matching_hosts($rule, AUTOMATION_RULE_TYPE_GRAPH_MATCH, 'automation_graph_rules.php?action=edit&id=' . get_request_var('id'));
+	} elseif (get_request_var('tab') == 'objects') {
+		display_new_graphs($rule, 'automation_graph_rules.php?action=edit&id=' . get_request_var('id'));
 	}
 
 	?>
