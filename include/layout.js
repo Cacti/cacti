@@ -2480,6 +2480,9 @@ function loadUrl(options) {
 		cont = true;
 	}
 
+	/* remove dialogs that were not purged */
+	$('.ui-dialog').empty().remove();
+
 	if (cont) {
 		if (options.funcStart != '') {
 			window[options.funcStart](options);
