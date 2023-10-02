@@ -180,6 +180,10 @@ function upgrade_to_1_3_0() {
 			'after' => 'name',
 			'columns' => 'graphs, templates',
 		),
+		'host' => array(
+			'after' => 'disabled',
+			'columns' => 'graphs, data_sources',
+		),
 		'data_input' => array(
 			'after' => 'type_id',
 			'columns' => 'data_sources, templates',

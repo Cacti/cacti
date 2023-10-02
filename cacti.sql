@@ -2020,6 +2020,8 @@ CREATE TABLE host (
   device_threads tinyint(3) unsigned NOT NULL DEFAULT '1',
   deleted char(2) NOT NULL default '',
   disabled char(2) NOT NULL default '',
+  graphs int(10) ungiend NOT NULL default '0',
+  data_sources int(10) ungiend NOT NULL default '0',
   status tinyint(3) unsigned NOT NULL default '0',
   status_event_count mediumint(8) unsigned NOT NULL default '0',
   status_fail_date timestamp NOT NULL default '0000-00-00 00:00:00',

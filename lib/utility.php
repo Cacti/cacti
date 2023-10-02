@@ -1903,6 +1903,7 @@ function utility_php_set_installed(&$extensions) {
 
 function update_device_totals() {
 	$tables = array(
+		'host',
 		'host_template',
 		'poller',
 		'sites',
@@ -1910,6 +1911,49 @@ function update_device_totals() {
 
 	foreach($tables as $table) {
 		switch($table) {
+			case 'host':
+				$data_sources = array_rekey(
+					db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS drows
+						FROM data_local GROUP
+						BY host_id'),
+					'id', 'drows'
+				);
+
+				$graphs = array_rekey(
+					db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS grows
+						FROM graph_local GROUP
+						BY host_id'),
+					'id', 'grows'
+				);
+
+				$devices = db_fetch_assoc('SELECT id FROM host');
+
+				if (cacti_sizeof($devices)) {
+					foreach($devices as $d) {
+						$gcount = 0;
+						$dcount = 0;
+
+						if (isset($graphs[$d['id']])) {
+							$gcount = $graphs[$d['id']];
+						}
+
+						if (isset($data_sources[$d['id']])) {
+							$dcount = $data_sources[$d['id']];
+						}
+
+						db_execute_prepared('UPDATE host
+							SET graphs = ?, data_sources = ?
+							WHERE id = ?',
+							array(
+								$gcount,
+								$dcount,
+								$d['id']
+							)
+						);
+					}
+				}
+
+				break;
 			case 'host_template':
 				// 'devices'
 				$items = array_rekey(
