@@ -57,7 +57,7 @@ if (!$is_request_ajax) { ?>
 				<?php draw_menu($user_menu);?>
 				<tr>
 					<td style='text-align:center;'>
-						<div class='cactiLogo' onclick='loadPage("<?php print CACTI_PATH_URL;?>about.php")'></div>
+						<div class='cactiLogo' onclick='loadUrl({url:"<?php print CACTI_PATH_URL;?>about.php"})'></div>
 					</td>
 				</tr>
 			</table>
