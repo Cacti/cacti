@@ -2293,7 +2293,7 @@ function loadTopTab(href, id, force) {
 	 * set the last visible lefttabs have a menu state,
 	 * right tabs do not and are always visible.
 	 */
-	if (id.startsWith('tab-')) {
+	if (id !== undefined && id.startsWith('tab-')) {
 		currentNavId    = 'menu:'+id;
 		currentNavState = storage.get(currentNavId);
 
