@@ -2964,8 +2964,6 @@ function graphs() {
 		$sql_order
 		$sql_limit";
 
-	cacti_log($sql);
-
 	$graph_list = db_fetch_assoc($sql);
 
 	$nav = html_nav_bar('graphs.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('Graphs'), 'page', 'main');
