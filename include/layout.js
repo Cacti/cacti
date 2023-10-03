@@ -43,6 +43,8 @@ var shiftPressed = false;
 var sessionMessage = null;
 var sessionMessageOpen = null;
 var sessionMessageTimer = null;
+var currentNavState = null;
+var currentNavId = null;
 var myTitle;
 var myHref;
 var lastPage = null;
@@ -950,9 +952,9 @@ function applySkin() {
 			var element = $(this);
 
 			if (element.is('div')) {
-				var text = $(this).find('span').html();
+				var text = HtmlSanitizer.SanitizeHtml($(this).find('span').html());
 			} else if (element.is('span') || element.is('a')) {
-				var text = $(this).prop('title');
+				var text = HtmlSanitizer.SanitizeHtml($(this).prop('title'));
 			}
 			return text;
 		}
@@ -1581,18 +1583,6 @@ function setupResponsiveMenuAndTabs() {
 	});
 }
 
-function getMenuState() {
-	var storage = Storages.localStorage;
-
-	if (storage.isSet('menuState_' + pageName)) {
-		state = storage.get('menuState_' + pageName);
-
-		return state;
-	} else {
-		return 'visible';
-	}
-}
-
 function responsiveUI(event) {
 	var tree = false;
 
@@ -2186,29 +2176,35 @@ function tuneFilter(object, width) {
 }
 
 function handleUserMenu(toggle) {
+	var storage = Storages.localStorage;
 	var windowWidth = $(window).width();
-	var savedState  = getMenuState();
-	var curState    = $('#navigation').is(':visible') ? 'visible' : 'hidden';
 
-	//console.log('handle called, curState:'+curState+', savedState:'+savedState+', Toggle:'+toggle);
+	if (currentNavId == 'undefined' || currentNavId == null) {
+		currentNavId = 'menu:' + $('.lefttab.selected').attr('id');
+	}
+
+	if (toggle) {
+		if (currentNavState == 'visible') {
+			currentNavState = 'hidden';
+		} else {
+			currentNavState = 'visible';
+		}
+	} else if (currentNavState == null) {
+		currentNavState = 'visible';
+	}
+
+	storage.set(currentNavId, currentNavState);
+
 	if ($('#navigation').length) {
 		if (theme != 'classic') {
-			if (curState == 'visible' && toggle) {
+			if (currentNavState == 'hidden') {
 				menuHide(true);
-			} else if (curState == 'hidden' && toggle) {
+			} else if (currentNavState == 'visible') {
 				menuShow();
-			} else if (savedState == 'visible') {
-				if (windowWidth < 640) {
-					menuHide(false);
-				} else {
-					menuShow();
-				}
-			} else {
-				menuHide(false);
 			}
 		} else if (windowWidth < 640) {
 			menuHide(true);
-		} else if (savedState == 'visible') {
+		} else if (currentNavState == 'visible') {
 			menuShow();
 		} else {
 			menuHide();
@@ -2217,8 +2213,6 @@ function handleUserMenu(toggle) {
 }
 
 function menuHide(store) {
-	var storage = Storages.localStorage;
-
 	var myClass = '';
 	var curMargin = parseInt($('#navigation_right').css('margin-left'));
 
@@ -2250,19 +2244,13 @@ function menuHide(store) {
 	if (myClass == '.cactiTreeNavigationArea' || pageName == 'graph_view.php') {
 		responsiveResizeGraphs();
 	}
-
-	if (store) {
-		storage.set('menuState_' + page, 'hidden');
-	}
 }
 
 function menuShow() {
-	var storage = Storages.localStorage;
 	var myClass = '';
 
 	if (!userMenuNavigationExists(pageName) && pageName != 'graph_view.php') {
 		$('#navigation').hide();
-		storage.set('menuState_' + pageName, 'hidden');
 		return;
 	}
 
@@ -2294,13 +2282,27 @@ function menuShow() {
 	}
 
 	$('#navigation').show();
-
-	storage.set('menuState_' + pageName, 'visible');
 }
 
 function loadTopTab(href, id, force) {
+	/* used for debugging */
 	var stack = ''; //getStackTrace(); // new Error().stack;
 	var url   = href;// + (href.indexOf('?') > 0 ? '&' : '?') + 'headercontent=true';
+
+	/**
+	 * set the last visible lefttabs have a menu state,
+	 * right tabs do not and are always visible.
+	 */
+	if (id.startsWith('tab-')) {
+		currentNavId    = 'menu:'+id;
+		currentNavState = storage.get(currentNavId);
+
+		if (currentNavState == null) {
+			currentNavState = 'visible';
+		}
+	} else {
+		currentNavState = 'visible';
+	}
 
 	return loadUrl({
 		url: url,
@@ -2480,13 +2482,13 @@ function loadUrl(options) {
 		cont = true;
 	}
 
-	/* remove dialogs that were not purged */
-	$('.ui-dialog').empty().remove();
-
 	if (cont) {
 		if (options.funcStart != '') {
 			window[options.funcStart](options);
 		}
+
+		/* remove dialogs that were not purged */
+		$('.ui-dialog').empty().remove();
 
 		closeDateFilters();
 
