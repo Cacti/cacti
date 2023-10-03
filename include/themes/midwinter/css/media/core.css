@@ -111,7 +111,7 @@ fieldset {
 }
 
 .fa:hover, .fas:hover, .far:hover, .fal:hover, .fad:hover, .fab:hover{
-    color: var(--text-color-lighter);
+    color: var(--text-color-white);
 }
 
 /* navigation menu */
@@ -221,7 +221,6 @@ input[type="checkbox"]:checked + label, input[type="radio"]:not([name^="reindex"
     display: flex;
     height: 100% !important;
     overflow-y: hidden !important;
-    background-color: var(--background-content);
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
@@ -232,12 +231,13 @@ input[type="checkbox"]:checked + label, input[type="radio"]:not([name^="reindex"
     display: flex;
     margin: 0;
     width: 100%;
-    background-color: var(--background-content);
+    background-color: var(--background-lowlight);
     height: calc(3.5rem - 2px);
     border-bottom: 1px solid var(--border-color-semilight);
     flex-direction: row;
     flex-wrap: nowrap;
     align-items: center;
+    padding: 0 0 0 1rem;
 }
 
 #navigation_right > .stickyContainer + #main, #main {
@@ -247,7 +247,6 @@ input[type="checkbox"]:checked + label, input[type="radio"]:not([name^="reindex"
 }
 
 /* Cacti Table */
-
 .cactiTable table {
     border-collapse: separate;
     border-spacing: 0;
@@ -916,7 +915,8 @@ ul#breadcrumbs {
 
 .cactiContent {
     width: 100%;
-    background: var(--background-content);
+    /*background: var(--background-content);*/
+    background-color: var(--background-lowlight);
 }
 
 .cactiTreeNavigationArea {
@@ -1444,8 +1444,9 @@ table.cactiTable {
     display: table;
     width: 100%;
     line-height: 30px;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
     overflow: hidden;
+    background-color: var(--background-content);
 }
 
 .formColumn {
@@ -1508,7 +1509,6 @@ table.cactiTable {
 }
 
 .formHeader {
-    cursor: pointer;
     float: left;
     width: 100%;
     text-align: left;
@@ -1517,7 +1517,9 @@ table.cactiTable {
     color: var(--text-color-normal);
     font-size: var(--fs-big);
     padding-left: 5px;
-    margin-top: 10px;
+    margin-top: 2rem;
+    box-sizing: border-box;
+    background-color: var(--background-progress-semilight);
 }
 
 .formHeader:hover {
@@ -1525,9 +1527,11 @@ table.cactiTable {
 }
 
 .formHeader.collapsible {
+    cursor: pointer;
 }
 
 .formHeader.collapsed {
+    cursor: pointer;
 }
 
 .formHeaderAnchor {
@@ -1980,15 +1984,17 @@ div.submenu span {
 .tabs {
     float: left;
     width: 100%;
-    line-height: 20px;
+    height: 100%;
     border-color: rgba(255,255,255,0.2);
     background: transparent;
+    display: flex;
+    align-items: center;
 }
 
 .tabs a {
     color: var(--text-color-highlight-a);
     float: left !important;
-    padding: 5px 8px;
+    padding: 0.6rem;
     font-size: var(--fs-regular);
     vertical-align: bottom;
     text-decoration: none;
@@ -2002,9 +2008,7 @@ div.submenu span {
 
 .tabs nav a.selected {
     color: var(--text-color-lighter);
-    background: none;
-    background-color: #1c1e2d;
-    border-bottom: 3px solid var(--background-lowlight);
+    border-bottom: 3px solid var(--background-progress);
 }
 
 .tabs li {
@@ -2024,7 +2028,6 @@ div.submenu span {
 }
 
 .tabs nav {
-    border-bottom: 1px solid #333543;
 }
 
 .tabs nav:after, .maintabs nav:after {
@@ -2100,7 +2103,7 @@ tr.selectable:last-child td {
 }
 
 tr.selectable:hover:not(.selected) {
-    background-color: var(--background-lowlight);
+    background-color: var(--background-progress-semilight);
 }
 
 tr.selected a {
@@ -2308,7 +2311,7 @@ hr.menu {
 }
 
 .hostInfoHeader {
-    background-color: var(--background);
+    background-color: var(--background-content);
     padding: 8px;
     box-shadow: 0px 0px 1px 0px rgb(0 0 0 / 25%);
 }

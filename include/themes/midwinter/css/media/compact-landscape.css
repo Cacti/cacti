@@ -220,12 +220,18 @@ html[data-kiosk-mode='on'] #mdw-ConsoleNavigation {
 
 .navBox-header-dropdown {
     width: 2rem;
-    height: 2rem;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 0.25rem;
     cursor: pointer;
+}
+
+.navBox-header-dropdown.show,
+.navBox-header-dropdown:hover {
+    color: var(--text-color-white);
+    background-color: var(--background-progress-semilight);
 }
 
 .navBox-header-dropdown.show > .navBox-header-dropdown-content {

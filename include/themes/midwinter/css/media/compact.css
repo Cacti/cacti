@@ -33,12 +33,20 @@
     visibility: visible !important;
 }
 
+.subTab {
+    height: 3.5rem;
+    line-height: 2.0rem;
+}
+
+#navBackdrop:hover,
+.subTab:hover,
 .compact_nav_icon:hover {
-    color:var(--text-color-high-contrast);
+    color:var(--text-color-white);
+    background-color: var(--background-progress-semilight);
 }
 
 .compact_nav_icon.active {
-    color: var(--text-color-high-contrast);
+    color: var(--text-color-white);
     background: var(--background-progress);
 }
 
@@ -99,6 +107,14 @@
     box-sizing: border-box;
     padding-top: 2rem;
     border-top: 1px solid var(--border-color-semilight);
+}
+
+.tab-columns {
+    line-height: 3.5em;
+    padding: 1rem 0.5rem;
+    overflow-x: auto;
+    height: 100%;
+    box-sizing: border-box;
 }
 
 .tab-columns div:nth-child(2n+1) {

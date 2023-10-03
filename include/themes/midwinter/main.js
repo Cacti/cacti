@@ -234,7 +234,7 @@ function setupTheme() {
 
 			/* table filter */
 			new navigationButton('displayOptions', 'fas fa-sliders-h', '#navFilter').build();
-			new navigationBox( 'Display Filters', 'displayOptions', 'full', '1', true, 'right').build();
+			new navigationBox( 'Columns', 'displayOptions', 'full', '1', false, 'right', 'Columns','<div class="tab-columns"><div>').build();
 			new navigationButton('kioskMode', 'fas fa-tv', '#navFilter', 'kioskMode', 'on').build();
 		}
 	}
