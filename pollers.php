@@ -879,7 +879,7 @@ function test_database_connection($poller = array()) {
 				} else {
 					$poller['dbssl'] = '';
 				}
-			elseif ($field == 'dbsslverifyservercert') {
+			} elseif ($field == 'dbsslverifyservercert') {
 				if (isset_request_var('dbsslverifyservercert') && get_nfilter_request_var('dbsslverifyservercert') == 'on') {
 					$poller['dbsslverifyservercert'] = 'on';
 				} else {
