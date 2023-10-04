@@ -1663,7 +1663,7 @@ $settings['authentication'] = array(
 	),
 	'auth_cache_enabled' => array(
 		'friendly_name' => __('Support Authentication Cookies'),
-		'description'   => __('If a user authenticates and selects \'Keep me signed in\', an authentication cookie will be created on the user\'s computer allowing that user to stay logged in.  The authentication cookie expires after 90 days of non-use.'),
+		'description'   => __('If a user authenticates and selects \'Keep me signed in\', an authentication cookie will be created on the user\'s computer allowing that user to stay logged in.  The authentication cookie expires after 90 days of non-use.  Note, the client must use HTTPS to leverage this feature.'),
 		'default'       => 'on',
 		'method'        => 'checkbox'
 	),

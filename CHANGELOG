@@ -14,6 +14,7 @@ Cacti CHANGELOG
 -issue#5264: The Net-SNMP Disk I/O Templates are not Cluster Aware
 -issue#5481: Attempting to edit a Data Query that does not exist throws warnings and not an GUI error
 -issue#5511: Allow automation network to be saved when the IP Addresses to ignore box is empty
+-issue#5517: Cacti 1.3.x will not support 'Remember me' functionality without using https
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1442: Add validation to GUI inputs

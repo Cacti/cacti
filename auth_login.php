@@ -346,7 +346,14 @@ if (read_config_option('auth_method') == AUTH_METHOD_LDAP || read_config_option(
 <?php
 }
 
-if (read_config_option('auth_cache_enabled') == 'on') { ?>
+
+if (isset($_SERVER['HTTPS']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
+	$is_https = true;
+} else {
+	$is_https = false;
+}
+
+if (read_config_option('auth_cache_enabled') == 'on' && $is_https) { ?>
 	<tr>
 		<td colspan='2'>
 			<input style='vertical-align:-3px;' type='checkbox' id='remember_me' name='remember_me' <?php print(isset($_COOKIE['cacti_remembers']) || !isempty_request_var('remember_me') ? 'checked' : ''); ?>>
