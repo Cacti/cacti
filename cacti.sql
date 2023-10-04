@@ -2260,6 +2260,8 @@ CREATE TABLE `poller` (
   `dbsslkey` varchar(255) default NULL,
   `dbsslcert` varchar(255) default NULL,
   `dbsslca` varchar(255) default NULL,
+  `dbsslcapath` varchar(255) default NULL,
+  `dbsslverifyservercert` char(3) default 'on',
   `total_time` double default '0',
   `max_time` double default NULL,
   `min_time` double default NULL,

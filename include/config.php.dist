@@ -26,18 +26,20 @@
  * Make sure these values reflect your actual database/host/user/password
  */
 
-$database_type     = 'mysql';
-$database_default  = 'cacti';
-$database_hostname = 'localhost';
-$database_username = 'cactiuser';
-$database_password = 'cactiuser';
-$database_port     = '3306';
-$database_retries  = 5;
-$database_ssl      = false;
-$database_ssl_key  = '';
-$database_ssl_cert = '';
-$database_ssl_ca   = '';
-$database_persist  = false;
+$database_type        = 'mysql';
+$database_default     = 'cacti';
+$database_hostname    = 'localhost';
+$database_username    = 'cactiuser';
+$database_password    = 'cactiuser';
+$database_port        = '3306';
+$database_retries     = 5;
+$database_ssl         = false;
+$database_ssl_key     = '';
+$database_ssl_cert    = '';
+$database_ssl_ca      = '';
+$database_ssl_capath  = '';
+$database_ssl_verify_server_cert = true;
+$database_persist     = false;
 
 /*
  * When the cacti server is a remote poller, then these entries point to
@@ -45,18 +47,19 @@ $database_persist  = false;
  * must remain commented out.
  */
 
-#$rdatabase_type     = 'mysql';
-#$rdatabase_default  = 'cacti';
-#$rdatabase_hostname = 'localhost';
-#$rdatabase_username = 'cactiuser';
-#$rdatabase_password = 'cactiuser';
-#$rdatabase_port     = '3306';
-#$rdatabase_retries  = 5;
-#$rdatabase_ssl      = false;
-#$rdatabase_ssl_key  = '';
-#$rdatabase_ssl_cert = '';
-#$rdatabase_ssl_ca   = '';
-
+#$rdatabase_type       = 'mysql';
+#$rdatabase_default    = 'cacti';
+#$rdatabase_hostname   = 'localhost';
+#$rdatabase_username   = 'cactiuser';
+#$rdatabase_password   = 'cactiuser';
+#$rdatabase_port       = '3306';
+#$rdatabase_retries    = 5;
+#$rdatabase_ssl        = false;
+#$rdatabase_ssl_key    = '';
+#$rdatabase_ssl_cert   = '';
+#$rdatabase_ssl_ca     = '';
+#$rdatabase_ssl_capath = '';
+#$rdatabase_ssl_verify_server_cert = true;
 /*
  * The poller_id of this system.  set to `1` for the main cacti web server.
  * Otherwise, you this value should be the poller_id for the remote poller.
