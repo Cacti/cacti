@@ -161,7 +161,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 				'database_ssl_cert' => $db_ssl_cert,
 				'database_ssl_ca'   => $db_ssl_ca,
 				'database_ssl_capath'   => $db_ssl_capath,
-				'database_ssl_verify_server_cert'   => $db_verify_server_cert,
+				'database_ssl_verify_server_cert'   => $db_ssl_verify_server_cert,
 				'database_persist'  => $persist,
 			);
 
