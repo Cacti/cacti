@@ -502,7 +502,7 @@ function settings() {
 		)
 	);
 
-	form_save_buttons($buttons);
+	form_save_buttons($buttons, false);
 
 	form_end();
 }

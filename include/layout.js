@@ -2179,8 +2179,16 @@ function handleUserMenu(toggle) {
 	var storage = Storages.localStorage;
 	var windowWidth = $(window).width();
 
+	/* set the navigation id is not set */
 	if (currentNavId == 'undefined' || currentNavId == null) {
 		currentNavId = 'menu:' + $('.lefttab.selected').attr('id');
+	}
+
+	/* check if the tab is selected */
+	var checkNav = currentNavId.replace('menu:', '');
+
+	if (!$('#'+checkNav).hasClass('selected')) {
+		$('#'+checkNav).addClass('selected');
 	}
 
 	if (toggle) {
@@ -2688,6 +2696,7 @@ function handleAjaxResponse(html, options) {
 		}
 
 		window.scrollTo(0, scrollTop);
+
 		handleConsole(options.pageName);
 
 		Pace.stop();

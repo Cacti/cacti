@@ -1284,10 +1284,11 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
  * data   - A JSON encoded structure of post or get data
  *
  * @param $buttons - an array of 'id', 'value', 'method', 'type'
+ * @param $ajax    - handle the return with ajax or a page load
  *
  * return null
  */
-function form_save_buttons($buttons) {
+function form_save_buttons($buttons, $ajax = true) {
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		$cancel_url = basename($_SERVER['HTTP_REFERER']);
 	} else {
@@ -1319,7 +1320,11 @@ function form_save_buttons($buttons) {
 									$url = $cancel_url;
 								}
 
-								$onclick = 'cactiReturnTo("' . $url . '")';
+								if ($ajax) {
+									$onclick = 'cactiReturnTo("' . $url . '")';
+								} else {
+									$onclick = "document.location ='$url'";
+								}
 
 								break;
 							case 'post':
