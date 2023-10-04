@@ -1381,6 +1381,8 @@ function makeFiltersResponsive() {
 
 							postUrl({
 								url: urlPath + 'auth_profile.php?tab=general&action=update_data',
+								handle: false,
+								noState: true,
 								funcEnd: 'finalizeAuthProfileData'
 							}, {
 								__csrf_magic: csrfMagicToken,
