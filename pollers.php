@@ -223,6 +223,22 @@ $fields_poller_edit = array(
 		'default'       => $database_ssl_ca,
 		'max_length'    => '255'
 	),
+ 	'dbsslcapath' => array(
+		'method'        => 'textbox',
+		'friendly_name' => __('Remote Database SSL Authorities directory'),
+		'description'   => __('The file path to the directory that contains the trusted SSL Certificate Authority certificates. This is an optional parameter that can used instead of giving the path to an individual Certificate Authority file. This parameter can be required by the database provider if they have started SSL using the --ssl-mode=VERIFY_CA option.'),
+		'value'         => '|arg1:dbsslcapath|',
+		'size'          => '50',
+		'default'       => $database_ssl_capath,
+		'max_length'    => '255'
+	),
+	'dbsslverifyservercert' => array(
+		'method'        => 'checkbox',
+		'friendly_name' => __('Remote Database SSL'),
+		'description'   => __("Provides a way to disable verification of the server's SSL certificate Common Name against the server's hostname when connecting. This verification is enabled by default."),
+		'value'         => '|arg1:dbsslverifyservercert|',
+		'default'       => $database_ssl_verify_server_cert ? 'on' : ''
+	),        
 	'id' => array(
 		'method' => 'hidden',
 		'value'  => '|arg1:id|',
@@ -315,6 +331,8 @@ function form_save() {
 			$save['dbsslkey']      = form_input_validate(get_nfilter_request_var('dbsslkey'),  'dbsslkey',  '', true, 3);
 			$save['dbsslcert']     = form_input_validate(get_nfilter_request_var('dbsslcert'), 'dbsslcert', '', true, 3);
 			$save['dbsslca']       = form_input_validate(get_nfilter_request_var('dbsslca'),   'dbsslca',   '', true, 3);
+			$save['dbsslcapath']   = form_input_validate(get_nfilter_request_var('dbsslcapath'), 'dbsslcapath',   '', true, 3);
+			$save['dbsslverifyservercert'] = isset_request_var('dbsslverifyservercert') ? 'on' : '';
 		}
 
 		// Check for duplicate hostname
@@ -703,6 +721,8 @@ function poller_edit() {
 			unset($fields_poller_edit['dbsslkey']);
 			unset($fields_poller_edit['dbsslcert']);
 			unset($fields_poller_edit['dbsslca']);
+			unset($fields_poller_edit['dbsslcapath']);
+			unset($fields_poller_edit['dbsslverifyservercert']);
 
 			$fields_poller_edit['log_level']['method'] = 'hidden';
 		}
@@ -766,6 +786,7 @@ function poller_edit() {
 
 				function ping_database() {
 					dbssl = $('#dbssl').is(':checked') ? 'on' : '';
+					dbsslverifyservercert = $('#dbsslverifyservercert').is(':checked') ? 'on' : '';
 
 					var options = {
 						url: 'pollers.php',
@@ -785,7 +806,9 @@ function poller_edit() {
 						dbssl: dbssl,
 						dbsslkey: $('#dbsslkey').val(),
 						dbsslcert: $('#dbsslcert').val(),
-						dbsslca: $('#dbsslca').val()
+						dbsslca: $('#dbsslca').val(),
+						dbsslcapath: $('#dbsslcapath').val(),
+						dbsslverifyservercert: dbsslverifyservercert
 					};
 
 					postUrl(options, data);
@@ -844,7 +867,9 @@ function test_database_connection($poller = array()) {
 			'dbssl',
 			'dbsslkey',
 			'dbsslcert',
-			'dbsslca'
+			'dbsslca',
+			'dbsslcapath',
+			'dbsslverifyservercert'
 		);
 
 		foreach ($fields as $field) {
@@ -853,6 +878,12 @@ function test_database_connection($poller = array()) {
 					$poller['dbssl'] = 'on';
 				} else {
 					$poller['dbssl'] = '';
+				}
+			} elseif ($field == 'dbsslverifyservercert') {
+				if (isset_request_var('dbsslverifyservercert') && get_nfilter_request_var('dbsslverifyservercert') == 'on') {
+					$poller['dbsslverifyservercert'] = 'on';
+				} else {
+					$poller['dbsslverifyservercert'] = '';
 				}
 			} elseif (isset_request_var($field)) {
 				$poller[$field] = get_nfilter_request_var($field);
@@ -875,7 +906,9 @@ function test_database_connection($poller = array()) {
 		$poller['dbssl'],
 		$poller['dbsslkey'],
 		$poller['dbsslcert'],
-		$poller['dbsslca']
+		$poller['dbsslca'],
+		$poller['dbsslcapath'],
+		$poller['dbsslverifyservercert']
 	);
 
 	if (is_object($connection)) {

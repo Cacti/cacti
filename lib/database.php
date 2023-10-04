@@ -48,12 +48,14 @@
  * @param mixed $db_ssl_key
  * @param mixed $db_ssl_cert
  * @param mixed $db_ssl_ca
+ * @param mixed $db_ssl_capath
+ * @param mixed $db_ssl_verify_server_cert
  * @param mixed $persist
  *
  * @returns (bool|object) connection object on success, false for error
  */
 function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $port = '3306', $retries = 20,
-	$db_ssl = false, $db_ssl_key = '', $db_ssl_cert = '', $db_ssl_ca = '', $persist = false) {
+	$db_ssl = false, $db_ssl_key = '', $db_ssl_cert = '', $db_ssl_ca = '', $db_ssl_capath = '', $db_ssl_verify_server_cert = true, $persist = false) {
 	global $database_sessions, $database_details, $database_total_queries, $database_persist, $config;
 
 	$database_total_queries = 0;
@@ -99,7 +101,15 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 				if (file_exists($db_ssl_ca)) {
 					$flags[PDO::MYSQL_ATTR_SSL_CA] = $db_ssl_ca;
 				}
-			}
+			} else if ($db_ssl_capath != '') {
+                            if (is_dir($db_ssl_capath)) {
+                                $flags[PDO::MYSQL_ATTR_SSL_CAPATH] = $db_ssl_capath;
+                            }
+                        }
+
+                        if ($db_ssl_verify_server_cert) {
+                            $flags[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = $db_ssl_verify_server_cert;
+                        }
 
 			if ($db_ssl_key != '' && $db_ssl_cert != '') {
 				if (file_exists($db_ssl_key) && file_exists($db_ssl_cert)) {
@@ -150,6 +160,8 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 				'database_ssl_key'  => $db_ssl_key,
 				'database_ssl_cert' => $db_ssl_cert,
 				'database_ssl_ca'   => $db_ssl_ca,
+				'database_ssl_capath'   => $db_ssl_capath,
+				'database_ssl_verify_server_cert'   => $db_ssl_verify_server_cert,
 				'database_persist'  => $persist,
 			);
 
@@ -259,22 +271,26 @@ function db_check_reconnect(object|false $db_conn = false, $log = true) {
 		global $database_ssl_key;
 		global $database_ssl_cert;
 		global $database_ssl_ca;
+                global $database_ssl_capath;
+                global $database_ssl_verify_server_cert;
 	}
 
 	if (cacti_sizeof($database_details) && $db_conn !== false) {
 		foreach ($database_details as $det) {
 			if (spl_object_hash($det['database_conn']) == spl_object_hash($db_conn)) {
-				$database_hostname = $det['database_hostname'];
-				$database_username = $det['database_username'];
-				$database_password = $det['database_password'];
-				$database_default  = $det['database_default'];
-				$database_type     = $det['database_type'];
-				$database_port     = $det['database_port'];
-				$database_retries  = $det['database_retries'];
-				$database_ssl      = $det['database_ssl'];
-				$database_ssl_key  = $det['database_ssl_key'];
-				$database_ssl_cert = $det['database_ssl_cert'];
-				$database_ssl_ca   = $det['database_ssl_ca'];
+				$database_hostname   = $det['database_hostname'];
+				$database_username   = $det['database_username'];
+				$database_password   = $det['database_password'];
+				$database_default    = $det['database_default'];
+				$database_type       = $det['database_type'];
+				$database_port       = $det['database_port'];
+				$database_retries    = $det['database_retries'];
+				$database_ssl        = $det['database_ssl'];
+				$database_ssl_key    = $det['database_ssl_key'];
+				$database_ssl_cert   = $det['database_ssl_cert'];
+				$database_ssl_ca     = $det['database_ssl_ca'];
+				$database_ssl_capath = $det['database_ssl_capath'];
+				$database_ssl_verify_server_cert = $det['database_ssl_verify_server_cert'];
 
 				break;
 			}
@@ -294,6 +310,14 @@ function db_check_reconnect(object|false $db_conn = false, $log = true) {
 
 		if (!isset($database_ssl_ca)) {
 			$database_ssl_ca   = '';
+		}
+
+                if (!isset($database_ssl_capath)) {
+			$database_ssl_capath   = '';
+		}
+
+                if (!isset($database_ssl_verify_server_cert)) {
+			$database_ssl_verify_server_cert   = false;
 		}
 
 		if (!isset($database_retries)) {
@@ -330,7 +354,9 @@ function db_check_reconnect(object|false $db_conn = false, $log = true) {
 			$database_ssl,
 			$database_ssl_key,
 			$database_ssl_cert,
-			$database_ssl_ca
+			$database_ssl_ca,
+                        $database_ssl_capath,
+                        $database_ssl_verify_server_cert
 		);
 	}
 }

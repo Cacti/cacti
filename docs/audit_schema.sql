@@ -713,6 +713,8 @@ INSERT INTO `table_columns` VALUES ('poller',14,'dbssl','char(3)','YES','','',''
 INSERT INTO `table_columns` VALUES ('poller',15,'dbsslkey','varchar(255)','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('poller',16,'dbsslcert','varchar(255)','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('poller',17,'dbsslca','varchar(255)','YES','',NULL,'');
+INSERT INTO `table_columns` VALUES ('poller',17,'dbsslcapath','varchar(255)','YES','',NULL,'');
+INSERT INTO `table_columns` VALUES ('poller',14,'dbsslverifyservercert','char(3)','YES','','on','');
 INSERT INTO `table_columns` VALUES ('poller',18,'total_time','double','YES','','0','');
 INSERT INTO `table_columns` VALUES ('poller',19,'max_time','double','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('poller',20,'min_time','double','YES','',NULL,'');

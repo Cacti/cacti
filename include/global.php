@@ -88,11 +88,13 @@ $database_password = 'cactiuser';
 $database_port     = '3306';
 $database_retries  = 2;
 
-$database_ssl      = false;
-$database_ssl_key  = '';
-$database_ssl_cert = '';
-$database_ssl_ca   = '';
-$database_persist  = true;
+$database_ssl        = false;
+$database_ssl_key    = '';
+$database_ssl_cert   = '';
+$database_ssl_ca     = '';
+$database_ssl_capath = '';
+$database_ssl_verify_server_cert = true;
+$database_persist    = true;
 
 /* Default session name - Session name must contain alpha characters */
 $cacti_session_name = 'Cacti';
@@ -131,17 +133,19 @@ if (isset($poller_id)) {
 }
 
 $db_var_defaults = array(
-	'database_type'     => 'mysql',
-	'database_default'  => null,
-	'database_hostname' => null,
-	'database_username' => null,
-	'database_password' => null,
-	'database_port'     => '3306',
-	'database_retries'  => 2,
-	'database_ssl'      => false,
-	'database_ssl_key'  => '',
-	'database_ssl_cert' => '',
-	'database_ssl_ca'   => '',
+	'database_type'       => 'mysql',
+	'database_default'    => null,
+	'database_hostname'   => null,
+	'database_username'   => null,
+	'database_password'   => null,
+	'database_port'       => '3306',
+	'database_retries'    => 2,
+	'database_ssl'        => false,
+	'database_ssl_key'    => '',
+	'database_ssl_cert'   => '',
+	'database_ssl_ca'     => '',
+        'database_ssl_capath' => '',
+        'database_ssl_verify_server_cert' => true,
 );
 
 $db_var_prefixes = array('');
@@ -279,26 +283,34 @@ $lu = $config['is_web'] ? '</ul>' : '';
 $il = $config['is_web'] ? '</li>' : '';
 
 if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
-	$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca);
+	$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca, $database_ssl_capath, $database_ssl_verify_server_cert);
 
 	if (!isset($rdatabase_retries)) {
 		$rdatabase_retries  = 2;
 	}
 
 	if (!isset($rdatabase_ssl)) {
-		$rdatabase_ssl      = false;
+		$rdatabase_ssl        = false;
 	}
 
 	if (!isset($rdatabase_ssl_key)) {
-		$rdatabase_ssl_key  = false;
+		$rdatabase_ssl_key    = false;
 	}
 
 	if (!isset($rdatabase_ssl_cert)) {
-		$rdatabase_ssl_cert = false;
+		$rdatabase_ssl_cert   = false;
 	}
 
 	if (!isset($rdatabase_ssl_ca)) {
-		$rdatabase_ssl_ca   = false;
+		$rdatabase_ssl_ca     = false;
+	}
+
+        if (!isset($rdatabase_ssl_capath)) {
+		$rdatabase_ssl_capath = false;
+	}
+
+        if (!isset($rdatabase_ssl_verify_server_cert)) {
+		$rdatabase_ssl_verify_server_cert = true;
 	}
 
 	// Check for recovery
@@ -319,22 +331,24 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	 * a remote poller, let's attempt to get back online.
 	 */
 	if ($conn_mode != 'offline') {
-		$remote_db_cnn_id = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $database_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca);
+		$remote_db_cnn_id = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $database_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca, $rdatabase_ssl_capath, $rdatabase_ssl_verify_server_cert);
 	}
 
 	if ($config['is_web'] && is_object($remote_db_cnn_id) &&
 		$config['connection']       != 'recovery' &&
 		$config['cacti_db_version'] != 'new_install') {
 		// Connection worked, so now override the default settings so that it will always utilize the remote connection
-		$database_default   = $rdatabase_default;
-		$database_hostname  = $rdatabase_hostname;
-		$database_username  = $rdatabase_username;
-		$database_password  = $rdatabase_password;
-		$database_port      = $rdatabase_port;
-		$database_ssl       = $rdatabase_ssl;
-		$database_ssl_key   = $rdatabase_ssl_key;
-		$database_ssl_cert  = $rdatabase_ssl_cert;
-		$database_ssl_ca    = $rdatabase_ssl_ca;
+		$database_default    = $rdatabase_default;
+		$database_hostname   = $rdatabase_hostname;
+		$database_username   = $rdatabase_username;
+		$database_password   = $rdatabase_password;
+		$database_port       = $rdatabase_port;
+		$database_ssl        = $rdatabase_ssl;
+		$database_ssl_key    = $rdatabase_ssl_key;
+		$database_ssl_cert   = $rdatabase_ssl_cert;
+		$database_ssl_ca     = $rdatabase_ssl_ca;
+		$database_ssl_capath = $rdatabase_ssl_capath;
+		$database_ssl_verify_server_cert = $rdatabase_verify_server_cert;
 	} elseif (is_object($remote_db_cnn_id)) {
 		if ($config['connection'] != 'recovery') {
 			$config['connection'] = 'online';
@@ -344,22 +358,30 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	}
 } else {
 	if (!isset($database_ssl)) {
-		$database_ssl      = false;
+		$database_ssl        = false;
 	}
 
 	if (!isset($database_ssl_key)) {
-		$database_ssl_key  = false;
+		$database_ssl_key    = false;
 	}
 
 	if (!isset($database_ssl_cert)) {
-		$database_ssl_cert = false;
+		$database_ssl_cert   = false;
 	}
 
 	if (!isset($database_ssl_ca)) {
-		$database_ssl_ca   = false;
+		$database_ssl_ca     = false;
 	}
 
-	if (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca)) {
+        if (!isset($database_ssl_capath)) {
+		$database_ssl_capath = false;
+	}
+
+        if (!isset($database_ssl_verify_server_cert)) {
+		$database_ssl_verify_server_cert = false;
+	}
+
+	if (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca, $database_ssl_capath, $database_ssl_verify_server_cert)) {
 		print $ps . 'FATAL: Connection to Cacti database failed. Please ensure: ' . $ul;
 		print $li . 'the PHP MySQL module is installed and enabled.' . $il;
 		print $li . 'the database is running.' . $il;
