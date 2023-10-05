@@ -131,12 +131,13 @@ html[data-kiosk-mode='on'] #mdw-ConsoleNavigation {
     height: calc(100vh - 4rem);
 }
 
-.mdw-ConsoleNavigationBox[data-width="1"]     { width: 19rem; !important;}
-.mdw-ConsoleNavigationBox[data-width="2"]     { width: 38rem; !important;}
-.mdw-ConsoleNavigationBox[data-width="3"]     { width: 57rem; !important;}
-.mdw-ConsoleNavigationBox[data-width="4"]     { width: 76rem; !important;}
-.mdw-ConsoleNavigationBox[data-width="5"]     { width: 95rem; !important;}
-.mdw-ConsoleNavigationBox[data-width="auto"]  { width:  auto; !important;}
+.mdw-ConsoleNavigationBox[data-width="1"]     { width:   19rem; !important; }
+.mdw-ConsoleNavigationBox[data-width="1.5"]   { width: 28.5rem; !important; }
+.mdw-ConsoleNavigationBox[data-width="2"]     { width:   38rem; !important; }
+.mdw-ConsoleNavigationBox[data-width="3"]     { width:   57rem; !important; }
+.mdw-ConsoleNavigationBox[data-width="4"]     { width:   76rem; !important; }
+.mdw-ConsoleNavigationBox[data-width="5"]     { width:   95rem; !important; }
+.mdw-ConsoleNavigationBox[data-width="auto"]  { width:    auto; !important; }
 
 .mdw-ConsoleNavigationBox[data-height="half"] {
     top: unset !important;
@@ -216,6 +217,10 @@ html[data-kiosk-mode='on'] #mdw-ConsoleNavigation {
 .navBox-header-title {
     width: 100%;
     font-size: var(--fs-big);
+}
+
+.navBox-header-title > span {
+    margin-left: 2rem;
 }
 
 .navBox-header-dropdown {
@@ -311,6 +316,7 @@ html[data-kiosk-mode='on'] #mdw-ConsoleNavigation {
     height: 3.5rem;
     font-size: var(--fs-semilarge);
     cursor: pointer;
+    margin-right: -1px;
 }
 
 .mdw-ConsoleNavigationArea .compact_nav_icon > span {

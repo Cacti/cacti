@@ -188,9 +188,9 @@
 }
 
 .daterangepicker td.in-range {
-  background-color: #ebf4f8;
+  background-color: var(--background-progress-semilight);
   border-color: transparent;
-  color: #000;
+  color: var(--text-color-white);
   border-radius: 0;
 }
 
@@ -207,9 +207,9 @@
 }
 
 .daterangepicker td.active, .daterangepicker td.active:hover {
-  background-color: #357ebd;
+  background-color: var(--background-progress);
   border-color: transparent;
-  color: #fff;
+  color: var(--text-color-white);
 }
 
 .daterangepicker th.month {
@@ -297,7 +297,7 @@
 }
 
 .daterangepicker.show-ranges.ltr .drp-calendar.left {
-  border-left: 1px solid var(--border-color);
+
 }
 
 .daterangepicker .ranges {
@@ -308,7 +308,7 @@
 }
 
 .daterangepicker.show-calendar .ranges {
-  margin-top: 8px;
+  border-right: 1px solid var(--border-color);
 }
 
 .daterangepicker .ranges ul {
@@ -325,12 +325,13 @@
 }
 
 .daterangepicker .ranges li:hover {
-  background-color: #eee;
+  background-color: var(--background-progress-semilight);
+  color: var(--text-color-white);
 }
 
 .daterangepicker .ranges li.active {
   background-color: var(--background-progress);
-  color: #fff;
+  color: var(--text-color-white);
 }
 
 /*  Larger Screen Styling */

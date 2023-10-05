@@ -18,7 +18,7 @@
 .ui-button:active,
 .ui-button .ui-state-active,
 .ui-button .ui-state-active:hover {
-    background: var(--background-progress);
+    background: var(--background-progress-semilight) !important;
     color: white;
 }
 
@@ -174,7 +174,7 @@
 .ui-menu .ui-state-focus, .ui-menu .ui-state-active {
     background: var(--background-lowlight);
     color: var(--text-color-lighter);
-    margin: -1px;
+    margin: 0;
 }
 
 .ui-menu .ui-menu-item {

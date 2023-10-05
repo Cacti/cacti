@@ -123,17 +123,17 @@ function is_function(fname) {
     return (typeof window[fname] === 'function');
 }
 
-function get_displayOption_content() {
+function get_displayOptions_content() {
     let filters_content;
     filters_content = '<div class="displayFilters tabbed">'
-    //    + '<input data-scope="theme" checked="checked" id="tab-filters" type="radio" name="tabs"/>'
+        + '<input data-scope="theme" checked="checked" id="tab-filters" type="radio" name="tabs"/>'
         + '<input data-scope="theme" id="tab-columns" type="radio" checked="checked" name="tabs"/>'
         + '<nav>'
-    //    + '<label for="tab-filters">Filters</label>'
+        + '<label for="tab-filters">Filters</label>'
         + '<label for="tab-columns">Columns</label>'
         + '</nav>'
         + '<figure>'
-    //    + '<div class="tab-filters"></div>'
+        + '<div class="tab-filters"></div>'
         + '<div class="tab-columns"></div>'
         + '</figure>'
         + '</div>';
