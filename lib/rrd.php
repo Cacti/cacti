@@ -446,6 +446,7 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 }
 
 function rrdtool_trim_output(&$output) {
+	global $config;
 	global $user_time, $system_time, $real_time;
 
 	/* When using RRDtool with proc_open for long strings
