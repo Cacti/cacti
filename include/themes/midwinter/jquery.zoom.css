@@ -8,8 +8,6 @@
 #zoom-box {
 	background: #000000;
 	filter:alpha(opacity=1);
-	-moz-opacity:0.01;
-	-khtml-opacity:0.01;
 	opacity:0.01;
 	width:0;
 	height:0;
@@ -32,11 +30,8 @@
 	position:absolute;
 	z-index:auto;
 	filter:alpha(opacity=50);
-	-moz-opacity:0.5;
-	-khtml-opacity:0.5;
 	opacity:0.5;
 	overflow:hidden;
-    border:0;
 	padding:0;
 	margin:0;
 	box-shadow: 0 2px 6px rgba(0,0,0,0.5), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3);
@@ -54,11 +49,8 @@
 	position:absolute;
 	z-index:auto;
 	filter:alpha(opacity=5);
-	-moz-opacity:0.5;
-	-khtml-opacity:0.5;
 	opacity:0.5;
 	overflow:hidden;
-    border:0;
 	padding:0;
 	margin:0;
 	box-shadow: 0 2px 6px rgba(0,0,0,0.75), inset 0 1px rgba(255,255,255,0.3), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.25), inset 0 -15px 30px rgba(0,0,0,0.3);
@@ -112,7 +104,7 @@
 	font-size: 1em;
 	float: left;
 	background: var(--background-lowlight);
-    padding: 0.5rem;
+    padding: 0.3rem;
 	border: 1px solid var(--border-color);
     border-radius: 4px;
 }
