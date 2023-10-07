@@ -493,10 +493,10 @@ function setupDefaultElements() {
 					columns_filter += '<div>' + cTitle + '</div>'
 						+ '<div>'
 						+ '<label class="checkboxSwitch">'
-						+ '<input data-scope="theme" id="mdw_' + 'col_' + cIndex +'" data-func="toggleTableColumn" data-table="'+tableHash+'" data-column="'+cIndex+'" class="formCheckbox" type="checkbox" name="col_' + cIndex + '" ' + (cVisible ? 'checked' : '') + '>'
+						+ '<input data-scope="theme" id="mdw_' + 'col_' + cIndex +'" data-func="toggleTableColumn" data-table="'+tableHash+'" data-column="'+cIndex+'" class="formCheckbox" type="checkbox" name="mdw_' + 'col_' + cIndex + '" ' + (cVisible ? 'checked' : '') + '>'
 						+ '<span class="checkboxSlider checkboxRound"></span>'
 						+ '</label>'
-						+ '<label class="checkboxLabel checkboxLabelWanted" for="col_"' + cIndex + '"></label>'
+						+ '<label class="checkboxLabel checkboxLabelWanted" for="mdw_' + 'col_' + cIndex + '"></label>'
 						+ '</div>'
 				}
 			})
