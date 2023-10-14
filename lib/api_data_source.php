@@ -265,6 +265,9 @@ function api_data_source_remove_multi($local_data_ids, $update_totals = true) {
 		db_execute('DELETE FROM data_local
 			WHERE id IN (' . $ids_to_delete . ')');
 
+		db_execute('DELETE FROM data_debug
+			WHERE datasource IN (' . $ids_to_delete . ')');
+
 		/* dsstats */
 		db_execute('DELETE FROM data_source_stats_daily
 			WHERE local_data_id IN(' . $ids_to_delete . ')');
