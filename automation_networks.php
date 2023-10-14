@@ -304,7 +304,7 @@ function api_networks_change_options($network_ids, $post) {
 		$network_ids = array($network_ids);
 	}
 
-	$fields = network_get_field_array($network_id);
+	$fields = network_get_field_array();
 
 	foreach ($network_ids as $network_id) {
 		foreach ($fields as $field_name => $field_array) {
@@ -1260,6 +1260,7 @@ function network_edit() {
 		$network      = db_fetch_row_prepared('SELECT * FROM automation_networks WHERE id = ?', array(get_request_var('id')));
 		$header_label = __esc('Network Discovery Range [edit: %s]', $network['name']);
 	} else {
+		$network      = array();
 		$header_label = __('Network Discovery Range [new]');
 	}
 
