@@ -53,6 +53,11 @@ function api_device_remove(int $device_id) {
 
 	api_plugin_hook_function('device_remove', array($device_id));
 
+	/**
+	 * Get the object totals by object type for later updating
+	 */
+	object_cache_get_totals('device_delete', $device_id);
+
 	if ($poller_id == 1) {
 		db_execute_prepared('DELETE FROM host WHERE id = ?', array($device_id));
 	} else {
@@ -93,6 +98,11 @@ function api_device_remove(int $device_id) {
 	 */
 	set_config_option('time_last_change_device', time());
 	set_config_option('time_last_change_site_device', time());
+
+	/**
+	 * Set the object totals by object type for later updating
+	 */
+	object_cache_update_totals('delete');
 }
 
 /**
@@ -190,6 +200,15 @@ function api_device_remove_multi($device_ids, $delete_type = 2) {
 	$i                 = 0;
 
 	if (cacti_sizeof($device_ids)) {
+		/**
+		 * Get the object totals by object type for later updating
+		 */
+		if ($delete_type == 2) {
+			object_cache_get_totals('device_delete', $device_ids);
+		} else {
+			object_cache_get_totals('device_leave', $device_ids);
+		}
+
 		api_plugin_hook_function('device_remove', $device_ids);
 
 		$data_sources = array();
@@ -265,6 +284,11 @@ function api_device_remove_multi($device_ids, $delete_type = 2) {
 		 */
 		set_config_option('time_last_change_device', time());
 		set_config_option('time_last_change_site_device', time());
+
+		/**
+		 * Set the object totals by object type for later updating
+		 */
+		object_cache_update_totals('delete');
 	}
 }
 

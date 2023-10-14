@@ -1901,7 +1901,515 @@ function utility_php_set_installed(&$extensions) {
 	}
 }
 
-function update_device_totals() {
+/**
+ * object_cache_get_totals - This function get's the count of objects
+ *   for a set of object types.  The object types include:
+ *
+ *   - device_delete - Delete devices Delete Graphs and Data Sources
+ *   - device_leave  - Delete devices Leave Graphs and Data Sources
+ *   - graph_delete  - Delete Graphs Delete Data Sources
+ *   - graph_leave   - Delete Graphs Leave Data Sources
+ *   - data_source   - Delete Data Sources
+ *
+ * This function is used to prime the previous values for processing
+ * by object removal functions.
+ *
+ * @param int       The class of object as above
+ * @param int|array The ids for the object class
+ *
+ * @return null
+ */
+function object_cache_get_totals($class, $object_ids) {
+	global $object_totals;
+
+	if (!is_array($object_ids)) {
+		$object_ids = explode(',', $object_ids);
+	}
+
+	/* object totals loaded already */
+	if (cacti_sizeof($object_totals)) {
+		return;
+	}
+
+	switch($class) {
+		case 'device_delete':
+			$object_totals['sites'] = array_rekey(
+				db_fetch_assoc('SELECT site_id AS id, COUNT(*) AS totals
+					FROM host AS h
+					WHERE id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY site_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['host_templates'] = array_rekey(
+				db_fetch_assoc('SELECT host_template_id AS id, COUNT(*) AS totals
+					FROM host AS h
+					WHERE id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY host_template_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['graph_templates'] = array_rekey(
+				db_fetch_assoc('SELECT graph_template_id AS id, COUNT(*) AS totals
+					FROM graph_local AS gl
+					WHERE host_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY graph_template_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['data_templates'] = array_rekey(
+				db_fetch_assoc('SELECT data_template_id AS id, COUNT(*) AS totals
+					FROM data_local AS dl
+					WHERE host_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY data_template_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['data_queries'] = array_rekey(
+				db_fetch_assoc('SELECT snmp_query_id AS id, COUNT(*) AS totals
+					FROM data_local AS dl
+					WHERE host_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY snmp_query_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['cdefs'] = array_rekey(
+				db_fetch_assoc('SELECT cdef_id AS id, COUNT(DISTINCT local_graph_id) AS totals
+					FROM graph_templates_item AS gti
+					INNER JOIN graph_local AS gl
+					ON gl.id = gti.local_graph_id
+					WHERE cdef_id > 0
+					AND host_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY cdef_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['vdefs'] = array_rekey(
+				db_fetch_assoc('SELECT vdef_id AS id, COUNT(DISTINCT local_graph_id) AS totals
+					FROM graph_templates_item AS gti
+					INNER JOIN graph_local AS gl
+					ON gl.id = gti.local_graph_id
+					WHERE vdef_id > 0
+					AND host_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY vdef_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['colors'] = array_rekey(
+				db_fetch_assoc('SELECT color_id AS id, COUNT(DISTINCT local_graph_id) AS totals
+					FROM graph_templates_item AS gti
+					INNER JOIN graph_local AS gl
+					ON gl.id = gti.local_graph_id
+					WHERE color_id > 0
+					AND host_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY color_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['gprints'] = array_rekey(
+				db_fetch_assoc('SELECT gprint_id AS id, COUNT(DISTINCT local_graph_id) AS totals
+					FROM graph_templates_item AS gti
+					INNER JOIN graph_local AS gl
+					ON gl.id = gti.local_graph_id
+					WHERE gprint_id > 0
+					AND host_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY gprint_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['data_inputs'] = array_rekey(
+				db_fetch_assoc('SELECT data_input_id AS id, COUNT(DISTINCT local_data_id) AS totals
+					FROM data_template_data AS dtd
+					INNER JOIN data_local AS dl
+					ON dl.id = dtd.local_data_id
+					WHERE data_input_id > 0
+					AND host_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY data_input_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['data_profiles'] = array_rekey(
+				db_fetch_assoc('SELECT data_source_profile_id AS id, COUNT(DISTINCT local_data_id) AS totals
+					FROM data_template_data AS dtd
+					INNER JOIN data_local AS dl
+					ON dl.id = dtd.local_data_id
+					WHERE data_source_profile_id > 0
+					AND host_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY data_source_profile_id'),
+				'id', 'totals'
+			);
+
+			break;
+		case 'device_leave':
+			$object_totals['sites'] = array_rekey(
+				db_fetch_assoc('SELECT site_id AS id, COUNT(*) AS totals
+					FROM host AS h
+					WHERE id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY site_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['host_templates'] = array_rekey(
+				db_fetch_assoc('SELECT host_template_id AS id, COUNT(*) AS totals
+					FROM host AS h
+					WHERE id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY host_template_id'),
+				'id', 'totals'
+			);
+
+			break;
+		case 'graph_delete':
+			$object_totals['host_graphs'] = array_rekey(
+				db_fetch_assoc('SELECT host_id, COUNT(*) AS totals
+					FROM graph_local AS gl
+					WHERE id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY host_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['host_data_sources'] = array_rekey(
+				db_fetch_assoc('SELECT host_id AS id, COUNT(DISTINCT local_data_id) AS totals
+					FROM data_local AS dl
+					INNER JOIN data_template_rrd AS dtr
+					ON dl.id = dtr.local_data_id
+					INNER JOIN graph_templates_item AS gti
+					ON dtr.id = gti.task_item_id
+					WHERE local_graph_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY host_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['graph_templates'] = array_rekey(
+				db_fetch_assoc('SELECT graph_template_id AS id, COUNT(*) AS totals
+					FROM graph_local AS gl
+					WHERE id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY graph_template_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['data_templates'] = array_rekey(
+				db_fetch_assoc('SELECT data_template_id AS id, COUNT(DISTINCT local_data_id) AS totals
+					FROM data_template_rrd AS dtr
+					INNER JOIN graph_templates_item AS gti
+					ON dtr.id = gti.task_item_id
+					WHERE local_graph_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY data_template_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['data_queries'] = array_rekey(
+				db_fetch_assoc('SELECT snmp_query_id AS id, COUNT(DISTINCT local_data_id) AS totals
+					FROM data_local AS dl
+					INNER JOIN data_template_rrd AS dtr
+					ON dl.id = dtr.local_data_id
+					INNER JOIN graph_templates_item AS gti
+					ON dtr.id = gti.task_item_id
+					FROM data_local AS dl
+					WHERE local_graph_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY snmp_query_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['cdefs'] = array_rekey(
+				db_fetch_assoc('SELECT cdef_id AS id, COUNT(DISTINCT local_graph_id) AS totals
+					FROM graph_templates_item AS gti
+					INNER JOIN graph_local AS gl
+					ON gl.id = gti.local_graph_id
+					WHERE cdef_id > 0
+					AND local_graph_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY cdef_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['vdefs'] = array_rekey(
+				db_fetch_assoc('SELECT vdef_id AS id, COUNT(DISTINCT local_graph_id) AS totals
+					FROM graph_templates_item AS gti
+					INNER JOIN graph_local AS gl
+					ON gl.id = gti.local_graph_id
+					WHERE vdef_id > 0
+					AND local_graph_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY vdef_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['colors'] = array_rekey(
+				db_fetch_assoc('SELECT color_id AS id, COUNT(DISTINCT local_graph_id) AS totals
+					FROM graph_templates_item AS gti
+					INNER JOIN graph_local AS gl
+					ON gl.id = gti.local_graph_id
+					WHERE color_id > 0
+					AND local_graph_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY color_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['gprints'] = array_rekey(
+				db_fetch_assoc('SELECT gprint_id AS id, COUNT(DISTINCT local_graph_id) AS totals
+					FROM graph_templates_item AS gti
+					INNER JOIN graph_local AS gl
+					ON gl.id = gti.local_graph_id
+					WHERE gprint_id > 0
+					AND local_graph_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY gprint_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['data_inputs'] = array_rekey(
+				db_fetch_assoc('SELECT data_input_id AS id, COUNT(DISTINCT local_data_id) AS totals
+					FROM data_template_data AS dtd
+					INNER JOIN data_local AS dl
+					ON dl.id = dtd.local_data_id
+					INNER JOIN graph_templates_item AS gti
+					ON dtr.id = gti.task_item_id
+					WHERE data_input_id > 0
+					AND local_graph_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY data_input_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['data_profiles'] = array_rekey(
+				db_fetch_assoc('SELECT data_source_profile_id AS id, COUNT(DISTINCT local_data_id) AS totals
+					FROM data_template_data AS dtd
+					INNER JOIN data_local AS dl
+					ON dl.id = dtd.local_data_id
+					INNER JOIN graph_templates_item AS gti
+					ON dtr.id = gti.task_item_id
+					WHERE data_input_id > 0
+					AND local_graph_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY data_source_profile_id'),
+				'id', 'totals'
+			);
+
+			break;
+		case 'graph_leave':
+			$object_totals['host_graphs'] = array_rekey(
+				db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS totals
+					FROM graph_local AS gl
+					WHERE id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY host_id'),
+				'id', 'total'
+			);
+
+			$object_totals['graph_templates'] = array_rekey(
+				db_fetch_assoc('SELECT graph_template_id AS id, COUNT(*) AS totals
+					FROM graph_local AS gl
+					WHERE id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY graph_template_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['cdefs'] = array_rekey(
+				db_fetch_assoc('SELECT cdef_id AS id, COUNT(DISTINCT local_graph_id) AS totals
+					FROM graph_templates_item AS gti
+					INNER JOIN graph_local AS gl
+					ON gl.id = gti.local_graph_id
+					WHERE cdef_id > 0
+					AND local_graph_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY cdef_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['vdefs'] = array_rekey(
+				db_fetch_assoc('SELECT vdef_id AS id, COUNT(DISTINCT local_graph_id) AS totals
+					FROM graph_templates_item AS gti
+					INNER JOIN graph_local AS gl
+					ON gl.id = gti.local_graph_id
+					WHERE vdef_id > 0
+					AND local_graph_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY vdef_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['colors'] = array_rekey(
+				db_fetch_assoc('SELECT color_id AS id, COUNT(DISTINCT local_graph_id) AS totals
+					FROM graph_templates_item AS gti
+					INNER JOIN graph_local AS gl
+					ON gl.id = gti.local_graph_id
+					WHERE color_id > 0
+					AND local_graph_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY color_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['gprints'] = array_rekey(
+				db_fetch_assoc('SELECT gprint_id AS id, COUNT(DISTINCT local_graph_id) AS totals
+					FROM graph_templates_item AS gti
+					INNER JOIN graph_local AS gl
+					ON gl.id = gti.local_graph_id
+					WHERE gprint_id > 0
+					AND local_graph_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY gprint_id'),
+				'id', 'totals'
+			);
+
+			break;
+		case 'data_source':
+			$object_totals['host_data_sources'] = array_rekey(
+				db_fetch_assoc('SELECT host_id, COUNT(*) AS totals
+					FROM data_local AS dl
+					WHERE id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY host_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['data_templates'] = array_rekey(
+				db_fetch_assoc('SELECT data_template_id AS id, COUNT(*) AS totals
+					FROM data_template_data AS dtd
+					WHERE local_data_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY data_template_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['data_queries'] = array_rekey(
+				db_fetch_assoc('SELECT snmp_query_id AS id, COUNT(*) AS totals
+					FROM data_local AS dl
+					WHERE id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY snmp_query_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['data_inputs'] = array_rekey(
+				db_fetch_assoc('SELECT data_input_id AS id, COUNT(*) AS totals
+					FROM data_template_data AS dtd
+					WHERE data_input_id > 0
+					AND local_data_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY data_input_id'),
+				'id', 'totals'
+			);
+
+			$object_totals['data_profiles'] = array_rekey(
+				db_fetch_assoc('SELECT data_source_profile_id AS id, COUNT(*) AS totals
+					FROM data_template_data AS dtd
+					WHERE data_source_profile_id > 0
+					AND local_data_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY data_source_profile_id'),
+				'id', 'totals'
+			);
+
+			break;
+	}
+}
+
+function object_cache_update_totals($direction) {
+	global $object_totals;
+
+	if ($direction == 'add') {
+		$operator = '+';
+	} elseif ($direction == 'delete') {
+		$operator = '-';
+	}
+
+	if (cacti_sizeof($object_totals)) {
+		if ($operator == '-' || $operator == '+') {
+			foreach($object_totals as $object_id => $data) {
+				foreach($data as $id => $value) {
+					switch($object_id) {
+						case 'host_graphs':
+							db_execute_prepared("UPDATE host
+								SET graphs = graphs $operator ?
+								WHERE id = ?
+								AND graphs $operator ? >= 0",
+								array($value, $id, $value));
+
+							break;
+						case 'host_data_sources':
+							db_execute_prepared("UPDATE host
+								SET data_sources = data_sources $operator ?
+								WHERE id = ?
+								AND data_sources $operator ? >= 0",
+								array($value, $id, $value));
+
+							break;
+						case 'host_templates':
+							db_execute_prepared("UPDATE host_template
+								SET devices = devices $operator ?
+								WHERE id = ?
+								AND devices $operator ? >= 0",
+								array($value, $id, $value));
+
+							break;
+						case 'graph_templates':
+							db_execute_prepared("UPDATE graph_templates
+								SET graphs = graphs $operator ?
+								WHERE id = ?
+								AND graphs $operator ? >= 0",
+								array($value, $id, $value));
+
+							break;
+						case 'data_templates':
+							db_execute_prepared("UPDATE data_template
+								SET data_sources = data_sources $operator ?
+								WHERE id = ?
+								AND data_sources $operator ? >= 0",
+								array($value, $id, $value));
+
+							break;
+						case 'cdefs':
+							db_execute_prepared("UPDATE cdef
+								SET graphs = graphs $operator ?
+								WHERE id = ?
+								AND graphs $operator ? >= 0",
+								array($value, $id, $value));
+
+							break;
+						case 'vdefs':
+							db_execute_prepared("UPDATE vdef
+								SET graphs = graphs $operator ?
+								WHERE id = ?
+								AND graphs $operator ? >= 0",
+								array($value, $id, $value));
+
+							break;
+						case 'colors':
+							db_execute_prepared("UPDATE colors
+								SET graphs = graphs $operator ?
+								WHERE id = ?
+								AND graphs $operator ? >= 0",
+								array($value, $id, $value));
+
+							break;
+						case 'gprints':
+							db_execute_prepared("UPDATE graph_templates_gprint
+								SET graphs = graphs $operator ?
+								WHERE id = ?
+								AND graphs $operator ? >= 0",
+								array($value, $id, $value));
+
+							break;
+						case 'data_inputs':
+							db_execute_prepared("UPDATE data_input
+								SET data_sources = data_sources $operator ?
+								WHERE id = ?
+								AND data_sources $operator ? >= 0",
+								array($value, $id, $value));
+
+							break;
+						case 'data_queries':
+							db_execute_prepared("UPDATE snmp_query
+								SET graphs = graphs $operator ?
+								WHERE id = ?
+								AND graphs $operator ? >= 0",
+								array($value, $id, $value));
+
+							break;
+						case 'data_profiles':
+							db_execute_prepared("UPDATE data_source_profiles
+								SET data_sources = data_sources $operator ?
+								WHERE id = ?
+								AND data_sources $operator ? >= 0",
+								array($value, $id, $value));
+
+							break;
+					}
+				}
+			}
+		}
+	}
+
+	unset($object_totals);
+}
+
+function object_cache_update_device_totals() {
 	$tables = array(
 		'host',
 		'host_template',
@@ -2054,7 +2562,7 @@ function update_device_totals() {
 	}
 }
 
-function update_data_source_totals() {
+function object_cache_update_data_source_totals() {
 	$tables = array(
 		'data_input',
 		'data_source_profiles',
@@ -2169,7 +2677,7 @@ function update_data_source_totals() {
 	}
 }
 
-function update_graph_totals() {
+function object_cache_update_graph_totals() {
 	$tables = array(
 		'cdef',
 		'colors',
@@ -2398,7 +2906,7 @@ function update_graph_totals() {
 	}
 }
 
-function update_aggregate_totals() {
+function object_cache_update_aggregate_totals() {
 	$tables = array(
 		'aggregate_graph_templates',
 		'color_templates',

@@ -249,10 +249,10 @@ function upgrade_to_1_3_0() {
 		}
 	}
 
-	update_device_totals();
-	update_data_source_totals();
-	update_graph_totals();
-	update_aggregate_totals();
+	object_cache_update_device_totals();
+	object_cache_update_data_source_totals();
+	object_cache_update_graph_totals();
+	object_cache_update_aggregate_totals();
 }
 
 function ldap_convert_1_3_0() {
