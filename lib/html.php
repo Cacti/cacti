@@ -1296,7 +1296,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 				print '</td>';
 
-				print "<td style='width:1%' class='right'>";
+				print "<td style='width:1%;padding-right:5px;' class='right'>";
 
 				print "<a class='deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item['id'] . "&nostate=true&$url_data") . "'></a>";
 
@@ -2619,6 +2619,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/billboard.js');
 	print get_md5_include_js('include/layout.js');
 	print get_md5_include_js('include/js/pace.js');
+	print get_md5_include_js('include/js/HtmlSanitizer.js');
 	print get_md5_include_js('include/realtime.js');
 	print get_md5_include_js('include/themes/' . $selectedTheme .'/main.js');
 
