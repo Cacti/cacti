@@ -207,9 +207,19 @@ function run_poller() {
 
 	$command = ' -q ' . CACTI_PATH_BASE . '/poller.php --force' . ($debug ? ' --debug':'');
 
+	$php_binary = read_config_option('path_php_binary');
+
+	if (empty($php_binary)) {
+		if ($config['cacti_server_os'] == 'win32') {
+			$php_binary = 'php';
+		} else {
+			$php_binary = '/usr/bin/php';
+		}
+	}
+
 	debug('Command Line is: ' . $command);
 
-	exec_background(read_config_option('path_php_binary'), $command);
+	exec_background($php_binary, $command);
 }
 
 function get_options() {
