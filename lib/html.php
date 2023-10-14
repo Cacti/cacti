@@ -1420,7 +1420,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 				print '</td>';
 
-				print "<td style='width:1%' class='right'>";
+				print "<td style='width:1%;padding-right:5%;' class='right'>";
 
 				print "<a class='deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item['id'] . "&nostate=true&$url_data") . "'></a>";
 
