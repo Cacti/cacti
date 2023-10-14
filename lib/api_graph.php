@@ -22,13 +22,21 @@
  +-------------------------------------------------------------------------+
 */
 
-function api_delete_graphs(&$local_graph_ids, $delete_type) {
+function api_delete_graphs(&$local_graph_ids, $delete_type, $update_totals = true) {
 	/* check for a bad local_graph_id = 0, and remove graphs */
 	api_graph_remove_bad_graphs($local_graph_ids);
 
 	if (!cacti_sizeof($local_graph_ids)) {
 		return;
 	}
+
+    if ($update_totals) {
+		if ($delete_type == 2) {
+	        object_cache_get_totals('graph_delete', $local_data_ids);
+		} else {
+	        object_cache_get_totals('graph_leave', $local_data_ids);
+		}
+    }
 
 	api_graph_remove_aggregate_items($local_graph_ids);
 
@@ -65,10 +73,10 @@ function api_delete_graphs(&$local_graph_ids, $delete_type) {
 				);
 
 				if (cacti_sizeof($data_sources)) {
-					api_data_source_remove_multi($data_sources);
+					api_data_source_remove_multi($data_sources, false);
 				}
 
-				api_graph_remove_multi($local_graph_ids);
+				api_graph_remove_multi($local_graph_ids, false);
 
 				/* Remove orphaned data sources */
 				$data_sources = array_rekey(
@@ -86,17 +94,21 @@ function api_delete_graphs(&$local_graph_ids, $delete_type) {
 				);
 
 				if (cacti_sizeof($data_sources)) {
-					api_data_source_remove_multi($data_sources);
+					api_data_source_remove_multi($data_sources, false);
 				}
 			} else {
-				api_graph_remove_multi($local_graph_ids);
+				api_graph_remove_multi($local_graph_ids, false);
 			}
 
 			break;
 		case '1':
-			api_graph_remove_multi($local_graph_ids);
+			api_graph_remove_multi($local_graph_ids, false);
 
 			break;
+	}
+
+	if ($update_totals) {
+		object_cache_update_totals('delete');
 	}
 
 	/**
@@ -114,6 +126,8 @@ function api_graph_remove($local_graph_id) {
 		return;
 	}
 
+	object_cache_get_totals('graph_leave', $local_graph_id);
+
 	api_plugin_hook_function('graphs_remove', array($local_graph_id));
 
 	api_graph_remove_aggregate_items($local_graph_id);
@@ -123,6 +137,8 @@ function api_graph_remove($local_graph_id) {
 	db_execute_prepared('DELETE FROM graph_tree_items WHERE local_graph_id = ?', array($local_graph_id));
 	db_execute_prepared('DELETE FROM reports_items WHERE local_graph_id = ?', array($local_graph_id));
 	db_execute_prepared('DELETE FROM graph_local WHERE id = ?', array($local_graph_id));
+
+	object_cache_update_totals('delete');
 
 	/**
 	 * Save the last time a graph was created/updated

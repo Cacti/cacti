@@ -54,7 +54,7 @@ function api_data_source_deletable($local_data_id) {
 	}
 }
 
-function api_data_source_remove($local_data_id) {
+function api_data_source_remove($local_data_id, $update_totals = true) {
 	if (empty($local_data_id)) {
 		return;
 	}
@@ -63,6 +63,10 @@ function api_data_source_remove($local_data_id) {
 
 	$autoclean = read_config_option('rrd_autoclean');
 	$acmethod  = read_config_option('rrd_autoclean_method');
+
+	if ($update_totals) {
+		object_cache_get_totals('data_source', $local_data_ids);
+	}
 
 	if ($autoclean == 'on') {
 		$dsinfo = db_fetch_row_prepared('SELECT local_data_id, data_source_path
@@ -175,12 +179,20 @@ function api_data_source_remove($local_data_id) {
 
 	/* update the database to document the cache change */
 	api_data_source_cache_crc_update($poller_id);
+
+	if ($update_totals) {
+		object_cache_update_totals('delete');
+	}
 }
 
-function api_data_source_remove_multi($local_data_ids) {
+function api_data_source_remove_multi($local_data_ids, $update_totals = true) {
 	// Shortcut out if no data
 	if (!cacti_sizeof($local_data_ids)) {
 		return;
+	}
+
+	if ($update_totals) {
+		object_cache_get_totals('data_source', $local_data_ids);
 	}
 
 	api_plugin_hook_function('data_source_remove', $local_data_ids);
@@ -317,6 +329,10 @@ function api_data_source_remove_multi($local_data_ids) {
 				api_data_source_cache_crc_update($poller_id);
 			}
 		}
+	}
+
+	if ($update_totals) {
+		object_cache_update_totals('delete');
 	}
 }
 

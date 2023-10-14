@@ -263,9 +263,9 @@ function api_device_remove_multi($device_ids, $delete_type = 2) {
 		db_execute("DELETE FROM reports_items    WHERE host_id IN ($devices_to_delete)");
 
 		if ($delete_type == 2) {
-			api_delete_graphs($graphs, $delete_type);
+			api_delete_graphs($graphs, $delete_type, false);
 		} else {
-			api_data_source_disable_multi($data_sources);
+			api_data_source_disable_multi($data_sources, false);
 
 			db_execute("UPDATE graph_local SET host_id = 0 WHERE host_id IN($devices_to_delete)");
 			db_execute("UPDATE data_local  SET host_id = 0 WHERE host_id IN($devices_to_delete)");
@@ -279,16 +279,16 @@ function api_device_remove_multi($device_ids, $delete_type = 2) {
 		}
 
 		/**
+		 * Set the object totals by object type for later updating
+		 */
+		object_cache_update_totals('delete');
+
+		/**
 		 * Save the last time a device/site was created/updated
 		 * for Caching.
 		 */
 		set_config_option('time_last_change_device', time());
 		set_config_option('time_last_change_site_device', time());
-
-		/**
-		 * Set the object totals by object type for later updating
-		 */
-		object_cache_update_totals('delete');
 	}
 }
 
