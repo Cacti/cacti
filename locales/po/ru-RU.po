@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2023-08-20 15:05-0400\nPO-Revision-Date: 2023-09-25 21:24+0000\nLast-Translator: Vladyslav V. Prodan <akapulko@gmail.com>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2023-08-20 15:05-0400\nPO-Revision-Date: 2023-10-14 20:07+0000\nLast-Translator: Vladyslav V. Prodan <akapulko@gmail.com>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2626 lib/html.php:2512
 msgid "About Cacti"
@@ -1345,7 +1345,7 @@ msgstr "Включить"
 #: plugins.php:32 pollers.php:34 user_admin.php:31 user_domains.php:31
 #: user_group_admin.php:33
 msgid "Disable"
-msgstr "Выключить"
+msgstr "Выключен вручную"
 
 #: automation_graph_rules.php:256
 msgid "Press 'Continue' to delete the following Graph Rules."
