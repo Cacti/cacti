@@ -311,6 +311,7 @@ label {
 	height: 14px !important;
 	vertical-align: middle;
 	text-decoration: none !important;
+	padding-right: 7px !important;
 }
 
 .deleteMarker:hover {
@@ -322,6 +323,7 @@ label {
 	height: 14px !important;
 	vertical-align: middle;
 	text-decoration: none !important;
+	padding-right: 7px !important;
 }
 
 .deleteMarkerDisabled:hover {
@@ -345,7 +347,8 @@ label {
 }
 
 .moveArrowNone {
-	padding-left: 14px;
+	display: inline-block;
+	width: 14.75px;
 }
 
 .action, .shiftArrow, .calendar {

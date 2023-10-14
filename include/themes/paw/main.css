@@ -1663,6 +1663,7 @@ th.sortable {
 	color: rgba(0,0,0,0.6);
 	vertical-align: middle;
 	text-decoration: none !important;
+	padding-right: 7px !important;
 }
 
 .deleteMarker:hover {
@@ -1673,6 +1674,7 @@ th.sortable {
 	color: rgba(0,0,0,0.6);
 	vertical-align: middle;
 	text-decoration: none !important;
+	padding-right: 7px !important;
 }
 
 .deleteMarkerDisabled:hover {
@@ -1695,7 +1697,7 @@ th.sortable {
 
 .moveArrowNone {
 	display: inline-block;
-	width: 11.75px;
+	width: 14.75px;
 }
 
 .action, .shiftArrow, .calendar {

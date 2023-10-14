@@ -1888,6 +1888,7 @@ table.cactiTable {
 	color: red;
 	vertical-align: middle;
 	text-decoration: none !important;
+	padding-right: 7px !important;
 }
 
 .deleteMarker:hover {
@@ -1896,6 +1897,7 @@ table.cactiTable {
 
 .deleteMarkerDisabled {
 	color: #9d9d9d !important;
+	padding-right: 7px !important;
 }
 
 .moveArrow {
@@ -1914,7 +1916,7 @@ table.cactiTable {
 
 .moveArrowNone {
 	display: inline-block;
-	width: 11.75px;
+	width: 14.75px;
 }
 
 .action, .shiftArrow, .calendar {

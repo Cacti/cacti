@@ -1915,6 +1915,7 @@ legend {
 	height: 14px !important;
 	vertical-align: middle;
 	text-decoration: none !important;
+	padding-right: 7px !important;
 }
 
 .deleteMarker:hover {
@@ -1926,6 +1927,7 @@ legend {
 	height: 14px !important;
 	vertical-align: middle;
 	text-decoration: none !important;
+	padding-right: 7px !important;
 }
 
 .deleteMarkerDisabled:hover {
@@ -1948,7 +1950,7 @@ legend {
 
 .moveArrowNone {
 	display: inline-block;
-	width: 11.75px;
+	width: 14.75px;
 }
 
 .action, .shiftArrow, .calendar {

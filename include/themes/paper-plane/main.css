@@ -1847,10 +1847,15 @@ tr>td.textInfo.right {
 	color: rgba(0,0,0,0.6);
 	vertical-align: middle;
 	text-decoration: none !important;
+	padding-right: 7px !important;
 }
 
 .deleteMarker:hover {
 	text-decoration: none !important;
+}
+
+.deleteMarkerDisabled {
+	padding-right: 7px !important;
 }
 
 .moveArrow {
@@ -1869,7 +1874,7 @@ tr>td.textInfo.right {
 
 .moveArrowNone {
 	display: inline-block;
-	width: 11.75px;
+	width: 14.75px;
 }
 
 .action, .shiftArrow, .calendar {
