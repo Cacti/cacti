@@ -1905,6 +1905,8 @@ function utility_php_set_installed(&$extensions) {
  * object_cache_get_totals - This function get's the count of objects
  *   for a set of object types.  The object types include:
  *
+ *   - device_state  - Load the object database with the current state
+ *                     This is to be used for diff updates.
  *   - device_delete - Delete devices Delete Graphs and Data Sources
  *   - device_leave  - Delete devices Leave Graphs and Data Sources
  *   - graph_delete  - Delete Graphs Delete Data Sources
@@ -1939,6 +1941,7 @@ function object_cache_get_totals($class, $object_ids, $diff = false) {
 	}
 
 	switch($class) {
+		case 'device_state':
 		case 'device_delete':
 			$variable['sites'] = array_rekey(
 				db_fetch_assoc('SELECT site_id AS id, COUNT(*) AS totals
@@ -2297,123 +2300,145 @@ function object_cache_get_totals($class, $object_ids, $diff = false) {
 	}
 }
 
-function object_cache_update_totals($direction, $diff = false) {
+function object_cache_update_totals($direction) {
 	global $object_totals, $object_totals_diff;
 
 	if ($direction == 'add') {
 		$operator = '+';
 	} elseif ($direction == 'delete') {
 		$operator = '-';
+	} elseif ($direction != 'diff') {
+		cacti_log("WARNING: Object cache direction $direction not known", false, "WEBUI");
+
+		return false;
+	} elseif (!cacti_sizeof($object_totals_diff)) {
+		cacti_log("WARNING: Unable to perform diff if the diff array is not loaded", false, "WEBUI");
+
+		return false;
+	} else {
+		/* scan the changes and then construct a new array with the deltas */
+		$prev_object_totals = $object_totals;
+		$object_totals      = array();
+		$direction          = '+';
+
+		foreach($object_totals_diff as $object_id => $data) {
+			foreach($data as $id => $value) {
+				if (isset($prev_object_totals[$object_id][$id])) {
+					$object_totals[$object_id][$id] = $value - $prev_object_totals[$object_id][$id];
+				} else {
+					$object_totals[$object_id][$id] = $value;
+				}
+			}
+		}
 	}
 
 	if (cacti_sizeof($object_totals)) {
-		if ($operator == '-' || $operator == '+') {
-			foreach($object_totals as $object_id => $data) {
-				foreach($data as $id => $value) {
-					switch($object_id) {
-						case 'host_graphs':
-							db_execute_prepared("UPDATE host
-								SET graphs = graphs $operator ?
-								WHERE id = ?
-								AND graphs $operator ? >= 0",
-								array($value, $id, $value));
+		foreach($object_totals as $object_id => $data) {
+			foreach($data as $id => $value) {
+				switch($object_id) {
+					case 'host_graphs':
+						db_execute_prepared("UPDATE host
+							SET graphs = graphs $operator ?
+							WHERE id = ?
+							AND graphs $operator ? >= 0",
+							array($value, $id, $value));
 
-							break;
-						case 'host_data_sources':
-							db_execute_prepared("UPDATE host
-								SET data_sources = data_sources $operator ?
-								WHERE id = ?
-								AND data_sources $operator ? >= 0",
-								array($value, $id, $value));
+						break;
+					case 'host_data_sources':
+						db_execute_prepared("UPDATE host
+							SET data_sources = data_sources $operator ?
+							WHERE id = ?
+							AND data_sources $operator ? >= 0",
+							array($value, $id, $value));
 
-							break;
-						case 'host_templates':
-							db_execute_prepared("UPDATE host_template
-								SET devices = devices $operator ?
-								WHERE id = ?
-								AND devices $operator ? >= 0",
-								array($value, $id, $value));
+						break;
+					case 'host_templates':
+						db_execute_prepared("UPDATE host_template
+							SET devices = devices $operator ?
+							WHERE id = ?
+							AND devices $operator ? >= 0",
+							array($value, $id, $value));
 
-							break;
-						case 'graph_templates':
-							db_execute_prepared("UPDATE graph_templates
-								SET graphs = graphs $operator ?
-								WHERE id = ?
-								AND graphs $operator ? >= 0",
-								array($value, $id, $value));
+						break;
+					case 'graph_templates':
+						db_execute_prepared("UPDATE graph_templates
+							SET graphs = graphs $operator ?
+							WHERE id = ?
+							AND graphs $operator ? >= 0",
+							array($value, $id, $value));
 
-							break;
-						case 'data_templates':
-							db_execute_prepared("UPDATE data_template
-								SET data_sources = data_sources $operator ?
-								WHERE id = ?
-								AND data_sources $operator ? >= 0",
-								array($value, $id, $value));
+						break;
+					case 'data_templates':
+						db_execute_prepared("UPDATE data_template
+							SET data_sources = data_sources $operator ?
+							WHERE id = ?
+							AND data_sources $operator ? >= 0",
+							array($value, $id, $value));
 
-							break;
-						case 'cdefs':
-							db_execute_prepared("UPDATE cdef
-								SET graphs = graphs $operator ?
-								WHERE id = ?
-								AND graphs $operator ? >= 0",
-								array($value, $id, $value));
+						break;
+					case 'cdefs':
+						db_execute_prepared("UPDATE cdef
+							SET graphs = graphs $operator ?
+							WHERE id = ?
+							AND graphs $operator ? >= 0",
+							array($value, $id, $value));
 
-							break;
-						case 'vdefs':
-							db_execute_prepared("UPDATE vdef
-								SET graphs = graphs $operator ?
-								WHERE id = ?
-								AND graphs $operator ? >= 0",
-								array($value, $id, $value));
+						break;
+					case 'vdefs':
+						db_execute_prepared("UPDATE vdef
+							SET graphs = graphs $operator ?
+							WHERE id = ?
+							AND graphs $operator ? >= 0",
+							array($value, $id, $value));
 
-							break;
-						case 'colors':
-							db_execute_prepared("UPDATE colors
-								SET graphs = graphs $operator ?
-								WHERE id = ?
-								AND graphs $operator ? >= 0",
-								array($value, $id, $value));
+						break;
+					case 'colors':
+						db_execute_prepared("UPDATE colors
+							SET graphs = graphs $operator ?
+							WHERE id = ?
+							AND graphs $operator ? >= 0",
+							array($value, $id, $value));
 
-							break;
-						case 'gprints':
-							db_execute_prepared("UPDATE graph_templates_gprint
-								SET graphs = graphs $operator ?
-								WHERE id = ?
-								AND graphs $operator ? >= 0",
-								array($value, $id, $value));
+						break;
+					case 'gprints':
+						db_execute_prepared("UPDATE graph_templates_gprint
+							SET graphs = graphs $operator ?
+							WHERE id = ?
+							AND graphs $operator ? >= 0",
+							array($value, $id, $value));
 
-							break;
-						case 'data_inputs':
-							db_execute_prepared("UPDATE data_input
-								SET data_sources = data_sources $operator ?
-								WHERE id = ?
-								AND data_sources $operator ? >= 0",
-								array($value, $id, $value));
+						break;
+					case 'data_inputs':
+						db_execute_prepared("UPDATE data_input
+							SET data_sources = data_sources $operator ?
+							WHERE id = ?
+							AND data_sources $operator ? >= 0",
+							array($value, $id, $value));
 
-							break;
-						case 'data_queries':
-							db_execute_prepared("UPDATE snmp_query
-								SET graphs = graphs $operator ?
-								WHERE id = ?
-								AND graphs $operator ? >= 0",
-								array($value, $id, $value));
+						break;
+					case 'data_queries':
+						db_execute_prepared("UPDATE snmp_query
+							SET graphs = graphs $operator ?
+							WHERE id = ?
+							AND graphs $operator ? >= 0",
+							array($value, $id, $value));
 
-							break;
-						case 'data_profiles':
-							db_execute_prepared("UPDATE data_source_profiles
-								SET data_sources = data_sources $operator ?
-								WHERE id = ?
-								AND data_sources $operator ? >= 0",
-								array($value, $id, $value));
+						break;
+					case 'data_profiles':
+						db_execute_prepared("UPDATE data_source_profiles
+							SET data_sources = data_sources $operator ?
+							WHERE id = ?
+							AND data_sources $operator ? >= 0",
+							array($value, $id, $value));
 
-							break;
-					}
+						break;
 				}
 			}
 		}
 	}
 
 	unset($object_totals);
+	unset($object_totals_diff);
 }
 
 function object_cache_update_device_totals() {

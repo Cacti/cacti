@@ -70,18 +70,18 @@ if (cacti_sizeof($parms)) {
 	$graphTitle    = '';
 	$cgInputFields = '';
 
-	$host_id     	  = 0;
-	$template_id 	  = 0;
+	$host_id        = 0;
+	$template_id    = 0;
 	$hostTemplateId = 0;
-	$force      	   = 0;
+	$force          = 0;
 
-	$listHosts       		  = false;
-	$listGraphTemplates 	= false;
-	$listSNMPFields  		  = false;
-	$listSNMPValues  		  = false;
-	$listQueryTypes  		  = false;
-	$listSNMPQueries 		  = false;
-	$listInputFields 		  = false;
+	$listHosts          = false;
+	$listGraphTemplates = false;
+	$listSNMPFields     = false;
+	$listSNMPValues     = false;
+	$listQueryTypes     = false;
+	$listSNMPQueries    = false;
+	$listInputFields    = false;
 
 	$quietMode       = false;
 
@@ -161,7 +161,8 @@ if (cacti_sizeof($parms)) {
 				}
 
 				$dsGraph['snmpField'] = $value;
-				$allow_multi          = true;
+
+				$allow_multi = true;
 
 				break;
 			case 'snmp-value-regex':
@@ -178,7 +179,8 @@ if (cacti_sizeof($parms)) {
 				}
 
 				$dsGraph['snmpValueRegex'] = $value;
-				$allow_multi               = true;
+
+				$allow_multi = true;
 
 				break;
 			case 'snmp-value':
@@ -187,7 +189,8 @@ if (cacti_sizeof($parms)) {
 				}
 
 				$dsGraph['snmpValue'] = $value;
-				$allow_multi          = true;
+
+				$allow_multi = true;
 
 				break;
 			case 'snmp-field-exclude':
@@ -196,7 +199,8 @@ if (cacti_sizeof($parms)) {
 				}
 
 				$dsGraph['snmpFieldExclude'] = $value;
-				$allow_multi                 = true;
+
+				$allow_multi = true;
 
 				break;
 			case 'snmp-value-exclude':
@@ -213,7 +217,8 @@ if (cacti_sizeof($parms)) {
 				}
 
 				$dsGraph['snmpValueExclude'] = $value;
-				$allow_multi                 = true;
+
+				$allow_multi = true;
 
 				break;
 			case 'reindex-method':
@@ -643,6 +648,10 @@ if (cacti_sizeof($parms)) {
 		}
 	}
 
+	if ($host_id > 0) {
+		object_cache_get_totals('device_state', $host_id);
+	}
+
 	$returnArray = array();
 
 	if ($graph_type == 'cg') {
@@ -855,6 +864,11 @@ if (cacti_sizeof($parms)) {
 		print 'ERROR: Graph Types must be either \'cg\' or \'ds\'' . PHP_EOL;
 
 		exit(1);
+	}
+
+	if ($host_id > 0) {
+		object_cache_get_totals('device_state', $host_id, true);
+		object_cache_update_totals('diff');
 	}
 
 	exit(0);

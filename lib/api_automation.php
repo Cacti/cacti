@@ -4471,6 +4471,10 @@ function automation_update_device($host_id) {
 
 	cacti_log($function . ' Device[' . $host_id . '], sql: ' . str_replace("\n",' ', $sql), true, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
 
+	if ($host_id > 0) {
+		object_cache_get_totals('device_state', $host_id);
+	}
+
 	/* create all graph template graphs */
 	if (cacti_sizeof($graph_templates)) {
 		foreach ($graph_templates as $graph_template) {
@@ -4495,6 +4499,11 @@ function automation_update_device($host_id) {
 
 			automation_execute_data_query($host_id, $data_query['id']);
 		}
+	}
+
+	if ($host_id > 0) {
+		object_cache_get_totals('device_state', $host_id, true);
+		object_cache_update_totals('diff');
 	}
 
 	/* now handle tree rules for that host */

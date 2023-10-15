@@ -299,6 +299,10 @@ function form_save() {
 			$graph_template_id = get_request_var('graph_template_id');
 			$host_id           = get_request_var('host_id');
 
+			if ($host_id > 0) {
+				object_cache_get_totals('device_state', $host_id);
+			}
+
 			$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $suggested_values);
 
 			if ($return_array !== false) {
@@ -314,6 +318,11 @@ function form_save() {
 				}
 			}
 
+			if ($host_id > 0) {
+				object_cache_get_totals('device_state', $host_id, true);
+				object_cache_update_totals('diff');
+			}
+
 			if (isset($return_array['local_graph_id'])) {
 				$local_graph_id = $return_array['local_graph_id'];
 				header('Location: graphs.php?action=graph_edit&id=' . $local_graph_id);
@@ -327,6 +336,10 @@ function form_save() {
 		if (isset_request_var('save_component_graph')) {
 			if (get_filter_request_var('host_id') == '-1') {
 				set_request_var('host_id', '0');
+			}
+
+			if (get_request_var('host_id') > 0) {
+				object_cache_get_totals('device_state', get_request_var('host_id'));
 			}
 
 			$save1['id']                   = get_nfilter_request_var('local_graph_id');
@@ -419,6 +432,11 @@ function form_save() {
 						update_graph_data_query_cache($local_graph_id);
 					}
 				}
+			}
+
+			if (get_request_var('host_id') > 0) {
+				object_cache_get_totals('device_state', get_request_var('host_id'), true);
+				object_cache_update_totals('diff');
 			}
 		}
 
