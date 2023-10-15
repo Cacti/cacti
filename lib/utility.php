@@ -1929,11 +1929,8 @@ function object_cache_get_totals($class, $object_ids, $diff = false) {
 		$object_ids = explode(',', $object_ids);
 	}
 
-	if ($diff) {
-		$variable = &$object_totals;
-	} else {
-		$variable = &$object_totals_diff;
-	}
+	/* temp variable for object array */
+	$variable = array();
 
 	/* object totals loaded already */
 	if (cacti_sizeof($object_totals) && $diff === false) {
@@ -1943,6 +1940,22 @@ function object_cache_get_totals($class, $object_ids, $diff = false) {
 	switch($class) {
 		case 'device_state':
 		case 'device_delete':
+			$variable['host_data_sources'] = array_rekey(
+				db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS totals
+					FROM data_local AS dl
+					WHERE host_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY host_id'),
+				'id', 'totals'
+			);
+
+			$variable['host_graphs'] = array_rekey(
+				db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS totals
+					FROM graph_local AS gl
+					WHERE host_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY host_id'),
+				'id', 'totals'
+			);
+
 			$variable['sites'] = array_rekey(
 				db_fetch_assoc('SELECT site_id AS id, COUNT(*) AS totals
 					FROM host AS h
@@ -2051,6 +2064,22 @@ function object_cache_get_totals($class, $object_ids, $diff = false) {
 
 			break;
 		case 'device_leave':
+			$variable['host_data_sources'] = array_rekey(
+				db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS totals
+					FROM data_local AS dl
+					WHERE host_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY host_id'),
+				'id', 'totals'
+			);
+
+			$variable['host_graphs'] = array_rekey(
+				db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS totals
+					FROM graph_local AS gl
+					WHERE host_id IN(' . implode(', ', $object_ids) . ')
+					GROUP BY host_id'),
+				'id', 'totals'
+			);
+
 			$variable['sites'] = array_rekey(
 				db_fetch_assoc('SELECT site_id AS id, COUNT(*) AS totals
 					FROM host AS h
@@ -2070,7 +2099,7 @@ function object_cache_get_totals($class, $object_ids, $diff = false) {
 			break;
 		case 'graph_delete':
 			$variable['host_graphs'] = array_rekey(
-				db_fetch_assoc('SELECT host_id, COUNT(*) AS totals
+				db_fetch_assoc('SELECT host_id AD id, COUNT(*) AS totals
 					FROM graph_local AS gl
 					WHERE id IN(' . implode(', ', $object_ids) . ')
 					GROUP BY host_id'),
@@ -2255,7 +2284,7 @@ function object_cache_get_totals($class, $object_ids, $diff = false) {
 			break;
 		case 'data_source':
 			$variable['host_data_sources'] = array_rekey(
-				db_fetch_assoc('SELECT host_id, COUNT(*) AS totals
+				db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS totals
 					FROM data_local AS dl
 					WHERE id IN(' . implode(', ', $object_ids) . ')
 					GROUP BY host_id'),
@@ -2297,6 +2326,12 @@ function object_cache_get_totals($class, $object_ids, $diff = false) {
 			);
 
 			break;
+	}
+
+	if ($diff) {
+		$object_totals_diff = $variable;
+	} else {
+		$object_totals = $variable;
 	}
 }
 
@@ -2429,6 +2464,14 @@ function object_cache_update_totals($direction) {
 							SET data_sources = data_sources $operator ?
 							WHERE id = ?
 							AND data_sources $operator ? >= 0",
+							array($value, $id, $value));
+
+						break;
+					case 'sites':
+						db_execute_prepared("UPDATE sites
+							SET devices = devices $operator ?
+							WHERE id = ?
+							AND devices $operator ? >= 0",
 							array($value, $id, $value));
 
 						break;
