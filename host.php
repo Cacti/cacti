@@ -691,9 +691,18 @@ function host_add_gt() {
 		array(get_nfilter_request_var('host_id'), get_nfilter_request_var('graph_template_id'))
 	);
 
+	if (get_request_var('host_id') > 0) {
+		object_cache_get_totals('device_state', $host['id']);
+	}
+
 	automation_hook_graph_template(get_nfilter_request_var('host_id'), get_nfilter_request_var('graph_template_id'));
 
 	api_plugin_hook_function('add_graph_template_to_host', array('host_id' => get_nfilter_request_var('host_id'), 'graph_template_id' => get_nfilter_request_var('graph_template_id')));
+
+	if (get_request_var('host_id') > 0) {
+		object_cache_get_totals('device_state', get_request_var('host_id'), true);
+		object_cache_update_totals('diff');
+	}
 }
 
 function host_remove_gt() {

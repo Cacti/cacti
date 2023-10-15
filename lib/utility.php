@@ -2319,7 +2319,7 @@ function object_cache_update_totals($direction) {
 		/* scan the changes and then construct a new array with the deltas */
 		$prev_object_totals = $object_totals;
 		$object_totals      = array();
-		$direction          = '+';
+		$operator           = '+';
 
 		foreach($object_totals_diff as $object_id => $data) {
 			foreach($data as $id => $value) {

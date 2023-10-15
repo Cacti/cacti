@@ -165,6 +165,10 @@ if ($exists > 0) {
 				}
 			}
 
+			if ($host['id'] > 0) {
+				object_cache_get_totals('device_state', $host['id']);
+			}
+
 			$graph_templates = db_fetch_assoc_prepared('SELECT graph_template_id
 				FROM host_template_graph
 				WHERE host_template_id = ?',
@@ -183,6 +187,11 @@ if ($exists > 0) {
 
 					api_plugin_hook_function('add_graph_template_to_host', array('host_id' => $host['id'], 'graph_template_id' => $graph_template['graph_template_id']));
 				}
+			}
+
+			if ($host['id'] > 0) {
+				object_cache_get_totals('device_state', $host['id'], true);
+				object_cache_update_totals('diff');
 			}
 		}
 	}

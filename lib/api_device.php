@@ -1317,6 +1317,10 @@ function api_device_quick_save(&$save) {
 function api_device_update_host_template(int $device_id, int $device_template_id) {
 	static $raised = array();
 
+	if ($device_id > 0) {
+		object_cache_get_totals('device_state', $device_id);
+	}
+
 	db_execute_prepared('UPDATE host
 		SET host_template_id = ?
 		WHERE id = ?
@@ -1471,6 +1475,11 @@ function api_device_update_host_template(int $device_id, int $device_template_id
 	$data = array('device_id' => $device_id, 'device_template_id' => $device_template_id);
 
 	api_plugin_hook_function('device_template_change', $data);
+
+	if ($device_id  > 0) {
+		object_cache_get_totals('device_state', $device_id, true);
+		object_cache_update_totals('diff');
+	}
 }
 
 /**

@@ -172,7 +172,16 @@ if (cacti_sizeof($parms)) {
 	} else {
 		db_execute('replace into host_graph (host_id,graph_template_id) values (' . $host_id . ',' . $graph_template_id . ')');
 
+		if ($host_id > 0) {
+			object_cache_get_totals('device_state', $host_id);
+		}
+
 		automation_hook_graph_template($host_id, $graph_template_id);
+
+		if ($host_id > 0) {
+			object_cache_get_totals('device_state', $host_id, true);
+			object_cache_update_totals('diff');
+		}
 
 		api_plugin_hook_function('add_graph_template_to_host', array('host_id' => $host_id, 'graph_template_id' => $graph_template_id));
 	}
