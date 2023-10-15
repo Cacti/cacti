@@ -1916,24 +1916,31 @@ function utility_php_set_installed(&$extensions) {
  *
  * @param int       The class of object as above
  * @param int|array The ids for the object class
+ * @param bool      Load the objects into the diff array
  *
  * @return null
  */
-function object_cache_get_totals($class, $object_ids) {
-	global $object_totals;
+function object_cache_get_totals($class, $object_ids, $diff = false) {
+	global $object_totals, $object_totals_diff;
 
 	if (!is_array($object_ids)) {
 		$object_ids = explode(',', $object_ids);
 	}
 
+	if ($diff) {
+		$variable = &$object_totals;
+	} else {
+		$variable = &$object_totals_diff;
+	}
+
 	/* object totals loaded already */
-	if (cacti_sizeof($object_totals)) {
+	if (cacti_sizeof($object_totals) && $diff === false) {
 		return;
 	}
 
 	switch($class) {
 		case 'device_delete':
-			$object_totals['sites'] = array_rekey(
+			$variable['sites'] = array_rekey(
 				db_fetch_assoc('SELECT site_id AS id, COUNT(*) AS totals
 					FROM host AS h
 					WHERE id IN(' . implode(', ', $object_ids) . ')
@@ -1941,7 +1948,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['host_templates'] = array_rekey(
+			$variable['host_templates'] = array_rekey(
 				db_fetch_assoc('SELECT host_template_id AS id, COUNT(*) AS totals
 					FROM host AS h
 					WHERE id IN(' . implode(', ', $object_ids) . ')
@@ -1949,7 +1956,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['graph_templates'] = array_rekey(
+			$variable['graph_templates'] = array_rekey(
 				db_fetch_assoc('SELECT graph_template_id AS id, COUNT(*) AS totals
 					FROM graph_local AS gl
 					WHERE host_id IN(' . implode(', ', $object_ids) . ')
@@ -1957,7 +1964,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['data_templates'] = array_rekey(
+			$variable['data_templates'] = array_rekey(
 				db_fetch_assoc('SELECT data_template_id AS id, COUNT(*) AS totals
 					FROM data_local AS dl
 					WHERE host_id IN(' . implode(', ', $object_ids) . ')
@@ -1965,7 +1972,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['data_queries'] = array_rekey(
+			$variable['data_queries'] = array_rekey(
 				db_fetch_assoc('SELECT snmp_query_id AS id, COUNT(*) AS totals
 					FROM data_local AS dl
 					WHERE host_id IN(' . implode(', ', $object_ids) . ')
@@ -1973,7 +1980,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['cdefs'] = array_rekey(
+			$variable['cdefs'] = array_rekey(
 				db_fetch_assoc('SELECT cdef_id AS id, COUNT(DISTINCT local_graph_id) AS totals
 					FROM graph_templates_item AS gti
 					INNER JOIN graph_local AS gl
@@ -1984,7 +1991,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['vdefs'] = array_rekey(
+			$variable['vdefs'] = array_rekey(
 				db_fetch_assoc('SELECT vdef_id AS id, COUNT(DISTINCT local_graph_id) AS totals
 					FROM graph_templates_item AS gti
 					INNER JOIN graph_local AS gl
@@ -1995,7 +2002,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['colors'] = array_rekey(
+			$variable['colors'] = array_rekey(
 				db_fetch_assoc('SELECT color_id AS id, COUNT(DISTINCT local_graph_id) AS totals
 					FROM graph_templates_item AS gti
 					INNER JOIN graph_local AS gl
@@ -2006,7 +2013,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['gprints'] = array_rekey(
+			$variable['gprints'] = array_rekey(
 				db_fetch_assoc('SELECT gprint_id AS id, COUNT(DISTINCT local_graph_id) AS totals
 					FROM graph_templates_item AS gti
 					INNER JOIN graph_local AS gl
@@ -2017,7 +2024,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['data_inputs'] = array_rekey(
+			$variable['data_inputs'] = array_rekey(
 				db_fetch_assoc('SELECT data_input_id AS id, COUNT(DISTINCT local_data_id) AS totals
 					FROM data_template_data AS dtd
 					INNER JOIN data_local AS dl
@@ -2028,7 +2035,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['data_profiles'] = array_rekey(
+			$variable['data_profiles'] = array_rekey(
 				db_fetch_assoc('SELECT data_source_profile_id AS id, COUNT(DISTINCT local_data_id) AS totals
 					FROM data_template_data AS dtd
 					INNER JOIN data_local AS dl
@@ -2041,7 +2048,7 @@ function object_cache_get_totals($class, $object_ids) {
 
 			break;
 		case 'device_leave':
-			$object_totals['sites'] = array_rekey(
+			$variable['sites'] = array_rekey(
 				db_fetch_assoc('SELECT site_id AS id, COUNT(*) AS totals
 					FROM host AS h
 					WHERE id IN(' . implode(', ', $object_ids) . ')
@@ -2049,7 +2056,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['host_templates'] = array_rekey(
+			$variable['host_templates'] = array_rekey(
 				db_fetch_assoc('SELECT host_template_id AS id, COUNT(*) AS totals
 					FROM host AS h
 					WHERE id IN(' . implode(', ', $object_ids) . ')
@@ -2059,7 +2066,7 @@ function object_cache_get_totals($class, $object_ids) {
 
 			break;
 		case 'graph_delete':
-			$object_totals['host_graphs'] = array_rekey(
+			$variable['host_graphs'] = array_rekey(
 				db_fetch_assoc('SELECT host_id, COUNT(*) AS totals
 					FROM graph_local AS gl
 					WHERE id IN(' . implode(', ', $object_ids) . ')
@@ -2067,7 +2074,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['host_data_sources'] = array_rekey(
+			$variable['host_data_sources'] = array_rekey(
 				db_fetch_assoc('SELECT host_id AS id, COUNT(DISTINCT local_data_id) AS totals
 					FROM data_local AS dl
 					INNER JOIN data_template_rrd AS dtr
@@ -2079,7 +2086,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['graph_templates'] = array_rekey(
+			$variable['graph_templates'] = array_rekey(
 				db_fetch_assoc('SELECT graph_template_id AS id, COUNT(*) AS totals
 					FROM graph_local AS gl
 					WHERE id IN(' . implode(', ', $object_ids) . ')
@@ -2087,7 +2094,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['data_templates'] = array_rekey(
+			$variable['data_templates'] = array_rekey(
 				db_fetch_assoc('SELECT data_template_id AS id, COUNT(DISTINCT local_data_id) AS totals
 					FROM data_template_rrd AS dtr
 					INNER JOIN graph_templates_item AS gti
@@ -2097,7 +2104,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['data_queries'] = array_rekey(
+			$variable['data_queries'] = array_rekey(
 				db_fetch_assoc('SELECT snmp_query_id AS id, COUNT(DISTINCT local_data_id) AS totals
 					FROM data_local AS dl
 					INNER JOIN data_template_rrd AS dtr
@@ -2110,7 +2117,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['cdefs'] = array_rekey(
+			$variable['cdefs'] = array_rekey(
 				db_fetch_assoc('SELECT cdef_id AS id, COUNT(DISTINCT local_graph_id) AS totals
 					FROM graph_templates_item AS gti
 					INNER JOIN graph_local AS gl
@@ -2121,7 +2128,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['vdefs'] = array_rekey(
+			$variable['vdefs'] = array_rekey(
 				db_fetch_assoc('SELECT vdef_id AS id, COUNT(DISTINCT local_graph_id) AS totals
 					FROM graph_templates_item AS gti
 					INNER JOIN graph_local AS gl
@@ -2132,7 +2139,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['colors'] = array_rekey(
+			$variable['colors'] = array_rekey(
 				db_fetch_assoc('SELECT color_id AS id, COUNT(DISTINCT local_graph_id) AS totals
 					FROM graph_templates_item AS gti
 					INNER JOIN graph_local AS gl
@@ -2143,7 +2150,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['gprints'] = array_rekey(
+			$variable['gprints'] = array_rekey(
 				db_fetch_assoc('SELECT gprint_id AS id, COUNT(DISTINCT local_graph_id) AS totals
 					FROM graph_templates_item AS gti
 					INNER JOIN graph_local AS gl
@@ -2154,7 +2161,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['data_inputs'] = array_rekey(
+			$variable['data_inputs'] = array_rekey(
 				db_fetch_assoc('SELECT data_input_id AS id, COUNT(DISTINCT local_data_id) AS totals
 					FROM data_template_data AS dtd
 					INNER JOIN data_local AS dl
@@ -2167,7 +2174,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['data_profiles'] = array_rekey(
+			$variable['data_profiles'] = array_rekey(
 				db_fetch_assoc('SELECT data_source_profile_id AS id, COUNT(DISTINCT local_data_id) AS totals
 					FROM data_template_data AS dtd
 					INNER JOIN data_local AS dl
@@ -2182,7 +2189,7 @@ function object_cache_get_totals($class, $object_ids) {
 
 			break;
 		case 'graph_leave':
-			$object_totals['host_graphs'] = array_rekey(
+			$variable['host_graphs'] = array_rekey(
 				db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS totals
 					FROM graph_local AS gl
 					WHERE id IN(' . implode(', ', $object_ids) . ')
@@ -2190,7 +2197,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'total'
 			);
 
-			$object_totals['graph_templates'] = array_rekey(
+			$variable['graph_templates'] = array_rekey(
 				db_fetch_assoc('SELECT graph_template_id AS id, COUNT(*) AS totals
 					FROM graph_local AS gl
 					WHERE id IN(' . implode(', ', $object_ids) . ')
@@ -2198,7 +2205,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['cdefs'] = array_rekey(
+			$variable['cdefs'] = array_rekey(
 				db_fetch_assoc('SELECT cdef_id AS id, COUNT(DISTINCT local_graph_id) AS totals
 					FROM graph_templates_item AS gti
 					INNER JOIN graph_local AS gl
@@ -2209,7 +2216,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['vdefs'] = array_rekey(
+			$variable['vdefs'] = array_rekey(
 				db_fetch_assoc('SELECT vdef_id AS id, COUNT(DISTINCT local_graph_id) AS totals
 					FROM graph_templates_item AS gti
 					INNER JOIN graph_local AS gl
@@ -2220,7 +2227,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['colors'] = array_rekey(
+			$variable['colors'] = array_rekey(
 				db_fetch_assoc('SELECT color_id AS id, COUNT(DISTINCT local_graph_id) AS totals
 					FROM graph_templates_item AS gti
 					INNER JOIN graph_local AS gl
@@ -2231,7 +2238,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['gprints'] = array_rekey(
+			$variable['gprints'] = array_rekey(
 				db_fetch_assoc('SELECT gprint_id AS id, COUNT(DISTINCT local_graph_id) AS totals
 					FROM graph_templates_item AS gti
 					INNER JOIN graph_local AS gl
@@ -2244,7 +2251,7 @@ function object_cache_get_totals($class, $object_ids) {
 
 			break;
 		case 'data_source':
-			$object_totals['host_data_sources'] = array_rekey(
+			$variable['host_data_sources'] = array_rekey(
 				db_fetch_assoc('SELECT host_id, COUNT(*) AS totals
 					FROM data_local AS dl
 					WHERE id IN(' . implode(', ', $object_ids) . ')
@@ -2252,7 +2259,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['data_templates'] = array_rekey(
+			$variable['data_templates'] = array_rekey(
 				db_fetch_assoc('SELECT data_template_id AS id, COUNT(*) AS totals
 					FROM data_template_data AS dtd
 					WHERE local_data_id IN(' . implode(', ', $object_ids) . ')
@@ -2260,7 +2267,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['data_queries'] = array_rekey(
+			$variable['data_queries'] = array_rekey(
 				db_fetch_assoc('SELECT snmp_query_id AS id, COUNT(*) AS totals
 					FROM data_local AS dl
 					WHERE id IN(' . implode(', ', $object_ids) . ')
@@ -2268,7 +2275,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['data_inputs'] = array_rekey(
+			$variable['data_inputs'] = array_rekey(
 				db_fetch_assoc('SELECT data_input_id AS id, COUNT(*) AS totals
 					FROM data_template_data AS dtd
 					WHERE data_input_id > 0
@@ -2277,7 +2284,7 @@ function object_cache_get_totals($class, $object_ids) {
 				'id', 'totals'
 			);
 
-			$object_totals['data_profiles'] = array_rekey(
+			$variable['data_profiles'] = array_rekey(
 				db_fetch_assoc('SELECT data_source_profile_id AS id, COUNT(*) AS totals
 					FROM data_template_data AS dtd
 					WHERE data_source_profile_id > 0
@@ -2290,8 +2297,8 @@ function object_cache_get_totals($class, $object_ids) {
 	}
 }
 
-function object_cache_update_totals($direction) {
-	global $object_totals;
+function object_cache_update_totals($direction, $diff = false) {
+	global $object_totals, $object_totals_diff;
 
 	if ($direction == 'add') {
 		$operator = '+';
