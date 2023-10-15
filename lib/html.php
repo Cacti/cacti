@@ -191,6 +191,8 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
  *   out.
  *
  * @param array  - An associative array of tab variables and names
+ *                 Alternatively an array of names that can be converted
+ *                 using the strtoupper() function to titles.
  * @param string - A string of URL parameters like 'action=edit&id=x'
  * @param string - An option session variable to use to store
  *                 the current tab status.  Defaults to the page
@@ -234,10 +236,17 @@ function html_sub_tabs($tabs, $uri = '', $session_var = '') {
 
 	if (cacti_sizeof($tabs)) {
 		foreach ($tabs as $id => $name) {
-			print "<li class='subTab'>
-				<a class='pic" . ($id == $current_tab ? ' selected' : '') . "'
-				href='" . html_escape($page_name . 'tab=' . $id) . "'>" . $name . '</a>
-			</li>';
+			if (is_numeric($id)) {
+				print "<li class='subTab'>
+					<a class='pic" . ($name == $current_tab ? ' selected' : '') . "'
+					href='" . html_escape($page_name . 'tab=' . $name) . "'>" . strtoupper($name) . '</a>
+				</li>';
+			} else {
+				print "<li class='subTab'>
+					<a class='pic" . ($id == $current_tab ? ' selected' : '') . "'
+					href='" . html_escape($page_name . 'tab=' . $id) . "'>" . $name . '</a>
+				</li>';
+			}
 		}
 	}
 
@@ -2947,7 +2956,7 @@ function html_auth_header($section, $browser_title, $legend, $title, $hook_args 
 				</div>
 				<div class='cactiAuth'>
 					<table class='cactiAuthTable'>
-<?php
+					<?php
 }
 
 function html_auth_footer($section, $error = '', $html = '') {
@@ -2969,7 +2978,7 @@ function html_auth_footer($section, $error = '', $html = '') {
 		</div>
 		<div class='cactiAuthLogo'></div>
 	</div>
-<?php
+	<?php
 	print $html;
 	include_once(__DIR__ . '/../include/global_session.php');
 	?>
