@@ -146,12 +146,6 @@ function exec_background($filename, $args = '', $redirect_args = '') {
 			} else {
 				exec($filename . ' ' . $args . ' ' . $redirect_args . ' &');
 			}
-		} elseif (file_exists_2gb($filename)) {
-			if ($redirect_args == '') {
-				exec($filename . ' ' . $args . ' > /dev/null 2>&1 &');
-			} else {
-				exec($filename . ' ' . $args . ' ' . $redirect_args . ' &');
-			}
 		}
 	} else {
 		cacti_log('WARNING: Empty filename sent to exec_background()', false, 'POLLER');
@@ -264,28 +258,6 @@ function file_escaped($file) {
 	}
 
 	return false;
-}
-
-/**
- * file_exists_2gb - fail safe version of the file exists function to correct
- *   for errors in certain versions of php.
- *
- * @param  (string) $filename - the name of the file to be tested.
- *
- * @return (int) 1 if the file exists otherwise 0
- */
-function file_exists_2gb($filename) {
-	global $config;
-
-	$rval = 0;
-
-	if ($config['cacti_server_os'] != 'win32') {
-		system("test -f $filename", $rval);
-
-		return ($rval == 0);
-	} else {
-		return 0;
-	}
 }
 
 /**
