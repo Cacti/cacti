@@ -37,6 +37,10 @@ switch (get_request_var('action')) {
 		save_settings();
 
 		break;
+	case 'search':
+		settings_search();
+
+		break;
 	case 'send_test':
 		email_test();
 
@@ -51,6 +55,20 @@ function display_settings() {
 	global $config, $settings, $tabs;
 
 	top_header();
+
+	html_start_box(__('Cacti Settings'), '100%', '', '3', 'left', '');
+
+	validate_settings_filter();
+
+	print '<tr><td>';
+	print '<table class="filterTable">';
+	print '<td>' . __('Search') . '</td>';
+	print '<td><input type="text" size="25" id="filter" value="' . get_request_var('filter') . '"></td>';
+	print '<td><span><input type="button" id="clear" value="' . __esc('Clear') . '"></span></td>';
+	print '</tr></table>';
+	print '</td></tr>';
+
+	html_end_box();
 
 	/* set the default settings category */
 	if (!isset_request_var('tab')) {
@@ -97,20 +115,17 @@ function display_settings() {
 
 	/* draw the categories tabs on the top of the page */
 	print "<div>";
-	print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>";
+	print "<div id='settings' class='tabs' style='float:left;'><nav style='display:none;'><ul role='tablist'>";
 
 	if (cacti_sizeof($tabs)) {
-		$i = 0;
-
 		foreach (array_keys($tabs) as $tab_short_name) {
-			print "<li class='subTab" . (!in_array($tab_short_name, $system_tabs) ? ' pluginTab':'') . "'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . html_escape("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . "</a></li>";
-
-			$i++;
+			print "<li id='$tab_short_name' class='subTab" . (!in_array($tab_short_name, $system_tabs) ? ' pluginTab':'') . "'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . html_escape("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . "</a></li>";
 		}
 	}
 
 	print "</ul></nav></div>";
 	print "</div>";
+	print "<div id='form_settings_wrap' style='display:none'>";
 
 	form_start('settings.php', 'form_settings');
 
@@ -215,14 +230,18 @@ function display_settings() {
 
 	form_save_button('', 'save');
 
+	print '</div>';
+
 	?>
 	<script type='text/javascript'>
 
+	var filterTimeout  = null;
 	var themeChanged   = false;
 	var langRefresh    = false;
 	var currentTheme   = '';
 	var currentLang    = '';
 	var rrdArchivePath = '';
+	var prevSearch     = $('#filter').val();
 	var smtpPath       = '';
 	var currentTab     = '<?php print $current_tab;?>';
 	var dataCollectors = '<?php print $data_collectors;?>';
@@ -231,11 +250,25 @@ function display_settings() {
 	var permsMessage   = '<?php print __esc('After you change the Graph Permission Model you should audit your Users and User Groups Effective Graph permission to ensure that you still have adequate control of your Graphs.  NOTE: If you want to restrict all Graphs at the Device or Graph Template Graph Permission Model, the default Graph Policy should be set to \'Deny\'.');?>';
 
 	$(function() {
+		$('#filter').keyup(function() {
+			if (filterTimeout) {
+				clearTimeout(filterTimeout);
+			}
+
+			filterTimeout = setTimeout(setupForm, 300);
+		});
+
+		setupForm();
+
+		$('#clear').click(function(event) {
+			loadUrl({url: 'settings.php?clear=true&filter='});
+		});
+
 		$('.subTab').find('a').click(function(event) {
 			event.preventDefault();
 			strURL = $(this).attr('href');
 			strURL += (strURL.indexOf('?') > 0 ? '&':'?') + 'header=false';
-			loadPageNoHeader(strURL, true, false);
+			loadUrl({url: strURL, scroll: true, force: false, loadType: 'noheader'});
 		});
 
 		$('input[value="<?php print __esc('Save');?>"]').unbind().click(function(event) {
@@ -570,6 +603,57 @@ function display_settings() {
 			}
 		}
 	});
+
+	function setupForm() {
+		if ($('#filter').val().length >= 1 && $('#filter').val != prevSearch) {
+			$.getJSON('settings.php?action=search&filter='+$('#filter').val(), function(data) {
+				if (data.tabs.length == 1 && data.tabs[0] != currentTab) {
+					loadPage('settings.php?tab='+data.tabs[0]+'&filter='+$('#filter').val());
+					return false;
+				} else if (data.tabs.length > 0) {
+					if (data.tabs.indexOf(currentTab) == -1) {
+						loadUrl({url: 'settings.php?tab='+data.tabs[0]+'&filter='+$('#filter').val()});
+						return false;
+					}
+
+					$('#settings').find('nav').show();
+					$('#settings').find('.subTab').hide();
+					$('#form_settings').find('div[id^="settings_"]').hide();
+					$('#form_settings').find('[id^="row"]').hide();
+
+					for (index of data.tabs) {
+						$('#settings').find('#'+index+'.subTab').show();
+						$('#form_settings').find('div[id^="settings_'+index+'"]').show();
+					}
+
+					for (index of data.spacers) {
+						$('#form_settings').find('#row_'+index).show();
+					}
+
+					for (index of data.rows) {
+						$('#form_settings').find('#row_'+index).show();
+					}
+				} else {
+					$('#settings').find('nav').show();
+					$('#settings').find('.subTab').show();
+					$('#form_settings').find('div[id^="settings_"]').show();
+					$('#form_settings').find('tr[id^="row_"]').show();
+				}
+
+				$('#saveRowParent').show();
+				$('#form_settings_wrap').show();
+				$('#filter').focus();
+			});
+
+			prevSearch = $('#filter').val();
+		} else {
+			$('#settings').find('nav').show();
+			$('#saveRowParent').show();
+			$('#settings').find('.subTab').show();
+			$('#form_settings_wrap').show();
+			$('#filter').focus();
+		}
+	}
 
 	function initBoostCache() {
 		if ($('#boost_png_cache_enable').is(':checked')){
@@ -1096,6 +1180,63 @@ function display_settings() {
 	api_plugin_hook('settings_bottom');
 
 	bottom_footer();
+}
+
+function validate_settings_filter() {
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'filter' => array(
+			'filter' => FILTER_DEFAULT,
+			'pageset' => true,
+			'default' => ''
+		)
+	);
+
+	validate_store_request_vars($filters, 'sess_settings');
+	/* ================= input validation ================= */
+}
+
+function settings_search() {
+	global $settings;
+
+	validate_settings_filter();
+
+	$filter = get_request_var('filter');
+
+	$response = array(
+		'tabs'    => array(),
+		'rows'    => array(),
+		'spacers' => array()
+	);
+
+	$last_spacer = '';
+	$tabs        = array();
+	$spacers     = array();
+
+	foreach($settings as $tab => $page) {
+		foreach($page as $field_name => $field_array) {
+			if ($field_array['method'] == 'spacer') {
+				$last_spacer = $field_name;
+			} elseif (stristr($field_array['friendly_name'], $filter) !== false || stristr($field_array['description'], $filter) !== false) {
+				$tabs[] = $tab;
+				$response['rows'][] = $field_name;
+
+				if ($last_spacer != '') {
+					$spacers[] = $last_spacer;
+				}
+			}
+		}
+	}
+
+	if (cacti_sizeof($tabs)) {
+		$response['tabs'] = array_values(array_unique($tabs, SORT_STRING));
+	}
+
+	if (cacti_sizeof($spacers)) {
+		$response['spacers'] = array_values(array_unique($spacers, SORT_STRING));
+	}
+
+	print json_encode($response);
 }
 
 function save_settings() {
