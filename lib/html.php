@@ -2619,7 +2619,6 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/billboard.js');
 	print get_md5_include_js('include/layout.js');
 	print get_md5_include_js('include/js/pace.js');
-	print get_md5_include_js('include/js/HtmlSanitizer.js');
 	print get_md5_include_js('include/realtime.js');
 	print get_md5_include_js('include/themes/' . $selectedTheme .'/main.js');
 
