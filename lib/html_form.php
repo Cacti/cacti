@@ -51,10 +51,22 @@ function draw_edit_form($array) {
 
 		foreach ($fields_array as $field_name => $field_array) {
 			if ($field_array['method'] == 'hidden') {
+				if (!isset($field_array['value'])) {
+					cacti_log("WARNING: Cacti Form field '$field_name' does not include a 'value' Column.  Using default", false);
+					cacti_debug_backtrace('form_edit');
+					$field_array['value'] = $field_array['default'];
+				}
+
 				print '<div class="hidden formRow">';
 				form_hidden_box($field_name, $field_array['value'], ((isset($field_array['default'])) ? $field_array['default'] : ''), true);
 				print '</div>';
 			} elseif ($field_array['method'] == 'hidden_zero') {
+				if (!isset($field_array['value'])) {
+					cacti_log("WARNING: Cacti Form field '$field_name' does not include a 'value' Column.  Using default", false);
+					cacti_debug_backtrace('form_edit');
+					$field_array['value'] = $field_array['default'];
+				}
+
 				print '<div class="hidden formRow">';
 				form_hidden_box($field_name, $field_array['value'], '0', true);
 				print '</div>';
@@ -83,6 +95,12 @@ function draw_edit_form($array) {
 				print "<div class='formFieldName'>";
 
 				if (isset($field_array['sub_checkbox'])) {
+					if (!isset($field_array['sub_checkbox']['value'])) {
+						cacti_log("WARNING: Cacti Form field '$field_name' does not include a sub_checkbox 'value' Column.  Using default", false);
+						cacti_debug_backtrace('form_edit');
+						$field_array['sub_checkbox']['value'] = $field_array['default'];
+					}
+
 					form_checkbox($field_array['sub_checkbox']['name'],
 						$field_array['sub_checkbox']['value'],
 						'',
@@ -254,13 +272,13 @@ function draw_edit_control($field_name, &$field_array) {
 				}
 
 				if (cacti_sizeof($files)) {
-				foreach($files as $file) {
-					if (is_readable($dir . '/' . $file) && $file != '.' && $file != '..') {
-						if (!in_array($file, $field_array['exclusions'])) {
-							$array_files[basename($file)] = basename($file);
+					foreach($files as $file) {
+						if (is_readable($dir . '/' . $file) && $file != '.' && $file != '..') {
+							if (!in_array($file, $field_array['exclusions'])) {
+								$array_files[basename($file)] = basename($file);
+							}
 						}
 					}
-				}
 				}
 			}
 		}
