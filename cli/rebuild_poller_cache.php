@@ -40,7 +40,7 @@ require_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 /* switch to main database for cli's */
 if ($config['poller_id'] > 1) {
-        db_switch_remote_to_main();
+	db_switch_remote_to_main();
 }
 
 /* process calling arguments */
@@ -84,8 +84,8 @@ foreach ($parms as $parameter) {
 
 				exit(1);
 			}
-			break;
 
+			break;
 		case '--host-template-id':
 			$host_template_id = trim($value);
 
@@ -94,8 +94,8 @@ foreach ($parms as $parameter) {
 
 				exit(1);
 			}
-			break;
 
+			break;
 		case '--data-template-id':
 			$data_template_id = trim($value);
 
@@ -104,34 +104,34 @@ foreach ($parms as $parameter) {
 
 				exit(1);
 			}
-			break;
 
+			break;
 		case '--type':
 			$type = $value;
-			break;
 
+			break;
 		case '--threads':
 			if (!is_numeric(trim($value))) {
 				print 'ERROR: You must supply a valid Number of Treads or skip this parametr for default value (' . $threads . ')' . PHP_EOL;
-
 				exit(1);
 			}
-			$threads = $value;
-			break;
 
+			$threads = $value;
+
+			break;
 		case '--child':
 			$thread_id = $value;
-			break;
 
+			break;
 		case '--force':
 			$forcerun = true;
-			break;
 
+			break;
 		case '-d':
 		case '--debug':
 			$debug = true;
-			break;
 
+			break;
 		case '-h':
 		case '-H':
 		case '--help':
@@ -170,13 +170,13 @@ $sql_where = '';
 $params    = array();
 
 if ($host_id > 0) {
-        $sql_where = ' AND h.id = ?';
-        $params[]  = $host_id;
+	$sql_where = ' AND h.id = ?';
+	$params[]  = $host_id;
 }
 
 if ($host_template_id > 0) {
-        $sql_where .= ' AND h.host_template_id = ?';
-        $params[] = $host_template_id;
+	$sql_where .= ' AND h.host_template_id = ?';
+	$params[] = $host_template_id;
 }
 
 /* issue warnings and start message if applicable */
@@ -195,14 +195,12 @@ if (!$forcerun) {
 /* Collect data as determined by the type */
 switch ($type) {
 	case 'rmaster':
-
 		pushout_master_handler($forcerun, $host_id, $host_template_id, $data_template_id, $threads);
 
 		unregister_process('pushout', 'rmaster', 0);
 
 		break;
 	case 'child':  /* Launched by the rmaster process */
-
 		$child_start = microtime(true);
 
 		$sql_where  = '';
@@ -224,13 +222,16 @@ switch ($type) {
 
 		$sql_where .= ' GROUP BY h.id ORDER BY h.id LIMIT ' . (($thread_id-1)*$hosts_per_process) . ',' . $hosts_per_process;
 
-		$rows = db_fetch_assoc_prepared("SELECT h.id AS id, COUNT(dl.id) AS dl_count FROM host AS h
-			LEFT JOIN data_local AS dl ON h.id=dl.host_id WHERE h.disabled='' " . $sql_where, $sql_params);
+		$rows = db_fetch_assoc_prepared("SELECT h.id AS id, COUNT(dl.id) AS dl_count
+			FROM host AS h
+			LEFT JOIN data_local AS dl
+			ON h.id=dl.host_id
+			WHERE h.disabled='' " . $sql_where,
+			$sql_params);
 
 		cacti_log(sprintf('Child Started Process %s with %d hosts, from: %d', $thread_id, $hosts_per_process, ($thread_id-1)*$hosts_per_process), true, 'PUSHOUT');
 
 		foreach ($rows as $row) {
-
 			if (!$debug) {
 				print '.';
 			}
@@ -257,7 +258,7 @@ exit(0);
 function pushout_master_handler($forcerun, $host_id, $host_template_id, $data_template_id, $threads) {
 	global $type;
 
-	$sql_where  = "";
+	$sql_where  = '';
 	$sql_params = array();
 
 	if ($host_id !== false) {
@@ -270,7 +271,9 @@ function pushout_master_handler($forcerun, $host_id, $host_template_id, $data_te
 		$sql_params[] = $host_template_id;
 	}
 
-	$rows = db_fetch_cell_prepared("SELECT count(id) FROM host WHERE disabled = '' " . $sql_where, $sql_params);
+	$rows = db_fetch_cell_prepared("SELECT COUNT(id)
+		FROM host
+		WHERE disabled = '' " . $sql_where, $sql_params);
 
 	if ($rows == 0) {
 		print 'WARNING: There are no hosts to process' . PHP_EOL;;
@@ -285,10 +288,10 @@ function pushout_master_handler($forcerun, $host_id, $host_template_id, $data_te
 	$h_done = 0;
 
 	for ($thread_id = 1; $h_done < $rows; $thread_id++) {
-
 		pushout_debug("Launching Process ID $thread_id");
 
 		pushout_launch_child($thread_id, $threads);
+
 		$h_done += $hosts_per_process;
 	}
 
@@ -389,12 +392,12 @@ function display_help() {
 	print 'repopulate poller cache for all or specified hosts.' . PHP_EOL . PHP_EOL;
 	print 'This utility will run in parallel with the given number of threads,' . PHP_EOL;
 
-        print 'Optional:' . PHP_EOL;
+	print 'Optional:' . PHP_EOL;
 	print ' --threads=N           - The number of threads to use to repopulate, default = 5' . PHP_EOL;
-        print ' --host-id=N           - Run for a specific Device' . PHP_EOL;
-        print ' --host-template-id=N  - Run for a specific Device Template' . PHP_EOL;
-        print ' --data-template-id=N  - Run for a specific Data Template' . PHP_EOL;
-        print ' --debug               - Display verbose output during execution' . PHP_EOL . PHP_EOL;
+	print ' --host-id=N           - Run for a specific Device' . PHP_EOL;
+	print ' --host-template-id=N  - Run for a specific Device Template' . PHP_EOL;
+	print ' --data-template-id=N  - Run for a specific Data Template' . PHP_EOL;
+	print ' --debug               - Display verbose output during execution' . PHP_EOL . PHP_EOL;
 
 	print 'System Controlled:' . PHP_EOL;
 	print '    --type      - The type and subtype of the rebuild poller cache process' . PHP_EOL;
@@ -456,3 +459,4 @@ function pushout_kill_running_processes() {
 		}
 	}
 }
+
