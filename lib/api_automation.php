@@ -288,7 +288,7 @@ function automation_get_matching_device_sql(&$rule, $rule_type) {
 		$sql_where = 'WHERE h.deleted = ""
 			AND (h.hostname LIKE '  . db_qstr('%' . get_request_var('filterd') . '%') . '
 			OR h.description LIKE ' . db_qstr('%' . get_request_var('filterd') . '%') . '
-			OR ht.name LIKE '	   . db_qstr('%' . get_request_var('filterd') . '%') . ')';
+			OR ht.name LIKE '	    . db_qstr('%' . get_request_var('filterd') . '%') . ')';
 	} else {
 		$sql_where = "WHERE h.deleted = ''";
 	}
@@ -332,6 +332,12 @@ function automation_get_matching_device_sql(&$rule, $rule_type) {
 		h.disabled AS disabled, $sdisabled
 		h.status, ht.name AS host_template_name
 		FROM host AS h
+		LEFT JOIN graph_local AS gl
+		ON h.id = gl.host_id
+		LEFT JOIN graph_templates AS gt
+		ON gl.graph_template_id = gt.id
+		LEFT JOIN graph_templates_graph AS gtg
+		ON gl.id = gtg.local_graph_id
 		LEFT JOIN sites AS s
 		ON s.id = h.site_id
 		LEFT JOIN host_template AS ht
@@ -443,15 +449,17 @@ function automation_get_matching_graphs_sql($rule, $rule_type) {
 	$sql_where .= ($sql_where != '' ? ' AND ':' WHERE ') . build_matching_objects_filter($rule['id'], $rule_type);
 
 	$total_rows_query = "SELECT COUNT(gtg.id)
-		FROM graph_local AS gl
-		INNER JOIN graph_templates_graph AS gtg
-		ON gl.id=gtg.local_graph_id
+		FROM host AS h
+		INNER JOIN graph_local AS gl
+		ON h.id = gl.host_id
+		LEFT JOIN sites AS s
+		ON h.site_id = s.id
 		LEFT JOIN graph_templates AS gt
-		ON gl.graph_template_id=gt.id
-		LEFT JOIN host AS h
-		ON gl.host_id=h.id
+		ON gl.graph_template_id = gt.id
+		LEFT JOIN graph_templates_graph AS gtg
+		ON gl.id = gtg.local_graph_id
 		LEFT JOIN host_template AS ht
-		ON h.host_template_id=ht.id
+		ON h.host_template_id = ht.id
 		$sql_where";
 
 	if (db_column_exists('sites', 'disabled')) {
@@ -465,17 +473,17 @@ function automation_get_matching_graphs_sql($rule, $rule_type) {
 		h.status, ht.name AS host_template_name,
 		gtg.id, gtg.local_graph_id, gtg.height, gtg.width,
 		gtg.title_cache, gt.name
-		FROM graph_local AS gl
-		INNER JOIN graph_templates_graph AS gtg
-		ON gl.id=gtg.local_graph_id
-		LEFT JOIN graph_templates AS gt
-		ON gl.graph_template_id=gt.id
-		LEFT JOIN host AS h
-		ON gl.host_id=h.id
+		FROM host AS h
+		INNER JOIN graph_local AS gl
+		ON h.id = gl.host_id
 		LEFT JOIN sites AS s
 		ON h.site_id = s.id
+		LEFT JOIN graph_templates AS gt
+		ON gl.graph_template_id = gt.id
+		LEFT JOIN graph_templates_graph AS gtg
+		ON gl.id = gtg.local_graph_id
 		LEFT JOIN host_template AS ht
-		ON h.host_template_id=ht.id
+		ON h.host_template_id = ht.id
 		$sql_where
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
 		LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
@@ -623,10 +631,15 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	html_end_box(false);
 
 	$details = automation_get_matching_graphs_sql($rule, $rule_type);
+	$rows    = $details['rows'];
 
-	$rows       = $details['rows'];
-	$total_rows = db_fetch_cell($details['total_rows_sql'], false);
-	$graph_list = db_fetch_assoc($details['rows_query'], false);
+	if (isset($details['total_rows'])) {
+		$total_rows = db_fetch_cell($details['total_rows'], false);
+		$graph_list = db_fetch_assoc($details['rows_query'], false);
+	} else {
+		$total_rows = 0;
+		$graph_list = array();
+	}
 
 	$nav = html_nav_bar($url, MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Devices'), 'page', 'main');
 
@@ -635,13 +648,13 @@ function display_matching_graphs($rule, $rule_type, $url) {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
+		'title_cache'        => array(__('Graph Title'), 'ASC'),
+		'local_graph_id'     => array(__('Graph ID'), 'ASC'),
+		'name'               => array(__('Graph Template Name'), 'ASC'),
 		'description'        => array(__('Device Description'), 'ASC'),
 		'hostname'           => array(__('Hostname'), 'ASC'),
 		'host_template_name' => array(__('Device Template Name'), 'ASC'),
 		'status'             => array(__('Status'), 'ASC'),
-		'title_cache'        => array(__('Graph Title'), 'ASC'),
-		'local_graph_id'     => array(__('Graph ID'), 'ASC'),
-		'name'               => array(__('Graph Template Name'), 'ASC'),
 	);
 
 	html_header_sort(
@@ -658,13 +671,13 @@ function display_matching_graphs($rule, $rule_type, $url) {
 
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 
+			form_selectable_cell(filter_value(title_trim($graph['title_cache'], read_config_option('max_title_length')), get_request_var('filter'), 'graphs.php?action=graph_edit&id=' . $graph['local_graph_id']), $graph['local_graph_id']);
+			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id']);
+			form_selectable_cell(filter_value($template_name, get_request_var('filter')), $graph['local_graph_id']);
 			form_selectable_cell(filter_value($graph['description'], get_request_var('filter'), 'host.php?action=edit&id=' . $graph['host_id']), $graph['local_graph_id']);
 			form_selectable_cell(filter_value($graph['hostname'], get_request_var('filter')), $graph['local_graph_id']);
 			form_selectable_cell(filter_value($graph['host_template_name'], get_request_var('filter')), $graph['local_graph_id']);
 			form_selectable_cell(get_colored_device_status((($graph['disabled'] == 'on' || $graph['site_disabled'] == 'on') ? true : false), $graph['status']), $graph['local_graph_id']);
-			form_selectable_cell(filter_value(title_trim($graph['title_cache'], read_config_option('max_title_length')), get_request_var('filter'), 'graphs.php?action=graph_edit&id=' . $graph['local_graph_id']), $graph['local_graph_id']);
-			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id']);
-			form_selectable_cell(filter_value($template_name, get_request_var('filter')), $graph['local_graph_id']);
 
 			form_end_row();
 		}
@@ -1571,7 +1584,6 @@ function display_graph_rule_items($title, &$rule, $rule_type, $module) {
 	} else {
 		print '<div id="sql_query" style="display:none"><div style="white-space:pre">' . __('Warning matching Graph Rule returned no matches') . '</div><br><hr><br><div>' . db_error() . '</div></div>';
 	}
-
 }
 
 function display_tree_rule_items($title, $rule, $item_type, $rule_type, $module) {
@@ -1939,9 +1951,11 @@ function build_rule_item_filter($automation_rule_items, $prefix = '') {
 
 /*
  * build_sort_order
- * @arg $index_order	sort order given by e.g. xml_array[index_order_type]
- * @arg $default_order	default order if any
- * return				sql sort order string
+ *
+ * @param string $index_order   - sort order given by e.g. xml_array[index_order_type]
+ * @param string $default_order	- default order if any
+ *
+ * @return string - sql sort order string
  */
 function build_sort_order($index_order, $default_order = '') {
 	$function = automation_function_with_pid(__FUNCTION__);
@@ -3106,11 +3120,10 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
  *   - take header type into account
  *   - create (multiple) header nodes
  *
- * @arg $item_id	id of the host/graph we're working on
- * @arg $rule		the rule we're working on
- * returns			the last tree item that was hooked into the tree
- * @param mixed $item_id
- * @param mixed $rule
+ * @param mixed $item_id - id of the host/graph we're working on
+ * @param mixed $rule    - the rule we're working on
+ *
+ * @return int - the last tree item that was hooked into the tree
  */
 function create_all_header_nodes($item_id, $rule) {
 	global $config, $automation_tree_header_types;

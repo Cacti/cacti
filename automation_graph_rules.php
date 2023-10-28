@@ -689,7 +689,7 @@ function automation_graph_rules_edit() {
 
 		$tabs = array(
 			'rule'    => __('Rule'),
-			'hosts'   => __('Matching Hosts'),
+			'hosts'   => __('Matching Devices'),
 			'objects' => __('Matching Objects')
 		);
 
@@ -743,7 +743,7 @@ function automation_graph_rules_edit() {
 		/*
 		 * display the rule items -------------------------------------------------------------------------------
 		 */
-		if (!empty($rule['id'])) {
+		if (isset($rule['id'])) {
 			# display graph rules for host match
 			display_match_rule_items(__('Device Selection Criteria'), $rule, AUTOMATION_RULE_TYPE_GRAPH_MATCH, 'automation_graph_rules.php');
 
