@@ -1621,6 +1621,8 @@ th.sortable {
 	color: rgba(0,0,0,0.6);
 	vertical-align: middle;
 	text-decoration: none !important;
+	display: inline-block !important;
+	width: 14.75px !important;
 }
 
 .deleteMarker:hover {
@@ -1631,6 +1633,8 @@ th.sortable {
 	color: rgba(0,0,0,0.6);
 	vertical-align: middle;
 	text-decoration: none !important;
+	display: inline-block !important;
+	width: 14.75px !important;
 }
 
 .deleteMarkerDisabled:hover {
@@ -1641,6 +1645,7 @@ th.sortable {
 	color: #00438C !important;
 	height: 14px !important;
 	font-size: 14px !important;
+	width: 14.75px !important;
 	vertical-align: middle;
 	text-decoration: none !important;
 }
@@ -1650,7 +1655,8 @@ th.sortable {
 }
 
 .moveArrowNone {
-	padding-left: 14px;
+	display: inline-block !important;
+	width: 14.75px !important;
 }
 
 .action, .shiftArrow, .calendar {

@@ -1871,6 +1871,8 @@ legend {
 	vertical-align: middle;
 	text-decoration: none !important;
 	padding-right: 7px !important;
+	display: inline-block !important;
+	width: 14.75px !important;
 }
 
 .deleteMarker:hover {
@@ -1883,6 +1885,8 @@ legend {
 	vertical-align: middle;
 	text-decoration: none !important;
 	padding-right: 7px !important;
+	display: inline-block !important;
+	width: 14.75px !important;
 }
 
 .deleteMarkerDisabled:hover {
@@ -1891,9 +1895,9 @@ legend {
 
 .moveArrow {
 	color: #00438C !important;
-	display: inline-block;
-	width: 11.75px; !important;
 	font-size: 14px !important;
+	display: inline-block !important;
+	width: 14.75px !important;
 	vertical-align: middle;
 	text-decoration: none !important;
 }
@@ -1903,8 +1907,8 @@ legend {
 }
 
 .moveArrowNone {
-	display: inline-block;
-	width: 14.75px;
+	display: inline-block !important;
+	width: 14.75px !important;
 }
 
 .action, .shiftArrow, .calendar {

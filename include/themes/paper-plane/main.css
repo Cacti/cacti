@@ -1848,6 +1848,8 @@ tr>td.textInfo.right {
 	vertical-align: middle;
 	text-decoration: none !important;
 	padding-right: 7px !important;
+	display: inline-block !important;
+	width: 14.75px !important;
 }
 
 .deleteMarker:hover {
@@ -1855,14 +1857,16 @@ tr>td.textInfo.right {
 }
 
 .deleteMarkerDisabled {
+	display: inline-block !important;
+	width: 14.75px !important;
 	padding-right: 7px !important;
 }
 
 .moveArrow {
 	color: #00438C !important;
 	height: 14px !important;
-	display: inline-block;
-	width: 11.75px;
+	display: inline-block !important;
+	width: 14.75px !important;
 	font-size: 14px !important;
 	vertical-align: middle;
 	text-decoration: none !important;
@@ -1873,8 +1877,8 @@ tr>td.textInfo.right {
 }
 
 .moveArrowNone {
-	display: inline-block;
-	width: 14.75px;
+	display: inline-block !important;
+	width: 14.75px !important;
 }
 
 .action, .shiftArrow, .calendar {
