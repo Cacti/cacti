@@ -1061,15 +1061,15 @@ function template_edit() {
 				$action = '';
 				if (!$dnd) {
 					if ($i != cacti_sizeof($graph_rules) - 1) {
-						$action .= '<a class="pic fa fa-caret-down moveArrow" style="width:16px" href="' . html_escape('automation_templates.php?action=item_movedown&template_id=' . get_request_var('id') . '&id=' . $rule['id'] . '&rule_type=1') . '" title="' . __esc('Move Down') . '"></a>';
+						$action .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('automation_templates.php?action=item_movedown&template_id=' . get_request_var('id') . '&id=' . $rule['id'] . '&rule_type=1') . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
-						$action .= '<a href="#" class="moveArrowNone" style="width:16px"></a>';
+						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
 
 					if ($i > 0) {
-						$action .= '<a class="pic fa fa-caret-up moveArrow" style="width:16px" href="' . html_escape('automation_templates.php?action=item_moveup&template_id=' . get_request_var('id') . '&id=' . $rule['id'] . '&rule_type=1') . '" title="' . __esc('Move Up') . '"></a>';
+						$action .= '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('automation_templates.php?action=item_moveup&template_id=' . get_request_var('id') . '&id=' . $rule['id'] . '&rule_type=1') . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
-						$action .= '<a href="#" class="moveArrowNone" style="width:16px"></a>';
+						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
 				}
 
@@ -1175,15 +1175,15 @@ function template_edit() {
 				$action = '';
 				if (!$dnd) {
 					if ($i != cacti_sizeof($tree_rules) - 1) {
-						$action .= '<a class="pic fa fa-caret-down moveArrow" style="width:16px" href="' . html_escape('automation_templates.php?action=item_movedown&template_id=' . get_request_var('id') . '&id=' . $rule['id'] . '&rule_type=2') . '" title="' . __esc('Move Down') . '"></a>';
+						$action .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('automation_templates.php?action=item_movedown&template_id=' . get_request_var('id') . '&id=' . $rule['id'] . '&rule_type=2') . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
-						$action .= '<a href="#" class="moveArrowNone" style="width:16px"></a>';
+						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
 
 					if ($i > 0) {
-						$action .= '<a class="pic fa fa-caret-up moveArrow" style="width:16px" href="' . html_escape('automation_templates.php?action=item_moveup&template_id=' . get_request_var('id') . '&id=' . $rule['id'] . '&rule_type=2') . '" title="' . __esc('Move Up') . '"></a>';
+						$action .= '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('automation_templates.php?action=item_moveup&template_id=' . get_request_var('id') . '&id=' . $rule['id'] . '&rule_type=2') . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
-						$action .= '<a href="#" class="moveArrowNone" style="width:16px"></a>';
+						$action .= '<a href="#" class="moveArrowNone"></a>';
 					}
 				}
 
