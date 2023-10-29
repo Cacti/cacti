@@ -1315,6 +1315,8 @@ function template_edit() {
 function template() {
 	global $at_actions, $item_rows, $availability_options;
 
+	automation_update_hashes();
+
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(

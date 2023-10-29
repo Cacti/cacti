@@ -4661,6 +4661,36 @@ function automation_hash_to_id($type, $hash) {
 	return false;
 }
 
+function automation_update_hashes() {
+	$tables = array(
+		'automation_templates',
+		'automation_templates_rules',
+		'automation_graph_rules',
+		'automation_graph_rule_items',
+		'automation_tree_rules',
+		'automation_tree_rule_items',
+		'automation_match_rule_items',
+		'automation_snmp',
+		'automation_snmp_items',
+		'automation_networks'
+	);
+
+	foreach($tables as $table) {
+		$items = db_fetch_assoc("SELECT id FROM $table WHERE hash = ''");
+
+		if (cacti_sizeof($items)) {
+			foreach($items as $item) {
+				$hash = get_hash_automation(0, $table);
+
+				db_execute_prepared("UPDATE $table
+					SET hash = ?
+					WHERE id = ?",
+					array($hash, $item['id']));
+			}
+		}
+	}
+}
+
 function automation_network_export($network_ids) {
 	if (!is_array($network_ids)) {
 		$export_name = db_fetch_cell_prepared("SELECT CONCAT('automation_network_', name)
