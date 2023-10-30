@@ -25,14 +25,6 @@
     visibility: hidden;
 }
 
-#navFilter {
-    visibility: hidden;
-}
-
-#navFilter.visible {
-    visibility: visible !important;
-}
-
 .subTab {
     height: 3.5rem;
     line-height: 2.0rem;
@@ -50,7 +42,6 @@
     background: var(--background-progress);
 }
 
-.no-col1 th:nth-child(1), .no-col1 td:nth-child(1),
 .no-col2 th:nth-child(2), .no-col2 td:nth-child(2),
 .no-col3 th:nth-child(3), .no-col3 td:nth-child(3),
 .no-col4 th:nth-child(4), .no-col4 td:nth-child(4),
@@ -162,4 +153,18 @@ nav label:hover { border-bottom-color: var(--border-color); }
     width: 100%;
     left: 0;
     bottom: -1px;
+}
+
+.tab-filters .filterTable {
+    width: 100%;
+}
+
+.tab-filters .filterTable td:nth-child(2n+1) {
+    display: block;
+    width: 100%;
+}
+
+.tab-filters .filterTable td:nth-child(2n+0) {
+    display: block;
+    width: 100%;
 }

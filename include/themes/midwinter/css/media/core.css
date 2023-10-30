@@ -29,7 +29,7 @@
 
 * {
     scrollbar-color: var(--scrollbar-thumb) transparent;
-    scrollbar-width: thin !important;
+    scrollbar-width: auto;
 }
 
 html {
@@ -99,10 +99,7 @@ fieldset {
 
 #main {
     display: block !important;
-}
-
-#main > *:not(iframe) {
-    #margin: 1rem 0.5rem 1rem 1rem;
+    scrollbar-gutter: stable;
 }
 
 /* icons fontawesome */
@@ -230,21 +227,27 @@ input[type="checkbox"]:checked + label, input[type="radio"]:not([name^="reindex"
 #navigation_right > .stickyContainer {
     display: flex;
     margin: 0;
-    width: 100%;
     background-color: var(--background-lowlight);
     height: calc(3.5rem - 2px);
+    padding: 0 1rem 0 1.5rem;
     border-bottom: 1px solid var(--border-color-semilight);
     flex-direction: row;
     flex-wrap: nowrap;
     align-items: center;
-    padding: 0 0 0 1rem;
 }
 
 #navigation_right > .stickyContainer + #main, #main {
-    padding: 1rem;
+    padding: 1rem 0 1rem 1rem;
     flex: 1;
     overflow-y: auto;
 }
+
+@supports (-moz-appearance:none) {
+    #navigation_right > .stickyContainer + #main, #main {
+        padding: 1rem;
+    }
+}
+
 
 /* Cacti Table */
 .cactiTable table {
@@ -264,7 +267,7 @@ th .fa {
 }
 
 pre {
-    color: var(--textcolor-light);
+    color: var(--text-color-light);
 }
 
 input, select {
@@ -1599,8 +1602,8 @@ table.cactiTable {
 }
 
 .tableHeaderColumnHover {
-    background-color: #545454;
-    color: var(--text-color-lighter) !important;
+    color: var(--text-color-white);
+    background-color: var(--background-progress-semilight);
 }
 
 .tableSubHeaderColumn, .tableSubHeaderColumnCenter, .tableSubHeaderColumnRight {
@@ -1643,7 +1646,6 @@ table.cactiTable {
     color: #white;
     vertical-align: middle;
     text-align: left;
-    text-align: left;
     padding: 3px;
 }
 
@@ -1680,6 +1682,10 @@ table.cactiTable {
     width: 100%;
     text-align: center;
     display: table;
+}
+
+.navBarNavigation:first-child {
+    display:none !important;
 }
 
 .navBarNavigation a {
@@ -2366,6 +2372,11 @@ input:focus + .checkboxSlider {
 
 input:disabled + .checkboxSlider {
     cursor: not-allowed;
+    background: #555;
+}
+
+input:disabled + .checkboxSlider:before{
+    background: #555;
 }
 
 input:checked + .checkboxSlider:before {

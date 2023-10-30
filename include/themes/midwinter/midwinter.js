@@ -27,36 +27,41 @@ class navigationBox {
     #container;
     #container_content = '';
     
-    constructor(title, helper, height='full', width='auto', resizable=true, align='left', header=title, content = 'auto') {
+    constructor(title, helper, height='full', width='auto', button= 'none', align='left', header=title, content = 'auto') {
         this.#box = {
-            'class':    'mdw-ConsoleNavigationBox',
-            'title':    title,
-            'helper':   helper,
-            'height':   ((height === 'half') ? 'half' : 'full'),
-            'width':    width,
-            'align':    ((align === 'right') ? 'right' : 'left'),
-            'header':   header,
-            'content':  content,
-            'resizable': resizable
+            'class':        'mdw-ConsoleNavigationBox',
+            'title':        title,
+            'helper':       helper,
+            'height':       ((height === 'half') ? 'half' : 'full'),
+            'width':        width,
+            'align':        ((align === 'right') ? 'right' : 'left'),
+            'header':       header,
+            'content':      content,
+            'button':       button
         };
-        let dropdown = '';
+        let navigationBoxButton = '';
 
-        if(this.#box.resizable) {
-            this.#box.width = initStorageItem('midWinter_widthNavigationBox_' + this.#box.helper, +width);
-            dropdown =
-                '<div class="navBox-header-dropdown" data-helper="'+this.#box.helper+'">'
-                +		'<i class="intro_glyph fas fa-ellipsis-v"></i>'
-                +		'<div class="navBox-header-dropdown-content">'
-                +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="auto" href="#">Auto</a>'
-                +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="1" href="#">Columns 1</a>'
-                +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="2" href="#">Columns 2</a>'
-                +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="3" href="#">Columns 3</a>'
-                +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="4" href="#">Columns 4</a>'
-                +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="5" href="#">Columns 5</a>'
-                +		'</div>'
-                +	'</div>'
-        }else {
-            dropdown = '<div class="navBox-header-dropdown invisible"></div>';
+        switch (this.#box.button) {
+            case 'menu':
+                this.#box.width = initStorageItem('midWinter_widthNavigationBox_' + this.#box.helper, +width);
+                navigationBoxButton =
+                    '<div class="navBox-header-dropdown" data-helper="'+this.#box.helper+'">'
+                    +		'<i class="intro_glyph fas fa-ellipsis-v"></i>'
+                    +		'<div class="navBox-header-dropdown-content">'
+                    +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="auto" href="#">Auto</a>'
+                    +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="1" href="#">Columns 1</a>'
+                    +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="2" href="#">Columns 2</a>'
+                    +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="3" href="#">Columns 3</a>'
+                    +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="4" href="#">Columns 4</a>'
+                    +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="5" href="#">Columns 5</a>'
+                    +		'</div>'
+                    +	'</div>'
+                break;
+            case 'close':
+                navigationBoxButton = '<div class="navBox-header-button" data-helper="'+this.#box.helper+'"><i class="intro_glyph fas fa-times"></i></div>';
+                break;
+            default:
+                navigationBoxButton = '<div class="navBox-header-dropdown invisible"></div>';
         }
 
         if(this.#box.content !== 'auto') {
@@ -70,7 +75,7 @@ class navigationBox {
 
         this.#container  = '<div class="'+this.#box.class+'" data-title="'+this.#box.title+'" data-helper="'+this.#box.helper+'" data-height="'+this.#box.height+'" data-width="'+this.#box.width+'" data-align="'+this.#box.align+'">';
         this.#container += '<div class="navBox-header">';
-        this.#container += '<div class="navBox-header-title"><span>'+this.#box.header+'</span></div>' + dropdown;
+        this.#container += '<div class="navBox-header-title"><span>'+this.#box.header+'</span></div>' + navigationBoxButton;
         this.#container += '</div>';
         this.#container += '<div class="navBox-content">' + this.#container_content + '</div>';
     }
@@ -81,8 +86,15 @@ class navigationBox {
         }
         this.#container += '</div></div>';
         let navigationBox = $(this.#container).appendTo('#mdw-SideBarContainer');
-        if(this.#box.resizable) {
-            $('[class="navBox-header-dropdown"][data-helper="'+this.#box.helper+'"]').off().on('click', {param: this.#box.helper}, toggleDropDownMenu);
+        switch (this.#box.button) {
+            case 'menu':
+                $('[class="navBox-header-dropdown"][data-helper="'+this.#box.helper+'"]').off().on('click', {param: this.#box.helper}, toggleDropDownMenu);
+                break;
+            case 'close':
+                $('[class="navBox-header-button"][data-helper="'+this.#box.helper+'"]').off().on('click', {param: this.#box.helper}, toggleCactiNavigationBox);
+                break;
+            default:
+                break;
         }
     }
 }
@@ -90,7 +102,7 @@ class navigationBox {
 class navigationButton {
     #icon;
     #container;
-    constructor(helper, icon_class, destination, onclick='auto', param='') {
+    constructor(helper, icon_class, destination, onclick='auto', param='on') {
         this.#icon = {
             'helper' : helper,
             'class'  : icon_class,
@@ -106,9 +118,12 @@ class navigationButton {
     }
 
     build() {
-        $(this.#container).appendTo(this.#icon.destination);
-        if(is_function(this.#icon.onclick)) {
-            $('[class="compact_nav_icon"][data-helper="' + this.#icon.helper + '"]').off().on("click", {param: this.#icon.param}, window[this.#icon.onclick]);
+        //avoid duplicates
+        if( $(this.#icon.destination + ' > div[class^="compact_nav_icon"][data-helper="' + this.#icon.helper + '"]').length === 0 ) {
+            $(this.#container).appendTo(this.#icon.destination);
+            if (is_function(this.#icon.onclick)) {
+                $('[class="compact_nav_icon"][data-helper="' + this.#icon.helper + '"]').off().on("click", {param: this.#icon.param}, window[this.#icon.onclick]);
+            }
         }
     }
 }
@@ -300,16 +315,6 @@ function get_user_content() {
         +						'<span class="checkboxSlider checkboxRound"></span>'
         +					'</label>'
         +					'<label class="checkboxLabel checkboxLabelWanted" for="mdw_themeColorModeAuto"></label>'
-        +				'</div>'
-        +           '</li>'
-        +           '<li>'
-        +				'<div>' + 'DarkMode' + '</div>'
-        +				'<div>'
-        +					'<label class="checkboxSwitch">'
-        +						'<input data-scope="theme" id="mdw_themeColorMode" data-func="toggleColorMode" class="formCheckbox" type="checkbox" name="mdw_themeColorMode" '+(midWinter_Color_Mode === 'light' ? '' : 'checked')+'>'
-        +						'<span class="checkboxSlider checkboxRound"></span>'
-        +					'</label>'
-        +					'<label class="checkboxLabel checkboxLabelWanted" for="mdw_themeColorMode"></label>'
         +				'</div>'
         +           '</li>'
         +           '<li>'
