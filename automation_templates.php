@@ -1096,7 +1096,7 @@ function template_edit() {
 							<?php print __('Add Graph Rule');?>
 						</td>
 						<td class='noHide'>
-							<?php form_dropdown('graph_rule', db_fetch_assoc_prepared('SELECT ar.id, ar.name
+							<?php form_dropdown('graph_rule', db_fetch_assoc_prepared('SELECT DISTINCT ar.id, ar.name
 								FROM automation_graph_rules AS ar
 								LEFT JOIN automation_templates_rules AS art
 								ON ar.id = art.rule_id
@@ -1206,7 +1206,7 @@ function template_edit() {
 							<?php print __('Add Tree Rule');?>
 						</td>
 						<td class='noHide'>
-							<?php form_dropdown('tree_rule', db_fetch_assoc_prepared('SELECT ar.id, ar.name
+							<?php form_dropdown('tree_rule', db_fetch_assoc_prepared('SELECT DISTINCT ar.id, ar.name
 								FROM automation_tree_rules AS ar
 								LEFT JOIN automation_templates_rules AS art
 								ON ar.id = art.rule_id

@@ -4842,7 +4842,7 @@ function automation_device_rule_export($template_ids) {
 				unset($device_rule_items[$index]['template_id']);
 			}
 
-			$device['device_rules'] = $device_rules;
+			$device['device_rules'] = $device_rule_items;
 
 			/* get the snmp options item data */
 			$graph_rules = db_fetch_assoc_prepared('SELECT *
