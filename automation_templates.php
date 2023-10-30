@@ -167,7 +167,7 @@ function automation_export() {
 			}
 
 			if (cacti_sizeof($export_data)) {
-				$export_file_name = $export_data['name'];
+				$export_file_name = $export_data['export_name'];
 
 				header('Content-type: application/json');
 				header('Content-Disposition: attachment; filename=' . $export_file_name);

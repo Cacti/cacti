@@ -1,0 +1,608 @@
+{
+    "name": "automation_device_rules_multiple",
+    "export_name": "automation_device_rules_multiple.json",
+    "device": [
+        {
+            "hash": "10409722bc6601521994016268f6a363",
+            "host_template": "07d3fe6a52915f99e642d22e27d967a4",
+            "availability_method": "2",
+            "sysDescr": "Linux",
+            "sysName": "",
+            "sysOid": "",
+            "description_pattern": "|sysName|",
+            "populate_location": "",
+            "sequence": "1",
+            "device_rules": [
+                {
+                    "hash": "1bc6c1e2f0c7e49b8e793761d2cf62f3",
+                    "rule_type": "1",
+                    "rule_id": "6e74c8ce1d65fc967b5084d3cf6268c2",
+                    "sequence": "1",
+                    "exit_rules": "0"
+                },
+                {
+                    "hash": "318206ebdbe33b40aca8ab5ac8bccedd",
+                    "rule_type": "1",
+                    "rule_id": "a483ccf5973cced7dfbf0dafcdd27eb5",
+                    "sequence": "2",
+                    "exit_rules": "0"
+                },
+                {
+                    "hash": "93d5a25af1e9b2d05059f36ddaa74d64",
+                    "rule_type": "2",
+                    "rule_id": "6068cefb7ad0ba54c5ae387f78a2f4e9",
+                    "sequence": "1",
+                    "exit_rules": "0"
+                },
+                {
+                    "hash": "be805f0ac726f261245fe652e6860ed7",
+                    "rule_type": "2",
+                    "rule_id": "8529b253c538b386c4398cabf664dcae",
+                    "sequence": "2",
+                    "exit_rules": "0"
+                }
+            ],
+            "graph_rules": [
+                {
+                    "hash": "6e74c8ce1d65fc967b5084d3cf6268c2",
+                    "name": "Traffic 64 bit Server",
+                    "snmp_query_id": "d75e406fdeca4fcef45b8be3a9a63cbc",
+                    "graph_type_id": "ab93b588c29731ab15db601ca0bc9dec",
+                    "enabled": "on",
+                    "graph_rule_items": [
+                        {
+                            "hash": "a99eb79be2736069b4f779b4e8c33e7a",
+                            "sequence": "1",
+                            "operation": "0",
+                            "field": "ifOperStatus",
+                            "operator": "7",
+                            "pattern": "Up"
+                        },
+                        {
+                            "hash": "46bacec28739050e01edb375a9a38bae",
+                            "sequence": "2",
+                            "operation": "1",
+                            "field": "ifIP",
+                            "operator": "16",
+                            "pattern": ""
+                        },
+                        {
+                            "hash": "960b0b46d87f506e2b86f232bdfe84f0",
+                            "sequence": "3",
+                            "operation": "1",
+                            "field": "ifHwAddr",
+                            "operator": "16",
+                            "pattern": ""
+                        }
+                    ],
+                    "graph_match_items": [
+                        {
+                            "hash": "6942ca4ca881cee66df95418696b3731",
+                            "rule_type": "1",
+                            "sequence": "1",
+                            "operation": "0",
+                            "field": "h.snmp_sysDescr",
+                            "operator": "8",
+                            "pattern": ""
+                        },
+                        {
+                            "hash": "98bc7b7719274ff62108db7b4b02559c",
+                            "rule_type": "1",
+                            "sequence": "2",
+                            "operation": "1",
+                            "field": "h.snmp_version",
+                            "operator": "12",
+                            "pattern": "2"
+                        },
+                        {
+                            "hash": "adbad1448730f7bb36e2493ee55d1dd4",
+                            "rule_type": "1",
+                            "sequence": "3",
+                            "operation": "1",
+                            "field": "h.snmp_sysDescr",
+                            "operator": "2",
+                            "pattern": "Windows"
+                        }
+                    ]
+                },
+                {
+                    "hash": "a483ccf5973cced7dfbf0dafcdd27eb5",
+                    "name": "Disk Space",
+                    "snmp_query_id": "9343eab1f4d88b0e61ffc9d020f35414",
+                    "graph_type_id": "46c4ee688932cf6370459527eceb8ef3",
+                    "enabled": "on",
+                    "graph_rule_items": [],
+                    "graph_match_items": []
+                }
+            ],
+            "tree_rules": [
+                {
+                    "hash": "6068cefb7ad0ba54c5ae387f78a2f4e9",
+                    "name": "New Device",
+                    "tree_id": "1",
+                    "tree_item_id": "0",
+                    "leaf_type": "3",
+                    "host_grouping_type": "1",
+                    "enabled": "on",
+                    "tree_rule_items": [
+                        {
+                            "hash": "8d40d2c5df84996e04de1a3f95baf3a1",
+                            "rule_id": "1",
+                            "sequence": "1",
+                            "field": "ht.name",
+                            "sort_type": "1",
+                            "propagate_changes": "",
+                            "search_pattern": "^(.*)\\s*Linux\\s*(.*)$",
+                            "replace_pattern": "${1}\\n${2}"
+                        },
+                        {
+                            "hash": "3edce47247dec1ba05c821b65d57df0e",
+                            "rule_id": "1",
+                            "sequence": "2",
+                            "field": "h.hostname",
+                            "sort_type": "1",
+                            "propagate_changes": "",
+                            "search_pattern": "^(\\w*)\\s*(\\w*)\\s*(\\w*).*$",
+                            "replace_pattern": ""
+                        }
+                    ],
+                    "tree_match_items": [
+                        {
+                            "hash": "c6e806508968f52c12c3c0fca5321171",
+                            "rule_type": "3",
+                            "sequence": "1",
+                            "operation": "0",
+                            "field": "ht.name",
+                            "operator": "1",
+                            "pattern": "Linux"
+                        }
+                    ]
+                },
+                {
+                    "hash": "8529b253c538b386c4398cabf664dcae",
+                    "name": "New Graph",
+                    "tree_id": "1",
+                    "tree_item_id": "0",
+                    "leaf_type": "2",
+                    "host_grouping_type": "1",
+                    "enabled": "",
+                    "tree_rule_items": [
+                        {
+                            "hash": "efbdc29e2e1ac30077e9b8de695c4d4e",
+                            "rule_id": "2",
+                            "sequence": "1",
+                            "field": "0",
+                            "sort_type": "2",
+                            "propagate_changes": "on",
+                            "search_pattern": "Traffic",
+                            "replace_pattern": ""
+                        },
+                        {
+                            "hash": "049adad1db17816e33ac1e7648c010c2",
+                            "rule_id": "2",
+                            "sequence": "2",
+                            "field": "gtg.title_cache",
+                            "sort_type": "1",
+                            "propagate_changes": "",
+                            "search_pattern": "^(.*)\\s*-\\s*Traffic -\\s*(.*)$",
+                            "replace_pattern": "${1}\\n${2}"
+                        }
+                    ],
+                    "tree_match_items": [
+                        {
+                            "hash": "a5f60d934e32a30c3fe15cdb66405034",
+                            "rule_type": "3",
+                            "sequence": "1",
+                            "operation": "0",
+                            "field": "ht.name",
+                            "operator": "1",
+                            "pattern": "SNMP"
+                        },
+                        {
+                            "hash": "7b9e8bc3f8cd5cbdc9ba1b5f0c0bfa00",
+                            "rule_type": "3",
+                            "sequence": "2",
+                            "operation": "1",
+                            "field": "gt.name",
+                            "operator": "1",
+                            "pattern": "Traffic"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "hash": "e871a24c6137d962edb7d8db13bf77f0",
+            "host_template": "5b8300be607dce4f030b026a381b91cd",
+            "availability_method": "2",
+            "sysDescr": "Windows",
+            "sysName": "",
+            "sysOid": "",
+            "description_pattern": "",
+            "populate_location": "",
+            "sequence": "2",
+            "device_rules": [
+                {
+                    "hash": "1a2d64e99e88e242e3c1087fbcefdeb7",
+                    "rule_type": "1",
+                    "rule_id": "76a3d65e12e449f90ea69668b4f091f6",
+                    "sequence": "1",
+                    "exit_rules": "0"
+                },
+                {
+                    "hash": "dcb06bc95094eacb56feafb99d1b04ed",
+                    "rule_type": "1",
+                    "rule_id": "a483ccf5973cced7dfbf0dafcdd27eb5",
+                    "sequence": "2",
+                    "exit_rules": "0"
+                },
+                {
+                    "hash": "806020da68b8ae172febd97d72e0eada",
+                    "rule_type": "2",
+                    "rule_id": "6068cefb7ad0ba54c5ae387f78a2f4e9",
+                    "sequence": "2",
+                    "exit_rules": "0"
+                },
+                {
+                    "hash": "506cb3f6f06b855911e9393292251790",
+                    "rule_type": "2",
+                    "rule_id": "8529b253c538b386c4398cabf664dcae",
+                    "sequence": "1",
+                    "exit_rules": "0"
+                }
+            ],
+            "graph_rules": [
+                {
+                    "hash": "76a3d65e12e449f90ea69668b4f091f6",
+                    "name": "Traffic 64 bit Server Linux",
+                    "snmp_query_id": "d75e406fdeca4fcef45b8be3a9a63cbc",
+                    "graph_type_id": "ab93b588c29731ab15db601ca0bc9dec",
+                    "enabled": "on",
+                    "graph_rule_items": [
+                        {
+                            "hash": "beb1d55e33352951dd3ec2b57f9cb73e",
+                            "sequence": "1",
+                            "operation": "0",
+                            "field": "ifOperStatus",
+                            "operator": "7",
+                            "pattern": "Up"
+                        },
+                        {
+                            "hash": "195c45f05bed26ac65f3b0550529e53d",
+                            "sequence": "2",
+                            "operation": "1",
+                            "field": "ifIP",
+                            "operator": "16",
+                            "pattern": ""
+                        },
+                        {
+                            "hash": "11b1ad5c2201777507e8d56daf25543e",
+                            "sequence": "3",
+                            "operation": "1",
+                            "field": "ifHwAddr",
+                            "operator": "16",
+                            "pattern": ""
+                        }
+                    ],
+                    "graph_match_items": [
+                        {
+                            "hash": "60f713006654b45715a39e070bd880b8",
+                            "rule_type": "1",
+                            "sequence": "1",
+                            "operation": "0",
+                            "field": "ht.name",
+                            "operator": "1",
+                            "pattern": "Net-SNMP"
+                        },
+                        {
+                            "hash": "ac90ff3b3b54c82e6b225c04ed368760",
+                            "rule_type": "1",
+                            "sequence": "2",
+                            "operation": "1",
+                            "field": "h.snmp_version",
+                            "operator": "12",
+                            "pattern": "2"
+                        }
+                    ]
+                },
+                {
+                    "hash": "a483ccf5973cced7dfbf0dafcdd27eb5",
+                    "name": "Disk Space",
+                    "snmp_query_id": "9343eab1f4d88b0e61ffc9d020f35414",
+                    "graph_type_id": "46c4ee688932cf6370459527eceb8ef3",
+                    "enabled": "on",
+                    "graph_rule_items": [],
+                    "graph_match_items": []
+                }
+            ],
+            "tree_rules": [
+                {
+                    "hash": "6068cefb7ad0ba54c5ae387f78a2f4e9",
+                    "name": "New Device",
+                    "tree_id": "1",
+                    "tree_item_id": "0",
+                    "leaf_type": "3",
+                    "host_grouping_type": "1",
+                    "enabled": "on",
+                    "tree_rule_items": [
+                        {
+                            "hash": "8d40d2c5df84996e04de1a3f95baf3a1",
+                            "rule_id": "1",
+                            "sequence": "1",
+                            "field": "ht.name",
+                            "sort_type": "1",
+                            "propagate_changes": "",
+                            "search_pattern": "^(.*)\\s*Linux\\s*(.*)$",
+                            "replace_pattern": "${1}\\n${2}"
+                        },
+                        {
+                            "hash": "3edce47247dec1ba05c821b65d57df0e",
+                            "rule_id": "1",
+                            "sequence": "2",
+                            "field": "h.hostname",
+                            "sort_type": "1",
+                            "propagate_changes": "",
+                            "search_pattern": "^(\\w*)\\s*(\\w*)\\s*(\\w*).*$",
+                            "replace_pattern": ""
+                        }
+                    ],
+                    "tree_match_items": [
+                        {
+                            "hash": "c6e806508968f52c12c3c0fca5321171",
+                            "rule_type": "3",
+                            "sequence": "1",
+                            "operation": "0",
+                            "field": "ht.name",
+                            "operator": "1",
+                            "pattern": "Linux"
+                        }
+                    ]
+                },
+                {
+                    "hash": "8529b253c538b386c4398cabf664dcae",
+                    "name": "New Graph",
+                    "tree_id": "1",
+                    "tree_item_id": "0",
+                    "leaf_type": "2",
+                    "host_grouping_type": "1",
+                    "enabled": "",
+                    "tree_rule_items": [
+                        {
+                            "hash": "efbdc29e2e1ac30077e9b8de695c4d4e",
+                            "rule_id": "2",
+                            "sequence": "1",
+                            "field": "0",
+                            "sort_type": "2",
+                            "propagate_changes": "on",
+                            "search_pattern": "Traffic",
+                            "replace_pattern": ""
+                        },
+                        {
+                            "hash": "049adad1db17816e33ac1e7648c010c2",
+                            "rule_id": "2",
+                            "sequence": "2",
+                            "field": "gtg.title_cache",
+                            "sort_type": "1",
+                            "propagate_changes": "",
+                            "search_pattern": "^(.*)\\s*-\\s*Traffic -\\s*(.*)$",
+                            "replace_pattern": "${1}\\n${2}"
+                        }
+                    ],
+                    "tree_match_items": [
+                        {
+                            "hash": "a5f60d934e32a30c3fe15cdb66405034",
+                            "rule_type": "3",
+                            "sequence": "1",
+                            "operation": "0",
+                            "field": "ht.name",
+                            "operator": "1",
+                            "pattern": "SNMP"
+                        },
+                        {
+                            "hash": "7b9e8bc3f8cd5cbdc9ba1b5f0c0bfa00",
+                            "rule_type": "3",
+                            "sequence": "2",
+                            "operation": "1",
+                            "field": "gt.name",
+                            "operator": "1",
+                            "pattern": "Traffic"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "hash": "59523b111123a4544bee6086e9e6ea21",
+            "host_template": "cae6a879f86edacb2471055783bec6d0",
+            "availability_method": "2",
+            "sysDescr": "(Cisco Internetwork Operating System Software|IOS)",
+            "sysName": "",
+            "sysOid": "",
+            "description_pattern": "",
+            "populate_location": "",
+            "sequence": "3",
+            "device_rules": [
+                {
+                    "hash": "de63e3a97a2063173d9962277713fabd",
+                    "rule_type": "1",
+                    "rule_id": "6e74c8ce1d65fc967b5084d3cf6268c2",
+                    "sequence": "1",
+                    "exit_rules": "0"
+                },
+                {
+                    "hash": "b62d9ceaf603863a9f4f961864566969",
+                    "rule_type": "2",
+                    "rule_id": "6068cefb7ad0ba54c5ae387f78a2f4e9",
+                    "sequence": "1",
+                    "exit_rules": "0"
+                },
+                {
+                    "hash": "fb9a5cf860812e885bf98477ee5af962",
+                    "rule_type": "2",
+                    "rule_id": "8529b253c538b386c4398cabf664dcae",
+                    "sequence": "2",
+                    "exit_rules": "0"
+                }
+            ],
+            "graph_rules": [
+                {
+                    "hash": "6e74c8ce1d65fc967b5084d3cf6268c2",
+                    "name": "Traffic 64 bit Server",
+                    "snmp_query_id": "d75e406fdeca4fcef45b8be3a9a63cbc",
+                    "graph_type_id": "ab93b588c29731ab15db601ca0bc9dec",
+                    "enabled": "on",
+                    "graph_rule_items": [
+                        {
+                            "hash": "a99eb79be2736069b4f779b4e8c33e7a",
+                            "sequence": "1",
+                            "operation": "0",
+                            "field": "ifOperStatus",
+                            "operator": "7",
+                            "pattern": "Up"
+                        },
+                        {
+                            "hash": "46bacec28739050e01edb375a9a38bae",
+                            "sequence": "2",
+                            "operation": "1",
+                            "field": "ifIP",
+                            "operator": "16",
+                            "pattern": ""
+                        },
+                        {
+                            "hash": "960b0b46d87f506e2b86f232bdfe84f0",
+                            "sequence": "3",
+                            "operation": "1",
+                            "field": "ifHwAddr",
+                            "operator": "16",
+                            "pattern": ""
+                        }
+                    ],
+                    "graph_match_items": [
+                        {
+                            "hash": "6942ca4ca881cee66df95418696b3731",
+                            "rule_type": "1",
+                            "sequence": "1",
+                            "operation": "0",
+                            "field": "h.snmp_sysDescr",
+                            "operator": "8",
+                            "pattern": ""
+                        },
+                        {
+                            "hash": "98bc7b7719274ff62108db7b4b02559c",
+                            "rule_type": "1",
+                            "sequence": "2",
+                            "operation": "1",
+                            "field": "h.snmp_version",
+                            "operator": "12",
+                            "pattern": "2"
+                        },
+                        {
+                            "hash": "adbad1448730f7bb36e2493ee55d1dd4",
+                            "rule_type": "1",
+                            "sequence": "3",
+                            "operation": "1",
+                            "field": "h.snmp_sysDescr",
+                            "operator": "2",
+                            "pattern": "Windows"
+                        }
+                    ]
+                }
+            ],
+            "tree_rules": [
+                {
+                    "hash": "6068cefb7ad0ba54c5ae387f78a2f4e9",
+                    "name": "New Device",
+                    "tree_id": "1",
+                    "tree_item_id": "0",
+                    "leaf_type": "3",
+                    "host_grouping_type": "1",
+                    "enabled": "on",
+                    "tree_rule_items": [
+                        {
+                            "hash": "8d40d2c5df84996e04de1a3f95baf3a1",
+                            "rule_id": "1",
+                            "sequence": "1",
+                            "field": "ht.name",
+                            "sort_type": "1",
+                            "propagate_changes": "",
+                            "search_pattern": "^(.*)\\s*Linux\\s*(.*)$",
+                            "replace_pattern": "${1}\\n${2}"
+                        },
+                        {
+                            "hash": "3edce47247dec1ba05c821b65d57df0e",
+                            "rule_id": "1",
+                            "sequence": "2",
+                            "field": "h.hostname",
+                            "sort_type": "1",
+                            "propagate_changes": "",
+                            "search_pattern": "^(\\w*)\\s*(\\w*)\\s*(\\w*).*$",
+                            "replace_pattern": ""
+                        }
+                    ],
+                    "tree_match_items": [
+                        {
+                            "hash": "c6e806508968f52c12c3c0fca5321171",
+                            "rule_type": "3",
+                            "sequence": "1",
+                            "operation": "0",
+                            "field": "ht.name",
+                            "operator": "1",
+                            "pattern": "Linux"
+                        }
+                    ]
+                },
+                {
+                    "hash": "8529b253c538b386c4398cabf664dcae",
+                    "name": "New Graph",
+                    "tree_id": "1",
+                    "tree_item_id": "0",
+                    "leaf_type": "2",
+                    "host_grouping_type": "1",
+                    "enabled": "",
+                    "tree_rule_items": [
+                        {
+                            "hash": "efbdc29e2e1ac30077e9b8de695c4d4e",
+                            "rule_id": "2",
+                            "sequence": "1",
+                            "field": "0",
+                            "sort_type": "2",
+                            "propagate_changes": "on",
+                            "search_pattern": "Traffic",
+                            "replace_pattern": ""
+                        },
+                        {
+                            "hash": "049adad1db17816e33ac1e7648c010c2",
+                            "rule_id": "2",
+                            "sequence": "2",
+                            "field": "gtg.title_cache",
+                            "sort_type": "1",
+                            "propagate_changes": "",
+                            "search_pattern": "^(.*)\\s*-\\s*Traffic -\\s*(.*)$",
+                            "replace_pattern": "${1}\\n${2}"
+                        }
+                    ],
+                    "tree_match_items": [
+                        {
+                            "hash": "a5f60d934e32a30c3fe15cdb66405034",
+                            "rule_type": "3",
+                            "sequence": "1",
+                            "operation": "0",
+                            "field": "ht.name",
+                            "operator": "1",
+                            "pattern": "SNMP"
+                        },
+                        {
+                            "hash": "7b9e8bc3f8cd5cbdc9ba1b5f0c0bfa00",
+                            "rule_type": "3",
+                            "sequence": "2",
+                            "operation": "1",
+                            "field": "gt.name",
+                            "operator": "1",
+                            "pattern": "Traffic"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

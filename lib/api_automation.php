@@ -4700,12 +4700,13 @@ function automation_network_export($network_ids) {
 
 		$network_ids = array($network_ids);
 	} else {
-		$export_name = 'automation_network_multiple.json';
+		$export_name = 'automation_network_multiple';
 	}
 
 	$json_array = array();
 
 	$json_array['name'] = clean_up_name(strtolower($export_name));
+	$json_array['export_name'] = $json_array['name'] . '.json';
 
 	if (cacti_sizeof($network_ids)) {
 		$networks = array();
@@ -4794,12 +4795,13 @@ function automation_device_rule_export($template_ids) {
 
 		$template_ids = array($template_ids);
 	} else {
-		$export_name = 'automation_device_rules_multiple.json';
+		$export_name = 'automation_device_rules_multiple';
 	}
 
 	$json_array = array();
 
 	$json_array['name'] = clean_up_name(strtolower($export_name));
+	$json_array['export_name'] = $json_array['name'] . '.json';
 
 	if (cacti_sizeof($template_ids)) {
 		$devices = array();
@@ -4963,12 +4965,13 @@ function automation_graph_rule_export($graph_rule_ids) {
 
 		$graph_rule_ids = array($graph_rule_ids);
 	} else {
-		$export_name = 'automation_graph_rules_multiple.json';
+		$export_name = 'automation_graph_rules_multiple';
 	}
 
 	$json_array = array();
 
 	$json_array['name'] = clean_up_name(strtolower($export_name));
+	$json_array['export_name'] = $json_array['name'] . '.json';
 
 	if (cacti_sizeof($graph_rule_ids)) {
 		$graph_rules = array();
@@ -5041,12 +5044,13 @@ function automation_tree_rule_export($tree_rule_ids) {
 
 		$tree_rule_ids = array($tree_rule_ids);
 	} else {
-		$export_name = 'automation_tree_rules_multiple.json';
+		$export_name = 'automation_tree_rules_multiple';
 	}
 
 	$json_array = array();
 
 	$json_array['name'] = clean_up_name(strtolower($export_name));
+	$json_array['export_name'] = $json_array['name'] . '.json';
 
 	if (cacti_sizeof($tree_rule_ids)) {
 		$tree_rules = array();
@@ -5109,12 +5113,13 @@ function automation_snmp_option_export($snmp_option_ids) {
 
 		$snmp_option_ids = array($snmp_option_ids);
 	} else {
-		$export_name = 'automation_snmp_options_multiple.json';
+		$export_name = 'automation_snmp_options_multiple';
 	}
 
 	$json_array = array();
 
 	$json_array['name'] = clean_up_name(strtolower($export_name));
+	$json_array['export_name'] = $json_array['name'] . '.json';
 
 	if (cacti_sizeof($snmp_option_ids)) {
 		$options = array();

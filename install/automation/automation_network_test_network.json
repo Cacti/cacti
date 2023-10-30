@@ -1,0 +1,68 @@
+{
+    "name": "automation_network_test_network",
+    "network": [
+        {
+            "hash": "a0f0a39eb0823b9f4231300f4c785ac9",
+            "poller_id": 1,
+            "site_id": "0",
+            "name": "Test Network",
+            "subnet_range": "192.168.1.0\/24",
+            "ignore_ips": "",
+            "dns_servers": "",
+            "enabled": "on",
+            "notification_enabled": "",
+            "notification_email": "",
+            "notification_fromname": "",
+            "notification_fromemail": "",
+            "snmp_id": "b8caee7dad384cabb2b3ab61ba0d6723",
+            "enable_netbios": "on",
+            "add_to_cacti": "on",
+            "same_sysname": "",
+            "total_ips": "254",
+            "ping_method": "1",
+            "ping_port": "22",
+            "ping_timeout": "400",
+            "ping_retries": "1",
+            "sched_type": "2",
+            "threads": "10",
+            "run_limit": "1200",
+            "start_at": "0000-00-00 00:00:00",
+            "next_start": "2023-11-01 01:32:00",
+            "recur_every": "2",
+            "day_of_week": "4",
+            "month": "",
+            "day_of_month": "",
+            "monthly_week": "",
+            "monthly_day": "",
+            "rerun_data_queries": "on",
+            "snmp": {
+                "hash": "b8caee7dad384cabb2b3ab61ba0d6723",
+                "name": "Default Option Set",
+                "snmp_items": [
+                    {
+                        "hash": "01fa8943789814bf7fd4be3caf3bd83f",
+                        "sequence": "1",
+                        "snmp_version": "2",
+                        "snmp_community": "public",
+                        "snmp_port": "161",
+                        "snmp_timeout": "1000",
+                        "snmp_retries": "3",
+                        "max_oids": "10",
+                        "bulk_walk_size": "-1"
+                    },
+                    {
+                        "hash": "5376f59d400e3b0b59f33f122cf133c3",
+                        "sequence": "2",
+                        "snmp_version": "2",
+                        "snmp_community": "private",
+                        "snmp_port": "161",
+                        "snmp_timeout": "1000",
+                        "snmp_retries": "3",
+                        "max_oids": "10",
+                        "bulk_walk_size": "-1"
+                    }
+                ]
+            }
+        }
+    ]
+}
