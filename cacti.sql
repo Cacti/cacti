@@ -252,8 +252,6 @@ CREATE TABLE `automation_graph_rule_items` (
 -- Dumping data for table `automation_graph_rule_items`
 --
 
-INSERT INTO `automation_graph_rule_items` VALUES (1,'',1,1,0,'ifOperStatus',7,'Up'),(2,'',1,2,1,'ifIP',16,''),(3,'',1,3,1,'ifHwAddr',16,''),(4,'',2,1,0,'ifOperStatus',7,'Up'),(5,'',2,2,1,'ifIP',16,''),(6,'',2,3,1,'ifHwAddr',16,'');
-
 --
 -- Table structure for table `automation_graph_rules`
 --
@@ -272,8 +270,6 @@ CREATE TABLE `automation_graph_rules` (
 --
 -- Dumping data for table `automation_graph_rules`
 --
-
-INSERT INTO `automation_graph_rules` VALUES (1,'','Traffic 64 bit Server',1,12,'on'),(2,'','Traffic 64 bit Server Linux',1,12,'on'),(3,'','Disk Space',3,17,'on');
 
 --
 -- Table structure for table `automation_ips`
@@ -310,8 +306,6 @@ CREATE TABLE `automation_match_rule_items` (
 --
 -- Dumping data for table `automation_match_rule_items`
 --
-
-INSERT INTO `automation_match_rule_items` VALUES (1,'',1,1,1,0,'h.snmp_sysDescr',8,''),(2,'',1,1,2,1,'h.snmp_version',12,'2'),(3,'',1,3,1,0,'ht.name',1,'Linux'),(4,'',2,1,1,0,'ht.name',1,'Linux'),(5,'',2,1,2,1,'h.snmp_version',12,'2'),(6,'',2,3,1,0,'ht.name',1,'SNMP'),(7,'',2,3,2,1,'gt.name',1,'Traffic'),(8,'',1,1,3,1,'h.snmp_sysDescr',2,'Windows');
 
 --
 -- Table structure for table `automation_networks`
@@ -455,8 +449,6 @@ CREATE TABLE `automation_templates` (
 -- Dumping data for table `automation_templates`
 --
 
-INSERT INTO `automation_templates` VALUES (1,'',3,2,'Linux','','','','',2),(2,'',1,2,'Windows','','','','',1),(3,'',2,2,'(Cisco Internetwork Operating System Software|IOS)','','','','',3);
-
 --
 -- Table structure for table `automation_templates_rules`
 --
@@ -498,8 +490,6 @@ CREATE TABLE `automation_tree_rule_items` (
 -- Dumping data for table `automation_tree_rule_items`
 --
 
-INSERT INTO `automation_tree_rule_items` VALUES (1,'',1,1,'ht.name',1,'','^(.*)\\s*Linux\\s*(.*)$','${1}\\n${2}'),(2,'',1,2,'h.hostname',1,'','^(\\w*)\\s*(\\w*)\\s*(\\w*).*$',''),(3,'',2,1,'0',2,'on','Traffic',''),(4,'',2,2,'gtg.title_cache',1,'','^(.*)\\s*-\\s*Traffic -\\s*(.*)$','${1}\\n${2}');
-
 --
 -- Table structure for table `automation_tree_rules`
 --
@@ -520,8 +510,6 @@ CREATE TABLE `automation_tree_rules` (
 --
 -- Dumping data for table `automation_tree_rules`
 --
-
-INSERT INTO `automation_tree_rules` VALUES (1,'','New Device',1,0,3,1,'on'),(2,'','New Graph',1,0,2,1,'');
 
 --
 -- Table structure for table `cdef`
