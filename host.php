@@ -692,7 +692,7 @@ function host_add_gt() {
 	);
 
 	if (get_request_var('host_id') > 0) {
-		object_cache_get_totals('device_state', $host['id']);
+		object_cache_get_totals('device_state', get_request_var('host_id'));
 	}
 
 	automation_hook_graph_template(get_nfilter_request_var('host_id'), get_nfilter_request_var('graph_template_id'));
