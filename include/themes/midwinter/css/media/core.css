@@ -918,8 +918,7 @@ ul#breadcrumbs {
 
 .cactiContent {
     width: 100%;
-    /*background: var(--background-content);*/
-    background-color: var(--background-lowlight);
+    background: var(--background-content);
 }
 
 .cactiTreeNavigationArea {
@@ -1033,11 +1032,19 @@ ul#breadcrumbs {
 }
 
 legend {
-    color: var(--text-color-highlight-a);
     font-size: var(--fs-huge);
     font-weight: bold;
     display: flex;
-    justify-content: flex-end;
+    align-items: left;
+    flex-direction: column;
+}
+
+legend::before {
+    content: "";
+    display: block;
+    background: transparent url(./../../images/cacti_logo.svg) no-repeat scroll 50% 50% / 60px auto;
+    width: 100px;
+    height: 140px;
 }
 
 .logoutRight, .loginRight {

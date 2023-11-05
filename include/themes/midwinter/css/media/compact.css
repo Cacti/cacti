@@ -168,3 +168,147 @@ nav label:hover { border-bottom-color: var(--border-color); }
     display: block;
     width: 100%;
 }
+
+
+.cactiAuthLogo {
+    display: none;
+}
+
+.cactiAuthCenter {
+    background: rgba(0,0,0,0.3);
+    border-right: 1px solid var(--border-color);
+    color: var(--text-color-white);
+    width: 35rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 4rem;
+    padding-bottom: 1rem;
+}
+
+html[data-theme-color="light"] {
+    background: rgba(0,0,0,0.25);
+}
+
+
+.cactiAuthCenter hr {
+    display:none;
+}
+
+.cactiAuthArea {
+
+}
+
+.cactiAuth label {
+    display: none;
+}
+
+.cactiAuthTitle {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.cactiAuth {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    font-size: var(--fs-semilarge);
+}
+
+.cactiAuth > span {
+    margin-bottom: 1rem;
+}
+
+.cactiAuth input[type="text"],
+.cactiAuth input[type="password"] {
+    outline: none;
+    border: none;
+    border-radius: 40px !important;
+    background: rgba(0, 0, 0, 0.6);
+    font-size: var(--fs-semihuge);
+    line-height: 3.5rem;
+    margin: 1rem 0;
+    padding: 0 0 0 4rem;
+}
+
+.cactiAuth input[type="submit"],
+.cactiAuth input[type="button"] {
+    outline: none;
+    border: none;
+    border-radius: 40px !important;
+    background: rgba(0, 0, 0, 0.6);
+    font-size: var(--fs-semihuge);
+    line-height: 3.5rem;
+    margin: 2rem 0 0 0;
+}
+
+.cactiAuth input[type="submit"]:hover,
+.cactiAuth input[type="button"]:hover {
+    background-color: rgba(0,0,0,0.3);
+}
+
+.cactiAuth i {
+    position: relative;
+    top: -3.5rem;
+    left: 2rem;
+    width: 1rem;
+    color: var(--text-color-medium);
+}
+
+cactiAuth::placeholder {
+    color: white;
+}
+
+.cactiAuthTable td {
+    padding-bottom: 6px;
+    padding-right: 6px;
+    white-space: nowrap;
+}
+
+.cactiAuthErrors {
+    color: red;
+    min-height: 15px;
+}
+
+.cactiAuthBody {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: stretch;
+    align-items: stretch;
+    height: 100%;
+    background: linear-gradient(210deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.1) 100%), url(./../../images/wallpapers/kapsodasos.jpg) no-repeat center fixed;
+    background-size: cover; /* Resize the background image to cover the entire container */
+}
+
+html[data-theme-color="light"] .cactiAuthBody {
+    background: url(./../../images/wallpapers/kapsodasos.jpg) no-repeat center;
+    background-size: cover; /* Resize the background image to cover the entire container */
+}
+
+.cactiAuthMotto {
+    flex: 1;
+    display: inline-flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    font-size: 16px; /* pixel value required to ensure presentation is always the same */
+    font-weight: var(--fw-extrabold);
+    color: var(--text-color-lighter);
+    padding-top: 10rem;
+    padding-right: 20rem;
+}
+
+.cactiAuthPanel {
+    padding: 4px 0px;
+}
+
+.versionInfo {
+    padding-top: 5px;
+    float: right;
+    margin-top: 15px;
+    color: white;
+}

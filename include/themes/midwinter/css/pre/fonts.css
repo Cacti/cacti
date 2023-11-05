@@ -1,4 +1,5 @@
 html {
+
     /* font-size variables */
     --fs-tiny:       0.5625rem;
     --fs-extrasmall: 0.625rem;
@@ -11,6 +12,8 @@ html {
     --fs-large:      1.375rem;
     --fs-semihuge:   1.5rem;
     --fs-huge:       1.625rem;
+    --fs-x-large:    2.0rem;
+    --fs-xx-large:   2.5rem;
     --fs-king:       3.875rem;
 
     /* default font size */

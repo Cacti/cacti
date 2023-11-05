@@ -34,8 +34,8 @@ function themeReady() {
 
 	/* load default values */
 	initStorageItem('midWinter_Color_Mode', 'dark', 'theme-color');
-	initStorageItem('midWinter_Color_Mode_Auto', 'off', 'theme-color-auto');
-	initStorageItem('midWinter_Font_Size', '82.5', 'zoom-level');
+	initStorageItem('midWinter_Color_Mode_Auto', 'on', 'theme-color-auto');
+	initStorageItem('midWinter_Font_Size', '75', 'zoom-level');
 	initStorageItem('midWinter_Animations', 'on', 'animations');
 	initStorageItem('midWinter_widthNavigationBox_settings', 'three');
 
@@ -146,6 +146,40 @@ function setupTheme() {
 	let midWinter_Animations = storage.get('midWinter_Animations');
 
 	// -- login, logout -- rewrite
+	if ($('.cactiAuthBody').length !== 0 && $('.cactiAuthMotto').length === 0 ) {
+		/* modify login area and element */
+		$('.cactiAuthArea legend').text('WELCOME TO CACTI');
+
+		/* get rid of outdated HTML table layout - that makes CSS layout difficult */
+		let cactiAuthTable = $('.cactiAuthTable').detach();
+
+		/* suppress issues with autofocus while page is loading */
+		$('<input id="suppress_autofocus" type="text" style="display:none;" tab-index="-1" autofocus>').prependTo('.cactiAuth');
+
+		$(cactiAuthTable).find('input').each(
+			function() {
+				if( $(this).attr('type') === 'password' || $(this).attr('type') === 'text' ) {
+					if ($(this).attr('name') !== undefined) {
+						$(this).appendTo('.cactiAuth');
+					}
+				}else {
+					$(this).appendTo('.cactiAuth');
+				}
+			}
+		)
+
+		let welcome = $(cactiAuthTable).find('td').eq(0).html();
+		$('<span>'+welcome+'</span>').prependTo('.cactiAuth');
+		cactiAuthTable = undefined;
+
+		$('<i class="far fa-user"></i>').insertAfter('#login_username');
+		$('<i class="fas fa-lock"></i>').insertAfter('input[type="password"]');
+
+		/* add theme motto */
+		$('<div class="cactiAuthMotto"><h3>MIDWINTER</h3><h6>A RESPONSIVE CACTI GUI FOR YOU</h6></div>').appendTo('.cactiAuthBody');
+	}
+
+
 	if ($('.loginArea legend').length !== 0) {
 		$('.loginArea legend').text('Cacti Monitoring');
 		$('.loginTitle p').html('v'+cactiVersion);

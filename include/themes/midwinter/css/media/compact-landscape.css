@@ -2,7 +2,7 @@
 #mdw-ConsolePageHead {
     display: flex;
     height: 4rem;
-    background-color: var(--background-lowlight);
+    background-color: var(--background-navigation-top);
     flex-direction: row;
     flex-wrap: wrap;
     align-content: flex-start;
@@ -113,7 +113,7 @@ html[data-theme-color-auto='on'] .compact_nav_icon[data-helper='toggleColorMode'
     width: 4rem;
     height: 4rem;
     cursor: pointer;
-    border-right: 1px solid var(--border-color);
+    border-right: 1px solid var(--box-shadow-color);
     z-index: 1000;
 }
 
@@ -150,7 +150,7 @@ html[data-kiosk-mode='on'] .cactiContent {
     float:left;
     z-index: 1000;
     background: var(--background-navigation);
-    border-right: 1px solid var(--border-color);
+    border-right: 1px solid var(--box-shadow-color);
 }
 
 html[data-kiosk-mode='on'] #mdw-ConsoleNavigation {
@@ -215,7 +215,7 @@ html[data-kiosk-mode='on'] #mdw-ConsoleNavigation {
     right: 0;
     box-shadow: 0 10px 5px 0 var(--box-shadow-color);
     border-top: 1px solid var(--border-color-light);
-    border-left: 1px solid var(--background-navigation);
+    border-left: 1px solid var(--border-color);
     border-bottom: 1px solid var(--background-navigation);
     transform: translateX(+125%);
 }
