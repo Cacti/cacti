@@ -236,14 +236,14 @@ function automation_import_process() {
 	if (cacti_sizeof($return_data) && isset($return_data['success'])) {
 		foreach ($return_data['success'] as $message) {
 			$debug_data[] = '<span class="deviceUp">' . __('NOTE:') . '</span> ' . $message;
-			cacti_log('NOTE: Automation SNMP Options Import Succeeded!.  Message: '. $message, false, 'AUTOM8');
+			cacti_log('NOTE: SNMP Options Import Succeeded!.  Message: '. $message, false, 'AUTOM8');
 		}
 	}
 
 	if (isset($return_data['errors'])) {
 		foreach ($return_data['errors'] as $error) {
 			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $error;
-			cacti_log('NOTE: Automation SNMP Options Import Error!.  Message: '. $message, false, 'AUTOM8');
+			cacti_log('NOTE: SNMP Options Import Error!.  Message: '. $message, false, 'AUTOM8');
 		}
 	}
 
@@ -496,7 +496,7 @@ function automation_duplicate_snmp_option($id, $new_name) {
 			WHERE snmp_id = ?",
 			array($hahs, $id));
 
-		raise_message('option_duplicated', __('Automation SNMP Options has been Duplicated.'), MESSAGE_LEVEL_INFO);
+		raise_message('option_duplicated', __('SNMP Options has been Duplicated.'), MESSAGE_LEVEL_INFO);
 	} else {
 		raise_message('missing_options', __('Automation Item does not exist.  Can not Duplicate.'), MESSAGE_LEVEL_ERROR);
 	}
@@ -742,7 +742,7 @@ function automation_snmp_edit() {
 			WHERE snmp_id = ?
 			ORDER BY sequence', array(get_request_var('id')));
 
-		html_start_box(__('Automation SNMP Options'), '100%', '', '3', 'center', 'automation_snmp.php?action=item_edit&id=' . get_request_var('id'));
+		html_start_box(__('SNMP Options'), '100%', '', '3', 'center', 'automation_snmp.php?action=item_edit&id=' . get_request_var('id'));
 
 		$display_text = array(
 			array('display' => __('Item'), 'align' => 'left'),
@@ -899,7 +899,7 @@ function automation_snmp() {
 		$rows = get_request_var('rows');
 	}
 
-	html_start_box(__('Automation SNMP Options'), '100%', '', '3', 'center', 'automation_snmp.php?action=edit');
+	html_start_box(__('SNMP Options'), '100%', '', '3', 'center', 'automation_snmp.php?action=edit');
 
 	?>
 	<tr class='even'>
