@@ -18,6 +18,7 @@ Cacti CHANGELOG
 -issue#5527: Upgrade from 0.8.8 to 1.2.25 (latest) fails on db upgrade due to missing data source profile id
 -issue#5534: When deleting a single Data Source the table data_debug is not purged
 -issue#5542: When a form element does not include a 'value' column, provide a more helpful warning message 
+-issue#5554: Interface description with equal sign (=) in ifAlias does not show Alias
 
 1.2.25
 -security#GHSA-77rf-774j-6h3p: Protect against Insecure deserialization of filter data

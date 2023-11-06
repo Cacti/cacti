@@ -745,7 +745,7 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 
 	if ($snmp_oid_included) {
 		/* strip off all leading junk (the oid and stuff) */
-		$string_array = explode('=', $string);
+		$string_array = explode('=', $string, 1);
 
 		if (cacti_sizeof($string_array) == 1) {
 			/* trim excess first */
@@ -842,7 +842,6 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 		 * and hex-string: from the passed value
 		 */
 		$output = '';
-
 		$parts  = explode(' ', $string);
 
 		if (cacti_sizeof($parts) == 4) {
@@ -889,12 +888,11 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 			$possible_ip = false;
 		}
 	} elseif (substr(strtolower($string), 0, 4) == 'hex:') {
-		$output = '';
-
 		/* strip off the 'Hex:' */
 		$string = trim(str_ireplace('hex:', '', $string));
 
 		/* normalize some forms */
+		$output = '';
 		$string = str_replace(array(' ', '-', '.'), ':', $string);
 		$parts  = explode(':', $string);
 
