@@ -745,7 +745,7 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 
 	if ($snmp_oid_included) {
 		/* strip off all leading junk (the oid and stuff) */
-		$string_array = explode('=', $string, 1);
+		$string_array = explode('=', $string, 2);
 
 		if (cacti_sizeof($string_array) == 1) {
 			/* trim excess first */
