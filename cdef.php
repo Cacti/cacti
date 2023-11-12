@@ -249,9 +249,10 @@ function form_actions() {
 			}
 		}
 
+
 		$form_data = array(
 			'general' => array(
-				'page'       => 'vdef.php',
+				'page'       => 'cdef.php',
 				'actions'    => $actions,
 				'optvar'     => 'drp_action',
 				'item_array' => $iarray,
