@@ -1248,6 +1248,9 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
  *   - smessage - Singular confirmation message to the user.
  *   - pmessage - Plural confirmation message to the user.
  *   - message  - Generic confirmation message to the user.
+ *   - extra    - An array of general form input.  The supported methods include:
+ *      textbox, drop_array, checkbox
+ *      additional options include: title, default, width, and array for drop_arrays
  *
  * An example might look like the following:
  *
@@ -1270,7 +1273,15 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
  *			'smessage' => __('Click \'Continue\' to Disable the following User Domain.'),
  *			'pmessage' => __('Click \'Continue\' to Disable following User Domains.'),
  *			'scont'    => __('Disable User Domain'),
- *			'pcont'    => __('Disable User Domains')
+ *			'pcont'    => __('Disable User Domains'),
+ *			'extra'    => array(
+ *				'group_prefix' => array(
+ *					'method'  => 'textbox',
+ *					'title'   => __('Group Prefix:'),
+ *					'default' => __('New Group'),
+ *					'width'   => 25
+ *				)
+ *			)
  *		)
  *	);
  *
@@ -1327,8 +1338,40 @@ function form_continue_confirmation($form_data) {
 
 	print "<tr><td class='textArea left'>";
 	print "<p>$message</p>";
-	print "<div class='itemlist'><ul>$ilist</ul></div>";
+
+	if ($ilist != '') {
+		print "<div class='itemlist'><ul>$ilist</ul></div>";
+	}
+
 	print "</td></tr>";
+
+	if (isset($data['extra'])) {
+		foreach($data['extra'] as $field_name => $field_array) {
+			if (!isset($field_array['width'])) {
+				$field_array['width'] = 25;
+			}
+
+			print "<tr><td class='textArea'>";
+
+			switch($field_array['method']) {
+				case 'textbox':
+					print "<p><label>{$field_array['title']}</label>";
+					print form_text_box($field_name, $field_array['default'], '', $field_array['width']);
+					print "</p>";
+
+					break;
+				case 'drop_array':
+					break;
+				case 'checkbox':
+					break;
+				default:
+					cacti_log("WARNING: Form continuation method {$field_array['method']} not understood");
+			}
+
+			print "</td></tr>";
+		}
+	}
+
 	print "<tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>

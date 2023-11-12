@@ -428,108 +428,70 @@ function form_actions() {
 		header('Location: user_group_admin.php');
 
 		exit;
-	}
-
-	/* loop through each of the users and process them */
-	$group_list  = '';
-	$group_array = array();
-	$i           = 0;
-
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
-
-			if (get_nfilter_request_var('drp_action') != '2') {
-				$group_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM user_auth_group WHERE id = ?', array($matches[1]))) . '</li>';
-			}
-			$group_array[$i] = $matches[1];
-
-			$i++;
-		}
-	}
-
-	top_header();
-
-	form_start('user_group_admin.php');
-
-	html_start_box($group_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-	if (isset($group_array) && cacti_sizeof($group_array)) {
-		if ((get_nfilter_request_var('drp_action') == '1') && (cacti_sizeof($group_array))) { /* delete */
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to delete the following User Group', 'Click \'Continue\' to delete following User Groups', cacti_sizeof($group_array)) . "</p>
-					<div class='itemlist'><ul>$group_list</ul></div>
-				</td>
-			</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete User Group', 'Delete User Groups', cacti_sizeof($group_array)) . "'>";
-		}
-
-		$group_id = '';
-
-		if ((get_nfilter_request_var('drp_action') == '2') && (cacti_sizeof($group_array))) { /* copy */
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to Copy the following User Group to a new User Group.', 'Click \'Continue\' to Copy following User Groups to new User Groups.', cacti_sizeof($group_array)) . "</p>
-					<div class='itemlist'><ul>$group_list</ul></div>
-				</td>
-			</tr>
-			<tr>
-				<td class='textArea'>
-					<p>" . __('Group Prefix:') . ' ';
-			print form_text_box('group_prefix', __('New Group'), '', 25);
-			print '</p></td>
-				</tr>';
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Copy User Group', 'Copy User Groups', cacti_sizeof($group_array)) . "'>";
-		}
-
-		if ((get_nfilter_request_var('drp_action') == '3') && (cacti_sizeof($group_array))) { /* enable */
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to enable the following User Group.', 'Click \'Continue\' to enable following User Groups.', cacti_sizeof($group_array)) . "</p>
-					<div class='itemlist'><ul>$group_list</ul></div>
-				</td>
-			</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enable User Group', 'Enable User Groups', cacti_sizeof($group_array)) . "'>";
-		}
-
-		if ((get_nfilter_request_var('drp_action') == '4') && (cacti_sizeof($group_array))) { /* disable */
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to disable the following User Group.', 'Click \'Continue\' to disable following User Groups.', cacti_sizeof($group_array)) . "</p>
-					<div class='itemlist'><ul>$group_list</ul></div>
-				</td>
-			</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Disable User Group', 'Disable User Groups', cacti_sizeof($group_array)) . "'>";
-		}
 	} else {
-		raise_message(40);
-		header('Location: user_group_admin.php');
+		$ilist  = '';
+		$iarray = array();
 
-		exit;
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
+
+				if (get_nfilter_request_var('drp_action') != '2') {
+					$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM user_auth_group WHERE id = ?', array($matches[1]))) . '</li>';
+				}
+
+				$iarray[] = $matches[1];
+			}
+		}
+
+		$form_data = array(
+			'general' => array(
+				'page'       => 'user_group_admin.php',
+				'actions'    => $group_actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Delete the following User Group.'),
+					'pmessage' => __('Click \'Continue\' to Delete following User Groups.'),
+					'scont'    => __('Delete User Group'),
+					'pcont'    => __('Delete User Groups')
+				),
+				2 => array(
+					'smessage' => __('Click \'Continue\' to Copy the following User Group.'),
+					'pmessage' => __('Click \'Continue\' to Copy following User Groups.'),
+					'scont'    => __('Copy User Group'),
+					'pcont'    => __('Copy User Groups'),
+					'extra'    => array(
+						'group_prefix' => array(
+							'method'  => 'textbox',
+							'title'   => __('Group Prefix:'),
+							'default' => __('New Group'),
+							'width'   => 25
+						)
+					)
+				),
+				3 => array(
+					'smessage' => __('Click \'Continue\' to Enable the following User Group.'),
+					'pmessage' => __('Click \'Continue\' to Enable following User Groups.'),
+					'scont'    => __('Enable User Group'),
+					'pcont'    => __('Enable User Groups')
+				),
+				4 => array(
+					'smessage' => __('Click \'Continue\' to Disable the following User Group.'),
+					'pmessage' => __('Click \'Continue\' to Disable following User Groups.'),
+					'scont'    => __('Disable User Group'),
+					'pcont'    => __('Disable User Groups')
+				)
+			)
+		);
+
+		form_continue_confirmation($form_data);
 	}
-
-	print "<tr>
-		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>";
-
-	print "<input type='hidden' name='selected_items' value='" . (isset($group_array) ? serialize($group_array) : '') . "'>";
-	print "<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
-		$save_html
-		</td>
-	</tr>";
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
 
 /* --------------------------
