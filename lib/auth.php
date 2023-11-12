@@ -558,6 +558,13 @@ function get_auth_realms($login = false) {
 			}
 
 			return $new_realms;
+		} else {
+			$new_realms['0'] = array(
+				'name'     => __('Local'),
+				'selected' => false
+			);
+
+			return $new_realms;
 		}
 	}
 
