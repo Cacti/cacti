@@ -25,7 +25,7 @@
 include('./include/auth.php');
 include_once('./lib/cdef.php');
 
-$cdef_actions = array(
+$actions = array(
 	1 => __('Delete'),
 	2 => __('Duplicate')
 );
@@ -99,10 +99,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	Global Form Functions
-   -------------------------- */
-
 function draw_cdef_preview($cdef_id) {
 	?>
 	<tr class='even'>
@@ -112,10 +108,6 @@ function draw_cdef_preview($cdef_id) {
 	</tr>
 	<?php
 }
-
-/* --------------------------
-	The Save Function
-   -------------------------- */
 
 function form_save() {
 	// make sure ids are numeric
@@ -216,12 +208,8 @@ function duplicate_cdef($_cdef_id, $cdef_title) {
 	}
 }
 
-/* ------------------------
-	The 'actions' function
-   ------------------------ */
-
 function form_actions() {
-	global $cdef_actions;
+	global $actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
@@ -245,81 +233,57 @@ function form_actions() {
 		header('Location: cdef.php');
 
 		exit;
-	}
-
-	/* setup some variables */
-	$cdef_list = '';
-	$i         = 0;
-
-	/* loop through each of the graphs selected on the previous page and get more info about them */
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
-
-			$cdef_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', array($matches[1]))) . '</li>';
-			$cdef_array[$i] = $matches[1];
-
-			$i++;
-		}
-	}
-
-	top_header();
-
-	form_start('cdef.php');
-
-	html_start_box($cdef_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-	if (isset($cdef_array) && cacti_sizeof($cdef_array)) {
-		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to delete the following CDEF.', 'Click \'Continue\' to delete all following CDEFs.', cacti_sizeof($cdef_array)) . "</p>
-					<div class='itemlist'><ul>$cdef_list</ul></div>
-				</td>
-			</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete CDEF', 'Delete CDEFs', cacti_sizeof($cdef_array)) . "'>";
-		} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to duplicate the following CDEF. You can optionally change the title format for the new CDEF.', 'Click \'Continue\' to duplicate the following CDEFs. You can optionally change the title format for the new CDEFs.', cacti_sizeof($cdef_array)) . "</p>
-					<div class='itemlist'><ul>$cdef_list</ul></div>
-					<p>" . __('Title Format:') . '<br>';
-			form_text_box('title_format', '<cdef_title> (1)', '', '255', '30', 'text');
-			print "</p>
-				</td>
-			</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate CDEF', 'Duplicate CDEFs', cacti_sizeof($cdef_array)) . "'>";
-		}
 	} else {
-		raise_message(40);
-		header('Location: cdef.php');
+		$ilist  = '';
+		$iarray = array();
 
-		exit;
+		/* loop through each of the graphs selected on the previous page and get more info about them */
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
+
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', array($matches[1]))) . '</li>';
+				$iarray[] = $matches[1];
+			}
+		}
+
+		$form_data = array(
+			'general' => array(
+				'page'       => 'vdef.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Delete the following CDEF.'),
+					'pmessage' => __('Click \'Continue\' to Delete following CDEFs.'),
+					'scont'    => __('Delete CDEF'),
+					'pcont'    => __('Delete CDEFs')
+				),
+				2 => array(
+					'smessage' => __('Click \'Continue\' to Duplicate the following CDEF.'),
+					'pmessage' => __('Click \'Continue\' to Duplicate following CDEFs.'),
+					'scont'    => __('Duplicate CDEF'),
+					'pcont'    => __('Duplicate CDEFs'),
+					'extra'    => array(
+						'title_format' => array(
+							'method'  => 'textbox',
+							'title'   => __('Title Format:'),
+							'default' => '<cdef_title>',
+							'width'   => 25
+						)
+					)
+				)
+			)
+		);
+
+		form_continue_confirmation($form_data);
 	}
-
-	print "<tr>
-		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($cdef_array) ? serialize($cdef_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
-			$save_html
-		</td>
-	</tr>";
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
-
-/* --------------------------
-	CDEF Item Functions
-   -------------------------- */
 
 function cdef_item_remove_confirm() {
 	global $cdef_functions, $cdef_item_types, $custom_cdef_data_source_types;
@@ -550,10 +514,6 @@ function item_edit() {
 	form_save_button('cdef.php?action=edit&id=' . get_request_var('cdef_id'));
 }
 
-/* ---------------------
-	CDEF Functions
-   --------------------- */
-
 function cdef_item_dnd() {
 	/* ================= Input validation ================= */
 	get_filter_request_var('id');
@@ -729,7 +689,7 @@ function cdef_edit() {
 }
 
 function cdef() {
-	global $cdef_actions, $item_rows;
+	global $actions, $item_rows;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -954,7 +914,7 @@ function cdef() {
 	}
 
 	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($cdef_actions);
+	draw_actions_dropdown($actions);
 
 	form_end();
 }

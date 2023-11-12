@@ -25,7 +25,7 @@
 include('./include/auth.php');
 include_once('./lib/vdef.php');
 
-$vdef_actions = array(
+$actions = array(
 	'1' => __('Delete'),
 	'2' => __('Duplicate')
 );
@@ -94,10 +94,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	Global Form Functions
-   -------------------------- */
-
 function draw_vdef_preview($vdef_id) {
 	?>
 	<tr class='even'>
@@ -107,10 +103,6 @@ function draw_vdef_preview($vdef_id) {
 	</tr>
 	<?php
 }
-
-/* --------------------------
-	The Save Function
-   -------------------------- */
 
 function vdef_form_save() {
 	if (isset_request_var('save_component_vdef')) {
@@ -197,12 +189,8 @@ function duplicate_vdef($_vdef_id, $vdef_title) {
 	}
 }
 
-/* ------------------------
-	The 'actions' function
-   ------------------------ */
-
 function vdef_form_actions() {
-	global $vdef_actions;
+	global $actions;
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
@@ -239,78 +227,57 @@ function vdef_form_actions() {
 		header('Location: vdef.php');
 
 		exit;
-	}
-
-	/* setup some variables */
-	$vdef_list = '';
-
-	/* loop through each of the graphs selected on the previous page and get more info about them */
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
-
-			$vdef_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM vdef WHERE id = ?', array($matches[1]))) . '</li>';
-			$vdef_array[] = $matches[1];
-		}
-	}
-
-	top_header();
-
-	form_start('vdef.php', 'vdef_actions');
-
-	html_start_box($vdef_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-	if (isset($vdef_array)) {
-		if (get_nfilter_request_var('drp_action') === '1') { // delete
-			print "	<tr>
-					<td class='topBoxAlt'>
-						<p>" . __n('Click \'Continue\' to delete the following VDEF.', 'Click \'Continue\' to delete following VDEFs.', cacti_sizeof($vdef_array)) . "</p>
-						<div class='itemlist'><ul>$vdef_list</ul></div>
-					</td>
-				</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc_n('Delete VDEF', 'Delete VDEFs', cacti_sizeof($vdef_array)) . "'>";
-		} elseif (get_nfilter_request_var('drp_action') === '2') { // duplicate
-			print "	<tr>
-					<td class='topBoxAlt'>
-						<p>" . __n('Click \'Continue\' to duplicate the following VDEF. You can optionally change the title format for the new VDEF.', 'Click \'Continue\' to duplicate following VDEFs. You can optionally change the title format for the new VDEFs.', cacti_sizeof($vdef_array)) . "</p>
-						<div class='itemlist'><ul>$vdef_list</ul></div>
-						<p><strong>" . __('Title Format:') . '</strong><br>';
-			form_text_box('title_format', '<vdef_title> (1)', '', '255', '30', 'text');
-			print "</p>
-					</td>
-				</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc_n('Duplicate VDEF', 'Duplicate VDEFs', cacti_sizeof($vdef_array)) . "'>";
-		}
 	} else {
-		raise_message(40);
-		header('Location: vdef.php');
+		$ilist  = '';
+		$iarray = array();
 
-		exit;
+		/* loop through each of the graphs selected on the previous page and get more info about them */
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
+
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM vdef WHERE id = ?', array($matches[1]))) . '</li>';
+				$iarray[] = $matches[1];
+			}
+		}
+
+		$form_data = array(
+			'general' => array(
+				'page'       => 'vdef.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Delete the following VDEF.'),
+					'pmessage' => __('Click \'Continue\' to Delete following VDEFs.'),
+					'scont'    => __('Delete VDEF'),
+					'pcont'    => __('Delete VDEFs')
+				),
+				2 => array(
+					'smessage' => __('Click \'Continue\' to Duplicate the following VDEF.'),
+					'pmessage' => __('Click \'Continue\' to Duplicate following VDEFs.'),
+					'scont'    => __('Duplicate VDEF'),
+					'pcont'    => __('Duplicate VDEFs'),
+					'extra'    => array(
+						'title_format' => array(
+							'method'  => 'textbox',
+							'title'   => __('Title Format:'),
+							'default' => '<vdef_title>',
+							'width'   => 25
+						)
+					)
+				)
+			)
+		);
+
+		form_continue_confirmation($form_data);
 	}
-
-	print "<tr>
-        <td class='saveRow'>
-            <input type='hidden' name='action' value='actions'>
-            <input type='hidden' name='selected_items' value='" . (isset($vdef_array) ? serialize($vdef_array) : '') . "'>
-            <input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
-            $save_html
-        </td>
-    </tr>";
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
-
-/* --------------------------
-	VDEF Item Functions
-   -------------------------- */
 
 function vdef_item_remove_confirm() {
 	global $vdef_functions, $vdef_item_types, $custom_vdef_data_source_types;
@@ -515,10 +482,6 @@ function vdef_item_edit() {
 
 	form_save_button('vdef.php?action=edit&id=' . get_request_var('vdef_id'));
 }
-
-/* ---------------------
-	VDEF Functions
-   --------------------- */
 
 function item_movedown() {
 	/* ================= input validation ================= */
@@ -846,7 +809,7 @@ function get_vdef_records(&$total_rows, &$rows) {
 }
 
 function vdef($refresh = true) {
-	global $vdef_actions;
+	global $actions;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -961,7 +924,7 @@ function vdef($refresh = true) {
 	}
 
 	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($vdef_actions);
+	draw_actions_dropdown($actions);
 
 	form_end();
 }
