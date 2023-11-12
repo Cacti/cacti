@@ -436,7 +436,7 @@ function setupDefaultElements() {
 
 		/* default setup */
 //		$('<div id="filterTableOnTop" class="stickyContainer sticky"><div id="filterTableOnTopContent"></div><div id="filterTableOnTopControl"></div></div>').prependTo('#navigation_right');
-		new navigationButton('displayOptions', 'fas fa-sliders-h', '#navFilter', 'auto', 'off').build();
+		new navigationButton('displayOptions', '','fas fa-sliders-h', '#navFilter', 'auto', 'off').build();
 //		new navigationButton('hideTopNavBar', 'fas fa-chevron-up', '#filterTableOnTopControl', 'toggleTopNavBar', 'off').build();
 
 		/* custom content */
