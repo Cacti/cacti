@@ -249,7 +249,6 @@ function form_actions() {
 			}
 		}
 
-
 		$form_data = array(
 			'general' => array(
 				'page'       => 'cdef.php',
