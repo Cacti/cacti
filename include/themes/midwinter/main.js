@@ -239,36 +239,36 @@ function setupTheme() {
 			);
 
 			/* dashboards */
-			new navigationButton('dashboards', 'Dashboards', 'fas fa-th-large', '#compact_tab_menu').build();
+			new navigationButton('dashboards', 'fas fa-th-large', '#compact_tab_menu').build();
 			new navigationBox(cactiDashboards, 'dashboards', 'full','1', 'menu').build();
 
 			/* settings */
 			if (cactiConsoleAllowed) {
-				new navigationButton('settings', 'Settings', 'fas fa-cogs', '#compact_tab_menu').build();
+				new navigationButton('settings', 'fas fa-cogs', '#compact_tab_menu').build();
 				new navigationBox(zoom_i18n_settings, 'settings', 'full', '3', 'menu', 'left', zoom_i18n_settings, element_menu).build();
 			}
 
 			/* tree */
 			if (cactiGraphsAllowed) {
-				new navigationButton('tree', 'Tree','fas fa-seedling', '#compact_tab_menu').build();
+				new navigationButton('tree', 'fas fa-seedling', '#compact_tab_menu').build();
 				new navigationBox( 'Tree', 'tree', 'full', '2', 'menu','left', 'Tree').build();
 			}
 
 			/* user help */
-			new navigationButton('help', 'Help', 'far fa-comment-alt', '#compact_user_menu').build();
+			new navigationButton('help', 'far fa-comment-alt', '#compact_user_menu').build();
 			new navigationBox(help, 'help', 'half', '2', 'none', 'left', justCacti+' &reg; v'+cactiVersion).build();
 
 			/* user settings */
-			new navigationButton('user', 'User Settings', 'far fa-user', '#compact_user_menu').build();
+			new navigationButton('user', 'far fa-user', '#compact_user_menu').build();
 			new navigationBox( cactiUser, 'user', 'half', '2', 'none', 'left', $('.loggedInAs').text() ).build();
 
 			/* log out */
-			new navigationButton('logout', 'Sign Out','fas fa-sign-out-alt', '#compact_user_menu', 'redirect', urlPath+'logout.php').build();
+			new navigationButton('logout', 'fas fa-sign-out-alt', '#compact_user_menu', 'redirect', urlPath+'logout.php').build();
 
 			/* table filters */
 			new navigationBox( 'Display Filters', 'displayOptions', 'full', '1.5', 'close', 'right').build();
-			new navigationButton('toggleColorMode', '', 'fas fa-adjust', '#navControl', 'toggleColorMode', 'on').build();
-			new navigationButton('kioskMode', '', 'fas fa-tv', '#navControl', 'kioskMode', 'on').build();
+			new navigationButton('toggleColorMode', 'fas fa-adjust', '#navControl', 'toggleColorMode', 'on').build();
+			new navigationButton('kioskMode', 'fas fa-tv', '#navControl', 'kioskMode', 'on').build();
 		}
 	}
 

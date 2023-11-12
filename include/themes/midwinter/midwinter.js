@@ -24,7 +24,7 @@
 class navigationBox {
     
     #box;
-     #container;
+    #container;
     #container_content = '';
     
     constructor(title, helper, height='full', width='auto', button= 'none', align='left', header=title, content = 'auto') {
@@ -102,10 +102,9 @@ class navigationBox {
 class navigationButton {
     #icon;
     #container;
-    constructor(helper, tooltip='', icon_class, destination, onclick='auto', param='on') {
+    constructor(helper, icon_class, destination, onclick='auto', param='on') {
         this.#icon = {
             'helper' : helper,
-            'tooltip' : tooltip,
             'class'  : icon_class,
             'destination' : destination,
             'param': param
@@ -115,8 +114,7 @@ class navigationButton {
         }else {
             this.#icon.onclick = onclick;
         }
-
-        this.#container = '<div class="compact_nav_icon" data-helper="'+this.#icon.helper+'" data-tooltip="'+this.#icon.tooltip+'"><i class="'+this.#icon.class+'"></i></div>';
+        this.#container = '<div class="compact_nav_icon" data-helper="'+this.#icon.helper+'"><i class="'+this.#icon.class+'"></i></div>';
     }
 
     build() {

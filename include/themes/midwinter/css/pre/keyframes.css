@@ -3,15 +3,3 @@
     50%		{ opacity: 0; }
     100%	{ opacity: 1; }
 }
-
-@keyframes scaleDelay {
-    0% {
-        transform: translate(2.75rem, 0) scale(0);
-    }
-    50% {
-        transform: translate(2.75rem, 0) scale(0);
-    }
-    100% {
-        transform: translate(2.75rem, 0) scale(1);
-    }
-}
