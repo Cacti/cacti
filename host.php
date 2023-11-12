@@ -1479,7 +1479,7 @@ function get_device_records(&$total_rows, $rows) {
 	$sql_order = get_order_string();
 	$sql_limit = 'LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$sql_query = "SELECT host.*, graphs, data_sources,
+	$sql_query = "SELECT host.*, gl.graphs, dl.data_sources,
 		CAST(IF(availability_method = 0, '0',
 			IF(status_event_count > 0 AND status IN (1, 2), status_event_count*$poller_interval,
 			IF(UNIX_TIMESTAMP(status_rec_date) < 943916400 AND status IN (0, 3), total_polls*$poller_interval,
