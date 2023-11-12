@@ -657,14 +657,11 @@ if ($config['is_web']) {
 	}
 
 	if (isset_request_var('newtheme')) {
-		$newtheme    =get_nfilter_request_var('newtheme');
-		$newtheme_css=__DIR__ . "/themes/$newtheme/main.css";
+		$newtheme     = get_nfilter_request_var('newtheme');
+		$newtheme_css = __DIR__ . "/themes/$newtheme/main.css";
 
 		if (is_valid_theme($newtheme)) {
-			set_config_option('selected_theme', $newtheme);
 			$_SESSION['selected_theme'] = $newtheme;
-		} else {
-			unset($_SESSION['selected_theme']);
 		}
 	}
 

@@ -822,26 +822,39 @@ function get_selected_theme():mixed {
  */
 function is_valid_theme(?string &$theme, int $set_user = 0):bool {
 	global $themes, $config;
+
 	$valid = true;
 
 	if ($theme == null || !file_exists(CACTI_PATH_INCLUDE . '/themes/' . $theme . '/main.css')) {
 		$valid      = false;
 		$user_table = db_table_exists('settings_user');
 
-		foreach ($themes as $t => $name) {
-			if (file_exists(CACTI_PATH_INCLUDE . '/themes/' . $t . '/main.css')) {
-				$theme = $t;
-				$valid = true;
+		$theme = read_config_option('selected_theme', true);
 
-				if ($user_table && $set_user && isset($_SESSION[SESS_USER_ID])) {
-					db_execute_prepared('UPDATE settings_user
-						SET value = ?
-						WHERE user_id = ?
-						AND name="selected_theme"',
-						array($theme, $_SESSION[SESS_USER_ID]));
+		if (file_exists(CACTI_PATH_INCLUDE . '/themes/' . $theme . '/main.css')) {
+			if ($user_table && $set_user && isset($_SESSION[SESS_USER_ID])) {
+				db_execute_prepared('UPDATE settings_user
+					SET value = ?
+					WHERE user_id = ?
+					AND name="selected_theme"',
+					array($theme, $_SESSION[SESS_USER_ID]));
+			}
+		} else {
+			foreach ($themes as $t => $name) {
+				if (file_exists(CACTI_PATH_INCLUDE . '/themes/' . $t . '/main.css')) {
+					$theme = $t;
+					$valid = true;
+
+					if ($user_table && $set_user && isset($_SESSION[SESS_USER_ID])) {
+						db_execute_prepared('UPDATE settings_user
+							SET value = ?
+							WHERE user_id = ?
+							AND name="selected_theme"',
+							array($theme, $_SESSION[SESS_USER_ID]));
+					}
+
+					break;
 				}
-
-				break;
 			}
 		}
 	}
