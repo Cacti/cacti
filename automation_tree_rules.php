@@ -668,28 +668,18 @@ function automation_tree_rules_remove() {
 	get_filter_request_var('id');
 	/* ==================================================== */
 
-	if ((read_config_option('deletion_verification') == 'on') && (!isset_request_var('confirm'))) {
-		top_header();
-		form_confirm(__('Are You Sure?'), __("Are you sure you want to DELETE the Rule '%s'?", db_fetch_cell_prepared('SELECT name FROM automation_tree_rules WHERE id = ?', array(get_request_var('id')))), 'automation_tree_rules.php', 'automation_tree_rules.php?action=remove&id=' . get_request_var('id'));
-		bottom_footer();
+	db_execute_prepared('DELETE FROM automation_match_rule_items
+		WHERE rule_id = ?
+		AND rule_type = ?',
+		array(get_request_var('id'), AUTOMATION_RULE_TYPE_TREE_MATCH));
 
-		exit;
-	}
+	db_execute_prepared('DELETE FROM automation_tree_rule_items
+		WHERE rule_id = ?',
+		array(get_request_var('id')));
 
-	if ((read_config_option('deletion_verification') == '') || (isset_request_var('confirm'))) {
-		db_execute_prepared('DELETE FROM automation_match_rule_items
-			WHERE rule_id = ?
-			AND rule_type = ?',
-			array(get_request_var('id'), AUTOMATION_RULE_TYPE_TREE_MATCH));
-
-		db_execute_prepared('DELETE FROM automation_tree_rule_items
-			WHERE rule_id = ?',
-			array(get_request_var('id')));
-
-		db_execute_prepared('DELETE FROM automation_tree_rules
-			WHERE id = ?',
-			array(get_request_var('id')));
-	}
+	db_execute_prepared('DELETE FROM automation_tree_rules
+		WHERE id = ?',
+		array(get_request_var('id')));
 }
 
 function automation_tree_rules_edit() {
