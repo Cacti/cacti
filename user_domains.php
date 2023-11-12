@@ -203,89 +203,58 @@ function form_actions() {
 		header('Location: user_domains.php');
 
 		exit;
-	}
-
-	/* setup some variables */
-	$d_list  = '';
-	$d_array = array();
-
-	/* loop through each of the data queries and process them */
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
-
-			$d_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT domain_name FROM user_domains WHERE domain_id = ?', array($matches[1]))) . '</li>';
-			$d_array[] = $matches[1];
-		}
-	}
-
-	top_header();
-
-	form_start('user_domains.php');
-
-	html_start_box($actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-	if (isset($d_array) && cacti_sizeof($d_array)) {
-		if (get_nfilter_request_var('drp_action') == '1') { // delete
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to delete the following User Domain.', 'Click \'Continue\' to delete following User Domains.', cacti_sizeof($d_array)) . "</p>
-					<div class='itemlist'><ul>$d_list</ul></div>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete User Domain', 'Delete User Domains', cacti_sizeof($d_array)) . "'>";
-		} elseif (get_nfilter_request_var('drp_action') == '2') { // disable
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to disable the following User Domain.', 'Click \'Continue\' to disable following User Domains.', cacti_sizeof($d_array)) . "</p>
-					<div class='itemlist'><ul>$d_list</ul></div>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Disable User Domain', 'Disable User Domains', cacti_sizeof($d_array)) . "'>";
-		} elseif (get_nfilter_request_var('drp_action') == '3') { // enable
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to enable the following User Domain.', 'Click \'Continue\' to enable following User Domains.', cacti_sizeof($d_array)) . "</p>
-					<div class='itemlist'><ul>$d_list</ul></div>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enabled User Domain', 'Enable User Domains', cacti_sizeof($d_array)) . "'>";
-		} elseif (get_nfilter_request_var('drp_action') == '4') { // default
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to make the following the following User Domain the default one.') . "</p>
-					<div class='itemlist'><ul>$d_list</ul></div>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Make Selected Domain Default') . "'>";
-		}
 	} else {
-		raise_message(40);
-		header('Location: user_domains.php');
+		$ilist  = '';
+		$iarray = array();
 
-		exit;
+		/* loop through each of the data queries and process them */
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
+
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT domain_name FROM user_domains WHERE domain_id = ?', array($matches[1]))) . '</li>';
+				$iarray[] = $matches[1];
+			}
+		}
+
+		$form_data = array(
+			'general' => array(
+				'page'       => 'user_domains.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Delete the following User Domain.'),
+					'pmessage' => __('Click \'Continue\' to Delete following User Domains.'),
+					'scont'    => __('Delete User Domain'),
+					'pcont'    => __('Delete User Domains')
+				),
+				2 => array(
+					'smessage' => __('Click \'Continue\' to Disable the following User Domain.'),
+					'pmessage' => __('Click \'Continue\' to Disable following User Domains.'),
+					'scont'    => __('Disable User Domain'),
+					'pcont'    => __('Disable User Domains')
+				),
+				3 => array(
+					'smessage' => __('Click \'Continue\' to Enable the following User Domain.'),
+					'pmessage' => __('Click \'Continue\' to Enable following User Domains.'),
+					'scont'    => __('Enable User Domain'),
+					'pcont'    => __('Enable User Domains')
+				),
+				4 => array(
+					'message' => __('Click \'Continue\' to make the following the following User Domain the default one.'),
+					'cont'    => __('Make Selected Domain Default')
+				)
+			)
+		);
+
+		form_continue_confirmation($form_data);
 	}
-
-	print "<tr>
-		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($d_array) ? serialize($d_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
-			$save_html
-		</td>
-	</tr>\n";
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
 
 /* -----------------------

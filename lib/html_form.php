@@ -1227,6 +1227,126 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 }
 
 /**
+ * form_continue_confirmation - given as set of form options in the form of an array
+ *   generate a continuation form confirm dialog for the user.
+ *
+ * @param array - Options to present to the users depending on the drop action
+ *
+ * The options array has two sections 'general' and 'options'.  The 'general' option
+ *   must includes the following 4 variables:
+ *   - page: The page that is being rendered or returnedd to in case of a cancel
+ *   - actions: An array of legal actions that we can construct a title for
+ *   - optvar: A request variable to pull the selected option from.  Normally 'drp_action'
+ *   - item_array: An array of selected items that have been pre-processed
+ *   - item_list: An string of list items "<li>Title</li>" that have been pre-processed
+ *
+ * The 'options' array should have a matching value array for each of the approved
+ *   actions.  For each action, you need one of the following formats variables:
+ *   - scont - Singular continuation string
+ *   - pcont - Plural continuation string
+ *   - cont  - Generic continuation string
+ *   - smessage - Singular confirmation message to the user.
+ *   - pmessage - Plural confirmation message to the user.
+ *   - message  - Generic confirmation message to the user.
+ *
+ * An example might look like the following:
+ *
+ * $form_data = array(
+ *	'general' => array(
+ *		'page'       => 'user_domains.php',
+ *		'actions'    => $actions,
+ *		'optvar'     => 'drp_action'
+ *		'item_array' => $d_array,
+ *		'item_list'  => $d_list,
+ *	),
+ *	'options' => array(
+ *		1 => array(
+ *			'smessage' => __('Click \'Continue\' to Delete the following User Domain.'),
+ *			'pmessage' => __('Click \'Continue\' to Delete following User Domains.'),
+ *			'scont'    => __('Delete User Domain'),
+ *			'pcont'    => __('Delete User Domains')
+ *		),
+ *		2 => array(
+ *			'smessage' => __('Click \'Continue\' to Disable the following User Domain.'),
+ *			'pmessage' => __('Click \'Continue\' to Disable following User Domains.'),
+ *			'scont'    => __('Disable User Domain'),
+ *			'pcont'    => __('Disable User Domains')
+ *		)
+ *	);
+ *
+ * @return null - Data is streamed through stdout
+ */
+function form_continue_confirmation($form_data) {
+	top_header();
+
+	$page    = $form_data['general']['page'];
+	$actions = $form_data['general']['actions'];
+	$drpvar  = $form_data['general']['optvar'];
+	$iarray  = $form_data['general']['item_array'];
+	$ilist   = $form_data['general']['item_list'];
+	$drpval  = get_nfilter_request_var($drpvar);
+
+	form_start($page);
+
+	html_start_box($actions[$drpval], '60%', '', '3', 'center', '');
+
+	if (cacti_sizeof($iarray)) {
+		$data = $form_data['options'][$drpval];
+
+		if (cacti_sizeof($iarray) > 1) {
+			if (isset($data['pmessage'])) {
+				$message = $data['pmessage'];
+			} elseif (isset($data['message'])) {
+				$message = $data['message'];
+			}
+
+			if (isset($data['pcont'])) {
+				$title = $data['pcont'];
+			} elseif (isset($data['cont'])) {
+				$title = $data['cont'];
+			}
+		} else {
+			if (isset($data['smessage'])) {
+				$message = $data['smessage'];
+			} elseif (isset($data['message'])) {
+				$message = $data['message'];
+			}
+
+			if (isset($data['scont'])) {
+				$title = $data['scont'];
+			} elseif (isset($data['cont'])) {
+				$title = $data['cont'];
+			}
+		}
+	} else {
+		raise_message(40);
+		header('Location: ' . $page);
+
+		exit;
+	}
+
+	print "<tr><td class='textArea left'>";
+	print "<p>$message</p>";
+	print "<div class='itemlist'><ul>$ilist</ul></div>";
+	print "</td></tr>";
+	print "<tr>
+		<td class='saveRow'>
+			<input type='hidden' name='action' value='actions'>
+			<input type='hidden' name='selected_items' value='" . (isset($iarray) ? serialize($iarray) : '') . "'>
+			<input type='hidden' name='drp_action' value='" . html_escape($drpval) . "'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo(\"$page\")' title='" . __('Return to previous page'). "'>&nbsp;
+			<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='$title'>
+		</td>
+	</tr>";
+
+	html_end_box();
+
+	form_end();
+
+	bottom_footer();
+}
+
+/**
  * form_confirm - draws a table presenting the user with some choice and allowing
  *   them to either proceed (delete) or cancel
  *
