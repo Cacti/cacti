@@ -363,7 +363,36 @@ html[data-kiosk-mode='on'] #mdw-ConsoleNavigation {
     font-size: var(--fs-semilarge);
     cursor: pointer;
     margin-right: -1px;
+    position: relative;
 }
+
+
+.mdw-ConsoleNavigationArea .compact_nav_icon[data-tooltip]:not([data-tooltip=""])::after {
+    background-color: var(--background);
+    color: var(--text-color-normal);
+    padding: 0.5rem 1rem;
+    height: fit-content;
+    width: fit-content;
+    white-space: nowrap;
+    border-radius: 5px;
+    position: absolute;
+    text-align: center;
+    left: 50%;
+    content: attr(data-tooltip);
+    transform: translate(2.75rem, 0) scale(0);
+    transform-origin: top;
+    transition: 0.1s;
+    box-shadow: 0 4px 14px 0 rgba(0,0,0,.2), 0 0 0 1px rgba(0,0,0,.05);
+    border: 1px solid var(--border-color-light);
+}
+
+.mdw-ConsoleNavigationArea .compact_nav_icon[data-tooltip]:not([data-tooltip=""]):not(.active):hover:after {
+    animation: scaleDelay ease 0.1s;
+    animation-delay: 0.75s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
 
 .mdw-ConsoleNavigationArea .compact_nav_icon > span {
     display: none;
