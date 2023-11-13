@@ -1489,7 +1489,7 @@ $settings['poller'] = array(
 	),
 	'rrdcheck_timeout' => array(
 		'friendly_name' => __('RRDfile Check Timeout'),
-		'description'   => __('The maximum amount of time Cacti\'s RRDfile check script can run without generating a timeout error and being killed.'),
+		'description'   => __('The maximum amount of time Cacti\'s RRDfile Check script can run without generating a timeout error and being killed.'),
 		'method'        => 'drop_array',
 		'default'       => '300',
 		'array'         => array(
@@ -2337,14 +2337,14 @@ $settings['data'] = array(
 		'method'        => 'spacer',
 	),
 	'rrdcheck_enable' => array(
-		'friendly_name' => __('Enable RRDfile check'),
-		'description'   => __('Should RRDfile check be enabled for this Cacti system?'),
+		'friendly_name' => __('Enable RRDfile Check'),
+		'description'   => __('Should RRDfile Check be enabled for this Cacti system?'),
 		'method'        => 'checkbox',
 		'default'       => ''
 	),
 	'rrdcheck_parallel' => array(
-		'friendly_name' => __('Number of RRDfile check Processes'),
-		'description'   => __('The number of concurrent RRDfile check processes to use to use to process all of rrd files.'),
+		'friendly_name' => __('Number of RRDfile Check Processes'),
+		'description'   => __('The number of concurrent RRDfile Check processes to use to use to process all of rrd files.'),
 		'default'       => '1',
 		'method'        => 'drop_array',
 		'array'         => array(
