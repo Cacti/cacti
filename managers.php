@@ -24,13 +24,13 @@
 
 include('./include/auth.php');
 
-$manager_actions = array(
+$actions = array(
 	1 => __('Delete'),
-	2 => __('Enable'),
-	3 => __('Disable')
+	2 => __('Disable'),
+	3 => __('Enable'),
 );
 
-$manager_notification_actions = array(
+$mactions = array(
 	1 => __('Disable'),
 	2 => __('Enable')
 );
@@ -71,7 +71,7 @@ switch (get_request_var('action')) {
 }
 
 function manager() {
-	global $config, $manager_actions, $item_rows;
+	global $config, $actions, $item_rows;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -268,14 +268,14 @@ function manager() {
 
 	form_hidden_box('action_receivers', '1', '');
 
-	draw_actions_dropdown($manager_actions);
+	draw_actions_dropdown($actions);
 
 	form_end();
 }
 
 function manager_edit() {
 	global $config, $snmp_auth_protocols, $snmp_priv_protocols, $snmp_versions,
-	$tabs_manager_edit, $fields_manager_edit, $manager_notification_actions;
+	$tabs_manager_edit, $fields_manager_edit, $mactions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -382,7 +382,7 @@ function manager_edit() {
 }
 
 function manager_notifications($id, $header_label) {
-	global $item_rows, $manager_notification_actions;
+	global $item_rows, $mactions;
 
 	$mibs            = db_fetch_assoc('SELECT DISTINCT mib FROM snmpagent_cache');
 	$registered_mibs = array();
@@ -634,7 +634,7 @@ function manager_notifications($id, $header_label) {
 		print $nav;
 	}
 
-	draw_actions_dropdown($manager_notification_actions);
+	draw_actions_dropdown($mactions);
 
 	form_end();
 }
@@ -889,14 +889,13 @@ function form_save() {
 			break;
 
 		default:
-			$save['id']                       = get_request_var('id');
-			$save['description']              = form_input_validate(trim(get_nfilter_request_var('description')), 'description', '', false, 3);
-			$save['hostname']                 = form_input_validate(trim(get_nfilter_request_var('hostname')), 'hostname', '', false, 3);
-			$save['disabled']                 = form_input_validate(get_nfilter_request_var('disabled'), 'disabled', '^on$', true, 3);
-			$save['max_log_size']             = get_nfilter_request_var('max_log_size');
-
-			$save['snmp_version']             = form_input_validate(get_nfilter_request_var('snmp_version'), 'snmp_version', '^[1-3]$', false, 3);
-			$save['snmp_community']           = form_input_validate(get_nfilter_request_var('snmp_community'), 'snmp_community', '', true, 3);
+			$save['id']             = get_request_var('id');
+			$save['description']    = form_input_validate(trim(get_nfilter_request_var('description')), 'description', '', false, 3);
+			$save['hostname']       = form_input_validate(trim(get_nfilter_request_var('hostname')), 'hostname', '', false, 3);
+			$save['disabled']       = form_input_validate(get_nfilter_request_var('disabled'), 'disabled', '^on$', true, 3);
+			$save['max_log_size']   = get_nfilter_request_var('max_log_size');
+			$save['snmp_version']   = form_input_validate(get_nfilter_request_var('snmp_version'), 'snmp_version', '^[1-3]$', false, 3);
+			$save['snmp_community'] = form_input_validate(get_nfilter_request_var('snmp_community'), 'snmp_community', '', true, 3);
 
 			if ($save['snmp_version'] == 3) {
 				$save['snmp_username']        = form_input_validate(get_nfilter_request_var('snmp_username'), 'snmp_username', '', true, 3);
@@ -914,9 +913,9 @@ function form_save() {
 				$save['snmp_engine_id']       = '';
 			}
 
-			$save['snmp_port']                = form_input_validate(get_nfilter_request_var('snmp_port'), 'snmp_port', '^[0-9]+$', false, 3);
-			$save['snmp_message_type']        = form_input_validate(get_nfilter_request_var('snmp_message_type'), 'snmp_message_type', '^[1-2]$', false, 3);
-			$save['notes']                    = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
+			$save['snmp_port']         = form_input_validate(get_nfilter_request_var('snmp_port'), 'snmp_port', '^[0-9]+$', false, 3);
+			$save['snmp_message_type'] = form_input_validate(get_nfilter_request_var('snmp_message_type'), 'snmp_message_type', '^[1-2]$', false, 3);
+			$save['notes']             = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
 
 			if ($save['snmp_version'] == 3 && ($save['snmp_password'] != get_nfilter_request_var('snmp_password_confirm'))) {
 				raise_message(4);
@@ -940,7 +939,7 @@ function form_save() {
 }
 
 function form_actions() {
-	global $manager_actions, $manager_notification_actions;
+	global $actions, $mactions;
 
 	if (isset_request_var('selected_items')) {
 		if (isset_request_var('action_receivers')) {
@@ -951,10 +950,10 @@ function form_actions() {
 					db_execute('DELETE FROM snmpagent_managers WHERE id IN (' . implode(',' ,$selected_items) . ')');
 					db_execute('DELETE FROM snmpagent_managers_notifications WHERE manager_id IN (' . implode(',' ,$selected_items) . ')');
 					db_execute('DELETE FROM snmpagent_notifications_log WHERE manager_id IN (' . implode(',' ,$selected_items) . ')');
-				} elseif (get_nfilter_request_var('drp_action') == '2') { // enable
-					db_execute("UPDATE snmpagent_managers SET disabled = '' WHERE id IN (" . implode(',' ,$selected_items) . ')');
-				} elseif (get_nfilter_request_var('drp_action') == '3') { // disable
+				} elseif (get_nfilter_request_var('drp_action') == '2') { // disable
 					db_execute("UPDATE snmpagent_managers SET disabled = 'on' WHERE id IN (" . implode(',' ,$selected_items) . ')');
+				} elseif (get_nfilter_request_var('drp_action') == '3') { // enable
+					db_execute("UPDATE snmpagent_managers SET disabled = '' WHERE id IN (" . implode(',' ,$selected_items) . ')');
 				}
 
 				header('Location: managers.php');
@@ -996,126 +995,102 @@ function form_actions() {
 
 			exit;
 		}
-	} else {
-		if (isset_request_var('action_receivers')) {
-			$selected_items = array();
-			$list           = '';
+	} elseif (isset_request_var('action_receivers')) {
+		$ilist  = '';
+		$iarray = array();
 
-			foreach ($_POST as $key => $value) {
-				if (strstr($key, 'chk_')) {
-					/* grep manager's id */
-					$id = substr($key, 4);
-					/* ================= input validation ================= */
-					input_validate_input_number($id, 'id');
-					/* ==================================================== */
-					$list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT description FROM snmpagent_managers WHERE id = ?', array($id))) . '</li>';
-					$selected_items[] = $id;
-				}
+		foreach ($_POST as $key => $value) {
+			if (strstr($key, 'chk_')) {
+				/* grep manager's id */
+				$id = substr($key, 4);
+				/* ================= input validation ================= */
+				input_validate_input_number($id, 'id');
+				/* ==================================================== */
+
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT description FROM snmpagent_managers WHERE id = ?', array($id))) . '</li>';
+
+				$iarray[] = $id;
 			}
-
-			top_header();
-
-			form_start('managers.php');
-
-			html_start_box($manager_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-			if (cacti_sizeof($selected_items)) {
-				if (get_nfilter_request_var('drp_action') == '1') { // delete
-					$msg = __n('Click \'Continue\' to delete the following Notification Receiver', 'Click \'Continue\' to delete following Notification Receiver', cacti_sizeof($selected_items));
-				} elseif (get_nfilter_request_var('drp_action') == '2') { // enable
-					$msg = __n('Click \'Continue\' to enable the following Notification Receiver', 'Click \'Continue\' to enable following Notification Receiver', cacti_sizeof($selected_items));
-				} elseif (get_nfilter_request_var('drp_action') == '3') { // disable
-					$msg = __n('Click \'Continue\' to disable the following Notification Receiver', 'Click \'Continue\' to disable following Notification Receiver', cacti_sizeof($selected_items));
-				}
-
-				print "<tr>
-					<td class='textArea'>
-						<p>$msg</p>
-						<div class='itemlist'><ul>$list</ul></div>
-					</td>
-				</tr>";
-
-				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'><input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('%s Notification Receivers', $manager_actions[get_nfilter_request_var('drp_action')]) . "'>";
-			} else {
-				raise_message(40);
-				header('Location: managers.php');
-
-				exit;
-			}
-
-			print "<tr>
-				<td class='saveRow'>
-				<input type='hidden' name='action' value='actions'>
-				<input type='hidden' name='action_receivers' value='1'>
-				<input type='hidden' name='selected_items' value='" . (isset($selected_items) ? serialize($selected_items) : '') . "'>
-				<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
-				$save_html
-				</td>
-			</tr>\n";
-
-			html_end_box();
-
-			form_end();
-
-			bottom_footer();
-		} else {
-			$selected_items = array();
-			$list           = '';
-
-			/* ================= input validation ================= */
-			get_filter_request_var('id');
-			/* ==================================================== */
-
-			foreach ($_POST as $key => $value) {
-				if (strstr($key, 'chk_')) {
-					/* grep mib and notification name */
-					$row_id           = substr($key, 4);
-					list($mib, $name) = explode('__', $row_id);
-					$list .= '<li>' . html_escape($name) . ' (' . html_escape($mib) .')</li>';
-					$selected_items[$mib][$name] = 1;
-				}
-			}
-
-			top_header();
-
-			form_start('managers.php');
-
-			html_start_box($manager_notification_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-			if (cacti_sizeof($selected_items)) {
-				$msg = (get_nfilter_request_var('drp_action') == 2)
-					 ? __('Click \'Continue\' to forward the following Notification Objects to this Notification Receiver.')
-					 : __('Click \'Continue\' to disable forwarding the following Notification Objects to this Notification Receiver.');
-
-				print "<tr>
-					<td class='textArea'>
-						<p>$msg</p>
-						<ul>$list</ul>
-					</td>
-				</tr>";
-
-				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Disable Notification Objects') . "'>";
-			} else {
-				print "<tr><td><span class='textError'>" . __('You must select at least one notification object.') . "</span></td></tr>\n";
-				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
-			}
-
-			print "<tr>
-				<td class='saveRow'>
-				<input type='hidden' name='action' value='actions'>
-				<input type='hidden' name='action_receiver_notifications' value='1'>
-				<input type='hidden' name='selected_items' value='" . (isset($selected_items) ? serialize($selected_items) : '') . "'>
-				<input type='hidden' name='id' value='" . get_nfilter_request_var('id') . "'>
-				<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
-				$save_html
-				</td>
-			</tr>";
-
-			html_end_box();
-
-			form_end();
-
-			bottom_footer();
 		}
+
+		$form_data = array(
+			'general' => array(
+				'page'       => 'managers.php',
+				'actions'    => $actions,
+				'eaction'    => 'action_receivers',
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Delete the following Notification Receiver.'),
+					'pmessage' => __('Click \'Continue\' to Delete following Notification Receivers.'),
+					'scont'    => __('Delete Notification Receiver'),
+					'pcont'    => __('Delete Notification Receivers')
+				),
+				2 => array(
+					'smessage' => __('Click \'Continue\' to Disable the following Notification Receiver.'),
+					'pmessage' => __('Click \'Continue\' to Disable following Notification Receivers.'),
+					'scont'    => __('Disable Notification Receiver'),
+					'pcont'    => __('Disable Notification Receivers')
+				),
+				3 => array(
+					'smessage' => __('Click \'Continue\' to Enable the following Notification Receiver.'),
+					'pmessage' => __('Click \'Continue\' to Enable following Notification Receivers.'),
+					'scont'    => __('Enable Notification Receiver'),
+					'pcont'    => __('Enable Notification Receivers'),
+				)
+			)
+		);
+
+		form_continue_confirmation($form_data);
+	} else {
+		$ilist  = '';
+		$iarray = array();
+
+		/* ================= input validation ================= */
+		get_filter_request_var('id');
+		/* ==================================================== */
+
+		foreach ($_POST as $key => $value) {
+			if (strstr($key, 'chk_')) {
+				/* grep mib and notification name */
+				$row_id = substr($key, 4);
+
+				list($mib, $name) = explode('__', $row_id);
+
+				$ilist .= '<li>' . html_escape($name) . ' (' . html_escape($mib) .')</li>';
+
+				$iarray[$mib][$name] = 1;
+			}
+		}
+
+		$form_data = array(
+			'general' => array(
+				'page'       => 'managers.php?action=edit&tab=notifications&id=' . get_request_var('id'),
+				'actions'    => $mactions,
+				'eaction'    => 'action_receiver_notifications',
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Disable Forwarding the following Notification Object the following Notification Receiver.'),
+					'pmessage' => __('Click \'Continue\' to Disable Forwarding the following Notification Objects to the following Notification Receiver.'),
+					'scont'    => __('Disable Forwarding Object'),
+					'pcont'    => __('Disable Forwarding Objects')
+				),
+				2 => array(
+					'smessage' => __('Click \'Continue\' to Enable Forwarding the following Notification Object to this Notification Receiver.'),
+					'pmessage' => __('Click \'Continue\' to Enable Forwarding the following Notification Objects Notification Receivers.'),
+					'scont'    => __('Enable Forwarding Object'),
+					'pcont'    => __('Enable Forwarding Objects')
+				)
+			)
+		);
+
+		form_continue_confirmation($form_data);
 	}
 }

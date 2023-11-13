@@ -24,7 +24,7 @@
 
 include_once('./include/auth.php');
 
-$link_actions = array(
+$actions = array(
 	1 => __('Delete'),
 	3 => __('Enable'),
 	2 => __('Disable')
@@ -133,7 +133,7 @@ switch (get_request_var('action')) {
 }
 
 function form_actions() {
-	global $link_actions;
+	global $actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action');
@@ -164,86 +164,59 @@ function form_actions() {
 		header('Location: links.php');
 
 		exit;
-	}
-
-	/* setup some variables */
-	$page_list = '';
-	$i         = 0;
-
-	/* loop through each of the pages selected on the previous page and get more info about them */
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
-
-			$page_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT title FROM external_links WHERE id = ?', array($matches[1]))) . '</li>';
-			$pages[$i] = $matches[1];
-
-			$i++;
-		}
-	}
-
-	top_header();
-
-	form_start('links.php');
-
-	html_start_box($link_actions[get_request_var_post('drp_action')], '60%', '', '3', 'center', '');
-
-	if (isset($pages) && cacti_sizeof($pages)) {
-		if (get_request_var('drp_action') == '3') { // Enable Pages
-			print "<tr>
-				<td colspan='2' class='textArea'>
-					<p>" . __('Click \'Continue\' to Enable the following Page(s).') . '</p>
-					<ul>' . $page_list . "</ul>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __('Continue') . "' title='" . __esc('Enable Page(s)') . "'>";
-		} elseif (get_request_var('drp_action') == '2') { // Disable Pages
-			print "<tr>
-				<td colspan='2' class='textArea'>
-					<p>" . __('Click \'Continue\' to Disable the following Page(s).') . '</p>
-					<ul>' . $page_list . "</ul>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __('Continue') . "' title='" . __esc('Disable Page(s)') . "'>";
-		} elseif (get_request_var('drp_action') == '1') { // Delete Pages
-			print "<tr>
-				<td colspan='2' class='textArea'>
-					<p>" . __('Click \'Continue\' to Delete the following Page(s).') . '</p>
-					<ul>' . $page_list . "</ul>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __('Continue') . "' title='" . __esc('Delete Page(s)') . "'>";
-		}
 	} else {
-		raise_message(40);
-		header('Location: links.php');
+		$ilist  = '';
+		$iarray = array();
 
-		exit;
+		/* loop through each of the pages selected on the previous page and get more info about them */
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
+
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT title FROM external_links WHERE id = ?', array($matches[1]))) . '</li>';
+
+				$iarray[] = $matches[1];
+			}
+		}
+
+		$form_data = array(
+			'general' => array(
+				'page'       => 'links.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Delete the following External Link.'),
+					'pmessage' => __('Click \'Continue\' to Delete following External Links.'),
+					'scont'    => __('Delete External Link'),
+					'pcont'    => __('Delete External Links')
+				),
+				2 => array(
+					'smessage' => __('Click \'Continue\' to Disable the following External Link.'),
+					'pmessage' => __('Click \'Continue\' to Disable following External Links.'),
+					'scont'    => __('Disable External Link'),
+					'pcont'    => __('Disable External Links')
+				),
+				3 => array(
+					'smessage' => __('Click \'Continue\' to Enable the following External Link.'),
+					'pmessage' => __('Click \'Continue\' to Enable following External Links.'),
+					'scont'    => __('Enable External Link'),
+					'pcont'    => __('Enable External Links'),
+				)
+			)
+		);
+
+		form_continue_confirmation($form_data);
 	}
-
-	print "<tr class='saveRow'>
-		<td>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($pages) ? serialize($pages) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
-			$save_html
-		</td>
-	</tr>\n";
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
 
 function pages() {
-	global $item_rows, $config, $link_actions;
+	global $item_rows, $config, $actions;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -385,12 +358,36 @@ function pages() {
 	html_start_box('', '100%', '', '4', 'center', '');
 
 	$display_text = array(
-		'nosort0'     => array('display' => __('Actions'), 'align' => 'left',  'sort' => ''),
-		'contentfile' => array('display' => __('Page'),    'align' => 'left',  'sort' => 'ASC'),
-		'title'       => array('display' => __('Title'),   'align' => 'left',  'sort' => 'ASC'),
-		'style'       => array('display' => __('Style'),   'align' => 'left',  'sort' => 'ASC'),
-		'disabled'    => array('display' => __('Enabled'), 'align' => 'left',  'sort' => 'ASC'),
-		'sortorder'   => array('display' => __('Order'),   'align' => 'center', 'sort' => 'ASC')
+		'nosort0' => array(
+			'display' => __('Actions'),
+			'align'   => 'left',
+			'sort'    => ''
+		),
+		'contentfile' => array(
+			'display' => __('Page'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'title' => array(
+			'display' => __('Title'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'style' => array(
+			'display' => __('Style'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'disabled' => array(
+			'display' => __('Enabled'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'sortorder' => array(
+			'display' => __('Order'),
+			'align'   => 'center',
+			'sort'    => 'ASC'
+		)
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'));
@@ -446,7 +443,7 @@ function pages() {
 		print $nav;
 	}
 
-	draw_actions_dropdown($link_actions);
+	draw_actions_dropdown($actions);
 
 	form_end();
 }
@@ -645,7 +642,5 @@ function edit_page() {
 			});
 		}
 	</script>
-<?php
+	<?php
 }
-
-// vim:ts=4:sw=4:

@@ -1236,6 +1236,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
  *   must includes the following 4 variables:
  *   - page: The page that is being rendered or returnedd to in case of a cancel
  *   - actions: An array of legal actions that we can construct a title for
+ *   - eaction: An action to add to the form save when there are more than one on a page
  *   - optvar: A request variable to pull the selected option from.  Normally 'drp_action'
  *   - item_array: An array of selected items that have been pre-processed
  *   - item_list: An string of list items "<li>Title</li>" that have been pre-processed
@@ -1258,6 +1259,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
  *	'general' => array(
  *		'page'       => 'user_domains.php',
  *		'actions'    => $actions,
+ *		'eaction'    => 'action_variable', // Extra Action
  *		'optvar'     => 'drp_action'
  *		'item_array' => $d_array,
  *		'item_list'  => $d_list,
@@ -1394,15 +1396,18 @@ function form_continue_confirmation($form_data) {
 		}
 	}
 
-	print "<tr>
-		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($iarray) ? serialize($iarray) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . html_escape($drpval) . "'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo(\"$page\")' title='" . __('Return to previous page'). "'>&nbsp;
-			<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='$title'>
-		</td>
-	</tr>";
+	print "<tr><td class='saveRow'>";
+	print "<input type='hidden' name='action' value='actions'>";
+
+	if (isset($form_data['general']['eaction'])) {
+		print "<input type='hidden' name='{$form_data['general']['eaction']}' value='1'>";
+	}
+
+	print "<input type='hidden' name='selected_items' value='" . (isset($iarray) ? serialize($iarray) : '') . "'>";
+	print "<input type='hidden' name='drp_action' value='" . html_escape($drpval) . "'>";
+	print "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo(\"$page\")' title='" . __('Return to previous page'). "'>&nbsp;";
+	print "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='$title'>";
+	print "</td></tr>";
 
 	html_end_box();
 
