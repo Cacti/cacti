@@ -238,7 +238,7 @@ $fields_poller_edit = array(
 		'description'   => __("Provides a way to disable verification of the server's SSL certificate Common Name against the server's hostname when connecting. This verification is enabled by default."),
 		'value'         => '|arg1:dbsslverifyservercert|',
 		'default'       => $database_ssl_verify_server_cert ? 'on' : ''
-	),        
+	),
 	'id' => array(
 		'method' => 'hidden',
 		'value'  => '|arg1:id|',
@@ -294,14 +294,6 @@ switch (get_request_var('action')) {
 
 		break;
 }
-
-/* --------------------------
-	Global Form Functions
-   -------------------------- */
-
-/* --------------------------
-	The Save Function
-   -------------------------- */
 
 function form_save() {
 	if (isset_request_var('save_component_poller')) {
@@ -676,10 +668,6 @@ function form_actions() {
 
 	bottom_footer();
 }
-
-/* ---------------------
-	Site Functions
-   --------------------- */
 
 function poller_edit() {
 	global $fields_poller_edit;

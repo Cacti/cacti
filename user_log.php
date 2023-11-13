@@ -53,10 +53,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* -----------------------
-	Functions
-   ----------------------- */
-
 function view_user_log() {
 	global $auth_realms, $item_rows;
 

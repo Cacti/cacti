@@ -135,10 +135,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function api_auth_logout_everywhere() {
 	$user = $_SESSION[SESS_USER_ID];
 
@@ -292,10 +288,6 @@ function form_save() {
 	$tab = (isset_request_var('tab') && get_nfilter_request_var('tab')) ? ('?tab=' . get_nfilter_request_var('tab')) : '';
 	header('Location: auth_profile.php' . $tab);
 }
-
-/* --------------------------
-	User Settings Functions
-   -------------------------- */
 
 function settings() {
 	global $tabs_graphs, $settings_user, $current_user, $graph_views, $current_user;

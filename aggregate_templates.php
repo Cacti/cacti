@@ -63,9 +63,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
 /**
  * aggregate_form_save	the save function
  */
@@ -282,11 +279,8 @@ function aggregate_form_save() {
 function aggregate_get_graph_items($table, $id) {
 }
 
-/* ------------------------
-	The 'actions' function
-   ------------------------ */
 /**
- * aggregate_form_actions		the action function
+ * aggregate_form_actions - the action function
  */
 function aggregate_form_actions() {
 	global $aggregate_actions, $config;

@@ -178,10 +178,6 @@ if (isset_request_var('update_policy')) {
 	}
 }
 
-/* --------------------------
-	Actions Function
-   -------------------------- */
-
 function user_group_disable($id) {
 	db_execute_prepared("UPDATE user_auth_group SET enabled = '' WHERE id = ?", array($id));
 
@@ -494,10 +490,6 @@ function form_actions() {
 	}
 }
 
-/* --------------------------
-	Save Function
-   -------------------------- */
-
 function form_save() {
 	global $settings_user;
 
@@ -589,10 +581,6 @@ function form_save() {
 	/* redirect to the appropriate page */
 	header('Location: user_group_admin.php?action=edit&tab=general&id=' .  get_nfilter_request_var('id'));
 }
-
-/* --------------------------
-	Graph Permissions
-   -------------------------- */
 
 function perm_remove() {
 	/* ================= input validation ================= */
@@ -1662,10 +1650,6 @@ function user_group_settings_edit($header_label) {
 	</script>
 	<?php
 }
-
-/* --------------------------
-	User Administration
-   -------------------------- */
 
 function group_edit() {
 	global $config, $fields_user_group_edit;

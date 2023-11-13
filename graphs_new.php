@@ -74,10 +74,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function save_default_query_option() {
 	$data_query = get_filter_request_var('query');
 	$default    = get_filter_request_var('item');
@@ -183,10 +179,6 @@ function form_save() {
 	}
 }
 
-/* -------------------
-	Data Query Functions
-   ------------------- */
-
 function host_reload_query() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -195,10 +187,6 @@ function host_reload_query() {
 
 	run_data_query(get_request_var('host_id'), get_request_var('id'));
 }
-
-/* -------------------
-	New Graph Functions
-   ------------------- */
 
 function host_new_graphs_save($host_id) {
 	$selected_graphs_array = cacti_unserialize(stripslashes(get_nfilter_request_var('selected_graphs_array')));
@@ -299,10 +287,6 @@ function host_new_graphs_save($host_id) {
 		exit;
 	}
 }
-
-/* -------------------
-	Graph Functions
-   ------------------- */
 
 function graphs() {
 	global $config, $item_rows;

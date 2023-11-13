@@ -183,10 +183,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	Global Form Functions
-   -------------------------- */
-
 function host_reindex() {
 	global $config;
 
@@ -260,10 +256,6 @@ function get_site_locations() {
 	print json_encode($return);
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function form_save() {
 	if (isset_request_var('save_component_host')) {
 		if (get_nfilter_request_var('snmp_version') == 3 && (get_nfilter_request_var('snmp_password') != get_nfilter_request_var('snmp_password_confirm'))) {
@@ -314,10 +306,6 @@ function form_save() {
 		header('Location: host.php?action=edit&id=' . (empty($host_id) ? get_nfilter_request_var('id') : $host_id));
 	}
 }
-
-/* ------------------------
-	The "actions" function
-   ------------------------ */
 
 function form_actions() {
 	global $device_actions, $device_change_fields, $fields_host_edit;
@@ -610,10 +598,6 @@ function form_actions() {
 	bottom_footer();
 }
 
-/* -------------------
-	Device Export Function
-   ------------------- */
-
 function host_export() {
 	host_validate_vars();
 
@@ -635,10 +619,6 @@ function host_export() {
 
 	fclose($stdout);
 }
-
-/* -------------------
-	Data Query Functions
-   ------------------- */
 
 function host_add_query() {
 	/* ================= input validation ================= */
@@ -713,10 +693,6 @@ function host_remove_gt() {
 
 	api_device_gt_remove(get_request_var('host_id'), get_request_var('id'));
 }
-
-/* ---------------------
-	Device Functions
-   --------------------- */
 
 function host_edit() {
 	global $fields_host_edit, $reindex_types;

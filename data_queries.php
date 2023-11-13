@@ -123,10 +123,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function form_save() {
 	if (isset_request_var('save_component_snmp_query')) {
 		get_filter_request_var('id');
@@ -435,10 +431,6 @@ function form_actions() {
 
 	bottom_footer();
 }
-
-/* ----------------------------
-	Data Query Graph Functions
-   ---------------------------- */
 
 function data_query_item_movedown_gsv() {
 	/* ================= input validation ================= */
@@ -1065,10 +1057,6 @@ function data_query_item_edit() {
 
 	form_save_button('data_queries.php?action=edit&id=' . get_request_var('snmp_query_id'), 'return');
 }
-
-/* ---------------------
-	Data Query Functions
-   --------------------- */
 
 function data_query_remove($id) {
 	$snmp_query_graph = db_fetch_assoc_prepared('SELECT id

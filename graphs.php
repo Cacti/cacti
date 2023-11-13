@@ -175,10 +175,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	Global Form Functions
-   -------------------------- */
-
 function get_ajax_graph_items() {
 	$rrd_id  = get_filter_request_var('rrd_id');
 	$host_id = get_filter_request_var('host_id');
@@ -247,10 +243,6 @@ function add_tree_names_to_actions_array() {
 		}
 	}
 }
-
-/* --------------------------
-	The Save Function
-   -------------------------- */
 
 function parse_validate_graph_template_id($variable) {
 	$output_type_id = 0;
@@ -1076,10 +1068,6 @@ function item_edit() {
 	</script>
 <?php
 }
-
-/* ------------------------
-	The "actions" function
-   ------------------------ */
 
 function get_current_graph_template($local_graph_id) {
 	$graph_local = db_fetch_row_prepared('SELECT *
@@ -1989,10 +1977,6 @@ function form_actions() {
 	bottom_footer();
 }
 
-/* -----------------------
-	item - Graph Items
-   ----------------------- */
-
 function item() {
 	global $consolidation_functions, $graph_item_types, $struct_graph_item;
 
@@ -2065,10 +2049,6 @@ function item() {
 
 	html_end_box();
 }
-
-/* ------------------------------------
-	graph - Graphs
-   ------------------------------------ */
 
 function is_multi_device_graph($local_graph_id) {
 	$devices = db_fetch_cell_prepared('SELECT COUNT(DISTINCT host_id)

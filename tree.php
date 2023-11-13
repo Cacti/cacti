@@ -524,9 +524,6 @@ function set_branch_sort_type() {
 	}
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
 function form_save() {
 	/* clear graph tree cache on save - affects current user only, other users should see changes in <5 minutes */
 	if (isset($_SESSION['dhtml_tree'])) {
@@ -635,9 +632,6 @@ function leaves_exist($parent, $tree_id) {
 		array($tree_id, $parent));
 }
 
-/* -----------------------
-	Tree Item Functions
-   ----------------------- */
 function form_actions() {
 	global $tree_actions;
 
@@ -784,10 +778,6 @@ function form_actions() {
 
 	bottom_footer();
 }
-
-/* ---------------------
-	Tree Functions
-   --------------------- */
 
 function tree_edit($partial = false) {
 	global $fields_tree_edit;

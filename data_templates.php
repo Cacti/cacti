@@ -81,10 +81,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function form_save() {
 	if (isset_request_var('save_component_template')) {
 		/* ================= input validation ================= */
@@ -356,10 +352,6 @@ function form_save() {
 	}
 }
 
-/* ------------------------
-	The "actions" function
-   ------------------------ */
-
 function form_actions() {
 	global $ds_actions;
 
@@ -525,10 +517,6 @@ function form_actions() {
 
 	bottom_footer();
 }
-
-/* ----------------------------
-	template - Data Templates
-   ---------------------------- */
 
 function template_rrd_remove() {
 	/* ================= input validation ================= */

@@ -290,10 +290,6 @@ function form_actions() {
 	bottom_footer();
 }
 
-/* --------------------------
-	CDEF Item Functions
-   -------------------------- */
-
 function field_remove_confirm() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -492,10 +488,6 @@ function field_edit() {
 
 	form_save_button('data_input.php?action=edit&id=' . get_request_var('data_input_id'));
 }
-
-/* -----------------------
-	Data Input Functions
-   ----------------------- */
 
 function data_edit() {
 	global $config, $fields_data_input_edit;

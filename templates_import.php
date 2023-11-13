@@ -53,10 +53,6 @@ if ($is_tmp && $is_save && $action == 'save') {
 	bottom_footer();
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function form_save() {
 	global $preview_only, $messages, $import_messages;
 

@@ -122,10 +122,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function form_save() {
 	if ((isset_request_var('save_component_data_source_new')) && (!isempty_request_var('data_template_id'))) {
 		$save['id']               = get_filter_request_var('local_data_id');
@@ -369,10 +365,6 @@ function form_save() {
 	}
 }
 
-/* ------------------------
-	The "actions" function
-   ------------------------ */
-
 function form_actions() {
 	global $ds_actions;
 
@@ -615,10 +607,6 @@ function form_actions() {
 	bottom_footer();
 }
 
-/* ----------------------------
-	data - Custom Data
-   ---------------------------- */
-
 function data_edit($incform = true) {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -729,10 +717,6 @@ function data_edit($incform = true) {
 
 	form_hidden_box('save_component_data', '1', '');
 }
-
-/* ------------------------
-	Data Source Functions
-   ------------------------ */
 
 function ds_rrd_remove() {
 	/* ================= input validation ================= */

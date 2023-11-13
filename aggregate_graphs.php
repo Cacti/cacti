@@ -379,11 +379,11 @@ function form_save() {
 	}
 }
 
-/* -----------------------
-	save aggregate graph item
-	This saves any overrides to item properties from graph template item.
-	Inserting new items here is not possible. Just editing existing ones.
-   ----------------------- */
+/**
+ * form_save_aggregate - save aggregate graph item
+ *   This saves any overrides to item properties from graph template item.
+ *   Inserting new items here is not possible. Just editing existing ones.
+ */
 function form_save_aggregate() {
 	global $config;
 
@@ -1055,12 +1055,9 @@ function item() {
 	html_end_box(false);
 }
 
-/* ------------------------------------
-	graph - Graphs
-   ------------------------------------ */
-
 function graph_edit() {
-	global $config, $struct_graph, $struct_aggregate_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;
+	global $config, $struct_graph, $struct_aggregate_graph, $image_types;
+	global $consolidation_functions, $graph_item_types, $struct_graph_item;
 
 	// Remove filter item
 	unset($struct_graph_item['data_template_id']);

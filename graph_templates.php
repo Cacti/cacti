@@ -935,11 +935,8 @@ function item_edit() {
 			changeColorId();
 		}
 	</script>
-<?php
+	<?php
 }
-/* ------------------------
-	The 'actions' function
-   ------------------------ */
 
 function form_actions() {
 	global $graph_actions, $config, $image_types;
@@ -1267,10 +1264,6 @@ function item() {
 
 	html_end_box();
 }
-
-/* ----------------------------
-	template - Graph Templates
-   ---------------------------- */
 
 function template_edit() {
 	global $struct_graph, $image_types, $fields_graph_template_template_edit;

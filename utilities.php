@@ -143,10 +143,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* -----------------------
-	Utilities Functions
-   ----------------------- */
-
 function rebuild_resource_cache() {
 	db_execute('DELETE FROM settings WHERE name LIKE "md5dirsum%"');
 	db_execute('TRUNCATE TABLE poller_resource_cache');

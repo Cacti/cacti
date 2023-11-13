@@ -44,10 +44,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function form_save() {
 	global $export_types, $export_errors;
 
@@ -83,10 +79,6 @@ function form_save() {
 		}
 	}
 }
-
-/* ---------------------------
-	Template Export Functions
-   --------------------------- */
 
 function export() {
 	global $export_types;

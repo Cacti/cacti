@@ -78,10 +78,6 @@ if (isset_request_var('update_policy')) {
 	}
 }
 
-/* --------------------------
-	Actions Function
-   -------------------------- */
-
 function update_policies() {
 	$policies = array('policy_graphs', 'policy_trees', 'policy_hosts', 'policy_graph_templates');
 
@@ -429,10 +425,6 @@ function form_actions() {
 		form_continue_confirmation($form_data);
 	}
 }
-
-/* --------------------------
-	Save Function
-   -------------------------- */
 
 function form_save() {
 	global $settings_user;
@@ -1771,10 +1763,6 @@ function settings_edit($header_label) {
 	</script>
 	<?php
 }
-
-/* --------------------------
-	User Administration
-   -------------------------- */
 
 function user_edit() {
 	global $config, $fields_user_user_edit_host;
