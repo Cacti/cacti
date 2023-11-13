@@ -88,7 +88,7 @@ foreach ($parms as $parameter) {
 
 			break;
 		case '--community':
-			$overrides['community'] = trim($value);
+			$overrides['snmp_community'] = trim($value);
 
 			break;
 		case '--version':
