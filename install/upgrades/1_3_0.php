@@ -209,7 +209,7 @@ function upgrade_to_1_3_0() {
 			'columns' => 'devices',
 		),
 		'sites' => array(
-			'after' => 'nodes',
+			'after' => 'notes',
 			'columns' => 'devices',
 		),
 		'snmp_query' => array(
