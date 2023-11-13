@@ -24,7 +24,7 @@
 
 include('./include/auth.php');
 
-$user_actions = array(
+$actions = array(
 	1 => __('Delete'),
 	2 => __('Copy'),
 	3 => __('Enable'),
@@ -97,7 +97,7 @@ function update_policies() {
 }
 
 function form_actions() {
-	global $user_actions, $auth_realms;
+	global $actions, $auth_realms;
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('associate_host')) {
@@ -322,157 +322,112 @@ function form_actions() {
 		header('Location: user_admin.php');
 
 		exit;
-	}
+	} else {
+		$ilist  = '';
+		$iarray = array();
 
-	/* loop through each of the users and process them */
-	$user_list  = '';
-	$user_array = array();
-	$i          = 0;
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
 
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
+				if (get_nfilter_request_var('drp_action') != '2') {
+					$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($matches[1]))) . '</li>';
+				}
 
-			if (get_nfilter_request_var('drp_action') != '2') {
-				$user_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($matches[1]))) . '</li>';
+				$iarray[] = $matches[1];
 			}
-			$user_array[$i] = $matches[1];
-
-			$i++;
 		}
-	}
 
-	top_header();
-
-	form_start('user_admin.php');
-
-	html_start_box($user_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-	if (isset($user_array) && cacti_sizeof($user_array)) {
-		if ((get_nfilter_request_var('drp_action') == '1') && (cacti_sizeof($user_array))) { // delete
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to delete the selected User(s).') . "</p>
-					<div class='itemlist'><ul>$user_list</ul></div>
-				</td>
-			</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'><input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete User(s)') . "'>";
-		}
-		$user_id = '';
-
-		if ((get_nfilter_request_var('drp_action') == '2') && (cacti_sizeof($user_array))) { // copy
-			$user_id    = $user_array[0];
+		if (cacti_sizeof($iarray)) {
+			$user_id    = $iarray[0];
 			$user_realm = db_fetch_cell_prepared('SELECT realm FROM user_auth WHERE id = ?', array($user_id));
-
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to copy the selected User to a new User below.') . "</p>
-				</td>
-			</tr>
-			<tr>
-				<td class='textArea'>
-					<p>" . __('Template Username:') . ' <i>' . html_escape(db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($user_id))) . "</i></p>
-				</td>
-			</tr>
-			<tr>
-				<td class='textArea'>
-					<p>" . __('Username:') . ' ';
-			print form_text_box('new_username', '', '', 25);
-
-			print "</p></td>
-				</tr>
-				<tr>
-					<td class='textArea'>
-						<p>" . __('Full Name:') . ' ';
-			print form_text_box('new_fullname', '', '', 35);
-
-			print "</p></td>
-				</tr>
-				<tr>
-					<td class='textArea'>
-						<p>" . __('Realm:') .' ';
-			print form_dropdown('new_realm', $auth_realms, '', '', $user_realm, '', 0);
-
-			print '</p></td>
-				</tr>';
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Copy User') . "'>";
+			$template   = html_escape(db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($user_id)));
+			$usernames  = db_fetch_assoc('SELECT id, username FROM user_auth WHERE realm = 0 ORDER BY username');
+		} else {
+			$user_id    = null;
+			$user_realm = null;
+			$template   = null;
+			$usernames  = null;
 		}
 
-		if ((get_nfilter_request_var('drp_action') == '3') && (cacti_sizeof($user_array))) { // enable
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to enable the selected User(s).'). "</p>
-					<div class='itemlist'><ul>$user_list</ul></div>
-				</td>
-			</tr>";
+		$form_data = array(
+			'general' => array(
+				'page'       => 'user_admin.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Delete the following User.'),
+					'pmessage' => __('Click \'Continue\' to Delete following Users.'),
+					'scont'    => __('Delete User'),
+					'pcont'    => __('Delete Users')
+				),
+				2 => array(
+					'message' => __('Click \'Continue\' to Copy the following User.'),
+					'cont'    => __('Copy User'),
+					'extra'    => array(
+						'template_username' => array(
+							'method'  => 'other',
+							'title'   => __('Template Username:'),
+							'default' => $template
+						),
+						'new_username' => array(
+							'method'  => 'textbox',
+							'title'   => __('Username:'),
+							'default' => '',
+							'width'   => 25
+						),
+						'new_fullname' => array(
+							'method'  => 'textbox',
+							'title'   => __('Full Name:'),
+							'default' => '',
+							'width'   => 35
+						),
+						'new_realm' => array(
+							'method'  => 'drop_array',
+							'title'   => __('Realm:'),
+							'array'   => $auth_realms,
+							'default' => $user_realm
+						)
+					)
+				),
+				3 => array(
+					'smessage' => __('Click \'Continue\' to Enable the following User.'),
+					'pmessage' => __('Click \'Continue\' to Enable following Users.'),
+					'scont'    => __('Enable User'),
+					'pcont'    => __('Enable Users')
+				),
+				4 => array(
+					'smessage' => __('Click \'Continue\' to Disable the following User.'),
+					'pmessage' => __('Click \'Continue\' to Disable following Users.'),
+					'scont'    => __('Disable User'),
+					'pcont'    => __('Disable Users')
+				),
+				5 => array(
+					'smessage' => __('Click \'Continue\' to Overwrite the User settings with the selected Template User settings and permissions.  The original User Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from the Template User.'),
+					'pmessage' => __('Click \'Continue\' to Overwrite the Users settings with the selected Template User settings and permissions.  The original Users Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from the Template User.'),
+					'scont'    => __('Replace User Settings for User'),
+					'pcont'    => __('Replace User Settings for Users'),
+					'extra'    => array(
+						'new_realm' => array(
+							'method'  => 'drop_array',
+							'title'   => __('Template User:'),
+							'array'   => $usernames,
+							'variable' => 'username',
+							'id'       => 'id'
+						)
+					)
+				)
+			)
+		);
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Enable User(s)') . "'>";
-		}
-
-		if ((get_nfilter_request_var('drp_action') == '4') && (cacti_sizeof($user_array))) { // disable
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to disable the selected User(s).') . "</p>
-					<div class='itemlist'><ul>$user_list</ul></div>
-				</td>
-			</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Disable User(s)') . "'>";
-		}
-
-		if ((get_nfilter_request_var('drp_action') == '5') && (cacti_sizeof($user_array))) { // batch copy
-			$usernames = db_fetch_assoc('SELECT id, username FROM user_auth WHERE realm = 0 ORDER BY username');
-
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to overwrite the User(s) settings with the selected template User settings and permissions.  The original users Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from Template User.') . "<br><br></td>
-				</tr>
-				<tr>
-					<td class='textArea'>
-						<p>" . __('Template User:') . ' ';
-			print form_dropdown('template_user', $usernames, 'username', 'id', '', '', 0);
-
-			print "</p></td>
-				</tr><tr>
-					<td class='textArea'>
-						<p>" . __('User(s) to update:') . "</p>
-						<ul>$user_list</ul>
-					</td>
-				</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Reset User(s) Settings') . "'>";
-		}
-	} else {
-		raise_message(40);
-		header('Location: user_admin.php');
-
-		exit;
+		form_continue_confirmation($form_data);
 	}
-
-	print "<tr>
-		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>";
-
-	if (get_nfilter_request_var('drp_action') == '2') { // copy
-		print "<input type='hidden' name='selected_items' value='" . $user_id . "'>";
-	} else {
-		print "<input type='hidden' name='selected_items' value='" . (isset($user_array) ? serialize($user_array) : '') . "'>";
-	}
-
-	print "<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
-		$save_html
-		</td>
-	</tr>";
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
 
 /* --------------------------
@@ -2009,7 +1964,7 @@ function user_edit() {
 }
 
 function user() {
-	global $config, $auth_realms, $user_actions, $item_rows;
+	global $config, $auth_realms, $actions, $item_rows;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2259,7 +2214,7 @@ function user() {
 		print $nav;
 	}
 
-	draw_actions_dropdown($user_actions);
+	draw_actions_dropdown($actions);
 
 	form_end();
 }

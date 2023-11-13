@@ -1249,7 +1249,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
  *   - pmessage - Plural confirmation message to the user.
  *   - message  - Generic confirmation message to the user.
  *   - extra    - An array of general form input.  The supported methods include:
- *      textbox, drop_array, checkbox
+ *      textbox, other, drop_array, checkbox
  *      additional options include: title, default, width, and array for drop_arrays
  *
  * An example might look like the following:
@@ -1354,13 +1354,35 @@ function form_continue_confirmation($form_data) {
 			print "<tr><td class='textArea'>";
 
 			switch($field_array['method']) {
+				case 'other':
+					print "<p><label>{$field_array['title']}</label>";
+					print "<span><b><i>{$field_array['default']}</i></b></span>";
+					print "</p>";
+
+					break;
 				case 'textbox':
 					print "<p><label>{$field_array['title']}</label>";
-					print form_text_box($field_name, $field_array['default'], '', $field_array['width']);
+					print "<span>" . form_text_box($field_name, $field_array['default'], '', $field_array['width']) . "</span>";
 					print "</p>";
 
 					break;
 				case 'drop_array':
+					if (!isset($field_array['default'])) {
+						$field_array['default'] = '';
+					}
+
+					if (!isset($field_array['variable'])) {
+						$field_array['variable'] = '';
+					}
+
+					if (!isset($field_array['id'])) {
+						$field_array['id'] = '';
+					}
+
+					print "<p><label>{$field_array['title']}</label>";
+					print "<span>" . form_dropdown($field_name, $field_array['array'], $field_array['variable'], $field_array['id'], $field_array['default'], '', 0) . "</span>";
+					print "</p>";
+
 					break;
 				case 'checkbox':
 					break;
