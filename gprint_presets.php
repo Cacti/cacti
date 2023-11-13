@@ -24,7 +24,7 @@
 
 include('./include/auth.php');
 
-$gprint_actions = array(
+$actions = array(
 	1 => __('Delete')
 );
 
@@ -59,10 +59,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
-/* --------------------------
-	The Save Function
-   -------------------------- */
-
 function form_save() {
 	if (isset_request_var('save_component_gprint_presets')) {
 		/* ================= input validation ================= */
@@ -96,12 +92,8 @@ function form_save() {
 	}
 }
 
-/* -----------------------------------
-	gprint_presets - GPRINT Presets
-   ----------------------------------- */
-
 function form_actions() {
-	global $gprint_actions;
+	global $actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
@@ -120,64 +112,43 @@ function form_actions() {
 		header('Location: gprint_presets.php');
 
 		exit;
-	}
-
-	/* setup some variables */
-	$gprint_list = '';
-	$i           = 0;
-
-	/* loop through each of the graphs selected on the previous page and get more info about them */
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
-
-			$gprint_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates_gprint WHERE id = ?', array($matches[1]))) . '</li>';
-			$gprint_array[$i] = $matches[1];
-
-			$i++;
-		}
-	}
-
-	top_header();
-
-	form_start('gprint_presets.php');
-
-	html_start_box($gprint_actions[get_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-	if (isset($gprint_array) && cacti_sizeof($gprint_array)) {
-		if (get_request_var('drp_action') == '1') { /* delete */
-			print "<tr>
-				<td class='textArea' class='odd'>
-					<p>" . __('Click \'Continue\' to delete the following GPRINT Preset(s).') . "</p>
-					<div class='itemlist'><ul>$gprint_list</ul></div>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') ."' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete GPRINT Preset(s)') ."'>";
-		}
 	} else {
-		raise_message(40);
-		header('Location: gprint_presets.php');
+		$ilist  = '';
+		$iarray = array();
 
-		exit;
+		/* loop through each of the graphs selected on the previous page and get more info about them */
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
+
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates_gprint WHERE id = ?', array($matches[1]))) . '</li>';
+
+				$iarray[] = $matches[1];
+			}
+		}
+
+		$form_data = array(
+			'general' => array(
+				'page'       => 'gprint_presets.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Delete the following GPRINT Preset.'),
+					'pmessage' => __('Click \'Continue\' to Delete following GPRINT Presets.'),
+					'scont'    => __('Delete GPRINT Preset'),
+					'pcont'    => __('Delete GPRINT Presets')
+				),
+			)
+		);
+
+		form_continue_confirmation($form_data);
 	}
-
-	print "<tr>
-		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($gprint_array) ? serialize($gprint_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
-			$save_html
-		</td>
-	</tr>\n";
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
 
 function gprint_presets_edit() {
@@ -211,7 +182,7 @@ function gprint_presets_edit() {
 }
 
 function gprint_presets() {
-	global $gprint_actions, $item_rows;
+	global $actions, $item_rows;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -426,12 +397,14 @@ function gprint_presets() {
 			}
 
 			form_alternate_row('line' . $gp['id'], false, $disabled);
+
 			form_selectable_cell(filter_value($gp['name'], get_request_var('filter'), 'gprint_presets.php?action=edit&id=' . $gp['id']), $gp['id']);
 			form_selectable_ecell($gp['gprint_text'], $gp['id'], '', 'right');
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $gp['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($gp['graphs'], '-1'), $gp['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($gp['templates'], '-1'), $gp['id'], '', 'right');
 			form_checkbox_cell($gp['name'], $gp['id'], $disabled);
+
 			form_end_row();
 		}
 	} else {
@@ -445,7 +418,7 @@ function gprint_presets() {
 	}
 
 	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($gprint_actions);
+	draw_actions_dropdown($actions);
 
 	form_end();
 }
