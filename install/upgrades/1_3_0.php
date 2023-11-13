@@ -295,12 +295,19 @@ function ldap_convert_1_3_0() {
 
 		if (!cacti_sizeof($domain)) {
 			cacti_log('NOTE: Creating new LDAP domain', true, 'INSTALL');
+
 			db_install_execute('INSERT INTO user_domains (domain_name, type, enabled) VALUES (\'LDAP\', 1, \'on\')');
 
 			$domain = db_fetch_row('SELECT * FROM user_domains WHERE domain_name = \'LDAP\'');
 		}
 
 		if (cacti_sizeof($domain)) {
+			/* Reset LDAP users to the new LDAP domain */
+			db_execute_prepared('UPDATE user_auth 
+				SET realm = ? + 1000 
+				WHERE realm = 3', 
+				array($domain['domain_id']));
+
 			$ldap_settings = array();
 
 			$ldap = db_fetch_row_prepared('SELECT *
