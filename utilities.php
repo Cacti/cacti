@@ -1253,7 +1253,7 @@ function utilities() {
 			__('RRDfile Checker') => array(
 				'link'        => 'rrdcheck.php',
 				'mode'        => 'online',
-				'description' => __('Use this utility to display problems with missing rrd files or missing values in rrdfiles. You need enable rrdcheck in Configuration->Settings->Data')
+				'description' => __('Use this utility to display problems with missing rrd files or missing values in RRDfiles. You need enable rrdcheck in Configuration > Settings > Data')
 			),
 		);
 	}
