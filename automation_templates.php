@@ -26,7 +26,7 @@ include('./include/auth.php');
 include_once('./lib/poller.php');
 include_once('./lib/utility.php');
 
-$at_actions = array(
+$actions = array(
 	1 => __('Delete'),
 	2 => __('Export')
 );
@@ -515,7 +515,7 @@ function automation_add_tree_rule() {
 }
 
 function form_actions() {
-	global $at_actions;
+	global $actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
@@ -555,72 +555,48 @@ function form_actions() {
 		header('Location: automation_templates.php');
 
 		exit;
-	}
-
-	/* setup some variables */
-	$at_list = '';
-	$i       = 0;
-
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
-
-			$at_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT ht.name FROM automation_templates AS at INNER JOIN host_template AS ht ON ht.id=at.host_template WHERE at.id = ?', array($matches[1]))) . '</li>';
-			$at_array[$i] = $matches[1];
-
-			$i++;
-		}
-	}
-
-	top_header();
-
-	form_start('automation_templates.php');
-
-	html_start_box($at_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-	if (isset($at_array) && cacti_sizeof($at_array)) {
-		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
-			print "<tr>
-				<td class='textArea' class='odd'>
-					<p>" . __('Click \'Continue\' to delete the following Device Rule(s).') . "</p>
-					<div class='itemlist'><ul>$at_list</ul></div>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Device Rule(s)') . "'>";
-		} elseif (get_nfilter_request_var('drp_action') == '2') { /* export */
-			print "<tr>
-				<td class='textArea' class='odd'>
-					<p>" . __('Click \'Continue\' to Export the following Device Rule(s).') . "</p>
-					<div class='itemlist'><ul>$at_list</ul></div>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Export Device Rule(s)') . "'>";
-		}
 	} else {
-		raise_message(40);
-		header('Location: automation_templates.php');
+		$ilist  = '';
+		$iarray = array();
 
-		exit;
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
+
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT ht.name FROM automation_templates AS at INNER JOIN host_template AS ht ON ht.id=at.host_template WHERE at.id = ?', array($matches[1]))) . '</li>';
+
+				$iarray[] = $matches[1];
+			}
+		}
+
+		$form_data = array(
+			'general' => array(
+				'page'       => 'automation_templates.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Delete the following Device Rule.'),
+					'pmessage' => __('Click \'Continue\' to Delete following Device Rules.'),
+					'scont'    => __('Delete Device Rule'),
+					'pcont'    => __('Delete Device Rules')
+				),
+				2 => array(
+					'smessage' => __('Click \'Continue\' to Export the following Device Rule.'),
+					'pmessage' => __('Click \'Continue\' to Export following Device Rules.'),
+					'scont'    => __('Export Device Rule'),
+					'pcont'    => __('Export Device Rules'),
+				)
+			)
+		);
+
+		form_continue_confirmation($form_data);
 	}
-
-	print "<tr>
-		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($at_array) ? serialize($at_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
-			$save_html
-		</td>
-	</tr>\n";
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
 
 function form_save() {
@@ -1313,7 +1289,7 @@ function template_edit() {
 }
 
 function template() {
-	global $at_actions, $item_rows, $availability_options;
+	global $actions, $item_rows, $availability_options;
 
 	automation_update_hashes();
 
@@ -1371,7 +1347,7 @@ function template() {
 
 									if (get_request_var('rows') == $key) {
 										print ' selected';
-									} print '>' . html_escape($value) . "</option>\n";
+									} print '>' . html_escape($value) . '</option>';
 								}
 							}
 	?>
@@ -1381,7 +1357,7 @@ function template() {
 						<span>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Import');?>' title='<?php print __esc('Import Device Rules');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='import' value='<?php print __esc('Import');?>' title='<?php print __esc('Import Device Rules');?>'>
 						</span>
 					</td>
 				</tr>
@@ -1464,11 +1440,26 @@ function template() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		array('display' => __('Template Name'), 'align' => 'left'),
-		array('display' => __('Availability Method'), 'align' => 'left'),
-		array('display' => __('System Description Match'), 'align' => 'left'),
-		array('display' => __('System Name Match'), 'align' => 'left'),
-		array('display' => __('System ObjectId Match'), 'align' => 'left')
+		array(
+			'display' => __('Template Name'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Availability Method'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('System Description Match'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('System Name Match'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('System ObjectId Match'),
+			'align'   => 'left'
+		)
 	);
 
 	if (read_config_option('drag_and_drop') == '') {
@@ -1477,7 +1468,8 @@ function template() {
 
 	html_header_checkbox($display_text, false);
 
-	$i           = 1;
+	$i = 1;
+
 	$total_items = cacti_sizeof($dts);
 
 	if (cacti_sizeof($dts)) {
@@ -1489,6 +1481,7 @@ function template() {
 			}
 
 			form_alternate_row('line' . $dt['id'], true);
+
 			form_selectable_cell(filter_value($name, get_request_var('filter'), 'automation_templates.php?action=edit&id=' . $dt['id']), $dt['id']);
 			form_selectable_cell($availability_options[$dt['availability_method']], $dt['id']);
 			form_selectable_cell(filter_value($dt['sysDescr'], get_request_var('filter')), $dt['id']);
@@ -1514,12 +1507,13 @@ function template() {
 			}
 
 			form_checkbox_cell($name, $dt['id']);
+
 			form_end_row();
 
 			$i++;
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Automation Device Templates Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Automation Device Templates Found') . "</em></td></tr>";
 	}
 
 	html_end_box(false);
@@ -1529,7 +1523,7 @@ function template() {
 	}
 
 	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($at_actions);
+	draw_actions_dropdown($actions);
 
 	form_end();
 

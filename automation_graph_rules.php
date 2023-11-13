@@ -25,7 +25,7 @@
 include('./include/auth.php');
 include_once('./lib/data_query.php');
 
-$automation_graph_rules_actions = array(
+$actions = array(
 	AUTOMATION_ACTION_GRAPH_DUPLICATE => __('Duplicate'),
 	AUTOMATION_ACTION_GRAPH_ENABLE    => __('Enable'),
 	AUTOMATION_ACTION_GRAPH_EXPORT    => __('Export'),
@@ -339,12 +339,8 @@ function form_save() {
 	}
 }
 
-/* ------------------------
- The 'actions' function
- ------------------------ */
-
 function automation_graph_rules_form_actions() {
-	global $config, $automation_graph_rules_actions;
+	global $config, $actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action');
@@ -409,98 +405,76 @@ function automation_graph_rules_form_actions() {
 		header('Location: automation_graph_rules.php');
 
 		exit;
-	}
-
-	/* setup some variables */
-	$automation_graph_rules_list = '';
-	$i                           = 0;
-	/* loop through each of the graphs selected on the previous page and get more info about them */
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
-
-			$automation_graph_rules_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM automation_graph_rules WHERE id = ?', array($matches[1]))) . '</li>';
-			$automation_graph_rules_array[] = $matches[1];
-		}
-	}
-
-	top_header();
-
-	form_start('automation_graph_rules.php', 'automation_graph_rules');
-
-	html_start_box($automation_graph_rules_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-	if (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_DELETE) { /* delete */
-		print "<tr>
-			<td class='textArea'>
-				<p>" . __('Press \'Continue\' to delete the following Graph Rules.') . "</p>
-				<ul>$automation_graph_rules_list</ul>
-			</td>
-		</tr>";
-	} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_DUPLICATE) { /* duplicate */
-		print "<tr>
-			<td class='textArea'>
-				<p>" . __('Click \'Continue\' to duplicate the following Rule(s). You can optionally change the title format for the new Graph Rules.') . "</p>
-				<div class='itemlist'><ul>$automation_graph_rules_list</ul></div>
-				<p>" . __('Title Format') . '<br>';
-		form_text_box('name_format', '<' . __('rule_name') . '> (1)', '', '255', '30', 'text');
-		print "</p>
-			</td>
-		</tr>\n";
-	} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_ENABLE) { /* enable */
-		print "<tr>
-			<td class='textArea'>
-				<p>" . __('Click \'Continue\' to enable the following Rule(s).') . "</p>
-				<div class='itemlist'><ul>$automation_graph_rules_list</ul></div>
-				<p>" . __('Make sure, that those rules have successfully been tested!') . "</p>
-			</td>
-		</tr>\n";
-	} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_DISABLE) { /* disable */
-		print "<tr>
-			<td class='textArea'>
-				<p>" . __('Click \'Continue\' to disable the following Rule(s).') . "</p>
-				<div class='itemlist'><ul>$automation_graph_rules_list</ul></div>
-			</td>
-		</tr>\n";
-	} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_EXPORT) { /* export */
-		print "<tr>
-			<td class='textArea'>
-				<p>" . __('Click \'Continue\' to Export the following Rule(s).') . "</p>
-				<div class='itemlist'><ul>$automation_graph_rules_list</ul></div>
-			</td>
-		</tr>\n";
-	}
-
-	if (!isset($automation_graph_rules_array)) {
-		raise_message(40);
-		header('Location: automation_graph_rules.php');
-
-		exit;
 	} else {
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Apply requested action') . "'>";
+		$ilist  = '';
+		$iarray = array();
+
+		/* loop through each of the graphs selected on the previous page and get more info about them */
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
+
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM automation_graph_rules WHERE id = ?', array($matches[1]))) . '</li>';
+				$iarray[] = $matches[1];
+			}
+		}
+
+		$form_data = array(
+			'general' => array(
+				'page'       => 'automation_graph_rules.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				AUTOMATION_ACTION_GRAPH_DELETE => array(
+					'smessage' => __('Click \'Continue\' to Delete the following Graph Rule.'),
+					'pmessage' => __('Click \'Continue\' to Delete following Graph Rules.'),
+					'scont'    => __('Delete Graph Rule'),
+					'pcont'    => __('Delete Graph Rules')
+				),
+				AUTOMATION_ACTION_GRAPH_ENABLE => array(
+					'smessage' => __('Click \'Continue\' to Enable the following Graph Rule.'),
+					'pmessage' => __('Click \'Continue\' to Enable following Graph Rules.'),
+					'scont'    => __('Enable Graph Rule'),
+					'pcont'    => __('Enable Graph Rules')
+				),
+				AUTOMATION_ACTION_GRAPH_DISABLE => array(
+					'smessage' => __('Click \'Continue\' to Disable the following Graph Rule.'),
+					'pmessage' => __('Click \'Continue\' to Disable following Graph Rules.'),
+					'scont'    => __('Disable Graph Rule'),
+					'pcont'    => __('Disable Graph Rules')
+				),
+				AUTOMATION_ACTION_GRAPH_EXPORT => array(
+					'smessage' => __('Click \'Continue\' to Export the following Graph Rule.'),
+					'pmessage' => __('Click \'Continue\' to Export following Graph Rules.'),
+					'scont'    => __('Export Graph Rule'),
+					'pcont'    => __('Export Graph Rules')
+				),
+				AUTOMATION_ACTION_GRAPH_DUPLICATE => array(
+					'smessage' => __('Click \'Continue\' to Duplicate the following Graph Rule.'),
+					'pmessage' => __('Click \'Continue\' to Duplicate following Graph Rules.'),
+					'scont'    => __('Duplicate Graph Rule'),
+					'pcont'    => __('Duplicate Graph Rules'),
+					'extra'    => array(
+						'name_format' => array(
+							'method'  => 'textbox',
+							'title'   => __('Title Format:'),
+							'default' => '<rule_name> (1)',
+							'width'   => 25
+						)
+					)
+				)
+			)
+		);
+
+		form_continue_confirmation($form_data);
 	}
-
-	print "	<tr>
-		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($automation_graph_rules_array) ? serialize($automation_graph_rules_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
-			$save_html
-		</td>
-	</tr>\n";
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
 
-/* --------------------------
- Rule Item Functions
- -------------------------- */
 function automation_graph_rules_item_movedown() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -596,10 +570,6 @@ function automation_graph_rules_item_edit() {
 	</script>
 	<?php
 }
-
-/* ---------------------
- Rule Functions
- --------------------- */
 
 function automation_graph_rules_remove() {
 	/* ================= input validation ================= */
@@ -792,7 +762,7 @@ function automation_graph_rules_edit() {
 }
 
 function automation_graph_rules() {
-	global $automation_graph_rules_actions, $config, $item_rows;
+	global $actions, $config, $item_rows;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -800,36 +770,36 @@ function automation_graph_rules() {
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
 		'page' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
-			),
+		),
 		'filter' => array(
 			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
-			),
+		),
 		'sort_column' => array(
 			'filter'  => FILTER_CALLBACK,
 			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'sort_direction' => array(
 			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'status' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
 		'snmp_query_id' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => ''
-			)
+		)
 	);
 
 	validate_store_request_vars($filters, 'sess_autom_gr');
@@ -1016,11 +986,33 @@ function automation_graph_rules() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'name'            => array('display' => __('Rule Name'),  'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this rule.')),
-		'id'              => array('display' => __('ID'),         'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database ID for this rule.  Useful in performing debugging and automation.')),
-		'snmp_query_name' => array('display' => __('Data Query'), 'align' => 'left', 'sort' => 'ASC'),
-		'graph_type_name' => array('display' => __('Graph Type'), 'align' => 'left', 'sort' => 'ASC'),
-		'enabled'         => array('display' => __('Enabled'),    'align' => 'right', 'sort' => 'ASC'),
+		'name' => array(
+			'display' => __('Rule Name'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The name of this rule.')
+		),
+		'id' => array(
+			'display' => __('ID'),
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The internal database ID for this rule.  Useful in performing debugging and automation.')
+		),
+		'snmp_query_name' => array(
+			'display' => __('Data Query'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'graph_type_name' => array(
+			'display' => __('Graph Type'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'enabled' => array(
+			'display' => __('Enabled'),
+			'align'   => 'right',
+			'sort'    => 'ASC'
+		)
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
@@ -1052,7 +1044,7 @@ function automation_graph_rules() {
 	}
 
 	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($automation_graph_rules_actions);
+	draw_actions_dropdown($actions);
 
 	form_end();
 }
