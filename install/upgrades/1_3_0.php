@@ -212,6 +212,10 @@ function upgrade_to_1_3_0() {
 			'after' => 'notes',
 			'columns' => 'devices',
 		),
+		'poller' => array(
+			'after' => 'sync_interval',
+			'columns' => 'devices',
+		),
 		'snmp_query' => array(
 			'after' => 'data_input_id',
 			'columns' => 'graphs, templates',
