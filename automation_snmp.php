@@ -25,7 +25,7 @@
 include('./include/auth.php');
 include_once('./lib/snmp.php');
 
-$automation_snmp_actions = array(
+$actions = array(
 	1 => __('Delete'),
 	2 => __('Duplicate'),
 	3 => __('Export'),
@@ -59,7 +59,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'actions':
-		form_automation_snmp_actions();
+		form_actions();
 
 		break;
 	case 'ajax_dnd':
@@ -332,11 +332,8 @@ function form_save() {
 	}
 }
 
-/* ------------------------
- The 'actions' function
- ------------------------ */
-function form_automation_snmp_actions() {
-	global $config, $automation_snmp_actions;
+function form_actions() {
+	global $config, $actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action');
@@ -381,93 +378,64 @@ function form_automation_snmp_actions() {
 		header('Location: automation_snmp.php');
 
 		exit;
-	}
-
-	/* setup some variables */
-	$snmp_options = '';
-	$i           = 0;
-	/* loop through each of the graphs selected on the previous page and get more info about them */
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
-			$snmp_options .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM automation_snmp WHERE id = ?', array($matches[1]))) . '</li>';
-			$automation_array[$i] = $matches[1];
-			$i++;
-		}
-	}
-
-	general_header();
-
-	?>
-	<script type='text/javascript'>
-	function goTo(location) {
-		document.location = location;
-	}
-	</script>
-	<?php
-
-	form_start('automation_snmp.php', 'automation_filter');
-
-	html_start_box($automation_snmp_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-	if (!isset($automation_array)) {
-		raise_message(40);
-		header('Location: automation_snmp.php');
-
-		exit;
 	} else {
-		$save_html = "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' name='save'>";
+		$ilist  = '';
+		$iarray = array();
 
-		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to delete the following SNMP Option(s).') . "</p>
-					<div class='itemlist'><ul>$snmp_options</ul></div>
-				</td>
-			</tr>";
-		} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to duplicate the following SNMP Options. You can optionally change the title format for the new SNMP Options.') . "</p>
-					<div class='itemlist'><ul>$snmp_options</ul></div>
-					<p>" . __('Name Format') . '<br>';
-			form_text_box('name_format', '<' . __('name') . '> (1)', '', '255', '30', 'text');
+		/* loop through each of the graphs selected on the previous page and get more info about them */
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
 
-			print '</p>
-				</td>
-			</tr>';
-		} elseif (get_nfilter_request_var('drp_action') == '3') { /* export */
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to Export the following SNMP Options.') . "</p>
-					<div class='itemlist'><ul>$snmp_options</ul></div>
-				</td>
-			</tr>";
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM automation_snmp WHERE id = ?', array($matches[1]))) . '</li>';
+
+				$iarray[] = $matches[1];
+			}
 		}
+
+		$form_data = array(
+			'general' => array(
+				'page'       => 'automation_snmp.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Delete the following SNMP Option.'),
+					'pmessage' => __('Click \'Continue\' to Delete following SNMP Options.'),
+					'scont'    => __('Delete SNMP Option'),
+					'pcont'    => __('Delete SNMP Options')
+				),
+				2 => array(
+					'smessage' => __('Click \'Continue\' to Duplicate the following SNMP Option.'),
+					'pmessage' => __('Click \'Continue\' to Duplicate following SNMP Options.'),
+					'scont'    => __('Duplicate SNMP Option'),
+					'pcont'    => __('Duplicate SNMP Options'),
+					'extra'    => array(
+						'name_format' => array(
+							'method'  => 'textbox',
+							'title'   => __('Name Format:'),
+							'default' => '<name> (1)',
+							'width'   => 25
+						)
+					)
+				),
+				3 => array(
+					'smessage' => __('Click \'Continue\' to Export the following SNMP Option.'),
+					'pmessage' => __('Click \'Continue\' to Export following SNMP Options.'),
+					'scont'    => __('Export SNMP Option'),
+					'pcont'    => __('Export SNMP Options')
+				),
+			)
+		);
+
+		form_continue_confirmation($form_data);
 	}
-
-	print "<tr>
-		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($automation_array) ? serialize($automation_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()' value='" . ($save_html == '' ? __esc('Return'):__esc('Cancel')) . "' name='cancel'>
-			$save_html
-		</td>
-	</tr>";
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
-
-/* --------------------------
- SNMP Options Functions
- -------------------------- */
 
 function automation_duplicate_snmp_option($id, $new_name) {
 	$name = db_fetch_cell_prepared('SELECT name
@@ -575,9 +543,9 @@ function automation_snmp_item_remove_confirm() {
 			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove SNMP Item');?>'>
 		</td>
 	</tr>
-<?php
+	<?php
 
-		html_end_box();
+	html_end_box();
 
 	form_end();
 
@@ -606,8 +574,7 @@ function automation_snmp_item_remove_confirm() {
 	}
 
 	</script>
-<?php
-
+	<?php
 }
 
 function automation_snmp_item_remove() {
@@ -857,11 +824,11 @@ function automation_snmp_edit() {
 			}).css('cursor', 'pointer');
 		});
 	</script>
-<?php
+	<?php
 }
 
 function automation_snmp() {
-	global $config, $item_rows, $automation_snmp_actions;
+	global $config, $item_rows, $actions;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -1029,12 +996,36 @@ function automation_snmp() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'name'      => array('display' => __('SNMP Option Set'), 'align' => 'left',  'sort' => 'ASC'),
-		'networks'  => array('display' => __('Networks Using'),  'align' => 'right', 'sort' => 'DESC'),
-		'totals'    => array('display' => __('SNMP Entries'),    'align' => 'right', 'sort' => 'DESC'),
-		'v1entries' => array('display' => __('V1 Entries'),      'align' => 'right', 'sort' => 'DESC'),
-		'v2entries' => array('display' => __('V2 Entries'),      'align' => 'right', 'sort' => 'DESC'),
-		'v3entries' => array('display' => __('V3 Entries'),      'align' => 'right', 'sort' => 'DESC')
+		'name' => array(
+			'display' => __('SNMP Option Set'),
+			'align'   => 'left',
+			'sort'    => 'ASC'
+		),
+		'networks' => array(
+			'display' => __('Networks Using'),
+			'align'   => 'right',
+			'sort'    => 'DESC'
+		),
+		'totals' => array(
+			'display' => __('SNMP Entries'),
+			'align'   => 'right',
+			'sort'    => 'DESC'
+		),
+		'v1entries' => array(
+			'display' => __('V1 Entries'),
+			'align'   => 'right',
+			'sort'    => 'DESC'
+		),
+		'v2entries' => array(
+			'display' => __('V2 Entries'),
+			'align'   => 'right',
+			'sort'    => 'DESC'
+		),
+		'v3entries' => array(
+			'display' => __('V3 Entries'),
+			'align'   => 'right',
+			'sort'    => 'DESC'
+		)
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
@@ -1064,18 +1055,7 @@ function automation_snmp() {
 	}
 
 	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($automation_snmp_actions);
+	draw_actions_dropdown($actions);
 
 	form_end();
-
-	?>
-	<script type='text/javascript'>
-	function applyFilter() {
-		strURL  = 'automation_snmp.php';
-		strURL += '?rows=' + $('#rows').val();
-		strURL += '&filter=' + $('#filter').val();
-		loadUrl({url:strURL})
-	}
-	</script>
-	<?php
 }

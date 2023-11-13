@@ -26,7 +26,7 @@ include('./include/auth.php');
 include_once('./lib/poller.php');
 include_once('./lib/utility.php');
 
-$profile_actions = array(
+$actions = array(
 	1 => __('Delete'),
 	2 => __('Duplicate')
 );
@@ -246,12 +246,8 @@ function form_save() {
 	}
 }
 
-/* ------------------------
-	The 'actions' function
-   ------------------------ */
-
 function form_actions() {
-	global $profile_actions;
+	global $actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
@@ -274,81 +270,58 @@ function form_actions() {
 		header('Location: data_source_profiles.php');
 
 		exit;
-	}
-
-	/* setup some variables */
-	$profile_list = '';
-	$i            = 0;
-
-	/* loop through each of the graphs selected on the previous page and get more info about them */
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
-
-			$profile_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM data_source_profiles WHERE id = ?', array($matches[1]))) . '</li>';
-			$profile_array[$i] = $matches[1];
-
-			$i++;
-		}
-	}
-
-	top_header();
-
-	form_start('data_source_profiles.php');
-
-	html_start_box($profile_actions[get_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-	if (isset($profile_array) && cacti_sizeof($profile_array)) {
-		if (get_request_var('drp_action') == '1') { // delete
-			print "<tr>
-				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to delete the following Data Source Profile', 'Click \'Continue\' to delete following Data Source Profiles', cacti_sizeof($profile_array)) . "</p>
-					<div class='itemlist'><ul>$profile_list</ul></div>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Source Profile', 'Delete Data Source Profiles', cacti_sizeof($profile_array)) . "'>";
-		} elseif (get_request_var('drp_action') == '2') { // duplicate
-			print "<tr>
-				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to duplicate the following Data Source Profile. You can optionally change the title format for the new Data Source Profile', 'Click \'Continue\' to duplicate following Data Source Profiles. You can optionally change the title format for the new Data Source Profiles.', cacti_sizeof($profile_array)) . "</p>
-					<div class='itemlist'><ul>$profile_list</ul></div>
-					<p>" . __('Title Format:') . '<br>';
-			form_text_box('title_format', '<profile_title> (1)', '', '255', '30', 'text');
-			print "</p>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate Data Source Profile', 'Duplicate Date Source Profiles', cacti_sizeof($profile_array)) . "'>";
-		}
 	} else {
-		raise_message(40);
-		header('Location: data_source_profiles.php');
+		$ilist  = '';
+		$iarray = array();
 
-		exit;
+		/* loop through each of the graphs selected on the previous page and get more info about them */
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
+
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM data_source_profiles WHERE id = ?', array($matches[1]))) . '</li>';
+
+				$iarray[] = $matches[1];
+			}
+		}
+
+		$form_data = array(
+			'general' => array(
+				'page'       => 'data_source_profiles.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Delete the following Data Source Profile.'),
+					'pmessage' => __('Click \'Continue\' to Delete following Data Source Profiles.'),
+					'scont'    => __('Delete Data Source Profile'),
+					'pcont'    => __('Delete Data Source Profiles')
+				),
+				2 => array(
+					'smessage' => __('Click \'Continue\' to Duplicate the following Data Source Profile.'),
+					'pmessage' => __('Click \'Continue\' to Duplicate following Data Source Profiles.'),
+					'scont'    => __('Duplicate Data Source Profile'),
+					'pcont'    => __('Duplicate Data Source Profiles'),
+					'extra'    => array(
+						'title_format' => array(
+							'method'  => 'textbox',
+							'title'   => __('Title Format:'),
+							'default' => '<profile_title> (1)',
+							'width'   => 25
+						)
+					)
+				)
+			)
+		);
+
+		form_continue_confirmation($form_data);
 	}
-
-	print "<tr>
-		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($profile_array) ? serialize($profile_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
-			$save_html
-		</td>
-	</tr>\n";
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
-
-/* --------------------------
-	CDEF Item Functions
-   -------------------------- */
 
 function duplicate_data_source_profile($source_profile, $title_format) {
 	if (!is_array($source_profile)) {
@@ -618,10 +591,6 @@ function item_edit() {
 	</script>
 	<?php
 }
-
-/* ---------------------
-	Profile Functions
-   --------------------- */
 
 function profile_edit() {
 	global $fields_profile_edit, $timespans;
@@ -895,7 +864,7 @@ function get_span($duration) {
 }
 
 function profile() {
-	global $profile_actions, $item_rows, $sampling_intervals, $heartbeats, $config;
+	global $actions, $item_rows, $sampling_intervals, $heartbeats, $config;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -1162,7 +1131,7 @@ function profile() {
 	}
 
 	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($profile_actions);
+	draw_actions_dropdown($actions);
 
 	form_end();
 }
