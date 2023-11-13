@@ -1101,15 +1101,23 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 		),
 		__('Utilities') => array(
 			'utilities.php'  => __('System Utilities'),
+			'rrdcleaner.php' => __('RRDfile Cleaner'),
+			'managers.php'   => __('SNMP Managers'),
 			'links.php'      => __('External Links'),
 			'user_log.php'   => __('User Log'),
 		),
 		__('Troubleshooting') => array(
 			'data_debug.php' => __('Data Sources'),
+			'rrdcheck.php'   => __('RRDfile Checker'),
 			'support.php'    => __('Technical Info'),
 			'changelog.php'  => __('Change Log'),
 		)
 	);
+
+	if ($config['poller_id'] > 1) {
+		unset($menu[__('Utilities')]['rrdcleaner.php']);
+		unset($menu[__('Troubleshooting')]['rrdcheck.php']);
+	}
 } else {
 	$menu = array(
 		__('Management') => array(
