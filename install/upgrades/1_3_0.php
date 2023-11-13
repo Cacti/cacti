@@ -302,6 +302,8 @@ function ldap_convert_1_3_0() {
 		}
 
 		if (cacti_sizeof($domain)) {
+			$domain_id = $domain['domain_id'];
+
 			/* Reset LDAP users to the new LDAP domain */
 			db_execute_prepared('UPDATE user_auth 
 				SET realm = ? + 1000 
