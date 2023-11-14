@@ -29,14 +29,14 @@ require_once(CACTI_PATH_LIBRARY . '/poller.php');
 ini_set('memory_limit', '-1');
 ini_set('max_execution_time', '900');
 
-$poller_actions = array(
+$actions = array(
 	POLLER_DISABLE     => __('Disable'),
 	POLLER_ENABLE      => __('Enable'),
 	POLLER_CLEAR_STATS => __('Clear Statistics'),
 );
 
 if ($config['poller_id'] == 1) {
-	$poller_actions += array(POLLER_RESYNC => __('Full Sync'));
+	$actions += array(POLLER_RESYNC => __('Full Sync'));
 }
 
 $poller_status = array(
@@ -463,7 +463,7 @@ function poller_host_duplicate($poller_id, $host) {
 }
 
 function form_actions() {
-	global $config, $poller_actions;
+	global $config, $actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
@@ -565,108 +565,67 @@ function form_actions() {
 		header('Location: pollers.php');
 
 		exit;
-	}
-
-	/* setup some variables */
-	$pollers = '';
-	$i       = 0;
-
-	/* loop through each of the graphs selected on the previous page and get more info about them */
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
-
-			$pollers .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM poller WHERE id = ?', array($matches[1]))) . '</li>';
-			$poller_array[$i] = $matches[1];
-
-			$i++;
-		}
-	}
-
-	top_header();
-
-	form_start('pollers.php');
-
-	$drp_action = get_nfilter_request_var('drp_action');
-	$action     = __('Unknown');
-
-	if (array_key_exists($drp_action, $poller_actions)) {
-		$action = $poller_actions[get_nfilter_request_var('drp_action')];
-	} elseif ($drp_action === POLLER_DELETE) {
-		$action = __('Delete');
-	}
-	html_start_box($action, '60%', '', '3', 'center', '');
-
-	if (isset($poller_array) && cacti_sizeof($poller_array)) {
-		if (get_nfilter_request_var('drp_action') == POLLER_DELETE) { // delete
-			print "<tr>
-				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to delete the following Data Collector.  Note, all devices will be disassociated from this Data Collector and mapped back to the Main Cacti Data Collector.', 'Click \'Continue\' to delete all following Data Collectors.  Note, all devices will be disassociated from these Data Collectors and mapped back to the Main Cacti Data Collector.', cacti_sizeof($poller_array)) . "</p>
-					<div class='itemlist'><ul>$pollers</ul></div>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Collector', 'Delete Data Collectors', cacti_sizeof($poller_array)) . "'>";
-		} elseif (get_request_var('drp_action') == POLLER_DISABLE) { // disable
-			print "<tr>
-				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to disable the following Data Collector.', 'Click \'Continue\' to disable the following Data Collectors.', cacti_sizeof($poller_array)) . "</p>
-					<div class='itemlist'><ul>$pollers</ul></div>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Disable Data Collector', 'Disable Data Collectors', cacti_sizeof($poller_array)) . "'>";
-		} elseif (get_request_var('drp_action') == POLLER_ENABLE) { // enable
-			print "<tr>
-				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to enable the following Data Collector.', 'Click \'Continue\' to enable the following Data Collectors.', cacti_sizeof($poller_array)) . "</p>
-					<div class='itemlist'><ul>$pollers</ul></div>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enable Data Collector', 'Enable Data Collectors', cacti_sizeof($poller_array)) . "'>";
-		} elseif (get_request_var('drp_action') == POLLER_RESYNC) { // full sync
-			print "<tr>
-				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to Synchronize the Remote Data Collector for Offline Operation.', 'Click \'Continue\' to Synchronize the Remote Data Collectors for Offline Operation.', cacti_sizeof($poller_array)) . "</p>
-					<div class='itemlist'><ul>$pollers</ul></div>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enable Data Collector', 'Synchronize Remote Data Collectors', cacti_sizeof($poller_array)) . "'>";
-		} elseif (get_request_var('drp_action') == POLLER_CLEAR_STATS) { // clear statistics
-			print "<tr>
-				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to Clear Data Collector Statistics for the Data Collector.', 'Click \'Continue\' to Clear DAta Collector Statistics for the Data Collectors.', cacti_sizeof($poller_array)) . "</p>
-					<div class='itemlist'><ul>$pollers</ul></div>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Clear Statistics for Data Collector', 'Clear Statistics for Data Collectors', cacti_sizeof($poller_array)) . "'>";
-		}
 	} else {
-		raise_message(40);
-		header('Location: pollers.php');
+		$ilist  = '';
+		$iarray = array();
 
-		exit;
+		/* loop through each of the graphs selected on the previous page and get more info about them */
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
+
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM poller WHERE id = ?', array($matches[1]))) . '</li>';
+
+				$iarray[] = $matches[1];
+			}
+		}
+
+		$form_data = array(
+			'general' => array(
+				'page'       => 'pollers.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				POLLER_DELETE => array(
+					'smessage' => __('Click \'Continue\' to Delete the following Data Collector.'),
+					'pmessage' => __('Click \'Continue\' to Delete the following Data Collectors.'),
+					'scont'    => __('Delete Data Collector'),
+					'pcont'    => __('Delete Data Collectors')
+				),
+				POLLER_DISABLE => array(
+					'smessage' => __('Click \'Continue\' to Disable the following Data Collector.'),
+					'pmessage' => __('Click \'Continue\' to Disable the following Data Collectors.'),
+					'scont'    => __('Disable Data Collector'),
+					'pcont'    => __('Disable Data Collectors')
+				),
+				POLLER_ENABLE => array(
+					'smessage' => __('Click \'Continue\' to Enable the following Data Collector.'),
+					'pmessage' => __('Click \'Continue\' to Enable the following Data Collectors.'),
+					'scont'    => __('Enable Data Collector'),
+					'pcont'    => __('Enable Data Collectors')
+				),
+				POLLER_RESYNC => array(
+					'smessage' => __('Click \'Continue\' to Synchronize the Remote Data Collector for Offline Operation.'),
+					'pmessage' => __('Click \'Continue\' to Synchronize the Remote Data Collectors for Offline Operation.'),
+					'scont'    => __('Resync Data Collector'),
+					'pcont'    => __('Resync Data Collectors')
+				),
+				POLLER_CLEAR_STATS => array(
+					'smessage' => __('Click \'Continue\' to Clear Statistics for the following Data Collector.'),
+					'pmessage' => __('Click \'Continue\' to Clear Statistics for following Data Collectors.'),
+					'scont'    => __('Resync Data Collector'),
+					'pcont'    => __('Resync Data Collectors')
+				)
+			)
+		);
+
+		form_continue_confirmation($form_data);
 	}
-
-	print "<tr>
-		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($poller_array) ? serialize($poller_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
-			$save_html
-		</td>
-	</tr>\n";
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
 
 function poller_edit() {
@@ -908,7 +867,7 @@ function test_database_connection($poller = array()) {
 }
 
 function pollers() {
-	global $poller_actions, $poller_status, $item_rows;
+	global $actions, $poller_status, $item_rows;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -1198,6 +1157,7 @@ function pollers() {
 			$pt = read_config_option('poller_type');
 
 			form_alternate_row('line' . $poller['id'], true, $disabled);
+
 			form_selectable_cell(filter_value($poller['name'], get_request_var('filter'), 'pollers.php?action=edit&id=' . $poller['id']), $poller['id']);
 			form_selectable_cell($poller['id'], $poller['id'], '', 'right');
 			form_selectable_ecell($poller['hostname'], $poller['id'], '', 'right');
@@ -1219,6 +1179,7 @@ function pollers() {
 			}
 
 			form_checkbox_cell($poller['name'], $poller['id'], $disabled);
+
 			form_end_row();
 		}
 	} else {
@@ -1232,7 +1193,7 @@ function pollers() {
 	}
 
 	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($poller_actions);
+	draw_actions_dropdown($actions);
 
 	form_end();
 }
