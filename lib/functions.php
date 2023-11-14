@@ -7179,7 +7179,14 @@ function is_install_needed($version = null) {
 	}
 
 	if ($mode == '==') {
-		return !$result;
+		$vparts   = explode('.', $version);
+		$nversion = implode('.', array_slice($vparts,0,3));
+
+		if ($db == $nversion) {
+			return false;
+		} else {
+			return !$result;
+		}
 	} else {
 		return $result;
 	}
