@@ -716,7 +716,7 @@ function rrdcheck_boost_bottom() {
 		include_once($config['base_path'] . '/lib/rrd.php');
 
 		/* run the daily stats. log to database to prevent secondary runs */
-		set_config_option('rrdcheck_last_run_time', date('Y-m-d G:i:s', time()));
+		set_config_option('rrdcheck_last_run_time', time());
 
 		/* run the daily stats */
 		rrdcheck_launch_children('bmaster');
