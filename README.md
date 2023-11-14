@@ -67,7 +67,7 @@ of any version with Cacti 1.2.x and above.
 ## IMPORTANT
 
 When using source or by downloading the code directly from the repository, it is
-important to note that periodically, you may have to return the database upgrade 
+important to note that periodically, you may have to rerun the database upgrade 
 cli script to bring in new columns.  You can use the --forcever=1.2.22 option
 to assume you are upgrading from an earlier cacti version:
 
