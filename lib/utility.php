@@ -1937,6 +1937,11 @@ function object_cache_get_totals($class, $object_ids, $diff = false) {
 		return;
 	}
 
+	/* avoid an error if there are no objects */
+	if (!cacti_sizeof($object_ids)) {
+		return;
+	}
+
 	switch($class) {
 		case 'device_state':
 		case 'device_delete':
