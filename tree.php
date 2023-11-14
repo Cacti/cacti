@@ -27,7 +27,7 @@ include_once('./lib/api_tree.php');
 include_once('./lib/html_tree.php');
 include_once('./lib/data_query.php');
 
-$tree_actions = array(
+$actions = array(
 	1 => __x('dropdown action', 'Delete'),
 	2 => __x('dropdown action', 'Publish'),
 	3 => __x('dropdown action', 'Un-Publish'),
@@ -633,7 +633,7 @@ function leaves_exist($parent, $tree_id) {
 }
 
 function form_actions() {
-	global $tree_actions;
+	global $actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
@@ -692,91 +692,61 @@ function form_actions() {
 		header('Location: tree.php');
 
 		exit;
-	}
-
-	/* setup some variables */
-	$tree_list = '';
-	$i         = 0;
-
-	/* loop through each of the selected items */
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
-
-			$tree_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($matches[1]))) . '</li>';
-			$tree_array[$i] = $matches[1];
-
-			$i++;
-		}
-	}
-
-	top_header();
-
-	form_start('tree.php');
-
-	html_start_box($tree_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-	if (isset($tree_array) && cacti_sizeof($tree_array)) {
-		if (get_nfilter_request_var('drp_action') == '1') { // delete
-			print "<tr>
-				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to delete the following Tree.', 'Click \'Continue\' to delete following Trees.', cacti_sizeof($tree_array)) . "</p>
-					<div class='itemlist'><ul>$tree_list</ul></div>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Tree', 'Delete Trees', cacti_sizeof($tree_array)) . "'>";
-		} elseif (get_nfilter_request_var('drp_action') == '2') { // publish
-			print "<tr>
-				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to publish the following Tree.', 'Click \'Continue\' to publish following Trees.', cacti_sizeof($tree_array)) . "</p>
-					<div class='itemlist'><ul>$tree_list</ul></div>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Publish Tree', 'Publish Trees', cacti_sizeof($tree_array)) . "'>";
-		} elseif (get_nfilter_request_var('drp_action') == '3') { // un-publish
-			print "<tr>
-				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to un-publish the following Tree.', 'Click \'Continue\' to un-publish following Trees.', cacti_sizeof($tree_array)) . "</p>
-					<div class='itemlist'><ul>$tree_list</ul></div>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Un-publish Tree', 'Un-publish Trees', cacti_sizeof($tree_array)) . "'>";
-		} elseif (get_nfilter_request_var('drp_action') == '4') { // un-lock
-			print "<tr>
-				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to un-lock the following Tree.', 'Click \'Continue\' to un-lock following Trees.', cacti_sizeof($tree_array)) . "</p>
-					<div class='itemlist'><ul>$tree_list</ul></div>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Un-lock Tree', 'Un-lock Trees', cacti_sizeof($tree_array)) . "'>";
-		}
 	} else {
-		raise_message(40);
-		header('Location: tree.php');
+		$ilist  = '';
+		$iarray = array();
 
-		exit;
+		/* loop through each of the selected items */
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
+
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($matches[1]))) . '</li>';
+
+				$iarray[] = $matches[1];
+			}
+		}
+
+		$form_data = array(
+			'general' => array(
+				'page'       => 'tree.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Delete the following Tree.'),
+					'pmessage' => __('Click \'Continue\' to Delete following Trees.'),
+					'scont'    => __('Delete Tree'),
+					'pcont'    => __('Delete Trees')
+				),
+				2 => array(
+					'smessage' => __('Click \'Continue\' to Publish the following Tree.'),
+					'pmessage' => __('Click \'Continue\' to Publish following Trees.'),
+					'scont'    => __('Publish Tree'),
+					'pcont'    => __('Publish Trees')
+				),
+				3 => array(
+					'smessage' => __('Click \'Continue\' to Un-Publish the following Tree.'),
+					'pmessage' => __('Click \'Continue\' to Un-Publish following Trees.'),
+					'scont'    => __('Un-Publish Tree'),
+					'pcont'    => __('Un-Publish Trees')
+				),
+				4 => array(
+					'smessage' => __('Click \'Continue\' to Un-Lock the following Tree.'),
+					'pmessage' => __('Click \'Continue\' to Un-Lock following Trees.'),
+					'scont'    => __('Un-Lock Tree'),
+					'pcont'    => __('Un-Lock Trees')
+				),
+			)
+		);
+
+		form_continue_confirmation($form_data);
 	}
-
-	print "<tr>
-		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($tree_array) ? serialize($tree_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
-			$save_html
-		</td>
-	</tr>\n";
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
 
 function tree_edit($partial = false) {
@@ -2044,7 +2014,7 @@ function display_graphs() {
 }
 
 function tree() {
-	global $tree_actions, $item_rows;
+	global $actions, $item_rows;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2335,6 +2305,7 @@ function tree() {
 			}
 
 			form_alternate_row('line' . $tree['id'], true);
+
 			form_selectable_cell(filter_value($tree['name'], get_request_var('filter'), 'tree.php?action=edit&id=' . $tree['id']), $tree['id']);
 			form_selectable_cell($tree['id'], $tree['id'], '', 'right');
 			form_selectable_cell($tree['enabled'] == 'on' ? __('Yes'):__('No'), $tree['id']);
@@ -2348,6 +2319,7 @@ function tree() {
 			form_selectable_cell($tree['hosts'] > 0 ? number_format_i18n($tree['hosts'], '-1'):'-', $tree['id'], '', 'right');
 			form_selectable_cell($tree['graphs'] > 0 ? number_format_i18n($tree['graphs'], '-1'):'-', $tree['id'], '', 'right');
 			form_checkbox_cell($tree['name'], $tree['id']);
+
 			form_end_row();
 
 			$i++;
@@ -2362,7 +2334,7 @@ function tree() {
 	}
 
 	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($tree_actions);
+	draw_actions_dropdown($actions);
 
 	form_end();
 

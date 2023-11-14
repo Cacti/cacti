@@ -33,7 +33,7 @@ include_once('./lib/utility.php');
 
 ini_set('max_execution_time', '-1');
 
-$graph_actions = array(
+$actions = array(
 	1 => __('Delete'),
 	2 => __('Duplicate'),
 	3 => __('Change Settings'),
@@ -939,7 +939,7 @@ function item_edit() {
 }
 
 function form_actions() {
-	global $graph_actions, $config, $image_types;
+	global $actions, $config, $image_types;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
@@ -1064,31 +1064,103 @@ function form_actions() {
 		header('Location: graph_templates.php');
 
 		exit;
-	}
+	} else {
+		$ilist  = '';
+		$iarray = array();
 
-	/* setup some variables */
-	$graph_list = '';
-	$i          = 0;
+		/* loop through each of the graphs selected on the previous page and get more info about them */
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
 
-	/* loop through each of the graphs selected on the previous page and get more info about them */
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
-
-			$graph_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($matches[1]))) . '</li>';
-			$graph_array[$i] = $matches[1];
-
-			$i++;
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($matches[1]))) . '</li>';
+				$iarray[] = $matches[1];
+			}
 		}
+
+		$form_data = array(
+			'general' => array(
+				'page'       => 'graph_templates.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Delete the following Graph Template.'),
+					'pmessage' => __('Click \'Continue\' to Delete following Graph Templates.'),
+					'scont'    => __('Delete Graph Template'),
+					'pcont'    => __('Delete Graph Templates')
+				),
+				2 => array(
+					'smessage' => __('Click \'Continue\' to Duplicate the following Graph Template.'),
+					'pmessage' => __('Click \'Continue\' to Duplicate following Graph Templates.'),
+					'scont'    => __('Duplicate Graph Template'),
+					'pcont'    => __('Duplicate Graph Templates'),
+					'extra'    => array(
+						'title_format' => array(
+							'method'  => 'textbox',
+							'title'   => __('Title Format:'),
+							'default' => '<template_title> (1)',
+							'width'   => 25
+						)
+					)
+				),
+				3 => array(
+					'smessage' => __('Click \'Continue\' to Resize the following Graph Template.'),
+					'pmessage' => __('Click \'Continue\' to Resize following Graph Templates.'),
+					'scont'    => __('Resize Graph Template'),
+					'pcont'    => __('Resize Graph Templates'),
+					'extra'    => array(
+						'graph_height' => array(
+							'method'  => 'textbox',
+							'title'   => __('Graph Height:'),
+							'default' => read_config_option('default_graph_height'),
+							'width'   => 5,
+							'size'    => 5
+						),
+						'graph_width' => array(
+							'method'  => 'textbox',
+							'title'   => __('Graph Width:'),
+							'default' => read_config_option('default_graph_width'),
+							'width'   => 5,
+							'size'    => 5
+						),
+						'image_format_id' => array(
+							'method'   => 'drop_array',
+							'title'    => __('Image Format:'),
+							'array'    => $image_types,
+							'default'  => read_config_option('default_image_format')
+						)
+					)
+				),
+				4 => array(
+					'smessage' => __('Click \'Continue\' to perform a Full Synchronization between your Graphs and the chosen Graph Template. If you simply have a situation where the Graph Items don\'t match the Graph Template, try the Quick Sync Graphs option first as it will take much less time.  This function is important if you have Graphs that exist with multiple versions of a Graph Template and wish to make them all common in appearance.'),
+					'pmessage' => __('Click \'Continue\' to perform a Full Synchronization between your Graphs and the chosen Graph Templates. If you simply have a situation where the Graph Items don\'t match the Graph Template, try the Quick Sync Graphs option first as it will take much less time.  This function is important if you have Graphs that exist with multiple versions of a Graph Template and wish to make them all common in appearance.'),
+					'scont'   => __('Synchronize Graphs to Graph Template'),
+					'pcont'   => __('Synchronize Graphs to Graph Templates'),
+				),
+				5 => array(
+					'smessage' =>  __('Click \'Continue\' to perform a Quick Synchronization of your Graphs for the following Graph Template. Use this option if your Graphs have Graph Items that do not match your Graph Template.  If this option does not work, use the Full Sync Graphs option, which will take more time to complete.'),
+					'pmessage' =>  __('Click \'Continue\' to perform a Quick Synchronization of your Graphs for the following Graph Templates. Use this option if your Graphs have Graph Items that do not match your Graph Template.  If this option does not work, use the Full Sync Graphs option, which will take more time to complete.'),
+					'scont'   => __('Synchronize Graphs to Graph Template'),
+					'pcont'   => __('Synchronize Graphs to Graph Templates'),
+				)
+			)
+		);
+
+		form_continue_confirmation($form_data);
 	}
+	exit;
 
 	top_header();
 
 	form_start('graph_templates.php');
 
-	html_start_box($graph_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box($actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($graph_array) && cacti_sizeof($graph_array)) {
 		if (get_request_var('drp_action') == '1') { // delete
@@ -1372,7 +1444,7 @@ function template_edit() {
 }
 
 function template() {
-	global $graph_actions, $item_rows, $image_types;
+	global $actions, $item_rows, $image_types;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -1674,6 +1746,7 @@ function template() {
 			}
 
 			form_alternate_row('line' . $template['id'], true, $disabled);
+
 			form_selectable_cell(filter_value($template['name'], get_request_var('filter'), 'graph_templates.php?action=template_edit&id=' . $template['id']), $template['id']);
 			form_selectable_cell($template['id'], $template['id'], '', 'right');
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['id'], '', 'right');
@@ -1682,6 +1755,7 @@ function template() {
 			form_selectable_ecell($template['size'], $template['id'], '', 'right');
 			form_selectable_ecell($template['vertical_label'], $template['id'], '', 'right');
 			form_checkbox_cell($template['name'], $template['id'], $disabled);
+
 			form_end_row();
 		}
 	} else {
@@ -1694,7 +1768,7 @@ function template() {
 	}
 
 	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($graph_actions);
+	draw_actions_dropdown($actions);
 
 	form_end();
 }

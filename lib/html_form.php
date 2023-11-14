@@ -1282,7 +1282,8 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
  *					'method'  => 'textbox',
  *					'title'   => __('Group Prefix:'),
  *					'default' => __('New Group'),
- *					'width'   => 25
+ *					'width'   => 25,
+ *					'size'    => 25
  *				)
  *			)
  *		)
@@ -1339,7 +1340,7 @@ function form_continue_confirmation($form_data) {
 		exit;
 	}
 
-	print "<tr><td class='textArea left'>";
+	print "<tr><td class='textArea left' colspan='3'>";
 	print "<p>$message</p>";
 
 	if ($ilist != '') {
@@ -1354,19 +1355,23 @@ function form_continue_confirmation($form_data) {
 				$field_array['width'] = 25;
 			}
 
-			print "<tr><td class='textArea'>";
+			if (!isset($field_array['size'])) {
+				$field_array['size'] = 25;
+			}
+
+			print "<tr class='filterTable'>";
 
 			switch($field_array['method']) {
 				case 'other':
-					print "<p><label>{$field_array['title']}</label>";
-					print "<span><b><i>{$field_array['default']}</i></b></span>";
-					print "</p>";
+					print "<td class='textArea nowrap'>{$field_array['title']}</td>";
+					print "<td class='textArea'><b><i>{$field_array['default']}</i></b></td>";
 
 					break;
 				case 'textbox':
-					print "<p><label>{$field_array['title']}</label>";
-					print "<span>" . form_text_box($field_name, $field_array['default'], '', $field_array['width']) . "</span>";
-					print "</p>";
+					print "<td class='textArea nowrap'>{$field_array['title']}</td>";
+					print "<td class='textArea'>";
+					form_text_box($field_name, $field_array['default'], '', $field_array['width'], $field_array['size']);
+					print "</td>";
 
 					break;
 				case 'drop_array':
@@ -1382,9 +1387,10 @@ function form_continue_confirmation($form_data) {
 						$field_array['id'] = '';
 					}
 
-					print "<p><label>{$field_array['title']}</label>";
-					print "<span>" . form_dropdown($field_name, $field_array['array'], $field_array['variable'], $field_array['id'], $field_array['default'], '', 0) . "</span>";
-					print "</p>";
+					print "<td class='textArea nowrap'>{$field_array['title']}</td>";
+					print "<td class='textArea'>";
+					form_dropdown($field_name, $field_array['array'], $field_array['variable'], $field_array['id'], $field_array['default'], '', 0);
+					print "</td>";
 
 					break;
 				case 'checkbox':
@@ -1393,17 +1399,17 @@ function form_continue_confirmation($form_data) {
 					cacti_log("WARNING: Form continuation method {$field_array['method']} not understood");
 			}
 
-			print "</td></tr>";
+			print "</tr>";
 		}
 
 		if (isset($form_data['general']['extra'])) {
-			print "<tr><td class='textArea left'><p>";
+			print "<tr><td class='textArea left' colspan='3'><p>";
 			print $form_data['general']['extra'];
 			print "</p></td></tr>";
 		}
 	}
 
-	print "<tr><td class='saveRow'>";
+	print "<tr><td class='saveRow' colspan='3'>";
 	print "<input type='hidden' name='action' value='actions'>";
 
 	if (isset($form_data['general']['eaction'])) {

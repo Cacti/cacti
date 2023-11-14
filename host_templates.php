@@ -31,7 +31,7 @@ include_once('./lib/data_query.php');
 include_once('./lib/poller.php');
 include_once('./lib/template.php');
 
-$host_actions = array(
+$actions = array(
 	1 => __('Delete'),
 	2 => __('Duplicate'),
 	3 => __('Sync Devices')
@@ -163,7 +163,7 @@ function template_item_add_gt() {
 }
 
 function form_actions() {
-	global $host_actions;
+	global $actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
@@ -195,89 +195,63 @@ function form_actions() {
 		header('Location: host_templates.php');
 
 		exit;
-	}
-
-	/* setup some variables */
-	$host_list = '';
-	$i         = 0;
-
-	/* loop through each of the host templates selected on the previous page and get more info about them */
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
-
-			$host_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM host_template WHERE id = ?', array($matches[1]))) . '</li>';
-			$host_array[$i] = $matches[1];
-
-			$i++;
-		}
-	}
-
-	top_header();
-
-	form_start('host_templates.php');
-
-	html_start_box($host_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-	if (isset($host_array) && cacti_sizeof($host_array)) {
-		if (get_request_var('drp_action') == '1') { // delete
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to delete the following Device Template(s).') . "</p>
-					<div class='itemlist'><ul>$host_list</ul></div>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Device Template(s)') . "'>";
-		} elseif (get_request_var('drp_action') == '2') { // duplicate
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to duplicate the following Device Template(s).  Optionally change the title for the new Device Template(s).') . "</p>
-					<div class='itemlist'><ul>$host_list</ul></div>
-					<p><strong>" . __('Title Format:') . "</strong><br>\n";
-
-			form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text');
-
-			print "</p>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Duplicate Device Template(s)') . "'>";
-		} elseif (get_request_var('drp_action') == '3') { // sync devices
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to Synchronize Devices associated with the selected Device Template(s).  Note that this action may take some time depending on the number of Devices mapped to the Device Template.') . "</p>
-					<div class='itemlist'><ul>$host_list</ul></div>\n";
-
-			print "</p>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Sync Devices to Device Template(s)') . "'>";
-		}
 	} else {
-		raise_message(40);
-		header('Location: host_templates.php');
+		$ilist  = '';
+		$iarray = array();
 
-		exit;
+		/* loop through each of the host templates selected on the previous page and get more info about them */
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
+
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM host_template WHERE id = ?', array($matches[1]))) . '</li>';
+
+				$iarray[] = $matches[1];
+			}
+		}
+
+		$form_data = array(
+			'general' => array(
+				'page'       => 'host_templates.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Delete the following Device Template.'),
+					'pmessage' => __('Click \'Continue\' to Delete following Device Templates.'),
+					'scont'    => __('Delete Device Template'),
+					'pcont'    => __('Delete Device Templates')
+				),
+				2 => array(
+					'smessage' => __('Click \'Continue\' to Duplicate the following Device Template.'),
+					'pmessage' => __('Click \'Continue\' to Duplicate following Device Templates.'),
+					'scont'    => __('Duplicate Device Template'),
+					'pcont'    => __('Duplicate Device Templates'),
+					'extra'    => array(
+						'title_format' => array(
+							'method'  => 'textbox',
+							'title'   => __('Title Format:'),
+							'default' => '<template_title> (1)',
+							'width'   => 25
+						)
+					)
+				),
+				3 => array(
+					'smessage' => __('Click \'Continue\' to Sync Devices to the following Device Template.'),
+					'pmessage' => __('Click \'Continue\' to Sync Devices to the following Device Templates.'),
+					'scont'    => __('Sync Device Template'),
+					'pcont'    => __('Sync Device Templates')
+				),
+			)
+		);
+
+		form_continue_confirmation($form_data);
 	}
-
-	print "<tr>
-		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($host_array) ? serialize($host_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
-			$save_html
-		</td>
-	</tr>\n";
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
 
 function template_item_remove_gt_confirm() {
@@ -641,7 +615,7 @@ function template_edit() {
 }
 
 function template() {
-	global $host_actions, $item_rows, $device_classes;
+	global $actions, $item_rows, $device_classes;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -889,6 +863,7 @@ function template() {
 			}
 
 			form_alternate_row('line' . $template['id'], true, $disabled);
+
 			form_selectable_cell(filter_value($template['name'], get_request_var('filter'), 'host_templates.php?action=edit&id=' . $template['id']), $template['id']);
 
 			if ($template['class'] != '') {
@@ -901,11 +876,13 @@ function template() {
 			form_selectable_cell($disabled ? __('No') : __('Yes'), $template['id'], '', 'right');
 			form_selectable_cell('<a class="linkEditMain" href="' . html_escape('host.php?reset=true&host_template_id=' . $template['id']) . '">' . number_format_i18n($template['hosts'], '-1') . '</a>', $template['id'], '', 'right');
 			form_checkbox_cell($template['name'], $template['id'], $disabled);
+
 			form_end_row();
 		}
 	} else {
 		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Device Templates Found') . "</em></td></tr>\n";
 	}
+
 	html_end_box(false);
 
 	if (cacti_sizeof($template_list)) {
@@ -913,7 +890,7 @@ function template() {
 	}
 
 	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($host_actions);
+	draw_actions_dropdown($actions);
 
 	form_end();
 }
