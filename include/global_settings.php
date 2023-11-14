@@ -1368,18 +1368,16 @@ $settings = array(
 			)
 		),
 		'rrdcheck_timeout' => array(
-			'friendly_name' => __('RRDfile Check Timeout'),
+			'friendly_name' => __('RRDChecker Timeout'),
 			'description' => __('The maximum amount of time Cacti\'s RRDfile check script can run without generating a timeout error and being killed.'),
 			'method' => 'drop_array',
-			'default' => '300',
+			'default' => '3600',
 			'array' => array(
-				'60'   => __('%s Minute', 1),
-				'120'  => __('%s Minutes', 2),
-				'300'  => __('%s Minutes', 5),
-				'600'  => __('%s Minutes', 10),
-				'1200' => __('%s Minutes', 20),
-				'1800' => __('%s Minutes', 30),
-				'3600' => __('1 Hour')
+				'300'   => __('%s Minutes', 5),
+				'1800'  => __('%s Minutes', 30),
+				'3600'  => __('%s Hour', 1),
+				'7200'  => __('%s Hour', 2),
+				'14400' => __('%s Hour', 4)
 			)
 		),
 		'commands_timeout' => array(
