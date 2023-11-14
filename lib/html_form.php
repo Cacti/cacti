@@ -1240,7 +1240,8 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
  *   - optvar: A request variable to pull the selected option from.  Normally 'drp_action'
  *   - item_array: An array of selected items that have been pre-processed
  *   - item_list: An string of list items "<li>Title</li>" that have been pre-processed
- *   - extra: A paragraph that is placed after the options and just before the Continue button
+ *   - header: A paragraph that is placed before the options and after the message text
+ *   - footer: A paragraph that is placed after the options and just before the Continue button
  *
  * The 'options' array should have a matching value array for each of the approved
  *   actions.  For each action, you need one of the following formats variables:
@@ -1262,17 +1263,22 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
  *		'actions'    => $actions,
  *		'eaction'    => 'action_variable', // Extra Action
  *		'optvar'     => 'drp_action'
+ *		'header'     => 'some header text',
  *		'item_array' => $d_array,
  *		'item_list'  => $d_list,
+ *		'footer'     => 'some footer text'
  *	),
  *	'options' => array(
  *		1 => array(
+ *			'header'     => 'some header text',
  *			'smessage' => __('Click \'Continue\' to Delete the following User Domain.'),
  *			'pmessage' => __('Click \'Continue\' to Delete following User Domains.'),
  *			'scont'    => __('Delete User Domain'),
  *			'pcont'    => __('Delete User Domains')
+ *			'footer'     => 'some footer text'
  *		),
  *		2 => array(
+ *			'header'     => 'some header text',
  *			'smessage' => __('Click \'Continue\' to Disable the following User Domain.'),
  *			'pmessage' => __('Click \'Continue\' to Disable following User Domains.'),
  *			'scont'    => __('Disable User Domain'),
@@ -1285,7 +1291,8 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
  *					'width'   => 25,
  *					'size'    => 25
  *				)
- *			)
+ *			),
+ *			'footer'     => 'some footer text'
  *		)
  *	);
  *
@@ -1342,6 +1349,18 @@ function form_continue_confirmation($form_data) {
 
 	print "<tr><td class='textArea left' colspan='3'>";
 	print "<p>$message</p>";
+
+	if (isset($form_data['general']['header'])) {
+		print "<tr><td class='textArea left' colspan='3'><p>";
+		print $form_data['general']['header'];
+		print "</p></td></tr>";
+	}
+
+	if (isset($data['header'])) {
+		print "<tr><td class='textArea left' colspan='3'><p>";
+		print $data['header'];
+		print "</p></td></tr>";
+	}
 
 	if ($ilist != '') {
 		print "<div class='itemlist'><ul>$ilist</ul></div>";
@@ -1402,9 +1421,15 @@ function form_continue_confirmation($form_data) {
 			print "</tr>";
 		}
 
-		if (isset($form_data['general']['extra'])) {
+		if (isset($data['footer'])) {
 			print "<tr><td class='textArea left' colspan='3'><p>";
-			print $form_data['general']['extra'];
+			print $data['footer'];
+			print "</p></td></tr>";
+		}
+
+		if (isset($form_data['general']['footer'])) {
+			print "<tr><td class='textArea left' colspan='3'><p>";
+			print $form_data['general']['footer'];
 			print "</p></td></tr>";
 		}
 	}
