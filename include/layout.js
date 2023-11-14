@@ -4453,6 +4453,11 @@ function makeCallbacks() {
 			open: function(event, ui) {
 				$('.ui-dialog').css('z-index', '20');
 				$(this).css('z-index', '5000');
+			},
+			close: function(event, ui) {
+				var cn = $(dcId).attr('data-callback-id');
+				callbackOpen[cn] = false;
+				clearTimeout(callbackTimer[cn]);
 			}
 		}).css('border', 'none').css('background-color', 'transparent');
 
