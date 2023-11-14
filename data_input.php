@@ -28,7 +28,7 @@ include_once('./lib/poller.php');
 include_once('./lib/template.php');
 include_once('./lib/utility.php');
 
-$di_actions = array(
+$actions = array(
 	1 => __('Delete'),
 	2 => __('Duplicate')
 );
@@ -193,7 +193,7 @@ function data_input_save_message($data_input_id, $type = 'input') {
 }
 
 function form_actions() {
-	global $di_actions;
+	global $actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
@@ -218,76 +218,57 @@ function form_actions() {
 		header('Location: data_input.php');
 
 		exit;
-	}
-
-	/* setup some variables */
-	$di_list = '';
-	$i       = 0;
-
-	/* loop through each of the data inputs and process them */
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
-
-			$di_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM data_input WHERE id = ?', array($matches[1]))) . '</li>';
-			$di_array[$i] = $matches[1];
-
-			$i++;
-		}
-	}
-
-	top_header();
-
-	form_start('data_input.php');
-
-	html_start_box($di_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-	if (isset($di_array) && cacti_sizeof($di_array)) {
-		if (get_request_var('drp_action') == '1') { // delete
-			$graphs = array();
-
-			print "<tr>
-				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to delete the following Data Input Method', 'Click \'Continue\' to delete the following Data Input Method', cacti_sizeof($di_array)) . "</p>
-					<div class='itemlist'><ul>$di_list</ul></div>
-				</td>
-			</tr>\n";
-		} elseif (get_request_var('drp_action') == '2') { // duplicate
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to duplicate the following Data Input Method(s). You can optionally change the title format for the new Data Input Method(s).') . "</p>
-                    <div class='itemlist'><ul>$di_list</ul></div>
-                    <p><strong>" . __('Input Name:'). '</strong><br>';
-			form_text_box('input_title', '<input_title> (1)', '', '255', '30', 'text');
-			print "</p>
-                </td>
-			</tr>\n";
-		}
-
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Input Method', 'Delete Data Input Methods', cacti_sizeof($di_array)) . "'>";
 	} else {
-		raise_message(40);
-		header('Location: data_input.php');
+		$ilist  = '';
+		$iarray = array();
 
-		exit;
+		/* loop through each of the data inputs and process them */
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
+
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM data_input WHERE id = ?', array($matches[1]))) . '</li>';
+
+				$iarray[] = $matches[1];
+			}
+		}
+
+		$form_data = array(
+			'general' => array(
+				'page'       => 'data_input.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Delete the following Data Input Method.'),
+					'pmessage' => __('Click \'Continue\' to Delete following Data Input Methods.'),
+					'scont'    => __('Delete Data Input Method'),
+					'pcont'    => __('Delete Data Input Methods')
+				),
+				2 => array(
+					'smessage' => __('Click \'Continue\' to Duplicate the following Data Input Method.'),
+					'pmessage' => __('Click \'Continue\' to Duplicate following Data Input Methods.'),
+					'scont'    => __('Duplicate Data Input Method'),
+					'pcont'    => __('Duplicate Data Input Methods'),
+					'extra'    => array(
+						'input_title' => array(
+							'method'  => 'textbox',
+							'title'   => __('Input Name:'),
+							'default' => '<input_title> (1)',
+							'width'   => 25
+						)
+					)
+				)
+			)
+		);
+
+		form_continue_confirmation($form_data);
 	}
-
-	print "<tr>
-		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($di_array) ? serialize($di_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
-			$save_html
-		</td>
-	</tr>\n";
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
 
 function field_remove_confirm() {
@@ -726,7 +707,7 @@ function data_edit() {
 }
 
 function data() {
-	global $input_types, $di_actions, $item_rows, $hash_system_data_inputs;
+	global $input_types, $actions, $item_rows, $hash_system_data_inputs;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -920,7 +901,9 @@ function data() {
 			} else {
 				$disabled = false;
 			}
+
 			form_alternate_row('line' . $data_input['id'], true, $disabled);
+
 			form_selectable_cell(filter_value($data_input['name'], get_request_var('filter'), 'data_input.php?action=edit&id=' . $data_input['id']), $data_input['id']);
 			form_selectable_cell($data_input['id'], $data_input['id'], '', 'right');
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $data_input['id'], '', 'right');
@@ -928,6 +911,7 @@ function data() {
 			form_selectable_cell(number_format_i18n($data_input['templates'], '-1'), $data_input['id'],'', 'right');
 			form_selectable_cell($input_types[$data_input['type_id']], $data_input['id'], '', 'right');
 			form_checkbox_cell($data_input['name'], $data_input['id'], $disabled);
+
 			form_end_row();
 		}
 	} else {
@@ -941,7 +925,7 @@ function data() {
 	}
 
 	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($di_actions);
+	draw_actions_dropdown($actions);
 
 	form_end();
 }

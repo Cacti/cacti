@@ -24,7 +24,7 @@
 
 include_once('./include/auth.php');
 
-$aggregate_actions = array(
+$actions = array(
 	1 => __('Delete'),
 	2 => __('Duplicate'),
 	3 => __('Sync Aggregates')
@@ -256,7 +256,7 @@ function form_save() {
  * form_actions	the action function
  */
 function form_actions() {
-	global $aggregate_actions, $config;
+	global $actions, $config;
 	include_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');
 
 	/* ================= input validation ================= */
@@ -285,88 +285,67 @@ function form_actions() {
 		header('Location: color_templates.php');
 
 		exit;
-	}
-
-	/* setup some variables */
-	$color_list = '';
-	$i          = 0;
-
-	/* loop through each of the color templates selected on the previous page and get more info about them */
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
-
-			$name = db_fetch_cell_prepared('SELECT name
-				FROM color_templates
-				WHERE color_template_id = ?',
-				array($matches[1]));
-
-			$color_list .= '<li>' . html_escape($name) . '</li>';
-			$color_array[] = $matches[1];
-		}
-	}
-
-	top_header();
-
-	form_start('color_templates.php');
-
-	html_start_box($aggregate_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-	if (isset($color_array) && cacti_sizeof($color_array)) {
-		if (get_request_var('drp_action') == '1') { /* delete */
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to delete the following Color Template', 'Click \'Continue\' to delete following Color Templates', cacti_sizeof($color_array)) . "</p>
-					<div class='itemlist'><ul>$color_list</ul></div>
-				</td>
-			</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Color Template', 'Delete Color Templates', cacti_sizeof($color_array)) . "'>";
-		} elseif (get_request_var('drp_action') == '2') { // duplicate
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to duplicate the following Color Template. You can optionally change the title format for the new color template.', 'Click \'Continue\' to duplicate following Color Templates. You can optionally change the title format for the new color templates.', cacti_sizeof($color_array)) . "</p>
-					<div class='itemlist'><ul>$color_list</ul></div>
-					<p>" . __('Title Format:') . '<br>';
-			form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text');
-			print '</p>
-				</td>
-			</tr>';
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate Color Template', 'Duplicate Color Templates', cacti_sizeof($color_array)) . "'>";
-		} elseif (get_request_var('drp_action') == '3') { // sync
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to Synchronize all Aggregate Graphs with the selected Color Template.', 'Click \'Continue\' to Synchronize all Aggregate Graphs with the selected Color Templates.', cacti_sizeof($color_array)) . "</p>
-					<div class='itemlist'><ul>$color_list</ul></div></p>
-				</td>
-			</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Synchronize Color Template', 'Synchronize Color Templates', cacti_sizeof($color_array)) . "'>";
-		}
 	} else {
-		raise_message(40);
-		header('Location: color_templates.php');
+		$ilist  = '';
+		$iarray = array();
 
-		exit;
+		/* loop through each of the color templates selected on the previous page and get more info about them */
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
+
+				$name = db_fetch_cell_prepared('SELECT name
+					FROM color_templates
+					WHERE color_template_id = ?',
+					array($matches[1]));
+
+				$ilist .= '<li>' . html_escape($name) . '</li>';
+				$iarray[] = $matches[1];
+			}
+		}
+
+		$form_data = array(
+			'general' => array(
+				'page'       => 'color_templates.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Delete the following Color Template.'),
+					'pmessage' => __('Click \'Continue\' to Delete following Color Templates.'),
+					'scont'    => __('Delete Color Template'),
+					'pcont'    => __('Delete Color Templates')
+				),
+				2 => array(
+					'smessage' => __('Click \'Continue\' to Duplicate the following Color Template.'),
+					'pmessage' => __('Click \'Continue\' to Duplicate following Color Templates.'),
+					'scont'    => __('Duplicate Color Template'),
+					'pcont'    => __('Duplicate Color Templates'),
+					'extra'    => array(
+						'title_format' => array(
+							'method'  => 'textbox',
+							'title'   => __('Title Format:'),
+							'default' => '<template_titel> (1)',
+							'width'   => 25
+						)
+					)
+				),
+				3 => array(
+					'smessage' => __('Click \'Continue\' to Syncronize the following Color Template to its Aggregates.'),
+					'pmessage' => __('Click \'Continue\' to Syncronize the following Color Templates to its Aggregates.'),
+					'scont'    => __('Synchronize Color Template'),
+					'pcont'    => __('Synchronize Color Templates')
+				),
+			)
+		);
+
+		form_continue_confirmation($form_data);
 	}
-
-	print "<tr>
-		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($color_array) ? serialize($color_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
-			$save_html
-		</td>
-	</tr>\n";
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
 
 function color_templates_item_dnd() {
@@ -790,7 +769,7 @@ function sync_color_templates($color_template) {
  * color_template maintain color templates
  */
 function color_template() {
-	global $aggregate_actions, $item_rows, $config;
+	global $actions, $item_rows, $config;
 	include_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');
 
 	/* ================= input validation and session storage ================= */
@@ -981,7 +960,7 @@ function color_template() {
 	}
 
 	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($aggregate_actions);
+	draw_actions_dropdown($actions);
 
 	form_end();
 

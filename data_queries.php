@@ -27,7 +27,7 @@ include_once('./lib/data_query.php');
 include_once('./lib/poller.php');
 include_once('./lib/utility.php');
 
-$dq_actions = array(
+$actions = array(
 	1 => __('Delete'),
 	2 => __('Duplicate')
 );
@@ -326,7 +326,7 @@ function form_save() {
 }
 
 function form_actions() {
-	global $dq_actions;
+	global $actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
@@ -353,83 +353,62 @@ function form_actions() {
 		header('Location: data_queries.php');
 
 		exit;
-	}
-
-	/* setup some variables */
-	$dq_list = '';
-	$i       = 0;
-
-	/* loop through each of the data queries and process them */
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
-
-			$name = db_fetch_cell_prepared('SELECT name
-				FROM snmp_query
-				WHERE id = ?',
-				array($matches[1]));
-
-			$dq_list .= '<li>' . html_escape($name) . '</li>';
-			$dq_array[$i] = $matches[1];
-
-			$i++;
-		}
-	}
-
-	top_header();
-
-	form_start('data_queries.php');
-
-	html_start_box($dq_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-	if (isset($dq_array) && cacti_sizeof($dq_array)) {
-		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
-			print "<tr>
-				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to Delete the following Data Query.', 'Click \'Continue\' to Delete following Data Queries.', cacti_sizeof($dq_array)) . "</p>
-					<div class='itemlist'><ul>$dq_list</ul></div>
-				</td>
-			</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Query', 'Delete Data Queries', cacti_sizeof($dq_array)) . "'>";
-		} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicatie */
-			print "<tr>
-				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to duplicate the following Data Query.', 'Click \'Continue\' to duplicate following Data Queries.', cacti_sizeof($dq_array)) . "</p>
-					<div class='itemlist'><ul>$dq_list</ul></div>
-					<p><strong>" . __('Name Format:'). "</strong><br>";
-
-			form_text_box('name_format', '<dataquery_name> (1)', '', '255', '30', 'text');
-
-			print "</p>
-                </td>
-            </tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate Data Query', 'Duplicate Data Queries', cacti_sizeof($dq_array)) . "'>";
-		}
 	} else {
-		raise_message(40);
-		header('Location: data_queries.php');
+		$ilist  = '';
+		$iarray = array();
 
-		exit;
+		/* loop through each of the data queries and process them */
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
+
+				$name = db_fetch_cell_prepared('SELECT name
+					FROM snmp_query
+					WHERE id = ?',
+					array($matches[1]));
+
+				$ilist .= '<li>' . html_escape($name) . '</li>';
+
+				$iarray[] = $matches[1];
+			}
+		}
+
+		$form_data = array(
+			'general' => array(
+				'page'       => 'data_queries.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Delete the following Data Query.'),
+					'pmessage' => __('Click \'Continue\' to Delete following Data Queries.'),
+					'scont'    => __('Delete Data Query'),
+					'pcont'    => __('Delete Data Queries')
+				),
+				2 => array(
+					'smessage' => __('Click \'Continue\' to Duplicate the following Data Query.'),
+					'pmessage' => __('Click \'Continue\' to Duplicate following Data Queries.'),
+					'scont'    => __('Duplicate Data Query'),
+					'pcont'    => __('Duplicate Data Queries'),
+					'extra'    => array(
+						'name_format' => array(
+							'method'  => 'textbox',
+							'title'   => __('Name Format:'),
+							'default' => '<dataquery_name> (1)',
+							'width'   => 25
+						)
+					)
+				)
+			)
+		);
+
+		form_continue_confirmation($form_data);
 	}
-
-	print "<tr>
-		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($dq_array) ? serialize($dq_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
-			$save_html
-		</td>
-	</tr>\n";
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
 
 function data_query_item_movedown_gsv() {
@@ -1269,7 +1248,7 @@ function data_query_edit() {
 }
 
 function data_query() {
-	global $dq_actions, $item_rows;
+	global $actions, $item_rows;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -1487,7 +1466,7 @@ function data_query() {
 	}
 
 	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($dq_actions);
+	draw_actions_dropdown($actions);
 
 	form_end();
 }

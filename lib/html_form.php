@@ -1240,6 +1240,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
  *   - optvar: A request variable to pull the selected option from.  Normally 'drp_action'
  *   - item_array: An array of selected items that have been pre-processed
  *   - item_list: An string of list items "<li>Title</li>" that have been pre-processed
+ *   - extra: A paragraph that is placed after the options and just before the Continue button
  *
  * The 'options' array should have a matching value array for each of the approved
  *   actions.  For each action, you need one of the following formats variables:
@@ -1393,6 +1394,12 @@ function form_continue_confirmation($form_data) {
 			}
 
 			print "</td></tr>";
+		}
+
+		if (isset($form_data['general']['extra'])) {
+			print "<tr><td class='textArea left'><p>";
+			print $form_data['general']['extra'];
+			print "</p></td></tr>";
 		}
 	}
 

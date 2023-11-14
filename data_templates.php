@@ -30,7 +30,7 @@ include_once('./lib/poller.php');
 include_once('./lib/template.php');
 include_once('./lib/utility.php');
 
-$ds_actions = array(
+$actions = array(
 	1 => __('Delete'),
 	2 => __('Duplicate'),
 	3 => __('Change Profile')
@@ -353,7 +353,7 @@ function form_save() {
 }
 
 function form_actions() {
-	global $ds_actions;
+	global $actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
@@ -430,31 +430,81 @@ function form_actions() {
 		header('Location: data_templates.php');
 
 		exit;
-	}
+	} else {
+		$ilist  = '';
+		$iarray = array();
 
-	/* setup some variables */
-	$ds_list = '';
-	$i       = 0;
+		/* loop through each of the graphs selected on the previous page and get more info about them */
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
 
-	/* loop through each of the graphs selected on the previous page and get more info about them */
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
-
-			$ds_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM data_template WHERE id = ?', array($matches[1]))) . '</li>';
-			$ds_array[$i] = $matches[1];
-
-			$i++;
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM data_template WHERE id = ?', array($matches[1]))) . '</li>';
+				$iarray[] = $matches[1];
+			}
 		}
+
+		$available_profiles = db_fetch_assoc('SELECT id, name FROM data_source_profiles ORDER BY name');
+
+		$form_data = array(
+			'general' => array(
+				'page'       => 'data_templates.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist,
+				'extra'      => __('NOTE: This change only will affect future Data Sources and does not alter existing Data Sources.')
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Delete the following Data Template.'),
+					'pmessage' => __('Click \'Continue\' to Delete following Data Templates.'),
+					'scont'    => __('Delete Data Template'),
+					'pcont'    => __('Delete Data Templates')
+				),
+				2 => array(
+					'smessage' => __('Click \'Continue\' to Duplicate the following Data Template.'),
+					'pmessage' => __('Click \'Continue\' to Duplicate following Data Templates.'),
+					'scont'    => __('Duplicate Data Template'),
+					'pcont'    => __('Duplicate Data Templates'),
+					'extra'    => array(
+						'title_format' => array(
+							'method'  => 'textbox',
+							'title'   => __('Title Format:'),
+							'default' => '<template_title> (1)',
+							'width'   => 25
+						)
+					)
+				),
+				3 => array(
+					'smessage' => __('Click \'Continue\' to Change Profile the following Data Template.'),
+					'pmessage' => __('Click \'Continue\' to Change Profile following Data Templates.'),
+					'scont'    => __('Change Profile for Data Template'),
+					'pcont'    => __('Change Profile for Data Templates'),
+					'extra'    => array(
+						'data_source_profile_id' => array(
+							'method'  => 'drop_array',
+							'title'   => __('New Data Source Profile:'),
+							'array'   => $available_profiles,
+							'variable' => 'name',
+							'id'       => 'id'
+						)
+					)
+				)
+			)
+		);
+
+		form_continue_confirmation($form_data);
 	}
+	exit;
 
 	top_header();
 
 	form_start('data_templates.php');
 
-	html_start_box($ds_actions[get_request_var('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box($actions[get_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($ds_array) && cacti_sizeof($ds_array)) {
 		if (get_request_var('drp_action') == '1') { // delete
@@ -1002,7 +1052,7 @@ function template_edit() {
 }
 
 function template() {
-	global $ds_actions, $item_rows;
+	global $actions, $item_rows;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -1279,7 +1329,9 @@ function template() {
 			if (get_request_var('profile') != '-1') {
 				$ds_url .= '&profile=' . get_request_var('profile');
 			}
+
 			form_alternate_row('line' . $template['id'], true, $disabled);
+
 			form_selectable_cell(filter_value($template['name'], get_request_var('filter'), 'data_templates.php?action=template_edit&id=' . $template['id']), $template['id']);
 			form_selectable_cell($template['id'], $template['id'], '', 'right');
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['id'], '', 'right');
@@ -1288,6 +1340,7 @@ function template() {
 			form_selectable_cell((empty($template['profile_name']) ? __('External'):html_escape($template['profile_name'])), $template['id']);
 			form_selectable_cell((($template['active'] == 'on') ? __('Active'):__('Disabled')), $template['id']);
 			form_checkbox_cell($template['name'], $template['id'], $disabled);
+
 			form_end_row();
 		}
 	} else {
@@ -1301,7 +1354,7 @@ function template() {
 	}
 
 	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($ds_actions);
+	draw_actions_dropdown($actions);
 
 	form_end();
 }

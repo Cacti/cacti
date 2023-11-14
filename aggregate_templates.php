@@ -26,7 +26,7 @@ include_once('./include/auth.php');
 include_once('./lib/api_aggregate.php');
 include_once('./lib/data_query.php');
 
-$aggregate_actions = array(
+$actions = array(
 	1 => __('Delete')
 );
 
@@ -283,7 +283,7 @@ function aggregate_get_graph_items($table, $id) {
  * aggregate_form_actions - the action function
  */
 function aggregate_form_actions() {
-	global $aggregate_actions, $config;
+	global $actions, $config;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action');
@@ -300,67 +300,48 @@ function aggregate_form_actions() {
 				db_execute('DELETE FROM aggregate_graph_templates_graph WHERE ' . array_to_sql_or($selected_items, 'aggregate_template_id'));
 				db_execute("UPDATE aggregate_graphs SET aggregate_template_id=0, template_propogation='' WHERE " . array_to_sql_or($selected_items, 'aggregate_template_id'));
 			}
-		} else {
 		}
 
 		header('Location: aggregate_templates.php');
 
 		exit;
-	}
-
-	/* setup some variables */
-	$aggregate_list = '';
-	$i              = 0;
-
-	/* loop through each of the color templates selected on the previous page and get more info about them */
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
-			$aggregate_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM aggregate_graph_templates WHERE id = ?', array($matches[1]))) . '</li>';
-			$aggregate_array[] = $matches[1];
-		}
-	}
-
-	top_header();
-
-	form_start('aggregate_templates.php');
-
-	html_start_box($aggregate_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-	if (isset($aggregate_array) && cacti_sizeof($aggregate_array)) {
-		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
-			print "<tr>
-					<td class='textArea'>
-						<p>" . __('Click \'Continue\' to Delete the following Aggregate Graph Template(s).') . "</p>
-						<div class='itemlist'><ul>$aggregate_list</ul></div>
-					</td>
-				</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Color Template(s)') . "'>";
-		}
 	} else {
-		raise_message(40);
-		header('Location: aggregate_templates.php');
+		$ilist  = '';
+		$iarray = array();
 
-		exit;
+		/* loop through each of the color templates selected on the previous page and get more info about them */
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
+
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM aggregate_graph_templates WHERE id = ?', array($matches[1]))) . '</li>';
+
+				$iarray[] = $matches[1];
+			}
+		}
+
+		$form_data = array(
+			'general' => array(
+				'page'       => 'aggregate_templates.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Delete the following Aggregate Graph Template.'),
+					'pmessage' => __('Click \'Continue\' to Delete following Aggregate Graph Templates.'),
+					'scont'    => __('Delete Aggregate Graph Template'),
+					'pcont'    => __('Delete Aggregate Graph Templates')
+				)
+			)
+		);
+
+		form_continue_confirmation($form_data);
 	}
-
-	print "<tr>
-		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($aggregate_array) ? serialize($aggregate_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
-			$save_html
-		</td>
-	</tr>\n";
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
 
 /**
@@ -559,7 +540,7 @@ function aggregate_template_edit() {
  * aggregate_template
  */
 function aggregate_template() {
-	global $aggregate_actions, $item_rows, $config;
+	global $actions, $item_rows, $config;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -738,7 +719,7 @@ function aggregate_template() {
 	}
 
 	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($aggregate_actions);
+	draw_actions_dropdown($actions);
 
 	form_end();
 
