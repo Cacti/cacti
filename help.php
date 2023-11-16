@@ -86,7 +86,7 @@ if (isset_request_var('error')) {
 		print json_encode(
 			array(
 				'status'   => 'Success',
-				'location' => CACTI_PATH_URL . '/docs/' . $page
+				'location' => CACTI_PATH_URL . 'docs/' . $page
 			)
 		);
 	} else {
