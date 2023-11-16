@@ -174,7 +174,7 @@ switch ($type) {
 
 rrdcheck_debug('Polling Ending');
 
-set_config_option('rrdchecker_last_run_time', time());
+set_config_option('rrdcheck_last_run_time', time());
 
 if (!$forcerun) {
 	unregister_process('rrdcheck', $type, $thread_id);
@@ -211,11 +211,11 @@ function rrdcheck_master_handler($forcerun) {
 		// determine if it's time to determine hourly averages
 		if (empty($last_run)) {
 			// since the poller has never run before, let's fake it out
-			set_config_option('rrdcheck_last_run_time', date($current_time));
+			set_config_option('rrdcheck_last_run_time', ($current_time-86400));
 		}
 
 		// if it's time to check, do so now
-		if ((!empty($last_run) && ((strtotime($last_run) + ($run_interval * 60)) < $current_time)) || $forcerun) {
+		if ((!empty($last_run) && (($last_run + ($run_interval * 60)) < $current_time)) || $forcerun) {
 
 			rrdcheck_launch_children($type);
 
