@@ -2410,7 +2410,7 @@ CREATE TABLE `reports_items` (
 
 CREATE TABLE settings (
   name varchar(75) NOT NULL default '',
-  value varchar(2048) NOT NULL default '',
+  value varchar(4096) NOT NULL default '',
   PRIMARY KEY (name)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
@@ -2428,14 +2428,13 @@ INSERT INTO settings VALUES ('selected_theme', 'modern');
 CREATE TABLE settings_user (
   user_id smallint(8) unsigned NOT NULL default '0',
   name varchar(75) NOT NULL default '',
-  value varchar(2048) NOT NULL default '',
+  value varchar(4096) NOT NULL default '',
   PRIMARY KEY (user_id, name)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `settings_user`
 --
-
 
 --
 -- Table structure for table `settings_user_group`
