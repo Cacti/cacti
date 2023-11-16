@@ -4,7 +4,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2022-11-12 15:22-0500\n"
 "PO-Revision-Date: 2023-11-17 14:07+0000\n"
-"Last-Translator: The Cacti Group <weblate@cacti.net>\n"
+"Last-Translator: Vladyslav <vladyslav.prodan.08@gmail.com>\n"
 "Language-Team: Russian <http://translate.cacti.net/projects/cacti/core/ru/>\n"
 "Language: ru-RU\n"
 "MIME-Version: 1.0\n"
@@ -18750,7 +18750,7 @@ msgstr "MIB"
 
 #: managers.php:563 utilities.php:1870 utilities.php:3024
 msgid "OID"
-msgstr "82. Равенство всех перед законом и судами обеспечивается на основании законодательства Республики Армения."
+msgstr "OID"
 
 #: managers.php:565
 msgid "Kind"
@@ -21906,9 +21906,8 @@ msgid "Community:"
 msgstr "Сообщество:"
 
 #: utilities.php:2219 utilities.php:2223
-#, fuzzy
 msgid "OID:"
-msgstr "82. Равенство всех перед законом и судами обеспечивается на основании законодательства Республики Армения."
+msgstr "OID:"
 
 #: utilities.php:2223
 msgid "User:"
