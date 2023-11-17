@@ -298,10 +298,10 @@ html[data-kiosk-mode='on'] #mdw-ConsoleNavigation {
     display: none;
     position: absolute;
     background-color: var(--background);
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
     z-index: 1;
     top: 2rem;
-    right: 0rem;
+    right: 0;
     border: 1px solid var(--border-color);
     border-radius: 4px;
     white-space: nowrap;
@@ -372,9 +372,10 @@ html[data-kiosk-mode='on'] #mdw-ConsoleNavigation {
 
 
 .mdw-ConsoleNavigationArea .compact_nav_icon[data-tooltip]:not([data-tooltip=""])::after {
-    background-color: var(--background);
+    background: var(--background-lowlight);
+    opacity: 0.9;
     color: var(--text-color-normal);
-    padding: 0.5rem 1rem;
+    padding: 0.25rem 1rem;
     height: fit-content;
     width: fit-content;
     white-space: nowrap;
@@ -386,8 +387,9 @@ html[data-kiosk-mode='on'] #mdw-ConsoleNavigation {
     transform: translate(2.75rem, 0) scale(0);
     transform-origin: top;
     transition: 0.1s;
-    box-shadow: 0 4px 14px 0 rgba(0,0,0,.2), 0 0 0 1px rgba(0,0,0,.05);
-    border: 1px solid var(--border-color-light);
+    box-shadow: var(--box-shadow-color) 0 10px 20px;
+    border: 1px solid var(--border-color);
+    font-size: var(--fs-regular);
 }
 
 .mdw-ConsoleNavigationArea .compact_nav_icon[data-tooltip]:not([data-tooltip=""]):not(.active):hover:after {
@@ -430,8 +432,6 @@ html[data-kiosk-mode='on'] #mdw-ConsoleNavigation {
     overflow: hidden;
     margin: 1rem 0 1rem 1rem;
     writing-mode: initial;
-    border: 1px solid var(--border-content-element);
-    border-radius: 3px;
 }
 
 #mdw-SideBarContainer .menuitem.double {
