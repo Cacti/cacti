@@ -31,6 +31,7 @@ html {
     --background-lowlight: hsl(var(--hue), 23%, 9%);
     --background-highlight: hsl(var(--hue), 19%, 17%);
     --background-progress: hsl(var(--special2-hue), 69%, 52%);
+    --background-progress-mediumlight: hsla(var(--special2-hue), 69%, 52%, 0.2);
     --background-progress-semilight: hsla(var(--special2-hue), 69%, 52%, 0.1);
     --background-dark: hsl(var(--hue), 19%, 17%);
     --border-color: hsl(var(--hue), 19%, 21%);
@@ -71,7 +72,8 @@ html[data-theme-color='light'] {
     --background-highlight: hsl(var(--special-hue), 84%, 50%);
     --background-dark: hsl(var(--special2-hue), 19%, 17%);
     --background-progress: hsl(var(--special-hue), 69%, 52%);
-    --background-progress-semilight: hsla(var(--special-hue), 69%, 52%, 0.4);
+    --background-progress-mediumlight: hsla(var(--special2-hue), 69%, 52%, 0.4);
+    --background-progress-semilight: hsla(var(--special-hue), 69%, 52%, 0.2);
 
     --border-color: hsla(var(--special2-hue), 84%, 20%, 0.25);
     --border-color-semilight: hsla(var(--special2-hue), 84%, 20%, 0.08);

@@ -190,8 +190,8 @@ input[type="checkbox"] + label:before {
 }
 
 input[type="checkbox"]:checked + label:before {
-    background-color: #1c1e2d;
-    color: #09ad7e;
+    background-color: transparent;
+    color: var(--text-color-highlight-a);
     content: '✔';
     text-align: center;
     line-height: var(--fs-regular);
@@ -2085,8 +2085,7 @@ div.submenu span {
 }
 
 tr.selected {
-    background: #242635 !important;
-    color: #bababa !important;
+    background: var(--background-progress-semilight);
 }
 
 tr.selected a.linkEditMain:visited {
@@ -2117,8 +2116,8 @@ tr.selectable td:last-child {
 tr.selectable:last-child td {
 }
 
-tr.selectable:hover:not(.selected) {
-    background-color: var(--background-progress-semilight);
+tr.selectable:hover {
+    background-color: var(--background-progress-mediumlight);
 }
 
 tr.selected a {
