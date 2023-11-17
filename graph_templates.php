@@ -1033,7 +1033,7 @@ function form_actions() {
 					retemplate_graphs($selected_items[$i]);
 
 					$graph_template_name = db_fetch_cell_prepared('SELECT name
-						FROM graph_templates
+						FROM graph_templates AS gt
 						WHERE id = ?',
 						array($selected_items[$i]));
 
