@@ -15,6 +15,7 @@ Cacti CHANGELOG
 -issue#5481: Attempting to edit a Data Query that does not exist throws warnings and not an GUI error
 -issue#5511: Allow automation network to be saved when the IP Addresses to ignore box is empty
 -issue#5517: Cacti 1.3.x will not support 'Remember me' functionality without using https
+-issue#5567: Incorrect variable name in change_device cli script
 -issue#5570: RRDChecker is started very often
 -issue#5573: Incorrect URL for editing graph template
 -feature#412: Import Export for Graph and Tree rules
