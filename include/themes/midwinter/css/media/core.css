@@ -182,11 +182,11 @@ input[type="checkbox"] + label:before {
     border-radius: 2px;
     content: "\00a0";
     display: inline-block;
-    font: 14px/1em sans-serif;
-    height: 1em;
-    margin: 0.25em 0.45em;
-    width: 1em;
+    height: var(--fs-regular);
+    margin: 0.25rem 0 0.25rem 0.25rem;
+    width: var(--fs-regular);
     background: transparent;
+    line-height: var(--fs-regular);
 }
 
 input[type="checkbox"]:checked + label:before {
@@ -194,6 +194,7 @@ input[type="checkbox"]:checked + label:before {
     color: #09ad7e;
     content: '✔';
     text-align: center;
+    line-height: var(--fs-regular);
 }
 
 input[type="checkbox"]:checked + label, input[type="radio"]:not([name^="reindex"]):checked + label {
@@ -1659,6 +1660,7 @@ table.cactiTable {
 .tableSubHeaderCheckbox {
     max-width: 20px;
     width: 20px;
+    position: unset;
 }
 
 .image_table {
