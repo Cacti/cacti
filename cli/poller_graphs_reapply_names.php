@@ -44,7 +44,7 @@ $filter  = '';
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
-			list($arg, $value) = explode('=', $parameter);
+			list($arg, $value) = explode('=', $parameter, 2);
 		} else {
 			$arg   = $parameter;
 			$value = '';
