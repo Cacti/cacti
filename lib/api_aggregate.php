@@ -1344,6 +1344,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 
 function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_graph_id, $_total, $_total_type) {
 	static $special_comments = null;
+	static $special_hrules   = null;
 
 	$comments_hrules = db_fetch_assoc('SELECT *
 		FROM graph_templates_item
@@ -1358,8 +1359,6 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 		array($local_graph_id));
 
 	if (cacti_sizeof($comments_hrules)) {
-		$hrule_found = false;
-
 		foreach ($comments_hrules as $item) {
 			switch($item['graph_type_id']) {
 				case GRAPH_ITEM_TYPE_COMMENT:
@@ -1437,9 +1436,9 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 
 					break;
 				case GRAPH_ITEM_TYPE_HRULE:
-					if (!$hrule_found) {
+					if (!isset($special_hrules[$item['value']])) {
 						if (preg_match('/(:bits:|:bytes:)/', $item['value'])) {
-							$hrule_found = true;
+							$special_hrules[$item['value']] = true;
 
 							$parts = explode('|', $item['value']);
 
@@ -1516,10 +1515,6 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 					}
 
 					break;
-			}
-
-			if ($hrule_found && $comment_found) {
-				break;
 			}
 		}
 	}
