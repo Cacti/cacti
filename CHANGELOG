@@ -2,14 +2,15 @@ Cacti CHANGELOG
 
 1.2.26
 -issue#5464: PHP warning when view Data Source Info mode with new Data Source
+-issue#5478: Add records about last reindex, rrdcleaner, ...
 -issue#5481: Attempting to edit a Data Query that does not exist throws warnings and not an GUI error
--issue#5483: cacti 1.2.25 ubuntu server 22.04.3 php8.1 add device error
+-issue#5483: Cacti 1.2.25 ubuntu server 22.04.3 php8.1 add device error
 -issue#5485: Selecting a host device in System Utilities - View Data Query Cache raises error in cacti log
--issue#5489: remove_graphs.php does not handle "--preserve" option
+-issue#5489: Remove_graphs.php does not handle "--preserve" option
 -issue#5490: Database failure causes infinite recursion in cacti_log() followed by machine lockup
 -issue#5492: Cacti 1.2.25 ss_host_cpu.php CPU graphs not updating anymore on Windows servers
 -issue#5493: Multi select drop down list box not rendered correctly in Chrome and Edge
--issue#5494: typo error in name used in inserts array for selective_plugin_debug
+-issue#5494: Typo error in name used in inserts array for selective_plugin_debug
 -issue#5495: Upon upgrade, cacti falsely assumes that a plugin is not compatible, when it could simply not be present
 -issue#5496: Plugin Management CLI does not work when multiple plugins are specified
 -issue#5502: Errors related to php 8.3 and page generation including a checkbox
@@ -19,7 +20,11 @@ Cacti CHANGELOG
 -issue#5534: When deleting a single Data Source the table data_debug is not purged
 -issue#5542: When a form element does not include a 'value' column, provide a more helpful warning message 
 -issue#5554: Interface description with equal sign (=) in ifAlias does not show Alias
+-issue#5561: Settings table custom size reverted by database repair
+-issue#5564: Device list empty due to SQL error 
+-issue#5565: Incorrect variable name in change_device cli script
 -issue#5572: RRD Checker timeouts to low
+-issue#5573: Incorrect URL for editing graph template
 -feature#5577: Provide new templates for ArubaOS switch, Aruba wifi controller and HPE iLO to be available during install 
 
 1.2.25

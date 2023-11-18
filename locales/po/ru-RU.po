@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2023-08-20 15:05-0400\nPO-Revision-Date: 2023-10-14 20:07+0000\nLast-Translator: Vladyslav V. Prodan <akapulko@gmail.com>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2023-08-20 15:05-0400\nPO-Revision-Date: 2023-11-17 14:07+0000\nLast-Translator: Vladyslav <vladyslav.prodan.08@gmail.com>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2626 lib/html.php:2512
 msgid "About Cacti"
@@ -5684,7 +5684,7 @@ msgstr "СКОРАЯ ПОМОЩЬ: Устройство ["
 #: host.php:203
 #, php-format
 msgid "Device Reindex Completed in %0.2f seconds.  There were %d items updated."
-msgstr "Переиндексация устройства завершена за %0,2f секунд. Было обновлено %d элементов."
+msgstr "Переиндексация устройства завершена за %0.2f секунд. Было обновлено %d элементов."
 
 #: host.php:330
 #, php-format
@@ -18645,7 +18645,7 @@ msgstr "MIB"
 
 #: managers.php:563 utilities.php:1870 utilities.php:3056
 msgid "OID"
-msgstr "82. Равенство всех перед законом и судами обеспечивается на основании законодательства Республики Армения."
+msgstr "OID"
 
 #: managers.php:565
 msgid "Kind"
@@ -21887,9 +21887,8 @@ msgid "Community:"
 msgstr "Сообщество:"
 
 #: utilities.php:2219 utilities.php:2223
-#, fuzzy
 msgid "OID:"
-msgstr "82. Равенство всех перед законом и судами обеспечивается на основании законодательства Республики Армения."
+msgstr "OID:"
 
 #: utilities.php:2223
 msgid "User:"
