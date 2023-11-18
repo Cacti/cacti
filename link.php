@@ -73,7 +73,7 @@ if (!cacti_sizeof($page)) {
 		}
 
 		if (preg_match('/^((((ht|f)tp(s?))\:\/\/){1}\S+)/i', $page['contentfile'])) {
-			print '<iframe id="content" src="' . $page['contentfile'] . '" frameborder="0"></iframe>';
+			print '<iframe id="content" src="' . $page['contentfile'] . '" sandbox="allow-scripts allow-popups allow-forms" frameborder="0"></iframe>';
 		} else {
 			print '<div id="content">';
 
