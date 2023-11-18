@@ -25,6 +25,7 @@ Cacti CHANGELOG
 -issue#5565: Incorrect variable name in change_device cli script
 -issue#5572: RRD Checker timeouts to low
 -issue#5573: Incorrect URL for editing graph template
+-feature#5577: Provide new templates for ArubaOS switch, Aruba wifi controller and HPE iLO to be available during install 
 
 1.2.25
 -security#GHSA-77rf-774j-6h3p: Protect against Insecure deserialization of filter data
