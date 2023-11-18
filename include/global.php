@@ -61,23 +61,21 @@ $cacti_version = trim($cacti_version);
 // define documentation table of contents
 define('CACTI_DOCUMENTATION_TOC', 'docs/Table-of-Contents.html');
 
-//By default, we assume that it is not
-//an AJAX request.
+// By default, we assume that it is not
+// an AJAX request.
 global $is_request_ajax;
 $is_request_ajax = false;
 
-//If HTTP_X_REQUESTED_WITH is equal to xmlhttprequest
-//We assume this is an ajax call
+// If HTTP_X_REQUESTED_WITH is equal to xmlhttprequest
+// We assume this is an ajax call
 if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
 	strcasecmp($_SERVER['HTTP_X_REQUESTED_WITH'], 'xmlhttprequest') == 0) {
 	$is_request_ajax = true;
+} elseif (isset($_REQUEST['header']) && $_REQUEST['header'] == 'false') {
+	$is_request_ajax = true;
+} elseif (isset($_REQUEST['headercontent'])) {
+	$is_request_ajax = false;
 }
-
-// NOTE: Cannot use isset_request_var() as that is in lib/html_utility.php
-//       which is not included yet!
-//if (isset($_REQUEST['headercontent'])) {
-//	$is_request_ajax = false;
-//}
 
 /* Default database settings*/
 $database_type     = 'mysql';
@@ -110,6 +108,7 @@ if (file_exists(__DIR__ . '/config.php')) {
 	if (!is_readable(__DIR__ . '/config.php')) {
 		die('Configuration file include/config.php is present, but unreadable.' . PHP_EOL);
 	}
+
 	include(__DIR__ . '/config.php');
 }
 
@@ -144,8 +143,8 @@ $db_var_defaults = array(
 	'database_ssl_key'    => '',
 	'database_ssl_cert'   => '',
 	'database_ssl_ca'     => '',
-        'database_ssl_capath' => '',
-        'database_ssl_verify_server_cert' => true,
+	'database_ssl_capath' => '',
+	'database_ssl_verify_server_cert' => true,
 );
 
 $db_var_prefixes = array('');
@@ -305,11 +304,11 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		$rdatabase_ssl_ca     = false;
 	}
 
-        if (!isset($rdatabase_ssl_capath)) {
+	if (!isset($rdatabase_ssl_capath)) {
 		$rdatabase_ssl_capath = false;
 	}
 
-        if (!isset($rdatabase_ssl_verify_server_cert)) {
+	if (!isset($rdatabase_ssl_verify_server_cert)) {
 		$rdatabase_ssl_verify_server_cert = true;
 	}
 
@@ -373,11 +372,11 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		$database_ssl_ca     = false;
 	}
 
-        if (!isset($database_ssl_capath)) {
+	if (!isset($database_ssl_capath)) {
 		$database_ssl_capath = false;
 	}
 
-        if (!isset($database_ssl_verify_server_cert)) {
+	if (!isset($database_ssl_verify_server_cert)) {
 		$database_ssl_verify_server_cert = false;
 	}
 
