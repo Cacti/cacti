@@ -102,14 +102,14 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 					$flags[PDO::MYSQL_ATTR_SSL_CA] = $db_ssl_ca;
 				}
 			} else if ($db_ssl_capath != '') {
-                            if (is_dir($db_ssl_capath)) {
-                                $flags[PDO::MYSQL_ATTR_SSL_CAPATH] = $db_ssl_capath;
-                            }
-                        }
+				if (is_dir($db_ssl_capath)) {
+					$flags[PDO::MYSQL_ATTR_SSL_CAPATH] = $db_ssl_capath;
+				}
+			}
 
-                        if ($db_ssl_verify_server_cert) {
-                            $flags[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = $db_ssl_verify_server_cert;
-                        }
+			if ($db_ssl_verify_server_cert) {
+				$flags[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = $db_ssl_verify_server_cert;
+			}
 
 			if ($db_ssl_key != '' && $db_ssl_cert != '') {
 				if (file_exists($db_ssl_key) && file_exists($db_ssl_cert)) {
@@ -271,8 +271,8 @@ function db_check_reconnect(object|false $db_conn = false, $log = true) {
 		global $database_ssl_key;
 		global $database_ssl_cert;
 		global $database_ssl_ca;
-                global $database_ssl_capath;
-                global $database_ssl_verify_server_cert;
+		global $database_ssl_capath;
+		global $database_ssl_verify_server_cert;
 	}
 
 	if (cacti_sizeof($database_details) && $db_conn !== false) {
@@ -312,11 +312,11 @@ function db_check_reconnect(object|false $db_conn = false, $log = true) {
 			$database_ssl_ca   = '';
 		}
 
-                if (!isset($database_ssl_capath)) {
+		if (!isset($database_ssl_capath)) {
 			$database_ssl_capath   = '';
 		}
 
-                if (!isset($database_ssl_verify_server_cert)) {
+		if (!isset($database_ssl_verify_server_cert)) {
 			$database_ssl_verify_server_cert   = false;
 		}
 
@@ -355,8 +355,8 @@ function db_check_reconnect(object|false $db_conn = false, $log = true) {
 			$database_ssl_key,
 			$database_ssl_cert,
 			$database_ssl_ca,
-                        $database_ssl_capath,
-                        $database_ssl_verify_server_cert
+			$database_ssl_capath,
+			$database_ssl_verify_server_cert
 		);
 	}
 }
