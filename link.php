@@ -76,7 +76,7 @@ if (!cacti_sizeof($page)) {
 		} else {
 			print '<div id="content">';
 
-			$file = $config['base_path'] . "/include/content/" . str_replace('../', '', $page['contentfile']);
+			$file = $config['base_path'] . '/include/content/' . basename($page['contentfile']);
 
 			if (file_exists($file)) {
 				include_once($file);
