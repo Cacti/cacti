@@ -1317,6 +1317,8 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 }
 
 function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_graph_id, $_total, $_total_type) {
+	static $special_comments = null;
+
 	$comments_hrules = db_fetch_assoc('SELECT *
 		FROM graph_templates_item
 		WHERE graph_type_id IN(' . GRAPH_ITEM_TYPE_COMMENT . ',' . GRAPH_ITEM_TYPE_HRULE . ')' .
@@ -1331,14 +1333,13 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 
 	if (cacti_sizeof($comments_hrules)) {
 		$hrule_found = false;
-		$comment_found = false;
 
 		foreach ($comments_hrules as $item) {
 			switch($item['graph_type_id']) {
 				case GRAPH_ITEM_TYPE_COMMENT:
-					if (!$comment_found) {
+					if (!isset($special_comments[$item['text_format']])) {
 						if (preg_match('/(:bits:|:bytes:)/', $item['text_format'])) {
-							$comment_found = true;
+							$special_comments[$item['text_format']] = true;
 
 							$parts = explode('|', $item['text_format']);
 
