@@ -26,6 +26,7 @@ Cacti CHANGELOG
 -issue#5565: Incorrect variable name in change_device cli script
 -issue#5572: RRD Checker timeouts to low
 -issue#5573: Incorrect URL for editing graph template
+-issue#5581: Due to previously never completed upgrade, future upgrades fail due to missing color table keys
 -feature#5577: Provide new templates for ArubaOS switch, Aruba wifi controller and HPE iLO to be available during install 
 
 1.2.25
