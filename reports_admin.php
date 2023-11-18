@@ -48,7 +48,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'send':
-		get_request_var('id');
+		get_filter_request_var('id');
 
 		reports_send(get_request_var('id'));
 
@@ -68,7 +68,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'ajax_get_branches':
-		print reports_get_branch_select(get_request_var('tree_id'));
+		print reports_get_branch_select(get_filter_request_var('tree_id'));
 
 		break;
 	case 'ajax_hosts':
@@ -136,7 +136,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'item_movedown':
-		get_request_var('id');
+		get_filter_request_var('id');
 
 		reports_item_movedown();
 
@@ -144,7 +144,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'item_moveup':
-		get_request_var('id');
+		get_filter_request_var('id');
 
 		reports_item_moveup();
 
@@ -152,7 +152,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'item_remove':
-		get_request_var('id');
+		get_filter_request_var('id');
 
 		reports_item_remove();
 

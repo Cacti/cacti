@@ -455,10 +455,9 @@ function poller_host_duplicate($poller_id, $host) {
 		return db_fetch_cell_prepared(
 			'SELECT COUNT(*)
 			FROM poller
-			WHERE dbhost LIKE "' . $host . '%"
+			WHERE dbhost LIKE ?
 			AND id != ?',
-			array($poller_id)
-		);
+			array($host . '%', $poller_id));
 	}
 }
 
