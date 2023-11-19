@@ -1786,6 +1786,10 @@ function is_console_page($url) {
 		return true;
 	}
 
+	if ($basename == 'about.php') {
+		return true;
+	}
+
 	if ($basename == 'rrdcleaner.php') {
 		return true;
 	}
