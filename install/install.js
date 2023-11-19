@@ -203,7 +203,7 @@ function getFieldData(fields, fieldData) {
 				}
 
 				$('input[name^="' + prefix + '"]').each(function(index,element) {
-					fieldData[element.id] =$(element).is(':checked');
+					fieldData[element.id] = $(element).is(':checked');
 				});
 			}
 		} else {
@@ -721,6 +721,13 @@ function performStep(installStep, suppressRefresh, forceReload) {
 			} else if (data.Step >= STEP_COMPLETE) {
 				processStepComplete(data.Step, data.StepData);
 			}
+
+			$('input[id^="chk_template"]').each(function() {
+				if ($(this).is(':checked')) {
+					console.log('checked');
+					$(this).closest('tr').addClass('selected');
+				}
+			});
 
 			$(function () {
 				var focusedElement;
