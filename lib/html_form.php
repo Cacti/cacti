@@ -1420,6 +1420,16 @@ function form_continue_confirmation($form_data) {
 
 					break;
 				case 'checkbox':
+					print "<td class='nowrap' colspan='2'>";
+					print "<span class='nowrap'>";
+					print "<span class='checkboxSwitch' id='{$field_name}_id' for='$field_name' title='{$field_array['title']}'>";
+					print "<input class='formCheckbox' type='checkbox' id='$field_name' name='$field_name' value=''>";
+					print "<span class='checkboxSlider checkboxRound'></span>";
+					print "</span>";
+					print "<label class='checkboxLabel checkboxLabelWanted' for='$field_name'>{$field_array['title']}</label>";
+					print "</span>";
+					print "</td>";
+
 					break;
 				default:
 					cacti_log("WARNING: Form continuation method {$field_array['method']} not understood");

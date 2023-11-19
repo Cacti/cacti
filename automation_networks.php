@@ -27,7 +27,7 @@ include('./include/auth.php');
 include_once('./lib/snmp.php');
 include_once('./lib/poller.php');
 
-$network_actions = array(
+$actions = array(
 	1 => __('Delete'),
 	2 => __('Disable'),
 	8 => __('Change Network Settings'),
@@ -508,7 +508,7 @@ function api_networks_save($post) {
 }
 
 function form_actions() {
-	global $config, $network_actions;
+	global $config, $actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action');
@@ -579,183 +579,159 @@ function form_actions() {
 		header('Location: automation_networks.php');
 
 		exit;
-	}
+	} else {
+		$ilist  = '';
+		$iarray = array();
 
-	/* setup some variables */
-	$networks_list = '';
-	$i             = 0;
+		/* defaults */
+		$header_array = array();
 
-	/* loop through each of the device types selected on the previous page and get more info about them */
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
+		/* loop through each of the device types selected on the previous page and get more info about them */
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
 
-			$networks_info = db_fetch_row_prepared('SELECT name FROM automation_networks WHERE id = ?', array($matches[1]));
-			$networks_list .= '<li>' . html_escape($networks_info['name']) . '</li>';
-			$networks_array[$i] = $matches[1];
-		}
+				$networks_info = db_fetch_row_prepared('SELECT name FROM automation_networks WHERE id = ?', array($matches[1]));
 
-		$i++;
-	}
+				$ilist .= '<li>' . html_escape($networks_info['name']) . '</li>';
 
-	top_header();
-
-	form_start('automation_networks.php');
-
-	html_start_box($network_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-	if (get_nfilter_request_var('drp_action') == '1') { /* delete */
-		print "<tr>
-			<td class='textArea'>
-				<p>" . __('Click \'Continue\' to delete the following Network(s).') . "</p>
-				<div class='itemlist'><ul>$networks_list</ul></div>
-			</td>
-		</tr>";
-	} elseif (get_nfilter_request_var('drp_action') == '3') { /* enable */
-		print "<tr>
-			<td class='textArea'>
-				<p>" . __('Click \'Continue\' to enable the following Network(s).') . "</p>
-				<div class='itemlist'><ul>$networks_list</ul></div>
-			</td>
-		</tr>";
-	} elseif (get_nfilter_request_var('drp_action') == '2') { /* disable */
-		print "<tr>
-			<td class='textArea'>
-				<p>" . __('Click \'Continue\' to disable the following Network(s).') . "</p>
-				<div class='itemlist'><ul>$networks_list</ul></div>
-			</td>
-		</tr>";
-	} elseif (get_nfilter_request_var('drp_action') == '4') { /* discover now */
-		print "<tr>
-			<td class='textArea'>
-				<p>" . __('Click \'Continue\' to discover the following Network(s).') . "</p>
-				<div class='itemlist'><ul>$networks_list</ul></div>
-				<span class='nowrap'>
-					<label class='checkboxSwitch' id='discover_dryrun_label' for='discover_dryrun' title='" . __esc('Perform a Dry Run.  Do not add Devices') . "'>
-						<input class='formCheckbox' type='checkbox' id='discover_dryrun' name='discover_dryrun' value=''>
-						<span class='checkboxSlider checkboxRound'></span>
-					</label>
-					<label class='checkboxLabel checkboxLabelWanted' for='discover_dryrun'>" . __esc('Perform a Dry Run.  Do not add Devices') . "</label>
-					<br>
-					<label class='checkboxSwitch' id='discover_debug_label' for='discover_debug' title='" . __esc('Enable Debug Logging') . "'>
-						<input class='formCheckbox' type='checkbox' id='discover_debug' name='discover_debug' value=''>
-						<span class='checkboxSlider checkboxRound'></span>
-					</label>
-					<label class='checkboxLabel checkboxLabelWanted' for='discover_debug'>" . __esc('Enable Debug Logging') . "</label>
-				</span>
-			</td>
-		</tr>";
-	} elseif (get_nfilter_request_var('drp_action') == '5') { /* cancel discovery now */
-		print "<tr>
-			<td class='textArea'>
-				<p>" . __('Click \'Continue\' to cancel on going Network Discovery(s).') . "</p>
-				<div class='itemlist'><ul>$networks_list</ul></div>
-			</td>
-		</tr>";
-	} elseif (get_nfilter_request_var('drp_action') == '6') { /* export */
-		print "<tr>
-			<td class='textArea'>
-				<p>" . __('Click \'Continue\' to Export the following Network(s).') . "</p>
-				<div class='itemlist'><ul>$networks_list</ul></div>
-			</td>
-		</tr>";
-	} elseif (get_nfilter_request_var('drp_action') == '7') { /* duplicate network */
-		print "<tr>
-			<td class='textArea'>
-				<p>" . __('Click \'Continue\' to Duplicate the following Network(s).') . "</p>
-				<div class='itemlist'><ul>$networks_list</ul></div>
-			</td>
-		</tr>";
-	} elseif (get_nfilter_request_var('drp_action') == '8') { /* change network options */
-		print "<tr>
-			<td class='textArea'>
-				<p>" . __('Click \'Continue\' to Change Network options for multiple Network(s).  Please check the box next to the fields you want to update, and then fill in the new value.') . "</p>
-				<div class='itemlist'><ul>$networks_list</ul></div>
-			</td>
-		</tr>";
-
-		$form_array = array();
-
-		$fields = network_get_field_array();
-
-		foreach($fields as $field_name => $field_array) {
-			if ((preg_match('/^notification_/', $field_name)) ||
-				(preg_match('/^ping_/', $field_name)) ||
-				($field_name == 'poller_id') ||
-				($field_name == 'site_id') ||
-				($field_name == 'dns_servers') ||
-				($field_name == 'enabled') ||
-				($field_name == 'snmp_id') ||
-				($field_name == 'enable_netbios') ||
-				($field_name == 'add_to_cacti') ||
-				($field_name == 'same_sysname') ||
-				($field_name == 'sched_type') ||
-				($field_name == 'threads') ||
-				($field_name == 'run_limit') ||
-				($field_name == 'recur_every') ||
-				($field_name == 'day_of_week') ||
-				($field_name == 'month') ||
-				($field_name == 'day_of_month') ||
-				($field_name == 'monthly_week') ||
-				($field_name == 'monthly_day')
-			) {
-
-				$form_array += array($field_name => $fields[$field_name]);
-
-				$form_array[$field_name]['value'] = '';
-
-				if (read_config_option('hide_form_description') == 'on') {
-					$form_array[$field_name]['description'] = '';
-				}
-
-				$form_array[$field_name]['form_id']      = 0;
-				$form_array[$field_name]['sub_checkbox'] = array(
-					'name'          => 't_' . $field_name,
-					'friendly_name' => __('Update this Field'),
-					'class'         => 'ui-state-disabled',
-					'value'         => ''
-				);
+				$iarray[] = $matches[1];
 			}
 		}
 
-		draw_edit_form(
-			array(
-				'config' => array('no_form_tag' => true),
-				'fields' => $form_array
+		if (cacti_sizeof($iarray) && get_request_var('drp_action') == 8) {
+			$form_array = array();
+
+			$fields = network_get_field_array();
+
+			foreach($fields as $field_name => $field_array) {
+				if ((preg_match('/^notification_/', $field_name)) ||
+					(preg_match('/^ping_/', $field_name)) ||
+					($field_name == 'poller_id') ||
+					($field_name == 'site_id') ||
+					($field_name == 'dns_servers') ||
+					($field_name == 'enabled') ||
+					($field_name == 'snmp_id') ||
+					($field_name == 'enable_netbios') ||
+					($field_name == 'add_to_cacti') ||
+					($field_name == 'same_sysname') ||
+					($field_name == 'sched_type') ||
+					($field_name == 'threads') ||
+					($field_name == 'run_limit') ||
+					($field_name == 'recur_every') ||
+					($field_name == 'day_of_week') ||
+					($field_name == 'month') ||
+					($field_name == 'day_of_month') ||
+					($field_name == 'monthly_week') ||
+					($field_name == 'monthly_day')
+				) {
+					$form_array += array($field_name => $fields[$field_name]);
+
+					$form_array[$field_name]['value'] = '';
+
+					if (read_config_option('hide_form_description') == 'on') {
+						$form_array[$field_name]['description'] = '';
+					}
+
+					$form_array[$field_name]['form_id']      = 0;
+					$form_array[$field_name]['sub_checkbox'] = array(
+						'name'          => 't_' . $field_name,
+						'friendly_name' => __('Update this Field'),
+						'class'         => 'ui-state-disabled',
+						'value'         => ''
+					);
+				}
+			}
+
+			ob_start();
+
+			draw_edit_form(
+				array(
+					'config' => array('no_form_tag' => true),
+					'fields' => $form_array
+				)
+			);
+
+			network_edit_javascript();
+
+			$header_array = ob_get_flush();
+		}
+
+		$form_data = array(
+			'general' => array(
+				'page'       => 'automation_networks.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Delete the following Network.'),
+					'pmessage' => __('Click \'Continue\' to Delete the following Networks.'),
+					'scont'    => __('Delete Network'),
+					'pcont'    => __('Delete Networks')
+				),
+				2 => array(
+					'smessage' => __('Click \'Continue\' to Disable the following Network.'),
+					'pmessage' => __('Click \'Continue\' to Disable the following Networks.'),
+					'scont'    => __('Disable Network'),
+					'pcont'    => __('Disable Networks')
+				),
+				3 => array(
+					'smessage' => __('Click \'Continue\' to Enable the following Network.'),
+					'pmessage' => __('Click \'Continue\' to Enable the following Networks.'),
+					'scont'    => __('Enable Network'),
+					'pcont'    => __('Enable Networks')
+				),
+				4 => array(
+					'smessage' => __('Click \'Continue\' to Discover the following Network.'),
+					'pmessage' => __('Click \'Continue\' to Discover the following Networks.'),
+					'scont'    => __('Discover Network'),
+					'pcont'    => __('Discover Networks'),
+					'extra'    => array(
+						'discover_dryrun' => array(
+							'method' => 'checkbox',
+							'title'  => __('Perform a Dry Run.  Do not add Devices'),
+							'default' => ''
+						),
+						'discover_debug' => array(
+							'method' => 'checkbox',
+							'title'  => __('Enable Debug Logging'),
+							'default' => ''
+						)
+					)
+				),
+				5 => array(
+					'message'  => __('Click \'Continue\' to cancel on going Network Discovery(s).'),
+					'cont'    => __('Cancel Network Discovery'),
+				),
+				6 => array(
+					'smessage' => __('Click \'Continue\' to Export the following Network.'),
+					'pmessage' => __('Click \'Continue\' to Export the following Networks.'),
+					'scont'    => __('Export Network'),
+					'pcont'    => __('Export Networks')
+				),
+				7 => array(
+					'smessage' => __('Click \'Continue\' to Duplicate the following Network.'),
+					'pmessage' => __('Click \'Continue\' to Duplicate the following Networks.'),
+					'scont'    => __('Duplicate Network'),
+					'pcont'    => __('Duplicate Networks')
+				),
+				8 => array(
+					'smessage' => __('Click \'Continue\' to Change Network options for the following Network.  Check the checkboxes to indicate that this setting should be changed.'),
+					'pmessage' => __('Click \'Continue\' to Change Network options for the following Networks.  Check the checkboxes to indicate that this setting should be changed.'),
+					'scont'    => __('Change Network'),
+					'pcont'    => __('Change Networks'),
+					'header'   => $header_array
+				),
 			)
 		);
 
-		network_edit_javascript();
-
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Change Newtork(s) Options') . "'>";
+		form_continue_confirmation($form_data);
 	}
-
-	if (!isset($networks_array)) {
-		raise_message(40);
-		header('Location: automation_networks.php');
-
-		exit;
-	} else {
-		$save_html = "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' name='save'>";
-	}
-
-	print "<tr>
-		<td colspan='2' class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($networks_array) ? serialize($networks_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>" . ($save_html != '' ? "
-			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()' name='cancel' value='" . __esc('Cancel') . "'>
-			$save_html" : "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()' name='cancel' value='" . __esc('Return') . "'>") . '
-		</td>
-	</tr>';
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
 
 function network_javascript() {
@@ -1312,7 +1288,7 @@ function get_networks(&$sql_where, $rows, $apply_limits = true) {
 }
 
 function networks() {
-	global $network_actions, $networkss, $config, $item_rows, $sched_types;
+	global $actions, $networkss, $config, $item_rows, $sched_types;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -1382,17 +1358,63 @@ function networks() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'name'           => array('display' => __('Network Name'), 'align' => 'left', 'sort' => 'ASC'),
-		'data_collector' => array('display' => __('Data Collector'), 'align' => 'left', 'sort' => 'DESC'),
-		'sched_type'     => array('display' => __('Schedule'), 'align' => 'left', 'sort' => 'DESC'),
-		'total_ips'      => array('display' => __('Total IPs'), 'align' => 'right', 'sort' => 'DESC'),
-		'nosort1'        => array('display' => __('Status'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The Current Status of this Networks Discovery')),
-		'nosort2'        => array('display' => __('Progress'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('Pending/Running/Done')),
-		'nosort3'        => array('display' => __('Up/SNMP Hosts'), 'align' => 'right', 'sort' => 'DESC'),
-		'threads'        => array('display' => __('Threads'), 'align' => 'right', 'sort' => 'DESC'),
-		'last_runtime'   => array('display' => __('Last Runtime'), 'align' => 'right', 'sort' => 'ASC'),
-		'nosort4'        => array('display' => __('Next Start'), 'align' => 'right', 'sort' => 'ASC'),
-		'last_started'   => array('display' => __('Last Started'), 'align' => 'right', 'sort' => 'ASC')
+		'name' => array(
+			'display' => __('Network Name'),
+			'align' => 'left',
+			'sort' => 'ASC'
+		),
+		'data_collector' => array(
+			'display' => __('Data Collector'),
+			'align' => 'left',
+			'sort' => 'DESC'
+		),
+		'sched_type' => array(
+			'display' => __('Schedule'),
+			'align' => 'left',
+			'sort' => 'DESC'
+		),
+		'total_ips' => array(
+			'display' => __('Total IPs'),
+			'align' => 'right',
+			'sort' => 'DESC'
+		),
+		'nosort1' => array(
+			'display' => __('Status'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The Current Status of this Networks Discovery')
+		),
+		'nosort2' => array(
+			'display' => __('Progress'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('Pending/Running/Done')
+		),
+		'nosort3' => array(
+			'display' => __('Up/SNMP Hosts'),
+			'align' => 'right',
+			'sort' => 'DESC'
+		),
+		'threads' => array(
+			'display' => __('Threads'),
+			'align' => 'right',
+			'sort' => 'DESC'
+		),
+		'last_runtime' => array(
+			'display' => __('Last Runtime'),
+			'align' => 'right',
+			'sort' => 'ASC'
+		),
+		'nosort4' => array(
+			'display' => __('Next Start'),
+			'align' => 'right',
+			'sort' => 'ASC'
+		),
+		'last_started' => array(
+			'display' => __('Last Started'),
+			'align' => 'right',
+			'sort' => 'ASC'
+		)
 	);
 
 	$status = 'Idle';
@@ -1456,6 +1478,7 @@ function networks() {
 			}
 
 			form_alternate_row('line' . $network['id'], true);
+
 			form_selectable_cell('<a class="linkEditMain" href="' . html_escape('automation_networks.php?action=edit&id=' . $network['id']) . '">' . html_escape($network['name']) . '</a>', $network['id']);
 			form_selectable_ecell($network['data_collector'], $network['id']);
 			form_selectable_cell($sched_types[$network['sched_type']], $network['id']);
@@ -1468,20 +1491,21 @@ function networks() {
 			form_selectable_cell($network['enabled'] == '' || $network['sched_type'] == '1' ? __('N/A') : ($network['next_start'] == '0000-00-00 00:00:00' ? substr($network['start_at'], 0, 16) : substr($network['next_start'], 0, 16)), $network['id'], '', 'right');
 			form_selectable_cell($network['last_started'] == '0000-00-00 00:00:00' ? __('Never') : substr($network['last_started'], 0, 16), $network['id'], '', 'right');
 			form_checkbox_cell($network['name'], $network['id']);
+
 			form_end_row();
 		}
 	} else {
 		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Networks Found') . '</em></td></tr>';
 	}
+
 	html_end_box(false);
 
 	if (cacti_sizeof($networks)) {
-		/* put the nav bar on the bottom as well */
 		print $nav;
 	}
 
 	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($network_actions);
+	draw_actions_dropdown($actions);
 
 	form_end();
 }
