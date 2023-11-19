@@ -1662,7 +1662,7 @@ function template() {
 	}
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
-		FROM graph_templates
+		FROM graph_templates AS gt
 		$sql_where
 		$sql_having");
 
