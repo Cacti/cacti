@@ -38,7 +38,7 @@ include_once('./lib/utility.php');
 
 aggregate_prune_graphs();
 
-$graph_actions = array(
+$actions = array(
 	1 => __('Delete'),
 	5 => __('Convert to Normal Graph'),
 	4 => __('Place Graphs on Report'),
@@ -104,14 +104,14 @@ switch (get_request_var('action')) {
 }
 
 function add_tree_names_to_actions_array() {
-	global $graph_actions;
+	global $actions;
 
 	/* add a list of tree names to the actions dropdown */
-	$trees = db_fetch_assoc('SELECT id,name FROM graph_tree ORDER BY name');
+	$trees = db_fetch_assoc('SELECT id, name FROM graph_tree ORDER BY name');
 
 	if (cacti_sizeof($trees)) {
 		foreach ($trees as $tree) {
-			$graph_actions['tr_' . $tree['id']] = __('Place on a Tree (%s)', $tree['name']);
+			$actions['tr_' . $tree['id']] = __('Place on a Tree (%s)', $tree['name']);
 		}
 	}
 }
@@ -686,14 +686,15 @@ function item_edit() {
 }
 
 function form_actions() {
-	global $graph_actions, $agg_item_actions;
+	global $actions, $agg_item_actions;
+	global $alignment, $graph_timespans;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
 	/* ==================================================== */
 
 	/* we are performing two set's of actions here */
-	$graph_actions += $agg_item_actions;
+	$actions += $agg_item_actions;
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
@@ -755,245 +756,238 @@ function form_actions() {
 		header('Location: aggregate_graphs.php');
 
 		exit;
-	}
-
-	/* setup some variables */
-	$graph_list = '';
-	$i          = 0;
-
-	/* loop through each of the graphs selected on the previous page and get more info about them */
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
-
-			$graph_list .= '<li>' . html_escape(get_graph_title($matches[1])) . '</li>';
-			$graph_array[$i] = $matches[1];
-
-			$i++;
-		}
-	}
-
-	top_header();
-
-	/* add a list of tree names to the actions dropdown */
-	add_tree_names_to_actions_array();
-
-	form_start('aggregate_graphs.php');
-
-	html_start_box($graph_actions[get_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-	$save_html = '';
-
-	if (isset($graph_array) && cacti_sizeof($graph_array)) {
-		if (get_request_var('drp_action') == '1') { // delete
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to delete the following Aggregate Graph(s).') . "</p>
-					<div class='itemlist'><ul>$graph_list</ul></div>
-				</td>
-			</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Graph(s)') . "'>";
-		} elseif (get_request_var('drp_action') == '2') { // migrate to aggregate
-			/* determine the common graph template if any */
-			foreach ($_POST as $var => $val) {
-				if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-					$local_graph_ids[] = $matches[1];
-				}
-			}
-			$lgid = implode(',', $local_graph_ids);
-
-			/* for whatever reason,  subquery performance in mysql is sub-optimal.  Therefore, let's do this
-			 * as a few queries instead.
-			 */
-			$task_items = array_rekey(db_fetch_assoc("SELECT DISTINCT task_item_id
-				FROM graph_templates_item
-				WHERE local_graph_id IN($lgid)"), 'task_item_id', 'task_item_id');
-
-			if (cacti_sizeof($task_items)) {
-				$task_items = implode(',', $task_items);
-
-				$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_template_id
-					FROM graph_templates_item
-					WHERE task_item_id IN ($task_items) AND graph_template_id>0");
-			} else {
-				$graph_templates = array();
-			}
-
-			if (cacti_sizeof($graph_templates) > 1) {
-				print "<tr>
-					<td class='textArea'>
-						<p>" . __('The selected Aggregate Graphs represent elements from more than one Graph Template.') . '</p>
-						<p>' . __('In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template.  Please press \'Return\' and then select only Aggregate Graph that utilize the same Graph Template.') . "</p>
-						<div class='itemlist'><ul>$graph_list</ul></div>
-					</td>
-				</tr>";
-
-				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
-			} elseif (cacti_sizeof($graph_templates) == 0) {
-				print "<tr>
-					<td class='textArea'>
-						<p>" . __('The selected Aggregate Graphs does not appear to have any matching Aggregate Templates.') . '</p>
-						<p>' . __('In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist.  Please press \'Return\' and then first create your Aggregate Template before retrying.') . "</p>
-						<div class='itemlist'><ul>$graph_list</ul></div>
-					</td>
-				</tr>";
-			} else {
-				$graph_template = $graph_templates[0]['graph_template_id'];
-
-				$aggregate_templates = db_fetch_assoc_prepared(
-					'SELECT id, name
-					FROM aggregate_graph_templates
-					WHERE graph_template_id = ?
-					ORDER BY name',
-					array($graph_template)
-				);
-
-				if (cacti_sizeof($aggregate_templates)) {
-					print "<tr>
-						<td class='textArea' colspan='2'>
-							<p>" . __('Click \'Continue\' and the following Aggregate Graph(s) will be migrated to use the Aggregate Template that you choose below.') . "</p>
-							<div class='itemlist'><ul>$graph_list</ul></div>
-						</td>
-					</tr>";
-
-					print "<tr>
-						<td class='textArea' width='170'>" . __('Aggregate Template:') . "</td>
-						<td>
-							<select name='aggregate_template_id'>";
-
-					html_create_list($aggregate_templates, 'name', 'id', $aggregate_templates[0]['id']);
-
-					print '</select>
-						</td>
-					</tr>';
-
-					$save_html = "<tr><td colspan='2' class='right'><input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Graph(s)') . "'></td></tr>";
-				} else {
-					print "<tr>
-						<td class='textArea'>
-							<p>" . __('There are currently no Aggregate Templates defined for the selected Legacy Aggregates.') . '</p>
-							<p>' . __('In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template \'%s\'.', db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($graph_template))) . '</p>
-							<p>' . __('Please press \'Return\' to continue.') . "</p>
-							<div class='itemlist'><ul>$graph_list</ul></div>
-						</td>
-					</tr>";
-
-					$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
-				}
-			}
-		} elseif (get_request_var('drp_action') == '3') { // create aggregate from aggregates
-			print "<tr>
-				<td colspan='2' class='textArea'>
-					<p>" . __('Click \'Continue\' to combine the following Aggregate Graph(s) into a single Aggregate Graph.') . "</p>
-					<div class='itemlist'><ul>$graph_list</ul></div>
-				</td>
-			</tr>";
-
-			print "	<tr><td class='textArea' width='170'>" . __('Aggregate Name:') . '</td></tr>';
-			print "	<tr><td class='textArea'><input type='text' class='ui-state-default ui-corner-all' name='aggregate_name' size='40' value='" . __esc('New Aggregate') . "'></td></tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Graph(s)') . "'>";
-		} elseif (get_request_var('drp_action') == '4') {
-			global $alignment, $graph_timespans;
-
-			$reports = db_fetch_assoc_prepared(
-				'SELECT id, name
-				FROM reports
-				WHERE user_id = ?
-				ORDER BY name',
-				array($_SESSION[SESS_USER_ID])
-			);
-
-			if (cacti_sizeof($reports)) {
-				print "<tr>
-					<td class='textArea'>
-						<p>" . __('Click \'Continue\' to add the selected Graphs to the Report below.') . "</p>
-						<div class='itemlist'><ul>$graph_list</ul></div>
-					</td>
-				</tr>
-				<tr><td>" . __('Report Name') . '<br>';
-				form_dropdown('report_id', $reports, 'name', 'id', '', '', '0');
-				print '</td></tr>';
-
-				print '<tr><td>' . __('Timespan') . '<br>';
-				form_dropdown('timespan', $graph_timespans, '', '', '', '', read_user_setting('default_timespan'));
-				print '</td></tr>';
-
-				print '<tr><td>' . __('Align') . '<br>';
-				form_dropdown('align', $alignment, '', '', '', '', REPORTS_ALIGN_CENTER);
-				print '</td></tr>';
-
-				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Add Graphs to Report') . "'>";
-			} else {
-				print "<tr><td class='even'><span class='textError'>" . __('You currently have no reports defined.') . '</span></td></tr>';
-				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
-			}
-		} elseif (get_request_var('drp_action') == '5') { // convert to a normal graph
-			print "<tr>
-				<td colspan='2' class='textArea'>
-					<p>" . __('Click \'Continue\' to convert the following Aggregate Graph(s) into a normal Graph.') . "</p>
-					<div class='itemlist'><ul>$graph_list</ul></div>
-				</td>
-			</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Convert to normal Graph(s)') . "'>";
-		} elseif (get_request_var('drp_action') == '10') { // associate with aggregate
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to associate the following Graph(s) with the Aggregate Graph.') . "</p>
-					<div class='itemlist'><ul>$graph_list</ul></div>
-				</td>
-			</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Associate Graph(s)') . "'>";
-		} elseif (get_request_var('drp_action') == '11') { // dis-associate with aggregate
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to disassociate the following Graph(s) from the Aggregate.') . "</p>
-					<div class='itemlist'><ul>$graph_list</ul></div>
-				</td>
-			</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Dis-Associate Graph(s)') . "'>";
-		} elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { // place on tree
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to place the following Aggregate Graph(s) under the Tree Branch.') . "</p>
-					<div class='itemlist'><ul>$graph_list</ul></div>
-					<p>" . __('Destination Branch:') . '<br>';
-			grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0');
-			print "</p>
-				</td>
-			</tr>
-			<input type='hidden' name='tree_id' value='" . html_escape($matches[1]) . "'>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Place Graph(s) on Tree') . "'>";
-		}
 	} else {
-		raise_message(40);
-		header('Location: aggregate_graphs.php');
+		$ilist  = '';
+		$iarray = array();
 
-		exit;
+		/* default form variables */
+		$aggregate_templates = array();
+		$reports = array();
+
+		/* loop through each of the graphs selected on the previous page and get more info about them */
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
+
+				$ilist .= '<li>' . html_escape(get_graph_title($matches[1])) . '</li>';
+
+				$iarray[] = $matches[1];
+			}
+		}
+
+		if (cacti_sizeof($iarray)) {
+			if (get_request_var('drp_action') == '2') {
+				/* determine the common graph template if any */
+				foreach ($_POST as $var => $val) {
+					if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+						$local_graph_ids[] = $matches[1];
+					}
+				}
+
+				$lgid = implode(',', $local_graph_ids);
+
+				/**
+				 * for whatever reason,  subquery performance in mysql is sub-optimal.
+				 * Therefore, let's do this as a few queries instead.
+				 */
+				$task_items = array_rekey(db_fetch_assoc("SELECT DISTINCT task_item_id
+					FROM graph_templates_item
+					WHERE local_graph_id IN($lgid)"), 'task_item_id', 'task_item_id');
+
+				if (cacti_sizeof($task_items)) {
+					$task_items = implode(',', $task_items);
+
+					$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_template_id
+						FROM graph_templates_item
+						WHERE task_item_id IN ($task_items) AND graph_template_id>0");
+				} else {
+					$graph_templates = array();
+				}
+
+				if (cacti_sizeof($graph_templates) > 1) {
+					$message = "<p>" . __('The selected Aggregate Graphs represent elements from more than one Graph Template.') . '</p>
+						<p>' . __('In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template.') . "</p>
+						<div class='itemlist'><ul>$ilist</ul></div>";
+
+					raise_message('nonmatch_templates', $message, MESSAGE_LEVEL_ERROR);
+					header('Location: aggregate_graphs.php');
+
+					exit;
+				} elseif (cacti_sizeof($graph_templates) == 0) {
+					$message = "<p>" . __('The selected Aggregate Graphs does not appear to have any matching Aggregate Templates.') . '</p>
+						<p>' . __('In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist.') . "</p>
+						<div class='itemlist'><ul>$ilist</ul></div>";
+
+					raise_message('nonmatch_templates', $message, MESSAGE_LEVEL_ERROR);
+					header('Location: aggregate_graphs.php');
+
+					exit;
+				} else {
+					$graph_template = $graph_templates[0]['graph_template_id'];
+
+					$aggregate_templates = array_rekey(
+						db_fetch_assoc_prepared('SELECT id, name
+							FROM aggregate_graph_templates
+							WHERE graph_template_id = ?
+							ORDER BY name',
+							array($graph_template)),
+						'id', 'name'
+					);
+
+					if (!cacti_sizeof($aggregate_templates)) {
+						$name = db_fetch_cell_prepared('SELECT name
+							FROM graph_templates
+							WHERE id = ?',
+							array($graph_template));
+
+						$message = "<p>" . __('There are currently no Aggregate Templates defined for the selected Legacy Aggregates.') . '</p>
+							<p>' . __esc('In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template \'%s\'.', $name) . "</p>
+							<div class='itemlist'><ul>$ilist</ul></div>";
+
+						raise_message('nonmatch_templates', $message, MESSAGE_LEVEL_ERROR);
+						header('Location: aggregate_graphs.php');
+
+						exit;
+					}
+				}
+			} elseif (get_request_var('drp_action') == '4') {
+
+				$reports = db_fetch_assoc_prepared('SELECT id, name
+					FROM reports
+					WHERE user_id = ?
+					ORDER BY name',
+					array($_SESSION[SESS_USER_ID]));
+
+				if (cacti_sizeof($reports)) {
+					$reports = array_rekey($reports, 'id', 'name');
+				} else {
+					$message = "<p>" . __('You currently have no reports defined.') . '</p>';
+
+					raise_message('nonmatch_templates', $message, MESSAGE_LEVEL_ERROR);
+					header('Location: aggregate_graphs.php');
+
+					exit;
+				}
+			}
+		}
+
+		$form_data = array(
+			'general' => array(
+				'page'       => 'aggregate_graphs.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist,
+				'eaction'    => 'local_graph_id',
+				'eactionid'  => isset_request_var('local_graph_id') ? get_filter_request_var('local_graph_id'):'0'
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Delete the following Aggregate Graph.'),
+					'pmessage' => __('Click \'Continue\' to Delete following Aggregate Graphs.'),
+					'scont'    => __('Delete Aggregate Graph'),
+					'pcont'    => __('Delete Aggregate Graphs')
+				),
+				2 => array(
+					'smessage' => __('Click \'Continue\' to Migrate the following Legacy Aggreate to a Templated Aggregate Graph.'),
+					'pmessage' => __('Click \'Continue\' to Migrate the following Legacy Aggregates to Templated Aggregate Graphs.'),
+					'scont'    => __('Migrate to Aggregate Graph'),
+					'pcont'    => __('Migrate to Aggregate Graphs'),
+					'extra'    => array(
+						'title_format' => array(
+							'method'  => 'drop_array',
+							'array'   => $aggregate_templates,
+							'title'   => __('Aggreate Template:'),
+							'default' => array_key_first($aggregate_templates)
+						)
+					)
+				),
+				3 => array(
+					'message' => __('Click \'Continue\' to Combine the following Aggreates into an Aggregate Graph.'),
+					'cont'    => __('Combine Aggregate Graphs'),
+					'extra'    => array(
+						'title_format' => array(
+							'method'  => 'textbox',
+							'title'   => __('Aggreate Name:'),
+							'default' => __('New Aggregate'),
+							'width'   => 40,
+							'size'    => 40
+						)
+					)
+				),
+				4 => array(
+					'smessage' => __('Click \'Continue\' to Place the following Aggregate Graph on a Report.'),
+					'pmessage' => __('Click \'Continue\' to Place the following Aggregate Graphs on a Report.'),
+					'scont'    => __('Place Aggregate Graph on Report'),
+					'pcont'    => __('Place Aggregate Graphs on Report'),
+					'extra'    => array(
+						'report_id' => array(
+							'method'  => 'drop_array',
+							'title'   => __('Report Name:'),
+							'array'   => $reports,
+							'default' => array_key_first($reports)
+						),
+						'timespan' => array(
+							'method'  => 'drop_array',
+							'title'   => __('Timespan:'),
+							'array'   => $graph_timespans,
+							'default' => read_user_setting('default_timespan')
+						),
+						'align' => array(
+							'method'  => 'drop_array',
+							'title'   => __('Align:'),
+							'array'   => $alignment,
+							'default' => REPORTS_ALIGN_CENTER
+						)
+					)
+				),
+				5 => array(
+					'smessage' => __('Click \'Continue\' to Convert the following Aggregate Graph to a Normal Graph.'),
+					'pmessage' => __('Click \'Continue\' to Convert the following Aggregate Graphs to Normal Graphs.'),
+					'scont'    => __('Convert Aggregate Graph'),
+					'pcont'    => __('Convert Aggregate Graphs')
+				),
+				10 => array(
+					'smessage' => __('Click \'Continue\' to Associate the following Graph with the Aggregate Graph.'),
+					'pmessage' => __('Click \'Continue\' to Associate the following Graphs with the Aggregate Graph.'),
+					'scont'    => __('Associate Graph with Aggregate'),
+					'pcont'    => __('Associate Graphs with  Aggregate')
+				),
+				11 => array(
+					'smessage' => __('Click \'Continue\' to Disassociate the following Graph from the Aggregate Graph.'),
+					'pmessage' => __('Click \'Continue\' to Disassociate the following Graphs from the Aggregate Graph.'),
+					'scont'    => __('Disassociate Graph with Aggregate'),
+					'pcont'    => __('Disassociate Graphs with  Aggregate')
+				),
+			)
+		);
+
+		$trees = db_fetch_assoc('SELECT id, name FROM graph_tree ORDER BY name');
+
+		if (cacti_sizeof($trees)) {
+			foreach($trees as $tree) {
+				$form_data['options']['tr_' . $tree['id']] = array(
+					'smessage' => __esc('Click \'Continue\' to Place the following Aggregate Graph on Tree %s.', $tree['name']),
+					'pmessage' => __esc('Click \'Continue\' to Duplicate following Aggregate Graphs on Tree %s.', $tree['name']),
+					'scont'    => __('Place Aggregate Graph on Tree'),
+					'pcont'    => __('Place Aggregate Graphs on Tree'),
+					'extra'    => array(
+						'tree_item_id' => array(
+							'method'  => 'drop_branch',
+							'title'   => __('Desination Branch:'),
+							'id'      => $tree['id']
+						)
+					),
+					'eaction'   => 'tree_id',
+					'eactionid' => $tree['id'],
+				);
+			}
+		}
+
+		form_continue_confirmation($form_data);
 	}
-
-	print "	<tr>
-		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='local_graph_id' value='" . (isset_request_var('local_graph_id') ? get_nfilter_request_var('local_graph_id') : 0) . "'>
-			<input type='hidden' name='selected_items' value='" . (isset($graph_array) ? serialize($graph_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
-			$save_html
-		</td>
-	</tr>";
-
-	html_end_box(false);
-
-	form_end();
-
-	bottom_footer();
 }
 
 function item() {
@@ -1959,7 +1953,7 @@ function aggregate_format_text($text, $filter) {
 }
 
 function aggregate_graph() {
-	global $graph_actions, $item_rows;
+	global $actions, $item_rows;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -2207,7 +2201,7 @@ function aggregate_graph() {
 	add_tree_names_to_actions_array();
 
 	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($graph_actions);
+	draw_actions_dropdown($actions);
 
 	/* remove old graphs */
 	purge_old_graphs();

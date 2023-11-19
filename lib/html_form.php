@@ -1412,6 +1412,13 @@ function form_continue_confirmation($form_data) {
 					print "</td>";
 
 					break;
+				case 'drop_branch':
+					print "<td class='textArea nowrap'>{$field_array['title']}</td>";
+					print "<td class='textArea'>";
+					grow_dropdown_tree($field_array['id'], '0', $field_name, '0');
+					print "</td>";
+
+					break;
 				case 'checkbox':
 					break;
 				default:
@@ -1438,7 +1445,19 @@ function form_continue_confirmation($form_data) {
 	print "<input type='hidden' name='action' value='actions'>";
 
 	if (isset($form_data['general']['eaction'])) {
-		print "<input type='hidden' name='{$form_data['general']['eaction']}' value='1'>";
+		if (!isset($form_data['general']['eactionid'])) {
+			$form_data['eactionid'] = 1;
+		}
+
+		print "<input type='hidden' name='{$form_data['general']['eaction']}' value='{$form_data['general']['eactionid']}'>";
+	}
+
+	if (isset($data['eaction'])) {
+		if (!isset($data['eactionid'])) {
+			$data['eactionid'] = 1;
+		}
+
+		print "<input type='hidden' name='{$data['eaction']}' value='{$data['eactionid']}'>";
 	}
 
 	print "<input type='hidden' name='selected_items' value='" . (isset($iarray) ? serialize($iarray) : '') . "'>";
