@@ -41,7 +41,7 @@ include_once('./lib/snmp.php');
 include_once('./lib/template.php');
 include_once('./lib/utility.php');
 
-$device_actions = array(
+$actions = array(
 	1 => __('Add Device'),
 	2 => __('Delete Device')
 );
@@ -86,7 +86,7 @@ switch(get_request_var('action')) {
 }
 
 function form_actions() {
-	global $device_actions, $availability_options;
+	global $actions, $availability_options;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
@@ -141,42 +141,50 @@ function form_actions() {
 		header('Location: automation_devices.php');
 
 		exit;
-	}
+	} else {
+		$ilist  = '';
+		$iarray = array();
 
-	/* setup some variables */
-	$device_list  = '';
-	$device_array = array();
-	$i            = 0;
+		/* loop through each of the graphs selected on the previous page and get more info about them */
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
 
-	/* loop through each of the graphs selected on the previous page and get more info about them */
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT CONCAT(IF(hostname!="", hostname, "unknown"), " (", ip, ")") FROM automation_devices WHERE id = ?', array($matches[1]))) . '</li>';
 
-			$device_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT CONCAT(IF(hostname!="", hostname, "unknown"), " (", ip, ")") FROM automation_devices WHERE id = ?', array($matches[1]))) . '</li>';
-			$device_array[$i] = $matches[1];
-
-			$i++;
+				$iarray[] = $matches[1];
+			}
 		}
-	}
 
-	top_header();
+		if (cacti_sizeof($iarray) && get_request_var('drp_action') == '1') { /* add */
+			$pollers = array_rekey(
+				db_fetch_assoc_prepared('SELECT id, name
+					FROM poller
+					ORDER BY name'),
+				'id', 'name'
+			);
 
-	form_start('automation_devices.php', 'chk');
+			$host_templates = array_rekey(
+				db_fetch_assoc_prepared('SELECT id, name
+					FROM host_template
+					ORDER BY name'),
+				'id', 'name'
+			);
 
-	html_start_box($device_actions[get_request_var('drp_action')], '60%', '', '3', 'center', '');
+			$poller_id = db_fetch_cell_prepared('SELECT id FROM poller WHERE disabled = "" LIMIT 1');
 
-	$available_host_templates = db_fetch_assoc_prepared('SELECT id, name FROM host_template ORDER BY name');
-
-	if (isset($device_array) && cacti_sizeof($device_array)) {
-		if (get_request_var('drp_action') == '1') { /* add */
-			$pollers = db_fetch_assoc_prepared('SELECT id, name FROM poller ORDER BY name');
+			if (empty($poller_id)) {
+				$poller_id = $pollers[0]['id'];
+			}
 
 			$availability_method = 0;
 			$host_template       = 0;
-			$devices             = db_fetch_assoc('SELECT id, sysName, sysDescr FROM automation_devices WHERE id IN (' . implode(',', $device_array) . ')');
+
+			$devices = db_fetch_assoc('SELECT id, sysName, sysDescr
+				FROM automation_devices
+				WHERE id IN (' . implode(',', $iarray) . ')');
 
 			foreach ($devices as $device) {
 				$os = automation_find_os($device['sysDescr'], '', $device['sysName']);
@@ -186,80 +194,76 @@ function form_actions() {
 						$host_template       = $os['host_template'];
 						$availability_method = $os['availability_method'];
 					} elseif ($host_template != $os['host_template']) {
-						// End up here if we have 2 devices with different Host Template matches
 						$host_template       = 0;
 						$availability_method = 0;
 
 						break;
 					}
 				} else {
-					// Couldn't determine the Host Template for a device, so abort and don't set a default
 					$host_template       = 0;
 					$availability_method = 0;
 
 					break;
 				}
 			}
-			print "<tr>
-				<td class='textArea odd'>
-					<p>" . __('Click \'Continue\' to add the following Discovered device(s).') . "</p>
-					<div class='itemlist'><ul>$device_list</ul></div>
-				</td>
-			</tr>
-			<tr>
-				<td class='textArea odd'>
-					<table><tr><td>" . __('Pollers') . '</td><td>';
-
-			form_dropdown('poller_id', $pollers, 'name', 'id', '', '', '');
-
-			print '</td></tr><tr><td>' . __('Select Template') . '</td><td>';
-
-			form_dropdown('host_template', $available_host_templates, 'name', 'id', '', '', $host_template);
-
-			print '</td></tr>';
-
-			print '<tr><td>' . __('Availability Method') . '</td><td>';
-
-			form_dropdown('availability_method', $availability_options, '', '', '', '', $availability_method);
-
-			print '</td></tr></table></td></tr>';
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Add Device(s)') . "'>";
-		} elseif (get_request_var('drp_action') == '2') { /* remove */
-			print "<tr>
-				<td class='textArea odd'>
-					<p>" . __('Click \'Continue\' to Delete the following Discovered device(s).') . "</p>
-					<div class='itemlist'><ul>$device_list</ul></div>
-				</td>
-			</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Device(s)') . "'>";
 		}
-	} else {
-		raise_message(40);
-		header('Location: automation_devices.php');
 
-		exit;
+		$form_data = array(
+			'general' => array(
+				'page'       => 'automation_devices.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Add the following Discovered Device to Cacti.'),
+					'pmessage' => __('Click \'Continue\' to Add the following Discovered Devices to Cacti.'),
+					'scont'    => __('Add Discovered Device'),
+					'pcont'    => __('Add Discovered Devices'),
+					'extra'    => array(
+						'poller_id' => array(
+							'method'  => 'drop_array',
+							'title'   => __('Poller:'),
+							'array'   => $pollers,
+							'default' => $poller_id,
+							'name'    => 'name',
+							'id'      => 'id',
+						),
+						'host_template' => array(
+							'method'  => 'drop_array',
+							'title'   => __('Device Template:'),
+							'array'   => $host_templates,
+							'default' => $host_template,
+							'name'    => 'name',
+							'id'      => 'id',
+						),
+						'availability_method' => array(
+							'method'  => 'drop_array',
+							'title'   => __('Availability Method:'),
+							'array'   => $availability_options,
+							'default' => $availability_method,
+							'name'    => 'name',
+							'id'      => 'id',
+						),
+					)
+				),
+				2 => array(
+					'smessage' => __('Click \'Continue\' to Remove the following Discovered Device.'),
+					'pmessage' => __('Click \'Continue\' to Remove the following Discovered Devices.'),
+					'scont'    => __('Remove Discovered Device'),
+					'pcont'    => __('Remove Discovered Devices'),
+				)
+			)
+		);
+
+		form_continue_confirmation($form_data);
 	}
-
-	print "<tr>
-		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($device_array) ? serialize($device_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
-			$save_html
-		</td>
-	</tr>";
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
 
 function display_discovery_page() {
-	global $item_rows, $os_arr, $status_arr, $networks, $device_actions;
+	global $item_rows, $os_arr, $status_arr, $networks, $actions;
 
 	top_header();
 
@@ -403,7 +407,7 @@ function display_discovery_page() {
 	}
 
 	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($device_actions);
+	draw_actions_dropdown($actions);
 
 	form_end();
 
@@ -496,7 +500,7 @@ function process_request_vars() {
 }
 
 function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
-	global $os_arr, $status_arr, $networks, $device_actions;
+	global $os_arr, $status_arr, $networks, $actions;
 
 	$sql_where  = '';
 	$status     = get_request_var('status');
@@ -558,7 +562,7 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 }
 
 function draw_filter() {
-	global $item_rows, $os_arr, $status_arr, $networks, $device_actions;
+	global $item_rows, $os_arr, $status_arr, $networks, $actions;
 
 	html_start_box(__('Discovery Filters'), '100%', '', '3', 'center', '');
 
