@@ -1725,11 +1725,11 @@ $attachment_sizes = array(
 );
 
 $reports_actions = array(
-	REPORTS_SEND_NOW  => __('Send Now'),
+	REPORTS_DELETE    => __('Delete'),
+	REPORTS_DISABLE   => __('Disable'),
 	REPORTS_DUPLICATE => __('Duplicate'),
 	REPORTS_ENABLE    => __('Enable'),
-	REPORTS_DISABLE   => __('Disable'),
-	REPORTS_DELETE    => __('Delete'),
+	REPORTS_SEND_NOW  => __('Send Now'),
 );
 
 if (!$config['is_web'] || is_realm_allowed(21)) {

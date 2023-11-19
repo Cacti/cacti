@@ -482,106 +482,81 @@ function reports_form_actions() {
 		header('Location: ' . get_reports_page());
 
 		exit;
-	}
-
-	/* setup some variables */
-	$reports_list = '';
-	$i            = 0;
-	/* loop through each of the graphs selected on the previous page and get more info about them */
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk]');
-			/* ==================================================== */
-
-			$reports_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM reports WHERE id = ?', array($matches[1]))) . '</li>';
-
-			$reports_array[$i] = $matches[1];
-
-			$i++;
-		}
-	}
-
-	top_header(true);
-
-	form_start(get_reports_page(), 'report');
-
-	html_start_box($reports_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-	if (!isset($reports_array)) {
-		raise_message(40);
-		header('Location: ' . get_reports_page());
-
-		exit;
 	} else {
-		$save_html = "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' name='save'>";
+		$ilist  = '';
+		$iarray = array();
 
-		if (get_nfilter_request_var('drp_action') == REPORTS_DELETE) { // delete
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to delete the following Report(s).') . "</p>
-					<div class='itemlist'><ul>$reports_list</ul></div>
-				</td>
-			</tr>\n";
-		} elseif (is_reports_admin() && get_nfilter_request_var('drp_action') == REPORTS_OWN) { // take ownership
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to take ownership of the following Report(s).') . "</p>
-					<div class='itemlist'><ul>$reports_list</ul></div>
-				</td>
-			</tr>\n";
-		} elseif (get_nfilter_request_var('drp_action') == REPORTS_DUPLICATE) { // duplicate
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to duplicate the following Report(s).  You may optionally change the title for the new Reports') . ".</p>
-					<div class='itemlist'><ul>$reports_list</ul></div>
-					<p>" . __('Name Format:') . "<br>\n";
+		/* loop through each of the graphs selected on the previous page and get more info about them */
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk]');
+				/* ==================================================== */
 
-			form_text_box('name_format', '<name> (1)', '', '255', '30', 'text');
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM reports WHERE id = ?', array($matches[1]))) . '</li>';
 
-			print "</p>
-				</td>
-			</tr>\n";
-		} elseif (get_nfilter_request_var('drp_action') == REPORTS_ENABLE) { // enable
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to enable the following Report(s).') . "</p>
-					<div class='itemlist'><ul>$reports_list</ul></div>
-					<p>" . __('Please be certain that those Report(s) have successfully been tested first!') . "</p>
-				</td>
-			</tr>\n";
-		} elseif (get_nfilter_request_var('drp_action') == REPORTS_DISABLE) { // disable
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to disable the following Reports.') . "</p>
-					<div class='itemlist'><ul>$reports_list</ul></div>
-				</td>
-			</tr>\n";
-		} elseif (get_nfilter_request_var('drp_action') == REPORTS_SEND_NOW) { // send now
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to send the following Report(s) now.') . "</p>
-					<div class='itemlist'><ul>$reports_list</ul></div>
-				</td>
-			</tr>\n";
+				$iarray[] = $matches[1];
+			}
 		}
+
+		$form_data = array(
+			'general' => array(
+				'page'       => get_current_page(),
+				'actions'    => $reports_actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				REPORTS_DELETE => array(
+					'smessage' => __('Click \'Continue\' to Delete the following Report.'),
+					'pmessage' => __('Click \'Continue\' to Delete the following Reports.'),
+					'scont'    => __('Delete Report'),
+					'pcont'    => __('Delete Reports')
+				),
+				REPORTS_OWN => array(
+					'smessage' => __('Click \'Continue\' to take ownership of the following Report.'),
+					'pmessage' => __('Click \'Continue\' to take ownership of the following Reports.'),
+					'scont'    => __('Take Report Ownership'),
+					'pcont'    => __('Take Reports Ownership')
+				),
+				REPORTS_DUPLICATE => array(
+					'smessage' => __('Click \'Continue\' to Duplicate the following Report.'),
+					'pmessage' => __('Click \'Continue\' to Duplicate the following Reports.'),
+					'scont'    => __('Duplicate Report'),
+					'pcont'    => __('Duplicate Reports'),
+					'extra'    => array(
+						'name_format' => array(
+							'method'  => 'textbox',
+							'title'   => __('Name Format:'),
+							'default' => '<name> (1)',
+							'width'   => 25
+						)
+					)
+				),
+				REPORTS_ENABLE => array(
+					'smessage' => __('Click \'Continue\' to Enable the following Report.'),
+					'pmessage' => __('Click \'Continue\' to Enable the following Reports.'),
+					'scont'    => __('Enable Report'),
+					'pcont'    => __('Enable Reports')
+				),
+				REPORTS_DISABLE => array(
+					'smessage' => __('Click \'Continue\' to Disable the following Report.'),
+					'pmessage' => __('Click \'Continue\' to Disable the following Reports.'),
+					'scont'    => __('Disable Report'),
+					'pcont'    => __('Disable Reports')
+				),
+				REPORTS_SEND_NOW => array(
+					'smessage' => __('Click \'Continue\' to Send the following Report now.'),
+					'pmessage' => __('Click \'Continue\' to Send the following Reports now.'),
+					'scont'    => __('Send Report Now'),
+					'pcont'    => __('Send Reports Now')
+				),
+			)
+		);
+
+		form_continue_confirmation($form_data);
 	}
-
-	print "<tr>
-		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($reports_array) ? serialize($reports_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()' value='" . ($save_html == '' ? 'Return' : 'Cancel') . "' name='cancel'>
-			$save_html
-		</td>
-	</tr>\n";
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
 
 /* --------------------------
@@ -594,12 +569,10 @@ function reports_send($id) {
 	input_validate_input_number($id, 'id');
 	/* ==================================================== */
 
-	$report = db_fetch_row_prepared(
-		'SELECT *
+	$report = db_fetch_row_prepared('SELECT *
 		FROM reports
 		WHERE id = ?',
-		array($id)
-	);
+		array($id));
 
 	if (!cacti_sizeof($report)) {
 		/* set error condition */
