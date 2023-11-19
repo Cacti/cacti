@@ -2318,6 +2318,7 @@ function automation_graph_automation_eligible($graph_template_id) {
 				AND dtd.local_data_id = 0
 				AND dif.input_output = "in"
 				AND dif.type_code = ""
+				AND dif.allow_nulls = ""
 				AND did.t_value = "on"
 				AND did.value = ""',
 				array($dtd['id']));
