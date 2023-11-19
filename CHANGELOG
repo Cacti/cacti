@@ -122,6 +122,7 @@ Cacti CHANGELOG
 -issue#5573: Incorrect URL for editing graph template
 -issue#5581: Due to previously never completed upgrade, future upgrades fail due to missing color table keys
 -issue#5585: Refix Issue #4649 using more appropriate method
+-issue#5586: CSV export displays data shifted by rrd step interval
 -feature#5577: Provide new templates for ArubaOS switch, Aruba wifi controller and HPE iLO to be available during install
 
 1.2.25
