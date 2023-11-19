@@ -2259,7 +2259,7 @@ function menuHide(store) {
 function menuShow() {
 	var myClass = '';
 
-	if (!userMenuNavigationExists(pageName) && pageName != 'graph_view.php') {
+	if (!userMenuNavigationExists(pageName) && pageName != 'graph_view.php' && pageName != 'about.php') {
 		$('#navigation').hide();
 		return;
 	}
@@ -2802,8 +2802,9 @@ function ajaxAnchors() {
 	var page = basename(location.pathname);
 
 	$('a.pic, a.linkOverDark, a.linkEditMain, a.console, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"], [href^="mailto"], [target="_blank"]').off('click').on('click', function (event) {
-		if (!shouldCaptureClick(event))
+		if (!shouldCaptureClick(event)) {
 			return;
+		}
 
 		event.preventDefault();
 		event.stopPropagation();
