@@ -30,7 +30,7 @@
  *
  * @return (string) the output of $command after execution
  */
-function exec_poll($command, $timeout) {
+function exec_poll($command, $timeout = 5) {
 	global $config;
 
 	$output = array();
