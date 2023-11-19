@@ -145,6 +145,14 @@ function form_actions() {
 		$ilist  = '';
 		$iarray = array();
 
+		/* default variables */
+		$pollers        = array();
+		$host_templates = array();
+		$poller_id      = 0;
+
+		$availability_method = 0;
+		$host_template       = 0;
+
 		/* loop through each of the graphs selected on the previous page and get more info about them */
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
@@ -178,9 +186,6 @@ function form_actions() {
 			if (empty($poller_id)) {
 				$poller_id = $pollers[0]['id'];
 			}
-
-			$availability_method = 0;
-			$host_template       = 0;
 
 			$devices = db_fetch_assoc('SELECT id, sysName, sysDescr
 				FROM automation_devices
