@@ -243,7 +243,7 @@ if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 
 if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 	if (!$html) {
-		$j = 1;
+		$j = 0;
 
 		foreach($xport_array['data'] as $row) {
 			$data = '"' . date('Y-m-d H:i:s', (isset($row['timestamp']) ? $row['timestamp'] : $xport_array['meta']['start'] + $j*$xport_array['meta']['step'])) . '"';
@@ -260,7 +260,7 @@ if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 		print "\xEF\xBB\xBF";
 		print $output;
 	} else {
-		$j = 1;
+		$j = 0;
 
 		foreach($xport_array['data'] as $row) {
 			print "<tr><td class='left'>" . date('Y-m-d H:i:s', (isset($row['timestamp']) ? $row['timestamp'] : $xport_array['meta']['start'] + $j*$xport_array['meta']['step'])) . "</td>";
