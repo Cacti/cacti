@@ -1624,7 +1624,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	} else {
 		/* basic export options */
 		$graph_opts =
-			'--start=' . cacti_escapeshellarg($graph_start) . RRD_NL .
+			'--start=' . cacti_escapeshellarg($graph_start-1) . RRD_NL .
 			'--end=' . cacti_escapeshellarg($graph_end) . RRD_NL .
 			'--maxrows=10000' . RRD_NL;
 	}
