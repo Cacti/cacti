@@ -2017,7 +2017,7 @@ function snmpagent_utilities_run_cache() {
 			show: 250,
 			hide: 250,
 			position: { collision: 'flipfit' },
-			content: function() { return HtmlSanitizer.SanitizeHtml($(this).attr('title')); }
+			content: function() { return DOMPurify.sanitize($(this).attr('title')); }
 		});
 	});
 	</script>

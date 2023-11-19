@@ -375,7 +375,7 @@ function manager_edit() {
 		$('.tooltip').tooltip({
 			track: true,
 			position: { collision: 'flipfit' },
-			content: function() { return HtmlSanitizer.SanitizeHtml($(this).attr('title')); }
+			content: function() { return DOMPurify.sanitize($(this).attr('title')); }
 		});
 	</script>
 	<?php

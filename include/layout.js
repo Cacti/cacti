@@ -952,9 +952,9 @@ function applySkin() {
 			var element = $(this);
 
 			if (element.is('div')) {
-				var text = HtmlSanitizer.SanitizeHtml($(this).find('span').html());
+				var text = DOMPurify.sanitize($(this).find('span').html());
 			} else if (element.is('span') || element.is('a')) {
-				var text = HtmlSanitizer.SanitizeHtml($(this).prop('title'));
+				var text = DOMPurify.sanitize($(this).prop('title'));
 			}
 			return text;
 		}
