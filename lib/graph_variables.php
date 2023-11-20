@@ -418,6 +418,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 	if ($percentile < 1 || $percentile > 99) {
 		return -1;
 	}
+cacti_log(implode(', ', array_values($graph_item)));
 
 	if (empty($graph_item['local_data_id'])) {
 		$graph_item['local_data_id'] = 0;
@@ -440,6 +441,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 			$local_data_array[$local_data_id][] = $data_source_name;
 		}
 	}
+cacti_log(" $type should be here");
 
 	/* Get the Nth percentile values */
 	if (!cacti_sizeof($nth_cache)) {
@@ -488,7 +490,9 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 			case 'aggregate_current':
 			case 'aggregate_current_peak':
 				$local_data_array = array();
-				if (!empty($graph_item['data_source_name'])) {
+
+				if ($graph_item['data_source_name'] != '') {
+cacti_log("In there $type should be here");
 					foreach ($graph_items as $graph_element) {
 						if ($graph_item['data_source_name'] == $graph_element['data_source_name'] &&
 							!empty($graph_element['data_template_rrd_id']) &&
@@ -529,6 +533,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 		case 'total':          // Total of the current data source name
 		case 'total_peak':
 		case 'aggregate_sum':
+		case 'aggregate_sum_peak':
 			if (!empty($nth_cache['nth_percentile_sum'])) {
 				$nth = $nth_cache['nth_percentile_sum'];
 				$nth = ($bytebit == 'bits') ? $nth * 8 : $nth;
@@ -540,6 +545,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 		case 'all_max_peak':
 		case 'aggregate_max':
 		case 'aggregate_peak':
+		case 'aggregate_current_peak':
 		case 'max':
 			if (!empty($nth_cache['nth_percentile_maximum'])) {
 				$nth = $nth_cache['nth_percentile_maximum'];
