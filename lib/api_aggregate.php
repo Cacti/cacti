@@ -1385,9 +1385,9 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 		foreach ($comments_hrules as $item) {
 			switch($item['graph_type_id']) {
 				case GRAPH_ITEM_TYPE_COMMENT:
-					if (!isset($special_comments[$item['text_format'] . | . $item['value']])) {
+					if (!isset($special_comments[$item['text_format'] . '|' . $item['value']])) {
 						if (preg_match('/(:bits:|:bytes:)/', $item['text_format'])) {
-							$special_comments[$item['text_format'] . | . $item['value']] = true;
+							$special_comments[$item['text_format'] . '|' . $item['value']] = true;
 
 							$parts = explode('|', $item['text_format']);
 
