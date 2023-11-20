@@ -605,6 +605,7 @@ label {
 	background: none repeat scroll 0 0 #F5F5F5;
 	border: none;
 	box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+	height: 20px;
 }
 
 .odd td, .even td, .even-alternate td, .selectable td {
@@ -615,12 +616,14 @@ label {
 	background: none repeat scroll 0 0 #E5E5E5;
 	border: none;
 	box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+	height: 20px;
 }
 
 .even-alternate {
 	background: none repeat scroll 0 0 #E7E9F2;
 	border: none;
 	box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+	height: 20px;
 }
 
 .saveRow {
@@ -2283,7 +2286,8 @@ ul#nav {
 }
 
 .clogStats td, .clogDebug td, .clogSQL td, .clogWarning td, .clogError td, .clogLimit td {
-	padding: 3px;
+	padding: 2px;
+	height: 20px;
 }
 
 @media print {
@@ -2723,7 +2727,7 @@ td.center > table {
 
 .tableRowGraph {
 	border: 2px solid rgba(0,0,0,0);
-	min-height: 25px;
+	min-height: 20px;
 }
 
 .tableRowGraph td {
