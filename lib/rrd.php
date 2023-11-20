@@ -2403,10 +2403,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		if (isset($graph_data_array['print_source'])) {
 			$source_command_line = read_config_option('path_rrdtool') . ' graph ' . $graph_opts . $graph_defs . $txt_graph_items;
 			$source_command_line_lengths = strlen(str_replace("\\\n", ' ', $source_command_line));
-			print '<PRE>' . html_escape($source_command_line) . '</PRE>';
+			print '<pre>' . wordwrap(html_escape($source_command_line), 160, PHP_EOL, true) . '</pre>';
 			print '<span class="textInfo">' . 'RRDtool Command lengths = ' . $source_command_line_lengths . ' characters.</span><br>';
 			if ( $config['cacti_server_os'] == 'win32' && $source_command_line_lengths > 8191 ) {
-				print '<PRE>' . 'Warning: The Cacti OS is Windows system, RRDtool Command lengths should not exceed 8191 characters.' . '</PRE>';
+				print '<pre>' . 'Warning: The Cacti OS is Windows system, RRDtool Command lengths should not exceed 8191 characters.' . '</pre>';
 			}
 		} else {
 			if (isset($graph_data_array['graphv'])) {
