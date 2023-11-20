@@ -523,11 +523,11 @@ function aggregate_template_edit() {
 
 		function changeTotalsType() {
 			if ($('#total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_SIMILAR; ?>) {
-				if ($('#total_prefix').val() == '') {
+				if ($('#total_prefix').val() == '' && $('#id').val() == 0) {
 					$('#total_prefix').attr('value', '<?php print __('Total'); ?>');
 				}
 			} else if ($('#total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_ALL; ?>) {
-				if ($('#total_prefix').val() == '') {
+				if ($('#total_prefix').val() == '' && $('#id').val() == 0) {
 					$('#total_prefix').attr('value', '<?php print __('All Items'); ?>');
 				}
 			}

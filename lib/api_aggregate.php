@@ -1346,12 +1346,19 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 	static $special_comments = null;
 	static $special_hrules   = null;
 
+	if (cacti_sizeof($member_graphs)) {
+		$template_graph[] = $member_graphs[0];
+	} else {
+		$template_graph   = array();
+	}
+
 	$comments_hrules = db_fetch_assoc('SELECT *
 		FROM graph_templates_item
 		WHERE graph_type_id IN(' . GRAPH_ITEM_TYPE_COMMENT . ',' . GRAPH_ITEM_TYPE_HRULE . ')' .
-		(cacti_sizeof($member_graphs) ? ' AND ' . array_to_sql_or($member_graphs, 'local_graph_id'):'') .
+		(cacti_sizeof($template_graph) ? ' AND ' . array_to_sql_or($template_graph, 'local_graph_id'):'') .
 		(cacti_sizeof($skipped_items) ? ' AND local_graph_id NOT IN(' . implode(',', $skipped_items) . ')':'') . '
-		ORDER BY graph_type_id DESC');
+		AND (text_format != "" || value != "")
+		ORDER BY local_graph_id, sequence ASC');
 
 	$next_item_sequence = db_fetch_cell_prepared('SELECT MAX(sequence)
 		FROM graph_templates_item
@@ -1495,10 +1502,12 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 								}
 							}
 
-							// add an empty line before nth percentile
-							db_execute_prepared("INSERT INTO graph_templates_item
-								(local_graph_id, graph_type_id, consolidation_function_id, text_format, value, hard_return, gprint_id, sequence)
-								VALUES (?, 1, 1, '', '', 'on', 2, ?)", array($local_graph_id, $next_item_sequence++));
+							// add an empty line before nth percentile for the first item only
+							if (cacti_sizeof($special_hrules) == 1) {
+								db_execute_prepared("INSERT INTO graph_templates_item
+									(local_graph_id, graph_type_id, consolidation_function_id, text_format, value, hard_return, gprint_id, sequence)
+									VALUES (?, 1, 1, '', '', 'on', 2, ?)", array($local_graph_id, $next_item_sequence++));
+							}
 
 							db_execute_prepared("INSERT INTO graph_templates_item
 								(local_graph_id, graph_type_id, color_id, consolidation_function_id, text_format, value, hard_return, gprint_id, sequence)
