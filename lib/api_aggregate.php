@@ -1320,19 +1320,35 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 	static $special_comments = null;
 	static $special_hrules   = null;
 
-	if (cacti_sizeof($member_graphs)) {
-		$template_graph[] = $member_graphs[0];
-	} else {
-		$template_graph   = array();
-	}
+	$agg_info = db_fetch_row_prepared('SELECT *
+		FROM aggregate_graphs
+		WHERE local_graph_id = ?',
+		array($local_graph_id));
 
-	$comments_hrules = db_fetch_assoc('SELECT *
-		FROM graph_templates_item
-		WHERE graph_type_id IN(' . GRAPH_ITEM_TYPE_COMMENT . ',' . GRAPH_ITEM_TYPE_HRULE . ')' .
-		(cacti_sizeof($template_graph) ? ' AND ' . array_to_sql_or($template_graph, 'local_graph_id'):'') .
-		(cacti_sizeof($skipped_items) ? ' AND local_graph_id NOT IN(' . implode(',', $skipped_items) . ')':'') . '
-		AND (text_format != "" || value != "")
-		ORDER BY local_graph_id, sequence ASC');
+	if (cacti_sizeof($agg_info)) {
+		$comments_hrules = db_fetch_assoc_prepared('SELECT *
+			FROM graph_templates_item
+			WHERE graph_type_id IN (?, ?)
+			AND graph_template_id = ?
+			AND local_graph_id = 0
+			AND (text_format != "" || value != "")
+			ORDER BY sequence ASC',
+			array(GRAPH_ITEM_TYPE_COMMENT, GRAPH_ITEM_TYPE_HRULE, $agg_info['graph_template_id']));
+	} else {
+		if (cacti_sizeof($member_graphs)) {
+			$template_graph[] = $member_graphs[0];
+		} else {
+			$template_graph   = array();
+		}
+
+		$comments_hrules = db_fetch_assoc('SELECT *
+			FROM graph_templates_item
+			WHERE graph_type_id IN(' . GRAPH_ITEM_TYPE_COMMENT . ',' . GRAPH_ITEM_TYPE_HRULE . ')' .
+			(cacti_sizeof($template_graph) ? ' AND ' . array_to_sql_or($template_graph, 'local_graph_id'):'') .
+			(cacti_sizeof($skipped_items) ? ' AND local_graph_id NOT IN(' . implode(',', $skipped_items) . ')':'') . '
+			AND (text_format != "" || value != "")
+			ORDER BY local_graph_id, sequence ASC');
+	}
 
 	$next_item_sequence = db_fetch_cell_prepared('SELECT MAX(sequence)
 		FROM graph_templates_item
