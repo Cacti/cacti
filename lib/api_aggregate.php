@@ -1375,7 +1375,7 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 										$pparts[3] = str_replace('max',     'aggregate_sum', $pparts[3]);
 									} else {
 										// Similar to separate
-										$pparts[3] = str_replace('current', 'aggregate', $pparts[3]);
+										$pparts[3] = str_replace('current', 'aggregate_current', $pparts[3]);
 										$pparts[3] = str_replace('max',     'aggregate_peak', $pparts[3]);
 									}
 
