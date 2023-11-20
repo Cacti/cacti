@@ -608,7 +608,7 @@ label {
 }
 
 .odd td, .even td, .even-alternate td, .selectable td {
-	padding: 3px;
+	padding-left: 3px;
 }
 
 .even {
@@ -1709,12 +1709,8 @@ legend {
 }
 
 .tableRow {
-	line-height: 20px;
-}
-
-.tableRowGraph td {
-	padding: 3px 0px;
-	vertical-align: top;
+    border: 2px solid rgba(0,0,0,0);
+	min-height: 25px;
 }
 
 .image_table {
@@ -2711,5 +2707,10 @@ td.center > table {
 }
 
 .tableRowGraph {
-     border: 2px solid rgba(0,0,0,0);
+	border: 2px solid rgba(0,0,0,0);
+	min-height: 25px;
+}
+
+.tableRowGraph td {
+    padding-left: 3px;
 }
