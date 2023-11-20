@@ -418,7 +418,6 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 	if ($percentile < 1 || $percentile > 99) {
 		return -1;
 	}
-cacti_log(implode(', ', array_values($graph_item)));
 
 	if (empty($graph_item['local_data_id'])) {
 		$graph_item['local_data_id'] = 0;
@@ -441,7 +440,6 @@ cacti_log(implode(', ', array_values($graph_item)));
 			$local_data_array[$local_data_id][] = $data_source_name;
 		}
 	}
-cacti_log(" $type should be here");
 
 	/* Get the Nth percentile values */
 	if (!cacti_sizeof($nth_cache)) {
@@ -492,7 +490,6 @@ cacti_log(" $type should be here");
 				$local_data_array = array();
 
 				if ($graph_item['data_source_name'] != '') {
-cacti_log("In there $type should be here");
 					foreach ($graph_items as $graph_element) {
 						if ($graph_item['data_source_name'] == $graph_element['data_source_name'] &&
 							!empty($graph_element['data_template_rrd_id']) &&
