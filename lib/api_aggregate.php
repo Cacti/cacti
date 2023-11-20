@@ -1447,9 +1447,10 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 							}
 
 							db_execute_prepared("INSERT INTO graph_templates_item
-								(local_graph_id, graph_type_id, consolidation_function_id, text_format, value, hard_return, gprint_id, sequence)
-								VALUES (?, ?, 1, ?, '', ?, 2, ?)", array(
+								(local_graph_id, task_item_id, graph_type_id, consolidation_function_id, text_format, value, hard_return, gprint_id, sequence)
+								VALUES (?, ?, ?, 1, ?, '', ?, 2, ?)", array(
 									$local_graph_id,
+									$item['task_item_id'],
 									GRAPH_ITEM_TYPE_COMMENT,
 									$item['text_format'],
 									$item['hard_return'],
@@ -1474,11 +1475,11 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 									if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
 										// All so use sum functions
 										$pparts[3] = str_replace('current', 'aggregate_sum', $pparts[3]);
-										$pparts[3] = str_replace('max',     'aggregate_sum', $pparts[3]);
+										$pparts[3] = str_replace('max',     'aggregate_sum_peak', $pparts[3]);
 									} else {
 										// Similar to separate
-										$pparts[3] = str_replace('current', 'aggregate', $pparts[3]);
-										$pparts[3] = str_replace('max',     'aggregate_peak', $pparts[3]);
+										$pparts[3] = str_replace('current', 'aggregate_current', $pparts[3]);
+										$pparts[3] = str_replace('max',     'aggregate_current_peak', $pparts[3]);
 									}
 
 									switch($pparts[3]) {
@@ -1506,7 +1507,9 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 											break;
 										case 'aggregate_peak':
 										case 'aggregate_sum':
+										case 'aggregate_sum_peak':
 										case 'aggregate_current':
+										case 'aggregate_current_peak':
 										case 'aggregate':
 											$new_ppart = $pparts[3];
 
@@ -1528,9 +1531,10 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 							}
 
 							db_execute_prepared("INSERT INTO graph_templates_item
-								(local_graph_id, graph_type_id, color_id, consolidation_function_id, text_format, value, hard_return, gprint_id, sequence)
-								VALUES (?, ?, ?, 1, ?, ?, '', 2, ?)", array(
+								(local_graph_id, task_item_id, graph_type_id, color_id, consolidation_function_id, text_format, value, hard_return, gprint_id, sequence)
+								VALUES (?, ?, ?, ?, 1, ?, ?, '', 2, ?)", array(
 									$local_graph_id,
+									$item['task_item_id'],
 									GRAPH_ITEM_TYPE_HRULE,
 									$item['color_id'],
 									$item['text_format'],
