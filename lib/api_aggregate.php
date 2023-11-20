@@ -1372,11 +1372,11 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 									if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
 										// All so use sum functions
 										$pparts[3] = str_replace('current', 'aggregate_sum', $pparts[3]);
-										$pparts[3] = str_replace('max',     'aggregate_sum', $pparts[3]);
+										$pparts[3] = str_replace('max',     'aggregate_sum_peak', $pparts[3]);
 									} else {
 										// Similar to separate
 										$pparts[3] = str_replace('current', 'aggregate_current', $pparts[3]);
-										$pparts[3] = str_replace('max',     'aggregate_peak', $pparts[3]);
+										$pparts[3] = str_replace('max',     'aggregate_current_peak', $pparts[3]);
 									}
 
 									switch($pparts[3]) {
@@ -1398,7 +1398,9 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 											$new_ppart = 'aggregate_peak';
 											break;
 										case 'aggregate_sum':
+										case 'aggregate_sum_peak':
 										case 'aggregate_current':
+										case 'aggregate_current_peak':
 										case 'aggregate':
 										case 'aggregate_peak':
 											$new_ppart = $pparts[3];
