@@ -534,12 +534,14 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 				break;
 			case 'aggregate_peak':
 			case 'aggregate_max':
+			case 'aggregate_sum_peak':
 				if (cacti_sizeof($local_data_array)) {
 					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, 0, true);
 				}
 
 				break;
 			case 'aggregate_current':
+			case 'aggregate_current_peak':
 				$local_data_array = array();
 
 				if (!empty($graph_item['data_source_name'])) {
@@ -552,8 +554,14 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 						}
 					}
 
-					if (cacti_sizeof($local_data_array)) {
-						$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile);
+					if ($type == 'aggregate_current') {
+						if (cacti_sizeof($local_data_array)) {
+							$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile);
+						}
+					} else {
+						if (cacti_sizeof($local_data_array)) {
+							$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, 0, true);
+						}
 					}
 				}
 
