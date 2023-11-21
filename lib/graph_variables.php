@@ -487,9 +487,9 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 				break;
 			case 'aggregate_current':
 			case 'aggregate_current_peak':
-				$local_data_array = array();
-
 				if ($graph_item['data_source_name'] != '') {
+					$local_data_array = array();
+
 					foreach ($graph_items as $graph_element) {
 						if ($graph_item['data_source_name'] == $graph_element['data_source_name'] &&
 							!empty($graph_element['data_template_rrd_id']) &&
