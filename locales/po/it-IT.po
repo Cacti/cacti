@@ -824,16 +824,6 @@ msgstr "Il Template Aggregato su cui si basa questo Grafici Aggregati è basato 
 msgid "No Aggregate Graphs Found"
 msgstr "Nessun grafico aggregato trovato"
 
-#: aggregate_items.php:350
-#, fuzzy
-msgid "Override Values for Graph Item"
-msgstr "Sovrascrivere i valori per l'elemento grafico"
-
-#: aggregate_items.php:361 lib/api_aggregate.php:1907
-#, fuzzy
-msgid "Override this Value"
-msgstr "Sovrascrivi questo valore"
-
 #: aggregate_templates.php:310
 #, fuzzy
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -23052,6 +23042,14 @@ msgstr "Il numero di modelli di grafici che utilizzano questo VDEF."
 #, fuzzy
 msgid "No VDEFs"
 msgstr "Nessun VDEF"
+
+#, fuzzy
+#~ msgid "Override Values for Graph Item"
+#~ msgstr "Sovrascrivere i valori per l'elemento grafico"
+
+#, fuzzy
+#~ msgid "Override this Value"
+#~ msgstr "Sovrascrivi questo valore"
 
 #, fuzzy
 #~ msgid "Version %1$s | %2$s"
