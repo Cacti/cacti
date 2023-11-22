@@ -1896,8 +1896,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			} else {
 				/* existing aggregate template or graph with no templating */
 				/* create a link to graph item editor */
-				//print '<a class="pic" href="aggregate_graphs.php?action=item_edit&'.$item_editor_link_param.'&id='.$item['id'].'">' . __('Item # %d', ($i+1)) . '</a>';
-				print '<a title="' . __esc('Aggregate Items are not editable') . '" class="pic" href="#">' . __('Item # %d', ($i + 1)) . '</a>';
+				print '<span title="' . __esc('Aggregate Items are not editable') . '">' . __('Item # %d', ($i+1)) . '</span>';
 			}
 			print '</td>';
 
