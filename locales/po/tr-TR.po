@@ -821,16 +821,6 @@ msgstr "Bu Toplam Grafiğin dayandığı Toplam Şablon"
 msgid "No Aggregate Graphs Found"
 msgstr "Toplam Grafik Bulunamadı"
 
-#: aggregate_items.php:350
-#, fuzzy
-msgid "Override Values for Graph Item"
-msgstr "Grafik Öğesi için Değerleri Geçersiz Kılma"
-
-#: aggregate_items.php:361 lib/api_aggregate.php:1907
-#, fuzzy
-msgid "Override this Value"
-msgstr "Bu Değeri Geçersiz Kıl"
-
 #: aggregate_templates.php:310
 #, fuzzy
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -23139,6 +23129,14 @@ msgstr "Bu VDEF&#39;i kullanan Grafik Şablonları sayısı."
 #, fuzzy
 msgid "No VDEFs"
 msgstr "VDEF yok"
+
+#, fuzzy
+#~ msgid "Override Values for Graph Item"
+#~ msgstr "Grafik Öğesi için Değerleri Geçersiz Kılma"
+
+#, fuzzy
+#~ msgid "Override this Value"
+#~ msgstr "Bu Değeri Geçersiz Kıl"
 
 #, fuzzy
 #~ msgid "Version %1$s | %2$s"
