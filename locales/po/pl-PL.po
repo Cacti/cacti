@@ -816,16 +816,6 @@ msgstr "Szablon wykresów, na podstawie którego tworzone są wykresy zagregowan
 msgid "No Aggregate Graphs Found"
 msgstr "Nie znaleziono wykresów zagregowanych"
 
-#: aggregate_items.php:350
-#, fuzzy
-msgid "Override Values for Graph Item"
-msgstr "Zastąpienie wartości dla elementu wykresu"
-
-#: aggregate_items.php:361 lib/api_aggregate.php:1907
-#, fuzzy
-msgid "Override this Value"
-msgstr "Nadpisz tę wartość"
-
 #: aggregate_templates.php:310
 #, fuzzy
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -23139,6 +23129,14 @@ msgstr "Liczba szablonów wykresów wykorzystujących ten VDEF."
 #, fuzzy
 msgid "No VDEFs"
 msgstr "Nr VDEF"
+
+#, fuzzy
+#~ msgid "Override Values for Graph Item"
+#~ msgstr "Zastąpienie wartości dla elementu wykresu"
+
+#, fuzzy
+#~ msgid "Override this Value"
+#~ msgstr "Nadpisz tę wartość"
 
 #, fuzzy
 #~ msgid "Version %1$s | %2$s"
