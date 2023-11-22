@@ -817,16 +817,6 @@ msgstr "この集計グラフの基になる集計テンプレート"
 msgid "No Aggregate Graphs Found"
 msgstr "集約グラフが見つかりません"
 
-#: aggregate_items.php:350
-#, fuzzy
-msgid "Override Values for Graph Item"
-msgstr "グラフ項目の値を上書き"
-
-#: aggregate_items.php:361 lib/api_aggregate.php:1907
-#, fuzzy
-msgid "Override this Value"
-msgstr "この値を上書き"
-
 #: aggregate_templates.php:310
 #, fuzzy
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -22956,6 +22946,14 @@ msgstr "このVDEFを使用しているグラフテンプレートの数。"
 #, fuzzy
 msgid "No VDEFs"
 msgstr "VDEFなし"
+
+#, fuzzy
+#~ msgid "Override Values for Graph Item"
+#~ msgstr "グラフ項目の値を上書き"
+
+#, fuzzy
+#~ msgid "Override this Value"
+#~ msgstr "この値を上書き"
 
 #, fuzzy
 #~ msgid "Version %1$s | %2$s"
