@@ -770,15 +770,6 @@ msgstr "Le modèle d'agrégat sur lequel ce graphique agrégé est basé"
 msgid "No Aggregate Graphs Found"
 msgstr "Aucun graphique agrégé trouvé"
 
-#: aggregate_items.php:350
-#, fuzzy
-msgid "Override Values for Graph Item"
-msgstr "Valeurs de remplacement pour l'élément graphique"
-
-#: aggregate_items.php:361 lib/api_aggregate.php:1907
-msgid "Override this Value"
-msgstr "Remplacer cette valeur"
-
 #: aggregate_templates.php:310
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
 msgstr "Cliquez sur 'Continuer' pour supprimer le(s) modèle(s) de graphique agrégé(s) suivant(s)."
@@ -22220,6 +22211,13 @@ msgstr "Le nombre de modèles de graphiques utilisant ce VDEF."
 #, fuzzy
 msgid "No VDEFs"
 msgstr "Pas de VDEF"
+
+#, fuzzy
+#~ msgid "Override Values for Graph Item"
+#~ msgstr "Valeurs de remplacement pour l'élément graphique"
+
+#~ msgid "Override this Value"
+#~ msgstr "Remplacer cette valeur"
 
 #, fuzzy
 #~ msgid "Version %1$s | %2$s"
