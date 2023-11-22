@@ -718,11 +718,17 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 				}
 			}
 
+			/**
+			 * Using this technique to catch multi-line
+			 * snmpwalk responses from net-snmp.  This happens
+			 * usually on sysDescr on Cisco devices.
+			 */
 			$i = 0;
 			foreach($temp_array as $index => $value) {
 				if (preg_match('/(.*) =.*/', $value)) {
-					$snmp_array[$i]['oid']   = trim(preg_replace('/(.*) =.*/', "\\1", $value));
-					$snmp_array[$i]['value'] = format_snmp_string($value, true, $value_output_format);
+					$parts = explode('=', $value, 2);
+					$snmp_array[$i]['oid']   = trim($parts[0]);
+					$snmp_array[$i]['value'] = format_snmp_string($parts[1], false, $value_output_format);
 					$i++;
 				} else {
 					$snmp_array[$i-1]['value'] .= $value;
