@@ -795,14 +795,6 @@ msgstr "Apkopotā veidne, uz kuras balstās šie apkopotie grafiki"
 msgid "No Aggregate Graphs Found"
 msgstr "Nav atrasts neviens apkopots grafiks"
 
-#: aggregate_items.php:350
-msgid "Override Values for Graph Item"
-msgstr "Aizstāt grafika elementa vērtību"
-
-#: aggregate_items.php:361 lib/api_aggregate.php:1907
-msgid "Override this Value"
-msgstr "Aizstāt šo vērtību"
-
 #: aggregate_templates.php:310
 #, fuzzy
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -20334,6 +20326,12 @@ msgstr "Grafiku veidņu skaits, kas izmanto šo VDEF."
 #: vdef.php:916
 msgid "No VDEFs"
 msgstr "Nav VDEF"
+
+#~ msgid "Override Values for Graph Item"
+#~ msgstr "Aizstāt grafika elementa vērtību"
+
+#~ msgid "Override this Value"
+#~ msgstr "Aizstāt šo vērtību"
 
 #~ msgid "Version %1$s | %2$s"
 #~ msgstr "Versija %1$s | %2$s"
