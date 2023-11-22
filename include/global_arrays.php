@@ -1322,7 +1322,6 @@ $user_auth_realm_filenames = array(
 	'color_templates_items.php' => 5,
 	'aggregate_templates.php' => 5,
 	'aggregate_graphs.php' => 5,
-	'aggregate_items.php' => 5,
 	'spikekill.php' => 1043,
 	'permission_denied.php' => -1,
 	'help.php' => -1
@@ -2776,24 +2775,6 @@ $navigation = array(
 	'aggregate_graphs.php:actions' => array(
 		'title' => __('Actions'),
 		'mapping' => 'index.php:,aggregate_graphs.php:',
-		'url' => '',
-		'level' => '2'
-	),
-	'aggregate_items.php:' => array(
-		'title' => __('Aggregate Items'),
-		'mapping' => 'index.php:',
-		'url' => 'aggregate_items.php',
-		'level' => '1'
-	),
-	'aggregate_items.php:item_edit' => array(
-		'title' => __('(Edit)'),
-		'mapping' => 'index.php:,aggregate_graphs.php:,aggregate_items.php:',
-		'url' => '',
-		'level' => '2'
-	),
-	'aggregate_items.php:actions' => array(
-		'title' => __('Actions'),
-		'mapping' => 'index.php:,aggregate_items.php:',
 		'url' => '',
 		'level' => '2'
 	),
