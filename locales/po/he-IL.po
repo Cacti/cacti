@@ -827,16 +827,6 @@ msgstr "תבנית מצטברת כי זה גרפים מצטבר מבוסס על"
 msgid "No Aggregate Graphs Found"
 msgstr "לא נמצאו גרפים מצטברים"
 
-#: aggregate_items.php:350
-#, fuzzy
-msgid "Override Values for Graph Item"
-msgstr "עקוף ערכים עבור פריט תרשים"
-
-#: aggregate_items.php:361 lib/api_aggregate.php:1907
-#, fuzzy
-msgid "Override this Value"
-msgstr "עקוף את הערך הזה"
-
 #: aggregate_templates.php:310
 #, fuzzy
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -23431,6 +23421,14 @@ msgstr "מספר תבניות גרפים באמצעות VDEF זה."
 #, fuzzy
 msgid "No VDEFs"
 msgstr "אין VDEFs"
+
+#, fuzzy
+#~ msgid "Override Values for Graph Item"
+#~ msgstr "עקוף ערכים עבור פריט תרשים"
+
+#, fuzzy
+#~ msgid "Override this Value"
+#~ msgstr "עקוף את הערך הזה"
 
 #, fuzzy
 #~ msgid "Version %1$s | %2$s"
