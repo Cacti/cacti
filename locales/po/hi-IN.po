@@ -828,16 +828,6 @@ msgstr "एग्रीगेट टेम्पलेट जो इस एग�
 msgid "No Aggregate Graphs Found"
 msgstr "कोई सकल रेखांकन नहीं मिला"
 
-#: aggregate_items.php:350
-#, fuzzy
-msgid "Override Values for Graph Item"
-msgstr "ग्राफ़ आइटम के लिए ओवरराइड मान"
-
-#: aggregate_items.php:361 lib/api_aggregate.php:1907
-#, fuzzy
-msgid "Override this Value"
-msgstr "इस मान को ओवरराइड करें"
-
 #: aggregate_templates.php:310
 #, fuzzy
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -23384,6 +23374,14 @@ msgstr "इस VDEF का उपयोग करके ग्राफ टे�
 #, fuzzy
 msgid "No VDEFs"
 msgstr "कोई VDEFs नहीं"
+
+#, fuzzy
+#~ msgid "Override Values for Graph Item"
+#~ msgstr "ग्राफ़ आइटम के लिए ओवरराइड मान"
+
+#, fuzzy
+#~ msgid "Override this Value"
+#~ msgstr "इस मान को ओवरराइड करें"
 
 #, fuzzy
 #~ msgid "Version %1$s | %2$s"
