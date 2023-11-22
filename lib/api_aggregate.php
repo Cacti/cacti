@@ -1036,7 +1036,8 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 	if (cacti_sizeof($aggregate_graphs)) {
 		foreach($aggregate_graphs as $ag) {
 			$member_graphs = array();
-			$graphs        = db_fetch_assoc_prepared('SELECT DISTINCT agi.local_graph_id
+
+			$graphs = db_fetch_assoc_prepared('SELECT DISTINCT agi.local_graph_id
 				FROM aggregate_graphs AS ag
 				INNER JOIN aggregate_graphs_items AS agi
 				ON ag.id=agi.aggregate_graph_id
@@ -1069,8 +1070,6 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
  *  */
 function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 	global $config;
-
-	include_once($config['base_path'] . '/lib/api_aggregate.php');
 
 	cacti_log(__FUNCTION__ . ' called. Graph id: ' . $local_graph_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
@@ -1359,9 +1358,9 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 		foreach ($comments_hrules as $item) {
 			switch($item['graph_type_id']) {
 				case GRAPH_ITEM_TYPE_COMMENT:
-					if (!isset($special_comments[$item['text_format'] . '|' . $item['value'] . $item['task_item_id']])) {
+					if (!isset($special_comments[$item['text_format'] . '|' . $item['value'] . '|' . $item['task_item_id']])) {
 						if (preg_match('/(:bits:|:bytes:)/', $item['text_format'])) {
-							$special_comments[$item['text_format'] . '|' . $item['value'] . $item['task_item_id']] = true;
+							$special_comments[$item['text_format'] . '|' . $item['value'] . '|' . $item['task_item_id']] = true;
 
 							$parts = explode('|', $item['text_format']);
 
@@ -1430,9 +1429,9 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 
 					break;
 				case GRAPH_ITEM_TYPE_HRULE:
-					if (!isset($special_hrules[$item['text_format'] . '|' . $item['value'] . $item['task_item_id']])) {
+					if (!isset($special_hrules[$item['text_format'] . '|' . $item['value'] . '|' . $item['task_item_id']])) {
 						if (preg_match('/(:bits:|:bytes:)/', $item['value'])) {
-							$special_hrules[$item['text_format'] . '|' . $item['value'] . $item['task_item_id']] = true;
+							$special_hrules[$item['text_format'] . '|' . $item['value'] . '|' . $item['task_item_id']] = true;
 
 							$parts = explode('|', $item['value']);
 							if (isset($parts[1])) {
