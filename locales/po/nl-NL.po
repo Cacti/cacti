@@ -782,14 +782,6 @@ msgstr "Het geaggregeerde template waarop dit geaggregeerde template is gebaseer
 msgid "No Aggregate Graphs Found"
 msgstr "Geen geaggregeerde grafieken gevonden"
 
-#: aggregate_items.php:350
-msgid "Override Values for Graph Item"
-msgstr "Overrule de waarden voor dit grafiek item"
-
-#: aggregate_items.php:361 lib/api_aggregate.php:1907
-msgid "Override this Value"
-msgstr "Overrule deze waarde"
-
 #: aggregate_templates.php:310
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
 msgstr "Klik op 'Volgende' om de volgende geaggregeerde grafiektemplate te verwijderen."
@@ -21561,6 +21553,12 @@ msgstr "Het aantal grafiektemplates die deze VDEF gebruiken."
 #: vdef.php:916
 msgid "No VDEFs"
 msgstr "Geen VDEF's"
+
+#~ msgid "Override Values for Graph Item"
+#~ msgstr "Overrule de waarden voor dit grafiek item"
+
+#~ msgid "Override this Value"
+#~ msgstr "Overrule deze waarde"
 
 #~ msgid "Version %1$s | %2$s"
 #~ msgstr "Versie %1$s | %2$s"
