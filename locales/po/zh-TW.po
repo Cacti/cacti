@@ -770,14 +770,6 @@ msgstr "此聚合圖表所基於的聚合模板"
 msgid "No Aggregate Graphs Found"
 msgstr "找不到聚合圖"
 
-#: aggregate_items.php:350
-msgid "Override Values for Graph Item"
-msgstr "覆蓋圖表項的值"
-
-#: aggregate_items.php:361 lib/api_aggregate.php:1907
-msgid "Override this Value"
-msgstr "覆蓋此值"
-
 #: aggregate_templates.php:310
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
 msgstr "單擊“繼續”以刪除以下聚合圖表模板。"
@@ -20340,6 +20332,12 @@ msgstr "使用此VDEF的圖表模板數。"
 #: vdef.php:916
 msgid "No VDEFs"
 msgstr "沒有VDEF"
+
+#~ msgid "Override Values for Graph Item"
+#~ msgstr "覆蓋圖表項的值"
+
+#~ msgid "Override this Value"
+#~ msgstr "覆蓋此值"
 
 #~ msgid "Version %1$s | %2$s"
 #~ msgstr "版本%1$s | %2$s"
