@@ -765,14 +765,6 @@ msgstr "La Plantilla de Agregados en la que estos gráficos Agregados están bas
 msgid "No Aggregate Graphs Found"
 msgstr "Gráficos Agregados no encontrados"
 
-#: aggregate_items.php:350
-msgid "Override Values for Graph Item"
-msgstr "Reemplazar valores para  items de gráficos"
-
-#: aggregate_items.php:361 lib/api_aggregate.php:1907
-msgid "Override this Value"
-msgstr "Sobreescribir este valor"
-
 #: aggregate_templates.php:310
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
 msgstr "Haga click en 'Continuar' para borrar las siguientes Plantillas de gráficos Agregados."
@@ -20660,6 +20652,12 @@ msgstr "Número de Plantillas de gráficos usando este VDEF."
 #: vdef.php:916
 msgid "No VDEFs"
 msgstr "No VDEFs"
+
+#~ msgid "Override Values for Graph Item"
+#~ msgstr "Reemplazar valores para  items de gráficos"
+
+#~ msgid "Override this Value"
+#~ msgstr "Sobreescribir este valor"
 
 #~ msgid "Version %1$s | %2$s"
 #~ msgstr "Versión %1$s | %2$s"
