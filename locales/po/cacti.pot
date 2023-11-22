@@ -758,14 +758,6 @@ msgstr ""
 msgid "No Aggregate Graphs Found"
 msgstr ""
 
-#: aggregate_items.php:350
-msgid "Override Values for Graph Item"
-msgstr ""
-
-#: aggregate_items.php:361 lib/api_aggregate.php:1907
-msgid "Override this Value"
-msgstr ""
-
 #: aggregate_templates.php:310
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
 msgstr ""
