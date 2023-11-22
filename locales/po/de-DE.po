@@ -805,16 +805,6 @@ msgstr "Die Aggregatvorlage, auf der diese Aggregatdiagramme basieren."
 msgid "No Aggregate Graphs Found"
 msgstr "Keine Aggregatdiagramme gefunden"
 
-#: aggregate_items.php:350
-#, fuzzy
-msgid "Override Values for Graph Item"
-msgstr "Überschreiben von Werten für Graph Item"
-
-#: aggregate_items.php:361 lib/api_aggregate.php:1907
-#, fuzzy
-msgid "Override this Value"
-msgstr "Diesen Wert überschreiben"
-
 #: aggregate_templates.php:310
 #, fuzzy
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -22604,6 +22594,14 @@ msgstr "Die Anzahl der Grafikvorlagen, die diesen VDEF verwenden."
 #, fuzzy
 msgid "No VDEFs"
 msgstr "VDEFs"
+
+#, fuzzy
+#~ msgid "Override Values for Graph Item"
+#~ msgstr "Überschreiben von Werten für Graph Item"
+
+#, fuzzy
+#~ msgid "Override this Value"
+#~ msgstr "Diesen Wert überschreiben"
 
 #, fuzzy
 #~ msgid "Version %1$s | %2$s"
