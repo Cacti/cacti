@@ -817,16 +817,6 @@ msgstr "Den aggregerade mallen som dessa Aggregatgrafer bygger på"
 msgid "No Aggregate Graphs Found"
 msgstr "Inga aggregerade grafer hittades"
 
-#: aggregate_items.php:350
-#, fuzzy
-msgid "Override Values for Graph Item"
-msgstr "Överrätta värden för grafobjekt"
-
-#: aggregate_items.php:361 lib/api_aggregate.php:1907
-#, fuzzy
-msgid "Override this Value"
-msgstr "Åsidosätta detta värde"
-
 #: aggregate_templates.php:310
 #, fuzzy
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -23129,6 +23119,14 @@ msgstr "Antalet grafmallar med denna VDEF."
 #, fuzzy
 msgid "No VDEFs"
 msgstr "Inga VDEFs"
+
+#, fuzzy
+#~ msgid "Override Values for Graph Item"
+#~ msgstr "Överrätta värden för grafobjekt"
+
+#, fuzzy
+#~ msgid "Override this Value"
+#~ msgstr "Åsidosätta detta värde"
 
 #, fuzzy
 #~ msgid "Version %1$s | %2$s"
