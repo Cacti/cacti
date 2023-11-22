@@ -824,16 +824,6 @@ msgstr "Το πρότυπο συσσωρευτών που βασίζεται σ�
 msgid "No Aggregate Graphs Found"
 msgstr "Δεν βρέθηκαν συγκεντρωτικά γραφήματα"
 
-#: aggregate_items.php:350
-#, fuzzy
-msgid "Override Values for Graph Item"
-msgstr "Απαγόρευση τιμών για το στοιχείο γραφήματος"
-
-#: aggregate_items.php:361 lib/api_aggregate.php:1907
-#, fuzzy
-msgid "Override this Value"
-msgstr "Να αντικατασταθεί αυτή η τιμή"
-
 #: aggregate_templates.php:310
 #, fuzzy
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -23221,6 +23211,14 @@ msgstr "Ο αριθμός των προτύπων γραφημάτων που χ
 #, fuzzy
 msgid "No VDEFs"
 msgstr "Δεν υπάρχουν VDEF"
+
+#, fuzzy
+#~ msgid "Override Values for Graph Item"
+#~ msgstr "Απαγόρευση τιμών για το στοιχείο γραφήματος"
+
+#, fuzzy
+#~ msgid "Override this Value"
+#~ msgstr "Να αντικατασταθεί αυτή η τιμή"
 
 #, fuzzy
 #~ msgid "Version %1$s | %2$s"
