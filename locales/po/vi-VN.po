@@ -828,16 +828,6 @@ msgstr "Mẫu Tổng hợp mà Đồ thị Tổng hợp này dựa trên"
 msgid "No Aggregate Graphs Found"
 msgstr "Không tìm thấy đồ thị tổng hợp"
 
-#: aggregate_items.php:350
-#, fuzzy
-msgid "Override Values for Graph Item"
-msgstr "Giá trị ghi đè cho mục đồ thị"
-
-#: aggregate_items.php:361 lib/api_aggregate.php:1907
-#, fuzzy
-msgid "Override this Value"
-msgstr "Ghi đè giá trị này"
-
 #: aggregate_templates.php:310
 #, fuzzy
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -23194,6 +23184,14 @@ msgstr "Số lượng mẫu biểu đồ sử dụng VDEF này."
 #, fuzzy
 msgid "No VDEFs"
 msgstr "Không có VDEF"
+
+#, fuzzy
+#~ msgid "Override Values for Graph Item"
+#~ msgstr "Giá trị ghi đè cho mục đồ thị"
+
+#, fuzzy
+#~ msgid "Override this Value"
+#~ msgstr "Ghi đè giá trị này"
 
 #, fuzzy
 #~ msgid "Version %1$s | %2$s"
