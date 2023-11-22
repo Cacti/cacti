@@ -768,14 +768,6 @@ msgstr "The Aggregate Template that that Aggregate Graphs based on"
 msgid "No Aggregate Graphs Found"
 msgstr "لا توجد رسوم بيانية مجمعة"
 
-#: aggregate_items.php:350
-msgid "Override Values for Graph Item"
-msgstr "تجاوز قيم عنصر الرسم البياني"
-
-#: aggregate_items.php:361 lib/api_aggregate.php:1907
-msgid "Override this Value"
-msgstr "تجاوز هذه القيمة"
-
 #: aggregate_templates.php:310
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
 msgstr "انقر فوق &quot;متابعة&quot; لحذف قالب (نماذج) الرسم البياني الكلي التالي."
@@ -20717,6 +20709,12 @@ msgstr "عدد قوالب الرسوم البيانية باستخدام هذا 
 #: vdef.php:916
 msgid "No VDEFs"
 msgstr "لا VDEFs"
+
+#~ msgid "Override Values for Graph Item"
+#~ msgstr "تجاوز قيم عنصر الرسم البياني"
+
+#~ msgid "Override this Value"
+#~ msgstr "تجاوز هذه القيمة"
 
 #, fuzzy
 #~ msgid "Version %1$s | %2$s"
