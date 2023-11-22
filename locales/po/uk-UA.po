@@ -765,14 +765,6 @@ msgstr "Шаблон Агрегованого, на якому базуютьс�
 msgid "No Aggregate Graphs Found"
 msgstr "Не знайдено Агрегованих Графіків"
 
-#: aggregate_items.php:350
-msgid "Override Values for Graph Item"
-msgstr "Перепризначити значення для Елементу Графіку"
-
-#: aggregate_items.php:361 lib/api_aggregate.php:1907
-msgid "Override this Value"
-msgstr "Перепризначити це значення"
-
 #: aggregate_templates.php:310
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
 msgstr "Клацніть 'Продовжити' для Видалення наступних шаблонів Агрегованих Графіків."
@@ -20257,6 +20249,12 @@ msgstr ""
 #: vdef.php:916
 msgid "No VDEFs"
 msgstr ""
+
+#~ msgid "Override Values for Graph Item"
+#~ msgstr "Перепризначити значення для Елементу Графіку"
+
+#~ msgid "Override this Value"
+#~ msgstr "Перепризначити це значення"
 
 #~ msgid "Aggreage Graph does not Exist"
 #~ msgstr "Агрегований Графік не існує"
