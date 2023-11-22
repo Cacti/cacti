@@ -77,10 +77,11 @@ if (!cacti_sizeof($page)) {
 		} else {
 			print '<div id="content">';
 
-			$file = CACTI_PATH_INCLUDE . '/content/' . basename($page['contentfile']);
+			$basepath = CACTI_PATH_INCLUDE . '/content';
+			$file     = realpath($basepath . '/' . $page['contentfile']);
 
-			if (file_exists($file)) {
-				include_once($file);
+			if ($file !== false && substr($file, 0, strlen($basepath)) == $basepath) {
+				print file_get_contents($file);
 			} else {
 				print '<h1>The file \'' . html_escape($page['contentfile']) . '\' does not exist!!</h1>';
 			}
