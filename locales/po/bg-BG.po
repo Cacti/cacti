@@ -819,16 +819,6 @@ msgstr "Общият шаблон, на който се основава тоз�
 msgid "No Aggregate Graphs Found"
 msgstr "Не са намерени общи графики"
 
-#: aggregate_items.php:350
-#, fuzzy
-msgid "Override Values for Graph Item"
-msgstr "Замяна на стойностите за графичен елемент"
-
-#: aggregate_items.php:361 lib/api_aggregate.php:1907
-#, fuzzy
-msgid "Override this Value"
-msgstr "Замяна на тази стойност"
-
 #: aggregate_templates.php:310
 #, fuzzy
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -23253,6 +23243,14 @@ msgstr "Броят на шаблоните с графики, използващ
 #, fuzzy
 msgid "No VDEFs"
 msgstr "Няма VDEF"
+
+#, fuzzy
+#~ msgid "Override Values for Graph Item"
+#~ msgstr "Замяна на стойностите за графичен елемент"
+
+#, fuzzy
+#~ msgid "Override this Value"
+#~ msgstr "Замяна на тази стойност"
 
 #, fuzzy
 #~ msgid "Version %1$s | %2$s"
