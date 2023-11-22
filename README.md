@@ -52,7 +52,7 @@ this OS version makes PHP8.0 available via a DNF Stream.
 
 However, if you wish to run Cacti 1.3.x on the RHEL/CentOS 7 distribution you can
 do so if you use the REMI distributions of PHP.  You will also in this case
-have to build RRDtool 1.8+ from source, which is strait forward.
+have to build RRDtool 1.8+ from source, which is straightforward.
 
 In the sections below, you can find some important first steps before installing
 either the Cacti 1.2.x version of the pending Cacti 1.3.x version.  Good luck
