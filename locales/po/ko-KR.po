@@ -825,16 +825,6 @@ msgstr "이 집계 그래프가 기반으로하는 집계 템플릿"
 msgid "No Aggregate Graphs Found"
 msgstr "누적 된 그래프 없음"
 
-#: aggregate_items.php:350
-#, fuzzy
-msgid "Override Values for Graph Item"
-msgstr "그래프 항목의 값 재정의"
-
-#: aggregate_items.php:361 lib/api_aggregate.php:1907
-#, fuzzy
-msgid "Override this Value"
-msgstr "이 값 무시"
-
 #: aggregate_templates.php:310
 #, fuzzy
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
@@ -23156,6 +23146,14 @@ msgstr "이 VDEF를 사용하는 그래프 템플릿 수입니다."
 #, fuzzy
 msgid "No VDEFs"
 msgstr "VDEF 없음"
+
+#, fuzzy
+#~ msgid "Override Values for Graph Item"
+#~ msgstr "그래프 항목의 값 재정의"
+
+#, fuzzy
+#~ msgid "Override this Value"
+#~ msgstr "이 값 무시"
 
 #, fuzzy
 #~ msgid "Version %1$s | %2$s"
