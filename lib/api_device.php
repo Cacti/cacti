@@ -1043,7 +1043,7 @@ function api_device_save($id, $device_template_id, $description, $hostname, $snm
 			array($id));
 
 		if (cacti_sizeof($previous)) {
-			$previous_poller = $previous['poller_id';
+			$previous_poller = $previous['poller_id'];
 		} else {
 			$previous_poller = 0;
 		}
