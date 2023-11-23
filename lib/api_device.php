@@ -1037,11 +1037,19 @@ function api_device_save($id, $device_template_id, $description, $hostname, $snm
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
 	if ($id > 0) {
-		$previous_poller = db_fetch_cell_prepared('SELECT poller_id
+		$previous = db_fetch_row_prepared('SELECT *
 			FROM host
 			WHERE id = ?',
 			array($id));
+
+		if (cacti_sizeof($previous)) {
+			$previous_poller = $previous['poller_id';
+		} else {
+			$previous_poller = 0;
+		}
 	} else {
+		$previous = array();
+
 		$previous_poller = 0;
 	}
 
@@ -1256,6 +1264,27 @@ function api_device_save($id, $device_template_id, $description, $hostname, $snm
 		automation_execute_device_create_tree($device_id);
 
 		api_plugin_hook_function('api_device_new', $save);
+	}
+
+	/**
+	 * Update the caches for various meta-data changes
+	 * This is to overcome changes in various caching aspects.
+	 */
+	if (cacti_sizeof($previous) && cacti_sizeof($save)) {
+		if ($save['site_id'] != $previous['site_id']) {
+			db_execute_prepared('UPDATE sites SET devices = devices + 1 WHERE id = ?', array($save['site_id']));
+			db_execute_prepared('UPDATE sites SET devices = devices - 1 WHERE id = ?', array($previous['site_id']));
+		}
+
+		if ($save['poller_id'] != $previous['poller_id']) {
+			db_execute_prepared('UPDATE poller SET devices = devices + 1 WHERE id = ?', array($save['poller_id']));
+			db_execute_prepared('UPDATE poller SET devices = devices - 1 WHERE id = ?', array($previous['poller_id']));
+		}
+
+		if ($save['host_template_id'] != $previous['host_template_id']) {
+			db_execute_prepared('UPDATE host_template SET devices = devices + 1 WHERE id = ?', array($save['host_template_id']));
+			db_execute_prepared('UPDATE host_template SET devices = devices - 1 WHERE id = ?', array($previous['host_template_id']));
+		}
 	}
 
 	return $device_id;

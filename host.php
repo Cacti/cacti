@@ -634,8 +634,7 @@ function host_add_gt() {
 	get_filter_request_var('graph_template_id');
 	/* ==================================================== */
 
-	db_execute_prepared(
-		'REPLACE INTO host_graph
+	db_execute_prepared('REPLACE INTO host_graph
 		(host_id, graph_template_id)
 		VALUES (?, ?)',
 		array(get_nfilter_request_var('host_id'), get_nfilter_request_var('graph_template_id'))
