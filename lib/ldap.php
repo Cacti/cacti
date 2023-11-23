@@ -585,7 +585,9 @@ class Ldap {
 			if ($this->referrals == '0') {
 				if (!ldap_set_option($ldap_conn, LDAP_OPT_REFERRALS, 0)) {
 					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorReferral, $ldap_conn, $this->host);
+
 					Ldap::RecordError($output);
+
 					ldap_close($ldap_conn);
 
 					return array(
@@ -599,7 +601,9 @@ class Ldap {
 			if ($this->encryption == '2') {
 				if (!ldap_start_tls($ldap_conn)) {
 					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorTls, $ldap_conn, $this->host);
+
 					Ldap::RecordError($output);
+
 					ldap_close($ldap_conn);
 
 					return array(
@@ -608,9 +612,17 @@ class Ldap {
 					);
 				}
 			}
-		}
 
-		return array('ldap_conn' => $ldap_conn, 'output' => $output);
+			return array('ldap_conn' => $ldap_conn, 'output' => $output);
+		} else {
+			$output = LdapError::GetErrorDetails(LdapError::ConnectionUnavailable, $ldap_conn, $this->host);
+			Ldap::RecordError($output);
+
+			return array(
+				'ldap_conn' => $ldap_conn,
+				'output'    => $output
+			);
+		}
 	}
 
 	function Authenticate() {
@@ -696,6 +708,7 @@ class Ldap {
 		} else {
 			/* unable to bind */
 			$ldap_error = ldap_errno($ldap_conn);
+
 			if ($ldap_error == 0x02) {
 				/* protocol error */
 				$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorGeneral, $ldap_conn, $this->host);

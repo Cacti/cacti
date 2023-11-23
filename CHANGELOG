@@ -30,6 +30,7 @@ Cacti CHANGELOG
 -issue#5585: Refix Issue #4649 using more appropriate method
 -issue#5586: CSV export displays data shifted by rrd step interval
 -issue#5589: When a graph has a real long cdef in graph debug mode, it forces an undesirable scroll
+-issue#5590: Secondary LDAP server not evaluated when the first one has failed
 -feature#5577: Provide new templates for ArubaOS switch, Aruba wifi controller and HPE iLO to be available during install 
 
 1.2.25
