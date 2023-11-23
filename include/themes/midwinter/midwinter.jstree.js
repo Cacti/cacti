@@ -38,8 +38,11 @@ function openNodes() {
 }
 
 function setupTree() {
-    $('#mdw_tree_content').each(function (data) {
-        var id = $(this).attr('id');
+    let navigationBox = false;
+
+    $('#mdw_tree_content').each(function () {
+
+        navigationBox = $(this).parent('.mdw-ConsoleNavigationBox');
 
         $(this)
             .on('init.jstree', function () {
@@ -70,7 +73,7 @@ function setupTree() {
                         href = href.replace('action=tree', 'action=tree_content');
                         href = href + '&hyper=true';
                         $('.cactiGraphContentArea').hide();
-                        loadUrl({url:href});
+                        loadUrl({url: href});
                     }
                     node = data.node.id;
                 }
@@ -139,16 +142,17 @@ function setupTree() {
                 'plugins': ['types', 'state', 'wholerow', 'search']
             });
     });
+}
 
-    $('#mdw_tree_search').keyup(function() {
-        if(search_to) { clearTimeout(search_to); }
-        search_to = setTimeout(function() {
-            var v = $('#mdw_tree_search_input').val();
-            if (v.length >= 3) {
-                $('#mdw_tree_content').jstree('search', v, false);
-            }else {
-                $('#mdw_tree_content').jstree('search', '', false);
-            }
-        }, 500);
-    });
-};
+function searchCactiTree() {
+    let search_string = $(this).val();
+
+    if(search_to) { clearTimeout(search_to); }
+    search_to = setTimeout(function() {
+        if (search_string.length >= 3) {
+            $('#mdw_tree_content').jstree('search', search_string, false);
+        }else {
+            $('#mdw_tree_content').jstree('search', '', false);
+        }
+    }, 500);
+}

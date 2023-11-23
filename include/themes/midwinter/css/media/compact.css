@@ -2,6 +2,7 @@
 .cactiPageHead,
 .cactiPageBottom,
 #navBar,
+#menu_main_console,
 .scrollBar,
 .infoBar {
     display: none;
@@ -201,7 +202,7 @@ html[data-theme-color="light"] {
 }
 
 .cactiAuth label {
-    display: none;
+    /*display: none;*/
 }
 
 .cactiAuthTitle {

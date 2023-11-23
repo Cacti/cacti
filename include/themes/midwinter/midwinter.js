@@ -24,10 +24,10 @@
 class navigationBox {
     
     #box;
-     #container;
+    #container;
     #container_content = '';
     
-    constructor(title, helper, height='full', width='auto', button= 'none', align='left', header=title, content = 'auto') {
+    constructor(title, helper, height='full', width='auto', buttons= {close: false, search: false, resize: true}, align='left', header=title, content = 'auto') {
         this.#box = {
             'class':        'mdw-ConsoleNavigationBox',
             'title':        title,
@@ -37,31 +37,37 @@ class navigationBox {
             'align':        ((align === 'right') ? 'right' : 'left'),
             'header':       header,
             'content':      content,
-            'button':       button
+            'buttons':       {
+                close:      (buttons.close !== false),
+                search:     (buttons.search !== false) ? buttons.search : false,
+                resize:     (buttons.resize !== false),
+            }
         };
-        let navigationBoxButton = '';
+        let navigationBoxButtons = '';
 
-        switch (this.#box.button) {
-            case 'menu':
-                this.#box.width = initStorageItem('midWinter_widthNavigationBox_' + this.#box.helper, +width);
-                navigationBoxButton =
-                    '<div class="navBox-header-dropdown" data-helper="'+this.#box.helper+'">'
-                    +		'<i class="intro_glyph fas fa-ellipsis-v"></i>'
-                    +		'<div class="navBox-header-dropdown-content">'
-                    +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="auto" href="#">Auto</a>'
-                    +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="1" href="#">Columns 1</a>'
-                    +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="2" href="#">Columns 2</a>'
-                    +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="3" href="#">Columns 3</a>'
-                    +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="4" href="#">Columns 4</a>'
-                    +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="5" href="#">Columns 5</a>'
-                    +		'</div>'
-                    +	'</div>'
-                break;
-            case 'close':
-                navigationBoxButton = '<div class="navBox-header-button" data-helper="'+this.#box.helper+'"><i class="intro_glyph fas fa-times"></i></div>';
-                break;
-            default:
-                navigationBoxButton = '<div class="navBox-header-dropdown invisible"></div>';
+        if(this.#box.buttons.search) {
+            navigationBoxButtons += '<div class="navBox-header-button" data-helper="'+this.#box.helper+'"><i class="intro_glyph fas fa-search"></i></div>';
+        }
+        if(this.#box.buttons.resize) {
+            navigationBoxButtons +=
+                '<div class="navBox-header-dropdown" data-helper="'+this.#box.helper+'">'
+                +		'<i class="intro_glyph fas fa-ellipsis-v"></i>'
+                +		'<div class="navBox-header-dropdown-content">'
+                +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="auto" href="#">Auto</a>'
+                +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="1" href="#">Columns 1</a>'
+                +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="2" href="#">Columns 2</a>'
+                +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="3" href="#">Columns 3</a>'
+                +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="4" href="#">Columns 4</a>'
+                +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="5" href="#">Columns 5</a>'
+                +		'</div>'
+                +	'</div>'
+        }
+        if(this.#box.buttons.close) {
+            navigationBoxButtons += '<div class="navBox-header-button" data-helper="'+this.#box.helper+'"><i class="intro_glyph fas fa-times"></i></div>';
+        }
+
+        if(navigationBoxButtons === '') {
+            navigationBoxButtons = '<div class="navBox-header-dropdown invisible"></div>';
         }
 
         if(this.#box.content !== 'auto') {
@@ -75,26 +81,51 @@ class navigationBox {
 
         this.#container  = '<div class="'+this.#box.class+'" data-title="'+this.#box.title+'" data-helper="'+this.#box.helper+'" data-height="'+this.#box.height+'" data-width="'+this.#box.width+'" data-align="'+this.#box.align+'">';
         this.#container += '<div class="navBox-header">';
-        this.#container += '<div class="navBox-header-title"><span>'+this.#box.header+'</span></div>' + navigationBoxButton;
-        this.#container += '</div>';
+        this.#container += '<div class="navBox-header-title"><span>'+this.#box.header+'</span></div>'
+        this.#container += navigationBoxButtons + '</div>';
+        if(this.#box.buttons.search) {
+            this.#container +=
+                '<div class="navBox-search hide">' +
+                    '<input type="search" name="navBox-search" placeholder="Search in '+this.#box.title+'" tabindex="0">' +
+                '</div>';
+        }
         this.#container += '<div class="navBox-content">' + this.#container_content + '</div>';
     }
 
     build() {
+        /* keep all navigation boxes inside a common DOM container */
         if($('#mdw-SideBarContainer').length === 0) {
             $('<div id="mdw-SideBarContainer"></div>').insertAfter('#cactiContent');
         }
         this.#container += '</div></div>';
         let navigationBox = $(this.#container).appendTo('#mdw-SideBarContainer');
-        switch (this.#box.button) {
-            case 'menu':
-                $('[class="navBox-header-dropdown"][data-helper="'+this.#box.helper+'"]').off().on('click', {param: this.#box.helper}, toggleDropDownMenu);
-                break;
-            case 'close':
-                $('[class="navBox-header-button"][data-helper="'+this.#box.helper+'"]').off().on('click', {param: this.#box.helper}, toggleCactiNavigationBox);
-                break;
-            default:
-                break;
+
+        /* register button events if required */
+        if(this.#box.buttons.close) {
+            $('[class="navBox-header-button"][data-helper="'+this.#box.helper+'"]', navigationBox).off().on(
+                'click', {param: this.#box.helper}, toggleCactiNavigationBox);
+        }
+
+        if(this.#box.buttons.resize) {
+            $('[class="navBox-header-dropdown"][data-helper="'+this.#box.helper+'"]', navigationBox).off().on('click', {param: this.#box.helper}, toggleDropDownMenu);
+        }
+
+        if(this.#box.buttons.search) {
+            let navBox_input_field = $("input[name=navBox-search]", navigationBox);
+            $('[class="navBox-header-button"][data-helper="'+this.#box.helper+'"]', navigationBox).off().on('click', function(e) {
+                if($('.navBox-search', navigationBox).hasClass('hide')) {
+                    $('.navBox-search', navigationBox).removeClass('hide');
+                    navBox_input_field.trigger('focus');
+                }else {
+                    navBox_input_field.val('').trigger('input').blur();
+                    $('.navBox-search', navigationBox).addClass('hide');
+                }
+                /* avoid that click event takes focus away */
+                e.preventDefault();
+            });
+            if(is_function(this.#box.buttons.search)) {
+                navBox_input_field.off().on("input", window[this.#box.buttons.search]);
+            }
         }
     }
 }
@@ -344,9 +375,6 @@ function get_user_content() {
 function get_tree_content() {
     let compact_tree_content =
         '<div id="mdw_tree">'
-        +   '<div id="mdw_tree_search">'
-        +       '<input id="mdw_tree_search_input" type="text" data-scope="theme" placeholder="Search..">'
-        +   '</div>'
         +   '<div id="mdw_tree_content">'
         +   '</div>'
         +'</div>';

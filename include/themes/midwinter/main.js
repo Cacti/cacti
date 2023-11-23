@@ -25,6 +25,7 @@ var midWinter_classes = new Array();
 loadScript('navigationBox', 'include/themes/midwinter/midwinter.js');
 loadScript('navigationTree', 'include/themes/midwinter/midwinter.jstree.js');
 loadScript('hotkeys', 'include/themes/midwinter/vendor/hotkeys/hotkeys.min.js');
+loadScript('mark', 'include/themes/midwinter/vendor/mark/jquery.mark.js');
 loadScript('moment', 'include/themes/midwinter/vendor/moment/moment.min.js');
 loadScript('daterangepicker', 'include/themes/midwinter/vendor/daterangepicker/daterangepicker.js');
 
@@ -112,7 +113,9 @@ function midWinterNavigation(element) {
 	let rubric_title 	= element.closest('div[class^="mdw-ConsoleNavigationBox"]').data('title');
 	let rubric_icon   	= $('.compact_nav_icon[data-helper="'+helper+'"]').html();
 
-	$('#navBreadCrumb .rubric').html( rubric_icon + rubric_title ).attr('data-helper', helper);
+	$('#navBreadCrumb .rubric').html( rubric_icon + rubric_title ).attr('data-helper', helper).off().on(
+		"click", {}, toggleCactiNavigationBox
+	);
 	$('#navBreadCrumb .category').html( category );
 	$('#navBreadCrumb .action').html( action );
 
@@ -156,7 +159,7 @@ function setupTheme() {
 		/* suppress issues with autofocus while page is loading */
 		$('<input id="suppress_autofocus" type="text" style="display:none;" tab-index="-1" autofocus>').prependTo('.cactiAuth');
 
-		$(cactiAuthTable).find('input').each(
+		$(cactiAuthTable).find("input, label").each(
 			function() {
 				if( $(this).attr('type') === 'password' || $(this).attr('type') === 'text' ) {
 					if ($(this).attr('name') !== undefined) {
@@ -240,33 +243,57 @@ function setupTheme() {
 
 			/* dashboards */
 			new navigationButton('dashboards', 'Dashboards', 'fas fa-th-large', '#compact_tab_menu').build();
-			new navigationBox(cactiDashboards, 'dashboards', 'full','1', 'menu').build();
+			new navigationBox(cactiDashboards, 'dashboards', 'full','1', {
+				close: false,
+				search: 'searchToHighlight',
+				resize: true
+			}).build();
 
 			/* settings */
 			if (cactiConsoleAllowed) {
 				new navigationButton('settings', 'Settings', 'fas fa-cogs', '#compact_tab_menu').build();
-				new navigationBox(zoom_i18n_settings, 'settings', 'full', '3', 'menu', 'left', zoom_i18n_settings, element_menu).build();
+				new navigationBox(zoom_i18n_settings, 'settings', 'full', '3', {
+					close: false,
+					search: 'searchToHighlight',
+					resize: true,
+				}, 'left', zoom_i18n_settings, element_menu).build();
 			}
 
 			/* tree */
 			if (cactiGraphsAllowed) {
 				new navigationButton('tree', 'Tree','fas fa-seedling', '#compact_tab_menu').build();
-				new navigationBox( 'Tree', 'tree', 'full', '2', 'menu','left', 'Tree').build();
+				new navigationBox( 'Tree', 'tree', 'full', 'auto', {
+					close: false,
+					search: 'searchCactiTree',
+					resize: true,
+				},'left', 'Tree').build();
 			}
 
 			/* user help */
 			new navigationButton('help', 'Help', 'far fa-comment-alt', '#compact_user_menu').build();
-			new navigationBox(help, 'help', 'half', '2', 'none', 'left', justCacti+' &reg; v'+cactiVersion).build();
+			new navigationBox(help, 'help', 'half', '2', {
+				close: false,
+				search: false,
+				resize: false
+			}, 'left', justCacti+' &reg; v'+cactiVersion).build();
 
 			/* user settings */
 			new navigationButton('user', 'User Settings', 'far fa-user', '#compact_user_menu').build();
-			new navigationBox( cactiUser, 'user', 'half', '2', 'none', 'left', $('.loggedInAs').text() ).build();
+			new navigationBox( cactiUser, 'user', 'half', '2', {
+				close: false,
+				search: false,
+				resize: false
+			}, 'left', $('.loggedInAs').text() ).build();
 
 			/* log out */
 			new navigationButton('logout', 'Sign Out','fas fa-sign-out-alt', '#compact_user_menu', 'redirect', urlPath+'logout.php').build();
 
 			/* table filters */
-			new navigationBox( 'Display Filters', 'displayOptions', 'full', '1.5', 'close', 'right').build();
+			new navigationBox( 'Display Filters', 'displayOptions', 'full', '1.5', {
+				close: true,
+				search: false,
+				resize: false
+			}, 'right').build();
 			new navigationButton('toggleColorMode', '', 'fas fa-adjust', '#navControl', 'toggleColorMode', 'on').build();
 			new navigationButton('kioskMode', '', 'fas fa-tv', '#navControl', 'kioskMode', 'on').build();
 		}
@@ -299,10 +326,6 @@ function setupThemeActions() {
 	});
 
 	//$('.cactiConsoleContentArea, .cactiGraphContentArea').off().on('click', toggleCactiNavigationBox);
-	$('#navBreadCrumb > div[class="rubric"]').each( function() {
-		let navBox = $(this).attr('data-helper');
-		$(this).off().on("click", {param: navBox}, toggleCactiNavigationBox);
-	});
 
 	$('#main').off().on('click', {param: 'off'}, toggleCactiNavigationBox);
 	$('.mdw-ConsoleNavigationBox').off().on('click', hideDropDownMenu);
@@ -311,7 +334,6 @@ function setupThemeActions() {
 
 function redirect(event) {
 	event.preventDefault();
-	console.log(event.data);
 	window.location = event.data.param;
 }
 
@@ -325,7 +347,7 @@ function setNavigationBoxColumns(event) {
 }
 
 function toggleCactiNavigationBox(event) {
-	let helper = $(this).data('helper');
+	let helper = $(this).attr('data-helper');
 
 	if(event.data && event.data.param) {
 		event.data.param = 'on';
@@ -961,3 +983,23 @@ const cyrb53 = function(str, seed = 0) {
 	h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
 	return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 };
+
+function searchToHighlight(event) {
+	let keyword = $(this).val();
+	let pattern = '.*' + keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '.*';
+	let re = new RegExp(pattern,'gmiu');
+	let container = $(this).parent().siblings('.navBox-content');
+
+	$("li.menuitem", container).removeClass('hide');
+	$("a[role='menuitem'], li.menuitem", container).unmark({
+		done: function() {
+			if(keyword) {
+				$("a[role='menuitem'], li.menuitem", container).markRegExp(re, {
+					"accuracy": "complementary",
+					"separateWordSearch": false,
+				});
+				$("li.menuitem", container).not(":has(mark)").addClass('hide');
+			}
+		}
+	});
+}

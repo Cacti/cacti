@@ -38,7 +38,8 @@ html[data-kiosk-mode='on'] #mdw-ConsolePageHead {
     margin-right: 0.5rem;
     padding: 0;
     text-align: center;
-    color: var(--text-color-normal);
+    color: var(--text-color-highlight-a);
+    cursor: pointer;
 }
 
 #navSearch {
@@ -174,6 +175,8 @@ html[data-kiosk-mode='on'] #mdw-ConsoleNavigation {
     top: 4rem !important;
     width: 55rem;
     height: calc(100vh - 4rem);
+    display: flex;
+    flex-direction: column;
 }
 
 .mdw-ConsoleNavigationBox[data-width="1"]     { width:   19rem !important; }
@@ -255,6 +258,7 @@ html[data-kiosk-mode='on'] #mdw-ConsoleNavigation {
 }
 
 .navBox-header {
+    flex-shrink: 0;
     height: calc(3.5rem - 2px);
     background: var(--background-lowlight);
     border-bottom: 1px solid var(--border-color-semilight);
@@ -274,7 +278,7 @@ html[data-kiosk-mode='on'] #mdw-ConsoleNavigation {
 
 .navBox-header-button,
 .navBox-header-dropdown {
-    width: 3.35rem;
+    width: 2.5rem;
     height: 100%;
     display: flex;
     align-items: center;
@@ -329,8 +333,28 @@ html[data-kiosk-mode='on'] #mdw-ConsoleNavigation {
 
 }
 
+.navBox-search {
+    flex-shrink: 0;
+    height: calc(3.5rem - 2px);
+    background: var(--background-lowlight);
+    border-bottom: 1px solid var(--border-color-semilight);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    justify-content: center;
+    padding: 0 2rem;
+}
+
+.navBox-search input {
+    border: 1px solid var(--background-progress-mediumlight);
+    border-radius: 5px !important;
+    color: var(--text-color-normal);
+}
+
 .navBox-content {
-    height: calc(100% - 3.5rem);
+    flex: 1;
+    overflow: auto;
 }
 
 
