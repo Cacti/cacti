@@ -438,9 +438,8 @@ function form_actions() {
 				)
 			);
 
-			device_javascript();
-
 			device_change_javascript();
+			device_javascript();
 
 			$footer = ob_get_clean();
 		} elseif (get_request_var('drp_action') == '8') { // Place on Report
@@ -1072,7 +1071,7 @@ function device_change_javascript() {
 			});
 		});
 	</script>
-<?php
+	<?php
 }
 
 function device_javascript(bool $hasHost = true) {
@@ -1259,7 +1258,7 @@ function device_javascript(bool $hasHost = true) {
 			hostInfoHeight = $('.hostInfoHeader').height();
 		}
 	</script>
-<?php
+	<?php
 }
 
 function host_validate_vars() {

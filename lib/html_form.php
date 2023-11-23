@@ -1475,18 +1475,18 @@ function form_continue_confirmation($form_data) {
 
 			print '</tr>';
 		}
+	}
 
-		if (isset($data['footer'])) {
-			print "<tr><td class='textArea left' colspan='3'><p>";
-			print $data['footer'];
-			print '</p></td></tr>';
-		}
+	if (isset($data['footer'])) {
+		print "<tr><td class='textArea left' colspan='3'><p>";
+		print $data['footer'];
+		print '</p></td></tr>';
+	}
 
-		if (isset($form_data['general']['footer'])) {
-			print "<tr><td class='textArea left' colspan='3'><p>";
-			print $form_data['general']['footer'];
-			print '</p></td></tr>';
-		}
+	if (isset($form_data['general']['footer'])) {
+		print "<tr><td class='textArea left' colspan='3'><p>";
+		print $form_data['general']['footer'];
+		print '</p></td></tr>';
 	}
 
 	print "<tr><td class='saveRow' colspan='3'>";
