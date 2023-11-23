@@ -1319,6 +1319,16 @@ legend {
 	padding-right: 4px;
 }
 
+.formConfirmRadio {
+	width: 10px;
+}
+
+.formConfirmRow {
+	padding: 3px 5px;
+	float: left;
+	margin: 3px;
+}
+
 .hostInfoHeader {
 	width: 100%;
 }
