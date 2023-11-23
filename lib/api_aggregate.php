@@ -1342,8 +1342,8 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 }
 
 function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_graph_id, $_total, $_total_type) {
-	static $special_comments = null;
-	static $special_hrules   = null;
+	$special_comments = null;
+	$special_hrules   = null;
 
 	$agg_info = db_fetch_row_prepared('SELECT *
 		FROM aggregate_graphs
@@ -1359,6 +1359,8 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 			AND (text_format != "" || value != "")
 			ORDER BY sequence ASC',
 			array(GRAPH_ITEM_TYPE_COMMENT, GRAPH_ITEM_TYPE_HRULE, $agg_info['graph_template_id']));
+
+		$graph_template_id = $agg_info['graph_template_id'];
 	} else {
 		if (cacti_sizeof($member_graphs)) {
 			$template_graph[] = $member_graphs[0];
@@ -1373,6 +1375,10 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 			(cacti_sizeof($skipped_items) ? ' AND local_graph_id NOT IN(' . implode(',', $skipped_items) . ')':'') . '
 			AND (text_format != "" || value != "")
 			ORDER BY local_graph_id, sequence ASC');
+
+		if (cacti_sizeof($comments_hrules)) {
+			$graph_template_id = $comments_hrules[0]['graph_template_id'];
+		}
 	}
 
 	$next_item_sequence = db_fetch_cell_prepared('SELECT MAX(sequence)
@@ -1446,8 +1452,9 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 							}
 
 							db_execute_prepared("INSERT INTO graph_templates_item
-								(local_graph_id, task_item_id, graph_type_id, consolidation_function_id, text_format, value, hard_return, gprint_id, sequence)
-								VALUES (?, ?, ?, 1, ?, '', ?, 2, ?)", array(
+								(graph_template_id, local_graph_id, task_item_id, graph_type_id, consolidation_function_id, text_format, value, hard_return, gprint_id, sequence)
+								VALUES (?, ?, ?, ?, 1, ?, '', ?, 2, ?)", array(
+									$graph_template_id,
 									$local_graph_id,
 									$item['task_item_id'],
 									GRAPH_ITEM_TYPE_COMMENT,
@@ -1525,13 +1532,14 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 							// add an empty line before nth percentile for the first item only
 							if (cacti_sizeof($special_hrules) == 1) {
 								db_execute_prepared("INSERT INTO graph_templates_item
-									(local_graph_id, graph_type_id, consolidation_function_id, text_format, value, hard_return, gprint_id, sequence)
-									VALUES (?, 1, 1, '', '', 'on', 2, ?)", array($local_graph_id, $next_item_sequence++));
+									(graph_template_id, local_graph_id, graph_type_id, consolidation_function_id, text_format, value, hard_return, gprint_id, sequence)
+									VALUES (?, ?, 1, 1, '', '', 'on', 2, ?)", array($graph_template_id, $local_graph_id, $next_item_sequence++));
 							}
 
 							db_execute_prepared("INSERT INTO graph_templates_item
-								(local_graph_id, task_item_id, graph_type_id, color_id, consolidation_function_id, text_format, value, hard_return, gprint_id, sequence)
-								VALUES (?, ?, ?, ?, 1, ?, ?, '', 2, ?)", array(
+								(graph_template_id, local_graph_id, task_item_id, graph_type_id, color_id, consolidation_function_id, text_format, value, hard_return, gprint_id, sequence)
+								VALUES (?, ?, ?, ?, ?, 1, ?, ?, '', 2, ?)", array(
+									$graph_template_id,
 									$local_graph_id,
 									$item['task_item_id'],
 									GRAPH_ITEM_TYPE_HRULE,
