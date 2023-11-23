@@ -195,8 +195,7 @@ function form_save() {
 
 			/* see if anything changed, if so, we will have to push out the aggregate */
 			if (!empty($aggregate_graph_id)) {
-				$old = db_fetch_row_prepared(
-					'SELECT *
+				$old = db_fetch_row_prepared('SELECT *
 					FROM aggregate_graphs
 					WHERE id = ?',
 					array($aggregate_graph_id)
@@ -853,7 +852,6 @@ function form_actions() {
 					}
 				}
 			} elseif (get_request_var('drp_action') == '4') {
-
 				$reports = db_fetch_assoc_prepared('SELECT id, name
 					FROM reports
 					WHERE user_id = ?
@@ -1019,16 +1017,14 @@ function graph_edit() {
 	$graphs             = array();
 
 	if (!isempty_request_var('id')) {
-		$graphs = db_fetch_row_prepared(
-			'SELECT *
+		$graphs = db_fetch_row_prepared('SELECT *
 			FROM graph_templates_graph
 			WHERE local_graph_id = ?',
 			array(get_request_var('id'))
 		);
 
 		if (cacti_sizeof($graphs)) {
-			$aginfo = db_fetch_row_prepared(
-				'SELECT *
+			$aginfo = db_fetch_row_prepared('SELECT *
 				FROM aggregate_graphs
 				WHERE local_graph_id = ?',
 				array($graphs['local_graph_id'])
@@ -1046,8 +1042,7 @@ function graph_edit() {
 
 	if (cacti_sizeof($aginfo)) {
 		if ($aginfo['aggregate_template_id'] > 0) {
-			$template = db_fetch_row_prepared(
-				'SELECT *
+			$template = db_fetch_row_prepared('SELECT *
 				FROM aggregate_graph_templates
 				WHERE id = ?',
 				array($aginfo['aggregate_template_id'])
@@ -1150,8 +1145,7 @@ function graph_edit() {
 	}
 
 	if (!isempty_request_var('id') && $current_tab == 'preview') {
-		$graph = db_fetch_row_prepared(
-			'SELECT *
+		$graph = db_fetch_row_prepared('SELECT *
 			FROM graph_local
 			WHERE id = ?',
 			array(get_request_var('id'))
@@ -1227,8 +1221,7 @@ function graph_edit() {
 			$helper_string = '|host_description|';
 
 			if (isset($template)) {
-				$data_query = db_fetch_cell_prepared(
-					'SELECT snmp_query_id
+				$data_query = db_fetch_cell_prepared('SELECT snmp_query_id
 					FROM snmp_query_graph
 					WHERE graph_template_id = ?',
 					array($template['graph_template_id'])
@@ -1411,6 +1404,7 @@ function graph_edit() {
 						}
 					} else if ($('#total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_ALL; ?>) {
 						if ($('#total_prefix').val() == '' && $('#id').val() == 0) {
+						if ($('#total_prefix').val() == '') {
 							$('#total_prefix').attr('value', '<?php print __('All Items'); ?>');
 						}
 					}
@@ -1587,22 +1581,19 @@ function aggregate_items() {
 		$sql_where .= ($sql_where != '' ? ' AND' : 'WHERE') . ' (agi.local_graph_id IS NOT NULL)';
 	}
 
-	$graph_template = db_fetch_cell_prepared(
-		'SELECT graph_template_id
+	$graph_template = db_fetch_cell_prepared('SELECT graph_template_id
 		FROM aggregate_graphs AS ag
 		WHERE ag.local_graph_id = ?',
 		array(get_request_var('id'))
 	);
 
-	$aggregate_id = db_fetch_cell_prepared(
-		'SELECT id
+	$aggregate_id = db_fetch_cell_prepared('SELECT id
 		FROM aggregate_graphs
 		WHERE local_graph_id = ?',
 		array(get_request_var('id'))
 	);
 
-	$total_items = db_fetch_cell_prepared(
-		'SELECT COUNT(*)
+	$total_items = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM aggregate_graphs_items
 		WHERE aggregate_graph_id = ?',
 		array($aggregate_id)
@@ -1709,18 +1700,18 @@ function aggregate_items() {
 						<td>
 							<select id='rows' onChange='applyFilter()'>
 								<option value='-1' <?php print(get_request_var('rows') == '-1' ? ' selected>' : '>') . __('Default'); ?></option>
-									<?php
-									if (cacti_sizeof($item_rows) > 0) {
-										foreach ($item_rows as $key => $value) {
-											print "<option value='" . $key . "'";
+								<?php
+								if (cacti_sizeof($item_rows) > 0) {
+									foreach ($item_rows as $key => $value) {
+										print "<option value='" . $key . "'";
 
-											if (get_request_var('rows') == $key) {
-												print ' selected';
-											}
-											print '>' . html_escape($value) . '</option>';
+										if (get_request_var('rows') == $key) {
+											print ' selected';
 										}
+										print '>' . html_escape($value) . '</option>';
 									}
-	?>
+								}
+								?>
 							</select>
 						</td>
 						<td>
@@ -1757,10 +1748,26 @@ function aggregate_items() {
 	print $nav;
 
 	$display_text = array(
-		'title_cache'    => array('display' => __('Graph Title'), 'align' => 'left', 'sort' => 'ASC'),
-		'local_graph_id' => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC'),
-		'agg_graph_id'   => array('display' => __('Included in Aggregate'), 'align' => 'left', 'sort' => 'ASC'),
-		'height'         => array('display' => __('Size'), 'align' => 'right', 'sort' => 'ASC')
+		'title_cache' => array(
+			'display' => __('Graph Title'),
+			'align' => 'left',
+			'sort' => 'ASC'
+		),
+		'local_graph_id' => array(
+			'display' => __('ID'),
+			'align' => 'right',
+			'sort' => 'ASC'
+		),
+		'agg_graph_id' => array(
+			'display' => __('Included in Aggregate'),
+			'align' => 'left',
+			'sort' => 'ASC'
+		),
+		'height' => array(
+			'display' => __('Size'),
+			'align' => 'right',
+			'sort' => 'ASC'
+		)
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false, 'aggregate_graphs.php?action=edit&id=' . get_request_var('id'));
@@ -1997,22 +2004,22 @@ function aggregate_graph() {
 								<option value='0' <?php if (get_request_var('template_id') == '0') { ?> selected<?php } ?>><?php print __('None'); ?></option>
 								<?php
 								$templates = db_fetch_assoc('SELECT DISTINCT at.id, at.name
-								FROM aggregate_graph_templates AS at
-								INNER JOIN aggregate_graphs AS ag
-								ON ag.aggregate_template_id=at.id
-								ORDER BY name');
+									FROM aggregate_graph_templates AS at
+									INNER JOIN aggregate_graphs AS ag
+									ON ag.aggregate_template_id=at.id
+									ORDER BY name');
 
-	if (cacti_sizeof($templates) > 0) {
-		foreach ($templates as $template) {
-			print "<option value='" . $template['id'] . "'";
+								if (cacti_sizeof($templates) > 0) {
+									foreach ($templates as $template) {
+										print "<option value='" . $template['id'] . "'";
 
-			if (get_request_var('template_id') == $template['id']) {
-				print ' selected';
-			}
-			print '>' . html_escape($template['name']) . '</option>';
-		}
-	}
-	?>
+										if (get_request_var('template_id') == $template['id']) {
+											print ' selected';
+										}
+										print '>' . html_escape($template['name']) . '</option>';
+									}
+								}
+								?>
 							</select>
 						</td>
 						<td>
@@ -2022,17 +2029,17 @@ function aggregate_graph() {
 							<select id='rows' onChange='applyFilter()'>
 								<option value='-1' <?php print(get_request_var('rows') == '-1' ? ' selected>' : '>') . __('Default'); ?></option>
 									<?php
-		if (cacti_sizeof($item_rows) > 0) {
-			foreach ($item_rows as $key => $value) {
-				print "<option value='" . $key . "'";
+									if (cacti_sizeof($item_rows) > 0) {
+										foreach ($item_rows as $key => $value) {
+											print "<option value='" . $key . "'";
 
-				if (get_request_var('rows') == $key) {
-					print ' selected';
-				}
-				print '>' . html_escape($value) . '</option>';
-			}
-		}
-	?>
+											if (get_request_var('rows') == $key) {
+												print ' selected';
+											}
+											print '>' . html_escape($value) . '</option>';
+										}
+									}
+								?>
 							</select>
 						</td>
 						<td>
@@ -2103,10 +2110,29 @@ function aggregate_graph() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'title_cache'    => array('display' => __('Graph Title'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The title for the Aggregate Graphs')),
-		'local_graph_id' => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database identifier for this object')),
-		'name'           => array('display' => __('Aggregate Template'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The Aggregate Template that this Aggregate Graphs is based upon')),
-		'height'         => array('display' => __('Size'), 'align' => 'right', 'sort' => 'ASC')
+		'title_cache' => array(
+			'display' => __('Graph Title'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The title for the Aggregate Graphs')
+		),
+		'local_graph_id' => array(
+			'display' => __('ID'),
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The internal database identifier for this object')
+		),
+		'name' => array(
+			'display' => __('Aggregate Template'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The Aggregate Template that this Aggregate Graphs is based upon')
+		),
+		'height' => array(
+			'display' => __('Size'),
+			'align'   => 'right',
+			'sort'    => 'ASC'
+		)
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false, 'aggregate_graphs.php?filter=' . get_request_var('filter'));
@@ -2115,12 +2141,15 @@ function aggregate_graph() {
 		foreach ($graph_list as $graph) {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			$template_name = html_escape($graph['name']);
+
 			form_alternate_row('line' . $graph['local_graph_id'], true);
+
 			form_selectable_cell(filter_value(title_trim($graph['title_cache'], read_config_option('max_title_length')), get_request_var('filter'), 'aggregate_graphs.php?action=edit&id=' . $graph['local_graph_id']), $graph['local_graph_id']);
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'right');
 			form_selectable_cell((empty($graph['name']) ? '<em>' . __('None') . '</em>' : filter_value($template_name, get_request_var('filter'))), $graph['local_graph_id']);
 			form_selectable_ecell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id'], '', 'right');
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
+
 			form_end_row();
 		}
 	} else {
