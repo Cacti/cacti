@@ -137,6 +137,23 @@ html[data-theme-color-auto='on'] .compact_nav_icon[data-helper='toggleColorMode'
     border-top: 1px solid var(--border-color-light);
 }
 
+/* limited height for highlighted buttons */
+.cactiContent:has(.saveRowParent) {
+    height: calc(100vh - 8rem) !important;
+}
+
+.saveRowParent {
+    position: absolute;
+    bottom: 0;
+    left: 4rem;
+    width: calc(100vw - 4rem);
+    height: 4rem;
+    box-sizing: border-box;
+    background: var(--background-content);
+    padding-right: 0.5rem;
+    border-top: 1px solid var(--border-color-semilight);
+}
+
 html[data-kiosk-mode='on'] .cactiContent {
     height: 100vh !important;
     border-top: none;
