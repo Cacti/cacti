@@ -1541,6 +1541,16 @@ legend {
 	padding-right: 8px;
 }
 
+.formConfirmRadio {
+	width: 10px;
+}
+
+.formConfirmRow {
+	padding: 3px 5px;
+	float: left;
+	margin: 3px;
+}
+
 .hostInfoHeader {
 	width: 100%;
 }
@@ -2286,8 +2296,7 @@ ul#nav {
 }
 
 .clogStats td, .clogDebug td, .clogSQL td, .clogWarning td, .clogError td, .clogLimit td {
-	padding: 2px;
-	height: 20px;
+	padding: 3px;
 }
 
 @media print {
@@ -2726,10 +2735,5 @@ td.center > table {
 }
 
 .tableRowGraph {
-	border: 2px solid rgba(0,0,0,0);
-	min-height: 20px;
-}
-
-.tableRowGraph td {
-    padding-left: 3px;
+     border: 2px solid rgba(0,0,0,0);
 }

@@ -37,7 +37,7 @@ include_once('./lib/snmp.php');
 include_once('./lib/template.php');
 include_once('./lib/utility.php');
 
-$device_actions = array(
+$actions = array(
 	1 => __('Delete'),
 	2 => __('Enable'),
 	3 => __('Disable'),
@@ -48,7 +48,7 @@ $device_actions = array(
 	8 => __('Place Device on Report')
 );
 
-$device_actions = api_plugin_hook_function('device_action_array', $device_actions);
+$actions = api_plugin_hook_function('device_action_array', $actions);
 
 /* set default action */
 set_default_action();
@@ -194,8 +194,7 @@ function host_reindex() {
 
 	$total_time = $end - $start;
 
-	$items = db_fetch_cell_prepared(
-		'SELECT COUNT(*)
+	$items = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM host_snmp_cache
 		WHERE host_id = ?',
 		array(get_filter_request_var('host_id'))
@@ -205,14 +204,14 @@ function host_reindex() {
 }
 
 function add_tree_names_to_actions_array() {
-	global $device_actions;
+	global $actions;
 
 	/* add a list of tree names to the actions dropdown */
 	$trees = db_fetch_assoc('SELECT id, name FROM graph_tree ORDER BY name');
 
 	if (cacti_sizeof($trees)) {
 		foreach ($trees as $tree) {
-			$device_actions['tr_' . $tree['id']] = __esc('Place on a Tree (%s)', $tree['name']);
+			$actions['tr_' . $tree['id']] = __esc('Place on a Tree (%s)', $tree['name']);
 		}
 	}
 }
@@ -308,7 +307,8 @@ function form_save() {
 }
 
 function form_actions() {
-	global $device_actions, $device_change_fields, $fields_host_edit;
+	global $actions, $device_change_fields, $fields_host_edit;
+	global $alignment, $graph_timespans;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
@@ -335,8 +335,7 @@ function form_actions() {
 				api_device_sync_device_templates($selected_items);
 			} elseif (get_request_var('drp_action') == '8') { // place device on report
 				if (!reports_add_devices(get_filter_request_var('report_id'), $selected_items, get_filter_request_var('timespan'), get_filter_request_var('align'))) {
-					$name = db_fetch_cell_prepared(
-						'SELECT name
+					$name = db_fetch_cell_prepared('SELECT name
 						FROM reports
 						WHERE id = ?',
 						array(get_request_var('report_id'))
@@ -381,60 +380,28 @@ function form_actions() {
 		header('Location: host.php');
 
 		exit;
-	}
+	} else {
+		$ilist   = '';
+		$iarray  = array();
+		$footer  = '';
+		$reports = array();
 
-	/* setup some variables */
-	$host_list  = '';
-	$host_array = array();
+		add_tree_names_to_actions_array();
 
-	/* loop through each of the host templates selected on the previous page and get more info about them */
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
+		/* loop through each of the host templates selected on the previous page and get more info about them */
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
 
-			$host_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($matches[1]))) . '</li>';
-			$host_array[] = $matches[1];
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($matches[1]))) . '</li>';
+
+				$iarray[] = $matches[1];
+			}
 		}
-	}
 
-	top_header();
-
-	/* add a list of tree names to the actions dropdown */
-	add_tree_names_to_actions_array();
-
-	form_start('host.php');
-
-	html_start_box($device_actions[get_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-	if (isset($host_array) && cacti_sizeof($host_array)) {
-		if (get_request_var('drp_action') == '2') { // Enable Devices
-			print "<tr>
-				<td colspan='2' class='textArea'>
-					<p>" . __('Click \'Continue\' to enable the following Device(s).') . "</p>
-					<div class='itemlist'><ul>$host_list</ul></div>
-				</td>
-			</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Enable Device(s)') . "'>";
-		} elseif (get_nfilter_request_var('drp_action') == '3') { // Disable Devices
-			print "	<tr>
-				<td colspan='2' class='textArea'>
-					<p>" . __('Click \'Continue\' to disable the following Device(s).') . "</p>
-					<div class='itemlist'><ul>$host_list</ul></div>
-				</td>
-				</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Disable Device(s)') . "'>";
-		} elseif (get_nfilter_request_var('drp_action') == '4') { // Change Device options
-			print "<tr>
-				<td colspan='2' class='textArea'>
-					<p>" . __('Click \'Continue\' to change the Device options below for multiple Device(s).  Please check the box next to the fields you want to update, and then fill in the new value.') . "</p>
-					<div class='itemlist'><ul>$host_list</ul></div>
-				</td>
-			</tr>";
-
+		if (get_nfilter_request_var('drp_action') == '4') { // Change Device options
 			$form_array = array();
 
 			foreach ($fields_host_edit as $field_name => $field_array) {
@@ -462,6 +429,8 @@ function form_actions() {
 				}
 			}
 
+			ob_start();
+
 			draw_edit_form(
 				array(
 					'config' => array('no_form_tag' => true),
@@ -473,129 +442,130 @@ function form_actions() {
 
 			device_change_javascript();
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Change Device(s) SNMP Options') . "'>";
-		} elseif (get_request_var('drp_action') == '5') { // Clear Statistics for Selected Devices
-			print "<tr>
-				<td colspan='2' class='textArea'>
-					<p>" . __('Click \'Continue\' to clear the counters for the following Device(s).') . "</p>
-					<div class='itemlist'><ul>$host_list</ul></div>
-				</td>
-			</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Clear Statistics on Device(s)') . "'>";
-		} elseif (get_nfilter_request_var('drp_action') == '7') { // sync device template
-			print "	<tr>
-				<td colspan='2' class='textArea'>
-					<p>" . __('Click \'Continue\' to Synchronize the following Device(s) to their Device Template.') . "</p>
-					<div class='itemlist'><ul>$host_list</ul></div>
-				</td>
-				</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Synchronize Device(s)') . "'>";
-		} elseif (get_request_var('drp_action') == '1') { // Delete
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to delete the following Device(s).') . "</p>
-					<div class='itemlist'><ul>$host_list</ul></div>";
-
-			form_radio_button('delete_type', '2', '1', __('Leave all Graph(s) and Data Source(s) untouched.  Data Source(s) will be disabled however.'), '1');
-			print '<br>';
-			form_radio_button('delete_type', '2', '2', __('Delete all associated Graph(s) and Data Source(s).'), '1');
-			print '<br>';
-
-			print '</td></tr>
-				</td>
-			</tr>';
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Device(s)') . "'>";
-		} elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { // place on tree
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to place the following Device(s) under the branch selected below.') . "</p>
-					<div class='itemlist'><ul>$host_list</ul></div>
-					<p>" . __('Destination Branch:') . '<br>';
-			grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0');
-
-			print "</p>
-				</td>
-			</tr>
-			<input type='hidden' name='tree_id' value='" . $matches[1] . "'>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Place Device(s) on Tree') . "'>";
-		} elseif (get_request_var('drp_action') == 6) { // automation
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to apply Automation Rules to the following Devices(s).') . "</p>
-					<div class='itemlist'><ul>$host_list</ul></div>
-				</td>
-			</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Run Automation on Device(s)') . "'>";
-		} elseif (get_request_var('drp_action') == '8') {
-			global $alignment, $graph_timespans;
-
-			$reports = db_fetch_assoc_prepared(
-				'SELECT id, name
+			$footer = ob_get_clean();
+		} elseif (get_request_var('drp_action') == '8') { // Place on Report
+			$reports = db_fetch_assoc_prepared('SELECT id, name
 				FROM reports
 				WHERE user_id = ?
 				ORDER BY name',
 				array($_SESSION[SESS_USER_ID])
 			);
-
-			if (cacti_sizeof($reports)) {
-				print "<tr>
-					<td class='textArea'>
-						<p>" . __('Click \'Continue\' to add the selected Graphs to the Report below.') . "</p>
-						<div class='itemlist'><ul>$host_list</ul></div>
-					</td>
-				</tr>
-				<tr><td>" . __('Report Name') . '<br>';
-				form_dropdown('report_id', $reports, 'name', 'id', '', '', '0');
-				print '</td></tr>';
-
-				print '<tr><td>' . __('Timespan') . '<br>';
-				form_dropdown('timespan', $graph_timespans, '', '', '', '', read_user_setting('default_timespan'));
-				print '</td></tr>';
-
-				print '<tr><td>' . __('Align') . '<br>';
-				form_dropdown('align', $alignment, '', '', '', '', REPORTS_ALIGN_CENTER);
-				print "</td></tr>\n";
-
-				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Add Devices to Report') . "'>";
-			} else {
-				print "<tr><td class='even'><span class='textError'>" . __('You currently have no Reports defined.') . "</span></td></tr>\n";
-				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
-			}
-		} else {
-			$save['drp_action'] = get_request_var('drp_action');
-			$save['host_list']  = $host_list;
-			$save['host_array'] = $host_array;
-
-			api_plugin_hook_function('device_action_prepare', $save);
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "'>";
 		}
-	} else {
-		raise_message(40);
-		header('Location: host.php');
 
-		exit;
+		$form_data = array(
+			'general' => array(
+				'page'       => 'host.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				1 => array(
+					'smessage' => __('Click \'Continue\' to Delete the following Device.'),
+					'pmessage' => __('Click \'Continue\' to Delete the following Devices.'),
+					'scont'    => __('Delete Device'),
+					'pcont'    => __('Delete Devices'),
+					'extra'    => array(
+						'delete_type' => array(
+							'method' => 'radio_button',
+							'options' => array(
+								'1' => array(
+									'default' => 2,
+									'title' => __('Leave all Graph(s) and Data Source(s) untouched.  Data Source(s) will be disabled however.')
+								),
+								'2' => array(
+									'default' => 2,
+									'title' => __('Delete all associated Graph(s) and Data Source(s).')
+								)
+							)
+						)
+					)
+				),
+				2 => array(
+					'smessage' => __('Click \'Continue\' to Enable the following Device.'),
+					'pmessage' => __('Click \'Continue\' to Enable the following Devices.'),
+					'scont'    => __('Enable Device'),
+					'pcont'    => __('Enable Devices')
+				),
+				3 => array(
+					'smessage' => __('Click \'Continue\' to Disable the following Device.'),
+					'pmessage' => __('Click \'Continue\' to Disable the following Devices.'),
+					'scont'    => __('Disable Device'),
+					'pcont'    => __('Disable Devices')
+				),
+				4 => array(
+					'smessage' => __('Click \'Continue\' to Change settings for the following Device.'),
+					'pmessage' => __('Click \'Continue\' to Change settings for the following Devices.'),
+					'scont'    => __('Change Device'),
+					'pcont'    => __('Change Devices'),
+					'footer'   => $footer,
+				),
+				5 => array(
+					'smessage' => __('Click \'Continue\' to Clear Statistics the following Device.'),
+					'pmessage' => __('Click \'Continue\' to Clear Statistics the following Devices.'),
+					'scont'    => __('Clear Statistics for Device'),
+					'pcont'    => __('Clear Statistics for Devices')
+				),
+				7 => array(
+					'smessage' => __('Click \'Continue\' to Synchronize Device to its Device Template.'),
+					'pmessage' => __('Click \'Continue\' to Synchronize Devices to their Device Templates.'),
+					'scont'    => __('Synchronize Device Template'),
+					'pcont'    => __('Synchronize Devices Templates')
+				),
+                8 => array(
+					'smessage' => __('Click \'Continue\' to Place the following Device on a Report.'),
+					'pmessage' => __('Click \'Continue\' to Place the following Devices on a Report.'),
+					'scont'    => __('Place Device on Report'),
+					'pcont'    => __('Place Devices on Report'),
+					'extra'    => array(
+						'report_id' => array(
+							'method'  => 'drop_array',
+							'title'   => __('Report Name:'),
+							'array'   => $reports,
+							'default' => array_key_first($reports)
+						),
+						'timespan' => array(
+							'method'  => 'drop_array',
+							'title'   => __('Timespan:'),
+							'array'   => $graph_timespans,
+							'default' => read_user_setting('default_timespan')
+						),
+						'align' => array(
+							'method'  => 'drop_array',
+							'title'   => __('Align:'),
+							'array'   => $alignment,
+							'default' => REPORTS_ALIGN_CENTER
+						)
+					)
+				),
+			)
+		);
+
+		$trees = db_fetch_assoc('SELECT id, name FROM graph_tree ORDER BY name');
+
+		if (cacti_sizeof($trees)) {
+			foreach($trees as $tree) {
+				$form_data['options']['tr_' . $tree['id']] = array(
+					'smessage' => __esc('Click \'Continue\' to Place the following Device on Tree %s.', $tree['name']),
+					'pmessage' => __esc('Click \'Continue\' to Duplicate following Devices on Tree %s.', $tree['name']),
+					'scont'    => __('Place Device on Tree'),
+					'pcont'    => __('Place Devices on Tree'),
+					'extra'    => array(
+						'tree_item_id' => array(
+							'method'  => 'drop_branch',
+							'title'   => __('Desination Branch:'),
+							'id'      => $tree['id']
+						)
+					),
+					'eaction'   => 'tree_id',
+					'eactionid' => $tree['id'],
+				);
+			}
+		}
+
+		form_continue_confirmation($form_data);
 	}
-
-	print "<tr>
-		<td colspan='2' class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . serialize($host_array) . "'>
-			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
-			$save_html
-		</td>
-	</tr>";
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
 
 function host_export() {
@@ -793,9 +763,7 @@ function host_edit() {
 			2
 		);
 
-		$selected_graph_templates = db_fetch_assoc_prepared(
-			'
-			SELECT result.id, result.name, graph_local.id AS graph_local_id
+		$selected_graph_templates = db_fetch_assoc_prepared('SELECT result.id, result.name, graph_local.id AS graph_local_id
 			FROM (
 				SELECT DISTINCT gt.id, gt.name
 				FROM graph_templates AS gt
@@ -810,8 +778,7 @@ function host_edit() {
 			array(get_request_var('id'), get_request_var('id'))
 		);
 
-		$available_graph_templates = db_fetch_assoc_prepared(
-			'SELECT DISTINCT gt.id, gt.name
+		$available_graph_templates = db_fetch_assoc_prepared('SELECT DISTINCT gt.id, gt.name
 			FROM graph_templates AS gt
 			LEFT JOIN snmp_query_graph AS sqg
 			ON sqg.graph_template_id = gt.id
@@ -933,8 +900,7 @@ function host_edit() {
 
 		$sql_where2 .= ' snmp_query.id NOT IN(SELECT snmp_query_id FROM host_snmp_query WHERE host_id = ' . get_request_var('id') . ')';
 
-		$selected_data_queries = db_fetch_assoc_prepared(
-			"SELECT snmp_query.id,
+		$selected_data_queries = db_fetch_assoc_prepared("SELECT snmp_query.id,
 			snmp_query.name, host_snmp_query.reindex_method, IFNULL(`items`.`itemCount`, 0) AS itemCount, IFNULL(`rows`.`rowCount`, 0) AS rowCount
 			FROM snmp_query
 			INNER JOIN host_snmp_query
@@ -1464,7 +1430,7 @@ function get_device_records(&$total_rows, $rows) {
 }
 
 function host() {
-	global $device_actions, $item_rows, $config, $availability_options;
+	global $actions, $item_rows, $config, $availability_options;
 
 	if ((!empty($_SESSION['sess_host_status'])) && (!isempty_request_var('host_status'))) {
 		if ($_SESSION['sess_host_status'] != get_nfilter_request_var('host_status')) {
@@ -1504,19 +1470,19 @@ function host() {
 								<option value='-1' <?php if (get_request_var('site_id') == '-1') { ?> selected<?php } ?>><?php print __('Any'); ?></option>
 								<option value='0' <?php if (get_request_var('site_id') == '0') { ?> selected<?php } ?>><?php print __('None'); ?></option>
 								<?php
-									$sites = db_fetch_assoc('SELECT id, name FROM sites ORDER BY name');
+								$sites = db_fetch_assoc('SELECT id, name FROM sites ORDER BY name');
 
-	if (cacti_sizeof($sites)) {
-		foreach ($sites as $site) {
-			print "<option value='" . $site['id'] . "'";
+								if (cacti_sizeof($sites)) {
+									foreach ($sites as $site) {
+										print "<option value='" . $site['id'] . "'";
 
-			if (get_request_var('site_id') == $site['id']) {
-				print ' selected';
-			}
-			print '>' . html_escape($site['name']) . '</option>';
-		}
-	}
-	?>
+										if (get_request_var('site_id') == $site['id']) {
+											print ' selected';
+										}
+										print '>' . html_escape($site['name']) . '</option>';
+									}
+								}
+								?>
 							</select>
 						</td>
 						<td>
@@ -1526,19 +1492,19 @@ function host() {
 							<select id='poller_id'>
 								<option value='-1' <?php if (get_request_var('poller_id') == '-1') { ?> selected<?php } ?>><?php print __('Any'); ?></option>
 								<?php
-	$pollers = db_fetch_assoc('SELECT id, name FROM poller ORDER BY name');
+								$pollers = db_fetch_assoc('SELECT id, name FROM poller ORDER BY name');
 
-	if (cacti_sizeof($pollers)) {
-		foreach ($pollers as $poller) {
-			print "<option value='" . $poller['id'] . "'";
+								if (cacti_sizeof($pollers)) {
+									foreach ($pollers as $poller) {
+										print "<option value='" . $poller['id'] . "'";
 
-			if (get_request_var('poller_id') == $poller['id']) {
-				print ' selected';
-			}
-			print '>' . html_escape($poller['name']) . '</option>';
-		}
-	}
-	?>
+										if (get_request_var('poller_id') == $poller['id']) {
+											print ' selected';
+										}
+										print '>' . html_escape($poller['name']) . '</option>';
+									}
+								}
+								?>
 							</select>
 						</td>
 						<td>
@@ -1549,22 +1515,22 @@ function host() {
 								<option value='-1' <?php if (get_request_var('host_template_id') == '-1') { ?> selected<?php } ?>><?php print __('Any'); ?></option>
 								<option value='0' <?php if (get_request_var('host_template_id') == '0') { ?> selected<?php } ?>><?php print __('None'); ?></option>
 								<?php
-	$host_templates = db_fetch_assoc('SELECT DISTINCT ht.id, ht.name
-								FROM host_template ht
-								JOIN host h ON h.host_template_id = ht.id
-								ORDER BY ht.name');
+								$host_templates = db_fetch_assoc('SELECT DISTINCT ht.id, ht.name
+									FROM host_template ht
+									JOIN host h ON h.host_template_id = ht.id
+									ORDER BY ht.name');
 
-	if (cacti_sizeof($host_templates)) {
-		foreach ($host_templates as $host_template) {
-			print "<option value='" . $host_template['id'] . "'";
+								if (cacti_sizeof($host_templates)) {
+									foreach ($host_templates as $host_template) {
+										print "<option value='" . $host_template['id'] . "'";
 
-			if (get_request_var('host_template_id') == $host_template['id']) {
-				print ' selected';
-			}
-			print '>' . html_escape($host_template['name']) . '</option>';
-		}
-	}
-	?>
+										if (get_request_var('host_template_id') == $host_template['id']) {
+											print ' selected';
+										}
+										print '>' . html_escape($host_template['name']) . '</option>';
+									}
+								}
+								?>
 							</select>
 						</td>
 						<td>
@@ -1574,28 +1540,29 @@ function host() {
 							<select id='location'>
 								<option value='-1' <?php if (get_request_var('location') == '-1') { ?> selected<?php } ?>><?php print __('All'); ?></option>
 								<?php
+								if (get_request_var('site_id') >= '0') {
+									$sql_where = 'WHERE site_id = ' . db_qstr(get_request_var('site_id'));
+								} else {
+									$sql_where = '';
+								}
 
-	if (get_request_var('site_id') >= '0') {
-		$sql_where = 'WHERE site_id = ' . db_qstr(get_request_var('site_id'));
-	} else {
-		$sql_where = '';
-	}
-	$locations = db_fetch_assoc("SELECT DISTINCT IF(IFNULL(host.location,'') = '', '" . __('Undefined') . "', location) AS location
-								FROM host
-								$sql_where
-								ORDER BY location");
+								$locations = db_fetch_assoc("SELECT DISTINCT
+									IF(IFNULL(host.location,'') = '', '" . __('Undefined') . "', location) AS location
+									FROM host
+									$sql_where
+									ORDER BY location");
 
-	if (cacti_sizeof($locations)) {
-		foreach ($locations as $l) {
-			print "<option value='" . $l['location'] . "'";
+								if (cacti_sizeof($locations)) {
+									foreach ($locations as $l) {
+										print "<option value='" . $l['location'] . "'";
 
-			if (get_request_var('location') == $l['location']) {
-				print ' selected';
-			}
-			print '>' . html_escape($l['location']) . '</option>';
-		}
-	}
-	?>
+										if (get_request_var('location') == $l['location']) {
+											print ' selected';
+										}
+										print '>' . html_escape($l['location']) . '</option>';
+									}
+								}
+								?>
 							</select>
 						</td>
 						<td>
@@ -1637,29 +1604,28 @@ function host() {
 							<select id='availability_method'>
 								<option value='-1' <?php if (get_request_var('host_status') == '-1') { ?> selected<?php } ?>><?php print __('Any'); ?></option>
 								<?php
-	if (get_request_var('host_template_id') > 0) {
-		$sql_where = 'WHERE host_template_id = ' . get_request_var('host_template_id');
-	} else {
-		$sql_where = '';
-	}
+								if (get_request_var('host_template_id') > 0) {
+									$sql_where = 'WHERE host_template_id = ' . get_request_var('host_template_id');
+								} else {
+									$sql_where = '';
+								}
 
-	$options = array_rekey(
-		db_fetch_assoc("SELECT DISTINCT availability_method AS id FROM host $sql_where"),
-		'id',
-		'id'
-	);
+								$options = array_rekey(
+									db_fetch_assoc("SELECT DISTINCT availability_method AS id FROM host $sql_where"),
+									'id', 'id'
+								);
 
-	if (cacti_sizeof($options)) {
-		foreach ($options as $option) {
-			print "<option value='" . $option . "'";
+								if (cacti_sizeof($options)) {
+									foreach ($options as $option) {
+										print "<option value='" . $option . "'";
 
-			if (get_request_var('availability_method') == $option) {
-				print ' selected';
-			}
-			print '>' . html_escape($availability_options[$option]) . '</option>';
-		}
-	}
-	?>
+										if (get_request_var('availability_method') == $option) {
+											print ' selected';
+										}
+										print '>' . html_escape($availability_options[$option]) . '</option>';
+									}
+								}
+								?>
 							</select>
 						</td>
 						<td>
@@ -1669,17 +1635,17 @@ function host() {
 							<select id='rows'>
 								<option value='-1' <?php print(get_request_var('rows') == '-1' ? ' selected>' : '>') . __('Default'); ?></option>
 									<?php
-		if (cacti_sizeof($item_rows)) {
-			foreach ($item_rows as $key => $value) {
-				print "<option value='" . $key . "'";
+									if (cacti_sizeof($item_rows)) {
+										foreach ($item_rows as $key => $value) {
+											print "<option value='" . $key . "'";
 
-				if (get_request_var('rows') == $key) {
-					print ' selected';
-				}
-				print '>' . html_escape($value) . '</option>';
-			}
-		}
-	?>
+											if (get_request_var('rows') == $key) {
+												print ' selected';
+											}
+											print '>' . html_escape($value) . '</option>';
+										}
+									}
+								?>
 							</select>
 						</td>
 						<?php api_plugin_hook('device_filter_end'); ?>
@@ -1736,7 +1702,7 @@ function host() {
 			</script>
 		</td>
 	</tr>
-<?php
+	<?php
 
 	html_end_box();
 
@@ -1914,7 +1880,7 @@ function host() {
 	add_tree_names_to_actions_array();
 
 	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($device_actions);
+	draw_actions_dropdown($actions);
 
 	form_end();
 

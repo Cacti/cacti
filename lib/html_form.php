@@ -959,6 +959,8 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
  * @param $form_current_value - the current value of this form element (element id)
  * @param $form_caption - the text to display to the right of the checkbox
  * @param $form_default_value - the value of this form element to use if there is
+ * @param $class - The object class for customization
+ * @param $on_change - An onChange event to attach to the form object
  *   no current value available
  */
 function form_radio_button($form_name, $form_previous_value, $form_current_value, $form_caption, $form_default_value, $class = '', $on_change = '') {
@@ -1252,8 +1254,8 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
  *   - pmessage - Plural confirmation message to the user.
  *   - message  - Generic confirmation message to the user.
  *   - extra    - An array of general form input.  The supported methods include:
- *      textbox, other, drop_array, checkbox
- *      additional options include: title, default, width, and array for drop_arrays
+ *      textbox, other, drop_array, checkbox, radio_button
+ *      additional options include: title, default, width, options for radio_button, and array for drop_array
  *
  * An example might look like the following:
  *
@@ -1301,12 +1303,13 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 function form_continue_confirmation($form_data) {
 	top_header();
 
-	$page    = $form_data['general']['page'];
-	$actions = $form_data['general']['actions'];
-	$drpvar  = $form_data['general']['optvar'];
-	$iarray  = $form_data['general']['item_array'];
-	$ilist   = $form_data['general']['item_list'];
-	$drpval  = get_nfilter_request_var($drpvar);
+	$page      = $form_data['general']['page'];
+	$actions   = $form_data['general']['actions'];
+	$drpvar    = $form_data['general']['optvar'];
+	$iarray    = $form_data['general']['item_array'];
+	$ilist     = $form_data['general']['item_list'];
+	$drpval    = get_nfilter_request_var($drpvar);
+	$form_name = 'form';
 
 	form_start($page);
 
@@ -1353,20 +1356,20 @@ function form_continue_confirmation($form_data) {
 	if (isset($form_data['general']['header'])) {
 		print "<tr><td class='textArea left' colspan='3'><p>";
 		print $form_data['general']['header'];
-		print "</p></td></tr>";
+		print '</p></td></tr>';
 	}
 
 	if (isset($data['header'])) {
 		print "<tr><td class='textArea left' colspan='3'><p>";
 		print $data['header'];
-		print "</p></td></tr>";
+		print '</p></td></tr>';
 	}
 
 	if ($ilist != '') {
 		print "<div class='itemlist'><ul>$ilist</ul></div>";
 	}
 
-	print "</td></tr>";
+	print '</td></tr>';
 
 	if (isset($data['extra'])) {
 		foreach($data['extra'] as $field_name => $field_array) {
@@ -1378,7 +1381,7 @@ function form_continue_confirmation($form_data) {
 				$field_array['size'] = 25;
 			}
 
-			print "<tr class='filterTable'>";
+			print "<tr class='formConfirmRow'>";
 
 			switch($field_array['method']) {
 				case 'other':
@@ -1390,7 +1393,7 @@ function form_continue_confirmation($form_data) {
 					print "<td class='textArea nowrap'>{$field_array['title']}</td>";
 					print "<td class='textArea'>";
 					form_text_box($field_name, $field_array['default'], '', $field_array['width'], $field_array['size']);
-					print "</td>";
+					print '</td>';
 
 					break;
 				case 'drop_array':
@@ -1409,14 +1412,14 @@ function form_continue_confirmation($form_data) {
 					print "<td class='textArea nowrap'>{$field_array['title']}</td>";
 					print "<td class='textArea'>";
 					form_dropdown($field_name, $field_array['array'], $field_array['variable'], $field_array['id'], $field_array['default'], '', 0);
-					print "</td>";
+					print '</td>';
 
 					break;
 				case 'drop_branch':
-					print "<td class='textArea nowrap'>{$field_array['title']}</td>";
+					print "<td class='textArea nowrap' colspan='2'>{$field_array['title']}</td>";
 					print "<td class='textArea'>";
 					grow_dropdown_tree($field_array['id'], '0', $field_name, '0');
-					print "</td>";
+					print '</td>';
 
 					break;
 				case 'checkbox':
@@ -1425,29 +1428,64 @@ function form_continue_confirmation($form_data) {
 					print "<span class='checkboxSwitch' id='{$field_name}_id' for='$field_name' title='{$field_array['title']}'>";
 					print "<input class='formCheckbox' type='checkbox' id='$field_name' name='$field_name' value=''>";
 					print "<span class='checkboxSlider checkboxRound'></span>";
-					print "</span>";
+					print '</span>';
 					print "<label class='checkboxLabel checkboxLabelWanted' for='$field_name'>{$field_array['title']}</label>";
-					print "</span>";
-					print "</td>";
+					print '</span>';
+					print '</td>';
+
+					break;
+				case 'radio_button':
+					$i = 1;
+					$options = cacti_sizeof($field_array['options']);
+
+					foreach($field_array['options'] as $current_value => $optdata) {
+						if (!isset($optdata['default'])) {
+							$optdata['default'] = '1';
+						}
+
+						if ($current_value == $optdata['default']) {
+							$checked = " checked aria-checked='true'";
+						} else {
+							$checked = " aria-checked='false'";
+						}
+
+						$css_id = $form_name . '_' . $current_value;
+
+						print "<td class='formConfirmRadio'>";
+						print "<label class='radioSwitch'>";
+						print "<input value='" . html_escape($current_value) . "' class='formCheckbox' type='radio' id='$css_id' name='$field_name'" . $checked . '>';
+						print "<span class='radioSlider radioRound'></span>";
+						print '</td>';
+						print "<td class='textArea'>";
+						print "<label class='radioLabelWanted' for='$css_id'>" . html_escape($optdata['title']) . '</label>';
+						print '</td>';
+
+						if ($i < $options) {
+							print '</tr>';
+							print "<tr class='formConfirmRow'>";
+						}
+
+						$i++;
+					}
 
 					break;
 				default:
 					cacti_log("WARNING: Form continuation method {$field_array['method']} not understood");
 			}
 
-			print "</tr>";
+			print '</tr>';
 		}
 
 		if (isset($data['footer'])) {
 			print "<tr><td class='textArea left' colspan='3'><p>";
 			print $data['footer'];
-			print "</p></td></tr>";
+			print '</p></td></tr>';
 		}
 
 		if (isset($form_data['general']['footer'])) {
 			print "<tr><td class='textArea left' colspan='3'><p>";
 			print $form_data['general']['footer'];
-			print "</p></td></tr>";
+			print '</p></td></tr>';
 		}
 	}
 
@@ -1474,7 +1512,7 @@ function form_continue_confirmation($form_data) {
 	print "<input type='hidden' name='drp_action' value='" . html_escape($drpval) . "'>";
 	print "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo(\"$page\")' title='" . __('Return to previous page'). "'>&nbsp;";
 	print "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='$title'>";
-	print "</td></tr>";
+	print '</td></tr>';
 
 	html_end_box();
 
