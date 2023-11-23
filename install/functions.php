@@ -475,6 +475,7 @@ function install_setup_get_templates() {
 		'APC_InfraStruXure_PDU.xml.gz',
 		'Apache_Webserver.xml.gz',
 		'ArubaOS_switch.xml.gz',
+		'Aruba_OSCX_switch_6x00.xml.gz',
 		'Aruba_Instant_AP_Cluster.xml.gz',
 		'Aruba_Wireless_Controller.xml.gz',
 		'BayTech_PDU.xml.gz',
