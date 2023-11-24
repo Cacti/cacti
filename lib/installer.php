@@ -2957,6 +2957,8 @@ class Installer implements JsonSerializable {
 			Installer::disableInvalidPlugins();
 		}
 
+		$this->setDefaultTemplate();
+
 		log_install_always('', __('Finished %s Process for v%s', $which, CACTI_VERSION));
 
 		set_config_option('install_error', $failure);
@@ -2980,6 +2982,27 @@ class Installer implements JsonSerializable {
 			log_install_always('', $failure);
 			$this->setProgress(Installer::PROGRESS_COMPLETE);
 			$this->setStep(Installer::STEP_ERROR);
+		}
+	}
+
+	private function setDefaultTemplate() {
+		if (read_config_option('default_template', true) == '') {
+			$default_set = false;
+
+			foreach($this->defaultAutomation as $item) {
+				$host_template_id = db_fetch_cell_prepared('SELECT id
+					FROM host_template
+					WHERE hash = ?',
+					array($item['hash']));
+
+				if (!empty($host_template_id)) {
+					log_install_always('', __('Setting the Default Device Template to \'%s\'', $item['name']));
+
+					set_config_option('default_template', $host_template_id);
+
+					break;
+				}
+			}
 		}
 	}
 
@@ -3027,11 +3050,6 @@ class Installer implements JsonSerializable {
 			// Repair automation rules if broken
 			repair_automation();
 
-			$default_set = false;
-			if (read_config_option('default_template') != '') {
-				$default_set = true;
-			}
-
 			foreach($this->defaultAutomation as $item) {
 				$host_template_id = db_fetch_cell_prepared('SELECT id
 					FROM host_template
@@ -3039,13 +3057,6 @@ class Installer implements JsonSerializable {
 					array($item['hash']));
 
 				if (!empty($host_template_id)) {
-					if (!$default_set) {
-						log_install_always('', __('Setting the Default Device Template to \'%s\'', $item['name']));
-
-						set_config_option('default_template', $host_template_id);
-						$default_set = true;
-					}
-
 					log_install_always('', __('Mapping Automation Template for Device Template \'%s\'', $item['name']));
 
 					$exists = db_fetch_cell_prepared('SELECT host_template
