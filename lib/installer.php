@@ -3243,15 +3243,26 @@ class Installer implements JsonSerializable {
 			// Repair automation rules if broken
 			repair_automation();
 
-			foreach ($this->defaultAutomation as $item) {
-				$host_template_id = db_fetch_cell_prepared(
-					'SELECT id
+			$default_set = false;
+			if (read_config_option('default_template') != '') {
+				$default_set = true;
+			}
+
+			foreach($this->defaultAutomation as $item) {
+				$host_template_id = db_fetch_cell_prepared('SELECT id
 					FROM host_template
 					WHERE hash = ?',
 					array($item['hash'])
 				);
 
 				if (!empty($host_template_id)) {
+					if (!$default_set) {
+						log_install_always('', __('Setting the Default Device Template to \'%s\'', $item['name']));
+
+						set_config_option('default_template', $host_template_id);
+						$default_set = true;
+					}
+
 					log_install_always('', __('Mapping Automation Template for Device Template \'%s\'', $item['name']));
 
 					$exists = db_fetch_cell_prepared(

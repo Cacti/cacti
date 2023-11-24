@@ -122,6 +122,7 @@ Cacti CHANGELOG
 -issue#5572: RRD Checker timeouts to low
 -issue#5573: Incorrect URL for editing graph template
 -issue#5581: Due to previously never completed upgrade, future upgrades fail due to missing color table keys
+-issue#5583: On install ensure Default Device is either Net-SNMP or Cisco Router or allow user to define during install
 -issue#5585: Refix Issue #4649 using more appropriate method
 -issue#5586: CSV export displays data shifted by rrd step interval
 -issue#5589: When a graph has a real long cdef in graph debug mode, it forces an undesirable scroll
