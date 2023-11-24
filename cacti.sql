@@ -441,8 +441,6 @@ CREATE TABLE `automation_templates` (
 -- Dumping data for table `automation_templates`
 --
 
-INSERT INTO `automation_templates` VALUES (1,3,2,'Linux','','',2),(2,1,2,'HP ETHERNET','','',1);
-
 --
 -- Table structure for table `automation_tree_rule_items`
 --
