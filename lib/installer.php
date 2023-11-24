@@ -2986,9 +2986,10 @@ class Installer implements JsonSerializable {
 	}
 
 	private function setDefaultTemplate() {
-		if (read_config_option('default_template', true) == '') {
-			$default_set = false;
+		$default_template = read_config_option('default_template');
+		log_install_always('', __('Current Default Device Template is \'%s\'', $default_template));
 
+		if (empty(read_config_option('default_template', true))) {
 			foreach($this->defaultAutomation as $item) {
 				$host_template_id = db_fetch_cell_prepared('SELECT id
 					FROM host_template
@@ -3001,6 +3002,8 @@ class Installer implements JsonSerializable {
 					set_config_option('default_template', $host_template_id);
 
 					break;
+				} else {
+					log_install_always('', __('Unable to find Device Template to \'%s\'', $item['name']));
 				}
 			}
 		}

@@ -599,7 +599,7 @@ $settings = array(
 			'friendly_name' => __('Template'),
 			'description' => __('The default Device Template used on all new Devices.'),
 			'method' => 'drop_sql',
-			'default' => '1',
+			'default' => '',
 			'none_value' => __('None'),
 			'sql' => 'SELECT id, name FROM host_template ORDER BY name',
 		),
