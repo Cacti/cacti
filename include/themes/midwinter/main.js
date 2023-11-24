@@ -21,7 +21,8 @@
   +-------------------------------------------------------------------------+
 */
 
-var midWinter_classes = new Array();
+/* cache local and vendor libs */
+let midWinter_classes = new Array();
 loadScript('navigationBox', 'include/themes/midwinter/midwinter.js');
 loadScript('navigationTree', 'include/themes/midwinter/midwinter.jstree.js');
 loadScript('hotkeys', 'include/themes/midwinter/vendor/hotkeys/hotkeys.min.js');
@@ -29,20 +30,21 @@ loadScript('mark', 'include/themes/midwinter/vendor/mark/jquery.mark.js');
 loadScript('moment', 'include/themes/midwinter/vendor/moment/moment.min.js');
 loadScript('daterangepicker', 'include/themes/midwinter/vendor/daterangepicker/daterangepicker.js');
 
-function handleUserMenu() {};
+/* global functionalities and default values */
+initStorageItem('midWinter_Color_Mode', 'dark', 'theme-color');
+initStorageItem('midWinter_Color_Mode_Auto', 'on', 'theme-color-auto');
+initStorageItem('midWinter_Font_Size', '75', 'zoom-level');
+initStorageItem('midWinter_Animations', 'on', 'animations');
+initStorageItem('midWinter_widthNavigationBox_settings', 'three');
+
+setHotKeys();
+
 
 function themeReady() {
 
-	/* load default values */
-	initStorageItem('midWinter_Color_Mode', 'dark', 'theme-color');
-	initStorageItem('midWinter_Color_Mode_Auto', 'on', 'theme-color-auto');
-	initStorageItem('midWinter_Font_Size', '75', 'zoom-level');
-	initStorageItem('midWinter_Animations', 'on', 'animations');
-	initStorageItem('midWinter_widthNavigationBox_settings', 'three');
-
 	setupTheme();
 	setupDefaultElements();
-	setHotKeys();
+
 	updateNavigation();
 	updateAjaxAnchors();
 	setThemeColor();
