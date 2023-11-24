@@ -2989,7 +2989,7 @@ class Installer implements JsonSerializable {
 		$default_template = read_config_option('default_template');
 		log_install_always('', __('Current Default Device Template is \'%s\'', $default_template));
 
-		if (empty(read_config_option('default_template', true))) {
+		if (read_config_option('default_template', true) == '') {
 			foreach($this->defaultAutomation as $item) {
 				$host_template_id = db_fetch_cell_prepared('SELECT id
 					FROM host_template
