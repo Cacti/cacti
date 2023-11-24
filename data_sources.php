@@ -33,15 +33,15 @@ include_once('./lib/rrd.php');
 include_once('./lib/template.php');
 include_once('./lib/utility.php');
 
-$ds_actions = array(
+$actions = array(
 	1 => __('Delete'),
-	3 => __('Change Device'),
-	8 => __('Reapply Suggested Names'),
-	6 => __('Enable'),
-	7 => __('Disable')
+	2 => __('Disable'),
+	3 => __('Enable'),
+	4 => __('Change Device'),
+	5 => __('Reapply Suggested Names'),
 );
 
-$ds_actions = api_plugin_hook_function('data_source_action_array', $ds_actions);
+$actions = api_plugin_hook_function('data_source_action_array', $actions);
 
 /* set default action */
 set_default_action();
@@ -366,7 +366,7 @@ function form_save() {
 }
 
 function form_actions() {
-	global $ds_actions;
+	global $actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
@@ -435,19 +435,19 @@ function form_actions() {
 				}
 
 				api_data_source_remove_multi($selected_items);
-			} elseif (get_nfilter_request_var('drp_action') == '3') { // change host
-				get_filter_request_var('host_id');
-
-				api_data_source_change_host($selected_items, get_request_var('host_id'));
-			} elseif (get_nfilter_request_var('drp_action') == '6') { // data source enable
-				for ($i=0;($i < cacti_count($selected_items));$i++) {
-					api_data_source_enable($selected_items[$i]);
-				}
-			} elseif (get_nfilter_request_var('drp_action') == '7') { // data source disable
+			} elseif (get_nfilter_request_var('drp_action') == '2') { // data source disable
 				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					api_data_source_disable($selected_items[$i]);
 				}
-			} elseif (get_nfilter_request_var('drp_action') == '8') { // reapply suggested data source naming
+			} elseif (get_nfilter_request_var('drp_action') == '3') { // data source enable
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
+					api_data_source_enable($selected_items[$i]);
+				}
+			} elseif (get_nfilter_request_var('drp_action') == '4') { // change host
+				get_filter_request_var('host_id');
+
+				api_data_source_change_host($selected_items, get_request_var('host_id'));
+			} elseif (get_nfilter_request_var('drp_action') == '5') { // reapply suggested data source naming
 				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					api_reapply_suggested_data_source_data($selected_items[$i]);
 					update_data_source_title_cache($selected_items[$i]);
@@ -465,146 +465,128 @@ function form_actions() {
 		header('Location: data_sources.php');
 
 		exit;
-	}
+	} else {
+		$ilist  = '';
+		$iarray = array();
 
-	/* setup some variables */
-	$ds_list = '';
-	$i       = 0;
+		/* some global defaults */
+		$graphs = array();
+		$flist  = '';
+		$hosts  = array_rekey(
+			db_fetch_assoc("SELECT id, CONCAT_WS('',description,' (',hostname,')') AS name
+				FROM host
+				ORDER BY description, hostname"),
+			'id', 'name'
+		);
 
-	/* loop through each of the graphs selected on the previous page and get more info about them */
-	foreach ($_POST as $var => $val) {
-		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
-			/* ================= input validation ================= */
-			input_validate_input_number($matches[1], 'chk[1]');
-			/* ==================================================== */
+		/* loop through each of the graphs selected on the previous page and get more info about them */
+		foreach ($_POST as $var => $val) {
+			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
+				/* ================= input validation ================= */
+				input_validate_input_number($matches[1], 'chk[1]');
+				/* ==================================================== */
 
-			$ds_list .= '<li>' . html_escape(get_data_source_title($matches[1])) . '</li>';
-			$ds_array[$i] = $matches[1];
+				$ilist .= '<li>' . html_escape(get_data_source_title($matches[1])) . '</li>';
 
-			$i++;
+				$iarray[] = $matches[1];
+			}
 		}
-	}
 
-	top_header();
-
-	form_start('data_sources.php');
-
-	html_start_box($ds_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-	if (isset($ds_array) && cacti_sizeof($ds_array)) {
-		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
-			$graphs = array();
-
-			/* find out which (if any) graphs are using this data source, so we can tell the user */
-			if (isset($ds_array)) {
+		if (isset($iarray) && cacti_sizeof($iarray)) {
+			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 				$graphs = db_fetch_assoc('SELECT
 					graph_templates_graph.local_graph_id,
 					graph_templates_graph.title_cache
 					FROM (data_template_rrd,graph_templates_item,graph_templates_graph)
 					WHERE graph_templates_item.task_item_id=data_template_rrd.id
 					AND graph_templates_item.local_graph_id=graph_templates_graph.local_graph_id
-					AND ' . array_to_sql_or($ds_array, 'data_template_rrd.local_data_id') . '
+					AND ' . array_to_sql_or($iarray, 'data_template_rrd.local_data_id') . '
 					AND graph_templates_graph.local_graph_id > 0
 					GROUP BY graph_templates_graph.local_graph_id
 					ORDER BY graph_templates_graph.title_cache');
-			}
 
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to delete the following Data Source', 'Click \'Continue\' to delete following Data Sources', cacti_sizeof($ds_array)) . "</p>
-					<div class='itemlist'><ul>$ds_list</ul></div>";
-
-			if (cacti_sizeof($graphs)) {
-				print "<tr><td class='textArea'><p class='textArea'>" . __n('The following graph is using these data sources:', 'The following graphs are using these data sources:', cacti_sizeof($graphs)) . '</p>';
-
-				print '<div class="itemlist"><ul>';
-
-				foreach ($graphs as $graph) {
-					print '<li>' . html_escape($graph['title_cache']) . '</li>';
+				if (cacti_sizeof($graphs)) {
+					foreach($graphs as $g) {
+						$flist .= '<li>' . html_escape($g['title_cache']) . '</li>';
+					}
 				}
-				print '</ul></div>';
-				print '<br>';
-
-				form_radio_button('delete_type', '3', '1', __n('Leave the <strong>Graph</strong> untouched.', 'Leave all <strong>Graphs</strong> untouched.', cacti_sizeof($graphs)), '1');
-				print '<br>';
-				form_radio_button('delete_type', '3', '2', __n('Delete all <strong>Graph Items</strong> that reference this Data Source.', 'Delete all <strong>Graph Items</strong> that reference these Data Sources.', cacti_sizeof($ds_array)), '1');
-				print '<br>';
-				form_radio_button('delete_type', '3', '3', __n('Delete all <strong>Graphs</strong> that reference this Data Source.', 'Delete all <strong>Graphs</strong> that reference these Data Sources.', cacti_sizeof($ds_array)), '1');
-				print '<br>';
-				print '</td></tr>';
 			}
-
-			print '</td>
-				</tr>';
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Source', 'Delete Data Sources', cacti_sizeof($ds_array)) . "'>";
-		} elseif (get_nfilter_request_var('drp_action') == '3') { // change host
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __n('Choose a new Device for this Data Source and click \'Continue\'.', 'Choose a new Device for these Data Sources and click \'Continue\'', cacti_sizeof($ds_array)) . "</p>
-					<div class='itemlist'><ul>$ds_list</ul></div>
-					<p>" . __('New Device:') . '<br>';
-			form_dropdown('host_id', db_fetch_assoc("SELECT id, CONCAT_WS('',description,' (',hostname,')') AS name FROM host ORDER BY description, hostname"),'name','id','','','0');
-			print '</p>
-				</td>
-			</tr>';
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Change Device') . "'>";
-		} elseif (get_nfilter_request_var('drp_action') == '6') { // data source enable
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to enable the following Data Source.', 'Click \'Continue\' to enable all following Data Sources.', cacti_sizeof($ds_array)) . "</p>
-					<div class='itemlist'><ul>$ds_list</ul></div>
-				</td>
-			</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enable Data Source', 'Enable Data Sources', cacti_sizeof($ds_array)) . "'>";
-		} elseif (get_nfilter_request_var('drp_action') == '7') { // data source disable
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to disable the following Data Source.', 'Click \'Continue\' to disable all following Data Sources.', cacti_sizeof($ds_array)) . "</p>
-					<div class='itemlist'><ul>$ds_list</ul></div>
-				</td>
-			</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Disable Data Source', 'Disable Data Sources', cacti_sizeof($ds_array)) . "'>";
-		} elseif (get_nfilter_request_var('drp_action') == '8') { // reapply suggested data source naming
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to re-apply the suggested name to the following Data Source.', 'Click \'Continue\' to re-apply the suggested names to all following Data Sources.', cacti_sizeof($ds_array)) . "</p>
-					<div class='itemlist'><ul>$ds_list</ul></div>
-				</td>
-			</tr>";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Reapply Suggested Naming to Data Source', 'Reapply Suggested Naming to Data Sources', cacti_sizeof($ds_array)) . "'>";
-		} else {
-			$save['drp_action'] = get_nfilter_request_var('drp_action');
-			$save['ds_list']    = $ds_list;
-			$save['ds_array']   = (isset($ds_array)? $ds_array : array());
-			api_plugin_hook_function('data_source_action_prepare', $save);
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "'>";
 		}
-	} else {
-		raise_message(40);
-		header('Location: data_sources.php');
 
-		exit;
+		$form_data = array(
+			'general' => array(
+				'page'       => 'data_sources.php',
+				'actions'    => $actions,
+				'optvar'     => 'drp_action',
+				'item_array' => $iarray,
+				'item_list'  => $ilist
+			),
+			'options' => array(
+				1 => array(
+					'smessage'  => __('Click \'Continue\' to Delete the following Data Source.'),
+					'pmessage'  => __('Click \'Continue\' to Delete following Data Sources.'),
+					'scont'     => __('Delete Data Source'),
+					'pcont'     => __('Delete Data Sources'),
+					'flist'     => $flist,
+					'sfmessage' => __n('The following Graph is using this Data Source.', 'The following Graphs are using this Data Source.', $graphs),
+					'pfmessage' => __n('The following Graph is using these Data Sources.', 'The following Graphs are using these Data Sources.', $graphs),
+					'extra'    => array(
+						'delete_type' => array(
+							'method' => 'radio_button',
+							'options' => array(
+								'1' => array(
+									'default' => 3,
+									'title' => __n('Leave the Graph Untouched', 'Leave all Graphs untouched.', $graphs)
+								),
+								'2' => array(
+									'default' => 3,
+									'title' => __n('Delete all Graph Items that reference this Data Source.', 'Delete all Graph Items that reference these Data Sources', $iarray)
+								),
+								'3' => array(
+									'default' => 3,
+									'title' => __n('Delete all Graphs that reference this Data Source.', 'Delete all Graphs that reference these Data Sources', $iarray)
+								)
+							)
+						)
+					)
+				),
+				2 => array(
+					'smessage' => __('Click \'Continue\' to Disable the following Data Source.'),
+					'pmessage' => __('Click \'Continue\' to Disable following Data Sources.'),
+					'scont'    => __('Disable Data Source'),
+					'pcont'    => __('Disable Data Sources')
+				),
+				3 => array(
+					'smessage' => __('Click \'Continue\' to Enable the following Data Source.'),
+					'pmessage' => __('Click \'Continue\' to Enable following Data Sources.'),
+					'scont'    => __('Enable Data Source'),
+					'pcont'    => __('Enable Data Sources')
+				),
+				4 => array(
+					'smessage' => __('Click \'Continue\' to Change the Device for the following Data Source.'),
+					'pmessage' => __('Click \'Continue\' to Change the Device for the following Data Sources.'),
+					'scont'    => __('Change Device for Data Source'),
+					'pcont'    => __('Change Device for Data Sources'),
+					'extra'    => array(
+						'host_id' => array(
+							'method' => 'drop_array',
+							'title'  => __('New Device:'),
+							'default' => '',
+							'array' => $hosts
+						)
+					)
+				),
+				5 => array(
+					'smessage' => __('Click \'Continue\' to Reapply Suggested Names the following Data Source.'),
+					'pmessage' => __('Click \'Continue\' to Reapply Suggested Names for the following Data Sources.'),
+					'scont'    => __('Reapply Suggested Names for Data Source'),
+					'pcont'    => __('Reapply Suggested Names for Data Sources')
+				)
+			)
+		);
+
+		form_continue_confirmation($form_data, 'data_source_action_prepare');
 	}
-
-	print "<tr>
-		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($ds_array) ? serialize($ds_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
-			$save_html
-		</td>
-	</tr>";
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
 
 function data_edit($incform = true) {
@@ -1298,7 +1280,7 @@ function validate_data_source_vars() {
 }
 
 function ds() {
-	global $ds_actions, $item_rows, $sampling_intervals;
+	global $actions, $item_rows, $sampling_intervals;
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
@@ -1755,7 +1737,7 @@ function ds() {
 	}
 
 	/* draw the dropdown containing a list of available actions for this form */
-	draw_actions_dropdown($ds_actions);
+	draw_actions_dropdown($actions);
 
 	form_end();
 }
