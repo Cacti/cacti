@@ -1458,9 +1458,9 @@ CREATE TABLE `data_source_purge_temp` (
 CREATE TABLE `data_source_stats_command_cache` (
   `local_data_id` int(10) unsigned NOT NULL default 0,
   `stats_command` BLOB NOT NULL default '',
-  PRIMARY KEY (`local_data_id`)) 
-  ENGINE=InnoDB 
-  ROW_FORMAT=DYNAMIC 
+  PRIMARY KEY (`local_data_id`))
+  ENGINE=InnoDB
+  ROW_FORMAT=DYNAMIC
   COMMENT='Holds the RRDfile Stats Commands';
 
 --
