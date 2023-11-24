@@ -368,8 +368,7 @@ function form_save() {
 			$task_item_changed = true;
 
 			if (get_request_var('graph_template_item_id') > 0) {
-				$task_item_id = db_fetch_cell_prepared(
-					'SELECT task_item_id
+				$task_item_id = db_fetch_cell_prepared('SELECT task_item_id
 					FROM graph_templates_item
 					WHERE id = ?',
 					array(get_request_var('graph_template_item_id'))
@@ -474,8 +473,7 @@ function form_save() {
 
 						/* an input for the current data source does NOT currently exist, let's create one */
 						if (!isset($orig_data_source_to_input[$save['task_item_id']])) {
-							$ds_name = db_fetch_cell_prepared(
-								'SELECT data_source_name
+							$ds_name = db_fetch_cell_prepared('SELECT data_source_name
 								FROM data_template_rrd
 								WHERE id = ?',
 								array(get_nfilter_request_var('task_item_id'))
@@ -490,8 +488,7 @@ function form_save() {
 
 							$graph_template_input_id = db_fetch_insert_id();
 
-							$graph_items = db_fetch_assoc_prepared(
-								'SELECT id
+							$graph_items = db_fetch_assoc_prepared('SELECT id
 								FROM graph_templates_item
 								WHERE graph_template_id = ?
 								AND task_item_id = ?',
@@ -557,7 +554,13 @@ function form_save() {
 				raise_message(1);
 
 				/* list all graph items from the db so we can compare them with the current form */
-				$db_selected_graph_item = array_rekey(db_fetch_assoc_prepared('SELECT graph_template_item_id FROM graph_template_input_defs WHERE graph_template_input_id = ?', array($graph_template_input_id)), 'graph_template_item_id', 'graph_template_item_id');
+				$db_selected_graph_item = array_rekey(
+					db_fetch_assoc_prepared('SELECT graph_template_item_id
+						FROM graph_template_input_defs
+						WHERE graph_template_input_id = ?',
+						array($graph_template_input_id)),
+					'graph_template_item_id', 'graph_template_item_id'
+				);
 
 				/* list all select graph items for use down below */
 				foreach ($_POST as $var => $val) {
@@ -686,8 +689,7 @@ function item_remove() {
 	db_execute_prepared('DELETE FROM graph_templates_item WHERE local_graph_template_item_id = ?', array(get_request_var('id')));
 
 	/* delete the graph item input if it is empty */
-	$graph_item_inputs = db_fetch_assoc_prepared('SELECT
-		graph_template_input.id
+	$graph_item_inputs = db_fetch_assoc_prepared('SELECT graph_template_input.id
 		FROM (graph_template_input, graph_template_input_defs)
 		WHERE graph_template_input.id = graph_template_input_defs.graph_template_input_id
 		AND graph_template_input.graph_template_id = ?
@@ -1033,7 +1035,7 @@ function form_actions() {
 					retemplate_graphs($selected_items[$i]);
 
 					$graph_template_name = db_fetch_cell_prepared('SELECT name
-						FROM graph_templates AS gt
+						FROM graph_templates
 						WHERE id = ?',
 						array($selected_items[$i]));
 
@@ -1154,98 +1156,6 @@ function form_actions() {
 
 		form_continue_confirmation($form_data);
 	}
-	exit;
-
-	top_header();
-
-	form_start('graph_templates.php');
-
-	html_start_box($actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
-
-	if (isset($graph_array) && cacti_sizeof($graph_array)) {
-		if (get_request_var('drp_action') == '1') { // delete
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to delete the following Graph Template(s).  Any Graph(s) associated with the Template(s) will become individual Graph(s).') . "</p>
-					<div class='itemlist'><ul>$graph_list</ul></div>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Graph Template(s)') . "'>";
-		} elseif (get_request_var('drp_action') == '2') { // duplicate
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to duplicate the following Graph Template(s). You can optionally change the title format for the new Graph Template(s).') . "</p>
-					<div class='itemlist'><ul>$graph_list</ul></div>
-					<p><strong>" . __('Title Format:'). '</strong><br>';
-			form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text');
-			print "</p>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue'). "' title='" . __esc('Duplicate Graph Template(s)') . "'>";
-		} elseif (get_request_var('drp_action') == '3') { // resize
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to resize the following Graph Template(s) and Graph(s) to the Height and Width below.  The defaults below are maintained in Settings.') . "</p>
-					<div class='itemlist'><ul>$graph_list</ul></div>
-				</td>
-			</tr>
-			</table>
-			<table class='filterTable'>
-			<tr>
-				<td>";
-
-			print __('Graph Height') . '</td><td>';
-			form_text_box('graph_height', read_config_option('default_graph_height'), '', '5', '5', 'text');
-			print '</td></tr><tr><td>' . __('Graph Width') . '</td><td>';
-			form_text_box('graph_width', read_config_option('default_graph_width'), '', '5', '5', 'text');
-			print '</td></tr><tr><td>' . __('Image Format') . '</td><td>';
-			form_dropdown('image_format_id', $image_types, '', '', read_config_option('default_image_format'), '', '');
-
-			print "</td></tr></table><div class='break'></div><table style='width:100%'>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Resize Selected Graph Template(s)') . "'>";
-		} elseif (get_request_var('drp_action') == '4') { // retemplate
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to perform a Full Synchronization between your Graphs and the chosen Graph Templates(s). If you simply have a situation where the Graph Items don\'t match the Graph Template, try the Quick Sync Graphs option first as it will take much less time.  This function is important if you have Graphs that exist with multiple versions of a Graph Template and wish to make them all common in appearance.') . "</p>
-					<div class='itemlist'><ul>$graph_list</ul></div>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue'). "' title='" . __esc('Synchronize Graphs to Graph Template(s)') . "'>";
-		} elseif (get_request_var('drp_action') == '5') { // retemplate only where sequences are off
-			print "<tr>
-				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to perform a Quick Synchronization of your Graphs for the following Graph Template(s). Use this option if your Graphs have Graph Items that do not match your Graph Template.  If this option does not work, use the Full Sync Graphs option, which will take more time to complete.') . "</p>
-					<div class='itemlist'><ul>$graph_list</ul></div>
-				</td>
-			</tr>\n";
-
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue'). "' title='" . __esc('Synchronize Graphs to Graph Template(s)') . "'>";
-		}
-	} else {
-		raise_message(40);
-		header('Location: graph_templates.php');
-
-		exit;
-	}
-
-	print "<tr>
-		<td class='saveRow'>
-			<input type='hidden' name='action' value='actions'>
-			<input type='hidden' name='selected_items' value='" . (isset($graph_array) ? serialize($graph_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
-			$save_html
-		</td>
-	</tr>\n";
-
-	html_end_box();
-
-	form_end();
-
-	bottom_footer();
 }
 
 function item() {
@@ -1669,8 +1579,7 @@ function template() {
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
-	$template_list = db_fetch_assoc("SELECT
-		gt.id, gt.name, gt.graphs,
+	$template_list = db_fetch_assoc("SELECT gt.id, gt.name, gt.graphs,
 		CONCAT(gtg.height, 'x', gtg.width) AS size, gtg.vertical_label, gtg.image_format_id
 		FROM graph_templates AS gt
 		INNER JOIN graph_templates_graph AS gtg
@@ -1824,13 +1733,9 @@ function input_edit() {
 
 	html_end_box(true, true);
 
-	$item_list = db_fetch_assoc_prepared("SELECT
-		CONCAT_WS(' - ', dtd.name, dtr.data_source_name) AS data_source_name,
-		gti.text_format,
-		gti.id AS graph_templates_item_id,
-		gti.graph_type_id,
-		gti.consolidation_function_id,
-		gtid.graph_template_input_id
+	$item_list = db_fetch_assoc_prepared("SELECT CONCAT_WS(' - ', dtd.name, dtr.data_source_name) AS data_source_name,
+		gti.text_format, gti.id AS graph_templates_item_id, gti.graph_type_id,
+		gti.consolidation_function_id, gtid.graph_template_input_id
 		FROM graph_templates_item AS gti
 		LEFT JOIN graph_template_input_defs AS gtid
 		ON gtid.graph_template_item_id = gti.id
@@ -1847,7 +1752,8 @@ function input_edit() {
 
 	html_start_box(__('Associated Graph Items'), '100%', false, '3', 'center', '');
 
-	$i                 = 0;
+	$i = 0;
+
 	$any_selected_item = '';
 
 	if (cacti_sizeof($item_list)) {
@@ -1857,7 +1763,8 @@ function input_edit() {
 			if ($item['graph_template_input_id'] == '') {
 				$old_value = '';
 			} else {
-				$old_value         = 'on';
+				$old_value = 'on';
+
 				$any_selected_item = $item['graph_templates_item_id'];
 			}
 
