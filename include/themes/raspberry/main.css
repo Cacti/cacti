@@ -1294,9 +1294,15 @@ legend {
 }
 
 .formConfirmRow {
-	padding: 3px 5px;
-	float: left;
 	margin: 3px;
+}
+
+.formConfirmRow td {
+	padding: 3px 8px;
+}
+
+.formConfirmRow td:first-child {
+	width: 1%;
 }
 
 .hostInfoHeader {

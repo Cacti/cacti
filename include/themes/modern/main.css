@@ -605,25 +605,22 @@ label {
 	background: none repeat scroll 0 0 #F5F5F5;
 	border: none;
 	box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
-	height: 20px;
 }
 
 .odd td, .even td, .even-alternate td, .selectable td {
-	padding-left: 3px;
+	padding: 3px;
 }
 
 .even {
 	background: none repeat scroll 0 0 #E5E5E5;
 	border: none;
 	box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
-	height: 20px;
 }
 
 .even-alternate {
 	background: none repeat scroll 0 0 #E7E9F2;
 	border: none;
 	box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
-	height: 20px;
 }
 
 .saveRow {
@@ -1546,9 +1543,15 @@ legend {
 }
 
 .formConfirmRow {
-	padding: 3px 5px;
-	float: left;
 	margin: 3px;
+}
+
+.formConfirmRow td {
+	padding: 3px 8px;
+}
+
+.formConfirmRow td:first-child {
+	width: 1%;
 }
 
 .hostInfoHeader {
@@ -1733,8 +1736,12 @@ legend {
 }
 
 .tableRow {
-    border: 2px solid rgba(0,0,0,0);
-	min-height: 25px;
+	line-height: 20px;
+}
+
+.tableRowGraph td {
+	padding: 3px 0px;
+	vertical-align: top;
 }
 
 .image_table {
