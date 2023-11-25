@@ -1300,9 +1300,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
  *
  * @return null - Data is streamed through stdout
  */
-function form_continue_confirmation($form_data, $plugin_hook = '') {
-	top_header();
-
+function form_continue_confirmation($form_data, $plugin_hook = '', $save = array()) {
 	$page      = $form_data['general']['page'];
 	$actions   = $form_data['general']['actions'];
 	$drpvar    = $form_data['general']['optvar'];
@@ -1311,11 +1309,13 @@ function form_continue_confirmation($form_data, $plugin_hook = '') {
 	$drpval    = get_nfilter_request_var($drpvar);
 	$form_name = 'form';
 
-	form_start($page);
-
-	html_start_box($actions[$drpval], '60%', '', '3', 'center', '');
-
 	if (!isset($form_data['options'][$drpval]) && $plugin_hook != '' && cacti_sizeof($iarray)) {
+		top_header();
+
+		form_start($page);
+
+		html_start_box($actions[$drpval], '60%', '', '3', 'center', '');
+
 		/* Legacy plugin form confirmation logic */
 		$title              = __('Proceed with Action');
 		$save['drp_action'] = $drpval;
@@ -1323,201 +1323,213 @@ function form_continue_confirmation($form_data, $plugin_hook = '') {
 		$save['ds_array']   = $iarray;
 
 		api_plugin_hook_function($plugin_hook, $save);
-	} else {
-		if (cacti_sizeof($iarray)) {
-			$data = $form_data['options'][$drpval];
+	} elseif (cacti_sizeof($iarray)) {
+		$data = $form_data['options'][$drpval];
 
-			if (cacti_sizeof($iarray) > 1) {
-				if (isset($data['pmessage'])) {
-					$message = $data['pmessage'];
-				} elseif (isset($data['message'])) {
-					$message = $data['message'];
-				}
-
-				if (isset($data['pcont'])) {
-					$title = $data['pcont'];
-				} elseif (isset($data['cont'])) {
-					$title = $data['cont'];
-				}
-			} else {
-				if (isset($data['smessage'])) {
-					$message = $data['smessage'];
-				} elseif (isset($data['message'])) {
-					$message = $data['message'];
-				}
-
-				if (isset($data['scont'])) {
-					$title = $data['scont'];
-				} elseif (isset($data['cont'])) {
-					$title = $data['cont'];
-				}
-			}
-		} else {
-			raise_message(40);
+		if (isset($data['return']) && $data['return'] == true) {
+			raise_message('form_return', $data['rmessage'], MESSAGE_LEVEL_ERROR);
 			header('Location: ' . $page);
 
 			exit;
+		} elseif (cacti_sizeof($iarray) > 1) {
+			if (isset($data['pmessage'])) {
+				$message = $data['pmessage'];
+			} elseif (isset($data['message'])) {
+				$message = $data['message'];
+			}
+
+			if (isset($data['pcont'])) {
+				$title = $data['pcont'];
+			} elseif (isset($data['cont'])) {
+				$title = $data['cont'];
+			}
+		} else {
+			if (isset($data['smessage'])) {
+				$message = $data['smessage'];
+			} elseif (isset($data['message'])) {
+				$message = $data['message'];
+			}
+
+			if (isset($data['scont'])) {
+				$title = $data['scont'];
+			} elseif (isset($data['cont'])) {
+				$title = $data['cont'];
+			}
+		}
+	} else {
+		raise_message(40);
+		header('Location: ' . $page);
+
+		exit;
+	}
+
+	top_header();
+
+	form_start($page);
+
+	html_start_box($actions[$drpval], '60%', '', '3', 'center', '');
+
+	print "<tr><td class='textArea left' colspan='3'>";
+	print "<p>$message</p>";
+	print "</td></tr>";
+
+	if (isset($form_data['general']['header'])) {
+		print "<tr><td class='textArea left' colspan='3'><p>";
+		print $form_data['general']['header'];
+		print '</p></td></tr>';
+	}
+
+	if (isset($data['header'])) {
+		print "<tr><td class='textArea left' colspan='3'><p>";
+		print $data['header'];
+		print '</p></td></tr>';
+	}
+
+	if ($ilist != '') {
+		print "<tr><td class='textArea left' colspan='3'>";
+		print "<div class='itemlist'><ul>$ilist</ul></div>";
+		print '</td></tr>';
+	}
+
+	if (isset($data['extra'])) {
+		foreach($data['extra'] as $field_name => $field_array) {
+			if (!isset($field_array['width'])) {
+				$field_array['width'] = 25;
+			}
+
+			if (!isset($field_array['size'])) {
+				$field_array['size'] = 25;
+			}
+
+			print "<tr class='formConfirmRow'>";
+
+			switch($field_array['method']) {
+				case 'other':
+					print "<td class='textArea nowrap'>{$field_array['title']}</td>";
+					print "<td class='textArea'><b><i>{$field_array['default']}</i></b></td>";
+
+					break;
+				case 'textbox':
+					print "<td class='textArea nowrap'>{$field_array['title']}</td>";
+					print "<td class='textArea'>";
+					form_text_box($field_name, $field_array['default'], '', $field_array['width'], $field_array['size']);
+					print '</td>';
+
+					break;
+				case 'drop_array':
+					if (!isset($field_array['default'])) {
+						$field_array['default'] = '';
+					}
+
+					if (!isset($field_array['variable'])) {
+						$field_array['variable'] = '';
+					}
+
+					if (!isset($field_array['id'])) {
+						$field_array['id'] = '';
+					}
+
+					print "<td class='textArea nowrap'>{$field_array['title']}</td>";
+					print "<td class='textArea'>";
+					form_dropdown($field_name, $field_array['array'], $field_array['variable'], $field_array['id'], $field_array['default'], '', 0);
+					print '</td>';
+
+					break;
+				case 'drop_branch':
+					print "<td class='textArea nowrap' colspan='2'>{$field_array['title']}</td>";
+					print "<td class='textArea'>";
+					grow_dropdown_tree($field_array['id'], '0', $field_name, '0');
+					print '</td>';
+
+					break;
+				case 'checkbox':
+					print "<td class='nowrap' colspan='2'>";
+					print "<span class='nowrap'>";
+					print "<span class='checkboxSwitch' id='{$field_name}_id' for='$field_name' title='{$field_array['title']}'>";
+					print "<input class='formCheckbox' type='checkbox' id='$field_name' name='$field_name' value=''>";
+					print "<span class='checkboxSlider checkboxRound'></span>";
+					print '</span>';
+					print "<label class='checkboxLabel checkboxLabelWanted' for='$field_name'>{$field_array['title']}</label>";
+					print '</span>';
+					print '</td>';
+
+					break;
+				case 'radio_button':
+					$i = 1;
+					$options = cacti_sizeof($field_array['options']);
+
+					foreach($field_array['options'] as $current_value => $optdata) {
+						if (!isset($optdata['default'])) {
+							$optdata['default'] = '1';
+						}
+
+						if ($current_value == $optdata['default']) {
+							$checked = " checked aria-checked='true'";
+						} else {
+							$checked = " aria-checked='false'";
+						}
+
+						$css_id = $form_name . '_' . $current_value;
+
+						print "<td class='formConfirmRadio'>";
+						print "<label class='radioSwitch'>";
+						print "<input value='" . html_escape($current_value) . "' class='formCheckbox' type='radio' id='$css_id' name='$field_name'" . $checked . '>';
+						print "<span class='radioSlider radioRound'></span>";
+						print '</td>';
+						print "<td class='textArea'>";
+						print "<label class='radioLabelWanted' for='$css_id'>" . html_escape($optdata['title']) . '</label>';
+						print '</td>';
+
+						if ($i < $options) {
+							print '</tr>';
+							print "<tr class='formConfirmRow'>";
+						}
+
+						$i++;
+					}
+
+					break;
+				default:
+					cacti_log("WARNING: Form continuation method {$field_array['method']} not understood");
+			}
+
+			print '</tr>';
+		}
+	}
+
+	if (isset($data['flist'])) {
+		if (cacti_sizeof($iarray) > 1) {
+			if (isset($data['pfmessage'])) {
+				$message = $data['pfmessage'];
+			} elseif (isset($data['fmessage'])) {
+				$message = $data['fmessage'];
+			}
+		} else {
+			if (isset($data['sfmessage'])) {
+				$message = $data['sfmessage'];
+			} elseif (isset($data['fmessage'])) {
+				$message = $data['fmessage'];
+			}
 		}
 
 		print "<tr><td class='textArea left' colspan='3'>";
 		print "<p>$message</p>";
-		print "</td></tr>";
+		print '</td></tr>';
+		print "<tr><td class='textArea left' colspan='3'>";
+		print "<div class='itemlist'><ul>{$data['flist']}</ul></div>";
+		print '</td></tr>';
+	}
 
-		if (isset($form_data['general']['header'])) {
-			print "<tr><td class='textArea left' colspan='3'><p>";
-			print $form_data['general']['header'];
-			print '</p></td></tr>';
-		}
+	if (isset($data['footer'])) {
+		print "<tr><td class='textArea left' colspan='3'><p>";
+		print $data['footer'];
+		print '</p></td></tr>';
+	}
 
-		if (isset($data['header'])) {
-			print "<tr><td class='textArea left' colspan='3'><p>";
-			print $data['header'];
-			print '</p></td></tr>';
-		}
-
-		if ($ilist != '') {
-			print "<tr><td class='textArea left' colspan='3'>";
-			print "<div class='itemlist'><ul>$ilist</ul></div>";
-			print '</td></tr>';
-		}
-
-		if (isset($data['extra'])) {
-			foreach($data['extra'] as $field_name => $field_array) {
-				if (!isset($field_array['width'])) {
-					$field_array['width'] = 25;
-				}
-
-				if (!isset($field_array['size'])) {
-					$field_array['size'] = 25;
-				}
-
-				print "<tr class='formConfirmRow'>";
-
-				switch($field_array['method']) {
-					case 'other':
-						print "<td class='textArea nowrap'>{$field_array['title']}</td>";
-						print "<td class='textArea'><b><i>{$field_array['default']}</i></b></td>";
-
-						break;
-					case 'textbox':
-						print "<td class='textArea nowrap'>{$field_array['title']}</td>";
-						print "<td class='textArea'>";
-						form_text_box($field_name, $field_array['default'], '', $field_array['width'], $field_array['size']);
-						print '</td>';
-
-						break;
-					case 'drop_array':
-						if (!isset($field_array['default'])) {
-							$field_array['default'] = '';
-						}
-
-						if (!isset($field_array['variable'])) {
-							$field_array['variable'] = '';
-						}
-
-						if (!isset($field_array['id'])) {
-							$field_array['id'] = '';
-						}
-
-						print "<td class='textArea nowrap'>{$field_array['title']}</td>";
-						print "<td class='textArea'>";
-						form_dropdown($field_name, $field_array['array'], $field_array['variable'], $field_array['id'], $field_array['default'], '', 0);
-						print '</td>';
-
-						break;
-					case 'drop_branch':
-						print "<td class='textArea nowrap' colspan='2'>{$field_array['title']}</td>";
-						print "<td class='textArea'>";
-						grow_dropdown_tree($field_array['id'], '0', $field_name, '0');
-						print '</td>';
-
-						break;
-					case 'checkbox':
-						print "<td class='nowrap' colspan='2'>";
-						print "<span class='nowrap'>";
-						print "<span class='checkboxSwitch' id='{$field_name}_id' for='$field_name' title='{$field_array['title']}'>";
-						print "<input class='formCheckbox' type='checkbox' id='$field_name' name='$field_name' value=''>";
-						print "<span class='checkboxSlider checkboxRound'></span>";
-						print '</span>';
-						print "<label class='checkboxLabel checkboxLabelWanted' for='$field_name'>{$field_array['title']}</label>";
-						print '</span>';
-						print '</td>';
-
-						break;
-					case 'radio_button':
-						$i = 1;
-						$options = cacti_sizeof($field_array['options']);
-
-						foreach($field_array['options'] as $current_value => $optdata) {
-							if (!isset($optdata['default'])) {
-								$optdata['default'] = '1';
-							}
-
-							if ($current_value == $optdata['default']) {
-								$checked = " checked aria-checked='true'";
-							} else {
-								$checked = " aria-checked='false'";
-							}
-
-							$css_id = $form_name . '_' . $current_value;
-
-							print "<td class='formConfirmRadio'>";
-							print "<label class='radioSwitch'>";
-							print "<input value='" . html_escape($current_value) . "' class='formCheckbox' type='radio' id='$css_id' name='$field_name'" . $checked . '>';
-							print "<span class='radioSlider radioRound'></span>";
-							print '</td>';
-							print "<td class='textArea'>";
-							print "<label class='radioLabelWanted' for='$css_id'>" . html_escape($optdata['title']) . '</label>';
-							print '</td>';
-
-							if ($i < $options) {
-								print '</tr>';
-								print "<tr class='formConfirmRow'>";
-							}
-
-							$i++;
-						}
-
-						break;
-					default:
-						cacti_log("WARNING: Form continuation method {$field_array['method']} not understood");
-				}
-
-				print '</tr>';
-			}
-		}
-
-		if (isset($data['flist'])) {
-			if (cacti_sizeof($iarray) > 1) {
-				if (isset($data['pfmessage'])) {
-					$message = $data['pfmessage'];
-				} elseif (isset($data['fmessage'])) {
-					$message = $data['fmessage'];
-				}
-			} else {
-				if (isset($data['sfmessage'])) {
-					$message = $data['sfmessage'];
-				} elseif (isset($data['fmessage'])) {
-					$message = $data['fmessage'];
-				}
-			}
-
-			print "<tr><td class='textArea left' colspan='3'>";
-			print "<p>$message</p>";
-			print "</td></tr>";
-		}
-
-		if (isset($data['footer'])) {
-			print "<tr><td class='textArea left' colspan='3'><p>";
-			print $data['footer'];
-			print '</p></td></tr>';
-		}
-
-		if (isset($form_data['general']['footer'])) {
-			print "<tr><td class='textArea left' colspan='3'><p>";
-			print $form_data['general']['footer'];
-			print '</p></td></tr>';
-		}
+	if (isset($form_data['general']['footer'])) {
+		print "<tr><td class='textArea left' colspan='3'><p>";
+		print $form_data['general']['footer'];
+		print '</p></td></tr>';
 	}
 
 	print "<tr><td class='saveRow' colspan='3'>";

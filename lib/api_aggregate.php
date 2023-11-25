@@ -1626,81 +1626,62 @@ function aggregate_handle_stacked_lines($local_graph_id, $_orig_graph_type, $_to
 		array(GRAPH_ITEM_TYPE_LINESTACK, $local_graph_id));
 }
 
-function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_template) {
-	/* find out which (if any) data sources are being used by this graph, so we can tell the user */
+/**
+ * aggregate_get_data_sources - find out which (if any) data sources are being
+ *   used by this graph, so we can tell the user
+ */
+function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_template, &$message = '') {
 	if (isset($graph_array)) {
 		# fetch all data sources for all selected graphs
-		$data_sources = db_fetch_assoc('SELECT
-			data_template_data.local_data_id,
-			data_template_data.name_cache
-			FROM (data_template_rrd,data_template_data,graph_templates_item)
-			WHERE graph_templates_item.task_item_id=data_template_rrd.id
-			AND data_template_rrd.local_data_id=data_template_data.local_data_id
-			AND ' . array_to_sql_or($graph_array, 'graph_templates_item.local_graph_id') . '
-			AND data_template_data.local_data_id>0
-			GROUP BY data_template_data.local_data_id
-			ORDER BY data_template_data.name_cache');
+		$data_sources = db_fetch_assoc('SELECT dtd.local_data_id, dtd.name_cache
+			FROM data_template_rrd AS dtr
+			INNER JOIN graph_templates_item AS gti
+			ON dtr.id = gti.task_item_id
+			INNER JOIN data_template_data AS dtd
+			ON dtr.local_data_id = dtd.local_data_id
+			WHERE ' . array_to_sql_or($graph_array, 'gti.local_graph_id') . '
+			AND dtd.local_data_id > 0
+			GROUP BY dtd.local_data_id
+			ORDER BY dtd.name_cache');
 
 		# verify, that only a single graph template is used, else
 		# aggregate will look funny
-		$sql = 'SELECT DISTINCT graph_templates.id, graph_templates.name
-			FROM graph_local
-			LEFT JOIN graph_templates ON (graph_local.graph_template_id=graph_templates.id)
-			WHERE (' . array_to_sql_or($graph_array, 'graph_local.id') . ')
-			AND graph_local.graph_template_id>0';
-		$used_graph_templates = db_fetch_assoc($sql);
+		$templates = db_fetch_assoc('SELECT DISTINCT gl.graph_template_id AS id
+			FROM graph_local AS gl
+			WHERE ' . array_to_sql_or($graph_array, 'gl.id'));
 
-		if (cacti_sizeof($used_graph_templates) > 1) {
-			# this is invalid! STOP
-			print "<tr><td colspan='2' class='textArea'>
-			<p>" . __('The Graphs chosen for the Aggregate Graph below represent Graphs from multiple Graph Templates.  Aggregate does not support creating Aggregate Graphs from multiple Graph Templates.') . '</p>';
-			print '<p>' . __('Press \'Return\' to return and select different Graphs') . '</p>';
-			print '<ul>';
+		if (cacti_sizeof($templates) > 1) {
+			$message = __('The Graphs chosen for the Aggregate Graph below represent Graphs from multiple Graph Templates.  Aggregate does not support creating Aggregate Graphs from multiple Graph Templates.');
 
-			foreach ($used_graph_templates as $graph_template) {
-				print '<li>' . html_escape($graph_template['name']) . '</li>';
+			return false;
+		} elseif (cacti_sizeof($templates) == 1)  {
+			if ($templates[0]['id'] == 0) {
+				/* selected graphs do not use templates */
+				$message = __('The Graphs chosen for the Aggregate Graph do not use Graph Templates.  Aggregate does not support creating Aggregate Graphs from non-templated graphs.');
+
+				return false;
+			} else {
+				$graph_template = $templates[0]['id'];
+
+				return true;
 			}
-			print '</ul></td></tr>';
-
-			?>
-			<script type='text/javascript'>
-			$().ready(function() {
-				$('#continue').hide();
-				$('#cancel').attr('value', '<?php print __esc('Return');?>');
-			});
-			</script>
-			<?php
-		} elseif (cacti_sizeof($used_graph_templates) < 1) {
-			/* selected graphs do not use templates */
-			print "<tr><td colspan='2' class='textArea'>
-			<p>" . __('The Graphs chosen for the Aggregate Graph do not use Graph Templates.  Aggregate does not support creating Aggregate Graphs from non-templated graphs.') . '</p>';
-			print '<p>' . __('Press \'Return\' to return and select different Graphs') . '</p>';
-			print '</td></tr>';
-
-			?>
-			<script type='text/javascript'>
-			$(function() {
-				$('#continue').hide();
-				$('#cancel').attr('value', '<?php print __esc('Return');?>');
-			});
-			</script>
-			<?php
 		} else {
-			$graph_template = $used_graph_templates[0]['id'];
+			$message = __('There was some error in MySQL/MariaDB.  Can not continue.');
 
-			return true;
+			return false;
 		}
-	}
+	} else {
+		$message = __('You must pass at least a single Graph to this function');
 
-	return false;
+		return false;
+	}
 }
 
 /**
  * draw_aggregate_template_graph_items_list - draw graph item list
  *
- * @param int $_graph_template_id - id of the graph for which the items shall be listed
- * # @param int $_object            - either the aggregate or aggregate_template
  * @param mixed $_graph_id
+ * @param int $_graph_template_id - id of the graph for which the items shall be listed
  * @param mixed $_object
  */
 function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0, $_object = array()) {

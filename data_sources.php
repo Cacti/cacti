@@ -513,6 +513,11 @@ function form_actions() {
 			}
 		}
 
+		// For use by plugins
+		$save['drp_action'] = $drpval;
+		$save['ds_list']    = $ilist;
+		$save['ds_array']   = $iarray;
+
 		$form_data = array(
 			'general' => array(
 				'page'       => 'data_sources.php',
@@ -528,23 +533,23 @@ function form_actions() {
 					'scont'     => __('Delete Data Source'),
 					'pcont'     => __('Delete Data Sources'),
 					'flist'     => $flist,
-					'sfmessage' => __n('The following Graph is using this Data Source.', 'The following Graphs are using this Data Source.', $graphs),
-					'pfmessage' => __n('The following Graph is using these Data Sources.', 'The following Graphs are using these Data Sources.', $graphs),
+					'sfmessage' => __n('The following Graph is using this Data Source.', 'The following Graphs are using this Data Source.', cacti_sizeof($graphs)),
+					'pfmessage' => __n('The following Graph is using these Data Sources.', 'The following Graphs are using these Data Sources.', cacti_sizeof($graphs)),
 					'extra'    => array(
 						'delete_type' => array(
 							'method' => 'radio_button',
 							'options' => array(
 								'1' => array(
 									'default' => 3,
-									'title' => __n('Leave the Graph Untouched', 'Leave all Graphs untouched.', $graphs)
+									'title' => __n('Leave the Graph Untouched', 'Leave all Graphs untouched.', cacti_sizeof($graphs))
 								),
 								'2' => array(
 									'default' => 3,
-									'title' => __n('Delete all Graph Items that reference this Data Source.', 'Delete all Graph Items that reference these Data Sources', $iarray)
+									'title' => __n('Delete all Graph Items that reference this Data Source.', 'Delete all Graph Items that reference these Data Sources', cacti_sizeof($iarray))
 								),
 								'3' => array(
 									'default' => 3,
-									'title' => __n('Delete all Graphs that reference this Data Source.', 'Delete all Graphs that reference these Data Sources', $iarray)
+									'title' => __n('Delete all Graphs that reference this Data Source.', 'Delete all Graphs that reference these Data Sources', cacti_sizeof($iarray))
 								)
 							)
 						)
@@ -585,7 +590,9 @@ function form_actions() {
 			)
 		);
 
-		form_continue_confirmation($form_data, 'data_source_action_prepare');
+		$form_data = api_plugin_hook_function('data_source_confirmation_form', $form_data);
+
+		form_continue_confirmation($form_data, 'data_source_action_prepare', $save);
 	}
 }
 

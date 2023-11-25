@@ -44,9 +44,21 @@ $actions = array(
 	4 => __('Change Device Settings'),
 	5 => __('Clear Statistics'),
 	6 => __('Apply Automation Rules'),
-	7 => __('Sync to Device Template'),
-	8 => __('Place Device on Report')
+	7 => __('Sync to Device Template')
 );
+
+$reports = db_fetch_cell_prepared('SELECT COUNT(*)
+	FROM reports
+	WHERE user_id = ?
+	ORDER BY name',
+	array($_SESSION[SESS_USER_ID])
+);
+
+if ($reports > 0) {
+	$actions += array(
+		8 => __('Place Device on Report')
+	);
+}
 
 $actions = api_plugin_hook_function('device_action_array', $actions);
 
@@ -449,6 +461,10 @@ function form_actions() {
 				ORDER BY name',
 				array($_SESSION[SESS_USER_ID])
 			);
+
+			if (cacti_sizeof($reports)) {
+				$reports = array_rekey($reports, 'id', 'name');
+			}
 		}
 
 		$form_data = array(
@@ -562,6 +578,8 @@ function form_actions() {
 				);
 			}
 		}
+
+		$form_data = api_plugin_hook_function('device_confirmation_form', $form_data);
 
 		form_continue_confirmation($form_data);
 	}
