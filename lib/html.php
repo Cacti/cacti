@@ -22,38 +22,40 @@
  +-------------------------------------------------------------------------+
 */
 
-/* html_start_box - draws the start of an HTML box with an optional title
-   @arg $title - the title of this box ("" for no title)
-   @arg $width - the width of the box in pixels or percent
-   @arg $div - end with a starting div
-   @arg $cell_padding - the amount of cell padding to use inside of the box
-   @arg $align - the HTML alignment to use for the box (center, left, or right)
-   @arg $add_text - the url to use when the user clicks 'Add' in the upper-right
-		corner of the box ("" for no 'Add' link)
-		This function has two method.  This first is for legacy behavior where you
-		you pass in a href to the function, and an optional label as $add_label
-		The new format accepts an array of hrefs to add to the start box.  The format
-		of the array is as follows:
-
-		$add_text = array(
-			array(
-				'id' => 'uniqueid',
-				'href' => 'value',
-				'title' => 'title',
-				'callback' => true|false,
-				'class' => 'fa fa-icon'
-			),
-			...
-		);
-
-		If the callback is true, the Cacti attribute will be added to the href
-		to present only the contents and not to include both the headers.  If
-		the link must go off page, simply make sure $callback is false.  There
-		is a requirement to use fontawesome icon sets for this class, but it
-		can include other classes.  In addition, the href can be a hash '#' if
-		your page has a ready function that has it's own javascript.
-   @arg $add_label - used with legacy behavior to add specific text to the link.
-		This parameter is only used in the legacy behavior.
+/**
+ * html_start_box - draws the start of an HTML box with an optional title
+ *
+ * @param  $title - the title of this box ("" for no title)
+ * @param  $width - the width of the box in pixels or percent
+ * @param  $div - end with a starting div
+ * @param  $cell_padding - the amount of cell padding to use inside of the box
+ * @param  $align - the HTML alignment to use for the box (center, left, or right)
+ * @param  $add_text - the url to use when the user clicks 'Add' in the upper-right
+ *   corner of the box ("" for no 'Add' link)
+ *   This function has two method.  This first is for legacy behavior where you
+ *   you pass in a href to the function, and an optional label as $add_label
+ *   The new format accepts an array of hrefs to add to the start box.  The format
+ *   of the array is as follows:
+ *
+ *   $add_text = array(
+ *      array(
+ *        'id' => 'uniqueid',
+ *        'href' => 'value',
+ *        'title' => 'title',
+ *        'callback' => true|false,
+ *        'class' => 'fa fa-icon'
+ *      ),
+ *      ...
+ *   );
+ *
+ *   If the callback is true, the Cacti attribute will be added to the href
+ *   to present only the contents and not to include both the headers.  If
+ *   the link must go off page, simply make sure $callback is false.  There
+ *   is a requirement to use fontawesome icon sets for this class, but it
+ *   can include other classes.  In addition, the href can be a hash '#' if
+ *   your page has a ready function that has it's own javascript.
+ * @param  $add_label - used with legacy behavior to add specific text to the link.
+ *   This parameter is only used in the legacy behavior.
  */
 function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, $add_label = false) {
 	global $config;
@@ -187,16 +189,17 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 
 /**
  * html_sub_tabs - Creates a memory persistent sub-tab interface
- *   for a page or pages using a simple method to lay those tabs
- *   out.
+ * for a page or pages using a simple method to lay those tabs
+ * out.
  *
- * @param array  - An associative array of tab variables and names
- *                 Alternatively an array of names that can be converted
- *                 using the strtoupper() function to titles.
- * @param string - A string of URL parameters like 'action=edit&id=x'
- * @param string - An option session variable to use to store
- *                 the current tab status.  Defaults to the page
- *                 name and the suffic of current_tab
+ * @param  array  - An associative array of tab variables and names
+ *   Alternatively an array of names that can be converted
+ *   using the strtoupper() function to titles.
+ * @param  string - A string of URL parameters like 'action=edit&id=x'
+ * @param  string - An option session variable to use to store
+ *   the current tab status.  Defaults to the page
+ *   name and the suffic of current_tab
+ *
  * @return null  - Output is printed to standard output
  */
 function html_sub_tabs($tabs, $uri = '', $session_var = '') {
@@ -254,9 +257,12 @@ function html_sub_tabs($tabs, $uri = '', $session_var = '') {
 	print '</div>';
 }
 
-/* html_end_box - draws the end of an HTML box
-   @arg $trailing_br (bool) - whether to draw a trailing <br> tag after ending
-   @arg $div (bool) - whether type of box is div or table */
+/**
+ * html_end_box - draws the end of an HTML box
+ *
+ * @param  $trailing_br (bool) - whether to draw a trailing <br> tag after ending
+ * @param  $div (bool) - whether type of box is div or table
+ */
 function html_end_box($trailing_br = true, $div = false) {
 	if ($div) {
 		print '</div></div>';
@@ -269,7 +275,9 @@ function html_end_box($trailing_br = true, $div = false) {
 	}
 }
 
-/* html_graph_template_multiselect - consistent multiselect javascript library for cacti. */
+/**
+ * html_graph_template_multiselect - consistent multiselect javascript library for cacti.
+ */
 function html_graph_template_multiselect() {
 	?>
 	var msWidth = 200;
@@ -341,18 +349,20 @@ function html_graph_template_multiselect() {
 	<?php
 }
 
-/* html_graph_area - draws an area the contains full sized graphs
-   @arg $graph_array - the array to contains graph information. for each graph in the
-		array, the following two keys must exist
-		$arr[0]["local_graph_id"] // graph id
-		$arr[0]["title_cache"] // graph title
-   @arg $no_graphs_message - display this message if no graphs are found in $graph_array
-   @arg $extra_url_args - extra arguments to append to the url
-   @arg $header - html to use as a header
-   @arg $columns - the number of columns to present
-   @arg $tree_id - the tree id if this is a tree thumbnail
-   @arg $branch_id - the branch id if this is a tree thumbnail
-*/
+/**
+ * html_graph_area - draws an area the contains full sized graphs
+ *
+ * @param  $graph_array - the array to contains graph information. for each graph in the
+ *   array, the following two keys must exist
+ *   $arr[0]["local_graph_id"] // graph id
+ *   $arr[0]["title_cache"] // graph title
+ * @param  $no_graphs_message - display this message if no graphs are found in $graph_array
+ * @param  $extra_url_args - extra arguments to append to the url
+ * @param  $header - html to use as a header
+ * @param  $columns - the number of columns to present
+ * @param  $tree_id - the tree id if this is a tree thumbnail
+ * @param  $branch_id - the branch id if this is a tree thumbnail
+ */
 function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args = '', $header = '', $columns = 0, $tree_id = 0, $branch_id = 0) {
 	global $config;
 	$i = 0;
@@ -422,18 +432,20 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 	}
 }
 
-/* html_graph_thumbnail_area - draws an area the contains thumbnail sized graphs
-   @arg $graph_array - the array to contains graph information. for each graph in the
-		array, the following two keys must exist
-		$arr[0]["local_graph_id"] // graph id
-		$arr[0]["title_cache"] // graph title
-   @arg $no_graphs_message - display this message if no graphs are found in $graph_array
-   @arg $extra_url_args - extra arguments to append to the url
-   @arg $header - html to use as a header
-   @arg $columns - the number of columns to present
-   @arg $tree_id - the tree id if this is a tree thumbnail
-   @arg $branch_id - the branch id if this is a tree thumbnail
-*/
+/**
+ * html_graph_thumbnail_area - draws an area the contains thumbnail sized graphs
+ *
+ * @param  $graph_array - the array to contains graph information. for each graph in the
+ *   array, the following two keys must exist
+ *   $arr[0]["local_graph_id"] // graph id
+ *   $arr[0]["title_cache"] // graph title
+ * @param  $no_graphs_message - display this message if no graphs are found in $graph_array
+ * @param  $extra_url_args - extra arguments to append to the url
+ * @param  $header - html to use as a header
+ * @param  $columns - the number of columns to present
+ * @param  $tree_id - the tree id if this is a tree thumbnail
+ * @param  $branch_id - the branch id if this is a tree thumbnail
+ */
 function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extra_url_args = '', $header = '', $columns = 0, $tree_id = 0, $branch_id = 0) {
 	global $config;
 	$i = 0;
@@ -611,17 +623,20 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 	print '</div>';
 }
 
-/* html_nav_bar - draws a navigation bar which includes previous/next links as well as current
-	page information
-   @arg $base_url - the base URL will all filter options except page (should include url_path)
-   @arg $max_pages - the maximum number of pages to display
-   @arg $current_page - the current page in the navigation system
-   @arg $rows_per_page - the number of rows that are displayed on a single page
-   @arg $total_rows - the total number of rows in the navigation system
-   @arg $object - the object types that is being displayed
-   @arg $page_var - the object types that is being displayed
-   @arg $return_to - paint the resulting page into this dom object
-   @arg $page_count - provide a page count */
+/**
+ * html_nav_bar - draws a navigation bar which includes previous/next links as well as current
+ * page information
+ *
+ * @param  $base_url - the base URL will all filter options except page (should include url_path)
+ * @param  $max_pages - the maximum number of pages to display
+ * @param  $current_page - the current page in the navigation system
+ * @param  $rows_per_page - the number of rows that are displayed on a single page
+ * @param  $total_rows - the total number of rows in the navigation system
+ * @param  $object - the object types that is being displayed
+ * @param  $page_var - the object types that is being displayed
+ * @param  $return_to - paint the resulting page into this dom object
+ * @param  $page_count - provide a page count
+ */
 function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $total_rows, $colspan=30, $object = '', $page_var = 'page', $return_to = '', $page_count = true) {
 	if ($object == '') {
 		$object = __('Rows');
@@ -709,19 +724,22 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 	return $nav;
 }
 
-/* html_header_sort - draws a header row suitable for display inside of a box element.  When
-		a user selects a column header, the callback function "filename" will be called to handle
-		the sort the column and display the altered results.
-   @arg $header_items - an array containing a list of column items to display.  The
-		format is similar to the html_header, with the exception that it has three
-		dimensions associated with each element (db_column => display_text, default_sort_order)
-		alternatively (db_column => array('display' = 'blah', 'align' = 'blah', 'sort' = 'blah'))
-   @arg $sort_column - the value of current sort column.
-   @arg $sort_direction - the value the current sort direction.  The actual sort direction
-		will be opposite this direction if the user selects the same named column.
-   @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row
-   @arg $url - a base url to redirect sort actions to
-   @arg $return_to - the id of the object to inject output into as a result of the sort action */
+/**
+ * html_header_sort - draws a header row suitable for display inside of a box element.  When
+ * a user selects a column header, the callback function "filename" will be called to handle
+ * the sort the column and display the altered results.
+ *
+ * @param  $header_items - an array containing a list of column items to display.  The
+ *   format is similar to the html_header, with the exception that it has three
+ *   dimensions associated with each element (db_column => display_text, default_sort_order)
+ *   alternatively (db_column => array('display' = 'blah', 'align' = 'blah', 'sort' = 'blah'))
+ * @param  $sort_column - the value of current sort column.
+ * @param  $sort_direction - the value the current sort direction.  The actual sort direction
+ *   will be opposite this direction if the user selects the same named column.
+ * @param  $last_item_colspan - the TD 'colspan' to apply to the last cell in the row
+ * @param  $url - a base url to redirect sort actions to
+ * @param  $return_to - the id of the object to inject output into as a result of the sort action
+ */
 function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1, $url = '', $return_to = '') {
 	static $page_count = 0;
 
@@ -878,19 +896,22 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 	$page_count++;
 }
 
-/* html_header_sort_checkbox - draws a header row with a 'select all' checkbox in the last cell
-		suitable for display inside of a box element.  When a user selects a column header,
-		the callback function "filename" will be called to handle the sort the column and display
-		the altered results.
-   @arg $header_items - an array containing a list of column items to display.  The
-		fonrmat is similar to the html_header, with the exception that it has three
-		dimensions associated with each element (db_column => display_text, default_sort_order)
-		alternatively (db_column => array('display' = 'blah', 'align' = 'blah', 'sort' = 'blah'))
-   @arg $sort_column - the value of current sort column.
-   @arg $sort_direction - the value the current sort direction.  The actual sort direction
-		will be opposite this direction if the user selects the same named column.
-   @arg $form_action - the url to post the 'select all' form to
-   @arg $return_to - the id of the object to inject output into as a result of the sort action */
+/**
+ * html_header_sort_checkbox - draws a header row with a 'select all' checkbox in the last cell
+ * suitable for display inside of a box element.  When a user selects a column header,
+ * the callback function "filename" will be called to handle the sort the column and display
+ * the altered results.
+ *
+ * @param  $header_items - an array containing a list of column items to display.  The
+ *   fonrmat is similar to the html_header, with the exception that it has three
+ *   dimensions associated with each element (db_column => display_text, default_sort_order)
+ *   alternatively (db_column => array('display' = 'blah', 'align' = 'blah', 'sort' = 'blah'))
+ * @param  $sort_column - the value of current sort column.
+ * @param  $sort_direction - the value the current sort direction.  The actual sort direction
+ *   will be opposite this direction if the user selects the same named column.
+ * @param  $form_action - the url to post the 'select all' form to
+ * @param  $return_to - the id of the object to inject output into as a result of the sort action
+ */
 function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $include_form = true, $form_action = '', $return_to = '', $prefix = 'chk') {
 	static $page_count = 0;
 
@@ -1051,10 +1072,13 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	$page_count++;
 }
 
-/* html_header - draws a header row suitable for display inside a box element
-   @arg $header_items - an array containing a list of items to be included in the header
-		alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
-   @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
+/**
+ * html_header - draws a header row suitable for display inside a box element
+ *
+ * @param  $header_items - an array containing a list of items to be included in the header
+ *   alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
+ * @param  $last_item_colspan - the TD 'colspan' to apply to the last cell in the row
+ */
 function html_header($header_items, $last_item_colspan = 1) {
 	print "<thead><tr class='tableHeader " . (!$last_item_colspan > 1 ? 'tableFixed':'') . "'>";
 
@@ -1091,11 +1115,14 @@ function html_header($header_items, $last_item_colspan = 1) {
 	print '</tr></thead>';
 }
 
-/* html_section_header - draws a header row suitable for display inside a box element
-		 but for display as a section title and not as a series of table header columns
-   @arg $header_name - an array of the display name of the header for the section and
-		optional alignment.
-   @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
+/**
+ * html_section_header - draws a header row suitable for display inside a box element
+ * but for display as a section title and not as a series of table header columns
+ *
+ * @param  $header_name - an array of the display name of the header for the section and
+ *   optional alignment.
+ * @param  $last_item_colspan - the TD 'colspan' to apply to the last cell in the row
+ */
 function html_section_header($header_item, $last_item_colspan = 1) {
 	print "<tr class='tableHeader " . (!$last_item_colspan > 1 ? 'tableFixed':'') . "'>";
 
@@ -1108,11 +1135,14 @@ function html_section_header($header_item, $last_item_colspan = 1) {
 	print '</tr>';
 }
 
-/* html_header_checkbox - draws a header row with a 'select all' checkbox in the last cell
-		suitable for display inside a box element
-   @arg $header_items - an array containing a list of items to be included in the header
-		alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
-   @arg $form_action - the url to post the 'select all' form to */
+/**
+ * html_header_checkbox - draws a header row with a 'select all' checkbox in the last cell
+ * suitable for display inside a box element
+ *
+ * @param  $header_items - an array containing a list of items to be included in the header
+ *   alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
+ * @param  $form_action - the url to post the 'select all' form to
+ */
 function html_header_checkbox($header_items, $include_form = true, $form_action = '', $resizable = true, $prefix = 'chk') {
 	/* default to the 'current' file */
 	if ($form_action == '') {
@@ -1151,18 +1181,21 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 	print '</tr></thead>';
 }
 
-/* html_create_list - draws the items for a html dropdown given an array of data
-   @arg $form_data - an array containing data for this dropdown. it can be formatted
-		in one of two ways:
-		$array["id"] = "value";
-		-- or --
-		$array[0]["id"] = 43;
-		$array[0]["name"] = "Red";
-   @arg $column_display - used to identify the key to be used for display data. this
-		is only applicable if the array is formatted using the second method above
-   @arg $column_id - used to identify the key to be used for id data. this
-		is only applicable if the array is formatted using the second method above
-   @arg $form_previous_value - the current value of this form element */
+/**
+ * html_create_list - draws the items for a html dropdown given an array of data
+ *
+ * @param  $form_data - an array containing data for this dropdown. it can be formatted
+ *   in one of two ways:
+ *   $array["id"] = "value";
+ *   -- or --
+ *   $array[0]["id"] = 43;
+ *   $array[0]["name"] = "Red";
+ * @param  $column_display - used to identify the key to be used for display data. this
+ *   is only applicable if the array is formatted using the second method above
+ * @param  $column_id - used to identify the key to be used for id data. this
+ *   is only applicable if the array is formatted using the second method above
+ * @param  $form_previous_value - the current value of this form element
+ */
 function html_create_list($form_data, $column_display, $column_id, $form_previous_value) {
 	if (empty($column_display)) {
 		if (cacti_sizeof($form_data)) {
@@ -1195,16 +1228,24 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 	}
 }
 
-/* html_escape_request_var - sanitizes a request variable for display
-   @arg $string - string the request variable to escape
-   @returns $new_string - the escaped request variable to be returned. */
+/**
+ * html_escape_request_var - sanitizes a request variable for display
+ *
+ * @param  $string - string the request variable to escape
+ *
+ * @return $new_string - the escaped request variable to be returned.
+ */
 function html_escape_request_var($string) {
 	return html_escape(get_request_var($string));
 }
 
-/* html_escape - sanitizes a string for display
-   @arg $string - string the string to escape
-   @returns $new_string - the escaped string to be returned. */
+/**
+ * html_escape - sanitizes a string for display
+ *
+ * @param  $string - string the string to escape
+ *
+ * @return $new_string - the escaped string to be returned.
+ */
 function html_escape($string) {
 	static $charset;
 
@@ -1226,12 +1267,16 @@ function html_escape($string) {
 	}
 }
 
-/* html_split_string - takes a string and breaks it into a number of <br> separated segments
-   @arg $string - string to be modified and returned
-   @arg $length - the maximal string length to split to
-   @arg $forgiveness - the maximum number of characters to walk back from to determine
-		the correct break location.
-   @returns $new_string - the modified string to be returned. */
+/**
+ * html_split_string - takes a string and breaks it into a number of <br> separated segments
+ *
+ * @param  $string - string to be modified and returned
+ * @param  $length - the maximal string length to split to
+ * @param  $forgiveness - the maximum number of characters to walk back from to determine
+ *   the correct break location.
+ *
+ * @return $new_string - the modified string to be returned.
+ */
 function html_split_string($string, $length = 90, $forgiveness = 10) {
 	$new_string = '';
 	$j          = 0;
@@ -1263,14 +1308,17 @@ function html_split_string($string, $length = 90, $forgiveness = 10) {
 	return $new_string;
 }
 
-/* draw_graph_items_list - draws a nicely formatted list of graph items for display
-		on an edit form
-   @arg $item_list - an array representing the list of graph items. this array should
-		come directly from the output of db_fetch_assoc()
-   @arg $filename - the filename to use when referencing any external url
-   @arg $url_data - any extra GET url information to pass on when referencing any
-		external url
-   @arg $disable_controls - whether to hide all edit/delete functionality on this form */
+/**
+ * draw_graph_items_list - draws a nicely formatted list of graph items for display
+ * on an edit form
+ *
+ * @param  $item_list - an array representing the list of graph items. this array should
+ *   come directly from the output of db_fetch_assoc()
+ * @param  $filename - the filename to use when referencing any external url
+ * @param  $url_data - any extra GET url information to pass on when referencing any
+ *   external url
+ * @param  $disable_controls - whether to hide all edit/delete functionality on this form
+ */
 function draw_graph_items_list($item_list, $filename, $url_data, $disable_controls) {
 	global $config;
 
@@ -1445,9 +1493,12 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 	}
 }
 
-/* is_menu_pick_active - determines if current selection is active
-   @arg $menu_url - url of current page
-   @returns true if active, false if not
+/**
+ * is_menu_pick_active - determines if current selection is active
+ *
+ * @param  $menu_url - url of current page
+ *
+ * @return true if active, false if not
 */
 function is_menu_pick_active($menu_url) {
 	static $url_array, $url_parts;
@@ -1514,7 +1565,11 @@ function is_menu_pick_active($menu_url) {
 	return false;
 }
 
-/* draw_menu - draws the cacti menu for display in the console */
+/**
+ * draw_menu - draws the cacti menu for display in the console
+ *
+ * @param  string - the user menu to display
+ */
 function draw_menu($user_menu = '') {
 	global $config, $user_auth_realm_filenames, $menu, $menu_glyphs;
 
@@ -1665,12 +1720,15 @@ function draw_menu($user_menu = '') {
 	print '</ul></div></td></tr></table></td></tr>';
 }
 
-/* draw_actions_dropdown - draws a table the allows the user to select an action to perform
-		on one or more data elements
-   @arg $actions_array - an array that contains a list of possible actions. this array should
-		be compatible with the form_dropdown() function
-   @arg $delete_action - if there is a delete action that should suppress removal of rows
-		specify it here.  If you don't want any delete actions, set to 0.*/
+/**
+ * draw_actions_dropdown - draws a table the allows the user to select an action to perform
+ * on one or more data elements
+ *
+ * @param  $actions_array - an array that contains a list of possible actions. this array should
+ *   be compatible with the form_dropdown() function
+ * @param  $delete_action - if there is a delete action that should suppress removal of rows
+ *   specify it here.  If you don't want any delete actions, set to 0.
+ */
 function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	global $config;
 
@@ -1772,11 +1830,14 @@ function form_area($text) { ?>
 	</tr>
 <?php }
 
-/* is_console_page - determines if current passed url is considered to be
-		  a console page
-   @arg url - url to be checked
-   @returns true if console page, false if not
-*/
+/**
+ * is_console_page - determines if current passed url is considered to be
+ * a console page.
+ *
+ * @param  url - url to be checked
+ *
+ * @return true if console page, false if not
+ */
 function is_console_page($url) {
 	global $menu;
 
@@ -2623,10 +2684,12 @@ function html_spikekill_js() {
 	<?php
 }
 
-/* html_common_header - prints a common set of header, css and javascript links
-   @arg title - the title of the page to place in the browser
-   @arg selectedTheme - optionally sets a specific theme over the current one
-*/
+/**
+ * html_common_header - prints a common set of header, css and javascript links
+ *
+ * @param  title - the title of the page to place in the browser
+ * @param  selectedTheme - optionally sets a specific theme over the current one
+ */
 function html_common_header($title, $selectedTheme = '') {
 	global $path2calendar, $path2timepicker, $path2colorpicker, $path2ms, $path2msfilter;
 
@@ -2938,6 +3001,7 @@ function html_help_page($page) {
 
 function html_auth_header($section, $browser_title, $legend, $title, $hook_args = array()) {
 	global $themes;
+
 	?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -2965,10 +3029,7 @@ function html_auth_header($section, $browser_title, $legend, $title, $hook_args 
 
 function html_auth_footer($section, $error = '', $html = '') {
 	?>
-							</table>
-						</div>
-						<?php api_plugin_hook("{$section}_after"); ?>
-					</form>
+					</table>
 				</div>
 				<?php api_plugin_hook("{$section}_after"); ?>
 			</form>

@@ -28,29 +28,22 @@
 
 class CactiTableFilter {
 	public $form_header    = '';
-
 	public $form_action    = '';
-
 	public $form_id        = '';
-
 	public $action_url     = '';
-
 	public $action_label   = '';
-
 	public $session_var    = 'sess_default';
-
 	public $default_filter = array();
-
 	public $rows_label     = '';
-
 	public $js_extra       = '';
+	public $dynamic        = true;
 
 	private $item_rows     = array();
-
 	private $filter_array  = array();
 
 	public function __construct($form_header = '', $form_action = '', $form_id = '',
-		$form_width = '', $session_var = '', $action_url = '', $action_label = '') {
+		$form_width = '', $session_var = '', $action_url = '', $action_label = false) {
+
 		global $item_rows;
 
 		$this->form_header   = $form_header;
@@ -70,8 +63,9 @@ class CactiTableFilter {
 		/* default filter */
 		$this->default_filter = array(
 			'rows' => array(
-				'row1' => array(
+				array(
 					'filter' => array(
+						'method'        => 'textbox',
 						'friendly_name'  => __('Search'),
 						'filter'         => FILTER_DEFAULT,
 						'placeholder'    => __('Enter a search term'),
@@ -81,22 +75,22 @@ class CactiTableFilter {
 						'max_length'     => '120'
 					),
 					'rows' => array(
+						'method'        => 'drop_array',
 						'friendly_name' => $this->rows_label,
 						'filter'        => FILTER_VALIDATE_INT,
-						'method'        => 'drop_array',
 						'default'       => '-1',
 						'pageset'       => true,
 						'array'         => $this->item_rows
 					),
 					'go' => array(
+						'method'  => 'submit',
 						'display' => __('Go'),
 						'title'   => __('Apply filter to table'),
-						'method'  => 'submit',
 					),
 					'clear' => array(
+						'method'  => 'button',
 						'display' => __('Clear'),
 						'title'   => __('Reset filter to default values'),
-						'method'  => 'button',
 					)
 				)
 			),
@@ -194,7 +188,6 @@ class CactiTableFilter {
 							print '<div class="formColumn"><div class="formFieldName">' . __('Presets') . '</div></div>' . PHP_EOL;
 
 							break;
-
 						default:
 							if (isset($field_array['friendly_name'])) {
 								print '<div class="formColumn"><div class="formFieldName"><label for="' . $field_name . '">' . $field_array['friendly_name'] . '</label></div></div>' . PHP_EOL;
@@ -258,7 +251,7 @@ class CactiTableFilter {
 						case 'drop_multi':
 						case 'drop_color':
 						case 'drop_tree':
-							if ($field_array['method'] != 'textbox') {
+							if ($field_array['method'] != 'textbox' && $this->dynamic) {
 								$changeChain .= ($changeChain != '' ? ', ':'') . '#' . $field_name;
 							}
 
