@@ -937,6 +937,13 @@ function setHotKeys() {
 }
 
 function loadScript(className, url='') {
+	if(!urlPath) {
+		let location = window.location.pathname;
+		let dirname = location.substring(0, location.lastIndexOf("/") + 1);
+		urlPath = (dirname.search('/install/') !== -1) ? dirname + '../' : dirname;
+		console.log(urlPath);
+	}
+
 	if(midWinter_classes.includes(className) === false) {
 		$.ajax({
 			dataType: 'script',
