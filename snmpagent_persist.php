@@ -34,41 +34,41 @@ chdir(__DIR__);
 
 /* translate well-known textual conventions and SNMP base types to net-snmp */
 $smi_base_datatypes = array(
-	'integer' 			       => 'INTEGER',
-	'integer32'			      => 'Integer32',
-	'unsigned32' 		     => 'Unsigned32',
-	'gauge' 			         => 'Gauge',
-	'gauge32' 			       => 'Gauge32',
-	'counter' 			       => 'Counter',
-	'counter32' 		      => 'Counter32',
-	'counter64' 		      => 'Counter64',
-	'timeticks' 		      => 'TimeTicks',
-	'octect string' 	   => 'OCTET STRING',
-	'opaque'			         => 'Opaque',
+	'integer'           => 'INTEGER',
+	'integer32'         => 'Integer32',
+	'unsigned32'        => 'Unsigned32',
+	'gauge'             => 'Gauge',
+	'gauge32'           => 'Gauge32',
+	'counter'           => 'Counter',
+	'counter32'         => 'Counter32',
+	'counter64'         => 'Counter64',
+	'timeticks'         => 'TimeTicks',
+	'octet string'      => 'OCTET STRING',
+	'opaque'            => 'Opaque',
 	'object identifier' => 'OBJECT IDENTIFIER',
-	'ipaddress' 		      => 'IpAddress',
-	'networkaddress' 	  => 'IpAddress',
-	'bits' 				         => 'OCTET STRING',
-	'displaystring' 	   => 'STRING',
-	'physaddress' 		    => 'OCTET STRING',
-	'macaddress' 		     => 'OCTET STRING',
-	'truthvalue' 		     => 'INTEGER',
-	'testandincr' 		    => 'Integer32',
-	'autonomoustype' 	  => 'OBJECT IDENTIFIER',
-	'variablepointer' 	 => 'OBJECT IDENTIFIER',
-	'rowpointer' 		     => 'OBJECT IDENTIFIER',
-	'rowstatus' 		      => 'INTEGER',
-	'timestamp' 		      => 'TimeTicks',
-	'timeinterval' 		   => 'Integer32',
-	'dateandtime' 		    => 'STRING',
-	'storagetype' 		    => 'INTEGER',
-	'tdomain' 			       => 'OBJECT IDENTIFIER',
-	'taddress' 			      => 'OCTET STRING'
+	'ipaddress'         => 'IpAddress',
+	'networkaddress'    => 'IpAddress',
+	'bits'              => 'OCTET STRING',
+	'displaystring'     => 'STRING',
+	'physaddress'       => 'OCTET STRING',
+	'macaddress'        => 'OCTET STRING',
+	'truthvalue'        => 'INTEGER',
+	'testandincr'       => 'Integer32',
+	'autonomoustype'    => 'OBJECT IDENTIFIER',
+	'variablepointer'   => 'OBJECT IDENTIFIER',
+	'rowpointer'        => 'OBJECT IDENTIFIER',
+	'rowstatus'         => 'INTEGER',
+	'timestamp'         => 'TimeTicks',
+	'timeinterval'      => 'Integer32',
+	'dateandtime'       => 'STRING',
+	'storagetype'       => 'INTEGER',
+	'tdomain'           => 'OBJECT IDENTIFIER',
+	'taddress'          => 'OCTET STRING'
 );
 
-$data				           = false;
-$eol				            = "\n";
-$cache  			         = array();
+$data = false;
+$eol = "\n";
+$cache = array();
 $cache_last_refresh = false;
 
 /* process command line options */
