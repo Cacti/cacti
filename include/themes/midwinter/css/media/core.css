@@ -90,7 +90,7 @@ fieldset {
 }
 
 .cactiContent {
-    height: calc(100vh - 5rem) !important;
+    height: calc(100vh - 5rem);
 }
 
 .cactiPageBottom {
@@ -1452,10 +1452,12 @@ table.cactiTable {
 }
 
 .formRow {
-    display: table;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
     width: 100%;
     line-height: 30px;
-    margin-bottom: 1px;
+    margin-bottom: 2px;
     overflow: hidden;
     background-color: var(--background-content);
 }
@@ -1466,43 +1468,29 @@ table.cactiTable {
 }
 
 .formColumnLeft {
-    padding-bottom: 32768px;
-    float: left;
-    display: table-column;
+    display: inline-flex;
+    align-items: flex-start;
+    flex: 1;
     width: 55%;
-    text-align: left;
+    padding: 1rem 4rem 1rem 1rem;
     background-color: var(--background-content-element);
-    margin-bottom: -32768px;
 }
 
 .formColumnRight {
-    padding-bottom: 32768px;
-    float: left;
-    display: table-column;
+    display: inline-flex;
+    align-items: center;
+    flex: 1;
     width: 45%;
-    text-align: left;
+    padding: 1rem;
     background-color: var(--background-content-element);
-    margin-bottom: -32768px;
 }
 
 .formData {
-    display: inline-block;
-    vertical-align: middle;
-    float: left;
-    padding-top: 5px;
-    padding-left: 15px;
-    padding-right: 40px;
-    padding-bottom: 15px;
 }
 
 .formFieldName {
     color: var(--text-color-lighter);
-    display: inline-block;
-    float: left;
     text-align: left;
-    padding-left: 15px;
-    padding-right: 40px;
-    padding-bottom: 15px;
 }
 
 .formFieldDescription {
@@ -1528,7 +1516,7 @@ table.cactiTable {
     color: var(--text-color-normal);
     font-size: var(--fs-big);
     padding-left: 5px;
-    margin-top: 2rem;
+    margin-top: 0.25rem;
     box-sizing: border-box;
     background-color: var(--background-progress-semilight);
 }

@@ -133,7 +133,7 @@ html[data-theme-color-auto='on'] .compact_nav_icon[data-helper='toggleColorMode'
 
 /* Main Content Area */
 .cactiContent {
-    height: calc(100vh - 4rem) !important;
+    height: calc(100vh - 4rem);
     border-top: 1px solid var(--border-color-light);
 }
 
@@ -146,6 +146,7 @@ html[data-theme-color-auto='on'] .compact_nav_icon[data-helper='toggleColorMode'
     position: absolute;
     bottom: 0;
     left: 4rem;
+    z-index: 100;
     width: calc(100vw - 4rem);
     height: 4rem;
     box-sizing: border-box;
@@ -379,8 +380,7 @@ html[data-kiosk-mode='on'] #mdw-ConsoleNavigation {
     box-sizing: border-box;
     width: 100%;
     height: 100%;
-    padding-left: 1rem;
-    padding-right: 4rem;
+    padding: 0.5rem 1rem;
     overflow: auto;
 }
 

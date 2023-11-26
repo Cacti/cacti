@@ -32,7 +32,7 @@ html {
     --background-highlight: hsl(var(--hue), 19%, 17%);
     --background-progress: hsl(var(--special2-hue), 69%, 52%);
     --background-progress-mediumlight: hsla(var(--special2-hue), 69%, 52%, 0.2);
-    --background-progress-semilight: hsla(var(--special2-hue), 69%, 52%, 0.1);
+    --background-progress-semilight: hsla(var(--special2-hue), 69%, 40%, 0.1);
     --background-dark: hsl(var(--hue), 19%, 17%);
     --border-color: hsl(var(--hue), 19%, 21%);
     --border-color-semilight: hsla(var(--hue), 19%, 100%, 0.04);
