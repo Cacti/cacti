@@ -224,7 +224,7 @@ function host_new_graphs_save($host_id) {
 					}
 				}
 			}
-		} elseif (preg_match('/^d_(\d+)_(\d+)_(\d+)_(\w+)/', $var, $matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:field_nam
+		} elseif (preg_match('/^d_(\d+)_(\d+)_(\d+)_(\w+)/', $var, $matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: data_template_id, 4:field_name
 			if (empty($matches[1])) { // this is a new graph from template field
 				$values['cg'][$matches[2]]['data_template'][$matches[3]][$matches[4]] = $val;
 			} else { // this is a data query field

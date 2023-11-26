@@ -551,7 +551,7 @@ function template_edit() {
 
 	?>
 	<script type='text/javascript'>
-		function deleteFinialize(options, data) {
+		function deleteFinalize(options, data) {
 			$('#cdialog').dialog({
 				title: '<?php print __('Delete Item from Device Template'); ?>',
 				close: function() {
@@ -573,7 +573,7 @@ function template_edit() {
 				var options = {
 					url: $(this).attr('href'),
 					noState: true,
-					funcEnd: 'deleteFinialize',
+					funcEnd: 'deleteFinalize',
 					elementId: 'cdialog',
 				};
 

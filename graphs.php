@@ -1721,8 +1721,8 @@ function form_actions() {
 					)
 				),
 				2 => array(
-					'smessage' => __('Choose a Graph Template and click \'Continue\' to Change the Graph Template for the following Graph.  Note that only comptible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources.'),
-					'pmessage' => __('Choose a Graph Template and click \'Continue\' to Change the Graph Template for the following Graphs.  Note that only comptible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources.'),
+					'smessage' => __('Choose a Graph Template and click \'Continue\' to Change the Graph Template for the following Graph.  Note that only compatible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources.'),
+					'pmessage' => __('Choose a Graph Template and click \'Continue\' to Change the Graph Template for the following Graphs.  Note that only compatible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources.'),
 					'cont'    => __('Change Graph Template'),
 					'extra'    => array(
 						'graph_template_id' => array(

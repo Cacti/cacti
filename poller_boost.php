@@ -1324,7 +1324,7 @@ function boost_log_child_statistics($rrd_updates, $child) {
 }
 
 function boost_purge_cached_png_files($forcerun) {
-	/* remove stale png's from the cache.  I consider png's stale afer 1 hour */
+	/* remove stale png's from the cache.  I consider png's stale after 1 hour */
 	if ((read_config_option('boost_png_cache_enable') == 'on') || $forcerun) {
 		$cache_directory = read_config_option('boost_png_cache_directory');
 		$remove_time     = time() - 3600;

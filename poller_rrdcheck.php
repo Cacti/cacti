@@ -201,7 +201,7 @@ function rrdcheck_master_handler($forcerun) {
 		rrdcheck_debug('Skipping Periodic Rollup - Boost will handle the Periodic Roll-up Cycle');
 	} else {
 		if ($run_interval == 'boost') {
-			cacti_log("WARNING: RRDcheck interval set to 'boost' and boost not enabled, reseting to default of 4 hours", false, 'RRDCHECK');
+			cacti_log("WARNING: RRDcheck interval set to 'boost' and boost not enabled, resetting to default of 4 hours", false, 'RRDCHECK');
 
 			set_config_option('rrdcheck_interval', 240);
 
