@@ -330,14 +330,14 @@ function form_actions() {
 						'title_format' => array(
 							'method'  => 'textbox',
 							'title'   => __('Title Format:'),
-							'default' => '<template_titel> (1)',
+							'default' => '<template_title> (1)',
 							'width'   => 25
 						)
 					)
 				),
 				3 => array(
-					'smessage' => __('Click \'Continue\' to Syncronize the following Color Template to its Aggregates.'),
-					'pmessage' => __('Click \'Continue\' to Syncronize the following Color Templates to its Aggregates.'),
+					'smessage' => __('Click \'Continue\' to Synchronize the following Color Template to its Aggregates.'),
+					'pmessage' => __('Click \'Continue\' to Synchronize the following Color Templates to its Aggregates.'),
 					'scont'    => __('Synchronize Color Template'),
 					'pcont'    => __('Synchronize Color Templates')
 				),

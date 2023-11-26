@@ -889,7 +889,7 @@ function form_actions() {
 					'pcont'    => __('Delete Aggregate Graphs')
 				),
 				2 => array(
-					'smessage' => __('Click \'Continue\' to Migrate the following Legacy Aggreate to a Templated Aggregate Graph.'),
+					'smessage' => __('Click \'Continue\' to Migrate the following Legacy Aggregate to a Templated Aggregate Graph.'),
 					'pmessage' => __('Click \'Continue\' to Migrate the following Legacy Aggregates to Templated Aggregate Graphs.'),
 					'scont'    => __('Migrate to Aggregate Graph'),
 					'pcont'    => __('Migrate to Aggregate Graphs'),
@@ -897,18 +897,18 @@ function form_actions() {
 						'title_format' => array(
 							'method'  => 'drop_array',
 							'array'   => $aggregate_templates,
-							'title'   => __('Aggreate Template:'),
+							'title'   => __('Aggregate Template:'),
 							'default' => array_key_first($aggregate_templates)
 						)
 					)
 				),
 				3 => array(
-					'message' => __('Click \'Continue\' to Combine the following Aggreates into an Aggregate Graph.'),
+					'message' => __('Click \'Continue\' to Combine the following Aggregates into an Aggregate Graph.'),
 					'cont'    => __('Combine Aggregate Graphs'),
 					'extra'    => array(
 						'title_format' => array(
 							'method'  => 'textbox',
-							'title'   => __('Aggreate Name:'),
+							'title'   => __('Aggregate Name:'),
 							'default' => __('New Aggregate'),
 							'width'   => 40,
 							'size'    => 40
@@ -974,7 +974,7 @@ function form_actions() {
 					'extra'    => array(
 						'tree_item_id' => array(
 							'method'  => 'drop_branch',
-							'title'   => __('Desination Branch:'),
+							'title'   => __('Destination Branch:'),
 							'id'      => $tree['id']
 						)
 					),

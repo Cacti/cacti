@@ -1856,7 +1856,7 @@ function form_actions() {
 					'extra'    => array(
 						'tree_item_id' => array(
 							'method'  => 'drop_branch',
-							'title'   => __('Desination Branch:'),
+							'title'   => __('Destination Branch:'),
 							'id'      => $tree['id']
 						)
 					),

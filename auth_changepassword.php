@@ -375,7 +375,7 @@ if (isset_request_var('ref')) {
 	}
 
 	if (!$valid) {
-		cacti_log('WARNING: User attempted to access Cacti from unkonwn URL', false, 'AUTH');
+		cacti_log('WARNING: User attempted to access Cacti from unknown URL', false, 'AUTH');
 
 		raise_message('problems_with_page', __('There are problems with the Change Password page.  Contact your Cacti administrator right away.'), MESSAGE_LEVEL_ERROR);
 		header('Location:index.php');
