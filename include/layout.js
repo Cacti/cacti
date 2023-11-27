@@ -3653,6 +3653,7 @@ function applyGraphFilter() {
 
 function cleanUrlParameters(href) {
 	href = href.replace('action=tree_content', 'action=tree');
+	href = href.replace('?header=false', '?').replace('&header=false', '');
 	href = href.replace('?nostate=true', '?').replace('&nostate=true', '').replace('?&', '?');
 
 	return href;
