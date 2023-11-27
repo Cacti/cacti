@@ -223,6 +223,36 @@ class Installer implements JsonSerializable {
 			DB_STATUS_SKIPPED => 'fa fa-check-circle'
 		);
 
+		$this->defaultAutomation = array(
+			array(
+				'name'          => 'Net-SNMP Device',
+				'hash'          => '07d3fe6a52915f99e642d22e27d967a4',
+				'sysDescrMatch' => 'Linux',
+				'sysNameMatch'  => '',
+				'sysOidMatch'   => '',
+				'availMethod'   => 2,
+				'sequence'      => 1
+			),
+			array(
+				'name'          => 'Windows Device',
+				'hash'          => '5b8300be607dce4f030b026a381b91cd',
+				'sysDescrMatch' => 'Windows',
+				'sysNameMatch'  => '',
+				'sysOidMatch'   => '',
+				'availMethod'   => 2,
+				'sequence'      => 2
+			),
+			array(
+				'name'          => 'Cisco Router',
+				'hash'          => 'cae6a879f86edacb2471055783bec6d0',
+				'sysDescrMatch' => '(Cisco Internetwork Operating System Software|IOS)',
+				'sysNameMatch'  => '',
+				'sysOidMatch'   => '',
+				'availMethod'   => 2,
+				'sequence'      => 3
+			)
+		);
+
 		$this->errors        = array();
 		$this->templates     = array();
 		$this->eula          = read_config_option('install_eula', true);
@@ -339,6 +369,10 @@ class Installer implements JsonSerializable {
 					$this->setCronInterval($value);
 
 					break;
+				case 'DefaultTemplate':
+					$this->setDefaultTemplate($value);
+
+					break;
 				case 'AutomationMode':
 					$this->setAutomationMode($value);
 
@@ -388,36 +422,6 @@ class Installer implements JsonSerializable {
 	 * @arg install_params - optional key/value array where key matches
 	 *                       XXX from setXXX/getXXX functions  */
 	private function setDefaults($install_params = array()) {
-		$this->defaultAutomation = array(
-			array(
-				'name'          => 'Net-SNMP Device',
-				'hash'          => '07d3fe6a52915f99e642d22e27d967a4',
-				'sysDescrMatch' => 'Linux',
-				'sysNameMatch'  => '',
-				'sysOidMatch'   => '',
-				'availMethod'   => 2,
-				'sequence'      => 1
-			),
-			array(
-				'name'          => 'Windows Device',
-				'hash'          => '5b8300be607dce4f030b026a381b91cd',
-				'sysDescrMatch' => 'Windows',
-				'sysNameMatch'  => '',
-				'sysOidMatch'   => '',
-				'availMethod'   => 2,
-				'sequence'      => 2
-			),
-			array(
-				'name'          => 'Cisco Router',
-				'hash'          => 'cae6a879f86edacb2471055783bec6d0',
-				'sysDescrMatch' => '(Cisco Internetwork Operating System Software|IOS)',
-				'sysNameMatch'  => '',
-				'sysOidMatch'   => '',
-				'availMethod'   => 2,
-				'sequence'      => 3
-			)
-		);
-
 		$this->tables             = $this->getTables();
 
 		// You have to set the paths before you start executing commands
@@ -427,6 +431,7 @@ class Installer implements JsonSerializable {
 		$this->permissions        = $this->getPermissions();
 		$this->modules            = $this->getModules();
 
+		$this->setDefaultTemplate($this->getDefaultTemplate());
 		$this->setTemplates($this->getTemplates());
 		$this->setProfile($this->getProfile());
 		$this->setAutomationMode($this->getAutomationMode());
@@ -1205,6 +1210,65 @@ class Installer implements JsonSerializable {
 		}
 
 		return $this->extensions;
+	}
+
+
+	private function getDefaultTemplate($force = false) {
+		global $config;
+
+		$default_template = read_config_option('default_template', true);
+		log_install_always('templates', 'getDefaultTemplate(): Default Device Template is \'' . $default_template . '\'');
+
+		$sysDescrMatch = $config['cacti_server_os'] == 'win32' ? 'Windows' : 'Linux';
+		foreach ($this->defaultAutomation as $item) {
+			if ($item['sysDescrMatch'] == $sysDescrMatch || !empty($default_template)) {
+				$host_template_id = db_fetch_cell_prepared(
+					'SELECT id
+					FROM host_template
+					WHERE hash = ?',
+					array($item['hash'])
+				);
+
+				if (!empty($host_template_id)) {
+					if ($host_template_id != $default_template) {
+						log_install_always('templates', 'getDefaultTemplate(): Changing Device Template to \'' . $item['name'] . '\'');
+
+						set_config_option('default_template', $host_template_id);
+					}
+					break;
+				} else {
+					log_install_debug('templates', 'getDefaultTemplate(): Unable to find Device Template for \'' . $item['name'] . '\'');
+				}
+			}
+		}
+
+		if (empty($default_template) && !$force) {
+			set_default_action('default_template', '');
+			$default_template = $this->getDefaultTemplate(true);
+		}
+
+		return $default_template;
+	}
+
+	private function setDefaultTemplate($param_default_template = '') {
+		$default_template = null;
+		if (!empty($param_default_template)) {
+			foreach ($this->defaultAutomation as $item) {
+				if ($item[''] == $param_default_template) {
+					$default_template = $param_default_template;
+					break;
+				}
+			}
+		}
+
+		if (empty($default_template)) {
+			$default_template = $this->getDefaultTemplate();
+		}
+
+		set_config_option('default_template', $default_template);
+
+		$default_template = $this->getDefaultTemplate();
+		log_install_always('template', 'setDefaultTemplate(): Device default template is \'' . $default_template . '\'');
 	}
 
 	/* getTemplates() - returns a list of expected templates and whether
@@ -3198,30 +3262,6 @@ class Installer implements JsonSerializable {
 
 			$this->setProgress(Installer::PROGRESS_COMPLETE);
 			$this->setStep(Installer::STEP_ERROR);
-		}
-	}
-
-	private function setDefaultTemplate() {
-		$default_template = read_config_option('default_template');
-		log_install_always('', __('Current Default Device Template is \'%s\'', $default_template));
-
-		if (read_config_option('default_template', true) == '') {
-			foreach($this->defaultAutomation as $item) {
-				$host_template_id = db_fetch_cell_prepared('SELECT id
-					FROM host_template
-					WHERE hash = ?',
-					array($item['hash']));
-
-				if (!empty($host_template_id)) {
-					log_install_always('', __('Setting the Default Device Template to \'%s\'', $item['name']));
-
-					set_config_option('default_template', $host_template_id);
-
-					break;
-				} else {
-					log_install_always('', __('Unable to find Device Template to \'%s\'', $item['name']));
-				}
-			}
 		}
 	}
 
