@@ -62,11 +62,11 @@
 .no-col18 th:nth-child(18), .no-col18 td:nth-child(18),
 .no-col19 th:nth-child(19), .no-col19 td:nth-child(19),
 .no-col20 th:nth-child(20), .no-col20 td:nth-child(20),
-.no-col16 th:nth-child(21), .no-col21 td:nth-child(21),
-.no-col17 th:nth-child(22), .no-col22 td:nth-child(22),
-.no-col18 th:nth-child(23), .no-col23 td:nth-child(23),
-.no-col19 th:nth-child(24), .no-col24 td:nth-child(24),
-.no-col20 th:nth-child(25), .no-col25 td:nth-child(25) {
+.no-col21 th:nth-child(21), .no-col21 td:nth-child(21),
+.no-col22 th:nth-child(22), .no-col22 td:nth-child(22),
+.no-col23 th:nth-child(23), .no-col23 td:nth-child(23),
+.no-col24 th:nth-child(24), .no-col24 td:nth-child(24),
+.no-col25 th:nth-child(25), .no-col25 td:nth-child(25) {
     display: none !important;
 }
 

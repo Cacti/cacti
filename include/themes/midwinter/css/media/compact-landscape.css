@@ -143,7 +143,7 @@ html[data-theme-color-auto='on'] .compact_nav_icon[data-helper='toggleColorMode'
 }
 
 .saveRowParent {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     left: 4rem;
     z-index: 100;
@@ -249,9 +249,18 @@ html[data-kiosk-mode='on'] #mdw-ConsoleNavigation {
     padding-right: 1rem;
 }
 
+[class^='mdw-ConsoleNavigationBox'] input {
+    display: none;
+}
+
 [class^='mdw-ConsoleNavigationBox'].visible {
     transform: translate(0);
 }
+
+[class^='mdw-ConsoleNavigationBox'].visible input {
+    display: block;
+}
+
 
 #nav li a,
 .nav li a {
@@ -368,6 +377,7 @@ html[data-kiosk-mode='on'] #mdw-ConsoleNavigation {
     border: 1px solid var(--background-progress-mediumlight);
     border-radius: 5px !important;
     color: var(--text-color-normal);
+    font-size: var(--fs-regular);
 }
 
 .navBox-content {
