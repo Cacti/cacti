@@ -560,7 +560,7 @@ if (defined('CACTI_CLI_ONLY')) {
 	# control characters primarily of use for TUI's. Search the net for a
 	# comprehensive reference on these, in here we need to be brief. basically
 	# you'll begin with a CSI, followed by parameters, and end with a particular
-	# "command" (which essientially dictates what the preceeding parameters do).
+	# "command" (which essientially dictates what the preceding parameters do).
 	define('CLI_CSI',            CLI_ESC . "\x9B");  # begin a control sequence
 
 	# these are shorthands and conclude a sequence directly
@@ -575,7 +575,7 @@ if (defined('CACTI_CLI_ONLY')) {
 	define('CLI_SGR_BLINK_FAST',	            6);  # rapid blink
 
 	# color. these are SGR sequences, so as noted above, those need to
-	# be concluded with CLI_SGR_END. ommitted 'SGR' from constant name to keep at
+	# be concluded with CLI_SGR_END. omitted 'SGR' from constant name to keep at
 	# least some semblance of brevity.
 	# basic 8 foreground colors
 	define('CLI_FG_BLACK',                     30);
