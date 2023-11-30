@@ -112,7 +112,7 @@ foreach ($parms as $parameter) {
 			break;
 		case '--threads':
 			if (!is_numeric(trim($value))) {
-				print 'ERROR: You must supply a valid Number of Treads or skip this parametr for default value (' . $threads . ')' . PHP_EOL;
+				print 'ERROR: You must supply a valid Number of Treads or skip this parameter for default value (' . $threads . ')' . PHP_EOL;
 				exit(1);
 			}
 

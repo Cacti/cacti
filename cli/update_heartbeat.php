@@ -359,7 +359,7 @@ function display_help() {
 	print "Optional:\n";
 	print "    --data-template-id=N  - Only update Cacti Data Source Heartbeats that are associated with a Data Template id.\n";
 	print "    --prev-heartbeat=N    - Only update Cacti Data Sources that currently have the Heartbeat specified.\n";
-	print "    --force               - If the hearbeat selected does not match the Data Source Profile, update the\n";
+	print "    --force               - If the heartbeat selected does not match the Data Source Profile, update the\n";
 	print "                            Data Source Profile to match the command.  Otherwise, the script will exit.\n";
 	print "    --debug               - Display verbose output during execution\n\n";
 	print "List Options:\n";

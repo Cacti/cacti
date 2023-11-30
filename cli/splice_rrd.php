@@ -414,7 +414,7 @@ function spliceRRDs(&$new_rrd, &$old_flat, &$old_dsnames) {
 
 							$new_value = $new_rrd['rra'][$rra_num]['database'][$cdp_ds_num][$time];
 
-							//print "DSName: $dsname, NewVAlue: $new_value, OrigValue: $v, OldValue: $old_value\n";
+							//print "DSName: $dsname, NewValue: $new_value, OrigValue: $v, OldValue: $old_value\n";
 						}
 					}
 				} else {
@@ -698,7 +698,7 @@ function flattenXML(&$xml) {
 	return $newxml;
 }
 
-/** getMaxValue - Obtains tha max value from the timestamp array
+/** getMaxValue - Obtains the max value from the timestamp array
  *  for use in debug output.
  * @param mixed $data
  */
@@ -714,7 +714,7 @@ function getMaxValue(&$data) {
 	return $max;
 }
 
-/** getAvgValue - Obtains tha average value from the timestamp array
+/** getAvgValue - Obtains the average value from the timestamp array
  *  for use in debug output.
  * @param mixed $data
  */

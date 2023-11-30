@@ -258,7 +258,7 @@ if (cacti_sizeof($parms)) {
 		$fin = fopen('php://stdin', 'r');
 
 		while(true) {
-			printf(PHP_EOL . 'Precheck completed with no Errors.  Do you want ot continue [Y|N]? ');
+			printf(PHP_EOL . 'Precheck completed with no Errors.  Do you want to continue [Y|N]? ');
 
 			$line = strtolower(trim(fgets($fin)));
 

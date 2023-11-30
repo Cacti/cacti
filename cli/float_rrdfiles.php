@@ -615,7 +615,7 @@ function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $
 }
 
 /**
- * flaot_launch_child - this function will launch collector children based upon
+ * float_launch_child - this function will launch collector children based upon
  *   the maximum number of threads and the process type
  *
  * @param $thread_id  (int)    The Thread id to launch
