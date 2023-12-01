@@ -975,7 +975,7 @@ $settings['visual'] = array(
 	),
 	'autocomplete_delay' => array(
 		'friendly_name' => __('Autocomplete Delay'),
-		'description'   => __('The number of milliseonds to wait before initiating a call to the server for autocomplete. Any value less than 500 will assume 500ms'),
+		'description'   => __('The number of milliseconds to wait before initiating a call to the server for autocomplete. Any value less than 500 will assume 500ms'),
 		'method'        => 'textboxx',
 		'default'       => '500',
 		'max_length'    => '5',

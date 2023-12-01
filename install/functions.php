@@ -220,7 +220,7 @@ function db_install_execute($sql, $params = array(), $log = true) {
 }
 
 /**
- * Provides databaase fetch functions during install
+ * Provides database fetch functions during install
  *
  * @param  string   $func
  * @param  string   $sql
