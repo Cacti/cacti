@@ -344,7 +344,7 @@ if ($child == 0) {
 
 		if ($rate > 0) {
 			$estimate = round($rrdfiles / $rate, 0);
-			$complate = ($end - $start) - $estimate;
+			$complete = ($end - $start) - $estimate;
 		} else {
 			$estimate = 'unknown';
 		}
