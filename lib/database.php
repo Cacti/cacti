@@ -230,7 +230,13 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 function db_check_reconnect($db_conn = false, $log = true) {
 	global $config, $database_details;
 
-	include($config['base_path'] . '/include/config.php');
+	if (file_exists($config['base_path'] . '/include/config.php')) {
+		include($config['base_path'] . '/include/config.php');
+	} else {
+		global $database_hostname, $database_username, $database_password, $database_default;
+		global $database_type, $database_port, $database_retries;
+		global $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca;
+	}
 
 	if (cacti_sizeof($database_details) && $db_conn !== false) {
 		foreach($database_details as $det) {
