@@ -161,10 +161,12 @@ function update_graphs_data_source_templates_totals($force) {
 
 	set_config_option('maintenance_totals_update', time());
 
-	object_cache_update_device_totals();
-	object_cache_update_data_source_totals();
-	object_cache_update_graph_totals();
-	object_cache_update_aggregate_totals();
+	if (db_column_exists('host_template', 'devices')) {
+		object_cache_update_device_totals();
+		object_cache_update_data_source_totals();
+		object_cache_update_graph_totals();
+		object_cache_update_aggregate_totals();
+	}
 }
 
 function reindex_devices() {
