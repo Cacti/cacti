@@ -291,6 +291,7 @@ if (cacti_sizeof($parms)) {
 					exit(1);
 				}
 
+				break;
 			case '--version':
 			case '-V':
 			case '-v':
