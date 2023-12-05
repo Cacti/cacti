@@ -993,8 +993,8 @@ function utilities_get_mysql_recommendations() {
 		);
 	} else {
 		if (version_compare($link_ver, '5.2', '>=')) {
-			if (!isset($variables['innodb_version']) && 
-				($database == 'MySQL' || ($database == 'MariaDB' && version_compare($link_ver, '11.0', '<')))) {
+			if (!isset($variables['innodb_version']) &&
+				($database == 'MySQL' || ($database == 'MariaDB' && version_compare($link_ver, '10.7', '<')))) {
 
 				$recommendations += array(
 					'innodb' => array(
