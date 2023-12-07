@@ -190,23 +190,23 @@ html[data-kiosk-mode='on'] #mdw-ConsoleNavigation {
 }
 
 .mdw-ConsoleNavigationBox {
-    top: 4rem !important;
+    top: 4rem;
     width: 55rem;
     height: calc(100vh - 4rem);
     display: flex;
     flex-direction: column;
 }
 
-.mdw-ConsoleNavigationBox[data-width="1"]     { width:   19rem !important; }
-.mdw-ConsoleNavigationBox[data-width="1.5"]   { width: 28.5rem !important; }
-.mdw-ConsoleNavigationBox[data-width="2"]     { width:   38rem !important; }
-.mdw-ConsoleNavigationBox[data-width="3"]     { width:   57rem !important; }
-.mdw-ConsoleNavigationBox[data-width="4"]     { width:   76rem !important; }
-.mdw-ConsoleNavigationBox[data-width="5"]     { width:   95rem !important; }
-.mdw-ConsoleNavigationBox[data-width="auto"]  { width:    auto !important; }
+.mdw-ConsoleNavigationBox[data-width="1"]     { width:   19rem; }
+.mdw-ConsoleNavigationBox[data-width="1.5"]   { width: 28.5rem; }
+.mdw-ConsoleNavigationBox[data-width="2"]     { width:   38rem; }
+.mdw-ConsoleNavigationBox[data-width="3"]     { width:   57rem; }
+.mdw-ConsoleNavigationBox[data-width="4"]     { width:   76rem; }
+.mdw-ConsoleNavigationBox[data-width="5"]     { width:   95rem; }
+.mdw-ConsoleNavigationBox[data-width="auto"]  { width:    auto; }
 
 .mdw-ConsoleNavigationBox[data-height="half"] {
-    top: unset !important;
+    top: unset;
     bottom: 0 !important;
     height: 28rem;
     max-height: 100vh;
@@ -532,31 +532,34 @@ html[data-kiosk-mode='on'] #mdw-ConsoleNavigation {
 
 @media screen and (max-height: 450px){
     [class^='mdw-ConsoleNavigationBox'] {
-        height: 100vh;
+        height: 100vh !important;
         max-height: 100vh;
         top: 0;
         width: calc(100vw - 4rem) !important;
         max-width: calc(100vw - 4rem) !important;
+        border-top: none;
     }
 
     [class^='mdw-ConsoleNavigationBox'] .header {
         display: none;
     }
+
+    .navBox-header-button {
+        margin-right: 1rem;
+    }
+
     [class^='mdw-ConsoleNavigationBox'] ul.nav,
     [class^='mdw-ConsoleNavigationBox'] ul#nav {
-        height: 100vh;
+        height: 100%;
+        box-sizing: border-box;
         padding-top: 1rem;
     }
 
+    .navBox-header-dropdown {
+        display: none;
+    }
+    
     #compact_user_menu {
         margin-bottom: 10px;
     }
 }
-
-
-
-/* ############### test only ##############
-.cactiTable .tableHeader > th:first-child{
-    text-align: left;
-}
- */
