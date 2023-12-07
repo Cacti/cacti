@@ -21,6 +21,11 @@
   +-------------------------------------------------------------------------+
 */
 
+/* global variables */
+let midWinter_tap_count;
+let midWinter_tap_clientX;
+let midWinter_tap_clientY;
+
 /* cache local and vendor libs */
 let midWinter_classes = new Array();
 loadScript('navigationBox', 'include/themes/midwinter/midwinter.js');
@@ -38,7 +43,6 @@ initStorageItem('midWinter_Animations', 'on', 'animations');
 initStorageItem('midWinter_widthNavigationBox_settings', 'three');
 
 setHotKeys();
-
 
 function themeReady() {
 
@@ -885,13 +889,48 @@ function checkThemeColorSetup(color_mode) {
 	}
 }
 
+
 function kioskMode(event = false) {
-		if (event === false) {
-			setDocumentAttribute('kiosk-mode', 'off');
-		}else {
-			toggleCactiNavigationBox(event);
-			setDocumentAttribute('kiosk-mode', 'on');
+	if (event === false) {
+		setDocumentAttribute('kiosk-mode', 'off');
+		if(isMobile.any() != null) {
+			$('#cactiContent').off('click');
 		}
+	}else {
+		toggleCactiNavigationBox(event);
+		setDocumentAttribute('kiosk-mode', 'on');
+		if(isMobile.any() != null) {
+			$('#cactiContent').off('click').on('click', function(e) {
+				let tap;
+				midWinter_tap_count++;
+
+				if(midWinter_tap_count === 1) {
+					midWinter_tap_clientX = e.clientX;
+					midWinter_tap_clientY = e.clientY;
+
+					tap = setTimeout(function(){
+						midWinter_tap_count = 0;
+						midWinter_tap_clientX = 0;
+						midWinter_tap_clientY = 0;
+					},300);
+				}else if (midWinter_tap_count === 2) {
+					if(Math.abs(e.clientX-midWinter_tap_clientX) <= 5 && Math.abs(e.clientY-midWinter_tap_clientY) <=5) {
+						e.preventDefault();
+						clearTimeout(tap);
+						midWinter_tap_count = 0;
+						midWinter_tap_clientX = 0;
+						midWinter_tap_clientY = 0;
+						kioskMode(false);
+					}
+				}else {
+					midWinter_tap_count = 0;
+					midWinter_tap_clientX = 0;
+					midWinter_tap_clientY = 0;
+					kioskMode(false);
+				}
+			});
+		}
+	}
 }
 
 function setHotKeys() {
