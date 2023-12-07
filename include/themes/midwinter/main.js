@@ -22,9 +22,9 @@
 */
 
 /* global variables */
-let midWinter_tap_count;
-let midWinter_tap_clientX;
-let midWinter_tap_clientY;
+let midWinter_tap_count = 0;
+let midWinter_tap_clientX = 0;
+let midWinter_tap_clientY = 0;
 
 /* cache local and vendor libs */
 let midWinter_classes = new Array();
@@ -914,7 +914,7 @@ function kioskMode(event = false) {
 						midWinter_tap_clientY = 0;
 					},300);
 				}else if (midWinter_tap_count === 2) {
-					if(Math.abs(e.clientX-midWinter_tap_clientX) <= 5 && Math.abs(e.clientY-midWinter_tap_clientY) <=5) {
+					if(Math.abs(e.clientX-midWinter_tap_clientX) < 10 && Math.abs(e.clientY-midWinter_tap_clientY) < 10) {
 						e.preventDefault();
 						clearTimeout(tap);
 						midWinter_tap_count = 0;
