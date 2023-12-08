@@ -2449,6 +2449,7 @@ function get_script_query_path($args, $script_path, $host_id) {
 /**
  * verify a given index_order
  * @param array $raw_xml 	- parsed XML array
+ *
  * @return bool 			- index_order field valid
  */
 function verify_index_order($raw_xml) {
@@ -2463,13 +2464,16 @@ function verify_index_order($raw_xml) {
 
 	/* list each of the input fields for this snmp query */
 	foreach ($raw_xml['fields'] as $field_name => $field_array) {
-		if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
-			/* create a list of all values for this index */
-			array_push($xml_inputs, $field_name);
+		if (isset($field_array['direction'])) {
+			if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
+				/* create a list of all values for this index */
+				array_push($xml_inputs, $field_name);
+			}
 		}
 	}
 
 	$all_index_order_fields_found = true;
+
 	/* the xml file contains an ordered list of 'indexable' fields */
 	if (isset($raw_xml['index_order'])) {
 		$index_order_array = explode(':', $raw_xml['index_order']);
