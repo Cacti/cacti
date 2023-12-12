@@ -227,6 +227,15 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 	return false;
 }
 
+/**
+ * db_check_reconnect - Check the database connection.  If the connection is gone
+ *  attempt to reconnect, otherwise return the connection
+ *
+ * @param bool|object  The connection to check
+ * @param bool         Wether or not to log the connection check
+ *
+ * @return bool        The database true is the database is connected else false
+ */
 function db_check_reconnect($db_conn = false, $log = true) {
 	global $config, $database_details;
 
@@ -279,7 +288,7 @@ function db_check_reconnect($db_conn = false, $log = true) {
 		db_close();
 
 		// Connect to the database server
-		db_connect_real(
+		$cnn_id = db_connect_real(
 			$database_hostname,
 			$database_username,
 			$database_password,
@@ -292,6 +301,14 @@ function db_check_reconnect($db_conn = false, $log = true) {
 			$database_ssl_cert,
 			$database_ssl_ca
 		);
+
+		if ($cnn_id !== false) {
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		return true;
 	}
 }
 
