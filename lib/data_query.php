@@ -2380,7 +2380,7 @@ function verify_index_order($raw_xml) {
 
 	/* list each of the input fields for this snmp query */
 	foreach ($raw_xml['fields'] as $field_name => $field_array) {
-		if (isset($field_array['direction'])) {
+		if (is_array($field_array) && isset($field_array['direction'])) {
 			if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
 				/* create a list of all values for this index */
 				array_push($xml_inputs, $field_name);
