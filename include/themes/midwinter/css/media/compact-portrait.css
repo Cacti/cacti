@@ -1,18 +1,18 @@
 /* Compact BreadCrumbBar with Cacti Logo */
 #mdw-ConsolePageHead {
     display: flex;
-    height: 4rem;
-    width: 3rem;                                                    /* <=== changed */
-    background-color: var(--background-content);
+    align-content: flex-start;
     flex-direction: column;
     flex-wrap: wrap;
-    align-content: flex-start;
+    width: 3rem;                                                    /* <=== changed */
+    height: 4rem;
+    background-color: var(--background-content);
 }
 
 #mdw-ConsolePageHead * {                  /*equal*/
-    background-color: var(--background-content);
     float: left;
     padding-bottom: 0px;
+    background-color: var(--background-content);
 }
 
 #navBreadCrumb {
@@ -21,13 +21,13 @@
 
 #navBackdrop {
     display: block;
-    background: transparent url(./../../images/cacti_logo.svg) no-repeat scroll 50% 50% / 20px auto;
-    background-color: var(--background-navigation);
-    padding-bottom: 0;
     float: left;
     width: 4rem;
     height: 4rem;
+    padding-bottom: 0;
     cursor: pointer;
+    background: transparent url(./../../images/cacti_logo.svg) no-repeat scroll 50% 50% / 20px auto;
+    background-color: var(--background-navigation);
 }
 
 /* Main Content Area */
@@ -38,25 +38,25 @@
 
 /* Console Navigation Area */
 .cactiConsoleNavigationArea {
-    display: flex !important;
-    flex-direction: row;
-    overflow-y: visible !important;
-    width: calc(100vw - 4rem) !important;
-    height: 4rem !important;
     position: absolute;
     top: 0;
     left: 4rem;
+    display: flex !important;
+    overflow-y: visible !important;
+    flex-direction: row;
     justify-content: space-between;
+    width: calc(100vw - 4rem) !important;
+    height: 4rem !important;
     padding: 0;             /* reset core */
     border-top: 0;          /* reset core */
 }
 
 .cactiConsoleNavigationArea .compact {
     display: flex;
-    width: 100%;
-    flex-direction: row;
     align-items: center;
+    flex-direction: row;
     justify-content: flex-start;
+    width: 100%;
 }
 
 .cactiConsoleNavigationArea .compact#compact_user_menu {
@@ -65,15 +65,15 @@
 }
 
 [class^="cactiConsoleNavigation"] [class$="Box"] {
-    box-sizing: border-box;
     position: fixed !important;
+    z-index: 1000;
     top: 4rem !important;
     left: 0;
-    height: calc(100vh - 4rem);
+    box-sizing: border-box;
     width: 100vw;
-    background-color: var(--background-menu);
+    height: calc(100vh - 4rem);
     border-top: 1px solid var(--background-navigation);
-    z-index: 1000;
+    background-color: var(--background-menu);
 }
 
 .mdw-ConsoleNavigationBox .fa,
@@ -92,13 +92,13 @@
 }
 
 .cactiConsoleNavigationArea .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 4rem;
-    border-bottom: 1px solid var(--background-navigation);
     font-size: var(--fs-big);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 4rem;
     color: var(--text-color-navigation-highlight);
+    border-bottom: 1px solid var(--background-navigation);
 }
 
 .cactiConsoleNavigationArea .header > div {
@@ -118,15 +118,15 @@
 .mdw-ConsoleNavigationBox ul#nav,
 .cactiConsoleNavigationBoxSmall ul.nav {
     display: flex;
-    flex-flow: row wrap;
-    writing-mode: vertical-lr;
-    margin: 0.5rem 0;
-    height: calc(100% - 5rem - 2px);
-    max-width: 100%;
-    overflow-y: auto;
     overflow-x: hidden;
-    flex-direction: column;
+    overflow-y: auto;
     align-content: flex-start;
+    flex-flow: row wrap;
+    flex-direction: column;
+    max-width: 100%;
+    height: calc(100% - 5rem - 2px);
+    margin: 0.5rem 0;
+    writing-mode: vertical-lr;
 }
 
 .cactiConsoleNavigationArea #menu::-webkit-scrollbar {
@@ -136,12 +136,12 @@
 }
 
 .cactiConsoleNavigationArea .compact_nav_icon {
+    font-size: var(--fs-semilarge);
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     width: 3rem;
     height: 4rem;
-    font-size: var(--fs-semilarge);
     cursor: pointer;
 }
 
@@ -154,11 +154,11 @@
 }
 
 .cactiConsoleNavigationArea .menu_glyph {
-    color: var(--text-color-navigation-highlight);
     font-size: var(--fs-big);
     font-weight: var(--fw-semibold);
-    padding-left: 1rem;
     width: 1.5rem;
+    padding-left: 1rem;
+    color: var(--text-color-navigation-highlight);
 }
 
 .cactiConsoleNavigationArea .menu_parent {
@@ -176,12 +176,12 @@
 
 .cactiConsoleNavigationArea .menuitem {
     position: relative;
-    width: calc(100vw - 2rem);
     overflow: hidden;
+    width: calc(100vw - 2rem);
     margin: 0.5rem;
     padding: 1rem 0 1rem 1rem;
-    writing-mode: initial;
     background: var(--background-content);
+    writing-mode: initial;
 }
 
 .cactiConsoleNavigationArea .menuitem:hover {

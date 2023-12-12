@@ -95,7 +95,7 @@ class navigationBox {
     build() {
         /* keep all navigation boxes inside a common DOM container */
         if($('#mdw-SideBarContainer').length === 0) {
-            $('<div id="mdw-SideBarContainer"></div>').insertAfter('#mdw-GridContainer');
+            $('<div id="mdw-SideBarContainer" class="mdw-SideBarContainer"></div>').insertAfter('#mdw-GridContainer');
         }
         this.#container += '</div></div>';
         let navigationBox = $(this.#container).appendTo('#mdw-SideBarContainer');

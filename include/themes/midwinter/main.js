@@ -198,9 +198,9 @@ function setupTheme() {
 	// duplicate cactiConsolePageHeadBackdrop for compact mode
 
 	if ($('#cactiContent').length) {
-		$('<div id="mdw-GridContainer">' +
-			'<div id="mdw-ConsolePageHead">'+
-				'<div id="navBreadCrumb">'+
+		$('<div id="mdw-GridContainer" class="mdw-GridContainer">' +
+			'<div id="mdw-ConsolePageHead" class="mdw-ConsolePageHead">'+
+				'<div id="navBreadCrumb" class="navBreadCrumb">'+
 				'<div class="rubric"></div><div class="separator">/</div>'+
 				'<div class="category"></div><div class="separator">/</div>'+
 				'<div class="action"></div>'+
@@ -212,8 +212,8 @@ function setupTheme() {
 				'</div>'+
 				'<div id="navControl"></div>'+
 			'</div>' +
-			'<div id="mdw-ConsoleNavigation" class="mdw-ConsoleNavigationArea"></div>' +
-			'<div id="mdw-Main"></div>' +
+			'<div id="mdw-ConsoleNavigation" class="mdw-ConsoleNavigation"></div>' +
+			'<div id="mdw-Main" class="mdw-Main"></div>' +
 		'</div>').insertBefore("#breadCrumbBar");
 
 		let element_main = $('#navigation_right').detach();
@@ -222,10 +222,10 @@ function setupTheme() {
 	}
 
 	// -- redesign console navigation area
-	if ($('.mdw-ConsoleNavigationArea').length !== 0) {
+	if ($('.mdw-ConsoleNavigation').length !== 0) {
 
 		if ($('#navBackdrop').length === 0 ) {
-			$('.mdw-ConsoleNavigationArea').empty().prepend('<div class="compact_nav_icon_menu" id="navBackdrop"></div>');
+			$('.mdw-ConsoleNavigation').empty().prepend('<div class="compact_nav_icon_menu" id="navBackdrop"></div>');
 			if (cactiConsoleAllowed) {
 				$("#navBackdrop").click( function() {
 					/* hide open menu boxes first and remove menu selection */
@@ -247,7 +247,7 @@ function setupTheme() {
 				element_menu = loadElement('menu', 'about.php', true);
 			}
 
-			$('.mdw-ConsoleNavigationArea').append(
+			$('.mdw-ConsoleNavigation').append(
 				'<div class="compact_nav_icon_menu" id="compact_tab_menu"></div>'
 				+'<div class="compact_nav_icon_menu" id="compact_user_menu"></div>'
 			);

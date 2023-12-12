@@ -1,4 +1,4 @@
-#mdw-GridContainer {
+.mdw-GridContainer {
     display: grid;
     grid-template-areas: 'sidebar header'
                          'sidebar main'
@@ -7,16 +7,16 @@
     grid-template-rows: 4rem calc(100vh - 4rem);
 }
 
-#mdw-ConsolePageHead {
-    grid-area: header;
+.mdw-ConsolePageHead {
     display: flex;
-    height: 4rem;
-    background-color: var(--background-navigation-top);
-    flex-direction: row;
-    flex-wrap: wrap;
     align-content: flex-start;
     align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    height: 4rem;
     padding: 0 12px 0 0;
+    background-color: var(--background-navigation-top);
+    grid-area: header;
 
     * {
         float: left;
@@ -29,11 +29,11 @@
 
 }
 
-#navBreadCrumb {
-    display: flex;
-    align-items: center;
+.navBreadCrumb {
     font-size: var(--fs-big);
     font-weight: var(--fw-medium);
+    display: flex;
+    align-items: center;
     padding: 0 0 0 1.5rem;
     color: var(--text-color-normal);
     background: transparent;
@@ -42,9 +42,9 @@
     & div {
         margin-right: 0.5rem;
         padding: 0;
+        cursor: pointer;
         text-align: center;
         color: var(--text-color-highlight-a);
-        cursor: pointer;
     }
 }
 
@@ -55,13 +55,13 @@
 #navFilter,
 #navControl,
 #filterTableOnTopControl {
-    display: flex;
-    align-items: center;
     font-size: var(--fs-big);
     font-weight: var(--fw-medium);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     color: var(--text-color-normal);
     background: transparent;
-    justify-content: flex-end;
 }
 
 #navFilter {
@@ -70,18 +70,18 @@
 
 #navControl {
     height: 3rem !important;
-    border-left: 1px solid var(--border-color);
     padding-left: 2px;
+    border-left: 1px solid var(--border-color);
 }
 
 #navControl .compact_nav_icon,
 #navFilter .compact_nav_icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 3rem;
-    width: 3rem;
     font-size: var(--fs-regular);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
     cursor: pointer;
 }
 
@@ -116,31 +116,31 @@ html[data-theme-color-auto='on'] .compact_nav_icon[data-helper='toggleColorMode'
 }
 
 #navBackdrop {
+    z-index: 1000;
     display: block;
-    background: transparent url(./../../images/cacti_logo.svg) no-repeat scroll 50% 50% / 20px auto;
-    background-color: var(--background-navigation);
-    padding-bottom: 0;
     float: left;
     width: 4rem;
     height: 4rem;
+    padding-bottom: 0;
     cursor: pointer;
     border-right: 1px solid var(--box-shadow-color);
-    z-index: 1000;
+    background: transparent url(./../../images/cacti_logo.svg) no-repeat scroll 50% 50% / 20px auto;
+    background-color: var(--background-navigation);
 }
 
 #filterTableOnTopControl .compact_nav_icon {
     display: flex;
-    justify-content: center;
     align-items: center;
-    height: 3rem;
+    justify-content: center;
     width: 3rem;
+    height: 3rem;
     cursor: pointer;
 }
 
 /* Main Content Area */
-#mdw-Main {
-    grid-area: main;
+.mdw-Main {
     border-top: 1px solid var(--border-color-light);
+    grid-area: main;
 
     &:has(.saveRowParent) {
         padding-bottom: 4rem;
@@ -149,48 +149,49 @@ html[data-theme-color-auto='on'] .compact_nav_icon[data-helper='toggleColorMode'
 
 .saveRowParent {
     position: fixed;
+    z-index: 100;
     bottom: 0;
     left: 4rem;
-    z-index: 100;
+    box-sizing: border-box;
     width: calc(100vw - 4rem);
     height: 4rem;
-    box-sizing: border-box;
-    background: var(--background-content);
     padding-right: 0.5rem;
     border-top: 1px solid var(--border-color-semilight);
+    background: var(--background-content);
 }
 
 /* Console Navigation Area */
-#mdw-ConsoleNavigation {
-    grid-area: sidebar;
-    display: flex;
-    flex-direction: column;
-    overflow-y: visible !important;
-    justify-content: flex-start;
+.mdw-ConsoleNavigation {
     position:relative;
-    float:left;
     z-index: 1000;
-    background: var(--background-navigation);
+    display: flex;
+    float:left;
+    overflow-y: visible !important;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
     border-right: 1px solid var(--box-shadow-color);
+    background: var(--background-navigation);
+    grid-area: sidebar;
 
     .compact_nav_icon_menu:last-child {
         display: flex;
-        flex-direction: column;
         align-items: stretch;
-        justify-content: flex-end;
         flex: 1;
+        flex-direction: column;
+        justify-content: flex-end;
         margin-bottom: 0.5rem;
     }
 
     .compact_nav_icon {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 3.5rem;
         font-size: var(--fs-semilarge);
-        cursor: pointer;
-        margin-right: -1px;
         position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 3.5rem;
+        margin-right: -1px;
+        cursor: pointer;
 
         & > span {
             display: none;
@@ -198,24 +199,24 @@ html[data-theme-color-auto='on'] .compact_nav_icon[data-helper='toggleColorMode'
 
         /* CSS driven tooltip */
         &[data-tooltip]:not([data-tooltip=""])::after {
-            background: var(--background-lowlight);
-            opacity: 0.9;
-            color: var(--text-color-normal);
-            padding: 0.25rem 1rem;
-            height: fit-content;
-            width: fit-content;
-            white-space: nowrap;
-            border-radius: 5px;
+            font-size: var(--fs-regular);
             position: absolute;
-            text-align: center;
             left: 50%;
+            width: fit-content;
+            height: fit-content;
+            padding: 0.25rem 1rem;
             content: attr(data-tooltip);
+            transition: 0.1s;
             transform: translate(2.75rem, 0) scale(0);
             transform-origin: top;
-            transition: 0.1s;
-            box-shadow: var(--box-shadow-color) 0 10px 20px;
+            text-align: center;
+            white-space: nowrap;
+            opacity: 0.9;
+            color: var(--text-color-normal);
             border: 1px solid var(--border-color);
-            font-size: var(--fs-regular);
+            border-radius: 5px;
+            background: var(--background-lowlight);
+            box-shadow: var(--box-shadow-color) 0 10px 20px;
         }
 
         &[data-tooltip]:not([data-tooltip=""]):not(.active):hover:after {
@@ -228,11 +229,49 @@ html[data-theme-color-auto='on'] .compact_nav_icon[data-helper='toggleColorMode'
 }
 
 .mdw-ConsoleNavigationBox {
+    position: absolute;
+    z-index: 900;
     top: 4rem;
-    width: 55rem;
-    height: calc(100vh - 4rem);
+    left: 4rem;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
+    width: 55rem;
+    min-width: 19rem;
+    max-width: calc(100vw - 5rem);
+    height: calc(100vh - 4rem);
+    transition: transform 0.5s;
+    transition-timing-function: ease-in-out;
+    transform: translateX(-125%);
+    border-top: 1px solid var(--border-color-light);
+    border-right: 1px solid var(--background-navigation);
+    border-bottom: 1px solid var(--background-navigation);
+    border-radius: 2px;
+    background-color: var(--background-menu);
+    box-shadow: -2px 10px 5px 2px var(--box-shadow-color);
+
+    &[data-align='right'] {
+        right: 0;
+        left: unset;
+        transform: translateX(+125%);
+        border: unset;
+        border-top: 1px solid var(--border-color-light);
+        border-bottom: 1px solid var(--background-navigation);
+        border-left: 1px solid var(--border-color);
+        box-shadow: 0 10px 5px 0 var(--box-shadow-color);
+
+        .navBox-header {
+            padding-right: 1rem;
+        }
+    }
+
+    &.visible {
+        transform: translate(0);
+
+        & input {
+            display: block;
+        }
+    }
 
     &[data-width="1"]     { width:   19rem; }
     &[data-width="1.5"]   { width: 28.5rem; }
@@ -248,106 +287,64 @@ html[data-theme-color-auto='on'] .compact_nav_icon[data-helper='toggleColorMode'
         height: 28rem;
         max-height: 100vh;
     }
+
     &[data-height="half"] .navBox-header {
         text-align: right;
     }
+
+    & input {
+        display: none;
+    }
+
+    & ul.nav,
+    & ul#nav {
+        display: flex;
+        overflow-x: auto;
+        align-content: flex-start;
+        flex-flow: row wrap;
+        flex-direction: column;
+        width: 100% !important;
+        height: 100%;
+        writing-mode: vertical-lr;
+
+        [data-width='auto'] & {
+            flex-direction: row;
+        }
+    }
 }
-
-
-[class^='mdw-ConsoleNavigationBox'] {
-    box-sizing: border-box;
-    min-width: 19rem;
-    max-width: calc(100vw - 5rem);
-    position: absolute;
-    left: 4rem;
-    background-color: var(--background-menu);
-    box-shadow: -2px 10px 5px 2px var(--box-shadow-color);
-    border-top: 1px solid var(--border-color-light);
-    border-right: 1px solid var(--background-navigation);
-    border-bottom: 1px solid var(--background-navigation);
-    border-radius: 2px;
-    transition: transform 0.5s;
-    transition-timing-function: ease-in-out;
-    transform: translateX(-125%);
-    z-index: 900;
-}
-
-[class^='mdw-ConsoleNavigationBox'][data-align='right'] {
-    left: unset;
-    border: unset;
-    right: 0;
-    box-shadow: 0 10px 5px 0 var(--box-shadow-color);
-    border-top: 1px solid var(--border-color-light);
-    border-left: 1px solid var(--border-color);
-    border-bottom: 1px solid var(--background-navigation);
-    transform: translateX(+125%);
-}
-
-[class^='mdw-ConsoleNavigationBox'][data-align='right'] .navBox-header {
-    padding-right: 1rem;
-}
-
-[class^='mdw-ConsoleNavigationBox'] input {
-    display: none;
-}
-
-[class^='mdw-ConsoleNavigationBox'].visible {
-    transform: translate(0);
-}
-
-[class^='mdw-ConsoleNavigationBox'].visible input {
-    display: block;
-}
-
 
 #nav li a,
 .nav li a {
     padding: unset;
 }
 
-[class^='mdw-ConsoleNavigationBox'] ul.nav,
-[class^='mdw-ConsoleNavigationBox'] ul#nav {
-    display: flex;
-    flex-flow: row wrap;
-    align-content: flex-start;
-    writing-mode: vertical-lr;
-    height: 100%;
-    width: 100% !important;
-    overflow-x: auto;
-    flex-direction: column;
-}
-
-[class^='mdw-ConsoleNavigationBox'][data-width='auto'] ul.nav,
-[class^='mdw-ConsoleNavigationBox'][data-width='auto'] ul#nav {
-    flex-direction: row;
-}
 
 .navBox-header {
-    flex-shrink: 0;
-    height: calc(3.5rem - 2px);
-    background: var(--background-lowlight);
-    border-bottom: 1px solid var(--border-color-semilight);
     display: flex;
     align-items: center;
+    flex-shrink: 0;
+    height: calc(3.5rem - 2px);
     text-align: center;
+    border-bottom: 1px solid var(--border-color-semilight);
+    background: var(--background-lowlight);
 }
 
 .navBox-header-title {
-    width: 100%;
     font-size: var(--fs-big);
-}
+    width: 100%;
 
-.navBox-header-title > span {
-    margin-left: 2rem;
+    > span {
+        margin-left: 2rem;
+    }
 }
 
 .navBox-header-button,
 .navBox-header-dropdown {
-    width: 2.5rem;
-    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 2.5rem;
+    height: 100%;
     cursor: pointer;
 }
 
@@ -364,23 +361,23 @@ html[data-theme-color-auto='on'] .compact_nav_icon[data-helper='toggleColorMode'
 
 /* Dropdown Content (Hidden by Default) */
 .navBox-header-dropdown-content {
-    display: none;
     position: absolute;
-    background-color: var(--background);
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
     z-index: 1;
     top: 2rem;
     right: 0;
+    display: none;
+    white-space: nowrap;
     border: 1px solid var(--border-color);
     border-radius: 4px;
-    white-space: nowrap;
+    background-color: var(--background);
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
 
 /* Links inside the dropdown */
 .navBox-header-dropdown-content a {
+    display: block;
     padding: 0.5rem 1rem;
     text-decoration: none;
-    display: block;
 }
 
 /* Change color of dropdown links on hover */
@@ -399,37 +396,37 @@ html[data-theme-color-auto='on'] .compact_nav_icon[data-helper='toggleColorMode'
 }
 
 .navBox-search {
-    flex-shrink: 0;
-    height: calc(3.5rem - 2px);
-    background: var(--background-lowlight);
-    border-bottom: 1px solid var(--border-color-semilight);
     display: flex;
-    flex-direction: column;
     align-items: stretch;
-    text-align: center;
+    flex-direction: column;
+    flex-shrink: 0;
     justify-content: center;
+    height: calc(3.5rem - 2px);
     padding: 0 2rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color-semilight);
+    background: var(--background-lowlight);
 }
 
 .navBox-search input {
+    font-size: var(--fs-regular);
+    color: var(--text-color-normal);
     border: 1px solid var(--background-progress-mediumlight);
     border-radius: 5px !important;
-    color: var(--text-color-normal);
-    font-size: var(--fs-regular);
 }
 
 .navBox-content {
-    flex: 1;
     overflow: auto;
+    flex: 1;
 }
 
 
 #mdw_tree {
+    overflow: auto;
     box-sizing: border-box;
     width: 100%;
     height: 100%;
     padding: 0.5rem 1rem;
-    overflow: auto;
 }
 
 #mdw_tree_search {
@@ -451,21 +448,21 @@ html[data-theme-color-auto='on'] .compact_nav_icon[data-helper='toggleColorMode'
 
 
 #mdw-SideBarContainer .menu_glyph {
-    color: var(--background-progress);
     font-size: var(--fs-big);
     font-weight: var(--fw-semibold);
-    padding-left: 0.75rem;
     width: 1.5rem;
+    padding-left: 0.75rem;
+    color: var(--background-progress);
 }
 
 #mdw-SideBarContainer .menu_parent {
+    font-size: var(--fs-big);
     display: flex !important;
     flex-direction: row;
     flex-shrink: 1;
     margin-bottom: 0.3rem;
     cursor: default;
     pointer-events: none;
-    font-size: var(--fs-big);
 }
 
 #mdw-SideBarContainer .menu_parent:not(.active) {
@@ -474,8 +471,8 @@ html[data-theme-color-auto='on'] .compact_nav_icon[data-helper='toggleColorMode'
 
 #mdw-SideBarContainer .menuitem {
     position: relative;
-    width: 16rem;
     overflow: hidden;
+    width: 16rem;
     margin: 1rem 0 1rem 1rem;
     writing-mode: initial;
 }
@@ -516,46 +513,34 @@ html[data-theme-color-auto='on'] .compact_nav_icon[data-helper='toggleColorMode'
     margin-left: 0 !important;
 }
 
-.cactiConsoleContentArea #filterTableOnTop {
-    /* padding-top: 0.6em; */
-}
-
-/* General Compact Styling Elements */
-.cactiShadow {
-    display: none;
-}
-
-@media screen and (max-height: 450px){
+@media screen and (max-height: 450px) {
     [class^='mdw-ConsoleNavigationBox'] {
-        height: 100vh !important;
-        max-height: 100vh;
         top: 0;
         width: calc(100vw - 4rem) !important;
         max-width: calc(100vw - 4rem) !important;
+        height: 100vh !important;
+        max-height: 100vh;
         border-top: none;
-    }
 
-    [class^='mdw-ConsoleNavigationBox'] .header {
-        display: none;
+        .header {
+            display: none;
+        }
+
+        & ul.nav,
+        & ul#nav {
+            flex-direction: row;
+            box-sizing: border-box;
+            height: 100%;
+            padding-top: 1rem;
+        }
     }
 
     .navBox-header-button {
         margin-right: 1rem;
     }
 
-    [class^='mdw-ConsoleNavigationBox'] ul.nav,
-    [class^='mdw-ConsoleNavigationBox'] ul#nav {
-        height: 100%;
-        box-sizing: border-box;
-        padding-top: 1rem;
-    }
-
     .navBox-header-dropdown {
         display: none;
-    }
-
-    #compact_user_menu {
-        margin-bottom: 10px;
     }
 }
 
@@ -564,21 +549,26 @@ html[data-kiosk-mode='on'] {
         grid-template-columns: 0 auto;
         grid-template-rows: 0 auto;
     }
-    #mdw-Main {
-        height: 100vh;
-        border-top: none;
+
+    #mdw-ConsolePageHead {
+        display: none;
     }
-    #mdw-Main:has(.saveRowParent) {
-        height: calc(100vh - 4rem);
-    }
-    .saveRowParent {
-        width: 100vw;
-        left: 0;
-    }
+
     #mdw-ConsoleNavigation {
         display: none !important;
     }
-    #mdw-ConsolePageHead {
-        display: none;
+
+    #mdw-Main {
+        height: 100vh;
+        border-top: none;
+
+        &:has(.saveRowParent) {
+            height: calc(100vh - 4rem);
+        }
+    }
+
+    .saveRowParent {
+        left: 0;
+        width: 100vw;
     }
 }
