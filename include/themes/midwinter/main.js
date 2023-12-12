@@ -196,24 +196,29 @@ function setupTheme() {
 	}
 
 	// duplicate cactiConsolePageHeadBackdrop for compact mode
-	if ($('#mdw-ConsolePageHead').length === 0 ) {
-		$('<div id="mdw-ConsolePageHead">'+
-			'<div id="navBreadCrumb">'+
+
+	if ($('#cactiContent').length) {
+		$('<div id="mdw-GridContainer">' +
+			'<div id="mdw-ConsolePageHead">'+
+				'<div id="navBreadCrumb">'+
 				'<div class="rubric"></div><div class="separator">/</div>'+
 				'<div class="category"></div><div class="separator">/</div>'+
 				'<div class="action"></div>'+
+				'</div>' +
+				'<div id="navSearch"></div>'+
+				'<div id="navFilter">'+
+				//'<div id="reportrange"style="cursor: pointer; padding: 5px 10px; border: 1px solid var(--border-color);">' +
+				//'<i className="fa fa-calendar"></i>&nbsp;<span></span> <i className="fa fa-caret-down"></i>' +
+				'</div>'+
+				'<div id="navControl"></div>'+
 			'</div>' +
-			'<div id="navSearch"></div>'+
-			'<div id="navFilter">'+
-	//			'<div id="reportrange"style="cursor: pointer; padding: 5px 10px; border: 1px solid var(--border-color);">' +
-	//			'<i className="fa fa-calendar"></i>&nbsp;<span></span> <i className="fa fa-caret-down"></i>' +
-			'</div>'+
-			'<div id="navControl"></div>'+
+			'<div id="mdw-ConsoleNavigation" class="mdw-ConsoleNavigationArea"></div>' +
+			'<div id="mdw-Main"></div>' +
 		'</div>').insertBefore("#breadCrumbBar");
-	}
 
-	if ($('.mdw-ConsoleNavigationArea').length === 0 && $('.cactiContent').length !== 0)  {
-		$('<div id="mdw-ConsoleNavigation" class="mdw-ConsoleNavigationArea"></div>').insertBefore('#cactiContent');
+		let element_main = $('#navigation_right').detach();
+		$(element_main).appendTo($('#mdw-Main'));
+		$('#cactiContent').remove();
 	}
 
 	// -- redesign console navigation area
@@ -894,13 +899,13 @@ function kioskMode(event = false) {
 	if (event === false) {
 		setDocumentAttribute('kiosk-mode', 'off');
 		if(isMobile.any() != null) {
-			$('#cactiContent').off('click');
+			$('#mdw-Main').off('click');
 		}
 	}else {
 		toggleCactiNavigationBox(event);
 		setDocumentAttribute('kiosk-mode', 'on');
 		if(isMobile.any() != null) {
-			$('#cactiContent').off('click').on('click', function(e) {
+			$('#mdw-Main').off('click').on('click', function(e) {
 				let tap;
 				midWinter_tap_count++;
 

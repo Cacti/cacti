@@ -89,10 +89,6 @@ fieldset {
     height: 2rem;
 }
 
-.cactiContent {
-    height: calc(100vh - 5rem);
-}
-
 .cactiPageBottom {
     display: none;
 }
@@ -917,8 +913,7 @@ ul#breadcrumbs {
 }
 
 
-.cactiContent {
-    width: 100%;
+#mdw-Main {
     background: var(--background-content);
 }
 
