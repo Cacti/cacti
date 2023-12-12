@@ -128,6 +128,8 @@ Cacti CHANGELOG
 -issue#5589: When a graph has a real long cdef in graph debug mode, it forces an undesirable scroll
 -issue#5590: Secondary LDAP server not evaluated when the first one has failed
 -issue#5602: Missing "break" for case statement in cli/add_device.php
+-issue#5609: XML Bug when parsing Data Query XML Resource File when no field direction attribute is specified
+-issue#5612: Function db_check_reconnect() does not properly return a value
 -feature#5577: Provide new templates for ArubaOS switch, Aruba wifi controller and HPE iLO to be available during install
 -feature#5597: Provide new templates for Arubai OSCX 6x00 switch to be available during install
 
