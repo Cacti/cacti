@@ -1,44 +1,49 @@
 Cacti CHANGELOG
 
 1.2.26
--issue#5464: PHP warning when view Data Source Info mode with new Data Source
--issue#5478: Add records about last reindex, rrdcleaner, ...
+-security#GHSA-xwqc-7jc4-xm73: XSS vulnerability when importing a template file
+-security#GHSA-pfh9-gwm6-86vp: RCE vulnerability when managing links
+-security#GHSA-vr3c-38wh-g855: SQL Injection vulnerability when managing poller devices
+-security#GHSA-wc73-r2vw-59pr: XSS vulnerability when adding new devices
+-security#GHSA-q7g7-gcf6-wh4x: XSS vulnerability when viewing data sources in debug mode
+-security#GHSA-w85f-7c4w-7594: SQL Injection vulnerability when managing SNMP Notification Receivers
+-issue#5464: When viewing data sources, an undefined variable error may be seen
+-issue#5478: Improvements for Poller Last Run Date
 -issue#5481: Attempting to edit a Data Query that does not exist throws warnings and not an GUI error
--issue#5483: Cacti 1.2.25 ubuntu server 22.04.3 php8.1 add device error
--issue#5485: Selecting a host device in System Utilities - View Data Query Cache raises error in cacti log
--issue#5489: Remove_graphs.php does not handle "--preserve" option
--issue#5490: Database failure causes infinite recursion in cacti_log() followed by machine lockup
--issue#5492: Cacti 1.2.25 ss_host_cpu.php CPU graphs not updating anymore on Windows servers
+-issue#5483: Improve PHP 8.1 support when adding devices
+-issue#5485: Viewing Data Query Cache can cause errors to be logged
+-issue#5489: Preserve option is not properly honoured when removing devices at command line
+-issue#5490: Infinite recursion is possible during a database failure
+-issue#5492: Monitoring Host CPU's does not always work on Windows endpoints
 -issue#5493: Multi select drop down list box not rendered correctly in Chrome and Edge
--issue#5494: Typo error in name used in inserts array for selective_plugin_debug
--issue#5495: Upon upgrade, cacti falsely assumes that a plugin is not compatible, when it could simply not be present
--issue#5496: Plugin Management CLI does not work when multiple plugins are specified
--issue#5502: Errors related to php 8.3 and page generation including a checkbox
--issue#5503: Note, we could not process all your actions. Details are below
--issue#5514: DS Stats issues warnings when the RRDfile has not been initialized 
--issue#5527: Upgrade from 0.8.8 to 1.2.25 (latest) fails on db upgrade due to missing data source profile id
--issue#5534: When deleting a single Data Source the table data_debug is not purged
--issue#5542: When a form element does not include a 'value' column, provide a more helpful warning message 
--issue#5554: Interface description with equal sign (=) in ifAlias does not show Alias
+-issue#5494: Selective Plugin Debugging may not always work as intended
+-issue#5495: During upgrades, Plugins may be falsely reported as incompatible
+-issue#5496: Plugin management at command line does not work with multiple plugins
+-issue#5502: Improve PHP 8.1 support for incrementing only numbers
+-issue#5503: Allow the renaming of guest and template accounts
+-issue#5514: DS Stats issues warnings when the RRDfile has not been initialized
+-issue#5527: When upgrading, missing data source profile can cause errors to be logged
+-issue#5534: When deleting a single Data Source, purge historical debug data
+-issue#5542: Improvements to form element warnings
+-issue#5554: Some interface aliases do not appear correctly
 -issue#5555: Aggregate graph does not show other percentiles
--issue#5561: Settings table custom size reverted by database repair
--issue#5564: Device list empty due to SQL error 
--issue#5565: Incorrect variable name in change_device cli script
--issue#5572: RRD Checker timeouts to low
--issue#5573: Incorrect URL for editing graph template
--issue#5581: Due to previously never completed upgrade, future upgrades fail due to missing color table keys
--issue#5583: On install ensure Default Device is either Net-SNMP or Cisco Router or allow user to define during install
--issue#5585: Refix Issue #4649 using more appropriate method
--issue#5586: CSV export displays data shifted by rrd step interval
--issue#5589: When a graph has a real long cdef in graph debug mode, it forces an undesirable scroll
+-issue#5561: Settings table updates for large values reverted by database repair
+-issue#5564: When obtaining graph records, error messages may be recorded
+-issue#5565: Unable to change a device's community at command line
+-issue#5572: Increase timeout for RRDChecker
+-issue#5573: When viewing a graph, option to edit template may lead to incorrect URL
+-issue#5581: When upgrading, failures may occur due to missing color table keys
+-issue#5583: On installation, allow a more appropriate template to be used as the default
+-issue#5585: When data input parameters are allowed to be null, allow null
+-issue#5586: CSV Exports may not always output data correctly
+-issue#5589: When debugging a graph, long CDEF's can cause undesirable scrolling
 -issue#5590: Secondary LDAP server not evaluated when the first one has failed
--issue#5602: Missing "break" for case statement in cli/add_device.php
--issue#5609: XML Bug when parsing Data Query XML Resource File when no field direction attribute is specified
--issue#5612: Function db_check_reconnect() does not properly return a value 
--issue#5613: ss_host_disk_php doesn't return data in all possible cases
--feature#5577: Provide new templates for ArubaOS switch, Aruba wifi controller and HPE iLO to be available during install 
--feature#5597: Provide new templates for Arubai OSCX 6x00 switch to be available during install 
-
+-issue#5602: When adding a device, using the bulk walk option can make version information appear
+-issue#5609: When parsing a Data Query resource, an error can be reported if no direction is specified
+-issue#5612: Database reconnection can cause errors to be reported incorrectly
+-issue#5613: fix returned value if $sau is empty
+-feature#5577: Add Aruba switch, Aruba controller and HPE iLO templates
+-feature#5597: Add OSCX 6x00 templates
 
 1.2.25
 -security#GHSA-77rf-774j-6h3p: Protect against Insecure deserialization of filter data
