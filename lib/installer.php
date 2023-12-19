@@ -1141,7 +1141,12 @@ class Installer implements JsonSerializable {
 		$default_template = null;
 		if (!empty($param_default_template)) {
 			foreach ($this->defaultAutomation as $item) {
-				if ($item[''] == $param_default_template) {
+				$host_template_id = db_fetch_cell_prepared('SELECT id
+						FROM host_template
+						WHERE hash = ?',
+						array($item['hash']));
+
+				if (!empty($host_template_id) && $host_template_id == $param_default_template) {
 					$default_template = $param_default_template;
 					break;
 				}
