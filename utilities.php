@@ -3088,13 +3088,15 @@ function snmpagent_utilities_run_cache() {
 
 	?>
 	<script type='text/javascript'>
+	function() {
 		$('.tooltip').tooltip({
 			track: true,
 			show: 250,
 			hide: 250,
 			position: { collision: 'flipfit' },
-			content: function() { return $(this).attr('title'); }
+			content: function() { return DOMPurify.sanitize($(this).attr('title')); }
 		});
+	});
 	</script>
 	<?php
 }
