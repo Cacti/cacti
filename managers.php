@@ -362,11 +362,13 @@ function manager_edit() {
 
 	?>
 	<script language='javascript' type='text/javascript' >
+	$(function() {
 		$('.tooltip').tooltip({
 			track: true,
 			position: { collision: 'flipfit' },
-			content: function() { return $(this).attr('title'); }
+			content: function() { return DOMPurify.sanitize($(this).attr('title')); }
 		});
+	});
 	</script>
 	<?php
 }
@@ -915,7 +917,12 @@ function form_actions() {
 		if (isset_request_var('action_receivers')) {
 			$selected_items = cacti_unserialize(stripslashes(get_nfilter_request_var('selected_graphs_array')));
 
-			if ($selected_items != false) {
+			if ($selected_items !== false) {
+				/* validate the selected items are ids */
+				foreach($selected_items as $index => $id) {
+					input_validate_input_number($id);
+				}
+
 				if (get_nfilter_request_var('drp_action') == '1') { // delete
 					db_execute('DELETE FROM snmpagent_managers WHERE id IN (' . implode(',' ,$selected_items) . ')');
 					db_execute('DELETE FROM snmpagent_managers_notifications WHERE manager_id IN (' . implode(',' ,$selected_items) . ')');

@@ -834,10 +834,11 @@ function applySkin() {
 			var element = $(this);
 
 			if (element.is('div')) {
-				var text = $(this).find('span').html();
+				var text = DOMPurity.sanitize($(this).find('span').html());
 			} else if (element.is('span') || element.is('a')) {
-				var text = $(this).prop('title');
+				var text = DOMPurify.sanitize($(this).prop('title'));
 			}
+
 			return text;
 		}
 	});
