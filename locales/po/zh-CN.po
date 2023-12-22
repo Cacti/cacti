@@ -23,41 +23,37 @@ msgid "About Cacti"
 msgstr "关于Cacti"
 
 #: about.php:44
-#, fuzzy
 msgid "Cacti is designed to be a complete graphing solution based on the RRDtool Time Series Database (TSDB) and Graphing solution. Its goal is to make the Network Administrator's job easier by taking care of all the important details necessary to create meaningful Graphs."
 msgstr "Cacti 被设计成基于RRDtool 框架的完整的画图解决方案. 其目标是通过创建有意义的图形所需的所有必要细节,使网络管理员的工作更轻松."
 
 #: about.php:46
 #, fuzzy, php-format
 msgid "Please see the official %sCacti website%s for information on how to use Cacti, get support, and updates."
-msgstr "请查看 %s Cacti 官方网站 %s 获取信息,支持和更新."
+msgstr "请查看 %s Cacti 官方网站 %s 获取如何使用Cacti的信息，以及获取支持和更新."
 
 #: about.php:50
-#, fuzzy
 msgid "Active Developers"
-msgstr "Cacti 开发者"
+msgstr "活跃的开发者"
 
 #: about.php:51
 msgid "Developers working on Cacti, its Architecture, Documentation and Future Releases."
-msgstr ""
+msgstr "开发Cacti及其体系结构、文档和未来版本的开发人员。"
 
 #: about.php:63
-#, fuzzy
 msgid "Honorable Mentions"
-msgstr "控制台菜单部分"
+msgstr "荣誉提名"
 
 #: about.php:64
 msgid "Contributors to Docuemntation, QA, Packaging, the Forums and our YouTube page."
-msgstr ""
+msgstr "文档、QA、打包以及论坛和我们的YouTube页面的贡献者"
 
 #: about.php:74
-#, fuzzy
 msgid "Emeritus Members"
-msgstr "组成员"
+msgstr "荣誉成员"
 
 #: about.php:75
 msgid "Members of the original Cacti Group that have since moved on in their careers.  We continue to wish them the best."
-msgstr ""
+msgstr "最初的Cacti小组成员，他们的职业生涯从此开始。我们继续祝愿他们一切顺利。"
 
 #: about.php:85
 msgid "Thanks"
@@ -82,7 +78,7 @@ msgstr "授权"
 
 #: about.php:99
 msgid "Cacti is licensed under the GNU GPL:"
-msgstr "Cacti 根据GNU GPL 许可:"
+msgstr "Cacti 遵循 GNU GPL 许可协议:"
 
 #: about.php:101 lib/installer.php:1915
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
@@ -119,9 +115,8 @@ msgid "Convert to Normal Graph"
 msgstr "转换为一般图形"
 
 #: aggregate_graphs.php:44 graphs.php:81 graphs.php:1822
-#, fuzzy
 msgid "Place Graphs on Report"
-msgstr "在报告上放置图表"
+msgstr "在报表中放置图形"
 
 #: aggregate_graphs.php:45
 msgid "Migrate Aggregate to use a Template"
@@ -157,17 +152,14 @@ msgid "The selected Aggregate Graphs represent elements from more than one Graph
 msgstr "选定的聚合图形是来自多个图形模板的元素."
 
 #: aggregate_graphs.php:810
-#, fuzzy
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template."
 msgstr "为了将下面的聚合图形迁移到基于模板的聚合,首先为图形模板 '%s'创建一个聚合模板."
 
 #: aggregate_graphs.php:818
-#, fuzzy
 msgid "The selected Aggregate Graphs does not appear to have any matching Aggregate Templates."
 msgstr "选定的聚合图形是来自多个图形模板的元素."
 
 #: aggregate_graphs.php:819
-#, fuzzy
 msgid "In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist."
 msgstr "为了将下面的聚合图迁移到基于模板的聚合,它们只能使用一个图形模板. 请按 '返回',然后选择仅使用相同图形模板的聚合图形."
 
@@ -186,22 +178,18 @@ msgid "You currently have no reports defined."
 msgstr "您目前没有定义报告."
 
 #: aggregate_graphs.php:886
-#, fuzzy
 msgid "Click 'Continue' to Delete the following Aggregate Graph."
 msgstr "点击 '继续' 删除以下聚合图形."
 
 #: aggregate_graphs.php:887
-#, fuzzy
 msgid "Click 'Continue' to Delete following Aggregate Graphs."
 msgstr "点击 '继续' 删除以下聚合图形."
 
 #: aggregate_graphs.php:888
-#, fuzzy
 msgid "Delete Aggregate Graph"
 msgstr "创建聚合图形"
 
 #: aggregate_graphs.php:889
-#, fuzzy
 msgid "Delete Aggregate Graphs"
 msgstr "创建聚合图形"
 
@@ -10505,7 +10493,7 @@ msgstr "数据模板的名称."
 
 #: include/global_form.php:1118
 msgid "Multiple Instances"
-msgstr "多个实例"
+msgstr "多实例"
 
 #: include/global_form.php:1119
 msgid "Check this checkbox if there can be more than one Graph of this type per Device."
@@ -10514,7 +10502,7 @@ msgstr "如果每个设备可以有多个此类型的图形,请选中此复选�
 #: include/global_form.php:1126
 #, fuzzy
 msgid "Test Data Sources"
-msgstr "有数据源"
+msgstr "测试数据源"
 
 #: include/global_form.php:1127
 #, fuzzy
@@ -11795,7 +11783,6 @@ msgid "General Defaults"
 msgstr "常规默认值"
 
 #: include/global_settings.php:700
-#, fuzzy
 msgid "The default Device Template used on all new Devices."
 msgstr "所有新设备上使用的默认设备模板."
 
@@ -11812,12 +11799,11 @@ msgid "Device Threads"
 msgstr "设备线程"
 
 #: include/global_settings.php:724
-#, fuzzy
 msgid "The default number of Device Threads.  This is only applicable when using the Spine Data Collector."
-msgstr "设备线程的默认数量.这仅适用于使用Spine Data Collector时."
+msgstr "设备线程的默认数量.这仅适用于使用Spine数据采集器时."
 
 #: include/global_settings.php:728
-#, fuzzy, php-format
+#, php-format
 msgid "%s Thread"
 msgstr "%d 线程"
 
@@ -11826,7 +11812,7 @@ msgstr "%d 线程"
 #: include/global_settings.php:733 include/global_settings.php:734
 #: include/global_settings.php:735 include/global_settings.php:736
 #: include/global_settings.php:737
-#, fuzzy, php-format
+#, php-format
 msgid "%s Threads"
 msgstr "%d 线程"
 
@@ -11839,47 +11825,38 @@ msgid "The default Re-index Method to use for all Data Queries."
 msgstr "用于所有数据查询的默认重新索引方法."
 
 #: include/global_settings.php:748
-#, fuzzy
 msgid "Default Interface Speed"
-msgstr "默认图形类型"
+msgstr "默认接口速率"
 
 #: include/global_settings.php:749
-#, fuzzy
 msgid "If Cacti can not determine the interface speed due to either ifSpeed or ifHighSpeed not being set or being zero, what maximum value do you wish on the resulting RRDfiles."
-msgstr "如果Cacti无法确定由于ifSpeed或ifHighSpeed未设置或为零而导致的接口速度，那么您希望在生成的RRDfiles上获得什么最大值。"
+msgstr "如果Cacti由于ifSpeed或ifHighSpeed未设置或为零而无法确定接口速度，您希望在生成的RRDfiles上的最大速率。"
 
 #: include/global_settings.php:753
-#, fuzzy
 msgid "100 Mbps Ethernet"
 msgstr "100 Mbps以太网"
 
 #: include/global_settings.php:754
-#, fuzzy
 msgid "1 Gbps Ethernet"
 msgstr "1 Gbps以太网"
 
 #: include/global_settings.php:755
-#, fuzzy
 msgid "10 Gbps Ethernet"
 msgstr "10 Gbps以太网"
 
 #: include/global_settings.php:756
-#, fuzzy
 msgid "25 Gbps Ethernet"
 msgstr "25 Gbps以太网"
 
 #: include/global_settings.php:757
-#, fuzzy
 msgid "40 Gbps Ethernet"
 msgstr "40 Gbps以太网"
 
 #: include/global_settings.php:758
-#, fuzzy
 msgid "56 Gbps Ethernet"
 msgstr "56 Gbps以太网"
 
 #: include/global_settings.php:759
-#, fuzzy
 msgid "100 Gbps Ethernet"
 msgstr "100 Gbps以太网"
 
@@ -11957,11 +11934,11 @@ msgstr "端口号"
 
 #: include/global_settings.php:846
 msgid "Default UDP Port for all new Devices.  Typically 161."
-msgstr "用于SNMP 调用的默认UDP 端口.  通常为161."
+msgstr "所有设备用于SNMP的默认UDP 端口.  通常为161."
 
 #: include/global_settings.php:854
 msgid "Default SNMP timeout in milli-seconds for all new Devices."
-msgstr "默认所有新设备的SNMP 超时时间 毫秒."
+msgstr "所有新设备的默认SNMP 超时时间，单位为毫秒."
 
 #: include/global_settings.php:862
 msgid "Default SNMP retries for all new Devices."
@@ -11989,7 +11966,6 @@ msgid "Default Ping Port for all new Devices.  With TCP, Cacti will attempt to S
 msgstr "所有新设备的默认Ping 端口. 如使用TCP, Cacti 将尝试发送syn包到端口.如使用UDP,Cacti 则要么成功连接,要么 '端口无法访问' 错误, 以确定设备是否已启动."
 
 #: include/global_settings.php:897
-#, fuzzy
 msgid "Default Ping Timeout value in milli-seconds for all new Devices.  The timeout values to use for Device SNMP, ICMP, UDP and TCP pinging.  ICMP Pings will be rounded up to the nearest second.  TCP and UDP connection timeouts on Windows are controlled by the operating system, and are therefore not recommended on Windows."
 msgstr "所有新设备的默认Ping 超时值(以毫秒为单位).用于设备SNMP,ICMP,UDP和TCP ping的超时值. ICMP Pings 将四舍五入到最接近的秒数. Windows 上的TCP 和UDP 连接超时由操作系统控制,因此不建议在Windows 上使用."
 
@@ -12028,7 +12004,7 @@ msgstr "主题"
 
 #: include/global_settings.php:942 include/global_settings.php:2682
 msgid "Please select one of the available Themes to skin your Cacti with."
-msgstr "请选择其中一个可用的主题来为您的Cacti 提供皮肤."
+msgstr "请选择其中一个可用的主题来作为您的Cacti皮肤."
 
 #: include/global_settings.php:948
 msgid "Table Settings"
@@ -12420,7 +12396,7 @@ msgstr "采集类型"
 
 #: include/global_settings.php:1301
 #, fuzzy
-msgid "The poller type to use.  This setting will take affect at next polling interval."
+msgid "The poller type to use. This setting will take affect at next polling interval."
 msgstr "要使用的poller 类型. 此设置将在下一个采集周期生效."
 
 #: include/global_settings.php:1308
@@ -12431,7 +12407,7 @@ msgstr "采集周期在使用中. 此设置将影响检查和更新RRD 文件的
 #: include/global_settings.php:1314
 #, fuzzy
 msgid "Cron/Daemon Interval"
-msgstr "Cron 周期"
+msgstr "Cron/Daemon 周期"
 
 #: include/global_settings.php:1315
 #, fuzzy
@@ -12440,7 +12416,7 @@ msgstr "Cacti 数据收集器的启动频率。您可以使用 crontab、计划�
 
 #: include/global_settings.php:1321
 msgid "Balance Process Load"
-msgstr "平衡进程负载"
+msgstr "进程负载均衡"
 
 #: include/global_settings.php:1322
 msgid "If you choose this option, Cacti will attempt to balance the load of each poller process by equally distributing poller items per process."
@@ -12506,7 +12482,7 @@ msgstr "poller 同步周期"
 
 #: include/global_settings.php:1391
 #, fuzzy
-msgid "The default polling sync interval to use when creating a poller.  This setting will affect how often remote pollers are checked and updated."
+msgid "The default polling sync interval to use when creating a poller. This setting will affect how often remote pollers are checked and updated."
 msgstr "创建poller 时使用的默认采集同步周期.此设置将影响远程poller 的检查和更新频率."
 
 #: include/global_settings.php:1397
@@ -23322,7 +23298,7 @@ msgstr "没有VDEF"
 
 #, fuzzy
 #~ msgid "NOTE: Graph not added for Data Query "
-#~ msgstr "从数据查询创建图形"
+#~ msgstr "注意：未为数据查询添加图形 "
 
 #~ msgid "Name Format"
 #~ msgstr "名称格式"
@@ -23343,7 +23319,7 @@ msgstr "没有VDEF"
 #~ msgstr "请确认"
 
 #~ msgid "Please press 'Return' to continue."
-#~ msgstr "请按 '返回' 继续."
+#~ msgstr "请按'返回'继续."
 
 #~ msgid "Please upgrade to PHP 5.5.4+ for IPv6 support!"
 #~ msgstr "请升级到PHP 5.5.4+以支持IPv6!"
@@ -23355,7 +23331,7 @@ msgstr "没有VDEF"
 #~ msgstr "按'返回'返回并选择不同的图形"
 
 #~ msgid "Press 'Return' to return and select different Graphs."
-#~ msgstr "按 '返回' 返回并选择不同的图形."
+#~ msgstr "按'返回'返回并选择不同的图形."
 
 #~ msgid "Preview Import Only"
 #~ msgstr "仅预览导入"
@@ -23366,7 +23342,7 @@ msgstr "没有VDEF"
 
 #, fuzzy
 #~ msgid "Protocol Version to connect to the server with."
-#~ msgstr "协议版本的服务器支持."
+#~ msgstr "连接到服务器的协议版本."
 
 #~ msgid "RRD Utilities"
 #~ msgstr "RRD 工具"
@@ -23407,14 +23383,14 @@ msgstr "没有VDEF"
 #~ msgstr "为主机选择一个图形模板"
 
 #~ msgid "Select a Tree Branch to use."
-#~ msgstr "选择一个树分支来使用."
+#~ msgstr "选择一个要使用的树分支."
 
 #~ msgid "Select the Aggregate Template to use and press 'Continue' to create your Aggregate Graph.  Otherwise press 'Cancel' to return."
 #~ msgstr "选择要使用的聚合模板,然后按 '继续' 创建聚合图形. 否则按 '取消' 返回."
 
 #, fuzzy
 #~ msgid "Should LDAP verify TLS Certificates when received by the Client."
-#~ msgstr "客户端收到 LDAP 时是否应验证 TLS 证书。"
+#~ msgstr "客户端收到 LDAP 时是否应验证 TLS 证书."
 
 #~ msgid "Sync Devices to Device Template(s)"
 #~ msgstr "将设备同步到设备模板"
@@ -23424,11 +23400,11 @@ msgstr "没有VDEF"
 
 #, fuzzy
 #~ msgid "TCP port for LDAPS for SSL communications.  Default is 636."
-#~ msgstr "TCP/UDP port for Non SSL communications."
+#~ msgstr "用于SSL通信的 LDAPS 的 TCP 端口。默认端口为636."
 
 #, fuzzy
 #~ msgid "TCP port for Non-SSL communications including LDAP + TLS.  Default is 389."
-#~ msgstr "用于非SSL通信的TCP/UDP 端口."
+#~ msgstr "用于非SSL通信的TCP/UDP 端口，包括LDAP 和 TLS。默认端口为389."
 
 #, fuzzy
 #~ msgid "TLS Certificate Requirements"
@@ -23436,7 +23412,7 @@ msgstr "没有VDEF"
 
 #, fuzzy
 #~ msgid "Template user id %s does not exist."
-#~ msgstr "模板用户ID %s 不存在."
+#~ msgstr "ID为 %s 的模板用户不存在."
 
 #, fuzzy
 #~ msgid "The Bind Timeout in seconds."
@@ -23448,10 +23424,10 @@ msgstr "没有VDEF"
 
 #, fuzzy
 #~ msgid "The Template Import Failed.  See the cacti.log for more details."
-#~ msgstr "模板导入失败。有关更多详细信息，请参见cacti.log。"
+#~ msgstr "模板导入失败。有关更多详细信息，请查看cacti.log."
 
 #~ msgid "The following Data Source(s) are in use by these Graph(s)."
-#~ msgstr "以下数据源正在由这些图形使用"
+#~ msgstr "以下数据源正在由这些图形使用."
 
 #~ msgid "There are presently no Aggregate Templates defined for this Graph Template.  Please either first create an Aggregate Template for the selected Graphs Graph Template and try again, or simply crease an un-templated Aggregate Graph."
 #~ msgstr "目前没有为此图形模板定义的聚合模板. 请先为选定的图形图形模板创建一个聚合模板,然后再试一次,或者简单地折叠一个没有模板的聚合图形."
@@ -23503,13 +23479,13 @@ msgstr "没有VDEF"
 #~ msgstr "由于会话超时,您已被自动注销了cacti."
 
 #~ msgid "You must select at least one notification object."
-#~ msgstr "您必须至少选择一个通知对象."
+#~ msgstr "您必须选择至少一个通知对象."
 
 #~ msgid "name"
 #~ msgstr "主机名"
 
 #~ msgid "rule_name"
-#~ msgstr "rule_name"
+#~ msgstr "规则名"
 
 #~ msgid "template_title"
 #~ msgstr "模板标题"
