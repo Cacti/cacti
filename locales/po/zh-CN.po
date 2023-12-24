@@ -8,9 +8,10 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2023-11-10 02:07+0000\n"
-"Last-Translator: Ben Hsu <48728121@qq.com>\n"
-"Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core/zh_Hans/>\n"
+"PO-Revision-Date: 2023-12-24 14:09+0000\n"
+"Last-Translator: zenghao liu <roy6152@163.com>\n"
+"Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
+"cacti/core/zh_Hans/>\n"
 "Language: zh-CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -6682,7 +6683,7 @@ msgstr ""
 
 #: help.php:82
 msgid "Cacti GitHub Site"
-msgstr ""
+msgstr "Cacti的GitHub站"
 
 #: help.php:82
 msgid "Open a ticket at "
