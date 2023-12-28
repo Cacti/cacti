@@ -985,8 +985,24 @@ function graphs() {
 		form_hidden_box('host_template_id', $host['host_template_id'], '0');
 	}
 
-	if (isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], 'graphs_new') === false) {
-		set_request_var('returnto', basename($_SERVER['HTTP_REFERER']));
+	if (isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] != '') {
+		$referer_url = parse_url($_SERVER['HTTP_REFERER']);
+
+		if ($_SERVER['SERVER_NAME'] != $referer_url['host']) {
+			/* Potential security exploit 1 */
+			set_request_var('returnto', 'host.php');
+		} elseif (strpos($_SERVER['HTTP_REFERER'], 'graphs_new') === false) {
+			set_request_var('returnto', basename($_SERVER['HTTP_REFERER']));
+		} else {
+			set_request_var('returnto', 'host.php');
+		}
+	} elseif (isset_request_var('returnto') && get_nfilter_request_var('returnto') != '') {
+		$returnto_url = parse_url(get_nfilter_request_var('returnto'));
+
+		if ($_SERVER['SERVER_NAME'] != $returnto_url['host']) {
+			/* Potential security exploit 2 */
+			set_request_var('returnto', 'host.php');
+		}
 	}
 
 	load_current_session_value('returnto', 'sess_grn_returnto', '');

@@ -681,7 +681,7 @@ function debug_view() {
 		array($id));
 
 	if (cacti_sizeof($dtd)) {
-		$real_path = str_replace('<path_rra>', $config['rra_path'], $dtd['data_source_path']);
+		$real_path = html_escape(str_replace('<path_rra>', $config['rra_path'], $dtd['data_source_path']));
 	} else {
 		$real_path = __('Not Found');
 	}
