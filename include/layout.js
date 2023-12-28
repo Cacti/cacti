@@ -834,7 +834,7 @@ function applySkin() {
 			var element = $(this);
 
 			if (element.is('div')) {
-				var text = DOMPurity.sanitize($(this).find('span').html());
+				var text = DOMPurify.sanitize($(this).find('span').html());
 			} else if (element.is('span') || element.is('a')) {
 				var text = DOMPurify.sanitize($(this).prop('title'));
 			}

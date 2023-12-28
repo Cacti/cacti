@@ -3088,7 +3088,7 @@ function snmpagent_utilities_run_cache() {
 
 	?>
 	<script type='text/javascript'>
-	function() {
+	$(function() {
 		$('.tooltip').tooltip({
 			track: true,
 			show: 250,
