@@ -119,7 +119,7 @@ function midWinterNavigation(element) {
 	let rubric_title 	= element.closest('div[class^="mdw-ConsoleNavigationBox"]').data('title');
 	let rubric_icon   	= $('.compact_nav_icon[data-helper="'+helper+'"]').html();
 
-	$('#navBreadCrumb .rubric').html( rubric_icon + rubric_title ).attr('data-helper', helper).off().on(
+	$('#navBreadCrumb .rubric').html( rubric_icon + '<span>' + rubric_title + '</span>').attr('data-helper', helper).off().on(
 		"click", {}, toggleCactiNavigationBox
 	);
 	$('#navBreadCrumb .category').html( category );
@@ -201,8 +201,8 @@ function setupTheme() {
 		$('<div id="mdw-GridContainer" class="mdw-GridContainer">' +
 			'<div id="mdw-ConsolePageHead" class="mdw-ConsolePageHead">'+
 				'<div id="navBreadCrumb" class="navBreadCrumb">'+
-				'<div class="rubric"></div><div class="separator">/</div>'+
-				'<div class="category"></div><div class="separator">/</div>'+
+				'<div class="rubric"></div>'+
+				'<div class="category"></div>'+
 				'<div class="action"></div>'+
 				'</div>' +
 				'<div id="navSearch"></div>'+
@@ -479,8 +479,6 @@ function setupDefaultElements() {
 
 			/* hide filter table title */
 			$('#filterTableOnTop .cactiTableTitle').detach();
-
-			$(".navBarNavigation:first").detach(); //.appendTo('#filterTableOnTop');
 			$("#filterTableOnTop").removeClass('hide');
 		}
 	}
