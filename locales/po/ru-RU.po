@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2023-12-05 18:50-0500\nPO-Revision-Date: 2024-01-01 00:08+0000\nLast-Translator: Anton Zhuravlev <baka109g@gmail.com>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2023-12-05 18:50-0500\nPO-Revision-Date: 2024-01-01 16:12+0000\nLast-Translator: Anton Zhuravlev <baka109g@gmail.com>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2626 lib/html.php:2518
 msgid "About Cacti"
@@ -3305,8 +3305,8 @@ msgstr "Отладка"
 msgid "Click 'Continue' to delete the following Data Input Method"
 msgid_plural "Click 'Continue' to delete the following Data Input Method"
 msgstr[0] "Нажмите кнопку \"Продолжить\", чтобы удалить следующий метод ввода данных"
-msgstr[1] "Нажмите кнопку \"Продолжить\", чтобы удалить следующий метод ввода данных"
-msgstr[2] "Нажмите кнопку \"Продолжить\", чтобы удалить следующий метод ввода данных"
+msgstr[1] "Нажмите кнопку \"Продолжить\", чтобы удалить следующие методы ввода данных"
+msgstr[2] "Нажмите кнопку \"Продолжить\", чтобы удалить следующие методы ввода данных"
 
 #: data_input.php:253
 #, fuzzy
@@ -3518,12 +3518,11 @@ msgstr[1] "Удалить запросы данных"
 msgstr[2] ""
 
 #: data_queries.php:416
-#, fuzzy
 msgid "Click 'Continue' to duplicate the following Data Query."
 msgid_plural "Click 'Continue' to duplicate following Data Queries."
-msgstr[0] "Нажмите кнопку \"Продолжить\", чтобы удалить следующий запрос данных."
-msgstr[1] "Вы уверены что хотите удалить этих пользователей?"
-msgstr[2] ""
+msgstr[0] "Нажмите кнопку \"Продолжить\", чтобы скопировать следующий запрос данных."
+msgstr[1] "Нажмите кнопку \"Продолжить\", чтобы скопировать следующие запросы данных."
+msgstr[2] "Нажмите кнопку \"Продолжить\", чтобы скопировать следующие запросы данных."
 
 #: data_queries.php:418 lib/html_reports.php:520
 msgid "Name Format:"
@@ -3731,20 +3730,18 @@ msgid "Changing the Heartbeat from this page, does not change the Heartbeat for 
 msgstr "Изменение частоты Heartbeat на этой странице не приводит к изменению частоты Heartbeat для существующих источников данных. Используйте функцию RRDtool 'tune', чтобы внести это изменение в ваши существующие файлы RRD, или запустите CLI утилиту update_heartbeat.php чтобы изменить.<br>"
 
 #: data_source_profiles.php:300
-#, fuzzy
 msgid "Click 'Continue' to delete the following Data Source Profile"
 msgid_plural "Click 'Continue' to delete following Data Source Profiles"
 msgstr[0] "Нажмите кнопку \"Продолжить\", чтобы удалить следующий Профиль источника данных"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[1] "Нажмите кнопку \"Продолжить\", чтобы удалить следующие Профили источников данных"
+msgstr[2] "Нажмите кнопку \"Продолжить\", чтобы удалить следующие Профили источников данных"
 
 #: data_source_profiles.php:305
-#, fuzzy
 msgid "Delete Data Source Profile"
 msgid_plural "Delete Data Source Profiles"
 msgstr[0] "Удалить профиль источника данных"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[1] "Удалить профили источников данных"
+msgstr[2] "Удалить профили источников данных"
 
 #: data_source_profiles.php:309
 #, fuzzy
