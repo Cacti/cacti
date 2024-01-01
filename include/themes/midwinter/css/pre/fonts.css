@@ -1,5 +1,9 @@
 html {
 
+    /* font-family variables */
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+    --font-mono: Noto Mono, Menlo, Monaco, Consolas, monospace;
+
     /* font-size variables */
     --fs-tiny:       0.5625rem;
     --fs-extrasmall: 0.625rem;
@@ -16,9 +20,6 @@ html {
     --fs-xx-large:   2.5rem;
     --fs-king:       3.875rem;
 
-    /* default font size */
-    font-size: 87.5%;
-
     /* font-weight variables */
     --fw-thin:       100;
     --fw-extralight: 200;
@@ -31,10 +32,19 @@ html {
     --fw-extrabold:  800;
     --fw-heavy:      900;
 
-    /* default font weight */
-    font-weight: 500;
+    /* defaults */
+    font-family:     var(--font-sans);
+    font-size:       var(--fs-regular);
+    font-style:      normal;
+    font-weight:     var(--fw-normal);
 }
 
+html[data-zoom-level='50'  ] { font-size: 50.0%; }
+html[data-zoom-level='52.5'] { font-size: 52.5%; }
+html[data-zoom-level='55'  ] { font-size: 55.0%; }
+html[data-zoom-level='57.5'] { font-size: 57.5%; }
+html[data-zoom-level='60'  ] { font-size: 60.0%; }
+html[data-zoom-level='62.5'] { font-size: 62.5%; }
 html[data-zoom-level='65'  ] { font-size: 65.0%; }
 html[data-zoom-level='67.5'] { font-size: 67.5%; }
 html[data-zoom-level='70'  ] { font-size: 70.0%; }

@@ -201,6 +201,7 @@ function setupTheme() {
 		$('<div id="mdw-GridContainer" class="mdw-GridContainer">' +
 			'<div id="mdw-ConsolePageHead" class="mdw-ConsolePageHead">'+
 				'<div id="navBreadCrumb" class="navBreadCrumb">'+
+				'<div class="home"><a href="'+urlPath+'index.php" class="pic">Home</a></div>'+
 				'<div class="rubric"></div>'+
 				'<div class="category"></div>'+
 				'<div class="action"></div>'+

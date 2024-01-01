@@ -363,7 +363,7 @@ function get_user_content() {
         +           '<li>'
         +				'<div>' + 'Zoom Level' + '</div>'
         +				'<div>'
-        +						'<input data-scope="theme" id="mdw_themeFontSize" data-func="changeGuiFontSize" type="range" min="65" max="100" step="2.5" value="'+ midWinter_Font_Size +'" defaultValue="87.5">'
+        +						'<input data-scope="theme" class="mdw_themeFontSize" id="mdw_themeFontSize" data-func="changeGuiFontSize" type="range" min="50" max="100" step="2.5" value="'+ midWinter_Font_Size +'" defaultValue="87.5">'
         +				'</div>'
         +           '</li>'
         +       '</ul>'

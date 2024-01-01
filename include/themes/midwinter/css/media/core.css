@@ -33,11 +33,9 @@
 }
 
 html {
-    font-family: Roboto,Helvetica Neue,Arial,Fira Sans,sans-serif;
-    font-style: normal;
     background-color: black;
 
-    &[data-animations='off'] * {
+    &[data-animations="off"] * {
         transition: transform 0s !important;
     }
 }
@@ -51,7 +49,7 @@ body {
     color: var(--text-color-normal);
     background-color: var(--background);
 
-    [data-theme-state='ready'] & {
+    [data-theme-state="ready"] & {
         animation: fadeInAnimation ease 1.5s;
         animation-iteration-count: 1;
         animation-fill-mode: forwards;
@@ -97,13 +95,19 @@ ul#nav, ul.nav {
 }
 
 /* hyperlinks */
-a, a:active, a:visited {
+a, a:visited {
     text-decoration: none;
     color: var(--text-color-highlight-a);
 }
 
-a:hover {
-    color: var(--text-color-lighter);
+a:hover,
+a:focus {
+    color: var(--text-color-highlight-a);
+    text-decoration: underline;
+}
+
+a:active {
+    text-decoration: none;
 }
 
 /* pseudo classes */
@@ -164,7 +168,7 @@ input[type="checkbox"] + label:before {
 
 input[type="checkbox"]:checked + label:before {
     line-height: var(--fs-regular);
-    content: '✔';
+    content: "✔";
     text-align: center;
     color: var(--text-color-highlight-a);
     background-color: transparent;
@@ -308,11 +312,11 @@ label.ui-state-hover > span {
 }
 
 .usermenudown {
-    background: transparent url('./../../../../../images/bullet_arrow_down.png') no-repeat center right;
+    background: transparent url("./../../../../../images/bullet_arrow_down.png") no-repeat center right;
 }
 
 .usermenuup {
-    background: transparent url('./../../../../../images/bullet_arrow_up.png') no-repeat center right;
+    background: transparent url("./../../../../../images/bullet_arrow_up.png") no-repeat center right;
 }
 
 .user {
@@ -937,7 +941,7 @@ ul#breadcrumbs {
     margin-left: 2px;
     padding-bottom: 140px;
     cursor: pointer;
-    background: transparent url('./../../images/cacti_logo.svg') no-repeat 30px;
+    background: transparent url("./../../images/cacti_logo.svg") no-repeat 30px;
 }
 
 .logoutLeft, .loginLeft {
@@ -1040,7 +1044,7 @@ legend::before {
     border: 1px solid rgba(255,255,255,0.2);
 }
 
-.loginBody input[type='submit'] {
+.loginBody input[type="submit"] {
     background-color: var(--background-progress);
 }
 
@@ -1216,13 +1220,14 @@ legend::before {
     cursor: pointer;
     white-space: nowrap;
     text-decoration: none;
-    color: var(--text-color-highlight-a);
 }
 
-.linkEditMain:hover {
-    white-space: nowrap;
-    text-decoration: none;
-    color: var(--text-color-lighter);
+.linkEditMain {
+    &:hover,
+    tr:hover & {
+       /* text-decoration: underline;
+        color: var(--text-color-highlight-a);*/
+    }
 }
 
 .linkOverDark, .linkOverDark:visited, .linkOverDark:active {
@@ -1386,6 +1391,7 @@ table.cactiTable {
     padding: 0;
     vertical-align: middle;
     white-space: nowrap;
+    margin-left: 5px;
 }
 
 .cactiTableButton i {
@@ -1487,7 +1493,12 @@ table.cactiTable {
     text-transform: none;
     color: var(--text-color-normal);
     background-color: var(--background-progress-semilight);
+
+    html[data-theme-color="light"] & {
+        color: var(--text-color-white);
 }
+}
+
 
 .formHeader:hover {
     color: var(--text-color-lighter);
@@ -1630,23 +1641,15 @@ table.cactiTable {
     background-color: #f5f5f5;
 }
 
-.navBar {
-    display: flex;
-    min-width: 30%;
-    height: 2rem;
-    white-space: nowrap;
-    background-color: var(--background-content);
-}
-
 .navBarNavigation {
     display: table;
     width: 100%;
     text-align: center;
     color: var(--text-color-light);
-}
 
-.navBarNavigation:first-child {
-    display:none !important;
+    &:first-of-type {
+        display: none;
+    }
 }
 
 .navBarNavigation a {
@@ -1767,27 +1770,6 @@ table.cactiTable {
 }
 
 /* tabs */
-.tabSpacer {
-    width: 0;
-    padding-right: 2px;
-    padding-left: 0;
-}
-
-.tabsMarginLeft {
-    padding-left: 2px;
-}
-
-.tabSelected {
-    width: 1%;
-    white-space: nowrap;
-    background-color: silver;
-}
-
-.tabNotSelected {
-    width: 1%;
-    white-space: nowrap;
-    background-color: #dfdfdf;
-}
 
 .deleteMarker {
     vertical-align: middle;
@@ -1843,95 +1825,9 @@ td.nowrap {
     border-bottom: 1px solid var(--border-color-lowlight);
 }
 
-.cactiGraphHeaderBackground {
-    display: none;
-}
-
-div#gtabs {
-    position: fixed;
-    top: 5px;
-    right: 5px;
-    display: none !important;
-    height: 30px;
-    padding-bottom: 0;
-    vertical-align: bottom;
-}
-
 .ellipsis {
     display: none;
     width: 25px !important;
-}
-
-.usertabs {
-    float: right !important;
-    overflow: hidden;
-    padding-right: 0.5rem;
-}
-
-.usertabs ul {
-    float: right;
-    margin: auto 0 !important;
-}
-
-.maintabs {
-    display: flex;
-    float: left;
-    overflow: hidden;
-}
-
-.maintabs a {
-    float: left !important;
-    padding: 0.5em 0.5em;
-    text-decoration: none;
-    color: var(--text-color-navigation-highlight);
-    outline-style: none;
-}
-
-.usertabs nav ul {
-    float: right;
-    padding-right: 5px;
-}
-
-.maintabs a:hover, .maintabs a:hover span {
-    color: var(--text-color-navigation);
-    background: none;
-}
-
-.maintabs a.selected:not(#tab-console) {
-    color: var(--text-color-lighter);
-    background: rgba(0,0,0,0.25);
-}
-
-.maintabs nav {
-    margin: auto 0;
-    white-space: nowrap;
-}
-
-.maintabs li {
-    bottom: -1px;
-    float: left;
-}
-
-.maintabs:not(.usertabs) li:first-child {
-    width: 50px;
-}
-
-.maintabs:not(.usertabs) li:first-child a:first-child{
-    width: 100%;
-    padding: 0.5em 0;
-}
-
-
-.maintabs-submenu {
-    display: none;
-}
-
-#menu-tab-graphs.maintabs-submenu, .maintabs-submenu-ellipsis a {
-    display: block;
-}
-
-.maintabs-submenu a {
-    padding: 5px 8px 5px 0;
 }
 
 div.submenu {
@@ -2005,7 +1901,7 @@ div.submenu span {
     content: ".";
 }
 
-.tabs ul, .maintabs ul {
+.tabs ul {
     margin: 0;
     padding: 0;
     list-style: none;
@@ -2036,51 +1932,37 @@ div.submenu span {
     margin-left: 1em;
 }
 
-tr.selected {
-    background: var(--background-progress-semilight);
-}
+tr {
+    &.selected {
+        background: var(--table-selected);
+    }
 
-tr.selected a.linkEditMain:visited {
-    color: var(--text-color-lighter);
-}
+    &:not(.selectable) {
+        & a.linkEditMain {
+            &:hover {
+                color: orange;
+            }
+        }
+    }
 
-tr:not(.selectable) a.linkEditMain:hover {
-    color: orange;
-}
-
-tr.selectable {
+    &.selectable {
     line-height: 22px;
+
+        & a {
+            #color: var(--text-color-normal);
+        }
+
+        & td {
+            border-bottom: 1px solid var(--border-color-semilight);
+        }
+
+        &:hover {
+            background-color: var(--table-selectable);
+        }
+    }
 }
 
-tr.selectable td {
-    border-bottom: 1px solid var(--border-color-semilight);
-}
 
-tr.selectable:first-child {
-}
-
-tr.selectable td:first-child {
-}
-
-tr.selectable td:last-child {
-}
-
-tr.selectable:last-child td {
-}
-
-tr.selectable:hover {
-    background-color: var(--background-progress-mediumlight);
-}
-
-tr.selected a {
-    color: var(--text-color-lighter);
-}
-
-tr:last-child {
-}
-
-td:last-child.checkbox {
-}
 
 #nav li ul li a.selected, .nav li ul li a.selected {
     color: var(--text-color-navigation-highlight);
@@ -2103,7 +1985,7 @@ td:last-child.checkbox {
     align-items: center;
     flex-direction: row;
     flex-wrap: nowrap;
-    justify-content: space-between;
+    justify-content: flex-start;
     width: 34rem;
 }
 
@@ -2460,7 +2342,7 @@ circle {
     fill: transparent !important;
 }
 
-[id*='_edit'] .tableRowGraph:hover {
+    [id*="_edit"] .tableRowGraph:hover {
     border-right: 2px solid yellow !important;
     border-left: 2px solid yellow !important;
     background-color: rgba(200, 0, 200, .1) !important;
