@@ -1,17 +1,5 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti Russian Language File\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2023-12-05 18:50-0500\n"
-"PO-Revision-Date: 2023-11-17 14:07+0000\n"
-"Last-Translator: Vladyslav <vladyslav.prodan.08@gmail.com>\n"
-"Language-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\n"
-"Language: ru-RU\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2023-12-05 18:50-0500\nPO-Revision-Date: 2024-01-01 00:08+0000\nLast-Translator: Anton Zhuravlev <baka109g@gmail.com>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2626 lib/html.php:2518
 msgid "About Cacti"
@@ -3314,12 +3302,11 @@ msgid "Debugging"
 msgstr "Отладка"
 
 #: data_input.php:246
-#, fuzzy
 msgid "Click 'Continue' to delete the following Data Input Method"
 msgid_plural "Click 'Continue' to delete the following Data Input Method"
 msgstr[0] "Нажмите кнопку \"Продолжить\", чтобы удалить следующий метод ввода данных"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[1] "Нажмите кнопку \"Продолжить\", чтобы удалить следующий метод ввода данных"
+msgstr[2] "Нажмите кнопку \"Продолжить\", чтобы удалить следующий метод ввода данных"
 
 #: data_input.php:253
 #, fuzzy
@@ -3331,12 +3318,11 @@ msgid "Input Name:"
 msgstr "Введите имя:"
 
 #: data_input.php:260
-#, fuzzy
 msgid "Delete Data Input Method"
 msgid_plural "Delete Data Input Methods"
 msgstr[0] "Удалить метод ввода данных"
-msgstr[1] "Метод Ввода Данных"
-msgstr[2] ""
+msgstr[1] "Удалить методы ввода данных"
+msgstr[2] "Удалить методы ввода данных"
 
 #: data_input.php:305
 #, fuzzy
@@ -3344,24 +3330,22 @@ msgid "Click 'Continue' to delete the following Data Input Field."
 msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующее поле ввода данных."
 
 #: data_input.php:306
-#, fuzzy, php-format
+#, php-format
 msgid "Field Name: %s"
 msgstr "Имя поля: %s"
 
 #: data_input.php:307
-#, fuzzy, php-format
+#, php-format
 msgid "Friendly Name: %s"
-msgstr "Дружественное имя: %s"
+msgstr "Дружелюбное имя: %s"
 
 #: data_input.php:313 host_templates.php:303 host_templates.php:366
-#, fuzzy
 msgid "Remove Data Input Field"
 msgstr "Удалить поле ввода данных"
 
 #: data_input.php:424
-#, fuzzy
 msgid "This script appears to have no input values, therefore there is nothing to add."
-msgstr "Похоже, что у этого скрипта нет входных значений, поэтому добавлять их нечего."
+msgstr "Похоже, что у этого скрипта нет входных значений, поэтому добавлять нечего."
 
 #: data_input.php:430
 #, php-format
@@ -3369,12 +3353,11 @@ msgid "Output Fields [edit: %s]"
 msgstr "Поля вывода (редактирование: %s)"
 
 #: data_input.php:431 include/global_form.php:660
-#, fuzzy
 msgid "Output Field"
-msgstr "Поле вывода"
+msgstr "Поле Вывода"
 
 #: data_input.php:433
-#, fuzzy, php-format
+#, php-format
 msgid "Input Fields [edit: %s]"
 msgstr "Поля ввода [Редактировать: %s]"
 
@@ -3433,19 +3416,16 @@ msgid "Field Order"
 msgstr "Порядок поля"
 
 #: data_input.php:606
-#, fuzzy
 msgid "(Not In Use)"
-msgstr "Цвет используемый для легенды"
+msgstr "(не используется)"
 
 #: data_input.php:615
-#, fuzzy
 msgid "No Input Fields"
-msgstr "Поля ввода"
+msgstr "Нет полей ввода"
 
 #: data_input.php:619
-#, fuzzy
 msgid "Output Fields"
-msgstr "Выходные поля"
+msgstr "Поля вывода"
 
 #: data_input.php:623
 msgid "Update RRA"
@@ -3456,12 +3436,10 @@ msgid "Output Fields can not be removed when Data Sources are present"
 msgstr "Поля вывода Не могут быть удалены при наличии источников данных"
 
 #: data_input.php:658
-#, fuzzy
 msgid "No Output Fields"
 msgstr "Поля вывода отсутствуют"
 
 #: data_input.php:684
-#, fuzzy
 msgid "Delete Data Input Field"
 msgstr "Удалить поле ввода данных"
 
@@ -3526,19 +3504,17 @@ msgid "No Data Input Methods Found"
 msgstr "Методы ввода данных не найдены"
 
 #: data_queries.php:407
-#, fuzzy
 msgid "Click 'Continue' to Delete the following Data Query."
 msgid_plural "Click 'Continue' to Delete following Data Queries."
 msgstr[0] "Нажмите кнопку \"Продолжить\", чтобы удалить следующий запрос данных."
-msgstr[1] "Вы уверены что хотите удалить этих пользователей?"
+msgstr[1] "Нажмите кнопку \"Продолжить\", чтобы удалить следующие запросы данных."
 msgstr[2] ""
 
 #: data_queries.php:412
-#, fuzzy
 msgid "Delete Data Query"
 msgid_plural "Delete Data Queries"
 msgstr[0] "Удалить запрос данных"
-msgstr[1] ""
+msgstr[1] "Удалить запросы данных"
 msgstr[2] ""
 
 #: data_queries.php:416
@@ -3550,16 +3526,14 @@ msgstr[1] "Вы уверены что хотите удалить этих по�
 msgstr[2] ""
 
 #: data_queries.php:418 lib/html_reports.php:520
-#, fuzzy
 msgid "Name Format:"
-msgstr "Формат имени"
+msgstr "Формат имени:"
 
 #: data_queries.php:426
-#, fuzzy
 msgid "Duplicate Data Query"
 msgid_plural "Duplicate Data Queries"
-msgstr[0] "Удалить запрос данных"
-msgstr[1] ""
+msgstr[0] "Дублировать запрос данных"
+msgstr[1] "Дублировать запросы данных"
 msgstr[2] ""
 
 #: data_queries.php:584
@@ -3568,7 +3542,7 @@ msgid "Click 'Continue' to delete the following Data Query Graph Association."
 msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующую Ассоциацию графиков запросов данных."
 
 #: data_queries.php:585
-#, fuzzy, php-format
+#, php-format
 msgid "Graph Name: %s"
 msgstr "Имя графика: %s"
 
@@ -3593,7 +3567,7 @@ msgid "Associated Data Templates"
 msgstr "Шаблоны ассоциированных данных"
 
 #: data_queries.php:702
-#, fuzzy, php-format
+#, php-format
 msgid "Data Template - %s"
 msgstr "Шаблон данных - %s"
 
@@ -3652,9 +3626,9 @@ msgid "The Data Query ID [%s] that you are trying to Edit does not exist.  Pleas
 msgstr ""
 
 #: data_queries.php:1111
-#, fuzzy, php-format
+#, php-format
 msgid "Data Queries [edit: %s]"
-msgstr "Запросы данных [редактировать: %s]."
+msgstr "Запросы данных [редактировать: %s]"
 
 #: data_queries.php:1113
 #, fuzzy
@@ -3662,12 +3636,10 @@ msgid "Data Queries [new]"
 msgstr "Запросы данных [новые]"
 
 #: data_queries.php:1135
-#, fuzzy
 msgid "Successfully located XML file"
-msgstr "Успешно расположенный XML-файл"
+msgstr "XML-файл успешно найден"
 
 #: data_queries.php:1138
-#, fuzzy
 msgid "Could not locate XML file."
 msgstr "Не удалось найти XML-файл."
 
@@ -3679,9 +3651,8 @@ msgstr "Нет ассоциированых шаблонов графиков"
 
 #: data_queries.php:1150 graph_templates.php:831 graphs_new.php:565
 #: host.php:762 lib/api_automation.php:576
-#, fuzzy
 msgid "Graph Template Name"
-msgstr "Имя шаблона графика Имя шаблона"
+msgstr "Имя шаблона графика"
 
 #: data_queries.php:1152
 #, fuzzy
@@ -3802,7 +3773,7 @@ msgid "Click 'Continue' to delete the following Data Source Profile RRA."
 msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующий Профиль источника данных RRA."
 
 #: data_source_profiles.php:418
-#, fuzzy, php-format
+#, php-format
 msgid "Profile Name: %s"
 msgstr "Имя профиля: %s"
 
@@ -3852,9 +3823,8 @@ msgstr "Хранение данных"
 
 #: data_source_profiles.php:637 include/global_settings.php:995
 #: lib/html_reports.php:1051
-#, fuzzy
 msgid "Graph Timespan"
-msgstr "Срок действия графика"
+msgstr "Интервал графика"
 
 #: data_source_profiles.php:638
 msgid "Steps"
@@ -3964,7 +3934,6 @@ msgid "1 Hour"
 msgstr "1 Час"
 
 #: data_source_profiles.php:903 include/global_arrays.php:1233
-#, fuzzy
 msgid "Data Source Profiles"
 msgstr "Профили источников данных"
 
@@ -3983,7 +3952,6 @@ msgid "Data Source Profile Name"
 msgstr "Имя профиля источника данных Имя профиля"
 
 #: data_source_profiles.php:1039
-#, fuzzy
 msgid "Is this the default Profile for all new Data Templates?"
 msgstr "Это профиль по умолчанию для всех новых шаблонов данных?"
 
@@ -4037,7 +4005,6 @@ msgid "No Data Source Profiles Found"
 msgstr "Профили источников данных не найдены"
 
 #: data_sources.php:38 data_sources.php:545 graphs.php:56
-#, fuzzy
 msgid "Change Device"
 msgstr "Изменить устройство"
 
@@ -4046,12 +4013,11 @@ msgid "Reapply Suggested Names"
 msgstr "Применить Предлагаемые Имена"
 
 #: data_sources.php:513
-#, fuzzy
 msgid "Click 'Continue' to delete the following Data Source"
 msgid_plural "Click 'Continue' to delete following Data Sources"
 msgstr[0] "Нажмите кнопку \"Продолжить\", чтобы удалить следующий Источник данных"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[1] "Нажмите кнопку \"Продолжить\", чтобы удалить следующие Источники данных"
+msgstr[2] "Нажмите кнопку \"Продолжить\", чтобы удалить следующие Источники данных"
 
 #: data_sources.php:517
 #, fuzzy
@@ -4157,12 +4123,11 @@ msgid "Custom Data [data input: %s]"
 msgstr "Пользовательские данные [Ввод данных: %s]"
 
 #: data_sources.php:683
-#, fuzzy, php-format
+#, php-format
 msgid "(From Device: %s)"
 msgstr "(Из устройства: %s)"
 
 #: data_sources.php:686
-#, fuzzy
 msgid "(From Data Template)"
 msgstr "(Из шаблона данных)"
 
@@ -4192,19 +4157,16 @@ msgid "Turn Off Data Source Debug Mode."
 msgstr "Выключить режим отладки источника данных."
 
 #: data_sources.php:856
-#, fuzzy
 msgid "Turn On Data Source Debug Mode."
 msgstr "Включить режим отладки источника данных."
 
 #: data_sources.php:857
-#, fuzzy
 msgid "Turn Off Data Source Info Mode."
-msgstr "Выключите режим источника данных."
+msgstr "Выключите режим информации источника данных."
 
 #: data_sources.php:857
-#, fuzzy
 msgid "Turn On Data Source Info Mode."
-msgstr "Включите режим источника данных."
+msgstr "Включите режим информации источника данных."
 
 #: data_sources.php:866
 #, php-format
@@ -4212,27 +4174,22 @@ msgid "Edit Graph: '%s'."
 msgstr "Редактировать граф '%s'."
 
 #: data_sources.php:870 graphs.php:1549
-#, fuzzy
 msgid "Edit Device."
-msgstr "Редактировать устройство"
+msgstr "Редактировать устройство."
 
 #: data_sources.php:873
-#, fuzzy
 msgid "Edit Data Template."
 msgstr "Редактирование шаблона данных."
 
 #: data_sources.php:876
-#, fuzzy
 msgid "Disable Data Source."
-msgstr "Отключить источник данных"
+msgstr "Отключить источник данных."
 
 #: data_sources.php:876
-#, fuzzy
 msgid "Enable Data Source."
-msgstr "Включить источник данных"
+msgstr "Включить источник данных."
 
 #: data_sources.php:942
-#, fuzzy
 msgid "Selected Data Template"
 msgstr "Выбранный шаблон данных"
 
@@ -4250,7 +4207,6 @@ msgid "Device"
 msgstr "Устройство"
 
 #: data_sources.php:951
-#, fuzzy
 msgid "Choose the Device that this Data Source belongs to."
 msgstr "Выберите Устройство, к которому принадлежит этот Источник данных."
 
@@ -4262,7 +4218,7 @@ msgstr "Дополнительные данные Шаблон данных Да
 #: data_sources.php:1003
 #, fuzzy
 msgid "Data Source Fields"
-msgstr "Поля источников данных"
+msgstr "Поля источника данных"
 
 #: data_sources.php:1004
 #, fuzzy
@@ -4284,7 +4240,6 @@ msgid "New"
 msgstr "Новый"
 
 #: data_sources.php:1165
-#, fuzzy
 msgid "Data Source Debug"
 msgstr "Отладка источника данных"
 
@@ -4305,9 +4260,8 @@ msgid "1 Minute"
 msgstr "1 минута"
 
 #: data_sources.php:1365
-#, fuzzy
 msgid "Data Sources [ All Devices ]"
-msgstr "Источники данных [Нет устройства]."
+msgstr "Источники данных [Все устройства]."
 
 #: data_sources.php:1367
 #, fuzzy
@@ -4315,17 +4269,16 @@ msgid "Data Sources [ Non Device Based ]"
 msgstr "Источники данных [Нет устройства]."
 
 #: data_sources.php:1370
-#, fuzzy, php-format
+#, php-format
 msgid "Data Sources [ %s ]"
 msgstr "Источники данных [%s]"
 
 #: data_sources.php:1443
 #, fuzzy
 msgid "Bad Indexes"
-msgstr "Индекс"
+msgstr "Сломанные индексы"
 
 #: data_sources.php:1449 graphs.php:2032
-#, fuzzy
 msgid "Note that this query may take some time to run."
 msgstr "Обратите внимание, что выполнение этого запроса может занять некоторое время."
 
@@ -4348,9 +4301,8 @@ msgid "The internal database ID for this Data Source. Useful when performing aut
 msgstr "Идентификатор внутренней базы данных для данного Источника данных. Полезно при выполнении автоматизации или отладки."
 
 #: data_sources.php:1641
-#, fuzzy
 msgid "The number of Graphs and Aggregate Graphs that are using the Data Source."
-msgstr "Количество графиков Шаблоны с помощью данного запроса данных."
+msgstr "Количество графиков и агрегированных графиков который использует данный запрос данных."
 
 #: data_sources.php:1647
 #, fuzzy
@@ -4358,7 +4310,6 @@ msgid "The frequency that data is collected for this Data Source."
 msgstr "Частота сбора данных для данного Источника данных."
 
 #: data_sources.php:1653
-#, fuzzy
 msgid "If this Data Source is no long in use by Graphs, it can be Deleted."
 msgstr "Если этот Источник данных больше не используется графиками, его можно удалить."
 
@@ -4373,45 +4324,39 @@ msgid "The Data Template that this Data Source was based upon."
 msgstr "Шаблон данных, на котором основан этот Источник данных."
 
 #: data_sources.php:1706
-#, fuzzy
 msgid "Damaged Data Source Name"
-msgstr "Имя источника данных"
+msgstr "Имя поврежденного источника данных"
 
 #: data_sources.php:1726
-#, fuzzy
 msgid "No Data Sources Found"
 msgstr "Источники данных не найдены"
 
 #: data_sources.php:1774
-#, fuzzy
 msgid "No Graphs"
-msgstr "Графики"
+msgstr "Нет графиков"
 
 #: data_sources.php:1778 include/global_arrays.php:996
 msgid "Aggregates"
 msgstr "Агрегаты"
 
 #: data_sources.php:1780
-#, fuzzy
 msgid "No Aggregates"
-msgstr "Агрегаты"
+msgstr "Нет агрегатов"
 
 #: data_templates.php:36
 msgid "Change Profile"
 msgstr "Изменить профиль"
 
 #: data_templates.php:259
-#, fuzzy, php-format
+#, php-format
 msgid "Field \"%s\" is missing an Output Field"
 msgstr "В поле \"%s\" отсутствует поле вывода"
 
 #: data_templates.php:462
-#, fuzzy
 msgid "Click 'Continue' to delete the following Data Template(s).  Any data sources attached to these templates will become individual Data Source(s) and all Templating benefits will be removed."
-msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующий(ые) шаблон(ы) данных.  Любые источники данных, приложенные к этим шаблонам, станут индивидуальными источниками данных, и все преимущества шаблонирования будут удалены."
+msgstr "Нажмите кнопку \"Продолжить\", чтобы удалить следующий(ые) шаблон(ы) данных. Любые источники данных, приложенные к этим шаблонам, станут индивидуальными источниками данных, и все преимущества шаблонирования будут удалены."
 
 #: data_templates.php:467
-#, fuzzy
 msgid "Delete Data Template(s)"
 msgstr "Удалить шаблон(ы) данных"
 
@@ -4426,32 +4371,27 @@ msgid "template_title"
 msgstr "Название шаблона"
 
 #: data_templates.php:477
-#, fuzzy
 msgid "Duplicate Data Template(s)"
 msgstr "Дублировать шаблон(ы) данных"
 
 #: data_templates.php:481
-#, fuzzy
 msgid "Click 'Continue' to change the default Data Source Profile for the following Data Template(s)."
 msgstr "Нажмите кнопку \"Продолжить\", чтобы изменить стандартный Профиль источника данных для следующего шаблона(ов) данных."
 
 #: data_templates.php:483
-#, fuzzy
 msgid "New Data Source Profile"
 msgstr "Новый профиль источника данных"
 
 #: data_templates.php:489
-#, fuzzy
 msgid "NOTE: This change only will affect future Data Sources and does not alter existing Data Sources."
 msgstr "ПРИМЕЧАНИЕ: Это изменение повлияет только на будущие Источники данных и не изменит существующие Источники данных."
 
 #: data_templates.php:493
-#, fuzzy
 msgid "Change Data Source Profile"
 msgstr "Изменить Профиль источника данных"
 
 #: data_templates.php:637
-#, fuzzy, php-format
+#, php-format
 msgid "Data Templates [edit: %s]"
 msgstr "Шаблоны данных [Редактировать: %s]"
 
@@ -4461,12 +4401,10 @@ msgid "Edit Data Input Method."
 msgstr "Редактирование метода ввода данных."
 
 #: data_templates.php:665
-#, fuzzy
 msgid "Data Templates [new]"
 msgstr "Шаблоны данных [новые]"
 
 #: data_templates.php:697
-#, fuzzy
 msgid "This field is always templated."
 msgstr "Это поле всегда является шаблонированным."
 
@@ -4506,7 +4444,6 @@ msgid "Custom Data Warning Message"
 msgstr "Пользовательские данные [Ввод данных: %s]"
 
 #: data_templates.php:966
-#, fuzzy
 msgid "WARNING: Data Loss can Occur"
 msgstr "ВНИМАНИЕ! Возможна потеря данных"
 
@@ -8424,7 +8361,6 @@ msgid "User Profile (Edit)"
 msgstr "Профиль пользователя (Изменить)"
 
 #: include/global_arrays.php:2018 include/global_arrays.php:2024
-#, fuzzy
 msgid "Tree Mode"
 msgstr "Режим дерева"
 
@@ -13447,7 +13383,7 @@ msgstr "1 колонка"
 #: lib/html_tree.php:1060
 #, php-format
 msgid "%d Columns"
-msgstr "%d шт."
+msgstr "%d Колонки"
 
 #: include/global_settings.php:2718
 msgid "Tree View Thumbnail Columns"
@@ -14110,9 +14046,9 @@ msgid "%s KBytes"
 msgstr "%s Гбайт"
 
 #: lib/boost.php:69
-#, fuzzy, php-format
+#, php-format
 msgid "%s Bytes"
-msgstr "%s Гбайт"
+msgstr "%s Байты"
 
 #: lib/clog_webapi.php:120 utilities.php:1613
 #, fuzzy, php-format
@@ -15159,7 +15095,6 @@ msgid "Allow or limit the table columns to extend beyond the current windows lim
 msgstr "Разрешить или ограничить выход столбцов таблицы за пределы текущих окон."
 
 #: lib/html.php:2472 lib/html_filter.php:65
-#, fuzzy
 msgid "Enter a search term"
 msgstr "Введите поисковый запрос"
 
@@ -15608,7 +15543,7 @@ msgstr "Колонки"
 #: lib/html_graph.php:227 lib/html_tree.php:1055
 #, php-format
 msgid "%d Column"
-msgstr "%d Колонка"
+msgstr "%d Столбец"
 
 #: lib/html_graph.php:257 lib/html_tree.php:1085
 msgid "Custom"
