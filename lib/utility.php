@@ -1001,7 +1001,7 @@ function utilities_get_mysql_recommendations() {
 	} else {
 		if (version_compare($link_ver, '5.2', '>=')) {
 			if (!isset($variables['innodb_version']) &&
-				($database == 'MySQL' || ($database == 'MariaDB' && version_compare($link_ver, '11.0', '<')))) {
+				($database == 'MySQL' || ($database == 'MariaDB' && version_compare($link_ver, '10.10', '<')))) {
 
 				$recommendations += array(
 					'innodb' => array(
