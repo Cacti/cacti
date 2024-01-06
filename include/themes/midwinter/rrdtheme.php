@@ -56,15 +56,15 @@ $rrdcolors_dark['arrow']  = '2C4D43';
 $rrdcolors_dark['frame']  = '141414';
 
 # RRDtool graph fonts in RRDtool 1.2+
-$rrdfonts['title']['font']     = 'Roboto';
-$rrdfonts['title']['size']     = '11';
-$rrdfonts['axis']['font']      = 'Roboto';
+$rrdfonts['title']['font']     = '';
+$rrdfonts['title']['size']     = '10';
+$rrdfonts['axis']['font']      = '';
 $rrdfonts['axis']['size']      = '8';
-$rrdfonts['legend']['font']    = 'Roboto Mono';
+$rrdfonts['legend']['font']    = 'DejaVuSansMono';
 $rrdfonts['legend']['size']    = '8';
-$rrdfonts['unit']['font']      = 'Roboto';
+$rrdfonts['unit']['font']      = '';
 $rrdfonts['unit']['size']      = '8';
-$rrdfonts['watermark']['font'] = 'Roboto';
+$rrdfonts['watermark']['font'] = '';
 $rrdfonts['watermark']['size'] = '6';
 
 # Only supported in RRDtool 1.4+

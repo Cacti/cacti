@@ -1,12 +1,69 @@
-/* Compact BreadCrumbBar with Cacti Logo */
-#mdw-ConsolePageHead {
+.mdw-GridContainer {
+    display: grid;
+    grid-template-areas: "header"
+                         "main"
+                         "footer";
+    grid-template-columns: repeat(1, 100%);
+    grid-template-rows: 4rem calc(100vh - 4rem);
+}
+
+.mdw-ConsoleNavigation {
+    grid-area: header;
     display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    background-color: var(--background-navigation);
+}
+
+.mdw-main {
+    grid-area: main;
+    border-top: 1px solid var(--box-shadow-color);
+}
+
+.compact_nav_icon_menu {
+    display: flex;
+    align-items: center;
+
+    &:first-of-type {
+        width: 4rem;
+        cursor: pointer;
+        background: transparent url(./../../images/cacti_logo.svg) no-repeat scroll 50% 50% / 20px auto;
+    }
+
+    &:last-of-type {
+        flex: 1;
+        justify-content: right;
+    }
+
+    & [data-helper="logout"] {
+        display: none;
+    }
+}
+
+.compact_nav_icon {
+    display: inline-flex;
+    justify-content: center;
+    align-content: center;
+    flex-wrap: wrap;
+    width: 3rem;
+    height: 4rem;
+    cursor: pointer;
+    font-size: var(--fs-semilarge);
+}
+
+
+
+
+/* Compact BreadCrumbBar with Cacti Logo */
+.mdw-ConsolePageHead {
+    display: none;
     align-content: flex-start;
     flex-direction: column;
     flex-wrap: wrap;
     width: 3rem;                                                    /* <=== changed */
     height: 4rem;
     background-color: var(--background-content);
+    grid-area: header;
 }
 
 #mdw-ConsolePageHead * {                  /*equal*/
@@ -19,16 +76,7 @@
     display: none;                                                  /* changed, but optional see core.css */
 }
 
-#navBackdrop {
-    display: block;
-    float: left;
-    width: 4rem;
-    height: 4rem;
-    padding-bottom: 0;
-    cursor: pointer;
-    background: transparent url(./../../images/cacti_logo.svg) no-repeat scroll 50% 50% / 20px auto;
-    background-color: var(--background-navigation);
-}
+
 
 /* Main Content Area */
 .cactiContent {                     /*equal*/
@@ -36,28 +84,7 @@
     border-top: 1px solid var(--background-menu);
 }
 
-/* Console Navigation Area */
-.cactiConsoleNavigationArea {
-    position: absolute;
-    top: 0;
-    left: 4rem;
-    display: flex !important;
-    overflow-y: visible !important;
-    flex-direction: row;
-    justify-content: space-between;
-    width: calc(100vw - 4rem) !important;
-    height: 4rem !important;
-    padding: 0;             /* reset core */
-    border-top: 0;          /* reset core */
-}
 
-.cactiConsoleNavigationArea .compact {
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-    justify-content: flex-start;
-    width: 100%;
-}
 
 .cactiConsoleNavigationArea .compact#compact_user_menu {
     justify-content: flex-end;
@@ -129,6 +156,9 @@
     writing-mode: vertical-lr;
 }
 
+
+
+
 .cactiConsoleNavigationArea #menu::-webkit-scrollbar {
     /* WebKit */
     width: 0;
@@ -143,10 +173,6 @@
     width: 3rem;
     height: 4rem;
     cursor: pointer;
-}
-
-.compact_nav_icon.mdw_logout {
-    display: none;
 }
 
 .cactiConsoleNavigationArea .compact_nav_icon > span {
@@ -204,3 +230,17 @@
 .cactiConsoleNavigationArea .menuitem:hover ul {
     display: inline-block !important;
 }
+
+.mdw-main {
+    border-top: 1px solid var(--border-color-light);
+    grid-area: main;
+
+    &:has(.saveRowParent) {
+        padding-bottom: 4rem;
+    }
+}
+
+.formRow {
+    flex-direction: column;
+}
+

@@ -185,7 +185,6 @@ html[data-theme-color-auto="on"] .compact_nav_icon[data-helper="toggleColorMode"
 
 /* Console Navigation Area */
 .mdw-ConsoleNavigation {
-    position: relative;
     z-index: 1000;
     display: flex;
     float: left;
@@ -203,7 +202,6 @@ html[data-theme-color-auto="on"] .compact_nav_icon[data-helper="toggleColorMode"
         flex: 1;
         flex-direction: column;
         justify-content: flex-end;
-        margin-bottom: 0.5rem;
     }
 
     .compact_nav_icon {

@@ -1426,13 +1426,18 @@ table.cactiTable {
 
 .formRow {
     line-height: 30px;
-    display: flex;
+    display: grid;
     overflow: hidden;
     align-items: stretch;
-    flex-direction: row;
     width: 100%;
-    margin-bottom: 2px;
     background-color: var(--background-content);
+    margin: 2px 0;
+}
+
+@media(min-width: 769px) {
+    .formRow {
+        grid-template-columns: repeat(2, 50%);
+    }
 }
 
 .formColumn {
@@ -1444,7 +1449,6 @@ table.cactiTable {
     display: inline-flex;
     align-items: flex-start;
     flex: 1;
-    width: 55%;
     padding: 1rem 4rem 1rem 1rem;
     background-color: var(--background-content-element);
 }
@@ -1453,7 +1457,6 @@ table.cactiTable {
     display: inline-flex;
     align-items: center;
     flex: 1;
-    width: 45%;
     padding: 1rem;
     text-align: left;
     background-color: var(--background-content-element);

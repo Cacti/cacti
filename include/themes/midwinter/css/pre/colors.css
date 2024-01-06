@@ -62,7 +62,7 @@ html[data-theme-color='light'] {
     --text-color-navigation-highlight: hsl(var(--hue), 7%, 100%);
     --text-color-highlight-a: hsl(var(--special2-hue), 100%, 50%);
     --background: hsl(var(--hue), 27.3%, 97.1%);
-    --background-content: hsl(var(--hue), 5%, 96%);
+    --background-content: hsl(var(--hue), 5%, 98%);
     --background-content-element : hsl(var(--hue), 5%, 92%);
     --background-filter: hsl(var(--hue), 17%, 18%);
     --background-navigation: hsl(var(--contrast), 0%, 91%);
