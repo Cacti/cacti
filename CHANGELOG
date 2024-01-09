@@ -1,4 +1,6 @@
 Cacti CHANGELOG
+-issue#5638: Add tooltip info about IPv6 address
+
 
 1.2.26
 -security#GHSA-xwqc-7jc4-xm73: XSS vulnerability when importing a template file
