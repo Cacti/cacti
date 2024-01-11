@@ -520,21 +520,17 @@ $hosts = db_fetch_assoc_prepared("SELECT h.id, h.hostname, h.ping_port, h.ping_m
 	);
 
 if (cacti_sizeof($hosts) > 0) {
-
 	cacti_log('NOTE: Found ' . cacti_sizeof($hosts) . ' device(s) for up/down testing only', true, 'POLLER', $medium);
 
 	foreach ($hosts as $host) {
-
 		$ping = new Net_Ping;
 		$ping->host = $host['id'];
 		$ping->port = $host['ping_port'];
 
 		// perform the appropriate ping check of the host
 		if ($ping->ping($host['availability_method'], $host['ping_method'], $host['ping_timeout'], $host['ping_retries'])) {
-
 			update_host_status(HOST_UP, $host['id'], $ping, $host['availability_method'], $print_data_to_stdout);
 			cacti_log("Device[" . $host['id'] ."] STATUS: Device '" . $host['hostname'] . "' is UP.", $print_data_to_stdout, 'POLLER', debug_level($host['id'], POLLER_VERBOSITY_MEDIUM));
-
 		} else {
 			update_host_status(HOST_DOWN, $host['id'], $ping, $host['availability_method'], $print_data_to_stdout);
 			cacti_log("Device[" . $host['id'] . "] STATUS: Device '" . $host['hostname'] . "' is Down.", $print_data_to_stdout, 'POLLER', debug_level($host['id'], POLLER_VERBOSITY_MEDIUM));
