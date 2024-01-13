@@ -72,7 +72,6 @@ fieldset {
     border:none;
 }
 
-
 /* main Layout */
 main {
     scrollbar-gutter: stable;
@@ -136,8 +135,14 @@ a:active {
 }
 
 /* input fields & elements */
+textarea,
+input[type="email"],
 input[type="text"] {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
     box-sizing: border-box;
+    max-width: 50rem;
+    width: 100%;
     padding: 0.2em;
 }
 
@@ -1463,6 +1468,7 @@ table.cactiTable {
 }
 
 .formData {
+    width: 100%;    /* required to equalize input[text] & textarea */
 }
 
 .formFieldName {

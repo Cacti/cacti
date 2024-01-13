@@ -206,12 +206,12 @@ function setupTheme() {
 				'<div class="category"></div>'+
 				'<div class="action"></div>'+
 				'</div>' +
-				'<div id="navSearch"></div>'+
-				'<div id="navFilter">'+
+				'<div id="navSearch" class="navSearch"></div>'+
+				'<div id="navFilter" class="navFilter" >'+
 				//'<div id="reportrange"style="cursor: pointer; padding: 5px 10px; border: 1px solid var(--border-color);">' +
 				//'<i className="fa fa-calendar"></i>&nbsp;<span></span> <i className="fa fa-caret-down"></i>' +
 				'</div>'+
-				'<div id="navControl"></div>'+
+				'<div id="navControl" class="navControl" ></div>'+
 			'</div>' +
 			'<div id="mdw-ConsoleNavigation" class="mdw-ConsoleNavigation"></div>' +
 			'<div id="mdw-Main" class="mdw-Main"></div>' +

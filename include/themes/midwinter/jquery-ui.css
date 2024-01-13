@@ -714,10 +714,14 @@ button.ui-button::-moz-focus-inner {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+
+button.ui-multiselect,
 .ui-selectmenu-button.ui-button {
+	box-sizing: border-box;
 	text-align: left;
 	white-space: nowrap;
-	width: 14em;
+	width: 100% !important;
+	max-width: 25rem !important;
 }
 .ui-selectmenu-icon.ui-icon {
 	float: right;

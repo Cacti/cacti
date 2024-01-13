@@ -3,18 +3,16 @@
     grid-template-areas: "sidebar header"
                          "sidebar main"
                          "sidebar footer";
-    grid-template-columns: 4rem auto;
-    grid-template-rows: 4rem calc(100vh - 4rem);
+    grid-template-columns: 4rem calc(100dvw - 4rem);
+    grid-template-rows: 4rem calc(100dvh - 4rem);
 }
 
 .mdw-ConsolePageHead {
     display: flex;
-    align-content: flex-start;
     align-items: center;
     flex-direction: row;
     flex-wrap: wrap;
     height: 4rem;
-    padding: 0 12px 0 0;
     background-color: var(--background-navigation-top);
     grid-area: header;
 
@@ -25,17 +23,27 @@
 
     > div {
         height: 100%;
+        display: flex;
+        align-items: center;
+        color: var(--text-color-normal);
+        background: transparent;
+        font-size: var(--fs-big);
+        font-weight: var(--fw-medium);
+
+        .compact_nav_icon {
+            font-size: var(--fs-regular);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 3rem;
+            height: 100%;
+            cursor: pointer;
+        }
     }
 }
 
 .navBreadCrumb {
-    font-size: var(--fs-big);
-    font-weight: var(--fw-medium);
-    display: flex;
-    align-items: center;
     padding: 0 0 0 1.5rem;
-    color: var(--text-color-normal);
-    background: transparent;
 
     & i {
         display: none;
@@ -71,55 +79,27 @@
     }
 }
 
-#navSearch {
+.navSearch {
     flex: 1;
 }
 
-#navFilter,
-#navControl,
-#filterTableOnTopControl {
-    font-size: var(--fs-big);
-    font-weight: var(--fw-medium);
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    color: var(--text-color-normal);
-    background: transparent;
-}
+.navFilter {
+    &::after {
+        content: "";
+        height: 70%;
+        border-left: 1px solid var(--border-color);
+        margin: 0.2rem;
+    }
 
-#navFilter {
-    padding-right: 2px;
-}
+    .compact_nav_icon.active {
+        color: var(--text-color-normal);
+        background-color: transparent;
 
-#navControl {
-    height: 3rem !important;
-    padding-left: 2px;
-    border-left: 1px solid var(--border-color);
-}
-
-#navControl .compact_nav_icon,
-#navFilter .compact_nav_icon {
-    font-size: var(--fs-regular);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 3rem;
-    height: 3rem;
-    cursor: pointer;
-}
-
-#navControl .compact_nav_icon:last-child {
-    width: 2rem;
-}
-
-#navFilter .compact_nav_icon.active {
-    color: var(--text-color-normal);
-    background-color: transparent;
-}
-
-#navFilter .compact_nav_icon.active:hover {
-    color: var(--text-color-white);
-    background-color: var(--background-progress-semilight);
+        &:hover {
+            color: var(--text-color-white);
+            background-color: var(--background-progress-semilight);
+        }
+    }
 }
 
 /*
@@ -136,28 +116,6 @@ html[data-top-nav='on'] .compact_nav_icon[data-helper='hideTopNavBar'] .fas {
 
 html[data-theme-color-auto="on"] .compact_nav_icon[data-helper="toggleColorMode"] {
     display: none !important;
-}
-
-#navBackdrop {
-    z-index: 1000;
-    display: block;
-    float: left;
-    width: 4rem;
-    height: 4rem;
-    padding-bottom: 0;
-    cursor: pointer;
-    border-right: 1px solid var(--box-shadow-color);
-    background: transparent url(./../../images/cacti_logo.svg) no-repeat scroll 50% 50% / 20px auto;
-    background-color: var(--background-navigation);
-}
-
-#filterTableOnTopControl .compact_nav_icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 3rem;
-    height: 3rem;
-    cursor: pointer;
 }
 
 /* Main Content Area */
@@ -196,12 +154,21 @@ html[data-theme-color-auto="on"] .compact_nav_icon[data-helper="toggleColorMode"
     background: var(--background-navigation);
     grid-area: sidebar;
 
-    .compact_nav_icon_menu:last-child {
-        display: flex;
-        align-items: stretch;
-        flex: 1;
-        flex-direction: column;
-        justify-content: flex-end;
+    .compact_nav_icon_menu {
+        &:first-of-type {
+            height: 4rem;
+            width: 4rem;
+            cursor: pointer;
+            background: transparent url(./../../images/cacti_logo.svg) no-repeat scroll 50% 50% / 20px auto;
+        }
+
+        &:last-child {
+            display: flex;
+            align-items: stretch;
+            flex: 1;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
     }
 
     .compact_nav_icon {
@@ -219,7 +186,6 @@ html[data-theme-color-auto="on"] .compact_nav_icon[data-helper="toggleColorMode"
         }
 
         /* CSS driven tooltip */
-
         &[data-tooltip]:not([data-tooltip=""])::after {
             font-size: var(--fs-regular);
             position: absolute;
@@ -557,6 +523,11 @@ html[data-theme-color-auto="on"] .compact_nav_icon[data-helper="toggleColorMode"
 }
 
 @media screen and (max-height: 450px) {
+    .mdw-GridContainer {
+        grid-template-columns: 4rem calc(100dvw - 4rem);
+        grid-template-rows: 0 100dvh;
+    }
+
     [class^="mdw-ConsoleNavigationBox"] {
         top: 0;
         width: calc(100vw - 4rem) !important;
