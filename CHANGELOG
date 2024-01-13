@@ -18,6 +18,7 @@ Cacti CHANGELOG
 -issue#5567: Incorrect variable name in change_device cli script
 -issue#5570: RRDChecker is started very often
 -issue#5573: Incorrect URL for editing graph template
+-issue#5639: Add tooltip info about IPv6 address
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1442: Add validation to GUI inputs

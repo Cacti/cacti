@@ -1451,7 +1451,7 @@ $settings['poller'] = array(
 			'0' => __('Disabled'),
 			'1' => __('Daily'),
 			'2' => __('Weekly on Sunday'),
-			'3' => __('Monthly on Sunady')
+			'3' => __('Monthly on Sunday')
 		)
 	),
 	'timeouts_header' => array(
