@@ -2120,7 +2120,7 @@ function object_cache_get_totals($class, $object_ids, $diff = false) {
 
 			break;
 		case 'graph_delete':
-			$data = db_fetch_assoc('SELECT host_id AD id, COUNT(*) AS totals
+			$data = db_fetch_assoc('SELECT host_id AS id, COUNT(*) AS totals
 				FROM graph_local AS gl
 				WHERE id IN(' . implode(', ', $object_ids) . ')
 				GROUP BY host_id');
@@ -2168,7 +2168,6 @@ function object_cache_get_totals($class, $object_ids, $diff = false) {
 				ON dl.id = dtr.local_data_id
 				INNER JOIN graph_templates_item AS gti
 				ON dtr.id = gti.task_item_id
-				FROM data_local AS dl
 				WHERE local_graph_id IN(' . implode(', ', $object_ids) . ')
 				GROUP BY snmp_query_id');
 
@@ -2229,7 +2228,7 @@ function object_cache_get_totals($class, $object_ids, $diff = false) {
 				INNER JOIN data_local AS dl
 				ON dl.id = dtd.local_data_id
 				INNER JOIN graph_templates_item AS gti
-				ON dtr.id = gti.task_item_id
+				ON dtd.id = gti.task_item_id
 				WHERE data_input_id > 0
 				AND local_graph_id IN(' . implode(', ', $object_ids) . ')
 				GROUP BY data_input_id');
@@ -2243,7 +2242,7 @@ function object_cache_get_totals($class, $object_ids, $diff = false) {
 				INNER JOIN data_local AS dl
 				ON dl.id = dtd.local_data_id
 				INNER JOIN graph_templates_item AS gti
-				ON dtr.id = gti.task_item_id
+				ON dtd.id = gti.task_item_id
 				WHERE data_input_id > 0
 				AND local_graph_id IN(' . implode(', ', $object_ids) . ')
 				GROUP BY data_source_profile_id');
