@@ -32,9 +32,9 @@ function api_delete_graphs(&$local_graph_ids, $delete_type, $update_totals = tru
 
     if ($update_totals) {
 		if ($delete_type == 2) {
-	        object_cache_get_totals('graph_delete', $local_data_ids);
+	        object_cache_get_totals('graph_delete', $local_graph_ids);
 		} else {
-	        object_cache_get_totals('graph_leave', $local_data_ids);
+	        object_cache_get_totals('graph_leave', $local_graph_ids);
 		}
     }
 
