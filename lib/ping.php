@@ -178,7 +178,7 @@ class Net_Ping
 				$result = shell_exec('ping -w ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
 			} elseif (substr_count(strtolower(PHP_OS), 'aix')) {
 				$result = shell_exec('ping -i ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
-			} elseif (substr_count(strtolower(PHP_OS), 'winnt')) {
+			} elseif (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 				$result = shell_exec('chcp 437 && ping -w ' . $this->timeout . ' -n ' . $this->retries . ' ' . $this->host['hostname']);
 			} else {
 				/* please know, that when running SELinux, httpd will throw
@@ -195,7 +195,7 @@ class Net_Ping
 				}
 			}
 
-			if (strtolower(PHP_OS) != 'winnt') {
+			if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 				$position = strpos($result, 'min/avg/max');
 
 				if ($position > 0) {

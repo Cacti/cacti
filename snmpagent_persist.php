@@ -77,7 +77,7 @@ $cache_last_refresh = false;
 $php = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 $extra_args     = '-q ' . cacti_escapeshellarg('./snmpagent_mibcache.php');
 
-if(strstr(PHP_OS, 'WIN')) {
+if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 	/* windows part missing */
 	pclose(popen('start "CactiSNMPCache" /I /B ' . $php . ' ' . $extra_args, 'r'));
 } else {
