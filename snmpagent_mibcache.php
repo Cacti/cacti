@@ -49,8 +49,8 @@ if (file_exists($path_mibcache_lock) && is_writable($path_mibcache_lock)) {
 $php        = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 $extra_args = ' ' . cacti_escapeshellarg('./snmpagent_mibcachechild.php');
 
-while (true) {
-	if (strstr(PHP_OS, 'WIN')) {
+while(true) {
+	if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 		popen('start "CactiSNMPCacheChild" /I ' . $php . ' ' . $extra_args, 'r');
 	} else {
 		exec($php . ' ' . $extra_args . ' > /dev/null &');

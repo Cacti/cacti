@@ -186,7 +186,7 @@ while (1) {
 
 	if (empty($input_string)) {
 		if (!empty($parent_pid)) {
-			if (strncasecmp(PHP_OS, 'win', 3) == 0) {
+			if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 				$out = array();
 				exec("TASKLIST /FO LIST /FI \"PID eq $parent_pid\"", $out);
 
