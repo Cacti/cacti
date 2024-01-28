@@ -8415,8 +8415,10 @@ function cacti_time_zone_set($gmt_offset) {
 			$php_offset = $zone;
 			ini_set('date.timezone', $zone);
 		} else {
-			$php_offset = 'Etc/GMT' . ($hours > 0 ? '-':'+') . abs($hours);
-			ini_set('date.timezone', 'Etc/GMT' . ($hours > 0 ? '-':'+') . abs($hours));
+			// Adding the rounding function as some timezones are Etc/GMT+5.5 which is
+			// not supported in PHP yet.
+			$php_offset = 'Etc/GMT' . ($hours > 0 ? '-':'+') . abs(round($hours));
+			ini_set('date.timezone', 'Etc/GMT' . ($hours > 0 ? '-':'+') . abs(round($hours)));
 		}
 
 		$_SESSION[SESS_BROWSER_SYSTEM_TZ] = $sys_offset;
