@@ -42,6 +42,7 @@ Cacti CHANGELOG
 -issue#5609: When parsing a Data Query resource, an error can be reported if no direction is specified
 -issue#5612: Database reconnection can cause errors to be reported incorrectly
 -issue#5613: fix returned value if $sau is empty
+-issue#5641: Cmd poller - add availability test for devices without poller items 
 -feature#5577: Add Aruba switch, Aruba controller and HPE iLO templates
 -feature#5597: Add OSCX 6x00 templates
 
