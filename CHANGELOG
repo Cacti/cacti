@@ -3,8 +3,8 @@ Cacti CHANGELOG
 1.2.27
 -issue#5622: Errors and deprecation warnings with PHP 8.3.0
 -issue#5638: Add tooltip info about IPv6 address
+-issue#5648: Fractional time offsets can cause huge webserver error-logs
 -issue#5649: Inapprorpiate use of PHP_OS in lib/ping.php on Windows Platform
-
 
 1.2.26
 -security#GHSA-xwqc-7jc4-xm73: XSS vulnerability when importing a template file
