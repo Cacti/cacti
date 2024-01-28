@@ -2737,7 +2737,7 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
 		$sql_order = "ORDER BY $sql_order";
 	}
 
-	if (read_user_setting('hide_disabled') == 'on') {
+	if (read_user_setting('hide_disabled', false, false, $user_id) == 'on') {
 		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(h.disabled = "" OR h.disabled IS NULL)';
 	}
 
