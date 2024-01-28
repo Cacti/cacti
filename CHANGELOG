@@ -99,6 +99,11 @@ Cacti CHANGELOG
 -feature: Upgrade d3.js to version 7.8.2
 -feature: Upgrade ua-parser.js to version 1.0.35
 
+1.2.27
+-issue#5622: Errors and deprecation warnings with PHP 8.3.0
+-issue#5638: Add tooltip info about IPv6 address
+-issue#5649: Inapprorpiate use of PHP_OS in lib/ping.php on Windows Platform
+
 1.2.26
 -issue#5464: PHP warning when view Data Source Info mode with new Data Source
 -issue#5481: Attempting to edit a Data Query that does not exist throws warnings and not an GUI error

@@ -31,7 +31,7 @@ include_once('./lib/poller.php');
 include_once('./lib/template.php');
 include_once('./lib/utility.php');
 
-ini_set('max_execution_time', '-1');
+ini_set('max_execution_time', '0');
 
 $actions = array(
 	1 => __('Delete'),
