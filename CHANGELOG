@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.27
+-issue#5622: Errors and deprecation warnings with PHP 8.3.0
 -issue#5638: Add tooltip info about IPv6 address
 -issue#5649: Inapprorpiate use of PHP_OS in lib/ping.php on Windows Platform
 
