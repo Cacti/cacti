@@ -54,6 +54,29 @@ switch ($action) {
 		}
 }
 
+if (isset($_SERVER['HTTP_REFERER'])) {
+	$return = $_SERVER['HTTP_REFERER'];
+
+	if (basename($return) != 'auth_changepassword.php') {
+		if (strpos($return, '/plugins/') !== false) {
+			$parts  = explode('/plugins/', $return);
+			$return = $config['url_path'] . 'plugins/' . $parts[1];
+		} else {
+			$return = $config['url_path'] . basename($return);
+		}
+
+		$_SESSION['acp_return'] = $return;
+	} else {
+		if (isset($_SESSION['acp_return'])) {
+			$return = $_SESSION['acp_return'];
+		} else {
+			$return = $config['url_path'] . 'index.php';
+		}
+	}
+} else {
+	$return = $config['url_path'] . 'index.php';
+}
+
 $user = db_fetch_row_prepared('SELECT *
 	FROM user_auth
 	WHERE id = ?',
@@ -408,7 +431,7 @@ if ($skip_current) {
 						</tr>
 						<tr>
 							<td class='nowrap' colspan='2'><input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Save'); ?>'>
-								<?php print $user['must_change_password'] != 'on' ? "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='window.history.go(-1)' value='".  __esc('Return') . "'>":"";?>
+								<?php print $user['must_change_password'] != 'on' ? "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location=\"$return\"' value='".  __esc('Return') . "'>":"";?>
 							</td>
 						</tr>
 					</table>
