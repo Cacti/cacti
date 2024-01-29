@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -issue#5638: Add tooltip info about IPv6 address
 -issue#5648: Fractional time offsets can cause huge webserver error-logs
 -issue#5649: Inapprorpiate use of PHP_OS in lib/ping.php on Windows Platform
+-issue#5655: Function get_allowed_devices can returns incorrect device list if session user_id variable is not set
 
 1.2.26
 -security#GHSA-xwqc-7jc4-xm73: XSS vulnerability when importing a template file
