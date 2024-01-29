@@ -371,6 +371,7 @@ abstract class LdapError {
 
 class Ldap {
 	public $dn;
+	public $cn;
 	public $host;
 	public $username;
 	public $password;
