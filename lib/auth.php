@@ -1346,6 +1346,20 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 		return array();
 	}
 
+	if ($user_id == -1) {
+		$auth_method = 0;
+	} else {
+		$auth_method = read_config_option('auth_method');
+	}
+
+	if ($auth_method > 0 && $user_id == 0) {
+		if (isset($_SESSION['sess_user_id'])) {
+			$user_id = $_SESSION['sess_user_id'];
+		} else {
+			return array();
+		}
+	}
+
 	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
@@ -1362,22 +1376,8 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 
 	$sql_where = "WHERE (gti.graph_tree_id=$tree_id AND gti.parent=$leaf_id)" . $sql_where;
 
-	if (read_user_setting('hide_disabled') == 'on') {
+	if (read_user_setting('hide_disabled', false, false, $user_id) == 'on') {
 		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(h.disabled = "" OR h.disabled IS NULL)';
-	}
-
-	if ($user_id == -1) {
-		$auth_method = AUTH_METHOD_NONE;
-	} else {
-		$auth_method = read_config_option('auth_method');
-	}
-
-	if ($auth_method > AUTH_METHOD_NONE && $user_id == 0) {
-		if (isset($_SESSION[SESS_USER_ID])) {
-			$user_id = $_SESSION[SESS_USER_ID];
-		} else {
-			return array();
-		}
 	}
 
 	$graph_auth_method = read_config_option('graph_auth_method');
@@ -1446,6 +1446,20 @@ function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sq
 		return array();
 	}
 
+	if ($user_id == -1) {
+		$auth_method = 0;
+	} else {
+		$auth_method = read_config_option('auth_method');
+	}
+
+	if ($auth_method > 0 && $user_id == 0) {
+		if (isset($_SESSION['sess_user_id'])) {
+			$user_id = $_SESSION['sess_user_id'];
+		} else {
+			return array();
+		}
+	}
+
 	if ($sql_limit != '') {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
@@ -1460,7 +1474,7 @@ function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sq
 		$sql_where .= ($sql_where != '' ? ' AND ' : ' ') . " gl.id = $graph_id";
 	}
 
-	if (read_user_setting('hide_disabled') == 'on') {
+	if (read_user_setting('hide_disabled', false, false, $user_id) == 'on') {
 		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(h.disabled = "" OR h.disabled IS NULL)';
 	}
 
@@ -1468,20 +1482,6 @@ function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sq
 		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL) AND $sql_where";
 	} else {
 		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL)";
-	}
-
-	if ($user_id == -1) {
-		$auth_method = AUTH_METHOD_NONE;
-	} else {
-		$auth_method = read_config_option('auth_method');
-	}
-
-	if ($auth_method > AUTH_METHOD_NONE && $user_id == 0) {
-		if (isset($_SESSION[SESS_USER_ID])) {
-			$user_id = $_SESSION[SESS_USER_ID];
-		} else {
-			return array();
-		}
 	}
 
 	/* see if permissions are simple */
@@ -1554,6 +1554,20 @@ function get_allowed_aggregate_graphs($sql_where = '', $sql_order = 'gtg.title_c
 		return array();
 	}
 
+	if ($user_id == -1) {
+		$auth_method = 0;
+	} else {
+		$auth_method = read_config_option('auth_method');
+	}
+
+	if ($auth_method > 0 && $user_id == 0) {
+		if (isset($_SESSION['sess_user_id'])) {
+			$user_id = $_SESSION['sess_user_id'];
+		} else {
+			return array();
+		}
+	}
+
 	if ($sql_limit != '' && $sql_limit != -1) {
 		$sql_limit = "LIMIT $sql_limit";
 	} else {
@@ -1568,7 +1582,7 @@ function get_allowed_aggregate_graphs($sql_where = '', $sql_order = 'gtg.title_c
 		$sql_where .= ($sql_where != '' ? ' AND ' : ' ') . " gl.id = $graph_id";
 	}
 
-	if (read_user_setting('hide_disabled') == 'on') {
+	if (read_user_setting('hide_disabled', false, false, $user_id) == 'on') {
 		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(h.disabled = "" OR h.disabled IS NULL)';
 	}
 
@@ -1576,20 +1590,6 @@ function get_allowed_aggregate_graphs($sql_where = '', $sql_order = 'gtg.title_c
 		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL) AND $sql_where";
 	} else {
 		$sql_where = "WHERE ((h.id > 0 AND h.deleted = '') OR h.id IS NULL)";
-	}
-
-	if ($user_id == -1) {
-		$auth_method = AUTH_METHOD_NONE;
-	} else {
-		$auth_method = read_config_option('auth_method');
-	}
-
-	if ($auth_method > AUTH_METHOD_NONE && $user_id == 0) {
-		if (isset($_SESSION[SESS_USER_ID])) {
-			$user_id = $_SESSION[SESS_USER_ID];
-		} else {
-			return array();
-		}
 	}
 
 	/* see if permissions are simple */
@@ -1838,6 +1838,12 @@ function get_allowed_graph_templates($sql_where = '', $sql_order = 'gt.name', $s
 		return array();
 	}
 
+	if ($user_id == -1) {
+		$auth_method = 0;
+	} else {
+		$auth_method = read_config_option('auth_method');
+	}
+
 	if ($user_id == 0) {
 		if (isset($_SESSION[SESS_USER_ID])) {
 			$user_id = $_SESSION[SESS_USER_ID];
@@ -1868,20 +1874,6 @@ function get_allowed_graph_templates($sql_where = '', $sql_order = 'gt.name', $s
 	}
 
 	$sql_where = 'WHERE ' . ($sql_where != '' ? $sql_where . ' AND ':' ') . '(gt.id IS NOT NULL) ';
-
-	if ($user_id == -1) {
-		$auth_method = AUTH_METHOD_NONE;
-	} else {
-		$auth_method = read_config_option('auth_method');
-	}
-
-	if ($auth_method > AUTH_METHOD_NONE && $user_id == 0) {
-		if (isset($_SESSION[SESS_USER_ID])) {
-			$user_id = $_SESSION[SESS_USER_ID];
-		} else {
-			return array();
-		}
-	}
 
 	/* see if permissions are simple */
 	$simple_perms = get_simple_graph_perms($user_id);
@@ -2833,7 +2825,7 @@ function get_allowed_devices($sql_where = '', $sql_order = 'description', $sql_l
 		$sql_order = "ORDER BY $sql_order";
 	}
 
-	if (read_user_setting('hide_disabled') == 'on') {
+	if (read_user_setting('hide_disabled', false, false, $user_id) == 'on') {
 		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(h.disabled = "" OR h.disabled IS NULL)';
 	}
 
@@ -3032,7 +3024,7 @@ function get_allowed_site_devices($site_id, $sql_where = '', $sql_order = 'descr
 		$sql_order = "ORDER BY $sql_order";
 	}
 
-	if (read_user_setting('hide_disabled') == 'on') {
+	if (read_user_setting('hide_disabled', false, false, $user_id) == 'on') {
 		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(h.disabled = "" OR h.disabled IS NULL)';
 	}
 
