@@ -102,6 +102,7 @@ Cacti CHANGELOG
 1.2.27
 -issue#5622: Errors and deprecation warnings with PHP 8.3.0
 -issue#5629: auth_changepassword.php cannot return to the refer url by just clicking the "Return" button once
+-issue#5636: Cacti 1.2.26 error on LDAP authentication the first time
 -issue#5638: Add tooltip info about IPv6 address
 -issue#5645: Boost poller fail to update rrd which Data Template and Graph Template items do not match
 -issue#5648: Fractional time offsets can cause huge webserver error-logs
