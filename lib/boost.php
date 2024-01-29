@@ -863,10 +863,25 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = null) {
 		cacti_log('The RRDpath is ' . $rrd_path, false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
 		cacti_log('The RRDpath template is ' . $rrd_tmpl, false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
 
+		$unused_data_source_names = array_rekey(
+			db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
+				FROM data_template_rrd AS dtr
+				LEFT JOIN graph_templates_item AS gti
+				ON dtr.id = gti.task_item_id
+				WHERE dtr.local_data_id = ?
+				AND gti.task_item_id IS NULL',
+				array($local_data_id)),
+			'data_source_name', 'data_source_name'
+		);
+
 		boost_timer('results_cycle', BOOST_TIMER_START);
 
 		/* go through each poller_output_boost entries and process */
 		foreach ($results as $item) {
+			if (cacti_sizeof($unused_data_source_names) && isset($unused_data_source_names[$item['rrd_name']])) {
+				continue;
+			}
+
 			/**
 			 * detect duplicate records, this should not happen,
 			 * but adding just in case.

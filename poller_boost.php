@@ -776,6 +776,8 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 		$last_update    = -1;
 		$reset_template = true;
 
+		$unused_data_source_names = array();
+
 		/* we are going to blow away all record if ok */
 		$vals_in_buffer = 0;
 
@@ -783,6 +785,10 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 
 		/* go through each poller_output_boost entries and process */
 		foreach ($results as $item) {
+			if ($local_data_id == $item['local_data_id'] && cacti_sizeof($unused_data_source_names) && isset($unused_data_source_names[$item['rrd_name']])) {
+				continue;
+			}
+
 			$item['timestamp'] = trim($item['timestamp']);
 
 			if (!$locked) {
@@ -803,6 +809,20 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 			 * and discover the template for the next RRDfile.
 			 */
 			if ($local_data_id != $item['local_data_id']) {
+				$unused_data_source_names = array_rekey(
+					db_fetch_assoc_prepared('SELECT DISTINCT dtr.data_source_name, dtr.data_source_name
+						FROM data_template_rrd AS dtr
+						LEFT JOIN graph_templates_item AS gti
+						ON dtr.id = gti.task_item_id
+						WHERE dtr.local_data_id = ?
+						AND gti.task_item_id IS NULL',
+						array($item['local_data_id'])),
+					'data_source_name', 'data_source_name'
+				);
+				if (cacti_sizeof($unused_data_source_names) && isset($unused_data_source_names[$item['rrd_name']])) {
+					continue;
+				}
+
 				$reset_template = true;
 
 				if (isset($nt_rrd_field_names)) {

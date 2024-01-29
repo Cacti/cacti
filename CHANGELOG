@@ -103,6 +103,7 @@ Cacti CHANGELOG
 -issue#5622: Errors and deprecation warnings with PHP 8.3.0
 -issue#5629: auth_changepassword.php cannot return to the refer url by just clicking the "Return" button once
 -issue#5638: Add tooltip info about IPv6 address
+-issue#5645: Boost poller fail to update rrd which Data Template and Graph Template items do not match
 -issue#5648: Fractional time offsets can cause huge webserver error-logs
 -issue#5649: Inapprorpiate use of PHP_OS in lib/ping.php on Windows Platform
 -issue#5655: Function get_allowed_devices can returns incorrect device list if session user_id variable is not set
