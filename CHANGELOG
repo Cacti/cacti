@@ -101,6 +101,7 @@ Cacti CHANGELOG
 
 1.2.27
 -issue#5622: Errors and deprecation warnings with PHP 8.3.0
+-issue#5628: Argument '--with-profile' is a invalid arg of cli/import_package.php
 -issue#5629: auth_changepassword.php cannot return to the refer url by just clicking the "Return" button once
 -issue#5636: Cacti 1.2.26 error on LDAP authentication the first time
 -issue#5638: Add tooltip info about IPv6 address
