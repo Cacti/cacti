@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2022-03-14 20:55-0400\n"
-"Last-Translator: Patrick Rademaker\n"
-"Language-Team: Patrick Rademaker\n"
-"Language: nl_NL\n"
+"PO-Revision-Date: 2024-01-31 14:27+0000\n"
+"Last-Translator: Edwin Lankamp <edwin.lankamp@gmail.com>\n"
+"Language-Team: Dutch <http://translate.cacti.net/projects/cacti/core/nl/>\n"
+"Language: nl-NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.0.1\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2719 lib/html.php:2726
 msgid "About Cacti"
@@ -47,17 +47,22 @@ msgid "Honorable Mentions"
 msgstr "Console menu sectie"
 
 #: about.php:64
+#, fuzzy
 msgid "Contributors to Docuemntation, QA, Packaging, the Forums and our YouTube page."
 msgstr ""
+"Draag bij aan documentatie, QA, verpakking, de forums en onze YouTube-pagina."
 
 #: about.php:74
 #, fuzzy
 msgid "Emeritus Members"
-msgstr "Groepsleden"
+msgstr "Emeritus Groepsleden"
 
 #: about.php:75
+#, fuzzy
 msgid "Members of the original Cacti Group that have since moved on in their careers.  We continue to wish them the best."
 msgstr ""
+"Leden van de oorspronkelijke Cacti Groep, die sindsdien verder zijn gegaan "
+"in hun carrière.  Wij wensen hun het allerbeste."
 
 #: about.php:85
 msgid "Thanks"
@@ -821,7 +826,7 @@ msgstr "Aggregeer template"
 #: include/global_arrays.php:1070 include/global_arrays.php:1145
 #: lib/installer.php:2747 user_admin.php:2778 user_group_admin.php:2479
 msgid "Templates"
-msgstr "Templates"
+msgstr "Sjablonen"
 
 #: aggregate_templates.php:630 cdef.php:773 color.php:542
 #: color_templates.php:860 gprint_presets.php:266 graph_templates.php:1429
@@ -2018,7 +2023,7 @@ msgstr "SNMP get"
 #: include/global_form.php:2014 include/global_settings.php:52
 #: lib/html_reports.php:30
 msgid "General Settings"
-msgstr "Algemene instellingen"
+msgstr "Algemene Instellingen"
 
 #: automation_networks.php:757 automation_snmp.php:687 data_input.php:561
 #: data_input.php:628 data_queries.php:767 data_queries.php:873
@@ -6839,9 +6844,8 @@ msgid "Click 'Continue' to Enable the following Devices."
 msgstr "Klik op 'Volgende' om de volgende appara(a)t(en) in te schakelen."
 
 #: host.php:503
-#, fuzzy
 msgid "Enable Device"
-msgstr "Appara(a)t(en) inschakelen"
+msgstr "Apparaat inschakelen"
 
 #: host.php:504
 #, fuzzy
@@ -9550,7 +9554,7 @@ msgstr "Beheer grafiek"
 #: include/global_arrays.php:2863 include/global_arrays.php:2881
 #: include/global_arrays.php:2893 include/global_arrays.php:2917
 msgid "(Edit)"
-msgstr "(Wijzig)"
+msgstr "(bewerken)"
 
 #: include/global_arrays.php:2179 lib/api_aggregate.php:1775
 msgid "Graph Items"
@@ -12962,7 +12966,6 @@ msgstr ""
 
 #: include/global_settings.php:1522 include/global_settings.php:2115
 #: include/global_settings.php:2242 include/global_settings.php:2349
-#, fuzzy
 msgid "1 Process"
 msgstr "1 Proces"
 
@@ -14559,6 +14562,7 @@ msgid "How do you wish to view Realtime Graphs?"
 msgstr "Hoe wilt u Realtime grafieken bekijken?"
 
 #: include/global_settings.php:3001
+#, fuzzy
 msgid "Inline"
 msgstr "Inline"
 
@@ -15261,9 +15265,8 @@ msgid "Authentication was previously not set.  Attempted to set to Local Authent
 msgstr "Verificatie was eerder niet ingesteld. Geprobeerd om lokale authenticatie in te stellen, maar er is geen beheerdersaccount gevonden."
 
 #: lib/auth.php:5124 lib/auth.php:5159 lib/auth.php:5197
-#, fuzzy
 msgid "Unknown error"
-msgstr "Onbekend Sec."
+msgstr "Onbekende fout "
 
 #: lib/auth.php:5128 lib/auth.php:5163 lib/auth.php:5201
 #, fuzzy
@@ -19588,7 +19591,7 @@ msgstr "Filters herstellen"
 #: links.php:327 links.php:521 user_admin.php:1525 user_group_admin.php:1414
 #, fuzzy
 msgid "Top Tab"
-msgstr "Top Tabblad"
+msgstr "Bovenste tabblad"
 
 #: links.php:328 user_admin.php:1526 user_group_admin.php:1415
 #, fuzzy
