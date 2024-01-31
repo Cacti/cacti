@@ -4,19 +4,7 @@
 # Patrick Rademaker, 2017.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2023-12-05 18:50-0500\n"
-"PO-Revision-Date: 2023-03-07 13:29+0000\n"
-"Last-Translator: Anonymous <anonymous@cacti.net>\n"
-"Language-Team: Dutch <http://translate.cacti.net/projects/cacti/core-v1-2-x/nl/>\n"
-"Language: nl-NL\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2023-12-05 18:50-0500\nPO-Revision-Date: 2024-01-31 13:06+0000\nLast-Translator: Edwin Lankamp <edwin.lankamp@gmail.com>\nLanguage-Team: Dutch <http://translate.cacti.net/projects/cacti/core-v1-2-x/nl/>\nLanguage: nl-NL\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2626 lib/html.php:2518
 msgid "About Cacti"
@@ -51,18 +39,20 @@ msgid "Honorable Mentions"
 msgstr "Console menu sectie"
 
 #: about.php:62
+#, fuzzy
 msgid "Contributors to Docuemntation, QA, Packaging, the Forums and our YouTube page."
-msgstr ""
+msgstr "Draag bij aan documentatie, QA, verpakking, de forums en onze YouTube-pagina."
 
 #: about.php:72
 #, fuzzy
 #| msgid "Group Member"
 msgid "Emeritus Members"
-msgstr "Groepsleden"
+msgstr "Emeritus Groepsleden"
 
 #: about.php:73
+#, fuzzy
 msgid "Members of the original Cacti Group that have since moved on in their careers.  We continue to wish them the best."
-msgstr ""
+msgstr "Leden van de oorspronkelijke Cacti Groep, die sindsdien verder zijn gegaan in hun carrière.  Wij wensen hun het allerbeste."
 
 #: about.php:83
 msgid "Thanks"
@@ -799,7 +789,7 @@ msgstr "Aggregeer template"
 #: include/global_arrays.php:1003 include/global_arrays.php:1066
 #: lib/installer.php:2559 user_admin.php:2858 user_group_admin.php:2513
 msgid "Templates"
-msgstr "Templates"
+msgstr "Sjablonen"
 
 #: aggregate_templates.php:623 cdef.php:770 color.php:558
 #: color_templates.php:562 gprint_presets.php:285 graph_templates.php:726
@@ -1595,7 +1585,7 @@ msgstr "Zoek netwerk binnen bereik [nieuw]"
 #: include/global_form.php:1998 include/global_settings.php:51
 #: lib/html_reports.php:30
 msgid "General Settings"
-msgstr "Algemene instellingen"
+msgstr "Algemene Instellingen"
 
 #: automation_networks.php:441 automation_snmp.php:505 data_input.php:560
 #: data_input.php:621 data_queries.php:777 data_queries.php:882
@@ -2214,7 +2204,7 @@ msgstr "Naamlayout"
 
 #: automation_snmp.php:244
 msgid "name"
-msgstr "naam"
+msgstr "Naam"
 
 #: automation_snmp.php:295
 #, fuzzy
@@ -8072,7 +8062,7 @@ msgstr "Beheer grafiek"
 #: include/global_arrays.php:2770 include/global_arrays.php:2788
 #: include/global_arrays.php:2812
 msgid "(Edit)"
-msgstr "(Wijzig)"
+msgstr "(bewerken)"
 
 #: include/global_arrays.php:2098 lib/api_aggregate.php:1741
 msgid "Graph Items"
@@ -11403,7 +11393,6 @@ msgstr ""
 
 #: include/global_settings.php:1402 include/global_settings.php:2067
 #: include/global_settings.php:2177 include/global_settings.php:2245
-#, fuzzy
 msgid "1 Process"
 msgstr "1 Proces"
 
@@ -13011,6 +13000,7 @@ msgid "How do you wish to view Realtime Graphs?"
 msgstr "Hoe wilt u Realtime grafieken bekijken?"
 
 #: include/global_settings.php:2866
+#, fuzzy
 msgid "Inline"
 msgstr "Inline"
 
@@ -17719,7 +17709,7 @@ msgstr "Filters herstellen"
 #: links.php:345 links.php:513 user_admin.php:1553 user_group_admin.php:1434
 #, fuzzy
 msgid "Top Tab"
-msgstr "Top Tabblad"
+msgstr "Bovenste tabblad"
 
 #: links.php:346 user_admin.php:1554 user_group_admin.php:1435
 #, fuzzy
