@@ -949,7 +949,7 @@ function loadTable($db, &$records) {
 
 function display_version() {
 	if (!defined('COPYRIGHT_YEARS')) {
-		define('COPYRIGHT_YEARS', '2004-2023');
+		define('COPYRIGHT_YEARS', '2004-2024');
 	}
 
 	$version = get_cacti_cli_version();
