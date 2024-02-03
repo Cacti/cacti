@@ -6296,6 +6296,21 @@ function repair_system_data_input_methods($step = 'import') {
 						}
 
 						db_execute_prepared('DELETE FROM data_input_fields WHERE hash = ?', array($bhash['hash']));
+					} elseif ($bhash['hash'] == '35637c344d84d8aa3a4dc50e4a120b3f')  {
+						$data_input_field_id = db_fetch_cell_prepared('SELECT *
+							FROM data_input_fields
+							WHERE hash = ?',
+							array('35637c344d84d8aa3a4dc50e4a120b3f'));
+
+						if ($data_input_field_id > 0) {
+							db_execute_prepared('DELETE FROM data_input_fields
+								WHERE id = ?',
+								array($data_input_field_id));
+
+							db_execute_prepared('DELETE FROM data_input_data
+								WHERE data_input_field_id = ?',
+								array($data_input_field_id));
+						}
 					} else {
 						cacti_log('WARNING: Could not find Cacti default matching hash for unknown system hash "' . $bhash['hash'] . '" for ' . $data_input_id . '.  No repair performed.');
 					}

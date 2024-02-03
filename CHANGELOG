@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#5648: Fractional time offsets can cause huge webserver error-logs
 -issue#5649: Inapprorpiate use of PHP_OS in lib/ping.php on Windows Platform
 -issue#5655: Function get_allowed_devices can returns incorrect device list if session user_id variable is not set
+-issue#5660: Warning about unknown system hash during the update
 -issue#5661: On Linux and *NIX variants Cacti is unable to find ping6 as it's not in the path
 
 1.2.26
