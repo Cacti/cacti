@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2023 The Cacti Group                                 |
+ | Copyright (C) 2004-2024 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -31,7 +31,7 @@ function upgrade_to_1_1_8() {
 		$watermark = $result['data'];
 	}
 
-	if ($watermark == 'Copyright (C) 2004-2023 The Cacti Group') {
+	if ($watermark == 'Copyright (C) 2004-2024 The Cacti Group') {
 		db_install_execute("DELETE FROM `settings` WHERE name = 'graph_watermark'");
 	}
 }
