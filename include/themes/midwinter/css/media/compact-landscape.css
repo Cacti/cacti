@@ -102,20 +102,8 @@
     }
 }
 
-/*
-html[data-top-nav='off'] .compact_nav_icon[data-helper='hideTopNavBar'] .fas {
-    rotate: x 180deg;
-    transition: 0.5s ease-in-out;
-}
-
-html[data-top-nav='on'] .compact_nav_icon[data-helper='hideTopNavBar'] .fas {
-    rotate: x 0deg;
-    transition: .5s ease-in-out;
-}
- */
-
-html[data-theme-color-auto="on"] .compact_nav_icon[data-helper="toggleColorMode"] {
-    display: none !important;
+.navControl {
+    padding-right: calc( 0.5rem + 4px);
 }
 
 /* Main Content Area */
@@ -128,12 +116,12 @@ html[data-theme-color-auto="on"] .compact_nav_icon[data-helper="toggleColorMode"
     }
 }
 
+/* ensure that save buttons stay at the bottom. no solution has been found yet to use grid-area: footer instead */
 .saveRowParent {
     position: fixed;
     z-index: 100;
     bottom: 0;
     left: 4rem;
-    box-sizing: border-box;
     width: calc(100vw - 4rem);
     height: 4rem;
     padding-right: 0.5rem;
@@ -223,7 +211,6 @@ html[data-theme-color-auto="on"] .compact_nav_icon[data-helper="toggleColorMode"
     left: 4rem;
     display: flex;
     flex-direction: column;
-    box-sizing: border-box;
     width: 55rem;
     min-width: 19rem;
     max-width: calc(100vw - 5rem);
@@ -248,8 +235,17 @@ html[data-theme-color-auto="on"] .compact_nav_icon[data-helper="toggleColorMode"
         border-left: 1px solid var(--border-color);
         box-shadow: 0 10px 5px 0 var(--box-shadow-color);
 
-        .navBox-header {
-            padding-right: 1rem;
+        .navBox-header-button:last-child {
+            width: 3rem;
+            margin-right: calc(0.5rem + 4px);
+        }
+
+        .navBox-content {
+            overflow: unset;
+            padding: 0;
+            & nav {
+                padding: 0 0.5rem;
+            }
         }
     }
 
@@ -261,33 +257,13 @@ html[data-theme-color-auto="on"] .compact_nav_icon[data-helper="toggleColorMode"
         }
     }
 
-    &[data-width="1"] {
-        width: 19rem;
-    }
-
-    &[data-width="1.5"] {
-        width: 28.5rem;
-    }
-
-    &[data-width="2"] {
-        width: 38rem;
-    }
-
-    &[data-width="3"] {
-        width: 57rem;
-    }
-
-    &[data-width="4"] {
-        width: 76rem;
-    }
-
-    &[data-width="5"] {
-        width: 95rem;
-    }
-
-    &[data-width="auto"] {
-        width: auto;
-    }
+    &[data-width="1"]    { width: 19.0rem; }
+    &[data-width="1.5"]  { width: 28.5rem; }
+    &[data-width="2"]    { width: 36.0rem; }
+    &[data-width="3"]    { width: 53.0rem; }
+    &[data-width="4"]    { width: 70.0rem; }
+    &[data-width="5"]    { width: 87.0rem; }
+    &[data-width="auto"] { width: auto;   }
 
     &[data-height="half"] {
         top: unset;
@@ -300,6 +276,12 @@ html[data-theme-color-auto="on"] .compact_nav_icon[data-helper="toggleColorMode"
         text-align: right;
     }
 
+    &:has(.navBox-search:not(.hide)) {
+       & > .navBox-content {
+            height: calc( 100% - 7rem );
+        }
+    }
+
     & input {
         display: none;
     }
@@ -307,16 +289,14 @@ html[data-theme-color-auto="on"] .compact_nav_icon[data-helper="toggleColorMode"
     & ul.nav,
     & ul#nav {
         display: flex;
-        overflow-x: auto;
+        gap: 1rem;
         align-content: flex-start;
         flex-flow: row wrap;
-        flex-direction: column;
-        width: 100% !important;
-        height: 100%;
         writing-mode: vertical-lr;
+        flex-direction: row;
 
-        [data-width="auto"] & {
-            flex-direction: row;
+        .mdw-ConsoleNavigationBox:not([data-width="auto"]) & {
+            writing-mode: unset;
         }
     }
 }
@@ -339,7 +319,7 @@ html[data-theme-color-auto="on"] .compact_nav_icon[data-helper="toggleColorMode"
 
 .navBox-header-title {
     font-size: var(--fs-big);
-    width: 100%;
+    flex-grow: 1;
 
     > span {
         margin-left: 2rem;
@@ -379,29 +359,22 @@ html[data-theme-color-auto="on"] .compact_nav_icon[data-helper="toggleColorMode"
     border-radius: 4px;
     background-color: var(--background);
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+
+    &.show {
+        display: block;
+    }
+
+    & a {
+        display: block;
+        padding: 0.5rem 1rem;
+        text-decoration: none;
+
+        &:hover {
+
+        }
+    }
 }
 
-/* Links inside the dropdown */
-.navBox-header-dropdown-content a {
-    display: block;
-    padding: 0.5rem 1rem;
-    text-decoration: none;
-}
-
-/* Change color of dropdown links on hover */
-.navBox-header-dropdown-content a:hover {
-
-}
-
-/* Show the dropdown menu on click */
-.navBox-header-dropdown-content.show {
-    display: block;
-}
-
-/* Change the background color of the dropdown button when the dropdown content is shown */
-.navBox-header-dropdown-content:hover .dropdown-button {
-
-}
 
 .navBox-search {
     display: flex;
@@ -414,52 +387,34 @@ html[data-theme-color-auto="on"] .compact_nav_icon[data-helper="toggleColorMode"
     text-align: center;
     border-bottom: 1px solid var(--border-color-semilight);
     background: var(--background-lowlight);
-}
 
-.navBox-search input {
-    font-size: var(--fs-regular);
-    color: var(--text-color-normal);
-    border: 1px solid var(--background-progress-mediumlight);
-    border-radius: 5px !important;
+    & input {
+        font-size: var(--fs-regular);
+        color: var(--text-color-normal);
+        border: 1px solid var(--background-progress-mediumlight);
+        border-radius: 5px !important;
+    }
 }
 
 .navBox-content {
     overflow: auto;
-    flex: 1;
+    padding: 1rem 0 0 1rem;
+    height: calc( 100% - 3.5rem );
+
+    &:has(.mdw_tree) {
+        padding: 1rem 1rem 0 1rem;
+    }
+
+    & .mdw_tree {
+        height: 100%;
+    }
 }
-
-
-#mdw_tree {
-    overflow: auto;
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    padding: 0.5rem 1rem;
-}
-
-#mdw_tree_search {
-    width: 100%;
-    height: 4rem;
-}
-
-#mdw_tree_content {
-    width: 100%;
-    height: calc(100% - 4rem);
-}
-
-#menu::-webkit-scrollbar {
-    /* WebKit */
-    width: 0;
-    height: 0;
-}
-
 
 .mdw-SideBarContainer {
     .menu_glyph {
         font-size: var(--fs-big);
         font-weight: var(--fw-semibold);
         width: 1.5rem;
-        padding-left: 0.75rem;
         color: var(--background-progress);
     }
 
@@ -481,7 +436,6 @@ html[data-theme-color-auto="on"] .compact_nav_icon[data-helper="toggleColorMode"
         position: relative;
         overflow: hidden;
         width: 16rem;
-        margin: 1rem 0 1rem 1rem;
         writing-mode: initial;
 
         & span {
@@ -543,7 +497,6 @@ html[data-theme-color-auto="on"] .compact_nav_icon[data-helper="toggleColorMode"
         & ul.nav,
         & ul#nav {
             flex-direction: row;
-            box-sizing: border-box;
             height: 100%;
             padding-top: 1rem;
         }
@@ -558,31 +511,41 @@ html[data-theme-color-auto="on"] .compact_nav_icon[data-helper="toggleColorMode"
     }
 }
 
-html[data-kiosk-mode="on"] {
-    .mdw-GridContainer {
-        grid-template-columns: 0 auto;
-        grid-template-rows: 0 auto;
-    }
 
-    .mdw-ConsolePageHead {
-        display: none;
-    }
+html {
 
-    .mdw-ConsoleNavigation {
-        display: none !important;
-    }
-
-    .mdw-Main {
-        height: 100vh;
-        border-top: none;
-
-        &:has(.saveRowParent) {
-            height: calc(100vh - 4rem);
+    &[data-theme-color-auto="on"] {
+        .compact_nav_icon[data-helper="toggleColorMode"] {
+            display: none !important;
         }
     }
 
-    .saveRowParent {
-        left: 0;
-        width: 100vw;
+    &[data-kiosk-mode="on"] {
+        .mdw-GridContainer {
+            grid-template-columns: 0 auto;
+            grid-template-rows: 0 auto;
+        }
+
+        .mdw-ConsolePageHead {
+            display: none;
+        }
+
+        .mdw-ConsoleNavigation {
+            display: none !important;
+        }
+
+        .mdw-Main {
+            height: 100vh;
+            border-top: none;
+
+            &:has(.saveRowParent) {
+                height: calc(100vh - 4rem);
+            }
+        }
+
+        .saveRowParent {
+            left: 0;
+            width: 100vw;
+        }
     }
 }

@@ -1,0 +1,30 @@
+/* basic CSS reset */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font: inherit;
+}
+
+html {
+    color-scheme: dark light;
+}
+
+body {
+    min-height: 100dvh;
+}
+
+img, picture svg, video {
+    display: block;
+    max-width: 100%;
+}
+
+code,
+kbd,
+samp,
+pre {
+    font-family: var(--font-mono);
+}

@@ -131,7 +131,7 @@
     font-family: Roboto,Helvetica Neue,Arial,Fira Sans,sans-serif;
     font-size: unset;
     background: transparent;
-    color: #CECECE;
+    color: var(--text-color-normal);
     z-index: 100 !important;
 }
 
@@ -151,7 +151,7 @@
     border: 1px solid var(--border-color);
     background: transparent;
     font-weight: normal;
-    color: #969BA3;
+    color: var(--text-color-normal);
 }
 
 .ui-widget-content {

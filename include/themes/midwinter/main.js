@@ -255,7 +255,7 @@ function setupTheme() {
 
 			/* dashboards */
 			new navigationButton('dashboards', 'Dashboards', 'fas fa-th-large', '#compact_tab_menu').build();
-			new navigationBox(cactiDashboards, 'dashboards', 'full','1', {
+			new navigationBox(cactiDashboards, 'dashboards', 'full','auto', {
 				close: false,
 				search: 'searchToHighlight',
 				resize: true
@@ -264,7 +264,7 @@ function setupTheme() {
 			/* settings */
 			if (cactiConsoleAllowed) {
 				new navigationButton('settings', 'Settings', 'fas fa-cogs', '#compact_tab_menu').build();
-				new navigationBox(zoom_i18n_settings, 'settings', 'full', '3', {
+				new navigationBox(zoom_i18n_settings, 'settings', 'full', 'auto', {
 					close: false,
 					search: 'searchToHighlight',
 					resize: true,
@@ -339,7 +339,7 @@ function setupThemeActions() {
 
 	//$('.cactiConsoleContentArea, .cactiGraphContentArea').off().on('click', toggleCactiNavigationBox);
 
-	$('#main').off().on('click', {param: 'off'}, toggleCactiNavigationBox);
+	$('#main, #navigation_right').off().on('click', {param: 'off'}, toggleCactiNavigationBox);
 	$('.mdw-ConsoleNavigationBox').off().on('click', hideDropDownMenu);
 	//$('.dropdown').off().on('click', toggleDropDownMenu);
 }

@@ -1,6 +1,4 @@
-html[data-base-color='65'  ] { --background-base-color: 65.0%; }
-
-html {
+:root {
     --contrast: 0;
     --hue: 233;
     --accent-hue: 240;

@@ -1,4 +1,4 @@
-/* hide standard mode elements till MidWinter finally dropped them */
+/* hide standard mode elements till MidWinter finally drops them */
 .cactiPageHead,
 .cactiPageBottom,
 #navBar,
@@ -31,6 +31,8 @@
     line-height: 2.0rem;
     height: 3.5rem;
 }
+
+
 
 #navBackdrop:hover,
 .subTab:hover,
@@ -99,16 +101,12 @@
 
 /* Tabs mit radio-Buttons */
 .tabbed {
-    box-sizing: border-box;
-    width: 100%;
     height: 100%;
-    padding: 0 0.5rem;
 }
 
 .tabbed figure {
     display: block;
     clear: both;
-    box-sizing: border-box;
     width: 100%;
     height: calc(100% - 3rem);
     margin: 0;
@@ -120,7 +118,6 @@
 .tabbed figure > div {
     line-height: 3.5em;
     overflow-y: auto;
-    box-sizing: border-box;
     width: 100%;
     height: calc(100% - 2.5rem);
     padding-top: 2rem;
@@ -130,21 +127,18 @@
 .tab-columns {
     line-height: 3.5em;
     overflow-x: auto;
-    box-sizing: border-box;
     height: 100%;
     padding: 1rem 0.5rem;
 }
 
 .tab-columns div:nth-child(2n+1) {
     float: left;
-    box-sizing: border-box;
     width: 70%;
     padding-left: 1rem;
 }
 
 .tab-columns div:nth-child(2n+0) {
     float: left;
-    box-sizing: border-box;
     width: 30%;
     text-align: right;
 }
@@ -155,7 +149,6 @@
 
 nav label {
     float: left;
-    box-sizing: border-box;
     width: 50%;
     height: 3rem;
     padding: 15px 15px;
@@ -343,4 +336,10 @@ html[data-theme-color="light"] {
 
 .cactiConsoleContentArea {
     margin-left: 0 !important;
+
+    /* only keep second navigation bar */
+    & :nth-child( 1 of .navBarNavigation ) {
+        display: none;
+    }
 }
+

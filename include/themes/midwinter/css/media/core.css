@@ -1,35 +1,39 @@
 /* main styles */
-::-webkit-scrollbar {
-    width: 12px;
+@supports selector(::-webkit-scrollbar) {
+    ::-webkit-scrollbar {
+        width: 12px;
+    }
+
+    ::-webkit-scrollbar:horizontal {
+        height: 12px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        border: 4px solid var(--background-content);
+        border-radius: 8px;
+        background: var(--scrollbar-thumb);
+    }
+
+    .mdw-ConsoleNavigationArea::-webkit-scrollbar-thumb {
+        border: 4px solid var(--background-navigation);
+    }
+
+    .mdw-ConsoleNavigationBox ::-webkit-scrollbar-thumb {
+        border: 4px solid var(--background-menu);
+    }
 }
 
-::-webkit-scrollbar:horizontal {
-    height: 12px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-    border: 4px solid var(--background-content);
-    border-radius: 8px;
-    background: var(--scrollbar-thumb);
-}
-
-.mdw-ConsoleNavigationArea::-webkit-scrollbar-thumb {
-    border: 4px solid var(--background-navigation);
-}
-
-.mdw-ConsoleNavigationBox ::-webkit-scrollbar-thumb {
-    border: 4px solid var(--background-menu);
-}
-
-* {
-    scrollbar-color: var(--scrollbar-thumb) transparent;
-    scrollbar-width: auto;
+@supports (scrollbar-width: auto) {
+    * {
+        scrollbar-color: var(--scrollbar-thumb) transparent;
+        scrollbar-width: thin;
+    }
 }
 
 html {
@@ -160,23 +164,17 @@ input[type="checkbox"]:focus + label:before {
 }
 
 input[type="checkbox"] + label:before {
-    line-height: var(--fs-regular);
-    display: inline-block;
-    width: var(--fs-regular);
-    height: var(--fs-regular);
-    margin: 0.25rem 0 0.25rem 0.25rem;
-    content: "\00a0";
-    border: 1px solid var(--text-color-normal);
-    border-radius: 2px;
-    background: transparent;
+    font-family: 'Font Awesome\ 5 Free';
+    font-weight: 600;
+    font-size: var(--fs-semilarge);
+    margin: 0 0.5rem;
+    content: "\f0c8";
+    color: var(--border-color);
 }
 
 input[type="checkbox"]:checked + label:before {
-    line-height: var(--fs-regular);
-    content: "✔";
-    text-align: center;
-    color: var(--text-color-highlight-a);
-    background-color: transparent;
+    content: "\f14a";
+    color: var(--background-progress);
 }
 
 input[type="checkbox"]:checked + label, input[type="radio"]:not([name^="reindex"]):checked + label {
@@ -220,7 +218,6 @@ input[type="checkbox"]:checked + label, input[type="radio"]:not([name^="reindex"
 
     > .stickyContainer + #main, #main {
         overflow-y: auto;
-        flex: 1;
         padding: 1rem 0 1rem 1rem;
     }
 
@@ -449,8 +446,8 @@ label.ui-state-hover > span {
 }
 
 .monoSpace {
-    font-family: monospace;
-    font-size: var(--fs-extrasmall);
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
     color: var(--text-color-light);
 }
 
@@ -783,12 +780,12 @@ label.ui-state-hover > span {
 }
 
 .hostUp {
-    font-family: monospace;
+    font-family: var(--font-mono);
     font-size: var(--fs-extrasmall);
 }
 
 .hostDown {
-    font-family: monospace;
+    font-family: var(--font-mono);
     font-size: var(--fs-extrasmall);
     color: #ff0000;
 }
@@ -1469,6 +1466,8 @@ table.cactiTable {
 
 .formData {
     width: 100%;    /* required to equalize input[text] & textarea */
+    white-space: nowrap;
+    padding-right: 2rem;
 }
 
 .formFieldName {
@@ -1655,10 +1654,6 @@ table.cactiTable {
     width: 100%;
     text-align: center;
     color: var(--text-color-light);
-
-    &:first-of-type {
-        display: none;
-    }
 }
 
 .navBarNavigation a {
@@ -1984,7 +1979,7 @@ tr {
 }
 
 #nav li ul li > *, .nav li ul li > * {
-    padding: 2px 4px 2px 3.5em;
+    padding: 2px 4px 2px 2.6em;
     outline-style: none;
 }
 
@@ -2037,7 +2032,7 @@ tr {
 }
 
 div.preformatted {
-    font-family: monospace;
+    font-family: var(--font-mono);
     white-space: pre;
 }
 

@@ -22,22 +22,23 @@
 */
 
 /* prerequisites  */
-@import url('./css/pre/fonts.css?a23648e6dc13c913f9ae2e993735631b');
-@import url('./css/pre/colors.css?6a3d4dc1567013fda818848070dd9939');
-@import url('./css/pre/keyframes.css?6d1d6a79b3c3bf783d25ff4a0cb83d59');
+@import 'css/pre/fonts.css?a23648e6dc13c913f9ae2e993735631b';
+@import 'css/pre/colors.css?6a3d4dc1567013fda818848070dd9939';
+@import 'css/pre/keyframes.css?6d1d6a79b3c3bf783d25ff4a0cb83d59';
+@import 'css/pre/reset.css?6d1d6a79b3c3bf783d25ff4a0cb83d59';
 
 /* Cacti core */
-@import url('./css/media/core.css?ad4ed321bb6b1a387743e4af1388207f') all;
-@import url('./css/media/print.css?f8c80271650344f45629199331592924') print;
+@import 'css/media/core.css?ad4ed321bb6b1a387743e4af1388207f' all;
+@import 'css/media/print.css?f8c80271650344f45629199331592924' print;
 
 /* compact mode */
-@import url('./css/media/compact.css?0bda9f47e7be64d1c2709f24cd70ba00') screen;
-@import url('./css/media/compact-portrait.css?675a729d0536e2b789cd45c991ad506d') screen and (max-width: 768px);
-@import url('./css/media/compact-landscape.css?ce95d6c0a3041f8db65365a6d0dad1ca') screen and (min-width: 769px);
+@import 'css/media/compact.css?0bda9f47e7be64d1c2709f24cd70ba00' screen;
+@import 'css/media/compact-portrait.css?675a729d0536e2b789cd45c991ad506d' screen and (max-width: 768px);
+@import 'css/media/compact-landscape.css?ce95d6c0a3041f8db65365a6d0dad1ca' screen and (min-width: 769px);
 
 /* extensions & addons */
-@import url('billboard.midwinter.css?e442c55720734e56c33de67e26a596de');
-@import url('jquery-ui.midwinter.css?7c0c69ff83d0a0d9fc7d54b737c7f9d3');
-@import url('./css/media/daterangepicker.css');
+@import 'billboard.midwinter.css?e442c55720734e56c33de67e26a596de';
+@import 'jquery-ui.midwinter.css?7c0c69ff83d0a0d9fc7d54b737c7f9d3';
+@import 'css/media/daterangepicker.css';
 
 /* End of file */

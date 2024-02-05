@@ -1,8 +1,23 @@
-html {
+:root {
 
     /* font-family variables */
-    --font-sans: -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', Arial, 'Segoe UI', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
-    --font-mono: Noto Mono, Menlo, Monaco, Consolas, monospace;
+    --font-sans:    -apple-system,
+                    BlinkMacSystemFont,
+                    Roboto,
+                    "Helvetica Neue",
+                    "Segoe UI",
+                    "Noto Sans",
+                    Helvetica,
+                    Arial,
+                    sans-serif;
+
+    --font-mono:    ui-monospace,
+                    SFMono-Regular,
+                    "SF Mono",
+                    Menlo,
+                    Consolas,
+                    "Liberation Mono",
+                    monospace;
 
     /* font-size variables */
     --fs-tiny:       0.5625rem;

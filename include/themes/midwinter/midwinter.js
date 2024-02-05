@@ -374,8 +374,8 @@ function get_user_content() {
 
 function get_tree_content() {
     let compact_tree_content =
-        '<div id="mdw_tree">'
-        +   '<div id="mdw_tree_content">'
+        '<div class="mdw_tree" id="mdw_tree">'
+        +   '<div class="mdw-treen_content" id="mdw_tree_content">'
         +   '</div>'
         +'</div>';
     return compact_tree_content;
