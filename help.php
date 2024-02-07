@@ -36,12 +36,12 @@ if (isset_request_var('error')) {
 		$username = 'unknown';
 	}
 
-	$message = sprintf('WARNING: Page:%s Generated a Fatal Error:%d for User:%s', $page, $error, $username);
+	$message = sprintf('WARNING: Cacti Page:%s for User:%s Generated a Fatal Error:%d', $page, $username, $error);
 
 	cacti_log($message, false);
 
 	if (debounce_run_notification('page_error_' . $page)) {
-		admin_email(__('Cacti System Warning'), __('WARNING: Cacti Page: %s Generated a Fatal Error %d!', $page, $error));
+		admin_email(__('Cacti System Warning'), __('WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!', $page, $username, $error));
 	}
 } elseif (isset_request_var('page')) {
 	get_filter_request_var('page', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
