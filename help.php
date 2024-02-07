@@ -30,7 +30,13 @@ if (isset_request_var('error')) {
 	$page  = basename(get_nfilter_request_var('page'));
 	$error = get_filter_request_var('error');
 
-	$message = sprintf('WARNING: Page:%s Generated a Fatal Error:%d', $page, $error);
+	if (isset($_SESSION['sess_user_id'])) {
+		$username = get_username($_SESSION['sess_user_id']);
+	} else {
+		$username = 'unknown';
+	}
+
+	$message = sprintf('WARNING: Page:%s Generated a Fatal Error:%d for User:%s', $page, $error, $username);
 
 	cacti_log($message, false);
 
