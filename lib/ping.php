@@ -222,7 +222,7 @@ class Net_Ping {
 				}
 			}
 
-			if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
+			if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN' || ($fping != '' && file_exists($fping))) {
 				$position = strpos($result, 'min/avg/max');
 
 				if ($position > 0) {
