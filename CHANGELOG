@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -issue#5655: Function get_allowed_devices can returns incorrect device list if session user_id variable is not set
 -issue#5660: Warning about unknown system hash during the update
 -issue#5661: On Linux and *NIX variants Cacti is unable to find ping6 as it's not in the path
+-issue#5662: installer - Undefined array key "name" warning in php8
 
 1.2.26
 -security#GHSA-xwqc-7jc4-xm73: XSS vulnerability when importing a template file
