@@ -48,7 +48,7 @@ function die_html_input_error($variable = null, $value = null, $message = '') {
 	$func = CACTI_CLI ? 'trim' : 'html_escape';
 
 	if ($message == '') {
-		$message = __('Validation error for variable %s with a value of %s.  See backtrace below for more details.', $variable, $value);
+		$message = __esc('Validation error for variable %s with a value of %s.  See backtrace below for more details.', $variable, $value);
 	}
 
 	$variable = ($variable !== null ? ', Variable:' . $func($variable) : '');
