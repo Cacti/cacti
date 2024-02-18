@@ -155,7 +155,6 @@ $no_http_header_files = array(
 	'add_graphs.php',
 	'add_perms.php',
 	'add_tree.php',
-	'boost_rrdupdate.php',
 	'cmd.php',
 	'cmd_realtime.php',
 	'copy_user.php',
