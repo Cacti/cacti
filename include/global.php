@@ -261,6 +261,11 @@ $filename = get_current_page();
 
 if (isset($no_http_headers) && $no_http_headers == true) {
 	$config['is_web'] = false;
+
+	if (isset($_REQUEST)) {
+		print 'FATAL: This file can only be called from the command line.' . PHP_EOL;
+		exit;
+	}
 }
 
 if ($config['is_web'] && ini_get('session.auto_start') == 1) {
