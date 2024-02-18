@@ -262,7 +262,7 @@ $filename = get_current_page();
 if (isset($no_http_headers) && $no_http_headers == true) {
 	$config['is_web'] = false;
 
-	if (isset($_REQUEST)) {
+	if (isset($_REQUEST) && cacti_sizeof($_REQUEST) || !isset($_SERVER['argv'])) {
 		print 'FATAL: This file can only be called from the command line.' . PHP_EOL;
 		exit;
 	}
