@@ -511,16 +511,15 @@ if ($allhost) {
 
 $hosts = db_fetch_assoc_prepared("SELECT h.id, h.hostname, h.ping_port, h.ping_method, h.ping_retries, h.ping_timeout, h.availability_method
 	FROM host AS h
-	LEFT OUTER JOIN poller_item AS pi
+	LEFT JOIN poller_item AS pi
 	ON h.id=pi.host_id
 	WHERE pi.host_id IS NULL
 	AND (h.disabled = '' OR h.disabled IS NULL)
 	$sql_where",
-	$params
-	);
+	$params);
 
-if (cacti_sizeof($hosts) > 0) {
-	cacti_log('NOTE: Found ' . cacti_sizeof($hosts) . ' device(s) for up/down testing only', true, 'POLLER', $medium);
+if (cacti_sizeof($hosts)) {
+	cacti_log('NOTE: Found ' . cacti_sizeof($hosts) . ' Device(s) for up/down validation only', true, 'POLLER', $medium);
 
 	foreach ($hosts as $host) {
 		$ping = new Net_Ping;
