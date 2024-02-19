@@ -542,6 +542,43 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 	cacti_log('NOTE: There are no items in your poller for this polling cycle!', true, 'POLLER', $medium);
 }
 
+// Try to check device status only for devices without poller items
+if ($allhost) {
+	$sql_where = 'AND h.poller_id = ?';
+	$params    = array($poller_id);
+} else {
+	$sql_where = 'AND h.poller_id = ? AND h.id >= ? AND h.id <= ? ';
+	$params    = array($poller_id, $first, $last);
+}
+
+$hosts = db_fetch_assoc_prepared("SELECT h.id, h.hostname, h.ping_port, h.ping_method, h.ping_retries, h.ping_timeout, h.availability_method
+	FROM host AS h
+	LEFT JOIN poller_item AS pi
+	ON h.id=pi.host_id
+	WHERE pi.host_id IS NULL
+	AND (h.disabled = '' OR h.disabled IS NULL)
+	$sql_where",
+	$params);
+
+if (cacti_sizeof($hosts)) {
+	cacti_log('NOTE: Found ' . cacti_sizeof($hosts) . ' Device(s) for up/down validation only', true, 'POLLER', $medium);
+
+	foreach ($hosts as $host) {
+		$ping = new Net_Ping;
+		$ping->host = $host['id'];
+		$ping->port = $host['ping_port'];
+
+		// perform the appropriate ping check of the host
+		if ($ping->ping($host['availability_method'], $host['ping_method'], $host['ping_timeout'], $host['ping_retries'])) {
+			update_host_status(HOST_UP, $host['id'], $ping, $host['availability_method'], $print_data_to_stdout);
+			cacti_log("Device[" . $host['id'] ."] STATUS: Device '" . $host['hostname'] . "' is UP.", $print_data_to_stdout, 'POLLER', debug_level($host['id'], POLLER_VERBOSITY_MEDIUM));
+		} else {
+			update_host_status(HOST_DOWN, $host['id'], $ping, $host['availability_method'], $print_data_to_stdout);
+			cacti_log("Device[" . $host['id'] . "] STATUS: Device '" . $host['hostname'] . "' is Down.", $print_data_to_stdout, 'POLLER', debug_level($host['id'], POLLER_VERBOSITY_MEDIUM));
+		}
+	}
+}
+
 // record the process as having completed
 record_cmdphp_done();
 
