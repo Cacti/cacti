@@ -28,10 +28,6 @@ include('./include/auth.php');
 set_default_action();
 
 switch (get_request_var('action')) {
-	case 'view':
-		header('location: user_log.php');
-
-		break;
 	case 'clear':
 		clear_user_log();
 		raise_message('purge_user_log', __('User Log Purged.'), MESSAGE_LEVEL_INFO);
