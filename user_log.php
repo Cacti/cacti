@@ -28,10 +28,6 @@ include('./include/auth.php');
 set_default_action();
 
 switch (get_request_var('action')) {
-	case 'view':
-		header('location: user_log.php');
-
-		break;
 	case 'clear':
 		clear_user_log();
 		raise_message('purge_user_log', __('User Log Purged.'), MESSAGE_LEVEL_INFO);
@@ -106,7 +102,7 @@ function view_user_log() {
 	?>
 	<script type='text/javascript'>
 	function clearFilter() {
-		strURL = urlPath+'user_log.php?action=view&clear=1';
+		strURL = urlPath+'user_log.php?clear=1';
 		loadUrl({url:strURL})
 	}
 
@@ -139,7 +135,6 @@ function view_user_log() {
 		strURL += '&result=' + $('#result').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&filter=' + $('#filter').val();
-		strURL += '&action=view';
 		loadUrl({url:strURL})
 	}
 	</script>
@@ -274,7 +269,7 @@ function view_user_log() {
 
 	$user_log = db_fetch_assoc($user_log_sql);
 
-	$nav = html_nav_bar('user_log.php?action=view&username=' . get_request_var('username') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, __('User Logins'), 'page', 'main');
+	$nav = html_nav_bar('user_log.php?username=' . get_request_var('username') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, __('User Logins'), 'page', 'main');
 
 	print $nav;
 
@@ -289,7 +284,7 @@ function view_user_log() {
 		'ip'        => array(__('IP Address'), 'DESC')
 	);
 
-	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1, 'user_log.php?action=view');
+	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1, 'user_log.php');
 
 	$i = 0;
 
