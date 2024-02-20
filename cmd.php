@@ -565,7 +565,7 @@ if (cacti_sizeof($hosts)) {
 
 	foreach ($hosts as $host) {
 		$ping = new Net_Ping;
-		$ping->host = $host['id'];
+		$ping->host = $host;
 		$ping->port = $host['ping_port'];
 
 		// perform the appropriate ping check of the host
