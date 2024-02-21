@@ -1164,7 +1164,7 @@ class spikekill {
 							}
 						} else {
 							if ($this->method == SPIKE_METHOD_VARIANCE) {
-								if ($dsvalue > (1 + $this->percent) * $rra[$rra_num][$ds_num]['variance_avg']) {
+								if ($dsvalue > (1 + $this->percent) * (float) $rra[$rra_num][$ds_num]['variance_avg']) {
 									if ($kills < $this->numspike) {
 										if ($this->avgnan == 'avg') {
 											cacti_log("DEBUG: replacing dsvalue {$dsvalue} with variance_avg {$rra[$rra_num][$ds_num]['variance_avg']}", false, 'SPIKEKILL', POLLER_VERBOSITY_DEBUG);
