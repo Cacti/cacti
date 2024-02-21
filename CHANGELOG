@@ -112,6 +112,7 @@ Cacti CHANGELOG
 -issue#5660: Warning about unknown system hash during the update
 -issue#5661: On Linux and *NIX variants Cacti is unable to find ping6 as it's not in the path
 -issue#5662: installer - Undefined array key "name" warning in php8
+-issue#5669: System Utilities show incorrect System Memory if memory is larger than 1k
 
 1.2.26
 -issue#5464: PHP warning when view Data Source Info mode with new Data Source
