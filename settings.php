@@ -29,6 +29,7 @@ include_once('./lib/poller.php');
 set_default_action();
 
 get_filter_request_var('tab', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
+get_filter_request_var('filter', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 
 global $disable_log_rotation, $local_db_cnn_id;
 
@@ -63,7 +64,7 @@ function display_settings() {
 	print '<tr><td>';
 	print '<table class="filterTable">';
 	print '<td>' . __('Search') . '</td>';
-	print '<td><input type="text" size="25" id="filter" value="' . get_request_var('filter') . '"></td>';
+	print '<td><input type="text" size="25" id="filter" value="' . html_escape_request_var('filter') . '"></td>';
 	print '<td><span><input type="button" id="clear" value="' . __esc('Clear') . '"></span></td>';
 	print '</tr></table>';
 	print '</td></tr>';
