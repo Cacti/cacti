@@ -5186,7 +5186,7 @@ function send_mail(array|string $to, string|array|null $from = null, string $sub
  * @param  null|string            $subject             Messgae subject
  * @param  null|string            $body                Message body, in HTML format
  * @param  null|string            $body_text           Messgae body, in TEXT format
- * @param  null|array             $attachments         Attachments to send
+ * @param  null|array|string      $attachments         Attachments to send
  * @param  null|array             $headers             Custom headers
  * @param  boolean                $html                Assume HTML format
  * @param  boolean                $expandIds           Find log style xxx[nn] and expand to full names
@@ -5196,7 +5196,7 @@ function send_mail(array|string $to, string|array|null $from = null, string $sub
  */
 function mailer(array|string $from, array|string $to, null|array|string $cc = null,
 	null|array|string $bcc = null, null|array|string $replyto = null, null|string $subject = null,
-	null|string $body = null, null|string $body_text = null, null|array $attachments = array(),
+	null|string $body = null, null|string $body_text = null, null|array|string $attachments = array(),
 	null|array $headers = array(), bool $html = true, bool $expandIds = false): string {
 	global $cacti_locale, $mail_methods;
 
