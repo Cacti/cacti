@@ -1445,10 +1445,10 @@ function form_continue_confirmation($form_data, $plugin_hook = '', $save = array
 				case 'checkbox':
 					print "<td class='nowrap' colspan='2'>";
 					print "<span class='nowrap'>";
-					print "<span class='checkboxSwitch' id='{$field_name}_id' for='$field_name' title='{$field_array['title']}'>";
+					print "<label class='checkboxSwitch' title='{$field_array['title']}'>";
 					print "<input class='formCheckbox' type='checkbox' id='$field_name' name='$field_name' value=''>";
 					print "<span class='checkboxSlider checkboxRound'></span>";
-					print '</span>';
+					print '</label>';
 					print "<label class='checkboxLabel checkboxLabelWanted' for='$field_name'>{$field_array['title']}</label>";
 					print '</span>';
 					print '</td>';
