@@ -163,18 +163,12 @@ function timeToRun() {
 	$basetime  = strtotime(read_config_option('spikekill_basetime'));
 	$baseupper = $basetime + 300;
 	$baselower = $basetime - 300;
-
-//	$baseupper = 300;
-//	$baselower = $frequency - 300;
 	$now       = time();
 
 	debug("LastRun:'$lastrun', Frequency:'$frequency', BaseTime:'" . date('Y-m-d H:i:s', $basetime) . "', BaseUpper:'$baseupper', BaseLower:'$baselower', Now:'" . date('Y-m-d H:i:s', $now) . "'");
 
 	if ($frequency > 0 && ($now - $lastrun > $frequency)) {
 		debug("Frequency is '$frequency' Seconds");
-
-//		$nowfreq = $now % $frequency;
-//		debug("Now Frequency is '$nowfreq'");
 
 		if ((empty($lastrun)) && ($now < $baseupper) && ($now > $baselower)) {
 			debug('Time to Run');
