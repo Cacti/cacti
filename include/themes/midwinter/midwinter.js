@@ -27,13 +27,17 @@ class navigationBox {
     #container;
     #container_content = '';
     
-    constructor(title, helper, height='full', width='auto', buttons= {close: false, search: false, resize: true}, align='left', header=title, content = 'auto') {
+    constructor(title, helper, height='full', width='auto', buttons= {close: false, search: false, resize: true}, align='left', header=title,
+                content = 'auto',
+                destination = '#mdw-SideBarContainer') {
+        let storage = Storages.localStorage;
+
         this.#box = {
             'class':        'mdw-ConsoleNavigationBox',
             'title':        title,
             'helper':       helper,
             'height':       ((height === 'half') ? 'half' : 'full'),
-            'width':        width,
+            'width':        (storage.isSet('midWinter_widthNavigationBox_'+helper)? storage.get('midWinter_widthNavigationBox_'+helper) : width),
             'align':        ((align === 'right') ? 'right' : 'left'),
             'header':       header,
             'content':      content,
@@ -41,7 +45,8 @@ class navigationBox {
                 close:      (buttons.close !== false),
                 search:     (buttons.search !== false) ? buttons.search : false,
                 resize:     (buttons.resize !== false),
-            }
+            },
+            'destination':   destination
         };
         let navigationBoxButtons = '';
 
@@ -98,7 +103,7 @@ class navigationBox {
             $('<div id="mdw-SideBarContainer" class="mdw-SideBarContainer"></div>').insertAfter('#mdw-GridContainer');
         }
         this.#container += '</div></div>';
-        let navigationBox = $(this.#container).appendTo('#mdw-SideBarContainer');
+        let navigationBox = $(this.#container).appendTo(this.#box.destination);
 
         /* register button events if required */
         if(this.#box.buttons.close) {
@@ -171,6 +176,7 @@ function is_function(fname) {
     return (typeof window[fname] === 'function');
 }
 
+/*
 function get_displayOptions_content() {
     let filters_content;
     filters_content = '<div class="displayFilters tabbed">'
@@ -188,6 +194,29 @@ function get_displayOptions_content() {
 
     return filters_content;
 }
+ */
+
+function get_displayOptions_content() {
+    let filters_content;
+    filters_content = '<div class="displayOptions">'
+/*
+        + '<div class="displayOptionsTap">'
+        +   '<input data-scope="theme" id="tab-filters" class="tab-input" type="checkbox" checked/>'
+        +   '<label class="tab-label" for="tab-filters">Filters <i class="fas fa-chevron-down"></i></label>'
+        +   '<div class="tab-filters tab-content"></div>'
+        + '</div>'
+  */
+        + '<div class="displayOptionsTap">'
+        +   '<input data-scope="theme" id="tab-columns" class="tab-input" type="checkbox" checked/>'
+        +   '<label class="tab-label" for="tab-columns">Columns <i class="fas fa-chevron-down"></i></label>'
+        +   '<div class="tab-columns tab-content"></div>'
+        + '</div>'
+        + '</div>';
+
+    return filters_content;
+}
+
+
 
 function get_dashboards_content(){
         let compact_tab_menu_content = '<ul class="nav">';

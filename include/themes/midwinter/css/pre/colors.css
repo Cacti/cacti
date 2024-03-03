@@ -1,4 +1,5 @@
-:root {
+[data-theme-color='dark'] {
+    color-scheme: dark;
     --contrast: 0;
     --hue: 233;
     --accent-hue: 240;
@@ -46,7 +47,9 @@
     --separator: hsl(var(--hue), 7%, 55%);
 }
 
-html[data-theme-color='light'] {
+[data-theme-color='light'] {
+    color-scheme: light;
+    --contrast: 0;
     --hue: 180;
     --special-hue: 208;
     --special2-hue: 229;
@@ -57,7 +60,7 @@ html[data-theme-color='light'] {
     --text-color-lighter: hsl(var(--hue), 7%, 5%);
     --text-color-high-contrast: hsl(var(--contrast), 0%, 5%);
     --text-color-navigation: hsl(var(--special2-hue), 7%, 25%);
-    --text-color-navigation-highlight: hsl(var(--hue), 7%, 100%);
+    --text-color-navigation-highlight:hsl(var(--hue), 7%, 100%);
     --text-color-highlight-a: hsl(var(--special2-hue), 100%, 50%);
     --background: hsl(var(--hue), 27.3%, 97.1%);
     --background-content: hsl(var(--hue), 5%, 98%);

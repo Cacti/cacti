@@ -31,6 +31,7 @@
         font-weight: var(--fw-medium);
 
         .compact_nav_icon {
+            position: relative;
             font-size: var(--fs-regular);
             display: flex;
             align-items: center;
@@ -38,6 +39,11 @@
             width: 3rem;
             height: 100%;
             cursor: pointer;
+
+            &[data-tooltip]:not([data-tooltip=""])::after {
+                top: 125%;
+                right:90%;
+            }
         }
     }
 }
@@ -45,33 +51,34 @@
 .navBreadCrumb {
     padding: 0 0 0 1.5rem;
 
-    & i {
-        display: none;
-    }
-
     & div {
         padding: 0;
         cursor: pointer;
         text-align: center;
 
-        & span:hover {
+        & a:hover,
+          span:hover {
             text-decoration: underline;
             color: var(--text-color-highlight-a);
         }
 
         &:not(:last-child)::after {
             margin: 0 0.5rem;
-            content: ">";
+            content: "\f105";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 600;
         }
 
     }
 
     & a {
-        &:visited {
+        &:visited,
+        & mark {
             color: var(--text-color-normal);
         }
 
         &:hover,
+        & mark:hover,
         &:focus {
             text-decoration: underline;
             color: var(--text-color-highlight-a);
@@ -94,7 +101,13 @@
     .compact_nav_icon.active {
         color: var(--text-color-normal);
         background-color: transparent;
-
+        &::after {
+            height: 25px;
+            width: 25px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+        }
         &:hover {
             color: var(--text-color-white);
             background-color: var(--background-progress-semilight);
@@ -108,11 +121,51 @@
 
 /* Main Content Area */
 .mdw-Main {
+    display: grid;
+    grid-template-areas:    "left top right"
+                            "left middle right";
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto 1fr;
     border-top: 1px solid var(--border-color-light);
+
     grid-area: main;
 
     &:has(.saveRowParent) {
         padding-bottom: 4rem;
+    }
+
+    & .mdw-DockTop {
+        grid-area: top / 1 / top / 3;
+    }
+
+    & .mdw-DockLeft {
+        grid-area: left;
+    }
+
+    & .mdw-DockRight {
+        grid-area: right;
+    }
+
+    & > div[class^="mdw-Dock"] {
+        &:has(div) {
+        }
+
+        & > div:first-of-type {
+            border-top: none;
+        }
+
+        & > div {
+            display: block;
+            height: 100%;
+            position: unset;
+            transform: translate(0);
+            transition: 300ms;
+            background: var(--background-content);
+            box-shadow: none;
+        }
+        .navBox-header {
+            font-size: var(--fs-regular);
+        }
     }
 }
 
@@ -169,40 +222,51 @@
         margin-right: -1px;
         cursor: pointer;
 
+        &[data-tooltip]:not([data-tooltip=""])::after {
+            left: 50%;
+        }
+
         & > span {
             display: none;
         }
-
-        /* CSS driven tooltip */
-        &[data-tooltip]:not([data-tooltip=""])::after {
-            font-size: var(--fs-regular);
-            position: absolute;
-            left: 50%;
-            width: fit-content;
-            height: fit-content;
-            padding: 0.25rem 1rem;
-            content: attr(data-tooltip);
-            transition: 0.1s;
-            transform: translate(2.75rem, 0) scale(0);
-            transform-origin: top;
-            text-align: center;
-            white-space: nowrap;
-            opacity: 0.9;
-            color: var(--text-color-normal);
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            background: var(--background-lowlight);
-            box-shadow: var(--box-shadow-color) 0 10px 20px;
-        }
-
-        &[data-tooltip]:not([data-tooltip=""]):not(.active):hover:after {
-            animation: scaleDelay ease 0.1s;
-            animation-delay: 0.75s;
-            animation-iteration-count: 1;
-            animation-fill-mode: forwards;
-        }
     }
 }
+
+
+
+* {
+    /* CSS driven tooltip */
+    &[data-tooltip]:not([data-tooltip=""])::after {
+        z-index: 300;
+        font-size: var(--fs-regular);
+        position: absolute;
+        width: fit-content;
+        height: fit-content;
+        padding: 0.5rem 1rem;
+        content: attr(data-tooltip);
+        transition: 0.1s;
+        transform: translate(0, 0) scale(0);
+        transform-origin: center;
+        text-align: center;
+        white-space: nowrap;
+        opacity: 0;
+        color: var(--text-color-normal);
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        background: var(--background-navigation-top);
+        box-shadow: var(--box-shadow-color) 0 10px 20px;
+    }
+
+    &[data-tooltip]:not([data-tooltip=""]):not(.active):hover:after {
+        opacity: 1;
+        animation: scaleDelay ease 0.1s;
+        animation-delay: 0.75s;
+        animation-iteration-count: 1;
+        animation-fill-mode: forwards;
+    }
+}
+
+
 
 .mdw-ConsoleNavigationBox {
     position: absolute;
@@ -244,7 +308,7 @@
             overflow: unset;
             padding: 0;
             & nav {
-                padding: 0 0.5rem;
+                padding: 0 1rem;
             }
         }
     }
@@ -283,7 +347,7 @@
     }
 
     & input {
-        display: none;
+        /*display: none;*/
     }
 
     & ul.nav,
@@ -311,7 +375,7 @@
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    height: calc(3.5rem - 2px);
+    height: 3.5rem;
     text-align: center;
     border-bottom: 1px solid var(--border-color-semilight);
     background: var(--background-lowlight);
@@ -393,6 +457,13 @@
         color: var(--text-color-normal);
         border: 1px solid var(--background-progress-mediumlight);
         border-radius: 5px !important;
+        background-color: var(--background-navigation-top) !important;
+        &:focus-visible {
+            outline: none !important;
+            box-shadow: none !important;
+            border: 1px solid var(--background-progress);
+            -webkit-tap-highlight-color: 1px solid var(--background-progress);
+        }
     }
 }
 
@@ -537,10 +608,11 @@ html {
         .mdw-Main {
             height: 100vh;
             border-top: none;
-
+/*
             &:has(.saveRowParent) {
                 height: calc(100vh - 4rem);
             }
+  */
         }
 
         .saveRowParent {

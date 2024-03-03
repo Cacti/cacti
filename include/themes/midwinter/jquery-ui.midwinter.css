@@ -18,7 +18,7 @@
 .ui-button:active,
 .ui-button .ui-state-active,
 .ui-button .ui-state-active:hover {
-    background: var(--background-progress-semilight) !important;
+    background: var(--background-progress-semilight);
     color: white;
 }
 
@@ -132,7 +132,7 @@
     font-size: unset;
     background: transparent;
     color: var(--text-color-normal);
-    z-index: 100 !important;
+    z-index: 100;
 }
 
 .ui-widget input,
