@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2023-12-24 14:09+0000\n"
-"Last-Translator: zenghao liu <roy6152@163.com>\n"
+"PO-Revision-Date: 2024-03-04 00:20+0000\n"
+"Last-Translator: Junhua Huang <junhuahuang1218@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
 "cacti/core/zh_Hans/>\n"
 "Language: zh-CN\n"
@@ -34,27 +34,24 @@ msgid "Please see the official %sCacti website%s for information on how to use C
 msgstr "请查看 %s Cacti 官方网站 %s 获取信息,支持和更新."
 
 #: about.php:50
-#, fuzzy
 msgid "Active Developers"
-msgstr "Cacti 开发者"
+msgstr "活跃开发者"
 
 #: about.php:51
 msgid "Developers working on Cacti, its Architecture, Documentation and Future Releases."
-msgstr ""
+msgstr "致力于 Cacti 及其架构、文档和未来版本的开发人员。"
 
 #: about.php:63
-#, fuzzy
 msgid "Honorable Mentions"
-msgstr "控制台菜单部分"
+msgstr "荣誉提名"
 
 #: about.php:64
 msgid "Contributors to Docuemntation, QA, Packaging, the Forums and our YouTube page."
-msgstr ""
+msgstr "文档、质量检查、包装、论坛和 YouTube 页面的贡献者。"
 
 #: about.php:74
-#, fuzzy
 msgid "Emeritus Members"
-msgstr "组成员"
+msgstr "名誉会员"
 
 #: about.php:75
 msgid "Members of the original Cacti Group that have since moved on in their careers.  We continue to wish them the best."
