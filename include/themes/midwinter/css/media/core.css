@@ -163,7 +163,7 @@ input[type="checkbox"]:focus + label:before {
 }
 
 input[type="checkbox"] + label:before {
-    font-family: 'Font Awesome\ 5 Free';
+    font-family: "Font Awesome\ 5 Free";
     font-weight: 600;
     font-size: var(--fs-semilarge);
     margin: 0 0.5rem;
@@ -204,47 +204,96 @@ input[type="checkbox"]:checked + label, input[type="radio"]:not([name^="reindex"
     flex-wrap: nowrap;
     justify-content: flex-start;
 
-    > .stickyContainer {
-        display: flex;
-        align-items: center;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        height: 3.5rem;
-        margin: 0;
-        padding: 0 1rem 0 1.5rem;
-        border-bottom: 1px solid var(--border-color-semilight);
-        background-color: var(--background-lowlight);
-    }
-
-    > .stickyContainer + #main, #main {
+    & #main, #main {
         overflow-y: auto;
         padding: 1rem 0 1rem 1rem;
         width: 100%;
         height: 100%;
 
-        > form {
-            height: 100%;
-            width: 100%;
+        &:has(.navBarNavigation) {
+            scrollbar-gutter: unset;
 
-            > .cactiTable[id$="2"] {
-                overflow-y: auto;
-                overflow-x: hidden;
-                max-height: calc(100% - 4rem);
+            & form {
+                height: 100%;
+                width: 100%;
             }
-        }
-    }
 
-    @supports (-moz-appearance:none) {
-        > .stickyContainer + #main, #main {
-            padding: 1rem;
+            & .cactiTable {
+                    scrollbar-gutter: stable;
+                    overflow: auto;
+                    max-height: calc(100% - 4rem);
+            }
+
+            & .cactiTable:not(:has(~ .actionsDropdown)) {
+                max-height: calc(100% - 2rem);
+            }
+
+            & .cactiTable {
+                position: relative;
+                z-index: 1;
+
+                & th:first-of-type,
+                & td:first-of-type {
+                    position: sticky;
+                    left: 0;
+                    z-index: 2;
+                    background: var(--background-content);
+
+                    tr.selected & {
+                       /* background: var(--table-selected);*/
+                    }
+                }
+
+                & th {
+                    white-space: nowrap;
+                }
+
+                & thead th:first-of-type,
+                & thead th:last-of-type,
+                & tfoot th:first-of-type,
+                & tfoot th:last-of-type {
+                    z-index: 3;
+                }
+
+                & tr.selectable {
+                    & td {
+                        background: var(--background-content);
+                    }
+
+                    &:hover{
+                        & td {
+                            background: var(--table-selectable);
+                        }
+                    }
+                }
+
+                & tr.selected {
+                    td {
+                        background: var(--table-selected);
+                    }
+
+                    &:hover {
+                        & td {
+                            background: var(--table-selectable);
+                        }
+                    }
+                }
+
+                & th:last-child,
+                & td:last-of-type {
+                    position: sticky;
+                    right: 0;
+                    z-index: 2;
+
+                }
+            }
         }
     }
 }
 
-
-
 /* Cacti Table */
 .cactiTable table {
+    width: calc(100% - 10px); /* required to suppress overflow-x due to scrollbar-gutter stable */
     border-spacing: 0;
     border-collapse: separate;
     text-align: left;
@@ -1579,7 +1628,7 @@ table.cactiTable {
         position: sticky;
         background: var(--background-content);
 
-        &:hover {
+        &:hover:not(.tableSubHeaderCheckbox) {
             border-bottom: 2px solid var(--background-progress-mediumlight);
         }
 

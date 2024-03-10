@@ -436,9 +436,6 @@ function applySkin() {
     /* check */
     setupBreadcrumbs();
 
-
-    applyTableSizing();
-
     setupPageTimeout();
 
     CsrfMagic.end();
@@ -462,6 +459,9 @@ function applySkin() {
     if (typeof themeReady == 'function') {
         themeReady();
     }
+
+    /* table (re-)sizing has to be executed after themeReady */
+    applyTableSizing();
 
     makeFiltersResponsive();
 

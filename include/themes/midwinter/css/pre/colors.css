@@ -32,8 +32,8 @@
     --background-progress: hsl(var(--special2-hue), 69%, 52%);
     --background-progress-mediumlight: hsla(var(--special2-hue), 69%, 52%, 0.2);
     --background-progress-semilight: hsla(var(--special2-hue), 69%, 40%, 0.1);
-    --table-selectable: hsla(var(--special2-hue), 69%, 52%, 0.2);
-    --table-selected: hsla(var(--special2-hue), 69%, 40%, 0.1);
+    --table-selectable: #164187; /* hsla(var(--special2-hue), 69%, 52%, 0.2); */
+    --table-selected: #133266; /* hsla(var(--special2-hue), 69%, 40%, 0.1); */
     --background-dark: hsl(var(--hue), 19%, 17%);
     --border-color: hsl(var(--hue), 19%, 21%);
     --border-color-semilight: hsla(var(--hue), 19%, 100%, 0.04);
@@ -77,8 +77,8 @@
     --background-progress: hsl(var(--special-hue), 69%, 40%);
     --background-progress-mediumlight: hsla(var(--special2-hue), 69%, 40%, 0.6);
     --background-progress-semilight: hsla(var(--special-hue), 69%, 40%, 0.5);
-    --table-selectable: hsl(var(--hue), 5%, 90%);
-    --table-selected: hsl(var(--hue), 5%, 93%);
+    --table-selectable: #e4e7e7; /* hsl(var(--hue), 5%, 90%);    /*  */
+    --table-selected: #eceeee; /* hsl(var(--hue), 5%, 93%);      /*  */
     --border-color: hsla(var(--special2-hue), 84%, 20%, 0.25);
     --border-color-semilight: hsla(var(--special2-hue), 84%, 20%, 0.08);
     --border-color-light: hsla(var(--special2-hue), 84%, 20%, 0.04);
