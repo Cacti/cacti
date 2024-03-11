@@ -3051,7 +3051,7 @@ function saveTableWidths(initial) {
 	var key;
 
 	// Initialize table width on the page
-	$('.cactiTable').each(function (data) {
+	$('table.cactiTable').each(function (data) {
 		var key = $(this).attr('id');
 
 		if (storage.isSet(key)) {
@@ -3086,7 +3086,7 @@ function saveTableWidths(initial) {
 		sizes[0] = width;
 
 		if (key !== undefined) {
-			if (initial && items.length) {
+			if (initial && items.length > 1) {
 				$('#' + key).find('th.ui-resizable').each(function (data) {
 					if (items[i] == 0) {
 						items[i] = $(this).width();
