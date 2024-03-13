@@ -63,6 +63,10 @@ class spikekill {
 
 	var $numspike  = '';
 
+	var $dsfilter  = '';
+
+	var $absmax  = '';
+
 	// Overridable
 	var $html      = true;
 
