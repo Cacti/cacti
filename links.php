@@ -398,13 +398,13 @@ function pages() {
 		foreach ($pages as $page) {
 			form_alternate_row('line' . $page['id']);
 
-			$actions = '<a class="pic"  href="' . html_escape('links.php?action=edit&id=' . $page['id']) . '" title="' . __esc('Edit Page') . '"><img src="' . CACTI_PATH_URL . 'images/application_edit.png" alt=""></a>';
+			$menuicons = '<a class="pic"  href="' . html_escape('links.php?action=edit&id=' . $page['id']) . '" title="' . __esc('Edit Page') . '"><img src="' . CACTI_PATH_URL . 'images/application_edit.png" alt=""></a>';
 
 			if ($page['enabled'] == 'on') {
-				$actions .= '<a class="pic" href="' . html_escape('link.php?id=' . $page['id']) . '" title="' . __esc('View Page') . '"><img src="' . CACTI_PATH_URL . 'images/view_page.png" alt=""></a>';
+				$menuicons .= '<a class="pic" href="' . html_escape('link.php?id=' . $page['id']) . '" title="' . __esc('View Page') . '"><img src="' . CACTI_PATH_URL . 'images/view_page.png" alt=""></a>';
 			}
 
-			form_selectable_cell($actions, $page['id'], '50');
+			form_selectable_cell($menuicons, $page['id'], '50');
 			form_selectable_ecell($page['contentfile'], $page['id']);
 			form_selectable_ecell($page['title'], $page['id']);
 			form_selectable_ecell($style_translate[$page['style']] . ($page['style'] == 'CONSOLE' ? ' ( ' . ($page['extendedstyle'] == '' ? __('External Links') : $page['extendedstyle']) . ' )' : ''), $page['id']);
@@ -442,6 +442,7 @@ function pages() {
 	if (cacti_sizeof($pages)) {
 		print $nav;
 	}
+
 
 	draw_actions_dropdown($actions);
 
