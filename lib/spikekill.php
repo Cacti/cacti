@@ -1257,17 +1257,28 @@ class spikekill {
 	private function calculateStandardDeviation($items) {
 		if (!function_exists('stats_standard_deviation')) {
 			function stats_standard_deviation($items, $sample = false) {
-				$total_items = cacti_count($items);
 
-				if ($total_items === 0) {
+				$sum = 0;
+				$total_items = 0;
+
+				/* remove NaN entries from the data set */
+				if (cacti_sizeof($items)) {
+					foreach($items as $key => $value) {
+						if (is_int($value) || is_float($value)) {
+							$total_items++;
+							cacti_log(print_r($sum,true) . ":::" . print_r($value,true));
+							$sum += $value;
+						} else {
+							unset($items[$key]);
+						}
+					}
+				}
+				
+				if (($sample && $total_items === 1) || $total_items === 0) {
 					return false;
 				}
 
-				if ($sample && $total_items === 1) {
-					return false;
-				}
-
-				$mean  = array_sum($items) / $total_items;
+				$mean  = $sum / $total_items;
 				$carry = 0.0;
 
 				foreach ($items as $val) {

@@ -14,7 +14,8 @@ Cacti CHANGELOG
 -issue#5661: On Linux and *NIX variants Cacti is unable to find ping6 as it's not in the path
 -issue#5662: installer - Undefined array key "name" warning in php8
 -issue#5669: System Utilities show incorrect System Memory if memory is larger than 1k
--issue#5677: Compatibility improvements for Spikekill under PHP 8.x 
+-issue#5677: Compatibility improvements for Spikekill under PHP 8.x
+-issue#5693: Fix Spikekill not following correct time in schedule, Improve PHP 8.3 in spikekill process
 
 1.2.26
 -security#GHSA-xwqc-7jc4-xm73: XSS vulnerability when importing a template file
