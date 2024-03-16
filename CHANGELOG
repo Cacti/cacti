@@ -114,6 +114,8 @@ Cacti CHANGELOG
 -issue#5661: On Linux and *NIX variants Cacti is unable to find ping6 as it's not in the path
 -issue#5662: installer - Undefined array key "name" warning in php8
 -issue#5669: System Utilities show incorrect System Memory if memory is larger than 1k
+-issue#5677: Compatibility improvements for Spikekill under PHP 8.x
+-issue#5693: Fix Spikekill not following correct time in schedule, Improve PHP 8.3 in spikekill process
 
 1.2.26
 -issue#5464: PHP warning when view Data Source Info mode with new Data Source
@@ -148,7 +150,7 @@ Cacti CHANGELOG
 -issue#5609: When parsing a Data Query resource, an error can be reported if no direction is specified
 -issue#5612: Database reconnection can cause errors to be reported incorrectly
 -issue#5613: fix returned value if $sau is empty
--issue#5641: Cmd poller - add availability test for devices without poller items 
+-issue#5641: Cmd poller - add availability test for devices without poller items
 -feature#5577: Add Aruba switch, Aruba controller and HPE iLO templates
 -feature#5597: Add OSCX 6x00 templates
 

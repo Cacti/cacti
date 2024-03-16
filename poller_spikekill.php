@@ -170,14 +170,12 @@ function timeToRun() {
 	if ($frequency > 0 && ($now - $lastrun > $frequency)) {
 		debug("Frequency is '$frequency' Seconds");
 
-		if ((empty($lastrun)) && ($now < $baseupper) && ($now > $baselower)) {
+		if (empty($lastrun) && ($now < $baseupper) && ($now > $baselower)) {
 			debug('Time to Run');
 			db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?)', array(time()));
 
 			return true;
-		}
-
-		if (($now - $lastrun > $frequency) && ($now < $baseupper) && ($now > $baselower)) {
+		} elseif (($now - $lastrun > $frequency) && ($now < $baseupper) && ($now > $baselower)) {
 			debug('Time to Run');
 			db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?)', array(time()));
 
