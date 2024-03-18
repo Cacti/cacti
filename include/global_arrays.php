@@ -655,6 +655,7 @@ $snmp_auth_protocols = array(
 $snmp_priv_protocols = array(
 	'[None]' => __('[None]'),
 	'DES'    => __('DES'),
+	'AES'    => __('AES'),
 	'AES128' => __('AES-128'),
 	'AES192' => __('AES-192'),
 	'AES256' => __('AES-256')
