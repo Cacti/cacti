@@ -156,7 +156,7 @@ function graph_view(array $rras, string $graph_title) {
 			?>
 			<tr class='tableRowGraph'>
 				<td class='center'>
-					<table>
+					<table class='graphWrapperOuter' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>'>
 						<tr>
 							<td>
 								<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id'] ?>' graph_id='<?php print $graph['local_graph_id']; ?>' rra_id='<?php print $rra['id']; ?>' graph_width='<?php print $graph['width']; ?>' graph_height='<?php print $graph['height']; ?>' graph_start='<?php print $graph_start; ?>' graph_end='<?php print $graph_end; ?>' title_font_size='<?php print((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size')); ?>'></div>
@@ -397,12 +397,12 @@ function graph_zoom(array $rras, string $graph_title) {
 		$graph_start--;
 	}
 
-	$graph = db_fetch_row_prepared(
-		'SELECT width, height, title_cache, local_graph_id, graph_template_id
-			FROM graph_templates_graph
-			WHERE local_graph_id = ?',
-		array(get_request_var('local_graph_id'))
-	);
+	$graph = db_fetch_row_prepared('SELECT width, height, title_cache, local_graph_id, graph_template_id, h.id AS host_id, h.disabled
+		FROM graph_templates_graph AS gtg
+		LEFT JOIN host AS h
+		ON gtg.host_id = h.id
+		WHERE local_graph_id = ?',
+		array(get_request_var('local_graph_id')));
 
 	$graph_height      = $graph['height'];
 	$graph_width       = $graph['width'];
@@ -424,7 +424,7 @@ function graph_zoom(array $rras, string $graph_title) {
 	</tr>
 	<tr class='tableRowGraph'>
 		<td class='center'>
-			<table>
+			<table class='graphWrapperOuter' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>'>
 				<tr>
 					<td class='center'>
 						<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id'] ?>' graph_id='<?php print $graph['local_graph_id']; ?>' rra_id='<?php print $rra['id']; ?>' graph_width='<?= $graph_width ?>' graph_height='<?= $graph_height ?>' title_font_size='<?= $title_font_size ?>'></div>

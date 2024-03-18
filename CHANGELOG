@@ -116,6 +116,7 @@ Cacti CHANGELOG
 -issue#5669: System Utilities show incorrect System Memory if memory is larger than 1k
 -issue#5677: Compatibility improvements for Spikekill under PHP 8.x
 -issue#5693: Fix Spikekill not following correct time in schedule, Improve PHP 8.3 in spikekill process
+-feature#5692: Add a "device enabled/disabled" indicator next to the graphs
 
 1.2.26
 -issue#5464: PHP warning when view Data Source Info mode with new Data Source

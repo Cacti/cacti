@@ -2499,6 +2499,10 @@ tr#realtime td:first-child {
 	position: relative;
 }
 
+.graphWrapperOuter[data-disabled="true"] {
+	background-color: rgba(255, 241, 118, 0.3);
+}
+
 .code {
 	font-family: Consolas, Courier New;
 	font-size: 0.8em;

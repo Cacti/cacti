@@ -365,6 +365,7 @@ function html_graph_template_multiselect() {
  */
 function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args = '', $header = '', $columns = 0, $tree_id = 0, $branch_id = 0) {
 	global $config;
+
 	$i = 0;
 	$k = 0;
 	$j = 0;
@@ -389,12 +390,16 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 		}
 
 		foreach ($graph_array as $graph) {
+			if (!isset($graph['host_id'])) {
+				list($graph['host_id'], $graph['disabled']) = db_fetch_cell_prepared('SELECT host_id, disabled FROM graph_local WHERE id = ?', array($graph['local_graph_id']));
+			}
+
 			if ($i == 0) {
 				print "<tr class='tableRowGraph'>";
 			}
 
 			?>
-			<td style='width:<?php print round(100 / $columns, 2);?>%;'>
+			<td class='graphWrapperOuter' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>' style='width:<?php print round(100 / $columns, 2);?>%;'>
 				<div>
 				<table style='text-align:center;margin:auto;'>
 					<tr>
@@ -474,6 +479,10 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 		$start = true;
 
 		foreach ($graph_array as $graph) {
+			if (!isset($graph['host_id'])) {
+				list($graph['host_id'], $graph['disabled']) = db_fetch_cell_prepared('SELECT host_id, disabled FROM graph_local WHERE id = ?', array($graph['local_graph_id']));
+			}
+
 			if (isset($graph['graph_template_name'])) {
 				if (isset($prev_graph_template_name)) {
 					if ($prev_graph_template_name != $graph['graph_template_name']) {
@@ -518,7 +527,8 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 			}
 
 			?>
-			<td style='width:<?php print round(100 / $columns, 2);?>%;'>
+			<td class='graphWrapperOuter' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>' style='width:<?php print round(100 / $columns, 2);?>%;'>
+				<div>
 				<table style='text-align:center;margin:auto;'>
 					<tr>
 						<td>
@@ -530,6 +540,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 						</td><?php } ?>
 					</tr>
 				</table>
+				</div>
 			</td>
 			<?php
 
