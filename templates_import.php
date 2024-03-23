@@ -487,7 +487,7 @@ function import() {
 			$.ajax({
 				type: 'POST',
 				enctype: 'multipart/form-data',
-				url: urlPath + '/templates_import.php?preview_only=true',
+				url: (urlPath != '/' ? urlPath + '/':'') + 'templates_import.php?preview_only=true',
 				data: data,
 				processData: false,
 				contentType: false,
