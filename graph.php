@@ -130,12 +130,14 @@ function graph_view(array $rras, string $graph_title) {
 	</tr>
 	<?php
 
-		$graph = db_fetch_row_prepared(
-			'SELECT local_graph_id, width, height, graph_template_id
-			FROM graph_templates_graph
-			WHERE local_graph_id = ?',
-			array(get_request_var('local_graph_id'))
-		);
+	$graph = db_fetch_row_prepared('SELECT gtg.local_graph_id, width, height, title_cache, gtg.graph_template_id, h.id AS host_id, h.disabled
+		FROM graph_templates_graph AS gtg
+		INNER JOIN graph_local AS gl
+		ON gtg.local_graph_id = gl.id
+		LEFT JOIN host AS h
+		ON gl.host_id = h.id
+		WHERE gtg.local_graph_id = ?',
+		array(get_request_var('local_graph_id')));
 
 	$graph_template_id = $graph['graph_template_id'];
 
@@ -397,11 +399,13 @@ function graph_zoom(array $rras, string $graph_title) {
 		$graph_start--;
 	}
 
-	$graph = db_fetch_row_prepared('SELECT width, height, title_cache, local_graph_id, graph_template_id, h.id AS host_id, h.disabled
+	$graph = db_fetch_row_prepared('SELECT gtg.local_graph_id, width, height, title_cache, gtg.graph_template_id, h.id AS host_id, h.disabled
 		FROM graph_templates_graph AS gtg
+		INNER JOIN graph_local AS gl
+		ON gtg.local_graph_id = gl.id
 		LEFT JOIN host AS h
-		ON gtg.host_id = h.id
-		WHERE local_graph_id = ?',
+		ON gl.host_id = h.id
+		WHERE gtg.local_graph_id = ?',
 		array(get_request_var('local_graph_id')));
 
 	$graph_height      = $graph['height'];
