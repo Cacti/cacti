@@ -1936,7 +1936,8 @@ function graph_management() {
 			'&rows=' + $('#rows').val() +
 			'&source=' + $('#source').val() +
 			'&orphans=' + $('#orphans').is(':checked') +
-			'&rfilter=' + base64_encode($('#rfilter').val()) +
+			//'&rfilter=' + base64_encode($('#rfilter').val()) +
+			'&rfilter=' + $('#rfilter').val() +
 			'&template_id=' + $('#template_id').val() +
 			'&header=false';
 		loadPageNoHeader(strURL);

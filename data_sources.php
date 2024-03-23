@@ -1311,7 +1311,8 @@ function ds() {
 		strURL  = 'data_sources.php' +
 			'?host_id=' + $('#host_id').val() +
 			'&site_id=' + $('#site_id').val() +
-			'&rfilter=' + base64_encode($('#rfilter').val()) +
+			//'&rfilter=' + base64_encode($('#rfilter').val()) +
+			'&rfilter=' + $('#rfilter').val() +
 			'&rows=' + $('#rows').val() +
 			'&status=' + $('#status').val() +
 			'&profile=' + $('#profile').val() +
