@@ -479,7 +479,7 @@ function form_save() {
 						if (cacti_sizeof($item_list)) {
 							foreach ($item_list as $item) {
 								/* if we are changing templates, the POST vars we are searching for here will not exist.
-								 this is because the db and form are out of sync here, but it is ok to just skip over saving
+								this is because the db and form are out of sync here, but it is ok to just skip over saving
 								 the inputs in this case. */
 								if (isset_request_var($input['column_name'] . '_' . $input['id'])) {
 									db_execute_prepared('UPDATE graph_templates_item
@@ -2778,7 +2778,8 @@ function graphs() {
 					'&rows='    + $('#rows').val() +
 					'&source='  + $('#source').val() +
 					'&orphans=' + $('#orphans').is(':checked') +
-					'&rfilter=' + base64_encode($('#rfilter').val()) +
+					//'&rfilter=' + base64_encode($('#rfilter').val()) +
+					'&rfilter=' + $('#rfilter').val() +
 					'&template_id=' + $('#template_id').val();
 
 				loadUrl({url:strURL})
