@@ -1363,7 +1363,8 @@ function utilities_view_logfile() {
 			'&message_type=' + $('#message_type').val() +
 			'&refresh=' + $('#refresh').val() +
 			'&reverse=' + $('#reverse').val() +
-			'&rfilter=' + base64_encode($('#rfilter').val()) +
+			//'&rfilter=' + base64_encode($('#rfilter').val()) +
+			'&rfilter=' + $('#rfilter').val() +
 			'&filename=' + $('#filename').val() +
 			'&action=view_logfile' +
 			'&header=false';
