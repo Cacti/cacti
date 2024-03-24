@@ -1,17 +1,5 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: Cacti\n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2023-12-05 18:50-0500\n"
-"PO-Revision-Date: 2023-03-07 13:26+0000\n"
-"Last-Translator: Anonymous <anonymous@cacti.net>\n"
-"Language-Team: French <http://translate.cacti.net/projects/cacti/core-v1-2-x/fr/>\n"
-"Language: fr-FR\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2023-12-05 18:50-0500\nPO-Revision-Date: 2024-03-24 22:14+0000\nLast-Translator: Nicolas BUTIN <nb1dev@free.fr>\nLanguage-Team: French <http://translate.cacti.net/projects/cacti/core-v1-2-x/fr/>\nLanguage: fr-FR\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n > 1;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2626 lib/html.php:2518
 msgid "About Cacti"
@@ -30,33 +18,28 @@ msgid "Please see the official %sCacti website%s for information on how to use C
 msgstr "Veuillez consulter le %ssite Web de Cacti%s officiel pour obtenir des informations, de l'aide et des mises à jour."
 
 #: about.php:48
-#, fuzzy
-#| msgid "Cacti Developers"
 msgid "Active Developers"
-msgstr "Les développeurs de Cacti"
+msgstr "Développeurs Actifs"
 
 #: about.php:49
 msgid "Developers working on Cacti, its Architecture, Documentation and Future Releases."
-msgstr ""
+msgstr "Développeurs travaillant sur Cacti, son architecture, documentation et ses futurs versions."
 
 #: about.php:61
-#, fuzzy
 msgid "Honorable Mentions"
-msgstr "Section Menu de la console"
+msgstr "Mentions Honorables"
 
 #: about.php:62
 msgid "Contributors to Docuemntation, QA, Packaging, the Forums and our YouTube page."
-msgstr ""
+msgstr "Contributeurs à la Documentation, à l'Assurance/Qualité, Distribution, aux Forums et à notre page YouTube."
 
 #: about.php:72
-#, fuzzy
-#| msgid "Group Member"
 msgid "Emeritus Members"
-msgstr "Membro do Grupo"
+msgstr "Membres Émérites"
 
 #: about.php:73
 msgid "Members of the original Cacti Group that have since moved on in their careers.  We continue to wish them the best."
-msgstr ""
+msgstr "Membres du groupe Cacti d'origine qui ont depuis évolué dans leur carrière.  Nous continuons de leur souhaiter le meilleur."
 
 #: about.php:83
 msgid "Thanks"
@@ -885,7 +868,7 @@ msgstr "Ne peut pas être réutilisé pour %d changements de mot de passe"
 
 #: auth_changepassword.php:357
 msgid "There are problems with the Change Password page.  Contact your Cacti administrator right away."
-msgstr ""
+msgstr "Il y a des problèmes avec la page de Changement de Mot de passe.  Contactez votre administrateur Cacti au plus vite."
 
 #: auth_changepassword.php:367 auth_changepassword.php:374
 #: include/global_form.php:1567 lib/functions.php:3679 lib/html.php:2487
@@ -3552,11 +3535,11 @@ msgstr "Supprimer chèque"
 
 #: data_debug.php:1054
 msgid "Run All"
-msgstr ""
+msgstr "Tout Exécuter"
 
 #: data_debug.php:1054
 msgid "Run checks on currently filtered Data Sources and preserve other results"
-msgstr ""
+msgstr "Exécutez des vérifications sur les Sources de données actuellement filtrées et conservez les autres résultats"
 
 #: data_debug.php:1062 data_sources.php:1419 data_templates.php:1047
 #: lib/html.php:2513
@@ -3897,7 +3880,7 @@ msgstr "Ajouter le nom suggéré au nom de la source de données"
 #: data_queries.php:1106
 #, php-format
 msgid "The Data Query ID [%s] that you are trying to Edit does not exist.  Please run the repair_database.php CLI script to resolve this database issue."
-msgstr ""
+msgstr "L'Acquisition avancée ID [%s] que vous essayez d'Éditer n'existe pas.  Merci de lancer le script CLI repair_database.php pour résoudre ce problème de base de donnée."
 
 #: data_queries.php:1111
 #, php-format
