@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2024-03-24 22:14+0000\n"
+"PO-Revision-Date: 2024-03-25 11:38+0000\n"
 "Last-Translator: Nicolas BUTIN <nb1dev@free.fr>\n"
 "Language-Team: French <http://translate.cacti.net/projects/cacti/core/fr/>\n"
 "Language: fr-FR\n"
@@ -4944,6 +4944,10 @@ msgstr "Aucune requête de données trouvée"
 #: data_source_profiles.php:192
 msgid "Changing the Heartbeat from this page, does not change the Heartbeat for your existing Data Sources.  Use RRDtool's 'tune' function to make that change to your existing RRDfiles heartbeats, or run the CLI utility update_heartbeat.php to correct.<br>"
 msgstr ""
+"Changer le Battement de cœur depuis cette page, ne change pas le Battement "
+"de cœur de vos Sources de données existantes.  Utilisez la fonction 'tune' "
+"de RRDtool pour réaliser ce changement sur vos fichiers RRD, ou exécuter "
+"l'utilitaire CLI update_heartbeat.php pour corriger.<br>"
 
 #: data_source_profiles.php:300
 #, fuzzy
@@ -5080,7 +5084,7 @@ msgstr "KBytes par source de données"
 
 #: data_source_profiles.php:810
 msgid "Enter a valid number of Rows to obtain the RRA size."
-msgstr ""
+msgstr "Entrez un numéro valide de Lignes pour obtenir la taille du RRA."
 
 #: data_source_profiles.php:824 include/global_arrays.php:802
 #: include/global_arrays.php:803 include/global_arrays.php:804
@@ -6937,7 +6941,7 @@ msgstr "Définir par défaut"
 #: help.php:38
 #, php-format
 msgid "WARNING: Cacti Page: %s Generated a Fatal Error %d!"
-msgstr ""
+msgstr "AVERTISSEMENT: La page Cacti: %s A généré une Erreur Fatale %d !"
 
 #: help.php:68
 #, php-format
@@ -6946,16 +6950,18 @@ msgstr ""
 
 #: help.php:82
 msgid "Cacti GitHub Site"
-msgstr ""
+msgstr "Site GitHub de Cacti"
 
 #: help.php:82
 msgid "Open a ticket at "
-msgstr ""
+msgstr "Ouvrir un ticket sur "
 
 #: help.php:82
 #, php-format
 msgid "The Help File %s was not located on the Cacti Documentation Website."
 msgstr ""
+"Le fichier d'aide %s n'a pas été trouvé sur le siteweb de Documentation "
+"Cacti."
 
 #: help.php:96
 #, php-format
@@ -7594,6 +7600,8 @@ msgstr "Le nom de ce modèle de d'équipement."
 #: host_templates.php:824
 msgid "The Class of this Device Template.  The Class Name should be representative of it's function."
 msgstr ""
+"La Classe de ce modèle d'équipement.  Le nom de la Classe doit être "
+"représentatif de sa fonction."
 
 #: host_templates.php:830
 msgid "The internal database ID for this Device Template.  Useful when performing automation or debugging."
@@ -7613,7 +7621,7 @@ msgstr "Le nombre d'équipements utilisant ce modèle d'équipements."
 
 #: host_templates.php:873 include/global_arrays.php:1180
 msgid "Unassigned"
-msgstr ""
+msgstr "Non attribué"
 
 #: host_templates.php:884
 msgid "No Device Templates Found"
@@ -7671,6 +7679,8 @@ msgstr "La dernière fois que ce collecteur a été entièrement synchronisé av
 #: include/global.php:634
 msgid "The Main Data Collector has gone to an Offline or Recovering Status"
 msgstr ""
+"Le Collecteur de données principal est passé à un statut Hors Ligne ou En "
+"cours de récupération"
 
 #: include/global_arrays.php:147
 msgid "Save Successful."
@@ -8791,7 +8801,7 @@ msgstr "Support"
 
 #: include/global_arrays.php:1157
 msgid "Access Points, Controllers"
-msgstr ""
+msgstr "Points d'Accès, Contrôleurs"
 
 #: include/global_arrays.php:1158
 #, fuzzy
@@ -8858,18 +8868,16 @@ msgid "NAS/SAN Related"
 msgstr ""
 
 #: include/global_arrays.php:1172
-#, fuzzy
 msgid "Network Firewalls"
-msgstr "Filtres réseau"
+msgstr "Pare-feu Réseau"
 
 #: include/global_arrays.php:1173
 msgid "Power Related PDUs/STS, etc."
 msgstr ""
 
 #: include/global_arrays.php:1174
-#, fuzzy
 msgid "Printer Related"
-msgstr "Etat de la base de données"
+msgstr "Lié aux Imprimantes"
 
 #: include/global_arrays.php:1175
 msgid "Storage Related"
