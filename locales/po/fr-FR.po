@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: Cacti\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2023-12-05 18:50-0500\nPO-Revision-Date: 2024-03-24 22:14+0000\nLast-Translator: Nicolas BUTIN <nb1dev@free.fr>\nLanguage-Team: French <http://translate.cacti.net/projects/cacti/core-v1-2-x/fr/>\nLanguage: fr-FR\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n > 1;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2023-12-05 18:50-0500\nPO-Revision-Date: 2024-03-25 11:38+0000\nLast-Translator: Nicolas BUTIN <nb1dev@free.fr>\nLanguage-Team: French <http://translate.cacti.net/projects/cacti/core-v1-2-x/fr/>\nLanguage: fr-FR\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n > 1;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2626 lib/html.php:2518
 msgid "About Cacti"
@@ -3971,7 +3971,7 @@ msgstr "Aucune requête de données trouvée"
 
 #: data_source_profiles.php:187
 msgid "Changing the Heartbeat from this page, does not change the Heartbeat for your existing Data Sources.  Use RRDtool's 'tune' function to make that change to your existing RRDfiles heartbeats, or run the CLI utility update_heartbeat.php to correct.<br>"
-msgstr ""
+msgstr "Changer le Battement de cœur depuis cette page, ne change pas le Battement de cœur de vos Sources de données existantes.  Utilisez la fonction 'tune' de RRDtool pour réaliser ce changement sur vos fichiers RRD, ou exécuter l'utilitaire CLI update_heartbeat.php pour corriger.<br>"
 
 #: data_source_profiles.php:300
 msgid "Click 'Continue' to delete the following Data Source Profile"
@@ -4095,7 +4095,7 @@ msgstr "KBytes par source de données"
 
 #: data_source_profiles.php:801
 msgid "Enter a valid number of Rows to obtain the RRA size."
-msgstr ""
+msgstr "Entrez un numéro valide de Lignes pour obtenir la taille du RRA."
 
 #: data_source_profiles.php:815 include/global_arrays.php:788
 #: include/global_arrays.php:789 include/global_arrays.php:790
@@ -5649,7 +5649,7 @@ msgstr "Définir par défaut"
 #: help.php:38
 #, php-format
 msgid "WARNING: Cacti Page: %s Generated a Fatal Error %d!"
-msgstr ""
+msgstr "AVERTISSEMENT: La page Cacti: %s A généré une Erreur Fatale %d !"
 
 #: help.php:68
 #, php-format
@@ -5658,16 +5658,16 @@ msgstr ""
 
 #: help.php:82
 msgid "Cacti GitHub Site"
-msgstr ""
+msgstr "Site GitHub de Cacti"
 
 #: help.php:82
 msgid "Open a ticket at "
-msgstr ""
+msgstr "Ouvrir un ticket sur "
 
 #: help.php:82
 #, php-format
 msgid "The Help File %s was not located on the Cacti Documentation Website."
-msgstr ""
+msgstr "Le fichier d'aide %s n'a pas été trouvé sur le siteweb de Documentation Cacti."
 
 #: help.php:96
 #, php-format
@@ -6213,7 +6213,7 @@ msgstr "Le nom de ce modèle de d'équipement."
 
 #: host_templates.php:822
 msgid "The Class of this Device Template.  The Class Name should be representative of it's function."
-msgstr ""
+msgstr "La Classe de ce modèle d'équipement.  Le nom de la Classe doit être représentatif de sa fonction."
 
 #: host_templates.php:828
 msgid "The internal database ID for this Device Template.  Useful when performing automation or debugging."
@@ -6233,7 +6233,7 @@ msgstr "Le nombre d'équipements utilisant ce modèle d'équipements."
 
 #: host_templates.php:869 include/global_arrays.php:1101
 msgid "Unassigned"
-msgstr ""
+msgstr "Non attribué"
 
 #: host_templates.php:879
 msgid "No Device Templates Found"
@@ -6292,7 +6292,7 @@ msgstr "La dernière fois que ce collecteur a été entièrement synchronisé av
 
 #: include/global.php:575
 msgid "The Main Data Collector has gone to an Offline or Recovering Status"
-msgstr ""
+msgstr "Le Collecteur de données principal est passé à un statut Hors Ligne ou En cours de récupération"
 
 #: include/global_arrays.php:146
 msgid "Save Successful."
@@ -7338,7 +7338,7 @@ msgstr "Support"
 
 #: include/global_arrays.php:1078
 msgid "Access Points, Controllers"
-msgstr ""
+msgstr "Points d'Accès, Contrôleurs"
 
 #: include/global_arrays.php:1079
 #, fuzzy
@@ -7412,20 +7412,16 @@ msgid "NAS/SAN Related"
 msgstr ""
 
 #: include/global_arrays.php:1093
-#, fuzzy
-#| msgid "Network Filters"
 msgid "Network Firewalls"
-msgstr "Filtres réseau"
+msgstr "Pare-feu Réseau"
 
 #: include/global_arrays.php:1094
 msgid "Power Related PDUs/STS, etc."
 msgstr ""
 
 #: include/global_arrays.php:1095
-#, fuzzy
-#| msgid "Database Status"
 msgid "Printer Related"
-msgstr "Etat de la base de données"
+msgstr "Lié aux Imprimantes"
 
 #: include/global_arrays.php:1096
 msgid "Storage Related"
