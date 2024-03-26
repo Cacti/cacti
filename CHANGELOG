@@ -18,6 +18,7 @@ Cacti CHANGELOG
 -issue#5693: Fix Spikekill not following correct time in schedule, Improve PHP 8.3 in spikekill process
 -issue#5696: When inputting Chinese to search for graphics, garbled characters appear.
 -issue#5701: Bad URL formating in the templates_import.php preview mode
+-issue#5706: Fix SQL queries for "device enabled/disabled" indicators 
 -feature#5692: Add a "device enabled/disabled" indicator next to the graphs
 
 1.2.26
@@ -61,7 +62,7 @@ Cacti CHANGELOG
 -issue#5602: When adding a device, using the bulk walk option can make version information appear
 -issue#5609: When parsing a Data Query resource, an error can be reported if no direction is specified
 -issue#5612: Database reconnection can cause errors to be reported incorrectly
--issue#5613: fix returned value if $sau is empty
+-issue#5613: Fix returned value if $sau is empty
 -issue#5641: Cmd poller - add availability test for devices without poller items 
 -feature#5577: Add Aruba switch, Aruba controller and HPE iLO templates
 -feature#5597: Add OSCX 6x00 templates
