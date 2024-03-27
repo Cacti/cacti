@@ -40,9 +40,15 @@ if (cacti_count($_SERVER['argv']) < 4) {
 	exit(-1);
 }
 
-$poller_id = $_SERVER['argv'][1];
+$poller_id = (int)$_SERVER['argv'][1];
 $graph_id  = (int)$_SERVER['argv'][2];
 $interval  = (int)$_SERVER['argv'][3];
+
+if ($poller_id <= 0) {
+	print "Invalid poller_id specified.\n\n";
+
+	exit(-1);
+}
 
 if ($graph_id <= 0) {
 	print "Invalid graph_id specified.\n\n";
