@@ -2738,7 +2738,7 @@ function rrdtool_function_theme_font_options(&$graph_data_array) {
 		}
 
 		if (isset($$themeborder) && cacti_version_compare($rrdversion,'1.4','>=')) {
-			$graph_opts .= "--border $$themeborder ";
+			$graph_opts .= "--border " .  $$themeborder . RRD_NL;
 		}
 
 		if (isset($rrdfonts)) {
