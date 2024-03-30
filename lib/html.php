@@ -391,7 +391,12 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 
 		foreach ($graph_array as $graph) {
 			if (!isset($graph['host_id'])) {
-				list($graph['host_id'], $graph['disabled']) = db_fetch_cell_prepared('SELECT host_id, disabled FROM graph_local WHERE id = ?', array($graph['local_graph_id']));
+				list($graph['host_id'], $graph['disabled']) = db_fetch_row_prepared('SELECT host_id, disabled 
+    					FROM graph_local AS gl 
+	 				LEFT JOIN host AS h 
+					ON gl.host_id = h.id 
+     					WHERE gl.id = ?', 
+					array($graph['local_graph_id']));
 			}
 
 			if ($i == 0) {
@@ -480,7 +485,12 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 
 		foreach ($graph_array as $graph) {
 			if (!isset($graph['host_id'])) {
-				list($graph['host_id'], $graph['disabled']) = db_fetch_cell_prepared('SELECT host_id, disabled FROM graph_local WHERE id = ?', array($graph['local_graph_id']));
+				list($graph['host_id'], $graph['disabled']) = db_fetch_row_prepared('SELECT host_id, disabled 
+    					FROM graph_local AS gl 
+	 				LEFT JOIN host AS h 
+      					ON gl.host_id = h.id 
+	   				WHERE gl.id = ?', 
+					array($graph['local_graph_id']));
 			}
 
 			if (isset($graph['graph_template_name'])) {
