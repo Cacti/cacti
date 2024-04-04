@@ -4290,7 +4290,7 @@ function gradient($vname = false, $start_color = '#0000a0', $end_color = '#f0f0f
 		$b = round($b1 + $diff_b * $factor);
 
 		if ($i == $steps && $label != false && strlen($label) > 2) {
-			$spline .= sprintf('AREA:%s%d#%02X%02X%02X%s:"%s" ' . RRD_NL, $spline_vname, $i, $r, $g, $b, $alpha, $label);
+			$spline .= sprintf('AREA:%s%d#%02X%02X%02X%s:%s ' . RRD_NL, $spline_vname, $i, $r, $g, $b, $alpha, $label);
 		} else {
 			$spline .= sprintf('AREA:%s%d#%02X%02X%02X%s ' . RRD_NL, $spline_vname, $i, $r, $g, $b, $alpha);
 		}
