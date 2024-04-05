@@ -1390,7 +1390,7 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
 	}
 
 	$graphs = db_fetch_assoc("SELECT gti.id, gti.title, gtg.local_graph_id, h.description,
-		gt.name AS template_name, gtg.title_cache, gtg.width, gtg.height,
+		gt.name AS template_name, gtg.title_cache, gtg.width, gtg.height, gl.host_id, h.disabled,
 		gl.snmp_index, gl.snmp_query_id
 		FROM graph_templates_graph AS gtg
 		INNER JOIN graph_local AS gl
