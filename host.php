@@ -1229,6 +1229,31 @@ function device_javascript() {
 		// Need to set this for global snmpv3 functions to remain sane between edits
 		snmp_security_initialized = false;
 
+		$('#cdialog').remove();
+		$('#main').append("<div id='cdialog' class='cdialog'></div>");
+
+		$('.delete').click(function (event) {
+			event.preventDefault();
+
+			request = $(this).attr('href');
+			$.get(request)
+				.done(function(data) {
+					$('#cdialog').html(data);
+
+					applySkin();
+
+					$('#cdialog').dialog({
+						title: '<?php print __('Delete Item from Device');?>',
+						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
+						minHeight: 80,
+						minWidth: 500
+					})
+				})
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
+		}).css('cursor', 'pointer');
+
 		if (typeof hostInfoHeight != 'undefined') {
 			if ($(window).scrollTop() == 0) {
 				$('.hostInfoHeader').css('height', '');
