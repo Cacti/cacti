@@ -53,6 +53,8 @@ $device_actions = api_plugin_hook_function('device_action_array', $device_action
 /* set default action */
 set_default_action();
 
+api_plugin_hook('device_top');
+
 switch (get_request_var('action')) {
 	case 'export':
 		host_export();
