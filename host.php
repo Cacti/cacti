@@ -1408,7 +1408,12 @@ function get_device_records(&$total_rows, $rows) {
 	} elseif ($host_where_status == '-4') {
 		$sql_where .= ($sql_where == '' ? ' WHERE ' : ' AND ') . "(host.status!='3' OR $host_where_disabled)";
 	} else {
-		$sql_where .= ($sql_where == '' ? ' WHERE ' : ' AND ') . "(host.status=$host_where_status AND NOT $host_where_disabled)";
+		if (db_column_exists('host', 'thold_failure_count')) {
+			$sql_where .= ($sql_where == '' ? ' WHERE ':' AND ') .
+				"((host.status=$host_where_status OR (status != 2 AND thold_failure_count > 0 AND status_event_count > thold_failure_count) AND NOT $host_where_disabled)";
+		} else {
+			$sql_where .= ($sql_where == '' ? ' WHERE ':' AND ') . "(host.status=$host_where_status AND NOT $host_where_disabled)";
+		}
 	}
 
 	if (get_request_var('availability_method') != '-1') {
