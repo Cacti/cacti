@@ -923,15 +923,27 @@ function load_current_session_value($request_var_name, $session_var_name, $defau
 	}
 }
 
-/* get_colored_device_status - given a device's status, return the colored text in HTML
-     format suitable for display
-   @arg $disabled (bool) - true if the device is disabled, false is it is not
-   @arg $status - the status type of the device as defined in global_constants.php
-   @returns - a string containing html that represents the device's current status */
-function get_colored_device_status($disabled, $status) {
+/**
+ * get_colored_device_status - given a device's status, return the colored text in HTML
+ * format suitable for display
+ *
+ * @param bool    - true if the device is disabled, false is it is not
+ * @param int     - The device status as defined in global_constants.php
+ * @param int     - The thold failure count is thold is installed
+ * @param int     - The host status event count is thold is installed
+ *
+ * @return - a string containing html that represents the device's current status
+ */
+function get_colored_device_status($disabled, $status, $thold_failure_count = -1, $status_event_count = -1) {
 	if ($disabled) {
 		return "<span class='deviceDisabled'>" . __('Disabled') . "</span>";
 	} else {
+		if ($status != HOST_RECOVERING && $thold_failure_count > 0) {
+			if ($status_event_count >= $thold_failure_count) {
+				return "<span class='deviceDown'>" . __('Down (Thold)') . "</span>";
+			}
+		}
+
 		switch ($status) {
 			case HOST_DOWN:
 				return "<span class='deviceDown'>" . __('Down') . "</span>";

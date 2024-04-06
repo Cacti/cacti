@@ -1469,8 +1469,14 @@ function get_device_records(&$total_rows, $rows) {
 		$sql_where .= ($sql_where != '' ? " AND host.disabled=''" : " WHERE host.disabled=''");
 	} elseif (get_request_var('host_status') == '-4') {
 		$sql_where .= ($sql_where != '' ? " AND (host.status!='3' OR host.disabled='on')" : " WHERE (host.status!='3' OR host.disabled='on')");
-	} else {
-		$sql_where .= ($sql_where != '' ? ' AND (host.status=' . get_request_var('host_status') . " AND host.disabled = '')" : 'where (host.status=' . get_request_var('host_status') . " AND host.disabled = '')");
+	} else { // Host Down
+
+		if (db_column_exists('host', 'thold_failure_count')) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') .
+				"((host.status=" . get_request_var('host_status') . " OR (status != 2 AND thold_failure_count > 0 AND status_event_count > thold_failure_count) AND host.disabled = ''))";
+		} else {
+			$sql_where .= ($sql_where != '' ? ' AND (host.status=' . get_request_var('host_status') . " AND host.disabled = '')" : 'where (host.status=' . get_request_var('host_status') . " AND host.disabled = '')");
+		}
 	}
 
 	if (get_request_var('host_template_id') == '-1') {
