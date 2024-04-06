@@ -1843,6 +1843,14 @@ function host() {
 		api_plugin_hook_function('device_table_replace', $hosts);
 	} else if (cacti_sizeof($hosts)) {
 		foreach ($hosts as $host) {
+			$disabled = ($host['disabled'] == 'on');
+
+			if (isset($host['thold_failure_count'])) {
+				$host_status = get_colored_device_status($disabled, $host['status'], $host['thold_failure_count'], $host['status_event_count']);
+			} else {
+				$host_status = get_colored_device_status($disabled, $host['status']);
+			}
+
 			if ($host['disabled'] == '' &&
 				($host['status'] == HOST_RECOVERING || $host['status'] == HOST_UP) &&
 				($host['availability_method'] != AVAIL_NONE && $host['availability_method'] != AVAIL_PING)) {
@@ -1868,7 +1876,7 @@ function host() {
 			form_selectable_cell(filter_value($host['id'], get_request_var('filter')), $host['id'], '', 'right');
 			form_selectable_cell('<a class="linkEditMain" href="' . $graphs_url . '">' . number_format_i18n($host['graphs'], '-1') . '</a>', $host['id'], '', 'right');
 			form_selectable_cell('<a class="linkEditMain" href="' . $data_source_url . '">' . number_format_i18n($host['data_sources'], '-1') . '</a>', $host['id'], '', 'right');
-			form_selectable_cell(get_colored_device_status(($host['disabled'] == 'on' ? true : false), $host['status']), $host['id'], '', 'center');
+			form_selectable_cell($host_status, $host['id'], '', 'center');
 			form_selectable_cell(get_timeinstate($host), $host['id'], '', 'right');
 			form_selectable_cell($uptime, $host['id'], '', 'right');
 			form_selectable_cell(round($host['polling_time'],2), $host['id'], '', 'right');
