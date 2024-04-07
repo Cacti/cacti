@@ -156,6 +156,18 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 
 	if (cacti_sizeof($input_item_list)) {
 		foreach ($input_item_list as $item) {
+			if (!db_column_exists('graph_templates_item', $item['column_name'])) {
+				raise_message_javascript(
+					__('Attempted SQL Injection'),
+					__('There was a SQL Injection attempted on the page'),
+					__('A client attempted to create a SQL Injection into Cacti likely from an external host with the address %s', get_client_addr())
+				);
+
+				cacti_log(sprintf('ERROR: A client attempted to create a SQL Injection into Cacti likely from an external host with the address %s', get_client_addr()), false, 'SECURITY');
+
+				exit;
+			}
+
 			$form_array = array();
 
 			if (!empty($local_graph_id)) {
