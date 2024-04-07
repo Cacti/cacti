@@ -991,6 +991,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			WHERE id = ?',
 			array($host_group_data_array[1]));
 
+		$name = html_escape($name);
 		$host_group_data_name = '<strong>' . __('Graph Template:'). '</strong> ' . $name;
 		$graph_template_id    = $host_group_data_array[1];
 	} elseif ($host_group_data_array[0] == 'dq') {
@@ -999,6 +1000,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			WHERE id = ?',
 			array($host_group_data_array[1]));
 
+		$name = html_escape($name);
 		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? __('Non Query Based') : $name);
 		$data_query_id        = $host_group_data_array[1];
 	} elseif ($host_group_data_array[0] == 'dqi') {
@@ -1007,6 +1009,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			WHERE id = ?',
 			array($host_group_data_array[1]));
 
+		$name = html_escape($name);
 		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? __('Non Query Based') : $name) . '-> ' . (empty($host_group_data_array[2]) ? __('Template Based') : get_formatted_data_query_index($leaf['host_id'], $host_group_data_array[1], $host_group_data_array[2]));
 		$data_query_id        = $host_group_data_array[1];
 		$data_query_index     = $host_group_data_array[2];
