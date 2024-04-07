@@ -285,6 +285,11 @@ $filename = get_current_page();
 $config['is_web'] = !defined('CACTI_CLI_ONLY');
 if ((isset($no_http_headers) && $no_http_headers == true) || in_array($filename, $no_http_header_files, true)) {
 	$config['is_web'] = false;
+
+	if (isset($_REQUEST) && cacti_sizeof($_REQUEST) || !isset($_SERVER['argv'])) {
+		print 'FATAL: This file can only be called from the command line.' . PHP_EOL;
+		exit;
+	}
 }
 
 $auto_start = ini_get('session.auto_start');
