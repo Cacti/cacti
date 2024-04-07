@@ -73,6 +73,12 @@ function api_plugin_hook($name) {
 
 	if (!empty($result)) {
 		foreach ($result as $hdata) {
+			// Security check
+			if (strpos($hdata['file'], '..') !== false) {
+				cacti_log("ERROR: Attempted inclusion of not plugin file $plugin_file from $plugin_name with the hook name $name", false, 'SECURITY');
+				continue;
+			}
+
 			$plugin_name = $hdata['name'];
 
 			if (!in_array($plugin_name, $plugins_integrated, true)) {
