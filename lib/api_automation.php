@@ -1248,7 +1248,7 @@ function display_matching_trees($rule_id, $rule_type, $item, $url) {
 			LEFT JOIN sites s
 			ON h.site_id = s.id
 			LEFT JOIN host_template AS ht
-			ON (h.host_template_id=ht.id)';
+			ON (h.host_template_id = ht.id)';
 
 		$sql_where = 'WHERE h.deleted = ""';
 	} elseif ($leaf_type == TREE_ITEM_TYPE_GRAPH) {
@@ -1307,7 +1307,14 @@ function display_matching_trees($rule_id, $rule_type, $item, $url) {
 	$sql_filter = build_matching_objects_filter($rule_id, AUTOMATION_RULE_TYPE_TREE_MATCH);
 
 	$templates = array();
-	$sql_field = $item['field'] . ' AS source ';
+
+	if (api_automation_column_exists($item['field'], array('host', 'host_template', 'graph_local', 'graph_templates_graph', 'graph_templates'))) {
+		$sql_field = $item['field'] . ' AS source ';
+	} else {
+		$sql_field = '"SQL Injection" AS source ';
+		cacti_log('Attempted SQL Injection found in Tree Automation for the field variable.', false, 'AUTOM8');
+		raise_message('sql_injection', __('Attempted SQL Injection found in Tree Automation for the field variable.'), MESSAGE_LEVEL_ERROR);
+	}
 
 	/* now we build up a new query for counting the rows */
 	if (db_column_exists('sites', 'disabled')) {
@@ -1402,7 +1409,21 @@ function display_matching_trees($rule_id, $rule_type, $item, $url) {
 	}
 }
 
-function display_match_rule_items($title, &$rule, $rule_type, $module) {
+function api_automation_column_exists($column, $tables) {
+	$column = str_replace(array('h.', 'ht.', 'gt.', 'gl.', 'gtg.'), '', 1);
+
+	if (cacti_sizeof($tables)) {
+		foreach($tables as $table) {
+			if (db_column_exists($table, $column)) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 	global $automation_op_array, $automation_oper, $automation_tree_header_types;
 
 	$rule_id = $rule['id'];
