@@ -1050,8 +1050,8 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
 function raise_message_javascript($title, $header, $message) {
 	?>
 	<script type='text/javascript'>
-	var mixedReasonTitle = DOMPurify.sanitize('<?php print $title;?>');
-	var mixedOnPage      = DOMPurify.sanitize('<?php print $header;?>');
+	var mixedReasonTitle = DOMPurify.sanitize(<?php print json_encode($title, JSON_THROW_ON_ERROR);?>);
+	var mixedOnPage      = DOMPurify.sanitize(<?php print json_encode($header, JSON_THROW_ON_ERROR);?>);
 	sessionMessage   = {
 		message: DOMPurify.sanitize('<?php print $message;?>'),
 		level: MESSAGE_LEVEL_MIXED
