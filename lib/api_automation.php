@@ -1804,7 +1804,7 @@ function build_graph_object_sql_having($rule, $filter) {
 			$i = 0;
 
 			foreach ($field_names as $column) {
-				$sql_having .= ($i == 0 ? '':' OR ') . '`' . implode('`.`', explode('.', $column['field_name'])) . '`' . ' LIKE "%' . $filter . '%"';
+				$sql_having .= ($i == 0 ? '':' OR ') . '`' . implode('`.`', explode('.', $column['field_name'])) . '`' . ' LIKE ' . db_qstr('%' . $filter . '%');
 				$i++;
 			}
 
@@ -5406,4 +5406,3 @@ function automation_validate_import_columns($table, &$data, &$debug_data) {
 
 	return true;
 }
-
