@@ -1658,19 +1658,23 @@ function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1
 	<?php
 }
 
-function form_area($text) { ?>
+function form_area($text) {
+	?>
 	<tr>
 		<td class='textArea'>
-			<?php print $text;?>
+			<?php print html_escape($text);?>
 		</td>
 	</tr>
-<?php }
+	<?php
+}
 
-/* is_console_page - determines if current passed url is considered to be
-          a console page
-   @arg url - url to be checked
-   @returns true if console page, false if not
-*/
+/**
+ * is_console_page - determines if current passed url is considered to be a console page
+ *
+ * @param url - url to be checked
+ *
+ * @return true if console page, false if not
+ */
 function is_console_page($url) {
 	global $menu;
 
