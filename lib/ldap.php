@@ -369,6 +369,7 @@ abstract class LdapError {
 	}
 }
 
+#[\AllowDynamicProperties]
 class Ldap {
 	public $dn;
 	public $cn;
