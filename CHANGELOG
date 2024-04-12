@@ -99,6 +99,7 @@ Cacti CHANGELOG
 -feature: Upgrade billboard.js to version 3.7.4
 -feature: Upgrade d3.js to version 7.8.2
 -feature: Upgrade ua-parser.js to version 1.0.35
+-feature#5717: Add Aruba Clearpass template
 
 1.2.27
 -issue#5622: Errors and deprecation warnings with PHP 8.3.0
