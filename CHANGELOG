@@ -19,6 +19,7 @@ Cacti CHANGELOG
 -issue#5696: When inputting Chinese to search for graphics, garbled characters appear.
 -issue#5701: Bad URL formating in the templates_import.php preview mode
 -feature#5692: Add a "device enabled/disabled" indicator next to the graphs
+-feature#5716: Add Aruba Clearpass template
 
 1.2.26
 -security#GHSA-xwqc-7jc4-xm73: XSS vulnerability when importing a template file
