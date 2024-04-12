@@ -599,6 +599,7 @@ function install_setup_get_templates() {
 		'Cacti_Stats.xml.gz',
 		'Cisco_Router.xml.gz',
 		'Citrix_NetScaler_VPX.xml.gz',
+		'Clearpass_policy_manager.xml.gz',
 		'ESXi_Device.xml.gz',
 		'Fortigate.xml.gz',
 		'HPE_iLO.xml.gz',
