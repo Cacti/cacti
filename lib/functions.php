@@ -5927,7 +5927,7 @@ function poller_maintenance() {
 	$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 
 	// If its not set, just assume its in the path
-	if (trim($command_string) == '') {
+	if (empty($command_string) || trim($command_string) == '') {
 		$command_string = 'php';
 	}
 

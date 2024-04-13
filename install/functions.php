@@ -1028,6 +1028,24 @@ function remote_update_config_file() {
 	return $failure;
 }
 
+/**
+ * set_install_config_option - Set a config option into the local database only
+ *
+ * @param $config_name - the name of the configuration setting as specified $settings array
+ * @param $value       - the values to be saved
+ *
+ * @return null        - nothing is returned
+ */
+function set_install_config_option($name, $value) {
+	global $local_db_cnn_id;
+
+	if (is_object($local_db_cnn_id)) {
+		db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($name, $value), false, $local_db_cnn_id);
+	} else {
+		set_config_option($name, $value);
+	}
+}
+
 function import_colors() {
 	global $config;
 

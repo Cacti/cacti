@@ -338,9 +338,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		$remote_db_cnn_id = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $database_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca, $rdatabase_ssl_capath, $rdatabase_ssl_verify_server_cert);
 	}
 
-	if ($config['is_web'] && is_object($remote_db_cnn_id) &&
-		$config['connection']       != 'recovery' &&
-		$config['cacti_db_version'] != 'new_install') {
+	if ($config['is_web'] && is_object($remote_db_cnn_id) && $config['connection'] != 'recovery' && $config['cacti_db_version'] != 'new_install' && !defined('IN_CACTI_INSTALL')) {
 		// Connection worked, so now override the default settings so that it will always utilize the remote connection
 		$database_default    = $rdatabase_default;
 		$database_hostname   = $rdatabase_hostname;
