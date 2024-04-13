@@ -811,7 +811,7 @@ function install_file_paths() {
 	$input['path_snmpwalk'] = install_tool_path('snmpwalk',
 		array(
 			'unix'  => '/usr/bin/snmpwalk',
-			'win32' => 'c:/net-snmp/bin/snmpwalk.exe'
+			'win32' => 'c:/usr/bin/snmpwalk.exe'
 		)
 	);
 
@@ -819,7 +819,7 @@ function install_file_paths() {
 	$input['path_snmpget'] = install_tool_path('snmpget',
 		array(
 			'unix'  => '/usr/bin/snmpget',
-			'win32' => 'c:/net-snmp/bin/snmpget.exe'
+			'win32' => 'c:/usr/bin/snmpget.exe'
 		)
 	);
 
@@ -827,7 +827,7 @@ function install_file_paths() {
 	$input['path_snmpbulkwalk'] = install_tool_path('snmpbulkwalk',
 		array(
 			'unix'  => '/usr/bin/snmpbulkwalk',
-			'win32' => 'c:/net-snmp/bin/snmpbulkwalk.exe'
+			'win32' => 'c:/usr/bin/snmpbulkwalk.exe'
 		)
 	);
 
@@ -835,7 +835,7 @@ function install_file_paths() {
 	$input['path_snmpgetnext'] = install_tool_path('snmpgetnext',
 		array(
 			'unix'  => '/usr/bin/snmpgetnext',
-			'win32' => 'c:/net-snmp/bin/snmpgetnext.exe'
+			'win32' => 'c:/usr/bin/snmpgetnext.exe'
 		)
 	);
 
@@ -843,7 +843,7 @@ function install_file_paths() {
 	$input['path_snmptrap'] = install_tool_path('snmptrap',
 		array(
 			'unix'  => '/usr/bin/snmptrap',
-			'win32' => 'c:/net-snmp/bin/snmptrap.exe'
+			'win32' => 'c:/usr/bin/snmptrap.exe'
 		)
 	);
 
