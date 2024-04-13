@@ -683,35 +683,35 @@ function install_file_paths() {
 	$input['path_snmpwalk'] = install_tool_path('snmpwalk',
 		array(
 			'unix'  => '/usr/local/bin/snmpwalk',
-			'win32' => 'c:/net-snmp/bin/snmpwalk.exe'
+			'win32' => 'c:/usr/bin/snmpwalk.exe'
 		));
 
 	/* snmpget Binary Path */
 	$input['path_snmpget'] = install_tool_path('snmpget',
 		array(
 			'unix'  => '/usr/local/bin/snmpget',
-			'win32' => 'c:/net-snmp/bin/snmpget.exe'
+			'win32' => 'c:/usr/bin/snmpget.exe'
 		));
 
 	/* snmpbulkwalk Binary Path */
 	$input['path_snmpbulkwalk'] = install_tool_path('snmpbulkwalk',
 		array(
 			'unix'  => '/usr/local/bin/snmpbulkwalk',
-			'win32' => 'c:/net-snmp/bin/snmpbulkwalk.exe'
+			'win32' => 'c:/usr/bin/snmpbulkwalk.exe'
 		));
 
 	/* snmpgetnext Binary Path */
 	$input['path_snmpgetnext'] = install_tool_path('snmpgetnext',
 		array(
 			'unix'  => '/usr/local/bin/snmpgetnext',
-			'win32' => 'c:/net-snmp/bin/snmpgetnext.exe'
+			'win32' => 'c:/usr/bin/snmpgetnext.exe'
 		));
 
 	/* snmptrap Binary Path */
 	$input['path_snmptrap'] = install_tool_path('snmptrap',
 		array(
 			'unix'  => '/usr/local/bin/snmptrap',
-			'win32' => 'c:/net-snmp/bin/snmptrap.exe'
+			'win32' => 'c:/usr/bin/snmptrap.exe'
 		));
 
 	/* sendmail Binary Path */
