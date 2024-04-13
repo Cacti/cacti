@@ -1812,7 +1812,7 @@ class Installer implements JsonSerializable {
 	}
 
 	public function processStepCheckDependencies() {
-		global $config;
+		global $config, $local_db_cnn_id, $remote_db_cnn_id;
 		global $database_default, $database_username, $database_port;
 		global $rdatabase_default, $rdatabase_username, $rdatabase_port;
 
@@ -2004,7 +2004,13 @@ class Installer implements JsonSerializable {
 		$output .= Installer::sectionSubTitleEnd();
 
 		$output .= Installer::sectionSubTitle(__('MySQL - TimeZone Support'), 'mysql_timezone');
-		$mysql_timezone_access = db_fetch_assoc('SHOW COLUMNS FROM mysql.time_zone_name', false);
+
+		if ($config['poller_id'] == 1) {
+			$mysql_timezone_access = db_fetch_assoc('SHOW COLUMNS FROM mysql.time_zone_name', false);
+		} else {
+			$mysql_timezone_access = db_fetch_assoc('SHOW COLUMNS FROM mysql.time_zone_name', false, $local_db_cnn_id);
+		}
+
 		if (cacti_sizeof($mysql_timezone_access)) {
 			$timezone_populated = db_fetch_cell('SELECT COUNT(*) FROM mysql.time_zone_name');
 			if (!$timezone_populated) {
@@ -2404,7 +2410,7 @@ class Installer implements JsonSerializable {
 			$output .= Installer::sectionNormal(__('An example of how to set folder permissions is shown here, though you may need to adjust this depending on your operating system, user accounts and desired permissions.'));
 			$output .= Installer::sectionNote('<span class="cactiInstallSectionCode" style="width: 95%; display: inline-flex;">' . $code . '</span>', '', '', __('EXAMPLE:'));
 			$output .= Installer::sectionNote(__('Once installation has completed the CSRF path, should be set to read-only.'));
-		}else {
+		} else {
 			$output .= Installer::sectionNormal('<font color="#008000">' . __('All folders are writable') . '</font>');
 		}
 
@@ -3413,7 +3419,7 @@ class Installer implements JsonSerializable {
 				include_once($upgrade_file);
 				if (function_exists($upgrade_function)) {
 					call_user_func($upgrade_function);
-					echo PHP_EOL;
+					print PHP_EOL;
 					$ver_status = $this->checkDatabaseUpgrade($cacti_upgrade_version);
 				} else {
 					log_install_always('', __('WARNING: Failed to find upgrade function for v%s', $cacti_upgrade_version));
