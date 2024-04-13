@@ -420,7 +420,7 @@ class Installer implements JsonSerializable {
 		if ($value !== null) {
 			$field = $value;
 			if ($save) {
-				set_config_option('install_' . $option, $param);
+				set_install_config_option('install_' . $option, $param);
 			}
 		}
 
@@ -459,8 +459,8 @@ class Installer implements JsonSerializable {
 	 * @param_progress - one of Installer::PROGRESS_ constants */
 	private function setProgress($param_process) {
 		log_install_medium('', "Progress: $param_process");
-		set_config_option('install_progress', $param_process);
-		set_config_option('install_updated', microtime(true));
+		set_install_config_option('install_progress', $param_process);
+		set_install_config_option('install_updated', microtime(true));
 	}
 
 	/* sanitizeRRDVersion() - ensure version number is valid
@@ -600,9 +600,9 @@ class Installer implements JsonSerializable {
 	}
 
 	private function getLanguage() {
-		$language = read_config_option('install_language');
+		$language = read_config_option('install_language', true);
 		if (empty($language)) {
-			$language = read_config_option('i18n_default_language');
+			$language = read_config_option('i18n_default_language', true);
 			if (empty($language) && isset($_SESSION['sess_user_id'])) {
 				$language = read_user_setting('user_language', get_new_user_default_language(), true);
 			}
@@ -624,8 +624,8 @@ class Installer implements JsonSerializable {
 			} else {
 				log_install_debug('language','setLanguage(): ' . $param_language);
 				$this->language = $param_language;
-				set_config_option('i18n_default_language', $param_language);
-				set_config_option('install_language', $param_language);
+				set_install_config_option('i18n_default_language', $param_language);
+				set_install_config_option('install_language', $param_language);
 				if (isset($_SESSION['sess_user_id'])) {
 					$_SESSION['sess_user_language'] = $param_language;
 					set_user_setting('user_language', $param_language);
@@ -649,13 +649,13 @@ class Installer implements JsonSerializable {
 		if (!$this->eula) {
 			$this->addError(Installer::STEP_WELCOME, 'Eula','Eula not accepted');
 		}
-		set_config_option('install_eula', $this->eula);
+		set_install_config_option('install_eula', $this->eula);
 	}
 
 	/* getRRDVersion() - gets the RRDVersion from the system or if overridden
 	 *                  during the installer, from the installer option */
 	private function getRRDVersion() {
-		$rrdver = read_config_option('install_rrdtool_version');
+		$rrdver = read_config_option('install_rrdtool_version', true);
 		if (empty($rrdver)) {
 //			log_install_high('rrdversion', 'getRRDVersion(): Getting tool version');
 //			$rrdver = get_rrdtool_version();
@@ -711,22 +711,22 @@ class Installer implements JsonSerializable {
 				$this->addError(Installer::STEP_BINARY_LOCATIONS, 'RRDVersion', 'setRRDVersion()', __('Failed to set specified %sRRDTool version: %s', $prefix, $param_rrdver));
 			} else {
 				$this->paths['rrdtool_version']['default'] = $param_rrdver;
-				set_config_option('install_rrdtool_version', $param_rrdver);
-				set_config_option('rrdtool_version', $param_rrdver);
+				set_install_config_option('install_rrdtool_version', $param_rrdver);
+				set_install_config_option('rrdtool_version', $param_rrdver);
 			}
 		}
 	}
 
 	/* getTheme() - gets the current theme */
 	private function getTheme() {
-		$theme = read_config_option('install_theme');
+		$theme = read_config_option('install_theme', true);
 		if (empty($theme)) {
 			if (isset($_SESSION['sess_user_id'])) {
 				$theme = read_user_setting('selected_theme');
 			}
 
 			if (empty($theme)) {
-				$theme = read_config_option('selected_theme');
+				$theme = read_config_option('selected_theme', true);
 			}
 		}
 		$theme = empty($theme) ? 'modern' : $theme;
@@ -747,8 +747,8 @@ class Installer implements JsonSerializable {
 			if (file_exists($themePath)) {
 				log_install_debug('theme','setTheme(): ' . $param_theme);
 				$this->theme = $param_theme;
-				set_config_option('install_theme', $this->theme);
-				set_config_option('selected_theme', $this->theme);
+				set_install_config_option('install_theme', $this->theme);
+				set_install_config_option('selected_theme', $this->theme);
 				if (isset($_SESSION['sess_user_id'])) {
 					set_user_setting('selected_theme', $this->theme);
 					$_SESSION['selected_theme'] = $this->theme;
@@ -772,7 +772,7 @@ class Installer implements JsonSerializable {
 				if (array_key_exists('default', $array)) {
 					$paths[$name] = $array['default'];
 				} else {
-					$paths[$name] = read_config_option($name);
+					$paths[$name] = read_config_option($name, true);
 				}
 			}
 		}
@@ -832,7 +832,7 @@ class Installer implements JsonSerializable {
 
 					if ($should_set) {
 						unset($this->errors['Paths'][$name]);
-						set_config_option($name, empty($path)?'':$path);
+						set_install_config_option($name, empty($path)?'':$path);
 					}
 
 					$this->paths[$name]['default'] = $path;
@@ -876,7 +876,7 @@ class Installer implements JsonSerializable {
 					$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Profile', __('Failed to apply specified profile %s != %s', $valid, $param_profile));
 				} else {
 					$this->profile = $valid;
-					set_config_option('install_profile', $valid);
+					set_install_config_option('install_profile', $valid);
 				}
 			}
 			log_install_medium('automation',"setProfile($param_profile) returns with $this->profile");
@@ -953,7 +953,7 @@ class Installer implements JsonSerializable {
 		if ($param_interval != null) {
 			if (array_key_exists($param_interval, $cron_intervals)) {
 				$this->cronInterval = $param_interval;
-				set_config_option('cron_interval', $param_interval);
+				set_install_config_option('cron_interval', $param_interval);
 			} else {
 				$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Poller','Cron', __('Failed to apply specified cron interval'));
 			}
@@ -1003,7 +1003,7 @@ class Installer implements JsonSerializable {
 					}
 				}
 				$this->automationRange = $param_range;
-				set_config_option('install_automation_range', $param_range);
+				set_install_config_option('install_automation_range', $param_range);
 			}
 		} else {
 			$param_range = '';
@@ -1070,7 +1070,7 @@ class Installer implements JsonSerializable {
 						$bad_option = false;
 						log_install_high('snmp_options',"snmp_option set:" . clean_up_lines(var_export($option_value, true)));
 						log_install_debug('snmp_options',"Set snmp_option: install_snmp_option_$key = $option_value");
-						set_config_option("install_snmp_option_$key", $option_value);
+						set_install_config_option("install_snmp_option_$key", $option_value);
 					}
 				}
 				if ($bad_option) {
@@ -1120,7 +1120,7 @@ class Installer implements JsonSerializable {
 					if ($host_template_id != $default_template) {
 						log_install_always('templates', 'getDefaultTemplate(): Changing Device Template to \'' . $item['name'] . '\'');
 
-						set_config_option('default_template', $host_template_id);
+						set_install_config_option('default_template', $host_template_id);
 					}
 					break;
 				} else {
@@ -1157,7 +1157,7 @@ class Installer implements JsonSerializable {
 			$default_template = $this->getDefaultTemplate();
 		}
 
-		set_config_option('default_template', $default_template);
+		set_install_config_option('default_template', $default_template);
 
 		$default_template = $this->getDefaultTemplate();
 		log_install_always('template','setDefaultTemplate(): Device default template is \'' . $default_template . '\'');
@@ -1267,7 +1267,7 @@ class Installer implements JsonSerializable {
 						$use   = false;
 					}
 
-					set_config_option("install_tp_$key", $value);
+					set_install_config_option("install_tp_$key", $value);
 					$this->templates[$name] = $use;
 				}
 			}
@@ -1284,7 +1284,7 @@ class Installer implements JsonSerializable {
 			}
 			$this->templates['all'] = $all;
 
-			set_config_option('install_has_templates', true);
+			set_install_config_option('install_has_templates', true);
 		}
 	}
 
@@ -1363,7 +1363,7 @@ class Installer implements JsonSerializable {
 
 				log_install_high('tables',"setTables(): Use: $use, Set: $set, All: $param_all, key: install_table_$name = " . $value);
 
-				set_config_option("install_table_$name", $value);
+				set_install_config_option("install_table_$name", $value);
 
 				$this->tables[$key] = $use;
 			}
@@ -1380,7 +1380,7 @@ class Installer implements JsonSerializable {
 			}
 			$this->tables['all'] = $all;
 
-			set_config_option('install_has_tables', true);
+			set_install_config_option('install_has_tables', true);
 		}
 	}
 
@@ -1429,7 +1429,7 @@ class Installer implements JsonSerializable {
 	private function setMode($param_mode = 0) {
 		if (intval($param_mode) > Installer::MODE_NONE && intval($param_mode) <= Installer::MODE_DOWNGRADE) {
 			log_install_high('mode','setMode(' . $param_mode . ')');
-			set_config_option('install_mode', $param_mode);
+			set_install_config_option('install_mode', $param_mode);
 			$this->mode = $param_mode;
 			$this->updateButtons();
 		} elseif ($param_mode != 0) {
@@ -1486,10 +1486,10 @@ class Installer implements JsonSerializable {
 			}
 		}
 
-		set_config_option('install_step', $this->stepCurrent);
+		set_install_config_option('install_step', $this->stepCurrent);
 		$this->updateButtons();
-		set_config_option('install_prev', $this->stepPrevious);
-		set_config_option('install_next', $this->stepNext);
+		set_install_config_option('install_prev', $this->stepPrevious);
+		set_install_config_option('install_next', $this->stepNext);
 	}
 
 	/* Some utility functions */
@@ -2768,7 +2768,7 @@ class Installer implements JsonSerializable {
 		$backgroundNeeded = $backgroundTime === false;
 		if (empty($backgroundTime)) {
 			$backgroundTime = microtime(true);
-			set_config_option('install_started', $backgroundTime);
+			set_install_config_option('install_started', $backgroundTime);
 		}
 
 		log_install_debug('background', 'backgroundTime = ' . $backgroundTime, 0);
@@ -2796,8 +2796,8 @@ class Installer implements JsonSerializable {
 			if ($backgroundLast < $backgroundExpire) {
 				$newTime = microtime(true);
 
-				set_config_option('install_started', $newTime);
-				set_config_option('install_updated', $newTime);
+				set_install_config_option('install_started', $newTime);
+				set_install_config_option('install_updated', $newTime);
 
 				$backgroundTime = read_config_option('install_started', true);
 
@@ -3032,21 +3032,23 @@ class Installer implements JsonSerializable {
 
 		log_install_always('', __('Finished %s Process for v%s', $which, CACTI_VERSION));
 
-		set_config_option('install_error', $failure);
+		set_install_config_option('install_error', $failure);
 
 		if (empty($failure)) {
+			// No failures so lets update the version
 			$this->setProgress(Installer::PROGRESS_VERSION_BEGIN);
 			db_execute('TRUNCATE TABLE version');
 			db_execute('INSERT INTO version (cacti) VALUES (\'' . CACTI_VERSION . '\');');
-			set_config_option('install_version', CACTI_VERSION);
+			set_install_config_option('install_version', CACTI_VERSION);
 			$this->setProgress(Installer::PROGRESS_VERSION_END);
 
 			// Sync the remote data collectors
-			$this->setProgress(Installer::PROGRESS_COLLECTOR_SYNC_START);
-			Installer::fullSyncDataCollectors();
-			$this->setProgress(Installer::PROGRESS_COLLECTOR_SYNC_END);
+			if ($this->mode != Installer::MODE_POLLER) {
+				$this->setProgress(Installer::PROGRESS_COLLECTOR_SYNC_START);
+				Installer::fullSyncDataCollectors();
+				$this->setProgress(Installer::PROGRESS_COLLECTOR_SYNC_END);
+			}
 
-			// No failures so lets update the version
 			$this->setProgress(Installer::PROGRESS_COMPLETE);
 			$this->setStep(Installer::STEP_COMPLETE);
 		} else {
@@ -3080,7 +3082,7 @@ class Installer implements JsonSerializable {
 				log_install_always('', __('About to import Package #%s \'%s\'.', $i, $package));
 
 				if (!empty($package)) {
-					set_config_option('install_updated', microtime(true));
+					set_install_config_option('install_updated', microtime(true));
 
 					$info = import_package_get_details($path . $package);
 					$result = import_package($path . $package, $this->profile, false, false, false, false, true, array(), array(), $info['class']);
@@ -3185,7 +3187,7 @@ class Installer implements JsonSerializable {
 				array($profile['heartbeat']));
 
 			$this->setProgress(Installer::PROGRESS_PROFILE_POLLER);
-			set_config_option('poller_interval', $profile['step']);
+			set_install_config_option('poller_interval', $profile['step']);
 		} else {
 			log_install_always('', __('Failed to find selected profile (%s), no changes were made', $profile_id));
 		}
@@ -3225,7 +3227,7 @@ class Installer implements JsonSerializable {
 
 					if ($snmp_name != 'snmp_security_level') {
 						$save[$snmp_name] = $snmp_value;
-						set_config_option($snmp_name, $snmp_value);
+						set_install_config_option($snmp_name, $snmp_value);
 					}
 				}
 
@@ -3301,7 +3303,7 @@ class Installer implements JsonSerializable {
 				if (cacti_sizeof($templates)) {
 					log_install_always('', __('Creating Graphs for Default Device'));
 					foreach($templates as $template) {
-						set_config_option('install_updated', microtime(true));
+						set_install_config_option('install_updated', microtime(true));
 						automation_execute_graph_template($host_id, $template['graph_template_id']);
 					}
 
@@ -3332,17 +3334,17 @@ class Installer implements JsonSerializable {
 		/* it's always a good idea to re-populate
 		 * the poller cache to make sure everything
 		 * is refreshed and up-to-date */
-		set_config_option('install_updated', microtime(true));
+		set_install_config_option('install_updated', microtime(true));
 		log_install_always('', __('Repopulating poller cache'));
 		repopulate_poller_cache();
 
 		/* fill up the snmpcache */
-		set_config_option('install_updated', microtime(true));
+		set_install_config_option('install_updated', microtime(true));
 		log_install_always('', __('Repopulating SNMP Agent cache'));
 		snmpagent_cache_rebuilt();
 
 		/* generate RSA key pair */
-		set_config_option('install_updated', microtime(true));
+		set_install_config_option('install_updated', microtime(true));
 		log_install_always('', __('Generating RSA Key Pair'));
 		rsa_check_keypair();
 
@@ -3368,11 +3370,11 @@ class Installer implements JsonSerializable {
 						' --table=' . cacti_escapeshellarg($name) .
 						' --utf8 --innodb --dynamic');
 
-					set_config_option('install_updated', microtime(true));
+					set_install_config_option('install_updated', microtime(true));
 					log_install_debug('convert', sprintf('Convert table #%s \'%s\' results: %s', $i, $name, $results), true);
 					if ((stripos($results, 'Converting table') !== false && stripos($results, 'Successful') !== false) ||
 					    stripos($results, 'Skipped table') !== false) {
-						set_config_option($key, '');
+						set_install_config_option($key, '');
 					}
 				}
 			}
@@ -3389,7 +3391,7 @@ class Installer implements JsonSerializable {
 		$cacheFile = tempnam(sys_get_temp_dir(), 'cdu');
 
 		log_install_always('', __('Switched from %s to %s', $cachePrev, $cacheFile));
-		set_config_option('install_cache_db', $cacheFile);
+		set_install_config_option('install_cache_db', $cacheFile);
 
 		$database_upgrade_status = array('file' => $cacheFile);
 		log_install_always('', __('NOTE: Using temporary file for db cache: %s',$cacheFile));
@@ -3445,7 +3447,7 @@ class Installer implements JsonSerializable {
 			}
 		}
 
-		set_config_option('install_cache_result', $failure);
+		set_install_config_option('install_cache_result', $failure);
 		if ($failure == DB_STATUS_ERROR) {
 			return 'WARNING: One or more upgrades failed to install correctly';
 		}
@@ -3531,7 +3533,8 @@ class Installer implements JsonSerializable {
 		}
 
 		$backgroundDone = microtime(true);
-		set_config_option('install_complete', $backgroundDone);
+		set_install_config_option('install_complete', $backgroundDone);
+		set_install_config_option('install_step', Installer::STEP_COMPLETE);
 
 		$dateBack = DateTime::createFromFormat('U.u', $backgroundTime);
 		$dateTime = DateTime::createFromFormat('U.u', $backgroundDone);
@@ -3625,7 +3628,7 @@ class Installer implements JsonSerializable {
 
 		foreach ($plugins_integrated as $plugin) {
 			if (api_plugin_is_enabled($plugin)) {
-				set_config_option('install_updated', microtime(true));
+				set_install_config_option('install_updated', microtime(true));
 				api_plugin_remove_hooks($plugin);
 				api_plugin_remove_realms($plugin);
 			}
@@ -3643,7 +3646,7 @@ class Installer implements JsonSerializable {
 				$disable = true;
 				$integrated = in_array($plugin, $plugins_integrated);
 
-				set_config_option('install_updated', microtime(true));
+				set_install_config_option('install_updated', microtime(true));
 
 				if (is_dir($config['base_path'] . '/plugins/' . $plugin)
 					&& file_exists($config['base_path'] . "/plugins/$plugin/setup.php")
@@ -3665,7 +3668,6 @@ class Installer implements JsonSerializable {
 				}
 			}
 		}
-
 
 		foreach ($plugins_integrated as $plugin) {
 			if (!api_plugin_is_enabled($plugin)) {
