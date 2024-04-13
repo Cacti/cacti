@@ -1965,7 +1965,7 @@ class Installer implements JsonSerializable {
 	}
 
 	public function processStepCheckDependencies() {
-		global $config;
+		global $config, $local_db_cnn_id, $remote_db_cnn_id;
 		global $database_default, $database_username, $database_port;
 		global $rdatabase_default, $rdatabase_username, $rdatabase_port;
 
@@ -2166,7 +2166,12 @@ class Installer implements JsonSerializable {
 		$output .= Installer::sectionSubTitleEnd();
 
 		$output .= Installer::sectionSubTitle(__('MySQL - TimeZone Support'), 'mysql_timezone');
-		$mysql_timezone_access = db_fetch_assoc('SHOW COLUMNS FROM mysql.time_zone_name', false);
+
+		if ($config['poller_id'] == 1) {
+			$mysql_timezone_access = db_fetch_assoc('SHOW COLUMNS FROM mysql.time_zone_name', false);
+		} else {
+			$mysql_timezone_access = db_fetch_assoc('SHOW COLUMNS FROM mysql.time_zone_name', false, $local_db_cnn_id);
+		}
 
 		if (cacti_sizeof($mysql_timezone_access)) {
 			$timezone_populated = db_fetch_cell('SELECT COUNT(*) FROM mysql.time_zone_name');
