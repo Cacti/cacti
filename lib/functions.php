@@ -1846,11 +1846,15 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 
 	/* initialize fail and recovery dates correctly */
 	if ($host['status_fail_date'] == '') {
-		$host['status_fail_date'] = strtotime('0000-00-00 00:00:00');
+		$host['status_fail_date'] = 0;
+	} else {
+		$host['status_fail_date'] = strtotime($host['status_fail_date']);;
 	}
 
 	if ($host['status_rec_date'] == '') {
-		$host['status_rec_date'] = strtotime('0000-00-00 00:00:00');
+		$host['status_rec_date'] = 0;
+	} else {
+		$host['status_rec_date'] = strtotime($host['status_rec_date']);;
 	}
 
 	if ($status == HOST_DOWN) {
