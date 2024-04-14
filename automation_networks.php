@@ -135,14 +135,10 @@ function api_networks_discover($network_id, $discover_debug) {
 				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --network=$network_id --force" . $args_debug);
 			} else {
 				$args_debug = ($discover_debug) ? '&debug=true' : '';
-				$hostname = db_fetch_cell_prepared('SELECT hostname
-					FROM poller
-					WHERE id = ?',
-					array($poller_id));
 
-				$fgc_contextoption = get_default_contextoption();
-				$fgc_context       = stream_context_create($fgc_contextoption);
-				$response          = @file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id . $args_debug, false, $fgc_context);
+				$url = $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id . $args_debug;
+
+				$response = call_remote_data_collector($poller_id, $url, 'AUTOM8');
 			}
 		} else {
 			$_SESSION['automation_message'] = __esc('Can Not Restart Discovery for Discovery in Progress for Network \'%s\'', $name);

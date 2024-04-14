@@ -137,9 +137,7 @@ if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
 	$null_param = array();
 	$output = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
 } else {
-	$hostname = db_fetch_cell('SELECT hostname FROM poller WHERE id = 1');
-
-	$url  = get_url_type() . '://' . $hostname . $config['url_path'] . 'remote_agent.php?action=graph_json';
+	$url  = $config['url_path'] . 'remote_agent.php?action=graph_json';
 	$url .= '&local_graph_id=' . get_request_var('local_graph_id');
 	$url .= '&rra_id=' . $rra_id;
 
@@ -147,9 +145,7 @@ if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
 		$url .= '&' . $variable . '=' . $value;
 	}
 
-	$fgc_contextoption = get_default_contextoption();
-	$fgc_context       = stream_context_create($fgc_contextoption);
-	$output            = @file_get_contents($url, false, $fgc_context);
+	$output = call_remote_data_collector(1, $url);
 
 	if (is_array($output) && isset($output['image'])) {
 		$output = $output['image'];
