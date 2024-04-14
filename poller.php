@@ -920,6 +920,21 @@ while ($poller_runs_completed < $poller_runs) {
 	}
 }
 
+function poller_heartbeat_check() {
+	$heartbeat_pollers = db_fetch_assoc('SELECT * FROM poller WHERE status=6 AND disabled = ""');
+
+	if (cacti_sizeof($heartbeat_pollers)) {
+		foreach($heartbeat_pollers as $p) {
+			if (debounce_run_notification('poller_heartbeat_' . $p['id'], 1800)) {
+				$log_message = sprintf('WARNING: PollerID:%s with Name:%s is in Heartbeat Status', $p['id'], $p['name']);
+				$email_message = __('WARNING: PollerID:%s with Name:%s is in Heartbeat Status', $p['id'], $p['name']);
+				cacti_log($log_message, false, 'POLLER');
+				admin_email(__('Poller in Heartbeat Mode'), $email_message);
+			}
+		}
+	}
+}
+
 /* start post data processing */
 if ($poller_id == 1) {
 	multiple_poller_boost_check();
@@ -936,6 +951,7 @@ if ($poller_id == 1) {
 	api_plugin_hook('poller_bottom');
 	bad_index_check($mibs);
 	host_status_cache_check();
+	poller_heartbeat_check();
 } else {
 	// flush the boost table if in recovery mode
 	if ($poller_id > 1 && $config['connection'] == 'recovery') {
