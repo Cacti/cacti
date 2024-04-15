@@ -82,7 +82,7 @@ foreach($parms as $parameter) {
 			break;
 
 		case '--template':
-			$overrides['template_id'] = $value;
+			$overrides['host_template_id'] = $value;
 			break;
 
 		case '--community':
