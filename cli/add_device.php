@@ -50,7 +50,7 @@ if (cacti_sizeof($parms)) {
 	$ip            = '';
 	$poller_id     = $config['poller_id'];
 	$site_id       = read_config_option('default_site');
-	$template_id   = read_config_option('default_template');
+	$template_id   = (int) read_config_option('default_template');
 	$community     = read_config_option('snmp_community');
 	$snmp_ver      = read_config_option('snmp_version');
 	$disable       = 0;
