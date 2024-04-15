@@ -84,7 +84,7 @@ foreach ($parms as $parameter) {
 
 			break;
 		case '--template':
-			$overrides['template_id'] = $value;
+			$overrides['host_template_id'] = $value;
 
 			break;
 		case '--community':
@@ -321,6 +321,11 @@ if (!cacti_sizeof($host)) {
 /* merge overridden parameters onto host */
 $host    = array_merge($host, $overrides);
 
+/* exception for IP */
+if (isset($overrides['ip'])) {
+	$host['hostname'] = $overrides['ip'];
+}
+
 /* process the various lists into validation arrays */
 $host_templates = getHostTemplates();
 $hosts          = getHostsByDescription();
@@ -399,7 +404,7 @@ if (!$quietMode) {
 	print "Changing device-id: $device_id to {$host['description']} ({$host['hostname']}) as \"{$host_templates[$host['host_template_id']]}\" using SNMP v{$host['snmp_version']} with community \"{$host['snmp_community']}\"\n";
 }
 
-$host_id = api_device_save($device_id, $host['host_template_id'], $host['description'], $host['ip'],
+$host_id = api_device_save($device_id, $host['host_template_id'], $host['description'], $host['hostname'],
 	$host['snmp_community'], $host['snmp_version'], $host['snmp_username'], $host['snmp_password'],
 	$host['snmp_port'], $host['snmp_timeout'], $host['disabled'], $host['availability_method'], $host['ping_method'],
 	$host['ping_port'], $host['ping_timeout'], $host['ping_retries'], $host['notes'],
