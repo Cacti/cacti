@@ -675,42 +675,42 @@ function install_file_paths() {
 	/* RRDtool Binary Path */
 	$input['path_rrdtool'] = install_tool_path('rrdtool',
 		array(
-			'unix'  => '/usr/local/bin/rrdtool',
+			'unix'  => '/usr/bin/rrdtool',
 			'win32' => 'c:/rrdtool/rrdtool.exe'
 		));
 
 	/* snmpwalk Binary Path */
 	$input['path_snmpwalk'] = install_tool_path('snmpwalk',
 		array(
-			'unix'  => '/usr/local/bin/snmpwalk',
+			'unix'  => '/usr/bin/snmpwalk',
 			'win32' => 'c:/usr/bin/snmpwalk.exe'
 		));
 
 	/* snmpget Binary Path */
 	$input['path_snmpget'] = install_tool_path('snmpget',
 		array(
-			'unix'  => '/usr/local/bin/snmpget',
+			'unix'  => '/usr/bin/snmpget',
 			'win32' => 'c:/usr/bin/snmpget.exe'
 		));
 
 	/* snmpbulkwalk Binary Path */
 	$input['path_snmpbulkwalk'] = install_tool_path('snmpbulkwalk',
 		array(
-			'unix'  => '/usr/local/bin/snmpbulkwalk',
+			'unix'  => '/usr/bin/snmpbulkwalk',
 			'win32' => 'c:/usr/bin/snmpbulkwalk.exe'
 		));
 
 	/* snmpgetnext Binary Path */
 	$input['path_snmpgetnext'] = install_tool_path('snmpgetnext',
 		array(
-			'unix'  => '/usr/local/bin/snmpgetnext',
+			'unix'  => '/usr/bin/snmpgetnext',
 			'win32' => 'c:/usr/bin/snmpgetnext.exe'
 		));
 
 	/* snmptrap Binary Path */
 	$input['path_snmptrap'] = install_tool_path('snmptrap',
 		array(
-			'unix'  => '/usr/local/bin/snmptrap',
+			'unix'  => '/usr/bin/snmptrap',
 			'win32' => 'c:/usr/bin/snmptrap.exe'
 		));
 
