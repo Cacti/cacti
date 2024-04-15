@@ -921,12 +921,21 @@ while ($poller_runs_completed < $poller_runs) {
 }
 
 function poller_heartbeat_check() {
-	$heartbeat_pollers = db_fetch_assoc('SELECT * FROM poller WHERE status=6 AND disabled = ""');
+	$poller_interval = read_config_option('poller_interval');
+
+	$heartbeat_pollers = db_fetch_assoc_prepared('SELECT *, UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_status) AS heartbeat
+		FROM poller
+		WHERE disabled = ""
+		HAVING heartbeat > ? * 2
+		OR status = 6',
+		array($poller_interval));
 
 	if (cacti_sizeof($heartbeat_pollers)) {
 		foreach($heartbeat_pollers as $p) {
+			db_execute_prepared('UPDATE poller SET status = 6 WHERE id = ?', array($p['id']));
+
 			if (debounce_run_notification('poller_heartbeat_' . $p['id'], 1800)) {
-				$log_message = sprintf('WARNING: PollerID:%s with Name:%s is in Heartbeat Status', $p['id'], $p['name']);
+				$log_message = sprintf('WARNING: Poller[%s] with Name:%s is in Heartbeat Status', $p['id'], $p['name']);
 				$email_message = __('WARNING: PollerID:%s with Name:%s is in Heartbeat Status', $p['id'], $p['name']);
 				cacti_log($log_message, false, 'POLLER');
 				admin_email(__('Poller in Heartbeat Mode'), $email_message);
@@ -1162,13 +1171,14 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 			(id, total_time, min_time, max_time, avg_time, total_polls, last_update, last_status, status)
 			VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW(), 2)
 			ON DUPLICATE KEY UPDATE
-			total_time=VALUES(total_time),
-			min_time=VALUES(min_time),
-			max_time=VALUES(max_time),
-			avg_time=VALUES(avg_time),
-			total_polls=VALUES(total_polls),
-			last_update=VALUES(last_update),
-			last_status=VALUES(last_status), status=VALUES(status)',
+			total_time = VALUES(total_time),
+			min_time = VALUES(min_time),
+			max_time = VALUES(max_time),
+			avg_time = VALUES(avg_time),
+			total_polls = VALUES(total_polls),
+			last_update = VALUES(last_update),
+			last_status = VALUES(last_status),
+			status = VALUES(status)',
 			array($poller_id, round($total_time, 4), $min_time, $max_time, $avg_time, $total_polls + 1), true, $poller_db_cnn_id);
 	}
 
