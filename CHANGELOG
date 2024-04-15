@@ -26,6 +26,7 @@ Cacti CHANGELOG
 -feature#5692: Add a "device enabled/disabled" indicator next to the graphs
 -feature#5710: Notify the admin periodically when a remote data collector goes into heartbeat status
 -feature#5716: Add Aruba Clearpass template
+-feature#5730: Enable a way to view which Device Templates are using which Graph Templates
 
 1.2.26
 -security#GHSA-xwqc-7jc4-xm73: XSS vulnerability when importing a template file
