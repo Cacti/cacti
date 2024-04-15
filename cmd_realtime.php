@@ -144,22 +144,13 @@ if (cacti_sizeof($idbyhost)) {
 				WHERE id = ?',
 				array($col_poller_id));
 
-			$port = read_config_option('remote_agent_port');
-
-			if ($port != '') {
-				$port = ':' . $port;
-			}
-
-			$url = get_url_type() . '://' . $hostname . $port .
-				CACTI_PATH_URL . '/remote_agent.php' .
+			$url = CACTI_PATH_URL . '/remote_agent.php' .
 				'?action=polldata' .
 				'&host_id=' . $host_id .
 				'&' . http_build_query($local_data_ids) .
 				'&poller_id=' . $poller_id;
 
-			$fgc_contextoption = get_default_contextoption();
-			$fgc_context       = stream_context_create($fgc_contextoption);
-			$output            = json_decode(@file_get_contents($url, false, $fgc_context), true);
+			$output = json_decode(call_remote_data_collector($col_poller_id, $url, 'REALTIME'), true);
 
 			if (cacti_sizeof($output)) {
 				$sql = '';

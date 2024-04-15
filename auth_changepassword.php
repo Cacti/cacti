@@ -62,9 +62,9 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 	if (basename($return) != 'auth_changepassword.php') {
 		if (strpos($return, '/plugins/') !== false) {
 			$parts  = explode('/plugins/', $return);
-			$return = $config['url_path'] . 'plugins/' . $parts[1];
+			$return = CACTI_PATH_URL . 'plugins/' . $parts[1];
 		} else {
-			$return = $config['url_path'] . basename($return);
+			$return = CACTI_PATH_URL . basename($return);
 		}
 
 		$_SESSION['acp_return'] = $return;
@@ -72,11 +72,11 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 		if (isset($_SESSION['acp_return'])) {
 			$return = $_SESSION['acp_return'];
 		} else {
-			$return = $config['url_path'] . 'index.php';
+			$return = CACTI_PATH_URL . 'index.php';
 		}
 	}
 } else {
-	$return = $config['url_path'] . 'index.php';
+	$return = CACTI_PATH_URL . 'index.php';
 }
 
 $user = db_fetch_row_prepared('SELECT *

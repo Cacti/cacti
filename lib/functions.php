@@ -6615,6 +6615,46 @@ function is_device_debug_enabled(int $host_id): bool {
 }
 
 /**
+ * call_remote_data_collector - Call the remote data collector with the correct URI
+ *
+ * @param - string - The hostname
+ * @param string - The URL to query
+ *
+ * @return - The results in raw form
+ */
+function call_remote_data_collector($poller_id, $url, $logtype = 'WEBUI') {
+	$hostname = db_fetch_cell_prepared('SELECT hostname
+		FROM poller
+		WHERE id = ?',
+		array($poller_id));
+
+	$port = read_config_option('remote_agent_port');
+
+	if ($port != '') {
+		$port = ':' . $port;
+	}
+
+	if (!is_ipaddress($hostname)) {
+		$ipaddress = gethostbyname($hostname);
+
+		if (!is_ipaddress($ipaddress)) {
+			if (debounce_run_notification('poller_down:' . $poller_id)) {
+				cacti_log(sprintf('WARNING: PollerID:%s has an invalid hostname:%s.  It is not reachable via DNS!', $poller_id, $hostname), false, $logtype);
+
+				admin_email(__('Cacti System Warning'), __('WARNING: PollerID:%s has an invalid hostname:%s.  Is it not reachable via DNS!', $poller_id, $hostname));
+			}
+
+			return '';
+		}
+	}
+
+	$fgc_contextoption = get_default_contextoption();
+	$fgc_context       = stream_context_create($fgc_contextoption);
+
+	return  file_get_contents(get_url_type() .'://' . $hostname . $port . $url, false, $fgc_context);
+}
+
+/**
  * get_url_type - Determines if remote communications are over
  * http or https for remote services.
  *

@@ -356,24 +356,11 @@ function api_networks_discover($network_id, $discover_debug, $discover_dryrun) {
 				$args_debug .= ($discover_dryrun) ? ' --dryrun' : '';
 				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --network=$network_id --force" . $args_debug);
 			} else {
-				$args_debug  = ($discover_debug) ? '&debug=true' : '';
-				$args_debug .= ($discover_dryrun) ? '&dryrun=true' : '';
-				$hostname   = db_fetch_cell_prepared(
-					'SELECT hostname
-					FROM poller
-					WHERE id = ?',
-					array($poller_id)
-				);
+				$args_debug = ($discover_debug) ? '&debug=true' : '';
 
-				$port = read_config_option('remote_agent_port');
+				$url = CACTI_PATH_URL . 'remote_agent.php?action=discover&network=' . $network_id . $args_debug;
 
-				if ($port != '') {
-					$port = ':' . $port;
-				}
-
-				$fgc_contextoption = get_default_contextoption();
-				$fgc_context       = stream_context_create($fgc_contextoption);
-				$response          = @file_get_contents(get_url_type() . '://' . $hostname . $port . CACTI_PATH_URL . 'remote_agent.php?action=discover&network=' . $network_id . $args_debug, false, $fgc_context);
+				$response = call_remote_data_collector($poller_id, $url, 'AUTOM8');
 			}
 		} else {
 			$_SESSION['automation_message'] = __esc('Can Not Restart Discovery for Discovery in Progress for Network \'%s\'', $name);

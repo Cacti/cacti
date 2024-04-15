@@ -121,6 +121,7 @@ Cacti CHANGELOG
 -issue#5701: Bad URL formating in the templates_import.php preview mode
 -issue#5720: mysql.time_zone_name table DB check isn't being made on Remote Poller installation
 -issue#5723: Remote Poller installation is finished successfully but no "finish" button
+-issue#5725: Remote Agent is not recording not authorized agent in log
 -issue#5726: Poller cache is not updating when changing hostname
 -issue#5727: Incorrect values status_fail_date and status_rec_date with cmd poller
 -feature#5692: Add a "device enabled/disabled" indicator next to the graphs

@@ -1134,7 +1134,7 @@ function template_edit() {
 			foreach($tree_rules as $rule) {
 				$id = "tr{$rule['id']}";
 
-				$exit_on_url = html_escape($config['url_path'] . 'automation_templates.php' .
+				$exit_on_url = html_escape(CACTI_PATH_URL . 'automation_templates.php' .
 					'?action=exitonchange' .
 					'&template_id='. get_request_var('id') .
 					'&id='         . $rule['id'] .

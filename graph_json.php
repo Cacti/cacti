@@ -186,15 +186,7 @@ if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
 		$graph_data_array['effective_user'] = $_SESSION[SESS_USER_ID];
 	}
 
-	$hostname = db_fetch_cell('SELECT hostname FROM poller WHERE id = 1');
-
-	$port = read_config_option('remote_agent_port');
-
-	if ($port != '') {
-		$port = ':' . $port;
-	}
-
-	$url  = get_url_type() . '://' . $hostname . $port . CACTI_PATH_URL . 'remote_agent.php?action=graph_json';
+	$url  = CACTI_PATH_URL . 'remote_agent.php?action=graph_json';
 	$url .= '&local_graph_id=' . get_request_var('local_graph_id');
 	$url .= '&rra_id=' . $rra_id;
 
@@ -202,9 +194,7 @@ if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
 		$url .= '&' . $variable . '=' . $value;
 	}
 
-	$fgc_contextoption = get_default_contextoption();
-	$fgc_context       = stream_context_create($fgc_contextoption);
-	$output            = @file_get_contents($url, false, $fgc_context);
+	$output = call_remote_data_collector(1, $url);
 }
 
 $output = trim($output);
