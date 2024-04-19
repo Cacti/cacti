@@ -98,7 +98,7 @@ if ($auth_method != 0) {
 			if (cacti_sizeof($current_user)) {
 				$_SESSION['sess_user_id'] = $current_user['id'];;
 
-				cacti_log("LOGIN: User '" . $user['username'] . "' authenticated via Basic Authentication.", false, 'AUTH');
+				cacti_log("LOGIN: User '" . $current_user['username'] . "' authenticated via Basic Authentication.", false, 'AUTH');
 
 				$client_addr = get_client_addr();
 
