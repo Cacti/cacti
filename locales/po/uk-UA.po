@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2024-04-20 06:09-0400\n"
+"POT-Creation-Date: 2024-04-20 17:58-0400\n"
 "PO-Revision-Date: 2023-07-27 15:11+0000\n"
 "Last-Translator: Vladyslav V. Prodan <akapulko@gmail.com>\n"
 "Language-Team: Ukrainian <http://translate.cacti.net/projects/cacti/core-v1-2-x/uk/>\n"
@@ -23,20 +23,15 @@ msgid "About Cacti"
 msgstr "Про Cacti"
 
 #: about.php:42
-#, fuzzy
-#| msgid "Cacti is designed to be a complete graphing solution based on the RRDtool's framework. Its goal is to make a network administrator's job easier by taking care of all the necessary details necessary to create meaningful graphs."
 msgid "Cacti is designed to be a complete graphing solution based on the RRDtool Time Series Database (TSDB) and Graphing solution. Its goal is to make the Network Administrator's job easier by taking care of all the important details necessary to create meaningful Graphs."
 msgstr "Cacti розроблено як повноцінне графічне рішення на основі фреймворку RRDtool. Його мета - полегшити роботу мережевих адміністраторів, подбавши про всі необхідні деталі, необхідні для створення важливих графіків."
 
 #: about.php:44
-#, fuzzy, php-format
-#| msgid "Please see the official %sCacti website%s for information, support, and updates."
+#, php-format
 msgid "Please see the official %sCacti website%s for information on how to use Cacti, get support, and updates."
 msgstr "Будь ласка, відвідайте офіційний сайт %sCacti website%s, там ви знайдете необхідну інформацію, підтримку та сповіщення про оновлення."
 
 #: about.php:48
-#, fuzzy
-#| msgid "Cacti Developers"
 msgid "Active Developers"
 msgstr "Розробники Cacti"
 
@@ -248,8 +243,6 @@ msgid "The selected Aggregate Graphs does not appear to have any matching Aggreg
 msgstr "Вибрані Агреговані Графіки не мають відповідних Шаблонів."
 
 #: aggregate_graphs.php:398
-#, fuzzy
-#| msgid "In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist.  Please press 'Return' and then first create your Aggergate Template before retrying."
 msgid "In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist.  Please press 'Return' and then first create your Aggregate Template before retrying."
 msgstr "Щоб перенести наведені нижче Агреговані Графіки за допомогою Шаблону Агрегації, він уже повинен існувати. Будь ласка, натисніть \"Повернутись\", після чого спочатку створіть свій Шаблон Агрегації перед тим як спробувати знову."
 
@@ -910,8 +903,7 @@ msgid "Save"
 msgstr "Зберегти"
 
 #: auth_changepassword.php:442 auth_login.php:386
-#, fuzzy, php-format
-#| msgid "Version %s"
+#, php-format
 msgid "Version %s | %s"
 msgstr "Версія %s"
 
@@ -932,8 +924,6 @@ msgid "Passwords Match"
 msgstr "Паролі збігаються"
 
 #: auth_login.php:75
-#, fuzzy
-#| msgid "Access Denied, please contact you Cacti Administrator."
 msgid "Cacti no longer supports No Authentication mode. Please contact your System Administrator."
 msgstr "Доступ Заборонено, будь ласка зверніться до вашого Адміністратора Cacti."
 
@@ -946,14 +936,11 @@ msgid "User was Authenticated, but the Template Account is disabled.  Using Gues
 msgstr ""
 
 #: auth_login.php:145
-#, fuzzy, php-format
-#| msgid "Access Denied, please contact you Cacti Administrator."
+#, php-format
 msgid "Access Denied!  Guest user id %s does not exist.  Please contact your Administrator."
 msgstr "Доступ Заборонено, будь ласка зверніться до вашого Адміністратора Cacti."
 
 #: auth_login.php:180
-#, fuzzy
-#| msgid "User Account Disabled"
 msgid "Access Denied!  User account disabled."
 msgstr "Обліковий запис користувача Вимкнено"
 
@@ -996,8 +983,6 @@ msgid "Keep me signed in"
 msgstr ""
 
 #: auth_login.php:371
-#, fuzzy
-#| msgid "User Login"
 msgid "Login"
 msgstr "Логін користувача"
 
@@ -2207,8 +2192,7 @@ msgid "SNMP Version: <b>%s</b>"
 msgstr "Версія SNMP: <b>%s</b>"
 
 #: automation_snmp.php:364
-#, fuzzy, php-format
-#| msgid "SNMP Community/Username: %s"
+#, php-format
 msgid "SNMP Community/Username: <b>%s</b>"
 msgstr "SNMP Community/Ім`я користувача: %s"
 
@@ -2384,8 +2368,6 @@ msgid "No SNMP Option Sets Found"
 msgstr "Не знайдено Наборів Опцій SNMP"
 
 #: automation_templates.php:162
-#, fuzzy
-#| msgid "Click 'Continue' to delete the folling Automation Template(s)."
 msgid "Click 'Continue' to delete the following Automation Template(s)."
 msgstr "Клацніть 'Продовжити', щоб видалити наступний Шаблон(и) Автоматизації."
 
@@ -2899,9 +2881,6 @@ msgstr[1] "Копіювати Шаблони Кольору"
 msgstr[2] "Копіювати Шаблони Кольору"
 
 #: color_templates.php:259
-#, fuzzy
-#| msgid "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Template."
-#| msgid_plural "Click 'Continue' to Syncrhonize all Aggregate Graphs with the selected Color Templates."
 msgid "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Template."
 msgid_plural "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Templates."
 msgstr[0] "Клацніть 'Продовжити' для того, щоб Синхронізувати всі Агреговані Графіки з обраними Шаблоном Кольору."
@@ -3100,8 +3079,6 @@ msgid "RRD Updated"
 msgstr "RRD Оновлено"
 
 #: data_debug.php:504
-#, fuzzy
-#| msgid "Determines if the RRDfile has been writted to properly."
 msgid "Determines if the RRDfile has been written to properly."
 msgstr "Визначає, чи RRD файл було вірно записано."
 
@@ -3251,8 +3228,7 @@ msgid "Issue"
 msgstr "Проблема"
 
 #: data_debug.php:890
-#, fuzzy, php-format
-#| msgid "For attrbitute '%s', issue found '%s'"
+#, php-format
 msgid "For attribute '%s', issue found '%s'"
 msgstr "Для атрибуту '%s' виявлено проблему '%s'"
 
@@ -3511,9 +3487,6 @@ msgid "No Data Input Methods Found"
 msgstr "Не знайдено Методів Введення Даних"
 
 #: data_queries.php:407
-#, fuzzy
-#| msgid "Click 'Continue' to delete the following Data Query."
-#| msgid_plural "Click 'Continue' to delete following Data Queries."
 msgid "Click 'Continue' to Delete the following Data Query."
 msgid_plural "Click 'Continue' to Delete following Data Queries."
 msgstr[0] "Клацніть 'Продовжити' для видалення наступного Запиту Даних."
@@ -3521,9 +3494,6 @@ msgstr[1] "Клацніть 'Продовжити' для видалення н�
 msgstr[2] "Клацніть 'Продовжити' для видалення наступних Запитів Даних."
 
 #: data_queries.php:412
-#, fuzzy
-#| msgid "Delete Data Query"
-#| msgid_plural "Delete Data Query"
 msgid "Delete Data Query"
 msgid_plural "Delete Data Queries"
 msgstr[0] "Видалити Запит Даних"
@@ -3531,9 +3501,6 @@ msgstr[1] "Видалити Запити Даних"
 msgstr[2] "Видалити Запити Даних"
 
 #: data_queries.php:416
-#, fuzzy
-#| msgid "Click 'Continue' to delete the following Data Query."
-#| msgid_plural "Click 'Continue' to delete following Data Queries."
 msgid "Click 'Continue' to duplicate the following Data Query."
 msgid_plural "Click 'Continue' to duplicate following Data Queries."
 msgstr[0] "Клацніть 'Продовжити' для видалення наступного Запиту Даних."
@@ -3545,9 +3512,6 @@ msgid "Name Format:"
 msgstr ""
 
 #: data_queries.php:426
-#, fuzzy
-#| msgid "Delete Data Query"
-#| msgid_plural "Delete Data Query"
 msgid "Duplicate Data Query"
 msgid_plural "Duplicate Data Queries"
 msgstr[0] "Видалити Запит Даних"
@@ -4239,8 +4203,6 @@ msgid "Data Source Name"
 msgstr "І'мя Джерела Даних"
 
 #: data_sources.php:1629
-#, fuzzy
-#| msgid "The name of this Data Source. Generally programtically generated from the Data Template definition."
 msgid "The name of this Data Source. Generally programmatically generated from the Data Template definition."
 msgstr "Ім'я цього Джерела Даних. За звичай згенеровано програмно з визначення в Шаблоні Даних."
 
@@ -4368,8 +4330,6 @@ msgid "This value is disabled due to it either it value being derived from the D
 msgstr "Це значення вимкнено через те, що його значення отримано з Пристрою або спеціального об’єкту Запиту Даних, який відстежує зв’язки критичних даних Запиту Даних."
 
 #: data_templates.php:861
-#, fuzzy
-#| msgid "This value is disabled due to it either it value being derived from the Device or special Data Query object that keeps track of critical data Data Query associations."
 msgid "This value is disabled due to it being derived from the Device and read only."
 msgstr "Це значення вимкнено через те, що його значення отримано з Пристрою або спеціального об’єкту Запиту Даних, який відстежує зв’язки критичних даних Запиту Даних."
 
@@ -4439,8 +4399,6 @@ msgid "No Data Templates Found"
 msgstr "Шаблонів Даних не знайдено"
 
 #: gprint_presets.php:148
-#, fuzzy
-#| msgid "Click 'Continue' to delete the folling GPRINT Preset(s)."
 msgid "Click 'Continue' to delete the following GPRINT Preset(s)."
 msgstr "Натисніть 'Продовжити', щоб видалити наступні пресети GPRINT."
 
@@ -4514,8 +4472,6 @@ msgid "CSV Export"
 msgstr "Експорт CSV"
 
 #: graph.php:143 graph.php:416 lib/html.php:526
-#, fuzzy
-#| msgid "Edit Graph Template."
 msgid "Edit Graph Template"
 msgstr "Редагувати Шаблон Графіків."
 
@@ -4755,8 +4711,6 @@ msgid "Graph Template Items [edit graph: %s]"
 msgstr "Елементи Шаблону Графіків [редагування графіку: %s]"
 
 #: graph_templates_items.php:538
-#, fuzzy
-#| msgid "Data Template Name"
 msgid "Data Template Filter"
 msgstr "Ім'я Шаблону Даних"
 
@@ -4825,8 +4779,6 @@ msgid "Graph Name"
 msgstr "Ім'я Графіку"
 
 #: graph_view.php:740 graph_view.php:768 graphs.php:2242
-#, fuzzy
-#| msgid "The Title of this Graph.  Generally programatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual."
 msgid "The Title of this Graph.  Generally programmatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual."
 msgstr "Заголовок цього Графіка. Зазвичай програмно генерується з визначення Шаблону Графіка або пропонованих правил іменування. Максимальна довжина заголовка контролюється в меню 'Параметри->Візуальне'."
 
@@ -5140,14 +5092,10 @@ msgid "Graph Management [ %s ]"
 msgstr "Керування Графіками [ %s ]"
 
 #: graphs.php:2052
-#, fuzzy
-#| msgid "Data Source"
 msgid "Graph Source"
 msgstr "Джерело Даних"
 
 #: graphs.php:2057
-#, fuzzy
-#| msgid "Not Templated"
 msgid "Non Templated"
 msgstr "Без Шаблонів"
 
@@ -5339,8 +5287,6 @@ msgid "Sync to Device Template"
 msgstr "Синхронізувати з Шаблоном Пристрою"
 
 #: host.php:48
-#, fuzzy
-#| msgid "Place Device(s) on Tree"
 msgid "Place Device on Report"
 msgstr "Розмістити Пристрій(ї) в Дереві"
 
@@ -5451,14 +5397,10 @@ msgid "Run Automation on Device(s)"
 msgstr "Запустити Автоматизацію на Пристроях"
 
 #: host.php:544
-#, fuzzy
-#| msgid "Add Graphs to Report"
 msgid "Add Devices to Report"
 msgstr "Додати Графіки до Звіту"
 
 #: host.php:546
-#, fuzzy
-#| msgid "You currently have no reports defined."
 msgid "You currently have no Reports defined."
 msgstr "Наразі у вас немає визначених звітів."
 
@@ -5633,8 +5575,6 @@ msgid "SNMP GetNext"
 msgstr "SNMP GetNext"
 
 #: host.php:1246
-#, fuzzy
-#| msgid "Delete Device"
 msgid "Delete Item from Device"
 msgstr "Видалити Пристрій"
 
@@ -5846,8 +5786,6 @@ msgid "The name of this Device Template."
 msgstr ""
 
 #: host_templates.php:915
-#, fuzzy
-#| msgid "Device Rules"
 msgid "Device Class"
 msgstr "Правила Пристроїв"
 
@@ -6552,8 +6490,7 @@ msgid "Every %d Day"
 msgstr ""
 
 #: include/global_arrays.php:758
-#, fuzzy, php-format
-#| msgid "%d Minutes"
+#, php-format
 msgid "%0.1f Minutes"
 msgstr "%d Хвилин"
 
@@ -6572,8 +6509,6 @@ msgid "Every day"
 msgstr "Кожен день"
 
 #: include/global_arrays.php:824
-#, fuzzy
-#| msgid "%d Thread"
 msgid "1 Thread"
 msgstr "%d Потік"
 
@@ -6818,8 +6753,6 @@ msgid "Import Templates"
 msgstr "Шаблони Імпорту"
 
 #: include/global_arrays.php:1031 include/global_arrays.php:2660
-#, fuzzy
-#| msgid "Import Templates"
 msgid "Import Packages"
 msgstr "Шаблони Імпорту"
 
@@ -6882,20 +6815,14 @@ msgid "Access Points, Controllers"
 msgstr ""
 
 #: include/global_arrays.php:1083
-#, fuzzy
-#| msgid "Apply Automation Rules"
 msgid "Application Related"
 msgstr "Застосувати Правила Автоматизації"
 
 #: include/global_arrays.php:1084
-#, fuzzy
-#| msgid "Cacti Developers"
 msgid "Cacti Related"
 msgstr "Розробники Cacti"
 
 #: include/global_arrays.php:1085
-#, fuzzy
-#| msgid "Data Template"
 msgid "Database Related"
 msgstr "Шаблон Даних"
 
@@ -6904,8 +6831,6 @@ msgid "Facilities Related"
 msgstr ""
 
 #: include/global_arrays.php:1087
-#, fuzzy
-#| msgid "Sync Devices"
 msgid "Generic Device"
 msgstr "Синхронізація Пристроїв"
 
@@ -6934,14 +6859,10 @@ msgid "Load Balancer"
 msgstr ""
 
 #: include/global_arrays.php:1094
-#, fuzzy
-#| msgid "Network Filters"
 msgid "Network Switch"
 msgstr "Фільтри Мережі"
 
 #: include/global_arrays.php:1095
-#, fuzzy
-#| msgid "Network Filters"
 msgid "Network Router"
 msgstr "Фільтри Мережі"
 
@@ -6950,8 +6871,6 @@ msgid "NAS/SAN Related"
 msgstr ""
 
 #: include/global_arrays.php:1097
-#, fuzzy
-#| msgid "Network Filters"
 msgid "Network Firewalls"
 msgstr "Фільтри Мережі"
 
@@ -6960,8 +6879,6 @@ msgid "Power Related PDUs/STS, etc."
 msgstr ""
 
 #: include/global_arrays.php:1099
-#, fuzzy
-#| msgid "Data Template"
 msgid "Printer Related"
 msgstr "Шаблон Даних"
 
@@ -6970,8 +6887,6 @@ msgid "Storage Related"
 msgstr ""
 
 #: include/global_arrays.php:1101
-#, fuzzy
-#| msgid "Select Template"
 msgid "Telco Related"
 msgstr "Виберіть Шаблон"
 
@@ -7952,8 +7867,6 @@ msgid "List unused Files"
 msgstr ""
 
 #: include/global_arrays.php:2450
-#, fuzzy
-#| msgid "Run Check"
 msgid "RRD Check"
 msgstr "Запустити Перевірку"
 
@@ -8010,8 +7923,6 @@ msgid "(Action)"
 msgstr ""
 
 #: include/global_arrays.php:2636
-#, fuzzy
-#| msgid "Cacti Developers"
 msgid "Cacti Help"
 msgstr "Розробники Cacti"
 
@@ -9035,8 +8946,6 @@ msgid "A useful name for this host template."
 msgstr ""
 
 #: include/global_form.php:1352
-#, fuzzy
-#| msgid "Duplicate Device Template(s)"
 msgid "A suitable Class for the Device Template."
 msgstr "Скопіювати Шаблони Пристроїв"
 
@@ -9182,8 +9091,6 @@ msgid "If the XML file containing template data is located on your local machine
 msgstr ""
 
 #: include/global_form.php:1689 package_import.php:833
-#, fuzzy
-#| msgid "Data Source Profiles"
 msgid "Data Source Overrides"
 msgstr "Профілі Джерела Даних"
 
@@ -9192,8 +9099,6 @@ msgid "Create New from Template"
 msgstr ""
 
 #: include/global_form.php:1703 package_import.php:847
-#, fuzzy
-#| msgid "Graph Template Options"
 msgid "Graph/Data Template Overrides"
 msgstr "Опції Шаблону Графіків"
 
@@ -9900,9 +9805,6 @@ msgid "The version of RRDtool that you have installed."
 msgstr ""
 
 #: include/global_settings.php:420
-#, fuzzy
-#| msgid "Enable Data Source"
-#| msgid_plural "Enable Data Sources"
 msgid "Enable Gradient Support"
 msgstr "Увімкнути Джерело Даних"
 
@@ -9927,8 +9829,6 @@ msgid "Restrictive"
 msgstr ""
 
 #: include/global_settings.php:433
-#, fuzzy
-#| msgid "Device Name"
 msgid "Device Based"
 msgstr "Ім'я Пристрою"
 
@@ -10089,8 +9989,6 @@ msgid "The default Image Format to be used for all new Graph Templates."
 msgstr ""
 
 #: include/global_settings.php:577
-#, fuzzy
-#| msgid "Is this the default Profile for all new Data Templates?"
 msgid "The default Graph Height to be used for all new Graph Templates."
 msgstr "Чи це Профіль за замовчуванням для всіх нових Шаблонів Даних?"
 
@@ -10498,14 +10396,10 @@ msgid "This is the location, on the web server where the RRDfiles and PNG files 
 msgstr ""
 
 #: include/global_settings.php:1017
-#, fuzzy
-#| msgid "RRDtool Graph Syntax"
 msgid "RRDtool Graph Options"
 msgstr "Синтаксис RRDtool Графіка"
 
 #: include/global_settings.php:1022
-#, fuzzy
-#| msgid "Custom Data"
 msgid "Custom Watermark"
 msgstr "Користувацькі Дані"
 
@@ -10514,8 +10408,6 @@ msgid "Text placed at the bottom center of every Graph."
 msgstr ""
 
 #: include/global_settings.php:1030
-#, fuzzy
-#| msgid "Custom Data"
 msgid "Custom Date Format"
 msgstr "Користувацькі Дані"
 
@@ -10622,8 +10514,6 @@ msgid "The font to use for Graph Unit items.  Enter either a valid True Type Fon
 msgstr ""
 
 #: include/global_settings.php:1121
-#, fuzzy
-#| msgid "User Settings"
 msgid "Business Hours Settings"
 msgstr "Налаштування користувача"
 
@@ -10644,8 +10534,6 @@ msgid "The time your business hours end. Format: hh:mm"
 msgstr ""
 
 #: include/global_settings.php:1142
-#, fuzzy
-#| msgid "%d Weeks"
 msgid "Hide Weekends"
 msgstr "%d Тижнів"
 
@@ -10762,8 +10650,6 @@ msgid "How many OID's should be returned per snmpbulkwalk request?  For Devices 
 msgstr ""
 
 #: include/global_settings.php:1269
-#, fuzzy
-#| msgid "SNMP Get"
 msgid "SNMP Get OID Limit"
 msgstr "SNMP Get"
 
@@ -10788,8 +10674,6 @@ msgid "By default, the main Cacti Data Collector will cache the entire web site 
 msgstr ""
 
 #: include/global_settings.php:1289
-#, fuzzy
-#| msgid "Data Collectors"
 msgid "Additional Data Collector Settings"
 msgstr "Збирачі Даних"
 
@@ -10830,8 +10714,6 @@ msgid "Periodic All Device Re-Index"
 msgstr ""
 
 #: include/global_settings.php:1326
-#, fuzzy
-#| msgid "Re-Index Device"
 msgid "Re-Index All Device Schedule"
 msgstr "Переіндексувати Пристрій"
 
@@ -10844,8 +10726,6 @@ msgid "Weekly on Sunday"
 msgstr ""
 
 #: include/global_settings.php:1334
-#, fuzzy
-#| msgid "Monthly on Day"
 msgid "Monthly on Sunady"
 msgstr "Щомісяця вдень"
 
@@ -10877,8 +10757,6 @@ msgid "The maximum amount of time Cacti's Data Source Statistics script can run 
 msgstr ""
 
 #: include/global_settings.php:1371
-#, fuzzy
-#| msgid "First Check TimeStamp"
 msgid "RRDChecker Timeout"
 msgstr "TimeStamp Першої Перевірки"
 
@@ -11046,8 +10924,6 @@ msgid "The name of the user that Cacti will use as a template for new Web Basic 
 msgstr ""
 
 #: include/global_settings.php:1527
-#, fuzzy
-#| msgid "Notification Settings"
 msgid "Basic Authentication Settings"
 msgstr "Налаштування Сповіщень"
 
@@ -11749,14 +11625,10 @@ msgid "The maximum amount of memory for the Cacti Poller and Data Source Statist
 msgstr ""
 
 #: include/global_settings.php:2229
-#, fuzzy
-#| msgid "Delete Check"
 msgid "RRDfile Check"
 msgstr "Видалити Перевірку"
 
 #: include/global_settings.php:2234
-#, fuzzy
-#| msgid "Enable Device Debug"
 msgid "Enable RRDfile Check"
 msgstr "Увімкнути Відлагодження Пристрою"
 
@@ -11813,15 +11685,10 @@ msgid "Which Directory Pattern do you wish to use for Structured RRD Paths.  'De
 msgstr ""
 
 #: include/global_settings.php:2305
-#, fuzzy
-#| msgid "Device"
 msgid "Device ID"
 msgstr "Пристрій"
 
 #: include/global_settings.php:2306
-#, fuzzy
-#| msgid "Delete Data Query"
-#| msgid_plural "Delete Data Query"
 msgid "Device ID/Data Query ID"
 msgstr "Видалити Запит Даних"
 
@@ -12056,8 +11923,6 @@ msgid "Which Graph mode you want displayed by default when you first visit the G
 msgstr ""
 
 #: include/global_settings.php:2560
-#, fuzzy
-#| msgid "Support"
 msgid "TimeZone Support"
 msgstr "Підтримка"
 
@@ -12331,14 +12196,10 @@ msgid "New Window"
 msgstr ""
 
 #: include/global_settings.php:2882
-#, fuzzy
-#| msgid "User Settings"
 msgid "System Setting"
 msgstr "Налаштування користувача"
 
 #: include/global_settings.php:2890
-#, fuzzy
-#| msgid "%d Week"
 msgid "1 Week"
 msgstr "%d Тиждень"
 
@@ -12785,8 +12646,6 @@ msgid "Device:"
 msgstr ""
 
 #: lib/auth.php:3497 lib/auth.php:3574
-#, fuzzy
-#| msgid "Access Denied, please contact you Cacti Administrator."
 msgid "Your account has been locked.  Please contact your Administrator."
 msgstr "Доступ Заборонено, будь ласка зверніться до вашого Адміністратора Cacti."
 
@@ -12809,14 +12668,12 @@ msgid "%s authenticated by Web Server, but both Template and Guest Users are not
 msgstr "%s автентифіковано веб-сервером, але користувачі Шаблону та Гостьові користувачі не визначені в Cacti."
 
 #: lib/auth.php:3728
-#, fuzzy, php-format
-#| msgid "LDAP Search Error: %s"
+#, php-format
 msgid "Access Denied!  LDAP Search Error: %s"
 msgstr "Помилка пошуку LDAP: %s"
 
 #: lib/auth.php:3749 lib/auth.php:3912
-#, fuzzy, php-format
-#| msgid "LDAP Error: %s"
+#, php-format
 msgid "Access Denied!  LDAP Error: %s"
 msgstr "Помилка LDAP: %s"
 
@@ -12830,8 +12687,7 @@ msgid "LDAP Search Error: %s"
 msgstr "Помилка пошуку LDAP: %s"
 
 #: lib/auth.php:3904 lib/auth.php:4726
-#, fuzzy, php-format
-#| msgid "Access Denied, please contact you Cacti Administrator."
+#, php-format
 msgid "Access Denied!  Template user id %s does not exist.  Please contact your Administrator."
 msgstr "Доступ Заборонено, будь ласка зверніться до вашого Адміністратора Cacti."
 
@@ -12932,8 +12788,6 @@ msgid "File"
 msgstr ""
 
 #: lib/clog_webapi.php:516
-#, fuzzy
-#| msgid "All Lines"
 msgid "Head Lines"
 msgstr "Всі Рядки"
 
@@ -12966,8 +12820,6 @@ msgid "AutoM8"
 msgstr ""
 
 #: lib/clog_webapi.php:558
-#, fuzzy
-#| msgid "In State"
 msgid "Non Stats"
 msgstr "В стані"
 
@@ -12976,8 +12828,6 @@ msgid "Boost"
 msgstr ""
 
 #: lib/clog_webapi.php:560
-#, fuzzy
-#| msgid "Device Description"
 msgid "Device Up/Down"
 msgstr "Опис Пристрою"
 
@@ -12986,8 +12836,6 @@ msgid "Recaches"
 msgstr ""
 
 #: lib/clog_webapi.php:565
-#, fuzzy
-#| msgid "Threads"
 msgid "Threshold"
 msgstr "Потоки"
 
@@ -13004,20 +12852,14 @@ msgid "Oldest First"
 msgstr ""
 
 #: lib/clog_webapi.php:612
-#, fuzzy
-#| msgid "RRD Match"
 msgid "Matches"
 msgstr "Співпадіння RRD"
 
 #: lib/clog_webapi.php:613
-#, fuzzy
-#| msgid "Passwords do Not Match"
 msgid "Does Not Match"
 msgstr "Паролі не збігаються"
 
 #: lib/clog_webapi.php:739
-#, fuzzy
-#| msgid "Sync Devices"
 msgid "System Device"
 msgstr "Синхронізація Пристроїв"
 
@@ -13704,8 +13546,6 @@ msgid "Damaged Graph"
 msgstr ""
 
 #: lib/html.php:76
-#, fuzzy
-#| msgid "Remove Query"
 msgid "Remote Server"
 msgstr "Видалити Запит"
 
@@ -14587,8 +14427,6 @@ msgid "Select a Site to filter for Devices and Graphs."
 msgstr ""
 
 #: lib/html_reports.php:1003
-#, fuzzy
-#| msgid "Select a Device Template that Devices will be matched to."
 msgid "Select a Device Template to use to filter for Devices or Graphs."
 msgstr "Виберіть відповідний Шаблон Пристрою."
 
@@ -14668,8 +14506,7 @@ msgid "Details %s"
 msgstr ""
 
 #: lib/html_reports.php:1531
-#, fuzzy, php-format
-#| msgid "Report Name"
+#, php-format
 msgid "Report Items %s"
 msgstr "Ім'я Звіту"
 
@@ -14688,8 +14525,7 @@ msgid "Item Details"
 msgstr ""
 
 #: lib/html_reports.php:1624
-#, fuzzy, php-format
-#| msgid "Graphs"
+#, php-format
 msgid "Graph: %s"
 msgstr "Графіки"
 
@@ -14700,20 +14536,16 @@ msgid "Using CSS"
 msgstr ""
 
 #: lib/html_reports.php:1637
-#, fuzzy, php-format
-#| msgid "Devices"
+#, php-format
 msgid "Device: %s"
 msgstr "Пристрої"
 
 #: lib/html_reports.php:1640
-#, fuzzy
-#| msgid "Graph Template Name"
 msgid ", Graph Template: All Templates"
 msgstr "Ім'я Шаблону Графіків"
 
 #: lib/html_reports.php:1642
-#, fuzzy, php-format
-#| msgid "Graph Templates"
+#, php-format
 msgid ", Graph Template: %s"
 msgstr "Шаблони Графіків"
 
@@ -14888,8 +14720,6 @@ msgid "Bad UTF-8 offset error!"
 msgstr ""
 
 #: lib/html_utility.php:943
-#, fuzzy
-#| msgid "Download"
 msgid "Down (Thold)"
 msgstr "Завантажити"
 
@@ -14923,14 +14753,12 @@ msgid "not writable"
 msgstr ""
 
 #: lib/import.php:1687 lib/import.php:1704
-#, fuzzy, php-format
-#| msgid "New Graph Template"
+#, php-format
 msgid "New Graph Template: %s"
 msgstr "Новий Шаблон Графіків"
 
 #: lib/import.php:1716 lib/import.php:1726
-#, fuzzy, php-format
-#| msgid "Data Query [%s]"
+#, php-format
 msgid "New Data Query: %s"
 msgstr "Запит Даних [%s]"
 
@@ -16411,14 +16239,10 @@ msgid "CDP Unknown Data points (0)"
 msgstr ""
 
 #: lib/rrd.php:3279
-#, fuzzy
-#| msgid "No Colors Found"
 msgid "Errors Found"
 msgstr "Кольорів Не Знайдено"
 
 #: lib/rrd.php:3291
-#, fuzzy
-#| msgid "Data Source Repair Recommendations"
 msgid "Optional Tuning Recommendations"
 msgstr "Поради що до Ремонту Джерела Даних"
 
@@ -17032,8 +16856,6 @@ msgstr ""
 
 #: package_import.php:354 package_import.php:360 package_import.php:416
 #: package_import.php:419
-#, fuzzy
-#| msgid "Error in data query."
 msgid "Error in Package"
 msgstr "Помилка в запиті даних."
 
@@ -17071,20 +16893,14 @@ msgid "The XML files for the package does not exist"
 msgstr ""
 
 #: package_import.php:453
-#, fuzzy
-#| msgid "Rule Details."
 msgid "Packages Details"
 msgstr "Подробиці Правила."
 
 #: package_import.php:466
-#, fuzzy
-#| msgid "Device Rules"
 msgid "Device class"
 msgstr "Правила Пристроїв"
 
 #: package_import.php:472
-#, fuzzy
-#| msgid "Copy"
 msgid "Copyright"
 msgstr "Копіювати"
 
@@ -17097,8 +16913,6 @@ msgid "Package"
 msgstr ""
 
 #: package_import.php:504
-#, fuzzy
-#| msgid "rule_name"
 msgid "Filename"
 msgstr "ім'я_правила"
 
@@ -17115,26 +16929,18 @@ msgid "Import Package Templates [ None selected imports all, Check to import sel
 msgstr ""
 
 #: package_import.php:586 templates_import.php:257
-#, fuzzy
-#| msgid "Template Title"
 msgid "Template Type"
 msgstr "Заголовок Шаблону"
 
 #: package_import.php:595 templates_import.php:269
-#, fuzzy
-#| msgid "Change Device"
 msgid "Changes/Diffferences"
 msgstr "Змінити Пристрій"
 
 #: package_import.php:620 templates_import.php:290
-#, fuzzy
-#| msgid "RRD Updated"
 msgid "Updated"
 msgstr "RRD Оновлено"
 
 #: package_import.php:657 templates_import.php:357
-#, fuzzy
-#| msgid "Orphaned"
 msgid "Orphans"
 msgstr "Сирота"
 
@@ -17151,8 +16957,6 @@ msgid "The *.xml.gz file located on your Local machine to Upload and Import."
 msgstr ""
 
 #: package_import.php:823
-#, fuzzy
-#| msgid "Automatically Add to Cacti"
 msgid "Automatically Trust Signer"
 msgstr "Автоматично Додати до Cacti"
 
@@ -17165,8 +16969,6 @@ msgid "Replace Data Source and Graph Template Suggested Value Records.  Graphs a
 msgstr ""
 
 #: package_import.php:932
-#, fuzzy
-#| msgid "Import"
 msgid "Package Import"
 msgstr "Імпорт"
 
@@ -17752,8 +17554,6 @@ msgid "No Data Collectors Found"
 msgstr ""
 
 #: rrdcheck.php:35
-#, fuzzy
-#| msgid "Run Check"
 msgid "RRD check"
 msgstr "Запустити Перевірку"
 
@@ -17762,8 +17562,6 @@ msgid "RRD check is disabled, please enable in Configuration -> Settings -> Data
 msgstr ""
 
 #: rrdcheck.php:105 utilities.php:2324
-#, fuzzy
-#| msgid "RRDfile Owner"
 msgid "RRDfile Checker"
 msgstr "Власник RRD файлу"
 
@@ -17772,14 +17570,10 @@ msgid "RRDcheck Problems"
 msgstr ""
 
 #: rrdcheck.php:154
-#, fuzzy
-#| msgid "Description"
 msgid "Host Description"
 msgstr "Опис"
 
 #: rrdcheck.php:162
-#, fuzzy
-#| msgid "Valid Data"
 msgid "Local Data ID"
 msgstr "Вірні Дані"
 
@@ -17792,8 +17586,6 @@ msgid "Deleted"
 msgstr ""
 
 #: rrdcheck.php:200
-#, fuzzy
-#| msgid "No Data Source Profiles Found"
 msgid "No RRDcheck Problems Found"
 msgstr "Не знайдено Профілів Джерел Даних"
 
@@ -17836,8 +17628,6 @@ msgid "Clear"
 msgstr ""
 
 #: rrdcheck.php:263
-#, fuzzy
-#| msgid "Purge"
 msgctxt "filter: purge"
 msgid "Purge"
 msgstr "Очищення"
@@ -18268,8 +18058,6 @@ msgid "The Template Import Succeeded."
 msgstr ""
 
 #: templates_import.php:145
-#, fuzzy
-#| msgid "Export Templates"
 msgid "Error in Template"
 msgstr "Шаблони Експорту"
 
@@ -18288,8 +18076,6 @@ msgid "Import Files [ If Files are missing, locate and install before using ]"
 msgstr ""
 
 #: templates_import.php:221
-#, fuzzy
-#| msgid "Field Name"
 msgid "File Name"
 msgstr "Ім'я Поля"
 
@@ -18892,20 +18678,14 @@ msgid "Basic"
 msgstr ""
 
 #: user_admin.php:2155
-#, fuzzy
-#| msgid "LDAP"
 msgid "LDAP/AD"
 msgstr "LDAP"
 
 #: user_admin.php:2156
-#, fuzzy
-#| msgid "User Domains"
 msgid "Domain"
 msgstr "Домени Користувачів"
 
 #: user_admin.php:2234
-#, fuzzy
-#| msgid "User"
 msgid "User ID"
 msgstr "Користувач"
 
@@ -19343,8 +19123,6 @@ msgid "PHP Info"
 msgstr ""
 
 #: utilities.php:150
-#, fuzzy
-#| msgid "Change Log"
 msgid "ChangeLog"
 msgstr "Change Log"
 
@@ -19892,8 +19670,6 @@ msgid "Running Processes:"
 msgstr ""
 
 #: utilities.php:2638
-#, fuzzy
-#| msgid "Color Item"
 msgid "Total Poller Items:"
 msgstr "Елемент Кольору"
 
@@ -19902,8 +19678,6 @@ msgid "Total Data Sources:"
 msgstr ""
 
 #: utilities.php:2648
-#, fuzzy
-#| msgid "Has Data Sources"
 msgid "Remaining Data Sources:"
 msgstr "Має Джерела Даних"
 
@@ -19965,14 +19739,10 @@ msgid "Last Start Time:"
 msgstr ""
 
 #: utilities.php:2733
-#, fuzzy
-#| msgid "Last Runtime"
 msgid "Last End Time:"
 msgstr "Останній Запуск"
 
 #: utilities.php:2733
-#, fuzzy
-#| msgid "Never"
 msgid "Never Run"
 msgstr "Ніколи"
 
@@ -20012,8 +19782,6 @@ msgid "Max Poller Memory Allowed:"
 msgstr ""
 
 #: utilities.php:2770
-#, fuzzy
-#| msgid "Clear Statistics"
 msgid "Detailed Runtime Statistics"
 msgstr "Очистити Статистику"
 
@@ -20225,103 +19993,3 @@ msgstr ""
 msgid "No VDEFs"
 msgstr ""
 
-#~ msgid "Failed to verify token"
-#~ msgstr "Не вдалось перевірити токен"
-
-#~ msgid "2FA Verification"
-#~ msgstr "2FA Верифікація"
-
-#~ msgid "2nd Factor Authentication"
-#~ msgstr "Другий етап Автентифікації"
-
-#~ msgid "Enter your token"
-#~ msgstr "Введіть ваш токен"
-
-#~ msgid "Token"
-#~ msgstr "Токен"
-
-#~ msgid "Verify"
-#~ msgstr "Підтвердження"
-
-#~ msgid "Highlights"
-#~ msgstr "Основне"
-
-#~ msgid "Full"
-#~ msgstr "Повністю"
-
-#~ msgid "Change Log [%s]"
-#~ msgstr "Change Log [%s]"
-
-#, fuzzy
-#~| msgid "User Login"
-#~ msgid "User Log Purged."
-#~ msgstr "Логін користувача"
-
-#~ msgid "Override Values for Graph Item"
-#~ msgstr "Перепризначити значення для Елементу Графіку"
-
-#~ msgid "Aggreage Graph does not Exist"
-#~ msgstr "Агрегований Графік не існує"
-
-#~ msgid "Template user id %s does not exist."
-#~ msgstr "ID користувача Шаблону %s не існує."
-
-#~ msgid "Guest user id %s does not exist."
-#~ msgstr "Гостьовий користувач %s не існує."
-
-#~ msgid "Invalid User Name/Password Please Retype"
-#~ msgstr "Невірні Ім'я користувача/Пароль, введіть ще раз"
-
-#~ msgid "2FA"
-#~ msgstr "2FA"
-
-#~ msgid "2FA Settings"
-#~ msgstr "Налаштування 2FA"
-
-#~ msgid "2FA Enabled"
-#~ msgstr "2FA Увімкнено"
-
-#~ msgid "Whether 2FA is enabled for this user."
-#~ msgstr "Чи ввімкнено 2FA для цього користувача."
-
-#~ msgid "2FA QA Code"
-#~ msgstr "Код 2FA QA"
-
-#~ msgid "The 2FA QA Code to be scanned with Google Authenticator, Authy or any compatible 2FA app"
-#~ msgstr "Код 2FA QA для сканування за допомогою Google Authenticator, Authy чи будь-якого сумісного додатку 2FA"
-
-#~ msgid "2FA App Token"
-#~ msgstr "Токен додатку 2FA"
-
-#~ msgid "The token generated by Google Authenticator, Auth or any compatible 2FA app"
-#~ msgstr "Токен, згенерований Google Authenticator, Auth або будь-яким сумісним 2FA додатком"
-
-#~ msgid "Verify App Token"
-#~ msgstr "Перевірка токену додатком"
-
-#~ msgid "Verify the 2FA App token entered above"
-#~ msgstr "Перевірте введений вище токен додатку 2FA"
-
-#~ msgid "Enabling..."
-#~ msgstr "Увімкнення..."
-
-#~ msgid "FATAL: YOU DO NOT HAVE ACCESS TO THIS AREA OF CACTI"
-#~ msgstr "FATAL: ВИ НЕ МАЄТЕ ДОСТУПУ ДО ЦІЄЇ ОБЛАСТІ CACTI"
-
-#~ msgid "The CDEF of this Graph."
-#~ msgstr "CDEF цього Графіку."
-
-#~ msgid "The VDEF of this Graph."
-#~ msgstr "CDEF цього Графіку."
-
-#~ msgid "View Timespans."
-#~ msgstr "Перегляд Проміжків Часу."
-
-#~ msgid "Created"
-#~ msgstr "Створено"
-
-#~ msgid "The date this device wasadded to the database"
-#~ msgstr "Дата, коли цей пристрій було додано до бази даних"
-
-#~ msgid "Technical Info"
-#~ msgstr "Технічна Інформація"

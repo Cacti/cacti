@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2024-04-20 06:09-0400\n"
+"POT-Creation-Date: 2024-04-20 17:58-0400\n"
 "PO-Revision-Date: 2024-03-04 00:20+0000\n"
 "Last-Translator: Junhua Huang <junhuahuang1218@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\n"
@@ -23,14 +23,11 @@ msgid "About Cacti"
 msgstr "关于Cacti"
 
 #: about.php:42
-#, fuzzy
-#| msgid "Cacti is designed to be a complete graphing solution based on the RRDtool's framework. Its goal is to make a network administrator's job easier by taking care of all the necessary details necessary to create meaningful graphs."
 msgid "Cacti is designed to be a complete graphing solution based on the RRDtool Time Series Database (TSDB) and Graphing solution. Its goal is to make the Network Administrator's job easier by taking care of all the important details necessary to create meaningful Graphs."
 msgstr "Cacti 被设计成基于RRDtool 框架的完整的画图解决方案. 其目标是通过创建有意义的图形所需的所有必要细节,使网络管理员的工作更轻松."
 
 #: about.php:44
-#, fuzzy, php-format
-#| msgid "Please see the official %sCacti website%s for information, support, and updates."
+#, php-format
 msgid "Please see the official %sCacti website%s for information on how to use Cacti, get support, and updates."
 msgstr "请查看 %s Cacti 官方网站 %s 获取信息,支持和更新."
 
@@ -117,7 +114,6 @@ msgid "Convert to Normal Graph"
 msgstr "转换为一般图形"
 
 #: aggregate_graphs.php:44 graphs.php:58
-#, fuzzy
 msgid "Place Graphs on Report"
 msgstr "在报告上放置图表"
 
@@ -243,12 +239,10 @@ msgid "Return"
 msgstr "返回"
 
 #: aggregate_graphs.php:397
-#, fuzzy
 msgid "The selected Aggregate Graphs does not appear to have any matching Aggregate Templates."
 msgstr "选定的聚合图形是来自多个图形模板的元素."
 
 #: aggregate_graphs.php:398
-#, fuzzy
 msgid "In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist.  Please press 'Return' and then first create your Aggregate Template before retrying."
 msgstr "为了将下面的聚合图迁移到基于模板的聚合,它们只能使用一个图形模板. 请按 '返回',然后选择仅使用相同图形模板的聚合图形."
 
@@ -286,7 +280,6 @@ msgid "New Aggregate"
 msgstr "新建聚合"
 
 #: aggregate_graphs.php:468 graphs.php:1270 host.php:528
-#, fuzzy
 msgid "Click 'Continue' to add the selected Graphs to the Report below."
 msgstr "点击 '继续' 将选定的图形添加到下面的报告中."
 
@@ -305,22 +298,18 @@ msgid "Align"
 msgstr "对齐"
 
 #: aggregate_graphs.php:484 graphs.php:1286
-#, fuzzy
 msgid "Add Graphs to Report"
 msgstr "添加图形到报告"
 
 #: aggregate_graphs.php:486 graphs.php:1288
-#, fuzzy
 msgid "You currently have no reports defined."
 msgstr "您目前没有定义报告."
 
 #: aggregate_graphs.php:492
-#, fuzzy
 msgid "Click 'Continue' to convert the following Aggregate Graph(s) into a normal Graph."
 msgstr "点击 '继续',将下面的聚合图形组合成一个聚合图形."
 
 #: aggregate_graphs.php:497
-#, fuzzy
 msgid "Convert to normal Graph(s)"
 msgstr "转换为LINE1图形"
 
@@ -359,7 +348,6 @@ msgid "[edit: %s]"
 msgstr "[编辑:%s]"
 
 #: aggregate_graphs.php:595 aggregate_graphs.php:708 aggregate_graphs.php:710
-#, fuzzy
 msgid "Aggregate Graph does not Exist"
 msgstr "聚合图形设置"
 
@@ -379,7 +367,6 @@ msgid "Preview"
 msgstr "预览"
 
 #: aggregate_graphs.php:621
-#, fuzzy
 msgid "Aggregate Graphs Accessed does not Exist"
 msgstr "聚合图形设置"
 
@@ -396,12 +383,11 @@ msgid "Show Item Details"
 msgstr "显示项目详情"
 
 #: aggregate_graphs.php:707
-#, fuzzy
 msgid "Aggregate Preview Does Not Exist"
 msgstr "聚合预览 [%s]"
 
 #: aggregate_graphs.php:714
-#, fuzzy, php-format
+#, php-format
 msgid "Aggregate Preview %s"
 msgstr "聚合预览 [%s]"
 
@@ -423,12 +409,10 @@ msgid "Aggregate Graph %s"
 msgstr "综合图 '%s'"
 
 #: aggregate_graphs.php:787 aggregate_templates.php:394 graphs.php:1058
-#, fuzzy
 msgid "Prefix Replacement Values"
 msgstr "替换模式"
 
 #: aggregate_graphs.php:788 aggregate_templates.php:395 graphs.php:1059
-#, fuzzy
 msgid "You may use these replacement values for the Prefix in the Aggregate Graph"
 msgstr "您可以将这些替换值用于聚合图中的前缀"
 
@@ -672,7 +656,6 @@ msgid "No Graphs Found"
 msgstr "未找到图形"
 
 #: aggregate_graphs.php:1503
-#, fuzzy
 msgid " [ Custom Graphs List Applied - Clear to Reset ]"
 msgstr "[自定义图形列表应用 - 过滤器从列表]"
 
@@ -893,7 +876,6 @@ msgid "Please enter your current password and your new<br>Cacti password."
 msgstr "请输入您当前的密码和新的<br>Cacti 密码."
 
 #: auth_changepassword.php:409
-#, fuzzy
 msgid "Please enter your new Cacti password."
 msgstr "请输入您的Cacti新密码."
 
@@ -921,8 +903,7 @@ msgid "Save"
 msgstr "保存"
 
 #: auth_changepassword.php:442 auth_login.php:386
-#, fuzzy, php-format
-#| msgid "Version %s %s"
+#, php-format
 msgid "Version %s | %s"
 msgstr "版本 %s %s"
 
@@ -943,32 +924,27 @@ msgid "Passwords Match"
 msgstr "密码匹配"
 
 #: auth_login.php:75
-#, fuzzy
 msgid "Cacti no longer supports No Authentication mode. Please contact your System Administrator."
 msgstr "访问被拒绝,请联系Cacti 管理员."
 
 #: auth_login.php:110
-#, fuzzy
 msgid "Unable to determine user Login Realm or Domain. Please contact your System Administrator."
 msgstr "访问被拒绝,请联系Cacti 管理员."
 
 #: auth_login.php:138
-#, fuzzy
 msgid "User was Authenticated, but the Template Account is disabled.  Using Guest Account"
 msgstr "用户已通过身份验证，但模板帐户已禁用。使用访客帐户"
 
 #: auth_login.php:145
-#, fuzzy, php-format
+#, php-format
 msgid "Access Denied!  Guest user id %s does not exist.  Please contact your Administrator."
 msgstr "访问被拒绝,请联系Cacti 管理员."
 
 #: auth_login.php:180
-#, fuzzy
 msgid "Access Denied!  User account disabled."
 msgstr "拒绝访问,用户帐号被禁用."
 
 #: auth_login.php:191
-#, fuzzy
 msgid "You do not have access to any area of Cacti.  Contact your administrator."
 msgstr "如果您觉得这是一个报错,请联系Cacti 管理员."
 
@@ -1068,7 +1044,6 @@ msgid "Clear User Settings"
 msgstr "清除用户设置"
 
 #: auth_profile.php:346
-#, fuzzy
 msgid "Return all User Settings to Default values."
 msgstr "将所有用户设置恢复为默认值."
 
@@ -1141,17 +1116,16 @@ msgid "Added manually through device automation interface."
 msgstr "通过设备自动化接口手动添加."
 
 #: automation_devices.php:123
-#, fuzzy, php-format
+#, php-format
 msgid "Device %s Added to Cacti"
 msgstr "添加到Cacti"
 
 #: automation_devices.php:125
-#, fuzzy, php-format
+#, php-format
 msgid "Device %s Not Added to Cacti"
 msgstr "没有添加到Cacti"
 
 #: automation_devices.php:135
-#, fuzzy
 msgid "Devices Removed from Cacti Automation database"
 msgstr "从 Cacti 自动化数据库中删除的设备"
 
@@ -1177,7 +1151,6 @@ msgid "Add Device(s)"
 msgstr "添加设备"
 
 #: automation_devices.php:222
-#, fuzzy
 msgid "Click 'Continue' to Delete the following Discovered device(s)."
 msgstr "点击 '继续' 添加以下已发现的设备."
 
@@ -1492,12 +1465,12 @@ msgid "Cancel Discovery"
 msgstr "取消发现"
 
 #: automation_networks.php:144
-#, fuzzy, php-format
+#, php-format
 msgid "Can Not Restart Discovery for Discovery in Progress for Network '%s'"
 msgstr "无法为网络 %s 正在进行的发现重启发现"
 
 #: automation_networks.php:148
-#, fuzzy, php-format
+#, php-format
 msgid "Can Not Perform Discovery for Disabled Network '%s'"
 msgstr "无法为禁用的网络 %s 执行发现"
 
@@ -1782,12 +1755,10 @@ msgid "For any newly discovered Devices that are reachable using SNMP and who ma
 msgstr "对于任何可以使用SNMP 访问且匹配设备规则的新发现设备,请将其添加到Cacti."
 
 #: automation_networks.php:552
-#, fuzzy
 msgid "Allow same sysName on different hosts"
 msgstr "允许不同的主机拥有相同的主机名"
 
 #: automation_networks.php:553
-#, fuzzy
 msgid "When discovering devices, allow duplicate sysnames to be added on different hosts"
 msgstr "发现设备时,允许在不同主机上添加重复的系统名称"
 
@@ -1808,7 +1779,6 @@ msgid "Notification Enabled"
 msgstr "启用通知"
 
 #: automation_networks.php:570
-#, fuzzy
 msgid "If checked, when the Automation Network is scanned, a report will be sent to the Notification Email account.."
 msgstr "如果选中,则扫描自动化网络时,报告将发送到通知电子邮件帐户."
 
@@ -1817,27 +1787,22 @@ msgid "Notification Email"
 msgstr "通知电子邮件"
 
 #: automation_networks.php:577
-#, fuzzy
 msgid "The Email account to be used to send the Notification Email to."
 msgstr "用于向其发送通知电子邮件的电子邮件帐户."
 
 #: automation_networks.php:584
-#, fuzzy
 msgid "Notification From Name"
 msgstr "自动通知的发件人"
 
 #: automation_networks.php:585
-#, fuzzy
 msgid "The Email account name to be used as the senders name for the Notification Email.  If left blank, Cacti will use the default Automation Notification Name if specified, otherwise, it will use the Cacti system default Email name"
 msgstr "电子邮件帐户名称,用作通知电子邮件的发件人名称.如果留空,Cacti 将使用默认的自动化通知名称(如果已指定),否则,它将使用Cacti 系统默认的电子邮件名称"
 
 #: automation_networks.php:593
-#, fuzzy
 msgid "Notification From Email Address"
 msgstr "来自电子邮件地址的通知"
 
 #: automation_networks.php:594
-#, fuzzy
 msgid "The Email Address to be used as the senders Email for the Notification Email.  If left blank, Cacti will use the default Automation Notification Email Address if specified, otherwise, it will use the Cacti system default Email Address"
 msgstr "电子邮件地址将用作发件人电子邮件通知电子邮件.如果留空,Cacti 将使用默认的自动化通知电子邮件地址(如果已指定),否则,它将使用Cacti 系统默认电子邮件地址"
 
@@ -2206,12 +2171,10 @@ msgid "name"
 msgstr "主机名"
 
 #: automation_snmp.php:295
-#, fuzzy
 msgid "Automation SNMP Options has been Duplicated."
 msgstr "自动化SNMP 选项"
 
 #: automation_snmp.php:297
-#, fuzzy
 msgid "Automation Item does not exist.  Can not Duplicate."
 msgstr "自动化项目不存在。不能重复。"
 
@@ -2405,8 +2368,6 @@ msgid "No SNMP Option Sets Found"
 msgstr "未找到SNMP 选项集"
 
 #: automation_templates.php:162
-#, fuzzy
-#| msgid "Click 'Continue' to delete the folling Automation Template(s)."
 msgid "Click 'Continue' to delete the following Automation Template(s)."
 msgstr "点击 '继续' 删除以下自动化模板."
 
@@ -2530,7 +2491,6 @@ msgid "Tree Creation Criteria"
 msgstr "树创建标准"
 
 #: automation_tree_rules.php:703
-#, fuzzy
 msgid "Change Leaf Type"
 msgstr "改变叶子类型"
 
@@ -2540,17 +2500,14 @@ msgid "WARNING:"
 msgstr "WARNING:"
 
 #: automation_tree_rules.php:707
-#, fuzzy
 msgid "You are changing the leaf type to \"Device\" which does not support Graph-based object matching/creation."
 msgstr "您正在将叶类型更改为 \"设备\",它不支持基于图形的对象匹配/创建."
 
 #: automation_tree_rules.php:708
-#, fuzzy
 msgid "By changing the leaf type, all invalid rules will be automatically removed and will not be recoverable."
 msgstr "通过更改叶类型,将自动删除所有无效规则,并且无法恢复."
 
 #: automation_tree_rules.php:709
-#, fuzzy
 msgid "Are you sure you wish to continue?"
 msgstr "您确定要继续吗?"
 
@@ -2592,17 +2549,14 @@ msgid "Cacti System Warning"
 msgstr "Cacti 系统警告"
 
 #: cactid.php:44
-#, fuzzy
 msgid "WARNING: Cacti Daemon PID["
 msgstr "警告：仙人掌守护进程PID["
 
 #: cactid.php:132
-#, fuzzy
 msgid "Cacti System Notice"
 msgstr "Cacti 系统工具"
 
 #: cactid.php:132
-#, fuzzy
 msgid "Notice: Cacti Daemon PID["
 msgstr "注意：Cacti 守护进程 PID["
 
@@ -2637,7 +2591,7 @@ msgid "Click 'Continue' to delete the following CDEF Item."
 msgstr "点击 '继续' 删除下面的CDEF项目."
 
 #: cdef.php:337
-#, fuzzy, php-format
+#, php-format
 msgid "CDEF Name: %s"
 msgstr "CDEF名称：'%s'"
 
@@ -2868,7 +2822,6 @@ msgid "No Colors Found"
 msgstr "未找到颜色"
 
 #: color_templates.php:30
-#, fuzzy
 msgid "Sync Aggregates"
 msgstr "聚合"
 
@@ -2908,13 +2861,11 @@ msgid_plural "Duplicate Color Templates"
 msgstr[0] "重复的颜色模板"
 
 #: color_templates.php:259
-#, fuzzy
 msgid "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Template."
 msgid_plural "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Templates."
 msgstr[0] "点击 '继续',从选定的图形创建一个聚合图形."
 
 #: color_templates.php:264
-#, fuzzy
 msgid "Synchronize Color Template"
 msgid_plural "Synchronize Color Templates"
 msgstr[0] "同步图形到图形模板."
@@ -2942,12 +2893,12 @@ msgid "Color Template [new]"
 msgstr "颜色模板[新建]"
 
 #: color_templates.php:465
-#, fuzzy, php-format
+#, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
 msgstr "颜色模板'％s'已推出％d个聚集模板，而％d个非模板聚集被推出"
 
 #: color_templates.php:467
-#, fuzzy, php-format
+#, php-format
 msgid "Color Template '%s' had no Aggregate Templates or Graphs using this Color Template."
 msgstr "颜色模板'％s'没有使用此颜色模板的聚合模板或图形。"
 
@@ -2991,42 +2942,34 @@ msgid "Color Template Items [new Report Item: %s]"
 msgstr "颜色模板项目[新建报告项目: %s]"
 
 #: data_debug.php:30
-#, fuzzy
 msgid "Run Check"
 msgstr "运行检查"
 
 #: data_debug.php:31
-#, fuzzy
 msgid "Delete Check"
 msgstr "删除检查"
 
 #: data_debug.php:52
-#, fuzzy
 msgid "Data Source debug started."
 msgstr "数据源调试"
 
 #: data_debug.php:55
-#, fuzzy
 msgid "Data Source debug received an invalid Data Source ID."
 msgstr "数据源调试收到无效的数据源ID。"
 
 #: data_debug.php:64
-#, fuzzy
 msgid "All RRDfile repairs succeeded."
 msgstr "所有RRDfile修复成功。"
 
 #: data_debug.php:66
-#, fuzzy
 msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
 msgstr "一个或多个RRDfile修复失败。有关错误，请参阅仙人掌日志。"
 
 #: data_debug.php:74
-#, fuzzy
 msgid "Automatic Data Source debug being rerun after repair."
 msgstr "修复后重新运行自动数据源调试。"
 
 #: data_debug.php:78
-#, fuzzy
 msgid "Data Source repair received an invalid Data Source ID."
 msgstr "数据源修复收到无效的数据源ID。"
 
@@ -3038,7 +2981,6 @@ msgid "Data Source"
 msgstr "数据源"
 
 #: data_debug.php:445
-#, fuzzy
 msgid "The Data Source to Debug"
 msgstr "要调试的数据源"
 
@@ -3047,7 +2989,6 @@ msgid "User"
 msgstr "User"
 
 #: data_debug.php:450
-#, fuzzy
 msgid "The User who requested the Debug."
 msgstr "请求调试的用户."
 
@@ -3056,17 +2997,14 @@ msgid "Started"
 msgstr "已开始"
 
 #: data_debug.php:456
-#, fuzzy
 msgid "The Date that the Debug was Started."
 msgstr "调试启动的日期."
 
 #: data_debug.php:462
-#, fuzzy
 msgid "The Data Source internal ID."
 msgstr "数据源内部ID."
 
 #: data_debug.php:468
-#, fuzzy
 msgid "The Status of the Data Source Debug Check."
 msgstr "数据源调试检查的状态."
 
@@ -3117,8 +3055,6 @@ msgid "RRD Updated"
 msgstr "RRD 更新"
 
 #: data_debug.php:504
-#, fuzzy
-#| msgid "Determines if the RRDfile has been writted to properly."
 msgid "Determines if the RRDfile has been written to properly."
 msgstr "请确定RRD 文件是否已正确写入."
 
@@ -3127,7 +3063,6 @@ msgid "Issues"
 msgstr "问题"
 
 #: data_debug.php:510
-#, fuzzy
 msgid "Summary of issues found for the Data Source."
 msgstr "发现数据源的任何摘要问题."
 
@@ -3140,7 +3075,6 @@ msgid "Data Sources"
 msgstr "数据源"
 
 #: data_debug.php:627 data_debug.php:1095
-#, fuzzy
 msgid "Not Debugging"
 msgstr "调试"
 
@@ -3154,22 +3088,18 @@ msgid "Not Found"
 msgstr "未找到"
 
 #: data_debug.php:704 data_debug.php:709
-#, fuzzy
 msgid "Not Checked Yet"
 msgstr "不检查"
 
 #: data_debug.php:727
-#, fuzzy
 msgid "Issues found!  Waiting on RRDfile update"
 msgstr "发现了问题！等待RRDfile更新"
 
 #: data_debug.php:730
-#, fuzzy
 msgid "No Initial found!  Waiting on RRDfile update"
 msgstr "没有找到初始！等待RRDfile更新"
 
 #: data_debug.php:734
-#, fuzzy
 msgid "Waiting on analysis and RRDfile update"
 msgstr "RRD 文件是否已更新?"
 
@@ -3218,17 +3148,15 @@ msgid "Second Check TimeStamp"
 msgstr "再次检查时间戳"
 
 #: data_debug.php:797
-#, fuzzy
 msgid "Were we able to convert the title?"
 msgstr "我们能够转换标题吗?"
 
 #: data_debug.php:802
-#, fuzzy
 msgid "Data Source matches the RRDfile?"
 msgstr "未对数据源进行采集"
 
 #: data_debug.php:816
-#, fuzzy, php-format
+#, php-format
 msgid "Data Source Troubleshooter [ Auto Refreshing till Complete ] %s"
 msgstr "数据源排障工具 [%s]"
 
@@ -3237,17 +3165,16 @@ msgid "Refresh Now"
 msgstr "立即刷新"
 
 #: data_debug.php:818
-#, fuzzy, php-format
+#, php-format
 msgid "Data Source Troubleshooter [ Auto Refreshing till RRDfile Update ] %s"
 msgstr "数据源排障工具 [%s]"
 
 #: data_debug.php:820
-#, fuzzy, php-format
+#, php-format
 msgid "Data Source Troubleshooter [ Analysis Complete! %s ]"
 msgstr "数据源排障工具 [%s]"
 
 #: data_debug.php:820
-#, fuzzy
 msgid "Rerun Analysis"
 msgstr "重新运行分析"
 
@@ -3269,7 +3196,6 @@ msgid "<not set>"
 msgstr "<未设置>"
 
 #: data_debug.php:873 data_debug.php:924
-#, fuzzy
 msgid "Data Source Repair Recommendations"
 msgstr "数据源字段"
 
@@ -3278,22 +3204,20 @@ msgid "Issue"
 msgstr "问题"
 
 #: data_debug.php:890
-#, fuzzy, php-format
+#, php-format
 msgid "For attribute '%s', issue found '%s'"
 msgstr "对于attrbitute'％s'，问题发现'％s'"
 
 #: data_debug.php:905
-#, fuzzy
 msgid "Apply Suggested Fixes"
 msgstr "重新使用建议的名称"
 
 #: data_debug.php:905
-#, fuzzy, php-format
+#, php-format
 msgid "Repair Steps [ %s ]"
 msgstr "修复步骤[％s]"
 
 #: data_debug.php:907
-#, fuzzy
 msgid "Repair Steps [ Run Fix from Command Line ]"
 msgstr "修复步骤[从命令行运行修复]"
 
@@ -3302,7 +3226,6 @@ msgid "Command"
 msgstr "命令"
 
 #: data_debug.php:926
-#, fuzzy
 msgid "Waiting on Data Source Check to Complete"
 msgstr "等待数据源检查完成"
 
@@ -3311,7 +3234,7 @@ msgid "All Devices"
 msgstr "所有设备"
 
 #: data_debug.php:1014
-#, fuzzy, php-format
+#, php-format
 msgid "Data Source Troubleshooter [ %s ]"
 msgstr "数据源排障工具 [%s]"
 
@@ -3320,7 +3243,6 @@ msgid "No Device"
 msgstr "无设备"
 
 #: data_debug.php:1053
-#, fuzzy
 msgid "Delete All Checks"
 msgstr "删除检查"
 
@@ -3361,12 +3283,10 @@ msgid_plural "Click 'Continue' to delete the following Data Input Method"
 msgstr[0] "点击 '继续' 删除以下数据输入方法"
 
 #: data_input.php:253
-#, fuzzy
 msgid "Click 'Continue' to duplicate the following Data Input Method(s). You can optionally change the title format for the new Data Input Method(s)."
 msgstr "单击 '继续' 以复制以下数据输入方法.您可以选择更改新数据输入法的标题格式."
 
 #: data_input.php:255
-#, fuzzy
 msgid "Input Name:"
 msgstr "数据输入名称"
 
@@ -3416,12 +3336,11 @@ msgid "Input Field"
 msgstr "输入字段"
 
 #: data_input.php:497
-#, fuzzy, php-format
+#, php-format
 msgid "Data Input Method [edit: %s]"
 msgstr "数据输入方法 [编辑: %s]"
 
 #: data_input.php:501
-#, fuzzy
 msgid "Data Input Method [new]"
 msgstr "数据输入方法[新建]"
 
@@ -3434,22 +3353,18 @@ msgid "Script Query"
 msgstr "脚本查询"
 
 #: data_input.php:524 include/global_arrays.php:520
-#, fuzzy
 msgid "Script Server Query"
 msgstr "脚本服务器"
 
 #: data_input.php:532
-#, fuzzy
 msgid "White List Verification Succeeded."
 msgstr "白名单验证成功."
 
 #: data_input.php:534
-#, fuzzy
 msgid "White List Verification Failed.  Run CLI script input_whitelist.php to correct."
 msgstr "白名单验证失败.运行CLI脚本input_whitelist.php进行更正."
 
 #: data_input.php:536
-#, fuzzy
 msgid "Input String does not exist in White List.  Run CLI script input_whitelist.php to correct."
 msgstr "白名单中不存在输入字符串.运行CLI脚本input_whitelist.php进行更正."
 
@@ -3482,7 +3397,6 @@ msgid "Update RRA"
 msgstr "更新 RRA"
 
 #: data_input.php:649
-#, fuzzy
 msgid "Output Fields can not be removed when Data Sources are present"
 msgstr "存在数据源时,无法删除输出字段"
 
@@ -3512,7 +3426,6 @@ msgid "The name of this Data Input Method."
 msgstr "此数据输入方法的名称."
 
 #: data_input.php:858
-#, fuzzy
 msgid "The internal database ID for this Data Input Method.  Useful when performing automation or debugging."
 msgstr "此数据模板的内部数据库标识. 执行自动化或调试时很有用."
 
@@ -3546,25 +3459,16 @@ msgid "No Data Input Methods Found"
 msgstr "未找到数据输入方法"
 
 #: data_queries.php:407
-#, fuzzy
-#| msgid "Click 'Continue' to delete the following Data Query."
-#| msgid_plural "Click 'Continue' to delete following Data Queries."
 msgid "Click 'Continue' to Delete the following Data Query."
 msgid_plural "Click 'Continue' to Delete following Data Queries."
 msgstr[0] "点击 '继续' 删除以下数据查询."
 
 #: data_queries.php:412
-#, fuzzy
-#| msgid "Delete Data Query"
-#| msgid_plural "Delete Data Query"
 msgid "Delete Data Query"
 msgid_plural "Delete Data Queries"
 msgstr[0] "删除数据查询"
 
 #: data_queries.php:416
-#, fuzzy
-#| msgid "Click 'Continue' to delete the following Data Query."
-#| msgid_plural "Click 'Continue' to delete following Data Queries."
 msgid "Click 'Continue' to duplicate the following Data Query."
 msgid_plural "Click 'Continue' to duplicate following Data Queries."
 msgstr[0] "点击 '继续' 删除以下数据查询."
@@ -3574,9 +3478,6 @@ msgid "Name Format:"
 msgstr "名称格式:"
 
 #: data_queries.php:426
-#, fuzzy
-#| msgid "Delete Data Query"
-#| msgid_plural "Delete Data Query"
 msgid "Duplicate Data Query"
 msgid_plural "Duplicate Data Queries"
 msgstr[0] "删除数据查询"
@@ -3591,7 +3492,6 @@ msgid "Graph Name: %s"
 msgstr "图形名称: %s"
 
 #: data_queries.php:591
-#, fuzzy
 msgid "Remove Data Query Graph Template"
 msgstr "转换为图形模板"
 
@@ -3601,7 +3501,6 @@ msgid "Associated Graph/Data Templates [edit: %s]"
 msgstr "关联的图形/数据模板 [编辑: %s]"
 
 #: data_queries.php:651
-#, fuzzy
 msgid "Associated Graph/Data Templates [new]"
 msgstr "关联的图形/数据模板 [编辑: %s]"
 
@@ -3615,7 +3514,6 @@ msgid "Data Template - %s"
 msgstr "数据模板 - %s"
 
 #: data_queries.php:753
-#, fuzzy
 msgid "If this Graph Template requires the Data Template Data Source to the left, select the correct XML output column and then to enable the mapping either check or toggle here."
 msgstr "如果此图形模板需要左侧的数据模板数据源，请选择正确的XML输出列，然后在此处选中或切换映射。"
 
@@ -3695,7 +3593,6 @@ msgid "Mapping ID"
 msgstr "映射ID"
 
 #: data_queries.php:1177
-#, fuzzy
 msgid "Association Read Only until XML file located"
 msgstr "关联只读，直到找到XML文件"
 
@@ -3774,7 +3671,6 @@ msgid_plural "Duplicate Date Source Profiles"
 msgstr[0] "重复的数据源配置文件"
 
 #: data_source_profiles.php:394
-#, fuzzy
 msgid "Unable to duplicate Data Source Profile.  Check Cacti Log for errors."
 msgstr "一个或多个RRDfile修复失败。有关错误，请参阅仙人掌日志。"
 
@@ -4122,7 +4018,7 @@ msgid "Turn On Data Source Info Mode."
 msgstr "打开数据源信息模式."
 
 #: data_sources.php:866
-#, fuzzy, php-format
+#, php-format
 msgid "Edit Graph: '%s'."
 msgstr "编辑图形模板."
 
@@ -4135,12 +4031,10 @@ msgid "Edit Data Template."
 msgstr "编辑数据模板."
 
 #: data_sources.php:876
-#, fuzzy
 msgid "Disable Data Source."
 msgstr "禁用数据源"
 
 #: data_sources.php:876
-#, fuzzy
 msgid "Enable Data Source."
 msgstr "启用数据源"
 
@@ -4149,7 +4043,6 @@ msgid "Selected Data Template"
 msgstr "选定的数据模板"
 
 #: data_sources.php:943
-#, fuzzy
 msgid "The name given to this data template.  Please note that you may only change Graph Templates to a 100%$ compatible Graph Template, which means that it includes identical Data Sources."
 msgstr "给这个数据模板的名字。 请注意，您只能将图形模板更改为百会之百兼容的图形模板，这意味着它包含相同的数据源。"
 
@@ -4211,27 +4104,23 @@ msgid "1 Minute"
 msgstr "1 分钟"
 
 #: data_sources.php:1365
-#, fuzzy
 msgid "Data Sources [ All Devices ]"
 msgstr "数据源 [无设备]"
 
 #: data_sources.php:1367
-#, fuzzy
 msgid "Data Sources [ Non Device Based ]"
 msgstr "数据源 [无设备]"
 
 #: data_sources.php:1370
-#, fuzzy, php-format
+#, php-format
 msgid "Data Sources [ %s ]"
 msgstr "数据源 [%s]"
 
 #: data_sources.php:1443
-#, fuzzy
 msgid "Bad Indexes"
 msgstr "索引"
 
 #: data_sources.php:1449 graphs.php:2032
-#, fuzzy
 msgid "Note that this query may take some time to run."
 msgstr "请注意，此查询可能需要一些时间才能运行。"
 
@@ -4244,8 +4133,6 @@ msgid "Data Source Name"
 msgstr "数据源名称"
 
 #: data_sources.php:1629
-#, fuzzy
-#| msgid "The name of this Data Source. Generally programtically generated from the Data Template definition."
 msgid "The name of this Data Source. Generally programmatically generated from the Data Template definition."
 msgstr "此数据源的名称. 通常通过数据模板定义以编程方式生成."
 
@@ -4254,7 +4141,6 @@ msgid "The internal database ID for this Data Source. Useful when performing aut
 msgstr "此数据源的内部数据库标识. 执行自动化或调试时很有用."
 
 #: data_sources.php:1641
-#, fuzzy
 msgid "The number of Graphs and Aggregate Graphs that are using the Data Source."
 msgstr "使用此数据查询的图形模板的数量."
 
@@ -4275,7 +4161,6 @@ msgid "The Data Template that this Data Source was based upon."
 msgstr "此数据源基于的数据模板."
 
 #: data_sources.php:1706
-#, fuzzy
 msgid "Damaged Data Source Name"
 msgstr "数据源名称"
 
@@ -4284,7 +4169,6 @@ msgid "No Data Sources Found"
 msgstr "无数据源"
 
 #: data_sources.php:1774
-#, fuzzy
 msgid "No Graphs"
 msgstr "图形"
 
@@ -4293,7 +4177,6 @@ msgid "Aggregates"
 msgstr "聚合"
 
 #: data_sources.php:1780
-#, fuzzy
 msgid "No Aggregates"
 msgstr "聚合"
 
@@ -4302,7 +4185,7 @@ msgid "Change Profile"
 msgstr "改变配置文件"
 
 #: data_templates.php:259
-#, fuzzy, php-format
+#, php-format
 msgid "Field \"%s\" is missing an Output Field"
 msgstr "字段“%s”缺少输出字段"
 
@@ -4364,7 +4247,6 @@ msgid "Check this checkbox if you wish to allow the user to override the value o
 msgstr "如果您希望允许用户在创建数据源期间覆盖右侧的值,请选中此复选框."
 
 #: data_templates.php:748
-#, fuzzy
 msgid "Data Templates in use can not be modified"
 msgstr "正在使用的数据模板无法修改"
 
@@ -4374,32 +4256,26 @@ msgid "Data Source Item [%s]"
 msgstr "数据源项目[%s]"
 
 #: data_templates.php:849
-#, fuzzy
 msgid "This value is disabled due to it either it value being derived from the Device or special Data Query object that keeps track of critical data Data Query associations."
 msgstr "此值被禁用，因为它的值是从设备或特殊数据查询对象派生的，该对象跟踪关键数据数据查询关联。"
 
 #: data_templates.php:861
-#, fuzzy
 msgid "This value is disabled due to it being derived from the Device and read only."
 msgstr "此值被禁用，因为它是从设备派生的并且是只读的。"
 
 #: data_templates.php:897
-#, fuzzy
 msgid "Value will be derived from the Device if this field is left empty."
 msgstr "如果此字段为空,则值将从设备派生."
 
 #: data_templates.php:965
-#, fuzzy
 msgid "Custom Data Warning Message"
 msgstr "自定义数据[数据输入: %s]"
 
 #: data_templates.php:966
-#, fuzzy
 msgid "WARNING: Data Loss can Occur"
 msgstr "警告：可能会发生数据丢失"
 
 #: data_templates.php:968
-#, fuzzy
 msgid "After you uncheck this checkbox and then Save the Data Template, any existing Data Sources based on this Data Template will loose their Custom Data.  This can result in broken Data Collection and Graphs"
 msgstr "取消选中此复选框然后保存数据模板后，任何基于此数据模板的现有数据源都将丢失其自定义数据。这可能会导致数据收集和图表损坏"
 
@@ -4453,8 +4329,6 @@ msgid "No Data Templates Found"
 msgstr "未找到数据模板"
 
 #: gprint_presets.php:148
-#, fuzzy
-#| msgid "Click 'Continue' to delete the folling GPRINT Preset(s)."
 msgid "Click 'Continue' to delete the following GPRINT Preset(s)."
 msgstr "点击 '继续' 删除以下GPRINT 预设."
 
@@ -4512,7 +4386,6 @@ msgid "No GPRINT Presets"
 msgstr "没有GPRINT 预设"
 
 #: graph.php:67
-#, fuzzy
 msgid "GRAPH DOES NOT EXIST"
 msgstr "图表不存在"
 
@@ -4529,8 +4402,6 @@ msgid "CSV Export"
 msgstr "CSV 导出"
 
 #: graph.php:143 graph.php:416 lib/html.php:526
-#, fuzzy
-#| msgid "Edit Graph Template."
 msgid "Edit Graph Template"
 msgstr "编辑图形模板."
 
@@ -4559,7 +4430,6 @@ msgid "RRDtool Graph Syntax"
 msgstr "RRDtool 图形语法"
 
 #: graph_image.php:181 graph_json.php:225 graph_realtime.php:237
-#, fuzzy
 msgid "The Cacti Poller has not run yet."
 msgstr "Cacti Poller 尚未运行."
 
@@ -4598,22 +4468,20 @@ msgid "Change Settings"
 msgstr "更改设置"
 
 #: graph_templates.php:40
-#, fuzzy
 msgid "Full Sync Graphs"
 msgstr "同步图"
 
 #: graph_templates.php:41
-#, fuzzy
 msgid "Quick Sync Graphs"
 msgstr "同步图"
 
 #: graph_templates.php:317 graph_templates.php:332
-#, fuzzy, php-format
+#, php-format
 msgid "Sync of Graph Template '%s' Resulted in %s Repairs!"
 msgstr "图表模板“%s”的同步导致 %s 次修复！"
 
 #: graph_templates.php:319 graph_templates.php:334
-#, fuzzy, php-format
+#, php-format
 msgid "Sync of Graph Template '%s' Resulted in no Repairs."
 msgstr "图表模板“%s”的同步导致没有修复。"
 
@@ -4654,7 +4522,6 @@ msgid "Resize Selected Graph Template(s)"
 msgstr "调整所选图形模板的大小"
 
 #: graph_templates.php:412
-#, fuzzy
 msgid "Click 'Continue' to perform a Full Synchronization between your Graphs and the chosen Graph Templates(s). If you simply have a situation where the Graph Items don't match the Graph Template, try the Quick Sync Graphs option first as it will take much less time.  This function is important if you have Graphs that exist with multiple versions of a Graph Template and wish to make them all common in appearance."
 msgstr "点击 '继续' 以使您的图形与以下图形模板同步. 如果图形存在多个图形模板版本并希望使其在外观上表现一致,那么则此功能非常重要."
 
@@ -4663,7 +4530,6 @@ msgid "Synchronize Graphs to Graph Template(s)"
 msgstr "同步图形到图形模板."
 
 #: graph_templates.php:421
-#, fuzzy
 msgid "Click 'Continue' to perform a Quick Synchronization of your Graphs for the following Graph Template(s). Use this option if your Graphs have Graph Items that do not match your Graph Template.  If this option does not work, use the Full Sync Graphs option, which will take more time to complete."
 msgstr "点击 '继续' 以使您的图形与以下图形模板同步. 如果图形存在多个图形模板版本并希望使其在外观上表现一致,那么则此功能非常重要."
 
@@ -4775,13 +4641,10 @@ msgid "Graph Template Items [edit graph: %s]"
 msgstr "图形模板项目[编辑图: %s]"
 
 #: graph_templates_items.php:538
-#, fuzzy
-#| msgid "Data Template Item"
 msgid "Data Template Filter"
 msgstr "数据模板项目"
 
 #: graph_templates_items.php:544
-#, fuzzy
 msgid "This filter will limit the Data Sources visible in the Data Source dropdown."
 msgstr "此过滤器将限制数据源下拉列表中可见的数据源。"
 
@@ -4846,13 +4709,10 @@ msgid "Graph Name"
 msgstr "图形名称"
 
 #: graph_view.php:740 graph_view.php:768 graphs.php:2242
-#, fuzzy
-#| msgid "The Title of this Graph.  Generally programatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual."
 msgid "The Title of this Graph.  Generally programmatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual."
 msgstr "这个图形的标题. 通常以图形模板定义或建议的命名规则编程式生成. 标题的最大长度在 '设置' -> '外观' 下进行控制."
 
 #: graph_view.php:745
-#, fuzzy
 msgid "The device for this Graph."
 msgstr "这个用户组的名称."
 
@@ -4861,7 +4721,6 @@ msgid "Source Type"
 msgstr "来源类型"
 
 #: graph_view.php:750 graphs.php:2254
-#, fuzzy
 msgid "The underlying source that this Graph was based upon."
 msgstr "这个图形基于的数据源."
 
@@ -4870,7 +4729,6 @@ msgid "Source Name"
 msgstr "源名称"
 
 #: graph_view.php:755 graphs.php:2260
-#, fuzzy
 msgid "The Graph Template or Data Query that this Graph was based upon."
 msgstr "此图形所基于的图形模板或数据查询."
 
@@ -4879,7 +4737,6 @@ msgid "The size of this Graph when not in Preview mode."
 msgstr "未处于预览模式时此图形的大小."
 
 #: graph_view.php:824
-#, fuzzy
 msgid "Select the Report to add the selected Graphs to."
 msgstr "选择将所选图形添加到哪个报告中."
 
@@ -4967,7 +4824,6 @@ msgid "Convert to Graph Template"
 msgstr "转换为图形模板"
 
 #: graphs.php:151 graphs.php:166
-#, fuzzy
 msgid "No Device - "
 msgstr "无设备"
 
@@ -5057,7 +4913,6 @@ msgid "Click 'Continue' to create an Aggregate Graph from the selected Graph(s).
 msgstr "点击 '继续',从选定的图形创建一个聚合图形."
 
 #: graphs.php:1017
-#, fuzzy
 msgid "The following Data Sources are in use by these Graphs:"
 msgstr "以下数据源正在由这些图形使用"
 
@@ -5112,7 +4967,7 @@ msgid "Edit Graph Template."
 msgstr "编辑图形模板."
 
 #: graphs.php:1544
-#, fuzzy, php-format
+#, php-format
 msgid "Edit Data Source: '%s'."
 msgstr "数据源 [%s]"
 
@@ -5129,7 +4984,7 @@ msgid "Selected Graph Template"
 msgstr "选择图形模板"
 
 #: graphs.php:1585
-#, fuzzy, php-format
+#, php-format
 msgid "Choose a Graph Template to apply to this Graph. Please note that you may only change Graph Templates to a 100%% compatible Graph Template, which means that it includes identical Data Sources."
 msgstr "选择一个图表模板应用到这个图表。 请注意，您只能将图形模板更改为百会之百兼容的图形模板，这意味着它包含相同的数据源。"
 
@@ -5150,34 +5005,27 @@ msgid "Graph Item Fields"
 msgstr "图形项字段"
 
 #: graphs.php:1975
-#, fuzzy
 msgid "Graph Management [ Custom Graphs List Applied - Clear to Reset ]"
 msgstr "[自定义图形列表应用 - 过滤器从列表]"
 
 #: graphs.php:1977
-#, fuzzy
 msgid "Graph Management [ All Devices ]"
 msgstr "所有设备的新图"
 
 #: graphs.php:1979
-#, fuzzy
 msgid "Graph Management [ Non Device Based ]"
 msgstr "用户组管理 [编辑: %s]"
 
 #: graphs.php:1982
-#, fuzzy, php-format
+#, php-format
 msgid "Graph Management [ %s ]"
 msgstr "图形管理"
 
 #: graphs.php:2052
-#, fuzzy
-#| msgid "Graph, Data Source"
 msgid "Graph Source"
 msgstr "图形,数据源"
 
 #: graphs.php:2057
-#, fuzzy
-#| msgid "Not Templated"
 msgid "Non Templated"
 msgstr "没有模板化"
 
@@ -5186,7 +5034,6 @@ msgid "The internal database ID for this Graph.  Useful when performing automati
 msgstr "此图的内部数据库ID. 执行自动化或调试时很有用."
 
 #: graphs.php:2292
-#, fuzzy
 msgid "Empty Graph"
 msgstr "复制图形"
 
@@ -5218,7 +5065,7 @@ msgid "Default Settings Saved"
 msgstr "默认设置已保存"
 
 #: graphs_new.php:346
-#, fuzzy, php-format
+#, php-format
 msgid "New Graphs for [ %s ] (%s %s)"
 msgstr "新图形 [ %s ]"
 
@@ -5274,17 +5121,17 @@ msgid "Select All Rows"
 msgstr "选择所有行"
 
 #: graphs_new.php:676
-#, fuzzy, php-format
+#, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id of '%s'"
 msgstr "为 ID 为“%s”的数据查询“%s”解析数据查询资源 XML 文件时出错"
 
 #: graphs_new.php:693
-#, fuzzy, php-format
+#, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
 msgstr "为 ID 为“%s”的数据查询“%s”解析数据查询资源 XML 文件时出错"
 
 #: graphs_new.php:697
-#, fuzzy, php-format
+#, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'"
 msgstr "为 ID 为“%s”的数据查询“%s”解析数据查询资源 XML 文件时出错"
 
@@ -5306,7 +5153,6 @@ msgid "You can run this Data Query in debug mode"
 msgstr "您可以在调试模式下运行此数据查询"
 
 #: graphs_new.php:875
-#, fuzzy
 msgid "The index is disabled due to the Data Query having no associated Graph Templates."
 msgstr "由于数据查询没有关联的图表模板，索引被禁用。"
 
@@ -5315,7 +5161,6 @@ msgid "Search Returned no Rows."
 msgstr "搜索没有返回行."
 
 #: graphs_new.php:930
-#, fuzzy
 msgid "Error in Data Query.  This could be due to the following: File Permissions, or a missing or improperly formatted Data Query XML file."
 msgstr "数据查询错误。这可能是由于以下原因： 文件权限，或丢失或格式不正确的数据查询 XML 文件。"
 
@@ -5372,47 +5217,40 @@ msgid "Sync to Device Template"
 msgstr "与设备模板同步"
 
 #: host.php:48
-#, fuzzy
 msgid "Place Device on Report"
 msgstr "将设备放置在树上"
 
 #: host.php:121
-#, fuzzy
 msgid "Data Query Re-indexed."
 msgstr "数据查询索引"
 
 #: host.php:129
-#, fuzzy
 msgid "Device Data Query Re-indexed.  Verbose output displayed."
 msgstr "设备数据查询重新索引。显示详细输出。"
 
 #: host.php:148
-#, fuzzy
 msgid "Device Debugging Enabled for Device."
 msgstr "为设备启用设备调试。"
 
 #: host.php:155
-#, fuzzy
 msgid "Device Debugging Disabled for Device."
 msgstr "设备已禁用"
 
 #: host.php:163
-#, fuzzy
 msgid "Poller Cache for Device Refreshed."
 msgstr "刷新设备的轮询缓存。"
 
 #: host.php:165
-#, fuzzy
 msgid "ERROR: Invalid Device ID."
 msgstr "ERROR: 设备["
 
 #: host.php:205
-#, fuzzy, php-format
+#, php-format
 msgid "Device Reindex Completed in %0.2f seconds.  There were %d items updated."
 msgstr "设备重新索引在％0.2f秒内完成。有％d个项目已更新。"
 
 #: host.php:332
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to add some Devices to Report '%s'"
 msgstr "无法连接到服务器"
 
@@ -5489,12 +5327,10 @@ msgid "Run Automation on Device(s)"
 msgstr "在设备上运行自动化"
 
 #: host.php:544
-#, fuzzy
 msgid "Add Devices to Report"
 msgstr "添加到报告"
 
 #: host.php:546
-#, fuzzy
 msgid "You currently have no Reports defined."
 msgstr "您目前没有定义报告."
 
@@ -5516,7 +5352,6 @@ msgid "Enable Device Debug"
 msgstr "启用设备调试"
 
 #: host.php:705
-#, fuzzy
 msgid "Repopulate Poller Cache"
 msgstr "重建poller 缓存"
 
@@ -5530,7 +5365,6 @@ msgid "Create Graphs for this Device"
 msgstr "为设备创建图形"
 
 #: host.php:722
-#, fuzzy
 msgid "Re-Index Device"
 msgstr "索引重建方法"
 
@@ -5671,7 +5505,6 @@ msgid "SNMP GetNext"
 msgstr "SNMP GetNext"
 
 #: host.php:1246
-#, fuzzy
 msgid "Delete Item from Device"
 msgstr "删除设备模板"
 
@@ -5857,7 +5690,6 @@ msgid "Add Data Query to Device Template"
 msgstr "将数据查询添加到设备模板"
 
 #: host_templates.php:584
-#, fuzzy
 msgid "Delete Item from Device Template"
 msgstr "删除设备模板"
 
@@ -5867,8 +5699,6 @@ msgid "Device Templates"
 msgstr "设备模板"
 
 #: host_templates.php:692 include/global_form.php:1351
-#, fuzzy
-#| msgid "Classic"
 msgid "Class"
 msgstr "经典"
 
@@ -5886,8 +5716,6 @@ msgid "The name of this Device Template."
 msgstr "设备模板的名称."
 
 #: host_templates.php:915
-#, fuzzy
-#| msgid "Device Rules"
 msgid "Device Class"
 msgstr "设备规则"
 
@@ -5954,7 +5782,6 @@ msgid "Installation In Progress"
 msgstr "安装进行中"
 
 #: include/auth.php:286
-#, fuzzy
 msgid "Only Cacti Administrators with Install/Upgrade privilege may login at this time"
 msgstr "此时只有具有安装/升级权限的Cacti 管理员才能登录"
 
@@ -5963,7 +5790,6 @@ msgid "There is an Installation or Upgrade in progress."
 msgstr "正在进行安装或升级."
 
 #: include/global.php:573
-#, fuzzy
 msgid "The Main Data Collector has returned to an Online Status"
 msgstr "此数据采集器最后一次与主Cacti 站点完全同步."
 
@@ -6008,7 +5834,6 @@ msgid "The Cacti log file must have the extension '.log'"
 msgstr "Cacti 日志文件必须具有扩展名'.log'"
 
 #: include/global_arrays.php:174
-#, fuzzy
 msgid "Data Input for method does not appear to be whitelisted."
 msgstr "数据输入的方法似乎未列入白名单."
 
@@ -6133,42 +5958,34 @@ msgid "You must select at least one object from the list."
 msgstr "您必须从列表中选择至少一个对象."
 
 #: include/global_arrays.php:267
-#, fuzzy
 msgid "Device Template updated.  Remember to Sync Devices to push all changes to Devices that use this Device Template."
 msgstr "设备模板已更新.  请记得同步模板以将所有更改推送到使用该模板的设备."
 
 #: include/global_arrays.php:270
-#, fuzzy
 msgid "Save Successful. Settings replicated to Remote Data Collectors."
 msgstr "保存成功. 配置已复制到远程数据采集器."
 
 #: include/global_arrays.php:273
-#, fuzzy
 msgid "Save Failed.  Minimum Values must be less than Maximum Value."
 msgstr "保存失败。最小值必须小于最大值。"
 
 #: include/global_arrays.php:276
-#, fuzzy
 msgid "Unable to change password.  User account not found."
 msgstr "无法更改密码。找不到用户帐户。"
 
 #: include/global_arrays.php:279
-#, fuzzy
 msgid "Data Input Saved.  You must update the Data Templates referencing this Data Input Method before creating Graphs or Data Sources."
 msgstr "数据输入已保存. 在创建图形或数据源之前,必须更新引用此数据输入方法的数据模板."
 
 #: include/global_arrays.php:282
-#, fuzzy
 msgid "Data Input Saved.  You must update the Data Templates referencing this Data Input Method before the Data Collectors will start using any new or modified Data Input - Input Fields."
 msgstr "数据输入已保存. 在数据采集器开始使用任何新的或修改的数据输入输入字段之前,必须更新引用此数据输入方法的数据模板."
 
 #: include/global_arrays.php:285
-#, fuzzy
 msgid "Data Input Field Saved.  You must update the Data Templates referencing this Data Input Method before creating Graphs or Data Sources."
 msgstr "数据输入字段已保存. 在创建图形或数据源之前,必须更新引用此数据输入方法的数据模板."
 
 #: include/global_arrays.php:288
-#, fuzzy
 msgid "Data Input Field Saved.  You must update the Data Templates referencing this Data Input Method before the Data Collectors will start using any new or modified Data Input - Input Fields."
 msgstr "数据输入字段已保存. 在数据采集器开始使用任何新的或修改的数据输入输入字段之前,必须更新引用此数据输入方法的数据模板."
 
@@ -6193,12 +6010,10 @@ msgid "You are not allowed to change your password."
 msgstr "您不允许更改您的密码."
 
 #: include/global_arrays.php:306
-#, fuzzy
 msgid "Unable to determine size of password field, please check permissions of db user"
 msgstr "无法确定密码字段的大小,请检查db用户的权限"
 
 #: include/global_arrays.php:309
-#, fuzzy
 msgid "Unable to increase size of password field, pleas check permission of db user"
 msgstr "无法增加密码字段的大小,请检查数据库用户的权限"
 
@@ -6223,7 +6038,6 @@ msgid "CSRF Timeout, refreshing page."
 msgstr "CSRF超时,刷新页面."
 
 #: include/global_arrays.php:327
-#, fuzzy
 msgid "CSRF Timeout occurred due to inactivity, page refreshed."
 msgstr "CSRF超时是由于不活动,页面刷新而发生的."
 
@@ -6240,7 +6054,6 @@ msgid "Data Collector(s) not found when attempting synchronization"
 msgstr "尝试同步时未找到数据采集器"
 
 #: include/global_arrays.php:339
-#, fuzzy
 msgid "Unable to establish MySQL connection with Remote Data Collector."
 msgstr "无法与远程数据采集器建立MySQL 连接."
 
@@ -6249,22 +6062,18 @@ msgid "Data Collector synchronization must be initiated from the main Cacti serv
 msgstr "数据采集器同步必须从主Cacti 服务器启动."
 
 #: include/global_arrays.php:345
-#, fuzzy
 msgid "Synchronization does not include the Central Cacti Database server."
 msgstr "同步不包括中央Cacti 数据库服务器."
 
 #: include/global_arrays.php:348
-#, fuzzy
 msgid "When saving a Remote Data Collector, the Database Hostname must be unique from all others."
 msgstr "保存远程数据采集器时,数据库主机名必须与所有其他数据库唯一."
 
 #: include/global_arrays.php:351
-#, fuzzy
 msgid "Your Remote Database Hostname must be something other than 'localhost' for each Remote Data Collector."
 msgstr "对于每个远程数据采集器,您的远程数据库主机名必须是 'localhost' 以外的其他名称."
 
 #: include/global_arrays.php:354
-#, fuzzy
 msgid "Path variables on this page were only saved locally."
 msgstr "此页面上的路径变量仅在本地保存。"
 
@@ -6301,7 +6110,6 @@ msgid "You must select at least one Graph to add to a Report."
 msgstr "您必须至少选择一个图形添加到报告中."
 
 #: include/global_arrays.php:381
-#, fuzzy
 msgid "All Graphs have been added to the Report.  Duplicate Graphs with the same Timespan were skipped."
 msgstr "所有图形都已添加到报告中.跳过了具有相同Timespan的重复图形."
 
@@ -6310,12 +6118,10 @@ msgid "Poller Resource Cache cleared.  Main Data Collector will rebuild at the n
 msgstr "Poller 资源缓存已清除.  主数据采集器将在下一个poller 启动时重建,并且远程数据采集器将在稍后进行同步."
 
 #: include/global_arrays.php:387
-#, fuzzy
 msgid "Permission Denied.  You do not have permission to the requested action."
 msgstr "没有权限。您无权执行所请求的操作。"
 
 #: include/global_arrays.php:390
-#, fuzzy
 msgid "Page is not defined.  Therefore, it can not be displayed."
 msgstr "页面未定义。因此，它无法显示。"
 
@@ -6472,22 +6278,18 @@ msgid "SHA"
 msgstr "SHA"
 
 #: include/global_arrays.php:650
-#, fuzzy
 msgid "SHA-224"
 msgstr "SHA-224"
 
 #: include/global_arrays.php:651
-#, fuzzy
 msgid "SHA-256"
 msgstr "SHA-256"
 
 #: include/global_arrays.php:652
-#, fuzzy
 msgid "SHA-392"
 msgstr "SHA-392"
 
 #: include/global_arrays.php:653
-#, fuzzy
 msgid "SHA-512"
 msgstr "SHA-512"
 
@@ -6496,33 +6298,26 @@ msgid "DES"
 msgstr "DES"
 
 #: include/global_arrays.php:659
-#, fuzzy
-#| msgid "DES"
 msgid "AES"
 msgstr "DES"
 
 #: include/global_arrays.php:660
-#, fuzzy
 msgid "AES-128"
 msgstr "AES-128"
 
 #: include/global_arrays.php:661
-#, fuzzy
 msgid "AES-192"
 msgstr "AES-192"
 
 #: include/global_arrays.php:662
-#, fuzzy
 msgid "AES-192-C"
 msgstr "AES-192"
 
 #: include/global_arrays.php:663
-#, fuzzy
 msgid "AES-256"
 msgstr "AES-256"
 
 #: include/global_arrays.php:664
-#, fuzzy
 msgid "AES-256-C"
 msgstr "AES-256"
 
@@ -6620,13 +6415,12 @@ msgid "Every %d Hours"
 msgstr "每 %d 小时"
 
 #: include/global_arrays.php:746
-#, fuzzy, php-format
+#, php-format
 msgid "Every %d Day"
 msgstr "每 %1 天"
 
 #: include/global_arrays.php:758
-#, fuzzy, php-format
-#| msgid "%d Minutes"
+#, php-format
 msgid "%0.1f Minutes"
 msgstr "%d 分"
 
@@ -6645,7 +6439,6 @@ msgid "Every day"
 msgstr "每天"
 
 #: include/global_arrays.php:824
-#, fuzzy
 msgid "1 Thread"
 msgstr "%d 线程"
 
@@ -6670,12 +6463,10 @@ msgid "Active Directory"
 msgstr "活动目录"
 
 #: include/global_arrays.php:891
-#, fuzzy
 msgid "LDAPS"
 msgstr "LDAP"
 
 #: include/global_arrays.php:892
-#, fuzzy
 msgid "LDAP + TLS"
 msgstr "LDAP + TLS"
 
@@ -6892,8 +6683,6 @@ msgid "Import Templates"
 msgstr "导入模板"
 
 #: include/global_arrays.php:1031 include/global_arrays.php:2660
-#, fuzzy
-#| msgid "Import Templates"
 msgid "Import Packages"
 msgstr "导入模板"
 
@@ -6956,20 +6745,14 @@ msgid "Access Points, Controllers"
 msgstr ""
 
 #: include/global_arrays.php:1083
-#, fuzzy
-#| msgid "Apply Automation Rules"
 msgid "Application Related"
 msgstr "应用自动化规则"
 
 #: include/global_arrays.php:1084
-#, fuzzy
-#| msgid "Cacti Report"
 msgid "Cacti Related"
 msgstr "Cacti 报告"
 
 #: include/global_arrays.php:1085
-#, fuzzy
-#| msgid "Database Status"
 msgid "Database Related"
 msgstr "数据库状态"
 
@@ -6978,14 +6761,10 @@ msgid "Facilities Related"
 msgstr ""
 
 #: include/global_arrays.php:1087
-#, fuzzy
-#| msgid "Generic Log Level"
 msgid "Generic Device"
 msgstr "基本日志级别"
 
 #: include/global_arrays.php:1088
-#, fuzzy
-#| msgid "Grid Options"
 msgid "HPC/Grid Computing"
 msgstr "网格选项"
 
@@ -7006,20 +6785,14 @@ msgid "Linux Related"
 msgstr ""
 
 #: include/global_arrays.php:1093
-#, fuzzy
-#| msgid "Load Balancing"
 msgid "Load Balancer"
 msgstr "负载均衡"
 
 #: include/global_arrays.php:1094
-#, fuzzy
-#| msgid "Network Filters"
 msgid "Network Switch"
 msgstr "网络过滤器"
 
 #: include/global_arrays.php:1095
-#, fuzzy
-#| msgid "Network Filters"
 msgid "Network Router"
 msgstr "网络过滤器"
 
@@ -7028,8 +6801,6 @@ msgid "NAS/SAN Related"
 msgstr ""
 
 #: include/global_arrays.php:1097
-#, fuzzy
-#| msgid "Network Filters"
 msgid "Network Firewalls"
 msgstr "网络过滤器"
 
@@ -7038,8 +6809,6 @@ msgid "Power Related PDUs/STS, etc."
 msgstr ""
 
 #: include/global_arrays.php:1099
-#, fuzzy
-#| msgid "Database Status"
 msgid "Printer Related"
 msgstr "数据库状态"
 
@@ -7048,8 +6817,6 @@ msgid "Storage Related"
 msgstr ""
 
 #: include/global_arrays.php:1101
-#, fuzzy
-#| msgid "Select Template"
 msgid "Telco Related"
 msgstr "选择模板"
 
@@ -7108,7 +6875,6 @@ msgid "Sites/Devices/Data"
 msgstr "站点/设备/数据"
 
 #: include/global_arrays.php:1235
-#, fuzzy
 msgid "Spike Handling"
 msgstr "尖峰削除设置"
 
@@ -7121,7 +6887,6 @@ msgid "Log Viewing"
 msgstr "日志查看"
 
 #: include/global_arrays.php:1250
-#, fuzzy
 msgid "Reports Administration"
 msgstr "日志管理"
 
@@ -7130,12 +6895,10 @@ msgid "Reports Creation"
 msgstr "报告创建"
 
 #: include/global_arrays.php:1252
-#, fuzzy
 msgid "Show Graph Action Icons"
 msgstr "显示图形标题"
 
 #: include/global_arrays.php:1253
-#, fuzzy
 msgid "Show User Help Links"
 msgstr "显示用户帮助链接"
 
@@ -7402,7 +7165,7 @@ msgid "%s Hours"
 msgstr "%s 小时"
 
 #: include/global_arrays.php:1605
-#, fuzzy, php-format
+#, php-format
 msgid "%d GByte"
 msgstr "%d GBytes"
 
@@ -7559,17 +7322,14 @@ msgid "Convert to LINE3 Graph"
 msgstr "转换为LINE3图形"
 
 #: include/global_arrays.php:1719
-#, fuzzy
 msgid "Convert to LINE1/STACK Graph"
 msgstr "转换为LINE1图形"
 
 #: include/global_arrays.php:1720
-#, fuzzy
 msgid "Convert to LINE2/STACK Graph"
 msgstr "转换为LINE2图形"
 
 #: include/global_arrays.php:1721
-#, fuzzy
 msgid "Convert to LINE3/STACK Graph"
 msgstr "转换为LINE3图形"
 
@@ -7578,12 +7338,10 @@ msgid "No Totals"
 msgstr "没有总计"
 
 #: include/global_arrays.php:1726
-#, fuzzy
 msgid "Print All Legend Items"
 msgstr "打印所有图例项目"
 
 #: include/global_arrays.php:1727
-#, fuzzy
 msgid "Print Totaling Legend Items Only"
 msgstr "仅打印总计图例项目"
 
@@ -7608,7 +7366,6 @@ msgid "Graph, Data Source"
 msgstr "图形,数据源"
 
 #: include/global_arrays.php:1739
-#, fuzzy
 msgid "Base Graph Order"
 msgstr "有图"
 
@@ -7766,22 +7523,18 @@ msgid "Dec"
 msgstr "十二月"
 
 #: include/global_arrays.php:1925
-#, fuzzy
 msgid "Use the First Handler Found"
 msgstr "使用 PHP GetText 处理程序"
 
 #: include/global_arrays.php:1929
-#, fuzzy
 msgid "Use the PHP GetText Handler"
 msgstr "使用 PHP GetText 处理程序"
 
 #: include/global_arrays.php:1933
-#, fuzzy
 msgid "Use the Oscarotero GetText Handler"
 msgstr "使用 Oscarotero GetText 处理程序"
 
 #: include/global_arrays.php:1937
-#, fuzzy
 msgid "Use the MonoTranslator GetText Handler"
 msgstr "使用 MonoTranslator GetText 处理程序"
 
@@ -7941,8 +7694,6 @@ msgid "[Warning]"
 msgstr "[警告]"
 
 #: include/global_arrays.php:1997
-#, fuzzy
-#| msgid "Restricted"
 msgid "[Restart]"
 msgstr "受限的"
 
@@ -8046,7 +7797,6 @@ msgid "List unused Files"
 msgstr "列出未使用的文件"
 
 #: include/global_arrays.php:2450
-#, fuzzy
 msgid "RRD Check"
 msgstr "运行检查"
 
@@ -8103,8 +7853,6 @@ msgid "(Action)"
 msgstr "(启动)"
 
 #: include/global_arrays.php:2636
-#, fuzzy
-#| msgid "Cacti Home"
 msgid "Cacti Help"
 msgstr "Cacti 首页"
 
@@ -8275,12 +8023,11 @@ msgid "Maximum OIDs Per Get Request"
 msgstr "每个获取请求的最大 OIDs"
 
 #: include/global_form.php:148
-#, fuzzy
 msgid "The number of SNMP OIDs that can be obtained in a single SNMP Get request."
 msgstr "指定可在单次SNMP 请求中采集的OID 数量."
 
 #: include/global_form.php:152
-#, fuzzy, php-format
+#, php-format
 msgid "%d OID"
 msgstr "Max OID"
 
@@ -8292,32 +8039,28 @@ msgstr "Max OID"
 #: include/global_form.php:163 include/global_form.php:164
 #: include/global_form.php:165 include/global_form.php:166
 #: include/global_form.php:167
-#, fuzzy, php-format
+#, php-format
 msgid "%d OID's"
 msgstr "%d 个 OID"
 
 #: include/global_form.php:172
-#, fuzzy
 msgid "Bulk Walk Maximum Repetitions"
 msgstr "批量步行最大重复次数"
 
 #: include/global_form.php:173
-#, fuzzy
 msgid "For SNMPv2 and SNMPv3 Devices, the SNMP Bulk Walk max-repetitions size. The default is to 'Auto Detect on Re-Index'. For very large switches, high performance servers, Jumbo Frame Networks or for high latency WAN connections, increasing this value may increase poller performance. More data is packed into a single SNMP packet which can reduce data query run time. However, some devices may completely refuse to respond to packets with a max-repetition size which is set too large. This can be especially true for lower-powered IoT type devices or smaller embedded IT appliances. Special attention to the overall network path MTU should also be considered since setting a value which is too high could lead to packet fragmentation."
 msgstr "对于 SNMPv2 和 SNMPv3 设备，SNMP Bulk Walk max-repetitions 大小。默认为“重新索引时自动检测”。对于超大型交换机、高性能服务器、巨型帧网络或高延迟 WAN 连接，增加此值可能会提高轮询器性能。更多的数据被打包到一个 SNMP 数据包中，这可以减少数据查询的运行时间。然而，一些设备可能会完全拒绝响应最大重复大小设置过大的数据包。对于功率较低的物联网类型设备或较小的嵌入式 IT 设备来说尤其如此。还应特别注意整个网络路径 MTU，因为设置过高的值可能会导致数据包碎片。"
 
 #: include/global_form.php:177
-#, fuzzy
 msgid "Auto Detect on Re-Index"
 msgstr "重新索引时自动检测"
 
 #: include/global_form.php:178
-#, fuzzy
 msgid "Auto Detect/Set on first Re-Index"
 msgstr "第一次重新索引时自动检测/设置"
 
 #: include/global_form.php:179
-#, fuzzy, php-format
+#, php-format
 msgid "%d Repitition"
 msgstr "日志保留个数"
 
@@ -8329,7 +8072,7 @@ msgstr "日志保留个数"
 #: include/global_form.php:190 include/global_form.php:191
 #: include/global_form.php:192 include/global_form.php:193
 #: include/global_form.php:194
-#, fuzzy, php-format
+#, php-format
 msgid "%d Repetitions"
 msgstr "网格选项"
 
@@ -8470,7 +8213,6 @@ msgid "White List Check"
 msgstr "白名单检查"
 
 #: include/global_form.php:426
-#, fuzzy
 msgid "The result of the Whitespace verification check for the specific Input Method.  If the Input String changes, and the Whitelist file is not update, Graphs will not be allowed to be created."
 msgstr "对特定输入法进行空白验证检查的结果.如果输入字符串更改,并且白名单文件未更新,则不允许创建图形."
 
@@ -9021,12 +8763,10 @@ msgid "Check this checkbox if there can be more than one Graph of this type per 
 msgstr "如果每个设备可以有多个此类型的图形,请选中此复选框."
 
 #: include/global_form.php:1118
-#, fuzzy
 msgid "Test Data Sources"
 msgstr "有数据源"
 
 #: include/global_form.php:1119
-#, fuzzy
 msgid "Check this checkbox if you wish to test the Data Sources prior to their creation.  With Test Data Sources enabled, if the Data Source does not return valid data, the Graph will not be created.  This setting is important if you wish to have a more generic Device Template that can include more Graph Templates that can be selectively applied depending on the characteristics of the Device itself.  Note: If you have a long running script as a Data Source, the time to create Graphs will be increased."
 msgstr "如果您希望在创建数据源之前对其进行测试，请选中此复选框。启用测试数据源后，如果数据源未返回有效数据，则不会创建图表。如果您希望拥有一个更通用的设备模板，该模板可以包含更多可以根据设备本身的特性有选择地应用的图形模板，则此设置很重要。注意：如果你有一个长时间运行的脚本作为数据源，创建图表的时间将会增加。"
 
@@ -9136,8 +8876,6 @@ msgid "A useful name for this host template."
 msgstr "主机模板的一个有用的名字."
 
 #: include/global_form.php:1352
-#, fuzzy
-#| msgid "A useful name for this Template."
 msgid "A suitable Class for the Device Template."
 msgstr "模板的一个有用的名字."
 
@@ -9283,8 +9021,6 @@ msgid "If the XML file containing template data is located on your local machine
 msgstr "如果包含模板数据的XML文件位于本地计算机上,请在此处选择它."
 
 #: include/global_form.php:1689 package_import.php:833
-#, fuzzy
-#| msgid "Data Source Profiles"
 msgid "Data Source Overrides"
 msgstr "数据源配置文件"
 
@@ -9293,8 +9029,6 @@ msgid "Create New from Template"
 msgstr "从模板新建"
 
 #: include/global_form.php:1703 package_import.php:847
-#, fuzzy
-#| msgid "Graph Template Options"
 msgid "Graph/Data Template Overrides"
 msgstr "图形模板选项"
 
@@ -9320,8 +9054,6 @@ msgid "Graph Template Image Format"
 msgstr "图形模板图像格式"
 
 #: include/global_form.php:1723 package_import.php:867
-#, fuzzy
-#| msgid "The default Image Format to be used for all new Graph Templates."
 msgid "The Image Format to be used when importing or updating Graph Templates."
 msgstr "用于所有新图形模板的默认图像格式."
 
@@ -9331,8 +9063,6 @@ msgid "Graph Template Height"
 msgstr "图形模板高度"
 
 #: include/global_form.php:1730 package_import.php:875
-#, fuzzy
-#| msgid "The default Graph Width to be used for all new Graph Templates."
 msgid "The Height to be used when importing or updating Graph Templates."
 msgstr "用于所有新图形模板的默认图形宽度."
 
@@ -9342,8 +9072,6 @@ msgid "Graph Template Width"
 msgstr "图形模板宽度"
 
 #: include/global_form.php:1738 package_import.php:884
-#, fuzzy
-#| msgid "The default Graph Width to be used for all new Graph Templates."
 msgid "The Width to be used when importing or updating Graph Templates."
 msgstr "用于所有新图形模板的默认图形宽度."
 
@@ -9394,13 +9122,11 @@ msgstr "所有GPRINT 行的前缀,以区分例如 不同的主机."
 
 #: include/global_form.php:1840 include/global_form.php:1926
 #: include/global_form.php:2031
-#, fuzzy
 msgid "Include Prefix Text"
 msgstr "包含索引"
 
 #: include/global_form.php:1841 include/global_form.php:1927
 #: include/global_form.php:2032
-#, fuzzy
 msgid "Include the source Graphs GPRINT Title Text with the Aggregate Graph(s)."
 msgstr "将源图GPRINT标题文本包含在汇总图中。"
 
@@ -9761,12 +9487,10 @@ msgid "The path to your Cacti log file (if blank, defaults to &lt;path_cacti&gt;
 msgstr "指定 Cacti 日志文件路径 (留空默认使用 &lt;path_cacti&gt;/log/cacti.log )"
 
 #: include/global_settings.php:181
-#, fuzzy
 msgid "Poller Standard Error Log Path"
 msgstr "poller 标准错误日志路径"
 
 #: include/global_settings.php:182
-#, fuzzy
 msgid "If you are having issues with Cacti's Data Collectors, set this file path and the Data Collectors standard error will be redirected to this file"
 msgstr "如果您遇到Cacti 数据采集器的问题,请设置此文件路径,并将数据采集器的标准错误重定向到此文件"
 
@@ -9811,7 +9535,6 @@ msgid "Spine Config File Path"
 msgstr "Spine 配置文件路径"
 
 #: include/global_settings.php:226
-#, fuzzy
 msgid "The path to Spine configuration file.  By default, in the cwd of Spine, or /etc if not specified."
 msgstr "Spine 配置文件的路径.默认情况下,在Spine 的cwd 中,如果未指定,则为/etc."
 
@@ -9868,17 +9591,14 @@ msgid "Log Input Validation Issues"
 msgstr "日志输入验证问题"
 
 #: include/global_settings.php:283
-#, fuzzy
 msgid "Record when request fields are accessed without going through proper input validation"
 msgstr "记录何时访问请求字段而不进行适当的输入验证"
 
 #: include/global_settings.php:288
-#, fuzzy
 msgid "Data Source Tracing"
 msgstr "数据源使用"
 
 #: include/global_settings.php:289
-#, fuzzy
 msgid "A developer only option to trace the creation of Data Sources mainly around checks for uniqueness"
 msgstr "仅限开发人员选项，用于跟踪数据源的创建，主要围绕检查唯一性"
 
@@ -9907,12 +9627,10 @@ msgid "A comma delimited list of Device ID's that you wish to be in Debug mode d
 msgstr "在数据采集期间,您希望处于调试模式的设备ID 列表(以逗号分隔). 此调试级别仅在Cacti 采集过程中适用."
 
 #: include/global_settings.php:316
-#, fuzzy
 msgid "Syslog/Eventlog Item Selection"
 msgstr "系统日志/事件日志项目选择"
 
 #: include/global_settings.php:317
-#, fuzzy
 msgid "When using Syslog/Eventlog for logging, the Cacti log messages that will be forwarded to the Syslog/Eventlog."
 msgstr "使用Syslog/Eventlog 进行日志记录时,会将Cacti 日志消息转发到Syslog/Eventlog."
 
@@ -9929,7 +9647,6 @@ msgid "Errors"
 msgstr "错误"
 
 #: include/global_settings.php:336
-#, fuzzy
 msgid "Internationalization (i18n)"
 msgstr "国际化 (i18n)"
 
@@ -9958,18 +9675,14 @@ msgid "Allow to automatically determine the 'default' language of the user and p
 msgstr "允许自动确定用户的 '默认' 语言,如果Cacti支持该语言,则在登录时提供该语言. 如果禁用,默认语言将有效,直到用户选择另一种语言."
 
 #: include/global_settings.php:365
-#, fuzzy
 msgid "Preferred Language Processor"
 msgstr "首选语言处理器"
 
 #: include/global_settings.php:366
-#, fuzzy
 msgid "Cacti includes support for multiple alternate Language Translation Processors.  If none is selected Cacti will attempt to use the first one found."
 msgstr "Cacti 包括对多个备用语言翻译处理器的支持。默认使用 PHP 内置支持，但并非所有 Linux 变体都包含内置语言支持。如果未选中，Cacti 将选择找到的第一个。"
 
 #: include/global_settings.php:372
-#, fuzzy
-#| msgid "MySQL - TimeZone Support"
 msgid "Client TimeZone Support"
 msgstr "MySQL - 时区支持"
 
@@ -9998,8 +9711,6 @@ msgid "Other Settings"
 msgstr "其他设置"
 
 #: include/global_settings.php:401
-#, fuzzy
-#| msgid "Set any graph specific options here."
 msgid "Show only site specific locations"
 msgstr "在这里设置任何图形特定选项."
 
@@ -10024,8 +9735,6 @@ msgid "The version of RRDtool that you have installed."
 msgstr "您已安装的RRDtool 版本."
 
 #: include/global_settings.php:420
-#, fuzzy
-#| msgid "Enable Report"
 msgid "Enable Gradient Support"
 msgstr "启用报告"
 
@@ -10038,8 +9747,6 @@ msgid "Graph Permission Method"
 msgstr "图形权限方法"
 
 #: include/global_settings.php:427
-#, fuzzy
-#| msgid "There are two methods for determining a User's Graph Permissions.  The first is 'Permissive'.  Under the 'Permissive' setting, a User only needs access to either the Graph, Device or Graph Template to gain access to the Graphs that apply to them.  Under 'Restrictive', the User must have access to the Graph, the Device, and the Graph Template to gain access to the Graph."
 msgid "There are four methods for determining a User's Graph Permissions.  The first is 'Permissive'.  Under the 'Permissive' setting, a User only needs access to either the Graph, Device or Graph Template to gain access to the Graphs that apply to them.  Under 'Restrictive', the User must have access to the Graph, the Device, and the Graph Template to gain access to the Graph.  These first two methods have scalability problems for very large installs.  So, two additional options are available.  They are 'Device Based', which means if you have access to the Device, you get access to it's Graphs.  And lastly 'Graph Template Based', which means if you have access to the 'Graph Template' you get access to all Device Graphs of that Template."
 msgstr "有两种方法可以确定用户的图形权限. 首先是 '宽松'. 在 '宽松' 设置下,用户只需要访问 '图形', '设备' 或 '图形模板' 即可访问适用于其的图形. 在 '严格' 下,用户必须有权访问图形,设备和图形模板才能访问图形."
 
@@ -10052,8 +9759,6 @@ msgid "Restrictive"
 msgstr "严格"
 
 #: include/global_settings.php:433
-#, fuzzy
-#| msgid "Device Name"
 msgid "Device Based"
 msgstr "设备名称"
 
@@ -10082,7 +9787,6 @@ msgid "When checked, Form and Setting Help will be show inline.  Otherwise it wi
 msgstr "选中后,表格和设置帮助将内嵌显示. 否则,当鼠标悬停在帮助按钮上时,会显示它."
 
 #: include/global_settings.php:454
-#, fuzzy
 msgid "Local Page Help Only"
 msgstr "获取帮助"
 
@@ -10099,22 +9803,18 @@ msgid "Prompt user before item deletion."
 msgstr "在删除项目之前提示用户."
 
 #: include/global_settings.php:466
-#, fuzzy
 msgid "Data Source Preservation Preset"
 msgstr "图形/数据源创建方法"
 
 #: include/global_settings.php:467
-#, fuzzy
 msgid "When enabled, Cacti will set Radio Button to Delete related Data Sources of a Graph when removing Graphs.  Note: Cacti will not allow the removal of Data Sources if they are used in other Graphs."
 msgstr "启用后，Cacti将在删除图形时将单选按钮设置为删除图形的相关数据源。注意：如果其他图形中使用了数据源，则Cacti不允许删除数据源。"
 
 #: include/global_settings.php:472
-#, fuzzy
 msgid "Graphs Auto Unlock"
 msgstr "图匹配规则"
 
 #: include/global_settings.php:473
-#, fuzzy
 msgid "When enabled, Cacti will not lock Graphs.  This allow a faster manual modification of Data Sources related to a Graph."
 msgstr "启用后，Cacti将不会锁定图表。这样可以更快地手动修改与图形相关的数据源。"
 
@@ -10123,7 +9823,6 @@ msgid "Hide Cacti Dashboard"
 msgstr "隐藏Cacti 仪表板"
 
 #: include/global_settings.php:479
-#, fuzzy
 msgid "For use with Cacti's External Link Support.  Using this setting, you can hide the Cacti Dashboard, so you can display just your own page."
 msgstr "用于Cacti 的外部链接支持.使用此设置,您可以隐藏Cacti 仪表板,这样您就可以只显示自己的页面."
 
@@ -10148,22 +9847,18 @@ msgid "When checked, any attempts to access Cacti will be redirected to HTTPS to
 msgstr "选中后, Cacti 的所有访问都将被重定向到HTTPS 以确保高安全性."
 
 #: include/global_settings.php:502
-#, fuzzy
 msgid "Content-Security Allow Unsafe JavaScript eval() calls"
 msgstr "允许不安全的JavaScript eval（）调用"
 
 #: include/global_settings.php:503
-#, fuzzy
 msgid "Certain Cacti plugins require the use of unsafe JavaScript eval() calls.  If you select this option, they will be allowed in Cacti."
 msgstr "某些Cacti插件需要使用不安全的JavaScript eval（）调用。如果选择此选项，则仙人掌中将允许它们。"
 
 #: include/global_settings.php:511
-#, fuzzy
 msgid "Content-Security Alternate Sources"
 msgstr "内容安全替代来源"
 
 #: include/global_settings.php:512
-#, fuzzy
 msgid "Space delimited domain names that will be permitted to be accessed outside of the Web Server itself.  This is important for users choosing to use a CDN, or hosting site.  Sources can includes wildcards for example: *.mydomain.com, or a protocol, for example: https://*.example.com.  These Alternate Sources include Image, CSS and JavaScript types only."
 msgstr "将允许在 Web 服务器本身之外访问的空格分隔的域名。这对于选择使用 CDN 或托管站点的用户来说很重要。来源可以包括通配符，例如：*.mydomain.com，或协议，例如：https://*.example.com。这些替代源仅包括图像、CSS 和 JavaScript 类型。"
 
@@ -10172,7 +9867,6 @@ msgid "Enable Automatic Graph Creation"
 msgstr "开启自动创建图形"
 
 #: include/global_settings.php:526
-#, fuzzy
 msgid "When disabled, Cacti Automation will not actively create any Graph.  This is useful when adjusting Device settings so as to avoid creating new Graphs each time you save an object.  Invoking Automation Rules manually will still be possible."
 msgstr "禁用时,Cacti Automation不会主动创建任何图形.这在调整设备设置时非常有用,以避免每次保存对象时都创建新的图形.仍然可以手动调用自动化规则."
 
@@ -10181,17 +9875,14 @@ msgid "Enable Automatic Tree Item Creation"
 msgstr "开启自动创建树项目"
 
 #: include/global_settings.php:532
-#, fuzzy
 msgid "When disabled, Cacti Automation will not actively create any Tree Item.  This is useful when adjusting Device or Graph settings so as to avoid creating new Tree Entries each time you save an object.  Invoking Rules manually will still be possible."
 msgstr "禁用时,Cacti Automation不会主动创建任何树项.在调整 '设备' 或 '图形' 设置时,这非常有用,以避免每次保存对象时都创建新的树条目.仍然可以手动调用规则."
 
 #: include/global_settings.php:536
-#, fuzzy
 msgid "Automation Notification To Email"
 msgstr "自动通知的收件人"
 
 #: include/global_settings.php:537
-#, fuzzy
 msgid "The Email Address to send Automation Notification Emails to if not specified at the Automation Network level.  If either this field, or the Automation Network value are left blank, Cacti will use the Primary Cacti Admins Email account."
 msgstr "如果未在自动化网络级别指定,则发送自动化通知电子邮件的电子邮件地址.如果此字段或自动化网络值保留为空,Cacti 将使用Primary Cacti Admins Email帐户."
 
@@ -10200,32 +9891,26 @@ msgid "Automation Notification From Name"
 msgstr "自动通知的发件人"
 
 #: include/global_settings.php:544
-#, fuzzy
 msgid "The Email Name to use for Automation Notification Emails to if not specified at the Automation Network level.  If either this field, or the Automation Network value are left blank, Cacti will use the system default From Name."
 msgstr "如果未在自动化网络级别指定,则用于自动化通知的电子邮件名称将发送电子邮件.如果此字段或自动化网络值保留为空,Cacti 将使用名称作为系统默认."
 
 #: include/global_settings.php:551
-#, fuzzy
 msgid "Automation Notification From Email"
 msgstr "自动通知来自哪个邮件地址"
 
 #: include/global_settings.php:552
-#, fuzzy
 msgid "The Email Address to use for Automation Notification Emails to if not specified at the Automation Network level.  If either this field, or the Automation Network value are left blank, Cacti will use the system default From Email Address."
 msgstr "如果未在自动化网络级别指定,则用于自动化通知的电子邮件地址将发送电子邮件.如果此字段或自动化网络值保留为空,Cacti 将使用系统默认的 '发件人'."
 
 #: include/global_settings.php:558
-#, fuzzy
 msgid "Graph Template Defaults"
 msgstr "图形模板基础"
 
 #: include/global_settings.php:564
-#, fuzzy
 msgid "Graph Template Test Data Source"
 msgstr "图形,数据源"
 
 #: include/global_settings.php:565
-#, fuzzy
 msgid "Check this checkbox if you wish to test the Data Sources prior to their creation for new and newly imported Graph Templates.  With Test Data Sources enabled, if the Data Source does not return valid data, the Graph will not be created.  This setting is important if you wish to have a more generic Device Template that can include more Graph Templates that can be selectively applied depending on the characteristics of the Device itself.  Note: If you have a long running script as a Data Source, the time to create Graphs will be increased."
 msgstr "如果您希望在创建新的和新导入的图形模板之前测试数据源，请选中此复选框。启用测试数据源后，如果数据源未返回有效数据，则不会创建图表。如果您希望拥有一个更通用的设备模板，该模板可以包含更多可以根据设备本身的特性有选择地应用的图形模板，则此设置很重要。注意：如果你有一个长时间运行的脚本作为数据源，创建图表的时间将会增加。"
 
@@ -10234,8 +9919,6 @@ msgid "The default Image Format to be used for all new Graph Templates."
 msgstr "用于所有新图形模板的默认图像格式."
 
 #: include/global_settings.php:577
-#, fuzzy
-#| msgid "The default Graph Width to be used for all new Graph Templates."
 msgid "The default Graph Height to be used for all new Graph Templates."
 msgstr "用于所有新图形模板的默认图形宽度."
 
@@ -10248,7 +9931,6 @@ msgid "General Defaults"
 msgstr "常规默认值"
 
 #: include/global_settings.php:600
-#, fuzzy
 msgid "The default Device Template used on all new Devices."
 msgstr "所有新设备上使用的默认设备模板."
 
@@ -10265,12 +9947,11 @@ msgid "Device Threads"
 msgstr "设备线程"
 
 #: include/global_settings.php:624
-#, fuzzy
 msgid "The default number of Device Threads.  This is only applicable when using the Spine Data Collector."
 msgstr "设备线程的默认数量.这仅适用于使用Spine Data Collector时."
 
 #: include/global_settings.php:628
-#, fuzzy, php-format
+#, php-format
 msgid "%s Thread"
 msgstr "%d 线程"
 
@@ -10279,7 +9960,7 @@ msgstr "%d 线程"
 #: include/global_settings.php:633 include/global_settings.php:634
 #: include/global_settings.php:635 include/global_settings.php:636
 #: include/global_settings.php:637
-#, fuzzy, php-format
+#, php-format
 msgid "%s Threads"
 msgstr "%d 线程"
 
@@ -10292,47 +9973,38 @@ msgid "The default Re-index Method to use for all Data Queries."
 msgstr "用于所有数据查询的默认重新索引方法."
 
 #: include/global_settings.php:648
-#, fuzzy
 msgid "Default Interface Speed"
 msgstr "默认图形类型"
 
 #: include/global_settings.php:649
-#, fuzzy
 msgid "If Cacti can not determine the interface speed due to either ifSpeed or ifHighSpeed not being set or being zero, what maximum value do you wish on the resulting RRDfiles."
 msgstr "如果Cacti无法确定由于ifSpeed或ifHighSpeed未设置或为零而导致的接口速度，那么您希望在生成的RRDfiles上获得什么最大值。"
 
 #: include/global_settings.php:653
-#, fuzzy
 msgid "100 Mbps Ethernet"
 msgstr "100 Mbps以太网"
 
 #: include/global_settings.php:654
-#, fuzzy
 msgid "1 Gbps Ethernet"
 msgstr "1 Gbps以太网"
 
 #: include/global_settings.php:655
-#, fuzzy
 msgid "10 Gbps Ethernet"
 msgstr "10 Gbps以太网"
 
 #: include/global_settings.php:656
-#, fuzzy
 msgid "25 Gbps Ethernet"
 msgstr "25 Gbps以太网"
 
 #: include/global_settings.php:657
-#, fuzzy
 msgid "40 Gbps Ethernet"
 msgstr "40 Gbps以太网"
 
 #: include/global_settings.php:658
-#, fuzzy
 msgid "56 Gbps Ethernet"
 msgstr "56 Gbps以太网"
 
 #: include/global_settings.php:659
-#, fuzzy
 msgid "100 Gbps Ethernet"
 msgstr "100 Gbps以太网"
 
@@ -10437,12 +10109,10 @@ msgid "Default Ping type for all new Devices.</i>"
 msgstr "所有新设备的默认Ping 类型.</i>"
 
 #: include/global_settings.php:789
-#, fuzzy
 msgid "Default Ping Port for all new Devices.  With TCP, Cacti will attempt to Syn the port.  With UDP, Cacti requires either a successful connection, or a 'port not reachable' error to determine if the Device is up or not."
 msgstr "所有新设备的默认Ping 端口. 如使用TCP, Cacti 将尝试发送syn包到端口.如使用UDP,Cacti 则要么成功连接,要么 '端口无法访问' 错误, 以确定设备是否已启动."
 
 #: include/global_settings.php:797
-#, fuzzy
 msgid "Default Ping Timeout value in milli-seconds for all new Devices.  The timeout values to use for Device SNMP, ICMP, UDP and TCP pinging.  ICMP Pings will be rounded up to the nearest second.  TCP and UDP connection timeouts on Windows are controlled by the operating system, and are therefore not recommended on Windows."
 msgstr "所有新设备的默认Ping 超时值(以毫秒为单位).用于设备SNMP,ICMP,UDP和TCP ping的超时值. ICMP Pings 将四舍五入到最接近的秒数. Windows 上的TCP 和UDP 连接超时由操作系统控制,因此不建议在Windows 上使用."
 
@@ -10516,22 +10186,18 @@ msgid "The default number of rows to return from an autocomplete based select pa
 msgstr "从基于自动完成的选择模式匹配返回的默认列数."
 
 #: include/global_settings.php:881 include/global_settings.php:2776
-#, fuzzy
 msgid "Minimum Tree Width"
 msgstr "最小长度"
 
 #: include/global_settings.php:882 include/global_settings.php:2777
-#, fuzzy
 msgid "The Minimum width of the Tree to contract to."
 msgstr "要收缩的树的最小宽度。"
 
 #: include/global_settings.php:889 include/global_settings.php:2784
-#, fuzzy
 msgid "Maximum Tree Width"
 msgstr "标题长度最大值"
 
 #: include/global_settings.php:890 include/global_settings.php:2785
-#, fuzzy
 msgid "The Maximum width of the Tree to expand to, after which time, Tree branches will scroll on the page."
 msgstr "要扩展到的最大树的宽度，此后，树枝将在页面上滚动。"
 
@@ -10540,12 +10206,10 @@ msgid "Filter Settings"
 msgstr "过滤器设置"
 
 #: include/global_settings.php:902
-#, fuzzy
 msgid "Strip Domains from Device Dropdowns"
 msgstr "从设备下拉列表中剥离域"
 
 #: include/global_settings.php:903
-#, fuzzy
 msgid "When viewing Device name filter dropdowns, checking this option will strip to domain from the hostname."
 msgstr "在查看设备名称过滤器下拉菜单时，选中此选项将从主机名剥离到域。"
 
@@ -10646,12 +10310,10 @@ msgid "This timespan you wish to see on the default graph."
 msgstr "您希望在默认图形上看到这个时间段."
 
 #: include/global_settings.php:1002
-#, fuzzy
 msgid "Minimum Refresh Interval"
 msgstr "刷新频率"
 
 #: include/global_settings.php:1003
-#, fuzzy
 msgid "This is the minimal supported time between Graph updates.  This value is also used to set certain RRDfile attributes.  If you have a Device that caches data and does not provide realtime updates, you may have to increase the default Minimum Refresh Interval to prevent creating Graphs with gaps."
 msgstr "这是图表更新之间支持的最短时间。此值还用于设置某些 RRDfile 属性。如果您的设备缓存数据并且不提供实时更新，您可能需要增加默认的最小刷新间隔以防止创建有间隙的图形。"
 
@@ -10664,12 +10326,10 @@ msgid "This is the location, on the web server where the RRDfiles and PNG files 
 msgstr "这是RRD 文件和PNG 文件将被缓存的Web 服务器上的位置. 该缓存将由poller 管理. 请确保您对此文件夹具有正确的读写权限"
 
 #: include/global_settings.php:1017
-#, fuzzy
 msgid "RRDtool Graph Options"
 msgstr "图形操作"
 
 #: include/global_settings.php:1022
-#, fuzzy
 msgid "Custom Watermark"
 msgstr "自定义数据"
 
@@ -10682,17 +10342,14 @@ msgid "Custom Date Format"
 msgstr "自定义日期格式"
 
 #: include/global_settings.php:1031
-#, fuzzy
 msgid "To be used when formatting |date_time| on a graph"
 msgstr "格式化 |date_time| 时使用在图表上"
 
 #: include/global_settings.php:1038
-#, fuzzy
 msgid "Disable RRDtool Watermark"
 msgstr "RRDtool 图像水印"
 
 #: include/global_settings.php:1039
-#, fuzzy
 msgid "Provided your RRDtool version supports it, you may disable RRDtool advertisement on your Graphs by checking this option."
 msgstr "如果您的 RRDtool 版本支持它，您可以通过选中此选项禁用图形上的 RRDtool 广告。"
 
@@ -10787,8 +10444,6 @@ msgid "The font to use for Graph Unit items.  Enter either a valid True Type Fon
 msgstr "用于Graph Unit项目的字体. 输入有效的True Type 字体文件或有效的Pango font-config值."
 
 #: include/global_settings.php:1121
-#, fuzzy
-#| msgid "User Settings"
 msgid "Business Hours Settings"
 msgstr "用户设置"
 
@@ -10809,8 +10464,6 @@ msgid "The time your business hours end. Format: hh:mm"
 msgstr ""
 
 #: include/global_settings.php:1142
-#, fuzzy
-#| msgid "%d Weeks"
 msgid "Hide Weekends"
 msgstr "%d 周"
 
@@ -10835,8 +10488,6 @@ msgid "The color to be shown for business hours"
 msgstr ""
 
 #: include/global_settings.php:1162
-#, fuzzy
-#| msgid "Maximum number of rows per page"
 msgid "Maximum number of days to show business hours"
 msgstr "每页最多显示多少列"
 
@@ -10857,7 +10508,6 @@ msgid "SNMP Agent Support Enabled"
 msgstr "开启SNMP Agent支持"
 
 #: include/global_settings.php:1186
-#, fuzzy
 msgid "If this option is checked, Cacti will populate SNMP Agent tables with Cacti device and system information.  It does not enable the SNMP Agent itself."
 msgstr "如果选中此选项,Cacti 将使用Cacti 设备和系统信息填充SNMP Agent 列表.它不会开启SNMP Agent 本身."
 
@@ -10866,32 +10516,26 @@ msgid "Poller Type"
 msgstr "采集类型"
 
 #: include/global_settings.php:1192
-#, fuzzy
 msgid "The poller type to use.  This setting will take affect at next polling interval."
 msgstr "要使用的poller 类型. 此设置将在下一个采集周期生效."
 
 #: include/global_settings.php:1198
-#, fuzzy
 msgid "Poller Sync Interval"
 msgstr "poller 同步周期"
 
 #: include/global_settings.php:1199
-#, fuzzy
 msgid "The default polling sync interval to use when creating a poller.  This setting will affect how often remote pollers are checked and updated."
 msgstr "创建poller 时使用的默认采集同步周期.此设置将影响远程poller 的检查和更新频率."
 
 #: include/global_settings.php:1206
-#, fuzzy
 msgid "The polling interval in use.  This setting will affect how often RRDfiles are checked and updated.  <strong><u>NOTE: If you change this value, you must re-populate the poller cache.  Failure to do so, may result in lost data.</u></strong>"
 msgstr "采集周期在使用中. 此设置将影响检查和更新RRD 文件的频率.<strong><u>注意: 如果更改此值,则必须重新填充poller 缓存. 否则可能导致数据丢失</u></strong>"
 
 #: include/global_settings.php:1212
-#, fuzzy
 msgid "Cron/Daemon Interval"
 msgstr "Cron 周期"
 
 #: include/global_settings.php:1213
-#, fuzzy
 msgid "The frequency that the Cacti data collector will be started.  You can use either crontab, a scheduled task (for windows), or the cactid systemd service to control launching the Cacti data collector.  For instructions on using the cactid daemon, review the README.md file in the service directory."
 msgstr "Cacti 数据收集器的启动频率。您可以使用 crontab、计划任务（适用于 Windows）或 cactid systemd 服务来控制启动 Cacti 数据收集器。有关使用 cactid 守护程序的说明，请查看服务目录中的 README.md 文件。"
 
@@ -10904,12 +10548,10 @@ msgid "If you choose this option, Cacti will attempt to balance the load of each
 msgstr "如果您选择此选项,则Cacti 将尝试通过平均分配每个进程的poller 项目来平衡每个poller 进程的负载."
 
 #: include/global_settings.php:1225
-#, fuzzy
 msgid "Debug Output Width"
 msgstr "调试输出宽度"
 
 #: include/global_settings.php:1226
-#, fuzzy
 msgid "If you choose this option, Cacti will check for output that exceeds Cacti's ability to store it and issue a warning when it finds it."
 msgstr "如果选择此选项,Cacti 将检查超出Cacti 存储能力的输出,并在找到时发出警告."
 
@@ -10926,7 +10568,6 @@ msgid "Remote Agent Timeout"
 msgstr "远程Agent 超时"
 
 #: include/global_settings.php:1238
-#, fuzzy
 msgid "The amount of time, in seconds, that the Central Cacti web server will wait for a response from the Remote Data Collector to obtain various Device information before abandoning the request.  On Devices that are associated with Data Collectors other than the Central Cacti Data Collector, the Remote Agent must be used to gather Device information."
 msgstr "中央Cacti Web服务器在放弃请求之前,等待远程数据采集器响应以获取各种设备信息的时间(以秒为单位).在与中央Cacti 数据采集器以外的数据采集器关联的设备上,必须使用Remote Agent 来收集设备信息."
 
@@ -10939,12 +10580,10 @@ msgid "How many OID's should be returned per snmpbulkwalk request?  For Devices 
 msgstr "每个snmpbulkwalk 请求应该返回多少个OID? 对于具有大型SNMP 树的设备,请增大此大小将增加WAN上的重新索引性能."
 
 #: include/global_settings.php:1269
-#, fuzzy
 msgid "SNMP Get OID Limit"
 msgstr "SNMP 获取"
 
 #: include/global_settings.php:1270
-#, fuzzy
 msgid "The default maximum number of SNMP Get OIDs to issue per snmpget request.  For Devices, this setting is controlled at the Device level.  You should only use this setting when using Cacti's SNMP API natively in your scripts or plugins."
 msgstr "每个 snmpget 请求发出的默认最大 SNMP Get OID 数。对于设备，此设置在设备级别进行控制。只有在脚本或插件中原生使用 Cacti 的 SNMP API 时，才应使用此设置。"
 
@@ -10957,17 +10596,14 @@ msgid "This setting is for a single poller systems only to rebuild the poller ou
 msgstr ""
 
 #: include/global_settings.php:1283
-#, fuzzy
 msgid "Disable Resource Cache Replication"
 msgstr "重建资源缓存"
 
 #: include/global_settings.php:1284
-#, fuzzy
 msgid "By default, the main Cacti Data Collector will cache the entire web site and plugins into a Resource Cache.  Then, periodically the Remote Data Collectors will update themselves with any updates from the main Cacti Data Collector.  This Resource Cache essentially allows Remote Data Collectors to self upgrade.  If you do not wish to use this option, you can disable it using this setting."
 msgstr "默认情况下，主仙人掌数据收集器会将整个网站和插件缓存到资源缓存中。然后，远程数据收集器会定期使用主仙人掌数据收集器的任何更新来更新主题。该资源缓存实质上允许远程数据收集器进行自我升级。如果您不想使用此选项，则可以使用此设置禁用它。"
 
 #: include/global_settings.php:1289
-#, fuzzy
 msgid "Additional Data Collector Settings"
 msgstr "远程数据采集器状态:"
 
@@ -10976,7 +10612,6 @@ msgid "Invalid Data Logging"
 msgstr "无效的数据记录"
 
 #: include/global_settings.php:1295
-#, fuzzy
 msgid "How would you like the Data Collector output errors logged?  Options include: 'Detailed' which details every error, 'Summary' which provides the number of output errors per Device, and 'None', which does not provide error counts."
 msgstr "想如何记录Spine 的输出错误?  选项有: '详细', 类似于cmd.php 日志记录;  '概要' 提供了每个设备输出错误的数量;  和'无'. 它不提供错误计数."
 
@@ -10993,7 +10628,6 @@ msgid "Number of PHP Script Servers"
 msgstr "Number of PHP Script Servers"
 
 #: include/global_settings.php:1306
-#, fuzzy
 msgid "The number of concurrent script server processes to run per spine process.  Settings between 1 and 15 are accepted.  This parameter will help if you are running several threads and script server scripts and is only valid for the spine Data Collector."
 msgstr "每个Spine 进程运行的并发脚本服务器进程的数量. 设置在1和10之间是合适的. 如果您正在运行多个线程和脚本服务器脚本,此参数将有所帮助."
 
@@ -11002,7 +10636,6 @@ msgid "Script and Script Server Timeout Value"
 msgstr "脚本和脚本服务器超时值"
 
 #: include/global_settings.php:1314
-#, fuzzy
 msgid "The maximum time that spine will wait on a script to complete.  This timeout value is in seconds and is only valid for the spine Data Collector."
 msgstr "Cacti 将等待脚本完成的最长时间. 此超时值以秒为单位"
 
@@ -11011,7 +10644,6 @@ msgid "Periodic All Device Re-Index"
 msgstr ""
 
 #: include/global_settings.php:1326
-#, fuzzy
 msgid "Re-Index All Device Schedule"
 msgstr "索引重建方法"
 
@@ -11024,23 +10656,18 @@ msgid "Weekly on Sunday"
 msgstr ""
 
 #: include/global_settings.php:1334
-#, fuzzy
-#| msgid "Monthly on Day"
 msgid "Monthly on Sunady"
 msgstr "每月的某一天"
 
 #: include/global_settings.php:1338
-#, fuzzy
 msgid "Background Timeout and Concurrent Process Settings"
 msgstr "图例字体设置"
 
 #: include/global_settings.php:1343
-#, fuzzy
 msgid "Report Generation Timeout"
 msgstr "远程Agent 超时"
 
 #: include/global_settings.php:1344
-#, fuzzy
 msgid "The maximum amount of time Cacti's Reports Generation script can run without generating a timeout error and being killed."
 msgstr "Cacti的Reports Generation脚本可以运行的最长时间，而不会产生超时错误并被杀死。"
 
@@ -11052,23 +10679,18 @@ msgid "%s Minute"
 msgstr "%s分钟"
 
 #: include/global_settings.php:1356
-#, fuzzy
 msgid "Data Source Statistics Timeout"
 msgstr "数据来源统计"
 
 #: include/global_settings.php:1357
-#, fuzzy
 msgid "The maximum amount of time Cacti's Data Source Statistics script can run without generating a timeout error and being killed."
 msgstr "Cacti的数据源统计脚本可以运行的最长时间，而不会产生超时错误并被杀死。"
 
 #: include/global_settings.php:1371
-#, fuzzy
-#| msgid "DNS Timeout"
 msgid "RRDChecker Timeout"
 msgstr "DNS 超时"
 
 #: include/global_settings.php:1372
-#, fuzzy
 msgid "The maximum amount of time Cacti's RRDfile check script can run without generating a timeout error and being killed."
 msgstr "仙人掌的Spikekill脚本可以运行的最长时间，而不会产生超时错误并被杀死。"
 
@@ -11080,18 +10702,14 @@ msgid "%s Hour"
 msgstr "%s小时"
 
 #: include/global_settings.php:1384
-#, fuzzy
 msgid "Poller Commands Timeout"
 msgstr "后台命令超时"
 
 #: include/global_settings.php:1385
-#, fuzzy
 msgid "The maximum amount of time Cacti's Background Commands script can run without generating a timeout error and being killed.  This script will perform tasks such as re-indexing Devices and pruning devices from Remote Data Collectors."
 msgstr "Cacti的Background Commands脚本可以运行的最长时间，而不会产生超时错误并被杀死。"
 
 #: include/global_settings.php:1397
-#, fuzzy
-#| msgid "Concurrent Processes"
 msgid "Poller Command Concurrent Processes"
 msgstr "并发进程"
 
@@ -11101,7 +10719,6 @@ msgstr ""
 
 #: include/global_settings.php:1402 include/global_settings.php:2067
 #: include/global_settings.php:2177 include/global_settings.php:2245
-#, fuzzy
 msgid "1 Process"
 msgstr "1个进程"
 
@@ -11148,52 +10765,42 @@ msgid "%d Processes"
 msgstr "% d进程"
 
 #: include/global_settings.php:1425
-#, fuzzy
 msgid "Maintenance Background Generation Timeout"
 msgstr "维护后台生成超时"
 
 #: include/global_settings.php:1426
-#, fuzzy
 msgid "The maximum amount of time a Cacti's Maintenance script can run without generating a timeout error and being killed."
 msgstr "仙人掌维护脚本可以运行的最长时间，而不会产生超时错误并被杀死。"
 
 #: include/global_settings.php:1439
-#, fuzzy
 msgid "Spikekill Background Generation Timeout"
 msgstr "Spikekill背景生成超时"
 
 #: include/global_settings.php:1440
-#, fuzzy
 msgid "The maximum amount of time a Cacti's Spikekill script can run without generating a timeout error and being killed."
 msgstr "仙人掌的Spikekill脚本可以运行的最长时间，而不会产生超时错误并被杀死。"
 
 #: include/global_settings.php:1456
-#, fuzzy
 msgid "Data Collector Defaults"
 msgstr "数据采集器"
 
 #: include/global_settings.php:1457
-#, fuzzy
 msgid "These settings are maintained at the Data Collector level.  The values here are only defaults used when first creating a Data Collector."
 msgstr "这些设置在数据收集器级别维护。此处的值仅是首次创建数据收集器时使用的默认值。"
 
 #: include/global_settings.php:1462
-#, fuzzy
 msgid "Data Collector Processes"
 msgstr "默认数据采集器的进程数"
 
 #: include/global_settings.php:1463
-#, fuzzy
 msgid "The default number of concurrent processes to execute per Data Collector.  NOTE: Starting from Cacti 1.2, this setting is maintained in the Data Collector.  Moving forward, this value is only a preset for the Data Collector.  Using a higher number when using cmd.php will improve performance.  Performance improvements in Spine are best resolved with the threads parameter.  When using Spine, we recommend a lower number and leveraging threads instead.  When using cmd.php, use no more than 2x the number of CPU cores."
 msgstr "每个数据采集器的默认并发进程数.注意: 从Cacti 1.2开始,此设置在数据采集器中维护.此后,这个值仅是数据采集器的预设值.使用cmd.php 时,使用较大的数字可提高性能. Spine 中的性能问题最好通过多线程参数解决.使用Spine 时,我们建议使用较低的数字并充分利用线程.使用cmd.php 时, 数字不应该超过CPU 核心数的2倍."
 
 #: include/global_settings.php:1470
-#, fuzzy
 msgid "Threads per Process"
 msgstr "每个进程的默认线程数"
 
 #: include/global_settings.php:1471
-#, fuzzy
 msgid "The Default Threads allowed per process.  NOTE: Starting in Cacti 1.2+, this setting is maintained in the Data Collector, and this is simply the Preset.  Using a higher number when using Spine will improve performance.  However, ensure that you have enough MySQL/MariaDB connections to support the following equation: connections = data collectors * processes * (threads + script servers).  You must also ensure that you have enough spare connections for user login connections as well."
 msgstr "每个进程允许的默认线程.注意: 从Cacti 1.2+开始,此设置在数据采集器中维护,这只是预设.使用Spine 时使用较高的数字可提高性能.但是,请确保您有足够的MySQL/MariaDB 连接数来支撑以下等式: connections = data collectorors * processes *(threads + script servers).您还必须确保为用户登录连接提供足够的备用连接."
 
@@ -11202,7 +10809,6 @@ msgid "Authentication Method"
 msgstr "认证方法"
 
 #: include/global_settings.php:1486
-#, fuzzy
 msgid "<blockquote><i>Built-in Authentication</i> - Cacti handles user authentication, which allows you to create users and give them rights to different areas within Cacti.<br><br><i>Web Basic Authentication</i> - Authentication is handled by the web server. Users can be added or created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used.<br><br><i>LDAP Authentication</i> - Allows for authentication against a LDAP server. Users will be created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used.  If PHPs LDAP module is not enabled, LDAP Authentication will not appear as a selectable option.<br><br><i>Multiple LDAP/AD Domain Authentication</i> - Allows administrators to support multiple disparate groups from different LDAP/AD directories to access Cacti resources.  Just as LDAP Authentication, the PHP LDAP module is required to utilize this method.</blockquote>"
 msgstr "<blockquote> <i>内置身份认证</i> - Cacti 处理用户身份认证,允许您创建用户并授予他们对Cacti 内不同区域的权限.<br><br> <i>Web 基本身份认证</i> - 身份认证由Web 服务器处理.如果定义了模板用户,则可以在首次登录时自动添加或创建用户,否则将使用预定义的来宾权限.<br><br> <i>LDAP 身份认证</i> - 允许使用LDAP 服务器进行身份认证.如果定义了模板用户,将在首次登录时自动创建用户,否则将使用定义的来宾权限.如果未启用PHP LDAP 模块,则LDAP 身份认证不会显示为可选选项. <br><br> <i>多个LDAP/AD 域身份认证</i> - 允许管理员支持来自不同LDAP/AD 目录的多个不同组以访问Cacti 资源.与LDAP 身份认证一样,使用此方法也需要PHP LDAP 模块. </blockquote>"
 
@@ -11219,12 +10825,10 @@ msgid "Special Users"
 msgstr "特定用户"
 
 #: include/global_settings.php:1503
-#, fuzzy
 msgid "Primary Admin"
 msgstr "主要管理员"
 
 #: include/global_settings.php:1504
-#, fuzzy
 msgid "The name of the primary administrative account that will automatically receive Emails when the Cacti system experiences issues.  To receive these Emails, ensure that your mail settings are correct, and the administrative account has an Email address that is set."
 msgstr "当Cacti 系统遇到问题时将自动接收电子邮件的主管理帐户的名称.要接收这些电子邮件,请确保您的邮件设置正确,并且管理帐户具有已设置的电子邮件地址."
 
@@ -11246,32 +10850,26 @@ msgid "User Template"
 msgstr "用户模板"
 
 #: include/global_settings.php:1520
-#, fuzzy
 msgid "The name of the user that Cacti will use as a template for new Web Basic and LDAP users; is 'guest' by default.  This user account will be disabled from logging in upon being selected."
 msgstr "Cacti 将用作新Web Basic 和LDAP 用户模板的用户名; 默认为 'guest', 被选中时,将禁止此用户帐户登录."
 
 #: include/global_settings.php:1527
-#, fuzzy
 msgid "Basic Authentication Settings"
 msgstr "Web 基本身份认证"
 
 #: include/global_settings.php:1532
-#, fuzzy
 msgid "Basic Auth Login Failure Message"
 msgstr "基本身份验证映射文件"
 
 #: include/global_settings.php:1533
-#, fuzzy
 msgid "When using basic authentication, if there are issues mapping the username to a valid Cacti account, the message included here will be displayed to users.  It can include both text and HTML."
 msgstr "使用基本身份验证时，如果将用户名映射到有效的 Cacti 帐户时出现问题，则会向用户显示此处包含的消息。它可以包括文本和 HTML。"
 
 #: include/global_settings.php:1540
-#, fuzzy
 msgid "Basic Auth Mapfile"
 msgstr "基本身份验证映射文件"
 
 #: include/global_settings.php:1541
-#, fuzzy
 msgid "When using basic authentication, if the basic account needs to be translated to a different login account, you can specify a CSV file here to map the basic account to the desired login account."
 msgstr "使用基本身份验证时，如果需要将基本帐户转换为其他登录帐户，则可以在此处指定CSV文件，以将基本帐户映射到所需的登录帐户。"
 
@@ -11397,12 +10995,10 @@ msgid "LDAP General Settings"
 msgstr "LDAP 基本设置"
 
 #: include/global_settings.php:1676 user_domains.php:367
-#, fuzzy
 msgid "Server(s)"
 msgstr "服务器"
 
 #: include/global_settings.php:1677 user_domains.php:368
-#, fuzzy
 msgid "A space delimited list of DNS hostnames or IP address of for valid LDAP servers.  Cacti will attempt to use the LDAP servers from left to right to authenticate a user."
 msgstr "有效 LDAP 服务器的 DNS 主机名或 IP 地址的空格分隔列表。 Cacti 将尝试从左到右使用 LDAP 服务器来验证用户。"
 
@@ -11411,7 +11007,6 @@ msgid "Port Standard"
 msgstr "端口标准"
 
 #: include/global_settings.php:1684
-#, fuzzy
 msgid "TCP port for Non-SSL communications including LDAP + TLS.  Default is 389."
 msgstr "用于非SSL通信的TCP/UDP 端口."
 
@@ -11420,7 +11015,6 @@ msgid "Port SSL"
 msgstr "SSL 端口"
 
 #: include/global_settings.php:1692
-#, fuzzy
 msgid "TCP port for LDAPS for SSL communications.  Default is 636."
 msgstr "TCP/UDP port for Non SSL communications."
 
@@ -11429,37 +11023,30 @@ msgid "Protocol Version"
 msgstr "协议版本"
 
 #: include/global_settings.php:1700
-#, fuzzy
 msgid "Protocol Version to connect to the server with."
 msgstr "协议版本的服务器支持."
 
 #: include/global_settings.php:1706
-#, fuzzy
 msgid "Connect Timeout"
 msgstr "连接超时"
 
 #: include/global_settings.php:1707
-#, fuzzy
 msgid "The Network Connect Timeout in seconds."
 msgstr "请输入SMTP 在几秒钟内超时."
 
 #: include/global_settings.php:1714
-#, fuzzy
 msgid "Bind Timeout"
 msgstr "超时"
 
 #: include/global_settings.php:1715
-#, fuzzy
 msgid "The Bind Timeout in seconds."
 msgstr "请输入SMTP 在几秒钟内超时."
 
 #: include/global_settings.php:1722
-#, fuzzy
 msgid "LDAP Debug Mode"
 msgstr "LDAP 调试模式"
 
 #: include/global_settings.php:1723
-#, fuzzy
 msgid "If Checked Cacti will log extra LDAP information to the Cacti log during Binding and Searching activities."
 msgstr "如果选中 Cacti 将在绑定和搜索活动期间将额外的 LDAP 信息记录到 Cacti 日志中。"
 
@@ -11468,17 +11055,14 @@ msgid "Encryption"
 msgstr "加密"
 
 #: include/global_settings.php:1729
-#, fuzzy
 msgid "Encryption that the server supports. NOTE: When using LDAP + TLS you must use version 3."
 msgstr "服务器支持的加密. TLS仅受协议版本3的支持."
 
 #: include/global_settings.php:1735
-#, fuzzy
 msgid "TLS Certificate Requirements"
 msgstr "TLS 证书要求"
 
 #: include/global_settings.php:1736
-#, fuzzy
 msgid "Should LDAP verify TLS Certificates when received by the Client."
 msgstr "客户端收到 LDAP 时是否应验证 TLS 证书。"
 
@@ -11595,7 +11179,6 @@ msgid "Email"
 msgstr "邮箱"
 
 #: include/global_settings.php:1839
-#, fuzzy
 msgid "Field that will replace the Email taken from LDAP. (on windows: mail)"
 msgstr "将替换从LDAP中获取的电子邮件的字段. (Windows: 邮件)"
 
@@ -11608,7 +11191,6 @@ msgid "Server Base URL"
 msgstr "服务器根URL"
 
 #: include/global_settings.php:1852
-#, fuzzy
 msgid "This is a the server location that will be used for links to the Cacti site. This should include the subdirectory if Cacti does not run from root folder."
 msgstr "这是一个服务器位置,将用于链接到Cacti 网站."
 
@@ -11617,12 +11199,10 @@ msgid "Emailing Options"
 msgstr "电子邮件选项"
 
 #: include/global_settings.php:1863
-#, fuzzy
 msgid "Notify Primary Admin of Issues"
 msgstr "通知主要管理员问题"
 
 #: include/global_settings.php:1864
-#, fuzzy
 msgid "In cases where the Cacti server is experiencing problems, should the Primary Administrator be notified by Email?  The Primary Administrator's Cacti user account is specified under the Authentication tab on Cacti's settings page. It defaults to the 'admin' account."
 msgstr "如果Cacti 服务器遇到问题,是否应通过电子邮件通知主管理员?主管理员的Cacti 用户帐户在Cacti 设置页面的Authentication 选项卡下指定.它默认为 'admin' 帐户."
 
@@ -11763,8 +11343,6 @@ msgid "Maximum E-Mail Size"
 msgstr "最大电子邮件大小"
 
 #: include/global_settings.php:1990
-#, fuzzy
-#| msgid "The maximum size of the E-Mail message including all attachements."
 msgid "The maximum size of the E-Mail message including all attachments."
 msgstr "电子邮件的最大大小,包括所有附件."
 
@@ -11821,7 +11399,6 @@ msgid "Enable On-demand RRD Updating"
 msgstr "开启RRD 按需更新"
 
 #: include/global_settings.php:2044
-#, fuzzy
 msgid "Should Boost enable on demand RRD updating in Cacti?  If you disable, this change will not take affect until after the next polling cycle.  When you have Remote Data Collectors, this settings is required to be on."
 msgstr "是否应该在Cacti 中开启RRD 按需更新? 如果关闭,则此更改将在下一个采集周期之后生效.如果有远程数据采集器,则必须开启此设置."
 
@@ -11842,12 +11419,10 @@ msgid "When you enable boost, your RRD files are only updated when they are requ
 msgstr "开启boost 时,只有在用户请求或者经过了这段时间后,才会更新RRD 文件."
 
 #: include/global_settings.php:2062
-#, fuzzy
 msgid "Number of Boost Processes"
 msgstr "Boost 进程数"
 
 #: include/global_settings.php:2063
-#, fuzzy
 msgid "The number of concurrent boost processes to use to use to process all of the RRDs in the boost table."
 msgstr "用于处理boost 表中所有RRD 的并发boost 进程数."
 
@@ -11888,7 +11463,6 @@ msgid "Maximum RRD Update Script Run Time"
 msgstr "RRD 更新脚本最长运行时间"
 
 #: include/global_settings.php:2121
-#, fuzzy
 msgid "If the boost poller exceeds this runtime, a warning will be placed in the cacti log,"
 msgstr "如果boost poller删除了此运行时间,则会在Cacti 日志中发出警告,"
 
@@ -11905,8 +11479,6 @@ msgid "Boost Debug Log"
 msgstr "Boost 调试日志"
 
 #: include/global_settings.php:2134
-#, fuzzy
-#| msgid "If this field is non-blank, Boost will log RRDupdate output from the boost\tpoller process."
 msgid "If this field is non-blank, Boost will log RRDUpdate output from the boost\tpoller process."
 msgstr "如果此字段不是空白,则Boost 将记录Boost\tpoller 进程的RRDupdate 输出."
 
@@ -11943,12 +11515,10 @@ msgid "Should Data Source Statistics be collected for this Cacti system?"
 msgstr "应该收集这个Cacti 系统的数据源统计数据吗?"
 
 #: include/global_settings.php:2172
-#, fuzzy
 msgid "Number of DSStats Processes"
 msgstr "Boost 进程数"
 
 #: include/global_settings.php:2173
-#, fuzzy
 msgid "The number of concurrent DSStats processes to use to use to process all of the Data Sources."
 msgstr "用于处理boost 表中所有RRD 的并发boost 进程数."
 
@@ -11985,42 +11555,30 @@ msgid "The maximum amount of memory for the Cacti Poller and Data Source Statist
 msgstr "Cacti poller 和数据源统计poller 的最大内存量"
 
 #: include/global_settings.php:2229
-#, fuzzy
-#| msgid "RRDfile Cleaner"
 msgid "RRDfile Check"
 msgstr "RRD 文件清理器"
 
 #: include/global_settings.php:2234
-#, fuzzy
-#| msgid "Enable Rule"
 msgid "Enable RRDfile Check"
 msgstr "启用规则"
 
 #: include/global_settings.php:2235
-#, fuzzy
-#| msgid "Should Data Source Statistics be collected for this Cacti system?"
 msgid "Should RRDfile check be enabled for this Cacti system?"
 msgstr "应该收集这个Cacti 系统的数据源统计数据吗?"
 
 #: include/global_settings.php:2240
-#, fuzzy
 msgid "Number of RRDfile Check Processes"
 msgstr "Boost 进程数"
 
 #: include/global_settings.php:2241
-#, fuzzy
 msgid "The number of concurrent RRDfile check processes to use to use to process all of rrd files."
 msgstr "用于处理boost 表中所有RRD 的并发boost 进程数."
 
 #: include/global_settings.php:2268
-#, fuzzy
-#| msgid "Frequency"
 msgid "Check Frequency"
 msgstr "频率"
 
 #: include/global_settings.php:2269
-#, fuzzy
-#| msgid "How frequent should Daily Stats be updated?"
 msgid "How frequent should RRD be checked ?"
 msgstr "每天统计应该多频繁一次更新?"
 
@@ -12037,14 +11595,10 @@ msgid "RRDtool Proxy Server"
 msgstr "RRDtool 代理服务器"
 
 #: include/global_settings.php:2290
-#, fuzzy
-#| msgid "Structured RRD Paths"
 msgid "Structure RRDfile Paths"
 msgstr "结构化RRD 路径"
 
 #: include/global_settings.php:2295
-#, fuzzy
-#| msgid "Structured RRD Paths"
 msgid "Enable Structured Paths"
 msgstr "结构化RRD 路径"
 
@@ -12053,8 +11607,6 @@ msgid "Use a separate subfolder for each hosts RRD files.  The naming of the RRD
 msgstr ""
 
 #: include/global_settings.php:2300
-#, fuzzy
-#| msgid "Directory Found"
 msgid "Directory Pattern"
 msgstr "找到目录"
 
@@ -12063,21 +11615,14 @@ msgid "Which Directory Pattern do you wish to use for Structured RRD Paths.  'De
 msgstr ""
 
 #: include/global_settings.php:2305
-#, fuzzy
-#| msgid "Device"
 msgid "Device ID"
 msgstr "设备"
 
 #: include/global_settings.php:2306
-#, fuzzy
-#| msgid "Delete Data Query"
-#| msgid_plural "Delete Data Query"
 msgid "Device ID/Data Query ID"
 msgstr "删除数据查询"
 
 #: include/global_settings.php:2307
-#, fuzzy
-#| msgid "Device Name"
 msgid "Device Hash/Device ID"
 msgstr "设备名称"
 
@@ -12167,7 +11712,6 @@ msgid "Replacement Method"
 msgstr "替换方法"
 
 #: include/global_settings.php:2397
-#, fuzzy
 msgid "There are three replacement methods.  The first method replaces the spike with the average of the data source in question.  The second method replaces the spike with a 'NaN'.  The last replaces the spike with the last known good value found."
 msgstr "有三种替代方法.第一种方法用所讨论的数据源的平均值替换峰值.第二种方法用 'NaN' 替换尖峰.最后一个用最后已知的良好值替换尖峰."
 
@@ -12293,12 +11837,10 @@ msgid "When performing batch spike removal, only the templates selected below wi
 msgstr "在执行批次尖峰清除时,只有下面选择的模板才会起作用."
 
 #: include/global_settings.php:2533
-#, fuzzy
 msgid "Backup Retention"
 msgstr "数据保留"
 
 #: include/global_settings.php:2534
-#, fuzzy
 msgid "When SpikeKill kills spikes in graphs, it makes a backup of the RRDfile.  How long should these backup files be retained?"
 msgstr "当SpikeKill消除图形中的峰值时，它将备份RRDfile。这些备份文件应保留多长时间？"
 
@@ -12311,8 +11853,6 @@ msgid "Which Graph mode you want displayed by default when you first visit the G
 msgstr "您首次访问 '图形' 页面时,默认显示哪种图形模式?"
 
 #: include/global_settings.php:2560
-#, fuzzy
-#| msgid "MySQL - TimeZone Support"
 msgid "TimeZone Support"
 msgstr "MySQL - 时区支持"
 
@@ -12321,8 +11861,6 @@ msgid "How would you like Cacti to present dates?  This setting will also change
 msgstr ""
 
 #: include/global_settings.php:2564
-#, fuzzy
-#| msgid "Cacti Server v%s - Maintenance"
 msgid "Cacti Server Timezone"
 msgstr "Cacti 服务器 v%s - 维护"
 
@@ -12355,22 +11893,18 @@ msgid "Hides Disabled Devices and Graphs when viewing outside of Console tab."
 msgstr "在 '控制台' 选项卡外查看时隐藏已禁用的设备和图形."
 
 #: include/global_settings.php:2589
-#, fuzzy
 msgid "Show Device Aggregates"
 msgstr "聚合"
 
 #: include/global_settings.php:2590
-#, fuzzy
 msgid "If a Device Data Source is included in an Aggregate Graph, show that Graph along with other Device Graphs"
 msgstr "如果设备数据源包含在聚合图中，请将该图与其他设备图一起显示"
 
 #: include/global_settings.php:2595
-#, fuzzy
 msgid "Enable Horizontal Scrolling"
 msgstr "启用水平滚动"
 
 #: include/global_settings.php:2596
-#, fuzzy
 msgid "Enable Horizontal Scrolling of Tables, Disabling Responsive Column Visibility."
 msgstr "启用表的水平滚动，禁用响应列的可见性。"
 
@@ -12528,12 +12062,10 @@ msgid "Choose whether to expand the Graph Templates and Data Queries used by a D
 msgstr "选择是否展开在树上使用的设备图形模板和数据查询."
 
 #: include/global_settings.php:2770
-#, fuzzy
 msgid "Tree History"
 msgstr "历史密码"
 
 #: include/global_settings.php:2771
-#, fuzzy
 msgid "If enabled, Cacti will remember your Tree History between logins and when you return to the Graphs page."
 msgstr "如果启用，则仙人掌将记住两次登录之间以及返回到“图形”页面时的树历史记录。"
 
@@ -12602,12 +12134,10 @@ msgid "1 Week"
 msgstr "1周"
 
 #: include/global_settings.php:2903
-#, fuzzy
 msgid "Auto Log Out Time"
 msgstr "自动注销"
 
 #: include/global_settings.php:2904
-#, fuzzy
 msgid "For users with Console access only, how long this user can stay logged in before being automatically logged out.  Note that if you have not been active in more than an hour, you may have to refresh your browser.  Also note that this setting has no affect when Authentication Cookies are enabled."
 msgstr "对于仅具有控制台访问权限的用户，此用户在自动注销之前可以保持登录状态的时间。请注意，如果您已经超过一个小时没有活动，则可能需要刷新浏览器。另请注意，启用身份验证 Cookie 时，此设置没有影响。"
 
@@ -12669,8 +12199,6 @@ msgid "New Poller"
 msgstr "新建poller"
 
 #: install/install.php:89
-#, fuzzy
-#| msgid "Active/Installed"
 msgid "Cacti Install Help"
 msgstr "启动/安装"
 
@@ -12685,7 +12213,6 @@ msgid "Cacti Server v%s - Installation Wizard"
 msgstr "Cacti 服务器 v%s - 安装向导"
 
 #: install/install.php:107
-#, fuzzy
 msgid "Refresh current page"
 msgstr "刷新频率"
 
@@ -12694,32 +12221,27 @@ msgid "Initializing"
 msgstr "初始化"
 
 #: install/install.php:114
-#, fuzzy, php-format
+#, php-format
 msgid "Please wait while the installation system for Cacti Version %s initializes. You must have JavaScript enabled for this to work."
 msgstr "Cacti Version %s 的安装程序初始化时请耐心等待.您必须开启JavaScript 才能进行."
 
 #: install/install.php:118
-#, fuzzy
 msgid "FATAL: We are unable to continue with this installation. In order to install Cacti, PHP must be at version 5.4 or later."
 msgstr "致命：我们无法继续此安装。为了安装Cacti，PHP必须是5.4或更高版本。"
 
 #: install/install.php:121
-#, fuzzy
 msgid "See the PHP Manual: <a href=\"http://php.net/manual/en/book.json.php\">JavaScript Object Notation</a>."
 msgstr "请参阅PHP手册： <a href=\"http://php.net/manual/en/book.json.php\">JavaScript对象表示法</a> 。"
 
 #: install/install.php:121
-#, fuzzy
 msgid "The php-json module must also be installed."
 msgstr "您已安装的RRDtool 版本."
 
 #: install/install.php:125
-#, fuzzy
 msgid "See the PHP Manual: <a href=\"http://php.net/manual/en/ini.core.php#ini.disable-functions\">Disable Functions</a>."
 msgstr "请参阅PHP手册： <a href=\"http://php.net/manual/en/ini.core.php#ini.disable-functions\">禁用功能</a> 。"
 
 #: install/install.php:125
-#, fuzzy
 msgid "The shell_exec() and/or exec() functions are currently blocked."
 msgstr "shell_exec（）和/或exec（）函数当前被阻止。"
 
@@ -12760,8 +12282,6 @@ msgid "Skip"
 msgstr "跳过"
 
 #: lib/api_aggregate.php:1829
-#, fuzzy
-#| msgid "Aggregate Items are not modifyable"
 msgid "Aggregate Items are not modifiable"
 msgstr "聚合项目不可修改"
 
@@ -12901,7 +12421,6 @@ msgid "Added by Cacti Automation"
 msgstr "由Cacti 自动化添加"
 
 #: lib/api_automation.php:3272
-#, fuzzy
 msgid "ERROR: IP ranges in the form of range1-range2 are no longer supported."
 msgstr "错误：不再支持采用 range1-range2 形式的 IP 范围。"
 
@@ -13001,44 +12520,41 @@ msgid "Web Basic"
 msgstr "Web Basic"
 
 #: lib/auth.php:2220
-#, fuzzy
 msgid "Device:(Hide Disabled)"
 msgstr "设备已禁用"
 
 #: lib/auth.php:2238 lib/auth.php:2240 lib/auth.php:2246 lib/auth.php:2248
-#, fuzzy, php-format
+#, php-format
 msgid "Graph:(%s%s)"
 msgstr "图形:"
 
 #: lib/auth.php:2261 lib/auth.php:2267 lib/auth.php:2334 lib/auth.php:2336
 #: lib/auth.php:2340 lib/auth.php:2342
-#, fuzzy, php-format
+#, php-format
 msgid "Device:(%s%s)"
 msgstr "设备:"
 
 #: lib/auth.php:2275 lib/auth.php:2281 lib/auth.php:2350 lib/auth.php:2352
 #: lib/auth.php:2356 lib/auth.php:2358
-#, fuzzy, php-format
+#, php-format
 msgid "Template:(%s%s)"
 msgstr "阈值模板 '%s' %s 失败！"
 
 #: lib/auth.php:2288
-#, fuzzy, php-format
+#, php-format
 msgid "Graph+Device+Template:(%s%s)"
 msgstr "设备模板:"
 
 #: lib/auth.php:2325 lib/auth.php:2327
-#, fuzzy, php-format
+#, php-format
 msgid "Device+Template:(%s%s)"
 msgstr "设备模板:"
 
 #: lib/auth.php:2371 lib/auth.php:2378 lib/auth.php:2387
-#, fuzzy
 msgid "Restricted By: "
 msgstr "受限的"
 
 #: lib/auth.php:2375
-#, fuzzy
 msgid "Granted By: "
 msgstr "授予访问权限"
 
@@ -13060,18 +12576,15 @@ msgid "Device:"
 msgstr "设备:"
 
 #: lib/auth.php:3497 lib/auth.php:3574
-#, fuzzy
 msgid "Your account has been locked.  Please contact your Administrator."
 msgstr "访问被拒绝,请联系Cacti 管理员."
 
 #: lib/auth.php:3537
-#, fuzzy
 msgid "Access Denied!  Login Disabled."
 msgstr "拒绝访问,用户帐号被禁用."
 
 #: lib/auth.php:3580 lib/auth.php:3586 lib/auth.php:3703 lib/auth.php:3788
 #: lib/auth.php:4087 lib/auth.php:4117 lib/auth.php:4151
-#, fuzzy
 msgid "Access Denied!  Login Failed."
 msgstr "拒绝访问,用户帐号被禁用."
 
@@ -13085,17 +12598,16 @@ msgid "%s authenticated by Web Server, but both Template and Guest Users are not
 msgstr "%s 通过Web 服务器进行身份认证, 但 '模板'和'来宾用户'在Cacti 中未定义."
 
 #: lib/auth.php:3728
-#, fuzzy, php-format
+#, php-format
 msgid "Access Denied!  LDAP Search Error: %s"
 msgstr "LDAP 搜索错误: %s"
 
 #: lib/auth.php:3749 lib/auth.php:3912
-#, fuzzy, php-format
+#, php-format
 msgid "Access Denied!  LDAP Error: %s"
 msgstr "LDAP 错误: %s"
 
 #: lib/auth.php:3761 lib/auth.php:3924 lib/auth.php:4127
-#, fuzzy
 msgid "Access Denied!  No password provided by user."
 msgstr "拒绝访问！用户未提供密码。"
 
@@ -13105,17 +12617,15 @@ msgid "LDAP Search Error: %s"
 msgstr "LDAP 搜索错误: %s"
 
 #: lib/auth.php:3904 lib/auth.php:4726
-#, fuzzy, php-format
+#, php-format
 msgid "Access Denied!  Template user id %s does not exist.  Please contact your Administrator."
 msgstr "访问被拒绝,请联系Cacti 管理员."
 
 #: lib/auth.php:4143
-#, fuzzy
 msgid "Access Denied! Login failed."
 msgstr "拒绝访问,用户帐号被禁用."
 
 #: lib/auth.php:4172
-#, fuzzy
 msgid "Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now."
 msgstr "您的Cacti管理员已强制使用复杂的密码登录，而您当前的Cacti密码不符合新要求。因此，您必须立即更改密码。"
 
@@ -13137,22 +12647,20 @@ msgid "Your password must contain at least 1 special character!"
 msgstr "您的密码必须至少包含1个特殊字符!"
 
 #: lib/auth.php:4525
-#, fuzzy
 msgid "Cacti Login Failure"
 msgstr "Cacti 日志已清除"
 
 #: lib/auth.php:4801
-#, fuzzy
 msgid "Authentication was previously not set.  Attempted to set to Local Authentication, but no Administrative account was found."
 msgstr "之前未设置身份验证。尝试设置为本地身份验证，但未找到管理员帐户。"
 
 #: lib/boost.php:63 utilities.php:2762
-#, fuzzy, php-format
+#, php-format
 msgid "%s MBytes"
 msgstr "%d MBytes"
 
 #: lib/boost.php:66
-#, fuzzy, php-format
+#, php-format
 msgid "%s KBytes"
 msgstr "%s GBytes"
 
@@ -13179,12 +12687,10 @@ msgid "Log Filters"
 msgstr "日志过滤器"
 
 #: lib/clog_webapi.php:274
-#, fuzzy
 msgid " - Admin Filter active"
 msgstr "- 管理员过滤器有效"
 
 #: lib/clog_webapi.php:276
-#, fuzzy
 msgid " - Admin Unfiltered"
 msgstr "- Admin Unfiltered"
 
@@ -13212,8 +12718,6 @@ msgid "File"
 msgstr "文件"
 
 #: lib/clog_webapi.php:516
-#, fuzzy
-#| msgid "%d Lines"
 msgid "Head Lines"
 msgstr "%d 行"
 
@@ -13226,12 +12730,10 @@ msgid "Stats"
 msgstr "状态"
 
 #: lib/clog_webapi.php:552
-#, fuzzy
 msgid "Warnings++"
 msgstr "警告"
 
 #: lib/clog_webapi.php:554
-#, fuzzy
 msgid "Errors++"
 msgstr "错误"
 
@@ -13244,12 +12746,10 @@ msgid "SQL Calls"
 msgstr "SQL调用"
 
 #: lib/clog_webapi.php:557
-#, fuzzy
 msgid "AutoM8"
 msgstr "自动"
 
 #: lib/clog_webapi.php:558
-#, fuzzy
 msgid "Non Stats"
 msgstr "没有说明"
 
@@ -13258,12 +12758,10 @@ msgid "Boost"
 msgstr "载具加速"
 
 #: lib/clog_webapi.php:560
-#, fuzzy
 msgid "Device Up/Down"
 msgstr "设备使用"
 
 #: lib/clog_webapi.php:561
-#, fuzzy
 msgid "Recaches"
 msgstr "匹配"
 
@@ -13284,20 +12782,14 @@ msgid "Oldest First"
 msgstr "最早的优先"
 
 #: lib/clog_webapi.php:612
-#, fuzzy
-#| msgid "matches"
 msgid "Matches"
 msgstr "匹配"
 
 #: lib/clog_webapi.php:613
-#, fuzzy
-#| msgid "Passwords do Not Match"
 msgid "Does Not Match"
 msgstr "密码不匹配"
 
 #: lib/clog_webapi.php:739
-#, fuzzy
-#| msgid "Sync Devices"
 msgid "System Device"
 msgstr "同步设备"
 
@@ -13306,7 +12798,6 @@ msgid "Automation Execution for Data Query complete"
 msgstr "数据查询的自动化已执行完毕"
 
 #: lib/data_query.php:74 lib/data_query.php:443
-#, fuzzy
 msgid "Plugin Hooks complete"
 msgstr "插件钩子完成"
 
@@ -13326,17 +12817,15 @@ msgid "Unknown Type = '%s'."
 msgstr "未知类型 = '%s'."
 
 #: lib/data_query.php:159
-#, fuzzy
 msgid "WARNING: Sort Field Association has Changed.  Re-mapping issues may occur!"
 msgstr "WARNING: 排序字段关联已更改.可能会出现重新映射的问题!"
 
 #: lib/data_query.php:171
-#, fuzzy
 msgid "Update Data Query Sort Cache complete"
 msgstr "更新数据查询排序缓存完毕"
 
 #: lib/data_query.php:196
-#, fuzzy, php-format
+#, php-format
 msgid "Found %s Local Data ID's to Verify"
 msgstr "找到要转换的％s表"
 
@@ -13346,7 +12835,7 @@ msgid "Index Change Detected! CurrentIndex: %s, PreviousIndex: %s"
 msgstr "检测到索引更改! 当前索引: %s, 之前的索引: %s"
 
 #: lib/data_query.php:310
-#, fuzzy, php-format
+#, php-format
 msgid "Transient Index Removal Detected! PreviousIndex: %s.  No action taken."
 msgstr "检测到索引删除! 之前的索引: %s"
 
@@ -13356,27 +12845,24 @@ msgid "Index Removal Detected! PreviousIndex: %s"
 msgstr "检测到索引删除! 之前的索引: %s"
 
 #: lib/data_query.php:347
-#, fuzzy, php-format
+#, php-format
 msgid "Verification of %s Local Data ID's Complete"
 msgstr "索引与本地数据关联完毕"
 
 #: lib/data_query.php:350
-#, fuzzy, php-format
+#, php-format
 msgid "Found Changed %s and %s Orphaned Local Data ID's to Re-map."
 msgstr "找到已更改的％s和％s孤立的本地数据ID以重新映射。"
 
 #: lib/data_query.php:353
-#, fuzzy
 msgid "Done remapping Graphs to their new Indexes"
 msgstr "将图形重新映射到新索引"
 
 #: lib/data_query.php:359 lib/data_query.php:366
-#, fuzzy
 msgid "Done updating Data Source Title Cache"
 msgstr "重复的数据源配置文件"
 
 #: lib/data_query.php:362 lib/data_query.php:369
-#, fuzzy
 msgid "Done updating Graph Title Cache"
 msgstr "完成更新图标题缓存"
 
@@ -13385,22 +12871,19 @@ msgid "Index Association with Local Data complete"
 msgstr "索引与本地数据关联完毕"
 
 #: lib/data_query.php:379
-#, fuzzy, php-format
+#, php-format
 msgid "Update Re-Index Cache complete. There were %s index changes, and %s orphaned indexes."
 msgstr "更新重新索引缓存完毕.曾经有"
 
 #: lib/data_query.php:383
-#, fuzzy
 msgid "Update Poller Cache for Query complete"
 msgstr "更新poller 缓存以查询完毕"
 
 #: lib/data_query.php:385
-#, fuzzy
 msgid "No Index Changes Detected, Skipping Re-Index and Poller Cache Re-population"
 msgstr "未检测到索引更改,跳过重新索引和poller 缓存重新填充"
 
 #: lib/data_query.php:432
-#, fuzzy
 msgid "Automation Executing for Data Query complete"
 msgstr "自动化执行数据查询已完毕"
 
@@ -13409,22 +12892,19 @@ msgid "Plugin hooks complete"
 msgstr "插件钩子完成"
 
 #: lib/data_query.php:491
-#, fuzzy
 msgid "Checking for Sort Field change.  No changes detected."
 msgstr "检查排序字段更改.未检测到任何更改"
 
 #: lib/data_query.php:496
-#, fuzzy, php-format
+#, php-format
 msgid "Detected New Sort Field: '%s' Old Sort Field '%s'"
 msgstr "检测到新的排序字段:'%s' 旧排序字段 '%s'"
 
 #: lib/data_query.php:513
-#, fuzzy
 msgid "ERROR: New Sort Field not suitable.  Sort Field will not change."
 msgstr "ERROR: 新的排序字段不适合.排序字段不会更改."
 
 #: lib/data_query.php:525
-#, fuzzy
 msgid "New Sort Field validated.  Sort Field be updated."
 msgstr "新的排序字段已验证.排序字段将更新."
 
@@ -13456,12 +12936,10 @@ msgid "Must contain &lt;direction&gt;input&lt;/direction&gt; or &lt;direction&gt
 msgstr "必须包含 &lt;direction&gt;input&lt;/direction&gt; or &lt;direction&gt;input-output&lt;/direction&gt;字段"
 
 #: lib/data_query.php:670
-#, fuzzy
 msgid "Data Query returned no indexes."
 msgstr "ERROR: 数据查询未返回任何索引."
 
 #: lib/data_query.php:671
-#, fuzzy
 msgid "&lt;arg_num_indexes&gt; exists in XML file but no data returned., 'Index Count Changed' not supported"
 msgstr "&lt;arg_num_indexes&gt; 在XML 文件中丢失, 不支持 '索引计数'"
 
@@ -13507,7 +12985,7 @@ msgid "Click to show Data Query output for field '%s'"
 msgstr "点击以显示字段'%s'的数据查询输出"
 
 #: lib/data_query.php:724
-#, fuzzy, php-format
+#, php-format
 msgid "Sort field returned no data for field name %s, skipping"
 msgstr "排序字段未返回任何数据.无法继续重新索引."
 
@@ -13532,7 +13010,6 @@ msgid "Invalid host_id: %s"
 msgstr "无效的 host_id: %s"
 
 #: lib/data_query.php:846
-#, fuzzy
 msgid "Auto Bulk Walk Size Selected."
 msgstr "选择了自动批量步行大小。"
 
@@ -13541,22 +13018,21 @@ msgid "Failed to load SNMP session."
 msgstr "无法加载SNMP 会话."
 
 #: lib/data_query.php:866
-#, fuzzy, php-format
+#, php-format
 msgid "Tested Bulk Walk Size %d with a response of %2.4f."
 msgstr "测试批量步行大小 %d，响应为 %2.4f。"
 
 #: lib/data_query.php:877
-#, fuzzy, php-format
+#, php-format
 msgid "Bulk Walk Size selected was %d."
 msgstr "选择的批量步行大小为 %d。"
 
 #: lib/data_query.php:880
-#, fuzzy
 msgid "Saving Bulk Walk Size to Device."
 msgstr "将批量步行大小保存到设备。"
 
 #: lib/data_query.php:892
-#, fuzzy, php-format
+#, php-format
 msgid "Bulk Walk Size is fixed at %d."
 msgstr "批量步行大小固定为 %d。"
 
@@ -13584,14 +13060,12 @@ msgid "Index found at OID: '%s' value: '%s'"
 msgstr "在OID 中找到的索引: '%s' 值: '%s'"
 
 #: lib/data_query.php:944
-#, fuzzy, php-format
-#| msgid "Filtering list of indexes @ '%s' Index Count: %s"
+#, php-format
 msgid "List of indexes filtered by value @ '%s' Index Count: %s"
 msgstr "过滤索引列表@ '%s'索引计数:%s"
 
 #: lib/data_query.php:948
-#, fuzzy, php-format
-#| msgid "Filtered Index found at OID: '%s' value: '%s'"
+#, php-format
 msgid "Filtered Index by value found at OID: '%s' value: '%s'"
 msgstr "在OID处找到的过滤索引:'%s'值:'%s'"
 
@@ -13646,7 +13120,7 @@ msgid "Executing SNMP get for %s oids (%s)"
 msgstr "为%s oid (%s)执行SNMP get"
 
 #: lib/data_query.php:1139 lib/data_query.php:1231 lib/data_query.php:1239
-#, fuzzy, php-format
+#, php-format
 msgid "Sort field returned no data for OID[%s], skipping."
 msgstr "返回的排序字段不是数据.无法继续重新索引OID [%s]"
 
@@ -13721,93 +13195,79 @@ msgid "Could not parse translation map (rewrite_value)"
 msgstr ""
 
 #: lib/data_query.php:1688
-#, fuzzy, php-format
-#| msgid "oid_rewrite at OID: '%s' new OID: '%s'"
+#, php-format
 msgid "rewrite_value: '%s' => '%s'"
 msgstr "oid_rewrite at OID: '%s' new OID: '%s'"
 
 #: lib/data_query.php:1793
-#, fuzzy
 msgid "Update graph data query cache complete"
 msgstr "更新数据查询排序缓存完毕"
 
 #: lib/data_query.php:1810
-#, fuzzy
 msgid "Re-Indexing Data Query complete"
 msgstr "重新索引数据查询完成"
 
 #: lib/data_query.php:1941
-#, fuzzy
 msgid "Unknown Index"
 msgstr "未知索引"
 
 #: lib/data_query.php:2488
-#, fuzzy, php-format
+#, php-format
 msgid "You must select an XML output column for Data Source '%s' and toggle the checkbox to its right"
 msgstr "您必须为数据源'％s'选择XML输出列，并将复选框切换到右侧"
 
 #: lib/data_query.php:2494
-#, fuzzy
 msgid "Your Graph Template has not Data Templates in use.  Please correct your Graph Template"
 msgstr "您的图表模板尚未使用数据模板。请更正您的图表模板"
 
 #: lib/database.php:1968
-#, fuzzy
 msgid "Failed to determine password field length, can not continue as may corrupt password"
 msgstr "无法确定密码字段长度,无法继续,因为可能会损坏密码"
 
 #: lib/database.php:1975
-#, fuzzy
 msgid "Failed to alter password field length, can not continue as may corrupt password"
 msgstr "无法更改密码字段长度,无法继续,因为可能会损坏密码"
 
 #: lib/dsdebug.php:168
-#, fuzzy, php-format
+#, php-format
 msgid "Data Source ID %s does not exist"
 msgstr "数据源不存在."
 
 #: lib/dsdebug.php:253
-#, fuzzy
 msgid "Debug not completed after 5 pollings"
 msgstr "采集5次之后调试还未完毕"
 
 #: lib/dsdebug.php:254
-#, fuzzy
 msgid "Failed fields: "
 msgstr "失败的字段:"
 
 #: lib/dsdebug.php:263
-#, fuzzy
 msgid "Data Source is not set as Active"
 msgstr "数据源未设置为活跃"
 
 #: lib/dsdebug.php:271
-#, fuzzy, php-format
+#, php-format
 msgid "RRDfile Folder (rra) is not writable by Poller.  Folder owner: %s.  Poller runs as: %s"
 msgstr "Poller 无法写入RRD 文件夹. RRD 所有者:"
 
 #: lib/dsdebug.php:276
-#, fuzzy, php-format
+#, php-format
 msgid "RRDfile is not writable by Poller.  RRDfile owner: %s.  Poller runs as %s"
 msgstr "Poller 无法写入RRD 文件. RRD所有者:"
 
 #: lib/dsdebug.php:285
-#, fuzzy
 msgid "RRDfile does not match Data Source"
 msgstr "RRD 文件与数据配置文件不匹配"
 
 #: lib/dsdebug.php:290
-#, fuzzy
 msgid "RRDfile not updated after polling"
 msgstr "采集之后,RRD 文件未更新"
 
 #: lib/dsdebug.php:297
-#, fuzzy
 msgid "Data Source returned Bad Results for "
 msgstr "数据源返回糟糕的结果"
 
 #: lib/dsdebug.php:302
-#, fuzzy
 msgid "Data Source was not polled"
 msgstr "未对数据源进行采集"
 
@@ -13816,12 +13276,11 @@ msgid "No issues found"
 msgstr "未发现问题"
 
 #: lib/dsdebug.php:311
-#, fuzzy
 msgid "RRDfile not created yet"
 msgstr "采集之后,RRD 文件未更新"
 
 #: lib/functions.php:449 settings.php:268
-#, fuzzy, php-format
+#, php-format
 msgid "Settings save to Data Collector %d skipped due to heartbeat."
 msgstr "设置保存到数据采集器 %d 失败."
 
@@ -13840,8 +13299,6 @@ msgid "Error %s is not readable"
 msgstr "出错: %s 不可读"
 
 #: lib/functions.php:3661
-#, fuzzy
-#| msgid "Logged in as"
 msgid "Logged in a Guest"
 msgstr "当前登录的用户为:"
 
@@ -13894,7 +13351,6 @@ msgid "Link %s"
 msgstr "链接 %s"
 
 #: lib/functions.php:4928
-#, fuzzy
 msgid "Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting."
 msgstr "Mailer Error: 没有设置<b> 收件人 </b>地址!! 如果使用 <i>邮件测试</i> 链接,请设置<b> 报警邮件 </b>设置."
 
@@ -13978,7 +13434,7 @@ msgid "Message Not Sent due to ping failure."
 msgstr "由于ping 失败,邮件未发送."
 
 #: lib/functions.php:5943 lib/functions.php:6012
-#, fuzzy, php-format
+#, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
 msgstr "Cacti 禁用了插件 %s 因为以下错误: %s! 更多详细信息,请参考Cacti 日志文件."
 
@@ -14016,18 +13472,14 @@ msgid "Not Applicable"
 msgstr "不适用"
 
 #: lib/graphs.php:86
-#, fuzzy
 msgid "Damaged Graph"
 msgstr "数据源,图"
 
 #: lib/html.php:76
-#, fuzzy
-#| msgid "Remove StdDev"
 msgid "Remote Server"
 msgstr "删除标准设置"
 
 #: lib/html.php:125
-#, fuzzy
 msgid "Get Page Help"
 msgstr "获取帮助"
 
@@ -14078,7 +13530,7 @@ msgid "All %d %s"
 msgstr "一共 %d 个 %s"
 
 #: lib/html.php:616
-#, fuzzy, php-format
+#, php-format
 msgid "Current Page: %s"
 msgstr "当前值"
 
@@ -14092,7 +13544,6 @@ msgid "#"
 msgstr "#"
 
 #: lib/html.php:1190
-#, fuzzy
 msgid "GPrint"
 msgstr "删除GPRINT 预设"
 
@@ -14162,7 +13613,6 @@ msgid "Dry Run Float Range"
 msgstr "干运行浮动范围"
 
 #: lib/html.php:2496
-#, fuzzy
 msgid "Allow or limit the table columns to extend beyond the current windows limits."
 msgstr "允许或限制表列扩展到超出当前窗口限制。"
 
@@ -14195,27 +13645,22 @@ msgid "Standard Mode"
 msgstr "标准模式"
 
 #: lib/html.php:2515
-#, fuzzy
 msgid "Compact Mode"
 msgstr "缩放模式"
 
 #: lib/html.php:2516
-#, fuzzy
 msgid "Dark Color Mode"
 msgstr "未找到颜色"
 
 #: lib/html.php:2517
-#, fuzzy
 msgid "Light Color Mode"
 msgstr "列表模式"
 
 #: lib/html.php:2518
-#, fuzzy
 msgid "Use System Color"
 msgstr "项目颜色"
 
 #: lib/html.php:2519
-#, fuzzy
 msgid "Ignore System Color"
 msgstr "项目颜色"
 
@@ -14244,12 +13689,10 @@ msgid "Cacti Project Page"
 msgstr "Cacti 项目页面"
 
 #: lib/html.php:2531
-#, fuzzy
 msgid "Spine"
 msgstr "Spine 二进制文件位置"
 
 #: lib/html.php:2532
-#, fuzzy
 msgid "RRDProxy"
 msgstr "RRD代理"
 
@@ -14262,18 +13705,14 @@ msgid "Shortcuts"
 msgstr "快捷键"
 
 #: lib/html.php:2535
-#, fuzzy
-#| msgid "Rotate the Cacti Log"
 msgid "Contribute to the Cacti Project"
 msgstr "轮转Cacti 日志"
 
 #: lib/html.php:2536
-#, fuzzy
 msgid "Help in Developing"
 msgstr "帮助开发"
 
 #: lib/html.php:2537
-#, fuzzy
 msgid "Donation & Sponsoring"
 msgstr "捐赠与赞助"
 
@@ -14282,7 +13721,6 @@ msgid "Client"
 msgstr "客户"
 
 #: lib/html.php:2541
-#, fuzzy
 msgid "Help in Translating"
 msgstr "帮助翻译"
 
@@ -14367,7 +13805,6 @@ msgid "Action failed"
 msgstr "操作失败"
 
 #: lib/html.php:2567 pollers.php:814
-#, fuzzy
 msgid "Connection Successful"
 msgstr "操作成功"
 
@@ -14380,7 +13817,6 @@ msgid "The response to the last action was unexpected."
 msgstr "最后一次操作相应出现异常."
 
 #: lib/html.php:2570
-#, fuzzy
 msgid "Some Actions failed"
 msgstr "一些操作失败了"
 
@@ -14409,7 +13845,6 @@ msgid "Zoom Out"
 msgstr "缩小"
 
 #: lib/html.php:2580
-#, fuzzy
 msgid "Zoom Out Factor"
 msgstr "缩小因子"
 
@@ -14438,7 +13873,6 @@ msgid "32x"
 msgstr "32x"
 
 #: lib/html.php:2587
-#, fuzzy
 msgid "Zoom Out Positioning"
 msgstr "缩小定位"
 
@@ -14455,17 +13889,14 @@ msgid "Open in new tab"
 msgstr "在新标签打开"
 
 #: lib/html.php:2593
-#, fuzzy
 msgid "Save graph"
 msgstr "保存图形"
 
 #: lib/html.php:2594
-#, fuzzy
 msgid "Copy graph"
 msgstr "复制图形"
 
 #: lib/html.php:2595
-#, fuzzy
 msgid "Copy graph link"
 msgstr "复制图形链接"
 
@@ -14486,7 +13917,6 @@ msgid "Begin with"
 msgstr "起始"
 
 #: lib/html.php:2601
-#, fuzzy
 msgid "End with"
 msgstr "结束日期"
 
@@ -14548,7 +13978,6 @@ msgid "NO FONT VERIFICATION POSSIBLE"
 msgstr "可能没有字体验证"
 
 #: lib/html_form.php:1400
-#, fuzzy
 msgid "Warning Unsaved Form Data"
 msgstr "警告未保存的表单数据"
 
@@ -14557,7 +13986,6 @@ msgid "Unsaved Changes Detected"
 msgstr "检测到未保存的更改"
 
 #: lib/html_form.php:1403
-#, fuzzy
 msgid "You have unsaved changes on this form.  If you press &#39;Continue&#39; these changes will be discarded.  Press &#39;Cancel&#39; to continue editing the form."
 msgstr "您在此表单上有未保存的更改.如果按'继续',这些更改将被丢弃.按'取消'继续编辑表单."
 
@@ -14711,7 +14139,7 @@ msgstr "格式化文件以使用"
 #: lib/html_reports.php:67
 msgid "Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the 'formats' directory."
 msgstr ""
-"择要使用的自定义html包装器和CSS文件. 该文件包含html和CSS.以包装您的报告.如果它包含的不仅仅是CSS.你需要在文件中放置一个特殊的<REPORT>标签.此格式标签将被报告内容替换.\n"
+"择要使用的自定义html包装器和CSS文件. 该文件包含html和CSS.以包装您的报告.如果它包含的不仅仅是CSS.你需要在文件中放置一个特殊的<REPORT>标签.此格式标签将被报告内容替换."
 "这些文件位于'formats'目录."
 
 #: lib/html_reports.php:72
@@ -14915,7 +14343,6 @@ msgid "Graph Tree Branch"
 msgstr "图树分支"
 
 #: lib/html_reports.php:978
-#, fuzzy
 msgid "Select a Tree Branch to use for Graphs and Devices.  Devices will be considered as Branches."
 msgstr "选择要用于图形和设备的树枝。设备将被视为分支。"
 
@@ -14924,27 +14351,22 @@ msgid "Cascade to Branches"
 msgstr "级联到分支"
 
 #: lib/html_reports.php:986
-#, fuzzy
 msgid "Should all Branch Graphs be rendered?"
 msgstr "是否应该渲染所有子分支图形?"
 
 #: lib/html_reports.php:993
-#, fuzzy
 msgid "Select a Site to filter for Devices and Graphs."
 msgstr "选择一个设备来指定一个图"
 
 #: lib/html_reports.php:1003
-#, fuzzy
 msgid "Select a Device Template to use to filter for Devices or Graphs."
 msgstr "选择要使用的设备模板."
 
 #: lib/html_reports.php:1011
-#, fuzzy
 msgid "Select a Device to be used to filter for of select for Graphs in the case of a Device Type."
 msgstr "在设备类型的情况下，选择要用于过滤的设备。"
 
 #: lib/html_reports.php:1022
-#, fuzzy
 msgid "Select a Graph Template for the Device to be used to filter for or select Graphs in the case of a Device Type."
 msgstr "为要用于过滤的设备选择图表模板，或在设备类型的情况下选择图表。"
 
@@ -14953,7 +14375,6 @@ msgid "Graph Name Regular Expression"
 msgstr "图名正则表达式"
 
 #: lib/html_reports.php:1034
-#, fuzzy
 msgid "A Perl compatible regular expression (REGEXP) used to select Graphs to include from the Tree or Device."
 msgstr "一个Perl兼容的正则表达式(REGEXP),用于从树中选择要包含的图形."
 
@@ -14962,7 +14383,6 @@ msgid "The Graph to use for this report item."
 msgstr "用于此报表项目的图形."
 
 #: lib/html_reports.php:1054
-#, fuzzy
 msgid "The Graph End time will be set to the scheduled report send time.  So, if you wish the end time on the various Graphs to be midnight, ensure you send the report at midnight.  The Graph Start time will be the End Time minus the Graph Timespan."
 msgstr "图形结束时间将设置为计划报告发送时间.因此,如果您希望各种图形的结束时间为午夜,请确保您在午夜发送报告.图形开始时间将是结束时间减去图形时间跨度."
 
@@ -15013,23 +14433,22 @@ msgid "[new]"
 msgstr "[新的]"
 
 #: lib/html_reports.php:1482
-#, fuzzy, php-format
+#, php-format
 msgid "Details %s"
 msgstr "详情"
 
 #: lib/html_reports.php:1531
-#, fuzzy, php-format
-#| msgid "No Report Items"
+#, php-format
 msgid "Report Items %s"
 msgstr "没有报告项目"
 
 #: lib/html_reports.php:1572
-#, fuzzy, php-format
+#, php-format
 msgid "Scheduled Events %s"
 msgstr "计划的事件"
 
 #: lib/html_reports.php:1583
-#, fuzzy, php-format
+#, php-format
 msgid "Report Preview %s"
 msgstr "报告预览"
 
@@ -15038,14 +14457,13 @@ msgid "Item Details"
 msgstr "项目细节"
 
 #: lib/html_reports.php:1624
-#, fuzzy, php-format
+#, php-format
 msgid "Graph: %s"
 msgstr "更改关联设备图"
 
 #: lib/html_reports.php:1627 lib/html_reports.php:1653
 #: lib/html_reports.php:1666 lib/html_reports.php:1667
 #: lib/html_reports.php:1716 lib/html_reports.php:1717
-#, fuzzy
 msgid "Using CSS"
 msgstr "使用 CSS"
 
@@ -15055,32 +14473,31 @@ msgid "Device: %s"
 msgstr "设备：%s"
 
 #: lib/html_reports.php:1640
-#, fuzzy
 msgid ", Graph Template: All Templates"
 msgstr "将图形模板添加到设备模板"
 
 #: lib/html_reports.php:1642
-#, fuzzy, php-format
+#, php-format
 msgid ", Graph Template: %s"
 msgstr "图形 [模板: %s]"
 
 #: lib/html_reports.php:1649 lib/html_reports.php:1712
-#, fuzzy, php-format
+#, php-format
 msgid ", Using RegEx: \"%s\""
 msgstr ", 使用正则表达式：“%s”"
 
 #: lib/html_reports.php:1691
-#, fuzzy, php-format
+#, php-format
 msgid "Tree: %s"
 msgstr "树:"
 
 #: lib/html_reports.php:1699
-#, fuzzy, php-format
+#, php-format
 msgid ", Device: %s"
 msgstr "设备：%s"
 
 #: lib/html_reports.php:1701
-#, fuzzy, php-format
+#, php-format
 msgid ", Branch: %s"
 msgstr "分支: %s"
 
@@ -15158,7 +14575,6 @@ msgid "Graph Template:"
 msgstr "图形模板:"
 
 #: lib/html_tree.php:936
-#, fuzzy
 msgid "Template Based"
 msgstr "图形模板基础"
 
@@ -15203,7 +14619,7 @@ msgid "Selected"
 msgstr "选"
 
 #: lib/html_utility.php:490 lib/html_utility.php:709
-#, fuzzy, php-format
+#, php-format
 msgid "The regular expression \"%s\" is not valid. Error is %s"
 msgstr "搜索字词 \"%s\"无效. 错误是%s"
 
@@ -15236,8 +14652,6 @@ msgid "Bad UTF-8 offset error!"
 msgstr "UTF-8 偏移错误!"
 
 #: lib/html_utility.php:943
-#, fuzzy
-#| msgid "Download"
 msgid "Down (Thold)"
 msgstr "下载"
 
@@ -15271,13 +14685,12 @@ msgid "not writable"
 msgstr "不可写"
 
 #: lib/import.php:1687 lib/import.php:1704
-#, fuzzy, php-format
+#, php-format
 msgid "New Graph Template: %s"
 msgstr "图形 [模板: %s]"
 
 #: lib/import.php:1716 lib/import.php:1726
-#, fuzzy, php-format
-#| msgid "Data Query [%s]"
+#, php-format
 msgid "New Data Query: %s"
 msgstr "数据查询 [%s]"
 
@@ -15394,12 +14807,11 @@ msgid "Failed to apply specified automation override: %s"
 msgstr "未能应用指定的自动化覆盖:%s"
 
 #: lib/installer.php:958
-#, fuzzy
 msgid "Failed to apply specified cron interval"
 msgstr "无法应用指定的cron 周期"
 
 #: lib/installer.php:1002
-#, fuzzy, php-format
+#, php-format
 msgid "Failed to apply '%s' as Automation Range"
 msgstr "无法应用指定的自动化范围"
 
@@ -15425,27 +14837,23 @@ msgid "Unknown Reason: %s"
 msgstr "未知的原因:% s"
 
 #: lib/installer.php:1586
-#, fuzzy, php-format
+#, php-format
 msgid "You are attempting to install Cacti %s onto a 0.6.x database. Unfortunately, this can not be performed."
 msgstr "您正在尝试将Cacti %s 安装到 0.6.x 数据库上.不幸的是,这不能执行."
 
 #: lib/installer.php:1587
-#, fuzzy
 msgid "To be able continue, you <b>MUST</b> create a new database, import \"cacti.sql\" into it:"
 msgstr "为了能够继续,您<b>必须</b>创建一个新的数据库,导入\"cacti.sql\":"
 
 #: lib/installer.php:1589
-#, fuzzy
 msgid "You <b>MUST</b> then update \"include/config.php\" to point to the new database."
 msgstr "然后,您<b>必须</b>更新 \"include/config.php\" 以指向新的数据库."
 
 #: lib/installer.php:1590
-#, fuzzy
 msgid "NOTE: Your existing data will not be modified, nor will it or any history be available to the new install"
 msgstr "注意: 您的现有数据不会被修改,新安装也不会修改它或任何历史记录"
 
 #: lib/installer.php:1597
-#, fuzzy
 msgid "You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:"
 msgstr "您已创建新数据库,但尚未导入 'cacti.sql' 文件.在命令行中,执行以下命令以继续:"
 
@@ -15495,7 +14903,7 @@ msgid "License Agreement"
 msgstr "许可协议"
 
 #: lib/installer.php:1750
-#, fuzzy, php-format
+#, php-format
 msgid "This version of Cacti (%s) does not appear to have a valid version code, please contact the Cacti Development Team to ensure this is corrected.  If you are seeing this error in a release, please raise a report immediately on GitHub"
 msgstr "此版本的Cacti（％s）似乎没有有效的版本代码，请联系Cacti开发团队以确保其受到管理。如果您在发布中看到此错误，请立即在GitHub上提交报告"
 
@@ -15504,8 +14912,7 @@ msgid "Thanks for taking the time to download and install Cacti, the complete gr
 msgstr "感谢您抽出时间下载并安装Cacti, 这是为您的网络而准备的完整的画图解决方案. 在您开始绘制很酷的图形之前,Cacti 需要知道一些数据."
 
 #: lib/installer.php:1754
-#, fuzzy, php-format
-#| msgid "Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href=\"%1$s\">Unix</a> and <a href=\"%2$s\">Win32</a>-based operating systems."
+#, php-format
 msgid "Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href=\"%s\">Unix</a> and <a href=\"%s\">Win32</a>-based operating systems."
 msgstr "确保您已阅读并遵循安装Cacti 所需的步骤,然后再继续. 可以在<a href=\"%1$s\"> Unix </a>和基于<a href=\"%2$s\"> Win32 </a>的操作系统上找到安装信息."
 
@@ -15515,7 +14922,7 @@ msgid "This process will guide you through the steps for upgrading from version 
 msgstr "此过程将指导您完成从版本 '%s' 升级的步骤."
 
 #: lib/installer.php:1758
-#, fuzzy, php-format
+#, php-format
 msgid "Also, if this is an upgrade, be sure to read the <a href=\"%s\">Upgrade</a> information file."
 msgstr "另外,如果这是升级,请务必阅读<a href=\"%s\">升级</a>信息文件."
 
@@ -15561,13 +14968,11 @@ msgid "Your Cacti configuration has the relative correct path (url_path) in conf
 msgstr "您的Cacti 配置在config.php 中具有相对正确的路径(url_path)."
 
 #: lib/installer.php:1877
-#, fuzzy, php-format
+#, php-format
 msgid "PHP - Recommendations (%s)"
 msgstr "PHP - 推荐配置"
 
 #: lib/installer.php:1881
-#, fuzzy
-#| msgid "PHP Recommendations"
 msgid "PHP Recommendations ("
 msgstr "PHP 推荐配置"
 
@@ -15580,17 +14985,14 @@ msgid "Recommended"
 msgstr "推荐"
 
 #: lib/installer.php:1889
-#, fuzzy
 msgid "PHP Binary"
 msgstr "PHP 路径"
 
 #: lib/installer.php:1892
-#, fuzzy
 msgid "The PHP binary location is not valid and must be updated."
 msgstr "PHP二进制位置无效，必须进行更新。"
 
 #: lib/installer.php:1899
-#, fuzzy
 msgid "Update the path_php_binary value in the settings table."
 msgstr "更新设置表中的path_php_binary值。"
 
@@ -15603,8 +15005,6 @@ msgid "Warning"
 msgstr "警告"
 
 #: lib/installer.php:1917
-#, fuzzy
-#| msgid "Required"
 msgid "Restart Required"
 msgstr "要求"
 
@@ -15690,17 +15090,14 @@ msgid "Upgrade from <strong>%s</strong> to <strong>%s</strong>"
 msgstr "从 <strong>%s</strong> 到 <strong>%s</strong> 升级"
 
 #: lib/installer.php:2071
-#, fuzzy
 msgid "In the event of issues, It is highly recommended that you clear your browser cache, closing then reopening your browser (not just the tab Cacti is on) and retrying, before raising an issue with The Cacti Group"
 msgstr "如果出现问题,强烈建议您清除浏览器缓存,关闭然后重新打开浏览器(不只是 'Cacti' 选项卡)并重试, 然后再向Cacti Group 报告问题"
 
 #: lib/installer.php:2072
-#, fuzzy
 msgid "On rare occasions, we have had reports from users who experience some minor issues due to changes in the code.  These issues are caused by the browser retaining pre-upgrade code and whilst we have taken steps to minimise the chances of this, it may still occur.  If you need instructions on how to clear your browser cache, <a href='https://www.refreshyourcache.com' target='_blank'>https://www.refreshyourcache.com/</a> is a good starting point."
 msgstr "在极少数情况下,我们收到了由于代码更改而遇到一些小问题的用户的报告.这些问题是由浏览器保留升级前代码引起的,虽然我们已采取措施尽量减少这种情况,但仍可能发生.如果您需要有关如何清除浏览器缓存的说明, <a href='https://www.refreshyourcache.com' target='_blank'>https://www.refreshyourcache.com/</a>是一个很好的起点."
 
 #: lib/installer.php:2073
-#, fuzzy
 msgid "If after clearing your cache and restarting your browser, you still experience issues, please raise the issue with us and we will try to identify the cause of it."
 msgstr "如果在清除缓存并重启浏览器后仍然遇到问题,请向我们提出问题,我们会尝试确定问题的原因."
 
@@ -15710,7 +15107,6 @@ msgid "Downgrade from <strong>%s</strong> to <strong>%s</strong>"
 msgstr "从<strong>%s</strong>降级为<strong>%s</strong>"
 
 #: lib/installer.php:2080
-#, fuzzy
 msgid "You appear to be downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues."
 msgstr "您似乎正在降级到以前的版本.为较新版本所做的数据库更改不会被撤消,并<i>可能</i>导致问题."
 
@@ -15772,7 +15168,6 @@ msgid "Server Operating System Type: <b>%s</b>"
 msgstr "服务器操作系统类型: <b>%s</b>"
 
 #: lib/installer.php:2162
-#, fuzzy
 msgid "Central Database Connection Information"
 msgstr "中央数据库连接信息"
 
@@ -15805,7 +15200,6 @@ msgid "The Installer automatically assigns a $poller_id and adds it to the confi
 msgstr "安装程序自动分配 $poller_id 并将其添加到config.php 文件中."
 
 #: lib/installer.php:2200
-#, fuzzy
 msgid "Once the variables are all set in the config.php file, you must also grant the $rdatabase_username access to the main Cacti database server.  Follow the same procedure you would with any other Cacti install.  You may then press the 'Test Connection' button.  If the test is successful you will be able to proceed and complete the install."
 msgstr "一旦变量全部在config.php 文件中设置,您还必须授予$ rdatabase_username访问主Cacti 数据库服务器的权限.按照与任何其他Cacti 安装相同的步骤进行操作.然后,您可以按 '测试连接' 按钮.如果测试成功,您将能够继续并完成安装."
 
@@ -15814,7 +15208,6 @@ msgid "Additional Steps After Installation"
 msgstr "安装后的其他步骤"
 
 #: lib/installer.php:2206
-#, fuzzy
 msgid "It is essential that the Central Cacti server can communicate via MySQL to each remote Cacti database server.  Once the install is complete, you must edit the Remote Data Collector and ensure the settings are correct.  You can verify using the 'Test Connection' when editing the Remote Data Collector."
 msgstr "中央Cacti 服务器必须能够通过MySQL 与每个远程Cacti 数据库服务器进行通信.安装完成后,您必须编辑远程数据采集器并确保设置正确.编辑远程数据采集器时,可以使用 '测试连接' 进行验证."
 
@@ -15875,7 +15268,6 @@ msgid "Please make sure that your webserver has read/write access to the cacti f
 msgstr "请确保您的web 服务器对以下显示出错的cacti 文件夹具有读/写权限."
 
 #: lib/installer.php:2392
-#, fuzzy
 msgid "If SELinux is enabled on your server, you can either permanently disable this, or temporarily disable it and then add the appropriate permissions using the SELinux command-line tools."
 msgstr "如果您的服务器上开启了SELinux, 您可以永久禁用它,或临时关闭它,然后使用SELinux 命令行工具添加适当的权限."
 
@@ -15885,7 +15277,6 @@ msgid "The user '%s' should have MODIFY permission to enable read/write."
 msgstr "用户'%s '应该具有修改权限以启用读/写。"
 
 #: lib/installer.php:2410
-#, fuzzy
 msgid "An example of how to set folder permissions is shown here, though you may need to adjust this depending on your operating system, user accounts and desired permissions."
 msgstr "此处显示了如何设置文件夹权限的示例,但您可能需要根据操作系统,用户帐户和所需权限进行调整"
 
@@ -15894,7 +15285,6 @@ msgid "EXAMPLE:"
 msgstr "例子:"
 
 #: lib/installer.php:2412
-#, fuzzy
 msgid "Once installation has completed the CSRF path, should be set to read-only."
 msgstr "安装完成后，CSRF路径应设置为只读。"
 
@@ -15903,57 +15293,46 @@ msgid "All folders are writable"
 msgstr "所有文件夹都是可写的"
 
 #: lib/installer.php:2426
-#, fuzzy
 msgid "Input Validation Whitelist Protection"
 msgstr "输入验证白名单保护"
 
 #: lib/installer.php:2427
-#, fuzzy
 msgid "Cacti Data Input methods that call a script can be exploited in ways that a non-administrator can perform damage to either files owned by the poller account, and in cases where someone runs the Cacti poller as root, can compromise the operating system allowing attackers to exploit your infrastructure."
 msgstr "可以以某种方式利用调用脚本的Cacti数据输入法，即非管理员可以破坏轮询器帐户拥有的任何文件，并且在有人以root身份运行Cacti轮询器的情况下，可以破坏操作系统，从而使攻击者能够利用您的基础架构。"
 
 #: lib/installer.php:2428
-#, fuzzy
 msgid "Therefore, several versions ago, Cacti was enhanced to provide Whitelist capabilities on the these types of Data Input Methods.  Though this does secure Cacti more thoroughly, it does increase the amount of work required by the Cacti administrator to import and manage Templates and Packages."
 msgstr "因此，在多个版本之前，对Cacti进行了增强，以针对这些类型的数据输入法提供白名单功能。尽管这样做确实可以更彻底地保护Cacti，但是它确实增加了Cacti管理员导入和管理模板和软件包所需的工作量。"
 
 #: lib/installer.php:2429
-#, fuzzy
 msgid "The way that the Whitelisting works is that when you first import a Data Input Method, or you re-import a Data Input Method, and the script and or arguments change in any way, the Data Input Method, and all the corresponding Data Sources will be immediatly disabled until the administrator validates that the Data Input Method is valid."
 msgstr "白名单的工作方式是，当您首次导入数据输入法或重新导入数据输入法，并且脚本和/或参数以任何方式更改时，数据输入法以及所有相应的数据源都会立即禁用，直到管理员确认数据输入法有效。"
 
 #: lib/installer.php:2430
-#, fuzzy
 msgid "To make identifying Data Input Methods in this state, we have provided a validation script in Cacti's CLI directory that can be run with the following options:"
 msgstr "为了在这种状态下识别数据输入法，我们在Cacti的CLI目录中提供了一个验证脚本，该脚本可以使用以下选项运行："
 
 #: lib/installer.php:2434
-#, fuzzy
 msgid "This script option will search for any Data Input Methods that are currently banned and provide details as to why."
 msgstr "该脚本选项将搜索当前禁止的任何数据输入方法，并提供有关原因的详细信息。"
 
 #: lib/installer.php:2435
-#, fuzzy
 msgid "This script option un-ban the Data Input Methods that are currently banned."
 msgstr "此脚本选项取消禁止当前禁止的数据输入法。"
 
 #: lib/installer.php:2436
-#, fuzzy
 msgid "This script option will re-enable any disabled Data Sources."
 msgstr "此脚本选项将重新启用所有禁用的数据源。"
 
 #: lib/installer.php:2440
-#, fuzzy
 msgid "It is strongly suggested that you update your config.php to enable this feature by uncommenting the <b>$input_whitelist</b> variable and then running the three CLI script options above after the web based install has completed."
 msgstr "强烈建议您通过取消注释<b>$ input_whitelist</b>变量并在基于Web的安装完成后运行上面的三个CLI脚本选项来更新config.php以启用此功能。"
 
 #: lib/installer.php:2442
-#, fuzzy
 msgid "Check the Checkbox below to acknowledge that you have read and understand this security concern"
 msgstr "选中下面的复选框以确认您已阅读并了解此安全问题"
 
 #: lib/installer.php:2444
-#, fuzzy
 msgid "I have read this statement"
 msgstr "我已阅读此声明"
 
@@ -15962,7 +15341,6 @@ msgid "Default Profile"
 msgstr "默认配置文件"
 
 #: lib/installer.php:2461
-#, fuzzy
 msgid "Please select the default Data Source Profile to be used for polling sources.  This is the maximum amount of time between scanning devices for information so the lower the polling interval, the more work is placed on the Cacti Server host.  Also, select the intended, or configured Cron interval that you wish to use for Data Collection."
 msgstr "请选择用于采集器的默认数据源配置文件.这是扫描设备之间获取信息的最长时间,因此采集周期越短,Cacti 服务器上的工作就越多.此外,选择要用于数据采集的预期或配置的Cron 周期."
 
@@ -15975,12 +15353,10 @@ msgid "Default Automation Network"
 msgstr "默认自动化网络"
 
 #: lib/installer.php:2494
-#, fuzzy
 msgid "Cacti can automatically scan the network once installation has completed. This will utilise the network range below to work out the range of IPs that can be scanned.  A predefined set of options are defined for scanning which include using both 'public' and 'private' communities."
 msgstr "安装完成后, Cacti 可以自动扫描网络.这将利用下面的网络范围来计算可扫描的IP 范围.为扫描定义了一组预定义的选项,包括使用 'public' 和 'private' 团体名."
 
 #: lib/installer.php:2495
-#, fuzzy
 msgid "If your devices require a different set of options to be used first, you may define them below and they will be utilized before the defaults"
 msgstr "如果您的设备需要先使用一组不同的选项,您可以在下面定义它们,它们将在默认值之前使用"
 
@@ -16025,12 +15401,10 @@ msgid "Template Setup"
 msgstr "模板设置"
 
 #: lib/installer.php:2562
-#, fuzzy
 msgid "Please select the Device Templates that you wish to update during the Upgrade."
 msgstr "选择您希望从Cacti 导出的模板类型."
 
 #: lib/installer.php:2563
-#, fuzzy
 msgid "Updating Templates that you have already made modifications to is not advisable.  The Upgrade of the Templates will NOT remove modifications to Graph and Data Templates, and can lead to unexpected behavior.  However, if you have not made changes to any Graph, Data Query, or Data Template, reimporting the Package should not have any affect.  In that case, you would have to 'Sync Graphs' to from the Templates after update."
 msgstr "不建议更新您已经修改过的模板。模板的升级不会删除对图形和数据模板的修改，并可能导致意外行为。但是，如果您没有对任何图形、数据查询或数据模板进行更改，则重新导入包应该没有任何影响。在这种情况下，您必须在更新后从模板“同步图表”。"
 
@@ -16047,7 +15421,6 @@ msgid "Homepage"
 msgstr "主页"
 
 #: lib/installer.php:2589
-#, fuzzy
 msgid "Device Templates allow you to monitor and graph a vast assortment of data within Cacti.  After you select the desired Device Templates, press 'Next' and the installation will complete.  Please be patient on this step, as the importation of the Device Templates can take a few minutes."
 msgstr "设备模板允许您监视和绘制Cacti 内的大量数据. 选择所需的设备模板后,按'完成',安装完成. 请耐心等待,因为输入设备模板可能需要几分钟的时间."
 
@@ -16064,7 +15437,6 @@ msgid "Your server collation does NOT appear to be fully UTF8 compliant. "
 msgstr "您的服务器排序规则似乎不完全符合UTF8 标准."
 
 #: lib/installer.php:2608
-#, fuzzy
 msgid "Under the [mysqld] section, locate the entries named 'character-set-server' and 'collation-server' and set them as follows:"
 msgstr "在[mysqld]部分下,找到名为 'character-set-server' 和 'collation-server' 的条目, 并按如下所示进行设置:"
 
@@ -16081,22 +15453,19 @@ msgid "Your database default collation does NOT appear to be full UTF8 compliant
 msgstr "您的数据库默认排序规则似乎不符合UTF8标准."
 
 #: lib/installer.php:2624
-#, fuzzy
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
 msgstr "如果排序规则不匹配,则插件创建的任何表都可能存在与Cacti Core 表链接的问题.请运行以下命令,确保将数据库更改为 'utf8mb4_unicode_ci':"
 
 #: lib/installer.php:2631
-#, fuzzy
 msgid "Table Setup"
 msgstr "表设置"
 
 #: lib/installer.php:2642
-#, fuzzy, php-format
+#, php-format
 msgid "You have more tables than your PHP configuration will allow us to display/convert.  Please modify the max_input_vars setting in php.ini to a value above %s"
 msgstr "您的表数量超出了PHP配置所允许的显示/转换数量。请修改php.ini中的max_input_vars设置为％s以上的值"
 
 #: lib/installer.php:2645
-#, fuzzy
 msgid "Conversion of tables may take some time especially on larger tables.  The conversion of these tables will occur in the background but will not prevent the installer from completing.  This may slow down some servers if there are not enough resources for MySQL to handle the conversion."
 msgstr "表的转换可能需要一些时间,尤其是在较大的表上. 这些表的转换将在后台进行,但不会阻止安装程序完成.如果MySQL没有足够的资源来处理转换,这可能会降低某些服务器的速度."
 
@@ -16121,12 +15490,10 @@ msgid "One or more tables are too large to convert during the installation.  You
 msgstr "一个或多个表太大而无法在安装期间进行转换.您应该使用脚本 cli/convert_tables.php 来执行转换,然后刷新此页面.例如:"
 
 #: lib/installer.php:2686
-#, fuzzy
 msgid "The following tables should be converted to UTF8 and InnoDB with a Dynamic row format.  Please select the tables that you wish to convert during the installation process."
 msgstr "以下表格应转换为UTF8 和InnoDB. 请在安装过程中选择要转换的表."
 
 #: lib/installer.php:2692
-#, fuzzy
 msgid "All your tables appear to be UTF8 and Dynamic row format compliant"
 msgstr "您的所有表格似乎都符合UTF8 标准"
 
@@ -16151,13 +15518,10 @@ msgid "DOWNGRADE DETECTED"
 msgstr "检测到降级"
 
 #: lib/installer.php:2717
-#, fuzzy
 msgid "YOU MUST MANUALLY CHANGE THE CACTI DATABASE TO REVERT ANY UPGRADE CHANGES THAT HAVE BEEN MADE.<br/>THE INSTALLER HAS NO METHOD TO DO THIS AUTOMATICALLY FOR YOU"
 msgstr "您必须手动修改CACTI 数据库以满足升级要求. <br/>安装程序无法为您自动做这件事"
 
 #: lib/installer.php:2718
-#, fuzzy
-#| msgid "Downgrading should only be performed when absolutely necessary and doing so may break your installlation"
 msgid "Downgrading should only be performed when absolutely necessary and doing so may break your installation"
 msgstr "降级只应在绝对必要时执行,这样做可能会破坏您的安装"
 
@@ -16180,7 +15544,7 @@ msgid "Your Cacti Server is now installing"
 msgstr "您的Cacti 服务器正在安装"
 
 #: lib/installer.php:2828
-#, fuzzy, php-format
+#, php-format
 msgid "Spawning background process: %s %s"
 msgstr "产生后台进程：％s％s"
 
@@ -16189,12 +15553,12 @@ msgid "Complete"
 msgstr "完成"
 
 #: lib/installer.php:2855
-#, fuzzy, php-format
+#, php-format
 msgid "Your Cacti Server v%s has been installed/updated.  You may now start using the software."
 msgstr "您的Cacti 服务器 v%s 已安装/更新.您现在可以开始使用该软件."
 
 #: lib/installer.php:2859
-#, fuzzy, php-format
+#, php-format
 msgid "Your Cacti Server v%s has been installed/updated with errors"
 msgstr "您的Cacti 服务器 v%s 在安装/更新时出错"
 
@@ -16211,197 +15575,182 @@ msgid "Get Started"
 msgstr "开始使用"
 
 #: lib/installer.php:3008
-#, fuzzy, php-format
+#, php-format
 msgid "Starting %s Process for v%s"
 msgstr "为v％s启动％s流程"
 
 #: lib/installer.php:3033
-#, fuzzy, php-format
+#, php-format
 msgid "Finished %s Process for v%s"
 msgstr "v％s完成的％s处理"
 
 #: lib/installer.php:3072
-#, fuzzy, php-format
+#, php-format
 msgid "Found %s templates to install"
 msgstr "找到了要安装的％s模板"
 
 #: lib/installer.php:3082
-#, fuzzy, php-format
+#, php-format
 msgid "About to import Package #%s '%s'."
 msgstr "即将导入软件包＃％s'％s'。"
 
 #: lib/installer.php:3091
-#, fuzzy, php-format
+#, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' succeeded"
 msgstr "已成功在配置文件'％s'下导入软件包＃％s'％s'"
 
 #: lib/installer.php:3097
-#, fuzzy, php-format
+#, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' failed"
 msgstr "在配置文件“％s”下导入软件包＃％s“％s”失败"
 
 #: lib/installer.php:3112
-#, fuzzy, php-format
+#, php-format
 msgid "Mapping Automation Template for Device Template '%s'"
 msgstr "[已删除模板]的自动化模板"
 
 #: lib/installer.php:3129
-#, fuzzy
 msgid "No templates were selected for import"
 msgstr "未选择要导入的模板"
 
 #: lib/installer.php:3138
-#, fuzzy
 msgid "Updating remote configuration file"
 msgstr "等待配置"
 
 #: lib/installer.php:3170
-#, fuzzy, php-format
+#, php-format
 msgid "Setting default data source profile to %s (%s)"
 msgstr "此数据模板的默认数据源配置文件."
 
 #: lib/installer.php:3192
-#, fuzzy, php-format
+#, php-format
 msgid "Failed to find selected profile (%s), no changes were made"
 msgstr "无法应用指定的配置文件 %s != %s"
 
 #: lib/installer.php:3201
-#, fuzzy, php-format
+#, php-format
 msgid "Updating automation network (%s), mode \"%s\" => \"%s\", subnet \"%s\" => %s\""
 msgstr "更新自动化网络（％s），模式“％s” =>“％s”，子网“％s” =>％s“"
 
 #: lib/installer.php:3211
-#, fuzzy
 msgid "Failed to find automation network, no changes were made"
 msgstr "找不到自动化网络，未进行任何更改"
 
 #: lib/installer.php:3215
-#, fuzzy
 msgid "Adding extra snmp settings for automation"
 msgstr "添加额外的snmp设置以实现自动化"
 
 #: lib/installer.php:3221
-#, fuzzy, php-format
+#, php-format
 msgid "Selecting Automation Option Set %s"
 msgstr "删除自动化模板"
 
 #: lib/installer.php:3234
-#, fuzzy, php-format
+#, php-format
 msgid "Updating Automation Option Set %s"
 msgstr "自动化SNMP 选项"
 
 #: lib/installer.php:3237
-#, fuzzy, php-format
+#, php-format
 msgid "Successfully updated Automation Option Set %s"
 msgstr "成功更新了自动化选项集％s"
 
 #: lib/installer.php:3239
-#, fuzzy, php-format
+#, php-format
 msgid "Resequencing Automation Option Set %s"
 msgstr "在设备上运行自动化"
 
 #: lib/installer.php:3245
-#, fuzzy, php-format
+#, php-format
 msgid "Failed to updated Automation Option Set %s"
 msgstr "无法应用指定的自动化范围"
 
 #: lib/installer.php:3248
-#, fuzzy
 msgid "Failed to find any automation option set"
 msgstr "无法找到要复制的数据!"
 
 #: lib/installer.php:3278
-#, fuzzy, php-format
+#, php-format
 msgid "Device Template for First Cacti Device is %s"
 msgstr "设备模板 [编辑: %s]"
 
 #: lib/installer.php:3304
-#, fuzzy
 msgid "Creating Graphs for Default Device"
 msgstr "为设备创建图形"
 
 #: lib/installer.php:3311
-#, fuzzy
 msgid "Adding Device to Default Tree"
 msgstr "设备默认值"
 
 #: lib/installer.php:3319
-#, fuzzy
 msgid "No templated graphs for Default Device were found"
 msgstr "找不到默认设备的模板化图"
 
 #: lib/installer.php:3323
-#, fuzzy
 msgid "WARNING: Device Template for your Operating System Not Found.  You will need to import Device Templates or Cacti Packages to monitor your Cacti server."
 msgstr "警告：找不到您的操作系统的设备模板。您将需要导入设备模板或Cacti软件包以监视您的Cacti服务器。"
 
 #: lib/installer.php:3330
-#, fuzzy
 msgid "Running first-time data query for local host"
 msgstr "运行本地主机的首次数据查询"
 
 #: lib/installer.php:3338
-#, fuzzy
 msgid "Repopulating poller cache"
 msgstr "重建poller 缓存"
 
 #: lib/installer.php:3343
-#, fuzzy
 msgid "Repopulating SNMP Agent cache"
 msgstr "重建SNMPAgent 缓存"
 
 #: lib/installer.php:3348
-#, fuzzy
 msgid "Generating RSA Key Pair"
 msgstr "生成RSA密钥对"
 
 #: lib/installer.php:3360
-#, fuzzy, php-format
+#, php-format
 msgid "Found %s tables to convert"
 msgstr "找到要转换的％s表"
 
 #: lib/installer.php:3367
-#, fuzzy, php-format
+#, php-format
 msgid "Converting Table #%s '%s'"
 msgstr "转换表＃％s'％s'"
 
 #: lib/installer.php:3382
-#, fuzzy
 msgid "No tables where found or selected for conversion"
 msgstr "没有找到或选择要转换的表"
 
 #: lib/installer.php:3393
-#, fuzzy, php-format
+#, php-format
 msgid "Switched from %s to %s"
 msgstr "从％s切换到％s"
 
 #: lib/installer.php:3397
-#, fuzzy, php-format
+#, php-format
 msgid "NOTE: Using temporary file for db cache: %s"
 msgstr "注意：使用临时文件进行数据库高速缓存：％s"
 
 #: lib/installer.php:3419
-#, fuzzy, php-format
+#, php-format
 msgid "Upgrading from v%s (DB %s) to v%s"
 msgstr "从v％s（数据库％s）升级到v％s"
 
 #: lib/installer.php:3427
-#, fuzzy, php-format
+#, php-format
 msgid "WARNING: Failed to find upgrade function for v%s"
 msgstr "警告：无法找到v％s的升级功能"
 
 #: lib/installer.php:3486
-#, fuzzy
 msgid "Install aborted due to no EULA acceptance"
 msgstr "由于未接受EULA，安装被中止"
 
 #: lib/installer.php:3509
-#, fuzzy, php-format
+#, php-format
 msgid "Background was already started at %s, this attempt at %s was skipped"
 msgstr "后台已在％s开始，此尝试已在％s跳过"
 
 #: lib/installer.php:3532
-#, fuzzy, php-format
+#, php-format
 msgid "Exception occurred during installation: #%s - %s"
 msgstr "安装期间发生异常: #"
 
@@ -16415,12 +15764,12 @@ msgid "Both"
 msgstr "两者"
 
 #: lib/installer.php:3577
-#, fuzzy, php-format
+#, php-format
 msgid "No - %s"
 msgstr "RRA [编辑: %s %s]"
 
 #: lib/installer.php:3582
-#, fuzzy, php-format
+#, php-format
 msgid "%s - N/A"
 msgstr "RRA [编辑: %s %s]"
 
@@ -16429,27 +15778,25 @@ msgid "Web"
 msgstr "网页"
 
 #: lib/installer.php:3584 lib/installer.php:3587
-#, fuzzy, php-format
+#, php-format
 msgid "%s - No"
 msgstr "RRA [编辑: %s %s]"
 
 #: lib/installer.php:3587
-#, fuzzy
 msgid "Cli"
 msgstr "如果您选择此选项，则将重新生成轮询缓存。如果在崩溃后遇到问题并且已经运行数据库修复工具，则只有在发生数据库崩溃的情况下才使用此选项;或者，如果您遇到问题 使用特定的设备，只需重新保存该设备以重建其轮询缓存即可。还有一个与此命令等效的命令行界面，建议用于大型系统。<i class = “deviceDown ”>注意：在大型系统 ，这个命令可能需要几分钟到几个小时才能完成，因此不应该从Cacti UI运行。您可以在命令行运行'php -q cli / rebuild_poller_cache.php --help'以获取更多信息。</ i>"
 
 #: lib/installer.php:3592
-#, fuzzy, php-format
+#, php-format
 msgid "Setting PHP Option %s = %s"
 msgstr "设置PHP选项％s =％s"
 
 #: lib/installer.php:3598
-#, fuzzy, php-format
+#, php-format
 msgid "Failed to set PHP option %s, is %s (should be %s)"
 msgstr "无法设置PHP选项％s，为％s（应为％s）"
 
 #: lib/installer.php:3617
-#, fuzzy
 msgid "No Remote Data Collectors found for full synchronization"
 msgstr "尝试同步时未找到数据采集器"
 
@@ -16470,17 +15817,17 @@ msgid "No username defined"
 msgstr "没有定义用户名"
 
 #: lib/ldap.php:298
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, Unable to set version (%s) on Server (%s)"
 msgstr "协议错误,无法设置版本"
 
 #: lib/ldap.php:302
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, Unable to set referrals option (%s) on Server (%s)"
 msgstr "协议错误,无法设置引荐选项"
 
 #: lib/ldap.php:306
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, unable to start TLS communications (%s) on Server (%s)"
 msgstr "协议错误,无法启动TLS通信"
 
@@ -16490,27 +15837,27 @@ msgid "Protocol Error, General failure (%s)"
 msgstr "协议错误, 普通故障(%s)"
 
 #: lib/ldap.php:314
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)"
 msgstr "协议错误, 无法绑定,LDAP 结果: %s"
 
 #: lib/ldap.php:318
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to Connect to Server (%s)"
 msgstr "无法连接到服务器"
 
 #: lib/ldap.php:322
-#, fuzzy, php-format
+#, php-format
 msgid "Connection Timeout to Server (%s)"
 msgstr "连接超时"
 
 #: lib/ldap.php:326
-#, fuzzy, php-format
+#, php-format
 msgid "Insufficient Access to Server (%s)"
 msgstr "访问不足"
 
 #: lib/ldap.php:330
-#, fuzzy, php-format
+#, php-format
 msgid "Group DN could not be found to compare on Server (%s)"
 msgstr "未找到group DN"
 
@@ -16527,7 +15874,7 @@ msgid "Unable to find users DN"
 msgstr "无法找到用户DN"
 
 #: lib/ldap.php:346
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to create LDAP connection object to Server (%s)"
 msgstr "无法创建LDAP连接对象"
 
@@ -16536,12 +15883,11 @@ msgid "Specific DN and Password required"
 msgstr "需要特定的DN和密码"
 
 #: lib/ldap.php:354
-#, fuzzy
 msgid "Invalid Password provided.  Login failed."
 msgstr "提供的密码无效。登录失败。"
 
 #: lib/ldap.php:358
-#, fuzzy, php-format
+#, php-format
 msgid "Unexpected error %s (Ldap Error: %s) on Server (%s)"
 msgstr "Unexpected error %s (Ldap Error: %s )"
 
@@ -16650,27 +15996,26 @@ msgid "Not Stated"
 msgstr "没有说明"
 
 #: lib/reports.php:143
-#, fuzzy, php-format
+#, php-format
 msgid "Device '%s' successfully added to Report."
 msgstr "添加到Cacti"
 
 #: lib/reports.php:146
-#, fuzzy
 msgid "Device not found! Unable to add to Report"
 msgstr "未找到要添加到报告中的图形"
 
 #: lib/reports.php:150
-#, fuzzy, php-format
+#, php-format
 msgid "Device '%s' not added to Report as it already exists on report."
 msgstr "设备“%s”未添加到报告中，因为它已存在于报告中。"
 
 #: lib/reports.php:596
-#, fuzzy, php-format
+#, php-format
 msgid "Problems sending Report '%s' Problem with e-mail Subsystem Error is '%s'"
 msgstr "发送报告'％s'时出现问题电子邮件子系统错误是'％s'"
 
 #: lib/reports.php:603
-#, fuzzy, php-format
+#, php-format
 msgid "Report '%s' Sent Successfully"
 msgstr "报告“％s”已成功发送"
 
@@ -16679,7 +16024,6 @@ msgid "(No Graph Template)"
 msgstr "(无图形模板)"
 
 #: lib/reports.php:1468
-#, fuzzy
 msgid "(Non Query Based)"
 msgstr "Non Query Based"
 
@@ -16719,8 +16063,7 @@ msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
 msgstr "跳过已存在的报告图项目 '<i>%s</i>'"
 
 #: lib/rrd.php:2919
-#, fuzzy, php-format
-#| msgid "Required RRD step size is '%s'"
+#, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
 msgstr "所需的RRD步长为'%s'"
 
@@ -16760,20 +16103,17 @@ msgid "The pdp_per_row of '%s' is invalid for RRA '%s' should be '%s'.  Consider
 msgstr ""
 
 #: lib/rrd.php:3074
-#, fuzzy, php-format
-#| msgid "XFF for cacti RRA id '%s' should be '%s'"
+#, php-format
 msgid "The XFF for Cacti RRA id is '%s' but should be '%s'"
 msgstr "XAF的cacti RRA id'%s' '应该是'%s'"
 
 #: lib/rrd.php:3078
-#, fuzzy, php-format
-#| msgid "Number of rows for Cacti RRA id '%s' should be '%s'"
+#, php-format
 msgid "The number of rows for Cacti RRA id '%s' is incorrect.  The number of rows are '%s' but should be '%s'"
 msgstr "Cacti RRA id'%s'的行数应该是'%s'"
 
 #: lib/rrd.php:3096
-#, fuzzy, php-format
-#| msgid "RRA '%s' missing in RRDfile"
+#, php-format
 msgid "The RRA '%s' missing in the existing Cacti RRDfile"
 msgstr "在RRDfile中缺少RRA '%s'"
 
@@ -16831,13 +16171,10 @@ msgid "CDP Unknown Data points (0)"
 msgstr "CDP 未知数据点(0)"
 
 #: lib/rrd.php:3279
-#, fuzzy
-#| msgid "No %s Found"
 msgid "Errors Found"
 msgstr "未找到 %s"
 
 #: lib/rrd.php:3291
-#, fuzzy
 msgid "Optional Tuning Recommendations"
 msgstr "数据源字段"
 
@@ -16865,14 +16202,14 @@ msgid "Error while parsing the XML of RRDtool dump"
 msgstr "解析RRDtool 转储的XML 时出错"
 
 #: lib/rrd.php:3765
-#, fuzzy, php-format
+#, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
-msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) 从RRD 文件中删除\n"
+msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) 从RRD 文件中删除"
 
 #: lib/rrd.php:3802
-#, fuzzy, php-format
+#, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
-msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f)添加到RRD 文件\n"
+msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f)添加到RRD 文件"
 
 #: lib/rrd.php:3832 lib/rrd.php:3846
 #, php-format
@@ -16900,12 +16237,10 @@ msgid "Unknown RRDtool Error"
 msgstr "未知的RRDtool 错误"
 
 #: lib/template.php:1492
-#, fuzzy
 msgid "Attempting to Create Graph from Non-Template"
 msgstr "从模板创建聚合"
 
 #: lib/template.php:1504
-#, fuzzy
 msgid "Attempting to Create Graph from Removed Graph Template"
 msgstr "尝试从已删除的图形模板创建图形"
 
@@ -16915,12 +16250,11 @@ msgid "Created: %s"
 msgstr "已创建图形: %s"
 
 #: lib/template.php:2151 lib/template.php:2180
-#, fuzzy
 msgid "ERROR: Whitelist Validation Failed. Check Data Input Method"
 msgstr "ERROR: 白名单验证失败.请检查数据输入方法"
 
 #: lib/template.php:2159
-#, fuzzy, php-format
+#, php-format
 msgid "Graph Not created for %s due to bad data"
 msgstr "图形创建"
 
@@ -16934,7 +16268,7 @@ msgid "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versio
 msgstr "MySQL 5.6+ 和MariaDB 10.0+ 都是很棒的版本,并且是非常好的可供选择的版本.请确保运行的是最新的版本,它们修复了一个长期存在的底层网络问题,那个问题会导致spine 遭遇很多可靠性问题."
 
 #: lib/utility.php:966
-#, fuzzy, php-format
+#, php-format
 msgid "It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3."
 msgstr "建议在任何版本大于5.1的 %s 中启用InnoDB."
 
@@ -16966,7 +16300,7 @@ msgid "With Remote polling capabilities, large amounts of data will be synced fr
 msgstr "通过远程poller 功能,大量数据将从主服务器同步到远程poller. 因此,请将此值保持在16M 或以上."
 
 #: lib/utility.php:1053
-#, fuzzy, php-format
+#, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
 msgstr "如果使用Cacti Performance Booster并选择内存存储引擎，则在系统内存表空间用完之前，必须小心刷新Performance Booster缓冲区。 这通过两种方式完成，首先将输出列的大小减小到合适的大小。 此列位于表poller_output和poller_output_boost中。 你可以做的第二件事是分配更多的内存到内存表中。 我们已经任意选择了系统内存10％的建议值，但是如果您使用的是SSD磁盘驱动器，或者系统较小，则可以忽略此建议或选择其他存储引擎。 您可以在Console - > System Utilities - > View Boost Status下看到Performance Booster表的预期消耗量。"
 
@@ -16984,22 +16318,19 @@ msgid "When using InnoDB storage it is important to keep your table spaces separ
 msgstr "使用InnoDB 存储引擎时,保持表空间的独立性很重要. 对于 %s 的长期用户,表管理会变得更简单.如果您尚未开启此功能, 可以通过在所有InnoDB 表上运行alter 语句来开启此功能."
 
 #: lib/utility.php:1083
-#, fuzzy
 msgid "When using innodb_file_per_table, it is important to set the innodb_file_format to Barracuda.  This setting will allow longer indexes important for certain Cacti tables."
 msgstr "使用innodb_file_per_table时，将innodb_file_format设置为Barracuda非常重要。此设置将允许更长的索引对某些Cacti表很重要。"
 
 #: lib/utility.php:1089
-#, fuzzy
 msgid "If your tables have very large indexes, you must operate with the Barracuda innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do this may result in plugins that can not properly create tables."
 msgstr "如果表的索引很大，则必须使用梭子鱼的innodb_file_format和innodb_large_prefix等于1的操作。否则可能会导致插件无法正确创建表。"
 
 #: lib/utility.php:1095
-#, fuzzy, php-format
+#, php-format
 msgid "InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size."
 msgstr "InnoDB将在系统内存中保存尽可能多的表和索引。 因此，你应该让innodb_buffer_pool大到足以容纳内存中的表和索引。 检查/ var / lib / mysql / cacti目录的大小将有助于确定此值。 我们建议您的系统总内存的25％，但是您的要求会因系统大小而异。"
 
 #: lib/utility.php:1101
-#, fuzzy
 msgid "This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accomodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance."
 msgstr "除非您的Cacti实例在ZFS或FusionI / O上运行，并且两者都具有内部日记功能以适应突然的系统崩溃，否则此设置应保持为ON。但是，如果您的电源非常好，并且系统很少宕机并且有备份，那么将此设置设置为OFF可以使数据库性能提高近50％。"
 
@@ -17012,7 +16343,6 @@ msgid "Rogue queries should not for the database to go offline to others.  Kill 
 msgstr "恶意查询不应该让数据库脱机给其他人. 请在杀死您的系统之前杀死这些查询."
 
 #: lib/utility.php:1116
-#, fuzzy
 msgid "Maximum I/O performance happens when you use the O_DIRECT method to flush pages."
 msgstr "使用O_DIRECT方法刷新页面时，会发生最大I / O性能。"
 
@@ -17031,37 +16361,32 @@ msgid "As of %s %s, the you can control how often %s flushes transactions to dis
 msgstr "从 %s %s开始,您可以控制 %s将交易刷新到磁盘的频率. 默认值是1秒,但是在高I/O系统中设置为大于1的值可以允许磁盘I/O更有序"
 
 #: lib/utility.php:1144
-#, fuzzy
 msgid "With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server."
 msgstr "采用现代SSD类型的存储器,具有多个读取IO线程对于具有高IO特性的应用是有利的."
 
 #: lib/utility.php:1149
-#, fuzzy
 msgid "With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics.  Depending on your MariaDB/MySQL versions, this value can go as high as 64.  But try to keep the number less than your total SMT threads on the database server."
 msgstr "采用现代SSD类型的存储器,具有多个写入IO线程对于具有高IO特性的应用是有利的."
 
 #: lib/utility.php:1155
-#, fuzzy, php-format
+#, php-format
 msgid "%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MariaDB less than 10.5.  The max value is 64, but should not exceed more than the number of CPU cores/threads.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max the number of CPU cores or 64."
 msgstr "%s会将innodb_buffer_pool分成内存区域以提高性能. 最大值是64.当您的innodb_buffer_pool小于1GB时,您应该使用池大小除以128MB. 继续使用这个等式,最大值为64."
 
 #: lib/utility.php:1155
-#, fuzzy, php-format
+#, php-format
 msgid "%s will divide the innodb_buffer_pool into memory regions to improve performance for versions of MySQL upto and including MySQL 8.0.  The max value is 64, but should not exceed more than the number of CPU cores/threads.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation up to the max of the number of CPU cores or 64."
 msgstr "%s会将innodb_buffer_pool分成内存区域以提高性能. 最大值是64.当您的innodb_buffer_pool小于1GB时,您应该使用池大小除以128MB. 继续使用这个等式,最大值为64."
 
 #: lib/utility.php:1161 lib/utility.php:1197
-#, fuzzy
 msgid "If you have SSD disks, use this suggestion.  If you have physical hard drives, use 200 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 100000 can be used."
 msgstr "如果您有SSD磁盘，请使用此建议。如果您有物理硬盘驱动器，请使用200 *阵列中的活动驱动器数量。如果使用NVMe或PCIe闪存，可以使用高达100000的更大数字。"
 
 #: lib/utility.php:1167 lib/utility.php:1203
-#, fuzzy
 msgid "If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used."
 msgstr "如果您有SSD磁盘，请使用此建议。如果您有物理硬盘驱动器，请使用2000 *阵列中的活动驱动器数量。如果使用NVMe或PCIe Flash，则可以使用高达200000的更大数字。"
 
 #: lib/utility.php:1173 lib/utility.php:1209
-#, fuzzy
 msgid "If you have SSD disks, use this suggestion. Otherwise, do not set this setting."
 msgstr "如果您有SSD磁盘，请使用此建议。否则，请勿设置此设置。"
 
@@ -17074,12 +16399,10 @@ msgid "With modern SSD type storage, having multiple write io threads is advanta
 msgstr "采用现代SSD类型的存储器,具有多个写入IO线程对于具有高IO特性的应用是有利的."
 
 #: lib/utility.php:1222
-#, fuzzy
 msgid "When using MariaDB 10.2.4 and above, this setting should be off if atomic writes are enabled.  Therefore, please enable atomic writes instead of the double write buffer as it will increase performance."
 msgstr "使用 MariaDB 10.2.4 及更高版本时，如果启用了原子写入，则应关闭此设置。因此，请启用原子写入而不是双写入缓冲区，因为它会提高性能。"
 
 #: lib/utility.php:1229
-#, fuzzy
 msgid "When using MariaDB 10.2.4 and above, you can use atomic writes over the doublewrite buffer to increase performance."
 msgstr "使用 MariaDB 10.2.4 及更高版本时，您可以在双写缓冲区上使用原子写入来提高性能。"
 
@@ -17109,13 +16432,12 @@ msgid "Comments"
 msgstr "注释"
 
 #: lib/utility.php:1821
-#, fuzzy, php-format
-#| msgid "PHP %s is the mimimum version"
+#, php-format
 msgid "PHP %s is the minimum version"
 msgstr "PHP %s 是最低版本要求"
 
 #: lib/utility.php:1823
-#, fuzzy, php-format
+#, php-format
 msgid "A minimum of %s memory limit"
 msgstr "至少 %s MB 内存"
 
@@ -17125,7 +16447,6 @@ msgid "A minimum of %s m execution time"
 msgstr "至少 %s m 执行时间"
 
 #: lib/utility.php:1827
-#, fuzzy
 msgid "A valid timezone that matches MySQL and the system"
 msgstr "与MySQL和系统匹配的有效时区"
 
@@ -17291,13 +16612,10 @@ msgid "You have been logged out of Cacti due to a session timeout."
 msgstr "由于会话超时,您已被自动注销了cacti."
 
 #: logout.php:52
-#, fuzzy
 msgid "You have been logged out of Cacti due to an account suspension."
 msgstr "由于会话超时,您已被自动注销了cacti."
 
 #: logout.php:54
-#, fuzzy
-#| msgid "You have been logged out of Cacti due to a session timeout."
 msgid "You have been logged out of Cacti due to a Remote Data Collector state change"
 msgstr "由于会话超时,您已被自动注销了cacti."
 
@@ -17453,8 +16771,7 @@ msgid "You have not Trusted this Package Author.  If you wish to import, check t
 msgstr ""
 
 #: package_import.php:205
-#, fuzzy, php-format
-#| msgid "Cacti log purged successfully"
+#, php-format
 msgid "The Package %s Imported Successfully"
 msgstr "Cacti 日志清空成功"
 
@@ -17465,8 +16782,6 @@ msgstr ""
 
 #: package_import.php:354 package_import.php:360 package_import.php:416
 #: package_import.php:419
-#, fuzzy
-#| msgid "Error in data query"
 msgid "Error in Package"
 msgstr "数据查询出错"
 
@@ -17488,8 +16803,6 @@ msgid "The package download or validation failed"
 msgstr ""
 
 #: package_import.php:416
-#, fuzzy
-#| msgid "Package Files"
 msgid "Package XML File Damaged."
 msgstr "包文件"
 
@@ -17506,20 +16819,14 @@ msgid "The XML files for the package does not exist"
 msgstr ""
 
 #: package_import.php:453
-#, fuzzy
-#| msgid "Package Files"
 msgid "Packages Details"
 msgstr "包文件"
 
 #: package_import.php:466
-#, fuzzy
-#| msgid "Device Rules"
 msgid "Device class"
 msgstr "设备规则"
 
 #: package_import.php:472
-#, fuzzy
-#| msgid "right"
 msgid "Copyright"
 msgstr "右"
 
@@ -17528,14 +16835,10 @@ msgid "Import Package Filenames [ None selected imports all, Check to import sel
 msgstr ""
 
 #: package_import.php:501
-#, fuzzy
-#| msgid "Package Files"
 msgid "Package"
 msgstr "包文件"
 
 #: package_import.php:504
-#, fuzzy
-#| msgid "Rename"
 msgid "Filename"
 msgstr "重命名"
 
@@ -17544,8 +16847,6 @@ msgid "Differences"
 msgstr ""
 
 #: package_import.php:557 package_import.php:624 templates_import.php:296
-#, fuzzy
-#| msgid "[unchanged]"
 msgid "Unchanged"
 msgstr "[不变]"
 
@@ -17554,26 +16855,18 @@ msgid "Import Package Templates [ None selected imports all, Check to import sel
 msgstr ""
 
 #: package_import.php:586 templates_import.php:257
-#, fuzzy
-#| msgid "Template Title"
 msgid "Template Type"
 msgstr "模板标题"
 
 #: package_import.php:595 templates_import.php:269
-#, fuzzy
-#| msgid "Change Device"
 msgid "Changes/Diffferences"
 msgstr "更改设备"
 
 #: package_import.php:620 templates_import.php:290
-#, fuzzy
-#| msgid "Update"
 msgid "Updated"
 msgstr "更新"
 
 #: package_import.php:657 templates_import.php:357
-#, fuzzy
-#| msgid "Orphaned"
 msgid "Orphans"
 msgstr "孤立的"
 
@@ -17582,8 +16875,6 @@ msgid "File Differences for: "
 msgstr ""
 
 #: package_import.php:817
-#, fuzzy
-#| msgid "Package Files"
 msgid "Local Package Import File"
 msgstr "包文件"
 
@@ -17592,8 +16883,6 @@ msgid "The *.xml.gz file located on your Local machine to Upload and Import."
 msgstr ""
 
 #: package_import.php:823
-#, fuzzy
-#| msgid "Automatically Add to Cacti"
 msgid "Automatically Trust Signer"
 msgstr "自动添加到Cacti"
 
@@ -17606,8 +16895,6 @@ msgid "Replace Data Source and Graph Template Suggested Value Records.  Graphs a
 msgstr ""
 
 #: package_import.php:932
-#, fuzzy
-#| msgid "Import"
 msgid "Package Import"
 msgstr "导入"
 
@@ -17785,38 +17072,35 @@ msgid "Plugin is not compatible"
 msgstr "插件不兼容"
 
 #: plugins.php:876
-#, fuzzy
-#| msgid "Enable Plugin"
 msgid "Enable Plugin Locally"
 msgstr "启用插件"
 
 #: poller.php:392
-#, fuzzy, php-format
+#, php-format
 msgid "WARNING: %s is out of sync with the Poller Interval for poller id %d!  The Poller Interval is %d seconds, with a maximum of a %d seconds, but %d seconds have passed since the last poll!"
 msgstr "WARNING: %s 与Poller 采集周期时间不一致! 采集周期为 %d 秒,最大值为 %d 秒,但自上次采集以来已经过了 %d 秒!"
 
 #: poller.php:542
-#, fuzzy, php-format
+#, php-format
 msgid "WARNING: There are %d processes detected as overrunning a polling cycle for poller id %d, please investigate."
 msgstr "WARNING: 检测到 '%d' 个超出采集周期,请进行调查."
 
 #: poller.php:607
-#, fuzzy, php-format
+#, php-format
 msgid "WARNING: Poller Output Table not empty for poller id %d.  Issues: %d, %s."
 msgstr "WARNING: Poller 输出表不为空.问题: %d, %s."
 
 #: poller.php:647
-#, fuzzy, php-format
+#, php-format
 msgid "ERROR: The spine path: %s is invalid for poller id %d.  Poller can not continue!"
 msgstr "ERROR: spine 路径: %s 无效. Poller 无法继续!"
 
 #: poller.php:789
-#, fuzzy, php-format
+#, php-format
 msgid "Maximum runtime of %d seconds exceeded for poller id %d. Exiting."
 msgstr "超出 %d 秒的最大运行时间. 退出."
 
 #: poller.php:895
-#, fuzzy
 msgid "WARNING: Cacti Polling Cycle Exceeded Poller Interval by "
 msgstr "警告：仙人掌轮询周期超过轮询间隔"
 
@@ -17830,32 +17114,26 @@ msgid "Poller in Heartbeat Mode"
 msgstr ""
 
 #: poller.php:1179
-#, fuzzy
 msgid "Cacti System Notification"
 msgstr "Cacti 系统工具"
 
 #: poller.php:1179
-#, fuzzy
 msgid "NOTE: A second Cacti data collector has been added.  Therefore, enabling boost automatically!"
 msgstr "注意：已添加第二个仙人掌数据收集器。因此，自动启用增强功能！"
 
 #: poller_automation.php:53
-#, fuzzy
 msgid "WARNING: Main Cacti database offline or in recovery"
 msgstr "警告：主 Cacti 数据库离线或正在恢复"
 
 #: poller_automation.php:954 poller_automation.php:1005
-#, fuzzy
 msgid "Cacti Primary Admin"
 msgstr "Cacti Primary Admin"
 
 #: poller_automation.php:1101
-#, fuzzy
 msgid "Cacti Automation Report requires an html based Email client"
 msgstr "Cacti Automation Report需要一个基于html的电子邮件客户端"
 
 #: poller_boost.php:351
-#, fuzzy
 msgid "WARNING: Detected Poller Boost Overrun, Possible Boost Poller Crash"
 msgstr "警告：检测到 Poller Boost Overrun，可能 Boost Poller 崩溃"
 
@@ -17908,12 +17186,10 @@ msgid "Processes"
 msgstr "进程"
 
 #: pollers.php:101
-#, fuzzy
 msgid "The number of Data Collector processes to use to spawn."
 msgstr "数据采集器的进程数."
 
 #: pollers.php:110
-#, fuzzy
 msgid "The number of Spine Threads to use per Data Collector process."
 msgstr "每个数据采集器进程使用的Spine 线程数."
 
@@ -17922,7 +17198,6 @@ msgid "Sync Interval"
 msgstr "同步周期"
 
 #: pollers.php:119
-#, fuzzy
 msgid "The polling sync interval in use.  This setting will affect how often this poller is checked and updated."
 msgstr "当前的采集同步周期.此设置将影响此poller 的检查和更新频率."
 
@@ -17967,12 +17242,10 @@ msgid "The TCP port to use to connect to the remote database."
 msgstr "用于连接到远程数据库的TCP端口."
 
 #: pollers.php:175
-#, fuzzy
 msgid "Remote Database Retries"
 msgstr "远程数据库用户"
 
 #: pollers.php:176
-#, fuzzy
 msgid "The number of times to attempt to retry to connect to the remote database."
 msgstr "用于连接到远程数据库的用户名."
 
@@ -17985,47 +17258,40 @@ msgid "If the remote database uses SSL to connect, check the checkbox below."
 msgstr "如果远程数据库使用SSL进行连接,请选中下面的复选框."
 
 #: pollers.php:191
-#, fuzzy
 msgid "Remote Database SSL Key"
 msgstr "远程数据库SSL密钥"
 
 #: pollers.php:192
-#, fuzzy
 msgid "The file holding the SSL Key to use to connect to the remote database."
 msgstr "保存SSL 密钥以用于连接到远程数据库的文件."
 
 #: pollers.php:200
-#, fuzzy
 msgid "Remote Database SSL Certificate"
 msgstr "远程数据库SSL 证书"
 
 #: pollers.php:201
-#, fuzzy
 msgid "The file holding the SSL Certificate to use to connect to the remote database."
 msgstr "包含SSL 证书的文件,用于连接到远程数据库."
 
 #: pollers.php:209
-#, fuzzy
 msgid "Remote Database SSL Authority"
 msgstr "远程数据库SSL 认证"
 
 #: pollers.php:210
-#, fuzzy
 msgid "The file holding the SSL Certificate Authority to use to connect to the remote database.  This is an optional parameter that can be required by the database provider if they have started SSL using the --ssl-mode=VERIFY_CA option."
 msgstr "包含用于连接到远程数据库的SSL证书颁发机构的文件。如果数据库提供者使用--ssl-mode = VERIFY_CA选项启动了SSL，则这是一个可选参数。"
 
 #: pollers.php:308
-#, fuzzy, php-format
+#, php-format
 msgid "You have already used this hostname '%s'.  Please enter a non-duplicate hostname."
 msgstr "您已经使用了该主机名'％s'。请输入一个非重复的主机名。"
 
 #: pollers.php:314
-#, fuzzy, php-format
+#, php-format
 msgid "You have already used this database hostname '%s'.  Please enter a non-duplicate database hostname."
 msgstr "您已经使用了此数据库主机名'％s'。请输入一个非重复的数据库主机名。"
 
 #: pollers.php:519
-#, fuzzy
 msgid "Data Collector Statistics cleared."
 msgstr "数据来源统计"
 
@@ -18065,13 +17331,11 @@ msgid_plural "Click 'Continue' to Synchronize the Remote Data Collectors for Off
 msgstr[0] "单击 '继续' 以同步远程数据采集器进行离线操作."
 
 #: pollers.php:590
-#, fuzzy
 msgid "Click 'Continue' to Clear Data Collector Statistics for the Data Collector."
 msgid_plural "Click 'Continue' to Clear DAta Collector Statistics for the Data Collectors."
 msgstr[0] "点击 '继续' 以启用下面的数据采集器."
 
 #: pollers.php:595
-#, fuzzy
 msgid "Clear Statistics for Data Collector"
 msgid_plural "Clear Statistics for Data Collectors"
 msgstr[0] "该数据采集器的状态."
@@ -18138,7 +17402,6 @@ msgid "Avg/Max"
 msgstr "平均/最大"
 
 #: pollers.php:1034
-#, fuzzy
 msgid "The Average and Maximum Collector timings for this Data Collector."
 msgstr "此数据采集器的平均计时和最大计时."
 
@@ -18191,7 +17454,6 @@ msgid "Last Sync"
 msgstr "上次同步"
 
 #: pollers.php:1076
-#, fuzzy
 msgid "The last time this Data Collector was full synced with main Cacti site."
 msgstr "此数据采集器最后一次与主Cacti 站点完全同步."
 
@@ -18200,7 +17462,6 @@ msgid "No Data Collectors Found"
 msgstr "未找到数据采集器"
 
 #: rrdcheck.php:35
-#, fuzzy
 msgid "RRD check"
 msgstr "运行检查"
 
@@ -18209,26 +17470,18 @@ msgid "RRD check is disabled, please enable in Configuration -> Settings -> Data
 msgstr ""
 
 #: rrdcheck.php:105 utilities.php:2324
-#, fuzzy
-#| msgid "RRDfile Cleaner"
 msgid "RRDfile Checker"
 msgstr "RRD 文件清理器"
 
 #: rrdcheck.php:144
-#, fuzzy
-#| msgid "No Device Templates Found"
 msgid "RRDcheck Problems"
 msgstr "未找到设备模板"
 
 #: rrdcheck.php:154
-#, fuzzy
-#| msgid "Description"
 msgid "Host Description"
 msgstr "描述"
 
 #: rrdcheck.php:162
-#, fuzzy
-#| msgid "Valid Data"
 msgid "Local Data ID"
 msgstr "有效数据"
 
@@ -18241,21 +17494,15 @@ msgid "Deleted"
 msgstr "已删除"
 
 #: rrdcheck.php:200
-#, fuzzy
-#| msgid "No Device Templates Found"
 msgid "No RRDcheck Problems Found"
 msgstr "未找到设备模板"
 
 #: rrdcheck.php:232
-#, fuzzy
-#| msgctxt "A short textual representation of a month, three letters"
-#| msgid "Aug"
 msgid "Age"
 msgstr "八月"
 
 #: rrdcheck.php:236 rrdcheck.php:237 rrdcheck.php:238
-#, fuzzy, php-format
-#| msgid "%d Hours"
+#, php-format
 msgid "%d hours"
 msgstr "%d 时"
 
@@ -18265,8 +17512,7 @@ msgid "%d day"
 msgstr ""
 
 #: rrdcheck.php:240 rrdcheck.php:241
-#, fuzzy, php-format
-#| msgid "days"
+#, php-format
 msgid "%d days"
 msgstr "天"
 
@@ -18290,8 +17536,6 @@ msgid "Clear"
 msgstr "清除"
 
 #: rrdcheck.php:263
-#, fuzzy
-#| msgid "Purge"
 msgctxt "filter: purge"
 msgid "Purge"
 msgstr "清空"
@@ -18375,12 +17619,11 @@ msgid "Archive All Unknown RRDfiles"
 msgstr "存档所有未知的RRD 文件"
 
 #: settings.php:376
-#, fuzzy
 msgid "NOTE: Path Settings on this Tab are only saved locally!"
 msgstr "注意：此选项卡上的路径设置仅在本地保存！"
 
 #: settings.php:381
-#, fuzzy, php-format
+#, php-format
 msgid "Cacti Settings (%s)%s"
 msgstr "Cacti 设置(%s)"
 
@@ -18557,7 +17800,6 @@ msgid "Zoom"
 msgstr "缩放"
 
 #: sites.php:142
-#, fuzzy
 msgid "The default Map Zoom for this Site.  Values can be from 0 to 23. Note that some regions of the planet have a max Zoom of 15."
 msgstr "本站点的默认地图缩放.值可以是0到23. 请注意,某些区域的最大缩放为15."
 
@@ -18590,12 +17832,10 @@ msgid "If the Site is known by another name enter it here."
 msgstr "假如本站点有其他名称,请在此处输入."
 
 #: sites.php:303
-#, fuzzy
 msgid "Template Site was not found! Unable to duplicate."
 msgstr "找不到模板网站！无法复制。"
 
 #: sites.php:377
-#, fuzzy
 msgid "Click 'Continue' to Delete the following Site.  Note, all Devices will be disassociated from this site."
 msgid_plural "Click 'Continue' to delete all following Sites.  Note, all devices will be disassociated from this site."
 msgstr[0] "点击'继续'删除以下站点. 请注意,所有设备将从本站点解除关联."
@@ -18606,7 +17846,6 @@ msgid_plural "Delete Sites"
 msgstr[0] "删除站点"
 
 #: sites.php:386
-#, fuzzy
 msgid "Click 'Continue' to Duplicate the following Site."
 msgid_plural "Click 'Continue' to Duplicate all following Sites."
 msgstr[0] "点击 '继续' 删除下面的树."
@@ -18653,14 +17892,13 @@ msgid "No Sites Found"
 msgstr "未找到站点"
 
 #: spikekill.php:38
-#, fuzzy, php-format
+#, php-format
 msgid "FATAL: Spike Kill method '%s' is Invalid"
-msgstr "FATAL: 尖峰消除方法 '%s' 无效\n"
+msgstr "FATAL: 尖峰消除方法 '%s' 无效"
 
 #: spikekill.php:112
-#, fuzzy
 msgid "FATAL: Spike Kill Not Allowed"
-msgstr "FATAL: 不允许尖峰消除\n"
+msgstr "FATAL: 不允许尖峰消除"
 
 #: templates_export.php:68
 msgid "WARNING: Export Errors Encountered. Refresh Browser Window for Details!"
@@ -18720,8 +17958,6 @@ msgid "The Template Import Succeeded."
 msgstr ""
 
 #: templates_import.php:145
-#, fuzzy
-#| msgid "Export Templates"
 msgid "Error in Template"
 msgstr "导出模板"
 
@@ -18740,14 +17976,10 @@ msgid "Import Files [ If Files are missing, locate and install before using ]"
 msgstr ""
 
 #: templates_import.php:221
-#, fuzzy
-#| msgid "Field Name"
 msgid "File Name"
 msgstr "字段名称"
 
 #: templates_import.php:236
-#, fuzzy
-#| msgid "Not Writable"
 msgid "Not Readable"
 msgstr "不可写入"
 
@@ -18756,13 +17988,10 @@ msgid "Import Templates [ None selected imports all, Check to import selectively
 msgstr ""
 
 #: templates_import.php:266
-#, fuzzy
-#| msgid "Include Dependencies"
 msgid "Dependencies"
 msgstr "包含依赖"
 
 #: templates_import.php:294
-#, fuzzy
 msgid "Damaged"
 msgstr "数据源,图"
 
@@ -18803,7 +18032,6 @@ msgid "Un-Publish"
 msgstr "未发布"
 
 #: tree.php:34
-#, fuzzy
 msgctxt "dropdown action"
 msgid "Un-Lock"
 msgstr "锁定"
@@ -18864,13 +18092,11 @@ msgid_plural "Un-publish Trees"
 msgstr[0] "取消发布树"
 
 #: tree.php:709
-#, fuzzy
 msgid "Click 'Continue' to un-lock the following Tree."
 msgid_plural "Click 'Continue' to un-lock following Trees."
 msgstr[0] "点击 '继续' 以取消发布以下树."
 
 #: tree.php:714
-#, fuzzy
 msgid "Un-lock Tree"
 msgid_plural "Un-lock Trees"
 msgstr[0] "取消发布树"
@@ -18901,8 +18127,7 @@ msgid "Finish Editing Tree"
 msgstr "完成编辑树"
 
 #: tree.php:803
-#, fuzzy, php-format
-#| msgid "This tree has been locked for Editing on %1$s by %2$s."
+#, php-format
 msgid "This tree has been locked for Editing on %s by %s."
 msgstr "此树已被%2$s锁定在%1$s 上进行编辑."
 
@@ -19019,7 +18244,6 @@ msgid "The last user to have modified this Tree."
 msgstr "最后一个修改了这棵树的用户."
 
 #: tree.php:2259
-#, fuzzy
 msgid "The total number of Site Branches in this Tree."
 msgstr "此树中的 '站点分支' 总数."
 
@@ -19048,14 +18272,10 @@ msgid "Batch Copy"
 msgstr "批量复制"
 
 #: user_admin.php:257
-#, fuzzy
-#| msgid "You are not allowed to change your password."
 msgid "You are not allowed to delete the current login account"
 msgstr "您不允许更改您的密码."
 
 #: user_admin.php:269
-#, fuzzy
-#| msgid "You are not allowed to change your password."
 msgid "You are not allowed to disable the current login account"
 msgstr "您不允许更改您的密码."
 
@@ -19132,18 +18352,14 @@ msgid "<b>Note:</b> System Graph Policy is 'Permissive' meaning the User must ha
 msgstr "<b>注意:</ b>系统图策略是 '允许',即用户必须有权访问图形,设备或图形模版中的至少一个才能访问图"
 
 #: user_admin.php:764 user_group_admin.php:753
-#, fuzzy
 msgid "<b>Note:</b> System Graph Policy is 'Restrictive' meaning the User must have access to either the Graph or the Device and Graph Template to gain access to the Graph"
 msgstr "<b>注意:</b>系统图策略是 '限制性', 意味着用户必须能够访问图形或设备和图形模板才能访问图形"
 
 #: user_admin.php:766 user_group_admin.php:755
-#, fuzzy
 msgid "<b>Note:</b> System Graph Policy is 'Device' meaning the User must have access to the Graph or Device to gain access to the Graph"
 msgstr "<b>注意:</b>系统图策略是 '限制性', 意味着用户必须能够访问图形或设备和图形模板才能访问图形"
 
 #: user_admin.php:768 user_group_admin.php:757
-#, fuzzy
-#| msgid "<b>Note:</b> System Graph Policy is 'Permissive' meaning the User must have access to at least one of Graph, Device, or Graph Template to gain access to the Graph"
 msgid "<b>Note:</b> System Graph Policy is 'Graph Template' meaning the User must have access to the Graph or Graph Template to gain access to the Graph"
 msgstr "<b>注意:</ b>系统图策略是 '允许',即用户必须有权访问图形,设备或图形模版中的至少一个才能访问图"
 
@@ -19300,7 +18516,6 @@ msgid "Plugin Permissions"
 msgstr "插件权限"
 
 #: user_admin.php:1655 user_group_admin.php:1534
-#, fuzzy
 msgid "Legacy Permissions"
 msgstr "用户权限"
 
@@ -19347,7 +18562,6 @@ msgid "Basic"
 msgstr "基本"
 
 #: user_admin.php:2155
-#, fuzzy
 msgid "LDAP/AD"
 msgstr "LDAP"
 
@@ -19405,7 +18619,6 @@ msgstr "设备权限 %s"
 #: user_admin.php:2778 user_admin.php:2875 user_admin.php:2972
 #: user_admin.php:3069 user_group_admin.php:2317 user_group_admin.php:2433
 #: user_group_admin.php:2530 user_group_admin.php:2627
-#, fuzzy
 msgid "Only Show Exceptions"
 msgstr "显示例外"
 
@@ -19748,7 +18961,6 @@ msgid "Clear"
 msgstr "清除"
 
 #: utilities.php:94
-#, fuzzy
 msgid "Data Source Statistics Purged."
 msgstr "数据来源统计"
 
@@ -19789,7 +19001,7 @@ msgstr "配置设置"
 #, php-format
 msgid "ERROR: Installed RRDtool version does not exceed configured version.<br>Please visit the %s and select the correct RRDtool Utility Version."
 msgstr ""
-"错误:已安装的RRDtool版本不超过已配置的版本。\n"
+"错误:已安装的RRDtool版本不超过已配置的版本。"
 "请访问%s并选择正确的RRDtool实用程序版本。"
 
 #: utilities.php:250
@@ -19844,12 +19056,10 @@ msgid "Name: "
 msgstr "名称："
 
 #: utilities.php:378
-#, fuzzy
 msgid "Procs: "
 msgstr "1个进程"
 
 #: utilities.php:385
-#, fuzzy
 msgid "Threads: "
 msgstr "线程"
 
@@ -19866,32 +19076,28 @@ msgid "PHP Servers"
 msgstr "PHP服务器"
 
 #: utilities.php:439 utilities.php:441 utilities.php:447 utilities.php:449
-#, fuzzy, php-format
+#, php-format
 msgid "Main Server: Current: %s, Min Required: %s"
 msgstr "当前：%s，最低要求：%s"
 
 #: utilities.php:457 utilities.php:459
-#, fuzzy, php-format
+#, php-format
 msgid "Local Server: Current: %s, Min Required: %s"
 msgstr "当前：%s，最低要求：%s"
 
 #: utilities.php:464
-#, fuzzy
 msgid "Minimum Connections:"
 msgstr "测试连接"
 
 #: utilities.php:466
-#, fuzzy
 msgid "Assumes 100 spare connections for Web page users and other various connections."
 msgstr "为网页用户和其他各种连接假设 100 个备用连接。"
 
 #: utilities.php:467
-#, fuzzy
 msgid "The minimum required can vary greatly if there is heavy user Graph viewing activity."
 msgstr "如果有大量用户图表查看活动，所需的最低限度可能会有很大差异。"
 
 #: utilities.php:468
-#, fuzzy
 msgid "Each browser tab can use upto 10 connections depending on the browser."
 msgstr "每个浏览器选项卡最多可以使用 10 个连接，具体取决于浏览器。"
 
@@ -19914,8 +19120,7 @@ msgstr "系统内存"
 #: utilities.php:518 utilities.php:651 utilities.php:660 utilities.php:666
 #: utilities.php:674 utilities.php:679 utilities.php:691 utilities.php:696
 #: utilities.php:707 utilities.php:712
-#, fuzzy, php-format
-#| msgid "%s GBytes"
+#, php-format
 msgid "%s GB"
 msgstr "%s GBytes"
 
@@ -19924,8 +19129,6 @@ msgid "MySQL/MariaDB Memory Statistics (Source: MySQL Tuner)"
 msgstr ""
 
 #: utilities.php:650 utilities.php:659 utilities.php:665
-#, fuzzy
-#| msgid "Max Poller Memory Allowed:"
 msgid "Max Total Memory Possible"
 msgstr "poller 允许使用的的最大内存:"
 
@@ -19935,8 +19138,6 @@ msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve 
 msgstr ""
 
 #: utilities.php:673 utilities.php:678 utilities.php:706
-#, fuzzy
-#| msgid "Max Poller Memory Allowed:"
 msgid "Max Core Memory Possible"
 msgstr "poller 允许使用的的最大内存:"
 
@@ -19981,7 +19182,6 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php:747
-#, fuzzy
 msgid "Installed. <span class=\"deviceDown\">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>"
 msgstr "已安装。 <span class=\"deviceDown\">注意：如果您打算使用SNMPv3，则必须删除php-snmp并使用Net-SNMP工具集。</span>"
 
@@ -20043,7 +19243,6 @@ msgid "Result"
 msgstr "结果"
 
 #: utilities.php:1054 utilities.php:1188
-#, fuzzy
 msgid "Success - Password"
 msgstr "成功 - Pswd"
 
@@ -20052,7 +19251,6 @@ msgid "Success - Token"
 msgstr "成功 - 令牌"
 
 #: utilities.php:1056 utilities.php:1188
-#, fuzzy
 msgid "Success - Password Change"
 msgstr "成功 - Pswd"
 
@@ -20212,8 +19410,6 @@ msgid "Rebuild Poller Cache"
 msgstr "重建poller 缓存"
 
 #: utilities.php:2289
-#, fuzzy
-#| msgid "The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems.  <i class=\"deviceDown\">NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run 'php -q cli/rebuild_poller_cache.php --help' at the command line for more information.</i>"
 msgid "The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems."
 msgstr "如果您选择此选项,则将重新生成poller 缓存.如果在崩溃后遇到问题并且已经运行数据库修复工具,则只有在发生数据库崩溃的情况下才使用此选项;或者,如果您遇到问题 使用特定的设备,只需重新保存该设备以重建其poller 缓存即可.还有一个与此命令等效的命令行界面,建议用于大型系统.<i class=\"deviceDown\"> 注意: 在大型系统 ,这个命令可能需要几分钟到几个小时才能完成,因此不应该从Cacti 界面运行.您可以在命令行运行 'php -q cli/rebuild_poller_cache.php --help' 以获取更多信息.</ i>"
 
@@ -20242,17 +19438,14 @@ msgid "This menu pick allows you to view various boost settings and statistics a
 msgstr "通过此菜单,您可以查看与当前Boost 相关的各种设置和统计信息."
 
 #: utilities.php:2309
-#, fuzzy
 msgid "Data Source Statistics Utilities"
 msgstr "数据来源统计"
 
 #: utilities.php:2310
-#, fuzzy
 msgid "Purge Data Source Statistics"
 msgstr "数据来源统计"
 
 #: utilities.php:2313
-#, fuzzy
 msgid "This menu pick will purge all existing Data Source Statistics from the Database.  If Data Source Statistics is enabled, the Data Sources Statistics will start collection again on the next Data Collector pass."
 msgstr "该菜单选项将清除数据库中所有现有的数据源统计信息。如果启用了数据源统计信息，则数据源统计信息将在下一次数据收集器传递时再次开始收集。"
 
@@ -20273,17 +19466,14 @@ msgid "Use this utility to display problems with missing rrd files or missing va
 msgstr ""
 
 #: utilities.php:2333
-#, fuzzy
 msgid "SNMP Agent Utilities"
 msgstr "SNMPAgent 工具"
 
 #: utilities.php:2337
-#, fuzzy
 msgid "This shows all objects being handled by the SNMP Agent."
 msgstr "这显示了SNMPAgent 处理的所有对象."
 
 #: utilities.php:2339
-#, fuzzy
 msgid "Rebuild SNMP Agent Cache"
 msgstr "重建SNMPAgent 缓存"
 
@@ -20292,7 +19482,6 @@ msgid "The SNMP cache will be cleared and re-generated if you select this option
 msgstr "如果您选择此选项,SNMP 缓存将被清除并重新生成. 请注意,它需要另一个poller 才能完全恢复SNMP 缓存"
 
 #: utilities.php:2347
-#, fuzzy
 msgid "This menu pick allows you to view the latest events SNMP Agent has handled in relation to the registered notification receivers."
 msgstr "通过此菜单,您可以查看SNMPAgent 处理的与注册的通知接收方有关的最新事件."
 
@@ -20341,7 +19530,6 @@ msgid "Running Processes:"
 msgstr "运行进程："
 
 #: utilities.php:2638
-#, fuzzy
 msgid "Total Poller Items:"
 msgstr "poller 缓存项目"
 
@@ -20350,7 +19538,6 @@ msgid "Total Data Sources:"
 msgstr "数据源计数:"
 
 #: utilities.php:2648
-#, fuzzy
 msgid "Remaining Data Sources:"
 msgstr "删除数据源"
 
@@ -20359,12 +19546,10 @@ msgid "TBD"
 msgstr "待定"
 
 #: utilities.php:2652
-#, fuzzy
 msgid "Queued Boost Records:"
 msgstr "等待Boost 记录:"
 
 #: utilities.php:2656
-#, fuzzy
 msgid "Approximate in Process:"
 msgstr "过程中的大约："
 
@@ -20406,8 +19591,6 @@ msgid "Estimated Maximum Records:"
 msgstr "预计最大记录数:"
 
 #: utilities.php:2724
-#, fuzzy
-#| msgid "Runtime Statistics"
 msgid "Previous Runtime Statistics"
 msgstr "运行时统计"
 
@@ -20416,8 +19599,6 @@ msgid "Last Start Time:"
 msgstr "上次开始时间:"
 
 #: utilities.php:2733
-#, fuzzy
-#| msgid "Last Start Time:"
 msgid "Last End Time:"
 msgstr "上次开始时间:"
 
@@ -20461,7 +19642,6 @@ msgid "Max Poller Memory Allowed:"
 msgstr "poller 允许使用的的最大内存:"
 
 #: utilities.php:2770
-#, fuzzy
 msgid "Detailed Runtime Statistics"
 msgstr "运行时统计"
 
@@ -20471,13 +19651,11 @@ msgid "Records: %s (ds rows), Time: %s (secs), GetRows: %s (secs), ResultsCycle:
 msgstr ""
 
 #: utilities.php:2798
-#, fuzzy
-#| msgid "Detailed Runtime Timers:"
 msgid "Previous Runtime Timers:"
 msgstr "详细的运行时间定时器:"
 
 #: utilities.php:2833 utilities.php:2835
-#, fuzzy, php-format
+#, php-format
 msgid "Process: %d"
 msgstr "1个进程"
 
@@ -20500,7 +19678,6 @@ msgid "Update Frequency:"
 msgstr "更新频率:"
 
 #: utilities.php:2847
-#, fuzzy
 msgid "Concurrent Processes:"
 msgstr "并发进程"
 
@@ -20537,7 +19714,6 @@ msgid "Cached Files Size:"
 msgstr "缓存文件大小:"
 
 #: utilities.php:2967
-#, fuzzy
 msgid "SNMP Agent Cache"
 msgstr "查看SNMP Agent缓存"
 
@@ -20554,7 +19730,6 @@ msgid "Scalar"
 msgstr "纯量"
 
 #: utilities.php:3221
-#, fuzzy
 msgid "SNMP Agent Notification Log"
 msgstr "查看SNMP Agent 通知日志"
 
@@ -20670,191 +19845,3 @@ msgstr "使用此VDEF 的图形模板的数量."
 msgid "No VDEFs"
 msgstr "没有VDEF"
 
-#, fuzzy
-#~| msgid "Deletion Verification"
-#~ msgid "2FA Verification"
-#~ msgstr "删除验证"
-
-#, fuzzy
-#~| msgid "Web Basic Authentication"
-#~ msgid "2nd Factor Authentication"
-#~ msgstr "Web 基本身份认证"
-
-#, fuzzy
-#~| msgid "Enter keyword"
-#~ msgid "Enter your token"
-#~ msgstr "请输入关键字"
-
-#, fuzzy
-#~| msgid "Verify All"
-#~ msgid "Verify"
-#~ msgstr "全部验证"
-
-#, fuzzy
-#~| msgid "Full Name"
-#~ msgid "Full"
-#~ msgstr "全名"
-
-#, fuzzy
-#~| msgid "ChangeLog"
-#~ msgid "Change Log [%s]"
-#~ msgstr "更新日志"
-
-#~ msgid "Aggregate Items"
-#~ msgstr "聚合项目"
-
-#~ msgid "Distinguished Name syntax, such as for windows: <i>\"&lt;username&gt;@win2kdomain.local\"</i> or for OpenLDAP: <i>\"uid=&lt;username&gt;,ou=people,dc=domain,dc=local\"</i>.   \"&lt;username&gt\" is replaced with the username that was supplied at the login prompt.  This is only used when in \"No Searching\" mode."
-#~ msgstr "可分辨名称语法,例如windows: <i>\"&lt;username&gt;@win2kdomain.local\"</i>或OpenLDAP <i>\"uid=&lt;username&gt;,ou=people,dc=domain,dc=local\"</i>.   \"&lt;username&gt\" 被在登录提示符处提供的用户名替换. 这仅在 \"不搜索\" 模式下使用."
-
-#~ msgid "Name of the attribute that contains the usernames of the members."
-#~ msgstr "包含成员用户名的属性名称."
-
-#, fuzzy
-#~| msgid "User Permissions"
-#~ msgid "Database Permissions"
-#~ msgstr "用户权限"
-
-#, fuzzy
-#~| msgid "Permissions"
-#~ msgid "Permission Name"
-#~ msgstr "权限"
-
-#, fuzzy
-#~| msgid "Polling Time"
-#~ msgid "Worst 20 polling time hosts"
-#~ msgstr "采集时间"
-
-#, fuzzy
-#~| msgid "Polling Time"
-#~ msgid "Avg Polling Time"
-#~ msgstr "采集时间"
-
-#, fuzzy
-#~| msgid "Polling Time"
-#~ msgid "Actual polling time"
-#~ msgstr "采集时间"
-
-#, fuzzy
-#~| msgid "No %s Found"
-#~ msgid "No host found"
-#~ msgstr "未找到 %s"
-
-#, fuzzy
-#~| msgid "User Language"
-#~ msgid "User Log Purged."
-#~ msgstr "用户语言"
-
-#, fuzzy
-#~| msgid "Click 'Continue' to purge the Log File.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog."
-#~ msgid "Click 'Continue' to purge the User Log.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog."
-#~ msgstr "单击 '继续' 以清空日志文件.<br> <br> <br>注意: 如果将日志记录设置为Cacti 和Syslog,则日志信息将保留在Syslog 中."
-
-#~ msgid "Override Values for Graph Item"
-#~ msgstr "图形项目的覆盖值"
-
-#~ msgid "Version %1$s | %2$s"
-#~ msgstr "版本 %1$s | %2$s"
-
-#, fuzzy
-#~ msgid "NOTE: Graph not added for Data Query "
-#~ msgstr "从数据查询创建图形"
-
-#, fuzzy
-#~ msgid "FATAL: YOU DO NOT HAVE ACCESS TO THIS AREA OF CACTI"
-#~ msgstr "FATAL: 您无法访问CACTI 的这个区域"
-
-#~ msgid "Infinity"
-#~ msgstr "无限"
-
-#~ msgid "RRD maximum for Data Source '%s' should be '%s'"
-#~ msgstr "数据源'%s'的RRD最大值应为'%s'"
-
-#~ msgid "DS '%s' missing in RRDfile"
-#~ msgstr " RRD 文件中缺少DS '%s' "
-
-#, fuzzy
-#~| msgid "DES"
-#~ msgid "DS"
-#~ msgstr "DES"
-
-#~ msgid "When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file."
-#~ msgstr "在执行连接时,如果它们低于此大小,它们将被保存在内存中,并且不会写入临时文件."
-
-#~ msgid "Import Template from Text"
-#~ msgstr "从文本导入模板"
-
-#~ msgid "If you have the XML file containing template data as text, you can paste it into this box to import it."
-#~ msgstr "如果您将包含模板数据的XML 文件作为文本,则可以将其粘贴到此框中以导入它."
-
-#~ msgid "Preview Import Only"
-#~ msgstr "仅预览导入"
-
-#~ msgid "If checked, Cacti will not import the template, but rather compare the imported Template to the existing Template data.  If you are acceptable of the change, you can them import."
-#~ msgstr "如果选中,Cacti 将不会真的导入模板,而是将导入的模板与现有模板数据进行比较.如果您可以接受,那么可以稍后进行真的导入."
-
-#, fuzzy
-#~ msgid "Resource File: '%s' is missing or not readable.  Make sure you install it before using Data Query: '%s'"
-#~ msgstr "资源文件：'％s'丢失或不可读。确保在使用数据查询之前安装它：'％s'"
-
-#, fuzzy
-#~ msgid "The Template Import Failed.  See the cacti.log for more details."
-#~ msgstr "模板导入失败。有关更多详细信息，请参见cacti.log。"
-
-#~ msgid "User Membership %s"
-#~ msgstr "用户成员 %s"
-
-#~ msgid "writable"
-#~ msgstr "可写"
-
-#~ msgid "Use a separate subfolder for each hosts RRD files.  The naming of the RRDfiles will be &lt;path_cacti&gt;/rra/host_id/local_data_id.rrd."
-#~ msgstr "为每个主机的RRD 文件使用单独的子文件夹. RRD 文件的命名将是 &lt;path_cacti&gt;/rra/host_id/local_data_id.rrd."
-
-#, fuzzy
-#~ msgid "Process %d Runtime:"
-#~ msgstr "进程%d运行时："
-
-#, fuzzy
-#~ msgid "Aggreage Graph does not Exist"
-#~ msgstr "聚合图形设置"
-
-#, fuzzy
-#~ msgid "Use the Built In Translator"
-#~ msgstr "使用内置翻译器"
-
-#, fuzzy
-#~ msgid "Items %s"
-#~ msgstr "颜色模板项目 [编辑: %s]"
-
-#~ msgid "Graph:"
-#~ msgstr "图形:"
-
-#~ msgid "Invalid User Name/Password Please Retype"
-#~ msgstr "无效的用户名/密码请重新输入"
-
-#~ msgid "Error in data query."
-#~ msgstr "数据查询错误."
-
-#~ msgid "1 Thread (default)"
-#~ msgstr "单线程 (默认)"
-
-#~ msgid "Select a Tree Branch to use."
-#~ msgstr "选择一个树分支来使用."
-
-#~ msgid "Select a Graph Template for the host"
-#~ msgstr "为主机选择一个图形模板"
-
-#~ msgid "Host:"
-#~ msgstr "主机:"
-
-#~ msgid "This account has been locked."
-#~ msgstr "此账户已锁定."
-
-#~ msgid "User Account Disabled"
-#~ msgstr "用户被禁用"
-
-#~ msgid "Guest user id %s does not exist."
-#~ msgstr "不存在来宾用户id %s。"
-
-#, fuzzy
-#~ msgid "Template user id %s does not exist."
-#~ msgstr "模板用户ID %s 不存在."
