@@ -1311,13 +1311,19 @@ function form_continue_confirmation($form_data, $plugin_hook = '', $save = array
 	$form_name = 'form';
 
 	if (!isset($form_data['options'][$drpval]) && $plugin_hook != '' && cacti_sizeof($iarray)) {
-		$title = __('Proceed with Action');
+		$title = __('Proceed with action');
 
 		if (!cacti_sizeof($save)) {
 			/* Legacy plugin form confirmation logic */
 			$save['drp_action'] = $drpval;
-			$save['ds_list']    = $ilist;
-			$save['ds_array']   = $iarray;
+
+			if ($ilist != '') {
+				$save['ds_list']  = $ilist;
+			}
+
+			if (cacti_sizeof($iarray)) {
+				$save['ds_array'] = $iarray;
+			}
 		}
 
 		// Trap the output
@@ -1390,7 +1396,7 @@ function form_continue_confirmation($form_data, $plugin_hook = '', $save = array
 		print '</p></td></tr>';
 	}
 
-	if ($ilist != '') {
+	if ($ilist != '' && $poutput == '') {
 		print "<tr><td class='textArea left' colspan='3'>";
 		print "<div class='itemlist'><ul>$ilist</ul></div>";
 		print '</td></tr>';
