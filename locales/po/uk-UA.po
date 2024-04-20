@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2024-04-20 17:58-0400\n"
+"POT-Creation-Date: 2024-04-20 18:16-0400\n"
 "PO-Revision-Date: 2023-07-27 15:11+0000\n"
 "Last-Translator: Vladyslav V. Prodan <akapulko@gmail.com>\n"
 "Language-Team: Ukrainian <http://translate.cacti.net/projects/cacti/core-v1-2-x/uk/>\n"
@@ -19992,4 +19992,3 @@ msgstr ""
 #: vdef.php:916
 msgid "No VDEFs"
 msgstr ""
-
