@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2024-04-20 17:58-0400\n"
+"POT-Creation-Date: 2024-04-20 18:16-0400\n"
 "PO-Revision-Date: 2023-03-07 13:33+0000\n"
 "Last-Translator: Anonymous <anonymous@cacti.net>\n"
 "Language-Team: Vietnamese <http://translate.cacti.net/projects/cacti/core-v1-2-x/vi/>\n"
@@ -19840,4 +19840,3 @@ msgstr "Số lượng mẫu biểu đồ sử dụng VDEF này."
 #: vdef.php:916
 msgid "No VDEFs"
 msgstr "Không có VDEF"
-
