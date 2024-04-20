@@ -685,13 +685,7 @@ function template() {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('Search');?>
-					</td>
-					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
-					</td>
-					<td>
-						<?php print __('Device Class');?>
+						<?php print __('Class');?>
 					</td>
 					<td>
 						<select id='class'>
@@ -759,6 +753,22 @@ function template() {
 						</select>
 					</td>
 					<td>
+						<span>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+						</span>
+					</td>
+				</tr>
+			</table>
+			<table class='filterTable'>
+				<tr>
+					<td>
+						<?php print __('Search');?>
+					</td>
+					<td>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+					</td>
+					<td>
 						<?php print __('Device Templates');?>
 					</td>
 					<td>
@@ -779,12 +789,6 @@ function template() {
 							<label for='has_hosts'><?php print __('Has Devices');?></label>
 						</span>
 					</td>
-					<td>
-						<span>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
-						</span>
-					</td>
 				</tr>
 			</table>
 		</form>
@@ -795,7 +799,7 @@ function template() {
 			strURL += '&filter='+$('#filter').val();
 			strURL += '&class='+$('#class').val();
 			strURL += '&rows='+$('#rows').val();
-			strURL += '&graph_templates='+$('#graph_templates').val();
+			strURL += '&graph_template='+$('#graph_template').val();
 			strURL += '&has_hosts='+$('#has_hosts').is(':checked');
 			loadPageNoHeader(strURL);
 		}
@@ -808,7 +812,7 @@ function template() {
 		}
 
 		$(function() {
-			$('#graph_templates, #class, #rows').change(function() {
+			$('#graph_template, #class, #rows').change(function() {
 				applyFilter();
 			});
 
