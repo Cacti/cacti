@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2024-04-20 17:58-0400\n"
+"POT-Creation-Date: 2024-04-20 18:16-0400\n"
 "PO-Revision-Date: 2024-03-04 00:20+0000\n"
 "Last-Translator: Junhua Huang <junhuahuang1218@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\n"
@@ -14138,9 +14138,7 @@ msgstr "格式化文件以使用"
 
 #: lib/html_reports.php:67
 msgid "Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the 'formats' directory."
-msgstr ""
-"择要使用的自定义html包装器和CSS文件. 该文件包含html和CSS.以包装您的报告.如果它包含的不仅仅是CSS.你需要在文件中放置一个特殊的<REPORT>标签.此格式标签将被报告内容替换."
-"这些文件位于'formats'目录."
+msgstr "择要使用的自定义html包装器和CSS文件. 该文件包含html和CSS.以包装您的报告.如果它包含的不仅仅是CSS.你需要在文件中放置一个特殊的<REPORT>标签.此格式标签将被报告内容替换.这些文件位于'formats'目录."
 
 #: lib/html_reports.php:72
 msgid "Default Text Font Size"
@@ -19000,9 +18998,7 @@ msgstr "配置设置"
 #: utilities.php:245
 #, php-format
 msgid "ERROR: Installed RRDtool version does not exceed configured version.<br>Please visit the %s and select the correct RRDtool Utility Version."
-msgstr ""
-"错误:已安装的RRDtool版本不超过已配置的版本。"
-"请访问%s并选择正确的RRDtool实用程序版本。"
+msgstr "错误:已安装的RRDtool版本不超过已配置的版本。请访问%s并选择正确的RRDtool实用程序版本。"
 
 #: utilities.php:250
 #, php-format
@@ -19844,4 +19840,3 @@ msgstr "使用此VDEF 的图形模板的数量."
 #: vdef.php:916
 msgid "No VDEFs"
 msgstr "没有VDEF"
-
