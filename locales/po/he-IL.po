@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2024-04-20 17:58-0400\n"
+"POT-Creation-Date: 2024-04-20 18:16-0400\n"
 "PO-Revision-Date: 2024-04-20 18:53-0400\n"
 "Last-Translator: Anonymous <anonymous@cacti.net>\n"
 "Language-Team: Hebrew (Israel) <http://translate.cacti.net/projects/cacti/core-v1-2-x/he_IL/>\n"
@@ -19350,7 +19350,7 @@ msgid "Max Total Memory Possible"
 msgstr "זיכרון מקסימלי לפולרים מותרים:"
 
 #: utilities.php:655
-#, no-php-format
+#, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr "צמצם את זיכרון MySQL/MariaDB לפחות מ -80% of זיכרון מערכת.  שמור זיכרון מטמון נוסף עבור קבצי RRD אם מסד הנתונים נמצא באותה מערכת כמו קבצי RRD.  ראה סיכומי ליבה ולקוחות להלן להסבר על שיטת החישוב."
 
