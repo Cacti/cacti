@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2024-04-20 17:58-0400\n"
+"POT-Creation-Date: 2024-04-20 18:16-0400\n"
 "PO-Revision-Date: 2024-04-20 19:06-0400\n"
 "Last-Translator: Anonymous <anonymous@cacti.net>\n"
 "Language-Team: Korean <http://translate.cacti.net/projects/cacti/core-v1-2-x/ko/>\n"
@@ -19132,7 +19132,7 @@ msgid "Max Total Memory Possible"
 msgstr "허용되는 최대 폴러 메모리 :"
 
 #: utilities.php:655
-#, no-php-format
+#, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr "MySQL/MariaDB 메모리를 80 % o f 미만의 시스템 메모리로 줄입니다. 데이터베이스가 RRD 파일과 동일한 시스템에 있는 경우 RRD 파일에 대한 추가 캐시 메모리를 보존합니다. 계산 방법에 대한 설명은 아래의 핵심 및 고객 합계를 참조하십시오."
 
