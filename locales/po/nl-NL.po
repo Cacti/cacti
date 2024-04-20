@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2024-04-20 17:58-0400\n"
+"POT-Creation-Date: 2024-04-20 18:16-0400\n"
 "PO-Revision-Date: 2024-04-20 19:11-0400\n"
 "Last-Translator: Edwin Lankamp <edwin.lankamp@gmail.com>\n"
 "Language-Team: Dutch <http://translate.cacti.net/projects/cacti/core-v1-2-x/nl/>\n"
@@ -19203,7 +19203,7 @@ msgid "Max Total Memory Possible"
 msgstr "Maximaal toegestaan Pollergeheugen:"
 
 #: utilities.php:655
-#, no-php-format
+#, php-format
 msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve additional Cache Memory for RRDfiles if the Database is on the same system as the RRDfiles.  See Core and Client Totals below for explanation of calculation method."
 msgstr "Verminder het MySQL/MariaDB-geheugen tot minder dan 80% of systeemgeheugen.  Bewaar extra cachegeheugen voor RRD-bestanden als de database zich op hetzelfde systeem bevindt als de RRD-bestanden.  Zie Kern- en klanttotalen hieronder voor uitleg van de berekeningsmethode."
 
