@@ -308,11 +308,11 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 
 		foreach ($graph_array as $graph) {
 			if (!isset($graph['host_id'])) {
-				list($graph['host_id'], $graph['disabled']) = db_fetch_row_prepared('SELECT host_id, disabled 
-    					FROM graph_local AS gl 
-	 				LEFT JOIN host AS h 
-					ON gl.host_id = h.id 
-     					WHERE gl.id = ?', 
+				list($graph['host_id'], $graph['disabled']) = db_fetch_row_prepared('SELECT host_id, disabled
+    					FROM graph_local AS gl
+	 				LEFT JOIN host AS h
+					ON gl.host_id = h.id
+     					WHERE gl.id = ?',
 					array($graph['local_graph_id']));
 			}
 
@@ -397,11 +397,11 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 		$start = true;
 		foreach ($graph_array as $graph) {
 			if (!isset($graph['host_id'])) {
-				list($graph['host_id'], $graph['disabled']) = db_fetch_row_prepared('SELECT host_id, disabled 
-    					FROM graph_local AS gl 
-	 				LEFT JOIN host AS h 
-      					ON gl.host_id = h.id 
-	   				WHERE gl.id = ?', 
+				list($graph['host_id'], $graph['disabled']) = db_fetch_row_prepared('SELECT host_id, disabled
+    					FROM graph_local AS gl
+	 				LEFT JOIN host AS h
+      					ON gl.host_id = h.id
+	   				WHERE gl.id = ?',
 					array($graph['local_graph_id']));
 			}
 
@@ -2493,7 +2493,7 @@ function html_common_header($title, $selectedTheme = '') {
 		var theme='<?php print $selectedTheme;?>';
 		var hScroll=<?php print read_user_setting('enable_hscroll', '') == 'on' ? 'true':'false';?>;
 		var userSettings=<?php print is_view_allowed('graph_settings') ? 'true':'false';?>;
-		var tableConstraints='<?php print __('Allow or limit the table columns to extend beyond the current windows limits.');?>';
+		var tableConstraints='<?php print __esc('Allow or limit the table columns to extend beyond the current windows limits.');?>';
 		var searchFilter='<?php print __esc('Enter a search term');?>';
 		var searchRFilter='<?php print __esc('Enter a regular expression');?>';
 		var noFileSelected='<?php print __esc('No file selected');?>';
