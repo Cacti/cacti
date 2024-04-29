@@ -102,35 +102,44 @@ Cacti CHANGELOG
 -feature#5717: Add Aruba Clearpass template
 
 1.2.27
--issue#5622: Errors and deprecation warnings with PHP 8.3.0
--issue#5628: Argument '--with-profile' is a invalid arg of cli/import_package.php
--issue#5629: auth_changepassword.php cannot return to the refer url by just clicking the "Return" button once
--issue#5636: Cacti 1.2.26 error on LDAP authentication the first time
--issue#5638: Add tooltip info about IPv6 address
--issue#5645: Boost poller fail to update rrd which Data Template and Graph Template items do not match
--issue#5648: Fractional time offsets can cause huge webserver error-logs
--issue#5649: Inapprorpiate use of PHP_OS in lib/ping.php on Windows Platform
--issue#5655: Function get_allowed_devices can returns incorrect device list if session user_id variable is not set
--issue#5660: Warning about unknown system hash during the update
--issue#5661: On Linux and *NIX variants Cacti is unable to find ping6 as it's not in the path
--issue#5662: installer - Undefined array key "name" warning in php8
--issue#5669: System Utilities show incorrect System Memory if memory is larger than 1k
--issue#5677: Compatibility improvements for Spikekill under PHP 8.x
--issue#5693: Fix Spikekill not following correct time in schedule, Improve PHP 8.3 in spikekill process
--issue#5696: When inputting Chinese to search for graphics, garbled characters appear.
--issue#5701: Bad URL formating in the templates_import.php preview mode
--issue#5720: mysql.time_zone_name table DB check isn't being made on Remote Poller installation
--issue#5723: Remote Poller installation is finished successfully but no "finish" button
--issue#5725: Remote Agent is not recording not authorized agent in log
--issue#5726: Poller cache is not updating when changing hostname
--issue#5727: Incorrect values status_fail_date and status_rec_date with cmd poller
--issue#5731: After Marking a Tree for Editing - Saving the Tree Unpublishes the Tree
--issue#5732: Web Basic Authentication does not log user logins
+-security#GHSA-37x7-mfjv-mm7m: Authentication Bypass when using using older password hashes
+-security#GHSA-7cmj-g5qc-pj88: RCE vulnerability when importing packages
+-security#GHSA-cx8g-hvq8-p2rv: RCE vulnerability when plugins include files
+-security#GHSA-gj3f-p326-gh8r: SQL Injection vulnerability when using tree rules through Automation API
+-security#GHSA-grj5-8fcj-34gh: XSS vulnerability when using JavaScript based messaging API
+-security#GHSA-jrxg-8wh8-943x: SQL Injection vulnerability when using form templates
+-security#GHSA-p4ch-7hjw-6m87: XSS vulnerability when reading tree rules with Automation API
+-security#GHSA-rqc8-78cm-85j3: XSS vulnerability when managing data queries
+-security#GHSA-vjph-r677-6pcc: SQL Injection vulnerability when retrieving graphs using Automation API
+-issue#5622: Improve PHP 8.3 support
+-issue#5628: When importing packages via command line, data source profile could not be selected
+-issue#5629: When changing password, returning to previous page does not always work
+-issue#5636: When using LDAP authentication the first time, warnings may appear in logs
+-issue#5638: When editing/viewing devices, add IPv6 info to hostname tooltip
+-issue#5645: Improve speed of polling when Boost is enabled
+-issue#5648: Improve support for Half-Hour time zones
+-issue#5649: Improve support of ping on Windows
+-issue#5655: When user session not found, device lists can be incorrectly returned
+-issue#5660: On import, legacy templates may generate warnings
+-issue#5661: Improve support for alternate locations of Ping
+-issue#5662: Improve PHP 8.1 support for Installer
+-issue#5669: Fix issues with number formatting
+-issue#5677: Improve PHP 8.1 support when SpikeKill is run first time
+-issue#5693: Improve PHP 8.1 support for SpikeKill
+-issue#5696: When using Chinese to search for graphics, garbled characters appear.
+-issue#5701: When importing templates, preview mode will not always load
+-issue#5720: When remote poller is installed, MySQL TimeZone DB checks are not performed
+-issue#5723: When Remote Poller installation completes, no finish button is shown
+-issue#5725: Unauthorized agents should be recorded into logs
+-issue#5726: Poller cache may not always update if hostname changes
+-issue#5727: When using CMD poller, Failure and Recovery dates may have incorrect values
+-issue#5731: Saving a Tree can cause the tree to become unpublished
+-issue#5732: Web Basic Authentication does not record user logins
 -issue#5733: When using Accent-based languages, translations may not work properly
--feature#5692: Add a "device enabled/disabled" indicator next to the graphs
+-feature#5692: Add a device "enabled/disabled" indicator next to the graphs
 -feature#5710: Notify the admin periodically when a remote data collector goes into heartbeat status
--feature#5716: Add Aruba Clearpass template
--feature#5730: Enable a way to view which Device Templates are using which Graph Templates
+-feature#5716: Add template for Aruba Clearpass
+-feature#5730: Add fliter/sort of Device Templates by Graph Templates
 
 1.2.26
 -issue#5464: PHP warning when view Data Source Info mode with new Data Source
