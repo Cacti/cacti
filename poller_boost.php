@@ -122,6 +122,8 @@ if ($child == false) {
 	$boost_last_run_time = read_config_option('boost_last_run_time');
 	if (!empty($boost_last_run_time) && !is_numeric($boost_last_run_time)) {
 		$last_run_time = strtotime($boost_last_run_time);
+	} elseif (empty($boost_last_run_time)) {
+		$last_run_time = time() - 3600;
 	} else {
 		$last_run_time = $boost_last_run_time;
 	}
@@ -129,6 +131,8 @@ if ($child == false) {
 	$boost_next_run_time = read_config_option('boost_next_run_time');
 	if (!empty($boost_next_run_time) && !is_numeric($boost_next_run_time)) {
 		$next_run_time = strtotime($boost_next_run_time);
+	} elseif (empty($boost_next_run_time)) {
+		$next_run_time = time() + 3600;
 	} else {
 		$next_run_time = $boost_next_run_time;
 	}

@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.2.x
+-issue#5748: PHP deprecation errors on fresh install associated with boost.
+
 1.2.27
 -issue#5622: Errors and deprecation warnings with PHP 8.3.0
 -issue#5628: Argument '--with-profile' is a invalid arg of cli/import_package.php
