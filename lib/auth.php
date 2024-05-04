@@ -4395,7 +4395,7 @@ function compat_password_verify($password, $hash) {
 
 	$md5 = md5($password);
 
-	return ($md5 == $hash);
+	return ($md5 === $hash);
 }
 
 /**
