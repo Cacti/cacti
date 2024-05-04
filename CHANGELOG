@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.x
+-security: Address issue with Type Juggling in Cacti's password validation tool
 -issue#5748: PHP deprecation errors on fresh install associated with boost.
 
 1.2.27
