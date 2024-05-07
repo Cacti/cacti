@@ -3090,9 +3090,17 @@ function automation_find_os($sysDescr, $sysObject, $sysName) {
 	$qsysDescr  = trim(db_qstr($sysDescr), "'");
 	$qsysName   = trim(db_qstr($sysName), "'");
 
-	$sql_where .= trim($sysDescr)  != '' ? 'WHERE (sysDescr REGEXP "(' . preg_quote($qsysDescr) . ')" OR ' . db_qstr($sysDescr) . ' LIKE CONCAT("%", sysDescr, "%"))':'';
-	$sql_where .= trim($sysObject) != '' ? ($sql_where != '' ? ' AND':'WHERE') . ' (sysOID REGEXP "(' . preg_quote($qsysObject) . ')" OR ' . db_qstr($sysObject) . ' LIKE CONCAT("%", sysOid, "%"))':'';
-	$sql_where .= trim($sysName)   != '' ? ($sql_where != '' ? ' AND':'WHERE') . ' (sysName REGEXP "(' . preg_quote($qsysName) . ')" OR ' . db_qstr($sysName) . ' LIKE CONCAT("%", sysName, "%"))':'';
+	if ($qsysDescr != '') {
+		$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' (sysDescr REGEXP "(' . preg_quote($qsysDescr) . ')" OR ' . db_qstr($sysDescr) . ' LIKE CONCAT("%", sysDescr, "%"))';
+	}
+
+	if ($qsysObject != '') {
+		$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' (sysOID REGEXP "(' . preg_quote($qsysObject) . ')" OR ' . db_qstr($sysObject) . ' LIKE CONCAT("%", sysOid, "%"))';
+	}
+
+	if ($qsysName != '') {
+		$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' (sysName REGEXP "(' . preg_quote($qsysName) . ')" OR ' . db_qstr($sysName) . ' LIKE CONCAT("%", sysName, "%"))';
+	}
 
 	$result = db_fetch_row("SELECT at.*,ht.name
 		FROM automation_templates AS at
