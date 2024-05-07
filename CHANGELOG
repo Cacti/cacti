@@ -10,7 +10,7 @@ Cacti CHANGELOG
 -security#GHSA-p4ch-7hjw-6m87: XSS vulnerability when reading tree rules with Automation API
 -security#GHSA-rqc8-78cm-85j3: XSS vulnerability when managing data queries
 -security#GHSA-vjph-r677-6pcc: SQL Injection vulnerability when retrieving graphs using Automation API
--security: Address issue with Type Juggling in Cacti's password validation tool
+-security: Authentication Bypass when using using older password hashes
 -issue#5622: Improve PHP 8.3 support
 -issue#5628: When importing packages via command line, data source profile could not be selected
 -issue#5629: When changing password, returning to previous page does not always work
