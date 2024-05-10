@@ -35,6 +35,7 @@ Cacti CHANGELOG
 -issue#5731: Saving a Tree can cause the tree to become unpublished
 -issue#5732: Web Basic Authentication does not record user logins
 -issue#5733: When using Accent-based languages, translations may not work properly
+-issue#5743: Fix automation expressions for device rules
 -issue#5748: Improve PHP 8.1 Support during fresh install with boost
 -feature#5692: Add a device "enabled/disabled" indicator next to the graphs
 -feature#5710: Notify the admin periodically when a remote data collector goes into heartbeat status
