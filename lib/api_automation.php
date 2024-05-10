@@ -3085,35 +3085,44 @@ function automation_add_tree($host_id, $tree) {
 
 function automation_find_os($sysDescr, $sysObject, $sysName) {
 	$sql_where  = '';
+	$sql_params = array();
 
-	$qsysObject = trim(db_qstr($sysObject), "'");
 	$qsysDescr  = trim(db_qstr($sysDescr), "'");
+	$qsysObject = trim(db_qstr($sysObject), "'");
 	$qsysName   = trim(db_qstr($sysName), "'");
 
 	if ($qsysDescr != '') {
 		$sql_where .= ($sql_where != '' ? ' AND':'WHERE') .
-			' (sysDescr != "" AND (' . preg_quote($qsysDescr) .
-			' REGEXP sysDescr OR ' . db_qstr($sysDescr) . ' LIKE CONCAT("%", sysDescr, "%")))';
+			' (sysDescr != "" AND (? REGEXP sysDescr OR ? LIKE CONCAT("%", sysDescr, "%")))';
+
+		$sql_params[] = $qsysDescr;
+		$sql_params[] = $sysDescr;
 	}
 
 	if ($qsysObject != '') {
 		$sql_where .= ($sql_where != '' ? ' AND':'WHERE') .
-			' (sysOID != "" AND (' . preg_quote($qsysObject) .
-			' REGEXP sysOID OR ' . db_qstr($sysObject) . ' LIKE CONCAT("%", sysOid, "%")))';
+			' (sysOID != "" AND (? REGEXP sysOID OR ? LIKE CONCAT("%", sysOid, "%")))';
+
+		$sql_params[] = $qsysObject;
+		$sql_params[] = $sysObject;
 	}
 
 	if ($qsysName != '') {
 		$sql_where .= ($sql_where != '' ? ' AND':'WHERE') .
-			' (sysName != "" AND (' . preg_quote($qsysName) .
-			' REGEXP sysName OR ' . db_qstr($sysName) . ' LIKE CONCAT("%", sysName, "%")))';
+			' (sysName != "" AND (? REGEXP sysName OR ? LIKE CONCAT("%", sysName, "%")))';
+
+		$sql_params[] = $qsysName;
+		$sql_params[] = $sysName;
 	}
 
-	$result = db_fetch_row("SELECT at.*,ht.name
+	$result = db_fetch_row_prepared("SELECT at.*,ht.name
 		FROM automation_templates AS at
 		INNER JOIN host_template AS ht
 		ON ht.id=at.host_template
 		$sql_where
-		ORDER BY sequence LIMIT 1");
+		ORDER BY sequence
+		LIMIT 1",
+		$sql_params);
 
 	if (cacti_sizeof($result)) {
 		return $result;
