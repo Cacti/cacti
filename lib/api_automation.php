@@ -3093,7 +3093,7 @@ function automation_find_os($sysDescr, $sysObject, $sysName) {
 
 	if ($qsysDescr != '') {
 		$sql_where .= ($sql_where != '' ? ' AND':'WHERE') .
-			' (sysDescr != "" AND (? REGEXP sysDescr OR ? LIKE CONCAT("%", sysDescr, "%")))';
+			' IF(sysDescr != "", (? REGEXP sysDescr OR ? LIKE CONCAT("%", sysDescr, "%")), 1)';
 
 		$sql_params[] = $qsysDescr;
 		$sql_params[] = $sysDescr;
@@ -3101,7 +3101,7 @@ function automation_find_os($sysDescr, $sysObject, $sysName) {
 
 	if ($qsysObject != '') {
 		$sql_where .= ($sql_where != '' ? ' AND':'WHERE') .
-			' (sysOID != "" AND (? REGEXP sysOID OR ? LIKE CONCAT("%", sysOid, "%")))';
+			' IF(sysOID != "", (? REGEXP sysOID OR ? LIKE CONCAT("%", sysOid, "%")), 1)';
 
 		$sql_params[] = $qsysObject;
 		$sql_params[] = $sysObject;
@@ -3109,7 +3109,7 @@ function automation_find_os($sysDescr, $sysObject, $sysName) {
 
 	if ($qsysName != '') {
 		$sql_where .= ($sql_where != '' ? ' AND':'WHERE') .
-			' (sysName != "" AND (? REGEXP sysName OR ? LIKE CONCAT("%", sysName, "%")))';
+			' IF(sysName != "", (? REGEXP sysName OR ? LIKE CONCAT("%", sysName, "%")), 1)';
 
 		$sql_params[] = $qsysName;
 		$sql_params[] = $sysName;
