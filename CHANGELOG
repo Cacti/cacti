@@ -125,6 +125,7 @@ Cacti CHANGELOG
 -issue#5726: Poller cache is not updating when changing hostname
 -issue#5727: Incorrect values status_fail_date and status_rec_date with cmd poller
 -issue#5731: After Marking a Tree for Editing - Saving the Tree Unpublishes the Tree
+-issue#5743: Fix automation expressions for device rules
 -feature#5692: Add a "device enabled/disabled" indicator next to the graphs
 -feature#5710: Notify the admin periodically when a remote data collector goes into heartbeat status
 -feature#5716: Add Aruba Clearpass template
