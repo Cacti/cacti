@@ -1187,7 +1187,12 @@ function raise_message_javascript(string $title, string $header, string $message
 	?>
 	<script type='text/javascript'>
 	$(function() {
-		raiseMessage('<?= $title?>', '<?= $header?>', '<?= $message ?>', <?= $level?>)
+		raiseMessage(
+			<?= json_encode($title, JSON_THROW_ON_ERROR);?>,
+			<?= json_encode($header, JSON_THROW_ON_ERROR);?>,
+			<?= json_encode($message, JSON_THROW_ON_ERROR);?>,
+			<?= $level ?> 
+		)
 	});
 	</script>
 	<?php
