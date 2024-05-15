@@ -1053,7 +1053,7 @@ function raise_message_javascript($title, $header, $message) {
 	var mixedReasonTitle = DOMPurify.sanitize(<?php print json_encode($title, JSON_THROW_ON_ERROR);?>);
 	var mixedOnPage      = DOMPurify.sanitize(<?php print json_encode($header, JSON_THROW_ON_ERROR);?>);
 	sessionMessage   = {
-		message: DOMPurify.sanitize('<?php print $message;?>'),
+		message: DOMPurify.sanitize(<?php print json_encode($message, JSON_THROW_ON_ERROR);?>),
 		level: MESSAGE_LEVEL_MIXED
 	};
 
