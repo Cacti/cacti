@@ -1186,13 +1186,13 @@ function raise_message(string|int $message_id, string $message = '', int $messag
 function raise_message_javascript(string $title, string $header, string $message, int $level = MESSAGE_LEVEL_MIXED) {
 	?>
 	<script type='text/javascript'>
+	var mixedReasonTitle = DOMPurify.sanitize(<?php print json_encode($title, JSON_THROW_ON_ERROR);?>);
+	var mixedOnPage      = DOMPurify.sanitize(<?php print json_encode($header, JSON_THROW_ON_ERROR);?>);
+	var message          = DOMPurify.sanitize(<?php print json_encode($message, JSON_THROW_ON_ERROR);?>);
+	var level            = <?php print $level; ?>;
+
 	$(function() {
-		raiseMessage(
-			<?php print json_encode($title, JSON_THROW_ON_ERROR);?>,
-			<?php print json_encode($header, JSON_THROW_ON_ERROR);?>,
-			<?php print json_encode($message, JSON_THROW_ON_ERROR);?>,
-			<?= $level ?> 
-		)
+		raiseMessage(mixedReasonTitle, mixedOnPage, message, level);
 	});
 	</script>
 	<?php
