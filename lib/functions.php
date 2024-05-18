@@ -9082,4 +9082,3 @@ function get_keyup_delay() {
 function cacti_unserialize($strobj) {
 	return unserialize($strobj, array('allowed_classes' => false));
 }
-
