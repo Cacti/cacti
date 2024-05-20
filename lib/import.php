@@ -523,22 +523,14 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 		$fdata = base64_decode($f['data'], true);
 		$name  = $f['name'];
 
-		/* The xml file without path is the main template of the package. It is processed below using $debug_data */
 		if (strpos($name, 'scripts/') !== false || strpos($name, 'resource/') !== false) {
-
 			$filename = CACTI_PATH_BASE . "/$name";
 
 			if (!$preview) {
 				if (!cacti_sizeof($import_files) || in_array($name, $import_files, true)) {
-					cacti_log('Checking filepath: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
+					cacti_log('Writing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 
-					if (!preg_match('/^(scripts|resource)[a-zA-Z0-9_\-\/]*$/', dirname($name))) {
-						cacti_log('FATAL: Incorrect path: ' . $filename, true, 'IMPORT', POLLER_VERBOSITY_LOW);
-
-						$filestatus[$filename] = __('incorrect path, file not saved');
-					} elseif ((is_writeable(dirname($filename)) && !file_exists($filename)) || is_writable($filename)) {
-						cacti_log('Writing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
-
+					if ((is_writeable(dirname($filename)) && !file_exists($filename)) || is_writable($filename)) {
 						$file = fopen($filename, 'wb');
 
 						if (is_resource($file)) {
@@ -570,9 +562,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 					$existing = md5_file($filename);
 				}
 
-				if (!preg_match('/^(scripts|resource)[a-zA-Z0-9_\-\/]*$/', dirname($name))) {
-					$filestatus[$filename] = 'incorrect path';
-				} elseif (is_writeable(dirname($filename))) {
+				if (is_writeable(dirname($filename))) {
 					if (file_exists($filename) && is_writable($filename)) {
 						if ($new == $existing) {
 							$filestatus[$filename] = 'writable, identical';
@@ -599,7 +589,6 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 				} else {
 					$filestatus[$filename] = 'not writable, new';
 				}
-
 			}
 		} else {
 			if (!$preview) {
