@@ -13,15 +13,15 @@ msgstr ""
 "Project-Id-Version: Cacti German Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-04-20 18:16-0400\n"
-"PO-Revision-Date: 2024-04-20 18:28-0400\n"
-"Last-Translator: lena <binder.lena@googlemail.com>\n"
+"PO-Revision-Date: 2024-05-25 15:08+0000\n"
+"Last-Translator: Kersten Lohmeyer <kersten.lohmeyer@gmail.com>\n"
 "Language-Team: German <http://translate.cacti.net/projects/cacti/core-v1-2-x/de/>\n"
-"Language: de_DE\n"
+"Language: de-DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Weblate 4.8.1\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-KeywordsList: __;__date\n"
 
@@ -954,8 +954,9 @@ msgid "Access Denied!  User account disabled."
 msgstr "Zugriff verweigert, Benutzerkonto deaktiviert."
 
 #: auth_login.php:191
+#, fuzzy
 msgid "You do not have access to any area of Cacti.  Contact your administrator."
-msgstr "Wenn du denkst, dass dies ein Fehler ist. Bitte wenden Sie sich an Ihren Kakteen-Administrator."
+msgstr "Sie haben keinen Zugang zu allen von Cacti.  Wenden Sie sich an Ihren Administrator."
 
 #: auth_login.php:279 lib/html_tree.php:164
 msgid "Login to Cacti"
@@ -1041,12 +1042,14 @@ msgid "A more descriptive name for this user, that can include spaces or special
 msgstr "Beschreibender Name für den Benutzer, darf Leerzeichen oder spezielle Zeichen enthalten."
 
 #: auth_profile.php:337 include/global_form.php:1526
+#, fuzzy
 msgid "Email Address"
-msgstr "E-Mail Adresse"
+msgstr "E-Mail-Adresse"
 
 #: auth_profile.php:338
+#, fuzzy
 msgid "An Email Address you be reached at."
-msgstr "Eine e-Mail-Adresse unter welcher Sie erreichbar sind."
+msgstr "Eine E-Mail-Adresse unter welcher Sie erreichbar sind."
 
 #: auth_profile.php:345 auth_profile.php:347
 msgid "Clear User Settings"
@@ -1125,14 +1128,14 @@ msgid "Added manually through device automation interface."
 msgstr "Manuell über die Schnittstelle zur Geräteautomatisierung hinzugefügt."
 
 #: automation_devices.php:123
-#, php-format
+#, fuzzy, php-format
 msgid "Device %s Added to Cacti"
-msgstr "Gerät %s zu Kakteen hinzugefügt"
+msgstr "Gerät %s zu Cacti hinzugefügt"
 
 #: automation_devices.php:125
-#, php-format
+#, fuzzy, php-format
 msgid "Device %s Not Added to Cacti"
-msgstr "Gerät %s nicht zu Kakteen hinzugefügt"
+msgstr "Gerät %s nicht zu Cacti hinzugefügt"
 
 #: automation_devices.php:135
 msgid "Devices Removed from Cacti Automation database"
@@ -1601,8 +1604,9 @@ msgid "Data Collector"
 msgstr "Feldrechner"
 
 #: automation_networks.php:446 include/global_form.php:1212
+#, fuzzy
 msgid "Choose the Cacti Data Collector/Poller to be used to gather data from this Device."
-msgstr "Wählen Sie den Kakteen-Daten-Sammler/Poller, der zum Sammeln von Daten von diesem Gerät verwendet werden soll."
+msgstr "Wählen Sie den Cacti-Daten-Sammler/Poller, der zum Sammeln von Daten von diesem Gerät verwendet werden soll."
 
 #: automation_networks.php:453
 msgid "Associated Site"
@@ -1756,8 +1760,9 @@ msgid "Use NetBIOS to attempt to resolve the hostname of up hosts."
 msgstr "Verwenden Sie NetBIOS, um zu versuchen, den Hostnamen von Up-Hosts aufzulösen."
 
 #: automation_networks.php:546
+#, fuzzy
 msgid "Automatically Add to Cacti"
-msgstr "Automatisch zu Kakteen hinzufügen"
+msgstr "Automatisch zu Cacti hinzufügen"
 
 #: automation_networks.php:547
 msgid "For any newly discovered Devices that are reachable using SNMP and who match a Device Rule, add them to Cacti."
@@ -2558,16 +2563,18 @@ msgid "Cacti System Warning"
 msgstr "Warnung vor dem Kaktus-System"
 
 #: cactid.php:44
+#, fuzzy
 msgid "WARNING: Cacti Daemon PID["
-msgstr "WARNUNG: Kakteen-Daemon-PID["
+msgstr "WARNUNG: Cacti-Daemon-PID["
 
 #: cactid.php:132
 msgid "Cacti System Notice"
 msgstr "Systemwerkzeuge"
 
 #: cactid.php:132
+#, fuzzy
 msgid "Notice: Cacti Daemon PID["
-msgstr "Hinweis: Kakteen-Daemon-PID["
+msgstr "Hinweis: Cacti-Daemon-PID["
 
 #: cdef.php:271
 msgid "Click 'Continue' to delete the following CDEF."
@@ -5798,12 +5805,14 @@ msgid "Not Logged In"
 msgstr "Nicht angemeldet"
 
 #: include/auth.php:160
+#, fuzzy
 msgid "You must be logged in to access this area of Cacti."
-msgstr "Du musst eingeloggt sein, um diesen Bereich von Kakteen zu betreten."
+msgstr "Du musst eingeloggt sein, um diesen Bereich von Cacti zu betreten."
 
 #: include/auth.php:165
+#, fuzzy
 msgid "FATAL: You must be logged in to access this area of Cacti."
-msgstr "FATAL: Du musst eingeloggt sein, um Zugang zu diesem Bereich der Kakteen zu erhalten."
+msgstr "FATAL: Du musst eingeloggt sein, um Zugang zu diesem Bereich von Cacti zu erhalten."
 
 #: include/auth.php:274 include/auth.php:276 lib/auth.php:4532
 #: permission_denied.php:30 permission_denied.php:32
@@ -5816,20 +5825,23 @@ msgid "Permission Denied"
 msgstr "Erlaubnis verweigert"
 
 #: include/auth.php:282 lib/functions.php:7023 permission_denied.php:54
+#, fuzzy
 msgid "If you feel that this is an error. Please contact your Cacti Administrator."
-msgstr "Wenn du denkst, dass dies ein Fehler ist. Bitte wenden Sie sich an Ihren Kakteen-Administrator."
+msgstr "Wenn du denkst, dass dies ein Fehler ist. Bitte wenden Sie sich an Ihren Cacti-Administrator."
 
 #: include/auth.php:282 lib/functions.php:7023 permission_denied.php:54
+#, fuzzy
 msgid "You are not permitted to access this section of Cacti."
-msgstr "Es ist Ihnen nicht gestattet, auf diesen Bereich von Kakteen zuzugreifen."
+msgstr "Es ist Ihnen nicht gestattet, auf diesen Bereich von Cacti zuzugreifen."
 
 #: include/auth.php:285
 msgid "Installation In Progress"
 msgstr "Installation im Gange"
 
 #: include/auth.php:286
+#, fuzzy
 msgid "Only Cacti Administrators with Install/Upgrade privilege may login at this time"
-msgstr "Nur Kakteen-Administratoren mit der Berechtigung Install/Upgrade dürfen sich zu diesem Zeitpunkt anmelden."
+msgstr "Nur Cacti-Administratoren mit der Berechtigung Install/Upgrade dürfen sich zu diesem Zeitpunkt anmelden."
 
 #: include/auth.php:286
 msgid "There is an Installation or Upgrade in progress."
@@ -6109,8 +6121,9 @@ msgid "Data Collector synchronization must be initiated from the main Cacti serv
 msgstr "Die Synchronisation des Datensammlers muss vom Hauptserver von Cacti initiiert werden."
 
 #: include/global_arrays.php:345
+#, fuzzy
 msgid "Synchronization does not include the Central Cacti Database server."
-msgstr "Die Synchronisation beinhaltet nicht den zentralen Kakteen-Datenbankserver."
+msgstr "Die Synchronisation beinhaltet nicht den zentralen Cacti-Datenbankserver."
 
 #: include/global_arrays.php:348
 msgid "When saving a Remote Data Collector, the Database Hostname must be unique from all others."
@@ -7902,8 +7915,9 @@ msgid "(Action)"
 msgstr "(Aktion)"
 
 #: include/global_arrays.php:2636
+#, fuzzy
 msgid "Cacti Help"
-msgstr "Kakteen Heim"
+msgstr "Cacti Hilfe"
 
 #: include/global_arrays.php:2648
 msgid "Export Results"
@@ -8347,8 +8361,9 @@ msgid "Data Source Active"
 msgstr "Datenquelle aktiv"
 
 #: include/global_form.php:613
+#, fuzzy
 msgid "Whether Cacti should gather data for this data source or not."
-msgstr "Ob Kakteen Daten für diese Datenquelle sammeln sollen oder nicht."
+msgstr "Ob Cacti Daten für diese Datenquelle sammeln sollen oder nicht."
 
 #: include/global_form.php:621
 msgid "Internal Data Source Name"
@@ -8559,8 +8574,9 @@ msgid "Unit Exponent Value (--units-exponent)"
 msgstr "Einheit Exponent Wert (-- Einheiten- Exponent)"
 
 #: include/global_form.php:845
+#, fuzzy
 msgid "What unit Cacti should use on the Y-axis. Use 3 to display everything in \"k\" or -6 to display everything in \"u\" (micro)."
-msgstr "Welche Einheit Kakteen auf der Y-Achse verwenden sollen. Verwenden Sie 3, um alles in \"k\" oder -6 anzuzeigen, um alles in \"u\" (micro) anzuzeigen."
+msgstr "Welche Einheit Cacti auf der Y-Achse verwenden sollen. Verwenden Sie 3, um alles in \"k\" oder -6 anzuzeigen, um alles in \"u\" (micro) anzuzeigen."
 
 #: include/global_form.php:849
 msgid "Unit Length (--units-length &lt;length&gt;)"
@@ -9528,8 +9544,9 @@ msgid "Logging"
 msgstr "Protokollierung"
 
 #: include/global_settings.php:171
+#, fuzzy
 msgid "Cacti Log Path"
-msgstr "Kakteen-Protokollpfad"
+msgstr "Cacti-Protokollpfad"
 
 #: include/global_settings.php:172
 msgid "The path to your Cacti log file (if blank, defaults to &lt;path_cacti&gt;/log/cacti.log)"
@@ -9600,8 +9617,9 @@ msgid "RRDfile Auto Clean Method"
 msgstr "RRDfile Auto-Reinigungsmethode"
 
 #: include/global_settings.php:245
+#, fuzzy
 msgid "The method used to Clean RRDfiles from Cacti after their Data Sources are deleted."
-msgstr "Die Methode, mit der RRD-Dateien von Kakteen bereinigt werden, nachdem ihre Datenquellen gelöscht wurden."
+msgstr "Die Methode, mit der RRD-Dateien von Cacti bereinigt werden, nachdem ihre Datenquellen gelöscht wurden."
 
 #: include/global_settings.php:249
 msgid "Archive"
@@ -9704,8 +9722,9 @@ msgid "Language Support"
 msgstr "Sprachenunterstützung"
 
 #: include/global_settings.php:342
+#, fuzzy
 msgid "Choose 'enabled' to allow the localization of Cacti. The strict mode requires that the requested language will also be supported by all plugins being installed at your system. If that's not the fact everything will be displayed in English."
-msgstr "Wählen Sie \"aktiviert\", um die Lokalisierung von Kakteen zu ermöglichen. Der strenge Modus erfordert, dass die angeforderte Sprache auch von allen Plugins unterstützt wird, die auf Ihrem System installiert sind. Wenn das nicht der Fall ist, wird alles auf Englisch angezeigt."
+msgstr "Wählen Sie \"aktiviert\", um die Lokalisierung von Cacti zu ermöglichen. Der strenge Modus erfordert, dass die angeforderte Sprache auch von allen Plugins unterstützt wird, die auf Ihrem System installiert sind. Wenn das nicht der Fall ist, wird alles auf Englisch angezeigt."
 
 #: include/global_settings.php:348
 msgid "Language"
@@ -9744,16 +9763,18 @@ msgid "Date Display Format"
 msgstr "Anzeigeformat des Datums"
 
 #: include/global_settings.php:383
+#, fuzzy
 msgid "The System default date format to use in Cacti."
-msgstr "Das standardmäßige Datumsformat des Systems, das in Kakteen verwendet wird."
+msgstr "Das standardmäßige Datumsformat des Systems, das in Cacti verwendet wird."
 
 #: include/global_settings.php:389 include/global_settings.php:2608
 msgid "Date Separator"
 msgstr "Datumstrennzeichen"
 
 #: include/global_settings.php:390
+#, fuzzy
 msgid "The System default date separator to be used in Cacti."
-msgstr "Das standardmäßige Datumstrenner des Systems, das in Kakteen verwendet wird."
+msgstr "Der standardmäßige Datumstrenner des Systems, der in Cacti verwendet wird."
 
 #: include/global_settings.php:396
 msgid "Other Settings"
@@ -9868,8 +9889,9 @@ msgid "When enabled, Cacti will not lock Graphs.  This allow a faster manual mod
 msgstr "Wenn diese Option aktiviert ist, sperrt Cacti keine Grafiken. Dies ermöglicht eine schnellere manuelle Änderung von Datenquellen, die sich auf ein Diagramm beziehen."
 
 #: include/global_settings.php:478
+#, fuzzy
 msgid "Hide Cacti Dashboard"
-msgstr "Kakteen Dashboard ausblenden"
+msgstr "Cacti Dashboard ausblenden"
 
 #: include/global_settings.php:479
 msgid "For use with Cacti's External Link Support.  Using this setting, you can hide the Cacti Dashboard, so you can display just your own page."
@@ -9900,8 +9922,9 @@ msgid "Content-Security Allow Unsafe JavaScript eval() calls"
 msgstr "Unsichere JavaScript-Aufrufe eval () zulassen"
 
 #: include/global_settings.php:503
+#, fuzzy
 msgid "Certain Cacti plugins require the use of unsafe JavaScript eval() calls.  If you select this option, they will be allowed in Cacti."
-msgstr "Bestimmte Cacti-Plugins erfordern die Verwendung unsicherer JavaScript eval () -Aufrufe. Wenn Sie diese Option auswählen, werden sie in Kakteen zugelassen."
+msgstr "Bestimmte Cacti-Plugins erfordern die Verwendung unsicherer JavaScript eval () -Aufrufe. Wenn Sie diese Option auswählen, werden sie in Cacti zugelassen."
 
 #: include/global_settings.php:511
 msgid "Content-Security Alternate Sources"
@@ -10166,8 +10189,9 @@ msgid "Default Ping Timeout value in milli-seconds for all new Devices.  The tim
 msgstr "Standard Ping Timeout Wert in Millisekunden für alle neuen Geräte.  Die Timeout-Werte, die für Device SNMP, ICMP, UDP und TCP Ping verwendet werden.  ICMP Pings werden auf die nächste Sekunde aufgerundet.  TCP- und UDP-Verbindungs-Timeout unter Windows werden vom Betriebssystem gesteuert und werden daher unter Windows nicht empfohlen."
 
 #: include/global_settings.php:805
+#, fuzzy
 msgid "The number of times Cacti will attempt to ping a Device before marking it as down."
-msgstr "Die Anzahl der Male, die Kakteen versuchen, ein Gerät anzupingen, bevor sie es als abwärts markieren."
+msgstr "Die Anzahl, wie oft Cacti versucht, ein Device anzupingen, bevor es als ausgefallen markiert wird."
 
 #: include/global_settings.php:812
 msgid "Up/Down Settings"
@@ -10199,8 +10223,9 @@ msgid "Theme"
 msgstr "Theme"
 
 #: include/global_settings.php:841 include/global_settings.php:2547
+#, fuzzy
 msgid "Please select one of the available Themes to skin your Cacti with."
-msgstr "Bitte wählen Sie eines der verfügbaren Designs aus, mit dem Sie Ihre Kakteen hauten können."
+msgstr "Bitte wählen Sie eines der verfügbaren Themes aus, um Ihr Cacti damit zu versehen."
 
 #: include/global_settings.php:847
 msgid "Table Settings"
@@ -10351,8 +10376,9 @@ msgid "Enable Real-time Graphing"
 msgstr "Echtzeit-Grafik aktivieren"
 
 #: include/global_settings.php:990
+#, fuzzy
 msgid "When an option is checked, users will be able to put Cacti into Real-time mode."
-msgstr "Wenn eine Option aktiviert ist, können Benutzer Kakteen in den Echtzeitmodus versetzen."
+msgstr "Wenn eine Option aktiviert ist, können Benutzer Cacti in den Echtzeitmodus versetzen."
 
 #: include/global_settings.php:996
 msgid "This timespan you wish to see on the default graph."
@@ -10619,8 +10645,9 @@ msgid "Remote Agent Timeout"
 msgstr "Timeout des Remote-Agenten"
 
 #: include/global_settings.php:1238
+#, fuzzy
 msgid "The amount of time, in seconds, that the Central Cacti web server will wait for a response from the Remote Data Collector to obtain various Device information before abandoning the request.  On Devices that are associated with Data Collectors other than the Central Cacti Data Collector, the Remote Agent must be used to gather Device information."
-msgstr "Die Zeitspanne in Sekunden, die der zentrale Kakteen-Webserver auf eine Antwort des entfernten Datensammlers wartet, um verschiedene Geräteinformationen abzurufen, bevor er die Anforderung abbricht.  Auf Geräten, die mit anderen Datensammlern als dem zentralen Kakteen-Datensammler verbunden sind, muss der Remote Agent verwendet werden, um Geräteinformationen zu sammeln."
+msgstr "Die Zeitspanne in Sekunden, die der zentrale Cacti-Webserver auf eine Antwort des entfernten Datensammlers wartet, um verschiedene Geräteinformationen abzurufen, bevor er die Anforderung abbricht.  Auf Geräten, die mit anderen Datensammlern als dem zentralen Cacti-Datensammler verbunden sind, muss der Remote Agent verwendet werden, um Geräteinformationen zu sammeln."
 
 #: include/global_settings.php:1249
 msgid "SNMP Bulkwalk Fetch Size"
@@ -11398,8 +11425,9 @@ msgid "The maximum size of the E-Mail message including all attachments."
 msgstr "Die maximale Größe der E-Mail-Nachricht einschließlich aller Anhänge."
 
 #: include/global_settings.php:1996
+#, fuzzy
 msgid "Poller Logging Level for Cacti Reporting"
-msgstr "Poller-Logging-Level für Kakteen-Reporting"
+msgstr "Poller-Logging-Level für Cacti-Reporting"
 
 #: include/global_settings.php:1997
 msgid "What level of detail do you want sent to the log file. WARNING: Leaving in any other status than NONE or LOW can exhaust your disk space rapidly."
@@ -11450,8 +11478,9 @@ msgid "Enable On-demand RRD Updating"
 msgstr "On-Demand-RRD-Aktualisierung aktivieren"
 
 #: include/global_settings.php:2044
+#, fuzzy
 msgid "Should Boost enable on demand RRD updating in Cacti?  If you disable, this change will not take affect until after the next polling cycle.  When you have Remote Data Collectors, this settings is required to be on."
-msgstr "Sollte Boost die Aktualisierung von RRDs in Kakteen bei Bedarf ermöglichen?  Wenn Sie diese Option deaktivieren, wird diese Änderung erst nach dem nächsten Abfragezyklus wirksam.  Wenn Sie Remote Data Collectors haben, müssen diese Einstellungen aktiviert sein."
+msgstr "Sollte Boost die Aktualisierung von RRDs in Cacti bei Bedarf ermöglichen?  Wenn Sie diese Option deaktivieren, wird diese Änderung erst nach dem nächsten Abfragezyklus wirksam.  Wenn Sie Remote Data Collectors haben, müssen diese Einstellungen aktiviert sein."
 
 #: include/global_settings.php:2049
 msgid "System Level RRD Updater"
@@ -11908,12 +11937,14 @@ msgid "TimeZone Support"
 msgstr "MySQL - TimeZone Unterstützung"
 
 #: include/global_settings.php:2561
+#, fuzzy
 msgid "How would you like Cacti to present dates?  This setting will also change the way that Cacti Graphs dates are represented."
-msgstr "Wie möchten Sie, dass Kakteen Reisedaten präsentieren?  Diese Einstellung ändert auch die Art und Weise, wie Kakteendiagramme dargestellt werden."
+msgstr "Wie möchten Sie, dass Cacti Daten darstellt?  Diese Einstellung ändert auch die Art und Weise, wie Cacti Graphen-Daten darstellt."
 
 #: include/global_settings.php:2564
+#, fuzzy
 msgid "Cacti Server Timezone"
-msgstr "Kakteen-Server v%s - Wartung"
+msgstr "Cacti-Server  Zeitzone"
 
 #: include/global_settings.php:2565
 msgid "My Browsers Timezone"
@@ -11960,12 +11991,14 @@ msgid "Enable Horizontal Scrolling of Tables, Disabling Responsive Column Visibi
 msgstr "Aktivieren Sie das horizontale Scrollen von Tabellen und deaktivieren Sie die Sichtbarkeit der ansprechenden Spalten."
 
 #: include/global_settings.php:2602
+#, fuzzy
 msgid "The date format to use in Cacti."
-msgstr "Das Datumsformat, das in Kakteen verwendet wird."
+msgstr "Das Datumsformat, das in Cacti verwendet wird."
 
 #: include/global_settings.php:2609
+#, fuzzy
 msgid "The date separator to be used in Cacti."
-msgstr "Das Datumstrenner, das in Kakteen verwendet werden soll."
+msgstr "Der Datumstrenner, der in Cacti verwendet werden soll."
 
 #: include/global_settings.php:2615
 msgid "Page Refresh"
@@ -12040,8 +12073,9 @@ msgid "Thumbnail Sections"
 msgstr "Thumbnail Bereich"
 
 #: include/global_settings.php:2690
+#, fuzzy
 msgid "Which portions of Cacti display Thumbnails by default."
-msgstr "Welche Teile von Kakteen standardmäßig Miniaturansichten anzeigen."
+msgstr "Welche Teile von Cacti standardmäßig Miniaturansichten anzeigen."
 
 #: include/global_settings.php:2704
 msgid "Preview Thumbnail Columns"
@@ -12193,9 +12227,9 @@ msgid "For users with Console access only, how long this user can stay logged in
 msgstr "Nur für Benutzer mit Konsolenzugriff, wie lange dieser Benutzer angemeldet bleiben kann, bevor er automatisch abgemeldet wird. Beachten Sie, dass Sie Ihren Browser möglicherweise aktualisieren müssen, wenn Sie länger als eine Stunde nicht aktiv waren. Beachten Sie auch, dass diese Einstellung keine Auswirkungen hat, wenn Authentifizierungs-Cookies aktiviert sind."
 
 #: index.php:68
-#, php-format
+#, fuzzy, php-format
 msgid "You are now logged into <a href=\"%s\"><b>Cacti</b></a>. You can follow these basic steps to get started."
-msgstr "Du bist jetzt eingeloggt in <a href=\"%s\"><b>Kakteen</b></a>. Sie können diese grundlegenden Schritte befolgen, um loszulegen."
+msgstr "Sie sind nun eingeloggt in <a href=\"%s\"><b>Cacti</b></a>. Sie können diese grundlegenden Schritte befolgen, um loszulegen."
 
 #: index.php:71
 #, php-format
@@ -12233,8 +12267,9 @@ msgid "Number of Offline Records:"
 msgstr "Anzahl der Offline-Sätze:"
 
 #: index.php:89
+#, fuzzy
 msgid "<strong>NOTE:</strong> You are logged into a Remote Data Collector.  When <b>'online'</b>, you will be able to view and control much of the Main Cacti Web Site just as if you were logged into it.  Also, it's important to note that Remote Data Collectors are required to use the Cacti's Performance Boosting Services <b>'On Demand Updating'</b> feature, and we always recommend using Spine.  When the Remote Data Collector is <b>'offline'</b>, the Remote Data Collectors Web Site will contain much less information.  However, it will cache all updates until the Main Cacti Database and Web Server are reachable.  Then it will dump it's Boost table output back to the Main Cacti Database for updating."
-msgstr "<strong>HINWEIS:</strong> Sie sind bei einem Remote Data Collector angemeldet.  Wenn Sie <b>'online'</b> sind, können Sie einen Großteil der Hauptkakteen-Website ansehen und steuern, als wären Sie bei ihr angemeldet.  Außerdem ist es wichtig zu beachten, dass Remote-Datensammler die Performance Boosting Services <b>'On Demand Updating'</b> der Kakteen nutzen müssen, und wir empfehlen immer die Verwendung der Wirbelsäule.  Wenn der Remote Data Collector <b>'offline'</b> ist, enthält die Remote Data Collectors Web Site viel weniger Informationen.  Es werden jedoch alle Updates zwischengespeichert, bis die Hauptkakteen-Datenbank und der Webserver erreichbar sind.  Dann wird die Ausgabe der Boost-Tabelle zur Aktualisierung in die Hauptkakteen-Datenbank zurückgeladen."
+msgstr "<strong>HINWEIS:</strong> Sie sind bei einem Remote Data Collector angemeldet. Wenn Sie <b>\"online\"</b> sind, können Sie einen Großteil der Cacti-Hauptwebsite ansehen und steuern, als ob Sie dort angemeldet wären. Außerdem ist es wichtig zu wissen, dass Remote Data Collectors die Funktion <b>\"On Demand Updating\"</b> der Cacti Performance Boosting Services nutzen müssen, und wir empfehlen immer die Verwendung von Spine. Wenn der Remote Data Collector <b>\"offline\"</b> ist, enthält die Website des Remote Data Collectors viel weniger Informationen. Allerdings werden alle Aktualisierungen zwischengespeichert, bis die Cacti-Hauptdatenbank und der Webserver wieder erreichbar sind. Dann wird die Ausgabe der Boost-Tabelle zur Aktualisierung zurück in die Cacti-Hauptdatenbank übertragen."
 
 #: index.php:94
 msgid "<strong>NOTE:</strong> None of the Core Cacti Plugins, to date, have been re-designed to work with Remote Data Collectors.  Therefore, Plugins such as MacTrack, and HMIB, which require direct access to devices will not work with Remote Data Collectors at this time.  However, plugins such as Thold will work so long as the Remote Data Collector is in <b>'online'</b> mode."
@@ -12254,14 +12289,14 @@ msgid "Cacti Install Help"
 msgstr "Aktiv/installiert"
 
 #: install/install.php:97
-#, php-format
+#, fuzzy, php-format
 msgid "Cacti Server v%s - Maintenance"
-msgstr "Kakteen-Server v%s - Wartung"
+msgstr "Cacti-Server v%s - Wartung"
 
 #: install/install.php:107
-#, php-format
+#, fuzzy, php-format
 msgid "Cacti Server v%s - Installation Wizard"
-msgstr "Kakteen-Server v%s - Installationsassistent"
+msgstr "Cacti-Server v%s - Installationsassistent"
 
 #: install/install.php:107
 msgid "Refresh current page"
@@ -12726,8 +12761,9 @@ msgid "%s - WEBUI NOTE: Cacti Log Cleared from Web Management Interface."
 msgstr "%s - WEBUI HINWEIS: Das Kakteenprotokoll wurde von der Web Management Oberfläche gelöscht."
 
 #: lib/clog_webapi.php:227
+#, fuzzy
 msgid "Click 'Continue' to purge the Log File.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog."
-msgstr "Klicken Sie auf'Weiter', um die Protokolldatei zu bereinigen.<br><br><br><br><br>Hinweis: Wenn die Protokollierung sowohl auf Kakteen als auch auf Syslog eingestellt ist, bleiben die Protokollinformationen in Syslog."
+msgstr "Klicken Sie auf'Weiter', um die Protokolldatei zu bereinigen.<br><br><br><br><br>Hinweis: Wenn die Protokollierung sowohl auf Cacti als auch auf Syslog eingestellt ist, bleiben die Protokollinformationen in Syslog."
 
 #: lib/clog_webapi.php:233 utilities.php:1434
 msgid "Purge Log"
@@ -13473,8 +13509,9 @@ msgid "Sending Message..."
 msgstr "Nachricht wird gesendet…"
 
 #: lib/functions.php:5350
+#, fuzzy
 msgid "Cacti Test Message"
-msgstr "Kakteen-Testmeldung"
+msgstr "Cacti-Testmeldung"
 
 #: lib/functions.php:5352
 msgid "Success!"
@@ -13720,8 +13757,9 @@ msgid "Help"
 msgstr "Hilfe"
 
 #: lib/html.php:2521
+#, fuzzy
 msgid "Cacti Home"
-msgstr "Kakteen Heim"
+msgstr "Cacti Home"
 
 #: lib/html.php:2523
 msgid "Miscellaneous"
@@ -13736,8 +13774,9 @@ msgid "Charts"
 msgstr "Charts"
 
 #: lib/html.php:2527
+#, fuzzy
 msgid "Cacti Project Page"
-msgstr "Kakteen-Projekt-Seite"
+msgstr "Cacti-Projekt-Seite"
 
 #: lib/html.php:2531
 msgid "Spine"
@@ -13780,8 +13819,9 @@ msgid "Report a bug"
 msgstr "Einen Fehler melden"
 
 #: lib/html.php:2544
+#, fuzzy
 msgid "Cacti"
-msgstr "Kakteen"
+msgstr "Cacti"
 
 #: lib/html.php:2546
 msgid "Click to Show/Hide Filter"
@@ -14773,8 +14813,9 @@ msgid "[preview] "
 msgstr "Vorschau"
 
 #: lib/import.php:2600
+#, fuzzy
 msgid "Cacti would make the following changes if the Template was imported:"
-msgstr "Kakteen würden die folgenden Änderungen vornehmen, wenn die Vorlage importiert würde:"
+msgstr "Cacti würde die folgenden Änderungen vornehmen, wenn die Vorlage importiert würde:"
 
 #: lib/import.php:2602
 msgid "Cacti has imported the following items for the Template:"
@@ -14908,8 +14949,9 @@ msgid "You have created a new database, but have not yet imported the 'cacti.sql
 msgstr "Sie haben eine neue Datenbank erstellt, aber noch nicht die Datei'cacti.sql' importiert. Führen Sie auf der Befehlszeile Folgendes aus, um fortzufahren:"
 
 #: lib/installer.php:1599
+#, fuzzy
 msgid "This error may also be generated if the cacti database user does not have correct permissions on the Cacti database. Please ensure that the Cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database."
-msgstr "Dieser Fehler kann auch dann auftreten, wenn der Benutzer der Kakteen-Datenbank keine korrekten Berechtigungen für die Kakteen-Datenbank hat. Bitte stellen Sie sicher, dass der Cacti-Datenbankbenutzer die Möglichkeit hat, in der Cacti-Datenbank SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX auszuwählen."
+msgstr "Dieser Fehler kann auch dann auftreten, wenn der Benutzer der Cacti-Datenbank keine korrekten Berechtigungen für die Cacti-Datenbank hat. Bitte stellen Sie sicher, dass der Cacti-Datenbankbenutzer die Möglichkeit hat, in der Cacti-Datenbank SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX auszuwählen."
 
 #: lib/installer.php:1600
 msgid "You <b>MUST</b> also import MySQL TimeZone information into MySQL and grant the Cacti user SELECT access to the mysql.time_zone_name table"
@@ -15140,8 +15182,9 @@ msgid "Upgrade from <strong>%s</strong> to <strong>%s</strong>"
 msgstr "Upgrade von <stark>%s</stark> auf <stark>%s</stark>"
 
 #: lib/installer.php:2071
+#, fuzzy
 msgid "In the event of issues, It is highly recommended that you clear your browser cache, closing then reopening your browser (not just the tab Cacti is on) and retrying, before raising an issue with The Cacti Group"
-msgstr "Im Falle von Problemen wird dringend empfohlen, dass Sie Ihren Browser-Cache leeren, schließen, dann Ihren Browser wieder öffnen (nicht nur die Registerkarte Kakteen ist eingeschaltet) und erneut versuchen, bevor Sie ein Problem mit The Cacti Group aufwerfen."
+msgstr "Bei Problemen wird dringend empfohlen, den Cache des Browsers zu leeren, den Browser zu schließen und erneut zu öffnen (nicht nur die Registerkarte, auf der sich Cacti befindet) und es erneut zu versuchen, bevor Sie ein Problem der Cacti Group melden."
 
 #: lib/installer.php:2072
 msgid "On rare occasions, we have had reports from users who experience some minor issues due to changes in the code.  These issues are caused by the browser retaining pre-upgrade code and whilst we have taken steps to minimise the chances of this, it may still occur.  If you need instructions on how to clear your browser cache, <a href='https://www.refreshyourcache.com' target='_blank'>https://www.refreshyourcache.com/</a> is a good starting point."
@@ -15286,8 +15329,9 @@ msgid "After the install is complete, you can make some of these directories rea
 msgstr "Nachdem die Installation abgeschlossen ist, können Sie einige dieser Verzeichnisse nur noch lesend machen, um die Sicherheit zu erhöhen."
 
 #: lib/installer.php:2306
+#, fuzzy
 msgid "These directories will be required to stay read writable after the install so that the Cacti remote synchronization process can update them as the Main Cacti Web Site changes"
-msgstr "Diese Verzeichnisse müssen nach der Installation lesbar bleiben, damit der Cacti-Fernsynchronisationsprozess sie aktualisieren kann, wenn sich die Haupt-Kakteen-Website ändert."
+msgstr "Diese Verzeichnisse müssen nach der Installation lesbar bleiben, damit der Cacti-Fernsynchronisationsprozess sie aktualisieren kann, wenn sich die Cacti-Hauptwebsite ändert."
 
 #: lib/installer.php:2310
 msgid "If you are installing packages, once the packages are installed, you should change the scripts directory back to read only as this presents some exposure to the web site."
@@ -15403,8 +15447,9 @@ msgid "Default Automation Network"
 msgstr "Standard-Automatisierungsnetzwerk"
 
 #: lib/installer.php:2494
+#, fuzzy
 msgid "Cacti can automatically scan the network once installation has completed. This will utilise the network range below to work out the range of IPs that can be scanned.  A predefined set of options are defined for scanning which include using both 'public' and 'private' communities."
-msgstr "Kakteen können das Netzwerk nach Abschluss der Installation automatisch scannen. Dabei wird der untenstehende Netzwerkbereich verwendet, um den Bereich der IPs zu ermitteln, die gescannt werden können.  Für das Scannen werden vordefinierte Optionen definiert, die sowohl die Verwendung von \"öffentlichen\" als auch von \"privaten\" Communities beinhalten."
+msgstr "Cacti kann das Netzwerk nach Abschluss der Installation automatisch scannen. Dabei wird der untenstehende Netzwerkbereich verwendet, um den Bereich der IPs zu ermitteln, die gescannt werden können.  Für das Scannen werden vordefinierte Optionen definiert, die sowohl die Verwendung von \"öffentlichen\" als auch von \"privaten\" Communities beinhalten."
 
 #: lib/installer.php:2495
 msgid "If your devices require a different set of options to be used first, you may define them below and they will be utilized before the defaults"
@@ -15451,8 +15496,9 @@ msgid "Template Setup"
 msgstr "Vorlagen-Einstellung"
 
 #: lib/installer.php:2562
+#, fuzzy
 msgid "Please select the Device Templates that you wish to update during the Upgrade."
-msgstr "Wählen Sie den Vorlagentyp aus, den Sie aus Kakteen exportieren möchten."
+msgstr "Bitte wählen Sie die Gerätevorlagen aus, die Sie während des Upgrades aktualisieren möchten."
 
 #: lib/installer.php:2563
 msgid "Updating Templates that you have already made modifications to is not advisable.  The Upgrade of the Templates will NOT remove modifications to Graph and Data Templates, and can lead to unexpected behavior.  However, if you have not made changes to any Graph, Data Query, or Data Template, reimporting the Package should not have any affect.  In that case, you would have to 'Sync Graphs' to from the Templates after update."
@@ -15576,8 +15622,9 @@ msgid "Downgrading should only be performed when absolutely necessary and doing 
 msgstr "Eine Herabstufung sollte nur dann durchgeführt werden, wenn es unbedingt erforderlich ist, und dies kann Ihre Installation beeinträchtigen."
 
 #: lib/installer.php:2721
+#, fuzzy
 msgid "Your Cacti Server is almost ready.  Please check that you are happy to proceed."
-msgstr "Dein Kakteen-Server ist fast fertig.  Bitte überprüfen Sie, ob Sie zufrieden sind."
+msgstr "Ihr Cacti-Server ist fast fertig.  Bitte überprüfen Sie, ob Sie zufrieden sind."
 
 #: lib/installer.php:2724
 #, php-format
@@ -16033,9 +16080,9 @@ msgid "Plugins"
 msgstr "Erweiterungen"
 
 #: lib/plugins.php:1276 lib/plugins.php:1282
-#, php-format
+#, fuzzy, php-format
 msgid "Requires: Cacti >= %s"
-msgstr "Erfordert: Kakteen >= %s"
+msgstr "Erfordert: Cacti >= %s"
 
 #: lib/plugins.php:1279
 msgid "Legacy Plugin"
@@ -16138,9 +16185,9 @@ msgid "DS '%s' missing in Cacti definition"
 msgstr "DS'%s' fehlt in der Kakteendefinition."
 
 #: lib/rrd.php:3020 lib/rrd.php:3021
-#, php-format
+#, fuzzy, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "Kakteen RRA'%s' hat die gleichen CF/Schritte (%s, %s) wie'%s'."
+msgstr "Cacti RRA'%s' hat die gleichen CF/Schritte (%s, %s) wie'%s'."
 
 #: lib/rrd.php:3035 lib/rrd.php:3036
 #, php-format
@@ -16153,14 +16200,14 @@ msgid "The pdp_per_row of '%s' is invalid for RRA '%s' should be '%s'.  Consider
 msgstr "Die pdp_per_row von '%s' ist ungültig für RRA '%s' sollte '%s' sein.  Erwägen Sie, die RRD-Datei zu löschen und Cacti neu erstellen zu lassen."
 
 #: lib/rrd.php:3074
-#, php-format
+#, fuzzy, php-format
 msgid "The XFF for Cacti RRA id is '%s' but should be '%s'"
-msgstr "XFF für Kakteen RRA id '%s' sollte '%s' sein."
+msgstr "XFF für Cacti RRA id '%s' sollte '%s' sein."
 
 #: lib/rrd.php:3078
-#, php-format
+#, fuzzy, php-format
 msgid "The number of rows for Cacti RRA id '%s' is incorrect.  The number of rows are '%s' but should be '%s'"
-msgstr "Die Anzahl der Zeilen für Kakteen-RRA-ID '%s' ist falsch.  Die Anzahl der Zeilen ist '%s', sollte aber '%s' sein"
+msgstr "Die Anzahl der Zeilen für Cacti-RRA-ID '%s' ist falsch.  Die Anzahl der Zeilen ist '%s', sollte aber '%s' sein"
 
 #: lib/rrd.php:3096
 #, php-format
@@ -16670,8 +16717,9 @@ msgid "You have been logged out of Cacti due to a Remote Data Collector state ch
 msgstr "Sie sind aufgrund von Inaktivität ausgeloggt worden."
 
 #: logout.php:62
+#, fuzzy
 msgid "Logout of Cacti"
-msgstr "Abmeldung von Kakteen"
+msgstr "Abmeldung von Cacti"
 
 #: logout.php:69
 msgid "Automatic Logout"
@@ -16936,8 +16984,9 @@ msgid "The *.xml.gz file located on your Local machine to Upload and Import."
 msgstr "Die Datei *.xml.gz auf Ihrem lokalen Computer zum Hochladen und Importieren."
 
 #: package_import.php:823
+#, fuzzy
 msgid "Automatically Trust Signer"
-msgstr "Automatisch zu Kakteen hinzufügen"
+msgstr "Automatisch dem Unterzeichner vertrauen"
 
 #: package_import.php:825
 msgid "If checked, Cacti will automatically Trust the Signer for this and any future Packages by that author."
@@ -17155,8 +17204,9 @@ msgid "Maximum runtime of %d seconds exceeded for poller id %d. Exiting."
 msgstr "Maximale Laufzeit von %d Sekunden für Poller-ID %d überschritten. Wird beendet."
 
 #: poller.php:895
+#, fuzzy
 msgid "WARNING: Cacti Polling Cycle Exceeded Poller Interval by "
-msgstr "WARNUNG: Polling-Zyklus für Kakteen hat das Poller-Intervall um . überschritten"
+msgstr "WARNUNG: Polling-Zyklus für Cacti hat das Poller-Intervall überschritten um "
 
 #: poller.php:920
 #, php-format
@@ -17180,8 +17230,9 @@ msgid "WARNING: Main Cacti database offline or in recovery"
 msgstr "WARNUNG: Hauptdatenbank von Cacti offline oder in Wiederherstellung"
 
 #: poller_automation.php:954 poller_automation.php:1005
+#, fuzzy
 msgid "Cacti Primary Admin"
-msgstr "Kakteen Primary Admin"
+msgstr "Cacti Primary Admin"
 
 #: poller_automation.php:1101
 msgid "Cacti Automation Report requires an html based Email client"
@@ -17687,9 +17738,9 @@ msgid "NOTE: Path Settings on this Tab are only saved locally!"
 msgstr "HINWEIS: Die Pfadeinstellungen auf dieser Registerkarte werden nur lokal gespeichert!"
 
 #: settings.php:381
-#, php-format
+#, fuzzy, php-format
 msgid "Cacti Settings (%s)%s"
-msgstr "Kakteen-Einstellungen (%s)%s"
+msgstr "Cacti-Einstellungen (%s)%s"
 
 #: settings.php:487
 msgid "Changing Permission Model Warning"
@@ -17978,8 +18029,9 @@ msgid "What would you like to export?"
 msgstr "Was würden Sie gerne exportieren?"
 
 #: templates_export.php:110
+#, fuzzy
 msgid "Select the Template type that you wish to export from Cacti."
-msgstr "Wählen Sie den Vorlagentyp aus, den Sie aus Kakteen exportieren möchten."
+msgstr "Wählen Sie den Vorlagentyp aus, den Sie aus Cacti exportieren möchten."
 
 #: templates_export.php:120
 msgid "Device Template to Export"
@@ -19127,8 +19179,9 @@ msgid "Poller Information"
 msgstr "Poller Informationen"
 
 #: utilities.php:348
+#, fuzzy
 msgid "Different version of Cacti and Spine!"
-msgstr "Verschiedene Versionen von Kakteen und Wirbelsäule!"
+msgstr "Verschiedene Versionen von Cacti und Spine!"
 
 #: utilities.php:366
 #, php-format
