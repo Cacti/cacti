@@ -429,7 +429,6 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 
 			if (read_config_option('poller_debug') == 'on' && strlen($output) > $maxwidth) {
 				$width_dses[] = $ds;
-				$width_errors++;
 			}
 
 			if ($set_spike_kill && !substr_count($output, ':')) {
