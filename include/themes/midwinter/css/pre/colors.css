@@ -19,31 +19,34 @@
     --text-color-navigation: hsl(var(--hue), 7%, 60%);
     --text-color-navigation-highlight: hsl(var(--hue), 7%, 85%);
     --background: hsl(var(--hue), 19%, 17%);
-    --background-content: hsl(var(--hue), 23%, 8%);
+    --background-content: hsl(var(--hue), 23%, 5%);
     --background-content-element : hsl(var(--hue), 23%, 9%);
     --background-filter: hsl(var(--hue), 23%, 14%);
     --background-navigation: hsl(var(--hue), 23%, 10%);
-    --background-navigation-top: hsl(var(--hue), 23%, 7%);
+    --background-navigation-top: hsl(var(--hue), 23%, 4%);
     --background-navigation-sticky: hsl(var(--hue), 23%, 16%);
-    --background-menu: hsl(var(--hue), 23%, 12%);
+    --background-menu: hsl(var(--hue), 23%, 11%);
     --background-superlowlight: hsl(var(--hue), 23%, 8%);
     --background-lowlight: hsl(var(--hue), 23%, 9%);
     --background-highlight: hsl(var(--hue), 19%, 17%);
     --background-progress: hsl(var(--special2-hue), 69%, 52%);
     --background-progress-mediumlight: hsla(var(--special2-hue), 69%, 52%, 0.2);
-    --background-progress-semilight: hsla(var(--special2-hue), 69%, 40%, 0.1);
+    --background-progress-semilight: hsla(var(--special2-hue), 69%, 80%, 0.1);
+    --background-autofill: hsla(var(--special2-hue), 69%, 52%, 0.2);
     --table-selectable: #164187; /* hsla(var(--special2-hue), 69%, 52%, 0.2); */
-    --table-selected: #133266; /* hsla(var(--special2-hue), 69%, 40%, 0.1); */
+    --table-selected: hsla(var(--special2-hue), 69%, 12%);
     --background-dark: hsl(var(--hue), 19%, 17%);
+    --background-active: limegreen;
     --border-color: hsl(var(--hue), 19%, 21%);
     --border-color-semilight: hsla(var(--hue), 19%, 100%, 0.04);
     --border-color-light: hsla(var(--hue), 19%, 100%, 0.08);
 
+
     --border-color-lowlight: hsl(var(--hue), 19%, 17%);
     --border-color-superlowlight: hsl(var(--special2-hue), 8%, 17%);
-    --border-color-highlight: hsl(var(--hue), 0%, 75%);
+    --border-color-highlight: hsl(var(--special2-hue), 69%, 52%);
     --scrollbar-thumb: hsl(var(--hue), 7%, 50%);
-    --box-shadow-color: hsl(var(--hue), 7%, 10%);
+    --box-shadow-color: hsl(var(--hue), 7%, 0%);
     --separator: hsl(var(--hue), 7%, 55%);
 }
 
@@ -63,20 +66,22 @@
     --text-color-navigation-highlight:hsl(var(--hue), 7%, 100%);
     --text-color-highlight-a: hsl(var(--special2-hue), 100%, 50%);
     --background: hsl(var(--hue), 27.3%, 97.1%);
-    --background-content: hsl(var(--hue), 5%, 98%);
-    --background-content-element : hsl(var(--hue), 5%, 92%);
+    --background-content: hsl(var(--hue), 0%, 98%);
+    --background-content-element : hsl(var(--hue), 0%, 94%);
     --background-filter: hsl(var(--hue), 17%, 18%);
-    --background-navigation: hsl(var(--contrast), 0%, 91%);
+    --background-navigation: hsl(var(--contrast), 0%, 90%);
     --background-navigation-top: hsl( var(--contrast), 0%, 100%);
     --background-navigation-sticky: hsl(var(--contrast), 0%, 97%);
-    --background-menu: hsl(var(--contrast), 0%, 93%);
+    --background-menu: hsl(var(--contrast), 0%, 95%);
     --background-superlowlight: hsl(var(--hue), 8%, 40%);
     --background-lowlight: hsl(var(--contrast), 0%, 99%);
     --background-highlight: hsl(var(--special-hue), 84%, 50%);
     --background-dark: hsl(var(--special2-hue), 19%, 17%);
     --background-progress: hsl(var(--special-hue), 69%, 40%);
     --background-progress-mediumlight: hsla(var(--special2-hue), 69%, 40%, 0.6);
-    --background-progress-semilight: hsla(var(--special-hue), 69%, 40%, 0.5);
+    --background-progress-semilight:  hsl(var(--contrast), 0%, 90%);
+    --background-active: forestgreen;
+    --background-autofill: lightyellow;
     --table-selectable: #e4e7e7; /* hsl(var(--hue), 5%, 90%);    /*  */
     --table-selected: #eceeee; /* hsl(var(--hue), 5%, 93%);      /*  */
     --border-color: hsla(var(--special2-hue), 84%, 20%, 0.25);
@@ -85,7 +90,7 @@
 
     --border-color-lowlight: hsl(var(--hue), 19%, 17%);
     --border-color-superlowlight: hsl(var(--special2-hue), 4%, 50%);
-    --border-color-highlight: hsl(var(--hue), 0%, 75%);
+    --border-color-highlight: hsl(202, 69%, 52%);
     --scrollbar-thumb: hsl(var(--hue), 13%, 73%);
     --box-shadow-color: hsla(var(--contrast), 0%, 0%, 0.3);
     --separator: hsl(var(--hue), 7%, 65%);

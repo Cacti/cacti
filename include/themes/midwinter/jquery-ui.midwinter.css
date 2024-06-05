@@ -232,11 +232,11 @@
 }
 
 .ui-corner-all {
-    border-radius: 0 !important;
-    -moz-border-radius-bottomright: 0 !important;
-    -moz-border-radius-bottomleft: 0 !important;
-    -moz-border-radius-topright: 0 !important;
-    -moz-border-radius-topleft: 0 !important;
+    border-radius: 0 ;
+    -moz-border-radius-bottomright: 0;
+    -moz-border-radius-bottomleft: 0;
+    -moz-border-radius-topright: 0;
+    -moz-border-radius-topleft: 0;
 }
 
 .ui-controlgroup {

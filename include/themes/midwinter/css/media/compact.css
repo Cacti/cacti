@@ -25,22 +25,38 @@
 
 .invisible {
     visibility: hidden;
+    height: 0;
+    width: 0;
+}
+
+.visible {
+    visibility: visible;
 }
 
 .subTab {
     line-height: 2.0rem;
     height: 3.5rem;
+
 }
 
-#navBackdrop:hover,
-.compact_nav_icon:hover {
-    color:var(--text-color-white);
-    background-color: var(--background-progress-semilight);
-}
+.compact_nav_icon {
+    color: var(--text-color-normal);
 
-.compact_nav_icon.active {
-    color: var(--text-color-white);
-    background: var(--background-progress);
+    &.mdw-active {
+        background: var(--background);
+    }
+
+    &.selected {
+        color: white;
+        background: hsl( 208, 69%, 40%);
+    }
+
+    @media (hover: hover) {
+        &:hover {
+            color: white;
+            background-color: hsla( 208, 69%, 40%, 0.5);
+        }
+    }
 }
 
 .no-col2 th:nth-child(2), .no-col2 td:nth-child(2),
@@ -96,265 +112,345 @@
 }
 
 
-/* Tabs mit radio-Buttons */
+    /* Main Content Area */
+    .mdw-Main {
+        display: grid;
+        grid-template-areas:    "left top    right"
+                                "left middle right";
+        grid-template-columns: auto 1fr auto;
+        grid-template-rows: auto 1fr;
+        border-top: 1px solid var(--border-color-light);
 
+        grid-area: main;
 
-.displayOptions {
-    height: 100%;
-    width: 100%;
-    padding: 1rem;
-
-    .displayOptionsTap {
-        .tab-label {
-            display: inline-flex;
-            width: 100%;
-            margin-top: 1rem;
-            padding: 0.5rem 1rem;
-            border-bottom: 3px solid transparent;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-
-            &:hover {
-                color: var(--text-color-white);
-                background-color: var(--background-progress-semilight);
-            }
+        &:has(.saveRowParent) {
+            padding-bottom: 4rem;
         }
 
-        & .tab-input {
-            position: absolute;
-            z-index: -1;
-            opacity: 0;
-        }
-
-        & .tab-input + label:before{
-            display: none;
-        }
-
-        & .tab-input:checked + label i {
-            transform: translate(0, 0) rotateX(180deg);
-            transition: 0.2s ease-in-out;
-        }
-
-
-        & .tab-input:checked ~ .tab-content {
-            height: auto;
-            opacity: 1;
-            transform: translate(0);
-        }
-
-        .tab-filters .filterTable {
-            width: 100%;
-        }
-
-        .tab-filters .filterTable td:nth-child(2n+1) {
-            display: block;
-            width: 100%;
-        }
-
-        .tab-filters .filterTable td:nth-child(2n+0) {
-            display: block;
-            width: 100%;
-        }
-
-        .tab-columns {
-            line-height: 3.5em;
-            overflow-x: auto;
-            height: 100%;
-            padding: 1rem 0;
-        }
-
-        .tab-columns div:nth-child(2n+1) {
-            float: left;
-            width: 70%;
+        & .mdw-DockTop {
+            grid-area: top / 1 / top / 3;
             padding-left: 1rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .tab-columns div:nth-child(2n+0) {
-            float: left;
-            width: 30%;
-            text-align: right;
-        }
-
-        .tab-content {
-            position: relative;
-            transform: translate(0, -10%);
-            transition: 0.2s ease-in-out;
-            height: 0;
-            opacity: 0;
-            overflow: hidden;
+            width: auto;
             border-bottom: 1px solid var(--border-color-semilight);
         }
 
-        .mdw-columns-reset {
-            cursor: pointer;
-            color: var(--text-color-highlight-a);
-            margin-top: 2rem;
-            font-weight: var(--fw-semibold);
+        & .mdw-DockLeft {
+            grid-area: left;
+            height: auto;
+            border-right: 1px solid var(--border-color-semilight);
         }
 
-        .mdw-columns-reset.inactive {
-            color: var(--text-color-normal);
-            cursor: unset;
+        & .mdw-DockRight {
+            grid-area: right;
+            height: auto;
+            border-left: 1px solid var(--border-color-semilight);
         }
-    }
-}
 
-.cactiAuthLogo {
-    display: none;
-}
+        & > div[class^="mdw-Dock"] {
+            background: var(--background-navigation-top);
+            &:has(div) {
+            }
 
-.cactiAuthCenter {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 35rem;
-    padding-top: 4rem;
-    padding-bottom: 1rem;
-    color: var(--text-color-white);
-    border-right: 1px solid var(--border-color);
-    background: rgba(0,0,0,0.3);
-}
+            & > div:first-of-type {
+                border-top: none;
+            }
 
-html[data-theme-color="light"] {
-    background: rgba(0,0,0,0.25);
-}
-
-
-.cactiAuthCenter hr {
-    display:none;
-}
-
-.cactiAuthArea {
-
-}
-
-.cactiAuth label {
-    /*display: none;*/
-}
-
-.cactiAuthTitle {
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-
-.cactiAuth {
-    font-size: var(--fs-semilarge);
-    display: flex;
-    align-items: stretch;
-    flex-direction: column;
-
-    > span {
-        margin-bottom: 1rem;
-    }
-
-    & i {
-        position: relative;
-        top: -3.5rem;
-        left: 2rem;
-        width: 1rem;
-        color: var(--text-color-medium);
-    }
-
-    & input:not([type="checkbox"]) {
-    font-size: var(--fs-semihuge);
-    line-height: 3.5rem;
-    border: none;
-    border-radius: 40px !important;
-    outline: none;
-    background: rgba(0, 0, 0, 0.6);
-}
-
-    & input[type="text"],
-    & input[type="password"] {
-        margin: 1rem 0;
-        padding: 0 0 0 4rem;
-    }
-
-    & input[type="submit"],
-    & input[type="button"] {
-    margin: 2rem 0 0 0;
-        :hover,
-        :focus {
-            background-color: rgba(0,0,0,0.3);
+            & > div {
+                display: block;
+                height: 100%;
+                position: unset;
+                transform: translate(0);
+                transition: 300ms;
+                background: transparent;
+                box-shadow: none;
+                border: none;
+            }
+            .navBox-header {
+                font-size: var(--fs-regular);
+                background: var(--background-content-element);
+                border-bottom: 1px solid var(--border-color-semilight);
+            }
         }
     }
 
-    &::placeholder {
-        color: white;
+    /* navigationBox Tabs */
+    .displayOptions {
+        height: 100%;
+        width: 100%;
+        padding: 1rem;
+
+        .displayOptionsTap {
+            .tab-label {
+                display: inline-flex;
+                width: 100%;
+                margin-top: 1rem;
+                padding: 0rem 1rem;
+                border-bottom: 3px solid transparent;
+                justify-content: space-between;
+                align-items: center;
+                cursor: pointer;
+
+                &:hover {
+                    color: var(--text-color-white);
+                    background-color: var(--background-progress-semilight);
+                }
+            }
+
+            & .tab-input {
+                position: absolute;
+                z-index: -1;
+                opacity: 0;
+            }
+
+            & .tab-input + label:before{
+                display: none;
+            }
+
+            & .tab-input:checked + label i {
+                transform: translate(0, 0) rotateX(180deg);
+                transition: 0.2s ease-in-out;
+            }
+
+
+            & .tab-input:checked + .tab-content {
+                height: auto;
+                opacity: 1;
+                transform: translate(0);
+            }
+
+            .tab-filters .filterTable {
+                width: 100%;
+            }
+
+            .tab-filters .filterTable td:nth-child(2n+1) {
+                display: block;
+                width: 100%;
+            }
+
+            .tab-filters .filterTable td:nth-child(2n+0) {
+                display: block;
+                width: 100%;
+            }
+
+            .tab-content {
+                position: relative;
+                transform: translate(0, -10%);
+                transition: 0.2s ease-in-out;
+                height: 0;
+                opacity: 0;
+                overflow: hidden;
+                border-bottom: 1px solid var(--border-color-semilight);
+                line-height: 3.5em;
+                padding: 0.25rem 0;
+
+                & div:nth-child(2n+1) {
+                    float: left;
+                    width: 70%;
+                    padding-left: 1rem;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                & div:nth-child(2n+0) {
+                    float: left;
+                    width: 30%;
+                    text-align: right;
+                }
+            }
+
+            .mdw-columns-reset {
+                cursor: pointer;
+                color: var(--text-color-highlight-a);
+                margin-top: 2rem;
+                font-weight: var(--fw-semibold);
+            }
+
+            .mdw-columns-reset.inactive {
+                color: var(--text-color-normal);
+                cursor: unset;
+            }
+        }
     }
 
-    & td {
-        padding-right: 6px;
-        padding-bottom: 6px;
-        white-space: nowrap;
+    .cactiAuthBody {
+        display: flex;
+        height: 100%;
+        width: 100%;
+        justify-items: center;
+        flex-direction: column;
+        align-items: center;
+        background: var(--background-content);
+        justify-items: center;
+        overflow-y: auto;
+        overflow-x: hidden;
+        @media screen and (max-width: 768px) {
+            background: var(--background-navigation-top);
+        }
     }
-}
 
-.cactiAuthErrors {
-    min-height: 15px;
-    color: red;
-}
-
-.cactiAuthBody {
-    display: flex;
-    align-items: stretch;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: stretch;
-    height: 100%;
-    background: linear-gradient(210deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.1) 100%), url(./../../images/wallpapers/kapsodasos.jpg) no-repeat center fixed;
-    background-size: cover;
-
-    html[data-theme-color="light"] & {
-    background: url(./../../images/wallpapers/kapsodasos.jpg) no-repeat center;
-        background-size: cover;
+    .cactiAuthLogo {
+        background: url(./../../images/wallpapers/cacti_monitoring_wall.jpg);
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
+        width: 100%;
+        min-height: 256px;
+        max-height: 30%;
     }
-}
 
-.cactiAuthMotto {
-    font-size: 16px; /* pixel value required to ensure presentation is always the same */
-    font-weight: var(--fw-extrabold);
-    display: inline-flex;
-    align-content: center;
-    align-items: center;
-    flex: 1;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding-top: 10rem;
-    padding-right: 20rem;
-    color: var(--text-color-lighter);
-}
+    .cactiAuthCenter {
+        display: flex;
+        align-items: center;
+        flex-direction: column-reverse;
+        justify-content: flex-end;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        color: var(--text-color-white);
+        border: 1px solid var(--border-color-semilight);
+        border-radius: 4px;
+        background: var(--background-navigation-top);
+        height: fit-content;
+        width: max-content;
+        min-width: 40rem;
+        max-width: 100dvw !important;
+        margin: auto 0;
 
-.cactiAuthPanel {
-    padding: 4px 0;
-}
-
-.versionInfo {
-    float: right;
-    margin-top: 15px;
-    padding-top: 5px;
-    color: white;
-}
-
-.cactiTreeNavigationArea,
-.cactiTreeNavigationArea * {
-    display: none !important;
-}
-
-.cactiGraphContentArea,
-.cactiConsoleContentArea {
-    /* only keep second navigation bar */
-    & :nth-child( 1 of .navBarNavigation ) {
-        display: none;
+        @media screen and (max-width: 768px) {
+            border: 1px solid transparent;
+        }
     }
-    grid-area: middle;
+
+    html[data-theme-color="light"] {
+        background: rgba(0,0,0,0.25);
+    }
 
 
-}
+    .cactiAuthCenter hr {
+        display:none;
+    }
+
+    .cactiAuthArea {
+        padding: 2.5rem;
+    }
+
+    .cactiAuth label {
+        /*display: none;*/
+    }
+
+    .cactiAuthTitle {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    .cactiAuth {
+        font-size: var(--fs-semilarge);
+        display: flex;
+        align-items: stretch;
+        flex-direction: column;
+
+        > span {
+            margin-bottom: 2rem;
+        }
+
+        & i {
+            position: relative;
+            top: -3.5rem;
+            left: 2rem;
+            width: 1rem;
+            color: var(--text-color-medium);
+            &:hover {
+                color: var(--text-color-medium);
+            }
+        }
+
+        & input:not([type="checkbox"]) {
+            line-height: 3.5rem;
+            background: rgba(0, 0, 0, 0.6);
+            html[data-theme-color="light"] & {
+                background: var(--background-content);
+            }
+        }
+
+        & input[type="text"],
+        & input[type="password"] {
+            margin: 1rem 0;
+            padding: 0 0 0 4rem;
+            &:-webkit-autofill,
+            &:-webkit-autofill:hover,
+            &:-webkit-autofill:focus {
+                -webkit-box-shadow: 0 0 0px 1000px var(--background-autofill) inset !important;
+                transition: background-color 5000s ease-in-out 0s !important;
+            }
+        }
+
+        & input[type="submit"],
+        & input[type="button"] {
+            margin: 2rem 0 0 0;
+            :hover,
+            :focus {
+                background-color: rgba(0,0,0,0.3);
+            }
+        }
+
+        &::placeholder {
+            color: white;
+        }
+
+        & td {
+            padding-right: 6px;
+            padding-bottom: 6px;
+            white-space: nowrap;
+        }
+    }
+
+    .cactiAuthErrors {
+        min-height: 3.5rem;
+        line-height: 3.5rem;
+        color: red;
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+    .cactiAuthMotto {
+        display: inline-flex;
+        align-content: center;
+        align-items: center;
+        flex: 1;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        color: darkseagreen;
+        position: absolute;
+        width: 100%;
+        height: 3rem;
+        bottom: 0;
+    }
+
+    .cactiAuthPanel {
+        padding: 4px 0;
+    }
+
+    .versionInfo {
+        color: var(--text-color-normal);
+        padding: 1rem 0;
+    }
+
+    .cactiTreeNavigationArea,
+    .cactiTreeNavigationArea * {
+        display: none !important;
+    }
+
+    .cactiGraphContentArea,
+    .cactiConsoleContentArea {
+        /* only keep second navigation bar */
+        & > div {
+            padding-left: 1rem;
+        }
+
+        & :nth-child( 1 of .navBarNavigation ) {
+            display: none;
+        }
+        grid-area: middle;
+    }
 

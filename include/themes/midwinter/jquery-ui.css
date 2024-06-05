@@ -717,11 +717,24 @@ button.ui-button::-moz-focus-inner {
 
 button.ui-multiselect,
 .ui-selectmenu-button.ui-button {
-	box-sizing: border-box;
-	text-align: left;
 	white-space: nowrap;
 	width: 100% !important;
 	max-width: 25rem !important;
+	border-radius: 5px;
+	display: inline-flex;
+	flex-direction: row-reverse;
+	justify-content: space-between;
+	align-items: center;
+	
+	&:active,
+	&:focus-within,
+	&:focus-visible {
+		outline: none !important;
+		box-shadow: none !important;
+		background: var(--background-content);
+		border: 1px solid var(--border-color-highlight);
+		-webkit-tap-highlight-color: 1px solid var(--border-color-highlight);
+	}
 }
 .ui-selectmenu-icon.ui-icon {
 	float: right;
@@ -985,7 +998,9 @@ a.ui-button:active,
 .ui-button:active,
 .ui-button.ui-state-active:hover {
 	font-weight: normal;
-	color: #93CEFF;
+	color: white;
+	background: var(--background-progress);
+}
 }
 .ui-icon-background,
 .ui-state-active .ui-icon-background {
