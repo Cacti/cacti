@@ -18,7 +18,7 @@
 We currently have two functioning versions of Cacti on this site, and several
 Cacti plugins supported by The Cacti Group.  Our current long lived version
 of Cacti in the `1.2.x` branch.  The current release version of this branch 
-is Cacti 1.2.22.  Sometime in December 2022, we will release Cacti 1.2.23.  
+is Cacti 1.2.27.  
 
 This pending maintenance release has several bugs fixes, and significantly more 
 welcomed feature enhancements.  You can review the CHANGELOG for the `1.2.x`
@@ -29,7 +29,7 @@ Branch.  In this branch, we as a team have re-grouped and are introducing severa
 new features.  We hope to be able to deliver a Christmas present for Cacti
 enthusiasts, which will be a Cacti 1.3.0-beta release.  If you want to get
 involved earlier, you can simply download the development release and knock
-yourselves out.  The 1.3.0 release will include everything in the pending 1.2.23
+yourselves out.  The 1.3.0 release will include everything in th 1.2.27
 release, as well as several additional features from our roadmap.
 
 System requirements vary from Cacti point release to point release.  The matrix
