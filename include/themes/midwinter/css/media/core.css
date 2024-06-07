@@ -314,7 +314,6 @@ input[type="checkbox"]:checked + label, input[type="radio"]:not([name^="reindex"
                     position: sticky;
                     right: -1px;
                     z-index: 2;
-                    text-align: center;
                 }
             }
         }
