@@ -2425,7 +2425,7 @@ function get_script_query_path($args, $script_path, $host_id) {
 
 	/* get any extra arguments that need to be passed to the script */
 	if ($args != '') {
-		$parts = preg_split('/\s+/', $args);
+		$parts = preg_split("/[\s,]*\\\"([^\\\"]+)\\\"[\s,]*|" . "[\s,]*'([^']+)'[\s,]*|" . "[\s,]+/", $args, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 
 		$extra_arguments = '';
 
