@@ -2,4 +2,4 @@
 ### These scripts are not supported by the Cacti team
 
 
-### If you would like to contriubte ensure you include your contact details on the script
+### If you would like to contribute ensure you include your contact details on the script
