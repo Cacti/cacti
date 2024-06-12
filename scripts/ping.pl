@@ -46,7 +46,7 @@ if (($ping =~ 'unknown host') || ($ping =~ 'Unknown host') || ($ping =~ 'not sup
 	}
 }
 
-$ping =~ m/(.*t(?:ime|emps)=)(.*).*(ms|usec)/;
+$ping =~ m/(.*t(?:ime|emps)=)([\w\.]*).*(ms|usec)/;
 
 if ($2 == '') {
 	print 'U'; 		# avoid cacti errors, but do not fake rrdtool stats
