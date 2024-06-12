@@ -2502,10 +2502,10 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 								$prepend = $script_queries['arg_prepend'];
 							}
 
-							$script_path = read_config_option('path_php_binary') . ' -q ' . get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $snmp_index), $script_queries['script_path'], $host_id);
+							$script_path = read_config_option('path_php_binary') . ' -q ' . get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $snmp_index . '"'), $script_queries['script_path'], $host_id);
 						} else {
 							$action = POLLER_ACTION_SCRIPT;
-							$script_path = get_script_query_path(trim((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $snmp_index), $script_queries['script_path'], $host_id);
+							$script_path = get_script_query_path(trim((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $snmp_index . '"'), $script_queries['script_path'], $host_id);
 						}
 					}
 
