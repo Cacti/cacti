@@ -156,6 +156,21 @@ function setupTheme() {
 				if( $(this).attr('type') === 'password' || $(this).attr('type') === 'text' ) {
 					if ($(this).attr('name') !== undefined) {
 						$(this).appendTo('.cactiAuth');
+						if($(this).attr('type') === 'password') {
+							switch ($(this).attr('id')) {
+								case 'current':
+									$(this).attr('placeholder', 'Current Password');
+									break;
+								case 'password':
+									$(this).attr('placeholder', 'New Password');
+									break;
+								case 'password_confirm':
+									$(this).attr('placeholder', 'Confirm Password');
+									break;
+								default:
+							}
+							$('<i class="fas fa-lock" data-helper="' + $(this).attr('id') + '" data-func="togglePwdInputField"></i>').insertAfter($(this));
+						}
 					}
 				}else {
 					$(this).appendTo('.cactiAuth');
@@ -169,12 +184,6 @@ function setupTheme() {
 		$('.versionInfo').detach().appendTo('.cactiAuthBody');
 
 		$('<i class="far fa-user"></i>').insertAfter('#login_username');
-		$('<i class="fas fa-lock"></i>').insertAfter('input[type="password"]');
-
-		/* add theme motto
-		$('<div class="cactiAuthMotto">MidWinter - A responsive Cacti Theme for you</div>').appendTo('.cactiAuthBody');
-
-		 */
 	}
 
 
@@ -335,7 +344,10 @@ function setupTheme() {
 }
 
 function setupThemeActions() {
-	$('[data-scope="theme"][id^="mdw_"]:not([type="range"]), a[data-scope="theme"]').off().on('click', function(e) {
+	$('[data-scope="theme"][id^="mdw_"]:not([type="range"]), ' +
+		'a[data-scope="theme"], ' +
+		'i[data-func!=""][data-func]'
+	).off().on('click', function(e) {
 		let fname = $(this).attr('data-func');
 		if(is_function(fname)) window[fname](e);
 	});
@@ -344,7 +356,6 @@ function setupThemeActions() {
 		let fname = $(this).attr('data-func');
 		if(is_function(fname)) window[fname](e);
 	});
-
 
 	//$('.cactiConsoleContentArea, .cactiGraphContentArea').off().on('click', toggleCactiNavigationBox);
 
@@ -488,6 +499,21 @@ function resetTableColumns(event) {
 
 	/* set reset button/link in inactive mode */
 	$('#mdw-columns-reset').addClass('inactive');
+}
+
+function togglePwdInputField(event) {
+	let helper = event.target.getAttribute('data-helper');
+
+	let destination = $('input[id="' + helper + '"]');
+	if ( destination.length) {
+		if(destination.attr('type') === 'password') {
+			destination.attr('type', 'text');
+		}else {
+			destination.attr('type', 'password');
+		}
+		event.target.classList.toggle('fa-lock')
+		event.target.classList.toggle('fa-lock-open');
+	}
 }
 
 function setupDefaultElements() {
