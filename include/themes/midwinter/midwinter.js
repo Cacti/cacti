@@ -357,7 +357,7 @@ function get_user_content() {
         +       '<ul>'
         +           '<li><a class="pic" role="menuitem" href="'+urlPath+'auth_profile.php?action=edit&header=false">'+editProfile+'</a></li>'
         +           '<li><a href="'+urlPath+'auth_changepassword.php" style="">'+changePassword+'</a></li>'
-        +           '<li><a href="#" class="mdw_logout">'+logout+'</a></li>'
+        +           '<li><a href="'+urlPath+'logout.php">'+logout+'</a></li>'
         +       '</ul>'
         +   '</li>'
         +   '<li class="menuitem double" id="menu_user_action">'
