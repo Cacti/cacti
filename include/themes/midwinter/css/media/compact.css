@@ -149,6 +149,9 @@
         & > div[class^="mdw-Dock"] {
             background: var(--background-navigation-top);
             &:has(div) {
+                .cactiTable {
+                    display: block !important;
+                }
                 .cactiTableTitle,
                 .cactiTableButton {
                     display: none;
