@@ -1,5 +1,7 @@
 Cacti CHANGELOG
 
+-issue#5772: Login log message unification - add client IP adress 
+
 1.2.27
 -security#GHSA-37x7-mfjv-mm7m: Authentication Bypass when using using older password hashes
 -security#GHSA-7cmj-g5qc-pj88: RCE vulnerability when importing packages
