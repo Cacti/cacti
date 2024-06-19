@@ -110,7 +110,9 @@ if ($auth_method != AUTH_METHOD_NONE) {
 				$_SESSION[SESS_USER_AGENT]  = $_SERVER['HTTP_USER_AGENT'];
 				$_SESSION[SESS_CLIENT_ADDR] = get_client_addr();
 
-				cacti_log("LOGIN: User '" . $current_user['username'] . "' authenticated via Basic Authentication.", false, 'AUTH');
+				$client_addr = get_client_addr();
+
+				cacti_log("LOGIN: User '" . $current_user['username'] . "' authenticated via Basic Authentication from IP Address '" . $client_addr . "'", false, 'AUTH');
 
 				db_execute_prepared('INSERT IGNORE INTO user_log
 					(username, user_id, result, ip, time)
