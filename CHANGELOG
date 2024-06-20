@@ -1,6 +1,9 @@
 Cacti CHANGELOG
 
--issue#5772: Login log message unification - add client IP adress 
+1.2.28
+-issue#5768: Cacti does not properly escape Data Query indexes that include a space
+-issue#5772: Login log message unification - add client IP address
+-issue#5773: Update rrd.php missing variable $okpos
 
 1.2.27
 -security#GHSA-37x7-mfjv-mm7m: Authentication Bypass when using using older password hashes
@@ -86,7 +89,7 @@ Cacti CHANGELOG
 -issue#5609: When parsing a Data Query resource, an error can be reported if no direction is specified
 -issue#5612: Database reconnection can cause errors to be reported incorrectly
 -issue#5613: Fix returned value if $sau is empty
--issue#5641: Cmd poller - add availability test for devices without poller items 
+-issue#5641: Cmd poller - add availability test for devices without poller items
 -feature#5577: Add Aruba switch, Aruba controller and HPE iLO templates
 -feature#5597: Add OSCX 6x00 templates
 
