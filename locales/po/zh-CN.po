@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2024-03-04 00:20+0000\n"
-"Last-Translator: Junhua Huang <junhuahuang1218@gmail.com>\n"
+"PO-Revision-Date: 2024-06-20 15:11+0000\n"
+"Last-Translator: tql <fttx31@126.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
 "cacti/core/zh_Hans/>\n"
 "Language: zh-CN\n"
@@ -684,9 +684,8 @@ msgid "No Graphs Found"
 msgstr "未找到图形"
 
 #: aggregate_graphs.php:1984
-#, fuzzy
 msgid " [ Custom Graphs List Applied - Clear to Reset ]"
-msgstr "[自定义图形列表应用 - 过滤器从列表]"
+msgstr " [自定义图形列表应用 - 过滤器从列表]"
 
 #: aggregate_graphs.php:1984 aggregate_graphs.php:2104
 #: include/global_arrays.php:2857
@@ -2551,7 +2550,7 @@ msgstr "网络名字"
 
 #: automation_networks.php:1372
 msgid "Schedule"
-msgstr "计划"
+msgstr "Schedule"
 
 #: automation_networks.php:1377
 msgid "Total IPs"
@@ -3796,7 +3795,7 @@ msgstr "颜色如屏幕上所示."
 
 #: color.php:685
 msgid "Colors in use cannot be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template."
-msgstr "正在由图形或图形模板引用的颜色不能被删除. "
+msgstr "引用的颜色不能被删除. 被定义为在用的由图形或图形模板引用中."
 
 #: color.php:691
 msgid "The number of Graph using this Color."
@@ -3956,7 +3955,7 @@ msgstr "颜色模板"
 
 #: color_templates.php:919
 msgid "Color Templates that are in use cannot be Deleted. In use is defined as being referenced by an Aggregate Template."
-msgstr "正在被聚合模板引用的颜色模板不能被删除. "
+msgstr "正在被聚合模板引用的颜色模板不能被删除."
 
 #: color_templates.php:953
 msgid "No Color Templates Found"
@@ -4140,9 +4139,8 @@ msgid "No Initial found!  Waiting on RRDfile update"
 msgstr "没有找到初始！等待RRDfile更新"
 
 #: data_debug.php:749
-#, fuzzy
 msgid "Waiting on analysis and RRDfile update"
-msgstr "RRD 文件是否已更新?"
+msgstr "等待分析和RRD 文件更新"
 
 #: data_debug.php:756
 msgid "RRDfile Owner"
@@ -4194,9 +4192,8 @@ msgid "Were we able to convert the title?"
 msgstr "我们能够转换标题吗?"
 
 #: data_debug.php:817
-#, fuzzy
 msgid "Data Source matches the RRDfile?"
-msgstr "未对数据源进行采集"
+msgstr "未对数据源进行采集?"
 
 #: data_debug.php:831
 #, fuzzy, php-format
@@ -4464,7 +4461,7 @@ msgstr "字段顺序"
 
 #: data_input.php:612
 msgid "(Not In Use)"
-msgstr " (不使用)"
+msgstr "(不使用)"
 
 #: data_input.php:622
 msgid "No Input Fields"
@@ -4853,7 +4850,7 @@ msgstr "跳数"
 #: lib/html.php:642 lib/html_filter.php:57 lib/installer.php:2832
 #: lib/rrd.php:3405 support.php:842 utilities.php:691
 msgid "Rows"
-msgstr "行数:"
+msgstr "行数"
 
 #: data_source_profiles.php:700
 msgid "Select Consolidation Function(s)"
@@ -5019,7 +5016,7 @@ msgstr "在数据存储为 '未知' 之前,以秒为单位的时间量没有良�
 
 #: data_source_profiles.php:1063
 msgid "The number of Data Sources using this Profile."
-msgstr "使用此配置文件的数据源的数量"
+msgstr "使用此配置文件的数据源的数量."
 
 #: data_source_profiles.php:1069
 msgid "The number of Data Templates using this Profile."
@@ -5219,9 +5216,9 @@ msgid "Turn On Data Source Info Mode."
 msgstr "打开数据源信息模式."
 
 #: data_sources.php:857
-#, fuzzy, php-format
+#, php-format
 msgid "Edit Graph: '%s'."
-msgstr "编辑图形模板."
+msgstr "编辑图形: '%s'."
 
 #: data_sources.php:862 graphs.php:2210
 msgid "Edit Device."
@@ -5636,7 +5633,7 @@ msgstr "GPRINT 格式字符串."
 
 #: gprint_presets.php:363
 msgid "GPRINTs that are in use cannot be Deleted.  In use is defined as being referenced by either a Graph or a Graph Template."
-msgstr "正在被图形或图形模板引用的GPRINT 不能被删除. "
+msgstr "在用的GPRINT 不能被删除. 被定义为在用的由图形或图形模板所引用."
 
 #: gprint_presets.php:369
 msgid "The number of Graphs using this GPRINT."
@@ -5668,9 +5665,8 @@ msgid "CSV Export"
 msgstr "CSV 导出"
 
 #: graph.php:171 graph.php:444 lib/html.php:593
-#, fuzzy
 msgid "Edit Graph Template"
-msgstr "编辑图形模板."
+msgstr "编辑图形模板"
 
 #: graph.php:176 lib/html.php:599 lib/html.php:601
 msgid "Click to view just this Graph in Real-time"
@@ -5725,11 +5721,11 @@ msgstr "缩略图"
 #: graph_realtime.php:440
 #, php-format
 msgid "%d seconds left."
-msgstr " 还有%d秒."
+msgstr "还有%d秒."
 
 #: graph_realtime.php:456
 msgid " seconds left."
-msgstr "秒了。"
+msgstr " 秒了。"
 
 #: graph_templates.php:39
 msgid "Change Settings"
@@ -7391,9 +7387,8 @@ msgid "There is an Installation or Upgrade in progress."
 msgstr "正在进行安装或升级."
 
 #: include/global.php:630
-#, fuzzy
 msgid "The Main Data Collector has returned to an Online Status"
-msgstr "此数据采集器最后一次与主Cacti 站点完全同步."
+msgstr "此数据采集器最后一次与主Cacti 站点完全同步"
 
 #: include/global.php:634
 msgid "The Main Data Collector has gone to an Offline or Recovering Status"
@@ -8062,9 +8057,9 @@ msgid "Every %d Day"
 msgstr "每 %1 天"
 
 #: include/global_arrays.php:768
-#, fuzzy, php-format
+#, php-format
 msgid "%0.1f Minutes"
-msgstr "%d 分"
+msgstr "%0.1f 分"
 
 #: include/global_arrays.php:801 include/global_arrays.php:821
 #: include/global_arrays.php:833 include/global_arrays.php:834
@@ -8768,7 +8763,7 @@ msgstr "去年"
 #: include/global_arrays.php:1533
 #, php-format
 msgid "%d Min"
-msgstr "%d 分"
+msgstr "%d 最小"
 
 #: include/global_arrays.php:1588
 msgid "Month Number, Day, Year"
@@ -9764,9 +9759,9 @@ msgid "The number of SNMP OIDs that can be obtained in a single SNMP Get request
 msgstr "指定可在单次SNMP 请求中采集的OID 数量."
 
 #: include/global_form.php:152
-#, fuzzy, php-format
+#, php-format
 msgid "%d OID"
-msgstr "Max OID"
+msgstr "%d OID"
 
 #: include/global_form.php:153 include/global_form.php:154
 #: include/global_form.php:155 include/global_form.php:156
@@ -9947,7 +9942,7 @@ msgstr "导入字符串"
 
 #: include/global_form.php:415
 msgid "The data that is sent to the script, which includes the complete path to the script and input sources in &lt;&gt; brackets."
-msgstr "发送到脚本的数据包括脚本和输入源的完整路径 &lt;&gt;  括号."
+msgstr "发送到脚本的数据包括脚本和输入源的完整路径 &lt;&gt; 括号."
 
 #: include/global_form.php:425
 msgid "White List Check"
@@ -10439,7 +10434,7 @@ msgstr "在时间轴(x轴)上将数据偏移 '值' 字段中指定的数量."
 
 #: include/global_form.php:1041
 msgid "[HRULE|VRULE]: The value of the graph item.<br/> [TICK]: The fraction for the tick line.<br/> [SHIFT]: The time offset in seconds."
-msgstr "[HRULE | VRULE]:图形项目的值.<br/> [TICK]:刻度线的分数.[SHIFT]:以秒为单位的时间偏移量."
+msgstr "[HRULE|VRULE]:图形项目的值.<br/> [TICK]:刻度线的分数.<br/>[SHIFT]:以秒为单位的时间偏移量."
 
 #: include/global_form.php:1044
 msgid "GPRINT Type"
@@ -10455,7 +10450,10 @@ msgstr "文本对齐(TEXTALIGN)"
 
 #: include/global_form.php:1056
 msgid "All subsequent legend line(s) will be aligned as given here.  You may use this command multiple times in a single graph.  This command does not produce tabular layout.<br/><strong>Note: </strong>You may want to insert a &lt;HR&gt; on the preceding graph item.<br/> <strong>Note: </strong>A &lt;HR&gt; on this legend line will obsolete this setting!"
-msgstr "所有后续的图例行将按照此处给出的方式对齐. 您可以在单个图形中多次使用此命令. 此命令不会生成表格式布局.<strong>注意: </ strong>您可能需要插入＆lt; HR＆gt; 在前面的图形项目中.<br/> <strong>注意: </ strong> A＆lt; HR＆gt; 在这个传奇线上会过时这个设置!"
+msgstr ""
+"所有后续的图例行将按照此处给出的方式对齐. 您可以在单个图形中多次使用此命令. 此命令不会生成表格式布局.<br/><strong>注意: "
+"</strong>您可能需要插入&lt;HR&gt; 在前面的图形项目中.<br/> <strong>注意: </strong> A&lt;HR&gt; "
+"在这个传奇线上会过时这个设置!"
 
 #: include/global_form.php:1059
 msgid "Text Format"
@@ -11099,7 +11097,7 @@ msgstr "替换模式"
 
 #: include/global_form.php:2365
 msgid "The Replacement String Pattern for use as a Tree Header.<br>Refer to a Match by e.g. <strong>\\${1}</strong> for the first match!"
-msgstr "第一个匹配的<strong>\\${1}</strong>用作树标题的替换字符串模式. "
+msgstr "用作树标题的替换字符串模式.<br>参考匹配例如.<strong>\\${1}</strong>第一个匹配!"
 
 #: include/global_languages.php:971
 msgid " T"
@@ -12526,9 +12524,8 @@ msgid "By default, upon upgrading the Main Cacti system, it will perform a Full 
 msgstr ""
 
 #: include/global_settings.php:1409
-#, fuzzy
 msgid "Additional Data Collector Settings"
-msgstr "远程数据采集器状态:"
+msgstr "远程数据采集器状态"
 
 #: include/global_settings.php:1414 include/global_settings.php:1630
 msgid "Invalid Data Logging"
@@ -12701,7 +12698,7 @@ msgstr "1个进程"
 #: include/global_settings.php:2367 include/global_settings.php:2368
 #, php-format
 msgid "%d Processes"
-msgstr "% d进程"
+msgstr "%d进程"
 
 #: include/global_settings.php:1545
 #, fuzzy
@@ -14209,7 +14206,11 @@ msgstr "离线记录数量:"
 
 #: index.php:89
 msgid "<strong>NOTE:</strong> You are logged into a Remote Data Collector.  When <b>'online'</b>, you will be able to view and control much of the Main Cacti Web Site just as if you were logged into it.  Also, it's important to note that Remote Data Collectors are required to use the Cacti's Performance Boosting Services <b>'On Demand Updating'</b> feature, and we always recommend using Spine.  When the Remote Data Collector is <b>'offline'</b>, the Remote Data Collectors Web Site will contain much less information.  However, it will cache all updates until the Main Cacti Database and Web Server are reachable.  Then it will dump it's Boost table output back to the Main Cacti Database for updating."
-msgstr "<strong>注意:</ strong>您已登录到远程数据采集器. 当<b>'在线'</ b>时,您将能够查看和控制大部分主要的Cacti 网站,就像您登录该网站一样. 此外,重要的是要注意,远程数据采集器需要使用Cacti 的Boost 服务<b>'按需更新'</ b>功能,并且我们始终建议使用Spine. 当远程数据采集器<b>'离线'</ b>时,远程数据采集器网站将包含更少的信息. 但是,它将缓存所有更新,直到主Cacti 数据库和Web服务器可达. 然后它会将它的转储表输出转储回主Cacti 数据库进行更新."
+msgstr ""
+"<strong>注意:</strong>您已登录到远程数据采集器. 当<b>'在线'</b>时,您将能够查看和控制大部分主要的Cacti "
+"网站,就像您登录该网站一样. 此外,重要的是要注意,远程数据采集器需要使用Cacti 的Boost 服务<b>'按需更新'</"
+"b>功能,并且我们始终建议使用Spine. 当远程数据采集器<b>'离线'</b>时,远程数据采集器网站将包含更少的信息. "
+"但是,它将缓存所有更新,直到主Cacti 数据库和Web服务器可达. 然后它会将它的转储表输出转储回主Cacti 数据库进行更新."
 
 #: index.php:94
 msgid "<strong>NOTE:</strong> None of the Core Cacti Plugins, to date, have been re-designed to work with Remote Data Collectors.  Therefore, Plugins such as MacTrack, and HMIB, which require direct access to devices will not work with Remote Data Collectors at this time.  However, plugins such as Thold will work so long as the Remote Data Collector is in <b>'online'</b> mode."
@@ -14693,9 +14694,9 @@ msgstr "设备:"
 
 #: lib/auth.php:2359 lib/auth.php:2365 lib/auth.php:2434 lib/auth.php:2436
 #: lib/auth.php:2440 lib/auth.php:2442
-#, fuzzy, php-format
+#, php-format
 msgid "Template:(%s%s)"
-msgstr "阈值模板 '%s' %s 失败！"
+msgstr "阈值模板 :(%s%s)"
 
 #: lib/auth.php:2372
 #, fuzzy, php-format
@@ -14884,7 +14885,8 @@ msgstr "%s - WEBUI注意: Cacti 日志已从Web 管理界面清除."
 
 #: lib/clog_webapi.php:209
 msgid "Click 'Continue' to purge the Log File.<br><br><br>Note: If logging is set to both Cacti and Syslog, the log information will remain in Syslog."
-msgstr "单击 '继续' 以清空日志文件.<br> <br> <br>注意: 如果将日志记录设置为Cacti 和Syslog,则日志信息将保留在Syslog 中."
+msgstr ""
+"单击 '继续' 以清空日志文件.<br><br><br>注意: 如果将日志记录设置为Cacti 和Syslog,则日志信息将保留在Syslog 中."
 
 #: lib/clog_webapi.php:215 user_log.php:394 utilities.php:333
 msgid "Purge Log"
@@ -14895,18 +14897,16 @@ msgid "Log Filters"
 msgstr "日志过滤器"
 
 #: lib/clog_webapi.php:258
-#, fuzzy
 msgid " - Admin Filter active"
-msgstr "- 管理员过滤器有效"
+msgstr " - 管理员过滤器有效"
 
 #: lib/clog_webapi.php:260
-#, fuzzy
 msgid " - Admin Unfiltered"
-msgstr "- Admin Unfiltered"
+msgstr " - Admin Unfiltered"
 
 #: lib/clog_webapi.php:263
 msgid " - Admin view"
-msgstr "- 管理员视图"
+msgstr " - 管理员视图"
 
 #: lib/clog_webapi.php:268
 #, php-format
@@ -15373,7 +15373,7 @@ msgstr "跳过数据@ '%s'的结果[key='%s'， value='%s']"
 #: lib/data_query.php:1203
 #, php-format
 msgid "Got SNMP get result for data @ '%s' [value='%s'] (index: %s)"
-msgstr "获得数据 @'%s'的SNMP 获取结果  [value='%s'] (index: %s)"
+msgstr "获得数据 @'%s'的SNMP 获取结果 [value='%s'] (index: %s)"
 
 #: lib/data_query.php:1233
 #, php-format
@@ -17140,7 +17140,7 @@ msgstr "Cacti 已为模板导入以下项目:"
 
 #: lib/import.php:2647
 msgid "[success]"
-msgstr " [成功]"
+msgstr "[成功]"
 
 #: lib/import.php:2649
 msgid "[fail]"
@@ -17312,9 +17312,10 @@ msgid "License Agreement"
 msgstr "许可协议"
 
 #: lib/installer.php:1897
-#, fuzzy, php-format
+#, php-format
 msgid "This version of Cacti (%s) does not appear to have a valid version code, please contact the Cacti Development Team to ensure this is corrected.  If you are seeing this error in a release, please raise a report immediately on GitHub"
-msgstr "此版本的Cacti（％s）似乎没有有效的版本代码，请联系Cacti开发团队以确保其受到管理。如果您在发布中看到此错误，请立即在GitHub上提交报告"
+msgstr ""
+"此版本的Cacti (%s) 似乎没有有效的版本代码,请联系Cacti开发团队以确保其受到管理. 如果您在发布中看到此错误,请立即在GitHub上提交报告"
 
 #: lib/installer.php:1900
 msgid "Thanks for taking the time to download and install Cacti, the complete graphing solution for your network. Before you can start making cool graphs, there are a few pieces of data that Cacti needs to know."
@@ -17599,7 +17600,10 @@ msgstr "Poller 配置"
 
 #: lib/installer.php:2345
 msgid "Your Remote Cacti Poller information has not been included in your config.php file.  Please review the config.php.dist, and set the variables: <i>$rdatabase_default, $rdatabase_username</i>, etc.  These variables must be set and point back to your Primary Cacti database server.  Correct this and try again."
-msgstr "您的Cacti 远程poller 信息未包含在您的config.php 文件中. 请查看config.php.dist,并设置变量:<i> $ rdatabase_default,$ rdatabase_username </ i>等.必须设置这些变量并指向您的主Cacti 数据库服务器. 纠正这一点,然后再试一次."
+msgstr ""
+"您的Cacti 远程poller 信息未包含在您的config.php 文件中. 请查看config.php.dist,并设置变量:<i> $ "
+"rdatabase_default,$ rdatabase_username </i>等.必须设置这些变量并指向您的主Cacti 数据库服务器. "
+"纠正这一点,然后再试一次."
 
 #: lib/installer.php:2349
 msgid "Remote Poller Variables"
@@ -17694,9 +17698,8 @@ msgid "The user '%s' should have MODIFY permission to enable read/write."
 msgstr "用户'%s '应该具有修改权限以启用读/写。"
 
 #: lib/installer.php:2586
-#, fuzzy
 msgid "An example of how to set folder permissions is shown here, though you may need to adjust this depending on your operating system, user accounts and desired permissions."
-msgstr "此处显示了如何设置文件夹权限的示例,但您可能需要根据操作系统,用户帐户和所需权限进行调整"
+msgstr "此处显示了如何设置文件夹权限的示例,但您可能需要根据操作系统,用户帐户和所需权限进行调整."
 
 #: lib/installer.php:2587
 msgid "EXAMPLE:"
@@ -18064,9 +18067,9 @@ msgid "Updating remote configuration file"
 msgstr "等待配置"
 
 #: lib/installer.php:3386
-#, fuzzy, php-format
+#, php-format
 msgid "Setting default data source profile to %s (%s)"
-msgstr "此数据模板的默认数据源配置文件."
+msgstr "设置默认数据源配置文件%s (%s)"
 
 #: lib/installer.php:3414
 #, fuzzy, php-format
@@ -18114,9 +18117,8 @@ msgid "Failed to updated Automation Option Set %s"
 msgstr "无法应用指定的自动化范围"
 
 #: lib/installer.php:3482
-#, fuzzy
 msgid "Failed to find any automation option set"
-msgstr "无法找到要复制的数据!"
+msgstr "无法找到要复制的数据"
 
 #: lib/installer.php:3512
 #, fuzzy, php-format
@@ -21119,6 +21121,8 @@ msgstr ""
 #: templates_import.php:333
 msgid "Some CDEF Items will not import due to an export error! Contact Template provider for an updated export."
 msgstr ""
+"Some CDEF Items will not import due to an export error! Contact Template "
+"provider for an updated export."
 
 #: templates_import.php:374 templates_import.php:461
 msgid "Import Template"
@@ -21549,7 +21553,7 @@ msgstr "拒绝"
 
 #: user_admin.php:731 user_group_admin.php:728
 msgid "<b>Note:</b> System Graph Policy is 'Permissive' meaning the User must have access to at least one of Graph, Device, or Graph Template to gain access to the Graph"
-msgstr "<b>注意:</ b>系统图策略是 '允许',即用户必须有权访问图形,设备或图形模版中的至少一个才能访问图"
+msgstr "<b>注意:</b>系统图策略是 '允许',即用户必须有权访问图形,设备或图形模版中的至少一个才能访问图"
 
 #: user_admin.php:733 user_group_admin.php:730
 #, fuzzy
@@ -21562,9 +21566,8 @@ msgid "<b>Note:</b> System Graph Policy is 'Device' meaning the User must have a
 msgstr "<b>注意:</b>系统图策略是 '限制性', 意味着用户必须能够访问图形或设备和图形模板才能访问图形"
 
 #: user_admin.php:737 user_group_admin.php:734
-#, fuzzy
 msgid "<b>Note:</b> System Graph Policy is 'Graph Template' meaning the User must have access to the Graph or Graph Template to gain access to the Graph"
-msgstr "<b>注意:</ b>系统图策略是 '允许',即用户必须有权访问图形,设备或图形模版中的至少一个才能访问图"
+msgstr "<b>注意:</b>系统图策略是 '允许',即用户必须有权访问图形,设备或图形模版中的至少一个才能访问图"
 
 #: user_admin.php:741 user_group_admin.php:742
 msgid "Default Graph Policy"
@@ -21973,7 +21976,7 @@ msgstr "服务器支持的加密. TLS仅受协议版本3的支持."
 
 #: user_domains.php:374
 msgid "Referrals"
-msgstr "Referrals"
+msgstr "推荐"
 
 #: user_domains.php:375
 msgid "Enable or Disable LDAP referrals.  If disabled, it may increase the speed of searches."
@@ -22757,7 +22760,7 @@ msgstr "RRD 更新:"
 
 #: utilities.php:1666
 msgid "MBytes"
-msgstr "MBytes"
+msgstr "兆字节"
 
 #: utilities.php:1666
 msgid "Peak Poller Memory:"
