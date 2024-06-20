@@ -102,7 +102,9 @@ Cacti CHANGELOG
 -feature#5717: Add Aruba Clearpass template
 
 1.2.28
--issue#5772: Login log message unification - add client IP adress 
+-issue#5768: Cacti does not properly escape Data Query indexes that include a space
+-issue#5772: Login log message unification - add client IP adress
+-issue#5773: Update rrd.php missing variable $okpos
 
 1.2.27
 -security#GHSA-37x7-mfjv-mm7m: Authentication Bypass when using using older password hashes
