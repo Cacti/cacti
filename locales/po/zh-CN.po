@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2024-06-21 03:19+0000\n"
+"PO-Revision-Date: 2024-06-21 03:21+0000\n"
 "Last-Translator: tql <fttx31@126.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
 "cacti/core/zh_Hans/>\n"
@@ -1262,14 +1262,14 @@ msgid "Added manually through device automation interface."
 msgstr "通过设备自动化接口手动添加."
 
 #: automation_devices.php:125
-#, fuzzy, php-format
+#, php-format
 msgid "Device %s Added to Cacti"
-msgstr "添加到Cacti"
+msgstr "设备%s已添加到Cacti"
 
 #: automation_devices.php:127
-#, fuzzy, php-format
+#, php-format
 msgid "Device %s Not Added to Cacti"
-msgstr "没有添加到Cacti"
+msgstr "设备%s未添加到Cacti"
 
 #: automation_devices.php:137
 #, fuzzy
@@ -3939,9 +3939,9 @@ msgid "Color Template [new]"
 msgstr "颜色模板[新建]"
 
 #: color_templates.php:762
-#, fuzzy, php-format
+#, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
-msgstr "颜色模板'％s'已推出％d个聚集模板，而％d个非模板聚集被推出"
+msgstr "颜色模板\"%s\"已推出%d个聚合模板，推出%d个非模板聚合"
 
 #: color_templates.php:764
 #, fuzzy, php-format
