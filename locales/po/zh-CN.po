@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2024-06-21 02:23+0000\n"
+"PO-Revision-Date: 2024-06-21 02:29+0000\n"
 "Last-Translator: tql <fttx31@126.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
 "cacti/core/zh_Hans/>\n"
@@ -8894,7 +8894,7 @@ msgstr "%s 分钟"
 
 #: include/global_arrays.php:1718
 msgid "1 Megabyte"
-msgstr "1 Megabyte"
+msgstr "1 兆字节"
 
 #: include/global_arrays.php:1719 include/global_arrays.php:1720
 #: include/global_arrays.php:1721 include/global_arrays.php:1722
@@ -8953,7 +8953,7 @@ msgstr "文本"
 
 #: include/global_arrays.php:1767 include/global_form.php:2283
 msgid "Tree"
-msgstr "Tree"
+msgstr "树"
 
 #: include/global_arrays.php:1770
 msgid "Horizontal Rule"
@@ -9552,7 +9552,7 @@ msgstr "查看SNMP Agent 通知日志"
 
 #: include/global_arrays.php:2641 vdef.php:574
 msgid "VDEF Items"
-msgstr "VDEF Items"
+msgstr "VDEF 项目"
 
 #: include/global_arrays.php:2647
 msgid "View SNMP Notification Receivers"
@@ -10068,7 +10068,7 @@ msgstr "数据输入之前可以通过的最大时间量为 '未知'. (通常是
 
 #: include/global_form.php:663 lib/html_utility.php:286
 msgid "Not Selected"
-msgstr "Not Selected"
+msgstr "未选择"
 
 #: include/global_form.php:664
 msgid "When data is gathered, the data for this field will be put into this data source."
@@ -10132,7 +10132,7 @@ msgstr "图形内图形区域的宽度(以像素为单位). 该区域不包括�
 
 #: include/global_form.php:743
 msgid "Base Value (--base)"
-msgstr "Base Value (--base)"
+msgstr "基础值 (--base)"
 
 #: include/global_form.php:747
 msgid "Should be set to 1024 for memory and 1000 for traffic measurements."
@@ -10378,7 +10378,7 @@ msgstr "项目的数据如何在图形上直观地表示出来."
 
 #: include/global_form.php:990
 msgid "The data source to use for this graph item."
-msgstr "The data source to use for this graph item."
+msgstr "用于此图形项的数据源。"
 
 #: include/global_form.php:997
 msgid "The color to use for the legend."
@@ -10410,7 +10410,7 @@ msgstr "CDEF (math) 函数应用于图形或图例上的这个项目."
 
 #: include/global_form.php:1022
 msgid "VDEF Function"
-msgstr "VDEF Function"
+msgstr "VDEF 功能"
 
 #: include/global_form.php:1027
 msgid "A VDEF (math) function to apply to this item on the graph legend."
@@ -11118,7 +11118,7 @@ msgstr "设备默认值"
 #: include/global_settings.php:42 include/global_settings.php:715
 #: support.php:54
 msgid "Poller"
-msgstr "Poller"
+msgstr "轮询器"
 
 #: include/global_settings.php:43
 msgid "Data"
@@ -11166,7 +11166,7 @@ msgstr "PHP Mail() 函数"
 
 #: include/global_settings.php:129 lib/functions.php:5739
 msgid "Sendmail"
-msgstr "Sendmail"
+msgstr "发送邮件"
 
 #: include/global_settings.php:130 lib/functions.php:5744
 msgid "SMTP"
@@ -14636,7 +14636,7 @@ msgstr "系统:"
 
 #: lib/api_device.php:1735
 msgid "Uptime:"
-msgstr "Uptime:"
+msgstr "运行时间:"
 
 #: lib/api_device.php:1737
 msgid "Hostname:"
@@ -14665,7 +14665,7 @@ msgstr "新分支"
 
 #: lib/auth.php:575
 msgid "Web Basic"
-msgstr "Web Basic"
+msgstr "基于Web"
 
 #: lib/auth.php:2303
 #, fuzzy
@@ -14891,7 +14891,7 @@ msgstr " - 管理员过滤器有效"
 
 #: lib/clog_webapi.php:260
 msgid " - Admin Unfiltered"
-msgstr " - Admin Unfiltered"
+msgstr " - 管理员未筛选"
 
 #: lib/clog_webapi.php:263
 msgid " - Admin view"
