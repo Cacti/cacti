@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2024-06-21 02:40+0000\n"
+"PO-Revision-Date: 2024-06-21 02:43+0000\n"
 "Last-Translator: tql <fttx31@126.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
 "cacti/core/zh_Hans/>\n"
@@ -7960,7 +7960,7 @@ msgstr "SNMP 描述"
 
 #: include/global_arrays.php:682
 msgid "SNMP getNext"
-msgstr "SNMP getNext"
+msgstr "SNMP 获得下一个"
 
 #: include/global_arrays.php:683
 msgid "Ping"
