@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-21 03:46+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-21 08:51+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -1251,7 +1251,7 @@ msgstr "导出到文件"
 #: automation_devices.php:502 data_debug.php:1053 lib/clog_webapi.php:223
 #: lib/clog_webapi.php:535 managers.php:749
 msgid "Purge"
-msgstr "清空"
+msgstr "清除"
 
 #: automation_devices.php:502
 msgid "Purge Discovered Devices"
@@ -1923,7 +1923,7 @@ msgstr "本月的哪些天将会发现这个网络范围."
 
 #: automation_networks.php:670 automation_networks.php:682
 msgid "Last"
-msgstr "上一次"
+msgstr "当前"
 
 #: automation_networks.php:676
 msgid "Week(s) of Month"
@@ -2688,7 +2688,7 @@ msgstr[0] "删除颜色"
 
 #: color.php:352
 msgid "Cacti has imported the following items:"
-msgstr "Cacti 导入了以下条目:"
+msgstr "Cacti导入了以下条目:"
 
 #: color.php:366 color.php:569
 msgid "Import Colors"
@@ -3922,7 +3922,7 @@ msgstr[0] "删除数据源"
 #: data_sources.php:539
 msgid "Choose a new Device for this Data Source and click 'Continue'."
 msgid_plural "Choose a new Device for these Data Sources and click 'Continue'"
-msgstr[0] "为这个数据源选择一个新的设备然后点击'继续'"
+msgstr[0] "为这些数据源选择一个新设备，然后单击“继续”"
 
 #: data_sources.php:541
 msgid "New Device:"
@@ -5015,7 +5015,7 @@ msgstr "图形,数据源"
 
 #: graphs.php:2057
 msgid "Non Templated"
-msgstr "没有模板化"
+msgstr "非模板化"
 
 #: graphs.php:2248
 msgid "The internal database ID for this Graph.  Useful when performing automation or debugging."
@@ -10708,7 +10708,7 @@ msgstr "并发轮询器命令进程数。 轮询器命令池中每个主机最�
 #: include/global_settings.php:1402 include/global_settings.php:2067
 #: include/global_settings.php:2177 include/global_settings.php:2245
 msgid "1 Process"
-msgstr "1个进程"
+msgstr "1流程"
 
 #: include/global_settings.php:1403 include/global_settings.php:1404
 #: include/global_settings.php:1405 include/global_settings.php:1406
@@ -11168,7 +11168,7 @@ msgstr "邮箱"
 
 #: include/global_settings.php:1839
 msgid "Field that will replace the Email taken from LDAP. (on windows: mail)"
-msgstr "将替换从LDAP中获取的电子邮件的字段. (Windows: 邮件)"
+msgstr "将替换从LDAP获取的电子邮件的字段。（在windows上：邮件） "
 
 #: include/global_settings.php:1846
 msgid "URL Linking"
@@ -14126,7 +14126,7 @@ msgstr "格式化文件以使用"
 
 #: lib/html_reports.php:67
 msgid "Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the 'formats' directory."
-msgstr "择要使用的自定义html包装器和CSS文件. 该文件包含html和CSS.以包装您的报告.如果它包含的不仅仅是CSS.你需要在文件中放置一个特殊的<REPORT>标签.此格式标签将被报告内容替换.这些文件位于'formats'目录."
+msgstr "选择要使用的自定义html包装和CSS文件。此文件同时包含html和CSS，用于包装您的报告。如果它包含的不仅仅是CSS，则需要在文件中放置一个特殊的＜REPORT＞标记。此格式标记将被报告内容替换。这些文件位于“formats”目录中。"
 
 #: lib/html_reports.php:72
 msgid "Default Text Font Size"
@@ -14706,7 +14706,7 @@ msgstr "包文件"
 
 #: lib/import.php:2595
 msgid "[preview] "
-msgstr "[预览] "
+msgstr "预览"
 
 #: lib/import.php:2600
 msgid "Cacti would make the following changes if the Template was imported:"
@@ -14726,7 +14726,7 @@ msgstr "[失败]"
 
 #: lib/import.php:2621
 msgid "[preview]"
-msgstr "[预览] "
+msgstr "预览"
 
 #: lib/import.php:2625
 msgid "[updated]"
@@ -15566,34 +15566,34 @@ msgid "Starting %s Process for v%s"
 msgstr "为v%s启动%s流程"
 
 #: lib/installer.php:3033
-#, fuzzy, php-format
+#, php-format
 msgid "Finished %s Process for v%s"
-msgstr "v％s完成的％s处理"
+msgstr "已完成%s针对v%s的进程"
 
 #: lib/installer.php:3072
-#, fuzzy, php-format
+#, php-format
 msgid "Found %s templates to install"
-msgstr "找到了要安装的％s模板"
+msgstr "找到了要安装的%s模板"
 
 #: lib/installer.php:3082
-#, fuzzy, php-format
+#, php-format
 msgid "About to import Package #%s '%s'."
-msgstr "即将导入软件包＃％s'％s'。"
+msgstr "即将导入软件包#%s '%s'。"
 
 #: lib/installer.php:3091
-#, fuzzy, php-format
+#, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' succeeded"
-msgstr "已成功在配置文件'％s'下导入软件包＃％s'％s'"
+msgstr "已成功在配置文件'%s'下导入软件包#%s '%s'"
 
 #: lib/installer.php:3097
-#, fuzzy, php-format
+#, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' failed"
-msgstr "在配置文件“％s”下导入软件包＃％s“％s”失败"
+msgstr "在配置文件'%s'下导入软件包#%s '%s'失败"
 
 #: lib/installer.php:3112
-#, fuzzy, php-format
+#, php-format
 msgid "Mapping Automation Template for Device Template '%s'"
-msgstr "[已删除模板]的自动化模板"
+msgstr "设备模板'%s'的映射自动化模板"
 
 #: lib/installer.php:3129
 msgid "No templates were selected for import"
@@ -15609,14 +15609,14 @@ msgid "Setting default data source profile to %s (%s)"
 msgstr "设置默认数据源配置文件%s (%s)"
 
 #: lib/installer.php:3192
-#, fuzzy, php-format
+#, php-format
 msgid "Failed to find selected profile (%s), no changes were made"
-msgstr "无法应用指定的配置文件 %s != %s"
+msgstr "找不到选定的配置文件(%s)，未进行任何更改"
 
 #: lib/installer.php:3201
-#, fuzzy, php-format
+#, php-format
 msgid "Updating automation network (%s), mode \"%s\" => \"%s\", subnet \"%s\" => %s\""
-msgstr "更新自动化网络（％s），模式“％s” =>“％s”，子网“％s” =>％s“"
+msgstr "更新自动化网络(%s)，模式\"%s =>'%s'，子网'%s' =>%s\""
 
 #: lib/installer.php:3211
 msgid "Failed to find automation network, no changes were made"
@@ -15627,29 +15627,29 @@ msgid "Adding extra snmp settings for automation"
 msgstr "添加额外的snmp设置以实现自动化"
 
 #: lib/installer.php:3221
-#, fuzzy, php-format
+#, php-format
 msgid "Selecting Automation Option Set %s"
-msgstr "删除自动化模板"
+msgstr "正在选择自动化选项集%s"
 
 #: lib/installer.php:3234
-#, fuzzy, php-format
+#, php-format
 msgid "Updating Automation Option Set %s"
-msgstr "自动化SNMP 选项"
+msgstr "正在更新自动化选项集%s"
 
 #: lib/installer.php:3237
-#, fuzzy, php-format
+#, php-format
 msgid "Successfully updated Automation Option Set %s"
-msgstr "成功更新了自动化选项集％s"
+msgstr "成功更新了自动化选项集%s"
 
 #: lib/installer.php:3239
-#, fuzzy, php-format
+#, php-format
 msgid "Resequencing Automation Option Set %s"
-msgstr "在设备上运行自动化"
+msgstr "重新排序自动化选项集%s"
 
 #: lib/installer.php:3245
-#, fuzzy, php-format
+#, php-format
 msgid "Failed to updated Automation Option Set %s"
-msgstr "无法应用指定的自动化范围"
+msgstr "无法更新自动化选项集%s"
 
 #: lib/installer.php:3248
 msgid "Failed to find any automation option set"
@@ -15693,52 +15693,52 @@ msgid "Generating RSA Key Pair"
 msgstr "生成RSA密钥对"
 
 #: lib/installer.php:3360
-#, fuzzy, php-format
+#, php-format
 msgid "Found %s tables to convert"
-msgstr "找到要转换的％s表"
+msgstr "找到要转换的%s表"
 
 #: lib/installer.php:3367
-#, fuzzy, php-format
+#, php-format
 msgid "Converting Table #%s '%s'"
-msgstr "转换表＃％s'％s'"
+msgstr "转换表#%s '%s'"
 
 #: lib/installer.php:3382
 msgid "No tables where found or selected for conversion"
 msgstr "没有找到或选择要转换的表"
 
 #: lib/installer.php:3393
-#, fuzzy, php-format
+#, php-format
 msgid "Switched from %s to %s"
-msgstr "从％s切换到％s"
+msgstr "从%s切换到%s"
 
 #: lib/installer.php:3397
-#, fuzzy, php-format
+#, php-format
 msgid "NOTE: Using temporary file for db cache: %s"
-msgstr "注意：使用临时文件进行数据库高速缓存：％s"
+msgstr "注意：使用临时文件进行数据库高速缓存：%s"
 
 #: lib/installer.php:3419
-#, fuzzy, php-format
+#, php-format
 msgid "Upgrading from v%s (DB %s) to v%s"
-msgstr "从v％s（数据库％s）升级到v％s"
+msgstr "从v%s（数据库%s）升级到v%s"
 
 #: lib/installer.php:3427
-#, fuzzy, php-format
+#, php-format
 msgid "WARNING: Failed to find upgrade function for v%s"
-msgstr "警告：无法找到v％s的升级功能"
+msgstr "警告：无法找到v%s的升级功能"
 
 #: lib/installer.php:3486
 msgid "Install aborted due to no EULA acceptance"
 msgstr "由于未接受EULA，安装被中止"
 
 #: lib/installer.php:3509
-#, fuzzy, php-format
+#, php-format
 msgid "Background was already started at %s, this attempt at %s was skipped"
-msgstr "后台已在％s开始，此尝试已在％s跳过"
+msgstr "后台已在%s开始，此尝试已在%s跳过"
 
 #: lib/installer.php:3532
-#, fuzzy, php-format
+#, php-format
 msgid "Exception occurred during installation: #%s - %s"
-msgstr "安装期间发生异常: #"
+msgstr "安装期间发生异常: #%s - %s"
 
 #: lib/installer.php:3542
 #, php-format
@@ -15750,37 +15750,37 @@ msgid "Both"
 msgstr "两者"
 
 #: lib/installer.php:3577
-#, fuzzy, php-format
+#, php-format
 msgid "No - %s"
-msgstr "RRA [编辑: %s %s]"
+msgstr "否-%s"
 
 #: lib/installer.php:3582
-#, fuzzy, php-format
+#, php-format
 msgid "%s - N/A"
-msgstr "RRA [编辑: %s %s]"
+msgstr "%s-不适用"
 
 #: lib/installer.php:3582 lib/installer.php:3584
 msgid "Web"
 msgstr "网页"
 
 #: lib/installer.php:3584 lib/installer.php:3587
-#, fuzzy, php-format
+#, php-format
 msgid "%s - No"
-msgstr "RRA [编辑: %s %s]"
+msgstr "%s - 否"
 
 #: lib/installer.php:3587
 msgid "Cli"
 msgstr "如果您选择此选项，则将重新生成轮询缓存。如果在崩溃后遇到问题并且已经运行数据库修复工具，则只有在发生数据库崩溃的情况下才使用此选项;或者，如果您遇到问题 使用特定的设备，只需重新保存该设备以重建其轮询缓存即可。还有一个与此命令等效的命令行界面，建议用于大型系统。<i class = “deviceDown ”>注意：在大型系统 ，这个命令可能需要几分钟到几个小时才能完成，因此不应该从Cacti UI运行。您可以在命令行运行'php -q cli / rebuild_poller_cache.php --help'以获取更多信息。</ i>"
 
 #: lib/installer.php:3592
-#, fuzzy, php-format
+#, php-format
 msgid "Setting PHP Option %s = %s"
-msgstr "设置PHP选项％s =％s"
+msgstr "设置PHP选项%s =%s"
 
 #: lib/installer.php:3598
-#, fuzzy, php-format
+#, php-format
 msgid "Failed to set PHP option %s, is %s (should be %s)"
-msgstr "无法设置PHP选项％s，为％s（应为％s）"
+msgstr "无法设置PHP选项%s，为%s（应为%s）"
 
 #: lib/installer.php:3617
 msgid "No Remote Data Collectors found for full synchronization"
@@ -15803,19 +15803,19 @@ msgid "No username defined"
 msgstr "没有定义用户名"
 
 #: lib/ldap.php:298
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, Unable to set version (%s) on Server (%s)"
-msgstr "协议错误,无法设置版本"
+msgstr "协议错误，无法在服务器（%s）上设置版本（%s）"
 
 #: lib/ldap.php:302
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, Unable to set referrals option (%s) on Server (%s)"
-msgstr "协议错误,无法设置引荐选项"
+msgstr "协议错误，无法在服务器（%s）上设置参照选项（%s）"
 
 #: lib/ldap.php:306
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, unable to start TLS communications (%s) on Server (%s)"
-msgstr "协议错误,无法启动TLS通信"
+msgstr "协议错误，无法在服务器（%s）上启动TLS通信（%s）"
 
 #: lib/ldap.php:310
 #, php-format
@@ -15823,29 +15823,29 @@ msgid "Protocol Error, General failure (%s)"
 msgstr "协议错误, 普通故障(%s)"
 
 #: lib/ldap.php:314
-#, fuzzy, php-format
+#, php-format
 msgid "Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)"
-msgstr "协议错误, 无法绑定,LDAP 结果: %s"
+msgstr "协议错误，无法绑定，LDAP结果：（%s）（在服务器（%s）上）"
 
 #: lib/ldap.php:318
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to Connect to Server (%s)"
-msgstr "无法连接到服务器"
+msgstr "无法连接到服务器(%s)"
 
 #: lib/ldap.php:322
-#, fuzzy, php-format
+#, php-format
 msgid "Connection Timeout to Server (%s)"
-msgstr "连接超时"
+msgstr "到服务器（%s）的连接超时"
 
 #: lib/ldap.php:326
-#, fuzzy, php-format
+#, php-format
 msgid "Insufficient Access to Server (%s)"
-msgstr "访问不足"
+msgstr "对服务器（%s）的访问权限不足"
 
 #: lib/ldap.php:330
-#, fuzzy, php-format
+#, php-format
 msgid "Group DN could not be found to compare on Server (%s)"
-msgstr "未找到group DN"
+msgstr "在服务器（%s）上找不到要进行比较的组DN"
 
 #: lib/ldap.php:334
 msgid "More than one matching user found"
@@ -15860,9 +15860,9 @@ msgid "Unable to find users DN"
 msgstr "无法找到用户DN"
 
 #: lib/ldap.php:346
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to create LDAP connection object to Server (%s)"
-msgstr "无法创建LDAP连接对象"
+msgstr "无法创建到服务器（%s）的LDAP连接对象"
 
 #: lib/ldap.php:350
 msgid "Specific DN and Password required"
@@ -15873,9 +15873,9 @@ msgid "Invalid Password provided.  Login failed."
 msgstr "提供的密码无效。登录失败。"
 
 #: lib/ldap.php:358
-#, fuzzy, php-format
+#, php-format
 msgid "Unexpected error %s (Ldap Error: %s) on Server (%s)"
-msgstr "Unexpected error %s (Ldap Error: %s )"
+msgstr "意外错误%s（Ldap错误：%s）（在服务器（%s）上）"
 
 #: lib/ping.php:131
 msgid "ICMP Ping timed out"
@@ -15996,14 +15996,14 @@ msgid "Device '%s' not added to Report as it already exists on report."
 msgstr "设备“%s”未添加到报告中，因为它已存在于报告中。"
 
 #: lib/reports.php:596
-#, fuzzy, php-format
+#, php-format
 msgid "Problems sending Report '%s' Problem with e-mail Subsystem Error is '%s'"
-msgstr "发送报告'％s'时出现问题电子邮件子系统错误是'％s'"
+msgstr "发送报告'%s'时出现问题电子邮件子系统错误是'%s'"
 
 #: lib/reports.php:603
-#, fuzzy, php-format
+#, php-format
 msgid "Report '%s' Sent Successfully"
-msgstr "报告“％s”已成功发送"
+msgstr "报告'%s'已成功发送"
 
 #: lib/reports.php:1071 lib/reports.php:1403
 msgid "(No Graph Template)"
@@ -16049,9 +16049,9 @@ msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
 msgstr "跳过已存在的报告图项目 '<i>%s</i>'"
 
 #: lib/rrd.php:2919
-#, fuzzy, php-format
+#, php-format
 msgid "The required RRDfile step size is '%s' but observed step is '%s'"
-msgstr "所需的RRD步长为'%s'"
+msgstr "所需的RRD文件步长为'%s'，但观察到的步长为'%s'"
 
 #: lib/rrd.php:2979
 #, php-format
@@ -16094,9 +16094,9 @@ msgid "The XFF for Cacti RRA id is '%s' but should be '%s'"
 msgstr "XAF的cacti RRA id'%s' '应该是'%s'"
 
 #: lib/rrd.php:3078
-#, fuzzy, php-format
+#, php-format
 msgid "The number of rows for Cacti RRA id '%s' is incorrect.  The number of rows are '%s' but should be '%s'"
-msgstr "Cacti RRA id'%s'的行数应该是'%s'"
+msgstr "Cacti RRA id'%s'的行数不正确。行数为'%s'，但应为'%s'"
 
 #: lib/rrd.php:3096
 #, php-format
@@ -16240,9 +16240,9 @@ msgid "ERROR: Whitelist Validation Failed. Check Data Input Method"
 msgstr "ERROR: 白名单验证失败.请检查数据输入方法"
 
 #: lib/template.php:2159
-#, fuzzy, php-format
+#, php-format
 msgid "Graph Not created for %s due to bad data"
-msgstr "图形创建"
+msgstr "由于数据不正确，未为%s创建图形"
 
 #: lib/template.php:2188
 #, php-format
@@ -16757,9 +16757,9 @@ msgid "You have not Trusted this Package Author.  If you wish to import, check t
 msgstr "您尚未信任此包作者。 如果要导入，请选中“自动信任作者”复选框"
 
 #: package_import.php:205
-#, fuzzy, php-format
+#, php-format
 msgid "The Package %s Imported Successfully"
-msgstr "Cacti 日志清空成功"
+msgstr "成功导入包%s"
 
 #: package_import.php:207
 #, php-format
@@ -17062,29 +17062,29 @@ msgid "Enable Plugin Locally"
 msgstr "启用插件"
 
 #: poller.php:392
-#, fuzzy, php-format
+#, php-format
 msgid "WARNING: %s is out of sync with the Poller Interval for poller id %d!  The Poller Interval is %d seconds, with a maximum of a %d seconds, but %d seconds have passed since the last poll!"
-msgstr "WARNING: %s 与Poller 采集周期时间不一致! 采集周期为 %d 秒,最大值为 %d 秒,但自上次采集以来已经过了 %d 秒!"
+msgstr "警告: %s 与Poller id %d采集周期时间不同步! 采集周期为 %d 秒,最大值为 %d 秒,但自上次采集以来已经过了 %d 秒!"
 
 #: poller.php:542
-#, fuzzy, php-format
+#, php-format
 msgid "WARNING: There are %d processes detected as overrunning a polling cycle for poller id %d, please investigate."
-msgstr "WARNING: 检测到 '%d' 个超出采集周期,请进行调查."
+msgstr "警告：检测到%d个进程超过轮询器id%d的轮询周期，请调查。"
 
 #: poller.php:607
-#, fuzzy, php-format
+#, php-format
 msgid "WARNING: Poller Output Table not empty for poller id %d.  Issues: %d, %s."
-msgstr "WARNING: Poller 输出表不为空.问题: %d, %s."
+msgstr "警告：轮询器id%d的轮询器输出表不为空。问题：%d，%s。"
 
 #: poller.php:647
-#, fuzzy, php-format
+#, php-format
 msgid "ERROR: The spine path: %s is invalid for poller id %d.  Poller can not continue!"
-msgstr "ERROR: spine 路径: %s 无效. Poller 无法继续!"
+msgstr "错误：spine路径：%s对轮询器id%d无效。轮询器无法继续！"
 
 #: poller.php:789
-#, fuzzy, php-format
+#, php-format
 msgid "Maximum runtime of %d seconds exceeded for poller id %d. Exiting."
-msgstr "超出 %d 秒的最大运行时间. 退出."
+msgstr "轮询程序id%d超过了%d秒的最大运行时间。正在退出。"
 
 #: poller.php:895
 msgid "WARNING: Cacti Polling Cycle Exceeded Poller Interval by "
@@ -17268,14 +17268,14 @@ msgid "The file holding the SSL Certificate Authority to use to connect to the r
 msgstr "包含用于连接到远程数据库的SSL证书颁发机构的文件。如果数据库提供者使用--ssl-mode = VERIFY_CA选项启动了SSL，则这是一个可选参数。"
 
 #: pollers.php:308
-#, fuzzy, php-format
+#, php-format
 msgid "You have already used this hostname '%s'.  Please enter a non-duplicate hostname."
-msgstr "您已经使用了该主机名'％s'。请输入一个非重复的主机名。"
+msgstr "您已经使用了此主机名“%s”。请输入一个不重复的主机名。"
 
 #: pollers.php:314
-#, fuzzy, php-format
+#, php-format
 msgid "You have already used this database hostname '%s'.  Please enter a non-duplicate database hostname."
-msgstr "您已经使用了此数据库主机名'％s'。请输入一个非重复的数据库主机名。"
+msgstr "您已经使用了此数据库主机名“%s”。请输入一个不重复的数据库主机名。"
 
 #: pollers.php:519
 msgid "Data Collector Statistics cleared."
@@ -17609,9 +17609,9 @@ msgid "NOTE: Path Settings on this Tab are only saved locally!"
 msgstr "注意：此选项卡上的路径设置仅在本地保存！"
 
 #: settings.php:381
-#, fuzzy, php-format
+#, php-format
 msgid "Cacti Settings (%s)%s"
-msgstr "Cacti 设置(%s)"
+msgstr "Cacti 设置(%s)%s"
 
 #: settings.php:487
 msgid "Changing Permission Model Warning"
@@ -18718,7 +18718,7 @@ msgstr "邮件"
 
 #: user_domains.php:505
 msgid "Field that will replace the email taken from LDAP. (on windows: mail) "
-msgstr "将替换从LDAP中获取的电子邮件的字段. (Windows: 邮件)"
+msgstr "将替换从LDAP获取的电子邮件的字段。（在windows上：邮件） "
 
 #: user_domains.php:530
 msgid "Domain Properties"
@@ -19639,9 +19639,9 @@ msgid "Previous Runtime Timers:"
 msgstr "详细的运行时间定时器:"
 
 #: utilities.php:2833 utilities.php:2835
-#, fuzzy, php-format
+#, php-format
 msgid "Process: %d"
-msgstr "1个进程"
+msgstr "进程：%d"
 
 #: utilities.php:2833
 #, php-format
