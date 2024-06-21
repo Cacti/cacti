@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-21 02:31+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-21 02:33+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -14742,7 +14742,7 @@ msgstr "查找依赖:"
 
 #: lib/import.php:2667
 msgid "Unmet Dependency:"
-msgstr "Unmet Dependency:"
+msgstr "取消设置依赖项:"
 
 #: lib/installer.php:574
 msgid "Path was not writable"
@@ -14775,7 +14775,7 @@ msgstr "PHP 没有返回预期的结果"
 
 #: lib/installer.php:842
 msgid "Unexpected path parameter"
-msgstr "Unexpected path parameter"
+msgstr "意外的路径参数"
 
 #: lib/installer.php:876
 #, php-format
@@ -16142,7 +16142,7 @@ msgstr "循环存档"
 
 #: lib/rrd.php:3217
 msgid "Cur Row"
-msgstr "Cur Row"
+msgstr "Cur 行"
 
 #: lib/rrd.php:3218
 msgid "PDP per Row"
