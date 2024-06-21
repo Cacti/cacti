@@ -13399,7 +13399,7 @@ msgstr "Ping 结果:"
 
 #: lib/functions.php:5335
 msgid "Bypassed"
-msgstr "Bypassed"
+msgstr "绕过"
 
 #: lib/functions.php:5343
 msgid "Creating Message Text..."
