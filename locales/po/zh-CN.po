@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2024-06-21 02:31+0000\n"
+"PO-Revision-Date: 2024-06-21 02:33+0000\n"
 "Last-Translator: tql <fttx31@126.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
 "cacti/core/zh_Hans/>\n"
@@ -17177,7 +17177,7 @@ msgstr "PHP 没有返回预期的结果"
 
 #: lib/installer.php:931
 msgid "Unexpected path parameter"
-msgstr "Unexpected path parameter"
+msgstr "意外的路径参数"
 
 #: lib/installer.php:969
 #, php-format
@@ -18612,7 +18612,7 @@ msgstr "循环存档"
 
 #: lib/rrd.php:3406
 msgid "Cur Row"
-msgstr "Cur Row"
+msgstr "Cur 行"
 
 #: lib/rrd.php:3407
 msgid "PDP per Row"
