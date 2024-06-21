@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2024-06-21 03:34+0000\n"
+"PO-Revision-Date: 2024-06-21 03:46+0000\n"
 "Last-Translator: tql <fttx31@126.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
 "cacti/core/zh_Hans/>\n"
@@ -6607,9 +6607,9 @@ msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id of
 msgstr "为 ID 为“%s”的数据查询“%s”解析数据查询资源 XML 文件时出错"
 
 #: graphs_new.php:695
-#, fuzzy, php-format
+#, php-format
 msgid "Error Parsing Data Query Resource XML file for Data Query '%s' with id '%s'.  Field Name '%s' missing a 'direction' attribute"
-msgstr "为 ID 为“%s”的数据查询“%s”解析数据查询资源 XML 文件时出错"
+msgstr "分析数据查询'%s'（id为'%s'）的数据查询资源XML文件时出错。字段名'%s'缺少“direction”属性"
 
 #: graphs_new.php:699
 #, fuzzy, php-format
@@ -6732,14 +6732,14 @@ msgid "ERROR: Invalid Device ID."
 msgstr "ERROR: 设备."
 
 #: host.php:215
-#, fuzzy, php-format
+#, php-format
 msgid "Device Reindex Completed in %0.2f seconds.  There were %d items updated."
-msgstr "设备重新索引在％0.2f秒内完成。有％d个项目已更新。"
+msgstr "设备重新索引在%0.2f秒内完成。有%d个项目已更新。"
 
 #: host.php:356
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to add some Devices to Report '%s'"
-msgstr "无法连接到服务器"
+msgstr "无法将某些设备添加到报告'%s'"
 
 #: host.php:480
 #, fuzzy
@@ -8044,9 +8044,9 @@ msgid "Every %d Hours"
 msgstr "每 %d 小时"
 
 #: include/global_arrays.php:756
-#, fuzzy, php-format
+#, php-format
 msgid "Every %d Day"
-msgstr "每 %1 天"
+msgstr "每 %d 天"
 
 #: include/global_arrays.php:768
 #, php-format
@@ -9800,9 +9800,9 @@ msgstr "网格选项"
 #: include/global_form.php:190 include/global_form.php:191
 #: include/global_form.php:192 include/global_form.php:193
 #: include/global_form.php:194
-#, fuzzy, php-format
+#, php-format
 msgid "%d Repetitions"
-msgstr "网格选项"
+msgstr "%d重复"
 
 #: include/global_form.php:202
 msgid "SNMP Retries"
@@ -11804,18 +11804,18 @@ msgid "The default number of Device Threads.  This is only applicable when using
 msgstr "设备线程的默认数量.这仅适用于使用Spine Data Collector时."
 
 #: include/global_settings.php:728
-#, fuzzy, php-format
+#, php-format
 msgid "%s Thread"
-msgstr "%d 线程"
+msgstr "%s 线程"
 
 #: include/global_settings.php:729 include/global_settings.php:730
 #: include/global_settings.php:731 include/global_settings.php:732
 #: include/global_settings.php:733 include/global_settings.php:734
 #: include/global_settings.php:735 include/global_settings.php:736
 #: include/global_settings.php:737
-#, fuzzy, php-format
+#, php-format
 msgid "%s Threads"
-msgstr "%d 线程"
+msgstr "%s 线程"
 
 #: include/global_settings.php:741
 msgid "Re-index Method for Data Queries"
@@ -14770,9 +14770,9 @@ msgid "LDAP Search Error: %s"
 msgstr "LDAP 搜索错误: %s"
 
 #: lib/auth.php:4061 lib/auth.php:5014
-#, fuzzy, php-format
+#, php-format
 msgid "Access Denied!  Template user id %s does not exist.  Please contact your Administrator."
-msgstr "访问被拒绝,请联系Cacti 管理员."
+msgstr "访问被拒绝！模板用户id%s不存在。请与管理员联系。"
 
 #: lib/auth.php:4388
 #, fuzzy
@@ -14853,9 +14853,9 @@ msgid "2FA has been enabled and verified"
 msgstr ""
 
 #: lib/boost.php:64 utilities.php:1675
-#, fuzzy, php-format
+#, php-format
 msgid "%s MBytes"
-msgstr "%d MBytes"
+msgstr "%s 兆字节"
 
 #: lib/boost.php:67
 #, fuzzy, php-format
@@ -15032,9 +15032,9 @@ msgid "Update Data Query Sort Cache complete"
 msgstr "更新数据查询排序缓存完毕"
 
 #: lib/data_query.php:215
-#, fuzzy, php-format
+#, php-format
 msgid "Found %s Local Data ID's to Verify"
-msgstr "找到要转换的％s表"
+msgstr "找到要转换的%s表"
 
 #: lib/data_query.php:309
 #, php-format
@@ -15052,14 +15052,14 @@ msgid "Index Removal Detected! PreviousIndex: %s"
 msgstr "检测到索引删除! 之前的索引: %s"
 
 #: lib/data_query.php:366
-#, fuzzy, php-format
+#, php-format
 msgid "Verification of %s Local Data ID's Complete"
-msgstr "索引与本地数据关联完毕"
+msgstr "%s本地数据ID的验证完成"
 
 #: lib/data_query.php:369
-#, fuzzy, php-format
+#, php-format
 msgid "Found Changed %s and %s Orphaned Local Data ID's to Re-map."
-msgstr "找到已更改的％s和％s孤立的本地数据ID以重新映射。"
+msgstr "找到已更改的%s和%s孤立的本地数据ID以重新映射。"
 
 #: lib/data_query.php:372
 #, fuzzy
@@ -15434,9 +15434,9 @@ msgid "Unknown Index"
 msgstr "未知索引"
 
 #: lib/data_query.php:2569
-#, fuzzy, php-format
+#, php-format
 msgid "You must select an XML output column for Data Source '%s' and toggle the checkbox to its right"
-msgstr "您必须为数据源'％s'选择XML输出列，并将复选框切换到右侧"
+msgstr "您必须为数据源'%s'选择XML输出列，并将复选框切换到右侧"
 
 #: lib/data_query.php:2575
 #, fuzzy
@@ -15794,9 +15794,9 @@ msgid "All %d %s"
 msgstr "一共 %d 个 %s"
 
 #: lib/html.php:688
-#, fuzzy, php-format
+#, php-format
 msgid "Current Page: %s"
-msgstr "当前值"
+msgstr "当前值: %s"
 
 #: lib/html.php:719
 #, php-format
@@ -16838,33 +16838,33 @@ msgid "[new]"
 msgstr "[新的]"
 
 #: lib/html_reports.php:1479
-#, fuzzy, php-format
+#, php-format
 msgid "Details %s"
-msgstr "详情"
+msgstr "详情%s"
 
 #: lib/html_reports.php:1524
-#, fuzzy, php-format
+#, php-format
 msgid "Report Items %s"
-msgstr "没有报告项目"
+msgstr "没有报告项目%s"
 
 #: lib/html_reports.php:1570
-#, fuzzy, php-format
+#, php-format
 msgid "Scheduled Events %s"
-msgstr "计划的事件"
+msgstr "计划的事件%s"
 
 #: lib/html_reports.php:1582
-#, fuzzy, php-format
+#, php-format
 msgid "Report Preview %s"
-msgstr "报告预览"
+msgstr "报告预览%s"
 
 #: lib/html_reports.php:1611
 msgid "Item Details"
 msgstr "项目细节"
 
 #: lib/html_reports.php:1626
-#, fuzzy, php-format
+#, php-format
 msgid "Graph: %s"
-msgstr "更改关联设备图"
+msgstr "更改关联设备图:%s"
 
 #: lib/html_reports.php:1629 lib/html_reports.php:1657
 #: lib/html_reports.php:1670 lib/html_reports.php:1671
@@ -17200,9 +17200,9 @@ msgid "Failed to apply specified cron interval"
 msgstr "无法应用指定的cron 周期"
 
 #: lib/installer.php:1107
-#, fuzzy, php-format
+#, php-format
 msgid "Failed to apply '%s' as Automation Range"
-msgstr "无法应用指定的自动化范围"
+msgstr "无法应用'%s'为指定的自动化范围"
 
 #: lib/installer.php:1189
 msgid "No matching snmp option exists"
@@ -17357,9 +17357,9 @@ msgid "Your Cacti configuration has the relative correct path (url_path) in conf
 msgstr "您的Cacti 配置在config.php 中具有相对正确的路径(url_path)."
 
 #: lib/installer.php:2031
-#, fuzzy, php-format
+#, php-format
 msgid "PHP - Recommendations (%s)"
-msgstr "PHP - 推荐配置"
+msgstr "PHP - 推荐配置(%s)"
 
 #: lib/installer.php:2035
 #, fuzzy
@@ -17888,9 +17888,9 @@ msgid "Table Setup"
 msgstr "表设置"
 
 #: lib/installer.php:2824
-#, fuzzy, php-format
+#, php-format
 msgid "You have more tables than your PHP configuration will allow us to display/convert.  Please modify the max_input_vars setting in php.ini to a value above %s"
-msgstr "您的表数量超出了PHP配置所允许的显示/转换数量。请修改php.ini中的max_input_vars设置为％s以上的值"
+msgstr "您的表数超过了PHP配置允许我们显示/转换的表数。请将php.ini中的max_input_vars设置修改为高于%s的值"
 
 #: lib/installer.php:2827
 #, fuzzy
@@ -17977,9 +17977,9 @@ msgid "Your Cacti Server is now installing"
 msgstr "您的Cacti 服务器正在安装"
 
 #: lib/installer.php:3019
-#, fuzzy, php-format
+#, php-format
 msgid "Spawning background process: %s %s"
-msgstr "产生后台进程：％s％s"
+msgstr "产生后台进程：%s %s"
 
 #: lib/installer.php:3046
 msgid "Complete"
@@ -18008,9 +18008,9 @@ msgid "Get Started"
 msgstr "开始使用"
 
 #: lib/installer.php:3212
-#, fuzzy, php-format
+#, php-format
 msgid "Starting %s Process for v%s"
-msgstr "为v％s启动％s流程"
+msgstr "为v%s启动%s流程"
 
 #: lib/installer.php:3241
 #, fuzzy, php-format
