@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-21 02:36+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-21 02:39+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -3922,7 +3922,7 @@ msgstr[0] "删除数据源"
 #: data_sources.php:539
 msgid "Choose a new Device for this Data Source and click 'Continue'."
 msgid_plural "Choose a new Device for these Data Sources and click 'Continue'"
-msgstr[0] "为这个数据源选择一个新的设备然后点击 '继续'"
+msgstr[0] "为这个数据源选择一个新的设备然后点击'继续'"
 
 #: data_sources.php:541
 msgid "New Device:"
@@ -18690,7 +18690,7 @@ msgstr "用于非SSL通信的TCP/UDP端口。"
 
 #: user_domains.php:386
 msgid "TCP/UDP port for SSL communications."
-msgstr "TCP/UDP port for SSL communications."
+msgstr "用于SSL通信的TCP/UDP端口。"
 
 #: user_domains.php:395
 msgid "Protocol Version that the server supports."
@@ -19091,7 +19091,7 @@ msgstr "脚本超时"
 
 #: utilities.php:477
 msgid "Max OID"
-msgstr "Max OID"
+msgstr "最大 OID"
 
 #: utilities.php:482
 msgid "Last Run Statistics"
@@ -19159,7 +19159,7 @@ msgstr "PHP OS"
 
 #: utilities.php:733
 msgid "PHP uname"
-msgstr "PHP uname"
+msgstr "PHP 未命名"
 
 #: utilities.php:744
 msgid "PHP SNMP"
@@ -19786,7 +19786,7 @@ msgstr "选择这是什么类型的VDEF 项目."
 
 #: vdef.php:422
 msgid "VDEF Item Value"
-msgstr "VDEF Item Value"
+msgstr "VDEF 项目值"
 
 #: vdef.php:423
 msgid "Enter a value for this VDEF item."
