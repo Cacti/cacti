@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2024-06-21 02:14+0000\n"
+"PO-Revision-Date: 2024-06-21 02:21+0000\n"
 "Last-Translator: tql <fttx31@126.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
 "cacti/core/zh_Hans/>\n"
@@ -4396,7 +4396,7 @@ msgstr "输出字段 [编辑: %s]"
 
 #: data_input.php:430 include/global_form.php:660
 msgid "Output Field"
-msgstr "Output Field"
+msgstr "输出字段"
 
 #: data_input.php:432
 #, php-format
@@ -5182,7 +5182,7 @@ msgstr "(从数据模板)"
 
 #: data_sources.php:681
 msgid "Nothing Entered"
-msgstr "Nothing Entered"
+msgstr "无输入"
 
 #: data_sources.php:696 data_templates.php:923
 msgid "No Input Fields for the Selected Data Input Source"
@@ -6483,7 +6483,7 @@ msgstr "选择该图所属的设备."
 
 #: graphs.php:2314
 msgid "Supplemental Graph Template Data"
-msgstr "Supplemental Graph Template Data"
+msgstr "补充图形模板数据"
 
 #: graphs.php:2316
 msgid "Graph Fields"
@@ -7736,7 +7736,7 @@ msgstr "页面未定义。因此，它无法显示。"
 
 #: include/global_arrays.php:393
 msgid "Unexpected error occurred"
-msgstr "Unexpected error occurred"
+msgstr "出现意外错误"
 
 #: include/global_arrays.php:505 include/global_arrays.php:986
 msgid "Function"
@@ -7952,7 +7952,7 @@ msgstr "Ping 或SNMP Uptime"
 
 #: include/global_arrays.php:680
 msgid "SNMP Uptime"
-msgstr "SNMP Uptime"
+msgstr "SNMP 运行时间"
 
 #: include/global_arrays.php:681
 msgid "SNMP Desc"
