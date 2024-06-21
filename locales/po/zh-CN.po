@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2024-06-21 02:36+0000\n"
+"PO-Revision-Date: 2024-06-21 02:40+0000\n"
 "Last-Translator: tql <fttx31@126.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
 "cacti/core/zh_Hans/>\n"
@@ -5609,7 +5609,7 @@ msgstr "GPRINT 预设"
 
 #: gprint_presets.php:245 gprint_presets.php:379 include/global_arrays.php:1090
 msgid "GPRINTs"
-msgstr "GPRINTs"
+msgstr "图形输出"
 
 #: gprint_presets.php:349
 msgid "GPRINT Preset Name"
@@ -20828,7 +20828,7 @@ msgstr "脚本超时"
 
 #: support.php:390
 msgid "Max OID"
-msgstr "Max OID"
+msgstr "最大 OID"
 
 #: support.php:395
 msgid "Last Run Statistics"
@@ -20896,7 +20896,7 @@ msgstr "PHP OS"
 
 #: support.php:665
 msgid "PHP uname"
-msgstr "PHP uname"
+msgstr "PHP 未命名"
 
 #: support.php:677
 msgid "PHP SNMP"
@@ -21929,7 +21929,7 @@ msgstr "SSL 端口"
 
 #: user_domains.php:352
 msgid "TCP/UDP port for SSL communications."
-msgstr "TCP/UDP port for SSL communications."
+msgstr "用于SSL通信的TCP/UDP端口。"
 
 #: user_domains.php:360
 msgid "Protocol Version"
@@ -22926,7 +22926,7 @@ msgstr "选择这是什么类型的VDEF 项目."
 
 #: vdef.php:421
 msgid "VDEF Item Value"
-msgstr "VDEF Item Value"
+msgstr "VDEF 项目值"
 
 #: vdef.php:422
 msgid "Enter a value for this VDEF item."
