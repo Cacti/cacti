@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-21 02:11+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-21 02:13+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -1193,7 +1193,7 @@ msgstr "OS"
 
 #: automation_devices.php:284 host.php:1800 include/global_arrays.php:530
 msgid "Uptime"
-msgstr "Uptime"
+msgstr "运行时间"
 
 #: automation_devices.php:285 automation_devices.php:540
 #: include/global_arrays.php:1023 utilities.php:2083
@@ -1312,7 +1312,7 @@ msgstr "标题格式"
 
 #: automation_graph_rules.php:265 automation_tree_rules.php:267
 msgid "rule_name"
-msgstr "rule_name"
+msgstr "规则_名"
 
 #: automation_graph_rules.php:271 automation_tree_rules.php:273
 msgid "Click 'Continue' to enable the following Rule(s)."
@@ -1977,7 +1977,7 @@ msgstr "Ping 端口"
 
 #: automation_networks.php:727 include/global_form.php:1283
 msgid "TCP or UDP port to attempt connection."
-msgstr "TCP or UDP port to attempt connection."
+msgstr "尝试连接的TCP or UDP端口."
 
 #: automation_networks.php:733 include/global_form.php:1289
 #: include/global_settings.php:796
