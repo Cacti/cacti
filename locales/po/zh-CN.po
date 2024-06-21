@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2024-06-21 02:29+0000\n"
+"PO-Revision-Date: 2024-06-21 02:31+0000\n"
 "Last-Translator: tql <fttx31@126.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
 "cacti/core/zh_Hans/>\n"
@@ -15321,7 +15321,7 @@ msgstr "找到OID 重写规则: 's/%s/%s/'"
 #: lib/data_query.php:1049
 #, php-format
 msgid "oid_rewrite at OID: '%s' new OID: '%s'"
-msgstr "oid_rewrite at OID: '%s' new OID: '%s'"
+msgstr "oid_重写 at OID: '%s' 新 OID: '%s'"
 
 #: lib/data_query.php:1070
 #, php-format
@@ -15567,7 +15567,7 @@ msgstr "以普通用户身份登录"
 
 #: lib/functions.php:3958
 msgid "guest"
-msgstr "guest"
+msgstr "客户"
 
 #: lib/functions.php:3961 lib/functions.php:3984 lib/html.php:2729
 msgid "User Community"
@@ -15598,7 +15598,7 @@ msgstr "叶子"
 #: lib/functions.php:4154 lib/html_tree.php:729 lib/html_tree.php:767
 #: lib/html_tree.php:1002 lib/html_tree.php:1010 lib/html_tree.php:1609
 msgid "Non Query Based"
-msgstr "Non Query Based"
+msgstr "非基于查询"
 
 #: lib/functions.php:4190
 #, php-format
