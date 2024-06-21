@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2024-06-21 03:21+0000\n"
+"PO-Revision-Date: 2024-06-21 03:34+0000\n"
 "Last-Translator: tql <fttx31@126.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
 "cacti/core/zh_Hans/>\n"
@@ -3944,9 +3944,9 @@ msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Temp
 msgstr "颜色模板\"%s\"已推出%d个聚合模板，推出%d个非模板聚合"
 
 #: color_templates.php:764
-#, fuzzy, php-format
+#, php-format
 msgid "Color Template '%s' had no Aggregate Templates or Graphs using this Color Template."
-msgstr "颜色模板'％s'没有使用此颜色模板的聚合模板或图形。"
+msgstr "颜色模板'%s'没有使用此颜色模板的聚合模板或图形。"
 
 #: color_templates.php:818 color_templates.php:832 color_templates.php:903
 #: include/global_arrays.php:2815
@@ -4246,9 +4246,9 @@ msgid "Issue"
 msgstr "问题"
 
 #: data_debug.php:910
-#, fuzzy, php-format
+#, php-format
 msgid "For attribute '%s', issue found '%s'"
-msgstr "对于attrbitute'％s'，问题发现'％s'"
+msgstr "对于attrbitute'%s'，问题发现'%s'"
 
 #: data_debug.php:925
 #, fuzzy
@@ -4256,9 +4256,9 @@ msgid "Apply Suggested Fixes"
 msgstr "重新使用建议的名称"
 
 #: data_debug.php:925
-#, fuzzy, php-format
+#, php-format
 msgid "Repair Steps [ %s ]"
-msgstr "修复步骤[％s]"
+msgstr "修复步骤[ %s ]"
 
 #: data_debug.php:927
 #, fuzzy
@@ -6509,9 +6509,9 @@ msgid "Graph Management [ Non Device Based ]"
 msgstr "用户组管理 [编辑: %s]"
 
 #: graphs.php:2618
-#, fuzzy, php-format
+#, php-format
 msgid "Graph Management [ %s ]"
-msgstr "图形管理"
+msgstr "图形管理[ %s ]"
 
 #: graphs.php:2686
 #, fuzzy
@@ -6542,9 +6542,9 @@ msgid "Default Settings Saved"
 msgstr "默认设置已保存"
 
 #: graphs_new.php:338
-#, fuzzy, php-format
+#, php-format
 msgid "New Graphs for [ %s ] (%s %s)"
-msgstr "新图形 [ %s ]"
+msgstr "新图形 [ %s ] (%s %s)"
 
 #: graphs_new.php:340
 msgid "New Graphs for [ All Devices ]"
