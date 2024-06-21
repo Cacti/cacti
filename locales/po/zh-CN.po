@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-21 02:21+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-21 02:23+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -6319,7 +6319,7 @@ msgstr "日志文件和Syslog/Eventlog"
 
 #: include/global_arrays.php:675
 msgid "Syslog/Eventlog Only"
-msgstr "Syslog/Eventlog Only"
+msgstr "仅系统/事件日志"
 
 #: include/global_arrays.php:684
 msgid "SNMP getNext"
@@ -7078,17 +7078,17 @@ msgstr "Boost 之后"
 #: include/global_arrays.php:1604
 #, php-format
 msgid "%d MBytes"
-msgstr "%d MBytes"
+msgstr "%d 兆字节"
 
 #: include/global_arrays.php:1542
 msgid "1 GByte"
-msgstr "1 GByte"
+msgstr "1 千兆字节"
 
 #: include/global_arrays.php:1543 include/global_arrays.php:1606
 #: lib/boost.php:61
 #, php-format
 msgid "%s GBytes"
-msgstr "%s GBytes"
+msgstr "%s 千兆字节"
 
 #: include/global_arrays.php:1544 include/global_arrays.php:1545
 #: include/global_arrays.php:1607 include/global_arrays.php:1608
@@ -7096,7 +7096,7 @@ msgstr "%s GBytes"
 #: include/global_arrays.php:1611 include/global_arrays.php:1612
 #, php-format
 msgid "%d GBytes"
-msgstr "%d GBytes"
+msgstr "%d 千兆字节"
 
 #: include/global_arrays.php:1565
 msgid "2,000 Data Source Items"
