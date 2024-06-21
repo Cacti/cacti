@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-21 02:20+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-21 02:21+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -6184,7 +6184,7 @@ msgstr "正常"
 
 #: include/global_arrays.php:570
 msgid "Light"
-msgstr "Light"
+msgstr "轻"
 
 #: include/global_arrays.php:571 include/global_arrays.php:576
 msgid "Mono"
