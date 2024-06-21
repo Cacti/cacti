@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-21 02:23+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-21 02:28+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -7180,7 +7180,7 @@ msgstr "%s 分钟"
 
 #: include/global_arrays.php:1642
 msgid "1 Megabyte"
-msgstr "1 Megabyte"
+msgstr "1 兆字节"
 
 #: include/global_arrays.php:1643 include/global_arrays.php:1644
 #: include/global_arrays.php:1645 include/global_arrays.php:1646
@@ -7239,7 +7239,7 @@ msgstr "文本"
 
 #: include/global_arrays.php:1690 include/global_form.php:2267
 msgid "Tree"
-msgstr "Tree"
+msgstr "树"
 
 #: include/global_arrays.php:1693
 msgid "Horizontal Rule"
@@ -7822,7 +7822,7 @@ msgstr "查看SNMP Agent 通知日志"
 
 #: include/global_arrays.php:2552 vdef.php:579
 msgid "VDEF Items"
-msgstr "VDEF Items"
+msgstr "VDEF 项目"
 
 #: include/global_arrays.php:2558
 msgid "View SNMP Notification Receivers"
@@ -8327,7 +8327,7 @@ msgstr "数据输入之前可以通过的最大时间量为 '未知'. (通常是
 
 #: include/global_form.php:663 lib/html_utility.php:280
 msgid "Not Selected"
-msgstr "Not Selected"
+msgstr "未选择"
 
 #: include/global_form.php:664
 msgid "When data is gathered, the data for this field will be put into this data source."
@@ -8391,7 +8391,7 @@ msgstr "图形内图形区域的宽度(以像素为单位). 该区域不包括�
 
 #: include/global_form.php:743
 msgid "Base Value (--base)"
-msgstr "Base Value (--base)"
+msgstr "基础值 (--base)"
 
 #: include/global_form.php:747
 msgid "Should be set to 1024 for memory and 1000 for traffic measurements."
@@ -8632,7 +8632,7 @@ msgstr "项目的数据如何在图形上直观地表示出来."
 
 #: include/global_form.php:982
 msgid "The data source to use for this graph item."
-msgstr "The data source to use for this graph item."
+msgstr "用于此图形项的数据源。"
 
 #: include/global_form.php:989
 msgid "The color to use for the legend."
@@ -8664,7 +8664,7 @@ msgstr "CDEF (math) 函数应用于图形或图例上的这个项目."
 
 #: include/global_form.php:1014
 msgid "VDEF Function"
-msgstr "VDEF Function"
+msgstr "VDEF 功能"
 
 #: include/global_form.php:1019
 msgid "A VDEF (math) function to apply to this item on the graph legend."
@@ -9348,7 +9348,7 @@ msgstr "设备默认值"
 
 #: include/global_settings.php:41 include/global_settings.php:615
 msgid "Poller"
-msgstr "Poller"
+msgstr "轮询器"
 
 #: include/global_settings.php:42
 msgid "Data"
@@ -9396,7 +9396,7 @@ msgstr "PHP Mail() 函数"
 
 #: include/global_settings.php:85 lib/functions.php:5298
 msgid "Sendmail"
-msgstr "Sendmail"
+msgstr "发送邮件"
 
 #: include/global_settings.php:86 lib/functions.php:5303
 msgid "SMTP"
@@ -12476,7 +12476,7 @@ msgstr "系统:"
 
 #: lib/api_device.php:1580
 msgid "Uptime:"
-msgstr "Uptime:"
+msgstr "运行时间:"
 
 #: lib/api_device.php:1582
 msgid "Hostname:"
@@ -12505,7 +12505,7 @@ msgstr "新分支"
 
 #: lib/auth.php:557
 msgid "Web Basic"
-msgstr "Web Basic"
+msgstr "基于Web"
 
 #: lib/auth.php:2220
 msgid "Device:(Hide Disabled)"
@@ -12680,7 +12680,7 @@ msgstr " - 管理员过滤器有效"
 
 #: lib/clog_webapi.php:276
 msgid " - Admin Unfiltered"
-msgstr " - Admin Unfiltered"
+msgstr " - 管理员未筛选"
 
 #: lib/clog_webapi.php:279
 msgid " - Admin view"
