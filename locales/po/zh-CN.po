@@ -7810,7 +7810,7 @@ msgstr "正常"
 
 #: include/global_arrays.php:571
 msgid "Light"
-msgstr "Light"
+msgstr "轻"
 
 #: include/global_arrays.php:572 include/global_arrays.php:577
 msgid "Mono"
