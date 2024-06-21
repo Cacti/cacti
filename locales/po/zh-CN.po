@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2024-06-21 02:13+0000\n"
+"PO-Revision-Date: 2024-06-21 02:14+0000\n"
 "Last-Translator: tql <fttx31@126.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
 "cacti/core/zh_Hans/>\n"
@@ -2550,7 +2550,7 @@ msgstr "网络名字"
 
 #: automation_networks.php:1372
 msgid "Schedule"
-msgstr "Schedule"
+msgstr "计划表"
 
 #: automation_networks.php:1377
 msgid "Total IPs"
@@ -3649,7 +3649,7 @@ msgstr "使用此CDEF的图形模板的数量."
 
 #: cdef.php:907
 msgid "No CDEFs"
-msgstr "No CDEFs"
+msgstr "无 CDEFs"
 
 #: changelog.php:58
 msgid "Highlights"
