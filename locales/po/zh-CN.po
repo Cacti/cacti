@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2024-06-21 02:21+0000\n"
+"PO-Revision-Date: 2024-06-21 02:23+0000\n"
 "Last-Translator: tql <fttx31@126.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
 "cacti/core/zh_Hans/>\n"
@@ -7940,7 +7940,7 @@ msgstr "日志文件和Syslog/Eventlog"
 
 #: include/global_arrays.php:673
 msgid "Syslog/Eventlog Only"
-msgstr "Syslog/Eventlog Only"
+msgstr "仅系统/事件日志"
 
 #: include/global_arrays.php:678
 msgid "Ping and SNMP Uptime"
@@ -8791,17 +8791,17 @@ msgstr "Boost 之后"
 #: include/global_arrays.php:1680
 #, php-format
 msgid "%d MBytes"
-msgstr "%d MBytes"
+msgstr "%d 兆字节"
 
 #: include/global_arrays.php:1618
 msgid "1 GByte"
-msgstr "1 GByte"
+msgstr "1 千兆字节"
 
 #: include/global_arrays.php:1619 include/global_arrays.php:1682
 #: lib/boost.php:62
 #, php-format
 msgid "%s GBytes"
-msgstr "%s GBytes"
+msgstr "%s 千兆字节"
 
 #: include/global_arrays.php:1620 include/global_arrays.php:1621
 #: include/global_arrays.php:1683 include/global_arrays.php:1684
@@ -8809,7 +8809,7 @@ msgstr "%s GBytes"
 #: include/global_arrays.php:1687 include/global_arrays.php:1688
 #, php-format
 msgid "%d GBytes"
-msgstr "%d GBytes"
+msgstr "%d 千兆字节"
 
 #: include/global_arrays.php:1641
 msgid "2,000 Data Source Items"
