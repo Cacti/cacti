@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-21 02:39+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-21 02:43+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -4339,7 +4339,7 @@ msgstr "GPRINT 预设"
 
 #: gprint_presets.php:268 gprint_presets.php:415 include/global_arrays.php:1027
 msgid "GPRINTs"
-msgstr "GPRINTs"
+msgstr "图形输出"
 
 #: gprint_presets.php:385
 msgid "GPRINT Preset Name"
@@ -5490,7 +5490,7 @@ msgstr "SNMP 描述"
 
 #: host.php:1173
 msgid "SNMP GetNext"
-msgstr "SNMP GetNext"
+msgstr "SNMP 获得下一个"
 
 #: host.php:1246
 msgid "Delete Item from Device"
@@ -6323,7 +6323,7 @@ msgstr "仅系统/事件日志"
 
 #: include/global_arrays.php:684
 msgid "SNMP getNext"
-msgstr "SNMP getNext"
+msgstr "SNMP 获得下一个"
 
 #: include/global_arrays.php:689
 msgid "ICMP Ping"
