@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-21 02:14+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-21 02:20+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -2670,7 +2670,7 @@ msgstr "使用此CDEF的图形模板的数量."
 
 #: cdef.php:909
 msgid "No CDEFs"
-msgstr "No CDEFs"
+msgstr "无 CDEFs"
 
 #: color.php:170
 msgid "Unnamed Color"
@@ -3312,7 +3312,7 @@ msgstr "输出字段 [编辑: %s]"
 
 #: data_input.php:431 include/global_form.php:660
 msgid "Output Field"
-msgstr "Output Field"
+msgstr "输出字段"
 
 #: data_input.php:433
 #, php-format
@@ -3974,7 +3974,7 @@ msgstr "(从数据模板)"
 
 #: data_sources.php:687
 msgid "Nothing Entered"
-msgstr "Nothing Entered"
+msgstr "无输入"
 
 #: data_sources.php:702 data_templates.php:916
 msgid "No Input Fields for the Selected Data Input Source"
@@ -4982,7 +4982,7 @@ msgstr "选择该图所属的设备."
 
 #: graphs.php:1649
 msgid "Supplemental Graph Template Data"
-msgstr "Supplemental Graph Template Data"
+msgstr "补充图形模板数据"
 
 #: graphs.php:1651
 msgid "Graph Fields"
@@ -5478,7 +5478,7 @@ msgstr "Ping 和SNMP Uptime"
 
 #: host.php:1169 include/global_arrays.php:682
 msgid "SNMP Uptime"
-msgstr "SNMP Uptime"
+msgstr "SNMP 运行时间"
 
 #: host.php:1171 include/global_arrays.php:681
 msgid "Ping or SNMP Uptime"
@@ -6115,7 +6115,7 @@ msgstr "页面未定义。因此，它无法显示。"
 
 #: include/global_arrays.php:393
 msgid "Unexpected error occurred"
-msgstr "Unexpected error occurred"
+msgstr "出现意外错误"
 
 #: include/global_arrays.php:505 include/global_arrays.php:927
 msgid "Function"
