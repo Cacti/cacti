@@ -131,7 +131,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 			cacti_log("LOGIN: Authenticated user '" . $username . "' using guest account '" . $user['username'] . "'", false, 'AUTH');
 
 			if ($username != '' && get_template_account($username) == 0) {
-				raise_message('template_disabled', __('User was Authenticated, but the Template Account is disabled.  Using Guest Account'), MESSAGE_LEVEL_WARN);
+				raise_message('template_disabled', __('User was Authenticated, but the Template Account is disabled. Using Guest Account'), MESSAGE_LEVEL_WARN);
 			}
 
 			$guest_user = true;
@@ -152,13 +152,14 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 
 	/* We have a valid user, do final checks, log their login attempt, and redirect as required */
 	if (!$error && cacti_sizeof($user)) {
-		if (!$guest_user) {
-			cacti_log("LOGIN: User '" . $user['username'] . "' authenticated", false, 'AUTH');
-		} else {
-			cacti_log("LOGIN: Guest User '" . $user['username'] . "' in use", false, 'AUTH');
-		}
 
 		$client_addr = get_client_addr();
+
+		if (!$guest_user) {
+			cacti_log("LOGIN: User '" . $user['username'] . "' authenticated from IP Address '" . $client_addr . "'", false, 'AUTH');
+		} else {
+			cacti_log("LOGIN: Guest User '" . $user['username'] . "' in use from IP Address '" . $client_addr . "'", false, 'AUTH');
+		}
 
 		db_execute_prepared(
 			'INSERT IGNORE INTO user_log
