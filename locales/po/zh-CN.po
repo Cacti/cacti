@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-21 03:21+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-21 03:34+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -2886,9 +2886,9 @@ msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Temp
 msgstr "颜色模板\"%s\"已推出%d个聚合模板，推出%d个非模板聚合"
 
 #: color_templates.php:467
-#, fuzzy, php-format
+#, php-format
 msgid "Color Template '%s' had no Aggregate Templates or Graphs using this Color Template."
-msgstr "颜色模板'％s'没有使用此颜色模板的聚合模板或图形。"
+msgstr "颜色模板'%s'没有使用此颜色模板的聚合模板或图形。"
 
 #: color_templates.php:521 color_templates.php:535 color_templates.php:630
 #: include/global_arrays.php:2726
@@ -3192,18 +3192,18 @@ msgid "Issue"
 msgstr "问题"
 
 #: data_debug.php:890
-#, fuzzy, php-format
+#, php-format
 msgid "For attribute '%s', issue found '%s'"
-msgstr "对于attrbitute'％s'，问题发现'％s'"
+msgstr "对于attrbitute'%s'，问题发现'%s'"
 
 #: data_debug.php:905
 msgid "Apply Suggested Fixes"
 msgstr "重新使用建议的名称"
 
 #: data_debug.php:905
-#, fuzzy, php-format
+#, php-format
 msgid "Repair Steps [ %s ]"
-msgstr "修复步骤[％s]"
+msgstr "修复步骤[ %s ]"
 
 #: data_debug.php:907
 msgid "Repair Steps [ Run Fix from Command Line ]"
@@ -5005,9 +5005,9 @@ msgid "Graph Management [ Non Device Based ]"
 msgstr "用户组管理 [编辑: %s]"
 
 #: graphs.php:1982
-#, fuzzy, php-format
+#, php-format
 msgid "Graph Management [ %s ]"
-msgstr "图形管理"
+msgstr "图形管理[ %s ]"
 
 #: graphs.php:2052
 msgid "Graph Source"
@@ -5053,9 +5053,9 @@ msgid "Default Settings Saved"
 msgstr "默认设置已保存"
 
 #: graphs_new.php:346
-#, fuzzy, php-format
+#, php-format
 msgid "New Graphs for [ %s ] (%s %s)"
-msgstr "新图形 [ %s ]"
+msgstr "新图形 [ %s ] (%s %s)"
 
 #: graphs_new.php:348
 msgid "New Graphs for [ All Devices ]"
