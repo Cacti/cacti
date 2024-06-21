@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2024-06-21 03:15+0000\n"
+"PO-Revision-Date: 2024-06-21 03:19+0000\n"
 "Last-Translator: tql <fttx31@126.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
 "cacti/core/zh_Hans/>\n"
@@ -995,9 +995,9 @@ msgid "User was Authenticated, but the Template Account is disabled.  Using Gues
 msgstr "用户已通过身份验证，但模板帐户已禁用。使用访客帐户"
 
 #: auth_login.php:141
-#, fuzzy, php-format
+#, php-format
 msgid "Access Denied!  Guest user id %s does not exist.  Please contact your Administrator."
-msgstr "访问被拒绝,请联系Cacti 管理员."
+msgstr "访问被拒绝！来宾用户id %s不存在。请与管理员联系。"
 
 #: auth_login.php:180
 #, fuzzy
