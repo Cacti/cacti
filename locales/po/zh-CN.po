@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-21 02:43+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-21 03:15+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -6659,7 +6659,7 @@ msgstr "数据配置文件"
 #: include/global_arrays.php:1025 include/global_arrays.php:2528 vdef.php:696
 #: vdef.php:710 vdef.php:881
 msgid "VDEFs"
-msgstr "VDEFs"
+msgstr "VDEFs字串"
 
 #: include/global_arrays.php:1029 include/global_arrays.php:1073
 msgid "Import/Export"
@@ -12861,7 +12861,7 @@ msgstr "索引与本地数据关联完毕"
 #: lib/data_query.php:379
 #, php-format
 msgid "Update Re-Index Cache complete. There were %s index changes, and %s orphaned indexes."
-msgstr "更新重新索引缓存完毕.曾经有."
+msgstr "更新重新索引缓存已完成。存在%s个索引更改和%s个孤立索引。"
 
 #: lib/data_query.php:383
 msgid "Update Poller Cache for Query complete"
@@ -13110,7 +13110,7 @@ msgstr "为%s oid (%s)执行SNMP get"
 #: lib/data_query.php:1139 lib/data_query.php:1231 lib/data_query.php:1239
 #, php-format
 msgid "Sort field returned no data for OID[%s], skipping."
-msgstr "排序字段未返回OID[%s]数据,跳过中"
+msgstr "排序字段未返回OID[%s]数据,跳过中。"
 
 #: lib/data_query.php:1143
 #, php-format
@@ -14706,7 +14706,7 @@ msgstr "包文件"
 
 #: lib/import.php:2595
 msgid "[preview] "
-msgstr "[预览]"
+msgstr "[预览] "
 
 #: lib/import.php:2600
 msgid "Cacti would make the following changes if the Template was imported:"
@@ -14726,7 +14726,7 @@ msgstr "[失败]"
 
 #: lib/import.php:2621
 msgid "[preview]"
-msgstr "[预览]"
+msgstr "[预览] "
 
 #: lib/import.php:2625
 msgid "[updated]"
@@ -14820,7 +14820,7 @@ msgstr "请向Cacti Group 报告."
 #: lib/installer.php:1579
 #, php-format
 msgid "Unknown Reason: %s"
-msgstr "未知的原因:% s"
+msgstr "未知的原因:%s"
 
 #: lib/installer.php:1586
 #, php-format
