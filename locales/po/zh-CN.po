@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2024-06-21 02:33+0000\n"
+"PO-Revision-Date: 2024-06-21 02:36+0000\n"
 "Last-Translator: tql <fttx31@126.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
 "cacti/core/zh_Hans/>\n"
@@ -19729,9 +19729,8 @@ msgid "WARNING: Main Cacti database offline or in recovery"
 msgstr "警告：主 Cacti 数据库离线或正在恢复"
 
 #: poller_automation.php:1035 poller_automation.php:1089
-#, fuzzy
 msgid "Cacti Primary Admin"
-msgstr "Cacti Primary Admin"
+msgstr "Cacti 主要管理员"
 
 #: poller_automation.php:1187
 #, fuzzy
@@ -20992,7 +20991,7 @@ msgstr "WARNING: 遇到导出错误. 请刷新浏览器窗口查看细节!"
 
 #: templates_export.php:107
 msgid "What would you like to export?"
-msgstr "What would you like to export?"
+msgstr "你想导出什么?"
 
 #: templates_export.php:108
 msgid "Select the Template type that you wish to export from Cacti."
@@ -21098,9 +21097,7 @@ msgstr ""
 
 #: templates_import.php:333
 msgid "Some CDEF Items will not import due to an export error! Contact Template provider for an updated export."
-msgstr ""
-"Some CDEF Items will not import due to an export error! Contact Template "
-"provider for an updated export."
+msgstr "由于导出错误，某些CDEF项目将无法导入！请与模板提供商联系以获取更新的导出。"
 
 #: templates_import.php:374 templates_import.php:461
 msgid "Import Template"
@@ -21271,7 +21268,7 @@ msgstr "要编辑树,您必须先解锁,然后为自己将其锁定"
 
 #: tree.php:855
 msgid "Tree Items"
-msgstr "Tree Items"
+msgstr "树项目"
 
 #: tree.php:863
 msgid "Available Sites"
@@ -21445,7 +21442,7 @@ msgstr "复制用户"
 
 #: user_admin.php:372
 msgid "Template Username:"
-msgstr "Template Username:"
+msgstr "模板用户名:"
 
 #: user_admin.php:377
 msgid "Username:"
@@ -21924,7 +21921,7 @@ msgstr "端口标准"
 
 #: user_domains.php:343
 msgid "TCP/UDP port for Non SSL communications."
-msgstr "TCP/UDP port for Non SSL communications."
+msgstr "用于非SSL通信的TCP/UDP端口。"
 
 #: user_domains.php:351
 msgid "Port SSL"
