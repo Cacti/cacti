@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2024-06-20 15:11+0000\n"
+"PO-Revision-Date: 2024-06-21 02:11+0000\n"
 "Last-Translator: tql <fttx31@126.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
 "cacti/core/zh_Hans/>\n"
@@ -424,7 +424,7 @@ msgstr "RRDtool 命令:"
 
 #: aggregate_graphs.php:1186 graph.php:656 graphs.php:2350
 msgid "RRDtool Says:"
-msgstr "RRDtool Says:"
+msgstr "RRDtool 说:"
 
 #: aggregate_graphs.php:1187 graph.php:661 graphs.php:2352
 msgid "Not Checked"
@@ -933,7 +933,7 @@ msgstr "最近 %d 次使用过的密码无法重复使用"
 
 #: auth_changepassword.php:380
 msgid "There are problems with the Change Password page.  Contact your Cacti administrator right away."
-msgstr ""
+msgstr "更改密码页面有问题。请立即联系您的Cacti管理员。"
 
 #: auth_changepassword.php:387
 msgid "Please enter your current password and your new<br>Cacti password."
@@ -3610,7 +3610,7 @@ msgstr "项目值"
 #: cdef.php:601 vdef.php:597
 #, php-format
 msgid "Item #%d"
-msgstr "项 #%d "
+msgstr "项 #%d"
 
 #: cdef.php:677
 msgid "Delete CDEF Item"
@@ -3972,9 +3972,8 @@ msgid "Delete Check"
 msgstr "删除检查"
 
 #: data_debug.php:52
-#, fuzzy
 msgid "Data Source debug started."
-msgstr "数据源调试"
+msgstr "数据源调试."
 
 #: data_debug.php:55
 #, fuzzy
@@ -4299,7 +4298,7 @@ msgstr ""
 
 #: data_debug.php:1081
 msgid "Run checks on currently filtered Data Sources and preserve other results"
-msgstr ""
+msgstr "对当前过滤的数据源运行检查并保留其他结果"
 
 #: data_debug.php:1089 data_sources.php:1421 data_templates.php:1052
 #: lib/html.php:2742
@@ -4365,9 +4364,8 @@ msgid "Duplicate Data Input Methods"
 msgstr "删除数据输入法"
 
 #: data_input.php:261
-#, fuzzy
 msgid "Input Name:"
-msgstr "数据输入名称"
+msgstr "数据输入名称:"
 
 #: data_input.php:292
 msgid "Click 'Continue' to delete the following Data Input Field."
@@ -4653,7 +4651,7 @@ msgstr "添加数据源名称建议的名称"
 #: data_queries.php:1097
 #, php-format
 msgid "The Data Query ID [%s] that you are trying to Edit does not exist.  Please run the repair_database.php CLI script to resolve this database issue."
-msgstr ""
+msgstr "您尝试编辑的数据查询ID[%s]不存在。请运行repair_database. php CLI脚本来解决此数据库问题。"
 
 #: data_queries.php:1102
 #, php-format
@@ -4872,7 +4870,7 @@ msgstr "每个数据源的 %s KBytes"
 
 #: data_source_profiles.php:810
 msgid "Enter a valid number of Rows to obtain the RRA size."
-msgstr ""
+msgstr "输入有效的行数以获取RRA大小。"
 
 #: data_source_profiles.php:824 include/global_arrays.php:802
 #: include/global_arrays.php:803 include/global_arrays.php:804
@@ -5229,14 +5227,12 @@ msgid "Edit Data Template."
 msgstr "编辑数据模板."
 
 #: data_sources.php:870
-#, fuzzy
 msgid "Disable Data Source."
-msgstr "禁用数据源"
+msgstr "禁用数据源."
 
 #: data_sources.php:870
-#, fuzzy
 msgid "Enable Data Source."
-msgstr "启用数据源"
+msgstr "启用数据源."
 
 #: data_sources.php:936
 msgid "Selected Data Template"
@@ -5935,7 +5931,7 @@ msgstr "这个图形模板的名称."
 
 #: graph_templates.php:1609
 msgid "Graph Templates that are in use cannot be Deleted.  In use is defined as being referenced by a Graph."
-msgstr "正在由Graph引用的图形模板不能被删除. "
+msgstr "正在由Graph引用的图形模板不能被删除."
 
 #: graph_templates.php:1615
 msgid "The number of Graphs using this Graph Template."
@@ -6160,9 +6156,8 @@ msgid "Create Aggregate from Template"
 msgstr "从模板创建聚合"
 
 #: graphs.php:210 graphs.php:225
-#, fuzzy
 msgid "No Device - "
-msgstr "无设备"
+msgstr "无设备 - "
 
 #: graphs.php:315
 #, php-format
@@ -6456,9 +6451,9 @@ msgid "Edit Graph Template."
 msgstr "编辑图形模板."
 
 #: graphs.php:2205
-#, fuzzy, php-format
+#, php-format
 msgid "Edit Data Source: '%s'."
-msgstr "数据源 [%s]"
+msgstr "数据源: '%s'."
 
 #: graphs.php:2214
 msgid "Unlock Graph."
@@ -6680,7 +6675,7 @@ msgstr "Cacti的GitHub站"
 
 #: help.php:82
 msgid "Open a ticket at "
-msgstr ""
+msgstr "在以下位置开票 "
 
 #: help.php:82
 #, php-format
@@ -6710,9 +6705,8 @@ msgid "Place Device on Report"
 msgstr "将设备放置在树上"
 
 #: host.php:131
-#, fuzzy
 msgid "Data Query Re-indexed."
-msgstr "数据查询索引"
+msgstr "数据查询索引."
 
 #: host.php:140
 #, fuzzy
@@ -6725,9 +6719,8 @@ msgid "Device Debugging Enabled for Device."
 msgstr "为设备启用设备调试。"
 
 #: host.php:167
-#, fuzzy
 msgid "Device Debugging Disabled for Device."
-msgstr "设备已禁用"
+msgstr "设备已禁用."
 
 #: host.php:175
 #, fuzzy
@@ -6735,9 +6728,8 @@ msgid "Poller Cache for Device Refreshed."
 msgstr "刷新设备的轮询缓存。"
 
 #: host.php:177
-#, fuzzy
 msgid "ERROR: Invalid Device ID."
-msgstr "ERROR: 设备["
+msgstr "ERROR: 设备."
 
 #: host.php:215
 #, fuzzy, php-format
@@ -7392,7 +7384,7 @@ msgstr "此数据采集器最后一次与主Cacti 站点完全同步"
 
 #: include/global.php:634
 msgid "The Main Data Collector has gone to an Offline or Recovering Status"
-msgstr ""
+msgstr "主数据收集器已进入离线或恢复状态"
 
 #: include/global_arrays.php:147
 msgid "Save Successful."
@@ -7404,7 +7396,7 @@ msgstr "保存失败."
 
 #: include/global_arrays.php:153
 msgid "Save Failed due to field input errors (Check red fields)."
-msgstr "由于字段输入错误而保存失败 (请检查红色字段)"
+msgstr "由于字段输入错误而保存失败 (请检查红色字段)."
 
 #: include/global_arrays.php:156
 msgid "Passwords do not match, please retype."
@@ -7631,7 +7623,7 @@ msgstr "不支持修改基于LDAP/AD 的密码."
 
 #: include/global_arrays.php:315
 msgid "Password successfully changed."
-msgstr "密码已成功更改 "
+msgstr "密码已成功更改."
 
 #: include/global_arrays.php:318
 msgid "Unable to clear log, no write permissions"
@@ -7717,7 +7709,7 @@ msgstr "无法添加图形.当前用户不是所有者"
 
 #: include/global_arrays.php:375
 msgid "Unable to Add all Graphs.  See error message for details."
-msgstr "无法添加所有图形.详情请参考报错信息"
+msgstr "无法添加所有图形.详情请参考报错信息."
 
 #: include/global_arrays.php:378
 msgid "You must select at least one Graph to add to a Report."
@@ -7790,7 +7782,7 @@ msgstr "索引重建可通过手动运行脚本或设备自动化进行."
 
 #: include/global_arrays.php:538
 msgid "When the Devices SNMP uptime goes backward, a Re-Index will be performed."
-msgstr "设备SNMP Uptime 减少时,将重建索引"
+msgstr "设备SNMP Uptime 减少时,将重建索引."
 
 #: include/global_arrays.php:539
 msgid "When the Data Query index count changes, a Re-Index will be performed."
@@ -8473,11 +8465,11 @@ msgstr ""
 
 #: include/global_arrays.php:1165
 msgid "ILO, IPMI, iDrac, etc."
-msgstr ""
+msgstr "ILO、IPMI、iDrac等."
 
 #: include/global_arrays.php:1166
 msgid "Licensing Related"
-msgstr ""
+msgstr "相关许可"
 
 #: include/global_arrays.php:1167
 msgid "Linux Related"
@@ -8509,7 +8501,7 @@ msgstr "网络过滤器"
 
 #: include/global_arrays.php:1173
 msgid "Power Related PDUs/STS, etc."
-msgstr ""
+msgstr "电源相关PDU/STS等."
 
 #: include/global_arrays.php:1174
 #, fuzzy
@@ -10756,11 +10748,11 @@ msgstr "显示用户指向浏览器的页面."
 
 #: include/global_form.php:1633
 msgid "Show the default console screen."
-msgstr "控制台默认显示"
+msgstr "控制台默认显示."
 
 #: include/global_form.php:1637
 msgid "Show the default graph screen."
-msgstr "图形默认显示"
+msgstr "图形默认显示."
 
 #: include/global_form.php:1643 user_log.php:286
 msgid "Authentication Realm"
@@ -11007,7 +10999,7 @@ msgstr "应该用于此规则项目的字段名称."
 
 #: include/global_form.php:2164 include/global_form.php:2206
 msgid "Operator."
-msgstr "操作员"
+msgstr "操作员."
 
 #: include/global_form.php:2171 include/global_form.php:2213
 #: include/global_form.php:2356
@@ -11515,9 +11507,8 @@ msgid "Other Settings"
 msgstr "其他设置"
 
 #: include/global_settings.php:468
-#, fuzzy
 msgid "Show only site specific locations"
-msgstr "在这里设置任何图形特定选项."
+msgstr "在这里设置任何图形特定选项"
 
 #: include/global_settings.php:469
 msgid "Show only locations that are available at a devices selected site."
@@ -14177,7 +14168,7 @@ msgstr "为网络<a href=\"%s\">创建设备</a>"
 #: index.php:72
 #, php-format
 msgid "<a href=\"%s\">Create graphs</a> for your new devices"
-msgstr "为新设备<a href=\"%s\">创建图形</a> "
+msgstr "为新设备<a href=\"%s\">创建图形</a>"
 
 #: index.php:73
 #, php-format
@@ -14682,15 +14673,15 @@ msgid "Device:(Hide Disabled)"
 msgstr "设备已禁用"
 
 #: lib/auth.php:2322 lib/auth.php:2324 lib/auth.php:2330 lib/auth.php:2332
-#, fuzzy, php-format
+#, php-format
 msgid "Graph:(%s%s)"
-msgstr "图形:"
+msgstr "图形:(%s%s)"
 
 #: lib/auth.php:2345 lib/auth.php:2351 lib/auth.php:2418 lib/auth.php:2420
 #: lib/auth.php:2424 lib/auth.php:2426
-#, fuzzy, php-format
+#, php-format
 msgid "Device:(%s%s)"
-msgstr "设备:"
+msgstr "设备:(%s%s)"
 
 #: lib/auth.php:2359 lib/auth.php:2365 lib/auth.php:2434 lib/auth.php:2436
 #: lib/auth.php:2440 lib/auth.php:2442
@@ -14699,24 +14690,22 @@ msgid "Template:(%s%s)"
 msgstr "阈值模板 :(%s%s)"
 
 #: lib/auth.php:2372
-#, fuzzy, php-format
+#, php-format
 msgid "Graph+Device+Template:(%s%s)"
-msgstr "设备模板:"
+msgstr "设备模板:(%s%s)"
 
 #: lib/auth.php:2409 lib/auth.php:2411
-#, fuzzy, php-format
+#, php-format
 msgid "Device+Template:(%s%s)"
-msgstr "设备模板:"
+msgstr "设备模板:(%s%s)"
 
 #: lib/auth.php:2455 lib/auth.php:2462 lib/auth.php:2471
-#, fuzzy
 msgid "Restricted By: "
-msgstr "受限的"
+msgstr "受限的: "
 
 #: lib/auth.php:2459
-#, fuzzy
 msgid "Granted By: "
-msgstr "授予访问权限"
+msgstr "授予访问权限: "
 
 #: lib/auth.php:2466
 msgid "Granted"
@@ -15053,9 +15042,9 @@ msgid "Index Change Detected! CurrentIndex: %s, PreviousIndex: %s"
 msgstr "检测到索引更改! 当前索引: %s, 之前的索引: %s"
 
 #: lib/data_query.php:329
-#, fuzzy, php-format
+#, php-format
 msgid "Transient Index Removal Detected! PreviousIndex: %s.  No action taken."
-msgstr "检测到索引删除! 之前的索引: %s"
+msgstr "检测到索引删除! 之前的索引: %s."
 
 #: lib/data_query.php:332
 #, php-format
@@ -15092,9 +15081,9 @@ msgid "Index Association with Local Data complete"
 msgstr "索引与本地数据关联完毕"
 
 #: lib/data_query.php:398
-#, fuzzy, php-format
+#, php-format
 msgid "Update Re-Index Cache complete. There were %s index changes, and %s orphaned indexes."
-msgstr "更新重新索引缓存完毕.曾经有"
+msgstr "更新重新索引缓存完毕.曾经有."
 
 #: lib/data_query.php:402
 #, fuzzy
@@ -15116,9 +15105,8 @@ msgid "Plugin hooks complete"
 msgstr "插件钩子完成"
 
 #: lib/data_query.php:510
-#, fuzzy
 msgid "Checking for Sort Field change.  No changes detected."
-msgstr "检查排序字段更改.未检测到任何更改"
+msgstr "检查排序字段更改.未检测到任何更改."
 
 #: lib/data_query.php:515
 #, fuzzy, php-format
@@ -15214,9 +15202,9 @@ msgid "Click to show Data Query output for field '%s'"
 msgstr "点击以显示字段'%s'的数据查询输出"
 
 #: lib/data_query.php:747
-#, fuzzy, php-format
+#, php-format
 msgid "Sort field returned no data for field name %s, skipping"
-msgstr "排序字段未返回任何数据.无法继续重新索引."
+msgstr "排序字段未返回字段名%s数据, 跳过中"
 
 #: lib/data_query.php:749
 #, php-format
@@ -15351,9 +15339,9 @@ msgid "Executing SNMP get for %s oids (%s)"
 msgstr "为%s oid (%s)执行SNMP get"
 
 #: lib/data_query.php:1173 lib/data_query.php:1266 lib/data_query.php:1275
-#, fuzzy, php-format
+#, php-format
 msgid "Sort field returned no data for OID[%s], skipping."
-msgstr "返回的排序字段不是数据.无法继续重新索引OID [%s]"
+msgstr "排序字段未返回OID[%s]数据,跳过中"
 
 #: lib/data_query.php:1177
 #, php-format
@@ -15466,9 +15454,9 @@ msgid "Failed to alter password field length, can not continue as may corrupt pa
 msgstr "无法更改密码字段长度,无法继续,因为可能会损坏密码"
 
 #: lib/dsdebug.php:175
-#, fuzzy, php-format
+#, php-format
 msgid "Data Source ID %s does not exist"
-msgstr "数据源不存在."
+msgstr "数据源ID %s不存在"
 
 #: lib/dsdebug.php:259
 #, fuzzy
@@ -15476,9 +15464,8 @@ msgid "Debug not completed after 5 pollings"
 msgstr "采集5次之后调试还未完毕"
 
 #: lib/dsdebug.php:260
-#, fuzzy
 msgid "Failed fields: "
-msgstr "失败的字段:"
+msgstr "失败的字段: "
 
 #: lib/dsdebug.php:269
 #, fuzzy
@@ -15486,14 +15473,14 @@ msgid "Data Source is not set as Active"
 msgstr "数据源未设置为活跃"
 
 #: lib/dsdebug.php:277
-#, fuzzy, php-format
+#, php-format
 msgid "RRDfile Folder (rra) is not writable by Poller.  Folder owner: %s.  Poller runs as: %s"
-msgstr "Poller 无法写入RRD 文件夹. RRD 所有者:"
+msgstr "Poller 无法写入RRD文件夹. RRD 所有者: %s.  Poller runs as: %s"
 
 #: lib/dsdebug.php:282
-#, fuzzy, php-format
+#, php-format
 msgid "RRDfile is not writable by Poller.  RRDfile owner: %s.  Poller runs as %s"
-msgstr "Poller 无法写入RRD 文件. RRD所有者:"
+msgstr "Poller 无法写入RRD 文件. RRD所有者: %s.  Poller runs as %s"
 
 #: lib/dsdebug.php:291
 #, fuzzy
@@ -15506,9 +15493,8 @@ msgid "RRDfile not updated after polling"
 msgstr "采集之后,RRD 文件未更新"
 
 #: lib/dsdebug.php:303
-#, fuzzy
 msgid "Data Source returned Bad Results for "
-msgstr "数据源返回糟糕的结果"
+msgstr "数据源返回糟糕的结果 "
 
 #: lib/dsdebug.php:308
 #, fuzzy
@@ -15568,13 +15554,12 @@ msgid "Error %s is not readable"
 msgstr "出错: %s 不可读"
 
 #: lib/functions.php:3958
-#, fuzzy
 msgid "Logged in a Guest"
-msgstr "当前登录的用户为:"
+msgstr "当前登录的用户为"
 
 #: lib/functions.php:3958 lib/functions.php:3974
 msgid "Logged in as"
-msgstr "当前登录的用户为:"
+msgstr "当前登录的用户为"
 
 #: lib/functions.php:3958
 msgid "Login as Regular User"
@@ -15642,7 +15627,7 @@ msgstr "连接失败: %s"
 
 #: lib/functions.php:5710
 msgid "SMTP error: "
-msgstr "SMTP error:"
+msgstr "SMTP error: "
 
 #: lib/functions.php:5723
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
@@ -16502,7 +16487,7 @@ msgstr "图形宽度"
 
 #: lib/html_reports.php:112
 msgid "The Graph width in pixels."
-msgstr "图形宽度(以像素为单位)"
+msgstr "以像素为单位的图形宽度."
 
 #: lib/html_reports.php:116
 msgid "Graph Height"
@@ -16534,7 +16519,7 @@ msgstr "报告周期"
 
 #: lib/html_reports.php:146
 msgid "Defines a Report Frequency relative to the given Mailtime above."
-msgstr "定义相对于上面给定Mailtime 的报告频率"
+msgstr "定义相对于上面给定Mailtime 的报告频率."
 
 #: lib/html_reports.php:147
 msgid "e.g. 'Week(s)' represents a weekly Reporting Interval."
@@ -16770,9 +16755,8 @@ msgid "Should all Branch Graphs be rendered?"
 msgstr "是否应该渲染所有子分支图形?"
 
 #: lib/html_reports.php:1020
-#, fuzzy
 msgid "Select a Site to filter for Devices and Graphs."
-msgstr "选择一个设备来指定一个图"
+msgstr "选择一个设备来指定一个图."
 
 #: lib/html_reports.php:1030
 #, fuzzy
@@ -16910,9 +16894,9 @@ msgid ", Using RegEx: \"%s\""
 msgstr ", 使用正则表达式：“%s”"
 
 #: lib/html_reports.php:1699
-#, fuzzy, php-format
+#, php-format
 msgid "Tree: %s"
-msgstr "树:"
+msgstr "树: %s"
 
 #: lib/html_reports.php:1710
 #, fuzzy, php-format
@@ -17329,7 +17313,7 @@ msgstr "确保您已阅读并遵循安装Cacti 所需的步骤,然后再继续. 
 #: lib/installer.php:1904
 #, php-format
 msgid "This process will guide you through the steps for upgrading from version '%s'. "
-msgstr "此过程将指导您完成从版本 '%s' 升级的步骤."
+msgstr "此过程将指导您完成从版本 '%s' 升级的步骤. "
 
 #: lib/installer.php:1905
 #, fuzzy, php-format
@@ -17354,7 +17338,7 @@ msgstr "接受GPL 许可协议"
 
 #: lib/installer.php:1959
 msgid "Select default theme: "
-msgstr "选择默认主题:"
+msgstr "选择默认主题: "
 
 #: lib/installer.php:1982
 msgid "Pre-installation Checks"
@@ -17873,7 +17857,7 @@ msgstr "您的服务器排序规则似乎符合UTF8 标准"
 
 #: lib/installer.php:2787
 msgid "Your server collation does NOT appear to be fully UTF8 compliant. "
-msgstr "您的服务器排序规则似乎不完全符合UTF8 标准."
+msgstr "您的服务器排序规则似乎不完全符合UTF8 标准. "
 
 #: lib/installer.php:2788
 #, fuzzy
@@ -17890,12 +17874,13 @@ msgstr "您的数据库默认排序规则似乎符合UTF8"
 
 #: lib/installer.php:2804
 msgid "Your database default collation does NOT appear to be full UTF8 compliant. "
-msgstr "您的数据库默认排序规则似乎不符合UTF8标准."
+msgstr "您的数据库默认排序规则似乎不符合UTF8标准. "
 
 #: lib/installer.php:2805
-#, fuzzy
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr "如果排序规则不匹配,则插件创建的任何表都可能存在与Cacti Core 表链接的问题.请运行以下命令,确保将数据库更改为 'utf8mb4_unicode_ci':"
+msgstr ""
+"如果排序规则不匹配,则插件创建的任何表都可能存在与Cacti Core 表链接的问题.   请运行以下命令,确保将数据库更改为 "
+"'utf8mb4_unicode_ci': "
 
 #: lib/installer.php:2812
 #, fuzzy
@@ -17930,7 +17915,8 @@ msgstr "列格式"
 
 #: lib/installer.php:2865
 msgid "One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: "
-msgstr "一个或多个表太大而无法在安装期间进行转换.您应该使用脚本 cli/convert_tables.php 来执行转换,然后刷新此页面.例如:"
+msgstr ""
+"一个或多个表太大而无法在安装期间进行转换.  您应该使用脚本 cli/convert_tables.php 来执行转换,然后刷新此页面.例如: "
 
 #: lib/installer.php:2869
 #, fuzzy
@@ -18420,12 +18406,12 @@ msgstr "由于设置原因, Ping 不能执行."
 #: lib/plugins.php:674
 #, php-format
 msgid "%s Version %s or above is required for %s. "
-msgstr "%s 版本 %s 或以上是 %s 所必需的."
+msgstr "%s 版本 %s 或以上是 %s 所必需的. "
 
 #: lib/plugins.php:678
 #, php-format
 msgid "%s is required for %s, and it is not installed. "
-msgstr "%s 是必需的 %s, 且未安装."
+msgstr "%s 是必需的 %s, 且未安装. "
 
 #: lib/plugins.php:701
 msgid "Plugin cannot be installed."
@@ -18464,9 +18450,9 @@ msgid "Not Stated"
 msgstr "没有说明"
 
 #: lib/reports.php:144
-#, fuzzy, php-format
+#, php-format
 msgid "Device '%s' successfully added to Report."
-msgstr "添加到Cacti"
+msgstr "设备'%s'成功添加到Report."
 
 #: lib/reports.php:147
 #, fuzzy
@@ -18540,12 +18526,12 @@ msgstr "所需的RRD步长为'%s'"
 #: lib/rrd.php:3168
 #, php-format
 msgid "Type for Data Source '%s' should be '%s'"
-msgstr "数据源'%s' 的类型应该是'%s' "
+msgstr "数据源'%s' 的类型应该是'%s'"
 
 #: lib/rrd.php:3174
 #, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
-msgstr "数据源'%s' 的心跳应该是'%s' "
+msgstr "数据源'%s' 的心跳应该是'%s'"
 
 #: lib/rrd.php:3186
 #, php-format
@@ -18590,7 +18576,7 @@ msgstr "在RRDfile中缺少RRA '%s'"
 #: lib/rrd.php:3292
 #, php-format
 msgid "RRA '%s' missing in Cacti definition"
-msgstr "在Cacti 定义中缺少RRA'%s' "
+msgstr "在Cacti 定义中缺少RRA'%s'"
 
 #: lib/rrd.php:3313
 msgid "RRD File Information"
@@ -19403,9 +19389,8 @@ msgid "The package download or validation failed"
 msgstr ""
 
 #: package_import.php:413
-#, fuzzy
 msgid "Package XML File Damaged."
-msgstr "包文件"
+msgstr "包文件XML损坏."
 
 #: package_import.php:413
 msgid "The XML files appears to be invalid.  Please contact the package author"
@@ -19482,7 +19467,7 @@ msgstr "孤立的"
 
 #: package_import.php:707
 msgid "File Differences for: "
-msgstr ""
+msgstr "文件差异: "
 
 #: package_import.php:814
 #, fuzzy
@@ -19715,9 +19700,8 @@ msgid "Maximum runtime of %d seconds exceeded for Poller[%d]. Exiting."
 msgstr "超出 %d 秒的最大运行时间. 退出."
 
 #: poller.php:913
-#, fuzzy
 msgid "WARNING: Cacti Polling Cycle Exceeded Poller Interval by "
-msgstr "警告：仙人掌轮询周期超过轮询间隔"
+msgstr "警告：仙人掌轮询周期超过轮询间隔 "
 
 #: poller.php:1196
 #, php-format
@@ -19953,9 +19937,8 @@ msgid "You have already used this database hostname '%s'.  Please enter a non-du
 msgstr "您已经使用了此数据库主机名'％s'。请输入一个非重复的数据库主机名。"
 
 #: pollers.php:560
-#, fuzzy
 msgid "Data Collector Statistics cleared."
-msgstr "数据来源统计"
+msgstr "数据收集统计信息清除."
 
 #: pollers.php:594
 #, fuzzy
@@ -20789,17 +20772,15 @@ msgstr "没有项目可采集"
 
 #: support.php:291 support.php:298
 msgid "Name: "
-msgstr "名称："
+msgstr "名称: "
 
 #: support.php:291
-#, fuzzy
 msgid "Procs: "
-msgstr "1个进程"
+msgstr "1个进程: "
 
 #: support.php:298
-#, fuzzy
 msgid "Threads: "
-msgstr "线程"
+msgstr "线程: "
 
 #: support.php:304
 msgid "Concurrent Processes"
@@ -20824,9 +20805,8 @@ msgid "Local Server: Current: %s, Min Required: %s"
 msgstr "当前：%s，最低要求：%s"
 
 #: support.php:377
-#, fuzzy
 msgid "Minimum Connections:"
-msgstr "测试连接"
+msgstr "测试连接:"
 
 #: support.php:379
 #, fuzzy
@@ -20871,9 +20851,8 @@ msgid "MySQL/MariaDB Memory Statistics (Source: MySQL Tuner)"
 msgstr ""
 
 #: support.php:571 support.php:580 support.php:586
-#, fuzzy
 msgid "Max Total Memory Possible"
-msgstr "poller 允许使用的的最大内存:"
+msgstr "poller 允许使用的的最大内存"
 
 #: support.php:576
 #, php-format
@@ -20881,9 +20860,8 @@ msgid "Reduce MySQL/MariaDB Memory to less than 80% of System Memory.  Preserve 
 msgstr ""
 
 #: support.php:594 support.php:599 support.php:627
-#, fuzzy
 msgid "Max Core Memory Possible"
-msgstr "poller 允许使用的的最大内存:"
+msgstr "poller 允许使用的的最大内存"
 
 #: support.php:595
 msgid "Reduce Total Core Memory"
@@ -21429,14 +21407,12 @@ msgid "Batch Copy"
 msgstr "批量复制"
 
 #: user_admin.php:270
-#, fuzzy
 msgid "You are not allowed to delete the current login account"
-msgstr "您不允许更改您的密码."
+msgstr "您不允许删除当前登陆账号"
 
 #: user_admin.php:282
-#, fuzzy
 msgid "You are not allowed to disable the current login account"
-msgstr "您不允许更改您的密码."
+msgstr "您不允许禁用当前登陆账号"
 
 #: user_admin.php:361
 #, fuzzy
@@ -22422,9 +22398,8 @@ msgid "Click 'Continue' to purge the User Log.<br><br><br>Note: If logging is se
 msgstr "单击 '继续' 以清空日志文件.<br> <br> <br>注意: 如果将日志记录设置为Cacti 和Syslog,则日志信息将保留在Syslog 中."
 
 #: utilities.php:111
-#, fuzzy
 msgid "Data Source Statistics Purged."
-msgstr "数据来源统计"
+msgstr "数据来源统计清除."
 
 #: utilities.php:354
 msgid "Display Order"
@@ -22545,9 +22520,10 @@ msgid "Rebuild Poller Cache"
 msgstr "重建poller 缓存"
 
 #: utilities.php:1214
-#, fuzzy
 msgid "The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems."
-msgstr "如果您选择此选项,则将重新生成poller 缓存.如果在崩溃后遇到问题并且已经运行数据库修复工具,则只有在发生数据库崩溃的情况下才使用此选项;或者,如果您遇到问题 使用特定的设备,只需重新保存该设备以重建其poller 缓存即可.还有一个与此命令等效的命令行界面,建议用于大型系统.<i class=\"deviceDown\"> 注意: 在大型系统 ,这个命令可能需要几分钟到几个小时才能完成,因此不应该从Cacti 界面运行.您可以在命令行运行 'php -q cli/rebuild_poller_cache.php --help' 以获取更多信息.</ i>"
+msgstr ""
+"如果选择此选项，将重新生成轮询器缓存。仅在数据库崩溃的情况下使用此选项，如果您在崩溃后遇到问题并且已经运行了数据库修复工具。或者，如果您在特定设备上遇到问"
+"题，只需重新保存该设备以重建其轮询器缓存。还有一个与此命令等效的命令行界面，建议用于大型系统."
 
 #: utilities.php:1216
 msgid "NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run 'php -q cli/rebuild_poller_cache.php --help' at the command line for more information."
@@ -22605,7 +22581,7 @@ msgstr "重建SNMPAgent 缓存"
 
 #: utilities.php:1252
 msgid "The SNMP cache will be cleared and re-generated if you select this option. Note that it takes another poller run to restore the SNMP cache completely."
-msgstr "如果您选择此选项,SNMP 缓存将被清除并重新生成. 请注意,它需要另一个poller 才能完全恢复SNMP 缓存"
+msgstr "如果您选择此选项,SNMP 缓存将被清除并重新生成. 请注意,它需要另一个poller 才能完全恢复SNMP 缓存."
 
 #: utilities.php:1257
 #, fuzzy
@@ -22653,18 +22629,16 @@ msgid "Running Processes:"
 msgstr "运行进程："
 
 #: utilities.php:1548
-#, fuzzy
 msgid "Total Poller Items:"
-msgstr "poller 缓存项目"
+msgstr "poller 缓存项目:"
 
 #: utilities.php:1554
 msgid "Total Data Sources:"
 msgstr "数据源计数:"
 
 #: utilities.php:1558
-#, fuzzy
 msgid "Remaining Data Sources:"
-msgstr "删除数据源"
+msgstr "删除数据源:"
 
 #: utilities.php:1558
 msgid "TBD"
@@ -22809,9 +22783,8 @@ msgid "Update Frequency:"
 msgstr "更新频率:"
 
 #: utilities.php:1760
-#, fuzzy
 msgid "Concurrent Processes:"
-msgstr "并发进程"
+msgstr "并发进程:"
 
 #: utilities.php:1763
 msgid "Next Start Time:"
@@ -22985,7 +22958,7 @@ msgstr "VDEF 的名称."
 
 #: vdef.php:882
 msgid "VDEFs that are in use cannot be Deleted. In use is defined as being referenced by a Graph or a Graph Template."
-msgstr "正在由图形或图形模板引用的VDEF 不能被删除. "
+msgstr "正在由图形或图形模板引用的VDEF 不能被删除."
 
 #: vdef.php:888
 msgid "The number of Graphs using this VDEF."
