@@ -1104,9 +1104,9 @@ msgid "Added manually through device automation interface."
 msgstr "通过设备自动化接口手动添加."
 
 #: automation_devices.php:123
-#, fuzzy, php-format
+#, php-format
 msgid "Device %s Added to Cacti"
-msgstr "添加到Cacti"
+msgstr "设备%s已添加到Cacti"
 
 #: automation_devices.php:125
 #, fuzzy, php-format
