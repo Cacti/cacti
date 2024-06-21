@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2024-06-21 02:11+0000\n"
+"PO-Revision-Date: 2024-06-21 02:13+0000\n"
 "Last-Translator: tql <fttx31@126.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
 "cacti/core/zh_Hans/>\n"
@@ -1386,7 +1386,7 @@ msgstr "OS"
 
 #: automation_devices.php:343 host.php:1787 include/global_arrays.php:531
 msgid "Uptime"
-msgstr "Uptime"
+msgstr "运行时间"
 
 #: automation_devices.php:348 automation_devices.php:659
 #: include/global_arrays.php:1086 utilities.php:1003
@@ -2466,7 +2466,7 @@ msgstr "Ping 端口"
 
 #: automation_networks.php:1057 include/global_form.php:1291
 msgid "TCP or UDP port to attempt connection."
-msgstr "TCP or UDP port to attempt connection."
+msgstr "尝试连接的TCP or UDP端口."
 
 #: automation_networks.php:1063 include/global_form.php:1297
 #: include/global_settings.php:896
