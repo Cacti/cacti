@@ -27,19 +27,22 @@ let midWinter_tap_clientX = 0;
 let midWinter_tap_clientY = 0;
 
 /* cache local and vendor libs */
-let midWinter_classes = new Array();
-loadScript('navigationBox', 'include/themes/midwinter/midwinter.js');
-loadScript('navigationTree', 'include/themes/midwinter/midwinter.jstree.js');
-loadScript('hotkeys', 'include/themes/midwinter/vendor/hotkeys/hotkeys.min.js');
-loadScript('mark', 'include/themes/midwinter/vendor/mark/jquery.mark.js');
-loadScript('moment', 'include/themes/midwinter/vendor/moment/moment.min.js');
-loadScript('daterangepicker', 'include/themes/midwinter/vendor/daterangepicker/daterangepicker.js');
+let midWinter_classes = [];
+let midWinter_path = 'include/themes/midwinter/';
+
+loadScript('navigationBox',	midWinter_path + 'midwinter.js');
+loadScript('navigationTree',	midWinter_path + 'midwinter.jstree.js');
+loadScript('hotkeys',			midWinter_path + 'vendor/hotkeys/hotkeys.min.js');
+loadScript('mark',			midWinter_path + 'vendor/mark/jquery.mark.js');
+loadScript('moment',			midWinter_path + 'vendor/moment/moment.min.js');
+loadScript('daterangepicker',	midWinter_path + 'vendor/daterangepicker/daterangepicker.js');
 
 /* global functionalities and default values */
-initStorageItem('midWinter_Color_Mode', 'dark', 'theme-color');
-initStorageItem('midWinter_Color_Mode_Auto', 'on', 'theme-color-auto');
-initStorageItem('midWinter_Font_Size', '75', 'zoom-level');
-initStorageItem('midWinter_Animations', 'on', 'animations');
+initStorageItem('midWinter_Color_Mode',			'dark',	'theme-color');
+initStorageItem('midWinter_Color_Mode_Auto',		'on',	'theme-color-auto');
+initStorageItem('midWinter_Font_Size',			'75',	'zoom-level');
+initStorageItem('midWinter_Animations',			'on',	'animations');
+initStorageItem('midWinter_Auto_Table_Layout',	'on',	'auto-table-layout');
 
 setHotKeys();
 
@@ -53,15 +56,15 @@ function themeReady() {
 	setThemeColor();
 
 	hideConsoleNavigation();
-	setupTree();
+	//setupTree();
 	setupThemeActions();
-
 	themeLoader('off');
 }
 
 function hideConsoleNavigation() {
-	$('[class^="mdw-ConsoleNavigationBox"][data-helper!="tree"]').removeClass('visible');
-	$('.compact_nav_icon[data-helper!="tree"]').removeClass('active');
+	$('[class^="mdw-ConsoleNavigationBox"]').removeClass('visible');
+	//$('[class^="mdw-ConsoleNavigationBox"][data-helper!="tree"]').removeClass('visible');
+	$('.compact_nav_icon[data-helper!="tree"]').removeClass('selected');
 }
 
 function updateAjaxAnchors() {
@@ -78,18 +81,7 @@ function updateAjaxAnchors() {
 
 		/* update menu selection */
 		if ($(this).hasClass('pic')) {
-			$(this).addClass('selected');
-		}
-
-		/* update menu selection */
-		if ($(this).hasClass('lefttab')) {
-			$('.lefttab').removeClass('selected');
-			$(this).addClass('selected');
-		}
-
-		/* update menu selection */
-		if ($(this).hasClass('righttab')) {
-			$('.righttab').removeClass('selected');
+			$('a[class="pic selected"]').removeClass('selected');
 			$(this).addClass('selected');
 		}
 
@@ -97,14 +89,9 @@ function updateAjaxAnchors() {
 			pageName = basename(href);
 		}
 
-		/* --------------- start MidWinter mod --------------- */
-		// set a marker if this a menu action
-		$(this).closest('div[class^="cactiConsoleNavigation"]').addClass('active');
+		/* close the console navigation afterward */
+		$('[class^="mdw-ConsoleNavigationBox"]').removeClass('visible');
 
-		// close the console navigation afterward
-		$('[class^="mdw-ConsoleNavigationBox"][data-helper!="tree"]').removeClass('visible');
-
-		/* ---------------- end MidWinter mod ---------------- */
 		loadUrl({url:href});
 		return false;
 	});
@@ -124,6 +111,11 @@ function midWinterNavigation(element) {
 		"click", {param: 'force_open', filter: category}, toggleCactiNavigationBox
 	);
 	$('#navBreadCrumb .action').html( action );
+
+	if (helper !== undefined) {
+		$('.compact_nav_icon[data-helper="'+helper+'"]').addClass('mdw-active');
+		$('.compact_nav_icon[data-helper!="'+helper+'"]').removeClass('mdw-active');
+	}
 
 }
 
@@ -147,15 +139,9 @@ function updateNavigation() {
 }
 
 function setupTheme() {
-	let storage = Storages.localStorage;
-	let midWinter_Color_Mode = storage.get('midWinter_Color_Mode');
-	let midWinter_Color_Mode_Auto = storage.get('midWinter_Color_Mode_Auto');
-	let midWinter_Font_Size = storage.get('midWinter_Font_Size');
-	let midWinter_widthNavigationBox_dashboards = storage.get('midWinter_widthNavigationBox_dashboards');
-	let midWinter_Animations = storage.get('midWinter_Animations');
 
 	// -- login, logout -- rewrite
-	if ($('.cactiAuthBody').length !== 0 && $('.cactiAuthMotto').length === 0 ) {
+	if ($('.cactiAuthBody').length !== 0 && $('.cactiAuthArea legend').text() !== 'WELCOME TO CACTI') {
 		/* modify login area and element */
 		$('.cactiAuthArea legend').text('WELCOME TO CACTI');
 
@@ -170,22 +156,34 @@ function setupTheme() {
 				if( $(this).attr('type') === 'password' || $(this).attr('type') === 'text' ) {
 					if ($(this).attr('name') !== undefined) {
 						$(this).appendTo('.cactiAuth');
+						if($(this).attr('type') === 'password') {
+							switch ($(this).attr('id')) {
+								case 'current':
+									$(this).attr('placeholder', 'Current Password');
+									break;
+								case 'password':
+									$(this).attr('placeholder', 'New Password');
+									break;
+								case 'password_confirm':
+									$(this).attr('placeholder', 'Confirm Password');
+									break;
+								default:
+							}
+							$('<i class="fas fa-lock" data-helper="' + $(this).attr('id') + '" data-func="togglePwdInputField"></i>').insertAfter($(this));
+						}
 					}
 				}else {
 					$(this).appendTo('.cactiAuth');
 				}
 			}
 		)
-
 		let welcome = $(cactiAuthTable).find('td').eq(0).html();
 		$('<span>'+welcome+'</span>').prependTo('.cactiAuth');
 		cactiAuthTable = undefined;
 
-		$('<i class="far fa-user"></i>').insertAfter('#login_username');
-		$('<i class="fas fa-lock"></i>').insertAfter('input[type="password"]');
+		$('.versionInfo').detach().appendTo('.cactiAuthBody');
 
-		/* add theme motto */
-		$('<div class="cactiAuthMotto"><h3>MIDWINTER</h3><h6>A RESPONSIVE CACTI GUI FOR YOU</h6></div>').appendTo('.cactiAuthBody');
+		$('<i class="far fa-user"></i>').insertAfter('#login_username');
 	}
 
 
@@ -218,10 +216,10 @@ function setupTheme() {
 			'</div>' +
 			'<div id="mdw-ConsoleNavigation" class="mdw-ConsoleNavigation"></div>' +
 			'<div id="mdw-Main" class="mdw-Main">' +
-				'<div id="mdw-DockTop" class="mdw-DockTop"></div>'+
-				'<div id="mdw-DockLeft" class="mdw-DockLeft"></div>'+
-				'<div id="mdw-DockRight" class="mdw-DockRight"></div>' +
-				'<div id="mdw-DockBottom" class="mdw-DockBottom"></div>'+
+				'<div id="mdw-DockTop" class="mdw-DockTop invisible" data-helper="displayDockTop"></div>'+
+				'<div id="mdw-DockLeft" class="mdw-DockLeft invisible"></div>'+
+				'<div id="mdw-DockRight" class="mdw-DockRight invisible"></div>' +
+				'<div id="mdw-DockBottom" class="mdw-DockBottom invisible"></div>'+
 			'</div>' +
 		'</div>'
 	).
@@ -236,12 +234,12 @@ function setupTheme() {
 	if ($('.mdw-ConsoleNavigation').length !== 0) {
 
 		if ($('#navBackdrop').length === 0 ) {
-			$('.mdw-ConsoleNavigation').empty().prepend('<div class="compact_nav_icon_menu" id="navBackdrop"></div>');
+			$('.mdw-ConsoleNavigation').empty().prepend('<div class="compact_nav_icon_menu">' +
+				'<div class="compact_nav_icon navBackdrop" id="navBackdrop"></div></div>');
 			if (cactiConsoleAllowed) {
 				$("#navBackdrop").click( function() {
 					/* hide open menu boxes first and remove menu selection */
 					$('[class^="cactiConsoleNavigation"]').removeClass('visible');
-					$('.compact_nav_icon').removeClass('active');
 					loadUrl({url:urlPath+'index.php'});
 				});
 			} else {
@@ -258,13 +256,14 @@ function setupTheme() {
 				element_menu = loadElement('menu', 'about.php', true);
 			}
 
+
 			$('.mdw-ConsoleNavigation').append(
 				'<div class="compact_nav_icon_menu" id="compact_tab_menu"></div>'
 				+'<div class="compact_nav_icon_menu" id="compact_user_menu"></div>'
 			);
 
 			/* dashboards */
-			new navigationButton('dashboards', 'Dashboards', 'fas fa-th-large', '#compact_tab_menu').build();
+			new navigationButton('dashboards', 'Dashboards', 'fas fa-th-large', '#compact_tab_menu').show();
 			new navigationBox(cactiDashboards, 'dashboards', 'full','auto', {
 				close: false,
 				search: 'searchToHighlight',
@@ -273,7 +272,7 @@ function setupTheme() {
 
 			/* settings */
 			if (cactiConsoleAllowed) {
-				new navigationButton('settings', 'Settings', 'fas fa-cogs', '#compact_tab_menu').build();
+				new navigationButton('settings', 'Settings', 'fas fa-cogs', '#compact_tab_menu');
 				new navigationBox(zoom_i18n_settings, 'settings', 'full', 'auto', {
 					close: false,
 					search: 'searchToHighlight',
@@ -283,7 +282,7 @@ function setupTheme() {
 
 			/* tree */
 			if (cactiGraphsAllowed) {
-				new navigationButton('tree', 'Tree View','fas fa-seedling', '#compact_tab_menu').build();
+				new navigationButton('tree', 'Tree View','fas fa-seedling', '#compact_tab_menu').show();
 				new navigationBox( 'Tree', 'tree', 'full', 'auto', {
 					close: false,
 					search: 'searchCactiTree',
@@ -292,7 +291,7 @@ function setupTheme() {
 			}
 
 			/* user help */
-			new navigationButton('help', 'Help', 'far fa-comment-alt', '#compact_user_menu').build();
+			new navigationButton('help', 'Help', 'far fa-comment-alt', '#compact_user_menu').show();
 			new navigationBox(help, 'help', 'half', '2', {
 				close: false,
 				search: false,
@@ -300,7 +299,7 @@ function setupTheme() {
 			}, 'left', justCacti+' &reg; v'+cactiVersion).build();
 
 			/* user settings */
-			new navigationButton('user', 'User Settings', 'far fa-user', '#compact_user_menu').build();
+			new navigationButton('user', 'User Settings', 'far fa-user', '#compact_user_menu').show();
 			new navigationBox( cactiUser, 'user', 'half', '2', {
 				close: false,
 				search: false,
@@ -308,21 +307,23 @@ function setupTheme() {
 			}, 'left', $('.loggedInAs').text() ).build();
 
 			/* log out */
-			new navigationButton('logout', 'Sign Out','fas fa-sign-out-alt', '#compact_user_menu', 'redirect', urlPath+'logout.php').build();
+			new navigationButton('logout', 'Sign Out','fas fa-sign-out-alt', '#compact_user_menu', 'redirect', urlPath+'logout.php').show();
 
 			/* table filters */
-	  		new navigationBox( 'Table Setup', 'displayOptions', 'full', '1', {
-				close: false,
+	  		new navigationBox( 'Table Layout', 'displayOptions', 'full', '1', {
+				close: true,
 				search: false,
-				resize: false
-			}, 'right','Table Setup', 'auto').build();
-			new navigationButton('toggleColorMode', 'Toggle light/dark Mode', 'fas fa-adjust', '#navControl', 'toggleColorMode', 'on').build();
-			new navigationButton('kioskMode', 'Enable Kiosk Mode', 'fas fa-tv', '#navControl', 'kioskMode', 'on').build();
+				resize: false,
+				dock: false,
+			}, 'right','Table Layout', 'auto').build();
+			new navigationButton('toggleColorMode', 'Toggle light/dark Mode', 'fas fa-adjust', '#navControl', 'toggleColorMode', 'on').show();
+			new navigationButton('kioskMode', 'Enable Kiosk Mode', 'fas fa-tv', '#navControl', 'kioskMode', 'on').show();
 		}
 	}
 
 	/* CLEAN UP */
 	$('#menu_main_console').remove();
+	$('a.menu_parent').removeClass('mdw-active');
 
 	/* replace default icons */
 	$('i.menu_glyph:not(.ignore).fa-home').removeClass('fa fa-home').addClass('fa fa-tools');
@@ -332,8 +333,7 @@ function setupTheme() {
 	$('i.menu_glyph:not(.ignore).fa-chart-area').removeClass('fa fa-chart-area').addClass('fa fa-plus');
 	$('i.menu_glyph.fa-cogs').removeClass('fa fa-cogs').addClass('fa fa-toolbox');
 	$('i.menu_glyph.fa-superpowers').removeClass('fab fa-superpowers').addClass('fas fa-network-wired');
-	$('i.fa-angle-double-down').removeClass('fa fa-angle-double-down').addClass('fas fa-chevron-down');
-	$('i.fa-angle-double-up').removeClass('fa fa-angle-double-up').addClass('fas fa-chevron-up');
+
 
 	/* hide settings icon if the user got access to console only for e.g. Intropage, but nothing else */
 	if($('[class^="mdw-ConsoleNavigationBox"][data-helper="settings"]').has('li').length === 0) {
@@ -344,7 +344,15 @@ function setupTheme() {
 }
 
 function setupThemeActions() {
-	$('[data-scope="theme"][id^="mdw_"], a[data-scope="theme"]').off().on('click', function(e) {
+	$('[data-scope="theme"][id^="mdw_"]:not([type="range"]), ' +
+		'a[data-scope="theme"], ' +
+		'i[data-func!=""][data-func]'
+	).off().on('click', function(e) {
+		let fname = $(this).attr('data-func');
+		if(is_function(fname)) window[fname](e);
+	});
+
+	$('input[type="range"][data-scope="theme"][id^="mdw_"]').off().on('change', function(e) {
 		let fname = $(this).attr('data-func');
 		if(is_function(fname)) window[fname](e);
 	});
@@ -376,18 +384,21 @@ function toggleCactiNavigationBox(event) {
 	/* hide open dropdown menu */
 	hideDropDownMenu();
 
-	$('#mdw-ConsoleNavigation .compact_nav_icon:not([data-helper="' + helper + '"])').removeClass('active');
+	$('#mdw-ConsoleNavigation .compact_nav_icon:not([data-helper="' + helper + '"])').removeClass('selected');
 	$('#mdw-SideBarContainer [class^="mdw-ConsoleNavigationBox"]:not([data-helper="' + helper + '"]) > div').scrollTop(0);
 	$('#mdw-SideBarContainer [class^="mdw-ConsoleNavigationBox"]:not([data-helper="' + helper + '"])').removeClass('visible');
 
 	let navigationBox = $('[class^="mdw-ConsoleNavigationBox"][data-helper="' + helper + '"]');
+	let compact_nav_icon = $('[class^="compact_nav_icon"][data-helper="' + helper + '"]');
 
 	if(event.data.param === 'on') {
-		$(this).toggleClass('active');
+		$(this).toggleClass('selected');
 		navigationBox.toggleClass('visible');
+		$(this).trigger('blur');
 	}else if(event.data.param === 'force_open') {
-		$(this).addClass('active');
+		$(this).addClass('selected');
 		navigationBox.addClass('visible');
+		compact_nav_icon.addClass('selected');
 		if(event.data && event.data.filter) {
 			let navBox_input_field = $("input[name=navBox-search]", navigationBox);
 			$('.navBox-search', navigationBox).removeClass('hide');
@@ -398,8 +409,23 @@ function toggleCactiNavigationBox(event) {
 			}
 		}
 	}else if(event.data.param === 'force_close') {
-		$(this).removeClass('active');
+		$(this).removeClass('selected').trigger('blur');
 		navigationBox.removeClass('visible');
+	}
+}
+
+function toggleCactiNavigationBoxPin(event) {
+	let helper = $(this).attr('data-helper');
+	let navigationBox = $('[class^="mdw-ConsoleNavigationBox"][data-helper="' + helper + '"]');
+	let compact_nav_icon = $('[class^="compact_nav_icon"][data-helper="' + helper + '"]');
+
+	if(event.data && event.data.dock) {
+		event.data.dock = event.data.dock.replace(/^./, str => str.toUpperCase());
+	}
+
+	if(/^(?:Left|Right|Top|Bottom)$/.test(event.data.dock)) {
+		navigationBox.detach().appendTo($("#mdw-Dock" + event.data.dock));
+		$("#mdw-Dock" + event.data.dock).removeClass('invisible');
 	}
 }
 
@@ -411,10 +437,10 @@ function toggleCactiDockNavigationBox(event) {
 	}
 
 	if(event.data.param === 'on') {
-		$(this).toggleClass('active');
+		$(this).toggleClass('selected');
 	}
 
-	$('[class^="mdw-ConsoleNavigationBox"][data-helper="' + helper + '"]').toggleClass('hide');
+	$('[class^="mdw-Dock"][data-helper="' + helper + '"]').toggleClass('invisible');
 }
 
 function toggleDropDownMenu(event) {
@@ -475,6 +501,21 @@ function resetTableColumns(event) {
 	$('#mdw-columns-reset').addClass('inactive');
 }
 
+function togglePwdInputField(event) {
+	let helper = event.target.getAttribute('data-helper');
+
+	let destination = $('input[id="' + helper + '"]');
+	if ( destination.length) {
+		if(destination.attr('type') === 'password') {
+			destination.attr('type', 'text');
+		}else {
+			destination.attr('type', 'password');
+		}
+		event.target.classList.toggle('fa-lock')
+		event.target.classList.toggle('fa-lock-open');
+	}
+}
+
 function setupDefaultElements() {
 	let storage = Storages.localStorage;
 	var pageName = basename($(location).attr('pathname'));
@@ -526,19 +567,14 @@ function setupDefaultElements() {
 		$('.stickyContainer').remove();
 	}
 
-	if ($("#main .filterTable").length) {
-		$('#navFilter > div[data-helper="displayOptions"]').removeClass('hide');
+	let btn_filter 	= new navigationButton('displayDockTop', 'Show Filter Dock','fas fa-filter', '#navFilter', 'toggleCactiDockNavigationBox', 'Top');
+	let btn_calendar	= new navigationButton('daterangepicker', 'Select Timeframe', 'fas fa-calendar-alt', '#navFilter', '', '');
+	let btn_add		= new navigationButton('formAction', 'Add','fas fa-plus', '#navFilter');
 
+	if ($("#main .filterTable").length) {
 		let filter;
 		filter = $("#main .filterTable:first").closest('div').detach();
 		$(".mdw-DockTop").html(filter);
-		//$('[class^="mdw-ConsoleNavigationBox"][data-helper="displayOptions"] .tab-filters').html(filter);
-
-		/* default setup */
-//		$('<div id="filterTableOnTop" class="stickyContainer"><div id="filterTableOnTopContent"></div><div id="filterTableOnTopControl"></div></div>').prependTo('#navigation_right');
-//		new navigationButton('daterangepicker', 'Select Timeframe', 'fas fa-calendar-alt', '#navFilter', '', '').build();
-		new navigationButton('displayOptions', 'Setup Table Columns','fas fa-sliders-h', '#navFilter').build();
-		//		new navigationButton('hideTopNavBar', 'fas fa-chevron-up', '#filterTableOnTopControl', 'toggleTopNavBar', 'off').build();
 
 		/* custom content */
 		if($("#main >div:first .filterTable:first").closest('div').length === 1) {
@@ -549,9 +585,10 @@ function setupDefaultElements() {
 			$('#filterTableOnTop .cactiTableTitle').detach();
 			$("#filterTableOnTop").removeClass('hide');
 		}
+		btn_filter.show();
 	}else {
-		$('#navFilter > div[data-helper="displayOptions"]').addClass('hide');
 		$(".mdw-DockTop").html('');
+		btn_filter.hide();
 	}
 
 	// ensure that table tabs shown within #main will stay on top
@@ -565,6 +602,8 @@ function setupDefaultElements() {
 		$("#tabsOnTop").removeClass('hide');
 	}
 
+	/* display option: table layout */
+	let btn_table_layout = new navigationButton('displayOptions', 'Setup Table Layout','fas fa-sliders-h', '#navFilter');
 
 	if ($('tr.tableHeader').length !== 0) {
 		let cArray = [];
@@ -586,6 +625,15 @@ function setupDefaultElements() {
 		let tableHash = cyrb53(window.location.pathname + tableID + cHeaderStr);
 		let table_settings;
 		let storage_table_headers = storage.get('midWinter_' + tableHash);
+
+
+		/* internal structure of storage_table_headers as follows
+		*	[0] - contains a cached string of classes hiding all unselected columns (by user) to save processing cycles
+			[1] - contains all table columns identified described as follows
+				  [ index, internal name |n/a|, title |n/a|, hide-able |0|, visible |1| ]
+			[2] - contains i18n session locale
+		*/
+
 
 		/* make this table addressable */
 		$('#'+tableID).attr('data-table', tableHash);
@@ -663,11 +711,12 @@ function setupDefaultElements() {
 
 			$('[class^="mdw-ConsoleNavigationBox"][data-helper="displayOptions"] .tab-columns').html(columns_filter);
 			$('#mdw-columns-reset').off().on('click', resetTableColumns);
+			btn_table_layout.show();
 		}
 	}else {
 		$('[class^="mdw-ConsoleNavigationBox"][data-helper="displayOptions"] .tab-columns').html('');
+		btn_table_layout.hide();
 	}
-
 
 	// Add nice search filter to filters
 	if ($('input[id="filter"]').length > 0 && $('input[id="filter"] > i[class="fa fa-search filter"]').length < 1) {
@@ -917,14 +966,21 @@ function toggleColorModeAuto() {
 	storage.set('midWinter_Color_Mode_Auto', midWinter_Color_Mode_Auto);
 	setDocumentAttribute('theme-color-auto', midWinter_Color_Mode_Auto);
 	setThemeColor();
+	/* update output field beside input selector */
+	$('#mdw_themeColorModeAutoValue').val(midWinter_Color_Mode_Auto);
 }
 
 function changeGuiFontSize() {
 	let storage = Storages.localStorage;
 	let midWinter_Font_Size = storage.get('midWinter_Font_Size');
+	let midWinter_FontSizeValue = 0;
 	midWinter_Font_Size = $('#mdw_themeFontSize').val();
+	midWinter_FontSizeValue = parseFloat(midWinter_Font_Size) + 25;
+
 	storage.set('midWinter_Font_Size', midWinter_Font_Size);
 	setDocumentAttribute('zoom-level', midWinter_Font_Size);
+	/* update output field beside input selector */
+	$('#mdw_themeFontSizeValue').val(midWinter_FontSizeValue + '%');
 }
 
 function toggleGuiAnimations() {
@@ -933,6 +989,18 @@ function toggleGuiAnimations() {
 	midWinter_Animations = (midWinter_Animations === 'on') ? 'off' : 'on';
 	storage.set('midWinter_Animations', midWinter_Animations);
 	setDocumentAttribute('animations', midWinter_Animations);
+	/* update output field beside input selector */
+	$('#mdw_themeAnimationsValue').val(midWinter_Animations);
+}
+
+function toggleAutoTableLayout() {
+	let storage = Storages.localStorage;
+	let midWinter_Auto_Table_Layout = storage.get('midWinter_Auto_Table_Layout');
+	midWinter_Auto_Table_Layout= (midWinter_Auto_Table_Layout === 'on') ? 'off' : 'on';
+	storage.set('midWinter_Auto_Table_Layout', midWinter_Auto_Table_Layout);
+	setDocumentAttribute('auto-table-layout', midWinter_Auto_Table_Layout);
+	/* update output field beside input selector */
+	$('#mdw_themeAutoTableLayoutValue').val(midWinter_Auto_Table_Layout);
 }
 
 function setThemeColor() {

@@ -16,10 +16,19 @@ html {
 body {
     min-height: 100dvh;
 }
-
+/*
 img, picture svg, video {
     display: block;
     max-width: 100%;
+}
+
+*/
+
+ul {
+    padding: revert;
+    &[class] {
+        list-style: none;
+    }
 }
 
 code,

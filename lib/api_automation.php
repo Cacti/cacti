@@ -1248,7 +1248,7 @@ function display_matching_trees($rule_id, $rule_type, $item, $url) {
 			LEFT JOIN sites s
 			ON h.site_id = s.id
 			LEFT JOIN host_template AS ht
-			ON (h.host_template_id=ht.id)';
+			ON (h.host_template_id = ht.id)';
 
 		$sql_where = 'WHERE h.deleted = ""';
 	} elseif ($leaf_type == TREE_ITEM_TYPE_GRAPH) {
@@ -1307,7 +1307,14 @@ function display_matching_trees($rule_id, $rule_type, $item, $url) {
 	$sql_filter = build_matching_objects_filter($rule_id, AUTOMATION_RULE_TYPE_TREE_MATCH);
 
 	$templates = array();
-	$sql_field = $item['field'] . ' AS source ';
+
+	if (api_automation_column_exists($item['field'], array('host', 'host_template', 'graph_local', 'graph_templates_graph', 'graph_templates'))) {
+		$sql_field = $item['field'] . ' AS source ';
+	} else {
+		$sql_field = '"SQL Injection" AS source ';
+		cacti_log('Attempted SQL Injection found in Tree Automation for the field variable.', false, 'AUTOM8');
+		raise_message('sql_injection', __('Attempted SQL Injection found in Tree Automation for the field variable.'), MESSAGE_LEVEL_ERROR);
+	}
 
 	/* now we build up a new query for counting the rows */
 	if (db_column_exists('sites', 'disabled')) {
@@ -1402,7 +1409,21 @@ function display_matching_trees($rule_id, $rule_type, $item, $url) {
 	}
 }
 
-function display_match_rule_items($title, &$rule, $rule_type, $module) {
+function api_automation_column_exists($column, $tables) {
+	$column = str_replace(array('h.', 'ht.', 'gt.', 'gl.', 'gtg.'), '', 1);
+
+	if (cacti_sizeof($tables)) {
+		foreach($tables as $table) {
+			if (db_column_exists($table, $column)) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 	global $automation_op_array, $automation_oper, $automation_tree_header_types;
 
 	$rule_id = $rule['id'];
@@ -3493,20 +3514,18 @@ function automation_add_tree($host_id, $tree) {
 function automation_find_os($sysDescr, $sysObject, $sysName) {
 	$sql_where  = '';
 
-	$qsysObject = trim(db_qstr($sysObject), "'");
-	$qsysDescr  = trim(db_qstr($sysDescr), "'");
-	$qsysName   = trim(db_qstr($sysName), "'");
+	$sql_where .= "WHERE (? REGEXP sysDescr OR ? LIKE CONCAT('%', sysDescr, '%'))";
+	$sql_where .= " AND (? REGEXP sysOid OR ? LIKE CONCAT('%', sysOid, '%'))";
+	$sql_where .= " AND (? REGEXP sysName OR ? LIKE CONCAT('%', sysName, '%'))";
 
-	$sql_where .= trim($sysDescr)  != '' ? 'WHERE (sysDescr REGEXP "(' . preg_quote($qsysDescr) . ')" OR ' . db_qstr($sysDescr) . ' LIKE CONCAT("%", sysDescr, "%"))':'';
-	$sql_where .= trim($sysObject) != '' ? ($sql_where != '' ? ' AND':'WHERE') . ' (sysOID REGEXP "(' . preg_quote($qsysObject) . ')" OR ' . db_qstr($sysObject) . ' LIKE CONCAT("%", sysOid, "%"))':'';
-	$sql_where .= trim($sysName)   != '' ? ($sql_where != '' ? ' AND':'WHERE') . ' (sysName REGEXP "(' . preg_quote($qsysName) . ')" OR ' . db_qstr($sysName) . ' LIKE CONCAT("%", sysName, "%"))':'';
+	$params = array($sysDescr, $sysDescr, $sysObject, $sysObject, $sysName, $sysName);
 
-	$result = db_fetch_row("SELECT at.*, ht.name
+	$result = db_fetch_row_prepared("SELECT at.*, ht.name
 		FROM automation_templates AS at
 		INNER JOIN host_template AS ht
 		ON ht.id = at.host_template
 		$sql_where
-		ORDER BY sequence LIMIT 1");
+		ORDER BY sequence LIMIT 1", $params);
 
 	if (cacti_sizeof($result)) {
 		return $result;

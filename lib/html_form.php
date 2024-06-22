@@ -1307,22 +1307,31 @@ function form_continue_confirmation($form_data, $plugin_hook = '', $save = array
 	$iarray    = $form_data['general']['item_array'];
 	$ilist     = $form_data['general']['item_list'];
 	$drpval    = get_nfilter_request_var($drpvar);
+	$poutput   = '';
 	$form_name = 'form';
 
 	if (!isset($form_data['options'][$drpval]) && $plugin_hook != '' && cacti_sizeof($iarray)) {
-		top_header();
+		$title = __('Proceed with action');
 
-		form_start($page);
+		if (!cacti_sizeof($save)) {
+			/* Legacy plugin form confirmation logic */
+			$save['drp_action'] = $drpval;
 
-		html_start_box($actions[$drpval], '60%', '', '3', 'center', '');
+			if ($ilist != '') {
+				$save['ds_list']  = $ilist;
+			}
 
-		/* Legacy plugin form confirmation logic */
-		$title              = __('Proceed with Action');
-		$save['drp_action'] = $drpval;
-		$save['ds_list']    = $ilist;
-		$save['ds_array']   = $iarray;
+			if (cacti_sizeof($iarray)) {
+				$save['ds_array'] = $iarray;
+			}
+		}
+
+		// Trap the output
+		ob_start();
 
 		api_plugin_hook_function($plugin_hook, $save);
+
+		$poutput = ob_get_clean();
 	} elseif (cacti_sizeof($iarray)) {
 		$data = $form_data['options'][$drpval];
 
@@ -1369,9 +1378,11 @@ function form_continue_confirmation($form_data, $plugin_hook = '', $save = array
 
 	html_start_box($actions[$drpval], '60%', '', '3', 'center', '');
 
-	print "<tr><td class='textArea left' colspan='3'>";
-	print "<p>$message</p>";
-	print "</td></tr>";
+	if (isset($message)) {
+		print "<tr><td class='textArea left' colspan='3'>";
+		print "<p>$message</p>";
+		print "</td></tr>";
+	}
 
 	if (isset($form_data['general']['header'])) {
 		print "<tr><td class='textArea left' colspan='3'><p>";
@@ -1385,7 +1396,7 @@ function form_continue_confirmation($form_data, $plugin_hook = '', $save = array
 		print '</p></td></tr>';
 	}
 
-	if ($ilist != '') {
+	if ($ilist != '' && $poutput == '') {
 		print "<tr><td class='textArea left' colspan='3'>";
 		print "<div class='itemlist'><ul>$ilist</ul></div>";
 		print '</td></tr>';
@@ -1445,7 +1456,7 @@ function form_continue_confirmation($form_data, $plugin_hook = '', $save = array
 				case 'checkbox':
 					print "<td class='nowrap' colspan='2'>";
 					print "<span class='nowrap'>";
-					print "<label class='checkboxSwitch' title='{$field_array['title']}'>";
+					print "<label class='checkboxSwitch' id='{$field_name}_id' for='$field_name' title='{$field_array['title']}'>";
 					print "<input class='formCheckbox' type='checkbox' id='$field_name' name='$field_name' value=''>";
 					print "<span class='checkboxSlider checkboxRound'></span>";
 					print '</label>';
@@ -1530,6 +1541,10 @@ function form_continue_confirmation($form_data, $plugin_hook = '', $save = array
 		print "<tr><td class='textArea left' colspan='3'><p>";
 		print $form_data['general']['footer'];
 		print '</p></td></tr>';
+	}
+
+	if ($poutput != '') {
+		print $poutput;
 	}
 
 	print "<tr><td class='saveRow' colspan='3'>";

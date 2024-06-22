@@ -45,10 +45,12 @@ class navigationBox {
                 close:      (buttons.close !== false),
                 search:     (buttons.search !== false) ? buttons.search : false,
                 resize:     (buttons.resize !== false),
+                dock:       (buttons.dock !== false) ? buttons.dock : false,
             },
             'destination':   destination
         };
         let navigationBoxButtons = '';
+        let navigationBoxButtonsLeft   = '';
 
         if(this.#box.buttons.search) {
             navigationBoxButtons += '<div class="navBox-header-button" data-helper="'+this.#box.helper+'"><i class="intro_glyph fas fa-search"></i></div>';
@@ -71,6 +73,12 @@ class navigationBox {
             navigationBoxButtons += '<div class="navBox-header-button" data-helper="'+this.#box.helper+'"><i class="intro_glyph fas fa-times"></i></div>';
         }
 
+        if(this.#box.buttons.dock) {
+            navigationBoxButtons += '<div class="navBox-header-button" data-helper="'+this.#box.helper+'">' +
+                                    '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="18" x="2" y="3" stroke-linecap="round" stroke-linejoin="round" rx="2"/><path d="M9 3v18"/></g></svg>' +
+                                    '</div>';
+        }
+
         if(navigationBoxButtons === '') {
             navigationBoxButtons = '<div class="navBox-header-dropdown invisible"></div>';
         }
@@ -91,7 +99,7 @@ class navigationBox {
         if(this.#box.buttons.search) {
             this.#container +=
                 '<div class="navBox-search hide">' +
-                    '<input type="search" name="navBox-search" placeholder="Search in '+this.#box.title+'" tabindex="0">' +
+                    '<input type="search" name="navBox-search" data-scope="theme" placeholder="Search in '+this.#box.title+'" tabindex="0">' +
                 '</div>';
         }
         this.#container += '<div class="navBox-content">' + this.#container_content + '</div>';
@@ -108,11 +116,17 @@ class navigationBox {
         /* register button events if required */
         if(this.#box.buttons.close) {
             $('[class="navBox-header-button"][data-helper="'+this.#box.helper+'"]', navigationBox).off().on(
-                'click', {param: this.#box.helper}, toggleCactiNavigationBox);
+                'click', {param: 'force_close'}, toggleCactiNavigationBox);
         }
 
         if(this.#box.buttons.resize) {
-            $('[class="navBox-header-dropdown"][data-helper="'+this.#box.helper+'"]', navigationBox).off().on('click', {param: this.#box.helper}, toggleDropDownMenu);
+            $('[class="navBox-header-dropdown"][data-helper="'+this.#box.helper+'"]', navigationBox).off().on(
+                'click', {param: this.#box.helper}, toggleDropDownMenu);
+        }
+
+        if(this.#box.buttons.dock) {
+            $('[class="navBox-header-button"][data-helper="'+this.#box.helper+'"]', navigationBox).off().on(
+                'click', {param: this.#box.helper, dock: 'right'}, toggleCactiNavigationBoxPin);
         }
 
         if(this.#box.buttons.search) {
@@ -138,80 +152,62 @@ class navigationBox {
 class navigationButton {
     #icon;
     #container;
+    #button;
+
     constructor(helper, tooltip='', icon_class, destination, onclick='auto', param='on') {
         this.#icon = {
-            'helper' : helper,
-            'tooltip' : tooltip,
-            'class'  : icon_class,
+            'helper'      : helper,
+            'tooltip'     : tooltip,
+            'class'       : icon_class,
             'destination' : destination,
-            'param': param
+            'param'       : param
         }
+
         if(onclick === 'auto') {
             this.#icon.onclick = 'toggleCactiNavigationBox';
         }else {
             this.#icon.onclick = onclick;
         }
 
-        this.#container = '<div class="compact_nav_icon" data-helper="'+this.#icon.helper+'" data-tooltip="'+this.#icon.tooltip+'"><i class="'+this.#icon.class+'"></i></div>';
-    }
+        this.#container = '<div class="compact_nav_icon hide" data-helper="'+this.#icon.helper+'" title="'+this.#icon.tooltip+'"><i class="'+this.#icon.class+'"></i></div>';
 
-    build() {
-        //avoid duplicates
+        /* avoid duplicates */
         if( $(this.#icon.destination + ' > div[class^="compact_nav_icon"][data-helper="' + this.#icon.helper + '"]').length === 0 ) {
             $(this.#container).appendTo(this.#icon.destination);
+            this.#button = $(this.#icon.destination + ' > div[class^="compact_nav_icon"][data-helper="' + this.#icon.helper + '"]');
             if (is_function(this.#icon.onclick)) {
-                $('[class="compact_nav_icon"][data-helper="' + this.#icon.helper + '"]').off().on("click", {param: this.#icon.param}, window[this.#icon.onclick]);
+                this.#button.off().on("click", {param: this.#icon.param}, window[this.#icon.onclick]);
             }
+        }else {
+            this.#button = $(this.#icon.destination + ' > div[class^="compact_nav_icon"][data-helper="' + this.#icon.helper + '"]');
         }
     }
+
+    show() {
+        this.#button.removeClass('hide');
+        return this;
+    }
+
+    hide() {
+        this.#button.addClass('hide');
+        return this;
+    }
 }
-
-class tableFilter {
-
-}
-
-
 
 function is_function(fname) {
     return (typeof window[fname] === 'function');
 }
 
-/*
 function get_displayOptions_content() {
     let filters_content;
-    filters_content = '<div class="displayFilters tabbed">'
-        + '<input data-scope="theme" checked="checked" id="tab-filters" type="radio" name="tabs"/>'
-        + '<input data-scope="theme" id="tab-columns" type="radio" checked="checked" name="tabs"/>'
-        + '<nav>'
-        + '<label for="tab-filters">Filters</label>'
-        + '<label for="tab-columns">Columns</label>'
-        + '</nav>'
-        + '<figure>'
-        + '<div class="tab-filters"></div>'
-        + '<div class="tab-columns"></div>'
-        + '</figure>'
-        + '</div>';
-
-    return filters_content;
-}
- */
-
-function get_displayOptions_content() {
-    let filters_content;
-    filters_content = '<div class="displayOptions">'
-/*
-        + '<div class="displayOptionsTap">'
-        +   '<input data-scope="theme" id="tab-filters" class="tab-input" type="checkbox" checked/>'
-        +   '<label class="tab-label" for="tab-filters">Filters <i class="fas fa-chevron-down"></i></label>'
-        +   '<div class="tab-filters tab-content"></div>'
-        + '</div>'
-  */
-        + '<div class="displayOptionsTap">'
-        +   '<input data-scope="theme" id="tab-columns" class="tab-input" type="checkbox" checked/>'
-        +   '<label class="tab-label" for="tab-columns">Columns <i class="fas fa-chevron-down"></i></label>'
-        +   '<div class="tab-columns tab-content"></div>'
-        + '</div>'
-        + '</div>';
+    filters_content =
+        '<div class="displayOptions">'
+        +   '<div class="displayOptionsTap">'
+        +       '<label class="tab-label" for="tab-columns">Columns <i class="fas fa-chevron-down"></i></label>'
+        +       '<input data-scope="theme" id="tab-columns" class="tab-input" type="checkbox" checked/>'
+        +       '<div class="tab-columns tab-content"></div>'
+        +   '</div>'
+        +'</div>';
 
     return filters_content;
 }
@@ -224,7 +220,7 @@ function get_dashboards_content(){
         if (cactiConsoleAllowed) {
             compact_tab_menu_content +=
                 '<li class="menuitem" id="menu_home">'
-                +    '<a class="menu_parent active" href="#">'
+                +    '<a class="menu_parent" href="#">'
                 +        '<i class="menu_glyph ignore fas fa-home"></i>'
                 +        '<span>'+cactiHome+'</span>'
                 +    '</a>'
@@ -234,21 +230,20 @@ function get_dashboards_content(){
                 +'</li>';
         }
 
-
         //#todo : string handling list, preview
         if (cactiGraphsAllowed) {
             compact_tab_menu_content +=
                 '<li class="menuitem" id="menu_tab_dashboard">'
-                +    '<a class="menu_parent active" href="#">'
+                +    '<a class="menu_parent" href="#">'
                 +        '<i class="menu_glyph ignore fas fa-chart-area"></i>'
                 +        '<span>Views</span>'
                 +    '</a>'
                 +    '<ul>'
-                +       '<li><a class="pic" role="menuitem" id="tab-graphs-list-view" href="' + urlPath + 'graph_view.php?action=list">list</a></li>'
-                +       '<li><a class="pic" role="menuitem" id="tab-graphs-pre-view" href="' + urlPath + 'graph_view.php?action=preview">preview</a></li>'
+                +       '<li><a class="pic" role="menuitem" id="tab-graphs-list-view" href="' + urlPath + 'graph_view.php?action=list">List</a></li>'
+                +       '<li><a class="pic" role="menuitem" id="tab-graphs-pre-view" href="' + urlPath + 'graph_view.php?action=preview">Preview</a></li>'
+                +       '<li><a class="pic" role="menuitem" id="tab-graphs-pre-view" href="' + urlPath + 'graph_view.php?action=tree">Tree</a></li>'
                 +    '</ul>'
                 +'</li>';
-
         }
 
         let showMisc = false;
@@ -261,7 +256,7 @@ function get_dashboards_content(){
         if (showMisc) {
             compact_tab_menu_content +=
                 '<li class="menuitem" id="menu_tab_miscellaneous">'
-                +   '<a class="menu_parent active" href="#">'
+                +   '<a class="menu_parent" href="#">'
                 +       '<i class="menu_glyph ignore fas fa-puzzle-piece"></i>'
                 +       '<span>'+cactiMisc+'</span>'
                 +   '</a>'
@@ -294,7 +289,7 @@ function get_help_content() {
     let compact_help_menu_content =
            '<ul class="nav">'
         +   '<li class="menuitem" id="menu_user_help">'
-        +       '<a class="menu_parent active" href="#">'
+        +       '<a class="menu_parent" href="#">'
         +           '<i class="menu_glyph fas fa-medkit"></i>'
         +           '<span>'+cactiGeneral+'</span>'
         +       '</a>'
@@ -306,7 +301,7 @@ function get_help_content() {
         +       '</ul>'
         +   '</li>'
         +   '<li class="menuitem" id="menu_user_issues">'
-        +       '<a class="menu_parent active" href="#">'
+        +       '<a class="menu_parent" href="#">'
         +           '<i class="menu_glyph fas fa-bug"></i>'
         +           '<span>'+reportABug+'</span>'
         +       '</a>'
@@ -318,7 +313,7 @@ function get_help_content() {
         +       '</ul>'
         +   '</li>'
         +   '<li class="menuitem" id="menu_user_shortcuts">'
-        +       '<a class="menu_parent active" href="#">'
+        +       '<a class="menu_parent" href="#">'
         +           '<i class="menu_glyph far fa-keyboard"></i>'
         +           '<span>'+cactiKeyboard+'</span>'
         +       '</a>'
@@ -327,7 +322,7 @@ function get_help_content() {
         +       '</ul>'
         +   '</li>'
         +   '<li class="menuitem" id="menu_user_help">'
-        +       '<a class="menu_parent active" href="#">'
+        +       '<a class="menu_parent" href="#">'
         +           '<i class="menu_glyph fas fa-hands-helping"></i>'
         +           '<span>'+cactiContributeTo+'</span>'
         +       '</a>'
@@ -349,22 +344,24 @@ function get_user_content() {
     let midWinter_Font_Size = storage.get('midWinter_Font_Size');
     let midWinter_widthNavigationBox_dashboards = storage.get('midWinter_widthNavigationBox_dashboards');
     let midWinter_Animations = storage.get('midWinter_Animations');
+    let midWinter_ShownFontSizeValue = parseFloat(midWinter_Font_Size) + 25;
+    let midWinter_Auto_Table_Layout = storage.get('midWinter_Auto_Table_Layout');
 
     let compact_user_menu_content =
            '<ul class="nav">'
         +   '<li class="menuitem" id="menu_user_action">'
-        +       '<a class="menu_parent active" href="#">'
+        +       '<a class="menu_parent" href="#">'
         +           '<i class="menu_glyph fas fa-user-edit"></i>'
         +           '<span>'+cactiProfile+'</span>'
         +       '</a>'
         +       '<ul>'
         +           '<li><a class="pic" role="menuitem" href="'+urlPath+'auth_profile.php?action=edit&header=false">'+editProfile+'</a></li>'
         +           '<li><a href="'+urlPath+'auth_changepassword.php" style="">'+changePassword+'</a></li>'
-        +           '<li><a href="#" class="mdw_logout">'+logout+'</a></li>'
+        +           '<li><a href="'+urlPath+'logout.php">'+logout+'</a></li>'
         +       '</ul>'
         +   '</li>'
         +   '<li class="menuitem double" id="menu_user_action">'
-        +       '<a class="menu_parent active" href="#">'
+        +       '<a class="menu_parent" href="#">'
         +           '<i class="menu_glyph fas fa-palette"></i>'
         +           '<span>'+cactiTheme+'</span>'
         +       '</a>'
@@ -377,6 +374,7 @@ function get_user_content() {
         +						'<span class="checkboxSlider checkboxRound"></span>'
         +					'</label>'
         +					'<label class="checkboxLabel checkboxLabelWanted" for="mdw_themeColorModeAuto"></label>'
+        +                   '<output id="mdw_themeColorModeAutoValue">'+ midWinter_Color_Mode_Auto +'</output>'
         +				'</div>'
         +           '</li>'
         +           '<li>'
@@ -387,12 +385,33 @@ function get_user_content() {
         +						'<span class="checkboxSlider checkboxRound"></span>'
         +					'</label>'
         +					'<label class="checkboxLabel checkboxLabelWanted" for="mdw_themeAnimations"></label>'
+        +                   '<output id="mdw_themeAnimationsValue">'+ midWinter_Animations +'</output>'
         +				'</div>'
         +           '</li>'
         +           '<li>'
         +				'<div>' + 'Zoom Level' + '</div>'
         +				'<div>'
-        +						'<input data-scope="theme" class="mdw_themeFontSize" id="mdw_themeFontSize" data-func="changeGuiFontSize" type="range" min="50" max="100" step="2.5" value="'+ midWinter_Font_Size +'" defaultValue="87.5">'
+        +						'<input data-scope="theme" class="mdw_themeFontSize" id="mdw_themeFontSize" data-func="changeGuiFontSize" type="range" min="50" max="100" step="2.5" value="'+ midWinter_Font_Size +'" defaultValue="75">'
+        +                       '<output id="mdw_themeFontSizeValue">'+midWinter_ShownFontSizeValue+'%</output>'
+        +				'</div>'
+        +           '</li>'
+        +       '</ul>'
+        +   '</li>'
+        +   '<li class="menuitem double" id="menu_user_action">'
+        +       '<a class="menu_parent" href="#">'
+        +           '<i class="menu_glyph fas fa-mobile-alt"></i>'
+        +           '<span>Mobile Devices</span>'
+        +       '</a>'
+        +       '<ul>'
+        +           '<li>'
+        +				'<div>' + 'Auto Table Layout' + '</div>'
+        +				'<div>'
+        +					'<label class="checkboxSwitch">'
+        +						'<input data-scope="theme" id="mdw_themeAutoTableLayout" data-func="toggleAutoTableLayout" class="formCheckbox" type="checkbox" name="mdw_themeAutoTableLayout" '+(midWinter_Auto_Table_Layout === 'on' ? 'checked' : '')+'>'
+        +						'<span class="checkboxSlider checkboxRound"></span>'
+        +					'</label>'
+        +					'<label class="checkboxLabel checkboxLabelWanted" for="mdw_themeAutoTableLayout"></label>'
+        +                   '<output id="mdw_themeAutoTableLayoutValue">'+ midWinter_Auto_Table_Layout +'</output>'
         +				'</div>'
         +           '</li>'
         +       '</ul>'

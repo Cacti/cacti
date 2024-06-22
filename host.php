@@ -581,9 +581,18 @@ function form_actions() {
 			}
 		}
 
+		// Legacy support for old version plugins
+		if (!isset($form_data['options'][get_request_var('drp_action')])) {
+			$save['drp_action'] = get_request_var('drp_action');
+			$save['host_list']  = $ilist;
+			$save['host_array'] = $iarray;
+		} else {
+			$save = array();
+		}
+
 		$form_data = api_plugin_hook_function('device_confirmation_form', $form_data);
 
-		form_continue_confirmation($form_data);
+		form_continue_confirmation($form_data, 'device_action_prepare', $save);
 	}
 }
 

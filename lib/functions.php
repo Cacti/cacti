@@ -1186,8 +1186,13 @@ function raise_message(string|int $message_id, string $message = '', int $messag
 function raise_message_javascript(string $title, string $header, string $message, int $level = MESSAGE_LEVEL_MIXED) {
 	?>
 	<script type='text/javascript'>
+	var mixedReasonTitle = DOMPurify.sanitize(<?php print json_encode($title, JSON_THROW_ON_ERROR);?>);
+	var mixedOnPage      = DOMPurify.sanitize(<?php print json_encode($header, JSON_THROW_ON_ERROR);?>);
+	var message          = DOMPurify.sanitize(<?php print json_encode($message, JSON_THROW_ON_ERROR);?>);
+	var level            = <?php print $level; ?>;
+
 	$(function() {
-		raiseMessage('<?= $title?>', '<?= $header?>', '<?= $message ?>', <?= $level?>)
+		raiseMessage(mixedReasonTitle, mixedOnPage, message, level);
 	});
 	</script>
 	<?php
@@ -1846,11 +1851,15 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
 
 	/* initialize fail and recovery dates correctly */
 	if ($host['status_fail_date'] == '') {
-		$host['status_fail_date'] = strtotime('0000-00-00 00:00:00');
+		$host['status_fail_date'] = 0;
+	} else {
+		$host['status_fail_date'] = strtotime($host['status_fail_date']);;
 	}
 
 	if ($host['status_rec_date'] == '') {
-		$host['status_rec_date'] = strtotime('0000-00-00 00:00:00');
+		$host['status_rec_date'] = 0;
+	} else {
+		$host['status_rec_date'] = strtotime($host['status_rec_date']);;
 	}
 
 	if ($status == HOST_DOWN) {
@@ -2745,10 +2754,10 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
 								$prepend = $script_queries['arg_prepend'];
 							}
 
-							$script_path = read_config_option('path_php_binary') . ' -q ' . get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $snmp_index), $script_queries['script_path'], $host_id);
+							$script_path = read_config_option('path_php_binary') . ' -q ' . get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $snmp_index . '"'), $script_queries['script_path'], $host_id);
 						} else {
 							$action      = POLLER_ACTION_SCRIPT;
-							$script_path = get_script_query_path(trim((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $snmp_index), $script_queries['script_path'], $host_id);
+							$script_path = get_script_query_path(trim((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $snmp_index . '"'), $script_queries['script_path'], $host_id);
 						}
 					}
 
@@ -5927,7 +5936,7 @@ function poller_maintenance() {
 	$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 
 	// If its not set, just assume its in the path
-	if (trim($command_string) == '') {
+	if (empty($command_string) || trim($command_string) == '') {
 		$command_string = 'php';
 	}
 
@@ -6608,6 +6617,46 @@ function is_device_debug_enabled(int $host_id): bool {
 	$devices      = explode(',', $device_debug);
 
 	return (array_search($host_id, $devices, true) !== false);
+}
+
+/**
+ * call_remote_data_collector - Call the remote data collector with the correct URI
+ *
+ * @param - string - The hostname
+ * @param string - The URL to query
+ *
+ * @return - The results in raw form
+ */
+function call_remote_data_collector($poller_id, $url, $logtype = 'WEBUI') {
+	$hostname = db_fetch_cell_prepared('SELECT hostname
+		FROM poller
+		WHERE id = ?',
+		array($poller_id));
+
+	$port = read_config_option('remote_agent_port');
+
+	if ($port != '') {
+		$port = ':' . $port;
+	}
+
+	if (!is_ipaddress($hostname)) {
+		$ipaddress = gethostbyname($hostname);
+
+		if (!is_ipaddress($ipaddress)) {
+			if (debounce_run_notification('poller_down:' . $poller_id)) {
+				cacti_log(sprintf('WARNING: PollerID:%s has an invalid hostname:%s.  It is not reachable via DNS!', $poller_id, $hostname), false, $logtype);
+
+				admin_email(__('Cacti System Warning'), __('WARNING: PollerID:%s has an invalid hostname:%s.  Is it not reachable via DNS!', $poller_id, $hostname));
+			}
+
+			return '';
+		}
+	}
+
+	$fgc_contextoption = get_default_contextoption();
+	$fgc_context       = stream_context_create($fgc_contextoption);
+
+	return  file_get_contents(get_url_type() .'://' . $hostname . $port . $url, false, $fgc_context);
 }
 
 /**
@@ -9033,4 +9082,3 @@ function get_keyup_delay() {
 function cacti_unserialize($strobj) {
 	return unserialize($strobj, array('allowed_classes' => false));
 }
-

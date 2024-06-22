@@ -65,15 +65,9 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 			WHERE id = ?',
 			array($poller_id));
 
-		$port = read_config_option('remote_agent_port');
+		$url = CACTI_PATH_URL . 'remote_agent.php?action=runquery&host_id=' . $host_id . '&data_query_id=' . $snmp_query_id;
 
-		if ($port != '') {
-			$port = ':' . $port;
-		}
-
-		$fgc_contextoption = get_default_contextoption();
-		$fgc_context       = stream_context_create($fgc_contextoption);
-		$response          = @file_get_contents(get_url_type() . '://' . $hostname . $port . CACTI_PATH_URL . 'remote_agent.php?action=runquery&host_id=' . $host_id . '&data_query_id=' . $snmp_query_id, false, $fgc_context);
+		$response = call_remote_data_collector($poller_id, $url);
 
 		if ($response != '') {
 			$response = json_decode($response, true);
@@ -2431,7 +2425,7 @@ function get_script_query_path($args, $script_path, $host_id) {
 
 	/* get any extra arguments that need to be passed to the script */
 	if ($args != '') {
-		$parts = preg_split('/\s+/', $args);
+		$parts = preg_split("/[\s,]*\\\"([^\\\"]+)\\\"[\s,]*|" . "[\s,]*'([^']+)'[\s,]*|" . "[\s,]+/", $args, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 
 		$extra_arguments = '';
 

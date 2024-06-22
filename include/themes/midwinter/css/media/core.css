@@ -80,10 +80,15 @@ fieldset {
 /* main Layout */
 main {
     scrollbar-gutter: stable;
+    @supports (scrollbar-width: auto) {
+        scrollbar-color: var(--scrollbar-thumb) var(--background-content);
+    }
 }
 
-.fa:hover, .fas:hover, .far:hover, .fal:hover, .fad:hover, .fab:hover{
-    color: var(--text-color-white);
+@media (hover: hover) {
+    .fa:hover, .fas:hover, .far:hover, .fal:hover, .fad:hover, .fab:hover {
+        color: var(--text-color-white);
+    }
 }
 
 /* navigation menu */
@@ -142,10 +147,21 @@ a:active {
 /* input fields & elements */
 textarea,
 input[type="email"],
-input[type="text"] {
+input[type="search"],
+input[type="text"],
+input[type="password"] {
     max-width: 50rem;
     width: 100%;
-    padding: 0.2em;
+    padding: 0.25rem 1rem;
+    border-radius: 5px !important;
+
+    &:focus-visible {
+        outline: none !important;
+        box-shadow: none !important;
+        background: var(--background-content);
+        border: 1px solid var(--border-color-highlight);
+        -webkit-tap-highlight-color: 1px solid var(--border-color-highlight);
+    }
 }
 
 input[type="checkbox"]:not([name^="multiselect"]), input[type="radio"]:not([name^="reindex"]) {
@@ -169,6 +185,7 @@ input[type="checkbox"] + label:before {
     margin: 0 0.5rem;
     content: "\f0c8";
     color: var(--border-color);
+    cursor: pointer
 }
 
 input[type="checkbox"]:checked + label:before {
@@ -206,7 +223,7 @@ input[type="checkbox"]:checked + label, input[type="radio"]:not([name^="reindex"
 
     & #main, #main {
         overflow-y: auto;
-        padding: 1rem 0 1rem 1rem;
+        padding: 0 0rem 1rem 1rem;
         width: 100%;
         height: 100%;
 
@@ -232,15 +249,17 @@ input[type="checkbox"]:checked + label, input[type="radio"]:not([name^="reindex"
                 position: relative;
                 z-index: 1;
 
-                & th:first-of-type,
-                & td:first-of-type {
-                    position: sticky;
-                    left: 0;
-                    z-index: 2;
-                    background: var(--background-content);
-
-                    tr.selected & {
-                       /* background: var(--table-selected);*/
+                & th,
+                & td {
+                    padding-right: 0.75rem;
+                    &:first-of-type {
+                        position: sticky;
+                        left: 0;
+                        z-index: 2;
+                        background: var(--background-content);
+                    }
+                    &:last-of-type {
+                        padding-right: 0;
                     }
                 }
 
@@ -253,6 +272,7 @@ input[type="checkbox"]:checked + label, input[type="radio"]:not([name^="reindex"
                 & tfoot th:first-of-type,
                 & tfoot th:last-of-type {
                     z-index: 3;
+                    padding-right: 0;
                 }
 
                 & tr.selectable {
@@ -270,6 +290,16 @@ input[type="checkbox"]:checked + label, input[type="radio"]:not([name^="reindex"
                 & tr.selected {
                     td {
                         background: var(--table-selected);
+                        &:first-of-type::before {
+                            background: var(--background-progress);
+                            border-radius: 4px;
+                            content: " ";
+                            display: block;
+                            height: 100%;
+                            position: absolute;
+                            width: 0.25rem;
+                            left: -0.4rem;
+                        }
                     }
 
                     &:hover {
@@ -282,9 +312,8 @@ input[type="checkbox"]:checked + label, input[type="radio"]:not([name^="reindex"
                 & th:last-child,
                 & td:last-of-type {
                     position: sticky;
-                    right: 0;
+                    right: -1px;
                     z-index: 2;
-
                 }
             }
         }
@@ -305,7 +334,7 @@ input[type="checkbox"]:checked + label, input[type="radio"]:not([name^="reindex"
 th .fa {
     position: absolute;
     top: 50%;
-    right: 3px;
+    right: 5px;
     margin-top: -5px;
 }
 
@@ -1077,18 +1106,18 @@ legend {
     font-size: var(--fs-huge);
     font-weight: bold;
     display: flex;
-    align-items: left;
-    flex-direction: column;
+    align-items: flex-end;
+    flex-direction: row;
 }
-
+/*
 legend::before {
     display: block;
-    width: 100px;
-    height: 140px;
+    width: 75px;
+    height: 100px;
     content: "";
     background: transparent url(./../../images/cacti_logo.svg) no-repeat scroll 50% 50% / 60px auto;
 }
-
+*/
 .logoutRight, .loginRight {
     display: none;
 }
@@ -1205,6 +1234,12 @@ legend::before {
     vertical-align: top;
 }
 
+.graphWrapperOuter {
+    & table {
+        width: unset;
+    }
+}
+
 .graphWrapper {
     position: relative;
     border: 1px solid var(--border-color);
@@ -1279,7 +1314,7 @@ legend::before {
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
-    padding: 3px;
+    padding: 3px 0 3px 3px;
     cursor: pointer;
     white-space: nowrap;
     text-decoration: none;
@@ -1488,7 +1523,7 @@ table.cactiTable {
 }
 
 .formRow {
-    line-height: 30px;
+    line-height: 2rem;
     display: grid;
     overflow: hidden;
     align-items: stretch;
@@ -1582,7 +1617,8 @@ table.cactiTable {
 
 .formHeaderAnchor {
     float: right;
-    padding-right: 8px;
+    width: 3rem;
+    text-align: center;
 }
 
 
@@ -1618,25 +1654,58 @@ table.cactiTable {
 
 .tableHeader {
     display: table-row;
+    height: 3.5rem;
 
     & th {
         font-weight: var(--fw-semibold);
         vertical-align: middle;
         text-transform: none;
-        border-bottom: 2px solid var(--border-color-semilight);
+        border-bottom: 1px solid var(--border-color-semilight);
         top: 0;
         position: sticky;
         background: var(--background-content);
+        padding: 0.5rem 0;
 
-        &:hover:not(.tableSubHeaderCheckbox) {
-            border-bottom: 2px solid var(--background-progress-mediumlight);
+        &:first-of-type::before {
+            background: var(--background-content);
+            content: " ";
+            display: block;
+            height: 3.5rem;
+            position: absolute;
+            width: 0.25rem;
+            left: -0.4rem;
+            top: 0;
         }
 
-        &:has(.fa-sort-up, .fa-sort-down),
-        &:has(.fa-sort-up, .fa-sort-down):hover {
+        &.sortable:not(.tableSubHeaderCheckbox):not(.tableHeaderColumnSelected):hover {
             color: var(--text-color-lighter);
             border-left-width: 0;
-            border-bottom: 2px solid var(--background-progress);
+
+            &::after {
+                background-color: var(--background-progress-mediumlight);
+                border-radius: 4px;
+                content: " ";
+                display: block;
+                width: calc(100% - 0.5rem);
+                position: absolute;
+                height: 0.25rem;
+                bottom: 0;
+                left: 0;
+            }
+            &:first-of-type::after {
+                top: 3.25rem;
+            }
+        }
+        &.tableHeaderColumnSelected::after {
+            background-color: var(--background-progress);
+            border-radius: 4px;
+            content: " ";
+            display: block;
+            width: calc(100% - 0.5rem);
+            position: absolute;
+            height: 0.25rem;
+            bottom: 0;
+            left: 0;
         }
     }
 
@@ -1894,7 +1963,6 @@ td.tab {
 }
 
 td.nowrap {
-    padding: 0 0.5em;
     border-bottom: 1px solid var(--border-color-lowlight);
 }
 
@@ -1925,30 +1993,45 @@ div.submenu span {
     height: 100%;
     border-color: rgba(255,255,255,0.2);
     background: transparent;
-}
 
-.tabs a {
-    font-size: var(--fs-regular);
-    float: left !important;
-    padding: 0.6rem;
-    vertical-align: bottom;
-    text-decoration: none;
-    color: var(--text-color-highlight-a);
-    border-bottom: 3px solid transparent;
-    outline-style: none;
-}
+    & nav a {
+        font-size: var(--fs-regular);
+        float: left !important;
+        padding: 0.6rem;
+        vertical-align: bottom;
+        text-decoration: none;
+        color: var(--text-color-highlight-a);
+        outline-style: none;
 
-.tabs a:hover {
-    color: var(--text-color-lighter);
-}
+        &:hover {
+            color: var(--text-color-lighter);
+        }
 
-.tabs nav a.selected {
-    color: var(--text-color-lighter);
-    border-bottom: 3px solid var(--background-progress);
-}
+        &::before {
+            background-color: transparent;
+            border-radius: 4px;
+            content: " ";
+            display: block;
+            position: absolute;
+            width: 100%;
+            height: 0.25rem;
+            left: 0;
+            bottom: 5px;
+        }
 
-.tabs nav a:not(.selected):hover {
-    border-bottom: 3px solid var(--background-progress-mediumlight);
+        &.selected {
+            color: var(--text-color-lighter);
+            &::before {
+                background-color: var(--background-progress);
+            }
+        }
+
+        &:not(.selected):hover {
+            &::before {
+                background-color: var(--background-progress-mediumlight);
+            }
+        }
+    }
 }
 
 .tabs li {
@@ -2063,7 +2146,8 @@ tr {
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: flex-start;
-    width: 34rem;
+    width: 100%;
+    max-width: 34rem;
 }
 
 #nav li ul li a:hover, .nav li ul li a:hover {
@@ -2279,6 +2363,7 @@ hr.menu {
     background-position: center;
     -webkit-box-shadow: 0 0 0.25rem #000;
     box-shadow: 0 0 0.25rem #000;
+    cursor: pointer;
 }
 
 input:checked + .checkboxSlider {
@@ -2295,6 +2380,7 @@ input:disabled + .checkboxSlider {
 }
 
 input:disabled + .checkboxSlider:before{
+    cursor: not-allowed;
     background: #888;
 }
 
@@ -2308,8 +2394,52 @@ input[type="search"]::-webkit-search-cancel-button {
     cursor: pointer;
 }
 
-input[type="submit"][value="Save"] {
-    background-color: #00a10b;
+input[type="submit"].save {
+    color: var(--text-color-white);
+    background-color: var(--background-progress);
+    border-radius: 2px ;
+    border: 1px solid  var(--background-progress);
+    padding: 0.4rem 1.8rem;
+    margin: 0 0.5rem;
+}
+
+input[type="submit"][role="button"],
+input[type="button"][id="return"] {
+    background:  transparent;
+    color: var(--background-progress);
+    border: 1px solid var(--background-progress);
+    border-radius: 5px;
+    padding: 0.4rem 1.8rem;
+}
+
+input[type="range"] {
+    width: 100%;
+    margin-right: 15px;
+    margin-left: 4px;
+    background: transparent;
+    &:focus {
+        outline: none;
+    }
+
+    &::-moz-range-track {
+        width: 100%;
+        height: 0.5rem;
+        cursor: pointer;
+        background: var(--background-progress);
+        border-radius: 24px;
+        border: 0.2px solid #010101;
+    }
+
+    /* All the same stuff for Firefox */
+    &::-moz-range-thumb {
+        border: 0.2px solid #9d9d9d;
+        border-radius: 50%;
+        height: 1.1rem;
+        width: 1.1rem;
+        background: #cbccd2 no-repeat center;
+        cursor: pointer;
+    }
+
 }
 
 /* Rounded.checkboxSliders */

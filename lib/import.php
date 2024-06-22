@@ -303,13 +303,32 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 	return $info_array;
 }
 
+function is_cacti_public_key($public_key) {
+	$public_key = trim($public_key);
+	$keys[] = get_public_key_sha1();
+	$keys[] = get_public_key_sha256();
+
+	foreach($keys as $key) {
+		if ($public_key === $key) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function get_public_key_sha1() {
+	return get_public_key();
+}
+
+function get_public_key_sha256() {
+	$public_key = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApH0rQ6cEYMCeHh5b7zCw\n5Mxzrj5N6PNW4NJE6YvjpzR40SE/B+vGnwpQZB+bmAVPJcn7TgUf5+ZnPoLL7BNn\nfFhDOREzQYhcTGTxTFQ/AD/DdgzyALdWsV14mwkaxKchnY3XZY1Jg/tm+AFOBrEX\n3Oa4pkOf7+V2HXVhbMhWrsoW5/tI8AQBQtzadqxXDGMpwlwKb6QNlUPk1slQFn3e\nk9rpWgq/84OxsJs2MVFyo/Nh6ehu8cE7OYHOJ/1qQ+8w99ro+zllwLqStY3/Z3Bl\nQmGcllo3/LfnWc10aqdtpFOxWcJwzkQ1vvjzAuWYPmW/fNbft3+pRuS7sa2jj/oN\nvQIDAQAB\n-----END PUBLIC KEY-----";
+
+	return $public_key;
+}
+
 function get_public_key() {
-	$public_key = <<<EOD
------BEGIN PUBLIC KEY-----
-MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMbPpuQfwmg93oOGjdLKrAqwEPwvvNjC
-bk2YZiDglh8lQJxNQI9glG1Z/ptvqprFO3iSx9rTP4vzZ0Ek2+EMYTMCAwEAAQ==
------END PUBLIC KEY-----
-EOD;
+	$public_key = "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMbPpuQfwmg93oOGjdLKrAqwEPwvvNjC\nbk2YZiDglh8lQJxNQI9glG1Z/ptvqprFO3iSx9rTP4vzZ0Ek2+EMYTMCAwEAAQ==\n-----END PUBLIC KEY-----";
 
 	return $public_key;
 }
@@ -374,6 +393,11 @@ function import_package_get_details($xmlfile) {
 
 function import_read_package_data($xmlfile, &$public_key) {
 	$public_key = import_package_get_public_key($xmlfile);
+
+	if (!is_cacti_public_key($public_key)) {
+		cacti_log('FATAL: Package Public Key is not Official Cacti Public Key for Package ' . $filename, true, 'IMPORT', POLLER_VERBOSITY_LOW);
+		return false;
+	}
 
 	$filename = "compress.zlib://$xmlfile";
 
@@ -523,22 +547,14 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 		$fdata = base64_decode($f['data'], true);
 		$name  = $f['name'];
 
-		/* The xml file without path is the main template of the package. It is processed below using $debug_data */
 		if (strpos($name, 'scripts/') !== false || strpos($name, 'resource/') !== false) {
-
 			$filename = CACTI_PATH_BASE . "/$name";
 
 			if (!$preview) {
 				if (!cacti_sizeof($import_files) || in_array($name, $import_files, true)) {
-					cacti_log('Checking filepath: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
+					cacti_log('Writing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 
-					if (!preg_match('/^(scripts|resource)[a-zA-Z0-9_\-\/]*$/', dirname($name))) {
-						cacti_log('FATAL: Incorrect path: ' . $filename, true, 'IMPORT', POLLER_VERBOSITY_LOW);
-
-						$filestatus[$filename] = __('incorrect path, file not saved');
-					} elseif ((is_writeable(dirname($filename)) && !file_exists($filename)) || is_writable($filename)) {
-						cacti_log('Writing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
-
+					if ((is_writeable(dirname($filename)) && !file_exists($filename)) || is_writable($filename)) {
 						$file = fopen($filename, 'wb');
 
 						if (is_resource($file)) {
@@ -570,9 +586,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 					$existing = md5_file($filename);
 				}
 
-				if (!preg_match('/^(scripts|resource)[a-zA-Z0-9_\-\/]*$/', dirname($name))) {
-					$filestatus[$filename] = 'incorrect path';
-				} elseif (is_writeable(dirname($filename))) {
+				if (is_writeable(dirname($filename))) {
 					if (file_exists($filename) && is_writable($filename)) {
 						if ($new == $existing) {
 							$filestatus[$filename] = 'writable, identical';
@@ -599,7 +613,6 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 				} else {
 					$filestatus[$filename] = 'not writable, new';
 				}
-
 			}
 		} else {
 			if (!$preview) {

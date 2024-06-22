@@ -558,8 +558,6 @@ function import_display_package_data($templates, $files, $package_name, $xmlfile
 							$nstatus .= ($nstatus != '' ? ', ':'') . __('Writable');
 						} elseif ($s == 'new') {
 							$nstatus .= ($nstatus != '' ? ', ':'') . __('New');
-						} elseif ($s == 'incorrect path') {
-							$nstatus .= ($nstatus != '' ? ', ':'') . __('Incorrect path, will not be imported');
 						} else {
 							$nstatus .= ($nstatus != '' ? ', ':'') . __('Unknown');
 						}

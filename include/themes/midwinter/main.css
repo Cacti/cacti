@@ -33,8 +33,7 @@
 
 /* compact mode */
 @import 'css/media/compact.css?0bda9f47e7be64d1c2709f24cd70ba00' screen;
-@import 'css/media/compact-portrait.css?675a729d0536e2b789cd45c991ad506d' screen and (max-width: 768px);
-@import 'css/media/compact-landscape.css?ce95d6c0a3041f8db65365a6d0dad1ca' screen and (min-width: 769px);
+@import 'css/media/compact-landscape.css?ce95d6c0a3041f8db65365a6d0dad1ca' screen;
 
 /* extensions & addons */
 @import 'billboard.midwinter.css?e442c55720734e56c33de67e26a596de';

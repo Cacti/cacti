@@ -456,8 +456,9 @@ function rrdtool_trim_output(&$output) {
 	 * string.  So, therefore, we have to prune that
 	 * output.
 	 */
-	 if ($config['cacti_server_os'] == 'win32') {
-		 $output = rtrim($output, "OK \n\r");
+	if ($config['cacti_server_os'] == 'win32') {
+		$output = rtrim($output, "OK \n\r");
+		$okpos  = strlen($output);
 	} else {
 		$okpos = strrpos($output, 'OK u:');
 

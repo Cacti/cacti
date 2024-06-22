@@ -391,11 +391,11 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 
 		foreach ($graph_array as $graph) {
 			if (!isset($graph['host_id'])) {
-				list($graph['host_id'], $graph['disabled']) = db_fetch_row_prepared('SELECT host_id, disabled 
-    					FROM graph_local AS gl 
-	 				LEFT JOIN host AS h 
-					ON gl.host_id = h.id 
-     					WHERE gl.id = ?', 
+				list($graph['host_id'], $graph['disabled']) = db_fetch_row_prepared('SELECT host_id, disabled
+    					FROM graph_local AS gl
+	 				LEFT JOIN host AS h
+					ON gl.host_id = h.id
+     					WHERE gl.id = ?',
 					array($graph['local_graph_id']));
 			}
 
@@ -485,11 +485,11 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 
 		foreach ($graph_array as $graph) {
 			if (!isset($graph['host_id'])) {
-				list($graph['host_id'], $graph['disabled']) = db_fetch_row_prepared('SELECT host_id, disabled 
-    					FROM graph_local AS gl 
-	 				LEFT JOIN host AS h 
-      					ON gl.host_id = h.id 
-	   				WHERE gl.id = ?', 
+				list($graph['host_id'], $graph['disabled']) = db_fetch_row_prepared('SELECT host_id, disabled
+    					FROM graph_local AS gl
+	 				LEFT JOIN host AS h
+      					ON gl.host_id = h.id
+	   				WHERE gl.id = ?',
 					array($graph['local_graph_id']));
 			}
 
@@ -1843,19 +1843,20 @@ function DrawMatrixHeaderItem($matrix_name, $matrix_text_color, $column_span = 1
 	<?php
 }
 
-function form_area($text) { ?>
+function form_area($text) {
+	?>
 	<tr>
 		<td class='textArea'>
-			<?php print $text;?>
+			<?php print html_escape($text);?>
 		</td>
 	</tr>
-<?php }
+	<?php
+}
 
 /**
- * is_console_page - determines if current passed url is considered to be
- * a console page.
+ * is_console_page - determines if current passed url is considered to be a console page
  *
- * @param  url - url to be checked
+ * @param url - url to be checked
  *
  * @return true if console page, false if not
  */
@@ -2823,7 +2824,7 @@ function html_common_header($title, $selectedTheme = '') {
 		var showHideFilter = '<?php print __esc('Click to Show/Hide Filter');?>';
 		var spikeKillResults = '<?php print __esc('SpikeKill Results');?>';
 		var standardGraphicalUserInterface = '<?php print __esc('Standard Mode');?>';
-		var tableConstraints = '<?php print __('Allow or limit the table columns to extend beyond the current windows limits.');?>';
+		var tableConstraints = '<?php print __esc('Allow or limit the table columns to extend beyond the current windows limits.');?>';
 		var testFailed = '<?php print __esc('Connection Failed');?>';
 		var testSuccessful = '<?php print __esc('Connection Successful');?>';
 		var theme = '<?php print $selectedTheme;?>';

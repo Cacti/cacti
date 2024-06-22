@@ -265,7 +265,10 @@ function template_item_remove_gt_confirm() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$template = db_fetch_row_prepared('SELECT * FROM graph_templates WHERE id = ?', array(get_request_var('id')));
+	$template = db_fetch_row_prepared('SELECT *
+		FROM graph_templates
+		WHERE id = ?',
+		array(get_request_var('id')));
 
 ?>
 	<tr>
@@ -634,6 +637,11 @@ function template() {
 			'pageset' => true,
 			'default' => ''
 		),
+		'graph_template' => array(
+			'filter' => FILTER_DEFAULT,
+			'pageset' => true,
+			'default' => '-1'
+		),
 		'class' => array(
 			'filter'  => FILTER_CALLBACK,
 			'default' => '-1',
@@ -673,103 +681,143 @@ function template() {
 ?>
 	<tr class='even noprint'>
 		<td>
-			<form id='form_host_template' action='host_templates.php'>
-				<table class='filterTable'>
-					<tr>
-						<td>
-							<?php print __('Search'); ?>
-						</td>
-						<td>
-							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter'); ?>'>
-						</td>
-						<td>
-							<?php print __('Device Class'); ?>
-						</td>
-						<td>
-							<select id='class' onChange='applyFilter()'>
-								<option value='-1' <?php print (get_request_var('class') == '-1' ? ' selected>' : '>') . __('All'); ?></option>
-									<?php
-									if (cacti_sizeof($device_classes)) {
-										foreach ($device_classes as $key => $value) {
-											print "<option value='" . $key . "'";
+		<form id='form_host_template' action='host_templates.php'>
+			<table class='filterTable'>
+				<tr>
+					<td>
+						<?php print __('Class');?>
+					</td>
+					<td>
+						<select id='class'>
+							<option value='-1'<?php print (get_request_var('class') == '-1' ? ' selected>':'>') . __('All');?></option>
+							<?php
+							if (cacti_sizeof($device_classes)) {
+								foreach ($device_classes as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var('class') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+								}
+							}
+							?>
+						</select>
+					</td>
+					<td>
+						<?php print __('Graph Template');?>
+					</td>
+					<td>
+						<select id='graph_template'>
+							<option value='-1'<?php print (get_request_var('graph_template') == '-1' ? ' selected>':'>') . __('All');?></option>
+							<?php
+							if (get_request_var('class') == -1) {
+								$graph_templates = db_fetch_assoc('SELECT DISTINCT id, name
+									FROM (
+										SELECT gt.id, gt.name
+										FROM graph_templates AS gt
+										INNER JOIN host_template_graph AS htg
+										ON htg.graph_template_id = gt.id
+										UNION
+										SELECT gt.id, gt.name
+										FROM graph_templates AS gt
+										INNER JOIN snmp_query_graph AS sqg
+										ON gt.id = sqg.graph_template_id
+										INNER JOIN host_template_snmp_query AS htsq
+										ON sqg.snmp_query_id = htsq.snmp_query_id
+									) AS rs
+									ORDER BY name');
+							} else {
+								$graph_templates = db_fetch_assoc_prepared('SELECT DISTINCT id, name
+									FROM (
+										SELECT gt.id, gt.name, hgt.host_template_id
+										FROM graph_templates AS gt
+										INNER JOIN host_template_graph AS htg
+										ON htg.graph_template_id = gt.id
+										UNION
+										SELECT gt.id, gt.name, htsq.host_template_id
+										FROM graph_templates AS gt
+										INNER JOIN snmp_query_graph AS sqg
+										ON gt.id = sqg.graph_template_id
+										INNER JOIN host_template_snmp_query AS htsq
+										ON sqg.snmp_query_id = htsq.snmp_query_id
+									) AS rs
+									INNER JOIN host_template AS ht
+									ON rs.host_template_id = ht.id
+									WHERE ht.id = ?
+									ORDER BY name',
+									array(get_request_var('class')));
+							}
 
-											if (get_request_var('class') == $key) {
-												print ' selected';
-											}
-											print '>' . html_escape($value) . "</option>\n";
-										}
-									}
-									?>
-							</select>
-						</td>
-						<td>
-							<?php print __('Device Templates'); ?>
-						</td>
-						<td>
-							<select id='rows' onChange='applyFilter()'>
-								<option value='-1' <?php print (get_request_var('rows') == '-1' ? ' selected>' : '>') . __('Default'); ?></option>
-									<?php
-									if (cacti_sizeof($item_rows)) {
-										foreach ($item_rows as $key => $value) {
-											print "<option value='" . $key . "'";
-
-											if (get_request_var('rows') == $key) {
-												print ' selected';
-											}
-											print '>' . html_escape($value) . "</option>\n";
-										}
-									}
-									?>
-							</select>
-						</td>
-						<td>
-							<span>
-								<input type='checkbox' id='has_hosts' <?php print(get_request_var('has_hosts') == 'true' ? 'checked' : ''); ?>>
-								<label for='has_hosts'><?php print __('Has Devices'); ?></label>
-							</span>
-						</td>
-						<td>
-							<span>
-								<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go'); ?>' title='<?php print __esc('Set/Refresh Filters'); ?>'>
-								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear'); ?>' title='<?php print __esc('Clear Filters'); ?>'>
-							</span>
-						</td>
-					</tr>
-				</table>
-			</form>
+							if (cacti_sizeof($graph_templates)) {
+								foreach ($graph_templates as $row) {
+									print "<option value='" . $row['id'] . "'" . (get_request_var('graph_template') == $row['id'] ? ' selected ':'') . '>' . html_escape($row['name']) . '</option>';
+								}
+							}
+							?>
+						</select>
+					</td>
+					<td>
+						<span>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+						</span>
+					</td>
+				</tr>
+			</table>
+			<table class='filterTable'>
+				<tr>
+					<td>
+						<?php print __('Search');?>
+					</td>
+					<td>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+					</td>
+					<td>
+						<?php print __('Device Templates');?>
+					</td>
+					<td>
+						<select id='rows'>
+							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
+							<?php
+							if (cacti_sizeof($item_rows)) {
+								foreach ($item_rows as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+								}
+							}
+							?>
+						</select>
+					</td>
+					<td>
+						<span>
+							<input type='checkbox' id='has_hosts' <?php print (get_request_var('has_hosts') == 'true' ? 'checked':'');?>>
+							<label for='has_hosts'><?php print __('Has Devices');?></label>
+						</span>
+					</td>
+				</tr>
+			</table>
+		</form>
 		</td>
 		<script type='text/javascript'>
-			function applyFilter() {
-				strURL = 'host_templates.php';
-				strURL += '?filter=' + $('#filter').val();
-				strURL += '&class=' + $('#class').val();
-				strURL += '&rows=' + $('#rows').val();
-				strURL += '&has_hosts=' + $('#has_hosts').is(':checked');
-				loadUrl({
-					url: strURL
-				})
-			}
+		function applyFilter() {
+			strURL  = 'host_templates.php?header=false';
+			strURL += '&filter='+$('#filter').val();
+			strURL += '&class='+$('#class').val();
+			strURL += '&rows='+$('#rows').val();
+			strURL += '&graph_template='+$('#graph_template').val();
+			strURL += '&has_hosts='+$('#has_hosts').is(':checked');
+			loadPageNoHeader(strURL);
+		}
 
-			function clearFilter() {
-				strURL = 'host_templates.php?clear=1';
-				loadUrl({
-					url: strURL
-				})
-			}
+		function clearFilter() {
+			strURL = 'host_templates.php?clear=1';
+			loadUrl({
+				url: strURL
+			})
+		}
 
-			$(function() {
-				$('#refresh, #has_hosts').click(function() {
-					applyFilter();
-				});
+		$(function() {
+			$('#graph_template, #class, #rows').change(function() {
+				applyFilter();
+			});
 
-				$('#clear').click(function() {
-					clearFilter();
-				});
-
-				$('#form_host_template').submit(function(event) {
-					event.preventDefault();
-					applyFilter();
-				});
+			$('#refresh, #has_hosts').click(function() {
+				applyFilter();
 			});
 		</script>
 	</tr>
@@ -779,13 +827,35 @@ function template() {
 
 	/* form the 'where' clause for our main sql query */
 	$sql_where = '';
+	$sql_join  = '';
 
 	if (get_request_var('filter') != '') {
-		$sql_where .= 'WHERE (host_template.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . '(ht.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 
 	if (get_request_var('class') != '-1') {
-		$sql_where .= 'WHERE (host_template.class = ' . db_qstr(get_request_var('class')) . ')';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . '(ht.class = ' . db_qstr(get_request_var('class')) . ')';
+	}
+
+	if (get_request_var('graph_template') != '-1') {
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . '(gt_id = ' . get_request_var('graph_template') . ')';
+		$sql_join   = "INNER JOIN (
+			SELECT DISTINCT host_template_id, id AS gt_id
+			FROM (
+				SELECT htg.host_template_id, gt.id
+				FROM graph_templates AS gt
+				INNER JOIN host_template_graph AS htg
+				ON htg.graph_template_id = gt.id
+				UNION
+				SELECT htsq.host_template_id, gt.id
+				FROM graph_templates AS gt
+				INNER JOIN snmp_query_graph AS sqg
+				ON gt.id = sqg.graph_template_id
+				INNER JOIN host_template_snmp_query AS htsq
+				ON sqg.snmp_query_id = htsq.snmp_query_id
+			) AS rs
+		) AS htdata
+		ON htdata.host_template_id = ht.id";
 	}
 
 	if (get_request_var('has_hosts') == 'true') {
@@ -794,18 +864,30 @@ function template() {
 		$sql_having = '';
 	}
 
-	$total_rows = db_fetch_cell("SELECT COUNT(*)
-		FROM host_template
-		$sql_where
-		$sql_having");
+	$total_rows = db_fetch_cell("SELECT COUNT(`rows`)
+		FROM (
+			SELECT
+			COUNT(ht.id) AS `rows`, COUNT(DISTINCT host.id) AS hosts
+			FROM host_template AS ht
+			$sql_join
+			LEFT JOIN host
+			ON host.host_template_id = ht.id
+			$sql_where
+			GROUP BY ht.id
+			$sql_having
+		) AS rs");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$template_list = db_fetch_assoc("SELECT
-		host_template.id, host_template.name, host_template.class, devices AS hosts
-		FROM host_template
+		ht.id, ht.name, ht.class, COUNT(DISTINCT host.id) AS hosts
+		FROM host_template AS ht
+		$sql_join
+		LEFT JOIN host
+		ON host.host_template_id=ht.id
 		$sql_where
+		GROUP BY ht.id
 		$sql_having
 		$sql_order
 		$sql_limit");
@@ -817,13 +899,13 @@ function template() {
 			'sort'    => 'ASC',
 			'tip'     => __('The name of this Device Template.')
 		),
-		'host_template.class' => array(
+		'ht.class' => array(
 			'display' => __('Device Class'),
 			'align'   => 'left',
 			'sort'    => 'ASC',
 			'tip'     => __('The Class of this Device Template.  The Class Name should be representative of it\'s function.')
 		),
-		'host_template.id' => array(
+		'ht.id' => array(
 			'display' => __('ID'),
 			'align'   => 'right',
 			'sort'    => 'ASC',

@@ -161,8 +161,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 			cacti_log("LOGIN: Guest User '" . $user['username'] . "' in use from IP Address '" . $client_addr . "'", false, 'AUTH');
 		}
 
-		db_execute_prepared(
-			'INSERT IGNORE INTO user_log
+		db_execute_prepared('INSERT IGNORE INTO user_log
 			(username, user_id, result, ip, time)
 			VALUES (?, ?, 1, ?, NOW())',
 			array($username, $user['id'], $client_addr)
