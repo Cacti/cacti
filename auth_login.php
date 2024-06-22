@@ -131,7 +131,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 			cacti_log("LOGIN: Authenticated user '" . $username . "' using guest account '" . $user['username'] . "'", false, 'AUTH');
 
 			if ($username != '' && get_template_account($username) == 0) {
-				raise_message('template_disabled', __('User was Authenticated, but the Template Account is disabled.  Using Guest Account'), MESSAGE_LEVEL_WARN);
+				raise_message('template_disabled', __('User was Authenticated, but the Template Account is disabled. Using Guest Account'), MESSAGE_LEVEL_WARN);
 			}
 
 			$guest_user = true;
