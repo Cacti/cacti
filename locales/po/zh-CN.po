@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2024-06-21 08:51+0000\n"
+"PO-Revision-Date: 2024-06-23 04:09+0000\n"
 "Last-Translator: tql <fttx31@126.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
 "cacti/core/zh_Hans/>\n"
@@ -1207,7 +1207,7 @@ msgstr "禁用"
 #: user_group_admin.php:656 user_group_admin.php:672 user_group_admin.php:1976
 #: utilities.php:993 utilities.php:1775
 msgid "Enabled"
-msgstr "启用"
+msgstr "已启用"
 
 #: auth_profile.php:611
 msgid "Enabling..."
@@ -1247,7 +1247,7 @@ msgstr "删除设备"
 #: lib/api_automation.php:76 lib/api_automation.php:1176
 #: lib/html_utility.php:1016 pollers.php:46
 msgid "Down"
-msgstr "Down"
+msgstr "离线"
 
 #: automation_devices.php:55 automation_devices.php:375
 #: automation_devices.php:519 automation_devices.php:529
@@ -1255,7 +1255,7 @@ msgstr "Down"
 #: lib/api_automation.php:75 lib/api_automation.php:1175
 #: lib/html_utility.php:1024
 msgid "Up"
-msgstr "Up"
+msgstr "在线"
 
 #: automation_devices.php:108
 msgid "Added manually through device automation interface."
@@ -1475,7 +1475,7 @@ msgstr "清空已发现的设备"
 #: utilities.php:1666 utilities.php:1677 utilities.php:1688 utilities.php:1711
 #: utilities.php:1757 utilities.php:2001
 msgid "N/A"
-msgstr "N/A"
+msgstr "不可用"
 
 #: automation_graph_rules.php:29 automation_networks.php:34
 #: automation_snmp.php:30 automation_tree_rules.php:29 cdef.php:30
@@ -1484,7 +1484,7 @@ msgstr "N/A"
 #: graphs.php:59 host_templates.php:37 include/global_arrays.php:1730
 #: sites.php:29 vdef.php:30
 msgid "Duplicate"
-msgstr "重复"
+msgstr "复制"
 
 #: automation_graph_rules.php:30 automation_networks.php:35
 #: automation_tree_rules.php:30 data_sources.php:39 host.php:42
@@ -3810,9 +3810,8 @@ msgid "No Colors Found"
 msgstr "未找到颜色"
 
 #: color_templates.php:30
-#, fuzzy
 msgid "Sync Aggregates"
-msgstr "聚合"
+msgstr "同步聚合"
 
 #: color_templates.php:117
 msgid "Color Item"
@@ -7046,7 +7045,7 @@ msgstr "导出设备"
 
 #: host.php:1609 lib/api_automation.php:74 lib/api_automation.php:1174
 msgid "Not Up"
-msgstr "Not UP"
+msgstr "不在线"
 
 #: host.php:1612 lib/api_automation.php:77 lib/api_automation.php:1177
 #: lib/html.php:84 lib/html_utility.php:1020 pollers.php:48
@@ -7110,7 +7109,7 @@ msgstr ""
 
 #: host.php:1781
 msgid "In State"
-msgstr "持续时间"
+msgstr "此状况时间"
 
 #: host.php:1784
 msgid "The amount of time that this Device has been in its current state."
@@ -7865,7 +7864,7 @@ msgstr "时间戳"
 
 #: include/global_arrays.php:603
 msgid "Duration"
-msgstr "持续时间"
+msgstr "期间"
 
 #: include/global_arrays.php:641
 msgid "Not In Use"
@@ -8335,9 +8334,8 @@ msgid "Import Templates"
 msgstr "导入模板"
 
 #: include/global_arrays.php:1094 include/global_arrays.php:2749
-#, fuzzy
 msgid "Import Packages"
-msgstr "导入模板"
+msgstr "导入程序包"
 
 #: include/global_arrays.php:1095 include/global_arrays.php:1320
 #: include/global_arrays.php:2731 templates_export.php:157
@@ -9654,7 +9652,7 @@ msgstr "选择该主机的SNMP 版本."
 
 #: include/global_form.php:44
 msgid "SNMP Community String"
-msgstr "SNMP 团体"
+msgstr "SNMP 团体字串"
 
 #: include/global_form.php:45
 msgid "Fill in the SNMP read community for this device."
@@ -19468,9 +19466,8 @@ msgid "File Differences for: "
 msgstr "文件差异: "
 
 #: package_import.php:814
-#, fuzzy
 msgid "Local Package Import File"
-msgstr "包文件"
+msgstr "本地包文件导入"
 
 #: package_import.php:815
 msgid "The *.xml.gz file located on your Local machine to Upload and Import."
@@ -19490,9 +19487,8 @@ msgid "Replace Data Source and Graph Template Suggested Value Records.  Graphs a
 msgstr ""
 
 #: package_import.php:929
-#, fuzzy
 msgid "Package Import"
-msgstr "导入"
+msgstr "包导入"
 
 #: plugins.php:33 plugins.php:696
 msgid "Uninstall"
