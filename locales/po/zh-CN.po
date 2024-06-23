@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-21 08:51+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Chinese Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-23 04:09+0000\nLast-Translator: tql <fttx31@126.com>\nLanguage-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core-v1-2-x/zh_Hans/>\nLanguage: zh-CN\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=1; plural=0;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -1089,7 +1089,7 @@ msgstr "删除设备"
 #: lib/api_automation.php:173 lib/api_automation.php:1099
 #: lib/html_utility.php:949 pollers.php:47
 msgid "Down"
-msgstr "Down"
+msgstr "离线"
 
 #: automation_devices.php:55 automation_devices.php:300
 #: automation_devices.php:411 automation_devices.php:421
@@ -1097,7 +1097,7 @@ msgstr "Down"
 #: lib/api_automation.php:172 lib/api_automation.php:1098
 #: lib/html_utility.php:955
 msgid "Up"
-msgstr "Up"
+msgstr "在线"
 
 #: automation_devices.php:107
 msgid "Added manually through device automation interface."
@@ -1269,7 +1269,7 @@ msgstr "清空已发现的设备"
 #: utilities.php:2745 utilities.php:2753 utilities.php:2764 utilities.php:2775
 #: utilities.php:2798 utilities.php:2844 utilities.php:3078
 msgid "N/A"
-msgstr "N/A"
+msgstr "不可用"
 
 #: automation_graph_rules.php:29 automation_snmp.php:30
 #: automation_tree_rules.php:29 cdef.php:30 color_templates.php:29
@@ -1278,7 +1278,7 @@ msgstr "N/A"
 #: host_templates.php:36 include/global_arrays.php:1653 sites.php:29
 #: vdef.php:30
 msgid "Duplicate"
-msgstr "重复"
+msgstr "复制"
 
 #: automation_graph_rules.php:30 automation_networks.php:33
 #: automation_tree_rules.php:30 data_sources.php:40 host.php:42
@@ -1402,7 +1402,7 @@ msgstr "数据查询"
 #: user_group_admin.php:695 user_group_admin.php:2020 utilities.php:2073
 #: utilities.php:2862
 msgid "Enabled"
-msgstr "启用"
+msgstr "已启用"
 
 #: automation_graph_rules.php:777 automation_graph_rules.php:915
 #: automation_networks.php:1088 automation_tree_rules.php:822
@@ -2811,7 +2811,7 @@ msgstr "未找到颜色"
 
 #: color_templates.php:30
 msgid "Sync Aggregates"
-msgstr "聚合"
+msgstr "同步聚合"
 
 #: color_templates.php:73
 msgid "Color Item"
@@ -5511,7 +5511,7 @@ msgstr "导出设备"
 
 #: host.php:1678 lib/api_automation.php:171 lib/api_automation.php:1097
 msgid "Not Up"
-msgstr "Not UP"
+msgstr "不在线"
 
 #: host.php:1681 lib/api_automation.php:174 lib/api_automation.php:1100
 #: lib/html.php:81 lib/html_utility.php:952 pollers.php:49
@@ -5564,7 +5564,7 @@ msgstr "基于ping 结果的设备监控状态. 如果是特殊类型的设备,�
 
 #: host.php:1794
 msgid "In State"
-msgstr "持续时间"
+msgstr "此状况时间"
 
 #: host.php:1797
 msgid "The amount of time that this Device has been in its current state."
@@ -6240,7 +6240,7 @@ msgstr "时间戳"
 
 #: include/global_arrays.php:602
 msgid "Duration"
-msgstr "持续时间"
+msgstr "期间"
 
 #: include/global_arrays.php:640
 msgid "Not In Use"
@@ -6672,7 +6672,7 @@ msgstr "导入模板"
 
 #: include/global_arrays.php:1031 include/global_arrays.php:2660
 msgid "Import Packages"
-msgstr "导入模板"
+msgstr "导入程序包"
 
 #: include/global_arrays.php:1032 include/global_arrays.php:1244
 #: include/global_arrays.php:2642 templates_export.php:159
@@ -7920,7 +7920,7 @@ msgstr "选择该主机的SNMP 版本."
 
 #: include/global_form.php:44
 msgid "SNMP Community String"
-msgstr "SNMP 团体"
+msgstr "SNMP 团体字串"
 
 #: include/global_form.php:45
 msgid "Fill in the SNMP read community for this device."
@@ -16862,7 +16862,7 @@ msgstr "文件差异: "
 
 #: package_import.php:817
 msgid "Local Package Import File"
-msgstr "包文件"
+msgstr "本地包文件导入"
 
 #: package_import.php:818
 msgid "The *.xml.gz file located on your Local machine to Upload and Import."
@@ -16882,7 +16882,7 @@ msgstr "替换数据源和图形模板建议值记录。 在数据查询重新�
 
 #: package_import.php:932
 msgid "Package Import"
-msgstr "导入"
+msgstr "包导入"
 
 #: plugins.php:33 plugins.php:677
 msgid "Uninstall"
