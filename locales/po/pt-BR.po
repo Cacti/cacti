@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-25 16:32+0000\nLast-Translator: fabricio tavares maciel <fabricio.tavares@gmail.com>\nLanguage-Team: Portuguese (Brazil) <http://translate.cacti.net/projects/cacti/core-v1-2-x/pt_BR/>\nLanguage: pt-BR\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n > 1;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-25 21:23+0000\nLast-Translator: fabricio tavares maciel <fabricio.tavares@gmail.com>\nLanguage-Team: Portuguese (Brazil) <http://translate.cacti.net/projects/cacti/core-v1-2-x/pt_BR/>\nLanguage: pt-BR\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n > 1;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -19806,7 +19806,7 @@ msgstr "Registros de log"
 #: utilities.php:3343
 #, php-format
 msgid "Severity Level: %s"
-msgstr "Gravidade Nível: %s"
+msgstr "Nível de Severidade: %s"
 
 #: vdef.php:265
 msgid "Click 'Continue' to delete the following VDEF."
@@ -19834,16 +19834,16 @@ msgstr[1] "Duplicar VDEFs"
 
 #: vdef.php:329
 msgid "Click 'Continue' to delete the following VDEF's."
-msgstr "Clique em 'Continuar' para eliminar os seguintes VDEF's."
+msgstr "Clique em 'Continuar' para Excluir as seguintes VDEF's."
 
 #: vdef.php:330
 #, php-format
 msgid "VDEF Name: %s"
-msgstr "Nome VDEF: %s"
+msgstr "Nome da VDEF: %s"
 
 #: vdef.php:337
 msgid "Remove VDEF Item"
-msgstr "Remover item VDEF"
+msgstr "Remover Item VDEF"
 
 #: vdef.php:385
 msgid "VDEF Preview"
@@ -19860,7 +19860,7 @@ msgstr "Itens VDEF [novo]"
 
 #: vdef.php:415
 msgid "VDEF Item Type"
-msgstr "Tipo de item VDEF"
+msgstr "Tipo de Item VDEF"
 
 #: vdef.php:416
 msgid "Choose what type of VDEF item this is."
@@ -19868,11 +19868,11 @@ msgstr "Escolha que tipo de item VDEF é este."
 
 #: vdef.php:422
 msgid "VDEF Item Value"
-msgstr "Valor do item VDEF"
+msgstr "Valor do Item VDEF"
 
 #: vdef.php:423
 msgid "Enter a value for this VDEF item."
-msgstr "Entrar um valor para este item VDEF."
+msgstr "Entre com um valor para este item VDEF."
 
 #: vdef.php:552
 #, php-format
@@ -19885,7 +19885,7 @@ msgstr "VDEFs [novo]"
 
 #: vdef.php:623 vdef.php:677
 msgid "Delete VDEF Item"
-msgstr "Excluir item VDEF"
+msgstr "Excluir Item VDEF"
 
 #: vdef.php:890
 msgid "The name of this VDEF."
