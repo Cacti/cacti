@@ -1218,7 +1218,7 @@ function settings_search() {
 		foreach($page as $field_name => $field_array) {
 			if ($field_array['method'] == 'spacer') {
 				$last_spacer = $field_name;
-			} else {
+			} elseif (($field_array['method'] != 'hidden')) {
 				$friendly_key = false;
 				$description_key = false;
 				
