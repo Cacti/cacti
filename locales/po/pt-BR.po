@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2024-06-25 16:32+0000\n"
+"PO-Revision-Date: 2024-06-25 21:23+0000\n"
 "Last-Translator: fabricio tavares maciel <fabricio.tavares@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <http://translate.cacti.net/projects/"
 "cacti/core/pt_BR/>\n"
@@ -25106,142 +25106,120 @@ msgid "Log Entries"
 msgstr "Registros de log"
 
 #: utilities.php:2277
-#, fuzzy, php-format
+#, php-format
 msgid "Severity Level: %s"
-msgstr "Gravidade Nível: %s"
+msgstr "Nível de Severidade: %s"
 
 #: vdef.php:256
-#, fuzzy
 msgid "Click 'Continue' to Delete the following VDEF."
-msgstr "Clique em 'Continuar' para apagar o seguinte VDEF."
+msgstr "Clique em 'Continuar' para Excluir o seguinte VDEF."
 
 #: vdef.php:257
-#, fuzzy
 msgid "Click 'Continue' to Delete following VDEFs."
-msgstr "Clique em 'Continuar' para eliminar os seguintes VDEF's."
+msgstr "Clique em 'Continuar' para Excluir os seguintes VDEF's."
 
 #: vdef.php:258
-#, fuzzy
 msgid "Delete VDEF"
-msgstr "Apagar VDEF"
+msgstr "Excluir VDEF"
 
 #: vdef.php:259
-#, fuzzy
 msgid "Delete VDEFs"
-msgstr "Apagar VDEF"
+msgstr "Excluir VDEF"
 
 #: vdef.php:262
-#, fuzzy
 msgid "Click 'Continue' to Duplicate the following VDEF."
-msgstr "Clique em 'Continuar' para excluir a seguinte árvore."
+msgstr "Clique em 'Continuar' para Excluir a seguinte VDEF."
 
 #: vdef.php:263
-#, fuzzy
 msgid "Click 'Continue' to Duplicate following VDEFs."
-msgstr "Clique em 'Continuar' para excluir a seguinte árvore."
+msgstr "Clique em 'Continuar' para Excluir as seguintes VDEFs."
 
 #: vdef.php:264
-#, fuzzy
 msgid "Duplicate VDEF"
 msgstr "Duplicar VDEF"
 
 #: vdef.php:265
-#, fuzzy
 msgid "Duplicate VDEFs"
-msgstr "Duplicar VDEF"
+msgstr "Duplicar VDEFs"
 
 #: vdef.php:303
-#, fuzzy
 msgid "Click 'Continue' to delete the following VDEF's."
-msgstr "Clique em 'Continuar' para eliminar os seguintes VDEF's."
+msgstr "Clique em 'Continuar' para Excluir as seguintes VDEF's."
 
 #: vdef.php:304
-#, fuzzy, php-format
+#, php-format
 msgid "VDEF Name: %s"
-msgstr "Nome VDEF: %s"
+msgstr "Nome da VDEF: %s"
 
 #: vdef.php:312
-#, fuzzy
 msgid "Remove VDEF Item"
-msgstr "Remover item VDEF"
+msgstr "Remover Item VDEF"
 
 #: vdef.php:384
-#, fuzzy
 msgid "VDEF Preview"
 msgstr "Pré-visualização do VDEF"
 
 #: vdef.php:394
-#, fuzzy, php-format
+#, php-format
 msgid "VDEF Items [edit: %s]"
 msgstr "Itens VDEF [editar: %s]"
 
 #: vdef.php:396
-#, fuzzy
 msgid "VDEF Items [new]"
 msgstr "Itens VDEF [novo]"
 
 #: vdef.php:414
-#, fuzzy
 msgid "VDEF Item Type"
-msgstr "Tipo de item VDEF"
+msgstr "Tipo de Item VDEF"
 
 #: vdef.php:415
-#, fuzzy
 msgid "Choose what type of VDEF item this is."
 msgstr "Escolha que tipo de item VDEF é este."
 
 #: vdef.php:421
-#, fuzzy
 msgid "VDEF Item Value"
-msgstr "Valor do item VDEF"
+msgstr "Valor do Item VDEF"
 
 #: vdef.php:422
-#, fuzzy
 msgid "Enter a value for this VDEF item."
-msgstr "Entrar um valor para este item VDEF."
+msgstr "Entre com um valor para este item VDEF."
 
 #: vdef.php:547
-#, fuzzy, php-format
+#, php-format
 msgid "VDEFs [edit: %s]"
 msgstr "VDEFs [editar: %s]"
 
 #: vdef.php:549
-#, fuzzy
 msgid "VDEFs [new]"
 msgstr "VDEFs [novo]"
 
 #: vdef.php:619 vdef.php:673
-#, fuzzy
 msgid "Delete VDEF Item"
-msgstr "Excluir item VDEF"
+msgstr "Excluir Item VDEF"
 
 #: vdef.php:874
-#, fuzzy
 msgid "VDEF Name"
 msgstr "Nome VDEF"
 
 #: vdef.php:877
-#, fuzzy
 msgid "The name of this VDEF."
 msgstr "O nome deste VDEF."
 
 #: vdef.php:882
-#, fuzzy
 msgid "VDEFs that are in use cannot be Deleted. In use is defined as being referenced by a Graph or a Graph Template."
-msgstr "Os VDEFs que estão em uso não podem ser apagados. Em uso é definido como sendo referenciado por um Gráfico ou um Modelo de Gráfico."
+msgstr ""
+"Os VDEFs que estão em uso não podem ser apagados. Em uso é definido como "
+"sendo referenciado por um Gráfico ou um Modelo de Gráfico."
 
 #: vdef.php:888
-#, fuzzy
 msgid "The number of Graphs using this VDEF."
 msgstr "O número de Gráficos que utilizam este VDEF."
 
 #: vdef.php:894
-#, fuzzy
 msgid "The number of Graphs Templates using this VDEF."
 msgstr "O número de Modelos de Gráficos usando este VDEF."
 
 #: vdef.php:917
-#, fuzzy
 msgid "No VDEFs"
 msgstr "Sem VDEFs"
 
