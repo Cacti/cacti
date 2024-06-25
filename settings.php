@@ -1218,12 +1218,35 @@ function settings_search() {
 		foreach($page as $field_name => $field_array) {
 			if ($field_array['method'] == 'spacer') {
 				$last_spacer = $field_name;
-			} elseif (stristr($field_array['friendly_name'], $filter) !== false || stristr($field_array['description'], $filter) !== false) {
-				$tabs[] = $tab;
-				$response['rows'][] = $field_name;
+			} else {
+				$friendly_key = false;
+				$description_key = false;
+				
+				if (array_key_exists('friendly_name', $field_array)) {
+					if (stristr($field_array['friendly_name'], $filter) !== false) {
+						$friendly_key = true;
+					} else {
+						$friendly_key = false;
+					}
+				} else {
+					$friendly_key = false;
+				}
+				if (array_key_exists('description', $field_array)) {
+					if (stristr($field_array['description'], $filter) !== false) {
+						$description_key = true;
+					} else {
+						$description_key = false;
+					}
+				} else {
+					$description_key = false;
+				}
+				if ($friendly_key !== false || $description_key !== false) {
+					$tabs[] = $tab;
+					$response['rows'][] = $field_name;
 
-				if ($last_spacer != '') {
-					$spacers[] = $last_spacer;
+					if ($last_spacer != '') {
+						$spacers[] = $last_spacer;
+					}
 				}
 			}
 		}
