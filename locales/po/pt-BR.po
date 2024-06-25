@@ -4,56 +4,44 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2024-04-20 18:16-0400\n"
-"PO-Revision-Date: 2024-04-20 19:16-0400\n"
-"Last-Translator: Ede Willians dos Santos Cavalcante <edewillians10@gmail.com>\n"
-"Language-Team: Portuguese (Brazil) <http://translate.cacti.net/projects/cacti/core-v1-2-x/pt_BR/>\n"
-"Language: pt_BR\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Poedit 3.4.2\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-06-25 16:32+0000\nLast-Translator: fabricio tavares maciel <fabricio.tavares@gmail.com>\nLanguage-Team: Portuguese (Brazil) <http://translate.cacti.net/projects/cacti/core-v1-2-x/pt_BR/>\nLanguage: pt-BR\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n > 1;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
-msgstr "Sobre Cacti"
+msgstr "Sobre o Cacti"
 
 #: about.php:42
 msgid "Cacti is designed to be a complete graphing solution based on the RRDtool Time Series Database (TSDB) and Graphing solution. Its goal is to make the Network Administrator's job easier by taking care of all the important details necessary to create meaningful Graphs."
-msgstr "Cacti é projetado para ser uma solução gráfica completa baseada na estrutura do RRDtool. Seu objetivo é facilitar o trabalho de um administrador de rede, cuidando de todos os detalhes necessários para criar gráficos significativos."
+msgstr "Cacti foi projetado para ser uma solução gráfica completa baseada na estrutura do RRDtool. Seu objetivo é facilitar o trabalho de um administrador de rede, cuidando de todos os detalhes necessários para criar gráficos significativos."
 
 #: about.php:44
 #, php-format
 msgid "Please see the official %sCacti website%s for information on how to use Cacti, get support, and updates."
-msgstr "Por favor, veja o site oficial %sCacti%s para informações, suporte e atualizações."
+msgstr "Acesse o site oficial %sCacti%s para mais informações, suporte e atualizações."
 
 #: about.php:48
 msgid "Active Developers"
-msgstr "Desenvolvedores Cacti"
+msgstr "Desenvolvedores Ativos"
 
 #: about.php:49
 msgid "Developers working on Cacti, its Architecture, Documentation and Future Releases."
-msgstr "Desenvolvedores trabalhando no Cacti, sua Arquitetura, Documentação e Lançamentos Futuros."
+msgstr "Desenvolvedores atuando no Cacti, sua arquitetura, documentação e futuros releases."
 
 #: about.php:61
 msgid "Honorable Mentions"
-msgstr "Secção Menu da Consola"
+msgstr "Menções Honrosas"
 
 #: about.php:62
 msgid "Contributors to Docuemntation, QA, Packaging, the Forums and our YouTube page."
-msgstr "Colaboradores do Docuemntation, QA, Packaging, dos Fóruns e da nossa página do YouTube."
+msgstr "Contribuidores para a Documentação, Perguntas e Respostas, Empacotamento, Fóruns e canal do Youtube."
 
 #: about.php:72
 msgid "Emeritus Members"
-msgstr "Membro do grupo"
+msgstr "Membros Eméritos"
 
 #: about.php:73
 msgid "Members of the original Cacti Group that have since moved on in their careers.  We continue to wish them the best."
-msgstr "Membros do Grupo Cacti original que, desde então, seguiram em frente em suas carreiras.  Continuamos a desejar-lhes o melhor."
+msgstr "Membros do grupo original do Cacti que mudaram de carreira. Continuamos desejando o melhor para eles."
 
 #: about.php:83
 msgid "Thanks"
@@ -62,15 +50,15 @@ msgstr "Obrigado"
 #: about.php:86
 #, php-format
 msgid "A very special thanks to %sTobi Oetiker%s, the creator of %sRRDtool%s and the very popular %sMRTG%s."
-msgstr "Um agradecimento muito especial a %sTobi Oetiker%s, o criador de %sRRDtool%s e os muito populares %sMRTG%s."
+msgstr "Um agradecimento muito especial a %sTobi Oetiker%s, o criador do %sRRDtool%s e o popular %sMRTG%s."
 
 #: about.php:89
 msgid "The users of Cacti"
-msgstr "Os usuários de Cacti"
+msgstr "Os usuários do Cacti"
 
 #: about.php:90
 msgid "Especially anyone who has taken the time to create an issue report, or otherwise help fix a Cacti related problems. Also to anyone who has contributed to supporting Cacti."
-msgstr "Especialmente qualquer um que tenha tomado o tempo para criar um relatório de problema, ou de outra forma ajudar a corrigir um Cacti problemas relacionados. Também para qualquer um que tenha contribuído para apoiar Cacti."
+msgstr "Especialmente qualquer um que tenha dedicado seu tempo para criar um relatório de problema, ou de outra forma ajudar a corrigir um problema relacionado ao Cacti. Também para qualquer um que tenha contribuído para apoiar o Cacti."
 
 #: about.php:95
 msgid "License"
@@ -82,7 +70,7 @@ msgstr "Cacti é licenciado sob a GNU GPL:"
 
 #: about.php:99 lib/installer.php:1768
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
-msgstr "Este programa é software livre; você pode redistribuí-lo e/ou modificá-lo sob os termos da GNU General Public License conforme publicada pela Free Software Foundation; ou versão 2 da Licença, ou (a seu critério) qualquer versão posterior."
+msgstr "Este programa é um software livre; você pode redistribuí-lo e/ou modificá-lo sob os termos da GNU General Public License conforme publicada pela Free Software Foundation; ou versão 2 da Licença, ou (a seu critério) qualquer versão posterior."
 
 #: about.php:101
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
@@ -111,32 +99,32 @@ msgstr "Excluir"
 
 #: aggregate_graphs.php:43
 msgid "Convert to Normal Graph"
-msgstr "Converter para gráfico LINE1"
+msgstr "Converter para Gráfico Normal"
 
 #: aggregate_graphs.php:44 graphs.php:58
 msgid "Place Graphs on Report"
-msgstr "Colocar gráficos no relatório"
+msgstr "Colocar Gráficos no Relatório"
 
 #: aggregate_graphs.php:45
 msgid "Migrate Aggregate to use a Template"
-msgstr "Migrar Agregado para usar um Template"
+msgstr "Migrar Agregado para usar um Modelo"
 
 #: aggregate_graphs.php:46
 msgid "Create New Aggregate from Aggregates"
-msgstr "Criar novo agregado a partir de agregados"
+msgstr "Criar Novo Agregado a partir de Agregados"
 
 #: aggregate_graphs.php:50
 msgid "Associate with Aggregate"
-msgstr "Associar com Agregar"
+msgstr "Associar ao Agregado"
 
 #: aggregate_graphs.php:51
 msgid "Disassociate with Aggregate"
-msgstr "Desassociar com Agregado"
+msgstr "Desassociar do Agregado"
 
 #: aggregate_graphs.php:84 graphs.php:197 host.php:216
 #, php-format
 msgid "Place on a Tree (%s)"
-msgstr "Coloque em uma árvore (%s)"
+msgstr "Coloque na Árvore (%s)"
 
 #: aggregate_graphs.php:352
 msgid "Click 'Continue' to delete the following Aggregate Graph(s)."
@@ -240,7 +228,7 @@ msgstr "Retorno"
 
 #: aggregate_graphs.php:397
 msgid "The selected Aggregate Graphs does not appear to have any matching Aggregate Templates."
-msgstr "Os Gráficos Agregados selecionados representam elementos de mais de um Modelo de Gráfico."
+msgstr "Os Gráficos Agregados selecionados não parecem ter nenhum Modelo de Agregado correspondente."
 
 #: aggregate_graphs.php:398
 msgid "In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist.  Please press 'Return' and then first create your Aggregate Template before retrying."
@@ -252,16 +240,16 @@ msgstr "Clique em 'Continuar' e o(s) seguinte(s) Gráfico(s) Agregado(s) será(�
 
 #: aggregate_graphs.php:420
 msgid "Aggregate Template:"
-msgstr "Modelo agregado:"
+msgstr "Modelo de Agregado:"
 
 #: aggregate_graphs.php:434
 msgid "There are currently no Aggregate Templates defined for the selected Legacy Aggregates."
-msgstr "Atualmente não existem Modelos agregados definidos para os Agregados antigos selecionados."
+msgstr "Atualmente não existem Templates de Agregados definidos para os Agregados Legados selecionados."
 
 #: aggregate_graphs.php:435
 #, php-format
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template '%s'."
-msgstr "Para migrar os Gráficos Agregados abaixo para um Agregado baseado em Modelos, primeiro crie um Modelo Agregado para o Modelo de Gráfico '%s'."
+msgstr "Para migrar os Gráficos Agregados abaixo para um Agregado baseado em Modelos, primeiro crie um Modelo de Agregado para o Modelo de Gráfico '%s'."
 
 #: aggregate_graphs.php:436
 msgid "Please press 'Return' to continue."
@@ -273,7 +261,7 @@ msgstr "Clique em 'Continuar' para combinar o(s) seguinte(s) Gráfico(s) Agregad
 
 #: aggregate_graphs.php:452
 msgid "Aggregate Name:"
-msgstr "Nome agregado:"
+msgstr "Nome do Agregado:"
 
 #: aggregate_graphs.php:453
 msgid "New Aggregate"
@@ -303,7 +291,7 @@ msgstr "Adicionar gráficos ao relatório"
 
 #: aggregate_graphs.php:486 graphs.php:1288
 msgid "You currently have no reports defined."
-msgstr "Atualmente, você não tem relatórios definidos."
+msgstr "Atualmente você não tem relatórios definidos."
 
 #: aggregate_graphs.php:492
 msgid "Click 'Continue' to convert the following Aggregate Graph(s) into a normal Graph."
@@ -349,7 +337,7 @@ msgstr "[editar: %s]"
 
 #: aggregate_graphs.php:595 aggregate_graphs.php:708 aggregate_graphs.php:710
 msgid "Aggregate Graph does not Exist"
-msgstr "Configurações agregadas do gráfico"
+msgstr "Gráfico Agregado inexistente"
 
 #: aggregate_graphs.php:610 aggregate_graphs.php:617 lib/html_reports.php:1381
 #: lib/html_reports.php:1383 utilities.php:2193
@@ -368,28 +356,28 @@ msgstr "Visualização"
 
 #: aggregate_graphs.php:621
 msgid "Aggregate Graphs Accessed does not Exist"
-msgstr "Configurações agregadas do gráfico"
+msgstr "Gráficos Agregados acessado inexistente"
 
 #: aggregate_graphs.php:687
 msgid "Turn Off Graph Debug Mode"
-msgstr "Desativar o modo de depuração do gráfico"
+msgstr "Desativar o Modo de Depuração do Gráfico"
 
 #: aggregate_graphs.php:689
 msgid "Turn On Graph Debug Mode"
-msgstr "Ativar o modo de depuração de gráfico"
+msgstr "Ativar o Modo de Depuração do Gráfico"
 
 #: aggregate_graphs.php:695 aggregate_graphs.php:1032
 msgid "Show Item Details"
-msgstr "Mostrar detalhes do item"
+msgstr "Exibir Detalhes do Item"
 
 #: aggregate_graphs.php:707
 msgid "Aggregate Preview Does Not Exist"
-msgstr "Previsão agregada [%s]"
+msgstr "Pré-Visualização do Agregado inexistente"
 
 #: aggregate_graphs.php:714
 #, php-format
 msgid "Aggregate Preview %s"
-msgstr "Previsão agregada [%s]"
+msgstr "Pré-Visualização do Agregado [%s]"
 
 #: aggregate_graphs.php:732 graph.php:600 graphs.php:1683
 msgid "RRDtool Command:"
@@ -397,20 +385,20 @@ msgstr "Comando RRDtool:"
 
 #: aggregate_graphs.php:734 graph.php:609 graphs.php:1687
 msgid "Not Checked"
-msgstr "Caixa de seleção de valores de campo"
+msgstr "Desmarcado"
 
 #: aggregate_graphs.php:734 graph.php:605 graphs.php:1685
 msgid "RRDtool Says:"
-msgstr "RRDtool diz:"
+msgstr "RRDtool informa:"
 
 #: aggregate_graphs.php:764
 #, php-format
 msgid "Aggregate Graph %s"
-msgstr "Gráfico agregado %s"
+msgstr "Gráfico Agregado %s"
 
 #: aggregate_graphs.php:787 aggregate_templates.php:394 graphs.php:1058
 msgid "Prefix Replacement Values"
-msgstr "Padrão de substituição"
+msgstr "Valores de Substituição de Prefixo"
 
 #: aggregate_graphs.php:788 aggregate_templates.php:395 graphs.php:1059
 msgid "You may use these replacement values for the Prefix in the Aggregate Graph"
@@ -423,25 +411,25 @@ msgstr "Total"
 
 #: aggregate_graphs.php:959 aggregate_templates.php:526 graphs.php:1143
 msgid "All Items"
-msgstr "Todos os itens"
+msgstr "Todos os Itens"
 
 #: aggregate_graphs.php:977 graphs.php:1698 lib/api_aggregate.php:1908
 msgid "Graph Configuration"
-msgstr "Configuração do gráfico"
+msgstr "Configuração do Gráfico"
 
 #: aggregate_graphs.php:1027 automation_graph_rules.php:551
 #: automation_graph_rules.php:566 automation_graph_rules.php:582
 #: automation_tree_rules.php:394 automation_tree_rules.php:544
 msgid "Show"
-msgstr "Mostrar"
+msgstr "Exibir"
 
 #: aggregate_graphs.php:1029
 msgid "Hide Item Details"
-msgstr "Ocultar detalhes do item"
+msgstr "Ocultar Detalhes do Item"
 
 #: aggregate_graphs.php:1229
 msgid "Matching Graphs"
-msgstr "Gráficos de correspondência"
+msgstr "Gráficos Correspondentes"
 
 #: aggregate_graphs.php:1238 aggregate_graphs.php:1512
 #: aggregate_templates.php:591 automation_devices.php:474
@@ -553,7 +541,7 @@ msgstr "Ir"
 #: user_group_admin.php:2729 utilities.php:1077 utilities.php:1432
 #: utilities.php:1766 utilities.php:2053 utilities.php:3013 utilities.php:3278
 msgid "Set/Refresh Filters"
-msgstr "Filtros Set/Refresh"
+msgstr "Setar/Atualizar Filtros"
 
 #: aggregate_graphs.php:1267 aggregate_graphs.php:1557
 #: aggregate_templates.php:629 automation_devices.php:496
@@ -598,7 +586,7 @@ msgstr "Limpar Filtros"
 #: aggregate_graphs.php:1292 aggregate_graphs.php:1622 graphs.php:1221
 #: lib/api_automation.php:574 user_admin.php:886 user_group_admin.php:882
 msgid "Graph Title"
-msgstr "Titulo do gráfico"
+msgstr "Titulo do Gráfico"
 
 #: aggregate_graphs.php:1293 aggregate_graphs.php:1623
 #: automation_graph_rules.php:896 automation_tree_rules.php:936
@@ -615,7 +603,7 @@ msgstr "ID"
 
 #: aggregate_graphs.php:1294
 msgid "Included in Aggregate"
-msgstr "Incluído no agregado"
+msgstr "Incluído no Agregado"
 
 #: aggregate_graphs.php:1295 aggregate_graphs.php:1625 graph_templates.php:854
 #: graph_view.php:758 graph_view.php:771 graphs.php:2263
@@ -653,11 +641,11 @@ msgstr "Sim"
 
 #: aggregate_graphs.php:1317 graphs.php:2305 lib/api_automation.php:601
 msgid "No Graphs Found"
-msgstr "Nenhum gráfico encontrado"
+msgstr "Nenhum Gráfico Encontrado"
 
 #: aggregate_graphs.php:1503
 msgid " [ Custom Graphs List Applied - Clear to Reset ]"
-msgstr "Lista de Gráficos Personalizados Aplicada - Filtro FROM List"
+msgstr " [ Lista Personalizada de Gráficos Aplicada - Limpar para Reiniciar ]"
 
 #: aggregate_graphs.php:1503 aggregate_graphs.php:1613
 #: include/global_arrays.php:2768
@@ -730,15 +718,15 @@ msgstr "Nenhum"
 
 #: aggregate_graphs.php:1622
 msgid "The title for the Aggregate Graphs"
-msgstr "O título para os Gráficos Agregados"
+msgstr "Título para os Gráficos Agregados"
 
 #: aggregate_graphs.php:1623
 msgid "The internal database identifier for this object"
-msgstr "O identificador interno do banco de dados para este objeto"
+msgstr "O identificador interno no banco de dados para este objeto"
 
 #: aggregate_graphs.php:1624 graphs.php:1225
 msgid "Aggregate Template"
-msgstr "Modelo agregado"
+msgstr "Modelo de Agregado"
 
 #: aggregate_graphs.php:1624
 msgid "The Aggregate Template that this Aggregate Graphs is based upon"
@@ -785,7 +773,7 @@ msgstr "Tem Gráficos"
 
 #: aggregate_templates.php:691 color_templates.php:640
 msgid "Template Title"
-msgstr "Título do Template"
+msgstr "Título do Modelo"
 
 #: aggregate_templates.php:692
 msgid "Aggregate Templates that are in use can not be Deleted.  In use is defined as being referenced by an Aggregate."
@@ -2305,7 +2293,7 @@ msgstr "Item#%d"
 
 #: automation_snmp.php:559
 msgid "none"
-msgstr "nenhum"
+msgstr "Nenhum"
 
 #: automation_snmp.php:574 automation_templates.php:524 cdef.php:612
 #: color_templates.php:111 data_queries.php:809 data_queries.php:916
@@ -2433,7 +2421,7 @@ msgstr "Modelos de automação de dispositivos"
 #: automation_templates.php:491 data_sources.php:1662 package_import.php:589
 #: templates_import.php:260 user_admin.php:1292 user_group_admin.php:1173
 msgid "Template Name"
-msgstr "Nome do modelo"
+msgstr "Nome do Modelo"
 
 #: automation_templates.php:495
 msgid "System ObjectId Match"
@@ -5369,7 +5357,7 @@ msgstr "Adicionar ao Relatório"
 
 #: host.php:546
 msgid "You currently have no Reports defined."
-msgstr "Atualmente, você não tem relatórios definidos."
+msgstr "Atualmente você não tem relatórios definidos."
 
 #: host.php:686
 msgid "Device [new]"
@@ -6950,7 +6938,7 @@ msgstr "Usuário normal"
 
 #: include/global_arrays.php:1259
 msgid "Template Editor"
-msgstr "Editor de Template"
+msgstr "Editor de Modelo"
 
 #: include/global_arrays.php:1260
 msgid "General Administration"
@@ -10887,7 +10875,7 @@ msgstr "O nome do usuário convidado para visualizar gráficos; é 'No User' por
 
 #: include/global_settings.php:1519 user_domains.php:340
 msgid "User Template"
-msgstr "Novo Template de Slider"
+msgstr "Modelo de Usuário"
 
 #: include/global_settings.php:1520
 msgid "The name of the user that Cacti will use as a template for new Web Basic and LDAP users; is 'guest' by default.  This user account will be disabled from logging in upon being selected."
@@ -12331,7 +12319,7 @@ msgstr "Itens agregados não são editáveis"
 
 #: lib/api_aggregate.php:1940
 msgid "Override this Value"
-msgstr "Substituir este valor"
+msgstr "Substituir este Valor"
 
 #: lib/api_automation.php:131
 msgid "Matching Devices"
@@ -15436,7 +15424,7 @@ msgstr "Isso pode ocorrer se o usuário tiver um banco de dados em branco e aind
 
 #: lib/installer.php:2559
 msgid "Template Setup"
-msgstr "Configuração do Tema"
+msgstr "Modelo de Configuração"
 
 #: lib/installer.php:2562
 msgid "Please select the Device Templates that you wish to update during the Upgrade."
@@ -16689,7 +16677,7 @@ msgstr "Destinatários"
 
 #: managers.php:217
 msgid "Id"
-msgstr "Id"
+msgstr "ID"
 
 #: managers.php:251
 msgid "No SNMP Notification Receivers"
@@ -17619,7 +17607,7 @@ msgstr "ID DS"
 
 #: rrdcleaner.php:382
 msgid "Template ID"
-msgstr "ID do Template"
+msgstr "ID do Modelo"
 
 #: rrdcleaner.php:384
 msgid "Last Modified"
