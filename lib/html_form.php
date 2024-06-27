@@ -53,7 +53,11 @@ function draw_edit_form($array) {
 				if (!isset($field_array['value'])) {
 					cacti_log("WARNING: Cacti Form field '$field_name' does not include a 'value' Column.  Using default", false);
 					cacti_debug_backtrace('form_edit');
-					$field_array['value'] = $field_array['default'];
+					if (array_key_exists('default', $field_array)) {
+						$field_array['value'] = $field_array['default'];
+					} else {
+						$field_array['value'] = '';
+					}
 				}
 
 				print '<div class="hidden formRow">';
