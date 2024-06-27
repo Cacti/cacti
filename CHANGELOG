@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-issue#5780: Undefined array key "default" in file html_form.php
 -issue#5776: Undefined array key "description" in file settings.php
 -issue#2205: Allow admins to disable RRDtool watermark
 -issue#3066: Enable the secure flag on cookies when HTTPS is enabled.
