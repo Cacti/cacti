@@ -52,9 +52,15 @@ function draw_edit_form($array) {
 		foreach ($fields_array as $field_name => $field_array) {
 			if ($field_array['method'] == 'hidden') {
 				if (!isset($field_array['value'])) {
-					cacti_log("WARNING: Cacti Form field '$field_name' does not include a 'value' Column.  Using default", false);
+					cacti_log("WARNING: Cacti Form field '$field_name' does not include a 'value' Column.  Using default.", false);
 					cacti_debug_backtrace('form_edit');
-					$field_array['value'] = $field_array['default'];
+
+					if (isset($field_array['default'])) {
+						$field_array['value'] = $field_array['default'];
+					} else {
+						cacti_log("WARNING: Cacti Form field '$field_name' does not include a 'default' Column.  Using empty string.", false);
+						$field_array['value'] = '';
+					}
 				}
 
 				print '<div class="hidden formRow">';
@@ -62,9 +68,15 @@ function draw_edit_form($array) {
 				print '</div>';
 			} elseif ($field_array['method'] == 'hidden_zero') {
 				if (!isset($field_array['value'])) {
-					cacti_log("WARNING: Cacti Form field '$field_name' does not include a 'value' Column.  Using default", false);
+					cacti_log("WARNING: Cacti Form field '$field_name' does not include a 'value' Column.  Using default.", false);
 					cacti_debug_backtrace('form_edit');
-					$field_array['value'] = $field_array['default'];
+
+					if (isset($field_array['default'])) {
+						$field_array['value'] = $field_array['default'];
+					} else {
+						cacti_log("WARNING: Cacti Form field '$field_name' does not include a 'default' Column.  Using '0'.", false);
+						$field_array['value'] = '0';
+					}
 				}
 
 				print '<div class="hidden formRow">';
@@ -98,7 +110,13 @@ function draw_edit_form($array) {
 					if (!isset($field_array['sub_checkbox']['value'])) {
 						cacti_log("WARNING: Cacti Form field '$field_name' does not include a sub_checkbox 'value' Column.  Using default", false);
 						cacti_debug_backtrace('form_edit');
-						$field_array['sub_checkbox']['value'] = $field_array['default'];
+
+						if (isset($field_array['sub_checkbox']['default'])) {
+							$field_array['sub_checkbox']['value'] = $field_array['default'];
+						} else {
+							cacti_log("WARNING: Cacti Form field '$field_name' does not include a 'default' Column.  Using ''.", false);
+							$field_array['sub_checkbox']['value'] = '';
+						}
 					}
 
 					form_checkbox($field_array['sub_checkbox']['name'],
