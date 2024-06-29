@@ -81,7 +81,7 @@ if (!cacti_sizeof($page)) {
 			$file     = realpath($basepath . '/' . $page['contentfile']);
 
 			if ($file !== false && substr($file, 0, strlen($basepath)) == $basepath) {
-				print file_get_contents($file);
+				include_once($file);
 			} else {
 				print '<h1>The file \'' . html_escape($page['contentfile']) . '\' does not exist!!</h1>';
 			}

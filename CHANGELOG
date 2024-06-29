@@ -107,6 +107,7 @@ Cacti CHANGELOG
 -issue#5772: Login log message unification - add client IP adress
 -issue#5773: Update rrd.php missing variable $okpos
 -issue#5780: Undefined array key "default" in file html_form.php
+-issue#5782: Function file_get_contents in file link.php
 
 1.2.27
 -security#GHSA-37x7-mfjv-mm7m: Authentication Bypass when using using older password hashes
