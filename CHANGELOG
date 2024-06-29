@@ -20,6 +20,7 @@ Cacti CHANGELOG
 -issue#5573: Incorrect URL for editing graph template
 -issue#5639: Add tooltip info about IPv6 address
 -issue#5680: Fix Spikekill not following correct time in schedule
+-issue#5776: Undefined array key "description" in file settings.php
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1442: Add validation to GUI inputs

@@ -1218,12 +1218,37 @@ function settings_search() {
 		foreach($page as $field_name => $field_array) {
 			if ($field_array['method'] == 'spacer') {
 				$last_spacer = $field_name;
-			} elseif (stristr($field_array['friendly_name'], $filter) !== false || stristr($field_array['description'], $filter) !== false) {
-				$tabs[] = $tab;
-				$response['rows'][] = $field_name;
+			} elseif ($field_array['method'] != 'hidden') {
+				$friendly_key    = false;
+				$description_key = false;
 
-				if ($last_spacer != '') {
-					$spacers[] = $last_spacer;
+				if (isset($field_array['friendly_name'])) {
+					if (stristr($field_array['friendly_name'], $filter) !== false) {
+						$friendly_key = true;
+					} else {
+						$friendly_key = false;
+					}
+				} else {
+					$friendly_key = false;
+				}
+
+				if (isset($field_array['description'])) {
+					if (stristr($field_array['description'], $filter) !== false) {
+						$description_key = true;
+					} else {
+						$description_key = false;
+					}
+				} else {
+					$description_key = false;
+				}
+
+				if ($friendly_key !== false || $description_key !== false) {
+					$tabs[] = $tab;
+					$response['rows'][] = $field_name;
+
+					if ($last_spacer != '') {
+						$spacers[] = $last_spacer;
+					}
 				}
 			}
 		}
