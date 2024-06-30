@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -issue#5768: Cacti does not properly escape Data Query indexes that include a space
 -issue#5772: Login log message unification - add client IP address
 -issue#5773: Update rrd.php missing variable $okpos
+-issue#5777: The Export .CSV only includes the 1st line of Notes
 -issue#5780: Undefined array key "default" in file html_form.php
 -issue#5782: Function file_get_contents in file link.php
 
