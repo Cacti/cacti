@@ -1,6 +1,8 @@
 Cacti CHANGELOG
 
 1.2.28
+-issue#5754: Installer replication loop for. Plugin realms
+-issue#5759: Remote poller attempts to sync with other pollers during install
 -issue#5768: Cacti does not properly escape Data Query indexes that include a space
 -issue#5772: Login log message unification - add client IP address
 -issue#5773: Update rrd.php missing variable $okpos

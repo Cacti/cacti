@@ -46,10 +46,32 @@ array_shift($params);
 global $cli_install;
 
 $cli_install = true;
+$now = time();
 
 if (cacti_sizeof($params) == 0) {
 	log_install_always('','no parameters passed' . PHP_EOL);
-	exit();
+	exit(0);
+}
+
+if (function_exists('register_process_start')) {
+	if (!register_process_start('install', 'master', '0', 600)) {
+		exit(0);
+	}
+} else {
+	$running = read_config_option('installer_running', true);
+
+	if ($running != '' && $now - $running < 600) {
+		exit(0);
+	}
+
+	set_config_option('installer_running', $now);
 }
 
 Installer::beginInstall($params[0]);
+
+if (function_exists('register_process_start')) {
+	unregister_process('install', 'master', 0);
+} else {
+	set_config_option('installer_running', '');
+}
+
