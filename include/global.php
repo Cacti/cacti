@@ -214,6 +214,7 @@ $config['DEBUG_READ_CONFIG_OPTION']         = defined('DEBUG_READ_CONFIG_OPTION'
 $config['DEBUG_READ_CONFIG_OPTION_DB_OPEN'] = defined('DEBUG_READ_CONFIG_OPTION_DB_OPEN');
 $config['DEBUG_SQL_CMD']                    = defined('DEBUG_SQL_CMD');
 $config['DEBUG_SQL_FLOW']                   = defined('DEBUG_SQL_FLOW');
+$config['DEBUG_SQL_CONNECT']                = defined('DEBUG_SQL_CONNECT');
 
 /* check for an empty database port */
 if (empty($database_port)) {

@@ -49,6 +49,10 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 	$i = 0;
 	if (isset($database_sessions["$device:$port:$db_name"])) {
+		if (!empty($config['DEBUG_SQL_CONNECT'])) {
+			error_log(sprintf('NOTE: Connect using cached connection %s:%s/%s.', $device, $port, $db_name));
+		}
+
 		return $database_sessions["$device:$port:$db_name"];
 	}
 
@@ -107,6 +111,10 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 				$cnn_id = new PDO("$db_type:host=$device;port=$port;dbname=$db_name;charset=utf8", $user, $pass, $flags);
 			}
 			$cnn_id->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
+
+			if (!empty($config['DEBUG_SQL_CONNECT'])) {
+				error_log(sprintf('NOTE: New connection to %s:%s/%s.', $device, $port, $db_name));
+			}
 
 			$bad_modes = array(
 				'STRICT_TRANS_TABLES',
@@ -354,20 +362,47 @@ function db_get_active_replicas() {
  *
  * @return (bool) the result of the close command
  */
-function db_close($db_conn = false) {
-	global $database_sessions, $database_default, $database_hostname, $database_port;
+function db_close(&$db_conn = false) {
+	global $database_sessions, $error_logged, $database_default, $database_hostname, $database_port, $database_details;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
+		if (!empty($config['DEBUG_SQL_CONNECT'])) {
+			error_log(sprintf('NOTE: Disconnecting from %s:%s/%s.', $database_hostname, $database_port, $database_default));
+		}
+
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 
 		if (!is_object($db_conn)) {
+			if (!empty($config['DEBUG_SQL_CONNECT'])) {
+				error_log(sprintf('WARNING: Disconnect issues.  Non-object for %s:%s/%s.', $database_hostname, $database_port, $database_default));
+			}
+
 			return false;
+		}
+
+		$database_sessions["$database_hostname:$database_port:$database_default"] = null;
+
+		if (isset($error_logged["$database_hostname:$database_port:$database_default"])) {
+			unset($error_logged["$database_hostname:$database_port:$database_default"]);
+		}
+	} elseif (!empty($config['DEBUG_SQL_CONNECT'])) {
+		$id   = spl_object_id($db_conn);
+		$hash = spl_object_hash($db_conn);
+		if (isset($database_details[$hash])) {
+			$det = $database_details[$hash];
+
+			error_log(sprintf('NOTE: Disconnecting from %s:%s/%s.', $det['database_hostname'], $det['database_port'], $det['database_default']));
+		} else {
+			error_log("WARNING: Disconnecting from unregistered Object ID: $id.");
+		}
+
+		if (isset($error_logged[$id])) {
+			unset($error_logged[$id]);
 		}
 	}
 
 	$db_conn = null;
-	$database_sessions["$database_hostname:$database_port:$database_default"] = null;
 
 	return true;
 }
@@ -400,7 +435,7 @@ function db_execute($sql, $log = true, $db_conn = false) {
  * @return (bool) '1' for success, false for failed
  */
 function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = false, $execute_name = 'Exec', $default_value = true, $return_func = 'no_return_function', $return_params = array()) {
-	global $database_sessions, $database_default, $config, $database_hostname, $database_port, $database_total_queries, $database_last_error, $database_log, $affected_rows;
+	global $database_sessions, $error_logged, $database_default, $config, $database_hostname, $database_port, $database_total_queries, $database_last_error, $database_log, $affected_rows, $database_details;
 
 	$database_total_queries++;
 
@@ -412,11 +447,36 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 	if (!is_object($db_conn)) {
 		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
 			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		} elseif (!isset($error_logged["$database_hostname:$database_port:$database_default"])) {
+			if (!empty($config['DEBUG_SQL_CONNECT'])) {
+				error_log(sprintf('WARNING: Execute unable to find connection for %s:%s/%s.', $database_hostname, $database_port, $database_default));
+				$error_logged["$database_hostname:$database_port:$database_default"] = true;
+			}
 		}
 
 		if (!is_object($db_conn)) {
+			if (!empty($config['DEBUG_SQL_CONNECT'])) {
+				error_log('FATAL: Unable to find connection Object ID.');
+			}
+
 			$database_last_error = 'DB ' . $execute_name . ' -- No connection found';
+
 			return false;
+		}
+	} elseif (!empty($config['DEBUG_SQL_CONNECT'])) {
+		$id   = spl_object_id($db_conn);
+		$hash = spl_object_hash($db_conn);
+
+		if (!isset($error_logged[$id])) {
+			if (isset($database_details[$hash])) {
+				$det = $database_details[$hash];
+
+				error_log(sprintf("NOTE: Execute Using %s:%s/%s.", $det['database_hostname'], $det['database_port'], $det['database_default']));
+			} else {
+				error_log("WARNING: Execute Using Object ID: $id.");
+			}
+
+			$error_logged[$id] = true;
 		}
 	}
 
@@ -441,6 +501,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 		}
 
 		set_error_handler('db_warning_handler',E_WARNING | E_NOTICE);
+
 		try {
 			if (empty($params) || cacti_count($params) == 0) {
 				$query->execute();
