@@ -176,7 +176,16 @@ $disable_log_rotation = false;
 #	define('DEBUG_SQL_FLOW', true);
 #}
 
-/*
+/**
+ * Debug the connect and disconnect activity
+ * and the first execute from each connection
+ * to the PHP error_log.
+ */
+#if (!defined('DEBUG_SQL_CONNECT')) {
+#	define('DEBUG_SQL_CONNECT', true);
+#}
+
+/**
  * Allow the use of Proxy IPs when searching for client
  * IP to be used
  *

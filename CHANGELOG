@@ -111,6 +111,8 @@ Cacti CHANGELOG
 -issue#5777: The Export .CSV only includes the 1st line of Notes
 -issue#5780: Undefined array key "default" in file html_form.php
 -issue#5782: Function file_get_contents in file link.php
+-issue#5783: Cacti improperly handles connection closing leading to issues with third party connections
+-feature#5784: Provide a means by which a user can track Cacti connections and disconnects from the php error_log
 
 1.2.27
 -security#GHSA-37x7-mfjv-mm7m: Authentication Bypass when using using older password hashes
