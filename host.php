@@ -613,7 +613,7 @@ function host_export() {
 
 		foreach($hosts as $h) {
 			foreach(array_keys($h) as $hc) {
-				if (strpos($h[$hc], "\n") !== false || strpos($h[$hc], "\r") !== false) {
+				if ($h[$hc] != '' && (strpos($h[$hc], "\n") !== false || strpos($h[$hc], "\r") !== false)) {
 					$h[$hc] = str_replace(array("\n", "\r"), ' ', $h[$hc]);
 				}
 			}
@@ -1962,3 +1962,4 @@ function host() {
 
 	api_plugin_hook('device_table_bottom');
 }
+
