@@ -197,24 +197,24 @@ function setupTheme() {
 
 	if ($('#cactiContent').length) {
 		$('<div id="mdw-GridContainer" class="mdw-GridContainer">' +
+			'<div id="mdw-ConsoleNavigation" class="mdw-ConsoleNavigation"></div>' +
 			'<div id="mdw-ConsolePageHead" class="mdw-ConsolePageHead">' +
 			'<div id="navBreadCrumb" class="navBreadCrumb">' +
-			'<div class="home"><a href="' + urlPath + 'index.php" class="pic">Home</a></div>' +
-			'<div class="rubric"></div>' +
-			'<div class="category"></div>' +
-			'<div class="action"></div>' +
+				'<div class="home"><a href="' + urlPath + 'index.php" class="pic">Home</a></div>' +
+				'<div class="rubric"></div>' +
+				'<div class="category"></div>' +
+				'<div class="action"></div>' +
+				'</div>' +
+				'<div id="navSearch" class="navSearch"></div>' +
+				'<div id="navFilter" class="navFilter" >' +
+	/*
+				'<div id="reportrange"style="cursor: pointer; padding: 5px 10px; border: 1px solid var(--border-color);">' +
+				'<i className="fa fa-calendar"></i>&nbsp;<span></span> <i className="fa fa-caret-down"></i>' +
+				'</div>' +
+	*/
+				'</div>' +
+				'<div id="navControl" class="navControl" ></div>' +
 			'</div>' +
-			'<div id="navSearch" class="navSearch"></div>' +
-			'<div id="navFilter" class="navFilter" >' +
-/*
-			'<div id="reportrange"style="cursor: pointer; padding: 5px 10px; border: 1px solid var(--border-color);">' +
-			'<i className="fa fa-calendar"></i>&nbsp;<span></span> <i className="fa fa-caret-down"></i>' +
-			'</div>' +
-*/
-			'</div>' +
-			'<div id="navControl" class="navControl" ></div>' +
-			'</div>' +
-			'<div id="mdw-ConsoleNavigation" class="mdw-ConsoleNavigation"></div>' +
 			'<div id="mdw-Main" class="mdw-Main">' +
 				'<div id="mdw-DockTop" class="mdw-DockTop invisible" data-helper="displayDockTop"></div>'+
 				'<div id="mdw-DockLeft" class="mdw-DockLeft invisible"></div>'+
@@ -235,7 +235,7 @@ function setupTheme() {
 
 		if ($('#navBackdrop').length === 0 ) {
 			$('.mdw-ConsoleNavigation').empty().prepend('<div class="compact_nav_icon_menu">' +
-				'<div class="compact_nav_icon navBackdrop" id="navBackdrop"></div></div>');
+				'<div class="compact_nav_icon navBackdrop" id="navBackdrop" role="button" tabindex="0" aria-pressed="false"></div></div>');
 			if (cactiConsoleAllowed) {
 				$("#navBackdrop").click( function() {
 					/* hide open menu boxes first and remove menu selection */
@@ -379,7 +379,9 @@ function setNavigationBoxColumns(event) {
 }
 
 function toggleCactiNavigationBox(event) {
-	let helper = $(this).attr('data-helper');
+	let caller = $(event.currentTarget);
+	let helper = caller.attr('data-helper');
+	let param = event.data.param;
 
 	/* hide open dropdown menu */
 	hideDropDownMenu();
@@ -391,12 +393,11 @@ function toggleCactiNavigationBox(event) {
 	let navigationBox = $('[class^="mdw-ConsoleNavigationBox"][data-helper="' + helper + '"]');
 	let compact_nav_icon = $('[class^="compact_nav_icon"][data-helper="' + helper + '"]');
 
-	if(event.data.param === 'on') {
-		$(this).toggleClass('selected');
+	if(param === 'on') {
+		caller.toggleClass('selected');
 		navigationBox.toggleClass('visible');
-		$(this).trigger('blur');
-	}else if(event.data.param === 'force_open') {
-		$(this).addClass('selected');
+	}else if(param === 'force_open') {
+		caller.addClass('selected');
 		navigationBox.addClass('visible');
 		compact_nav_icon.addClass('selected');
 		if(event.data && event.data.filter) {
@@ -408,14 +409,15 @@ function toggleCactiNavigationBox(event) {
 				navBox_input_field.val('').trigger('input').blur();
 			}
 		}
-	}else if(event.data.param === 'force_close') {
-		$(this).removeClass('selected').trigger('blur');
+	}else if(param === 'force_close') {
+		caller.removeClass('selected').trigger('blur');
 		navigationBox.removeClass('visible');
 	}
 }
 
 function toggleCactiNavigationBoxPin(event) {
-	let helper = $(this).attr('data-helper');
+	let caller = $(event.currentTarget);
+	let helper = caller.attr('data-helper');
 	let navigationBox = $('[class^="mdw-ConsoleNavigationBox"][data-helper="' + helper + '"]');
 	let compact_nav_icon = $('[class^="compact_nav_icon"][data-helper="' + helper + '"]');
 
@@ -430,7 +432,8 @@ function toggleCactiNavigationBoxPin(event) {
 }
 
 function toggleCactiDockNavigationBox(event) {
-	let helper = $(this).attr('data-helper');
+	let caller = $(event.currentTarget);
+	let helper = caller.attr('data-helper');
 
 	if(event.data && event.data.param) {
 		event.data.param = 'on';

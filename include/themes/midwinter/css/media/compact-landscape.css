@@ -56,6 +56,7 @@ html {
     height: 4rem;
     background-color: var(--background-navigation-top);
     grid-area: header;
+    padding: 2px 0 3px 0;
 
     * {
         float: left;
@@ -80,6 +81,8 @@ html {
             width: 3rem;
             height: 100%;
             cursor: pointer;
+            border: 1px solid transparent;
+            border-radius: 4px;
 
             &[data-tooltip]:not([data-tooltip=""])::after {
                 top: 125%;
@@ -405,6 +408,7 @@ html {
     height: 3.5rem;
     text-align: center;
     background: var(--background-navigation);
+    padding: 2px 2px 3px 2px;
 }
 
 .navBox-header-title {
@@ -423,13 +427,15 @@ html {
     width: 2.5rem;
     height: 100%;
     cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 4px;
 }
 
 .navBox-header-button:hover,
 .navBox-header-dropdown.show,
 .navBox-header-dropdown:hover {
-    color: var(--text-color-white);
-    background-color: var(--background-progress-semilight);
+    color: white;
+    background-color: hsla(208, 69%, 40%, 0.5);
 }
 
 .navBox-header-dropdown.show > .navBox-header-dropdown-content {

@@ -116,17 +116,23 @@ class navigationBox {
         /* register button events if required */
         if(this.#box.buttons.close) {
             $('[class="navBox-header-button"][data-helper="'+this.#box.helper+'"]', navigationBox).off().on(
-                'click', {param: 'force_close'}, toggleCactiNavigationBox);
+                'click', {param: 'force_close'}, toggleCactiNavigationBox).on(
+                'keydown', {param: 'force_close', function: 'toggleCactiNavigationBox'}, run_keyEvent
+            )
         }
 
         if(this.#box.buttons.resize) {
             $('[class="navBox-header-dropdown"][data-helper="'+this.#box.helper+'"]', navigationBox).off().on(
-                'click', {param: this.#box.helper}, toggleDropDownMenu);
+                'click', {param: this.#box.helper}, toggleDropDownMenu).on(
+                'keydown', {param:  this.#box.helper, function: 'toggleDropDownMenu'}, run_keyEvent
+            )
         }
 
         if(this.#box.buttons.dock) {
             $('[class="navBox-header-button"][data-helper="'+this.#box.helper+'"]', navigationBox).off().on(
-                'click', {param: this.#box.helper, dock: 'right'}, toggleCactiNavigationBoxPin);
+                'click', {param: this.#box.helper, dock: 'right'}, toggleCactiNavigationBoxPin).on(
+                'keydown', {param:  this.#box.helper, dock: 'right', function: 'toggleCactiNavigationBoxPin'}, run_keyEvent
+            );
         }
 
         if(this.#box.buttons.search) {
@@ -169,14 +175,16 @@ class navigationButton {
             this.#icon.onclick = onclick;
         }
 
-        this.#container = '<div class="compact_nav_icon hide" data-helper="'+this.#icon.helper+'" title="'+this.#icon.tooltip+'"><i class="'+this.#icon.class+'"></i></div>';
+        this.#container = '<div class="compact_nav_icon hide" data-helper="'+this.#icon.helper+'" title="'+this.#icon.tooltip+'" role="button" tabindex="0" aria-pressed="false"><i class="'+this.#icon.class+'"></i></div>';
 
         /* avoid duplicates */
         if( $(this.#icon.destination + ' > div[class^="compact_nav_icon"][data-helper="' + this.#icon.helper + '"]').length === 0 ) {
             $(this.#container).appendTo(this.#icon.destination);
             this.#button = $(this.#icon.destination + ' > div[class^="compact_nav_icon"][data-helper="' + this.#icon.helper + '"]');
             if (is_function(this.#icon.onclick)) {
+                /* if an onclick event is supported then implement keydown events to act similar to a button element */
                 this.#button.off().on("click", {param: this.#icon.param}, window[this.#icon.onclick]);
+                this.#button.on("keydown", {param: this.#icon.param, function: this.#icon.onclick}, run_keyEvent);
             }
         }else {
             this.#button = $(this.#icon.destination + ' > div[class^="compact_nav_icon"][data-helper="' + this.#icon.helper + '"]');
@@ -192,6 +200,13 @@ class navigationButton {
         this.#button.addClass('hide');
         return this;
     }
+}
+
+function run_keyEvent(event) {
+    if (!(event.keyCode === 13 || event.keyCode === 32)) {
+        return;
+    }
+    window[event.data.function](event);
 }
 
 function is_function(fname) {

@@ -748,6 +748,10 @@ label.ui-state-hover > span {
     padding: 0 5px 0 0;
     cursor: pointer;
     text-align: right;
+    color: var(--text-color-highlight-a);
+    &:hover{
+        color: var(--text-color-lighter);
+    }
 }
 
 .reloadquery {
