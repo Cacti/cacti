@@ -517,17 +517,6 @@ function form_save() {
 		$username = db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array(get_nfilter_request_var('id')));
 		$history  = db_fetch_cell_prepared('SELECT password_history FROM user_auth WHERE id = ?', array(get_nfilter_request_var('id')));
 
-		/* deprecating as we are storing the id and not the username any longer */
-		//if ($username != '' && $username != get_nfilter_request_var('username')) {
-		//	if (is_template_account(get_filter_request_var('id'))) {
-		//		raise_message(20);
-		//	}
-		//
-		//	if (get_filter_request_var('id') === get_guest_account()) {
-		//		raise_message(20);
-		//	}
-		//}
-
 		/* check to make sure the passwords match; if not error */
 		if (get_nfilter_request_var('password') != get_nfilter_request_var('password_confirm')) {
 			raise_message(4);
@@ -1960,31 +1949,42 @@ function user() {
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
 		'realm' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
 		'page' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
-			),
+		),
+		'login' => array(
+			'filter' => FILTER_VALIDATE_INT,
+			'pageset' => true,
+			'default' => '0'
+		),
 		'filter' => array(
 			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
-			),
+		),
+		'group' => array(
+			'filter' => FILTER_CALLBACK,
+			'default' => '-1',
+			'pageset' => true,
+			'options' => array('options' => 'sanitize_search_string')
+		),
 		'sort_column' => array(
 			'filter'  => FILTER_CALLBACK,
 			'default' => 'username',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'sort_direction' => array(
 			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		)
 	);
 
 	validate_store_request_vars($filters, 'sess_usera');
@@ -1996,6 +1996,7 @@ function user() {
 	function applyFilter() {
 		strURL  = 'user_admin.php?rows=' + $('#rows').val();
 		strURL += '&filter=' + $('#filter').val();
+		strURL += '&group=' + $('#group').val();
 		strURL += '&realm=' + $('#realm').val();
 		loadUrl({url:strURL})
 	}
@@ -2014,7 +2015,7 @@ function user() {
 			clearFilter();
 		});
 
-		$('#realm, #rows').change(function() {
+		$('#realm, #rows, #group, #login').change(function() {
 			applyFilter();
 		});
 
@@ -2046,6 +2047,42 @@ function user() {
 					</td>
 					<td>
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+					</td>
+					<td>
+						<?php print __('Group');?>
+					</td>
+					<td>
+						<select id='group'>
+							<option value='-1'<?php print (get_request_var('group') == '-1' ? ' selected>':'>') . __('All');?></option>
+							<?php
+							$groups = array_rekey(
+								db_fetch_assoc('SELECT id, description
+									FROM user_auth_group
+									ORDER BY description'),
+								'id', 'description'
+							);
+
+							if (cacti_sizeof($groups)) {
+								foreach ($groups as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var('group') == $key) { print ' selected'; } print '>' . html_escape($value) . '</option>';
+								}
+							}
+							?>
+						</select>
+					</td>
+					<td>
+						<?php print __('Last Login');?>
+					</td>
+					<td>
+						<select id='login'>
+							<option value='0'<?php print (get_request_var('login') == '0' ? ' selected>':'>') . __esc('All');?></option>
+							<option value='1'<?php print (get_request_var('login') == '1' ? ' selected>':'>') . __esc('< 1 Week Ago');?></option>
+							<option value='2'<?php print (get_request_var('login') == '2' ? ' selected>':'>') . __esc('< 1 Month Ago');?></option>
+							<option value='3'<?php print (get_request_var('login') == '3' ? ' selected>':'>') . __esc('> 1 Month Ago');?></option>
+							<option value='4'<?php print (get_request_var('login') == '4' ? ' selected>':'>') . __esc('> 2 Months Ago');?></option>
+							<option value='5'<?php print (get_request_var('login') == '5' ? ' selected>':'>') . __esc('> 4 Months Ago');?></option>
+							<option value='6'<?php print (get_request_var('login') == '6' ? ' selected>':'>') . __esc('Never');?></option>
+						</select>
 					</td>
 					<td>
 						<?php print __('Realm');?>
@@ -2096,35 +2133,70 @@ function user() {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where = 'WHERE (
-			user_auth.username LIKE '	 . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR user_auth.full_name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
+			ua.username LIKE '     . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR ua.full_name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
 	}
 
 	if (get_request_var('realm') >= 0) {
 		if (get_request_var('realm') < 4) {
-			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' user_auth.realm = ' . get_request_var('realm');
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ua.realm = ' . get_request_var('realm');
 		} else {
-			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' user_auth.realm > 3';
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ua.realm > 3';
+		}
+	}
+
+	if (get_request_var('group') > 0) {
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ug.group_id = ' . get_request_var('group');
+	}
+
+	if (get_request_var('login') > 0) {
+		if (get_request_var('login') == 1) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' time > DATE_SUB(NOW(), INTERVAL 1 WEEK)';
+		} elseif (get_request_var('login') == 2) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' time > DATE_SUB(NOW(), INTERVAL 1 MONTH)';
+		} elseif (get_request_var('login') == 3) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' time < DATE_SUB(NOW(), INTERVAL 1 MONTH)';
+		} elseif (get_request_var('login') == 4) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' time < DATE_SUB(NOW(), INTERVAL 2 MONTH)';
+		} elseif (get_request_var('login') == 5) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' time < DATE_SUB(NOW(), INTERVAL 4 MONTH)';
+		} elseif (get_request_var('login') == 6) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' time IS NULL';
 		}
 	}
 
 	$total_rows = db_fetch_cell("SELECT
-		COUNT(user_auth.id)
-		FROM user_auth
+		COUNT(DISTINCT ua.id)
+		FROM user_auth AS ua
+		LEFT JOIN (
+			SELECT user_id, MAX(time) AS time
+			FROM user_log
+			GROUP BY user_id
+		) AS ul
+		ON ua.id = ul.user_id
+		LEFT JOIN user_auth_group_members AS ug
+		ON ua.id = ug.user_id
 		$sql_where");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
-	$user_list = db_fetch_assoc("SELECT id, user_auth.username, full_name,
-		realm, enabled, policy_graphs, policy_hosts, policy_graph_templates,
-		time, max(UNIX_TIMESTAMP(time)) as dtime
-		FROM user_auth
-		LEFT JOIN user_log ON (user_auth.id = user_log.user_id)
+	$user_list = db_fetch_assoc("SELECT ua.id, ua.username, ua.full_name,
+		ua.realm, ua.enabled, ua.policy_graphs, ua.policy_hosts, ua.policy_graph_templates,
+		time, MAX(UNIX_TIMESTAMP(time)) as dtime
+		FROM user_auth AS ua
+		LEFT JOIN (
+			SELECT user_id, MAX(time) AS time
+			FROM user_log
+			GROUP BY user_id
+		) AS ul
+		ON ua.id = ul.user_id
+		LEFT JOIN user_auth_group_members AS ug
+		ON ua.id = ug.user_id
 		$sql_where
-		GROUP BY id
+		GROUP BY ua.id
 		$sql_order
 		$sql_limit");
 
@@ -2214,27 +2286,27 @@ function process_graph_request_vars() {
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => read_config_option('num_rows_table')
-			),
+		),
 		'page' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
-			),
+		),
 		'filter' => array(
 			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
-			),
+		),
 		'graph_template_id' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1',
-			),
+		),
 		'associated' => array(
 			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => 'true'
-			)
+		)
 	);
 
 	validate_store_request_vars($filters, 'sess_uag');
@@ -2248,22 +2320,22 @@ function process_group_request_vars() {
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => read_config_option('num_rows_table')
-			),
+		),
 		'page' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
-			),
+		),
 		'filter' => array(
 			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
-			),
+		),
 		'associated' => array(
 			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => 'true'
-			)
+		)
 	);
 
 	validate_store_request_vars($filters, 'sess_uagr');
@@ -2277,27 +2349,27 @@ function process_device_request_vars() {
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => read_config_option('num_rows_table')
-			),
+		),
 		'page' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
-			),
+		),
 		'filter' => array(
 			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
-			),
+		),
 		'host_template_id' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1',
-			),
+		),
 		'associated' => array(
 			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => 'true'
-			)
+		)
 	);
 
 	validate_store_request_vars($filters, 'sess_uad');
@@ -2311,27 +2383,27 @@ function process_template_request_vars() {
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => read_config_option('num_rows_table')
-			),
+		),
 		'page' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
-			),
+		),
 		'filter' => array(
 			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
-			),
+		),
 		'graph_template_id' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1',
-			),
+		),
 		'associated' => array(
 			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => 'true'
-			)
+		)
 	);
 
 	validate_store_request_vars($filters, 'sess_uate');
@@ -2345,27 +2417,27 @@ function process_tree_request_vars() {
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => read_config_option('num_rows_table')
-			),
+		),
 		'page' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
-			),
+		),
 		'filter' => array(
 			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
-			),
+		),
 		'graph_template_id' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1',
-			),
+		),
 		'associated' => array(
 			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => 'true'
-			)
+		)
 	);
 
 	validate_store_request_vars($filters, 'sess_uatr');
