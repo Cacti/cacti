@@ -10,7 +10,7 @@ Cacti CHANGELOG
 -issue#5780: Undefined array key "default" in file html_form.php
 -issue#5782: Function file_get_contents in file link.php
 -issue#5783: Cacti improperly handles connection closing leading to issues with third party connections
--issue#5785: auth_changepassword.php triggers NS_ERROR_REDIRECT_LOOP if server's default IP address is not public
+-issue#5790: Cactid - Cron out of sync with poller Message
 -feature#5784: Provide a means by which a user can track Cacti connections and disconnects from the php error_log
 
 1.2.27
