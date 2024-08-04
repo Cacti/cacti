@@ -1194,8 +1194,9 @@ if ((isset($_SESSION[SESS_USER_ID]))) {
 		if (cacti_sizeof($consoles)) {
 			foreach ($consoles as $page) {
 				if (!$config['is_web'] || is_realm_allowed($page['id'] + 10000)) {
-					$menuname                                      = (isset($page['extendedstyle']) && $page['extendedstyle'] != '' ? $page['extendedstyle'] : __('External Links'));
-					$menu[$menuname]['link.php?id=' . $page['id']] = $page['title'];
+					$menuname = (isset($page['extendedstyle']) && $page['extendedstyle'] != '' ? html_escape($page['extendedstyle']) : __('External Links'));
+
+					$menu[$menuname]['link.php?id=' . $page['id']] = html_escape($page['title']);
 				}
 			}
 		}
