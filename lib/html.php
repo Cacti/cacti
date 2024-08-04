@@ -1989,7 +1989,7 @@ function html_show_tabs_left() {
 							}
 						}
 
-						print '<a id="tab-link' . $tab['id'] . '" href="' . CACTI_PATH_URL . 'link.php?id=' . $tab['id'] . '"><img src="' . get_classic_tabimage($tab['title'], $down) . '" alt="' . $tab['title'] . '"></a>';
+						print '<a id="tab-link' . $tab['id'] . '" href="' . CACTI_PATH_URL . 'link.php?id=' . $tab['id'] . '"><img src="' . get_classic_tabimage($tab['title'], $down) . '" alt="' . html_escape($tab['title']) . '"></a>';
 					}
 				}
 			}

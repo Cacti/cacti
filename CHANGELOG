@@ -103,6 +103,7 @@ Cacti CHANGELOG
 -feature#5717: Add Aruba Clearpass template
 
 1.2.28
+-security#GHSA-fgc6-g8gc-wcg5: External Link Console Menu Item not Escaped
 -issue#5754: Installer replication loop for. Plugin realms
 -issue#5759: Remote poller attempts to sync with other pollers during install
 -issue#5768: Cacti does not properly escape Data Query indexes that include a space
