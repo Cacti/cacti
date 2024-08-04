@@ -69,7 +69,12 @@ case 'save':
 	$save['refresh'] = form_input_validate(get_nfilter_request_var('refresh'), 'refresh', '^[0-9]+$', false, 3);
 
 	if (preg_match('/^((((ht|f)tp(s?))\:\/\/){1}\S+)/i', get_nfilter_request_var('fileurl')) && get_nfilter_request_var('filename') == '0') {
-		$save['contentfile'] = get_nfilter_request_var('fileurl');
+		if (filter_var(get_nfilter_request_var('fileurl'), FILTER_VALIDATE_URL)) {
+			$save['contentfile'] = get_nfilter_request_var('fileurl');
+		} else {
+			$_SESSION['sess_error_fields']['contentfile'] = 'contentfile';
+			raise_message('badurl', __('Your contentfile is not a valid URL.  Please enter a value URL'), MESSAGE_LEVEL_ERROR);
+		}
 	} else {
 		$save['contentfile'] = preg_replace('/[^A-Za-z0-9_\.-]/','_', get_nfilter_request_var('filename'));
 	}
