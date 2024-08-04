@@ -620,15 +620,15 @@ function install_tool_path($name, $defaultPaths) {
 	);
 
 	log_install_debug('file', "$name: Locations ($os), Paths: " . clean_up_lines(var_export($defaultPaths, true)));
-	if (isset($settings) && isset($settings['path']) && isset($settings['path']['path_'.$name])) {
-		$tool = $settings['path']['path_'.$name];
+	if (isset($settings) && isset($settings['path']) && isset($settings['path']['path_' . $name])) {
+		$tool = $settings['path']['path_' . $name];
 	} elseif (isset($settings) && isset($settings['mail']) && isset($settings['mail'][$name])) {
 		$tool = $settings['mail'][$name];
 	}
 
 	$which_tool = '';
 	if (config_value_exists('path_' . $name)) {
-		$which_tool = read_config_option('path_'.$name, true);
+		$which_tool = read_config_option('path_' . $name, true);
 		log_install_high('file', "Using config location: $which_tool");
 	}
 
@@ -885,7 +885,27 @@ function remote_update_config_file() {
  * @return null        - nothing is returned
  */
 function set_install_config_option($name, $value) {
-	global $local_db_cnn_id;
+	global $config, $local_db_cnn_id;
+
+	/* some additional extension checks */
+	switch($name) {
+		case 'path_cactilog':
+			$extension = pathinfo($value, PATHINFO_EXTENSION);
+
+			if ($extension != 'log') {
+				$value = $config['base_path'] . '/log/cacti.log';
+			}
+
+			break;
+		case 'path_stderrlog':
+			$extension = pathinfo($value, PATHINFO_EXTENSION);
+
+			if ($extension != 'log') {
+				$value = $config['base_path'] . '/log/cacti.stderr.log';
+			}
+
+			break;
+	}
 
 	if (is_object($local_db_cnn_id)) {
 		db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', array($name, $value), false, $local_db_cnn_id);
@@ -1130,9 +1150,11 @@ function install_full_sync() {
 		AND disabled = ""');
 
 	log_install_always('sync', 'Found ' . cacti_sizeof($pollers) . ' poller(s) to sync');
+
 	if (cacti_sizeof($pollers)) {
 		foreach($pollers as $poller) {
 			log_install_debug('sync', 'Poller ' . $poller['id'] . ' has a status of ' . $poller['status'] . ' with gap ' . $poller['gap']);
+
 			if (($poller['status'] == POLLER_STATUS_NEW) ||
 				($poller['status'] == POLLER_STATUS_DOWN) ||
 				($poller['status'] == POLLER_STATUS_HEARTBEAT) ||

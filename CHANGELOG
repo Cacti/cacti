@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -security#GHSA-fgc6-g8gc-wcg5: External Link Console Menu Item not Escaped
 -security#GHSA-49f2-hwx9-qffr: External Link Console Menu Section not Escaped
 -security#GHSA-wh9c-v56x-v77c: It is possible to create XSS with an nafarious External Link
+-security#GHSA-gxq4-mv8h-6qj4: Fix a possible user directed RCE when installing Cacti
 -issue#5754: Installer replication loop for. Plugin realms
 -issue#5759: Remote poller attempts to sync with other pollers during install
 -issue#5768: Cacti does not properly escape Data Query indexes that include a space
