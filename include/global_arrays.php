@@ -686,9 +686,10 @@ $availability_options = array(
 );
 
 $ping_methods = array(
-	PING_ICMP => __('ICMP Ping'),
-	PING_TCP  => __('TCP Ping'),
-	PING_UDP  => __('UDP Ping')
+	PING_ICMP        => __('ICMP Ping'),
+	PING_TCP         => __('TCP Ping'),
+	PING_TCP_CLOSED  => __('TCP Ping Closed'),
+	PING_UDP         => __('UDP Ping')
 );
 
 $logfile_verbosity = array(
