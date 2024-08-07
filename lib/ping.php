@@ -549,15 +549,26 @@ class Net_Ping {
 				$errno = socket_last_error($this->socket);
 
 				if ($errno > 0) {
-					$this->ping_response = __('TCP ping: socket_connect(), reason: %s', socket_strerror($errno));
-					$this->ping_status   = 'down';
+					if ($errno == 111 && $this->ping_type == PING_TCP_CLOSED) {
+						$this->time = $this->get_time($this->precision);
+						$this->ping_status   = 'up';
+						$this->ping_response = __('TCP Ping Success Connection Refused (%s ms)', $this->time*1000);
+						$this->ping_status   = $this->time*1000;
+					} else {
+						$this->ping_response = __('TCP Ping Failed: socket_connect(), reason: %s', socket_strerror($errno));
+						$this->ping_status   = 'down';
+					}
 
 					socket_clear_error($this->socket);
 
 					$this->close_socket();
 					$this->restore_cacti_error_handler();
 
-					return false;
+					if ($this->ping_status == 'down') {
+						return false;
+					} else {
+						return true;
+					}
 				}
 
 				$r = array($this->socket);
@@ -567,7 +578,7 @@ class Net_Ping {
 				$num_changed_sockets = socket_select($r, $w, $f, $to_sec, $to_usec);
 
 				if ($num_changed_sockets === false) {
-					$this->ping_response = __('TCP ping: socket_select() failed, reason: %s', socket_strerror(socket_last_error()));
+					$this->ping_response = __('TCP Ping Failed: socket_select() failed, reason: %s', socket_strerror(socket_last_error()));
 					$this->ping_status   = 'down';
 
 					$this->close_socket();
@@ -620,6 +631,7 @@ class Net_Ping {
 
 		$this->ping_status   = 'down';
 		$this->ping_response = __('Ping not performed due to setting.');
+		$this->ping_type     = $ping_type;
 		$this->snmp_status   = 'down';
 		$this->snmp_response = 'SNMP not performed due to setting or ping result.';
 		$this->avail_method  = $avail_method;
@@ -664,7 +676,7 @@ class Net_Ping {
 				$ping_result = $this->ping_icmp();
 			} elseif ($ping_type == PING_UDP) {
 				$ping_result = $this->ping_udp();
-			} elseif ($ping_type == PING_TCP) {
+			} elseif ($ping_type == PING_TCP || $ping_type == PING_TCP_CLOSED) {
 				$ping_result = $this->ping_tcp();
 			}
 		}

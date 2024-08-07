@@ -120,6 +120,7 @@ Cacti CHANGELOG
 -issue#5790: Cactid - Cron out of sync with poller Message
 -issue#5791: Unable to filter users by user group, or the last time they logged into Cacti
 -feature#5784: Provide a means by which a user can track Cacti connections and disconnects from the php error_log
+-feature#5796: Due to Conflicting Interpretations of TCP Ping, Introduce new Ping Method
 
 1.2.27
 -security#GHSA-37x7-mfjv-mm7m: Authentication Bypass when using using older password hashes
