@@ -119,6 +119,7 @@ Cacti CHANGELOG
 -issue#5785: auth_changepassword.php triggers NS_ERROR_REDIRECT_LOOP if server's default IP address is not public
 -issue#5790: Cactid - Cron out of sync with poller Message
 -issue#5791: Unable to filter users by user group, or the last time they logged into Cacti
+-issue#5792: Unable to add Graphs to a Report from Cacti List View
 -feature#5784: Provide a means by which a user can track Cacti connections and disconnects from the php error_log
 -feature#5796: Due to Conflicting Interpretations of TCP Ping, Introduce new Ping Method
 -feature: Update jQueryUI to 1.14.0

@@ -1017,13 +1017,14 @@ switch (get_nfilter_request_var('action')) {
 
 						$(this).dialog('close');
 
-						strURL = 'graph_view.php?action=ajax_reports';
-							'&report_id='   + $('#report_id').val()  +
-							'&timespan='    + $('#timespan').val()   +
-							'&align='       + $('#align').val()      +
+						strURL = 'graph_view.php?action=ajax_reports' +
+							'&header=false' +
+							'&report_id='   + $('#report_id').val()   +
+							'&timespan='    + $('#timespan').val()    +
+							'&align='       + $('#align').val()       +
 							'&graph_list='  + $('#graph_list').val();
 
-						loadUrl({url:strURL})
+						loadUrl({url:strURL});
 					}
 				}
 			],
