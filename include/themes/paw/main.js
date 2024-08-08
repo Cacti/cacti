@@ -86,7 +86,7 @@ function themeReady() {
 		$('<div class="dropdownMenu">'
 			+'<ul id="submenu-user-help" class="submenuoptions right" style="display:none;">'
 				+'<li><a href="https://www.cacti.net" target="_blank" rel="noopener"><span>'+cactiHome+'</span></a></li>'
-				+'<li><a href="https://github.com/cacti" target="_blank rel="noopener""><span>'+cactiProjectPage+'</span></a></li>'
+				+'<li><a href="https://github.com/cacti" target="_blank" rel="noopener"><span>'+cactiProjectPage+'</span></a></li>'
 				+'<li><hr class="menu"></li>'
 				+'<li><a href="https://forums.cacti.net/" target="_blank" rel="noopener"><span>'+cactiCommunityForum+'</span></a></li>'
 				+'<li><a href="https://github.com/Cacti/documentation/blob/develop/README.md" target="_blank" rel="noopener"><span>'+cactiDocumentation+'</span></a></li>'
