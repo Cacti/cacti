@@ -1,0 +1,43 @@
+html {
+    /* font-size variables */
+    --fs-tiny: 0.5625rem;
+    --fs-extrasmall: 0.625rem;
+    --fs-small: 0.75rem;
+    --fs-semismall: 0.8125rem;
+    --fs-medium: 0.875rem;
+    --fs-regular: 1rem;
+    --fs-big: 1.125rem;
+    --fs-semilarge: 1.25rem;
+    --fs-large: 1.375rem;
+    --fs-semihuge: 1.5rem;
+    --fs-huge: 1.625rem;
+    --fs-king: 3.875rem;
+
+    font-size: 87.5%;
+
+    /* font-weight variables */
+    --fw-thin: 100;
+    --fw-extralight: 200;
+    --fw-light: 300;
+    --fw-semilight: 350;
+    --fw-normal: 400;
+    --fw-medium: 500;
+    --fw-semibold: 600;
+    --fw-bold: 700;
+    --fw-extrabold: 800;
+    --fw-heavy: 900;
+
+    font-weight: 500;
+}
+
+html[data-zoom-level='small'] {
+    font-size: 75%;
+}
+
+html[data-zoom-level='regular'] {
+    font-size: 87.5%;
+}
+
+html[data-zoom-level='large'] {
+    font-size: 100%;
+}
