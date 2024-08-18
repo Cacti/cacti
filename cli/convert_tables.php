@@ -174,39 +174,53 @@ if ($innodb) {
 }
 
 if (strlen($table_name)) {
-	$tables = db_fetch_assoc('SHOW TABLE STATUS LIKE \''.$table_name .'\'');
+	$tables = array($table_name);
 } else {
-	$tables = db_fetch_assoc('SHOW TABLE STATUS');
+	$tables = get_cacti_base_tables();
 }
 
 if (cacti_sizeof($tables)) {
 	foreach($tables AS $table) {
+		$table_data = db_fetch_row_prepared('SELECT *
+			FROM information_schema.TABLES
+			WHERE TABLE_NAME = ?
+			AND TABLE_SCHEMA = ?',
+			array($table, $database_default));
+
 		$canConvert = $rebuild;
 		$canInnoDB  = false;
 		if (!$canConvert && $innodb) {
-			$canConvert = $table['Engine'] == 'MyISAM';
-			$canInnoDB  = true;
+			if ($table_data['ENGINE'] == 'MyISAM') {
+				$canConvert = true;
+				$canInnoDB  = true;
+			} elseif ($table_data['ENGINE'] == 'Aria') {
+				$canConvert = true;
+			}
 		}
 
-		if (in_array($table['Name'], $skip_tables)) {
+		if (in_array($table, $skip_tables)) {
 			$canInnoDB = false;
 		}
 
 		if (!$canConvert && $utf8) {
-			$canConvert = $table['Collation'] != 'utf8mb4_unicode_ci';
+			$canConvert = $table_data['TABLE_COLLATION'] != 'utf8mb4_unicode_ci';
 		}
 
 		if (!$canConvert && $latin) {
-			$canConvert = $table['Collation'] != 'latin1';
+			$canConvert = $table_data['TABLE_COLLATION'] != 'latin1';
 		}
 
-		if ($dynamic && $table['Row_format'] == 'Compact') {
+		if ($dynamic && $table_data['ROW_FORMAT'] == 'Compact') {
 			$canConvert = true;
 		}
 
+		if ($dynamic && $table_data['ROW_FORMAT'] == 'Page') {
+			$canConvert = false;
+		}
+
 		if ($canConvert) {
-			if ($table['Rows'] < $size || $force) {
-				print_or_log($installer,  "Converting Table -> '" . $table['Name'] . "'");
+			if ($table_data['TABLE_ROWS'] < $size || $force) {
+				print_or_log($installer,  "Converting Table > '$table'");
 
 				$sql = '';
 				if ($utf8) {
@@ -219,20 +233,20 @@ if (cacti_sizeof($tables)) {
 					$sql .= (strlen($sql) ? ',' : '') . ' ENGINE=Innodb';
 				}
 
-				$status = db_execute('ALTER TABLE `' . $table['Name'] . '`' . ($dynamic ? ' ROW_FORMAT=Dynamic, ':'') . $sql);
+				$status = db_execute("ALTER TABLE `$table`" . ($dynamic ? ' ROW_FORMAT=Dynamic, ':'') . $sql);
 
 				if ($status === false) {
 					print_or_log($installer,  ' Failed' . PHP_EOL);
 
-					record_log($installer, "FATAL: Conversion of Table '" . $table['Name'] . "' Failed.  Command: 'ALTER TABLE `" . $table['Name'] . "` $sql'");
+					record_log($installer, "FATAL: Conversion of Table '$table' Failed.  Command: 'ALTER TABLE `$table` $sql'");
 				} else {
 					print_or_log($installer,  ' Successful' . PHP_EOL);
 				}
 			} else {
-				print_or_log($installer,  "Skipping Table -> '" . $table['Name'] . " too many rows '" . $table['Rows'] . "'" . PHP_EOL);
+				print_or_log($installer,  "Skipping Table > '$table' too many rows '{$table_data['TABLE_ROWS']}'" . PHP_EOL);
 			}
 		} else {
-			print_or_log($installer,  "Skipping Table -> '" . $table['Name'] . "'" . PHP_EOL);
+			print_or_log($installer,  "Skipping Table > '$table'" . PHP_EOL);
 		}
 	}
 }
