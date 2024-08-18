@@ -124,6 +124,7 @@ Cacti CHANGELOG
 -feature#5796: Due to Conflicting Interpretations of TCP Ping, Introduce new Ping Method
 -feature: Update jQueryUI to 1.14.0
 -feature: Improve the performance of the repopulation of the poller cache
+-feature: Add additional Repair Database Checks to address various Cacti database corruptions
 
 1.2.27
 -security#GHSA-37x7-mfjv-mm7m: Authentication Bypass when using using older password hashes
