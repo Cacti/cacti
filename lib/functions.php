@@ -6907,6 +6907,33 @@ function get_client_addr() {
 	return $client_addr;
 }
 
+/**
+ * get_cacti_base_tables - Extracts all the base Cacti tables from the
+ * cacti.sql file in the base Cacti directory.
+ */
+function get_cacti_base_tables() {
+	global $config;
+
+	$base_tables = array();
+
+	if (file_exists($config['base_path'] . '/cacti.sql')) {
+		$schema = file($config['base_path'] . '/cacti.sql');
+	} else {
+		return $base_tables;
+	}
+
+	if (cacti_sizeof($schema)) {
+		foreach($schema as $line) {
+			if (strpos($line, 'CREATE TABLE') !== false) {
+				$table = str_replace(array('CREATE TABLE', '`', '(', ' '), '', $line);
+				$base_tables[] = trim($table);
+			}
+		}
+	}
+
+	return $base_tables;
+}
+
 function cacti_pton($ipaddr) {
 	// Strip out the netmask, if there is one.
 	$subnet_pos = strpos($ipaddr, '/');
