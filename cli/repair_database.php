@@ -479,7 +479,7 @@ function detailed_checks() {
 		if ($force) {
 			foreach($rows as $row) {
 				$name = db_fetch_cell_prepared('SELECT name
-					FROM graph_template
+					FROM graph_templates
 					WHERE id = ?',
 					array($row['graph_template_id']));
 
