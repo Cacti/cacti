@@ -124,7 +124,7 @@ if ($total_errors == 0 && $total_repairs == 0) {
 	printf('NOTE: Found 0 Cacti database issues to repair.' . PHP_EOL . PHP_EOL);
 } elseif (($total_errors > 0 || $total_repairs > 0) && !$force) {
 	printf('WARNING: Found %s problems in your Cacti database and automatically repaired %s of them.' . PHP_EOL, $total_errors, $total_repairs);
-	printf('WARNING: Using the \'--force\' option will either fix, remove or ignore any additional issues' . PHP_EOL);
+	printf('WARNING: Using the \'--force\' option will either repair, remove or ignore any additional issues' . PHP_EOL);
 	printf('WARNING: if they can not be repaired.' . PHP_EOL . PHP_EOL);
 	printf('WARNING: Because these changes can not be reversed, make sure you make a Cacti backup first.' . PHP_EOL . PHP_EOL);
 } else {
@@ -495,7 +495,7 @@ function detailed_checks() {
 			}
 		}
 
-		printf('NOTE: Found ' . ($force ? 'and repaired ':'') . ' %s Graphs from %s Graph Templates that had invalid item counts.' . PHP_EOL, $total_graphs, cacti_sizeof($rows));
+		printf('NOTE: Found ' . ($force ? 'and repaired ':'') . '%s Graphs from %s Graph Templates that had invalid item counts.' . PHP_EOL, $total_graphs, cacti_sizeof($rows));
 	} else {
 		printf('NOTE: Found 0 Graph Templates whose Graphs had incorrect item counts.' . PHP_EOL);
 	}
@@ -671,9 +671,9 @@ function snmp_repairs() {
 
 		if (cacti_sizeof($errors)) {
 			if ($force) {
-				printf('NOTE: Fixed %s Device SNMP issues in %s Devices.' . PHP_EOL, $snmp_errors, cacti_sizeof($errors));
+				printf('NOTE: Found and repaired %s Device SNMP issues in %s Devices.' . PHP_EOL, $snmp_errors, cacti_sizeof($errors));
 			} else {
-				printf('NOTE: Not fixing %s Device SNMP issues in %s Devices.' . PHP_EOL, $snmp_errors, cacti_sizeof($errors));
+				printf('NOTE: Not repairing %s Device SNMP issues in %s Devices.' . PHP_EOL, $snmp_errors, cacti_sizeof($errors));
 			}
 		} else {
 			printf('NOTE: Found 0 Device SNMP issues in %s Devices.' . PHP_EOL, cacti_sizeof($errors));
@@ -719,7 +719,7 @@ function snmp_index_repairs() {
 		AND value = ''");
 
 	if (cacti_sizeof($entries)) {
-		printf('NOTE: Fixing %s Data Sources with missing host information.' . PHP_EOL, cacti_sizeof($entries));
+		printf('NOTE: Found and repairing %s Data Sources with missing host information.' . PHP_EOL, cacti_sizeof($entries));
 
 		$fixes = 0;
 
@@ -771,16 +771,16 @@ function snmp_index_repairs() {
 			}
 		}
 
-		printf('NOTE: Fixed %s of %s Data Sources entries with missing host information.' . PHP_EOL, $fixes, cacti_sizeof($entries));
+		printf('NOTE: Found and repaired %s of %s Data Sources entries with invalid Device information.' . PHP_EOL, $fixes, cacti_sizeof($entries));
 
 		$total_errors  += $fixes;
 		$total_repairs += $fixes;
 	} else {
-		printf('NOTE: Found 0 Data Sources with missing host infromation.' . PHP_EOL);
+		printf('NOTE: Found 0 Data Sources with invalid Device infromation.' . PHP_EOL);
 	}
 
 	// Correct issues with non-checked data input columns that must be checked.
-	printf('NOTE: Searching for and fixing all Data Query required checked Data Input columns.' . PHP_EOL, cacti_sizeof($entries));
+	printf('NOTE: Searching for and repairing all Data Query required checked Data Input columns.' . PHP_EOL, cacti_sizeof($entries));
 
 	db_execute("UPDATE data_input_data
 		SET t_value = 'on'
@@ -798,13 +798,13 @@ function snmp_index_repairs() {
 
 	$fixes = db_affected_rows();
 
-	printf('NOTE: Found %s Data Query rows missing the required checked columns.' . PHP_EOL, $fixes);
+	printf('NOTE: Found %s and repaired Data Query rows missing the required checked columns.' . PHP_EOL, $fixes);
 
 	$total_errors  += $fixes;
 	$total_repairs += $fixes;
 
 	// Correct missing host_id checkmark value in the data input data table
-	printf('NOTE: Searching for and fixing all Data Query rows with invalid host_id attributes.' . PHP_EOL);
+	printf('NOTE: Searching for and repairing all Data Query rows with invalid host_id attributes.' . PHP_EOL);
 
 	// Host ID should not be checked, but should not be 'on' either
 	db_execute("UPDATE data_input_data
@@ -823,14 +823,14 @@ function snmp_index_repairs() {
 
 	$fixes = db_affected_rows();
 
-	printf('NOTE: Found %s Data Query rows with invalid host_id attributes.' . PHP_EOL, $fixes);
+	printf('NOTE: Found and repaired %s Data Query rows with invalid host_id attributes.' . PHP_EOL, $fixes);
 
 	$total_errors  += $fixes;
 	$total_repairs += $fixes;
 
 	printf('NOTE: Searching for damaged Data Query indexes (Pass 1).' . PHP_EOL);
 
-	// Fixing Data Input values using graph_local and data_local data if available
+	// Repairing Data Input values using graph_local and data_local data if available
 	$broken_data_rows = db_fetch_assoc("SELECT did.*
 		FROM data_input_data AS did
 		INNER JOIN data_template_data AS dtd
@@ -955,7 +955,7 @@ function snmp_index_repairs() {
 
 			$total_repairs += $fixes;
 
-			printf('NOTE: Fixed %s of %s Data Query Index entries in (Pass 1).' . PHP_EOL, $fixes, cacti_sizeof($broken_data_rows));
+			printf('NOTE: Found and repaired %s of %s Data Query Index entries in (Pass 1).' . PHP_EOL, $fixes, cacti_sizeof($broken_data_rows));
 		} else {
 			printf('NOTE: Skipping attempt to repair %s Data Query indexes in (Pass 1).' . PHP_EOL, cacti_sizeof($broken_data_rows));
 		}
@@ -965,7 +965,7 @@ function snmp_index_repairs() {
 
 	printf('NOTE: Searching for damaged Data Query indexes (Pass 2).' . PHP_EOL);
 
-	// Fixing Broken Data Query indexes by Graph Name
+	// Repairing Broken Data Query indexes by Graph Name
 	$hosts = db_fetch_assoc("SELECT DISTINCT host_id
 		FROM data_local
 		WHERE snmp_query_id > 0
@@ -980,7 +980,7 @@ function snmp_index_repairs() {
 		printf('NOTE: Found %s Devices with damaged Data Query indexes in (Pass 2).' . PHP_EOL, cacti_sizeof($hosts));
 
 		if ($force) {
-			printf('NOTE: Attempting to repair Data Query indexes from Data Source Titles.' . PHP_EOL);
+			printf('NOTE: Attempting to repair Data Query indexes from Data Source titles.' . PHP_EOL);
 
 			$match_cnt  = 0;
 			$misses_cnt = 0;
@@ -1091,10 +1091,11 @@ function snmp_index_repairs() {
 			printf("NOTE: Checks Completed: %s, Matches: %s, Missed: %s" . PHP_EOL, $check_cnt, $match_cnt, $misses_cnt);
 
 			if (cacti_sizeof($reindexes)) {
-				printf('NOTE: Found multiple valid indexes for %s Data Sources!' . PHP_EOL, $reindex_ds_cnt);
-				printf('NOTE: Found %s Data Sources that had no corresponding possible index.' . PHP_EOL, $nomatch_cnt);
-				printf('NOTE: Suggest you reindex your Devices for the following' . PHP_EOL);
-				printf('NOTE: Data Queries and then rerun this repair tool.' . PHP_EOL);
+				printf('WARNING: Found multiple valid indexes for %s Data Sources!' . PHP_EOL, $reindex_ds_cnt);
+				printf('         Found %s Data Sources that had no corresponding possible index.' . PHP_EOL, $nomatch_cnt);
+				printf('         Suggest you reindex your Devices for the following' . PHP_EOL);
+				printf('         Data Queries and then rerun this repair tool.' . PHP_EOL . PHP_EOL);
+				printf('         Eg: ./poller_reindex_hosts --host-id=N --qid=N' . PHP_EOL);
 
 				foreach($reindexes as $snmp_query_id => $hosts) {
 					$name = db_fetch_cell_prepared('SELECT name
@@ -1104,7 +1105,7 @@ function snmp_index_repairs() {
 
 					$total_hosts = cacti_sizeof($hosts);
 
-					printf('NOTE: Data Query: %s with %s Devices impacted.' . PHP_EOL, $name, $total_hosts);
+					printf('NOTE: Data Query: %s (%s) with %s Devices impacted.' . PHP_EOL, $name, $snmp_query_id, $total_hosts);
 				}
 			}
 		} else {
