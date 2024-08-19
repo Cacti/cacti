@@ -987,8 +987,6 @@ function snmp_index_repairs() {
 			$check_cnt  = 0;
 
 			foreach($hosts as $h) {
-				$repaired_hosts[$h['host_id']] = $h['host_id'];
-
 				$data_query_ids = array_rekey(
 					db_fetch_assoc_prepared('SELECT DISTINCT snmp_query_id
 						FROM data_local
@@ -1031,6 +1029,8 @@ function snmp_index_repairs() {
 						$check_cnt++;
 
 						if ($total_matches == 1) {
+							$repaired_hosts[$h['host_id']] = $h['host_id'];
+
 							$match_cnt++;
 
 							db_execute_prepared('UPDATE data_local
@@ -1095,7 +1095,7 @@ function snmp_index_repairs() {
 				printf('         Found %s Data Sources that had no corresponding possible index.' . PHP_EOL, $nomatch_cnt);
 				printf('         Suggest you reindex your Devices for the following' . PHP_EOL);
 				printf('         Data Queries and then rerun this repair tool.' . PHP_EOL . PHP_EOL);
-				printf('         Eg: ./poller_reindex_hosts --host-id=N --qid=N' . PHP_EOL);
+				printf('         Eg: ./poller_reindex_hosts --host-id=N --qid=N' . PHP_EOL . PHP_EOL);
 
 				foreach($reindexes as $snmp_query_id => $hosts) {
 					$name = db_fetch_cell_prepared('SELECT name
@@ -1105,7 +1105,7 @@ function snmp_index_repairs() {
 
 					$total_hosts = cacti_sizeof($hosts);
 
-					printf('NOTE: Data Query: %s (%s) with %s Devices impacted.' . PHP_EOL, $name, $snmp_query_id, $total_hosts);
+					printf('         Data Query: %s (%s) with %s Devices impacted.' . PHP_EOL, $name, $snmp_query_id, $total_hosts);
 				}
 			}
 		} else {
@@ -1113,6 +1113,56 @@ function snmp_index_repairs() {
 		}
 	} else {
 		printf('NOTE: Found 0 Devices with damaged Data Query indexes in (Pass 2).' . PHP_EOL);
+	}
+
+	printf('NOTE: Searching for orphaned Data Sources that are not orphaned.' . PHP_EOL);
+
+	$local_data_ids = db_fetch_assoc('SELECT *
+		FROM data_local
+		WHERE snmp_index != ""
+		AND snmp_query_id > 0
+		AND orphan = 1');
+
+	$total_errors += cacti_sizeof($local_data_ids);
+
+	if (cacti_sizeof($local_data_ids)) {
+		printf('NOTE: Found %s Devices with orphaned Data Sources that may not be orphaned.' . PHP_EOL, cacti_sizeof($local_data_ids));
+
+		if ($force) {
+			printf('NOTE: Attempting to confirm and repair Data Sources are in fact not orphaned.' . PHP_EOL);
+
+			$fixes = 0;
+
+			foreach($local_data_ids as $ldi) {
+				$snmp_index = $ldi['snmp_index'];
+
+				$found = db_fetch_cell_prepared('SELECT count(*)
+					FROM host_snmp_cache
+					WHERE host_id = ?
+					AND snmp_query_id = ?
+					AND snmp_index = ?',
+					array($ldi['host_id'], $ldi['snmp_query_id'], $ldi['snmp_index']));
+
+				if ($found) {
+					$repaired_hosts[$ldi['host_id']] = $ldi['host_id'];
+
+					db_execute_prepared('UPDATE data_local
+						SET orphan = 0
+						WHERE id = ?',
+						array($ldi['id']));
+
+					$fixes++;
+				}
+			}
+
+			$total_repairs += $fixes;
+
+			printf('NOTE: Found and repaired %s of %s Data Sources with invalid orphan status.' . PHP_EOL, $fixes, cacti_sizeof($local_data_ids));
+		} else {
+			printf('NOTE: Skipping attempt to confirm and repair Data Sources orphan status.' . PHP_EOL);
+		}
+	} else {
+		printf('NOTE: Found 0 Devices with Data Sources with a potentially incorrect orphan status.' . PHP_EOL);
 	}
 
 	$broken_ds = db_fetch_cell("SELECT COUNT(*)
