@@ -122,6 +122,7 @@ Cacti CHANGELOG
 -issue#5792: Unable to add Graphs to a Report from Cacti List View
 -issue#5797: Add additional Repair Database Checks to address various Cacti database corruptions
 -issue#5802: Cacti should not convert non-base tables as they may have an focused characters set and engine
+-issue#5806: Issues with Cacti posix_kill wrapper in Windows
 -feature#5784: Provide a means by which a user can track Cacti connections and disconnects from the php error_log
 -feature#5796: Due to Conflicting Interpretations of TCP Ping, Introduce new Ping Method
 -feature: Update jQueryUI to 1.14.0

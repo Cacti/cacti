@@ -6913,19 +6913,42 @@ function repair_system_data_input_methods($step = 'import') {
 
 if (isset($config['cacti_server_os']) && $config['cacti_server_os'] == 'win32' && !function_exists('posix_kill')) {
 	function posix_kill($pid, $signal = SIGTERM) {
-		$wmi   = new COM('winmgmts:{impersonationLevel=impersonate}!\\\\.\\root\\cimv2');
+		if (!defined('SIGTERM')) {
+			define('SIGTERM', 15);
+		}
+
+		if (!defined('SIGKILL')) {
+			define('SIGKILL', 9);
+		}
+
+		if (!defined('SIGHUP')) {
+			define('SIGHUP', 1);
+		}
+
+		if (!defined('SIGINT')) {
+			define('SIGINT', 2);
+		}
+
+		$wmi   = new COM("winmgmts:{impersonationLevel=impersonate}!\\\\.\\root\\cimv2");
 		$procs = $wmi->ExecQuery("SELECT ProcessId FROM Win32_Process WHERE ProcessId='" . $pid . "'");
 
 		if (cacti_sizeof($procs)) {
-			if ($signal == SIGTERM) {
-				foreach ($procs as $proc) {
+			if ($signal == 0) {
+				return true;  // The process is running
+			} elseif ($signal == SIGTERM || $signal == SIGINT || $signal == SIGKILL) {
+				foreach($procs as $proc) {
 					$proc->Terminate();
 				}
+			} elseif ($signal == SIGHUP) {
+				cacti_log("WARNING: SIGHUP Signal for pid: $pid is not supported on Windows", false, 'POLLER');
 			} else {
-				return true;
+				cacti_log("WARNING: Unknown Signal Number $signal in posix_kill", false, 'POLLER');
+				return false;
 			}
-		} else {
+		} elseif ($signal == 0) {
 			return false;
+		} else {
+			return true;
 		}
 	}
 }
