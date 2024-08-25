@@ -100,7 +100,7 @@ case 'save':
 			} else {
 				$continue = true;
 
-				if ($field_name == 'path_cactilog') {
+				if ($field_name == 'path_cactilog' || $field_name == 'path_stderrlog') {
 					$extension = pathinfo(get_nfilter_request_var($field_name), PATHINFO_EXTENSION);
 
 					if ($extension != 'log') {
@@ -1357,4 +1357,3 @@ default:
 
 	break;
 }
-
