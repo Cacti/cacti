@@ -720,11 +720,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = null) {
 
 	$data_ids_to_get = read_config_option('boost_rrd_update_max_records_per_select');
 
-	$query_string = '';
-	$arch_tables  = db_fetch_assoc("SELECT table_name AS name
-		FROM information_schema.tables
-		WHERE table_schema = SCHEMA()
-		AND table_name LIKE 'poller_output_boost_arch_%'");
+	$archive_tables = boost_get_arch_table_names($archive_table);
 
 	$results = array();
 
@@ -737,60 +733,51 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = null) {
 		$timestamp = time() - 10;
 	}
 
-	boost_timer('get_records', BOOST_TIMER_START);
+	$query_string        = 'SELECT * FROM (';
+	$query_string_suffix = 'ORDER BY local_data_id ASC, timestamp ASC, rrd_name ASC';
+	$sub_query_string    = '';
+	$sql_params          = array();
 
-	if (cacti_count($arch_tables)) {
-		foreach ($arch_tables as $table) {
-			$tresults = db_fetch_assoc_prepared('SELECT local_data_id,
-				UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
-				FROM ' . $table['name'] . '
-				WHERE local_data_id = ?
-				AND time < FROM_UNIXTIME(?)
-				ORDER BY time ASC, rrd_name ASC',
-				array($local_data_id, $timestamp), false);
+	if (cacti_count($archive_tables)) {
+		foreach($archive_tables as $table) {
+	        $sub_query_string .= ($sub_query_string != '' ? ' UNION ALL ':'') .
+				" SELECT $table.local_data_id, dl.data_template_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
+				FROM $table
+				WHERE $table.local_data_id = ?";
 
-			if (cacti_sizeof($tresults)) {
-				$results = array_merge($results, $tresults);
-			}
+			$sql_params[] = $local_data_id;
 		}
 	}
 
-	$arch_results = cacti_sizeof($results);
-
-	$tresults = db_fetch_assoc_prepared("SELECT po.local_data_id, dl.data_template_id,
+	$sub_query_string .= ($sub_query_string != '' ? ' UNION ALL ':'') .
+		" SELECT po.local_data_id, dl.data_template_id,
 		UNIX_TIMESTAMP(po.time) AS timestamp, po.rrd_name, po.output
 		FROM poller_output_boost AS po
 		INNER JOIN data_local AS dl
 		ON po.local_data_id = dl.id
 		WHERE po.local_data_id = ?
 		AND po.time < FROM_UNIXTIME(?)
-		ORDER BY po.time, po.rrd_name",
-		array($local_data_id, $timestamp));
+		ORDER BY po.time ASC, po.rrd_name ASC";
 
-	$boost_results = cacti_sizeof($tresults);
+	$sql_params[] = $local_data_id;
+	$sql_params[] = $timestamp;
 
-	if (cacti_sizeof($tresults)) {
-		$results = array_merge($results, $tresults);
-	}
+	$query_string = $query_string . $sub_query_string . ') t ' . $query_string_suffix;
 
+	boost_timer('get_records', BOOST_TIMER_START);
+	$results = db_fetch_assoc_prepared($query_string, $sql_params);
 	boost_timer('get_records', BOOST_TIMER_END);
 
-	cacti_log('Local Data ID: ' . $local_data_id . ', Archive Results: ' . $arch_results . ', Boost Results: ' . $boost_results, false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
+	$boost_results = cacti_sizeof($results);
 
-	$sorted = boost_array_orderby($results, 'timestamp', SORT_ASC, 'rrd_name', SORT_ASC);
-
-	$sorted_results = cacti_sizeof($sorted);
-
-	$results = $sorted;
-
-	cacti_log('Local Data ID: ' . $local_data_id . ', Sorted Results: ' . $sorted_results, false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
+	cacti_log('Local Data ID: ' . $local_data_id . ', Boost Results: ' . $boost_results, false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
 
 	/* remove the entries from the table */
 	boost_timer('delete', BOOST_TIMER_START);
 
-	if (cacti_count($arch_tables)) {
-		foreach ($arch_tables as $table) {
-			db_execute_prepared('DELETE IGNORE FROM ' . $table['name'] . '
+	if (cacti_count($archive_tables)) {
+		foreach($archive_tables as $table) {
+			db_execute_prepared('DELETE IGNORE FROM ' . $table . '
 				WHERE local_data_id = ?',
 				array($local_data_id));
 		}
