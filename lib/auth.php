@@ -3914,7 +3914,7 @@ function domains_login_process($username) {
 				cacti_log('LOGIN FAILED: LDAP Error: ' . $ldap_auth_response['error_text'], false, 'AUTH');
 
 				if ($ldap_auth_response['error_text'] == 1) {
-					auth_lockout_process($username, $realm);
+					auth_process_lockout($username, $realm);
 				}
 			}
 		}
@@ -4745,7 +4745,7 @@ function auth_login_create_user_from_template($username, $realm) {
  * @return (bool) Returns false on failure to set user account, otherwise redirects
  */
 function check_reset_no_authentication($auth_method) {
-	global $error, $error_msg;
+	global $config, $error, $error_msg;
 
 	if ($auth_method == 0) {
 		$admin_id = db_execute_prepared('SELECT id

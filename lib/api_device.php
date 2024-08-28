@@ -1371,7 +1371,7 @@ function api_device_update_host_template($device_id, $device_template_id) {
 						raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 						$raised[$poller_id] = true;
 					}
-				} elseif (!$isset($raised[$poller_id])) {
+				} elseif (!isset($raised[$poller_id])) {
 					raise_message('poller_down_' . $poller_id, __('Remote Poller %s is Down, you will need to perform a FullSync once it is up again', $poller_id), MESSAGE_LEVEL_WARN);
 					$raised[$poller_id] = true;
 				}
@@ -2223,7 +2223,7 @@ function api_clone_device_template_check_for_errors($device_template_id, $device
 					WHERE name = ?',
 					array($name . $suffix));
 
-				if ($exits > 0) {
+				if ($exists > 0) {
 					$warnings++;
 					$return['warnings'][] = sprintf('WARNING: Data Template Data Input Method \'%s\' already exists.', $name . $suffix);
 				}
