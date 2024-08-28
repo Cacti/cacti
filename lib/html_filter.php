@@ -135,13 +135,13 @@ class CactiTableFilter {
 
 	public function filter_render() {
 		/* setup filter variables */
-		sanitize_filter_variables();
+		$this->sanitize_filter_variables();
 
 		/* render the filter in the page */
-		create_filter();
+		$this->create_filter();
 
 		/* create javascript to operate of the filter */
-		create_javascript();
+		$this->create_javascript();
 
 		return true;
 	}
@@ -153,10 +153,10 @@ class CactiTableFilter {
 
 		html_start_box($this->form_header, $this->form_width, true, '3', 'center', $this->action_url, $this->action_label);
 
-		if (isset($this->form_array['rows'])) {
-			print "<form id='" . $this->filter_id . "' action='" . $this->filter_action . "'>\n";
+		if (isset($this->filter_array['rows'])) {
+			print "<form id='" . $this->form_id . "' action='" . $this->form_action . "'>\n";
 
-			foreach($this->form_array['rows'] as $index => $row) {
+			foreach($this->filter_array['rows'] as $index => $row) {
 				print "<div class='filterTable'>\n";
 				print "<div class='formRow'>\n";
 
@@ -217,8 +217,8 @@ class CactiTableFilter {
 
 		$separator = "\"+\"&";
 
-		if (isset($this->form_array['rows'])) {
-			foreach($this->form_array['rows'] as $index => $row) {
+		if (isset($this->filter_array['rows'])) {
+			foreach($this->filter_array['rows'] as $index => $row) {
 				foreach($row as $field_name => $field_array) {
 					switch($field_array['method']) {
 					case 'button':
@@ -282,8 +282,8 @@ class CactiTableFilter {
 	private function sanitize_filter_variables() {
 		$filters = array();
 
-		if (isset($this->form_array['rows'])) {
-			foreach($this->form_array['rows'] as $index => $row) {
+		if (isset($this->filter_array['rows'])) {
+			foreach($this->filter_array['rows'] as $index => $row) {
 				foreach($row as $field_name => $field_array) {
 					switch($field_array['method']) {
 					case 'button':
@@ -312,14 +312,14 @@ class CactiTableFilter {
 			}
 		}
 
-		if (isset($this->form_array['sort'])) {
+		if (isset($this->filter_array['sort'])) {
 			$filters['sort_column']['filter']     = FILTER_CALLBACK;
 			$filters['sort_column']['options']    = array('options' => 'sanitize_search_string');
-			$filters['sort_column']['default']    = $this->form_array['sort']['sort_column'];
+			$filters['sort_column']['default']    = $this->filter_array['sort']['sort_column'];
 
 			$filters['sort_direction']['filter']  = FILTER_CALLBACK;
 			$filters['sort_direction']['options'] = array('options' => 'sanitize_search_string');
-			$filters['sort_direction']['default'] = $this->form_array['sort']['sort_direction'];
+			$filters['sort_direction']['default'] = $this->filter_array['sort']['sort_direction'];
 		}
 
 		validate_store_request_vars($filters, $this->session_var);
