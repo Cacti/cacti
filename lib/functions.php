@@ -827,14 +827,14 @@ function get_selected_theme() {
  * form_input_validate - validates the value of a form field and Takes the appropriate action if the input
  * is not valid
  *
- * @param $field_value - the value of the form field
- * @param $field_name - the name of the $_POST field as specified in the HTML
- * @param $regexp_match - (optionally) enter a regular expression to match the value against
- * @param $allow_nulls - (bool) whether to allow an empty string as a value or not
- * @param $custom_message - (int) the ID of the message to raise upon an error which is defined in the
+ * @param string $field_value    value of the form field
+ * @param string $field_name     name of the $_POST field as specified in the HTML
+ * @param string $regexp_match   (optionally) enter a regular expression to match the value against
+ * @param bool $allow_nulls      whether to allow an empty string as a value or not
+ * @param int $custom_message    the ID of the message to raise upon an error which is defined in the
  *   $messages array in 'include/global_arrays.php'
  *
- * @return - the original $field_value
+ * @return string                the original $field_value
  */
 function form_input_validate($field_value, $field_name, $regexp_match, $allow_nulls, $custom_message = 3) {
 	global $messages;
