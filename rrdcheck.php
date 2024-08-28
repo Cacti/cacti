@@ -192,7 +192,7 @@ function rrdcheck_display_problems() {
 			form_selectable_cell(filter_value($problem['name_cache'], get_request_var('filter')), $problem['local_data_id']);
 			form_selectable_cell(filter_value($problem['local_data_id'], get_request_var('filter')), $problem['local_data_id'], '', 'center');
 			form_selectable_cell(filter_value($problem['message'], get_request_var('filter')), $problem['local_data_id']);
-			form_selectable_cell($problem['test_date'], $file['local_data_id'], '', 'right');
+			form_selectable_cell($problem['test_date'], $problem['local_data_id'], '', 'right');
 
 			form_end_row();
 		}
@@ -202,7 +202,7 @@ function rrdcheck_display_problems() {
 
 	html_end_box(false);
 
-	if (cacti_sizeof($file_list)) {
+	if (cacti_sizeof($problems)) {
 		print $nav;
 	}
 
