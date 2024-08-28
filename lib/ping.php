@@ -39,6 +39,9 @@ class Net_Ping
 	var $precision;
 	var $time;
 	var $timer_start_time;
+	var $sqn;
+	var $avail_method;
+	var $ping_type;
 
 	function __construct() {
 		$this->port = 33439;
@@ -147,7 +150,7 @@ class Net_Ping
 
 				if (!$this->is_ipaddress($host_ip)) {
 					cacti_log('WARNING: ICMP Ping Error: cacti_gethostbyname failed for ' . $this->host['hostname']);
-					$this->response = 'ICMP Ping Error: cacti_gethostbyname failed for ' . $this->host['hostname'];
+					$this->ping_response = 'ICMP Ping Error: cacti_gethostbyname failed for ' . $this->host['hostname'];
 					return false;
 				}
 			}
@@ -208,7 +211,7 @@ class Net_Ping
 
 					return true;
 				} else {
-					$this->status = 'down';
+					$this->ping_status = 'down';
 					$this->ping_response = __('ICMP ping Timed out');
 
 					return false;
@@ -226,7 +229,7 @@ class Net_Ping
 
 					return true;
 				} else {
-					$this->status = 'down';
+					$this->ping_status = 'down';
 					$this->ping_response = __('ICMP ping Timed out');
 
 					return false;
@@ -356,7 +359,7 @@ class Net_Ping
 
 				if (!$this->is_ipaddress($host_ip)) {
 					cacti_log('WARNING: UDP Ping Error: cacti_gethostbyname failed for ' . $this->host['hostname']);
-					$this->response = 'UDP Ping Error: cacti_gethostbyname failed for ' . $this->host['hostname'];
+					$this->ping_response = 'UDP Ping Error: cacti_gethostbyname failed for ' . $this->host['hostname'];
 					$this->restore_cacti_error_handler();
 
 					return false;
@@ -398,7 +401,7 @@ class Net_Ping
 			$retry_count = 0;
 			while (true) {
 				if ($retry_count >= $this->retries) {
-					$this->status = 'down';
+					$this->ping_status = 'down';
 					$this->ping_response = __('UDP ping error: %s', $error);
 					$this->close_socket();
 					$this->restore_cacti_error_handler();
@@ -493,7 +496,7 @@ class Net_Ping
 
 				if (!$this->is_ipaddress($host_ip)) {
 					cacti_log('WARNING: TCP Ping Error: cacti_gethostbyname failed for ' . $this->host['hostname']);
-					$this->response = 'TCP Ping Error: cacti_gethostbyname failed for ' . $this->host['hostname'];
+					$this->ping_response = 'TCP Ping Error: cacti_gethostbyname failed for ' . $this->host['hostname'];
 					$this->restore_cacti_error_handler();
 
 					return false;
