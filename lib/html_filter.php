@@ -30,6 +30,7 @@ class CactiTableFilter {
 	public $form_header    = '';
 	public $form_action    = '';
 	public $form_id        = '';
+	public $form_width     = '';
 	public $action_url     = '';
 	public $action_label   = '';
 	public $session_var    = 'sess_default';
