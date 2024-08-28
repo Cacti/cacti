@@ -324,7 +324,7 @@ function display_template_data(&$templates) {
 					$dep_details['unmet'] = __('Unmet: %d', $unmet_count);
 				}
 
-				form_selectable_cell(implode(', ', $diff_details), $id, '', 'white-space:pre-wrap');
+				form_selectable_cell(implode(', ', $dep_details), $id, '', 'white-space:pre-wrap');
 			} else {
 				form_selectable_cell(__('None'), $id);
 			}
