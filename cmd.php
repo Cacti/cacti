@@ -764,7 +764,7 @@ function collect_device_data(&$item, &$error_ds) {
 		default:
 			$error_ds[$ds] = $ds;
 
-			cacti_log("Device[$host_id] DS[$ds] ERROR: Invalid polling option: " . $item['action'], $stdout, 'POLLER');
+			cacti_log("Device[$host_id] DS[$ds] ERROR: Invalid polling option: " . $item['action'], $print_data_to_stdout, 'POLLER');
 	}
 
 	return $output;
