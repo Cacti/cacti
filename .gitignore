@@ -60,7 +60,7 @@ cache/**
 plugins/**
 
 # Ignore Cacti resources files/folders
-resources/**
+resource/**
 
 # Ignore Cacti script files/folders
 scripts/**
