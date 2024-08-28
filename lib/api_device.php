@@ -1820,3 +1820,1192 @@ function api_duplicate_device_template($_host_template_id, $host_template_title)
 		return false;
 	}
 }
+
+/**
+ * api_clone_message - Displays a clone specific log
+ *   message if there to CLI and the Cacti log
+ *
+ * @param string - The message to output
+ * @param bool - Is the output for CLI or the web only
+ *
+ * @return null
+ */
+function api_clone_message($message, $force = false) {
+	global $debug, $config;
+
+	if ($debug || $force) {
+		if (!$config['is_web']) {
+			print trim($message) . PHP_EOL;
+		}
+
+		cacti_log($message, false, 'DTCLONE');
+	}
+}
+
+/**
+ * api_clone_get_unique_name - Get a unique name for
+ *   a cacti object based upon the table and column
+ *   name.
+ *
+ * @param string - The desired object name
+ * @param string - The table to be checked for that name
+ * @param string - The column name to check for the name
+ *
+ * @return string|bool - The correct name for the object, else false
+ *    If more than 20 attempts are made to find a good name.
+ */
+function api_clone_get_unique_name($name, $table, $column = 'name') {
+	$i = 0;
+
+	while($i < 20) {
+		if ($i > 0) {
+			$check_name = $name . " ($i)";
+		} else {
+			$check_name = $name;
+		}
+
+		$exists = db_fetch_cell_prepared("SELECT $column
+			FROM $table
+			WHERE $column = ?",
+			array($check_name));
+
+		if ($exists == '') {
+			return $check_name;
+		}
+
+		$i++;
+	}
+
+	return false;
+}
+
+/**
+ * api_clone_get_unique_filename - Get a unique file name for
+ *   a Cacti object based upon the file name.
+ *
+ * @param string - The current filename
+ *
+ * @return string|bool - The correct name for the object, else false
+ *    If more than 20 attempts are made to find a good name.
+ */
+function api_clone_get_unique_filename($file_name) {
+	$i = 1;
+
+	$file_data = pathinfo($file_name);
+	$file_base = $file_data['dirname'] . '/' . basename($file_data['basename'], $file_data['extension']);
+	$file_ext  = $file_data['extension'];
+
+	while($i < 20) {
+		$id = substr('00' . $i, -2);
+		$check_name = $file_base . "_$id" . '.' . $file_ext;
+
+		if (!file_exists($check_name)) {
+			return $check_name;
+		}
+
+		$i++;
+	}
+
+	return false;
+}
+
+/**
+ * api_clone_device_template_check_for_errors - This function will validate the
+ *   intput and return warnings and errors before allowing users to proceed.  This
+ *   option is skipped when using the quiet option.
+ *
+ * @param int    - The device template id to be cloned
+ * @param string - The include Graph Templates list
+ * @param string - The clone Graph Templates list
+ * @param string - The include Data Queries list
+ * @param string - The clone Data Queries list
+ * @param string - The include Data Templates list
+ * @param string - The clone Data Templates list
+ * @param string - The suffix for the clone operation
+ * @param bool   - Should Data Query XML be cloned.  Will be updated if incorrect.
+ * @param bool   - Should Data Input Method be cloned.  Will be updated if incorrect.
+ *
+ * @return array - An array of warning and error message to provide to the user.
+ */
+function api_clone_device_template_check_for_errors($device_template_id, $device_template_name, $include_gt, $clone_gt,
+	$include_dq, $clone_dq, $include_dt, $clone_dt, &$suffix, &$clone_xml, &$clone_script) {
+
+	global $config;
+
+	$return = array(
+		'warnings' => array(),
+		'errors'   => array()
+	);
+
+	$device_template = db_fetch_row_prepared('SELECT *
+		FROM host_template
+		WHERE id = ?',
+		array($device_template_id));
+
+	/* first error check */
+	if (!cacti_sizeof($device_template)) {
+		$return['errors'][] = sprintf('FATAL: Device Template %s does not exist!', $device_template_id);
+
+		return $return;
+	} else {
+		$objects = api_clone_device_template_get_objects($device_template['id']);
+	}
+
+	/* second error check */
+	if (!cacti_sizeof($objects)) {
+		$return['errors'][] = sprintf('FATAL: Device Template %s has no Objects!', $device_template_id);
+
+		return $return;
+	}
+
+	$errors     = 0;
+	$warnings   = 0;
+	$include_gt = strtolower($include_gt);
+	$include_dq = strtolower($include_dq);
+	$include_dt = strtolower($include_dt);
+	$clone_gt   = strtolower($clone_gt);
+	$clone_dq   = strtolower($clone_dq);
+	$clone_dt   = strtolower($clone_dt);
+
+	printf('Cloning Criteria for Device Template are:'                                   . PHP_EOL);
+	printf('---------------------------------------------------------------------------' . PHP_EOL);
+	printf('NOTE: Include Graph Template: ' . ($include_gt != ''   ? $include_gt:'none') . PHP_EOL);
+	printf('NOTE: Include Data Query:     ' . ($include_dq != ''   ? $include_dq:'none') . PHP_EOL);
+	printf('NOTE: Include Data Template:  ' . ($include_dt != ''   ? $include_dt:'none') . PHP_EOL);
+	printf('NOTE: Clone Graph Template:   ' . ($clone_gt != ''     ? $clone_gt:'none')   . PHP_EOL);
+	printf('NOTE: Clone Data Query:       ' . ($clone_dq != ''     ? $clone_dq:'none')   . PHP_EOL);
+	printf('NOTE: Clone Data Template:    ' . ($clone_dt != ''     ? $clone_dt:'none')   . PHP_EOL);
+	printf('NOTE: Clone XML Files:        ' . ($clone_xml != ''    ? 'yes':'no')         . PHP_EOL);
+	printf('NOTE: Clone Script Files:     ' . ($clone_script != '' ? 'yes':'no')         . PHP_EOL);
+	printf('---------------------------------------------------------------------------' . PHP_EOL);
+
+	if ($include_gt == 'all' && $clone_gt != '') {
+		$return['errors'][] = sprintf('FATAL: Include Graph Templates can not be \'all\' when Clone Graph Templates is in use!');
+		$errors++;
+	}
+
+	if ($include_dq == 'all' && $clone_dq != '') {
+		$return['errors'][] = sprintf('FATAL: Include Data Queries can not be \'all\' when Clone Data Queries is in use!');
+		$errors++;
+	}
+
+	if ($include_dt == 'all' && $clone_dt != '') {
+		$return['errors'][] = sprintf('FATAL: Include Data Templates can not be \'all\' when Clone Data Templates is in use!');
+		$errors++;
+	}
+
+	if ($include_gt != '' && $clone_gt == 'all') {
+		$return['errors'][] = sprintf('FATAL: Clone Graph Templates can not be \'all\' when Include Graph Templates is in use!');
+		$errors++;
+	}
+
+	if ($include_dq != '' && $clone_dq == 'all') {
+		$return['errors'][] = sprintf('FATAL: Clone Data Queries can not be \'all\' when Include Data Queries is in use!');
+		$errors++;
+	}
+
+	if ($include_dt != '' && $clone_dt == 'all') {
+		$return['errors'][] = sprintf('FATAL: Clone Data Templates can not be \'all\' when Include Data Templates is in use!');
+		$errors++;
+	}
+
+	if ($include_gt != '' && $include_gt != 'all') {
+		$gts = explode(',', $include_gt);
+
+		foreach($gts as $gt) {
+			if (!is_numeric($gt) || $gt <= 0) {
+				$errors++;
+
+				$return['errors'][] = sprintf('FATAL: Graph Template to be included %s is not numeric', $gt);
+			}
+		}
+	}
+
+	if ($include_dq != '' && $include_dq != 'all') {
+		$dqs = explode(',', $include_dq);
+
+		foreach($dqs as $dq) {
+			if (!is_numeric($dq) || $dq <= 0) {
+				$errors++;
+
+				$return['errors'][] = sprintf('FATAL: Data Query to be included %s is not numeric', $dq);
+			}
+		}
+	}
+
+	if ($include_dt != '' && $include_dt != 'all') {
+		$dts = explode(',', $include_dt);
+
+		foreach($dts as $dt) {
+			if (!is_numeric($dt) || $dt <= 0) {
+				$errors++;
+
+				$return['errors'][] = sprintf('FATAL: Data Template to be included %s is not numeric', $dt);
+			}
+		}
+	}
+
+	$graph_templates = array_merge(array_keys($objects['graph_templates']), array_keys($objects['data_query_graph_templates']));
+	$data_templates  = array_merge(array_keys($objects['data_templates']), array_keys($objects['data_query_data_templates']));
+	$data_queries    = array_keys($objects['data_queries']);
+
+	if ($include_gt != '' && $include_gt != 'all') {
+		$gti = explode(',', $include_gt);
+
+		foreach($gts as $gt) {
+			if (array_search($gt, $graph_templates, true) === false) {
+				$errors++;
+				$return['errors'][] = sprintf('FATAL: Graph Template to be included %s does not exist in Device Template', $gt);
+			}
+		}
+	}
+
+	if ($clone_gt != '' && $clone_gt != 'all') {
+		$gtc = explode(',', $clone_gt);
+
+		foreach($gtc as $gt) {
+			if (array_search($gt, $graph_templates, true) === false) {
+				$errors++;
+				$return['errors'][] = sprintf('FATAL: Graph Template to be cloned %s does not exist in Device Template', $gt);
+			}
+		}
+	}
+
+	if ($include_dq != '' && $include_dq != 'all') {
+		$dqi = explode(',', $include_dq);
+
+		foreach($dqi as $dq) {
+			if (array_search($dq, $data_queries, true) === false) {
+				$errors++;
+				$return['errors'][] = sprintf('FATAL: Data Query to be included %s does not exist in Device Template', $dq);
+			}
+		}
+	}
+
+	if ($clone_dq != '' && $clone_dq != 'all') {
+		$clone_dq = true;
+
+		$dqc = explode(',', $clone_dq);
+
+		foreach($dqc as $dq) {
+			if (!is_numeric($dq) && $dq > 0) {
+				$errors++;
+				$return['errors'][] = sprintf('FATAL: Data Query to be cloned %s is not numeric', $dq);
+			} elseif (array_search($dq, $data_queries, true) === false) {
+				$errors++;
+				$return['errors'][] = sprintf('FATAL: Data Query to be cloned %s does not exist in Device Template', $dq);
+			}
+		}
+	} elseif ($clone_dq == 'all') {
+		$clone_dq = true;
+	}
+
+	if ($include_dt != '' && $include_dt != 'all') {
+		$dti = explode(',', $include_dt);
+
+		foreach($dti as $dt) {
+			if (!is_numeric($dt) && $dt > 0) {
+				$errors++;
+				$return['errors'][] = sprintf('FATAL: Data Template to be cloned %s is not numeric', $dt);
+			} elseif (array_search($dt, $data_templates, true) === false) {
+				$errors++;
+				$return['errors'][] = sprintf('FATAL: Data Template to be included %s does not exist in Device Template', $dt);
+			}
+		}
+	}
+
+	if ($clone_dt != '' && $clone_dt != 'all') {
+		$clone_dt = true;
+
+		$dtc = explode(',', $clone_dt);
+
+		foreach($dtc as $dt) {
+			if (!is_numeric($dt) && $dt > 0) {
+				$errors++;
+				$return['errors'][] = sprintf('FATAL: Data Template to be cloned %s is not numeric', $dt);
+			} elseif (array_search($dt, $data_templates, true) === false) {
+				$errors++;
+				$return['errors'][] = sprintf('FATAL: Data Template to be cloned %s does not exist in Device Template', $dt);
+			}
+		}
+	} elseif ($clone_dt == 'all') {
+		$clone_dt = true;
+	}
+
+	/* now check for name collision xml files and scripts */
+	if ($clone_xml) {
+		if ($clone_dq != '') {
+			foreach($objects['data_queries'] as $id => $data_query) {
+				if (!is_numeric($id) && $id <= 0) {
+					$errors++;
+					$return['errors'][] = sprintf('FATAL: Data Query to be cloned %s is not numeric', $id);
+				} elseif ($data_query['xml_path'] != '') {
+					$xml_clone  = str_replace('.xml', '', $data_query['xml_path']);
+					$xml_clone .= $suffix . '.xml';
+					$name = $data_query['name'];
+					$xml_base = trim(str_replace($config['base_path'], '', $xml_clone), '/');
+
+					if (file_exists($xml_clone)) {
+						if (!is_writable(dirname($xml_clone))) {
+							$errors++;
+							$return['errors'][] = sprintf('FATAL: Data Query XML Base path \'%s\' for Data Query \'%s\' already exists, and the directory is not writable!', $xml_base, $name);
+						} else {
+							$warnings++;
+							$return['warnings'][] = sprintf('WARNING: Data Query XML Base path \'%s\' for \'%s\' already exists.', $xml_base, $name);
+						}
+					} else {
+						$errors++;
+						$return['errors'][] = sprintf('FATAL: Data Query XML Base path \'%s\' for \'%s\' not found!', $xml_base, $name);
+					}
+				}
+			}
+		}
+	}
+
+	if ($clone_script) {
+		if ($clone_dq != '') {
+			foreach($objects['data_queries'] as $id => $data_query) {
+				if (!is_numeric($id) && $id <= 0) {
+					$errors++;
+					$return['errors'][] = sprintf('FATAL: Data Query to be cloned %s is not numeric', $id);
+				} elseif (isset($data_query['script_path']) && $data_query['script_path'] != '') {
+					$parts = explode('.', $data_query['script_path']);
+					$name  = $data_query['name'];
+
+					$xml_script = $parts[0] . $suffix . (isset($parts[1]) ? '.' . $parts[1]:'');
+					$xml_base   = trim(str_replace($config['base_path'], '', $xml_script), '/');
+
+					if (file_exists($xml_script)) {
+						if (!is_writable(dirname($xml_script))) {
+							$errors++;
+							$return['errors'][] = sprintf('FATAL: Data Query Script Base path \'%s\' for \'%s\' already exists and the directory is not writable!', $xml_base, $name);
+						} else {
+							$warnings++;
+							$return['warnings'][] = sprintf('WARNING: Data Query Script Base path \'%s\' for \'%s\' already exists.', $xml_base, $name);
+						}
+					} else {
+						$errors++;
+						$return['errors'][] = sprintf('FATAL: Data Query Script Base path \'%s\' for \'%s\' not found!', $xml_base, $name);
+					}
+				}
+			}
+		}
+
+		if ($clone_dt) {
+			foreach($objects['data_templates'] AS $id => $data_template) {
+				if (!is_numeric($id) && $id <= 0) {
+					$errors++;
+					$return['errors'][] = sprintf('FATAL: Data Template to be cloned %s is not numeric', $id);
+				} elseif (isset($data_templates['script_path'])) {
+					$parts = explode('.', $data_template['script_path']);
+					$name  = $data_template['name'];
+
+					$script_path = $parts[0] . $suffix . (isset($parts[1]) ? '.' . $parts[1]:'');
+					$script_base = trim(str_replace($config['base_path'], '', $script_path), '/');
+
+					if (file_exists($script_path)) {
+						if (!is_writeable($script_path)) {
+							$errors++;
+							$return['errors'][] = sprintf('FATAL: Data Template Script Base path \'%s\' for \'%s\' already exists and the directory is not writable!', $script_base, $name);
+						} else {
+							$warnings++;
+							$return['warnings'][] = sprintf('WARNING: Data Template Script Base path \'%s\' for \'%s\' already exists.', $script_base, $name);
+						}
+					} else {
+						$errors++;
+						$return['errors'][] = sprintf('FATAL: Data Template Script Base path \'%s\' for \'%s\' not found!', $script_base, $name);
+					}
+				}
+			}
+		}
+	}
+
+	/* not issue some warnings for things to be cloned */
+	if ($device_template_name == '') {
+		$device_template_name = db_fetch_cell_prepared('SELECT name
+			FROM host_template
+			WHERE id = ?',
+			array($device_template_id));
+
+		$device_template_name .= $suffix;
+	}
+
+	$exists = db_fetch_cell_prepared('SELECT id
+		FROM host_template
+		WHERE name = ?',
+		array($device_template_name));
+
+	if ($exists) {
+		$warnings++;
+		$return['warnings'][] = sprintf('WARNING: Device Template \'%s\' already exists.', $device_template_name);
+	}
+
+	if ($clone_gt != '') {
+		if ($clone_gt == 'all') {
+			$gts = array_keys($objects['graph_templates']);
+		} else {
+			$gts = explode(',', $clone_gt);
+		}
+
+		foreach($gts as $gt_id) {
+			$name = $objects['graph_templates'][$gt_id]['name'];
+
+			$exists = db_fetch_cell_prepared('SELECT id
+				FROM graph_templates
+				WHERE name = ?',
+				array($name . $suffix));
+
+			if ($exists > 0) {
+				$warnings++;
+				$return['warnings'][] = sprintf('WARNING: Graph Template \'%s\' already exists.', $name . $suffix);
+			}
+		}
+	}
+
+	/* not issue some warnings for things to be cloned */
+	if ($clone_xml && !$clone_dq) {
+		$warnings++;
+		$return['warnings'][] = sprintf('WARNING: Ignoring --clone-xml as no Data Queries were selected to be cloned.');
+		$clone_xml = false;
+	}
+
+	if ($clone_script && (!$clone_dq && !$clone_dt)) {
+		$warnings++;
+		$return['warnings'][] = sprintf('WARNING: Ignoring --clone-script as no Data Queries or Templates were selected to be cloned.');
+		$clone_script = false;
+	}
+
+	if ($clone_dq != '') {
+		$ndq = array();
+
+		if ($clone_dq == 'all') {
+			$dqs = array_keys($objects['data_queries']);
+		} else {
+			$dqs = explode(',', $clone_dq);
+		}
+
+		if (cacti_sizeof($dqs)) {
+			foreach($dqs as $dq) {
+				$ndq[$dq] = $dq;
+			}
+
+			$dqs = $ndq;
+		}
+
+		foreach($dqs as $dq_id) {
+			if (is_numeric($dq_id) && $dq_id > 0 && isset($objects['data_queries'][$dq_id])) {
+				$name = $objects['data_queries'][$dq_id]['name'];
+
+				$exists = db_fetch_cell_prepared('SELECT id
+					FROM snmp_query
+					WHERE name = ?',
+					array($name . $suffix));
+
+				if ($exists > 0) {
+					$warnings++;
+					$return['warnings'][] = sprintf('WARNING: Data Query \'%s\' already exists.', $name . $suffix);
+				}
+			} else {
+				$errors++;
+				$return['errors'][] = sprintf('FATAL: Data Query ID %s to be cloned is not numeric.', $dq_id);
+			}
+		}
+
+		foreach($objects['data_query_graph_templates'] as $id => $graph_template) {
+			$name          = $graph_template['name'];
+			$snmp_query_id = $graph_template['snmp_query_id'];
+
+			if (isset($dqs[$snmp_query_id])) {
+				$dq_name = $objects['data_queries'][$snmp_query_id]['name'];
+
+				api_clone_message(sprintf('NOTE: Checking GT:\'%s\' and DQ Name:\'%s\'.', $name, $dq_name));
+
+				$exists = db_fetch_cell_prepared('SELECT id
+					FROM graph_templates
+					WHERE name = ?',
+					array($name . $suffix));
+
+				if ($exists > 0) {
+					$warnings++;
+					$return['warnings'][] = sprintf('WARNING: Graph Template \'%s\' for Data Query \'%s\' already exists.', $name . $suffix, $dq_name);
+				}
+			}
+		}
+	}
+
+	if ($clone_dt != '') {
+		print 'Clone DT is "' . $clone_dt . '"' . PHP_EOL;
+		if ($clone_dt == 'all') {
+			$dts = array_keys($objects['data_queries']);
+		} else {
+			$dts = explode(',', $clone_dt);
+		}
+
+		foreach($dts as $dt_id) {
+			if (is_numeric($dt_id) && $dt_id > 0 && isset($objects['data_templates'][$dt_id])) {
+				$name   = $objects['data_templates'][$dt_id]['name'];
+				$dihash = $objects['data_templates'][$dt_id]['dihash'];
+
+				$exists = db_fetch_cell_prepared('SELECT id
+					FROM data_template
+					WHERE name = ?',
+					array($name . $suffix));
+
+				if ($exists > 0) {
+					$warnings++;
+					$return['warnings'][] = sprintf('WARNING: Data Template \'%s\' already exists.', $name . $suffix);
+				}
+
+				$name = db_fetch_assoc_prepared('SELECT name
+					FROM data_input
+					WHERE hash = ?',
+					array($dihash));
+
+				$exists = db_fetch_cell_prepared('SELECT id
+					FROM data_input
+					WHERE name = ?',
+					array($name . $suffix));
+
+				if ($exists > 0) {
+					$warnings++;
+					$return['warnings'][] = sprintf('WARNING: Data Template Data Input Method \'%s\' already exists.', $name . $suffix);
+				}
+			} else {
+				$errors++;
+				$return['errors'][] = sprintf('FATAL: Data Template ID %s to be cloned is not numeric.', $dq_id);
+			}
+		}
+	}
+
+	//print_r($objects);
+
+	return $return;
+}
+
+/**
+ * api_clone_device_template_get_objects - This function returns the core components
+ *   from the Device Template for validating cloning actions.  Once these values
+ *   are returned, the device template API will be able to clone the Device
+ *   Template without errors.
+ *
+ * @param int - The Device Template ID to return objects for
+ *
+ * @return array - All the Device Template Objects
+ */
+function api_clone_device_template_get_objects($device_template_id) {
+	global $config;
+
+	$objects = array(
+		'graph_templates'               => array(),
+		'data_templates'                => array(),
+		'data_queries'                  => array(),
+		'data_query_graph_templates'    => array(),
+		'data_query_data_templates'     => array()
+	);
+
+	$objects['graph_templates'] = array_rekey(
+		db_fetch_assoc_prepared('SELECT gt.id, gt.name, gt.hash
+			FROM host_template_graph AS ht
+			INNER JOIN graph_templates AS gt
+			ON ht.graph_template_id = gt.id
+			WHERE ht.host_template_id = ?',
+			array($device_template_id)),
+		'id', array('name', 'hash')
+	);
+
+	$objects['data_queries'] = array_rekey(
+		db_fetch_assoc_prepared('SELECT sq.id, sq.name, sq.hash, sq.data_input_id, di.hash AS dihash,
+			REPLACE(sq.xml_path, "<path_cacti>", ?) AS xml_path,
+			REPLACE(di.input_string, "<path_cacti>", ?) AS input_string
+			FROM host_template_snmp_query AS htsq
+			INNER JOIN snmp_query AS sq
+			ON sq.id = htsq.snmp_query_id
+			INNER JOIN data_input AS di
+			ON di.id = sq.data_input_id
+			WHERE host_template_id = ?',
+			array($config['base_path'], $config['base_path'], $device_template_id)),
+		'id', array('name', 'hash', 'dihash', 'data_input_id', 'xml_path', 'input_string')
+	);
+
+	if (cacti_sizeof($objects['data_queries'])) {
+		foreach($objects['data_queries'] as $id => $data_query) {
+			$snmp_query_data = get_data_query_array($id);
+
+			if (isset($snmp_query_data['script_path'])) {
+				$objects['data_queries'][$id]['script_path'] = str_replace('|path_cacti|', $config['base_path'], $snmp_query_data['script_path']);
+			}
+		}
+	}
+
+	if (cacti_sizeof($objects['graph_templates'])) {
+		$objects['data_templates'] = array_rekey(
+			db_fetch_assoc_prepared('SELECT DISTINCT dt.id, dt.name, dt.hash, dtd.data_input_id, di.hash AS dihash,
+				REPLACE(di.input_string, "<path_cacti>", "' . $config['base_path'] . '") AS input_string
+				FROM data_template AS dt
+				INNER JOIN data_template_data AS dtd
+				ON dt.id = dtd.data_template_id
+				INNER JOIN data_template_rrd AS dtr
+				ON dt.id = dtr.data_template_id
+				INNER JOIN graph_templates_item AS gti
+				ON dtr.id = gti.task_item_id
+				INNER JOIN data_input AS di
+				ON di.id = dtd.data_input_id
+				WHERE dtr.local_data_id = 0
+				AND gti.local_graph_id = 0
+				AND gti.graph_template_id IN (
+					SELECT graph_template_id
+					FROM host_template_graph
+					WHERE host_template_id = ?
+				)',
+				array($device_template_id)),
+			'id', array('name', 'hash', 'dihash', 'data_input_id', 'input_string')
+		);
+
+		if (cacti_sizeof($objects['data_templates'])) {
+			foreach($objects['data_templates'] as $id => $data_template) {
+				/* peel the script from the input_string */
+				if (isset($data_template['input_string'])) {
+					$parts = explode(' ', $data_template['input_string']);
+
+					foreach($parts as $p) {
+						if (strpos($p, $config['base_path']) !== false) {
+							if (file_exists($p)) {
+								$objects['data_templates'][$id]['script_path'] = $p;
+								break;
+							}
+						}
+					}
+				}
+
+				/* let's get the list of graph templates that need updating */
+				$graph_templates = array_rekey(
+					db_fetch_assoc_prepared('SELECT DISTINCT graph_template_id AS id
+						FROM graph_templates_item AS gti
+						INNER JOIN data_template_rrd AS dtr
+						ON gti.task_item_id = dtr.id
+						WHERE local_graph_id = 0
+						AND local_data_id = 0
+						AND dtr.data_template_id = ?',
+						array($id)),
+					'id', 'id'
+				);
+
+				$objects['data_templates'][$id]['graph_template_ids'] = $graph_templates;
+			}
+		}
+	}
+
+	if (cacti_sizeof($objects['data_queries'])) {
+		$objects['data_query_graph_templates'] = array_rekey(
+			db_fetch_assoc('SELECT gt.id, gt.name, gt.hash, sqg.snmp_query_id, sqg.name AS sqname
+				FROM graph_templates AS gt
+				INNER JOIN snmp_query_graph AS sqg
+				ON gt.id = sqg.graph_template_id
+				WHERE sqg.snmp_query_id IN (' . implode(',', array_keys($objects['data_queries'])) . ')'),
+			'id', array('name', 'hash', 'snmp_query_id', 'sqname')
+		);
+
+		$objects['data_query_data_templates'] = array_rekey(
+			db_fetch_assoc('SELECT DISTINCT dt.id, dt.name, dt.hash, dtd.data_input_id, sq.id AS snmp_query_id
+				FROM data_template AS dt
+				INNER JOIN data_template_data AS dtd
+				ON dt.id = dtd.data_template_id
+				INNER JOIN snmp_query_graph_rrd AS sqgr
+				ON dt.id = sqgr.data_template_id
+				INNER JOIN snmp_query_graph AS sqg
+				ON sqgr.snmp_query_graph_id = sqg.id
+				INNER JOIN snmp_query AS sq
+				ON sq.id = sqg.snmp_query_id
+				WHERE dtd.local_data_id = 0
+				AND sq.id IN (' . implode(',', array_keys($objects['data_queries'])) . ')'),
+			'id', array('name', 'hash', 'data_input_id', 'snmp_query_id')
+		);
+	}
+
+	return $objects;
+}
+
+/**
+ * api_clone_device_template - Clones a device template and in some cases
+ *   also updates duplicates Graph Templates, Data Templates, Data Input Methods
+ *   and making copies of scripts, and XML files as well.
+ *
+ * @param int    - The Device Template ID
+ * @param string - The proposed Device Template Name
+ * @param string - A comma delimited list of Graph Template ID's to Include
+ * @param string - A comma delimited list of Graph Template ID's to Clone
+ * @param string - A comma delimited list of Data Query ID's to Include
+ * @param string - A comma delimited list of Data Query ID's to Clone
+ * @param string - A comma delimited list of Data Templates to Include
+ * @param string - A comma delimited list of Data Templates to Clone
+ * @param string - The suffix to use for Cloning objects
+ * @param bool   - Boolean to direct Cacti to clone the XML
+ * @param bool   - Boolean to direct to Clone scripts
+ *
+ * @return int|false - Either the new Device Template ID or false on error
+ */
+function api_clone_device_template($template_id, $template_name, $include_gt, $clone_gt,
+	$include_dq, $clone_dq, $include_dt, $clone_dt, $suffix, $clone_xml, $clone_script, $cli = false) {
+
+	global $config;
+
+	/* The list of duplicated Data Templates.  Dont do it more than once */
+	$duped_graph_templates[]    = array();
+	$duped_data_templates[]     = array();
+	$duped_data_input_methods[] = array();
+	$duped_xmlfiles[]           = array();
+	$duped_scripts[]            = array();
+	$duped_data_query_graphs[]  = array();
+
+	$start = microtime(true);
+
+	$device_template = db_fetch_row_prepared('SELECT *
+		FROM host_template
+		WHERE id = ?',
+		array($template_id));
+
+	api_clone_message(sprintf('NOTE: Beginning Cloning Device Template %s.', $device_template['name']));
+
+	$device_template_hash = generate_hash();
+
+	if ($template_name == '') {
+		$new_name = $device_template['name'] . $suffix;
+	} else {
+		$new_name = $template_name;
+	}
+
+	$new_name = api_clone_get_unique_name($new_name, 'host_template', 'name');
+
+	api_clone_message(sprintf('NOTE: Cloning Device Template \'%s\'to \'%s\'', $device_template['name'], $new_name), true);
+
+	$save         = $device_template;
+	$save['id']   = 0;
+	$save['name'] = $new_name;
+	$save['hash'] = $device_template_hash;
+
+	$new_template = sql_save($save, 'host_template');
+
+	/**
+	 * This process follows the following algorithm
+	 *
+	 * Template Duplication Process
+	 * --------------------------------------------------------------
+	 * 1. Get all current Device Template Objects
+	 *
+	 * 2. Copy the Device Template
+	 *
+	 * 3. Handle Include Cases
+	 *    a. Include Graph Templates
+	 *    b. Include Data Queries
+	 *
+	 * 4. Handle Clone Cases for Graph Template case
+	 *    a. Clone Graph Templates
+	 *    b. Clone Data Templates
+	 *    c. Clone Data Input Method if Called for
+	 *
+	 * 5. Handle Clone Cases for Data Query Cases
+	 *    a. Clone Data Queries
+	 *    b. Clone Data Query Graph Templates
+	 *    c. Clone Data Query Data Templates
+	 *
+	 * 6. Handle Clone XML and Clone Script options
+	 *    a. Make copies of each XML file
+	 *    b. Make copyies of each script file
+	 *    c. Update references in Data Query XML files
+	 *    d. Make updates in Data Input Methods
+	 *
+	 * NOTES:
+	 * --------------------------------------------------------------
+	 * In the Case of the Data Queries, there is no cloning of the
+	 * Data Input Method as they are static and will not change
+	 *
+	 * In the case of Cloning Graph Template Data Templates,
+	 * we must also clone the Data Input method as it is assumed
+	 * that the clone should include it as well.
+	 */
+
+	/* get the list of exist Data Template Objects */
+	$objects = api_clone_device_template_get_objects($template_id);
+
+	/* include graph templates */
+	if ($include_gt != '' && $include_gt != 'all') {
+		$sql_where = 'AND graph_template_id IN (' . $include_gt . ')';
+	} elseif ($clone_gt == 'all') {
+		$sql_where = 'AND 1 = 0';
+	} else {
+		$sql_where = '';
+	}
+
+	$graph_templates = db_fetch_assoc_prepared("SELECT *
+		FROM host_template_graph
+		WHERE host_template_id = ?
+		$sql_where",
+		array($device_template['id']));
+
+	if (cacti_sizeof($graph_templates)) {
+		api_clone_message(sprintf('NOTE: Including %s Graph Templates', cacti_sizeof($graph_templates)));
+
+		foreach($graph_templates as $gt) {
+			db_execute_prepared('INSERT INTO host_template_graph
+				(host_template_id, graph_template_id)
+				VALUES (?, ?)',
+				array($new_template, $gt['graph_template_id']));
+		}
+	} else {
+		api_clone_message('NOTE: No Graph Templates to be Included');
+	}
+
+	/* include data queries */
+	if ($include_dq != '' && $include_dq != 'all') {
+		$sql_where = 'AND snmp_query_id IN (' . $include_dq . ')';
+	} elseif ($clone_dq == 'all') {
+		$sql_where = 'AND 1 = 0';
+	} else {
+		$sql_where = '';
+	}
+
+	$data_queries = db_fetch_assoc_prepared("SELECT *
+		FROM host_template_snmp_query
+		WHERE host_template_id = ?
+		$sql_where",
+		array($device_template['id']));
+
+	if (cacti_sizeof($data_queries)) {
+		api_clone_message(sprintf('NOTE: Including %s Data Queries', cacti_sizeof($data_queries)));
+
+		foreach($data_queries as $dq) {
+			db_execute_prepared('INSERT INTO host_template_snmp_query
+				(host_template_id, snmp_query_id)
+				VALUES (?, ?)',
+				array($new_template, $dq['snmp_query_id']));
+		}
+	} else {
+		api_clone_message('NOTE: No Data Queries to be Included');
+	}
+
+	/**
+	 * Handle the Data Query Clone Case
+	 *
+	 * 1. Duplicate the Data Query
+	 * 2. If --clone-xml - Clone the XML file
+	 * 3. If --clone-script - Clone the Script and update the XML file
+	 * 4. If --clone-xml - Update the Data Query with the new XML path
+	 */
+	if ($clone_dq != '') {
+		api_clone_message('NOTE: Starting Data Query Clone Process');
+
+		if ($clone_dq == 'all') {
+			$ids = array_keys($objects['data_queries']);
+		} else {
+			$ids = explode(',', $clone_dq);
+		}
+
+		foreach($ids as $id) {
+			$old_name    = $objects['data_queries'][$id]['name'];
+			$new_name    = api_clone_get_unique_name($old_name, 'snmp_query', 'name');
+			$new_dq      = data_query_duplicate($id, $new_name);
+			$new_xml     = false;
+			$new_script  = false;
+
+			api_clone_message(sprintf('NOTE: Cloning Data Query \'%s\' to \'%s\'', $objects['data_queries'][$id]['name'], $new_name), true);
+
+			db_execute_prepared('INSERT INTO host_template_snmp_query
+				(host_template_id, snmp_query_id)
+				VALUES (?, ?)',
+				array($new_template, $new_dq));
+
+			if ($clone_xml) {
+				$old_xmlfile = $objects['data_queries'][$id]['xml_path'];
+				$old_xmlbase = str_replace($config['base_path'], '', $old_xmlfile);
+				$new_xmlfile = api_clone_get_unique_filename($old_xmlfile);
+				$new_xmlbase = str_replace($config['base_path'], '', $new_xmlfile);
+
+				if (!isset($duped_xmlfiles[$old_xmlfile])) {
+					api_clone_message(sprintf('NOTE: Copying XML Base \'%s\' to \'%s\'', $old_xmlbase, $new_xmlbase));
+
+					$new_xml = copy($old_xmlfile, $new_xmlfile);
+
+					$duped_xmlfiles[$old_xmlfile] = $new_xmlfile;
+
+					if ($clone_script) {
+						if (isset($objects['data_queries'][$id]['script_path'])) {
+							$old_scriptfile = $objects['data_queries'][$id]['script_path'];
+							$old_scriptbase = str_replace($config['base_path'], '', $old_scriptfile);
+							$new_scriptfile = api_clone_get_unique_filename($old_scriptfile);
+							$new_scriptbase = str_replace($config['base_path'], '', $new_scriptfile);
+
+							if ($new_xmlfile !== false) {
+								if (!isset($duped_scripts[$old_scriptfile])) {
+									api_clone_message(sprintf('NOTE: Copying Script Base \'%s\' to \'%s\'', $old_scriptbase, $new_scriptbase));
+
+									$new_script     = copy($old_scriptfile, $new_scriptfile);
+								} else {
+									/* skipping as we've already cloned */
+									$new_script     = true;
+									$new_scriptfile = $duped_scripts[$old_scriptfile];
+								}
+							}
+						}
+					}
+
+					/* update the XML with new values */
+					if ($new_script) {
+						api_clone_message(sprintf('NOTE: Updating \'%s\' with new values', $new_xmlfile));
+
+						$data = file_get_contents($new_xmlfile);
+						$data = str_replace($old_scriptfile, $new_scriptfile, $data);
+						file_put_contents($new_xmlfile, $data);
+					}
+				} else {
+					/* skipping as we've already cloned */
+					$new_xmlfile = $duped_xmlfiles[$old_xmlfile];
+				}
+
+				db_execute_prepared('UPDATE snmp_query
+					SET xml_path = ?
+					WHERE id = ?',
+					array($new_xmlfile, $new_dq));
+			}
+
+			/* Clone Data Query Graph Templates now */
+			$dqgt = $objects['data_query_graph_templates'];
+
+			foreach($dqgt as $gt_id => $gt_data) {
+				if ($gt_data['snmp_query_id'] == $id) {
+					$old_name  = $objects['data_query_graph_templates'][$gt_id]['name'];
+					$new_name  = api_clone_get_unique_name($old_name, 'graph_templates', 'name');
+					$dqgt_name = $objects['data_query_graph_templates'][$gt_id]['sqname'];
+
+					if (!isset($duped_graph_templates[$gt_id])) {
+						api_clone_message(sprintf('NOTE: Cloning Data Query Graph Template \'%s\' to \'%s\'', $old_name, $new_name), true);
+
+						$new_gt = api_duplicate_graph(0, $gt_id, $new_name, false);
+
+						$duped_graph_templates[$gt_id] = $new_gt;
+					} else {
+						/* skipping as we've already cloned */
+						$new_gt = $duped_graph_templates[$gt_id];
+					}
+
+					/**
+					 * update the snmp_query_graph entries
+					 * Get the snmp_query_graph_id from the duplicated
+					 * data query first to use to update the rest
+					 */
+					$snmp_query_graph_id = db_fetch_cell_prepared('SELECT id
+						FROM snmp_query_graph
+						WHERE snmp_query_id = ?
+						AND graph_template_id = ?',
+						array($new_dq, $gt_id));
+
+					if ($snmp_query_graph_id > 0) {
+						db_execute_prepared('UPDATE snmp_query_graph
+							SET graph_template_id = ?, name = ?
+							WHERE id = ?',
+							array($new_gt, $dqgt_name, $snmp_query_graph_id));
+
+						/**
+						 * Since we clone the Data Query, we will clone the
+						 * Data Template too.  So, get the new SNMP Query Graphs
+						 * Data Template ID
+						 */
+						$data_template_id = db_fetch_cell_prepared('SELECT data_template_id
+							FROM snmp_query_graph_rrd
+							WHERE snmp_query_graph_id = ?',
+							array($snmp_query_graph_id));
+
+						$old_snmp_query_graph_id = db_fetch_cell_prepared('SELECT id
+							FROM snmp_query_graph
+							WHERE snmp_query_id = ?
+							AND graph_template_id = ?',
+							array($id, $gt_id));
+
+						$old_snmp_query_graph_rrds = db_fetch_assoc_prepared('SELECT *
+							FROM snmp_query_graph_rrd
+							WHERE snmp_query_graph_id = ?',
+							array($old_snmp_query_graph_id));
+
+						$old_snmp_query_graph_rrd_sv = db_fetch_assoc_prepared('SELECT *
+							FROM snmp_query_graph_rrd_sv
+							WHERE snmp_query_graph_id = ?',
+							array($old_snmp_query_graph_id));
+
+						$old_snmp_query_graph_sv = db_fetch_assoc_prepared('SELECT *
+							FROM snmp_query_graph_sv
+							WHERE snmp_query_graph_id = ?',
+							array($old_snmp_query_graph_id));
+
+						if ($data_template_id > 0) {
+							$old_name = db_fetch_cell_prepared('SELECT name
+								FROM data_template
+								WHERE id = ?',
+								array($data_template_id));
+
+							if (!isset($duped_data_templates[$data_template_id])) {
+								api_clone_message(sprintf('NOTE: Cloning Data Template \'%s\' to \'%s\'', $old_name, $new_name), true);
+
+								$new_name = api_clone_get_unique_name($old_name, 'data_template', 'name');
+								$new_dt   = api_duplicate_data_source(0, $data_template_id, $new_name);
+
+								if (cacti_sizeof($old_snmp_query_graph_rrds)) {
+									foreach($old_snmp_query_graph_rrds as $rrd) {
+										$data_source_name = db_fetch_cell_prepared('SELECT data_source_name
+											FROM data_template_rrd
+											WHERE id = ?',
+											array($rrd['data_template_rrd_id']));
+
+										$dt_rrd_id = db_fetch_cell_prepared('SELECT id FROM data_template_rrd
+											WHERE data_template_id = ?
+											AND data_source_name = ?
+											AND local_data_id = 0',
+											array($new_dt, $data_source_name));
+
+										db_execute_prepared('INSERT INTO snmp_query_graph_rrd
+											(snmp_query_graph_id, data_template_id, data_template_rrd_id, snmp_field_name)
+											VALUES (?, ?, ?, ?)',
+											array(
+												$snmp_query_graph_id,
+												$new_dt,
+												$dt_rrd_id,
+												$rrd['snmp_field_name']
+											)
+										);
+
+										db_execute_prepared('UPDATE graph_templates_item
+											SET task_item_id = ?
+											WHERE task_item_id = ?',
+											array($dt_rrd_id, $rrd['data_template_rrd_id']));
+									}
+								}
+
+								if (cacti_sizeof($old_snmp_query_graph_rrd_sv)) {
+									foreach($old_snmp_query_graph_rrd_sv as $sv) {
+										unset($save);
+
+										$save['id']                  = 0;
+										$save['hash']                = get_hash_data_query(0, 'data_query_sv_data_source');
+										$save['snmp_query_graph_id'] = $snmp_query_graph_id;
+										$save['data_template_id']    = $sv['data_template_id'];
+										$save['sequence']            = $sv['sequence'];
+										$save['field_name']          = $sv['field_name'];
+										$save['text']                = $sv['text'];
+
+										sql_save($save, 'snmp_query_graph_rrd_sv');
+									}
+								}
+
+								if (cacti_sizeof($old_snmp_query_graph_sv)) {
+									foreach($old_snmp_query_graph_sv as $sv) {
+										unset($save);
+										$save['id']                  = 0;
+										$save['hash']                = get_hash_data_query(0, 'data_query_sv_graph');
+										$save['snmp_query_graph_id'] = $snmp_query_graph_id;
+										$save['sequence']            = $sv['sequence'];
+										$save['field_name']          = $sv['field_name'];
+										$save['text']                = $sv['text'];
+
+										sql_save($save, 'snmp_query_graph_sv');
+									}
+								}
+
+
+
+								$duped_data_templates[$data_template_id] = $new_dt;
+							} else {
+								/* skipping as we've already cloned */
+								db_execute_prepared('UPDATE snmp_query_graph_rrd
+									SET data_template_id = ?
+									WHERE snmp_query_graph_id = ?',
+									array($duped_data_templates[$data_template_id], $snmp_query_graph_id));
+							}
+						} else {
+							api_clone_message(sprintf('WARNING: Data Query Graph Template \'%s\' not mapped to a Data Template', $snmp_query_graph_id));
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if ($clone_gt != '') {
+		api_clone_message('NOTE: Cloning Non Data Query Graph Templates');
+
+		if ($clone_gt == 'all') {
+			$ids = array_keys($objects['graph_templates']);
+		} else {
+			$ids = explode(',', $clone_gt);
+		}
+
+		foreach($ids as $id) {
+			$old_name = $objects['graph_templates'][$id]['name'];
+			$new_name = api_clone_get_unique_name($old_name, 'graph_templates', 'name');
+
+			if (!isset($duped_graph_templates[$id])) {
+				api_clone_message(sprintf('NOTE: Cloning Graph Template \'%s\' to \'%s\'', $old_name, $new_name), true);
+
+				$new_gt = api_duplicate_graph(0, $id, $new_name, false);
+
+				$duped_graph_templates[$id] = $new_gt;
+			} else {
+				/* skipping as we've already cloned */
+				$new_gt = $duped_graph_templates[$id];
+			}
+
+			db_execute_prepared('INSERT INTO host_template_graph
+				(host_template_id, graph_template_id)
+				VALUES (?, ?)',
+				array($new_template, $new_gt));
+		}
+	}
+
+	exit;
+
+	if ($clone_dt != '') {
+		api_clone_message('NOTE: Cloning Non Data Query Draph Templates');
+
+		if ($clone_dt == 'all') {
+			$ids = array_keys($objects['data_templates']);
+		} else {
+			$ids = explode(',', $clone_dt);
+		}
+
+		foreach($ids as $id) {
+			$graph_templates = $objects['data_templates'][$id]['graph_templates'];
+
+			$old_name = $objects['data_templates'][$id]['name'];
+			$new_name = api_clone_get_unique_name($old_name, 'data_template', 'name');
+
+			if (!isset($duped_data_templates[$id])) {
+				api_clone_message(sprintf('NOTE: Cloning Data Template \'%s\' to \'%s\'', $old_name, $new_name), true);
+
+				$new_dt = api_duplicate_data_source(0, $id, $new_name);
+
+				if (isset($objects['data_templates'][$id]['script_path'])) {
+					$old_scriptfile = $objects['data_queries'][$id]['script_path'];
+					$new_scriptfile = api_clone_get_unique_filename($old_scriptfile);
+
+					if (!isset($duped_scripts[$old_scriptfile])) {
+						api_clone_message(sprintf('NOTE: Cloning Data Input Script \'%s\' to \'%s\'', $old_scriptfile, $new_scriptfile), true);
+
+						$new_script = copy($old_scriptfile, $new_scriptfile);
+					} else {
+						/* skipping as we've already cloned */
+						$new_script = $duped_scripts[$old_scriptfile];
+					}
+
+					// TO-DO Data Input Duplication
+					//					db_execute('UPDATE data_input SET input_string=REPLACE(input_string, ?, ?)
+					//						WHERE data_input_id = ?',
+					//						array($old_scriptfile, $new_scriptfile, $new_di_id));
+				}
+
+				$duped_data_templates[$id] = $new_dt;
+			} else {
+				/* skipping as we've already cloned */
+				$new_dt = $duped_data_templates[$id];
+			}
+		}
+	}
+
+	return $new_template;
+}
