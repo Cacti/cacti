@@ -3136,9 +3136,9 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 					/* cacti knows this ds, but the rrd file does not */
 					$info['ds'][$data_source_name]['type'] = $data_source['type'];
 					$info['ds'][$data_source_name]['minimal_heartbeat'] = $data_source['minimal_heartbeat'];
-					$info['ds'][$ds_name]['min'] = $data_source['min'];
-					$info['ds'][$ds_name]['max'] = $data_source['max'];
-					$info['ds'][$ds_name]['seen'] = true;
+					$info['ds'][$data_source_name]['min'] = $data_source['min'];
+					$info['ds'][$data_source_name]['max'] = $data_source['max'];
+					$info['ds'][$data_source_name]['seen'] = true;
 
 					continue;
 				}
