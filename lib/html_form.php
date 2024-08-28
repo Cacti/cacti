@@ -965,7 +965,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 	}
 }
 
-/** form_checkbox - draws a standard html checkbox
+/* form_checkbox - draws a standard html checkbox
    @param string $form_name - the name of this form element
    @param string $form_previous_value - the current value of this form element
    @param string $form_caption - the text to display to the right of the checkbox
