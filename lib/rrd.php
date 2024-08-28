@@ -2947,9 +2947,9 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 					/* cacti knows this ds, but the rrd file does not */
 					$info['ds'][$data_source_name]['type'] = $data_source['type'];
 					$info['ds'][$data_source_name]['minimal_heartbeat'] = $data_source['minimal_heartbeat'];
-					$info['ds'][$ds_name]['min'] = $data_source['min'];
-					$info['ds'][$ds_name]['max'] = $data_source['max'];
-					$info['ds'][$ds_name]['seen'] = true;
+					$info['ds'][$data_source_name]['min'] = $data_source['min'];
+					$info['ds'][$data_source_name]['max'] = $data_source['max'];
+					$info['ds'][$data_source_name]['seen'] = true;
 
 					continue;
 				}
@@ -3396,7 +3396,7 @@ function rrd_datasource_add($file_array, $ds_array, $debug) {
 		/* now start XML processing */
 		foreach ($ds_array as $ds) {
 			/* first, append the <DS> structure in the rrd header */
-			if ($ds['type'] === $data_source_types[DATA_SOURCE_TYPE_COMPUTE]) {
+			if ($ds['type'] === $data_source_types[5]) {
 				rrd_append_compute_ds($dom, $version, $ds['name'], $ds['type'], $ds['cdef']);
 			} else {
 				rrd_append_ds($dom, $version, $ds['name'], $ds['type'], $ds['heartbeat'], $ds['min'], $ds['max']);

@@ -73,17 +73,17 @@ function api_plugin_hook($name) {
 
 	if (!empty($result)) {
 		foreach ($result as $hdata) {
+			$plugin_name = $hdata['name'];
+			$plugin_file = $hdata['file'];
+
 			// Security check
-			if (strpos($hdata['file'], '..') !== false) {
+			if (strpos($plugin_file, '..') !== false) {
 				cacti_log("ERROR: Attempted inclusion of not plugin file $plugin_file from $plugin_name with the hook name $name", false, 'SECURITY');
 				continue;
 			}
 
-			$plugin_name = $hdata['name'];
-
 			if (!in_array($plugin_name, $plugins_integrated, true)) {
 				$plugin_func = $hdata['function'];
-				$plugin_file = $hdata['file'];
 				$full_path   = $config['base_path'] . '/plugins/' . $plugin_name . '/' . $plugin_file;
 				$debounce    = 'mpf_' . $plugin_name . '_' . $plugin_func;
 
