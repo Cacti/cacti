@@ -2755,7 +2755,15 @@ class Installer implements JsonSerializable {
 			$name        = (isset($p['name']) && !empty($p['name'])) ? $p['name'] : '';
 			$description = (isset($p['description']) && !empty($p['description'])) ? $p['description'] : '';
 			$author      = (isset($p['author']) && !empty($p['author'])) ? $p['author'] : '';
-			$homepage    = (isset($p['homepage']) && !empty($p['homepage'])) ? '<a href="' . $p['homepage'] . '" target=_new>' . $p['homepage'] . '</a>' : '';
+
+			if (isset($p['homepage']) && !empty($p['homepage'])) {
+				if (strncmp($p['homepage'], 'http://', 7) !== 0 && strncmp($p['homepage'], 'http://', 8) !== 0) {
+					$p['homepage'] = 'https://' . $p['homepage'];
+				}
+				$homepage = '<a href="'. $p['homepage'] . '" target=_new>' . $p['homepage'] . '</a>';
+			} else {
+				$homepage = '';
+			}
 
 			form_alternate_row('line' . $id, true);
 			form_selectable_cell($name, $id);
