@@ -49,9 +49,8 @@ if ($config['poller_id'] > 1) {
 	if ($config['connection'] == 'online') {
 		db_force_remote_cnn();
 	} elseif (debounce_run_notification('db_offline')) {
-		cacti_log('WARNING: Main Cacti database offline or in recovery.  Can not run automation', false, 'AUTOM8');
-		admin_email(__('Cacti System Warning'), __('WARNING: Main Cacti database offline or in recovery'));
-
+		cacti_log(sprintf('WARNING: Main Cacti database %s offline or in recovery.  Can not run automation', $rdatabase_hostname), false, 'AUTOM8');
+		admin_email(__('Cacti System Warning'), __("WARNING: Main Cacti database %s offline or in recovery", $rdatabase_hostname));
 		exit(1);
 	}
 }
