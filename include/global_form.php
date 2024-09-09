@@ -1269,7 +1269,6 @@ $fields_host_edit = array(
 		),
 	'ping_method' => array(
 		'friendly_name' => __('Ping Method'),
-		'description' => __('The type of ping packet to sent.  <br><i>NOTE: ICMP on Linux/UNIX requires root privileges.</i>'),
 		'description' => __('The type of ping packet to sent.  <br><i>NOTE: ICMP on Linux/UNIX requires root privileges.</i>  <br><i>NOTE: TCP Ping Closed - Even if the tcp ping is not successful, the device can be considered UP.</i>'),
 		'on_change' => 'changeHostForm()',
 		'value' => '|arg1:ping_method|',
