@@ -553,6 +553,7 @@ label {
 	color: lime;
 	font-weight: bold;
 	font-size: 14px;
+	margin-right: 15px;
 }
 
 .verbosequery {
@@ -1958,6 +1959,10 @@ tr.selectable td {
 
 tr.selected a {
 	color: yellow;
+}
+
+tr td:last-child .checkbox {
+	margin-right: 15px;
 }
 
 #nav li a.pic:hover:not(.selected) {
