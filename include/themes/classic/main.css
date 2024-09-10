@@ -606,35 +606,38 @@ label {
 
 .reloadquery {
 	cursor: pointer;
-	padding: 2px;
+	padding: 1px;
 	vertical-align: middle;
 	color: lime;
 	font-weight: bold;
 	font-size: 14px;
+	margin-right: 10px;
 }
 
 .verbosequery {
 	cursor: pointer;
-	padding: 2px;
+	padding: 1px;
 	vertical-align: middle;
 	color: rgba(255, 204, 0, 0.8);
 	font-size: 14px;
+	margin-right: 10px;
 }
 
 .deletequery {
 	cursor: pointer;
-	padding: 2px;
+	padding: 1px;
 	vertical-align: middle;
 	text-decoration: none;
 	color: red !important;
 	font-weight: bold;
 	font-size: 14px;
+	margin-right: 10px;
 }
 
 .deletequery:hover {
 	color: red !important;
 	text-decoration: none;
-	padding: 2px;
+	padding: 1px;
 	vertical-align: middle;
 }
 
@@ -1803,6 +1806,27 @@ div#gtabs {
 	margin: 0;
 	padding: 0;
 }
+
+tr td:last-child .checkbox {
+	margin-right: 10px !important;
+}
+
+tr th:last-child .checkbox {
+	margin-right: 10px !important;
+}
+
+.fa-angle-double-up, .fa-angle-double-down {
+	margin-right: 10px;
+}
+
+.fa-plus, .fa-question-circle {
+	margin-right: 10px;
+}
+
+.fa-compress, .fa-expand {
+	margin-right: 10px;
+}
+
 
 /* Navigation Area */
 #nav {
