@@ -1367,7 +1367,22 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 
 	if (empty($graph_data_array['graph_end'])) {
-		$graph_data_array['graph_end']   = -300;
+		$main_last_run = read_config_option('poller_lastrun_1');
+		$now_time      = time();
+		$default_delta = (int) read_config_option('poller_interval') * -1;
+
+		if (!empty($main_last_run)) {
+			$delta_time = $main_last_run - $now_time;
+
+			/* DST time change detected */
+			if ($delta_time > 0) {
+				$delta_time = $default_delta;
+			}
+		} else {
+			$delta_time = $default_delta;
+		}
+
+		$graph_data_array['graph_end'] = $delta_time;
 	}
 
 	$local_data_ids = array_rekey(
