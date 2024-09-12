@@ -22,6 +22,7 @@ Cacti CHANGELOG
 -issue#5797: Add additional Repair Database Checks to address various Cacti database corruptions
 -issue#5802: Cacti should not convert non-base tables as they may have an focused characters set and engine
 -issue#5806: Issues with Cacti posix_kill wrapper in Windows
+-issue#5813: Can't change password when first installing
 -feature#5784: Provide a means by which a user can track Cacti connections and disconnects from the php error_log
 -feature#5796: Due to Conflicting Interpretations of TCP Ping, Introduce new Ping Method
 -feature#5819: Be more precise on the Graph End time when an end time is not provided
