@@ -43,7 +43,7 @@ function get_rrdfile_names($thread_id = 1, $max_threads = 1) {
 			WHERE pi.local_data_id IS NOT NULL
 			AND data_source_path != ""
 			AND dtd.local_data_id != 0');
-	} elseif (sizeof($newrows)) {
+	} elseif (cacti_sizeof($newrows)) {
 		return $newrows[$thread_id];
 	} else {
 		$dsses_total = db_fetch_cell('SELECT SUM(rrd_num)
@@ -152,10 +152,12 @@ function dsstats_get_and_store_ds_avgpeak_values($interval, $type, $thread_id = 
 		foreach ($rrdfiles as $file) {
 			$dsses += $file['dsses'];
 
+			$local_data_id = $file['local_data_id'];
+
 			if ($file['data_source_path'] != '') {
 				$rrdfile = str_replace('<path_rra>', $config['rra_path'], $file['data_source_path']);
 
-				$stats[$file['local_data_id']] = dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $pipes);
+				$stats[$file['local_data_id']] = dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $interval, $pipes);
 			} else {
 				$data_source_name = db_fetch_cell_prepared('SELECT name_cache
 					FROM data_template_data
@@ -258,13 +260,14 @@ function dsstats_write_buffer(&$stats_array, $interval) {
  *   components and then calculates the AVERAGE and MAX values from that data and returns an array to the calling
  *   function for storage into the respective database table.
  *
- * @param $rrdfile  - (string) The rrdfile to process
- * @param $interval - (string) The interval type to process
- * @param $pipes    - (resource) Pipes to the background RRDtool process
+ * @param $local_data_id - (string) The rrdfile to process
+ * @param $rrdfile       - (string) The rrdfile to process
+ * @param $interval      - (string) The interval type to process
+ * @param $pipes         - (resource) Pipes to the background RRDtool process
  *
  * @return - (mixed) An array of AVERAGE, and MAX values in an RRDfile by Data Source name
  */
-function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, &$pipes) {
+function dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $interval, &$pipes) {
 	global $config, $user_time, $system_time, $real_time;
 
 	$use_proxy = (read_config_option('storage_location') ? true : false);
@@ -448,11 +451,9 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, &$pipes)
 				}
 			}
 		}
-	} else {
+	} elseif (($interval == 'daily') || ($interval == 'day')) {
 		/* only alarm if performing the 'daily' averages */
-		if (($interval == 'daily') || ($interval == 'day')) {
-			cacti_log("WARNING: File '" . $rrdfile . "' Does not exist", false, 'DSSTATS');
-		}
+		cacti_log("WARNING: File does not exist!  DS[$local_data_id], FILE[" . $rrdfile . "]", false, 'DSSTATS');
 	}
 }
 
