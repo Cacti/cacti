@@ -764,7 +764,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = null) {
 		ON po.local_data_id = dl.id
 		WHERE po.local_data_id = ?
 		AND po.time < FROM_UNIXTIME(?)
-		ORDER BY po.time ASC, po.rrd_name ASC";
+		ORDER BY time ASC, rrd_name ASC";
 
 	$sql_params[] = $local_data_id;
 	$sql_params[] = $timestamp;
