@@ -720,13 +720,20 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 	$sql_params          = array();
 
 	if (cacti_count($archive_tables)) {
-		foreach($archive_tables as $table) {
-	        $sub_query_string .= ($sub_query_string != '' ? ' UNION ALL ':'') .
-				" SELECT $table.local_data_id, dl.data_template_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
-				FROM $table
-				WHERE $table.local_data_id = ?";
+		foreach($archive_tables as $index => $table) {
+			$lock[$table] = db_execute("LOCK TABLE $table READ LOCAL", false);
 
-			$sql_params[] = $local_data_id;
+			if (!$lock[$table]) {
+				/* lock will fail if the table is gone */
+				unset($archive_tables[$index]);
+			} else {
+				$sub_query_string .= ($sub_query_string != '' ? ' UNION ALL ':'') .
+					" SELECT $table.local_data_id, dl.data_template_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
+					FROM $table
+					WHERE $table.local_data_id = ?";
+
+				$sql_params[] = $local_data_id;
+			}
 		}
 	}
 
@@ -750,6 +757,10 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 	boost_timer('get_records', BOOST_TIMER_END);
 
 	$boost_results = cacti_sizeof($results);
+
+	if (cacti_count($archive_tables)) {
+		db_execute('UNLOCK TABLES');
+	}
 
 	cacti_log('Local Data ID: ' . $local_data_id . ', Boost Results: ' . $boost_results, false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
 
