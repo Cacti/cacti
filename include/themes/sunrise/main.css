@@ -664,33 +664,36 @@ label.ui-state-hover > span {
 
 .reloadquery {
 	cursor: pointer;
-	padding: 2px;
+	padding: 1px;
 	vertical-align: middle;
 	color: #32CD32;
 	font-weight: bold;
 	font-size: 14px;
+	padding-right: 15px !important;
 }
 
 .verbosequery {
 	cursor: pointer;
-	padding: 2px;
+	padding: 1px;
 	vertical-align: middle;
 	color: orange;
 	font-size: 14px;
+	padding-right: 15px;
 }
 
 .deletequery {
 	cursor: pointer;
-	padding: 2px;
+	padding: 1px;
 	vertical-align: middle;
 	color: red !important;
 	font-size: 14px;
+	padding-right: 15px;
 }
 
 .deletequery:hover {
 	color: red !important;
 	text-decoration: none;
-	padding: 2px;
+	padding: 1px;
 	vertical-align: middle;
 }
 
@@ -2129,6 +2132,27 @@ div.submenu span {
 	margin: 0;
 	padding: 0;
 }
+
+tr td:last-child .formCheckboxLabel {
+	margin-right: 10px !important;
+}
+
+tr th:last-child .formCheckboxLabel {
+	margin-right: 10px !important;
+}
+
+.fa-angle-double-up, .fa-angle-double-down {
+	margin-right: 10px;
+}
+
+.fa-plus, .fa-question-circle {
+	margin-right: 10px;
+}
+
+.fa-compress, .fa-expand {
+	margin-right: 10px;
+}
+
 
 /* Navigation Area */
 #nav {
