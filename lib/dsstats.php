@@ -449,11 +449,9 @@ function dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $in
 				}
 			}
 		}
-	} else {
+	} elseif (($interval == 'daily') || ($interval == 'day')) {
 		/* only alarm if performing the 'daily' averages */
-		if (($interval == 'daily') || ($interval == 'day')) {
-			cacti_log("WARNING: File '" . $rrdfile . "' Does not exist", false, 'DSSTATS');
-		}
+		cacti_log("WARNING: File does not exist!  DS[$local_data_id], FILE[" . $rrdfile . "]", false, 'DSSTATS');
 	}
 }
 
