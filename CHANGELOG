@@ -28,6 +28,7 @@ Cacti CHANGELOG
 -feature#5819: Be more precise on the Graph End time when an end time is not provided
 -feature: Update jQuery to 3.7.1
 -feature: Update jQueryUI to 1.14.0
+-feature: Update billboard.js to 3.13.0
 -feature: Improve the performance of the repopulation of the poller cache
 
 1.2.27
