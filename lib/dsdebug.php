@@ -99,7 +99,7 @@ function dsdebug_error_handler($errno, $errmsg, $filename, $linenum, $vars = [])
 }
 
 function dsdebug_poller_output(&$rrd_update_array) {
-	global $config, $ds_types, $ds_last, $ds_steps, $ds_multi;
+	global $config;
 
 	/* suppress warnings */
 	if (defined('E_DEPRECATED')) {

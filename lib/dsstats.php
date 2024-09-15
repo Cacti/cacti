@@ -624,7 +624,7 @@ function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars = [])
 /**
  * dsstats_poller_output - this routine runs in parallel with the cacti poller and
  *   populates the last and cache tables.  On larger systems, it should be noted that
- *   the memory overhead for the global arrays, $ds_types, $ds_last, $ds_steps, $ds_multi
+ *   the memory overhead for the global arrays, $ds_types, $ds_last, $ds_multi
  *   could be serval hundred megabytes.  So, this should be kept in mind when running the
  *   sizing your system.
  *
@@ -635,7 +635,6 @@ function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars = [])
  *   $ds_types - The type of data source, keyed by the local_data_id and the rrd_name stored inside
  *               of the RRDfile.
  *   $ds_last  - For the COUNTER, and DERIVE DS types, the last measured and stored value.
- *   $ds_steps - Records the poller interval for every Data Source so that rates can be stored.
  *   $ds_multi - For Multi Part responses, stores the mapping of the Data Input Fields to the
  *               Internal RRDfile DS names.
  *
@@ -653,7 +652,10 @@ function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars = [])
  * @return - NULL
  */
 function dsstats_poller_output(&$rrd_update_array) {
-	global $config, $ds_types, $ds_last, $ds_steps, $ds_multi;
+	global $config;
+
+	static $ds_types = array();
+	static $ds_multi = array();
 
 	/* suppress warnings */
 	if (defined('E_DEPRECATED')) {
@@ -681,28 +683,32 @@ function dsstats_poller_output(&$rrd_update_array) {
 			$overhead_last    = strlen($sql_last_prefix) + strlen($sql_last_suffix);
 
 			/* determine the keyvalue pairs to decide on how to store data */
-			$ds_types = array_rekey(
-				db_fetch_assoc('SELECT DISTINCT data_source_name, data_source_type_id, rrd_step, rrd_maximum
-					FROM data_template_rrd AS dtr
-					INNER JOIN data_template_data AS dtd
-					ON dtd.local_data_id = dtr.local_data_id
-					WHERE dtd.local_data_id > 0'),
-				'data_source_name', array('data_source_type_id', 'rrd_step', 'rrd_maximum')
-			);
+			if (!cacti_sizeof($ds_types)) {
+				$ds_types = array_rekey(
+					db_fetch_assoc('SELECT DISTINCT data_source_name, data_source_type_id, rrd_step, rrd_maximum
+						FROM data_template_rrd AS dtr
+						INNER JOIN data_template_data AS dtd
+						ON dtd.local_data_id = dtr.local_data_id
+						WHERE dtd.local_data_id > 0'),
+					'data_source_name', array('data_source_type_id', 'rrd_step', 'rrd_maximum')
+				);
+			}
 
 			/* make the association between the multi-part name value pairs and the RRDfile internal
 			 * data source names.
 			 */
-			$ds_multi = array_rekey(
-				db_fetch_assoc('SELECT DISTINCT data_name, data_source_name
-					FROM graph_templates_item AS gti
-					INNER JOIN data_template_rrd AS dtr
-					ON gti.task_item_id = dtr.id
-					INNER JOIN data_input_fields AS dif
-					ON dif.id = dtr.data_input_field_id
-					WHERE dtr.data_input_field_id != 0'),
-				'data_name', 'data_source_name'
-			);
+			if (!cacti_sizeof($ds_multi)) {
+				$ds_multi = array_rekey(
+					db_fetch_assoc('SELECT DISTINCT data_name, data_source_name
+						FROM graph_templates_item AS gti
+						INNER JOIN data_template_rrd AS dtr
+						ON gti.task_item_id = dtr.id
+						INNER JOIN data_input_fields AS dif
+						ON dif.id = dtr.data_input_field_id
+						WHERE dtr.data_input_field_id != 0'),
+					'data_name', 'data_source_name'
+				);
+			}
 
 			/* required for updating tables */
 			$cache_i      = 1;
