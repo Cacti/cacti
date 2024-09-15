@@ -131,6 +131,7 @@ Cacti CHANGELOG
 -feature: Update jQuery to 3.7.1
 -feature: Update jQueryUI to 1.14.0
 -feature: Update billboard.js to 3.13.0
+-feature: Update Purify.js to 3.1.6
 -feature: Improve the performance of the repopulation of the poller cache
 
 1.2.27
