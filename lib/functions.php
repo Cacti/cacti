@@ -789,16 +789,19 @@ function get_selected_theme():mixed {
 
 	if (!file_exists(CACTI_PATH_INCLUDE . '/themes/' . $theme . '/main.css')) {
 		foreach ($themes as $t => $name) {
-			if (file_exists(CACTI_PATH_INCLUDE . '/themes/' . $t . '/main.css')) {
-				$theme = $t;
+			if ($t != 'classic') {
+				if (file_exists(CACTI_PATH_INCLUDE . '/themes/' . $t . '/main.css')) {
+					$theme = $t;
 
-				db_execute_prepared('UPDATE settings_user
-					SET value = ?
-					WHERE user_id = ?
-					AND name="selected_theme"',
-					array($theme, $_SESSION[SESS_USER_ID]));
+					db_execute_prepared('UPDATE settings_user
+						SET value = ?
+						WHERE user_id = ?
+						AND name = "selected_theme"',
+						array($theme, $_SESSION[SESS_USER_ID]));
 
-				break;
+						break;
+					}
+				}
 			}
 		}
 	}
