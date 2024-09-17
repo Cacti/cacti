@@ -175,6 +175,8 @@ if (cacti_sizeof($parms)) {
 			$ids_found[] = $host['id'];
 		}
 
+
+
 		print PHP_EOL;
 	}
 
@@ -191,6 +193,10 @@ if (cacti_sizeof($parms)) {
 			exit(1);
 		} else {
 			print "Success - removed device-ids: $ids_confirm" . PHP_EOL;
+			foreach ($hosts as $host) {
+				cacti_log("CLI: Device Removed via remove_device.php - Device ID: " . $host['id'] . ", Hostname: " . $host['hostname'] . ", Description: " . $host['description']);
+			}
+
 			exit(0);
 		}
 	} else {
