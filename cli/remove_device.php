@@ -122,7 +122,7 @@ if (cacti_sizeof($parms)) {
 	$ids_ip    = array();
 
 	/* process host description */
-	if ($description > '') {
+	if ($description != '') {
 		if ($debug) {
 			print "Searching hosts by description..." . PHP_EOL;
 		}
@@ -148,7 +148,7 @@ if (cacti_sizeof($parms)) {
 		}
 	}
 
-	if (cacti_sizeof($ids_host) == 0 && cacti_sizeof($ids_ip) == 0) {
+	if (cacti_sizeof($ids_host) == 0 && cacti_sizeof($ids_ip) == 0 && cacti_sizeof($ids_id) == 0) {
 		print "ERROR: No matches found, was IP or Description set properly?" . PHP_EOL;
 		exit(1);
 	}
