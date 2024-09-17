@@ -131,6 +131,7 @@ Cacti CHANGELOG
 -feature#5784: Provide a means by which a user can track Cacti connections and disconnects from the php error_log
 -feature#5796: Due to Conflicting Interpretations of TCP Ping, Introduce new Ping Method
 -feature#5819: Be more precise on the Graph End time when an end time is not provided
+-feature#5825: Allow remove_device.php to use a list of device id's
 -feature: Update jQuery to 3.7.1
 -feature: Update jQueryUI to 1.14.0
 -feature: Update billboard.js to 3.13.0

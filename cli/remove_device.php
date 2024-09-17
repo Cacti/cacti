@@ -44,9 +44,10 @@ array_shift($parms);
 
 if (cacti_sizeof($parms)) {
 	/* setup defaults */
-	$description = '';
-	$ip          = '';
-	$host_id     = '';
+	$description   = '';
+	$ip            = '';
+	$host_id       = '';
+	$id_ids        = false;
 
 	$quietMode   = false;
 	$confirm     = false;
@@ -79,29 +80,38 @@ if (cacti_sizeof($parms)) {
 			case '--ip':
 				$ip = trim($value);
 
-				break;
-			case '--version':
-			case '-V':
-			case '-v':
-				display_version();
+			break;
+		case '--id':
+			$id = trim($value);
 
-				exit(0);
-			case '--help':
-			case '-H':
-			case '-h':
-				display_help();
+			if (strpos($id, ',') !== false) {
+				$ids_id = explode(',', $id);
+			} else {
+				$ids_id = array($id);
+			}
 
-				exit(0);
-			case '--quiet':
-				$quietMode = true;
+			break;
+		case '--version':
+		case '-V':
+		case '-v':
+			display_version();
 
-				break;
+			exit(0);
+		case '--help':
+		case '-H':
+		case '-h':
+			display_help();
 
-			default:
-				print "ERROR: Invalid Argument: ($arg)\n\n";
-				display_help();
+			exit(0);
+		case '--quiet':
+			$quietMode = true;
 
-				exit(1);
+			break;
+		default:
+			print "ERROR: Invalid Argument: ($arg)" . PHP_EOL;
+			display_help();
+
+			exit(1);
 		}
 	}
 
@@ -114,79 +124,83 @@ if (cacti_sizeof($parms)) {
 	/* process host description */
 	if ($description > '') {
 		if ($debug) {
-			print "Searching hosts by description...\n";
+			print "Searching hosts by description..." . PHP_EOL;
 		}
 
 		$ids_host = preg_array_key_match("/$description/", $hosts);
 
 		if (cacti_sizeof($ids_host) == 0) {
-			print "ERROR: Unable to find host in the database matching description ($description)\n";
-
+			print "ERROR: Unable to find host in the database matching description ($description)" . PHP_EOL;
 			exit(1);
 		}
 	}
 
-	if ($ip > '') {
+	if ($ip != '') {
 		if ($debug) {
-			print "Searching hosts by IP...\n";
+			print "Searching hosts by IP..." . PHP_EOL;
 		}
 
 		$ids_ip = preg_array_key_match("/$ip/", $addresses);
 
 		if (cacti_sizeof($ids_ip) == 0) {
-			print "ERROR: Unable to find host in the database matching IP ($ip)\n";
-
+			print "ERROR: Unable to find host in the database matching IP ($ip)" . PHP_EOL;
 			exit(1);
 		}
 	}
 
 	if (cacti_sizeof($ids_host) == 0 && cacti_sizeof($ids_ip) == 0) {
-		print "ERROR: No matches found, was IP or Description set properly?\n";
-
+		print "ERROR: No matches found, was IP or Description set properly?" . PHP_EOL;
 		exit(1);
 	}
 
 	$ids = array_merge($ids_host, $ids_ip);
 	$ids = array_unique($ids, SORT_NUMERIC);
 
-	$ids_sql = implode(',',$ids);
-
-	if ($debug) {
-		print "Finding devices with ids $ids_sql\n\n";
+	if ($ids_id !== false) {
+		$ids = array_merge($ids, $ids_id);
+		$ids = array_unique($ids, SORT_NUMERIC);
 	}
 
-	$hosts     = db_fetch_assoc("SELECT id, hostname, description FROM host WHERE id IN ($ids_sql) ORDER by description");
+	$ids_sql = implode(',', $ids);
+	if ($debug) {
+		print "Finding devices with ids $ids_sql" . PHP_EOL;
+	}
+
+	$hosts = db_fetch_assoc("SELECT id, hostname, description
+		FROM host
+		WHERE id IN ($ids_sql)
+		ORDER BY description");
+
 	$ids_found = array();
 
 	if (!$quiet) {
-		printf("%8.s | %30.s | %30.s\n",'id','host','description');
+		printf('%8.s | %30.s | %30.s' . PHP_EOL, 'id', 'host', 'description');
 
 		foreach ($hosts as $host) {
-			printf("%8.d | %30.s | %30.s\n",$host['id'],$host['hostname'],$host['description']);
+			printf('%8.d | %30.s | %30.s' . PHP_EOL,$host['id'],$host['hostname'],$host['description']);
 			$ids_found[] = $host['id'];
 		}
-		print "\n";
+
+		print PHP_EOL;
 	}
 
 	if ($confirm) {
-		$ids_confirm = implode(', ',$ids_found);
-
+		$ids_confirm = implode(', ', $ids_found);
 		if (!$quiet) {
-			print "Removing devices with ids: $ids_confirm\n";
+			print "Removing devices with ids: $ids_confirm" . PHP_EOL;
 		}
+
 		$host_id = api_device_remove_multi($ids);
 
 		if (is_error_message()) {
-			print "ERROR: Failed to remove devices\n";
-
+			print "ERROR: Failed to remove devices" . PHP_EOL;
 			exit(1);
 		} else {
-			print "Success - removed device-ids: $ids_confirm\n";
-
+			print "Success - removed device-ids: $ids_confirm" . PHP_EOL;
 			exit(0);
 		}
 	} else {
-		print "Please use --confirm to remove these devices\n";
+		print "Please use --confirm to remove these devices" . PHP_EOL;
 	}
 } else {
 	display_help();
@@ -197,26 +211,32 @@ if (cacti_sizeof($parms)) {
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_cli_version();
-	print "Cacti Remove Device Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Remove Device Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 function display_help() {
 	display_version();
 
-	print "\nusage: remove_device.php --description=[description] --ip=[IP]\n";
-	print "    [--confirm] [--quiet]\n\n";
-	print "Required:\n";
-	print "    --description  the name that will be displayed by Cacti in the graphs\n";
-	print "    --ip           self explanatory (can also be a FQDN)\n";
-	print "   (either one or both fields can be used and may be regex)\n\n";
-	print "Optional:\n";
-	print "    --confirm       confirms that you wish to remove matches\n\n";
-	print "List Options:\n";
-	print "    --quiet - batch mode value return\n\n";
+	print PHP_EOL;
+	print 'usage: remove_device.php --description=\'S\' | --ip=\'S\' | --id=N,N,N,...' . PHP_EOL;
+	print '    [--confirm] [--quiet]' . PHP_EOL . PHP_EOL;
+
+	print 'Required: (on or more)' . PHP_EOL;
+	print "    --description='S' A substring or regular expression of the hostname or description." . PHP_EOL;
+	print "    --ip='S'          A IP or hostname (can also be a FQDN)." . PHP_EOL;
+	print '    --id=N,N,...      A column delimited list of device ids.' . PHP_EOL . PHP_EOL;
+
+	print '   (both --description and --ip can be a regex)' . PHP_EOL . PHP_EOL;
+	print 'Optional:' . PHP_EOL;
+	print '    --confirm           confirms that you wish to remove matches' . PHP_EOL . PHP_EOL;
+
+	print 'List Options:' . PHP_EOL;
+	print '    --quiet             batch mode value return' . PHP_EOL . PHP_EOL;
 }
 
 function preg_array_key_match($needle, $haystack) {
 	global $debug;
+
 	$matches = array();
 
 	if (isset($haystack)) {
@@ -228,18 +248,19 @@ function preg_array_key_match($needle, $haystack) {
 	}
 
 	if ($debug) {
-		print "Attempting to match against '$needle' against ".cacti_sizeof($haystack)." entries\n";
+		print "Attempting to match against '$needle' against " . cacti_sizeof($haystack) . " entries" . PHP_EOL;
 	}
 
 	foreach ($haystack as $str => $value) {
 		if ($debug) {
-			print " - Key $str => Value $value\n";
+			print " - Key $str => Value $value" . PHP_EOL;
 		}
 
 		if (preg_match($needle, $str, $m)) {
 			if ($debug) {
-				print "   + $str: $value\n";
+				print "   + $str: $value" . PHP_EOL;
 			}
+
 			$matches[] = $value;
 		}
 	}
