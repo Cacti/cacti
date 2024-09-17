@@ -799,8 +799,7 @@ function get_selected_theme():mixed {
 						AND name = "selected_theme"',
 						array($theme, $_SESSION[SESS_USER_ID]));
 
-						break;
-					}
+					break;
 				}
 			}
 		}
