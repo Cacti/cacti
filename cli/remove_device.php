@@ -173,7 +173,6 @@ if (cacti_sizeof($parms)) {
 		foreach ($hosts as $host) {
 			printf('%8.d | %30.s | %30.s' . PHP_EOL,$host['id'],$host['hostname'],$host['description']);
 			$ids_found[] = $host['id'];
-			$ids_details = $host['id'] . ' - ' . $host['hostname'] . ' - ' . $host['description'];
 		}
 
 
