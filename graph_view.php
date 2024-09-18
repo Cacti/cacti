@@ -547,38 +547,49 @@ switch (get_nfilter_request_var('action')) {
 				'filter'  => FILTER_VALIDATE_INT,
 				'pageset' => true,
 				'default' => '-1'
-				),
+			),
 			'page' => array(
 				'filter'  => FILTER_VALIDATE_INT,
 				'default' => '1'
-				),
+			),
 			'rfilter' => array(
 				'filter'  => FILTER_VALIDATE_IS_REGEX,
 				'pageset' => true,
 				'default' => '',
-				),
+			),
 			'graph_template_id' => array(
 				'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 				'pageset' => true,
 				'default' => '-1'
-				),
-			'host_id' => array(
-				'filter'  => FILTER_VALIDATE_INT,
+			),
+			'site_id' => array(
+				'filter' => FILTER_VALIDATE_INT,
 				'pageset' => true,
 				'default' => '-1'
-				),
+			),
+			'host_id' => array(
+				'filter' => FILTER_VALIDATE_INT,
+				'pageset' => true,
+				'default' => '-1'
+			),
+			'location' => array(
+				'filter' => FILTER_CALLBACK,
+				'pageset' => true,
+				'default' => '-1',
+				'options' => array('options' => 'sanitize_search_string')
+			),
 			'graph_add' => array(
 				'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 				'default' => ''
-				),
+			),
 			'graph_list' => array(
 				'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 				'default' => ''
-				),
+			),
 			'graph_remove' => array(
 				'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 				'default' => ''
-				)
+			)
 		);
 
 		validate_store_request_vars($filters, 'sess_gl');
@@ -635,102 +646,113 @@ switch (get_nfilter_request_var('action')) {
 		html_start_box(__('Graph List View Filters') . (isset_request_var('style') && get_request_var('style') != '' ? ' ' . __('[ Custom Graph List Applied - Filter FROM List ]'):''), '100%', '', '3', 'center', '');
 
 		?>
-	<tr class='even noprint'>
-		<td class='noprint'>
-			<table class='filterTable'>
-				<tr class='noprint'>
-					<td>
-						<?php print __('Search');?>
-					</td>
-					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='55' value='<?php print html_escape_request_var('rfilter');?>'>
-					</td>
-					<?php html_host_filter(get_request_var('host_id'));?>
-					<td>
-						<span>
-							<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>' onClick='clearFilter()'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('View');?>' title='<?php print __esc('View Graphs');?>' onClick='viewGraphs()'>
-							<?php if (cacti_sizeof($reports)) {?>
-							<input type='button' class='ui-button ui-corner-all ui-widget' id='addreport' value='<?php print __esc('Report');?>' title='<?php print __esc('Add to a Report');?>'>
-							<?php } ?>
-						</span>
-					</td>
-				</tr>
-			</table>
-			<table class='filterTable'>
-				<tr>
-					<td>
-						<?php print __('Template');?>
-					</td>
-					<td>
-						<select id='graph_template_id' multiple style='opacity:0.1;overflow:hide;height:0px;'>
-							<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
-							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('Not Templated');?></option>
-							<?php
-
+		<tr class='even noprint'>
+			<td class='noprint'>
+				<table class='filterTable'>
+					<tr class='noprint'>
+						<td>
+							<?php print __('Search');?>
+						</td>
+						<td>
+							<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='55' value='<?php print html_escape_request_var('rfilter');?>'>
+						</td>
+						<?php html_host_filter(get_request_var('host_id'));?>
+						<td>
+							<span>
+								<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>' onClick='clearFilter()'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('View');?>' title='<?php print __esc('View Graphs');?>' onClick='viewGraphs()'>
+								<?php if (cacti_sizeof($reports)) {?>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='addreport' value='<?php print __esc('Report');?>' title='<?php print __esc('Add to a Report');?>'>
+								<?php } ?>
+							</span>
+						</td>
+					</tr>
+				</table>
+				<table class='filterTable'>
+					<tr>
+						<?php html_site_filter(get_request_var('site_id'));?>
+						<?php
+	
+						if (get_request_var('site_id') >= 0) {
+							$loc_where = 'WHERE site_id = ' . db_qstr(get_request_var('site_id'));
+						} else {
+							$loc_where = '';
+						}
+	
+						html_location_filter(get_request_var('location'), 'applyFilter', $loc_where);
+						?>
+						<td>
+							<?php print __('Template');?>
+						</td>
+						<td>
+							<select id='graph_template_id' multiple style='opacity:0.1;overflow:hide;height:0px;'>
+								<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
+								<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('Not Templated');?></option>
+								<?php
+	
 								// suppress total rows collection
 								$total_rows = -1;
 
-		$graph_templates = get_allowed_graph_templates('', 'name', '', $total_rows);
+								$graph_templates = get_allowed_graph_templates('', 'name', '', $total_rows);
 
-		if (cacti_sizeof($graph_templates)) {
-			$selected    = explode(',', get_request_var('graph_template_id'));
+								if (cacti_sizeof($graph_templates)) {
+									$selected    = explode(',', get_request_var('graph_template_id'));
 
-			foreach ($graph_templates as $gt) {
-				if ($gt['id'] != 0) {
-					$found = db_fetch_cell_prepared('SELECT id
-											FROM graph_local
-											WHERE graph_template_id = ? LIMIT 1',
-						array($gt['id']));
+									foreach ($graph_templates as $gt) {
+										if ($gt['id'] != 0) {
+											$found = db_fetch_cell_prepared('SELECT id
+												FROM graph_local
+												WHERE graph_template_id = ? LIMIT 1',
+												array($gt['id']));
 
-					if ($found) {
-						print "<option value='" . $gt['id'] . "'";
+											if ($found) {
+												print "<option value='" . $gt['id'] . "'";
 
-						if (cacti_sizeof($selected)) {
-							if (in_array($gt['id'], $selected, true)) {
-								print ' selected';
-							}
-						}
-						print '>';
-						print html_escape($gt['name']) . "</option>\n";
-					}
-				}
-			}
-		}
-		?>
-						</select>
-					</td>
-					<td>
-						<?php print __('Graphs');?>
-					</td>
-					<td>
-						<select id='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
-							<?php
-		if (cacti_sizeof($item_rows)) {
-			foreach ($item_rows as $key => $value) {
-				print "<option value='" . $key . "'";
+												if (cacti_sizeof($selected)) {
+													if (in_array($gt['id'], $selected, true)) {
+														print ' selected';
+													}
+												}
+												print '>';
+												print html_escape($gt['name']) . "</option>\n";
+											}
+										}
+									}
+								}
+								?>
+							</select>
+						</td>
+						<td>
+							<?php print __('Graphs');?>
+						</td>
+						<td>
+							<select id='rows' onChange='applyFilter()'>
+								<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
+								<?php
+								if (cacti_sizeof($item_rows)) {
+									foreach ($item_rows as $key => $value) {
+										print "<option value='" . $key . "'";
 
-				if (get_request_var('rows') == $key) {
-					print ' selected';
-				} print '>' . $value . "</option>\n";
-			}
-		}
-		?>
-						</select>
-					</td>
-				</tr>
-			</table>
-			<input type='hidden' id='style' value='selective'>
-			<input type='hidden' id='action' value='list'>
-			<input type='hidden' id='graph_add' value=''>
-			<input type='hidden' id='graph_remove' value=''>
-			<input type='hidden' id='graph_list' value='<?php print get_request_var('graph_list');?>'>
-		</td>
-	</tr>
-	<?php
-	html_end_box();
+										if (get_request_var('rows') == $key) {
+											print ' selected';
+										} print '>' . $value . "</option>\n";
+									}
+								}
+								?>
+							</select>
+						</td>
+					</tr>
+				</table>
+				<input type='hidden' id='style' value='selective'>
+				<input type='hidden' id='action' value='list'>
+				<input type='hidden' id='graph_add' value=''>
+				<input type='hidden' id='graph_remove' value=''>
+				<input type='hidden' id='graph_list' value='<?php print get_request_var('graph_list');?>'>
+			</td>
+		</tr>
+		<?php
+		html_end_box();
 
 		/* create filter for sql */
 		$sql_where  = '';
@@ -739,10 +761,22 @@ switch (get_nfilter_request_var('action')) {
 			$sql_where .= " gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'";
 		}
 
+		if (!isempty_request_var('site_id') && get_request_var('site_id') > 0) {
+			$sql_where .= ($sql_where == '' ? '' : ' AND') . ' h.site_id=' . get_request_var('site_id');
+		} elseif (isempty_request_var('site_id')) {
+			$sql_where .= ($sql_where == '' ? '' : ' AND') . ' h.site_id=0';
+		}
+
 		if (!isempty_request_var('host_id') && get_request_var('host_id') > 0) {
 			$sql_where .= ($sql_where == '' ? '' : ' AND') . ' gl.host_id=' . get_request_var('host_id');
 		} elseif (isempty_request_var('host_id')) {
 			$sql_where .= ($sql_where == '' ? '' : ' AND') . ' gl.host_id=0';
+		}
+
+		if (get_request_var('location') != '' && get_request_var('location') != '-1' && get_request_var('location') != '0') {
+			$sql_where .= ($sql_where == '' ? '' : ' AND') . ' h.location = ' . db_qstr(get_request_var('location'));
+		} elseif (get_request_var('location') == '0') {
+			$sql_where .= ($sql_where == '' ? '' : ' AND') . ' h.location = ""';
 		}
 
 		if (!isempty_request_var('graph_template_id') && get_request_var('graph_template_id') != '-1' && get_request_var('graph_template_id') != '0') {
@@ -884,182 +918,182 @@ switch (get_nfilter_request_var('action')) {
 		}
 
 		?>
-	<div class='break'></div>
-	<div class='cactiTable'>
-		<div style='float:left'><img src='images/arrow.gif' alt=''>&nbsp;</div>
-		<div style='float:right'><input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('View');?>' title='<?php print __esc('View Graphs');?>' onClick='viewGraphs()'></div>
-	</div>
-	<?php print $report_text;?>
-	<script type='text/javascript'>
-	var refreshMSeconds=999999999;
-	var graph_list_array = new Array(<?php print get_request_var('graph_list');?>);
+		<div class='break'></div>
+		<div class='cactiTable'>
+			<div style='float:left'><img src='images/arrow.gif' alt=''>&nbsp;</div>
+			<div style='float:right'><input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('View');?>' title='<?php print __esc('View Graphs');?>' onClick='viewGraphs()'></div>
+		</div>
+		<?php print $report_text;?>
+		<script type='text/javascript'>
+		var refreshMSeconds=999999999;
+		var graph_list_array = new Array(<?php print get_request_var('graph_list');?>);
 
-	function clearFilter() {
-		strURL = 'graph_view.php?action=list&clear=1';
-		loadUrl({url:strURL})
-	}
-
-	function applyFilter() {
-		strURL = 'graph_view.php?action=list&page=1';
-		strURL += '&host_id=' + $('#host_id').val();
-		strURL += '&rows=' + $('#rows').val();
-		strURL += '&graph_template_id=' + $('#graph_template_id').val();
-		strURL += '&rfilter=' + base64_encode($('#rfilter').val());
-		strURL += url_graph('');
-		loadUrl({url:strURL})
-	}
-
-	function initializeChecks() {
-		for (var i = 0; i < graph_list_array.length; i++) {
-			$('#line'+graph_list_array[i]).addClass('selected');
-			$('#chk_'+graph_list_array[i]).prop('checked', true);
-			$('#chk_'+graph_list_array[i]).parent().addClass('selected');
+		function clearFilter() {
+			strURL = 'graph_view.php?action=list&clear=1';
+			loadUrl({url:strURL})
 		}
-	}
 
-	function viewGraphs() {
-		graphList = $('#graph_list').val();
-		$('input[id^=chk_]').each(function(data) {
-			graphID = $(this).attr('id').replace('chk_','');
-			if ($(this).is(':checked')) {
-				graphList += (graphList.length > 0 ? ',':'') + graphID;
+		function applyFilter() {
+			strURL = 'graph_view.php?action=list&page=1';
+			strURL += '&host_id=' + $('#host_id').val();
+			strURL += '&rows=' + $('#rows').val();
+			strURL += '&graph_template_id=' + $('#graph_template_id').val();
+			strURL += '&rfilter=' + base64_encode($('#rfilter').val());
+			strURL += url_graph('');
+			loadUrl({url:strURL})
+		}
+
+		function initializeChecks() {
+			for (var i = 0; i < graph_list_array.length; i++) {
+				$('#line'+graph_list_array[i]).addClass('selected');
+				$('#chk_'+graph_list_array[i]).prop('checked', true);
+				$('#chk_'+graph_list_array[i]).parent().addClass('selected');
 			}
-		});
-		$('#graph_list').val(graphList);
-
-		strURL = urlPath+'graph_view.php?action=preview';
-		$('#chk').find('select, input').each(function() {
-			switch($(this).attr('id')) {
-				case 'rfilter':
-					strURL += '&' + $(this).attr('id') + '=' + base64_encode($(this).val());
-					break;
-				case 'graph_template_id':
-				case 'host_id':
-				case 'graph_add':
-				case 'graph_remove':
-				case 'graph_list':
-				case 'style':
-				case 'csrf_magic':
-					strURL += '&' + $(this).attr('id') + '=' + $(this).val();
-					break;
-				default:
-					break;
-			}
-		});
-
-		strURL += '&reset=true';
-
-		loadUrl({url:strURL})
-
-		$('#breadcrumbs').empty().html('<li><a href="graph_view.php?action=preview"><?php print __('Preview Mode');?></a></li>');
-		$('#listview').removeClass('selected');
-		$('#preview').addClass('selected');
-	}
-
-	function url_graph(strNavURL) {
-		if ($('#action').val() == 'list') {
-			var strURL = '';
-			var strAdd = '';
-			var strDel = '';
+		}
+	
+		function viewGraphs() {
+			graphList = $('#graph_list').val();
 			$('input[id^=chk_]').each(function(data) {
 				graphID = $(this).attr('id').replace('chk_','');
 				if ($(this).is(':checked')) {
-					strAdd += (strAdd.length > 0 ? ',':'') + graphID;
-				} else if (graphChecked(graphID)) {
-					strDel += (strDel.length > 0 ? ',':'') + graphID;
+					graphList += (graphList.length > 0 ? ',':'') + graphID;
 				}
 			});
+			$('#graph_list').val(graphList);
 
-			strURL = '&demon=1&graph_list=<?php print get_request_var('graph_list');?>&graph_add=' + strAdd + '&graph_remove=' + strDel;
-
-			return strNavURL + strURL;
-		} else {
-			return strNavURL;
-		}
-	}
-
-	function graphChecked(graph_id) {
-		for(var i = 0; i < graph_list_array.length; i++) {
-			if (graph_list_array[i] == graph_id) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	function addReport() {
-		$('#addGraphs').dialog({
-			title: '<?php print __('Add Selected Graphs to Report');?>',
-			minHeight: 80,
-			minWidth: 400,
-			modal: true,
-			resizable: false,
-			draggable: false,
-			buttons: [
-				{
-					text: '<?php print __('Cancel');?>',
-					click: function() {
-						$(this).dialog('close');
-					}
-				},
-				{
-					text: '<?php print __('Ok');?>',
-					click: function() {
-						graphList = $('#graph_list').val();
-						$('input[id^=chk_]').each(function(data) {
-							graphID = $(this).attr('id').replace('chk_','');
-							if ($(this).is(':checked')) {
-								graphList += (graphList.length > 0 ? ',':'') + graphID;
-							}
-						});
-						$('#graph_list').val(graphList);
-
-						$(this).dialog('close');
-
-						strURL = 'graph_view.php?action=ajax_reports' +
-							'&header=false' +
-							'&report_id='   + $('#report_id').val()   +
-							'&timespan='    + $('#timespan').val()    +
-							'&align='       + $('#align').val()       +
-							'&graph_list='  + $('#graph_list').val();
-
-						loadUrl({url:strURL});
-					}
+			strURL = urlPath+'graph_view.php?action=preview';
+			$('#chk').find('select, input').each(function() {
+				switch($(this).attr('id')) {
+					case 'rfilter':
+						strURL += '&' + $(this).attr('id') + '=' + base64_encode($(this).val());
+						break;
+					case 'graph_template_id':
+					case 'host_id':
+					case 'graph_add':
+					case 'graph_remove':
+					case 'graph_list':
+					case 'style':
+					case 'csrf_magic':
+						strURL += '&' + $(this).attr('id') + '=' + $(this).val();
+						break;
+					default:
+						break;
 				}
-			],
-			open: function() {
-				$('.ui-dialog').css('z-index', 99);
-				$('.ui-widget-overlay').css('z-index', 98);
-			},
-			close: function() {
-				$('[title]').each(function() {
-					if ($(this).tooltip('instance')) {
-						$(this).tooltip('close');
+			});
+	
+			strURL += '&reset=true';
+
+			loadUrl({url:strURL})
+
+			$('#breadcrumbs').empty().html('<li><a href="graph_view.php?action=preview"><?php print __('Preview Mode');?></a></li>');
+			$('#listview').removeClass('selected');
+			$('#preview').addClass('selected');
+		}
+	
+		function url_graph(strNavURL) {
+			if ($('#action').val() == 'list') {
+				var strURL = '';
+				var strAdd = '';
+				var strDel = '';
+				$('input[id^=chk_]').each(function(data) {
+					graphID = $(this).attr('id').replace('chk_','');
+					if ($(this).is(':checked')) {
+						strAdd += (strAdd.length > 0 ? ',':'') + graphID;
+					} else if (graphChecked(graphID)) {
+						strDel += (strDel.length > 0 ? ',':'') + graphID;
 					}
 				});
+	
+				strURL = '&demon=1&graph_list=<?php print get_request_var('graph_list');?>&graph_add=' + strAdd + '&graph_remove=' + strDel;
+	
+				return strNavURL + strURL;
+			} else {
+				return strNavURL;
 			}
+		}
+	
+		function graphChecked(graph_id) {
+			for(var i = 0; i < graph_list_array.length; i++) {
+				if (graph_list_array[i] == graph_id) {
+					return true;
+				}
+			}
+	
+			return false;
+		}
+	
+		function addReport() {
+			$('#addGraphs').dialog({
+				title: '<?php print __('Add Selected Graphs to Report');?>',
+				minHeight: 80,
+				minWidth: 400,
+				modal: true,
+				resizable: false,
+				draggable: false,
+				buttons: [
+					{
+						text: '<?php print __('Cancel');?>',
+						click: function() {
+							$(this).dialog('close');
+						}
+					},
+					{
+						text: '<?php print __('Ok');?>',
+						click: function() {
+							graphList = $('#graph_list').val();
+							$('input[id^=chk_]').each(function(data) {
+								graphID = $(this).attr('id').replace('chk_','');
+								if ($(this).is(':checked')) {
+									graphList += (graphList.length > 0 ? ',':'') + graphID;
+								}
+							});
+							$('#graph_list').val(graphList);
+	
+							$(this).dialog('close');
+	
+							strURL = 'graph_view.php?action=ajax_reports' +
+								'&header=false' +
+								'&report_id='   + $('#report_id').val()   +
+								'&timespan='    + $('#timespan').val()    +
+								'&align='       + $('#align').val()       +
+								'&graph_list='  + $('#graph_list').val();
+	
+							loadUrl({url:strURL});
+						}
+					}
+				],
+				open: function() {
+					$('.ui-dialog').css('z-index', 99);
+					$('.ui-widget-overlay').css('z-index', 98);
+				},
+				close: function() {
+					$('[title]').each(function() {
+						if ($(this).tooltip('instance')) {
+							$(this).tooltip('close');
+						}
+					});
+				}
+			});
+		}
+
+		$(function() {
+			pageAction = 'list';
+
+			initializeChecks();
+
+			$('#addreport').click(function() {
+				addReport();
+			});
+
+			<?php html_graph_template_multiselect('list');?>
+
+			$('#chk').unbind().on('submit', function(event) {
+				event.preventDefault();
+				applyFilter();
+			});
 		});
-	}
-
-	$(function() {
-		pageAction = 'list';
-
-		initializeChecks();
-
-		$('#addreport').click(function() {
-			addReport();
-		});
-
-		<?php html_graph_template_multiselect('list');?>
-
-		$('#chk').unbind().on('submit', function(event) {
-			event.preventDefault();
-			applyFilter();
-		});
-	});
-	</script>
-	<?php
+		</script>
+		<?php
 
 		bottom_footer();
 
