@@ -175,8 +175,6 @@ if (cacti_sizeof($parms)) {
 			$ids_found[] = $host['id'];
 		}
 
-
-
 		print PHP_EOL;
 	}
 
