@@ -172,6 +172,7 @@ if ($child == false) {
 		 */
 		$poller_items = db_fetch_row('SELECT * FROM poller_output_boost LIMIT 1');
 		if (!cacti_sizeof($poller_items)) {
+			cacti_log('INFO: Boost has no items in poller_output_boost to process during this cycle.', false, 'BOOST');
 			exit(0);
 		}
 
@@ -189,13 +190,18 @@ if ($child == false) {
 		db_execute('TRUNCATE TABLE poller_output_boost_processes');
 
 		/* Prepare the boost distribution */
+		cacti_log('INFO: Boost preparing tables ...', false, 'BOOST');
+		$time_start = time();
 		$continue = boost_prepare_process_table();
+		$time_end = time();
+		cacti_log('INFO: Boost prepare tables took ' . ($time_end - $time_start) . 'seconds.', false, 'BOOST');
 
 		/* Launch the boost children */
 		if ($continue) {
 			/* Allow mysql to flush the rename transaction */
 			sleep(7);
 
+			cacti_log('INFO: Boost spawning child processes ...', false, 'BOOST');
 			boost_launch_children();
 
 			/* Wait for all processes to continue */
@@ -203,6 +209,8 @@ if ($child == false) {
 				boost_debug(sprintf('%s Processes Running, Sleeping for 2 seconds.', $running));
 				sleep(2);
 			}
+
+			cacti_log('INFO: Boost last child processes ended.', false, 'BOOST');
 
 			/* tell the main poller that we are done */
 			set_config_option('boost_poller_status', 'complete - end time:' . date('Y-m-d H:i:s'));
@@ -224,6 +232,7 @@ if ($child == false) {
 			}
 
 			if ($rrd_updates > 0) {
+				cacti_log('INFO: Boost removing archive tables ...', false, 'BOOST');
 				/* cleanup - remove empty arch tables*/
 				$tables = db_fetch_assoc("SELECT table_name AS name
 					FROM information_schema.tables
@@ -232,6 +241,7 @@ if ($child == false) {
 
 				if (cacti_sizeof($tables)) {
 					foreach ($tables as $table) {
+						cacti_log('INFO: Boost removing archive table: ' . $table['name'], false, 'BOOST');
 						db_execute('DROP TABLE IF EXISTS ' . $table['name']);
 					}
 				}
@@ -243,6 +253,7 @@ if ($child == false) {
 			}
 		}
 
+		cacti_log('INFO: Boost unregistering master process', false, 'BOOST');
 		unregister_process('boost', 'master', $config['poller_id'], getmypid());
 
 		/* log the end time of the process */
@@ -264,6 +275,7 @@ if ($child == false) {
 
 	exit(0);
 } else {
+	cacti_log('INFO: Boost register child process ' . $child, false, 'BOOST');
 	/* we will warn if the process is taking extra long */
 	if (!register_process_start('boost', 'child', $child, read_config_option('boost_rrd_update_max_runtime') * 3)) {
 		exit(0);
@@ -388,9 +400,11 @@ function boost_prepare_process_table() {
 	$archive_table = 'poller_output_boost_arch_' . $time;
 	$interim_table = 'poller_output_boost_' . $time;
 
+	cacti_log('INFO: Boost rotating poller_output_boost into archive table: ' . $archive_table, false, 'BOOST');
 	db_execute("CREATE TABLE $interim_table LIKE poller_output_boost");
 	db_execute("RENAME TABLE poller_output_boost TO $archive_table, $interim_table TO poller_output_boost");
 	db_execute("ANALYZE TABLE $archive_table");
+	cacti_log('INFO: Boost done rotating poller_output_boost', false, 'BOOST');
 
 	$arch_tables = boost_get_arch_table_names($archive_table);
 
@@ -402,12 +416,15 @@ function boost_prepare_process_table() {
 
 	$total_rows = 0;
 
-	foreach ($arch_tables as $table) {
-		$total_rows += db_fetch_cell_prepared('SELECT TABLE_ROWS
+	cacti_log('INFO: Boost counting entries in archive tables ...', false, 'BOOST');
+	foreach($arch_tables as $table) {
+		$table_rows = db_fetch_cell_prepared('SELECT TABLE_ROWS
 			FROM information_schema.TABLES
 			WHERE TABLE_SCHEMA = SCHEMA()
 			AND TABLE_NAME = ?',
 			array($table));
+		$total_rows += $table_rows;
+		cacti_log('INFO: Boost archive table ' . $table . ' has ' . $table_rows . ' entries.', false, 'BOOST');
 	}
 
 	if ($total_rows == 0) {
@@ -416,6 +433,8 @@ function boost_prepare_process_table() {
 		cacti_log('ERROR: Failed to retrieve any rows from archive tables', false, 'BOOST');
 
 		return false;
+	} else {
+		cacti_log('INFO: Boost processing a total of ' . $total_rows . ' entries.', false, 'BOOST');
 	}
 
 	db_execute('CREATE TABLE IF NOT EXISTS poller_output_boost_local_data_ids (
