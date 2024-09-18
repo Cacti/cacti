@@ -737,10 +737,13 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = null) {
 	$query_string_suffix = 'ORDER BY local_data_id ASC, timestamp ASC, rrd_name ASC';
 	$sub_query_string    = '';
 	$sql_params          = array();
+	$locks               = false;
 
 	if (cacti_count($archive_tables)) {
 		foreach($archive_tables as $index => $table) {
 			$lock[$table] = db_execute("LOCK TABLE $table READ LOCAL", false);
+
+			$locks = true;
 
 			if (!$lock[$table]) {
 				/* lock will fail if the table is gone */
@@ -754,6 +757,10 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = null) {
 				$sql_params[] = $local_data_id;
 			}
 		}
+	}
+
+	if ($locks) {
+		db_execute("LOCK TABLE poller_output_boost AS po READ LOCAL, LOCK TABLE data_local AS dl READ LOCAL");
 	}
 
 	$sub_query_string .= ($sub_query_string != '' ? ' UNION ALL ':'') .
@@ -777,7 +784,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = null) {
 
 	$boost_results = cacti_sizeof($results);
 
-	if (cacti_count($archive_tables)) {
+	if ($locks) {
 		db_execute('UNLOCK TABLES');
 	}
 
