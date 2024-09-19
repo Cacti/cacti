@@ -579,6 +579,21 @@ case 'list':
 		$rows = get_request_var('rows');
 	}
 
+	/* check to see if site_id and location are mismatched */
+	if (get_request_var('site_id') >= 0) {
+		if (get_request_var('location') != '0' && get_request_var('location') != '-1') {
+			$exists = db_fetch_cell_prepared('SELECT COUNT(*)
+				FROM host
+				WHERE site_id = ?
+				AND location = ?',
+				array(get_request_var('site_id'), get_request_var('location')));
+
+			if (!$exists) {
+				set_request_var('location', '-1');
+			}
+		}
+	}
+
 	$graph_list = array();
 
 	/* save selected graphs into url */
