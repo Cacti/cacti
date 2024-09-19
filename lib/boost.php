@@ -714,50 +714,55 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 		$timestamp = time() - 10;
 	}
 
-	$query_string        = 'SELECT * FROM (';
+	$query_string        = '';
 	$query_string_suffix = 'ORDER BY local_data_id ASC, timestamp ASC, rrd_name ASC';
-	$sub_query_string    = '';
 	$sql_params          = array();
 	$locks               = false;
+	$temp_table          = false;
 
 	if (cacti_count($archive_tables)) {
+		$temp_table = 'poller_output_boost_temp_' . time();
+
+		db_execute("CREATE TEMPORARY TABLE $temp_table LIKE poller_output_boost");
+
 		foreach($archive_tables as $index => $table) {
-			$lock[$table] = db_execute("LOCK TABLE $table READ LOCAL", false);
-
-			$locks = true;
-
-			if (!$lock[$table]) {
-				/* lock will fail if the table is gone */
-				unset($archive_tables[$index]);
-			} else {
-				$sub_query_string .= ($sub_query_string != '' ? ' UNION ALL ':'') .
-					" SELECT $table.local_data_id, dl.data_template_id, UNIX_TIMESTAMP(time) AS timestamp, rrd_name, output
-					FROM $table
-					WHERE $table.local_data_id = ?";
-
-				$sql_params[] = $local_data_id;
-			}
+			db_execute_prepared("INSERT INTO $temp_table
+				SELECT *
+				FROM $table
+				WHERE local_data_id = ?",
+				array($local_data_id), false);
 		}
 	}
 
-	if ($locks) {
-		db_execute("LOCK TABLE poller_output_boost AS po READ LOCAL, LOCK TABLE data_local AS dl READ LOCAL");
-	}
+	if ($temp_table !== false) {
+		db_execute_prepared("INSERT INTO $temp_table
+			SELECT *
+			FROM poller_output_boost
+			WHERE local_data_id = ?
+			AND time < FROM_UNIXTIME(?)",
+			array($local_data_id, $timestamp), false);
 
-	$sub_query_string .= ($sub_query_string != '' ? ' UNION ALL ':'') .
-		" SELECT po.local_data_id, dl.data_template_id,
-		UNIX_TIMESTAMP(po.time) AS timestamp, po.rrd_name, po.output
-		FROM poller_output_boost AS po
-		INNER JOIN data_local AS dl
-		ON po.local_data_id = dl.id
-		WHERE po.local_data_id = ?
-		AND po.time < FROM_UNIXTIME(?)
-		ORDER BY time ASC, rrd_name ASC";
+		$query_string = "SELECT po.local_data_id, dl.data_template_id,
+			UNIX_TIMESTAMP(po.time) AS timestamp, po.rrd_name, po.output
+			FROM $temp_table AS po
+			INNER JOIN data_local AS dl
+			ON po.local_data_id = dl.id
+			WHERE po.local_data_id = ?
+			AND po.time < FROM_UNIXTIME(?)
+			ORDER BY time ASC, rrd_name ASC";
+	} else {
+		$query_string = "SELECT po.local_data_id, dl.data_template_id,
+			UNIX_TIMESTAMP(po.time) AS timestamp, po.rrd_name, po.output
+			FROM poller_output_boost AS po
+			INNER JOIN data_local AS dl
+			ON po.local_data_id = dl.id
+			WHERE po.local_data_id = ?
+			AND po.time < FROM_UNIXTIME(?)
+			ORDER BY time ASC, rrd_name ASC";
+	}
 
 	$sql_params[] = $local_data_id;
 	$sql_params[] = $timestamp;
-
-	$query_string = $query_string . $sub_query_string . ') t ' . $query_string_suffix;
 
 	boost_timer('get_records', BOOST_TIMER_START);
 	$results = db_fetch_assoc_prepared($query_string, $sql_params);
@@ -765,8 +770,8 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 
 	$boost_results = cacti_sizeof($results);
 
-	if ($locks) {
-		db_execute('UNLOCK TABLES');
+	if ($temp_table !== false) {
+		db_execute("DROP TEMPORARY TABLE $temp_table");
 	}
 
 	cacti_log('Local Data ID: ' . $local_data_id . ', Boost Results: ' . $boost_results, false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
@@ -776,9 +781,10 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 
 	if (cacti_count($archive_tables)) {
 		foreach($archive_tables as $table) {
-			db_execute_prepared('DELETE IGNORE FROM ' . $table . '
-				WHERE local_data_id = ?',
-				array($local_data_id));
+			db_execute_prepared("DELETE IGNORE
+				FROM $table
+				WHERE local_data_id = ?",
+				array($local_data_id), false);
 		}
 	}
 
@@ -786,7 +792,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = '') {
 		db_execute_prepared('DELETE FROM poller_output_boost
 			WHERE local_data_id = ?
 			AND time < FROM_UNIXTIME(?)',
-			array($local_data_id, $timestamp));
+			array($local_data_id, $timestamp), false);
 	}
 
 	boost_timer('delete', BOOST_TIMER_END);
