@@ -601,6 +601,21 @@ switch (get_nfilter_request_var('action')) {
 			$rows = get_request_var('rows');
 		}
 
+		/* check to see if site_id and location are mismatched */
+		if (get_request_var('site_id') >= 0) {
+			if (get_request_var('location') != '0' && get_request_var('location') != '-1') {
+				$exists = db_fetch_cell_prepared('SELECT COUNT(*)
+					FROM host
+					WHERE site_id = ?
+					AND location = ?',
+					array(get_request_var('site_id'), get_request_var('location')));
+
+				if (!$exists) {
+					set_request_var('location', '-1');
+				}
+			}
+		}
+
 		$graph_list = array();
 
 		/* save selected graphs into url */
@@ -673,13 +688,13 @@ switch (get_nfilter_request_var('action')) {
 					<tr>
 						<?php html_site_filter(get_request_var('site_id'));?>
 						<?php
-	
+
 						if (get_request_var('site_id') >= 0) {
 							$loc_where = 'WHERE site_id = ' . db_qstr(get_request_var('site_id'));
 						} else {
 							$loc_where = '';
 						}
-	
+
 						html_location_filter(get_request_var('location'), 'applyFilter', $loc_where);
 						?>
 						<td>
@@ -690,7 +705,7 @@ switch (get_nfilter_request_var('action')) {
 								<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
 								<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('Not Templated');?></option>
 								<?php
-	
+
 								// suppress total rows collection
 								$total_rows = -1;
 
@@ -950,7 +965,7 @@ switch (get_nfilter_request_var('action')) {
 				$('#chk_'+graph_list_array[i]).parent().addClass('selected');
 			}
 		}
-	
+
 		function viewGraphs() {
 			graphList = $('#graph_list').val();
 			$('input[id^=chk_]').each(function(data) {
@@ -980,7 +995,7 @@ switch (get_nfilter_request_var('action')) {
 						break;
 				}
 			});
-	
+
 			strURL += '&reset=true';
 
 			loadUrl({url:strURL})
@@ -989,7 +1004,7 @@ switch (get_nfilter_request_var('action')) {
 			$('#listview').removeClass('selected');
 			$('#preview').addClass('selected');
 		}
-	
+
 		function url_graph(strNavURL) {
 			if ($('#action').val() == 'list') {
 				var strURL = '';
@@ -1003,25 +1018,25 @@ switch (get_nfilter_request_var('action')) {
 						strDel += (strDel.length > 0 ? ',':'') + graphID;
 					}
 				});
-	
+
 				strURL = '&demon=1&graph_list=<?php print get_request_var('graph_list');?>&graph_add=' + strAdd + '&graph_remove=' + strDel;
-	
+
 				return strNavURL + strURL;
 			} else {
 				return strNavURL;
 			}
 		}
-	
+
 		function graphChecked(graph_id) {
 			for(var i = 0; i < graph_list_array.length; i++) {
 				if (graph_list_array[i] == graph_id) {
 					return true;
 				}
 			}
-	
+
 			return false;
 		}
-	
+
 		function addReport() {
 			$('#addGraphs').dialog({
 				title: '<?php print __('Add Selected Graphs to Report');?>',
@@ -1048,16 +1063,16 @@ switch (get_nfilter_request_var('action')) {
 								}
 							});
 							$('#graph_list').val(graphList);
-	
+
 							$(this).dialog('close');
-	
+
 							strURL = 'graph_view.php?action=ajax_reports' +
 								'&header=false' +
 								'&report_id='   + $('#report_id').val()   +
 								'&timespan='    + $('#timespan').val()    +
 								'&align='       + $('#align').val()       +
 								'&graph_list='  + $('#graph_list').val();
-	
+
 							loadUrl({url:strURL});
 						}
 					}
