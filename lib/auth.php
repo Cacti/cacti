@@ -4329,6 +4329,8 @@ function domains_ldap_search_cn($username, $cn = array(), $realm) {
 		if (!empty($ld['specific_dn']))       $ldap->specific_dn       = $ld['specific_dn'];
 		if (!empty($ld['specific_password'])) $ldap->specific_password = $ld['specific_password'];
 
+		$ldap->cn = $cn;
+
 		if ($ld['group_require'] == 'on') {
 			$ldap->group_require = true;
 		} else {
