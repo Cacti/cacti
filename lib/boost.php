@@ -740,7 +740,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = null) {
 	$temp_table          = false;
 
 	if (cacti_count($archive_tables)) {
-		$temp_table = "poller_output_boost_temp_$local_data_id_" . mt_rand() . '_' . microtime(true);
+		$temp_table = 'poller_output_boost_temp_' . $local_data_id . '_' . mt_rand() . '_' . microtime(true);
 
 		db_execute("CREATE TEMPORARY TABLE $temp_table LIKE poller_output_boost");
 
