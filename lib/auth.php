@@ -4067,7 +4067,7 @@ function domains_ldap_search_dn($username, $realm) {
 	}
 }
 
-function domains_ldap_search_cn($username, $cn = array(), $realm) {
+function domains_ldap_search_cn($username, $cn = array(), $realm = 0) {
 	$ldap = new Ldap;
 
 	if (!empty($username)) $ldap->username = $username;
