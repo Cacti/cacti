@@ -931,13 +931,13 @@ ul#breadcrumbs {
 
 .cactiAuthLogo {
 	position: relative;
-	background: transparent url('./images/cacti_logo.svg') no-repeat 30px;
+	top: 0px;
+	left: 0px;
+	background: transparent url('./images/cacti_logo.svg') no-repeat center;
 	width: 130px;
-        height: 148px;
+	height: 148px;
 	z-index: 2;
-	margin-top: -175px;
-	margin-left: -75px;
-	margin-bottom: -20px;
+	margin: -310px 0 0 290px;
 }
 
 .cactiAuthCenter {
@@ -979,7 +979,7 @@ ul#breadcrumbs {
 
 .cactiAuthErrors {
 	color: red;
-	min-height: 15px;
+	min-height: 20px;
 }
 
 legend {
@@ -1007,7 +1007,8 @@ legend {
 }
 
 .versionInfo {
-	padding-top: 5px;
+	padding-top: 15px;
+	margin-right: -10px;
 	float: right;
 	color: white;
 }

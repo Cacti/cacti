@@ -763,14 +763,15 @@ label {
 }
 
 .cactiAuthLogo {
+	display: hidden;
 	position: relative;
-	background: transparent url('./images/cacti_logo.svg') no-repeat 30px;
+	background: none;
+	#background: transparent url('./images/cacti_logo.svg') no-repeat 30px;
 	width: 130px;
-        height: 148px;
+	height: 148px;
 	z-index: 2;
-	margin-top: -210px;
-	margin-left: 0px;
-	margin-bottom: -20px;
+	margin-top: -310px;
+	margin-left: 250px;
 }
 
 .cactiAuthCenter {
@@ -812,7 +813,7 @@ label {
 
 .cactiAuthErrors {
 	color: red;
-	min-height: 15px;
+	min-height: 20px;
 }
 
 legend {
