@@ -440,6 +440,7 @@ html {
     }
 }
 
+
 .navBox-header-button {
     display: flex;
     align-items: center;
@@ -450,23 +451,32 @@ html {
     min-width: 2.5rem;
     width: 2.5rem;
     height: 2.5rem;
-}
+    &[aria-pressed="true"] {
+        background: var(--background-active-section);
+        &:has(~ .navBox-header-search) {
+            ~ .navBox-header-search { display: flex; }
+            ~ .navBox-header-title  { display: none; }
+            ~ .navBox-header-filler { flex-grow: 1;  }
+        }
+    }
 
-.navBox-header-button:hover {
-    color: white;
-    background-color: hsla(208, 69%, 40%, 0.5);
+    &:hover {
+        color: white;
+        background-color: hsla(208, 69%, 40%, 0.5);
+    }
 }
 
 .navBox-header-filler {
-    flex: 1;
+    flex-grow: 0;
 }
 
-.navBox-header-button.dropdown.show > .navBox-header-dropdown-content {
+.navBox-header-button.show[data-action="dropdown"] > .navBox-header-dropdown-content {
     display: block !important;
 }
 
 /* Dropdown Content (Hidden by Default) */
 .navBox-header-dropdown-content {
+    font-family: 'Segoe UI', 'Segoe UI Web Regular', 'Segoe UI Symbol', 'Helvetica Neue', 'BBAlpha Sans', 'S60 Sans', Arial, sans-serif;
     position: absolute;
     z-index: 1;
     top: 2rem;
@@ -495,7 +505,7 @@ html {
 
 
 .navBox-header-search {
-    display: flex;
+    display: none;
     align-items: stretch;
     flex-direction: column;
     justify-content: center;

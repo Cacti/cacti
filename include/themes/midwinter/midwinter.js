@@ -57,7 +57,7 @@ class navigationBox {
 
         if(this.#box.buttons.search) {
             navigationBoxButtonsLeft += '<div class="navBox-header-button fa-icon-search" data-action="search" data-helper="'+this.#box.helper+'" role="button" tabindex="0" aria-pressed="false"></div>';
-            navigationBoxSearch += '<div class="navBox-header-search hide"><input type="search" name="navBox-header-search" data-scope="theme" placeholder="Search in '+this.#box.title+'" tabindex="0"></div>';
+            navigationBoxSearch += '<div class="navBox-header-search"><input type="search" name="navBox-header-search" data-scope="theme" data-helper="'+this.#box.helper+'" placeholder="Search in '+this.#box.title+'" tabindex="0"></div>';
         }
         if(this.#box.buttons.resize) {
             navigationBoxButtonsRight +=
@@ -139,14 +139,11 @@ class navigationBox {
         if(this.#box.buttons.search) {
             let navBox_input_field = $("input[name=navBox-header-search]", navigationBox);
             $('[class^="navBox-header-button"][data-action="search"][data-helper="'+this.#box.helper+'"]', navigationBox).off().on('click', function(e) {
-                if($('.navBox-header-search', navigationBox).hasClass('hide')) {
-                    $('.navBox-header-title', navigationBox).addClass('hide');
-                    $('.navBox-header-search', navigationBox).removeClass('hide');
+                $(this).attr('aria-pressed', function(_, attr) { return !(attr === 'true') })
+                if ($(this).attr('aria-pressed') === 'true') {
                     navBox_input_field.trigger('focus');
                 }else {
                     navBox_input_field.val('').trigger('input').blur();
-                    $('.navBox-header-search', navigationBox).addClass('hide');
-                    $('.navBox-header-title', navigationBox).removeClass('hide');
                 }
                 /* avoid that click event takes focus away */
                 e.preventDefault();

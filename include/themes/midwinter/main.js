@@ -452,12 +452,12 @@ function toggleDropDownMenu(event) {
 	let caller = $(event.currentTarget);
 	let helper = caller.attr('data-helper');
 
-	$('[class^="navBox-header-button dropdown"][data-helper="' + helper + '"]').toggleClass('show');
+	$('[class^="navBox-header-button"][data-action="dropdown"][data-helper="' + helper + '"]').toggleClass('show');
 	return false;
 }
 
 function hideDropDownMenu() {
-	$('[class^="navBox-header-button dropdown"]').removeClass('show');
+	$('[class^="navBox-header-button"][data-action="dropdown"]').removeClass('show');
 }
 
 function toggleTableColumn(event) {
@@ -1274,10 +1274,13 @@ const cyrb53 = function(str, seed = 0) {
 };
 
 function searchToHighlight(event) {
+	let caller = $(event.currentTarget);
+	let helper = caller.attr('data-helper');
+	let container = $('[class^="mdw-ConsoleNavigationBox"][data-helper="' + helper + '"]').find('.navBox-content');
+
 	let keyword = $(this).val();
 	let pattern = '.*' + keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '.*';
 	let re = new RegExp(pattern,'gmiu');
-	let container = $(this).parent().siblings('.navBox-content');
 
 	$("li.menuitem", container).removeClass('hide');
 	$("a[role='menuitem'], li.menuitem", container).unmark({
