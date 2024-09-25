@@ -49,16 +49,19 @@ class navigationBox {
             },
             'destination':   destination
         };
-        let navigationBoxButtons = '';
-        let navigationBoxButtonsLeft   = '';
+        let navigationBoxButtonsRight   = '';
+        let navigationBoxButtonsLeft    = '';
+        let navigationBoxSearch         = '';
+        let navigationBoxFiller         = '<div class="navBox-header-filler"></div>';
+        let navigationBoxTitle          = '<div class="navBox-header-title"><span>'+this.#box.header+'</span></div>';
 
         if(this.#box.buttons.search) {
-            navigationBoxButtons += '<div class="navBox-header-button" data-helper="'+this.#box.helper+'"><i class="intro_glyph fas fa-search"></i></div>';
+            navigationBoxButtonsLeft += '<div class="navBox-header-button fa-icon-search" data-action="search" data-helper="'+this.#box.helper+'" role="button" tabindex="0" aria-pressed="false"></div>';
+            navigationBoxSearch += '<div class="navBox-header-search hide"><input type="search" name="navBox-header-search" data-scope="theme" placeholder="Search in '+this.#box.title+'" tabindex="0"></div>';
         }
         if(this.#box.buttons.resize) {
-            navigationBoxButtons +=
-                '<div class="navBox-header-dropdown" data-helper="'+this.#box.helper+'">'
-                +		'<i class="intro_glyph fas fa-ellipsis-v"></i>'
+            navigationBoxButtonsRight +=
+                '<div class="navBox-header-button fa-icon-ellipsis-v" data-action="dropdown" data-helper="'+this.#box.helper+'" role="button" tabindex="0" aria-pressed="false">'
                 +		'<div class="navBox-header-dropdown-content">'
                 +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="auto" href="#">Auto</a>'
                 +			'<a class="setNavigationBoxColumns" data-scope="theme" data-func="setNavigationBoxColumns" data-helper="'+this.#box.helper+'" data-value="1" href="#">Columns 1</a>'
@@ -70,17 +73,17 @@ class navigationBox {
                 +	'</div>'
         }
         if(this.#box.buttons.close) {
-            navigationBoxButtons += '<div class="navBox-header-button" data-helper="'+this.#box.helper+'"><i class="intro_glyph fas fa-times"></i></div>';
+            navigationBoxButtonsRight += '<div class="navBox-header-button fa-icon-minus" data-action="close" data-helper="'+this.#box.helper+'" role="button" tabindex="0" aria-pressed="false"></div>';
         }
 
         if(this.#box.buttons.dock) {
-            navigationBoxButtons += '<div class="navBox-header-button" data-helper="'+this.#box.helper+'">' +
+            navigationBoxButtonsRight += '<div class="navBox-header-button" data-action="dock" data-helper="'+this.#box.helper+'" role="button" tabindex="0" aria-pressed="false">' +
                                     '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="18" x="2" y="3" stroke-linecap="round" stroke-linejoin="round" rx="2"/><path d="M9 3v18"/></g></svg>' +
                                     '</div>';
         }
 
-        if(navigationBoxButtons === '') {
-            navigationBoxButtons = '<div class="navBox-header-dropdown invisible"></div>';
+        if(navigationBoxButtonsRight === '') {
+            navigationBoxButtonsRight = '<div class="navBox-header-dropdown invisible"></div>';
         }
 
         if(this.#box.content !== 'auto') {
@@ -93,15 +96,13 @@ class navigationBox {
         }
 
         this.#container  = '<div class="'+this.#box.class+'" data-title="'+this.#box.title+'" data-helper="'+this.#box.helper+'" data-height="'+this.#box.height+'" data-width="'+this.#box.width+'" data-align="'+this.#box.align+'">';
-        this.#container += '<div class="navBox-header">';
-        this.#container += '<div class="navBox-header-title"><span>'+this.#box.header+'</span></div>'
-        this.#container += navigationBoxButtons + '</div>';
-        if(this.#box.buttons.search) {
-            this.#container +=
-                '<div class="navBox-search hide">' +
-                    '<input type="search" name="navBox-search" data-scope="theme" placeholder="Search in '+this.#box.title+'" tabindex="0">' +
-                '</div>';
-        }
+        this.#container += '<div class="navBox-header">'
+                            + navigationBoxButtonsLeft
+                            + navigationBoxSearch
+                            + navigationBoxFiller
+                            + navigationBoxTitle
+                            + navigationBoxButtonsRight
+                         + '</div>';
         this.#container += '<div class="navBox-content">' + this.#container_content + '</div>';
     }
 
@@ -115,35 +116,37 @@ class navigationBox {
 
         /* register button events if required */
         if(this.#box.buttons.close) {
-            $('[class="navBox-header-button"][data-helper="'+this.#box.helper+'"]', navigationBox).off().on(
+            $('[class^="navBox-header-button"][data-action="close"][data-helper="'+this.#box.helper+'"]', navigationBox).off().on(
                 'click', {param: 'force_close'}, toggleCactiNavigationBox).on(
                 'keydown', {param: 'force_close', function: 'toggleCactiNavigationBox'}, run_keyEvent
             )
         }
 
         if(this.#box.buttons.resize) {
-            $('[class="navBox-header-dropdown"][data-helper="'+this.#box.helper+'"]', navigationBox).off().on(
+            $('[class^="navBox-header-button"][data-action="dropdown"][data-helper="'+this.#box.helper+'"]', navigationBox).off().on(
                 'click', {param: this.#box.helper}, toggleDropDownMenu).on(
                 'keydown', {param:  this.#box.helper, function: 'toggleDropDownMenu'}, run_keyEvent
             )
         }
 
         if(this.#box.buttons.dock) {
-            $('[class="navBox-header-button"][data-helper="'+this.#box.helper+'"]', navigationBox).off().on(
+            $('[class^="navBox-header-button"][data-action="dock"][data-helper="'+this.#box.helper+'"]', navigationBox).off().on(
                 'click', {param: this.#box.helper, dock: 'right'}, toggleCactiNavigationBoxPin).on(
                 'keydown', {param:  this.#box.helper, dock: 'right', function: 'toggleCactiNavigationBoxPin'}, run_keyEvent
             );
         }
 
         if(this.#box.buttons.search) {
-            let navBox_input_field = $("input[name=navBox-search]", navigationBox);
-            $('[class="navBox-header-button"][data-helper="'+this.#box.helper+'"]', navigationBox).off().on('click', function(e) {
-                if($('.navBox-search', navigationBox).hasClass('hide')) {
-                    $('.navBox-search', navigationBox).removeClass('hide');
+            let navBox_input_field = $("input[name=navBox-header-search]", navigationBox);
+            $('[class^="navBox-header-button"][data-action="search"][data-helper="'+this.#box.helper+'"]', navigationBox).off().on('click', function(e) {
+                if($('.navBox-header-search', navigationBox).hasClass('hide')) {
+                    $('.navBox-header-title', navigationBox).addClass('hide');
+                    $('.navBox-header-search', navigationBox).removeClass('hide');
                     navBox_input_field.trigger('focus');
                 }else {
                     navBox_input_field.val('').trigger('input').blur();
-                    $('.navBox-search', navigationBox).addClass('hide');
+                    $('.navBox-header-search', navigationBox).addClass('hide');
+                    $('.navBox-header-title', navigationBox).removeClass('hide');
                 }
                 /* avoid that click event takes focus away */
                 e.preventDefault();
@@ -160,9 +163,10 @@ class navigationButton {
     #container;
     #button;
 
-    constructor(helper, tooltip='', icon_class, destination, onclick='auto', param='on') {
+    constructor(helper, subtitle='', tooltip='', icon_class, destination, onclick='auto', param='on') {
         this.#icon = {
             'helper'      : helper,
+            'title'       : subtitle,
             'tooltip'     : tooltip,
             'class'       : icon_class,
             'destination' : destination,
@@ -175,7 +179,7 @@ class navigationButton {
             this.#icon.onclick = onclick;
         }
 
-        this.#container = '<div class="compact_nav_icon hide" data-helper="'+this.#icon.helper+'" title="'+this.#icon.tooltip+'" role="button" tabindex="0" aria-pressed="false"><i class="'+this.#icon.class+'"></i></div>';
+        this.#container = '<div class="compact_nav_icon hide" data-subtitle="'+this.#icon.title+'" data-helper="'+this.#icon.helper+'" title="'+this.#icon.tooltip+'" role="button" tabindex="0" aria-pressed="false"><i class="'+this.#icon.class+'"></i></div>';
 
         /* avoid duplicates */
         if( $(this.#icon.destination + ' > div[class^="compact_nav_icon"][data-helper="' + this.#icon.helper + '"]').length === 0 ) {
@@ -206,6 +210,7 @@ function run_keyEvent(event) {
     if (!(event.keyCode === 13 || event.keyCode === 32)) {
         return;
     }
+    event.preventDefault();
     window[event.data.function](event);
 }
 
@@ -235,7 +240,7 @@ function get_dashboards_content(){
         if (cactiConsoleAllowed) {
             compact_tab_menu_content +=
                 '<li class="menuitem" id="menu_home">'
-                +    '<a class="menu_parent" href="#">'
+                +    '<a class="menu_parent" href="#" inert>'
                 +        '<i class="menu_glyph ignore fas fa-home"></i>'
                 +        '<span>'+cactiHome+'</span>'
                 +    '</a>'
@@ -249,7 +254,7 @@ function get_dashboards_content(){
         if (cactiGraphsAllowed) {
             compact_tab_menu_content +=
                 '<li class="menuitem" id="menu_tab_dashboard">'
-                +    '<a class="menu_parent" href="#">'
+                +    '<a class="menu_parent" href="#" inert>'
                 +        '<i class="menu_glyph ignore fas fa-chart-area"></i>'
                 +        '<span>Views</span>'
                 +    '</a>'
@@ -271,7 +276,7 @@ function get_dashboards_content(){
         if (showMisc) {
             compact_tab_menu_content +=
                 '<li class="menuitem" id="menu_tab_miscellaneous">'
-                +   '<a class="menu_parent" href="#">'
+                +   '<a class="menu_parent" href="#" inert>'
                 +       '<i class="menu_glyph ignore fas fa-puzzle-piece"></i>'
                 +       '<span>'+cactiMisc+'</span>'
                 +   '</a>'
@@ -304,31 +309,31 @@ function get_help_content() {
     let compact_help_menu_content =
            '<ul class="nav">'
         +   '<li class="menuitem" id="menu_user_help">'
-        +       '<a class="menu_parent" href="#">'
+        +       '<a class="menu_parent" href="#" inert>'
         +           '<i class="menu_glyph fas fa-medkit"></i>'
         +           '<span>'+cactiGeneral+'</span>'
         +       '</a>'
         +       '<ul>'
         +           '<li><a class="pic" role="menuitem" href="'+urlPath+'about.php">'+aboutCacti+'</a></li>'
-        +           '<li><a href="https://github.com/Cacti/documentation/blob/develop/README.md" target="_blank" rel="noopener">'+cactiDocumentation+'</a></li>'
-        +           '<li><a href="https://github.com/cacti" target="_blank" rel="noopener">'+cactiProjectPage+'</a></li>'
-        +           '<li><a href="https://www.cacti.net" target="_blank" rel="noopener">'+cactiHome+'</></a></li>'
+        +           '<li><a href="https://github.com/Cacti/documentation/blob/develop/README.md" target="_blank" rel="noopener noreferrer">'+cactiDocumentation+'</a></li>'
+        +           '<li><a href="https://github.com/cacti" target="_blank" rel="noopener noreferrer">'+cactiProjectPage+'</a></li>'
+        +           '<li><a href="https://www.cacti.net" target="_blank" rel="noopener noreferrer">'+cactiHome+'</></a></li>'
         +       '</ul>'
         +   '</li>'
         +   '<li class="menuitem" id="menu_user_issues">'
-        +       '<a class="menu_parent" href="#">'
+        +       '<a class="menu_parent" href="#" inert>'
         +           '<i class="menu_glyph fas fa-bug"></i>'
         +           '<span>'+reportABug+'</span>'
         +       '</a>'
         +       '<ul>'
-        +           '<li><a href="https://github.com/Cacti/cacti/issues/new/choose" target="_blank" rel="noopener">'+justCacti+'</></a></li>'
-        +           '<li><a href="https://github.com/Cacti/documentation/issues/new/choose" target="_blank" rel="noopener">'+cactiDocumentation+'</></a></li>'
-        +           '<li><a href="https://github.com/Cacti/spine/issues/new/choose" target="_blank" rel="noopener">'+cactiSpine+'</a></li>'
-        +           '<li><a href="https://github.com/Cacti/rrdproxy/issues/new/choose" target="_blank" rel="noopener">'+cactiRRDProxy+'</a></li>'
+        +           '<li><a href="https://github.com/Cacti/cacti/issues/new/choose" target="_blank" rel="noopener noreferrer">'+justCacti+'</></a></li>'
+        +           '<li><a href="https://github.com/Cacti/documentation/issues/new/choose" target="_blank" rel="noopener noreferrer">'+cactiDocumentation+'</></a></li>'
+        +           '<li><a href="https://github.com/Cacti/spine/issues/new/choose" target="_blank" rel="noopener noreferrer">'+cactiSpine+'</a></li>'
+        +           '<li><a href="https://github.com/Cacti/rrdproxy/issues/new/choose" target="_blank" rel="noopener noreferrer">'+cactiRRDProxy+'</a></li>'
         +       '</ul>'
         +   '</li>'
         +   '<li class="menuitem" id="menu_user_shortcuts">'
-        +       '<a class="menu_parent" href="#">'
+        +       '<a class="menu_parent" href="#" inert>'
         +           '<i class="menu_glyph far fa-keyboard"></i>'
         +           '<span>'+cactiKeyboard+'</span>'
         +       '</a>'
@@ -337,15 +342,15 @@ function get_help_content() {
         +       '</ul>'
         +   '</li>'
         +   '<li class="menuitem" id="menu_user_help">'
-        +       '<a class="menu_parent" href="#">'
+        +       '<a class="menu_parent" href="#" inert>'
         +           '<i class="menu_glyph fas fa-hands-helping"></i>'
         +           '<span>'+cactiContributeTo+'</span>'
         +       '</a>'
         +       '<ul>'
-        +           '<li><a href="https://forums.cacti.net/" target="_blank" rel="noopener">'+cactiCommunityForum+'</a></li>'
-        +           '<li><a href="https://github.com/cacti" target="_blank" rel="noopener">'+cactiDevHelp+'</a></li>'
-        +           '<li><a href="https://www.cacti.net/development/contribute" target="_blank" rel="noopener">'+cactiDonate+'</a></li>'
-        +           '<li><a href="https://translate.cacti.net" target="_blank" rel="noopener">'+cactiTranslate+'</a></li>'
+        +           '<li><a href="https://forums.cacti.net/" target="_blank" rel="noopener noreferrer">'+cactiCommunityForum+'</a></li>'
+        +           '<li><a href="https://github.com/cacti" target="_blank" rel="noopener noreferrer">'+cactiDevHelp+'</a></li>'
+        +           '<li><a href="https://www.cacti.net/development/contribute" target="_blank" rel="noopener noreferrer">'+cactiDonate+'</a></li>'
+        +           '<li><a href="https://translate.cacti.net" target="_blank" rel="noopener noreferrer">'+cactiTranslate+'</a></li>'
         +       '</ul>'
         +   '</li>'
         +   '</ul>';
@@ -361,11 +366,12 @@ function get_user_content() {
     let midWinter_Animations = storage.get('midWinter_Animations');
     let midWinter_ShownFontSizeValue = parseFloat(midWinter_Font_Size) + 25;
     let midWinter_Auto_Table_Layout = storage.get('midWinter_Auto_Table_Layout');
+    let midWinter_Controls_SubTitle = storage.get('midWinter_Controls_SubTitle');
 
     let compact_user_menu_content =
            '<ul class="nav">'
         +   '<li class="menuitem" id="menu_user_action">'
-        +       '<a class="menu_parent" href="#">'
+        +       '<a class="menu_parent" href="#" inert>'
         +           '<i class="menu_glyph fas fa-user-edit"></i>'
         +           '<span>'+cactiProfile+'</span>'
         +       '</a>'
@@ -376,7 +382,7 @@ function get_user_content() {
         +       '</ul>'
         +   '</li>'
         +   '<li class="menuitem double" id="menu_user_action">'
-        +       '<a class="menu_parent" href="#">'
+        +       '<a class="menu_parent" href="#" inert>'
         +           '<i class="menu_glyph fas fa-palette"></i>'
         +           '<span>'+cactiTheme+'</span>'
         +       '</a>'
@@ -410,10 +416,21 @@ function get_user_content() {
         +                       '<output id="mdw_themeFontSizeValue">'+midWinter_ShownFontSizeValue+'%</output>'
         +				'</div>'
         +           '</li>'
+        +           '<li>'
+        +				'<div>' + 'Show Control Names' + '</div>'
+        +				'<div>'
+        +					'<label class="checkboxSwitch">'
+        +						'<input data-scope="theme" id="mdw_themeControlsSubTitle" data-func="toggleControlsSubtitle" class="formCheckbox" type="checkbox" name="mdw_themeControlsSubtitle" '+(midWinter_Controls_SubTitle === 'on' ? 'checked' : '')+'>'
+        +						'<span class="checkboxSlider checkboxRound"></span>'
+        +					'</label>'
+        +					'<label class="checkboxLabel checkboxLabelWanted" for="mdw_themeControlsSubTitle"></label>'
+        +                   '<output id="mdw_themeControlsSubTitleValue">'+ midWinter_Controls_SubTitle +'</output>'
+        +				'</div>'
+        +           '</li>'
         +       '</ul>'
         +   '</li>'
         +   '<li class="menuitem double" id="menu_user_action">'
-        +       '<a class="menu_parent" href="#">'
+        +       '<a class="menu_parent" href="#" inert>'
         +           '<i class="menu_glyph fas fa-mobile-alt"></i>'
         +           '<span>Mobile Devices</span>'
         +       '</a>'

@@ -710,7 +710,7 @@ button.ui-button::-moz-focus-inner {
 }
 .ui-selectmenu-text {
 	display: block;
-	margin-right: 20px;
+	margin-right: 5px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
@@ -996,11 +996,11 @@ a.ui-button:focus {
 .ui-widget-header .ui-state-active,
 a.ui-button:active,
 .ui-button:active,
-.ui-button.ui-state-active:hover {
+.ui-button.ui-state-active:hover,
+.ui-button.ui-state-active:focus-within {
 	font-weight: normal;
 	color: white;
 	background: var(--background-progress);
-}
 }
 .ui-icon-background,
 .ui-state-active .ui-icon-background {

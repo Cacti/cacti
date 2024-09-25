@@ -171,8 +171,14 @@
     background-color: var(--background-content);
 }
 
-.ui-menu .ui-state-focus, .ui-menu .ui-state-active {
+.ui-menu .ui-state-focus {
     background: var(--background-lowlight);
+    color: var(--text-color-lighter);
+    margin: 0;
+}
+
+.ui-menu .ui-state-active {
+    background: var(--background-active-section);
     color: var(--text-color-lighter);
     margin: 0;
 }
@@ -240,4 +246,41 @@
     vertical-align: middle;
     display: inline-block;
     font-size: var(--fs-regular);
+}
+
+.filterTable {
+    /* redesign classical select menus to become really compact */
+    .ui-selectmenu-button {
+        border: 1px solid transparent !important;
+        border-radius: 4px;
+        background-color: transparent !important;
+
+        &:first-of-type {
+            padding-left: 0 !important;
+        }
+    }
+
+    td:not(:has(*)) {
+       display: none;
+    }
+
+    .ui-selectmenu-text[data-active][data-active="false"] {
+        color: var(--text-color-normal);
+    }
+
+    .ui-selectmenu-text[data-active][data-active="true"] {
+        color: var(--text-color-highlight-a);
+    }
+
+}
+
+.mdw-selectmenu-search {
+    margin-top: 0.4rem;
+    padding-bottom: 2px;
+    background: var(--background-content);
+    box-shadow: var(--box-shadow-color) 0 5px 10px;
+    & input {
+        border: 1px solid var(--border-color);
+
+    }
 }

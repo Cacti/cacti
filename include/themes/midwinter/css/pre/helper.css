@@ -1,0 +1,14 @@
+/* Helper Classes */
+
+/* Helper Icon Class to generate FontAwesome Icons using pseudo elements */
+
+div[class*=" fa-icon-"], span[class*=" fa-icon-"] {
+    font-family: "Font Awesome 5 Free", serif;
+    font-weight: 600;
+
+    &.fa-icon-ellipsis-v::after { content: "\f142"; }
+    &.fa-icon-minus::after      { content: "\f068"; }
+    &.fa-icon-search::after     { content: "\f002"; }
+    &.fa-icon-check::after      { content: "\f003"; }
+
+}

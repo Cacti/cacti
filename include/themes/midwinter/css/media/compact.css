@@ -39,16 +39,24 @@
 
 }
 
-.compact_nav_icon {
+.compact_nav_icon,
+.navBox-header-button {
     color: var(--text-color-normal);
 
     &.mdw-active {
-        background: var(--background);
+        background: var(--background-active-section);
     }
 
     &.selected {
         color: white;
         background: hsl( 208, 69%, 40%);
+    }
+
+    &:focus-visible {
+        color: white;
+        outline: none !important;
+        box-shadow: var(--background-content) 0px 0px 0px -2px, var(--border-color-highlight) 0px 0px 0px 1px;
+        background-color: hsla( 208, 69%, 40%, 0.5);
     }
 
     @media (hover: hover) {

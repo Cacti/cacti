@@ -43,6 +43,7 @@ initStorageItem('midWinter_Color_Mode_Auto',		'on',	'theme-color-auto');
 initStorageItem('midWinter_Font_Size',			'75',	'zoom-level');
 initStorageItem('midWinter_Animations',			'on',	'animations');
 initStorageItem('midWinter_Auto_Table_Layout',	'on',	'auto-table-layout');
+initStorageItem('midWinter_Controls_SubTitle',	'off',	'controls-subtitle');
 
 setHotKeys();
 
@@ -235,7 +236,9 @@ function setupTheme() {
 
 		if ($('#navBackdrop').length === 0 ) {
 			$('.mdw-ConsoleNavigation').empty().prepend('<div class="compact_nav_icon_menu">' +
-				'<div class="compact_nav_icon navBackdrop" id="navBackdrop" role="button" tabindex="0" aria-pressed="false"></div></div>');
+				'<div class="compact_nav_icon" data-subtitle="Console" id="navBackdrop" role="button" tabindex="0" aria-pressed="false">' +
+					'<div class="navBackdrop"></div>'+
+				'</div></div>');
 			if (cactiConsoleAllowed) {
 				$("#navBackdrop").click( function() {
 					/* hide open menu boxes first and remove menu selection */
@@ -256,25 +259,24 @@ function setupTheme() {
 				element_menu = loadElement('menu', 'about.php', true);
 			}
 
-
 			$('.mdw-ConsoleNavigation').append(
 				'<div class="compact_nav_icon_menu" id="compact_tab_menu"></div>'
 				+'<div class="compact_nav_icon_menu" id="compact_user_menu"></div>'
 			);
 
 			/* dashboards */
-			new navigationButton('dashboards', 'Dashboards', 'fas fa-th-large', '#compact_tab_menu').show();
+			new navigationButton('dashboards', 'Panels', 'Panels', 'fas fa-th-large', '#compact_tab_menu').show();
 			new navigationBox(cactiDashboards, 'dashboards', 'full','auto', {
-				close: false,
+				close: true,
 				search: 'searchToHighlight',
 				resize: true
 			}).build();
 
 			/* settings */
 			if (cactiConsoleAllowed) {
-				new navigationButton('settings', 'Settings', 'fas fa-cogs', '#compact_tab_menu');
+				new navigationButton('settings', 'Setup', 'Settings', 'fas fa-cogs', '#compact_tab_menu');
 				new navigationBox(zoom_i18n_settings, 'settings', 'full', 'auto', {
-					close: false,
+					close: true,
 					search: 'searchToHighlight',
 					resize: true,
 				}, 'left', zoom_i18n_settings, element_menu).build();
@@ -282,16 +284,16 @@ function setupTheme() {
 
 			/* tree */
 			if (cactiGraphsAllowed) {
-				new navigationButton('tree', 'Tree View','fas fa-seedling', '#compact_tab_menu').show();
+				new navigationButton('tree', 'Tree', 'Tree View','fas fa-seedling', '#compact_tab_menu').show();
 				new navigationBox( 'Tree', 'tree', 'full', 'auto', {
-					close: false,
+					close: true,
 					search: 'searchCactiTree',
 					resize: true,
 				},'left', 'Tree').build();
 			}
 
 			/* user help */
-			new navigationButton('help', 'Help', 'far fa-comment-alt', '#compact_user_menu').show();
+			new navigationButton('help', 'Help', 'Help', 'far fa-comment-alt', '#compact_user_menu').show();
 			new navigationBox(help, 'help', 'half', '2', {
 				close: false,
 				search: false,
@@ -299,7 +301,7 @@ function setupTheme() {
 			}, 'left', justCacti+' &reg; v'+cactiVersion).build();
 
 			/* user settings */
-			new navigationButton('user', 'User Settings', 'far fa-user', '#compact_user_menu').show();
+			new navigationButton('user', 'User', 'User Settings', 'far fa-user', '#compact_user_menu').show();
 			new navigationBox( cactiUser, 'user', 'half', '2', {
 				close: false,
 				search: false,
@@ -307,7 +309,7 @@ function setupTheme() {
 			}, 'left', $('.loggedInAs').text() ).build();
 
 			/* log out */
-			new navigationButton('logout', 'Sign Out','fas fa-sign-out-alt', '#compact_user_menu', 'redirect', urlPath+'logout.php').show();
+			new navigationButton('logout', 'Exit', 'Sign Out','fas fa-sign-out-alt', '#compact_user_menu', 'redirect', urlPath+'logout.php').show();
 
 			/* table filters */
 	  		new navigationBox( 'Table Layout', 'displayOptions', 'full', '1', {
@@ -316,14 +318,14 @@ function setupTheme() {
 				resize: false,
 				dock: false,
 			}, 'right','Table Layout', 'auto').build();
-			new navigationButton('toggleColorMode', 'Toggle light/dark Mode', 'fas fa-adjust', '#navControl', 'toggleColorMode', 'on').show();
-			new navigationButton('kioskMode', 'Enable Kiosk Mode', 'fas fa-tv', '#navControl', 'kioskMode', 'on').show();
+			new navigationButton('toggleColorMode', 'Color', 'Toggle light/dark Mode', 'fas fa-adjust', '#navControl', 'toggleColorMode', 'on').show();
+			new navigationButton('kioskMode', 'Kiosk', 'Enable Kiosk Mode', 'fas fa-tv', '#navControl', 'kioskMode', 'on').show();
 		}
 	}
 
 	/* CLEAN UP */
 	$('#menu_main_console').remove();
-	$('a.menu_parent').removeClass('mdw-active');
+	$('a.menu_parent').removeClass('mdw-active').prop('inert', true); // suppress focus
 
 	/* replace default icons */
 	$('i.menu_glyph:not(.ignore).fa-home').removeClass('fa fa-home').addClass('fa fa-tools');
@@ -447,14 +449,15 @@ function toggleCactiDockNavigationBox(event) {
 }
 
 function toggleDropDownMenu(event) {
-	//event.preventDefault();
-	let helper = $(this).data('helper');
-	$('[class^="navBox-header-dropdown"][data-helper="' + helper + '"]').toggleClass('show');
+	let caller = $(event.currentTarget);
+	let helper = caller.attr('data-helper');
+
+	$('[class^="navBox-header-button dropdown"][data-helper="' + helper + '"]').toggleClass('show');
 	return false;
 }
 
 function hideDropDownMenu() {
-	$('[class^="navBox-header-dropdown"]').removeClass('show');
+	$('[class^="navBox-header-button dropdown"]').removeClass('show');
 }
 
 function toggleTableColumn(event) {
@@ -570,9 +573,9 @@ function setupDefaultElements() {
 		$('.stickyContainer').remove();
 	}
 
-	let btn_filter 	= new navigationButton('displayDockTop', 'Show Filter Dock','fas fa-filter', '#navFilter', 'toggleCactiDockNavigationBox', 'Top');
-	let btn_calendar	= new navigationButton('daterangepicker', 'Select Timeframe', 'fas fa-calendar-alt', '#navFilter', '', '');
-	let btn_add		= new navigationButton('formAction', 'Add','fas fa-plus', '#navFilter');
+	let btn_filter 	= new navigationButton('displayDockTop', 'Filter', 'Show Filter Dock','fas fa-filter', '#navFilter', 'toggleCactiDockNavigationBox', 'Top');
+	let btn_calendar	= new navigationButton('daterangepicker', 'Calendar', 'Select Timeframe', 'fas fa-calendar-alt', '#navFilter', '', '');
+	let btn_add		= new navigationButton('formAction', 'New', 'Add','fas fa-plus', '#navFilter');
 
 	if ($("#main .filterTable").length) {
 		let filter;
@@ -606,7 +609,7 @@ function setupDefaultElements() {
 	}
 
 	/* display option: table layout */
-	let btn_table_layout = new navigationButton('displayOptions', 'Setup Table Layout','fas fa-sliders-h', '#navFilter');
+	let btn_table_layout = new navigationButton('displayOptions', 'Table', 'Setup Table Layout','fas fa-sliders-h', '#navFilter');
 
 	if ($('tr.tableHeader').length !== 0) {
 		let cArray = [];
@@ -777,15 +780,92 @@ function setupDefaultElements() {
 
 	$('select.colordropdown').dropcolor();
 
+	$.widget( "ui.selectmenu", $.ui.selectmenu, {
+		_renderMenu: function( ul, items ) {
+			let that = this;
+			let attr = this.element[0].attributes;
+
+			$.each( items, function( index, item ) {
+				that._renderItemData( ul, item );
+			});
+
+			if (typeof(attr['data-defaultLabel']) !== 'undefined') {
+				$(ul).parent().prepend('<div class="mdw-selectmenu-search"><input type="search" data-scope="theme" placeholder="Search"></div>');
+				this._on(false, this.menuWrap.find('input'), {
+					'input': function (event) {
+						let search_string = that.menuWrap.find('input').val().toUpperCase();
+						$(ul).find('li').each(function (index, item) {
+							if ($(this).text().toUpperCase().indexOf(search_string) > -1) {
+								$(this).show();
+							} else {
+								$(this).hide();
+							}
+						})
+					}
+				})
+			}
+		},
+		_renderButtonItem: function( item ) {
+			let that = this;
+			let attr = this.element[0].attributes;
+
+			if (typeof(attr['data-defaultLabel']) !== 'undefined') {
+				let defaultLabel = attr['data-defaultLabel'].value;
+				let filterActive = '';
+				let defaultIndex = 0;
+				let defaultValue = this.element.find("option").eq(0).val();
+
+				if (typeof(attr['data-defaultValue']) !== 'undefined') {
+					let defaultValue = attr['data-defaultValue'].value;
+				}
+
+				filterActive = (defaultValue !== item.value) ? 'true' : 'false';
+
+				/* fallback to index value -- maybe superfluous */
+				if(filterActive === '') {
+					filterActive = (defaultIndex !== item.index) ? 'true' : 'false';
+				}
+
+				let buttonItem = $( "<span>", {
+					"class": "ui-selectmenu-text",
+					"data-active": filterActive
+				})
+				if (filterActive === 'true') {
+					this._setText( buttonItem, defaultLabel + ': ' + item.label );
+					let icon = {'button' : 'ui-icon-close'};
+					this._setOption( 'icons', icon );
+					this._off( this.button.find( "span.ui-icon" ), 'click');
+					this._on( false, this.button.find( "span.ui-icon" ), {
+						click: function( event ) {
+							event.stopImmediatePropagation();
+							let defaultValue = that.element.find( "option" ).eq(0).val();
+							let item = {'index' : 0, 'value' : defaultValue };
+							this._select( item, event);
+						}
+					} );
+				}else {
+					this._setText( buttonItem, defaultLabel );
+				}
+				return buttonItem;
+			}else {
+				let buttonItem = $( "<span>", {
+					"class": "ui-selectmenu-text",
+				})
+				this._setText( buttonItem, item.label );
+				return buttonItem;
+			}
+		}
+	});
 
 	$('select').not('.colordropdown').each(function() {
 		if ($(this).prop('multiple') != true) {
 			$(this).each(function() {
-				id = $(this).attr('id');
+				let id = $(this).attr('id');
+				let text = 'hello';
 
 				$(this).selectmenu({
 					open: function(event, ui) {
-						var instance = $(this).selectmenu('instance');
+						let instance = $(this).selectmenu('instance');
 						instance.menuInstance.focus(null, instance._getSelectedItem());
 					},
 					change: function(event, ui) {
@@ -799,7 +879,7 @@ function setupDefaultElements() {
 					width: false
 				});
 
-				$('#'+id+'-menu').css('max-height', '250px');
+				$('#'+id+'-menu').css('max-height', '250px').attr('data-title', 'hello2');
 			});
 		} else {
 			$(this).addClass('ui-state-default ui-corner-all');
@@ -994,6 +1074,16 @@ function toggleGuiAnimations() {
 	setDocumentAttribute('animations', midWinter_Animations);
 	/* update output field beside input selector */
 	$('#mdw_themeAnimationsValue').val(midWinter_Animations);
+}
+
+function toggleControlsSubtitle() {
+	let storage = Storages.localStorage;
+	let midWinter_Controls_SubTitle = storage.get('midWinter_Controls_SubTitle');
+	midWinter_Controls_SubTitle = (midWinter_Controls_SubTitle === 'on') ? 'off' : 'on';
+	storage.set('midWinter_Controls_SubTitle', midWinter_Controls_SubTitle);
+	setDocumentAttribute('controls-subtitle', midWinter_Controls_SubTitle);
+	/* update output field beside input selector */
+	$('#mdw_themeControlsSubTitleValue').val(midWinter_Controls_SubTitle);
 }
 
 function toggleAutoTableLayout() {

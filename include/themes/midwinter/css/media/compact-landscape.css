@@ -6,6 +6,12 @@ html {
         }
     }
 
+    &:not([data-controls-subtitle="on"]) {
+        .compact_nav_icon::after {
+            display: none !important;
+        }
+    }
+
     &[data-kiosk-mode="on"] {
 
         .mdw-GridContainer {
@@ -37,7 +43,6 @@ html {
         }
     }
 }
-
 
 .mdw-GridContainer {
     display: grid;
@@ -202,6 +207,8 @@ html {
     border-right: 1px solid var(--border-color-semilight);
     background: var(--background-navigation);
     grid-area: sidebar;
+    padding-bottom: 2px;
+
 
     .compact_nav_icon_menu {
         &:last-child {
@@ -217,7 +224,7 @@ html {
         font-size: var(--fs-semilarge);
         position: relative;
         display: flex;
-        align-items: center;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
         height: 3.5rem;
@@ -226,16 +233,31 @@ html {
         border-radius: 4px;
         border: 2px solid transparent;
 
-        &.navBackdrop {
+        &:has(.navBackdrop){
             height: calc(4rem - 2px);
+        }
+
+
+        & .navBackdrop {
+            width: 100%;
+            height: 3.5rem;
             background: transparent url("./../../images/cacti_logo.svg") no-repeat scroll 50% 50% / 20px auto;
-            &:hover {
-                background-color: hsla( 208, 69%, 40%, 0.5);
+
+            html[data-controls-subtitle="on"] & {
+                height: 2rem;
+                background: transparent url("./../../images/cacti_logo.svg") no-repeat scroll 50% 50% / min(10px) auto;
             }
         }
 
-        &[data-tooltip]:not([data-tooltip=""])::after {
-            left: 50%;
+        &[data-subtitle]:not([data-subtitle=""])::after {
+            display: block;
+            content: attr(data-subtitle);
+            font-size: var(--fs-small);
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
         }
 
         & > span {
@@ -322,7 +344,6 @@ html {
         box-shadow: 0 10px 5px 0 var(--box-shadow-color);
 
         .navBox-header-button:last-child {
-            width: 3rem;
             margin-right: calc(0.5rem + 4px);
         }
 
@@ -408,7 +429,7 @@ html {
     height: 3.5rem;
     text-align: center;
     background: var(--background-navigation);
-    padding: 2px 2px 3px 2px;
+    padding: 2px 0.5rem 3px 0.75rem;
 }
 
 .navBox-header-title {
@@ -419,26 +440,28 @@ html {
     }
 }
 
-.navBox-header-button,
-.navBox-header-dropdown {
+.navBox-header-button {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2.5rem;
-    height: 100%;
     cursor: pointer;
     border: 1px solid transparent;
     border-radius: 4px;
+    min-width: 2.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
 }
 
-.navBox-header-button:hover,
-.navBox-header-dropdown.show,
-.navBox-header-dropdown:hover {
+.navBox-header-button:hover {
     color: white;
     background-color: hsla(208, 69%, 40%, 0.5);
 }
 
-.navBox-header-dropdown.show > .navBox-header-dropdown-content {
+.navBox-header-filler {
+    flex: 1;
+}
+
+.navBox-header-button.dropdown.show > .navBox-header-dropdown-content {
     display: block !important;
 }
 
@@ -471,18 +494,21 @@ html {
 }
 
 
-.navBox-search {
+.navBox-header-search {
     display: flex;
     align-items: stretch;
     flex-direction: column;
-    flex-shrink: 0;
     justify-content: center;
-    height: 3.5rem;
-    padding: 0 2rem;
+    padding: 0 1rem;
     text-align: center;
+    width: 100%;
+    max-width: 32rem;
     background: var(--background-navigation);
 
     & input {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
         font-size: var(--fs-regular);
         color: var(--text-color-normal);
         border: 1px solid var(--border-color-highlight);
@@ -494,7 +520,7 @@ html {
 
 .navBox-content {
     overflow: auto;
-    padding: 1rem 0 0 2rem;
+    padding: 1rem 0 0 1rem;
     height: calc( 100% - 3.5rem );
     border-top: 1px solid var(--background-navigation-top);
 
@@ -638,6 +664,15 @@ html {
         align-items: stretch;
         border-right: none;
         border-top: 1px solid var(--text-color-black);
+
+        & .compact_nav_icon {
+            & .navBackdrop {
+                html[data-controls-subtitle="on"] & {
+                    height: 15px;
+                    background: transparent url("./../../images/cacti_logo.svg") no-repeat scroll 50% 50% / 10px auto;
+                }
+            }
+        }
     }
 
     .mdw-Main {
@@ -647,6 +682,7 @@ html {
     .compact_nav_icon_menu {
         display: flex;
         align-items: center;
+        padding-top: 4px;
 
         &:first-of-type {
             margin-left: 1rem;
@@ -664,8 +700,7 @@ html {
             justify-content: center;
             align-content: center;
             flex-wrap: wrap;
-            width: 3rem;
-            height: 4rem;
+            width: 3.25rem;
             cursor: pointer;
             font-size: var(--fs-semilarge);
             border-radius: 4px 4px 0 0;
@@ -745,7 +780,7 @@ html {
         }
     }
 }
-@media screen and (max-width: 769px) {
+@media screen and (max-width: 768px) {
     &[data-auto-table-layout="on"] {
         .cactiTable:has(th) {
             th:nth-of-type(n+2):nth-last-of-type(n+2):not(.nohide),

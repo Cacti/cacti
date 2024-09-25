@@ -37,6 +37,7 @@
     --table-selected: hsla(var(--special2-hue), 69%, 12%);
     --background-dark: hsl(var(--hue), 19%, 17%);
     --background-active: limegreen;
+    --background-active-section: hsl(var(--hue), 19%, 17%);
     --border-color: hsl(var(--hue), 19%, 21%);
     --border-color-semilight: hsla(var(--hue), 19%, 100%, 0.04);
     --border-color-light: hsla(var(--hue), 19%, 100%, 0.08);
@@ -81,6 +82,7 @@
     --background-progress-mediumlight: hsla(var(--special2-hue), 69%, 40%, 0.6);
     --background-progress-semilight:  hsl(var(--contrast), 0%, 90%);
     --background-active: forestgreen;
+    --background-active-section: lemonchiffon;
     --background-autofill: lightyellow;
     --table-selectable: #e4e7e7; /* hsl(var(--hue), 5%, 90%);    /*  */
     --table-selected: #eceeee; /* hsl(var(--hue), 5%, 93%);      /*  */

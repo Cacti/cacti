@@ -2300,7 +2300,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 			<?php print __('Device');?>
 		</td>
 		<td>
-			<select id='host_id' name='host_id' onChange='<?php print $call_back;?>'>
+			<select id='host_id' name='host_id' onChange='<?php print $call_back;?>' data-defaultLabel='<?php print __('Device');?>'>
 				<?php if (!$noany) {?><option value='-1'<?php if ($host_id == '-1') {?> selected<?php }?>><?php print __('Any');?></option><?php }?>
 				<?php if (!$nonone) {?><option value='0'<?php if ($host_id == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
 				<?php
@@ -2358,7 +2358,7 @@ function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_wher
 		<?php print __('Site');?>
 	</td>
 	<td>
-		<select id='site_id' onChange='<?php print $call_back;?>'>
+		<select id='site_id' onChange='<?php print $call_back;?>' data-defaultLabel='<?php print __('Site');?>'>
 			<?php if (!$noany) {?><option value='-1'<?php if ($site_id == '-1') {?> selected<?php }?>><?php print __('Any');?></option><?php }?>
 			<?php if (!$nonone) {?><option value='0'<?php if ($site_id == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
 			<?php
@@ -2792,7 +2792,7 @@ function html_common_header($title, $selectedTheme = '') {
 		var cactiConsole = '<?php print __esc('Console');?>';
 		var cactiConsoleAllowed=<?php print(is_realm_allowed(8) ? 'true':'false');?>;
 		var cactiContributeTo = '<?php print __esc('Contribute to the Cacti Project');?>';
-		var cactiDashboards = '<?php print __esc('Dashboards');?>';
+		var cactiDashboards = '<?php print __esc('Panels');?>';
 		var cactiDevHelp = '<?php print __esc('Help in Developing');?>';
 		var cactiDocumentation = '<?php print __esc('Documentation');?>';
 		var cactiDonate = '<?php print __esc('Donation & Sponsoring');?>';
