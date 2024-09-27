@@ -434,9 +434,8 @@ html {
 
 .navBox-header-title {
     flex-grow: 1;
-
     > span {
-        margin-left: 2rem;
+        margin-right: 2rem;
     }
 }
 
@@ -454,7 +453,15 @@ html {
     &[aria-pressed="true"] {
         background: var(--background-active-section);
         &:has(~ .navBox-header-search) {
-            ~ .navBox-header-search { display: flex; }
+            ~ .navBox-header-search {
+                flex-grow: 5;
+                visibility: visible;
+            }
+            ~ .navBox-header-search > input {
+                display: block !important;
+                width: 100%;
+                min-width: 8.5rem;
+            }
             ~ .navBox-header-title  { display: none; }
             ~ .navBox-header-filler { flex-grow: 1;  }
         }
@@ -503,28 +510,31 @@ html {
     }
 }
 
-
 .navBox-header-search {
-    display: none;
+    display: flex;
+    visibility: hidden;
+    width: 0;
     align-items: stretch;
     flex-direction: column;
     justify-content: center;
-    padding: 0 1rem;
     text-align: center;
-    width: 100%;
-    max-width: 32rem;
     background: var(--background-navigation);
+    transition: flex 0.3s ease-in-out, visibility 0.25s ease-in-out;
+    padding: 0 1rem;
+    flex-shrink: 0;
 
     & input {
+        height: 2rem;
+        display: block;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
         font-size: var(--fs-regular);
         color: var(--text-color-normal);
-        border: 1px solid var(--border-color-highlight);
         background-color: var(--background-navigation-top) !important;
-        padding: 0.5rem 1rem;
-        max-width: unset;
+        border: 1px solid var(--border-color-highlight);
+        padding: 0 0.5rem 0 1rem;
+        max-width: 50rem;
     }
 }
 

@@ -141,7 +141,9 @@ class navigationBox {
             $('[class^="navBox-header-button"][data-action="search"][data-helper="'+this.#box.helper+'"]', navigationBox).off().on('click', function(e) {
                 $(this).attr('aria-pressed', function(_, attr) { return !(attr === 'true') })
                 if ($(this).attr('aria-pressed') === 'true') {
-                    navBox_input_field.trigger('focus');
+                    setTimeout( function() {
+                        navBox_input_field.delay().trigger('focus');
+                    }, 100 );
                 }else {
                     navBox_input_field.val('').trigger('input').blur();
                 }
