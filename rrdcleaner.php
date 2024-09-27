@@ -535,17 +535,18 @@ function filter() {
 							<select id='rows'>
 								<option value='-1' <?php print(get_request_var('rows') == '-1' ? ' selected>' : '>') . __('Default'); ?></option>
 									<?php
-										if (cacti_sizeof($item_rows)) {
-											foreach ($item_rows as $key => $value) {
-												print '<option value="' . $key . '"';
+									if (cacti_sizeof($item_rows)) {
+										foreach ($item_rows as $key => $value) {
+											print '<option value="' . $key . '"';
 
-												if (get_request_var('rows') == $key) {
-													print ' selected';
-												}
-												print '>' . $value . "</option>\n";
+											if (get_request_var('rows') == $key) {
+												print ' selected';
 											}
+											print '>' . $value . "</option>\n";
 										}
-	?>
+									}
+									?>
+								</option>
 							</select>
 						</td>
 						<td>
@@ -567,10 +568,11 @@ function filter() {
 			</form>
 			<script type="text/javascript">
 				function refreshForm() {
-					strURL = 'rrdcleaner.php';
-					'?filter=' + $('#filter').val() +
-						'&age=' + $('#age').val() +
-						'&rows=' + $('#rows').val();
+					var strURL  = 'rrdcleaner.php';
+					strURL += '?filter=' + $('#filter').val();
+					strURL += '&age=' + $('#age').val();
+					strURL += '&rows=' + $('#rows').val();
+
 					loadUrl({
 						url: strURL
 					})
@@ -626,5 +628,5 @@ function filter() {
 			</script>
 		</td>
 	</tr>
-<?php
+	<?php
 }
