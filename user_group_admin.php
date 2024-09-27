@@ -1896,7 +1896,7 @@ function user_group() {
 						<?php print __('Groups');?>
 					</td>
 					<td>
-						<select id='rows'>
+						<select id='rows' data-defaultLabel='<?php print __('Groups');?>'>
 							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -2232,7 +2232,7 @@ function graph_filter($header_label) {
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='graph_template_id'>
+						<select id='graph_template_id' data-defaultLabel='<?php print __('Template');?>'>
 							<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
@@ -2258,7 +2258,7 @@ function graph_filter($header_label) {
 						<?php print __('Graphs');?>
 					</td>
 					<td>
-						<select id='rows'>
+						<select id='rows' data-defaultLabel='<?php print __('Graphs');?>'>
 							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 	if (cacti_sizeof($item_rows)) {
@@ -2358,7 +2358,7 @@ function device_filter($header_label) {
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='host_template_id'>
+						<select id='host_template_id' data-defaultLabel='<?php print __('Template');?>'>
 							<option value='-1'<?php if (get_request_var('host_template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('host_template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
@@ -2380,7 +2380,7 @@ function device_filter($header_label) {
 						<?php print __('Devices');?>
 					</td>
 					<td>
-						<select id='rows'>
+						<select id='rows' data-defaultLabel='<?php print __('Devices');?>'>
 							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 	if (cacti_sizeof($item_rows)) {
@@ -2479,7 +2479,7 @@ function template_filter($header_label) {
 						<?php print __('Templates');?>
 					</td>
 					<td>
-						<select id='rows'>
+						<select id='rows' data-defaultLabel='<?php print __('Templates');?>'>
 							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -2578,7 +2578,7 @@ function tree_filter($header_label) {
 						<?php print __('Trees');?>
 					</td>
 					<td>
-						<select id='rows'>
+						<select id='rows' data-defaultLabel='<?php print __('Trees');?>'>
 							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -2677,7 +2677,7 @@ function member_filter($header_label) {
 						<?php print __('Users');?>
 					</td>
 					<td>
-						<select id='rows'>
+						<select id='rows' data-defaultLabel='<?php print __('Users');?>'>
 							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {

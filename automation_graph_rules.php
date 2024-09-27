@@ -835,7 +835,7 @@ function automation_graph_rules() {
 							<?php print __('Data Query');?>
 						</td>
 						<td>
-							<select id='snmp_query_id'>
+							<select id='snmp_query_id' data-defaultLabel='<?php print __('Data Query');?>'>
 								<option value='-1'<?php print(get_request_var('snmp_query_id') == '-1' ? ' selected':'');?>><?php print __('Any');?></option>
 								<?php
 								$available_data_queries = db_fetch_assoc('SELECT DISTINCT
@@ -857,7 +857,7 @@ function automation_graph_rules() {
 							<?php print __('Status');?>
 						</td>
 						<td>
-							<select id='status'>
+							<select id='status' data-defaultLabel='<?php print __('Status');?>'>
 								<option value='-1' <?php print(get_request_var('status') == '-1' ? ' selected':'');?>><?php print __('Any');?></option>
 								<option value='-2' <?php print(get_request_var('status') == '-2' ? ' selected':'');?>><?php print __('Enabled');?></option>
 								<option value='-3' <?php print(get_request_var('status') == '-3' ? ' selected':'');?>><?php print __('Disabled');?></option>
@@ -867,7 +867,7 @@ function automation_graph_rules() {
 							<?php print __('Graph Rules');?>
 						</td>
 						<td>
-							<select id='rows'>
+							<select id='rows' data-defaultLabel='<?php print __('Graph Rules');?>'>
 								<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 								<?php
 								if (cacti_sizeof($item_rows) > 0) {

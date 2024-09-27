@@ -587,7 +587,7 @@ function draw_filter() {
 						<?php print __('Network');?>
 					</td>
 					<td>
-						<select id='network' onChange='applyFilter()'>
+						<select id='network' onChange='applyFilter()' data-defaultLabel='<?php print __('Network');?>'>
 							<option value='-1' <?php if (get_request_var('network') == -1) {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							if (cacti_sizeof($networks)) {
@@ -621,7 +621,7 @@ function draw_filter() {
 						<?php print __('Status');?>
 					</td>
 					<td>
-						<select id='status' onChange='applyFilter()'>
+						<select id='status' onChange='applyFilter()' data-defaultLabel='<?php print __('Status');?>'>
 							<option value='-1' <?php if (get_request_var('status') == '') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 	if (cacti_sizeof($status_arr)) {
@@ -640,7 +640,7 @@ function draw_filter() {
 						<?php print __('OS');?>
 					</td>
 					<td>
-						<select id='os' onChange='applyFilter()'>
+						<select id='os' onChange='applyFilter()' data-defaultLabel='<?php print __('OS');?>'>
 							<option value='-1' <?php if (get_request_var('os') == '') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 	if (cacti_sizeof($os_arr)) {
@@ -659,7 +659,7 @@ function draw_filter() {
 						<?php print __('SNMP');?>
 					</td>
 					<td>
-						<select id='snmp' onChange='applyFilter()'>
+						<select id='snmp' onChange='applyFilter()' data-defaultLabel='<?php print __('SNMP');?>'>
 							<option value='-1' <?php if (get_request_var('snmp') == '') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 	if (cacti_sizeof($status_arr)) {
@@ -678,7 +678,7 @@ function draw_filter() {
 						<?php print __('Devices');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Devices');?>'>
 							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 	if (cacti_sizeof($item_rows) > 0) {

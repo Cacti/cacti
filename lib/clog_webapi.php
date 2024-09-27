@@ -486,7 +486,7 @@ function filter($clogAdmin, $selectedFile) {
 						<?php print __('File');?>
 					</td>
 					<td>
-						<select id='filename'>
+						<select id='filename' data-defaultLabel='<?php print __('File');?>'>
 						<?php
 						$logFileArray = clog_get_logfiles();
 
@@ -513,7 +513,7 @@ function filter($clogAdmin, $selectedFile) {
 						<?php print(get_request_var('reverse') == 1 ? __('Tail Lines'):__('Head Lines'));?>
 					</td>
 					<td>
-						<select id='tail_lines'>
+						<select id='tail_lines' data-defaultLabel='<?php print(get_request_var('reverse') == 1 ? __('Tail Lines'):__('Head Lines'));?>'>
 							<?php
 		foreach ($log_tail_lines as $tail_lines => $display_text) {
 			print "<option value='" . $tail_lines . "'";
@@ -541,7 +541,7 @@ function filter($clogAdmin, $selectedFile) {
 						<?php print __('Type');?>
 					</td>
 					<td>
-						<select id='message_type'>
+						<select id='message_type' data-defaultLabel='<?php print __('Type');?>'>
 							<?php
 	$message_types = array(
 		'-1' => __('All'),
@@ -578,7 +578,7 @@ function filter($clogAdmin, $selectedFile) {
 						<?php print __('Display');?>
 					</td>
 					<td>
-						<select id='reverse'>
+						<select id='reverse' data-defaultLabel='<?php print __('Display');?>'>
 							<option value='1'<?php if (get_request_var('reverse') == '1') {?> selected<?php }?>><?php print __('Newest First');?></option>
 							<option value='2'<?php if (get_request_var('reverse') == '2') {?> selected<?php }?>><?php print __('Oldest First');?></option>
 						</select>
@@ -587,7 +587,7 @@ function filter($clogAdmin, $selectedFile) {
 						<?php print __('Refresh');?>
 					</td>
 					<td>
-						<select id='refresh'>
+						<select id='refresh' data-defaultLabel='<?php print __('Refresh');?>'>
 							<?php
 	foreach ($page_refresh_interval as $seconds => $display_text) {
 		print "<option value='" . $seconds . "'";
@@ -608,7 +608,7 @@ function filter($clogAdmin, $selectedFile) {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<select id='matches'>
+						<select id='matches' data-defaultLabel='<?php print __('Search');?>'>
 							<option value='1'<?php if (get_request_var('matches') == '1') {?> selected<?php }?>><?php print __('Matches');?></option>
 							<option value='0'<?php if (get_request_var('matches') == '0') {?> selected<?php }?>><?php print __('Does Not Match');?></option>
 						</select>

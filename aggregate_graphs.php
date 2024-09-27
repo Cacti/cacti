@@ -1698,7 +1698,7 @@ function aggregate_items() {
 							<?php print __('Graphs'); ?>
 						</td>
 						<td>
-							<select id='rows' onChange='applyFilter()'>
+							<select id='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Graphs');?>'>
 								<option value='-1' <?php print(get_request_var('rows') == '-1' ? ' selected>' : '>') . __('Default'); ?></option>
 								<?php
 								if (cacti_sizeof($item_rows) > 0) {
@@ -1999,7 +1999,7 @@ function aggregate_graph() {
 							<?php print __('Template'); ?>
 						</td>
 						<td>
-							<select id='template_id' name='template_id' onChange='applyFilter()'>
+							<select id='template_id' name='template_id' onChange='applyFilter()'  data-defaultLabel='<?php print __('Template');?>'>
 								<option value='-1' <?php if (get_request_var('template_id') == '-1') { ?> selected<?php } ?>><?php print __('Any'); ?></option>
 								<option value='0' <?php if (get_request_var('template_id') == '0') { ?> selected<?php } ?>><?php print __('None'); ?></option>
 								<?php
@@ -2026,7 +2026,7 @@ function aggregate_graph() {
 							<?php print __('Graphs'); ?>
 						</td>
 						<td>
-							<select id='rows' onChange='applyFilter()'>
+							<select id='rows' onChange='applyFilter()'  data-defaultLabel='<?php print __('Graphs');?>'>
 								<option value='-1' <?php print(get_request_var('rows') == '-1' ? ' selected>' : '>') . __('Default'); ?></option>
 									<?php
 									if (cacti_sizeof($item_rows) > 0) {

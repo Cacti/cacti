@@ -1443,7 +1443,7 @@ function template() {
 						<?php print __('Graph Templates');?>
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyFilter()'>
+						<select id='rows' name='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Graph Templates');?>'>
 							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
@@ -1462,7 +1462,7 @@ function template() {
 						<?php print __('CDEFs');?>
 					</td>
 					<td>
-						<select id='cdef_id' onChange='applyFilter()'>
+						<select id='cdef_id' onChange='applyFilter()' data-defaultLabel='<?php print __('CDEFs');?>'>
 							<option value='-1'<?php if (get_request_var('cdef_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							$cdefs = db_fetch_assoc('SELECT c.id, c.name
@@ -1483,7 +1483,7 @@ function template() {
 						<?php print __('VDEFs');?>
 					</td>
 					<td>
-						<select id='vdef_id' onChange='applyFilter()'>
+						<select id='vdef_id' onChange='applyFilter()' data-defaultLabel='<?php print __('VDEFs');?>'>
 							<option value='-1'<?php if (get_request_var('vdef_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							$vdefs = db_fetch_assoc('SELECT v.id, v.name

@@ -158,7 +158,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='graph_template_id' multiple style='opacity:0.1;overflow-y:auto;overflow-x:hide;height:0px;'>
+						<select id='graph_template_id' multiple style='opacity:0.1;overflow-y:auto;overflow-x:hide;height:0px;' data-defaultLabel='<?php print __('Template');?>'>
 							<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
 							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('Not Templated');?></option>
 							<?php
@@ -216,7 +216,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<?php print __('Graphs');?>
 					</td>
 					<td>
-						<select id='graphs' onChange='applyGraphFilter()'>
+						<select id='graphs' onChange='applyGraphFilter()' data-defaultLabel='<?php print __('Graphs');?>'>
 							<?php
 	if (cacti_sizeof($graphs_per_page)) {
 		foreach ($graphs_per_page as $key => $value) {
@@ -234,7 +234,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<?php print __('Columns');?>
 					</td>
 					<td>
-						<select id='columns' onChange='applyGraphFilter()'>
+						<select id='columns' onChange='applyGraphFilter()' data-defaultLabel='<?php print __('Columns');?>'>
 							<option value='1'<?php if (get_request_var('columns') == '1') {?> selected<?php }?>><?php print __('%d Column', 1);?></option>
 							<option value='2'<?php if (get_request_var('columns') == '2') {?> selected<?php }?>><?php print __('%d Columns', 2);?></option>
 							<option value='3'<?php if (get_request_var('columns') == '3') {?> selected<?php }?>><?php print __('%d Columns', 3);?></option>
@@ -263,7 +263,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<?php print __('Presets');?>
 					</td>
 					<td>
-						<select id='predefined_timespan' onChange='applyGraphTimespan()'>
+						<select id='predefined_timespan' onChange='applyGraphTimespan()' data-defaultLabel='<?php print __('Presets');?>'>
 							<?php
 	$graph_timespans = array_merge(array(GT_CUSTOM => __('Custom')), $graph_timespans);
 
@@ -336,7 +336,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<?php print __('Window');?>
 					</td>
 					<td>
-						<select name='graph_start' id='graph_start' onChange='realtimeGrapher()'>
+						<select name='graph_start' id='graph_start' onChange='realtimeGrapher()' data-defaultLabel='<?php print __('Window');?>'>
 						<?php
 						foreach ($realtime_window as $interval => $text) {
 							printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_window'] ? 'selected="selected"' : '', $text);
@@ -348,7 +348,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<?php print __('Interval');?>
 					</td>
 					<td>
-						<select name='ds_step' id='ds_step' onChange="realtimeGrapher()">
+						<select name='ds_step' id='ds_step' onChange="realtimeGrapher()" data-defaultLabel='<?php print __('Interval');?>'>
 							<?php
 		foreach ($realtime_refresh as $interval => $text) {
 			printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_dsstep'] ? ' selected="selected"' : '', $text);

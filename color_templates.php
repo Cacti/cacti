@@ -832,7 +832,7 @@ function color_template() {
 							' . __('Color Templates') . '
 						</td>
 						<td>
-							<select id="rows" onChange="applyFilter()">
+							<select id="rows" onChange="applyFilter()" data-defaultLabel="' . __('Color Templates') . '">
 								<option value="-1" ';
 
 	if (get_request_var('rows') == '-1') {

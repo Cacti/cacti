@@ -1535,7 +1535,7 @@ function host() {
 							<?php print __('Site'); ?>
 						</td>
 						<td>
-							<select id='site_id'>
+							<select id='site_id' data-defaultLabel='<?php print __('Site'); ?>'>
 								<option value='-1' <?php if (get_request_var('site_id') == '-1') { ?> selected<?php } ?>><?php print __('Any'); ?></option>
 								<option value='0' <?php if (get_request_var('site_id') == '0') { ?> selected<?php } ?>><?php print __('None'); ?></option>
 								<?php
@@ -1558,7 +1558,7 @@ function host() {
 							<?php print __('Data Collector'); ?>
 						</td>
 						<td>
-							<select id='poller_id'>
+							<select id='poller_id' data-defaultLabel='<?php print __('Data Collector'); ?>'>
 								<option value='-1' <?php if (get_request_var('poller_id') == '-1') { ?> selected<?php } ?>><?php print __('Any'); ?></option>
 								<?php
 								$pollers = db_fetch_assoc('SELECT id, name FROM poller ORDER BY name');
@@ -1580,7 +1580,7 @@ function host() {
 							<?php print __('Template'); ?>
 						</td>
 						<td>
-							<select id='host_template_id'>
+							<select id='host_template_id' data-defaultLabel='<?php print __('Template'); ?>'>
 								<option value='-1' <?php if (get_request_var('host_template_id') == '-1') { ?> selected<?php } ?>><?php print __('Any'); ?></option>
 								<option value='0' <?php if (get_request_var('host_template_id') == '0') { ?> selected<?php } ?>><?php print __('None'); ?></option>
 								<?php
@@ -1606,7 +1606,7 @@ function host() {
 							<?php print __('Location'); ?>
 						</td>
 						<td>
-							<select id='location'>
+							<select id='location' data-defaultLabel='<?php print __('Location'); ?>'>
 								<option value='-1' <?php if (get_request_var('location') == '-1') { ?> selected<?php } ?>><?php print __('All'); ?></option>
 								<?php
 								if (get_request_var('site_id') >= '0') {
@@ -1655,7 +1655,7 @@ function host() {
 							<?php print __('Status'); ?>
 						</td>
 						<td>
-							<select id='host_status'>
+							<select id='host_status' data-defaultLabel='<?php print __('Status'); ?>'>
 								<option value='-1' <?php if (get_request_var('host_status') == '-1') { ?> selected<?php } ?>><?php print __('Any'); ?></option>
 								<option value='-3' <?php if (get_request_var('host_status') == '-3') { ?> selected<?php } ?>><?php print __('Enabled'); ?></option>
 								<option value='-2' <?php if (get_request_var('host_status') == '-2') { ?> selected<?php } ?>><?php print __('Disabled'); ?></option>
@@ -1670,7 +1670,7 @@ function host() {
 							<?php print __('Service Check'); ?>
 						</td>
 						<td>
-							<select id='availability_method'>
+							<select id='availability_method' data-defaultLabel='<?php print __('Service Check'); ?>'>
 								<option value='-1' <?php if (get_request_var('host_status') == '-1') { ?> selected<?php } ?>><?php print __('Any'); ?></option>
 								<?php
 								if (get_request_var('host_template_id') > 0) {
@@ -1701,7 +1701,7 @@ function host() {
 							<?php print __('Devices'); ?>
 						</td>
 						<td>
-							<select id='rows'>
+							<select id='rows' data-defaultLabel='<?php print __('Devices'); ?>'>
 								<option value='-1' <?php print(get_request_var('rows') == '-1' ? ' selected>' : '>') . __('Default'); ?></option>
 									<?php
 									if (cacti_sizeof($item_rows)) {

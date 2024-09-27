@@ -159,7 +159,7 @@ function manager() {
 							<?php print __('Receivers'); ?>
 						</td>
 						<td>
-							<select id='rows' onChange='applyFilter()'>
+							<select id='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Receivers');?>'>
 								<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 								<?php
 								if (cacti_sizeof($item_rows)) {
@@ -490,7 +490,7 @@ function manager_notifications($id, $header_label) {
 							<?php print __('MIB');?>
 						</td>
 						<td>
-							<select id='mib' name='mib' onChange='applyFilter()'>
+							<select id='mib' name='mib' onChange='applyFilter()' data-defaultLabel='<?php print __('MIB');?>'>
 								<option value='-1'<?php if (get_request_var('mib') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								if (cacti_sizeof($mibs)) {
@@ -515,7 +515,7 @@ function manager_notifications($id, $header_label) {
 							<?php print __('Receivers');?>
 						</td>
 						<td>
-							<select id='rows' name='rows' onChange='applyFilter()'>
+							<select id='rows' name='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Receivers');?>'>
 								<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 								<?php
 	if (cacti_sizeof($item_rows)) {
@@ -752,7 +752,7 @@ function manager_logs($id, $header_label) {
 							<?php print __('Severity');?>
 						</td>
 						<td>
-							<select id='severity' onChange='applyFilter()'>
+							<select id='severity' onChange='applyFilter()' data-defaultLabel='<?php print __('Severity');?>'>
 								<option value='-1'<?php if (get_request_var('severity') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								foreach ($severity_levels as $level => $name) {

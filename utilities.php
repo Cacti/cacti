@@ -287,7 +287,7 @@ function utilities_view_logfile() {
 						<?php print __('File');?>
 					</td>
 					<td>
-						<select id='filename' onChange='applyFilter()'>
+						<select id='filename' onChange='applyFilter()' data-defaultLabel='<?php print __('File');?>'>
 							<?php
 							$logFileArray = clog_get_logfiles();
 
@@ -314,7 +314,7 @@ function utilities_view_logfile() {
 						<?php print __('Tail Lines');?>
 					</td>
 					<td>
-						<select id='tail_lines' onChange='applyFilter()'>
+						<select id='tail_lines' onChange='applyFilter()' data-defaultLabel='<?php print __('Tail Lines');?>'>
 							<?php
 							foreach ($log_tail_lines as $tail_lines => $display_text) {
 								print "<option value='" . $tail_lines . "'";
@@ -341,7 +341,7 @@ function utilities_view_logfile() {
 						<?php print __('Type');?>
 					</td>
 					<td>
-						<select id='message_type' onChange='applyFilter()'>
+						<select id='message_type' onChange='applyFilter()' data-defaultLabel='<?php print __('Type');?>'>
 							<option value='-1'<?php if (get_request_var('message_type') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
 							<option value='1'<?php if (get_request_var('message_type') == '1') {?> selected<?php }?>><?php print __('Stats');?></option>
 							<option value='2'<?php if (get_request_var('message_type') == '2') {?> selected<?php }?>><?php print __('Warnings');?></option>
@@ -354,7 +354,7 @@ function utilities_view_logfile() {
 						<?php print __('Display Order');?>
 					</td>
 					<td>
-						<select id='reverse' onChange='applyFilter()'>
+						<select id='reverse' onChange='applyFilter()' data-defaultLabel='<?php print __('Display Order');?>'>
 							<option value='1'<?php if (get_request_var('reverse') == '1') {?> selected<?php }?>><?php print __('Newest First');?></option>
 							<option value='2'<?php if (get_request_var('reverse') == '2') {?> selected<?php }?>><?php print __('Oldest First');?></option>
 						</select>
@@ -363,7 +363,7 @@ function utilities_view_logfile() {
 						<?php print __('Refresh');?>
 					</td>
 					<td>
-						<select id='refresh' onChange='applyFilter()'>
+						<select id='refresh' onChange='applyFilter()' data-defaultLabel='<?php print __('Refresh');?>'>
 							<?php
 							foreach ($page_refresh_interval as $seconds => $display_text) {
 								print "<option value='" . $seconds . "'";
@@ -636,7 +636,7 @@ function utilities_view_snmp_cache() {
 						<?php print __('Query Name');?>
 					</td>
 					<td>
-						<select id='snmp_query_id' onChange='applyFilter()'>
+						<select id='snmp_query_id' onChange='applyFilter()'  data-defaultLabel='<?php print __('Query Name');?>'>
 							<option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							if (get_request_var('host_id') == -1) {
@@ -691,7 +691,7 @@ function utilities_view_snmp_cache() {
 						<?php print __('Rows');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Rows');?>'>
 							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 	if (cacti_sizeof($item_rows)) {
@@ -939,7 +939,7 @@ function utilities_view_poller_cache() {
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='template_id' onChange='applyFilter()'>
+						<select id='template_id' onChange='applyFilter()' data-defaultLabel='<?php print __('Template');?>'>
 							<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
@@ -988,7 +988,7 @@ function utilities_view_poller_cache() {
 						<?php print __('Status');?>
 					</td>
 					<td>
-						<select id='status' onChange='applyFilter()'>
+						<select id='status' onChange='applyFilter()' data-defaultLabel='<?php print __('Status');?>'>
 							<option value='-1'<?php if (get_request_var('status') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='1'<?php if (get_request_var('status') == '1') {?> selected<?php }?>><?php print __('Enabled');?></option>
 							<option value='0'<?php if (get_request_var('status') == '0') {?> selected<?php }?>><?php print __('Disabled');?></option>
@@ -998,7 +998,7 @@ function utilities_view_poller_cache() {
 						<?php print __('Action');?>
 					</td>
 					<td>
-						<select id='poller_action' onChange='applyFilter()'>
+						<select id='poller_action' onChange='applyFilter()' data-defaultLabel='<?php print __('Action');?>'>
 							<option value='-1'<?php if (get_request_var('poller_action') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('poller_action') == '0') {?> selected<?php }?>><?php print __('SNMP');?></option>
 							<option value='1'<?php if (get_request_var('poller_action') == '1') {?> selected<?php }?>><?php print __('Script');?></option>
@@ -1009,7 +1009,7 @@ function utilities_view_poller_cache() {
 						<?php print __('Entries');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Entries');?>'>
 							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 	if (cacti_sizeof($item_rows)) {
@@ -1364,7 +1364,7 @@ function boost_display_run_status() {
 						<?php print __('Refresh Interval');?>
 					</td>
 					<td>
-						<select id='refresh' name='refresh' onChange='applyFilter()'>
+						<select id='refresh' name='refresh' onChange='applyFilter()' data-defaultLabel='<?php print __('Refresh Interval');?>'>
 						<?php
 						foreach ($boost_utilities_interval as $key => $interval) {
 							print '<option value="' . $key . '"';
@@ -1897,7 +1897,7 @@ function snmpagent_utilities_run_cache() {
 							<?php print __('MIB');?>
 						</td>
 						<td>
-							<select id='mib' onChange='applyFilter()'>
+							<select id='mib' onChange='applyFilter()' data-defaultLabel='<?php print __('MIB');?>'>
 								<option value='-1'<?php if (get_request_var('mib') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								if (cacti_sizeof($mibs) > 0) {
@@ -1916,7 +1916,7 @@ function snmpagent_utilities_run_cache() {
 							<?php print __('OIDs');?>
 						</td>
 						<td>
-							<select id='rows' onChange='applyFilter()'>
+							<select id='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('OIDs');?>'>
 								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 								<?php
 	if (cacti_sizeof($item_rows)) {
@@ -2158,7 +2158,7 @@ function snmpagent_utilities_run_eventlog() {
 							<?php print __('Severity');?>
 						</td>
 						<td>
-							<select id='severity' onChange='applyFilter()'>
+							<select id='severity' onChange='applyFilter()' data-defaultLabel='<?php print __('Severity');?>'>
 								<option value='-1'<?php if (get_request_var('severity') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 								foreach ($severity_levels as $level => $name) {
@@ -2175,7 +2175,7 @@ function snmpagent_utilities_run_eventlog() {
 							<?php print __('Receiver');?>
 						</td>
 						<td>
-							<select id='receiver' onChange='applyFilter()'>
+							<select id='receiver' onChange='applyFilter()' data-defaultLabel='<?php print __('Receiver');?>'>
 								<option value='-1'<?php if (get_request_var('receiver') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
 	foreach ($receivers as $receiver) {
@@ -2192,7 +2192,7 @@ function snmpagent_utilities_run_eventlog() {
 							<?php print __('Entries');?>
 						</td>
 						<td>
-							<select id='rows' onChange='applyFilter()'>
+							<select id='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Entries');?>'>
 								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 								<?php
 	if (cacti_sizeof($item_rows)) {

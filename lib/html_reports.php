@@ -1855,7 +1855,7 @@ function reports() {
 						" . __('Status') . "
 					</td>
 					<td>
-						<select id='status' onChange='applyFilter()'>
+						<select id='status' onChange='applyFilter()' data-defaultLabel='" . __('Status') . "'>
 							<option value='-1'" . (get_request_var('status') == '-1' ? ' selected' : '') . '>' . __('Any') . "</option>
 							<option value='-2'" . (get_request_var('status') == '-2' ? ' selected' : '') . '>' . __('Enabled') . "</option>
 							<option value='-3'" . (get_request_var('status') == '-3' ? ' selected' : '') . '>' . __('Disabled') . '</option>
@@ -1865,7 +1865,7 @@ function reports() {
 						' . __('Reports') . "
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows' onChange='applyFilter()' data-defaultLabel='" . __('Reports') . "'>
 							<option value='-1'" . (get_request_var('rows') == '-1' ? ' selected' : '') . '>' . __('Default') . '</option>';
 
 	if (cacti_sizeof($item_rows)) {

@@ -752,7 +752,7 @@ function cdef() {
 						<?php print __('CDEFs');?>
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyFilter()'>
+						<select id='rows' name='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('CDEFs');?>'>
 							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {

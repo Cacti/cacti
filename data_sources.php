@@ -1382,7 +1382,7 @@ function ds() {
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='template_id' name='template_id' onChange='applyFilter()'>
+						<select id='template_id' name='template_id' onChange='applyFilter()' data-defaultLabel='<?php print __('Template');?>'>
 							<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
@@ -1421,7 +1421,7 @@ function ds() {
 						<?php print __('Profile');?>
 					</td>
 					<td>
-						<select id='profile' name='profile' onChange='applyFilter()'>
+						<select id='profile' name='profile' onChange='applyFilter()' data-defaultLabel='<?php print __('Profile');?>'>
 							<option value='-1'<?php print(get_request_var('profile') == '-1' ? ' selected>':'>') . __('All');?></option>
 							<?php
 	$profiles = array_rekey(db_fetch_assoc('SELECT id, name FROM data_source_profiles ORDER BY name'), 'id', 'name');
@@ -1442,7 +1442,7 @@ function ds() {
 						<?php print __('Status');?>
 					</td>
 					<td>
-						<select id='status' name='status' onChange='applyFilter()'>
+						<select id='status' name='status' onChange='applyFilter()' data-defaultLabel='<?php print __('Status');?>'>
 							<option value='-1'<?php if (get_request_var('status') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
 							<option value='1'<?php if (get_request_var('status') == '1') {?> selected<?php }?>><?php print __('Enabled');?></option>
 							<option value='2'<?php if (get_request_var('status') == '2') {?> selected<?php }?>><?php print __('Disabled');?></option>
@@ -1469,7 +1469,7 @@ function ds() {
 						<?php print __('Data Sources');?>
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyFilter()'>
+						<select id='rows' name='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Data Sources');?>'>
 							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 	if (cacti_sizeof($item_rows) > 0) {

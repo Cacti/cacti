@@ -602,7 +602,7 @@ function aggregate_template() {
 							' . __('Templates') . '
 						</td>
 						<td>
-							<select id="rows" onChange="applyFilter()">
+							<select id="rows" onChange="applyFilter()" data-defaultLabel="' . __('Templates') . '">
 							<option value="-1" ';
 
 	if (get_request_var('rows') == '-1') {

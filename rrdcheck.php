@@ -232,7 +232,7 @@ function filter() {
 						<?php print __('Age');?>
 					</td>
 					<td>
-						<select id='age' onChange='refreshForm()'>
+						<select id='age' onChange='refreshForm()' data-defaultLabel='<?php print __('Age');?>'>
 							<option value='0'   <?php print(get_request_var('age') == '0'   ? ' selected':'');?>>&lt; <?php print __('%d hours', 2);?></option>
 							<option value='14400'   <?php print(get_request_var('age') == '14400'   ? ' selected':'');?>>&gt; <?php print __('%d hours', 4);?></option>
 							<option value='43200'  <?php print(get_request_var('age') == '43200'  ? ' selected':'');?>>&gt;  <?php print __('%d hours',12);?></option>
@@ -245,7 +245,7 @@ function filter() {
 						<?php print __('Messages');?>
 					</td>
 					<td>
-						<select id='rows'>
+						<select id='rows' data-defaultLabel='<?php print __('Messages');?>'>
 							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {

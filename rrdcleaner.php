@@ -516,7 +516,7 @@ function filter() {
 							<?php print __('Time Since Update'); ?>
 						</td>
 						<td>
-							<select id='age' onChange='refreshForm()'>
+							<select id='age' onChange='refreshForm()' data-defaultLabel='<?php print __('Time Since Update');?>'>
 								<option value='0' <?php print(get_request_var('age') == '0'   ? ' selected' : ''); ?>>&lt; <?php print __('%d Week', 1); ?></option>
 								<option value='604800' <?php print(get_request_var('age') == '604800'   ? ' selected' : ''); ?>>&gt; <?php print __('%d Week', 1); ?></option>
 								<option value='1209600' <?php print(get_request_var('age') == '1209600'  ? ' selected' : ''); ?>>&gt; <?php print __('%d Weeks', 2); ?></option>
@@ -532,7 +532,7 @@ function filter() {
 							<?php print __('RRDfiles'); ?>
 						</td>
 						<td>
-							<select id='rows'>
+							<select id='rows' data-defaultLabel='<?php print __('RRDfiles');?>'>
 								<option value='-1' <?php print(get_request_var('rows') == '-1' ? ' selected>' : '>') . __('Default'); ?></option>
 									<?php
 									if (cacti_sizeof($item_rows)) {

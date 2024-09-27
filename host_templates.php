@@ -688,7 +688,7 @@ function template() {
 						<?php print __('Class');?>
 					</td>
 					<td>
-						<select id='class'>
+						<select id='class' data-defaultLabel='<?php print __('Class');?>'>
 							<option value='-1'<?php print (get_request_var('class') == '-1' ? ' selected>':'>') . __('All');?></option>
 							<?php
 							if (cacti_sizeof($device_classes)) {
@@ -703,7 +703,7 @@ function template() {
 						<?php print __('Graph Template');?>
 					</td>
 					<td>
-						<select id='graph_template'>
+						<select id='graph_template' data-defaultLabel='<?php print __('Graph Template');?>'>
 							<option value='-1'<?php print (get_request_var('graph_template') == '-1' ? ' selected>':'>') . __('All');?></option>
 							<?php
 							if (get_request_var('class') == -1) {
@@ -772,7 +772,7 @@ function template() {
 						<?php print __('Device Templates');?>
 					</td>
 					<td>
-						<select id='rows'>
+						<select id='rows' data-defaultLabel='<?php print __('Device Templates');?>'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {

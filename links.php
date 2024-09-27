@@ -303,7 +303,7 @@ function pages() {
 							<?php print __('Links'); ?>
 						</td>
 						<td>
-							<select id='rows' onChange='applyFilter()'>
+							<select id='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Links');?>'>
 								<option value=-1 <?php get_request_var('rows') == -1 ? 'selected' : ''; ?>><?php print __('Default'); ?></option>
 								<?php
 								foreach ($item_rows as $key => $row) {

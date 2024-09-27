@@ -1516,7 +1516,7 @@ function networks_filter() {
 							<?php print __('Networks'); ?>
 						</td>
 						<td>
-							<select id='rows' onChange='applyFilter()'>
+							<select id='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Networks');?>'>
 								<option value='-1' <?php if (get_request_var('rows') == '-1') { ?> selected<?php } ?>><?php print __('Default'); ?></option>
 								<?php
 									if (cacti_sizeof($item_rows)) {
@@ -1536,7 +1536,7 @@ function networks_filter() {
 							<?php print __('Refresh'); ?>
 						</td>
 						<td>
-							<select id='refresh' onChange='applyFilter()'>
+							<select id='refresh' onChange='applyFilter()' data-defaultLabel='<?php print __('Refresh');?>'>
 								<?php
 								$frequency = array(
 									10  => __('%d Seconds', 10),

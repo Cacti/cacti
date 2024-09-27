@@ -2052,7 +2052,7 @@ function user() {
 						<?php print __('Group');?>
 					</td>
 					<td>
-						<select id='group'>
+						<select id='group' data-defaultLabel='<?php print __('Group');?>'>
 							<option value='-1'<?php print (get_request_var('group') == '-1' ? ' selected>':'>') . __('All');?></option>
 							<?php
 							$groups = array_rekey(
@@ -2074,7 +2074,7 @@ function user() {
 						<?php print __('Last Login');?>
 					</td>
 					<td>
-						<select id='login'>
+						<select id='login' data-defaultLabel='<?php print __('Last Login');?>'>
 							<option value='0'<?php print (get_request_var('login') == '0' ? ' selected>':'>') . __esc('All');?></option>
 							<option value='1'<?php print (get_request_var('login') == '1' ? ' selected>':'>') . __esc('< 1 Week Ago');?></option>
 							<option value='2'<?php print (get_request_var('login') == '2' ? ' selected>':'>') . __esc('< 1 Month Ago');?></option>
@@ -2088,7 +2088,7 @@ function user() {
 						<?php print __('Realm');?>
 					</td>
 					<td>
-						<select id='realm'>
+						<select id='realm' data-defaultLabel='<?php print __('Realm');?>'>
 							<option value='-1'<?php print(get_request_var('realm') == '-1' ? ' selected>':'>') . __('All');?></option>
 							<option value='0'<?php print(get_request_var('realm') == '0' ? ' selected>':'>') . __('Local');?></option>
 							<option value='2'<?php print(get_request_var('realm') == '2' ? ' selected>':'>') . __('Basic');?></option>
@@ -2100,7 +2100,7 @@ function user() {
 						<?php print __('Users');?>
 					</td>
 					<td>
-						<select id='rows'>
+						<select id='rows' data-defaultLabel='<?php print __('Users');?>'>
 							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {

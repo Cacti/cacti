@@ -604,7 +604,7 @@ function domains() {
 							<?php print __('Domains'); ?>
 						</td>
 						<td>
-							<select id='rows' onChange="applyFilter()">
+							<select id='rows' onChange="applyFilter()" data-defaultLabel='<?php print __('Domains');?>'>
 								<option value='-1' <?php print(get_request_var('rows') == '-1' ? ' selected>' : '>') . __('Default'); ?></option>
 									<?php
 										if (cacti_sizeof($item_rows)) {

@@ -1052,7 +1052,7 @@ function template() {
 						<?php print __('Profile');?>
 					</td>
 					<td>
-						<select id='profile' onChange='applyFilter()'>
+						<select id='profile' onChange='applyFilter()' data-defaultLabel='<?php print __('Profile');?>'>
 							<option value='-1'<?php print(get_request_var('profile') == '-1' ? ' selected>':'>') . __('All');?></option>
 							<?php
 							$profiles = array_rekey(db_fetch_assoc('SELECT id, name FROM data_source_profiles ORDER BY name'), 'id', 'name');
@@ -1073,7 +1073,7 @@ function template() {
 						<?php print __('Data Templates');?>
 					</td>
 					<td>
-						<select id='rows' name='rows' onChange='applyFilter()'>
+						<select id='rows' name='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Data Templates');?>'>
 							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 	if (cacti_sizeof($item_rows)) {

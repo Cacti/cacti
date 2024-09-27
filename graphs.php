@@ -2638,7 +2638,7 @@ function graphs() {
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='template_id' onChange='applyFilter()'>
+						<select id='template_id' onChange='applyFilter()' data-defaultLabel='<?php print __('Template');?>'>
 							<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
@@ -2686,7 +2686,7 @@ function graphs() {
 						<?php print __('Source');?>
 					</td>
 					<td>
-						<select id='source' onChange='applyFilter()'>
+						<select id='source' onChange='applyFilter()' data-defaultLabel='<?php print __('Source');?>'>
 							<option value='-1'<?php print(get_request_var('source') == '-1' ? ' selected>':'>') . __('All');?></option>
 							<option value='0'<?php print(get_request_var('source') == '0' ? ' selected>':'>') . __('Non Templated');?></option>
 							<option value='1'<?php print(get_request_var('source') == '1' ? ' selected>':'>') . __('Graph Template');?></option>
@@ -2697,7 +2697,7 @@ function graphs() {
 						<?php print __('CDEFs');?>
 					</td>
 					<td>
-						<select id='cdef_id' onChange='applyFilter()'>
+						<select id='cdef_id' onChange='applyFilter()' data-defaultLabel='<?php print __('CDEFs');?>'>
 							<option value='-1'<?php if (get_request_var('cdef_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 
@@ -2719,7 +2719,7 @@ function graphs() {
 						<?php print __('VDEFs');?>
 					</td>
 					<td>
-						<select id='vdef_id' onChange='applyFilter()'>
+						<select id='vdef_id' onChange='applyFilter()' data-defaultLabel='<?php print __('VDEFs');?>'>
 							<option value='-1'<?php if (get_request_var('vdef_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							$vdefs = db_fetch_assoc('SELECT v.id, v.name
@@ -2750,7 +2750,7 @@ function graphs() {
 						<?php print __('Graphs');?>
 					</td>
 					<td>
-						<select id='rows' onChange='applyFilter()'>
+						<select id='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Graphs');?>'>
 							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows)) {
