@@ -1998,6 +1998,7 @@ function user() {
 		strURL += '&filter=' + $('#filter').val();
 		strURL += '&group=' + $('#group').val();
 		strURL += '&realm=' + $('#realm').val();
+		strURL += '&login=' + $('#login').val();
 		loadUrl({url:strURL})
 	}
 
