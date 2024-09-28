@@ -368,7 +368,12 @@ function dsstats_remove_old_partitions($current_time, $fpartition = false) {
 }
 
 function dsstats_prune_partitions($table_name, $partitions_to_keep) {
-	$tables = db_fetch_assoc("SHOW TABLES LIKE '{$table_name}_v%'");
+	global $database_default;
+
+	$tables = db_fetch_assoc_prepared("SELECT TABLE_NAME
+		FROM information_schema.TABLES
+		WHERE TABLE_NAME LIKE '{$table_name}_v%' AND TABLE_SCHEMA = ?",
+		array($database_default));
 
 	if (cacti_sizeof($tables) > $partitions_to_keep) {
 		$partitions_to_delete = cacti_sizeof($tables) - $partitions_to_keep;
@@ -376,7 +381,7 @@ function dsstats_prune_partitions($table_name, $partitions_to_keep) {
 		$partitions = array();
 
 		foreach($tables as $table) {
-			$tname = $table[0];
+			$tname = $table['TABLE_NAME'];
 			$parts = explode('_v', $tname);
 			$partitions[] = $parts[1];
 		}
