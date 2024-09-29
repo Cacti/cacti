@@ -867,6 +867,8 @@ function setupDefaultElements() {
 					open: function(event, ui) {
 						let instance = $(this).selectmenu('instance');
 						instance.menuInstance.focus(null, instance._getSelectedItem());
+						let search = instance.menuWrap.find('input');
+						if (search.length > 0) search.focus();
 					},
 					change: function(event, ui) {
 						$(this).val(ui.item.value).change();
