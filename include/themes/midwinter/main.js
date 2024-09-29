@@ -791,9 +791,34 @@ function setupDefaultElements() {
 
 			if (typeof(attr['data-defaultLabel']) !== 'undefined') {
 				$(ul).parent().prepend('<div class="mdw-selectmenu-search"><input type="search" data-scope="theme" placeholder="Search"></div>');
-				this._on(false, this.menuWrap.find('input'), {
-					'input': function (event) {
 
+				this._on(false, this.menuWrap.find('input'), {
+					'keydown': function (event) {
+						var preventDefault = true;
+						switch ( event.keyCode ) {
+							case $.ui.keyCode.TAB:
+							case $.ui.keyCode.ESCAPE:
+								this.close(event);
+								break;
+							case $.ui.keyCode.ENTER:
+							case $.ui.keyCode.UP:
+							case $.ui.keyCode.DOWN:
+							case $.ui.keyCode.HOME:
+							case $.ui.keyCode.PAGE_UP:
+							case $.ui.keyCode.END:
+							case $.ui.keyCode.PAGE_DOWN:
+							case $.ui.keyCode.SPACE:
+								this.menu.trigger(event);
+								break;
+							default:
+								preventDefault = false;
+								break;
+						}
+						if ( preventDefault ) {
+							event.preventDefault();
+						}
+					},
+					'input': function (event) {
 						let search_string = that.menuWrap.find('input').val().toUpperCase();
 						$(ul).find('li').each(function (index, item) {
 							if ($(this).text().toUpperCase().indexOf(search_string) > -1) {
