@@ -103,42 +103,42 @@ Cacti CHANGELOG
 -feature#5717: Add Aruba Clearpass template
 
 1.2.28
--security#GHSA-fgc6-g8gc-wcg5: External Link Console Menu Item not Escaped
--security#GHSA-49f2-hwx9-qffr: External Link Console Menu Section not Escaped
--security#GHSA-wh9c-v56x-v77c: It is possible to create XSS with an nafarious External Link
--security#GHSA-gxq4-mv8h-6qj4: Fix a possible user directed RCE when installing Cacti
+-security#GHSA-49f2-hwx9-qffr: XSS vulnerability when creating external links with the consolenewsection parameter
+-security#GHSA-fgc6-g8gc-wcg5: XSS vulnerability when creating external links with the title parameter
+-security#GHSA-gxq4-mv8h-6qj4: RCE vulnerability can be executed via Log Poisoning
+-security#GHSA-wh9c-v56x-v77c: XSS vulnerability when creating external links with the fileurl parameter
 -issue#5636: When using LDAP authentication the first time, warnings may appear in logs
--issue#5754: Installer replication loop for. Plugin realms
--issue#5759: Remote poller attempts to sync with other pollers during install
--issue#5768: Cacti does not properly escape Data Query indexes that include a space
+-issue#5754: When installing, a replication loop for plugin_realms may occur
+-issue#5759: When installing, remote poller may attempt to sync with other pollers
+-issue#5768: When a Data Query has a space, indexes may not be properly escaped
 -issue#5771: Boost does not always order data source records properly
--issue#5772: Login log message unification - add client IP address
--issue#5773: Update rrd.php missing variable $okpos
--issue#5777: The Export .CSV only includes the 1st line of Notes
--issue#5780: Undefined array key "default" in file html_form.php
--issue#5782: Function file_get_contents in file link.php
--issue#5783: Cacti improperly handles connection closing leading to issues with third party connections
--issue#5785: auth_changepassword.php triggers NS_ERROR_REDIRECT_LOOP if server's default IP address is not public
--issue#5790: Cactid - Cron out of sync with poller Message
--issue#5791: Unable to filter users by user group, or the last time they logged into Cacti
--issue#5792: Unable to add Graphs to a Report from Cacti List View
--issue#5797: Add additional Repair Database Checks to address various Cacti database corruptions
--issue#5802: Cacti should not convert non-base tables as they may have an focused characters set and engine
--issue#5806: Issues with Cacti posix_kill wrapper in Windows
--issue#5813: Can't change password when first installing
--issue#5814: Cacti complains that the "webpage has no write permissions" without even trying
--issue#5823: If active theme is missing ensure the fallback is not the classic theme
+-issue#5772: Add IP address to the login audit for successful logins by xmacan
+-issue#5773: Undefined variable error may sometimes occur when dealing with RRD output by MSS970
+-issue#5777: When export to CSV, only the first line of notes is included
+-issue#5780: When rendering forms, missing default value can cause errors
+-issue#5782: Allow hosted content to be executable for the links page
+-issue#5783: When closing database connections, some may linger incorrectly
+-issue#5785: When changing passwords, an infinite loop may occur by ddb4github
+-issue#5790: When using Cacti Daemon, a "Cron out of sync" message may be reported
+-issue#5791: Add ability to filter/sort users by group or last login time
+-issue#5792: When using List View, unable to add Graphs to a Report
+-issue#5797: When using SNMPv3, some devices may show polling issues
+-issue#5802: Limit table conversion to Cacti core tables
+-issue#5806: Fix issues with posix-based kills on Windows
+-issue#5813: When installing, password changes may fail on new installations
+-issue#5814: When using structured RRD folders, permission issues may be flagged incorrectly
+-issue#5823: When unable to locate a valid theme, new default will be Modern
 -issue#5824: Properly cache the data source information for dsstats processing
--feature#5784: Provide a means by which a user can track Cacti connections and disconnects from the php error_log
--feature#5796: Due to Conflicting Interpretations of TCP Ping, Introduce new Ping Method
--feature#5819: Be more precise on the Graph End time when an end time is not provided
--feature#5825: Allow remove_device.php to use a list of device id's
+-feature#5784: Add ability to log database connections/disconnections
+-feature#5796: Add Ping Method where connection refused assumes host is up
+-feature#5819: When displaying graphs, default end time does not show full 24 hour period
+-feature#5825: Add --id to remove_device.php
 -feature#5828: Add Location and Site to Graph List View
--feature#5830: Boost logging enhancements
+-feature#5830: Add more verbose logging to Boost
 -feature: Update jQuery to 3.7.1
 -feature: Update jQueryUI to 1.14.0
--feature: Update billboard.js to 3.13.0
 -feature: Update Purify.js to 3.1.6
+-feature: Update billboard.js to 3.13.0
 -feature: Improve the performance of the repopulation of the poller cache
 
 1.2.27
