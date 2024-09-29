@@ -249,6 +249,10 @@ input[type="checkbox"]:focus-within + label:before {
                 position: relative;
                 z-index: 1;
 
+                & thead {
+                    position: relative;
+                    z-index: 3;
+                }
                 & th,
                 & td {
                     padding-right: 0.75rem;
