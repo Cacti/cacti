@@ -793,12 +793,13 @@ function setupDefaultElements() {
 				$(ul).parent().prepend('<div class="mdw-selectmenu-search"><input type="search" data-scope="theme" placeholder="Search"></div>');
 				this._on(false, this.menuWrap.find('input'), {
 					'input': function (event) {
+
 						let search_string = that.menuWrap.find('input').val().toUpperCase();
 						$(ul).find('li').each(function (index, item) {
 							if ($(this).text().toUpperCase().indexOf(search_string) > -1) {
-								$(this).show();
+								$(this).addClass('ui-menu-item').prop('hidden', false);
 							} else {
-								$(this).hide();
+								$(this).removeClass('ui-menu-item').prop('hidden', true);
 							}
 						})
 					}
@@ -881,7 +882,7 @@ function setupDefaultElements() {
 					width: false
 				});
 
-				$('#'+id+'-menu').css('max-height', '250px').attr('data-title', 'hello2');
+				$('#'+id+'-menu').css('max-height', '250px');
 			});
 		} else {
 			$(this).addClass('ui-state-default ui-corner-all');
