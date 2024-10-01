@@ -723,9 +723,9 @@ function template() {
 									) AS rs
 									ORDER BY name');
 							} else {
-								$graph_templates = db_fetch_assoc_prepared('SELECT DISTINCT id, name
+								$graph_templates = db_fetch_assoc_prepared('SELECT DISTINCT ht.id, ht.name
 									FROM (
-										SELECT gt.id, gt.name, hgt.host_template_id
+										SELECT gt.id, gt.name, htg.host_template_id
 										FROM graph_templates AS gt
 										INNER JOIN host_template_graph AS htg
 										ON htg.graph_template_id = gt.id
