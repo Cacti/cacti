@@ -27,6 +27,7 @@ Cacti CHANGELOG
 -issue#5814: When using structured RRD folders, permission issues may be flagged incorrectly
 -issue#5823: When unable to locate a valid theme, new default will be Modern
 -issue#5824: Properly cache the data source information for dsstats processing
+-issue#5840: Reindex Method 'Verify all Fields' does not work for OID/INDEX parse method
 -feature#5784: Add ability to log database connections/disconnections
 -feature#5796: Add Ping Method where connection refused assumes host is up
 -feature#5819: When displaying graphs, default end time does not show full 24 hour period
