@@ -734,7 +734,6 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = null) {
 	}
 
 	$query_string        = '';
-	$query_string_suffix = 'ORDER BY local_data_id ASC, timestamp ASC, rrd_name ASC';
 	$sql_params          = array();
 	$locks               = false;
 	$temp_table          = false;
