@@ -678,7 +678,7 @@ function template() {
 
 	html_start_box(__('Device Templates'), '100%', '', '3', 'center', 'host_templates.php?action=edit');
 
-?>
+	?>
 	<tr class='even noprint'>
 		<td>
 		<form id='form_host_template' action='host_templates.php'>
@@ -801,7 +801,9 @@ function template() {
 			strURL += '&rows='+$('#rows').val();
 			strURL += '&graph_template='+$('#graph_template').val();
 			strURL += '&has_hosts='+$('#has_hosts').is(':checked');
-			loadPageNoHeader(strURL);
+			loadUrl({
+				url: strURL
+			});
 		}
 
 		function clearFilter() {
@@ -819,9 +821,10 @@ function template() {
 			$('#refresh, #has_hosts').click(function() {
 				applyFilter();
 			});
+		});
 		</script>
 	</tr>
-<?php
+	<?php
 
 	html_end_box();
 
