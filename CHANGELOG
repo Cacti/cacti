@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.2.x
+-issue#5843: Issue with temporary tables with use of microtime
+
 1.2.28
 -security#GHSA-49f2-hwx9-qffr: XSS vulnerability when creating external links with the consolenewsection parameter
 -security#GHSA-fgc6-g8gc-wcg5: XSS vulnerability when creating external links with the title parameter
