@@ -749,11 +749,11 @@ function discoverDevices($network_id, $thread) {
 										$shortname   = $device['dnsname_short'];
 										$sysLocation = $device['snmp_sysLocation'];
 
-										$pattern = str_replace(
-											array('|sysName|', '|ipAddress|', '|dnsName|', '|dnsShortName|', '|sysLocation|'),
-											array($sysName, $ip_address, $dnsname, $shortname, $sysLocation),
-											$fos['description_pattern']
-										);
+										$pattern = str_replace('|sysName|', $sysName, $fos['description_pattern']);
+										$pattern = str_replace('|ipAddress|', $ip_address, $pattern);
+										$pattern = str_replace('|dnsName|', $dnsname, $pattern);
+										$pattern = str_replace('|dnsShortName|', $shortname, $pattern);
+										$pattern = str_replace('|sysLocation|', $sysLocation, $pattern);
 
 										$description = db_fetch_cell("SELECT $pattern");
 

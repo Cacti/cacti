@@ -3542,8 +3542,6 @@ function automation_find_os($sysDescr, $sysObject, $sysName) {
 		$sql_where
 		ORDER BY sequence LIMIT 1", $params);
 
-cacti_log(vsprintf(str_replace('?', '"%s"', "SELECT at.*, ht.name FROM automation_templates AS at INNER JOIN host_template AS ht ON ht.id = at.host_template $sql_where ORDER BY sequence LIMIT 1"), $params));
-
 	if (cacti_sizeof($result)) {
 		return $result;
 	} else {
