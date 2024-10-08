@@ -432,7 +432,6 @@ class Installer implements JsonSerializable {
 		$this->modules            = $this->getModules();
 
 		$this->setDefaultTemplate($this->getDefaultTemplate());
-		$this->setTemplates($this->getTemplates());
 		$this->setProfile($this->getProfile());
 		$this->setAutomationMode($this->getAutomationMode());
 		$this->setAutomationOverride($this->getAutomationOverride());
@@ -1073,6 +1072,7 @@ class Installer implements JsonSerializable {
 			$row = db_fetch_row('SELECT id, subnet_range
 				FROM automation_networks
 				LIMIT 1');
+
 			$enabled = 0;
 			$network = '';
 			log_install_debug('automation', "getAutomationRange(): found '" . clean_up_lines(var_export($row, true)));
@@ -1149,8 +1149,10 @@ class Installer implements JsonSerializable {
 
 		if (is_array($param_snmp_options)) {
 			db_execute('DELETE FROM settings WHERE name like \'install_snmp_option_%\'');
+
 			log_install_medium('snmp_options', 'Updating snmp_options');
 			log_install_debug('snmp_options', 'Parameter data:' . clean_up_lines(var_export($param_snmp_options, true)));
+
 			$known_map = array(
 				'SnmpVersion'         => 'snmp_version',
 				'SnmpCommunity'       => 'snmp_community',
@@ -1221,8 +1223,7 @@ class Installer implements JsonSerializable {
 		$sysDescrMatch = $config['cacti_server_os'] == 'win32' ? 'Windows' : 'Linux';
 		foreach ($this->defaultAutomation as $item) {
 			if ($item['sysDescrMatch'] == $sysDescrMatch || !empty($default_template)) {
-				$host_template_id = db_fetch_cell_prepared(
-					'SELECT id
+				$host_template_id = db_fetch_cell_prepared('SELECT id
 					FROM host_template
 					WHERE hash = ?',
 					array($item['hash'])
@@ -1267,7 +1268,7 @@ class Installer implements JsonSerializable {
 		set_install_config_option('default_template', $default_template);
 
 		$default_template = $this->getDefaultTemplate();
-		log_install_always('template', 'setDefaultTemplate(): Device default template is \'' . $default_template . '\'');
+		log_install_always('templates', 'setDefaultTemplate(): Device default template is \'' . $default_template . '\'');
 	}
 
 	/* getTemplates() - returns a list of expected templates and whether
@@ -1333,7 +1334,8 @@ class Installer implements JsonSerializable {
 	 *         passed that is not expected */
 	private function setTemplates($param_templates = array()) {
 		if (is_array($param_templates)) {
-			db_execute('DELETE FROM settings WHERE name like \'install_template_%\'');
+			db_execute('DELETE FROM settings WHERE name like \'install_tp_%\'');
+
 			$known_templates = install_setup_get_templates();
 
 			log_install_medium('templates', 'setTemplates(): Updating templates');
@@ -3056,6 +3058,7 @@ class Installer implements JsonSerializable {
 		if ($this->stepCurrent == Installer::STEP_COMPLETE) {
 			$output = Installer::sectionTitle(__('Complete'));
 			$output .= Installer::sectionNormal(__('Your Cacti Server v%s has been installed/updated.  You may now start using the software.', CACTI_VERSION_FULL));
+
 			db_execute('DELETE FROM settings WHERE name LIKE "install_%"');
 		} elseif ($this->stepCurrent == Installer::STEP_ERROR) {
 			$output = Installer::sectionTitleError();
@@ -3283,7 +3286,7 @@ class Installer implements JsonSerializable {
 
 		$templates = db_fetch_assoc("SELECT value
 			FROM settings
-			WHERE name LIKE 'install_template_%'
+			WHERE name LIKE 'install_tp_%'
 			AND value <> ''");
 
 		$this->setProgress(Installer::PROGRESS_TEMPLATES_BEGIN);
@@ -3332,16 +3335,14 @@ class Installer implements JsonSerializable {
 				if (!empty($host_template_id)) {
 					log_install_always('', __('Mapping Automation Template for Device Template \'%s\'', $item['name']));
 
-					$exists = db_fetch_cell_prepared(
-						'SELECT host_template
+					$exists = db_fetch_cell_prepared('SELECT host_template
 						FROM automation_templates
 						WHERE host_template = ?',
 						array($host_template_id)
 					);
 
 					if (empty($exists)) {
-						db_execute_prepared(
-							'INSERT INTO automation_templates
+						db_execute_prepared('INSERT INTO automation_templates
 							(host_template, availability_method, sysDescr, sysName, sysOid, sequence)
 							VALUES (?, ?, ?, ?, ?, ?)',
 							array(
@@ -3386,8 +3387,7 @@ class Installer implements JsonSerializable {
 		$this->setProgress(Installer::PROGRESS_PROFILE_START);
 
 		$profile_id = intval($this->profile);
-		$profile    = db_fetch_row_prepared(
-			'SELECT id, name, step, heartbeat
+		$profile    = db_fetch_row_prepared('SELECT id, name, step, heartbeat
 			FROM data_source_profiles
 			WHERE id = ?',
 			array($profile_id)
@@ -3402,21 +3402,18 @@ class Installer implements JsonSerializable {
 			db_execute('UPDATE data_source_profiles
 				SET `default` = ""');
 
-			db_execute_prepared(
-				'UPDATE data_source_profiles
+			db_execute_prepared('UPDATE data_source_profiles
 				SET `default` = \'on\'
 				WHERE `id` = ?',
 				array($profile['id'])
 			);
 
-			db_execute_prepared(
-				'UPDATE data_template_data
+			db_execute_prepared('UPDATE data_template_data
 				SET rrd_step = ?, data_source_profile_id = ?',
 				array($profile['step'], $profile['id'])
 			);
 
-			db_execute_prepared(
-				'UPDATE data_template_rrd
+			db_execute_prepared('UPDATE data_template_rrd
 				SET rrd_heartbeat = ?',
 				array($profile['heartbeat'])
 			);
@@ -3443,8 +3440,7 @@ class Installer implements JsonSerializable {
 				$this->automationRange
 			));
 
-			db_execute_prepared(
-				'UPDATE automation_networks SET
+			db_execute_prepared('UPDATE automation_networks SET
 				subnet_range = ?,
 				enabled = ?
 				WHERE id = ?',
@@ -3482,10 +3478,9 @@ class Installer implements JsonSerializable {
 					log_install_always('', __('Successfully updated Automation Option Set %s', $snmp_id));
 
 					log_install_always('', __('Resequencing Automation Option Set %s', $snmp_id));
-					db_execute_prepared(
-						'UPDATE automation_snmp_items
-							     SET sequence = sequence + 1
-							     WHERE snmp_id = ?',
+					db_execute_prepared('UPDATE automation_snmp_items
+						SET sequence = sequence + 1
+						WHERE snmp_id = ?',
 						array($snmp_id)
 					);
 				} else {
@@ -3534,8 +3529,7 @@ class Installer implements JsonSerializable {
 				' --version=' . $version .
 				' --community=' . cacti_escapeshellarg($community));
 
-			$host_id = db_fetch_cell_prepared(
-				'SELECT id
+			$host_id = db_fetch_cell_prepared('SELECT id
 				FROM host
 				WHERE host_template_id = ?
 				LIMIT 1',
@@ -3544,8 +3538,7 @@ class Installer implements JsonSerializable {
 
 			if (!empty($host_id)) {
 				$this->setProgress(Installer::PROGRESS_DEVICE_GRAPH);
-				$templates = db_fetch_assoc_prepared(
-					'SELECT *
+				$templates = db_fetch_assoc_prepared('SELECT *
 					FROM host_graph
 					WHERE host_id = ?',
 					array($host_id)
@@ -3956,8 +3949,7 @@ class Installer implements JsonSerializable {
 
 		foreach ($plugins_integrated as $plugin) {
 			if (!api_plugin_is_enabled($plugin)) {
-				db_execute_prepared(
-					'DELETE FROM plugin_config
+				db_execute_prepared('DELETE FROM plugin_config
 					WHERE directory = ?',
 					array($plugin)
 				);
