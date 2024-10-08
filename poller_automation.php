@@ -751,7 +751,7 @@ function discoverDevices($network_id, $thread) {
 
 										$pattern = str_replace(
 											array('|sysName|', '|ipAddress|', '|dnsName|', '|dnsShortName|', '|sysLocation|'),
-											array($sysName, $ip_address, $dnsname, $dns_shortname, $sysLocation),
+											array($sysName, $ip_address, $dnsname, $shortname, $sysLocation),
 											$fos['description_pattern']
 										);
 
