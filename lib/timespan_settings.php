@@ -191,7 +191,7 @@ function set_preset_timespan(&$timespan) {
 
 	/* operate like graphs if graphs is set */
 	if ($graph) {
-		$time = read_config_option('poller_lastrun_1');
+		$time = read_config_option('poller_lastrun_1', true);
 
 		if (empty($time)) {
 			$time = time();
