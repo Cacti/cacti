@@ -252,6 +252,15 @@ function api_data_source_remove_multi($local_data_ids, $update_totals = true) {
 			}
 		}
 
+		/* prepare auto-clean if enabled */
+		if ($autoclean == 'on') {
+			db_execute("INSERT INTO data_source_purge_action (local_data_id, name, action)
+				SELECT local_data_id, REPLACE(data_source_path, '<path_cacti>/', ''), '" . $acmethod . "'
+				FROM data_template_data
+				WHERE local_data_id IN (" . $ids_to_delete . ')
+				ON DUPLICATE KEY UPDATE action=VALUES(action)');
+		}
+
 		/* core data */
 		db_execute('DELETE FROM data_template_data
 			WHERE local_data_id IN (' . $ids_to_delete . ')');
@@ -296,14 +305,6 @@ function api_data_source_remove_multi($local_data_ids, $update_totals = true) {
 
 		db_execute('DELETE FROM poller_output_boost
 			WHERE local_data_id IN (' . $ids_to_delete . ')');
-
-		if ($autoclean == 'on') {
-			db_execute("INSERT INTO data_source_purge_action (local_data_id, name, action)
-				SELECT local_data_id, REPLACE(data_source_path, '<path_cacti>/', ''), '" . $acmethod . "'
-				FROM data_template_data
-				WHERE local_data_id IN (" . $ids_to_delete . ')
-				ON DUPLICATE KEY UPDATE action=VALUES(action)');
-		}
 
 		if (cacti_sizeof($poller_ids)) {
 			foreach ($poller_ids as $poller_id) {
