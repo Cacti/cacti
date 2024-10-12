@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.x
 -issue#5843: Issue with temporary tables with use of microtime
+-issue#5847: Presets Time in Cacti 1.2.28 Not Automatically Updating...
 
 1.2.28
 -security#GHSA-49f2-hwx9-qffr: XSS vulnerability when creating external links with the consolenewsection parameter
