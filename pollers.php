@@ -189,10 +189,15 @@ $fields_poller_edit = array(
 		'default'       => $database_retries,
 		'max_length'    => '5'
 	),
+	'spacerssl' => array(
+		'method'        => 'spacer',
+		'friendly_name' => __('Remote Database SSL Information'),
+		'description' => __('Starting in MariaDB 11.4 and above, SSL is autonegotiated between the client and server.  So, this option may not be required')
+	),
 	'dbssl' => array(
 		'method'        => 'checkbox',
 		'friendly_name' => __('Remote Database SSL'),
-		'description'   => __('If the remote database uses SSL to connect, check the checkbox below.'),
+		'description'   => __('If the remote database uses SSL to connect, and it\'s prior to MariaDB 11.4, check the checkbox below to enter the details.'),
 		'value'         => '|arg1:dbssl|',
 		'default'       => $database_ssl ? 'on' : ''
 	),
@@ -238,6 +243,10 @@ $fields_poller_edit = array(
 		'description'   => __("Provides a way to disable verification of the server's SSL certificate Common Name against the server's hostname when connecting. This verification is enabled by default."),
 		'value'         => '|arg1:dbsslverifyservercert|',
 		'default'       => $database_ssl_verify_server_cert ? 'on' : ''
+	),
+	'spacertest' => array(
+		'method'        => 'spacer',
+		'friendly_name' => __('Test Connection'),
 	),
 	'id' => array(
 		'method' => 'hidden',
@@ -709,11 +718,13 @@ function poller_edit() {
 						dbsslkey: hasSSL,
 						dbsslcert: hasSSL,
 						dbsslca: hasSSL,
+						dbsslcapath: hasSSL,
+						dbsslverifyservercert: hasSSL,
 					});
 				}
 
 				$(function() {
-					$('#row_dbsslca').after('<?php print $row_html; ?>');
+					$('#row_spacertest').after('<?php print $row_html; ?>');
 					$('#dbssl').click(function() {
 						showHideRemoteDB();
 					});

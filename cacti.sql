@@ -2258,6 +2258,7 @@ CREATE TABLE `poller` (
   `processes` int(10) unsigned default '1',
   `threads` int(10) unsigned default '1',
   `sync_interval` int(10) unsigned default '7200',
+  `devices` int(10) unsigned NOT NULL default '0',
   `snmp` mediumint(8) unsigned default '0',
   `script` mediumint(8) unsigned default '0',
   `server` mediumint(8) unsigned default '0',
@@ -2265,7 +2266,6 @@ CREATE TABLE `poller` (
   `last_status` timestamp NOT NULL default '0000-00-00 00:00:00',
   `last_sync` timestamp NOT NULL default '0000-00-00 00:00:00',
   `requires_sync` char(2) default '',
-  `devices` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `disabled` (`disabled`)

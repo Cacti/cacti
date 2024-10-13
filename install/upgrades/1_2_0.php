@@ -37,10 +37,11 @@ function upgrade_to_1_2_0() {
 	db_install_add_column('poller', array('name' => 'sync_interval', 'type' => 'int', 'after' => 'threads', 'default' => '7200'));
 	db_install_add_column('poller', array('name' => 'timezone', 'type' => 'varchar(40)', 'default' => '', 'after' => 'status'));
 	db_install_add_column('poller', array('name' => 'dbsslkey', 'type' => 'varchar(255)', 'after' => 'dbssl'));
-	db_install_add_column('poller', array('name' => 'dbsslcert', 'type' => 'varchar(255)', 'after' => 'dbssl'));
-	db_install_add_column('poller', array('name' => 'dbsslca', 'type' => 'varchar(255)', 'after' => 'dbssl'));
-	db_install_add_column('poller', array('name' => 'dbsslcapath', 'type' => 'varchar(255)', 'after' => 'dbssl'));
-	db_install_add_column('poller', array('name' => 'dbsslverifyservercert', 'type' => 'char(3)', 'after' => 'dbssl', 'default' => 'on'));
+	db_install_add_column('poller', array('name' => 'dbsslcert', 'type' => 'varchar(255)', 'after' => 'dbsslkey'));
+	db_install_add_column('poller', array('name' => 'dbsslca', 'type' => 'varchar(255)', 'after' => 'dbsslcert'));
+	db_install_add_column('poller', array('name' => 'dbsslcapath', 'type' => 'varchar(255)', 'after' => 'dbsslca'));
+	db_install_add_column('poller', array('name' => 'dbsslverifyservercert', 'type' => 'char(3)', 'after' => 'dbsslcapath', 'default' => 'on'));
+
 	if (!$poller_exists) {
 		// Take the value from the settings table and translate to
 		// the new Data Collector table settings
