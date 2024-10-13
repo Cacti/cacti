@@ -38,6 +38,7 @@ $dir->close();
 $tabs = array(
 	'general'        => __('General'),
 	'path'           => __('Paths'),
+	'logging'        => __('Logging'),
 	'snmp'           => __('Device Defaults'),
 	'poller'         => __('Poller'),
 	'data'           => __('Data'),
@@ -239,27 +240,6 @@ $settings['path'] = array(
 		'install_check'    => 'writable',
 		'install_optional' => true
 	),
-	'logrotate_enabled' => array(
-		'friendly_name' => __('Rotate the Cacti Log'),
-		'description'   => __('This option will rotate the Cacti Log periodically.'),
-		'method'        => 'checkbox',
-		'default'       => 'on',
-	),
-	'logrotate_frequency' => array(
-		'friendly_name' => __('Rotation Frequency'),
-		'description'   => __('At what frequency would you like to rotate your logs?'),
-		'method'        => 'drop_array',
-		'default'       => '1',
-		'array'         => $logrotate_frequency
-	),
-	'logrotate_retain' => array(
-		'friendly_name' => __('Log Retention'),
-		'description'   => __('How many log files do you wish to retain?  Use 0 to never remove any logs. (0-365)'),
-		'method'        => 'textbox',
-		'default'       => '7',
-		'max_length'    => 3,
-		'size'          => 4
-	),
 	'pollerpaths_header' => array(
 		'friendly_name' => __('Alternate Poller Path'),
 		'collapsible'   => 'true',
@@ -311,7 +291,7 @@ $settings['path'] = array(
 	)
 );
 
-$settings['general'] = array(
+$settings['logging'] = array(
 	'poller_specific_header' => array(
 		'friendly_name' => __('Log Settings'),
 		'collapsible'   => 'true',
@@ -399,6 +379,35 @@ $settings['general'] = array(
 			)
 		)
 	),
+	'log_rotation' => array(
+		'friendly_name' => __('Log Rotation'),
+		'collapsible'   => 'true',
+		'method'        => 'spacer',
+	),
+	'logrotate_enabled' => array(
+		'friendly_name' => __('Rotate the Cacti Log'),
+		'description'   => __('This option will rotate the Cacti Log periodically.'),
+		'method'        => 'checkbox',
+		'default'       => 'on',
+	),
+	'logrotate_frequency' => array(
+		'friendly_name' => __('Rotation Frequency'),
+		'description'   => __('At what frequency would you like to rotate your logs?'),
+		'method'        => 'drop_array',
+		'default'       => '1',
+		'array'         => $logrotate_frequency
+	),
+	'logrotate_retain' => array(
+		'friendly_name' => __('Log Retention'),
+		'description'   => __('How many log files do you wish to retain?  Use 0 to never remove any logs. (0-365)'),
+		'method'        => 'textbox',
+		'default'       => '7',
+		'max_length'    => 3,
+		'size'          => 4
+	),
+);
+
+$settings['general'] = array(
 	'i18n_header' => array(
 		'friendly_name' => __('Internationalization (i18n)'),
 		'collapsible'   => 'true',

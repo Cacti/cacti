@@ -104,6 +104,7 @@ function display_settings() {
 	$system_tabs = array(
 		'general',
 		'path',
+		'logging',
 		'snmp',
 		'poller',
 		'data',
@@ -300,6 +301,14 @@ function display_settings() {
 			currentLanguage    = $('#i18n_default_language').val();
 			currentLangSupport = $('#i18n_language_support').val();
 
+			$('#graph_auth_method').change(function() {
+				permsChanger();
+			});
+
+			$('#i18n_default_language, #i18n_auto_detection, #i18n_language_support').change(function() {
+				langDetectionChanger();
+			});
+		} else if (currentTab == 'logging') {
 			$('#selective_plugin_debug').multiselect({
 				menuHeight: $(window).height()*.7,
 				menuWidth: 230,
@@ -342,14 +351,6 @@ function display_settings() {
 				label: '<?php print __('Search');?>',
 				placeholder: '<?php print __('Enter keyword');?>',
 				width: '150'
-			});
-
-			$('#graph_auth_method').change(function() {
-				permsChanger();
-			});
-
-			$('#i18n_default_language, #i18n_auto_detection, #i18n_language_support').change(function() {
-				langDetectionChanger();
 			});
 		} else if (currentTab == 'spikes') {
 			$('#spikekill_templates').multiselect({
