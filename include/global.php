@@ -680,7 +680,7 @@ if ($config['is_web']) {
 
 		foreach ($bad_actions as $bad) {
 			if ($action == $bad && !isset($_POST['__csrf_magic'])) {
-				cacti_log('WARNING: Attempt to use GET method for POST operations from IP ' . get_client_addr(), false, 'WEBUI');
+				cacti_log(sprintf('WARNING: Attempt to use GET method for POST operations in page %s from IP %s', $filename, get_client_addr()), false, 'WEBUI');
 
 				exit;
 			}
