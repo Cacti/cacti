@@ -90,52 +90,52 @@ function html_graph_validate_preview_request_vars() {
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => read_user_setting('preview_graphs_per_page', 20)
-			),
+		),
 		'page' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
-			),
+		),
 		'graph_template_id' => array(
 			'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'pageset' => true,
 			'default' => '-1',
-			),
+		),
 		'columns' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => read_user_setting('num_columns', '2')
-			),
+		),
 		'host_id' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
 		'rfilter' => array(
 			'filter'  => FILTER_VALIDATE_IS_REGEX,
 			'pageset' => true,
 			'default' => '',
-			),
+		),
 		'thumbnails' => array(
 			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'default' => read_user_setting('thumbnail_section_preview', '') == 'on' ? 'true':'false'
-			),
+		),
 		'graph_list' => array(
 			'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'default' => ''
-			),
+		),
 		'graph_add' => array(
 			'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'default' => ''
-			),
+		),
 		'graph_remove' => array(
 			'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'default' => ''
-			),
+		),
 		'style' => array(
 			'filter'  => FILTER_DEFAULT,
 			'default' => ''
-			)
+		)
 	);
 
 	validate_store_request_vars($filters, 'sess_grview');

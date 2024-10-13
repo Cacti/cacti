@@ -225,7 +225,7 @@ function set_user_setting(string $config_name, mixed $value, ?int $user = null):
 			value = ?',
 			array($user, $config_name, $value));
 
-		unset($_SESSION[OPTIONS_USER]);
+		$_SESSION[OPTIONS_USER][$config_name] = $value;
 		$settings_user[$config_name]['value'] = $value;
 	}
 }
@@ -347,7 +347,11 @@ function read_user_setting(string $config_name, mixed $default = false, bool $fo
 	global $config;
 
 	/* users must have cacti user auth turned on to use this, or the guest account must be active */
-	$effective_uid = $user ?? ($_SESSION[SESS_USER_ID] ?? 0);
+	if ($user == 0 && isset($_SESSION[SESS_USER_ID])) {
+		$effective_uid = $_SESSION[SESS_USER_ID];
+	} else {
+		$effective_uid = $user;
+	}
 
 	if (!$force) {
 		if (isset($_SESSION[OPTIONS_USER])) {

@@ -139,8 +139,7 @@ function api_auth_logout_everywhere() {
 	$user = $_SESSION[SESS_USER_ID];
 
 	if (!empty($user)) {
-		db_execute_prepared(
-			'DELETE FROM user_auth_cache
+		db_execute_prepared('DELETE FROM user_auth_cache
 			WHERE user_id = ?',
 			array($user)
 		);
@@ -152,8 +151,7 @@ function api_auth_clear_user_settings() {
 
 	if (!empty($user)) {
 		if (isset_request_var('tab') && get_nfilter_request_var('tab') == 'general') {
-			db_execute_prepared(
-				'DELETE FROM settings_user
+			db_execute_prepared('DELETE FROM settings_user
 				WHERE user_id = ?',
 				array($user)
 			);
@@ -178,8 +176,7 @@ function api_auth_clear_user_setting($name) {
 
 	if (!empty($user)) {
 		if (isset_request_var('tab') && get_nfilter_request_var('tab') == 'general') {
-			db_execute_prepared(
-				'DELETE FROM settings_user
+			db_execute_prepared('DELETE FROM settings_user
 				WHERE user_id = ?
 				AND name = ?',
 				array($user, $name)
@@ -188,8 +185,7 @@ function api_auth_clear_user_setting($name) {
 			foreach ($settings_user as $tab => $settings) {
 				if (isset($settings[$name])) {
 					if (isset($settings[$name]['default'])) {
-						db_execute_prepared(
-							'INSERT INTO settings_user
+						db_execute_prepared('INSERT INTO settings_user
 							(name, value, user_id)
 							VALUES (?, ?, ?)',
 							array($name, $settings[$name]['default'], $user)
@@ -217,8 +213,7 @@ function api_auth_update_user_setting($name, $value) {
 
 	if (!empty($user)) {
 		if ($name == 'full_name' || $name == 'email_address') {
-			db_execute_prepared(
-				"UPDATE user_auth
+			db_execute_prepared("UPDATE user_auth
 				SET $name = ?
 				WHERE id = ?",
 				array($value, $user)
@@ -226,8 +221,7 @@ function api_auth_update_user_setting($name, $value) {
 		} else {
 			foreach ($settings_user as $tab => $settings) {
 				if (isset($settings[$name])) {
-					db_execute_prepared(
-						'REPLACE INTO settings_user
+					db_execute_prepared('REPLACE INTO settings_user
 						(name, value, user_id)
 						VALUES (?, ?, ?)',
 						array($name, $value, $user)
@@ -249,8 +243,7 @@ function form_save() {
 
 	// Save the users profile information
 	if (isset_request_var('full_name') && isset_request_var('email_address') && isset($_SESSION[SESS_USER_ID])) {
-		db_execute_prepared(
-			'UPDATE user_auth
+		db_execute_prepared('UPDATE user_auth
 			SET full_name = ?, email_address = ?
 			WHERE id = ?',
 			array(
@@ -319,8 +312,7 @@ function settings() {
 
 	html_start_box(__('User Account Details'), '100%', true, '3', 'center', '');
 
-	$current_user = db_fetch_row_prepared(
-		'SELECT *
+	$current_user = db_fetch_row_prepared('SELECT *
 		FROM user_auth
 		WHERE id = ?',
 		array($_SESSION[SESS_USER_ID])
@@ -438,8 +430,7 @@ function settings() {
 							$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
 						}
 
-						$form_array[$field_name]['items'][$sub_field_name]['value'] =  db_fetch_cell_prepared(
-							'SELECT value
+						$form_array[$field_name]['items'][$sub_field_name]['value'] =  db_fetch_cell_prepared('SELECT value
 							FROM settings_user
 							WHERE name = ?
 							AND user_id = ?',
@@ -451,8 +442,7 @@ function settings() {
 						$form_array[$field_name]['form_id'] = 1;
 					}
 
-					$user_row = db_fetch_row_prepared(
-						'SELECT value
+					$user_row = db_fetch_row_prepared('SELECT value
 						FROM settings_user
 						WHERE name = ?
 						AND user_id = ?',
@@ -529,8 +519,7 @@ function settings_2fa() {
 
 	html_start_box(__('2FA Settings'), '100%', true, '3', 'center', '');
 
-	$current_user = db_fetch_row_prepared(
-		'SELECT *
+	$current_user = db_fetch_row_prepared('SELECT *
 		FROM user_auth
 		WHERE id = ?',
 		array($_SESSION[SESS_USER_ID])
