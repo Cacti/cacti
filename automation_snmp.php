@@ -23,6 +23,7 @@
  */
 
 include('./include/auth.php');
+include_once('./lib/api_automation.php');
 include_once('./lib/snmp.php');
 
 $actions = array(
@@ -236,21 +237,21 @@ function automation_import_process() {
 	if (cacti_sizeof($return_data) && isset($return_data['success'])) {
 		foreach ($return_data['success'] as $message) {
 			$debug_data[] = '<span class="deviceUp">' . __('NOTE:') . '</span> ' . $message;
-			cacti_log('NOTE: SNMP Options Import Succeeded!.  Message: '. $message, false, 'AUTOM8');
+			automation_log('NOTE: SNMP Options Import Succeeded!.  Message: '. $message, AUTOMATION_LOG_LOW);
 		}
 	}
 
 	if (isset($return_data['errors'])) {
 		foreach ($return_data['errors'] as $error) {
 			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $error;
-			cacti_log('NOTE: SNMP Options Import Error!.  Message: '. $message, false, 'AUTOM8');
+			automation_log('NOTE: SNMP Options Import Error!.  Message: '. $message, AUTOMATION_LOG_LOW);
 		}
 	}
 
 	if (isset($return_data['failure'])) {
 		foreach ($return_data['failure'] as $message) {
 			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $message;
-			cacti_log('NOTE: Automation SNMP Option Import Failed!.  Message: '. $message, false, 'AUTOM8');
+			automation_log('NOTE: Automation SNMP Option Import Failed!.  Message: '. $message, AUTOMATION_LOG_LOW);
 		}
 	}
 

@@ -32,6 +32,7 @@ if (function_exists('pcntl_async_signals')) {
 ini_set('output_buffering', 'Off');
 
 require(__DIR__ . '/include/cli_check.php');
+require_once(CACTI_PATH_LIBRARY . '/api_automation.php');
 require_once(CACTI_PATH_LIBRARY . '/api_device.php');
 require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
 require_once(CACTI_PATH_LIBRARY . '/api_graph.php');
@@ -49,7 +50,7 @@ if ($config['poller_id'] > 1) {
 	if ($config['connection'] == 'online') {
 		db_force_remote_cnn();
 	} elseif (debounce_run_notification('db_offline')) {
-		cacti_log(sprintf('WARNING: Main Cacti database %s offline or in recovery.  Can not run automation', $rdatabase_hostname), false, 'AUTOM8');
+		cacti_log(sprintf('WARNING: Main Cacti database %s offline or in recovery.  Can not run automation', $rdatabase_hostname), true, 'AUTOM8');
 		admin_email(__('Cacti System Warning'), __("WARNING: Main Cacti database %s offline or in recovery", $rdatabase_hostname));
 		exit(1);
 	}
@@ -247,7 +248,7 @@ if ($master) {
 	if (cacti_sizeof($networks)) {
 		foreach ($networks as $network) {
 			if ($network['snmp_id'] == 0) {
-				cacti_log("ERROR: Automation can not run for Network '" . $network['name'] . "' since the SNMP ID is not set.", false, 'AUTOM8');
+				cacti_log("ERROR: Automation can not run for Network '" . $network['name'] . "' since the SNMP ID is not set.", true, 'AUTOM8');
 
 				continue;
 			}

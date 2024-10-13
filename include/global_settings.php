@@ -622,6 +622,13 @@ $settings['general'] = array(
 		'method'        => 'spacer',
 		'collapsible'   => 'true'
 	),
+	'automation_log_level' => array(
+		'friendly_name' => __('Logging Level'),
+		'description'   => __('The Logging level for Automation activities.  Levels are Low, Medium and High.'),
+		'method'        => 'drop_array',
+		'default'       => AUTOMATION_LOG_LOW,
+		'array'         => $automation_log_levels
+	),
 	'automation_serial_scans' => array(
 		'method'        => 'checkbox',
 		'friendly_name' => __('Force Serial Automation Scans'),

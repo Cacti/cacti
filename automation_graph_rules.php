@@ -23,6 +23,7 @@
 */
 
 include('./include/auth.php');
+include_once('./lib/api_automation.php');
 include_once('./lib/data_query.php');
 
 $actions = array(
@@ -219,21 +220,21 @@ function automation_import_process() {
 	if (sizeof($return_data) && isset($return_data['success'])) {
 		foreach ($return_data['success'] as $message) {
 			$debug_data[] = '<span class="deviceUp">' . __('NOTE:') . '</span> ' . $message;
-			cacti_log('NOTE: Automation Graph Rules Import Succeeded!.  Message: '. $message, false, 'AUTOM8');
+			automation_log('NOTE: Automation Graph Rules Import Succeeded!.  Message: '. $message, AUTOMATION_LOG_LOW);
 		}
 	}
 
 	if (isset($return_data['errors'])) {
 		foreach ($return_data['errors'] as $error) {
 			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $error;
-			cacti_log('NOTE: Automation Graph Rules Import Error!.  Message: '. $message, false, 'AUTOM8');
+			automation_log('NOTE: Automation Graph Rules Import Error!.  Message: '. $message, AUTOMATION_LOG_LOW);
 		}
 	}
 
 	if (isset($return_data['failure'])) {
 		foreach ($return_data['failure'] as $message) {
 			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $message;
-			cacti_log('NOTE: Automation Graph Rules Import Failed!.  Message: '. $message, false, 'AUTOM8');
+			automation_log('NOTE: Automation Graph Rules Import Failed!.  Message: '. $message, AUTOMATION_LOG_LOW);
 		}
 	}
 
@@ -357,12 +358,12 @@ function automation_graph_rules_form_actions() {
 				db_execute('DELETE FROM automation_match_rule_items WHERE ' . array_to_sql_or($selected_items, 'rule_id'));
 			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_DUPLICATE) { /* duplicate */
 				for ($i=0;($i < cacti_count($selected_items));$i++) {
-					cacti_log('form_actions duplicate: ' . $selected_items[$i] . ' name: ' . get_nfilter_request_var('name_format'), true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
+					automation_log('form_actions duplicate: ' . $selected_items[$i] . ' name: ' . get_nfilter_request_var('name_format'), AUTOMATION_LOG_HIGH, POLLER_VERBOSITY_MEDIUM);
 					duplicate_automation_graph_rules($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_ENABLE) { /* enable */
 				for ($i=0;($i < cacti_count($selected_items));$i++) {
-					cacti_log('form_actions enable: ' . $selected_items[$i], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
+					automation_log('form_actions enable: ' . $selected_items[$i], AUTOMATION_LOG_HIGH, POLLER_VERBOSITY_MEDIUM);
 
 					db_execute_prepared("UPDATE automation_graph_rules
 						SET enabled='on'
@@ -371,7 +372,7 @@ function automation_graph_rules_form_actions() {
 				}
 			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_DISABLE) { /* disable */
 				for ($i=0;($i < cacti_count($selected_items));$i++) {
-					cacti_log('form_actions disable: ' . $selected_items[$i], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
+					automation_log('form_actions disable: ' . $selected_items[$i], AUTOMATION_LOG_HIGH, POLLER_VERBOSITY_MEDIUM);
 
 					db_execute_prepared("UPDATE automation_graph_rules
 						SET enabled=''

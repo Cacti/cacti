@@ -628,6 +628,12 @@ $graph_item_types = array(
 
 asort($graph_item_types);
 
+$automation_log_levels = array(
+	AUTOMATION_LOG_LOW    => __('Warnings, Errors, Device and Tree Creation'),
+	AUTOMATION_LOG_MEDIUM => __('Low Level plus Graph Creation/Non-Creation Events'),
+	AUTOMATION_LOG_HIGH   => __('All Events plus Global Log Level Specific Trace Events')
+);
+
 $image_types = array(
 	1 => 'PNG',
 	3 => 'SVG'

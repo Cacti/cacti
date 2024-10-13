@@ -404,6 +404,10 @@ define('AUTOMATION_ACTION_TREE_DISABLE', 3);
 define('AUTOMATION_ACTION_TREE_EXPORT', 4);
 define('AUTOMATION_ACTION_TREE_DELETE', 99);
 
+define('AUTOMATION_LOG_LOW', 1);
+define('AUTOMATION_LOG_MEDIUM', 2);
+define('AUTOMATION_LOG_HIGH', 3);
+
 if (isset($database_type) && $database_type == 'mysql') {
 	define('SQL_NO_CACHE', 'SQL_NO_CACHE');
 } else {
