@@ -357,42 +357,33 @@ function processStepWelcome(StepData) {
 //		$('#accept').prop('checked',true);
 //	}
 
-	if (StepData.Theme != 'classic') {
-		$('select#theme').selectmenu({
-			change: function() {
-				performStep(STEP_WELCOME, undefined, true);
-			}
-		});
-
-		$.widget( "custom.iconselectmenu", $.ui.selectmenu, {
-			_renderItem: function( ul, item ) {
-				var li = $( "<li>" ), wrapper = $( "<div>", { text: item.label } );
-				if ( item.disabled ) {
-					li.addClass( "ui-state-disabled" );
-				}
-
-				$( "<span>", {
-					style: item.element.attr( "data-style" ),
-					"class": "fi fis " + item.element.attr( "data-class" )
-				}).appendTo( wrapper );
-
-				return li.append( wrapper ).appendTo( ul );
-			}
-		});
-
-		$("select#language").selectmenu('destroy').iconselectmenu({
-			change: function() {
-				performStep(STEP_WELCOME, undefined, true);
-			}
-		}).iconselectmenu( "menuWidget" ).addClass( "ui-menu-icons customicons" );
-	} else {
-		$('#theme').change(function() {
+	$('select#theme').selectmenu({
+		change: function() {
 			performStep(STEP_WELCOME, undefined, true);
-		});
-		$('#language').change(function() {
+		}
+	});
+
+	$.widget( "custom.iconselectmenu", $.ui.selectmenu, {
+		_renderItem: function( ul, item ) {
+			var li = $( "<li>" ), wrapper = $( "<div>", { text: item.label } );
+			if ( item.disabled ) {
+				li.addClass( "ui-state-disabled" );
+			}
+
+			$( "<span>", {
+				style: item.element.attr( "data-style" ),
+				"class": "fi fis " + item.element.attr( "data-class" )
+			}).appendTo( wrapper );
+
+			return li.append( wrapper ).appendTo( ul );
+		}
+	});
+
+	$("select#language").selectmenu('destroy').iconselectmenu({
+		change: function() {
 			performStep(STEP_WELCOME, undefined, true);
-		});
-	}
+		}
+	}).iconselectmenu( "menuWidget" ).addClass( "ui-menu-icons customicons" );
 
 	if ($('#accept').length) {
 		$('#accept').click(function() {
@@ -428,17 +419,11 @@ function processStepInstallType(StepData) {
 			}
 		}
 
-		if (StepData.Theme != 'classic') {
-			$('select#install_type').selectmenu({
-				change: function() {
-					performStep(STEP_INSTALL_TYPE);
-				}
-			});
-		} else {
-			$('#install_type').change(function() {
+		$('select#install_type').selectmenu({
+			change: function() {
 				performStep(STEP_INSTALL_TYPE);
-			});
-		}
+			}
+		});
 	}
 }
 
@@ -692,9 +677,7 @@ function performStep(installStep, suppressRefresh, forceReload) {
 			setButtonData('Test',data.Test);
 
 			$('input[type=\"text\"], input[type=\"password\"], input[type=\"checkbox\"], textarea').not('image').addClass('ui-state-default ui-corner-all');
-			if (data.Theme != 'classic') {
-				$('select').selectmenu();
-			}
+			$('select').selectmenu();
 
 			if (data.Step == STEP_WELCOME) {
 				processStepWelcome(data.StepData);

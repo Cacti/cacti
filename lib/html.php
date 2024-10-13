@@ -1913,261 +1913,178 @@ function html_show_tabs_left() {
 		$show_console_tab = false;
 	}
 
-	if (get_selected_theme() == 'classic') {
-		if ($show_console_tab == true) {
-			$console_selected = (is_console_page(get_current_page()) ? " class='selected'":'');
-			$console_image    = (is_console_page(get_current_page()) ? 'images/tab_console.gif':'images/tab_console_down.gif');
-			?><a id='tab-console' <?=$console_selected?> href='<?php print CACTI_PATH_URL; ?>index.php'><img src='<?=get_theme_paths('%s', $console_image)?>' alt='<?php print __('Console');?>'></a><?php
-		}
+	if ($show_console_tab) {
+		$tabs_left[] =
+		array(
+			'title' => __('Console'),
+			'id'	   => 'tab-console',
+			'url'   => CACTI_PATH_URL . 'index.php',
+		);
+	}
 
-		if ($realm_allowed[7]) {
-			if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
-				// Don't show graphs tab when offline
-			} else {
-				$file = get_current_page();
-
-				if ($file == 'graph_view.php' || $file == 'graph.php') {
-					print "<a id='tab-graphs' class='selected' href='" . html_escape(CACTI_PATH_URL . 'graph_view.php') . "'><img src='" . get_theme_paths('%s', 'images/tab_graphs_down.gif') . " alt='" . __('Graphs') . "'></a>";
-				} else {
-					print "<a id='tab-graphs' href='" . html_escape(CACTI_PATH_URL . 'graph_view.php') . "'><img src='" . CACTI_PATH_URL . "images/tab_graphs.gif' alt='" . __('Graphs') . "'></a>";
-				}
-			}
-		}
-
-		if ($realm_allowed[21] || $realm_allowed[22]) {
-			if ($config['poller_id'] > 1) {
-				// Don't show reports table if not poller 1
-			} else {
-				if (substr_count($_SERVER['REQUEST_URI'], 'reports_')) {
-					print '<a id="tab-reports" href="' . CACTI_PATH_URL . ($realm_allowed[21] === true ? 'reports_admin.php':'reports_user.php') . '"><img src="' . CACTI_PATH_URL . 'images/tab_nectar_down.gif" alt="' . __('Reporting') . '"></a>';
-				} else {
-					print '<a id="tab-reports" href="' . CACTI_PATH_URL . ($realm_allowed[21] === true ? 'reports_admin.php':'reports_user.php') . '"><img src="' . CACTI_PATH_URL . 'images/tab_nectar.gif" alt="' . __('Reporting') . '"></a>';
-				}
-			}
-		}
-
-		if ($realm_allowed[18] || $realm_allowed[19]) {
-			if (substr_count($_SERVER['REQUEST_URI'], 'clog')) {
-				print '<a id="tab-logs" href="' . CACTI_PATH_URL . ($realm_allowed[18] ? 'clog.php':'clog_user.php') . '"><img src="' . CACTI_PATH_URL . 'images/tab_clog_down.png" alt="' . __('Logs'). '"></a>';
-			} else {
-				print '<a id="tab-logs" href="' . CACTI_PATH_URL . ($realm_allowed[18] ? 'clog.php':'clog_user.php') . '"><img src="' . CACTI_PATH_URL . 'images/tab_clog.png" alt="' . __('Logs') . '"></a>';
-			}
-		}
-
-		api_plugin_hook('top_graph_header_tabs');
-
+	if ($realm_allowed[7]) {
 		if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
-			// Only show external links when online
+			// Don't show the graphs tab when offline
 		} else {
-			$external_links = db_fetch_assoc('SELECT id, title
-				FROM external_links
-				WHERE style="TAB"
-				AND enabled="on"
-				ORDER BY sortorder');
-
-			if (cacti_sizeof($external_links)) {
-				foreach ($external_links as $tab) {
-					if (is_realm_allowed($tab['id'] + 10000)) {
-						$parsed_url = parse_url($_SERVER['REQUEST_URI']);
-						$down       = false;
-
-						if (basename($parsed_url['path']) == 'link.php') {
-							if (isset($parsed_url['query'])) {
-								$queries = explode('&', $parsed_url['query']);
-
-								foreach ($queries as $q) {
-									list($var, $value) = explode('=', $q);
-
-									if ($var == 'id') {
-										if ($value == $tab['id']) {
-											$down = true;
-
-											break;
-										}
-									}
-								}
-							}
-						}
-
-						print '<a id="tab-link' . $tab['id'] . '" href="' . CACTI_PATH_URL . 'link.php?id=' . $tab['id'] . '"><img src="' . get_classic_tabimage($tab['title'], $down) . '" alt="' . html_escape($tab['title']) . '"></a>';
-					}
-				}
-			}
-		}
-	} else {
-		if ($show_console_tab) {
-			$tabs_left[] =
-			array(
-				'title' => __('Console'),
-				'id'	   => 'tab-console',
-				'url'   => CACTI_PATH_URL . 'index.php',
-			);
-		}
-
-		if ($realm_allowed[7]) {
-			if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
-				// Don't show the graphs tab when offline
-			} else {
-				$tabs_left[] =
-					array(
-						'title' => __('Graphs'),
-						'id'	   => 'tab-graphs',
-						'url'   => CACTI_PATH_URL . 'graph_view.php',
-					);
-			}
-		}
-
-		if ($realm_allowed[21] || $realm_allowed[22]) {
-			if ($config['poller_id'] > 1) {
-				// Don't show the reports tab on other pollers
-			} else {
-				$tabs_left[] =
-					array(
-						'title' => __('Reporting'),
-						'id'	   => 'tab-reports',
-						'url'   => CACTI_PATH_URL . ($realm_allowed[21] ? 'reports_admin.php':'reports_user.php'),
-					);
-			}
-		}
-
-		if ($realm_allowed[18] || $realm_allowed[19]) {
 			$tabs_left[] =
 				array(
-					'title' => __('Logs'),
-					'id'	   => 'tab-logs',
-					'url'   => CACTI_PATH_URL . ($realm_allowed[18] ? 'clog.php':'clog_user.php'),
+					'title' => __('Graphs'),
+					'id'	   => 'tab-graphs',
+					'url'   => CACTI_PATH_URL . 'graph_view.php',
 				);
 		}
+	}
 
-		// Get Plugin Text Out of Band
-		ob_start();
-		api_plugin_hook('top_graph_header_tabs');
-
-		$tab_text = trim(ob_get_clean());
-		$tab_text = str_replace('<a', '', $tab_text);
-		$tab_text = str_replace('</a>', '|', $tab_text);
-		$tab_text = str_replace('<img', '', $tab_text);
-		$tab_text = str_replace('<', '', $tab_text);
-		$tab_text = str_replace('"', "'", $tab_text);
-		$tab_text = str_replace('>', '', $tab_text);
-		$elements = explode('|', $tab_text);
-		$count    = 0;
-
-		foreach ($elements as $p) {
-			$p = trim($p);
-
-			if ($p == '') {
-				continue;
-			}
-
-			$altpos  = strpos($p, 'alt=');
-			$hrefpos = strpos($p, 'href=');
-			$idpos   = strpos($p, 'id=');
-
-			if ($altpos !== false) {
-				$alt   = substr($p, $altpos + 4);
-				$parts = explode("'", $alt);
-
-				if ($parts[0] == '') {
-					$alt = $parts[1];
-				} else {
-					$alt = $parts[0];
-				}
-			} else {
-				$alt = __('Title');
-			}
-
-			if ($hrefpos !== false) {
-				$href  = substr($p, $hrefpos + 5);
-				$parts = explode("'", $href);
-
-				if ($parts[0] == '') {
-					$href = $parts[1];
-				} else {
-					$href = $parts[0];
-				}
-			} else {
-				$href = 'unknown';
-			}
-
-			if ($idpos !== false) {
-				$id    = substr($p, $idpos + 3);
-				$parts = explode("'", $id);
-
-				if ($parts[0] == '') {
-					$id = $parts[1];
-				} else {
-					$id = $parts[0];
-				}
-			} else {
-				$id = 'unknown' . $count;
-				$count++;
-			}
-
-			$tabs_left[] = array('title' => ucwords($alt), 'id' => 'tab-' . $id, 'url' => $href);
-		}
-
-		if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
-			// Only show external links when online
+	if ($realm_allowed[21] || $realm_allowed[22]) {
+		if ($config['poller_id'] > 1) {
+			// Don't show the reports tab on other pollers
 		} else {
-			$external_links = db_fetch_assoc('SELECT id, title
-				FROM external_links
-				WHERE style="TAB"
-				AND enabled="on"
-				ORDER BY sortorder');
+			$tabs_left[] =
+				array(
+					'title' => __('Reporting'),
+					'id'	   => 'tab-reports',
+					'url'   => CACTI_PATH_URL . ($realm_allowed[21] ? 'reports_admin.php':'reports_user.php'),
+				);
+		}
+	}
 
-			if (cacti_sizeof($external_links)) {
-				foreach ($external_links as $tab) {
-					if (is_realm_allowed($tab['id'] + 10000)) {
-						$tabs_left[] =
-							array(
-								'title' => $tab['title'],
-								'id'    => 'tab-link' . $tab['id'],
-								'url'   => CACTI_PATH_URL . 'link.php?id=' . $tab['id']
-							);
-					}
+	if ($realm_allowed[18] || $realm_allowed[19]) {
+		$tabs_left[] =
+			array(
+				'title' => __('Logs'),
+				'id'	   => 'tab-logs',
+				'url'   => CACTI_PATH_URL . ($realm_allowed[18] ? 'clog.php':'clog_user.php'),
+			);
+	}
+
+	// Get Plugin Text Out of Band
+	ob_start();
+	api_plugin_hook('top_graph_header_tabs');
+
+	$tab_text = trim(ob_get_clean());
+	$tab_text = str_replace('<a', '', $tab_text);
+	$tab_text = str_replace('</a>', '|', $tab_text);
+	$tab_text = str_replace('<img', '', $tab_text);
+	$tab_text = str_replace('<', '', $tab_text);
+	$tab_text = str_replace('"', "'", $tab_text);
+	$tab_text = str_replace('>', '', $tab_text);
+	$elements = explode('|', $tab_text);
+	$count    = 0;
+
+	foreach ($elements as $p) {
+		$p = trim($p);
+
+		if ($p == '') {
+			continue;
+		}
+
+		$altpos  = strpos($p, 'alt=');
+		$hrefpos = strpos($p, 'href=');
+		$idpos   = strpos($p, 'id=');
+
+		if ($altpos !== false) {
+			$alt   = substr($p, $altpos + 4);
+			$parts = explode("'", $alt);
+
+			if ($parts[0] == '') {
+				$alt = $parts[1];
+			} else {
+				$alt = $parts[0];
+			}
+		} else {
+			$alt = __('Title');
+		}
+
+		if ($hrefpos !== false) {
+			$href  = substr($p, $hrefpos + 5);
+			$parts = explode("'", $href);
+
+			if ($parts[0] == '') {
+				$href = $parts[1];
+			} else {
+				$href = $parts[0];
+			}
+		} else {
+			$href = 'unknown';
+		}
+
+		if ($idpos !== false) {
+			$id    = substr($p, $idpos + 3);
+			$parts = explode("'", $id);
+
+			if ($parts[0] == '') {
+				$id = $parts[1];
+			} else {
+				$id = $parts[0];
+			}
+		} else {
+			$id = 'unknown' . $count;
+			$count++;
+		}
+
+		$tabs_left[] = array('title' => ucwords($alt), 'id' => 'tab-' . $id, 'url' => $href);
+	}
+
+	if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
+		// Only show external links when online
+	} else {
+		$external_links = db_fetch_assoc('SELECT id, title
+			FROM external_links
+			WHERE style="TAB"
+			AND enabled="on"
+			ORDER BY sortorder');
+
+		if (cacti_sizeof($external_links)) {
+			foreach ($external_links as $tab) {
+				if (is_realm_allowed($tab['id'] + 10000)) {
+					$tabs_left[] =
+						array(
+							'title' => $tab['title'],
+							'id'    => 'tab-link' . $tab['id'],
+							'url'   => CACTI_PATH_URL . 'link.php?id=' . $tab['id']
+						);
 				}
 			}
 		}
+	}
 
-		$i       = 0;
-		$me_base = get_current_page();
+	$i       = 0;
+	$me_base = get_current_page();
 
-		foreach ($tabs_left as $tab) {
-			$tab_base = basename($tab['url']);
+	foreach ($tabs_left as $tab) {
+		$tab_base = basename($tab['url']);
 
-			if ($tab_base == 'graph_view.php' && ($me_base == 'graph_view.php' || $me_base == 'graph.php')) {
-				$tabs_left[$i]['selected'] = true;
-			} elseif (isset_request_var('id') && ($tab_base == 'link.php?id=' . get_nfilter_request_var('id')) && $me_base == 'link.php') {
-				$tabs_left[$i]['selected'] = true;
-			} elseif ($tab_base == 'index.php' && is_console_page($me_base)) {
-				$tabs_left[$i]['selected'] = true;
-			} elseif ($tab_base == $me_base) {
-				$tabs_left[$i]['selected'] = true;
-			}
+		if ($tab_base == 'graph_view.php' && ($me_base == 'graph_view.php' || $me_base == 'graph.php')) {
+			$tabs_left[$i]['selected'] = true;
+		} elseif (isset_request_var('id') && ($tab_base == 'link.php?id=' . get_nfilter_request_var('id')) && $me_base == 'link.php') {
+			$tabs_left[$i]['selected'] = true;
+		} elseif ($tab_base == 'index.php' && is_console_page($me_base)) {
+			$tabs_left[$i]['selected'] = true;
+		} elseif ($tab_base == $me_base) {
+			$tabs_left[$i]['selected'] = true;
+		}
 
+		$i++;
+	}
+
+	$i = 0;
+
+	print "<div class='maintabs'><nav><ul role='tablist'>";
+
+	foreach ($tabs_left as $tab) {
+		if (isset($tab['id'])) {
+			$id = $tab['id'];
+		} else {
+			$id = 'anchor' . $i;
 			$i++;
 		}
 
-		$i = 0;
-
-		print "<div class='maintabs'><nav><ul role='tablist'>";
-
-		foreach ($tabs_left as $tab) {
-			if (isset($tab['id'])) {
-				$id = $tab['id'];
-			} else {
-				$id = 'anchor' . $i;
-				$i++;
-			}
-
-			print "<li><a id='$id' role='tab' class='lefttab" . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . html_escape($tab['url']) . "'><span class='fa glyph_$id'></span><span class='text_$id'>" . html_escape($tab['title']) . "</span></a><a id='menu-$id' class='maintabs-submenu' href='#'><i class='fa fa-angle-down'></i></a></li>";
-		}
-
-		print "<li class='ellipsis maintabs-submenu-ellipsis'><a id='menu-ellipsis' role='tab' aria-selected='false' class='submenu-ellipsis' href='#'><i class='fa fa-angle-down'></i></a></li>";
-
-		print '</ul></nav></div>';
+		print "<li><a id='$id' role='tab' class='lefttab" . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . html_escape($tab['url']) . "'><span class='fa glyph_$id'></span><span class='text_$id'>" . html_escape($tab['title']) . "</span></a><a id='menu-$id' class='maintabs-submenu' href='#'><i class='fa fa-angle-down'></i></a></li>";
 	}
+
+	print "<li class='ellipsis maintabs-submenu-ellipsis'><a id='menu-ellipsis' role='tab' aria-selected='false' class='submenu-ellipsis' href='#'><i class='fa fa-angle-down'></i></a></li>";
+
+	print '</ul></nav></div>';
 }
 
 function html_graph_tabs_right() {
@@ -2175,112 +2092,89 @@ function html_graph_tabs_right() {
 
 	$theme = get_selected_theme();
 
-	if ($theme == 'classic') {
-		if (is_view_allowed('show_tree')) {
-			?><a class='righttab' id='treeview' href='<?php print html_escape(CACTI_PATH_URL . 'graph_view.php?action=tree');?>'><img src='<?php print CACTI_PATH_URL; ?>images/tab_mode_tree<?php
+	$tabs_right = array();
+
+	if (is_view_allowed('show_tree')) {
+		$tabs_right[] = array(
+			'title' => __('Tree View'),
+			'image' => get_theme_paths('%s', 'images/tab_tree.gif'),
+			'id'    => 'tree',
+			'url'   => 'graph_view.php?action=tree',
+		);
+	}
+
+	if (is_view_allowed('show_list')) {
+		$tabs_right[] = array(
+			'title' => __('List View'),
+			'image' => get_theme_paths('%s', 'images/tab_list.gif'),
+			'id'    => 'list',
+			'url'   => 'graph_view.php?action=list',
+		);
+	}
+
+	if (is_view_allowed('show_preview')) {
+		$tabs_right[] = array(
+			'title' => __('Preview'),
+			'image' => get_theme_paths('%s', 'images/tab_preview.gif'),
+			'id'    => 'preview',
+			'url'   => 'graph_view.php?action=preview',
+		);
+	}
+
+	$i = 0;
+
+	foreach ($tabs_right as $tab) {
+		if ($tab['id'] == 'tree') {
 			if (isset_request_var('action') && get_nfilter_request_var('action') == 'tree') {
-				print '_down';
-			}?>.gif' title='<?php print __esc('Tree View');?>' alt=''></a><?php
-		}?><?php
-
-		if (is_view_allowed('show_list')) {
-			?><a class='righttab' id='listview' href='<?php print html_escape(CACTI_PATH_URL . 'graph_view.php?action=list');?>'><img src='<?php print CACTI_PATH_URL; ?>images/tab_mode_list<?php
-			if (isset_request_var('action') && get_nfilter_request_var('action') == 'list') {
-				print '_down';
-			}?>.gif' title='<?php print __esc('List View');?>' alt=''></a><?php
-		}?><?php
-
-		if (is_view_allowed('show_preview')) {
-			?><a class='righttab' id='preview' href='<?php print html_escape(CACTI_PATH_URL . 'graph_view.php?action=preview');?>'><img src='<?php print CACTI_PATH_URL; ?>images/tab_mode_preview<?php
-			if (isset_request_var('action') && get_nfilter_request_var('action') == 'preview') {
-				print '_down';
-			}?>.gif' title='<?php print __esc('Preview View');?>' alt=''></a><?php
-		}?>&nbsp;<br>
-		<?php
-	} else {
-		$tabs_right = array();
-
-		if (is_view_allowed('show_tree')) {
-			$tabs_right[] = array(
-				'title' => __('Tree View'),
-				'image' => get_theme_paths('%s', 'images/tab_tree.gif'),
-				'id'    => 'tree',
-				'url'   => 'graph_view.php?action=tree',
-			);
-		}
-
-		if (is_view_allowed('show_list')) {
-			$tabs_right[] = array(
-				'title' => __('List View'),
-				'image' => get_theme_paths('%s', 'images/tab_list.gif'),
-				'id'    => 'list',
-				'url'   => 'graph_view.php?action=list',
-			);
-		}
-
-		if (is_view_allowed('show_preview')) {
-			$tabs_right[] = array(
-				'title' => __('Preview'),
-				'image' => get_theme_paths('%s', 'images/tab_preview.gif'),
-				'id'    => 'preview',
-				'url'   => 'graph_view.php?action=preview',
-			);
-		}
-
-		$i = 0;
-
-		foreach ($tabs_right as $tab) {
-			if ($tab['id'] == 'tree') {
-				if (isset_request_var('action') && get_nfilter_request_var('action') == 'tree') {
-					$tabs_right[$i]['selected'] = true;
-				}
-			} elseif ($tab['id'] == 'list') {
-				if (isset_request_var('action') && get_nfilter_request_var('action') == 'list') {
-					$tabs_right[$i]['selected'] = true;
-				}
-			} elseif ($tab['id'] == 'preview') {
-				if (isset_request_var('action') && get_nfilter_request_var('action') == 'preview') {
-					$tabs_right[$i]['selected'] = true;
-				}
-			} elseif (strstr(get_current_page(false), $tab['url'])) {
 				$tabs_right[$i]['selected'] = true;
 			}
-
-			$i++;
-		}
-
-		print "<div class='tabs' style='float:right;'><nav><ul role='tablist'>";
-
-		foreach ($tabs_right as $tab) {
-			switch($tab['id']) {
-				case 'tree':
-					if (isset($tab['image']) && $tab['image'] != '') {
-						print "<li><a id='treeview' role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
-					} else {
-						print "<li><a role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
-					}
-
-					break;
-				case 'list':
-					if (isset($tab['image']) && $tab['image'] != '') {
-						print "<li><a id='listview' role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
-					} else {
-						print "<li><a role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
-					}
-
-					break;
-				case 'preview':
-					if (isset($tab['image']) && $tab['image'] != '') {
-						print "<li><a role='tab' id='preview' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
-					} else {
-						print "<li><a role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
-					}
-
-					break;
+		} elseif ($tab['id'] == 'list') {
+			if (isset_request_var('action') && get_nfilter_request_var('action') == 'list') {
+				$tabs_right[$i]['selected'] = true;
 			}
+		} elseif ($tab['id'] == 'preview') {
+			if (isset_request_var('action') && get_nfilter_request_var('action') == 'preview') {
+				$tabs_right[$i]['selected'] = true;
+			}
+		} elseif (strstr(get_current_page(false), $tab['url'])) {
+			$tabs_right[$i]['selected'] = true;
 		}
-		print '</ul></nav></div>';
+
+		$i++;
 	}
+
+	print "<div class='tabs' style='float:right;'><nav><ul role='tablist'>";
+
+	foreach ($tabs_right as $tab) {
+		switch($tab['id']) {
+			case 'tree':
+				if (isset($tab['image']) && $tab['image'] != '') {
+					print "<li><a id='treeview' role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
+				} else {
+					print "<li><a role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
+				}
+
+				break;
+			case 'list':
+				if (isset($tab['image']) && $tab['image'] != '') {
+					print "<li><a id='listview' role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
+				} else {
+					print "<li><a role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
+				}
+
+				break;
+			case 'preview':
+				if (isset($tab['image']) && $tab['image'] != '') {
+					print "<li><a role='tab' id='preview' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'><img src='" . $tab['image'] . "' alt='' style='vertical-align:bottom;'></a></li>";
+				} else {
+					print "<li><a role='tab' title='" . html_escape($tab['title']) . "' class='righttab " . (isset($tab['selected']) ? " selected' aria-selected='true'":"' aria-selected='false'") . " href='" . $tab['url'] . "'>" . $tab['title'] . '</a></li>';
+				}
+
+				break;
+		}
+	}
+
+	print '</ul></nav></div>';
 }
 
 function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_where = '', $noany = false, $nonone = false) {
@@ -2294,7 +2188,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 		$host_id = get_filter_request_var('host_id');
 	}
 
-	if ($theme == 'classic' || !read_config_option('autocomplete_enabled')) {
+	if (!read_config_option('autocomplete_enabled')) {
 		?>
 		<td>
 			<?php print __('Device');?>
@@ -2759,11 +2653,7 @@ function html_common_header($title, $selectedTheme = '') {
 		$selectedTheme = get_selected_theme();
 	}
 
-	if ($selectedTheme == 'classic') {
-		print "<meta content='width=device-width, initial-scale=0.5, minimum-scale=0.2, maximum-scale=5' name='viewport'>" . PHP_EOL;
-	} else {
-		print "<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5' name='viewport'>" . PHP_EOL;
-	}
+	print "<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5' name='viewport'>" . PHP_EOL;
 
 	$script_policy = read_config_option('content_security_policy_script');
 

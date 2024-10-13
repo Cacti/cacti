@@ -895,7 +895,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $a
 
 	$theme = get_selected_theme();
 
-	if ($theme == 'classic' || read_config_option('autocomplete') > 0) {
+	if (read_config_option('autocomplete') > 0) {
 		print "<select id='" . html_escape($form_name) . "' name='" . html_escape($form_name) . "'" . $class . '>';
 
 		if (!empty($none_entry)) {

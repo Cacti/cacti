@@ -1048,24 +1048,16 @@ function device_reindex_methods($item, $host) {
 	$i = 0;
 
 	foreach ($reindex_types as $key => $type) {
-		if ($selectedTheme != 'classic') {
-			if ($i == 0) {
-				print "<fieldset class='reindex_methods'>";
-			}
-			print "<input name='reindex_radio_" . $item['id'] . "' type='radio' data-device-id='" . $host['id'] . "' data-query-id='" . $item['id'] . "' data-reindex-method='" . $key . "' id='reindex_" . $item['id'] . '_' . $key . "'" . ($item['reindex_method'] == $key ? ' checked="checked"' : '') . ' />';
-			print "<label title='" . html_escape($reindex_types_tips[$key]) . "' for='reindex_" . $item['id'] . '_' . $key . "'>" . $type . '</label>';
-		} else {
-			print $reindex_types[$item['reindex_method']];
-
-			break;
+		if ($i == 0) {
+			print "<fieldset class='reindex_methods'>";
 		}
+		print "<input name='reindex_radio_" . $item['id'] . "' type='radio' data-device-id='" . $host['id'] . "' data-query-id='" . $item['id'] . "' data-reindex-method='" . $key . "' id='reindex_" . $item['id'] . '_' . $key . "'" . ($item['reindex_method'] == $key ? ' checked="checked"' : '') . ' />';
+		print "<label title='" . html_escape($reindex_types_tips[$key]) . "' for='reindex_" . $item['id'] . '_' . $key . "'>" . $type . '</label>';
 
 		$i++;
 	}
 
-	if ($selectedTheme != 'classic') {
-		print '</fieldset>';
-	}
+	print '</fieldset>';
 }
 
 function device_change_javascript() {

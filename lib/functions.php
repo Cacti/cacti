@@ -793,18 +793,16 @@ function get_selected_theme():mixed {
 
 	if (!file_exists(CACTI_PATH_INCLUDE . '/themes/' . $theme . '/main.css')) {
 		foreach ($themes as $t => $name) {
-			if ($t != 'classic') {
-				if (file_exists(CACTI_PATH_INCLUDE . '/themes/' . $t . '/main.css')) {
-					$theme = $t;
+			if (file_exists(CACTI_PATH_INCLUDE . '/themes/' . $t . '/main.css')) {
+				$theme = $t;
 
-					db_execute_prepared('UPDATE settings_user
-						SET value = ?
-						WHERE user_id = ?
-						AND name = "selected_theme"',
-						array($theme, $_SESSION[SESS_USER_ID]));
+				db_execute_prepared('UPDATE settings_user
+					SET value = ?
+					WHERE user_id = ?
+					AND name = "selected_theme"',
+					array($theme, $_SESSION[SESS_USER_ID]));
 
-					break;
-				}
+				break;
 			}
 		}
 	}
@@ -4081,7 +4079,7 @@ function draw_navigation_text($type = 'url') {
 		// be one.
 		$current_nav .= "<li><a id='nav_$i' href='" . (empty($url) ? '#':html_escape($url)) . "'>";
 		$current_nav .= html_escape(resolve_navigation_variables($navigation[basename($breadcrumb)]['title']));
-		$current_nav .= '</a>' . (get_selected_theme() == 'classic' ? ' > ':'') . '</li>';
+		$current_nav .= '</a></li>';
 		$title .= html_escape(resolve_navigation_variables($navigation[basename($breadcrumb)]['title'])) . ' > ';
 
 		$nav_count++;
@@ -4199,7 +4197,7 @@ function draw_navigation_text($type = 'url') {
 		if ($style == 'CONSOLE') {
 			$current_nav = "<ul id='breadcrumbs'>
 				<li>
-					<a id='nav_0' href='" . CACTI_PATH_URL . "index.php'>" . __('Console') . '</a>' . (get_selected_theme() == 'classic' ? ' > ':'') .
+					<a id='nav_0' href='" . CACTI_PATH_URL . "index.php'>" . __('Console') . '</a>' .
 				'</li>';
 
 			$current_nav .= "<li><a id='nav_1' href='#'>" . __('Link %s', html_escape($title)) . '</a></li>';

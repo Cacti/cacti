@@ -133,10 +133,8 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 			WHERE id = ?',
 			array($local_graph_id));
 
-		if (get_selected_theme() != 'classic') {
-			$struct_graph_item['task_item_id']['method'] = 'drop_callback';
-			$struct_graph_item['task_item_id']['action'] = 'ajax_get_graphitem';
-		}
+		$struct_graph_item['task_item_id']['method'] = 'drop_callback';
+		$struct_graph_item['task_item_id']['action'] = 'ajax_get_graphitem';
 
 		$struct_graph_item['task_item_id']['sql'] = "SELECT
 			CONCAT_WS('',
@@ -194,11 +192,9 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 			$form_field_name = str_replace('|field|', $item['column_name'], $field_name_format);
 			$form_field_name = str_replace('|id|', $item['id'], $form_field_name);
 
-			if (get_selected_theme() != 'classic') {
-				if (cacti_sizeof($current_def_value)) {
-					$struct_graph_item[$item['column_name']]['id'] = $current_def_value[$item['column_name']];
-					$struct_graph_item['task_item_id']['action']   = 'ajax_graph_items' . (isset($host_id) ? '&host_id=' . $host_id:'') . '&rrd_id=' . $current_def_value[$item['column_name']];
-				}
+			if (cacti_sizeof($current_def_value)) {
+				$struct_graph_item[$item['column_name']]['id'] = $current_def_value[$item['column_name']];
+				$struct_graph_item['task_item_id']['action']   = 'ajax_graph_items' . (isset($host_id) ? '&host_id=' . $host_id:'') . '&rrd_id=' . $current_def_value[$item['column_name']];
 			}
 
 			$form_array += array($form_field_name => $struct_graph_item[$item['column_name']]);
@@ -229,7 +225,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 						$form_array[$form_field_name]['value'] = $value;
 					}
 				}
-			} elseif (get_selected_theme() != 'classic') {
+			} else {
 				if (strpos($form_field_name, 'task_item_id') !== false) {
 					if (isset($current_def_value[$item['column_name']])) {
 						$value = db_fetch_cell_prepared("SELECT

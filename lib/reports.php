@@ -431,7 +431,7 @@ function generate_report($report, $force = false) {
 		return false;
 	}
 
-	$theme = 'classic';
+	$theme = 'modern';
 
 	$body = reports_generate_html($report['id'], REPORTS_OUTPUT_EMAIL, $theme);
 
@@ -806,7 +806,7 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 	$format_ok   = false;
 
 	if ($theme == '') {
-		$theme = 'classic';
+		$theme = 'modern';
 	}
 
 	$time = time();
@@ -967,7 +967,7 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 	}
 }
 
-function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme = 'classic') {
+function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme = 'modern') {
 	$outstr = '';
 
 	if (reports_tree_has_graphs($item['tree_id'], $branch_id, $report['user_id'], $item['graph_name_regexp'])) {
@@ -1000,7 +1000,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
  * @param mixed $theme
  * @return string		- generated html
  */
-function reports_graph_image($report, $item, $timespan, $output, $theme = 'classic') {
+function reports_graph_image($report, $item, $timespan, $output, $theme = 'modern') {
 	global $config;
 
 	$out = '';
@@ -1049,7 +1049,7 @@ function reports_graph_image($report, $item, $timespan, $output, $theme = 'class
  *
  * @return string			- html
  */
-function reports_expand_device(&$report, $item, $device_id, $output, $format_ok, $theme = 'classic') {
+function reports_expand_device(&$report, $item, $device_id, $output, $format_ok, $theme = 'modern') {
 	global $config, $alignment;
 
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
@@ -1198,7 +1198,7 @@ function reports_expand_device(&$report, $item, $device_id, $output, $format_ok,
  *
  * @return string			- html
  */
-function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $theme = 'classic', $nested = false) {
+function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $theme = 'modern', $nested = false) {
 	global $config, $alignment;
 
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
@@ -1682,7 +1682,7 @@ function necturally_sort_graphs($a, $b) {
  * @param mixed $theme
  * @return string
  */
-function reports_graph_area($graphs, &$report, $item, $timespan, $output, $format_ok, $theme = 'classic') {
+function reports_graph_area($graphs, &$report, $item, $timespan, $output, $format_ok, $theme = 'modern') {
 	global $alignment;
 
 	$outstr = '';

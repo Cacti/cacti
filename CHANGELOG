@@ -95,9 +95,10 @@ Cacti CHANGELOG
 -feature#5407: Add last_updated column to the boost table to increase diagnostics in Cacti
 -feature#5416: Display device class before package import
 -feature#5463: When building Automation Rules, show the 'effective sql' on the page for users who know SQL
--feature#5538: Reduce the number of default log from automation
 -feature#5578: Provide new templates for Aruba switch, Aruba wifi controller and HPE iLO to be available during install
 -feature#5596: Add template Aruba OSCX switch 6x00
+-feature#5804: Remove the Classic Theme in Cacti
+-feature#5838: Reduce the number of default log from automation
 -feature#5849: Separate Logging related settings to a new settings tab
 -feature: Allow messages to be popup notifications
 -feature: Upgrade billboard.js to version 3.7.4

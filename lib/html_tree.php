@@ -161,55 +161,53 @@ function grow_dhtml_trees() {
 	?>
 
 	function resizeTreePanel() {
-		if (theme != 'classic') {
-			var docHeight      = $(window).outerHeight();
-			var navWidth       = $('.cactiTreeNavigationArea').width();
-			var searchHeight   = $('.cactiTreeSearch').outerHeight();
-			var pageHeadHeight = $('.cactiPageHead').outerHeight();
-			var breadCrHeight  = $('.breadCrumbBar').outerHeight();
-			var pageBottomHeight = $('.cactiPageBottom').outerHeight();
-			//console.log('----------------------');
+		var docHeight      = $(window).outerHeight();
+		var navWidth       = $('.cactiTreeNavigationArea').width();
+		var searchHeight   = $('.cactiTreeSearch').outerHeight();
+		var pageHeadHeight = $('.cactiPageHead').outerHeight();
+		var breadCrHeight  = $('.breadCrumbBar').outerHeight();
+		var pageBottomHeight = $('.cactiPageBottom').outerHeight();
+		//console.log('----------------------');
 
-			var jsTreeHeight  = Math.max.apply(Math, $('#jstree').children(':visible').map(function() {
-				return $(this).outerHeight();
-			}).get());
+		var jsTreeHeight  = Math.max.apply(Math, $('#jstree').children(':visible').map(function() {
+			return $(this).outerHeight();
+		}).get());
 
-			var treeAreaHeight = docHeight - pageHeadHeight - breadCrHeight - searchHeight - pageBottomHeight;
-			//console.log('docHeight:' + docHeight);
-			//console.log('searchHeight:' + searchHeight);
-			//console.log('pageHeadHeight:' + pageHeadHeight);
-			//console.log('pageBottomHeight:' + pageBottomHeight);
-			//console.log('breadCrHeight:' + breadCrHeight);
-			//console.log('jsTreeHeight:' + jsTreeHeight);
-			//console.log('treeAreaHeight:' + treeAreaHeight);
+		var treeAreaHeight = docHeight - pageHeadHeight - breadCrHeight - searchHeight - pageBottomHeight;
+		//console.log('docHeight:' + docHeight);
+		//console.log('searchHeight:' + searchHeight);
+		//console.log('pageHeadHeight:' + pageHeadHeight);
+		//console.log('pageBottomHeight:' + pageBottomHeight);
+		//console.log('breadCrHeight:' + breadCrHeight);
+		//console.log('jsTreeHeight:' + jsTreeHeight);
+		//console.log('treeAreaHeight:' + treeAreaHeight);
 
-			$('#jstree').height(jsTreeHeight + 30);
-			$('.cactiTreeNavigationArea').height(treeAreaHeight+searchHeight);
+		$('#jstree').height(jsTreeHeight + 30);
+		$('.cactiTreeNavigationArea').height(treeAreaHeight+searchHeight);
 
-			var visWidth = Math.max.apply(Math, $('#jstree').children(':visible').map(function() {
-				return $(this).width();
-			}).get());
+		var visWidth = Math.max.apply(Math, $('#jstree').children(':visible').map(function() {
+			return $(this).width();
+		}).get());
 
-			var minWidth = <?php print read_user_setting('min_tree_width');?>;
-			var maxWidth = <?php print read_user_setting('max_tree_width');?>;
+		var minWidth = <?php print read_user_setting('min_tree_width');?>;
+		var maxWidth = <?php print read_user_setting('max_tree_width');?>;
 
-			if (visWidth < minWidth) {
-				$('.cactiTreeNavigationArea').width(minWidth);
-				$('.cactiGraphContentArea').css('margin-left', minWidth+5);
-				$('.cactiTreeNavigationArea').css('overflow-x', '');
-			} else if (visWidth > maxWidth) {
-				$('.cactiTreeNavigationArea').width(maxWidth);
-				$('.cactiGraphContentArea').css('margin-left', maxWidth+5);
-				$('.cactiTreeNavigationArea').css('overflow-x', 'auto');
-			} else if (visWidth > navWidth) {
-				$('.cactiTreeNavigationArea').width(visWidth);
-				$('.cactiGraphContentArea').css('margin-left', visWidth+5);
-				$('.cactiTreeNavigationArea').css('overflow-x', 'auto');
-			} else {
-				$('.cactiTreeNavigationArea').width(navWidth);
-				$('.cactiGraphContentArea').css('margin-left', navWidth+5);
-				$('.cactiTreeNavigationArea').css('overflow-x', '');
-			}
+		if (visWidth < minWidth) {
+			$('.cactiTreeNavigationArea').width(minWidth);
+			$('.cactiGraphContentArea').css('margin-left', minWidth+5);
+			$('.cactiTreeNavigationArea').css('overflow-x', '');
+		} else if (visWidth > maxWidth) {
+			$('.cactiTreeNavigationArea').width(maxWidth);
+			$('.cactiGraphContentArea').css('margin-left', maxWidth+5);
+			$('.cactiTreeNavigationArea').css('overflow-x', 'auto');
+		} else if (visWidth > navWidth) {
+			$('.cactiTreeNavigationArea').width(visWidth);
+			$('.cactiGraphContentArea').css('margin-left', visWidth+5);
+			$('.cactiTreeNavigationArea').css('overflow-x', 'auto');
+		} else {
+			$('.cactiTreeNavigationArea').width(navWidth);
+			$('.cactiGraphContentArea').css('margin-left', navWidth+5);
+			$('.cactiTreeNavigationArea').css('overflow-x', '');
 		}
 	}
 

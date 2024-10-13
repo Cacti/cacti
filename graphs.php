@@ -878,7 +878,7 @@ function item_edit() {
 			$value        = '';
 		}
 
-		if (get_selected_theme() != 'classic' && read_config_option('autocomplete_enabled') > 0) {
+		if (read_config_option('autocomplete_enabled') > 0) {
 			$action = 'ajax_graph_items';
 
 			if (get_request_var('host_id') > 0) {
@@ -929,7 +929,7 @@ function item_edit() {
 	foreach ($struct_graph_item as $field_name => $field_array) {
 		$form_array += array($field_name => $struct_graph_item[$field_name]);
 
-		if (get_selected_theme() != 'classic' && read_config_option('autocomplete_enabled')) {
+		if (read_config_option('autocomplete_enabled')) {
 			if ($field_name != 'task_item_id') {
 				$form_array[$field_name]['value'] = (isset($template_item[$field_name]) ? $template_item[$field_name] : '');
 			}
