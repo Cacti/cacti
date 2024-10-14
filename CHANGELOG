@@ -98,8 +98,10 @@ Cacti CHANGELOG
 -feature#5578: Provide new templates for Aruba switch, Aruba wifi controller and HPE iLO to be available during install
 -feature#5596: Add template Aruba OSCX switch 6x00
 -feature#5804: Remove the Classic Theme in Cacti
+-feature#5833: Add button for remove all data and configuration/settings
 -feature#5838: Reduce the number of default log from automation
 -feature#5849: Separate Logging related settings to a new settings tab
+-feature#5855: Replace Plugin Images with FontAwesome Glyphs
 -feature: Allow messages to be popup notifications
 -feature: Upgrade billboard.js to version 3.7.4
 -feature: Upgrade d3.js to version 7.8.2

@@ -56,6 +56,7 @@ $modes = array(
 	'check',
 	'remote_enable',
 	'remote_disable',
+	'remove_data',
 	'moveup',
 	'movedown'
 );
@@ -91,6 +92,14 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 			define('IN_PLUGIN_INSTALL', 1);
 
 			api_plugin_uninstall($id);
+
+			header('Location: plugins.php');
+
+			exit;
+
+			break;
+		case 'remove_data':
+			api_plugin_remove_data($id);
 
 			header('Location: plugins.php');
 
@@ -672,14 +681,50 @@ function update_show_current() {
 
 	form_end();
 
-	$uninstall_msg   = __('Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click \'Uninstall\' below.  Otherwise click \'Cancel\'');
+	$uninstall_msg   = __('Uninstalling this Plugin and may remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click \'Uninstall\' below.  Otherwise click \'Cancel\'.');
 	$uninstall_title = __('Are you sure you want to Uninstall?');
+
+	$rmdata_msg   = __('Removing Plugin Data and Settings for will remove all Plugin Data and Settings.  If you really want to Remove Data and Settings for this Plugin, click \'Remove Data\' below.  Otherwise click \'Cancel\'.');
+	$rmdata_title = __('Are you sure you want to Remove all Plugin Data and Settings?');
 
 	?>
 	<script type='text/javascript'>
 	var url = '';
 
 	$(function() {
+		$('.pirmdata').click(function(event) {
+			event.preventDefault();
+
+			url = $(this).attr('href');
+
+			var btnRmData = {
+				'Cancel': {
+					text: '<?php print __('Cancel');?>',
+					id: 'btnCancel',
+					click: function() {
+						$(this).dialog('close');
+					}
+				},
+				'RmData': {
+					text: '<?php print __('Remove Data');?>',
+					id: 'btnUninstall',
+					click: function() {
+						$('#pidialog').dialog('close');
+						document.location = url;
+					}
+				}
+			};
+
+			$('body').remove('#pidialog').append("<div id='pidialog'><h4><?php print $rmdata_msg;?></h4></div>");
+
+			$('#pidialog').dialog({
+				title: '<?php print $rmdata_title;?>',
+				minHeight: 80,
+				minWidth: 500,
+				buttons: btnRmData
+			});
+		});
+
 		$('.piuninstall').click(function(event) {
 			event.preventDefault();
 			url = $(this).attr('href');
@@ -696,15 +741,15 @@ function update_show_current() {
 					text: '<?php print __('Uninstall');?>',
 					id: 'btnUninstall',
 					click: function() {
-						$('#uninstalldialog').dialog('close');
+						$('#pidialog').dialog('close');
 						document.location = url;
 					}
 				}
 			};
 
-			$('body').remove('#uninstalldialog').append("<div id='uninstalldialog'><h4><?php print $uninstall_msg;?></h4></div>");
+			$('body').remove('#pidialog').append("<div id='pidialog'><h4><?php print $uninstall_msg;?></h4></div>");
 
-			$('#uninstalldialog').dialog({
+			$('#pidialog').dialog({
 				title: '<?php print $uninstall_title;?>',
 				minHeight: 80,
 				minWidth: 500,
@@ -834,68 +879,83 @@ function plugin_actions($plugin, $table) {
 			$not_installed = plugin_required_installed($plugin, $table);
 
 			if ($not_installed != '') {
-				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Install Plugin.  The following Plugins must be installed first: %s', ucfirst($not_installed)) . "' class='linkEditMain'><img src='" . CACTI_PATH_URL . "images/cog_error.png'></a>";
+				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Install Plugin.  The following Plugins must be installed first: %s', ucfirst($not_installed)) . "' class='linkEditMain'><i class='fa fa-cog deviceUp'></i></a>";
 			} else {
-				$link .= "<a href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=install&id=' . $plugin['directory']) . "' title='" . __esc('Install Plugin') . "' class='piinstall linkEditMain'><img src='" . CACTI_PATH_URL . "images/cog_add.png'></a>";
+				$link .= "<a href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=install&id=' . $plugin['directory']) . "' title='" . __esc('Install Plugin') . "' class='piinstall linkEditMain'><i class='fa fa-cog deviceUp'></i></a>";
 			}
-			$link .= "<img src='" . CACTI_PATH_URL . "images/view_none.gif'>";
+
+			$link .= "<i class='fa fa-cog' style='color:transparent'></i>";
+
+			$setup_file = CACTI_BASE_PATH . '/plugins/' . $plugin['directory'] . '/setup.php';
+
+			if (file_exists($setup_file)) {
+				require_once($setup_file);
+
+				$has_data_function = "plugin_{$plugin['directory']}_has_data";
+				$rm_data_function  = "plugin_{$plugin['directory']}_remove_data";
+
+				if (function_exists($has_data_function) && function_exists($rm_data_function) && $has_data_function()) {
+					$link .= "<a href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=remove_data&id=' . $plugin['directory']) . "' title='" . __esc('Remove Plugin Data Tables and Settings') . "' class='pirmdata'><i class='fa fa-trash deviceDisabled'></i></a>";
+				}
+			}
 
 			break;
 		case '1':	// Currently Active
 			$required = plugin_required_for_others($plugin, $table);
 
 			if ($required != '') {
-				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Uninstall.  This Plugin is required by: %s', ucfirst($required)) . "'><img src='" . CACTI_PATH_URL . "images/cog_error.png'></a>";
+				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Uninstall.  This Plugin is required by: %s', ucfirst($required)) . "'><i class='fa fa-cog deviceUnknown'></i></a>";
 			} else {
-				$link .= "<a class='piuninstall' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><img src='" . CACTI_PATH_URL . "images/cog_delete.png'></a>";
+				$link .= "<a class='piuninstall' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><i class='fa fa-cog deviceDown'></i></a>";
 			}
-			$link .= "<a class='pidisable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=disable&id=' . $plugin['directory']) . "' title='" . __esc('Disable Plugin') . "'><img src='" . CACTI_PATH_URL . "images/stop.png'></a>";
+
+			$link .= "<a class='pidisable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=disable&id=' . $plugin['directory']) . "' title='" . __esc('Disable Plugin') . "'><i class='fa fa-circle deviceRecovering'></i></a>";
 
 			break;
 		case '2': // Configuration issues
-			$link .= "<a class='piuninstall' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><img src='" . CACTI_PATH_URL . "images/cog_delete.png'></a>";
+			$link .= "<a class='piuninstall' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><i class='fa fa-cog deviceDown'></i></a>";
 
 			break;
 		case '4':	// Installed but not active
 			$required = plugin_required_for_others($plugin, $table);
 
 			if ($required != '') {
-				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Uninstall.  This Plugin is required by: %s', ucfirst($required)) . "'><img src='" . CACTI_PATH_URL . "images/cog_error.png'></a>";
+				$link .= "<a class='pierror' href='#' title='" . __esc('Unable to Uninstall.  This Plugin is required by: %s', ucfirst($required)) . "'><i class='fa fa-cog deviceUnknown'></i></a>";
 			} else {
-				$link .= "<a class='piuninstall' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><img src='" . CACTI_PATH_URL . "images/cog_delete.png'></a>";
+				$link .= "<a class='piuninstall' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><i class='fa fa-cog deviceDown'></i></a>";
 			}
-			$link .= "<a class='pienable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=enable&id=' . $plugin['directory']) . "' title='" . __esc('Enable Plugin') . "'><img src='" . CACTI_PATH_URL . "images/accept.png'></a>";
+
+			$link .= "<a class='pienable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=enable&id=' . $plugin['directory']) . "' title='" . __esc('Enable Plugin') . "'><i class='fa fa-circle deviceUp'></i></a>";
 
 			break;
 		case '-5': // Plugin directory missing
-			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory is missing!') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
+			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory is missing!') . "' class='linkEditMain'><i class='fa fa-cog deviceUnknown'></i></a>";
 
 			break;
 		case '-4': // Plugins should have INFO file since 1.0.0
-			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin is not compatible (Pre-1.x)') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
+			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin is not compatible (Pre-1.x)') . "' class='linkEditMain'><i class='fa fa-cog deviceUnknown'></i></a>";
 
 			break;
 		case '-3': // Plugins can have spaces in their names
-			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directories can not include spaces') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
+			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directories can not include spaces') . "' class='linkEditMain'><i class='fa fa-cog deviceUnknown'></i></a>";
 
 			break;
 		case '-2': // Naming issues
-			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory is not correct.  Should be \'%s\' but is \'%s\'', strtolower($plugin['infoname']), $plugin['directory']) . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
+			$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory is not correct.  Should be \'%s\' but is \'%s\'', strtolower($plugin['infoname']), $plugin['directory']) . "' class='linkEditMain'><i class='fa fa-cog deviceUnknown'></i></a>";
 
 			break;
-
 		default: // Old PIA
 			$path       = CACTI_PATH_PLUGINS . '/' . $plugin['directory'];
 			$directory  = $plugin['name'];
 
 			if (!file_exists("$path/setup.php")) {
-				$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory \'%s\' is missing setup.php', $plugin['directory']) . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
+				$link .= "<a class='pierror' href='#' title='" . __esc('Plugin directory \'%s\' is missing setup.php', $plugin['directory']) . "' class='linkEditMain'><i class='fa fa-cog deviceUnknown'></i></a>";
 			} elseif (!file_exists("$path/INFO")) {
-				$link .= "<a class='pierror' href='#' title='" . __esc('Plugin is lacking an INFO file') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
+				$link .= "<a class='pierror' href='#' title='" . __esc('Plugin is lacking an INFO file') . "' class='linkEditMain'><i class='fa fa-cog deviceUnknown'></i></a>";
 			} elseif (in_array($directory, $plugins_integrated, true)) {
-				$link .= "<a class='pierror' href='#' title='" . __esc('Plugin is integrated into Cacti core') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
+				$link .= "<a class='pierror' href='#' title='" . __esc('Plugin is integrated into Cacti core') . "' class='linkEditMain'><i class='fa fa-cog deviceUnknown'></i></a>";
 			} else {
-				$link .= "<a class='pierror' href='#' title='" . __esc('Plugin is not compatible') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
+				$link .= "<a class='pierror' href='#' title='" . __esc('Plugin is not compatible') . "' class='linkEditMain'><i class='fa fa-cog deviceUnknown'></i></a>";
 			}
 
 			break;
@@ -906,10 +966,10 @@ function plugin_actions($plugin, $table) {
 			if ($plugin['remote_status'] == 1) { // Installed and Active
 				// TO-DO: Disabling here does not make much sense as the main will be replicated
 				// with any change of any other plugin thus undoing.  Fix that moving forward
-				//$link .= "<a class='pidisable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=remote_disable&id=' . $plugin['directory']) . "' title='" . __esc('Disable Plugin Locally') . "'><img src='" . CACTI_PATH_URL . "images/stop.png'></a>";
+				//$link .= "<a class='pidisable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=remote_disable&id=' . $plugin['directory']) . "' title='" . __esc('Disable Plugin Locally') . "'><i class='fa fa-cog deviceDown'></i></a>";
 			} elseif ($plugin['remote_status'] == 4) { // Installed but inactive
 				if ($plugin['status'] == 1) {
-					$link .= "<a class='pienable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=remote_enable&id=' . $plugin['directory']) . "' title='" . __esc('Enable Plugin Locally') . "'><img src='" . CACTI_PATH_URL . "images/accept.png'></a>";
+					$link .= "<a class='pienable' href='" . html_escape(CACTI_PATH_URL . 'plugins.php?mode=remote_enable&id=' . $plugin['directory']) . "' title='" . __esc('Enable Plugin Locally') . "'><i class='fa fa-circle deviceUp'></i></a>";
 				}
 			}
 		}

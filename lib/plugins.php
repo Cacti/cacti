@@ -891,6 +891,24 @@ function api_plugin_disable($plugin) {
 	api_plugin_replicate_config();
 }
 
+function api_plugin_remove_data($plugin) {
+	$setup_file = CACTI_BASE_PATH . "/plugins/$plugin/setup.php";
+
+	if (file_exists($setup_file)) {
+		require_once($setup_file);
+
+		$rmdata_function = "plugin_{$plugin}_remove_data";
+
+		if (function_exists($rmdata_function)) {
+			$rmdata_function();
+
+			raise_message('rmdata_complete', __('Data for Plugin %s including Tables and Settings has been removed.', $plugin), MESSAGE_LEVEL_INFO);
+		} else {
+			raise_message('rmdata_not_complete', __('Data for Plugin %s including Tables and Settings has not been removed due to missing removal function.', $plugin), MESSAGE_LEVEL_ERROR);
+		}
+	}
+}
+
 function api_plugin_replicate_config() {
 	global $config;
 
