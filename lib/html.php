@@ -2721,7 +2721,7 @@ function html_help_page($page) {
 	$help = array(
 		'aggregates.php'              => 'Aggregates.html',
 		'aggregate_templates.php'     => 'Aggregate-Templates.html',
-		'automation_networks.php'     => 'Automation-Networks.php',
+		'automation_networks.php'     => 'Automation-Networks.html',
 		'cdef.php'                    => 'CDEFs.html',
 		'color_templates.php'         => 'Color-Templates.html',
 		'color.php'                   => 'Colors.html',
