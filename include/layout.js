@@ -2262,10 +2262,8 @@ function loadTopTab(href, id, force) {
 	var stack = ''; //getStackTrace(); // new Error().stack;
 	var url   = href;// + (href.indexOf('?') > 0 ? '&' : '?') + 'headercontent=true';
 
-	if (typeof options.noState == 'undefined' || options.noState == false) {
-		/* close all toasts */
-		$.toast().reset('all');
-	}
+	/* close all toasts */
+	$.toast().reset('all');
 
 	/**
 	 * set the last visible lefttabs have a menu state,
