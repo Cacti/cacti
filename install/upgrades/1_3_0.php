@@ -71,9 +71,7 @@ function upgrade_to_1_3_0() {
 		ldap_convert_1_3_0();
 	}
 
-	if (!db_column_exists('data_source_stats_daily', 'cf')) {
-		upgrade_dsstats();
-	}
+	upgrade_dsstats();
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS host_value_cache (
 		host_id mediumint(8) unsigned NOT NULL default '0',
@@ -299,7 +297,7 @@ function ldap_convert_1_3_0() {
 		MODIFY COLUMN group_dn varchar(128) NOT NULL default "",
 		MODIFY COLUMN group_attrib varchar(128) NOT NULL default "",
 		MODIFY COLUMN search_base varchar(128) NOT NULL default "",
-		MODIFY COLUMN search_filter varchar(128) NOT NULL default "",
+		MODIFY COLUMN search_filter varchar(512) NOT NULL default "",
 		MODIFY COLUMN specific_dn varchar(128) NOT NULL default "",
 		MODIFY COLUMN specific_password varchar(128) NOT NULL default ""');
 
@@ -395,12 +393,8 @@ function upgrade_dsstats() {
 		if (!db_column_exists($table, 'cf')) {
 			$sql = "ALTER TABLE $table
 				ADD COLUMN cf TINYINT UNSIGNED NOT NULL DEFAULT '0' AFTER rrd_name";
-			$suffix = ', DROP PRIMARY KEY,
-				ADD PRIMARY KEY(local_data_id, rrd_name, cf)';
 		} else {
 			$sql = "ALTER TABLE $table ";
-
-			$suffix = '';
 		}
 
 		$i = 0;
@@ -415,7 +409,9 @@ function upgrade_dsstats() {
 			}
 		}
 
-		cacti_log("$sql $suffix");
+		$suffix = ($i > 0 ? ',':'') . ' DROP PRIMARY KEY,
+			ADD PRIMARY KEY(local_data_id, rrd_name, cf)';
+
 		db_install_execute("$sql $suffix");
 	}
 
