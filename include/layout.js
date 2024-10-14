@@ -2262,8 +2262,10 @@ function loadTopTab(href, id, force) {
 	var stack = ''; //getStackTrace(); // new Error().stack;
 	var url   = href;// + (href.indexOf('?') > 0 ? '&' : '?') + 'headercontent=true';
 
-	/* close all toasts */
-	$.toast().reset('all');
+	if (typeof options.noState == 'undefined' || options.noState == false) {
+		/* close all toasts */
+		$.toast().reset('all');
+	}
 
 	/**
 	 * set the last visible lefttabs have a menu state,
@@ -2451,8 +2453,10 @@ function loadUrl(options) {
 	statePushed = false;
 	cont = false;
 
-	/* close all toasts */
-	$.toast().reset('all');
+	if (typeof options.noState == 'undefined' || options.noState == false) {
+		/* close all toasts */
+		$.toast().reset('all');
+	}
 
 	options = sanitizeAjaxOptions(options);
 	if (!options.force) {
@@ -2491,8 +2495,10 @@ function postUrl(options, data) {
 	statePushed = false;
 	cont = false;
 
-	/* close all toasts */
-	$.toast().reset('all');
+	if (typeof options.noState == 'undefined' || options.noState == false) {
+		/* close all toasts */
+		$.toast().reset('all');
+	}
 
 	options = sanitizeAjaxOptions(options);
 	if (options.funcStart != '') {
