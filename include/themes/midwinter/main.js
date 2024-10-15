@@ -790,7 +790,11 @@ function setupDefaultElements() {
 			});
 
 			if (typeof(attr['data-defaultLabel']) !== 'undefined') {
-				$(ul).parent().prepend('<div class="mdw-selectmenu-search"><input type="search" data-scope="theme" placeholder="Search"></div>');
+				let select_menu = $(ul).parent();
+
+				if ( select_menu.find('ui-selectmenu-search') !== undefined) {
+					$(ul).parent().prepend('<div class="ui-selectmenu-search"><input type="search" data-scope="theme" placeholder="Search"></div>');
+				}
 
 				this._on(false, this.menuWrap.find('input'), {
 					'keydown': function (event) {
