@@ -899,8 +899,8 @@
 		}
 
 		function zoomAction_position_crosshair(event) {
-			zoom.refs.crosshair_x.css('top', (event.clientY - zoom.image.top - zoom.box.top)+"px");
-			zoom.refs.crosshair_y.css('left', (event.clientX - zoom.box.left - zoom.image.left)+"px");
+			zoom.refs.crosshair_x.css('top', (event.pageY - zoom.image.top - zoom.box.top)+"px");
+			zoom.refs.crosshair_y.css('left', (event.pageX - zoom.box.left - zoom.image.left)+"px");
 		}
 
 		/**
