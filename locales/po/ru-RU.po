@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2024-01-01 00:08+0000\n"
-"Last-Translator: Anton Zhuravlev <baka109g@gmail.com>\n"
+"PO-Revision-Date: 2024-10-16 16:52+0000\n"
+"Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Russian <http://translate.cacti.net/projects/cacti/core/ru/>\n"
 "Language: ru-RU\n"
 "MIME-Version: 1.0\n"
@@ -1012,7 +1012,7 @@ msgstr "Пароль"
 #: auth_login.php:332 user_admin.php:2051 user_admin.php:2144
 #: user_group_admin.php:656
 msgid "Realm"
-msgstr "Царство"
+msgstr "Область"
 
 #: auth_login.php:360
 msgid "Keep me signed in"
