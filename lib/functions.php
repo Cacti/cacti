@@ -6660,7 +6660,27 @@ function call_remote_data_collector($poller_id, $url, $logtype = 'WEBUI') {
 	$fgc_contextoption = get_default_contextoption();
 	$fgc_context       = stream_context_create($fgc_contextoption);
 
-	return  file_get_contents(get_url_type() .'://' . $hostname . $port . $url, false, $fgc_context);
+	$output = array();
+
+	set_error_handler(
+		function ($severity, $message, $file, $line) {
+			throw new ErrorException($message, $severity, $severity, $file, $line);
+		}
+	);
+
+	$start = microtime(true);
+
+	try {
+		$output = file_get_contents(get_url_type() .'://' . $hostname . $port . $url, false, $fgc_context);
+	} catch (Exception $e) {
+		$end = microtime(true);
+
+		cacti_log(sprintf('WARNING: Failed talking to Remote Data Collector \'%s\' after %0.2f seconds.  URL:\'%s:\', Error:\'%s:\'', $poller_id, ($end - $start), $url, $e-getMessage()), false, $logtype);
+	}
+
+	restore_error_handler();
+
+	return $output;
 }
 
 /**

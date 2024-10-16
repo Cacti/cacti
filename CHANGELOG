@@ -103,6 +103,7 @@ Cacti CHANGELOG
 -feature#5849: Separate Logging related settings to a new settings tab
 -feature#5855: Replace Plugin Images with FontAwesome Glyphs
 -feature#5861: In Cacti Utilities, be able to view the MariaDB/MySQL processeslist and active background tasks
+-feature#5862: Change logging message around remote agent timeout
 -feature: Allow messages to be popup notifications
 -feature: Upgrade billboard.js to version 3.7.4
 -feature: Upgrade d3.js to version 7.8.2
