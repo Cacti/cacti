@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-10-16 16:52+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti Russian Language File\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-10-16 20:03+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Russian <http://translate.cacti.net/projects/cacti/core-v1-2-x/ru/>\nLanguage: ru-RU\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -3903,7 +3903,7 @@ msgstr "Частота опроса для профиля"
 #: data_source_profiles.php:1058 include/global_form.php:232
 #: include/global_form.php:652 pollers.php:50
 msgid "Heartbeat"
-msgstr "Пульсация"
+msgstr "Пульс RRD данных"
 
 #: data_source_profiles.php:1061
 msgid "The Amount of Time, in seconds, without good data before Data is stored as Unknown"
@@ -16156,7 +16156,7 @@ msgstr "Тип источника данных \"%s\" должен быть \"%s
 #: lib/rrd.php:2985
 #, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
-msgstr "Сердцебиение для источника данных \"%s\" должно быть \"%s\"."
+msgstr "Пульс RRD данных для источника данных '%s' должно быть '%s'"
 
 #: lib/rrd.php:2997
 #, php-format
@@ -16213,7 +16213,7 @@ msgstr "2,000 Элементов источников данных"
 
 #: lib/rrd.php:3158
 msgid "Minimal Heartbeat"
-msgstr "Минимальное сердцебиение"
+msgstr "Минимальный пульс RRD данных"
 
 #: lib/rrd.php:3159
 msgid "Min"
