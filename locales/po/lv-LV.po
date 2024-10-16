@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
-msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-10-16 16:52+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: Cacti 1.2.20\nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2024-10-16 20:03+0000\nLast-Translator: Coool (github.com/Coool) <coool@mail.lv>\nLanguage-Team: Latvian <http://translate.cacti.net/projects/cacti/core-v1-2-x/lv/>\nLanguage: lv-LV\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -1785,7 +1785,7 @@ msgstr "Paziņojums no vārda"
 
 #: automation_networks.php:585
 msgid "The Email account name to be used as the senders name for the Notification Email.  If left blank, Cacti will use the default Automation Notification Name if specified, otherwise, it will use the Cacti system default Email name"
-msgstr "E-pasta konta nosaukums, kas tiks izmantots kā paziņojuma e-pasta sūtītāja vārds.  Ja tiek atstāts tukšs, Cacti izmantos noklusējuma automatizācijas paziņojumu nosaukumu, ja tas ir norādīts. Pretējā gadījumā tas izmantos Cacti sistēmas noklusējuma e-pasta nosaukumu."
+msgstr "E-pasta konta nosaukums, kas tiks izmantots kā paziņojuma e-pasta sūtītāja vārds.  Ja tiek atstāts tukšs, Cacti izmantos noklusējuma automatizācijas paziņojumu nosaukumu, ja tas ir norādīts. Pretējā gadījumā tas izmantos Cacti sistēmas noklusējuma e-pasta nosaukumu"
 
 #: automation_networks.php:593
 msgid "Notification From Email Address"
@@ -1948,7 +1948,7 @@ msgstr "Trešais"
 
 #: automation_networks.php:689
 msgid "Day(s) of Week"
-msgstr "Nedēļas diena(-as)."
+msgstr "Nedēļas diena(s)"
 
 #: automation_networks.php:705
 msgid "Reachability Settings"
@@ -2000,23 +2000,23 @@ msgstr "Pēc sākotnējās kļūmes Cacti mēģinās veikt tik daudz ping atkār
 
 #: automation_networks.php:783
 msgid "Select the days(s) of the week"
-msgstr "Izvēlieties nedēļas dienu(-as)."
+msgstr "Atlasiet nedēļas dienu(-as)"
 
 #: automation_networks.php:793
 msgid "Select the month(s) of the year"
-msgstr "Izvēlieties gada mēnesi(-s)."
+msgstr "Atlasiet gada mēnesi(-šus)"
 
 #: automation_networks.php:803
 msgid "Select the day(s) of the month"
-msgstr "Izvēlieties mēneša dienu(-as)."
+msgstr "Atlasiet mēneša dienu(-as)"
 
 #: automation_networks.php:813
 msgid "Select the week(s) of the month"
-msgstr "Izvēlieties mēneša nedēļu(-as)."
+msgstr "Atlasiet mēneša nedēļu(-as)"
 
 #: automation_networks.php:823
 msgid "Select the day(s) of the week"
-msgstr "Izvēlieties nedēļas dienu(-as)."
+msgstr "Atlasiet nedēļas dienu(-as)"
 
 #: automation_networks.php:917 automation_networks.php:934
 msgid "every X Days"
@@ -3678,7 +3678,7 @@ msgstr "Datu vaicājumi nav atrasti"
 
 #: data_source_profiles.php:187
 msgid "Changing the Heartbeat from this page, does not change the Heartbeat for your existing Data Sources.  Use RRDtool's 'tune' function to make that change to your existing RRDfiles heartbeats, or run the CLI utility update_heartbeat.php to correct.<br>"
-msgstr "Mainot sirdspukstus no šīs lapas, nemainās jūsu esošo datu avotu sirdspuksti.  Izmantojiet RRDtool funkciju \"noregulēt\", lai veiktu šīs izmaiņas esošajos RRDfailu sirdspukstos, vai palaidiet CLI utilītas atjauninājumu_heartbeat.php, lai to labotu.<br>"
+msgstr "Mainot RRD datu pulsu šajā lapā, neizmaina pulsu jūsu esošajos datu avotos. Izmantojiet RRDtool 'tune' funkciju, lai veiktu pulsa izmaiņas esošajos RRD failos, vai palaidiet update_heartbeat.php skriptu no komandrindas, lai atjauninātu pulsu uz jauno vērtību.<br>"
 
 #: data_source_profiles.php:300
 #, fuzzy
@@ -3689,12 +3689,11 @@ msgstr[1] ""
 msgstr[2] ""
 
 #: data_source_profiles.php:305
-#, fuzzy
 msgid "Delete Data Source Profile"
 msgid_plural "Delete Data Source Profiles"
-msgstr[0] "Dzēst datu avota profila vienumu"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Dzēst datu avota profilus"
+msgstr[1] "Dzēst datu avota profilu"
+msgstr[2] "Dzēst datu avota profilus"
 
 #: data_source_profiles.php:309
 msgid "Click 'Continue' to duplicate the following Data Source Profile. You can optionally change the title format for the new Data Source Profile"
@@ -3980,9 +3979,9 @@ msgstr[2] "Dzēst visus <strong>grafikus</strong>, kas atsaucas uz šiem datu av
 #: data_sources.php:535
 msgid "Delete Data Source"
 msgid_plural "Delete Data Sources"
-msgstr[0] "Dzēst datu avotu"
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Dzēst datu avotus"
+msgstr[1] "Dzēst datu avotu"
+msgstr[2] "Dzēst datu avotus"
 
 #: data_sources.php:539
 msgid "Choose a new Device for this Data Source and click 'Continue'."
@@ -4003,12 +4002,11 @@ msgstr[1] ""
 msgstr[2] ""
 
 #: data_sources.php:554
-#, fuzzy
 msgid "Enable Data Source"
 msgid_plural "Enable Data Sources"
-msgstr[0] "Iespējot datu avotu."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Iespējot datu avotus"
+msgstr[1] "Iespējot datu avotu"
+msgstr[2] "Iespējot datu avotus"
 
 #: data_sources.php:558
 msgid "Click 'Continue' to disable the following Data Source."
@@ -4018,12 +4016,11 @@ msgstr[1] ""
 msgstr[2] ""
 
 #: data_sources.php:563
-#, fuzzy
 msgid "Disable Data Source"
 msgid_plural "Disable Data Sources"
-msgstr[0] "Atspējot datu avotu."
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Atspējot datu avotus"
+msgstr[1] "Atspējot datu avotu"
+msgstr[2] "Atspējot datu avotus"
 
 #: data_sources.php:567
 msgid "Click 'Continue' to re-apply the suggested name to the following Data Source."
@@ -5900,7 +5897,7 @@ msgstr "Izceltais direktorijs nepastāv. Lūdzu, ievadiet derīgu direktoriju."
 
 #: include/global_arrays.php:171
 msgid "The Cacti log file must have the extension '.log'"
-msgstr "Cacti žurnāla failam jābūt ar '.log' paplašinājumu."
+msgstr "Cacti žurnāla failam jābūt ar '.log' paplašinājumu"
 
 #: include/global_arrays.php:174
 msgid "Data Input for method does not appear to be whitelisted."
@@ -10175,7 +10172,7 @@ msgstr "Ping veids"
 
 #: include/global_settings.php:782
 msgid "Default Ping type for all new Devices.</i>"
-msgstr "Noklusējuma ping tips visām jaunajām ierīcēm."
+msgstr "Noklusējuma ping veids visām jaunajām ierīcēm.</i>"
 
 #: include/global_settings.php:789
 msgid "Default Ping Port for all new Devices.  With TCP, Cacti will attempt to Syn the port.  With UDP, Cacti requires either a successful connection, or a 'port not reachable' error to determine if the Device is up or not."
@@ -12831,8 +12828,9 @@ msgid "Device Up/Down"
 msgstr "Ierīce uz augšu/uz leju"
 
 #: lib/clog_webapi.php:561
+#, fuzzy
 msgid "Recaches"
-msgstr "Recaches"
+msgstr "Vēlreiz kešo"
 
 #: lib/clog_webapi.php:565
 msgid "Threshold"
@@ -13322,7 +13320,7 @@ msgstr "Aptaujātajs nevar ierakstīt RRDfile mapē (rra).  Mapes īpašnieks: %
 #: lib/dsdebug.php:276
 #, php-format
 msgid "RRDfile is not writable by Poller.  RRDfile owner: %s.  Poller runs as %s"
-msgstr "Aptaujātajs nevar ierakstīt RRDfile.  RRDfile īpašnieks: %s.  Aptaujātajs palaists ar %s lietotāja tiesībām"
+msgstr "Aptaujātajs nevar ierakstīt RRD failā.  RRD faila īpašnieks: %s.  Aptaujātajs palaists ar %s lietotāja tiesībām"
 
 #: lib/dsdebug.php:285
 msgid "RRDfile does not match Data Source"
@@ -14787,7 +14785,7 @@ msgstr "Pakešu faili"
 
 #: lib/import.php:2595
 msgid "[preview] "
-msgstr "[priekšskatījums]"
+msgstr "[priekšskatījums] "
 
 #: lib/import.php:2600
 msgid "Cacti would make the following changes if the Template was imported:"
@@ -14807,7 +14805,7 @@ msgstr "[neizdevās]"
 
 #: lib/import.php:2621
 msgid "[preview]"
-msgstr "[priekšskatījums]"
+msgstr "[priekšskatījums] "
 
 #: lib/import.php:2625
 msgid "[updated]"
@@ -14981,7 +14979,7 @@ msgstr "Paldies, ka veltījāt laiku, lai lejupielādētu un instalētu Cacti �
 #: lib/installer.php:1754
 #, php-format
 msgid "Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href=\"%s\">Unix</a> and <a href=\"%s\">Win32</a>-based operating systems."
-msgstr "Pirms turpināt, pārliecinieties, vai esat izlasījis un izpildījis vajadzīgās darbības, kas nepieciešamas, lai instalētu Cacti. Instalēšanas informāciju var atrast operētājsistēmām, kuru pamatā ir <a href=\"%1$s\">Unix</a> un <a href=\"%2$s\">Win32</a> ."
+msgstr "Pārliecinieties, ka esat izlasījuši un izpildījuši vajadzīgās darbības, kas nepieciešamas, lai uzstādītu Cacti. Uzstādīšanas informāciju <a href=\"%s\">Unix</a> un <a href=\"%s\">Win32</a> operētājsistēmām var atrast sekojot to atbilstošajām saitēm."
 
 #: lib/installer.php:1757
 #, php-format
@@ -15158,7 +15156,7 @@ msgstr "Jaunināt no <strong>%s</strong> uz <strong>%s</strong>"
 
 #: lib/installer.php:2071
 msgid "In the event of issues, It is highly recommended that you clear your browser cache, closing then reopening your browser (not just the tab Cacti is on) and retrying, before raising an issue with The Cacti Group"
-msgstr "Problēmu gadījumā ir ļoti ieteicams notīrīt pārlūkprogrammas kešatmiņu, aizverot, pēc tam atkārtoti atverot pārlūkprogrammu (ne tikai ir ieslēgta cilne Cacti) un mēģināt vēlreiz, pirms tiek izvirzīta problēma ar The Cacti Group."
+msgstr "Problēmu gadījumā ir ļoti ieteicams notīrīt pārlūka kešatmiņu, pārstartēt pārlūku (nevis tikai aizvērt cilni, kurā Cacti atvērts) un mēģināt vēlreiz. Ja tas nepalīdz, variet ziņot problēmu The Cacti Group komandai"
 
 #: lib/installer.php:2072
 msgid "On rare occasions, we have had reports from users who experience some minor issues due to changes in the code.  These issues are caused by the browser retaining pre-upgrade code and whilst we have taken steps to minimise the chances of this, it may still occur.  If you need instructions on how to clear your browser cache, <a href='https://www.refreshyourcache.com' target='_blank'>https://www.refreshyourcache.com/</a> is a good starting point."
@@ -16142,7 +16140,7 @@ msgstr "Datu avota “%s” veidam ir jābūt “%s”"
 #: lib/rrd.php:2985
 #, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
-msgstr "Datu avota “%s” sirdsdarbībai ir jābūt “%s”"
+msgstr "Datu avota '%s' RRD datu pulsam jābūt '%s'"
 
 #: lib/rrd.php:2997
 #, php-format
@@ -16199,7 +16197,7 @@ msgstr "Datu avota vienumi"
 
 #: lib/rrd.php:3158
 msgid "Minimal Heartbeat"
-msgstr "Minimāla sirdsdarbība"
+msgstr "Minimālais RRD datu pulss"
 
 #: lib/rrd.php:3159
 msgid "Min"
@@ -17178,7 +17176,7 @@ msgid "WARNING: Cacti Polling Cycle Exceeded Poller Interval by "
 msgstr "BRĪDINĀJUMS: Cacti apjautāšanas cikls pārsniedza apjautāšanas intervālu par "
 
 #: poller.php:920
-#, php-format
+#, fuzzy, php-format
 msgid "WARNING: PollerID:%s with Name:%s is in Heartbeat Status"
 msgstr "BRĪDINĀJUMS: PollerID:%s ar nosaukumu:%s ir periodisko kontrolziņojumu statusā"
 
@@ -18097,7 +18095,7 @@ msgstr "Bojāts grafiks"
 #: templates_import.php:321
 #, fuzzy, php-format
 msgid "Met: %d"
-msgstr "Izpildīts"
+msgstr "Met: %d"
 
 #: templates_import.php:325
 #, php-format
@@ -18244,7 +18242,7 @@ msgstr "Pabeidziet koka rediģēšanu"
 #: tree.php:803
 #, php-format
 msgid "This tree has been locked for Editing on %s by %s."
-msgstr "%2$s šo koku bloķēja rediģēšanai %1$s."
+msgstr "Šis koks ir bloķēts rediģēšanai %s pateicoties %s."
 
 #: tree.php:808
 msgid "To edit the tree, you must first unlock it and then lock it as yourself"
