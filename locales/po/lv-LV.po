@@ -8,14 +8,15 @@ msgstr ""
 "Project-Id-Version: Cacti 1.2.20\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2023-06-27 16:06+0000\n"
+"PO-Revision-Date: 2024-10-16 16:52+0000\n"
 "Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core/lv/>\n"
 "Language: lv-LV\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= 19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 0 || n % 100 >= 11 && n % 100 <= "
+"19) ? 0 : ((n % 10 == 1 && n % 100 != 11) ? 1 : 2);\n"
 "X-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2719 lib/html.php:2726
@@ -4972,7 +4973,7 @@ msgstr "Profila aptauju biežums"
 #: data_source_profiles.php:1054 include/global_form.php:232
 #: include/global_form.php:652 pollers.php:49
 msgid "Heartbeat"
-msgstr "Sirdspuksti"
+msgstr "RRD datu pulss"
 
 #: data_source_profiles.php:1057
 msgid "The Amount of Time, in seconds, without good data before Data is stored as Unknown"
