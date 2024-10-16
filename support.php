@@ -223,6 +223,9 @@ function show_database_processes() {
 		<form name='form_db_stats'>
 			<script type='text/javascript'>
 			$(function() {
+				refreshMSeconds=$('#refresh').val()*1000;
+				refreshPage='support.php?tab=processes';
+
 				$('#refresh, #poller, #length, #rows').change(function() {
 					applyFilter();
 				});
@@ -503,6 +506,9 @@ function show_cacti_processes() {
 		<form name='form_processes'>
 			<script type='text/javascript'>
 			$(function() {
+				refreshMSeconds=$('#refresh').val()*1000;
+				refreshPage='support.php?tab=background';
+
 				$('#refresh, #rows, #tasks').change(function() {
 					applyFilter();
 				});
