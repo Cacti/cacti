@@ -484,13 +484,15 @@ function show_cacti_processes() {
 
 	/* the full set of process tables known to Cacti */
 	$tables = array(
-		'poller_time'                   => __('Cacti Poller'),       // Core Cacti poller table
-		'processes'                     => __('Cacti Process'),      // Cacti process table
-		'grid_processes'                => __('RTM Process'),        // RTM process table
-		'automation_processes'          => __('Automation Process'), // Automation process table
-		'plugin_hmib_processes'         => __('HMIB Process'),       // HMIB process table
-		'plugin_microtik_processes'     => __('MikroTik Process'),   // Mikrotik process table
-		'plugin_webseer_processes'      => __('WebSeer Process'),    // WebSeer process table
+		'poller_time'                   => __('Cacti Poller'),          // Core Cacti poller table
+		'processes'                     => __('Cacti Process'),         // Cacti process table
+		'grid_processes'                => __('RTM Process'),           // RTM process table
+		'automation_processes'          => __('Automation Process'),    // Automation process table
+		'plugin_hmib_processes'         => __('HMIB Process'),          // HMIB process table
+		'plugin_microtik_processes'     => __('MikroTik Process'),      // Mikrotik process table
+		'plugin_webseer_processes'      => __('WebSeer Process'),       // WebSeer process table
+		'plugin_servcheck_processes'    => __('Service Check Process'), // Service Check process table
+		'mac_track_processes'           => __('MacTrack Process'),      // WebSeer process table
 	);
 
 	/* reduce the set of tables based if they exist */
@@ -683,6 +685,15 @@ function show_cacti_processes() {
 						time AS started, 'N/A' AS last_update,
 						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(time) AS runtime
 						FROM plugin_webseer_processes";
+
+				break;
+			case 'plugin_servcheck_processes':
+				$sql_inner .= ($sql_inner != '' ? ' UNION ':'') .
+					"SELECT pid, '$name' AS tasktype,
+						CONCAT('" . __('Poller:') . "', poller_id) AS taskname, test_id AS taskid, 'N/A' AS timeout,
+						time AS started, 'N/A' AS last_update,
+						UNIX_TIMESTAMP() - UNIX_TIMESTAMP(time) AS runtime
+						FROM plugin_servcheck_processes";
 
 				break;
 		}
