@@ -389,6 +389,16 @@ function upgrade_dsstats() {
 		'data_source_stats_yearly'
 	);
 
+	$version = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "version"');
+
+	if (cacti_sizeof($version)) {
+		if (stripos($version['Value'], 'MariaDB') !== false) {
+			$db = 'mariadb';
+		} else {
+			$db = 'mysql';
+		}
+	}
+
 	foreach ($tables as $table) {
 		if (!db_column_exists($table, 'cf')) {
 			$sql = "ALTER TABLE $table
@@ -412,7 +422,25 @@ function upgrade_dsstats() {
 		$suffix = ($i > 0 ? ',':'') . ' DROP PRIMARY KEY,
 			ADD PRIMARY KEY(local_data_id, rrd_name, cf)';
 
+		if ($db == 'mariadb') {
+			$suffix .= ", ENGINE=Aria ROW_FORMAT=Page";
+		}
+
 		db_install_execute("$sql $suffix");
+
+		/* if re-upgrading, move existing partitions to aria */
+		if ($db == 'mariadb') {
+			$tables = db_fetch_assoc("SELECT *
+				FROM information_schema.TABLES
+				WHERE TABLE_NAME LIKE '{$table}_v%'
+				AND TABLE_SCHEMA=SCHEMA()");
+
+			if (cacti_sizeof($tables)) {
+				foreach($tables as $t) {
+					db_install_execute("ALTER TABLE {$t['TABLE_NAME']} ENGINE=Aria ROW_FORMAT=Page");
+				}
+			}
+		}
 	}
 
 	if (!db_column_exists('data_source_stats_hourly', 'cf')) {
