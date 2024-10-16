@@ -156,56 +156,25 @@ function themeReady() {
 		$('.import_text').text(fileText);
 	}
 
-	$('select.colordropdown').dropcolor();
-
-	$('select').not('.colordropdown, #user_language').each(function() {
-		if ($(this).prop('multiple') != true) {
-			$(this).each(function() {
-				id = $(this).attr('id');
-
-				$(this).selectmenu({
-					change: function(event, ui) {
-						$(this).val(ui.item.value).change();
-					},
-					position: {
-						my: "left top",
-						at: "left bottom",
-						collision: "flip"
-					},
-					width: 'auto'
-				});
-
-				$('#'+id+'-menu').css('max-height', '250px');
-			});
-		} else {
-			$(this).addClass('ui-state-default ui-corner-all');
-		}
-	});
-
-	renderLanguages();
-
-	/* Replace icons */
-	$('.fa-arrow-down').addClass('fa-chevron-down').removeClass('fa-arrow-down');
-	$('.fa-arrow-up').addClass('fa-chevron-up').removeClass('fa-arrow-up');
-
 	// Hide the graph icons until you hover
 	$('.graphDrillDown').hover(
-	function() {
-		element = $(this);
+		function() {
+			element = $(this);
 
-		// hide the previously shown element
-		if (element.attr('id').replace('dd', '') != graphMenuElement && graphMenuElement > 0) {
-			$('#dd'+graphMenuElement).find('.iconWrapper:first').hide(300);
+			// hide the previously shown element
+			if (element.attr('id').replace('dd', '') != graphMenuElement && graphMenuElement > 0) {
+				$('#dd'+graphMenuElement).find('.iconWrapper:first').hide(300);
+			}
+
+			clearTimeout(graphMenuTimer);
+			graphMenuTimer = setTimeout(function() { showGraphMenu(element); }, 400);
+		},
+		function() {
+			element = $(this);
+			clearTimeout(graphMenuTimer);
+			graphMenuTimer = setTimeout(function() { hideGraphMenu(element); }, 400);
 		}
-
-		clearTimeout(graphMenuTimer);
-		graphMenuTimer = setTimeout(function() { showGraphMenu(element); }, 400);
-	},
-	function() {
-		element = $(this);
-		clearTimeout(graphMenuTimer);
-		graphMenuTimer = setTimeout(function() { hideGraphMenu(element); }, 400);
-	});
+	);
 
 	function showGraphMenu(element) {
 		element.find('.spikekillMenu').menu('disable');

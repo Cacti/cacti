@@ -850,6 +850,11 @@ function applySkin() {
 
 	$('#messageContainer').remove();
 
+	/* Replace icons */
+	$('.fa-arrow-down').addClass('fa-chevron-down').removeClass('fa-arrow-down');
+	$('.fa-arrow-up').addClass('fa-chevron-up').removeClass('fa-arrow-up');
+	$('.fa-remove').addClass('fa-trash-o').removeClass('fa-remove');
+
 	if (!theme) {
 		theme = 'midwinter';
 
@@ -868,6 +873,8 @@ function applySkin() {
 			$('input[type="submit"], button[type="submit"]').not('.import, .export').button('disable');
 		});
 	}
+
+	setSelectMenus();
 
 	setGraphTabs();
 
@@ -1397,7 +1404,7 @@ function makeFiltersResponsive() {
 
 				if (filterContents.find('#export').length) {
 					title = $('#export').attr('value');
-					filterHeader.find('div.cactiTableButton').append('<span title="' + title + '" style="display:none;" class="cactiFilterExport"><i class="fa fa-arrow-down"></i></span>');
+					filterHeader.find('div.cactiTableButton').append('<span title="' + title + '" style="display:none;" class="cactiFilterExport"><i class="fa fa-chevron-down"></i></span>');
 
 					$('.cactiFilterExport').off('click').on('click', function (event) {
 						event.stopPropagation();
@@ -1407,7 +1414,7 @@ function makeFiltersResponsive() {
 
 				if (filterContents.find('#import').length) {
 					title = $('#import').attr('value');
-					filterHeader.find('div.cactiTableButton').append('<span title="' + title + '" style="display:none;" class="cactiFilterImport"><i class="fa fa-arrow-up"></i></span>');
+					filterHeader.find('div.cactiTableButton').append('<span title="' + title + '" style="display:none;" class="cactiFilterImport"><i class="fa fa-chevron-up"></i></span>');
 
 					$('.cactiFilterImport').off('click').on('click', function (event) {
 						event.stopPropagation();
@@ -3289,6 +3296,209 @@ var waitForFinalEvent = (function () {
 		timers[uniqueId] = setTimeout(callback, ms);
 	};
 })();
+
+function setSelectMenus() {
+	$.widget( "ui.selectmenu", $.ui.selectmenu, {
+		_renderMenu: function( ul, items ) {
+			let that = this;
+			let attr = this.element[0].attributes;
+
+			$.each( items, function( index, item ) {
+				that._renderItemData( ul, item );
+			});
+
+			if (typeof(attr['data-defaultLabel']) !== 'undefined') {
+				$(ul).parent().prepend('<div class="mdw-selectmenu-search"><input style="width:100%" type="search" class="ui-state-default ui-corner-all" data-scope="theme" placeholder="Search"></div>');
+
+				this._on(false, this.menuWrap.find('input'), {
+					'keydown': function (event) {
+						var preventDefault = true;
+						switch ( event.keyCode ) {
+							case $.ui.keyCode.TAB:
+							case $.ui.keyCode.ESCAPE:
+								this.close(event);
+								break;
+							case $.ui.keyCode.ENTER:
+							case $.ui.keyCode.UP:
+							case $.ui.keyCode.DOWN:
+							case $.ui.keyCode.HOME:
+							case $.ui.keyCode.PAGE_UP:
+							case $.ui.keyCode.END:
+							case $.ui.keyCode.PAGE_DOWN:
+							case $.ui.keyCode.SPACE:
+								this.menu.trigger(event);
+								break;
+							default:
+								preventDefault = false;
+								break;
+						}
+						if ( preventDefault ) {
+							event.preventDefault();
+						}
+					},
+					'input': function (event) {
+						let search_string = that.menuWrap.find('input').val().toUpperCase();
+						$(ul).find('li').each(function (index, item) {
+							if ($(this).text().toUpperCase().indexOf(search_string) > -1) {
+								$(this).addClass('ui-menu-item').prop('hidden', false);
+							} else {
+								$(this).removeClass('ui-menu-item').prop('hidden', true);
+							}
+						})
+					}
+				})
+			}
+		},
+		_renderButtonItem: function( item ) {
+			let that = this;
+			let attr = this.element[0].attributes;
+
+			if (typeof(attr['data-defaultLabel']) !== 'undefined') {
+				let defaultLabel = attr['data-defaultLabel'].value;
+				let filterActive = '';
+				let defaultIndex = 0;
+				let defaultValue = this.element.find("option").eq(0).val();
+
+				if (typeof(attr['data-defaultValue']) !== 'undefined') {
+					let defaultValue = attr['data-defaultValue'].value;
+				}
+
+				filterActive = (defaultValue !== item.value) ? 'true' : 'false';
+
+				/* fallback to index value -- maybe superfluous */
+				if(filterActive === '') {
+					filterActive = (defaultIndex !== item.index) ? 'true' : 'false';
+				}
+
+				let buttonItem = $( "<span>", {
+					"class": "ui-selectmenu-text",
+					"data-active": filterActive
+				})
+				if (filterActive === 'true') {
+					this._setText( buttonItem, defaultLabel + ': ' + item.label );
+					let icon = {'button' : 'ui-icon-close'};
+					this._setOption( 'icons', icon );
+					this._off( this.button.find( "span.ui-icon" ), 'click');
+					this._on( false, this.button.find( "span.ui-icon" ), {
+						click: function( event ) {
+							event.stopImmediatePropagation();
+							let defaultValue = that.element.find( "option" ).eq(0).val();
+							let item = {'index' : 0, 'value' : defaultValue };
+							this._select( item, event);
+						}
+					} );
+				}else {
+					this._setText( buttonItem, defaultLabel );
+				}
+				return buttonItem;
+			}else {
+				let buttonItem = $( "<span>", {
+					"class": "ui-selectmenu-text",
+				})
+				this._setText( buttonItem, item.label );
+				return buttonItem;
+			}
+		}
+	});
+
+	$('select.colordropdown').dropcolor();
+
+	$('select').not('.colordropdown').each(function() {
+		if ($(this).prop('multiple') != true) {
+			$(this).each(function() {
+				let id = $(this).attr('id');
+				let text = 'hello';
+
+				$(this).selectmenu({
+					open: function(event, ui) {
+						let instance = $(this).selectmenu('instance');
+						instance.menuInstance.focus(null, instance._getSelectedItem());
+						let search = instance.menuWrap.find('input');
+						if (search.length > 0) search.focus();
+					},
+					change: function(event, ui) {
+						$(this).val(ui.item.value).change();
+					},
+					position: {
+						my: "left top",
+						at: "left bottom",
+						collision: "flip"
+					},
+					width: false
+				});
+
+				$('#'+id+'-menu').css('max-height', '250px');
+			});
+		} else {
+			$(this).addClass('ui-state-default ui-corner-all');
+		}
+	});
+
+	$('#host').off().autocomplete({
+		source: pageName+'?action=ajax_hosts',
+		autoFocus: true,
+		minLength: 0,
+		select: function(event,ui) {
+			$('#host_id').val(ui.item.id);
+			callBack = $('#call_back').val();
+			if (callBack != 'undefined') {
+				if (callBack.indexOf('applyFilter') >= 0) {
+					applyFilter();
+				} else if (callBack.indexOf('applyGraphFilter') >= 0) {
+					applyGraphFilter();
+				}
+			} else if (typeof applyGraphFilter === 'function') {
+				applyGraphFilter();
+			} else {
+				applyFilter();
+			}
+		}
+	}).addClass('ui-state-default ui-selectmenu-text').css('border', 'none').css('background-color', 'transparent');
+
+	$('#host_click').css('z-index', '4');
+	$('#host_wrapper').off().dblclick(function() {
+		hostOpen = false;
+		clearTimeout(hostTimer);
+		clearTimeout(clickTimeout);
+		$('#host').autocomplete('close').select();
+	}).click(function() {
+		if (hostOpen) {
+			$('#host').autocomplete('close');
+			clearTimeout(hostTimer);
+			hostOpen = false;
+		} else {
+			clickTimeout = setTimeout(function() {
+				$('#host').autocomplete('search', '');
+				clearTimeout(hostTimer);
+				hostOpen = true;
+			}, 200);
+		}
+		$('#host').select();
+	}).on('mouseenter', function() {
+		$(this).addClass('ui-state-hover');
+		$('input#host').addClass('ui-state-hover');
+	}).on('mouseleave', function() {
+		$(this).removeClass('ui-state-hover');
+		$('#host').removeClass('ui-state-hover');
+		hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
+		hostOpen = false;
+	});
+
+	var hostPrefix = '';
+	$('#host').autocomplete('widget').each(function() {
+		hostPrefix=$(this).attr('id');
+
+		if (hostPrefix != '') {
+			$('ul[id="'+hostPrefix+'"]').on('mouseenter', function() {
+				clearTimeout(hostTimer);
+			}).on('mouseleave', function() {
+				hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
+				$(this).removeClass('ui-state-hover');
+				$('input#host').removeClass('ui-state-hover');
+			});
+		}
+	});
+}
 
 function setupEllipsis() {
 	$('<div class="dropdownMenu">' +
