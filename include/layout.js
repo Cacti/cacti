@@ -3298,7 +3298,7 @@ var waitForFinalEvent = (function () {
 })();
 
 function setSelectMenus() {
-	$.widget( "ui.selectmenu", $.ui.selectmenu, {
+	$.widget("ui.selectmenu", $.ui.selectmenu, {
 		_renderMenu: function( ul, items ) {
 			let that = this;
 			let attr = this.element[0].attributes;
@@ -3308,7 +3308,7 @@ function setSelectMenus() {
 			});
 
 			if (typeof(attr['data-defaultLabel']) !== 'undefined') {
-				$(ul).parent().prepend('<div class="mdw-selectmenu-search"><input style="width:100%" type="search" class="ui-state-default ui-corner-all" data-scope="theme" placeholder="Search"></div>');
+				$(ul).parent().prepend('<div class="mdw-selectmenu-search"><input style="width:100%" type="search" class="ui-state-default ui-corner-all" data-scope="theme" placeholder="' + searchPlaceholder + '"></div>');
 
 				this._on(false, this.menuWrap.find('input'), {
 					'keydown': function (event) {
@@ -3374,6 +3374,7 @@ function setSelectMenus() {
 					"class": "ui-selectmenu-text",
 					"data-active": filterActive
 				})
+
 				if (filterActive === 'true') {
 					this._setText( buttonItem, defaultLabel + ': ' + item.label );
 					let icon = {'button' : 'ui-icon-close'};
@@ -3387,11 +3388,11 @@ function setSelectMenus() {
 							this._select( item, event);
 						}
 					} );
-				}else {
+				} else {
 					this._setText( buttonItem, defaultLabel );
 				}
 				return buttonItem;
-			}else {
+			} else {
 				let buttonItem = $( "<span>", {
 					"class": "ui-selectmenu-text",
 				})
@@ -3431,71 +3432,6 @@ function setSelectMenus() {
 			});
 		} else {
 			$(this).addClass('ui-state-default ui-corner-all');
-		}
-	});
-
-	$('#host').off().autocomplete({
-		source: pageName+'?action=ajax_hosts',
-		autoFocus: true,
-		minLength: 0,
-		select: function(event,ui) {
-			$('#host_id').val(ui.item.id);
-			callBack = $('#call_back').val();
-			if (callBack != 'undefined') {
-				if (callBack.indexOf('applyFilter') >= 0) {
-					applyFilter();
-				} else if (callBack.indexOf('applyGraphFilter') >= 0) {
-					applyGraphFilter();
-				}
-			} else if (typeof applyGraphFilter === 'function') {
-				applyGraphFilter();
-			} else {
-				applyFilter();
-			}
-		}
-	}).addClass('ui-state-default ui-selectmenu-text').css('border', 'none').css('background-color', 'transparent');
-
-	$('#host_click').css('z-index', '4');
-	$('#host_wrapper').off().dblclick(function() {
-		hostOpen = false;
-		clearTimeout(hostTimer);
-		clearTimeout(clickTimeout);
-		$('#host').autocomplete('close').select();
-	}).click(function() {
-		if (hostOpen) {
-			$('#host').autocomplete('close');
-			clearTimeout(hostTimer);
-			hostOpen = false;
-		} else {
-			clickTimeout = setTimeout(function() {
-				$('#host').autocomplete('search', '');
-				clearTimeout(hostTimer);
-				hostOpen = true;
-			}, 200);
-		}
-		$('#host').select();
-	}).on('mouseenter', function() {
-		$(this).addClass('ui-state-hover');
-		$('input#host').addClass('ui-state-hover');
-	}).on('mouseleave', function() {
-		$(this).removeClass('ui-state-hover');
-		$('#host').removeClass('ui-state-hover');
-		hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
-		hostOpen = false;
-	});
-
-	var hostPrefix = '';
-	$('#host').autocomplete('widget').each(function() {
-		hostPrefix=$(this).attr('id');
-
-		if (hostPrefix != '') {
-			$('ul[id="'+hostPrefix+'"]').on('mouseenter', function() {
-				clearTimeout(hostTimer);
-			}).on('mouseleave', function() {
-				hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
-				$(this).removeClass('ui-state-hover');
-				$('input#host').removeClass('ui-state-hover');
-			});
 		}
 	});
 }
