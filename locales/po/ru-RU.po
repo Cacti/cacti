@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2024-10-16 16:52+0000\n"
+"PO-Revision-Date: 2024-10-17 16:22+0000\n"
 "Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Russian <http://translate.cacti.net/projects/cacti/core/ru/>\n"
 "Language: ru-RU\n"
@@ -5002,7 +5002,7 @@ msgstr "Частота опроса для профиля"
 #: data_source_profiles.php:1054 include/global_form.php:232
 #: include/global_form.php:652 pollers.php:49
 msgid "Heartbeat"
-msgstr "Пульсация"
+msgstr "Пульс RRD данных"
 
 #: data_source_profiles.php:1057
 #, fuzzy
@@ -19683,9 +19683,9 @@ msgid "Type for Data Source '%s' should be '%s'"
 msgstr "Тип источника данных \"%s\" должен быть \"%s\"."
 
 #: lib/rrd.php:3174
-#, fuzzy, php-format
+#, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
-msgstr "Сердцебиение для источника данных \"%s\" должно быть \"%s\"."
+msgstr "Пульс RRD данных для источника данных '%s' должно быть '%s'"
 
 #: lib/rrd.php:3186
 #, fuzzy, php-format
@@ -19743,9 +19743,8 @@ msgid "Data Source Items"
 msgstr "2,000 Элементов источников данных"
 
 #: lib/rrd.php:3347
-#, fuzzy
 msgid "Minimal Heartbeat"
-msgstr "Минимальное сердцебиение"
+msgstr "Минимальный пульс RRD данных"
 
 #: lib/rrd.php:3348
 msgid "Min"
