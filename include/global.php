@@ -35,6 +35,7 @@ $config = array();
 /* define if cacti is in CLI mode */
 define('CACTI_CLI', (php_sapi_name() == 'cli'));
 define('CACTI_WEB', (php_sapi_name() != 'cli'));
+define('CACTI_SERVER_OS', strstr(PHP_OS, 'WIN') ? 'win32' : 'unix');
 
 if (defined('CACTI_CLI_ONLY') && CACTI_WEB) {
 	die('<br><strong>This script is only meant to run at the command line.</strong>');
@@ -127,8 +128,10 @@ $config['proxy_headers'] = $proxy_headers ?? array();
 /* Set the poller_id */
 if (isset($poller_id)) {
 	$config['poller_id'] = $poller_id;
+	define('POLLER_ID', $poller_id);
 } else {
 	$config['poller_id'] = 1;
+	define('POLLER_ID', 1);
 }
 
 $db_var_defaults = array(
