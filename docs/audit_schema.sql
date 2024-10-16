@@ -422,7 +422,7 @@ INSERT INTO `table_columns` VALUES ('data_source_purge_temp',7,'in_cacti','tinyi
 INSERT INTO `table_columns` VALUES ('data_source_purge_temp',8,'data_template_id','mediumint(8) unsigned','NO','MUL','0','');
 INSERT INTO `table_columns` VALUES ('data_source_stats_daily',1,'local_data_id','int(10) unsigned','NO','PRI',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_daily',2,'rrd_name','varchar(19)','NO','PRI',NULL,'');
-INSERT INTO `table_columns` VALUES ('data_source_stats_daily',3,'cf','tinyint(3) unsigned','NO','MUL','0','');
+INSERT INTO `table_columns` VALUES ('data_source_stats_daily',3,'cf','tinyint(3) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('data_source_stats_daily',4,'average','double','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_daily',5,'peak','double','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_daily',6,'p95n','double','YES','',NULL,'');
@@ -437,7 +437,7 @@ INSERT INTO `table_columns` VALUES ('data_source_stats_daily',14,'lslint','doubl
 INSERT INTO `table_columns` VALUES ('data_source_stats_daily',15,'lslcorrel','double','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_hourly',1,'local_data_id','int(10) unsigned','NO','PRI',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_hourly',2,'rrd_name','varchar(19)','NO','PRI',NULL,'');
-INSERT INTO `table_columns` VALUES ('data_source_stats_hourly',3,'cf','tinyint(3) unsigned','NO','MUL','0','');
+INSERT INTO `table_columns` VALUES ('data_source_stats_hourly',3,'cf','tinyint(3) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('data_source_stats_hourly',3,'average','double','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_hourly',4,'peak','double','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_hourly_cache',1,'local_data_id','int(10) unsigned','NO','PRI',NULL,'');
@@ -450,7 +450,7 @@ INSERT INTO `table_columns` VALUES ('data_source_stats_hourly_last',3,'value','d
 INSERT INTO `table_columns` VALUES ('data_source_stats_hourly_last',4,'calculated','double','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_monthly',1,'local_data_id','int(10) unsigned','NO','PRI',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_monthly',2,'rrd_name','varchar(19)','NO','PRI',NULL,'');
-INSERT INTO `table_columns` VALUES ('data_source_stats_monthly',3,'cf','tinyint(3) unsigned','NO','MUL','0','');
+INSERT INTO `table_columns` VALUES ('data_source_stats_monthly',3,'cf','tinyint(3) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('data_source_stats_monthly',4,'average','double','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_monthly',5,'peak','double','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_monthly',6,'p95n','double','YES','',NULL,'');
@@ -465,7 +465,7 @@ INSERT INTO `table_columns` VALUES ('data_source_stats_monthly',14,'lslint','dou
 INSERT INTO `table_columns` VALUES ('data_source_stats_monthly',15,'lslcorrel','double','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_weekly',1,'local_data_id','int(10) unsigned','NO','PRI',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_weekly',2,'rrd_name','varchar(19)','NO','PRI',NULL,'');
-INSERT INTO `table_columns` VALUES ('data_source_stats_weekly',3,'cf','tinyint(3) unsigned','NO','MUL','0','');
+INSERT INTO `table_columns` VALUES ('data_source_stats_weekly',3,'cf','tinyint(3) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('data_source_stats_weekly',4,'average','double','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_weekly',5,'peak','double','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_weekly',6,'p95n','double','YES','',NULL,'');
@@ -480,7 +480,7 @@ INSERT INTO `table_columns` VALUES ('data_source_stats_weekly',14,'lslint','doub
 INSERT INTO `table_columns` VALUES ('data_source_stats_weekly',15,'lslcorrel','double','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_yearly',1,'local_data_id','int(10) unsigned','NO','PRI',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_yearly',2,'rrd_name','varchar(19)','NO','PRI',NULL,'');
-INSERT INTO `table_columns` VALUES ('data_source_stats_yearly',3,'cf','tinyint(3) unsigned','NO','MUL','0','');
+INSERT INTO `table_columns` VALUES ('data_source_stats_yearly',3,'cf','tinyint(3) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('data_source_stats_yearly',4,'average','double','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_yearly',5,'peak','double','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('data_source_stats_yearly',6,'p95n','double','YES','',NULL,'');
