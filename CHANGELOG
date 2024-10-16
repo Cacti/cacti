@@ -114,6 +114,7 @@ Cacti CHANGELOG
 -issue#5847: Presets Time in Cacti 1.2.28 Not Automatically Updating...
 -issue#5848: RRDfile Auto Clean not working
 -issue#5856: Help HTML file is incorrect for Automation Networks
+-issue#5867: Disabling a Tree does not function as expected
 
 1.2.28
 -security#GHSA-49f2-hwx9-qffr: XSS vulnerability when creating external links with the consolenewsection parameter

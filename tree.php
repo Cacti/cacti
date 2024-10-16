@@ -549,7 +549,7 @@ function form_save() {
 		$save['name']          = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 		$save['sort_type']     = form_input_validate(get_nfilter_request_var('sort_type'), 'sort_type', '', true, 3);
 		$save['last_modified'] = date('Y-m-d H:i:s', time());
-		$save['enabled']       = isset_request_var('enabled') ? 'on':'';
+		$save['enabled']       = get_request_var('enabled') == 'true' || get_request_var('enabled') == 'on' ? 'on':'off';
 		$save['modified_by']   = $_SESSION[SESS_USER_ID];
 
 		if (isempty_request_var('sequence')) {
@@ -669,7 +669,7 @@ function form_actions() {
 				set_config_option('time_last_change_branch', time());
 			} elseif (get_nfilter_request_var('drp_action') == '3') { // un-publish
 				db_execute("UPDATE graph_tree
-					SET enabled='',
+					SET enabled='off',
 					last_modified=NOW(),
 					modified_by=" . $_SESSION[SESS_USER_ID] . '
 					WHERE ' . array_to_sql_or($selected_items, 'id'));
