@@ -403,7 +403,8 @@ function spliceRRDs(&$new_rrd, &$old_flat, &$old_dsnames) {
 								$old_value = getOldRRDValue($old_flat, $olddsnum, $cf, $time);
 
 								if ($old_value != 'NaN') {
-									$last_good                                                = $old_value;
+									$last_good = $old_value;
+
 									$new_rrd['rra'][$rra_num]['database'][$cdp_ds_num][$time] = $old_value;
 								} elseif ($last_good != 'NaN') {
 									$new_rrd['rra'][$rra_num]['database'][$cdp_ds_num][$time] = $last_good;
@@ -785,15 +786,18 @@ function processXML(&$output) {
 			} elseif (substr_count($line, '<lastupdate>')) {
 				$rrd['lastupdate'] = XMLrip('lastupdate', $line);
 			} elseif (substr_count($line, '<version>')) {
-				$line           = trim(str_replace('<rrd>', '', $line));
+				$line = trim(str_replace('<rrd>', '', $line));
+
 				$rrd['version'] = XMLrip('version', $line);
 			} elseif (substr_count($line, '<step>')) {
 				$rrd['step'] = XMLrip('step', $line);
 			} elseif (substr_count($line, '<rra>')) {
 				$in_rra = true;
 			} elseif (substr_count($line, '</rra>')) {
-				$in_rra     = false;
+				$in_rra = false;
+
 				$cdp_ds_num = 0;
+
 				$rra_num++;
 			} elseif (substr_count($line, '<ds>')) {
 				if (!$in_cdp) {
@@ -817,7 +821,8 @@ function processXML(&$output) {
 				$in_parm = false;
 			} elseif (substr_count($line, '<name>')) {
 				$rrd['ds'][$ds_num]['name'] = XMLrip('name', $line);
-				$dsnames[]                  = XMLrip('name', $line);
+
+				$dsnames[] = XMLrip('name', $line);
 			} elseif (substr_count($line, '<type>')) {
 				$rrd['ds'][$ds_num]['type'] = XMLrip('type', $line);
 			} elseif (substr_count($line, '<minimal_heartbeat>')) {
@@ -867,10 +872,19 @@ function createRRDFileFromXML($xmlfile, $rrdfile) {
 
 	/* execute the dump command */
 	print 'NOTE: Re-Importing \'' . $xmlfile . '\' to \'' . $rrdfile . '\'' . PHP_EOL;
-	$response = shell_exec("$rrdtool restore -f -r $xmlfile $rrdfile");
+	$return_code = 0;
+	$output      = array();
+	$command     = "$rrdtool restore -f -r $xmlfile $rrdfile";
+	$result      = exec($command, $output, $return_var);
 
-	if (strlen($response)) {
-		print $response . PHP_EOL;
+	if ($return_var == 0) {
+		print "NOTE: File $rrdfile Restored Correctly" . PHP_EOL;
+	} else {
+		print "WARNING: File $rrdfile Encountered Errors.  Errors below:" . PHP_EOL;
+
+		foreach($output as $l) {
+			print "WARNING: $l" . PHP_EOL;
+		}
 	}
 }
 
@@ -919,7 +933,8 @@ function preProcessXML(&$output) {
 					/* do nothing no line */
 				} else {
 					$comment_end = strpos($line, '-->');
-					$row         = strpos($line, '<row>');
+
+					$row = strpos($line, '<row>');
 
 					if ($row > 0) {
 						$date = trim(substr($line,strpos($line,'/')+1,11));
