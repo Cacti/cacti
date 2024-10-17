@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.2.20\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2024-10-16 16:52+0000\n"
+"PO-Revision-Date: 2024-10-17 16:22+0000\n"
 "Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
 "Language-Team: Latvian <http://translate.cacti.net/projects/cacti/core/lv/>\n"
 "Language: lv-LV\n"
@@ -770,7 +770,7 @@ msgstr "Jebkuru"
 #: templates_import.php:361 user_admin.php:2437 user_admin.php:2662
 #: user_group_admin.php:2237 user_group_admin.php:2363 utilities.php:944
 msgid "None"
-msgstr "Neviens"
+msgstr "Neviena"
 
 #: aggregate_graphs.php:2117
 #, fuzzy
@@ -2247,7 +2247,9 @@ msgstr "Atkārtoti palaist datu vaicājumus"
 
 #: automation_networks.php:881
 msgid "If a device previously added to Cacti is found, rerun its data queries."
-msgstr "Ja tiek atrasta ierīce, kas iepriekš pievienota Cacti, atkārtoti palaidiet tās datu vaicājumus."
+msgstr ""
+"Ja atrod ierīci, kas iepriekš bijusi pievienota Cacti, atkārtoti palaidiet "
+"tās datu vaicājumus."
 
 #: automation_networks.php:886
 msgid "Discovery Timing"
@@ -2410,7 +2412,7 @@ msgstr "Trešais"
 
 #: automation_networks.php:982
 msgid "Day(s) of Week"
-msgstr "Nedēļas diena(-as)."
+msgstr "Nedēļas diena(s)"
 
 #: automation_networks.php:998
 msgid "Notification Settings"
@@ -2438,7 +2440,11 @@ msgstr "Paziņojums no vārda"
 
 #: automation_networks.php:1019
 msgid "The Email account name to be used as the senders name for the Notification Email.  If left blank, Cacti will use the default Automation Notification Name if specified, otherwise, it will use the Cacti system default Email name"
-msgstr "E-pasta konta nosaukums, kas tiks izmantots kā paziņojuma e-pasta sūtītāja vārds.  Ja tiek atstāts tukšs, Cacti izmantos noklusējuma automatizācijas paziņojumu nosaukumu, ja tas ir norādīts. Pretējā gadījumā tas izmantos Cacti sistēmas noklusējuma e-pasta nosaukumu."
+msgstr ""
+"E-pasta konta nosaukums, kas tiks izmantots kā paziņojuma e-pasta sūtītāja "
+"vārds.  Ja tiek atstāts tukšs, Cacti izmantos noklusējuma automatizācijas "
+"paziņojumu nosaukumu, ja tas ir norādīts. Pretējā gadījumā tas izmantos "
+"Cacti sistēmas noklusējuma e-pasta nosaukumu"
 
 #: automation_networks.php:1027
 msgid "Notification From Email Address"
@@ -2498,23 +2504,23 @@ msgstr "Pēc sākotnējās kļūmes Cacti mēģinās veikt tik daudz ping atkār
 
 #: automation_networks.php:1099
 msgid "Select the days(s) of the week"
-msgstr "Izvēlieties nedēļas dienu(-as)."
+msgstr "Atlasiet nedēļas dienu(-as)"
 
 #: automation_networks.php:1109
 msgid "Select the month(s) of the year"
-msgstr "Izvēlieties gada mēnesi(-s)."
+msgstr "Atlasiet gada mēnesi(-šus)"
 
 #: automation_networks.php:1119
 msgid "Select the day(s) of the month"
-msgstr "Izvēlieties mēneša dienu(-as)."
+msgstr "Atlasiet mēneša dienu(-as)"
 
 #: automation_networks.php:1129
 msgid "Select the week(s) of the month"
-msgstr "Izvēlieties mēneša nedēļu(-as)."
+msgstr "Atlasiet mēneša nedēļu(-as)"
 
 #: automation_networks.php:1139
 msgid "Select the day(s) of the week"
-msgstr "Izvēlieties nedēļas dienu(-as)."
+msgstr "Atlasiet nedēļas dienu(-as)"
 
 #: automation_networks.php:1209 automation_networks.php:1216
 msgid "every X Days"
@@ -2904,7 +2910,7 @@ msgstr "Elements#%d"
 
 #: automation_snmp.php:741
 msgid "none"
-msgstr "Neviens"
+msgstr "Neviena"
 
 #: automation_snmp.php:756 automation_templates.php:1040
 #: automation_templates.php:1154 automation_templates.php:1495 cdef.php:611
@@ -4710,6 +4716,10 @@ msgstr "Datu vaicājumi nav atrasti"
 #: data_source_profiles.php:192
 msgid "Changing the Heartbeat from this page, does not change the Heartbeat for your existing Data Sources.  Use RRDtool's 'tune' function to make that change to your existing RRDfiles heartbeats, or run the CLI utility update_heartbeat.php to correct.<br>"
 msgstr ""
+"Mainot RRD datu pulsu šajā lapā, neizmaina pulsu jūsu esošajos datu avotos. "
+"Izmantojiet RRDtool 'tune' funkciju, lai veiktu pulsa izmaiņas esošajos RRD "
+"failos, vai palaidiet update_heartbeat.php skriptu no komandrindas, lai "
+"atjauninātu pulsu uz jauno vērtību.<br>"
 
 #: data_source_profiles.php:300
 #, fuzzy
@@ -6993,7 +7003,7 @@ msgstr "Nav noteikts"
 #: host.php:1482 host.php:1769 include/global_settings.php:707
 #: lib/html.php:2336 lib/html_reports.php:1017
 msgid "Site"
-msgstr "Vietne"
+msgstr "Atrašanās vieta"
 
 #: host.php:1588
 msgid "Export Devices"
@@ -7373,7 +7383,7 @@ msgstr "Izceltais direktorijs nepastāv. Lūdzu, ievadiet derīgu direktoriju."
 
 #: include/global_arrays.php:171
 msgid "The Cacti log file must have the extension '.log'"
-msgstr "Cacti žurnāla failam jābūt ar '.log' paplašinājumu."
+msgstr "Cacti žurnāla failam jābūt ar '.log' paplašinājumu"
 
 #: include/global_arrays.php:174
 msgid "Data Input for method does not appear to be whitelisted."
@@ -7888,7 +7898,7 @@ msgstr "SNMP apraksts"
 
 #: include/global_arrays.php:682
 msgid "SNMP getNext"
-msgstr "SNMP getNext"
+msgstr "SNMP GetNext"
 
 #: include/global_arrays.php:683
 msgid "Ping"
@@ -8211,7 +8221,7 @@ msgstr "Vadība"
 #: include/global_arrays.php:1059 sites.php:521 sites.php:536 sites.php:622
 #: tree.php:848 tree.php:2258
 msgid "Sites"
-msgstr "Vietnes"
+msgstr "Atrašanās vietas"
 
 #: include/global_arrays.php:1060 include/global_arrays.php:1310 tree.php:2117
 #: tree.php:2132 tree.php:2200 user_admin.php:1394 user_admin.php:2877
@@ -8586,7 +8596,7 @@ msgstr "Pēdējā pusstunda"
 
 #: include/global_arrays.php:1502
 msgid "Last Hour"
-msgstr "Pēdējā stunda"
+msgstr "Pēdējo stundu"
 
 #: include/global_arrays.php:1503 include/global_arrays.php:1504
 #: include/global_arrays.php:1505 include/global_arrays.php:1506
@@ -8596,7 +8606,7 @@ msgstr "Pēdējās %d stundas"
 
 #: include/global_arrays.php:1507
 msgid "Last Day"
-msgstr "Pēdējā diena"
+msgstr "Pēdējo dienu"
 
 #: include/global_arrays.php:1508 include/global_arrays.php:1509
 #: include/global_arrays.php:1510
@@ -8606,7 +8616,7 @@ msgstr "Pēdējās %d dienas"
 
 #: include/global_arrays.php:1511
 msgid "Last Week"
-msgstr "Pagājusī nedēļa"
+msgstr "Pagājušo nedēļu"
 
 #: include/global_arrays.php:1512
 #, php-format
@@ -11825,7 +11835,7 @@ msgstr "Ping veids"
 
 #: include/global_settings.php:882
 msgid "Default Ping type for all new Devices.</i>"
-msgstr "Noklusējuma ping tips visām jaunajām ierīcēm."
+msgstr "Noklusējuma ping veids visām jaunajām ierīcēm.</i>"
 
 #: include/global_settings.php:889
 msgid "Default Ping Port for all new Devices.  With TCP, Cacti will attempt to Syn the port.  With UDP, Cacti requires either a successful connection, or a 'port not reachable' error to determine if the Device is up or not."
@@ -14410,7 +14420,7 @@ msgstr "Darbības laiks:"
 
 #: lib/api_device.php:1737
 msgid "Hostname:"
-msgstr "Resursdatora nosaukums:"
+msgstr "Resursdatora nosaukums: "
 
 #: lib/api_device.php:1738
 msgid "Location:"
@@ -14579,9 +14589,8 @@ msgid "Authentication was previously not set.  Attempted to set to Local Authent
 msgstr "Autentifikācija iepriekš nebija iestatīta. Mēģināja iestatīt vietējo autentifikāciju, taču netika atrasts neviens administratīvs konts."
 
 #: lib/auth.php:5124 lib/auth.php:5159 lib/auth.php:5197
-#, fuzzy
 msgid "Unknown error"
-msgstr "Nezināma sek"
+msgstr "Nezināma kļūda"
 
 #: lib/auth.php:5128 lib/auth.php:5163 lib/auth.php:5201
 #, fuzzy
@@ -14724,8 +14733,9 @@ msgid "Device Up/Down"
 msgstr "Ierīce uz augšu/uz leju"
 
 #: lib/clog_webapi.php:559
+#, fuzzy
 msgid "Recaches"
-msgstr "Recaches"
+msgstr "Vēlreiz kešo"
 
 #: lib/clog_webapi.php:563
 msgid "Threshold"
@@ -15215,7 +15225,9 @@ msgstr "Aptaujātajs nevar ierakstīt RRDfile mapē (rra).  Mapes īpašnieks: %
 #: lib/dsdebug.php:282
 #, php-format
 msgid "RRDfile is not writable by Poller.  RRDfile owner: %s.  Poller runs as %s"
-msgstr "Aptaujātajs nevar ierakstīt RRDfile.  RRDfile īpašnieks: %s.  Aptaujātajs palaists ar %s lietotāja tiesībām"
+msgstr ""
+"Aptaujātajs nevar ierakstīt RRD failā.  RRD faila īpašnieks: %s.  "
+"Aptaujātajs palaists ar %s lietotāja tiesībām"
 
 #: lib/dsdebug.php:291
 msgid "RRDfile does not match Data Source"
@@ -16144,7 +16156,7 @@ msgstr "Atzīmējiet šo izvēles rūtiņu, ja vēlaties pārskatam izmantot pie
 
 #: lib/html_reports.php:64
 msgid "Format File to Use"
-msgstr "Izmantojamais faila formāts"
+msgstr "Izmantotais faila formāts"
 
 #: lib/html_reports.php:67
 msgid "Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the 'formats' directory."
@@ -16689,7 +16701,7 @@ msgstr "Koks:"
 
 #: lib/html_tree.php:1021
 msgid "Site:"
-msgstr "Vietne:"
+msgstr "Atrašanās vieta:"
 
 #: lib/html_tree.php:1027
 msgid "Leaf:"
@@ -16809,7 +16821,7 @@ msgstr "Pakešu faili"
 
 #: lib/import.php:2624
 msgid "[preview] "
-msgstr "[priekšskatījums]"
+msgstr "[priekšskatījums] "
 
 #: lib/import.php:2630
 msgid "Cacti would make the following changes if the Template was imported:"
@@ -16829,7 +16841,7 @@ msgstr "[neizdevās]"
 
 #: lib/import.php:2651
 msgid "[preview]"
-msgstr "[priekšskatījums]"
+msgstr "[priekšskatījums] "
 
 #: lib/import.php:2655
 msgid "[updated]"
@@ -17173,7 +17185,10 @@ msgstr "Jaunināt no <strong>%s</strong> uz <strong>%s</strong>"
 
 #: lib/installer.php:2230
 msgid "In the event of issues, It is highly recommended that you clear your browser cache, closing then reopening your browser (not just the tab Cacti is on) and retrying, before raising an issue with The Cacti Group"
-msgstr "Problēmu gadījumā ir ļoti ieteicams notīrīt pārlūkprogrammas kešatmiņu, aizverot, pēc tam atkārtoti atverot pārlūkprogrammu (ne tikai ir ieslēgta cilne Cacti) un mēģināt vēlreiz, pirms tiek izvirzīta problēma ar The Cacti Group."
+msgstr ""
+"Problēmu gadījumā ir ļoti ieteicams notīrīt pārlūka kešatmiņu, pārstartēt "
+"pārlūku (nevis tikai aizvērt cilni, kurā Cacti atvērts) un mēģināt vēlreiz. "
+"Ja tas nepalīdz, variet ziņot problēmu The Cacti Group komandai"
 
 #: lib/installer.php:2231
 msgid "On rare occasions, we have had reports from users who experience some minor issues due to changes in the code.  These issues are caused by the browser retaining pre-upgrade code and whilst we have taken steps to minimise the chances of this, it may still occur.  If you need instructions on how to clear your browser cache, <a href='https://www.refreshyourcache.com' target='_blank'>https://www.refreshyourcache.com/</a> is a good starting point."
@@ -17319,7 +17334,10 @@ msgstr "Kad instalēšana ir pabeigta, dažus no šiem direktorijiem varat iesta
 
 #: lib/installer.php:2477
 msgid "These directories will be required to stay read writable after the install so that the Cacti remote synchronization process can update them as the Main Cacti Web Site changes"
-msgstr "Šiem direktorijiem pēc instalēšanas ir jābūt lasāmiem, rakstāmiem, lai Cacti attālās sinhronizācijas process varētu tos atjaunināt, mainoties galvenajai Cacti vietnei."
+msgstr ""
+"Šīm mapēm pēc uzstādīšanas jābūt lasāmām un rakstāmām, lai Cacti attālās "
+"sinhronizācijas process varētu tos atjaunināt, mainoties galvenajai Cacti "
+"vietnei"
 
 #: lib/installer.php:2481
 msgid "If you are installing packages, once the packages are installed, you should change the scripts directory back to read only as this presents some exposure to the web site."
@@ -18168,7 +18186,7 @@ msgstr "Datu avota “%s” veidam ir jābūt “%s”"
 #: lib/rrd.php:3174
 #, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
-msgstr "Datu avota “%s” sirdsdarbībai ir jābūt “%s”"
+msgstr "Datu avota '%s' RRD datu pulsam jābūt '%s'"
 
 #: lib/rrd.php:3186
 #, php-format
@@ -18188,7 +18206,7 @@ msgstr "Cacti RRA '%s' ir tāds pats CF/soļi (%s, %s) kā '%s'"
 #: lib/rrd.php:3224 lib/rrd.php:3225
 #, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "RRA failam “%s” ir tāds pats CF/soļi (%s, %s) kā failam “%s”."
+msgstr "RRA failam '%s' ir tik pat CF/soļi (%s, %s) kā '%s'"
 
 #: lib/rrd.php:3259
 #, php-format
@@ -18206,9 +18224,9 @@ msgid "The number of rows for Cacti RRA id '%s' is incorrect.  The number of row
 msgstr "Rindu skaitam Cacti RRA id '%s' ir jābūt '%s'"
 
 #: lib/rrd.php:3285
-#, fuzzy, php-format
+#, php-format
 msgid "The RRA '%s' missing in the existing Cacti RRDfile"
-msgstr "RRD failā trūkst RRA “%s”."
+msgstr "Esošajā Cacti RRD failā trūkst '%s' RRA"
 
 #: lib/rrd.php:3292
 #, php-format
@@ -18225,7 +18243,7 @@ msgstr "Datu avota vienumi"
 
 #: lib/rrd.php:3347
 msgid "Minimal Heartbeat"
-msgstr "Minimāla sirdsdarbība"
+msgstr "Minimālais RRD datu pulss"
 
 #: lib/rrd.php:3348
 msgid "Min"
@@ -18852,6 +18870,7 @@ msgid "Notification"
 msgstr "Paziņojums"
 
 #: managers.php:821 utilities.php:2270
+#, fuzzy
 msgid "Varbinds"
 msgstr "Varbinds"
 
@@ -20676,9 +20695,9 @@ msgid "Damaged"
 msgstr "Bojāts grafiks"
 
 #: templates_import.php:320
-#, php-format
+#, fuzzy, php-format
 msgid "Met: %d"
-msgstr ""
+msgstr "Met: %d"
 
 #: templates_import.php:324
 #, php-format
