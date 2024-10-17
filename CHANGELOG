@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -issue#5848: RRDfile Auto Clean not working
 -issue#5856: Help HTML file is incorrect for Automation Networks
 -issue#5867: Disabling a Tree does not function as expected
+-issue#5868: Error when remove Orphaned Graphs from GUI
 -issue#5870: CLI utility splice_rrd.php generates an error in PHP8+
 
 1.2.28
