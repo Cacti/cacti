@@ -349,6 +349,11 @@ switch (get_nfilter_request_var('action')) {
 		navHeight    = $('.cactiTreeNavigationArea').height();
 		windowHeight = $(window).height();
 		navOffset    = $('.cactiTreeNavigationArea').offset();
+
+		if (navOffset.top == undefined) {
+			navOffset.top = 0;
+		}
+
 		if (navHeight + navOffset.top < windowHeight) {
 			$('.cactiTreeNavigationArea').height(windowHeight - navOffset.top);
 		}
