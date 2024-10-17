@@ -105,6 +105,7 @@ Cacti CHANGELOG
 -feature#5860: When Cacti is running on MariaDB move the Data Source statistics partitions to the ARIA table format
 -feature#5861: In Cacti Utilities, be able to view the MariaDB/MySQL processeslist and active background tasks
 -feature#5862: Change logging message around remote agent timeout
+-feature#5871: Make it possible for splice_rrd.php to run from outside of Cacti
 -feature: Allow messages to be popup notifications
 -feature: Upgrade billboard.js to version 3.7.4
 -feature: Upgrade d3.js to version 7.8.2
