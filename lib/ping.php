@@ -171,7 +171,7 @@ class Net_Ping
 				$result = shell_exec('ping -t ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
 			} elseif (substr_count(strtolower(PHP_OS), 'freebsd')) {
 				if (strpos($host_ip, ':') !== false) {
-					$result = shell_exec('/usr/sbin/ping6 -x ' . $this->timeout . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
+					$result = shell_exec('ping6 -t ' . $this->timeout . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
 				} else {
 					$result = shell_exec('ping -W ' . $this->timeout . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
 				}
@@ -745,6 +745,9 @@ class Net_Ping
 			$ip_address = str_replace('tcp:', '', strtolower($ip_address));
 		} elseif (strpos($ip_address, 'udp:') !== false) {
 			$ip_address = str_replace('udp:', '', strtolower($ip_address));
+		} elseif (strpos($ip_address, '[') !== false) {
+			$parts = explode(']', $ip_address);
+			$ip_address = trim($parts[0], '[');
 		}
 
 		return $ip_address;
