@@ -1426,20 +1426,25 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
  * get_allowed_graphs - Returns the graphs that are permitted by the user.  Used for table displays
  *   where users will view the graphs that they are permitted to access
  *
- * @param  (string) The SQL where when searching for specific content
- * @param  (string) The SQL Order clause to use for the sorting of graphs
- * @param  (int)    The limit on items to return.  If empty or -1, return all items
- * @param  (int)    The number of rows found, to be returned to the caller
- * @param  (int)    If checking a user, specify the user_id otherwise for the current user leave blank
- * @param  (int)    If just searching for if a single graph is permitted, the id of that graph
- * @param mixed $sql_where
- * @param mixed $sql_order
- * @param mixed $sql_limit
- * @param mixed $total_rows
- * @param mixed $user_id
- * @param mixed $graph_id
+ * @param  string       The SQL where when searching for specific content
+ * @param  string|array The SQL Order clause to use for the sorting of graphs, if using order by
+ *                      Data source, the following must be passed in an array
  *
- * @return (array) Array of allowed graphs
+ *                      array(
+ *                          'data_source' => 'traffic_in',
+ *                          'order'       => 'asc'|'desc',
+ *                          'start_time'  => unix_timestamp,
+ *                          'end_time'    => unix_timestamp,
+ *                          'cf'          => avg (0) | max (1)
+ *                          'metric'      => average | peak | sum | p25 | p50 | p75 | p90 | p95
+ *                      )
+ *
+ * @param  int          The limit on items to return.  If empty or -1, return all items
+ * @param  int          The number of rows found, to be returned to the caller
+ * @param  int          If checking a user, specify the user_id otherwise for the current user leave blank
+ * @param  int          If just searching for if a single graph is permitted, the id of that graph
+ *
+ * @return array        Array of allowed graphs
  */
 function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sql_limit = '', &$total_rows = 0, $user_id = 0, $graph_id = 0) {
 	if (!auth_valid_user($user_id)) {
@@ -1466,12 +1471,41 @@ function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sq
 		$sql_limit = '';
 	}
 
-	if ($sql_order != '') {
+	$sql_order_join = '';
+
+	if (is_array($sql_order)) {
+		require_once(CACTI_PATH_LIBRARY . '/dsstats.php');
+
+		$table = dsstats_get_best_partition($sql_order['start_time'], $sql_order['end_time']);
+
+		if ($sql_order['cf'] == 'avg') {
+			$cf = 0;
+		} elseif ($sql_order['cf'] == 'max') {
+			$cf = 1;
+		} else {
+			$cf = $sql_order['cf'];
+		}
+
+		$sql_order_join = "INNER JOIN
+		(
+			SELECT DISTINCT gti.local_graph_id, ot.*
+			FROM graph_templates_item AS gti
+			INNER JOIN data_template_rrd AS dtr
+			ON gti.task_item_id = dtr.id
+			INNER JOIN $table AS ot
+			ON dtr.local_data_id = ot.local_data_id
+			WHERE ot.rrd_name = " . db_qstr($sql_order['data_source']) . "
+			AND ot.cf = $cf
+		) AS rs
+		ON gl.id = rs.local_graph_id";
+
+		$sql_order = "ORDER BY rs." . $sql_order['metric'] . ' ' . $sql_order['order'];
+	} elseif ($sql_order != '') {
 		$sql_order = "ORDER BY $sql_order";
 	}
 
 	if ($graph_id > 0) {
-		$sql_where .= ($sql_where != '' ? ' AND ' : ' ') . " gl.id = $graph_id";
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' ') . ' gl.id = ' . $graph_id;
 	}
 
 	if (read_user_setting('hide_disabled', false, false, $user_id) == 'on') {
@@ -1502,11 +1536,12 @@ function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sq
 		IF(gl.graph_template_id=0, 0, IF(gl.snmp_query_id=0, 2, 1)) AS graph_source
 		FROM graph_templates_graph AS gtg
 		INNER JOIN graph_local AS gl
-		ON gl.id=gtg.local_graph_id
+		ON gl.id = gtg.local_graph_id
 		LEFT JOIN graph_templates AS gt
-		ON gt.id=gl.graph_template_id
+		ON gt.id = gl.graph_template_id
 		LEFT JOIN host AS h
-		ON h.id=gl.host_id
+		ON h.id = gl.host_id
+		$sql_order_join
 		$sql_where
 		$sql_order
 		$sql_limit");
@@ -1519,6 +1554,7 @@ function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sq
 		ON gt.id=gl.graph_template_id
 		LEFT JOIN host AS h
 		ON h.id=gl.host_id
+		$sql_order_join
 		$sql_where";
 
 	if ($graph_id == 0) {

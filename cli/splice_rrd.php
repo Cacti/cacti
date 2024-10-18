@@ -30,11 +30,9 @@
 $rrdtool    = '/usr/bin/rrdtool';
 
 if (file_exists(__DIR__ . '/../include/cli_check.php')) {
-	print 'NOTE: Running from the Cacti Server' . PHP_EOL;
 	require(__DIR__ . '/../include/cli_check.php');
 	$from_cacti = true;
 } else {
-	print 'NOTE: Not running from the Cacti Server' . PHP_EOL;
 	$from_cacti = false;
 }
 
@@ -205,6 +203,12 @@ if (cacti_sizeof($parms)) {
 				exit(-3);
 		}
 	}
+}
+
+if ($from_cacti) {
+	print 'NOTE: Running from the Cacti Server' . PHP_EOL;
+} else {
+	print 'NOTE: Not running from the Cacti Server' . PHP_EOL;
 }
 
 /* additional error check */

@@ -329,6 +329,10 @@
       // bump unique ID after assigning it to the widget instance
       this.multiselectID = multiselectID++;
 
+      // Convert to a multi-select if it's not already
+      if (!$element[0].multiple) {
+         $element[0].multiple = true;
+      }
 
       this.$headerLinkContainer = $( document.createElement('ul') )
             .addClass('ui-helper-reset')
@@ -383,9 +387,9 @@
 
     /**
      * Helper function used in _create()
-    * @param {string} linkTemplate HTML link template string
-    * @param {string} linkID key string to look up in linkInfo object.
-    * @return {object} link HTML
+     * @param {string} linkTemplate HTML link template string
+     * @param {string} linkID key string to look up in linkInfo object.
+     * @return {object} link HTML
      */
    _linkHTML: function(linkTemplate, linkID) {
       var self = this;
@@ -441,7 +445,12 @@
       // Pick up the select type from the underlying element
       var isMultiple = elSelect.multiple;
       var isDisabled = option.disabled;
-      var isSelected = option.selected;
+
+      if (option.selected || option.outerHTML.indexOf('selected=') > 0) {
+          var isSelected = true;
+      } else {
+          var isSelected = false;
+      }
 
       var input = document.createElement('input');
       var inputAttribs = {
@@ -455,6 +464,7 @@
         'disabled': isDisabled ? 'disabled' : null,
         'aria-disabled': isDisabled ? 'true' : null,
       };
+
       for (var name in inputAttribs) {
         if (inputAttribs[name] !== null) {
           input.setAttribute(name, inputAttribs[name]);

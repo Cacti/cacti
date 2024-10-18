@@ -58,8 +58,8 @@ function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tr
 		array($tree_id, $parent));
 
 	if ($parent == 0) {
-		print "<select name='$form_name' id='$form_name'>\n";
-		print "<option value='0'>[root]</option>\n";
+		print "<select name='$form_name' id='$form_name'>";
+		print "<option value='0'>[root]</option>";
 	}
 
 	if (cacti_sizeof($branches)) {
@@ -83,7 +83,7 @@ function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tr
 	}
 
 	if ($parent == 0) {
-		print "</select>\n";
+		print "</select>";
 	}
 }
 
@@ -811,69 +811,95 @@ function html_validate_tree_vars() {
 		return false;
 	}
 
+	/* unset the ordering if we have a setup that does not support ordering */
+	if (isset_request_var('graph_template_id')) {
+		if (strpos(get_nfilter_request_var('graph_template_id'), ',') !== false || get_nfilter_request_var('graph_template_id') <= 0) {
+			set_request_var('graph_order', '');
+			set_request_var('graph_source', '');
+		}
+	}
+
+	/* handle the change of a single template */
+	if (isset($_SESSION['sess_grt_graph_template_id']) && isset_request_var('graph_template_id')) {
+		if ($_SESSION['sess_grt_graph_template_id'] != get_nfilter_request_var('graph_template_id')) {
+			set_request_var('graph_order', '');
+			set_request_var('graph_source', '');
+		}
+	}
+
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'graphs' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => read_user_setting('treeview_graphs_per_page')
-			),
+		),
 		'graph_template_id' => array(
 			'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
+		'graph_source' => array(
+			'filter'  => FILTER_CALLBACK,
+			'default' => 'name',
+			'options' => array('options' => 'sanitize_search_string')
+		),
+		'graph_order' => array(
+			'filter'  => FILTER_VALIDATE_REGEXP,
+			'options' => array('options' => array('regexp' => '(asc|desc)')),
+			'default' => 'desc'
+		),
 		'columns' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => read_user_setting('num_columns_tree', '2')
-			),
+		),
 		'page' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
-			),
+		),
 		'predefined_timeshift' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => read_user_setting('default_timeshift')
-			),
+		),
 		'predefined_timespan' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => read_user_setting('default_timespan')
-			),
+		),
 		'node' => array(
 			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '/([_\-a-z:0-9#]+)/')),
 			'pageset' => true,
 			'default' => ''
-			),
+		),
 		'site_id' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '-1'
-			),
+		),
 		'host_id' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '-1'
-			),
+		),
 		'host_template_id' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '-1'
-			),
+		),
 		'hgd' => array(
 			'filter'  => FILTER_CALLBACK,
 			'pageset' => true,
 			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'rfilter' => array(
 			'filter'  => FILTER_VALIDATE_IS_REGEX,
 			'pageset' => true,
 			'default' => '',
-			),
+		),
 		'thumbnails' => array(
 			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => read_user_setting('thumbnail_section_tree_2') == 'on' ? 'true':'false'
-			)
+		)
 	);
 
 	validate_store_request_vars($filters, 'sess_grt');
@@ -1060,39 +1086,42 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='graph_template_id' multiple style='opacity:0.1;overflow-y:auto;overflow-x:hide;height:0px;'>
+						<select id='graph_template_id' class='multi-select'>
 							<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
 							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('Not Templated');?></option>
 							<?php
 							// suppress total rows collection
 							$total_rows = -1;
 
-	$graph_templates = get_allowed_graph_templates('', 'name', '', $total_rows);
+							$graph_templates = get_allowed_graph_templates('', 'name', '', $total_rows);
 
-	if (cacti_sizeof($graph_templates)) {
-		$selected    = explode(',', get_request_var('graph_template_id'));
+							if (cacti_sizeof($graph_templates)) {
+								$selected = explode(',', get_request_var('graph_template_id'));
 
-		foreach ($graph_templates as $gt) {
-			$found = db_fetch_cell_prepared('SELECT id
+								foreach ($graph_templates as $gt) {
+									$exists = db_fetch_cell_prepared('SELECT id
 										FROM graph_local
 										WHERE graph_template_id = ? LIMIT 1',
-				array($gt['id']));
+										array($gt['id']));
 
-			if ($found) {
-				print "<option value='" . $gt['id'] . "'";
+									if ($exists) {
+										$found = false;
 
-				if (cacti_sizeof($selected)) {
-					if (in_array($gt['id'], $selected, true)) {
-						print ' selected';
-					}
-				}
-				print '>' . html_escape($gt['name']) . '</option>';
-			}
-		}
-	}
-	?>
+										foreach($selected as $id) {
+											if ($id == $gt['id']) {
+												$found = true;
+												break;
+											}
+										}
+
+										print "<option value='{$gt['id']}'" . ($found ? ' selected':'') . '>' . html_escape($gt['name']) . '</option>';
+									}
+								}
+							}
+							?>
 						</select>
 					</td>
+					<?php print html_graph_order_filter();?>
 					<td>
 						<span>
 							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filter');?>'>
@@ -1113,16 +1142,12 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					<td>
 						<select id='graphs' onChange='applyGraphFilter()'>
 							<?php
-	if (cacti_sizeof($graphs_per_page)) {
-		foreach ($graphs_per_page as $key => $value) {
-			print "<option value='" . $key . "'";
-
-			if (get_request_var('graphs') == $key) {
-				print ' selected';
-			} print '>' . $value . '</option>';
-		}
-	}
-	?>
+							if (cacti_sizeof($graphs_per_page)) {
+								foreach ($graphs_per_page as $key => $value) {
+									print "<option value='$key'" . (get_request_var('graphs') == $key ? ' selected':'') . '>' . $value . '</option>';
+								}
+							}
+							?>
 						</select>
 					</td>
 					<td>
@@ -1160,21 +1185,17 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					<td>
 						<select id='predefined_timespan' onChange='applyGraphTimespan()'>
 							<?php
-	$graph_timespans = array_merge(array(GT_CUSTOM => __('Custom')), $graph_timespans);
+							$graph_timespans = array_merge(array(GT_CUSTOM => __('Custom')), $graph_timespans);
 
-	$start_val = 0;
-	$end_val   = cacti_sizeof($graph_timespans);
+							$start_val = 0;
+							$end_val   = cacti_sizeof($graph_timespans);
 
-	if (cacti_sizeof($graph_timespans)) {
-		foreach ($graph_timespans as $value => $text) {
-			print "<option value='$value'";
-
-			if ($_SESSION['sess_current_timespan'] == $value) {
-				print ' selected';
-			} print '>' . html_escape($text) . '</option>';
-		}
-	}
-	?>
+							if (cacti_sizeof($graph_timespans)) {
+								foreach ($graph_timespans as $value => $text) {
+									print "<option value='$value'" . ($_SESSION['sess_current_timespan'] == $value ? ' selected':'') .  '>' . html_escape($text) . '</option>';
+								}
+							}
+							?>
 						</select>
 					</td>
 					<td>
@@ -1200,19 +1221,15 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							<i class='shiftArrow fa fa-backward' onClick='timeshiftGraphFilterLeft()' title='<?php print __esc('Shift Time Backward');?>'></i>
 							<select id='predefined_timeshift' title='<?php print __esc('Define Shifting Interval');?>'>
 								<?php
-		$start_val = 1;
-	$end_val    = cacti_sizeof($graph_timeshifts) + 1;
+								$start_val = 1;
+							$end_val    = cacti_sizeof($graph_timeshifts) + 1;
 
-	if (cacti_sizeof($graph_timeshifts)) {
-		for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
-			print "<option value='$shift_value'";
-
-			if ($_SESSION['sess_current_timeshift'] == $shift_value) {
-				print ' selected';
-			} print '>' . html_escape($graph_timeshifts[$shift_value]) . '</option>';
-		}
-	}
-	?>
+							if (cacti_sizeof($graph_timeshifts)) {
+								for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
+									print "<option value='$shift_value'" . ($_SESSION['sess_current_timeshift'] == $shift_value ? ' selected':'') . '>' . html_escape($graph_timeshifts[$shift_value]) . '</option>';
+								}
+							}
+							?>
 							</select>
 							<i class='shiftArrow fa fa-forward' onClick='timeshiftGraphFilterRight()' title='<?php print __esc('Shift Time Forward');?>'></i>
 						</span>
@@ -1236,7 +1253,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							foreach ($realtime_window as $interval => $text) {
 								printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_window'] ? ' selected="selected"' : '', $text);
 							}
-	?>
+							?>
 						</select>
 					</td>
 					<td>
@@ -1245,10 +1262,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					<td>
 						<select id='ds_step' onChange="realtimeGrapher()">
 							<?php
-	foreach ($realtime_refresh as $interval => $text) {
-		printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_dsstep'] ? ' selected="selected"' : '', $text);
-	}
-	?>
+							foreach ($realtime_refresh as $interval => $text) {
+								printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_dsstep'] ? ' selected="selected"' : '', $text);
+							}
+							?>
 						</select>
 					</td>
 					<td>
@@ -1433,7 +1450,20 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			$sql_where .= ($sql_where != '' ? ' AND ':'') . '(gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
 		}
 
-		$graphs = get_allowed_graphs($sql_where);
+		if (read_config_option('dsstats_enable') == 'on' && get_request_var('graph_source') != '' && get_request_var('graph_order') != '') {
+			$sql_order = array(
+				'data_source' => get_request_var('graph_source'),
+				'order'       => get_request_var('graph_order'),
+				'start_time'  => get_current_graph_start(),
+				'end_time'    => get_current_graph_end(),
+				'cf'          => 'avg',
+				'metric'      => 'average'
+			);
+		} else {
+			$sql_order = 'gtg.title_cache';
+		}
+
+		$graphs = get_allowed_graphs($sql_where, $sql_order);
 
 		if (read_user_setting('show_aggregates', 'on') == 'on') {
 			$agg = get_allowed_aggregate_graphs($sql_where);
@@ -1561,7 +1591,21 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 			}
 
 			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.graph_template_id IN (' . implode(', ', $graph_template_ids) . ')';
-			$graphs = get_allowed_graphs($sql_where);
+
+			if (read_config_option('dsstats_enable') == 'on' && get_request_var('graph_source') != '' && get_request_var('graph_order') != '') {
+				$sql_order = array(
+					'data_source' => get_request_var('graph_source'),
+					'order'       => get_request_var('graph_order'),
+					'start_time'  => get_current_graph_start(),
+					'end_time'    => get_current_graph_end(),
+					'cf'          => 'avg',
+					'metric'      => 'average'
+				);
+			} else {
+				$sql_order = 'gtg.title_cache';
+			}
+
+			$graphs = get_allowed_graphs($sql_where, $sql_order);
 
 			if (read_user_setting('show_aggregates', 'on') == 'on') {
 				$agg = get_allowed_aggregate_graphs($sql_where);
@@ -1625,7 +1669,20 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 					'gl.snmp_query_id=' . $data_query['id'] . ($host_id > 0 ? ' AND gl.host_id=' . $host_id:'') .
 					' ' . ($data_query_index != '' ? ' AND gl.snmp_index = ' . db_qstr($data_query_index): '');
 
-				$graphs = get_allowed_graphs($sql_where);
+				if (read_config_option('dsstats_enable') == 'on' && get_request_var('graph_source') != '' && get_request_var('graph_order') != '') {
+					$sql_order = array(
+						'data_source' => get_request_var('graph_source'),
+						'order'       => get_request_var('graph_order'),
+						'start_time'  => get_current_graph_start(),
+						'end_time'    => get_current_graph_end(),
+						'cf'          => 'avg',
+						'metric'      => 'average'
+					);
+				} else {
+					$sql_order = 'gtg.title_cache';
+				}
+
+				$graphs = get_allowed_graphs($sql_where, $sql_order);
 
 				if (read_user_setting('show_aggregates', 'on') == 'on') {
 					$agg = get_allowed_aggregate_graphs($sql_where);

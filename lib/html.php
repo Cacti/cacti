@@ -378,9 +378,16 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 
 	?>
 	<script type='text/javascript'>
-	var refreshMSeconds = <?php print read_user_setting('page_refresh') * 1000;?>;
-	var graph_start     = <?php print get_current_graph_start();?>;
-	var graph_end       = <?php print get_current_graph_end();?>;
+	if ($('#predefined_timespan').val() == 0) {
+		refreshMSeconds = 999999;
+	} else {
+		refreshMSeconds = <?php print read_user_setting('page_refresh') * 1000;?>;
+	}
+
+	refreshPage     = '<?php print get_current_page();?>?action=preview';
+
+	var graph_start = <?php print get_current_graph_start();?>;
+	var graph_end   = <?php print get_current_graph_end();?>;
 	</script>
 	<?php
 
@@ -392,10 +399,10 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 		foreach ($graph_array as $graph) {
 			if (!isset($graph['host_id'])) {
 				list($graph['host_id'], $graph['disabled']) = db_fetch_row_prepared('SELECT host_id, disabled
-    					FROM graph_local AS gl
+    				FROM graph_local AS gl
 	 				LEFT JOIN host AS h
 					ON gl.host_id = h.id
-     					WHERE gl.id = ?',
+     				WHERE gl.id = ?',
 					array($graph['local_graph_id']));
 			}
 
@@ -470,9 +477,16 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 
 	?>
 	<script type='text/javascript'>
-	var refreshMSeconds = <?php print read_user_setting('page_refresh') * 1000;?>;
-	var graph_start     = <?php print get_current_graph_start();?>;
-	var graph_end       = <?php print get_current_graph_end();?>;
+	if ($('#predefined_timespan').val() == 0) {
+		refreshMSeconds = 999999;
+	} else {
+		refreshMSeconds = <?php print read_user_setting('page_refresh') * 1000;?>;
+	}
+
+	refreshPage     = '<?php print get_current_page();?>?action=tree';
+
+	var graph_start = <?php print get_current_graph_start();?>;
+	var graph_end   = <?php print get_current_graph_end();?>;
 	</script>
 	<?php
 
@@ -486,9 +500,9 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 		foreach ($graph_array as $graph) {
 			if (!isset($graph['host_id'])) {
 				list($graph['host_id'], $graph['disabled']) = db_fetch_row_prepared('SELECT host_id, disabled
-    					FROM graph_local AS gl
+    				FROM graph_local AS gl
 	 				LEFT JOIN host AS h
-      					ON gl.host_id = h.id
+      				ON gl.host_id = h.id
 	   				WHERE gl.id = ?',
 					array($graph['local_graph_id']));
 			}
@@ -2177,6 +2191,92 @@ function html_graph_tabs_right() {
 	print '</ul></nav></div>';
 }
 
+function html_graph_order_filter() {
+	$output = '';
+
+	$output .= '<td>' . __('Ordering') . '</td>';
+	if (read_config_option('dsstats_enable') == 'on') {
+		if (isset_request_var('graph_template_id')) {
+			$graph_templates = get_request_var('graph_template_id');
+
+			if (strpos($graph_templates, ',') !== false || $graph_templates == '' || $graph_templates <= 0) {
+				$output .= '<td><select>';
+				$output .= '<option selected>' . __esc('Select a Single Template') . '</option></td>';
+				$output .= '</select></td>';
+			} else {
+				$output .= '<td>';
+
+				$data_sources = db_fetch_assoc_prepared("SELECT DISTINCT data_source_name AS graph_source
+					FROM graph_templates_item AS gti
+					INNER JOIN data_template_rrd AS dtr
+					ON dtr.id = gti.task_item_id
+					WHERE graph_template_id = ?
+					AND local_graph_id = 0
+					ORDER BY data_source_name",
+					array($graph_templates));
+
+				if (get_request_var('graph_source') != '') {
+					$exists = db_fetch_row_prepared("SELECT DISTINCT data_source_name
+						FROM graph_templates_item AS gti
+						INNER JOIN data_template_rrd AS dtr
+						ON dtr.id = gti.task_item_id
+						WHERE graph_template_id = ?
+						AND data_source_name = ?
+						AND local_graph_id = 0
+						LIMIT 1",
+						array($graph_templates, get_request_var('graph_source')));
+
+					if (cacti_sizeof($exists)) {
+						$exists = true;
+					}
+				} else {
+					$exists = false;
+				}
+
+				if (!$exists) {
+					set_request_var('graph_order', 'desc');
+				}
+
+				if (cacti_sizeof($data_sources)) {
+					$output .= "<select id='graph_source' data-defaultLabel='" .  __('Sort Column') . "' onChange='applyGraphFilter()'>";
+
+					foreach($data_sources as $index => $d) {
+						if ((!$exists && $index == 0) || get_request_var('graph_source') == $d['graph_source']) {
+							$selected = true;
+						} else {
+							$selected = false;
+						}
+
+						$output .= "<option value='{$d['graph_source']}'" . ($selected ? ' selected':'') . '>' . html_escape($d['graph_source']) . '</option>';
+					}
+
+					$output .= '</select>';
+				}
+
+				$output .= '</td>';
+
+				$output .= '<td>' . __('Direction') . '</td>';
+				$output .= '<td>';
+				$output .= "<select id='graph_order' data-defaultLabel='" .  __('Sort Order') . "' onChange='applyGraphFilter()'>";
+				$output .= "<option value='asc'" . (get_request_var('graph_order') == 'asc' ? ' selected':'') . '>' . __esc('Ascending') . '</option>';
+				$output .= "<option value='desc'" . (get_request_var('graph_order') == 'desc' ? ' selected':'') . '>' . __esc('Descending') . '</option>';
+				$output .= '</select>';
+				$output .= '</td>';
+			}
+		} else {
+			$output .= '<td><select disabled="disabled">';
+			$output .= '<option selected disabled>' . __esc('Select a Single Template') . '</option></td>';
+			$output .= '</select></td>';
+		}
+	} else {
+		$output .= '<td><select disabled="disabled">';
+		$output .= '<option selected disabled>' . __esc('Enable Data Source Statistics to Sort Graphs') . '</option></td>';
+		$output .= '</select></td>';
+	}
+
+	print $output;
+}
+
 function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_where = '', $noany = false, $nonone = false) {
 	$theme = get_selected_theme();
 
@@ -2201,16 +2301,12 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 				$devices = get_allowed_devices($sql_where);
 
-		if (cacti_sizeof($devices)) {
-			foreach ($devices as $device) {
-				print "<option value='" . $device['id'] . "'";
-
-				if ($host_id == $device['id']) {
-					print ' selected';
-				} print '>' . html_escape(strip_domain($device['description'])) . '</option>';
-			}
-		}
-		?>
+				if (cacti_sizeof($devices)) {
+					foreach ($devices as $device) {
+						print "<option value='{$device['id']}'" . ($host_id == $device['id'] ? ' selected':'') . '>' . html_escape(strip_domain($device['description'])) . '</option>';
+					}
+				}
+				?>
 			</select>
 		</td>
 		<?php
