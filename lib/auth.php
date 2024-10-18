@@ -1426,20 +1426,25 @@ function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '',
  * get_allowed_graphs - Returns the graphs that are permitted by the user.  Used for table displays
  *   where users will view the graphs that they are permitted to access
  *
- * @param  (string) The SQL where when searching for specific content
- * @param  (string) The SQL Order clause to use for the sorting of graphs
- * @param  (int)    The limit on items to return.  If empty or -1, return all items
- * @param  (int)    The number of rows found, to be returned to the caller
- * @param  (int)    If checking a user, specify the user_id otherwise for the current user leave blank
- * @param  (int)    If just searching for if a single graph is permitted, the id of that graph
- * @param mixed $sql_where
- * @param mixed $sql_order
- * @param mixed $sql_limit
- * @param mixed $total_rows
- * @param mixed $user_id
- * @param mixed $graph_id
+ * @param  string       The SQL where when searching for specific content
+ * @param  string|array The SQL Order clause to use for the sorting of graphs, if using order by
+ *                      Data source, the following must be passed in an array
  *
- * @return (array) Array of allowed graphs
+ *                      array(
+ *                          'data_source' => 'traffic_in',
+ *                          'order'       => 'asc'|'desc',
+ *                          'start_time'  => unix_timestamp,
+ *                          'end_time'    => unix_timestamp,
+ *                          'cf'          => avg | max
+ *                          'metric'      => avg | p25, p50, p75, p90, p95
+ *                      )
+ *
+ * @param  int          The limit on items to return.  If empty or -1, return all items
+ * @param  int          The number of rows found, to be returned to the caller
+ * @param  int          If checking a user, specify the user_id otherwise for the current user leave blank
+ * @param  int          If just searching for if a single graph is permitted, the id of that graph
+ *
+ * @return array        Array of allowed graphs
  */
 function get_allowed_graphs($sql_where = '', $sql_order = 'gtg.title_cache', $sql_limit = '', &$total_rows = 0, $user_id = 0, $graph_id = 0) {
 	if (!auth_valid_user($user_id)) {
