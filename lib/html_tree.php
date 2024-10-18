@@ -811,69 +811,95 @@ function html_validate_tree_vars() {
 		return false;
 	}
 
+	/* unset the ordering if we have a setup that does not support ordering */
+	if (isset_request_var('graph_template_id')) {
+		if (strpos(get_nfilter_request_var('graph_template_id'), ',') !== false || get_nfilter_request_var('graph_template_id') <= 0) {
+			set_request_var('graph_order', '');
+			set_request_var('graph_source', '');
+		}
+	}
+
+	/* handle the change of a single template */
+	if (isset($_SESSION['sess_grt_graph_template_id']) && isset_request_var('graph_template_id')) {
+		if ($_SESSION['sess_grt_graph_template_id'] != get_nfilter_request_var('graph_template_id')) {
+			set_request_var('graph_order', '');
+			set_request_var('graph_source', '');
+		}
+	}
+
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'graphs' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => read_user_setting('treeview_graphs_per_page')
-			),
+		),
 		'graph_template_id' => array(
 			'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
+		'graph_source' => array(
+			'filter'  => FILTER_CALLBACK,
+			'default' => 'name',
+			'options' => array('options' => 'sanitize_search_string')
+		),
+		'graph_order' => array(
+			'filter'  => FILTER_VALIDATE_REGEXP,
+			'options' => array('options' => array('regexp' => '(asc|desc)')),
+			'default' => 'desc'
+		),
 		'columns' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => read_user_setting('num_columns_tree', '2')
-			),
+		),
 		'page' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
-			),
+		),
 		'predefined_timeshift' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => read_user_setting('default_timeshift')
-			),
+		),
 		'predefined_timespan' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => read_user_setting('default_timespan')
-			),
+		),
 		'node' => array(
 			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '/([_\-a-z:0-9#]+)/')),
 			'pageset' => true,
 			'default' => ''
-			),
+		),
 		'site_id' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '-1'
-			),
+		),
 		'host_id' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '-1'
-			),
+		),
 		'host_template_id' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '-1'
-			),
+		),
 		'hgd' => array(
 			'filter'  => FILTER_CALLBACK,
 			'pageset' => true,
 			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'rfilter' => array(
 			'filter'  => FILTER_VALIDATE_IS_REGEX,
 			'pageset' => true,
 			'default' => '',
-			),
+		),
 		'thumbnails' => array(
 			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => read_user_setting('thumbnail_section_tree_2') == 'on' ? 'true':'false'
-			)
+		)
 	);
 
 	validate_store_request_vars($filters, 'sess_grt');
@@ -1095,6 +1121,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 							?>
 						</select>
 					</td>
+					<?php print html_graph_order_filter();?>
 					<td>
 						<span>
 							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filter');?>'>
@@ -1423,7 +1450,20 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			$sql_where .= ($sql_where != '' ? ' AND ':'') . '(gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
 		}
 
-		$graphs = get_allowed_graphs($sql_where);
+		if (read_config_option('dsstats_enable') == 'on' && get_request_var('graph_source') != '' && get_request_var('graph_order') != '') {
+			$sql_order = array(
+				'data_source' => get_request_var('graph_source'),
+				'order'       => get_request_var('graph_order'),
+				'start_time'  => get_current_graph_start(),
+				'end_time'    => get_current_graph_end(),
+				'cf'          => 'avg',
+				'metric'      => 'average'
+			);
+		} else {
+			$sql_order = 'gtg.title_cache';
+		}
+
+		$graphs = get_allowed_graphs($sql_where, $sql_order);
 
 		if (read_user_setting('show_aggregates', 'on') == 'on') {
 			$agg = get_allowed_aggregate_graphs($sql_where);
@@ -1551,7 +1591,21 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 			}
 
 			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.graph_template_id IN (' . implode(', ', $graph_template_ids) . ')';
-			$graphs = get_allowed_graphs($sql_where);
+
+			if (read_config_option('dsstats_enable') == 'on' && get_request_var('graph_source') != '' && get_request_var('graph_order') != '') {
+				$sql_order = array(
+					'data_source' => get_request_var('graph_source'),
+					'order'       => get_request_var('graph_order'),
+					'start_time'  => get_current_graph_start(),
+					'end_time'    => get_current_graph_end(),
+					'cf'          => 'avg',
+					'metric'      => 'average'
+				);
+			} else {
+				$sql_order = 'gtg.title_cache';
+			}
+
+			$graphs = get_allowed_graphs($sql_where, $sql_order);
 
 			if (read_user_setting('show_aggregates', 'on') == 'on') {
 				$agg = get_allowed_aggregate_graphs($sql_where);
@@ -1615,7 +1669,20 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 					'gl.snmp_query_id=' . $data_query['id'] . ($host_id > 0 ? ' AND gl.host_id=' . $host_id:'') .
 					' ' . ($data_query_index != '' ? ' AND gl.snmp_index = ' . db_qstr($data_query_index): '');
 
-				$graphs = get_allowed_graphs($sql_where);
+				if (read_config_option('dsstats_enable') == 'on' && get_request_var('graph_source') != '' && get_request_var('graph_order') != '') {
+					$sql_order = array(
+						'data_source' => get_request_var('graph_source'),
+						'order'       => get_request_var('graph_order'),
+						'start_time'  => get_current_graph_start(),
+						'end_time'    => get_current_graph_end(),
+						'cf'          => 'avg',
+						'metric'      => 'average'
+					);
+				} else {
+					$sql_order = 'gtg.title_cache';
+				}
+
+				$graphs = get_allowed_graphs($sql_where, $sql_order);
 
 				if (read_user_setting('show_aggregates', 'on') == 'on') {
 					$agg = get_allowed_aggregate_graphs($sql_where);

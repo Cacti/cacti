@@ -84,6 +84,22 @@ function set_default_graph_action() {
 }
 
 function html_graph_validate_preview_request_vars() {
+	/* unset the ordering if we have a setup that does not support ordering */
+	if (isset_request_var('graph_template_id')) {
+		if (strpos(get_nfilter_request_var('graph_template_id'), ',') !== false || get_nfilter_request_var('graph_template_id') <= 0) {
+			set_request_var('graph_order', '');
+			set_request_var('graph_source', '');
+		}
+	}
+
+	/* handle the change of a single template */
+	if (isset($_SESSION['sess_grview_graph_template_id']) && isset_request_var('graph_template_id')) {
+		if ($_SESSION['sess_grview_graph_template_id'] != get_nfilter_request_var('graph_template_id')) {
+			set_request_var('graph_order', '');
+			set_request_var('graph_source', '');
+		}
+	}
+
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'graphs' => array(
