@@ -31,6 +31,7 @@ Cacti CHANGELOG
 -feature#2439: Allow CDEF to be used as a filter for Graph/Graph Templates
 -feature#2474: Enable better version reporting for GitHub/Source/Package editions
 -feature#2550: Enable use of authenticator codes for Two-Factor Authentication
+-feature#2572: Support Sorting of Tree or Graph View by Data Source
 -feature#2607: Allow adding sites from command line
 -feature#2767: Plugins should be temporarily disabled if a required plugin is also disabled
 -feature#2959: Add multi threading for push out hosts (cli)
