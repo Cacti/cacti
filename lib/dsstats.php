@@ -1405,3 +1405,74 @@ function dsstats_processes_running($type) {
 
 	return $running;
 }
+
+/**
+ * dsstats_get_best_partition - given a time range, determine the
+ *   best partition to use to gather graph statistics
+ *
+ * @param  int      start_time as a unix timestamp
+ * @param  int      end_time as a unix timestamp
+ *
+ * @return string   The table name of the best partition
+ */
+function dsstats_get_best_partition($start_time, $end_time = 0) {
+	if ($end_time == 0) {
+		$end_time = time();
+	}
+
+	$cur_time = time();
+
+	$days = ceil(($end_time - $start_time) / 86400);
+
+	if ($days <= 1) {
+		// Daily partition
+		$desired_suffix = '_v' . date('Y', $start_time) . substr('000' . date('z'), -3);
+		$current_suffix = '_v' . date('Y', $cur_time)   . substr('000' . date('z', $cur_time), -3);
+
+		if ($desired_suffix == $current_suffix) {
+			return 'data_source_stats_daily';
+		} elseif (table_exists('data_source_stats_daily' . $desired_suffix)) {
+			return 'data_source_stats_daily' . $desired_suffix;
+		} else {
+			return 'data_source_stats_daily';
+		}
+	} elseif ($days > 1 && $days <= 7) {
+		// Weekly partition
+		$desired_suffix = '_v' . date('Y', $start_time) . substr('000' . date('W'), -3);
+		$current_suffix = '_v' . date('Y', $cur_time)   . substr('000' . date('W', $cur_time), -3);
+
+		if ($desired_suffix == $current_suffix) {
+			return 'data_source_stats_weekly';
+		} elseif (table_exists('data_source_stats_weekly' . $desired_suffix)) {
+			return 'data_source_stats_weekly' . $desired_suffix;
+		} else {
+			return 'data_source_stats_weekly';
+		}
+	} elseif ($days > 7 AND $days <= 30) {
+		// Monthly partition
+		$desired_suffix = '_v' . date('Y', $start_time) . substr('000' . date('m'), -3);
+		$current_suffix = '_v' . date('Y', $cur_time)   . substr('000' . date('m', $cur_time), -3);
+
+		if ($desired_suffix == $current_suffix) {
+			return 'data_source_stats_monthly';
+		} elseif (table_exists('data_source_stats_monthly' . $desired_suffix)) {
+			return 'data_source_stats_monthly' . $desired_suffix;
+		} else {
+			return 'data_source_stats_monthly';
+		}
+	} else {
+		// Yearly partition
+		$desired_suffix = '_v' . date('Y', $start_time);
+		$current_suffix = '_v' . date('Y', $cur_time);
+
+		if ($desired_suffix == $current_suffix) {
+			return 'data_source_stats_yearly';
+		} elseif (table_exists('data_source_stats_yearly' . $desired_suffix)) {
+			return 'data_source_stats_yearly' . $desired_suffix;
+		} else {
+			return 'data_source_stats_yearly';
+		}
+	}
+
+	return 'data_source_stats_daily';
+}
