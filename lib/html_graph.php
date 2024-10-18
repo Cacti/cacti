@@ -120,6 +120,16 @@ function html_graph_validate_preview_request_vars() {
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'default' => read_user_setting('thumbnail_section_preview', '') == 'on' ? 'true':'false'
 		),
+		'graph_source' => array(
+			'filter'  => FILTER_CALLBACK,
+			'default' => 'name',
+			'options' => array('options' => 'sanitize_search_string')
+		),
+		'graph_order' => array(
+			'filter'  => FILTER_VALIDATE_REGEXP,
+			'options' => array('options' => array('regexp' => '(asc|desc)')),
+			'default' => 'desc'
+		),
 		'graph_list' => array(
 			'filter'  => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'default' => ''
@@ -158,40 +168,42 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<?php print __('Template');?>
 					</td>
 					<td>
-						<select id='graph_template_id' multiple style='opacity:0.1;overflow-y:auto;overflow-x:hide;height:0px;' data-defaultLabel='<?php print __('Template');?>'>
+						<select id='graph_template_id' class='multi-select' style='display:none'>
 							<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
 							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('Not Templated');?></option>
 							<?php
 							// suppress total rows collection
 							$total_rows = -1;
 
-	$graph_templates = get_allowed_graph_templates('', 'name', '', $total_rows);
+							$graph_templates = get_allowed_graph_templates('', 'name', '', $total_rows);
 
-	if (cacti_sizeof($graph_templates)) {
-		$selected    = explode(',', get_request_var('graph_template_id'));
+							if (cacti_sizeof($graph_templates)) {
+								$selected = explode(',', get_request_var('graph_template_id'));
 
-		foreach ($graph_templates as $gt) {
-			$found = db_fetch_cell_prepared('SELECT id
+								foreach ($graph_templates as $gt) {
+									$exists = db_fetch_cell_prepared('SELECT id
 										FROM graph_local
 										WHERE graph_template_id = ? LIMIT 1',
-				array($gt['id']));
+										array($gt['id']));
 
-			if ($found) {
-				print "<option value='" . $gt['id'] . "'";
+									if ($exists) {
+										$found = false;
 
-				if (cacti_sizeof($selected)) {
-					if (in_array($gt['id'], $selected, true)) {
-						print ' selected';
-					}
-				}
-				print '>';
-				print html_escape($gt['name']) . "</option>\n";
-			}
-		}
-	}
-	?>
+										foreach($selected as $id) {
+											if ($id == $gt['id']) {
+												$found = true;
+												break;
+											}
+										}
+
+										print "<option value='{$gt['id']}'" . ($found ? ' selected':'') . '>' . html_escape($gt['name']) . '</option>';
+									}
+								}
+							}
+							?>
 						</select>
 					</td>
+					<?php print html_graph_order_filter();?>
 					<td>
 						<span>
 							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
@@ -218,16 +230,12 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					<td>
 						<select id='graphs' onChange='applyGraphFilter()' data-defaultLabel='<?php print __('Graphs');?>'>
 							<?php
-	if (cacti_sizeof($graphs_per_page)) {
-		foreach ($graphs_per_page as $key => $value) {
-			print "<option value='" . $key . "'";
-
-			if (get_request_var('graphs') == $key) {
-				print ' selected';
-			} print '>' . $value . "</option>\n";
-		}
-	}
-	?>
+							if (cacti_sizeof($graphs_per_page)) {
+								foreach ($graphs_per_page as $key => $value) {
+									print "<option value='$key'" . (get_request_var('graphs') == $key ? ' selected':'') . '>' . $value . '</option>';
+								}
+							}
+							?>
 						</select>
 					</td>
 					<td>
@@ -265,21 +273,17 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					<td>
 						<select id='predefined_timespan' onChange='applyGraphTimespan()' data-defaultLabel='<?php print __('Presets');?>'>
 							<?php
-	$graph_timespans = array_merge(array(GT_CUSTOM => __('Custom')), $graph_timespans);
+							$graph_timespans = array_merge(array(GT_CUSTOM => __('Custom')), $graph_timespans);
 
-	$start_val = 0;
-	$end_val   = cacti_sizeof($graph_timespans);
+							$start_val = 0;
+							$end_val   = cacti_sizeof($graph_timespans);
 
-	if (cacti_sizeof($graph_timespans)) {
-		foreach ($graph_timespans as $value => $text) {
-			print "<option value='$value'";
-
-			if ($_SESSION['sess_current_timespan'] == $value) {
-				print ' selected';
-			} print '>' . html_escape($text) . '</option>';
-		}
-	}
-	?>
+							if (cacti_sizeof($graph_timespans)) {
+								foreach ($graph_timespans as $value => $text) {
+									print "<option value='$value'" . ($_SESSION['sess_current_timespan'] == $value ? ' selected':'') . '>' . html_escape($text) . '</option>';
+								}
+							}
+							?>
 						</select>
 					</td>
 					<td>
@@ -305,19 +309,15 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 							<i class='shiftArrow fa fa-backward' onClick='timeshiftGraphFilterLeft()' title='<?php print __esc('Shift Time Backward');?>'></i>
 							<select id='predefined_timeshift' name='predefined_timeshift' title='<?php print __esc('Define Shifting Interval');?>'>
 								<?php
-		$start_val = 1;
-	$end_val    = cacti_sizeof($graph_timeshifts) + 1;
+								$start_val = 1;
+								$end_val    = cacti_sizeof($graph_timeshifts) + 1;
 
-	if (cacti_sizeof($graph_timeshifts) > 0) {
-		for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
-			print "<option value='$shift_value'";
-
-			if ($_SESSION['sess_current_timeshift'] == $shift_value) {
-				print ' selected';
-			} print '>' . html_escape($graph_timeshifts[$shift_value]) . '</option>';
-		}
-	}
-	?>
+								if (cacti_sizeof($graph_timeshifts)) {
+									for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
+										print "<option value='$shift_value'" . ($_SESSION['sess_current_timeshift'] == $shift_value ? ' selected':'') . '>' . html_escape($graph_timeshifts[$shift_value]) . '</option>';
+									}
+								}
+								?>
 							</select>
 							<i class='shiftArrow fa fa-forward' onClick='timeshiftGraphFilterRight()' title='<?php print __esc('Shift Time Forward');?>'></i>
 						</span>
@@ -341,7 +341,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						foreach ($realtime_window as $interval => $text) {
 							printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_window'] ? 'selected="selected"' : '', $text);
 						}
-	?>
+						?>
 						</select>
 					</td>
 					<td>
@@ -350,10 +350,10 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					<td>
 						<select name='ds_step' id='ds_step' onChange="realtimeGrapher()" data-defaultLabel='<?php print __('Interval');?>'>
 							<?php
-		foreach ($realtime_refresh as $interval => $text) {
-			printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_dsstep'] ? ' selected="selected"' : '', $text);
-		}
-	?>
+							foreach ($realtime_refresh as $interval => $text) {
+								printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_dsstep'] ? ' selected="selected"' : '', $text);
+							}
+						?>
 						</select>
 					</td>
 					<td>

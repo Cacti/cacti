@@ -706,7 +706,7 @@ switch (get_nfilter_request_var('action')) {
 							<?php print __('Template');?>
 						</td>
 						<td>
-							<select id='graph_template_id' multiple style='opacity:0.1;overflow:hide;height:0px;' data-defaultLabel='<?php print __('Template');?>'>
+							<select id='graph_template_id' class='multi-select' data-defaultLabel='<?php print __('Template');?>'>
 								<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
 								<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('Not Templated');?></option>
 								<?php
