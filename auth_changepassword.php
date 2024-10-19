@@ -349,7 +349,7 @@ if (isset_request_var('ref')) {
 				$valid = false;
 			}
 
-			if (!$valid && sizeof($server_info)) {
+			if (!$valid && cacti_sizeof($server_info)) {
 				foreach($server_info as $record) {
 					if (isset($record['host']) && $record['host'] == $server_ref) {
 						$valid = true;

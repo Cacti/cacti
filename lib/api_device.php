@@ -1134,10 +1134,29 @@ function api_device_save($id, $device_template_id, $description, $hostname, $snm
 
 	if ($device_id > 0) {
 		if (read_config_option('extended_paths') == 'on'){
-			$host_dir = $config['rra_path'] . '/' . $device_id;
+			$pattern  = read_config_option('extended_paths_type');
+			$maxdirs  = read_config_option('extended_paths_hashes');
+   			if (empty($maxdirs) || $maxdirs < 0 || !is_numeric($maxdirs)) {
+				$maxdirs = 100;
+			}
+
+			$hash_id = $device_id % $maxdirs;
+
+			if ($pattern == 'device' || $pattern == '') {
+				$host_dir = $config['rra_path'] . "/$device_id";
+			} elseif ($pattern == 'device_dq') {
+				$host_dir = $config['rra_path'] . "/$device_id";
+			} elseif ($pattern == 'hash_device') {
+				$host_dir = $config['rra_path'] . "/$hash_id/$device_id";
+			} elseif ($pattern == 'hash_device_dq') {
+				$host_dir = $config['rra_path'] . "/$hash_id/$device_id";
+			} else {
+				$host_dir = $config['rra_path'] . "/$device_id";
+			}
+
 			if (!is_dir($host_dir)){
 				if (is_writable($config['rra_path'])) {
-					if (mkdir($host_dir, 0775)) {
+					if (mkdir($host_dir, 0775, true)) {
 						if ($config['cacti_server_os'] != 'win32') {
 							$owner_id      = fileowner($config['rra_path']);
 							$group_id      = filegroup($config['rra_path']);

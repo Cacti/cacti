@@ -796,23 +796,25 @@ function get_selected_theme() {
 			array($_SESSION['sess_user_id']), '', false);
 
 		// user has a theme
-		if (! empty($user_theme)) {
+		if (!empty($user_theme)) {
 			$theme = $user_theme;;
 		}
 	}
 
 	if (!file_exists($config['base_path'] . '/include/themes/' . $theme . '/main.css')) {
 		foreach($themes as $t => $name) {
-			if (file_exists($config['base_path'] . '/include/themes/' . $t . '/main.css')) {
-				$theme = $t;
+			if ($t != 'classic') {
+				if (file_exists($config['base_path'] . '/include/themes/' . $t . '/main.css')) {
+					$theme = $t;
 
-				db_execute_prepared('UPDATE settings_user
-					SET value = ?
-					WHERE user_id = ?
-					AND name="selected_theme"',
-					array($theme, $_SESSION['sess_user_id']));
+					db_execute_prepared('UPDATE settings_user
+						SET value = ?
+						WHERE user_id = ?
+						AND name = "selected_theme"',
+						array($theme, $_SESSION['sess_user_id']));
 
-				break;
+					break;
+				}
 			}
 		}
 	}

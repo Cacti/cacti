@@ -571,32 +571,35 @@ label {
 
 .reloadquery {
 	cursor: pointer;
-	padding: 2px;
+	padding: 1px;
 	vertical-align: middle;
 	color: rgba(148, 179, 107, 0.8);
 	font-size: 14px;
+	margin-right: 10px;
 }
 
 .verbosequery {
 	cursor: pointer;
-	padding: 2px;
+	padding: 1px;
 	vertical-align: middle;
 	color: rgba(255, 204, 0, 0.8);
 	font-size: 14px;
+	margin-right: 10px;
 }
 
 .deletequery {
 	cursor: pointer;
-	padding: 2px;
+	padding: 1px;
 	vertical-align: middle;
 	color: red;
 	font-size: 14px;
+	margin-right: 10px;
 }
 
 .deletequery:hover {
 	color: red;
 	text-decoration: none;
-	padding: 2px;
+	padding: 1px;
 	vertical-align: middle;
 }
 
@@ -2108,6 +2111,26 @@ tr.selectable:hover:not(.selected) a {
 
 tr.selected a {
 	color: black !important;
+}
+
+tr td:last-child .checkbox {
+	margin-right: 10px !important;
+}
+
+tr th:last-child .checkbox {
+	margin-right: 10px !important;
+}
+
+.fa-angle-double-up, .fa-angle-double-down {
+	margin-right: 10px;
+}
+
+.fa-plus, .fa-question-circle {
+	margin-right: 10px;
+}
+
+.fa-compress, .fa-expand {
+	margin-right: 10px;
 }
 
 #nav li a.pic:hover, #nav li a.selected {

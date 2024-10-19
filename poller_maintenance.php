@@ -247,7 +247,7 @@ function rrdfile_purge($force) {
 	global $archived, $purged, $poller_start;
 
 	/* are my tables already present? */
-	$purge = db_fetch_cell('SELECT count(*)
+	$purge = db_fetch_cell('SELECT COUNT(*)
 		FROM data_source_purge_action');
 
 	/* if the table that holds the actions is present, work on it */
@@ -540,21 +540,25 @@ function remove_files($file_array) {
 
 	if ( read_config_option('storage_location')) {
 		$rrdtool_pipe = rrd_init();
+
 		rrdtool_execute('setcnn timeout off', false, RRDTOOL_OUTPUT_NULL, $rrdtool_pipe, $logopt = 'POLLER');
-	}else {
+	} else {
 		/* let's prepare the archive directory */
 		$rrd_archive = read_config_option('rrd_archive', true);
+
 		if ($rrd_archive == '') {
 			$rrd_archive = $rra_path . '/archive';
 		}
+
 		rrdclean_create_path($rrd_archive);
 	}
 
 	/* now scan the files */
 	foreach ($file_array as $file) {
-		$source_file = $rra_path . '/' . $file['name'];
+		$file['name'] = str_replace('<path_rra>', '', $file['name']);
+		$source_file  = $rra_path . '/' . $file['name'];
 
-		if( read_config_option('storage_location') == 0) {
+		if (read_config_option('storage_location') == 0) {
 			switch ($file['action']) {
 				case '1' :
 					if (unlink($source_file)) {
@@ -562,7 +566,9 @@ function remove_files($file_array) {
 					} else {
 						cacti_log($file['name'] . " ERROR: RRDfile Maintenance unable to delete from $rra_path!", true, 'MAINT');
 					}
+
 					$purged++;
+
 					break;
 				case '3' :
 					$target_file = $rrd_archive . '/' . $file['name'];
@@ -576,26 +582,32 @@ function remove_files($file_array) {
 					} else {
 						cacti_log($file['name'] . " ERROR: RRDfile Maintenance unable to move to $rrd_archive!", true, 'MAINT');
 					}
+
 					$archived++;
+
 					break;
 			}
-		}else {
+		} else {
 			switch($file['action']) {
 				case '1':
 					if ( rrdtool_execute('unlink ' . $source_file, false, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, $logopt = 'MAINT')) {
 						maint_debug('Deleted: ' . $file['name']);
-					}else {
+					} else {
 						cacti_log($file['name'] . 'ERROR: RRDfile Maintenance unable to delete from RRDproxy!', true, 'MAINT');
 					}
+
 					$purged++;
+
 					break;
 				case '3':
 					if ( rrdtool_execute('archive ' . $source_file, false, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, $logopt = 'MAINT')) {
 						maint_debug('Moved: ' . $file['name'] . ' to: RRDproxy Archive');
-					}else {
+					} else {
 						cacti_log($file['name'] . 'ERROR: RRDfile Maintenance unable to move to RRDproxy Archive!', true, 'MAINT');
 					}
+
 					$archived++;
+
 					break;
 			}
 		}
@@ -642,7 +654,7 @@ function remove_files($file_array) {
 		}
 	}
 
-	if(read_config_option('storage_location')) {
+	if (read_config_option('storage_location')) {
 		rrd_close($rrdtool_pipe);
 	}
 
