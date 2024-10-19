@@ -189,7 +189,7 @@ class Net_Ping
 				 * as it now tries to open an ICMP socket and fails
 				 * $result will be empty, then. */
 				if (strpos($host_ip, ':') !== false) {
-					$result = shell_exec('/usr/sbin/ping6 -W ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname']);
+					$result = shell_exec('ping -6 -W ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname']);
 				} else {
 					$result = shell_exec('ping -W ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname'] . ' 2>&1');
 					if ((strpos($result, 'unknown host') !== false || strpos($result, 'Address family') !== false) && file_exists('/bin/ping6')) {
