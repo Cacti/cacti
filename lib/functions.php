@@ -7454,3 +7454,20 @@ function cacti_unserialize($strobj) {
 		return unserialize($strobj);
 	}
 }
+
+function cacti_format_ipv6_colon($address) {
+	if (!filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+		return $address;
+	}
+	
+	if (strpos($address, '[') !== false) {
+		return $address;
+	}
+
+	if (strpos($address, ':') !== false) {
+		return '[' . $address . ']';
+	}
+
+	return($address);
+}
+
