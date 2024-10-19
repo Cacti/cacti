@@ -173,6 +173,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user = '', 
 		}
 	} else {
 		$snmp_value = '';
+		$hostname = cacti_format_ipv6_colon($hostname);
 
 		/* net snmp want the timeout in seconds */
 		$timeout_s = (int) ceil($timeout_ms / 1000);
@@ -266,6 +267,7 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = 
 		}
 	} else {
 		$snmp_value = '';
+		$hostname = cacti_format_ipv6_colon($hostname);
 
 		/* net snmp want the timeout in seconds */
 		$timeout_s = (int) ceil($timeout_ms / 1000);
@@ -354,6 +356,7 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $auth_user = 
 		}
 	} else {
 		$snmp_value = '';
+		$hostname = cacti_format_ipv6_colon($hostname);
 
 		/* net snmp want the timeout in seconds */
 		$timeout_s = (int) ceil($timeout_ms / 1000);
@@ -662,6 +665,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 	} else {
 		/* ucd/net snmp want the timeout in seconds */
 		$timeout_s = (int) ceil($timeout_ms / 1000);
+		$hostname = cacti_format_ipv6_colon($hostname);
 
 		if ($version == '1') {
 			$snmp_auth = '-c ' . snmp_escape_string($community); /* v1/v2 - community string */

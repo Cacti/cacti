@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -issue#5867: Disabling a Tree does not function as expected
 -issue#5868: Error when remove Orphaned Graphs from GUI
 -issue#5870: CLI utility splice_rrd.php generates an error in PHP8+
+-issue#5874: IPV6 address colon format causes the snmp query to not work 
 
 1.2.28
 -security#GHSA-49f2-hwx9-qffr: XSS vulnerability when creating external links with the consolenewsection parameter
