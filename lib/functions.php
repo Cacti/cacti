@@ -7456,7 +7456,10 @@ function cacti_unserialize($strobj) {
 }
 
 function cacti_format_ipv6_colon($ipv6) {
-
+	if (!filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+		return $ipv6;
+	}
+	
 	if (strpos($ipv6, '[') !== false) {
 		return $ipv6;
 	}
