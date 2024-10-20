@@ -395,6 +395,7 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 	switch ($output_flag) {
 		case RRDTOOL_OUTPUT_STDOUT:
 		case RRDTOOL_OUTPUT_GRAPH_DATA:
+
 			$output = '';
 
 			while (!feof($fp)) {
@@ -405,6 +406,8 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 				fclose($fp);
 				proc_close($process);
 			}
+
+
 
 			rrdtool_trim_output($output);
 
@@ -1246,6 +1249,14 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 
 	if (read_config_option('rrdtool_watermark') == 'on') {
 		$graph_opts .= '--disable-rrdtool-tag ' . RRD_NL;
+	}
+
+	/* activate --add-jsontime option for graphv only and RRDtool version 1.8.0 and above */
+	if (isset($graph_data_array['graphv'])) {
+		$rrdversion = get_rrdtool_version();
+		if (isset($rrdversion) && cacti_version_compare($rrdversion,'1.8','>=')) {
+			$graph_opts .= '--add-jsontime ' . RRD_NL;
+		}
 	}
 
 	foreach ($graph as $key => $value) {

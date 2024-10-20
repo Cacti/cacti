@@ -99,6 +99,10 @@ var faIcons = {
 	}
 };
 
+let select2Setup = {
+	displayDefaultLabel : false,
+}
+
 window.paceOptions = {
 	ajax: true,
 	document: true,
@@ -3352,6 +3356,7 @@ function setSelectMenus() {
 		_renderButtonItem: function( item ) {
 			let that = this;
 			let attr = this.element[0].attributes;
+			let showDefaultLabel = select2Setup["displayDefaultLabel"];
 
 			if (typeof(attr['data-defaultLabel']) !== 'undefined') {
 				let defaultLabel = attr['data-defaultLabel'].value;
@@ -3376,7 +3381,7 @@ function setSelectMenus() {
 				})
 
 				if (filterActive === 'true') {
-					this._setText( buttonItem, defaultLabel + ': ' + item.label );
+					this._setText(buttonItem, ((showDefaultLabel) ? defaultLabel+': ' : '') + item.label);
 					let icon = {'button' : 'ui-icon-close'};
 					this._setOption( 'icons', icon );
 					this._off( this.button.find( "span.ui-icon" ), 'click');
@@ -3389,7 +3394,7 @@ function setSelectMenus() {
 						}
 					} );
 				} else {
-					this._setText( buttonItem, defaultLabel );
+					this._setText( buttonItem, (showDefaultLabel) ? defaultLabel : item.label );
 				}
 				return buttonItem;
 			} else {
@@ -4046,10 +4051,11 @@ function finalizeGraphRedraw(options, data) {
 			data.graph_top = parseInt(data.graph_top * ratio);
 			data.graph_left = parseInt(data.graph_left * ratio);
 		}
-
+		let raw_data_compressed = (data.raw !== undefined) ? lzjs.compressToBase64(JSON.stringify(data.raw)) : '';
 		$('#wrapper_' + data.local_graph_id).empty().html(
 			"<img class='graphimage' id='graph_" + data.local_graph_id + "'" +
 			" src='data:image/" + data.type + ";base64," + data.image + "'" +
+			" data-raw='" + raw_data_compressed + "'" +
 			" rra_id='" + data.rra_id + "'" +
 			" graph_type='" + data.type + "'" +
 			" graph_id='" + data.local_graph_id + "'" +
@@ -4205,10 +4211,11 @@ function initializeGraphs(disable_cache) {
 				if (rra_id > 0) {
 					wrapper_id += '[rra_id=\'' + data.rra_id + '\']';
 				}
-
+				let raw_data_compressed = (data.raw !== undefined) ? lzjs.compressToBase64(JSON.stringify(data.raw)) : '';
 				$(wrapper_id).empty().html(
 					"<img class='graphimage' id='graph_" + data.local_graph_id + "'" +
 					" src='data:image/" + data.type + ";base64," + data.image + "'" +
+					" data-raw='" + raw_data_compressed + "'" +
 					" rra_id='" + data.rra_id + "'" +
 					" graph_type='" + data.type + "'" +
 					" graph_id='" + data.local_graph_id + "'" +

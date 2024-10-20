@@ -2848,6 +2848,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/purify.js');
 	print get_md5_include_js('include/realtime.js');
 	print get_md5_include_js('include/js/ui-notices.js');
+    print get_md5_include_js('include/js/lzjs.js');
 
 	/* Main theme based scripts (included last to allow overrides) */
 	print get_md5_include_js('include/css/', theme: $selectedTheme, file: 'main.js');
