@@ -21,7 +21,10 @@
   +-------------------------------------------------------------------------+
 */
 
-/* global variables */
+/* global setup */
+select2Setup["displayDefaultLabel"] = true;
+
+/* global midwinter variables */
 let midWinter_tap_count = 0;
 let midWinter_tap_clientX = 0;
 let midWinter_tap_clientY = 0;

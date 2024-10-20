@@ -55,7 +55,7 @@ body {
     background-color: var(--background);
 
     [data-theme-state="ready"] & {
-        animation: fadeInAnimation ease 1.5s;
+        animation: fadeInAnimation ease 0.5s;
         animation-iteration-count: 1;
         animation-fill-mode: forwards;
     }
