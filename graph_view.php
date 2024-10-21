@@ -507,6 +507,17 @@ switch (get_nfilter_request_var('action')) {
 		$limit  = (get_request_var('graphs') * (get_request_var('page') - 1)) . ',' . get_request_var('graphs');
 		$order  = 'gtg.title_cache';
 
+		if (read_config_option('dsstats_enable') == 'on' && get_request_var('graph_source') != '' && get_request_var('graph_order') != '') {
+			$order = array(
+				'data_source' => get_request_var('graph_source'),
+				'order'       => get_request_var('graph_order'),
+				'start_time'  => get_current_graph_start(),
+				'end_time'    => get_current_graph_end(),
+				'cf'          => 'avg',
+				'metric'      => 'average'
+			);
+		}
+
 		$graphs = get_allowed_graphs($sql_where, $order, $limit, $total_graphs);
 
 		$nav = html_nav_bar('graph_view.php', MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('graphs'), $total_graphs, get_request_var('columns'), __('Graphs'), 'page', 'main');
@@ -706,7 +717,7 @@ switch (get_nfilter_request_var('action')) {
 							<?php print __('Template');?>
 						</td>
 						<td>
-							<select id='graph_template_id' multiple style='opacity:0.1;overflow:hide;height:0px;' data-defaultLabel='<?php print __('Template');?>'>
+							<select id='graph_template_id' class='multi-select' data-defaultLabel='<?php print __('Template');?>'>
 								<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
 								<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('Not Templated');?></option>
 								<?php

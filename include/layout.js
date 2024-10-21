@@ -3303,7 +3303,7 @@ var waitForFinalEvent = (function () {
 
 function setSelectMenus() {
 	$.widget("ui.selectmenu", $.ui.selectmenu, {
-		_renderMenu: function( ul, items ) {
+		_renderMenu: function(ul, items) {
 			let that = this;
 			let attr = this.element[0].attributes;
 
@@ -3353,7 +3353,7 @@ function setSelectMenus() {
 				})
 			}
 		},
-		_renderButtonItem: function( item ) {
+		_renderButtonItem: function(item) {
 			let that = this;
 			let attr = this.element[0].attributes;
 			let showDefaultLabel = select2Setup["displayDefaultLabel"];
@@ -3371,7 +3371,7 @@ function setSelectMenus() {
 				filterActive = (defaultValue !== item.value) ? 'true' : 'false';
 
 				/* fallback to index value -- maybe superfluous */
-				if(filterActive === '') {
+				if (filterActive === '') {
 					filterActive = (defaultIndex !== item.index) ? 'true' : 'false';
 				}
 
@@ -3382,8 +3382,10 @@ function setSelectMenus() {
 
 				if (filterActive === 'true') {
 					this._setText(buttonItem, ((showDefaultLabel) ? defaultLabel+': ' : '') + item.label);
-					let icon = {'button' : 'ui-icon-close'};
+
+          let icon = {'button' : 'ui-icon-close'};
 					this._setOption( 'icons', icon );
+
 					this._off( this.button.find( "span.ui-icon" ), 'click');
 					this._on( false, this.button.find( "span.ui-icon" ), {
 						click: function( event ) {
@@ -3409,7 +3411,7 @@ function setSelectMenus() {
 
 	$('select.colordropdown').dropcolor();
 
-	$('select').not('.colordropdown').each(function() {
+	$('select').not('.colordropdown').not('.multi-select').each(function() {
 		if ($(this).prop('multiple') != true) {
 			$(this).each(function() {
 				let id = $(this).attr('id');
@@ -3763,6 +3765,8 @@ function applyGraphFilter() {
 	var href = correctUrlParameters(graphPage + '?action=' + pageAction +
 		'&rfilter=' + base64_encode($('#rfilter').val()) +
 		(typeof $('#host_id').val() != 'undefined' ? '&host_id=' + $('#host_id').val() : '') +
+		(typeof $('#graph_source').val() != 'undefined' ? '&graph_source=' + $('#graph_source').val() : '') +
+		(typeof $('#graph_order').val() != 'undefined' ? '&graph_order=' + $('#graph_order').val() : '') +
 		'&columns=' + $('#columns').val() +
 		'&graphs=' + $('#graphs').val() +
 		'&graph_template_id=' + $('#graph_template_id').val() +
