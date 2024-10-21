@@ -261,7 +261,7 @@
     }
 
     td:not(:has(*)) {
-       display: none;
+       display: none !important;
     }
 
     .ui-selectmenu-text[data-active][data-active="false"] {
@@ -281,6 +281,5 @@
     box-shadow: var(--box-shadow-color) 0 5px 10px;
     & input {
         border: 1px solid var(--border-color);
-
     }
 }
