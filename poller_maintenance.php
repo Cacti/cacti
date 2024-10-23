@@ -561,7 +561,7 @@ function remove_files($file_array) {
 		if (read_config_option('storage_location') == 0) {
 			switch ($file['action']) {
 				case '1' :
-					if (unlink($source_file)) {
+					if (file_exists($source_file) && unlink($source_file)) {
 						maint_debug('Deleted: ' . $file['name']);
 					} else {
 						cacti_log($file['name'] . " ERROR: RRDfile Maintenance unable to delete from $rra_path!", true, 'MAINT');
@@ -577,7 +577,7 @@ function remove_files($file_array) {
 						rrdclean_create_path($target_dir);
 					}
 
-					if (rename($source_file, $target_file)) {
+					if (file_exists($source_file) && rename($source_file, $target_file)) {
 						maint_debug('Moved: ' . $file['name'] . ' to: ' . $rrd_archive);
 					} else {
 						cacti_log($file['name'] . " ERROR: RRDfile Maintenance unable to move to $rrd_archive!", true, 'MAINT');
