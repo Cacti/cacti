@@ -22,6 +22,7 @@ Cacti CHANGELOG
 -issue#5680: Fix Spikekill not following correct time in schedule
 -issue#5776: Undefined array key "description" in file settings.php
 -issue#5844: Automation fails when using MySQL 8
+-issue#5885: Fix Fortigate and Aruba OSCX switch template, improve Clearpass template
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1442: Add validation to GUI inputs
