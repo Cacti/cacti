@@ -554,7 +554,6 @@ function remove_files($file_array) {
 	}
 
 	/* now scan the files */
-
 	foreach ($file_array as $file) {
 		$file['name'] = str_replace('<path_rra>', '', $file['name']);
 		$source_file  = $rra_path . '/' . $file['name'];
