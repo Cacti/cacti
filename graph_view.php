@@ -505,10 +505,10 @@ switch (get_nfilter_request_var('action')) {
 		}
 
 		$limit  = (get_request_var('graphs') * (get_request_var('page') - 1)) . ',' . get_request_var('graphs');
-		$order  = 'gtg.title_cache';
+		$sql_order  = 'gtg.title_cache';
 
 		if (read_config_option('dsstats_enable') == 'on' && get_request_var('graph_source') != '' && get_request_var('graph_order') != '') {
-			$order = array(
+			$sql_order = array(
 				'data_source' => get_request_var('graph_source'),
 				'order'       => get_request_var('graph_order'),
 				'start_time'  => get_current_graph_start(),
@@ -518,7 +518,8 @@ switch (get_nfilter_request_var('action')) {
 			);
 		}
 
-		$graphs = get_allowed_graphs($sql_where, $order, $limit, $total_graphs);
+
+		$graphs = get_allowed_graphs($sql_where, $sql_order, $limit, $total_graphs);
 
 		$nav = html_nav_bar('graph_view.php', MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('graphs'), $total_graphs, get_request_var('columns'), __('Graphs'), 'page', 'main');
 

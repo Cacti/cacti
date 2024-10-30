@@ -143,7 +143,6 @@ if (read_config_option('auth_method') == 2) {
 	var refreshIsLogout=<?php print $refreshIsLogout;?>;
 	var refreshPage='<?php print $myrefresh['page'];?>';
 	var refreshMSeconds=<?php print $myrefresh['seconds'] * 1000;?>;
-	var urlPath='<?php print CACTI_PATH_URL;?>';
 	var previousPage='';
 	var sessionLocale='<?php print CACTI_LOCALE;?>';
 	var sessionNotices=<?php print display_output_messages();?>;

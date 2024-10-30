@@ -119,6 +119,7 @@ window.onbeforeunload = renderLoading;
 function renderLoading() {
 	Pace.stop();
 	Pace.bar.render();
+	document.cookie = 'CactiTab=' + sessionStorage.tab + '; SameSite=None; Secure; Path=' + urlPath;
 }
 
 var isMobile = {
@@ -2459,6 +2460,8 @@ function loadPage(href, force) {
 }
 
 function loadUrl(options) {
+	document.cookie = 'CactiTab=' + sessionStorage.tab + '; SameSite=None; Secure; Path=' + urlPath;
+
 	statePushed = false;
 	cont = false;
 
@@ -2501,6 +2504,8 @@ function loadUrl(options) {
 }
 
 function postUrl(options, data) {
+	document.cookie = 'CactiTab=' + sessionStorage.tab + '; SameSite=None; Secure; Path=' + urlPath;
+
 	statePushed = false;
 	cont = false;
 
@@ -2617,6 +2622,10 @@ function handleAjaxResponse(html, options) {
 
 	options = sanitizeAjaxOptions(options);
 
+	if (html.indexOf('cactiAuthArea') > 0) {
+		document.location = 'index.php';
+	}
+
 	if (options.handle && options.redirect.trim() == '') {
 		elementId = '#' + options.elementId;
 
@@ -2676,7 +2685,7 @@ function handleAjaxResponse(html, options) {
 			}
 		}
 
-		applySkin()
+		applySkin();
 
 		var scrollTop = (isMobile.any() != null) ? 1 : 0;
 
@@ -3302,7 +3311,7 @@ var waitForFinalEvent = (function () {
 })();
 
 function setSelectMenus() {
-	$.widget("ui.selectmenu", $.ui.selectmenu, {
+	$.widget('ui.selectmenu', $.ui.selectmenu, {
 		_renderMenu: function(ul, items) {
 			let that = this;
 			let attr = this.element[0].attributes;
@@ -3375,35 +3384,40 @@ function setSelectMenus() {
 					filterActive = (defaultIndex !== item.index) ? 'true' : 'false';
 				}
 
-				let buttonItem = $( "<span>", {
-					"class": "ui-selectmenu-text",
-					"data-active": filterActive
+				let buttonItem = $('<span>', {
+					'class': 'ui-selectmenu-text',
+					'data-active': filterActive
 				})
 
 				if (filterActive === 'true') {
 					this._setText(buttonItem, ((showDefaultLabel) ? defaultLabel+': ' : '') + item.label);
 
-          let icon = {'button' : 'ui-icon-close'};
-					this._setOption( 'icons', icon );
+					let icon = {'button' : 'ui-icon-close'};
 
-					this._off( this.button.find( "span.ui-icon" ), 'click');
-					this._on( false, this.button.find( "span.ui-icon" ), {
-						click: function( event ) {
+					this._setOption('icons', icon);
+
+					this._off(this.button.find('span.ui-icon'), 'click');
+					this._on(false, this.button.find('span.ui-icon'), {
+						click: function(event) {
 							event.stopImmediatePropagation();
-							let defaultValue = that.element.find( "option" ).eq(0).val();
-							let item = {'index' : 0, 'value' : defaultValue };
-							this._select( item, event);
+							let defaultValue = this.element.find('option').eq(0).val();
+							let defaultLabel = this.element.find('option').eq(0).text();
+							let item = {'index' : 0, 'value' : defaultValue, 'label' : defaultLabel };
+							this._select(item, event);
 						}
-					} );
+					});
 				} else {
-					this._setText( buttonItem, (showDefaultLabel) ? defaultLabel : item.label );
+					this._setText(buttonItem, (showDefaultLabel) ? defaultLabel : item.label);
 				}
+
 				return buttonItem;
 			} else {
-				let buttonItem = $( "<span>", {
-					"class": "ui-selectmenu-text",
+				let buttonItem = $('<span>', {
+					'class': 'ui-selectmenu-text',
 				})
-				this._setText( buttonItem, item.label );
+
+				this._setText(buttonItem, item.label);
+
 				return buttonItem;
 			}
 		}
@@ -3420,19 +3434,24 @@ function setSelectMenus() {
 				$(this).selectmenu({
 					open: function(event, ui) {
 						let instance = $(this).selectmenu('instance');
+
 						instance.menuInstance.focus(null, instance._getSelectedItem());
+
 						let search = instance.menuWrap.find('input');
-						if (search.length > 0) search.focus();
+
+						if (search.length > 0) {
+							search.focus();
+						}
 					},
 					change: function(event, ui) {
 						$(this).val(ui.item.value).change();
 					},
 					position: {
-						my: "left top",
-						at: "left bottom",
-						collision: "flip"
+						my: 'left top',
+						at: 'left bottom',
+						collision: 'flip'
 					},
-					width: false
+					width: 'auto'
 				});
 
 				$('#'+id+'-menu').css('max-height', '250px');
@@ -3689,6 +3708,20 @@ if (typeof urlPath == 'undefined') {
 	var urlPath = '';
 }
 
+/* Setup a session per tab */
+if (window.name == '') {
+	var max = 99999999;
+	var min = 10000000;
+	sessionStorage.tab = Math.floor(Math.random() * (max - min + 1) + min);
+	window.name = sessionStorage.tab;
+
+	if (urlPath != '') {
+		document.cookie = 'CactiTab=' + sessionStorage.tab + '; SameSite=None; Secure; Path=' + urlPath;
+	}
+
+	document.location = document.location.href;
+}
+
 var graphPage = urlPath + 'graph_view.php';
 var pageAction = 'preview';
 
@@ -3741,8 +3774,9 @@ function closeDateFilters() {
 
 function saveGraphFilter(section) {
 	postUrl({
+		noState: true,
 		url: graphPage + '?action=save',
-		funcEnd: 'finializeGraphFilter'
+		funcEnd: 'finalizeGraphFilter'
 	}, {
 		section: section,
 		columns: $('#columns').val(),

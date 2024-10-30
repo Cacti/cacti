@@ -943,7 +943,7 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = null) {
 					$rrd_update_values .= $value;
 				}
 
-				if (cacti_version_compare(get_rrdtool_version(),'1.5','>=')) {
+				if (cacti_version_compare(get_rrdtool_version(), '1.5', '>=')) {
 					$update_options='--skip-past-updates';
 				} else {
 					$update_options='';
@@ -1254,7 +1254,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 	/* activate --add-jsontime option for graphv only and RRDtool version 1.8.0 and above */
 	if (isset($graph_data_array['graphv'])) {
 		$rrdversion = get_rrdtool_version();
-		if (isset($rrdversion) && cacti_version_compare($rrdversion,'1.8','>=')) {
+		if (isset($rrdversion) && cacti_version_compare($rrdversion, '1.8', '>=')) {
 			$graph_opts .= '--add-jsontime ' . RRD_NL;
 		}
 	}
@@ -1689,6 +1689,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	$nth           = 0;
 	$sum           = 0;
 	$last_graph_cf = array();
+	$legends       = array();
 
 	if (cacti_sizeof($graph_items)) {
 		/* we need to add a new column 'cf_reference', so unless PHP 5 is used, this foreach syntax is required */
@@ -1778,6 +1779,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$graph_defs .= 'DEF:' . generate_graph_def_name(strval($i)) . '=' . cacti_escapeshellarg($data_source_path) . ':' . cacti_escapeshellarg($graph_item['data_source_name'], true) . ':' . $consolidation_functions[$graph_cf] . RRD_NL;
 
 					$cf_ds_cache[$graph_item['data_template_rrd_id']][$graph_cf] = "$i";
+
+					$legends[$graph_item['local_data_id']][$consolidation_functions[$graph_cf]] = $graph_item['data_source_name'] . ' (' . $consolidation_functions[$graph_cf] . ')';
 
 					$i++;
 				}
@@ -2472,7 +2475,13 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 						break;
 					case GRAPH_ITEM_TYPE_AREA:
-						$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id], $pad_number):''));
+						if ($graph_variables['text_format'][$graph_item_id] != '') {
+							$text_format = rrdtool_escape_string(html_escape(str_pad($graph_variables['text_format'][$graph_item_id], $pad_number)));
+						} elseif (isset($graph_data_array['graph_nolegend'])) {
+							$text_format = $legends[$graph_item['local_data_id']][$consolidation_functions[$graph_cf]];
+						} else {
+							$text_format = '';
+						}
 
 						if (read_config_option('enable_rrdtool_gradient_support') == 'on') {
 							/* End color is a 40% (0.4) darkened (negative number) version of the original color */
@@ -2489,10 +2498,15 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 						break;
 					case GRAPH_ITEM_TYPE_STACK:
-						$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id], $pad_number):''));
+						if ($graph_variables['text_format'][$graph_item_id] != '') {
+							$text_format = rrdtool_escape_string(html_escape(str_pad($graph_variables['text_format'][$graph_item_id], $pad_number)));
+						} elseif (isset($graph_data_array['graph_nolegend'])) {
+							$text_format = $legends[$graph_item['local_data_id']][$consolidation_functions[$graph_cf]];
+						} else {
+							$text_format = '';
+						}
 
 						$txt_graph_items .= 'AREA:' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ':STACK';
-
 						if ($graph_item['shift'] == CHECKED && $graph_item['value'] > 0) {      # create a SHIFT statement
 							$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
 						}
@@ -2501,7 +2515,13 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					case GRAPH_ITEM_TYPE_LINE1:
 					case GRAPH_ITEM_TYPE_LINE2:
 					case GRAPH_ITEM_TYPE_LINE3:
-						$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id], $pad_number):''));
+						if ($graph_variables['text_format'][$graph_item_id] != '') {
+							$text_format = rrdtool_escape_string(html_escape(str_pad($graph_variables['text_format'][$graph_item_id], $pad_number)));
+						} elseif (isset($graph_data_array['graph_nolegend'])) {
+							$text_format = $legends[$graph_item['local_data_id']][$consolidation_functions[$graph_cf]];
+						} else {
+							$text_format = '';
+						}
 
 						$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . $dash;
 
@@ -2511,7 +2531,13 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 						break;
 					case GRAPH_ITEM_TYPE_LINESTACK:
-						$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id], $pad_number):''));
+						if ($graph_variables['text_format'][$graph_item_id] != '') {
+							$text_format = rrdtool_escape_string(html_escape(str_pad($graph_variables['text_format'][$graph_item_id], $pad_number)));
+						} elseif (isset($graph_data_array['graph_nolegend'])) {
+							$text_format = $legends[$graph_item['local_data_id']][$consolidation_functions[$graph_cf]];
+						} else {
+							$text_format = '';
+						}
 
 						$txt_graph_items .= 'LINE' . $graph_item['line_width'] . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ':STACK' . $dash;
 
@@ -2568,10 +2594,13 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				if (preg_match('/^(AREA|AREA:STACK|LINE[123]|STACK)$/', $graph_item_types[$graph_item['graph_type_id']])) {
 					/* give all export items a name */
 					if (trim($graph_variables['text_format'][$graph_item_id]) == '') {
-						$legend_name = 'col' . $j . '-' . $data_source_name;
+						$legend_name = $legends[$graph_item['local_data_id']][$consolidation_functions[$graph_cf]];
+						//$legend_name = 'col' . $j . '-' . $data_source_name;
 					} else {
-						$legend_name = $graph_variables['text_format'][$graph_item_id];
+						$legend_name = $legends[$graph_item['local_data_id']][$consolidation_functions[$graph_cf]];
+						//$legend_name = $graph_variables['text_format'][$graph_item_id];
 					}
+
 					$stacked_columns['col' . $j] = ($graph_item_types[$graph_item['graph_type_id']] == 'STACK') ? 1 : 0;
 					$j++;
 
@@ -2602,8 +2631,15 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 		/* either print out the source or pass the source onto rrdtool to get us a nice PNG */
 		if (isset($graph_data_array['print_source'])) {
-			$source_command_line         = read_config_option('path_rrdtool') . ' graph ' . $graph_opts . $graph_defs . $txt_graph_items;
+			if (isset($graph_data_array['graphv'])) {
+				$graph = 'graphv';
+			} else {
+				$graph = 'graph';
+			}
+
+			$source_command_line = read_config_option('path_rrdtool') . " $graph " . $graph_opts . $graph_defs . $txt_graph_items;
 			$source_command_line_lengths = strlen(str_replace("\\\n", ' ', $source_command_line));
+
 			print '<pre>' . wordwrap(html_escape($source_command_line), 160, PHP_EOL, true) . '</pre>';
 			print '<span class="textInfo">' . 'RRDtool Command lengths = ' . $source_command_line_lengths . ' characters.</span><br>';
 			if ( $config['cacti_server_os'] == 'win32' && $source_command_line_lengths > 8191 ) {
@@ -2764,7 +2800,7 @@ function rrdtool_function_theme_font_options(&$graph_data_array) {
 			}
 		}
 
-		if (isset($$themeborder) && cacti_version_compare($rrdversion,'1.4','>=')) {
+		if (isset($$themeborder) && cacti_version_compare($rrdversion, '1.4', '>=')) {
 			$graph_opts .= "--border " .  $$themeborder . RRD_NL;
 		}
 
@@ -2786,7 +2822,7 @@ function rrdtool_function_theme_font_options(&$graph_data_array) {
 	$graph_opts .= rrdtool_function_set_font('unit', '', $themefonts);
 
 	/* watermark fonts */
-	if (isset($rrdversion) && cacti_version_compare($rrdversion,'1.3','>')) {
+	if (isset($rrdversion) && cacti_version_compare($rrdversion, '1.3', '>')) {
 		$graph_opts .= rrdtool_function_set_font('watermark', '', $themefonts);
 	}
 

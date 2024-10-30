@@ -138,7 +138,7 @@ function html_graph_validate_preview_request_vars() {
 		),
 		'graph_source' => array(
 			'filter'  => FILTER_CALLBACK,
-			'default' => 'name',
+			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 		),
 		'graph_order' => array(

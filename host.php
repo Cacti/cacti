@@ -1810,7 +1810,7 @@ function host() {
 			'sort'    => 'ASC',
 			'tip'     => __('The monitoring status of the Device based upon ping results.  If this Device is a special type Device, by using the hostname "localhost", or due to the setting to not perform an Availability Check, it will always remain Up.  When using cmd.php data collector, a Device with no Graphs, is not pinged by the data collector and will remain in an "Unknown" state.')
 		),
-		'site' => array(
+		'site_name' => array(
 			'display' => __('Site'),
 			'align'   => 'left',
 			'sort'    => 'ASC',

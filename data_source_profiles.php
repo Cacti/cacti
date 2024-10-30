@@ -1002,23 +1002,19 @@ function profile() {
 	}
 
 	if (get_request_var('has_data') == 'true') {
-		$sql_having = 'HAVING data_sources > 0';
-	} else {
-		$sql_having = '';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (dsp.data_sources > 0)';
 	}
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
-		FROM data_source_profiles
-		$sql_where
-		$sql_having");
+		FROM data_source_profiles AS dsp
+		$sql_where");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$profile_list = db_fetch_assoc("SELECT *
-		FROM data_source_profiles
+		FROM data_source_profiles AS dsp
 		$sql_where
-		$sql_having
 		$sql_order
 		$sql_limit");
 

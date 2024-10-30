@@ -2771,6 +2771,7 @@ function html_common_header($title, $selectedTheme = '') {
 	<title><?php print $title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 	<script type='text/javascript'>
+		var urlPath='<?php print CACTI_PATH_URL;?>';
 		var aboutCacti = '<?php print __esc('About Cacti');?>';
 		var cactiCharts = '<?php print __esc('Charts');?>';
 		var cactiClient = '<?php print __esc('Client');?>';

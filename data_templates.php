@@ -1157,9 +1157,7 @@ function template() {
 	}
 
 	if (get_request_var('has_data') == 'true') {
-		$sql_having = 'HAVING data_sources>0';
-	} else {
-		$sql_having = '';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' dt.data_sources > 0';
 	}
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
@@ -1171,8 +1169,7 @@ function template() {
 		ON dtd.data_input_id = di.id
 		LEFT JOIN data_source_profiles AS dsp
 		ON dtd.data_source_profile_id = dsp.id
-		$sql_where
-		$sql_having");
+		$sql_where");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
@@ -1188,7 +1185,6 @@ function template() {
 		LEFT JOIN data_input AS di
 		ON dtd.data_input_id = di.id
 		$sql_where
-		$sql_having
 		$sql_order
 		$sql_limit";
 

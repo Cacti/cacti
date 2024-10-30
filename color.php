@@ -625,15 +625,12 @@ function color() {
 	}
 
 	if (get_request_var('has_graphs') == 'true') {
-		$sql_having = 'HAVING graphs>0 OR templates>0';
-	} else {
-		$sql_having = '';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' graphs > 0';
 	}
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
 		FROM colors
-		$sql_where
-		$sql_having");
+		$sql_where");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
@@ -641,7 +638,6 @@ function color() {
 	$colors = db_fetch_assoc("SELECT *
 		FROM colors
 		$sql_where
-		$sql_having
 		$sql_order
 		$sql_limit");
 

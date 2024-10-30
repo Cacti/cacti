@@ -203,17 +203,45 @@ $oarray = array('type' => $gtype, 'local_graph_id' => get_request_var('local_gra
 // Check if we received back something populated from rrdtool
 if ($output !== false && $output != '' && strpos($output, 'image = ') !== false) {
 	// Find the beginning of the image definition row
-	$image_begin_pos  = strpos($output, 'image = ');
-	// Find the end of the line of the image definition row, after this the raw image data will come
-	$image_data_pos   = strpos($output, "\n" , $image_begin_pos) + 1;
-	// Insert the raw image data to the array
-	$oarray['image']  = base64_encode(substr($output, $image_data_pos));
+	$image_begin_pos = strpos($output, 'image = ');
 
 	// Parse and populate everything before the image definition row
 	$header_lines = explode("\n", substr($output, 0, $image_begin_pos - 1));
 
+	// Check for additional data points from graphv output
+	$graph_start_pos = strpos($output, 'graph_start =', $image_begin_pos);
+
+	if (!$graph_start_pos) {
+		// Find the end of the line of the image definition row, after this the raw image data will come
+		$image_data_pos = strpos($output, "\n" , $image_begin_pos) + 1;
+
+		// Insert the raw image data to the array
+		$oarray['image'] = base64_encode(substr($output, $image_data_pos));
+	} else {
+		// Find the end of the line of the image definition row, after this the raw image data will come
+		$image_data_pos = strpos($output, "\n" , $image_begin_pos) + 1;
+
+		// Insert the raw image data to the array
+		$oarray['image'] = base64_encode(substr($output, $image_data_pos, $graph_start_pos - $image_data_pos));
+
+		// Get the datapoints to the end of the file.
+		$datapoints_start_pos = strpos($output, 'datapoints =');
+
+		$datapoints = substr($output, $datapoints_start_pos);
+
+		// Get rid of the 'datapoints =' line
+		$dp_output = explode("\n", $datapoints);
+		unset($dp_output[0]);
+
+		$datapoints = json_decode(implode("\n", $dp_output), true);
+
+		foreach($datapoints as $name => $value) {
+			$oarray[$name] = $value;
+		}
+	}
+
 	foreach ($header_lines as $line) {
-		$parts             = explode(' = ', $line);
+		$parts = explode(' = ', $line);
 		$oarray[$parts[0]] = trim($parts[1]);
 	}
 } else {
@@ -225,6 +253,7 @@ if ($output !== false && $output != '' && strpos($output, 'image = ') !== false)
 	$graph_data_array['get_error'] = true;
 
 	$null_param = array();
+
 	rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, null, $null_param, $_SESSION[SESS_USER_ID]);
 
 	$error = ob_get_contents();
@@ -250,12 +279,12 @@ if ($output !== false && $output != '' && strpos($output, 'image = ') !== false)
 			$oarray['image_height'] = round($graph_data_array['graph_height'] * 1.8, 0);
 		}
 	} else {
-		$oarray['image_width']  = round(db_fetch_cell_prepared('SELECT width
+		$oarray['image_width'] = round(db_fetch_cell_prepared('SELECT width
 			FROM graph_templates_graph
 			WHERE local_graph_id = ?',
 			array(get_request_var('local_graph_id'))), 0);
 
-		$oarray['image_height']  = round(db_fetch_cell_prepared('SELECT height
+		$oarray['image_height'] = round(db_fetch_cell_prepared('SELECT height
 			FROM graph_templates_graph
 			WHERE local_graph_id = ?',
 			array(get_request_var('local_graph_id'))), 0);

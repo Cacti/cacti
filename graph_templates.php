@@ -1566,15 +1566,12 @@ function template() {
 	}
 
 	if (get_request_var('has_graphs') == 'true') {
-		$sql_having = 'HAVING graphs > 0';
-	} else {
-		$sql_having = '';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gt.graphs > 0';
 	}
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
 		FROM graph_templates AS gt
-		$sql_where
-		$sql_having");
+		$sql_where");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
@@ -1586,7 +1583,6 @@ function template() {
 		ON gtg.graph_template_id = gt.id
 		AND gtg.local_graph_id = 0
 		$sql_where
-		$sql_having
 		$sql_order
 		$sql_limit");
 

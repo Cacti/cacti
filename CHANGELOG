@@ -22,6 +22,7 @@ Cacti CHANGELOG
 -issue#5680: Fix Spikekill not following correct time in schedule
 -issue#5776: Undefined array key "description" in file settings.php
 -issue#5844: Automation fails when using MySQL 8
+-issue#5885: Fix Fortigate and Aruba OSCX switch template, improve Clearpass template
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1442: Add validation to GUI inputs
@@ -107,6 +108,7 @@ Cacti CHANGELOG
 -feature#5861: In Cacti Utilities, be able to view the MariaDB/MySQL processeslist and active background tasks
 -feature#5862: Change logging message around remote agent timeout
 -feature#5871: Make it possible for splice_rrd.php to run from outside of Cacti
+-feature#5889: Make it so that Cacti does not share sessions between browser tabs
 -feature: Allow messages to be popup notifications
 -feature: Upgrade billboard.js to version 3.7.4
 -feature: Upgrade d3.js to version 7.8.2
@@ -119,7 +121,9 @@ Cacti CHANGELOG
 -issue#5848: RRDfile Auto Clean not working
 -issue#5856: Help HTML file is incorrect for Automation Networks
 -issue#5867: Disabling a Tree does not function as expected
+-issue#5868: Error when remove Orphaned Graphs from GUI
 -issue#5870: CLI utility splice_rrd.php generates an error in PHP8+
+-issue#5874: IPV6 address colon format causes the snmp query to not work 
 
 1.2.28
 -security#GHSA-49f2-hwx9-qffr: XSS vulnerability when creating external links with the consolenewsection parameter

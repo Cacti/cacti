@@ -787,14 +787,11 @@ function get_vdef_records(&$total_rows, &$rows) {
 	}
 
 	if (get_request_var('has_graphs') == 'true') {
-		$sql_having = 'HAVING graphs>0';
-	} else {
-		$sql_having = '';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' graphs > 0';
 	}
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
         FROM vdef
-		$sql_having
         $sql_where");
 
 	$sql_order = get_order_string();
@@ -803,7 +800,6 @@ function get_vdef_records(&$total_rows, &$rows) {
 	return db_fetch_assoc("SELECT *
 		FROM vdef
 		$sql_where
-		$sql_having
 		$sql_order
 		$sql_limit");
 }
