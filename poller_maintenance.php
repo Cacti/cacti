@@ -565,12 +565,11 @@ function remove_files($file_array) {
 					if (file_exists($source_file)) {
 						if (unlink($source_file)) {
 							maint_debug('Deleted: ' . $file['name']);
+							$purged++;
 						} else {
 							cacti_log($file['name'] . " ERROR: RRDfile Maintenance unable to delete from $rra_path!", true, 'MAINT');
 						}
 					}
-
-					$purged++;
 
 					break;
 				case '3' :
@@ -583,12 +582,11 @@ function remove_files($file_array) {
 					if (file_exists($source_file)) {
 						if (rename($source_file, $target_file)) {
 							maint_debug('Moved: ' . $file['name'] . ' to: ' . $rrd_archive);
+							$archived++;
 						} else {
 							cacti_log($file['name'] . " ERROR: RRDfile Maintenance unable to move to $rrd_archive!", true, 'MAINT');
 						}
 					}
-
-					$archived++;
 
 					break;
 			}
