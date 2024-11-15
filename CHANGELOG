@@ -115,6 +115,7 @@ Cacti CHANGELOG
 -feature: Upgrade d3.js to version 7.8.2
 -feature: Upgrade ua-parser.js to version 1.0.35
 -feature#5717: Add Aruba Clearpass template
+-feature#5922: Add HPE Nimble/Alletra template
 
 1.2.29
 -issue#5843: Issue with temporary tables with use of microtime
