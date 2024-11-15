@@ -603,6 +603,7 @@ function install_setup_get_templates() {
 		'ESXi_Device.xml.gz',
 		'Fortigate.xml.gz',
 		'HPE_iLO.xml.gz',
+		'HPE_NimbleAlletra_storage.xml.gz',
 		'Generic_SNMP_Device.xml.gz',
 		'Local_Linux_Machine.xml.gz',
 		'MikroTik_Device.xml.gz',
