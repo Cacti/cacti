@@ -4,11 +4,6 @@
 	z-index:auto;
 	width: 100%;
 	height: 100%;
-	&[data-active-element]:hover {
-		.zoom-crosshair {
-			visibility: visible;
-		}
-	}
 }
 
 #zoom-box {
@@ -21,15 +16,11 @@
 	border:0;
 	z-index:auto;
 	pointer-events: all;
-	&:hover {
-		.zoom-crosshair {
-			/*visibility: visible;*/
-		}
-	}
+
 }
 
 .zoom-crosshair {
-	visibility: hidden;
+	display: none;
 	position:relative;
 	top:0;
 	right:0;
@@ -174,7 +165,8 @@
 	z-index: auto;
 }
 
-.zoom-menu {
+.zoom-menu,
+.zoom-livedata {
 	color: var(--text-color-normal);
 	position: absolute;
 	background: var(--background-content);

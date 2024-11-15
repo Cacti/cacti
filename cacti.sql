@@ -2161,6 +2161,49 @@ CREATE TABLE host_template_snmp_query (
 --
 
 --
+-- Table structure for table `plugin_archive`
+--
+
+CREATE TABLE `plugin_archive` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `plugin` varchar(32) NOT NULL DEFAULT '',
+  `description` varchar(64) NOT NULL DEFAULT '',
+  `author` varchar(64) NOT NULL DEFAULT '',
+  `webpage` varchar(255) NOT NULL DEFAULT '',
+  `user_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `version` varchar(10) NOT NULL DEFAULT '',
+  `requires` varchar(128) DEFAULT '',
+  `compat` varchar(20) NOT NULL DEFAULT '',
+  `dir_md5sum` varchar(32) NOT NULL DEFAULT '',
+  `last_updated` timestamp NULL DEFAULT NULL,
+  `archive` longblob DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `directory` (`plugin`)
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
+
+--
+-- Table structure for table `plugin_available`
+--
+
+CREATE TABLE `plugin_available` (
+  `plugin` varchar(32) NOT NULL DEFAULT '',
+  `description` varchar(128) NOT NULL DEFAULT '',
+  `author` varchar(40) NOT NULL DEFAULT '',
+  `webpage` varchar(128) NOT NULL DEFAULT '',
+  `tag_name` varchar(20) NOT NULL DEFAULT '',
+  `published_at` timestamp NULL DEFAULT NULL,
+  `compat` varchar(20) NOT NULL DEFAULT '',
+  `requires` varchar(128) NOT NULL DEFAULT '',
+  `body` blob DEFAULT NULL,
+  `info` blob DEFAULT NULL,
+  `readme` blob DEFAULT NULL,
+  `changelog` blob DEFAULT NULL,
+  `archive` longblob DEFAULT NULL,
+  `last_updated` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`plugin`,`tag_name`)
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
+
+--
 -- Table structure for table `plugin_config`
 --
 
@@ -2172,6 +2215,7 @@ CREATE TABLE `plugin_config` (
   `author` varchar(64) NOT NULL default '',
   `webpage` varchar(255) NOT NULL default '',
   `version` varchar(10) NOT NULL default '',
+  `last_updated` timestamp default NULL,
   PRIMARY KEY (`id`),
   KEY `status` (`status`),
   KEY `directory` (`directory`)

@@ -117,6 +117,42 @@ fieldset {
 	margin: 0px;
 }
 
+.cols1 {
+	width: 100%;
+	display:table-cell;
+}
+
+.cols2 {
+	width: 50%;
+	display:table-cell;
+}
+
+.cols3 {
+	width: 33%;
+	display:table-cell;
+}
+
+.cols4 {
+	width: 25%;
+	display:table-cell;
+}
+
+.cols5 {
+	width: 20%;
+	display:table-cell;
+}
+
+.cols6 {
+	width: 16.6%;
+	display:table-cell;
+}
+
+.graphPage {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+
 hr.menu {
 	border: 0;
 	height: 1px;
@@ -348,19 +384,6 @@ label {
 	cursor: pointer;
 	padding: 2px;
 	border: none;
-}
-
-.graphDrillDown {
-	vertical-align: top;
-	align-self: left;
-	z-index: 4;
-	padding: 3px;
-	height: 100%;
-	width: 20px;
-}
-
-.drillDown {
-	cursor: pointer;
 }
 
 .monoSpace {
@@ -901,7 +924,6 @@ ul#breadcrumbs {
 }
 
 .cactiConsoleNavigationArea {
-	border-right: #aaaaaa 1px solid;
 	padding-left: 0px;
 	padding-right: 0px;
 	padding-top: 5px;
@@ -921,7 +943,7 @@ ul#breadcrumbs {
 
 .cactiLogo {
 	background: #efefef url('./images/cacti_logo.svg') no-repeat 30px;
-	display: block;
+	display: table;
 	cursor: pointer;
 	padding-bottom: 160px;
 	margin-bottom: 60px;
@@ -1156,6 +1178,10 @@ legend {
 	display: inline-block;
 }
 
+.piinstall, .pienable, .pidisable, .piuninstall, .pierror, .pirmdata {
+	padding: 0px 3px !important;
+}
+
 .noLinkEditMain {
 	color: rgba(44,130,29,1);
 	text-decoration: none;
@@ -1163,10 +1189,6 @@ legend {
 	font-weight: normal;
 	padding: 3px;
 	white-space: nowrap;
-}
-
-.piinstall, .pienable, .pidisable, .piuninstall, .pierror {
-	padding: 0px 3px !important;
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
@@ -2382,6 +2404,10 @@ ul#nav {
 	border: transparent;
 }
 
+.ui-selectmenu-search input {
+	width: 100%;
+}
+
 div.preformatted {
 	font-family: monospace;
 	white-space: pre;
@@ -2520,8 +2546,22 @@ tr#realtime td:first-child {
 	overflow-x: hidden;
 }
 
+.graphDrillDown {
+	display: inline-block;
+	vertical-align: top;
+	align-self: left;
+	z-index: 4;
+	padding: 3px;
+	height: 200px;
+	width: 20px;
+}
+
+.drillDown {
+	cursor: pointer;
+}
+
 .graphWrapper {
-	position: relative;
+	display: inline-block;;
 }
 
 .graphWrapperOuter[data-disabled="true"] {

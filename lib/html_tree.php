@@ -1041,7 +1041,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			WHERE id = ?',
 			array($host_group_data_array[1]));
 
-		$host_group_data_name = '<strong>' . __('Graph Template:'). '</strong> ' . html_escape($name);
+		$host_group_data_name = '<i class="bold">' . __('Graph Template:'). '</i> ' . html_escape($name);
 		$graph_template_id    = $host_group_data_array[1];
 	} elseif ($host_group_data_array[0] == 'dq') {
 		$name = db_fetch_cell_prepared('SELECT name
@@ -1049,7 +1049,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			WHERE id = ?',
 			array($host_group_data_array[1]));
 
-		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? __('Non Query Based') : html_escape($name));
+		$host_group_data_name = '<i class="bold">' . __('Graph Template:') . '</i> ' . (empty($host_group_data_array[1]) ? __('Non Query Based') : html_escape($name));
 		$data_query_id        = $host_group_data_array[1];
 	} elseif ($host_group_data_array[0] == 'dqi') {
 		$name = db_fetch_cell_prepared('SELECT name
@@ -1057,41 +1057,41 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			WHERE id = ?',
 			array($host_group_data_array[1]));
 
-		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? __('Non Query Based') : html_escape($name)) . '-> ' . (empty($host_group_data_array[2]) ? __('Template Based') : get_formatted_data_query_index($leaf['host_id'], $host_group_data_array[1], $host_group_data_array[2]));
+		$host_group_data_name = '<i class="bold">' . __('Graph Template:') . '</i> ' . (empty($host_group_data_array[1]) ? __('Non Query Based') : html_escape($name)) . '-> ' . (empty($host_group_data_array[2]) ? __('Template Based') : get_formatted_data_query_index($leaf['host_id'], $host_group_data_array[1], $host_group_data_array[2]));
 		$data_query_id    = $host_group_data_array[1];
 		$data_query_index = $host_group_data_array[2];
 	}
 
 	if ($tree_name != '') {
-		$title .= $title_delimiter . '<strong>' . __('Tree:') . '</strong> ' . html_escape($tree_name);
-		$title_delimiter = '-> ';
+		$title .= $title_delimiter . '<i class="bold">' . __('Tree:') . '</i> ' . html_escape($tree_name);
+		$title_delimiter = ' > ';
 	}
 
 	if ($site_name != '') {
-		$title .= $title_delimiter . '<strong>' . __('Site:') . '</strong>&nbsp;' . html_escape($site_name);
-		$title_delimiter = '-> ';
+		$title .= $title_delimiter . '<i class="bold">' . __('Site:') . '</i>&nbsp;' . html_escape($site_name);
+		$title_delimiter = ' > ';
 	}
 
 	if (cacti_sizeof($leaf_names)) {
 		foreach ($leaf_names as $leaf_name) {
-			$title .= $title_delimiter . '<strong>' . __('Leaf:') . '</strong> ' . html_escape($leaf_name);
-			$title_delimiter = '-> ';
+			$title .= $title_delimiter . '<i class="bold">' . __('Leaf:') . '</i> ' . html_escape($leaf_name);
+			$title_delimiter = ' > ';
 		}
 	}
 
 	if ($host_template_name != '') {
-		$title .= $title_delimiter . '<strong>' . __('Device Template:') . '</strong> ' . html_escape($host_template_name);
-		$title_delimiter = '-> ';
+		$title .= $title_delimiter . '<i class="bold">' . __('Device Template:') . '</i> ' . html_escape($host_template_name);
+		$title_delimiter = ' > ';
 	}
 
 	if ($host_name != '') {
-		$title .= $title_delimiter . '<strong>' . __('Device:') . '</strong> ' . html_escape($host_name);
-		$title_delimiter = '-> ';
+		$title .= $title_delimiter . '<i class="bold">' . __('Device:') . '</i> ' . html_escape($host_name);
+		$title_delimiter = ' > ';
 	}
 
 	if ($host_group_data_name != '') {
 		$title .= $title_delimiter . " " . $host_group_data_name;
-		$title_delimiter = '-> ';
+		$title_delimiter = ' > ';
 	}
 
 	html_start_box(__('Graph Filters') . (get_request_var('rfilter') != '' ? ' [ ' . __('Filter') . " '" . html_escape_request_var('rfilter') . "' " . __('Applied') . ' ]' : ''), '100%', '', '3', 'center', '');
@@ -1308,6 +1308,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		</form>
 		</td>
 	</tr><?php
+
 	html_end_box();
 
 	?>
@@ -1516,12 +1517,13 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, '3', 'center', '');
 
 	/* start graph display */
-	print "<tr class='tableHeader'><td style='width:390px;' colspan='" . get_request_var('columns') . "' class='graphSubHeaderColumn textHeaderDark'>$title</td></tr>";
+	print "<div class='tableHeader tableRowGraph left'>$title</div>";
 
-	$i          = get_request_var('graphs') * (get_request_var('page') - 1);
+	$i = get_request_var('graphs') * (get_request_var('page') - 1);
+
 	$last_graph = $i + get_request_var('graphs');
 
 	$new_graph_list = array();
@@ -1543,7 +1545,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	api_plugin_hook_function('tree_view_page_end');
 
-	html_end_box();
+	html_end_box(false, true);
 
 	if ($total_rows) {
 		print $nav;

@@ -197,7 +197,11 @@ function clog_view_logfile() {
 
 	set_page_refresh($refresh);
 
-	top_header(true);
+	if (get_current_page() == 'clog.php' || get_current_page() == 'clog_user.php') {
+		general_header(true);
+	} else {
+		top_header(true);
+	}
 
 	if ($clogAdmin && isset_request_var('purge')) {
 		form_start('clog.php');

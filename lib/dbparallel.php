@@ -286,7 +286,7 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 	$is_union = false;
 
 	/**
-	 * Our reponse object which can then be used by the caller
+	 * Our response object which can then be used by the caller
 	 * to create the table, perform queries, etc.
 	 */
  	$response = array(
@@ -372,7 +372,7 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 	 * LIMIT
 	 *
 	 * Knowning this information, we can tokenize the SQL
-	 * statement and prepare for paralellization.  The MySQL/MariaDB language
+	 * statement and prepare for parallelization.  The MySQL/MariaDB language
 	 * syntax has a very many modifiers that we hope not to have to cover
 	 * in this exercise.  They include, but are not limited to the items included
 	 * in the following two links:
@@ -573,7 +573,7 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
  * @return (string)        The column aggregate function
  */
 function db_get_aggregate($colsql) {
-	// Decompose and prepare the query for parallization
+	// Decompose and prepare the query for parallelization
 	$aggregators = array(
 		'SUM(',
 		'COUNT(',

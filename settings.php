@@ -1366,7 +1366,7 @@ function save_settings() {
 				}
 			}
 		} elseif ($field_array['method'] == 'textbox_password') {
-			if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name . '_confirm')) {
+			if (isset_request_var($field_name . '_confirm') && get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name . '_confirm')) {
 				$_SESSION['sess_error_fields'][$field_name] = $field_name;
 				$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
 				$errors[4] = 4;

@@ -1,9 +1,14 @@
 :root {
 
     /* font-family variables */
-    --font-sans:    Helvetica, Arial, system-ui, sans-serif;
+    --font-sans:    Roboto,
+                    Helvetica,
+                    Arial,
+                    system-ui,
+                    sans-serif;
 
-    --font-mono:    ui-monospace,
+    --font-mono:    "Roboto Mono",
+                    ui-monospace,
                     SFMono-Regular,
                     "SF Mono",
                     Menlo,

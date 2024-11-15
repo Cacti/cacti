@@ -106,7 +106,11 @@ CsrfMagic.end = function() {
 	forms = document.getElementsByTagName('form');
 	for (var i = 0; i < forms.length; i++) {
 		form = forms[i];
-		if (form.method.toUpperCase() !== 'POST') continue;
+
+		if (typeof form.method.toUpperCase == 'function' && form.method.toUpperCase() !== 'POST') {
+			continue;
+		}
+
 		if (form.elements[csrfMagicName]) continue;
 		var input = document.createElement('input');
 		input.setAttribute('name',  csrfMagicName);

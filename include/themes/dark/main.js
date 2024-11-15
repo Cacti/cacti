@@ -117,6 +117,7 @@ function themeReady() {
 		element.find('.iconWrapper').show(300, function() {
 			graphMenuElement = element.attr('id').replace('dd', '');;
 			$(this).find('.spikekillMenu').menu('enable');
+			$(this).css('display', 'block');
 		});
 	}
 
@@ -131,7 +132,7 @@ function themeReady() {
 }
 
 function setMenuVisibility() {
-	storage=Storages.localStorage;
+	storage=Storages.sessionStorage;
 
 	// Initialize the navigation settings
 	// This will setup the initial visibility of the menu

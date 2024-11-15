@@ -65,7 +65,7 @@ function api_data_source_remove($local_data_id, $update_totals = true) {
 	$acmethod  = read_config_option('rrd_autoclean_method');
 
 	if ($update_totals) {
-		object_cache_get_totals('data_source', $local_data_ids);
+		object_cache_get_totals('data_source', $local_data_id);
 	}
 
 	if ($autoclean == 'on') {

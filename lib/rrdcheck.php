@@ -345,7 +345,7 @@ function do_rrdcheck($thread_id = 1) {
 						);
 					}
 
-					// Should never happend
+					// Should never happen
 					if (empty($dsname)) {
 						db_execute_prepared('INSERT INTO rrdcheck
 							(local_data_id, test_date, message)
@@ -711,7 +711,7 @@ function rrdcheck_error_handler($errno, $errmsg, $filename, $linenum, $vars = ar
 }
 
 /**
- * rrdcheck_boost_bottom - this routine accomodates rrdcheck after the boost process
+ * rrdcheck_boost_bottom - this routine accommodates rrdcheck after the boost process
  *   has completed.  The use of boost will require boost version 2.5 or above.  The idea
  *   if that rrdcheck will be started on the boost cycle.
  *
@@ -815,7 +815,7 @@ function rrdcheck_rrdtool_init() {
 /**
  * rrdcheck_rrdtool_execute - this routine passes commands to RRDtool and returns the information
  *   back to rrdcheck.  It is important to note here that RRDtool needs to provide an either 'OK'
- *   or 'ERROR' response accross the pipe as it does not provide EOF characters to key upon.
+ *   or 'ERROR' response across the pipe as it does not provide EOF characters to key upon.
  *   This may not be the best method and may be changed after I have a conversation with a few
  *   developers.
  *

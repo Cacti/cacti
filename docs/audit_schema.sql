@@ -762,6 +762,7 @@ INSERT INTO `table_columns` VALUES ('plugin_config',4,'status','tinyint(3) unsig
 INSERT INTO `table_columns` VALUES ('plugin_config',5,'author','varchar(64)','NO','','','');
 INSERT INTO `table_columns` VALUES ('plugin_config',6,'webpage','varchar(255)','NO','','','');
 INSERT INTO `table_columns` VALUES ('plugin_config',7,'version','varchar(10)','NO','','','');
+INSERT INTO `table_columns` VALUES ('plugin_config',8,'last_updated','timestamp','YES','','','');
 INSERT INTO `table_columns` VALUES ('plugin_db_changes',1,'id','mediumint(8) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('plugin_db_changes',2,'plugin','varchar(16)','NO','MUL','','');
 INSERT INTO `table_columns` VALUES ('plugin_db_changes',3,'table','varchar(64)','NO','','','');

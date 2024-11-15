@@ -391,6 +391,8 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 	</script>
 	<?php
 
+	print '<div class=\'graphPage\'>';
+
 	if ($num_graphs > 0) {
 		if ($header != '') {
 			print $header;
@@ -406,47 +408,27 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 					array($graph['local_graph_id']));
 			}
 
-			if ($i == 0) {
-				print "<tr class='tableRowGraph'>";
-			}
-
 			?>
-			<td class='graphWrapperOuter' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>' style='width:<?php print round(100 / $columns, 2);?>%;'>
+			<div class='graphWrapperOuter cols<?php print $columns;?>' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>'>
 				<div>
-				<table style='text-align:center;margin:auto;'>
-					<tr>
-						<td>
-							<div class='graphWrapper' style='width:100%;' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
-							<?php print(read_user_setting('show_graph_title') == 'on' ? "<span class='center'>" . html_escape($graph['title_cache']) . '</span>' : '');?>
-						</td>
-						<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
-							<?php graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons', $tree_id, $branch_id);?>
-						</td><?php } ?>
-					</tr>
-				</table>
-				<div>
-			</td>
+					<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
+					<?php if (is_realm_allowed(27)) { ?>
+					<div id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
+						<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons', $tree_id, $branch_id);?>
+					</div>
+					<?php } ?>
+				</div>
+				<?php print (read_user_setting('show_graph_title') == 'on' ? "<div>" . html_escape($graph['title_cache']) . '</div>' : '');?>
+			</div>
 			<?php
-
-			$i++;
-
-			if (($i % $columns) == 0) {
-				$i = 0;
-				print '</tr>';
-			}
 		}
-
-		while (($i % $columns) != 0) {
-			print "<td style='text-align:center;width:" . round(100 / $columns, 2) . "%;'></td>";
-			$i++;
-		}
-
-		print '</tr>';
 	} else {
 		if ($no_graphs_message != '') {
-			print "<td><em>$no_graphs_message</em></td>";
+			print "<div class='tableRowGraph'><em>$no_graphs_message</em></div>";
 		}
 	}
+
+	print '</div>';
 }
 
 /**
@@ -490,6 +472,8 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 	</script>
 	<?php
 
+	print '<div class=\'graphPage\'>';
+
 	if ($num_graphs > 0) {
 		if ($header != '') {
 			print $header;
@@ -529,69 +513,31 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 				}
 
 				if ($print) {
-					if (!$start) {
-						while (($i % $columns) != 0) {
-							print "<td style='text-align:center;width:" . round(100 / $columns, 3) . "%;'></td>";
-							$i++;
-						}
-
-						print '</tr>';
-					}
-
-					print "<tr class='tableHeader'>
-							<td class='graphSubHeaderColumn textHeaderDark' colspan='$columns'>" . __('Data Query:') . ' ' . $graph['data_query_name'] . '</td>
-						</tr>';
-					$i = 0;
+					print "<div class='tableRowGraph graphSubHeaderColumn textHeaderDark'>" . __('Data Query:') . ' ' . $graph['data_query_name'] . '</div>';
 				}
 			}
 
-			if ($i == 0) {
-				print "<tr class='tableRowGraph'>";
-				$start = false;
-			}
-
 			?>
-			<td class='graphWrapperOuter' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>' style='width:<?php print round(100 / $columns, 2);?>%;'>
+			<div class='graphWrapperOuter cols<?php print $columns;?>' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>'>
 				<div>
-				<table style='text-align:center;margin:auto;'>
-					<tr>
-						<td>
-							<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_user_setting('default_width');?>' graph_height='<?php print read_user_setting('default_height');?>'></div>
-							<?php print(read_user_setting('show_graph_title') == 'on' ? "<span class='center'>" . html_escape($graph['title_cache']) . '</span>' : '');?>
-						</td>
-						<?php if (is_realm_allowed(27)) { ?><td id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
-							<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails', $tree_id, $branch_id);?>
-						</td><?php } ?>
-					</tr>
-				</table>
+					<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_user_setting('default_width');?>' graph_height='<?php print read_user_setting('default_height');?>'></div>
+					<?php if (is_realm_allowed(27)) { ?>
+					<div id='dd<?php print $graph['local_graph_id'];?>' class='noprint graphDrillDown'>
+						<?php print graph_drilldown_icons($graph['local_graph_id'], 'graph_buttons_thumbnails', $tree_id, $branch_id);?>
+					</div>
+					<?php } ?>
 				</div>
-			</td>
+				<?php print (read_user_setting('show_graph_title') == 'on' ? "<div class='center'>" . html_escape($graph['title_cache']) . '</div>' : '');?>
+			</div>
 			<?php
-
-			$i++;
-			$k++;
-
-			if (($i % $columns) == 0 && ($k < $num_graphs)) {
-				$i=0;
-				$j++;
-				print '</tr>';
-				$start = true;
-			}
-		}
-
-		if (!$start) {
-			while (($i % $columns) != 0) {
-				print "<td style='text-align:center;width:" . round(100 / $columns, 2) . "%;'></td>";
-				$i++;
-			}
-
-			print '</tr>';
 		}
 	} else {
 		if ($no_graphs_message != '') {
-			print "<td><em>$no_graphs_message</em></td>";
+			print "<div class='tableRowGraph'><em>$no_graphs_message</em></div>";
 		}
 	}
+
+	print '</div>';
 }
 
 function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_id = 0, $branch_id = 0) {
@@ -638,7 +584,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 	}
 
 	if (is_realm_allowed(1043)) {
-		print "<span class='iconLink spikekill' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_sk'><img id='sk" . $local_graph_id . "' class='drillDown' src='" . get_theme_paths('%s', 'images/spikekill.gif') . "' title='" . __esc('Kill Spikes in Graphs') . "'></span>";
+		print "<div class='iconLink spikekill' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_sk'><img id='sk" . $local_graph_id . "' class='drillDown' src='" . get_theme_paths('%s', 'images/spikekill.gif') . "' title='" . __esc('Kill Spikes in Graphs') . "'></div>";
 		print '<br/>';
 	}
 
@@ -1612,7 +1558,7 @@ function draw_menu($user_menu = '') {
 		$user_menu = $menu;
 	}
 
-	print "<tr><td><table width='100%'><tr><td><div id='menu'><ul id='nav' role='menu'>";
+	print "<div id='menu'><ul id='nav' role='menu'>";
 
 	/* loop through each header */
 	$i       = 0;
@@ -1752,7 +1698,7 @@ function draw_menu($user_menu = '') {
 		}
 	}
 
-	print '</ul></div></td></tr></table></td></tr>';
+	print '</ul></div>';
 }
 
 /**

@@ -46,16 +46,57 @@ function upgrade_to_1_3_0() {
 	db_install_add_column('aggregate_graph_templates_graph', array('name' => 't_left_axis_format', 'type' => 'char(2)',  'default' => '0', 'after' => 'right_axis_formatter'));
 	db_install_add_column('aggregate_graph_templates_graph', array('name' => 'left_axis_format', 'type' => 'mediumint(8)', 'NULL' => true, 'after' => 't_left_axis_format'));
 
+	db_install_add_column('plugin_config', array('name' => 'last_updated', 'type' => 'timestamp', 'NULL' => true, 'after' => 'version'));
+
+	db_install_execute('UPDATE plugin_config SET last_updated = NOW() WHERE status IN (1,2,3,4) AND last_updated = NULL');
+
+	/* temporary workaround till project finished */
+	db_install_execute("CREATE TABLE IF NOT EXISTS `plugin_available` (
+		`plugin` varchar(32) NOT NULL DEFAULT '',
+		`description` varchar(128) NOT NULL DEFAULT '',
+		`author` varchar(40) NOT NULL DEFAULT '',
+		`webpage` varchar(128) NOT NULL DEFAULT '',
+		`tag_name` varchar(20) NOT NULL DEFAULT '',
+		`published_at` timestamp NULL DEFAULT NULL,
+		`compat` varchar(20) NOT NULL DEFAULT '',
+		`requires` varchar(128) NOT NULL DEFAULT '',
+		`body` blob DEFAULT NULL,
+		`info` blob DEFAULT NULL,
+		`readme` blob DEFAULT NULL,
+		`changelog` blob DEFAULT NULL,
+		`archive` longblob DEFAULT NULL,
+		`last_updated` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+		PRIMARY KEY (`plugin`,`tag_name`))
+		ENGINE=InnoDB
+		ROW_FORMAT=DYNAMIC");
+
+	db_install_execute("CREATE TABLE IF NOT EXISTS `plugin_archive` (
+		`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+		`plugin` varchar(32) NOT NULL DEFAULT '',
+		`description` varchar(64) NOT NULL DEFAULT '',
+		`author` varchar(64) NOT NULL DEFAULT '',
+		`webpage` varchar(255) NOT NULL DEFAULT '',
+		`user_id` int(10) unsigned NOT NULL DEFAULT 0,
+		`version` varchar(10) NOT NULL DEFAULT '',
+		`requires` varchar(128) DEFAULT '',
+		`compat` varchar(20) NOT NULL DEFAULT '',
+		`dir_md5sum` varchar(32) NOT NULL DEFAULT '',
+		`last_updated` timestamp NULL DEFAULT NULL,
+		`archive` longblob DEFAULT NULL,
+		PRIMARY KEY (`id`),
+		KEY `directory` (`plugin`))
+		ENGINE=InnoDB
+		ROW_FORMAT=DYNAMIC");
+
 	//Not sure why we were adding this...
 	//db_install_add_column('user_domains', array('name' => 'tls_verify', 'type' => 'int', 'null' => false, 'default' => '0'));
 
-	db_install_execute('UPDATE host h
-		LEFT JOIN sites s
+	db_install_execute('UPDATE host AS h
+		LEFT JOIN sites AS s
 		ON s.id = h.site_id
 		SET status = 0
 		WHERE IFNULL(h.disabled,"") = "on"
-		OR IFNULL(s.disabled, "") = "on"
-	');
+		OR IFNULL(s.disabled, "") = "on"');
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS poller_time_stats (
 		id bigint(20) unsigned NOT NULL auto_increment,

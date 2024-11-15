@@ -225,18 +225,20 @@ function draw_edit_control($field_name, &$field_array) {
 				'********'
 			);
 
-			print '<br>';
+			if (!isset($field_array['noconfirm'])) {
+				print '<br>';
 
-			form_text_box(
-				$field_name . '_confirm',
-				$field_array['value'],
-				((isset($field_array['default'])) ? $field_array['default'] : ''),
-				$field_array['max_length'],
-				((isset($field_array['size'])) ? $field_array['size'] : '40'),
-				'password',
-				((isset($field_array['form_id'])) ? $field_array['form_id'] : ''),
-				'********'
-			);
+				form_text_box(
+					$field_name . '_confirm',
+					$field_array['value'],
+					((isset($field_array['default'])) ? $field_array['default'] : ''),
+					$field_array['max_length'],
+					((isset($field_array['size'])) ? $field_array['size'] : '40'),
+					'password',
+					((isset($field_array['form_id'])) ? $field_array['form_id'] : ''),
+					'********'
+				);
+			}
 
 			break;
 		case 'textarea':
@@ -611,7 +613,7 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
 		$extra_text  = $data['text'];
 		$extra_class = (isset($data['error']) ? 'fa-times-circle' : 'fa-check-circle');
 		$extra_color = (isset($data['error']) ? 'red' : 'green');
-		$error_class = (isset($data['error']) ? 'txtErrorTextBox' : '');
+		$error_class = (isset($data['error']) ? ' txtErrorTextBox' : '');
 	} else {
 		if (isset($_SESSION[SESS_FIELD_VALUES])) {
 			if (!empty($_SESSION[SESS_FIELD_VALUES][$form_name])) {
@@ -621,7 +623,7 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
 
 		if (isset($_SESSION[SESS_ERROR_FIELDS])) {
 			if (!empty($_SESSION[SESS_ERROR_FIELDS][$form_name])) {
-				$error_class = 'txtErrorTextBox';
+				$error_class = ' txtErrorTextBox';
 				unset($_SESSION[SESS_ERROR_FIELDS][$form_name]);
 			}
 		}
@@ -726,11 +728,7 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 		$form_previous_value = $form_default_value;
 	}
 
-	if ($type == 'password') {
-		print "<input type='text' style='display:none' value=''><input type='password' style='display:none' autocomplete='current-password' value=''>";
-	}
-
-	print "<input type='$type' " . ($type == 'password' || $type == 'password_confirm' ? 'autocomplete="current-password"' : 'off') . ($title != '' ? ' title="' . $title . '"' : '');
+	print "<input type='$type' " . ($type == 'password' || $type == 'password_confirm' ? 'autocomplete="off" readonly onfocus="this.removeAttribute(\'readonly\');"' : '') . ($title != '' ? ' title="' . $title . '"' : '');
 
 	if (isset($_SESSION[SESS_ERROR_FIELDS])) {
 		if (!empty($_SESSION[SESS_ERROR_FIELDS][$form_name])) {

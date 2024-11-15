@@ -258,7 +258,7 @@ function form_save() {
 
 			if (cacti_sizeof($data_template_fields)) {
 				foreach ($data_template_fields as $data_template_field) {
-					raise_message('data_template_rrd_' . $data_template_field['dtr_id'], __('Field "%s" is missing an Output Field', $data_template_field['data_source_name']), MESSAGE_LEVEL_WARN);
+					raise_message('data_template_rrd_' . $data_template_field['dtr_id'], __('Field "%s" is missing an Output Field.  Select the Output Field associated with this Data Source, and press Save again.', $data_template_field['data_source_name']), MESSAGE_LEVEL_WARN);
 				}
 			}
 		}
@@ -744,17 +744,15 @@ function template_edit() {
 	if (isset($template_data_rrds)) {
 		if (cacti_sizeof($template_data_rrds) > 1) {
 			/* draw the data source tabs on the top of the page */
-			print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>\n";
+			print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>";
 
 			foreach ($template_data_rrds as $template_data_rrd) {
-				print "<li class='subTab'><a " . (($template_data_rrd['id'] == get_request_var('view_rrd')) ? "class='pic selected'" : "class='pic'") . " href='" . html_escape('data_templates.php?action=template_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>" . ($i + 1) . ': ' . html_escape($template_data_rrd['data_source_name']) . '</a>' . ($template_data['data_sources'] == 0 ? "<a class='pic deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . get_request_var('id')) . "'></a>":"<a class='deleteMarkerDisabled fa fa-times' href='#' title='" . __esc('Data Templates in use can not be modified') . "'></a>") . "</li>\n";
+				print "<li class='subTab'><a " . (($template_data_rrd['id'] == get_request_var('view_rrd')) ? "class='pic selected'" : "class='pic'") . " href='" . html_escape('data_templates.php?action=template_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>" . ($i + 1) . ': ' . html_escape($template_data_rrd['data_source_name']) . '</a>' . ($template_data['data_sources'] == 0 ? "<a class='pic deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . get_request_var('id')) . "'></a>":"<a class='deleteMarkerDisabled fa fa-times' href='#' title='" . __esc('Data Templates in use can not be modified') . "'></a>") . "</li>";
 
 				$i++;
 			}
 
-			print "
-			</ul></nav>\n
-			</div>\n";
+			print "</ul></nav></div>";
 		} elseif (cacti_sizeof($template_data_rrds) == 1) {
 			set_request_var('view_rrd', $template_data_rrds[0]['id']);
 		}
@@ -992,37 +990,42 @@ function template() {
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
 		'page' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '1'
-			),
+		),
 		'filter' => array(
 			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
-			),
+		),
 		'sort_column' => array(
 			'filter'  => FILTER_CALLBACK,
 			'default' => 'name',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'sort_direction' => array(
 			'filter'  => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'profile' => array(
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
+		'method' => array(
+			'filter'  => FILTER_VALIDATE_INT,
+			'pageset' => true,
+			'default' => '-1'
+		),
 		'has_data' => array(
 			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
 			'default' => read_config_option('default_has') == 'on' ? 'true':'false'
-			)
+		)
 	);
 
 	validate_store_request_vars($filters, 'sess_dt');
@@ -1049,6 +1052,23 @@ function template() {
 						<input type='text' class='ui-state-default ui-corner-all' id='filter' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
+						<?php print __('Method');?>
+					</td>
+					<td>
+						<select id='method' onChange='applyFilter()' data-defaultLabel='<?php print __('Method');?>'>
+							<option value='-1'<?php print(get_request_var('method') == '-1' ? ' selected>':'>') . __('All');?></option>
+							<?php
+							$methods = array_rekey(db_fetch_assoc('SELECT id, name FROM data_input ORDER BY name'), 'id', 'name');
+
+							if (cacti_sizeof($methods)) {
+								foreach ($methods as $key => $value) {
+									print "<option value='" . $key . "'" . (get_request_var('method') == $key ? ' selected':'') . '>' . html_escape($value) . '</option>';
+								}
+							}
+							?>
+						</select>
+					</td>
+					<td>
 						<?php print __('Profile');?>
 					</td>
 					<td>
@@ -1057,16 +1077,12 @@ function template() {
 							<?php
 							$profiles = array_rekey(db_fetch_assoc('SELECT id, name FROM data_source_profiles ORDER BY name'), 'id', 'name');
 
-	if (cacti_sizeof($profiles)) {
-		foreach ($profiles as $key => $value) {
-			print "<option value='" . $key . "'";
-
-			if (get_request_var('profile') == $key) {
-				print ' selected';
-			} print '>' . html_escape($value) . "</option>\n";
-		}
-	}
-	?>
+							if (cacti_sizeof($profiles)) {
+								foreach ($profiles as $key => $value) {
+									print "<option value='" . $key . "'" . (get_request_var('profile') == $key ? ' selected':'') . '>' . html_escape($value) . '</option>';
+								}
+							}
+							?>
 						</select>
 					</td>
 					<td>
@@ -1076,16 +1092,12 @@ function template() {
 						<select id='rows' name='rows' onChange='applyFilter()' data-defaultLabel='<?php print __('Data Templates');?>'>
 							<option value='-1'<?php print(get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-	if (cacti_sizeof($item_rows)) {
-		foreach ($item_rows as $key => $value) {
-			print "<option value='" . $key . "'";
-
-			if (get_request_var('rows') == $key) {
-				print ' selected';
-			} print '>' . html_escape($value) . "</option>\n";
-		}
-	}
-	?>
+							if (cacti_sizeof($item_rows)) {
+								foreach ($item_rows as $key => $value) {
+									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected':'') . '>' . html_escape($value) . '</option>';
+								}
+							}
+							?>
 						</select>
 					</td>
 					<td>
@@ -1110,6 +1122,7 @@ function template() {
 			strURL += '?filter='+$('#filter').val();
 			strURL += '&rows='+$('#rows').val();
 			strURL += '&profile='+$('#profile').val();
+			strURL += '&method='+$('#method').val();
 			strURL += '&has_data='+$('#has_data').is(':checked');
 			loadUrl({url:strURL})
 		}
@@ -1154,6 +1167,10 @@ function template() {
 
 	if (get_request_var('profile') != '-1') {
 		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' dtd.data_source_profile_id=' . get_request_var('profile');
+	}
+
+	if (get_request_var('method') != '-1') {
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' dtd.data_input_id=' . get_request_var('method');
 	}
 
 	if (get_request_var('has_data') == 'true') {

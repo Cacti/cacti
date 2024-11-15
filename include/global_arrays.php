@@ -521,7 +521,8 @@ $input_types = array(
 	DATA_INPUT_TYPE_SCRIPT_QUERY        => __('Script Query'),    // Action 1:
 	DATA_INPUT_TYPE_PHP_SCRIPT_SERVER   => __('Script Server'),
 	DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER => __('Script Server Query'),
-	DATA_INPUT_TYPE_STREAM              => __('Stream Data')
+	DATA_INPUT_TYPE_STREAM              => __('Stream Data'),
+	DATA_INPUT_TYPE_STREAM_QUERY        => __('Stream Data Query')
 );
 
 $input_types_script = array(
@@ -986,7 +987,8 @@ $rrdtool_versions = array(
 	'1.7.0' => 'RRDtool 1.7+',
 	'1.7.1' => 'RRDtool 1.7.1+',
 	'1.7.2' => 'RRDtool 1.7.2+',
-	'1.8.0' => 'RRDtool 1.8+'
+	'1.8.0' => 'RRDtool 1.8+',
+	'1.9.0' => 'RRDtool 1.9+'
 );
 
 $i18n_modes = array(
@@ -1465,7 +1467,8 @@ $hash_system_data_inputs = array(
 	'bf566c869ac6443b0c75d1c32b5a350e', // Get SNMP Data (Indexed)
 	'80e9e4c4191a5da189ae26d0e237f015', // Get Script Data (Indexed)
 	'332111d8b54ac8ce939af87a7eac0c06', // Get Script Server Data (Indexed)
-	'7ed649bfa9cd627d7482b7700e88db53'  // Stream Data
+	'7ed649bfa9cd627d7482b7700e88db53', // Get Stream Data
+	'8489967af7ec4addacc6a67ca4e36c16'  // Get Stream Data (Indexed)
 );
 
 $host_struc = array(
@@ -2962,6 +2965,7 @@ $snmpagent_event_severity = array(
 
 $days_from_time_settings = array(
 	'mods' => array(
+		'y' => 31536000,
 		'd' => 86400,
 		'h' => 3600,
 		'm' => '60',
@@ -2969,14 +2973,16 @@ $days_from_time_settings = array(
 	),
 	'text' => array(
 		DAYS_FORMAT_SHORT => array(
+			'y'      => 'y',
 			'd'      => 'd',
-				'h'     => 'h',
-				'm'     => 'm',
+			'h'      => 'h',
+			'm'      => 'm',
 			's'      => 's',
 			'suffix' => ':',
 			'prefix' => '',
 		),
 		DAYS_FORMAT_MEDIUM => array(
+			'y'      => __('years'),
 			'd'      => __('days'),
 			'h'      => __('hrs'),
 			'm'      => __('mins'),
@@ -2985,6 +2991,7 @@ $days_from_time_settings = array(
 			'prefix' => ' ',
 		),
 		DAYS_FORMAT_MEDIUM_LOG => array(
+			'y'      => 'years',
 			'd'      => 'days',
 			'h'      => 'hrs',
 			'm'      => 'mins',
@@ -2993,6 +3000,7 @@ $days_from_time_settings = array(
 			'prefix' => ' ',
 		),
 		DAYS_FORMAT_LONG => array(
+			'y'      => __('years'),
 			'd'      => __('days'),
 			'h'      => __('hours'),
 			'm'      => __('minutes'),
@@ -3001,6 +3009,7 @@ $days_from_time_settings = array(
 			'prefix' => ' ',
 		),
 		DAYS_FORMAT_LONG_LOG => array(
+			'y'      => 'years',
 			'd'      => 'days',
 			'h'      => 'hours',
 			'm'      => 'minutes',

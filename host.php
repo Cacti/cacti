@@ -1390,7 +1390,10 @@ function get_device_records(&$total_rows, $rows) {
 		$sql_where = 'WHERE (deleted = "" AND (
 			host.hostname LIKE '	   . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR host.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR host.id = '			 . db_qstr(get_request_var('filter')) . '))';
+			OR host.notes LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR s.name LIKE '           . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR host.external_id LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR host.id = '			   . db_qstr(get_request_var('filter')) . '))';
 	} else {
 		$sql_where = "WHERE deleted = ''";
 	}

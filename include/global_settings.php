@@ -562,6 +562,42 @@ $settings['general'] = array(
 		'method'        => 'checkbox',
 		'default'       => 'on',
 	),
+	'github_spacer' => array(
+		'friendly_name' => __('GitHub/GitLab API Settings'),
+		'method'        => 'spacer',
+		'collapsible'   => 'true'
+	),
+	'github_repository' => array(
+		'friendly_name' => __('Base API Repository URL'),
+		'description'   => __('If you wish to get the latest plguins versions directly from GitHub or GitLab enter the GitHub or GitLab API url here.  The default is https://api.github.com/.  Change this only if you have your own repository that you maintain for Cacti Plugins.'),
+		'method'        => 'textbox',
+		'default'       => 'https://api.github.com/',
+		'size'          => '60',
+		'max_length'    => '100',
+	),
+	'github_user' => array(
+		'friendly_name' => __('GitHub User Account'),
+		'description'   => __('The User account that holds your GitHub/GitLab repositories.  Change this only if you have your own repository that you maintain for Cacti Plugins.'),
+		'method'        => 'textbox',
+		'default'       => 'cacti',
+		'size'          => '20',
+		'max_length'    => '20',
+	),
+	'github_access_token' => array(
+		'friendly_name' => __('Personal Access Token'),
+		'description'   => __('If you wish to get the latest plguins versions directly from GitHub without overly restricted rate limiting, enter your Personal Access Token here.'),
+		'method'        => 'textbox_password',
+		'default'       => '',
+		'noconfirm'     => true,
+		'size'          => '100',
+		'max_length'    => '255',
+	),
+	'github_allow_unsafe' => array(
+		'friendly_name' => __('Enable Unsafe Plugin Installs'),
+		'description'   => __('If you would like to allow the installation of Cacti Plugins from their \'develop\' branch, check this checkbox.'),
+		'method'        => 'checkbox',
+		'default'       => '',
+	),
 	'security_header' => array(
 		'friendly_name' => __('Site Security'),
 		'method'        => 'spacer',
@@ -2188,14 +2224,14 @@ $settings['boost'] = array(
 		'array'         => $boost_max_runtime
 	),
 	'boost_redirect' => array(
-		'friendly_name' => __('Enable direct population of poller_output_boost table'),
-		'description'   => __('Enables direct insert of records into poller output boost with results in a 25% time reduction in each poll cycle.'),
+		'friendly_name' => __('Enable Direct Population of Boost Table'),
+		'description'   => __('Enables direct insert of records into poller output boost table with results in a 25% time reduction in each poll cycle.'),
 		'method'        => 'checkbox',
 		'default'       => ''
 	),
 	'path_boost_log' => array(
 		'friendly_name' => __('Boost Debug Log'),
-		'description'   => __('If this field is non-blank, Boost will log RRDUpdate output from the boost	poller process.'),
+		'description'   => __('If this field is non-blank, Boost will log RRDUpdate output from the boost poller process. WARNING: This setting significantly affects the boost runtime'),
 		'method'        => 'filepath',
 		'file_type'     => 'ascii',
 		'default'       => '',

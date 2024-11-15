@@ -131,6 +131,11 @@ function dsstats_get_and_store_ds_avgpeak_values($interval, $type, $thread_id = 
 		set_config_option('dsstats_parallel', '1');
 	}
 
+	if (empty($thread_id)) {
+		$thread_id   = 1;
+		$max_threads = 1;
+	}
+
 	$rrdfiles   = get_rrdfile_names($thread_id, $max_threads);
 	$stats      = array();
 	$rrd_files += cacti_sizeof($rrdfiles);

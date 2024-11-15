@@ -35,11 +35,20 @@ set_default_action();
 
 switch (get_request_var('action')) {
 	case 'clear_poller_cache':
-		/* obtain timeout settings */
-		$max_execution = ini_get('max_execution_time');
-		ini_set('max_execution_time', '0');
-		repopulate_poller_cache();
-		ini_set('max_execution_time', $max_execution);
+		$running = is_process_running('pushout', 'rmaster', 0);
+
+		if ($running === false) {
+    		$php_binary = read_config_option('path_php_binary');
+
+    		exec_background($php_binary, CACTI_PATH_CLI . '/rebuild_poller_cache.php');
+
+			usleep(300000);
+
+			raise_message('repopulate_background', __('The Poller Cache Rebuild Operation has been started in background'), MESSAGE_LEVEL_INFO);
+		} elseif ($running === true) {
+			raise_message('repopulate_background', __('The Poller Cache Rebuild Operation has already been started.'), MESSAGE_LEVEL_INFO);
+		}
+
 		header('Location: utilities.php?action=view_poller_cache');
 
 		exit;
@@ -926,7 +935,31 @@ function utilities_view_poller_cache() {
 	</script>
 	<?php
 
-	html_start_box(__('Poller Cache Items'), '100%', '', '3', 'center', '');
+	$running = is_process_running('pushout', 'rmaster', 0);
+
+	switch($running) {
+		case false:
+			html_start_box(__('Poller Cache Items'), '100%', '', '3', 'center', '');
+
+			break;
+		case true:
+			html_start_box(__('Poller Cache Items [ <span class="blink deviceUp">Rebuild In Process - Press Go to Check Status</span> ]'), '100%', '', '3', 'center', '');
+
+			break;
+		case 97:
+			html_start_box(__('Poller Cache Items [ Rebuild Crashed without Unregistering ]'), '100%', '', '3', 'center', '');
+
+			break;
+		case 98:
+			html_start_box(__('Poller Cache Items [ Rebuild Timed out but is Running ]'), '100%', '', '3', 'center', '');
+
+			break;
+		case 99:
+			html_start_box(__('Poller Cache Items [ Rebuild Timed out and Crashed ]'), '100%', '', '3', 'center', '');
+
+			break;
+	}
+
 
 	?>
 	<tr class='even noprint'>

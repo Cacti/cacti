@@ -335,31 +335,33 @@ switch (get_nfilter_request_var('action')) {
 		}
 
 		?>
-	<script type='text/javascript'>
-	var refreshIsLogout = false;
-	var refreshPage     = '<?php print str_replace('tree_content', 'tree', sanitize_uri($_SERVER['REQUEST_URI']));?>';
-	var refreshMSeconds = <?php print read_user_setting('page_refresh') * 1000;?>;
-	var graph_start     = <?php print get_current_graph_start();?>;
-	var graph_end       = <?php print get_current_graph_end();?>;
-	var timeOffset      = <?php print date('Z');?>
+		<script type='text/javascript'>
+		var refreshIsLogout = false;
+		var refreshPage     = '<?php print str_replace('tree_content', 'tree', sanitize_uri($_SERVER['REQUEST_URI']));?>';
+		var refreshMSeconds = <?php print read_user_setting('page_refresh') * 1000;?>;
+		var graph_start     = <?php print get_current_graph_start();?>;
+		var graph_end       = <?php print get_current_graph_end();?>;
+		var timeOffset      = <?php print date('Z');?>
 
-	// Adjust the height of the tree
-	$(function() {
-		pageAction   = 'tree';
-		navHeight    = $('.cactiTreeNavigationArea').height();
-		windowHeight = $(window).height();
-		navOffset    = $('.cactiTreeNavigationArea').offset();
+		// Adjust the height of the tree
+		$(function() {
+			pageAction   = 'tree';
+			navHeight    = $('.cactiTreeNavigationArea').height();
+			windowHeight = $(window).height();
+			navOffset    = $('.cactiTreeNavigationArea').offset();
 
-		if (navOffset.top == undefined) {
-			navOffset.top = 0;
-		}
+			if (navOffset.top == undefined) {
+				navOffset.top = 0;
+			}
 
-		if (navHeight + navOffset.top < windowHeight) {
-			$('.cactiTreeNavigationArea').height(windowHeight - navOffset.top);
-		}
-	});
-	</script>
-	<?php
+			if (navHeight + navOffset.top < windowHeight) {
+				$('.cactiTreeNavigationArea').height(windowHeight - navOffset.top);
+			}
+
+			handleUserMenu();
+		});
+		</script>
+		<?php
 
 		$access_denied   = false;
 		$tree_parameters = array();

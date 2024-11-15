@@ -215,14 +215,18 @@ input[type="checkbox"]:focus-within + label:before {
 .cactiGraphContentArea,
 .cactiConsoleContentArea {
     display: flex;
-    overflow-y: hidden !important;
+    overflow-y: hidden !important;              /* ensure to reset inline styles driven by layout.js ;( */
+    overflow-x: auto !important;                /* ensure to reset inline styles driven by layout.js ;( */
+    height: auto !important;                    /* ensure to reset inline styles driven by layout.js ;( */
     align-items: stretch;
     flex-direction: column;
     flex-wrap: nowrap;
     justify-content: flex-start;
 
     & #main, #main {
-        overflow-y: auto;
+        display: unset !important;              /* ensure to reset inline styles driven by layout.js ;( */
+        overflow-y: auto !important;            /* ensure to reset inline styles driven by layout.js ;( */
+        overflow-x: auto !important;            /* ensure to reset inline styles driven by layout.js ;( */
         padding: 0 0 0.5rem 1rem;
         width: 100%;
         height: 100%;

@@ -101,7 +101,7 @@ if (csrf_writable($path_csrf_secret)) {
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_cli_version();
-	print "Cacti Rebuild Poller Cache Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
+	print "Cacti CSRF File Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 /*	display_help - displays the usage of the function */

@@ -1066,7 +1066,7 @@ function get_message_max_type(?array $output_messages = null) {
 	$level = MESSAGE_LEVEL_NONE;
 
 	if ($output_messages === null && isset($_SESSION[SESS_MESSAGES])) {
-		$ouptut_messages = $_SESSION[SESS_MESSAGES];
+		$output_messages = $_SESSION[SESS_MESSAGES];
 	}
 
 	if (is_array($output_messages)) {
@@ -1580,6 +1580,49 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	}
 
 	$database_log = $last_log;
+
+	if (1 == 0) {
+		$limit = $skip = 0;
+		$skip  = $skip >= 0 ? $skip : 1;
+		$limit = $limit > 0 ? ($limit + $skip) : 0;
+
+		$callers = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $limit);
+
+		while ($skip > 0) {
+			array_shift($callers);
+			$skip--;
+		}
+
+		$s='';
+
+		foreach ($callers as $c) {
+			if (isset($c['line'])) {
+				$line = '[' . $c['line'] . ']';
+			} else {
+				$line = '';
+			}
+
+			if (isset($c['file'])) {
+				$file = str_replace(CACTI_PATH_BASE, '', $c['file']) . $line;
+			} else {
+				$file = $line;
+			}
+
+			$func = $c['function'].'()';
+
+			if (isset($c['class'])) {
+				$func = $c['class'] . $c['type'] . $func;
+			}
+
+			$s = ($file != '' ? $file . ':':'') . "$func" . (empty($s) ? '' : ', ') . $s;
+		}
+
+		if (!empty($s)) {
+			$s = ' (' . $s . ')';
+		}
+
+		error_log($message . '-----------------' . $s);
+	}
 }
 
 /**
@@ -3175,7 +3218,7 @@ function get_color(int $color_id):string|false {
 	return db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($color_id));
 }
 
-// TODO: This marker is to identifer where to resume typing and PHPDoc syntax updating
+// TODO: This marker is to identify where to resume typing and PHPDoc syntax updating
 
 /**
  * get_graph_title_cache - returns the title of the graph using the title cache
@@ -3293,7 +3336,11 @@ function get_template_account($user = '') {
  * @param  $user_id - (int) the ID of the user
  *
  * @return mixed the username */
-function get_username($user_id) {
+function get_username($user_id = 0) {
+	if ($user_id == 0) {
+		$user_id = $_SESSION[SESS_USER_ID];
+	}
+
 	return db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($user_id));
 }
 
@@ -3429,6 +3476,10 @@ function generate_graph_best_cf($local_data_id, $requested_cf, int $ds_step = 60
 		} else {
 			$best_cf = '1';
 		}
+	}
+
+	if (empty($best_cf)) {
+		$best_cf = '1';
 	}
 
 	/* if you can not figure it out return average */
@@ -5196,9 +5247,9 @@ function send_mail(array|string $to, string|array|null $from = null, string $sub
  * @param  null|array|string      $cc                  none, single or multiple contacts
  * @param  null|array|string      $bcc                 none, single or multiple contacts
  * @param  null|array|string      $replyto             none, single or multiple contacts
- * @param  null|string            $subject             Messgae subject
+ * @param  null|string            $subject             Message subject
  * @param  null|string            $body                Message body, in HTML format
- * @param  null|string            $body_text           Messgae body, in TEXT format
+ * @param  null|string            $body_text           Message body, in TEXT format
  * @param  null|array|string      $attachments         Attachments to send
  * @param  null|array             $headers             Custom headers
  * @param  boolean                $html                Assume HTML format
@@ -6662,22 +6713,30 @@ function call_remote_data_collector($poller_id, $url, $logtype = 'WEBUI') {
 
 	$output = array();
 
+	/* register error handlers for the remote agent calls */
 	set_error_handler(
 		function ($severity, $message, $file, $line) {
 			throw new ErrorException($message, $severity, $severity, $file, $line);
+			return false;
 		}
 	);
 
-	$start = microtime(true);
+	$ra_start = microtime(true);
 
 	try {
 		$output = file_get_contents(get_url_type() .'://' . $hostname . $port . $url, false, $fgc_context);
-	} catch (Exception $e) {
-		$end = microtime(true);
+	} catch (ErrorException $e) {
+		$ra_end = microtime(true);
 
-		cacti_log(sprintf('WARNING: Failed talking to Remote Data Collector \'%s\' after %0.2f seconds.  URL:\'%s:\', Error:\'%s:\'', $poller_id, ($end - $start), $url, $e-getMessage()), false, $logtype);
+		if (debounce_run_notification('poller_connect_down:' . $poller_id)) {
+			cacti_log(sprintf('WARNING: Failed talking to Remote Data Collector \'%s\' after %0.2f seconds.  URL:\'%s:\', Error:\'%s:\'', $poller_id, ($ra_end - $ra_start), $url, $e->getMessage()), false, $logtype);
+			admin_email(__('Cacti System Warning'), __("Failed to Contact Remote Agent %s\nReason: %s.\nSee Cacti Log for details.", $hostname, $e->getMessage()));
+		}
+
+		return false;
 	}
 
+	/* restore the two original error handlers */
 	restore_error_handler();
 
 	return $output;
@@ -7099,7 +7158,7 @@ function format_cacti_version($version, $format = CACTI_VERSION_FORMAT_FULL) {
 	if (count($parts) > 3) {
 		if ($parts[3] == '-1') {
 			$source = get_source_timestamp();
-			cacti_log('Source: ' . json_encode($source ?? '<null>'), false, 'DEBUG');
+			//cacti_log('Source: ' . json_encode($source ?? '<null>'), false, 'DEBUG');
 			$parts[3] = 99;
 			$parts[4] = $source[0];
 			$parts[5] = $source[1];
@@ -7396,7 +7455,7 @@ function version_to_decimal(string $version, int $length = 9, bool $hex = true):
 function version_to_bits(string $version, $hex = false): int {
 	/***************************************************
 	 * Bits is how many bits to shift that section of a
-	 * version to the left wihtin the integer.
+	 * version to the left within the integer.
 	 *
 	 * vMajor.Minor.Reversion.Patch.Timestamp
 	 *
@@ -7411,7 +7470,7 @@ function version_to_bits(string $version, $hex = false): int {
 
 	// Do we have a version that isn't 'unknown'
 	if ($version !== 'Unknown') {
-		// Format the verison and explode it
+		// Format the version and explode it
 		// and find the total number of parts
 		$txtVersion = format_cacti_version($version);
 		$parts      = explode('.', $txtVersion);
@@ -7757,7 +7816,7 @@ function get_theme_paths(string $format, string $path, ?string $theme = null, ?s
  * @param  string      $path    Path to include
  * @param  boolean     $async   Load asynchronously
  * @param  string|null $theme   Theme to use
- * @param  string|null $file    File to inlcude
+ * @param  string|null $file    File to include
  *
  * @return void
  */
@@ -7773,7 +7832,7 @@ function get_md5_include_js(string $path, bool $async = false, ?string $theme = 
  * @param  string      $path    Path to include
  * @param  boolean     $async   Load asynchronously
  * @param  string|null $theme   Theme to use
- * @param  string|null $file    File to inlcude
+ * @param  string|null $file    File to include
  *
  * @return void
  */
@@ -7789,7 +7848,7 @@ function get_md5_include_css(string $path, bool $async = false, ?string $theme =
  * @param  string      $path    Path to include
  * @param  boolean     $async   Load asynchronously
  * @param  string|null $theme   Theme to use
- * @param  string|null $file    File to inlcude
+ * @param  string|null $file    File to include
  * @param  string|null $rel     Rel type output when not null (eg, icon, shortcut icon)
  * @param  string|null $sizes   Sizes output when not null (eg, 96x96)
  *
@@ -8274,6 +8333,10 @@ function cacti_session_start() {
 		die('PHP Session Management is missing, please install PHP Session module');
 	}
 
+	if (!isset($config[CACTI_SESSION_NAME])) {
+		return false;
+	}
+
 	session_name($config[CACTI_SESSION_NAME]);
 
 	if (session_status() === PHP_SESSION_NONE) {
@@ -8312,7 +8375,7 @@ function cacti_session_destroy() {
 }
 
 /**
- * cacti_cookie_set - Allows for settings an arbitry cookie name and value
+ * cacti_cookie_set - Allows for settings an arbitrary cookie name and value
  * used for CSRF protection.
  *
  * @param  mixed $session
@@ -8523,7 +8586,7 @@ function cacti_browser_zone_enabled() {
 /**
  * cacti_time_zone_set - Givin an offset in minutes, attempt
  * to set a PHP date.timezone.  There are some oddballs that
- * we have to accomodate.
+ * we have to accommodate.
  *
  * @param  mixed $gmt_offset
  *

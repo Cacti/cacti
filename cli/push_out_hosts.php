@@ -46,8 +46,7 @@ cacti_log('WARNING: Deprecated script push_out_hosts.php. Please use rebuild_pol
 if (in_array('-v', $parms) || in_array('-V', $parms) || in_array('--version', $parms)) {
 	// exception for github tests
 	print 'Cacti Repopulate poller cache Tool, Version ' . CACTI_VERSION . ' ' . COPYRIGHT_YEARS . PHP_EOL;
-}
-else {
+} else {
 	print 'WARNING: Deprecated script push_out_hosts.php. Please use rebuild_poller_cache.php.' . PHP_EOL;
-	passthru ($php_binary . ' ' . CACTI_PATH_CLI . '/rebuild_poller_cache.php ' .$parameters);
+	passthru ($php_binary . ' ' . CACTI_PATH_CLI . '/rebuild_poller_cache.php ' . $parameters);
 }

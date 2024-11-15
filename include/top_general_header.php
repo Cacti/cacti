@@ -53,14 +53,8 @@ if (!$is_request_ajax) { ?>
 	<div id='cactiContent' class='cactiContent'>
 		<?php if (isset($user_menu) && is_array($user_menu)) {?>
 		<div style='display:none;' id='navigation' class='cactiConsoleNavigationArea'>
-			<table style='width:100%;'>
-				<?php draw_menu($user_menu);?>
-				<tr>
-					<td style='text-align:center;'>
-						<div class='cactiLogo' onclick='loadUrl({url:"<?php print CACTI_PATH_URL;?>about.php"})'></div>
-					</td>
-				</tr>
-			</table>
+			<?php draw_menu($user_menu);?>
+			<div class='cactiLogo' onclick='loadUrl({url:"<?php print CACTI_PATH_URL;?>about.php"})'></div>
 		</div>
 		<?php } ?>
 		<div id='navigation_right' class='cactiConsoleContentArea'>

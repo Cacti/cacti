@@ -23,10 +23,13 @@ Cacti CHANGELOG
 -issue#5776: Undefined array key "description" in file settings.php
 -issue#5844: Automation fails when using MySQL 8
 -issue#5885: Fix Fortigate and Aruba OSCX switch template, improve Clearpass template
+-issue#5899: Tooltip remain on page after page is refreshed
+-issue#5900: Please add the ability to select compiled RRDtool v1.9+
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1442: Add validation to GUI inputs
 -feature#1523: Value above RRD maximum value
+-feature#1987: Plugins should be able to be downloaded, installed, and upgraded from Plugin Management
 -feature#2166: LDAP configuration should only use 'user_domains_ldap'
 -feature#2437: Create system-wide Proxy settings for plugins
 -feature#2439: Allow CDEF to be used as a filter for Graph/Graph Templates
@@ -34,6 +37,7 @@ Cacti CHANGELOG
 -feature#2550: Enable use of authenticator codes for Two-Factor Authentication
 -feature#2572: Support Sorting of Tree or Graph View by Data Source
 -feature#2607: Allow adding sites from command line
+-feature#2738: Set cache rebuild process indicator for the Cacti UI
 -feature#2767: Plugins should be temporarily disabled if a required plugin is also disabled
 -feature#2959: Add multi threading for push out hosts (cli)
 -feature#3048: Allow different log settings for remote pollers
@@ -99,6 +103,9 @@ Cacti CHANGELOG
 -feature#5463: When building Automation Rules, show the 'effective sql' on the page for users who know SQL
 -feature#5578: Provide new templates for Aruba switch, Aruba wifi controller and HPE iLO to be available during install
 -feature#5596: Add template Aruba OSCX switch 6x00
+-feature#5601: Order Graph Item Inputs Naturally (MariaDB 10.7++, no MySQL support)
+-feature#5681: Add poller information to graph-variables
+-feature#5717: Add Aruba Clearpass template
 -feature#5804: Remove the Classic Theme in Cacti
 -feature#5833: Add button for remove all data and configuration/settings
 -feature#5838: Reduce the number of default log from automation
@@ -107,15 +114,20 @@ Cacti CHANGELOG
 -feature#5860: When Cacti is running on MariaDB move the Data Source statistics partitions to the ARIA table format
 -feature#5861: In Cacti Utilities, be able to view the MariaDB/MySQL processeslist and active background tasks
 -feature#5862: Change logging message around remote agent timeout
+-feature#5866: Add 'database' to the permission structure in db_get_permissions() function
 -feature#5871: Make it possible for splice_rrd.php to run from outside of Cacti
 -feature#5889: Make it so that Cacti does not share sessions between browser tabs
 -feature#5892: Enable Authentication Cookies by Default in New Installs
+-feature#5907: Add Filter for Data Input Method on Data Templates
+-feature#5908: Add Searching of Notes and External ID when Searching for a Device
+-feature#5920: Remove the use of tables for alignment on graphs page and move to flex alignment
+-feature#5922: Add HPE Nimble/Alletra template
 -feature: Allow messages to be popup notifications
 -feature: Upgrade billboard.js to version 3.7.4
 -feature: Upgrade d3.js to version 7.8.2
 -feature: Upgrade ua-parser.js to version 1.0.35
--feature#5717: Add Aruba Clearpass template
--feature#5922: Add HPE Nimble/Alletra template
+-feature: Add parsedown to vendor library for plugin CHANGELOG and README viewing support
+-feature: Add year display to get_daysfromtime function
 
 1.2.29
 -issue#5843: Issue with temporary tables with use of microtime

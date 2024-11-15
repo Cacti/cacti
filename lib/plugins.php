@@ -314,7 +314,7 @@ function api_plugin_get_dependencies($plugin) {
 		$info = parse_ini_file($file, true);
 
 		if (isset($info['info']['requires']) && trim($info['info']['requires']) != '') {
-			$parts = explode(' ', trim($info['info']['requires']));
+			$parts = array_map('trim', explode(' ', $info['info']['requires']));
 
 			foreach ($parts as $p) {
 				$vparts = explode(':', $p);
@@ -677,12 +677,12 @@ function api_plugin_can_install($plugin, &$message) {
 
 	if (is_array($dependencies) && cacti_sizeof($dependencies)) {
 		foreach ($dependencies as $dependency => $version) {
-			if (!api_plugin_minimum_version($dependency, $version)) {
-				$message .= __('%s Version %s or above is required for %s. ', ucwords($dependency), $version, ucwords($plugin));
+			if (!plugin_valid_version_range($dependency, $version)) {
+				$message .= __('\'%s\' versions \'%s\' above or in range are required to install \'%s\'. ', ucwords($dependency), $version, ucwords($plugin));
 
 				$proceed = false;
 			} elseif (!api_plugin_installed($dependency)) {
-				$message .= __('%s is required for %s, and it is not installed. ', ucwords($dependency), ucwords($plugin));
+				$message .= __('\'%s\' must first be installed before \'%s\' is installed. ', ucwords($dependency), ucwords($plugin));
 
 				$proceed = false;
 			}
@@ -753,8 +753,8 @@ function api_plugin_install($plugin) {
 	}
 
 	db_execute_prepared('INSERT INTO plugin_config
-		(directory, name, author, webpage, version)
-		VALUES (?, ?, ?, ?, ?)',
+		(directory, name, author, webpage, version, last_updated)
+		VALUES (?, ?, ?, ?, ?, NOW())',
 		array($plugin, $name, $author, $webpage, $version));
 
 	$function = 'plugin_' . $plugin . '_install';
@@ -769,12 +769,16 @@ function api_plugin_install($plugin) {
 				SET status = 4
 				WHERE directory = ?',
 				array($plugin));
+
+			cacti_log(sprintf('NOTE: Cacti Plugin %s has been installed by %s', $plugin, get_username()), false, 'PLUGIN');
 		} else {
 			// Set the plugin as "needs configuration"
 			db_execute_prepared('UPDATE plugin_config
 				SET status = 2
 				WHERE directory = ?',
 				array($plugin));
+
+			cacti_log(sprintf('WARNING: Cacti Plugin %s was not installed by %s due to Configuration Issues', $plugin, get_username()), false, 'PLUGIN');
 		}
 	} else {
 		raise_message('install_error', __('The Plugin in the directory \'%s\' does not include an install function \'%s()\'.  This function must exist for the plugin to be installed.', $plugin, $function), MESSAGE_LEVEL_ERROR);
@@ -782,6 +786,55 @@ function api_plugin_install($plugin) {
 	}
 
 	api_plugin_replicate_config();
+}
+
+/**
+ * api_plugin_upgrade_register - Check the current version vs. the info version
+ * and if it finds that they are different, it will update the version
+ * and return true or false depending on if the version was changed.
+ *
+ * @param   string  The name of the plugin
+ *
+ * @return  bool    True if the version changed else false
+ */
+function api_plugin_upgrade_register($plugin) {
+	global $config;
+
+	$info = plugin_load_info_file(CACTI_PATH_PLUGINS . '/' . $plugin . '/INFO');
+
+	if ($info) {
+		$details = db_fetch_row_prepared('SELECT *
+			FROM plugin_config
+			WHERE directory = ?',
+			array($plugin));
+
+		if (cacti_sizeof($details)) {
+			$id      = $details['id'];
+			$version = $details['version'];
+
+			if (isset($info['webpage'])) {
+				$info['homepage'] = $info['webpage'];
+			}
+
+			if ($version != $info['version']) {
+				db_execute_prepared('UPDATE plugin_config
+					SET name = ?, author = ?, webpage = ?, version = ?, last_updated = NOW()
+					WHERE id = ?',
+					array(
+						$info['longname'],
+						$info['author'],
+						$info['homepage'],
+						$info['version'],
+						$id
+					)
+				);
+
+				return true;
+			}
+		}
+	}
+
+	return false;
 }
 
 function api_plugin_uninstall_integrated() {
@@ -822,6 +875,8 @@ function api_plugin_uninstall($plugin, $tables = true) {
 	}
 
 	api_plugin_replicate_config();
+
+	cacti_log(sprintf('NOTE: Cacti Plugin %s has been uninstalled by %s', $plugin, get_username()), false, 'PLUGIN');
 }
 
 function api_plugin_check_config($plugin) {
@@ -854,6 +909,8 @@ function api_plugin_enable($plugin) {
 			SET status = 1
 			WHERE directory = ?',
 			array($plugin));
+
+		cacti_log(sprintf('WARNING: Cacti Plugin %s has been enabled by %s', $plugin, get_username()), false, 'PLUGIN');
 	}
 }
 
@@ -889,6 +946,8 @@ function api_plugin_disable($plugin) {
 		array($plugin));
 
 	api_plugin_replicate_config();
+
+	cacti_log(sprintf('WARNING: Cacti Plugin %s has been disabled by %s', $plugin, get_username()), false, 'PLUGIN');
 }
 
 function api_plugin_remove_data($plugin) {
@@ -967,7 +1026,7 @@ function api_plugin_disable_all($plugin) {
 	api_plugin_disable_hooks_all($plugin);
 
 	db_execute_prepared('UPDATE plugin_config
-		SET status = 4
+		SET status = 7
 		WHERE directory = ?',
 		array($plugin));
 
@@ -1283,6 +1342,340 @@ function api_plugin_user_realm_auth($filename = '') {
 	return false;
 }
 
+function api_plugin_reorder($new_order) {
+	if (cacti_sizeof($new_order)) {
+		$plugins = db_fetch_assoc('SELECT * FROM plugin_config ORDER BY id');
+		$columns = array_keys($plugins[0]);
+
+		$plugins_reorder = array_rekey($plugins, 'id', $columns);
+
+		foreach($new_order as $plugin) {
+			$id = str_replace('line', '', $plugin);
+			input_validate_input_number($id, 'id');
+
+			$order[] = $id;
+		}
+
+		$sequence = 1;
+
+		$sql = 'REPLACE INTO plugin_config
+			(id, directory, name, status, author, webpage, version, last_updated)
+			VALUES ';
+
+		$params = array();
+
+		foreach($order as $id) {
+			if (isset($plugins_reorder[$id])) {
+				$plugins_reorder[$id]['id'] = $sequence;
+
+				$sql .= ($sequence > 1 ? ',':'') . '(?, ?, ?, ?, ?, ?, ?, ?)';
+
+				$params[] = $plugins_reorder[$id]['id'];
+				$params[] = $plugins_reorder[$id]['directory'];
+				$params[] = $plugins_reorder[$id]['name'];
+				$params[] = $plugins_reorder[$id]['status'];
+				$params[] = $plugins_reorder[$id]['author'];
+				$params[] = $plugins_reorder[$id]['webpage'];
+				$params[] = $plugins_reorder[$id]['version'];
+				$params[] = $plugins_reorder[$id]['last_updated'];
+
+				$sequence++;
+			}
+		}
+
+		/* resequence it one transaction */
+		db_execute_prepared($sql, $params);
+
+		/* remove anything invalid */
+		db_execute_prepared('DELETE FROM plugin_config WHERE id >= ?', array($sequence));
+	}
+}
+
+function api_plugin_get_available_file_contents($plugin, $tag, $filetype) {
+	include_once(CACTI_PATH_INCLUDE . '/vendor/parsedown/Parsedown.php');
+
+	if (db_column_exists('plugin_available', $filetype)) {
+		$contents = db_fetch_cell_prepared("SELECT $filetype AS data
+			FROM plugin_available
+			WHERE plugin = ?
+			AND tag_name = ?",
+			array($plugin, $tag));
+
+		if ($contents != '') {
+			$contents = base64_decode($contents);
+
+			$Parsedown = new Parsedown();
+
+			print $Parsedown->text($contents);
+		} else {
+			return false;
+		}
+	} else {
+		return false;
+	}
+}
+
+function api_plugin_archive_remove($plugin, $id) {
+	db_execute_prepared('DELETE FROM plugin_archive
+		WHERE plugin = ? AND id = ?',
+		array($plugin, $id));
+
+	raise_message('plugin_archive_removed', __('The Archive for Plugin \'%s\' has been removed.', $plugin), MESSAGE_LEVEL_INFO);
+}
+
+function api_plugin_archive_restore($plugin, $id, $type = 'archive') {
+	if ($type == 'archive') {
+		$archive = db_fetch_cell_prepared('SELECT archive
+			FROM plugin_archive
+			WHERE plugin = ?
+			AND id = ?',
+			array($plugin, $id));
+	} else {
+		$archive = db_fetch_cell_prepared('SELECT archive
+			FROM plugin_available
+			WHERE plugin = ?
+			AND tag_name = ?',
+			array($plugin, $id));
+	}
+
+	if ($archive != '') {
+		$tmpfile  = sys_get_temp_dir() . '/' . $plugin . '_' . rand() . '.tar.gz';;
+		$pharfile = "phar://{$tmpfile}";
+
+		$file_data = base64_decode($archive);
+
+		if ($file_data != '') {
+			/* set the restore path to the plugin directory */
+			$restore_path = CACTI_PATH_BASE . "/plugins/$plugin";
+
+			/* write the archive to the temporary directory */
+			file_put_contents($tmpfile, $file_data);
+
+			/* open the archive */
+			$archive = new PharData($tmpfile);
+
+			/* create directory if required */
+			if (!is_dir($restore_path)) {
+				if (!mkdir($restore_path, 0755, true)) {
+					if ($type == 'archive') {
+						raise_message('restore_failed', __('Restore failed!  The Plugin \'%s\' archive Restore failed.  Unable to create directory \'%s\'.', $plugin, $restore_path), MESSAGE_LEVEL_ERROR);
+					} else {
+						raise_message('restore_failed', __('Restore failed!  The available Plugin \'%s\' Load failed.  Unable to create directory \'%s\'.', $plugin, $restore_path), MESSAGE_LEVEL_ERROR);
+					}
+
+					$archive->__destruct();
+					unlink($tmpfile);
+
+					return false;
+				}
+			}
+
+			/* get the list of files and directories from inside the archive file */
+			$archive_files = array();
+
+			foreach (new RecursiveIteratorIterator($archive) as $file) {
+				/**
+				 * archives from github have an extra directory
+				 * remove it.
+				 *
+				 * an example from the resulting array:
+				 * [CHANGELOG.md] => /Cacti-plugin_cycle-e941f17/CHANGELOG.md
+				 */
+				if ($type != 'archive') {
+					$pfile    = str_replace($pharfile, '', $file->getPathname());
+					$tfile    = ltrim($pfile, '/');
+					$paths    = explode('/', $tfile);
+					$bad_path = array_shift($paths);
+					$tfile    = implode('/', $paths);
+
+					/* skip hidden files like .github* */
+					if (substr($tfile, 0, 1) == '.' && $tfile != '.htaccess') {
+						continue;
+					}
+
+					$archive_files[$tfile] = $pfile;
+				} else {
+					$tfile = str_replace("phar://{$tmpfile}", '', $file->getPathname());
+
+					$archive_files[$tfile] = $tfile;
+				}
+			}
+
+			/* get the list of files in the current plugin directory */
+			$dir_iterator = new RecursiveDirectoryIterator($restore_path);
+			$iterator     = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::SELF_FIRST);
+
+			$current_files = array();
+			foreach ($iterator as $file) {
+				$file = str_replace($restore_path, '', $file);
+
+				if (substr($file, -1) == '.') {
+					continue;
+				}
+
+				$current_files[$file] = $file;
+			}
+
+			/* relative plugin data locations that should not be remove */
+			$info_file = CACTI_PATH_PLUGINS . '/' . $plugin . '/INFO';
+			$noremove  = array();
+			if (file_exists($info_file)) {
+				$info = plugin_load_info_file($info_file);
+
+				if (isset($info['noremove'])) {
+					$noremove = explode(' ', $info['noremove']);
+				}
+			}
+
+			/* remove files that are not in the archive */
+			foreach ($current_files as $file) {
+				if (!is_dir("$restore_path/$file") && !isset($archive_files[$file])) {
+					if (basename($file) !== 'config.php' && basename($file) != 'config_local.php') {
+						if (!in_array(dirname($file), $noremove)) {
+							// Let's not do that until we figure out weathermap.
+							// We need a discussion by the cactigroup as well
+							// unlink("$restore_path/$file");
+						}
+					}
+				}
+			}
+
+			/* load the archive into memory */
+			Phar::loadPhar($tmpfile, 'my.tgz');
+
+			/**
+			 * put yourself into the base directory in order to
+			 * be able to use basenames to create things like
+			 * directories.
+			 */
+			chdir($restore_path);
+
+			foreach($archive_files as $basefile => $pharpath) {
+				$output = file_get_contents("phar://my.tgz{$pharpath}");
+
+				if (strlen($output)) {
+					$rfile = ltrim($basefile, '/');
+
+					if (basename($rfile) != $rfile) {
+						if (!is_dir(dirname($rfile)) && !mkdir(dirname($rfile), 0755, true)) {
+							if ($type == 'archive') {
+								raise_message('restore_failed', __('Restore failed!  The archived Plugin \'%s\' Restore failed. Unable to create directory %s', $plugin, dirname($basefile)), MESSAGE_LEVEL_INFO);
+							} else {
+								raise_message('restore_failed', __('Load failed!  The available Plugin \'%s\' Load failed. Unable to create directory %s', $plugin, dirname($basefile)), MESSAGE_LEVEL_INFO);
+							}
+
+							$archive->__destruct();
+							unlink($tmpfile);
+
+							return false;
+						}
+					}
+
+					file_put_contents($restore_path . '/' . $basefile, $output);
+				}
+			}
+
+			$archive->__destruct();
+
+			/* remove the archive file */
+			unlink($tmpfile);
+
+			if ($type == 'archive') {
+				raise_message('archive_restored', __('Restore succeeded!  The archived Plugin \'%s\' Restore succeeded.', $plugin), MESSAGE_LEVEL_INFO);
+			} else {
+				raise_message('archive_restored', __('Load succeeded!  The available Plugin \'%s\' Load succeeded.', $plugin), MESSAGE_LEVEL_INFO);
+			}
+
+			return true;
+		} else {
+			if ($type == 'archive') {
+				raise_message('archive_failed', __('Restore failed!  The archived Plugin \'%s\' Restore failed.  Check the cacti.log for warnings.', $plugin), MESSAGE_LEVEL_ERROR);
+			} else {
+				raise_message('archive_failed', __('Load failed!  The available Plugin \'%s\' Load failed.  Check the cacti.log for warnings.', $plugin), MESSAGE_LEVEL_ERROR);
+			}
+
+			return false;
+		}
+	} else {
+		if ($type == 'archive') {
+			raise_message('plugin_archive_not_found', __('Restore failed!  Unable to locate the archive record for Plugin \'%s\' in the database.', $plugin), MESSAGE_LEVEL_ERROR);
+		} else {
+			raise_message('plugin_archive_not_found', __('Load failed!  Unable to locate the available record for Plugin \'%s\' in the database.', $plugin), MESSAGE_LEVEL_ERROR);
+		}
+
+		return false;
+	}
+}
+
+function api_plugin_archive($plugin) {
+	$plugin_data = db_fetch_row_prepared('SELECT *
+		FROM plugin_config
+		WHERE directory = ?',
+		array($plugin));
+
+	if (cacti_sizeof($plugin_data)) {
+		$tmpfile  = sys_get_temp_dir() . '/' . $plugin . '_' . rand() . '.tar';
+		$tmpafile = "$tmpfile.gz";
+		$path     = CACTI_PATH_BASE . "/plugins/$plugin";
+		$md5sum   = md5sum_path($path);
+
+		/* create the tar file */
+		$archive = new PharData($tmpfile);
+		$archive->buildFromDirectory($path);
+
+		/* create the tar.gz file */
+		$archive->compress(Phar::GZ);
+		$archive->__destruct();
+
+		/* delete the tar file */
+		unlink($tmpfile);
+
+		$info_file = CACTI_PATH_PLUGINS . '/' . $plugin . '/INFO';
+		$compat    = '';
+		$requires  = '';
+
+		if (file_exists($info_file)) {
+			$info = plugin_load_info_file($info_file);
+
+			if (isset($info['compat'])) {
+				$compat = $info['compat'];
+			}
+
+			if (isset($info['requires'])) {
+				$requires = $info['requires'];
+			}
+		}
+
+		if (file_exists($tmpafile)) {
+			db_execute_prepared('INSERT INTO plugin_archive
+				(plugin, description, author, webpage, version, requires, compat, user_id, dir_md5sum, last_updated, archive)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				array(
+					$plugin,
+					$plugin_data['name'],
+					$plugin_data['author'],
+					$plugin_data['webpage'],
+					$plugin_data['version'],
+					$requires,
+					$compat,
+					SESS_USER_ID,
+					$md5sum,
+					date('Y-m-d H:i:s'),
+					base64_encode(file_get_contents($tmpafile))
+				)
+			);
+
+			unlink($tmpafile);
+
+			raise_message('plugin_archived', __('The Plugin \'%s\' has been archived successfully.', $plugin), MESSAGE_LEVEL_INFO);
+		} else {
+			raise_message('plugin_archive_failed', __('The Plugin \'%s\' archiving process has failed.  Check the Cacti log for errors.', $plugin), MESSAGE_LEVEL_ERROR);
+		}
+	} else {
+		raise_message('plugin_archive_failed', __('The Plugin \'%s\' archiving process has failed due to the plugin directory being missing.', $plugin), MESSAGE_LEVEL_ERROR);
+	}
+}
+
 function plugin_config_arrays() {
 	global $config, $menu;
 
@@ -1305,7 +1698,7 @@ function plugin_is_compatible($plugin) {
 	$info = plugin_load_info_file(CACTI_PATH_PLUGINS . '/' . $plugin . '/INFO');
 
 	if ($info !== false) {
-		if (!isset($info['compat']) || cacti_version_compare(CACTI_VERSION, $info['compat'], '<')) {
+		if (!isset($info['compat']) || plugin_valid_version_range($info['compat'], CACTI_VERSION)) {
 			return array('compat' => false, 'requires' => __('Requires: Cacti >= %s', $info['compat']));
 		}
 	} else {
@@ -1315,9 +1708,89 @@ function plugin_is_compatible($plugin) {
 	return array('compat' => true, 'requires' => __('Requires: Cacti >= %s', $info['compat']));
 }
 
+function plugin_valid_version_range($range_string, $compare_version = CACTI_VERSION)  {
+	if (strpos($range_string, ' ') !== false) {
+		$compares = explode(' ', $range_string);
+
+		foreach($compares as $line) {
+			if (strpos($line, '<=') !== false) {
+				$theversion = str_replace('<=', '', $line);
+				$versions[] = array('direction' => '=', 'version' => $theversion);
+			} elseif (strpos($line, '>=') !== false) {
+				$theversion = str_replace('>=', '', $line);
+				$versions[] = array('direction' => '=', 'version' => $theversion);
+			} elseif (strpos($line, '<') !== false) {
+				$theversion = str_replace('<', '', $line);
+				$versions[] = array('direction' => '=', 'version' => $theversion);
+			} elseif (strpos($line, '>') !== false) {
+				$theversion = str_replace('>', '', $line);
+				$versions[] = array('direction' => '=', 'version' => $theversion);
+			} elseif (strpos($line, '=') !== false) {
+				$theversion = str_replace('=', '', $line);
+				$versions[] = array('direction' => '=', 'version' => $theversion);
+			} else {
+				cacti_log('Invalid version comparison');
+				return false;
+			}
+		}
+
+		foreach($versions as $v) {
+			if (!cacti_version_compare($compare_version, $v['version'], $v['direction'])) {
+				return false;
+			}
+		}
+	} else {
+		$versions[] = array('direction' => '>=', 'version' => $range_string);
+
+		if (cacti_version_compare($compare_version, $range_string, '>=')) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+function plugin_valid_dependencies($required) {
+	if ($required == '') {
+		return true;
+	} elseif (strpos($required, ' ') !== false) {
+		$requires = array_map('trim', explode(' ', $required));
+	} else {
+		$requires[] = $required;
+	}
+
+	foreach($requires as $r) {
+		$parts    = explode(':', $r);
+		$dplugin  = $parts[0];
+		$compares = $parts[1];
+
+		$version  = db_fetch_cell_prepared('SELECT version
+			FROM plugin_config
+			WHERE directory = ?',
+			array($dplugin));
+
+		if (empty($version)) {
+			return false;
+		}
+
+		if (!plugin_valid_version_range($compares, $version)) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 function plugin_load_info_defaults($file, $info, $defaults = array()) {
 	$result = $info;
-	$dir    = @basename(@dirname($file));
+
+	if ($file != '') {
+		$dir = basename(dirname($file));
+	} else {
+		$dir = 'unknown';
+	}
 
 	if (!is_array($defaults)) {
 		$defaults = array();
@@ -1347,12 +1820,14 @@ function plugin_load_info_defaults($file, $info, $defaults = array()) {
 		}
 	}
 
-	if (strstr($dir, ' ') !== false) {
-		$result['status'] = -3;
-	} elseif (strtolower($dir) != strtolower($result['name'])) {
-		$result['status'] = -2;
-	} elseif (!isset($result['compat']) || cacti_version_compare(CACTI_VERSION, $result['compat'], '<')) {
-		$result['status'] = -1;
+	if ($info_fields['status'] == 0) {
+		if (strstr($dir, ' ') !== false) {
+			$result['status'] = -3;
+		} elseif (strtolower($dir) != strtolower($result['name'])) {
+			$result['status'] = -2;
+		} elseif (!isset($result['compat']) || cacti_version_compare(CACTI_VERSION, $result['compat'], '<')) {
+			$result['status'] = -1;
+		}
 	}
 
 	return $result;
@@ -1379,3 +1854,374 @@ function plugin_load_info_file($file) {
 
 	return $info;
 }
+
+function plugin_fetch_latest_plugins() {
+	$start = microtime(true);
+
+	$repo = trim(read_config_option('github_repository'), "/\n\r ");
+	$user = trim(read_config_option('github_user'));
+
+	if ($repo == '' || $user == '') {
+		rase_message('plugins_failed', __('Unable to retrieve Cacti Plugins due to the Base API Repository URL or User not being set in Configuration > Settings > General > GitHub/GitLab API Settings.'), MESSAGE_LEVEL_ERROR);
+		return false;
+	}
+
+	$avail_plugins = array();
+
+	$plugins = plugin_make_github_request("$repo/users/$user/repos", 'json');
+
+	if ($plugins === false) {
+		header('Location: plugins.php');
+		exit;
+	}
+
+	if (cacti_sizeof($plugins)) {
+		foreach($plugins as $pi) {
+			if (isset($pi['full_name'])) {
+				if (strpos($pi['full_name'], 'plugin_') !== false) {
+					$plugin = explode('plugin_', $pi['full_name'])[1];
+
+					$avail_plugins[$plugin]['name'] = $plugin;
+				}
+			}
+		}
+	}
+
+	$updated = 0;
+
+	if (cacti_sizeof($avail_plugins)) {
+		foreach($avail_plugins as $plugin_name => $pi_details) {
+			$details = plugin_make_github_request("$repo/repos/$user/plugin_{$plugin_name}/releases", 'json');
+
+			if ($details === false) {
+				header('Location: plugins.php');
+				exit;
+			}
+
+			if (cacti_sizeof($details)) {
+				$json_data = $details;
+
+				/* insert latest release */
+				if (isset($json_data[0]['tag_name'])) {
+					$avail_plugins[$plugin_name][$json_data[0]['tag_name']]['body']         = $json_data[0]['body'];
+					$avail_plugins[$plugin_name][$json_data[0]['tag_name']]['published_at'] = date('Y-m-d H:i:s', strtotime($json_data[0]['published_at']));
+
+					$published_at = date('Y-m-d H:i:s', strtotime($json_data[0]['published_at']));
+					$tag_name     = $json_data[0]['tag_name'];
+
+					$unchanged = db_fetch_cell_prepared('SELECT COUNT(*)
+						FROM plugin_available
+						WHERE plugin = ?
+						AND published_at = ?
+						AND tag_name = ?',
+						array($plugin_name, $published_at, $tag_name)
+					);
+
+					if ($unchanged) {
+						$skip = true;
+						cacti_log(sprintf('SKIPPED: Plugin:\'%s\', Tag/Release:\'%s\' Skipped as it has not changed', $plugin_name, $json_data[0]['tag_name']), false, 'PLUGIN');
+					} else {
+						$skip = false;
+					}
+
+					if (!$skip) {
+						$updated++;
+
+						$pstart = microtime(true);
+
+						$files = array(
+							'changelog' => "$repo/repos/$user/plugin_{$plugin_name}/contents/CHANGELOG.md?ref={$json_data[0]['tag_name']}",
+							'readme'    => "$repo/repos/$user/plugin_{$plugin_name}/contents/README.md?ref={$json_data[0]['tag_name']}",
+							'info'      => "$repo/repos/$user/plugin_{$plugin_name}/contents/INFO?ref={$json_data[0]['tag_name']}",
+							'archive'   => "$repo/repos/$user/plugin_{$plugin_name}/tarball?ref={$json_data[0]['tag_name']}"
+						);
+
+						$ofiles = array();
+
+						foreach($files as $file => $url) {
+							if ($file != 'archive') {
+								$file_details = plugin_make_github_request($url, 'json');
+
+								if ($file_details === false) {
+									header('Location: plugins.php');
+									exit;
+								}
+
+								if (isset($file_details['content'])) {
+									$ofiles[$file] = base64_decode($file_details['content']);
+								} else {
+									$ofiles[$file] = '';
+								}
+							} else {
+								$file_details = plugin_make_github_request($url, 'file');
+
+								if ($file_details === false) {
+									header('Location: plugins.php');
+									exit;
+								}
+
+								$ofiles[$file] = $file_details;
+							}
+						}
+
+						$compat      = '';
+						$requires    = '';
+						$description = '';
+						$webpage     = '';
+						$author      = '';
+						if ($ofiles['info'] != '') {
+							$lines = explode("\n", $ofiles['info']);
+
+							foreach($lines as $l) {
+								if (strpos($l, 'compat ') !== false) {
+									$compat = trim(explode('=', $l)[1]);
+								} elseif (strpos($l, 'requires ') !== false) {
+									$requires = trim(explode('=', $l)[1]);
+								} elseif (strpos($l, 'longname ') !== false) {
+									$description = trim(explode('=', $l)[1]);
+								} elseif (strpos($l, 'homepage ') !== false) {
+									$webpage = trim(explode('=', $l)[1]);
+								} elseif (strpos($l, 'author ') !== false) {
+									$author = trim(explode('=', $l)[1]);
+								}
+							}
+						}
+
+						db_execute_prepared('REPLACE INTO plugin_available
+							(plugin, description, author, webpage, tag_name, compat, requires, published_at, body, info, readme, changelog, archive)
+							VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+							array(
+								$plugin_name,
+								$description,
+								$author,
+								$webpage,
+								$json_data[0]['tag_name'],
+								$compat,
+								$requires,
+								date('Y-m-d H:i:s', strtotime($json_data[0]['published_at'])),
+								base64_encode($json_data[0]['body']),
+								base64_encode($ofiles['info']),
+								base64_encode($ofiles['readme']),
+								base64_encode($ofiles['changelog']),
+								base64_encode($ofiles['archive'])
+							)
+						);
+
+						$pend = microtime(true);
+
+						cacti_log(sprintf('UPDATED: Plugin:\'%s\', Tag/Release:\'%s\' Updated in %0.2f seconds.', $plugin_name, $json_data[0]['tag_name'], $pend - $pstart), false, 'PLUGIN');
+					}
+				}
+			}
+
+			$develop = plugin_make_github_request("$repo/repos/$user/plugin_{$plugin_name}?rel=develop", 'json');
+
+			if ($develop === false) {
+				header('Location: plugins.php');
+				exit;
+			}
+
+			if (cacti_sizeof($develop)) {
+				$published_at = date('Y-m-d H:i:s', strtotime($develop['pushed_at']));
+				$tag_name     = 'develop';
+
+				$unchanged = db_fetch_cell_prepared('SELECT COUNT(*)
+					FROM plugin_available
+					WHERE plugin = ?
+					AND published_at = ?
+					AND tag_name = ?',
+					array($plugin_name, $published_at, $tag_name)
+				);
+
+				if ($unchanged) {
+					$skip = true;
+					cacti_log(sprintf('SKIPPED: Plugin:\'%s\', Tag/Release:\'%s\' Skipped as it has not changed', $plugin_name, 'develop'), false, 'PLUGIN');
+				} else {
+					$skip = false;
+				}
+
+				if (!$skip) {
+					$updated++;
+
+					$pstart = microtime(true);
+
+					$avail_plugins[$plugin_name]['develop']['body']         = '';
+					$avail_plugins[$plugin_name]['develop']['published_at'] = $published_at;
+
+					/* insert develop */
+					$files = array(
+						'changelog' => "$repo/repos/$user/plugin_{$plugin_name}/contents/CHANGELOG.md?ref=develop",
+						'readme'    => "$repo/repos/$user/plugin_{$plugin_name}/contents/README.md?ref=develop",
+						'info'      => "$repo/repos/$user/plugin_{$plugin_name}/contents/INFO?ref=develop",
+						'archive'   => "$repo/repos/$user/plugin_{$plugin_name}/tarball?ref=develop"
+					);
+
+					$ofiles = array();
+
+					foreach($files as $file => $url) {
+						if ($file != 'archive') {
+							$file_details = plugin_make_github_request($url, 'json');
+
+							if ($file_details === false) {
+								header('Location: plugins.php');
+								exit;
+							}
+
+							if (isset($file_details['content'])) {
+								$ofiles[$file] = base64_decode($file_details['content']);
+							} else {
+								$ofiles[$file] = '';
+							}
+						} else {
+							$file_details = plugin_make_github_request($url, 'file');
+
+							if ($file_details === false) {
+								header('Location: plugins.php');
+								exit;
+							}
+
+							$ofiles[$file] = $file_details;
+						}
+					}
+
+					$compat      = '';
+					$requires    = '';
+					$description = '';
+					$author      = '';
+					$webpage     = '';
+					if ($ofiles['info'] != '') {
+						$lines = explode("\n", $ofiles['info']);
+
+						foreach($lines as $l) {
+							if (strpos($l, 'compat ') !== false) {
+								$compat = trim(explode('=', $l)[1]);
+							} elseif (strpos($l, 'requires ') !== false) {
+								$requires = trim(explode('=', $l)[1]);
+							} elseif (strpos($l, 'longname ') !== false) {
+								$description = trim(explode('=', $l)[1]);
+							} elseif (strpos($l, 'homepage ') !== false) {
+								$webpage = trim(explode('=', $l)[1]);
+							} elseif (strpos($l, 'author ') !== false) {
+								$author = trim(explode('=', $l)[1]);
+							}
+						}
+					}
+
+					db_execute_prepared('REPLACE INTO plugin_available
+						(plugin, description, author, webpage, tag_name, compat, requires, published_at, body, info, readme, changelog, archive)
+						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+						array(
+							$plugin_name,
+							$description,
+							$author,
+							$webpage,
+							$tag_name,
+							$compat,
+							$requires,
+							$published_at,
+							'',
+							base64_encode($ofiles['info']),
+							base64_encode($ofiles['readme']),
+							base64_encode($ofiles['changelog']),
+							base64_encode($ofiles['archive'])
+						)
+					);
+
+					$pend = microtime(true);
+
+					cacti_log(sprintf('UPDATED: Plugin:\'%s\', Tag/Release:\'%s\' Updated in %0.2f seconds.', $plugin_name, 'develop', $pend - $pstart), false, 'PLUGIN');
+				}
+			}
+		}
+	}
+
+	$end = microtime(true);
+
+	$total_plugins   = cacti_sizeof($avail_plugins);
+	$updated_plugins = $updated;
+
+	if (cacti_sizeof($avail_plugins)) {
+		raise_message('plugins_fetched', __('There were \'%s\' Plugins found at The Cacti Groups GitHub site and \'%s\' Plugins Tags/Releases were retrieved and updated in %0.2f seconds.', $total_plugins, $updated_plugins, $end - $start), MESSAGE_LEVEL_INFO);
+	} else {
+		raise_message('plugins_fetched', __('Unable to reach The Cacti Groups GitHub site.  No plugin data retrieved in %0.2f seconds.', $end-$start), MESSAGE_LEVEL_WARN);
+	}
+
+	cacti_log(sprintf('PLUGIN STATS: Time:%0.2f Plugins:%d Updated:%d', $end-$start, cacti_sizeof($avail_plugins), $updated_plugins), false, 'SYSTEM');
+
+	return $avail_plugins;
+}
+
+function plugin_make_github_request($url, $type = 'json') {
+	$pat  = read_config_option('github_access_token');
+
+	$use_pat = false;
+	if ($pat != '') {
+		$use_pat = true;
+	}
+
+	$ch = curl_init();
+
+	if ($ch) {
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_USERAGENT, 'CactiServer ' . CACTI_VERSION);
+
+		$headers  = array();
+		$header[] = 'X-GitHub-Api-Version: 2022-11-28';
+
+		if ($type == 'json') {
+			$headers[] = 'Content-Type: application/json';
+		} elseif ($type == 'file') {
+			$file = sys_get_temp_dir() . '/curlfile.output.' . rand() . '.tgz';
+
+			$fh = fopen($file, 'w');
+
+			curl_setopt($ch, CURLOPT_FILE, $fh);
+			curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		}
+
+		if ($use_pat) {
+			$headers[] = "Authorization: Bearer $pat";
+		}
+
+		if (cacti_sizeof($headers)) {
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		}
+
+		$data  = curl_exec($ch);
+		$info  = curl_getinfo($ch);
+		$errno = curl_errno($ch);
+		$error = curl_error($ch);
+
+		curl_close($ch);
+
+		if ($info['http_code'] == 403 || $info['http_code'] == 429) {
+			$json_data = json_decode($data, true);
+			raise_message('rate_limited', $json_data['message'], MESSAGE_LEVEL_ERROR);
+
+			return false;
+		}
+
+		if ($errno == 0) {
+			if ($type == 'json') {
+				return json_decode($data, true);
+			} elseif ($type == 'raw') {
+				return $data;
+			} elseif ($type == 'file') {
+				fclose($fh);
+
+				$data = file_get_contents($file);
+
+				unlink($file);
+
+				return $data;
+			}
+		} else {
+			raise_message('curl_error', "Curl Experienced an error with url:$url, error:$error", MESSAGE_LEVEL_ERROR);
+
+			return false;
+		}
+	}
+}
+

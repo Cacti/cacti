@@ -806,6 +806,7 @@ function setupDefaultElements() {
 		element.find('.iconWrapper').show(300, function() {
 			graphMenuElement = element.attr('id').replace('dd', '');
 			$(this).find('.spikekillMenu').menu('enable');
+			$(this).css('display', 'block');
 		});
 	}
 
@@ -883,7 +884,7 @@ function toggleColorModeAuto() {
 	$('#mdw_themeColorModeAutoValue').val(midWinter_Color_Mode_Auto);
 }
 
-function changeGuiFontSize() {
+function changeGuiFontSize(change=true) {
 	let storage = Storages.localStorage;
 	let midWinter_Font_Size = storage.get('midWinter_Font_Size');
 	let midWinter_FontSizeValue = 0;
@@ -891,9 +892,11 @@ function changeGuiFontSize() {
 	midWinter_FontSizeValue = parseFloat(midWinter_Font_Size) + 25;
 
 	storage.set('midWinter_Font_Size', midWinter_Font_Size);
-	setDocumentAttribute('zoom-level', midWinter_Font_Size);
+	if(change) {
+		setDocumentAttribute('zoom-level', midWinter_Font_Size);
+	}
 	/* update output field beside input selector */
-	$('#mdw_themeFontSizeValue').val(midWinter_FontSizeValue + '%');
+	$('#mdw_themeFontSizeValue').val(midWinter_FontSizeValue.toFixed(1) + ' %');
 }
 
 function toggleGuiAnimations() {

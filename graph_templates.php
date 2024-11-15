@@ -1107,7 +1107,7 @@ function form_actions() {
 							'method'  => 'textbox',
 							'title'   => __('Title Format:'),
 							'default' => '<template_title> (1)',
-							'width'   => 25
+							'width'   => 45
 						)
 					)
 				),
@@ -1209,10 +1209,20 @@ function item() {
 	DrawMatrixHeaderItem(__('Name'),'',2);
 	print '</tr>';
 
-	$template_item_list = db_fetch_assoc_prepared('SELECT id, name
+	$database = utilities_get_mysql_info();
+
+	$sql_order = 'ORDER BY name';
+	if ($database['database'] == 'MariaDB') {
+		if (cacti_version_compare($database['version'], '10.7', '>')) {
+			$sql_order = 'ORDER BY NATURAL_SORT_KEY(name)';
+		}
+	}
+
+	$template_item_list = db_fetch_assoc_prepared("SELECT id, name
 		FROM graph_template_input
 		WHERE graph_template_id = ?
-		ORDER BY name', array(get_request_var('id')));
+		$sql_order",
+		array(get_request_var('id')));
 
 	$i = 0;
 

@@ -2548,8 +2548,8 @@ function db_dump_data($database = '', $tables = '', $credentials = array(), $out
 	return $retval;
 }
 
-function db_create_permissions_array($default = false) {
-	return array(
+function db_create_permissions_array($database, $default = false) {
+	$permissions = array(
 		'ALTER'                   => $default,
 		'ALTER ROUTINE'           => $default,
 		'CREATE'                  => $default,
@@ -2584,6 +2584,8 @@ function db_create_permissions_array($default = false) {
 		'UPDATE'                  => $default,
 		'USAGE'                   => $default,
 	);
+
+	return array($database => $permissions);
 }
 
 function db_get_grants($log = false, $db_conn = false) {
@@ -2593,9 +2595,11 @@ function db_get_grants($log = false, $db_conn = false) {
 }
 
 function db_get_permissions($include_unknown = false, $log = false, $db_conn = false) {
-	$perms = db_create_permissions_array(false);
+	global $database_default;
 
-	$db_name   = db_fetch_cell('SELECT DATABASE()', $log, $db_conn);
+	$perms = db_create_permissions_array($database_default, false);
+
+	$db_names  = array($database_default, 'mysql');
 	$db_grants = db_fetch_assoc('SHOW GRANTS FOR CURRENT_USER', $log, $db_conn);
 
 	if (cacti_sizeof($db_grants)) {
@@ -2607,29 +2611,38 @@ function db_get_permissions($include_unknown = false, $log = false, $db_conn = f
 					// Replace any % used with .* for preg_match
 					$db_grant_regex = str_replace(array('*', '%'), array('.*', '.*'), $db_grant_match[2]);
 
-					// See if we match the database name
-					$db_regex_match = preg_match('/' . $db_grant_regex . '/', '`' . $db_name . '`');
+					foreach($db_names as $db_name) {
+						// See if we match the database name
+						$db_regex_match = preg_match('/' . $db_grant_regex . '/', '`' . $db_name . '`');
 
-					// Yes, we did
-					if ($db_regex_match) {
-						// Lets get all the permissions assigned.
-						$db_grant_perms = preg_split('/,[ ]*/', $db_grant_match[1]);
+						// Yes, we did
+						if ($db_regex_match) {
+							// Lets get all the permissions assigned.
+							$db_grant_perms = preg_split('/,[ ]*/', $db_grant_match[1]);
 
-						if (cacti_sizeof($db_grant_perms)) {
-							foreach ($db_grant_perms as $db_grant_perm) {
-								$db_grant_perm = strtoupper($db_grant_perm);
+							if (cacti_sizeof($db_grant_perms)) {
+								foreach ($db_grant_perms as $db_grant_perm) {
+									$db_grant_perm = strtoupper($db_grant_perm);
 
-								if ($db_grant_perm == 'ALL' ||
-									$db_grant_perm == 'ALL PRIVILEGES') {
-									$perms = db_create_permissions_array(true);
+									if ($db_grant_perm == 'ALL' ||
+										$db_grant_perm == 'ALL PRIVILEGES') {
+										$perms = db_create_permissions_array($db_name, true);
 
-									break 3;
-								}
+										break 3;
+									}
 
-								if (array_key_exists($db_grant_perm, $perms)) {
-									$perms[$db_grant_perm] = true;
-								} elseif ($include_unknown) {
-									$perms[$db_grant_perm.'*'] = true;
+									if (array_key_exists($db_grant_perm, $perms)) {
+										if (strpos($db_grant, "`$database_default`.*") !== false) {
+											$perms[$db_name][$db_grant_perm . ' ON *'] = true;
+										} else {
+											$perms[$db_name][$db_grant_perm] = true;
+										}
+									} elseif ($include_unknown) {
+										$gs = explode('.', $db_grant);
+										$table = explode(' ', $gs[1]);
+										$table = str_replace('`', '', $table[0]);
+										$perms[$db_name][$db_grant_perm . ' ON ' . $table] = true;
+									}
 								}
 							}
 						}
@@ -2642,20 +2655,31 @@ function db_get_permissions($include_unknown = false, $log = false, $db_conn = f
 	return $perms;
 }
 
-function db_has_permissions($permissions, $log = false, $db_conn = false) {
+function db_has_permissions($permissions, $database = false, $log = false, $db_conn = false) {
+	global $database_default;
+
+	if ($database == false) {
+		$database = $database_default;
+	}
+
 	$perms = db_get_permissions(false, $log, $db_conn);
 
 	if (!is_array($permissions)) {
 		$permissions = array($permissions);
 	}
 
-	$result = true;
+	$found = false;
 
 	foreach ($permissions as $permission) {
-		if (empty($perms[$permission])) {
-			$result = false;
+		foreach($perms as $db => $perm) {
+			if ($database == $db || $database == 'all') {
+				if (!empty($perm[$permission])) {
+					$found = true;
+					break 2;
+				}
+			}
 		}
 	}
 
-	return $result;
+	return $found;
 }

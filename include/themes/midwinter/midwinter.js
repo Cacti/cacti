@@ -411,7 +411,7 @@ function get_user_content() {
         +           '<li>'
         +				'<div>' + 'Zoom Level' + '</div>'
         +				'<div>'
-        +						'<input data-scope="theme" class="mdw_themeFontSize" id="mdw_themeFontSize" data-func="changeGuiFontSize" type="range" min="50" max="100" step="2.5" value="'+ midWinter_Font_Size +'" defaultValue="75">'
+        +						'<input data-scope="theme" class="mdw_themeFontSize" id="mdw_themeFontSize" onchange="changeGuiFontSize()" oninput="changeGuiFontSize(false)" type="range" min="50" max="100" step="2.5" value="'+ midWinter_Font_Size +'" defaultValue="75">'
         +                       '<output id="mdw_themeFontSizeValue">'+midWinter_ShownFontSizeValue+'%</output>'
         +				'</div>'
         +           '</li>'

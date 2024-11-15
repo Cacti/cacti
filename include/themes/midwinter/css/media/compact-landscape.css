@@ -618,11 +618,15 @@ html {
             }
 
             & input[type="range"] {
-                width: 10rem;
                 padding: 0;
                 display: block;
                 float: left;
                 cursor: pointer;
+            }
+
+            & output {
+                width: 6rem;
+                text-align: right;
             }
         }
     }

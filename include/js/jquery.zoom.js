@@ -66,6 +66,10 @@
 				origin				: ((typeof location.origin == 'undefined')
 										? location.protocol + '//' + location.host : location.origin)
 			},
+			raw: {																										// raw holds all raw data points and legend items, requires RRDtool 1.8.0+
+				data : [],
+				legend: []
+			},
 			refs: 		{
 				m: 	{ 1 : {}, 2 : {} },																					// 'references' allows addressing all zoom container elements without an extra document query
 			}
@@ -132,7 +136,7 @@
 			let activeElement = '';
 
 			image.parent().disableSelection();
-			image.off().on('mouseover',
+			image.off().on('mouseenter',
 				function(e){
 					if($('#zoom-container').length !== 0) {
 						activeElement = $('#zoom-container').attr('data-active-element');
@@ -141,7 +145,7 @@
 						//zoomElements_remove();
 						zoomFunction_init(image);
 					}
-					zoomAction_position_crosshair(e);
+					zoomLiveData_hide();
 				}
 			);
 		}
@@ -211,6 +215,12 @@
 			zoom.box.left				= zoom.graph.left;
 			zoom.box.right				= zoom.box.left + zoom.box.width;
 
+			if(zoom.initiator.attr('data-raw').length > 0) {
+				let raw_data = JSON.parse(lzjs.decompressFromBase64(zoom.initiator.attr('data-raw')));
+				if(raw_data.data !== undefined && raw_data.data.length > 0) zoom.raw.data = raw_data.data;
+				if(raw_data.legend !== undefined && raw_data.legend.length > 0) zoom.raw.legend = raw_data.legend;
+			}
+
 			// add all additional HTML elements to the DOM if necessary and register
 			// the individual events needed. Once added we will only reset
 			// and reposition these elements.
@@ -218,7 +228,7 @@
 			// add zoom container plus elements to DOM if not existing and fill up reference cache
 			zoom.refs.container = $('#zoom-container');
 			if (zoom.refs.container.length === 0) {
-				zoom.refs.container 		= $('<div id="zoom-container" data-active-element=""></div>').appendTo('body');
+				zoom.refs.container 		= $('<div id="zoom-container" data-active-element="'+zoomGetImageId(image)+'"></div>').appendTo('body');
 				zoom.refs.box 				= $('<div id="zoom-box"></div>').appendTo('#zoom-container');
 				zoom.refs.crosshair_x 		= $('<div id="zoom-crosshair-x" class="zoom-crosshair x-axis"></div>').appendTo('#zoom-box');
 				zoom.refs.crosshair_y 		= $('<div id="zoom-crosshair-y" class="zoom-crosshair y-axis"></div>').appendTo('#zoom-box');
@@ -244,7 +254,7 @@
 				zoom.refs.m[2].marker 		= $('#zoom-marker-2');
 				zoom.refs.m[2].tooltip 		= $('#zoom-marker-tooltip-2');
 
-				zoom.refs.container.attr('data-active-element', '');
+				zoom.refs.container.attr('data-active-element', zoomGetImageId(image));
             }
 
 			// add the context (right click) menu
@@ -354,6 +364,17 @@
 				zoom.refs.textarea = $('<textarea id="zoom-textarea" class="zoom-hidden"></textarea>').appendTo('body');
 			}
 
+			// add a hidden live data container
+			zoom.refs.livedata = $('#zoom-livedata');
+			if (zoom.refs.livedata.length === 0) {
+				zoom.refs.livedata = $('<div id="zoom-livedata" class="zoom-livedata"></div>').appendTo('body');
+				zoom.refs.livedata.header = $('<div id="zoom-livedata-header" class="zoom-livedata-header"></div>').appendTo('#zoom-livedata');
+				zoom.refs.livedata.content = $('<div id="zoom-livedata-content" class="zoom-livedata-content"></div>').appendTo('#zoom-livedata');
+			}else {
+				zoom.refs.livedata.header = $('#zoom-livedata-header');
+				zoom.refs.livedata.content = $('#zoom-livedata-content');
+			}
+
 			// ensure that zoom markers are hidden
 			zoom.marker[1].placed = false;
 			zoom.marker[2].placed = false;
@@ -391,7 +412,7 @@
 			zoom.refs.container.off();
 			zoom.refs.container.on('contextmenu', '', '', function(e) { zoomContextMenu_toggle(e); return false; } );
 
-			zoom.refs.box.off();
+			zoom.refs.box.off('contextmenu');
 			zoom.refs.box.on('contextmenu', '','',function(e) { zoomContextMenu_toggle(e); return false; } );
 			zoom.refs.box.css({ cursor:'crosshair', width:zoom.box.width + 'px', height:zoom.box.height + 'px', top:zoom.box.top+'px', left:zoom.box.left+'px' } );
 
@@ -405,6 +426,8 @@
 			);
 
 			$('.zoom-marker-tooltip-value').disableSelection();	// TODO - update CSS instead
+
+			zoomLiveData_hide();
 		}
 
 		/*
@@ -422,9 +445,11 @@
 						/* clicking the left mouse button will initiate a zoom-in */
 						case 1:
 							// remember active element
-							zoom.refs.container.attr('data-active-element', zoomGetImageId(image));
+							//zoom.refs.container.attr('data-active-element', zoomGetImageId(image));
 							// ensure menu is closed
 							zoomContextMenu_hide();
+							// hide Live Data
+							zoomLiveData_hide();
 							// reset the zoom area
 							zoom.attr.start = e.pageX;
 							zoom.refs.box.css({ cursor:'e-resize' });
@@ -480,7 +505,6 @@
 				/* moving the mouse pointer quickly will avoid it
 				that the mousemove event has enough time to actualize the zoom area */
 				zoom.refs.container.on( 'mouseout', function(e) {
-					zoomAction_position_crosshair(e);
 					zoomAction_draw(e);
 				} );
 
@@ -488,12 +512,12 @@
 				/* welcome to the advanced mode ;) */
 				zoom.box.width = zoom.graph.width+1;
 				zoom.refs.box.css({ width:zoom.box.width + 'px' });
-				zoom.refs.box.off('mousedown').on('mousedown', '', {zoom:zoom},function(e) {
+				zoom.refs.box.off().on('mousedown', '', {zoom:zoom},function(e) {
 					let zoom = e.data.zoom;
 					switch(e.which) {
 						case 1:
 							// remember active element
-							zoom.refs.container.attr('data-active-element', zoomGetImageId(image));
+							//zoom.refs.container.attr('data-active-element', zoomGetImageId(image));
 							// ensure menu is closed
 							zoomContextMenu_hide();
 
@@ -660,7 +684,7 @@
 				}).on(
 					'mousemove', function(e) { zoomAction_position_crosshair(e) }
 				).on(
-					'mouseout', function(e) {zoomAction_position_crosshair(e) }
+					'mouseleave', function(e) {zoomAction_position_crosshair(e) }
 				)
 
 			}
@@ -899,8 +923,19 @@
 		}
 
 		function zoomAction_position_crosshair(event) {
-			zoom.refs.crosshair_x.css('top', (event.pageY - zoom.image.top - zoom.box.top)+"px");
-			zoom.refs.crosshair_y.css('left', (event.pageX - zoom.box.left - zoom.image.left)+"px");
+			if (event.type === 'mousemove' || event.type === 'mouseenter') {
+				zoom.refs.crosshair_x.css('top', (event.pageY - parseInt(zoom.initiator.offset().top) - zoom.box.top)+"px").show();
+				zoom.refs.crosshair_y.css('left', (event.pageX - parseInt(zoom.initiator.offset().left) - zoom.box.left)+"px").show();
+				zoomLiveData_show(event);
+			}else if (event.type === 'mouseleave') {
+				zoomLiveData_hide()
+			}
+		}
+
+		function zoomLiveData_hide() {
+			zoom.refs.crosshair_x.hide();
+			zoom.refs.crosshair_y.hide();
+			zoom.refs.livedata.hide();
 		}
 
 		/**
@@ -919,7 +954,7 @@
 			$('.zoomContextMenuAction__zoom_out').text(getZoomOutFactorText(zoom.custom.zoomOutFactor));
 
 			if (zoom.custom.zoomMode === 'quick') {
-				$('.advanced_mode').hide();				//# TODO - check if still required.
+				$('.advanced_mode').hide(); //# TODO - check if still required.
 			}
 
 			/* init click on events */
@@ -999,7 +1034,6 @@
 						zoomContextMenu_hide();
 						zoomElements_reset();
 						zoomAction_init(zoom.initiator);
-
 					}
 					break;
 				case 'timestamps':
@@ -1117,7 +1151,56 @@
 			}
 		}
 
-		function zoomContextMenu_show(e){
+		function zoomLiveData_show(e) {
+			if (zoom.raw.data.length > 0 ) {
+				if (e.type === 'mousemove' || e.type === 'mouseenter') {
+					let container_y_pos = e.pageY;
+					let container_y_offset = 10;
+					let container_x_pos = e.pageX;
+					let container_x_offset = 10;
+
+					let window_size_x_1 = $(document).scrollLeft();
+					let window_size_x_2 = $(window).width() + $(document).scrollLeft();
+					let window_size_y_1 = $(document).scrollTop();
+					let window_size_y_2 = $(window).height() + $(document).scrollTop();
+
+					let container_height = zoom.refs.livedata.outerHeight();
+					let container_width = zoom.refs.livedata.outerWidth();
+
+					const unixTime = parseInt(parseInt(zoom.graph.start) + (e.pageX - zoom.image.left - zoom.box.left + 1) * zoom.graph.secondsPerPixel);
+					const date = new Date(unixTime * 1000);
+					const formatted_date = new Intl.DateTimeFormat(navigator.languages, {
+						year: "numeric",
+						month: "numeric",
+						day: "numeric",
+						hour: "numeric",
+						minute: "numeric",
+						second: "numeric",
+						hour12: false,
+					}).format(date);
+					zoom.refs.livedata.header.html(formatted_date);
+
+					if ((container_x_pos + container_x_offset + container_width) > window_size_x_2) {
+						container_x_offset = -1 * (container_x_offset + container_width);
+					}
+					if ((container_y_pos + container_y_offset + container_height) > window_size_y_2) {
+						container_y_offset = -1 * (container_y_offset + container_height);
+					}
+
+					zoom.refs.livedata.css({
+						left: container_x_pos + container_x_offset,
+						top: container_y_pos + container_y_offset,
+						zIndex: '101'
+					}).show();
+				} else {
+					if (e.type === 'mouseleave' && e.target === e.currentTarget) {
+						zoom.refs.livedata.hide();
+					}
+				}
+			}
+		}
+
+		function zoomContextMenu_show(e) {
 			let menu_y_pos				= e.pageY;
 			let menu_y_offset	= 5;
 			let menu_x_pos				= e.pageX;
@@ -1151,7 +1234,7 @@
 				menu_y_offset += (-1*menu_height);
 			}
 
-			zoom.refs.menu.css({ left: menu_x_pos+menu_x_offset, top: menu_y_pos+menu_y_offset, zIndex: '101' }).show();
+			zoom.refs.menu.css({ left: menu_x_pos+menu_x_offset, top: menu_y_pos+menu_y_offset, zIndex: '102' }).show();
 		}
 
 		function zoomContextMenu_hide(){

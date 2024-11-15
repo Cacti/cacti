@@ -37,7 +37,6 @@ require_once(CACTI_PATH_LIBRARY . '/utility.php');
 require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
 require_once(CACTI_PATH_LIBRARY . '/poller.php');
 
-
 /* switch to main database for cli's */
 if ($config['poller_id'] > 1) {
 	db_switch_remote_to_main();
@@ -335,7 +334,6 @@ function pushout_launch_child($thread_id, $threads) {
 	cacti_log(sprintf('NOTE: Launching Rebuild poller cache Number %s for Type %s', $thread_id, 'child'), true, 'PUSHOUT', POLLER_VERBOSITY_MEDIUM);
 
 	exec_background($php_binary, CACTI_PATH_CLI . "/rebuild_poller_cache.php --type=child --threads=$threads --child=$thread_id " . ($debug ? " --debug":"") . ($host_template_id ? " --host-template-id=$host_template_id":"") . ($data_template_id ? " --data-template-id=$data_template_id":""));
-
 }
 
 /**
@@ -400,8 +398,8 @@ function display_help() {
 	print ' --debug               - Display verbose output during execution' . PHP_EOL . PHP_EOL;
 
 	print 'System Controlled:' . PHP_EOL;
-	print '    --type      - The type and subtype of the rebuild poller cache process' . PHP_EOL;
-	print '    --child     - The thread id of the child process' . PHP_EOL . PHP_EOL;
+	print ' --type                - The type and subtype of the rebuild poller cache process' . PHP_EOL;
+	print ' --child               - The thread id of the child process' . PHP_EOL . PHP_EOL;
 }
 
 /**

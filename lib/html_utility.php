@@ -813,8 +813,11 @@ function validate_store_request_vars(array $filters, string $sess_prefix = ''):v
 	}
 }
 
-/* update_order_string - creates a sort string for standard Cacti tables
-   @returns - null */
+/**
+ * update_order_string - creates a sort string for standard Cacti tables
+ *
+ * @returns - null
+ */
 function update_order_string($inplace = false) {
 	$page = get_order_string_page();
 
@@ -862,7 +865,7 @@ function update_order_string($inplace = false) {
 			}
 
 			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_nfilter_request_var('sort_direction');
-			$_SESSION['sort_string'][$page]                               = 'ORDER BY ';
+			$_SESSION['sort_string'][$page] = 'ORDER BY ';
 
 			foreach ($_SESSION['sort_data'][$page] as $column => $direction) {
 				if (strpos($column, '(') === false && strpos($column, '`') === false) {

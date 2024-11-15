@@ -562,7 +562,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 			} elseif (is_hexadecimal($value)) {
 				/**
 				 * special case of one value output: hexadecimal to decimal conversion
-				 * attempt to accomodate 32bit and 64bit systems
+				 * attempt to accommodate 32bit and 64bit systems
 				 */
 				$value = str_replace(' ', '', $value);
 
@@ -2358,6 +2358,52 @@ function get_remote_poller_ids_from_devices(&$devices) {
 		);
 	} else {
 		return array();
+	}
+}
+
+/**
+ * is_process_running - Check to see if a process is running
+ *   or has timed out.
+ *
+ * @param  string   - The Task Type
+ * @param  string   - The Task Name
+ * @param  int      - The Task ID
+ *
+ * @return int|bool - false if not running, true if running, 97 exited but not unregistered, 98 timeout and running, 99 timeout and dead
+ */
+function is_process_running($tasktype, $taskname, $taskid = 0) {
+	if (!db_table_exists('processes')) {
+		// We return true here because we assume there is no process blocking start
+		return true;
+	}
+
+	$r = db_fetch_row_prepared('SELECT *,
+		IF(UNIX_TIMESTAMP(started) + timeout < UNIX_TIMESTAMP(), UNIX_TIMESTAMP(started), 0) AS timeout_exceeded,
+		UNIX_TIMESTAMP() AS `current_timestamp`
+		FROM processes
+		WHERE tasktype = ?
+		AND taskname = ?
+		AND taskid = ?',
+		array($tasktype, $taskname, $taskid));
+
+	if (!cacti_sizeof($r)) {
+		// Process is not registered or running
+		return false;
+	} elseif ($r['timeout_exceeded']) {
+		// Process Timeed Out
+		if ($r['pid'] > 0) {
+			return 98;
+		} else {
+			return 99;
+		}
+	} elseif ($r['pid'] > 0 && posix_kill($r['pid'], 0)) {
+		// Process Running and fine
+		return true;
+	} else {
+		// Exited process but not unregistered
+		unregister_process($tasktype, $taskname, $taskid);
+
+		return 97;
 	}
 }
 
