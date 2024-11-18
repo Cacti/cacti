@@ -602,6 +602,15 @@ function display_settings() {
 				$('#row_settings_smtp_secure').show();
 				$('#row_settings_smtp_timeout').show();
 				break;
+			case '3':
+				$('#row_settings_smtp_host').show();
+				$('#row_settings_smtp_port').show();
+				$('#row_settings_smtp_username').show();
+				$('#row_settings_oauth2_client_id').show();
+				$('#row_settings_oauth2_client_secret').show();
+// toto bude natvdro				$('#row_settings_smtp_redirect_uri').show();
+//pm tady musi byt skryti ostatnich 
+				break;
 			}
 		}
 	});

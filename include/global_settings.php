@@ -128,7 +128,9 @@ asort($logfiles);
 $mail_methods = array(
 	CACTI_MAIL_PHP      => __('PHP Mail() Function'),
 	CACTI_MAIL_SENDMAIL => __('Sendmail'),
-	CACTI_MAIL_SMTP     => __('SMTP')
+	CACTI_MAIL_SMTP     => __('SMTP'),
+	CACTI_MAIL_OAUTH2   => __('OAuth 2')
+
 );
 
 if ($config['cacti_server_os'] == 'win32') {
@@ -2071,6 +2073,23 @@ $settings['mail'] = array(
 		'default'       => '10',
 		'max_length'    => '10',
 		'size'          => '5'
+	),
+	'settings_oauth2_header' => array(
+		'friendly_name' => __('OAuth 2 Options'),
+		'collapsible'   => 'true',
+		'method'        => 'spacer',
+	),
+	'settings_oauth2_client_id' => array(
+		'friendly_name' => __('OAuth2 Client ID'),
+		'description'   => __('Please enter OAuth Client'),
+		'method'        => 'textbox',
+		'max_length'    => 255,
+	),
+	'settings_oauth2_client_secret' => array(
+		'friendly_name' => __('Oauth2 Client secret'),
+		'description'   => __('Please enter OAuth secret'),
+		'method'        => 'textbox_password',
+		'max_length'    => 255,
 	),
 	'reports_header' => array(
 		'friendly_name' => __('Reporting Presets'),
