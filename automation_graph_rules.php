@@ -358,12 +358,12 @@ function automation_graph_rules_form_actions() {
 				db_execute('DELETE FROM automation_match_rule_items WHERE ' . array_to_sql_or($selected_items, 'rule_id'));
 			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_DUPLICATE) { /* duplicate */
 				for ($i=0;($i < cacti_count($selected_items));$i++) {
-					automation_log('form_actions duplicate: ' . $selected_items[$i] . ' name: ' . get_nfilter_request_var('name_format'), AUTOMATION_LOG_HIGH, POLLER_VERBOSITY_MEDIUM);
+					automation_log('form_actions duplicate: ' . $selected_items[$i] . ' name: ' . get_nfilter_request_var('name_format'), AUTOMATION_LOG_HIGH);
 					duplicate_automation_graph_rules($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_ENABLE) { /* enable */
 				for ($i=0;($i < cacti_count($selected_items));$i++) {
-					automation_log('form_actions enable: ' . $selected_items[$i], AUTOMATION_LOG_HIGH, POLLER_VERBOSITY_MEDIUM);
+					automation_log('form_actions enable: ' . $selected_items[$i], AUTOMATION_LOG_HIGH);
 
 					db_execute_prepared("UPDATE automation_graph_rules
 						SET enabled='on'
@@ -372,7 +372,7 @@ function automation_graph_rules_form_actions() {
 				}
 			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_DISABLE) { /* disable */
 				for ($i=0;($i < cacti_count($selected_items));$i++) {
-					automation_log('form_actions disable: ' . $selected_items[$i], AUTOMATION_LOG_HIGH, POLLER_VERBOSITY_MEDIUM);
+					automation_log('form_actions disable: ' . $selected_items[$i], AUTOMATION_LOG_HIGH);
 
 					db_execute_prepared("UPDATE automation_graph_rules
 						SET enabled=''
@@ -704,6 +704,7 @@ function automation_graph_rules_edit() {
 		/*
 		 * display the rule items -------------------------------------------------------------------------------
 		 */
+
 		if (isset($rule['id'])) {
 			# display graph rules for host match
 			display_match_rule_items(__('Device Selection Criteria'), $rule, AUTOMATION_RULE_TYPE_GRAPH_MATCH, 'automation_graph_rules.php');

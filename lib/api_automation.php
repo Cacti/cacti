@@ -1423,7 +1423,7 @@ function api_automation_column_exists($column, $tables) {
 	return false;
 }
 
-function display_match_rule_items($title, $rule_id, $rule_type, $module) {
+function display_match_rule_items($title, $rule, $rule_type, $module) {
 	global $automation_op_array, $automation_oper, $automation_tree_header_types;
 
 	$rule_id = $rule['id'];
@@ -5440,3 +5440,23 @@ function automation_validate_import_columns($table, &$data, &$debug_data) {
 
 	return true;
 }
+
+/**
+ * automation_log - logs a string to Cacti's log file or optionally to the browser
+ *
+ * @param string $string  - the string to append to the log file
+ * @param  $level - (int) only log if above the specified log level
+ */
+function automation_log($string, $level = AUTOMATION_LOG_LOW) {
+
+	if (function_exists('read_config_option')) {
+		define('AUTOMATION_LEVEL', read_config_option('automation_log_level'));
+	} else {
+		define('AUTOMATION_LEVEL', 1);
+	}
+
+	if (AUTOMATION_LEVEL >= $level) {
+		cacti_log($string, false, 'AUTOMATION');
+	}
+}
+
