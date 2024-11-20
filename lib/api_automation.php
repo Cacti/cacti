@@ -328,7 +328,7 @@ function automation_get_matching_device_sql(&$rule, $rule_type) {
 		$sdisabled = "'' AS site_disabled,";
 	}
 
-	$sql_query = "SELECT h.id AS host_id, h.hostname, h.description,
+	$sql_query = "SELECT DISTINCT h.id AS host_id, h.hostname, h.description,
 		h.disabled AS disabled, $sdisabled
 		h.status, ht.name AS host_template_name
 		FROM host AS h
