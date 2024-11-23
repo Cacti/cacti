@@ -2079,6 +2079,18 @@ $settings['mail'] = array(
 		'collapsible'   => 'true',
 		'method'        => 'spacer',
 	),
+	'settings_oauth2_provider' => array(
+		'friendly_name' => __('Oauth2 Provider'),
+		'description'   => __('Choose your OAuth2 provider.'),
+		'method'        => 'drop_array',
+		'array'         => array(
+			'google'    => 'Google',
+			'yahoo'     => 'Yahoo',
+			'microsoft' => 'Microsoft',
+			'azure'     => 'Azure',
+		),
+		'default' => 'google'
+	),
 	'settings_oauth2_client_id' => array(
 		'friendly_name' => __('OAuth2 Client ID'),
 		'description'   => __('Please enter OAuth Client'),
@@ -2088,7 +2100,13 @@ $settings['mail'] = array(
 	'settings_oauth2_client_secret' => array(
 		'friendly_name' => __('Oauth2 Client Secret'),
 		'description'   => __('Please enter OAuth secret'),
-		'method'        => 'textbox_password',
+		'method'        => 'textbox',
+		'max_length'    => 255,
+	),
+	'settings_oauth2_tenant_id' => array(
+		'friendly_name' => __('Azure Tenant ID'),
+		'description'   => __('Only relevant for Azure'),
+		'method'        => 'textbox',
 		'max_length'    => 255,
 	),
 	'settings_oauth2_redirect_uri' => array(
