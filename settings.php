@@ -574,6 +574,14 @@ function display_settings() {
 				$('#row_settings_smtp_password').hide();
 				$('#row_settings_smtp_secure').hide();
 				$('#row_settings_smtp_timeout').hide();
+				$('#row_settings_oauth2_header').hide();
+				$('#row_settings_oauth2_host').hide();
+				$('#row_settings_oauth2_port').hide();
+				$('#row_settings_oauth2_secure').hide();
+				$('#row_settings_oauth2_timeout').hide();
+				$('#row_settings_oauth2_client_id').hide();
+				$('#row_settings_oauth2_client_secret').hide();
+				$('#row_settings_oauth2_redirect_uri').hide();
 				break;
 			case '1':
 				if (smtpPath != '') {
@@ -589,11 +597,27 @@ function display_settings() {
 				$('#row_settings_smtp_password').hide();
 				$('#row_settings_smtp_secure').hide();
 				$('#row_settings_smtp_timeout').hide();
+				$('#row_settings_oauth2_header').hide();
+				$('#row_settings_oauth2_host').hide();
+				$('#row_settings_oauth2_port').hide();
+				$('#row_settings_oauth2_secure').hide();
+				$('#row_settings_oauth2_timeout').hide();
+				$('#row_settings_oauth2_client_id').hide();
+				$('#row_settings_oauth2_client_secret').hide();
+				$('#row_settings_oauth2_redirect_uri').hide();
 				break;
 			case '2':
 				$('#settings_sendmail_path').val('');
 				$('#row_settings_sendmail_header').hide();
 				$('#row_settings_sendmail_path').hide();
+				$('#row_settings_oauth2_header').hide();
+				$('#row_settings_oauth2_host').hide();
+				$('#row_settings_oauth2_port').hide();
+				$('#row_settings_oauth2_secure').hide();
+				$('#row_settings_oauth2_timeout').hide();
+				$('#row_settings_oauth2_client_id').hide();
+				$('#row_settings_oauth2_client_secret').hide();
+				$('#row_settings_oauth2_redirect_uri').hide();
 				$('#row_settings_smtp_header').show();
 				$('#row_settings_smtp_host').show();
 				$('#row_settings_smtp_port').show();
@@ -603,13 +627,23 @@ function display_settings() {
 				$('#row_settings_smtp_timeout').show();
 				break;
 			case '3':
-				$('#row_settings_smtp_host').show();
-				$('#row_settings_smtp_port').show();
-				$('#row_settings_smtp_username').show();
+				$('#row_settings_sendmail_header').hide();
+				$('#row_settings_sendmail_path').hide();
+				$('#row_settings_smtp_header').hide();
+				$('#row_settings_smtp_host').hide();
+				$('#row_settings_smtp_port').hide();
+				$('#row_settings_smtp_username').hide();
+				$('#row_settings_smtp_password').hide();
+				$('#row_settings_smtp_secure').hide();
+				$('#row_settings_smtp_timeout').hide();
+				$('#row_settings_oauth2_host').show();
+				$('#row_settings_oauth2_port').show();
+				$('#row_settings_oauth2_secure').show();
+				$('#row_settings_oauth2_timeout').show();
+				$('#row_settings_oauth2_header').show();
 				$('#row_settings_oauth2_client_id').show();
 				$('#row_settings_oauth2_client_secret').show();
-// toto bude natvdro				$('#row_settings_smtp_redirect_uri').show();
-//pm tady musi byt skryti ostatnich 
+				$('#row_settings_oauth2_redirect_uri').show();
 				break;
 			}
 		}
