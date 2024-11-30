@@ -2116,6 +2116,12 @@ $settings['mail'] = array(
 		'max_length'    => 255,
 		'default'       => read_config_option('base_url') . 'oauth2.php'
 	),
+	'settings_oauth2_token' => array(
+		'friendly_name' => __('Oauth2 token'),
+		'description'   => __('From OAuth2 provider'),
+		'method'        => 'textbox',
+		'max_length'    => 255,
+	),
 	'settings_oauth2_host' => array(
 		'friendly_name' => __('SMTP Hostname'),
 		'description'   => __('This is the hostname/IP of the SMTP Server you will send the Email to. For failover, separate your hosts using a semi-colon.'),

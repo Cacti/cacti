@@ -617,6 +617,7 @@ function display_settings() {
 				$('#row_settings_oauth2_redirect_uri').hide();
 				$('#row_settings_oauth2_provider').hide();
 				$('#row_settings_oauth2_tenant_id').hide();
+				$('#row_settings_oauth2_token').hide();
 				break;
 			case '1':
 				if (smtpPath != '') {
@@ -642,6 +643,7 @@ function display_settings() {
 				$('#row_settings_oauth2_redirect_uri').hide();
 				$('#row_settings_oauth2_provider').hide();
 				$('#row_settings_oauth2_tenant_id').hide();
+				$('#row_settings_oauth2_token').hide();
 				break;
 			case '2':
 				$('#settings_sendmail_path').val('');
@@ -657,6 +659,7 @@ function display_settings() {
 				$('#row_settings_oauth2_redirect_uri').hide();
 				$('#row_settings_oauth2_provider').hide();
 				$('#row_settings_oauth2_tenant_id').hide();
+				$('#row_settings_oauth2_token').hide();
 				$('#row_settings_smtp_header').show();
 				$('#row_settings_smtp_host').show();
 				$('#row_settings_smtp_port').show();
@@ -685,6 +688,7 @@ function display_settings() {
 				$('#row_settings_oauth2_redirect_uri').show();
 				$('#row_settings_oauth2_provider').show();
 				$('#row_settings_oauth2_tenant_id').show();
+				$('#row_settings_oauth2_token').show();
 				break;
 			}
 		}
