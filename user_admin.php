@@ -565,6 +565,14 @@ function form_save() {
 			$user_id = sql_save($save, 'user_auth');
 
 			if ($user_id) {
+				if ($save['id'] == 0 && $save['email_address'] && read_config_option('secnotify_newuser') == 'on') {
+					cacti_log('budu mailovat novy uzivatel!!pm');
+				}
+				
+				if ($save['id'] > 0 && $save['email_address'] && read_config_option('secnotify_chpass') == 'on') {
+					cacti_log('budu mailovat zmenu hesla!!pm');
+
+				}
 				raise_message(1);
 			} else {
 				raise_message(2);
