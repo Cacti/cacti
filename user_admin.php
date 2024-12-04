@@ -491,6 +491,8 @@ function form_save() {
 		get_filter_request_var('policy_graph_templates');
 		/* ==================================================== */
 
+		$password_email = '';
+
 		$old_password = db_fetch_cell_prepared('SELECT password
 			FROM user_auth
 			WHERE id = ?',
@@ -499,6 +501,7 @@ function form_save() {
 		if ((get_nfilter_request_var('password') == '') && (get_nfilter_request_var('password_confirm') == '')) {
 			$password = $old_password;
 		} else {
+			$password_email = get_nfilter_request_var('password');
 			$password = compat_password_hash(get_nfilter_request_var('password'), PASSWORD_DEFAULT);
 
 			if ($password != $old_password) {
@@ -566,13 +569,23 @@ function form_save() {
 
 			if ($user_id) {
 				if ($save['id'] == 0 && $save['email_address'] && read_config_option('secnotify_newuser') == 'on') {
-					cacti_log('budu mailovat novy uzivatel!!pm');
+					$replacement = array(read_config_option('base_url') . CACTI_PATH_URL, $save['username'], $password_email);
+					$search = array('<CACTIURL>', '<USERNAME>', '<PASSWORD>');
+					$body = str_replace($search, $replacement, read_config_option('secnotify_newuser_message'));
+
+					send_mail($save['email_address'], null, read_config_option('secnotify_newuser_subject'), $body, array(), array(),  true);
+					cacti_log(sprintf('NOTE: New user created, username %s, created by %s', $save['email_address'], get_username()), false, 'SYSTEM');
 				}
 				
 				if ($save['id'] > 0 && $save['email_address'] && read_config_option('secnotify_chpass') == 'on') {
-					cacti_log('budu mailovat zmenu hesla!!pm');
+					$replacement = array(read_config_option('base_url') . CACTI_PATH_URL, $save['username'], $password_email);
+					$search = array('<CACTIURL>', '<USERNAME>', '<PASSWORD>');
+					$body = str_replace($search, $replacement, read_config_option('secnotify_chpass_message'));
 
+					send_mail($save['email_address'], null, read_config_option('secnotify_chpass_subject'), $body, array(), array(),  true);
+					cacti_log(sprintf('NOTE: Admin %s, changed password for user %s', get_username(), $save['email_address']), false, 'SYSTEM');
 				}
+
 				raise_message(1);
 			} else {
 				raise_message(2);

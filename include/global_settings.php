@@ -1964,7 +1964,7 @@ $settings['authentication'] = array(
 		'textarea_rows' => '4',
 		'textarea_cols' => '80',
 		'max_length'    => 1024,
-		'default'       => __('New user created. <br>Server: <CACTIURL><br>Username: <USERNAME><br>Password:<PASSWORD><br><br>')
+		'default'       => __('New user created. <br>Server: <CACTIURL><br>Username: <USERNAME><br>Password: <PASSWORD><br><br>Sending a password by email is not secure. Please change it as soon as possible.<br><br>')
 	),
 	'secnotify_chpass' => array(
 		'friendly_name' => __('Send email when admin change user password'),
@@ -1987,7 +1987,7 @@ $settings['authentication'] = array(
 		'textarea_rows' => '4',
 		'textarea_cols' => '80',
 		'max_length'    => 1024,
-		'default'       => __('User password changed. <br>Server: <CACTIURL><br>Username: <USERNAME><br>Password:<PASSWORD><br><br>')
+		'default'       => __('User password changed. <br>Server: <CACTIURL><br>Username: <USERNAME><br>Password: <PASSWORD><br><br>Sending a password by email is not secure. Please change it as soon as possible.<br><br>')
 	),
 );
 
