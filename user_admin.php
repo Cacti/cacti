@@ -491,8 +491,6 @@ function form_save() {
 		get_filter_request_var('policy_graph_templates');
 		/* ==================================================== */
 
-		$password_email = '';
-
 		$old_password = db_fetch_cell_prepared('SELECT password
 			FROM user_auth
 			WHERE id = ?',
@@ -501,7 +499,6 @@ function form_save() {
 		if ((get_nfilter_request_var('password') == '') && (get_nfilter_request_var('password_confirm') == '')) {
 			$password = $old_password;
 		} else {
-			$password_email = get_nfilter_request_var('password');
 			$password = compat_password_hash(get_nfilter_request_var('password'), PASSWORD_DEFAULT);
 
 			if ($password != $old_password) {
@@ -568,9 +565,23 @@ function form_save() {
 			$user_id = sql_save($save, 'user_auth');
 
 			if ($user_id) {
+
+				$hash = generate_hash();
+
+				$replacement = array(
+					read_config_option('base_url') . CACTI_PATH_URL, 
+					$save['username'],
+					read_config_option('base_url') . CACTI_PATH_URL . 'auth_user?action=reset&hash=' . $hash
+				);
+				$search = array('<CACTIURL>', '<USERNAME>', '<PWDRESETLINK>');
+
+				db_execute_prepared('INSERT INTO user_auth_reset_hashes
+					(user_id, hash, expiry)
+					VALUES (?, ?, date_sub(now(), interval 1 day))',
+					array ($user_id, $hash));
+
 				if ($save['id'] == 0 && $save['email_address'] && read_config_option('secnotify_newuser') == 'on') {
-					$replacement = array(read_config_option('base_url') . CACTI_PATH_URL, $save['username'], $password_email);
-					$search = array('<CACTIURL>', '<USERNAME>', '<PASSWORD>');
+
 					$body = str_replace($search, $replacement, read_config_option('secnotify_newuser_message'));
 
 					send_mail($save['email_address'], null, read_config_option('secnotify_newuser_subject'), $body, array(), array(),  true);
@@ -578,8 +589,7 @@ function form_save() {
 				}
 				
 				if ($save['id'] > 0 && $save['email_address'] && read_config_option('secnotify_chpass') == 'on') {
-					$replacement = array(read_config_option('base_url') . CACTI_PATH_URL, $save['username'], $password_email);
-					$search = array('<CACTIURL>', '<USERNAME>', '<PASSWORD>');
+
 					$body = str_replace($search, $replacement, read_config_option('secnotify_chpass_message'));
 
 					send_mail($save['email_address'], null, read_config_option('secnotify_chpass_subject'), $body, array(), array(),  true);
