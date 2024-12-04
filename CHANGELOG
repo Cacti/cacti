@@ -102,6 +102,7 @@ Cacti CHANGELOG
 -feature#5316: Allow for searching in settings/menu
 -feature#5321: cli/push_out_hosts.php is deprecated, redirect to rebuild_poller.cache.php
 -feature#5368: Allow all key searching calls to be delayed by defined amount
+-feature#5389: When a new account is created or admin har reset password send email to user 
 -feature#5406: Cacti connection handling should forcibly close connections to work around PDO uncertainty
 -feature#5407: Add last_updated column to the boost table to increase diagnostics in Cacti
 -feature#5416: Display device class before package import
