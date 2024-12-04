@@ -1125,6 +1125,9 @@ INSERT INTO `table_columns` VALUES ('user_auth_group_perms',2,'item_id','mediumi
 INSERT INTO `table_columns` VALUES ('user_auth_group_perms',3,'type','tinyint(3) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('user_auth_group_realm',1,'group_id','int(10) unsigned','NO','PRI',NULL,'');
 INSERT INTO `table_columns` VALUES ('user_auth_group_realm',2,'realm_id','int(10) unsigned','NO','PRI',NULL,'');
+INSERT INTO `table_columns` VALUES ('user_auth_reset_hashes',1,'user_id','int(10) unsigned','NO','PRI',NULL,'');
+INSERT INTO `table_columns` VALUES ('user_auth_reset_hashes',2,'hash','varchar(128)','NO','','','');
+INSERT INTO `table_columns` VALUES ('user_auth_reset_hashes',3,'expiry','timestamp','NO','PRI',CURRENT_TIMESTAMP,'');
 INSERT INTO `table_columns` VALUES ('user_auth_perms',1,'user_id','mediumint(8) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('user_auth_perms',2,'item_id','mediumint(8) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('user_auth_perms',3,'type','tinyint(3) unsigned','NO','PRI','0','');
