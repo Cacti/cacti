@@ -2875,6 +2875,21 @@ CREATE TABLE `user_auth_group_perms` (
 --
 
 --
+-- Table structure for table `user_auth_reset_hashes`
+--
+
+CREATE TABLE `user_auth_reset_hashes` (
+  `user_id` int(10) unsigned NOT NULL default '0',
+  `hash` varchar(128) NUT NULL default '',
+  `expiry` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_id`,`expiry`),
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Table that Contains User Password Reset Hashes';
+
+--
+-- Dumping data for table `user_auth_reset_hashes`
+--
+
+--
 -- Table structure for table `user_auth_group_realm`
 --
 
