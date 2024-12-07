@@ -4448,14 +4448,14 @@ function secpass_login_process($username) {
 	}
 
 	if (cacti_sizeof($user)) {
-                if ($user['enabled'] != 'on') {
-                        $error     = true;
-                        $error_msg = __('Access Denied!  Login Failed.');
+		if ($user['enabled'] != 'on') {
+			$error     = true;
+			$error_msg = __('Access Denied!  Login Failed.');
 
-                        cacti_log(sprintf('LOGIN FAILED: User %s, account disabled.', $username), false, 'AUTH');
+			cacti_log(sprintf('LOGIN FAILED: User %s, account disabled.', $username), false, 'AUTH');
 
-                        return array();
-                }
+			return array();
+		}
 
 		if (trim($password) == '') {
 			/* error */
@@ -4476,7 +4476,7 @@ function secpass_login_process($username) {
 
 			if (!$error) {
 				$error     = true;
-				$error_msg = __('Access Denied! Login failed.');
+				$error_msg = __('Access Denied! Login failed.') . ' <a href="auth_resetpassword.php">' . __('Reset password') . '</a>';
 			}
 
 			return array();

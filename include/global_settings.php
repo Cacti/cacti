@@ -1976,13 +1976,13 @@ $settings['authentication'] = array(
 		'friendly_name' => __('Subject of change password message'),
 		'description'   => __('This is the Email subject that will be used when admin change user password.'),
 		'method'        => 'textbox',
-		'default'       => __('Cacti - password changed'),
+		'default'       => __('Cacti - password reset'),
 		'max_length'    => 80,
 		'size'          => 80
 	),
 	'secnotify_chpass_message' => array(
 		'friendly_name' => __('Email body for change password message'),
-		'description'   => __('This is the message that will be send when admin reset user password. Max 1024 characters. HTML is allowed. There are several common replacement tags that may be used in include &#060CACTIURL&#062 &#060USERNAME&#062 &#060PASSWORD&#062'),
+		'description'   => __('This is the message that will be send when reset user password request. Max 1024 characters. HTML is allowed. There are several common replacement tags that may be used in include &#060CACTIURL&#062 &#060USERNAME&#062 &#060PASSWORD&#062'),
 		'method'        => 'textarea',
 		'textarea_rows' => '4',
 		'textarea_cols' => '80',
