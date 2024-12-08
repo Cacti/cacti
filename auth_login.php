@@ -177,7 +177,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 		/* check if the user is enabled */
 		if (!$user_enabled) {
 			$error     = true;
-			$error_msg = __('Access Denied! User account disabled.');
+			$error_msg = __('Access Denied!  User account disabled.');
 
 			if ($auth_method == AUTH_METHOD_BASIC) {
 				auth_display_custom_error_message($error_msg);
