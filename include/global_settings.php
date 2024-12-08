@@ -1997,13 +1997,13 @@ $settings['authentication'] = array(
 		'default'       => __('New user created. <br>Server: <a href="<CACTIURL>"><CACTIURL></a><br>Username: <USERNAME><br>To login and set a new password, use <a href="<PWDRESETLINK>">the following link</a><br><br>')
 	),
 	'secnotify_chpass' => array(
-		'friendly_name' => __('Send email when admin change user password'),
+		'friendly_name' => __('Send email when an admin changes a user password'),
 		'description'   => __('When an admin changes the password of an account and the email address for that account is entered, send an informational email to that address.'),
 		'method'        => 'checkbox',
 		'default'       => '',
 	),
 	'secnotify_chpass_subject' => array(
-		'friendly_name' => __('Subject of rest password message'),
+		'friendly_name' => __('Subject of reset password message'),
 		'description'   => __('This is the Email subject that will be used when admin change user password or user use \'Forgot password\'.'),
 		'method'        => 'textbox',
 		'default'       => __('Cacti - password reset'),
@@ -2012,7 +2012,7 @@ $settings['authentication'] = array(
 	),
 	'secnotify_chpass_message' => array(
 		'friendly_name' => __('Email body for reset password message'),
-		'description'   => __('This is the message that will be send when reset user password request. Max 1024 characters. HTML is allowed. There are several common replacement tags that may be used in include &#060CACTIURL&#062 &#060USERNAME&#062 &#060PASSWORD&#062'),
+		'description'   => __('This is the message that will be sent when a user requests a password reset. Max 1024 characters. HTML is allowed. There are several common replacement tags that may be used in include &#060CACTIURL&#062 &#060USERNAME&#062 &#060PASSWORD&#062'),
 		'method'        => 'textarea',
 		'textarea_rows' => '4',
 		'textarea_cols' => '80',
@@ -2020,7 +2020,7 @@ $settings['authentication'] = array(
 		'default'       => __('User\'s password has been reset. <br>Server: <a href="<CACTIURL>"><CACTIURL></a><br>Username: <USERNAME><br>To set a new password, use <a href="<PWDRESETLINK>">the following link</a><br><br>')
 	),
 	'secnotify_resetlink_timeout' => array(
-		'friendly_name' => __('Resetlink validity'),
+		'friendly_name' => __('Reset link validity'),
 		'description'   => __('How long the resetlink is valid in hours'),
 		'method'        => 'drop_array',
 		'default'       => '24',
