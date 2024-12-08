@@ -43,7 +43,6 @@ switch ($action) {
 		exit;
 
 		break;
-
 	case 'formreset': /* check correct hash, if incorrect lets start again */
 		$user_hash = get_filter_request_var('hash', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^[a-zA-Z0-9]+$/')));
 
@@ -59,9 +58,7 @@ switch ($action) {
 		}
 
 		break;
-
 	case 'resetrequest': /* try to find user in db. If yes and has email, send resetlink */
-
 		$user = array();
 		$identity = get_nfilter_request_var('identity');
 
@@ -102,9 +99,7 @@ switch ($action) {
 		$action = 'formidentity';
 
 		break;
-
 	case 'resetpassword': /* check and save new password */
-
 		$user_hash = get_filter_request_var('hash', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^[a-zA-Z0-9]+$/')));
 
 		$hash = db_fetch_row_prepared('SELECT *
@@ -132,7 +127,6 @@ switch ($action) {
 
 		// Check new password passes basic checks
 		if ($error != 'ok') {
-
 			$errorMessage = "<span class='badpassword_message'>$error</span>";
 			$action = 'formreset';
 
@@ -141,7 +135,6 @@ switch ($action) {
 
 		// Check user password history
 		if (!secpass_check_history($user['id'], $password)) {
-
 			$action = 'formreset';
 
 			break;
@@ -149,7 +142,6 @@ switch ($action) {
 
 		// Password and Confirmed password checks
 		if ($password !== $password_confirm) {
-
 			$errorMessage = "<span class='badpassword_message'>" . __('Your new passwords do not match, please retype.') . '</span>';
 			$action = 'formreset';
 
@@ -158,7 +150,6 @@ switch ($action) {
 
 		// Check new password does not match stored password
 		if (compat_password_verify($password, $user['password'])) {
-
 			$errorMessage = "<span class='badpassword_message'>" . __('Your new password cannot be the same as the old password. Please try again.') . '</span>';
 			$action = 'formreset';
 
@@ -169,10 +160,10 @@ switch ($action) {
 		if ($password != '') {
 			if (read_config_option('secpass_expirepass') > 0) {
 				db_execute_prepared("UPDATE user_auth
-				SET lastchange = ?
-				WHERE id = ?
-				AND realm = 0
-				AND enabled = 'on'",
+					SET lastchange = ?
+					WHERE id = ?
+					AND realm = 0
+					AND enabled = 'on'",
 					array(time(), $user['id']));
 			}
 
@@ -180,10 +171,10 @@ switch ($action) {
 
 			if ($history > 0) {
 				$h = db_fetch_row_prepared("SELECT password, password_history
-				FROM user_auth
-				WHERE id = ?
-				AND realm = 0
-				AND enabled = 'on'",
+					FROM user_auth
+					WHERE id = ?
+					AND realm = 0
+					AND enabled = 'on'",
 					array($user['id']));
 
 				$op = $h['password'];
@@ -197,23 +188,23 @@ switch ($action) {
 				$h   = implode('|', $h);
 
 				db_execute_prepared("UPDATE user_auth
-				SET password_history = ?
-				WHERE id = ?
-				AND realm = 0
-				AND enabled = 'on'",
+					SET password_history = ?
+					WHERE id = ?
+					AND realm = 0
+					AND enabled = 'on'",
 					array($h, $user['id']));
 			}
 
 			db_execute_prepared('INSERT IGNORE INTO user_log
-			(username, result, time, ip)
-			VALUES (?, 3, NOW(), ?)',
+				(username, result, time, ip)
+				VALUES (?, 3, NOW(), ?)',
 				array($user['username'], get_client_addr()));
 
 			db_check_password_length();
 
 			db_execute_prepared("UPDATE user_auth
-			SET must_change_password = '', password = ?
-			WHERE id = ?",
+				SET must_change_password = '', password = ?
+				WHERE id = ?",
 				array(compat_password_hash($password,PASSWORD_DEFAULT), $user['id']));
 
 			db_execute_prepared('DELETE FROM user_auth_reset_hashes
