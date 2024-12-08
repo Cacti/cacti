@@ -452,11 +452,7 @@ html_auth_footer('change_password', $errorMessage, "
 	var password_change = $('#password_change').is(':checked');
 
 	$(function() {
-		if ($(#identity).length) {
-			$('#identity').focus();
-		} else {
-			$('#password').focus();
-		}
+		$('#current').focus();
 
 		/* clear passwords */
 		$('#password').val('');

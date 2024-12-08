@@ -1964,7 +1964,7 @@ $settings['authentication'] = array(
 		'textarea_rows' => '4',
 		'textarea_cols' => '80',
 		'max_length'    => 1024,
-		'default'       => __('New user created. <br>Server: <CACTIURL><br>Username: <USERNAME><br>To login and set a new password, use the following link: <PWDRESETLINK><br><br>')
+		'default'       => __('New user created. <br>Server: <a href="<CACTIURL>"><CACTIURL></a><br>Username: <USERNAME><br>To login and set a new password, use <a href="<PWDRESETLINK>">the following link</a><br><br>')
 	),
 	'secnotify_chpass' => array(
 		'friendly_name' => __('Send email when admin change user password'),
@@ -1973,21 +1973,34 @@ $settings['authentication'] = array(
 		'default'       => '',
 	),
 	'secnotify_chpass_subject' => array(
-		'friendly_name' => __('Subject of change password message'),
-		'description'   => __('This is the Email subject that will be used when admin change user password.'),
+		'friendly_name' => __('Subject of rest password message'),
+		'description'   => __('This is the Email subject that will be used when admin change user password or user use \'Forgot password\'.'),
 		'method'        => 'textbox',
 		'default'       => __('Cacti - password reset'),
 		'max_length'    => 80,
 		'size'          => 80
 	),
 	'secnotify_chpass_message' => array(
-		'friendly_name' => __('Email body for change password message'),
+		'friendly_name' => __('Email body for reset password message'),
 		'description'   => __('This is the message that will be send when reset user password request. Max 1024 characters. HTML is allowed. There are several common replacement tags that may be used in include &#060CACTIURL&#062 &#060USERNAME&#062 &#060PASSWORD&#062'),
 		'method'        => 'textarea',
 		'textarea_rows' => '4',
 		'textarea_cols' => '80',
 		'max_length'    => 1024,
-		'default'       => __('User\'s password has been reset. <br>Server: <CACTIURL><br>Username: <USERNAME><br>To set a new password, use the following link: <PWDRESETLINK><br><br>')
+		'default'       => __('User\'s password has been reset. <br>Server: <a href="<CACTIURL>"><CACTIURL></a><br>Username: <USERNAME><br>To set a new password, use <a href="<PWDRESETLINK>">the following link</a><br><br>')
+	),
+	'secnotify_resetlink_timeout' => array(
+		'friendly_name' => __('Resetlink validity'),
+		'description'   => __('How long the resetlink is valid in hours'),
+		'method'        => 'drop_array',
+		'default'       => '24',
+		'array'         => array(
+			'1'     => __('%d Hour', 1),
+			'4'     => __('%d Hours', 4),
+			'12'    => __('%d Hours', 12),
+			'24'    => __('%d Day', 1),
+			'48'    => __('%d Days', 2),
+		)
 	),
 );
 
