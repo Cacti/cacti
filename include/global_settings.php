@@ -240,6 +240,14 @@ $settings['path'] = array(
 		'install_check'    => 'writable',
 		'install_optional' => true
 	),
+	'path_boost_log' => array(
+		'friendly_name' => __('Boost Debug Log'),
+		'description'   => __('This is the Log file where Boost will write its information to.  It much be located in the same directory as the Cacti Log file.'),
+		'method'        => 'filepath',
+		'file_type'     => 'ascii',
+		'default'       => CACTI_PATH_LOG . '/boost.log',
+		'max_length'    => '255'
+	),
 	'pollerpaths_header' => array(
 		'friendly_name' => __('Alternate Poller Path'),
 		'collapsible'   => 'true',
@@ -929,6 +937,21 @@ $settings['snmp'] = array(
 		'default'       => AVAIL_SNMP,
 		'array'         => $availability_options,
 	),
+	'snmp_options' => array(
+		'friendly_name' => __('Downed Device SNMP Recovery Options Set'),
+		'description'   => __('If a Device goes down, use this SNMP Option Set to attempt to re-establish communication with the device and update the devices settings based upon the first matching SNMP Options Set.'),
+		'method'        => 'drop_sql',
+		'default'       => '',
+		'sql'           => 'SELECT id, name FROM automation_snmp ORDER BY name',
+		'none_value'    => __('Disabled')
+	),
+	'snmp_options_retry_interval' => array(
+		'friendly_name' => __('Downed Device SNMP Recovery Options Retry Frequency'),
+		'description'   => __('When a Device is Down, and has an SNMP Recovery Options Set established, how often do you wish to try to reciver the Device using the SNMP Options Set specified?'),
+		'method'        => 'drop_array',
+		'default'       => 3600,
+		'array'         => $poller_sync_intervals,
+	),
 	'ping_method' => array(
 		'friendly_name' => __('Ping Type'),
 		'description'   => __('Default Ping type for all new Devices.</i>'),
@@ -1488,6 +1511,13 @@ $settings['poller'] = array(
 		'default'       => '25',
 		'max_length'    => '10',
 		'size'          => '5'
+	),
+	'poller_output_debounce' => array(
+		'friendly_name' => __('Poller Output Not Empty Debouncing'),
+		'description'   => __('If you are having issues with some data sources, your Email could be flooded with \'Poller Output Not Empty\' warnings.  If this is happening, you can debounce the setting based upon this interval.'),
+		'method'        => 'drop_array',
+		'default'       => 3600,
+		'array'         => $poller_sync_intervals,
 	),
 	'reindex_header' => array(
 		'friendly_name' => __('Periodic All Device Re-Index'),
@@ -2322,13 +2352,11 @@ $settings['boost'] = array(
 		'method'        => 'checkbox',
 		'default'       => ''
 	),
-	'path_boost_log' => array(
-		'friendly_name' => __('Boost Debug Log'),
-		'description'   => __('If this field is non-blank, Boost will log RRDUpdate output from the boost poller process. WARNING: This setting significantly affects the boost runtime'),
-		'method'        => 'filepath',
-		'file_type'     => 'ascii',
-		'default'       => '',
-		'max_length'    => '255'
+	'boost_debug_enabled' => array(
+		'friendly_name' => __('Enable Boost Debugging'),
+		'description'   => __('If set, Boost will log debug information directly to the Boost log file.  Please note, enabling can cause a high I/O rate on the local file system.'),
+		'method'        => 'checkbox',
+		'default'       => ''
 	),
 	'boost_png_header' => array(
 		'friendly_name' => __('Image Caching'),

@@ -9,6 +9,7 @@ Cacti CHANGELOG
 -issue#3559: When a developer uses backtracing, HTML output can be seen from command line
 -issue#3560: When using `input_validate_xxx`, calls to `die_html_input_error()` do not pass variable name
 -issue#5019: Install SQL Statements with Database name should be quoted
+-issue#5191: Improve poller recovery by the addition of a secondary index
 -issue#5216: 1.3.0 - QA DSSTATS does not use the RRDtool Proxy stateful socket connection
 -issue#5221: ss_fping.php script times out when there is a lot of packet loss
 -issue#5264: The Net-SNMP Disk I/O Templates are not Cluster Aware
@@ -19,6 +20,7 @@ Cacti CHANGELOG
 -issue#5570: RRDChecker is started very often
 -issue#5573: Incorrect URL for editing graph template
 -issue#5639: Add tooltip info about IPv6 address
+-issue#5657: Consolidation Functions must be available in COMMENT for nth percentile and bandwidth summations comment types
 -issue#5680: Fix Spikekill not following correct time in schedule
 -issue#5776: Undefined array key "description" in file settings.php
 -issue#5844: Automation fails when using MySQL 8
@@ -26,14 +28,19 @@ Cacti CHANGELOG
 -issue#5899: Tooltip remain on page after page is refreshed
 -issue#5900: Please add the ability to select compiled RRDtool v1.9+
 -issue#5936: If a Remote Data Collector has not devices, poller.php does not properly register any collectors
+-issue#5964: Graph Timespans too far into the past generate RRDtool crashes
+-issue#5967: Removing dygraph-combined.js as we are not using it and have adequate charting libraries
+-issue#5968: Removing jQuery Sparklines API as we are not using it and have adequate charting libraries
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors
 -feature#1398: Implement an interactive web based Plugin upgrade process
 -feature#1442: Add validation to GUI inputs
 -feature#1523: Value above RRD maximum value
+-feature#1585: Confirmation screen should show what options have been picked
 -feature#1987: Plugins should be able to be downloaded, installed, and upgraded from Plugin Management
 -feature#2166: LDAP configuration should only use 'user_domains_ldap'
+-feature#2429: Allow Device SNMP Options to be Templated
 -feature#2437: Create system-wide Proxy settings for plugins
 -feature#2439: Allow CDEF to be used as a filter for Graph/Graph Templates
 -feature#2474: Enable better version reporting for GitHub/Source/Package editions
@@ -86,30 +93,37 @@ Cacti CHANGELOG
 -feature#5083: Make user log ask for confirmation on purge
 -feature#5120: Define cacti system paths as constants for better code checking
 -feature#5129: Add an option to skip table sync to remote pollers during upgrade process of Cacti
+-feature#5130: Add parameter "version" for Graph Templates
 -feature#5148: Allow theme-based include paths with master location
 -feature#5149: Allow CSS files to be loaded async #5149
 -feature#5163: DSSTATS - Add Additional Data Source Statics to Cacti
 -feature#5165: DSSTATS - Change data_source_stats_hourly_cache from Memory to INNODB
 -feature#5178: DSSTATS - Allow Retention of Daily, Weekly, Monthly and Yearly data for varying periods
+-feature#5212: Gradient Support drops Alpha translparency values from Areas and Does not Support Stack
 -feature#5215: DSSTATS - Cache the RRDtool Logic in a table to speed calculation of the staticis gathering
 -feature#5222: Allow Cacti Log to be Displayed in 'Raw Log' Format
 -feature#5225: When your Database server has TB of memory, memory calculation returns incorrect data in Cacti
 -feature#5231: When editing a Device show in state/uptime as a date in the header
+-feature#5267: Gradient Support does not work correctly on Aggregate Graphs
 -feature#5273: Add support for RRD --left-axis-format Options
 -feature#5278: Enhance Cacti's ping to use fping if it's installed to take advantage of sub-second timeouts
 -feature#5294: Allow Ignored Errors to be Logged such as 'No Route to host'
 -feature#5305: Remove files aggregate_items.php and color_templates_items.php and consolidate into their parents
 -feature#5316: Allow for searching in settings/menu
 -feature#5321: cli/push_out_hosts.php is deprecated, redirect to rebuild_poller.cache.php
+-feature#5328: Search through Data Query fields when searching for Graphs in Tree
 -feature#5368: Allow all key searching calls to be delayed by defined amount
--feature#5389: When a new account is created or admin har reset password send email to user 
+-feature#5378: When reload page in browser with graphs created scroll window always return to top
+-feature#5389: Forgot password function and email notification about new user or reset user password 
 -feature#5406: Cacti connection handling should forcibly close connections to work around PDO uncertainty
 -feature#5407: Add last_updated column to the boost table to increase diagnostics in Cacti
 -feature#5416: Display device class before package import
 -feature#5463: When building Automation Rules, show the 'effective sql' on the page for users who know SQL
 -feature#5578: Provide new templates for Aruba switch, Aruba wifi controller and HPE iLO to be available during install
+-feature#5588: When upgrading Cacti deprecated/removed libraries and files still exist
 -feature#5596: Add template Aruba OSCX switch 6x00
 -feature#5601: Order Graph Item Inputs Naturally (MariaDB 10.7++, no MySQL support)
+-feature#5640: Boost log file visibility and rotation not as expected
 -feature#5681: Add poller information to graph-variables
 -feature#5717: Add Aruba Clearpass template
 -feature#5804: Remove the Classic Theme in Cacti
@@ -132,6 +146,14 @@ Cacti CHANGELOG
 -feature#5923: If RRDtool crashes due to a segmentation fault, report that and retry a few times
 -feature#5931: Make it easier to connect content in the table data_input_data to the host and data source
 -feature#5935: Add additional detail to the Admin Email to trace the server's impacted by the errors
+-feature#5941: Implement Drag and Drop on Graph Templates Edit Page
+-feature#5942: Improve Speed of Graph Template Editing Through Bulk Updates
+-feature#5948: Allow Graph Template Classes to be changed enmass
+-feature#5952: Create a new form dropdown type called drop_icon
+-feature#5954: Add Check boxes to Graph Templates Change Page
+-feature#5955: When Changing a Profile Update Other Data
+-feature#5959: Debounce the Poller Output Not Empty Warning
+-feature#5966: Add snmp retries at the device level
 -feature: Allow messages to be popup notifications
 -feature: Upgrade billboard.js to version 3.14.1
 -feature: Upgrade jQueryUI to 1.14.1
@@ -140,6 +162,7 @@ Cacti CHANGELOG
 -feature: Add parsedown to vendor library for plugin CHANGELOG and README viewing support
 -feature: Add year display to get_daysfromtime function
 -feature: Add class and version columns to Graph Template to support Streams feature
+-feature: Upgrade jquery.tablednd.js to 1.0.5
 
 1.2.29
 -issue#5843: Issue with temporary tables with use of microtime
@@ -153,6 +176,8 @@ Cacti CHANGELOG
 -issue#5884: Fix Fortigate and Aruba OSCX switch template, improve Clearpass template
 -issue#5927: Unable to re-enable a plugin using plugin_manage.php
 -issue#5932: When upgrading Cacti, the replicate_out() process runs repeatedly
+-issue#5961: Issues with Replication of Tables and Misleading Full Sync Time
+-issue#5963: Cacti caching for db_table_exists() and db_column_exists() is not connection aware and replication does not replicate empty table structures
 -feature#5921: Add HPE Nimble/Alletra template
 -feature#5933: Only attempt to change the table type and character encoding for built-in Cacti tables
 

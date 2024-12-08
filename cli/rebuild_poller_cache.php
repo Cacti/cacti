@@ -152,6 +152,25 @@ foreach ($parms as $parameter) {
 	}
 }
 
+/**
+ * allow multiple runs for each type. This is mainly important for
+ * the Data Template options to change the Profile Id of a data
+ * source or data template.  These processes to repopulate the
+ * poller cache are done in succession in background.
+ */
+$rp_type = '';
+if ($host_id !== false) {
+	$rp_type .= ($rp_type != '' ? ',':':') . "hi:$host_id";
+}
+
+if ($host_template_id !== false) {
+	$rp_type .= ($rp_type != '' ? ',':':') . "ht:$host_template_id";
+}
+
+if ($data_template_id !== false) {
+	$rp_type .= ($rp_type != '' ? ',':':') . "dt:$data_template_id";
+}
+
 /* install signal handlers for UNIX only */
 if (function_exists('pcntl_signal')) {
 	pcntl_signal(SIGTERM, 'sig_handler');
@@ -186,7 +205,7 @@ pushout_debug('Rebuild poller cache starting');
 
 /* silently end if the registered process is still running  */
 if (!$forcerun) {
-	if (!register_process_start('pushout', $type, $thread_id, 86400)) {
+	if (!register_process_start('pushout' . $rp_type, $type, $thread_id, 86400)) {
 		exit(0);
 	}
 }
@@ -196,7 +215,7 @@ switch ($type) {
 	case 'rmaster':
 		pushout_master_handler($forcerun, $host_id, $host_template_id, $data_template_id, $threads);
 
-		unregister_process('pushout', 'rmaster', 0);
+		unregister_process('pushout' . $rp_type, 'rmaster', 0);
 
 		break;
 	case 'child':  /* Launched by the rmaster process */
@@ -244,7 +263,7 @@ switch ($type) {
 
 		$total_time = microtime(true) - $child_start;
 
-		unregister_process('pushout', 'child', $thread_id);
+		unregister_process('pushout' . $rp_type, 'child', $thread_id);
 
 		break;
 }
@@ -333,7 +352,7 @@ function pushout_launch_child($thread_id, $threads) {
 
 	cacti_log(sprintf('NOTE: Launching Rebuild poller cache Number %s for Type %s', $thread_id, 'child'), true, 'PUSHOUT', POLLER_VERBOSITY_MEDIUM);
 
-	exec_background($php_binary, CACTI_PATH_CLI . "/rebuild_poller_cache.php --type=child --threads=$threads --child=$thread_id " . ($debug ? " --debug":"") . ($host_template_id ? " --host-template-id=$host_template_id":"") . ($data_template_id ? " --data-template-id=$data_template_id":""));
+	exec_background($php_binary, CACTI_PATH_CLI . "/rebuild_poller_cache.php --type=child --threads=$threads --child=$thread_id " . ($debug ? ' --debug':'') . ($host_template_id ? " --host-template-id=$host_template_id":'') . ($data_template_id ? " --data-template-id=$data_template_id":''));
 }
 
 /**
@@ -410,7 +429,7 @@ function display_help() {
  * @return - null
  */
 function sig_handler($signo) {
-	global $type, $thread_id;
+	global $type, $thread_id, $rp_type;
 
 	switch ($signo) {
 		case SIGTERM:
@@ -421,7 +440,7 @@ function sig_handler($signo) {
 				pushout_kill_running_processes();
 			}
 
-			unregister_process('pushout', 'rmaster', $thread_id, getmypid());
+			unregister_process('pushout' . $rp_type, 'rmaster', $thread_id, getmypid());
 
 			exit(1);
 

@@ -171,6 +171,14 @@ foreach ($parms as $parameter) {
 			$overrides['snmp_timeout'] = $value;
 
 			break;
+		case '--retries':
+			$overrides['snmp_retries'] = $value;
+
+			break;
+		case '--options':
+			$overrides['snmp_options'] = $value;
+
+			break;
 		case '--ping_timeout':
 			$overrides['ping_timeout'] = $value;
 
@@ -410,7 +418,7 @@ $host_id = api_device_save($device_id, $host['host_template_id'], $host['descrip
 	$host['ping_port'], $host['ping_timeout'], $host['ping_retries'], $host['notes'],
 	$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
 	$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['max_oids'], $host['device_threads'],
-	$host['poller_id'], $host['site_id'], $host['external_id'], $host['location'], $host['bulk_walk_size']);
+	$host['poller_id'], $host['site_id'], $host['external_id'], $host['location'], $host['bulk_walk_size'], $host['snmp_options'], $host['snmp_retries']);
 
 if (is_error_message() || $host_id != $device_id) {
 	print "ERROR: Failed to change this device ($device_id-$host_id)\n";
@@ -436,7 +444,7 @@ function display_help() {
 	print "\nusage: change_device.php --id=<device-id> [--description=[description]] [--ip=[IP]] [--template=[ID]] [--notes=\"[]\"] [--disable]\n";
 	print "    [--poller=[id]] [--site=[id] [--external-id=[S]] [--proxy] [--threads=[1]\n";
 	print "    [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] --ping_timeout=[N] --ping_retries=[2]\n";
-	print "    [--version=[0|1|2|3]] [--community=] [--port=161] [--timeout=500]\n";
+	print "    [--version=[0|1|2|3]] [--community=] [--port=161] [--timeout=500] [--retries=3] [--options=0]\n";
 	print "    [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=] [--engineid=]\n";
 	print "    [--quiet]\n\n";
 	print "Required:\n";
@@ -462,7 +470,9 @@ function display_help() {
 	print "    --version      1, 0|1|2|3, snmp version.  0 for no snmp\n";
 	print "    --community    '', snmp community string for snmpv1 and snmpv2.  Leave blank for no community\n";
 	print "    --port         161\n";
-	print "    --timeout      500\n";
+	print "    --timeout      500, The default snmp timeout\n";
+	print "    --retries      3, The number of snmp retries\n";
+	print "    --options      0, The SNMP Recovery Template Options set to use\n";
 	print "    --username     '', snmp username for snmpv3\n";
 	print "    --password     '', snmp password for snmpv3\n";
 	print "    --authproto    '', snmp authentication protocol for snmpv3\n";

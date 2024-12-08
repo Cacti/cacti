@@ -24,6 +24,7 @@
 
 function upgrade_to_1_3_0() {
 	db_install_change_column('version', array('name' => 'cacti', 'type' => 'char(30)', 'null' => false, 'default' => ''));
+
 	db_install_add_column('user_auth', array('name' => 'tfa_enabled', 'type' => 'char(3)', 'null' => false, 'default' => ''));
 	db_install_add_column('user_auth', array('name' => 'tfa_secret', 'type' => 'char(50)', 'null' => false, 'default' => ''));
 
@@ -35,8 +36,19 @@ function upgrade_to_1_3_0() {
 	db_install_add_column('poller', array('name' => 'dbsslverifyservercert', 'type' => 'char(3)', 'after' => 'dbsslcapath', 'default' => 'on'));
 
 	db_install_add_column('host', array('name' => 'created', 'type' => 'timestamp', 'default' => 'CURRENT_TIMESTAMP'));
+	db_install_add_column('host', array('name' => 'snmp_options', 'type' => 'tinyint(3)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'external_id'));
+	db_install_add_column('host', array('name' => 'status_options_date', 'type' => 'timestamp', 'NULL' => false, 'default' => '0000-00-00', 'after' => 'status_rec_date'));
+
+	db_install_add_column('host', array('name' => 'snmp_retries', 'type' => 'tinyint(3) unsigned', 'NULL' => false, 'default' => '3', 'after' => 'snmp_timeout'));
+	db_install_add_column('poller_item', array('name' => 'snmp_retries', 'type' => 'tinyint(3) unsigned', 'NULL' => false, 'default' => '3', 'after' => 'snmp_timeout'));
+
+	db_execute_prepared('UPDATE host SET snmp_retries = ?', array(read_config_option('snmp_retries')));
+	db_execute_prepared('UPDATE poller_item SET snmp_retries = ?', array(read_config_option('snmp_retries')));
 
 	db_install_add_column('graph_templates_item', array('name' => 'legend', 'type' => 'varchar(30)', 'default' => '', 'after' => 'text_format'));
+	db_install_add_column('graph_templates_item', array('name' => 'color2_id', 'type' => 'mediumint(8)', 'unsigned' => true, 'default' => '0', 'after' => 'alpha'));
+	db_install_add_column('graph_templates_item', array('name' => 'alpha2', 'type' => 'char(2)', 'default' => 'FF', 'after' => 'color2_id'));
+	db_install_add_column('graph_templates_item', array('name' => 'gradheight', 'type' => 'tinyint(4)', 'default' => '50', 'after' => 'alpha2'));
 
 	db_install_add_column('sites', array('name' => 'disabled', 'type' => 'char(2)', 'null' => false, 'default' => '', 'after' => 'name'));
 
@@ -66,6 +78,8 @@ function upgrade_to_1_3_0() {
 	db_add_index('data_input_data', 'INDEX', 'local_data_id', array('local_data_id'));
 	db_add_index('data_input_data', 'INDEX', 'host_id', array('host_id'));
 
+	db_add_index('poller_output_boost', 'INDEX', 'time', array('time'));
+
 	db_install_execute("UPDATE data_input_data AS did
 		INNER JOIN data_template_data AS dtd
 		ON did.data_template_data_id = dtd.id
@@ -76,6 +90,9 @@ function upgrade_to_1_3_0() {
 		ON did.data_template_data_id = dtd.id
 		INNER JOIN data_local AS dl ON dl.id = dtd.local_data_id
 		SET did.host_id = dl.host_id");
+
+	/* remove all the legacy debounce entries */
+	db_install_execute('DELETE FROM settings WHERE name LIKE "debounce_%" AND value > 0');
 
 	/* temporary workaround till project finished */
 	db_install_execute("CREATE TABLE IF NOT EXISTS `plugin_available` (
@@ -334,6 +351,9 @@ function upgrade_to_1_3_0() {
 	object_cache_update_data_source_totals();
 	object_cache_update_graph_totals();
 	object_cache_update_aggregate_totals();
+
+	/* remove legacy files from old cacti releases */
+	prune_deprecated_files();
 }
 
 function ldap_convert_1_3_0() {

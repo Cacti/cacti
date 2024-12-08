@@ -835,6 +835,25 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 						}
 
 						$save[$field_name] = $color_id;
+					} elseif (($field_name == 'color2_id') && (preg_match('/^[a-fA-F0-9]{6}$/', $item_array[$field_name])) && (get_version_index($parsed_hash['version']) >= get_version_index('0.8.5'))) { /* treat the 'color' field differently */
+						$color2_id = db_fetch_cell_prepared('SELECT id
+							FROM colors
+							WHERE hex = ?',
+							array($item_array[$field_name]));
+
+						if (empty($color2_id) && !$preview_only) {
+							db_execute_prepared('INSERT INTO colors (
+								hex) VALUES (?)',
+								array($item_array[$field_name]));
+
+							$color2_id = db_fetch_insert_id();
+						}
+
+						if (empty($color2_id) && $preview_only) {
+							$color2_id = $item_array[$field_name];
+						}
+
+						$save[$field_name] = $color2_id;
 					} else {
 						$save[$field_name] = xml_character_decode($item_array[$field_name]);
 					}
@@ -2310,6 +2329,20 @@ function compare_data($save, $previous_data, $table) {
 				}
 
 				if ($column == 'color_id') {
+					$oldvalue = db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($previous_data[$column]));
+					$oldvalue = html_escape($oldvalue);
+					$oldvalue = '<span style="background-color:#' . $oldvalue . '">' . $oldvalue . '</span>';
+
+					$newvalue = db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($value));
+
+					if (empty($newvalue) && $preview_only) {
+						$newvalue = html_escape($value);
+					} else {
+						$newvalue = html_escape($newvalue);
+					}
+
+					$newvalue = '<span style="background-color:#' . $newvalue . '">' . $newvalue . '</span>';
+				} elseif ($column == 'color2_id') {
 					$oldvalue = db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($previous_data[$column]));
 					$oldvalue = html_escape($oldvalue);
 					$oldvalue = '<span style="background-color:#' . $oldvalue . '">' . $oldvalue . '</span>';

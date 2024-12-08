@@ -465,7 +465,7 @@ function form_actions() {
 					'extra'    => array(
 						'group_prefix' => array(
 							'method'  => 'textbox',
-							'title'   => __('Group Prefix:'),
+							'title'   => __('Group Prefix'),
 							'default' => __('New Group'),
 							'width'   => 25
 						)

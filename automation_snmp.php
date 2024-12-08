@@ -419,7 +419,7 @@ function form_actions() {
 					'extra'    => array(
 						'name_format' => array(
 							'method'  => 'textbox',
-							'title'   => __('Name Format:'),
+							'title'   => __('Name Format'),
 							'default' => '<name> (1)',
 							'width'   => 25
 						)
@@ -736,8 +736,9 @@ function automation_snmp_edit() {
 
 		if (cacti_sizeof($items)) {
 			foreach ($items as $item) {
-				form_alternate_row('line' . $item['id'], true, true);
-				$form_data = "<td><a class='linkEditMain' href='" . html_escape('automation_snmp.php?action=item_edit&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . "'>" . __('Item#%d', $i) . '</a></td>';
+				form_alternate_row('line' . $item['id'], true);
+
+				$form_data = "<td><a class='linkEditMain' href='" . html_escape('automation_snmp.php?action=item_edit&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . "'>" . __('Item # %d', $i) . '</a></td>';
 				$form_data .= '<td>' . 	$item['snmp_version'] . '</td>';
 				$form_data .= '<td class="left">' . 	($item['snmp_version'] == 3 ? __('none') : html_escape($item['snmp_community'])) . '</td>';
 				$form_data .= '<td class="right">' . 	$item['snmp_port'] . '</td>';
@@ -767,9 +768,11 @@ function automation_snmp_edit() {
 				}
 
 				$form_data .= '<a class="delete deleteMarker fa fa-times" id="' . $item['id'] . '_' . $item['snmp_id'] . '" title="' . __esc('Delete') . '"></a>';
-				$form_data .= '</td></tr>';
+				$form_data .= '</td>';
 
 				print $form_data;
+
+				form_end_row();
 
 				$i++;
 			}

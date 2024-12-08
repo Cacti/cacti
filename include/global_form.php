@@ -23,7 +23,7 @@
 */
 
 if (!defined('VALID_HOST_FIELDS')) {
-	$string = api_plugin_hook_function('valid_host_fields', '(hostname|host_id|location|snmp_community|snmp_username|snmp_password|snmp_auth_protocol|snmp_priv_passphrase|snmp_priv_protocol|snmp_context|snmp_engine_id|snmp_version|snmp_port|snmp_timeout|external_id)');
+	$string = api_plugin_hook_function('valid_host_fields', '(hostname|host_id|location|snmp_community|snmp_username|snmp_password|snmp_auth_protocol|snmp_priv_passphrase|snmp_priv_protocol|snmp_context|snmp_engine_id|snmp_version|snmp_port|snmp_timeout|snmp_retries|external_id)');
 	define('VALID_HOST_FIELDS', $string);
 }
 $valid_host_fields = VALID_HOST_FIELDS;
@@ -139,6 +139,15 @@ $fields_snmp_item = array(
 		'default'       => read_config_option('snmp_timeout'),
 		'size'          => '12'
 	),
+	'snmp_retries' => array(
+		'method'        => 'textbox',
+		'friendly_name' => __('SNMP Retries'),
+		'description'   => __('The maximum number of times SNMP will attempt to contact the remote device before giving up.'),
+		'value'         => '|arg1:snmp_retries|',
+		'max_length'    => '4',
+		'default'       => read_config_option('snmp_retries'),
+		'size'          => '4'
+	)
 );
 
 $fields_snmp_item_with_oids = $fields_snmp_item + array(
@@ -990,18 +999,40 @@ $struct_graph_item = array(
 		'description' => __('The data source to use for this graph item.')
 	),
 	'color_id' => array(
-		'friendly_name' => __('Color'),
+		'friendly_name' => __('Primary Color'),
 		'method'        => 'drop_color',
 		'default'       => '0',
 		'on_change'     => 'changeColorId()',
-		'description'   => __('The color to use for the legend.')
+		'description'   => __('The color to use for the canvas item and legend.')
 	),
 	'alpha' => array(
-		'friendly_name' => __('Opacity/Alpha Channel'),
+		'friendly_name' => __('Primary Opacity'),
 		'method'        => 'drop_array',
 		'default'       => 'FF',
 		'array'         => $graph_color_alpha,
-		'description'   => __('The opacity/alpha channel of the color.')
+		'description'   => __('The opacity of the primary color.')
+	),
+	'color2_id' => array(
+		'friendly_name' => __('Gradient Color'),
+		'method'        => 'drop_color',
+		'default'       => '0',
+		'on_change'     => 'changeColorId()',
+		'description'   => __('The gradient color to use for the canvas item.')
+	),
+	'alpha2' => array(
+		'friendly_name' => __('Gradient Opacity'),
+		'method'        => 'drop_array',
+		'default'       => 'FF',
+		'array'         => $graph_color_alpha,
+		'description'   => __('The opacity of the gradient color.')
+	),
+	'gradheight' => array(
+		'friendly_name' => __('Gradient Height'),
+		'method'        => 'textbox',
+		'max_length'    => '5',
+		'size'          => '5',
+		'default'       => '',
+		'description'   => __('The Gradient Height parameter can create three different behaviors. If it is > 0, then the gradient is a fixed height, starting at the line going down. If it is < 0, then the gradient starts at a fixed height above the x-axis, going down to the x-axis. If it is == 0, then the gradient goes from the top of the area fill to x-axis.')
 	),
 	'consolidation_function_id' => array(
 		'friendly_name' => __('Consolidation Function'),
@@ -1298,6 +1329,15 @@ $fields_host_edit = array(
 		'method'        => 'drop_array',
 		'default'       => read_config_option('availability_method'),
 		'array'         => $availability_options
+	),
+	'snmp_options' => array(
+		'friendly_name' => __('Downed Device SNMP Recovery Options Set'),
+		'description'   => __('If a Device goes down, use this SNMP Option Set to attempt to re-establish communication with the device and update the devices settings based upon the first matching SNMP Options Set.'),
+		'on_change'     => 'changeHostForm()',
+		'value'         => '|arg1:snmp_options|',
+		'method'        => 'drop_sql',
+		'default'       => read_config_option('snmp_options'),
+		'sql'           => 'SELECT "0" AS id, "' . __esc('Disabled') . '" AS name UNION SELECT id, name FROM automation_snmp ORDER BY id'
 	),
 	'ping_method' => array(
 		'friendly_name' => __('Ping Method'),

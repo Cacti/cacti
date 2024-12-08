@@ -106,6 +106,7 @@
 		z-index:300;
 		background: transparent;
 		transform: translateX(-100%);
+		left: 0;
 
 		&[id$="-1"] { top: 0.5rem; }
 		&[id$="-2"] { bottom: 0.5rem; }
@@ -239,7 +240,7 @@ div.zoom-menu-hover, div.inner_li>span.zoom-menu-hover{
 }
 
 .zoom-livedata {
-	min-width: 20rem;
+	min-width: 22rem;
 	padding: 0.5rem 1rem;
 }
 
@@ -275,6 +276,7 @@ div.zoom-menu-hover, div.inner_li>span.zoom-menu-hover{
 .zoom-livedata-title {
 	flex: 1;
 	text-align: left;
+	margin-right: 1rem;
 }
 
 .zoom-livedata-unit {

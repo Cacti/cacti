@@ -1441,7 +1441,7 @@ function reports_edit() {
 		)
 	);
 
-	validate_store_request_vars($filters, 'sess_reports');
+	validate_store_request_vars($filters, 'sess_repe');
 	/* ================= input validation ================= */
 
 	if (get_request_var('rows') == '-1') {
@@ -1822,7 +1822,7 @@ function reports() {
 		)
 	);
 
-	validate_store_request_vars($filters, 'sess_reports');
+	validate_store_request_vars($filters, 'sess_repv');
 	/* ================= input validation ================= */
 
 	if (get_request_var('rows') == -1) {

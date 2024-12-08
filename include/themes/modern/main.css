@@ -228,6 +228,10 @@ label {
 	white-space: nowrap;
 }
 
+.prewrap {
+	white-space: pre-wrap;
+}
+
 .wrap {
 	white-space: normal !important;
 }

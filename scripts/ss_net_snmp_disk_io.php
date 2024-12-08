@@ -124,7 +124,7 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 		$host['snmp_context'],
 		$host['snmp_port'],
 		$host['snmp_timeout'],
-		$host['ping_retries'],
+		$host['snmp_retries'],
 		SNMP_POLLER,
 		$host['snmp_engine_id']);
 
@@ -142,7 +142,7 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 		$host['snmp_context'],
 		$host['snmp_port'],
 		$host['snmp_timeout'],
-		$host['ping_retries'],
+		$host['snmp_retries'],
 		SNMP_POLLER,
 		$host['snmp_engine_id']);
 
@@ -172,7 +172,7 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 			$host['snmp_context'],
 			$host['snmp_port'],
 			$host['snmp_timeout'],
-			$host['ping_retries'],
+			$host['snmp_retries'],
 			$host['max_oids'],
 			SNMP_POLLER,
 			$host['snmp_engine_id']);
@@ -218,7 +218,7 @@ function ss_net_snmp_disk_io($host_id_or_hostname = '') {
 			$host['snmp_context'],
 			$host['snmp_port'],
 			$host['snmp_timeout'],
-			$host['ping_retries'],
+			$host['snmp_retries'],
 			$host['max_oids'],
 			SNMP_POLLER,
 			$host['snmp_engine_id']);

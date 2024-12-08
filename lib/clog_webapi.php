@@ -47,8 +47,11 @@ function clog_validate_filename(&$file, &$filepath, &$filename, $filecheck = fal
 		$logfile = CACTI_PATH_LOG . '/cacti.log';
 	}
 
-	$errfile  = read_config_option('path_stderrlog');
-	$errbase  = basename($errfile);
+	$errfile   = read_config_option('path_stderrlog');
+	$errbase   = basename($errfile);
+
+	$boostfile = read_config_option('path_boost_log');
+	$boostbase = basename($boostfile);
 
 	$file     = basename($file);
 	$logbase  = basename($logfile);
@@ -64,6 +67,10 @@ function clog_validate_filename(&$file, &$filepath, &$filename, $filecheck = fal
 	} elseif (!empty($logfile) && strpos($file, $logbase) === 0) {
 		$filepath = dirname($logfile);
 		$filename = $logbase;
+		$filefull = $filepath . '/' . $file;
+	} elseif (!empty($boostfile) && strpos($file, $boostbase) === 0) {
+		$filepath = dirname($boostfile);
+		$filename = $boostbase;
 		$filefull = $filepath . '/' . $file;
 	}
 
@@ -397,11 +404,13 @@ function filter_sort($a, $b) {
 function clog_get_logfiles() {
 	global $config;
 
-	$stdFileArray  = $stdLogFileArray = $stdErrFileArray = array();
+	$stdFileArray  = $stdLogFileArray = $stdErrFileArray = $boostFileArray = array();
 	$configLogPath = read_config_option('path_cactilog');
 	$configLogBase = basename($configLogPath);
 	$stderrLogPath = read_config_option('path_stderrlog');
 	$stderrLogBase = basename($stderrLogPath);
+	$boostLogPath  = read_config_option('path_boost_log');
+	$boostLogBase  = basename($boostLogPath);
 
 	if ($configLogPath == '') {
 		$logPath = CACTI_PATH_LOG . '/';
@@ -410,7 +419,7 @@ function clog_get_logfiles() {
 	}
 
 	if (is_readable($logPath)) {
-		$files = @scandir($logPath);
+		$files = scandir($logPath);
 	} else {
 		$files = array('cacti.log');
 	}
@@ -423,7 +432,7 @@ function clog_get_logfiles() {
 		$stdLogFileArray = array();
 
 		foreach ($files as $logFile) {
-			if (in_array($logFile, array('.', '..', '.htaccess', $configLogBase, $stderrLogBase), true)) {
+			if (in_array($logFile, array('.', '..', '.htaccess', $configLogBase, $stderrLogBase, $boostLogBase), true)) {
 				continue;
 			}
 
@@ -439,6 +448,8 @@ function clog_get_logfiles() {
 
 			if (!empty($stderrLogBase) && strpos($logFile, $stderrLogBase) === 0){
 				$stdErrFileArray[] = $logFile;
+			} elseif (!empty($boostLogBase) && strpos($logFile, $boostLogBase) === 0){
+				$boostFileArray[] = $logFile;
 			} else {
 				$stdLogFileArray[] = $logFile;
 			}
@@ -446,6 +457,7 @@ function clog_get_logfiles() {
 
 		$stdErrFileArray = array_unique($stdErrFileArray);
 		$stdLogFileArray = array_unique($stdLogFileArray);
+		$boostFileArray  = array_unique($boostFileArray);
 	}
 
 	// Defaults go first and second
@@ -485,8 +497,9 @@ function clog_get_logfiles() {
 
 	arsort($stdLogFileArray, SORT_NATURAL);
 	arsort($stdErrFileArray, SORT_NATURAL);
+	arsort($boostFileArray, SORT_NATURAL);
 
-	return array_unique(array_merge($stdFileArray, $stdLogFileArray, $stdErrFileArray));
+	return array_unique(array_merge($stdFileArray, $stdLogFileArray, $stdErrFileArray, $boostFileArray));
 }
 
 function filter($clogAdmin, $selectedFile) {
@@ -577,6 +590,7 @@ function filter($clogAdmin, $selectedFile) {
 								'10' => __('Boost'),
 								'11' => __('Device Up/Down'),
 								'12' => __('Recaches'),
+								'13' => __('Security Issues'),
 							);
 
 							if (api_plugin_is_enabled('thold')) {

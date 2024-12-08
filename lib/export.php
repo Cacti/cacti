@@ -116,10 +116,10 @@ function graph_template_to_xml($graph_template_id) {
 
 							break;
 						case 'color_id':
+						case 'color2_id':
 							$xml_text .= "\t\t\t<$field_name>" . db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($item[$field_name])) . "</$field_name>\n";
 
 							break;
-
 						default:
 							$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item[$field_name]) . "</$field_name>\n";
 
@@ -921,13 +921,14 @@ function resolve_dependencies($type, $id, $dep_array) {
 		case 'graph_template':
 			/* dep: data template */
 			$graph_template_items = db_fetch_assoc_prepared('SELECT
-			data_template_rrd.data_template_id
-			FROM (graph_templates_item,data_template_rrd)
-			WHERE graph_templates_item.task_item_id = data_template_rrd.id
-			AND graph_templates_item.graph_template_id = ?
-			AND graph_templates_item.local_graph_id = 0
-			AND graph_templates_item.task_item_id > 0
-			GROUP BY data_template_rrd.data_template_id', array($id));
+				data_template_rrd.data_template_id
+				FROM (graph_templates_item,data_template_rrd)
+				WHERE graph_templates_item.task_item_id = data_template_rrd.id
+				AND graph_templates_item.graph_template_id = ?
+				AND graph_templates_item.local_graph_id = 0
+				AND graph_templates_item.task_item_id > 0
+				GROUP BY data_template_rrd.data_template_id',
+				array($id));
 
 			if (cacti_sizeof($graph_template_items) > 0) {
 				foreach ($graph_template_items as $item) {
@@ -939,11 +940,12 @@ function resolve_dependencies($type, $id, $dep_array) {
 
 			/* dep: cdef */
 			$cdef_items = db_fetch_assoc_prepared('SELECT cdef_id
-			FROM graph_templates_item
-			WHERE graph_template_id = ?
-			AND local_graph_id = 0
-			AND cdef_id > 0
-			GROUP BY cdef_id', array($id));
+				FROM graph_templates_item
+				WHERE graph_template_id = ?
+				AND local_graph_id = 0
+				AND cdef_id > 0
+				GROUP BY cdef_id',
+				array($id));
 
 			$recursive = true;
 			/* in the first turn, search all inherited cdef items related to all cdef's known on highest recursion level */
@@ -954,10 +956,10 @@ function resolve_dependencies($type, $id, $dep_array) {
 					/* are there any inherited cdef's within those referenced by any graph item?
 					 * search for all cdef_items of type = 5 (inherited cdef)
 					 * but fetch only those related to already given cdef's */
-					$sql = 'SELECT value as cdef_id ' .
-						'FROM cdef_items ' .
-						'WHERE type = 5 ' .
-						'AND ' . array_to_sql_or($search_cdef_items, 'cdef_id');
+					$sql = 'SELECT value as cdef_id
+						FROM cdef_items
+						WHERE type = 5
+						AND ' . array_to_sql_or($search_cdef_items, 'cdef_id');
 
 					$inherited_cdef_items = db_fetch_assoc($sql);
 
@@ -988,11 +990,11 @@ function resolve_dependencies($type, $id, $dep_array) {
 
 			/* dep: vdef */
 			$vdef_items = db_fetch_assoc_prepared('SELECT vdef_id
-			FROM graph_templates_item
-			WHERE graph_template_id = ?
-			AND local_graph_id = 0
-			AND vdef_id > 0
-			GROUP BY vdef_id',
+				FROM graph_templates_item
+				WHERE graph_template_id = ?
+				AND local_graph_id = 0
+				AND vdef_id > 0
+				GROUP BY vdef_id',
 				array($id));
 
 			if (cacti_sizeof($vdef_items) > 0) {
@@ -1005,11 +1007,11 @@ function resolve_dependencies($type, $id, $dep_array) {
 
 			/* dep: gprint preset */
 			$graph_template_items = db_fetch_assoc_prepared('SELECT gprint_id
-			FROM graph_templates_item
-			WHERE graph_template_id = ?
-			AND local_graph_id = 0
-			AND gprint_id > 0
-			GROUP BY gprint_id',
+				FROM graph_templates_item
+				WHERE graph_template_id = ?
+				AND local_graph_id = 0
+				AND gprint_id > 0
+				GROUP BY gprint_id',
 				array($id));
 
 			if (cacti_sizeof($graph_template_items) > 0) {
@@ -1024,10 +1026,10 @@ function resolve_dependencies($type, $id, $dep_array) {
 		case 'data_template':
 			/* dep: data input method */
 			$item = db_fetch_row_prepared('SELECT data_input_id
-			FROM data_template_data
-			WHERE data_template_id = ?
-			AND local_data_id = 0
-			AND data_input_id > 0',
+				FROM data_template_data
+				WHERE data_template_id = ?
+				AND local_data_id = 0
+				AND data_input_id > 0',
 				array($id));
 
 			if ((!empty($item)) && (!isset($dep_array['data_input_method'][$item['data_input_id']]))) {
@@ -1036,9 +1038,9 @@ function resolve_dependencies($type, $id, $dep_array) {
 
 			/* dep: data source profiles */
 			$profiles = db_fetch_assoc_prepared('SELECT DISTINCT data_source_profile_id
-			FROM data_template_data
-			WHERE data_template_id = ?
-			AND local_data_id = 0',
+				FROM data_template_data
+				WHERE data_template_id = ?
+				AND local_data_id = 0',
 				array($id));
 
 			if (cacti_sizeof($profiles)) {
@@ -1053,9 +1055,9 @@ function resolve_dependencies($type, $id, $dep_array) {
 		case 'data_query':
 			/* dep: data input method */
 			$item = db_fetch_row_prepared('SELECT data_input_id
-			FROM snmp_query
-			WHERE id = ?
-			AND data_input_id > 0',
+				FROM snmp_query
+				WHERE id = ?
+				AND data_input_id > 0',
 				array($id));
 
 			if ((!empty($item)) && (!isset($dep_array['data_input_method'][$item['data_input_id']]))) {
@@ -1064,10 +1066,10 @@ function resolve_dependencies($type, $id, $dep_array) {
 
 			/* dep: graph template */
 			$snmp_query_graph = db_fetch_assoc_prepared('SELECT graph_template_id
-			FROM snmp_query_graph
-			WHERE snmp_query_id = ?
-			AND graph_template_id > 0
-			GROUP BY graph_template_id',
+				FROM snmp_query_graph
+				WHERE snmp_query_id = ?
+				AND graph_template_id > 0
+				GROUP BY graph_template_id',
 				array($id));
 
 			if (cacti_sizeof($snmp_query_graph) > 0) {
@@ -1082,10 +1084,10 @@ function resolve_dependencies($type, $id, $dep_array) {
 		case 'host_template':
 			/* dep: graph template */
 			$host_template_graph = db_fetch_assoc_prepared('SELECT graph_template_id
-			FROM host_template_graph
-			WHERE host_template_id = ?
-			AND graph_template_id > 0
-			GROUP BY graph_template_id',
+				FROM host_template_graph
+				WHERE host_template_id = ?
+				AND graph_template_id > 0
+				GROUP BY graph_template_id',
 				array($id));
 
 			if (cacti_sizeof($host_template_graph) > 0) {
@@ -1098,10 +1100,10 @@ function resolve_dependencies($type, $id, $dep_array) {
 
 			/* dep: data query */
 			$host_template_snmp_query = db_fetch_assoc_prepared('SELECT snmp_query_id
-			FROM host_template_snmp_query
-			WHERE host_template_id = ?
-			AND snmp_query_id > 0
-			GROUP BY snmp_query_id',
+				FROM host_template_snmp_query
+				WHERE host_template_id = ?
+				AND snmp_query_id > 0
+				GROUP BY snmp_query_id',
 				array($id));
 
 			if (cacti_sizeof($host_template_snmp_query) > 0) {

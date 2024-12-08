@@ -582,7 +582,7 @@ function form_actions() {
 					'extra'    => array(
 						'host_id' => array(
 							'method' => 'drop_array',
-							'title'  => __('New Device:'),
+							'title'  => __('New Device'),
 							'default' => '',
 							'array' => $hosts
 						)

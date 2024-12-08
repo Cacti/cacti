@@ -423,7 +423,7 @@ function form_actions() {
 					'extra'    => array(
 						'site_name' => array(
 							'method'  => 'textbox',
-							'title'   => __('Site Name:'),
+							'title'   => __('Site Name'),
 							'default' => '<site> (1)',
 							'width'   => 25
 						)

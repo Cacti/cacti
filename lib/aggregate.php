@@ -879,20 +879,23 @@ function aggregate_prune_graphs($local_graph_id = 0) {
 	$local_graph_ids  = array();
 
 	$sql_where        = '';
+	$sql_params       = array();
 
 	if ($local_graph_id > 0) {
-		$sql_where = "AND pagi.local_graph_id=$local_graph_id";
+		$sql_where = 'AND pagi.local_graph_id = ?';
+		$sql_params[] = $local_graph_id;
 	}
 
 	// Phase 1 Aggregate Graphs
-	$pruneme = db_fetch_assoc("SELECT
+	$pruneme = db_fetch_assoc_prepared("SELECT
 		pagi.aggregate_graph_id,
 		pagi.local_graph_id
 		FROM aggregate_graphs_items AS pagi
 		LEFT JOIN graph_local AS gl
-		ON pagi.local_graph_id=gl.id
+		ON pagi.local_graph_id = gl.id
 		WHERE gl.id IS NULL
-		$sql_where");
+		$sql_where",
+		$sql_params);
 
 	foreach ($pruneme as $p) {
 		$local_graph_ids[$p['local_graph_id']]      = $p['local_graph_id'];
@@ -933,7 +936,8 @@ function aggregate_prune_graphs($local_graph_id = 0) {
 
 			if (cacti_sizeof($bad_graph_items)) {
 				db_execute('DELETE FROM graph_templates_item
-					WHERE id IN (' . implode(',', $bad_graph_items) . ')');
+					WHERE id IN (' . implode(',', $bad_graph_items) . ')
+					AND local_graph_id > 0');
 			}
 		}
 	}

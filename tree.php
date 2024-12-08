@@ -1967,16 +1967,18 @@ function display_hosts() {
 }
 
 function display_graphs() {
-	$sql_where = '';
+	$sql_where  = '';
+	$sql_params = array();
 
 	$site_ids = get_filter_request_var('site_id', FILTER_VALIDATE_IS_NUMERIC_LIST);
 	$host_ids = get_filter_request_var('host_id', FILTER_VALIDATE_IS_NUMERIC_LIST);
 
 	if (get_nfilter_request_var('filter') != '') {
-		$sql_where .= 'WHERE (
-			title_cache LIKE ' . db_qstr('%' . get_nfilter_request_var('filter') . '%') . '
-			OR gt.name LIKE '  . db_qstr('%' . get_nfilter_request_var('filter') . '%') . ')
-			AND local_graph_id > 0';
+		$sql_where .= 'WHERE (title_cache LIKE ? OR gt.name LIKE ? OR hsc.field_value LIKE ?) AND local_graph_id > 0';
+
+		$sql_params[] = '%' . get_nfilter_request_var('filter') . '%';
+		$sql_params[] = '%' . get_nfilter_request_var('filter') . '%';
+		$sql_params[] = '%' . get_nfilter_request_var('filter') . '%';
 	} else {
 		$sql_where .= 'WHERE local_graph_id > 0';
 	}
@@ -1989,10 +1991,12 @@ function display_graphs() {
 		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'gl.host_id IN( ' . $host_ids . ')';
 	}
 
-	$graphs = db_fetch_assoc("SELECT
+	$graphs = db_fetch_assoc_prepared("SELECT
 		gtg.local_graph_id AS id,
 		gtg.title_cache AS title,
-		gt.name AS template_name
+		gt.name AS template_name,
+		hsc.field_name,
+		hsc.field_value
 		FROM graph_templates_graph AS gtg
 		LEFT JOIN graph_templates AS gt
 		ON gt.id=gtg.graph_template_id
@@ -2000,12 +2004,20 @@ function display_graphs() {
 		ON gtg.local_graph_id = gl.id
 		LEFT JOIN host as h
 		ON gl.host_id = h.id
+		LEFT JOIN host_snmp_cache AS hsc
+		ON hsc.host_id = h.id
+		AND hsc.snmp_query_id = gl.snmp_query_id
 		$sql_where
 		ORDER BY title_cache
-		LIMIT " . read_config_option('autocomplete_rows'));
+		LIMIT " . read_config_option('autocomplete_rows'),
+		$sql_params);
 
 	if (cacti_sizeof($graphs)) {
 		foreach ($graphs as $g) {
+			if ($g['field_value'] != '') {
+				$g['title'] .= ' [ ' . html_escape($g['field_name']) . ':' . html_escape($g['field_value']) . ' ]';
+			}
+
 			if (is_graph_allowed($g['id'])) {
 				print "<ul><li id='tgraph:" . $g['id'] . "' data-jstree='{ \"type\": \"graph\" }'>" . html_escape($g['title']) . '</li></ul>';
 			}
@@ -2345,9 +2357,8 @@ function tree() {
 			$('#tree2_child').attr('id', 'tree_ids');
 
 			<?php if (read_config_option('drag_and_drop') == 'on') { ?>
-			$('#tree_ids').find('tr:first').addClass('nodrag').addClass('nodrop');
 
-			$('#tree_ids').tableDnD({
+			$('form#chk').find('table').unbind().tableDnD({
 				onDrop: function(table, row) {
 					loadUrl({url:'tree.php?action=ajax_dnd&'+$.tableDnD.serialize()})
 				}

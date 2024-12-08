@@ -385,8 +385,7 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe = null,
 	/* get the information to populate into the rrd files */
 	if (boost_check_correct_enabled()) {
 		/* before we make a graph, we need to check for rrd updates and perform them. */
-		$local_data_ids = db_fetch_assoc_prepared('SELECT DISTINCT
-			data_template_rrd.local_data_id
+		$local_data_ids = db_fetch_assoc_prepared('SELECT DISTINCT data_template_rrd.local_data_id
 			FROM graph_templates_item
 			INNER JOIN data_template_rrd
 			ON (graph_templates_item.task_item_id = data_template_rrd.id)
@@ -1553,9 +1552,10 @@ function boost_poller_bottom() {
 		boost_update_snmp_statistics();
 
 		$boost_log     = read_config_option('path_boost_log');
+		$boost_debug   = read_config_option('boost_debug_enabled') == 'on' ? true:false;
 		$boost_logdir  = dirname($boost_log);
 
-		if ($boost_log != '') {
+		if ($boost_debug && $boost_log != '') {
 			if (!is_writable($boost_log) || !is_dir($boost_logdir) || !is_writable($boost_logdir)) {
 				boost_debug("WARNING: Boost log '$boost_log' does not exist or is not writable!");
 
@@ -1567,7 +1567,7 @@ function boost_poller_bottom() {
 
 		$command_string = read_config_option('path_php_binary');
 
-		if ($boost_log != '') {
+		if ($boost_debug && $boost_log != '') {
 			if ($config['cacti_server_os'] == 'unix') {
 				$extra_args    = '-q '  . CACTI_PATH_BASE . '/poller_boost.php --debug';
 				$redirect_args =  '>> ' . $boost_log . ' 2>&1';

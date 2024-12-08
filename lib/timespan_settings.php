@@ -75,6 +75,8 @@ function process_html_variables() {
 				set_request_var('predefined_timespan', read_user_setting('default_timespan'));
 				$_SESSION['sess_current_timespan'] = read_user_setting('default_timespan');
 			}
+		} else {
+			$_SESSION['sess_current_timespan'] = get_request_var('predefined_timespan');
 		}
 	} else {
 		if (isset($_SESSION['sess_current_timespan'])) {
@@ -84,6 +86,7 @@ function process_html_variables() {
 			$_SESSION['sess_current_timespan'] = read_user_setting('default_timespan');
 		}
 	}
+
 	load_current_session_value('predefined_timespan', 'sess_current_timespan', read_user_setting('default_timespan'));
 
 	# process timeshift
@@ -104,12 +107,56 @@ function process_html_variables() {
 			$_SESSION['sess_current_timeshift'] = read_user_setting('default_timeshift');
 		}
 	}
+
 	load_current_session_value('predefined_timeshift', 'sess_current_timeshift', read_user_setting('default_timeshift'));
 }
 
 /* when a span time preselection has been defined update the span time fields */
 /* someone hit a button and not a dropdown */
 function process_user_input(&$timespan, $timeshift) {
+	/**
+	 * perform cursory time checks to invalidate dates before 1993.  I picked
+	 * 1993 as that is the year that my son was born.
+	 */
+	if (isset_request_var('date1') || isset_request_var('date2')) {
+		$early_date = strtotime(date('1993-01-01'));
+		$date1 = get_nfilter_request_var('date1');
+		$date2 = get_nfilter_request_var('date2');
+		if (!is_numeric($date1)) {
+			$date1 = strtotime($date1);
+		}
+
+		if (!is_numeric($date2)) {
+			$date2 = strtotime($date2);
+		}
+
+		$errors = 0;
+
+		if ($date1 < $early_date) {
+			raise_message('start_too_early', __('Your Start Date \'%s\' is before January 1993.  Please pick a more recent Start Date.', date('Y-m-d H:i:s', $date1)), MESSAGE_LEVEL_WARN);
+			$errors++;
+		}
+
+		if ($date2 < $early_date) {
+			raise_message('start_too_early', __('Your End Date \'%s\' is before January 1993.  Please pick a more recent End Date.', date('Y-m-d H:i:s', $date2)), MESSAGE_LEVEL_WARN);
+			$errors++;
+		}
+
+		if ($errors) {
+			if (isset($_SESSION['sess_current_date1'])) {
+				set_request_var('date1', $_SESSION['sess_current_date1']);
+			} else {
+				set_request_var('date1', date('Y-m-d H:i:s', time()-86400));
+			}
+
+			if (isset($_SESSION['sess_current_date2'])) {
+				set_request_var('date2', $_SESSION['sess_current_date2']);
+			} else {
+				set_request_var('date2', date('Y-m-d H:i:s', time()));
+			}
+		}
+	}
+
 	/* catch the case where the session is not set for some reason */
 	if (isset($_SESSION['sess_current_date1']) && isset($_SESSION['sess_current_date2'])) {
 		if (isset_request_var('date1')) {
@@ -128,8 +175,8 @@ function process_user_input(&$timespan, $timeshift) {
 				/* the default button wasn't pushed */
 				$timespan['current_value_date1'] = sanitize_search_string(get_nfilter_request_var('date1'));
 				$timespan['current_value_date2'] = sanitize_search_string(get_nfilter_request_var('date2'));
-				$timespan['begin_now']           = $_SESSION['sess_current_timespan_begin_now'];
-				$timespan['end_now']             = $_SESSION['sess_current_timespan_end_now'];
+				$timespan['begin_now']           = intval($_SESSION['sess_current_timespan_begin_now']);
+				$timespan['end_now']             = intval($_SESSION['sess_current_timespan_end_now']);
 
 				/* time shifter: shift left                                           */
 				if (isset_request_var('move_left_x')) {
@@ -160,8 +207,8 @@ function process_user_input(&$timespan, $timeshift) {
 			$timespan['current_value_date1'] = $_SESSION['sess_current_date1'];
 			$timespan['current_value_date2'] = $_SESSION['sess_current_date2'];
 
-			$timespan['begin_now'] = $_SESSION['sess_current_timespan_begin_now'];
-			$timespan['end_now']   = $_SESSION['sess_current_timespan_end_now'];
+			$timespan['begin_now'] = intval($_SESSION['sess_current_timespan_begin_now']);
+			$timespan['end_now']   = intval($_SESSION['sess_current_timespan_end_now']);
 
 			/* custom display refresh */
 			if ($_SESSION['custom']) {
@@ -234,8 +281,8 @@ function finalize_timespan(&$timespan) {
 		$timespan['current_value_date2'] = date('Y-m-d H:i', $timespan['end_now']);
 	}
 
-	$_SESSION['sess_current_timespan_end_now']   = $timespan['end_now'];
-	$_SESSION['sess_current_timespan_begin_now'] = $timespan['begin_now'];
+	$_SESSION['sess_current_timespan_end_now']   = intval($timespan['end_now']);
+	$_SESSION['sess_current_timespan_begin_now'] = intval($timespan['begin_now']);
 	$_SESSION['sess_current_date1']              = $timespan['current_value_date1'];
 	$_SESSION['sess_current_date2']              = $timespan['current_value_date2'];
 

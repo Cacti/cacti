@@ -2,89 +2,15 @@
  * TableDnD plug-in for JQuery, allows you to drag and drop table rows
  * You can set up various options to control how the system will work
  * Copyright (c) Denis Howlett <denish@isocra.com>
- * Licensed like jQuery, see http://docs.jquery.com/License.
- *
- * Configuration options:
- *
- * onDragStyle
- *     This is the style that is assigned to the row during drag. There are limitations to the styles that can be
- *     associated with a row (such as you can't assign a border--well you can, but it won't be
- *     displayed). (So instead consider using onDragClass.) The CSS style to apply is specified as
- *     a map (as used in the jQuery css(...) function).
- * onDropStyle
- *     This is the style that is assigned to the row when it is dropped. As for onDragStyle, there are limitations
- *     to what you can do. Also this replaces the original style, so again consider using onDragClass which
- *     is simply added and then removed on drop.
- * onDragClass
- *     This class is added for the duration of the drag and then removed when the row is dropped. It is more
- *     flexible than using onDragStyle since it can be inherited by the row cells and other content. The default
- *     is class is tDnD_whileDrag. So to use the default, simply customise this CSS class in your
- *     stylesheet.
- * onDrop
- *     Pass a function that will be called when the row is dropped. The function takes 2 parameters: the table
- *     and the row that was dropped. You can work out the new order of the rows by using
- *     table.rows.
- * onDragStart
- *     Pass a function that will be called when the user starts dragging. The function takes 2 parameters: the
- *     table and the row which the user has started to drag.
- * onDragStop
- *     Pass a function that will be called when the user stops dragging regardless of if the rows have been
- *     rearranged. The function takes 2 parameters: the table and the row which the user was dragging.
- * onAllowDrop
- *     Pass a function that will be called as a row is over another row. If the function returns true, allow
- *     dropping on that row, otherwise not. The function takes 2 parameters: the dragged row and the row under
- *     the cursor. It returns a boolean: true allows the drop, false doesn't allow it.
- * scrollAmount
- *     This is the number of pixels to scroll if the user moves the mouse cursor to the top or bottom of the
- *     window. The page should automatically scroll up or down as appropriate (tested in IE6, IE7, Safari, FF2,
- *     FF3 beta
- * dragHandle
- *     This is a jQuery mach string for one or more cells in each row that is draggable. If you
- *     specify this, then you are responsible for setting cursor: move in the CSS and only these cells
- *     will have the drag behaviour. If you do not specify a dragHandle, then you get the old behaviour where
- *     the whole row is draggable.
- *
- * Other ways to control behaviour:
- *
- * Add class="nodrop" to any rows for which you don't want to allow dropping, and class="nodrag" to any rows
- * that you don't want to be draggable.
- *
- * Inside the onDrop method you can also call $.tableDnD.serialize() this returns a string of the form
- * <tableID>[]=<rowID1>&<tableID>[]=<rowID2> so that you can send this back to the server. The table must have
- * an ID as must all the rows.
- *
- * Other methods:
- *
- * $("...").tableDnDUpdate()
- * Will update all the matching tables, that is it will reapply the mousedown method to the rows (or handle cells).
- * This is useful if you have updated the table rows using Ajax and you want to make the table draggable again.
- * The table maintains the original configuration (so you don't have to specify it again).
- *
- * $("...").tableDnDSerialize()
- * Will serialize and return the serialized string as above, but for each of the matching tables--so it can be
- * called from anywhere and isn't dependent on the currentTable being set up correctly before calling
- *
- * Known problems:
- * - Auto-scoll has some problems with IE7  (it scrolls even when it shouldn't), work-around: set scrollAmount to 0
- *
- * Version 0.2: 2008-02-20 First public version
- * Version 0.3: 2008-02-07 Added onDragStart option
- *                         Made the scroll amount configurable (default is 5 as before)
- * Version 0.4: 2008-03-15 Changed the noDrag/noDrop attributes to nodrag/nodrop classes
- *                         Added onAllowDrop to control dropping
- *                         Fixed a bug which meant that you couldn't set the scroll amount in both directions
- *                         Added serialize method
- * Version 0.5: 2008-05-16 Changed so that if you specify a dragHandle class it doesn't make the whole row
- *                         draggable
- *                         Improved the serialize method to use a default (and settable) regular expression.
- *                         Added tableDnDupate() and tableDnDSerialize() to be called when you are outside the table
- * Version 0.6: 2011-12-02 Added support for touch devices
- * Version 0.7  2012-04-09 Now works with jQuery 1.7 and supports touch, tidied up tabs and spaces
+ * License: MIT.
+ * See https://github.com/isocra/TableDnD
  */
+
+/*jshint -W054 */
+
 !function ($, window, document, undefined) {
-// Determine if this is a touch device
-var hasTouch   = 'ontouchstart' in document.documentElement,
-    startEvent = 'touchstart mousedown',
+
+var startEvent = 'touchstart mousedown',
     moveEvent  = 'touchmove mousemove',
     endEvent   = 'touchend mouseup';
 
@@ -98,12 +24,12 @@ $(document).ready(function () {
         return objMap;
     }
     $('table').each(function () {
-        if ($(this).data('table') == 'dnd') {
+        if ($(this).data('table') === 'dnd') {
 
             $(this).tableDnD({
                 onDragStyle: $(this).data('ondragstyle') && parseStyle($(this).data('ondragstyle')) || null,
                 onDropStyle: $(this).data('ondropstyle') && parseStyle($(this).data('ondropstyle')) || null,
-                onDragClass: $(this).data('ondragclass') == undefined && "tDnD_whileDrag" || $(this).data('ondragclass'),
+                onDragClass: $(this).data('ondragclass') === undefined && "tDnD_whileDrag" || $(this).data('ondragclass'),
                 onDrop: $(this).data('ondrop') && new Function('table', 'row', $(this).data('ondrop')), // 'return eval("'+$(this).data('ondrop')+'");') || null,
                 onDragStart: $(this).data('ondragstart') && new Function('table', 'row' ,$(this).data('ondragstart')), // 'return eval("'+$(this).data('ondragstart')+'");') || null,
                 onDragStop: $(this).data('ondragstop') && new Function('table', 'row' ,$(this).data('ondragstop')),
@@ -241,7 +167,7 @@ jQuery.tableDnD = {
                 // Iterate through each row, the row is bound to "this"
                 if (! $(this).hasClass("nodrag")) {
                     $(this).bind(startEvent, function(e) {
-                        if (e.target.tagName == "TD") {
+                        if (e.target.tagName === "TD") {
                             $.tableDnD.initialiseDrag(this, table, this, e, config);
                             return false;
                         }
@@ -320,16 +246,6 @@ jQuery.tableDnD = {
         var left = 0,
             top  = 0;
 
-        // Safari fix -- thanks to Luis Chato for this!
-        // Safari 2 doesn't correctly grab the offsetTop of a table row
-        // this is detailed here:
-        // http://jacob.peargrove.com/blog/2006/technical/table-row-offsettop-bug-in-safari/
-        // the solution is likewise noted there, grab the offset of a table cell in the row - the firstChild.
-        // note that firefox will return a text node as a first child, so designing a more thorough
-        // solution may need to take that into account, for now this seems to work in firefox, safari, ie
-        if (element.offsetHeight == 0)
-            element = element.firstChild; // a table cell
-
         while (element.offsetParent) {
             left   += element.offsetLeft;
             top    += element.offsetTop;
@@ -356,10 +272,10 @@ jQuery.tableDnD = {
         // Windows version
         // yOffset=document.body.scrollTop;
         if (document.all)
-            if (typeof document.compatMode != 'undefined'
-                && document.compatMode != 'BackCompat')
+            if (typeof document.compatMode !== 'undefined'
+                && document.compatMode !== 'BackCompat')
                 yOffset = document.documentElement.scrollTop;
-            else if (typeof document.body != 'undefined')
+            else if (typeof document.body !== 'undefined')
                 yOffset = document.body.scrollTop;
 
         mousePos.y - yOffset < config.scrollAmount
@@ -370,12 +286,12 @@ jQuery.tableDnD = {
     },
     moveVerticle: function (moving, currentRow) {
 
-        if (0 != moving.vertical
+        if (0 !== moving.vertical
             // If we're over a row then move the dragged row to there so that the user sees the
             // effect dynamically
             && currentRow
-            && this.dragObject != currentRow
-            && this.dragObject.parentNode == currentRow.parentNode)
+            && this.dragObject !== currentRow
+            && this.dragObject.parentNode === currentRow.parentNode)
             0 > moving.vertical
                 && this.dragObject.parentNode.insertBefore(this.dragObject, currentRow.nextSibling)
             || 0 < moving.vertical
@@ -387,10 +303,10 @@ jQuery.tableDnD = {
             currentLevel;
 
         if (!config.hierarchyLevel
-            || 0 == moving.horizontal
+            || 0 === moving.horizontal
             // We only care if moving left or right on the current row
             || !currentRow
-            || this.dragObject != currentRow)
+            || this.dragObject !== currentRow)
                 return null;
 
             currentLevel = $(currentRow).data('level');
@@ -422,7 +338,7 @@ jQuery.tableDnD = {
             return false;
 
         // prevent touch device screen scrolling
-        e.type == 'touchmove'
+        e.type === 'touchmove'
             && event.preventDefault(); // TODO verify this is event and not really e
 
         // update the style to show we're dragging
@@ -459,9 +375,9 @@ jQuery.tableDnD = {
             };
 
         // update the old value
-        if (moving.horizontal != 0)
+        if (moving.horizontal !== 0)
             this.oldX    = x;
-        if (moving.vertical   != 0)
+        if (moving.vertical   !== 0)
             this.oldY    = y;
 
         return moving;
@@ -478,7 +394,7 @@ jQuery.tableDnD = {
             row       = rows[i];
             rowY      = this.getPosition(row).y;
             rowHeight = parseInt(row.offsetHeight) / 2;
-            if (row.offsetHeight == 0) {
+            if (row.offsetHeight === 0) {
                 rowY      = this.getPosition(row.firstChild).y;
                 rowHeight = parseInt(row.firstChild.offsetHeight) / 2;
             }
@@ -540,7 +456,7 @@ jQuery.tableDnD = {
         this.dragObject = null;
         // Call the onDrop method if there is one
         config.onDrop
-            && this.originalOrder != this.currentOrder()
+            && this.originalOrder !== this.currentOrder()
             && $(droppedRow).hide().fadeIn('fast')
             && config.onDrop(this.currentTable, droppedRow);
 
@@ -630,7 +546,7 @@ jQuery.tableDnD = {
         for (var i=0; i < rows.length; i++) {
             if (config.hierarchyLevel) {
                 indentLevel = $(rows[i]).data('level') || 0;
-                if (indentLevel == 0) {
+                if (indentLevel === 0) {
                     currentID   = paramName;
                     previousIDs = [];
                 }
@@ -640,7 +556,7 @@ jQuery.tableDnD = {
                 }
                 else if (indentLevel < currentLevel) {
                     for (var h = 0; h < previousIDs.length; h++) {
-                        if (previousIDs[h][1] == indentLevel)
+                        if (previousIDs[h][1] === indentLevel)
                             currentID         = previousIDs[h][0];
                         if (previousIDs[h][1] >= currentLevel)
                             previousIDs[h][1] = 0;
@@ -673,3 +589,4 @@ jQuery.fn.extend(
 );
 
 }(jQuery, window, window.document);
+

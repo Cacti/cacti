@@ -22,6 +22,195 @@
  +-------------------------------------------------------------------------+
 */
 
+function prune_deprecated_files() {
+	$files = array(
+		'rrd.php',
+		'graph_templates_inputs.php',
+		'graph_templates_items.php',
+		'poller_export.php',
+		'script_server.pl',
+		'lib/graph_export.php',
+		'lib/adodb',
+		'include/zoom.js',
+		'include/main.css',
+		'include/jscalendar',
+		'include/html',
+		'include/constants.php',
+		'include/treeview',
+		'include/js/jquery',
+		'include/js/dygraph-combined.js',
+		'include/js/jquery.sparkline.js',
+		'install/0_8_1_to_0_8_2.php',
+		'install/0_8_2a_to_0_8_3.php',
+		'install/0_8_2_to_0_8_2a.php',
+		'install/0_8_3_to_0_8_4.php',
+		'install/0_8_4_to_0_8_5.php',
+		'install/0_8_5a_to_0_8_6.php',
+		'install/0_8_6c_to_0_8_6d.php',
+		'install/0_8_6d_to_0_8_6e.php',
+		'install/0_8_6f_to_0_8_6g.php',
+		'install/0_8_6g_to_0_8_6h.php',
+		'install/0_8_6h_to_0_8_6i.php',
+		'install/0_8_6j_to_0_8_7.php',
+		'install/0_8_6_to_0_8_6a.php',
+		'install/0_8_7a_to_0_8_7b.php',
+		'install/0_8_7b_to_0_8_7c.php',
+		'install/0_8_7c_to_0_8_7d.php',
+		'install/0_8_7d_to_0_8_7e.php',
+		'install/0_8_7e_to_0_8_7f.php',
+		'install/0_8_7f_to_0_8_7g.php',
+		'install/0_8_7g_to_0_8_7h.php',
+		'install/0_8_7h_to_0_8_7i.php',
+		'install/0_8_7i_to_0_8_8.php',
+		'install/0_8_7_to_0_8_7a.php',
+		'install/0_8_8_to_0_8_8a.php',
+		'install/0_8_8_to_0_8_8b.php',
+		'install/0_8_to_0_8_1.php',
+		'install/install_finish.gif',
+		'install/install_next.gif',
+		'images/auth_deny.gif',
+		'images/auth_login.gif',
+		'images/auth_logout.gif',
+		'images/button_add.gif',
+		'images/button_cancel.gif',
+		'images/button_clear.gif',
+		'images/button_colapse_all.gif',
+		'images/button_create.gif',
+		'images/button_default.gif',
+		'images/button_delete.gif',
+		'images/button_expand_all.gif',
+		'images/button_export.gif',
+		'images/button_go.gif',
+		'images/button_help.gif',
+		'images/button_import.gif',
+		'images/button_no.gif',
+		'images/button_purge.gif',
+		'images/button_refresh.gif',
+		'images/button_save.gif',
+		'images/button_view.gif',
+		'images/button_yes.gif',
+		'images/hide.gif',
+		'images/left_border.gif',
+		'images/menu_line.gif',
+		'images/show.gif',
+		'images/auth_background.gif',
+		'images/cacti_backdrop.gif',
+		'images/cacti_logo_new.gif',
+		'images/cacti_logo.png',
+		'images/cog_delete.png',
+		'images/cog_error.png',
+		'images/delete_icon.gif',
+		'images/delete_icon_large.gif',
+		'images/disable_icon.png',
+		'images/enable_icon_disabled.png',
+		'images/enable_icon.png',
+		'images/graph_page_top.gif',
+		'images/graph_query.png',
+		'images/graph_zoom.gif',
+		'images/install_icon_disabled.png',
+		'images/install_icon.png',
+		'images/move_down.gif',
+		'images/move_left.gif',
+		'images/move_right.gif',
+		'images/move_up.gif',
+		'images/reload_icon_small.gif',
+		'images/rrd_not_found.png',
+		'images/tab_cacti.gif',
+		'images/tab_clog_down.png',
+		'images/tab_clog.png',
+		'images/tab_console_down.gif',
+		'images/tab_graphs_down.gif',
+		'images/tab_graphs.gif',
+		'images/tab_mode_list_down.gif',
+		'images/tab_mode_list.gif',
+		'images/tab_mode_preview_down.gif',
+		'images/tab_mode_preview.gif',
+		'images/tab_mode_tree_down.gif',
+		'images/tab_mode_tree.gif',
+		'images/tab_nectar_down.gif',
+		'images/tab_nectar.gif',
+		'images/tab_settings_down.gif',
+		'images/tab_settings.gif',
+		'images/uninstall_icon.gif',
+		'install/upgrades/0_8_1_to_0_8_2.php',
+		'install/upgrades/0_8_2a_to_0_8_3.php',
+		'install/upgrades/0_8_2_to_0_8_2a.php',
+		'install/upgrades/0_8_3_to_0_8_4.php',
+		'install/upgrades/0_8_4_to_0_8_5.php',
+		'install/upgrades/0_8_5a_to_0_8_6.php',
+		'install/upgrades/0_8_6c_to_0_8_6d.php',
+		'install/upgrades/0_8_6d_to_0_8_6e.php',
+		'install/upgrades/0_8_6f_to_0_8_6g.php',
+		'install/upgrades/0_8_6g_to_0_8_6h.php',
+		'install/upgrades/0_8_6h_to_0_8_6i.php',
+		'install/upgrades/0_8_6j_to_0_8_7.php',
+		'install/upgrades/0_8_6_to_0_8_6a.php',
+		'include/themes/dark/c3.css',
+		'include/themes/modern/c3.css',
+		'include/themes/paper-plane/c3.css',
+		'include/themes/paw/c3.css',
+		'include/themes/sunrise/c3.css',
+		'include/themes/cacti/c3.css',
+		'include/themes/carrot/c3.css',
+		'include/themes/hollyberry/c3.css',
+		'include/themes/raspberry/c3.css',
+		'include/themes/midwinter/c3.css',
+		'include/themes/dark/billboard.css',
+		'include/themes/modern/billboard.css',
+		'include/themes/paper-plane/billboard.css',
+		'include/themes/paw/billboard.css',
+		'include/themes/sunrise/billboard.css',
+		'include/themes/cacti/billboard.css',
+		'include/themes/carrot/billboard.css',
+		'include/themes/hollyberry/billboard.css',
+		'include/themes/raspberry/billboard.css',
+		'include/themes/midwinter/billboard.css',
+		'include/js/c3.js',
+		'include/js/c3.js',
+	);
+
+	foreach($files as $file) {
+		$full_path = CACTI_PATH_BASE . '/' . $file;
+
+		if (file_exists($full_path)) {
+			if (is_writable($full_path)) {
+				if (is_dir($full_path)) {
+					install_rmdir_recursive($file, 1);
+				} else {
+					install_unlink($file);
+				}
+			} else {
+				log_install_high('file', "Unlinking file: $file failed due to permission errors.");
+			}
+		}
+	}
+
+	$remove_plugins = array(
+		'aggregate',
+		'autom8',
+		'clog',
+		'discovery',
+		'domains',
+		'dsstats',
+		'nectar',
+		'realtime',
+		'rrdclean',
+		'settings',
+		'snmpagent',
+		'spikekill',
+		'superlinks',
+		'ugroup'
+	);
+
+	foreach($remove_plugins as $pi) {
+		$full_path = CACTI_PATH_BASE . '/plugins/' . $pi;
+
+		if (file_exists($full_path) && is_dir($full_path)) {
+			install_rmdir_recursive("plugins/$pi", true);
+		}
+	}
+}
+
 function prime_default_settings() {
 	global $settings;
 
@@ -83,11 +272,49 @@ function install_create_csrf_secret($file) {
 }
 
 function install_unlink($file) {
-	if (file_exists(CACTI_PATH_BASE . '/' . $file) && is_writable(CACTI_PATH_BASE . '/' . $file)) {
-		log_install_high('file', "Unlinking file: $file");
+	$full_file = CACTI_PATH_BASE . '/' . $file;
+
+	if (file_exists($full_file) && is_writable($full_file)) {
+		log_install_high('file', "Unlinking file: $full_file");
+
 		unlink(CACTI_PATH_BASE . '/' . $file);
 	} else {
-		log_install_high('file', "Unlinking file: $file failed due to permission errors.");
+		log_install_high('file', "Unlinking file: $full_file failed due to permission errors.");
+	}
+}
+
+function install_rmdir($directory) {
+	if (file_exists(CACTI_PATH_BASE . '/' . $directory) && is_writable(CACTI_PATH_BASE . '/' . $directory)) {
+		log_install_high('file', "Unlinking directory: $directory");
+		unlink(CACTI_PATH_BASE . '/' . $directory);
+	} else {
+		log_install_high('file', "Unlinking directory: $directory failed due to permission errors.");
+	}
+}
+
+/**
+ * install_rmdir_recursive - Simple function to recursively remove a directory
+ *  structure.
+ *
+ * @param  string     - Directory name
+ * @param  bool       - True, and the directory and contents will be
+ *                      removed.  Otherwise the directory will remain.
+ *
+ * @return nill       - Nothing is returned
+ */
+function install_rmdir_recursive($directory, $delete_parent = null) {
+	$files = glob(CACTI_PATH_BASE . '/' . $directory . '/{,.}[!.,!..]*',GLOB_MARK|GLOB_BRACE);
+
+	foreach ($files as $file) {
+		if (is_dir($file)) {
+			rmdir_recursive($file, 1);
+		} else {
+			install_unlink($file);
+		}
+	}
+
+	if ($delete_parent) {
+		install_rmdir($directory);
 	}
 }
 

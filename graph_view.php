@@ -192,8 +192,24 @@ switch (get_nfilter_request_var('action')) {
 
 		break;
 	case 'update_timespan':
-		$_SESSION['sess_current_date1'] = get_request_var('date1');
-		$_SESSION['sess_current_date2'] = get_request_var('date2');
+		if (isset_request_var('date1')) {
+			$_SESSION['sess_current_date1'] = get_request_var('date1');
+		}
+
+		if (isset_request_var('date2')) {
+			$_SESSION['sess_current_date2'] = get_request_var('date2');
+		}
+
+		if (isset_request_var('predefined_timespan')) {
+			$return = array(
+				'date1'      => $_SESSION['sess_current_date1'],
+				'date2'      => $_SESSION['sess_current_date2'],
+				'timestamp1' => $_SESSION['sess_current_timespan_begin_now'],
+				'timestamp2' => $_SESSION['sess_current_timespan_end_now'],
+			);
+
+			print json_encode($return);
+		}
 
 		break;
 	case 'save':
@@ -250,11 +266,11 @@ switch (get_nfilter_request_var('action')) {
 		top_graph_header();
 
 		?>
-	<script type='text/javascript'>
-	minTreeWidth = <?php print read_user_setting('min_tree_width');?>;
-	maxTreeWidth = <?php print read_user_setting('max_tree_width');?>;
-	</script>
-	<?php
+		<script type='text/javascript'>
+		minTreeWidth = <?php print read_user_setting('min_tree_width');?>;
+		maxTreeWidth = <?php print read_user_setting('max_tree_width');?>;
+		</script>
+		<?php
 
 		bottom_footer();
 
@@ -336,9 +352,10 @@ switch (get_nfilter_request_var('action')) {
 
 		?>
 		<script type='text/javascript'>
-		var refreshIsLogout = false;
-		var refreshPage     = '<?php print str_replace('tree_content', 'tree', sanitize_uri($_SERVER['REQUEST_URI']));?>';
-		var refreshMSeconds = <?php print read_user_setting('page_refresh') * 1000;?>;
+		refreshIsLogout = false;
+		refreshPage     = '<?php print str_replace('tree_content', 'tree', sanitize_uri($_SERVER['REQUEST_URI']));?>';
+		refreshMSeconds = <?php print read_user_setting('page_refresh') * 1000;?>;
+		refreshFunction = 'refreshGraphs()';
 		var graph_start     = <?php print get_current_graph_start();?>;
 		var graph_end       = <?php print get_current_graph_end();?>;
 		var timeOffset      = <?php print date('Z');?>
@@ -995,7 +1012,9 @@ switch (get_nfilter_request_var('action')) {
 		</div>
 		<?php print $report_text;?>
 		<script type='text/javascript'>
-			var refreshMSeconds=999999999;
+			refreshMSeconds=999999999;
+			refreshFunction = 'refreshGraphs()';
+
 			var graph_list_array = new Array(<?php print get_request_var('graph_list');?>);
 
 			function clearFilter() {

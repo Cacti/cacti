@@ -369,24 +369,24 @@ function form_actions() {
 					'extra'    => array(
 						'template_username' => array(
 							'method'  => 'other',
-							'title'   => __('Template Username:'),
+							'title'   => __('Template Username'),
 							'default' => $template
 						),
 						'new_username' => array(
 							'method'  => 'textbox',
-							'title'   => __('Username:'),
+							'title'   => __('Username'),
 							'default' => '',
 							'width'   => 25
 						),
 						'new_fullname' => array(
 							'method'  => 'textbox',
-							'title'   => __('Full Name:'),
+							'title'   => __('Full Name'),
 							'default' => '',
 							'width'   => 35
 						),
 						'new_realm' => array(
 							'method'  => 'drop_array',
-							'title'   => __('Realm:'),
+							'title'   => __('Realm'),
 							'array'   => $auth_realms,
 							'default' => $user_realm
 						)
@@ -412,7 +412,7 @@ function form_actions() {
 					'extra'    => array(
 						'new_realm' => array(
 							'method'  => 'drop_array',
-							'title'   => __('Template User:'),
+							'title'   => __('Template User'),
 							'array'   => $usernames,
 							'variable' => 'username',
 							'id'       => 'id'

@@ -266,7 +266,7 @@ function vdef_form_actions() {
 					'extra'    => array(
 						'title_format' => array(
 							'method'  => 'textbox',
-							'title'   => __('Title Format:'),
+							'title'   => __('Title Format'),
 							'default' => '<vdef_title>',
 							'width'   => 25
 						)
@@ -591,34 +591,33 @@ function vdef_edit() {
 
 		if (cacti_sizeof($vdef_items)) {
 			foreach ($vdef_items as $vdef_item) {
-				form_alternate_row('line' . $vdef_item['id'], true, true);
-				?>
-				<td>
-					<a class='linkEditMain' href='<?php print html_escape('vdef.php?action=item_edit&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef['id']);?>'><?php print __('Item #%d', $i);?></a>
-				</td>
-				<td>
-					<em><?php $vdef_item_type = $vdef_item['type'];
-				print $vdef_item_types[$vdef_item_type];?></em>: <strong><?php print html_escape(get_vdef_item_name($vdef_item['id']));?></strong>
-				</td>
-				<td class='right'>
-					<?php
+				form_alternate_row('line' . $vdef_item['id'], true);
+
+				form_selectable_cell(filter_value(__('Item # %d', $i), '', 'vdef.php?action=item_edit&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef['id']), $vdef_item['id']);
+
+				$item_value = '<em>' . $vdef_item_types[$vdef_item['type']] . '</em>' . html_escape(get_vdef_item_name($vdef_item['id']));
+
+				form_selectable_cell($item_value, $vdef_item['id']);
+
+				$actions = '';
+
 				if (read_config_option('drag_and_drop') == '') {
-					if ($i < $total_items && $total_items > 1) {
-						print '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('vdef.php?action=item_movedown&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Down') . '"></a>';
+					if ($i < $total_items && $total_items > 0) {
+						$actions .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('vdef.php?action=item_movedown&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
-						print '<span class="moveArrowNone"></span>';
+						$actions .= '<span class="moveArrowNone"></span>';
 					}
 
 					if ($i > 1 && $i <= $total_items) {
-						print '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('vdef.php?action=item_moveup&id=' . $vdef_item['id'] .	'&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
+						$actions .= '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('vdef.php?action=item_moveup&id=' . $vdef_item['id'] .   '&vdef_id=' . $vdef_item['vdef_id']) . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
-						print '<span class="moveArrowNone"></span>';
+						$actions .= '<span class="moveArrowNone"></span>';
 					}
 				}
-				?>
-					<a id='<?php print $vdef['id'] . '_' . $vdef_item['id'];?>' class='delete deleteMarker fa fa-times' title='<?php print __esc('Delete VDEF Item');?>'></a>
-				</td>
-				<?php
+
+				$actions .= "<a id='{$vdef['id']}_{$vdef_item['id']}' class='delete deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='#'></a>";
+
+				form_selectable_cell($actions, $vdef_item['id'], '', 'right');
 
 				form_end_row();
 
@@ -640,6 +639,7 @@ function vdef_edit() {
 		$('#main').append("<div class='cdialog' id='cdialog'></div>");
 
 		<?php if (read_config_option('drag_and_drop') == 'on') { ?>
+		$('#vdef_item').find('tr:first').addClass('nodrag').addClass('nodrop');
 		$('#vdef_item').unbind().tableDnD({
 			onDrop: function(table, row) {
 				loadUrl({url:'vdef.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize()})

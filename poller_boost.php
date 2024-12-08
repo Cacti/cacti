@@ -54,6 +54,7 @@ $child    = false;
 $current_lock = false;
 
 global $child, $next_run_time, $archive_table, $current_lock;
+global $boost_debug, $boost_log, $cacti_log;
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
@@ -120,6 +121,10 @@ $rrd_updates = -1;
 ini_set('max_execution_time', '0');
 boost_memory_limit();
 
+$boost_debug = read_config_option('boost_debug_enabled') == 'on' ? true:false;
+$boost_log   = read_config_option('path_boost_log');
+$cacti_log   = read_config_option('path_cactilog');
+
 if ($child == false) {
 	$current_time  = time();
 
@@ -154,13 +159,14 @@ if ($child == false) {
 		 * Check to see if the boost log is enabled and the file exists and
 		 * is writable.  If it does not exist, create an empty file.
 		 */
-		$debug_log = read_config_option('path_boost_log');
-		if ($debug_log != '') {
-			if (!file_exists($debug_log)) {
-				if (is_writable(dirname($debug_log))) {
-					touch($debug_log);
+		if ($boost_debug && $boost_log != '') {
+			if (dirname($cacti_log) != dirname($boost_log)) {
+				cacti_log(sprintf('WARNING: Boost Debug Log location:%s must be in the same directory as the Cacti Log location:%s.  Change the path to a correct location', $boost_log, $cacti_log), true, 'BOOST');
+			} elseif (!file_exists($boost_log)) {
+				if (is_writable(dirname($boost_log))) {
+					touch($boost_log);
 				} else {
-					cacti_log(sprintf('WARNING: Boost Debug Log %s is not writable.  Change the path to a writable location', $debug_log), true, 'BOOST');
+					cacti_log(sprintf('WARNING: Boost Debug Log %s is not writable.  Change the path to a writable location', $boost_log), true, 'BOOST');
 				}
 			}
 		}
@@ -488,7 +494,7 @@ function boost_prepare_process_table() {
 }
 
 function boost_launch_children() {
-	global $config, $debug;
+	global $config, $debug, $boost_log, $boost_debug, $cacti_log;
 
 	$processes = read_config_option('boost_parallel');
 
@@ -497,10 +503,9 @@ function boost_launch_children() {
 	}
 
 	$php_binary    = read_config_option('path_php_binary');
-	$boost_log     = read_config_option('path_boost_log');
 	$redirect_args = '';
 
-	if ($boost_log != '') {
+	if ($boost_debug && $boost_log != '') {
 		if (!is_writable($boost_log)) {
 			boost_debug("WARNING: Boost log '$boost_log' is not writable!");
 
@@ -709,6 +714,7 @@ function boost_output_rrd_data($child) {
    @arg $rrdtool_pipe - the socket that has been opened for the RRDtool operation */
 function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 	global $config, $archive_table, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used, $current_lock;
+	global $boost_debug, $boost_log;
 
 	/* cache this call as it takes time */
 	static $archive_tables  = false;
@@ -1011,7 +1017,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 							if ($reset_template) {
 								cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $field . "' [map " . $matches[0] . '->' . $field . ']', true, 'BOOST', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_HIGH));
 
-								if (trim(read_config_option('path_boost_log')) != '') {
+								if ($boost_debug && $boost_log != '') {
 									print "DEBUG: Parsed MULTI output field in path 1 '" . $matches[0] . "' [map " . $field . '->' . $field . ']' . PHP_EOL;
 								}
 
@@ -1071,7 +1077,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 									if ($reset_template) {
 										cacti_log("Parsed MULTI output field in path 2 '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $field . ']', true, 'BOOST', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_HIGH));
 
-										if (trim(read_config_option('path_boost_log')) != '') {
+										if ($boost_debug && $boost_log != '') {
 											print "DEBUG: Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . '->' . $field . ']' . PHP_EOL;
 										}
 
@@ -1090,7 +1096,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 										$buflen += 2;
 									}
 
-									if (trim(read_config_option('path_boost_log')) != '') {
+									if ($boost_debug && $boost_log != '') {
 										print "DEBUG: Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . '->' . $nt_rrd_field_names[$matches[1]] . ']' . PHP_EOL;
 									}
 								}
@@ -1203,6 +1209,8 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 }
 
 function boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, $rrdtool_pipe) {
+	global $boost_log, $boost_debug;
+
 	$outbuf = '';
 
 	if (cacti_sizeof($outarray)) {
@@ -1213,7 +1221,7 @@ function boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, 
 
 	$rrd_tmpl = implode(':', array_keys($rrd_tmplp));
 
-	if (trim(read_config_option('path_boost_log')) != '') {
+	if ($boost_debug && $boost_log != '') {
 		print "DEBUG: Updating Local Data Id:'$local_data_id', Template:" . $rrd_tmpl . ', Output:' . $outbuf . PHP_EOL;
 	}
 

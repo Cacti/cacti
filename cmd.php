@@ -659,7 +659,7 @@ function open_snmp_session($host_id, &$item) {
 			$item['snmp_engine_id'],
 			$item['snmp_port'],
 			$item['snmp_timeout'],
-			read_config_option('snmp_retries'),
+			$item['snmp_retries'],
 			$item['max_oids']
 		);
 

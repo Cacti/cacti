@@ -3215,7 +3215,7 @@ function auth_valid_user($user_id) {
 			if (empty($exists)) {
 				cacti_log(sprintf('ERROR: Invalid Cacti User ID %d is being used in a permission that does not exist', $user_id), false, 'AUTH');
 
-				cacti_debug_backtrace('Invalid User Accound');
+				cacti_debug_backtrace('Invalid User Account');
 
 				$users[$user_id] = false;
 

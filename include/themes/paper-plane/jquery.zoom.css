@@ -119,6 +119,7 @@
 		background: transparent;
 		transform: translateX(-100%);
 		color: #9d9d9d;
+		left: 0;
 
 		&[id$="-1"] { top: 0.5rem; }
 		&[id$="-2"] { bottom: 0.5rem; }

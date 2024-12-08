@@ -189,6 +189,10 @@ label {
 	white-space: nowrap;
 }
 
+.prewrap {
+	white-space: pre-wrap;
+}
+
 .top {
 	vertical-align: top;
 }

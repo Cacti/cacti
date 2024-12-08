@@ -461,7 +461,7 @@ function automation_tree_rules_form_actions() {
 					'extra'    => array(
 						'name_format' => array(
 							'method'  => 'textbox',
-							'title'   => __('Title Format:'),
+							'title'   => __('Title Format'),
 							'default' => '<rule_name> (1)',
 							'width'   => 25
 						)

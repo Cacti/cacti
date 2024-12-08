@@ -949,7 +949,7 @@ if (function_exists('ldap_connect')) {
 }
 
 $domain_types = array(
-	DOMAIN_TYPE_LDAP => __('LDAP'),-
+	DOMAIN_TYPE_LDAP => __('LDAP'),
 	DOMAIN_TYPE_AD   => __('Active Directory')
 );
 
@@ -1196,7 +1196,32 @@ $device_classes = array(
 	'unassigned'   => __('Unassigned')
 );
 
-$graph_template_classes = $device_classes;
+$graph_template_classes = array(
+	'amon'            => __('Amon Server Stats'),
+	'amqp'            => __('AMQP Stats'),
+	'cpu'             => __('CPU Stats'),
+	'disk'            => __('Disk Stats'),
+	'diskio'          => __('Disk I/O Stats'),
+	'health'          => __('Health Stats'),
+	'http'            => __('Webserver Stats'),
+	'kafka'           => __('Kafka Stats'),
+	'kernel'          => __('Kernel Stats'),
+	'kernel_vmstat'   => __('Kernel Memory'),
+	'linux_cpu'       => __('Linux CPU Stats'),
+	'linux_sysctl_fs' => __('Linux Kernel Params'),
+	'mongodb'         => __('MongoDB Stats'),
+	'mysql'           => __('MariaDB/MySQL Stats'),
+	'mem'             => __('Memory Stats'),
+	'mqqt'            => __('Mosquitto Stats'),
+	'net'             => __('Network Stats'),
+	'process'         => __('Process Stats'),
+	'qos'             => __('QOS Stats'),
+	'swap'            => __('Swap Stats'),
+	'syslog'          => __('Syslog Stats'),
+	'system'          => __('System Stats'),
+	'unassigned'      => __('Unassigned'),
+	'unspecified'     => __('Unspecified'),
+);
 
 if ((isset($_SESSION[SESS_USER_ID]))) {
 	if (db_table_exists('external_links')) {
@@ -1481,6 +1506,7 @@ $host_struc = array(
 	'site_id',
 	'poller_id',
 	'notes',
+	'snmp_options',
 	'snmp_community',
 	'snmp_version',
 	'snmp_username',
@@ -1492,6 +1518,7 @@ $host_struc = array(
 	'snmp_engine_id',
 	'snmp_port',
 	'snmp_timeout',
+	'snmp_retries',
 	'max_oids',
 	'bulk_walk_size',
 	'device_threads',

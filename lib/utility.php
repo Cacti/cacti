@@ -651,7 +651,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 
 	/* setup the database call */
 	$sql_prefix = 'INSERT INTO poller_item (local_data_id, poller_id, host_id, action, hostname, ' .
-		'snmp_community, snmp_version, snmp_timeout, snmp_username, snmp_password, ' .
+		'snmp_community, snmp_version, snmp_timeout, snmp_retries, snmp_username, snmp_password, ' .
 		'snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, snmp_engine_id, ' .
 		'snmp_port, rrd_name, rrd_path, rrd_num, rrd_step, rrd_next_step, arg1, arg2, arg3, present) ' .
 		'VALUES';
@@ -664,6 +664,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 		snmp_community = VALUES(snmp_community),
 		snmp_version = VALUES(snmp_version),
 		snmp_timeout = VALUES(snmp_timeout),
+		snmp_retries = VALUES(snmp_retries),
 		snmp_username = VALUES(snmp_username),
 		snmp_password = VALUES(snmp_password),
 		snmp_auth_protocol = VALUES(snmp_auth_protocol),
@@ -2411,7 +2412,7 @@ function object_cache_get_totals($class, $object_ids, $diff = false) {
 				GROUP BY host_id');
 
 			if (cacti_sizeof($data)) {
-				$variable['host_graphs'] = array_rekey($data, 'id', 'total');
+				$variable['host_graphs'] = array_rekey($data, 'id', 'totals');
 			}
 
 			$data = db_fetch_assoc('SELECT graph_template_id AS id, COUNT(*) AS totals

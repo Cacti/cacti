@@ -222,7 +222,7 @@ function form_save() {
 				$graph_templates_items = array_rekey(
 					db_fetch_assoc_prepared('SELECT id, sequence
 						FROM graph_templates_item
-						WHERE local_graph_id=0
+						WHERE local_graph_id = 0
 						AND graph_template_id = ?
 						ORDER BY sequence', array($graph_template_id)),
 					'id',
@@ -897,7 +897,7 @@ function form_actions() {
 						'title_format' => array(
 							'method'  => 'drop_array',
 							'array'   => $aggregate_templates,
-							'title'   => __('Aggregate Template:'),
+							'title'   => __('Aggregate Template'),
 							'default' => array_key_first($aggregate_templates)
 						)
 					)
@@ -908,7 +908,7 @@ function form_actions() {
 					'extra'    => array(
 						'title_format' => array(
 							'method'  => 'textbox',
-							'title'   => __('Aggregate Name:'),
+							'title'   => __('Aggregate Name'),
 							'default' => __('New Aggregate'),
 							'width'   => 40,
 							'size'    => 40
@@ -923,19 +923,19 @@ function form_actions() {
 					'extra'    => array(
 						'report_id' => array(
 							'method'  => 'drop_array',
-							'title'   => __('Report Name:'),
+							'title'   => __('Report Name'),
 							'array'   => $reports,
 							'default' => array_key_first($reports)
 						),
 						'timespan' => array(
 							'method'  => 'drop_array',
-							'title'   => __('Timespan:'),
+							'title'   => __('Timespan'),
 							'array'   => $graph_timespans,
 							'default' => read_user_setting('default_timespan')
 						),
 						'align' => array(
 							'method'  => 'drop_array',
-							'title'   => __('Align:'),
+							'title'   => __('Align'),
 							'array'   => $alignment,
 							'default' => REPORTS_ALIGN_CENTER
 						)
@@ -1040,6 +1040,13 @@ function graph_edit() {
 		}
 	}
 
+
+	$aggregate_tabs = array(
+		'details' => __('Details'),
+		'items'   => __('Items'),
+		'preview' => __('Preview')
+	);
+
 	if (cacti_sizeof($aginfo)) {
 		if ($aginfo['aggregate_template_id'] > 0) {
 			$template = db_fetch_row_prepared('SELECT *
@@ -1050,18 +1057,8 @@ function graph_edit() {
 		} else {
 			$template = $aginfo;
 		}
-
-		$aggregate_tabs = array(
-			'details' => __('Details'),
-			'items'   => __('Items'),
-			'preview' => __('Preview')
-		);
 	} elseif (cacti_sizeof($graphs)) {
-		$template       = array();
-		$aggregate_tabs = array(
-			'details' => __('Details'),
-			'preview' => __('Preview')
-		);
+		$template = array();
 	} else {
 		raise_message('missing_aggregate', __('Aggregate Graphs Accessed does not Exist'), MESSAGE_LEVEL_ERROR);
 
@@ -1107,18 +1104,16 @@ function graph_edit() {
 	print "<div class='tabs'>";
 	print "<div class='aggtabs'><nav><ul role='tablist'>";
 
-	$i = 0;
-
 	if (cacti_sizeof($aggregate_tabs)) {
-		foreach (array_keys($aggregate_tabs) as $tab_short_name) {
-			if ($tab_short_name == 'details' || (!isempty_request_var('id'))) {
-				print "<li class='subTab'><a id='agg_" . $tab_short_name . "' class='tab " . ($tab_short_name == $current_tab ? "selected'" : "'") . ($tab_short_name == 'preview' ? ' style="display:none"' : '') .
-					" href='" . html_escape(CACTI_PATH_URL . 'aggregate_graphs.php?action=edit&id=' . get_request_var('id') . "&tab=$tab_short_name") . "'>" . $aggregate_tabs[$tab_short_name] . '</a></li>';
+		foreach ($aggregate_tabs as $id => $name) {
+			if ($id == 'details' || (!isempty_request_var('id'))) {
+				print "<li class='subTab'><a id='agg_" . $tab_short_name . "' class='tab " . ($id == $current_tab ? "selected'" : "'") .
+					" href='" . html_escape(CACTI_PATH_URL . 'aggregate_graphs.php?action=edit&id=' . get_request_var('id') . "&tab=$id") .
+					"'>" . html_escape($name) . '</a></li>';
 			}
-
-			$i++;
 		}
 	}
+
 	print '</ul>';
 
 	/* handle debug mode */
@@ -1173,11 +1168,12 @@ function graph_edit() {
 			</td>
 		</tr>
 		<?php
-				if (isset($_SESSION['graph_debug_mode']) && isset_request_var('id')) {
-					$graph_data_array['output_flag']  = RRDTOOL_OUTPUT_STDERR;
-					$graph_data_array['print_source'] = 1;
-					$null_param                       = array();
-					?>
+		if (isset($_SESSION['graph_debug_mode']) && isset_request_var('id')) {
+			$graph_data_array['output_flag']  = RRDTOOL_OUTPUT_STDERR;
+			$graph_data_array['print_source'] = 1;
+
+			$null_param = array();
+			?>
 			<tr>
 				<td id='rrdtoolinfo' class='left' style='padding-left:15px;max-width:900px;overflow:scroll'>
 					<div style='overflow:auto;'>
@@ -1189,16 +1185,14 @@ function graph_edit() {
 					<script type='text/javascript'>
 						$(function() {
 							var rrdwidth = $(window).width() - $('.cactiConsoleNavigationArea').width();
-							$('#agg_preview').show();
 							$('#rrdtoolinfo, #imagewindow').css('max-width', rrdwidth);
 						});
 					</script>
 				</td>
 			</tr>
-		<?php
-				}
-		?>
-		<?php
+			<?php
+		}
+
 		html_end_box(false);
 	}
 
@@ -1309,8 +1303,8 @@ function graph_edit() {
 				];
 
 				$(function() {
-					if ($('input[id^="agg_total"]').is(':checked') || $('#template_propogation').is(':checked')) {
-						$('#agg_preview').show();
+					if (!$('input[id^="agg_total"]').is(':checked') && !$('#template_propogation').is(':checked')) {
+						$('#agg_preview').hide();
 					}
 
 					if ($('#template_propogation').is(':checked')) {
@@ -1398,20 +1392,21 @@ function graph_edit() {
 				}
 
 				function changeTotalsType() {
-					if ($('#total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_SIMILAR; ?>) {
+					if ($('#total_type').val() == '<?php print AGGREGATE_TOTAL_TYPE_SIMILAR; ?>') {
 						if ($('#total_prefix').val() == '' && $('#id').val() == 0) {
 							$('#total_prefix').attr('value', '<?php print __('Total'); ?>');
 						}
-					} else if ($('#total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_ALL; ?>) {
+					} else if ($('#total_type').val() == '<?php print AGGREGATE_TOTAL_TYPE_ALL; ?>') {
 						if ($('#total_prefix').val() == '' && $('#id').val() == 0) {
-						if ($('#total_prefix').val() == '') {
-							$('#total_prefix').attr('value', '<?php print __('All Items'); ?>');
+							if ($('#total_prefix').val() == '') {
+								$('#total_prefix').attr('value', '<?php print __('All Items'); ?>');
+							}
 						}
 					}
 				}
 			</script>
-		<?php
-				print '</div>';
+			<?php
+			print '</div>';
 		}
 
 		/* we will show the classic representation only when we are not templating */
@@ -1660,8 +1655,8 @@ function aggregate_items() {
 		}
 
 		$(function() {
-			if (totalItems > 0) {
-				$('#agg_preview').show();
+			if (totalItems == 0) {
+				$('#agg_preview').hide();
 			}
 
 			$('#clear').click(function() {
@@ -1965,8 +1960,8 @@ function aggregate_graph() {
 		}
 
 		$(function() {
-			if ($('input[id^="agg_total"]').is(':checked') || $('#template_propogation').is(':checked')) {
-				$('#agg_preview').show();
+			if (!$('input[id^="agg_total"]').is(':checked') && !$('#template_propogation').is(':checked')) {
+				$('#agg_preview').hide();
 			}
 
 			$('#clear').click(function() {
@@ -2200,10 +2195,12 @@ function purge_old_graphs() {
 
 	if (cacti_sizeof($old_aggregates)) {
 		db_execute('DELETE FROM graph_templates_item
-			WHERE local_graph_id IN (' . implode(',', $old_aggregates) . ')');
+			WHERE local_graph_id IN (' . implode(',', $old_aggregates) . ')
+			AND local_graph_id > 0');
 
 		db_execute('DELETE FROM graph_templates_graph
-			WHERE local_graph_id IN (' . implode(',', $old_aggregates) . ')');
+			WHERE local_graph_id IN (' . implode(',', $old_aggregates) . ')
+			AND local_graph_id > 0');
 
 		db_execute('DELETE FROM aggregate_graphs
 			WHERE local_graph_id IN (' . implode(',', $old_aggregates) . ')');

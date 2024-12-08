@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2023-12-01 14:22-0600\n"
-"PO-Revision-Date: 2024-12-01 02:16+0000\n"
+"PO-Revision-Date: 2024-12-06 19:25+0000\n"
 "Last-Translator: Anton Zhuravlev <baka109g@gmail.com>\n"
 "Language-Team: Russian <http://translate.cacti.net/projects/cacti/core/ru/>\n"
 "Language: ru-RU\n"
@@ -1825,7 +1825,6 @@ msgid "ERROR: Network '%s' is Invalid."
 msgstr "ОШИБКА: Сеть '%s' недействительна."
 
 #: automation_networks.php:641 host.php:432
-#, fuzzy
 msgid "Update this Field"
 msgstr "Обновить данное поле"
 
@@ -2177,7 +2176,7 @@ msgstr "%d Час"
 #: include/global_settings.php:3023
 #, php-format
 msgid "%d Hours"
-msgstr "%d Часа(ов)"
+msgstr "%d Часов"
 
 #: automation_networks.php:856
 msgid "Enable this Network Range."
@@ -4942,7 +4941,7 @@ msgstr "%d День"
 #: include/global_settings.php:1864 include/global_settings.php:1865
 #, php-format
 msgid "%d Days"
-msgstr "%d Дня(ей)"
+msgstr "%d Дней"
 
 #: data_source_profiles.php:859 include/global_arrays.php:730
 #: include/global_arrays.php:1604 include/global_arrays.php:1625
@@ -6073,7 +6072,6 @@ msgid "View"
 msgstr "Вид"
 
 #: graph_view.php:653 graph_view.php:890 include/global_arrays.php:1295
-#, fuzzy
 msgid "View Graphs"
 msgstr "Просмотр графиков"
 
@@ -7212,9 +7210,8 @@ msgid "Export Devices"
 msgstr "Экспорт устройств"
 
 #: host.php:1609 lib/api_automation.php:74 lib/api_automation.php:1174
-#, fuzzy
 msgid "Not Up"
-msgstr "Вверх"
+msgstr "Упал"
 
 #: host.php:1612 lib/api_automation.php:77 lib/api_automation.php:1177
 #: lib/html.php:84 lib/html_utility.php:1020 pollers.php:48
@@ -15515,7 +15512,7 @@ msgstr "Работает:"
 
 #: lib/api_device.php:1737
 msgid "Hostname:"
-msgstr "Имя хоста:"
+msgstr "Имя хоста: "
 
 #: lib/api_device.php:1738
 msgid "Location:"
@@ -17309,7 +17306,6 @@ msgid "From"
 msgstr "От"
 
 #: lib/html_graph.php:291 lib/html_tree.php:1188
-#, fuzzy
 msgid "Start Date Selector"
 msgstr "Выбор даты запуска"
 
@@ -17319,22 +17315,18 @@ msgid "To"
 msgstr "До"
 
 #: lib/html_graph.php:300 lib/html_tree.php:1197
-#, fuzzy
 msgid "End Date Selector"
 msgstr "Выбор даты окончания срока действия"
 
 #: lib/html_graph.php:305 lib/html_tree.php:1202
-#, fuzzy
 msgid "Shift Time Backward"
 msgstr "Переключить время назад"
 
 #: lib/html_graph.php:306 lib/html_tree.php:1203
-#, fuzzy
 msgid "Define Shifting Interval"
 msgstr "Определить интервал переключения"
 
 #: lib/html_graph.php:322 lib/html_tree.php:1219
-#, fuzzy
 msgid "Shift Time Forward"
 msgstr "Время сдвига вперед"
 
@@ -17923,9 +17915,9 @@ msgid ", Using RegEx: \"%s\""
 msgstr ", Используя регулярное выражение: \"%s\""
 
 #: lib/html_reports.php:1699
-#, fuzzy, php-format
+#, php-format
 msgid "Tree: %s"
-msgstr "Поместить в дерево (%s)"
+msgstr "Дерево: %s"
 
 #: lib/html_reports.php:1710
 #, fuzzy, php-format
@@ -21483,19 +21475,19 @@ msgid "Age"
 msgstr "Авг"
 
 #: rrdcheck.php:236 rrdcheck.php:237 rrdcheck.php:238
-#, fuzzy, php-format
+#, php-format
 msgid "%d hours"
-msgstr "%d Часа(ов)"
+msgstr "%d Часов"
 
 #: rrdcheck.php:239
 #, php-format
 msgid "%d day"
-msgstr ""
+msgstr "%d День"
 
 #: rrdcheck.php:240 rrdcheck.php:241
-#, fuzzy, php-format
+#, php-format
 msgid "%d days"
-msgstr "дней"
+msgstr "%d Дней"
 
 #: rrdcheck.php:245
 msgid "Messages"
@@ -24268,7 +24260,7 @@ msgstr "Последняя продолжительность пробега:"
 #: utilities.php:1652
 #, php-format
 msgid "%d minutes"
-msgstr "%d минут"
+msgstr "%d Минут"
 
 #: utilities.php:1652
 #, php-format

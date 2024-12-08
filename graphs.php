@@ -137,6 +137,26 @@ switch (get_request_var('action')) {
 		get_allowed_ajax_graph_items(true, $sql_where);
 
 		break;
+	case 'ajax_dnd':
+		$local_graph_id = get_filter_request_var('id');
+		$sequences      = get_nfilter_request_var('item_ids');
+
+		if (cacti_sizeof($sequences)) {
+			foreach($sequences as $index => $s) {
+				$new_seq = $index++;
+
+				db_execute_prepared('UPDATE graph_templates_item
+					SET sequence = ?
+					WHERE id = ?
+					AND local_graph_id = ?
+					AND graph_template_id = 0',
+					array($new_seq, $s, $local_graph_id));
+			}
+		}
+
+		header('Location: graphs.php?action=graph_edit&id=' . get_filter_request_var('id'));
+
+		break;
 	case 'item_remove':
 		get_filter_request_var('local_graph_id');
 
@@ -193,14 +213,18 @@ function get_ajax_graph_items() {
 	$rrd_id  = get_filter_request_var('rrd_id');
 	$host_id = get_filter_request_var('host_id');
 
+	$sql_where    = '';
+	$sql_params   = array();
+	$sql_params[] = $rra_id;
+
 	if ($host_id > 0) {
-		$sql_where = ' AND data_local.host_id=' . $host_id;
-	} else {
-		$sql_where = '';
+		$sql_where = ' AND data_local.host_id = ?';
+		$sql_params[] = $host_id;
 	}
 
-	if (get_request_var('term') != '') {
-		$sql_where .= ' HAVING name LIKE "%' . trim(db_qstr(get_request_var('term')),"'") . '%"';
+	if (get_nfilter_request_var('term') != '') {
+		$sql_where .= ' HAVING name LIKE ?';
+		$sql_params[] = '%' . get_nfilter_request_var('term') . '%';
 	}
 
 	$items  = db_fetch_assoc_prepared("SELECT *
@@ -234,7 +258,7 @@ function get_ajax_graph_items() {
 			ORDER BY name
 		) AS b
 		LIMIT " . read_config_option('autocomplete_rows'),
-		array($rrd_id));
+		$sql_params);
 
 	foreach ($items as $key => $item) {
 		$items[$key]['label'] = $item['name'];
@@ -570,24 +594,37 @@ function form_save() {
 
 		$sequence = get_nfilter_request_var('sequence');
 
+		if (empty($sequence) || !is_numeric($sequence)) {
+			$sequence = 1;
+		}
+
 		foreach ($items as $item) {
 			/* generate a new sequence if needed */
 			if (empty($sequence)) {
 				$sequence = get_sequence($sequence, 'sequence', 'graph_templates_item', 'local_graph_id=' . get_nfilter_request_var('local_graph_id'));
 			}
+
 			$save['id']                           = get_nfilter_request_var('graph_template_item_id');
 			$save['graph_template_id']            = get_nfilter_request_var('graph_template_id');
 			$save['local_graph_template_item_id'] = get_nfilter_request_var('local_graph_template_item_id');
 			$save['local_graph_id']               = get_nfilter_request_var('local_graph_id');
 			$save['task_item_id']                 = form_input_validate(get_nfilter_request_var('task_item_id'), 'task_item_id', '^[0-9]+$', true, 3);
 			$save['color_id']                     = form_input_validate((isset($item['color_id']) ? $item['color_id'] : get_nfilter_request_var('color_id')), 'color_id', '^[0-9]+$', true, 3);
+			$save['color2_id']                    = form_input_validate((isset($item['color2_id']) ? $item['color2_id'] : get_nfilter_request_var('color2_id')), 'color2_id', '^[0-9]+$', true, 3);
 
 			/* if alpha is disabled, use invisible_alpha instead */
 			if (!isset_request_var('alpha')) {
 				set_request_var('alpha', get_nfilter_request_var('invisible_alpha'));
 			}
 
+			if (!isset_request_var('alpha2')) {
+				set_request_var('alpha2', get_nfilter_request_var('invisible_alpha'));
+			}
+
 			$save['alpha']          = form_input_validate((isset($item['alpha']) ? $item['alpha'] : get_nfilter_request_var('alpha')), 'alpha', '', true, 3);
+			$save['alpha2']         = form_input_validate((isset($item['alpha2']) ? $item['alpha2'] : get_nfilter_request_var('alpha2')), 'alpha2', '', true, 3);
+			$save['gradheight']     = form_input_validate((isset($item['gradheight']) ? $item['gradheight'] : get_nfilter_request_var('gradheight')), 'gradheight', '', true, 3);
+
 			$save['graph_type_id']  = form_input_validate((isset($item['graph_type_id']) ? $item['graph_type_id'] : get_nfilter_request_var('graph_type_id')), 'graph_type_id', '^[0-9]+$', true, 3);
 
 			if (isset_request_var('line_width') || isset($item['line_width'])) {
@@ -620,6 +657,8 @@ function form_save() {
 			$save['consolidation_function_id'] = form_input_validate((isset($item['consolidation_function_id']) ? $item['consolidation_function_id'] : get_nfilter_request_var('consolidation_function_id')), 'consolidation_function_id', '^[0-9]+$', true, 3);
 			$save['textalign']                 = form_input_validate((isset_request_var('textalign') ? get_nfilter_request_var('textalign') : ''), 'textalign', '^[a-z]+$', true, 3);
 			$save['text_format']               = form_input_validate((isset($item['text_format']) ? $item['text_format'] : get_nfilter_request_var('text_format')), 'text_format', '', true, 3);
+			$save['legend']                    = form_input_validate((isset($item['legend']) ? $item['legend'] : get_nfilter_request_var('legend')), 'legend', '', true, 3);
+
 			$save['value']                     = form_input_validate(get_nfilter_request_var('value'), 'value', '', true, 3);
 			$save['hard_return']               = form_input_validate(((isset($item['hard_return']) ? $item['hard_return'] : (isset_request_var('hard_return') ? get_nfilter_request_var('hard_return') : ''))), 'hard_return', '', true, 3);
 			$save['gprint_id']                 = form_input_validate(get_nfilter_request_var('gprint_id'), 'gprint_id', '^[0-9]+$', true, 3);
@@ -829,8 +868,7 @@ function item_edit() {
 	}
 
 	if (!isempty_request_var('id')) {
-		$template_item = db_fetch_row_prepared(
-			'SELECT *
+		$template_item = db_fetch_row_prepared('SELECT *
 			FROM graph_templates_item
 			WHERE id = ?',
 			array(get_request_var('id'))
@@ -1024,6 +1062,20 @@ function item_edit() {
 			}
 		}
 
+		function changeColor2Id() {
+			$('#alpha2').prop('disabled', true);
+
+			if ($('#color2_id').val() != 0) {
+				$('#alpha2').prop('disabled', false);
+			}
+
+			switch ($('#graph_type_id').val()) {
+				case '7':
+				case '8':
+					$('#alpha2').prop('disabled', false);
+			}
+		}
+
 		function cdefAlignment() {
 			if ($('#task_item_id').val() == '0') {
 				$('#cdef_id option').each(function() {
@@ -1056,27 +1108,33 @@ function item_edit() {
 			})
 		}
 
+		var graphType = $('#graph_type_id').val();
 		function setRowVisibility() {
 			toggleFields({
 				data_template_id: graphType != 3 && graphType != 40,
 				task_item_id: graphType != 3 && graphType != 40,
 				color_id: (graphType > 1 && graphType < 9) || graphType == 20 || graphType == 30,
+				color2_id: graphType == 7 || graphType == 8,
 				line_width: (graphType > 3 && graphType < 7) || graphType == 20,
 				dashes: (graphType > 1 && graphType < 7) || graphType == 20,
 				dash_offset: (graphType > 1 && graphType < 7) || graphType == 20,
 				textalign: graphType == 40,
 				shift: (graphType > 3 && graphType < 9) || graphType == 20,
 				alpha: (graphType > 3 && graphType < 9) || graphType == 20 || graphType == 40,
-				consolidation_function_id: graphType > 3 && graphType != 10 && graphType != 15 && graphType != 30 && graphType != 40,
+				alpha2: graphType == 7 || graphType == 8,
+				gradheight: graphType == 7 || graphType == 8,
+				consolidation_function_id: graphType == 1 || (graphType > 3 && graphType != 10 && graphType != 15 && graphType != 30 && graphType != 40),
 				cdef_id: graphType > 3 && graphType != 40,
 				vdef_id: graphType > 3 && graphType != 40,
 				value: graphType == 2 || graphType == 3 || graphType == 30,
 				gprint_id: graphType > 8 && graphType < 16,
 				text_format: graphType >= 1 && graphType != 10 && graphType != 15 && graphType != 40,
+				legend: (graphType > 1 && graphType < 9) || graphType == 20 || graphType == 30,
 				hard_return: graphType >= 1 && graphType != 10 && graphType != 15 && graphType != 40,
 			});
 
 			changeColorId();
+			changeColor2Id();
 			cdefAlignment();
 		}
 	</script>
@@ -1704,17 +1762,19 @@ function form_actions() {
 					'flist'     => $flist,
 					'sfmessage' => __n('The following Data Source is used by this Graph.', 'The following Data Sources are used by this Graph.', cacti_sizeof($data_sources)),
 					'pfmessage' => __n('The following Data Source is used by these Graphs.', 'The following Data Sources are used by these Graphs.', cacti_sizeof($iarray)),
-					'extra'    => array(
+					'extra'     => array(
 						'delete_type' => array(
-							'method' => 'radio_button',
-							'options' => array(
-								$rbutton1 => array(
-									'default' => 2,
-									'title' => __n('Delete the Data Sources referenced by this Graph', 'Delete the Data Sources reference by these Graphs.', cacti_sizeof($iarray))
+							'method' => 'radio',
+							'title' => __('Delete Method'),
+							'default' => 1,
+							'items' => array(
+								0 => array(
+									'radio_value' => '1',
+									'radio_caption' => __n('Delete the Data Sources referenced by this Graph', 'Delete the Data Sources reference by these Graphs.', cacti_sizeof($iarray))
 								),
-								$rbutton2 => array(
-									'default' => 2,
-									'title' => __n('Leave the Data Source untouched.', 'Leave the Data Sources untouched', cacti_sizeof($data_sources))
+								1 => array(
+									'radio_value' => '2',
+									'radio_caption' => __n('Leave the Data Source untouched.', 'Leave the Data Sources untouched', cacti_sizeof($data_sources))
 								)
 							)
 						)
@@ -1723,11 +1783,11 @@ function form_actions() {
 				2 => array(
 					'smessage' => __('Choose a Graph Template and click \'Continue\' to Change the Graph Template for the following Graph.  Note that only compatible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources.'),
 					'pmessage' => __('Choose a Graph Template and click \'Continue\' to Change the Graph Template for the following Graphs.  Note that only compatible Graph Templates will be displayed.  Compatible is identified by those having identical Data Sources.'),
-					'cont'    => __('Change Graph Template'),
+					'cont'     => __('Change Graph Template'),
 					'extra'    => array(
 						'graph_template_id' => array(
 							'method' => 'drop_array',
-							'title'  => __('New Graph Template:'),
+							'title'  => __('New Graph Template'),
 							'default' => '',
 							'array' => $gtarray
 						)
@@ -1741,7 +1801,7 @@ function form_actions() {
 					'extra'    => array(
 						'title_format' => array(
 							'method'  => 'textbox',
-							'title'   => __('Title Format:'),
+							'title'   => __('Title Format'),
 							'default' => '<graph_title> (1)',
 							'width'   => 255,
 							'size'    => 30
@@ -1756,7 +1816,7 @@ function form_actions() {
 					'extra'    => array(
 						'title_format' => array(
 							'method'  => 'textbox',
-							'title'   => __('Title Format:'),
+							'title'   => __('Title Format'),
 							'default' => '<graph_title> Template',
 							'width'   => 255,
 							'size'    => 30
@@ -1771,7 +1831,7 @@ function form_actions() {
 					'extra'    => array(
 						'host_id' => array(
 							'method' => 'drop_array',
-							'title'  => __('New Device:'),
+							'title'  => __('New Device'),
 							'default' => '',
 							'array' => $devices
 						)
@@ -1809,7 +1869,7 @@ function form_actions() {
 					'extra'    => array(
 						'aggregate_template_id' => array(
 							'method'  => 'drop_array',
-							'title'   => __('Aggregate Template:'),
+							'title'   => __('Aggregate Template'),
 							'default' => '',
 							'array'   => $atemplates,
 						)
@@ -1823,19 +1883,19 @@ function form_actions() {
 					'extra'    => array(
 						'report_id' => array(
                             'method'  => 'drop_array',
-                            'title'   => __('Report Name:'),
+                            'title'   => __('Report Name'),
                             'array'   => $reports,
                             'default' => array_key_first($reports)
 						),
 						'timespan' => array(
                             'method'  => 'drop_array',
-                            'title'   => __('Timespan:'),
+                            'title'   => __('Timespan'),
                             'array'   => $graph_timespans,
                             'default' => read_user_setting('default_timespan')
 						),
 						'align' => array(
                             'method'  => 'drop_array',
-                            'title'   => __('Align:'),
+                            'title'   => __('Align'),
                             'array'   => $alignment,
                             'default' => REPORTS_ALIGN_CENTER
 						)
@@ -1856,7 +1916,7 @@ function form_actions() {
 					'extra'    => array(
 						'tree_item_id' => array(
 							'method'  => 'drop_branch',
-							'title'   => __('Destination Branch:'),
+							'title'   => __('Destination Branch'),
 							'id'      => $tree['id']
 						)
 					),
@@ -2002,26 +2062,28 @@ function item() {
 		$anchor_link  = '';
 	} else {
 		$template_item_list = db_fetch_assoc_prepared("SELECT
-			gti.id, gti.text_format, gti.value, gti.hard_return, gti.graph_type_id, gti.alpha, gti.textalign,
+			gti.id, gti.text_format, gti.value, gti.hard_return, gti.graph_type_id, gti.alpha, gti.alpha2, gti.textalign,
 			gti.consolidation_function_id, gti.sequence,
 			CONCAT(dtd.name_cache, ' (',  dtr.data_source_name, ')') AS data_source_name,
-			cd.name AS cdef_name, c.hex,
+			cd.name AS cdef_name, c.hex, c2.hex AS hex2, gti.legend,
 			vd.name AS vdef_name, gtgp.name AS gprint_name
 			FROM graph_templates_item AS gti
 			LEFT JOIN data_template_rrd AS dtr
-			ON (gti.task_item_id = dtr.id)
+			ON gti.task_item_id = dtr.id
 			LEFT JOIN data_local AS dl
-			ON (dtr.local_data_id = dl.id)
+			ON dtr.local_data_id = dl.id
 			LEFT JOIN data_template_data AS dtd
-			ON (dl.id = dtd.local_data_id)
+			ON dl.id = dtd.local_data_id
 			LEFT JOIN graph_templates_gprint AS gtgp
-			ON (gprint_id = gtgp.id)
+			ON gprint_id = gtgp.id
 			LEFT JOIN cdef AS cd
-			ON (cdef_id = cd.id)
+			ON cdef_id = cd.id
 			LEFT JOIN vdef AS vd
-			ON (vdef_id = vd.id)
+			ON vdef_id = vd.id
 			LEFT JOIN colors AS c
-			ON (color_id = c.id)
+			ON color_id = c.id
+			LEFT JOIN colors AS c2
+			ON color_id = c2.id
 			WHERE gti.local_graph_id = ?
 			ORDER BY gti.sequence", array(get_request_var('id')));
 
@@ -2052,6 +2114,14 @@ function item() {
 		$('.deleteMarker, .moveArrow').unbind().click(function(event) {
 			event.preventDefault();
 			loadUrl({url:$(this).attr('href')})
+		});
+
+		$('#graphs_graph_edit2_child').attr('id', 'item_ids');
+		$('#item_ids').find('tr:first').addClass('nodrag').addClass('nodrop');
+		$('#item_ids').tableDnD({
+			onDrop: function(table, row) {
+				loadUrl({url:'graphs.php?action=ajax_dnd&id=<?php isset_request_var('id') ? print get_request_var('id') : print 0;?>&'+$.tableDnD.serialize()});
+			}
 		});
 	});
 	</script>

@@ -1360,8 +1360,14 @@ function db_index_matches($table, $index, $columns, $log = true, $db_conn = fals
 function db_table_exists($table, $log = true, $db_conn = false) {
 	static $results;
 
-	if (isset($results[$table]) && !defined('IN_CACTI_INSTALL') && !defined('IN_PLUGIN_INSTALL')) {
-		return $results[$table];
+	if ($db_conn == false) {
+		$index = '-1';
+	} else {
+		$index = md5(json_encode($db_conn));
+	}
+
+	if (isset($results[$index][$table]) && !defined('IN_CACTI_INSTALL') && !defined('IN_PLUGIN_INSTALL')) {
+		return $results[$index][$table];
 	}
 
 	// Separate the database from the table and remove backticks
@@ -1370,9 +1376,9 @@ function db_table_exists($table, $log = true, $db_conn = false) {
 	if ($matches !== false && array_key_exists('table', $matches)) {
 		$sql = 'SHOW TABLES LIKE \'' . $matches['table'] . '\'';
 
-		$results[$table] = (db_fetch_cell($sql, '', $log, $db_conn) ? true : false);
+		$results[$index][$table] = (db_fetch_cell($sql, '', $log, $db_conn) ? true : false);
 
-		return $results[$table];
+		return $results[$index][$table];
 	}
 
 	return false;
@@ -1437,19 +1443,19 @@ function db_cacti_initialized($is_web = true) {
 function db_column_exists($table, $column, $log = true, $db_conn = false) {
 	static $results = array();
 
-	if (isset($results[$table][$column]) && !defined('IN_CACTI_INSTALL') && !defined('IN_PLUGIN_INSTALL')) {
-		return $results[$table][$column];
+	if ($db_conn == false) {
+		$index = '-1';
+	} else {
+		$index = md5(json_encode($db_conn));
 	}
 
-	$result = false;
-
-	if (db_table_exists($table, $log, $db_conn)) {
-		$result = (db_fetch_cell("SHOW columns FROM `$table` LIKE '$column'", '', $log, $db_conn) ? true : false);
+	if (isset($results[$index][$table][$column]) && !defined('IN_CACTI_INSTALL') && !defined('IN_PLUGIN_INSTALL')) {
+		return $results[$index][$table][$column];
 	}
 
-	$results[$table][$column] = $result;
+	$results[$index][$table][$column] = (db_fetch_cell("SHOW columns FROM `$table` LIKE '$column'", '', $log, $db_conn) ? true : false);
 
-	return $results[$table][$column];
+	return $results[$index][$table][$column];
 }
 
 /**
@@ -2194,7 +2200,7 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 			} elseif (is_numeric($value)) {
 				$array_items[$key] = $value;
 			} else {
-				cacti_log('ERROR: Column: ' . $key . ' contains and invald value: ' . $value, false, 'DBCALL');
+				cacti_log('ERROR: Column: ' . $key . ' contains and invalid value: ' . $value, false, 'DBCALL');
 				$array_items[$key] = 0;
 			}
 		} else {

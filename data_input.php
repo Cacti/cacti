@@ -258,7 +258,7 @@ function form_actions() {
 					'extra'    => array(
 						'input_title' => array(
 							'method'  => 'textbox',
-							'title'   => __('Input Name:'),
+							'title'   => __('Input Name'),
 							'default' => '<input_title> (1)',
 							'width'   => 25
 						)

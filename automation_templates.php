@@ -867,8 +867,10 @@ function automation_get_tree_headers() {
 
 	foreach ($trees as $tree) {
 		$headers['tr_' . $tree['id'] . '_br_0'] = $tree['name'];
-		$spaces                                 = '';
-		$headers                                = automation_get_child_branches($tree['id'], 0, $spaces, $headers);
+
+		$spaces = '';
+
+		$headers = automation_get_child_branches($tree['id'], 0, $spaces, $headers);
 	}
 
 	return $headers;

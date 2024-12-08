@@ -210,15 +210,13 @@ function aggregate_form_save() {
 	/* save the template items now */
 	/* get existing item ids and sequences from graph template */
 	$graph_templates_items = array_rekey(
-		db_fetch_assoc_prepared(
-			'SELECT id, sequence
+		db_fetch_assoc_prepared('SELECT id, sequence
 			FROM graph_templates_item
-			WHERE local_graph_id=0
+			WHERE local_graph_id = 0
 			AND graph_template_id = ?',
 			array($save1['graph_template_id'])
 		),
-		'id',
-		array('sequence')
+		'id', array('sequence')
 	);
 
 	/* get existing aggregate template items */

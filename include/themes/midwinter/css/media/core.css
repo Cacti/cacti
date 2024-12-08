@@ -124,6 +124,10 @@ a:active {
     white-space: nowrap;
 }
 
+.prewrap {
+	white-space: pre-wrap;
+}
+
 .wrap {
     white-space: normal !important;
 }
@@ -187,7 +191,7 @@ input[type="checkbox"]:checked + label:before {
     content: "\f14a";
     color: var(--background-progress);
 }
-    
+
 input[type="checkbox"]:checked + label, input[type="radio"]:not([name^="reindex"]):checked + label {
     color: var(--text-color-lighter);
 }

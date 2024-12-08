@@ -1339,7 +1339,7 @@ class Installer implements JsonSerializable {
 	 *         passed that is not expected */
 	private function setTemplates($param_templates = array()) {
 		if (is_array($param_templates)) {
-			db_execute('DELETE FROM settings WHERE name like \'install_tp_%\'');
+			db_execute("DELETE FROM settings WHERE name LIKE 'install_tp_%'");
 
 			$known_templates = install_setup_get_templates();
 
@@ -2925,7 +2925,12 @@ class Installer implements JsonSerializable {
 			$output .= Installer::sectionNormal(__('Downgrading should only be performed when absolutely necessary and doing so may break your installation'));
 		} else {
 			$output = Installer::sectionTitle($title);
+
+			$output .= '<hr>';
+
 			$output .= Installer::sectionNormal(__('Your Cacti Server is almost ready.  Please check that you are happy to proceed.'));
+
+			$output .= Installer::showInstallOptions();
 
 			$output .= Installer::sectionNote(
 				__('Press \'%s\' then click \'%s\' to complete the installation process after selecting your Device Templates.', $title, $button)
@@ -2936,6 +2941,129 @@ class Installer implements JsonSerializable {
 		$this->buttonNext->Text    = $button;
 		$this->buttonNext->Enabled = false;
 		$this->buttonNext->Step    = Installer::STEP_INSTALL;
+
+		return $output;
+	}
+
+	private function showInstallOptions() {
+		$output = '';
+
+		$output .= Installer::sectionTitle(__('General Settings'));
+
+		$output .= '<hr>';
+
+		$opt = array_rekey(
+			db_fetch_assoc('SELECT *
+				FROM settings
+				WHERE name LIKE "install_%"
+				AND name NOT LIKE "install_table_%"
+				AND name NOT LIKE "install_tp_%"'),
+			'name', 'value'
+		);
+
+		$output .= Installer::sectionNormal(__('The following General Install Options will be applied.'));
+		$output .= Installer::sectionNormal('<b>' . __('EULA') . '</b>: '   . __('GPL License Accepted'));
+
+		switch($opt['install_mode']) {
+			case Installer::MODE_INSTALL;
+				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('New Install'));
+				break;
+			case Installer::MODE_UPGRADE;
+				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('Upgrade'));
+				break;
+			case Installer::MODE_DOWNGRADE;
+				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('Downgrade'));
+				break;
+			case Installer::MODE_NONE;
+				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('None'));
+				break;
+			default:
+				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('Unknown'));
+				break;
+		}
+
+		$topts = db_fetch_assoc('SELECT *
+			FROM settings
+			WHERE name LIKE "install_tp_%"
+			AND value != ""');
+
+		$taopts = db_fetch_assoc('SELECT *
+			FROM settings
+			WHERE name LIKE "install_table_%"');
+
+		$output .= Installer::sectionNormal('<b>' . __('RRDtool Version')  . '</b>: ' . html_escape($opt['install_rrdtool_version']));
+		$output .= Installer::sectionNormal('<b>' . __('Default Theme')    . '</b>: ' . ucfirst(html_escape($opt['install_theme'])));
+		$output .= Installer::sectionNormal('<b>' . __('Install Language') . '</b>: ' . html_escape($opt['install_language']));
+
+		$profile = db_fetch_cell_prepared('SELECT name
+			FROM data_source_profiles
+			WHERE id = ?',
+			array($opt['install_profile']));
+
+		$output .= Installer::sectionNormal('<b>' . __('Default Poller Interval') . '</b>: ' . html_escape($profile));
+
+		if (cacti_sizeof($topts)) {
+			$output .= Installer::sectionNormal('<b>' . __('Device Packages') . '</b>: ' . __('%d Device Packages to be Installed', cacti_sizeof($topts)));
+		} else {
+			$output .= Installer::sectionNormal('<b>' . __('Device Packages') . '</b>: ' . __('No Device Packages to be Installed') . '</b>');
+		}
+
+		if ($opt['install_has_tables'] == 1) {
+			$output .= Installer::sectionNormal('<b>' . __('Table Upgrades') . '</b>: ' . __('%d Tables to be Upgraded', cacti_sizeof($taopts)));
+		} else {
+			$output .= Installer::sectionNormal('<b>' . __('Table Upgrades') . '</b>: ' . __('No Tables to be Upgraded') . '</b>');
+		}
+
+		$output .= '<hr>';
+
+		if ($opt['install_mode'] == Installer::MODE_INSTALL) {
+			$output .= Installer::sectionTitle(__('Device/Graph Automation'));
+			$output .= Installer::sectionNormal(__('The following Device and Graph Automation rules will be applied.  These rules allow you to quickly setup monitoring of your network or networks.'));
+
+			if (isset($opt['install_automation_mode']) && $opt['install_automation_mode'] == 1) {
+				$output .= Installer::sectionNormal('<b>' . __('Automation Mode') . '</b>: ' . __('Automation Is Enabled'));
+			} else {
+				$output .= Installer::sectionNormal('<b>' . __('Automation Mode') . '</b>: ' . __('Automation Is Disabled'));
+			}
+
+			if (isset($opt['install_automation_range'])) {
+				$output .= Installer::sectionNormal('<b>' . __('IP Address Range') . '</b>: ' . html_escape($opt['install_automation_range']));
+			}
+
+			if (isset($opt['install_automation_override'])) {
+				$output .= Installer::sectionNormal('<b>' . __('SNMP Options') . '</b>: ' . __('Using a Custom SNMP Options'));
+			} else {
+				$output .= Installer::sectionNormal('<b>' . __('SNMP Options') . '</b>: ' . __('Using the Default SNMP Options'));
+			}
+		}
+
+		if (cacti_sizeof($topts)) {
+			$output .= '<hr>';
+
+			$output .= Installer::sectionTitle(__('Device Package'));
+			$output .= Installer::sectionNormal(__('The following Device Packages will be Installed or Upgraded'));
+
+			$output .= '<hr>';
+
+			foreach($topts as $o) {
+				$output .= Installer::sectionNormal('<b>' . __('Package:') . '</b>: ' . str_replace(array('.xml.gz', '_'), '', $o['value']) . '</b>');
+			}
+		}
+
+		if (cacti_sizeof($taopts)) {
+			$output .= '<hr>';
+
+			$output .= Installer::sectionTitle(__('Table Upgrades'));
+			$output .= Installer::sectionNormal(__('The following Tables will be Upgraded to InnoDB and Converted to utf8mb4 for performance and internationalization.'));
+
+			$output .= '<hr>';
+
+			foreach($taopts as $o) {
+				$output .= Installer::sectionNormal('<b>' . __('Table:') . '</b>: ' . html_escape($o['value']) . '</b>');
+			}
+		}
+
+		$output .= '<hr>';
 
 		return $output;
 	}

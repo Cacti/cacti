@@ -624,9 +624,18 @@ while ($poller_runs_completed < $poller_runs) {
 			$issue_list .= ", Additional Issues Remain.  Only showing first $issues_limit";
 		}
 
-		cacti_log("WARNING: Poller Output Table not Empty.  Issues: $count, $issue_list", true, 'POLLER');
+		$po_debounce = read_config_option('poller_output_debounce');
 
-		admin_email(__('Cacti System Warning'), __('WARNING: Poller Output Table not empty for Poller[%d].  Issues: %d, %s.', $poller_id, $count, $issue_list));
+		if ($po_debounce == '') {
+			set_config_option('poller_output_debounce', '3600');
+			$po_debounce = 3600;
+		}
+
+		if ($po_debounce == 0 || debounce_run_notification('poller_output_not_empty', $po_debounce)) {
+			cacti_log("WARNING: Poller Output Table not Empty.  Issues: $count, $issue_list", true, 'POLLER');
+
+			admin_email(__('Cacti System Warning'), __('WARNING: Poller Output Table not empty for Poller[%d].  Issues: %d, %s.', $poller_id, $count, $issue_list));
+		}
 
 		db_execute_prepared('DELETE po ' . $issues_sql, $issues_param);
 	}

@@ -74,7 +74,7 @@ function api_data_source_remove($local_data_id, $update_totals = true) {
 			WHERE local_data_id = ?', array($local_data_id));
 
 		if (cacti_sizeof($dsinfo)) {
-			$filename = str_replace('<path_cacti>/', '', $dsinfo['data_source_path']);
+			$filename = str_replace('<path_rra>/', '', $dsinfo['data_source_path']);
 			db_execute_prepared('INSERT INTO data_source_purge_action
 				(local_data_id, name, action) VALUES (?, ?, ?)
 				ON DUPLICATE KEY UPDATE action=VALUES(action)',
@@ -255,7 +255,7 @@ function api_data_source_remove_multi($local_data_ids, $update_totals = true) {
 		/* prepare auto-clean if enabled */
 		if ($autoclean == 'on') {
 			db_execute("INSERT INTO data_source_purge_action (local_data_id, name, action)
-				SELECT local_data_id, REPLACE(data_source_path, '<path_cacti>/', ''), '" . $acmethod . "'
+				SELECT local_data_id, REPLACE(data_source_path, '<path_rra>/', ''), '" . $acmethod . "'
 				FROM data_template_data
 				WHERE local_data_id IN (" . $ids_to_delete . ')
 				ON DUPLICATE KEY UPDATE action=VALUES(action)');

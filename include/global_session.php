@@ -49,8 +49,11 @@ if (isset($_SESSION[CLOG_ERROR]) && $_SESSION[CLOG_ERROR] != '') {
 }
 
 $script = basename($_SERVER['SCRIPT_NAME']);
+$graphs = false;
 
 if ($script == 'graph_view.php' || $script == 'graph.php') {
+	$graphs = true;
+
 	if (isset($_SESSION['custom']) && $_SESSION['custom'] == true) {
 		$refreshIsLogout = 'true';
 	} elseif (isset_request_var('action') && get_nfilter_request_var('action') == 'zoom') {
@@ -134,6 +137,12 @@ if (read_config_option('auth_method') == 2) {
 	$refreshIsLogout = 'false';
 }
 
+if ($graphs) {
+	$refresh_function = 'refreshGraphs()';
+} else {
+	$refresh_function = '';
+}
+
 ?>
 <script type='text/javascript'>
 	var cactiVersion='<?php print $config['cacti_version'];?>';
@@ -143,6 +152,7 @@ if (read_config_option('auth_method') == 2) {
 	var refreshIsLogout=<?php print $refreshIsLogout;?>;
 	var refreshPage='<?php print $myrefresh['page'];?>';
 	var refreshMSeconds=<?php print $myrefresh['seconds'] * 1000;?>;
+	var refreshFunction='<?php print $refresh_function;?>';
 	var previousPage='';
 	var sessionLocale='<?php print CACTI_LOCALE;?>';
 	var sessionNotices=<?php print display_output_messages();?>;

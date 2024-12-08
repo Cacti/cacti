@@ -230,7 +230,7 @@ function form_actions() {
 					'extra'    => array(
 						'poller_id' => array(
 							'method'  => 'drop_array',
-							'title'   => __('Poller:'),
+							'title'   => __('Poller'),
 							'array'   => $pollers,
 							'default' => $poller_id,
 							'name'    => 'name',
@@ -238,7 +238,7 @@ function form_actions() {
 						),
 						'host_template' => array(
 							'method'  => 'drop_array',
-							'title'   => __('Device Template:'),
+							'title'   => __('Device Template'),
 							'array'   => $host_templates,
 							'default' => $host_template,
 							'name'    => 'name',
@@ -246,7 +246,7 @@ function form_actions() {
 						),
 						'availability_method' => array(
 							'method'  => 'drop_array',
-							'title'   => __('Availability Method:'),
+							'title'   => __('Availability Method'),
 							'array'   => $availability_options,
 							'default' => $availability_method,
 							'name'    => 'name',

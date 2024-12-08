@@ -1248,8 +1248,9 @@ function display_output_messages() {
 			}
 
 			if (!empty($current_message['message'])) {
-				$current_message['title']   = get_message_title($current_message);
-				$final_messages[]           = array(
+				$current_message['title'] = get_message_title($current_message);
+
+				$final_messages[] = array(
 					'id'      => $current_message_id,
 					'level'   => $current_message['level'],
 					'message' => $current_message['message'],
@@ -1840,6 +1841,10 @@ function determine_display_log_entry($message_type, $line, $filter, $matches = t
 			if (!$display) {
 				$display = (strpos($line, 'Recache Event') !== false);
 			}
+
+			break;
+		case 13: /* SECURITY */
+			$display = (strpos($line, 'SECURITY') !== false);
 
 			break;
 		case -1: /* all */
@@ -8715,19 +8720,35 @@ function cacti_time_zone_set($gmt_offset) {
 }
 
 function debounce_run_notification($id, $frequency = 7200) {
-	$full = 'debounce_' . $id;
-	$key   = substr($full, 0, 50);
-
-	if ($full !== $key) {
-		cacti_debug_backtrace("ERROR: debounce key was truncated from $full to $key");
-	}
+	$key = 'debounce_' . md5($id);
 
 	/* debounce admin emails */
 	$last = read_config_option($key);
 	$now  = time();
 
-	if (empty($last) || $now - $last > $frequency) {
-		set_config_option($key, $now);
+	/* default to unset */
+	$last_timestamp = '';
+
+	if ($last != '' && is_numeric($last)) {
+		$last_timestamp = $last;
+	} elseif ($last != '') {
+		$last = json_decode($last, true);
+
+		if (isset($last['timestamp'])) {
+			$last_timestamp = $last['timestamp'];
+		} else {
+			$last_timestamp = '';
+		}
+	}
+
+	if (empty($last_timestamp) || $now - $last_timestamp > $frequency) {
+		$current = array(
+			'timestamp' => $now,
+			'id'        => $id
+		);
+
+		set_config_option($key, json_encode($current));
+
 		return true;
 	}
 
@@ -8982,8 +9003,7 @@ function text_regex_datasource($matches, $link = false) {
 		foreach ($ds_ids as $ds) {
 			if (!isset($gr_cache[$ds])) {
 				$gr_cache[$ds] = array_rekey(
-					db_fetch_assoc_prepared(
-						'SELECT DISTINCT
+					db_fetch_assoc_prepared('SELECT DISTINCT
 						gti.local_graph_id AS id
 						FROM graph_templates_item AS gti
 						INNER JOIN data_template_rrd AS dtr
@@ -8992,8 +9012,7 @@ function text_regex_datasource($matches, $link = false) {
 						AND dtr.local_data_id = ?',
 						array($ds)
 					),
-					'id',
-					'id'
+					'id', 'id'
 				);
 			}
 

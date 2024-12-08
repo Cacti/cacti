@@ -398,7 +398,7 @@ function form_actions() {
 					'extra'    => array(
 						'name_format' => array(
 							'method'  => 'textbox',
-							'title'   => __('Name Format:'),
+							'title'   => __('Name Format'),
 							'default' => '<dataquery_name> (1)',
 							'width'   => 25
 						)

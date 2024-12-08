@@ -68,6 +68,8 @@ if (cacti_sizeof($parms)) {
 	$snmp_engine_id       = '';
 	$snmp_port            = read_config_option('snmp_port');
 	$snmp_timeout         = read_config_option('snmp_timeout');
+	$snmp_retries         = read_config_option('snmp_retries');
+	$snmp_options         = read_config_option('snmp_options');
 
 	$avail          = 1;
 	$ping_method    = read_config_option('ping_method');
@@ -184,6 +186,14 @@ if (cacti_sizeof($parms)) {
 				break;
 			case '--timeout':
 				$snmp_timeout = $value;
+
+				break;
+			case '--retries':
+				$snmp_retries = $value;
+
+				break;
+			case '--options':
+				$snmp_options = $value;
 
 				break;
 			case '--ping_timeout':
@@ -493,7 +503,7 @@ if (cacti_sizeof($parms)) {
 		$ping_port, $ping_timeout, $ping_retries, $notes,
 		$snmp_auth_protocol, $snmp_priv_passphrase,
 		$snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids, $device_threads,
-		$poller_id, $site_id, $external_id, $location, $bulk_walk_size);
+		$poller_id, $site_id, $external_id, $location, $bulk_walk_size, $snmp_options, $snmp_retries);
 
 	if (is_error_message()) {
 		print "ERROR: Failed to add this device\n";
@@ -522,7 +532,7 @@ function display_help() {
 	print "\nusage: add_device.php --description=[description] --ip=[IP] --template=[ID] [--notes=\"[]\"] [--disable]\n";
 	print "    [--poller=[id]] [--site=[id] [--external-id=[S]] [--proxy] [--threads=[1]\n";
 	print "    [--avail=[ping]] --ping_method=[icmp] --ping_port=[N/A, 1-65534] --ping_timeout=[N] --ping_retries=[2]\n";
-	print "    [--version=[0|1|2|3]] [--community=] [--port=161] [--timeout=500]\n";
+	print "    [--version=[0|1|2|3]] [--community=] [--port=161] [--timeout=500] [--retries=3] [--options=0]\n";
 	print "    [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=] [--engineid=]\n";
 	print "    [--quiet]\n\n";
 	print "Required:\n";
@@ -546,7 +556,9 @@ function display_help() {
 	print "    --version      1, 0|1|2|3, snmp version.  0 for no snmp\n";
 	print "    --community    '', snmp community string for snmpv1 and snmpv2.  Leave blank for no community\n";
 	print "    --port         161\n";
-	print "    --timeout      500\n";
+	print "    --timeout      500, The default snmp timeout\n";
+	print "    --retries      3, The number of snmp retries\n";
+	print "    --options      0, The SNMP Recovery Template Options set to use\n";
 	print "    --username     '', snmp username for snmpv3\n";
 	print "    --password     '', snmp password for snmpv3\n";
 	print "    --authproto    '', snmp authentication protocol for snmpv3\n";

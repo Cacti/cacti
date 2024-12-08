@@ -30,6 +30,8 @@ require_once(CACTI_PATH_LIBRARY . '/api_graph.php');
 include_once(CACTI_PATH_LIBRARY . '/poller.php');
 require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
+require_once(CACTI_PATH_LIBRARY . '/ping.php');
+require_once(CACTI_PATH_LIBRARY . '/snmp.php');
 
 /* let PHP run just as long as it has to */
 ini_set('max_execution_time', '0');
@@ -141,9 +143,15 @@ if ($config['poller_id'] > 1) {
 
 phpversion_check($force);
 
+$stats = device_recovery_sweep();
+
 $end = microtime(true);
 
-cacti_log(sprintf('MAINT STATS: Time:%0.2f', $end - $start), false, 'SYSTEM');
+if ($stats['devices'] > 0) {
+	cacti_log(sprintf('MAINT RECOVERY STATS: Time:%0.2f Checks:%s Recovered:%s', $stats['sweeptime'], $stats['devices'], $stats['recovered']), false, 'SYSTEM');
+}
+
+cacti_log(sprintf('MAINT TOTAL STATS: Time:%0.2f', $end - $start), false, 'SYSTEM');
 
 if (!$force) {
 	unregister_process('maintenance', 'master', $config['poller_id']);
@@ -157,6 +165,109 @@ function purge_host_value_cache() {
 			WHERE time_to_live > 0
 			AND UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_updated) > time_to_live');
 	}
+}
+
+function device_recovery_sweep() {
+	global $config;
+
+	$start = microtime(true);
+
+	maint_debug("Attempting to Recover Downed Devices using SNMP Options");
+
+	$devices = db_fetch_assoc_prepared('SELECT *
+		FROM host
+		WHERE status = ?
+		AND deleted = ""
+		AND disabled = ""
+		AND snmp_options > 0
+		AND status_options_date < DATE_SUB(NOW(), INTERVAL ? SECOND)
+		AND poller_id = ?',
+		array(HOST_DOWN, read_config_option('snmp_options_retry_interval'), $config['poller_id']));
+
+	$snmp_columns = array(
+		'snmp_version',
+		'snmp_community',
+		'snmp_timeout',
+		'snmp_retries',
+		'snmp_username',
+		'snmp_password',
+		'snmp_auth_protocol',
+		'snmp_priv_protocol',
+		'snmp_priv_passphrase',
+		'snmp_context',
+		'snmp_engine_id'
+	);
+
+	$recovered    = 0;
+	$down_devices = cacti_sizeof($devices);
+
+	if (cacti_sizeof($devices)) {
+		maint_debug(sprintf('Found %s Devices to Recover', cacti_sizeof($devices)));
+
+		$options = db_fetch_assoc('SELECT * FROM automation_snmp_items ORDER BY sequence');
+		$names   = array_rekey(db_fetch_assoc('SELECT * FROM automation_snmp'), 'id', 'name');
+
+		if (cacti_sizeof($options)) {
+			foreach($devices as $d) {
+				$device_up = false;
+
+				$start = microtime(true);
+
+				foreach($options as $o) {
+					$ping = new Net_Ping;
+
+					$thost = $d;
+
+					foreach($snmp_columns as $c) {
+						$thost[$c] = $o[$c];
+					}
+
+					switch($thost['availability_method']) {
+						case AVAIL_NONE:
+						case AVAIL_PING:
+							$thost['availability_method'] = AVAIL_SNMP;
+							break;
+					}
+
+					$ping->host = $thost;
+					$ping->port = $thost['ping_port'];
+
+					if ($ping->ping($thost['availability_method'], $thost['ping_method'], $thost['ping_timeout'], $thost['ping_retries'])) {
+						cacti_log(sprintf('RECOVERY STATS: Time:%0.2f Device[%s] STATUS: Device \'%s\' brought UP with Options Set [%s]', microtime(true) - $start, $thost['id'], $thost['hostname'], $names[$o['snmp_id']]), true, 'SYSTEM');
+
+						$sql        = 'UPDATE host SET ';
+						$sql_params = array();
+
+						foreach($snmp_columns as $i => $c) {
+							$sql         .= ($i > 0 ? ', ':'') . "$c = ?";
+							$sql_params[] = $thost[$c];
+						}
+
+						$sql .= ', status = 3, status_rec_date = NOW() WHERE id = ?';
+						$sql_params[] = $thost['id'];
+
+						db_execute_prepared($sql, $sql_params);
+
+						$device_up = true;
+						$recovered++;
+
+						break;
+					}
+				}
+
+				if (!$device_up) {
+					cacti_log(sprintf('RECOVERY STATS: Time:%0.2f Device[%s] STATUS: Device \'%s\' remains Down. No matching Options Sets.', microtime(true)-$start, $thost['id'], $thost['hostname']), true, 'SYSTEM');
+					db_execute_prepared('UPDATE host SET status_options_date = NOW() WHERE id = ?', array($thost['id']));
+				}
+			}
+		}
+	} else {
+		maint_debug(sprintf('Found 0 Devices to Recover'));
+	}
+
+	$time = microtime(true) - $start;
+
+	return array('devices' => $down_devices, 'recovered' => $recovered, 'sweeptime' => $time);
 }
 
 function update_graphs_data_source_templates_totals($force) {
@@ -397,6 +508,12 @@ function logrotate_rotatenow() {
 		$logs['Cacti StdErr'] = $log;
 	}
 
+	$log = read_config_option('path_boost_log');
+
+	if (!empty($log)) {
+		$logs['Cacti Boost'] = $log;
+	}
+
 	$run_time = time();
 	set_config_option('logrotate_lastrun', $run_time);
 
@@ -426,6 +543,7 @@ function logrotate_rotatenow() {
 	/* record the start time */
 	$poller_end = microtime(true);
 	$string     = sprintf('LOGMAINT STATS: Time:%4.4f, Rotated:%d, Removed:%d, Days Retained:%d', ($poller_end - $poller_start), $rotated, $cleaned, $days);
+
 	cacti_log($string, true, 'SYSTEM');
 }
 

@@ -58,6 +58,21 @@ class Diff_SequenceMatcher
 	private $b = null;
 
 	/**
+	 * @var var|null
+	 */
+	private $opCodes        = null;
+
+	/**
+	 * @var var|null
+	 */
+	private $matchingBlocks = null;
+
+	/**
+	 * @var var|null
+	 */
+	private $fullBCount     = null;
+
+	/**
 	 * @var array Array of characters that are considered junk from the second sequence. Characters are the array key.
 	 */
 	private $junkDict = array();
@@ -84,10 +99,11 @@ class Diff_SequenceMatcher
 	 * @param string|array $b A string or array containing the lines to compare.
 	 * @param string|array $junkCallback Either an array or string that references a callback function (if there is one) to determine 'junk' characters.
 	 */
-	public function __construct($a, $b, $junkCallback=null, $options = null)
+	public function __construct($a, $b, $junkCallback = null, $options = null)
 	{
 		$this->a = null;
 		$this->b = null;
+
 		$this->junkCallback = $junkCallback;
 		$this->setOptions($options);
 		$this->setSequences($a, $b);
@@ -349,8 +365,8 @@ class Diff_SequenceMatcher
 			return $this->matchingBlocks;
 		}
 
-		$aLength = count($this->a);
-		$bLength = count($this->b);
+		$aLength = count($this->a ?? []);
+		$bLength = count($this->b ?? []);
 
 		$queue = array(
 			array(

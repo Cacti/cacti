@@ -385,6 +385,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 	}
 
 	refreshPage     = '<?php print get_current_page();?>?action=preview';
+	refreshFunction = 'refreshGraphs()';
 
 	var graph_start = <?php print get_current_graph_start();?>;
 	var graph_end   = <?php print get_current_graph_end();?>;
@@ -466,6 +467,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 	}
 
 	refreshPage     = '<?php print get_current_page();?>?action=tree';
+	refreshFunction = 'refreshGraphs()';
 
 	var graph_start = <?php print get_current_graph_start();?>;
 	var graph_end   = <?php print get_current_graph_end();?>;
@@ -1165,12 +1167,40 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 /**
  * html_create_list - draws the items for a html dropdown given an array of data
  *
- * @param  $form_data - an array containing data for this dropdown. it can be formatted
- *   in one of two ways:
- *   $array["id"] = "value";
+ * @param  $form_data - an array containing data for this dropdown. it can be
+ *   formatted in one of three ways:
+ *
+ *   $dropdown_array = array(
+ *     'id'  => 'name1'
+ *     'id2' => 'name2',
+ *     ...
+ *   );
+ *
  *   -- or --
- *   $array[0]["id"] = 43;
- *   $array[0]["name"] = "Red";
+ *
+ *   $dropdown_array = array(
+ *       array(
+ *         'id'   => 'id1',
+ *         'name' => 'name1',
+ *       ),
+ *       array(
+ *         'id'   => 'id2',
+ *         'name' => 'name2'
+ *       ),
+ *       ...
+ *   );
+ *
+ *   -- or for custom rendering of icons --
+ *
+ *   $dropdown_array = array(
+ *     'server' => array(
+ *        'display' => __('Some Value'),
+ *        'class'   => 'fa fa-server',
+ *        'style'   => 'width:30px;...'
+ *     ),
+ *     ...
+ *   );
+ *
  * @param  $column_display - used to identify the key to be used for display data. this
  *   is only applicable if the array is formatted using the second method above
  * @param  $column_id - used to identify the key to be used for id data. this
@@ -1178,32 +1208,40 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
  * @param  $form_previous_value - the current value of this form element
  */
 function html_create_list($form_data, $column_display, $column_id, $form_previous_value) {
-	if (empty($column_display)) {
-		if (cacti_sizeof($form_data)) {
-			foreach (array_keys($form_data) as $id) {
-				print '<option value="' . html_escape($id) . '"';
-
-				if ($form_previous_value == $id) {
-					print ' selected';
-				}
-
-				print '>' . html_escape(null_out_substitutions($form_data[$id])) . '</option>';
-			}
-		}
-	} else {
-		if (cacti_sizeof($form_data)) {
-			foreach ($form_data as $row) {
-				print "<option value='" . html_escape($row[$column_id]) . "'";
-
-				if ($form_previous_value == $row[$column_id]) {
-					print ' selected';
-				}
-
-				if (isset($row['host_id'])) {
-					print '>' . html_escape($row[$column_display]) . '</option>';
+	if (cacti_sizeof($form_data)) {
+		foreach ($form_data as $key => $row) {
+			if (is_array($row)) {
+				if ($column_id != '') {
+					print "<option value='" . html_escape($row[$column_id]) . "'";
 				} else {
-					print '>' . html_escape(null_out_substitutions($row[$column_display])) . '</option>';
+					print "<option value='" . html_escape($key) . "'";
 				}
+			} else {
+				print "<option value='" . html_escape($key) . "'";
+			}
+
+			if ($column_id != '' && isset($row[$column_id]) && $form_previous_value == $row[$column_id]) {
+				print ' selected';
+			} elseif ($column_id == '' && $key == $form_previous_value) {
+				print ' selected';
+			}
+
+			if (isset($row['class'])) {
+				print " data-class='" . $row['class'] . "'";
+			}
+
+			if (isset($row['style'])) {
+				print " data-style='" . $row['style'] . "'";
+			}
+
+			if (!is_array($row)) {
+				print '>' . html_escape($row) . '</option>';
+			} elseif (isset($row['host_id'])) {
+				print '>' . html_escape($row[$column_display]) . '</option>';
+			} elseif (isset($row['display'])) {
+				print '>' . html_escape($row['display']) . '</option>';
+			} else {
+				print '>' . html_escape(null_out_substitutions($row[$column_display])) . '</option>';
 			}
 		}
 	}
@@ -1305,18 +1343,55 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
 
-	print "<tr class='tableHeader'>";
-	DrawMatrixHeaderItem(__('Graph Item'),'',1);
-	DrawMatrixHeaderItem(__('#'), '', 1);
-	DrawMatrixHeaderItem(__('Data Source'),'',1);
-	DrawMatrixHeaderItem(__('Graph Item Type'),'',1);
-	DrawMatrixHeaderItem(__('CF Type'),'',1);
-	DrawMatrixHeaderItem(__('GPrint'),'',1);
-	DrawMatrixHeaderItem(__('CDEF'),'',1);
-	DrawMatrixHeaderItem(__('VDEF'),'',1);
-	DrawMatrixHeaderItem(__('Alpha %'),'',1);
-	DrawMatrixHeaderItem(__('Item Color'),'',4);
-	print '</tr>';
+	$display_text = array(
+		array(
+			'display' => __('Data Source'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Seq#'),
+			'align'   => 'center'
+		),
+		array(
+			'display' => __('Type'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Consolidation'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Legend'),
+			'tip'     => __('When exporting or showing the values while hovering over the Graph, what legend to you want displayed?  If empty, it will default to data_source_name (consolidation function).  This does not work for some Cacti items such as TOTAL_ALL_DATA_SOURCES for example.'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('GPrint'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('CDEF'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('VDEF'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Primary Color'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Gradient Color'),
+			'align'   => 'left'
+		),
+		array(
+			'display' => __('Actions'),
+			'align'   => 'right'
+		)
+	);
+
+	html_header($display_text);
 
 	$group_counter    = 0;
 	$_graph_type_name = '';
@@ -1324,15 +1399,17 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 	if (cacti_sizeof($item_list)) {
 		foreach ($item_list as $item) {
+			$_graph_type_name = $graph_item_types[$item['graph_type_id']];
+
 			/* graph grouping display logic */
 			$this_row_style   = '';
 			$use_custom_class = false;
 			$hard_return      = '';
 
-			if (!preg_match('/(GPRINT|TEXTALIGN|HRULE|VRULE|TICK)/', $graph_item_types[$item['graph_type_id']])) {
+			if (!preg_match('/(GPRINT|TEXTALIGN|HRULE|VRULE|TICK)/', $_graph_type_name)) {
 				$this_row_style      = 'font-weight: bold;';
 				$use_custom_class    = true;
-				$item['gprint_name'] = __('N/A');
+				$item['gprint_name'] = '-';
 
 				if ($group_counter % 2 == 0) {
 					$customClass = 'graphItem';
@@ -1343,27 +1420,13 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 				$group_counter++;
 			}
 
-			$_graph_type_name = $graph_item_types[$item['graph_type_id']];
 
 			/* alternating row color */
 			if ($use_custom_class == false) {
-				print "<tr class='tableRowGraph'>";
+				print "<tr id='{$item['id']}' class='tableRowGraph'>";
 			} else {
-				print "<tr class='tableRowGraph $customClass'>";
+				print "<tr id='{$item['id']}' class='tableRowGraph $customClass'>";
 			}
-
-			print '<td>';
-
-			if ($disable_controls == false) {
-				print "<a class='linkEditMain' href='" . html_escape("$filename?action=item_edit&id=" . $item['id'] . "&$url_data") . "'>";
-			}
-			print __('Item # %d', ($i + 1));
-
-			if ($disable_controls == false) {
-				print '</a>';
-			}
-			print '</td>';
-			print '<td>' . $item['sequence'] . '</td>';
 
 			if (empty($item['data_source_name'])) {
 				$item['data_source_name'] = __('No Source');
@@ -1402,41 +1465,122 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 				$hard_return = "<span style='font-weight:bold;color:#FF0000;'>&lt;HR&gt;</span>";
 			}
 
-			/* data source */
-			print "<td style='$this_row_style'>" . html_escape($matrix_title) . $hard_return . '</td>';
+			if ($disable_controls == false) {
+				$display = "<a class='linkEditMain' href='" . html_escape("$filename?action=item_edit&id=" . $item['id'] . "&$url_data") . "'>" . html_escape($matrix_title) . '</a>';
+			} else {
+				$display = html_escape($matric_title);
+			}
 
-			/* graph item type */
+			/* data source display */
+			print "<td style='$this_row_style'>" . $display . $hard_return . '</td>';
+
+			/* sequence number */
+			print "<td class='center' style='$this_row_style'>" . $item['sequence'] . '</td>';
+
+			/* graph item type display */
 			print "<td style='$this_row_style'>" . $graph_item_types[$item['graph_type_id']] . '</td>';
 
+			/* consolidation function display */
 			if (!preg_match('/(TICK|TEXTALIGN|HRULE|VRULE)/', $_graph_type_name)) {
 				print "<td style='$this_row_style'>" . $consolidation_functions[$item['consolidation_function_id']] . '</td>';
 			} else {
-				print '<td>' . __('N/A') . '</td>';
+				print '<td>-</td>';
 			}
 
-			print "<td style='$this_row_style'>";
-			print $item['gprint_name'];
-			print '</td>';
-
-			print "<td style='$this_row_style'>";
-			print $item['cdef_name'];
-			print '</td>';
-
-			print "<td style='$this_row_style'>";
-			print $item['vdef_name'];
-			print '</td>';
-
-			/* alpha type */
-			if (preg_match('/(AREA|STACK|TICK|LINE[123])/', $_graph_type_name)) {
-				print "<td style='$this_row_style'>" . round((hexdec($item['alpha']) / 255) * 100) . '%</td>';
+			/* export/hover legend */
+			if ($item['legend'] != '') {
+				print "<td style='$this_row_style'>" . html_escape($item['legend']) . '</td>';
 			} else {
-				print "<td style='$this_row_style'></td>";
+				print '<td>-</td>';
 			}
 
-			/* color name */
+			/* grpint display */
+			print "<td class='prewrap' style='$this_row_style'>";
+			if ($item['gprint_name'] != '') {
+				print html_escape($item['gprint_name']);
+			} else {
+				print '-';
+			}
+			print '</td>';
+
+			/* cdef display */
+			print "<td class='prewrap' style='$this_row_style'>";
+			if ($item['cdef_name'] != '') {
+				print $item['cdef_name'];
+			} else {
+				print '-';
+			}
+			print '</td>';
+
+			/* vdef display */
+			print "<td class='prewrap' style='$this_row_style'>";
+			if ($item['vdef_name'] != '') {
+				print $item['vdef_name'];
+			} else {
+				print '-';
+			}
+			print '</td>';
+
+			/* color display */
+			$blank = '-';
+
+			if (preg_match('/(AREA|STACK|TICK|LINE[123])/', $_graph_type_name)) {
+				if (preg_match('/(AREA|STACK)/', $_graph_type_name)) {
+					if ($item['hex'] != '') {
+						$color1 = $item['hex']  . $item['alpha'];
+
+						if ($item['hex2'] != '') {
+							$color2 = $item['hex2'] . ($item['hex2'] != '' ? $item['alpha2']:'');
+						} else {
+							$color2 = $blank;
+						}
+					} else {
+						$color1 = $color2 = $blank;
+					}
+				} else {
+					if ($item['hex'] != '') {
+						$color1 = $item['hex'] . $item['alpha'];
+					} else {
+						$color1 = $blank;
+					}
+					$color2 = $blank;
+				}
+			} else {
+				$color1 = $color2 = $blank;
+			}
+
 			if (!preg_match('/(TEXTALIGN)/', $_graph_type_name)) {
-				print "<td style='width:1%;" . ((!empty($item['hex'])) ? 'background-color:#' . $item['hex'] . ";'" : "'") . '></td>';
-				print "<td style='$this_row_style'>" . $item['hex'] . '</td>';
+				if (preg_match('/(AREA|STACK)/', $_graph_type_name)) {
+					/* color1 */
+					print "<td class='nowrap'>";
+					print "<div style='display:table-cell;min-width:16px;background-color:#{$color1}'></div>";
+					print "<div style='display:table-cell;padding-left:5px;'>{$color1}</div>";
+					print '</td>';
+
+					/* color2 */
+					print "<td class='nowrap'>";
+
+					if ($color2 != $blank) {
+						print "<div style='display:table-cell;min-width:16px;background-color:#{$color2}'></div>";
+						print "<div style='display:table-cell;padding-left:5px;'>{$color2}</div>";
+					} else {
+						print $color2;
+					}
+					print '</td>';
+				} else {
+					/* color 1 */
+					print "<td class='nowrap'>";
+					if ($color1 != $blank) {
+						print "<div style='display:table-cell;min-width:16px;background-color:#{$color1}'></div>";
+						print "<div style='display:table-cell;padding-left:5px;'>{$color1}</div>";
+					} else {
+						print $color1;
+					}
+					print '</td>';
+
+					/* color2 */
+					print "<td>{$color2}</td>";
+				}
 			} else {
 				print '<td></td><td></td>';
 			}
@@ -1456,10 +1600,6 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 					print "<span class='moveArrowNone'></span>";
 				}
 
-				print '</td>';
-
-				print "<td style='width:1%' class='right'>";
-
 				print "<a class='deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item['id'] . "&nostate=true&$url_data") . "'></a>";
 
 				print '</td>';
@@ -1470,7 +1610,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 			$i++;
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='7'><em>" . __('No Items') . '</em></td></tr>';
+		print "<tr class='tableRow'><td colspan='" . cacti_sizeof($display_text) . "'><em>" . __('No Items') . '</em></td></tr>';
 	}
 }
 
@@ -2871,6 +3011,8 @@ function html_common_header($title, $selectedTheme = '') {
 		var zoom_i18n_zoom_out = '<?php print __esc('Zoom Out');?>';
 		var zoom_i18n_zoom_out_factor = '<?php print __esc('Zoom Out Factor');?>';
 		var zoom_i18n_zoom_out_positioning = '<?php print __esc('Zoom Out Positioning');?>';
+		var zoom_outOfRangeTitle='<?php print __esc('Zoom Window Out of Range');?>';
+		var zoom_outOfRangeMessage='<?php print __esc('Zoom Dates before January 1, 1993 are not supported in Cacti!  Pick a more recent date.');?>';
 	</script>
 	<?php
 	/* Global icons */
@@ -2907,7 +3049,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/jstree.js');
 	print get_md5_include_js('include/js/jquery.toast.js');
 	print get_md5_include_js('include/js/jquery.hotkeys.js', true);
-	print get_md5_include_js('include/js/jquery.tablednd.js', true);
+	print get_md5_include_js('include/js/jquery.tablednd.js');
 	print get_md5_include_js('include/js/jquery.zoom.js', true);
 	print get_md5_include_js('include/js/jquery.multiselect.js');
 	print get_md5_include_js('include/js/jquery.multiselect.filter.js');
@@ -2916,10 +3058,8 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/jquery.tablesorter.js');
 	print get_md5_include_js('include/js/jquery.tablesorter.widgets.js', true);
 	print get_md5_include_js('include/js/jquery.tablesorter.pager.js', true);
-	print get_md5_include_js('include/js/jquery.sparkline.js', true);
 	print get_md5_include_js('include/js/jquery.validate/jquery.validate.js', true);
 	print get_md5_include_js('include/js/Chart.js', true);
-	print get_md5_include_js('include/js/dygraph-combined.js', true);
 	print get_md5_include_js('include/js/d3.js');
 	print get_md5_include_js('include/js/billboard.js');
 	print get_md5_include_js('include/layout.js');
@@ -3086,3 +3226,4 @@ function html_auth_footer($section, $error = '', $html = '') {
 </html>
 <?php
 }
+

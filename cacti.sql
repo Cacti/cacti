@@ -56,6 +56,7 @@ CREATE TABLE `aggregate_graph_templates` (
 --
 -- Table structure for table `aggregate_graph_templates_graph`
 --
+
 CREATE TABLE `aggregate_graph_templates_graph` (
   `aggregate_template_id` int(10) unsigned NOT NULL,
   `t_image_format_id` char(2) default '',
@@ -1890,6 +1891,9 @@ CREATE TABLE graph_templates_item (
   task_item_id int(10) unsigned NOT NULL default '0',
   color_id mediumint(8) unsigned NOT NULL default '0',
   alpha char(2) default 'FF',
+  color2_id mediumint(8) unsigned NOT NULL default '0',
+  alpha2 char(2) default 'FF',
+  gradheight tinyint(4) NOT NULL default '50',
   graph_type_id tinyint(3) unsigned NOT NULL default '0',
   line_width DECIMAL(4,2) default 0,
   dashes varchar(20) default NULL,
@@ -1990,6 +1994,7 @@ CREATE TABLE host (
   location varchar(40) default NULL,
   notes text,
   external_id varchar(40) default NULL,
+  snmp_options tinyint(3) unsigned NOT NULL default '0',
   snmp_community varchar(100) default NULL,
   snmp_version tinyint(3) unsigned NOT NULL default '1',
   snmp_username varchar(50) default NULL,
@@ -2001,6 +2006,7 @@ CREATE TABLE host (
   snmp_engine_id varchar(64) default '',
   snmp_port mediumint(8) unsigned NOT NULL default '161',
   snmp_timeout mediumint(8) unsigned NOT NULL default '500',
+  snmp_retries tinyint(3) unsigned NOT NULL default '3',
   snmp_sysDescr varchar(300) NOT NULL default '',
   snmp_sysObjectID varchar(128) NOT NULL default '',
   snmp_sysUpTimeInstance bigint(20) unsigned NOT NULL default '0',
@@ -2023,6 +2029,7 @@ CREATE TABLE host (
   status_event_count mediumint(8) unsigned NOT NULL default '0',
   status_fail_date timestamp NOT NULL default '0000-00-00 00:00:00',
   status_rec_date timestamp NOT NULL default '0000-00-00 00:00:00',
+  status_options_date timestamp NOT NULL default '0000-00-00 00:00:00',
   status_last_error varchar(255) default '',
   min_time decimal(10,5) default '9.99999',
   max_time decimal(10,5) default '0.00000',
@@ -2375,6 +2382,7 @@ CREATE TABLE poller_item (
   `snmp_engine_id` varchar(64) default '',
   `snmp_port` mediumint(8) unsigned NOT NULL default '161',
   `snmp_timeout` mediumint(8) unsigned NOT NULL default '0',
+  `snmp_retries` tinyint(3) unsigned NOT NULL default '3',
   `rrd_name` varchar(19) NOT NULL default '',
   `rrd_path` varchar(255) NOT NULL default '',
   `rrd_num` tinyint(3) unsigned NOT NULL default '0',
@@ -2416,7 +2424,8 @@ CREATE TABLE `poller_output_boost` (
   `output` varchar(512) NOT NULL,
   `last_updated` timestamp NOT NULL default current_timestamp,
   PRIMARY KEY USING BTREE (`local_data_id`, `time`, `rrd_name`),
-  KEY `last_updated` (`last_updated`)
+  KEY `last_updated` (`last_updated`),
+  KEY `time` (`time`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --

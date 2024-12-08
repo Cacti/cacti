@@ -117,6 +117,7 @@
 		z-index:300;
 		background: transparent;
 		transform: translateX(-100%);
+		left: 0;
 
 		&[id$="-1"] { top: 0.5rem; }
 		&[id$="-2"] { bottom: 0.5rem; }

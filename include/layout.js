@@ -915,6 +915,8 @@ function applySkin() {
 
 	makeCallbacks();
 
+	setupObjectChange();
+
 	$('.helpPage').off('click').on('click', function (event) {
 		event.stopPropagation();
 		getCactiHelp($(this).attr('data-page'));
@@ -1362,9 +1364,9 @@ function finalizeAuthProfileData(options, data) {
 }
 
 function makeFiltersResponsive() {
-	storage = Storages.sessionStorage;
+	var storage = Storages.sessionStorage;
 
-	filterNum = 0;
+	var filterNum = 0;
 
 	if ($('div.cactiTableButton').closest('.cactiTable').not('#dqdebug').find('.filterTable').length) {
 		$('div.cactiTableButton').closest('.cactiTable').not('#dqdebug').each(function () {
@@ -1496,7 +1498,7 @@ function makeFiltersResponsive() {
 }
 
 function toggleFilterAndIcon(id, child, initial) {
-	storage = Storages.sessionStorage;
+	var storage = Storages.sessionStorage;
 
 	if (storage.isSet('filterVisibility')) {
 		state = storage.get('filterVisibility');
@@ -2167,6 +2169,7 @@ function tuneFilter(object, width) {
 
 function handleUserMenu(toggle) {
 	var storage = Storages.sessionStorage;
+
 	var windowWidth = $(window).width();
 
 	/* set the navigation id is not set */
@@ -2476,8 +2479,13 @@ function loadPage(href, force) {
 function loadUrl(options) {
 	setCactiTabCookie();
 
+	clearAllTimeouts();
+
 	statePushed = false;
 	cont = false;
+
+	/* get rid of old selectmenu's */
+	$('.ui-selectmenu-menu').empty();
 
 	if (typeof options.noState == 'undefined' || options.noState == false) {
 		/* close all toasts */
@@ -3202,8 +3210,13 @@ function setupPageTimeout() {
 				}
 
 				/* fix coner case with tree refresh */
-				refreshPage = correctUrlParameters(refreshPage);
-				loadUrl({ url: refreshPage });
+				if (refreshFunction == '') {
+					refreshPage = correctUrlParameters(refreshPage);
+					loadUrl({ url: refreshPage });
+				} else {
+					eval(refreshFunction);
+					setupPageTimeout();
+				}
 			}
 		}, refreshMSeconds);
 	}
@@ -3445,9 +3458,38 @@ function setSelectMenus() {
 		}
 	});
 
+	$.widget('custom.dropicon', $.ui.selectmenu, {
+		_renderItem: function( ul, item ) {
+			var li = $('<li>');
+			var wrapper = $('<div>', {text: item.label});
+
+			if (item.disabled) {
+				li.addClass('ui-state-disabled');
+			}
+
+			if (item.element.attr('data-style') != '') {
+				var style = item.element.attr('data-style')+';background:transparent;min-width:20px;';
+			} else {
+				var style = 'background:transparent;min-width:20px;';
+			}
+
+			var iclass = item.element.attr('data-class');
+
+			$('<i>', {
+				style: style,
+				'class': iclass
+			})
+			.prependTo(wrapper);
+
+			return li.append(wrapper).appendTo(ul);
+		}
+	});
+
+	$('select.drop-icon').dropicon();
+
 	$('select.colordropdown').dropcolor();
 
-	$('select').not('.colordropdown').not('.multi-select').not('#user_language').each(function() {
+	$('select').not('.colordropdown').not('.drop-icon').not('.multi-select').not('#user_language').each(function() {
 		if ($(this).prop('multiple') != true) {
 			$(this).each(function() {
 				let id = $(this).attr('id');
@@ -3481,6 +3523,50 @@ function setSelectMenus() {
 		} else {
 			$(this).addClass('ui-state-default ui-corner-all');
 		}
+	});
+}
+
+function setupObjectChange() {
+	function disableField(id) {
+		$('#' + id).prop('disabled', true).addClass('ui-state-disabled');
+
+		if (id == 'location') {
+			$('#location_wrap').prop('disabled', true).addClass('ui-selectmenu-disabled ui-state-disabled');
+		}
+
+		if ($('#' + id).button('instance')) {
+			$('#' + id).button('disable');
+		} else if ($('#' + id).selectmenu('instance')) {
+                $('#' + id).selectmenu('disable');
+		}
+	}
+
+	function enableField(id) {
+		$('#' + id).prop('disabled', false).removeClass('ui-state-disabled');
+
+		if (id == 'location') {
+			$('#location_wrap').prop('disabled', false).removeClass('ui-selectmenu-disabled ui-state-disabled');
+		}
+
+		if ($('#' + id).button('instance')) {
+			$('#' + id).button('enable');
+		} else if ($('#' + id).selectmenu('instance')) {
+			$('#' + id).selectmenu('enable');
+		}
+	}
+
+	$('.confirm_actions').find('input[id^="t_"]').click(function() {
+		var id = $(this).attr('id').substring(2);
+		if ($(this).is(':checked')) {
+			enableField(id);
+		} else {
+			disableField(id);
+		}
+	});
+
+	$('.confirm_actions').find('input[id^="t_"]').each(function() {
+		var id = $(this).attr('id').substring(2);
+		disableField(id);
 	});
 }
 
@@ -4156,6 +4242,19 @@ function finalizeGraphRedraw(options, data) {
 	}
 }
 
+function refreshGraphs() {
+	var post = {
+		'predefined_timespan': $('#predefined_timespan').val(),
+		__csrf_magic: csrfMagicToken
+	};
+
+	$.post(document.location.pathname + '?action=update_timespan', post, function(data) {
+		$('#date1').val(data.date1);
+		$('#date2').val(data.date2);
+		initializeGraphs();
+	}, 'json');
+}
+
 function initializeGraphs(disable_cache) {
 	disable_cache = (typeof disable_cache == 'undefined') ? false : true;
 
@@ -4183,6 +4282,13 @@ function initializeGraphs(disable_cache) {
 	var timestampDate1 = getTimestampFromDate($('#date1').val());
 	var timestampDate2 = getTimestampFromDate($('#date2').val());
 
+	graph_start = timestampDate1;
+	graph_end   = timestampDate2;
+
+	if (timestampDate1 <= 0) {
+		return false;
+	}
+
 	$('a[id$="_csv"]').each(function () {
 		var graph_id = $(this).attr('id').replace('graph_', '').replace('_csv', '');
 
@@ -4196,8 +4302,8 @@ function initializeGraphs(disable_cache) {
 			'?local_graph_id=' + graph_id +
 			'&rra_id=0' +
 			'&view_type=tree' +
-			'&graph_start=' + timestampDate1 +
-			'&graph_end=' + timestampDate2;
+			'&graph_start=' + graph_start +
+			'&graph_end=' + graph_end;
 
 		$(this).attr('href', url);
 
@@ -4214,8 +4320,8 @@ function initializeGraphs(disable_cache) {
 				'?local_graph_id=' + graph_id +
 				'&rra_id=0' +
 				'&view_type=tree' +
-				'&graph_start=' + timestampDate1 +
-				'&graph_end=' + timestampDate2;
+				'&graph_start=' + graph_start +
+				'&graph_end=' + graph_end;
 
 			Pace.stop();
 		});
@@ -4406,6 +4512,124 @@ function initializeGraphs(disable_cache) {
 		});
 	});
 }
+
+$.widget('ui.tooltip', $.ui.tooltip, {
+	_create: function() {
+		this._on( {
+			mouseover: "open",
+			focusin: "open"
+		} );
+
+		// IDs of generated tooltips, needed for destroy
+		this.tooltips = {};
+
+		// IDs of parent tooltips where we removed the title attribute
+		this.parents = {};
+
+		// Append the aria-live region so tooltips announce correctly,
+		// but only once !
+		let liveRegion = $("[role=log].ui-helper-hidden-accessible");
+		if ( liveRegion.length === 0 ) {
+			this.liveRegion = $( "<div>" )
+				.attr( {
+					role: "log",
+					"aria-live": "assertive",
+					"aria-relevant": "additions"
+				} )
+				.appendTo( this.document[ 0 ].body );
+			this._addClass( this.liveRegion, null, "ui-helper-hidden-accessible" );
+		}else{
+			this.liveRegion = liveRegion;
+		}
+		this.disabledTitles = $( [] );
+	},
+	_open: function( event, target, content ) {
+		var tooltipData, tooltip, delayedShow, a11yContent,
+			positionOption = $.extend( {}, this.options.position );
+
+		if ( !content ) {
+			return;
+		}
+
+		// Content can be updated multiple times. If the tooltip already
+		// exists, then just update the content and bail.
+		tooltipData = this._find( target );
+		if ( tooltipData ) {
+			tooltipData.tooltip.find( ".ui-tooltip-content" ).html( content );
+			return;
+		}
+
+		// If we have a title, clear it to prevent the native tooltip
+		// we have to check first to avoid defining a title if none exists
+		// (we don't want to cause an element to start matching [title])
+		//
+		// We use removeAttr only for key events, to allow IE to export the correct
+		// accessible attributes. For mouse events, set to empty string to avoid
+		// native tooltip showing up (happens only when removing inside mouseover).
+		if ( target.is( "[title]" ) ) {
+			if ( event && event.type === "mouseover" ) {
+				target.attr( "title", "" );
+			} else {
+				target.removeAttr( "title" );
+			}
+		}
+
+		tooltipData = this._tooltip( target );
+		tooltip = tooltipData.tooltip;
+		this._addDescribedBy( target, tooltip.attr( "id" ) );
+		tooltip.find( ".ui-tooltip-content" ).html( content );
+
+		// Support: Voiceover on OS X, JAWS on IE <= 9
+		// JAWS announces deletions even when aria-relevant="additions"
+		// Voiceover will sometimes re-read the entire log region's contents from the beginning
+		this.liveRegion.empty();
+		a11yContent = $( "<div>" ).html( tooltip.find( ".ui-tooltip-content" ).html() );
+		a11yContent.removeAttr( "name" ).find( "[name]" ).removeAttr( "name" );
+		a11yContent.removeAttr( "id" ).find( "[id]" ).removeAttr( "id" );
+		a11yContent.appendTo( this.liveRegion );
+
+		function position( event ) {
+			positionOption.of = event;
+			if ( tooltip.is( ":hidden" ) ) {
+				return;
+			}
+			tooltip.position( positionOption );
+		}
+		if ( this.options.track && event && /^mouse/.test( event.type ) ) {
+			this._on( this.document, {
+				mousemove: position
+			} );
+
+			// trigger once to override element-relative positioning
+			position( event );
+		} else {
+			tooltip.position( $.extend( {
+				of: target
+			}, this.options.position ) );
+		}
+
+		tooltip.hide();
+
+		this._show( tooltip, this.options.show );
+
+		// Handle tracking tooltips that are shown with a delay (#8644). As soon
+		// as the tooltip is visible, position the tooltip using the most recent
+		// event.
+		// Adds the check to add the timers only when both delay and track options are set (#14682)
+		if ( this.options.track && this.options.show && this.options.show.delay ) {
+			delayedShow = this.delayedShow = setInterval( function() {
+				if ( tooltip.is( ":visible" ) ) {
+					position( positionOption.of );
+					clearInterval( delayedShow );
+				}
+			}, 13 );
+		}
+
+		this._trigger( "open", event, { tooltip: tooltip } );
+	},
+})
+
+
 
 $.widget('custom.languageselect', $.ui.selectmenu, {
 	_renderItem: function (ul, item) {
@@ -4717,7 +4941,10 @@ function makeCallbacks() {
 
 		$(dcWrap).on('mouseenter', function() {
 			$(this).addClass('ui-state-hover');
-			$('input#' + id + '_input').addClass('ui-state-hover');
+
+			if ($('input#' + id + '_input').length) {
+				$('input#' + id + '_input').addClass('ui-state-hover');
+			}
 		}).on('mouseleave', function() {
 			$(this).removeClass('ui-state-hover');
 			$(dcInputFields).removeClass('ui-state-hover');

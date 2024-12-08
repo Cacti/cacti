@@ -117,16 +117,23 @@ if ($poller_id == 0) {
 }
 
 if (cacti_sizeof($pollers)) {
+	if (!register_process_start('psync', "POLLER:$poller_id", 0, 900)) {
+		cacti_log("WARNING: Another Sync Operations is already running", true, 'POLLER');
+		exit(0);
+	}
+
 	foreach ($pollers as $poller) {
+		replicate_out($poller['id'], $class);
+
 		db_execute_prepared('UPDATE poller
 			SET last_sync = NOW(), requires_sync=""
 			WHERE id = ?',
 			array($poller['id']));
 
-		replicate_out($poller['id'], $class);
-
 		cacti_log('STATS: Poller ID ' . $poller['id'] . ' fully Replicated', false, 'POLLER');
 	}
+
+	unregister_process('psync', "POLLER:$poller_id", 0);
 } else {
 	print 'FATAL: The poller specified ' . $poller_id . ' is either disabled, or does not exist!' . PHP_EOL;
 

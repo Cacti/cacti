@@ -236,7 +236,7 @@ function form_actions() {
 					'extra'    => array(
 						'title_format' => array(
 							'method'  => 'textbox',
-							'title'   => __('Title Format:'),
+							'title'   => __('Title Format'),
 							'default' => '<template_title> (1)',
 							'width'   => 25
 						)
@@ -823,6 +823,11 @@ function template() {
 			});
 
 			$('#has_hosts').click(function() {
+				applyFilter();
+			});
+
+			$('#form_host_template').on('submit', function(event) {
+				event.preventDefault();
 				applyFilter();
 			});
 		});

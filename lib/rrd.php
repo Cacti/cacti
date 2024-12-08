@@ -1648,7 +1648,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	$graph_items = db_fetch_assoc_prepared('SELECT gti.id AS graph_templates_item_id,
 		gti.cdef_id, gti.vdef_id, gti.text_format, gti.value, gti.hard_return,
 		gti.consolidation_function_id, gti.graph_type_id, gtgp.gprint_text,
-		colors.hex, gti.alpha, gti.line_width, gti.dashes, gti.shift,
+		colors.hex, colors2.hex AS hex2, gti.alpha, gti.alpha2, gti.gradheight,
+		gti.line_width, gti.dashes, gti.shift,
 		gti.dash_offset, gti.textalign, dl.snmp_query_id, dl.snmp_index, gti.legend,
 		dtr.id AS data_template_rrd_id, dtr.local_data_id,
 		dtr.rrd_minimum, dtr.rrd_maximum, dtr.data_source_name, dtr.local_data_template_rrd_id
@@ -1658,9 +1659,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		LEFT JOIN data_local AS dl
 		ON dl.id = dtr.local_data_id
 		LEFT JOIN colors
-		ON gti.color_id=colors.id
+		ON gti.color_id = colors.id
+		LEFT JOIN colors AS colors2
+		ON gti.color2_id = colors2.id
 		LEFT JOIN graph_templates_gprint AS gtgp
-		ON gti.gprint_id=gtgp.id
+		ON gti.gprint_id = gtgp.id
 		WHERE gti.local_graph_id = ?
 		ORDER BY gti.sequence',
 		array($local_graph_id)
@@ -2404,6 +2407,18 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$graph_item_color_code .= $graph_item['alpha'];
 			}
 
+			$rrdversion = get_rrdtool_version();
+			if (cacti_version_compare($rrdversion, '1.8', '>=')) {
+				if (!empty($graph_item['hex2']) && ($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_AREA || $graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_STACK)) {
+					$graph_item_color_code2 = '#' . $graph_item['hex2'];
+					$graph_item_color_code2 .= $graph_item['alpha2'];
+				} else {
+					$graph_item_color_code2 = '';
+				}
+			} else {
+				$graph_item_color_code2 = '';
+			}
+
 			/* initialize dash support */
 			$dash = '';
 
@@ -2537,7 +2552,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 							$end_color        = colourBrightness('#' . $graph_item['hex'], -0.4);
 							$txt_graph_items .= gradient($data_source_name, $graph_item_color_code, $end_color . $graph_item['alpha'], cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]), 20, false, $graph_item['alpha']);
 						} else {
-							$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ' ';
+							$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . $graph_item_color_code . $graph_item_color_code2 . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]);
+
+							if ($graph_item_color_code2 != '') {
+								$txt_graph_items .= ':gradheight=' . $graph_item['gradheight'];
+							}
 						}
 
 						if ($graph_item['shift'] == CHECKED && abs($graph_item['value']) > 0) {
@@ -2562,7 +2581,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 							$text_format = '';
 						}
 
-						$txt_graph_items .= 'AREA:' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ':STACK';
+						$txt_graph_items .= 'AREA:' . $data_source_name . $graph_item_color_code . $graph_item_color_code2 . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ':STACK';
+
+						if ($graph_item_color_code2 != '') {
+							$txt_graph_items .= ':gradheight=' . $graph_item['gradheight'];
+						}
+
 						if ($graph_item['shift'] == CHECKED && $graph_item['value'] > 0) {      # create a SHIFT statement
 							$txt_graph_items .= RRD_NL . 'SHIFT:' . $data_source_name . ':' . $graph_item['value'];
 						}
@@ -4194,7 +4218,8 @@ function rrd_copy_rra($dom, $cf, $rra_parm) {
 }
 
 function rrdtool_replacement_legend($local_graph_id) {
-	$graph_data = db_fetch_assoc_prepared('SELECT gti.legend, dtr.data_source_name, gti.consolidation_function_id, c.hex, gti.alpha
+	$graph_data = db_fetch_assoc_prepared('SELECT gti.legend, dtr.data_source_name,
+		gti.consolidation_function_id, c.hex, gti.alpha, gti.text_format
 		FROM graph_templates_item AS gti
 		INNER JOIN data_template_rrd AS dtr
 		ON gti.task_item_id = dtr.id
@@ -4205,12 +4230,23 @@ function rrdtool_replacement_legend($local_graph_id) {
 		ORDER BY gti.sequence',
 		array($local_graph_id));
 
+	$is_agg = db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM aggregate_graphs
+		WHERE local_graph_id = ?',
+		array($local_graph_id));
+
 	$legend = array();
 
 	if (cacti_sizeof($graph_data)) {
 		foreach($graph_data as $g) {
+			if ($is_agg && $g['text_format'] != '') {
+				$agg_prefix = $g['text_format'] . ' - ';
+			} else {
+				$agg_prefix = '';
+			}
+
 			if ($g['legend'] != '') {
-				$legend[] = array('legend' => $g['legend'], 'color' => '#' . $g['hex'] . $g['alpha']);
+				$legend[] = array('legend' => $agg_prefix . $g['legend'], 'color' => '#' . $g['hex'] . $g['alpha']);
 			} else {
 				if ($g['data_source_name'] == '') {
 					$g['data_source_name'] = 'Unknown';
@@ -4233,7 +4269,7 @@ function rrdtool_replacement_legend($local_graph_id) {
 						break;
 				}
 
-				$legend[] = array('legend' => $g['data_source_name'], 'color' => '#' . $g['hex'] . $g['alpha']);
+				$legend[] = array('legend' => $agg_prefix . $g['data_source_name'], 'color' => '#' . $g['hex'] . $g['alpha']);
 			}
 		}
 	}

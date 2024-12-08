@@ -603,6 +603,8 @@ function discoverDevices($network_id, $thread) {
 					$device['snmp_priv_protocol']   = '';
 					$device['max_oids']             = '10';
 					$device['bulk_walk_size']       = '-1';
+					$device['snmp_options']         = '0';
+					$device['snmp_retries']         = '3';
 
 					/* create new ping socket for host pinging */
 					$ping                   = new Net_Ping;

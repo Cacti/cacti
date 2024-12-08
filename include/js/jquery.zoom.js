@@ -38,7 +38,10 @@
 			inputfieldEndTime	: '',                  																	// ID of the input field that contains the end date
 			submitButton		: 'button_refresh_x',  																	// ID of the 'submit' button
 			cookieName			: 'cacti_zoom',        																	// default name required for session cookie
-			serverTimeOffset	: 0					   																	// JS calculates in relation to the localization of the browser (0.8.8 only)
+			serverTimeOffset	: 0,				   																	// JS calculates in relation to the localization of the browser (0.8.8 only)
+			zoomMinTime         : 725846400,
+			rangeTitle          : zoom_outOfRangeTitle,
+			rangeMessage        : zoom_outOfRangeMessage
 		};
 
 		// define global variables / objects here
@@ -298,7 +301,7 @@
 
 				zoom.refs.container.removeClass().addClass('zoom_active_' + zoomGetId(zoom));
 
-			}else {
+			} else {
 				zoom.refs.box 				= $('#zoom-box');
 				zoom.refs.crosshair_x 		= $('#zoom-crosshair-x');
 				zoom.refs.crosshair_y 		= $('#zoom-crosshair-y');
@@ -426,7 +429,7 @@
 				zoom.refs.livedata.container = $('<div id="zoom-livedata" class="zoom-livedata"></div>').appendTo('body');
 				zoom.refs.livedata.header = $('<div id="zoom-livedata-header" class="zoom-livedata-header"></div>').appendTo('#zoom-livedata');
 				zoom.refs.livedata.content = $('<div id="zoom-livedata-content" class="zoom-livedata-content"></div>').appendTo('#zoom-livedata');
-			}else {
+			} else {
 				zoom.refs.livedata.header = $('#zoom-livedata-header');
 				zoom.refs.livedata.content = $('#zoom-livedata-content');
 				zoom.refs.livedata.content.empty();
@@ -741,7 +744,7 @@
 			if(zoom.marker.distance === undefined) {
 				let test = (zoom.marker[marker].dst_lt < 1);
 				zoom.refs.m[marker].tooltip.toggleClass('relative-right', (zoom.marker[marker].dst_lt < 1) );
-			}else {
+			} else {
 				if (zoom.marker.distance < 0) {
 					// marker is left beside secondmarker;
 					zoom.refs.m[marker].tooltip.toggleClass('relative-right', (zoom.marker[marker].dst_lt < 1));
@@ -807,14 +810,18 @@
 
 					if (pageAction !== 'graph') {
 						graph_start = newGraphStartTime;
-						graph_end = newGraphEndTime;
+						graph_end   = newGraphEndTime;
 
-						initializeGraphs(true);
-					}else{
+						if (newGraphStartTime >= defaults.zoomMinTime) {
+							initializeGraphs(true);
+						}
+					} else{
 						$('#graph_start').val(newGraphStartTime);
 						$('#graph_end').val(newGraphEndTime);
 
-						initializeGraph();
+						if (newGraphStartTime >= defaults.zoomMinTime) {
+							initializeGraphs(true);
+						}
 					}
 				} else {
 					$("input[name='" + zoom.options.submitButton + "']").trigger('click');
@@ -933,12 +940,16 @@
 						graph_start = newGraphStartTime;
 						graph_end = newGraphEndTime;
 
-						initializeGraphs(true);
-					}else{
+						if (newGraphStartTime >= defaults.zoomMinTime) {
+							initializeGraphs(true);
+						}
+					} else{
 						$('#graph_start').val(newGraphStartTime);
 						$('#graph_end').val(newGraphEndTime);
 
-						initializeGraph();
+						if (newGraphStartTime >= defaults.zoomMinTime) {
+							initializeGraph();
+						}
 					}
 				} else {
 					$("input[name='" + zoom.options.submitButton + "']").trigger('click');
@@ -954,15 +965,27 @@
 		* when updating the zoom window, we have to update cacti's zoom session variables
 		*/
 		function zoomAction_update_session(newGraphStartTime, newGraphEndTime) {
-			$.get(document.location.pathname +
-				'?action=update_timespan' +
-				'&date1=' + unixTime2Date(newGraphStartTime) +
-				'&date2=' + unixTime2Date(newGraphEndTime), function() {
-				$('#predefined_timespan').val('0');
-				if (typeof $('#predefined_timespan').selectmenu() === 'object') {
-					$('#predefined_timespan').selectmenu('refresh');
-				}
-			});
+			if (newGraphStartTime <= defaults.zoomMinTime) {
+				PopupWarning(defaults.rangeMessage, defaults.rangeTitle);
+
+				$('.graphimage').each(function() {
+					$(this).zoom({
+						inputfieldStartTime: 'date1',
+						inputfieldEndTime: 'date2',
+						serverTimeOffset: timeOffset
+					});
+				});
+			} else {
+				$.get(document.location.pathname +
+					'?action=update_timespan' +
+					'&date1=' + unixTime2Date(newGraphStartTime) +
+					'&date2=' + unixTime2Date(newGraphEndTime), function() {
+					$('#predefined_timespan').val('0');
+					if (typeof $('#predefined_timespan').selectmenu() === 'object') {
+						$('#predefined_timespan').selectmenu('refresh');
+					}
+				});
+			}
 		}
 
 		/*
@@ -971,7 +994,7 @@
 		function zoomAction_draw(event) {
 			if (zoom.attr.start === 'none') {
 				return;
-			}else {
+			} else {
 				zoom.livedata = false;
 			}
 
@@ -993,7 +1016,7 @@
 				zoom.refs.crosshair_x.css('top', (event.pageY - parseInt(zoom.initiator.offset().top) - zoom.box.top)+"px").show();
 				zoom.refs.crosshair_y.css('left', (event.pageX - parseInt(zoom.initiator.offset().left) - zoom.box.left)+"px").show();
 				zoomLiveData_show(event);
-			}else if (event.type === 'mouseleave') {
+			} else if (event.type === 'mouseleave') {
 				zoomLiveData_hide()
 			}
 		}
@@ -1291,11 +1314,14 @@
 		}
 
 		function zoomFormatNumToSI(num) {
-			if (num === 0) return '0';
-
-			const signPrefix = num < 0 ? '-' : '';
+			const signPrefix = num < 0 ? '-' : ' ';
 			let sig = Math.abs(num);
 			let exponent = 0;
+
+			if (num === 0) {
+				return ' ' + new Big(0).toFixed(2) + ' ' + si_prefixes[exponent];
+			}
+
 			while (sig >= 1000 && exponent < 24) {
 				sig /= 1000;
 				exponent += 3;

@@ -1459,7 +1459,7 @@ function display_match_rule_items($title, $rule, $rule_type, $module) {
 
 			$url = $module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type;
 
-			form_selectable_cell(filter_value(__('Item#%d', $i+1), '', $url), $i);
+			form_selectable_cell(filter_value(__('Item # %d', $i+1), '', $url), $i);
 			form_selectable_cell($item['sequence'], $i);
 			form_selectable_cell($operation, $i);
 			form_selectable_cell(html_escape($item['field']), $i);
@@ -1552,7 +1552,7 @@ function display_graph_rule_items($title, &$rule, $rule_type, $module) {
 
 			$url = $module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type;
 
-			form_selectable_cell(filter_value(__('Item#%d', $i+1), '', $url), $i);
+			form_selectable_cell(filter_value(__('Item # %d', $i+1), '', $url), $i);
 			form_selectable_cell($item['sequence'], $i);
 			form_selectable_cell($operation, $i);
 			form_selectable_cell(html_escape($item['field']), $i);
@@ -1647,7 +1647,7 @@ function display_tree_rule_items($title, $rule, $item_type, $rule_type, $module)
 
 			$url = $module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type;
 
-			form_selectable_cell(filter_value(__('Item#%d', $i+1), '', $url), $i);
+			form_selectable_cell(filter_value(__('Item # %d', $i+1), '', $url), $i);
 			form_selectable_cell($item['sequence'], $i);
 			form_selectable_cell($field_name, $i);
 			form_selectable_cell($tree_sort_types[$item['sort_type']], $i);
@@ -2731,8 +2731,7 @@ function automation_execute_graph_template($host_id, $graph_template_id) {
 		array($graph_template_id, $host_id));
 
 	if ($existsAlready > 0) {
-		$dataSourceId  = db_fetch_cell_prepared('SELECT
-			data_template_rrd.local_data_id
+		$dataSourceId  = db_fetch_cell_prepared('SELECT data_template_rrd.local_data_id
 			FROM graph_templates_item, data_template_rrd
 			WHERE graph_templates_item.local_graph_id = ?
 			AND graph_templates_item.task_item_id = data_template_rrd.id
@@ -3104,8 +3103,7 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 						array_key_exists('local_graph_id', $return_array) &&
 						array_key_exists('local_data_id', $return_array)) {
 
-						$data_source_id = db_fetch_cell_prepared('SELECT
-							data_template_rrd.local_data_id
+						$data_source_id = db_fetch_cell_prepared('SELECT data_template_rrd.local_data_id
 							FROM graph_templates_item, data_template_rrd
 							WHERE graph_templates_item.local_graph_id = ?
 							AND graph_templates_item.task_item_id = data_template_rrd.id
