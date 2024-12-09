@@ -735,7 +735,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 		$rrdtool_version     = get_rrdtool_version();
 
 		if ($rrdtool_ins_version != $rrdtool_version) {
-			boost_debug('NOTE: Updating Stored RRDtool version to installed version ' . $rrdtool_ins_version);
+			boost_debug('Updating Stored RRDtool version to installed version ' . $rrdtool_ins_version);
 
 			cacti_log('NOTE: Updating Stored RRDtool version to installed version ' . $rrdtool_ins_version, true, 'BOOST');
 
@@ -1015,11 +1015,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 							}
 
 							if ($reset_template) {
-								cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $field . "' [map " . $matches[0] . '->' . $field . ']', true, 'BOOST', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_HIGH));
-
-								if ($boost_debug && $boost_log != '') {
-									print "DEBUG: Parsed MULTI output field in path 1 '" . $matches[0] . "' [map " . $field . '->' . $field . ']' . PHP_EOL;
-								}
+								boost_debug("Parsed MULTI output field in path 1 '" . $matches[0] . "' [map " . $field . '->' . $field . ']');
 
 								$rrd_tmpl .= ($rrd_tmpl != '' ? ':':'') . $field;
 							}
@@ -1075,11 +1071,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 									}
 
 									if ($reset_template) {
-										cacti_log("Parsed MULTI output field in path 2 '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $field . ']', true, 'BOOST', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_HIGH));
-
-										if ($boost_debug && $boost_log != '') {
-											print "DEBUG: Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . '->' . $field . ']' . PHP_EOL;
-										}
+										boost_debug("Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . '->' . $field . ']');
 
 										$rrd_tmpl .= ($rrd_tmpl != '' ? ':':'') . $field;
 									}
@@ -1096,9 +1088,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 										$buflen += 2;
 									}
 
-									if ($boost_debug && $boost_log != '') {
-										print "DEBUG: Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . '->' . $nt_rrd_field_names[$matches[1]] . ']' . PHP_EOL;
-									}
+									boost_debug("Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . '->' . $nt_rrd_field_names[$matches[1]] . ']');
 								}
 
 								$vals_in_buffer++;
@@ -1209,8 +1199,6 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 }
 
 function boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, $rrdtool_pipe) {
-	global $boost_log, $boost_debug;
-
 	$outbuf = '';
 
 	if (cacti_sizeof($outarray)) {
@@ -1221,9 +1209,7 @@ function boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, 
 
 	$rrd_tmpl = implode(':', array_keys($rrd_tmplp));
 
-	if ($boost_debug && $boost_log != '') {
-		print "DEBUG: Updating Local Data Id:'$local_data_id', Template:" . $rrd_tmpl . ', Output:' . $outbuf . PHP_EOL;
-	}
+	boost_debug("Updating Local Data Id:'$local_data_id', Template:" . $rrd_tmpl . ', Output:' . $outbuf);
 
 	boost_timer('rrdupdate', BOOST_TIMER_START);
 	$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $outbuf, $rrdtool_pipe);

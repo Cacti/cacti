@@ -463,7 +463,7 @@ function automation_duplicate_snmp_option($id, $new_name) {
 			snmp_priv_passphrase, snmp_priv_protocol, snmp_context, snmp_engine_id
 			FROM automation_snmp_items
 			WHERE snmp_id = ?",
-			array($hahs, $id));
+			array($hash, $id));
 
 		raise_message('option_duplicated', __('SNMP Options has been Duplicated.'), MESSAGE_LEVEL_INFO);
 	} else {

@@ -112,10 +112,16 @@ function form_save() {
 	/* ==================================================== */
 
 	if (isset_request_var('save_component_template')) {
-		$save['id']    = get_nfilter_request_var('id');
-		$save['hash']  = get_hash_host_template(get_nfilter_request_var('id'));
-		$save['name']  = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
-		$save['class'] = form_input_validate(get_nfilter_request_var('class'), 'class', '', false, 3);
+		$save['id']           = get_nfilter_request_var('id');
+		$save['hash']         = get_hash_host_template(get_nfilter_request_var('id'));
+		$save['name']         = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['version']      = form_input_validate(get_nfilter_request_var('version'), 'version', '', false, 3);
+		$save['class']        = form_input_validate(get_nfilter_request_var('class'), 'class', '', false, 3);
+		$save['tags']         = form_input_validate(get_nfilter_request_var('tags'), 'tags', '', true, 3);
+		$save['author']       = form_input_validate(get_nfilter_request_var('author'), 'author', '', false, 3);
+		$save['email']        = form_input_validate(get_nfilter_request_var('email'), 'email', '', false, 3);
+		$save['copyright']    = form_input_validate(get_nfilter_request_var('copyright'), 'copyright', '', false, 3);
+		$save['installation'] = form_input_validate(get_nfilter_request_var('installation'), 'installation', '', true, 3);
 
 		if (!is_error_message()) {
 			$host_template_id = sql_save($save, 'host_template');
@@ -393,15 +399,14 @@ function template_item_remove_dq() {
 }
 
 function template_edit() {
-	global $fields_host_template_edit;
+	global $fields_host_template_edit, $copyrights;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$host_template = db_fetch_row_prepared(
-			'SELECT *
+		$host_template = db_fetch_row_prepared('SELECT *
 			FROM host_template
 			WHERE id = ?',
 			array(get_request_var('id'))
@@ -411,6 +416,22 @@ function template_edit() {
 	} else {
 		$header_label = __('Device Templates [new]');
 		set_request_var('id', 0);
+	}
+
+	if (!cacti_sizeof($host_template) || $host_template['version'] == '') {
+		$fields_host_template_edit['version']['default'] = CACTI_VERSION;
+	}
+
+	if (!cacti_sizeof($host_template) || $host_template['author'] == '') {
+		$fields_host_template_edit['author']['default'] = read_config_option('packaging_author');
+	}
+
+	if (!cacti_sizeof($host_template) || $host_template['email'] == '') {
+		$fields_host_template_edit['email']['default'] = read_config_option('packaging_email');
+	}
+
+	if (!cacti_sizeof($host_template) || $host_template['copyright'] == '') {
+		$fields_host_template_edit['copyright']['default'] = read_config_option('packaging_copyright');
 	}
 
 	form_start('host_templates.php', 'form_network');
@@ -433,9 +454,7 @@ function template_edit() {
 	if (!isempty_request_var('id')) {
 		html_start_box(__('Associated Graph Templates'), '100%', '', '3', 'center', '');
 
-		$selected_graph_templates = db_fetch_assoc_prepared('SELECT
-			graph_templates.id,
-			graph_templates.name
+		$selected_graph_templates = db_fetch_assoc_prepared('SELECT graph_templates.id, graph_templates.name
 			FROM (graph_templates,host_template_graph)
 			WHERE graph_templates.id = host_template_graph.graph_template_id
 			AND host_template_graph.host_template_id = ?
@@ -899,7 +918,7 @@ function template() {
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$template_list = db_fetch_assoc_prepared("SELECT
-		ht.id, ht.name, ht.class, COUNT(DISTINCT host.id) AS hosts
+		ht.id, ht.name, ht.class, ht.version, ht.author, ht.copyright, COUNT(DISTINCT host.id) AS hosts
 		FROM host_template AS ht
 		$sql_join
 		LEFT JOIN host
@@ -923,6 +942,24 @@ function template() {
 			'align'   => 'left',
 			'sort'    => 'ASC',
 			'tip'     => __('The Class of this Device Template.  The Class Name should be representative of it\'s function.')
+		),
+		'ht.version' => array(
+			'display' => __('Version'),
+			'align'   => 'center',
+			'sort'    => 'ASC',
+			'tip'     => __('The version of this Device Template.')
+		),
+		'ht.author' => array(
+			'display' => __('Author'),
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The author of this Device Template.')
+		),
+		'ht.copyright' => array(
+			'display' => __('Copyright'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The copyright of this Device Template.')
 		),
 		'ht.id' => array(
 			'display' => __('ID'),
@@ -973,6 +1010,10 @@ function template() {
 			} else {
 				form_selectable_cell(__('Unassigned'), $template['id']);
 			}
+
+			form_selectable_cell($template['version'], $template['version'], '', 'center');
+			form_selectable_cell($template['author'], $template['author'], '', 'left');
+			form_selectable_cell($template['copyright'], $template['copyright'], '', 'left');
 
 			form_selectable_cell($template['id'], $template['id'], '', 'right');
 			form_selectable_cell($disabled ? __('No') : __('Yes'), $template['id'], '', 'right');

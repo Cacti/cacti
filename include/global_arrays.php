@@ -1061,6 +1061,14 @@ $custom_data_source_types = array(
 	'COUNT_SIMILAR_DS_DUPS'	         => __('Count of All Similar Data Sources (Include Duplicates)')
 );
 
+$copyrights = array(
+	'Apache License 2.0'                 => __('Apache License 2.0'),
+	'Creative Commons'                   => __('Creative Commons'),
+	'GNU General Public License'         => __('GNU General Public License'),
+	'MIT License'                        => __('MIT License'),
+	'Eclipse Public License version 2.0' => __('Eclipse Public License version 2.0'),
+);
+
 if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 	$menu = array(
 		__('Main Console') => array(
@@ -1106,9 +1114,12 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			'gprint_presets.php'       => __('GPRINTs'),
 		),
 		__('Import/Export') => array(
-			'templates_import.php' => __('Import Templates'),
 			'package_import.php'   => __('Import Packages'),
-			'templates_export.php' => __('Export Templates')
+			'templates_import.php' => __('Import Templates'),
+			'templates_export.php' => __('Export Templates'),
+			'package.php'          => __('Create Packages'),
+			'package_repos.php'    => __('Repositories'),
+			'package_keys.php'     => __('Public Keys'),
 		),
 		__('Configuration')  => array(
 			'settings.php'         => __('Settings'),
@@ -1363,6 +1374,7 @@ $user_auth_realms = array(
 
 	16   => __('Export Templates'),
 	17   => __('Import Templates'),
+	29   => __('Package Management'),
 
 	18   => __('Log Administration'),
 	19   => __('Log Viewing'),
@@ -1376,7 +1388,7 @@ $user_auth_realms = array(
 
 $user_auth_roles = array(
 	__('Normal User')            => array(7, 19, 20, 22, 24, 25, 27, 28),
-	__('Template Editor')        => array(8, 2, 9, 10, 11, 12, 13, 14, 16, 17),
+	__('Template Editor')        => array(8, 2, 9, 10, 11, 12, 13, 14, 16, 17, 29),
 	__('General Administration') => array(8, 3, 4, 5, 23, 1043),
 	__('System Administration')  => array(8, 15, 26, 1, 18, 21, 101)
 );
@@ -1418,6 +1430,9 @@ $user_auth_realm_filenames = array(
 	'templates_export.php'       => 16,
 	'templates_import.php'       => 17,
 	'package_import.php'         => 17,
+	'package.php'                => 29,
+	'package_repos.php'          => 29,
+	'package_keys.php'           => 29,
 	'tree.php'                   => 4,
 	'user_admin.php'             => 1,
 	'user_domains.php'           => 1,
@@ -2798,6 +2813,24 @@ $navigation = array(
 		'url'     => 'package_import.php',
 		'level'   => '1'
 	),
+    'package.php:' => array(
+        'title'   => __('Package Cacti Template'),
+        'mapping' => 'index.php:',
+        'url'     => 'package.php',
+        'level'   => '1'
+    ),
+    'package_repos.php' => array(
+        'title'   => __('Package Repositories'),
+        'mapping' => 'index.php',
+        'url'     => 'package_repos.php',
+        'level'   => '1'
+    ),
+    'package_keys.php' => array(
+        'title'   => __('Package Public Keys'),
+        'mapping' => 'index.php',
+        'url'     => 'package_keys.php',
+        'level'   => '1'
+    ),
 	'reports_admin.php:' => array(
 		'title'   => __('Reporting'),
 		'mapping' => '',

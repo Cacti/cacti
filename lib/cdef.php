@@ -22,9 +22,16 @@
  +-------------------------------------------------------------------------+
 */
 
-/* get_cdef_item_name - resolves a single CDEF item into its text-based representation
-   @arg $cdef_item_id - the id of the individual cdef item
-   @returns - a text-based representation of the cdef item */
+/**
+ * Retrieves the name of a CDEF item based on its ID.
+ *
+ * This function fetches the type and value of a CDEF item from the database and returns
+ * the corresponding name or value based on the item's type.
+ *
+ * @param int $cdef_item_id The ID of the CDEF item.
+ * 
+ * @return string The name or value of the CDEF item.
+ */
 function get_cdef_item_name($cdef_item_id) {
 	global $cdef_functions, $cdef_operators;
 
@@ -49,11 +56,17 @@ function get_cdef_item_name($cdef_item_id) {
 			break;
 	}
 }
-
-/* get_cdef - resolves an entire CDEF into its text-based representation for use in the RRDtool 'graph'
-	 string. this name will be resolved recursively if necessary
-   @arg $cdef_id - the id of the cdef to resolve
-   @returns - a text-based representation of the cdef */
+/**
+ * Resolves an entire CDEF into its text-based representation for use in the RRDtool 'graph'
+ * string. this name will be resolved recursively if necessary
+ *
+ * This function fetches the CDEF items associated with the provided CDEF ID from the database,
+ * constructs the CDEF string by iterating through the items, and handles nested CDEFs recursively.
+ *
+ * @param int $cdef_id The ID of the CDEF to retrieve.
+ * 
+ * @return string The constructed CDEF string.
+ */
 function get_cdef($cdef_id) {
 	$cdef_items = db_fetch_assoc_prepared('SELECT id, type, value FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', array($cdef_id));
 

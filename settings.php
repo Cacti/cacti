@@ -53,7 +53,7 @@ switch (get_request_var('action')) {
 }
 
 function display_settings() {
-	global $config, $settings, $tabs;
+	global $config, $settings, $tabs, $local_db_cnn_id;
 
 	top_header();
 
@@ -1269,7 +1269,7 @@ function settings_search() {
 }
 
 function save_settings() {
-	global $config, $settings;
+	global $config, $settings, $local_db_cnn_id;
 
 	$errors = array();
 	$inserts = array();

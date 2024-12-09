@@ -1425,6 +1425,14 @@ $fields_host_template_edit = array(
 		'max_length'    => '255',
 		'size'          => '80'
 	),
+	'version' => array(
+		'method'        => 'textbox',
+		'friendly_name' => __('Version'),
+		'description'   => __('The Version given to this Device Template.'),
+		'value'         => '|arg1:version|',
+		'max_length'    => '10',
+		'size'          => '10'
+	),
 	'class' => array(
 		'method'        => 'drop_array',
 		'friendly_name' => __('Class'),
@@ -1432,6 +1440,49 @@ $fields_host_template_edit = array(
 		'value'         => '|arg1:class|',
 		'array'         => $device_classes,
 		'default'       => ''
+	),
+	'tags' => array(
+		'method'        => 'textbox',
+		'friendly_name' => __('Tags'),
+		'description'   => __('A series of space delimited tags to help with searching for this Device Template.'),
+		'value'         => '|arg1:tags|',
+		'default'       => '',
+		'max_length'    => '128',
+		'size'          => '80'
+	),
+	'author' => array(
+		'method'        => 'textbox',
+		'friendly_name' => __('Author'),
+		'description'   => __('The original author of this Device Template.'),
+		'value'         => '|arg1:author|',
+		'max_length'    => '40',
+		'size'          => '40'
+	),
+	'email' => array(
+		'method'        => 'textbox',
+		'friendly_name' => __('Author Email'),
+		'description'   => __('The original author\'s Email address.'),
+		'value'         => '|arg1:email|',
+		'type'          => 'email',
+		'max_length'    => '60',
+		'size'          => '60'
+	),
+	'copyright' => array(
+		'method'        => 'drop_array',
+		'friendly_name' => __('Copyright'),
+		'description'   => __('A the author\'s desired copyright for this Device Template.'),
+		'value'         => '|arg1:copyright|',
+		'array'         => $copyrights,
+		'default'       => 'GNU General Public License'
+	),
+	'installation' => array(
+		'method'        => 'textarea',
+		'friendly_name' => __('Installation Instructions'),
+		'description'   => __('Brief installation instructions provided by the Device Template author.'),
+		'class'         => 'textAreaNotes',
+		'value'         => '|arg1:installation|',
+		'textarea_rows' => '5',
+		'textarea_cols' => '50'
 	),
 	'id' => array(
 		'method' => 'hidden_zero',

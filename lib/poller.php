@@ -158,7 +158,7 @@ function exec_background($filename, $args = '', $redirect_args = '') {
  * command exits or the timeout has expired.
  *
  * @param  (string)      $cmd          Command to execute.
- * @param  (string)      $output       A return array of output.
+ * @param  (array)      $output       A return array of output.
  * @param  (int)         $return_code  The return code from the script
  * @param  (int)         $timeout      Timeout in seconds.
  *
@@ -1349,7 +1349,7 @@ function resource_cache_out($type, $path) {
  * @param  (string) $path      - The path to check for the md5sum
  * @param  (bool)   $recursive - The path should be verified recursively
  *
- * @return (void)
+ * @return string|bool
  */
 function md5sum_path($path, $recursive = true) {
 	if (!is_dir($path)) {

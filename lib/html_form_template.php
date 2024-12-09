@@ -22,19 +22,21 @@
  +-------------------------------------------------------------------------+
 */
 
-/* draw_nontemplated_fields_graph - draws a form that consists of all non-templated graph fields associated
-	 with a particular graph template
-   @arg $graph_template_id - the id of the graph template to base the form after
-   @arg $values_array - any values that should be included by default on the form
-   @arg $field_name_format - all fields on the form will be named using the following format, the following
-	 variables can be used:
-	   |field| - the current field name
-   @arg $header_title - the title to use on the header for this form
-   @arg $alternate_colors (bool) - whether to alternate colors for each row on the form or not
-   @arg $include_hidden_fields (bool) - should elements that are not to be displayed be represented as hidden
-	 html input elements or omitted altogether?
-   @arg $snmp_query_graph_id - if this graph template is part of a data query, specify the graph id here. this
-	 will be used to determine if a given field is using suggested values */
+/**
+ * Draws a form that consists of all non-templated graph fields associated with a particular graph template
+ *
+ * @param int $graph_template_id The ID of the graph template.
+ * @param array &$values_array Reference to an array containing the values for the fields.
+ * @param string $field_name_format The format for the field names. Default is '|field|'.
+ * @param string $header_title The title to display as a header. Default is an empty string.
+ * @param bool $alternate_colors Whether to alternate row colors in the form. Default is true.
+ * @param bool $include_hidden_fields Whether to include hidden fields in the form. Default is true.
+ * @param int $snmp_query_graph_id The ID of the SNMP query graph. Default is 0.
+ *
+ * @global array $struct_graph The global array containing the structure of the graph fields.
+ *
+ * @return int The number of fields drawn.
+ */
 function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $field_name_format = '|field|', $header_title = '', $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
 	global $struct_graph;
 
@@ -103,16 +105,21 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 	return $num_fields_drawn;
 }
 
-/* draw_nontemplated_fields_graph_item - draws a form that consists of all non-templated graph item fields
-	 associated with a particular graph template
-   @arg $graph_template_id - the id of the graph template to base the form after
-   @arg $local_graph_id - specify the id of the associated graph if it exists
-   @arg $field_name_format - all fields on the form will be named using the following format, the following
-	 variables can be used:
-	   |field| - the current field name
-	   |id| - the current graph input id
-   @arg $header_title - the title to use on the header for this form
-   @arg $alternate_colors (bool) - whether to alternate colors for each row on the form or not */
+/**
+ * Draws a form that consists of all non-templated graph item fields associated with a particular graph template
+ *
+ * This function fetches information about the graph template and modifies the default graph items array.
+ * It then iterates through the input items, checks for SQL injection attempts, and constructs a form array
+ * for each item. The form array is used to draw the edit form for the graph item fields.
+ *
+ * @param int $graph_template_id The ID of the graph template.
+ * @param int $local_graph_id The ID of the local graph.
+ * @param string $field_name_format The format for the field names. Default is '|field|_|id|'.
+ * @param string $header_title The title for the header. Default is an empty string.
+ * @param bool $alternate_colors Whether to alternate row colors. Default is true.
+ * @param string $locked Whether the fields are locked. Default is 'false'.
+ * @return int The number of fields drawn.
+ */
 function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id, $field_name_format = '|field|_|id|', $header_title = '', $alternate_colors = true, $locked = 'false') {
 	global $struct_graph_item;
 
@@ -276,20 +283,25 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 	return $num_fields_drawn;
 }
 
-/* draw_nontemplated_fields_data_source - draws a form that consists of all non-templated data source fields
-	 associated with a particular data template
-   @arg $data_template_id - the id of the data template to base the form after
-   @arg $local_data_id - specify the id of the associated data source if it exists
-   @arg $values_array - any values that should be included by default on the form
-   @arg $field_name_format - all fields on the form will be named using the following format, the following
-	 variables can be used:
-	   |field| - the current field name
-   @arg $header_title - the title to use on the header for this form
-   @arg $alternate_colors (bool) - whether to alternate colors for each row on the form or not
-   @arg $include_hidden_fields (bool) - should elements that are not to be displayed be represented as hidden
-	 html input elements or omitted altogether?
-   @arg $snmp_query_graph_id - if this data template is part of a data query, specify the graph id here. this
-	 will be used to determine if a given field is using suggested values */
+/**
+ * Draws a form that consists of all non-templated data source fields associated with a particular data template
+ *
+ * This function generates and displays form fields for a data source based on the provided data template and values.
+ * It supports various options such as including hidden fields, alternating colors, and custom field name formats.
+ *
+ * @param int $data_template_id The ID of the data template to use.
+ * @param int $local_data_id The ID of the local data source.
+ * @param array &$values_array An array of values to populate the form fields.
+ * @param string $field_name_format The format for field names, default is '|field|'.
+ * @param string $header_title The title to display as a header, default is an empty string.
+ * @param bool $alternate_colors Whether to alternate row colors, default is true.
+ * @param bool $include_hidden_fields Whether to include hidden fields, default is true.
+ * @param int $snmp_query_graph_id The ID of the SNMP query graph, default is 0.
+ *
+ * @global array $struct_data_source The structure of the data source fields.
+ *
+ * @return int The number of fields drawn.
+ */
 function draw_nontemplated_fields_data_source($data_template_id, $local_data_id, &$values_array, $field_name_format = '|field|', $header_title = '', $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
 	global $struct_data_source;
 
@@ -365,22 +377,19 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 	return $num_fields_drawn;
 }
 
-/* draw_nontemplated_fields_data_source_item - draws a form that consists of all non-templated data source
-	 item fields associated with a particular data template
-   @arg $data_template_id - the id of the data template to base the form after
-   @arg $values_array - any values that should be included by default on the form
-   @arg $field_name_format - all fields on the form will be named using the following format, the following
-	 variables can be used:
-	   |field| - the current field name
-	   |id| - the id of the current data source item
-   @arg $header_title - the title to use on the header for this form
-   @arg $draw_title_for_each_item (bool) - should a separate header be drawn for each data source item, or
-	 should all data source items be drawn under one header?
-   @arg $alternate_colors (bool) - whether to alternate colors for each row on the form or not
-   @arg $include_hidden_fields (bool) - should elements that are not to be displayed be represented as hidden
-	 html input elements or omitted altogether?
-   @arg $snmp_query_graph_id - if this graph template is part of a data query, specify the graph id here. this
-	 will be used to determine if a given field is using suggested values */
+/**
+ * Draws a form that consists of all non-templated data source item fields associated with a particular data template
+ *
+ * @param int $data_template_id The ID of the data template.
+ * @param array &$values_array Reference to the array of values.
+ * @param string $field_name_format The format for the field names. Default is '|field_id|'.
+ * @param string $header_title The title to display in the header. Default is an empty string.
+ * @param bool $draw_title_for_each_item Whether to draw the title for each item. Default is true.
+ * @param bool $alternate_colors Whether to alternate row colors. Default is true.
+ * @param bool $include_hidden_fields Whether to include hidden fields. Default is true.
+ * @param int $snmp_query_graph_id The ID of the SNMP query graph. Default is 0.
+ * @return int The number of fields drawn.
+ */
 function draw_nontemplated_fields_data_source_item($data_template_id, &$values_array, $field_name_format = '|field_id|', $header_title = '', $draw_title_for_each_item = true, $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
 	global $struct_data_source_item;
 
@@ -489,20 +498,21 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 	return $num_fields_drawn;
 }
 
-/* draw_nontemplated_fields_custom_data - draws a form that consists of all non-templated custom data fields
-	 associated with a particular data template
-   @arg $data_template_id - the id of the data template to base the form after
-   @arg $field_name_format - all fields on the form will be named using the following format, the following
-	 variables can be used:
-	   |id| - the id of the current field
-   @arg $header_title - the title to use on the header for this form
-   @arg $draw_title_for_each_item (bool) - should a separate header be drawn for each data source item, or
-	 should all data source items be drawn under one header?
-   @arg $alternate_colors (bool) - whether to alternate colors for each row on the form or not
-   @arg $include_hidden_fields (bool) - should elements that are not to be displayed be represented as hidden
-	 html input elements or omitted altogether?
-   @arg $snmp_query_id - if this graph template is part of a data query, specify the data query id here. this
-	 will be used to determine if a given field is associated with a suggested value */
+/**
+ * Draws a form that consists of all non-templated custom data fields associated with a particular data template
+ *
+ * This function retrieves and displays input fields for a specified data template.
+ * It supports various customization options such as field name formatting, header titles,
+ * alternating row colors, and inclusion of hidden fields.
+ *
+ * @param int $data_template_data_id The ID of the data template data.
+ * @param string $field_name_format The format for the field names. Default is '|field|'.
+ * @param string $header_title The title to display as the header. Default is an empty string.
+ * @param bool $alternate_colors Whether to alternate row colors. Default is true.
+ * @param bool $include_hidden_fields Whether to include hidden fields. Default is true.
+ * @param int $snmp_query_id The SNMP query ID. Default is 0.
+ * @return int The number of fields drawn.
+ */
 function draw_nontemplated_fields_custom_data($data_template_data_id, $field_name_format = '|field|',
 	$header_title = '', $alternate_colors = true, $include_hidden_fields = true, $snmp_query_id = 0) {
 	$draw_any_items   = false;
@@ -602,14 +612,18 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 	return $num_fields_drawn;
 }
 
-/* draw_custom_data_row - draws a single row representing 'custom data' for a single data input field.
-	 this function is where additional logic can be applied to control how a certain field of custom
-	 data is represented on the HTML form
-   @arg $field_name - the name of this form element
-   @arg $data_input_field_id - the id of the data input field that this row represents
-   @arg $data_template_data_id - the id of the data source data element that this data input field
-	 belongs to
-   @arg $current_value - the current value of this field */
+/**
+ * Draws a single row representing 'custom data' for a single data input field.
+ *   this function is where additional logic can be applied to control how a certain field of custom
+ *   data is represented on the HTML form
+ *
+ * @param string $field_name The name of the form field.
+ * @param int $data_input_field_id The ID of the data input field.
+ * @param int $data_template_data_id The ID of the data template data.
+ * @param mixed $current_value The current value of the field.
+ *
+ * @return void
+ */
 function draw_custom_data_row($field_name, $data_input_field_id, $data_template_data_id, $current_value) {
 	$field = db_fetch_row_prepared('SELECT data_name, type_code
 		FROM data_input_fields

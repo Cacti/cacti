@@ -354,6 +354,61 @@ function upgrade_to_1_3_0() {
 
 	/* remove legacy files from old cacti releases */
 	prune_deprecated_files();
+
+	$data = array();
+	$data['columns'][] = array('name' => 'id', 'unsigned' => true, 'type' => 'int(10)', 'NULL' => false, 'auto_increment' => true);
+	$data['columns'][] = array('name' => 'name', 'type' => 'varchar(32)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'enabled', 'type' => 'char(2)', 'NULL' => false, 'default' => 'on');
+	$data['columns'][] = array('name' => 'default', 'type' => 'char(2)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'repo_type', 'unsigned' => true, 'type' => 'tinyint(3)', 'NULL' => false, 'default' => '0');
+	$data['columns'][] = array('name' => 'repo_location', 'type' => 'varchar(128)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'repo_branch', 'type' => 'varchar(20)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'repo_api_key', 'type' => 'varchar(100)', 'NULL' => false, 'default' => '');
+	$data['primary'] = 'id';
+	$data['keys'][] = array('name' => 'location_branch', 'columns' => array('repo_location','repo_branch'));
+	$data['type'] = 'InnoDB';
+	$data['charset'] = 'utf8mb4';
+	$data['comment'] = 'Holds Repository Locations that hold Packages';
+	$data['row_format'] = 'Dynamic';
+	db_update_table('package_repositories', $data);
+
+	$data = array();
+	$data['columns'][] = array('name' => 'id', 'unsigned' => true, 'type' => 'int(10)', 'NULL' => false, 'auto_increment' => true);
+	$data['columns'][] = array('name' => 'md5sum', 'type' => 'varchar(32)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'author', 'type' => 'varchar(40)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'homepage', 'type' => 'varchar(128)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'email_address', 'type' => 'varchar(60)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'public_key', 'type' => 'varchar(1024)', 'NULL' => true, 'default' => '');
+	$data['primary'] = 'id';
+	$data['keys'][] = array('name' => 'md5sum', 'columns' => array('md5sum'), 'unique' => true);
+	$data['type'] = 'InnoDB';
+	$data['charset'] = 'utf8mb4';
+	$data['comment'] = 'Hold Trusted Package Public Keys';
+	$data['row_format'] = 'Dynamic';
+	db_update_table('package_public_keys', $data);
+
+	/* setup install keypair */
+
+	/* add package meta information to the host_template table */
+	$data = array();
+	$data['columns'][] = array('name' => 'id', 'unsigned' => true, 'type' => 'mediumint(8)', 'NULL' => false, 'auto_increment' => true);
+	$data['columns'][] = array('name' => 'hash', 'type' => 'varchar(32)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'name', 'type' => 'varchar(100)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'version', 'type' => 'varchar(20)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'class', 'type' => 'varchar(40)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'tags', 'type' => 'varchar(128)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'author', 'type' => 'varchar(40)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'email', 'type' => 'varchar(60)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'copyright', 'type' => 'varchar(40)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'installation', 'type' => 'varchar(1024)', 'NULL' => false, 'default' => '');
+	$data['columns'][] = array('name' => 'devices', 'unsigned' => true, 'type' => 'int(10)', 'NULL' => false, 'default' => '0');
+	$data['primary'] = 'id';
+	$data['keys'][] = array('name' => 'name', 'columns' => array('name'));
+	$data['type'] = 'InnoDB';
+	$data['charset'] = 'utf8mb4';
+	$data['row_format'] = 'Dynamic';
+	db_update_table('host_template', $data);
+
 }
 
 function ldap_convert_1_3_0() {

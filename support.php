@@ -950,6 +950,8 @@ function show_cacti_poller() {
 }
 
 function show_database_tables() {
+	global $local_db_cnn_id;
+	
 	/* Get table status */
 	if (POLLER_ID == 1) {
 		$tables = db_fetch_assoc('SELECT *

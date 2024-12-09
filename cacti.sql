@@ -2138,7 +2138,13 @@ CREATE TABLE host_template (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
   `hash` varchar(32) NOT NULL default '',
   `name` varchar(100) NOT NULL default '',
+  `version` varchar(20) NOT NULL default '',
   `class` varchar(40) NOT NULL default '',
+  `tags` varchar(128) NOT NULL default '',
+  `author` varchar(40) NOT NULL default '',
+  `email` varchar(60) NOT NULL default '',
+  `copyright` varchar(40) NOT NULL default '',
+  `installation` varchar(1024) NOT NULL default '',
   `devices` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY (id),
   KEY `name` (`name`)
@@ -2175,6 +2181,38 @@ CREATE TABLE host_template_snmp_query (
 --
 -- Dumping data for table `host_template_snmp_query`
 --
+
+--
+-- Table structure for table `pacakge_public_keys`
+--
+
+CREATE TABLE `package_public_keys` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `md5sum` varchar(32) NOT NULL DEFAULT '',
+  `author` varchar(40) NOT NULL DEFAULT '',
+  `homepage` varchar(128) NOT NULL DEFAULT '',
+  `email_address` varchar(60) NOT NULL DEFAULT '',
+  `public_key` varchar(1024) DEFAULT '',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `md5sum` (`md5sum`) 
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC COMMENT='Hold Trusted Package Public Keys';
+
+--
+-- Table structure for table `package_repositories`
+--
+
+CREATE TABLE `package_repositories` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) NOT NULL DEFAULT '',
+  `enabled` char(2) NOT NULL DEFAULT 'on',
+  `default` char(2) NOT NULL DEFAULT '',
+  `repo_type` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `repo_location` varchar(128) NOT NULL DEFAULT '',
+  `repo_branch` varchar(20) NOT NULL DEFAULT '',
+  `repo_api_key` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `location_branch` (`repo_location`,`repo_branch`)
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC COMMENT='Holds Repository Locations that hold Packages';
 
 --
 -- Table structure for table `plugin_archive`

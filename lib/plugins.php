@@ -969,7 +969,7 @@ function api_plugin_disable($plugin) {
 }
 
 function api_plugin_remove_data($plugin) {
-	$setup_file = CACTI_BASE_PATH . "/plugins/$plugin/setup.php";
+	$setup_file = CACTI_PATH_BASE . "/plugins/$plugin/setup.php";
 
 	if (file_exists($setup_file)) {
 		require_once($setup_file);
@@ -1910,7 +1910,7 @@ function plugin_fetch_latest_plugins() {
 
 	if ($repo == '' || $user == '') {
 	       	if (CACTI_WEB) {
-			rase_message('plugins_failed', __('Unable to retrieve Cacti Plugins due to the Base API Repository URL or User not being set in Configuration > Settings > General > GitHub/GitLab API Settings.'), MESSAGE_LEVEL_ERROR);
+			raise_message('plugins_failed', __('Unable to retrieve Cacti Plugins due to the Base API Repository URL or User not being set in Configuration > Settings > General > GitHub/GitLab API Settings.'), MESSAGE_LEVEL_ERROR);
 		} else {
 			print 'Unable to retrieve Cacti Plugins due to the Base API Repository URL or User not being set in Configuration > Settings > General > GitHub/GitLab API Settings.' . PHP_EOL;
 		}
@@ -1924,7 +1924,7 @@ function plugin_fetch_latest_plugins() {
 
 	if ($plugins === false) {
        	if (CACTI_WEB) {
-			rase_message('plugins_failed', __('No plugins found at GitHub/GitLab location.'), MESSAGE_LEVEL_ERROR);
+			raise_message('plugins_failed', __('No plugins found at GitHub/GitLab location.'), MESSAGE_LEVEL_ERROR);
 			header('Location: plugins.php');
 			exit;
 		} else {
@@ -2008,7 +2008,7 @@ function plugin_fetch_latest_plugins() {
 
 								if ($file_details === false) {
 									if (CACTI_WEB) {
-										rase_message('plugins_failed', __('Unable to get archive from GitHub/GitLab location.'), MESSAGE_LEVEL_ERROR);
+										raise_message('plugins_failed', __('Unable to get archive from GitHub/GitLab location.'), MESSAGE_LEVEL_ERROR);
 										header('Location: plugins.php');
 										exit;
 									} else {
@@ -2027,7 +2027,7 @@ function plugin_fetch_latest_plugins() {
 
 								if ($file_details === false) {
 									if (CACTI_WEB) {
-										rase_message('plugins_failed', __('Unable to get %s from GitHub/GitLab location.', $file), MESSAGE_LEVEL_ERROR);
+										raise_message('plugins_failed', __('Unable to get %s from GitHub/GitLab location.', $file), MESSAGE_LEVEL_ERROR);
 										header('Location: plugins.php');
 										exit;
 									} else {
@@ -2094,7 +2094,7 @@ function plugin_fetch_latest_plugins() {
 
 			if ($develop === false) {
 				if (CACTI_WEB) {
-					rase_message('plugins_failed', __('Unable to get develop repo data for plugin %s from GitHub/GitLab location.', $plugin_name), MESSAGE_LEVEL_ERROR);
+					raise_message('plugins_failed', __('Unable to get develop repo data for plugin %s from GitHub/GitLab location.', $plugin_name), MESSAGE_LEVEL_ERROR);
 					header('Location: plugins.php');
 					exit;
 				} else {
@@ -2146,7 +2146,7 @@ function plugin_fetch_latest_plugins() {
 
 							if ($file_details === false) {
 								if (CACTI_WEB) {
-									rase_message('plugins_failed', __('Unable to get archive from GitHub/GitLab location.'), MESSAGE_LEVEL_ERROR);
+									raise_message('plugins_failed', __('Unable to get archive from GitHub/GitLab location.'), MESSAGE_LEVEL_ERROR);
 									header('Location: plugins.php');
 									exit;
 								} else {
@@ -2165,7 +2165,7 @@ function plugin_fetch_latest_plugins() {
 
 							if ($file_details === false) {
 								if (CACTI_WEB) {
-									rase_message('plugins_failed', __('Unable to get %s from GitHub/GitLab location.', $file), MESSAGE_LEVEL_ERROR);
+									raise_message('plugins_failed', __('Unable to get %s from GitHub/GitLab location.', $file), MESSAGE_LEVEL_ERROR);
 									header('Location: plugins.php');
 									exit;
 								} else {

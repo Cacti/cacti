@@ -161,11 +161,17 @@ function sqltable_to_php($table, $create, $plugin = '') {
 		$result = db_fetch_assoc("SHOW INDEX FROM $table");
 
 		if (cacti_sizeof($result)) {
+			$unique_keys = array();
+
 			foreach ($result as $r) {
 				if ($r['Key_name'] == 'PRIMARY') {
 					$pri[] = $r['Column_name'];
 				} else {
 					$keys[$r['Key_name']][$r['Seq_in_index']] = $r['Column_name'];
+
+					if ($r['Non_unique'] == 0) {
+						$unique_keys[$r['Key_name']] = $r['Key_name'];
+					}
 				}
 			}
 
@@ -180,9 +186,9 @@ function sqltable_to_php($table, $create, $plugin = '') {
 			if (!empty($keys)) {
 				foreach ($keys as $n => $k) {
 					if ($plugin != '') {
-						$text .= "\$data['keys'][] = array('name' => '$n', 'columns' => '" . implode('`,`', $k) . "');\n";
+						$text .= "\$data['keys'][] = array('name' => '$n', " . (isset($unique_keys[$n]) ? "'unique' => true, ":'') . "'columns' => '" . implode('`,`', $k) . "');\n";
 					} else {
-						$text .= "\$data['keys'][] = array('name' => '$n', 'columns' => array('" . implode("','", $k) . "'));\n";
+						$text .= "\$data['keys'][] = array('name' => '$n', " . (isset($unique_keys[$n]) ? "'unique' => true, ":'') . "'columns' => array('" . implode("','", $k) . "'));\n";
 					}
 				}
 			}

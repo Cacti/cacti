@@ -22,21 +22,21 @@
  +-------------------------------------------------------------------------+
 */
 
-/* inject_form_variables - replaces all variables contained in $form_array with
-	 their actual values
-   @arg $form_array - an array that contains all of the information needed to draw
-	 the html form. see the arrays contained in include/global_settings.php
-	 for the exact syntax of this array
-   @arg $arg1 - an array that represents the |arg1:| variable (see
-	 include/global_form.php for more details)
-   @arg $arg2 - an array that represents the |arg2:| variable (see
-	 include/global_form.php for more details)
-   @arg $arg3 - an array that represents the |arg3:| variable (see
-	 include/global_form.php for more details)
-   @arg $arg4 - an array that represents the |arg4:| variable (see
-	 include/global_form.php for more details)
-   @returns - $form_array with all available variables substituted with their
-	 proper values */
+/**
+ * Replaces all variables contained in $form_array with their actual values
+ *
+ * This function recursively processes the form array and replaces placeholders
+ * with corresponding values from the provided arguments. It supports up to three
+ * levels of argument replacement (arg1, arg2, arg3).
+ *
+ * @param array &$form_array The form array to process. This array is passed by reference.
+ * @param array $arg1 Optional. Represents the |arg1:| variable (see include/global_form.php for more details)
+ * @param array $arg2 Optional. Represents the |arg2:| variable (see include/global_form.php for more details)
+ * @param array $arg3 Optional. Represents the |arg3:| variable (see include/global_form.php for more details)
+ * @param array $arg4 Optional. Represents the |arg4:| variable (see include/global_form.php for more details)
+ *
+ * @return array The processed form array with injected variables.
+ */
 function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $arg3 = array(), $arg4 = array()) {
 	$check_fields = array('id', 'value', 'array', 'friendly_name', 'description', 'sql', 'sql_print', 'form_id', 'items', 'tree_id');
 
@@ -146,13 +146,20 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 	return $form_array;
 }
 
-/* form_alternate_row_color - starts an HTML row with an alternating color scheme
-   @arg $row_color1 - the first color to use
-   @arg $row_color2 - the second color to use
-   @arg $row_value - the value of the row which will be used to evaluate which color
-	 to display for this particular row. must be an integer
-   @arg $row_id - used to allow js and ajax actions on this object
-   @returns - the background color used for this particular row */
+/**
+ * Generates a table row with alternating row colors and returns the current color.
+ *
+ * This function prints an HTML table row (`<tr>`) with a class that alternates between
+ * 'odd', 'even', and 'even-alternate' based on the provided row value. It also returns
+ * the current color used for the row.
+ *
+ * @param string $row_color1 The color for odd rows.
+ * @param string $row_color2 The color for even rows. If empty or 'E5E5E5', the class 'even' is used.
+ * @param int $row_value The current row number, used to determine if the row is odd or even.
+ * @param string $row_id Optional. The ID to assign to the row. If not provided, no ID is assigned.
+ *
+ * @return string The current color used for the row.
+ */
 function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id = '') {
 	if ($row_value % 2 == 1) {
 		$class         ='odd';
@@ -174,11 +181,16 @@ function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id 
 
 	return $current_color;
 }
-
-/* form_alternate_row - starts an HTML row with an alternating color scheme
-   @arg $light - Alternate odd style
-   @arg $row_id - The id of the row
-   @arg $reset - Reset to top of table */
+   
+/**
+ * Generates an HTML table row with alternating classes for styling.
+ *
+ * @param string $row_id The ID to assign to the table row. If not provided, no ID will be assigned.
+ * @param bool $light If true, the row will use the 'even-alternate' class for even rows.
+ * @param bool $disabled If true, the row will not be selectable.
+ *
+ * @return void
+ */
 function form_alternate_row($row_id = '', $light = false, $disabled = false) {
 	static $i = 1;
 
@@ -203,22 +215,36 @@ function form_alternate_row($row_id = '', $light = false, $disabled = false) {
 	}
 }
 
-/* form_selectable_ecell - a wrapper to form_selectable_cell that escapes the contents
-   @arg $contents - the readable portion of the
-   @arg $id - the id of the object that will be highlighted
-   @arg $width - the width of the table element
-   @arg $style_or_class - the style or class to apply to the table element
-   @arg $title - optional title for the column */
+/**
+ * A wrapper to form_selectable_cell that escapes the contents
+ *
+ * This function creates a selectable table cell with the provided contents,
+ * ensuring that the contents are properly escaped to prevent XSS attacks.
+ *
+ * @param string $contents The content to be displayed inside the cell.
+ * @param string $id The ID attribute for the cell.
+ * @param string $width Optional. The width of the cell. Default is an empty string.
+ * @param string $style_or_class Optional. The style or class attribute for the cell. Default is an empty string.
+ * @param string $title Optional. The title attribute for the cell. Default is an empty string.
+ * 
+ * @return void
+ */
 function form_selectable_ecell($contents, $id, $width = '', $style_or_class = '', $title = '') {
 	form_selectable_cell(html_escape($contents), $id, $width, $style_or_class, $title);
 }
 
-/* form_selectable_cell - format's a table row such that it can be highlighted using cacti's js actions
-   @arg $contents - the readable portion of the
-   @arg $id - the id of the object that will be highlighted
-   @arg $width - the width of the table element
-   @arg $style_or_class - the style or class to apply to the table element
-   @arg $title - optional title for the column */
+/**
+ * Format's a table row such that it can be highlighted using cacti's js actions
+ *
+ * @param string $contents The content to be placed inside the table cell.
+ * @param string $id The ID attribute for the table cell (not used in the function).
+ * @param string $width Optional. The width of the table cell. Default is an empty string.
+ * @param string $style_or_class Optional. The style or class attribute for the table cell. Default is an empty string.
+ *                               If it contains a colon (:), it is treated as a style attribute; otherwise, as a class attribute.
+ * @param string $title Optional. The tooltip text for the table cell. Default is an empty string.
+ *
+ * @return void
+ */
 function form_selectable_cell($contents, $id, $width = '', $style_or_class = '', $title = '') {
 	$output = '';
 
@@ -254,31 +280,54 @@ function form_selectable_cell($contents, $id, $width = '', $style_or_class = '',
 	print "\t<td " . $output . '>' . $wrapper . "</td>\n";
 }
 
-/* form_checkbox_cell - format's a tables checkbox form element so that the cacti js actions work on it
-   @arg $title - the text that will be displayed if your hover over the checkbox */
+/**
+ * Format's a tables checkbox form element so that the cacti js actions work on it
+ *
+ * @param string $title The title attribute for the checkbox, used for accessibility.
+ * @param string $id The unique identifier for the checkbox input element.
+ * @param bool $disabled Optional. Whether the checkbox should be disabled. Default is false.
+ * @param bool $checked Optional. Whether the checkbox should be checked. Default is false.
+ * 
+ * @return void
+ */
 function form_checkbox_cell($title, $id, $disabled = false, $checked = false) {
 	print "\t<td class='checkbox' style='width:1%;'>\n";
 	print "\t\t<input type='checkbox' title='" . html_escape($title) . "' class='checkbox" . ($disabled ? ' disabled':'') . "' " . ($disabled ? " disabled='disabled'":'') . ($checked ? " checked='checked'":'') . " id='chk_" . $id . "' name='chk_" . $id . "'><label class='formCheckboxLabel' for='chk_" . $id . "'></label>\n";
 	print "\t</td>\n";
 }
 
-/* form_end_row - ends a table row that is started with form_alternate_row */
+/**
+ * Ends a table row that is started with form_alternate_row
+ *
+ * @return void
+ */
 function form_end_row() {
 	print "</tr>\n";
 }
 
-/* html_boolean - returns the boolean equivalent of an HTML checkbox value
-   @arg $html_boolean - the value of the HTML checkbox
-   @returns - true or false based on the value of the HTML checkbox */
+/**
+ * Returns the boolean equivalent of an HTML checkbox value
+ *
+ * This function checks if the given string is equal to 'on' and returns true if it is,
+ * otherwise it returns false.
+ *
+ * @param string $html_boolean The string representation of a boolean value.
+ * 
+ * @return bool Returns true if the input string is 'on', otherwise false.
+ */
 function html_boolean($html_boolean) {
 	return ($html_boolean == 'on');
 }
 
-/* html_boolean_friendly - returns the natural language equivalent of an HTML
-	 checkbox value
-   @arg $html_boolean - the value of the HTML checkbox
-   @returns - 'Selected' or 'Not Selected' based on the value of the HTML
-	 checkbox */
+/**
+ * Returns the natural language equivalent of an HTML checkbox value
+ *
+ * This function takes an HTML boolean value (typically 'on' or 'off') and
+ * returns a user-friendly string indicating whether the value is selected or not.
+ *
+ * @param string $html_boolean The HTML boolean value to convert. Expected values are 'on' or 'off'.
+ * @return string Returns 'Selected' if the input is 'on', otherwise returns 'Not Selected'.
+ */
 function html_boolean_friendly($html_boolean) {
 	if ($html_boolean == 'on') {
 		return __('Selected');
@@ -287,10 +336,13 @@ function html_boolean_friendly($html_boolean) {
 	}
 }
 
-/* get_checkbox_style - finds the proper CSS padding to apply based on the
-	 current client browser in use
-   @returns - a CSS style string which should be used with an HTML checkbox
-	 control */
+/**
+ * Finds the proper CSS padding to apply based on the current client browser in use
+ *
+ * This function currently returns an empty string, indicating no specific style is applied.
+ *
+ * @return string An empty string representing the checkbox style.
+ */
 function get_checkbox_style() {
 	return '';
 }
@@ -805,9 +857,15 @@ function validate_store_request_vars(array $filters, string $sess_prefix = ''):v
 }
 
 /**
- * update_order_string - creates a sort string for standard Cacti tables
+ * Creates a sort string for standard Cacti tables
  *
- * @returns - null
+ * This function manages the sorting order for data displayed on a page. It can update the order string
+ * in place or based on request variables. The function handles sorting by different columns, including
+ * special handling for IP addresses.
+ *
+ * @param bool $inplace If true, updates the order string in place using the current session data.
+ * 
+ * @return void
  */
 function update_order_string($inplace = false) {
 	$page = get_order_string_page();
@@ -884,8 +942,15 @@ function update_order_string($inplace = false) {
 	}
 }
 
-/* get_order_string - returns a valid order string for a table
-   @returns - the order string */
+/**
+ * Generates an SQL ORDER BY clause based on the current sorting preferences.
+ *
+ * This function constructs an ORDER BY clause using the sort column and sort direction
+ * specified in the request variables. It also ensures that the column name is properly
+ * delimited to prevent SQL injection.
+ *
+ * @return string The generated ORDER BY clause.
+ */
 function get_order_string() {
 	$page = get_order_string_page();
 
@@ -902,6 +967,17 @@ function get_order_string() {
 	}
 }
 
+/**
+ * Removes a specified column from the order string in the session data.
+ *
+ * This function retrieves the current page's order string and checks if the specified
+ * column exists in the session's sort data for that page. If the column is found, it
+ * removes the column from the sort data and updates the order string.
+ *
+ * @param string $column The name of the column to be removed from the order string.
+ * 
+ * @return void
+ */
 function remove_column_from_order_string($column) {
 	$page = get_order_string_page();
 
@@ -911,6 +987,16 @@ function remove_column_from_order_string($column) {
 	}
 }
 
+/**
+ * Generates a unique order string for the current page.
+ *
+ * This function creates a unique identifier for the current page by combining
+ * a static page count, the current page name, and optional request variables
+ * such as 'action' and 'tab'. The page count is incremented with each call to
+ * ensure uniqueness.
+ *
+ * @return string A unique order string for the current page.
+ */
 function get_order_string_page() {
 	static $page_count = 0;
 
@@ -929,6 +1015,17 @@ function get_order_string_page() {
 	return $page;
 }
 
+/**
+ * Validates if the given string is a valid regular expression.
+ *
+ * This function checks if the provided regular expression is valid and safe to use.
+ * It prevents exploits by limiting the length of the regular expression to 50 bytes
+ * and disallowing the use of the semicolon character.
+ *
+ * @param string $regex The regular expression to validate.
+ * 
+ * @return mixed Returns true if the regular expression is valid, otherwise returns an error message.
+ */
 function validate_is_regex($regex) {
 	if ($regex == '') {
 		return true;
@@ -985,12 +1082,19 @@ function validate_is_regex($regex) {
 	}
 }
 
-/* load_current_session_value - finds the correct value of a variable that is being
-	 cached as a session variable on an HTML form
-   @arg $request_var_name - the array index name for the request variable
-   @arg $session_var_name - the array index name for the session variable
-   @arg $default_value - the default value to use if values cannot be obtained using
-	 the session or request array */
+/**
+ * Loads the current session value for a given request variable.
+ *
+ * This function checks if a request variable is set. If it is, the value is stored in the session.
+ * If the request variable is not set but the session variable is, the session value is set as the request variable.
+ * If neither is set, the request variable is set to a default value.
+ *
+ * @param string $request_var_name The name of the request variable to check.
+ * @param string $session_var_name The name of the session variable to store the value.
+ * @param mixed $default_value The default value to set if neither the request nor session variable is set.
+ * 
+ * @return void
+ */
 function load_current_session_value($request_var_name, $session_var_name, $default_value) {
 	if (isset_request_var($request_var_name)) {
 		$_SESSION[$session_var_name] = get_request_var($request_var_name);
@@ -1002,15 +1106,18 @@ function load_current_session_value($request_var_name, $session_var_name, $defau
 }
 
 /**
- * get_colored_device_status - given a device's status, return the colored text in HTML
- * format suitable for display
+ * Get the colored device status as an HTML span element.
  *
- * @param bool    - true if the device is disabled, false is it is not
- * @param int     - The device status as defined in global_constants.php
- * @param int     - The thold failure count is thold is installed
- * @param int     - The host status event count is thold is installed
+ * This function returns an HTML span element with a class and text representing
+ * the status of a device. The status can be 'Disabled', 'Down (Thold)', 'Down',
+ * 'Recovering', 'Up', 'Error', or 'Unknown'.
  *
- * @return - a string containing html that represents the device's current status
+ * @param bool $disabled Indicates if the device is disabled.
+ * @param int $status The current status of the device.
+ * @param int $thold_failure_count Optional. The threshold failure count. Default is -1.
+ * @param int $status_event_count Optional. The status event count. Default is -1.
+ *
+ * @return string The HTML span element with the appropriate class and status text.
  */
 function get_colored_device_status($disabled, $status, $thold_failure_count = -1, $status_event_count = -1) {
 	if ($disabled) {
@@ -1066,9 +1173,11 @@ function get_colored_site_status(bool $disabled, ?string $site_name) {
 	return "<span class='$class'>" . __esc($site_name) . '</span>';
 }
 
-/* get_current_graph_start - determine the correct graph start time selected using
-	 the timespan selector
-   @returns - the number of seconds relative to now where the graph should begin */
+/**
+ * Determine the correct graph start time selected using the timespan selector
+ *
+ * @return mixed The current graph start time if set and numeric, otherwise a default timespan value.
+ */
 function get_current_graph_start() {
 	if (isset($_SESSION['sess_current_timespan_begin_now']) && is_numeric($_SESSION['sess_current_timespan_begin_now'])) {
 		return $_SESSION['sess_current_timespan_begin_now'];
@@ -1077,9 +1186,11 @@ function get_current_graph_start() {
 	}
 }
 
-/* get_current_graph_end - determine the correct graph end time selected using
-	 the timespan selector
-   @returns - the number of seconds relative to now where the graph should end */
+/**
+ * Determine the correct graph end time selected using the timespan selector
+ *
+ * @return mixed The current graph end time if set and numeric, otherwise '0'.
+ */
 function get_current_graph_end() {
 	if (isset($_SESSION['sess_current_timespan_end_now']) && is_numeric($_SESSION['sess_current_timespan_end_now'])) {
 		return $_SESSION['sess_current_timespan_end_now'];
@@ -1088,9 +1199,18 @@ function get_current_graph_end() {
 	}
 }
 
-/* display_tooltip - display the text passed to the function as a tooltip
-   @arg $text - the text to display in the tooltip
-   @returns - null */
+/**
+ * Generates an HTML tooltip element with the provided text.
+ *
+ * This function creates a tooltip element using a div with the class
+ * "cactiTooltipHint" and a FontAwesome question-circle icon. The tooltip
+ * text is included within a span element that is initially hidden.
+ *
+ * @param string $text The text to be displayed inside the tooltip.
+ * 
+ * @return string The HTML string for the tooltip element if text is provided, 
+ *                otherwise an empty string.
+ */
 function display_tooltip($text) {
 	if ($text != '') {
 		return '<div class="cactiTooltipHint fa fa-question-circle"><span style="display:none;">' . $text . "</span></div>\n";
@@ -1099,15 +1219,19 @@ function display_tooltip($text) {
 	}
 }
 
-/* get_page_list - generates the html necessary to present the user with a list of pages limited
-	 in length and number of rows per page
-   @arg $current_page - the current page number
-   @arg $pages_per_screen - the maximum number of pages allowed on a single screen. odd numbered
-	 values for this argument are preferred for equality reasons
-   @arg $current_page - the current page number
-   @arg $total_rows - the total number of available rows
-   @arg $url - the url string to prepend to each page click
-   @returns - a string containing html that represents the a page list */
+/**
+ * Generates a paginated list of links for navigating through pages.
+ *
+ * @param int $current_page The current page number.
+ * @param int $pages_per_screen The number of pages to display in the pagination control.
+ * @param int $rows_per_page The number of rows per page.
+ * @param int $total_rows The total number of rows.
+ * @param string $url The base URL for the pagination links.
+ * @param string $page_var The query parameter name for the page number (default is 'page').
+ * @param string $return_to The ID of the HTML element to update with the new page content (default is '').
+ * 
+ * @return string The HTML for the pagination control.
+ */
 function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_rows, $url, $page_var = 'page', $return_to = '') {
 	// By current design, $pages_per_screen means number of page no in mid of nav bar
 	// when $total_pages is larger than $pages_per_screen + 2(first and last)

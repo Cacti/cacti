@@ -3824,9 +3824,9 @@ function basic_auth_login_process($username) {
  *   if there is an error, the globals error and error_msg will be set to notify the caller
  *   that error and not to proceed with login.
  *
- * @param  (string) $username - The user to process
+ * @param  string $username - The user to process
  *
- * @return (array)  $user - The valid user information, or empty array if user must be created
+ * @return array  $user - The valid user information, or empty array if user must be created
  */
 function local_auth_login_process($username) {
 	$user = array();

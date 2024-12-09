@@ -605,7 +605,7 @@ function push_out_data_input_method($data_input_id) {
 }
 
 /** mass update of poller cache - can run in parallel to poller
- * @param array/int $local_data_ids - either a scalar (all ids) or an array of data source to act on
+ * @param array $local_data_ids - either a scalar (all ids) or an array of data source to act on
  * @param array $poller_items - the new items for poller cache
  * @param int $poller_id - the poller_id of the buffer
  */

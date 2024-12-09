@@ -569,7 +569,7 @@ function substitute_poller_data($string, $graph, $local_data_id, $max_chars = 0)
 				WHERE h.id = ?',
 				array($graph['host_id']));
 
-			if (!cacti_sizoef($poller)) {
+			if (!cacti_sizeof($poller)) {
 				return $string;
 			}
 
@@ -591,7 +591,7 @@ function substitute_poller_data($string, $graph, $local_data_id, $max_chars = 0)
 			WHERE dl.id = ?',
 			array($local_data_id));
 
-		if (!cacti_sizoef($poller)) {
+		if (!cacti_sizeof($poller)) {
 			return $string;
 		}
 
@@ -628,7 +628,7 @@ function substitute_site_data($string, $graph, $local_data_id, $max_chars = 0) {
 				WHERE h.id = ?',
 				array($graph['host_id']));
 
-			if (!cacti_sizoef($site)) {
+			if (!cacti_sizeof($site)) {
 				return $string;
 			}
 
@@ -650,7 +650,7 @@ function substitute_site_data($string, $graph, $local_data_id, $max_chars = 0) {
 			WHERE dl.id = ?',
 			array($local_data_id));
 
-		if (!cacti_sizoef($site)) {
+		if (!cacti_sizeof($site)) {
 			return $string;
 		}
 

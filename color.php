@@ -199,15 +199,16 @@ function color_import_processor(&$colors) {
 	if (cacti_sizeof($colors)) {
 		foreach ($colors as $color_line) {
 			/* parse line */
-			$line_array = explode(',', $color_line);
+			$line_array     = explode(',', $color_line);
+			$insert_columns = array();
+			$save_order    = '(';
+			$update_suffix = '';
 
 			/* header row */
 			if ($i == 0) {
-				$save_order    = '(';
 				$j             = 0;
 				$first_column  = true;
 				$required      = 0;
-				$update_suffix = '';
 
 				if (cacti_sizeof($line_array)) {
 					foreach ($line_array as $line_item) {

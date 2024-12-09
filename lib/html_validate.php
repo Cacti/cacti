@@ -22,28 +22,71 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Validates if the given value is equal to the comparison value.
+ *
+ * @param mixed  $value    The value to be validated.
+ * @param mixed  $c_value  The value to compare against.
+ * @param string $variable (Optional) The name of the variable being validated.
+ *
+ * @return void
+ */
 function input_validate_input_equals($value, $c_value, $variable = '') {
 	if ($value != $c_value) {
 		die_html_input_error($variable, $value);
 	}
 }
 
+/**
+ * Validates if the given value is a number.
+ *
+ * @param mixed  $value    The value to be validated.
+ * @param string $variable (Optional) The name of the variable being validated. This is used in the error message.
+ *
+ * @return void
+ */
 function input_validate_input_number($value, $variable = '') {
 	if ((!is_numeric($value)) && ($value != '')) {
 		die_html_input_error($variable, $value);
 	}
 }
 
+/**
+ * Validates the input value against a given regular expression.
+ *
+ * @param string $value The input value to be validated.
+ * @param string $regex The regular expression to validate the input value against.
+ * @param string $variable (Optional) The name of the variable being validated, used for error reporting.
+ *
+ * @return void
+ */
 function input_validate_input_regex($value, $regex, $variable = '') {
 	if ($value != null && $value != '' && (!preg_match('/' . $regex . '/', $value))) {
 		die_html_input_error($variable, $value);
 	}
 }
 
+/**
+ * Logs an input validation error for a given variable.
+ *
+ * This function logs a debug backtrace message indicating that input validation
+ * was not performed for the specified variable.
+ *
+ * @param string $variable The name of the variable for which input validation was not performed.
+ */
 function html_log_input_error($variable) {
 	cacti_debug_backtrace("Input Validation Not Performed for '$variable'");
 }
 
+/**
+ * Terminates the script execution and outputs an error message for HTML input validation errors.
+ *
+ * @param string|null $variable The name of the variable that caused the validation error.
+ * @param string|null $value The value of the variable that caused the validation error.
+ * @param string $message An optional custom error message.
+ * 
+ * @return void
+ */
 function die_html_input_error($variable = null, $value = null, $message = '') {
 	$func = CACTI_CLI ? 'trim' : 'html_escape';
 

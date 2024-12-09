@@ -181,8 +181,8 @@ function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_i
  * @param int $_new_graph_id			- id of the new graph
  * @param int $_old_graph_id			- id of the old graph
  * @param int $_graph_template_id		- template id of the old graph if the old graph is 0
- * @param int $_skip					- graph items to be skipped, array starts at 1
- * @param int $_totali                  - graph items to be totaled, array starts at 1
+ * @param array $_skip					- graph items to be skipped, array starts at 1
+ * @param array $_totali                - graph items to be totaled, array starts at 1
  * @param int $_graph_item_sequence		- sequence number of the next graph item to be inserted
  * @param int $_selected_graph_index	- index of current graph to be inserted
  * @param array $_color_templates		- the color templates to be used

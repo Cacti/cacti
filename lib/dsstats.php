@@ -1253,7 +1253,7 @@ function dsstats_rrdtool_execute($command, $rrd_process) {
 	$use_proxy  = (read_config_option('storage_location') > 0 ? true : false);
 
 	if ($use_proxy) {
-		$output = rrdtool_function_execute($command, false, RRDTOOL_OUTPUT_STDOUT, $rrd_process, 'DSSTATS');
+		$output = rrdtool_execute($command, false, RRDTOOL_OUTPUT_STDOUT, $rrd_process, 'DSSTATS');
 	} else {
 		$stdout = '';
 
@@ -1448,7 +1448,7 @@ function dsstats_get_best_partition($start_time, $end_time = 0) {
 
 		if ($desired_suffix == $current_suffix) {
 			return 'data_source_stats_daily';
-		} elseif (table_exists('data_source_stats_daily' . $desired_suffix)) {
+		} elseif (db_table_exists('data_source_stats_daily' . $desired_suffix)) {
 			return 'data_source_stats_daily' . $desired_suffix;
 		} else {
 			return 'data_source_stats_daily';
@@ -1460,7 +1460,7 @@ function dsstats_get_best_partition($start_time, $end_time = 0) {
 
 		if ($desired_suffix == $current_suffix) {
 			return 'data_source_stats_weekly';
-		} elseif (table_exists('data_source_stats_weekly' . $desired_suffix)) {
+		} elseif (db_table_exists('data_source_stats_weekly' . $desired_suffix)) {
 			return 'data_source_stats_weekly' . $desired_suffix;
 		} else {
 			return 'data_source_stats_weekly';
@@ -1472,7 +1472,7 @@ function dsstats_get_best_partition($start_time, $end_time = 0) {
 
 		if ($desired_suffix == $current_suffix) {
 			return 'data_source_stats_monthly';
-		} elseif (table_exists('data_source_stats_monthly' . $desired_suffix)) {
+		} elseif (db_table_exists('data_source_stats_monthly' . $desired_suffix)) {
 			return 'data_source_stats_monthly' . $desired_suffix;
 		} else {
 			return 'data_source_stats_monthly';
@@ -1484,7 +1484,7 @@ function dsstats_get_best_partition($start_time, $end_time = 0) {
 
 		if ($desired_suffix == $current_suffix) {
 			return 'data_source_stats_yearly';
-		} elseif (table_exists('data_source_stats_yearly' . $desired_suffix)) {
+		} elseif (db_table_exists('data_source_stats_yearly' . $desired_suffix)) {
 			return 'data_source_stats_yearly' . $desired_suffix;
 		} else {
 			return 'data_source_stats_yearly';

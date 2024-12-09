@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+/**
+ * Processes the tree settings for the current user.
+ * 
+ * @return void
+ */
 function process_tree_settings() {
 	global $current_user;
 
@@ -43,6 +48,17 @@ function process_tree_settings() {
 	}
 }
 
+/**
+ * Generates a dropdown tree structure for a given tree ID.
+ *
+ * @param int $tree_id The ID of the tree to generate the dropdown for.
+ * @param int $parent The parent ID to start building the tree from. Default is 0 (root).
+ * @param string $form_name The name attribute for the <select> element.
+ * @param string $selected_tree_item_id The ID of the tree item to be selected by default.
+ * @param int $tier The current tier level in the tree. Default is 0.
+ *
+ * @return void
+ */
 function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tree_item_id = '', $tier = 0) {
 	global $config;
 
@@ -87,6 +103,11 @@ function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tr
 	}
 }
 
+/**
+ * Generates and displays the DHTML trees
+ *
+ * @return void
+ */
 function grow_dhtml_trees() {
 	global $config;
 
@@ -379,6 +400,15 @@ function grow_dhtml_trees() {
 	<?php
 }
 
+/**
+ * Retrieves the tree path based on the request variables.
+ *
+ * This function constructs an array of node identifiers representing the path
+ * in a tree structure. It processes the request variables to determine the
+ * specific nodes and their hierarchy.
+ *
+ * @return array An array of node identifiers representing the tree path.
+ */
 function get_tree_path() {
 	if (isset_request_var('node')) {
 		$nodes  = array();
@@ -477,6 +507,14 @@ function get_tree_path() {
 	}
 }
 
+/**
+ * Get the CSS class for a device based on its status.
+ *
+ * @param int $host_id The ID of the host device.
+ * @return string The CSS class name corresponding to the device's status.
+ * 
+ * @return string
+ */
 function get_device_leaf_class($host_id) {
 	$status = db_fetch_cell_prepared('SELECT status FROM host WHERE id = ?', array($host_id));
 
@@ -509,6 +547,15 @@ function get_device_leaf_class($host_id) {
 	return $class;
 }
 
+/**
+ * Draws a DHTML tree level for a given tree ID and parent node.
+ *
+ * @param int  $tree_id The ID of the tree to draw.
+ * @param int  $parent  The ID of the parent node (default is 0).
+ * @param bool $editing Whether the tree is in editing mode (default is false).
+ *
+ * @return array An array of HTML strings representing the DHTML tree level.
+ */
 function draw_dhtml_tree_level($tree_id, $parent = 0, $editing = false) {
 	$dhtml_tree = array();
 
@@ -535,6 +582,17 @@ function draw_dhtml_tree_level($tree_id, $parent = 0, $editing = false) {
 	return $dhtml_tree;
 }
 
+/**
+ * Draws a DHTML tree level for graphing.
+ *
+ * This function generates the HTML structure for a DHTML tree based on the given tree ID and parent node.
+ * It includes branches for sites, hosts, and other elements, and returns the generated HTML as an array of strings.
+ *
+ * @param int $tree_id The ID of the tree to draw.
+ * @param int $parent The ID of the parent node. Defaults to 0.
+ * 
+ * @return array The generated HTML structure as an array of strings.
+ */
 function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 	global $config;
 
@@ -573,6 +631,16 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 	return $dhtml_tree;
 }
 
+/**
+ * Creates a site branch in the DHTML tree structure.
+ *
+ * This function generates a hierarchical tree structure for a given site,
+ * including its devices and graph templates.
+ *
+ * @param array $leaf An associative array containing site information.
+ * 
+ * @return array An array of strings representing the DHTML tree structure.
+ */
 function create_site_branch($leaf) {
 	global $config, $unique_id;
 
@@ -634,6 +702,18 @@ function create_site_branch($leaf) {
 	return $dhtml_tree;
 }
 
+/**
+ * Creates a branch in the DHTML tree structure.
+ *
+ * This function generates a list item (`<li>`) element for a given leaf node
+ * in the tree. It checks if the leaf node has children and assigns the appropriate
+ * CSS class to indicate whether the node is closed or not. The function also
+ * constructs a URL for the leaf node and escapes it for HTML output.
+ *
+ * @param array $leaf An associative array representing the leaf node. It should
+ *
+ * @return array An array containing the generated HTML for the leaf node.
+ */
 function create_branch($leaf) {
 	global $config;
 
@@ -650,6 +730,15 @@ function create_branch($leaf) {
 	return $dhtml_tree;
 }
 
+/**
+ * Creates a host branch in the DHTML tree structure.
+ *
+ * @param array $leaf The leaf node containing host information.
+ * @param int $site_id The site ID associated with the host (default is -1).
+ * @param int $ht The host template ID (default is -1).
+ * 
+ * @return array The DHTML tree structure with the host branch added.
+ */
 function create_host_branch($leaf, $site_id = -1, $ht = -1) {
 	global $config, $unique_id;
 
@@ -687,6 +776,15 @@ function create_host_branch($leaf, $site_id = -1, $ht = -1) {
 	return $dhtml_tree;
 }
 
+/**
+ * Creates a branch of graph templates for a given host in a DHTML tree structure.
+ *
+ * @param array $leaf An associative array containing information about the host.
+ * @param int $site_id Optional. The ID of the site. Default is -1.
+ * @param int $ht Optional. The ID of the host template. Default is -1.
+ * 
+ * @return array An array of HTML list items representing the graph templates.
+ */
 function create_graph_template_branch($leaf, $site_id = -1, $ht = -1) {
 	global $config, $unique_id;
 
@@ -708,6 +806,19 @@ function create_graph_template_branch($leaf, $site_id = -1, $ht = -1) {
 	return $dhtml_tree;
 }
 
+/**
+ * Creates a data query branch for a given leaf and site.
+ *
+ * This function generates a hierarchical tree structure for data queries
+ * associated with a specific host. It supports both query-based and non-query-based
+ * data sources and includes options for sorting and filtering based on user settings.
+ *
+ * @param array $leaf The leaf node containing host information.
+ * @param int $site_id The site ID (default is -1).
+ * @param int $ht The host template ID (default is -1).
+ * 
+ * @return array The generated DHTML tree structure.
+ */
 function create_data_query_branch($leaf, $site_id = -1, $ht = -1) {
 	global $config, $unique_id;
 
@@ -815,6 +926,15 @@ function create_data_query_branch($leaf, $site_id = -1, $ht = -1) {
 	return $dhtml_tree;
 }
 
+/**
+ * Creates a DHTML tree structure.
+ *
+ * This function generates a DHTML tree structure by retrieving a list of allowed trees
+ * and marking each tree as true in the resulting array.
+ *
+ * @return array An associative array where the keys are tree identifiers prefixed with 'tree:'
+ *               and the values are set to true.
+ */
 function create_dhtml_tree() {
 	$dhtml_tree = array();
 
@@ -829,6 +949,15 @@ function create_dhtml_tree() {
 	return $dhtml_tree;
 }
 
+/**
+ * Validates and processes tree-related request variables.
+ * 
+ * This function ensures that the request variables related to tree views are
+ * properly validated and sanitized. It also handles session storage for these
+ * variables and prevents double calls within the same stack.
+ * 
+ * @return bool Returns false if the function has already been called in the same stack.
+ */
 function html_validate_tree_vars() {
 	static $count = false;
 
@@ -943,6 +1072,19 @@ function html_validate_tree_vars() {
 	$count = true;
 }
 
+/**
+ * Generates the right pane tree structure for the given tree and leaf IDs.
+ *
+ * This function constructs the right pane tree structure for a given tree and leaf ID,
+ * including various filters and options for graph templates, host templates, sites, and more.
+ * It also handles the display of graph filters, timespan selectors, and other UI elements.
+ *
+ * @param int $tree_id The ID of the tree to generate the right pane for.
+ * @param int $leaf_id The ID of the leaf to generate the right pane for.
+ * @param string $host_group_data The host group data string, which can include graph template IDs, data query IDs, and data query indexes.
+ *
+ * @return void
+ */
 function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	global $current_user, $config, $graphs_per_page, $graph_timeshifts;
 
@@ -1565,6 +1707,17 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 }
 
+/**
+ * Retrieves a list of graphs for a given host, graph template, and data query.
+ *
+ * @param int    $host_id             The ID of the host.
+ * @param string $graph_template_id   The ID of the graph template.
+ * @param int    $data_query_id       The ID of the data query.
+ * @param string $host_grouping_type  The type of host grouping (optional).
+ * @param string $data_query_index    The index of the data query (optional).
+ *
+ * @return array An array of graphs for the specified host, graph template, and data query.
+ */
 function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host_grouping_type = '', $data_query_index = '') {
 	$graph_list = array();
 	$sql_where  = '';

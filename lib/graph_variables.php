@@ -25,13 +25,13 @@
 /**
  * nth_percentile - given a data source, calculate the Nth percentile for a given over a time period
  *
- * @param (int|array) $local_data_ids - the data source array to perform the Nth percentile calculation
- * @param (int)       $start_seconds - start seconds of time range
- * @param (int)       $stop_seconds - stop seconds of time range
- * @param (int)       $percentile - Nth Percentile to calculate, integer between 1 and 99
- * @param (int)       $resolution - the accuracy of the data measured in seconds
+ * @param int|array $local_data_ids - the data source array to perform the Nth percentile calculation
+ * @param int       $start_seconds - start seconds of time range
+ * @param int       $stop_seconds - stop seconds of time range
+ * @param int       $percentile - Nth Percentile to calculate, integer between 1 and 99
+ * @param int       $resolution - the accuracy of the data measured in seconds
  *
- * @return (double)   an array containing each data source item, and its 95th percentile
+ * @return double   an array containing each data source item, and its 95th percentile
  */
 function nth_percentile($local_data_ids, $start_seconds, $end_seconds, $percentile = 95, $resolution = 0, $peak = false) {
 	$stats = json_decode(rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $percentile, $resolution, $peak), true);
@@ -63,14 +63,14 @@ function nth_percentile($local_data_ids, $start_seconds, $end_seconds, $percenti
  * rrdtool_function_stats - given a data source, calculate a number of statistics for an RRDfile or files
  * over a specified time period
  *
- * @param (int)      $local_data_ids - the data source array to perform the Nth percentile calculation
- * @param (int)      $start_seconds - start seconds of time range
- * @param (int)      $stop_seconds - stop seconds of time range
- * @param (int)      $percentile - Nth Percentile to calculate, integer between 1 and 99
- * @param (int)      $resolution - the accuracy of the data measured in seconds
- * @param (res|null) $rrdtool_pipe - the RRDtool socket connection if there is one
+ * @param int|array     $local_data_ids - the data source array to perform the Nth percentile calculation
+ * @param int           $start_seconds - start seconds of time range
+ * @param int           $stop_seconds - stop seconds of time range
+ * @param int           $percentile - Nth Percentile to calculate, integer between 1 and 99
+ * @param int           $resolution - the accuracy of the data measured in seconds
+ * @param resource|null $rrdtool_pipe - the RRDtool socket connection if there is one
  *
- * @return (array) an array containing each data source item, and its 95th percentile
+ * @return string JSON data containing each data source item, and its 95th percentile
  */
 function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $percentile = 95, $resolution = 0, $peak = false, $rrdtool_pipe = null) {
 	global $config;

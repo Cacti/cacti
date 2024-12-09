@@ -564,7 +564,7 @@ function data_query_item_remove_confirm() {
 		$('#continue').click(function(data) {
 			var options = {
 				url: 'data_queries.php?action=item_remove',
-				funcEnd: 'removeDataQueryItemFinalize';
+				funcEnd: 'removeDataQueryItemFinalize',
 			}
 
 			var data = {

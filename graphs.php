@@ -215,7 +215,7 @@ function get_ajax_graph_items() {
 
 	$sql_where    = '';
 	$sql_params   = array();
-	$sql_params[] = $rra_id;
+	$sql_params[] = $rrd_id;
 
 	if ($host_id > 0) {
 		$sql_where = ' AND data_local.host_id = ?';

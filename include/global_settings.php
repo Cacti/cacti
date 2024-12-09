@@ -606,6 +606,34 @@ $settings['general'] = array(
 		'method'        => 'checkbox',
 		'default'       => '',
 	),
+	'packaging_spacer' => array(
+		'friendly_name' => __('Packaging Defaults'),
+		'method'        => 'spacer',
+		'collapsible'   => 'true'
+	),
+	'packaging_author' => array(
+		'friendly_name' => __('Author Name'),
+		'description'   => __('The name of the author that you wish published with the Device Template or Package.'),
+		'method'        => 'textbox',
+		'default'       => 'The Cacti Group',
+		'size'          => '40',
+		'max_length'    => '40',
+	),
+	'packaging_email' => array(
+		'friendly_name' => __('Author Email Address'),
+		'description'   => __('The Email address of the author that you wish published with the Device Template or Package.'),
+		'method'        => 'textbox',
+		'default'       => 'developers@cacti.net',
+		'size'          => '60',
+		'max_length'    => '60',
+	),
+	'packaging_copyright' => array(
+		'friendly_name' => __('Template/Package Copyright'),
+		'description'   => __('The Email address of the author that you wish published with the Device Template or Package.'),
+		'method'        => 'drop_array',
+		'default'       => 'GNU General Public License',
+		'array'         => $copyrights,
+	),
 	'security_header' => array(
 		'friendly_name' => __('Site Security'),
 		'method'        => 'spacer',

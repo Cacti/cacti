@@ -259,7 +259,8 @@ function push_out_data_source($data_template_data_id) {
  * @param return_ids - Return an array of special ids
  * @param mixed $data_input_field_id
  * @param mixed $return_ids
- * @return boolean - true or false
+ * 
+ * @return bool|array - true or false
  */
 function data_input_field_always_checked($data_input_field_id = 0, $return_ids = false) {
 	static $always_checked = array();

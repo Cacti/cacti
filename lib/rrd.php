@@ -361,7 +361,7 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 					$process = proc_open(read_config_option('path_rrdtool') . ' - ' . $debug, $descriptorspec, $pipes);
 
 					if (!is_resource($process)) {
-						$attempt++;
+						$attempts++;
 
 						unset($process);
 					} else {
@@ -1047,18 +1047,18 @@ function rrdtool_function_tune($rrd_tune_array) {
 /**
  * rrdtool_function_fetch - given a data source, return all of its data in an array
  *
- * @param $local_data_id - the data source to fetch data for
- * @param $start_time - the start time to use for the data calculation. this value can
+ * @param int         $local_data_id - the data source to fetch data for
+ * @param int         $start_time - the start time to use for the data calculation. this value can
  *   either be absolute (unix timestamp) or relative (to now)
- * @param $end_time - the end time to use for the data calculation. this value can
+ * @param int         $end_time - the end time to use for the data calculation. this value can
  *   either be absolute (unix timestamp) or relative (to now)
- * @param $resolution - the accuracy of the data measured in seconds
- * @param $show_unknown - Show unknown 'NAN' values in the output as 'U'
- * @param $rrdtool_file - Don't force Cacti to calculate the file
- * @param $cf - Specify the consolidation function to use
- * @param $rrdtool_pipe - a pipe to an rrdtool command
+ * @param int         $resolution - the accuracy of the data measured in seconds
+ * @param bool        $show_unknown - Show unknown 'NAN' values in the output as 'U'
+ * @param string|null $rrdtool_file - Don't force Cacti to calculate the file
+ * @param string      $cf - Specify the consolidation function to use
+ * @param null|res    $rrdtool_pipe - a pipe to an rrdtool command
  *
- * @return - (array) an array containing all data in this data source broken down
+ * @return array an array containing all data in this data source broken down
  *   by each data source item. the maximum of all data source items is included in
  *   an item called 'nth_percentile_maximum'.  The array will look as follows:
  *
@@ -3027,6 +3027,7 @@ function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 	} else {
 		return $txt_graph_item;
 	}
+	return '';
 }
 
 function rrdtool_function_get_resstep($local_data_ids, $graph_start, $graph_end, $type = 'res') {
@@ -3578,9 +3579,9 @@ function rrdtool_info2html($info_array, $diff=array()) {
 				form_selectable_cell(__('Unknown'), 'max', '', 'color:red;text-align:right');
 			}
 
-			form_selectable_cell((isset($value['last_ds']) && is_numeric($value['last_ds']) ? number_format_i18n($value['last_ds']) : (isset($value['last_ds']) ? $value['last_ds']:'')), 'last_ds', '', 'text-align:right');
-			form_selectable_cell((isset($value['value']) ? is_numeric($value['value']) ? number_format_i18n($value['value']) : $value['value'] : ''), 'value', '', 'text-align:right');
-			form_selectable_cell((isset($value['unknown_sec']) && is_numeric($value['unknown_sec']) ? number_format_i18n($value['unknown_sec']) : (isset($value['unknown_sec']) ? $value['unknown_sec']:'')), 'unknown_sec', '', 'text-align:right');
+			form_selectable_cell(((isset($value['last_ds']) && is_numeric($value['last_ds']) ? number_format_i18n($value['last_ds']) : (isset($value['last_ds']) ? $value['last_ds']:''))), 'last_ds', '', 'text-align:right');
+			form_selectable_cell(((isset($value['value']) ? (is_numeric($value['value']) ? number_format_i18n($value['value']) : $value['value']) : '')), 'value', '', 'text-align:right');
+			form_selectable_cell(((isset($value['unknown_sec']) && is_numeric($value['unknown_sec']) ? number_format_i18n($value['unknown_sec']) : (isset($value['unknown_sec']) ? $value['unknown_sec']:''))), 'unknown_sec', '', 'text-align:right');
 
 			form_end_row();
 		}
@@ -3614,7 +3615,7 @@ function rrdtool_info2html($info_array, $diff=array()) {
 			form_selectable_cell((isset($value['cur_row']) ? $value['cur_row'] : ''), 'cur_row', '', 'text-align:right');
 			form_selectable_cell((isset($value['pdp_per_row']) ? $value['pdp_per_row'] : ''), 'pdp_per_row', '', 'text-align:right');
 			form_selectable_cell((isset($value['xff']) ? floatval($value['xff']) : ''), 'xff', '', (isset($diff['rra'][$key]['xff']) 	? 'color:red;text-align:right' : 'text-align:right'));
-			form_selectable_cell((isset($value['cdp_prep'][0]['value']) ? (strtolower($value['cdp_prep'][0]['value']) == 'nan') ? $value['cdp_prep'][0]['value'] : floatval($value['cdp_prep'][0]['value']) : ''), 'value', '', 'text-align:right');
+			form_selectable_cell((isset($value['cdp_prep'][0]['value']) ? ((strtolower($value['cdp_prep'][0]['value']) == 'nan') ? $value['cdp_prep'][0]['value'] : floatval($value['cdp_prep'][0]['value'])) : ''), 'value', '', 'text-align:right');
 			form_selectable_cell((isset($value['cdp_prep'][0]['unknown_datapoints'])? $value['cdp_prep'][0]['unknown_datapoints'] : ''), 	'unknown_datapoints', '', 'text-align:right');
 
 			form_end_row();
@@ -3650,7 +3651,7 @@ function rrdtool_tune($rrd_file, $diff, $show_source = true) {
 				if ($key === 'resize') {
 					continue;
 				}
-				print_leaves($line, $nl);
+				print_leaves($line);
 			}
 		}
 	}

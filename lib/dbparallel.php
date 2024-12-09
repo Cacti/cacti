@@ -213,7 +213,7 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 	$sql = str_replace($ignores, $replaces, $sql);
 
 	while (substr_count($sql, '  ')) {
-		$str = str_replace('  ', ' ', $str);
+		$sql = str_replace('  ', ' ', $sql);
 	}
 
 	/**

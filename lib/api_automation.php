@@ -4671,7 +4671,7 @@ function automation_type_to_table($type) {
 	return $table;
 }
 
-function automation_id_to_hash($type, $id) {
+function automation_id_to_hash($table, $id) {
 	$table = automation_type_to_table($table);
 
 	if ($table != '') {

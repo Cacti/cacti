@@ -45,9 +45,9 @@ function title_trim(string $text, int $max_length): string {
 /**
  * filter_value - a quick way to highlight text in a table from general filtering
  *
- * @param $text - the string to filter
- * @param $filter - the search term to filter for
- * @param $href - the href if you wish to have an anchor returned
+ * @param string $text - the string to filter
+ * @param string $filter - the search term to filter for
+ * @param string $href - the href if you wish to have an anchor returned
  *
  * @return null|string the filtered string
  */
@@ -1205,8 +1205,10 @@ function raise_message_javascript(string $title, string $header, string $message
 }
 
 /**
- * display_output_messages - displays all of the cached messages from the raise_message() function and clears
+ * Displays all of the cached messages from the raise_message() function and clears
  * the message cache
+ * 
+ * @return string
  */
 function display_output_messages() {
 	$debug_message   = debug_log_return('new_graphs');
@@ -1265,12 +1267,21 @@ function display_output_messages() {
 	return json_encode($final_messages);
 }
 
+/**
+ * Displays a custom error message.
+ *
+ * This function raises a custom error message using the provided message.
+ *
+ * @param string $message The error message to be displayed.
+ */
 function display_custom_error_message($message) {
 	raise_message('custom_error', $message);
 }
 
 /**
- * clear_messages - clears the message cache
+ * Clears the message cache
+ *
+ * @return bool Returns false if the session_status function does not exist.
  */
 function clear_messages() {
 	// This function should always exist, if not its an invalid install
@@ -1295,6 +1306,8 @@ function clear_messages() {
 /**
  * kill_session_var - kills a session variable using unset()
  * @param mixed $var_name
+ * 
+ * @return void
  */
 function kill_session_var($var_name) {
 	/* register_global = on: reset local settings cache so the user sees the new settings */
@@ -1304,6 +1317,8 @@ function kill_session_var($var_name) {
 
 /**
  * force_session_data - forces session data into the session if the session was closed for some reason
+ * 
+ * @return bool
  */
 function force_session_data() {
 	global $config;
@@ -1440,10 +1455,12 @@ function get_selective_log_level(): ?int {
 /**
  * cacti_log - logs a string to Cacti's log file or optionally to the browser
  *
- * @param  $string - the string to append to the log file
- * @param  $output - (bool) whether to output the log line to the browser using print() or not
- * @param  $environ - (string) tells from where the script was called from
- * @param  $level - (int) only log if above the specified log level
+ * @param string $string - the string to append to the log file
+ * @param bool $output - whether to output the log line to the browser using print() or not
+ * @param string $environ - tells from where the script was called from
+ * @param int $level - only log if above the specified log level
+ * 
+ * @return bool
  */
 function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	global $config, $database_log;
@@ -1639,6 +1656,8 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
  * @param  $total_rows   - (int) the total number of rows in the logfile
  * @param  $matches      - (bool) match or does not match the filter
  * @param  $expand_text  - (bool) expand text to perform replacements
+ * 
+ * @return array
  */
 function tail_file(string $file_name, int $number_of_lines, ?int $message_type = -1, ?string $filter = '', ?int &$page_nr = 1, ?int &$total_rows = 0, ?bool $matches = true, ?bool $expand_text = false): array {
 	if (!file_exists($file_name)) {
@@ -1890,9 +1909,13 @@ function determine_display_log_entry($message_type, $line, $filter, $matches = t
  * update_host_status - updates the host table with information about its status.
  * It will also output to the appropriate log file when an event occurs.
  *
- * @param  $status - (int constant) the status of the host (Up/Down)
- * @param  $host_id - (int) the host ID for the results
- * @param  $ping - (class array) results of the ping command.
+ * @param int $status - the status of the host (Up/Down)
+ * @param int $host_id - the host ID for the results
+ * @param Net_Ping $ping - results of the ping command.
+ * @param int $ping_availability - the availability of the ping
+ * @param bool $print_data_to_stdout - whether to print the data to the standard output
+ * 
+ * @return void
  */
 function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $ping_availability, bool $print_data_to_stdout) {
 	$issue_log_message   = false;
@@ -2130,8 +2153,9 @@ function update_host_status(int $status, int $host_id, Net_Ping &$ping, int $pin
  * is_hexadecimal - test whether a string represents a hexadecimal number,
  * ignoring space and tab, and case insensitive.
  *
- * @param  $result - the string to test
- * @param  1 if the argument is hex, 0 otherwise, and false on error
+ * @param string $result - the string to test
+ * 
+ * @return bool
  */
 function is_hexadecimal($result) {
 	$hexstr = str_replace(array(' ', '-'), ':', trim($result));
@@ -2154,7 +2178,7 @@ function is_hexadecimal($result) {
 /**
  * strip_domain - removes the domain from a hostname
  *
- * @param  $hostname - the hostname for a device
+ * @param string $hostname - the hostname for a device
  *
  * @return mixed the stripped hostname
  */
@@ -2175,7 +2199,7 @@ function strip_domain($hostname) {
 /**
  * is_mac_address - determines if the result value is a mac address
  *
- * @param  $result - some string to be evaluated
+ * @param string $result - some string to be evaluated
  *
  * @return mixed either to result is a mac address of not
  */
@@ -2246,7 +2270,7 @@ function is_hex_string(&$result) {
 /**
  * prepare_validate_result - determines if the result value is valid or not.  If not valid returns a "U"
  *
- * @param  $result - the result from the poll, the result can be modified in the call
+ * @param string $result - the result from the poll, the result can be modified in the call
  *
  * @return mixed either to result is valid or not
  */
@@ -2310,9 +2334,9 @@ function prepare_validate_result(&$result) {
 /**
  * strip_alpha - remove non-numeric data from a string and return the numeric part
  *
- * @param  $string - the string to be evaluated
+ * @param string $string - the string to be evaluated
  *
- * @return mixed either the numeric value or false if not numeric
+ * @return string|bool either the numeric value or false if not numeric
  */
 function strip_alpha($string) {
 	/* strip all non numeric data */
@@ -2330,9 +2354,9 @@ function strip_alpha($string) {
 /**
  * is_valid_pathname - takes a pathname are verifies it matches file name rules
  *
- * @param  $path - the pathname to be tested
+ * @param string $path - the pathname to be tested
  *
- * @return mixed either true or false
+ * @return bool either true or false
  */
 function is_valid_pathname($path) {
 	if (preg_match('/^([a-zA-Z0-9\_\.\-\\\:\/]+)$/', trim($path))) {
@@ -2345,8 +2369,11 @@ function is_valid_pathname($path) {
 /**
  * dsv_log - provides debug logging when tracing Graph/Data Source creation
  *
- * @param  $message - the message to output to the log
- * @param  $data  - the data to be carried with the message
+ * @param string $message - the message to output to the log
+ * @param array|string|null $data  - the data to be carried with the message
+ * @param int $level - the level of verbosity to use
+ * 
+ * @return void
  */
 function dsv_log($message, $data = null, $level = POLLER_VERBOSITY_LOW) {
 	if (read_config_option('data_source_trace') == 'on') {
@@ -2361,11 +2388,11 @@ function dsv_log($message, $data = null, $level = POLLER_VERBOSITY_LOW) {
  * function is used by automation to prevent the creation of graphs
  * that will never generate data.
  *
- * @param  $graph_template_id - The Graph Template to test
- * @param  $host_id - The Host to test
- * @param  mixed $snmp_query_id
- * @param  mixed $snmp_index
- * @param  mixed $values
+ * @param  int    $graph_template_id - The Graph Template to test
+ * @param  int    $host_id - The Host to test
+ * @param  int    $snmp_query_id
+ * @param  string $snmp_index
+ * @param  array  $values
  *
  * @return boolean true or false
  */
@@ -2408,12 +2435,12 @@ function test_data_sources($graph_template_id, $host_id, $snmp_query_id = 0, $sn
  * function is used by automation to prevent the creation of graphs
  * that will never generate data.
  *
- * @param  $graph_template_id - The Graph Template to test
- * @param  $host_id - The Host to test
- * @param  mixed $data_template_id
- * @param  mixed $snmp_query_id
- * @param  mixed $snmp_index
- * @param  mixed $suggested_vals
+ * @param  int    $graph_template_id - The Graph Template to test
+ * @param  int    $host_id - The Host to test
+ * @param  int    $data_template_id
+ * @param  int    $snmp_query_id
+ * @param  string $snmp_index
+ * @param  array  $suggested_vals
  *
  * @return boolean true or false
  */
@@ -3228,9 +3255,9 @@ function get_color(int $color_id):string|false {
 /**
  * get_graph_title_cache - returns the title of the graph using the title cache
  *
- * @param  $local_graph_id - (int) the ID of the graph to get the title for
+ * @param int $local_graph_id - The ID of the graph to get the title for
  *
- * @return mixed the graph title
+ * @return string the graph title
  */
 function get_graph_title_cache($local_graph_id) {
 	return db_fetch_cell_prepared('SELECT title_cache
@@ -3242,7 +3269,7 @@ function get_graph_title_cache($local_graph_id) {
 /**
  * Returns the title of a graph without using the title cache
  *
- * @param  $local_graph_id   The ID of the graph to get a title for
+ * @param int $local_graph_id   The ID of the graph to get a title for
  *
  * @return string|false     The graph title
  */
@@ -3338,7 +3365,7 @@ function get_template_account($user = '') {
 /**
  * get_username - returns the username for the selected user
  *
- * @param  $user_id - (int) the ID of the user
+ * @param int $user_id - The ID of the user
  *
  * @return mixed the username */
 function get_username($user_id = 0) {
@@ -3368,7 +3395,7 @@ function get_execution_user() {
  * generate_data_source_path - creates a new data source path from scratch using the first data source
  * item name and updates the database with the new value
  *
- * @param  $local_data_id - (int) the ID of the data source to generate a new path for
+ * @param int $local_data_id - The ID of the data source to generate a new path for
  *
  * @return mixed the new generated path
  */
@@ -3455,11 +3482,11 @@ function generate_data_source_path($local_data_id) {
  * the list of available consolidation functions for the consolidation functions and returns
  * the most appropriate.  Typically, this will be the requested value
  *
- * @param  mixed $local_data_id
- * @param  $requested_cf
- * @param  $ds_step
+ * @param  int    $local_data_id
+ * @param  mixed  $requested_cf
+ * @param  int    $ds_step
  *
- * @return mixed the best cf to use
+ * @return string the best cf to use
  */
 function generate_graph_best_cf($local_data_id, $requested_cf, int $ds_step = 60): string {
 	static $best_cf;
@@ -3494,9 +3521,9 @@ function generate_graph_best_cf($local_data_id, $requested_cf, int $ds_step = 60
 /**
  * get_rrd_cfs - reads the RRDfile and gets the RRAs stored in it.
  *
- * @param  $local_data_id
+ * @param int $local_data_id
  *
- * @return mixed array of the CF functions
+ * @return array array of the CF functions
  */
 function get_rrd_cfs($local_data_id) {
 	global $consolidation_functions;
@@ -3567,7 +3594,7 @@ function get_rrd_cfs($local_data_id) {
  * generate_graph_def_name - takes a number and turns each digit into its letter-based
  * counterpart for RRDtool DEF names (ex 1 -> a, 2 -> b, etc)
  *
- * @param  $graph_item_id - (int) the ID to generate a letter-based representation of
+ * @param int $graph_item_id - (int) the ID to generate a letter-based representation of
  *
  * @return mixed a letter-based representation of the input argument
  */
@@ -3592,8 +3619,10 @@ function generate_graph_def_name($graph_item_id) {
  * generate_data_input_field_sequences - re-numbers the sequences of each field associated
  * with a particular data input method based on its position within the input string
  *
- * @param $string - the input string that contains the field variables in a certain order
- * @param $data_input_id - (int) the ID of the data input method
+ * @param string $string - the input string that contains the field variables in a certain order
+ * @param int $data_input_id - The ID of the data input method
+ * 
+ * @return void
  */
 function generate_data_input_field_sequences($string, $data_input_id) {
 	global $config, $registered_cacti_names;
@@ -3622,11 +3651,13 @@ function generate_data_input_field_sequences($string, $data_input_id) {
  * move_graph_group - takes a graph group (parent+children) and swaps it with another graph
  * group
  *
- * @param  $graph_template_item_id - (int) the ID of the (parent) graph item that was clicked
- * @param  $graph_group_array - (array) an array containing the graph group to be moved
- * @param  $target_id - (int) the ID of the (parent) graph item of the target group
- * @param  $direction - ('next' or 'previous') whether the graph group is to be swapped with
+ * @param int    $graph_template_item_id - The ID of the (parent) graph item that was clicked
+ * @param array  $graph_group_array - Contains the graph group to be moved
+ * @param int    $target_id - The ID of the (parent) graph item of the target group
+ * @param string $direction - ('next' or 'previous') whether the graph group is to be swapped with
  *   group above or below the current group
+ * 
+ * @return void
  */
 function move_graph_group($graph_template_item_id, $graph_group_array, $target_id, $direction) {
 	$graph_item = db_fetch_row_prepared('SELECT local_graph_id, graph_template_id
@@ -3726,7 +3757,7 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
  * get_graph_group - returns an array containing each item in the graph group given a single
  * graph item in that group
  *
- * @param  $graph_template_item_id - (int) the ID of the graph item to return the group of
+ * @param int $graph_template_item_id - The ID of the graph item to return the group of
  *
  * @return mixed (array) an array containing each item in the graph group
  */
@@ -3802,8 +3833,8 @@ function get_graph_group($graph_template_item_id) {
 /**
  * get_graph_parent - returns the ID of the next or previous parent graph item id
  *
- * @param  $graph_template_item_id - the ID of the current graph item
- * @param  $direction - ('next' or 'previous') whether to find the next or previous parent
+ * @param int $graph_template_item_id - the ID of the current graph item
+ * @param string $direction - ('next' or 'previous') whether to find the next or previous parent
  *
  * @return mixed the ID of the next or previous parent graph item id
  */

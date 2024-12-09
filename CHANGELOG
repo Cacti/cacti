@@ -31,6 +31,8 @@ Cacti CHANGELOG
 -issue#5964: Graph Timespans too far into the past generate RRDtool crashes
 -issue#5967: Removing dygraph-combined.js as we are not using it and have adequate charting libraries
 -issue#5968: Removing jQuery Sparklines API as we are not using it and have adequate charting libraries
+-issue#5969: If System Level Browser TimeZone Support is disabled don't show the User Profile Option
+-issue#5973: Multiple Issues with database API function db_update_table() preventing correct update of an existing table
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors
@@ -153,6 +155,7 @@ Cacti CHANGELOG
 -feature#5954: Add Check boxes to Graph Templates Change Page
 -feature#5955: When Changing a Profile Update Other Data
 -feature#5959: Debounce the Poller Output Not Empty Warning
+-feature#5965: Merge packaging plugin with Cacti and add archiving and restore capabilities
 -feature#5966: Add snmp retries at the device level
 -feature: Allow messages to be popup notifications
 -feature: Upgrade billboard.js to version 3.14.1

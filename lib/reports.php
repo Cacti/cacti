@@ -286,7 +286,7 @@ function reports_date_time_format() {
  * @param int $offset    - offset in seconds to be added to the new start time
  * @param int $timestamp - current start time for report
  *
- * @return - new timestamp
+ * @return int - new timestamp
  */
 function reports_interval_start($interval, $count, $offset, $timestamp) {
 	global $reports_interval;

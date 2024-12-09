@@ -3838,7 +3838,7 @@ function checkForLogout(data) {
 }
 
 function setCactiTabCookie() {
-	document.cookie = 'CactiTab=' + sessionStorage.tab + '; SameSite=None; Max-Age: -1; Secure; Path=' + urlPath;
+	document.cookie = 'CactiTab=' + sessionStorage.tab + '; Max-Age: -1;' + (window.location.protocol === 'https:' ? ' SameSite=None; Secure;' : ' SameSite=Strict;') +' Path=' + urlPath;
 }
 
 function checkForRedirects(data, href) {

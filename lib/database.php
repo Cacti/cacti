@@ -516,7 +516,7 @@ function db_execute($sql, $log = true, $db_conn = false) {
  * @param mixed $return_func
  * @param mixed $return_params
  *
- * @return (bool) '1' for success, false for failed
+ * @return mixed '1' for success, false for failed, or the return value of the return function
  */
 function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = false, $execute_name = 'Exec', $default_value = true, $return_func = 'no_return_function', $return_params = array()) {
 	global $database_sessions, $error_logged, $database_default, $config, $database_hostname, $database_port, $database_total_queries, $database_last_error, $database_log, $affected_rows, $database_details;
@@ -722,7 +722,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
  * @param mixed $log
  * @param mixed $db_conn
  *
- * @return (bool)  The output of the sql query as a single variable
+ * @return bool|string  The output of the sql query as a single variable
  */
 function db_fetch_cell($sql, $col_name = '', $log = true, $db_conn = false) {
 	global $config;
@@ -749,7 +749,7 @@ function db_fetch_cell($sql, $col_name = '', $log = true, $db_conn = false) {
  * @param mixed $log
  * @param mixed $db_conn
  *
- * @return (bool) The output of the sql query as a single variable
+ * @return bool|string The output of the sql query as a single variable
  */
 function db_fetch_cell_prepared($sql, $params = array(), $col_name = '', $log = true, $db_conn = false) {
 	global $config;
@@ -763,7 +763,7 @@ function db_fetch_cell_prepared($sql, $params = array(), $col_name = '', $log = 
 
 /**
  * db_fetch_cell_return - Function to process and return data from the
- *   db_fetch_cell_prepared function
+ *   db_fetch_cell function
  *
  * @param  (string) The SQL query to run
  * @param  (string) The column to return if the query is more row or associative
@@ -1058,6 +1058,8 @@ function db_add_column($table, $column, $log = true, $db_conn = false) {
 
 			if (isset($column['after'])) {
 				$sql .= ' AFTER ' . $column['after'];
+			} elseif (isset($column['first'])) {
+				$sql .= ' FIRST';
 			}
 
 			return db_execute($sql, $log, $db_conn);
@@ -1552,12 +1554,19 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 		db_execute("ALTER TABLE `$table` ROW_FORMAT = " . $data['row_format'], $log, $db_conn);
 	}
 
-	$allcolumns = array();
+	$allcolumns  = array();
+	$prev_column = false;
 
 	foreach ($data['columns'] as $column) {
 		$allcolumns[] = $column['name'];
 
 		if (!db_column_exists($table, $column['name'], $log, $db_conn)) {
+			if ($prev_column !== false) {
+				$column['after'] = $prev_column;
+			} else {
+				$column['first'] = true;
+			}
+
 			if (!db_add_column($table, $column, $log, $db_conn)) {
 				return false;
 			}
@@ -1618,6 +1627,8 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 				}
 			}
 		}
+
+		$prev_column = $column['name'];
 	}
 
 	if ($removecolumns) {
@@ -1658,7 +1669,7 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 
 					if (!empty($add) || !empty($del)) {
 						if (!db_execute("ALTER TABLE `$table` DROP INDEX `$n`", $log, $db_conn) ||
-							!db_execute("ALTER TABLE `$table` ADD INDEX `$n` (" . $k['name'] . '` (' . db_format_index_create($k['columns']) . ')', $log, $db_conn)) {
+							!db_execute("ALTER TABLE `$table` ADD" . (isset($k['unique']) ? ' UNIQUE':'') . " INDEX `$n` (" . $k['name'] . '` (' . db_format_index_create($k['columns']) . ')', $log, $db_conn)) {
 							return false;
 						}
 					}
@@ -1679,7 +1690,7 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 	if (isset($data['keys'])) {
 		foreach ($data['keys'] as $k) {
 			if (!isset($allindexes[$k['name']])) {
-				if (!db_execute("ALTER TABLE `$table` ADD INDEX `" . $k['name'] . '` (' . db_format_index_create($k['columns']) . ')', $log, $db_conn)) {
+				if (!db_execute("ALTER TABLE `$table` ADD" . (isset($k['unique']) ? ' UNIQUE':'') . " INDEX `" . $k['name'] . '` (' . db_format_index_create($k['columns']) . ')', $log, $db_conn)) {
 					return false;
 				}
 			}
@@ -1703,6 +1714,10 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 				return false;
 			}
 		} else {
+			if (!is_array($data['primary'])) {
+				$data['primary'] = array($data['primary']);
+			}
+
 			$add = array_diff($data['primary'], $allindexes['PRIMARY']);
 			$del = array_diff($allindexes['PRIMARY'], $data['primary']);
 
@@ -1844,9 +1859,9 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 			foreach ($data['keys'] as $key) {
 				if (isset($key['name'])) {
 					if (is_array($key['columns'])) {
-						$sql .= ",\n KEY `" . $key['name'] . '` (`' . implode('`,`', $key['columns']) . '`)';
+						$sql .= ",\n " . (isset($key['unique']) ? ' UNIQUE':'') . " INDEX `" . $key['name'] . '` (`' . implode('`,`', $key['columns']) . '`)';
 					} else {
-						$sql .= ",\n KEY `" . $key['name'] . '` (`' . $key['columns'] . '`)';
+						$sql .= ",\n " (isset($key['unique']) ? ' UNIQUE':'') . " INDEX `" . $key['name'] . '` (`' . $key['columns'] . '`)';
 					}
 				}
 			}
