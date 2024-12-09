@@ -2025,10 +2025,10 @@ $settings['authentication'] = array(
 		'method'        => 'drop_array',
 		'default'       => '15',
 		'array'         => array(
-			'5'     => __('%d Hour', 5),
-			'10'     => __('%d Hours', 10),
-			'15'    => __('%d Hours', 15),
-			'20'    => __('%d Day', 20),
+			'5'     => __('%d Minutes', 5),
+			'10'    => __('%d Minutes', 10),
+			'15'    => __('%d Minutes', 15),
+			'20'    => __('%d Minutes', 20),
 		)
 	),
 );
