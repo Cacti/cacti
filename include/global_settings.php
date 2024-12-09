@@ -2021,15 +2021,14 @@ $settings['authentication'] = array(
 	),
 	'secnotify_resetlink_timeout' => array(
 		'friendly_name' => __('Reset link validity'),
-		'description'   => __('How long the resetlink is valid in hours'),
+		'description'   => __('How long the resetlink is valid in minutes'),
 		'method'        => 'drop_array',
-		'default'       => '24',
+		'default'       => '15',
 		'array'         => array(
-			'1'     => __('%d Hour', 1),
-			'4'     => __('%d Hours', 4),
-			'12'    => __('%d Hours', 12),
-			'24'    => __('%d Day', 1),
-			'48'    => __('%d Days', 2),
+			'5'     => __('%d Hour', 5),
+			'10'     => __('%d Hours', 10),
+			'15'    => __('%d Hours', 15),
+			'20'    => __('%d Day', 20),
 		)
 	),
 );

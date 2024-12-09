@@ -75,7 +75,7 @@ switch ($action) {
 
 			db_execute_prepared('INSERT INTO user_auth_reset_hashes
 				(user_id, hash, expiry)
-				VALUES (?, ?, date_add(now(), interval ? hour))',
+				VALUES (?, ?, date_add(now(), interval ? minute))',
 				array ($user['id'], $hash, read_config_option('secnotify_resetlink_timeout')));
 
 			$replacement = array(
