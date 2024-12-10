@@ -1,0 +1,180 @@
+#!/bin/bash
+clear
+# Read the configuration file paths
+CONF_FILE="/var/www/html/cacti/include/config.php"
+HOST_FILE="getOID.hosts"
+
+# Prompt for template match pattern
+echo -n "Enter template match pattern (can include regex like ^ and %): "
+read TEMPLATE_MATCH
+
+# Escape special characters for MySQL LIKE pattern
+TEMPLATE_MATCH_ESCAPED=$(echo "$TEMPLATE_MATCH" | sed 's/[%_]/\\&/g')
+
+clear
+
+function getProperty {
+    CONF_KEY=$1
+    CONF_VALUE=$(grep -m 1 "$CONF_KEY" $CONF_FILE | cut -d'=' -f2)
+    echo $CONF_VALUE | sed -r 's/(\x27|\;|&|\[|\]\))//g'
+}
+
+# Main loop to restart the process if the user chooses "no" at the confirmation prompt
+while true; do
+    echo "# Reading property from $CONF_FILE"
+    DB_USER=$(getProperty "database_username")
+    DB_PASS=$(getProperty "database_password")
+    DB_PORT=$(getProperty "database_port")
+    echo
+    echo "Reading from DB..."
+
+    # Fetch template ids and names from the database
+    TEMPLATE_LIST=$(mysql -s -u $DB_USER -p$DB_PASS cacti -e "SELECT id, name FROM host_template WHERE name LIKE '$TEMPLATE_MATCH' ORDER BY id;" | tail -n +2)
+
+    # Check if any templates are returned
+    if [ -z "$TEMPLATE_LIST" ]; then
+        echo "No templates found with the pattern '$TEMPLATE_MATCH'. Exiting."
+        exit 1
+    fi
+
+    # Display the template list and prompt for a selection
+    echo "Available Template IDs matching the filter: $TEMPLATE_MATCH"
+    echo "-----------------------------"
+    echo "Index	ID	Template Name"
+    echo "-----------------------------"
+
+    INDEX=1
+    declare -a TEMPLATE_IDS
+    declare -a TEMPLATE_NAMES
+
+    while IFS=$'\t' read -r TEMPLATE_ID TEMPLATE_NAME; do
+        TEMPLATE_IDS+=("$TEMPLATE_ID")
+        TEMPLATE_NAMES+=("$TEMPLATE_NAME")
+        echo "$INDEX	$TEMPLATE_ID	$TEMPLATE_NAME"
+        ((INDEX++))
+    done <<< "$TEMPLATE_LIST"
+
+    echo "-------------------------------------------------------------"
+    echo "0. Exit"
+    echo "-------------------------------------------------------------"
+
+    # Prompt user to choose a template_id
+    echo -n "Please choose a template_id (0 to exit, 1-${#TEMPLATE_IDS[@]}): "
+    read choice
+
+    # Check for exit choice
+    if [ "$choice" -eq 0 ]; then
+        echo "Exiting..."
+        exit 0
+    fi
+
+    # Validate the user's input
+    if [[ ! "$choice" =~ ^[0-9]+$ ]] || [ "$choice" -lt 1 ] || [ "$choice" -gt "${#TEMPLATE_IDS[@]}" ]]; then
+        echo "Invalid choice. Exiting."
+        exit 1
+    fi
+
+    # Get the selected template_id and template_name
+    SELECTED_TEMPLATE_ID="${TEMPLATE_IDS[$((choice-1))]}"
+    SELECTED_TEMPLATE_NAME="${TEMPLATE_NAMES[$((choice-1))]}"
+
+    # Fetch host details for the selected template_id
+    HOST_LIST=$(mysql -s -u $DB_USER -p$DB_PASS cacti -e "SELECT description, hostname, snmp_community FROM host WHERE host_template_id = $SELECTED_TEMPLATE_ID AND disabled != 'on' ORDER BY description ASC;")
+
+    if [ -z "$HOST_LIST" ]; then
+        echo "No hosts found for the selected template. Exiting."
+        exit 1
+    fi
+
+    # Calculate column widths based on the longest entry for each field
+    calculate_max_width() {
+        local max_width=0
+        while IFS=$'\t' read -r data; do
+            if [ ${#data} -gt $max_width ]; then
+                max_width=${#data}
+            fi
+        done
+        echo $max_width
+    }
+
+    # Calculate column widths for description, hostname, and snmp_community
+    HOST_WIDTH=$(calculate_max_width <<< "$(echo "$HOST_LIST" | cut -f1)")
+    HOSTNAME_WIDTH=$(calculate_max_width <<< "$(echo "$HOST_LIST" | cut -f2)")
+    COMMUNITY_WIDTH=$(calculate_max_width <<< "$(echo "$HOST_LIST" | cut -f3)")
+
+    # Display the list of hosts with flexible column widths
+    clear
+    echo "Hosts associated with Template ID $SELECTED_TEMPLATE_ID ($SELECTED_TEMPLATE_NAME):"
+    echo "----------------------------------------------------------------------"
+    echo -e "Index\t$(printf '%-*s' $HOST_WIDTH 'Host Description')\t$(printf '%-*s' $HOSTNAME_WIDTH 'Hostname')\t$(printf '%-*s' $COMMUNITY_WIDTH 'SNMP Community')"
+    echo "----------------------------------------------------------------------"
+    HOST_INDEX=1
+    declare -a HOSTS
+    while IFS=$'\t' read -r DESCRIPTION HOSTNAME COMMUNITY; do
+        HOSTS+=("$DESCRIPTION $HOSTNAME $COMMUNITY")
+        printf "%-3d\t%-*s\t%-*s\t%-*s\n" $HOST_INDEX $HOST_WIDTH "$DESCRIPTION" $HOSTNAME_WIDTH "$HOSTNAME" $COMMUNITY_WIDTH "$COMMUNITY"
+        ((HOST_INDEX++))
+    done <<< "$HOST_LIST"
+    echo "----------------------------------------------------------------------"
+
+    # Confirm continuation
+    echo -n "Do you want to continue with these hosts? (y/n): "
+    read CONFIRMATION
+
+    # Restart the loop if the user chooses "no"
+    if [[ ! "$CONFIRMATION" =~ ^[Yy]$ ]]; then
+        echo "Returning to the beginning..."
+        continue
+    fi
+
+    # Prompt for OID inputs
+    echo -n "Enter OIDs separated by space (e.g. OID1 OID2 OID3): "
+    read -a OIDS
+
+    # Create the HOST_FILE with description, hostname, and snmp_community
+    mysql -s -u $DB_USER -p$DB_PASS cacti << EOF > $HOST_FILE 2>&1
+SELECT CONCAT(description, ',', hostname, ',', snmp_community)
+ FROM host
+ WHERE host_template_id = $SELECTED_TEMPLATE_ID
+ AND disabled != "on"
+ ORDER BY description ASC;
+EOF
+
+    # Ensure that commas are preserved as field separators in HOST_FILE
+    sed -i 's/[ \(]/_/g;s/[\)]//g' $HOST_FILE
+
+    # Process OIDs and generate output for each
+    clear
+    echo -e "Index\t$(printf '%-*s' $HOST_WIDTH 'Host Description')\t$(printf '%-*s' $HOSTNAME_WIDTH 'Hostname')\t$(printf '%-*s' $COMMUNITY_WIDTH 'SNMP Community')\tOutput"
+    echo "----------------------------------------------------------------------"
+
+    for OID in "${OIDS[@]}"; do
+        HOST_NUM=1
+        while IFS=',' read -r desc hostname community; do
+            if [[ -z "$desc" || -z "$hostname" || -z "$community" ]]; then
+                echo "Skipping empty or malformed entry: desc='$desc', hostname='$hostname', community='$community'"
+                continue
+            fi
+
+            # Fetch the SNMP output
+            output=$(snmpget -v2c -c "$community" "$hostname" "$OID" 2>&1)
+
+            # Check if output contains "No Such Object available"
+            if [[ "$output" == *"No Such Object available"* ]]; then
+                output=$(snmpget -v2c -c "$community" "$hostname" "$OID.0" 2>&1)
+                if [[ "$output" != *"No Such Object available"* ]]; then
+                    output+=" MODIFIED"
+                else
+                    output="$OID doesn't exist"
+                fi
+            fi
+
+            # Print the results with dynamic column widths
+            printf "%-3d\t%-*s\t%-*s\t%-*s\t%s\n" $HOST_NUM $HOST_WIDTH "$desc" $HOSTNAME_WIDTH "$hostname" $COMMUNITY_WIDTH "$community" "$output"
+            ((HOST_NUM++))
+        done < "$HOST_FILE"
+    done
+
+    # Exit the loop after successful completion
+    break
+done
