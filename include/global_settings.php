@@ -629,7 +629,7 @@ $settings['general'] = array(
 	),
 	'packaging_copyright' => array(
 		'friendly_name' => __('Template/Package Copyright'),
-		'description'   => __('The Email address of the author that you wish published with the Device Template or Package.'),
+		'description'   => __('The default copyright that you would like to use for your packaged Device Templates and Packages.'),
 		'method'        => 'drop_array',
 		'default'       => 'GNU General Public License',
 		'array'         => $copyrights,

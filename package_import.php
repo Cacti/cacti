@@ -419,7 +419,7 @@ function form_save() {
 			$info = package_validate_signature($xmlfile);
 
 			if ($info == false) {
-				raise_message('verify_warning', __('Unable to obtain the public key for this pacakge.  Contact the package author to receive a new package.'), MESSAGE_LEVEL_ERROR);
+				raise_message('verify_warning', __('Unable to obtain the public key for this package.  Contact the package author to receive a new package.'), MESSAGE_LEVEL_ERROR);
 
 				header('Location: package_import?package_location=0');
 				exit;
