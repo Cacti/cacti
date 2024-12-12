@@ -154,7 +154,7 @@ function check_auth_cookie() {
 				} else {
 					set_auth_cookie($user_info);
 
-					cacti_log("LOGIN: User '" . $user_info['username'] . "' Authenticated via Authentication Cookie", false, 'AUTH');
+					cacti_log(sprintf("LOGIN: User %s Authenticated via Authentication Cookie from IP Address %s", $user_info['username'], get_client_addr()), false, 'AUTH');
 
 					db_execute_prepared('INSERT IGNORE INTO user_log
 						(username, user_id, result, ip, time)
@@ -3719,7 +3719,7 @@ function auth_process_lockout($username, $realm) {
 
 			if (cacti_sizeof($user)) {
 				if ($user['enabled'] == '') {
-					cacti_log("LOGIN FAILED: Local Login Failed for user '" . $username . "' from IP Address '" . get_client_addr() . "'.  User account Disabled.", false, 'AUTH');
+					cacti_log(sprintf('LOGIN FAILED: Local Login Failed for user %s from IP address %s. User account disabled.', $username, get_client_addr()), false, 'AUTH');
 
 					$error     = true;
 					$error_msg = __('Access Denied!  Login Disabled.');
@@ -3727,7 +3727,7 @@ function auth_process_lockout($username, $realm) {
 
 				$failed = intval($user['failed_attempts']) + 1;
 
-				cacti_log('LOGIN FAILED: User \'' . $username . '\' failed authentication, incrementing lockout (' . $failed . ' of ' . $max . ')', false, 'AUTH', POLLER_VERBOSITY_LOW);
+				cacti_log(sprintf('LOGIN FAILED: User \'%s\' failed authentication, incrementing lockout (%d of %d)',$username, $failed, $max), false, 'AUTH', POLLER_VERBOSITY_LOW);
 
 				if ($failed >= $max) {
 					db_execute_prepared("UPDATE user_auth
@@ -3756,19 +3756,19 @@ function auth_process_lockout($username, $realm) {
 					array($username, isset($user['id']) ? $user['id']:0, get_client_addr()));
 
 				if ($user['locked'] == 'on') {
-					cacti_log("LOGIN FAILED: Local Login Failed for user '" . $username . "' from IP Address '" . get_client_addr() . "'.  Account is locked out.", false, 'AUTH');
+					cacti_log(sprintf("LOGIN FAILED: Local Login Failed for user '%s' from IP Address '%s'. Account is locked out.", $username, get_client_addr()), false, 'AUTH');
 
 					$error     = true;
 					$error_msg = __('Your account has been locked.  Please contact your Administrator.');
 				} else {
-					cacti_log("LOGIN FAILED: Local Login Failed for user '" . $username . "' from IP Address '" . get_client_addr() . "'.", false, 'AUTH');
+					cacti_log(sprintf("LOGIN FAILED: Local Login Failed for user '%s' from IP Address '%s'", $username, get_client_addr()), false, 'AUTH');
 
 					/* error */
 					$error     = true;
 					$error_msg = __('Access Denied!  Login Failed.');
 				}
 			} else {
-				cacti_log("LOGIN FAILED: Local Login Failed to find user '" . $username . "' from IP Address '" . get_client_addr() . "'.", false, 'AUTH');
+				cacti_log(sprintf("LOGIN FAILED: Local Login Failed to find user '%s' from IP Address '%s'",  $username, get_client_addr()), false, 'AUTH');
 
 				$error     = true;
 				$error_msg = __('Access Denied!  Login Failed.');
@@ -3792,7 +3792,7 @@ function basic_auth_login_process($username) {
 	global $error, $error_msg;
 
 	if (empty($username)) {
-		cacti_log('ERROR: No username passed with Web Basic Authentication enabled.', false, 'AUTH');
+		cacti_log('ERROR: No username passed with Web Basic Authentication enabled. From IP Address ' . get_client_addr(), false, 'AUTH');
 		auth_display_custom_error_message(__('Web Basic Authentication configured, but no username was passed from the web server. Please make sure you have authentication enabled on the web server.'));
 
 		exit;
@@ -3809,7 +3809,7 @@ function basic_auth_login_process($username) {
 		$error     = true;
 		$error_msg = __esc('%s authenticated by Web Server, but both Template and Guest Users are not defined in Cacti.', $username);
 
-		cacti_log("LOGIN FAILED: User '" . $username . "' authenticated by Web Server, but both Template and Guest Users are not defined in Cacti.  Exiting.", false, 'AUTH');
+		cacti_log(sprintf("LOGIN FAILED: User '%s' from IP address %s authenticated by Web Server, but both Template and Guest Users are not defined in Cacti. Exiting.", $username, get_client_addr()), false, 'AUTH');
 
 		auth_display_custom_error_message($error_msg);
 
@@ -3891,7 +3891,7 @@ function ldap_login_process($username) {
 		$error     = true;
 		$error_msg = __('Access Denied!  Login Failed.');
 
-		cacti_log('LOGIN FAILED: Empty LDAP Username provided', false, 'AUTH');
+		cacti_log('LOGIN FAILED: Empty LDAP Username provided. From IP address' . get_client_addr(), false, 'AUTH');
 
 		return array();
 	}
@@ -3916,7 +3916,7 @@ function ldap_login_process($username) {
 			$error     = true;
 			$error_msg =  __('Access Denied!  LDAP Search Error: %s', $ldap_dn_search_response['error_text']);
 
-			cacti_log('LOGIN FAILED: LDAP Error: ' . $ldap_dn_search_response['error_text'], false, 'AUTH');
+			cacti_log('LOGIN FAILED: LDAP Error: ' . $ldap_dn_search_response['error_text'] . '. From IP address ' . get_client_addr(), false, 'AUTH');
 		}
 
 		if (!$error) {
@@ -3925,7 +3925,7 @@ function ldap_login_process($username) {
 
 			if ($ldap_auth_response['error_num'] == '0') {
 				/* Locate user in database */
-				cacti_log("LOGIN: LDAP User '" . $username . "' Authenticated", false, 'AUTH');
+				cacti_log(sprintf("LOGIN: LDAP User '%s' from IP Address %s Authenticated", $username, get_client_addr()), false, 'AUTH');
 
 				$user = db_fetch_row_prepared('SELECT *
 					FROM user_auth
@@ -3937,7 +3937,7 @@ function ldap_login_process($username) {
 				$error     = true;
 				$error_msg = __('Access Denied!  LDAP Error: %s', $ldap_auth_response['error_text']);
 
-				cacti_log('LOGIN FAILED: LDAP Error: ' . $ldap_auth_response['error_text'], false, 'AUTH');
+				cacti_log('LOGIN FAILED: LDAP Error: ' . $ldap_auth_response['error_text'] . 'From IP address ' . get_client_addr(), false, 'AUTH');
 
 				if ($ldap_auth_response['error_num'] == 1) {
 					auth_process_lockout($username, $realm);
@@ -3949,7 +3949,7 @@ function ldap_login_process($username) {
 		$error     = true;
 		$error_msg = __('Access Denied!  No password provided by user.');
 
-		cacti_log(sprintf('LOGIN FAILED: LDAP No password provided for user %s', $username), false, 'AUTH');
+		cacti_log(sprintf('LOGIN FAILED: LDAP No password provided for user %s from IP address %s', $username, get_client_addr()), false, 'AUTH');
 
 		auth_process_lockout($username, $realm);
 	}
@@ -3976,7 +3976,7 @@ function domains_login_process($username) {
 		$error     = true;
 		$error_msg = __('Access Denied!  Login Failed.');
 
-		cacti_log('LOGIN FAILED: Empty Domains Username provided', false, 'AUTH');
+		cacti_log('LOGIN FAILED: Empty Domains Username provided, from IP address' . get_client_addr(), false, 'AUTH');
 
 		return array();
 	}
@@ -4000,7 +4000,7 @@ function domains_login_process($username) {
 			$error     = true;
 			$error_msg = __('LDAP Search Error: %s', $ldap_dn_search_response['error_text']);
 
-			cacti_log('LOGIN FAILED: LDAP Error: ' . $ldap_dn_search_response['error_text'], false, 'AUTH');
+			cacti_log('LOGIN FAILED: LDAP Error: ' . $ldap_dn_search_response['error_text'] . '. From IP address ' . get_client_addr(), false, 'AUTH');
 		}
 
 		if (!$error) {
@@ -4015,7 +4015,7 @@ function domains_login_process($username) {
 					array($realm - 1000));
 
 				/* Locate user in database */
-				cacti_log("LOGIN: LDAP User '$username' Authenticated from Domain '$domain_name'", false, 'AUTH');
+				cacti_log(sprintf("LOGIN: LDAP User '%s' Authenticated from Domain '%s' from IP address %s", $username, $domain_name, get_client_addr()), false, 'AUTH');
 
 				$user = db_fetch_row_prepared('SELECT *
 					FROM user_auth
@@ -4101,7 +4101,7 @@ function domains_login_process($username) {
 				$error     = true;
 				$error_msg = __('Access Denied!  LDAP Error: %s', $ldap_auth_response['error_text']);
 
-				cacti_log('LOGIN FAILED: LDAP Error: ' . $ldap_auth_response['error_text'], false, 'AUTH');
+				cacti_log('LOGIN FAILED: LDAP Error: ' . $ldap_auth_response['error_text'] . ', from IP address ' . get_client_addr(), false, 'AUTH');
 
 				if ($ldap_auth_response['error_text'] == 1) {
 					auth_process_lockout($username, $realm);
@@ -4113,7 +4113,7 @@ function domains_login_process($username) {
 		$error     = true;
 		$error_msg = __('Access Denied!  No password provided by user.');
 
-		cacti_log(sprintf('LOGIN FAILED: LDAP No password provided for user %s', $username), false, 'AUTH');
+		cacti_log(sprintf("LOGIN FAILED: LDAP No password provided for user '%s' from IP address %s", $username, get_client_addr()), false, 'AUTH');
 
 		auth_process_lockout($username, $realm);
 	}
@@ -4422,8 +4422,7 @@ function secpass_login_process($username) {
 		$error     = true;
 		$error_msg = __('Access Denied!  Login Failed.');
 
-		cacti_log('LOGIN FAILED: Empty Local Username provided', false, 'AUTH');
-
+		cacti_log(sprintf('LOGIN FAILED: Empty Local Username provided, from IP Address %s', get_client_addr()), false, 'AUTH');
 		return array();
 	}
 
@@ -4452,8 +4451,7 @@ function secpass_login_process($username) {
 			$error     = true;
 			$error_msg = __('Access Denied!  Login failed, account disabled.');
 
-			cacti_log(sprintf('LOGIN FAILED: User %s, account disabled.', $username), false, 'AUTH');
-
+			cacti_log(sprintf('LOGIN FAILED: Local Login Failed for user %s from IP Address %s, account disabled.', $username, get_client_addr()), false, 'AUTH');
 			return array();
 		}
 
@@ -4462,7 +4460,7 @@ function secpass_login_process($username) {
 			$error     = true;
 			$error_msg = __('Access Denied!  No password provided by user.');
 
-			cacti_log(sprintf('LOGIN FAILED: No password provided for user %s', $username), false, 'AUTH');
+			cacti_log(sprintf('LOGIN FAILED: No password provided for user %s from IP Address %s', $username, get_client_addr()), false, 'AUTH');
 
 			$valid_pass = false;
 		} else {
@@ -4477,6 +4475,8 @@ function secpass_login_process($username) {
 			if (!$error) {
 				$error     = true;
 				$error_msg = __('Access Denied! Login failed.') . ' <a href="auth_resetpassword.php">' . __('Reset password') . '</a>';
+
+				cacti_log(sprintf('LOGIN FAILED: Local Login Failed for user %s from IP Address %s', $username, get_client_addr()), false, 'AUTH');
 			}
 
 			return array();
@@ -4486,7 +4486,7 @@ function secpass_login_process($username) {
 		$error     = true;
 		$error_msg = __('Access Denied!  Login Failed.');
 
-		cacti_log(sprintf('LOGIN FAILED: Invalid user %s specified.', $username), false, 'AUTH');
+		cacti_log(sprintf('LOGIN FAILED: Invalid user %s specified from IP Address %s', $username, get_client_addr()), false, 'AUTH');
 	}
 
 	/**
