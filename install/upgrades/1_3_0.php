@@ -108,7 +108,7 @@ function upgrade_to_1_3_0() {
 	$data['columns'][] = array('name' => 'readme', 'type' => 'blob', 'NULL' => true);
 	$data['columns'][] = array('name' => 'changelog', 'type' => 'blob', 'NULL' => true);
 	$data['columns'][] = array('name' => 'archive', 'type' => 'longblob', 'NULL' => true);
-	$data['columns'][] = array('name' => 'last_updated', 'type' => 'timestamp', 'NULL' => true, 'default' => 'current_timestamp()');
+	$data['columns'][] = array('name' => 'last_updated', 'type' => 'timestamp', 'NULL' => true, 'default' => 'CURRENT_TIMESTAMP');
 	$data['primary'] = 'plugin`,`tag_name';
 	$data['type'] = 'InnoDB';
 	$data['row_format'] = 'Dynamic';
@@ -167,7 +167,7 @@ function upgrade_to_1_3_0() {
 	$data['columns'][] = array('name' => 'dimension', 'type' => 'varchar(40)', 'NULL' => false, 'default' => '');
 	$data['columns'][] = array('name' => 'value', 'type' => 'varchar(8192)', 'NULL' => false, 'default' => '');
 	$data['columns'][] = array('name' => 'time_to_live', 'type' => 'int(11)', 'NULL' => false, 'default' => '-1');
-	$data['columns'][] = array('name' => 'last_updated', 'type' => 'timestamp', 'NULL' => true, 'default' => 'current_timestamp()');
+	$data['columns'][] = array('name' => 'last_updated', 'type' => 'timestamp', 'NULL' => true, 'default' => 'CURRENT_TIMESTAMP');
 	$data['primary'] = 'host_id`,`dimension';
 	$data['type'] = 'InnoDB';
 	$data['row_format'] = 'Dynamic';
@@ -440,7 +440,7 @@ function upgrade_to_1_3_0() {
 	$data['columns'][] = array('name' => 'copyright', 'type' => 'varchar(40)', 'NULL' => false, 'default' => '');
 	$data['columns'][] = array('name' => 'installation', 'type' => 'varchar(1024)', 'NULL' => false, 'default' => '');
 	$data['columns'][] = array('name' => 'archive_note', 'type' => 'varchar(256)', 'NULL' => false, 'default' => '');
-	$data['columns'][] = array('name' => 'archive_date', 'type' => 'timestamp', 'NULL' => false, 'default' => 'current_timestamp()');
+	$data['columns'][] = array('name' => 'archive_date', 'type' => 'timestamp', 'NULL' => false, 'default' => 'CURRENT_TIMESTAMP');
 	$data['columns'][] = array('name' => 'archive_md5sum', 'type' => 'varchar(32)', 'NULL' => false, 'default' => '');
 	$data['columns'][] = array('name' => 'archive', 'type' => 'longblob', 'NULL' => true);
 	$data['primary'] = 'id';
