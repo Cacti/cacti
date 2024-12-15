@@ -855,9 +855,9 @@ function host_edit() {
 				<td class='nowrap right'>
 					<span title='<?php print __esc('Delete Graph Template Association'); ?>' class='deletequery fa fa-times' id='gtremove<?php print $item['id']; ?>' data-id='<?php print $item['id']; ?>'></span>
 				</td>
-				<?php
+		<?php
 
-				form_end_row();
+						form_end_row();
 			}
 		} else {
 			print "<tr class='tableRow'><td colspan='3'><em>" . __('No associated graph templates.') . '</em></td></tr>';
@@ -991,9 +991,8 @@ function host_edit() {
 					<span class='verbosequery fa fa-sync' id='verbose<?php print $item['id']; ?>' title='<?php print __esc('Verbose Query'); ?>' data-id='<?php print $item['id']; ?>'></span>
 					<span class='deletequery fa fa-times' id='remove<?php print $item['id']; ?>' title='<?php print __esc('Remove Query'); ?>' data-id='<?php print $item['id']; ?>'></span>
 				</td>
-
-				<?php
-				form_end_row();
+		<?php
+					form_end_row();
 			}
 		} else {
 			print "<tr class='tableRow'><td colspan='4'><em>" . __('No Associated Data Queries.') . '</em></td></tr>';
@@ -1032,7 +1031,7 @@ function host_edit() {
 			</td>
 		</tr>
 
-		<?php
+	<?php
 		html_end_box();
 
 		api_plugin_hook('device_edit_pre_bottom');
@@ -1404,6 +1403,7 @@ function host_validate_vars() {
 function get_device_records(&$total_rows, $rows) {
 	$sql_where  = '';
 	$sql_params = array();
+	$maint_devices = '';
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
@@ -1452,6 +1452,59 @@ function get_device_records(&$total_rows, $rows) {
 					AND status_event_count >= thold_failure_count))";
 		} else {
 			$sql_where .= ($sql_where == '' ? ' WHERE ':' AND ') . " (host.status != '3' OR host.disabled = 'on')";
+		}
+	} elseif (api_plugin_is_enabled('maint')) {
+		$t = time();
+		$schedules = array();
+
+		$all_sch = db_fetch_assoc("SELECT *
+			FROM plugin_maint_schedules
+			WHERE enabled = 'on'");
+
+		if (cacti_sizeof($all_sch)) {
+			foreach ($all_sch as $sch) {
+
+				if ($sch['mtype'] == 1 && ($t > $sch['stime'] && $t < $sch['etime'])) {
+					$schedules[] = $sch['id'];
+				}
+
+				if ($sch['mtype'] == 2) {
+					if ($sch['etime'] < $t) {
+						/* convert start and end to local so that hour stays same for 
+						add days across daylight saving time change */
+						$starttimelocal = (new DateTime('@' . strval($sch['stime'])))->setTimezone( new DateTimeZone( date_default_timezone_get()));
+						$endtimelocal   = (new DateTime('@' . strval($sch['etime'])))->setTimezone( new DateTimeZone( date_default_timezone_get()));
+						$nowtime        = new DateTime();
+						/* add interval days */
+						$addday = new DateInterval( 'P' . strval($sch['minterval'] / 86400) . 'D');
+						while ($endtimelocal < $nowtime) {
+							$starttimelocal = $starttimelocal->add( $addday );
+							$endtimelocal   = $endtimelocal->add( $addday );
+						}
+
+						$sch['stime'] = $starttimelocal->getTimestamp();
+						$sch['etime'] = $endtimelocal->getTimestamp();
+					}
+					if ($t > $sch['stime'] && $t < $sch['etime']) {
+						$schedules[] = $sch['id'];
+					}
+				}
+			}
+
+			if (cacti_sizeof($schedules)) {
+
+				$maint_device_ids = db_fetch_row('SELECT host
+					FROM plugin_maint_hosts
+					WHERE type = 1 AND
+					schedule in (' . implode(',', $schedules) . ')');
+
+				if (cacti_sizeof($maint_device_ids)) {
+					$maint_devices = implode(',', $maint_device_ids);
+					if ($host_where_status == '-5') {
+						$sql_where .= ($sql_where == '' ? ' WHERE ':' AND ') . 'host.id in (' . $maint_devices . ')';
+					}
+				}
+			}
 		}
 	} elseif ($host_where_status != '-1') {
 		if (db_column_exists('host', 'thold_failure_count')) {
@@ -1510,8 +1563,9 @@ function get_device_records(&$total_rows, $rows) {
 			IF(UNIX_TIMESTAMP(status_rec_date) < 943916400 AND status IN (0, 3), total_polls*$poller_interval,
 			IF(UNIX_TIMESTAMP(status_rec_date) > 943916400, UNIX_TIMESTAMP() - UNIX_TIMESTAMP(status_rec_date),
 			IF(snmp_sysUptimeInstance>0 AND snmp_version > 0, snmp_sysUptimeInstance/100, UNIX_TIMESTAMP()
-		))))) AS unsigned) AS instate,
-		s.name as site_name,
+		))))) AS unsigned) AS instate, " .
+		($maint_devices != '' ? "IF(host.id in($maint_devices), 1,0) as maint, " : "") .
+		"s.name as site_name,
 		s.disabled as site_disabled
 		FROM host
 		LEFT JOIN sites AS s
@@ -1668,6 +1722,9 @@ function host() {
 								<option value='-3' <?php if (get_request_var('host_status') == '-3') { ?> selected<?php } ?>><?php print __('Enabled'); ?></option>
 								<option value='-2' <?php if (get_request_var('host_status') == '-2') { ?> selected<?php } ?>><?php print __('Disabled'); ?></option>
 								<option value='-4' <?php if (get_request_var('host_status') == '-4') { ?> selected<?php } ?>><?php print __('Not Up'); ?></option>
+								<?php if (api_plugin_is_enabled('maint')) {?>
+									<option value='-5' <?php if (get_request_var('host_status') == '-5') { ?> selected<?php } ?>><?php print __('Maintenance'); ?></option>
+								<?php } ?>
 								<option value='3' <?php if (get_request_var('host_status') == '3') { ?> selected<?php } ?>><?php print __('Up'); ?></option>
 								<option value='1' <?php if (get_request_var('host_status') == '1') { ?> selected<?php } ?>><?php print __('Down'); ?></option>
 								<option value='2' <?php if (get_request_var('host_status') == '2') { ?> selected<?php } ?>><?php print __('Recovering'); ?></option>
@@ -1925,8 +1982,9 @@ function host() {
 
 			form_alternate_row('line' . $host['id'], true);
 
-			form_selectable_cell(filter_value($host['description'], get_request_var('filter'), 'host.php?action=edit&id=' . $host['id']), $host['id']);
+			$maint = ($host['maint'] == 1 ? '<i class="fas fa-wrench" title="' . __('Maintenace') . '"></i>' : '');
 
+			form_selectable_cell(filter_value($host['description'], get_request_var('filter'), 'host.php?action=edit&id=' . $host['id']) . $maint, $host['id']);
 			form_selectable_cell(filter_value($host['hostname'], get_request_var('filter')), $host['id']);
 			form_selectable_cell(filter_value($host['id'], get_request_var('filter')), $host['id'], '', 'right');
 			form_selectable_cell($host['device_threads'], $host['id'], '', 'right');
@@ -1987,4 +2045,5 @@ function host() {
 
 	api_plugin_hook('device_table_bottom');
 }
+
 
