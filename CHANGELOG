@@ -166,6 +166,7 @@ Cacti CHANGELOG
 -feature#5970: Import/Export Automation should take THold into account
 -feature#5971: Add a method to mark missing Data in all graphs globally
 -feature#5993: Allow Automation Rules to Search through Site Information
+-feature#5997: Add filter for devices in maintenance plan, add icon to device list 
 -feature: Allow messages to be popup notifications
 -feature: Upgrade billboard.js to version 3.14.1
 -feature: Upgrade jQueryUI to 1.14.1
