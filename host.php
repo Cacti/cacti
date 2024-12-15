@@ -1498,12 +1498,20 @@ function get_device_records(&$total_rows, $rows) {
 					WHERE type = 1 AND
 					schedule in (' . implode(',', $schedules) . ')');
 
-				if (cacti_sizeof($maint_device_ids)) {
+				if (cacti_sizeof($maint_device_ids)) { /* need later for all hosts */
 					$maint_devices = implode(',', $maint_device_ids);
-					if ($host_where_status == '-5') {
+				}
+
+				if ($host_where_status == '-5') {
+					if (cacti_sizeof($maint_device_ids)) {
+						
 						$sql_where .= ($sql_where == '' ? ' WHERE ':' AND ') . 'host.id in (' . $maint_devices . ')';
+					} else {
+						$sql_where .= ($sql_where == '' ? ' WHERE ':' AND ') . 'host.id = -1 ';
 					}
 				}
+
+
 			}
 		}
 	} elseif ($host_where_status != '-1') {
@@ -1564,7 +1572,7 @@ function get_device_records(&$total_rows, $rows) {
 			IF(UNIX_TIMESTAMP(status_rec_date) > 943916400, UNIX_TIMESTAMP() - UNIX_TIMESTAMP(status_rec_date),
 			IF(snmp_sysUptimeInstance>0 AND snmp_version > 0, snmp_sysUptimeInstance/100, UNIX_TIMESTAMP()
 		))))) AS unsigned) AS instate, " .
-		($maint_devices != '' ? "IF(host.id in($maint_devices), 1,0) as maint, " : "") .
+		($maint_devices != '' ? "IF(host.id in($maint_devices), 1,0) as maint, " : "0 as maint, ") .
 		"s.name as site_name,
 		s.disabled as site_disabled
 		FROM host
