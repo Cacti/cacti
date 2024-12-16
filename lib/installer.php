@@ -2974,6 +2974,9 @@ class Installer implements JsonSerializable {
 			case Installer::MODE_DOWNGRADE;
 				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('Downgrade'));
 				break;
+			case Installer::MODE_POLLER: // Add this case for poller
+                                $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: ' . __('Poller'));
+                                 break;
 			case Installer::MODE_NONE;
 				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('None'));
 				break;
