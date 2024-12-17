@@ -4040,10 +4040,10 @@ class Installer implements JsonSerializable {
 		if ($status['total'] == 0) {
 			log_install_always('sync', __('No Remote Data Collectors found for full synchronization'));
 		} else {
-			Installer::fullSyncDataCollectorLog($status['timeout'], "Remote Data Collector with name '%s' and id %d previous timed out.  Please manually Sync when once online to complete upgrade.");
-			Installer::fullSyncDataCollectorLog($status['skipped'], "Remote Data Collector with name '%s' and id %d is not available to sync.  Please manually Sync when once online to complete upgrade.");
-			Installer::fullSyncDataCollectorLog($status['failed'], "Remote Data Collector with name '%s' and id %d failed Full Sync.  Please manually Sync when once online to complete upgrade.");
-			Installer::fullSyncDataCollectorLog($status['success'], "Remote Data Collector with name '%s' and id %d completed Full Sync.");
+                        Installer::fullSyncDataCollectorLog($status['timeout'], "The Remote Data Collector named '%s' (ID: %d) timed out. Check Network/Server status then, please perform a manual sync to finalize the upgrade.");
+                        Installer::fullSyncDataCollectorLog($status['skipped'], "The Remote Data Collector named '%s' (ID: %d) is currently unavailable Check Network/Server status. Once it is online, please perform a manual sync to finalize the upgrade.");
+                        Installer::fullSyncDataCollectorLog($status['failed'], "The Remote Data Collector named '%s' (ID: %d) encountered an error during the full synchronization.please perform a manual sync to finalize the upgrade.");
+                        Installer::fullSyncDataCollectorLog($status['success'], "The Remote Data Collector named '%s' (ID: %d) successfully completed the full synchronization.");
 		}
 	}
 
