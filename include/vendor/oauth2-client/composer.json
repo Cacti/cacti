@@ -1,0 +1,10 @@
+{
+    "require": {
+        "league/oauth2-google": "^4.0",
+        "hayageek/oauth2-yahoo": "^2.0",
+        "stevenmaguire/oauth2-keycloak": "^5.1",
+        "greew/oauth2-azure-provider": "^2.0",
+        "league/oauth2-client": "^2.7",
+        "stevenmaguire/oauth2-microsoft": "^2.2"
+    }
+}

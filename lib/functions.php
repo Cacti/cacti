@@ -5293,10 +5293,10 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 
 	$how = read_config_option('settings_how');
 
-	if ($how < 0 || $how > 2) {
+	if ($how < 0 || $how > 3) {
 		$how = 0;
 	}
-
+	
 	if ($how == 0) {
 		$mail->isMail();
 	} elseif ($how == 1) {
@@ -5330,6 +5330,30 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 			$mail->SMTPAutoTLS = false;
 			$mail->SMTPSecure  = false;
 		}
+	} elseif ($how == 3) {
+/*
+		use League\OAuth2\Client\Provider\Google;
+		use Greew\OAuth2\Client\Provider\Azure;
+*/
+//!!pm delam
+		$mail->isSMTP();
+		$mail->Host     = read_config_option('settings_smtp_host');
+		$mail->Port     = read_config_option('settings_smtp_port');
+
+		$secure  = read_config_option('settings_smtp_secure');
+
+		if (!empty($secure) && $secure != 'none') {
+			$mail->SMTPSecure = true;
+
+			if (substr_count($mail->Host, ':') == 0) {
+				$mail->Host = $secure . '://' . $mail->Host;
+			}
+		} else {
+			$mail->SMTPAutoTLS = false;
+			$mail->SMTPSecure  = false;
+		}
+
+		$mail->AuthType = 'XOAUTH2';
 	}
 
 	/* perform data substitution */

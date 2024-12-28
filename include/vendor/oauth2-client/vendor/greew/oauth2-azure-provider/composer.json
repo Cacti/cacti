@@ -1,0 +1,31 @@
+{
+  "name": "greew/oauth2-azure-provider",
+  "description": "An OAuth2 client provider for Microsoft Azure to be used with thephpleague/oauth2-client",
+  "type": "library",
+  "license": "GPL-3.0-or-later",
+  "require": {
+    "php": "^7.3 || ^8.0",
+    "league/oauth2-client": "^2.6",
+    "guzzlehttp/psr7": "^2.4",
+    "psr/http-message": "^1.0 || ^2.0"
+  },
+  "require-dev": {
+    "roave/security-advisories": "dev-latest",
+    "phpunit/phpunit": "^9.5",
+    "friendsofphp/php-cs-fixer": "^3.64"
+  },
+  "autoload": {
+    "psr-4": {
+      "Greew\\OAuth2\\Client\\Provider\\": "src/Provider/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Greew\\OAuth2\\Test\\Client\\Provider\\": "tests/src/Provider"
+    }
+  },
+  "scripts": {
+    "test": "@php vendor/bin/phpunit",
+    "style": "@php vendor/bin/php-cs-fixer fix src/ --rules=@PER-CS"
+  }
+}
