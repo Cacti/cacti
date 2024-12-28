@@ -2116,8 +2116,8 @@ $settings['mail'] = array(
 		'max_length'    => 255,
 		'default'       => read_config_option('base_url') . 'oauth2.php'
 	),
-	'settings_oauth2_token' => array(
-		'friendly_name' => __('Oauth2 token'),
+	'settings_oauth2_refresh_token' => array(
+		'friendly_name' => __('Oauth2 refresh token'),
 		'description'   => __('From OAuth2 provider'),
 		'method'        => 'textbox',
 		'max_length'    => 255,
