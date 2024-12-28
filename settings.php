@@ -437,7 +437,7 @@ function display_settings() {
 			}).trigger('change');
 		} else if (currentTab == 'mail') {
 			$('#row_settings_email_header div.formHeaderText').append('<div id="emailtest" class="emailtest"><?php print __('Send a Test Email');?></div>');
-			$('#row_settings_oauth2_header div.formHeaderText').append('<div id="oauth2token" class="emailtest"><?php print __('Generate OAuth2 Token');?></div>');
+			$('#row_settings_oauth2_header div.formHeaderText').append('<div id="oauth2token" class="emailtest"><?php print __('Generate OAuth2 Refresh Token');?></div>');
 
 			initMail();
 
@@ -502,9 +502,6 @@ function display_settings() {
 						getPresentHTTPError(data);
 					});
 			});
-
-
-
 		} else if (currentTab == 'visual') {
 			currentTheme = $('#selected_theme').val();
 
@@ -617,7 +614,7 @@ function display_settings() {
 				$('#row_settings_oauth2_redirect_uri').hide();
 				$('#row_settings_oauth2_provider').hide();
 				$('#row_settings_oauth2_tenant_id').hide();
-				$('#row_settings_oauth2_token').hide();
+				$('#row_settings_oauth2_refresh_token').hide();
 				break;
 			case '1':
 				if (smtpPath != '') {
@@ -643,7 +640,7 @@ function display_settings() {
 				$('#row_settings_oauth2_redirect_uri').hide();
 				$('#row_settings_oauth2_provider').hide();
 				$('#row_settings_oauth2_tenant_id').hide();
-				$('#row_settings_oauth2_token').hide();
+				$('#row_settings_oauth2_refresh_token').hide();
 				break;
 			case '2':
 				$('#settings_sendmail_path').val('');
@@ -659,7 +656,7 @@ function display_settings() {
 				$('#row_settings_oauth2_redirect_uri').hide();
 				$('#row_settings_oauth2_provider').hide();
 				$('#row_settings_oauth2_tenant_id').hide();
-				$('#row_settings_oauth2_token').hide();
+				$('#row_settings_oauth2_refresh_token').hide();
 				$('#row_settings_smtp_header').show();
 				$('#row_settings_smtp_host').show();
 				$('#row_settings_smtp_port').show();
@@ -688,7 +685,7 @@ function display_settings() {
 				$('#row_settings_oauth2_redirect_uri').show();
 				$('#row_settings_oauth2_provider').show();
 				$('#row_settings_oauth2_tenant_id').show();
-				$('#row_settings_oauth2_token').show();
+				$('#row_settings_oauth2_refresh_token').show();
 				break;
 			}
 		}
