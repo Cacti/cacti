@@ -1378,7 +1378,7 @@ $fields_host_edit = array(
 	'host_add_head' => array(
 		'method'        => 'spacer',
 		'collapsible'   => 'true',
-		'friendly_name' => __('Additional Options')
+		'friendly_name' => __('Additional Information')
 	),
 	 'created' => array(
 		'method'        => 'label',
