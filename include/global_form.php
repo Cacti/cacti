@@ -1383,7 +1383,7 @@ $fields_host_edit = array(
 	 'created' => array(
 		'method'        => 'label',
 		'friendly_name' => __('Created'),
-		'description'   => __('Date/time the device was added'),
+		'description'   => __('Date/time the device was added to Cacti'),
 		'value'         => '|arg1:created|',
 		'max_length'    => '30',
 	),
