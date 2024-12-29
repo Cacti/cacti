@@ -1627,7 +1627,7 @@ function api_plugin_archive_restore($plugin, $id, $type = 'archive') {
 						array($plugin));
 				} else {
 					db_execute_prepared('UPDATE plugin_config
-						SET last_updated = ?,
+						SET last_updated = ?
 						WHERE directory = ?',
 						array($new_updated, $plugin));
 				}
