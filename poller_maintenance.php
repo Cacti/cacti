@@ -871,4 +871,3 @@ function phpversion_check($force = false) {
 		db_execute_prepared('REPLACE INTO settings (name, value) VALUES ("phpver_last", ?)', array($now));
 	}
 }
-
