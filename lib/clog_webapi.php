@@ -157,7 +157,7 @@ function clog_view_logfile() {
 	}
 
 	if ($clogAdmin && get_nfilter_request_var('action') == 'purge') {
-		form_start($current_page);
+		form_start(get_current_page());
 
 		html_start_box(__('Purge'), '50%', '', '3', 'center', '');
 
