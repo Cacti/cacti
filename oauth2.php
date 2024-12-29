@@ -75,25 +75,27 @@ switch ($providerName) {
 }
 
 if (!isset($_GET['code'])) { // If we don't have an authorization code then get one
-    $authUrl = $provider->getAuthorizationUrl($options);
-    $_SESSION['oauth2state'] = $provider->getState();
-    header('Location: ' . $authUrl);
-    exit;
+	$authUrl = $provider->getAuthorizationUrl($options);
+	$_SESSION['oauth2state'] = $provider->getState();
+	header('Location: ' . $authUrl);
+	exit;
 
-    //Check given state against previously stored one to mitigate CSRF attack
+	//Check given state against previously stored one to mitigate CSRF attack
 } elseif (empty($_GET['state']) || (isset($_SESSION['oauth2state']) && ($_GET['state'] !== $_SESSION['oauth2state']))) {
-    unset($_SESSION['oauth2state']);
-    exit('Invalid state');
+	unset($_SESSION['oauth2state']);
+	exit('Invalid state');
 } else { // Try to get an access token (using the authorization code grant)
-    $token = $provider->getAccessToken(
-        'authorization_code',
-        [
-            'code' => $_GET['code']
-        ]
-    );
-    //Use this to interact with an API on the users behalf
-    //Use this to get a new access token if the old one expires
-    echo 'Refresh Token: ', $token->getRefreshToken();
+	$token = $provider->getAccessToken(
+		'authorization_code',
+		[
+			'code' => $_GET['code']
+		]
+	);
+
+	//Use this to interact with an API on the users behalf
+	//Use this to get a new access token if the old one expires
+	print __('Refresh Token: ') . $token->getRefreshToken();
+	print '<br/>' . __('Store this token in Settings -> Mail/Reporting/DNS -> Oauth2 refresh token');
 }
 
 ?>
