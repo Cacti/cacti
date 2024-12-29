@@ -131,9 +131,6 @@ update_graphs_data_source_templates_totals($force);
 // Remove expired host value cache
 purge_host_value_cache();
 
-// Refresh oauth2 access token
-// refresh_oauth2_token();
-
 if ($config['poller_id'] > 1) {
 	api_plugin_hook('poller_remote_maint');
 }
@@ -875,26 +872,3 @@ function phpversion_check($force = false) {
 	}
 }
 
-/* tohle asi vubec nepotrebuju 
-function refresh_oauth2_token() {
-	if (read_config_option('settings_how') == 3) {
-		switch (read_config_option('settings_oauth2_provider')) {
-			case 'google':
-				use League\OAuth2\Client\Provider\Google;
-
-				$provider = new Google([
-					'clientId'     => read_config_option('settings_oauth2_client_id'),
-					'clientSecret' => read_config_option('settings_oauth2_client_secret')
-					'redirectUri'  => read_config_option('settings_oauth2_redirect_uri'),
-					'accessType'   => 'offline',
-				]);
-//!!pm tohle opravit, refresh token uz mam
-				$grant = new RefreshToken();
-				$token = $provider->getAccessToken($grant, ['refresh_token' => $refreshToken]);
-
-				break;
-		
-		}
-	}
-}
-*/
