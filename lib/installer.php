@@ -2774,7 +2774,7 @@ class Installer implements JsonSerializable {
 				if (strncmp($p['homepage'], 'http://', 7) !== 0 && strncmp($p['homepage'], 'http://', 8) !== 0) {
 					$p['homepage'] = 'https://' . $p['homepage'];
 				}
-				$homepage = '<a href="'. $p['homepage'] . '" target=_new>' . $p['homepage'] . '</a>';
+				$homepage = '<a href="'. $p['homepage'] . '" target="_new">' . $p['homepage'] . '</a>';
 			} else {
 				$homepage = '';
 			}
@@ -2783,7 +2783,7 @@ class Installer implements JsonSerializable {
 			form_selectable_ecell($name, $id);
 			form_selectable_ecell($description, $id);
 			form_selectable_ecell($author, $id);
-			form_selectable_ecell($homepage, $id);
+			form_selectable_cell($homepage, $id);
 			form_checkbox_cell($p['name'], 'template_'  . str_replace('.', '_',  $p['filename']));
 			form_end_row();
 		}
