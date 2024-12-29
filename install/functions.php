@@ -309,7 +309,7 @@ function install_rmdir_recursive($directory, $delete_parent = null) {
 
 	foreach ($files as $file) {
 		if (is_dir($file)) {
-			rmdir_recursive($file, 1);
+			install_rmdir_recursive($file, 1);
 		} else {
 			install_unlink($file);
 		}
