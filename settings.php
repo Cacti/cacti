@@ -609,6 +609,7 @@ function display_settings() {
 				$('#row_settings_oauth2_port').hide();
 				$('#row_settings_oauth2_secure').hide();
 				$('#row_settings_oauth2_timeout').hide();
+				$('#row_settings_oauth2_from_email').hide();
 				$('#row_settings_oauth2_client_id').hide();
 				$('#row_settings_oauth2_client_secret').hide();
 				$('#row_settings_oauth2_redirect_uri').hide();
@@ -635,6 +636,7 @@ function display_settings() {
 				$('#row_settings_oauth2_port').hide();
 				$('#row_settings_oauth2_secure').hide();
 				$('#row_settings_oauth2_timeout').hide();
+				$('#row_settings_oauth2_from_email').hide();
 				$('#row_settings_oauth2_client_id').hide();
 				$('#row_settings_oauth2_client_secret').hide();
 				$('#row_settings_oauth2_redirect_uri').hide();
@@ -651,6 +653,7 @@ function display_settings() {
 				$('#row_settings_oauth2_port').hide();
 				$('#row_settings_oauth2_secure').hide();
 				$('#row_settings_oauth2_timeout').hide();
+				$('#row_settings_oauth2_from_email').hide();
 				$('#row_settings_oauth2_client_id').hide();
 				$('#row_settings_oauth2_client_secret').hide();
 				$('#row_settings_oauth2_redirect_uri').hide();
@@ -680,6 +683,7 @@ function display_settings() {
 				$('#row_settings_oauth2_secure').show();
 				$('#row_settings_oauth2_timeout').show();
 				$('#row_settings_oauth2_header').show();
+				$('#row_settings_oauth2_from_email').show();
 				$('#row_settings_oauth2_client_id').show();
 				$('#row_settings_oauth2_client_secret').show();
 				$('#row_settings_oauth2_redirect_uri').show();

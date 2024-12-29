@@ -1997,7 +1997,7 @@ $settings['mail'] = array(
 	),
 	'settings_from_name' => array(
 		'friendly_name' => __('From Name'),
-		'description'   => __('This is the actual name that the Email will appear from.'),
+		'description'   => __('This is the actual name that the Email will appear from. Not used for OAuth2 method.'),
 		'method'        => 'textbox',
 		'max_length'    => 255,
 	),
@@ -2090,6 +2090,12 @@ $settings['mail'] = array(
 			'azure'     => 'Azure',
 		),
 		'default' => 'google'
+	),
+	'settings_oauth2_from_email' => array(
+		'friendly_name' => __('Email Address'),
+		'description'   => __('Email address connected with your oauth.'),
+		'method'        => 'textbox',
+		'max_length'    => 255,
 	),
 	'settings_oauth2_client_id' => array(
 		'friendly_name' => __('OAuth2 Client ID'),

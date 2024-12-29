@@ -1,14 +1,7 @@
 <?php
 
-namespace PHPMailer\PHPMailer;
-
 include(__DIR__ . '/include/global.php');
 require_once(__DIR__ . '/include/vendor/oauth2-client/vendor/autoload.php');
-
-use League\OAuth2\Client\Provider\Google;
-use Hayageek\OAuth2\Client\Provider\Yahoo;
-use Stevenmaguire\OAuth2\Client\Provider\Microsoft;
-use Greew\OAuth2\Client\Provider\Azure;
 
 if (read_config_option('settings_how') != 3) {
 	cacti_log('WARNING: Trying get OAuth2 token but different mail method is configured');
@@ -36,7 +29,7 @@ switch ($providerName) {
 
 	case 'google':
 
-		$provider = new Google($params);
+		$provider = new League\OAuth2\Client\Provider\Google($params);
 		$options = [
 			'scope' => [
 				'https://mail.google.com/'
@@ -46,12 +39,12 @@ switch ($providerName) {
 		break;
 
 	case 'yahoo':
-		$provider = new Yahoo($params);
+		$provider = new Hayageek\OAuth2\Client\Provider\Yahoo($params);
 
 		break;
 
 	case 'microsoft':
-		$provider = new Microsoft($params);
+		$provider = new Stevenmaguire\OAuth2\Client\Provider\Microsoft($params);
 		$options = [
 			'scope' => [
 				'wl.imap',
@@ -64,7 +57,7 @@ switch ($providerName) {
 	case 'azure':
 		$params['tenantId'] = $tenantId;
 
-		$provider = new Azure($params);
+		$provider = new Greew\OAuth2\Client\Provider\Azure($params);
 		$options = [
 			'scope' => [
 				'https://outlook.office.com/SMTP.Send',
@@ -81,20 +74,17 @@ switch ($providerName) {
 		break;
 }
 
-
-if (!isset($_GET['code'])) {
-    // If we don't have an authorization code then get one
+if (!isset($_GET['code'])) { // If we don't have an authorization code then get one
     $authUrl = $provider->getAuthorizationUrl($options);
     $_SESSION['oauth2state'] = $provider->getState();
     header('Location: ' . $authUrl);
     exit;
 
     //Check given state against previously stored one to mitigate CSRF attack
-} elseif (empty($_GET['state']) || ($_GET['state'] !== $_SESSION['oauth2state'])) {
+} elseif (empty($_GET['state']) || (isset($_SESSION['oauth2state']) && ($_GET['state'] !== $_SESSION['oauth2state']))) {
     unset($_SESSION['oauth2state']);
     exit('Invalid state');
-} else {
-    //Try to get an access token (using the authorization code grant)
+} else { // Try to get an access token (using the authorization code grant)
     $token = $provider->getAccessToken(
         'authorization_code',
         [

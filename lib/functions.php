@@ -5267,6 +5267,9 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 	require_once(CACTI_PATH_INCLUDE . '/vendor/phpmailer/src/Exception.php');
 	require_once(CACTI_PATH_INCLUDE . '/vendor/phpmailer/src/PHPMailer.php');
 	require_once(CACTI_PATH_INCLUDE . '/vendor/phpmailer/src/SMTP.php');
+	require_once(CACTI_PATH_INCLUDE . '/vendor/phpmailer/src/OAuthTokenProvider.php');
+	require_once(CACTI_PATH_INCLUDE . '/vendor/phpmailer/src/OAuth.php');
+	require_once(CACTI_PATH_INCLUDE . '/vendor/oauth2-client/vendor/autoload.php');
 
 	$start_time = microtime(true);
 
@@ -5331,29 +5334,72 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 			$mail->SMTPSecure  = false;
 		}
 	} elseif ($how == 3) {
-/*
-		use League\OAuth2\Client\Provider\Google;
-		use Greew\OAuth2\Client\Provider\Azure;
-*/
-//!!pm delam
 		$mail->isSMTP();
-		$mail->Host     = read_config_option('settings_smtp_host');
-		$mail->Port     = read_config_option('settings_smtp_port');
+		$mail->Host = read_config_option('settings_oauth2_host');
+		$mail->Port = read_config_option('settings_oauth2_port');
 
-		$secure  = read_config_option('settings_smtp_secure');
+		$secure = read_config_option('settings_oauth2_secure');
 
 		if (!empty($secure) && $secure != 'none') {
-			$mail->SMTPSecure = true;
-
-			if (substr_count($mail->Host, ':') == 0) {
-				$mail->Host = $secure . '://' . $mail->Host;
-			}
+			$mail->SMTPSecure = strtolower($secure);
 		} else {
 			$mail->SMTPAutoTLS = false;
 			$mail->SMTPSecure  = false;
 		}
 
+		$mail->SMTPAuth = true;
 		$mail->AuthType = 'XOAUTH2';
+
+		$email = read_config_option('settings_oauth2_from_email');
+		$clientId = read_config_option('settings_oauth2_client_id');
+		$clientSecret = read_config_option('settings_oauth2_client_secret');
+		$tenantId = read_config_option('settings_oauth2_tenant_id');
+
+		$refreshToken = read_config_option('settings_oauth2_refresh_token');
+
+		switch (read_config_option('settings_oauth2_provider')) {
+			case 'google':
+				$provider = new League\OAuth2\Client\Provider\Google([
+					'clientId' => $clientId,
+					'clientSecret' => $clientSecret,
+				]);
+
+				break;
+			case 'azure':
+				$provider = new Greew\OAuth2\Client\Provider\Azure([
+					'clientId' => $clientId,
+					'clientSecret' => $clientSecret,
+					'tenantId' => $tenantId,
+				]);
+
+				break;
+
+			case 'yahoo':
+				$provider = new Hayageek\OAuth2\Client\Provider\Yahoo([
+					'clientId' => $clientId,
+					'clientSecret' => $clientSecret,
+				]);
+
+				break;
+
+			case 'microsoft':
+				$provider = new Stevenmaguire\OAuth2\Client\Provider\Microsoft([
+					'clientId' => $clientId,
+					'clientSecret' => $clientSecret,
+				]);
+
+				break;
+		}
+
+		$mail->setOAuth(
+			new PHPMailer\PHPMailer\OAuth([
+				'provider' => $provider,
+				'clientId' => $clientId,
+				'clientSecret' => $clientSecret,
+				'refreshToken' => $refreshToken,
+				'userName' => $email,
+			])
+		);
 	}
 
 	/* perform data substitution */
