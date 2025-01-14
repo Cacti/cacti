@@ -1556,7 +1556,7 @@ function graph_templates() {
 
 	$total_rows = db_fetch_cell_prepared("SELECT COUNT(DISTINCT gt.id)
 		FROM graph_templates AS gt
-		INNER JOIN graph_templates_item AS gti
+		LEFT JOIN graph_templates_item AS gti
 		ON gti.graph_template_id = gt.id
 		AND gti.local_graph_id = 0
 		$sql_where",
@@ -1575,7 +1575,7 @@ function graph_templates() {
 		INNER JOIN graph_templates_graph AS gtg
 		ON gtg.graph_template_id = gt.id
 		AND gtg.local_graph_id = 0
-		INNER JOIN graph_templates_item AS gti
+		LEFT JOIN graph_templates_item AS gti
 		ON gti.graph_template_id = gt.id
 		AND gti.local_graph_id = 0
 		LEFT JOIN (
