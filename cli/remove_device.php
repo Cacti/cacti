@@ -198,6 +198,7 @@ if (cacti_sizeof($parms)) {
 
 	if ($confirm) {
 		$ids_confirm = implode(', ', $ids_found);
+		$hosts = [];
 
 		if (!$quiet) {
 			print "Removing devices with ids: $ids_confirm" . PHP_EOL;
