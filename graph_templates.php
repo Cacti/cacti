@@ -896,7 +896,7 @@ function item_edit() {
 		}
 	}
 
-	if (cacti_sizeof($template_item) && $template_item['legend'] == '') {
+	if (isset($template_item) && cacti_sizeof($template_item) && $template_item['legend'] == '') {
 		switch ($template_item['graph_type_id']) {
 			case 7:
 			case 8:
