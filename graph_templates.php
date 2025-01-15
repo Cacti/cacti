@@ -574,7 +574,7 @@ function form_save() {
 			db_execute_prepared('UPDATE graph_templates
 				SET last_updated = NOW()
 				WHERE id = ?',
-				get_nfilter_request_var('graph_template_id'));
+				array(get_nfilter_request_var('graph_template_id')));
 
 			header('Location: graph_templates.php?action=template_edit&id=' . get_nfilter_request_var('graph_template_id'));
 
@@ -656,7 +656,7 @@ function form_save() {
 			db_execute_prepared('UPDATE graph_templates
 				SET last_updated = NOW()
 				WHERE id = ?',
-				get_nfilter_request_var('graph_template_id'));
+				array(get_nfilter_request_var('graph_template_id')));
 
 			header('Location: graph_templates.php?action=template_edit&id=' . get_nfilter_request_var('graph_template_id'));
 
