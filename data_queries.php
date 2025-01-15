@@ -330,7 +330,7 @@ function form_save() {
 
 			clear_messages();
 
-			header('Location: data_queries.php?action=item_edit?id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+			header('Location: data_queries.php?action=item_edit&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
 		}
 	}
 }
@@ -1020,6 +1020,10 @@ function data_query_item_edit() {
 	});
 
 	$('input.svds_x').click(function() {
+		var options = {
+			url:'data_queries.php'
+		}
+
 		// Get the dsid value
 		var id    = $(this).attr('id');
 		var parts = id.split('_');
@@ -1035,11 +1039,10 @@ function data_query_item_edit() {
 				'svds_field': $('#svds_'+sid+'_field').val(),
 				'svds_text': $('#svds_'+sid+'_text').val(),
 				'svds_id': sid,
-				header: 'false',
 				__csrf_magic: csrfMagicToken
 			};
 
-			postURL({url:'data_queries.php'}, data);
+			postUrl(options, data);
 		}
 	});
 	</script>
