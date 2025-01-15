@@ -276,7 +276,7 @@ function form_save() {
 		db_execute_prepared('UPDATE snmp_query
 			SET last_updated = NOW()
 			WHERE id = ?',
-			get_request_var('id'));
+			array(get_request_var('id')));
 
 		clear_messages();
 
@@ -326,7 +326,7 @@ function form_save() {
 			db_execute_prepared('UPDATE snmp_query
 				SET last_updated = NOW()
 				WHERE id = ?',
-				get_request_var('id'));
+				array(get_request_var('id')));
 
 			clear_messages();
 
