@@ -1882,7 +1882,7 @@ class Installer implements JsonSerializable {
 			case Installer::STEP_PERMISSION_CHECK:
 				return $this->processStepPermissionCheck();
 			case Installer::STEP_INPUT_VALIDATION:
-				return $this->processStepInputValidation();
+				return $this->processStepNoticesRecomendations();
 			case Installer::STEP_PROFILE_AND_AUTOMATION:
 				return $this->processStepProfileAndAutomation();
 			case Installer::STEP_TEMPLATE_INSTALL:
@@ -2617,8 +2617,11 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
-	public function processStepInputValidation() {
-		$output  = Installer::sectionTitle(__('Input Validation Whitelist Protection'));
+	public function processStepNoticesRecomendations() {
+		$output  = Installer::sectionTitle(__('Linux kernel security modules'));
+		$output .= Installer::sectionNormal(__('Cacti needs to establish network connections, execute binaries and write files to work. Linux security features such as <b>SELinux</b>, <b>AppArmor</b> or <b>ModSecurity</b> may cause Cacti to become inoperable in some configurations. If problems occur, check the settings of these security tools.<br/><br/>'));
+
+		$output .= Installer::sectionTitle(__('Input Validation Whitelist Protection'));
 		$output .= Installer::sectionNormal(__('Cacti Data Input methods that call a script can be exploited in ways that a non-administrator can perform damage to either files owned by the poller account, and in cases where someone runs the Cacti poller as root, can compromise the operating system allowing attackers to exploit your infrastructure.'));
 		$output .= Installer::sectionNormal(__('Therefore, several versions ago, Cacti was enhanced to provide Whitelist capabilities on the these types of Data Input Methods.  Though this does secure Cacti more thoroughly, it does increase the amount of work required by the Cacti administrator to import and manage Templates and Packages.'));
 		$output .= Installer::sectionNormal(__('The way that the Whitelisting works is that when you first import a Data Input Method, or you re-import a Data Input Method, and the script and or arguments change in any way, the Data Input Method, and all the corresponding Data Sources will be immediately disabled until the administrator validates that the Data Input Method is valid.'));
@@ -2632,7 +2635,7 @@ class Installer implements JsonSerializable {
 				'</ul>'
 		);
 
-		$output .= Installer::sectionNormal(__('It is strongly suggested that you update your config.php to enable this feature by uncommenting the <b>$input_whitelist</b> variable and then running the three CLI script options above after the web based install has completed.'));
+		$output .= Installer::sectionNormal(__('It is strongly suggested that you update your config.php to enable this feature by uncommenting the <b>$input_whitelist</b> variable and then running the three CLI script options above after the web based install has completed.<br/><br/>'));
 
 		$output .= Installer::sectionNormal(__('Check the Checkbox below to acknowledge that you have read and understand this security concern'));
 

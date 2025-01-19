@@ -479,7 +479,7 @@ function processStepCheckTables(StepData) {
 
 }
 
-function processStepInputValidation(StepData) {
+function processStepNoticesRecomendations(StepData) {
 	if ($('#confirm').length) {
 		$('#confirm').click(function() {
 			if ($(this).is(':checked')) {
@@ -690,7 +690,7 @@ function performStep(installStep, suppressRefresh, forceReload) {
 			} else if (data.Step == STEP_BINARY_LOCATIONS) {
 				processStepBinaryLocations(data.StepData);
 			} else if (data.Step == STEP_INPUT_VALIDATION) {
-				processStepInputValidation(data.StepData);
+				processStepNoticesRecomendations(data.StepData);
 			} else if (data.Step == STEP_PROFILE_AND_AUTOMATION) {
 				processStepProfileAndAutomation(data.StepData);
 			} else if (data.Step == STEP_TEMPLATE_INSTALL) {
