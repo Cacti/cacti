@@ -174,6 +174,7 @@ Cacti CHANGELOG
 -feature#6033: Allow Admins to see when a template was last modified
 -feature#6034: Allow Users to Drill Up from CDEF's and VDEF's to Graphs and Graph Templates
 -feature#6044: Enable the capabilities to view historical Classical Cacti Report from the GUI
+-feature#6063: Change installer page Input Validation Whitelist Protection to Recommendations 
 -feature#6066: Enable Drag and Drop for External Links
 -feature: Allow messages to be popup notifications
 -feature: Upgrade billboard.js to version 3.14.1
