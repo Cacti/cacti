@@ -735,7 +735,7 @@ function graphs() {
 							<span>" . __esc('Data Query [%s]', $snmp_query['name']) . "</span>
 						</div>
 						<div class='cactiTableButton'>
-							<span class='reloadquery fa fa-sync' id='reload" . $snmp_query['id'] . "' data-id='" . $snmp_query['id'] . "'></span>
+							<span class='reloadquery fa fa-sync' id='reload" . $snmp_query['id'] . "' title='" . __esc('Reload Query') . "' data-id='" . $snmp_query['id'] . "'></span>
 						</div>
 					</div>
 				</div>";
@@ -981,7 +981,15 @@ function graphs() {
 	}
 
 	if ($script != '') {
+		$script .= "$(function() {
+			$('[id^=\'reload\']').click(function(data) {
+				$(this).addClass('fa-spin');
+				loadUrl({url:'graphs_new.php?action=query_reload&id='+$(this).attr('data-id')+'&host_id='+$('#host_id').val()})
+			});
+		});";
+
 		$script .= "$('.default').click(function() { $.get('graphs_new.php?action=ajax_save&query=" . (isset($snmp_query['id']) ? $snmp_query['id']:'') . "'+'&item='+$(\".dqselect\").val()).fail(function(data) { getPresentHTTPError(data); });}); $('tr.notemplate').tooltip();</script>";
+
 		print $script;
 	}
 
