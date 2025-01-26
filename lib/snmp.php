@@ -488,7 +488,7 @@ function cacti_snmp_session_walk($session, $oid, $dummy = false, $max_repetition
 	}
 
 	if (cacti_sizeof($out)) {
-		foreach($out as $oid => $value){
+		foreach($out as $oid => $value) {
 			if (is_array($value)) {
 				foreach($value as $index => $sval) {
 					$out[$oid][$index] = format_snmp_string($sval, false, $value_output_format);
@@ -537,7 +537,7 @@ function cacti_snmp_session_get($session, $oid, $strip_alpha = false) {
 	}
 
 	if (is_array($out)) {
-		foreach($out as $oid => $value){
+		foreach($out as $oid => $value) {
 			$out[$oid] = format_snmp_string($value, false, SNMP_STRING_OUTPUT_GUESS, $strip_alpha);
 		}
 	} else {
@@ -579,7 +579,7 @@ function cacti_snmp_session_getnext($session, $oid) {
 	}
 
 	if (is_array($out)) {
-		foreach($out as $oid => $value){
+		foreach($out as $oid => $value) {
 			$out[$oid] = format_snmp_string($value, false);
 		}
 	} else {
@@ -587,6 +587,18 @@ function cacti_snmp_session_getnext($session, $oid) {
 	}
 
 	return $out;
+}
+
+function cacti_snmp_validate_oid($oid) {
+	$oid = ltrim($oid, '.');
+
+	$validate = array_unique(array_map('is_numeric', explode('.', $oid)));
+
+	if (array_search(false, $validate, true)) {
+		return false;
+	} else {
+		return true;
+	}
 }
 
 function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '', $auth_pass = '',
@@ -728,16 +740,34 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 			 * usually on sysDescr on Cisco devices.
 			 */
 			$i = 0;
+
 			foreach($temp_array as $index => $value) {
 				if (preg_match('/(.*) =.*/', $value)) {
-					$parts = explode('=', $value, 2);
-					$snmp_array[$i]['oid']   = trim($parts[0]);
-					$snmp_array[$i]['value'] = format_snmp_string($parts[1], false, $value_output_format);
+					$parts   = explode('=', $value, 2);
+					$t_oid   = trim($parts[0]);
+					$t_value = $parts[1];
+
+					if (!cacti_snmp_validate_oid($t_oid)) {
+						cacti_log(sprintf('WARNING: SNMP Agent exploit attempted on SNMP agent from host ip: %s with oid: %s', $hostname, $t_oid), false, 'SECURITY');
+						continue;
+					}
+
+					$snmp_array[$i]['oid']   = $t_oid;
+					$snmp_array[$i]['value'] = $t_value;
 					$i++;
 				} else {
 					$snmp_array[$i-1]['value'] .= $value;
 				}
 			}
+		}
+	}
+
+	/**
+	 * replay the array to escape value data in case of a multi-line exploit
+	 */
+	if (cacti_sizeof($snmp_array)) {
+		foreach($snmp_array as $index => $data) {
+			$snmp_array[$index]['value'] = format_snmp_string($data['value'], false, $value_output_format);
 		}
 	}
 

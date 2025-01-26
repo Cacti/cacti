@@ -1,6 +1,12 @@
 Cacti CHANGELOG
 
-1.2.x
+1.2.29
+-security#GHSA-pv2c-97pp-vxwg: Local File Inclusion (LFI) Vulnerability via Poller Standard Error Log Path
+-security#GHSA-f9c7-7rc3-574c: SQL Injection vulnerability when using tree rules through Automation API 
+-security#GHSA-vj9g-P7F2-4wqj: SQL Injection vulnerability when view host template
+-security#GHSA-fh3x-69rr-qqpp: SQL Injection vulnerability when request automation devices
+-security#GHSA-c5j8-jxj3-hh36: Authenticated RCE via multi-line SNMP responses
+-security#GHSA-fxrq-fr7h-9rqq: Arbitrary File Creation leading to RCE
 -issue#5843: Issue with temporary tables with use of microtime
 -issue#5847: Presets Time in Cacti 1.2.28 Not Automatically Updating...
 -issue#5848: RRDfile Auto Clean not working

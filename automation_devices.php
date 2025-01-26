@@ -345,45 +345,44 @@ function process_request_vars() {
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '-1'
-			),
+		),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 
-			),
+		),
 		'filter' => array(
 			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
-			),
+		),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
 			'default' => 'hostname',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'sort_direction' => array(
 			'filter' => FILTER_CALLBACK,
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'status' => array(
 			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
 			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'network' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
-			),
+			'default' => '-1',
+		),
 		'snmp' => array(
 			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
 			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
-			),
+		),
 		'os' => array(
 			'filter' => FILTER_CALLBACK,
 			'pageset' => true,
@@ -400,6 +399,8 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 	global $os_arr, $status_arr, $networks, $device_actions;
 
 	$sql_where  = '';
+	$sql_params = array();
+
 	$status     = get_request_var('status');
 	$network    = get_request_var('network');
 	$snmp       = get_request_var('snmp');
@@ -407,42 +408,51 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 	$filter     = get_request_var('filter');
 
 	if ($status == __('Down')) {
-		$sql_where .= 'WHERE up=0';
+		$sql_where .= 'WHERE up = 0';
 	} else if ($status == __('Up')) {
-		$sql_where .= 'WHERE up=1';
+		$sql_where .= 'WHERE up = 1';
 	}
 
 	if ($network > 0) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'network_id=' . $network;
+		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . 'network_id = ?';
+		$sql_params[] = $network;
 	}
 
 	if ($snmp == __('Down')) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'snmp=0';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'snmp = 0';
 	} else if ($snmp == __('Up')) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'snmp=1';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'snmp = 1';
 	}
 
 	if ($os != '-1' && in_array($os, $os_arr)) {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . "os='$os'";
+		$sql_where  .= ($sql_where != '' ? ' AND ':'WHERE ') . 'os = ?';
+		$sql_param[] = $os;
 	}
 
 	if ($filter != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . '(hostname LIKE ' . db_qstr('%' . $filter . '%') . '
-			OR ip LIKE ' . db_qstr('%' . $filter . '%') . '
-			OR sysName LIKE ' . db_qstr('%' . $filter . '%') . '
-			OR sysDescr LIKE ' . db_qstr('%' . $filter . '%') . '
-			OR sysLocation LIKE ' . db_qstr('%' . $filter . '%') . '
-			OR sysContact LIKE ' . db_qstr('%' . $filter . '%') . '
-			)';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') .
+			'(hostname LIKE ? OR ip LIKE ? OR sysName LIKE ? OR sysDescr LIKE ? OR sysLocation LIKE ? OR sysContact LIKE ?)';
+
+		$sql_params[] = '%' . $filter . '%';
+		$sql_params[] = '%' . $filter . '%';
+		$sql_params[] = '%' . $filter . '%';
+		$sql_params[] = '%' . $filter . '%';
+		$sql_params[] = '%' . $filter . '%';
+		$sql_params[] = '%' . $filter . '%';
 	}
 
 	if ($export) {
-		return db_fetch_assoc("SELECT * FROM automation_devices $sql_where ORDER BY INET_ATON(ip)");
+		return db_fetch_assoc_prepared("SELECT *
+			FROM automation_devices
+			$sql_where
+			ORDER BY INET_ATON(ip)",
+			$sql_params);
 	} else {
-		$total_rows = db_fetch_cell("SELECT
+		$total_rows = db_fetch_cell_prepared("SELECT
 			COUNT(*)
 			FROM automation_devices
-			$sql_where");
+			$sql_where",
+			$sql_params);
 
 		$page = get_request_var('page');
 
@@ -455,7 +465,7 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 			$sql_order
 			$sql_limit";
 
-		return db_fetch_assoc($sql_query);
+		return db_fetch_assoc_prepared($sql_query, $sql_params);
 	}
 }
 

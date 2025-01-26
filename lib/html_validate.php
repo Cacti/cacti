@@ -48,7 +48,7 @@ function die_html_input_error($variable = '', $value = '', $message = '') {
 	global $config;
 
 	if ($message == '') {
-		$message = __('Validation error for variable %s with a value of %s.  See backtrace below for more details.', html_escape($variable), html_escape($value));
+		$message = __esc('Validation error for variable %s with a value of %s.  See backtrace below for more details.', $variable, html_escape($value));
 	}
 
 	if (isset_request_var('json')) {
