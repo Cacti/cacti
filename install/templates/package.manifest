@@ -226,6 +226,22 @@
         },
         {
             "kind": "Package",
+            "name": "Dell iDrac",
+            "filename": "Dell_iDrac.xml.gz",
+            "metadata": {
+                "author": "The Cacti Group",
+                "homepage": "cacti.net",
+                "email": "developers@cacti.net",
+                "description": "Dell iDrac Device Package",
+                "class": "remotemgmt",
+                "tags": "Physical disk, virtual disk, temperature, fans, controller, battery",
+                "installation": [],
+                "version": "1.3.0",
+                "copyright": "GNU General Public License"
+            }
+        },
+        {
+            "kind": "Package",
             "name": "ESXi Device",
             "filename": "ESXi_Device.xml.gz",
             "metadata": {
