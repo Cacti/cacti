@@ -24,6 +24,7 @@ Cacti CHANGELOG
 -issue#5986: PHP ERRORS with php8.4 while including global_arrays.php
 -issue#5987: Please add a new line to upgrade_database script 
 -issue#6065: Preview page no longer refreshes
+-issue#6078: Convert tables errors when using default mariadb collation settings
 -feature#5921: Add HPE Nimble/Alletra template
 -feature#5933: Only attempt to change the table type and character encoding for built-in Cacti tables
 

@@ -30,6 +30,8 @@ DELIMITER //
 SET @sqlmode= "";
 SET SESSION sql_mode = @sqlmode;
 
+ALTER DATABASE DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 --
 -- Table structure for table `aggregate_graph_templates`
 --
