@@ -137,7 +137,7 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-if (!$replace && !$generate) {
+if (!isset($replace) && !isset($generate)) {
 	display_help();
 	exit(0);
 }
