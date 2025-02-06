@@ -552,9 +552,9 @@ function get_auth_realms($login = false) {
 	}
 
 	return array(
-		'0' => ['name' => __('Local')],
-		'3' => ['name' => __('LDAP')],
-		'2' => ['name' => __('Web Basic')],
+		'0' => __('Local'),
+		'3' => __('LDAP'),
+		'2' => __('Web Basic'),
 	);
 }
 

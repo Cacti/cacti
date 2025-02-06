@@ -335,6 +335,10 @@ $selectedTheme = get_selected_theme();
 								);
 							} else {
 								$realms = get_auth_realms(true);
+
+								foreach($realms as $key => $erealm) {
+									$realms[$key] = array('name' => $erealm);
+								}
 							}
 
 							// try and remember previously selected realm
