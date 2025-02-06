@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.2.30
+-issue#6090: Undefined function warnings in Automation
+
 1.2.29
 -security#GHSA-c5j8-jxj3-hh36: Authenticated RCE via multi-line SNMP responses
 -security#GHSA-f9c7-7rc3-574c: SQL Injection vulnerability when using tree rules through Automation API
