@@ -324,21 +324,17 @@ $selectedTheme = get_selected_theme();
 								$realms = api_plugin_hook_function('login_realms',
 									array(
 										'1' => array(
-											'name' => __('Local'),
+											'name'     => __('Local'),
 											'selected' => false
 										),
 										'2' => array(
-											'name' => __('LDAP'),
+											'name'     => __('LDAP'),
 											'selected' => true
 										)
 									)
 								);
 							} else {
 								$realms = get_auth_realms(true);
-
-								foreach($realms as $key => $erealm) {
-									$realms[$key] = array('name' => $erealm);
-								}
 							}
 
 							// try and remember previously selected realm
