@@ -295,7 +295,7 @@ function export() {
 		),
 		'export_item_id' => array(
 			'method' => 'drop_sql',
-			'friendly_name' => __('%s to Export', $export_types{get_nfilter_request_var('export_type')}['name']),
+			'friendly_name' => __('%s to Export', $export_types[get_nfilter_request_var('export_type')]['name']),
 			'description' => __('Choose the exact items to export in the Package.'),
 			'value' => (isset_request_var('export_item_id') ? get_filter_request_var('export_item_id'):'|arg1:export_item_id|'),
 			'sql' => $export_types[get_nfilter_request_var('export_type')]['dropdown_sql']
