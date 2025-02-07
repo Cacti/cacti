@@ -162,13 +162,13 @@ function automation_tree_rules_form_save() {
 			header('Location: automation_tree_rules.php?header=false&action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
 		}
 	} elseif (isset_request_var('save_component_automation_tree_rule_item')) {
-
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
 		get_filter_request_var('item_id');
 		/* ==================================================== */
 
 		unset($save);
+
 		$save['id']                = form_input_validate(get_request_var('item_id'), 'item_id', '^[0-9]+$', false, 3);
 		$save['rule_id']           = form_input_validate(get_request_var('id'), 'id', '^[0-9]+$', false, 3);
 		$save['sequence']          = form_input_validate(get_nfilter_request_var('sequence'), 'sequence', '^[0-9]+$', false, 3);
