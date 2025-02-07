@@ -850,7 +850,7 @@ function template() {
 	}
 
 	if (get_request_var('graph_template') != '-1') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . '(gt_id = ' . get_request_var('graph_template') . ')';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . '(gt_id = ' . get_filter_request_var('graph_template') . ')';
 		$sql_join   = "INNER JOIN (
 			SELECT DISTINCT host_template_id, id AS gt_id
 			FROM (
