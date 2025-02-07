@@ -1454,7 +1454,7 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 			form_alternate_row();
 			$form_data = '<td><a class="linkEditMain" href="' . html_escape($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">' . __('Item#%d', $i+1) . '</a></td>';
 			$form_data .= '<td>' . 	$item['sequence'] . '</td>';
-			$form_data .= '<td>' . 	$field_name . '</td>';
+			$form_data .= '<td>' . 	html_escape($field_name) . '</td>';
 			$form_data .= '<td>' . 	$tree_sort_types[$item['sort_type']] . '</td>';
 			$form_data .= '<td>' . 	($item['propagate_changes'] ? __('Yes'):__('No')) . '</td>';
 			$form_data .= '<td>' . 	html_escape($item['search_pattern']) . '</td>';
