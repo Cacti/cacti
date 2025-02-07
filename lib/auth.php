@@ -519,13 +519,13 @@ function get_auth_realms($login = false) {
 		if (cacti_sizeof($drealms)) {
 			if ($login) {
 				$new_realms['0'] = array(
-					'name' => __('Local'),
+					'name'     => __('Local'),
 					'selected' => false
 				);
 
 				foreach($drealms as $realm) {
 					$new_realms[1000+$realm['domain_id']] = array(
-						'name' => $realm['domain_name'],
+						'name'     => $realm['domain_name'],
 						'selected' => false
 					);
 				}
@@ -549,13 +549,18 @@ function get_auth_realms($login = false) {
 
 			return $new_realms;
 		}
+	} elseif ($login) {
+		return array(
+			'0' => array('name' => __('Local')),
+			'3' => array('name' => __('LDAP'))
+		);
+	} else {
+		return array(
+			'0' => __('Local'),
+			'3' => __('LDAP'),
+			'2' => __('Web Basic'),
+		);
 	}
-
-	return array(
-		'0' => ['name' => __('Local')],
-		'3' => ['name' => __('LDAP')],
-		'2' => ['name' => __('Web Basic')],
-	);
 }
 
 /**

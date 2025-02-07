@@ -324,11 +324,11 @@ $selectedTheme = get_selected_theme();
 								$realms = api_plugin_hook_function('login_realms',
 									array(
 										'1' => array(
-											'name' => __('Local'),
+											'name'     => __('Local'),
 											'selected' => false
 										),
 										'2' => array(
-											'name' => __('LDAP'),
+											'name'     => __('LDAP'),
 											'selected' => true
 										)
 									)

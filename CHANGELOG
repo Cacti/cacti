@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.30
+-issue#6089: Cannot Add New User due to incorrect array structure
 -issue#6090: Undefined function warnings in Automation
 
 1.2.29
