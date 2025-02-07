@@ -286,7 +286,7 @@ function export() {
 
 	form_start('package.php', 'form_id');
 
-	html_start_box(__('Available Templates [%s]', $export_types{get_nfilter_request_var('export_type')}['name']), '100%', '', '3', 'center', '');
+	html_start_box(__('Available Templates [%s]', $export_types[get_nfilter_request_var('export_type')]['name']), '100%', '', '3', 'center', '');
 
 	$package_form = array(
 		'spacer0' => array(
