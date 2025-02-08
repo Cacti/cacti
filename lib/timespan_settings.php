@@ -54,7 +54,7 @@ function initialize_timespan(&$timespan) {
 		$default_timespan  = read_user_setting('default_timespan');
 		$default_timeshift = read_user_setting('default_timeshift');
 
-		if (empty($detault_timespan)) {
+		if (empty($default_timespan)) {
 			$default_timespan = 7;
 			set_user_setting('predefined_timespan', $default_timespan);
 		}
