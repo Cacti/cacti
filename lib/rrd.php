@@ -1382,6 +1382,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			$delta_time = $default_delta;
 		}
 
+		if ($delta_time <= $graph_data_array['graph_start']) {
+			$delta_time = $now_time;
+		}
+
 		$graph_data_array['graph_end'] = $delta_time;
 	}
 
