@@ -1178,7 +1178,7 @@ $menu_glyphs = array(
 	__('Configuration')   => 'fa fa-sliders-h',
 	__('Utilities')       => 'fa fa-cog',
 	__('External Links')  => 'fa fa-external-link-alt',
-	__('Support')         => 'far fa-question-circle-circle',
+	__('Support')         => 'fa fa-question-circle',
 	__('Troubleshooting') => 'fa fa-bug'
 );
 

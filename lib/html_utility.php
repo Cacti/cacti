@@ -1486,7 +1486,7 @@ function get_current_graph_end() {
  */
 function display_tooltip($text) {
 	if ($text != '') {
-		return '<div class="cactiTooltipHint far fa-question-circle-circle-filled"><span style="display:none;">' . $text . "</span></div>\n";
+		return '<div class="cactiTooltipHint fa fa-question-circle"><span style="display:none;">' . $text . "</span></div>\n";
 	} else {
 		return '';
 	}

@@ -2435,7 +2435,7 @@ class Installer implements JsonSerializable {
 			$form_check_string = '';
 
 			/* draw the actual header and textbox on the form */
-			print "<div class='formRow $class'><div class='formColumnLeft'><div class='formFieldName'>" . $array['friendly_name'] . "<div class='formTooltip'><div class='cactiTooltipHint far fa-question-circle-circle-filled'><span style='display:none;'>" . $array['description'] . '</span></div></div></div></div>';
+			print "<div class='formRow $class'><div class='formColumnLeft'><div class='formFieldName'>" . $array['friendly_name'] . "<div class='formTooltip'><div class='cactiTooltipHint fa fa-question-circle'><span style='display:none;'>" . $array['description'] . '</span></div></div></div></div>';
 
 			print "<div class='formColumnRight'><div class='formData'>";
 
