@@ -101,16 +101,16 @@ class CactiTableFilter {
 			300 => __('%d Minutes', 5)
 		);
 
-		if ($session_var == '') {
+		if ($this->session_var == '') {
 			$action = get_nfilter_request_var('action');
 			$tab    = get_nfilter_request_var('tab');
 
 			if ($action != '') {
-				$session_var .= basename(get_current_page(), '.php') . '_' . $action;
+				$this->session_var .= basename(get_current_page(), '.php') . '_' . $action;
 			} elseif ($tab != '') {
-				$session_var .= basename(get_current_page(), '.php') . '_' . $tab;
+				$this->session_var .= basename(get_current_page(), '.php') . '_' . $tab;
 			} else {
-				$session_var .= basename(get_current_page(), '.php');
+				$this->session_var .= basename(get_current_page(), '.php');
 			}
 		}
 
