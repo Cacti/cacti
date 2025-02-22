@@ -394,8 +394,8 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 					if ($output == '' || $output === null) {
 						if (debounce_run_notification('rrdtool_command_crash', 28880)) {
 							$backtrace     = cacti_debug_backtrace('RRDTOOL Error');
-							$log_message   = sprintf('WARNING: RRDtool Cashed executing the following command %s.  %s', $command_line, $backtrace);
-							$email_message = __('WARNING: RRDtool Crashed execution the following command line %s.  %s', $command_line, $backtrace);
+							$log_message   = sprintf('WARNING: RRDtool Crashed executing the following command line %s.  %s', $command_line, $backtrace);
+							$email_message = __('WARNING: RRDtool Crashed executing the following command line %s.  %s', $command_line, $backtrace);
 
 							cacti_log($log_message, false, 'RRDTOOL');
 							admin_email(__('RRDtool Command Crashed'), $email_message);
