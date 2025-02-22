@@ -688,7 +688,7 @@ class CactiTableFilter {
 
 				$buttonFunction .= PHP_EOL . "\t\tfunction {$buttonId}Function () {" . $func_nl .
 					"clearTimeout(myRefresh);" . $func_nl .
-					"$('#text').text('{buttonArray['status']}');" . $func_nl .
+					"$('#text').text('{$buttonArray['status']}');" . $func_nl .
 					"pulsate('#text');" . $func_nl .
 					$callbackFunction . ";" . $func_el .
 					"Pace.stop();" . $func_el .
