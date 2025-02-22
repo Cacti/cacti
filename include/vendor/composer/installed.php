@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'cacti/cacti',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => NULL,
+        'pretty_version' => 'dev-develop',
+        'version' => 'dev-develop',
+        'reference' => 'fb05ea4a451ebb5766d82bfd4962130e546e76bf',
         'type' => 'composer-plugin',
         'install_path' => __DIR__ . '/../../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'cacti/cacti' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => NULL,
+            'pretty_version' => 'dev-develop',
+            'version' => 'dev-develop',
+            'reference' => 'fb05ea4a451ebb5766d82bfd4962130e546e76bf',
             'type' => 'composer-plugin',
             'install_path' => __DIR__ . '/../../../',
             'aliases' => array(),
@@ -127,6 +127,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'phpstan/phpstan' => array(
+            'pretty_version' => '2.1.6',
+            'version' => '2.1.6.0',
+            'reference' => '6eaec7c6c9e90dcfe46ad1e1ffa5171e2dab641c',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpstan/phpstan',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
         'psr/http-client' => array(
             'pretty_version' => '1.0.3',
             'version' => '1.0.3.0',
@@ -189,6 +198,15 @@
             'install_path' => __DIR__ . '/../ralouphie/getallheaders',
             'aliases' => array(),
             'dev_requirement' => false,
+        ),
+        'rector/rector' => array(
+            'pretty_version' => '2.0.9',
+            'version' => '2.0.9.0',
+            'reference' => '4393230e478c0006795770fe74c223b5c64ed68c',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../rector/rector',
+            'aliases' => array(),
+            'dev_requirement' => true,
         ),
         'stevenmaguire/oauth2-keycloak' => array(
             'pretty_version' => '5.1.0',

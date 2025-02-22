@@ -79,5 +79,8 @@
         "lint": "phplint --no-cache src/",
         "phpcsfixer": "php-cs-fixer fix --diff --dry-run --ansi",
         "phpcsfixit": "php-cs-fixer fix --ansi"
+    },
+    "require-dev": {
+        "rector/rector": "^2.0"
     }
 }
