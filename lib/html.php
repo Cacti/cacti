@@ -2394,7 +2394,7 @@ function html_make_device_where() {
 		$sql_where .= ($sql_where != '' ? ' AND ':' (') . 'h.location = ' . get_request_var('host_template_id');
 	}
 
-	if (isset_request_var('external_id') && get_nfilter_filter_request_var('external_id') != '-1') {
+	if (isset_request_var('external_id') && get_nfilter_request_var('external_id') != '-1') {
 		$sql_where .= ($sql_where != '' ? ' AND ':' (') . 'h.external_id = ' . db_qstr(get_nfilter_request_var('external_id'));
 	}
 
