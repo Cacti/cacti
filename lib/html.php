@@ -1129,7 +1129,7 @@ function html_header($header_items, $last_item_colspan = 1, $resizable = true) {
  *
  * @return void
  */
-function html_section_header($header_item, $last_item_colspan = 1, resizable = true) {
+function html_section_header($header_item, $last_item_colspan = 1, $resizable = true) {
 	print "<tr class='tableHeader " . ($last_item_colspan > 1 || !$resizable ? 'tableFixed':'') . "'>";
 
 	if (is_array($header_item) && isset($header_item['display'])) {
