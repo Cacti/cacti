@@ -838,7 +838,7 @@ function reports_remove_history($history_id, $report_id = 0) {
 
 		raise_message('remove_message', __('Report \'%s\' History Removed by user \'%s\' or a Report Administrator can remove the report.', $report['name'], get_username($_SESSION[SESS_USER_ID])), MESSAGE_LEVEL_INFO);
 	} else {
-		raise_message('remove_error', __('Only the owning user \'%s\' or a Report Administrator can remove the report.', get_username($user_id)), MESSAGE_LEVEL_ERROR);
+		raise_message('remove_error', __('Only the owning user \'%s\' or a Report Administrator can remove the report.', get_username($_SESSION[SESS_USER_ID])), MESSAGE_LEVEL_ERROR);
 	}
 }
 
