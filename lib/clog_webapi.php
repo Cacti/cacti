@@ -60,15 +60,15 @@ function clog_validate_filename(&$file, &$filepath, &$filename, $filecheck = fal
 	$filename = '';
 	$filefull = '';
 
-	if (!empty($errfile) && strpos($file, $errbase) === 0) {
+	if (!empty($errfile) && str_starts_with($file, $errbase)) {
 		$filepath = dirname($errfile);
 		$filename = $errbase;
 		$filefull = $filepath . '/' . $file;
-	} elseif (!empty($logfile) && strpos($file, $logbase) === 0) {
+	} elseif (!empty($logfile) && str_starts_with($file, $logbase)) {
 		$filepath = dirname($logfile);
 		$filename = $logbase;
 		$filefull = $filepath . '/' . $file;
-	} elseif (!empty($boostfile) && strpos($file, $boostbase) === 0) {
+	} elseif (!empty($boostfile) && str_starts_with($file, $boostbase)) {
 		$filepath = dirname($boostfile);
 		$filename = $boostbase;
 		$filefull = $filepath . '/' . $file;
@@ -288,15 +288,15 @@ function clog_view_logfile() {
 		}
 
 		/* get the background color */
-		if (strpos($new_item, 'ERROR') !== false || strpos($new_item, 'FATAL') !== false) {
+		if (str_contains($new_item, 'ERROR') || str_contains($new_item, 'FATAL')) {
 			$class = 'clogError';
-		} elseif (strpos($new_item, 'WARN') !== false) {
+		} elseif (str_contains($new_item, 'WARN')) {
 			$class = 'clogWarning';
-		} elseif (strpos($new_item, ' SQL ') !== false) {
+		} elseif (str_contains($new_item, ' SQL ')) {
 			$class = 'clogSQL';
-		} elseif (strpos($new_item, 'DEBUG') !== false) {
+		} elseif (str_contains($new_item, 'DEBUG')) {
 			$class = 'clogDebug';
-		} elseif (strpos($new_item, 'STATS') !== false) {
+		} elseif (str_contains($new_item, 'STATS')) {
 			$class = 'clogStats';
 		} else {
 			if ($linecolor) {
@@ -378,7 +378,7 @@ function clog_get_logfiles() {
 
 			$explode = explode('.', $logFile);
 
-			if (substr($explode[max(array_keys($explode))], 0, 3) != 'log') {
+			if (!str_starts_with($explode[max(array_keys($explode))], 'log')) {
 				continue;
 			}
 
@@ -386,9 +386,9 @@ function clog_get_logfiles() {
 				continue;
 			}
 
-			if (!empty($stderrLogBase) && strpos($logFile, $stderrLogBase) === 0){
+			if (!empty($stderrLogBase) && str_starts_with($logFile, $stderrLogBase)){
 				$stdErrFileArray[] = $logFile;
-			} elseif (!empty($boostLogBase) && strpos($logFile, $boostLogBase) === 0){
+			} elseif (!empty($boostLogBase) && str_starts_with($logFile, $boostLogBase)){
 				$boostFileArray[] = $logFile;
 			} else {
 				$stdLogFileArray[] = $logFile;
@@ -419,7 +419,7 @@ function clog_get_logfiles() {
 
 					$explode = explode('.', $logFile);
 
-					if (substr($explode[max(array_keys($explode))], 0, 3) != 'log') {
+					if (!str_starts_with($explode[max(array_keys($explode))], 'log')) {
 						continue;
 					}
 
@@ -455,7 +455,7 @@ function create_filter($logfile, $clogAdmin) {
 	$newLogArray  = array();
 
 	if (cacti_sizeof($logFileArray)) {
-		foreach ($logFileArray as $index => $logFile) {
+		foreach ($logFileArray as $logFile) {
 			$logParts = explode('-', $logFile);
 			$logDate  = cacti_count($logParts) < 2 ? '' : $logParts[1] . (isset($logParts[2]) ? '-' . $logParts[2]:'');
 			$logName  = $logParts[0];

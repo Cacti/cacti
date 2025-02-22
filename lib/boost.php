@@ -51,13 +51,13 @@ function boost_array_orderby() {
 
 function boost_file_size_display($file_size, $digits = 2) {
 	if ($file_size > 1024) {
-		$file_size = $file_size / 1024;
+		$file_size /= 1024;
 
 		if ($file_size > 1024) {
-			$file_size = $file_size / 1024;
+			$file_size /= 1024;
 
 			if ($file_size > 1024) {
-				$file_size = $file_size / 1024;
+				$file_size /= 1024;
 
 				return __('%s GBytes', number_format_i18n($file_size, $digits));
 			} else {
@@ -754,7 +754,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = null) {
 
 		db_execute("CREATE TEMPORARY TABLE $temp_table LIKE poller_output_boost");
 
-		foreach($archive_tables as $index => $table) {
+		foreach($archive_tables as $table) {
 			db_execute_prepared("INSERT INTO $temp_table
 				SELECT *
 				FROM $table
@@ -932,12 +932,12 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = null) {
 					$vals_in_buffer = 0;
 
 					/* check return status for delete operation */
-					if (strpos(trim($return_value), 'OK') === false && $return_value != '') {
+					if (!str_contains(trim($return_value), 'OK') && $return_value != '') {
 						cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
 					}
 				}
 
-				if (strpos($value, 'DNP') === false) {
+				if (!str_contains($value, 'DNP')) {
 					$output  = ' ' . $item['timestamp'];
 					$outbuf .= $output;
 					$outlen += strlen($output);
@@ -947,7 +947,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = null) {
 			}
 
 			/* single one value output */
-			if (strpos($value, 'DNP') !== false) {
+			if (str_contains($value, 'DNP')) {
 				/* continue, bad time */
 			} elseif ((is_numeric($value)) || ($value == 'U' && $item['rrd_name'] != '')) {
 				$output  = ':' . $value;
@@ -959,7 +959,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = null) {
 				$outbuf .= $output;
 				$outlen += strlen($output);
 				$vals_in_buffer++;
-			} elseif (strpos($value, ':') !== false) {
+			} elseif (str_contains($value, ':')) {
 				$values = preg_split('/\s+/', $value);
 
 				if (!$multi_vals_set) {
@@ -1138,7 +1138,7 @@ function boost_process_poller_output($local_data_id, $rrdtool_pipe = null) {
 			boost_timer('rrdupdate', BOOST_TIMER_END);
 
 			/* check return status for delete operation */
-			if (strpos(trim($return_value), 'OK') === false && $return_value != '') {
+			if (!str_contains(trim($return_value), 'OK') && $return_value != '') {
 				cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
 			}
 		}
@@ -1377,7 +1377,7 @@ function boost_rrdtool_function_create($local_data_id, $show_source, $rrdtool_pi
 			if (empty($data_source['rrd_maximum'])) {
 				/* in case no maximum is given, use "Undef" value */
 				$data_source['rrd_maximum'] = 'U';
-			} elseif (strpos($data_source['rrd_maximum'], '|query_') !== false) {
+			} elseif (str_contains($data_source['rrd_maximum'], '|query_')) {
 				$data_local = db_fetch_row_prepared('SELECT * FROM data_local WHERE id = ?', array($local_data_id));
 
 				$speed = rrdtool_function_interface_speed($data_local);

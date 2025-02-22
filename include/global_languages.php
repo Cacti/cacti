@@ -299,7 +299,7 @@ function get_src_language_files($i18n_handler) {
 		);
 	}
 
-	$i18n_handler_text = ($i18n_handler === null) ? 'null' : $i18n_handler;
+	$i18n_handler_text = $i18n_handler ?? 'null';
 
 	foreach ($i18n_providers as $i18n_provider) {
 		$found = true;
@@ -566,7 +566,7 @@ function set_language_constants(array $constants) {
 function __gettext(?string $text, string $domain = 'cacti') {
 	global $i18n;
 
-	$text = $text ?? '';
+	$text ??= '';
 
 	// Assume translation fails or is not defined
 	if (isset($i18n[$domain])) {
@@ -594,8 +594,8 @@ function __gettext(?string $text, string $domain = 'cacti') {
 function __n(?string $singular, ?string $plural, $number, string $domain = 'cacti') {
 	global $i18n;
 
-	$singular = $singular ?? '';
-	$plural   = $plural   ?? '';
+	$singular ??= '';
+	$plural ??= '';
 
 	if (isset($i18n[$domain])) {
 		return __uf($i18n[$domain]->ngettext($singular, $plural, $number));
@@ -931,12 +931,12 @@ function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 		$number = 0;
 	} elseif ($decimals == -1 || $decimals == null) {
 		$number = number_format($number, 0, $locale['decimal_point'], $locale['thousands_sep']);
-	} elseif ($number >= pow($baseu, 4)) {
-		$number = number_format($number / pow($baseu, 4), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
-	} elseif ($number >= pow($baseu, 3)) {
-		$number = number_format($number / pow($baseu, 3), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' G');
-	} elseif ($number >= pow($baseu, 2)) {
-		$number = number_format($number / pow($baseu, 2), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' M');
+	} elseif ($number >= $baseu ** 4) {
+		$number = number_format($number / $baseu ** 4, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
+	} elseif ($number >= $baseu ** 3) {
+		$number = number_format($number / $baseu ** 3, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' G');
+	} elseif ($number >= $baseu ** 2) {
+		$number = number_format($number / $baseu ** 2, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' M');
 	} elseif ($number >= $baseu) {
 		$number = number_format($number / $baseu, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' K');
 	} else {
@@ -944,8 +944,8 @@ function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 	}
 
 	foreach ($origlocales as $locale_setting) {
-		if (strpos($locale_setting, '=') !== false) {
-			list($category, $locale) = explode('=', $locale_setting);
+		if (str_contains($locale_setting, '=')) {
+			[$category, $locale] = explode('=', $locale_setting);
 		} else {
 			$category = LC_ALL;
 			$locale   = $locale_setting;
@@ -980,7 +980,7 @@ function get_new_user_default_language() {
 function i18n_debug($text, $mode = FILE_APPEND, $eol = PHP_EOL) {
 	global $config;
 
-	if (!empty($config['i18n_log']) && is_writeable($config['i18n_log'])) {
+	if (!empty($config['i18n_log']) && is_writable($config['i18n_log'])) {
 		file_put_contents($config['i18n_log'], $text . $eol, $mode);
 	}
 }
@@ -988,7 +988,7 @@ function i18n_debug($text, $mode = FILE_APPEND, $eol = PHP_EOL) {
 function i18n_text_debug($text, $mode = FILE_APPEND, $eol = PHP_EOL) {
 	global $config;
 
-	if (!empty($config['i18n_text_log']) && is_writeable($config['i18n_log'])) {
+	if (!empty($config['i18n_text_log']) && is_writable($config['i18n_log'])) {
 		file_put_contents($config['i18n_text_log'], $text . $eol, $mode);
 	}
 }

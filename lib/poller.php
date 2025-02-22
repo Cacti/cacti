@@ -253,7 +253,7 @@ function exec_with_timeout($cmd, &$output, &$return_code, $timeout = 5) {
 }
 
 function file_escaped($file) {
-	if (substr($file, 0, 1) == '"' && substr($file, -1, 1) == '"') {
+	if (str_starts_with($file, '"') && str_ends_with($file, '"')) {
 		return true;
 	}
 
@@ -580,7 +580,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
 				} else {
 					$rrd_update_array[$rrd_path]['times'][$unix_time][$rrd_name] = 'U';
 				}
-			} elseif (strpos($value, ':') !== false) {
+			} elseif (str_contains($value, ':')) {
 				/* multiple value output */
 				$values = preg_split('/\s+/', $value);
 
@@ -940,7 +940,7 @@ function update_resource_cache($poller_id = 1) {
 
 							if (cacti_sizeof($exclude_paths)) {
 								foreach ($exclude_paths as $epath) {
-									if (strpos($epath, '*.') !== false) {
+									if (str_contains($epath, '*.')) {
 										$file_exclusions[] = trim(str_replace('*.', '', $epath));
 									} else {
 										$dir_exclusions[]  = trim($epath);
@@ -1077,7 +1077,7 @@ function cache_in_path($path, $type, $recursive = true) {
 			$exclude = true;
 		}
 
-		if (basename($path) == 'config.php' && strpos($path, 'plugins') !== false) {
+		if (basename($path) == 'config.php' && str_contains($path, 'plugins')) {
 			// Allow replication of plugin based config.php files
 			$exclude = false;
 		} elseif (basename($path) == 'config_local.php') {
@@ -1095,7 +1095,7 @@ function cache_in_path($path, $type, $recursive = true) {
 			$curr_md5 = md5_file($path);
 			$last_md5 = db_fetch_cell_prepared('SELECT md5sum FROM poller_resource_cache WHERE path = ?', array($spath));
 
-			if (substr($spath, 0, 8) == 'plugins/') {
+			if (str_starts_with($spath, 'plugins/')) {
 				$ppath = CACTI_PATH_BASE . '/'. $spath;
 			} else {
 				$ppath = $spath;
@@ -1135,7 +1135,7 @@ function update_db_from_path($path, $type, $recursive = true) {
 					if ($recursive) {
 						update_db_from_path($path . DIRECTORY_SEPARATOR . $entry, $type, $recursive);
 					}
-				} elseif (basename($spath) == 'config.php' && strpos($path, 'plugins') === false) {
+				} elseif (basename($spath) == 'config.php' && !str_contains($path, 'plugins')) {
 					// Don't cache Cacti's config.php
 					continue;
 				} elseif (basename($path) == '.travis.yml') {
@@ -1274,10 +1274,10 @@ function resource_cache_out($type, $path) {
 							// Executable check
 							$executable = false;
 
-							if (strpos($e['path'], 'lib/poller.php') === false) {
-								if (strpos($contents, '#!/usr/bin/env php') !== false) {
+							if (!str_contains($e['path'], 'lib/poller.php')) {
+								if (str_contains($contents, '#!/usr/bin/env php')) {
 									$executable = true;
-								} elseif (strpos($contents, '#!/usr/bin/php') !== false) {
+								} elseif (str_contains($contents, '#!/usr/bin/php')) {
 									$executable = true;
 								}
 							}
@@ -1285,7 +1285,7 @@ function resource_cache_out($type, $path) {
 							$tmpdir  = sys_get_temp_dir();
 							$tmpfile = tempnam($tmpdir,'ccp');
 
-							if ((is_writeable($tmpdir) && !file_exists($tmpfile)) || (file_exists($tmpfile) && is_writable($tmpfile))) {
+							if ((is_writable($tmpdir) && !file_exists($tmpfile)) || (file_exists($tmpfile) && is_writable($tmpfile))) {
 								if (file_put_contents($tmpfile, $contents) !== false) {
 									$output = system($php_path . ' -l ' . $tmpfile, $exit);
 
@@ -1319,7 +1319,7 @@ function resource_cache_out($type, $path) {
 							} else {
 								cacti_log("ERROR: Cache in cannot write to '" . $tmpfile . "', purge this location", false, 'REPLICATE');
 							}
-						} elseif (is_writeable($mypath) || (!file_exists($mypath) && is_writable(dirname($mypath)))) {
+						} elseif (is_writable($mypath) || (!file_exists($mypath) && is_writable(dirname($mypath)))) {
 							cacti_log("INFO: Updating '" . $mypath . "' from Cache!", false, 'REPLICATE');
 
 							file_put_contents($mypath, $contents);

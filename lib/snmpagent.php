@@ -498,7 +498,7 @@ function snmpagent_poller_bottom() {
 		WHERE name = 'stats_recache'");
 
 	if ($recache_stats) {
-		list($time, $hosts) = explode(' ', $recache_stats);
+		[$time, $hosts] = explode(' ', $recache_stats);
 		$time               = str_replace('RecacheTime:', '', $time);
 		$hosts              = str_replace('HostsRecached:', '', $hosts);
 
@@ -835,7 +835,7 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 		foreach ($reg_var_binds as $reg_var_bind) {
 			$registered_var_binds[$reg_var_bind['attribute']] = array(
 				'oid'  => $reg_var_bind['oid'],
-				'type' => ($reg_var_bind['tcType']) ? $reg_var_bind['tcType'] : $reg_var_bind['type']
+				'type' => $reg_var_bind['tcType'] ?: $reg_var_bind['type']
 			);
 		}
 	}

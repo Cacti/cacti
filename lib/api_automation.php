@@ -226,8 +226,8 @@ function display_matching_hosts($rule, $rule_type, $url) {
 			form_selectable_cell(get_colored_device_status((($host['disabled'] == 'on' || $host['site_disabled'] == 'on') ? true : false), $host['status']), $host['host_id'], '', 'center');
 			form_selectable_cell(filter_value($host['host_template_name'], get_request_var('filter')), $host['host_id']);
 			form_selectable_cell(round(($host['host_id']), 2), $host['host_id'], '', 'right');
-			form_selectable_cell((isset($host_graphs[$host['host_id']]) ? $host_graphs[$host['host_id']] : 0), $host['host_id'], '', 'right');
-			form_selectable_cell((isset($host_data_sources[$host['host_id']]) ? $host_data_sources[$host['host_id']] : 0), $host['host_id'], '', 'right');
+			form_selectable_cell(($host_graphs[$host['host_id']] ?? 0), $host['host_id'], '', 'right');
+			form_selectable_cell(($host_data_sources[$host['host_id']] ?? 0), $host['host_id'], '', 'right');
 
 			form_end_row();
 		}
@@ -2338,7 +2338,7 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 	draw_edit_form(
 		array(
 			'config' => array('no_form_tag' => true),
-			'fields' => inject_form_variables($_fields_rule_item_edit, (isset($automation_item) ? $automation_item : array()), (isset($automation_rule) ? $automation_rule : array()))
+			'fields' => inject_form_variables($_fields_rule_item_edit, ($automation_item ?? array()), ($automation_rule ?? array()))
 		)
 	);
 
@@ -2511,7 +2511,7 @@ function automation_graph_automation_eligible($graph_template_id) {
 	// Check the Graph Template first for adherence
 	if (cacti_sizeof($graph_template)) {
 		foreach ($graph_template as $field => $value) {
-			if (substr($field, 0, 2) == 't_') {
+			if (str_starts_with($field, 't_')) {
 				$parent = substr($field, 2);
 
 				if (isset($graph_template[$parent])) {
@@ -2539,7 +2539,7 @@ function automation_graph_automation_eligible($graph_template_id) {
 	if (cacti_sizeof($data_templates)) {
 		foreach ($data_templates as $dtd) {
 			foreach ($dtd as $field => $value) {
-				if (substr($field, 0, 2) == 't_') {
+				if (str_starts_with($field, 't_')) {
 					$parent = substr($field, 2);
 
 					if (isset($dtd[$parent])) {
@@ -3327,35 +3327,34 @@ function automation_add_device($device, $web = false) {
 	$template_id          = $device['host_template'];
 	$snmp_sysName         = $device['snmp_sysName'];
 
-	$description          = isset($device['description']) ?
-		$device['description'] : ($snmp_sysName != '' ? $snmp_sysName : ($device['hostname'] == '' ? $device['ip'] : $device['hostname']));
+	$description          = $device['description'] ?? $snmp_sysName != '' ? $snmp_sysName : ($device['hostname'] == '' ? $device['ip'] : $device['hostname']);
 
-	$poller_id            = isset($device['poller_id']) ? $device['poller_id'] : read_config_option('default_poller');
-	$site_id              = isset($device['site_id']) ? $device['site_id'] : read_config_option('default_site');
-	$ip                   = isset($device['ip']) ? $device['ip']:$device['ip_address'];
+	$poller_id            = $device['poller_id'] ?? read_config_option('default_poller');
+	$site_id              = $device['site_id'] ?? read_config_option('default_site');
+	$ip                   = $device['ip'] ?? $device['ip_address'];
 	$snmp_community       = $device['snmp_community'];
 	$snmp_ver             = $device['snmp_version'];
 	$snmp_username	       = $device['snmp_username'];
 	$snmp_password	       = $device['snmp_password'];
 	$snmp_port            = $device['snmp_port'];
-	$snmp_timeout         = isset($device['snmp_timeout']) ? $device['snmp_timeout']:read_config_option('snmp_timeout');
+	$snmp_timeout         = $device['snmp_timeout'] ?? read_config_option('snmp_timeout');
 	$disable              = '';
-	$availability_method  = isset($device['availability_method']) ? $device['availability_method']:read_config_option('availability_method');
-	$ping_method          = isset($device['ping_method']) ? $device['ping_method'] : read_config_option('ping_method');
-	$ping_port            = isset($device['ping_port']) ? $device['ping_port'] : read_config_option('ping_port');
-	$ping_timeout         = isset($device['ping_timeout']) ? $device['ping_timeout'] : read_config_option('ping_timeout');
-	$ping_retries         = isset($device['ping_retries']) ? $device['ping_retries'] : read_config_option('ping_retries');
-	$notes                = isset($device['notes']) ? $device['notes'] : __('Added by Cacti Automation');
+	$availability_method  = $device['availability_method'] ?? read_config_option('availability_method');
+	$ping_method          = $device['ping_method'] ?? read_config_option('ping_method');
+	$ping_port            = $device['ping_port'] ?? read_config_option('ping_port');
+	$ping_timeout         = $device['ping_timeout'] ?? read_config_option('ping_timeout');
+	$ping_retries         = $device['ping_retries'] ?? read_config_option('ping_retries');
+	$notes                = $device['notes'] ?? __('Added by Cacti Automation');
 	$snmp_auth_protocol   = $device['snmp_auth_protocol'];
 	$snmp_priv_passphrase = $device['snmp_priv_passphrase'];
 	$snmp_priv_protocol   = $device['snmp_priv_protocol'];
 	$snmp_context	        = $device['snmp_context'];
 	$snmp_engine_id       = $device['snmp_engine_id'];
-	$max_oids             = isset($device['max_oids']) ? $device['max_oids']:10;
-	$device_threads       = isset($device['device_threads']) ? $device['device_threads']:1;
-	$external_id          = isset($device['external_id']) ? $device['external_id']:'';
-	$location             = isset($device['location']) ? $device['location']:'';
-	$bulk_walk_size       = isset($device['bulk_walk_size']) ? $device['bulk_walk_size']:-1;
+	$max_oids             = $device['max_oids'] ?? 10;
+	$device_threads       = $device['device_threads'] ?? 1;
+	$external_id          = $device['external_id'] ?? '';
+	$location             = $device['location'] ?? '';
+	$bulk_walk_size       = $device['bulk_walk_size'] ?? -1;
 
 	automation_debug(' - Adding Device');
 
@@ -3442,7 +3441,7 @@ function automation_debug($text) {
 	global $debug, $config;
 	static $message = '';
 
-	if (strstr($text, "\n") !== false) {
+	if (str_contains($text, "\n")) {
 		$logLevel = POLLER_VERBOSITY_MEDIUM;
 
 		if ($debug) {
@@ -3522,7 +3521,7 @@ function automation_get_valid_mask($range) {
 			$cidr = $range;
 			$mask = array(
 				'cidr'   => $cidr,
-				'subnet' => long2ip((pow(2, $range) - 1) << (32 - $range)),
+				'subnet' => long2ip((2 ** $range - 1) << (32 - $range)),
 			);
 		} else {
 			$mask = false;
@@ -3550,7 +3549,7 @@ function automation_get_network_info($range) {
 
 	$range = trim($range);
 
-	if (strpos($range, '/') !== false) {
+	if (str_contains($range, '/')) {
 		// 10.1.0.0/24 or 10.1.0.0/255.255.255.0
 		$range_parts = explode('/', $range);
 
@@ -3570,7 +3569,7 @@ function automation_get_network_info($range) {
 				$broadcast = long2ip($dec + $count);
 			}
 		}
-	} elseif (strpos($range, '*') !== false && strpos($range, '-') === false) {
+	} elseif (str_contains($range, '*') && !str_contains($range, '-')) {
 		$test = str_replace('*', 0, $range);
 
 		if (!filter_var($test, FILTER_VALIDATE_IP)) {
@@ -3617,7 +3616,7 @@ function automation_get_network_info($range) {
 
 			return automation_get_network_info(rtrim($network,'.').'/'.rtrim($broadcast,'.'));
 		}
-	} elseif (strpos($range, '-') !== false) {
+	} elseif (str_contains($range, '-')) {
 		raise_message('automation_iprange', __('ERROR: IP ranges in the form of range1-range2 are no longer supported.'), MESSAGE_LEVEL_ERROR);
 
 		return false;
@@ -3630,7 +3629,7 @@ function automation_get_network_info($range) {
 		if (ip2long($network) <= ip2long($broadcast)) {
 			$detail['network']   = $network;
 			$detail['broadcast'] = $broadcast;
-			$detail['cidr']      = isset($mask['cidr']) ? $mask['cidr'] : false;
+			$detail['cidr']      = $mask['cidr'] ?? false;
 
 			if ($network == $broadcast) {
 				$detail['type']  = 'single';
@@ -3692,7 +3691,7 @@ function automation_get_next_host($start, $total, $count, $range) {
 		for ($x = 0; $x < 4; $x++) {
 			$ip[$x] += intval($count / $y);
 			$count -= ((intval($count / $y)) * 256);
-			$y = $y / 256;
+			$y /= 256;
 
 			if ($ip[$x] == 256 && $x > 0) {
 				$ip[$x] = 0;
@@ -3729,7 +3728,7 @@ function automation_primeIPAddressTable($network_id) {
 	}
 
 	if (cacti_sizeof($subNets)) {
-		foreach ($subNets as $position => $subNet) {
+		foreach ($subNets as $subNet) {
 			$count       = 1;
 			$sql         = array();
 			$subNetTotal = automation_calculate_total_ips($subNet);
@@ -3909,7 +3908,7 @@ function automation_valid_snmp_device(&$device) {
 */
 function automation_get_dns_from_ip($ip, $dns, $timeout = 1000) {
 	/* random transaction number (for routers etc to get the reply back) */
-	$data = rand(10, 99);
+	$data = random_int(10, 99);
 
 	/* trim it to 2 bytes */
 	$data = substr($data, 0, 2);
@@ -4209,35 +4208,18 @@ function automation_change_tree_rule_leaf_type($leaf_type, $rule_id) {
 function automation_type_to_table($type) {
 	$table = '';
 
-	switch($type) {
-		case 'network':
-			$table = 'automation_networks';
-			break;
-		case 'device':
-			$table = 'automation_templates';
-			break;
-		case 'device_rules':
-			$table = 'automation_templates_rules';
-			break;
-		case 'graph':
-			$table = 'automation_graph_rules';
-			break;
-		case 'graph_items':
-			$table = 'automation_graph_rule_items';
-			break;
-		case 'tree':
-			$table = 'automation_tree_rules';
-			break;
-		case 'tree_items':
-			$table = 'automation_tree_rule_items';
-			break;
-		case 'snmp':
-			$table = 'automation_snmp';
-			break;
-		case 'snmp_items':
-			$table = 'automation_snmp_items';
-			break;
-	}
+	$table = match ($type) {
+        'network' => 'automation_networks',
+        'device' => 'automation_templates',
+        'device_rules' => 'automation_templates_rules',
+        'graph' => 'automation_graph_rules',
+        'graph_items' => 'automation_graph_rule_items',
+        'tree' => 'automation_tree_rules',
+        'tree_items' => 'automation_tree_rule_items',
+        'snmp' => 'automation_snmp',
+        'snmp_items' => 'automation_snmp_items',
+        default => $table,
+    };
 
 	return $table;
 }
@@ -5077,7 +5059,7 @@ function automation_network_import($json_data) {
 		$error = false;
 		$save  = array();
 
-		foreach ($json_data['network'] as $network => $data) {
+		foreach ($json_data['network'] as $data) {
 			if (isset($data['snmp'])) {
 				$debug_data += automation_snmp_option_import($data['snmp']);
 				unset($data['snmp']);
@@ -5338,7 +5320,7 @@ function automation_tree_rule_import($json_data, $tree_branches = false) {
 
 			if ($tree_branches) {
 				if (isset($rule['tree_data']) && isset($rule['tree_branch_data'])) {
-					list($save['tree_id'], $save['tree_item_id']) = automation_tree_rule_create_tree($rule['tree_data'], $rule['tree_branch_data']);
+					[$save['tree_id'], $save['tree_item_id']] = automation_tree_rule_create_tree($rule['tree_data'], $rule['tree_branch_data']);
 				}
 			}
 
@@ -5662,7 +5644,7 @@ function automation_template_import($json_data, $tree_branches = false) {
 
 						if ($tree_branches) {
 							if (isset($rule['tree_data']) && isset($rule['tree_branch_data'])) {
-								list($save['tree_id'], $save['tree_item_id']) = automation_tree_rule_create_tree($rule['tree_data'], $rule['tree_branch_data']);
+								[$save['tree_id'], $save['tree_item_id']] = automation_tree_rule_create_tree($rule['tree_data'], $rule['tree_branch_data']);
 							}
 						}
 

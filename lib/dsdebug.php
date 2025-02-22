@@ -209,13 +209,13 @@ function dsdebug_poller_bottom() {
 				$info['runas_poller'] = get_running_user();
 
 				// convert_name
-				$info['convert_name'] = (strpos('|', get_data_source_title($c['datasource'])) === false ? 1 : 0);
+				$info['convert_name'] = (!str_contains('|', get_data_source_title($c['datasource'])) ? 1 : 0);
 
 				// last_result  (processed by hook)
 				if (is_array($info['last_result']) && !empty($info['last_result']) && $info['valid_data'] == '') {
 					$info['valid_data'] = 1;
 
-					foreach ($info['last_result'] as $k => $l) {
+					foreach ($info['last_result'] as $l) {
 						if ($l == 'U') {
 							cacti_log('Bad Data Found for Data Source ID ' . $c['datasource'], false, 'DSDEBUG');
 							$info['valid_data'] = 0;
@@ -345,7 +345,7 @@ function dsdebug_run_repair($id) {
 		if (isset($check['info']['rrd_match_array']['tune'])) {
 			$path = get_data_source_path($id, true);
 
-			if (is_writeable($path)) {
+			if (is_writable($path)) {
 				$rrdtool_path = read_config_option('path_rrdtool');
 				$failures     = 0;
 				$failure_data = '';

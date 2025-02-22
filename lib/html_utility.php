@@ -67,20 +67,20 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 
 							/* an empty field name in the variable means don't treat this as an array */
 							if ($matches2 == '') {
-								if (is_array($$matches1)) {
+								if (is_array(${$matches1})) {
 									/* the existing value is already an array, leave it alone */
-									$form_array[$field_name][$field_to_check] = $$matches1;
+									$form_array[$field_name][$field_to_check] = ${$matches1};
 								} else {
 									/* the existing value is probably a single variable */
-									$form_array[$field_name][$field_to_check] = str_replace($matches0, $$matches1, $field_array[$field_to_check]);
+									$form_array[$field_name][$field_to_check] = str_replace($matches0, ${$matches1}, $field_array[$field_to_check]);
 								}
 							} else {
 								/* copy the value down from the array/key specified in the variable
 								 * replace up to three times for arg1:arg2:arg3 variables
 								 */
-								if (isset($$matches1)) {
-									if (is_array($$matches1)) {
-										$array = $$matches1;
+								if (isset(${$matches1})) {
+									if (is_array(${$matches1})) {
+										$array = ${$matches1};
 
 										if (is_array($array) && isset($array[$matches2]) && $array[$matches2] != '') {
 											$string = str_replace($matches0, $array[$matches2], $string);
@@ -204,9 +204,9 @@ function form_alternate_row($row_id = '', $light = false, $disabled = false) {
 
 	$i++;
 
-	if ($row_id != '' && !$disabled && substr($row_id, 0, 4) != 'row_') {
+	if ($row_id != '' && !$disabled && !str_starts_with($row_id, 'row_')) {
 		print "<tr class='$class selectable tableRow' id='$row_id'>\n";
-	} elseif (substr($row_id, 0, 4) == 'row_') {
+	} elseif (str_starts_with($row_id, 'row_')) {
 		print "<tr class='$class tableRow' id='$row_id'>\n";
 	} elseif ($row_id != '') {
 		print "<tr class='$class tableRow' id='$row_id'>\n";
@@ -291,7 +291,7 @@ function form_selectable_cell($contents, $id, $width = '', $style_or_class = '',
 	$output = '';
 
 	if ($style_or_class != '') {
-		if (strpos($style_or_class, ':') === false) {
+		if (!str_contains($style_or_class, ':')) {
 			$output = "class='nowrap " . $style_or_class . "'";
 
 			if ($width != '') {
@@ -369,7 +369,7 @@ function form_selectable_vcell($contents, $table_id = '', $columnid = '', $style
 	$output = '';
 
 	if ($style_or_class != '') {
-		if (strpos($style_or_class, ':') === false) {
+		if (!str_contains($style_or_class, ':')) {
 			$output = "class='nowrap " . $style_or_class . "'";
 
 			if ($width != '') {
@@ -1145,7 +1145,7 @@ function update_order_string($inplace = false) {
 
 	$order = '';
 
-	if (strpos(get_request_var('sort_column'), '(') === false && strpos(get_request_var('sort_column'), '`') === false) {
+	if (!str_contains(get_request_var('sort_column'), '(') && !str_contains(get_request_var('sort_column'), '`')) {
 		$del = '`';
 	} else {
 		$del = '';
@@ -1190,7 +1190,7 @@ function update_order_string($inplace = false) {
 			$_SESSION['sort_string'][$page] = 'ORDER BY ';
 
 			foreach ($_SESSION['sort_data'][$page] as $column => $direction) {
-				if (strpos($column, '(') === false && strpos($column, '`') === false) {
+				if (!str_contains($column, '(') && !str_contains($column, '`')) {
 					$del = '`';
 				} else {
 					$del = '';
@@ -1227,7 +1227,7 @@ function update_order_string($inplace = false) {
 function get_order_string() {
 	$page = get_order_string_page();
 
-	if (strpos(get_request_var('sort_column'), '(') === false && strpos(get_request_var('sort_column'), '`') === false) {
+	if (!str_contains(get_request_var('sort_column'), '(') && !str_contains(get_request_var('sort_column'), '`')) {
 		$del = '`';
 	} else {
 		$del = '';
@@ -1313,7 +1313,7 @@ function validate_is_regex($regex) {
 		return __('Cacti regular expressions are limited to 50 characters only for security reasons.');
 	}
 
-	if (strpos($regex, ';') !== false) {
+	if (str_contains($regex, ';')) {
 		return __('Cacti regular expressions can not includes the semi-color character.');
 	}
 
@@ -1402,29 +1402,13 @@ function get_colored_device_status($disabled, $status, $thold_failure_count = -1
 			}
 		}
 
-		switch ($status) {
-			case HOST_DOWN:
-				return "<span class='deviceDown'>" . __('Down') . '</span>';
-
-				break;
-			case HOST_RECOVERING:
-				return "<span class='deviceRecovering'>" . __('Recovering') . '</span>';
-
-				break;
-			case HOST_UP:
-				return "<span class='deviceUp'>" . __('Up') . '</span>';
-
-				break;
-			case HOST_ERROR:
-				return "<span class='deviceError'>" . __('Error') . '</span>';
-
-				break;
-
-			default:
-				return "<span class='deviceUnknown'>" . __('Unknown') . '</span>';
-
-				break;
-		}
+		return match ($status) {
+            HOST_DOWN => "<span class='deviceDown'>" . __('Down') . '</span>',
+            HOST_RECOVERING => "<span class='deviceRecovering'>" . __('Recovering') . '</span>',
+            HOST_UP => "<span class='deviceUp'>" . __('Up') . '</span>',
+            HOST_ERROR => "<span class='deviceError'>" . __('Error') . '</span>',
+            default => "<span class='deviceUnknown'>" . __('Unknown') . '</span>',
+        };
 	}
 }
 
@@ -1512,7 +1496,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	$pages_per_screen += 2;
 	$url_page_select = "<ul class='pagination'>";
 
-	if (strpos($url, '?') !== false) {
+	if (str_contains($url, '?')) {
 		$url . '&';
 	} else {
 		$url . '?';
@@ -1596,7 +1580,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 		$return_to = 'main';
 	}
 
-	$url = $url . $page_var;
+	$url .= $page_var;
 	$url_page_select .= "<script type='text/javascript'>
 	function goto$page_var(pageNo) {
 		if (typeof url_graph === 'function') {

@@ -68,7 +68,7 @@ if ($snmp_version == 3) {
  * process INDEX requests
  */
 if ($cmd == 'index') {
-	$arr_index = get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids, SNMP_POLLER);
+	$arr_index = get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids);
 
 	for ($i=0;($i < cacti_sizeof($arr_index));$i++) {
 		print $arr_index[$i] . PHP_EOL;
@@ -78,7 +78,7 @@ if ($cmd == 'index') {
 	 * process NUM_INDEXES requests
 	 */
 } elseif ($cmd == 'num_indexes') {
-	$arr_index = get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids, SNMP_POLLER);
+	$arr_index = get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids);
 
 	print cacti_sizeof($arr_index) . PHP_EOL;
 

@@ -415,7 +415,7 @@ function get_tree_path() {
 		$nnodes = array();
 		$rnodes = array();
 
-		if (strpos(get_request_var('node'), 'tbranch') !== false) {
+		if (str_contains(get_request_var('node'), 'tbranch')) {
 			$parts = explode('-', get_request_var('node'));
 			$node  = $parts[1];
 
@@ -496,7 +496,7 @@ function get_tree_path() {
 			if (cacti_sizeof($nnodes)) {
 				$nodes = array_merge($nodes, $nnodes);
 			}
-		} elseif (strpos(get_request_var('node'), 'tree_anchor') !== false) {
+		} elseif (str_contains(get_request_var('node'), 'tree_anchor')) {
 			$parts   = explode('-', get_request_var('node'));
 			$nodes[] = 'tree_anchor-' . $parts[1] . '_anchor';
 		}
@@ -958,7 +958,7 @@ function create_tree_filter() {
 
 	/* unset the ordering if we have a setup that does not support ordering */
 	if (isset_request_var('graph_template_id')) {
-		if (strpos(get_nfilter_request_var('graph_template_id'), ',') !== false || get_nfilter_request_var('graph_template_id') <= 0) {
+		if (str_contains(get_nfilter_request_var('graph_template_id'), ',') || get_nfilter_request_var('graph_template_id') <= 0) {
 			set_request_var('graph_order', '');
 			set_request_var('graph_source', '');
 		}
@@ -1898,7 +1898,7 @@ function get_matching_nodes() {
 		$fa = array();
 
 		if (cacti_sizeof($final_array)) {
-			foreach ($final_array as $key => $matches) {
+			foreach ($final_array as $matches) {
 				foreach ($matches as $branch => $dnc) {
 					$fa[] = $branch;
 				}
@@ -1935,7 +1935,7 @@ function html_tree_get_node() {
 	$tree_id = 0;
 
 	if (isset_request_var('tree_id')) {
-		if (get_nfilter_request_var('tree_id') == 0 && strstr(get_nfilter_request_var('id'), 'tbranch-') !== false) {
+		if (get_nfilter_request_var('tree_id') == 0 && str_contains(get_nfilter_request_var('id'), 'tbranch-')) {
 			$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
 			FROM graph_tree_items
 			WHERE id = ?',
@@ -2046,10 +2046,10 @@ function html_tree_get_content() {
 		$parts = explode('-', sanitize_search_string(get_request_var('node')));
 
 		// Check for tree anchor
-		if (strpos(get_nfilter_request_var('node'), 'tree_anchor') !== false) {
+		if (str_contains(get_nfilter_request_var('node'), 'tree_anchor')) {
 			$tree_id = $parts[1];
 			$node_id = 0;
-		} elseif (strpos(get_nfilter_request_var('node'), 'tbranch') !== false) {
+		} elseif (str_contains(get_nfilter_request_var('node'), 'tbranch')) {
 			// Check for branch
 			$node_id = $parts[1];
 			$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id

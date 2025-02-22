@@ -342,7 +342,7 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 	}
 
 	/* some basic field values that ALL data sources should have */
-	$save['id']                          = (isset($data['id']) ? $data['id'] : 0);
+	$save['id']                          = ($data['id'] ?? 0);
 	$save['local_data_template_data_id'] = $template_data['id'];
 	$save['local_data_id']               = $local_data_id;
 	$save['data_template_id']            = $data_template_id;
@@ -362,7 +362,7 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 	}
 
 	/* these fields should never be overwritten by the template */
-	$save['data_source_path'] = (isset($data['data_source_path']) ? $data['data_source_path']:'');
+	$save['data_source_path'] = ($data['data_source_path'] ?? '');
 
 	$data_template_data_id = sql_save($save, 'data_template_data');
 
@@ -679,7 +679,7 @@ function graph_template_has_override($graph_template_id) {
 	// Check the Graph Template first for adherence
 	if (cacti_sizeof($graph_template)) {
 		foreach ($graph_template as $field => $value) {
-			if (substr($field, 0, 2) == 't_') {
+			if (str_starts_with($field, 't_')) {
 				if ($value == 'on') {
 					return true;
 				}
@@ -703,7 +703,7 @@ function graph_template_has_override($graph_template_id) {
 	if (cacti_sizeof($data_templates)) {
 		foreach ($data_templates as $dtd) {
 			foreach ($dtd as $field => $value) {
-				if (substr($field, 0, 2) == 't_') {
+				if (str_starts_with($field, 't_')) {
 					if ($value == 'on') {
 						return true;
 					}
@@ -746,7 +746,7 @@ function graph_template_has_override($graph_template_id) {
 }
 
 function parse_graph_template_id($value) {
-	if (strpos($value, '_') !== false) {
+	if (str_contains($value, '_')) {
 		$template_parts = explode('_', $value);
 
 		if (is_numeric($template_parts[0]) && is_numeric($template_parts[1])) {
@@ -1039,7 +1039,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = fal
 	}
 
 	/* some basic field values that ALL graphs should have */
-	$save['id']                            = (isset($graph_list['id']) ? $graph_list['id'] : 0);
+	$save['id']                            = ($graph_list['id'] ?? 0);
 	$save['local_graph_template_graph_id'] = $template_graph_list['id'];
 	$save['local_graph_id']                = $local_graph_id;
 	$save['graph_template_id']             = $graph_template_id;
@@ -1114,10 +1114,10 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = fal
 							break;
 
 						default:
-							if (strstr($cols[$column]['type'], 'int') !== false ||
-								strstr($cols[$column]['type'], 'float') !== false ||
-								strstr($cols[$column]['type'], 'decimal') !== false ||
-								strstr($cols[$column]['type'], 'double') !== false) {
+							if (str_contains($cols[$column]['type'], 'int') ||
+								str_contains($cols[$column]['type'], 'float') ||
+								str_contains($cols[$column]['type'], 'decimal') ||
+								str_contains($cols[$column]['type'], 'double')) {
 								if (!empty($value)) {
 									$save[$column] = $value;
 								} else {
@@ -1177,10 +1177,10 @@ function change_graph_template($local_graph_id, $graph_template_id, $force = fal
 							break;
 
 						default:
-							if (strstr($cols[$column]['type'], 'int') !== false ||
-								strstr($cols[$column]['type'], 'float') !== false ||
-								strstr($cols[$column]['type'], 'decimal') !== false ||
-								strstr($cols[$column]['type'], 'double') !== false) {
+							if (str_contains($cols[$column]['type'], 'int') ||
+								str_contains($cols[$column]['type'], 'float') ||
+								str_contains($cols[$column]['type'], 'decimal') ||
+								str_contains($cols[$column]['type'], 'double')) {
 								if (!empty($value)) {
 									$save[$column] = $value;
 								} else {
@@ -1338,10 +1338,10 @@ function update_graph_template_items($graph_template_id, $graph_template_item_id
 										break;
 
 									default:
-										if (strstr($cols[$column]['type'], 'int') !== false ||
-											strstr($cols[$column]['type'], 'float') !== false ||
-											strstr($cols[$column]['type'], 'decimal') !== false ||
-											strstr($cols[$column]['type'], 'double') !== false) {
+										if (str_contains($cols[$column]['type'], 'int') ||
+											str_contains($cols[$column]['type'], 'float') ||
+											str_contains($cols[$column]['type'], 'decimal') ||
+											str_contains($cols[$column]['type'], 'double')) {
 											if (!empty($value)) {
 												$save[$column] = $value;
 											} else {
@@ -1401,10 +1401,10 @@ function update_graph_template_items($graph_template_id, $graph_template_item_id
 										break;
 
 									default:
-										if (strstr($cols[$column]['type'], 'int') !== false ||
-											strstr($cols[$column]['type'], 'float') !== false ||
-											strstr($cols[$column]['type'], 'decimal') !== false ||
-											strstr($cols[$column]['type'], 'double') !== false) {
+										if (str_contains($cols[$column]['type'], 'int') ||
+											str_contains($cols[$column]['type'], 'float') ||
+											str_contains($cols[$column]['type'], 'decimal') ||
+											str_contains($cols[$column]['type'], 'double')) {
 											if (!empty($value)) {
 												$save[$column] = $value;
 											} else {
@@ -1973,7 +1973,7 @@ function create_graph_custom_data_compatible($suggested_vals, $previous_data_sou
 		return $compatible;
 	}
 
-	foreach ($suggested_vals as $template => $items) {
+	foreach ($suggested_vals as $items) {
 		if (cacti_sizeof($items)) {
 			foreach ($items as $type => $item) {
 				if (read_config_option('data_source_trace') == 'on') {
@@ -2317,8 +2317,8 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 			array($data_template['id']));
 
 		// Interfaces are a special case where we can change from 32 to 64 bits on the fly
-		if (strpos($input_fields, 'ifHCInOctets,ifHCOutOctets') !== false ||
-			strpos($input_fields, 'ifInOctets,ifOutOctets') !== false) {
+		if (str_contains($input_fields, 'ifHCInOctets,ifHCOutOctets') ||
+			str_contains($input_fields, 'ifInOctets,ifOutOctets')) {
 			if (read_config_option('data_source_trace') == 'on') {
 				cacti_log('Data Source Exists Special Case "' . $input_fields . '"', false, 'DSTRACE');
 			}

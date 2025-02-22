@@ -546,7 +546,7 @@ class CactiTableFilter {
 							print '</div>';
 							print '<div class="filterColumn">';
 							print '<span>';
-							print '<input type="text" class="ui-state-default ui-corner-all' . $class . '" id="date1" size="18" value="' . (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '') . '">';
+							print '<input type="text" class="ui-state-default ui-corner-all' . $class . '" id="date1" size="18" value="' . ($_SESSION['sess_current_date1'] ?? '') . '">';
 							print '<i id="startDate" class="calendar fa fa-calendar-alt" title="' . __esc('Start Date Selector') . '"></i>';
 							print '</span>';
 							print '</div>';
@@ -557,7 +557,7 @@ class CactiTableFilter {
 							print '</div>';
 							print '<div class="filterColumn">';
 							print '<span>';
-							print '<input type="text" class="ui-state-default ui-corner-all' . $class . '" id="date2" size="18" value="' . (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '') . '">';
+							print '<input type="text" class="ui-state-default ui-corner-all' . $class . '" id="date2" size="18" value="' . ($_SESSION['sess_current_date2'] ?? '') . '">';
 							print '<i id="endDate" class="calendar fa fa-calendar-alt" title="' . __esc('End Date Selector') . '"></i>';
 							print '</span>';
 							print '</div>';
@@ -615,7 +615,7 @@ class CactiTableFilter {
 								print '<div class="filterColumn"><div class="filterFieldName"><label for="' . $field_name . '">' . $field_array['friendly_name'] . '</label></div></div>' . PHP_EOL;
 							}
 
-							if (isset_request_var($field_name) && strpos($field_array['method'], 'callback') === false) {
+							if (isset_request_var($field_name) && !str_contains($field_array['method'], 'callback')) {
 								$field_array['value'] = get_nfilter_request_var($field_name);
 							}
 
@@ -704,7 +704,7 @@ class CactiTableFilter {
 		$clearFilter   = $applyFilter;
 		$defaultFilter = $applyFilter;
 
-		if (strpos($applyFilter, '?') === false) {
+		if (!str_contains($applyFilter, '?')) {
 			$separator = '?';
 		} else {
 			$separator = '&';
@@ -738,7 +738,7 @@ class CactiTableFilter {
 		$globalAdd       = '';
 
 		if (isset($this->filter_array['rows'])) {
-			foreach($this->filter_array['rows'] as $index => $row) {
+			foreach($this->filter_array['rows'] as $row) {
 				foreach($row as $field_name => $field_array) {
 					switch($field_array['method']) {
 						case 'content':
@@ -928,7 +928,7 @@ class CactiTableFilter {
 		$filters = array();
 
 		if (isset($this->filter_array['rows'])) {
-			foreach($this->filter_array['rows'] as $index => $row) {
+			foreach($this->filter_array['rows'] as $row) {
 				foreach($row as $field_name => $field_array) {
 					switch($field_array['method']) {
 						case 'timespan':

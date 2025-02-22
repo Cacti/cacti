@@ -27,7 +27,7 @@
    @arg $poller_id - the id of the poller impacted by hash update
    @arg $variable  - the hash variable prefix for the replication setting. */
 function api_data_source_cache_crc_update($poller_id, $variable = 'poller_replicate_data_source_cache_crc') {
-	$hash = hash('ripemd160', date('Y-m-d H:i:s') . rand() . $poller_id);
+	$hash = hash('ripemd160', date('Y-m-d H:i:s') . random_int(0, mt_getrandmax()) . $poller_id);
 
 	db_execute_prepared("REPLACE INTO settings
 		SET value = ?, name='$variable" . '_' . "$poller_id'",
@@ -501,7 +501,7 @@ function api_data_source_get_interface_speed($data_local) {
 				cacti_log('Interface Speed Detected by Default: "' . $speed . '"', false, 'DSTRACE');
 			}
 		} else {
-			$speed = $speed * 1000000;
+			$speed *= 1000000;
 
 			if (read_config_option('data_source_trace') == 'on') {
 				cacti_log('Interface Speed Detected by Settings: "' . $speed . '"', false, 'DSTRACE');
@@ -596,7 +596,7 @@ function api_reapply_suggested_data_source_data($local_data_id) {
 			}
 
 			/* if there are no '|query' characters, all of the substitutions were successful */
-			if (strpos($subs_string, '|query') === false) {
+			if (!str_contains($subs_string, '|query')) {
 				if (in_array($sv['field_name'], $matches, true)) {
 					continue;
 				}
@@ -699,8 +699,8 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 
 	/* create new entry: data_template_data */
 	$save['id']                          = 0;
-	$save['local_data_id']               = (isset($local_data_id) ? $local_data_id : 0);
-	$save['local_data_template_data_id'] = (isset($data_template_data['local_data_template_data_id']) ? $data_template_data['local_data_template_data_id'] : 0);
+	$save['local_data_id']               = ($local_data_id ?? 0);
+	$save['local_data_template_data_id'] = ($data_template_data['local_data_template_data_id'] ?? 0);
 	$save['data_template_id']            = (!empty($_local_data_id) ? $data_template_data['data_template_id'] : $data_template_id);
 	$save['name_cache']                  = $data_template_data['name_cache'];
 
@@ -720,8 +720,8 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 			unset($save);
 
 			$save['id']                         = 0;
-			$save['local_data_id']              = (isset($local_data_id) ? $local_data_id : 0);
-			$save['local_data_template_rrd_id'] = (isset($data_template_rrd['local_data_template_rrd_id']) ? $data_template_rrd['local_data_template_rrd_id'] : 0);
+			$save['local_data_id']              = ($local_data_id ?? 0);
+			$save['local_data_template_rrd_id'] = ($data_template_rrd['local_data_template_rrd_id'] ?? 0);
 			$save['data_template_id']           = (!empty($_local_data_id) ? $data_template_rrd['data_template_id'] : $data_template_id);
 
 			if ($save['local_data_id'] == 0) {

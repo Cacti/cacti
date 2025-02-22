@@ -384,7 +384,7 @@ function do_rrdcheck($thread_id = 1) {
 						$line = trim($line);
 
 						// remove line - OK u:0.03 s:0.12 r:0.33
-						if (substr($line, 0, 2) == 'OK') {
+						if (str_starts_with($line, 'OK')) {
 							continue;
 						}
 

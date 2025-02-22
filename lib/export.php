@@ -98,33 +98,14 @@ function graph_template_to_xml($graph_template_id) {
 
 			foreach ($struct_graph_item as $field_name => $field_array) {
 				if (!empty($item[$field_name])) {
-					switch ($field_name) {
-						case 'task_item_id':
-							$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('data_template_item') . get_hash_data_template($item[$field_name], 'data_template_item') . "</$field_name>\n";
-
-							break;
-						case 'cdef_id':
-							$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('cdef') . get_hash_cdef($item[$field_name]) . "</$field_name>\n";
-
-							break;
-						case 'vdef_id':
-							$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('vdef') . get_hash_vdef($item[$field_name]) . "</$field_name>\n";
-
-							break;
-						case 'gprint_id':
-							$xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('gprint_preset') . get_hash_gprint($item[$field_name]) . "</$field_name>\n";
-
-							break;
-						case 'color_id':
-						case 'color2_id':
-							$xml_text .= "\t\t\t<$field_name>" . db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($item[$field_name])) . "</$field_name>\n";
-
-							break;
-						default:
-							$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item[$field_name]) . "</$field_name>\n";
-
-							break;
-					}
+					match ($field_name) {
+                        'task_item_id' => $xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('data_template_item') . get_hash_data_template($item[$field_name], 'data_template_item') . "</$field_name>\n",
+                        'cdef_id' => $xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('cdef') . get_hash_cdef($item[$field_name]) . "</$field_name>\n",
+                        'vdef_id' => $xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('vdef') . get_hash_vdef($item[$field_name]) . "</$field_name>\n",
+                        'gprint_id' => $xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('gprint_preset') . get_hash_gprint($item[$field_name]) . "</$field_name>\n",
+                        'color_id', 'color2_id' => $xml_text .= "\t\t\t<$field_name>" . db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($item[$field_name])) . "</$field_name>\n",
+                        default => $xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item[$field_name]) . "</$field_name>\n",
+                    };
 				} else {
 					$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item[$field_name]) . "</$field_name>\n";
 				}

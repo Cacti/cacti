@@ -244,7 +244,7 @@ function get_basic_auth_username() {
 	}
 
 	if ($username !== false) {
-		if (strpos($username, '@') !== false) {
+		if (str_contains($username, '@')) {
 			$upart    = explode('@', $username);
 			$username = $upart[0];
 		}
@@ -259,7 +259,7 @@ function get_basic_auth_username() {
 
 			if (cacti_sizeof($records)) {
 				foreach ($records as $r) {
-					list($basic, $shortform) = str_getcsv($r);
+					[$basic, $shortform] = str_getcsv($r);
 
 					if (trim($basic) == $username) {
 						$username = trim($shortform);
@@ -3685,7 +3685,7 @@ function auth_process_lockout($username, $realm) {
 				db_execute_prepared('INSERT IGNORE INTO user_log
 					(username, user_id, result, ip, time)
 					VALUES (?, ?, 0, ?, NOW())',
-					array($username, isset($user['id']) ? $user['id']:0, get_client_addr()));
+					array($username, $user['id'] ?? 0, get_client_addr()));
 
 				if ($user['locked'] == 'on') {
 					cacti_log(sprintf("LOGIN FAILED: Local Login Failed for user '%s' from IP Address '%s'. Account is locked out.", $username, get_client_addr()), false, 'AUTH');
@@ -4888,7 +4888,7 @@ function auth_login_redirect($login_opts = '') {
 
 				if (auth_basename($referer) == 'logout.php') {
 					$referer = CACTI_PATH_URL . 'index.php';
-				} elseif (strpos($referer, CACTI_PATH_URL) === false) {
+				} elseif (!str_contains($referer, CACTI_PATH_URL)) {
 					if (!is_realm_allowed(8)) {
 						$referer = CACTI_PATH_URL . 'graph_view.php' . ($newtheme ? '?newtheme=1':'');
 					} else {
@@ -4911,7 +4911,7 @@ function auth_login_redirect($login_opts = '') {
 				cacti_log(sprintf("DEBUG: Referer Short Circuit to '%s'", 'index.php'), false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 			}
 
-			$referer .= ($newtheme ? (strpos($referer, '?') === false ? '?':'&') . 'newtheme=1':'');
+			$referer .= ($newtheme ? (!str_contains($referer, '?') ? '?':'&') . 'newtheme=1':'');
 
 			/* Strip out the login from the referer if present */
 			$referer  = str_replace('?action=login', '', $referer);
@@ -5013,8 +5013,8 @@ function auth_login_create_user_from_template($username, $realm) {
 
 					user_copy($user_template['username'], $username, $user_template['realm'], $realm, false, $data_override);
 				} else {
-					$ldap_response = (isset($ldap_cn_search_response[0]) ? $ldap_cn_search_response[0] : '(no response given)');
-					$ldap_code     = (isset($ldap_cn_search_response['error_num']) ? $ldap_cn_search_response['error_num'] : '(no code given)');
+					$ldap_response = ($ldap_cn_search_response[0] ?? '(no response given)');
+					$ldap_code     = ($ldap_cn_search_response['error_num'] ?? '(no code given)');
 					cacti_log('LOGIN: Email Address and Full Name fields not found, reason: ' . $ldap_response . 'code: ' . $ldap_code, false, 'AUTH');
 					user_copy($user_template['username'], $username, $user_template['realm'], $realm);
 				}
@@ -5130,7 +5130,7 @@ function check_reset_no_authentication($auth_method) {
 
 		$_SESSION[SESS_USER_ID]         = $admin_id;
 		$_SESSION[SESS_CHANGE_PASSWORD] = true;
-		header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?action=force&ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
+		header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?action=force&ref=' . ($_SERVER['HTTP_REFERER'] ?? 'index.php'));
 
 		exit;
 	}

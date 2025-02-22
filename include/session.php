@@ -93,7 +93,7 @@ function cacti_db_session_write($id, $data) {
 	}
 
 	$client_addr = get_client_addr();
-	$user_agent  = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT']:'Unknown';
+	$user_agent  = $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown';
 
 	if ($user_id > 0) {
 		db_execute_prepared('INSERT INTO sessions
@@ -105,7 +105,7 @@ function cacti_db_session_write($id, $data) {
 				user_agent = VALUES(user_agent),
 				transactions = transactions + 1',
 			array($id, $client_addr, $access, $data, $user_id, $user_agent));
-	} elseif (strpos($data, 'ses_user_id') !== false) {
+	} elseif (str_contains($data, 'ses_user_id')) {
 		db_execute_prepared('INSERT INTO sessions
 			(id, remote_addr, access, data, user_agent)
 			VALUES (?, ?, ?, ?, ?)

@@ -45,36 +45,36 @@ class spikekill {
 	private $user_info = array();
 
 	// Required variables
-	var $rrdfile   = '';
+	public $rrdfile   = '';
 
-	var $method    = '';
+	public $method    = '';
 
-	var $avgnan    = '';
+	public $avgnan    = '';
 
-	var $stddev    = '';
+	public $stddev    = '';
 
-	var $out_start = '';
+	public $out_start = '';
 
-	var $out_end   = '';
+	public $out_end   = '';
 
-	var $outliers  = '';
+	public $outliers  = '';
 
-	var $percent   = '';
+	public $percent   = '';
 
-	var $numspike  = '';
+	public $numspike  = '';
 
-	var $dsfilter  = '';
+	public $dsfilter  = '';
 
-	var $absmax  = '';
+	public $absmax  = '';
 
 	// Overridable
-	var $html      = true;
+	public $html      = true;
 
-	var $backup    = false;
+	public $backup    = false;
 
-	var $debug     = false;
+	public $debug     = false;
 
-	var $dryrun    = false;
+	public $dryrun    = false;
 
 	// Defaults from cacti settings
 	private $dmethod   = 1;
@@ -96,9 +96,9 @@ class spikekill {
 
 	private $strout      = '';
 
-	private $ds_min      = '';
+	private $ds_min      = [];
 
-	private $ds_max      = '';
+	private $ds_max      = [];
 
 	private $total_kills = 0;
 
@@ -309,7 +309,7 @@ class spikekill {
 
 		if ($this->percent != '') {
 			if (is_numeric($this->percent) && $this->percent > 0) {
-				$this->percent = $this->percent / 100;
+				$this->percent /= 100;
 			} else {
 				$this->set_error('FATAL: Percent deviation must be a positive floating point number.');
 			}
@@ -537,7 +537,7 @@ class spikekill {
 					/* get the timestamp */
 					$timestamp_part = $linearray[0];
 
-					if (strpos($timestamp_part, '<timestamp>') !== false) {
+					if (str_contains($timestamp_part, '<timestamp>')) {
 						$timestamp_part = str_replace('<row><timestamp>', '', $timestamp_part);
 						$timestamp_part = str_replace('</timestamp>', '', $timestamp_part);
 						$timestamp      = trim($timestamp_part);
@@ -994,7 +994,7 @@ class spikekill {
 								$this->ds_name[$dskey],
 								$this->rra_cf[$rra_key],
 								$ds['totalsamples'],
-								(isset($ds['numsamples']) ? $ds['numsamples'] : '0'),
+								($ds['numsamples'] ?? '0'),
 								($ds['average'] != 'N/A' ? round($ds['average'],2) : $ds['average']),
 								($ds['standard_deviation'] != 'N/A' ? round($ds['standard_deviation'],2) : $ds['standard_deviation']),
 								(isset($ds['max_value']) ? round($ds['max_value'],2) : 'N/A'),
@@ -1034,7 +1034,7 @@ class spikekill {
 								$this->ds_name[$dskey],
 								$this->rra_cf[$rra_key],
 								$ds['totalsamples'],
-								(isset($ds['numsamples']) ? $ds['numsamples'] : '0'),
+								($ds['numsamples'] ?? '0'),
 								($ds['average'] != 'N/A' ? round($ds['average'],2) : $ds['average']),
 								($ds['standard_deviation'] != 'N/A' ? round($ds['standard_deviation'],2) : $ds['standard_deviation']),
 								(isset($ds['max_value']) ? round($ds['max_value'],2) : 'N/A'),
@@ -1068,7 +1068,7 @@ class spikekill {
 					/* get the timestamp */
 					$timestamp_part = $linearray[0];
 
-					if (strpos($timestamp_part, '<timestamp>') !== false) {
+					if (str_contains($timestamp_part, '<timestamp>')) {
 						$timestamp_part = str_replace('<row><timestamp>', '', $timestamp_part);
 						$timestamp_part = str_replace('</timestamp>', '', $timestamp_part);
 						$timestamp      = trim($timestamp_part);
@@ -1266,7 +1266,7 @@ class spikekill {
 							$line = trim(substr($line,0,$comment_start - 1) . substr($line,$comment_end + 3));
 						}
 
-						if (strpos($line, '<row>') !== false) {
+						if (str_contains($line, '<row>')) {
 							/* capture the timestamp */
 							$stamp     = trim(substr($oline, $comment_start + 4, $comment_end - 4));
 							$stamp     = explode('/', $stamp);
@@ -1292,17 +1292,17 @@ class spikekill {
 		if ($total_time < 60) {
 			return $total_time . ' secs';
 		} else {
-			$total_time = $total_time / 60;
+			$total_time /= 60;
 
 			if ($total_time < 60) {
 				return $total_time . ' mins';
 			} else {
-				$total_time = $total_time / 60;
+				$total_time /= 60;
 
 				if ($total_time < 24) {
 					return $total_time . ' hours';
 				} else {
-					$total_time = $total_time / 24;
+					$total_time /= 24;
 
 					return $total_time . ' days';
 				}

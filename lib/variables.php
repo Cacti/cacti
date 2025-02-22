@@ -119,7 +119,7 @@ function update_data_source_title_cache($local_data_id) {
 
 	$data_source = get_data_source_title($local_data_id);
 
-	if (strstr($data_source, '|query_') !== false || strstr($data_source, '|host_') !== false) {
+	if (str_contains($data_source, '|query_') || str_contains($data_source, '|host_')) {
 		if ($old_title == '') {
 			db_execute_prepared('UPDATE data_template_data
 				SET name_cache = ?
@@ -239,7 +239,7 @@ function update_graph_title_cache($local_graph_id) {
 
 	$graph_title = get_graph_title($local_graph_id);
 
-	if (strstr($graph_title, '|query_') !== false || strstr($graph_title, '|host_') !== false) {
+	if (str_contains($graph_title, '|query_') || str_contains($graph_title, '|host_')) {
 		if ($old_title == '') {
 			db_execute_prepared('UPDATE graph_templates_graph
 				SET title_cache = ?
@@ -477,7 +477,7 @@ function substitute_snmp_query_data($string, $host_id, $snmp_query_id, $snmp_ind
 
 				$string = stri_replace('|query_' . $data['field_name'] . '|', $data['field_value'], $string);
 
-				if (strpos($string, 'query_') === false) {
+				if (!str_contains($string, 'query_')) {
 					break;
 				}
 			}
@@ -576,7 +576,7 @@ function substitute_poller_data($string, $graph, $local_data_id, $max_chars = 0)
 			$columns = array_keys($poller);
 
 			foreach($columns as $c) {
-				if (strpos($string, '|poller_' . $c . '|') !== false) {
+				if (str_contains($string, '|poller_' . $c . '|')) {
 					$string = stri_replace('|poller_' . $c . '|', $poller[$c], $string);
 				}
 			}
@@ -598,7 +598,7 @@ function substitute_poller_data($string, $graph, $local_data_id, $max_chars = 0)
 		$columns = array_keys($poller);
 
 		foreach($columns as $c) {
-			if (strpos($string, '|poller_' . $c . '|') !== false) {
+			if (str_contains($string, '|poller_' . $c . '|')) {
 				$string = stri_replace('|poller_' . $c . '|', $poller[$c], $string);
 			}
 		}
@@ -635,7 +635,7 @@ function substitute_site_data($string, $graph, $local_data_id, $max_chars = 0) {
 			$columns = array_keys($site);
 
 			foreach($columns as $c) {
-				if (strpos($string, '|site_' . $c . '|') !== false) {
+				if (str_contains($string, '|site_' . $c . '|')) {
 					$string = stri_replace('|site_' . $c . '|', $site[$c], $string);
 				}
 			}
@@ -657,7 +657,7 @@ function substitute_site_data($string, $graph, $local_data_id, $max_chars = 0) {
 		$columns = array_keys($site);
 
 		foreach($columns as $c) {
-			if (strpos($string, '|site_' . $c . '|') !== false) {
+			if (str_contains($string, '|site_' . $c . '|')) {
 				$string = stri_replace('|site_' . $c . '|', $site[$c], $string);
 			}
 		}

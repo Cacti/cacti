@@ -139,7 +139,7 @@ function create_preview_filter() {
 
 	/* unset the ordering if we have a setup that does not support ordering */
 	if (isset_request_var('graph_template_id')) {
-		if (strpos(get_nfilter_request_var('graph_template_id'), ',') !== false || get_nfilter_request_var('graph_template_id') <= 0) {
+		if (str_contains(get_nfilter_request_var('graph_template_id'), ',') || get_nfilter_request_var('graph_template_id') <= 0) {
 			set_request_var('graph_order', '');
 			set_request_var('graph_source', '');
 		}
@@ -569,7 +569,7 @@ function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_gra
 	form_hidden_box('save_component_new_graphs', '1', '');
 	form_hidden_box('selected_graphs_array', serialize($selected_graphs_array), '');
 
-	if (isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], 'graphs_new') === false) {
+	if (isset($_SERVER['HTTP_REFERER']) && !str_contains($_SERVER['HTTP_REFERER'], 'graphs_new')) {
 		set_request_var('returnto', basename($_SERVER['HTTP_REFERER']));
 	}
 
@@ -678,14 +678,14 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 		AND gtg.local_graph_id = 0',
 		array($graph_template_id));
 
-	array_push($num_output_fields, draw_nontemplated_fields_graph($graph_template_id, $graph_template, "g_$snmp_query_id" . '_' . $graph_template_id . '_|field|', __('Graph [Template: %s]', html_escape($graph_template['graph_template_name'])), true, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
+	array_push($num_output_fields, draw_nontemplated_fields_graph($graph_template_id, $graph_template, "g_$snmp_query_id" . '_' . $graph_template_id . '_|field|', __('Graph [Template: %s]', html_escape($graph_template['graph_template_name'])), true, false, ($snmp_query_graph_id ?? 0)));
 
 	array_push($num_output_fields, draw_nontemplated_fields_graph_item($graph_template_id, 0, 'gi_' . $snmp_query_id . '_' . $graph_template_id . '_|id|_|field|', __('Graph Items [Template: %s]', html_escape($graph_template['graph_template_name'])), true));
 
 	/* DRAW: Data Sources */
 	if (cacti_sizeof($data_templates)) {
 		foreach ($data_templates as $data_template) {
-			array_push($num_output_fields, draw_nontemplated_fields_data_source($data_template['data_template_id'], 0, $data_template, 'd_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|field|', __('Data Source [Template: %s]', html_escape($data_template['data_template_name'])), true, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
+			array_push($num_output_fields, draw_nontemplated_fields_data_source($data_template['data_template_id'], 0, $data_template, 'd_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|field|', __('Data Source [Template: %s]', html_escape($data_template['data_template_name'])), true, false, ($snmp_query_graph_id ?? 0)));
 
 			$data_template_items = db_fetch_assoc_prepared('SELECT
 				data_template_rrd.*
@@ -694,7 +694,7 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 				AND local_data_id = 0',
 				array($data_template['data_template_id']));
 
-			array_push($num_output_fields, draw_nontemplated_fields_data_source_item($data_template['data_template_id'], $data_template_items, 'di_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|id|_|field|', '', true, false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
+			array_push($num_output_fields, draw_nontemplated_fields_data_source_item($data_template['data_template_id'], $data_template_items, 'di_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|id|_|field|', '', true, false, false, ($snmp_query_graph_id ?? 0)));
 			array_push($num_output_fields, draw_nontemplated_fields_custom_data($data_template['id'], 'c_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|id|', __('Custom Data [Template: %s]', html_escape($data_template['data_template_name'])), true, false, $snmp_query_id));
 		}
 	}
@@ -1702,7 +1702,7 @@ function html_graph_single_view() {
 		general_header();
 	}
 
-	if (strpos(get_request_var('action'), 'tree') !== false) {
+	if (str_contains(get_request_var('action'), 'tree')) {
 		$suffix = 'tree';
 	} else {
 		$suffix = 'preview';
@@ -1936,7 +1936,7 @@ function html_graph_zoom() {
 	$rras = $info['rras'];
 	$graph_title = $info['title'];
 
-	if (strpos(get_nfilter_request_var('action'), 'tree') !== false) {
+	if (str_contains(get_nfilter_request_var('action'), 'tree')) {
 		$suffix = 'tree';
 	} else {
 		$suffix = 'preview';

@@ -403,7 +403,7 @@ function reports_log($string, $output = false, $environ = 'REPORTS', $level = PO
 	}
 
 	# if current verbosity >= level of current message, print it
-	if (strpos($string, 'STATS') !== false) {
+	if (str_contains($string, 'STATS')) {
 		cacti_log($string, $output, 'SYSTEM');
 	} elseif (REPORTS_DEBUG >= $level) {
 		cacti_log($string, $output, $environ);
@@ -671,9 +671,9 @@ function reports_load_format_file($format_file, &$output, &$report_tag_included,
 				$report_tag_included = true;
 			}
 
-			if (substr($line, 0, 1) != '#') {
+			if (!str_starts_with($line, '#')) {
 				$output .= $line . PHP_EOL;
-			} elseif (strstr($line, 'Theme:') !== false) {
+			} elseif (str_contains($line, 'Theme:')) {
 				$tparts = explode(':', $line);
 				$theme  = trim($tparts[1]);
 			}
@@ -785,9 +785,9 @@ function reports_generate_history_html($history_id, $output = REPORTS_OUTPUT_STD
 			$lines    = explode("\n", $report);
 
 			foreach($lines as $l) {
-				if (strpos($l, '<style') !== false) {
+				if (str_contains($l, '<style')) {
 					$instyle = true;
-				} elseif (strpos($l, '</style>') !== false) {
+				} elseif (str_contains($l, '</style>')) {
 					$instyle = false;
 				}
 
@@ -817,7 +817,7 @@ function reports_generate_history_html($history_id, $output = REPORTS_OUTPUT_STD
 
 		$graph_data = json_decode(base64_decode($data['report_attachments']), true);
 
-		foreach($graph_data as $index => $graph) {
+		foreach($graph_data as $graph) {
 			$report = str_replace('<GRAPH:' . $graph['local_graph_id'] . ':' . $graph['timespan'] . '>',
 				'<img class="graph" src="data:image/png;base64,' . $graph['attachment'] . '">', $report);
 		}
@@ -1105,7 +1105,7 @@ function reports_graph_image($report, $item, $timespan, $output, $theme = 'moder
 	}
 
 	if ($report['graph_linked'] == 'on') {
-		if (substr(read_config_option('base_url'), 0, 4) != 'http') {
+		if (!str_starts_with(read_config_option('base_url'), 'http')) {
 			if (read_config_option('force_https') == 'on') {
 				$prefix = 'https://';
 			} else {
@@ -1430,7 +1430,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 					$sql_where
 					ORDER BY gti.position");
 
-				foreach ($graphs as $key => $graph) {
+				foreach ($graphs as $graph) {
 					if (is_graph_allowed($graph['local_graph_id'], $user)) {
 						$mygraphs[$graph['local_graph_id']] = $graph;
 					}
@@ -1940,7 +1940,7 @@ function reports_get_format_files() {
 						foreach ($contents as $line) {
 							$line = trim($line);
 
-							if (substr_count($line, 'Description:') && substr($line, 0, 1) == '#') {
+							if (substr_count($line, 'Description:') && str_starts_with($line, '#')) {
 								$arr            = explode(':', $line);
 								$formats[$file] = trim($arr[1]) . ' (' . $file . ')';
 							}
@@ -2119,7 +2119,7 @@ function reports_graphs_action_execute($action) {
  * The parameters include:
  *
  * @param  int       $id           - The report queue unique id number.
- * @param  timestamp $start_time   - The time that the report process started for logging
+ * @param  int       $start_time   - The time that the report process started for logging
  * @param  string    $report_type  - The output type of the report.  To be used by the plugin for re-rendering
  * @param  string    $source       - The plugin defined report source name.  For example: 'reports', 'reportit', 'flowview'
  * @param  int       $source_id    - The id as it is known to the source
@@ -2227,9 +2227,9 @@ function reports_log_and_notify($id, $start_time, $report_type, $source, $source
 								}
 
 								$to_emails  = $list['emails'];
-								$cc_emails  = isset($list['cc_emails']) ? $list['cc_emails']:'';
+								$cc_emails  = $list['cc_emails'] ?? '';
 								$bcc_emails = $list['bcc_emails'];
-								$reply_to   = isset($list['reply_to'])  ? $list['reply_to']:'';
+								$reply_to   = $list['reply_to'] ?? '';
 
 								if (isset($data['reply_to']) && $reply_to == '') {
 									$reply_to = $data['reply_to'];

@@ -241,7 +241,7 @@ function nth_percentile_fetch_statistics($percentile, &$local_data_ids, &$fetch_
 	$max_values_array = array();
 
 	if (cacti_sizeof($asum_array)) {
-		foreach ($asum_array as $ds_name => $sum_by_timestamp) {
+		foreach ($asum_array as $sum_by_timestamp) {
 			foreach ($sum_by_timestamp as $timestamp => $data) {
 				if (!isset($max_values_array[$timestamp])) {
 					$max_values_array[$timestamp] = $data;
@@ -338,7 +338,7 @@ function cacti_stats_calc($array, $ptile = 95) {
 	}
 
 	foreach ($array as $number) {
-		$rsquared += pow($number - $average, 2);
+		$rsquared += ($number - $average) ** 2;
 	}
 
 	$variance = $rsquared / $elements;
@@ -351,11 +351,11 @@ function cacti_stats_calc($array, $ptile = 95) {
 	$p25n_index  = ceil($elements * 0.75);
 
 	$results = array(
-		'p95n'     => (isset($array[$p95n_index]) ? $array[$p95n_index] : 0),
-		'p90n'     => (isset($array[$p90n_index]) ? $array[$p90n_index] : 0),
-		'p75n'     => (isset($array[$p75n_index]) ? $array[$p75n_index] : 0),
-		'p50n'     => (isset($array[$p50n_index]) ? $array[$p50n_index] : 0),
-		'p25n'     => (isset($array[$p25n_index]) ? $array[$p25n_index] : 0),
+		'p95n'     => ($array[$p95n_index] ?? 0),
+		'p90n'     => ($array[$p90n_index] ?? 0),
+		'p75n'     => ($array[$p75n_index] ?? 0),
+		'p50n'     => ($array[$p50n_index] ?? 0),
+		'p25n'     => ($array[$p25n_index] ?? 0),
 		'average'  => $average,
 		'peak'     => $peak,
 		'sum'      => $sum,
@@ -491,7 +491,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 		}
 
 		foreach ($gi as $data_source => $true) {
-			list($data_source_name, $local_data_id) = explode('|||', $data_source);
+			[$data_source_name, $local_data_id] = explode('|||', $data_source);
 			$local_data_array[$local_data_id][]     = $data_source_name;
 		}
 	}
@@ -577,7 +577,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 			if (!empty($nth_cache[$graph_item['data_source_name']])) {
 				$nth = $nth_cache[$graph_item['data_source_name']];
 				$nth = ($bytebit == 'bits') ? $nth * 8 : $nth;
-				$nth /= pow($base, $power);
+				$nth /= $base ** $power;
 			}
 
 			break;
@@ -588,7 +588,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 			if (!empty($nth_cache['nth_percentile_sum'])) {
 				$nth = $nth_cache['nth_percentile_sum'];
 				$nth = ($bytebit == 'bits') ? $nth * 8 : $nth;
-				$nth /= pow($base, $power);
+				$nth /= $base ** $power;
 			}
 
 			break;
@@ -601,7 +601,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 			if (!empty($nth_cache['nth_percentile_maximum'])) {
 				$nth = $nth_cache['nth_percentile_maximum'];
 				$nth = ($bytebit == 'bits') ? $nth * 8 : $nth;
-				$nth /= pow($base, $power);
+				$nth /= $base ** $power;
 			}
 
 			break;
@@ -610,7 +610,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 			if (!empty($nth_cache['nth_percentile_aggregate_total'])) {
 				$nth = $nth_cache['nth_percentile_aggregate_total'];
 				$nth = ($bytebit == 'bits') ? $nth * 8 : $nth;
-				$nth /= pow($base, $power);
+				$nth /= $base ** $power;
 			}
 
 			break;
@@ -714,7 +714,7 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_ite
 	}
 
 	if (preg_match('/\d+/', $regexp_match_array[1])) {
-		$summation /= pow($base, $regexp_match_array[1]);
+		$summation /= $base ** $regexp_match_array[1];
 	} elseif ($regexp_match_array[1] == 'auto') {
 		if ($graph['base_value'] == 1000) {
 			if ($summation < 1000) {
