@@ -1849,7 +1849,7 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 
 		if (isset($data['primary'])) {
 			if (is_array($data['primary'])) {
-				$sql .= ",\n PRIMARY KEY (`" . implode('`,`'. $data['primary']) . '`)';
+				$sql .= ",\n PRIMARY KEY (`" . implode('`,`', $data['primary']) . '`)';
 			} else {
 				$sql .= ",\n PRIMARY KEY (`" . $data['primary'] . '`)';
 			}
