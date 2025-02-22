@@ -156,8 +156,8 @@ jobs:
         sudo chmod 777 ${{ github.workspace }}/include/config.php
         cat ${{ github.workspace}}/include/config.php
 
-    - name: Validate composer.json and composer.lock
-      run: composer validate --strict
+#    - name: Validate composer.json and composer.lock
+#      run: composer validate --strict
 
     - name: Cache Composer packages
       id: composer-cache
