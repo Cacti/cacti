@@ -1711,7 +1711,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 						$days              = intval($snmp_uptime_ticks / (60 * 60 * 24 * 100));
 						$remainder         = $snmp_uptime_ticks % (60 * 60 * 24 * 100);
 						$hours             = intval($remainder / (60 * 60 * 100));
-						$remainder %= 60 * 60 * 100;
+						$remainder        %= 60 * 60 * 100;
 						$minutes           = intval($remainder / (60 * 100));
 						print '<b>' . __('Uptime:') . "</b> $snmp_uptime";
 						print '&nbsp;(' . $days . __('days') . ', ' . $hours . __('hours') . ', ' . $minutes . __('minutes') . ')<br>';
