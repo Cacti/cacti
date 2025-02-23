@@ -1403,12 +1403,12 @@ function get_colored_device_status($disabled, $status, $thold_failure_count = -1
 		}
 
 		return match ($status) {
-            HOST_DOWN => "<span class='deviceDown'>" . __('Down') . '</span>',
-            HOST_RECOVERING => "<span class='deviceRecovering'>" . __('Recovering') . '</span>',
-            HOST_UP => "<span class='deviceUp'>" . __('Up') . '</span>',
-            HOST_ERROR => "<span class='deviceError'>" . __('Error') . '</span>',
-            default => "<span class='deviceUnknown'>" . __('Unknown') . '</span>',
-        };
+			HOST_DOWN       => "<span class='deviceDown'>" . __('Down') . '</span>',
+			HOST_RECOVERING => "<span class='deviceRecovering'>" . __('Recovering') . '</span>',
+			HOST_UP         => "<span class='deviceUp'>" . __('Up') . '</span>',
+			HOST_ERROR      => "<span class='deviceError'>" . __('Error') . '</span>',
+			default         => "<span class='deviceUnknown'>" . __('Unknown') . '</span>',
+		};
 	}
 }
 
