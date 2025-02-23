@@ -126,11 +126,16 @@ jobs:
 
     - name: Install Apache and tools
       run: sudo apt-get -y install apache2 snmp rrdtool fping bash libapache2-mod-php${{ matrix.php }}
+
     - name: Open permissions for testing purposes
       run: sudo chmod -R 777 ${{ github.workspace}}
 
     - name: Restart Apache2
-      run: sudo systemctl restart apache2
+      run: }
+        sudo systemctl restart apache2
+        sudo systemctl restart irqbalance
+        sudo systemctl restart networkd-dispatcher
+        sudo systemctl restart php${{ matrix.php }}-fpm
 
     - name: Setup the Cacti Root
       run: |
