@@ -2128,7 +2128,7 @@ function reports_graphs_action_execute($action) {
  * @param  string    $oput_raw     - The Raw HTML output without CSS
  * @param  string    $oput_html    - The Report Output with CSS
  * @param  string    $oput_text    - The text output if any
- * @param  array     $attachements - The attachments required to reproduce the report
+ * @param  array     $attachments - The attachments required to reproduce the report
  * @param  array     $headers      - Any report specific Email headers
  */
 function reports_log_and_notify($id, $start_time, $report_type, $source, $source_id, $subject,

@@ -2599,7 +2599,7 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
-	public function processStepNoticesRecomendations() {
+	public function processStepNoticesRecommendations() {
 		$output  = Installer::sectionTitle(__('Linux kernel security modules'));
 		$output .= Installer::sectionNormal(__('Cacti needs to establish network connections, execute binaries and write files to work. Linux security features such as <b>SELinux</b>, <b>AppArmor</b> or <b>ModSecurity</b> may cause Cacti to become inoperable in some configurations. If problems occur, check the settings of these security tools.<br/><br/>'));
 
