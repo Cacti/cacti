@@ -1714,10 +1714,10 @@ class Installer implements JsonSerializable {
 		global $config;
 
 		return match ($reason) {
-            Installer::EXIT_DB_EMPTY => $this->exitSqlNeeded(),
-            Installer::EXIT_DB_OLD => $this->exitDbTooOld(),
-            default => $this->exitWithUnknownReason($reason),
-        };
+			Installer::EXIT_DB_EMPTY => $this->exitSqlNeeded(),
+			Installer::EXIT_DB_OLD   => $this->exitDbTooOld(),
+			default                  => $this->exitWithUnknownReason($reason),
+		};
 	}
 
 	private function exitWithUnknownReason($reason) {
@@ -1865,21 +1865,22 @@ class Installer implements JsonSerializable {
 
 			return $this->exitWithReason($exitReason);
 		}
-        return match ($this->stepCurrent) {
-            Installer::STEP_WELCOME => $this->processStepWelcome(),
-            Installer::STEP_CHECK_DEPENDENCIES => $this->processStepCheckDependencies(),
-            Installer::STEP_INSTALL_TYPE => $this->processStepMode(),
-            Installer::STEP_BINARY_LOCATIONS => $this->processStepBinaryLocations(),
-            Installer::STEP_PERMISSION_CHECK => $this->processStepPermissionCheck(),
-            Installer::STEP_INPUT_VALIDATION => $this->processStepNoticesRecomendations(),
-            Installer::STEP_PROFILE_AND_AUTOMATION => $this->processStepProfileAndAutomation(),
-            Installer::STEP_TEMPLATE_INSTALL => $this->processStepTemplateInstall(),
-            Installer::STEP_CHECK_TABLES => $this->processStepCheckTables(),
-            Installer::STEP_INSTALL_CONFIRM => $this->processStepInstallConfirm(),
-            Installer::STEP_INSTALL => $this->processStepInstall(),
-            Installer::STEP_ERROR, Installer::STEP_COMPLETE => $this->processStepComplete(),
-            default => $this->exitWithReason((0 - $this->stepCurrent)),
-        };
+
+		return match ($this->stepCurrent) {
+			Installer::STEP_WELCOME                         => $this->processStepWelcome(),
+			Installer::STEP_CHECK_DEPENDENCIES              => $this->processStepCheckDependencies(),
+			Installer::STEP_INSTALL_TYPE                    => $this->processStepMode(),
+			Installer::STEP_BINARY_LOCATIONS                => $this->processStepBinaryLocations(),
+			Installer::STEP_PERMISSION_CHECK                => $this->processStepPermissionCheck(),
+			Installer::STEP_INPUT_VALIDATION                => $this->processStepNoticesRecomendations(),
+			Installer::STEP_PROFILE_AND_AUTOMATION          => $this->processStepProfileAndAutomation(),
+			Installer::STEP_TEMPLATE_INSTALL                => $this->processStepTemplateInstall(),
+			Installer::STEP_CHECK_TABLES                    => $this->processStepCheckTables(),
+			Installer::STEP_INSTALL_CONFIRM                 => $this->processStepInstallConfirm(),
+			Installer::STEP_INSTALL                         => $this->processStepInstall(),
+			Installer::STEP_ERROR, Installer::STEP_COMPLETE => $this->processStepComplete(),
+			default                                         => $this->exitWithReason((0 - $this->stepCurrent)),
+		};
 	}
 
 	public function processStepWelcome() {
