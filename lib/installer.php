@@ -2957,14 +2957,14 @@ class Installer implements JsonSerializable {
 		$output .= Installer::sectionNormal('<b>' . __('EULA') . '</b>: '   . __('GPL License Accepted'));
 
 		match ($opt['install_mode']) {
-            Installer::MODE_INSTALL => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('New Install')),
-            Installer::MODE_UPGRADE => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('Upgrade')),
-            Installer::MODE_DOWNGRADE => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('Downgrade')),
-            // Add this case for poller
-            Installer::MODE_POLLER => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: ' . __('Poller')),
-            Installer::MODE_NONE => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('None')),
-            default => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('Unknown')),
-        };
+			Installer::MODE_INSTALL   => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('New Install')),
+			Installer::MODE_UPGRADE   => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('Upgrade')),
+			Installer::MODE_DOWNGRADE => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('Downgrade')),
+			// Add this case for poller
+			Installer::MODE_POLLER    => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: ' . __('Poller')),
+			Installer::MODE_NONE      => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('None')),
+			default                   => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('Unknown')),
+		};
 
 		$topts = db_fetch_assoc('SELECT *
 			FROM settings
@@ -3316,10 +3316,10 @@ class Installer implements JsonSerializable {
 		$failure = '';
 
 		$which = match ($this->mode) {
-            Installer::MODE_UPGRADE => 'UPGRADE',
-            Installer::MODE_DOWNGRADE => 'DOWNGRADE',
-            default => 'INSTALL',
-        };
+			Installer::MODE_UPGRADE   => 'UPGRADE',
+			Installer::MODE_DOWNGRADE => 'DOWNGRADE',
+			default                   => 'INSTALL',
+		};
 
 		log_install_always('', __('Starting %s Process for v%s', $which, CACTI_VERSION_FULL));
 
