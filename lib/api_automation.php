@@ -4209,16 +4209,16 @@ function automation_type_to_table($type) {
 	$table = '';
 
 	$table = match ($type) {
-        'network' => 'automation_networks',
-        'device' => 'automation_templates',
-        'device_rules' => 'automation_templates_rules',
-        'graph' => 'automation_graph_rules',
-        'graph_items' => 'automation_graph_rule_items',
-        'tree' => 'automation_tree_rules',
-        'tree_items' => 'automation_tree_rule_items',
-        'snmp' => 'automation_snmp',
-        'snmp_items' => 'automation_snmp_items',
-        default => $table,
+		'network'      => 'automation_networks',
+		'device'       => 'automation_templates',
+		'device_rules' => 'automation_templates_rules',
+		'graph'        => 'automation_graph_rules',
+		'graph_items'  => 'automation_graph_rule_items',
+		'tree'         => 'automation_tree_rules',
+		'tree_items'   => 'automation_tree_rule_items',
+		'snmp'         => 'automation_snmp',
+		'snmp_items'   => 'automation_snmp_items',
+		default        => $table,
     };
 
 	return $table;
