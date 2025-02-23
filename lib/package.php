@@ -105,7 +105,8 @@ function save_packager_metadata($hash, $info) {
 }
 
 function check_template_dependencies($export_type, $template_id) {
-	$error_message .= ($error_message != '' ? '<br>':'') . __('Script or Resource File \'%s\' does not exist.  Please repackage after locating and installing this file', $file['file']);
+	/* FIX ME: This function is not used */
+	//$error_message .= ($error_message != '' ? '<br>':'') . __('Script or Resource File \'%s\' does not exist.  Please repackage after locating and installing this file', $file['file']);
 }
 
 function check_get_author_info() {
@@ -155,7 +156,7 @@ function open_packager_metadata_table() {
 		copyright char(40) NOT NULL,
 		PRIMARY KEY (hash))';
 
-	if (is_writeable(dirname($db_file))) {
+	if (is_writable(dirname($db_file))) {
 		$create = true;
 		if (file_exists($db_file)) {
 			$create = false;
@@ -280,7 +281,7 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 		/* search xml files for scripts */
 		if (cacti_sizeof($files)) {
 			foreach($files as $file) {
-				if (strpos($file['file'], '.xml') !== false) {
+				if (str_contains($file['file'], '.xml')) {
 					$files = array_merge($files, find_dependent_files(file_get_contents($file['file']), $file));
 				}
 			}
@@ -302,7 +303,7 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 			/* search xml files for scripts */
 			if (cacti_sizeof($nfiles)) {
 				foreach($nfiles as $file) {
-					if (strpos($file['file'], '.xml') !== false) {
+					if (str_contains($file['file'], '.xml')) {
 						$files = array_merge($files, find_dependent_files(file_get_contents($file['file']), $file));
 					}
 				}
@@ -367,7 +368,7 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 
 		foreach($files as $file) {
 			if (array_search($file, $found) === false) {
-				if (strpos($file['file'], '/resource/') === false) {
+				if (!str_contains($file['file'], '/resource/')) {
 					$exists = file_exists($file['file']);
 					$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . html_escape(basename($file['file'])) .  ($exists ? '<i class="fa-solid fa-circle-check deviceUp"></i>':'<i class="fa fa-cross deviceDown"></i>') . '</div></div>';
 				}
@@ -418,16 +419,16 @@ function find_dependent_files($xml_data, $raise_message = false) {
 	$data  = explode("\n", $xml_data);
 
 	foreach($data as $line) {
-		if (strpos($line, '<xml_path>') !== false) {
+		if (str_contains($line, '<xml_path>')) {
 			$line = str_replace('<xml_path>', '', $line);
 			$line = str_replace('</xml_path>', '', $line);
 
 			$files = process_paths($line, $files, $raise_message);
-		} elseif (strpos($line, '<script_path>') !== false) {
+		} elseif (str_contains($line, '<script_path>')) {
 			$line = str_replace('<script_path>', '', $line);
 			$line = str_replace('</script_path>', '', $line);
 			$files = process_paths($line, $files, $raise_message);
-		} elseif (strpos($line, '<input_string>') !== false) {
+		} elseif (str_contains($line, '<input_string>')) {
 			$line  = str_replace('<input_string>', '', $line);
 			$line  = str_replace('</input_string>', '', $line);
 			$line  = base64_decode($line);
@@ -508,7 +509,7 @@ function find_paths($input, $type = 'cacti_xml') {
 		$valid = true;
 		if (file_exists($part)) {
 			foreach($excluded_paths as $path) {
-				if (strpos($part, $path) !== false) {
+				if (str_contains($part, $path)) {
 					$valid = false;
 					break;
 				}
@@ -516,7 +517,7 @@ function find_paths($input, $type = 'cacti_xml') {
 
 			if ($valid) {
 				foreach($excluded_basenames as $binary) {
-					if (strpos($binary, basename($part)) !== false) {
+					if (str_contains($binary, basename($part))) {
 						$valid = false;
 						break;
 					}
@@ -526,7 +527,7 @@ function find_paths($input, $type = 'cacti_xml') {
 			if ($valid) {
 				$paths[] = array('opath' => $opath, 'file' => $part);
 			}
-		} elseif (strpos($part, '/') !== false || strpos($part, "\\") !== false) {
+		} elseif (str_contains($part, '/') || str_contains($part, "\\")) {
 			$mpaths[] = array('opath' => $opath, 'file' => $part);
 		}
 	}
@@ -613,7 +614,7 @@ function package_template(&$template, &$info, &$files, &$debug) {
 
 	$debug .= "Packaging Dependent files....\n";
 
-	$debug .= ' Files Specified: ' . sizeof($files) . "\n";
+	$debug .= ' Files Specified: ' . count($files) . "\n";
 
 	/* calculate directories */
 	$directories = array();
@@ -623,7 +624,7 @@ function package_template(&$template, &$info, &$files, &$debug) {
 		}
 	}
 
-	$debug .= ' Directories extracted: ' . sizeof($directories) . "\n";
+	$debug .= ' Directories extracted: ' . count($directories) . "\n";
 
 	$xml .= "   <directories>\n";
 	if (cacti_sizeof($directories)) {
@@ -742,29 +743,20 @@ function package_template(&$template, &$info, &$files, &$debug) {
 function get_item_name($export_type, $export_id) {
 	$name = 'Unknown';
 
-	switch($export_type) {
-		case 'host_template':
-			$name = db_fetch_cell_prepared('SELECT name
-				FROM host_template
-				WHERE id = ?', array($export_id));
-
-			break;
-		case 'graph_template':
-			$name = db_fetch_cell_prepared('SELECT name
-				FROM graph_templates
-				WHERE id = ?',
-				array($export_id));
-
-			break;
-		case 'data_query':
-			$name = db_fetch_cell_prepared('SELECT name
-				FROM snmp_query
-				WHERE id = ?',
-				array($export_id));
-
-			break;
-	}
+	$name = match ($export_type) {
+		'host_template' => db_fetch_cell_prepared('SELECT name
+			FROM host_template
+			WHERE id = ?', array($export_id)),
+		'graph_template' => db_fetch_cell_prepared('SELECT name
+			FROM graph_templates
+			WHERE id = ?',
+			array($export_id)),
+		'data_query' => db_fetch_cell_prepared('SELECT name
+			FROM snmp_query
+			WHERE id = ?',
+			array($export_id)),
+		default => $name,
+	};
 
 	return $name;
 }
-

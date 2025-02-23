@@ -44,7 +44,7 @@ function draw_edit_form($array) {
 
 	if (cacti_sizeof($fields_array)) {
 		if (!isset($config_array['no_form_tag'])) {
-			print "<form class='cactiForm' method='post' autocomplete='off' action='" . ((isset($config_array['post_to'])) ? $config_array['post_to'] : get_current_page()) . "'" . ((isset($config_array['form_name'])) ? " name='" . $config_array['form_name'] . "'" : '') . ((isset($config_array['enctype'])) ? " enctype='" . $config_array['enctype'] . "'" : '') . ">";
+			print "<form class='cactiForm' method='post' autocomplete='off' action='" . ($config_array['post_to'] ?? get_current_page()) . "'" . ((isset($config_array['form_name'])) ? " name='" . $config_array['form_name'] . "'" : '') . ((isset($config_array['enctype'])) ? " enctype='" . $config_array['enctype'] . "'" : '') . ">";
 		}
 
 		$i         = 0;
@@ -65,7 +65,7 @@ function draw_edit_form($array) {
 				}
 
 				print '<div class="hidden formRow">';
-				form_hidden_box($field_name, $field_array['value'], ((isset($field_array['default'])) ? $field_array['default'] : ''), true);
+				form_hidden_box($field_name, $field_array['value'], ($field_array['default'] ?? ''), true);
 				print '</div>';
 			} elseif ($field_array['method'] == 'hidden_zero') {
 				if (!isset($field_array['value'])) {
@@ -125,21 +125,21 @@ function draw_edit_form($array) {
 						$field_array['sub_checkbox']['name'],
 						$field_array['sub_checkbox']['value'],
 						'',
-						((isset($field_array['sub_checkbox']['default'])) 	? $field_array['sub_checkbox']['default'] : ''),
-						((isset($field_array['sub_checkbox']['form_id'])) 	? $field_array['sub_checkbox']['form_id'] : ''),
-						((isset($field_array['sub_checkbox']['class'])) 	? $field_array['sub_checkbox']['class'] : ''),
-						((isset($field_array['sub_checkbox']['on_change'])) ? $field_array['sub_checkbox']['on_change'] : ''),
-						((isset($field_array['sub_checkbox']['friendly_name'])) ? $field_array['sub_checkbox']['friendly_name'] : '')
+						($field_array['sub_checkbox']['default'] ?? ''),
+						($field_array['sub_checkbox']['form_id'] ?? ''),
+						($field_array['sub_checkbox']['class'] ?? ''),
+						($field_array['sub_checkbox']['on_change'] ?? ''),
+						($field_array['sub_checkbox']['friendly_name'] ?? '')
 					);
 				}
 
 				print html_escape($field_array['friendly_name']);
 
 				if (read_config_option('hide_form_description') == 'on') {
-					print '<br><span class="formFieldDescription">' . ((isset($field_array['description'])) ? $field_array['description'] : '') . "</span>";
+					print '<br><span class="formFieldDescription">' . ($field_array['description'] ?? '') . "</span>";
 				} else {
 					print '<div class="formTooltip">';
-					print display_tooltip((isset($field_array['description'])) ? $field_array['description'] : '');
+					print display_tooltip($field_array['description'] ?? '');
 					print '</div>';
 				}
 
@@ -182,12 +182,12 @@ function draw_edit_control($field_name, &$field_array) {
 			form_text_box(
 				$field_name,
 				$field_array['value'],
-				((isset($field_array['default'])) ? $field_array['default'] : ''),
+				($field_array['default'] ?? ''),
 				$field_array['max_length'],
-				((isset($field_array['size'])) ? $field_array['size'] : '40'),
-				((isset($field_array['type'])) ? $field_array['type'] : 'text'),
-				((isset($field_array['form_id'])) ? $field_array['form_id'] : ''),
-				((isset($field_array['placeholder'])) ? $field_array['placeholder'] : '')
+				($field_array['size'] ?? '40'),
+				($field_array['type'] ?? 'text'),
+				($field_array['form_id'] ?? ''),
+				($field_array['placeholder'] ?? '')
 			);
 
 			break;
@@ -195,11 +195,11 @@ function draw_edit_control($field_name, &$field_array) {
 			form_filepath_box(
 				$field_name,
 				$field_array['value'],
-				((isset($field_array['default'])) ? $field_array['default'] : ''),
+				($field_array['default'] ?? ''),
 				$field_array['max_length'],
-				((isset($field_array['size'])) ? $field_array['size'] : '40'),
+				($field_array['size'] ?? '40'),
 				'text',
-				((isset($field_array['form_id'])) ? $field_array['form_id'] : '')
+				($field_array['form_id'] ?? '')
 			);
 
 			break;
@@ -207,11 +207,11 @@ function draw_edit_control($field_name, &$field_array) {
 			form_dirpath_box(
 				$field_name,
 				$field_array['value'],
-				((isset($field_array['default'])) ? $field_array['default'] : ''),
+				($field_array['default'] ?? ''),
 				$field_array['max_length'],
-				((isset($field_array['size'])) ? $field_array['size'] : '40'),
+				($field_array['size'] ?? '40'),
 				'text',
-				((isset($field_array['form_id'])) ? $field_array['form_id'] : '')
+				($field_array['form_id'] ?? '')
 			);
 
 			break;
@@ -219,11 +219,11 @@ function draw_edit_control($field_name, &$field_array) {
 			form_text_box(
 				$field_name,
 				$field_array['value'],
-				((isset($field_array['default'])) ? $field_array['default'] : ''),
+				($field_array['default'] ?? ''),
 				$field_array['max_length'],
-				((isset($field_array['size'])) ? $field_array['size'] : '40'),
+				($field_array['size'] ?? '40'),
 				'password',
-				((isset($field_array['form_id'])) ? $field_array['form_id'] : ''),
+				($field_array['form_id'] ?? ''),
 				'********'
 			);
 
@@ -233,11 +233,11 @@ function draw_edit_control($field_name, &$field_array) {
 				form_text_box(
 					$field_name . '_confirm',
 					$field_array['value'],
-					((isset($field_array['default'])) ? $field_array['default'] : ''),
+					($field_array['default'] ?? ''),
 					$field_array['max_length'],
-					((isset($field_array['size'])) ? $field_array['size'] : '40'),
+					($field_array['size'] ?? '40'),
 					'password',
-					((isset($field_array['form_id'])) ? $field_array['form_id'] : ''),
+					($field_array['form_id'] ?? ''),
 					'********'
 				);
 			}
@@ -249,10 +249,10 @@ function draw_edit_control($field_name, &$field_array) {
 				$field_array['value'],
 				$field_array['textarea_rows'],
 				$field_array['textarea_cols'],
-				((isset($field_array['default'])) ? $field_array['default'] : ''),
-				((isset($field_array['class'])) ? $field_array['class'] : ''),
-				((isset($field_array['on_change'])) ? $field_array['on_change'] : ''),
-				((isset($field_array['placeholder'])) ? $field_array['placeholder'] : '')
+				($field_array['default'] ?? ''),
+				($field_array['class'] ?? ''),
+				($field_array['on_change'] ?? ''),
+				($field_array['placeholder'] ?? '')
 			);
 
 			break;
@@ -263,11 +263,11 @@ function draw_edit_control($field_name, &$field_array) {
 				'',
 				'',
 				$field_array['value'],
-				((isset($field_array['none_value'])) ? $field_array['none_value'] : ''),
-				((isset($field_array['default'])) ? $field_array['default'] : ''),
-				((isset($field_array['class'])) ? $field_array['class'] : ''),
-				((isset($field_array['on_change'])) ? $field_array['on_change'] : ''),
-				((isset($field_array['friendly_name'])) ? $field_array['friendly_name'] : '')
+				($field_array['none_value'] ?? ''),
+				($field_array['default'] ?? ''),
+				($field_array['class'] ?? ''),
+				($field_array['on_change'] ?? ''),
+				($field_array['friendly_name'] ?? '')
 			);
 
 			break;
@@ -278,10 +278,10 @@ function draw_edit_control($field_name, &$field_array) {
 				'',
 				'',
 				$field_array['value'],
-				((isset($field_array['none_value'])) ? $field_array['none_value'] : ''),
-				((isset($field_array['default'])) ? $field_array['default'] : ''),
-				((isset($field_array['class'])) ? $field_array['class'] : ''),
-				((isset($field_array['on_change'])) ? $field_array['on_change'] : '')
+				($field_array['none_value'] ?? ''),
+				($field_array['default'] ?? ''),
+				($field_array['class'] ?? ''),
+				($field_array['on_change'] ?? '')
 			);
 
 			break;
@@ -291,10 +291,10 @@ function draw_edit_control($field_name, &$field_array) {
 				'',
 				'',
 				$field_array['value'],
-				((isset($field_array['none_value'])) ? $field_array['none_value'] : ''),
-				((isset($field_array['default'])) ? $field_array['default'] : ''),
-				((isset($field_array['class'])) ? $field_array['class'] : ''),
-				((isset($field_array['on_change'])) ? $field_array['on_change'] : '')
+				($field_array['none_value'] ?? ''),
+				($field_array['default'] ?? ''),
+				($field_array['class'] ?? ''),
+				($field_array['on_change'] ?? '')
 			);
 
 			break;
@@ -332,11 +332,11 @@ function draw_edit_control($field_name, &$field_array) {
 				'',
 				'',
 				$field_array['value'],
-				((isset($field_array['none_value'])) ? $field_array['none_value'] : ''),
-				((isset($field_array['default'])) ? $field_array['default'] : ''),
-				((isset($field_array['class'])) ? $field_array['class'] : ''),
-				((isset($field_array['on_change'])) ? $field_array['on_change'] : ''),
-				((isset($field_array['friendly_name'])) ? $field_array['friendly_name'] : '')
+				($field_array['none_value'] ?? ''),
+				($field_array['default'] ?? ''),
+				($field_array['class'] ?? ''),
+				($field_array['on_change'] ?? ''),
+				($field_array['friendly_name'] ?? '')
 			);
 
 			break;
@@ -347,11 +347,11 @@ function draw_edit_control($field_name, &$field_array) {
 				'name',
 				'id',
 				$field_array['value'],
-				((isset($field_array['none_value'])) ? $field_array['none_value'] : ''),
-				((isset($field_array['default'])) ? $field_array['default'] : ''),
-				((isset($field_array['class'])) ? $field_array['class'] : ''),
-				((isset($field_array['on_change'])) ? $field_array['on_change'] : ''),
-				((isset($field_array['friendly_name'])) ? $field_array['friendly_name'] : '')
+				($field_array['none_value'] ?? ''),
+				($field_array['default'] ?? ''),
+				($field_array['class'] ?? ''),
+				($field_array['on_change'] ?? ''),
+				($field_array['friendly_name'] ?? '')
 			);
 
 			break;
@@ -364,12 +364,12 @@ function draw_edit_control($field_name, &$field_array) {
 				$field_array['action'],
 				$field_array['id'],
 				$field_array['value'],
-				((isset($field_array['none_value'])) ? $field_array['none_value'] : ''),
-				((isset($field_array['default'])) ? $field_array['default'] : ''),
-				((isset($field_array['class'])) ? $field_array['class'] : ''),
-				((isset($field_array['on_change'])) ? $field_array['on_change'] : ''),
-				((isset($field_array['friendly_name'])) ? $field_array['friendly_name'] : ''),
-				((isset($field_array['request_vars'])) ? $field_array['request_vars'] : '')
+				($field_array['none_value'] ?? ''),
+				($field_array['default'] ?? ''),
+				($field_array['class'] ?? ''),
+				($field_array['on_change'] ?? ''),
+				($field_array['friendly_name'] ?? ''),
+				($field_array['request_vars'] ?? '')
 			);
 
 			break;
@@ -379,8 +379,8 @@ function draw_edit_control($field_name, &$field_array) {
 				$field_array['array'],
 				(isset($field_array['sql']) ? db_fetch_assoc($field_array['sql']) : $field_array['value']),
 				'id',
-				((isset($field_array['class'])) ? $field_array['class'] : ''),
-				((isset($field_array['on_change'])) ? $field_array['on_change'] : '')
+				($field_array['class'] ?? ''),
+				($field_array['on_change'] ?? '')
 			);
 
 			break;
@@ -398,9 +398,9 @@ function draw_edit_control($field_name, &$field_array) {
 				$field_name,
 				$field_array['value'],
 				__('None'),
-				((isset($field_array['default'])) ? $field_array['default'] : ''),
-				((isset($field_array['class'])) ? $field_array['class'] : ''),
-				((isset($field_array['on_change'])) ? $field_array['on_change'] : '')
+				($field_array['default'] ?? ''),
+				($field_array['class'] ?? ''),
+				($field_array['on_change'] ?? '')
 			);
 
 			break;
@@ -409,10 +409,10 @@ function draw_edit_control($field_name, &$field_array) {
 				$field_name,
 				$field_array['value'],
 				$field_array['friendly_name'],
-				((isset($field_array['default'])) ? $field_array['default'] : ''),
-				((isset($field_array['form_id'])) ? $field_array['form_id'] : ''),
-				((isset($field_array['class'])) ? $field_array['class'] : ''),
-				((isset($field_array['on_change'])) ? $field_array['on_change'] : ''),
+				($field_array['default'] ?? ''),
+				($field_array['form_id'] ?? ''),
+				($field_array['class'] ?? ''),
+				($field_array['on_change'] ?? ''),
 				$field_array['friendly_name']
 			);
 
@@ -433,10 +433,10 @@ function draw_edit_control($field_name, &$field_array) {
 					$check_name,
 					$check_array['value'],
 					$check_array['friendly_name'],
-					((isset($check_array['default'])) ? $check_array['default'] : ''),
-					((isset($check_array['form_id'])) ? $check_array['form_id'] : ''),
-					((isset($field_array['class'])) ? $field_array['class'] : ''),
-					((isset($check_array['on_change'])) ? $check_array['on_change'] : (((isset($field_array['on_change'])) ? $field_array['on_change'] : ''))),
+					($check_array['default'] ?? ''),
+					($check_array['form_id'] ?? ''),
+					($field_array['class'] ?? ''),
+					($check_array['on_change'] ?? $field_array['on_change'] ?? ''),
 					$field_array['friendly_name'],
 					true
 				);
@@ -458,15 +458,15 @@ function draw_edit_control($field_name, &$field_array) {
 		case 'radio':
 			print "<div style='formRadio'>" . PHP_EOL;
 
-			foreach ($field_array['items'] as $radio_index => $radio_array) {
+			foreach ($field_array['items'] as $radio_array) {
 				form_radio_button(
 					$field_name,
 					$field_array['value'],
 					$radio_array['radio_value'],
 					$radio_array['radio_caption'],
-					((isset($field_array['default'])) ? $field_array['default'] : ''),
-					((isset($field_array['class'])) ? $field_array['class'] : ''),
-					((isset($field_array['on_change'])) ? $field_array['on_change'] : '')
+					($field_array['default'] ?? ''),
+					($field_array['class'] ?? ''),
+					($field_array['on_change'] ?? '')
 				);
 
 				print '<br>';
@@ -495,38 +495,38 @@ function draw_edit_control($field_name, &$field_array) {
 			form_font_box(
 				$field_name,
 				$field_array['value'],
-				((isset($field_array['default'])) ? $field_array['default'] : ''),
+				($field_array['default'] ?? ''),
 				$field_array['max_length'],
-				((isset($field_array['size'])) ? $field_array['size'] : '40'),
+				($field_array['size'] ?? '40'),
 				'text',
-				((isset($field_array['form_id'])) ? $field_array['form_id'] : ''),
-				((isset($field_array['placeholder'])) ? $field_array['placeholder'] : '')
+				($field_array['form_id'] ?? ''),
+				($field_array['placeholder'] ?? '')
 			);
 
 			break;
 		case 'file':
 			form_file(
 				$field_name,
-				((isset($field_array['size'])) ? $field_array['size'] : '40'),
-				((isset($field_array['accept'])) ? $field_array['accept'] : '')
+				($field_array['size'] ?? '40'),
+				($field_array['accept'] ?? '')
 			);
 
 			break;
 		case 'button':
 			form_button(
 				$field_name,
-				((isset($field_array['value'])) ? $field_array['value'] : ''),
-				((isset($field_array['title'])) ? $field_array['title'] : ''),
-				((isset($field_array['on_click'])) ? $field_array['on_click'] : '')
+				($field_array['value'] ?? ''),
+				($field_array['title'] ?? ''),
+				($field_array['on_click'] ?? '')
 			);
 
 			break;
 		case 'submit':
 			form_submit(
 				$field_name,
-				((isset($field_array['value'])) ? $field_array['value'] : ''),
-				((isset($field_array['title'])) ? $field_array['title'] : ''),
-				((isset($field_array['on_click'])) ? $field_array['on_click'] : '')
+				($field_array['value'] ?? ''),
+				($field_array['title'] ?? ''),
+				($field_array['on_click'] ?? '')
 			);
 
 			break;

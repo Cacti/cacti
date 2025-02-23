@@ -390,90 +390,28 @@ abstract class LdapError {
 			$ldapError = ldap_error($ldapConn);
 		}
 
-		switch ($returnError) {
-			case LdapError::None:
-			case LdapError::Success:
-				$error_text = __('Authentication Success');
-
-				break;
-			case LdapError::Failure:
-				$error_text = __('Authentication Failure');
-
-				break;
-			case LdapError::Disabled:
-				$error_text = __('PHP LDAP not enabled');
-
-				break;
-			case LdapError::UndefinedUsername:
-				$error_text = __('No username defined');
-
-				break;
-			case LdapError::ProtocolErrorVersion:
-				$error_text = __('Protocol Error, Unable to set version (%s) on Server (%s)', $ldapError, $ldapServer);
-
-				break;
-			case LdapError::ProtocolErrorReferral:
-				$error_text = __('Protocol Error, Unable to set referrals option (%s) on Server (%s)', $ldapError, $ldapServer);
-
-				break;
-			case LdapError::ProtocolErrorTls:
-				$error_text = __('Protocol Error, unable to start TLS communications (%s) on Server (%s)', $ldapError, $ldapServer);
-
-				break;
-			case LdapError::ProtocolErrorGeneral:
-				$error_text = __('Protocol Error, General failure (%s)', $ldapError, $ldapServer);
-
-				break;
-			case LdapError::ProtocolErrorBind:
-				$error_text = __('Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)', $ldapError, $ldapServer);
-
-				break;
-			case LdapError::ConnectionUnavailable:
-				$error_text = __('Unable to Connect to Server (%s)', $ldapServer);
-
-				break;
-			case LdapError::ConnectionTimeout:
-				$error_text =  __('Connection Timeout to Server (%s)', $ldapServer);
-
-				break;
-			case LdapError::InsufficientAccess:
-				$error_text = __('Insufficient Access to Server (%s)', $ldapServer);
-
-				break;
-			case LdapError::SearchFoundNoGroup:
-				$error_text = __('Group DN could not be found to compare on Server (%s)', $ldapServer);
-
-				break;
-			case LdapError::SearchFoundMultiUser:
-				$error_text = __('More than one matching user found');
-
-				break;
-			case LdapError::SearchFoundNoUserDN:
-				$error_text = __('Unable to find user from DN');
-
-				break;
-			case LdapError::SearchFoundNoUser:
-				$error_text = __('Unable to find users DN');
-
-				break;
-			case LdapError::MissingLdapObject:
-				$error_text = __('Unable to create LDAP connection object to Server (%s)', $ldapServer);
-
-				break;
-			case LdapError::UndefinedDnOrPassword:
-				$error_text = __('Specific DN and Password required');
-
-				break;
-			case LdapError::EmptyPassword:
-				$error_text = __('Invalid Password provided.  Login failed.');
-
-				break;
-
-			default:
-				$error_text = __('Unexpected error %s (Ldap Error: %s) on Server (%s)', $returnError, $ldapError, $ldapServer);
-
-				break;
-		}
+		$error_text = match ($returnError) {
+			LdapError::None, LdapError::Success => __('Authentication Success'),
+			LdapError::Failure                  => __('Authentication Failure'),
+			LdapError::Disabled                 => __('PHP LDAP not enabled'),
+			LdapError::UndefinedUsername        => __('No username defined'),
+			LdapError::ProtocolErrorVersion     => __('Protocol Error, Unable to set version (%s) on Server (%s)', $ldapError, $ldapServer),
+			LdapError::ProtocolErrorReferral    => __('Protocol Error, Unable to set referrals option (%s) on Server (%s)', $ldapError, $ldapServer),
+			LdapError::ProtocolErrorTls         => __('Protocol Error, unable to start TLS communications (%s) on Server (%s)', $ldapError, $ldapServer),
+			LdapError::ProtocolErrorGeneral     => __('Protocol Error, General failure (%s)', $ldapError, $ldapServer),
+			LdapError::ProtocolErrorBind        => __('Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)', $ldapError, $ldapServer),
+			LdapError::ConnectionUnavailable    => __('Unable to Connect to Server (%s)', $ldapServer),
+			LdapError::ConnectionTimeout        => __('Connection Timeout to Server (%s)', $ldapServer),
+			LdapError::InsufficientAccess       => __('Insufficient Access to Server (%s)', $ldapServer),
+			LdapError::SearchFoundNoGroup       => __('Group DN could not be found to compare on Server (%s)', $ldapServer),
+			LdapError::SearchFoundMultiUser     => __('More than one matching user found'),
+			LdapError::SearchFoundNoUserDN      => __('Unable to find user from DN'),
+			LdapError::SearchFoundNoUser        => __('Unable to find users DN'),
+			LdapError::MissingLdapObject        => __('Unable to create LDAP connection object to Server (%s)', $ldapServer),
+			LdapError::UndefinedDnOrPassword    => __('Specific DN and Password required'),
+			LdapError::EmptyPassword            => __('Invalid Password provided.  Login failed.'),
+			default                             => __('Unexpected error %s (Ldap Error: %s) on Server (%s)', $returnError, $ldapError, $ldapServer),
+		};
 
 		return array(
 			'error_num'  => $error_num,

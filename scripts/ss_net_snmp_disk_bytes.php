@@ -56,10 +56,10 @@ function ss_net_snmp_disk_bytes($host_id_or_hostname = '') {
 
 	if (!db_table_exists('host_value_cache')) {
 		if ($environ != 'realtime') {
-			$tmpdir  = $tmpdir . '/cacti/net-snmp-devio';
+			$tmpdir .= '/cacti/net-snmp-devio';
 			$tmpfile = $host_id . '_bytes';
 		} else {
-			$tmpdir  = $tmpdir . '/cacti-rt/net-snmp-devio';
+			$tmpdir .= '/cacti-rt/net-snmp-devio';
 			$tmpfile = $host_id . '_' . $poller_id . '_bytes_rt';
 		}
 
@@ -154,7 +154,7 @@ function ss_net_snmp_disk_bytes($host_id_or_hostname = '') {
 		$host['snmp_engine_id']);
 
 	foreach ($names as $measure) {
-		if (substr($measure['value'],0,2) == 'sd' || substr($measure['value'],0,4) == 'nvme' || substr($measure['value'],0,2) == 'vm') {
+		if (str_starts_with($measure['value'], 'sd') || str_starts_with($measure['value'], 'nvme') || str_starts_with($measure['value'], 'vm')) {
 			if (is_numeric(substr(strrev($measure['value']),0,1))) {
 				continue;
 			}

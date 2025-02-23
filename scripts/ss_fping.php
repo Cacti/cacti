@@ -136,7 +136,7 @@ function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port =
 		$predev = 0;
 
 		foreach ($time as $sample) {
-			$predev += pow(($sample - $avg),2);
+			$predev += ($sample - $avg) ** 2;
 		}
 
 		$dev = sqrt($predev / cacti_count($time));

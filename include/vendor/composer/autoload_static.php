@@ -10,6 +10,8 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        '9b38cf48e83f5d8f60375221cd213eee' => __DIR__ . '/..' . '/phpstan/phpstan/bootstrap.php',
+        '38143a9afc50997d55e4815db8489d1c' => __DIR__ . '/..' . '/rector/rector/bootstrap.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -53,8 +55,8 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
     public static $prefixDirsPsr4 = array (
         'Stevenmaguire\\OAuth2\\Client\\' => 
         array (
-            0 => __DIR__ . '/..' . '/stevenmaguire/oauth2-keycloak/src',
-            1 => __DIR__ . '/..' . '/stevenmaguire/oauth2-microsoft/src',
+            0 => __DIR__ . '/..' . '/stevenmaguire/oauth2-microsoft/src',
+            1 => __DIR__ . '/..' . '/stevenmaguire/oauth2-keycloak/src',
         ),
         'Psr\\Log\\' => 
         array (
@@ -83,8 +85,8 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
         ),
         'League\\OAuth2\\Client\\' => 
         array (
-            0 => __DIR__ . '/..' . '/league/oauth2-client/src',
-            1 => __DIR__ . '/..' . '/league/oauth2-google/src',
+            0 => __DIR__ . '/..' . '/league/oauth2-google/src',
+            1 => __DIR__ . '/..' . '/league/oauth2-client/src',
         ),
         'Hayageek\\OAuth2\\Client\\' => 
         array (

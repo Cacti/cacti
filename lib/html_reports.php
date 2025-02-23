@@ -299,7 +299,7 @@ function reports_form_save() {
 		$save['from_name']   = $post['from_name'];
 		$save['from_email']  = $post['from_email'];
 		$save['bcc']         = $post['bcc'];
-		$save['notify_list'] = (isset($post['notify_list']) ? $post['notify_list']:'');
+		$save['notify_list'] = ($post['notify_list'] ?? '');
 
 		$atype = $post['attachment_type'];
 
@@ -409,7 +409,7 @@ function reports_form_actions() {
 
 		if ($selected_items != false) {
 			foreach($selected_items as $report) {
-				list($type, $report_id) = explode('_', $report);
+				[$type, $report_id] = explode('_', $report);
 
 				if (get_nfilter_request_var('drp_action') == REPORTS_DELETE) { // delete
 					if ($type == 'reports') {
@@ -477,7 +477,7 @@ function reports_form_actions() {
 		/* loop through each of the graphs selected on the previous page and get more info about them */
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([a-z_0-9]+)$/', $var, $matches)) {
-				list($type, $id) = explode('_', $matches[1]);
+				[$type, $id] = explode('_', $matches[1]);
 				/* ================= input validation ================= */
 				input_validate_input_number($id);
 				/* ==================================================== */
@@ -1208,14 +1208,14 @@ function reports_item_edit() {
 	draw_edit_form(
 		array(
 			'config' => array('no_form_tag' => true),
-			'fields' => inject_form_variables($fields_reports_item_edit, (isset($report_item) ? $report_item : array()))
+			'fields' => inject_form_variables($fields_reports_item_edit, ($report_item ?? array()))
 		)
 	);
 
 	html_end_box(true, true);
 
-	form_hidden_box('id', (isset($report_item['id']) ? $report_item['id'] : '0'), '');
-	form_hidden_box('report_id', (isset($report_item['report_id']) ? $report_item['report_id'] : '0'), '');
+	form_hidden_box('id', ($report_item['id'] ?? '0'), '');
+	form_hidden_box('report_id', ($report_item['report_id'] ?? '0'), '');
 	form_hidden_box('save_component_report_item', '1', '');
 
 	form_save_button(get_reports_page() . '?action=edit&tab=items&id=' . get_request_var('id'), 'return');
@@ -1541,7 +1541,7 @@ function reports_edit() {
 
 			html_end_box(true, true);
 
-			form_hidden_box('id', (isset($report['id']) ? $report['id'] : '0'), '');
+			form_hidden_box('id', ($report['id'] ?? '0'), '');
 			form_hidden_box('save_component_report', '1', '');
 
 			?>
@@ -2264,7 +2264,7 @@ function reports() {
 			form_selectable_cell($type, $id);
 
 			if (reports_html_account_exists($report['user_id'])) {
-				form_selectable_ecell($report['full_name'] ? $report['full_name'] : $report['username'], $id);
+				form_selectable_ecell($report['full_name'] ?: $report['username'], $id);
 			} else {
 				form_selectable_cell(__('Report Disabled - No Owner'), $id);
 			}

@@ -472,7 +472,7 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 		data_query_remove_disabled_items($orphaned_ids);
 	}
 
-	return (isset($result) ? $result : true);
+	return ($result ?? true);
 }
 
 function data_query_remove_disabled_items($orphaned_ids) {
@@ -729,7 +729,7 @@ function query_script_host($host_id, $snmp_query_id) {
 
 	foreach ($script_queries['fields'] as $field_name => $field_array) {
 		if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
-			$rewrite_value = isset($field_array['rewrite_value']) ? $field_array['rewrite_value'] : null;
+			$rewrite_value = $field_array['rewrite_value'] ?? null;
 			$script_path   = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] . ' ': '') . $script_queries['arg_query'] . ' ' . $field_array['query_name'], $script_queries['script_path'], $host_id);
 
 			debug_log_insert_section_start('data_query', __esc('Click to show Data Query output for field \'%s\'', $field_name), true);
@@ -1011,10 +1011,10 @@ function query_snmp_host($host_id, $snmp_query_id) {
 			debug_log_insert('data_query', __esc('Fixing wrong \'method\' field for \'%s\' since \'rewrite_index\' or \'oid_suffix\' is defined', $field_name));
 		}
 
-		$rewrite_value = isset($field_array['rewrite_value']) ? $field_array['rewrite_value'] : null;
+		$rewrite_value = $field_array['rewrite_value'] ?? null;
 
 		if ((!isset($field_array['oid'])) && ($field_array['source'] == 'index')) {
-			foreach ($snmp_indexes as $oid => $value) {
+			foreach ($snmp_indexes as $value) {
 				query_debug_timer_offset('data_query', __esc('Inserting index data for field \'%s\' [value=\'%s\']' , $field_name, $value));
 
 				$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $value, $value, '');
@@ -1080,7 +1080,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 				$values = array();
 
-				foreach ($snmp_indexes as $index_oid => $index) {
+				foreach ($snmp_indexes as $index) {
 					$oid = $field_array['oid'];
 
 					if (isset($field_array['rewrite_index'])) {
@@ -1098,9 +1098,9 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					$oid .= isset($field_array['oid_suffix']) ? ('.' . $field_array['oid_suffix']) : '';
 					$value = null;
 
-					if (substr($field_array['source'], 0, 11) == 'OID/REGEXP:') {
+					if (str_starts_with($field_array['source'], 'OID/REGEXP:')) {
 						$value = preg_replace('/' . str_replace('OID/REGEXP:', '', $field_array['source']) . '/', '\\1', $oid);
-					} elseif (substr($field_array['source'], 0, 15) == 'OID2HEX/REGEXP:') {
+					} elseif (str_starts_with($field_array['source'], 'OID2HEX/REGEXP:')) {
 						$value = preg_replace('/' . str_replace('OID2HEX/REGEXP:', '', $field_array['source']) . '/', '\\1', $oid);
 
 						$parts    = explode('.', $value);
@@ -1130,7 +1130,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					$values[] = array('value' => $value, 'index' => $index, 'oid' => $oid);
 				}
 
-				if (cacti_sizeof($values) > 0 && (substr($field_array['source'], 0, 13) == 'VALUE/REGEXP:' || $field_array['source'] == 'value')) {
+				if (cacti_sizeof($values) > 0 && (str_starts_with($field_array['source'], 'VALUE/REGEXP:') || $field_array['source'] == 'value')) {
 					$oids = array();
 
 					foreach ($values as $key => $value) {
@@ -1186,7 +1186,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						}
 
 						foreach ($values as $key => $value) {
-							if (substr($field_array['source'], 0, 13) == 'VALUE/REGEXP:') {
+							if (str_starts_with($field_array['source'], 'VALUE/REGEXP:')) {
 								$values[$key]['value'] = preg_replace('/' . str_replace('VALUE/REGEXP:', '', $field_array['source']) . '/', '\\1', $values[$key]['value']);
 							}
 						}
@@ -1199,7 +1199,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 				}
 
 				$values = null;
-			} elseif (substr($field_array['source'], 0, 13) == 'VALUE/REGEXP:') {
+			} elseif (str_starts_with($field_array['source'], 'VALUE/REGEXP:')) {
 				foreach ($snmp_indexes as $oid => $index) {
 					$oid = $field_array['oid'] .  '.' . $index;
 					$oid .= isset($field_array['oid_suffix']) ? ('.' . $field_array['oid_suffix']) : '';
@@ -1282,7 +1282,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 			if (preg_match('/^value/i', $field_array['source'])) {
 				if (cacti_sizeof($snmp_data)) {
 					foreach ($snmp_data as $oid => $value) {
-						$index_regex = (isset($field_array['oid_index_parse']) ? $field_array['oid_index_parse'] : $index_parse_regexp) . (isset($field_array['oid_suffix']) ? ('.' . $field_array['oid_suffix']) : '');
+						$index_regex = ($field_array['oid_index_parse'] ?? $index_parse_regexp) . (isset($field_array['oid_suffix']) ? ('.' . $field_array['oid_suffix']) : '');
 
 						if (!preg_match($index_regex, $oid)) {
 							continue;
@@ -1302,23 +1302,12 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						$oid = $field_array['oid'] . ".$snmp_index" . (isset($field_array['oid_suffix']) ? ('.' . $field_array['oid_suffix']) : '');
 
 						if ($field_name == 'ifOperStatus' || $field_name == 'ifAdminStatus') {
-							switch(true) {
-								case preg_match('/^(down|2)/i',$value):
-									$value = 'Down';
-
-									break;
-								case preg_match('/^(up|1)/i',$value):
-									$value = 'Up';
-
-									break;
-								case preg_match('/^(notpresent|6)/i',$value):
-									$value = 'notPresent';
-
-									break;
-
-								default:
-									$value = 'Testing';
-							}
+							$value = match (true) {
+								preg_match('/^(down|2)/i', $value)       => 'Down',
+								preg_match('/^(up|1)/i', $value)         => 'Up',
+								preg_match('/^(notpresent|6)/i', $value) => 'notPresent',
+								default                                  => 'Testing',
+							};
 							$mode = 'value';
 						} elseif (preg_match('/VALUE\/REGEXP:(.*)/', $field_array['source'], $matches)) {
 							$modified_value = preg_replace('/' . $matches[1] . '/', '\\1', $value);
@@ -1338,12 +1327,12 @@ function query_snmp_host($host_id, $snmp_query_id) {
 							$mode = 'value';
 						}
 
-						$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, isset($modified_value)?$modified_value:$value , $snmp_index, $oid);
+						$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $modified_value ?? $value, $snmp_index, $oid);
 						debug_log_insert('data_query', __esc('Found item [%s=\'%s\'] index: %s [from %s]',$field_name,isset($modified_value)?"$modified_value ($value)":$value,$snmp_index,$mode));
 						unset($modified_value);
 					}
 				}
-			} elseif (substr($field_array['source'], 0, 11) == 'OID/REGEXP:') {
+			} elseif (str_starts_with($field_array['source'], 'OID/REGEXP:')) {
 				if (cacti_sizeof($snmp_data)) {
 					foreach ($snmp_data as $oid => $value) {
 						$parse_value = preg_replace('/' . str_replace('OID/REGEXP:', '', $field_array['source']) . '/', '\\1', $oid);
@@ -1394,7 +1383,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $parse_value, $snmp_index, $oid);
 					}
 				}
-			} elseif (substr($field_array['source'], 0, 15) == 'OID2HEX/REGEXP:') {
+			} elseif (str_starts_with($field_array['source'], 'OID2HEX/REGEXP:')) {
 				if (cacti_sizeof($snmp_data)) {
 					foreach ($snmp_data as $oid => $value) {
 						$parse_value = preg_replace('/' . str_replace('OID2HEX/REGEXP:', '', $field_array['source']) . '/', '\\1', $oid);
@@ -1445,7 +1434,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $parse_value, $snmp_index, $oid);
 					}
 				}
-			} elseif (substr($field_array['source'], 0, 16) == 'OIDVALUE/REGEXP:') {
+			} elseif (str_starts_with($field_array['source'], 'OIDVALUE/REGEXP:')) {
 				$regex_array = explode(':', str_replace('OIDVALUE/REGEXP:', '', $field_array['source']));
 
 				if (cacti_sizeof($snmp_data)) {
@@ -1656,7 +1645,7 @@ function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite
 		$numeric_output = true;
 	}
 
-	foreach ($snmp_indexes as $oid => $num_index) {
+	foreach ($snmp_indexes as $num_index) {
 		$index = $rewrite_index;
 
 		foreach ($chain_indexes as $key => $values) {

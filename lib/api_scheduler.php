@@ -484,7 +484,7 @@ function api_scheduler_is_time_to_start($schedule, $table = 'automation_networks
 			break;
 		case SCHEDULE_MONTHLY:
 		case SCHEDULE_MONTHLY_ON_DAY:
-			$next = api_scheduler_calculate_next_start($schedule, $now);
+			$next = api_scheduler_calculate_next_start($schedule);
 
 			db_execute_prepared("UPDATE $table
 				SET next_start = ?

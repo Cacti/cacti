@@ -76,7 +76,7 @@ function api_delete_graphs(&$local_graph_ids, $delete_type, $update_totals = tru
 					api_data_source_remove_multi($data_sources, false);
 				}
 
-				api_graph_remove_multi($local_graph_ids, false);
+				api_graph_remove_multi($local_graph_ids);
 
 				/* Remove orphaned data sources */
 				$data_sources = array_rekey(
@@ -97,12 +97,12 @@ function api_delete_graphs(&$local_graph_ids, $delete_type, $update_totals = tru
 					api_data_source_remove_multi($data_sources, false);
 				}
 			} else {
-				api_graph_remove_multi($local_graph_ids, false);
+				api_graph_remove_multi($local_graph_ids);
 			}
 
 			break;
 		case '1':
-			api_graph_remove_multi($local_graph_ids, false);
+			api_graph_remove_multi($local_graph_ids);
 
 			break;
 	}
@@ -434,8 +434,8 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 
 	/* create new entry: graph_templates_graph */
 	$save['id']                            = 0;
-	$save['local_graph_id']                = (isset($local_graph_id) ? $local_graph_id : 0);
-	$save['local_graph_template_graph_id'] = (isset($graph_template_graph['local_graph_template_graph_id']) ? $graph_template_graph['local_graph_template_graph_id'] : 0);
+	$save['local_graph_id']                = ($local_graph_id ?? 0);
+	$save['local_graph_template_graph_id'] = ($graph_template_graph['local_graph_template_graph_id'] ?? 0);
 	$save['graph_template_id']             = (!empty($_local_graph_id) ? $graph_template_graph['graph_template_id'] : $graph_template_id);
 	$save['title_cache']                   = $graph_template_graph['title_cache'];
 
@@ -457,9 +457,9 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 			$save['id']                           = 0;
 			/* save a hash only for graph_template copy operations */
 			$save['hash']                         = (!empty($_graph_template_id) ? get_hash_graph_template(0, 'graph_template_item') : 0);
-			$save['local_graph_id']               = (isset($local_graph_id) ? $local_graph_id : 0);
+			$save['local_graph_id']               = ($local_graph_id ?? 0);
 			$save['graph_template_id']            = (!empty($_local_graph_id) ? $graph_template_item['graph_template_id'] : $graph_template_id);
-			$save['local_graph_template_item_id'] = (isset($graph_template_item['local_graph_template_item_id']) ? $graph_template_item['local_graph_template_item_id'] : 0);
+			$save['local_graph_template_item_id'] = ($graph_template_item['local_graph_template_item_id'] ?? 0);
 
 			foreach ($struct_graph_item as $field => $array) {
 				$save[$field] = $graph_template_item[$field];

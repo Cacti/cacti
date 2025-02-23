@@ -400,7 +400,7 @@ function dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $in
 
 						if ($index > 0) {
 							// Catch the last line
-							if (substr($line, 0, 2) == 'OK') {
+							if (str_starts_with($line, 'OK')) {
 								$line  = trim($line, ' OK');
 								$parts = explode(' ', $line);
 								//print $line . PHP_EOL;
@@ -495,22 +495,22 @@ function dsstats_get_stats_command($local_data_id, $rrdfile, $use_proxy, $mode, 
 		 */
 		if (cacti_sizeof($info_array)) {
 			foreach ($info_array as $line) {
-				if (strpos($line, 'ds[') !== false) {
+				if (str_contains($line, 'ds[')) {
 					$parts  = explode(']', $line);
 					$parts2 = explode('[', $parts[0]);
 
 					$dsnames[trim($parts2[1])] = 1;
-				} elseif (strpos($line, '.cf') !== false) {
+				} elseif (str_contains($line, '.cf')) {
 					$parts = explode('=', $line);
 
-					if (strpos($parts[1], 'AVERAGE') !== false) {
+					if (str_contains($parts[1], 'AVERAGE')) {
 						$average = true;
 					}
 
-					if (strpos($parts[1], 'MAX') !== false) {
+					if (str_contains($parts[1], 'MAX')) {
 						$max = true;
 					}
-				} elseif (strpos($line, 'step') !== false) {
+				} elseif (str_contains($line, 'step')) {
 					$parts = explode('=', $line);
 
 					$poller_interval = trim($parts[1]);
@@ -772,11 +772,11 @@ function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars = arr
 			"' LINE NO:'" . $linenum . "'";
 
 		/* let's ignore some lesser issues */
-		if (strpos($errmsg, 'date_default_timezone') !== false) {
+		if (str_contains($errmsg, 'date_default_timezone')) {
 			return;
 		}
 
-		if (strpos($errmsg, 'Only variables') !== false) {
+		if (str_contains($errmsg, 'Only variables')) {
 			return;
 		}
 
@@ -959,7 +959,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 									}
 
 									if ($currentval != 'NULL') {
-										$currentval = $currentval / $polling_interval;
+										$currentval /= $polling_interval;
 
 										if ($ds_type == 6) {
 											$currentval = round($currentval, 0);
@@ -1270,11 +1270,11 @@ function dsstats_rrdtool_execute($command, $rrd_process) {
 			while (!feof($pipes[1])) {
 				$stdout .= fgets($pipes[1], 4096);
 
-				if (strpos($stdout, 'OK') !== false) {
+				if (str_contains($stdout, 'OK')) {
 					break;
 				}
 
-				if (strpos($stdout, 'ERROR') !== false) {
+				if (str_contains($stdout, 'ERROR')) {
 					break;
 				}
 			}

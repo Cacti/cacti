@@ -321,7 +321,7 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 	 */
 	if (stripos($sql, 'UNION') === false && stripos($sql, 'UNION ALL') === false) {
 		// Find the table name if not a union query
-		if (sizeof($from_split) > 1) {
+		if (count($from_split) > 1) {
 			$bits = explode(' ', trim($from_split[1]));
 			$table_name = trim($bits[0], '`');
 
@@ -348,7 +348,7 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 		 * to skip the checks below GROUP BY, LIMIT, ORDER, etc. below as
 		 * they are each contained within the UNION's themselves.
 		 */
-		if (substr(trim($from_split[1]), 0, 1) == '(') {
+		if (str_starts_with(trim($from_split[1]), '(')) {
 			$simple_union = false;
 		} else {
 			$simple_union = true;

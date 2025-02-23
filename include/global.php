@@ -165,9 +165,9 @@ foreach ($db_var_prefixes as $db_var_prefix) {
 	foreach ($db_var_defaults as $db_var_name => $db_var_default) {
 		$db_var_full = $db_var_prefix . $db_var_name;
 
-		if (!isset($$db_var_full)) {
+		if (!isset(${$db_var_full})) {
 			if ($db_var_default !== null) {
-				$$db_var_full = $db_var_default;
+				${$db_var_full} = $db_var_default;
 			} else {
 				$db_missing_vars .= (($db_missing_vars == '') ? 'missing ' : ', ') . $db_var_full;
 			}
@@ -225,7 +225,7 @@ if (isset($input_whitelist)) {
 
 /* define any additional paths as constants */
 foreach ($config as $key => $value) {
-	if (substr($key, -5) == '_path') {
+	if (str_ends_with($key, '_path')) {
 		$path_name     = substr($key, 0, -5);
 		$constant_name = 'CACTI_PATH_' . strtoupper($path_name);
 
@@ -596,7 +596,7 @@ if ((bool)ini_get('register_globals')) {
 
 	foreach ($input as $var => $val) {
 		if (!in_array($var, $not_unset, true)) {
-			unset($$var);
+			unset(${$var});
 		}
 	}
 

@@ -134,14 +134,10 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 
 	foreach ($hash_types_to_db_info as $hash_type => $db_info) {
 		$db_id_field = (
-			isset($db_info['id_field'])
-			? $db_info['id_field']
-			: 'id'
+			$db_info['id_field'] ?? 'id'
 		);
 		$db_hash_field = (
-			isset($db_info['hash_field'])
-			? $db_info['hash_field']
-			: 'hash'
+			$db_info['hash_field'] ?? 'hash'
 		);
 		$db_table = $db_info['table'];
 
@@ -508,7 +504,7 @@ function import_read_package_data($xmlfile, &$public_key, $preview = false) {
 				return false;
 			}
 
-			if (strpos($x, '<signature>') !== false) {
+			if (str_contains($x, '<signature>')) {
 				$binary_signature =  base64_decode(trim(str_replace(array('<signature>', '</signature>'), array('', ''), $x)), true);
 				$x                = "   <signature></signature>\n";
 
@@ -640,14 +636,14 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 		$fdata = base64_decode($f['data'], true);
 		$name  = $f['name'];
 
-		if (strpos($name, 'scripts/') !== false || strpos($name, 'resource/') !== false) {
+		if (str_contains($name, 'scripts/') || str_contains($name, 'resource/')) {
 			$filename = CACTI_PATH_BASE . "/$name";
 
 			if (!$preview) {
 				if (!cacti_sizeof($import_files) || in_array($name, $import_files, true)) {
 					cacti_log('Writing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_MEDIUM);
 
-					if ((is_writeable(dirname($filename)) && !file_exists($filename)) || is_writable($filename)) {
+					if ((is_writable(dirname($filename)) && !file_exists($filename)) || is_writable($filename)) {
 						$file = fopen($filename, 'wb');
 
 						if (is_resource($file)) {
@@ -679,16 +675,16 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $rep
 					$existing = md5_file($filename);
 				}
 
-				if (is_writeable(dirname($filename))) {
+				if (is_writable(dirname($filename))) {
 					if (file_exists($filename) && is_writable($filename)) {
 						if ($new == $existing) {
 							$filestatus[$filename] = 'writable, identical';
 						} else {
 							$filestatus[$filename] = 'writable, differences';
 						}
-					} elseif (file_exists($filename) && is_writeable($filename)) {
+					} elseif (file_exists($filename) && is_writable($filename)) {
 						$filestatus[$filename] = 'writable, new';
-					} elseif (file_exists($filename) && !is_writeable($filename)) {
+					} elseif (file_exists($filename) && !is_writable($filename)) {
 						if ($new == $existing) {
 							$filestatus[$filename] = 'not writable, identical';
 						} else {
@@ -1388,7 +1384,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 	/* import into: data_input_data */
 	if (!$preview_only) {
 		if (is_array($xml_array['data'])) {
-			foreach ($xml_array['data'] as $item_hash => $item_array) {
+			foreach ($xml_array['data'] as $item_array) {
 				$data_hash = parse_xml_hash($item_array['data_input_field_id']);
 
 				// Skip bad SNMP port hashes
@@ -1570,7 +1566,7 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_s
 
 				/* import into: snmp_query_graph_rrd */
 				if (is_array($item_array['rrd'])) {
-					foreach ($item_array['rrd'] as $sub_item_hash => $sub_item_array) {
+					foreach ($item_array['rrd'] as $sub_item_array) {
 						unset($save);
 						$save['snmp_query_graph_id']  = $data_query_graph_id;
 						$save['data_template_id']     = resolve_hash_to_id($sub_item_array['data_template_id'], $hash_cache, 'snmp_query_graph_rrd');
@@ -2480,10 +2476,10 @@ function compare_data($save, $previous_data, $table) {
 			if ($previous_data[$column] != $value) {
 				$cols = db_get_table_column_types($table);
 
-				if (strstr($cols[$column]['type'], 'int') !== false ||
-					strstr($cols[$column]['type'], 'float') !== false ||
-					strstr($cols[$column]['type'], 'decimal') !== false ||
-					strstr($cols[$column]['type'], 'double') !== false) {
+				if (str_contains($cols[$column]['type'], 'int') ||
+					str_contains($cols[$column]['type'], 'float') ||
+					str_contains($cols[$column]['type'], 'decimal') ||
+					str_contains($cols[$column]['type'], 'double')) {
 					if (empty($previous_data[$column]) && empty($value)) {
 						continue;
 					}
@@ -2893,7 +2889,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 
 			print PHP_EOL . "<p><strong>" . $type_name . "</strong></p>" . PHP_EOL;
 
-			foreach ($type_array as $index => $vals) {
+			foreach ($type_array as $vals) {
 				if ($vals['result'] == 'success') {
 					$result_text = "<span class='success'>" . __('[success]') . '</span>';
 				} elseif ($vals['result'] == 'fail') {

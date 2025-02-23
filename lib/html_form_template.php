@@ -58,8 +58,8 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 		$form_array += array($form_field_name => $struct_graph[$field_name]);
 
 		/* modifications to the default form array */
-		$form_array[$form_field_name]['value']   = (isset($values_array[$field_name]) ? $values_array[$field_name] : '');
-		$form_array[$form_field_name]['form_id'] = (isset($values_array['id']) ? $values_array['id'] : '0');
+		$form_array[$form_field_name]['value']   = ($values_array[$field_name] ?? '');
+		$form_array[$form_field_name]['form_id'] = ($values_array['id'] ?? '0');
 		unset($form_array[$form_field_name]['default']);
 
 		if ($field_array['method'] == 'spacer') {
@@ -216,7 +216,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 			}
 
 			if ($locked == 'true') {
-				if (strpos($form_field_name, 'task_item_id') !== false) {
+				if (str_contains($form_field_name, 'task_item_id')) {
 					$form_array[$form_field_name]['method'] = 'value';
 
 					if (isset($current_def_value[$item['column_name']])) {
@@ -233,7 +233,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 					}
 				}
 			} else {
-				if (strpos($form_field_name, 'task_item_id') !== false) {
+				if (str_contains($form_field_name, 'task_item_id')) {
 					if (isset($current_def_value[$item['column_name']])) {
 						$value = db_fetch_cell_prepared("SELECT
 							CONCAT_WS('', CASE WHEN host.description IS NULL THEN 'No Device - ' ELSE '' END, data_template_data.name_cache, ' (', data_template_rrd.data_source_name, ')') AS name
@@ -323,12 +323,12 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 		$form_array += array($form_field_name => $struct_data_source[$field_name]);
 
 		/* modifications to the default form array */
-		$form_array[$form_field_name]['value']   = (isset($values_array[$field_name]) ? $values_array[$field_name] : '');
-		$form_array[$form_field_name]['form_id'] = (isset($values_array['id']) ? $values_array['id'] : '0');
+		$form_array[$form_field_name]['value']   = ($values_array[$field_name] ?? '');
+		$form_array[$form_field_name]['form_id'] = ($values_array['id'] ?? '0');
 		unset($form_array[$form_field_name]['default']);
 
-		$current_flag          = (isset($field_array['flags']) ? $field_array['flags'] : '');
-		$current_template_flag = (isset($data_template['t_' . $field_name]) ? $data_template['t_' . $field_name] : 'on');
+		$current_flag          = ($field_array['flags'] ?? '');
+		$current_template_flag = ($data_template['t_' . $field_name] ?? 'on');
 
 		if (($current_template_flag != 'on') || ($current_flag == 'ALWAYSTEMPLATE')) {
 			if ($include_hidden_fields == true) {
@@ -426,8 +426,8 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 				$form_array += array($form_field_name => $struct_data_source_item[$field_name]);
 
 				/* modifications to the default form array */
-				$form_array[$form_field_name]['value']   = (isset($rrd[$field_name]) ? $rrd[$field_name] : '');
-				$form_array[$form_field_name]['form_id'] = (isset($rrd['id']) ? $rrd['id'] : '0');
+				$form_array[$form_field_name]['value']   = ($rrd[$field_name] ?? '');
+				$form_array[$form_field_name]['form_id'] = ($rrd['id'] ?? '0');
 				unset($form_array[$form_field_name]['default']);
 
 				/* append the data source item name so the user will recognize it */

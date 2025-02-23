@@ -78,7 +78,7 @@ function api_plugin_hook($name) {
 			$plugin_file = $hdata['file'];
 
 			// Security check
-			if (strpos($plugin_file, '..') !== false) {
+			if (str_contains($plugin_file, '..')) {
 				cacti_log("ERROR: Attempted inclusion of not plugin file $plugin_file from $plugin_name with the hook name $name", false, 'SECURITY');
 				continue;
 			}
@@ -294,7 +294,7 @@ function api_plugin_run_plugin_hook_function($hook, $plugin, $function, $ret) {
 function api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilities) {
 	if (isset($required_capabilities[$hook])) {
 		foreach ($required_capabilities[$hook] as $capability) {
-			if (strpos($capability, 'remote_collect') !== false) {
+			if (str_contains($capability, 'remote_collect')) {
 				return true;
 			}
 		}
@@ -395,7 +395,7 @@ function api_plugin_remote_capabilities($plugin) {
 function api_plugin_has_capability($plugin, $capability) {
 	$capabilities = api_plugin_remote_capabilities($plugin);
 
-	if (strpos($capabilities, "$capability:1") !== false) {
+	if (str_contains($capabilities, "$capability:1")) {
 		return true;
 	} else {
 		return false;
@@ -421,32 +421,32 @@ function api_plugin_status_run($hook, $required_capabilities, $plugin_capabiliti
 
 	foreach ($required_capabilities[$hook] as $capability) {
 		if ($capability == 'remote_collect') {
-			if (strpos($plugin_capabilities, "$capability:1") !== false) {
+			if (str_contains($plugin_capabilities, "$capability:1")) {
 				return true;
 			}
 		} elseif ($capability == 'remote_poller') {
-			if (strpos($plugin_capabilities, "$capability:1") !== false) {
+			if (str_contains($plugin_capabilities, "$capability:1")) {
 				return true;
 			}
-		} elseif ($status == 'online' && strpos($capability, 'online') === false) {
+		} elseif ($status == 'online' && !str_contains($capability, 'online')) {
 			continue;
-		} elseif (($status == 'offline' || $status == 'recovery') && strpos($capability, 'offline') === false) {
+		} elseif (($status == 'offline' || $status == 'recovery') && !str_contains($capability, 'offline')) {
 			continue;
 		}
 
-		if (strpos($plugin_capabilities, "$capability:1") !== false) {
+		if (str_contains($plugin_capabilities, "$capability:1")) {
 			return true;
 		}
 
 		switch ($capability) {
 			case 'offline_view': // if the plugin has mgmt, it's assumed to have view
-				if (strpos($plugin_capabilities, 'offline_mgmt:1') !== false) {
+				if (str_contains($plugin_capabilities, 'offline_mgmt:1')) {
 					return true;
 				}
 
 				break;
 			case 'online_view': // if the plugin has mgmt, it's assumed to have view
-				if (strpos($plugin_capabilities, 'offline_mgmt:1') !== false) {
+				if (str_contains($plugin_capabilities, 'offline_mgmt:1')) {
 					return true;
 				}
 
@@ -468,7 +468,7 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 	$result = db_fetch_assoc('SHOW TABLES');
 	$tables = array();
 
-	foreach ($result as $index => $arr) {
+	foreach ($result as $arr) {
 		foreach ($arr as $t) {
 			$tables[] = $t;
 		}
@@ -620,7 +620,7 @@ function api_plugin_db_add_column($plugin, $table, $column) {
 	$result  = db_fetch_assoc('SHOW COLUMNS FROM `' . $table . '`');
 	$columns = array();
 
-	foreach ($result as $index => $arr) {
+	foreach ($result as $arr) {
 		foreach ($arr as $t) {
 			$columns[] = $t;
 		}
@@ -744,7 +744,7 @@ function api_plugin_install($plugin) {
 
 		$author  = $info['author'];
 		$version = $info['version'];
-	} elseif (strpos($plugin, 'plugin_') !== false) {
+	} elseif (str_contains($plugin, 'plugin_')) {
 		raise_message('directory_error', __('The Plugin directory \'%s\' needs to be renamed to remove \'plugin_\' from the name before it can be installed.', $plugin), MESSAGE_LEVEL_ERROR);
 		return false;
 	} else {
@@ -1244,8 +1244,8 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 				db_execute_prepared('DELETE FROM plugin_realms
 					WHERE id = ?',
 					array($realm_info['id']));
-			} elseif (strpos($realm_info['file'], $file)) {
-				if (substr($realm_info['file'], 0, strlen($file)) == $file) {
+			} elseif (strpos($realm_info['file'], (string) $file)) {
+				if (str_starts_with($realm_info['file'], $file)) {
 					$file = substr($file, strlen($file) - 1);
 				} else {
 					$file = str_replace(',' . $file, '', $realm_info['file']);
@@ -1275,7 +1275,7 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 				AND file = ?',
 				array($plugin, $file), false);
 
-			$realm_id = $realm_id + 100;
+			$realm_id += 100;
 
 			$user_ids[] = read_config_option('admin_user');
 
@@ -1469,7 +1469,7 @@ function api_plugin_archive_restore($plugin, $id, $type = 'archive') {
 	}
 
 	if ($archive != '') {
-		$tmpfile  = sys_get_temp_dir() . '/' . $plugin . '_' . rand() . '.tar.gz';;
+		$tmpfile  = sys_get_temp_dir() . '/' . $plugin . '_' . random_int(0, mt_getrandmax()) . '.tar.gz';;
 		$pharfile = "phar://{$tmpfile}";
 
 		$file_data = base64_decode($archive);
@@ -1519,7 +1519,7 @@ function api_plugin_archive_restore($plugin, $id, $type = 'archive') {
 					$tfile    = implode('/', $paths);
 
 					/* skip hidden files like .github* */
-					if (substr($tfile, 0, 1) == '.' && $tfile != '.htaccess') {
+					if (str_starts_with($tfile, '.') && $tfile != '.htaccess') {
 						continue;
 					}
 
@@ -1539,7 +1539,7 @@ function api_plugin_archive_restore($plugin, $id, $type = 'archive') {
 			foreach ($iterator as $file) {
 				$file = str_replace($restore_path, '', $file);
 
-				if (substr($file, -1) == '.') {
+				if (str_ends_with($file, '.')) {
 					continue;
 				}
 
@@ -1661,7 +1661,7 @@ function api_plugin_archive($plugin, $note = '') {
 		array($plugin));
 
 	if (cacti_sizeof($plugin_data)) {
-		$tmpfile  = sys_get_temp_dir() . '/' . $plugin . '_' . rand() . '.tar';
+		$tmpfile  = sys_get_temp_dir() . '/' . $plugin . '_' . random_int(0, mt_getrandmax()) . '.tar';
 		$tmpafile = "$tmpfile.gz";
 		$path     = CACTI_PATH_BASE . "/plugins/$plugin";
 		$md5sum   = md5sum_path($path);
@@ -1757,23 +1757,23 @@ function plugin_is_compatible($plugin) {
 }
 
 function plugin_valid_version_range($range_string, $compare_version = CACTI_VERSION)  {
-	if (strpos($range_string, ' ') !== false) {
+	if (str_contains($range_string, ' ')) {
 		$compares = explode(' ', $range_string);
 
 		foreach($compares as $line) {
-			if (strpos($line, '<=') !== false) {
+			if (str_contains($line, '<=')) {
 				$theversion = str_replace('<=', '', $line);
 				$versions[] = array('direction' => '=', 'version' => $theversion);
-			} elseif (strpos($line, '>=') !== false) {
+			} elseif (str_contains($line, '>=')) {
 				$theversion = str_replace('>=', '', $line);
 				$versions[] = array('direction' => '=', 'version' => $theversion);
-			} elseif (strpos($line, '<') !== false) {
+			} elseif (str_contains($line, '<')) {
 				$theversion = str_replace('<', '', $line);
 				$versions[] = array('direction' => '=', 'version' => $theversion);
-			} elseif (strpos($line, '>') !== false) {
+			} elseif (str_contains($line, '>')) {
 				$theversion = str_replace('>', '', $line);
 				$versions[] = array('direction' => '=', 'version' => $theversion);
-			} elseif (strpos($line, '=') !== false) {
+			} elseif (str_contains($line, '=')) {
 				$theversion = str_replace('=', '', $line);
 				$versions[] = array('direction' => '=', 'version' => $theversion);
 			} else {
@@ -1803,7 +1803,7 @@ function plugin_valid_version_range($range_string, $compare_version = CACTI_VERS
 function plugin_valid_dependencies($required) {
 	if ($required == '') {
 		return true;
-	} elseif (strpos($required, ' ') !== false) {
+	} elseif (str_contains($required, ' ')) {
 		$requires = array_map('trim', explode(' ', $required));
 	} else {
 		$requires[] = $required;
@@ -1855,12 +1855,12 @@ function plugin_load_info_defaults($file, $info, $defaults = array()) {
 		'status'       => file_exists($file) ? 0 : -4,
 		'version'      => __('Unknown'),
 		'author'       => __('Unknown'),
-		'homepage'     => isset($info['webpage']) ? $info['webpage'] : __('Not Stated'),
+		'homepage'     => $info['webpage'] ?? __('Not Stated'),
 		'capabilities' => '',
 		'directory'    => $dir,
 	);
 
-	$info_fields = $info_fields + $defaults;
+	$info_fields += $defaults;
 
 	foreach ($info_fields as $name => $value) {
 		if (!array_key_exists($name, $result)) {
@@ -1869,7 +1869,7 @@ function plugin_load_info_defaults($file, $info, $defaults = array()) {
 	}
 
 	if ($info_fields['status'] == 0) {
-		if (strstr($dir, ' ') !== false) {
+		if (str_contains($dir, ' ')) {
 			$result['status'] = -3;
 		} elseif (strtolower($dir) != strtolower($result['name'])) {
 			$result['status'] = -2;
@@ -1937,7 +1937,7 @@ function plugin_fetch_latest_plugins() {
 	if (cacti_sizeof($plugins)) {
 		foreach($plugins as $pi) {
 			if (isset($pi['full_name'])) {
-				if (strpos($pi['full_name'], 'plugin_') !== false) {
+				if (str_contains($pi['full_name'], 'plugin_')) {
 					$plugin = explode('plugin_', $pi['full_name'])[1];
 
 					$avail_plugins[$plugin]['name'] = $plugin;
@@ -2050,15 +2050,15 @@ function plugin_fetch_latest_plugins() {
 							$lines = explode("\n", $ofiles['info']);
 
 							foreach($lines as $l) {
-								if (strpos($l, 'compat ') !== false) {
+								if (str_contains($l, 'compat ')) {
 									$compat = trim(explode('=', $l)[1]);
-								} elseif (strpos($l, 'requires ') !== false) {
+								} elseif (str_contains($l, 'requires ')) {
 									$requires = trim(explode('=', $l)[1]);
-								} elseif (strpos($l, 'longname ') !== false) {
+								} elseif (str_contains($l, 'longname ')) {
 									$description = trim(explode('=', $l)[1]);
-								} elseif (strpos($l, 'homepage ') !== false) {
+								} elseif (str_contains($l, 'homepage ')) {
 									$webpage = trim(explode('=', $l)[1]);
-								} elseif (strpos($l, 'author ') !== false) {
+								} elseif (str_contains($l, 'author ')) {
 									$author = trim(explode('=', $l)[1]);
 								}
 							}
@@ -2188,15 +2188,15 @@ function plugin_fetch_latest_plugins() {
 						$lines = explode("\n", $ofiles['info']);
 
 						foreach($lines as $l) {
-							if (strpos($l, 'compat ') !== false) {
+							if (str_contains($l, 'compat ')) {
 								$compat = trim(explode('=', $l)[1]);
-							} elseif (strpos($l, 'requires ') !== false) {
+							} elseif (str_contains($l, 'requires ')) {
 								$requires = trim(explode('=', $l)[1]);
-							} elseif (strpos($l, 'longname ') !== false) {
+							} elseif (str_contains($l, 'longname ')) {
 								$description = trim(explode('=', $l)[1]);
-							} elseif (strpos($l, 'homepage ') !== false) {
+							} elseif (str_contains($l, 'homepage ')) {
 								$webpage = trim(explode('=', $l)[1]);
-							} elseif (strpos($l, 'author ') !== false) {
+							} elseif (str_contains($l, 'author ')) {
 								$author = trim(explode('=', $l)[1]);
 							}
 						}
@@ -2267,7 +2267,7 @@ function plugin_make_github_request($url, $type = 'json') {
 		if ($type == 'json') {
 			$headers[] = 'Content-Type: application/json';
 		} elseif ($type == 'file') {
-			$file = sys_get_temp_dir() . '/curlfile.output.' . rand() . '.tgz';
+			$file = sys_get_temp_dir() . '/curlfile.output.' . random_int(0, mt_getrandmax()) . '.tgz';
 
 			$fh = fopen($file, 'w');
 

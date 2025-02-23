@@ -27,7 +27,7 @@
    @arg $poller_id - the id of the poller impacted by hash update
    @arg $variable  - the variable name to store in the settings table */
 function update_replication_crc($poller_id, $variable) {
-	$hash = hash('ripemd160', date('Y-m-d H:i:s') . rand() . $poller_id);
+	$hash = hash('ripemd160', date('Y-m-d H:i:s') . random_int(0, mt_getrandmax()) . $poller_id);
 
 	db_execute_prepared("REPLACE INTO settings
 		SET value = ?, name='$variable" . ($poller_id > 0 ? '_' . "$poller_id'":"'"),
@@ -347,7 +347,7 @@ function update_poller_cache($data_source, $commit = false) {
 					WHERE local_data_id = ?',
 					array($data_source['id']));
 
-				$poller_items[] = api_poller_cache_item_add($data_source['host_id'], $host_fields, $data_source['id'], $data_input['rrd_step'], 0, get_data_source_item_name($data_template_rrd_id), 1, (isset($host_fields['snmp_oid']) ? $host_fields['snmp_oid'] : ''));
+				$poller_items[] = api_poller_cache_item_add($data_source['host_id'], $host_fields, $data_source['id'], $data_input['rrd_step'], 0, get_data_source_item_name($data_template_rrd_id), 1, ($host_fields['snmp_oid'] ?? ''));
 			} elseif ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) {
 				$snmp_queries = get_data_query_array($data_source['snmp_query_id']);
 
@@ -519,7 +519,7 @@ function update_poller_cache($data_source, $commit = false) {
 								$script_path = get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $data_source['snmp_index'] . '"'), $script_queries['script_path'] . ' ' . $script_queries['script_function'], $data_source['host_id']);
 							} else {
 								$action      = POLLER_ACTION_SCRIPT;
-								$script_path = get_script_query_path(trim((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] : '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $data_source['snmp_index'] . '"'), $script_queries['script_path'], $data_source['host_id']);
+								$script_path = get_script_query_path(trim(($script_queries['arg_prepend'] ?? '') . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' "' . $data_source['snmp_index'] . '"'), $script_queries['script_path'], $data_source['host_id']);
 							}
 						}
 
@@ -1066,7 +1066,7 @@ function utilities_get_mysql_info($poller_id = 1) {
 		$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES', false, $local_db_cnn_id), 'Variable_name', 'Value');
 	}
 
-	if (strpos($variables['version'], 'MariaDB') !== false) {
+	if (str_contains($variables['version'], 'MariaDB')) {
 		$database = 'MariaDB';
 		$version  = str_replace('-MariaDB', '', $variables['version']);
 
@@ -1428,8 +1428,8 @@ function utilities_get_mysql_recommendations() {
 			unset($passed);
 
 			$compare         = '';
-			$value_recommend = isset($r['value']) ? $r['value'] : '<unset>';
-			$value_current   = isset($variables[$name]) ? $variables[$name] : '<unset>';
+			$value_recommend = $r['value'] ?? '<unset>';
+			$value_current   = $variables[$name] ?? '<unset>';
 			$value_display   = $value_current;
 
 			switch($r['measure']) {
@@ -1779,7 +1779,7 @@ function utilities_get_system_memory() {
 
 			foreach ($data as $l) {
 				if (trim($l) != '') {
-					list($key, $val) = explode(':', $l);
+					[$key, $val] = explode(':', $l);
 					$val             = trim($val, " kBb\r\n");
 					$memInfo[$key]   = round($val * 1000,0);
 				}
@@ -1825,8 +1825,8 @@ function utilities_get_system_memory() {
 }
 
 function utility_php_sort_extensions($a, $b) {
-	$name_a = isset($a['name']) ? $a['name'] : '';
-	$name_b = isset($b['name']) ? $b['name'] : '';
+	$name_a = $a['name'] ?? '';
+	$name_b = $b['name'] ?? '';
 
 	return strcasecmp($name_a, $name_b);
 }
@@ -1923,7 +1923,7 @@ function utility_get_formatted_bytes($input_value, $wanted_type, &$output_value,
 		}
 
 		if (isset($multiplier[$default_type])) {
-			$input_value = $input_value * $multiplier[$default_type];
+			$input_value *= $multiplier[$default_type];
 		}
 	}
 
@@ -1946,7 +1946,7 @@ function utility_php_verify_recommends(&$recommends, $source) {
 	$rec_version    = '7.4.0';
 	$rec_memory_mb  = 800;
 	$rec_execute_m  = 1;
-	$memory_ini     = (isset($original_memory_limit) ? $original_memory_limit : ini_get('memory_limit'));
+	$memory_ini     = ($original_memory_limit ?? ini_get('memory_limit'));
 
 	// adjust above appropriately (used in configs)
 	$rec_execute    = $rec_execute_m * 60;

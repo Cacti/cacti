@@ -130,7 +130,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 	while ($i <= $retries) {
 		try {
-			if (strpos($device, '/') !== false && filetype($device) == 'socket') {
+			if (str_contains($device, '/') && filetype($device) == 'socket') {
 				$cnn_id = new PDO("$db_type:unix_socket=$device;dbname=$db_name;charset=utf8", $user, $pass, $flags);
 			} else {
 				$cnn_id = new PDO("$db_type:host=$device;port=$port;dbname=$db_name;charset=utf8", $user, $pass, $flags);
@@ -175,7 +175,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 			$ver = db_get_global_variable('version', $cnn_id);
 
-			if (strpos($ver, 'MariaDB') !== false) {
+			if (str_contains($ver, 'MariaDB')) {
 				$srv  = 'MariaDB';
 				$ver  = str_replace('-MariaDB', '', $ver);
 				$required_modes[] = 'NO_ENGINE_SUBSTITUTION';
@@ -650,7 +650,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 
 			return $return_value;
 		} else {
-			$database_last_error = 'DB ' . $execute_name . ' Failed!, Error ' . $en . ': ' . (isset($errorinfo[2]) ? $errorinfo[2] : '<no error>');
+			$database_last_error = 'DB ' . $execute_name . ' Failed!, Error ' . $en . ': ' . ($errorinfo[2] ?? '<no error>');
 
 			if (isset($query)) {
 				$query->closeCursor();
@@ -688,7 +688,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 					cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . $errorinfo[2], false);
 					cacti_debug_backtrace('SQL', false, true, 0, 1);
 
-					$database_last_error = 'DB ' . $execute_name . ' Failed!, Error ' . $en . ': ' . (isset($errorinfo[2]) ? $errorinfo[2] : '<no error>');
+					$database_last_error = 'DB ' . $execute_name . ' Failed!, Error ' . $en . ': ' . ($errorinfo[2] ?? '<no error>');
 				}
 			}
 
@@ -860,7 +860,7 @@ function db_fetch_row_return($query) {
 		$r = $query->fetchAll(PDO::FETCH_ASSOC);
 	}
 
-	return (isset($r[0])) ? $r[0] : array();
+	return $r[0] ?? array();
 }
 
 /**
@@ -1037,7 +1037,7 @@ function db_add_column($table, $column, $log = true, $db_conn = false) {
 			}
 
 			if (isset($column['default'])) {
-				if (in_array(strtolower($column['type']), array('timestamp', 'datetime', 'date'), true) && strpos($column['default'], 'CURRENT_TIMESTAMP') !== false) {
+				if (in_array(strtolower($column['type']), array('timestamp', 'datetime', 'date'), true) && str_contains($column['default'], 'CURRENT_TIMESTAMP')) {
 					$sql .= ' default ' . $column['default'];
 				} else {
 					$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
@@ -1575,7 +1575,7 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 			// FIXME: Need to still check default value
 			$arr = db_fetch_row("SHOW columns FROM `$table` LIKE '" . $column['name'] . "'", $log, $db_conn);
 
-			if (strpos(strtolower($arr['Type']), ' unsigned') !== false) {
+			if (str_contains(strtolower($arr['Type']), ' unsigned')) {
 				$arr['Type']     = str_ireplace(' unsigned', '', $arr['Type']);
 				$arr['unsigned'] = true;
 			}
@@ -1750,7 +1750,7 @@ function db_format_index_create($indexes) {
 		foreach ($indexes as $index) {
 			$index = trim($index);
 
-			if (substr($index, -1) == ')') {
+			if (str_ends_with($index, ')')) {
 				$outindex .= ($outindex != '' ? ',':'') . $index;
 			} else {
 				$outindex .= ($outindex != '' ? ',':'') . '`' . $index . '`';
@@ -1761,7 +1761,7 @@ function db_format_index_create($indexes) {
 	} else {
 		$indexes = trim($indexes);
 
-		if (substr($indexes, -1) == ')') {
+		if (str_ends_with($indexes, ')')) {
 			return $indexes;
 		} else {
 			return '`' . trim($indexes, ' `') . '`';
@@ -2194,15 +2194,15 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 			return false;
 		}
 
-		if (strstr($cols[$key]['type'], 'int') !== false ||
-			strstr($cols[$key]['type'], 'float') !== false ||
-			strstr($cols[$key]['type'], 'double') !== false ||
-			strstr($cols[$key]['type'], 'decimal') !== false) {
+		if (str_contains($cols[$key]['type'], 'int') ||
+			str_contains($cols[$key]['type'], 'float') ||
+			str_contains($cols[$key]['type'], 'double') ||
+			str_contains($cols[$key]['type'], 'decimal')) {
 			if ($value == '') {
 				if ($cols[$key]['null'] == 'YES') {
 					// TODO: We should make 'NULL', but there are issues that need to be addressed first
 					$array_items[$key] = 0;
-				} elseif (strpos($cols[$key]['extra'], 'auto_increment') !== false) {
+				} elseif (str_contains($cols[$key]['extra'], 'auto_increment')) {
 					$array_items[$key] = 0;
 				} elseif ($cols[$key]['default'] == '') {
 					// TODO: We should make 'NULL', but there are issues that need to be addressed first
@@ -2519,7 +2519,7 @@ function db_dump_data($database = '', $tables = '', $credentials = array(), $out
 		foreach ($credentials as $key => $value) {
 			$name = trim($key);
 
-			if (strstr($name, '--') !== false) {      //name like --host
+			if (str_contains($name, '--')) {      //name like --host
 				if ($name == '--password') {
 					$password = $value;
 				} elseif ($name == '--user') {
@@ -2527,7 +2527,7 @@ function db_dump_data($database = '', $tables = '', $credentials = array(), $out
 				} else {
 					$credentials_string .= $name . '=' . $value . ' ';
 				}
-			} elseif (strstr($name, '-') !== false) { //name like -h
+			} elseif (str_contains($name, '-')) { //name like -h
 				if ($name == '-p') {
 					$password = $value;
 				} elseif ($name == '-u') {
@@ -2561,7 +2561,7 @@ function db_dump_data($database = '', $tables = '', $credentials = array(), $out
 		$dump = 'mysqldump';
 	}
 
-	if (strstr($options, '--defaults-extra-file') !== false) {
+	if (str_contains($options, '--defaults-extra-file')) {
 		exec("$dump $options $credentials_string $database $tables > $output_file", $output, $retval);
 	} else {
 		exec("$dump $options $credentials_string $database version >/dev/null 2>&1", $output, $retval);
@@ -2660,7 +2660,7 @@ function db_get_permissions($include_unknown = false, $log = false, $db_conn = f
 									}
 
 									if (array_key_exists($db_grant_perm, $perms)) {
-										if (strpos($db_grant, "`$database_default`.*") !== false) {
+										if (str_contains($db_grant, "`$database_default`.*")) {
 											$perms[$db_name][$db_grant_perm . ' ON *'] = true;
 										} else {
 											$perms[$db_name][$db_grant_perm] = true;

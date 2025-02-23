@@ -34,7 +34,7 @@
  * @return (void)
  */
 function api_device_cache_crc_update($poller_id, $variable = 'poller_replicate_device_cache_crc') {
-	$hash = hash('ripemd160', date('Y-m-d H:i:s') . rand() . $poller_id);
+	$hash = hash('ripemd160', date('Y-m-d H:i:s') . random_int(0, mt_getrandmax()) . $poller_id);
 
 	db_execute_prepared("REPLACE INTO settings SET value = ?, name='$variable" . '_' . "$poller_id'", array($hash));
 }
@@ -265,7 +265,7 @@ function api_device_remove_multi($device_ids, $delete_type = 2) {
 		if ($delete_type == 2) {
 			api_delete_graphs($graphs, $delete_type, false);
 		} else {
-			api_data_source_disable_multi($data_sources, false);
+			api_data_source_disable_multi($data_sources);
 
 			db_execute("UPDATE graph_local SET host_id = 0 WHERE host_id IN($devices_to_delete)");
 			db_execute("UPDATE data_local  SET host_id = 0 WHERE host_id IN($devices_to_delete)");
@@ -1711,7 +1711,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 						$days              = intval($snmp_uptime_ticks / (60 * 60 * 24 * 100));
 						$remainder         = $snmp_uptime_ticks % (60 * 60 * 24 * 100);
 						$hours             = intval($remainder / (60 * 60 * 100));
-						$remainder         = $remainder % (60 * 60 * 100);
+						$remainder        %= 60 * 60 * 100;
 						$minutes           = intval($remainder / (60 * 100));
 						print '<b>' . __('Uptime:') . "</b> $snmp_uptime";
 						print '&nbsp;(' . $days . __('days') . ', ' . $hours . __('hours') . ', ' . $minutes . __('minutes') . ')<br>';
@@ -2196,7 +2196,7 @@ function api_clone_device_template_check_for_errors($device_template_id, $device
 					$script_base = trim(str_replace($config['base_path'], '', $script_path), '/');
 
 					if (file_exists($script_path)) {
-						if (!is_writeable($script_path)) {
+						if (!is_writable($script_path)) {
 							$errors++;
 							$return['errors'][] = sprintf('FATAL: Data Template Script Base path \'%s\' for \'%s\' already exists and the directory is not writable!', $script_base, $name);
 						} else {
@@ -2303,7 +2303,7 @@ function api_clone_device_template_check_for_errors($device_template_id, $device
 			}
 		}
 
-		foreach($objects['data_query_graph_templates'] as $id => $graph_template) {
+		foreach($objects['data_query_graph_templates'] as $graph_template) {
 			$name          = $graph_template['name'];
 			$snmp_query_id = $graph_template['snmp_query_id'];
 
@@ -2460,7 +2460,7 @@ function api_clone_device_template_get_objects($device_template_id) {
 					$parts = explode(' ', $data_template['input_string']);
 
 					foreach($parts as $p) {
-						if (strpos($p, $config['base_path']) !== false) {
+						if (str_contains($p, $config['base_path'])) {
 							if (file_exists($p)) {
 								$objects['data_templates'][$id]['script_path'] = $p;
 								break;
@@ -3099,7 +3099,7 @@ function api_device_template_archive_for_export($id) {
 			/* search xml files for scripts */
 			if (cacti_sizeof($files)) {
 				foreach($files as $file) {
-					if (strpos($file['file'], '.xml') !== false) {
+					if (str_contains($file['file'], '.xml')) {
 						$files = array_merge($files, find_dependent_files(file_get_contents($file['file'])));
 					}
 				}
@@ -3171,7 +3171,7 @@ function api_device_template_archive($id, $archive_note) {
 			/* search xml files for scripts */
 			if (cacti_sizeof($files)) {
 				foreach($files as $file) {
-					if (strpos($file['file'], '.xml') !== false) {
+					if (str_contains($file['file'], '.xml')) {
 						$files = array_merge($files, find_dependent_files(file_get_contents($file['file'])));
 					}
 				}

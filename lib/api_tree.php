@@ -219,7 +219,7 @@ function api_tree_create_node($tree_id, $node_id, $position, $title = '') {
 	$data  = api_tree_parse_node_data($node_id);
 
 	if ($data['leaf_id'] < 0) {
-		cacti_log("ERROR: Invalid BranchID: '" . (isset($data['leaf_id']) ? $data['leaf_id']:'-') . "', Function create_node", false);
+		cacti_log("ERROR: Invalid BranchID: '" . ($data['leaf_id'] ?? '-') . "', Function create_node", false);
 
 		return;
 	}
@@ -528,7 +528,7 @@ function api_tree_parse_node_data($variable) {
 
 		if (cacti_sizeof($ndata)) {
 			foreach ($ndata as $data) {
-				list($type, $tid) = explode(':', $data);
+				[$type, $tid] = explode(':', $data);
 
 				/* watch out for monkey business */
 				input_validate_input_number($tid, 'tid');
@@ -606,7 +606,7 @@ function api_tree_rename_node($tree_id, $node_id = '', $title = '') {
 
 	if (cacti_sizeof($ndata)) {
 		foreach ($ndata as $data) {
-			if (strpos($data, ':') === false) {
+			if (!str_contains($data, ':')) {
 				cacti_log("ERROR: Invalid NodeID: '" . $node_id . "', Function rename_node", false);
 
 				header('Content-Type: application/json; charset=utf-8');
@@ -615,7 +615,7 @@ function api_tree_rename_node($tree_id, $node_id = '', $title = '') {
 				return;
 			}
 
-			list($type, $tid) = explode(':', $data);
+			[$type, $tid] = explode(':', $data);
 
 			/* watch out for monkey business */
 			input_validate_input_number($tid, 'tid');

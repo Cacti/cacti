@@ -88,14 +88,14 @@ if ($cacti_db_session == true) {
 
 			while (false !== ($filename = readdir($session_dir_handle))) {
 				/* a real user session should be greater than 400 Bytes */
-				if (strpos($filename, 'sess_') !== false && filesize($session_save_path . '/' . $filename) > 400) {
+				if (str_contains($filename, 'sess_') && filesize($session_save_path . '/' . $filename) > 400) {
 					$session = file_get_contents($session_save_path . '/' . $filename);
 
 					/* first off check if we are allowed to read the session
 					 * file. Then we are only interested in sessions of
 					 * authenticated Cacti users
 					 */
-					if ($session !== false && strpos($session, 'cacti_cwd') !== false && preg_match('/sess_user_id\|s:[0-9]*:\"[0-9]*\"/', $session, $match)) {
+					if ($session !== false && str_contains($session, 'cacti_cwd') && preg_match('/sess_user_id\|s:[0-9]*:\"[0-9]*\"/', $session, $match)) {
 						$session_user_id = substr($match[0], strpos($match[0], ':"') + 2, -1);
 						/* due to the fact that ATIME could be unsupported/disabled we have to use MTIME instead */
 						$mtime = filemtime($session_save_path . '/' . $filename);

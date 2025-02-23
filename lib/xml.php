@@ -95,13 +95,13 @@ function rrdxport2array($data) {
 	$array = explode("\n", $data);
 
 	if (cacti_sizeof($array)) {
-		if ((substr(trim($array[0]),0,1)) == '<') {
+		if (str_starts_with(trim($array[0]), '<')) {
 			/* continue */
 		} else {
 			$new_array = array();
 
 			foreach ($array as $element) {
-				if ((substr(trim($element),0,1)) == '<') {
+				if (str_starts_with(trim($element), '<')) {
 					$new_array[] = $element;
 				}
 			}

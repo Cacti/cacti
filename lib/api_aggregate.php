@@ -72,7 +72,7 @@ function aggregate_graph_local_save($id = 0) {
 	cacti_log(__FUNCTION__ . ' local_graph: ' . $id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	/* create or update entry: graph_local */
-	$local_graph['id']                = (isset($id) ? $id : 0);
+	$local_graph['id']                = ($id ?? 0);
 	$local_graph['graph_template_id'] = 0;  # no templating
 	$local_graph['host_id']           = 0;  # no host to be referred to
 	$local_graph['snmp_query_id']     = 0;  # no templating
@@ -122,7 +122,7 @@ function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_i
 
 		if (cacti_sizeof($aggregate_data)) {
 			foreach ($aggregate_data as $field => $value) {
-				if (substr($field, 0, 2) == 't_' && $value == 'on') {
+				if (str_starts_with($field, 't_') && $value == 'on') {
 					$value_field_name                 = substr($field, 2);
 					$template_data[$value_field_name] = $aggregate_data[$value_field_name];
 				}
@@ -429,7 +429,7 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 			}
 
 			if ($save['text_format'] != '') {
-				$save['text_format'] = substitute_host_data($save['text_format'], '|', '|', (isset($graph_local['host_id']) ? $graph_local['host_id']:0));
+				$save['text_format'] = substitute_host_data($save['text_format'], '|', '|', ($graph_local['host_id'] ?? 0));
 				cacti_log(__FUNCTION__ . ' substituted:' . $save['text_format'], true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 				/* if this is a data query graph type, try to substitute */
@@ -456,7 +456,7 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 
 			$save['id'] 							                     = 0;
 			$save['local_graph_template_item_id']	  = 0;	# disconnect this graph item from the graph template item
-			$save['local_graph_id'] 				            = (isset($_new_graph_id) ? $_new_graph_id : 0);
+			$save['local_graph_id'] 				            = ($_new_graph_id ?? 0);
 			$save['graph_template_id'] 				         = 0;	# disconnect this graph item from the graph template
 			$save['hash']                           = '';   # remove any template attribs
 
@@ -1102,19 +1102,19 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 	set_error_handler('aggregate_error_handler');
 
 	if (cacti_sizeof($member_graphs)) {
-		$graph_title          = (isset($attribs['graph_title']) ? $attribs['graph_title']:'');
-		$aggregate_template   = (isset($attribs['aggregate_template_id']) ? $attribs['aggregate_template_id']:0);
-		$graph_template_id    = (isset($attribs['graph_template_id']) ? $attribs['graph_template_id']:0);
-		$aggregate_graph      = (isset($attribs['aggregate_graph_id']) ? $attribs['aggregate_graph_id']:0);
-		$template_propogation = (isset($attribs['template_propogation']) ? $attribs['template_propogation']:'on');
-		$gprint_prefix        = (isset($attribs['gprint_prefix']) ? $attribs['gprint_prefix']:'');
-		$gprint_format        = (isset($attribs['gprint_format']) ? $attribs['gprint_format']:'');
-		$_graph_type          = (isset($attribs['graph_type']) ? $attribs['graph_type']:0);
-		$_total               = (isset($attribs['total']) ? $attribs['total']:0);
-		$_total_type          = (isset($attribs['total_type']) ? $attribs['total_type']:0);
-		$_total_prefix        = (isset($attribs['total_prefix']) ? $attribs['total_prefix']:'');
-		$_reorder             = (isset($attribs['reorder']) ? $attribs['reorder']:0);
-		$item_no              = (isset($attribs['item_no']) ? $attribs['item_no']:0);
+		$graph_title          = ($attribs['graph_title'] ?? '');
+		$aggregate_template   = ($attribs['aggregate_template_id'] ?? 0);
+		$graph_template_id    = ($attribs['graph_template_id'] ?? 0);
+		$aggregate_graph      = ($attribs['aggregate_graph_id'] ?? 0);
+		$template_propogation = ($attribs['template_propogation'] ?? 'on');
+		$gprint_prefix        = ($attribs['gprint_prefix'] ?? '');
+		$gprint_format        = ($attribs['gprint_format'] ?? '');
+		$_graph_type          = ($attribs['graph_type'] ?? 0);
+		$_total               = ($attribs['total'] ?? 0);
+		$_total_type          = ($attribs['total_type'] ?? 0);
+		$_total_prefix        = ($attribs['total_prefix'] ?? '');
+		$_reorder             = ($attribs['reorder'] ?? 0);
+		$item_no              = ($attribs['item_no'] ?? 0);
 		$color_templates      = (is_array($attribs['color_templates']) ? $attribs['color_templates']:array());
 		$graph_item_types     = (is_array($attribs['graph_item_types']) ? $attribs['graph_item_types']:array());
 		$cdefs                = (is_array($attribs['cdefs']) ? $attribs['cdefs']:array());
@@ -1270,14 +1270,14 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 				// - explicitly marked as skipped (based on $skipped_items)
 				// - OR NOT marked as 'totalling' items
 				for ($k=1; $k <= $item_no; $k++) {
-					cacti_log(__FUNCTION__ . ' old skip: ' . (isset($skipped_items[$k]) ? $skipped_items[$k]:''), true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+					cacti_log(__FUNCTION__ . ' old skip: ' . ($skipped_items[$k] ?? ''), true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 					// skip all items, that shall not be totalled
 					if (!isset($total_items[$k])) {
 						$skipped_items[$k] = $k;
 					}
 
-					cacti_log(__FUNCTION__ . ' new skip: ' . (isset($skipped_items[$k]) ? $skipped_items[$k]:''), true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+					cacti_log(__FUNCTION__ . ' new skip: ' . ($skipped_items[$k] ?? ''), true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 				}
 
 				// add the 'templating' graph to the new graph, honoring skipped, hr and color

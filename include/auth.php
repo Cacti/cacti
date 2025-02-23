@@ -74,7 +74,7 @@ api_plugin_hook_function('auth_alternate_realms');
  */
 if ($auth_method != AUTH_METHOD_BASIC) {
 	if (isset($_SESSION[SESS_CHANGE_PASSWORD])) {
-		header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
+		header('Location: ' . CACTI_PATH_URL . 'auth_changepassword.php?ref=' . ($_SERVER['HTTP_REFERER'] ?? 'index.php'));
 
 		exit;
 	}

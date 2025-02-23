@@ -351,7 +351,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 
 		foreach ($graph_array as $graph) {
 			if (!isset($graph['host_id'])) {
-				list($graph['host_id'], $graph['disabled']) = db_fetch_row_prepared('SELECT host_id, disabled
+				[$graph['host_id'], $graph['disabled']] = db_fetch_row_prepared('SELECT host_id, disabled
     				FROM graph_local AS gl
 	 				LEFT JOIN host AS h
 					ON gl.host_id = h.id
@@ -437,7 +437,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 
 		foreach ($graph_array as $graph) {
 			if (!isset($graph['host_id'])) {
-				list($graph['host_id'], $graph['disabled']) = db_fetch_row_prepared('SELECT host_id, disabled
+				[$graph['host_id'], $graph['disabled']] = db_fetch_row_prepared('SELECT host_id, disabled
     				FROM graph_local AS gl
 	 				LEFT JOIN host AS h
       				ON gl.host_id = h.id
@@ -1673,8 +1673,8 @@ function is_menu_pick_active($menu_url) {
 	$menu_parts = array();
 
 	/* special case for host.php?action=edit&create=true */
-	if (strpos($_SERVER['REQUEST_URI'], 'host.php?action=edit&create=true') !== false) {
-		if (strpos($menu_url, 'host.php?action=edit&create=true') !== false) {
+	if (str_contains($_SERVER['REQUEST_URI'], 'host.php?action=edit&create=true')) {
+		if (str_contains($menu_url, 'host.php?action=edit&create=true')) {
 			return true;
 		} else {
 			return false;
@@ -1691,7 +1691,7 @@ function is_menu_pick_active($menu_url) {
 	}
 
 	// Host requires another check
-	if (strpos($menu_url, 'host.php?action=edit&create=true') !== false) {
+	if (str_contains($menu_url, 'host.php?action=edit&create=true')) {
 		return false;
 	}
 
@@ -1767,7 +1767,7 @@ function draw_menu($user_menu = '') {
 					$show_header_items = false;
 				}
 			} else {
-				$current_realm_id = (isset($user_auth_realm_filenames[basename($item_url)]) ? $user_auth_realm_filenames[basename($item_url)] : 0);
+				$current_realm_id = ($user_auth_realm_filenames[basename($item_url)] ?? 0);
 
 				if (is_realm_allowed($current_realm_id)) {
 					$show_header_items = true;
@@ -1799,7 +1799,7 @@ function draw_menu($user_menu = '') {
 			foreach ($header_array as $item_url => $item_title) {
 				$basename         = explode('?', basename($item_url));
 				$basename         = $basename[0];
-				$current_realm_id = (isset($user_auth_realm_filenames[$basename]) ? $user_auth_realm_filenames[$basename] : 0);
+				$current_realm_id = ($user_auth_realm_filenames[$basename] ?? 0);
 
 				/**
 				 * if this item is an array, then it contains sub-items. if not, is just
@@ -1817,7 +1817,7 @@ function draw_menu($user_menu = '') {
 						}
 
 						foreach ($item_title as $item_sub_url => $item_sub_title) {
-							if (substr($item_sub_url, 0, 10) == 'EXTERNAL::') {
+							if (str_starts_with($item_sub_url, 'EXTERNAL::')) {
 								$item_sub_external = true;
 								$item_sub_url      = substr($item_sub_url, 10);
 							} else {
@@ -1853,7 +1853,7 @@ function draw_menu($user_menu = '') {
 				} else {
 					if ($current_realm_id == -1 || is_realm_allowed($current_realm_id) || !isset($user_auth_realm_filenames[$basename])) {
 						/* draw normal (non sub-item) menu item */
-						if (substr($item_url, 0, 10) == 'EXTERNAL::') {
+						if (str_starts_with($item_url, 'EXTERNAL::')) {
 							$item_external = true;
 							$item_url      = substr($item_url, 10);
 						} else {
@@ -2056,7 +2056,7 @@ function is_console_page($url) {
 	}
 
 	if (cacti_sizeof($menu)) {
-		foreach ($menu as $section => $children) {
+		foreach ($menu as $children) {
 			if (cacti_sizeof($children)) {
 				foreach ($children as $page => $name) {
 					if (basename($page) == $basename) {
@@ -2354,7 +2354,7 @@ function html_graph_tabs_right() {
 function html_transform_graph_template_ids($ids) {
 	$return_ids = array();
 
-	if (strpos($ids, ',') !== false) {
+	if (str_contains($ids, ',')) {
 		$ids = explode(',', $ids);
 	} else {
 		$ids = array($ids);
@@ -2363,7 +2363,7 @@ function html_transform_graph_template_ids($ids) {
 	foreach($ids as $id) {
 		if (is_numeric($id)) {
 			$return_ids[] = $id;
-		} elseif (strpos($id, 'cg_') !== false) {
+		} elseif (str_contains($id, 'cg_')) {
 			$new_id = str_replace('cg_', '', $id);
 			$return_ids[] = $new_id;
 		} else {
@@ -2426,7 +2426,7 @@ function html_graph_order_filter_array() {
 		if (isset_request_var('graph_template_id')) {
 			$graph_templates = html_transform_graph_template_ids(get_nfilter_request_var('graph_template_id'));
 
-			if (strpos($graph_templates, ',') !== false || $graph_templates == '' || $graph_templates <= 0) {
+			if (str_contains($graph_templates, ',') || $graph_templates == '' || $graph_templates <= 0) {
 				$show_sort    = false;
 
 				$data_sources = array('-1' => __('Select a Single Template'));
@@ -2581,7 +2581,7 @@ function html_business_hours_filter($callBack = 'applyGraphFilter') {
 function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_where = '', $noany = false, $nonone = false) {
 	$theme = get_selected_theme();
 
-	if (strpos($call_back, '()') === false) {
+	if (!str_contains($call_back, '()')) {
 		$call_back .= '()';
 	}
 
@@ -2648,7 +2648,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_where = '', $noany = false, $nonone = false) {
 	$theme = get_selected_theme();
 
-	if (strpos($call_back, '()') === false) {
+	if (!str_contains($call_back, '()')) {
 		$call_back .= '()';
 	}
 
@@ -2693,7 +2693,7 @@ function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_wher
 function html_location_filter($location = '', $call_back = 'applyFilter', $sql_where = '', $noany = false, $nonone = false) {
 	$theme = get_selected_theme();
 
-	if (strpos($call_back, '()') === false) {
+	if (!str_contains($call_back, '()')) {
 		$call_back .= '()';
 	}
 
@@ -2707,7 +2707,7 @@ function html_location_filter($location = '', $call_back = 'applyFilter', $sql_w
 			<?php if (!$nonone) {?><option value='0'<?php if ($location == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
 			<?php
 
-			if ($sql_where != '' && strpos($sql_where, 'WHERE') === false) {
+			if ($sql_where != '' && !str_contains($sql_where, 'WHERE')) {
 				$sql_where = 'WHERE ' . $sql_where;
 			}
 
