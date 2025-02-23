@@ -705,12 +705,12 @@ class Net_Ping {
 		$this->restore_cacti_error_handler();
 
 		return match ($avail_method) {
-            AVAIL_SNMP_OR_PING => $snmp_result || $ping_result,
-            AVAIL_SNMP_AND_PING => $snmp_result && $ping_result,
-            AVAIL_SNMP, AVAIL_SNMP_GET_NEXT, AVAIL_SNMP_GET_SYSDESC => $snmp_result,
-            AVAIL_PING => $ping_result,
-            default => false,
-        };
+			AVAIL_SNMP_OR_PING  => $snmp_result || $ping_result,
+			AVAIL_SNMP_AND_PING => $snmp_result && $ping_result,
+			AVAIL_SNMP, AVAIL_SNMP_GET_NEXT, AVAIL_SNMP_GET_SYSDESC => $snmp_result,
+			AVAIL_PING          => $ping_result,
+			default             => false,
+		};
 	} /* end_ping */
 
 	function is_ipaddress($ip_address = '') {
