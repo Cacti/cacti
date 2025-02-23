@@ -1026,13 +1026,13 @@ function get_format_message_instance($current_message): string {
 	}
 
 	$message = match ($level) {
-        MESSAGE_LEVEL_NONE => '<span>' . $fmessage . '</span>',
-        MESSAGE_LEVEL_INFO => '<span class="deviceUp">' . $fmessage . '</span>',
-        MESSAGE_LEVEL_WARN => '<span class="deviceWarning">' . $fmessage . '</span>',
-        MESSAGE_LEVEL_ERROR => '<span class="deviceDown">' . $fmessage . '</span>',
-        MESSAGE_LEVEL_CSRF => '<span class="deviceDown">' . $fmessage . '</span>',
-        default => '<span class="deviceUnknown">' . $fmessage . '</span>',
-    };
+		MESSAGE_LEVEL_NONE  => '<span>' . $fmessage . '</span>',
+		MESSAGE_LEVEL_INFO  => '<span class="deviceUp">' . $fmessage . '</span>',
+		MESSAGE_LEVEL_WARN  => '<span class="deviceWarning">' . $fmessage . '</span>',
+		MESSAGE_LEVEL_ERROR => '<span class="deviceDown">' . $fmessage . '</span>',
+		MESSAGE_LEVEL_CSRF  => '<span class="deviceDown">' . $fmessage . '</span>',
+		default             => '<span class="deviceUnknown">' . $fmessage . '</span>',
+	};
 
 	return $message;
 }
