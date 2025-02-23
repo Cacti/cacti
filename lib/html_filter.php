@@ -280,7 +280,7 @@ class CactiTableFilter {
 			}
 		}
 
-		// Make common adjustements
+		// Make common adjustments
 		if ($this->has_refresh) {
 			if (isset_request_var('refresh')) {
 				$value = get_nfilter_request_var('refresh');
@@ -462,7 +462,7 @@ class CactiTableFilter {
 			foreach($this->filter_array['rows'] as $index => $row) {
 				if ($index > 0 && !$text_appended) {
 					print "<div class='filterColumnButton' id='text'></div>";
-					$text_appened = true;
+					$text_appended = true;
 				}
 
 				print "<div class='filterTable even'>";
