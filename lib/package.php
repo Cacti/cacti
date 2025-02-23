@@ -744,20 +744,19 @@ function get_item_name($export_type, $export_id) {
 	$name = 'Unknown';
 
 	$name = match ($export_type) {
-        'host_template' => db_fetch_cell_prepared('SELECT name
-				FROM host_template
-				WHERE id = ?', array($export_id)),
-        'graph_template' => db_fetch_cell_prepared('SELECT name
-				FROM graph_templates
-				WHERE id = ?',
-				array($export_id)),
-        'data_query' => db_fetch_cell_prepared('SELECT name
-				FROM snmp_query
-				WHERE id = ?',
-				array($export_id)),
-        default => $name,
-    };
+		'host_template' => db_fetch_cell_prepared('SELECT name
+			FROM host_template
+			WHERE id = ?', array($export_id)),
+		'graph_template' => db_fetch_cell_prepared('SELECT name
+			FROM graph_templates
+			WHERE id = ?',
+			array($export_id)),
+		'data_query' => db_fetch_cell_prepared('SELECT name
+			FROM snmp_query
+			WHERE id = ?',
+			array($export_id)),
+		default => $name,
+	};
 
 	return $name;
 }
-
