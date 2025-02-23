@@ -907,12 +907,15 @@ function is_tree_branch_empty($tree_id, $parent = 0) {
 		), 'site_id', 'site_id'
 	);
 
+	$total_rows = -1;
+
 	if (!cacti_sizeof($sites)) {
-		if (cacti_sizeof($hosts) && cacti_sizeof(get_allowed_devices('h.id IN(' . implode(',', $hosts) . ')'), 'description', '', -1) > 0) {
+		if (cacti_sizeof($hosts) && cacti_sizeof(get_allowed_devices('h.id IN(' . implode(',', $hosts) . ')', 'description', '', $total_rows)) > 0) {
 			return false;
 		}
 	} else {
 		$site_hosts = array();
+
 		foreach($sites as $site) {
 			$site_hosts += array_rekey(
 				db_fetch_assoc_prepared('SELECT id
@@ -923,7 +926,7 @@ function is_tree_branch_empty($tree_id, $parent = 0) {
 			);
 		}
 
-		if (cacti_sizeof($site_hosts) && cacti_sizeof(get_allowed_devices('h.id IN(' . implode(',', $site_hosts) . ')'), 'description', '', -1) > 0) {
+		if (cacti_sizeof($site_hosts) && cacti_sizeof(get_allowed_devices('h.id IN(' . implode(',', $site_hosts) . ')', 'description', '', $total_rows)) > 0) {
 			return false;
 		}
 	}
