@@ -131,7 +131,7 @@ jobs:
       run: sudo chmod -R 777 ${{ github.workspace}}
 
     - name: Restart Apache2
-      run: }
+      run: |
         sudo systemctl restart apache2
         sudo systemctl restart irqbalance
         sudo systemctl restart networkd-dispatcher
