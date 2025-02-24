@@ -819,7 +819,13 @@ function template_edit() {
 		if ($input_type != 1 && $input_type != 5) {
 			unset($struct_data_source_item['data_input_field_id']);
 		} else {
-			$struct_data_source_item['data_input_field_id']['sql'] = "SELECT id, CONCAT(data_name, ' - ', name) AS name FROM data_input_fields WHERE data_input_id=" . $template_data['data_input_id'] . " AND input_output='out' AND update_rra='on' ORDER BY data_name, name";
+			$struct_data_source_item['data_input_field_id']['sql'] = "SELECT id,
+				CONCAT(data_name, ' - ', name) AS name
+				FROM data_input_fields
+				WHERE data_input_id = " . $template_data['data_input_id'] . "
+				AND input_output='out'
+				AND update_rra='on'
+				ORDER BY data_name, name";
 		}
 	}
 
@@ -888,7 +894,7 @@ function template_edit() {
 					$message = __esc('This value is disabled due to it either it value being derived from the Device or special Data Query object that keeps track of critical data Data Query associations.');
 
 					if (cacti_sizeof($data_input_data)) {
-						$old_value  = $data_input_data['value'];
+						$old_value  = $data_input_data['value'] ?? '';
 						$old_tvalue = 'on';
 						$disable    = 'disable';
 					} else {
@@ -899,15 +905,15 @@ function template_edit() {
 				} elseif ($field['type_code'] == 'host_id') {
 					$message = __esc('This value is disabled due to it being derived from the Device and read only.');
 
-					$old_value  = $data_input_data['value'];
+					$old_value  = $data_input_data['value'] ?? '';
 					$old_tvalue = '';
 					$disable    = 'disable';
 				} else {
 					$message = __esc('Check this checkbox if you wish to allow the user to override the value on the right during Data Source creation.');
 
 					if (cacti_sizeof($data_input_data)) {
-						$old_value  = $data_input_data['value'];
-						$old_tvalue = $data_input_data['t_value'];
+						$old_value  = $data_input_data['value'] ?? '';
+						$old_tvalue = $data_input_data['t_value'] ?? '';
 						$disable    = '';
 					} else {
 						$old_value  = '';
