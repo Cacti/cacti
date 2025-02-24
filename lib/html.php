@@ -135,7 +135,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_url_or
 		}
 
 		if ($showcols) {
-			print "<span class='cactiFilterColumns' title='" . __esc('Select Columns for Display') . "'><a id='showColumns' href='#'><i class='fa fa-bars threeBars'></i></a></span>";
+			print "<span class='cactiFilterColumns' title='" . __esc('Select Columns for Display') . "'><a id='showColumns' href='#'><i class='fas fa-table-list threeBars'></i></a></span>";
 		}
 
 		if ($add_url_or_buttons != '' && !is_array($add_url_or_buttons)) {
@@ -526,7 +526,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 	print "<div class='iconWrapper'>";
 	print "<a class='iconLink utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><i class='drillDown fa fa-cog actionCog' title='" . __esc('Graph Details, Zooming and Debugging Utilities') . "'></i></a><br>";
 	print "<a class='iconLink csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><i class='drillDown fa fa-file-csv fileCSV' title='" . __esc('CSV Export of Graph Data'). "'></i></a><br>";
-	print "<a class='iconLink mrtg' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><i class='drillDown fa fa-bars threeBars' title='" . __esc('Time Graph View'). "'></i></a><br>";
+	print "<a class='iconLink mrtg' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><i class='drillDown fa fas fa-table-list threeBars' title='" . __esc('Time Graph View'). "'></i></a><br>";
 
 	if (is_realm_allowed(3)) {
 		$host_id = db_fetch_cell_prepared('SELECT host_id
