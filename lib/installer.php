@@ -1872,7 +1872,7 @@ class Installer implements JsonSerializable {
 			Installer::STEP_INSTALL_TYPE                    => $this->processStepMode(),
 			Installer::STEP_BINARY_LOCATIONS                => $this->processStepBinaryLocations(),
 			Installer::STEP_PERMISSION_CHECK                => $this->processStepPermissionCheck(),
-			Installer::STEP_INPUT_VALIDATION                => $this->processStepNoticesRecomendations(),
+			Installer::STEP_INPUT_VALIDATION                => $this->processStepNoticesRecommendations(),
 			Installer::STEP_PROFILE_AND_AUTOMATION          => $this->processStepProfileAndAutomation(),
 			Installer::STEP_TEMPLATE_INSTALL                => $this->processStepTemplateInstall(),
 			Installer::STEP_CHECK_TABLES                    => $this->processStepCheckTables(),
