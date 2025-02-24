@@ -5789,7 +5789,7 @@ function automation_template_import($json_data, $tree_branches = false) {
 					foreach($data['thold_rules'] AS $rule) {
 						$thold_name = $rule['thold_template']['name'];
 
-						$thold_template_id = db_fetch_cell('SELECT id
+						$thold_template_id = db_fetch_cell_prepared('SELECT id
 							FROM thold_template
 							WHERE hash = ?',
 							array($rule['thold_template_id']));
