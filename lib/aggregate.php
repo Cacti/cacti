@@ -65,6 +65,7 @@ function aggregate_build_children_url(int $local_graph_id, int $graph_start = -1
 			return "<a class='hyperLink aggregates' href='" . html_escape(CACTI_PATH_URL . 'graph_view.php?reset=1&page=1&graph_template_id=-1&host_id=-1&filter=&style=selective&action=preview' . ($graph_start >= 0 ? '&graph_start=' . $graph_start:'') . ($graph_end >= 0 ? '&graph_end=' . $graph_end:'') . ($rra_id >= 0 ? '&rra_id=' . $rra_id:'') . '&' . $graph_select) . "'><i class='drillDown fa fa-sitemap expandAggregate' title='" . __esc('Display Graphs from this Aggregate') . "'></i></a><br>" . PHP_EOL;
 		}
 	}
+
 	return '';
 }
 
@@ -301,11 +302,11 @@ function api_aggregate_create(string $aggregate_name, array $graphs, int $agg_te
 
 /**
  * aggregate_error_handler	- PHP error handler
- * @param int $errno		- error id
- * @param string $errmsg	- error message
- * @param string $filename	- file name
- * @param int $linenum		- line of error
- * @param array $vars		- additional variables
+ * @param int $errno error id
+ * @param string $errmsg error message
+ * @param string $filename file name
+ * @param int $linenum line of error
+ * @param array $vars additional variables
  * @return void
  */
 function aggregate_error_handler(int $errno, string $errmsg, string $filename, int $linenum, array $vars = array()): void {
@@ -370,19 +371,17 @@ function aggregate_error_handler(int $errno, string $errmsg, string $filename, i
 			}
 		}
 	}
-
-	return;
 }
 
 /**
  * get_next_sequence 			- returns the next available sequence id
  *
- * @param int $id 				- the current id
- * @param string $field 		- the field name that contains the target id
- * @param string $table_name 	- the table name that contains the target id
- * @param string $group_query 	- an SQL 'where' clause to limit the query
+ * @param int $id The current id
+ * @param string $field The field name that contains the target id
+ * @param string $table_name The table name that contains the target id
+ * @param string $group_query An SQL 'where' clause to limit the query
  * @param string $key_field
- * @return int					- the next available sequence id
+ * @return int The next available sequence id
  */
 function get_next_sequence(int $id, string $field, string $table_name, string $group_query, string $key_field='id'): int {
 	cacti_log(__FUNCTION__ . '  called. Id: ' . $id . ' field: ' . $field . ' table: ' . $table_name, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
@@ -404,8 +403,8 @@ function get_next_sequence(int $id, string $field, string $table_name, string $g
 
 /**
  * find out, if this is a pure STACKed graph
- * @param int $_local_graph_id	- graph to be examined
- * @return bool					- true, if pure STACKed graph
+ * @param int $_local_graph_id graph to be examined
+ * @return bool	true, if pure STACKed graph
  */
 function aggregate_is_pure_stacked_graph(int $_local_graph_id): bool {
 	cacti_log(__FUNCTION__ . ' local_graph: ' . $_local_graph_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
@@ -802,6 +801,7 @@ function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence,
 				if ($cdef['cdef_text'] == $new_cdef_text) {
 					$new_cdef_id = $cdef['id'];
 					cacti_log(__FUNCTION__ . ' matching cdef: ' . $new_cdef_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+
 					# leave on first match
 					break;
 				}
@@ -979,7 +979,7 @@ function aggregate_prune_graphs(int $local_graph_id = 0): void {
 	$sql_params       = array();
 
 	if ($local_graph_id > 0) {
-		$sql_where = 'AND pagi.local_graph_id = ?';
+		$sql_where    = 'AND pagi.local_graph_id = ?';
 		$sql_params[] = $local_graph_id;
 	}
 

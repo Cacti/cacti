@@ -114,7 +114,7 @@ function create_tree_devices_filter(string $rows_label = ''): array {
 			)
 		),
 		'sort' => array(
-			'sort_column' => 'description',
+			'sort_column'    => 'description',
 			'sort_direction' => 'ASC'
 		)
 	);
@@ -285,10 +285,10 @@ function automation_get_matching_device_sql(array &$rule, string $rule_type): ar
 		$sql_where = 'WHERE h.deleted = ""
 			AND (h.hostname LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR h.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR h.location LIKE '    . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR h.location LIKE '	. db_qstr('%' . get_request_var('filter') . '%') . '
 			OR h.external_id LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR s.site LIKE '        . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR ht.name LIKE '	    . db_qstr('%' . get_request_var('filter') . '%') . ')';
+			OR s.site LIKE '		. db_qstr('%' . get_request_var('filter') . '%') . '
+			OR ht.name LIKE '		. db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = "WHERE h.deleted = ''";
 	}
@@ -334,7 +334,7 @@ function automation_get_matching_device_sql(array &$rule, string $rule_type): ar
 	if ($hsc_sql !== false) {
 		$hsc_join = "LEFT JOIN (\n$hsc_sql\n\t\t) AS hsc\n\t\tON hsc.host_id = h.id";
 	} else {
-		$hsc_join = "";
+		$hsc_join = '';
 	}
 
 	$sql_query = "SELECT DISTINCT h.id AS host_id, h.hostname, h.description,
@@ -392,11 +392,11 @@ function automation_get_matching_graphs_sql(array $rule, string $rule_type): arr
 	if (get_request_var('filter') != '') {
 		$sql_where = 'WHERE (
 			gtg.title_cache LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR gt.name LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR s.name LIKE '        . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR gt.name LIKE '	   . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR s.name LIKE '		. db_qstr('%' . get_request_var('filter') . '%') . '
 			OR h.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR h.location LIKE '    . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR h.hostname LIKE '    . db_qstr('%' . get_request_var('filter') . '%') . ')';
+			OR h.location LIKE '	. db_qstr('%' . get_request_var('filter') . '%') . '
+			OR h.hostname LIKE '	. db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
 	}
@@ -427,7 +427,7 @@ function automation_get_matching_graphs_sql(array $rule, string $rule_type): arr
 		$hsc_join = "LEFT JOIN ($hsc_sql) AS hsc
 			ON hsc.host_id = h.id";
 	} else {
-		$hsc_join = "";
+		$hsc_join = '';
 	}
 
 	$total_rows_query = "SELECT COUNT(gtg.id)
@@ -503,7 +503,7 @@ function create_tree_graphs_filter(): array {
 	$templates = get_allowed_graph_templates('', 'name', '', $total_rows);
 
 	if (cacti_sizeof($templates)) {
-		foreach($templates as $t) {
+		foreach ($templates as $t) {
 			$rtemplates[$t['id']] = $t['name'];
 		}
 	}
@@ -511,8 +511,9 @@ function create_tree_graphs_filter(): array {
 	$rtemplates = $any + $none + $rtemplates;
 
 	$hosts = get_allowed_devices();
+
 	if (cacti_sizeof($hosts)) {
-		foreach($hosts as $h) {
+		foreach ($hosts as $h) {
 			$rhosts[$h['id']] = $h['description'];
 		}
 	}
@@ -586,7 +587,7 @@ function create_tree_graphs_filter(): array {
 			)
 		),
 		'sort' => array(
-			'sort_column' => 'title_cache',
+			'sort_column'    => 'title_cache',
 			'sort_direction' => 'ASC'
 		)
 	);
@@ -929,7 +930,7 @@ function display_new_graphs(array $rule, string $url): void {
 	global $config, $item_rows;
 
 	/* create the page filter */
-	$pageFilter = new CactiTableFilter(__('Matching Indexes'), $url, 'form', 'sess_auto_mo', false, false, false);
+	$pageFilter             = new CactiTableFilter(__('Matching Indexes'), $url, 'form', 'sess_auto_mo', false, false, false);
 	$pageFilter->rows_label = __('Objects');
 	$pageFilter->render();
 
@@ -1062,7 +1063,7 @@ function process_sanitize_draw_tree_items_filter(bool $render = false, string $u
 	$header = __('Matching Items');
 
 	/* create the page filter */
-	$pageFilter = new CactiTableFilter($header, $url, 'forms', 'sess_auto_tim');
+	$pageFilter             = new CactiTableFilter($header, $url, 'forms', 'sess_auto_tim');
 	$pageFilter->rows_label = __('Data Queries');
 
 	$pageFilter->set_filter_array($filters);
@@ -1111,7 +1112,7 @@ function display_matching_trees(string $rule_id, $rule_type, array $item, string
 		$hsc_join = "LEFT JOIN ($hsc_sql) AS hsc
 			ON hsc.host_id = h.id";
 	} else {
-		$hsc_join = "";
+		$hsc_join = '';
 	}
 
 	if ($leaf_type == TREE_ITEM_TYPE_HOST) {
@@ -1143,11 +1144,11 @@ function display_matching_trees(string $rule_id, $rule_type, array $item, string
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
 		$sql_where .= ' AND (
-			h.hostname LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
+			h.hostname LIKE '	   . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR h.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR h.location LIKE '    . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR s.name LIKE '        . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR ht.name LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . ')';
+			OR h.location LIKE '	. db_qstr('%' . get_request_var('filter') . '%') . '
+			OR s.name LIKE '		. db_qstr('%' . get_request_var('filter') . '%') . '
+			OR ht.name LIKE '	   . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 
 	if (db_column_exists('sites', 'disabled')) {
@@ -1204,7 +1205,7 @@ function display_matching_trees(string $rule_id, $rule_type, array $item, string
 		$sql_tables
 		$sql_where AND ($sql_filter)";
 
-cacti_log($rows_query);
+	cacti_log($rows_query);
 	$total_rows = cacti_sizeof(db_fetch_assoc($rows_query, false));
 
 	$sortby = get_request_var('sort_column');
@@ -1313,10 +1314,10 @@ cacti_log($rows_query);
 function api_automation_column_exists(string $column, array $tables): bool {
 	$column = str_replace(array('h.', 'ht.', 'gt.', 'gl.', 'gtg.'), array('', '', '', '', ''), $column);
 
-cacti_log("The column is now $column");
+	cacti_log("The column is now $column");
 
 	if (cacti_sizeof($tables)) {
-		foreach($tables as $table) {
+		foreach ($tables as $table) {
 			if (db_column_exists($table, $column)) {
 				return true;
 			}
@@ -1353,31 +1354,31 @@ function display_match_rule_items(string $title, array $rule, string $rule_type,
 	$display_text = array(
 		array(
 			'display' => __('Item'),
-			'align' => 'left'
+			'align'   => 'left'
 		),
 		array(
 			'display' => __('Sequence'),
-			'align' => 'left'
+			'align'   => 'left'
 		),
 		array(
 			'display' => __('Operation'),
-			'align' => 'left'
+			'align'   => 'left'
 		),
 		array(
 			'display' => __('Field'),
-			'align' => 'left'
+			'align'   => 'left'
 		),
 		array(
 			'display' => __('Operator'),
-			'align' => 'left'
+			'align'   => 'left'
 		),
 		array(
 			'display' => __('Pattern'),
-			'align' => 'left'
+			'align'   => 'left'
 		),
 		array(
 			'display' => __('Actions'),
-			'align' => 'right'
+			'align'   => 'right'
 		)
 	);
 
@@ -1393,7 +1394,7 @@ function display_match_rule_items(string $title, array $rule, string $rule_type,
 
 			$url = $module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type;
 
-			form_selectable_cell(filter_value(__('Item # %d', $i+1), '', $url), $i);
+			form_selectable_cell(filter_value(__('Item # %d', $i + 1), '', $url), $i);
 			form_selectable_cell($item['sequence'], $i);
 			form_selectable_cell($operation, $i);
 			form_selectable_ecell($item['field'], $i);
@@ -1408,7 +1409,7 @@ function display_match_rule_items(string $title, array $rule, string $rule_type,
 
 			$form_data = '';
 
-			if ($i != cacti_sizeof($items)-1) {
+			if ($i != cacti_sizeof($items) - 1) {
 				$url = $module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type;
 
 				$form_data .= '<a class="pic fa fa-caret-down moveArrow"
@@ -1499,7 +1500,7 @@ function display_graph_rule_items(string $title, array &$rule, string $rule_type
 
 			$url = $module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type;
 
-			form_selectable_cell(filter_value(__('Item # %d', $i+1), '', $url), $i);
+			form_selectable_cell(filter_value(__('Item # %d', $i + 1), '', $url), $i);
 			form_selectable_cell($item['sequence'], $i);
 			form_selectable_cell($operation, $i);
 			form_selectable_cell(html_escape($item['field']), $i);
@@ -1514,7 +1515,7 @@ function display_graph_rule_items(string $title, array &$rule, string $rule_type
 
 			$form_data = '';
 
-			if ($i != cacti_sizeof($items)-1) {
+			if ($i != cacti_sizeof($items) - 1) {
 				$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Down') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
@@ -1605,7 +1606,7 @@ function display_tree_rule_items(string $title, array $rule, string $item_type, 
 
 			$url = $module . '?action=item_edit&tab=rule&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type;
 
-			form_selectable_cell(filter_value(__('Item # %d', $i+1), '', $url), $i);
+			form_selectable_cell(filter_value(__('Item # %d', $i + 1), '', $url), $i);
 			form_selectable_cell($item['sequence'], $i);
 			form_selectable_cell($field_name, $i);
 			form_selectable_cell($tree_sort_types[$item['sort_type']], $i);
@@ -1615,7 +1616,7 @@ function display_tree_rule_items(string $title, array $rule, string $item_type, 
 
 			$form_data = '';
 
-			if ($i != cacti_sizeof($items)-1) {
+			if ($i != cacti_sizeof($items) - 1) {
 				$url = $module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id . '&rule_type=' . $rule_type;
 
 				$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' .
@@ -1816,6 +1817,7 @@ function build_graph_object_sql_having(array $rule, string $filter): string {
 
 		return $sql_having;
 	}
+
 	return '';
 }
 
@@ -1925,7 +1927,7 @@ function build_rule_item_filter(array $automation_rule_items, string $prefix = '
 	if (cacti_sizeof($automation_rule_items)) {
 		$sql_filter = ' ';
 
-		foreach($automation_rule_items as $automation_rule_item) {
+		foreach ($automation_rule_items as $automation_rule_item) {
 			// AND|OR|(|)
 			if ($automation_rule_item['operation'] != AUTOMATION_OPER_NULL) {
 				if ($automation_rule_item['operation'] == AUTOMATION_OPER_RIGHT_BRACKET) {
@@ -2037,7 +2039,7 @@ function get_matching_hosts(array $rule, string $rule_type, string $sql_where=''
 		$hsc_join = "LEFT JOIN ($hsc_sql) AS hsc
 			ON hsc.host_id = h.id";
 	} else {
-		$hsc_join = "";
+		$hsc_join = '';
 	}
 
 	$sql_query = "SELECT h.id AS host_id, h.hostname, h.description,
@@ -2090,7 +2092,7 @@ function get_matching_graphs(array $rule, string $rule_type, string $sql_where =
 		$hsc_join = "LEFT JOIN ($hsc_sql) AS hsc
 			ON hsc.host_id = h.id";
 	} else {
-		$hsc_join = "";
+		$hsc_join = '';
 	}
 
 	$sql_query = "SELECT h.id AS host_id, h.hostname, h.description,
@@ -2198,7 +2200,7 @@ function make_host_snnp_cache_sql(): string|false {
 	if (cacti_sizeof($fields)) {
 		$sql = "\t\tSELECT host_id ";
 
-		foreach($fields as $field) {
+		foreach ($fields as $field) {
 			$sql .= ",\n\t\t\tMAX(CASE WHEN field_name = '{$field['field_name']}' THEN field_value ELSE NULL END) AS `{$field['field_name']}`";
 		}
 
@@ -2927,9 +2929,9 @@ function automation_execute_device_create_tree(string $host_id): void {
 			ON atr.id = aatr.rule_id
 			AND aatr.rule_type = 2
 			WHERE enabled = 'on'
-			AND leaf_type = " . TREE_ITEM_TYPE_HOST . "
+			AND leaf_type = " . TREE_ITEM_TYPE_HOST . '
 			AND host_template_id = ?
-			ORDER BY aatr.sequence";
+			ORDER BY aatr.sequence';
 
 		$rules = db_fetch_assoc_prepared($sql, array($host_template_id));
 	} else {
@@ -3029,9 +3031,9 @@ function automation_execute_graph_create_tree(string $graph_id): void {
 			ON atr.id = aatr.rule_id
 			AND aatr.rule_type = 2
 			WHERE enabled = 'on'
-			AND leaf_type = " . TREE_ITEM_TYPE_GRAPH . "
+			AND leaf_type = " . TREE_ITEM_TYPE_GRAPH . '
 			AND host_template_id = ?
-			ORDER BY aatr.sequence";
+			ORDER BY aatr.sequence';
 
 		$rules = db_fetch_assoc_prepared($sql, array($host_template_id));
 	} else {
@@ -3043,7 +3045,6 @@ function automation_execute_graph_create_tree(string $graph_id): void {
 
 		$rules = db_fetch_assoc($sql);
 	}
-
 
 	cacti_log($function . ' Graph[' . $graph_id . '], Matching rule sql: ' . str_replace("\n",' ', $sql) . ' matches: ' . cacti_sizeof($rules), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
 
@@ -3197,6 +3198,7 @@ function create_dq_graphs(int $host_id, int $snmp_query_id, array $rule): bool {
 
 			if (isset($existsAlready) && $existsAlready > 0) {
 				cacti_log('NOTE: ' . $function . ' Device[' . $host_id . "] Graph Creation Skipped - Already Exists - Graph[$existsAlready]", false, 'AUTOM8', POLLER_VERBOSITY_HIGH);
+
 				continue;
 			}
 
@@ -3209,7 +3211,6 @@ function create_dq_graphs(int $host_id, int $snmp_query_id, array $rule): bool {
 					if (cacti_sizeof($return_array) &&
 						array_key_exists('local_graph_id', $return_array) &&
 						array_key_exists('local_data_id', $return_array)) {
-
 						$data_source_id = db_fetch_cell_prepared('SELECT data_template_rrd.local_data_id
 							FROM graph_templates_item, data_template_rrd
 							WHERE graph_templates_item.local_graph_id = ?
@@ -3239,6 +3240,7 @@ function create_dq_graphs(int $host_id, int $snmp_query_id, array $rule): bool {
 			}
 		}
 	}
+
 	return true;
 }
 
@@ -4047,7 +4049,7 @@ function automation_primeIPAddressTable(int $network_id): void {
 	if ($ignore_ips != '') {
 		$ignore_ips = explode(',', $ignore_ips);
 
-		foreach($ignore_ips as $index => $ip) {
+		foreach ($ignore_ips as $index => $ip) {
 			$ignore_ips[$index] = trim($ip);
 		}
 	} else {
@@ -4597,7 +4599,7 @@ function automation_type_to_table(string $type): string {
 		'snmp'         => 'automation_snmp',
 		'snmp_items'   => 'automation_snmp_items',
 		default        => $table,
-    };
+	};
 
 	return $table;
 }
@@ -4660,11 +4662,11 @@ function automation_update_hashes(): void {
 		'automation_networks'
 	);
 
-	foreach($tables as $table) {
+	foreach ($tables as $table) {
 		$items = db_fetch_assoc("SELECT id FROM $table WHERE hash = ''");
 
 		if (cacti_sizeof($items)) {
-			foreach($items as $item) {
+			foreach ($items as $item) {
 				$hash = get_hash_automation(0, $table);
 
 				db_execute_prepared("UPDATE $table
@@ -4696,13 +4698,13 @@ function automation_network_export(array $network_ids): array {
 
 	$json_array = array();
 
-	$json_array['name'] = clean_up_name(strtolower($export_name));
+	$json_array['name']        = clean_up_name(strtolower($export_name));
 	$json_array['export_name'] = $json_array['name'] . '.json';
 
 	if (cacti_sizeof($network_ids)) {
 		$networks = array();
 
-		foreach($network_ids as $id) {
+		foreach ($network_ids as $id) {
 			/* get the row of data */
 			$network = db_fetch_row_prepared('SELECT *
 				FROM automation_networks
@@ -4742,7 +4744,7 @@ function automation_network_export(array $network_ids): array {
 				array($snmp_id));
 
 			/* remove objects that have a hash */
-			foreach($snmp_items as $index => $item) {
+			foreach ($snmp_items as $index => $item) {
 				unset($snmp_items[$index]['id']);
 				unset($snmp_items[$index]['snmp_id']);
 
@@ -4797,13 +4799,13 @@ function automation_device_rule_export(array $template_ids): array {
 
 	$json_array = array();
 
-	$json_array['name'] = clean_up_name(strtolower($export_name));
+	$json_array['name']        = clean_up_name(strtolower($export_name));
 	$json_array['export_name'] = $json_array['name'] . '.json';
 
 	if (cacti_sizeof($template_ids)) {
 		$devices = array();
 
-		foreach($template_ids as $id) {
+		foreach ($template_ids as $id) {
 			/* get the row of data */
 			$device = db_fetch_row_prepared('SELECT *
 				FROM automation_templates
@@ -4824,7 +4826,7 @@ function automation_device_rule_export(array $template_ids): array {
 				WHERE template_id = ?',
 				array($id));
 
-			foreach($device_rule_items as $index => $rule) {
+			foreach ($device_rule_items as $index => $rule) {
 				if ($rule['rule_type'] == 1) {
 					$device_rule_items[$index]['rule_id'] = db_fetch_cell_prepared('SELECT hash
 						FROM automation_graph_rules
@@ -4850,7 +4852,7 @@ function automation_device_rule_export(array $template_ids): array {
 				array($id));
 
 			/* remove objects that have a hash */
-			foreach($graph_rules as $index => $rule) {
+			foreach ($graph_rules as $index => $rule) {
 				$rule_id = $rule['id'];
 
 				$graph_rules[$index]['snmp_query_id'] = db_fetch_cell_prepared('SELECT hash
@@ -4872,7 +4874,7 @@ function automation_device_rule_export(array $template_ids): array {
 					array($rule_id));
 
 				/* remove objects that have a hash */
-				foreach($graph_rule_items as $grindex => $rule_item) {
+				foreach ($graph_rule_items as $grindex => $rule_item) {
 					unset($graph_rule_items[$grindex]['id']);
 					unset($graph_rule_items[$grindex]['rule_id']);
 				}
@@ -4891,7 +4893,7 @@ function automation_device_rule_export(array $template_ids): array {
 				 * rule_types 1,2 are Graph Rules
 				 * rule_types 3,4 are Tree Rules
 				 */
-				foreach($graph_match_items as $gmindex => $rule_item) {
+				foreach ($graph_match_items as $gmindex => $rule_item) {
 					unset($graph_match_items[$gmindex]['id']);
 					unset($graph_match_items[$gmindex]['rule_id']);
 				}
@@ -4908,7 +4910,7 @@ function automation_device_rule_export(array $template_ids): array {
 				array($id));
 
 			/* remove objects that have a hash */
-			foreach($tree_rules as $index => $rule) {
+			foreach ($tree_rules as $index => $rule) {
 				$rule_id = $rule['id'];
 
 				/* get the snmp options item data */
@@ -4918,7 +4920,7 @@ function automation_device_rule_export(array $template_ids): array {
 					array($rule_id));
 
 				/* remove objects that have a hash */
-				foreach($tree_rule_items as $trindex => $rule_item) {
+				foreach ($tree_rule_items as $trindex => $rule_item) {
 					unset($tree_rule_items[$trindex]['id']);
 
 					$tree_rule_items[$trindex]['rule_id'] = db_fetch_cell_prepared('SELECT hash
@@ -4948,7 +4950,7 @@ function automation_device_rule_export(array $template_ids): array {
 				 * rule_types 1,2 are Graph Rules
 				 * rule_types 3,4 are Tree Rules
 				 */
-				foreach($tree_match_items as $tmindex => $rule_item) {
+				foreach ($tree_match_items as $tmindex => $rule_item) {
 					unset($tree_match_items[$tmindex]['id']);
 					unset($tree_match_items[$tmindex]['rule_id']);
 				}
@@ -4972,7 +4974,7 @@ function automation_device_rule_export(array $template_ids): array {
 				$thold_rules = array();
 
 				if (cacti_sizeof($rules)) {
-					foreach($rules as $r) {
+					foreach ($rules as $r) {
 						$ht_hash = db_fetch_cell_prepared('SELECT hash
 							FROM host_template
 							WHERE id = ?',
@@ -5049,7 +5051,7 @@ function automation_tree_rule_create_tree(array $tree_data, array $branch_data):
 			if (cacti_sizeof($branch_data)) {
 				$parent = 0;
 
-				foreach($branch_data as $branch) {
+				foreach ($branch_data as $branch) {
 					$branch_id = db_fetch_cell_prepared('SELECT id
 						FROM graph_tree_items
 						WHERE parent = ?
@@ -5061,7 +5063,7 @@ function automation_tree_rule_create_tree(array $tree_data, array $branch_data):
 						$save = $branch;
 
 						/* what we know from the imported object */
-						$save['id'] = 0;
+						$save['id']            = 0;
 						$save['parent']        = $parent;
 						$save['graph_tree_id'] = $tree_id;
 
@@ -5150,13 +5152,13 @@ function automation_graph_rule_export(array $graph_rule_ids): array {
 
 	$json_array = array();
 
-	$json_array['name'] = clean_up_name(strtolower($export_name));
+	$json_array['name']        = clean_up_name(strtolower($export_name));
 	$json_array['export_name'] = $json_array['name'] . '.json';
 
 	if (cacti_sizeof($graph_rule_ids)) {
 		$graph_rules = array();
 
-		foreach($graph_rule_ids as $rule_id) {
+		foreach ($graph_rule_ids as $rule_id) {
 			/* get the snmp options item data */
 			$graph_rule = db_fetch_row_prepared('SELECT *
 				FROM automation_graph_rules
@@ -5180,7 +5182,7 @@ function automation_graph_rule_export(array $graph_rule_ids): array {
 				array($rule_id));
 
 			/* remove objects that have a hash */
-			foreach($graph_rule_items as $grindex => $rule_item) {
+			foreach ($graph_rule_items as $grindex => $rule_item) {
 				unset($graph_rule_items[$grindex]['id']);
 				unset($graph_rule_items[$grindex]['rule_id']);
 			}
@@ -5199,7 +5201,7 @@ function automation_graph_rule_export(array $graph_rule_ids): array {
 				array($rule_id));
 
 			/* remove objects that have a hash */
-			foreach($graph_match_items as $gmindex => $rule_item) {
+			foreach ($graph_match_items as $gmindex => $rule_item) {
 				unset($graph_match_items[$gmindex]['id']);
 				unset($graph_match_items[$gmindex]['rule_id']);
 			}
@@ -5235,13 +5237,13 @@ function automation_tree_rule_export(array $tree_rule_ids): array {
 
 	$json_array = array();
 
-	$json_array['name'] = clean_up_name(strtolower($export_name));
+	$json_array['name']        = clean_up_name(strtolower($export_name));
 	$json_array['export_name'] = $json_array['name'] . '.json';
 
 	if (cacti_sizeof($tree_rule_ids)) {
 		$tree_rules = array();
 
-		foreach($tree_rule_ids as $rule_id) {
+		foreach ($tree_rule_ids as $rule_id) {
 			/* get the snmp options item data */
 			$tree_rule = db_fetch_row_prepared('SELECT *
 				FROM automation_tree_rules
@@ -5255,7 +5257,7 @@ function automation_tree_rule_export(array $tree_rule_ids): array {
 				array($rule_id));
 
 			/* remove objects that have a hash */
-			foreach($tree_rule_items as $trindex => $rule_item) {
+			foreach ($tree_rule_items as $trindex => $rule_item) {
 				unset($tree_rule_items[$trindex]['id']);
 				unset($tree_rule_items[$trindex]['rule_id']);
 			}
@@ -5278,7 +5280,7 @@ function automation_tree_rule_export(array $tree_rule_ids): array {
 				array($rule_id));
 
 			/* remove objects that have a hash */
-			foreach($tree_match_items as $tmindex => $rule_item) {
+			foreach ($tree_match_items as $tmindex => $rule_item) {
 				unset($tree_match_items[$tmindex]['id']);
 				unset($tree_match_items[$tmindex]['rule_id']);
 			}
@@ -5314,13 +5316,13 @@ function automation_snmp_option_export(array $snmp_option_ids): array {
 
 	$json_array = array();
 
-	$json_array['name'] = clean_up_name(strtolower($export_name));
+	$json_array['name']        = clean_up_name(strtolower($export_name));
 	$json_array['export_name'] = $json_array['name'] . '.json';
 
 	if (cacti_sizeof($snmp_option_ids)) {
 		$options = array();
 
-		foreach($snmp_option_ids as $option) {
+		foreach ($snmp_option_ids as $option) {
 			/* get the snmp options data */
 			$snmp_option = db_fetch_row_prepared('SELECT *
 				FROM automation_snmp
@@ -5337,7 +5339,7 @@ function automation_snmp_option_export(array $snmp_option_ids): array {
 				array($option));
 
 			/* remove objects that have a hash */
-			foreach($snmp_items as $index => $item) {
+			foreach ($snmp_items as $index => $item) {
 				unset($snmp_items[$index]['id']);
 				unset($snmp_items[$index]['snmp_id']);
 
@@ -5379,24 +5381,31 @@ function automation_validate_upload(): array|bool {
 			switch ($_FILES['import_file']['error']) {
 				case 1:
 					raise_message('ftb', __('The file is too big.'), MESSAGE_LEVEL_ERROR);
+
 					break;
 				case 2:
 					raise_message('ftb2', __('The file is too big.'), MESSAGE_LEVEL_ERROR);
+
 					break;
 				case 3:
 					raise_message('ift', __('Incomplete file transfer.'), MESSAGE_LEVEL_ERROR);
+
 					break;
 				case 4:
 					raise_message('nfu', __('No file uploaded.'), MESSAGE_LEVEL_ERROR);
+
 					break;
 				case 6:
 					raise_message('tfm', __('Temporary folder missing.'), MESSAGE_LEVEL_ERROR);
+
 					break;
 				case 7:
 					raise_message('ftwf', __('Failed to write file to disk'), MESSAGE_LEVEL_ERROR);
+
 					break;
 				case 8:
 					raise_message('fusbe', __('File upload stopped by extension'), MESSAGE_LEVEL_ERROR);
+
 					break;
 			}
 
@@ -5431,7 +5440,7 @@ function automation_snmp_option_import(array $snmp): array {
 
 	$debug_data = array();
 
-	foreach($snmp as $column => $coldata) {
+	foreach ($snmp as $column => $coldata) {
 		switch($column) {
 			case 'hash':
 				$save['id']   = automation_hash_to_id('snmp', $coldata);
@@ -5440,7 +5449,7 @@ function automation_snmp_option_import(array $snmp): array {
 				break;
 			case 'name':
 				$save['name'] = $coldata;
-				$snmp_id = sql_save($save, 'automation_snmp');
+				$snmp_id      = sql_save($save, 'automation_snmp');
 
 				if ($snmp_id) {
 					if ($config['is_web']) {
@@ -5458,20 +5467,22 @@ function automation_snmp_option_import(array $snmp): array {
 
 				break;
 			case 'snmp_items':
-				foreach($coldata as $snmp_options) {
+				foreach ($coldata as $snmp_options) {
 					$save = array();
 
 					$save['snmp_id'] = $snmp_id;
 
-					foreach($snmp_options as $option => $optdata) {
+					foreach ($snmp_options as $option => $optdata) {
 						switch($option) {
 							case 'hash':
 								$save['id']   = automation_hash_to_id('snmp_items', $optdata);
 								$save['hash'] = $optdata;
 
 								break;
+
 							default:
 								$save[$option] = $optdata;
+
 								break;
 						}
 					}
@@ -5527,17 +5538,17 @@ function automation_network_import(string $json_data): array {
 
 				$save  = array();
 			} else {
-				$error = true;
+				$error                  = true;
 				$debug_data['errors'][] = __('The Automation Network Rule does not include any SNMP Options!');
 			}
 
 			if (!automation_validate_import_columns('automation_networks', $data, $debug_data)) {
 				$debug_data['errors'][] = __('The Automation Network Rule import columns do not match the database schema');
-				$error = true;
+				$error                  = true;
 			}
 
 			if (!$error) {
-				foreach($data as $column => $coldata) {
+				foreach ($data as $column => $coldata) {
 					switch($column) {
 						case 'hash':
 							$save['id']   = automation_hash_to_id('network', $coldata);
@@ -5569,6 +5580,7 @@ function automation_network_import(string $json_data): array {
 							}
 
 							break;
+
 						default:
 							$save[$column] = $coldata;
 
@@ -5630,11 +5642,11 @@ function automation_graph_rule_import(string $json_data): array {
 			$hash = $rule['hash'];
 
 			if (isset($rule['snmp_query_id']) && $rule['snmp_query_id'] != '') {
-				$hash = $rule['snmp_query_id'];
+				$hash          = $rule['snmp_query_id'];
 				$snmp_query_id = db_fetch_cell_prepared('SELECT id FROM snmp_query WHERE hash = ?', array($hash));
 
 				if (empty($snmp_query_id)) {
-					$error = true;
+					$error                  = true;
 					$debug_data['errors'][] = __('The Cacti install does not include the Data Query with the hash \'%s\'!', $hash);
 				} else {
 					$sqids[$hash] = $snmp_query_id;
@@ -5642,11 +5654,11 @@ function automation_graph_rule_import(string $json_data): array {
 			}
 
 			if (isset($rule['graph_type_id']) && $rule['graph_type_id'] != '') {
-				$hash = $rule['graph_type_id'];
+				$hash          = $rule['graph_type_id'];
 				$graph_type_id = db_fetch_cell_prepared('SELECT id FROM snmp_query_graph WHERE hash = ?', array($hash));
 
 				if (empty($graph_type_id)) {
-					$error = true;
+					$error                  = true;
 					$debug_data['errors'][] = __('The Cacti install does not include the Data Query Graph mapping with the hash \'%s\'!', $hash);
 				} else {
 					$sqgtids[$hash] = $graph_type_id;
@@ -5655,7 +5667,7 @@ function automation_graph_rule_import(string $json_data): array {
 		}
 
 		if (!$error) {
-			foreach($json_data['graph_rules'] as $rule) {
+			foreach ($json_data['graph_rules'] as $rule) {
 				$hash = $rule['hash'];
 
 				/* prepare the save array */
@@ -5665,7 +5677,7 @@ function automation_graph_rule_import(string $json_data): array {
 				unset($save['graph_rule_items']);
 				unset($save['graph_match_items']);
 
-				$save['id'] = db_fetch_cell_prepared('SELECT id FROM automation_graph_rules WHERE hash = ?', array($hash));
+				$save['id']            = db_fetch_cell_prepared('SELECT id FROM automation_graph_rules WHERE hash = ?', array($hash));
 				$save['snmp_query_id'] = $sqids[$rule['snmp_query_id']];
 				$save['graph_type_id'] = $sqgtids[$rule['graph_type_id']];
 
@@ -5688,7 +5700,7 @@ function automation_graph_rule_import(string $json_data): array {
 				}
 
 				if (cacti_sizeof($rule['graph_rule_items'])) {
-					foreach($rule['graph_rule_items'] as $rule_item) {
+					foreach ($rule['graph_rule_items'] as $rule_item) {
 						$hash = $rule_item['hash'];
 
 						$save = $rule_item;
@@ -5717,7 +5729,7 @@ function automation_graph_rule_import(string $json_data): array {
 				}
 
 				if (cacti_sizeof($rule['graph_match_items'])) {
-					foreach($rule['graph_match_items'] as $match_item) {
+					foreach ($rule['graph_match_items'] as $match_item) {
 						$hash = $match_item['hash'];
 
 						$save = $match_item;
@@ -5777,7 +5789,7 @@ function automation_tree_rule_import(array $json_data, bool $tree_branches = fal
 		$error   = false;
 		$save    = array();
 
-		foreach($json_data['tree_rules'] as $rule) {
+		foreach ($json_data['tree_rules'] as $rule) {
 			$hash = $rule['hash'];
 			$name = $rule['name'];
 
@@ -5823,7 +5835,7 @@ function automation_tree_rule_import(array $json_data, bool $tree_branches = fal
 			}
 
 			if (cacti_sizeof($rule['tree_rule_items'])) {
-				foreach($rule['tree_rule_items'] as $rule_item) {
+				foreach ($rule['tree_rule_items'] as $rule_item) {
 					$hash = $rule_item['hash'];
 
 					$save = $rule_item;
@@ -5852,7 +5864,7 @@ function automation_tree_rule_import(array $json_data, bool $tree_branches = fal
 			}
 
 			if (cacti_sizeof($rule['tree_match_items'])) {
-				foreach($rule['tree_match_items'] as $match_item) {
+				foreach ($rule['tree_match_items'] as $match_item) {
 					$hash = $match_item['hash'];
 
 					$save = $match_item;
@@ -5915,26 +5927,26 @@ function automation_template_import(array $json_data, bool $tree_branches = fals
 		$sqgtids = array();
 
 		foreach ($json_data['device'] as $data) {
-			$hash = $data['host_template'];
+			$hash             = $data['host_template'];
 			$host_template_id = db_fetch_cell_prepared('SELECT id FROM host_template WHERE hash = ?', array($hash));
 
 			if (empty($host_template_id)) {
-				$error = true;
+				$error                  = true;
 				$debug_data['errors'][] = __('The Cacti install does not include the Device Template with the hash \'%s\'!', $hash);
 			} else {
 				$htids[$hash] = $host_template_id;
 			}
 
 			if (cacti_sizeof($data['graph_rules'])) {
-				foreach($data['graph_rules'] AS $rule) {
+				foreach ($data['graph_rules'] as $rule) {
 					$hash = $rule['hash'];
 
 					if (isset($rule['snmp_query_id']) && $rule['snmp_query_id'] != '') {
-						$hash = $rule['snmp_query_id'];
+						$hash          = $rule['snmp_query_id'];
 						$snmp_query_id = db_fetch_cell_prepared('SELECT id FROM snmp_query WHERE hash = ?', array($hash));
 
 						if (empty($snmp_query_id)) {
-							$error = true;
+							$error                  = true;
 							$debug_data['errors'][] = __('The Cacti install does not include the Data Query with the hash \'%s\'!', $hash);
 						} else {
 							$sqids[$hash] = $snmp_query_id;
@@ -5942,11 +5954,11 @@ function automation_template_import(array $json_data, bool $tree_branches = fals
 					}
 
 					if (isset($rule['graph_type_id']) && $rule['graph_type_id'] != '') {
-						$hash = $rule['graph_type_id'];
+						$hash          = $rule['graph_type_id'];
 						$graph_type_id = db_fetch_cell_prepared('SELECT id FROM snmp_query_graph WHERE hash = ?', array($hash));
 
 						if (empty($graph_type_id)) {
-							$error = true;
+							$error                  = true;
 							$debug_data['errors'][] = __('The Cacti install does not include the Data Query Graph mapping with the hash \'%s\'!', $hash);
 						} else {
 							$sqgtids[$hash] = $graph_type_id;
@@ -6015,7 +6027,7 @@ function automation_template_import(array $json_data, bool $tree_branches = fals
 				$graph_match_item_ids = array();
 
 				if (cacti_sizeof($data['graph_rules'])) {
-					foreach($data['graph_rules'] as $rule) {
+					foreach ($data['graph_rules'] as $rule) {
 						$hash = $rule['hash'];
 
 						/* prepare the save array */
@@ -6025,7 +6037,7 @@ function automation_template_import(array $json_data, bool $tree_branches = fals
 						unset($save['graph_rule_items']);
 						unset($save['graph_match_items']);
 
-						$save['id'] = db_fetch_cell_prepared('SELECT id FROM automation_graph_rules WHERE hash = ?', array($hash));
+						$save['id']            = db_fetch_cell_prepared('SELECT id FROM automation_graph_rules WHERE hash = ?', array($hash));
 						$save['snmp_query_id'] = $sqids[$rule['snmp_query_id']];
 						$save['graph_type_id'] = $sqgtids[$rule['graph_type_id']];
 
@@ -6048,7 +6060,7 @@ function automation_template_import(array $json_data, bool $tree_branches = fals
 						}
 
 						if (cacti_sizeof($rule['graph_rule_items'])) {
-							foreach($rule['graph_rule_items'] as $rule_item) {
+							foreach ($rule['graph_rule_items'] as $rule_item) {
 								$hash = $rule_item['hash'];
 
 								$save = $rule_item;
@@ -6077,7 +6089,7 @@ function automation_template_import(array $json_data, bool $tree_branches = fals
 						}
 
 						if (cacti_sizeof($rule['graph_match_items'])) {
-							foreach($rule['graph_match_items'] as $match_item) {
+							foreach ($rule['graph_match_items'] as $match_item) {
 								$hash = $match_item['hash'];
 
 								$save = $match_item;
@@ -6108,7 +6120,7 @@ function automation_template_import(array $json_data, bool $tree_branches = fals
 				}
 
 				if (cacti_sizeof($data['tree_rules'])) {
-					foreach($data['tree_rules'] as $rule) {
+					foreach ($data['tree_rules'] as $rule) {
 						$hash = $rule['hash'];
 
 						/* prepare the save array */
@@ -6154,7 +6166,7 @@ function automation_template_import(array $json_data, bool $tree_branches = fals
 						}
 
 						if (cacti_sizeof($rule['tree_rule_items'])) {
-							foreach($rule['tree_rule_items'] as $rule_item) {
+							foreach ($rule['tree_rule_items'] as $rule_item) {
 								$hash = $rule_item['hash'];
 
 								$save = $rule_item;
@@ -6183,7 +6195,7 @@ function automation_template_import(array $json_data, bool $tree_branches = fals
 						}
 
 						if (cacti_sizeof($rule['tree_match_items'])) {
-							foreach($rule['tree_match_items'] as $match_item) {
+							foreach ($rule['tree_match_items'] as $match_item) {
 								$hash = $match_item['hash'];
 
 								$save = $match_item;
@@ -6219,7 +6231,7 @@ function automation_template_import(array $json_data, bool $tree_branches = fals
 				 * rule type 2 - Tree Rule
 				 */
 				if (cacti_sizeof($data['device_rules'])) {
-					foreach($data['device_rules'] as $rule) {
+					foreach ($data['device_rules'] as $rule) {
 						$hash = $rule['hash'];
 
 						$save = $rule;
@@ -6267,7 +6279,7 @@ function automation_template_import(array $json_data, bool $tree_branches = fals
 				if (!db_table_exists('plugin_thold_host_template')) {
 					$debug_data['failure'][] = __('The Thold Plugin is not Installed on this system.  So, Thresholds will not be imported.');
 				} else {
-					foreach($data['thold_rules'] AS $rule) {
+					foreach ($data['thold_rules'] as $rule) {
 						$thold_name = $rule['thold_template']['name'];
 
 						$thold_template_id = db_fetch_cell_prepared('SELECT id
@@ -6340,7 +6352,7 @@ function automation_template_import(array $json_data, bool $tree_branches = fals
  */
 function automation_validate_import_columns(string $table, array &$data, array &$debug_data): bool {
 	if (cacti_sizeof($data)) {
-		foreach($data as $column => $cdata) {
+		foreach ($data as $column => $cdata) {
 			if (!db_column_exists($table, $column)) {
 				$debug_data['errors'][] = __('Template column \'' . $column . '\' is not valid column.');
 
@@ -6373,4 +6385,3 @@ function automation_log(string $string, int $level = AUTOMATION_LOG_LOW): void {
 		cacti_log($string, false, 'AUTOMATION');
 	}
 }
-

@@ -1690,7 +1690,7 @@ function aggregate_get_data_sources(array &$graph_array, array &$data_sources, a
 			$message = __('The Graphs chosen for the Aggregate Graph below represent Graphs from multiple Graph Templates.  Aggregate does not support creating Aggregate Graphs from multiple Graph Templates.');
 
 			return false;
-		} elseif (cacti_sizeof($templates) == 1)  {
+		} elseif (cacti_sizeof($templates) == 1) {
 			if ($templates[0]['id'] == 0) {
 				/* selected graphs do not use templates */
 				$message = __('The Graphs chosen for the Aggregate Graph do not use Graph Templates.  Aggregate does not support creating Aggregate Graphs from non-templated graphs.');
@@ -1772,6 +1772,7 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 	if (cacti_sizeof($_object) > 0 && $_object['id'] > 0) {
 		/* drawing items for existing aggregate graph/template */
 		$is_edit =true;
+
 		/* fetch existing item values */
 		if (isset($_object['aggregate_template_id']) && $_object['aggregate_template_id'] == 0) {
 			/* this is aggregate graph with no aggregate template */
@@ -1922,7 +1923,7 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 			} else {
 				/* existing aggregate template or graph with no templating */
 				/* create a link to graph item editor */
-				print '<span title="' . __esc('Aggregate Items are not editable') . '">' . __('Item # %d', ($i+1)) . '</span>';
+				print '<span title="' . __esc('Aggregate Items are not editable') . '">' . __('Item # %d', ($i + 1)) . '</span>';
 			}
 			print '</td>';
 
