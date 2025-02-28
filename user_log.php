@@ -141,7 +141,7 @@ function view_user_log() {
 			</td>
 			<td class='nowrap'>
 				<?php if (isset($auth_realms[$item['realm']])) {
-					print filter_value($auth_realms[$item['realm']], get_request_var('filter'));
+					print filter_value($auth_realms[$item['realm']]['name'], get_request_var('filter'));
 				} else {
 					print __('N/A');
 				}
