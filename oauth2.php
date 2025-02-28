@@ -22,7 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-require('./include/auth.php');
+//require('./include/auth.php');
+require('./include/global.php');
 
 if (read_config_option('settings_how') != 3) {
 	cacti_log('WARNING: Trying get OAuth2 token but different mail method is configured');
@@ -110,6 +111,7 @@ if (!isset($_GET['code'])) { // If we don't have an authorization code then get 
 	//Use this to interact with an API on the users behalf
 	//Use this to get a new access token if the old one expires
 	print __('Refresh Token: ') . $token->getRefreshToken();
-	print '<br/>' . __('Store this token in Settings -> Mail/Reporting/DNS -> Oauth2 refresh token');
+	print '<br/>' . __('Store this token in Settings -> Mail/Reporting/DNS -> Oauth2 refresh token. ');
+	print '<br/>' . __('if the token is empty, it means it stays the same. The Oatuh2 provider will not resend it in that case. ');
 }
 
