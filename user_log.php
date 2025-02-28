@@ -127,37 +127,26 @@ function view_user_log() {
 	if (cacti_sizeof($user_log)) {
 		foreach ($user_log as $item) {
 			form_alternate_row('line' . $i, true);
-			?>
-			<td class='nowrap'>
-				<?php print filter_value($item['username'], get_request_var('filter'));?>
-			</td>
-			<td class='nowrap'>
-				<?php if (isset($item['full_name'])) {
-					print filter_value($item['full_name'], get_request_var('filter'));
-				} else {
-					print __('(User Removed)');
-				}
-			?>
-			</td>
-			<td class='nowrap'>
-				<?php if (isset($auth_realms[$item['realm']])) {
-					print filter_value($auth_realms[$item['realm']]['name'], get_request_var('filter'));
-				} else {
-					print __('N/A');
-				}
-			?>
-			</td>
-			<td class='nowrap'>
-				<?php print filter_value($item['time'], get_request_var('filter'));?>
-			</td>
-			<td class='nowrap'>
-				<?php print($item['result'] == 0 ? __('Failed'):($item['result'] == 1 ? __('Success - Password'):($item['result'] == 3 ? __('Success - Password Change'):__('Success - Token'))));?>
-			</td>
-			<td class='nowrap'>
-				<?php print filter_value($item['ip'], get_request_var('filter'));?>
-			</td>
-			</tr>
-			<?php
+
+			form_selectable_cell(filter_value($item['username'], get_request_var('filter')), $i, '', 'nowrap');
+
+			if (isset($item['full_name'])) {
+				form_selectable_cell(filter_value($item['full_name'], get_request_var('filter')), $i);
+			} else {
+				form_selectable_cell(__('(User Removed)'), $i);
+			}
+
+			if (isset($auth_realms[$item['realm']])) {
+				form_selectable_cell(filter_value($auth_realms[$item['realm']]['name'], get_request_var('filter')), $i);
+			} else {
+				form_selectable_cell(__('N/A'), $i);;
+			}
+
+			form_selectable_cell(filter_value($item['time'], get_request_var('filter')), $i);
+
+			form_selectable_cell(($item['result'] == 0 ? __('Failed'):($item['result'] == 1 ? __('Success - Password'):($item['result'] == 3 ? __('Success - Password Change'):__('Success - Token')))), $i);
+
+			form_selectable_cell(filter_value($item['ip'], get_request_var('filter')), $i);
 
 			$i++;
 		}
