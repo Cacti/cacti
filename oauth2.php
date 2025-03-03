@@ -22,7 +22,6 @@
  +-------------------------------------------------------------------------+
 */
 
-//require('./include/auth.php');
 require('./include/global.php');
 
 if (read_config_option('settings_how') != 3) {
