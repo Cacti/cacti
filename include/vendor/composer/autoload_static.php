@@ -53,8 +53,8 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
     public static $prefixDirsPsr4 = array (
         'Stevenmaguire\\OAuth2\\Client\\' => 
         array (
-            0 => __DIR__ . '/..' . '/stevenmaguire/oauth2-microsoft/src',
-            1 => __DIR__ . '/..' . '/stevenmaguire/oauth2-keycloak/src',
+            0 => __DIR__ . '/..' . '/stevenmaguire/oauth2-keycloak/src',
+            1 => __DIR__ . '/..' . '/stevenmaguire/oauth2-microsoft/src',
         ),
         'Psr\\Log\\' => 
         array (
