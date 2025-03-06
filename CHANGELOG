@@ -33,6 +33,7 @@ Cacti CHANGELOG
 -issue#5968: Removing jQuery Sparklines API as we are not using it and have adequate charting libraries
 -issue#5969: If System Level Browser TimeZone Support is disabled don't show the User Profile Option
 -issue#5973: Multiple Issues with database API function db_update_table() preventing correct update of an existing table
+-issue#6163: Checkbox is displayed always on in some cases
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors
