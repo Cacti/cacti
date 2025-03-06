@@ -5389,6 +5389,10 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 		$tenantId     = read_config_option('settings_oauth2_tenant_id');
 		$refreshToken = read_config_option('settings_oauth2_refresh_token');
 
+		if ($refreshToken == '') {
+			return __('No OAuth2 refrest token is specified. Configure OAuth2 correctly.');
+		}
+
 		switch (read_config_option('settings_oauth2_provider')) {
 			case 'google':
 				$provider = new League\OAuth2\Client\Provider\Google([
