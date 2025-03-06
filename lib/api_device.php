@@ -2837,7 +2837,7 @@ function api_clone_device_template($template_id, $template_name, $include_gt, $c
 								api_clone_message(sprintf('NOTE: Cloning Data Template \'%s\' to \'%s\'', $old_name, $new_name), true);
 
 								$new_name = api_clone_get_unique_name($old_name, 'data_template', 'name');
-								$new_dt   = api_duplicate_data_source(0, $data_template_id, $new_name);
+								$new_dt   = api_data_source_duplicate(0, $data_template_id, $new_name);
 
 								if (cacti_sizeof($old_snmp_query_graph_rrds)) {
 									foreach($old_snmp_query_graph_rrds as $rrd) {
@@ -2970,7 +2970,7 @@ function api_clone_device_template($template_id, $template_name, $include_gt, $c
 			if (!isset($duped_data_templates[$id])) {
 				api_clone_message(sprintf('NOTE: Cloning Data Template \'%s\' to \'%s\'', $old_name, $new_name), true);
 
-				$new_dt = api_duplicate_data_source(0, $id, $new_name);
+				$new_dt = api_data_source_duplicate(0, $id, $new_name);
 
 				if (isset($objects['data_templates'][$id]['script_path'])) {
 					$old_scriptfile = $objects['data_queries'][$id]['script_path'];

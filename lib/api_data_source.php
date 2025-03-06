@@ -621,7 +621,7 @@ function api_reapply_suggested_data_source_data($local_data_id) {
 	}
 }
 
-function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_source_title) {
+function api_data_source_duplicate($_local_data_id, $_data_template_id, $data_source_title) {
 	global $struct_data_source, $struct_data_source_item;
 
 	if (!empty($_local_data_id)) {
@@ -774,7 +774,7 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 	}
 }
 
-function api_duplicate_data_input($_data_input_id, $input_title) {
+function api_data_input_duplicate($_data_input_id, $input_title) {
 	$orig_input = db_fetch_row_prepared('SELECT *
 		FROM data_input
 		WHERE id = ?',
