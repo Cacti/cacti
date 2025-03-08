@@ -1608,7 +1608,7 @@ function get_graphs_aggregates_url($local_data_id) {
 	return $url;
 }
 
-function create_filter() {
+function create_filter($session_var) {
 	global $item_rows, $page_refresh_interval;
 
 	$all     = array('-1' => __('All'));
@@ -1642,9 +1642,12 @@ function create_filter() {
 	$sql_where  = '';
 	$sql_params = array();
 
-	$host_id = get_filter_request_var('host_id');
-	if (get_request_var('host_id') == '') {
-		$host_id = -1;
+	if (isset_request_var('host_id')) {
+		$host_id = get_request_var('host_id');
+	} elseif (isset($_SESSION[$session_var . '_host_id'])) {
+		$host_id = $_SESSION[$session_var . '_host_id'];
+	} else {
+		$host_id = '-1';
 	}
 
 	if ($host_id > 0) {
@@ -1802,7 +1805,7 @@ function create_filter() {
 }
 
 function process_sanitize_draw_filter($render = false) {
-	$filters = create_filter();
+	$filters = create_filter('sess_ds');
 
 	if (read_config_option('grds_creation_method') == 1) {
 		if (get_request_var('host_id') == '-1') {

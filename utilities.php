@@ -207,7 +207,7 @@ function utilities_clear_logfile() {
 	html_end_box();
 }
 
-function create_data_query_filter() {
+function create_data_query_filter($session_var) {
 	global $item_rows;
 
 	$all     = array('-1' => __('All'));
@@ -239,7 +239,13 @@ function create_data_query_filter() {
 	$sql_where  = '';
 	$sql_params = array();
 
-	$host_id = get_filter_request_var('host_id');
+	if (isset_request_var('host_id')) {
+		$host_id = get_request_var('host_id');
+	} elseif (isset($_SESSION[$session_var . '_host_id'])) {
+		$host_id = $_SESSION[$session_var . '_host_id'];
+	} else {
+		$host_id = '-1';
+	}
 
 	if ($host_id > 0) {
 		/* for the templates dropdown */
@@ -366,7 +372,7 @@ function create_data_query_filter() {
 }
 
 function process_sanitize_draw_data_query_filter($render = false) {
-	$filters = create_data_query_filter();
+	$filters = create_data_query_filter('sess_usnmp');
 
 	/* create the page filter */
 	$pageFilter = new CactiTableFilter(__('Data Query Cache Items'), 'utilities.php?action=view_snmp_cache', 'form_snmpcache', 'sess_usnmp');
@@ -658,7 +664,7 @@ function utilities_view_poller_cache() {
 	}
 }
 
-function create_poller_cache_filter() {
+function create_poller_cache_filter($session_var) {
 	global $item_rows;
 
 	$all     = array('-1' => __('All'));
@@ -690,7 +696,13 @@ function create_poller_cache_filter() {
 	$sql_where  = '';
 	$sql_params = array();
 
-	$host_id = get_filter_request_var('host_id');
+	if (isset_request_var('host_id')) {
+		$host_id = get_request_var('host_id');
+	} elseif (isset($_SESSION[$session_var . '_host_id'])) {
+		$host_id = $_SESSION[$session_var . '_host_id'];
+	} else {
+		$host_id = '-1';
+	}
 
 	if ($host_id > 0) {
 		/* for the templates dropdown */
@@ -827,7 +839,7 @@ function create_poller_cache_filter() {
 }
 
 function process_sanitize_draw_poller_cache_filter($render = false) {
-	$filters = create_poller_cache_filter();
+	$filters = create_poller_cache_filter('sess_pollerc');
 
 	$running = is_process_running('pushout', 'rmaster', 0);
 

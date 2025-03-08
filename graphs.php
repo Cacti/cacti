@@ -773,14 +773,20 @@ function validate_item_vars() {
 	/* ================= input validation ================= */
 }
 
-function create_item_filter() {
+function create_item_filter($session_var) {
 	global $item_rows;
 
 	$all     = array('-1' => __('All'));
 	$any     = array('-1' => __('Any'));
 	$none    = array('0'  => __('None'));
 
-	$host_id = get_request_var('host_id');
+	if (isset_request_var('host_id')) {
+		$host_id = get_request_var('host_id');
+	} elseif (isset($_SESSION[$session_var . '_host_id'])) {
+		$host_id = $_SESSION[$session_var . '_host_id'];
+	} else {
+		$host_id = '-1';
+	}
 
 	if ($host_id > 0) {
 		/* for the templates dropdown */
@@ -863,7 +869,7 @@ function create_item_filter() {
 }
 
 function process_sanitize_draw_item_filter($render = false, $host) {
-	$filters = create_item_filter();
+	$filters = create_item_filter('sess_graphs');
 
 	if (empty($host['hostname'])) {
 		$header = __('Data Sources [No Device]');
@@ -2966,7 +2972,7 @@ function graphs() {
 	form_end();
 }
 
-function create_filter() {
+function create_filter($session_var) {
 	global $item_rows;
 
 	$all     = array('-1' => __('All'));
@@ -3030,7 +3036,13 @@ function create_filter() {
 	$sql_where  = '';
 	$sql_params = array();
 
-	$host_id = get_request_var('host_id');
+	if (isset_request_var('host_id')) {
+		$host_id = get_request_var('host_id');
+	} elseif (isset($_SESSION[$session_var . '_host_id'])) {
+		$host_id = $_SESSION[$session_var . '_host_id'];
+	} else {
+		$host_id = '-1';
+	}
 
 	if ($host_id > 0) {
 		/* for the templates dropdown */
@@ -3165,7 +3177,7 @@ function create_filter() {
 }
 
 function process_sanitize_draw_filter($render = false) {
-	$filters = create_filter();
+	$filters = create_filter('sess_graphs');
 
 	if (read_config_option('grds_creation_method') == 1) {
 		$add_url = html_escape('graphs.php?action=graph_edit&host_id=' . get_request_var('host_id'));
