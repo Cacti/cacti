@@ -1468,7 +1468,7 @@ function display_tree_rule_items($title, $rule, $item_type, $rule_type, $module)
 			if ($item['field'] === AUTOMATION_TREE_ITEM_TYPE_STRING) {
 				$field_name = $automation_tree_header_types[AUTOMATION_TREE_ITEM_TYPE_STRING];
 			} else {
-				$field_name = $item['field'];
+				$field_name = html_escape($item['field']);
 			}
 
 			form_alternate_row();
