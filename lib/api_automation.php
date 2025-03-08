@@ -128,7 +128,7 @@ function create_tree_devices_filter(string $rows_label = ''): array {
  *
  * @return void
  */
-function process_sanitize_draw_tree_devices_filter(bool $render = false, string $url = ''): void {
+function draw_tree_devices_filter(bool $render = false, string $url = '') : void {
 	$filters = create_tree_devices_filter();
 
 	$header = __('Matching Devices');
@@ -157,7 +157,7 @@ function process_sanitize_draw_tree_devices_filter(bool $render = false, string 
 function display_matching_hosts(array $rule, string $rule_type, string $url): void {
 	global $device_actions, $item_rows;
 
-	process_sanitize_draw_tree_devices_filter(true, $url);
+	draw_tree_devices_filter(true, $url);
 
 	$details = automation_get_matching_device_sql($rule, $rule_type);
 
@@ -601,7 +601,7 @@ function create_tree_graphs_filter(): array {
  *
  * @return void
  */
-function process_sanitize_draw_tree_graphs_filter(bool $render = false, string $url = ''): void {
+function draw_tree_graphs_filter(bool $render = false, string $url = '') : void {
 	$filters = create_tree_graphs_filter();
 
 	$header = __('Matching Graphs');
@@ -630,7 +630,7 @@ function process_sanitize_draw_tree_graphs_filter(bool $render = false, string $
 function display_matching_graphs(array $rule, string $rule_type, string $url): void {
 	global $graph_actions, $item_rows;
 
-	process_sanitize_draw_tree_graphs_filter(true, $url);
+	draw_tree_graphs_filter(true, $url);
 
 	$details = automation_get_matching_graphs_sql($rule, $rule_type);
 	$rows    = $details['rows'];
@@ -1057,7 +1057,7 @@ function display_new_graphs(array $rule, string $url): void {
  *
  * @return void
  */
-function process_sanitize_draw_tree_items_filter(bool $render = false, string $url = ''): void {
+function draw_tree_items_filter(bool $render = false, string $url = '') : void {
 	$filters = create_tree_devices_filter(__('Data Queries'));
 
 	$header = __('Matching Items');
@@ -1092,7 +1092,7 @@ function display_matching_trees(string $rule_id, $rule_type, array $item, string
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . " called: $rule_id/$rule_type", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
-	process_sanitize_draw_tree_items_filter(true, $url);
+	draw_tree_items_filter(true, $url);
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
@@ -1445,7 +1445,7 @@ function display_match_rule_items(string $title, array $rule, string $rule_type,
 	}
 
 	/* sanitize the variables */
-	process_sanitize_draw_tree_devices_filter();
+	draw_tree_devices_filter();
 
 	$details = automation_get_matching_device_sql($rule, $rule_type);
 	$data    = db_fetch_assoc($details['rows_query']);
@@ -1599,7 +1599,7 @@ function display_tree_rule_items(string $title, array $rule, string $item_type, 
 			if ($item['field'] === AUTOMATION_TREE_ITEM_TYPE_STRING) {
 				$field_name = $automation_tree_header_types[AUTOMATION_TREE_ITEM_TYPE_STRING];
 			} else {
-				$field_name = $item['field'];
+				$field_name = html_escape($item['field']);
 			}
 
 			form_alternate_row();

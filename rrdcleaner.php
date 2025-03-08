@@ -282,7 +282,7 @@ function list_rrd() {
 	/* install the rrdclean error handler */
 	set_error_handler('rrdclean_error_handler');
 
-	process_sanitize_draw_filter(true);
+	draw_rrdcleaner_filter(true);
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
@@ -468,7 +468,7 @@ function do_rrd() {
 	restore_error_handler();
 }
 
-function create_filter() {
+function create_rrdcleaner_filter() {
 	global $item_rows;
 
 	$ages = array(
@@ -558,8 +558,8 @@ function create_filter() {
 	);
 }
 
-function process_sanitize_draw_filter($render = false) {
-	$filters = create_filter();
+function draw_rrdcleaner_filter($render = false) {
+	$filters = create_rrdcleaner_filter();
 
 	/* create the page filter */
 	$pageFilter = new CactiTableFilter(__('RRDfile Cleaner'), 'rrdcleaner.php', 'form_rrdclean', 'sess_rrdclean');

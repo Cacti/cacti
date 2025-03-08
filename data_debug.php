@@ -35,7 +35,7 @@ ini_set('memory_limit', '-1');
 
 set_default_action();
 
-process_sanitize_draw_filter(false);
+draw_data_debug_filter(false);
 
 switch (get_request_var('action')) {
 	case 'actions':
@@ -461,7 +461,7 @@ function debug_wizard() {
 		$datefmt = 'Y-m-d H:i:s';
 	}
 
-	process_sanitize_draw_filter(true);
+	draw_data_debug_filter(true);
 
 	$total_rows = 0;
 	$checks     = array();
@@ -955,7 +955,7 @@ function debug_icon($result) {
 	return '<i class="fa fa-exclamation-triangle" style="color:orange"></i>';
 }
 
-function create_filter() {
+function create_data_debug_filter($session_var) {
 	global $item_rows, $page_refresh_interval;
 
 	$all     = array('-1' => __('All'));
@@ -999,7 +999,13 @@ function create_filter() {
 	$sql_where  = '';
 	$sql_params = array();
 
-	$host_id = get_request_var('host_id');
+	if (isset_request_var('host_id')) {
+		$host_id = get_request_var('host_id');
+	} elseif (isset($_SESSION[$session_var . '_host_id'])) {
+		$host_id = $_SESSION[$session_var . '_host_id'];
+	} else {
+		$host_id = '-1';
+	}
 
 	if ($host_id > 0) {
 		/* for the templates dropdown */
@@ -1167,8 +1173,8 @@ function create_filter() {
 	);
 }
 
-function process_sanitize_draw_filter($render = false) {
-	$filters = create_filter();
+function draw_data_debug_filter($render = false) {
+	$filters = create_data_debug_filter('sess_data_debug');
 
 	if (get_request_var('host_id') > 0) {
 		$hostname = db_fetch_cell_prepared('SELECT CONCAT(description, " ( ", hostname, " )")

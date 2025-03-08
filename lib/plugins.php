@@ -1614,7 +1614,7 @@ function api_plugin_archive_restore($plugin, $id, $type = 'archive') {
 				raise_message('archive_restored', __('Restore succeeded!  The archived Plugin \'%s\' Restore succeeded.', $plugin), MESSAGE_LEVEL_INFO);
 
 				db_execute_prepared('UPDATE plugin_config
-					SET last_updated = ?,
+					SET last_updated = ?
 					WHERE directory = ?',
 					array($new_updated, $plugin));
 			} else {

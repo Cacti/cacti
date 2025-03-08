@@ -5,7 +5,7 @@
  * billboard.js, JavaScript chart library
  * https://naver.github.io/billboard.js/
  *
- * @version 3.14.2
+ * @version 3.14.3
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -4172,7 +4172,7 @@ function getDataKeyForJson(keysParam, config) {
       if (hasViewBox($el.svg)) {
         const pos = [point, 0];
         isRotated && pos.reverse();
-        point = getTransformCTM($el.svg.node(), ...pos)[isRotated ? "y" : "x"];
+        point = getTransformCTM($el.eventRect.node(), ...pos)[isRotated ? "y" : "x"];
       } else {
         point -= isRotated ? rect.top : rect.left;
       }
@@ -4734,7 +4734,7 @@ var external_commonjs_d3_drag_commonjs2_d3_drag_amd_d3_drag_root_d3_ = __webpack
       let x = left + (mouse ? mouse[0] : 0) + (isMultipleX || isRotated ? 0 : width / 2);
       let y = top + (mouse ? mouse[1] : 0) + (isRotated ? 4 : 0);
       if (hasViewBox(svg)) {
-        const ctm = getTransformCTM($$.$el.svg.node(), x, y, false);
+        const ctm = getTransformCTM($$.$el.eventRect.node(), x, y, false);
         x = ctm.x;
         y = ctm.y;
       }
@@ -21358,8 +21358,9 @@ ${percentValue}%`;
    * @property {number} [gauge.expand.rate=0.98] Set expand rate.
    * @property {number} [gauge.expand.duration=50] Set the expand transition time in milliseconds.
    * @property {boolean} [gauge.enforceMinMax=false] Enforce to given min/max value.
-   * - When `gauge.min=50` and given value is `30`, gauge will render as empty value.
-   * - When `gauge.max=100` and given value is `120`, gauge will render till 100, not surpassing max value.
+   * - **Note:** Only works for single data series.
+   * 	- When `gauge.min=50` and given value is `30`, gauge will render as empty value.
+   * 	- When `gauge.max=100` and given value is `120`, gauge will render till 100, not surpassing max value.
    * @property {number} [gauge.min=0] Set min value of the gauge.
    * @property {number} [gauge.max=100] Set max value of the gauge.
    * @property {number} [gauge.startingAngle=-1 * Math.PI / 2] Set starting angle where data draws.
@@ -21862,7 +21863,7 @@ const bb = {
    *    bb.version;  // "1.0.0"
    * @memberof bb
    */
-  version: "3.14.2",
+  version: "3.14.3",
   /**
    * Generate chart
    * - **NOTE:** Bear in mind for the possiblity of ***throwing an error***, during the generation when:

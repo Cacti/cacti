@@ -2302,7 +2302,7 @@ function user() {
 			form_selectable_cell($user['id'], $user['id']);
 			form_selectable_cell(filter_value($user['full_name'], get_request_var('filter')), $user['id']);
 			form_selectable_cell($enabled, $user['id']);
-			form_selectable_cell($realm, $user['id']);
+			form_selectable_cell($realm['name'], $user['id']);
 			form_selectable_cell(($user['policy_graphs'] == 1 ? __('ALLOW'):__('DENY')), $user['id']);
 			form_selectable_cell(($user['policy_hosts'] == 1 ? __('ALLOW'):__('DENY')), $user['id']);
 			form_selectable_cell(($user['policy_graph_templates'] == 1 ? __('ALLOW'):__('DENY')), $user['id']);

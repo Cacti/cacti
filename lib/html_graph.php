@@ -114,7 +114,7 @@ function set_default_graph_action() {
 	}
 }
 
-function create_preview_filter() {
+function create_preview_filter($session_var) {
 	global $item_rows;
 
 	$all     = array('-1'   => __('All'));
@@ -145,7 +145,13 @@ function create_preview_filter() {
 		}
 	}
 
-	$host_id = get_filter_request_var('host_id');
+	if (isset_request_var('host_id')) {
+		$host_id = get_request_var('host_id');
+	} elseif (isset($_SESSION[$session_var . '_host_id'])) {
+		$host_id = $_SESSION[$session_var . '_host_id'];
+	} else {
+		$host_id = '-1';
+	}
 
 	if ($host_id > 0) {
 		$hostname = db_fetch_cell_prepared('SELECT description
@@ -363,11 +369,11 @@ function create_preview_filter() {
 	return $filters;
 }
 
-function process_sanitize_draw_preview_filter($render = false, $page = '', $action = 'get') {
+function draw_preview_filter($render = false, $page = '', $action = 'get') {
 	$header = __('Graph Preview Filters') . (isset_request_var('style') && get_request_var('style') != '' ? ' ' . __('[ Custom Graph List Applied - Filtering from List ]'):'');
 
 	/* create the page filter */
-	$filters    = create_preview_filter();
+	$filters    = create_preview_filter('sess_pview');
 	$pageFilter = new CactiTableFilter($header, $page, 'form_graph_view', 'sess_pview', '', false, false);
 	$pageFilter->rows_label  = __('Graphs');
 	$pageFilter->form_method = $action;
@@ -444,7 +450,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 
 	initialize_realtime_step_and_window();
 
-	process_sanitize_draw_preview_filter(true, $page, $action);
+	draw_preview_filter(true, $page, $action);
 
 	?>
 	<script type='text/javascript'>
@@ -918,7 +924,7 @@ function html_graph_preview_view() {
 	}
 }
 
-function create_listview_filter() {
+function create_listview_filter($session_var) {
 	global $item_rows;
 
 	$all     = array('-1'   => __('All'));
@@ -941,7 +947,13 @@ function create_listview_filter() {
 	);
 	$locations = $any + $none + $locations;
 
-	$host_id = get_filter_request_var('host_id');
+	if (isset_request_var('host_id')) {
+		$host_id = get_request_var('host_id');
+	} elseif (isset($_SESSION[$session_var . '_host_id'])) {
+		$host_id = $_SESSION[$session_var . '_host_id'];
+	} else {
+		$host_id = '-1';
+	}
 
 	if ($host_id > 0) {
 		$hostname = db_fetch_cell_prepared('SELECT description
@@ -1104,11 +1116,11 @@ function create_listview_filter() {
 	return $filters;
 }
 
-function process_sanitize_draw_listview_filter($render = false) {
+function draw_listview_filter($render = false) {
 	$header = __('Graph List View Filters') . (isset_request_var('style') && get_request_var('style') != '' ? ' ' . __('[ Custom Graph List Applied - Filtering from List ]'):'');
 
 	/* create the page filter */
-	$filters    = create_listview_filter();
+	$filters    = create_listview_filter('sess_lview');
 	$pageFilter = new CactiTableFilter($header, 'graph_view.php?action=list', 'form_graph_view', 'sess_lview');
 	$pageFilter->rows_label  = __('Graphs');
 	$pageFilter->form_method = 'post';
@@ -1137,7 +1149,7 @@ function html_graph_list_view() {
 
 	top_graph_header();
 
-	process_sanitize_draw_listview_filter(true);
+	draw_listview_filter(true);
 
 	if (get_request_var('graphs') == '-1') {
 		$graph_rows = read_config_option('num_rows_table');

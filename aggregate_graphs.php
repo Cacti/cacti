@@ -1890,7 +1890,7 @@ function aggregate_format_text($text, $filter) {
 	return $text;
 }
 
-function create_filter() {
+function create_aggregate_filter() {
 	global $item_rows;
 
 	$any  = array('-1' => __('Any'));
@@ -1970,8 +1970,8 @@ function create_filter() {
 	);
 }
 
-function process_sanitize_draw_filter($render = false) {
-	$filters = create_filter();
+function draw_aggregate_filter($render = false) {
+	$filters = create_aggregate_filter();
 
 	$header = __('Aggregate Graphs') . (get_request_var('local_graph_ids') != '' ? __(' [ Custom Graphs List Applied - Clear to Reset ]') : '');
 
@@ -1990,7 +1990,7 @@ function process_sanitize_draw_filter($render = false) {
 function aggregate_graph() {
 	global $actions, $item_rows;
 
-	process_sanitize_draw_filter(true);
+	draw_aggregate_filter(true);
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');

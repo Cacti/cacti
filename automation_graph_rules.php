@@ -115,7 +115,7 @@ switch (get_request_var('action')) {
 }
 
 function automation_export() {
-	process_sanitize_draw_filter(false);
+	draw_graph_rules_filter(false);
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
@@ -296,14 +296,22 @@ function form_save() {
 		/* Test for SQL injections */
 		$field_name = str_replace(array('ht.', 'h.', 'gt.'), '', $save['field']);
 
-		if (!db_column_exists('host', $field_name) && !db_column_exists('host_template', $field_name) && !db_column_exists('graph_templates', $field_name)) {
-			raise_message('sql_injection', __('An attempt was made to perform a SQL injection in Tree automation'), MESSAGE_LEVEL_ERROR);
+		$exists = db_fetch_cell_prepared('SELECT field_name
+			FROM host_snmp_cache
+			WHERE field_name = ?
+			LIMIT 1',
+			array($field_name));
 
-			cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
+		if (!$exists) {
+			if (!db_column_exists('host', $field_name) && !db_column_exists('host_template', $field_name) && !db_column_exists('graph_templates', $field_name)) {
+				raise_message('sql_injection', __('An attempt was made to perform a SQL injection in Tree automation'), MESSAGE_LEVEL_ERROR);
 
-			header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
+				cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
 
-			exit;
+				header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id'));
+
+				exit;
+			}
 		}
 
 		if (!is_error_message()) {
@@ -337,6 +345,19 @@ function form_save() {
 		$save['field']     = form_input_validate(((isset_request_var('field') && get_nfilter_request_var('field') != '0') ? get_nfilter_request_var('field') : ''), 'field', '', true, 3);
 		$save['operator']  = form_input_validate((isset_request_var('operator') ? get_nfilter_request_var('operator') : ''), 'operator', '^[0-9]+$', true, 3);
 		$save['pattern']   = form_input_validate((isset_request_var('pattern') ? get_nfilter_request_var('pattern') : ''), 'pattern', '', true, 3);
+
+		/* Test for SQL injections */
+		$field_name = str_replace(array('ht.', 'h.', 'gt.'), '', $save['field']);
+
+		if (!db_column_exists('host', $field_name) && !db_column_exists('host_template', $field_name) && !db_column_exists('graph_templates', $field_name)) {
+			raise_message('sql_injection', __('An attempt was made to perform a SQL injection in Graph automation'), MESSAGE_LEVEL_ERROR);
+
+			cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
+
+			header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
+
+			exit;
+		}
 
 		if (!is_error_message()) {
 			$item_id = sql_save($save, 'automation_match_rule_items');
@@ -782,7 +803,7 @@ function automation_graph_rules_edit() {
 	<?php
 }
 
-function create_filter() {
+function create_graph_rules_filter() {
 	global $item_rows;
 
 	$any = array(-1 => __('Any'));
@@ -872,8 +893,8 @@ function create_filter() {
 	);
 }
 
-function process_sanitize_draw_filter($render = false) {
-	$filters = create_filter();
+function draw_graph_rules_filter($render = false) {
+	$filters = create_graph_rules_filter();
 
 	/* create the page filter */
 	$pageFilter = new CactiTableFilter(__('Graph Rules'), 'automation_graph_rules.php', 'form_automation', 'sess_autom_gr', 'automation_graph_rules.php?action=edit');
@@ -891,7 +912,7 @@ function process_sanitize_draw_filter($render = false) {
 function automation_graph_rules() {
 	global $actions, $config, $item_rows;
 
-	process_sanitize_draw_filter(true);
+	draw_graph_rules_filter(true);
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');

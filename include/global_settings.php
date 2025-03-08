@@ -2317,7 +2317,7 @@ $settings['mail'] = array(
 		'method'        => 'spacer',
 	),
 	'settings_oauth2_provider' => array(
-		'friendly_name' => __('Oauth2 Provider'),
+		'friendly_name' => __('OAuth2 Provider'),
 		'description'   => __('Choose your OAuth2 provider.'),
 		'method'        => 'drop_array',
 		'array'         => array(
@@ -2341,7 +2341,7 @@ $settings['mail'] = array(
 		'max_length'    => 255,
 	),
 	'settings_oauth2_client_secret' => array(
-		'friendly_name' => __('Oauth2 Client Secret'),
+		'friendly_name' => __('OAuth2 Client Secret'),
 		'description'   => __('Please enter OAuth secret'),
 		'method'        => 'textbox',
 		'max_length'    => 255,
@@ -2353,15 +2353,15 @@ $settings['mail'] = array(
 		'max_length'    => 255,
 	),
 	'settings_oauth2_redirect_uri' => array(
-		'friendly_name' => __('Oauth2 Redirect URI'),
+		'friendly_name' => __('OAuth2 Redirect URI'),
 		'description'   => __('Please check this URI. It could be accessible from internet.'),
 		'method'        => 'textbox',
 		'max_length'    => 255,
 		'default'       => read_config_option('base_url') . 'oauth2.php'
 	),
 	'settings_oauth2_refresh_token' => array(
-		'friendly_name' => __('Oauth2 refresh token'),
-		'description'   => __('From OAuth2 provider'),
+		'friendly_name' => __('OAuth2 refresh token'),
+		'description'   => __('You can insert here OAuth2 refresh token directly, if you know it. Second option is retrieved from oauth2 provider. In this case set correct OAuth2 setting, save setting and open new browser tab or window and go to OAuth2 Redirect URI'),
 		'method'        => 'textbox',
 		'max_length'    => 255,
 	),

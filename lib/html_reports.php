@@ -659,8 +659,7 @@ function reports_item_remove() {
  * @return void
  */
 function reports_item_resequence($report_id) {
-	$items = db_fetch_assoc_prepared(
-		'SELECT *
+	$items = db_fetch_assoc_prepared('SELECT *
 		FROM reports_items
 		WHERE report_id = ?
 		ORDER BY sequence',
@@ -671,8 +670,7 @@ function reports_item_resequence($report_id) {
 		$sequence = 1;
 
 		foreach ($items as $i) {
-			db_execute_prepared(
-				'UPDATE reports_items
+			db_execute_prepared('UPDATE reports_items
 				SET sequence = ?
 				WHERE id = ?',
 				array($sequence, $i['id'])
@@ -748,11 +746,10 @@ function reports_item_validate() {
 				case 'host_id':
 					if (get_request_var('host_id') != '-1') {
 						if (get_request_var('local_graph_id') > 0) {
-							$valid = db_fetch_cell_prepared(
-								'SELECT id
-							FROM graph_local
-							WHERE host_id = ?
-							AND id = ?',
+							$valid = db_fetch_cell_prepared('SELECT id
+								FROM graph_local
+								WHERE host_id = ?
+								AND id = ?',
 								array(get_request_var('host_id'), get_request_var('local_graph_id'))
 							);
 
@@ -762,11 +759,10 @@ function reports_item_validate() {
 						}
 
 						if (get_request_var('host_template_id') > 0) {
-							$valid = db_fetch_cell_prepared(
-								'SELECT id
-							FROM host
-							WHERE host_template_id = ?
-							AND id = ?',
+							$valid = db_fetch_cell_prepared('SELECT id
+								FROM host
+								WHERE host_template_id = ?
+								AND id = ?',
 								array(get_request_var('host_template_id'), get_request_var('host_id'))
 							);
 
@@ -776,11 +772,10 @@ function reports_item_validate() {
 						}
 
 						if (get_request_var('graph_template_id') > 0) {
-							$valid = db_fetch_cell_prepared(
-								'SELECT id
-							FROM graph_local
-							WHERE graph_template_id = ?
-							AND id = ?',
+							$valid = db_fetch_cell_prepared('SELECT id
+								FROM graph_local
+								WHERE graph_template_id = ?
+								AND id = ?',
 								array(get_request_var('graph_template_id'), get_request_var('host_id'))
 							);
 
@@ -790,11 +785,10 @@ function reports_item_validate() {
 						}
 
 						if (get_request_var('site_id') > 0) {
-							$valid = db_fetch_cell_prepared(
-								'SELECT id
-							FROM host
-							WHERE site_id = ?
-							AND id = ?',
+							$valid = db_fetch_cell_prepared('SELECT id
+								FROM host
+								WHERE site_id = ?
+								AND id = ?',
 								array(get_request_var('site_id'), get_request_var('host_id'))
 							);
 
@@ -808,11 +802,10 @@ function reports_item_validate() {
 				case 'site_id':
 					if (get_request_var('site_id') != '-1') {
 						if (get_request_var('host_id') > 0) {
-							$valid = db_fetch_cell_prepared(
-								'SELECT id
-							FROM host
-							WHERE site_id = ?
-							AND id = ?',
+							$valid = db_fetch_cell_prepared('SELECT id
+								FROM host
+								WHERE site_id = ?
+								AND id = ?',
 								array(get_request_var('site_id'), get_request_var('host_id'))
 							);
 
@@ -822,13 +815,12 @@ function reports_item_validate() {
 						}
 
 						if (get_request_var('local_graph_id') > 0) {
-							$valid = db_fetch_cell_prepared(
-								'SELECT gl.id
-							FROM graph_local AS gl
-							INNER JOIN host AS h
-							ON gl.host_id = h.id
-							WHERE site_id = ?
-							AND gl.id = ?',
+							$valid = db_fetch_cell_prepared('SELECT gl.id
+								FROM graph_local AS gl
+								INNER JOIN host AS h
+								ON gl.host_id = h.id
+								WHERE site_id = ?
+								AND gl.id = ?',
 								array(get_request_var('site_id'), get_request_var('local_graph_id'))
 							);
 
@@ -842,13 +834,12 @@ function reports_item_validate() {
 				case 'host_template_id':
 					if (get_request_var('host_template_id') != '-1') {
 						if (get_request_var('local_graph_id') > 0) {
-							$valid = db_fetch_cell_prepared(
-								'SELECT gl.id
-							FROM graph_local AS gl
-							INNER JOIN host AS h
-							ON gl.host_id = h.id
-							WHERE host_template_id = ?
-							AND gl.id = ?',
+							$valid = db_fetch_cell_prepared('SELECT gl.id
+								FROM graph_local AS gl
+								INNER JOIN host AS h
+								ON gl.host_id = h.id
+								WHERE host_template_id = ?
+								AND gl.id = ?',
 								array(get_request_var('host_template_id'), get_request_var('local_graph_id'))
 							);
 
@@ -858,11 +849,10 @@ function reports_item_validate() {
 						}
 
 						if (get_request_var('host_id') > 0) {
-							$valid = db_fetch_cell_prepared(
-								'SELECT id
-							FROM host
-							WHERE host_template_id = ?
-							AND id = ?',
+							$valid = db_fetch_cell_prepared('SELECT id
+								FROM host
+								WHERE host_template_id = ?
+								AND id = ?',
 								array(get_request_var('host_template_id'), get_request_var('host_id'))
 							);
 
@@ -876,11 +866,10 @@ function reports_item_validate() {
 				case 'graph_template_id':
 					if (get_request_var('graph_template_id') != '-1') {
 						if (get_request_var('local_graph_id') > 0) {
-							$valid = db_fetch_cell_prepared(
-								'SELECT id
-							FROM graph_local
-							WHERE graph_template_id = ?
-							AND id = ?',
+							$valid = db_fetch_cell_prepared('SELECT id
+								FROM graph_local
+								WHERE graph_template_id = ?
+								AND id = ?',
 								array(get_request_var('graph_template_id'), get_request_var('local_graph_id'))
 							);
 
@@ -921,8 +910,7 @@ function reports_item_edit() {
 	$report_item['tree_id']           = -1;
 
 	if (isset_request_var('item_id') && get_filter_request_var('item_id') > 0) {
-		$report_item = db_fetch_row_prepared(
-			'SELECT *
+		$report_item = db_fetch_row_prepared('SELECT *
 			FROM reports_items WHERE id = ?',
 			array(get_request_var('item_id'))
 		);
@@ -966,8 +954,7 @@ function reports_item_edit() {
 		} else {
 			switch ($check) {
 				case 'graph_template_id':
-					$graph_template_description = db_fetch_cell_prepared(
-						'SELECT name
+					$graph_template_description = db_fetch_cell_prepared('SELECT name
 						FROM graph_templates
 						WHERE id = ?',
 						array($report_item[$check])
@@ -975,8 +962,7 @@ function reports_item_edit() {
 
 					break;
 				case 'host_id':
-					$host_description = db_fetch_cell_prepared(
-						'SELECT description
+					$host_description = db_fetch_cell_prepared('SELECT description
 						FROM host
 						WHERE id = ?',
 						array($report_item[$check])
@@ -988,8 +974,7 @@ function reports_item_edit() {
 	}
 
 	if ($report_item['local_graph_id'] > 0) {
-		$title_cache = db_fetch_cell_prepared(
-			'SELECT title_cache
+		$title_cache = db_fetch_cell_prepared('SELECT title_cache
 			FROM graph_templates_graph
 			WHERE local_graph_id = ?',
 			array($report_item['local_graph_id'])
@@ -1178,8 +1163,7 @@ function reports_item_edit() {
 	);
 
 	// fetch the current report record
-	$report = db_fetch_row_prepared(
-		'SELECT *
+	$report = db_fetch_row_prepared('SELECT *
 		FROM reports
 		WHERE id = ?',
 		array(get_filter_request_var('id'))
@@ -1603,7 +1587,7 @@ function reports_edit() {
 
 			break;
 		case 'preview':
-			process_sanitize_draw_preview_filter(true, $header_label);
+			draw_preview_filter(true, $header_label);
 
 			if (get_request_var('rdate') == '-1') {
 				if (get_request_var('style') == 'false') {
@@ -1697,10 +1681,9 @@ function display_reports_items($report_id) {
 					if ($item['graph_template_id'] == -1) {
 						$item_details .= __(', Graph Template: All Templates');
 					} else {
-						$item_details .= __(', Graph Template: %s', db_fetch_cell_prepared(
-							'SELECT name
-						FROM graph_templates
-						WHERE id = ?',
+						$item_details .= __(', Graph Template: %s', db_fetch_cell_prepared('SELECT name
+							FROM graph_templates
+							WHERE id = ?',
 							array($item['graph_template_id'])
 						));
 					}
@@ -1735,20 +1718,18 @@ function display_reports_items($report_id) {
 					break;
 				case REPORTS_ITEM_TREE:
 					if ($item['branch_id'] > 0) {
-						$branch_details = db_fetch_row_prepared(
-							'SELECT *
-						FROM graph_tree_items
-						WHERE id = ?',
+						$branch_details = db_fetch_row_prepared('SELECT *
+							FROM graph_tree_items
+							WHERE id = ?',
 							array($item['branch_id'])
 						);
 					} else {
 						$branch_details = array();
 					}
 
-					$tree_name = db_fetch_cell_prepared(
-						'SELECT name
-					FROM graph_tree
-					WHERE id = ?',
+					$tree_name = db_fetch_cell_prepared('SELECT name
+						FROM graph_tree
+						WHERE id = ?',
 						array($item['tree_id'])
 					);
 
@@ -1756,10 +1737,9 @@ function display_reports_items($report_id) {
 
 					if ($item['branch_id'] > 0) {
 						if ($branch_details['host_id'] > 0) {
-							$description = db_fetch_cell_prepared(
-								'SELECT description
-							FROM host
-							WHERE id = ?',
+							$description = db_fetch_cell_prepared('SELECT description
+								FROM host
+								WHERE id = ?',
 								array($branch_details['host_id'])
 							);
 
@@ -1928,7 +1908,7 @@ function create_preview_filter() {
 	);
 }
 
-function process_sanitize_draw_preview_filter($render = false, $header_label = '') {
+function draw_preview_filter($render = false, $header_label = '') {
 	$filters = create_preview_filter();
 
 	$report_id  = get_request_var('id');
@@ -1948,7 +1928,7 @@ function process_sanitize_draw_preview_filter($render = false, $header_label = '
 	}
 }
 
-function create_filter() {
+function create_reports_filter() {
 	global $item_rows;
 
 	$any  = array('-1' => __('Any'));
@@ -2032,8 +2012,8 @@ function create_filter() {
 	);
 }
 
-function process_sanitize_draw_filter($render = false) {
-	$filters = create_filter();
+function draw_reports_filter($render = false) {
+	$filters = create_reports_filter();
 
 	$header = __('Reports [%s]', (is_reports_admin() ? __('Administrator Level') : __('User Level')));
 
@@ -2058,7 +2038,7 @@ function reports() {
 	global $config, $item_rows, $reports_interval;
 	global $reports_actions, $attach_types, $sched_types;
 
-	process_sanitize_draw_filter(true);
+	draw_reports_filter(true);
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');

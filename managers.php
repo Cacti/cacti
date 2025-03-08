@@ -345,7 +345,7 @@ function create_manager_notification_filter() {
 	);
 }
 
-function process_sanitize_draw_manager_notification_filter($render = false, $header_label = '') {
+function draw_manager_notification_filter($render = false, $header_label = '') {
 	$filters = create_manager_notification_filter();
 
 	/* create the page filter */
@@ -364,7 +364,7 @@ function process_sanitize_draw_manager_notification_filter($render = false, $hea
 function manager_notifications($id, $header_label) {
 	global $item_rows, $mactions;
 
-	process_sanitize_draw_manager_notification_filter(true, $header_label);
+	draw_manager_notification_filter(true, $header_label);
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
@@ -542,7 +542,7 @@ function create_manager_log_filter($severity_levels) {
 	);
 }
 
-function process_sanitize_draw_manager_log_filter($render = false, $severity_levels = '', $header_label = '') {
+function draw_manager_log_filter($render = false, $severity_levels = '', $header_label = '') {
 	$filters = create_manager_log_filter($severity_levels);
 
 	/* create the page filter */
@@ -578,7 +578,7 @@ function manager_logs($id, $header_label) {
 		set_request_var('clear', true);
 	}
 
-	process_sanitize_draw_manager_log_filter(true, $severity_levels, $header_label);
+	draw_manager_log_filter(true, $severity_levels, $header_label);
 	/* ==================================================== */
 
 	if (get_request_var('rows') == '-1') {

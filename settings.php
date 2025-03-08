@@ -449,7 +449,7 @@ function display_settings() {
 			}).trigger('change');
 		} else if (currentTab == 'mail') {
 			$('#row_settings_email_header div.formHeaderText').append('<div id="emailtest" class="emailtest"><?php print __('Send a Test Email');?></div>');
-			$('#row_settings_oauth2_header div.formHeaderText').append('<div id="oauth2token" class="emailtest"><?php print __('Generate OAuth2 Refresh Token');?></div>');
+			$('#row_settings_oauth2_header div.formHeaderText').append('<div id="oauth2token" class="emailtest"><?php print __('Generate OAuth2 Refresh Token in new window');?></div>');
 
 			initMail();
 
@@ -485,34 +485,9 @@ function display_settings() {
 						getPresentHTTPError(data);
 					});
 			});
-			
-			$('#oauth2token').click(function() {
-				$.get('oauth2.php')
-					.done(function(data) {
-						$('body').append('<div id="oatoken" title="<?php print __esc('Get OAuth2 Token');?>"></div>');
-						$('#oatoken').html(data);
 
-						$('#oatoken').dialog({
-							autoOpen: false,
-							modal: true,
-							minHeight: 300,
-							maxHeight: 600,
-							height: 450,
-							width: 500,
-							autoOpen: true,
-							show: {
-								effect: 'appear',
-								duration: 100
-							},
-							hide: {
-								effect: 'appear',
-								duration: 100
-							}
-						});
-					})
-					.fail(function(data) {
-						getPresentHTTPError(data);
-					});
+			$('#oauth2token').click(function() {
+				window.open('<?php print read_config_option('settings_oauth2_redirect_uri');?>', '_blank');
 			});
 		} else if (currentTab == 'visual') {
 			currentTheme = $('#selected_theme').val();

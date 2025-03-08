@@ -63,7 +63,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'remove_history':
-		process_sanitize_draw_preview_filter();
+		draw_preview_filter();
 
 		$history_id = get_request_var('rdate');
 		$report_id  = get_request_var('id');
