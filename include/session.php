@@ -58,7 +58,7 @@ function cacti_db_session_close(): bool {
 	return true;
 }
 
-function cacti_db_session_read(int $id) {
+function cacti_db_session_read(string $id) {
 	db_execute_prepared('UPDATE IGNORE sessions
 		SET access = ?
 		WHERE id = ?',
@@ -77,7 +77,7 @@ function cacti_db_session_read(int $id) {
 	return $session;
 }
 
-function cacti_db_session_write(int $id, string $data): bool {
+function cacti_db_session_write(string $id, string $data): bool {
 	$access = time();
 
 	cacti_db_session_check();
