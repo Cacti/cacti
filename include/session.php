@@ -120,7 +120,7 @@ function cacti_db_session_write(string $id, string $data): bool {
 	return true;
 }
 
-function cacti_db_session_destroy(int $id): bool {
+function cacti_db_session_destroy(string $id): bool {
 	db_execute_prepared('DELETE FROM sessions
 		WHERE id = ?',
 		array($id));
