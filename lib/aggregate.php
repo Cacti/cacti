@@ -22,7 +22,21 @@
  +-------------------------------------------------------------------------+
  */
 
-function aggregate_build_children_url($local_graph_id, $graph_start = -1, $graph_end = -1, $rra_id = -1) {
+/**
+ * Builds a URL for the children graphs of an aggregate graph.
+ *
+ * This function constructs a URL that links to the children graphs of a specified aggregate graph.
+ * It first prunes the graphs associated with the given local graph ID, then fetches the aggregate
+ * graph data and its associated child graph IDs. If child graph IDs are found, it constructs a URL
+ * with the appropriate query parameters and returns it as a hyperlink.
+ *
+ * @param int $local_graph_id The ID of the local graph.
+ * @param int $graph_start Optional. The start time for the graph. Default is -1.
+ * @param int $graph_end Optional. The end time for the graph. Default is -1.
+ * @param int $rra_id Optional. The RRA ID for the graph. Default is -1.
+ * @return string The constructed URL as a hyperlink.
+ */
+function aggregate_build_children_url(int $local_graph_id, int $graph_start = -1, int $graph_end = -1, int $rra_id = -1): string {
 	global $config;
 
 	aggregate_prune_graphs($local_graph_id);
@@ -51,9 +65,21 @@ function aggregate_build_children_url($local_graph_id, $graph_start = -1, $graph
 			return "<a class='hyperLink aggregates' href='" . html_escape(CACTI_PATH_URL . 'graph_view.php?reset=1&page=1&graph_template_id=-1&host_id=-1&filter=&style=selective&action=preview' . ($graph_start >= 0 ? '&graph_start=' . $graph_start:'') . ($graph_end >= 0 ? '&graph_end=' . $graph_end:'') . ($rra_id >= 0 ? '&rra_id=' . $rra_id:'') . '&' . $graph_select) . "'><i class='drillDown fa fa-sitemap expandAggregate' title='" . __esc('Display Graphs from this Aggregate') . "'></i></a><br>" . PHP_EOL;
 		}
 	}
+
+	return '';
 }
 
-function api_aggregate_convert_template($graphs) {
+/**
+ * Converts a list of graphs to use an aggregate template.
+ *
+ * This function takes an array of graph IDs and applies an aggregate template to each graph.
+ * It saves the new aggregate graph configuration to the database and updates the aggregate graph items.
+ *
+ * @param array $graphs An array of graph IDs to be converted.
+ *
+ * @return void
+ */
+function api_aggregate_convert_template(array $graphs): void {
 	$aggregate_template_id = get_nfilter_request_var('aggregate_template_id');
 	$aggregate_template    = db_fetch_row_prepared('SELECT *
 		FROM aggregate_graph_templates
@@ -106,7 +132,20 @@ function api_aggregate_convert_template($graphs) {
 	}
 }
 
-function api_aggregate_associate($local_graph_id, $graphs) {
+/**
+ * Associates a list of graphs with a local graph in the aggregate graphs.
+ *
+ * This function retrieves the aggregate template and aggregate ID for the given local graph ID.
+ * If an aggregate ID is found, it determines the maximum sequence number for the aggregate graph items.
+ * It then iterates over the provided graphs and inserts or replaces each graph into the aggregate graph items
+ * with the appropriate sequence number. Finally, it pushes out the aggregates using the aggregate template and local graph ID.
+ *
+ * @param int $local_graph_id The ID of the local graph to associate with.
+ * @param array $graphs An array of graph IDs to associate with the local graph.
+ *
+ * @return void
+ */
+function api_aggregate_associate(int $local_graph_id, array $graphs): void {
 	$aggregate_template = db_fetch_cell_prepared('SELECT aggregate_template_id
 		FROM aggregate_graphs
 		WHERE local_graph_id = ?',
@@ -140,7 +179,21 @@ function api_aggregate_associate($local_graph_id, $graphs) {
 	}
 }
 
-function api_aggregate_disassociate($local_graph_id, $graphs) {
+/**
+ * Disassociates a list of graphs from an aggregate graph.
+ *
+ * This function removes the association between a specified local graph and a list of graphs
+ * from the aggregate graph. It first retrieves the aggregate template ID and aggregate ID
+ * for the given local graph ID. If an aggregate ID is found, it iterates through the list of
+ * graphs and deletes each association from the `aggregate_graphs_items` table. Finally, it
+ * calls the `push_out_aggregates` function to update the aggregate template.
+ *
+ * @param int $local_graph_id The ID of the local graph to disassociate.
+ * @param array $graphs An array of graph IDs to be disassociated from the aggregate graph.
+ *
+ * @return void
+ */
+function api_aggregate_disassociate(int $local_graph_id, array $graphs): void {
 	$aggregate_template = db_fetch_cell_prepared('SELECT aggregate_template_id
 		FROM aggregate_graphs
 		WHERE local_graph_id = ?',
@@ -163,7 +216,16 @@ function api_aggregate_disassociate($local_graph_id, $graphs) {
 	}
 }
 
-function api_aggregate_create($aggregate_name, $graphs, $agg_template_id = 0) {
+/**
+ * Creates an aggregate graph from a list of graphs.
+ *
+ * @param string $aggregate_name The name of the aggregate graph to be created.
+ * @param array $graphs An array of graph IDs to be included in the aggregate graph.
+ * @param int $agg_template_id Optional. The ID of the aggregate template to use. Default is 0.
+ *
+ * @return void
+ */
+function api_aggregate_create(string $aggregate_name, array $graphs, int $agg_template_id = 0): void {
 	/* get the first aggregate graph */
 	if ($agg_template_id == 0) {
 		$agg_template = db_fetch_row_prepared('SELECT *
@@ -240,13 +302,14 @@ function api_aggregate_create($aggregate_name, $graphs, $agg_template_id = 0) {
 
 /**
  * aggregate_error_handler	- PHP error handler
- * @param int $errno		- error id
- * @param string $errmsg	- error message
- * @param string $filename	- file name
- * @param int $linenum		- line of error
- * @param array $vars		- additional variables
+ * @param int $errno error id
+ * @param string $errmsg error message
+ * @param string $filename file name
+ * @param int $linenum line of error
+ * @param array $vars additional variables
+ * @return void
  */
-function aggregate_error_handler($errno, $errmsg, $filename, $linenum, $vars = array()) {
+function aggregate_error_handler(int $errno, string $errmsg, string $filename, int $linenum, array $vars = array()): void {
 	$errno &= error_reporting();
 
 	# return if error handling disabled by @
@@ -308,21 +371,19 @@ function aggregate_error_handler($errno, $errmsg, $filename, $linenum, $vars = a
 			}
 		}
 	}
-
-	return;
 }
 
 /**
  * get_next_sequence 			- returns the next available sequence id
  *
- * @param int $id 				- the current id
- * @param string $field 		- the field name that contains the target id
- * @param string $table_name 	- the table name that contains the target id
- * @param string $group_query 	- an SQL 'where' clause to limit the query
- * + @returns int					- the next available sequence id
- * @param mixed $key_field
+ * @param int $id The current id
+ * @param string $field The field name that contains the target id
+ * @param string $table_name The table name that contains the target id
+ * @param string $group_query An SQL 'where' clause to limit the query
+ * @param string $key_field
+ * @return int The next available sequence id
  */
-function get_next_sequence($id, $field, $table_name, $group_query, $key_field='id') {
+function get_next_sequence(int $id, string $field, string $table_name, string $group_query, string $key_field='id'): int {
 	cacti_log(__FUNCTION__ . '  called. Id: ' . $id . ' field: ' . $field . ' table: ' . $table_name, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	if (empty($id)) {
@@ -336,16 +397,16 @@ function get_next_sequence($id, $field, $table_name, $group_query, $key_field='i
 	} else {
 		$data = db_fetch_row("SELECT $field FROM $table_name WHERE $key_field = id");
 
-		return $data[$field];
+		return (int) $data[$field];
 	}
 }
 
 /**
  * find out, if this is a pure STACKed graph
- * @param int $_local_graph_id	- graph to be examined
- * @return bool					- true, if pure STACKed graph
+ * @param int $_local_graph_id graph to be examined
+ * @return bool	true, if pure STACKed graph
  */
-function aggregate_is_pure_stacked_graph($_local_graph_id) {
+function aggregate_is_pure_stacked_graph(int $_local_graph_id): bool {
 	cacti_log(__FUNCTION__ . ' local_graph: ' . $_local_graph_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	$_pure_stacked_graph = false;
@@ -376,7 +437,7 @@ function aggregate_is_pure_stacked_graph($_local_graph_id) {
  * @param int $_local_graph_id	- graph to be examined
  * @return bool					- true, if pure STACKed graph
  */
-function aggregate_is_stacked_graph($_local_graph_id) {
+function aggregate_is_stacked_graph(int $_local_graph_id): bool {
 	cacti_log(__FUNCTION__ . ' local_graph: ' . $_local_graph_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	$_pure_stacked_graph = false;
@@ -402,7 +463,16 @@ function aggregate_is_stacked_graph($_local_graph_id) {
 	return $_stacked_graph;
 }
 
-function aggregate_conditional_convert_graph_type($_graph_id, $_old_type, $_new_type) {
+/**
+ * Converts the graph type of a specific graph item from an old type to a new type.
+ *
+ * @param int $_graph_id The ID of the graph whose item type is to be converted.
+ * @param int $_old_type The current type of the graph item.
+ * @param int $_new_type The new type to which the graph item should be converted.
+ *
+ * @return void
+ */
+function aggregate_conditional_convert_graph_type(int $_graph_id, int $_old_type, int $_new_type): void {
 	cacti_log(__FUNCTION__ . '  called: graph: ' . $_graph_id . ' old item type: ' . $_old_type . ' new item type: ' . $_new_type, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	if (!empty($_graph_id) && !empty($_old_type)) {
@@ -423,7 +493,15 @@ function aggregate_conditional_convert_graph_type($_graph_id, $_old_type, $_new_
 	}
 }
 
-function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_type) {
+/**
+ * Changes the graph type of an aggregate graph item based on the provided old and new graph types.
+ *
+ * @param int $graph_index The index of the graph item within the aggregate.
+ * @param int $old_graph_type The current graph type of the item.
+ * @param int $new_graph_type The desired new graph type for the item.
+ * @return int The resulting graph type after applying the change.
+ */
+function aggregate_change_graph_type(int $graph_index, int $old_graph_type, int $new_graph_type): int {
 	cacti_log(__FUNCTION__ . ' called. Index ' . $graph_index . ' old type ' . $old_graph_type . ' Graph Type: ' . $new_graph_type, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	/* LEGEND entries and xRULEs stay unchanged
@@ -540,8 +618,9 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
  *
  * @param int $_color_template_id		- id of the base color template
  * @param string $color_template_title	- title of the duplicated color template
+ * @return void
  */
-function duplicate_color_template($_color_template_id, $color_template_title) {
+function duplicate_color_template(int $_color_template_id, string $color_template_title): void {
 	cacti_log(__FUNCTION__ . ' called. Color Template Id: ' . $_color_template_id . ' Title: ' . $color_template_title, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	/* fetch data from table color_templates */
@@ -586,8 +665,9 @@ function duplicate_color_template($_color_template_id, $color_template_title) {
 
 /**
  * aggregate_cdef_make0			- return the id of a 'Make 0' cdef, create that cdef if necessary
+ * @return int					- id of the 'Make 0' cdef
  */
-function aggregate_cdef_make0() {
+function aggregate_cdef_make0(): int {
 	global $config;
 
 	include_once(CACTI_PATH_LIBRARY . '/cdef.php');
@@ -641,8 +721,9 @@ function aggregate_cdef_make0() {
  * @param int $_new_graph_id		- id of new graph
  * @param int $_graph_item_sequence	- current graph item sequence
  * @param int $_total_type			- what type of totalling is required?
+ * @return void
  */
-function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total_type) {
+function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence, int $_total_type): void {
 	global $config;
 
 	include_once(CACTI_PATH_LIBRARY . '/cdef.php');
@@ -720,6 +801,7 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 				if ($cdef['cdef_text'] == $new_cdef_text) {
 					$new_cdef_id = $cdef['id'];
 					cacti_log(__FUNCTION__ . ' matching cdef: ' . $new_cdef_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+
 					# leave on first match
 					break;
 				}
@@ -789,9 +871,9 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 /** auto_hr			- set a new hr when items are skipped
  * @param array $s	- array of skipped items
  * @param array $h	- array of items with HR
- * returns array	- array with new HR markers
+ * @return array	- array with new HR markers
  */
-function auto_hr($s, $h) {
+function auto_hr(array $s, array $h): array {
 	cacti_log(__FUNCTION__ . ' called', true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	# start at end of array, both arrays are from 1 .. cacti_count(array)
@@ -815,9 +897,9 @@ function auto_hr($s, $h) {
 
 /** auto_title					- generate a title suggested to the user
  * @param int $_local_graph_id	- the id of the graph stanza
- * returns string				- the title
+ * @return string				- the title
  */
-function auto_title($_local_graph_id) {
+function auto_title(int $_local_graph_id): string {
 	cacti_log(__FUNCTION__ . ' called. Local Graph Id: ' . $_local_graph_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	# apply given graph title, but drop host and query variables
@@ -844,7 +926,13 @@ function auto_title($_local_graph_id) {
 	return $graph_title;
 }
 
-function api_aggregate_remove_multi($graphs) {
+/**
+ * Removes multiple aggregate graphs and their associated items from the database.
+ *
+ * @param array $graphs An array of graph IDs to be removed.
+ * @return void
+ */
+function api_aggregate_remove_multi(array $graphs): void {
 	global $config;
 
 	include_once(CACTI_PATH_LIBRARY . '/api_graph.php');
@@ -874,7 +962,16 @@ function api_aggregate_remove_multi($graphs) {
 }
 
 /* To-do remove orphaned elements */
-function aggregate_prune_graphs($local_graph_id = 0) {
+/**
+ * Prunes orphaned graphs and their associated items from the database.
+ *
+ * @param int $local_graph_id Optional. The ID of a specific local graph to prune. If greater than 0, 
+ *                            only the specified local graph and its associated items will be pruned.
+ *                            Defaults to 0, which means all orphaned graphs will be pruned.
+ *
+ * @return void
+ */
+function aggregate_prune_graphs(int $local_graph_id = 0): void {
 	$aggregate_graphs = array();
 	$local_graph_ids  = array();
 
@@ -882,7 +979,7 @@ function aggregate_prune_graphs($local_graph_id = 0) {
 	$sql_params       = array();
 
 	if ($local_graph_id > 0) {
-		$sql_where = 'AND pagi.local_graph_id = ?';
+		$sql_where    = 'AND pagi.local_graph_id = ?';
 		$sql_params[] = $local_graph_id;
 	}
 
@@ -943,7 +1040,14 @@ function aggregate_prune_graphs($local_graph_id = 0) {
 	}
 }
 
-function api_aggregate_convert_to_graph($graphs) {
+/**
+ * Converts a list of graphs to a specific graph template.
+ *
+ * @param array $graphs An array of graph IDs to be converted.
+ *
+ * @return void
+ */
+function api_aggregate_convert_to_graph(array $graphs): void {
 	if (cacti_sizeof($graphs)) {
 		foreach ($graphs as $graph) {
 			$ag = db_fetch_cell_prepared('SELECT id

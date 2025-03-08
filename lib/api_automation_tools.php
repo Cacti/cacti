@@ -22,7 +22,12 @@
  +-------------------------------------------------------------------------+
  */
 
-function getHostTemplates() {
+/**
+ * Retrieves a list of host templates from the database.
+ *
+ * @return array An associative array of host templates with template IDs as keys and template names as values.
+ */
+function getHostTemplates(): array {
 	$tmpArray = db_fetch_assoc('SELECT id, name FROM host_template ORDER BY id');
 
 	$host_templates[0] = 'None';
@@ -36,7 +41,13 @@ function getHostTemplates() {
 	return $host_templates;
 }
 
-function getHostsByDescription($hostTemplateIds = false) {
+/**
+ * Retrieves hosts based on their description.
+ *
+ * @param array|false $hostTemplateIds An array of host template IDs to filter the hosts by, or false to retrieve all hosts.
+ * @return array|false Returns an array of hosts that match the given description, or false on failure.
+ */
+function getHostsByDescription(array|false $hostTemplateIds = false): array|false {
 	$hosts = array();
 
 	if ($hostTemplateIds !== false) {
@@ -73,7 +84,12 @@ function getHostsByDescription($hostTemplateIds = false) {
 	return $hosts;
 }
 
-function getSites() {
+/**
+ * Retrieves a list of sites.
+ *
+ * @return array An array containing the list of sites.
+ */
+function getSites(): array {
 	$sites    = array();
 	$tmpArray = db_fetch_assoc('SELECT * FROM sites ORDER BY id');
 
@@ -86,7 +102,15 @@ function getSites() {
 	return $sites;
 }
 
-function getHosts($hostTemplateIds = false) {
+/**
+ * Retrieves a list of hosts.
+ *
+ * @param array|false $hostTemplateIds Optional. An array of host template IDs to filter the hosts by.
+ *                                     If false, all hosts will be retrieved.
+ *
+ * @return array|false Returns an array of hosts if successful, or false on failure.
+ */
+function getHosts(array|false $hostTemplateIds = false): array|false {
 	$hosts = array();
 
 	if ($hostTemplateIds !== false) {
@@ -123,7 +147,13 @@ function getHosts($hostTemplateIds = false) {
 	return $hosts;
 }
 
-function getInputFields($templateId) {
+/**
+ * Retrieves the input fields for a given template ID.
+ *
+ * @param int $templateId The ID of the template to retrieve input fields for.
+ * @return array An array of input fields associated with the specified template ID.
+ */
+function getInputFields(int $templateId): array {
 	$fields = array();
 
 	$tmpArray = db_fetch_assoc_prepared("SELECT DISTINCT dif.data_name AS `name`, dif.name AS `description`,
@@ -165,7 +195,12 @@ function getInputFields($templateId) {
 	return $fields;
 }
 
-function getAddresses() {
+/**
+ * Retrieves a list of addresses.
+ *
+ * @return array An array of addresses.
+ */
+function getAddresses(): array {
 	$addresses = array();
 	$tmpArray  = db_fetch_assoc('SELECT id, hostname FROM host ORDER BY hostname');
 
@@ -178,7 +213,14 @@ function getAddresses() {
 	return $addresses;
 }
 
-function getSNMPFields($hostId, $snmp_query_id = '') {
+/**
+ * Retrieves SNMP fields for a given host.
+ *
+ * @param string $hostId The ID of the host for which to retrieve SNMP fields.
+ * @param string $snmp_query_id Optional. The ID of the SNMP query. Default is an empty string.
+ * @return array An array of SNMP fields for the specified host.
+ */
+function getSNMPFields(string $hostId, string $snmp_query_id = ''): array {
 	$fieldNames = array();
 
 	if ($snmp_query_id != '') {
@@ -202,7 +244,15 @@ function getSNMPFields($hostId, $snmp_query_id = '') {
 	return $fieldNames;
 }
 
-function getSNMPValues($hostId, $field, $snmp_query_id = '') {
+/**
+ * Retrieves SNMP values for a given host and field.
+ *
+ * @param string $hostId The ID of the host to query.
+ * @param string $field The specific field to retrieve values for.
+ * @param string $snmp_query_id Optional. The ID of the SNMP query to use. Default is an empty string.
+ * @return array An array of SNMP values.
+ */
+function getSNMPValues(string $hostId, string $field, string $snmp_query_id = ''): array {
 	$values   = array();
 
 	if ($snmp_query_id != '') {
@@ -227,7 +277,12 @@ function getSNMPValues($hostId, $field, $snmp_query_id = '') {
 	return $values;
 }
 
-function getSNMPQueries() {
+/**
+ * Retrieves a list of SNMP queries.
+ *
+ * @return array An array containing SNMP queries.
+ */
+function getSNMPQueries(): array {
 	$queries  = array();
 	$tmpArray = db_fetch_assoc('SELECT id, name FROM snmp_query ORDER by id');
 
@@ -240,7 +295,13 @@ function getSNMPQueries() {
 	return $queries;
 }
 
-function getSNMPQueryTypes($snmpQueryId) {
+/**
+ * Retrieves the SNMP query types for a given SNMP query ID.
+ *
+ * @param int $snmpQueryId The ID of the SNMP query.
+ * @return array An array of SNMP query types.
+ */
+function getSNMPQueryTypes(int $snmpQueryId): array {
 	$types    = array();
 
 	$tmpArray = db_fetch_assoc_prepared('SELECT id, name
@@ -258,7 +319,12 @@ function getSNMPQueryTypes($snmpQueryId) {
 	return $types;
 }
 
-function getGraphTemplates() {
+/**
+ * Retrieves a list of graph templates.
+ *
+ * @return array An array of graph templates.
+ */
+function getGraphTemplates(): array {
 	$graph_templates = array();
 
 	$tmpArray = db_fetch_assoc('SELECT id, name FROM graph_templates ORDER BY id');
@@ -272,7 +338,14 @@ function getGraphTemplates() {
 	return $graph_templates;
 }
 
-function getGraphTemplatesByHostTemplate($host_template_ids = false) {
+/**
+ * Retrieves graph templates associated with the given host template IDs.
+ *
+ * @param array|false $host_template_ids An array of host template IDs to filter the graph templates by.
+ *                                       If false, all graph templates will be retrieved.
+ * @return array|false Returns an array of graph templates if found, or false on failure.
+ */
+function getGraphTemplatesByHostTemplate(array|false $host_template_ids = false): array|false {
 	$graph_templates = array();
 
 	if ($host_template_ids !== false) {
@@ -309,7 +382,15 @@ function getGraphTemplatesByHostTemplate($host_template_ids = false) {
 	return $graph_templates;
 }
 
-function displayQueryTypes($types, $quietMode = false) {
+/**
+ * Displays the query types.
+ *
+ * @param array $types An array of query types to display.
+ * @param bool $quietMode Optional. If set to true, suppresses output. Default is false.
+ *
+ * @return void
+ */
+function displayQueryTypes(array $types, bool $quietMode = false): void {
 	if (!$quietMode) {
 		print 'Known SNMP Query Types: (id, name)' . PHP_EOL;
 	}
@@ -325,7 +406,15 @@ function displayQueryTypes($types, $quietMode = false) {
 	}
 }
 
-function displayHostTemplates($host_templates, $quietMode = false) {
+/**
+ * Displays the host templates.
+ *
+ * @param array $host_templates An array of host templates to display.
+ * @param bool $quietMode Optional. If set to true, suppresses output. Default is false.
+ *
+ * @return void
+ */
+function displayHostTemplates(array $host_templates, bool $quietMode = false): void {
 	if (!$quietMode) {
 		print 'Valid Device Templates: (id, name)' . PHP_EOL;
 	}
@@ -341,7 +430,14 @@ function displayHostTemplates($host_templates, $quietMode = false) {
 	}
 }
 
-function displayCommunities($quietMode = false) {
+/**
+ * Displays the list of communities.
+ *
+ * @param bool $quietMode If set to true, suppresses output.
+ *
+ * @return void
+ */
+function displayCommunities(bool $quietMode = false): void {
 	if (!$quietMode) {
 		print 'Known SNMP Communities: (community)' . PHP_EOL;
 	}
@@ -361,7 +457,16 @@ function displayCommunities($quietMode = false) {
 	}
 }
 
-function displaySNMPFields($fields, $hostId, $quietMode = false) {
+/**
+ * Displays SNMP fields for a given host.
+ *
+ * @param array $fields An array of SNMP fields to display.
+ * @param string $hostId The ID of the host for which the SNMP fields are displayed.
+ * @param bool $quietMode Optional. If true, suppresses output. Default is false.
+ *
+ * @return void
+ */
+function displaySNMPFields(array $fields, string $hostId, bool $quietMode = false): void {
 	if (!$quietMode) {
 		print 'Known SNMP Fields for host-id ' . $hostId . ': (name)' . PHP_EOL;
 	}
@@ -377,7 +482,17 @@ function displaySNMPFields($fields, $hostId, $quietMode = false) {
 	}
 }
 
-function displaySNMPValues($values, $hostId, $field, $quietMode = false) {
+/**
+ * Displays SNMP values for a given host.
+ *
+ * @param array $values The SNMP values to display.
+ * @param string $hostId The ID of the host.
+ * @param string $field The field to display.
+ * @param bool $quietMode Optional. If true, suppresses output. Default is false.
+ *
+ * @return void
+ */
+function displaySNMPValues(array $values, string $hostId, string $field, bool $quietMode = false): void {
 	if (!$quietMode) {
 		print 'Known SNMP Values for Field ' . $field . ' and host-id ' . $hostId . ': (name)' . PHP_EOL;
 	}
@@ -393,7 +508,15 @@ function displaySNMPValues($values, $hostId, $field, $quietMode = false) {
 	}
 }
 
-function displaySNMPQueries($queries, $quietMode = false) {
+/**
+ * Displays SNMP queries.
+ *
+ * @param array $queries An array of SNMP queries to display.
+ * @param bool $quietMode Optional. If set to true, suppresses output. Default is false.
+ *
+ * @return void
+ */
+function displaySNMPQueries(array $queries, bool $quietMode = false): void {
 	if (!$quietMode) {
 		print 'Known SNMP Queries: (id, name)' . PHP_EOL;
 	}
@@ -409,7 +532,15 @@ function displaySNMPQueries($queries, $quietMode = false) {
 	}
 }
 
-function displayInputFields($input_fields, $quietMode = false) {
+/**
+ * Displays input fields.
+ *
+ * @param array $input_fields An array of input fields to be displayed.
+ * @param bool $quietMode Optional. If set to true, suppresses output. Default is false.
+ *
+ * @return void
+ */
+function displayInputFields(array $input_fields, bool $quietMode = false): void {
 	if (!$quietMode) {
 		print 'Known Input Fields: (name, default, description)' . PHP_EOL;
 	}
@@ -425,7 +556,15 @@ function displayInputFields($input_fields, $quietMode = false) {
 	}
 }
 
-function displayGraphTemplates($templates, $quietMode = false) {
+/**
+ * Displays the provided graph templates.
+ *
+ * @param array $templates An array of graph templates to be displayed.
+ * @param bool $quietMode Optional. If set to true, suppresses output. Default is false.
+ *
+ * @return void
+ */
+function displayGraphTemplates(array $templates, bool $quietMode = false): void {
 	if (!$quietMode) {
 		print 'Known Graph Templates: (id, name)' . PHP_EOL;
 	}
@@ -441,7 +580,15 @@ function displayGraphTemplates($templates, $quietMode = false) {
 	}
 }
 
-function displayHosts($hosts, $quietMode = false) {
+/**
+ * Displays a list of hosts.
+ *
+ * @param array $hosts An array of host information to be displayed.
+ * @param bool $quietMode Optional. If set to true, suppresses output. Default is false.
+ *
+ * @return void
+ */
+function displayHosts(array $hosts, bool $quietMode = false): void {
 	if (!$quietMode) {
 		print 'Known Devices: (id, hostname, template, description)' . PHP_EOL;
 	}
@@ -457,7 +604,15 @@ function displayHosts($hosts, $quietMode = false) {
 	}
 }
 
-function displaySites($sites, $quietMode = false) {
+/**
+ * Displays a list of sites.
+ *
+ * @param array $sites An array of sites to display.
+ * @param bool $quietMode Optional. If true, suppresses output. Default is false.
+ *
+ * @return void
+ */
+function displaySites(array $sites, bool $quietMode = false): void {
 	if (!$quietMode) {
 		print 'Known Sites: (id, name)' . PHP_EOL;
 	}
@@ -473,7 +628,14 @@ function displaySites($sites, $quietMode = false) {
 	}
 }
 
-function displayTrees($quietMode = false) {
+/**
+ * Displays the trees.
+ *
+ * @param bool $quietMode If set to true, the function will operate in quiet mode.
+ *
+ * @return void
+ */
+function displayTrees(bool $quietMode = false): void {
 	global $tree_sort_types;
 
 	if (!$quietMode) {
@@ -497,7 +659,17 @@ function displayTrees($quietMode = false) {
 	}
 }
 
-function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode = false) {
+/**
+ * Displays the tree nodes for a given tree.
+ *
+ * @param int $tree_id The ID of the tree to display nodes for.
+ * @param string $nodeType The type of nodes to display (optional).
+ * @param int $parentNode The ID of the parent node to start displaying from (optional).
+ * @param bool $quietMode Whether to suppress output (optional).
+ *
+ * @return void
+ */
+function displayTreeNodes(int $tree_id, string $nodeType = '', int $parentNode = 0, bool $quietMode = false): void {
 	global $tree_sort_types, $tree_item_types, $host_group_types;
 
 	if ($parentNode == 0) {
@@ -599,7 +771,14 @@ function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode 
 	}
 }
 
-function displayRRAs($quietMode = false) {
+/**
+ * Displays the Round-Robin Archives (RRAs).
+ *
+ * @param bool $quietMode If set to true, suppresses output.
+ *
+ * @return void
+ */
+function displayRRAs(bool $quietMode = false): void {
 	if (!$quietMode) {
 		print 'Known RRAs: (id, steps, rows, name)' . PHP_EOL;
 	}
@@ -620,7 +799,15 @@ function displayRRAs($quietMode = false) {
 	}
 }
 
-function displayHostGraphs($host_id, $quietMode = false) {
+/**
+ * Displays the graphs for a given host.
+ *
+ * @param int  $host_id   The ID of the host whose graphs are to be displayed.
+ * @param bool $quietMode Optional. If set to true, suppresses output. Default is false.
+ *
+ * @return void
+ */
+function displayHostGraphs(int $host_id, bool $quietMode = false): void {
 	if (!$quietMode) {
 		print 'Known Device Graphs: (id, name, template)' . PHP_EOL;
 	}
@@ -650,7 +837,14 @@ function displayHostGraphs($host_id, $quietMode = false) {
 	}
 }
 
-function displayUsers($quietMode = false) {
+/**
+ * Displays the list of users.
+ *
+ * @param bool $quietMode If set to true, suppresses output.
+ *
+ * @return void
+ */
+function displayUsers(bool $quietMode = false): void {
 	if (!$quietMode) {
 		print 'Known Users: (id, username, full_name)'. PHP_EOL;
 	}
