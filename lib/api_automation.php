@@ -114,7 +114,7 @@ function create_tree_devices_filter($rows_label = '') {
 	);
 }
 
-function process_sanitize_draw_tree_devices_filter($render = false, $url = '') {
+function draw_tree_devices_filter($render = false, $url = '') {
 	$filters = create_tree_devices_filter();
 
 	$header = __('Matching Devices');
@@ -134,7 +134,7 @@ function process_sanitize_draw_tree_devices_filter($render = false, $url = '') {
 function display_matching_hosts($rule, $rule_type, $url) {
 	global $device_actions, $item_rows;
 
-	process_sanitize_draw_tree_devices_filter(true, $url);
+	draw_tree_devices_filter(true, $url);
 
 	$details = automation_get_matching_device_sql($rule, $rule_type);
 
@@ -550,7 +550,7 @@ function create_tree_graphs_filter() {
 	);
 }
 
-function process_sanitize_draw_tree_graphs_filter($render = false, $url = '') {
+function draw_tree_graphs_filter($render = false, $url = '') {
 	$filters = create_tree_graphs_filter();
 
 	$header = __('Matching Graphs');
@@ -570,7 +570,7 @@ function process_sanitize_draw_tree_graphs_filter($render = false, $url = '') {
 function display_matching_graphs($rule, $rule_type, $url) {
 	global $graph_actions, $item_rows;
 
-	process_sanitize_draw_tree_graphs_filter(true, $url);
+	draw_tree_graphs_filter(true, $url);
 
 	$details = automation_get_matching_graphs_sql($rule, $rule_type);
 	$rows    = $details['rows'];
@@ -974,7 +974,7 @@ function display_new_graphs($rule, $url) {
 	print '</table>';
 }
 
-function process_sanitize_draw_tree_items_filter($render = false, $url = '') {
+function draw_tree_items_filter($render = false, $url = '') {
 	$filters = create_tree_devices_filter(__('Data Queries'));
 
 	$header = __('Matching Items');
@@ -999,7 +999,7 @@ function display_matching_trees($rule_id, $rule_type, $item, $url) {
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . " called: $rule_id/$rule_type", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
-	process_sanitize_draw_tree_items_filter(true, $url);
+	draw_tree_items_filter(true, $url);
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
@@ -1335,7 +1335,7 @@ function display_match_rule_items($title, $rule, $rule_type, $module) {
 	}
 
 	/* sanitize the variables */
-	process_sanitize_draw_tree_devices_filter();
+	draw_tree_devices_filter();
 
 	$details = automation_get_matching_device_sql($rule, $rule_type);
 	$data    = db_fetch_assoc($details['rows_query']);

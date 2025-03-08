@@ -322,7 +322,7 @@ function create_database_process_filter() {
 	);
 }
 
-function process_sanitize_draw_database_process_filter($render = false) {
+function draw_database_process_filter($render = false) {
 	$filters = create_database_process_filter();
 
 	$header = __('Technical Support [ Database Queries ]');
@@ -342,7 +342,7 @@ function process_sanitize_draw_database_process_filter($render = false) {
 function show_database_processes() {
 	global $item_rows;
 
-	process_sanitize_draw_database_process_filter(true);
+	draw_database_process_filter(true);
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
@@ -541,7 +541,7 @@ function create_cacti_process_filter($tables) {
 	);
 }
 
-function process_sanitize_draw_cacti_process_filter($render = false, $tables = array()) {
+function draw_cacti_process_filter($render = false, $tables = array()) {
 	$filters = create_cacti_process_filter($tables);
 
 	$header = __('Technical Support [ Background Processes ]');
@@ -581,7 +581,7 @@ function show_cacti_processes() {
 		}
 	}
 
-	process_sanitize_draw_cacti_process_filter(true, $tables);
+	draw_cacti_process_filter(true, $tables);
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');

@@ -197,7 +197,7 @@ function clog_view_logfile() {
 		return;
 	}
 
-	process_sanitize_draw_filter(true, $logfile, $clogAdmin);
+	draw_clog_filter(true, $logfile, $clogAdmin);
 
 	/* read logfile into an array and display */
 	$total_rows      = 0;
@@ -442,7 +442,7 @@ function clog_get_logfiles() {
 	return array_unique(array_merge($stdFileArray, $stdLogFileArray, $stdErrFileArray, $boostFileArray));
 }
 
-function create_filter($logfile, $clogAdmin) {
+function create_clog_filter($logfile, $clogAdmin) {
 	global $log_tail_lines, $page_refresh_interval;
 
 	$all     = array('-1' => __('All'));
@@ -608,8 +608,8 @@ function create_filter($logfile, $clogAdmin) {
 	}
 }
 
-function process_sanitize_draw_filter($render = false, $logfile = false, $clogAdmin = false) {
-	$filters = create_filter($logfile, $clogAdmin);
+function draw_clog_filter($render = false, $logfile = false, $clogAdmin = false) {
+	$filters = create_clog_filter($logfile, $clogAdmin);
 
 	$page_nr = get_nfilter_request_var('page');
 

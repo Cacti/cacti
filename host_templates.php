@@ -929,7 +929,7 @@ function create_template_filter() {
 	);
 }
 
-function process_sanitize_draw_template_filter($render = false) {
+function draw_template_filter($render = false) {
 	$filters = create_template_filter();
 
 	/* create the page filter */
@@ -947,7 +947,7 @@ function process_sanitize_draw_template_filter($render = false) {
 function device_templates() {
 	global $actions, $item_rows, $device_classes;
 
-	process_sanitize_draw_template_filter(true);
+	draw_template_filter(true);
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
@@ -1330,7 +1330,7 @@ function create_archive_filter() {
 	);
 }
 
-function process_sanitize_draw_archive_filter($render = false) {
+function draw_archive_filter($render = false) {
 	$filters = create_archive_filter();
 
 	/* create the page filter */
@@ -1348,7 +1348,7 @@ function process_sanitize_draw_archive_filter($render = false) {
 function device_archives() {
 	global $actions, $item_rows, $device_classes;
 
-	process_sanitize_draw_archive_filter(true);
+	draw_archive_filter(true);
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');

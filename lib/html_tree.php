@@ -113,7 +113,7 @@ function grow_dhtml_trees() {
 
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
-	process_sanitize_draw_tree_filter();
+	draw_tree_filter();
 
 	$default_tree_id = read_user_setting('default_tree_id');
 
@@ -1139,7 +1139,7 @@ function create_tree_filter() {
 	return $filters;
 }
 
-function process_sanitize_draw_tree_filter($render = false) {
+function draw_tree_filter($render = false) {
 	$header = __('Graph Tree Filters') . (get_nfilter_request_var('rfilter') != '' ? ' [ ' . __('Filter') . " '" . html_escape_request_var('rfilter') . "' " . __('Applied') . ' ]' : '');
 
 	/* create the page filter */
@@ -1180,7 +1180,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		return;
 	}
 
-	process_sanitize_draw_tree_filter(true);
+	draw_tree_filter(true);
 
 	if (empty($leaf_id)) {
 		$leaf_id = 0;
@@ -1912,7 +1912,7 @@ function get_matching_nodes() {
 }
 
 function html_tree_init() {
-	process_sanitize_draw_tree_filter();
+	draw_tree_filter();
 
 	if (isset_request_var('tree_id')) {
 		$_SESSION['sess_tree_id'] = get_filter_request_var('tree_id');
@@ -1982,7 +1982,7 @@ function html_tree_get_node() {
 }
 
 function html_tree_get_content() {
-	process_sanitize_draw_tree_filter();
+	draw_tree_filter();
 
 	top_graph_header();
 

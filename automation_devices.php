@@ -270,7 +270,7 @@ function display_discovery_page() {
 
 	top_header();
 
-	process_sanitize_draw_filter(true);
+	draw_automation_devices_filter(true);
 
 	$total_rows = 0;
 
@@ -518,7 +518,7 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 	}
 }
 
-function create_filter() {
+function create_automation_devices_filter() {
 	global $item_rows, $os_arr, $status_arr, $networks;
 
 	$any          = array(-1 => __('Any'));
@@ -621,10 +621,10 @@ function create_filter() {
 	);
 }
 
-function process_sanitize_draw_filter($render = false) {
+function draw_automation_devices_filter($render = false) {
 	global $item_rows, $filters, $os_arr, $status_arr, $networks, $actions;
 
-	$filters = create_filter();
+	$filters = create_automation_devices_filter();
 
 	/* create the page filter */
 	$pageFilter = new CactiTableFilter(__('Discovered Devices'), 'automation_devices.php', 'form_devices', 'sess_autom_device');
@@ -640,7 +640,7 @@ function process_sanitize_draw_filter($render = false) {
 }
 
 function export_discovery_results() {
-	process_sanitize_draw_filter(false);
+	draw_automation_devices_filter(false);
 
 	$results = get_discovery_results($total_rows, 0, true);
 

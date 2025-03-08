@@ -1273,7 +1273,7 @@ function get_poller_interval($seconds, $data_source_profile_id) {
 function data_sources() {
 	global $actions, $item_rows, $sampling_intervals;
 
-	process_sanitize_draw_filter(true);
+	draw_data_source_filter(true);
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
@@ -1608,7 +1608,7 @@ function get_graphs_aggregates_url($local_data_id) {
 	return $url;
 }
 
-function create_filter($session_var) {
+function create_data_sources_filter($session_var) {
 	global $item_rows, $page_refresh_interval;
 
 	$all     = array('-1' => __('All'));
@@ -1804,8 +1804,8 @@ function create_filter($session_var) {
 	);
 }
 
-function process_sanitize_draw_filter($render = false) {
-	$filters = create_filter('sess_ds');
+function draw_data_source_filter($render = false) {
+	$filters = create_data_sources_filter('sess_ds');
 
 	if (read_config_option('grds_creation_method') == 1) {
 		if (get_request_var('host_id') == '-1') {

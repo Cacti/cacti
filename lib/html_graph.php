@@ -369,7 +369,7 @@ function create_preview_filter($session_var) {
 	return $filters;
 }
 
-function process_sanitize_draw_preview_filter($render = false, $page = '', $action = 'get') {
+function draw_preview_filter($render = false, $page = '', $action = 'get') {
 	$header = __('Graph Preview Filters') . (isset_request_var('style') && get_request_var('style') != '' ? ' ' . __('[ Custom Graph List Applied - Filtering from List ]'):'');
 
 	/* create the page filter */
@@ -450,7 +450,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 
 	initialize_realtime_step_and_window();
 
-	process_sanitize_draw_preview_filter(true, $page, $action);
+	draw_preview_filter(true, $page, $action);
 
 	?>
 	<script type='text/javascript'>
@@ -1116,7 +1116,7 @@ function create_listview_filter($session_var) {
 	return $filters;
 }
 
-function process_sanitize_draw_listview_filter($render = false) {
+function draw_listview_filter($render = false) {
 	$header = __('Graph List View Filters') . (isset_request_var('style') && get_request_var('style') != '' ? ' ' . __('[ Custom Graph List Applied - Filtering from List ]'):'');
 
 	/* create the page filter */
@@ -1149,7 +1149,7 @@ function html_graph_list_view() {
 
 	top_graph_header();
 
-	process_sanitize_draw_listview_filter(true);
+	draw_listview_filter(true);
 
 	if (get_request_var('graphs') == '-1') {
 		$graph_rows = read_config_option('num_rows_table');

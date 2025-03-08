@@ -1518,7 +1518,7 @@ function template_edit() {
 function graph_templates() {
 	global $actions, $item_rows, $image_types, $graph_template_classes;
 
-	process_sanitize_draw_filter(true);
+	draw_graph_templates_filter(true);
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
@@ -1831,7 +1831,7 @@ function input_edit() {
 	form_save_button('graph_templates.php?action=template_edit&id=' . get_request_var('graph_template_id'));
 }
 
-function create_filter() {
+function create_graph_templates_filter() {
 	global $item_rows, $graph_template_classes;
 
 	$all     = array('-1' => __('All'));
@@ -1973,8 +1973,8 @@ function create_filter() {
 	);
 }
 
-function process_sanitize_draw_filter($render = false) {
-	$filters = create_filter();
+function draw_graph_templates_filter($render = false) {
+	$filters = create_graph_templates_filter();
 
 	/* create the page filter */
 	$pageFilter = new CactiTableFilter(__('Graph Templates'), 'graph_templates.php', 'form_graphs', 'sess_gt', 'graph_templates.php?action=template_edit');

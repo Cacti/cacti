@@ -1024,7 +1024,7 @@ function template_edit() {
 function data_templates() {
 	global $actions, $item_rows;
 
-	process_sanitize_draw_filter(true);
+	draw_data_template_filter(true);
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
@@ -1194,7 +1194,7 @@ function data_templates() {
 	form_end();
 }
 
-function create_filter() {
+function create_data_template_filter() {
 	global $item_rows, $page_refresh_interval;
 
 	$all     = array('-1' => __('All'));
@@ -1297,8 +1297,8 @@ function create_filter() {
 	);
 }
 
-function process_sanitize_draw_filter($render = false) {
-	$filters = create_filter();
+function draw_data_template_filter($render = false) {
+	$filters = create_data_template_filter();
 
 	/* create the page filter */
 	$pageFilter = new CactiTableFilter(__('Data Templates'), 'data_templates.php', 'form_data', 'sess_dt', 'data_templates.php?action=template_edit');

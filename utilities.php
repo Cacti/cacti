@@ -371,7 +371,7 @@ function create_data_query_filter($session_var) {
 	);
 }
 
-function process_sanitize_draw_data_query_filter($render = false) {
+function draw_data_query_filter($render = false) {
 	$filters = create_data_query_filter('sess_usnmp');
 
 	/* create the page filter */
@@ -390,7 +390,7 @@ function process_sanitize_draw_data_query_filter($render = false) {
 function utilities_view_snmp_cache() {
 	global $poller_actions, $item_rows;
 
-	process_sanitize_draw_data_query_filter(true);
+	draw_data_query_filter(true);
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
@@ -505,7 +505,7 @@ function utilities_view_snmp_cache() {
 function utilities_view_poller_cache() {
 	global $poller_actions, $item_rows;
 
-	process_sanitize_draw_poller_cache_filter(true);
+	draw_poller_cache_filter(true);
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
@@ -838,7 +838,7 @@ function create_poller_cache_filter($session_var) {
 	);
 }
 
-function process_sanitize_draw_poller_cache_filter($render = false) {
+function draw_poller_cache_filter($render = false) {
 	$filters = create_poller_cache_filter('sess_pollerc');
 
 	$running = is_process_running('pushout', 'rmaster', 0);
@@ -1545,7 +1545,7 @@ function create_snmp_agent_cache_filter() {
 	);
 }
 
-function process_sanitize_draw_snmp_agent_cache_filter($render = false) {
+function draw_snmp_agent_cache_filter($render = false) {
 	$filters = create_snmp_agent_cache_filter();
 
 	/* create the page filter */
@@ -1577,7 +1577,7 @@ function snmpagent_utilities_run_cache() {
 		}
 	}
 
-	process_sanitize_draw_snmp_agent_cache_filter(true);
+	draw_snmp_agent_cache_filter(true);
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
@@ -1750,7 +1750,7 @@ function create_snmp_agent_events_filter() {
 	);
 }
 
-function process_sanitize_draw_snmp_agent_events_filter($render = false) {
+function draw_snmp_agent_events_filter($render = false) {
 	$filters = create_snmp_agent_events_filter();
 
 	/* create the page filter */
@@ -1798,7 +1798,7 @@ function snmpagent_utilities_run_eventlog() {
 		set_request_var('clear', true);
 	}
 
-	process_sanitize_draw_snmp_agent_events_filter(true);
+	draw_snmp_agent_events_filter(true);
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');

@@ -116,7 +116,7 @@ switch (get_request_var('action')) {
 }
 
 function automation_export() {
-	process_sanitize_draw_filter(true);
+	draw_tree_rules_filter(true);
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
@@ -937,7 +937,7 @@ function automation_tree_rules_edit() {
 	<?php
 }
 
-function create_filter() {
+function create_tree_rules_filter() {
 	global $item_rows;
 
 	$status_arr = array(
@@ -1005,8 +1005,8 @@ function create_filter() {
 	);
 }
 
-function process_sanitize_draw_filter($render = false) {
-	$filters = create_filter();
+function draw_tree_rules_filter($render = false) {
+	$filters = create_tree_rules_filter();
 
 	/* create the page filter */
 	$pageFilter = new CactiTableFilter(__('Tree Rules'), 'automation_tree_rules.php', 'form_automation', 'sess_autom_tr', 'automation_tree_rules.php?action=edit');
@@ -1026,7 +1026,7 @@ function automation_tree_rules() {
 	global $actions, $config, $item_rows;
 	global $automation_tree_item_types, $host_group_types;
 
-	process_sanitize_draw_filter(true);
+	draw_tree_rules_filter(true);
 
 	if ((!empty($_SESSION['sess_autom_tr_status'])) && (!isempty_request_var('status'))) {
 		if ($_SESSION['sess_autom_tr_status'] != get_nfilter_request_var('status')) {

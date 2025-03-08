@@ -288,7 +288,7 @@ function host_new_graphs_save($host_id) {
 	}
 }
 
-function create_filter($host, $snmp_queries) {
+function create_graphs_new_filter($host, $snmp_queries) {
 	global $item_rows;
 
 	$all = array('-2' => __('All'));
@@ -423,8 +423,8 @@ function create_filter($host, $snmp_queries) {
 	return $filters;
 }
 
-function process_sanitize_draw_filter($render = false, $header_label = '', $host = array(), $snmp_queries = array()) {
-	$filters = create_filter($host, $snmp_queries);
+function draw_graphs_new_filter($render = false, $header_label = '', $host = array(), $snmp_queries = array()) {
+	$filters = create_graphs_new_filter($host, $snmp_queries);
 
 	/* create the page filter */
 	$pageFilter = new CactiTableFilter($header_label, 'graphs_new.php', 'form_gn', 'sess_gn', '', '', false);
@@ -474,7 +474,7 @@ function graphs() {
 		ORDER BY sq.name',
 		array($host['id']));
 
-	process_sanitize_draw_filter(true, $header_label, $host, $snmp_queries);
+	draw_graphs_new_filter(true, $header_label, $host, $snmp_queries);
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_user_setting('num_rows_table', read_config_option('num_rows_table'), true);

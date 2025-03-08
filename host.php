@@ -597,7 +597,7 @@ function form_actions() {
 }
 
 function host_export() {
-	process_sanitize_draw_filter(false);
+	draw_hosts_filter(false);
 
 	$hosts = get_device_records($total_rows, 9999999);
 
@@ -1614,7 +1614,7 @@ function get_device_records(&$total_rows, $rows) {
 function host() {
 	global $actions, $item_rows, $config, $availability_options;
 
-	process_sanitize_draw_filter(true);
+	draw_hosts_filter(true);
 
 	/* if the number of rows is -1, set it to the default */
 	if (get_request_var('rows') == -1) {
@@ -1849,7 +1849,7 @@ function host() {
 	api_plugin_hook('device_table_bottom');
 }
 
-function create_filter() {
+function create_hosts_filter() {
 	global $item_rows, $availability_options;
 
 	$all     = array('-1' => __('All'));
@@ -2048,7 +2048,7 @@ function create_filter() {
 	);
 }
 
-function process_sanitize_draw_filter($render = false) {
+function draw_hosts_filter($render = false) {
 	/* grab sanifization for plugins */
 	$hfilters    = array();
 	$hfilters    = api_plugin_hook_function('device_filters', $hfilters);
@@ -2061,7 +2061,7 @@ function process_sanitize_draw_filter($render = false) {
 		}
 	}
 
-	$filters = create_filter();
+	$filters = create_hosts_filter();
 
 	if (get_request_var('host_template_id') > 0) {
 		$url = 'host.php?action=edit&host_template_id=' . get_request_var('host_template_id');

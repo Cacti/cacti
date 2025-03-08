@@ -115,7 +115,7 @@ switch (get_request_var('action')) {
 }
 
 function automation_export() {
-	process_sanitize_draw_filter(false);
+	draw_graph_rules_filter(false);
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
@@ -803,7 +803,7 @@ function automation_graph_rules_edit() {
 	<?php
 }
 
-function create_filter() {
+function create_graph_rules_filter() {
 	global $item_rows;
 
 	$any = array(-1 => __('Any'));
@@ -893,8 +893,8 @@ function create_filter() {
 	);
 }
 
-function process_sanitize_draw_filter($render = false) {
-	$filters = create_filter();
+function draw_graph_rules_filter($render = false) {
+	$filters = create_graph_rules_filter();
 
 	/* create the page filter */
 	$pageFilter = new CactiTableFilter(__('Graph Rules'), 'automation_graph_rules.php', 'form_automation', 'sess_autom_gr', 'automation_graph_rules.php?action=edit');
@@ -912,7 +912,7 @@ function process_sanitize_draw_filter($render = false) {
 function automation_graph_rules() {
 	global $actions, $config, $item_rows;
 
-	process_sanitize_draw_filter(true);
+	draw_graph_rules_filter(true);
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');

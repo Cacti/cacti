@@ -51,7 +51,7 @@ switch (get_request_var('action')) {
 function view_user_log() {
 	global $auth_realms, $item_rows;
 
-	process_sanitize_draw_filter(true);
+	draw_user_log_filter(true);
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
@@ -235,7 +235,7 @@ function purge_user_log() {
 	html_end_box();
 }
 
-function create_filter() {
+function create_user_log_filter() {
 	global $item_rows;
 
 	$all     = array('-1' => __('All'));
@@ -335,8 +335,8 @@ function create_filter() {
 	);
 }
 
-function process_sanitize_draw_filter($render = false) {
-	$filters = create_filter();
+function draw_user_log_filter($render = false) {
+	$filters = create_user_log_filter();
 
 	/* create the page filter */
 	$pageFilter = new CactiTableFilter(__('User Login History'), 'user_log.php', 'form_userlog', 'sess_userlog');

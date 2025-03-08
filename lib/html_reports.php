@@ -1587,7 +1587,7 @@ function reports_edit() {
 
 			break;
 		case 'preview':
-			process_sanitize_draw_preview_filter(true, $header_label);
+			draw_preview_filter(true, $header_label);
 
 			if (get_request_var('rdate') == '-1') {
 				if (get_request_var('style') == 'false') {
@@ -1908,7 +1908,7 @@ function create_preview_filter() {
 	);
 }
 
-function process_sanitize_draw_preview_filter($render = false, $header_label = '') {
+function draw_preview_filter($render = false, $header_label = '') {
 	$filters = create_preview_filter();
 
 	$report_id  = get_request_var('id');
@@ -1928,7 +1928,7 @@ function process_sanitize_draw_preview_filter($render = false, $header_label = '
 	}
 }
 
-function create_filter() {
+function create_reports_filter() {
 	global $item_rows;
 
 	$any  = array('-1' => __('Any'));
@@ -2012,8 +2012,8 @@ function create_filter() {
 	);
 }
 
-function process_sanitize_draw_filter($render = false) {
-	$filters = create_filter();
+function draw_reports_filter($render = false) {
+	$filters = create_reports_filter();
 
 	$header = __('Reports [%s]', (is_reports_admin() ? __('Administrator Level') : __('User Level')));
 
@@ -2038,7 +2038,7 @@ function reports() {
 	global $config, $item_rows, $reports_interval;
 	global $reports_actions, $attach_types, $sched_types;
 
-	process_sanitize_draw_filter(true);
+	draw_reports_filter(true);
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
