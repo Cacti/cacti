@@ -1332,7 +1332,7 @@ function form_actions() {
 		if ($selected_items != false) {
 			if (get_request_var('drp_action') == '1') { // delete
 				if (!isset_request_var('delete_type')) {
-					set_request_var('delete_type', 1);
+					set_request_var('delete_type', 2);
 				}
 
 				api_delete_graphs($selected_items, get_filter_request_var('delete_type'));
@@ -1828,14 +1828,14 @@ function form_actions() {
 						'delete_type' => array(
 							'method' => 'radio',
 							'title' => __('Delete Method'),
-							'default' => 1,
+							'default' => read_config_option('ds_preselected_delete') == 'on' ? 2:1,
 							'items' => array(
 								0 => array(
-									'radio_value' => '1',
+									'radio_value' => '2',
 									'radio_caption' => __n('Delete the Data Sources referenced by this Graph', 'Delete the Data Sources reference by these Graphs.', cacti_sizeof($iarray))
 								),
 								1 => array(
-									'radio_value' => '2',
+									'radio_value' => '1',
 									'radio_caption' => __n('Leave the Data Source untouched.', 'Leave the Data Sources untouched', cacti_sizeof($data_sources))
 								)
 							)

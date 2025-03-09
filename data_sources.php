@@ -519,7 +519,7 @@ function form_actions() {
 		}
 
 		// For use by plugins
-		$save['drp_action'] = $drpval;
+		$save['drp_action'] = 1;
 		$save['ds_list']    = $ilist;
 		$save['ds_array']   = $iarray;
 
