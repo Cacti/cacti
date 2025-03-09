@@ -1642,7 +1642,7 @@ $fields_tree_edit = [
 ];
 
 /* file: user_admin.php, action: user_edit (host) */
-$fields_user_user_edit_host = [
+$fields_user_edit = [
 	'username' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('User Name'),

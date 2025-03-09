@@ -77,6 +77,14 @@ function preset_vdef_form_list() {
 			'value'         => '|arg1:name|',
 			'max_length'    => '255',
 		],
+		'id' => [
+			'method' => 'hidden_zero',
+			'value'  => '|arg1:id|'
+		],
+		'save_component_vdeef' => [
+			'method' => 'hidden',
+			'value'  => '1'
+		]
 	];
 
 	return $fields_vdef_edit;

@@ -1252,21 +1252,21 @@ function validate_request_vars() {
 		'replace_svalues' => [
 			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => ['options' => ['regexp' => '(on|true|false)']],
-			'default' => read_config_option('replace_svalues')
+			'default' => read_config_option('replace_svalues') ?? ''
 		],
 		'remove_orphans' => [
 			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => ['options' => ['regexp' => '(on|true|false)']],
-			'default' => read_config_option('remove_orphans')
+			'default' => read_config_option('remove_orphans') ?? ''
 		],
 		'trust_signer' => [
 			'filter'  => FILTER_VALIDATE_REGEXP,
 			'options' => ['options' => ['regexp' => '(on|true|false)']],
-			'default' => read_config_option('trust_signer')
+			'default' => read_config_option('trust_signer') ?? ''
 		],
 		'package_location' => [
 			'filter'  => FILTER_VALIDATE_INT,
-			'default' => read_config_option('package_location')
+			'default' => read_config_option('package_location') ?? ''
 		],
 		'data_source_profile' => [
 			'filter'  => FILTER_VALIDATE_INT,
@@ -1274,15 +1274,15 @@ function validate_request_vars() {
 		],
 		'image_format' => [
 			'filter'  => FILTER_VALIDATE_INT,
-			'default' => read_config_option('default_image_format')
+			'default' => read_config_option('default_image_format') ?? 'SVG'
 		],
 		'graph_width' => [
 			'filter'  => FILTER_VALIDATE_INT,
-			'default' => read_config_option('default_graph_width')
+			'default' => read_config_option('default_graph_width') ?? '700'
 		],
 		'graph_height' => [
 			'filter'  => FILTER_VALIDATE_INT,
-			'default' => read_config_option('default_graph_height')
+			'default' => read_config_option('default_graph_height') ?? '200'
 		],
 	];
 

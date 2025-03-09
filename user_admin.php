@@ -1825,7 +1825,7 @@ function settings_edit($header_label) {
 }
 
 function user_edit() {
-	global $config, $fields_user_user_edit_host;
+	global $config, $fields_user_edit;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -1895,7 +1895,7 @@ function user_edit() {
 			draw_edit_form(
 				[
 					'config' => ['no_form_tag' => true],
-					'fields' => inject_form_variables($fields_user_user_edit_host, (isset($user) ? $user : []))
+					'fields' => inject_form_variables($fields_user_edit, (isset($user) ? $user : []))
 				]
 			);
 

@@ -1280,7 +1280,7 @@ function data_sources() {
 		$rows = get_request_var('rows');
 	}
 
-	if (get_request_var('host_id') > 0) {
+	if (get_filter_request_var('host_id') > 0) {
 		$host = db_fetch_row_prepared('SELECT hostname
 			FROM host
 			WHERE id = ?',
@@ -1615,13 +1615,13 @@ function create_data_sources_filter($session_var) {
 	$none    = ['0'  => __('None')];
 	$deleted = ['-2' => __('Deleted/Invalid')];
 
-	$sites   = array_rekey(
+	$sites = array_rekey(
 		db_fetch_assoc('SELECT id, name
 			FROM sites
 			ORDER BY name'),
 		'id', 'name'
 	);
-	$sites   = $any + $sites;
+	$sites = $any + $sites;
 
 	$profiles = array_rekey(
 		db_fetch_assoc('SELECT id, name
@@ -1642,7 +1642,7 @@ function create_data_sources_filter($session_var) {
 	$sql_params = [];
 
 	if (isset_request_var('host_id')) {
-		$host_id = get_request_var('host_id');
+		$host_id = get_filter_request_var('host_id');
 	} elseif (isset($_SESSION[$session_var . '_host_id'])) {
 		$host_id = $_SESSION[$session_var . '_host_id'];
 	} else {
@@ -1807,7 +1807,7 @@ function draw_data_source_filter($render = false) {
 	$filters = create_data_sources_filter('sess_ds');
 
 	if (read_config_option('grds_creation_method') == 1) {
-		if (get_request_var('host_id') == '-1') {
+		if (get_filter_request_var('host_id') == '-1') {
 			$new_host_id = 0;
 		} else {
 			$new_host_id = get_request_var('host_id');
@@ -1818,7 +1818,7 @@ function draw_data_source_filter($render = false) {
 		$add_url = '';
 	}
 
-	if (get_request_var('host_id') == -1) {
+	if (get_filter_request_var('host_id') == -1) {
 		$header = __('Data Sources [ All Devices ]');
 	} elseif (get_request_var('host_id') == 0) {
 		$header = __('Data Sources [ Non Device Based ]');

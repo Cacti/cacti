@@ -1294,7 +1294,7 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 				print '>' . html_escape($row[$column_display]) . '</option>';
 			} elseif (isset($row['display'])) {
 				print '>' . html_escape($row['display']) . '</option>';
-			} else {
+			} elseif (isset($column_display) && isset($row[$column_display])) {
 				print '>' . html_escape(null_out_substitutions($row[$column_display])) . '</option>';
 			}
 		}
@@ -3154,6 +3154,7 @@ function html_common_header($title, $selectedTheme = '') {
 	<meta name="theme-color" content="#161616"/>
 	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' https://api.qrserver.com <?php print $alternates;?> data: blob:; style-src 'self' 'unsafe-inline' <?php print $alternates;?>; script-src 'self' <?php print html_escape($script_policy);?> 'unsafe-inline' <?php print $alternates;?>; worker-src 'self' <?php print $alternates;?>;">
 	<meta name='robots' content='noindex,nofollow'>
+
 	<title><?php print $title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 	<script type='text/javascript'>

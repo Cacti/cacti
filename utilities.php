@@ -697,7 +697,7 @@ function create_poller_cache_filter($session_var) {
 	$sql_params = [];
 
 	if (isset_request_var('host_id')) {
-		$host_id = get_request_var('host_id');
+		$host_id = get_filter_request_var('host_id');
 	} elseif (isset($_SESSION[$session_var . '_host_id'])) {
 		$host_id = $_SESSION[$session_var . '_host_id'];
 	} else {

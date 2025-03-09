@@ -283,7 +283,8 @@ function form_selectable_cell($contents, $id, $width = '', $style_or_class = '',
 			if ($tableColumns[$table_id][$columns["autocol$col_num"]] !== true) {
 				return false;
 			}
-		} elseif (!isset($logged[$table_id])) {
+		} elseif ($col_num < cacti_sizeof($tableColumns)) {
+			/* We can have last item colspan > 1.  So, only log if column count is larger */
 			cacti_log("The table with the Table ID $table_id is not using form_selectable_cell() correctly");
 			$logged[$table_id] = true;
 		}
@@ -323,19 +324,25 @@ function form_selectable_cell($contents, $id, $width = '', $style_or_class = '',
 	print "\t<td " . $output . '>' . $wrapper . "</td>\n";
 }
 
-function form_get_table_id() {
+function form_get_table_id(?bool $increment = false) {
+	static $table_count = 0;
+
+	if ($increment) {
+		$table_count++;
+	}
+
 	if (isset_request_var('action') && get_nfilter_request_var('action') != '' && isset_request_var('tab') && get_nfilter_request_var('tab') != '') {
-		return basename(get_current_page(), '.php') . ':action-tab-' . get_nfilter_request_var('action') . '-' . get_nfilter_request_var('tab') . ':';
+		return basename(get_current_page(), '.php') . ':' . $table_count . ':action-tab-' . get_nfilter_request_var('action') . '-' . get_nfilter_request_var('tab') . ':';
 	}
 
 	if (isset_request_var('action') && get_nfilter_request_var('action') != '') {
-		return basename(get_current_page(), '.php') . ':action-' . get_nfilter_request_var('action') . ':';
+		return basename(get_current_page(), '.php') . ':' . $table_count . ':action-' . get_nfilter_request_var('action') . ':';
 	}
 
 	if (isset_request_var('tab') && get_nfilter_request_var('tab') != '') {
 		return basename(get_current_page(), '.php') . ':tab-' . get_nfilter_request_var('tab') . ':';
 	} else {
-		return basename(get_current_page(), '.php') . ':';
+		return basename(get_current_page(), '.php') . ':' . $table_count;
 	}
 }
 
@@ -416,7 +423,7 @@ function form_process_visible_display_text($table_id, $display_text) {
 	 * so maintain a column count per page and store settings
 	 * accordingly.
 	 */
-	$table_id = form_get_table_id();
+	$table_id = form_get_table_id(true);
 
 	if (!isset($tableColumns[$table_id])) {
 		$tableCount[$table_id]   = 0;
@@ -1031,7 +1038,8 @@ function validate_store_request_vars(array $filters, string $sess_prefix = ''):v
 				} elseif (isset($options['default'])) {
 					set_request_var($variable, $options['default']);
 				} else {
-					cacti_log("Filter Variable: $variable, Must have a default and none is set", false);
+					cacti_log("WARNING: Filter Variable: $variable, Must have a default and none is set", false, 'FILTER');
+					cacti_debug_backtrace('FILTER');
 					set_request_var($variable, '');
 				}
 			} else {

@@ -293,6 +293,11 @@ function create_graphs_new_filter($host, $snmp_queries) {
 	$all = ['-2' => __('All')];
 	$gt  = ['-1' => __('Graph Template Based')];
 
+	if (!cacti_sizeof($host)) {
+		$host['id'] = '';
+		$host['description'] = __('Select a Device');
+	}
+
 	$graph_types = array_rekey($snmp_queries, 'id', 'name');
 
 	$graph_types = $all + $gt + $graph_types;
@@ -440,18 +445,22 @@ function draw_graphs_new_filter($render = false, $header_label = '', $host = [],
 function graphs() {
 	global $config, $item_rows;
 
-	if (isempty_request_var('host_id')) {
+	if (get_filter_request_var('host_id') > 0) {
+		$host = db_fetch_row_prepared('SELECT id, description, hostname, host_template_id
+			FROM host
+			WHERE id = ?',
+			[get_filter_request_var('host_id')]);
+	} else {
 		$host = db_fetch_row('SELECT id, description, hostname, host_template_id
 			FROM host
 			ORDER BY description ASC
 			LIMIT 1');
 
-		set_request_var('host_id', $host['id']);
-	} else {
-		$host = db_fetch_row_prepared('SELECT id, description, hostname, host_template_id
-			FROM host
-			WHERE id = ?',
-			[get_filter_request_var('host_id')]);
+		if (cacti_sizeof($host)) {
+			set_request_var('host_id', $host['id']);
+		} else {
+			set_request_var('host_id', '0');
+		}
 	}
 
 	if (cacti_sizeof($host)) {
@@ -471,7 +480,7 @@ function graphs() {
 		ON hsq.snmp_query_id = sq.id
 		WHERE hsq.host_id = ?
 		ORDER BY sq.name',
-		[$host['id']]);
+		[get_request_var('host_id')]);
 
 	draw_graphs_new_filter(true, $header_label, $host, $snmp_queries);
 
@@ -573,7 +582,7 @@ function graphs() {
 				AND gt.multiple = ""
 				AND gl.snmp_query_id = 0
 				GROUP BY gl.graph_template_id',
-				[$host['id']]);
+				[get_request_var('host_id')]);
 
 			if (cacti_sizeof($template_graphs)) {
 				$script .= 'var gt_created_graphs = new Array(';
