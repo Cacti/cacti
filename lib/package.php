@@ -725,7 +725,7 @@ function package_template(&$template, &$info, &$files, &$debug) {
 		return false;
 	}
 
-	$xml .= "   <signature>"     . $basesig                         . "</signature>\n</xml>";
+	$xml .= "   <signature>" . $basesig . "</signature>\n</xml>";
 
 	$name = get_item_name(get_request_var('export_type'), get_request_var('export_item_id'));
 

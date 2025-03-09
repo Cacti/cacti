@@ -40,9 +40,9 @@ function api_data_source_deletable($local_data_id) {
 	$graphs = db_fetch_cell_prepared('SELECT COUNT(DISTINCT gti.local_graph_id)
 		FROM data_local AS dl
 		INNER JOIN data_template_rrd AS dtr
-		ON dl.id=dtr.local_data_id
+		ON dl.id = dtr.local_data_id
 		LEFT JOIN graph_templates_item AS gti
-		ON gti.task_item_id=dtr.id
+		ON gti.task_item_id = dtr.id
 		WHERE dl.id = ?
 		AND gti.id IS NOT NULL',
 		array($local_data_id));
