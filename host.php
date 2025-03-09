@@ -988,8 +988,8 @@ function host_edit() {
 					</div>
 					<div class='cactiTableButton'>
 						<span>
-							<a class='linkCopyDark cactiTableCopy' id='copyToClipboard<?php print $dbg_copy_uid; ?>'><?php print __('Copy'); ?></a>
-							<a id='dbghide' class='fa fa-times' href='#'><?php print __('Hide'); ?></a>
+							<a class='linkCopyDark cactiTableCopy fa fa-copy' id='copyToClipboard<?php print $dbg_copy_uid; ?>' title='<?php print __('Copy All Data to Clipboard'); ?>'></a>
+							<a id='dbghide' class='fa fa-trash-alt' href='#' title='<?php print __('Remove Debug Output'); ?>'></a>
 						</span>
 					</div>
 				</div>
