@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -34,14 +34,14 @@ function graph_template_to_xml($graph_template_id) {
 	$graph_template = db_fetch_row_prepared('SELECT *
 		FROM graph_templates
 		WHERE id = ?',
-		array($graph_template_id));
+		[$graph_template_id]);
 
 	$graph_template_graph = db_fetch_row_prepared('SELECT *
 		FROM graph_templates_graph
 		WHERE graph_template_id = ?
 		AND local_graph_id = 0
 		ORDER BY id',
-		array($graph_template_id));
+		[$graph_template_id]);
 
 	$graph_template_items = db_fetch_assoc_prepared('SELECT *
 		FROM graph_templates_item
@@ -49,13 +49,13 @@ function graph_template_to_xml($graph_template_id) {
 		AND local_graph_id = 0
 		AND hash != ""
 		ORDER BY sequence',
-		array($graph_template_id));
+		[$graph_template_id]);
 
 	$graph_template_inputs = db_fetch_assoc_prepared('SELECT *
 		FROM graph_template_input
 		WHERE graph_template_id = ?
 		ORDER BY id',
-		array($graph_template_id));
+		[$graph_template_id]);
 
 	if ((empty($graph_template['id'])) || (empty($graph_template_graph['id']))) {
 		$export_errors++;
@@ -103,7 +103,7 @@ function graph_template_to_xml($graph_template_id) {
 						'cdef_id'               => $xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('cdef') . get_hash_cdef($item[$field_name]) . "</$field_name>\n",
 						'vdef_id'               => $xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('vdef') . get_hash_vdef($item[$field_name]) . "</$field_name>\n",
 						'gprint_id'             => $xml_text .= "\t\t\t<$field_name>hash_" . get_hash_version('gprint_preset') . get_hash_gprint($item[$field_name]) . "</$field_name>\n",
-						'color_id', 'color2_id' => $xml_text .= "\t\t\t<$field_name>" . db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', array($item[$field_name])) . "</$field_name>\n",
+						'color_id', 'color2_id' => $xml_text .= "\t\t\t<$field_name>" . db_fetch_cell_prepared('SELECT hex FROM colors WHERE id = ?', [$item[$field_name]]) . "</$field_name>\n",
 						default                 => $xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item[$field_name]) . "</$field_name>\n",
 					};
 				} else {
@@ -140,7 +140,7 @@ function graph_template_to_xml($graph_template_id) {
 			$graph_template_input_items = db_fetch_assoc_prepared('SELECT graph_template_item_id
 				FROM graph_template_input_defs
 				WHERE graph_template_input_id = ?',
-				array($item['id']));
+				[$item['id']]);
 
 			$xml_text .= "\t\t\t<items>";
 
@@ -180,14 +180,14 @@ function data_template_to_xml($data_template_id) {
 	$data_template = db_fetch_row_prepared('SELECT id, name
 		FROM data_template
 		WHERE id = ?',
-		array($data_template_id));
+		[$data_template_id]);
 
 	$data_template_data = db_fetch_row_prepared('SELECT *
 		FROM data_template_data
 		WHERE data_template_id = ?
 		AND local_data_id = 0
 		ORDER BY id',
-		array($data_template_id));
+		[$data_template_id]);
 
 	$data_template_rrd = db_fetch_assoc_prepared('SELECT *
 		FROM data_template_rrd
@@ -195,12 +195,12 @@ function data_template_to_xml($data_template_id) {
 		AND local_data_id = 0
 		AND hash != ""
 		ORDER BY id',
-		array($data_template_id));
+		[$data_template_id]);
 
 	$data_input_data = db_fetch_assoc_prepared('SELECT *
 		FROM data_input_data
 		WHERE data_template_data_id = ?',
-		array($data_template_data['id']));
+		[$data_template_data['id']]);
 
 	if ((empty($data_template['id'])) || (empty($data_template_data['id']))) {
 		$export_errors++;
@@ -308,13 +308,13 @@ function data_input_method_to_xml($data_input_id) {
 	$data_input = db_fetch_row_prepared('SELECT *
 		FROM data_input
 		WHERE id = ?',
-		array($data_input_id));
+		[$data_input_id]);
 
 	$data_input_fields = db_fetch_assoc_prepared('SELECT *
 		FROM data_input_fields
 		WHERE data_input_id = ?
 		ORDER BY id',
-		array($data_input_id));
+		[$data_input_id]);
 
 	if (empty($data_input['id'])) {
 		$export_errors++;
@@ -387,11 +387,11 @@ function data_input_method_to_xml($data_input_id) {
 function cdef_to_xml($cdef_id) {
 	global $fields_cdef_edit, $export_errors;
 
-	$fields_cdef_item_edit = array(
+	$fields_cdef_item_edit = [
 		'sequence' => 'sequence',
 		'type'     => 'type',
 		'value'    => 'value'
-	);
+	];
 
 	$hash['cdef'] = get_hash_version('cdef') . get_hash_cdef($cdef_id);
 	$xml_text     = '';
@@ -399,13 +399,13 @@ function cdef_to_xml($cdef_id) {
 	$cdef = db_fetch_row_prepared('SELECT *
 		FROM cdef
 		WHERE id = ?',
-		array($cdef_id));
+		[$cdef_id]);
 
 	$cdef_items = db_fetch_assoc_prepared('SELECT *
 		FROM cdef_items
 		WHERE cdef_id = ?
 		ORDER BY sequence',
-		array($cdef_id));
+		[$cdef_id]);
 
 	if (empty($cdef['id'])) {
 		$export_errors++;
@@ -473,13 +473,13 @@ function vdef_to_xml($vdef_id) {
 	$vdef = db_fetch_row_prepared('SELECT *
 		FROM vdef
 		WHERE id = ?',
-		array($vdef_id));
+		[$vdef_id]);
 
 	$vdef_items = db_fetch_assoc_prepared('SELECT *
 		FROM vdef_items
 		WHERE vdef_id = ?
 		ORDER BY sequence',
-		array($vdef_id));
+		[$vdef_id]);
 
 	if (empty($vdef['id'])) {
 		$err_msg = 'Invalid VDEF.';
@@ -535,7 +535,7 @@ function gprint_preset_to_xml($gprint_preset_id) {
 	$graph_templates_gprint = db_fetch_row_prepared('SELECT *
 		FROM graph_templates_gprint
 		WHERE id = ?',
-		array($gprint_preset_id));
+		[$gprint_preset_id]);
 
 	if (empty($graph_templates_gprint['id'])) {
 		$export_errors++;
@@ -568,19 +568,19 @@ function data_source_profile_to_xml($data_source_profile_id) {
 	$profile = db_fetch_row_prepared('SELECT *
 		FROM data_source_profiles
 		WHERE id = ?',
-		array($data_source_profile_id));
+		[$data_source_profile_id]);
 
 	$profile_cf = db_fetch_assoc_prepared('SELECT *
 		FROM data_source_profiles_cf
 		WHERE data_source_profile_id = ?
 		ORDER BY consolidation_function_id',
-		array($data_source_profile_id));
+		[$data_source_profile_id]);
 
 	$profile_rra = db_fetch_assoc_prepared('SELECT *
 		FROM data_source_profiles_rra
 		WHERE data_source_profile_id = ?
 		ORDER BY steps',
-		array($data_source_profile_id));
+		[$data_source_profile_id]);
 
 	if (empty($profile['id'])) {
 		$export_errors++;
@@ -655,19 +655,19 @@ function host_template_to_xml($host_template_id) {
 	$host_template = db_fetch_row_prepared('SELECT *
 		FROM host_template
 		WHERE id = ?',
-		array($host_template_id));
+		[$host_template_id]);
 
 	$host_template_graph = db_fetch_assoc_prepared('SELECT *
 		FROM host_template_graph
 		WHERE host_template_id = ?
 		ORDER BY graph_template_id',
-		array($host_template_id));
+		[$host_template_id]);
 
 	$host_template_snmp_query = db_fetch_assoc_prepared('SELECT *
 		FROM host_template_snmp_query
 		WHERE host_template_id = ?
 		ORDER BY snmp_query_id',
-		array($host_template_id));
+		[$host_template_id]);
 
 	if (empty($host_template['id'])) {
 		$export_errors++;
@@ -738,13 +738,13 @@ function data_query_to_xml($data_query_id) {
 	$snmp_query = db_fetch_row_prepared('SELECT *
 		FROM snmp_query
 		WHERE id = ?',
-		array($data_query_id));
+		[$data_query_id]);
 
 	$snmp_query_graph = db_fetch_assoc_prepared('SELECT *
 		FROM snmp_query_graph
 		WHERE snmp_query_id = ?
 		ORDER BY id',
-		array($data_query_id));
+		[$data_query_id]);
 
 	if (empty($snmp_query['id'])) {
 		$export_errors++;
@@ -793,20 +793,20 @@ function data_query_to_xml($data_query_id) {
 				FROM snmp_query_graph_rrd_sv
 				WHERE snmp_query_graph_id = ?
 				ORDER BY sequence',
-				array($item['id']));
+				[$item['id']]);
 
 			$snmp_query_graph_sv = db_fetch_assoc_prepared('SELECT *
 				FROM snmp_query_graph_sv
 				WHERE snmp_query_graph_id = ?
 				ORDER BY sequence',
-				array($item['id']));
+				[$item['id']]);
 
 			$snmp_query_graph_rrd = db_fetch_assoc_prepared('SELECT *
 				FROM snmp_query_graph_rrd
 				WHERE snmp_query_graph_id = ?
 				AND data_template_id > 0
 				ORDER BY data_template_rrd_id',
-				array($item['id']));
+				[$item['id']]);
 
 			/* XML Branch: <graphs/rrd> */
 
@@ -895,7 +895,7 @@ function data_query_to_xml($data_query_id) {
 function resolve_dependencies($type, $id, $dep_array) {
 	/* make sure we define our variables */
 	if (!isset($dep_array[$type])) {
-		$dep_array[$type] = array();
+		$dep_array[$type] = [];
 	}
 
 	switch ($type) {
@@ -909,7 +909,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 				AND graph_templates_item.local_graph_id = 0
 				AND graph_templates_item.task_item_id > 0
 				GROUP BY data_template_rrd.data_template_id',
-				array($id));
+				[$id]);
 
 			if (cacti_sizeof($graph_template_items) > 0) {
 				foreach ($graph_template_items as $item) {
@@ -926,7 +926,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 				AND local_graph_id = 0
 				AND cdef_id > 0
 				GROUP BY cdef_id',
-				array($id));
+				[$id]);
 
 			$recursive = true;
 			/* in the first turn, search all inherited cdef items related to all cdef's known on highest recursion level */
@@ -976,7 +976,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 				AND local_graph_id = 0
 				AND vdef_id > 0
 				GROUP BY vdef_id',
-				array($id));
+				[$id]);
 
 			if (cacti_sizeof($vdef_items) > 0) {
 				foreach ($vdef_items as $item) {
@@ -993,7 +993,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 				AND local_graph_id = 0
 				AND gprint_id > 0
 				GROUP BY gprint_id',
-				array($id));
+				[$id]);
 
 			if (cacti_sizeof($graph_template_items) > 0) {
 				foreach ($graph_template_items as $item) {
@@ -1011,7 +1011,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 				WHERE data_template_id = ?
 				AND local_data_id = 0
 				AND data_input_id > 0',
-				array($id));
+				[$id]);
 
 			if ((!empty($item)) && (!isset($dep_array['data_input_method'][$item['data_input_id']]))) {
 				$dep_array = resolve_dependencies('data_input_method', $item['data_input_id'], $dep_array);
@@ -1022,7 +1022,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 				FROM data_template_data
 				WHERE data_template_id = ?
 				AND local_data_id = 0',
-				array($id));
+				[$id]);
 
 			if (cacti_sizeof($profiles)) {
 				foreach ($profiles as $item) {
@@ -1039,7 +1039,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 				FROM snmp_query
 				WHERE id = ?
 				AND data_input_id > 0',
-				array($id));
+				[$id]);
 
 			if ((!empty($item)) && (!isset($dep_array['data_input_method'][$item['data_input_id']]))) {
 				$dep_array = resolve_dependencies('data_input_method', $item['data_input_id'], $dep_array);
@@ -1051,7 +1051,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 				WHERE snmp_query_id = ?
 				AND graph_template_id > 0
 				GROUP BY graph_template_id',
-				array($id));
+				[$id]);
 
 			if (cacti_sizeof($snmp_query_graph) > 0) {
 				foreach ($snmp_query_graph as $item) {
@@ -1069,7 +1069,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 				WHERE host_template_id = ?
 				AND graph_template_id > 0
 				GROUP BY graph_template_id',
-				array($id));
+				[$id]);
 
 			if (cacti_sizeof($host_template_graph) > 0) {
 				foreach ($host_template_graph as $item) {
@@ -1085,7 +1085,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 				WHERE host_template_id = ?
 				AND snmp_query_id > 0
 				GROUP BY snmp_query_id',
-				array($id));
+				[$id]);
 
 			if (cacti_sizeof($host_template_snmp_query) > 0) {
 				foreach ($host_template_snmp_query as $item) {
@@ -1096,9 +1096,8 @@ function resolve_dependencies($type, $id, $dep_array) {
 			}
 
 			break;
-
 		default:
-			$param              = array();
+			$param              = [];
 			$param['type']      = $type;
 			$param['id']        = $id;
 			$param['dep_array'] = $dep_array;
@@ -1122,7 +1121,7 @@ function get_item_xml($type, $id, $follow_deps) {
 
 	if ($follow_deps == true) {
 		/* follow all dependencies recursively */
-		$dep_array = resolve_dependencies($type, $id, array());
+		$dep_array = resolve_dependencies($type, $id, []);
 	} else {
 		/* we are not supposed to resolve dependencies */
 		$dep_array[$type][$id] = $id;
@@ -1168,9 +1167,8 @@ function get_item_xml($type, $id, $follow_deps) {
 						$xml_text .= "\n" . data_source_profile_to_xml($dep_id);
 
 						break;
-
 					default:
-						$param             = array();
+						$param             = [];
 						$param['dep_id']   = $dep_id;
 						$param['dep_type'] = $dep_type;
 						$param['xml_text'] = $xml_text;
@@ -1197,4 +1195,3 @@ function get_item_xml($type, $id, $follow_deps) {
 function xml_character_encode($text) {
 	return html_escape($text);
 }
-

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -26,9 +26,9 @@ include('./include/auth.php');
 include_once('./lib/poller.php');
 include_once('./lib/utility.php');
 
-$actions = array(
+$actions = [
 	1 => __('Delete')
-);
+];
 
 /* set default action */
 set_default_action();
@@ -44,6 +44,7 @@ switch (get_request_var('action')) {
 		public_keys();
 
 		bottom_footer();
+
 		break;
 }
 
@@ -56,19 +57,20 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == '1') { // delete
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					package_key_remove($selected_items[$i]);
 				}
 			}
 		}
 
 		header('Location: package_keys.php?header=false');
+
 		exit;
 	}
 
 	/* setup some variables */
-	$p_list = '';
-	$p_array = array();
+	$p_list  = '';
+	$p_array = [];
 
 	/* loop through each of the data queries and process them */
 	foreach ($_POST as $var => $val) {
@@ -77,7 +79,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$p_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT author FROM package_public_keys WHERE id = ?', array($matches[1]))) . '</li>';
+			$p_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT author FROM package_public_keys WHERE id = ?', [$matches[1]])) . '</li>';
 			$p_array[] = $matches[1];
 		}
 	}
@@ -102,6 +104,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: package_keys.php?header=false');
+
 		exit;
 	}
 
@@ -122,7 +125,7 @@ function form_actions() {
 }
 
 function package_key_remove($id) {
-	db_execute_prepared('DELETE FROM package_public_keys WHERE id = ?', array($id));
+	db_execute_prepared('DELETE FROM package_public_keys WHERE id = ?', [$id]);
 }
 
 function public_keys() {
@@ -142,7 +145,7 @@ function public_keys() {
 	}
 
 	$sql_where  = '';
-	$sql_params = array();
+	$sql_params = [];
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
@@ -155,7 +158,7 @@ function public_keys() {
 	}
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$total_rows = db_fetch_cell_prepared("SELECT COUNT(*)
 		FROM package_public_keys
@@ -169,30 +172,30 @@ function public_keys() {
 		$sql_limit",
 		$sql_params);
 
-	$display_text = array(
-		'author' => array(
+	$display_text = [
+		'author' => [
 			'display' => __('Author'),
 			'sort'    => 'ASC'
-		),
-		'id' => array(
+		],
+		'id' => [
 			'display' => __('ID'),
 			'align'   => 'left',
 			'sort'    => 'ASC'
-		),
-		'homepage' => array(
+		],
+		'homepage' => [
 			'display' => __('Home Page'),
 			'sort'    => 'ASC'
-		),
-		'email_address' => array(
+		],
+		'email_address' => [
 			'display' => __('Support EMail Address'),
 			'sort'    => 'ASC'
-		),
-		'nosort' => array(
+		],
+		'nosort' => [
 			'display' => __('Key Type'),
-		),
-	);
+		],
+	];
 
-	$nav = html_nav_bar('package_keys.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, sizeof($display_text)+1, __('Package Public Keys'), 'page', 'main');
+	$nav = html_nav_bar('package_keys.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, sizeof($display_text) + 1, __('Package Public Keys'), 'page', 'main');
 
 	form_start('package_keys.php', 'chk');
 
@@ -203,6 +206,7 @@ function public_keys() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
+
 	if (cacti_sizeof($keys)) {
 		foreach ($keys as $key) {
 			form_alternate_row('line' . $key['id'], true);
@@ -220,7 +224,7 @@ function public_keys() {
 			form_end_row();
 		}
 	} else {
-		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No Package Public Keys Found') . '</em></td></tr>';
+		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No Package Public Keys Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -234,4 +238,3 @@ function public_keys() {
 
 	form_end();
 }
-

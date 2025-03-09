@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -42,7 +42,7 @@ function upgrade_to_1_1_20() {
 		MODIFY COLUMN `mib` VARCHAR(50) NOT NULL,
 		MODIFY COLUMN `attribute` VARCHAR(50) NOT NULL');
 
-	db_install_add_key('snmpagent_cache_notifications', 'key', 'PRIMARY', array('name', 'mib', 'attribute', 'sequence_id'));
+	db_install_add_key('snmpagent_cache_notifications', 'key', 'PRIMARY', ['name', 'mib', 'attribute', 'sequence_id']);
 
 	db_install_drop_key('snmpagent_cache_textual_conventions', 'key', 'PRIMARY');
 
@@ -51,7 +51,7 @@ function upgrade_to_1_1_20() {
 		MODIFY COLUMN mib VARCHAR(50) NOT NULL,
 		MODIFY COLUMN type VARCHAR(50) NOT NULL');
 
-	db_install_add_key('snmpagent_cache_textual_conventions', 'key', 'PRIMARY', array('name', 'mib', 'type'));
+	db_install_add_key('snmpagent_cache_textual_conventions', 'key', 'PRIMARY', ['name', 'mib', 'type']);
 
 	/* correct dumplicate notifications */
 	$notifications_results = db_install_fetch_assoc('SELECT *, COUNT(*) AS totals
@@ -69,7 +69,7 @@ function upgrade_to_1_1_20() {
 				AND notification = ?
 				AND mib = ?
 				LIMIT $totals",
-				array($n['manager_id'], $n['notification'], $n['mib']));
+				[$n['manager_id'], $n['notification'], $n['mib']]);
 		}
 	}
 
@@ -79,5 +79,5 @@ function upgrade_to_1_1_20() {
 		MODIFY COLUMN `notification` VARCHAR(50) NOT NULL,
 		MODIFY COLUMN `mib` VARCHAR(50) NOT NULL');
 
-	db_install_add_key('snmpagent_managers_notifications', 'key', 'PRIMARY', array('manager_id', 'notification', 'mib'));
+	db_install_add_key('snmpagent_managers_notifications', 'key', 'PRIMARY', ['manager_id', 'notification', 'mib']);
 }

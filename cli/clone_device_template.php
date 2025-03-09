@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -32,7 +32,8 @@ require(__DIR__ . '/../lib/data_query.php');
 chdir('..');
 
 if ($config['poller_id'] > 1) {
-	print "FATAL: This utility is designed for the main Data Collector only" . PHP_EOL;
+	print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
+
 	exit(1);
 }
 
@@ -61,7 +62,7 @@ $clone_script  = false;
 if (cacti_sizeof($parms)) {
 	$shortopts = 'VvHh';
 
-	$longopts = array(
+	$longopts = [
 		// Options without a value
 		'debug',
 		'copy',
@@ -86,11 +87,11 @@ if (cacti_sizeof($parms)) {
 		'clone-data-queries::',
 		'clone-graph-templates::',
 		'clone-data-templates::',
-	);
+	];
 
 	$options = getopt($shortopts, $longopts);
 
-	foreach($options as $arg => $value) {
+	foreach ($options as $arg => $value) {
 		switch($arg) {
 			case 'list-all':
 				$list_all = true;
@@ -156,26 +157,31 @@ if (cacti_sizeof($parms)) {
 			case 'V':
 			case 'v':
 				display_version();
+
 				exit(0);
 			case 'help':
 			case 'H':
 			case 'h':
 				display_help();
+
 				exit(0);
 			default:
 				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 				display_help();
+
 				exit(1);
 		}
 	}
 
 	if ($list_all) {
 		list_all_templates();
+
 		exit(0);
 	}
 
 	if ($list_device) {
 		list_device_template($list_device);
+
 		exit(0);
 	}
 
@@ -212,10 +218,10 @@ if (cacti_sizeof($parms)) {
 	 * list a report of the errors and then drop out of the validation checks.
 	 */
 	$proceed = false;
-	$output  = array(
-		'warnings' => array(),
-		'errors'   => array()
-	);
+	$output  = [
+		'warnings' => [],
+		'errors'   => []
+	];
 
 	printf('---------------------------------------------------------------' . PHP_EOL);
 	printf('Performing pre-check for errors in arguments' . PHP_EOL);
@@ -230,13 +236,13 @@ if (cacti_sizeof($parms)) {
 
 	if (cacti_sizeof($output['errors']) || cacti_sizeof($output['warnings'])) {
 		printf(PHP_EOL);
-		printf("WARNING: Clone Device Template found issues.  You may correct these issues or continue." . PHP_EOL);
-		printf("         In the case of duplicate name warnings, Cacti will attempt to find a suitable new name." . PHP_EOL);
+		printf('WARNING: Clone Device Template found issues.  You may correct these issues or continue.' . PHP_EOL);
+		printf('         In the case of duplicate name warnings, Cacti will attempt to find a suitable new name.' . PHP_EOL);
 		printf("         using an ascending numeric suffix starting with ' (1)'.  For scripts and XML files, the" . PHP_EOL);
 		printf("         new names will start with an ascending numeric suffix starting with '_01'." . PHP_EOL . PHP_EOL);
 
 		if (cacti_sizeof($output['errors'])) {
-			foreach($output['errors'] as $error) {
+			foreach ($output['errors'] as $error) {
 				printf($error . PHP_EOL);
 			}
 
@@ -244,7 +250,7 @@ if (cacti_sizeof($parms)) {
 		}
 
 		if (cacti_sizeof($output['warnings'])) {
-			foreach($output['warnings'] as $warning) {
+			foreach ($output['warnings'] as $warning) {
 				printf($warning . PHP_EOL);
 			}
 		}
@@ -252,22 +258,26 @@ if (cacti_sizeof($parms)) {
 		printf('NOTE: No Clone Device Template precheck errors Found!' . PHP_EOL);
 	}
 
-    printf('------------------------------------------------------' . PHP_EOL);
+	printf('------------------------------------------------------' . PHP_EOL);
 
 	if (!$quiet) {
 		$fin = fopen('php://stdin', 'r');
 
-		while(true) {
+		while (true) {
 			printf(PHP_EOL . 'Precheck completed with no Errors.  Do you want to continue [Y|N]? ');
 
 			$line = strtolower(trim(fgets($fin)));
 
 			if ($line == 'y') {
 				fclose($fin);
+
 				break;
-			} elseif ($line == 'n') {
+			}
+
+			if ($line == 'n') {
 				fclose($fin);
 				printf('User does not wish to proceed.  Exiting!' . PHP_EOL);
+
 				exit(1);
 			}
 		}
@@ -275,7 +285,7 @@ if (cacti_sizeof($parms)) {
 
 	/* proceed with the Clone here */
 	printf('Proceeding with Device Template Cloning' . PHP_EOL);
-    printf('------------------------------------------------------' . PHP_EOL);
+	printf('------------------------------------------------------' . PHP_EOL);
 
 	$success = api_clone_device_template($template_id, $template_name, $include_gt, $clone_gt,
 		$include_dq, $clone_dq, $include_dt, $clone_dt, $suffix, $clone_xml, $clone_script);
@@ -304,7 +314,7 @@ function list_all_templates() {
 		printf('%-8s %-40s %-25s' . PHP_EOL, 'Id', 'Name', 'Class');
 		printf('%-8s %-40s %-25s' . PHP_EOL, str_repeat('-', 8), str_repeat('-', 40), str_repeat('-', 25));
 
-		foreach($device_templates as $dt) {
+		foreach ($device_templates as $dt) {
 			printf('%-8s %-40s %-25s' . PHP_EOL, $dt['id'], $dt['name'], $device_classes[$dt['class']]);
 		}
 	} else {
@@ -318,7 +328,7 @@ function list_device_template($device_template_id) {
 	$device_template = db_fetch_row_prepared('SELECT *
 		FROM host_template
 		WHERE id = ?',
-		array($device_template_id));
+		[$device_template_id]);
 
 	if (cacti_sizeof($device_template)) {
 		printf('-----------------------------------------------' . PHP_EOL);
@@ -335,7 +345,7 @@ function list_device_template($device_template_id) {
 					WHERE host_template_id = ?
 				)
 				ORDER BY name',
-				array($device_template_id)),
+				[$device_template_id]),
 			'id', 'name'
 		);
 
@@ -347,7 +357,7 @@ function list_device_template($device_template_id) {
 			printf('%-8s %-40s' . PHP_EOL, 'Id', 'Name');
 			printf('%-8s %-40s' . PHP_EOL, str_repeat('-', 8), str_repeat('-', 40));
 
-			foreach($graph_templates as $id => $name) {
+			foreach ($graph_templates as $id => $name) {
 				printf('%-8s %-40s' . PHP_EOL, $id, $name);
 			}
 		} else {
@@ -363,7 +373,7 @@ function list_device_template($device_template_id) {
 					WHERE host_template_id = ?
 				)
 				ORDER BY name',
-				array($device_template_id)),
+				[$device_template_id]),
 			'id', 'name');
 
 		if (cacti_sizeof($data_queries)) {
@@ -374,7 +384,7 @@ function list_device_template($device_template_id) {
 			printf('%-8s %-40s' . PHP_EOL, 'Id', 'Name');
 			printf('%-8s %-40s' . PHP_EOL, str_repeat('-', 8), str_repeat('-', 40));
 
-			foreach($data_queries as $id => $name) {
+			foreach ($data_queries as $id => $name) {
 				printf('%-8s %-40s' . PHP_EOL, $id, $name);
 			}
 		} else {
@@ -394,7 +404,7 @@ function list_device_template($device_template_id) {
 					)
 				)
 				ORDER BY name',
-				array($device_template_id)),
+				[$device_template_id]),
 			'id', 'name'
 		);
 
@@ -406,7 +416,7 @@ function list_device_template($device_template_id) {
 			printf('%-8s %-40s' . PHP_EOL, 'Id', 'Name');
 			printf('%-8s %-40s' . PHP_EOL, str_repeat('-', 8), str_repeat('-', 40));
 
-			foreach($data_query_graph_templates as $id => $name) {
+			foreach ($data_query_graph_templates as $id => $name) {
 				printf('%-8s %-40s' . PHP_EOL, $id, $name);
 			}
 		} else {
@@ -416,6 +426,7 @@ function list_device_template($device_template_id) {
 		exit(0);
 	} else {
 		print "FATAL: Device Template $device_template_id does not exist!" . PHP_EOL;
+
 		exit(1);
 	}
 }
@@ -488,4 +499,3 @@ function display_help() {
 	print '  --debug                           - Be more verbose in during processing' . PHP_EOL;
 	print PHP_EOL;
 }
-

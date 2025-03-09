@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -63,7 +63,7 @@ function ss_host_disk($hostname = '', $host_id = 0, $snmp_auth = '', $cmd = 'ind
 		$snmp_community = $snmp[5];
 	}
 
-	$oids = array(
+	$oids = [
 		'total'       => '.1.3.6.1.2.1.25.2.3.1.5',
 		'totalin'     => '.1.3.6.1.2.1.25.2.3.1.5',
 		'used'        => '.1.3.6.1.2.1.25.2.3.1.6',
@@ -71,7 +71,7 @@ function ss_host_disk($hostname = '', $host_id = 0, $snmp_auth = '', $cmd = 'ind
 		'index'       => '.1.3.6.1.2.1.25.2.3.1.1',
 		'description' => '.1.3.6.1.2.1.25.2.3.1.3',
 		'sau'         => '.1.3.6.1.2.1.25.2.3.1.4'
-	);
+	];
 
 	if ($cmd == 'index') {
 		$return_arr = ss_host_disk_reindex(
@@ -127,7 +127,7 @@ function ss_host_disk($hostname = '', $host_id = 0, $snmp_auth = '', $cmd = 'ind
 		$arg   = $arg1;
 		$index = $arg2;
 
-		$value = api_plugin_hook_function('hmib_get_disk', array('host_id' => $host_id, 'arg' => $arg, 'index' => $index));
+		$value = api_plugin_hook_function('hmib_get_disk', ['host_id' => $host_id, 'arg' => $arg, 'index' => $index]);
 
 		if (is_array($value)) {
 			if (($arg == 'total') || ($arg == 'used')) {
@@ -136,7 +136,7 @@ function ss_host_disk($hostname = '', $host_id = 0, $snmp_auth = '', $cmd = 'ind
 					WHERE host_id = ?
 					AND field_name = 'hrStorageAllocationUnits'
 					AND snmp_index = ?",
-					array($host_id, $index)));
+					[$host_id, $index]));
 
 				$snmp_data = cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", $snmp_version,
 					$snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase,
@@ -163,12 +163,12 @@ function ss_host_disk($hostname = '', $host_id = 0, $snmp_auth = '', $cmd = 'ind
 }
 
 function ss_host_disk_reindex($arr) {
-	$return_arr = array();
+	$return_arr = [];
 
 	if (cacti_sizeof($arr)) {
 		for ($i=0;($i < cacti_sizeof($arr));$i++) {
 			if (!isset($arr[$i]['value'])) {
-				return array();
+				return [];
 			}
 
 			$return_arr[$i] = $arr[$i]['value'];

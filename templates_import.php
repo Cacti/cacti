@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -95,7 +95,7 @@ function form_save() {
 			$replace_svalues = false;
 		}
 
-		$import_hashes = array();
+		$import_hashes = [];
 
 		/* loop through each of the graphs selected on the previous page and get more info about them */
 		foreach ($_POST as $var => $val) {
@@ -109,7 +109,7 @@ function form_save() {
 			}
 		}
 
-		$import_messages = array();
+		$import_messages = [];
 
 		/* obtain debug information if it's set */
 		$debug_data = import_xml_data($xml_data, $import_as_new, $profile_id, $remove_orphans, $replace_svalues, $import_hashes);
@@ -148,7 +148,7 @@ function form_save() {
 function prepare_template_display(&$import_info) {
 	global $hash_type_names;
 
-	$templates = array();
+	$templates = [];
 
 	/**
 	 * This function will create an array of item types and their status
@@ -215,14 +215,14 @@ function display_template_data(&$templates) {
 
 		html_start_box(__('Import Files [ If Files are missing, locate and install before using ]'), '100%', '', '1', 'center', '');
 
-		$display_text = array(
-			array(
+		$display_text = [
+			[
 				'display' => __('File Name')
-			),
-			array(
+			],
+			[
 				'display' => __('Status')
-			)
-		);
+			]
+		];
 
 		html_header($display_text);
 
@@ -251,23 +251,23 @@ function display_template_data(&$templates) {
 	if (cacti_sizeof($templates)) {
 		html_start_box(__('Import Templates [ None selected imports all, Check to import selectively ]'), '100%', '', '1', 'center', '');
 
-		$display_text = array(
-			array(
+		$display_text = [
+			[
 				'display' => __('Template Type')
-			),
-			array(
+			],
+			[
 				'display' => __('Template Name')
-			),
-			array(
+			],
+			[
 				'display' => __('Status')
-			),
-			array(
+			],
+			[
 				'display' => __('Dependencies')
-			),
-			array(
+			],
+			[
 				'display' => __('Changes/Diffferences')
-			)
-		);
+			]
+		];
 
 		html_header_checkbox($display_text, false, '', true, 'import');
 
@@ -276,12 +276,12 @@ function display_template_data(&$templates) {
 		foreach ($templates as $hash => $detail) {
 			$id = base64_encode(
 				json_encode(
-					array(
+					[
 						'hash'    => $hash,
 						'type'    => $detail['type_name'],
 						'name'    => $detail['name'],
 						'status'  => $detail['status']
-					)
+					]
 				)
 			);
 
@@ -302,7 +302,7 @@ function display_template_data(&$templates) {
 			form_selectable_cell($status, $id);
 
 			if (isset($detail['deps'])) {
-				$dep_details = array();
+				$dep_details = [];
 				$unmet_count = 0;
 				$met_count   = 0;
 
@@ -333,16 +333,16 @@ function display_template_data(&$templates) {
 				form_selectable_cell(__('Some CDEF Items will not import due to an export error! Contact Template provider for an updated export.'), $id);
 			} elseif (isset($detail['vals'])) {
 				$diff_details = '';
-				$diff_array   = array();
-				$orphan_array = array();
+				$diff_array   = [];
+				$orphan_array = [];
 
 				foreach ($detail['vals'] as $type => $diffs) {
 					if ($type == 'differences') {
-						foreach($diffs as $item) {
+						foreach ($diffs as $item) {
 							$diff_array[$item] = $item;
 						}
 					} elseif ($type == 'orphans') {
-						foreach($diffs as $item) {
+						foreach ($diffs as $item) {
 							$orphan_array[$item] = $item;
 						}
 					}
@@ -389,39 +389,39 @@ function import() {
 	form_start('templates_import.php', 'import', true);
 
 	/* ================= input validation and session storage ================= */
-	$filters = array(
-		'preview_only' => array(
+	$filters = [
+		'preview_only' => [
 			'filter'  => FILTER_VALIDATE_REGEXP,
-			'options' => array('options' => array('regexp' => '(true|false)')),
+			'options' => ['options' => ['regexp' => '(true|false)']],
 			'default' => 'on'
-		),
-		'replace_svalues' => array(
+		],
+		'replace_svalues' => [
 			'filter'  => FILTER_VALIDATE_REGEXP,
-			'options' => array('options' => array('regexp' => '(true|false)')),
+			'options' => ['options' => ['regexp' => '(true|false)']],
 			'default' => read_config_option('replace_svalues')
-		),
-		'remove_orphans' => array(
+		],
+		'remove_orphans' => [
 			'filter'  => FILTER_VALIDATE_REGEXP,
-			'options' => array('options' => array('regexp' => '(true|false)')),
+			'options' => ['options' => ['regexp' => '(true|false)']],
 			'default' => read_config_option('remove_orphans')
-		),
-		'data_source_profile' => array(
+		],
+		'data_source_profile' => [
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => $default_profile
-		),
-		'image_format' => array(
+		],
+		'image_format' => [
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => read_config_option('default_image_format')
-		),
-		'graph_width' => array(
+		],
+		'graph_width' => [
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => read_config_option('default_graph_width')
-		),
-		'graph_height' => array(
+		],
+		'graph_height' => [
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => read_config_option('default_graph_height')
-		),
-	);
+		],
+	];
 
 	validate_store_request_vars($filters, 'sess_pimport');
 	/* ================= input validation ================= */
@@ -461,10 +461,10 @@ function import() {
 	html_start_box(__('Import Template'), '100%', true, '3', 'center', '');
 
 	draw_edit_form(
-		array(
-			'config' => array('no_form_tag' => true),
+		[
+			'config' => ['no_form_tag' => true],
 			'fields' => $fields_template_import
-		)
+		]
 	);
 
 	html_end_box(true, true);

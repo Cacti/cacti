@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -83,7 +83,6 @@ if (cacti_sizeof($parms)) {
 				$host_template_id = $value;
 
 				break;
-
 			default:
 				print "ERROR: Invalid Argument: ($arg)" . PHP_DEOL;
 				display_help();
@@ -157,7 +156,7 @@ if ($pattern == '' || $pattern == 'device') {
 }
 
 $sql_where  = '';
-$sql_params = array();
+$sql_params = [];
 
 if ($host_id > 0) {
 	$sql_where    = ' AND h.id = ?';
@@ -245,7 +244,7 @@ foreach ($data_sources as $info) {
 			FROM data_template_rrd
 			WHERE local_data_id = ?
 			LIMIT 1',
-			array($local_data_id));
+			[$local_data_id]);
 
 		$data_source_path1 = $base_rra_path . '/' . strtolower(clean_up_file_name($info['description'])) . '_' . $local_data_id . '.rrd';
 
@@ -346,13 +345,13 @@ function update_database($info) {
 	db_execute_prepared('UPDATE poller_item
 		SET rrd_path = ?
 		WHERE local_data_id = ?',
-		array($info['new_rrd_path'], $info['local_data_id']));
+		[$info['new_rrd_path'], $info['local_data_id']]);
 
 	/* update table data_template_data */
 	db_execute_prepared('UPDATE data_template_data
 		SET data_source_path = ?
 		WHERE local_data_id = ?',
-		array($info['new_data_source_path'], $info['local_data_id']));
+		[$info['new_data_source_path'], $info['local_data_id']]);
 
 	struct_debug("Database Changes Complete for File '" . $info['new_rrd_path'] . "'");
 }

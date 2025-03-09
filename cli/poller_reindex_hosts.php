@@ -48,7 +48,7 @@ require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 /* switch to main database for cli's */
 if ($config['poller_id'] > 1) {
-        db_switch_remote_to_main();
+	db_switch_remote_to_main();
 }
 
 /* process calling arguments */
@@ -92,11 +92,11 @@ foreach ($parms as $parameter) {
 				$host_id = $value;
 			} else {
 				print 'ERROR: You must supply a valid Device ID to run this script!' . PHP_EOL;
+
 				exit(1);
 			}
 
 			break;
-
 		case '--qid':
 			if (strtolower($value) == 'all') {
 				$query_id = false;
@@ -104,21 +104,20 @@ foreach ($parms as $parameter) {
 				$query_id = $value;
 			} else {
 				print 'ERROR: You must supply a valid Query ID to run this script!' . PHP_EOL;
+
 				exit(1);
 			}
 
 			break;
-
 		case '-host-descr':
 		case '--host-descr':
 			$host_descr = $value;
 
 			break;
-
 		case '--type':
 			$type = $value;
-			break;
 
+			break;
 		case '--threads':
 			if (!is_numeric(trim($value))) {
 				print 'ERROR: You must supply a valid Number of Treads or skip this parametr for default value (' . $threads . ')' . PHP_EOL;
@@ -126,21 +125,21 @@ foreach ($parms as $parameter) {
 				exit(1);
 			}
 			$threads = $value;
-			break;
 
+			break;
 		case '--child':
 			$thread_id = $value;
-			break;
 
+			break;
 		case '--force':
 			$forcerun = true;
-			break;
 
+			break;
 		case '-d':
 		case '--debug':
 			$debug = true;
-			break;
 
+			break;
 		case '-h':
 		case '-H':
 		case '--help':
@@ -176,7 +175,7 @@ ini_set('max_execution_time', '0');
 ini_set('memory_limit', '-1');
 
 $sql_where = 'WHERE IFNULL(TRIM(s.disabled),"") != "on" AND IFNULL(TRIM(h.disabled),"") != "on"';
-$params = array();
+$params    = [];
 
 if (is_numeric($host_id) && $host_id > 0) {
 	$sql_where .= 'AND host_id = ? ';
@@ -224,18 +223,16 @@ if (!$forcerun) {
 /* Collect data as determined by the type */
 switch ($type) {
 	case 'rmaster':
-
 		reindex_master_handler($forcerun, $host_id, $query_id, $host_descr, $threads);
 
 		unregister_process('reindex', 'rmaster', 0);
 
 		break;
 	case 'child':  /* Launched by the rmaster process */
-
 		$child_start = microtime(true);
 
 		$sql_where = 'WHERE IFNULL(TRIM(s.disabled),"") != "on" AND IFNULL(TRIM(h.disabled),"") != "on"';
-		$params = array();
+		$params    = [];
 
 		if (is_numeric($host_id) && $host_id > 0) {
 			$sql_where .= 'AND host_id = ? ';
@@ -262,9 +259,9 @@ switch ($type) {
 			$sql_where",
 			$params);
 
-		$ds_per_process = ceil($rows/$threads);
+		$ds_per_process = ceil($rows / $threads);
 
-		$sql_where .= ' ORDER BY h.id LIMIT ' . (($thread_id-1)*$ds_per_process) . ',' . $ds_per_process;
+		$sql_where .= ' ORDER BY h.id LIMIT ' . (($thread_id - 1) * $ds_per_process) . ',' . $ds_per_process;
 
 		$data_queries = db_fetch_assoc_prepared("SELECT h.description, h.hostname, hsq.host_id, hsq.snmp_query_id
 			FROM host_snmp_query hsq
@@ -275,7 +272,7 @@ switch ($type) {
 			$sql_where",
 			$params);
 
-		cacti_log(sprintf('Child Started Process %s with %d hosts, from: %d', $thread_id, $ds_per_process, ($thread_id-1)*$ds_per_process), true, 'REINDEX');
+		cacti_log(sprintf('Child Started Process %s with %d hosts, from: %d', $thread_id, $ds_per_process, ($thread_id - 1) * $ds_per_process), true, 'REINDEX');
 
 		foreach ($data_queries as $data_query) {
 			run_data_query($data_query['host_id'], $data_query['snmp_query_id'], false, $forcerun);
@@ -289,17 +286,18 @@ switch ($type) {
 }
 
 reindex_debug('Polling Ending');
+
 if ($type == 'rmaster') {
 	cacti_log('Poller reindex hosts process finished', true, 'REINDEX');
 }
-exit(0);
 
+exit(0);
 
 function reindex_master_handler($forcerun, $host_id, $query_id, $host_descr, $threads) {
 	global $type;
 
 	$sql_where = 'WHERE IFNULL(TRIM(s.disabled),"") != "on" AND IFNULL(TRIM(h.disabled),"") != "on"';
-	$params = array();
+	$params    = [];
 
 	if (is_numeric($host_id) && $host_id > 0) {
 		$sql_where .= 'AND host_id = ? ';
@@ -327,19 +325,18 @@ function reindex_master_handler($forcerun, $host_id, $query_id, $host_descr, $th
 		$params);
 
 	if ($rows == 0) {
-		print 'WARNING: There are no data sources to process' . PHP_EOL;;
+		print 'WARNING: There are no data sources to process' . PHP_EOL;
 
 		return false;
 	}
 
-	$ds_per_process = ceil($rows/$threads);
+	$ds_per_process = ceil($rows / $threads);
 
 	print "There are $rows data queries, $threads threads and $ds_per_process data sources to process per thread" . PHP_EOL;
 
 	$h_done = 0;
 
 	for ($thread_id = 1; $h_done < $rows; $thread_id++) {
-
 		reindex_debug("Launching Process ID $thread_id");
 
 		reindex_launch_child($thread_id, $threads);
@@ -372,6 +369,7 @@ function reindex_master_handler($forcerun, $host_id, $query_id, $host_descr, $th
  *   the maximum number of threads and the process type
  *
  * @param $thread_id  (int)    The Thread id to launch
+ * @param mixed $threads
  *
  * @return - NULL
  */
@@ -384,8 +382,7 @@ function reindex_launch_child($thread_id, $threads) {
 
 	cacti_log(sprintf('NOTE: Launching Reindex hosts Number %s for Type %s', $thread_id, 'child'), true, 'REINDEX', POLLER_VERBOSITY_MEDIUM);
 
-	exec_background($php_binary, CACTI_PATH_CLI . "/poller_reindex_hosts.php --type=child --threads=$threads --child=$thread_id " . ($debug ? " --debug":"") . ($host_id ? " --id=$host_id":"") . ($query_id ? " --qid=$query_id":"") . ($host_descr ? " --host-descr=$host_descr":"") . ($forcerun ? " --force":""));
-
+	exec_background($php_binary, CACTI_PATH_CLI . "/poller_reindex_hosts.php --type=child --threads=$threads --child=$thread_id " . ($debug ? ' --debug':'') . ($host_id ? " --id=$host_id":'') . ($query_id ? " --qid=$query_id":'') . ($host_descr ? " --host-descr=$host_descr":'') . ($forcerun ? ' --force':''));
 }
 
 /**
@@ -430,17 +427,15 @@ function display_version() {
 	print 'Cacti Reindex hosts Tool, Version ' . CACTI_VERSION . ' ' . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-
 /**
  * display_help - generic help screen for utilities
  */
 function display_help() {
-
 	display_version();
 
 	print 'usage: poller_reindex_hosts.php --id=[host_id|all] [--qid=[ID|all]]' . PHP_EOL . PHP_EOL;
 
-        print 'Optional:' . PHP_EOL;
+	print 'Optional:' . PHP_EOL;
 	print '   [--host-descr=[description]] [--debug]' . PHP_EOL . PHP_EOL;
 	print '--id=host_id             - The host_id to have data queries reindexed or \'all\' to reindex all hosts' . PHP_EOL;
 	print '--qid=query_id           - Only index on a specific data query id; defaults to \'all\'' . PHP_EOL;
@@ -478,7 +473,6 @@ function sig_handler($signo) {
 			exit(1);
 
 			break;
-
 		default:
 			/* ignore all other signals */
 	}
@@ -498,7 +492,7 @@ function reindex_kill_running_processes() {
 		WHERE tasktype = "reindex"
 		AND taskname IN ("child")
 		AND pid != ?',
-		array(getmypid()));
+		[getmypid()]);
 
 	if (cacti_sizeof($processes)) {
 		foreach ($processes as $p) {

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -38,7 +38,7 @@ function upgrade_to_1_1_17() {
 				$interval_results = db_install_fetch_cell('SELECT step
 					FROM data_source_profiles
 					WHERE id = ?',
-					array($rra['data_source_profile_id']));
+					[$rra['data_source_profile_id']]);
 				$interval = $interval_results['data'];
 
 				$timespan = $rra['steps'] * $interval * $rra['rows'];
@@ -48,7 +48,7 @@ function upgrade_to_1_1_17() {
 				db_install_execute('UPDATE data_source_profiles_rra
 					SET timespan = ?
 					WHERE id = ?',
-					array($timespan, $rra['id']));
+					[$timespan, $rra['id']]);
 			}
 		}
 	}

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -26,10 +26,10 @@ include_once('./include/auth.php');
 include_once(CACTI_PATH_LIBRARY . '/functions.php');
 include_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
-$ds_actions = array(
+$ds_actions = [
 	1 => __x('dropdown action', 'Delete'),
 	3 => __x('dropdown action', 'Archive')
-);
+];
 
 $rra_path = CACTI_PATH_RRA . '/';
 
@@ -66,7 +66,6 @@ switch (get_request_var('action')) {
 		bottom_footer();
 
 		break;
-
 	default:
 		top_header();
 		/* fill files name table */
@@ -136,12 +135,12 @@ function rrdclean_truncate_tables() {
 /*
  * PHP Error Handler
  */
-function rrdclean_error_handler($errno, $errmsg, $filename, $linenum, $vars = array()) {
+function rrdclean_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
 	global $debug;
 
 	if ($debug) {
 		/* define all error types */
-		$errortype = array(
+		$errortype = [
 			E_ERROR             => 'Error',
 			E_WARNING           => 'Warning',
 			E_PARSE             => 'Parsing Error',
@@ -155,7 +154,7 @@ function rrdclean_error_handler($errno, $errmsg, $filename, $linenum, $vars = ar
 			E_USER_NOTICE       => 'User Notice',
 			#			E_STRICT            => 'Runtime Notice',
 			#			E_RECOVERABLE_ERROR => 'Catchable Fatal Error'
-		);
+		];
 
 		/* create an error string for the log */
 		$err = "ERRNO:'"  . $errno   . "' TYPE:'"    . $errortype[$errno] .
@@ -190,7 +189,7 @@ function get_files() {
 	/* install the rrdclean error handler */
 	set_error_handler('rrdclean_error_handler');
 
-	$files_unused = array();
+	$files_unused = [];
 	$arc_path     = read_config_option('rrd_archive');
 
 	if (substr_count($arc_path, $rra_path)) {
@@ -210,7 +209,7 @@ function get_files() {
 		ON DUPLICATE KEY UPDATE local_data_id=VALUES(local_data_id)");
 
 	$size = 0;
-	$sql  = array();
+	$sql  = [];
 
 	if (read_config_option('storage_location')) {
 		$rrdtool_pipe = rrd_init();
@@ -233,7 +232,7 @@ function get_files() {
 					ON DUPLICATE KEY UPDATE size=VALUES(size), last_mod=VALUES(last_mod)');
 
 					$size = 0;
-					$sql  = array();
+					$sql  = [];
 				}
 			}
 		}
@@ -253,7 +252,7 @@ function get_files() {
 					ON DUPLICATE KEY UPDATE size=VALUES(size), last_mod=VALUES(last_mod)');
 
 					$size = 0;
-					$sql  = array();
+					$sql  = [];
 				}
 			}
 		}
@@ -291,7 +290,7 @@ function list_rrd() {
 	}
 
 	$sql_where  = 'WHERE in_cacti = 0';
-	$sql_params = array();
+	$sql_params = [];
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
@@ -347,15 +346,15 @@ function list_rrd() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$display_text = array(
-		'name'               => array(__('RRDfile Name'), 'ASC'),
-		'name_cache'         => array(__('DS Name'), 'ASC'),
-		'local_data_id'      => array(__('DS ID'), 'ASC'),
-		'data_template_id'   => array(__('Template ID'), 'ASC'),
-		'data_template_name' => array(__('Template'), 'ASC'),
-		'last_mod'           => array(__('Last Modified'), 'DESC'),
-		'size'               => array(__('Size [KB]'), 'DESC')
-	);
+	$display_text = [
+		'name'               => [__('RRDfile Name'), 'ASC'],
+		'name_cache'         => [__('DS Name'), 'ASC'],
+		'local_data_id'      => [__('DS ID'), 'ASC'],
+		'data_template_id'   => [__('Template ID'), 'ASC'],
+		'data_template_name' => [__('Template'), 'ASC'],
+		'last_mod'           => [__('Last Modified'), 'DESC'],
+		'size'               => [__('Size [KB]'), 'DESC']
+	];
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -376,7 +375,7 @@ function list_rrd() {
 			form_end_row();
 		}
 	} else {
-		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No Unused RRDfiles') . "</em></td></tr>";
+		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No Unused RRDfiles') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -422,7 +421,7 @@ function remove_all_rrds() {
 		SELECT name, local_data_id, ? AS action
 		FROM data_source_purge_temp
 		WHERE in_cacti = 0
-		ON DUPLICATE KEY UPDATE action = VALUES(action)', array($action));
+		ON DUPLICATE KEY UPDATE action = VALUES(action)', [$action]);
 
 	/* remove the entries from the data_source_purge_temp location */
 	db_execute('DELETE FROM data_source_purge_temp WHERE in_cacti = 0');
@@ -449,7 +448,7 @@ function do_rrd() {
 			/* recreate the file name */
 			$unused_file = db_fetch_row_prepared('SELECT id, name, local_data_id
 				FROM data_source_purge_temp
-				WHERE id = ?', array($matches[1]));
+				WHERE id = ?', [$matches[1]]);
 
 			/* add to data_source_purge_action table */
 			$sql = 'INSERT INTO data_source_purge_action
@@ -457,10 +456,10 @@ function do_rrd() {
 				VALUES(?, ?, ?)
 				ON DUPLICATE KEY UPDATE local_data_id = VALUES(local_data_id)';
 
-			db_execute_prepared($sql, array($unused_file['name'], $unused_file['local_data_id'], get_nfilter_request_var('drp_action')));
+			db_execute_prepared($sql, [$unused_file['name'], $unused_file['local_data_id'], get_nfilter_request_var('drp_action')]);
 
 			/* drop from data_source_purge table */
-			db_execute_prepared('DELETE FROM data_source_purge_temp WHERE id = ?', array($matches[1]));
+			db_execute_prepared('DELETE FROM data_source_purge_temp WHERE id = ?', [$matches[1]]);
 		}
 	}
 
@@ -471,7 +470,7 @@ function do_rrd() {
 function create_rrdcleaner_filter() {
 	global $item_rows;
 
-	$ages = array(
+	$ages = [
 		'0'        => '&lt; ' . __('%d Week', 1),
 		'604800'   => '&gt; ' . __('%d Week', 1),
 		'1209600'  => '&gt; ' . __('%d Weeks', 2),
@@ -481,13 +480,13 @@ function create_rrdcleaner_filter() {
 		'10512000' => '&gt; ' . __('%d Months', 4),
 		'15768000' => '&gt; ' . __('%d Months', 6),
 		'31536000' => '&gt; ' . __('%d Year', 1)
-	);
+	];
 
-	return array(
-		'rows' => array(
-			array(
-				'filter' => array(
-					'method'        => 'textbox',
+	return [
+		'rows' => [
+			[
+				'filter' => [
+					'method'         => 'textbox',
 					'friendly_name'  => __('Search'),
 					'filter'         => FILTER_DEFAULT,
 					'placeholder'    => __('Enter a search term'),
@@ -496,8 +495,8 @@ function create_rrdcleaner_filter() {
 					'pageset'        => true,
 					'max_length'     => '120',
 					'value'          => ''
-				),
-				'age' => array(
+				],
+				'age' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Time Since Update'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -505,8 +504,8 @@ function create_rrdcleaner_filter() {
 					'pageset'       => true,
 					'array'         => $ages,
 					'value'         => '0'
-				),
-				'rows' => array(
+				],
+				'rows' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('RRDfiles'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -514,48 +513,48 @@ function create_rrdcleaner_filter() {
 					'pageset'       => true,
 					'array'         => $item_rows,
 					'value'         => '-1'
-				)
-			)
-		),
-		'buttons' => array(
-			'go' => array(
+				]
+			]
+		],
+		'buttons' => [
+			'go' => [
 				'method'  => 'submit',
 				'display' => __('Go'),
 				'title'   => __('Apply filter to table'),
-			),
-			'clear' => array(
+			],
+			'clear' => [
 				'method'  => 'button',
 				'display' => __('Clear'),
 				'title'   => __('Reset filter to default values'),
-			),
-			'rescan' => array(
+			],
+			'rescan' => [
 				'method'  => 'button',
 				'display' => __('Rescan'),
 				'action'  => 'default',
 				'title'   => __('Rescan RRDfiles and their status'),
-			),
-			'remall' => array(
+			],
+			'remall' => [
 				'method'  => 'button',
 				'display' => __('Delete All'),
 				'action'  => 'default',
 				'title'   => __('Delete All RRDfiles'),
 				'status'  => __('Scheduling Purging of All Unknowns'),
 				'url'     => 'rrdcleaner.php?action=remall&raction=3&clear=1'
-			),
-			'arcall' => array(
+			],
+			'arcall' => [
 				'method'  => 'button',
 				'display' => __('Archive All'),
 				'action'  => 'default',
 				'title'   => __('Archive All RRDfiles'),
 				'status'  => __('Scheduling Archiving of All Unknowns'),
 				'url'     => 'rrdcleaner.php?action=arcall&raction=3&clear=1'
-			)
-		),
-		'sort' => array(
+			]
+		],
+		'sort' => [
 			'sort_column'    => 'name',
 			'sort_direction' => 'ASC'
-		)
-	);
+		]
+	];
 }
 
 function draw_rrdcleaner_filter($render = false) {
@@ -573,4 +572,3 @@ function draw_rrdcleaner_filter($render = false) {
 		$pageFilter->sanitize();
 	}
 }
-

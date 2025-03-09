@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -168,7 +168,6 @@ function get_timespan(&$span, $curr_time, $timespan_given, $first_weekdayid) {
 			$span['end_now']   = strtotime('+1 year', $span['begin_now']) - 1;
 
 			break;
-
 		default:
 			$span['begin_now'] = $curr_time - DEFAULT_TIMESPAN;
 

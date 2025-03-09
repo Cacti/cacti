@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -26,123 +26,123 @@ include('./include/auth.php');
 
 set_default_action();
 
-$group_actions = array(
+$group_actions = [
 	1 => __('Delete'),
 	2 => __('Copy'),
 	3 => __('Enable'),
 	4 => __('Disable')
-);
+];
 
-$href_options = array(
-	3 => array(
+$href_options = [
+	3 => [
 		'radio_value'   => '4',
 		'radio_caption' => __('Defer to the Users Setting')
-		),
-	0 => array(
+		],
+	0 => [
 		'radio_value'   => '1',
 		'radio_caption' => __('Show the Page that the User pointed their browser to')
-		),
-	1 => array(
+		],
+	1 => [
 		'radio_value'   => '2',
 		'radio_caption' => __('Show the Console')
-		),
-	2 => array(
+		],
+	2 => [
 		'radio_value'   => '3',
 		'radio_caption' => __('Show the default Graph Screen')
-		)
-);
+		]
+];
 
-$gperm_options = array(
-	0 => array(
+$gperm_options = [
+	0 => [
 		'radio_value'   => '1',
 		'radio_caption' => __('Defer to the Users Setting')
-		),
-	1 => array(
+		],
+	1 => [
 		'radio_value'   => '2',
 		'radio_caption' => __('Grant Access')
-		),
-	2 => array(
+		],
+	2 => [
 		'radio_value'   => '3',
 		'radio_caption' => __('Restrict Access')
-		)
-);
+		]
+];
 
-$fields_user_group_edit = array(
-	'name' => array(
+$fields_user_group_edit = [
+	'name' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Group Name'),
 		'description'   => __('The name of this Group.'),
 		'value'         => '|arg1:name|',
 		'max_length'    => '255'
-		),
-	'description' => array(
+		],
+	'description' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Group Description'),
 		'description'   => __('A more descriptive name for this group, that can include spaces or special characters.'),
 		'value'         => '|arg1:description|',
 		'max_length'    => '255'
-		),
-	'enabled' => array(
+		],
+	'enabled' => [
 		'method'        => 'checkbox',
 		'friendly_name' => __('Enabled'),
 		'description'   => __('Determines if user is able to login.'),
 		'value'         => '|arg1:enabled|',
 		'default'       => ''
-		),
-	'grp1' => array(
+		],
+	'grp1' => [
 		'friendly_name' => __('General Group Options'),
 		'method'        => 'checkbox_group',
 		'description'   => __('Set any user account-specific options here.'),
-		'items'         => array(
-			'graph_settings' => array(
+		'items'         => [
+			'graph_settings' => [
 				'value'         => '|arg1:graph_settings|',
 				'friendly_name' => __('Allow Users of this Group to keep custom User Settings'),
 				'form_id'       => '|arg1:id|',
 				'default'       => 'on'
-				)
-			)
-		),
-	'show_tree' => array(
+				]
+			]
+		],
+	'show_tree' => [
 		'friendly_name' => __('Tree Rights'),
 		'method'        => 'radio',
 		'description'   => __('Should Users of this Group have access to the Tree?'),
 		'value'         => '|arg1:show_tree|',
 		'default'       => '1',
 		'items'         => $gperm_options
-		),
-	'show_list' => array(
+		],
+	'show_list' => [
 		'friendly_name' => __('Graph List Rights'),
 		'method'        => 'radio',
 		'description'   => __('Should Users of this Group have access to the Graph List?'),
 		'value'         => '|arg1:show_list|',
 		'default'       => '1',
 		'items'         => $gperm_options
-		),
-	'show_preview' => array(
+		],
+	'show_preview' => [
 		'friendly_name' => __('Graph Preview Rights'),
 		'method'        => 'radio',
 		'description'   => __('Should Users of this Group have access to the Graph Preview?'),
 		'value'         => '|arg1:show_preview|',
 		'default'       => '1',
 		'items'         => $gperm_options
-		),
-	'login_opts' => array(
+		],
+	'login_opts' => [
 		'friendly_name' => __('Login Options'),
 		'method'        => 'radio',
 		'default'       => '1',
 		'description'   => __('What to do when a User from this User Group logs in.'),
 		'value'         => '|arg1:login_opts|',
 		'items'         => $href_options
-		),
-	'id' => array(
+		],
+	'id' => [
 		'method' => 'hidden_zero',
 		'value'  => '|arg1:id|'
-		),
-	'save_component_group' => array(
+		],
+	'save_component_group' => [
 		'method' => 'hidden',
 		'value'  => '1'
-		)
-);
+		]
+];
 
 if (isset_request_var('update_policy')) {
 	update_policies();
@@ -166,7 +166,6 @@ if (isset_request_var('update_policy')) {
 			bottom_footer();
 
 			break;
-
 		default:
 			if (!api_plugin_hook_function('user_group_admin_action', get_request_var('action'))) {
 				top_header();
@@ -179,22 +178,22 @@ if (isset_request_var('update_policy')) {
 }
 
 function user_group_disable($id) {
-	db_execute_prepared("UPDATE user_auth_group SET enabled = '' WHERE id = ?", array($id));
+	db_execute_prepared("UPDATE user_auth_group SET enabled = '' WHERE id = ?", [$id]);
 
 	reset_group_perms($id);
 }
 
 function user_group_enable($id) {
-	db_execute_prepared("UPDATE user_auth_group SET enabled = 'on' WHERE id = ?", array($id));
+	db_execute_prepared("UPDATE user_auth_group SET enabled = 'on' WHERE id = ?", [$id]);
 
 	reset_group_perms($id);
 }
 
 function user_group_remove($id) {
-	db_execute_prepared('DELETE FROM user_auth_group WHERE id = ?', array($id));
-	db_execute_prepared('DELETE FROM user_auth_group_members WHERE group_id = ?', array($id));
-	db_execute_prepared('DELETE FROM user_auth_group_realm WHERE group_id = ?', array($id));
-	db_execute_prepared('DELETE FROM user_auth_group_perms WHERE group_id = ?', array($id));
+	db_execute_prepared('DELETE FROM user_auth_group WHERE id = ?', [$id]);
+	db_execute_prepared('DELETE FROM user_auth_group_members WHERE group_id = ?', [$id]);
+	db_execute_prepared('DELETE FROM user_auth_group_realm WHERE group_id = ?', [$id]);
+	db_execute_prepared('DELETE FROM user_auth_group_perms WHERE group_id = ?', [$id]);
 }
 
 function user_group_copy($id, $prefix = 'New Group') {
@@ -207,7 +206,7 @@ function user_group_copy($id, $prefix = 'New Group') {
 		policy_graphs, policy_trees, policy_hosts, policy_graph_templates, enabled)
 		SELECT ' . db_qstr($name) . ', description, graph_settings, login_opts, show_tree, show_list, show_preview,
 		policy_graphs, policy_trees, policy_hosts, policy_graph_templates, enabled
-		FROM user_auth_group WHERE id = ?', array($id));
+		FROM user_auth_group WHERE id = ?', [$id]);
 
 	$id = db_fetch_insert_id();
 
@@ -215,28 +214,28 @@ function user_group_copy($id, $prefix = 'New Group') {
 		$perms = db_fetch_assoc_prepared('SELECT *
 			FROM user_auth_group_perms
 			WHERE group_id = ?',
-			array($id));
+			[$id]);
 
 		if (cacti_sizeof($perms)) {
 			foreach ($perms as $p) {
 				db_execute_prepared('INSERT INTO user_auth_group_perms
 					(group_id, item_id, type)
 					VALUES (?, ?, ?)',
-					array($id, $p['item_id'], $p['type']));
+					[$id, $p['item_id'], $p['type']]);
 			}
 		}
 
 		$realms = db_fetch_assoc_prepared('SELECT *
 			FROM user_auth_group_realm
 			WHERE group_id = ?',
-			array($id));
+			[$id]);
 
 		if (cacti_sizeof($realms)) {
 			foreach ($realms as $r) {
 				db_execute_prepared('INSERT INTO user_auth_group_realm
 					(group_id, realm_id)
 					VALUES (?, ?)',
-					array($id, $r['realm_id']));
+					[$id, $r['realm_id']]);
 			}
 		}
 	}
@@ -245,11 +244,11 @@ function user_group_copy($id, $prefix = 'New Group') {
 }
 
 function update_policies() {
-	$policies = array('policy_graphs', 'policy_trees', 'policy_hosts', 'policy_graph_templates');
+	$policies = ['policy_graphs', 'policy_trees', 'policy_hosts', 'policy_graph_templates'];
 
 	foreach ($policies as $p) {
 		if (isset_request_var($p)) {
-			db_execute_prepared("UPDATE `user_auth_group` SET `$p` = ? WHERE `id` = ?", array(get_filter_request_var($p), get_filter_request_var('id')));
+			db_execute_prepared("UPDATE `user_auth_group` SET `$p` = ? WHERE `id` = ?", [get_filter_request_var($p), get_filter_request_var('id')]);
 		}
 	}
 
@@ -273,13 +272,13 @@ function form_actions() {
 					db_execute_prepared('REPLACE INTO user_auth_group_perms
 						(group_id, item_id, type)
 						VALUES (?, ?, 3)',
-						array(get_nfilter_request_var('id'), $matches[1]));
+						[get_nfilter_request_var('id'), $matches[1]]);
 				} else {
 					db_execute_prepared('DELETE FROM user_auth_group_perms
 						WHERE group_id = ?
 						AND item_id = ?
 						AND type = 3',
-						array(get_nfilter_request_var('id'), $matches[1]));
+						[get_nfilter_request_var('id'), $matches[1]]);
 				}
 			}
 		}
@@ -300,13 +299,13 @@ function form_actions() {
 					db_execute_prepared('REPLACE INTO user_auth_group_perms
 						(group_id, item_id, type)
 						VALUES (?, ?, 1)',
-						array(get_nfilter_request_var('id'), $matches[1]));
+						[get_nfilter_request_var('id'), $matches[1]]);
 				} else {
 					db_execute_prepared('DELETE FROM user_auth_group_perms
 						WHERE group_id = ?
 						AND item_id = ?
 						AND type = 1',
-						array(get_nfilter_request_var('id'), $matches[1]));
+						[get_nfilter_request_var('id'), $matches[1]]);
 				}
 			}
 		}
@@ -327,13 +326,13 @@ function form_actions() {
 					db_execute_prepared('REPLACE INTO user_auth_group_perms
 						(group_id, item_id, type)
 						VALUES (?, ?, 4)',
-						array(get_nfilter_request_var('id'), $matches[1]));
+						[get_nfilter_request_var('id'), $matches[1]]);
 				} else {
 					db_execute_prepared('DELETE FROM user_auth_group_perms
 						WHERE group_id = ?
 						AND item_id = ?
 						AND type = 4',
-						array(get_nfilter_request_var('id'), $matches[1]));
+						[get_nfilter_request_var('id'), $matches[1]]);
 				}
 			}
 		}
@@ -354,13 +353,13 @@ function form_actions() {
 					db_execute_prepared('REPLACE INTO user_auth_group_perms
 						(group_id, item_id, type)
 						VALUES (?, ?, 2)',
-						array(get_nfilter_request_var('id'), $matches[1]));
+						[get_nfilter_request_var('id'), $matches[1]]);
 				} else {
 					db_execute_prepared('DELETE FROM user_auth_group_perms
 						WHERE group_id = ?
 						AND item_id = ?
 						AND type = 2',
-						array(get_nfilter_request_var('id'), $matches[1]));
+						[get_nfilter_request_var('id'), $matches[1]]);
 				}
 			}
 		}
@@ -381,12 +380,12 @@ function form_actions() {
 					db_execute_prepared('REPLACE INTO user_auth_group_members
 						(group_id, user_id)
 						VALUES (?, ?)',
-						array(get_nfilter_request_var('id'), $matches[1]));
+						[get_nfilter_request_var('id'), $matches[1]]);
 				} else {
 					db_execute_prepared('DELETE FROM user_auth_group_members
 						WHERE group_id = ?
 						AND user_id = ?',
-						array(get_nfilter_request_var('id'), $matches[1]));
+						[get_nfilter_request_var('id'), $matches[1]]);
 				}
 			}
 		}
@@ -426,7 +425,7 @@ function form_actions() {
 		exit;
 	} else {
 		$ilist  = '';
-		$iarray = array();
+		$iarray = [];
 
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
@@ -435,56 +434,56 @@ function form_actions() {
 				/* ==================================================== */
 
 				if (get_nfilter_request_var('drp_action') != '2') {
-					$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM user_auth_group WHERE id = ?', array($matches[1]))) . '</li>';
+					$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM user_auth_group WHERE id = ?', [$matches[1]])) . '</li>';
 				}
 
 				$iarray[] = $matches[1];
 			}
 		}
 
-		$form_data = array(
-			'general' => array(
+		$form_data = [
+			'general' => [
 				'page'       => 'user_group_admin.php',
 				'actions'    => $group_actions,
 				'optvar'     => 'drp_action',
 				'item_array' => $iarray,
 				'item_list'  => $ilist
-			),
-			'options' => array(
-				1 => array(
+			],
+			'options' => [
+				1 => [
 					'smessage' => __('Click \'Continue\' to Delete the following User Group.'),
 					'pmessage' => __('Click \'Continue\' to Delete following User Groups.'),
 					'scont'    => __('Delete User Group'),
 					'pcont'    => __('Delete User Groups')
-				),
-				2 => array(
+				],
+				2 => [
 					'smessage' => __('Click \'Continue\' to Copy the following User Group.'),
 					'pmessage' => __('Click \'Continue\' to Copy following User Groups.'),
 					'scont'    => __('Copy User Group'),
 					'pcont'    => __('Copy User Groups'),
-					'extra'    => array(
-						'group_prefix' => array(
+					'extra'    => [
+						'group_prefix' => [
 							'method'  => 'textbox',
 							'title'   => __('Group Prefix'),
 							'default' => __('New Group'),
 							'width'   => 25
-						)
-					)
-				),
-				3 => array(
+						]
+					]
+				],
+				3 => [
 					'smessage' => __('Click \'Continue\' to Enable the following User Group.'),
 					'pmessage' => __('Click \'Continue\' to Enable following User Groups.'),
 					'scont'    => __('Enable User Group'),
 					'pcont'    => __('Enable User Groups')
-				),
-				4 => array(
+				],
+				4 => [
 					'smessage' => __('Click \'Continue\' to Disable the following User Group.'),
 					'pmessage' => __('Click \'Continue\' to Disable following User Groups.'),
 					'scont'    => __('Disable User Group'),
 					'pcont'    => __('Disable User Groups')
-				)
-			)
-		);
+				]
+			]
+		];
 
 		form_continue_confirmation($form_data);
 	}
@@ -500,7 +499,7 @@ function form_save() {
 		/* ==================================================== */
 
 		/* check duplicate group */
-		if (cacti_sizeof(db_fetch_row_prepared('SELECT * FROM user_auth_group WHERE name = ? AND id != ?', array(get_nfilter_request_var('name'), get_nfilter_request_var('id'))))) {
+		if (cacti_sizeof(db_fetch_row_prepared('SELECT * FROM user_auth_group WHERE name = ? AND id != ?', [get_nfilter_request_var('name'), get_nfilter_request_var('id')]))) {
 			raise_message(12);
 		}
 
@@ -533,12 +532,12 @@ function form_save() {
 	}
 
 	if (isset_request_var('save_component_realm_perms')) {
-		db_execute_prepared('DELETE FROM user_auth_group_realm WHERE group_id = ?', array(get_filter_request_var('id')));
+		db_execute_prepared('DELETE FROM user_auth_group_realm WHERE group_id = ?', [get_filter_request_var('id')]);
 
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^[section]/i', $var)) {
 				if (substr($var, 0, 7) == 'section') {
-					db_execute_prepared('REPLACE INTO user_auth_group_realm (group_id, realm_id) VALUES (?, ?)', array(get_request_var('id'), substr($var, 7)));
+					db_execute_prepared('REPLACE INTO user_auth_group_realm (group_id, realm_id) VALUES (?, ?)', [get_request_var('id'), substr($var, 7)]);
 				}
 			}
 		}
@@ -557,10 +556,10 @@ function form_save() {
 			foreach ($tab_fields as $field_name => $field_array) {
 				if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
-						db_execute_prepared('REPLACE INTO settings_user_group (group_id, name, value) VALUES (?, ?, ?)', array(get_filter_request_var('id'), $sub_field_name, get_nfilter_request_var($sub_field_name, '')));
+						db_execute_prepared('REPLACE INTO settings_user_group (group_id, name, value) VALUES (?, ?, ?)', [get_filter_request_var('id'), $sub_field_name, get_nfilter_request_var($sub_field_name, '')]);
 					}
 				} else {
-					db_execute_prepared('REPLACE INTO settings_user_group (group_id, name, value) VALUES (?, ?, ?)', array(get_request_var('id'), $field_name, get_nfilter_request_var($field_name)));
+					db_execute_prepared('REPLACE INTO settings_user_group (group_id, name, value) VALUES (?, ?, ?)', [get_request_var('id'), $field_name, get_nfilter_request_var($field_name)]);
 				}
 			}
 		}
@@ -589,13 +588,13 @@ function perm_remove() {
 	/* ==================================================== */
 
 	if (get_request_var('type') == 'graph') {
-		db_execute_prepared('DELETE FROM user_auth_group_perms WHERE type=1 AND group_id = ? AND item_id = ?', array(get_request_var('group_id'), get_request_var('id')));
+		db_execute_prepared('DELETE FROM user_auth_group_perms WHERE type=1 AND group_id = ? AND item_id = ?', [get_request_var('group_id'), get_request_var('id')]);
 	} elseif (get_request_var('type') == 'tree') {
-		db_execute_prepared('DELETE FROM user_auth_group_perms WHERE type=2 AND group_id = ? AND item_id = ?', array(get_request_var('group_id'), get_request_var('id')));
+		db_execute_prepared('DELETE FROM user_auth_group_perms WHERE type=2 AND group_id = ? AND item_id = ?', [get_request_var('group_id'), get_request_var('id')]);
 	} elseif (get_request_var('type') == 'host') {
-		db_execute_prepared('DELETE FROM user_auth_group_perms WHERE type=3 AND group_id = ? AND item_id = ?', array(get_request_var('group_id'), get_request_var('id')));
+		db_execute_prepared('DELETE FROM user_auth_group_perms WHERE type=3 AND group_id = ? AND item_id = ?', [get_request_var('group_id'), get_request_var('id')]);
 	} elseif (get_request_var('type') == 'graph_template') {
-		db_execute_prepared('DELETE FROM user_auth_group_perms WHERE type=4 AND group_id = ? AND item_id = ?', array(get_request_var('group_id'), get_request_var('id')));
+		db_execute_prepared('DELETE FROM user_auth_group_perms WHERE type=4 AND group_id = ? AND item_id = ?', [get_request_var('group_id'), get_request_var('id')]);
 	}
 
 	header('Location: user_group_admin.php?action=edit&tab=gperms&id=' . get_request_var('group_id'));
@@ -614,7 +613,7 @@ function user_group_members_edit($header_label) {
 	}
 
 	$sql_where  = '';
-	$sql_params = array();
+	$sql_params = [];
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
@@ -646,16 +645,16 @@ function user_group_members_edit($header_label) {
 
 	$members = db_fetch_assoc_prepared($sql_query, $sql_params);
 
-	$display_text = array(
+	$display_text = [
 		__('Login Name'),
 		__('Full Name'),
 		__('ID'),
 		__('Membership'),
 		__('Enabled'),
 		__('Realm')
-	);
+	];
 
-	$nav = html_nav_bar('user_group_admin.php?action=edit&tab=members&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, cacti_sizeof($display_text)+1, __('Users'), 'page', 'main');
+	$nav = html_nav_bar('user_group_admin.php?action=edit&tab=members&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Users'), 'page', 'main');
 
 	form_start('user_group_admin.php?tab=members&id=' . get_request_var('id'), 'chk');
 
@@ -699,10 +698,10 @@ function user_group_members_edit($header_label) {
 	form_hidden_box('id', get_request_var('id'), '');
 	form_hidden_box('associate_member', '1', '');
 
-	$assoc_actions = array(
+	$assoc_actions = [
 		1 => __('Add to Group'),
 		2 => __('Remove from Group')
-	);
+	];
 
 	/* draw the dropdown containing a list of available actions for this form */
 	draw_actions_dropdown($assoc_actions);
@@ -717,16 +716,16 @@ function user_group_graph_perms_edit($tab, $header_label) {
 	get_filter_request_var('id');
 	/* ==================================================== */
 
-	$policy_array = array(
+	$policy_array = [
 		1 => __('Allow'),
 		2 => __('Deny')
-	);
+	];
 
 	if (!isempty_request_var('id')) {
 		$policy = db_fetch_row_prepared('SELECT policy_graphs, policy_trees, policy_hosts, policy_graph_templates
 			FROM user_auth_group
 			WHERE id = ?',
-			array(get_request_var('id')));
+			[get_request_var('id')]);
 	}
 
 	switch($tab) {
@@ -806,7 +805,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			FROM user_auth_group AS uag
 			WHERE uag.enabled = 'on'
 			AND uag.id = ?",
-				array(get_request_var('id')));
+				[get_request_var('id')]);
 
 			/**
 			 * if viewing just the graphs that the user has access to
@@ -865,7 +864,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 			html_start_box('', '100%', '', '3', 'center', '');
 
-			$display_text = array( __('Graph Title'), __('ID'), __('Effective Policy'));
+			$display_text = [ __('Graph Title'), __('ID'), __('Effective Policy')];
 
 			html_header_checkbox($display_text, false);
 
@@ -896,15 +895,15 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			form_hidden_box('associate_graph', '1', '');
 
 			if ($policy['policy_graphs'] == 1) {
-				$assoc_actions = array(
+				$assoc_actions = [
 					1 => __('Revoke Access'),
 					2 => __('Grant Access')
-				);
+				];
 			} else {
-				$assoc_actions = array(
+				$assoc_actions = [
 					1 => __('Grant Access'),
 					2 => __('Revoke Access')
-				);
+				];
 			}
 
 			?>
@@ -963,7 +962,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			}
 
 			$sql_where    = '';
-			$sql_params   = array();
+			$sql_params   = [];
 			$sql_params[] = get_request_var('id');
 
 			/* form the 'where' clause for our main sql query */
@@ -1023,7 +1022,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 			$hosts = db_fetch_assoc_prepared($sql_query, $sql_params);
 
-			$display_text = array(
+			$display_text = [
 				__('Description'),
 				__('ID'),
 				__('Effective Policy'),
@@ -1031,9 +1030,9 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				__('Data Sources'),
 				__('Status'),
 				__('Hostname')
-			);
+			];
 
-			$nav = html_nav_bar('user_group_admin.php?action=edit&tab=permsd&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, cacti_sizeof($display_text)+1, __('Devices'), 'page', 'main');
+			$nav = html_nav_bar('user_group_admin.php?action=edit&tab=permsd&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Devices'), 'page', 'main');
 
 			form_start('user_group_admin.php?tab=permsd&id=' . get_request_var('id'), 'chk');
 
@@ -1087,15 +1086,15 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			form_hidden_box('associate_host', '1', '');
 
 			if ($policy['policy_hosts'] == 1) {
-				$assoc_actions = array(
+				$assoc_actions = [
 					1 => __('Revoke Access'),
 					2 => __('Grant Access')
-				);
+				];
 			} else {
-				$assoc_actions = array(
+				$assoc_actions = [
 					1 => __('Grant Access'),
 					2 => __('Revoke Access')
-				);
+				];
 			}
 
 			/* draw the dropdown containing a list of available actions for this form */
@@ -1162,7 +1161,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			AND user_auth_group_perms.type = 4
 			AND user_auth_group_perms.group_id = ?
 			$sql_where",
-				array(get_request_var('id')));
+				[get_request_var('id')]);
 
 			$sql_query = "SELECT gt.id, gt.name, COUNT(DISTINCT gl.id) AS totals, user_auth_group_perms.group_id
 			FROM graph_templates AS gt
@@ -1177,7 +1176,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			ORDER BY name
 			LIMIT " . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
-			$graphs = db_fetch_assoc_prepared($sql_query, array(get_request_var('id')));
+			$graphs = db_fetch_assoc_prepared($sql_query, [get_request_var('id')]);
 
 			$nav = html_nav_bar('user_group_admin.php?action=edit&tab=permste&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Graph Templates'), 'page', 'main');
 
@@ -1187,7 +1186,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 			html_start_box('', '100%', '', '3', 'center', '');
 
-			$display_text = array( __('Template Name'), __('ID'), __('Effective Policy'), __('Total Graphs'));
+			$display_text = [ __('Template Name'), __('ID'), __('Effective Policy'), __('Total Graphs')];
 
 			html_header_checkbox($display_text, false);
 
@@ -1232,15 +1231,15 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			form_hidden_box('associate_template', '1', '');
 
 			if ($policy['policy_graph_templates'] == 1) {
-				$assoc_actions = array(
+				$assoc_actions = [
 					1 => __('Revoke Access'),
 					2 => __('Grant Access')
-				);
+				];
 			} else {
-				$assoc_actions = array(
+				$assoc_actions = [
 					1 => __('Grant Access'),
 					2 => __('Revoke Access')
-				);
+				];
 			}
 
 			/* draw the dropdown containing a list of available actions for this form */
@@ -1321,7 +1320,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 			html_start_box('', '100%', '', '3', 'center', '');
 
-			$display_text = array( __('Tree Name'), __('ID'), __('Effective Policy'));
+			$display_text = [ __('Tree Name'), __('ID'), __('Effective Policy')];
 
 			html_header_checkbox($display_text, false);
 
@@ -1364,15 +1363,15 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			form_hidden_box('associate_tree', '1', '');
 
 			if ($policy['policy_trees'] == 1) {
-				$assoc_actions = array(
+				$assoc_actions = [
 					1 => __('Revoke Access'),
 					2 => __('Grant Access')
-				);
+				];
 			} else {
-				$assoc_actions = array(
+				$assoc_actions = [
 					1 => __('Grant Access'),
 					2 => __('Revoke Access')
-				);
+				];
 			}
 
 			/* draw the dropdown containing a list of available actions for this form */
@@ -1389,7 +1388,7 @@ function user_group_is_member($user_id, $group_id) {
 		FROM user_auth_group_members
 		WHERE user_id = ?
 		AND group_id = ?',
-		array($user_id, $group_id));
+		[$user_id, $group_id]);
 }
 
 function user_group_realms_edit($header_label) {
@@ -1423,7 +1422,7 @@ function user_group_realms_edit($header_label) {
 					FROM user_auth_group_realm
 					WHERE group_id = ?
 					AND realm_id = ?',
-					array(get_request_var('id', 0), $realm));
+					[get_request_var('id', 0), $realm]);
 
 				if ($set) {
 					$old_value = 'on';
@@ -1432,11 +1431,11 @@ function user_group_realms_edit($header_label) {
 				}
 
 				if ($realm != 101) {
-					$display = trim(str_replace(array('Plugin ->', 'Plugin ', 'Configure '), '', $user_auth_realms[$realm]));
+					$display = trim(str_replace(['Plugin ->', 'Plugin ', 'Configure '], '', $user_auth_realms[$realm]));
 				} else {
 					$display = trim($user_auth_realms[$realm]);
 				}
-				$display = trim(str_replace(array('View ', 'Management'), array('', 'Administration'), $display));
+				$display = trim(str_replace(['View ', 'Management'], ['', 'Administration'], $display));
 
 				unset($all_realms[$realm]);
 
@@ -1452,12 +1451,12 @@ function user_group_realms_edit($header_label) {
 	/* external links */
 	$links  = db_fetch_assoc('SELECT * FROM external_links ORDER BY sortorder');
 
-	$style_translate = array(
+	$style_translate = [
 		'CONSOLE'    => __('Console'),
 		'TAB'        => __('Top Tab'),
 		'FRONT'      => __('Bottom Console'),
 		'FRONTTOP'   => __('Top Console')
-	);
+	];
 
 	if (cacti_sizeof($links)) {
 		print "<tr class='tableHeader'><th colspan='2'>" . __('External Link Permissions') . '</th></tr>';
@@ -1470,7 +1469,7 @@ function user_group_realms_edit($header_label) {
 				FROM user_auth_group_realm
 				WHERE group_id = ?
 				AND realm_id = ?',
-				array(get_request_var('id', 0), $realm));
+				[get_request_var('id', 0), $realm]);
 
 			if ($set) {
 				$old_value = 'on';
@@ -1485,7 +1484,6 @@ function user_group_realms_edit($header_label) {
 					$description = $style_translate[$r['style']] . ': ' . ($r['extendedstyle'] == '' ? __('External Links') : $r['extendedstyle']) . '/' . $r['title'];
 
 					break;
-
 				default:
 					$description = $style_translate[$r['style']] . ': ' . ucfirst($r['title']);
 
@@ -1528,7 +1526,7 @@ function user_group_realms_edit($header_label) {
 				FROM user_auth_group_realm
 				WHERE group_id = ?
 				AND realm_id = ?',
-				array(get_request_var('id', 0), $realm));
+				[get_request_var('id', 0), $realm]);
 
 			if ($set) {
 				$old_value = 'on';
@@ -1566,7 +1564,7 @@ function user_group_realms_edit($header_label) {
 				FROM user_auth_group_realm
 				WHERE group_id = ? AND
 				realm_id = ?',
-				array(get_request_var('id', 0), $realm));
+				[get_request_var('id', 0), $realm]);
 
 			if ($set) {
 				$old_value = 'on';
@@ -1628,10 +1626,10 @@ function user_group_settings_edit($header_label) {
 
 		print "<div class='spacer formHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$tab_short_name'><div style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":'') . '</div></div>';
 
-		$form_array = array();
+		$form_array = [];
 
 		foreach ($tab_fields as $field_name => $field_array) {
-			$form_array += array($field_name => $tab_fields[$field_name]);
+			$form_array += [$field_name => $tab_fields[$field_name]];
 
 			if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 				foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
@@ -1639,22 +1637,22 @@ function user_group_settings_edit($header_label) {
 						$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
 					}
 
-					$form_array[$field_name]['items'][$sub_field_name]['value'] =  db_fetch_cell_prepared('SELECT value FROM settings_user_group WHERE name = ? AND group_id = ?', array($sub_field_name, get_request_var('id')));
+					$form_array[$field_name]['items'][$sub_field_name]['value'] =  db_fetch_cell_prepared('SELECT value FROM settings_user_group WHERE name = ? AND group_id = ?', [$sub_field_name, get_request_var('id')]);
 				}
 			} else {
 				if (graph_config_value_exists($field_name, get_request_var('id'))) {
 					$form_array[$field_name]['form_id'] = 1;
 				}
 
-				$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value FROM settings_user_group WHERE name = ? AND group_id = ?', array($field_name, get_request_var('id')));
+				$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value FROM settings_user_group WHERE name = ? AND group_id = ?', [$field_name, get_request_var('id')]);
 			}
 		}
 
 		draw_edit_form(
-			array(
-				'config' => array('no_form_tag' => true),
+			[
+				'config' => ['no_form_tag' => true],
 				'fields' => $form_array
-			)
+			]
 		);
 	}
 
@@ -1699,11 +1697,11 @@ function group_edit() {
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
-	get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-z_A-Z]+)$/')));
+	get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-z_A-Z]+)$/']]);
 	/* ==================================================== */
 
 	/* present a tabbed interface */
-	$tabs = array(
+	$tabs = [
 		'general'  => __('General'),
 		'members'  => __('Members'),
 		'realms'   => __('Permissions'),
@@ -1712,7 +1710,7 @@ function group_edit() {
 		'permste'  => __('Template Perms'),
 		'permstr'  => __('Tree Perms'),
 		'settings' => __('User Settings')
-	);
+	];
 
 	$permission_model = read_config_option('graph_auth_method');
 
@@ -1723,7 +1721,7 @@ function group_edit() {
 	}
 
 	if (!isempty_request_var('id')) {
-		$group        = db_fetch_row_prepared('SELECT * FROM user_auth_group WHERE id = ?', array(get_request_var('id')));
+		$group        = db_fetch_row_prepared('SELECT * FROM user_auth_group WHERE id = ?', [get_request_var('id')]);
 		$header_label = __esc('User Group Management [edit: %s]', $group['name']);
 	} else {
 		$header_label = __('User Group Management [new]');
@@ -1758,10 +1756,10 @@ function group_edit() {
 
 			html_start_box($header_label, '100%', true, '3', 'center', '');
 
-			draw_edit_form(array(
-				'config' => array('no_form_tag' => true),
-				'fields' => inject_form_variables($fields_user_group_edit, (isset($group) ? $group : array()))
-			));
+			draw_edit_form([
+				'config' => ['no_form_tag' => true],
+				'fields' => inject_form_variables($fields_user_group_edit, (isset($group) ? $group : []))
+			]);
 
 			html_end_box(true, true);
 
@@ -1820,7 +1818,6 @@ function group_edit() {
 			user_group_members_edit($header_label);
 
 			break;
-
 		default:
 			if (api_plugin_hook_function('user_group_admin_run_action', get_request_var('tab'))) {
 				user_group_realms_edit($header_label);
@@ -1835,7 +1832,7 @@ function is_user_group_realm_allowed($realm_id, $group_id) {
 		FROM user_auth_group_realm
 		WHERE group_id = ?
 		AND realm_id = ?',
-		array($group_id, $realm_id));
+		[$group_id, $realm_id]);
 }
 
 function user_group() {
@@ -1854,7 +1851,7 @@ function user_group() {
 	}
 
 	$sql_where  = '';
-	$sql_params = array();
+	$sql_params = [];
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
@@ -1883,38 +1880,38 @@ function user_group() {
 		' LIMIT ' . ($rows * (get_request_var('page') - 1) . ',' . $rows),
 		$sql_params);
 
-	$display_text = array(
-		'name' => array(
+	$display_text = [
+		'name' => [
 			'display' => __('Group Name'),
 			'sort'    => 'ASC'
-		),
-		'members' => array(
+		],
+		'members' => [
 			'display' => __('Members'),
 			'sort'    => 'ASC'
-		),
-		'description' => array(
+		],
+		'description' => [
 			'display' => __('Description'),
 			'sort'    => 'ASC'
-		),
-		'policy_graphs' => array(
+		],
+		'policy_graphs' => [
 			'display' => __('Graph Policy'),
 			'sort'    => 'ASC'
-		),
-		'policy_hosts' => array(
+		],
+		'policy_hosts' => [
 			'display' => __('Device Policy'),
 			'sort'    => 'ASC'
-		),
-		'policy_graph_templates' => array(
+		],
+		'policy_graph_templates' => [
 			'display' => __('Template Policy'),
 			'sort'    => 'ASC'
-		),
-		'enabled' => array(
+		],
+		'enabled' => [
 			'display' => __('Enabled'),
 			'sort'    => 'ASC'
-		)
-	);
+		]
+	];
 
-	$nav = html_nav_bar('user_group_admin.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, cacti_sizeof($display_text)+1, __('Groups'), 'page', 'main');
+	$nav = html_nav_bar('user_group_admin.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Groups'), 'page', 'main');
 
 	form_start('user_group_admin.php', 'chk');
 
@@ -1964,8 +1961,8 @@ function user_group() {
 function create_graphs_filter() {
 	global $item_rows;
 
-	$any  = array('-1' => __('Any'));
-	$none = array('0'  => __('None'));
+	$any  = ['-1' => __('Any')];
+	$none = ['0'  => __('None')];
 
 	$graph_templates = array_rekey(
 		db_fetch_assoc('SELECT DISTINCT gt.id, gt.name
@@ -1978,11 +1975,11 @@ function create_graphs_filter() {
 
 	$graph_templates = $any + $none + $graph_templates;
 
-	return array(
-		'rows' => array(
-			array(
-				'filter' => array(
-					'method'        => 'textbox',
+	return [
+		'rows' => [
+			[
+				'filter' => [
+					'method'         => 'textbox',
 					'friendly_name'  => __('Search'),
 					'filter'         => FILTER_DEFAULT,
 					'placeholder'    => __('Enter a search term'),
@@ -1991,8 +1988,8 @@ function create_graphs_filter() {
 					'pageset'        => true,
 					'max_length'     => '120',
 					'value'          => ''
-				),
-				'graph_template_id' => array(
+				],
+				'graph_template_id' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Template'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -2000,8 +1997,8 @@ function create_graphs_filter() {
 					'pageset'       => true,
 					'array'         => $graph_templates,
 					'value'         => '0'
-				),
-				'rows' => array(
+				],
+				'rows' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Graphs'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -2009,22 +2006,22 @@ function create_graphs_filter() {
 					'pageset'       => true,
 					'array'         => $item_rows,
 					'value'         => '-1'
-				)
-			)
-		),
-		'buttons' => array(
-			'go' => array(
+				]
+			]
+		],
+		'buttons' => [
+			'go' => [
 				'method'  => 'submit',
 				'display' => __('Go'),
 				'title'   => __('Apply filter to table'),
-			),
-			'clear' => array(
+			],
+			'clear' => [
 				'method'  => 'button',
 				'display' => __('Clear'),
 				'title'   => __('Reset filter to default values'),
-			)
-		)
-	);
+			]
+		]
+	];
 }
 
 function graph_filter($header_label) {
@@ -2048,8 +2045,8 @@ function graph_filter($header_label) {
 function create_device_filter() {
 	global $item_rows;
 
-	$any  = array('-1' => __('Any'));
-	$none = array('0'  => __('None'));
+	$any  = ['-1' => __('Any')];
+	$none = ['0'  => __('None')];
 
 	$host_templates = array_rekey(
 		db_fetch_assoc('SELECT id, name
@@ -2060,11 +2057,11 @@ function create_device_filter() {
 
 	$host_templates = $any + $none + $host_templates;
 
-	return array(
-		'rows' => array(
-			array(
-				'filter' => array(
-					'method'        => 'textbox',
+	return [
+		'rows' => [
+			[
+				'filter' => [
+					'method'         => 'textbox',
 					'friendly_name'  => __('Search'),
 					'filter'         => FILTER_DEFAULT,
 					'placeholder'    => __('Enter a search term'),
@@ -2073,8 +2070,8 @@ function create_device_filter() {
 					'pageset'        => true,
 					'max_length'     => '120',
 					'value'          => ''
-				),
-				'host_template_id' => array(
+				],
+				'host_template_id' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Template'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -2082,8 +2079,8 @@ function create_device_filter() {
 					'pageset'       => true,
 					'array'         => $host_templates,
 					'value'         => '-1'
-				),
-				'rows' => array(
+				],
+				'rows' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Devices'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -2091,22 +2088,22 @@ function create_device_filter() {
 					'pageset'       => true,
 					'array'         => $item_rows,
 					'value'         => '-1'
-				)
-			)
-		),
-		'buttons' => array(
-			'go' => array(
+				]
+			]
+		],
+		'buttons' => [
+			'go' => [
 				'method'  => 'submit',
 				'display' => __('Go'),
 				'title'   => __('Apply filter to table'),
-			),
-			'clear' => array(
+			],
+			'clear' => [
 				'method'  => 'button',
 				'display' => __('Clear'),
 				'title'   => __('Reset filter to default values'),
-			)
-		)
-	);
+			]
+		]
+	];
 }
 
 function device_filter($header_label) {
@@ -2142,17 +2139,17 @@ function template_filter($header_label) {
 }
 
 function tree_filter($header_label) {
-    /* create the page filter */
-    $pageFilter = new CactiTableFilter(__('Tree Permissions %s', $header_label), 'user_group_admin.php?action=edit&tab=permstr&id=' . get_request_var('id'), 'form_tree', 'sess_ug_tr');
+	/* create the page filter */
+	$pageFilter = new CactiTableFilter(__('Tree Permissions %s', $header_label), 'user_group_admin.php?action=edit&tab=permstr&id=' . get_request_var('id'), 'form_tree', 'sess_ug_tr');
 
-    $pageFilter->rows_label       = __('Trees');
-    $pageFilter->has_associated   = true;
-    $pageFilter->associated_label = __('Only Show Exceptions');
-    $pageFilter->render();
+	$pageFilter->rows_label       = __('Trees');
+	$pageFilter->has_associated   = true;
+	$pageFilter->associated_label = __('Only Show Exceptions');
+	$pageFilter->render();
 
-    form_hidden_box('action', 'edit', '');
-    form_hidden_box('tab', 'permstr', '');
-    form_hidden_box('id', get_request_var('id'), '');
+	form_hidden_box('action', 'edit', '');
+	form_hidden_box('tab', 'permstr', '');
+	form_hidden_box('id', get_request_var('id'), '');
 }
 
 function member_filter($header_label) {
@@ -2168,4 +2165,3 @@ function member_filter($header_label) {
 	form_hidden_box('tab', 'members', '');
 	form_hidden_box('id', get_request_var('id'), '');
 }
-

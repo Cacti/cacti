@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -35,7 +35,7 @@ function clog_get_graphs_from_datasource($local_data_id) {
 		ON gti.task_item_id=dtr.id
 		WHERE gtg.local_graph_id>0
 		AND dtr.local_data_id = ?',
-		array($local_data_id)), 'id', 'name');
+		[$local_data_id]), 'id', 'name');
 }
 
 function clog_validate_filename(&$file, &$filepath, &$filename, $filecheck = false) {
@@ -145,10 +145,12 @@ function clog_view_logfile() {
 		$logfile = read_config_option('path_cactilog');
 
 		header('Location: clog.php?filename=' . basename($logfile));
+
 		exit;
 	}
 
 	$page_nr = get_nfilter_request_var('page');
+
 	if ($page_nr == '') {
 		$page_nr = 1;
 		set_request_var('page', 1);
@@ -262,7 +264,7 @@ function clog_view_logfile() {
 		$sql_where
 		AND deleted = ''");
 
-	$hostDescriptions = array();
+	$hostDescriptions = [];
 
 	foreach ($hosts as $host) {
 		$hostDescriptions[$host['id']] = html_escape($host['description']);
@@ -344,7 +346,7 @@ function filter_sort($a, $b) {
 function clog_get_logfiles() {
 	global $config;
 
-	$stdFileArray  = $stdLogFileArray = $stdErrFileArray = $boostFileArray = array();
+	$stdFileArray  = $stdLogFileArray = $stdErrFileArray = $boostFileArray = [];
 	$configLogPath = read_config_option('path_cactilog');
 	$configLogBase = basename($configLogPath);
 	$stderrLogPath = read_config_option('path_stderrlog');
@@ -361,7 +363,7 @@ function clog_get_logfiles() {
 	if (is_readable($logPath)) {
 		$files = scandir($logPath);
 	} else {
-		$files = array('cacti.log');
+		$files = ['cacti.log'];
 	}
 
 	// Defaults go first and second
@@ -369,10 +371,10 @@ function clog_get_logfiles() {
 
 	// After Defaults, do Cacti log first (of archived)
 	if (cacti_sizeof($files)) {
-		$stdLogFileArray = array();
+		$stdLogFileArray = [];
 
 		foreach ($files as $logFile) {
-			if (in_array($logFile, array('.', '..', '.htaccess', $configLogBase, $stderrLogBase, $boostLogBase), true)) {
+			if (in_array($logFile, ['.', '..', '.htaccess', $configLogBase, $stderrLogBase, $boostLogBase], true)) {
 				continue;
 			}
 
@@ -386,9 +388,9 @@ function clog_get_logfiles() {
 				continue;
 			}
 
-			if (!empty($stderrLogBase) && str_starts_with($logFile, $stderrLogBase)){
+			if (!empty($stderrLogBase) && str_starts_with($logFile, $stderrLogBase)) {
 				$stdErrFileArray[] = $logFile;
-			} elseif (!empty($boostLogBase) && str_starts_with($logFile, $boostLogBase)){
+			} elseif (!empty($boostLogBase) && str_starts_with($logFile, $boostLogBase)) {
 				$boostFileArray[] = $logFile;
 			} else {
 				$stdLogFileArray[] = $logFile;
@@ -410,10 +412,10 @@ function clog_get_logfiles() {
 			$files    = $errFiles;
 
 			if (cacti_sizeof($files)) {
-				$stdErrFileArray = array();
+				$stdErrFileArray = [];
 
 				foreach ($files as $logFile) {
-					if (in_array($logFile, array('.', '..', '.htaccess', $configLogBase, $stderrLogBase), true)) {
+					if (in_array($logFile, ['.', '..', '.htaccess', $configLogBase, $stderrLogBase], true)) {
 						continue;
 					}
 
@@ -445,31 +447,31 @@ function clog_get_logfiles() {
 function create_clog_filter($logfile, $clogAdmin) {
 	global $log_tail_lines, $page_refresh_interval;
 
-	$all     = array('-1' => __('All'));
-	$any     = array('-1' => __('Any'));
-	$none    = array('0'  => __('None'));
-	$deleted = array('-2' => __('Deleted/Invalid'));
+	$all     = ['-1' => __('All')];
+	$any     = ['-1' => __('Any')];
+	$none    = ['0'  => __('None')];
+	$deleted = ['-2' => __('Deleted/Invalid')];
 
 	/* transform the log directory as required */
 	$logFileArray = clog_get_logfiles();
-	$newLogArray  = array();
+	$newLogArray  = [];
 
 	if (cacti_sizeof($logFileArray)) {
 		foreach ($logFileArray as $logFile) {
-			$logParts = explode('-', $logFile);
-			$logDate  = cacti_count($logParts) < 2 ? '' : $logParts[1] . (isset($logParts[2]) ? '-' . $logParts[2]:'');
-			$logName  = $logParts[0];
+			$logParts              = explode('-', $logFile);
+			$logDate               = cacti_count($logParts) < 2 ? '' : $logParts[1] . (isset($logParts[2]) ? '-' . $logParts[2]:'');
+			$logName               = $logParts[0];
 			$newLogArray[$logFile] = $logName . ($logDate != '' ? ' [' . substr($logDate,4) . ']':'');
 		}
 	}
 
-	$expands = array(
+	$expands = [
 		'0' => __('System Default'),
 		'1' => __('Expand Log'),
 		'2' => __('Raw Log'),
-	);
+	];
 
-	$message_types = array(
+	$message_types = [
 		'-1' => __('All'),
 		'1'  => __('Stats'),
 		'2'  => __('Warnings'),
@@ -484,34 +486,34 @@ function create_clog_filter($logfile, $clogAdmin) {
 		'11' => __('Device Up/Down'),
 		'12' => __('Recaches'),
 		'13' => __('Security Issues'),
-	);
+	];
 
 	if (api_plugin_is_enabled('thold')) {
 		$message_types['99'] = __('Threshold');
 	}
 
-	$reverse = array(
+	$reverse = [
 		'1' => __('Newest First'),
 		'2' => __('Oldest First')
-	);
+	];
 
-	$matches = array(
+	$matches = [
 		'1' => __('Matches'),
 		'0' => __('Does Not Match')
-	);
+	];
 
-	return array(
-		'rows' => array(
-			array(
-				'filename' => array(
+	return [
+		'rows' => [
+			[
+				'filename' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('File'),
 					'filter'        => FILTER_DEFAULT,
 					'default'       => 'cacti.log',
 					'array'         => $newLogArray,
 					'value'         => $logfile
-				),
-				'tail_lines' => array(
+				],
+				'tail_lines' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Tail Lines'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -519,8 +521,8 @@ function create_clog_filter($logfile, $clogAdmin) {
 					'pageset'       => true,
 					'array'         => $log_tail_lines,
 					'value'         => ''
-				),
-				'expand' => array(
+				],
+				'expand' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Expand Log'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -528,10 +530,10 @@ function create_clog_filter($logfile, $clogAdmin) {
 					'pageset'       => true,
 					'array'         => $expands,
 					'value'         => '-1'
-				)
-			),
-			array(
-				'message_type' => array(
+				]
+			],
+			[
+				'message_type' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Type'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -539,8 +541,8 @@ function create_clog_filter($logfile, $clogAdmin) {
 					'pageset'       => true,
 					'array'         => $message_types,
 					'value'         => '-1'
-				),
-				'reverse' => array(
+				],
+				'reverse' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Display'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -548,8 +550,8 @@ function create_clog_filter($logfile, $clogAdmin) {
 					'pageset'       => true,
 					'array'         => $reverse,
 					'value'         => '1'
-				),
-				'refresh' => array(
+				],
+				'refresh' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Refresh'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -557,10 +559,10 @@ function create_clog_filter($logfile, $clogAdmin) {
 					'pageset'       => true,
 					'array'         => $page_refresh_interval,
 					'value'         => '300'
-				)
-			),
-			array(
-				'matches' => array(
+				]
+			],
+			[
+				'matches' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Search'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -569,9 +571,9 @@ function create_clog_filter($logfile, $clogAdmin) {
 					'pageset'       => true,
 					'array'         => $matches,
 					'value'         => '1'
-				),
-				'rfilter' => array(
-					'method'        => 'textbox',
+				],
+				'rfilter' => [
+					'method'         => 'textbox',
 					'filter'         => FILTER_VALIDATE_IS_REGEX,
 					'placeholder'    => __('Enter a search term'),
 					'size'           => '55',
@@ -579,29 +581,29 @@ function create_clog_filter($logfile, $clogAdmin) {
 					'pageset'        => true,
 					'max_length'     => '120',
 					'value'          => ''
-				)
-			)
-		),
-		'buttons' => array(
-			'go' => array(
+				]
+			]
+		],
+		'buttons' => [
+			'go' => [
 				'method'  => 'submit',
 				'display' => __('Go'),
 				'title'   => __('Apply filter to table'),
-			),
-			'clear' => array(
+			],
+			'clear' => [
 				'method'  => 'button',
 				'display' => __('Clear'),
 				'title'   => __('Reset filter to default values'),
-			),
-			'purge' => array(
+			],
+			'purge' => [
 				'method'  => 'button',
 				'display' => __('Purge'),
 				'action'  => 'default',
 				'title'   => __('Purge User log of all but the last login attempt'),
 				'url'     => 'clog.php?action=purge&filename=' . $logfile
-			),
-		)
-	);
+			],
+		]
+	];
 
 	if (!$clogAdmin) {
 		unset($filter['buttons']['purge']);
@@ -617,10 +619,10 @@ function draw_clog_filter($render = false, $logfile = false, $clogAdmin = false)
 
 	if ($current_page == 'utilities.php') {
 		$base_page  = 'utilities.php?action=view_logfile';
-		$page = $base_page . '&page=' . $page_nr;
+		$page       = $base_page . '&page=' . $page_nr;
 	} else {
 		$base_page  = 'clog' . (!$clogAdmin ? '_user' : '') . '.php';
-		$page = $base_page . '?page=' . $page_nr;
+		$page       = $base_page . '?page=' . $page_nr;
 	}
 
 	/* create the page filter */

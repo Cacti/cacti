@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -297,7 +297,7 @@ Error codes:
 15      CN unknown on LDAP
 99      PHP LDAP not enabled
 */
-function cacti_ldap_search_cn($username, $cn = array(), $dn = '', $host = '', $port = '', $port_ssl = '', $version = '', $encryption = '',
+function cacti_ldap_search_cn($username, $cn = [], $dn = '', $host = '', $port = '', $port_ssl = '', $version = '', $encryption = '',
 	$referrals = '', $mode = '', $search_base = '', $search_filter = '', $specific_dn = '', $specific_password = '') {
 	$ldap = new Ldap;
 
@@ -413,13 +413,13 @@ abstract class LdapError {
 			default                             => __('Unexpected error %s (Ldap Error: %s) on Server (%s)', $returnError, $ldapError, $ldapServer),
 		};
 
-		return array(
+		return [
 			'error_num'  => $error_num,
 			'error_text' => $error_text,
 			'error_ldap' => $ldapError,
 			'dn'         => '',
 			'stack'      => cacti_debug_backtrace('', false, false)
-		);
+		];
 	}
 }
 
@@ -427,7 +427,7 @@ class Ldap {
 	public $dn;
 
 	public $cn;
-	
+
 	public $host;
 
 	public $username;
@@ -505,7 +505,7 @@ class Ldap {
 		return true;
 	}
 
-	function ErrorHandler($level, $message, $file, $line, $context = array()) {
+	function ErrorHandler($level, $message, $file, $line, $context = []) {
 		return true;
 	}
 
@@ -514,7 +514,7 @@ class Ldap {
 		restore_error_handler();
 
 		/* set an error handler for ldap */
-		set_error_handler(array($this, 'ErrorHandler'));
+		set_error_handler([$this, 'ErrorHandler']);
 
 		cacti_session_close();
 	}
@@ -536,23 +536,23 @@ class Ldap {
 	}
 
 	function Connect() {
-		$output    = array();
+		$output    = [];
 		$ldap_conn = null;
 
 		/* function check */
 		if (!function_exists('ldap_connect')) {
-			return array(
+			return [
 				'ldap_conn' => $ldap_conn,
 				'output'    => LdapError::GetErrorDetails(LdapError::Disabled)
-			);
+			];
 		}
 
 		/* validation */
 		if (empty($this->username)) {
-			return array(
+			return [
 				'ldap_conn' => $ldap_conn,
 				'output'    => LdapError::GetErrorDetails(LdapError::UndefinedUsername)
-			);
+			];
 		}
 
 		/**
@@ -642,10 +642,10 @@ class Ldap {
 				Ldap::RecordError($output);
 				ldap_close($ldap_conn);
 
-				return array(
+				return [
 					'ldap_conn' => $ldap_conn,
 					'output'    => $output
-				);
+				];
 			}
 
 			/* set reasonable timeouts */
@@ -672,10 +672,10 @@ class Ldap {
 
 					ldap_close($ldap_conn);
 
-					return array(
+					return [
 						'ldap_conn' => $ldap_conn,
 						'output'    => $output
-					);
+					];
 				}
 			}
 
@@ -688,27 +688,27 @@ class Ldap {
 
 					ldap_close($ldap_conn);
 
-					return array(
+					return [
 						'ldap_conn' => $ldap_conn,
 						'output'    => $output
-					);
+					];
 				}
 			}
 
-			return array('ldap_conn' => $ldap_conn, 'output' => $output);
+			return ['ldap_conn' => $ldap_conn, 'output' => $output];
 		} else {
 			$output = LdapError::GetErrorDetails(LdapError::ConnectionUnavailable, $ldap_conn, $this->host);
 			Ldap::RecordError($output);
 
-			return array(
+			return [
 				'ldap_conn' => $ldap_conn,
 				'output'    => $output
-			);
+			];
 		}
 	}
 
 	function Authenticate() {
-		$output = array();
+		$output = [];
 
 		/* Determine connection method and create LDAP Object */
 		$this->SetLdapHandler();
@@ -731,7 +731,7 @@ class Ldap {
 
 		/* Decode username, and remove bad characters */
 		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
-		$this->username = str_replace(array('&', '|', '(', ')', '*', '>', '<', '!', '='), '', $this->username);
+		$this->username = str_replace(['&', '|', '(', ')', '*', '>', '<', '!', '='], '', $this->username);
 		$this->password = html_entity_decode($this->password, $this->GetMask(), 'UTF-8');
 		$this->dn       = str_replace('<username>', $this->username, $this->dn);
 
@@ -760,8 +760,8 @@ class Ldap {
 					 * feature request: http://bugs.php.net/bug.php?id=42060
 					 * And the patch against latest PHP release:
 					 * http://cvsweb.netbsd.org/bsdweb.cgi/pkgsrc/databases/php-ldap/files/ldap-ctrl-exop.patch
-					*/
-					$true_dn_result = ldap_search($ldap_conn, $this->search_base, '(|(uid=' . $this->dn . ')(cn=' . $this->dn . ')(userPrincipalName=' . $this->dn . '))', array('dn'));
+					 */
+					$true_dn_result = ldap_search($ldap_conn, $this->search_base, '(|(uid=' . $this->dn . ')(cn=' . $this->dn . ')(userPrincipalName=' . $this->dn . '))', ['dn']);
 					$first_entry    = ldap_first_entry($ldap_conn, $true_dn_result);
 
 					/* we will test in two ways */
@@ -841,7 +841,7 @@ class Ldap {
 	}
 
 	function Search() {
-		$output = array();
+		$output = [];
 
 		/* Determine connection method and create LDAP Object */
 		$this->SetLdapHandler();
@@ -864,7 +864,7 @@ class Ldap {
 
 		/* Decode username, and remove bad characters */
 		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
-		$this->username = str_replace(array('&', '|', '(', ')', '*', '>', '<', '!', '='), '', $this->username);
+		$this->username = str_replace(['&', '|', '(', ')', '*', '>', '<', '!', '='], '', $this->username);
 		$this->dn       = str_replace('<username>', $this->username, $this->dn);
 
 		if ($this->mode == '0') {
@@ -901,7 +901,7 @@ class Ldap {
 		/* bind to the directory */
 		if (ldap_bind($ldap_conn, $this->specific_dn, $this->specific_password)) {
 			/* Search */
-			$ldap_results = ldap_search($ldap_conn, $this->search_base, $this->search_filter, array('dn'));
+			$ldap_results = ldap_search($ldap_conn, $this->search_base, $this->search_filter, ['dn']);
 
 			if ($ldap_results) {
 				$ldap_entries = ldap_get_entries($ldap_conn, $ldap_results);
@@ -959,7 +959,7 @@ class Ldap {
 	}
 
 	function Getcn() {
-		$output = array();
+		$output = [];
 
 		/* Determine connection method and create LDAP Object */
 		$this->SetLdapHandler();
@@ -982,7 +982,7 @@ class Ldap {
 
 		/* Decode username, and remove bad characters */
 		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
-		$this->username = str_replace(array('&', '|', '(', ')', '*', '>', '<', '!', '='), '', $this->username);
+		$this->username = str_replace(['&', '|', '(', ')', '*', '>', '<', '!', '='], '', $this->username);
 		$this->dn       = str_replace('<username>', $this->username, $this->dn);
 
 		if ($this->mode == '0') {
@@ -1020,9 +1020,11 @@ class Ldap {
 
 			if ($ldap_results) {
 				$ldap_entries =  ldap_get_entries($ldap_conn, $ldap_results);
+
 				/* We find 1 entries */
 				if ($ldap_entries['count'] == 1) {
 					$output = LdapError::GetErrorDetails(LdapError::Success);
+
 					// check if we got an full username entry
 					if (array_key_exists($this->cn[0], $ldap_entries[0])) {
 						$output['cn'][$this->cn[0]] = $ldap_entries[0][$this->cn[0]][0];
@@ -1081,7 +1083,7 @@ class Ldap {
 
 	function isUserInLDAPGroup($ldapConn, $ldapbasedn, $groupDN, $ldapUser) {
 		$query       = "(&(distinguishedName=$ldapUser)(memberOf:1.2.840.113556.1.4.1941:=$groupDN))";
-		$ldapSearch  = @ldap_search($ldapConn,$ldapbasedn,$query,array('dn'));
+		$ldapSearch  = @ldap_search($ldapConn,$ldapbasedn,$query,['dn']);
 		$ldapResults = @ldap_get_entries($ldapConn, $ldapSearch);
 
 		// user should only be returned once IF they're a member of the group

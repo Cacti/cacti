@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -23,6 +23,6 @@
 */
 
 global $plugin_hooks, $plugins_integrated, $plugins;
-$plugin_hooks       = array();
-$plugins            = array();
-$plugins_integrated = array('snmpagent', 'clog', 'settings', 'boost', 'dsstats', 'watermark', 'ssl', 'ugroup', 'domains', 'jqueryskin', 'secpass', 'logrotate', 'realtime', 'rrdclean', 'nectar', 'aggregate', 'autom8', 'discovery', 'spikekill', 'superlinks', 'debug');
+$plugin_hooks       = [];
+$plugins            = [];
+$plugins_integrated = ['snmpagent', 'clog', 'settings', 'boost', 'dsstats', 'watermark', 'ssl', 'ugroup', 'domains', 'jqueryskin', 'secpass', 'logrotate', 'realtime', 'rrdclean', 'nectar', 'aggregate', 'autom8', 'discovery', 'spikekill', 'superlinks', 'debug'];

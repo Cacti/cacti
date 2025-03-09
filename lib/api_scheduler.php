@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -25,21 +25,21 @@
 function api_scheduler_form() {
 	global $sched_types, $heartbeats;
 
-	return array(
-		'spacer2' => array(
+	return [
+		'spacer2' => [
 			'method'        => 'spacer',
 			'friendly_name' => __('Schedule'),
 			'collapsible'   => 'true'
-		),
-		'sched_type' => array(
+		],
+		'sched_type' => [
 			'method'        => 'drop_array',
 			'friendly_name' => __('Schedule Type'),
 			'description'   => __('Define the collection frequency.'),
 			'value'         => '|arg1:sched_type|',
 			'array'         => $sched_types,
 			'default'       => SCHEDULE_MANUAL
-		),
-		'start_at' => array(
+		],
+		'start_at' => [
 			'method'        => 'textbox',
 			'friendly_name' => __('Starting Date/Time'),
 			'description'   => __('What time will this Network discover item start?'),
@@ -47,14 +47,14 @@ function api_scheduler_form() {
 			'max_length'    => '30',
 			'default'       => date('Y-m-d H:i:s'),
 			'size'          => 60
-		),
-		'recur_every' => array(
+		],
+		'recur_every' => [
 			'method'        => 'drop_array',
 			'friendly_name' => __('Rerun Every'),
 			'description'   => __('Rerun discovery for this Network Range every X.'),
 			'value'         => '|arg1:recur_every|',
 			'default'       => '1',
-			'array'         => array(
+			'array'         => [
 				1 => '1',
 				2 => '2',
 				3 => '3',
@@ -62,13 +62,13 @@ function api_scheduler_form() {
 				5 => '5',
 				6 => '6',
 				7 => '7'
-			),
-		),
-		'day_of_week' => array(
+			],
+		],
+		'day_of_week' => [
 			'method'        => 'drop_multi',
 			'friendly_name' => __('Days of Week'),
 			'description'   => __('What Day(s) of the week will this Network Range be discovered.'),
-			'array'         => array(
+			'array'         => [
 				1 => __('Sunday'),
 				2 => __('Monday'),
 				3 => __('Tuesday'),
@@ -76,15 +76,15 @@ function api_scheduler_form() {
 				5 => __('Thursday'),
 				6 => __('Friday'),
 				7 => __('Saturday')
-			),
+			],
 			'value' => '|arg1:day_of_week|',
 			'class' => 'day_of_week'
-		),
-		'month' => array(
+		],
+		'month' => [
 			'method'        => 'drop_multi',
 			'friendly_name' => __('Months of Year'),
 			'description'   => __('What Months(s) of the Year will this Network Range be discovered.'),
-			'array'         => array(
+			'array'         => [
 				1  => __('January'),
 				2  => __('February'),
 				3  => __('March'),
@@ -97,36 +97,36 @@ function api_scheduler_form() {
 				10 => __('October'),
 				11 => __('November'),
 				12 => __('December')
-			),
+			],
 			'value' => '|arg1:month|',
 			'class' => 'month'
-		),
-		'day_of_month' => array(
+		],
+		'day_of_month' => [
 			'method'        => 'drop_multi',
 			'friendly_name' => __('Days of Month'),
 			'description'   => __('What Day(s) of the Month will this Network Range be discovered.'),
-			'array'         => array(1 => '1', 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32 => __('Last')),
+			'array'         => [1 => '1', 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32 => __('Last')],
 			'value'         => '|arg1:day_of_month|',
 			'class'         => 'days_of_month'
-		),
-		'monthly_week' => array(
+		],
+		'monthly_week' => [
 			'method'        => 'drop_multi',
 			'friendly_name' => __('Week(s) of Month'),
 			'description'   => __('What Week(s) of the Month will this Network Range be discovered.'),
-			'array'         => array(
+			'array'         => [
 				1    => __('First'),
 				2    => __('Second'),
 				3    => __('Third'),
 				'32' => __('Last')
-			),
+			],
 			'value' => '|arg1:monthly_week|',
 			'class' => 'monthly_week'
-		),
-		'monthly_day' => array(
+		],
+		'monthly_day' => [
 			'method'        => 'drop_multi',
 			'friendly_name' => __('Day(s) of Week'),
 			'description'   => __('What Day(s) of the week will this Network Range be discovered.'),
-			'array'         => array(
+			'array'         => [
 				1 => __('Sunday'),
 				2 => __('Monday'),
 				3 => __('Tuesday'),
@@ -134,31 +134,31 @@ function api_scheduler_form() {
 				5 => __('Thursday'),
 				6 => __('Friday'),
 				7 => __('Saturday')
-			),
+			],
 			'value' => '|arg1:monthly_day|',
 			'class' => 'monthly_day'
-		),
-		'run_limit' => array(
+		],
+		'run_limit' => [
 			'method'        => 'drop_array',
 			'friendly_name' => __('Run Limit'),
 			'description'   => __('Define the maximum allowed runtime of this scheduled task.'),
 			'value'         => '|arg1:run_limit|',
 			'array'         => $heartbeats,
 			'default'       => '20'
-		),
-		'next_start' => array(
+		],
+		'next_start' => [
 			'method' => 'hidden',
 			'value'  => '|arg1:next_start|'
-		),
-		'orig_sched_type' => array(
+		],
+		'orig_sched_type' => [
 			'method' => 'hidden',
 			'value'  => '|arg1:sched_type|'
-		),
-		'orig_start_at' => array(
+		],
+		'orig_start_at' => [
 			'method' => 'hidden',
 			'value'  => '|arg1:start_at|'
-		),
-	);
+		],
+	];
 }
 
 function api_scheduler_javascript() {
@@ -318,10 +318,10 @@ function api_scheduler_augment_save($save, $post) {
 	$save['run_limit']   = form_input_validate($post['run_limit'], 'run_limit', '', true, 3);
 
 	/* convert arrays to strings */
-	$variables = array('day_of_week', 'month', 'day_of_month', 'monthly_week', 'monthly_day');
-	$aposts    = array();
+	$variables = ['day_of_week', 'month', 'day_of_month', 'monthly_week', 'monthly_day'];
+	$aposts    = [];
 
-	foreach($variables as $v) {
+	foreach ($variables as $v) {
 		if (isset($post[$v])) {
 			$save[$v] = form_input_validate(implode(',', $post[$v]), $v, '', true, 3);
 		} else {
@@ -431,7 +431,7 @@ function api_scheduler_is_time_to_start($schedule, $table = 'automation_networks
 				db_execute_prepared("UPDATE $table
 					SET next_start = ?
 					WHERE id = ?",
-					array(date('Y-m-d H:i', $target), $schedule['id']));
+					[date('Y-m-d H:i', $target), $schedule['id']]);
 
 				return true;
 
@@ -474,7 +474,7 @@ function api_scheduler_is_time_to_start($schedule, $table = 'automation_networks
 				db_execute_prepared("UPDATE $table
 					SET next_start = ?
 					WHERE id = ?",
-					array(date('Y-m-d H:i', $target), $schedule['id']));
+					[date('Y-m-d H:i', $target), $schedule['id']]);
 
 				return true;
 			}
@@ -489,7 +489,7 @@ function api_scheduler_is_time_to_start($schedule, $table = 'automation_networks
 			db_execute_prepared("UPDATE $table
 				SET next_start = ?
 				WHERE id = ?",
-				array(date('Y-m-d H:i', $next), $schedule['id']));
+				[date('Y-m-d H:i', $next), $schedule['id']]);
 
 			if ($schedule['next_start'] == '0000-00-00 00:00:00') {
 				if ($now > strtotime($schedule['start_at'])) {
@@ -509,11 +509,10 @@ function api_scheduler_is_time_to_start($schedule, $table = 'automation_networks
 
 function api_scheduler_calculate_next_start($schedule) {
 	$now    = time();
-	$dates  = array();
+	$dates  = [];
 
 	switch($schedule['sched_type']) {
 		case SCHEDULE_MANUAL:
-
 			break;
 		case SCHEDULE_MONTHLY:
 			$months = explode(',', $schedule['month']);
@@ -586,7 +585,7 @@ function api_scheduler_calculate_next_start($schedule) {
 			$weeks  = explode(',', $schedule['monthly_week']);
 			$days   = explode(',', $schedule['monthly_day']);
 			$now    = time();
-			$dates  = array();
+			$dates  = [];
 
 			foreach ($months as $month) {
 				foreach ($weeks as $week) {
@@ -707,7 +706,7 @@ function api_scheduler_calculate_next_start($schedule) {
 	if ($schedule['sched_type'] !== SCHEDULE_MANUAL) {
 		asort($dates);
 
-		$newdates = array();
+		$newdates = [];
 
 		foreach ($dates as $date) {
 			$ndate = date('Y-m-d', $date) . ' ' . date('H:i:s', strtotime($schedule['start_at']));
@@ -723,4 +722,3 @@ function api_scheduler_calculate_next_start($schedule) {
 
 	return false;
 }
-

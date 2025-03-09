@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -48,16 +48,16 @@ function changelog_view() {
 	global $database_default, $config, $rrdtool_versions, $poller_options, $input_types, $local_db_cnn_id;
 
 	/* ================= input validation ================= */
-	get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-z_A-Z]+)$/')));
+	get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-z_A-Z]+)$/']]);
 	/* ==================================================== */
 
 	top_header();
 
 	/* present a tabbed interface */
-	$tabs = array(
+	$tabs = [
 		'highlights' => __('Highlights'),
 		'full'       => __('Full'),
-	);
+	];
 
 	/* set the default tab */
 	load_current_session_value('tab', 'sess_cl_tabs', 'summary');
@@ -65,11 +65,11 @@ function changelog_view() {
 
 	$page = 'changelog.php?tab=' . $current_tab;
 
-	$refresh = array(
+	$refresh = [
 		'seconds' => 999999,
 		'page'    => $page,
 		'logout'  => 'false'
-	);
+	];
 
 	set_page_refresh($refresh);
 	$i = 0;
@@ -107,8 +107,8 @@ function changelog_view() {
 	array_shift($changelog);
 
 	$ver     = '';
-	$vers    = array();
-	$details = array();
+	$vers    = [];
+	$details = [];
 	$first   = '';
 
 	foreach ($changelog as $line) {
@@ -118,9 +118,9 @@ function changelog_view() {
 			$detail = false;
 
 			if (preg_match('/-(issue|feature|security): (.*)/i', $line, $parts)) {
-				$detail = array('desc' => $parts[2]);
+				$detail = ['desc' => $parts[2]];
 			} elseif (preg_match('/-(issue|feature|security)#(\d+)\: (.*)/i', $line, $parts)) {
-				$detail = array('desc' => $parts[3], 'issue' => $parts[2]);
+				$detail = ['desc' => $parts[3], 'issue' => $parts[2]];
 			}
 
 			$type = 'unknown';
@@ -135,7 +135,7 @@ function changelog_view() {
 
 			if (!empty($detail)) {
 				if (empty($details[$type])) {
-					$details[$type] = array();
+					$details[$type] = [];
 				}
 				$details[$type][] = $detail;
 			}
@@ -143,7 +143,7 @@ function changelog_view() {
 			if (!empty($ver)) {
 				$vers[$ver] = $details;
 				$first      =true;
-				$details    = array();
+				$details    = [];
 			}
 
 			if (count($vers) > 4) {
@@ -181,7 +181,6 @@ function changelog_view() {
 							$highlight = true;
 
 							break;
-
 						default:
 							$icon = '<i class="fa fa-question-circle"></i>';
 

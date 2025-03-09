@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -60,7 +60,7 @@ function view_user_log() {
 	}
 
 	$sql_where  = '';
-	$sql_params = array();
+	$sql_params = [];
 
 	/* filter by username */
 	if (get_request_var('user_id') == '-2') {
@@ -106,14 +106,14 @@ function view_user_log() {
 
 	$user_log = db_fetch_assoc_prepared($user_log_sql, $sql_params);
 
-	$display_text = array(
-		'username'  => array(__('User'), 'ASC'),
-		'full_name' => array(__('Full Name'), 'ASC'),
-		'realm'     => array(__('Authentication Realm'), 'ASC'),
-		'time'      => array(__('Date'), 'DESC'),
-		'result'    => array(__('Result'), 'DESC'),
-		'ip'        => array(__('IP Address'), 'DESC')
-	);
+	$display_text = [
+		'username'  => [__('User'), 'ASC'],
+		'full_name' => [__('Full Name'), 'ASC'],
+		'realm'     => [__('Authentication Realm'), 'ASC'],
+		'time'      => [__('Date'), 'DESC'],
+		'result'    => [__('Result'), 'DESC'],
+		'ip'        => [__('IP Address'), 'DESC']
+	];
 
 	$nav = html_nav_bar('user_log.php?user_id=' . get_request_var('user_id') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, __('Login Attempts'), 'page', 'main');
 
@@ -140,7 +140,7 @@ function view_user_log() {
 			if (isset($auth_realms[$item['realm']])) {
 				form_selectable_cell(filter_value($auth_realms[$item['realm']]['name'], get_request_var('filter')), $i);
 			} else {
-				form_selectable_cell(__('N/A'), $i);;
+				form_selectable_cell(__('N/A'), $i);
 			}
 
 			form_selectable_cell(filter_value($item['time'], get_request_var('filter')), $i);
@@ -167,13 +167,13 @@ function clear_user_log() {
 		/* remove active users */
 		foreach ($users as $user) {
 			// Check how many rows for the current user with a valid token
-			foreach (array(1, 2) as $result) {
+			foreach ([1, 2] as $result) {
 				$total_rows = db_fetch_cell_prepared('SELECT COUNT(username)
 					FROM user_log
 					WHERE username = ?
 					AND user_id = ?
 					AND result = ?',
-					array($user['username'], $user['id'], $result));
+					[$user['username'], $user['id'], $result]);
 
 				if ($total_rows > 1) {
 					db_execute_prepared('DELETE
@@ -182,7 +182,7 @@ function clear_user_log() {
 						AND user_id = ?
 						AND result = ?
 						ORDER BY time LIMIT ' . ($total_rows - 1),
-						array($user['username'], $user['id'], $result));
+						[$user['username'], $user['id'], $result]);
 				}
 			}
 
@@ -191,7 +191,7 @@ function clear_user_log() {
 				WHERE username = ?
 				AND user_id = ?
 				AND result = 0',
-				array($user['username'], $user['id']));
+				[$user['username'], $user['id']]);
 		}
 
 		/* delete inactive users */
@@ -238,8 +238,8 @@ function purge_user_log() {
 function create_user_log_filter() {
 	global $item_rows;
 
-	$all     = array('-1' => __('All'));
-	$deleted = array('-2' => __('Deleted/Invalid'));
+	$all     = ['-1' => __('All')];
+	$deleted = ['-2' => __('Deleted/Invalid')];
 	$users   = db_fetch_assoc('SELECT DISTINCT id,
 		IF(ud.domain_name != "",
 			CONCAT(ua.username, " (", ud.domain_name, ")"),
@@ -259,19 +259,19 @@ function create_user_log_filter() {
 
 	$users = $all + $deleted + $users;
 
-	$results = array(
+	$results = [
 		'-1' => __('Any'),
 		'1'  => __('Success - Password'),
 		'2'  => __('Success - Token'),
 		'3'  => __('Success - Password Change'),
 		'0'  => __('Failed')
-	);
+	];
 
-	return array(
-		'rows' => array(
-			array(
-				'filter' => array(
-					'method'        => 'textbox',
+	return [
+		'rows' => [
+			[
+				'filter' => [
+					'method'         => 'textbox',
 					'friendly_name'  => __('Search'),
 					'filter'         => FILTER_DEFAULT,
 					'placeholder'    => __('Enter a search term'),
@@ -280,8 +280,8 @@ function create_user_log_filter() {
 					'pageset'        => true,
 					'max_length'     => '120',
 					'value'          => ''
-				),
-				'user_id' => array(
+				],
+				'user_id' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('User'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -289,8 +289,8 @@ function create_user_log_filter() {
 					'pageset'       => true,
 					'array'         => $users,
 					'value'         => '-1'
-				),
-				'result' => array(
+				],
+				'result' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Result'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -298,8 +298,8 @@ function create_user_log_filter() {
 					'pageset'       => true,
 					'array'         => $results,
 					'value'         => '-1'
-				),
-				'rows' => array(
+				],
+				'rows' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Attempts'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -307,32 +307,32 @@ function create_user_log_filter() {
 					'pageset'       => true,
 					'array'         => $item_rows,
 					'value'         => '-1'
-				)
-			)
-		),
-		'buttons' => array(
-			'go' => array(
+				]
+			]
+		],
+		'buttons' => [
+			'go' => [
 				'method'  => 'submit',
 				'display' => __('Go'),
 				'title'   => __('Apply filter to table'),
-			),
-			'clear' => array(
+			],
+			'clear' => [
 				'method'  => 'button',
 				'display' => __('Clear'),
 				'title'   => __('Reset filter to default values'),
-			),
-			'purge' => array(
+			],
+			'purge' => [
 				'method'  => 'button',
 				'display' => __('Purge'),
 				'action'  => 'default',
 				'title'   => __('Purge User log of all but the last login attempt'),
-			)
-		),
-		'sort' => array(
+			]
+		],
+		'sort' => [
 			'sort_column'    => 'time',
 			'sort_direction' => 'DESC'
-		)
-	);
+		]
+	];
 }
 
 function draw_user_log_filter($render = false) {
@@ -350,4 +350,3 @@ function draw_user_log_filter($render = false) {
 		$pageFilter->sanitize();
 	}
 }
-

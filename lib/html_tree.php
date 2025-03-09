@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -37,12 +37,12 @@ function process_tree_settings() {
 				db_execute_prepared('DELETE FROM settings_tree
 					WHERE graph_tree_item_id = ?
 					AND user_id = ?',
-					array(get_request_var('branch_id'), $_SESSION[SESS_USER_ID]));
+					[get_request_var('branch_id'), $_SESSION[SESS_USER_ID]]);
 
 				db_execute_prepared('INSERT INTO settings_tree
 					(graph_tree_item_id, user_id,status)
 					VALUES (?, ?, ?)',
-					array(get_request_var('branch_id'), $_SESSION[SESS_USER_ID], get_request_var('hide')));
+					[get_request_var('branch_id'), $_SESSION[SESS_USER_ID], get_request_var('hide')]);
 			}
 		}
 	}
@@ -71,7 +71,7 @@ function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tr
 		AND gti.local_graph_id = 0
 		AND parent = ?
 		ORDER BY parent, position',
-		array($tree_id, $parent));
+		[$tree_id, $parent]);
 
 	if ($parent == 0) {
 		print "<select name='$form_name' id='$form_name'>";
@@ -99,7 +99,7 @@ function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tr
 	}
 
 	if ($parent == 0) {
-		print "</select>";
+		print '</select>';
 	}
 }
 
@@ -121,7 +121,7 @@ function grow_dhtml_trees() {
 		$user = db_fetch_row_prepared('SELECT policy_trees
 			FROM user_auth
 			WHERE id = ?',
-			array($_SESSION[SESS_USER_ID]));
+			[$_SESSION[SESS_USER_ID]]);
 
 		if ($user['policy_trees'] == 1) {
 			$default_tree_id = db_fetch_cell_prepared('SELECT graph_tree.id
@@ -134,7 +134,7 @@ function grow_dhtml_trees() {
 				AND graph_tree.enabled = "on"
 				ORDER BY graph_tree.id
 				LIMIT 1',
-				array($_SESSION[SESS_USER_ID]));
+				[$_SESSION[SESS_USER_ID]]);
 		} else {
 			$default_tree_id = db_fetch_cell_prepared('SELECT graph_tree.id
 				FROM graph_tree
@@ -145,7 +145,7 @@ function grow_dhtml_trees() {
 				WHERE graph_tree.enabled = "on"
 				ORDER BY graph_tree.id
 				LIMIT 1',
-				array($_SESSION[SESS_USER_ID]));
+				[$_SESSION[SESS_USER_ID]]);
 		}
 	} else {
 		$default_tree_id = db_fetch_cell('SELECT id
@@ -411,9 +411,9 @@ function grow_dhtml_trees() {
  */
 function get_tree_path() {
 	if (isset_request_var('node')) {
-		$nodes  = array();
-		$nnodes = array();
-		$rnodes = array();
+		$nodes  = [];
+		$nnodes = [];
+		$rnodes = [];
 
 		if (str_contains(get_request_var('node'), 'tbranch')) {
 			$parts = explode('-', get_request_var('node'));
@@ -422,7 +422,7 @@ function get_tree_path() {
 			$linknode = db_fetch_row_prepared('SELECT *
 				FROM graph_tree_items
 				WHERE id = ?',
-				array($node));
+				[$node]);
 
 			if (cacti_sizeof($linknode)) {
 				$nodes[] = 'tree_anchor-' . $linknode['graph_tree_id'] . '_anchor';
@@ -468,7 +468,6 @@ function get_tree_path() {
 							$nnodes[] = $nstack . '-dq-'  . $parts[1];
 
 							break;
-
 						default:
 							break;
 					}
@@ -481,7 +480,7 @@ function get_tree_path() {
 						$linknode = db_fetch_row_prepared('SELECT *
 							FROM graph_tree_items
 							WHERE id = ?',
-							array($linknode['parent']));
+							[$linknode['parent']]);
 					} else {
 						break;
 					}
@@ -503,7 +502,7 @@ function get_tree_path() {
 
 		return $nodes;
 	} else {
-		return array();
+		return [];
 	}
 }
 
@@ -516,7 +515,7 @@ function get_tree_path() {
  * @return string
  */
 function get_device_leaf_class($host_id) {
-	$status = db_fetch_cell_prepared('SELECT status FROM host WHERE id = ?', array($host_id));
+	$status = db_fetch_cell_prepared('SELECT status FROM host WHERE id = ?', [$host_id]);
 
 	switch($status) {
 		case HOST_DOWN:
@@ -539,7 +538,6 @@ function get_device_leaf_class($host_id) {
 			$class = 'deviceError';
 
 			break;
-
 		default:
 			$class = '';
 	}
@@ -557,7 +555,7 @@ function get_device_leaf_class($host_id) {
  * @return array An array of HTML strings representing the DHTML tree level.
  */
 function draw_dhtml_tree_level($tree_id, $parent = 0, $editing = false) {
-	$dhtml_tree = array();
+	$dhtml_tree = [];
 
 	$hierarchy = get_allowed_tree_level($tree_id, $parent, $editing);
 
@@ -600,7 +598,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 
 	$hierarchy = get_allowed_tree_content($tree_id, $parent);
 
-	$dhtml_tree = array();
+	$dhtml_tree = [];
 
 	if (cacti_sizeof($hierarchy)) {
 		if ($tree_id > 0) {
@@ -646,7 +644,7 @@ function create_site_branch($leaf) {
 
 	$unique_id++;
 
-	$dhtml_tree   = array();
+	$dhtml_tree   = [];
 
 	$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . '-site-' . $leaf['site_id'] . "' data-jstree='{ \"type\" : \"site\" }'><a href=\"" . html_escape(CACTI_PATH_URL . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&site_id=' . $leaf['site_id'] . '&host_id=-1&host_template_id=-1&hgd=') . '">' . html_escape($leaf['sitename']) . "</a>\n";
 
@@ -717,13 +715,13 @@ function create_site_branch($leaf) {
 function create_branch($leaf) {
 	global $config;
 
-	$dhtml_tree = array();
+	$dhtml_tree = [];
 
 	$children = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM graph_tree_items
 		WHERE parent = ?
 		AND local_graph_id=0',
-		array($leaf['id']));
+		[$leaf['id']]);
 
 	$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' " . ($children > 0 ? "class='jstree-closed'":'') . '><a href="' . html_escape(CACTI_PATH_URL . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&site_id=-1&host_id=-1&host_template_id=-1&hgd=') . '">' . html_escape($leaf['title']) . "</a></li>\n";
 
@@ -788,7 +786,7 @@ function create_host_branch($leaf, $site_id = -1, $ht = -1) {
 function create_graph_template_branch($leaf, $site_id = -1, $ht = -1) {
 	global $config, $unique_id;
 
-	$dhtml_tree = array();
+	$dhtml_tree = [];
 
 	// suppress total rows collection
 	$total_rows = -1;
@@ -822,7 +820,7 @@ function create_graph_template_branch($leaf, $site_id = -1, $ht = -1) {
 function create_data_query_branch($leaf, $site_id = -1, $ht = -1) {
 	global $config, $unique_id;
 
-	$dhtml_tree = array();
+	$dhtml_tree = [];
 
 	$data_queries = db_fetch_assoc_prepared('SELECT sq.id, sq.name
 		FROM graph_local AS gl
@@ -831,24 +829,24 @@ function create_data_query_branch($leaf, $site_id = -1, $ht = -1) {
 		AND gl.host_id = ?
 		GROUP BY sq.id
 		ORDER BY sq.name',
-		array($leaf['host_id']));
+		[$leaf['host_id']]);
 
-	array_push($data_queries, array(
+	array_push($data_queries, [
 		'id'   => '0',
 		'name' => __('Non Query Based')
-	));
+	]);
 
 	if (cacti_sizeof($data_queries)) {
 		if ($leaf['host_id'] > 0) {
 			if (read_config_option('dsstats_enable') == 'on' && get_request_var('graph_source') != '' && get_request_var('graph_order') != '') {
-				$sql_order = array(
-					'data_source' => get_request_var('graph_source'),
-					'order'       => get_request_var('graph_order'),
-					'start_time'  => get_current_graph_start(),
-					'end_time'    => get_current_graph_end(),
-					'cf'          => get_request_var('cf'),
+				$sql_order = [
+					'data_source'  => get_request_var('graph_source'),
+					'order'        => get_request_var('graph_order'),
+					'start_time'   => get_current_graph_start(),
+					'end_time'     => get_current_graph_end(),
+					'cf'           => get_request_var('cf'),
 					'measure'      => get_request_var('measure')
-				);
+				];
 			} else {
 				$sql_order = 'gtg.title_cache';
 			}
@@ -858,18 +856,18 @@ function create_data_query_branch($leaf, $site_id = -1, $ht = -1) {
 			if (read_user_setting('show_aggregates', 'on') == 'on') {
 				$agg = get_allowed_aggregate_graphs('gl.host_id=' . $leaf['host_id'] . ' AND gl.snmp_query_id=0');
 			} else {
-				$agg = array();
+				$agg = [];
 			}
 		} else {
 			if (read_config_option('dsstats_enable') == 'on' && get_request_var('graph_source') != '' && get_request_var('graph_order') != '') {
-				$sql_order = array(
-					'data_source' => get_request_var('graph_source'),
-					'order'       => get_request_var('graph_order'),
-					'start_time'  => get_current_graph_start(),
-					'end_time'    => get_current_graph_end(),
-					'cf'          => get_request_var('cf'),
+				$sql_order = [
+					'data_source'  => get_request_var('graph_source'),
+					'order'        => get_request_var('graph_order'),
+					'start_time'   => get_current_graph_start(),
+					'end_time'     => get_current_graph_end(),
+					'cf'           => get_request_var('cf'),
 					'measure'      => get_request_var('measure')
-				);
+				];
 			} else {
 				$sql_order = 'gtg.title_cache';
 			}
@@ -879,7 +877,7 @@ function create_data_query_branch($leaf, $site_id = -1, $ht = -1) {
 			if (read_user_setting('show_aggregates', 'on') == 'on') {
 				$agg = get_allowed_aggregate_graphs('gl.snmp_query_id=0');
 			} else {
-				$agg = array();
+				$agg = [];
 			}
 		}
 
@@ -888,9 +886,9 @@ function create_data_query_branch($leaf, $site_id = -1, $ht = -1) {
 		foreach ($data_queries as $data_query) {
 			if ($data_query['id'] == 0) {
 				$non_tg = $ntg;
-				$sfd    = array();
+				$sfd    = [];
 			} else {
-				$non_tg = array();
+				$non_tg = [];
 
 				/* fetch a list of field names that are sorted by the preferred sort field */
 				$sfd = get_formatted_data_query_indexes($leaf['host_id'], $data_query['id']);
@@ -936,7 +934,7 @@ function create_data_query_branch($leaf, $site_id = -1, $ht = -1) {
  *               and the values are set to true.
  */
 function create_dhtml_tree() {
-	$dhtml_tree = array();
+	$dhtml_tree = [];
 
 	$tree_list = get_allowed_trees();
 
@@ -952,9 +950,9 @@ function create_dhtml_tree() {
 function create_tree_filter() {
 	global $item_rows;
 
-	$all     = array('-1' => __('All'));
-	$any     = array('-1' => __('Any'));
-	$none    = array('0'  => __('None'));
+	$all     = ['-1' => __('All')];
+	$any     = ['-1' => __('Any')];
+	$none    = ['0'  => __('None')];
 
 	/* unset the ordering if we have a setup that does not support ordering */
 	if (isset_request_var('graph_template_id')) {
@@ -972,21 +970,22 @@ function create_tree_filter() {
 		$templates = get_allowed_graph_templates_normalized('', 'name', '', $total_rows);
 	}
 
-	$normalized_templates = array();
+	$normalized_templates = [];
+
 	if (cacti_sizeof($templates)) {
-		foreach($templates as $t) {
+		foreach ($templates as $t) {
 			$normalized_templates[$t['id']] = $t['name'];
 		}
 	}
 
-	$columns = array(
+	$columns = [
 		'1' => __('%d Column', 1),
 		'2' => __('%d Columns', 2),
 		'3' => __('%d Columns', 3),
 		'4' => __('%d Columns', 4),
 		'5' => __('%d Columns', 5),
 		'6' => __('%d Columns', 6)
-	);
+	];
 
 	$normalized_templates = $all + $none + $normalized_templates;
 
@@ -1004,11 +1003,11 @@ function create_tree_filter() {
 		$thumbnails = read_user_setting('thumbnail_section_tree') == 'on' ? 'true':'false';
 	}
 
-	$filters = array(
-		'rows' => array(
-			array(
-				'rfilter' => array(
-					'method'        => 'textbox',
+	$filters = [
+		'rows' => [
+			[
+				'rfilter' => [
+					'method'         => 'textbox',
 					'friendly_name'  => __('Search'),
 					'filter'         => FILTER_VALIDATE_IS_REGEX,
 					'placeholder'    => __('Enter a search term'),
@@ -1017,24 +1016,24 @@ function create_tree_filter() {
 					'pageset'        => true,
 					'max_length'     => '120',
 					'value'          => ''
-				)
-			),
-			array(
-				'graph_template_id' => array(
+				]
+			],
+			[
+				'graph_template_id' => [
 					'method'         => 'drop_multi',
 					'friendly_name'  => __('Template'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => array('options' => array('regexp' => '(cg_[0-9]|dq_[0-9]|[\-0-9])')),
+					'filter_options' => ['options' => ['regexp' => '(cg_[0-9]|dq_[0-9]|[\-0-9])']],
 					'default'        => '-1',
 					'dynamic'        => false,
 					'class'          => 'graph-multiselect',
 					'pageset'        => true,
 					'array'          => $normalized_templates,
 					'value'          => get_nfilter_request_var('graph_template_id')
-				),
-			),
-			array(
-				'graphs' => array(
+				],
+			],
+			[
+				'graphs' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Graphs'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -1042,8 +1041,8 @@ function create_tree_filter() {
 					'pageset'       => true,
 					'array'         => $item_rows,
 					'value'         => ''
-				),
-				'columns' => array(
+				],
+				'columns' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Columns'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -1051,89 +1050,89 @@ function create_tree_filter() {
 					'pageset'       => true,
 					'array'         => $columns,
 					'value'         => read_user_setting('num_columns_tree', '2')
-				),
-				'thumbnails' => array(
+				],
+				'thumbnails' => [
 					'method'         => 'filter_checkbox',
 					'friendly_name'  => __('Thumbnails'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => array('options' => array('regexp' => '(true|false)')),
+					'filter_options' => ['options' => ['regexp' => '(true|false)']],
 					'default'        => read_user_setting('thumbnail_section_tree') == 'on' ? 'true':'false',
 					'value'          => $thumbnails
-				),
-				'business_hours' => array(
+				],
+				'business_hours' => [
 					'method'         => 'filter_checkbox',
 					'friendly_name'  => __('Business Hours'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => array('options' => array('regexp' => '(true|false)')),
+					'filter_options' => ['options' => ['regexp' => '(true|false)']],
 					'default'        => read_user_setting('show_business_hours') == 'on' ? 'true':'false',
 					'value'          => $business_hours
-				)
-			),
-			array(
-				'timespan' => array(
+				]
+			],
+			[
+				'timespan' => [
 					'method'         => 'timespan',
 					'refresh'        => true,
 					'clear'          => true,
 					'shifter'        => true,
-				),
-				'node' => array(
+				],
+				'node' => [
 					'method'         => 'validate',
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => array('options' => array('regexp' => '/([_\-a-z:0-9#]+)/')),
+					'filter_options' => ['options' => ['regexp' => '/([_\-a-z:0-9#]+)/']],
 					'pageset'        => true,
 					'default'        => ''
-				),
-				'site_id' => array(
+				],
+				'site_id' => [
 					'method'         => 'validate',
 					'filter'         => FILTER_VALIDATE_INT,
 					'default'        => '-1'
-				),
-				'host_id' => array(
+				],
+				'host_id' => [
 					'method'         => 'validate',
 					'filter'         => FILTER_VALIDATE_INT,
 					'default'        => '-1'
-				),
-				'host_template_id'   => array(
+				],
+				'host_template_id'   => [
 					'method'         => 'validate',
 					'filter'         => FILTER_VALIDATE_INT,
 					'default'        => '-1'
-				),
-				'hgd' => array(
+				],
+				'hgd' => [
 					'method'         => 'validate',
 					'filter'         => FILTER_CALLBACK,
-					'filter_options' => array('options' => 'sanitize_search_string'),
+					'filter_options' => ['options' => 'sanitize_search_string'],
 					'pageset'        => true,
 					'default'        => '',
-				),
-			)
-		),
-		'buttons' => array(
-			'go' => array(
-				'method'  => 'submit',
-				'display' => __('Go'),
-				'title'   => __('Apply filter to table'),
+				],
+			]
+		],
+		'buttons' => [
+			'go' => [
+				'method'   => 'submit',
+				'display'  => __('Go'),
+				'title'    => __('Apply filter to table'),
 				'callback' => 'applyGraphFilter()'
-			),
-			'clear' => array(
-				'method'  => 'button',
-				'display' => __('Clear'),
-				'title'   => __('Reset filter to default values'),
+			],
+			'clear' => [
+				'method'   => 'button',
+				'display'  => __('Clear'),
+				'title'    => __('Reset filter to default values'),
 				'callback' => 'clearGraphFilter()'
-			)
-		)
-	);
+			]
+		]
+	];
 
 	if (cacti_sizeof($metrics_array)) {
 		$filters['rows'][1] += $metrics_array;
 	}
 
 	if (is_view_allowed('graph_settings')) {
-		$filters['buttons']['save'] = array(
-			'method'  => 'button',
-			'display' => __('Save'),
-			'title'   => __('Save filter to the database'),
+		$filters['buttons']['save'] = [
+			'method'   => 'button',
+			'display'  => __('Save'),
+			'title'    => __('Save filter to the database'),
 			'callback' => 'saveGraphFilter("treeview")'
-		);
+		];
 	}
 
 	return $filters;
@@ -1143,8 +1142,8 @@ function draw_tree_filter($render = false) {
 	$header = __('Graph Tree Filters') . (get_nfilter_request_var('rfilter') != '' ? ' [ ' . __('Filter') . " '" . html_escape_request_var('rfilter') . "' " . __('Applied') . ' ]' : '');
 
 	/* create the page filter */
-	$filters    = create_tree_filter();
-	$pageFilter = new CactiTableFilter($header, 'graph_view.php', 'form_graph_view', 'sess_tview', '', false, false);
+	$filters                = create_tree_filter();
+	$pageFilter             = new CactiTableFilter($header, 'graph_view.php', 'form_graph_view', 'sess_tview', '', false, false);
 	$pageFilter->rows_label = __('Graphs');
 	$pageFilter->set_filter_array($filters);
 	$pageFilter->inject_content = inject_realtime_form();
@@ -1197,13 +1196,13 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	$graph_template_id    = '-1';
 	$data_query_id        = '-1';
 	$data_query_index     = '';
-	$leaf_names           = array();
+	$leaf_names           = [];
 
 	$leaf = db_fetch_row_prepared('SELECT
 		title, host_id, site_id, host_grouping_type, parent
 		FROM graph_tree_items
 		WHERE id = ?',
-		array($leaf_id));
+		[$leaf_id]);
 
 	$leaf_type = api_tree_get_item_type($leaf_id);
 
@@ -1212,7 +1211,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$tree_name = db_fetch_cell_prepared('SELECT name
 			FROM graph_tree
 			WHERE id = ?',
-			array($tree_id));
+			[$tree_id]);
 	}
 
 	if (isset($leaf['title']) && $leaf['title'] != '') {
@@ -1221,12 +1220,12 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	if (($leaf_type == 'site' || $leaf_type == 'host') && $leaf['parent'] != 0) {
 		$parent     = $leaf['parent'];
-		$leaf_names = array();
+		$leaf_names = [];
 
 		while ($parent != 0) {
 			$pleaf = db_fetch_row_prepared('SELECT * FROM graph_tree_items
 				WHERE id = ?',
-				array($parent));
+				[$parent]);
 
 			if (cacti_sizeof($pleaf)) {
 				$leaf_names[] = $pleaf['title'];
@@ -1241,33 +1240,33 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$host_name = db_fetch_cell_prepared('SELECT description
 			FROM host
 			WHERE id = ?',
-			array($leaf['host_id']));
+			[$leaf['host_id']]);
 
 		$site_name = db_fetch_cell_prepared('SELECT name
 			FROM sites
 			WHERE id = ?',
-			array($leaf['site_id']));
+			[$leaf['site_id']]);
 	}
 
 	if (isset_request_var('host_id') && get_filter_request_var('host_id') > 0 && $host_name == '') {
 		$host_name = db_fetch_cell_prepared('SELECT description
 			FROM host
 			WHERE id = ?',
-			array(get_request_var('host_id')));
+			[get_request_var('host_id')]);
 	}
 
 	if (isset_request_var('site_id') && get_filter_request_var('site_id') > 0 && $site_name == '') {
 		$site_name = db_fetch_cell_prepared('SELECT name
 			FROM sites
 			WHERE id = ?',
-			array(get_request_var('site_id')));
+			[get_request_var('site_id')]);
 	}
 
 	if (isset_request_var('host_template_id') && get_filter_request_var('host_template_id') > 0) {
 		$host_template_name = db_fetch_cell_prepared('SELECT name
 			FROM host_template
 			WHERE id = ?',
-			array(get_request_var('host_template_id')));
+			[get_request_var('host_template_id')]);
 	}
 
 	$host_group_data_array = explode(':', $host_group_data);
@@ -1276,7 +1275,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$name = db_fetch_cell_prepared('SELECT name
 			FROM graph_templates
 			WHERE id = ?',
-			array($host_group_data_array[1]));
+			[$host_group_data_array[1]]);
 
 		$host_group_data_name = '<i class="bold">' . __('Graph Template:'). '</i> ' . html_escape($name);
 		$graph_template_id    = $host_group_data_array[1];
@@ -1284,7 +1283,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$name = db_fetch_cell_prepared('SELECT name
 			FROM snmp_query
 			WHERE id = ?',
-			array($host_group_data_array[1]));
+			[$host_group_data_array[1]]);
 
 		$host_group_data_name = '<i class="bold">' . __('Graph Template:') . '</i> ' . (empty($host_group_data_array[1]) ? __('Non Query Based') : html_escape($name));
 		$data_query_id        = $host_group_data_array[1];
@@ -1292,11 +1291,11 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$name = db_fetch_cell_prepared('SELECT name
 			FROM snmp_query
 			WHERE id = ?',
-			array($host_group_data_array[1]));
+			[$host_group_data_array[1]]);
 
 		$host_group_data_name = '<i class="bold">' . __('Graph Template:') . '</i> ' . (empty($host_group_data_array[1]) ? __('Non Query Based') : html_escape($name)) . '-> ' . (empty($host_group_data_array[2]) ? __('Template Based') : get_formatted_data_query_index($leaf['host_id'], $host_group_data_array[1], $host_group_data_array[2]));
-		$data_query_id    = $host_group_data_array[1];
-		$data_query_index = $host_group_data_array[2];
+		$data_query_id        = $host_group_data_array[1];
+		$data_query_index     = $host_group_data_array[2];
 	}
 
 	if ($tree_name != '') {
@@ -1327,7 +1326,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 
 	if ($host_group_data_name != '') {
-		$title .= $title_delimiter . " " . $host_group_data_name;
+		$title .= $title_delimiter . ' ' . $host_group_data_name;
 		$title_delimiter = ' > ';
 	}
 
@@ -1422,17 +1421,17 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	html_spikekill_js();
 
 	api_plugin_hook_function('graph_tree_page_buttons',
-		array(
+		[
 			'treeid'    => $tree_id,
 			'leafid'    => $leaf_id,
 			'mode'      => 'tree',
 			'timespan'  => $_SESSION['sess_current_timespan'],
 			'starttime' => get_current_graph_start(),
 			'endtime'   => get_current_graph_end()
-		)
+		]
 	);
 
-	$graph_list = array();
+	$graph_list = [];
 
 	if (($leaf_type == 'header') || (empty($leaf_id))) {
 		$sql_where = '';
@@ -1489,7 +1488,6 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.snmp_query_id = ' . $parts[1] . ' AND snmp_index = ' . $dqi;
 
 					break;
-
 				default:
 					break;
 			}
@@ -1506,14 +1504,14 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		}
 
 		if (read_config_option('dsstats_enable') == 'on' && get_request_var('graph_source') != '' && get_request_var('graph_order') != '') {
-			$sql_order = array(
+			$sql_order = [
 				'data_source' => get_request_var('graph_source'),
 				'order'       => get_request_var('graph_order'),
 				'start_time'  => get_current_graph_start(),
 				'end_time'    => get_current_graph_end(),
 				'cf'          => get_request_var('cf'),
 				'measure'     => get_request_var('measure')
-			);
+			];
 		} else {
 			$sql_order = 'gtg.title_cache';
 		}
@@ -1523,7 +1521,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		if (read_user_setting('show_aggregates', 'on') == 'on') {
 			$agg = get_allowed_aggregate_graphs($sql_where);
 		} else {
-			$agg = array();
+			$agg = [];
 		}
 
 		$graphs = array_merge($graphs, $agg);
@@ -1554,7 +1552,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	$last_graph = $i + $graph_rows;
 
-	$new_graph_list = array();
+	$new_graph_list = [];
 
 	while ($i < $total_rows && $i < $last_graph) {
 		$new_graph_list[] = $graph_list[$i];
@@ -1592,7 +1590,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
  * @return array An array of graphs for the specified host, graph template, and data query.
  */
 function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host_grouping_type = '', $data_query_index = '') {
-	$graph_list = array();
+	$graph_list = [];
 	$sql_where  = '';
 
 	/* graph template grouping */
@@ -1614,7 +1612,7 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 
 		$graph_templates = get_allowed_graph_templates($sql_where, 'name', '', $total_rows);
 
-		$final_templates = array();
+		$final_templates = [];
 
 		if ($graph_template_id != '' && $graph_template_id != '-1' && $graph_template_id != '0') {
 			$templates = explode(',', $graph_template_id);
@@ -1630,17 +1628,17 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 				}
 			}
 		} elseif ($graph_template_id == '0') {
-			$final_templates = array();
+			$final_templates = [];
 		} else {
 			$final_templates = $graph_templates;
 		}
 
 		/* for graphs without a template */
 		array_push(
-			$final_templates, array(
+			$final_templates, [
 				'id'   => '0',
 				'name' => __('(Non Graph Template)')
-			)
+			]
 		);
 
 		if (cacti_sizeof($final_templates)) {
@@ -1654,7 +1652,7 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 				$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.host_id = ' . $host_id;
 			}
 
-			$graph_template_ids = array();
+			$graph_template_ids = [];
 
 			foreach ($final_templates as $graph_template) {
 				array_push($graph_template_ids, $graph_template['id']);
@@ -1663,14 +1661,14 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.graph_template_id IN (' . implode(', ', $graph_template_ids) . ')';
 
 			if (get_request_var('graph_source') != '-1' && read_config_option('dsstats_enable') == 'on' && get_request_var('graph_source') != '' && get_request_var('graph_order') != '') {
-				$sql_order = array(
+				$sql_order = [
 					'data_source' => get_request_var('graph_source'),
 					'order'       => get_request_var('graph_order'),
 					'start_time'  => get_current_graph_start(),
 					'end_time'    => get_current_graph_end(),
 					'cf'          => get_request_var('cf'),
 					'measure'     => get_request_var('measure')
-				);
+				];
 			} else {
 				$sql_order = 'gtg.title_cache';
 			}
@@ -1680,7 +1678,7 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 			if (read_user_setting('show_aggregates', 'on') == 'on') {
 				$agg = get_allowed_aggregate_graphs($sql_where);
 			} else {
-				$agg = array();
+				$agg = [];
 			}
 
 			$graphs = array_merge($graphs, $agg);
@@ -1716,10 +1714,10 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 		/* for graphs without a data query */
 		if ($data_query_id <= 0) {
 			array_push($data_queries,
-				array(
+				[
 					'id'   => '0',
 					'name' => __('Non Query Based')
-				)
+				]
 			);
 		}
 
@@ -1740,14 +1738,14 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 					' ' . ($data_query_index != '' ? ' AND gl.snmp_index = ' . db_qstr($data_query_index): '');
 
 				if (read_config_option('dsstats_enable') == 'on' && get_request_var('graph_source') != '' && get_request_var('graph_order') != '') {
-					$sql_order = array(
+					$sql_order = [
 						'data_source' => get_request_var('graph_source'),
 						'order'       => get_request_var('graph_order'),
 						'start_time'  => get_current_graph_start(),
 						'end_time'    => get_current_graph_end(),
 						'cf'          => get_request_var('cf'),
 						'measure'     => get_request_var('measure')
-					);
+					];
 				} else {
 					$sql_order = 'gtg.title_cache';
 				}
@@ -1757,13 +1755,13 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 				if (read_user_setting('show_aggregates', 'on') == 'on') {
 					$agg = get_allowed_aggregate_graphs($sql_where);
 				} else {
-					$agg = array();
+					$agg = [];
 				}
 
 				$graphs = array_merge($graphs, $agg);
 
 				/* re-key the results on data query index */
-				$snmp_index_to_graph = array();
+				$snmp_index_to_graph = [];
 
 				if (cacti_sizeof($graphs)) {
 					/* let's sort the graphs naturally */
@@ -1782,14 +1780,14 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 					if (isset($snmp_index_to_graph[$snmp_index])) {
 						foreach ($snmp_index_to_graph[$snmp_index] as $local_graph_id => $graph_title) {
 							/* reformat the array so it's compatible with the html_graph* area functions */
-							array_push($graph_list, array(
+							array_push($graph_list, [
 								'data_query_name'  => $data_query['name'],
 								'sort_field_value' => $sort_field_value,
 								'local_graph_id'   => $local_graph_id,
 								'title_cache'      => $graph_title,
 								'height'           => $graphs_height[$local_graph_id],
 								'width'            => $graphs_width[$local_graph_id]
-							));
+							]);
 						}
 					}
 				}
@@ -1808,8 +1806,8 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
  * @return array An array of matching branch objects
  */
 function get_matching_nodes() {
-	$my_matches = array();
-	$match      = array();
+	$my_matches = [];
+	$match      = [];
 
 	$filter = '%' . get_nfilter_request_var('str') . '%';
 
@@ -1844,7 +1842,7 @@ function get_matching_nodes() {
 			OR (h2.site_id > 0)
 			OR (gtg.local_graph_id > 0)
 			OR (site.id > 0)',
-			array($filter, $filter, $filter, $filter, $filter, $filter, $filter));
+			[$filter, $filter, $filter, $filter, $filter, $filter, $filter]);
 	} else {
 		$matching = db_fetch_assoc('SELECT parent, graph_tree_id FROM graph_tree_items');
 	}
@@ -1857,7 +1855,7 @@ function get_matching_nodes() {
 				$row = db_fetch_row_prepared('SELECT parent, graph_tree_id
 					FROM graph_tree_items
 					WHERE id = ?',
-					array($row['parent']));
+					[$row['parent']]);
 
 				if (!cacti_sizeof($row)) {
 					break;
@@ -1867,12 +1865,12 @@ function get_matching_nodes() {
 			if (cacti_sizeof($row)) {
 				$match[]      = 'tree_anchor-' . $row['graph_tree_id'];
 				$my_matches[] = array_reverse($match);
-				$match        = array();
+				$match        = [];
 			}
 		}
 
 		// Now flatten the list of nodes
-		$final_array = array();
+		$final_array = [];
 		$level       = 0;
 
 		while (true) {
@@ -1895,7 +1893,7 @@ function get_matching_nodes() {
 			}
 		}
 
-		$fa = array();
+		$fa = [];
 
 		if (cacti_sizeof($final_array)) {
 			foreach ($final_array as $matches) {
@@ -1939,7 +1937,7 @@ function html_tree_get_node() {
 			$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
 			FROM graph_tree_items
 			WHERE id = ?',
-				array(str_replace('tbranch-', '', get_nfilter_request_var('id'))));
+				[str_replace('tbranch-', '', get_nfilter_request_var('id'))]);
 		} elseif (get_nfilter_request_var('tree_id') == 'default' ||
 			get_nfilter_request_var('tree_id') == 'undefined' ||
 			get_nfilter_request_var('tree_id') == '') {
@@ -1970,7 +1968,7 @@ function html_tree_get_node() {
 					$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
 					FROM graph_tree_items
 					WHERE id = ?',
-						array($parent));
+						[$parent]);
 
 					break;
 				}
@@ -2037,7 +2035,7 @@ function html_tree_get_content() {
 	<?php
 
 	$access_denied   = false;
-	$tree_parameters = array();
+	$tree_parameters = [];
 	$tree_id         = 0;
 	$node_id         = 0;
 	$hgdata          = 0;
@@ -2055,7 +2053,7 @@ function html_tree_get_content() {
 			$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
 			FROM graph_tree_items
 			WHERE id = ?',
-				array($node_id));
+				[$node_id]);
 		}
 	}
 
@@ -2075,4 +2073,3 @@ function html_tree_get_content() {
 
 	bottom_footer();
 }
-

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -65,7 +65,6 @@ switch (get_request_var('action')) {
 		save_user_filter();
 
 		break;
-
 	default:
 		top_header();
 		graphs();
@@ -117,7 +116,7 @@ function store_get_selected_dq_index($snmp_query_id) {
 
 function form_save() {
 	if (isset_request_var('save_component_graph')) {
-		$form_data = array();
+		$form_data = [];
 
 		/* summarize the 'create graph from host template/snmp index' stuff into an array */
 		foreach ($_POST as $var => $val) {
@@ -191,8 +190,8 @@ function host_reload_query() {
 function host_new_graphs_save($host_id) {
 	$selected_graphs_array = cacti_unserialize(stripslashes(get_nfilter_request_var('selected_graphs_array')));
 
-	$values    = array();
-	$form_data = array();
+	$values    = [];
+	$form_data = [];
 
 	/* form an array that contains all of the data on the previous form */
 	foreach ($_POST as $var => $val) {
@@ -212,7 +211,7 @@ function host_new_graphs_save($host_id) {
 				graph_template_item_id
 				FROM graph_template_input_defs
 				WHERE graph_template_input_id = ?',
-				array($matches[3]));
+				[$matches[3]]);
 
 			/* loop through each item affected and update column data */
 			if (cacti_sizeof($item_list)) {
@@ -241,7 +240,7 @@ function host_new_graphs_save($host_id) {
 			$idata          = db_fetch_row_prepared('SELECT *
 				FROM data_input_fields
 				WHERE id = ?',
-				array($input_field_id));
+				[$input_field_id]);
 
 			$val = form_input_validate($val, $var, $idata['regexp_match'], $idata['allow_nulls'], 3);
 
@@ -291,17 +290,17 @@ function host_new_graphs_save($host_id) {
 function create_graphs_new_filter($host, $snmp_queries) {
 	global $item_rows;
 
-	$all = array('-2' => __('All'));
-	$gt  = array('-1' => __('Graph Template Based'));
+	$all = ['-2' => __('All')];
+	$gt  = ['-1' => __('Graph Template Based')];
 
 	$graph_types = array_rekey($snmp_queries, 'id', 'name');
 
 	$graph_types = $all + $gt + $graph_types;
 
-	$filters = array(
-		'rows' => array(
-			array(
-				'host_id' => array(
+	$filters = [
+		'rows' => [
+			[
+				'host_id' => [
 					'method'         => 'drop_callback',
 					'friendly_name'  => __('Device'),
 					'filter'         => FILTER_VALIDATE_INT,
@@ -312,20 +311,20 @@ function create_graphs_new_filter($host, $snmp_queries) {
 					'id'             => $host['id'],
 					'value'          => $host['description'],
 					'on_change'      => 'applyFilter()'
-				),
-				'graph_type' => array(
+				],
+				'graph_type' => [
 					'method'         => 'drop_array',
 					'friendly_name'  => __('Graph Type'),
 					'filter'         => FILTER_CALLBACK,
-					'filter_options' => array('options' => 'sanitize_search_string'),
+					'filter_options' => ['options' => 'sanitize_search_string'],
 					'default'        => read_user_setting('graph_type', read_config_option('default_graphs_new_dropdown'), true),
 					'pageset'        => true,
 					'array'          => $graph_types,
 					'value'          => '-1'
-				)
-			),
-			array(
-				'filter' => array(
+				]
+			],
+			[
+				'filter' => [
 					'method'         => 'textbox',
 					'friendly_name'  => __('Search'),
 					'filter'         => FILTER_DEFAULT,
@@ -335,8 +334,8 @@ function create_graphs_new_filter($host, $snmp_queries) {
 					'pageset'        => true,
 					'max_length'     => '120',
 					'value'          => ''
-				),
-				'rows' => array(
+				],
+				'rows' => [
 					'method'         => 'drop_array',
 					'friendly_name'  => __('Rows'),
 					'filter'         => FILTER_VALIDATE_INT,
@@ -344,41 +343,41 @@ function create_graphs_new_filter($host, $snmp_queries) {
 					'pageset'        => true,
 					'array'          => $item_rows,
 					'value'          => '-1'
-				)
-			)
-		),
-		'buttons' => array(
-			'go' => array(
+				]
+			]
+		],
+		'buttons' => [
+			'go' => [
 				'method'  => 'submit',
 				'display' => __('Go'),
 				'title'   => __('Apply Filter to Table'),
-			),
-			'clear' => array(
+			],
+			'clear' => [
 				'method'  => 'button',
 				'display' => __('Clear'),
 				'title'   => __('Reset Filter to Default Values'),
-			),
-			'save' => array(
+			],
+			'save' => [
 				'method'  => 'button',
 				'display' => __('Save'),
 				'title'   => __('Save the Filter for the User'),
 				'url'     => 'graphs_new.php?action=ajax_save_filter',
 				'status'  => __('Filter Settings Saved')
-			)
-		),
-		'links' => array(
-			array(
+			]
+		],
+		'links' => [
+			[
 				'display' => __('Edit this Device'),
 				'url'     => 'host.php?action=edit&id=' . get_request_var('host_id'),
 				'class'   => 'fa fa-wrench newDevice'
-			),
-			array(
+			],
+			[
 				'display' => __('Create New Device'),
 				'url'     => 'host.php?action=edit',
 				'class'   => 'fa-solid fa-gear editDevice'
-			),
-		)
-	);
+			],
+		]
+	];
 
 	/* process plugin links */
 	ob_start();
@@ -407,15 +406,15 @@ function create_graphs_new_filter($host, $snmp_queries) {
 		$anchors = $links->getElementsByTagName('a');
 
 		if (cacti_sizeof($anchors)) {
-			foreach($anchors as $a) {
+			foreach ($anchors as $a) {
 				$name = $a->textContent;
 				$href = $a->getAttribute('href');
 
-				$filters['links'][] = array(
+				$filters['links'][] = [
 					'display' => $name,
 					'url'     => $href,
 					'class'   => 'fa fa-funny'
-				);
+				];
 			}
 		}
 	}
@@ -423,7 +422,7 @@ function create_graphs_new_filter($host, $snmp_queries) {
 	return $filters;
 }
 
-function draw_graphs_new_filter($render = false, $header_label = '', $host = array(), $snmp_queries = array()) {
+function draw_graphs_new_filter($render = false, $header_label = '', $host = [], $snmp_queries = []) {
 	$filters = create_graphs_new_filter($host, $snmp_queries);
 
 	/* create the page filter */
@@ -452,14 +451,14 @@ function graphs() {
 		$host = db_fetch_row_prepared('SELECT id, description, hostname, host_template_id
 			FROM host
 			WHERE id = ?',
-			array(get_filter_request_var('host_id')));
+			[get_filter_request_var('host_id')]);
 	}
 
 	if (cacti_sizeof($host)) {
 		$name = db_fetch_cell_prepared('SELECT name
 			FROM host_template
 			WHERE id = ?',
-			array($host['host_template_id']));
+			[$host['host_template_id']]);
 
 		$header_label = __esc('New Graphs [ %s - %s ] [ %s ]', $host['description'], $host['hostname'], (!empty($host['host_template_id']) ? $name:''));
 	} else {
@@ -472,7 +471,7 @@ function graphs() {
 		ON hsq.snmp_query_id = sq.id
 		WHERE hsq.host_id = ?
 		ORDER BY sq.name',
-		array($host['id']));
+		[$host['id']]);
 
 	draw_graphs_new_filter(true, $header_label, $host, $snmp_queries);
 
@@ -487,7 +486,7 @@ function graphs() {
 	$total_rows = cacti_sizeof(db_fetch_assoc_prepared('SELECT graph_template_id
 		FROM host_graph
 		WHERE host_id = ?',
-		array(get_request_var('host_id'))));
+		[get_request_var('host_id')]));
 
 	$i = 0;
 
@@ -534,7 +533,7 @@ function graphs() {
 			FROM graph_templates AS gt
 			WHERE multiple = "on"
 			ORDER BY name',
-			array(get_request_var('host_id'))
+			[get_request_var('host_id')]
 		);
 
 		/* create a row at the bottom that lets the user create any graph they choose */
@@ -574,7 +573,7 @@ function graphs() {
 				AND gt.multiple = ""
 				AND gl.snmp_query_id = 0
 				GROUP BY gl.graph_template_id',
-				array($host['id']));
+				[$host['id']]);
 
 			if (cacti_sizeof($template_graphs)) {
 				$script .= 'var gt_created_graphs = new Array(';
@@ -602,7 +601,7 @@ function graphs() {
 			WHERE hg.host_id = ?
 			$sql_where
 			ORDER BY gt.name",
-			array(get_request_var('host_id'))
+			[get_request_var('host_id')]
 		);
 
 		/* create a row for each graph template associated with the host template */
@@ -629,7 +628,7 @@ function graphs() {
 	}
 
 	if (get_request_var('graph_type') != -1 && !isempty_request_var('host_id')) {
-		$params   = array();
+		$params   = [];
 		$params[] = $host['id'];
 
 		if (get_request_var('graph_type') != -2) {
@@ -683,7 +682,7 @@ function graphs() {
 											WHERE host_id = ?
 											AND snmp_query_id = ?
 											AND field_name = ?',
-											array($host['id'], $snmp_query['id'], $field_name));
+											[$host['id'], $snmp_query['id'], $field_name]);
 									}
 								}
 							} else {
@@ -704,7 +703,7 @@ function graphs() {
 					FROM snmp_query_graph
 					WHERE snmp_query_id = ?
 					ORDER BY name',
-					array($snmp_query['id']));
+					[$snmp_query['id']]);
 
 				if (cacti_sizeof($snmp_query_graphs)) {
 					foreach ($snmp_query_graphs as $snmp_query_graph) {
@@ -712,7 +711,7 @@ function graphs() {
 							FROM graph_local
 							WHERE snmp_query_graph_id = ?
 							AND host_id = ?',
-							array($snmp_query_graph['id'], $host['id']));
+							[$snmp_query_graph['id'], $host['id']]);
 
 						$script .= 'created_graphs[' . $snmp_query_graph['id'] . '] = new Array(';
 
@@ -753,7 +752,7 @@ function graphs() {
 							WHERE field_value LIKE ?
 							AND snmp_query_id = ?
 							AND host_id = ?',
-							array('%' . get_request_var('filter') . '%', $snmp_query['id'], $host['id']));
+							['%' . get_request_var('filter') . '%', $snmp_query['id'], $host['id']]);
 
 						if (cacti_sizeof($indexes)) {
 							foreach ($indexes as $index) {
@@ -789,7 +788,7 @@ function graphs() {
 							FROM host_snmp_cache
 							WHERE host_id = ?
 							AND snmp_query_id = ?',
-							array($host['id'], $snmp_query['id']));
+							[$host['id'], $snmp_query['id']]);
 
 						/* build magic query */
 						$sql_query          = 'SELECT host_id, snmp_query_id, snmp_index';
@@ -871,7 +870,7 @@ function graphs() {
 						$enabled = db_fetch_cell_prepared('SELECT COUNT(*)
 							FROM snmp_query_graph
 							WHERE snmp_query_id = ?',
-							array($snmp_query['id']));
+							[$snmp_query['id']]);
 
 						if (!$enabled) {
 							$disabled_text = __esc('The index is disabled due to the Data Query having no associated Graph Templates.');
@@ -942,7 +941,7 @@ function graphs() {
 					FROM snmp_query_graph
 					WHERE snmp_query_id = ?
 					ORDER BY name',
-					array($snmp_query['id']));
+					[$snmp_query['id']]);
 
 				if (cacti_sizeof($data_query_graphs) == 1) {
 					print "<input type='hidden' id='sgg_" . $snmp_query['id'] . "' name='sgg_" . $snmp_query['id'] . "' value='" . $data_query_graphs[0]['id'] . "'>";

@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -113,12 +113,13 @@ if ($poller_id == 0) {
 		WHERE id != 1
 		AND id = ?
 		AND disabled=""',
-		array($poller_id));
+		[$poller_id]);
 }
 
 if (cacti_sizeof($pollers)) {
 	if (!register_process_start('psync', "POLLER:$poller_id", 0, 900)) {
-		cacti_log("WARNING: Another Sync Operations is already running", true, 'POLLER');
+		cacti_log('WARNING: Another Sync Operations is already running', true, 'POLLER');
+
 		exit(0);
 	}
 
@@ -128,7 +129,7 @@ if (cacti_sizeof($pollers)) {
 		db_execute_prepared('UPDATE poller
 			SET last_sync = NOW(), requires_sync=""
 			WHERE id = ?',
-			array($poller['id']));
+			[$poller['id']]);
 
 		cacti_log('STATS: Poller ID ' . $poller['id'] . ' fully Replicated', false, 'POLLER');
 	}

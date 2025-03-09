@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -82,7 +82,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 $user = db_fetch_row_prepared('SELECT *
 	FROM user_auth
 	WHERE id = ?',
-	array($_SESSION[SESS_USER_ID]));
+	[$_SESSION[SESS_USER_ID]]);
 
 $version = CACTI_VERSION;
 
@@ -188,22 +188,22 @@ switch ($action) {
 		if ($password != '') {
 			if (read_config_option('secpass_expirepass') > 0) {
 				db_execute_prepared("UPDATE user_auth
-				SET lastchange = ?
-				WHERE id = ?
-				AND realm = 0
-				AND enabled = 'on'",
-					array(time(), $user_id));
+					SET lastchange = ?
+					WHERE id = ?
+					AND realm = 0
+					AND enabled = 'on'",
+					[time(), $user_id]);
 			}
 
 			$history = intval(read_config_option('secpass_history'));
 
 			if ($history > 0) {
 				$h = db_fetch_row_prepared("SELECT password, password_history
-				FROM user_auth
-				WHERE id = ?
-				AND realm = 0
-				AND enabled = 'on'",
-					array($user_id));
+					FROM user_auth
+					WHERE id = ?
+					AND realm = 0
+					AND enabled = 'on'",
+					[$user_id]);
 
 				$op = $h['password'];
 				$h  = explode('|', $h['password_history']);
@@ -216,24 +216,24 @@ switch ($action) {
 				$h   = implode('|', $h);
 
 				db_execute_prepared("UPDATE user_auth
-				SET password_history = ?
-				WHERE id = ?
-				AND realm = 0
-				AND enabled = 'on'",
-					array($h, $user_id));
+					SET password_history = ?
+					WHERE id = ?
+					AND realm = 0
+					AND enabled = 'on'",
+					[$h, $user_id]);
 			}
 
 			db_execute_prepared('INSERT IGNORE INTO user_log
-			(username, result, time, ip)
-			VALUES (?, 3, NOW(), ?)',
-				array($user['username'], get_client_addr()));
+				(username, result, time, ip)
+				VALUES (?, 3, NOW(), ?)',
+				[$user['username'], get_client_addr()]);
 
 			db_check_password_length();
 
 			db_execute_prepared("UPDATE user_auth
-			SET must_change_password = '', password = ?
-			WHERE id = ?",
-				array(compat_password_hash($password,PASSWORD_DEFAULT), $user_id));
+				SET must_change_password = '', password = ?
+				WHERE id = ?",
+				[compat_password_hash($password,PASSWORD_DEFAULT), $user_id]);
 
 			// Clear the auth cache for the user
 			$token = '';
@@ -261,9 +261,9 @@ switch ($action) {
 			}
 
 			db_execute_prepared("DELETE FROM user_auth_cache
-			WHERE user_id = ?
-			$sql_where",
-				array($_SESSION[SESS_USER_ID]));
+				WHERE user_id = ?
+				$sql_where",
+				[$_SESSION[SESS_USER_ID]]);
 
 			kill_session_var(SESS_CHANGE_PASSWORD);
 
@@ -274,9 +274,9 @@ switch ($action) {
 			/* if no console permissions show graphs otherwise, pay attention to user setting */
 			$realm_id    = $user_auth_realm_filenames['index.php'];
 			$has_console = db_fetch_cell_prepared('SELECT realm_id
-			FROM user_auth_realm
-			WHERE user_id = ? AND realm_id = ?',
-				array($user_id, $realm_id));
+				FROM user_auth_realm
+				WHERE user_id = ? AND realm_id = ?',
+				[$user_id, $realm_id]);
 
 			if (basename(get_nfilter_request_var('ref')) == 'auth_changepassword.php' || basename(get_nfilter_request_var('ref')) == '') {
 				if ($has_console) {
@@ -300,7 +300,6 @@ switch ($action) {
 						header('Location: graph_view.php');
 
 						break;
-
 					default:
 						api_plugin_hook_function('login_options_navigate', $user['login_opts']);
 				}
@@ -364,6 +363,7 @@ if (isset_request_var('ref')) {
 		$value = true;
 	} elseif (isset($ref_parts['host'])) {
 		$server_addr = $_SERVER['SERVER_ADDR'];
+
 		if (!filter_var($_SERVER['SERVER_NAME'], FILTER_VALIDATE_IP)) {
 			$server_info = dns_get_record($_SERVER['SERVER_NAME'], DNS_ANY);
 			$server_ref  = gethostbyname($ref_parts['host']);
@@ -373,15 +373,22 @@ if (isset_request_var('ref')) {
 			}
 
 			if (!$valid && cacti_sizeof($server_info)) {
-				foreach($server_info as $record) {
+				foreach ($server_info as $record) {
 					if (isset($record['host']) && $record['host'] == $server_ref) {
 						$valid = true;
+
 						break;
-					} elseif (isset($record['target']) && $record['target'] == $server_ref) {
+					}
+
+					if (isset($record['target']) && $record['target'] == $server_ref) {
 						$valid = true;
+
 						break;
-					} elseif (isset($record['ip']) && $record['ip'] == $server_addr) {
+					}
+
+					if (isset($record['ip']) && $record['ip'] == $server_addr) {
 						$valid = true;
+
 						break;
 					}
 				}
@@ -389,6 +396,7 @@ if (isset_request_var('ref')) {
 		} else {
 			$server_ip   = gethostbyname($_SERVER['SERVER_NAME']);
 			$server_ref  = gethostbyname($ref_parts['host']);
+
 			if ($server_ip == $server_ref) {
 				$valid = true;
 			}
@@ -401,7 +409,9 @@ if (isset_request_var('ref')) {
 		cacti_log('WARNING: User attempted to access Cacti from unknown URL', false, 'AUTH');
 
 		raise_message('problems_with_page', __('There are problems with the Change Password page.  Contact your Cacti administrator right away.'), MESSAGE_LEVEL_ERROR);
+
 		header('Location:index.php');
+
 		exit;
 	}
 }

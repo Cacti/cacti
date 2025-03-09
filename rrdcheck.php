@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -69,7 +69,7 @@ function rrdcheck_display_problems() {
 	}
 
 	$sql_where  = '';
-	$sql_params = array();
+	$sql_params = [];
 
 	$secsback = get_request_var('age');
 
@@ -127,30 +127,30 @@ function rrdcheck_display_problems() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$display_text = array(
-		'description' => array(
+	$display_text = [
+		'description' => [
 			'display' => __('Host Description'),
 			'sort'    => 'ASC'
-		),
-		'name_cache' => array(
+		],
+		'name_cache' => [
 			'display' => __('Data Source'),
 			'sort'    => 'ASC'
-		),
-		'local_data_id' => array(
+		],
+		'local_data_id' => [
 			'display' => __('Local Data ID'),
 			'align'   => 'center',
 			'sort'    => 'ASC'
-		),
-		'message' => array(
+		],
+		'message' => [
 			'display' => __('Message'),
 			'sort'    => 'ASC'
-		),
-		'test_date' => array(
+		],
+		'test_date' => [
 			'display' => __('Date'),
 			'align'   => 'right',
 			'sort'    => 'DESC'
-		),
-	);
+		],
+	];
 
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -193,24 +193,24 @@ function rrdcheck_display_problems() {
 function create_rrdcheck_filter() {
 	global $item_rows, $page_refresh_interval;
 
-	$all     = array('-1' => __('All'));
-	$any     = array('-1' => __('Any'));
-	$none    = array('0'  => __('None'));
+	$all     = ['-1' => __('All')];
+	$any     = ['-1' => __('Any')];
+	$none    = ['0'  => __('None')];
 
-	$ages = array(
+	$ages = [
 		'0'      => '&lt; ' . __('%d hours', 2),
 		'14400'  => '&gt; ' . __('%d hours', 4),
 		'43200'  => '&gt; ' . __('%d hours',12),
 		'86400'  => '&gt; ' . __('%d day', 1),
 		'259200' => '&gt; ' . __('%d days', 3),
 		'604800' => '&gt; ' . __('%d days', 5)
-	);
+	];
 
-	return array(
-		'rows' => array(
-			array(
-				'filter' => array(
-					'method'        => 'textbox',
+	return [
+		'rows' => [
+			[
+				'filter' => [
+					'method'         => 'textbox',
 					'friendly_name'  => __('Search'),
 					'filter'         => FILTER_DEFAULT,
 					'placeholder'    => __('Enter a search term'),
@@ -219,8 +219,8 @@ function create_rrdcheck_filter() {
 					'pageset'        => true,
 					'max_length'     => '120',
 					'value'          => ''
-				),
-				'age' => array(
+				],
+				'age' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Age'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -228,8 +228,8 @@ function create_rrdcheck_filter() {
 					'pageset'       => true,
 					'array'         => $ages,
 					'value'         => '0'
-				),
-				'rows' => array(
+				],
+				'rows' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Attempts'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -237,32 +237,32 @@ function create_rrdcheck_filter() {
 					'pageset'       => true,
 					'array'         => $item_rows,
 					'value'         => '-1'
-				)
-			)
-		),
-		'buttons' => array(
-			'go' => array(
+				]
+			]
+		],
+		'buttons' => [
+			'go' => [
 				'method'  => 'submit',
 				'display' => __('Go'),
 				'title'   => __('Apply filter to table'),
-			),
-			'clear' => array(
+			],
+			'clear' => [
 				'method'  => 'button',
 				'display' => __('Clear'),
 				'title'   => __('Reset filter to default values'),
-			),
-			'purge' => array(
+			],
+			'purge' => [
 				'method'  => 'button',
 				'display' => __('Purge'),
 				'action'  => 'default',
 				'title'   => __('Purge Data Source Checks from the Database'),
-			)
-		),
-		'sort' => array(
+			]
+		],
+		'sort' => [
 			'sort_column'    => 'test_date',
 			'sort_direction' => 'DESC'
-		)
-	);
+		]
+	];
 }
 
 function draw_rrdcheck_filter($render = false) {
@@ -280,4 +280,3 @@ function draw_rrdcheck_filter($render = false) {
 		$pageFilter->sanitize();
 	}
 }
-

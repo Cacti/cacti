@@ -1,7 +1,7 @@
 <?php
 /*
   +-------------------------------------------------------------------------+
-  | Copyright (C) 2004-2024 The Cacti Group                                 |
+  | Copyright (C) 2004-2025 The Cacti Group                                 |
   |                                                                         |
   | This program is free software; you can redistribute it and/or           |
   | modify it under the terms of the GNU General Public License             |
@@ -62,12 +62,12 @@ function cacti_db_session_read(string $id) {
 	db_execute_prepared('UPDATE IGNORE sessions
 		SET access = ?
 		WHERE id = ?',
-		array(time(), $id));
+		[time(), $id]);
 
 	$session = db_fetch_cell_prepared('SELECT data
 		FROM sessions
 		WHERE id = ?',
-		array($id));
+		[$id]);
 
 	// work with PHP 7.1
 	if (empty($session)) {
@@ -104,7 +104,7 @@ function cacti_db_session_write(string $id, string $data): bool {
 				access = VALUES(access),
 				user_agent = VALUES(user_agent),
 				transactions = transactions + 1',
-			array($id, $client_addr, $access, $data, $user_id, $user_agent));
+			[$id, $client_addr, $access, $data, $user_id, $user_agent]);
 	} elseif (str_contains($data, 'ses_user_id')) {
 		db_execute_prepared('INSERT INTO sessions
 			(id, remote_addr, access, data, user_agent)
@@ -114,7 +114,7 @@ function cacti_db_session_write(string $id, string $data): bool {
 				access = VALUES(access),
 				user_agent = VALUES(user_agent),
 				transactions = transactions + 1',
-			array($id, $client_addr, $access, $data, $user_agent));
+			[$id, $client_addr, $access, $data, $user_agent]);
 	}
 
 	return true;
@@ -123,7 +123,7 @@ function cacti_db_session_write(string $id, string $data): bool {
 function cacti_db_session_destroy(string $id): bool {
 	db_execute_prepared('DELETE FROM sessions
 		WHERE id = ?',
-		array($id));
+		[$id]);
 
 	return true;
 }
@@ -133,7 +133,7 @@ function cacti_db_session_clean(int $max): bool {
 
 	db_execute_prepared('DELETE FROM sessions
 		WHERE access < ?',
-		array($old));
+		[$old]);
 
 	return true;
 }

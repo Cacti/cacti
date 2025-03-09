@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -44,11 +44,11 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 if (cacti_sizeof($parms)) {
-	$host_template_ids   = array();
-	$host_ids            = array();
-	$graph_template_ids  = array();
-	$regex               = array();
-	$graph_ids           = array();
+	$host_template_ids   = [];
+	$host_ids            = [];
+	$graph_template_ids  = [];
+	$regex               = [];
+	$graph_ids           = [];
 
 	$graphTemplates      = getGraphTemplates();
 	$hostTemplates       = getHostTemplates();
@@ -65,7 +65,7 @@ if (cacti_sizeof($parms)) {
 
 	$shortopts = 'VvHh';
 
-	$longopts = array(
+	$longopts = [
 		'host-id::',
 		'graph-type::',
 		'graph-template-id::',
@@ -83,7 +83,7 @@ if (cacti_sizeof($parms)) {
 		'force',
 		'version',
 		'help'
-	);
+	];
 
 	$options = getopt($shortopts, $longopts);
 
@@ -91,7 +91,7 @@ if (cacti_sizeof($parms)) {
 		switch($arg) {
 			case 'graph-regex':
 				if (!is_array($value)) {
-					$value = array($value);
+					$value = [$value];
 				}
 
 				$regex = $value;
@@ -107,7 +107,7 @@ if (cacti_sizeof($parms)) {
 				break;
 			case 'graph-template-id':
 				if (!is_array($value)) {
-					$value = array($value);
+					$value = [$value];
 				}
 
 				$graph_template_ids = $value;
@@ -115,7 +115,7 @@ if (cacti_sizeof($parms)) {
 				break;
 			case 'host-template-id':
 				if (!is_array($value)) {
-					$value = array($value);
+					$value = [$value];
 				}
 
 				$host_template_ids = $value;
@@ -131,7 +131,7 @@ if (cacti_sizeof($parms)) {
 				break;
 			case 'graph-id':
 				if (!is_array($value)) {
-					$value = array($value);
+					$value = [$value];
 				}
 
 				$graph_ids = $value;
@@ -139,7 +139,7 @@ if (cacti_sizeof($parms)) {
 				break;
 			case 'host-id':
 				if (!is_array($value)) {
-					$value = array($value);
+					$value = [$value];
 				}
 
 				$host_ids = $value;

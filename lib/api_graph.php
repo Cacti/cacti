@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -30,13 +30,13 @@ function api_delete_graphs(&$local_graph_ids, $delete_type, $update_totals = tru
 		return;
 	}
 
-    if ($update_totals) {
+	if ($update_totals) {
 		if ($delete_type == 2) {
-	        object_cache_get_totals('graph_delete', $local_graph_ids);
+			object_cache_get_totals('graph_delete', $local_graph_ids);
 		} else {
-	        object_cache_get_totals('graph_leave', $local_graph_ids);
+			object_cache_get_totals('graph_leave', $local_graph_ids);
 		}
-    }
+	}
 
 	api_graph_remove_aggregate_items($local_graph_ids);
 
@@ -120,7 +120,7 @@ function api_delete_graphs(&$local_graph_ids, $delete_type, $update_totals = tru
 
 function api_graph_remove($local_graph_id) {
 	if (empty($local_graph_id)) {
-		$local_graph_ids = array($local_graph_id);
+		$local_graph_ids = [$local_graph_id];
 		api_graph_remove_bad_graphs($local_graph_ids);
 
 		return;
@@ -128,15 +128,15 @@ function api_graph_remove($local_graph_id) {
 
 	object_cache_get_totals('graph_leave', $local_graph_id);
 
-	api_plugin_hook_function('graphs_remove', array($local_graph_id));
+	api_plugin_hook_function('graphs_remove', [$local_graph_id]);
 
 	api_graph_remove_aggregate_items($local_graph_id);
 
-	db_execute_prepared('DELETE FROM graph_templates_graph WHERE local_graph_id = ?', array($local_graph_id));
-	db_execute_prepared('DELETE FROM graph_templates_item WHERE local_graph_id = ?', array($local_graph_id));
-	db_execute_prepared('DELETE FROM graph_tree_items WHERE local_graph_id = ?', array($local_graph_id));
-	db_execute_prepared('DELETE FROM reports_items WHERE local_graph_id = ?', array($local_graph_id));
-	db_execute_prepared('DELETE FROM graph_local WHERE id = ?', array($local_graph_id));
+	db_execute_prepared('DELETE FROM graph_templates_graph WHERE local_graph_id = ?', [$local_graph_id]);
+	db_execute_prepared('DELETE FROM graph_templates_item WHERE local_graph_id = ?', [$local_graph_id]);
+	db_execute_prepared('DELETE FROM graph_tree_items WHERE local_graph_id = ?', [$local_graph_id]);
+	db_execute_prepared('DELETE FROM reports_items WHERE local_graph_id = ?', [$local_graph_id]);
+	db_execute_prepared('DELETE FROM graph_local WHERE id = ?', [$local_graph_id]);
 
 	object_cache_update_totals('delete');
 
@@ -147,7 +147,7 @@ function api_graph_remove($local_graph_id) {
 	set_config_option('time_last_change_graph', time());
 }
 
-function api_graph_remove_bad_graphs(&$local_graph_ids = array()) {
+function api_graph_remove_bad_graphs(&$local_graph_ids = []) {
 	if (cacti_sizeof($local_graph_ids)) {
 		$bad_graph = array_search(0, $local_graph_ids, true);
 
@@ -184,13 +184,13 @@ function api_graph_remove_aggregate_items($local_graph_ids) {
 			db_fetch_assoc_prepared('SELECT DISTINCT aggregate_graph_id
 				FROM aggregate_graphs_items
 				WHERE local_graph_id = ?',
-				array($lgid)),
+				[$lgid]),
 			'aggregate_graph_id', 'aggregate_graph_id'
 		);
 
 		if (cacti_sizeof($aggregate_graphs)) {
 			foreach ($aggregate_graphs as $ag) {
-				$lgids = array($lgid);
+				$lgids = [$lgid];
 
 				api_aggregate_disassociate($ag, $lgids);
 			}
@@ -265,7 +265,7 @@ function api_resize_graphs($local_graph_id, $graph_width, $graph_height) {
 	db_execute_prepared('UPDATE graph_templates_graph
 		SET width = ?, height = ?
 		WHERE local_graph_id = ?',
-		array($graph_width, $graph_height, $local_graph_id));
+		[$graph_width, $graph_height, $local_graph_id]);
 }
 
 /* api_reapply_suggested_graph_title - reapplies the suggested name to a graph title
@@ -278,7 +278,7 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 	$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id
 		FROM graph_templates_graph
 		WHERE local_graph_id = ?',
-		array($local_graph_id));
+		[$local_graph_id]);
 
 	/* if a non-template graph, simply return */
 	if ($graph_template_id == 0) {
@@ -290,7 +290,7 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 	$graph_local = db_fetch_row_prepared('SELECT *
 		FROM graph_local
 		WHERE id = ?',
-		array($local_graph_id));
+		[$local_graph_id]);
 
 	/* if this is not a data query graph, simply return */
 	if (!isset($graph_local['host_id'])) {
@@ -308,11 +308,11 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 		WHERE snmp_query_graph_id = ?
 		AND field_name = 'title'
 		ORDER BY sequence",
-		array($graph_local['snmp_query_graph_id']));
+		[$graph_local['snmp_query_graph_id']]);
 
-	$matches = array();
+	$matches = [];
 
-	$suggested_values_graph = array();
+	$suggested_values_graph = [];
 
 	if (cacti_sizeof($suggested_values)) {
 		foreach ($suggested_values as $suggested_value) {
@@ -331,7 +331,7 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 					db_execute_prepared('UPDATE graph_templates_graph
 						SET ' . $suggested_value['field_name'] . ' = ?
 						WHERE local_graph_id = ?',
-						array($suggested_value['text'], $local_graph_id));
+						[$suggested_value['text'], $local_graph_id]);
 
 					/* once we find a working value for this very field, stop */
 					$suggested_values_graph[$suggested_value['field_name']] = true;
@@ -360,7 +360,7 @@ function api_get_graphs_from_datasource($local_data_id) {
 		INNER JOIN data_template_rrd
 		ON graph_templates_item.task_item_id = data_template_rrd.id
 		WHERE graph_templates_graph.local_graph_id > 0
-		AND data_template_rrd.local_data_id = ?', array($local_data_id)), 'id', 'name');
+		AND data_template_rrd.local_data_id = ?', [$local_data_id]), 'id', 'name');
 }
 
 function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title, $map_to_data_query = true) {
@@ -370,7 +370,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 		$graph_local = db_fetch_row_prepared('SELECT *
 			FROM graph_local
 			WHERE id = ?',
-			array($_local_graph_id));
+			[$_local_graph_id]);
 
 		if (!cacti_sizeof($graph_local)) {
 			return false;
@@ -379,12 +379,12 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 		$graph_template_graph = db_fetch_row_prepared('SELECT *
 			FROM graph_templates_graph
 			WHERE local_graph_id = ?',
-			array($_local_graph_id));
+			[$_local_graph_id]);
 
 		$graph_template_items = db_fetch_assoc_prepared('SELECT *
 			FROM graph_templates_item
 			WHERE local_graph_id = ?',
-			array($_local_graph_id));
+			[$_local_graph_id]);
 
 		/* create new entry: graph_local */
 		$save['id']                = 0;
@@ -400,7 +400,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 		$graph_template        = db_fetch_row_prepared('SELECT *
 			FROM graph_templates
 			WHERE id = ?',
-			array($_graph_template_id));
+			[$_graph_template_id]);
 
 		if (!cacti_sizeof($graph_template)) {
 			return false;
@@ -410,18 +410,18 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 			FROM graph_templates_graph
 			WHERE graph_template_id = ?
 			AND local_graph_id=0',
-			array($_graph_template_id));
+			[$_graph_template_id]);
 
 		$graph_template_items  = db_fetch_assoc_prepared('SELECT *
 			FROM graph_templates_item
 			WHERE graph_template_id = ?
 			AND local_graph_id=0',
-			array($_graph_template_id));
+			[$_graph_template_id]);
 
 		$graph_template_inputs = db_fetch_assoc_prepared('SELECT *
 			FROM graph_template_input
 			WHERE graph_template_id = ?',
-			array($_graph_template_id));
+			[$_graph_template_id]);
 
 		/* create new entry: graph_templates */
 		$save['id']       = 0;
@@ -489,7 +489,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 				$graph_template_input_defs = db_fetch_assoc_prepared('SELECT *
 					FROM graph_template_input_defs
 					WHERE graph_template_input_id = ?',
-					array($graph_template_input['id']));
+					[$graph_template_input['id']]);
 
 				/* create new entry(s): graph_template_input_defs (graph template only) */
 				if (cacti_sizeof($graph_template_input_defs)) {
@@ -497,10 +497,10 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 						db_execute_prepared('INSERT INTO graph_template_input_defs
 							(graph_template_input_id, graph_template_item_id)
 							VALUES (?, ?)',
-							array(
+							[
 								$graph_template_input_id,
 								$graph_item_mappings[$graph_template_input_def['graph_template_item_id']]
-							)
+							]
 						);
 					}
 				}
@@ -515,7 +515,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 		$data_query_graphs = db_fetch_assoc_prepared('SELECT *
 			FROM snmp_query_graph
 			WHERE graph_template_id = ?',
-			array($_graph_template_id));
+			[$_graph_template_id]);
 
 		if (cacti_sizeof($data_query_graphs)) {
 			unset($save);
@@ -523,7 +523,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 			$name = db_fetch_cell_prepared('SELECT name
 				FROM graph_templates
 				WHERE id = ?',
-				array($graph_template_id));
+				[$graph_template_id]);
 
 			foreach ($data_query_graphs as $dqg) {
 				/* map the snmp_query_graph */
@@ -542,19 +542,19 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 					$snmp_query_graph_rrds = db_fetch_assoc_prepared('SELECT *
 						FROM snmp_query_graph_rrd
 						WHERE snmp_query_graph_id = ?',
-						array($dqg['id']));
+						[$dqg['id']]);
 
 					if (cacti_sizeof($snmp_query_graph_rrds)) {
 						foreach ($snmp_query_graph_rrds as $sqgr) {
 							db_execute_prepared('INSERT INTO snmp_query_graph_rrd
 								(snmp_query_graph_id, data_template_id, data_template_rrd_id, snmp_field_name)
 								VALUES (?, ?, ?, ?)',
-								array(
+								[
 									$snmp_query_graph_id,
 									$sqgr['data_template_id'],
 									$sqgr['data_template_rrd_id'],
 									$sqgr['snmp_field_name']
-								)
+								]
 							);
 						}
 					}
@@ -564,7 +564,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 				$snames = db_fetch_assoc_prepared('SELECT *
 					FROM snmp_query_graph_rrd_sv
 					WHERE snmp_query_graph_id = ?',
-					array($dqg['id']));
+					[$dqg['id']]);
 
 				if (cacti_sizeof($snames)) {
 					foreach ($snames as $sn) {
@@ -586,7 +586,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 				$snames = db_fetch_assoc_prepared('SELECT *
 					FROM snmp_query_graph_sv
 					WHERE snmp_query_graph_id = ?',
-					array($dqg['id']));
+					[$dqg['id']]);
 
 				if (cacti_sizeof($snames)) {
 					foreach ($snames as $sn) {
@@ -614,7 +614,9 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 
 	if ($_local_graph_id > 0) {
 		return $local_graph_id;
-	} elseif ($_graph_template_id > 0) {
+	}
+
+	if ($_graph_template_id > 0) {
 		return $graph_template_id;
 	} else {
 		return false;
@@ -625,13 +627,13 @@ function api_graph_change_device($local_graph_id, $host_id) {
 	$dqgraph = db_fetch_cell_prepared('SELECT snmp_query_id
 		FROM graph_local
 		WHERE id = ?',
-		array($local_graph_id));
+		[$local_graph_id]);
 
 	if (empty($dqgraph)) {
 		db_execute_prepared('UPDATE graph_local
 			SET host_id = ?
 			WHERE id = ?',
-			array($host_id, $local_graph_id));
+			[$host_id, $local_graph_id]);
 
 		update_graph_title_cache($local_graph_id);
 
@@ -641,19 +643,19 @@ function api_graph_change_device($local_graph_id, $host_id) {
 			INNER JOIN data_template_rrd AS dtr
 			ON gti.task_item_id=dtr.id
 			WHERE gti.local_graph_id = ?',
-			array($local_graph_id));
+			[$local_graph_id]);
 
 		if (cacti_sizeof($data_ids)) {
 			foreach ($data_ids as $data_id) {
 				db_execute_prepared('UPDATE data_local
 					SET host_id = ?
 					WHERE id = ?',
-					array($host_id, $data_id['local_data_id']));
+					[$host_id, $data_id['local_data_id']]);
 
 				db_execute_prepared('UPDATE poller_item
 					SET host_id = ?
 					WHERE local_data_id = ?',
-					array($host_id, $data_id['local_data_id']));
+					[$host_id, $data_id['local_data_id']]);
 			}
 		}
 

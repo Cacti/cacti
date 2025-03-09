@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -149,14 +149,14 @@ if ($audit) {
 	if (file_exists($config['input_whitelist'])) {
 		$input_ws = json_decode(file_get_contents($config['input_whitelist']), true);
 	} else {
-		$input_ws = array();
+		$input_ws = [];
 	}
 
-	$pushes = array();
+	$pushes = [];
 
 	if (cacti_sizeof($input_db)) {
 		// format data for easier consumption
-		$input = array();
+		$input = [];
 
 		foreach ($input_db as $value) {
 			if ($push && isset($input_ws[$value['hash']])) {

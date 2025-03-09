@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -226,7 +226,7 @@ if (sizeof($parms)) {
 function addSite() {
 	global $siteName, $siteAddr1, $siteAddr2, $siteCity, $siteState, $siteZip, $siteCountry, $siteTimezone, $siteLatitude, $siteLongitude, $siteAltname, $siteNotes, $geocodeAddress;
 
-	$siteData = db_fetch_assoc_prepared('SELECT * from sites where name = ?', array($siteName));
+	$siteData = db_fetch_assoc_prepared('SELECT * from sites where name = ?', [$siteName]);
 
 	# Fix nasty DMS values
 	fixCoordinates($siteLatitude, $siteLongitude);
@@ -256,7 +256,7 @@ function addSite() {
 			exit;
 		}
 
-		$params = array(
+		$params = [
 			$siteName      ? $siteName      : (isset($siteData[0]) ? $siteData[0]['name'] : ''),
 			$siteAddr1     ? $siteAddr1     : (isset($siteData[0]) ? $siteData[0]['address1'] : ''),
 			$siteAddr2     ? $siteAddr2     : (isset($siteData[0]) ? $siteData[0]['address2'] : ''),
@@ -270,7 +270,7 @@ function addSite() {
 			$siteAltname   ? $siteAltname 	: (isset($siteData[0]) ? $siteData[0]['alternate_id'] : ''),
 			$siteNotes     ? $siteNotes     : (isset($siteData[0]) ? $siteData[0]['notes'] : ''),
 			isset($siteData[0]) ? $siteData[0]['id'] : 0,
-		);
+		];
 
 		db_execute_prepared('UPDATE sites set
 			name 		= ?,
@@ -290,7 +290,7 @@ function addSite() {
 		return ($siteData[0]['id']);
 	} else {
 		echoQuiet("Adding new site: $siteName\n");
-		$params = array(
+		$params = [
 			$siteName      ? $siteName           : '',
 			$siteAddr1     ? $siteAddr1          : '',
 			$siteAddr2     ? $siteAddr2          : '',
@@ -303,7 +303,7 @@ function addSite() {
 			$siteLongitude ? $siteLongitude      : '',
 			$siteAltname   ? $siteAltname        : '',
 			$siteNotes     ? $siteNotes          : '',
-		);
+		];
 
 		db_execute_prepared('INSERT into sites
 			(name, address1, address2, city, state, postal_code, country,
@@ -334,7 +334,7 @@ function mapDevices($siteId, $doMap) {
 	$deviceMapWild 	= $deviceMapWild ? '/' . str_replace('%', '.+', $deviceMapWild) . '/' : '';
 	$ipMapWild 	    = $ipMapWild ? '/' . str_replace('%', '.+', $ipMapWild) . '/' : '';
 
-	$matchedDevices = array();
+	$matchedDevices = [];
 
 	foreach ($devices as $device) {
 		$deviceId   = $device['id'];
@@ -398,7 +398,7 @@ function doDeviceMap($deviceId, $siteId) {
 		return false;
 	}
 
-	db_execute_prepared('UPDATE host set site_id = ? where id = ?', array($siteId, $deviceId));
+	db_execute_prepared('UPDATE host set site_id = ? where id = ?', [$siteId, $deviceId]);
 	$numUpdates = db_affected_rows();
 
 	return $numUpdates > 0;
@@ -450,7 +450,7 @@ function geocodeAddress($siteAddr1, $siteAddr2, $siteCity, $siteZip, $siteCountr
 		}
 	}
 
-	return (array($latGeocode, $lngGeocode));
+	return ([$latGeocode, $lngGeocode]);
 }
 
 function fixCoordinates($lat, $lng) {
@@ -464,7 +464,7 @@ function fixCoordinates($lat, $lng) {
 		$lng = sprintf('%0.6f', ($EW == 'W' ? -1 : 1) * ($degE + ($minE / 60) + ($secE / 3600)));
 	}
 
-	return (array($lat, $lng));
+	return ([$lat, $lng]);
 }
 
 /*  displayVersion - displays version information */

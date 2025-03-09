@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -35,12 +35,12 @@ $output_grants = false;
 if (cacti_sizeof($parms)) {
 	$shortopts = 'JjGgVvHh';
 
-	$longopts = array(
+	$longopts = [
 		'grant',
 		'json',
 		'version',
 		'help'
-	);
+	];
 
 	$options = getopt($shortopts, $longopts);
 

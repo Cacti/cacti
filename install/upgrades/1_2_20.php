@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -51,13 +51,13 @@ function upgrade_to_1_2_20() {
 			$data_template_data = db_fetch_row_prepared('SELECT *
 				FROM data_template_data
 				WHERE id = ?',
-				array($e['data_template_data_id']));
+				[$e['data_template_data_id']]);
 
 			if (cacti_sizeof($data_template_data)) {
 				$local_data = db_fetch_row_prepared('SELECT *
 					FROM data_local
 					WHERE id = ?',
-					array($data_template_data['local_data_id']));
+					[$data_template_data['local_data_id']]);
 
 				if (cacti_sizeof($local_data)) {
 					switch($e['type_code']) {
@@ -65,13 +65,13 @@ function upgrade_to_1_2_20() {
 							$hostname = db_fetch_cell_prepared('SELECT hostname
 								FROM host
 								WHERE id = ?',
-								array($local_data['host_id']));
+								[$local_data['host_id']]);
 
 							db_execute_prepared('UPDATE data_input_data
 								SET value = ?
 								WHERE data_input_field_id = ?
 								AND data_template_data_id = ?',
-								array($hostname, $e['data_input_field_id'], $e['data_template_data_id']));
+								[$hostname, $e['data_input_field_id'], $e['data_template_data_id']]);
 
 							break;
 						case 'host_id':
@@ -79,7 +79,7 @@ function upgrade_to_1_2_20() {
 								SET value = ?
 								WHERE data_input_field_id = ?
 								AND data_template_data_id = ?',
-								array($local_data['host_id'], $e['data_input_field_id'], $e['data_template_data_id']));
+								[$local_data['host_id'], $e['data_input_field_id'], $e['data_template_data_id']]);
 
 							break;
 					}
@@ -135,12 +135,12 @@ function upgrade_to_1_2_20() {
 			$data_template_data = db_fetch_row_prepared('SELECT *
 				FROM data_template_data
 				WHERE id = ?',
-				array($ds['data_template_data_id']));
+				[$ds['data_template_data_id']]);
 
 			$field_data = db_fetch_row_prepared('SELECT *
 				FROM data_input_fields
 				WHERE id = ?',
-				array($ds['data_input_field_id']));
+				[$ds['data_input_field_id']]);
 
 			if (cacti_sizeof($data_template_data)) {
 				$local_data_id = $data_template_data['local_data_id'];
@@ -148,7 +148,7 @@ function upgrade_to_1_2_20() {
 				$local_data = db_fetch_row_prepared('SELECT *
 					FROM data_local
 					WHERE id = ?',
-					array($local_data_id));
+					[$local_data_id]);
 
 				if (cacti_sizeof($local_data)) {
 					$local_graph_ids = db_fetch_assoc_prepared('SELECT DISTINCT local_graph_id
@@ -156,14 +156,14 @@ function upgrade_to_1_2_20() {
 						INNER JOIN graph_templates_item AS gti
 						ON dtr.id = gti.task_item_id
 						WHERE dtr.local_data_id = ?',
-						array($local_data_id));
+						[$local_data_id]);
 
 					if (cacti_sizeof($local_graph_ids)) {
 						foreach ($local_graph_ids as $id) {
 							$local_graph = db_fetch_row_prepared('SELECT *
 								FROM graph_local
 								WHERE id = ?',
-								array($id['local_graph_id']));
+								[$id['local_graph_id']]);
 
 							switch($field_data['type_code']) {
 								case 'index_type':
@@ -173,7 +173,7 @@ function upgrade_to_1_2_20() {
 										SET value = ?
 										WHERE data_input_field_id = ?
 										AND data_template_data_id = ?',
-										array($index_type, $ds['data_input_field_id'], $ds['data_template_data_id']));
+										[$index_type, $ds['data_input_field_id'], $ds['data_template_data_id']]);
 
 									break;
 								case 'index_value':
@@ -181,7 +181,7 @@ function upgrade_to_1_2_20() {
 										SET value = ?
 										WHERE data_input_field_id = ?
 										AND data_template_data_id = ?',
-										array($local_graph['snmp_index'], $ds['data_input_field_id'], $ds['data_template_data_id']));
+										[$local_graph['snmp_index'], $ds['data_input_field_id'], $ds['data_template_data_id']]);
 
 									break;
 								case 'output_type_id':
@@ -190,14 +190,14 @@ function upgrade_to_1_2_20() {
 											FROM snmp_query_graph
 											WHERE graph_template_id = ?
 											AND snmp_query_id = ?',
-											array($local_graph['graph_template_id'], $local_graph['snmp_query_id']));
+											[$local_graph['graph_template_id'], $local_graph['snmp_query_id']]);
 									}
 
 									db_execute_prepared('UPDATE data_input_data
 										SET value = ?
 										WHERE data_input_field_id = ?
 										AND data_template_data_id = ?',
-										array($local_graph['snmp_query_graph_id'], $ds['data_input_field_id'], $ds['data_template_data_id']));
+										[$local_graph['snmp_query_graph_id'], $ds['data_input_field_id'], $ds['data_template_data_id']]);
 
 									break;
 							}

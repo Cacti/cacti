@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -27,8 +27,8 @@ function upgrade_to_1_1_6() {
 		MODIFY COLUMN `input_string` varchar(512) default NULL'
 	);
 
-	db_install_add_key('data_input', 'key', 'name_type_id', array('name', 'type_id'));
-	db_install_add_key('snmp_query_graph', 'key', 'graph_template_id_name', array('graph_template_id', 'name'));
+	db_install_add_key('data_input', 'key', 'name_type_id', ['name', 'type_id']);
+	db_install_add_key('snmp_query_graph', 'key', 'graph_template_id_name', ['graph_template_id', 'name']);
 
 	if (!db_index_exists('graph_templates', 'multiple_name')) {
 		db_install_execute(
@@ -48,19 +48,19 @@ function upgrade_to_1_1_6() {
 		ENGINE=MEMORY"
 	);
 
-	db_install_add_key('graph_templates_gprint', 'key', 'name', array('name'));
+	db_install_add_key('graph_templates_gprint', 'key', 'name', ['name']);
 
-	db_install_add_key('data_source_profiles', 'key', 'name', array('name'));
-	db_install_add_key('cdef', 'key', 'name', array('name'));
-	db_install_add_key('vdef', 'key', 'name', array('name'));
-	db_install_add_key('poller', 'key', 'name', array('name'));
-	db_install_add_key('host_template', 'key', 'name', array('name'));
-	db_install_add_key('data_template', 'key', 'name', array('name'));
-	db_install_add_key('automation_tree_rules', 'key', 'name', array('name'));
-	db_install_add_key('automation_graph_rules', 'key', 'name', array('name'));
-	db_install_add_key('graph_templates', 'key', 'name', array('name'));
-	db_install_add_key('graph_tree', 'key', 'name', array('name'));
-	db_install_add_key('snmp_query_graph', 'key', 'snmp_query_id_name', array('snmp_query_id', 'name'));
+	db_install_add_key('data_source_profiles', 'key', 'name', ['name']);
+	db_install_add_key('cdef', 'key', 'name', ['name']);
+	db_install_add_key('vdef', 'key', 'name', ['name']);
+	db_install_add_key('poller', 'key', 'name', ['name']);
+	db_install_add_key('host_template', 'key', 'name', ['name']);
+	db_install_add_key('data_template', 'key', 'name', ['name']);
+	db_install_add_key('automation_tree_rules', 'key', 'name', ['name']);
+	db_install_add_key('automation_graph_rules', 'key', 'name', ['name']);
+	db_install_add_key('graph_templates', 'key', 'name', ['name']);
+	db_install_add_key('graph_tree', 'key', 'name', ['name']);
+	db_install_add_key('snmp_query_graph', 'key', 'snmp_query_id_name', ['snmp_query_id', 'name']);
 
 	db_install_execute("REPLACE INTO settings (name, value) VALUES ('max_display_rows', '1000')");
 }

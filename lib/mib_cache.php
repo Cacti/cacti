@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -31,9 +31,9 @@ class MibCache {
 
 	private $active_table_entry    = '';
 
-	private $cache__tables         = array();
+	private $cache__tables         = [];
 
-	private $cache__tables_columns = array();
+	private $cache__tables_columns = [];
 
 	public function __construct($mib='CACTI-MIB') {
 		$this->active_mib = $mib;
@@ -49,10 +49,10 @@ class MibCache {
 		if ($this->active_mib == 'CACTI-MIB') {
 			return false;
 		} else {
-			db_execute_prepared('DELETE FROM snmpagent_cache WHERE `mib` = ?', array($this->active_mib));
-			db_execute_prepared('DELETE FROM snmpagent_cache_notifications WHERE `mib` = ?', array($this->active_mib));
-			db_execute_prepared('DELETE FROM snmpagent_cache_textual_conventions WHERE `mib` = ?', array($this->active_mib));
-			db_execute_prepared('DELETE FROM snmpagent_mibs WHERE `name` = ?', array($this->active_mib));
+			db_execute_prepared('DELETE FROM snmpagent_cache WHERE `mib` = ?', [$this->active_mib]);
+			db_execute_prepared('DELETE FROM snmpagent_cache_notifications WHERE `mib` = ?', [$this->active_mib]);
+			db_execute_prepared('DELETE FROM snmpagent_cache_textual_conventions WHERE `mib` = ?', [$this->active_mib]);
+			db_execute_prepared('DELETE FROM snmpagent_mibs WHERE `name` = ?', [$this->active_mib]);
 		}
 	}
 
@@ -67,7 +67,7 @@ class MibCache {
 
 		if (isset($mp->mib) && isset($mp->oids) && $mp->mib) {
 			/* check if this mib has already been installed */
-			$existing = db_fetch_cell_prepared('SELECT 1 FROM snmpagent_mibs WHERE `name` = ?', array($mp->mib));
+			$existing = db_fetch_cell_prepared('SELECT 1 FROM snmpagent_mibs WHERE `name` = ?', [$mp->mib]);
 
 			if ($existing) {
 				if ($replace == false) {
@@ -79,30 +79,30 @@ class MibCache {
 					$this->uninstall();
 				}
 			}
-			db_execute_prepared('INSERT INTO snmpagent_mibs SET `id` = 0, `name` = ?, `file` = ?', array($mp->mib, $path));
+			db_execute_prepared('INSERT INTO snmpagent_mibs SET `id` = 0, `name` = ?, `file` = ?', [$mp->mib, $path]);
 
 			foreach ($mp->oids as $object_name => $object_params) {
 				if ($object_params['otype'] != 'TEXTUAL-CONVENTION') {
 					db_execute_prepared('INSERT IGNORE INTO `snmpagent_cache`
 						(`oid`, `name`, `mib`, `type`, `otype`, `kind`, `max-access`, `description`)
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-						array($object_params['oid'], $object_name, $object_params['mib'], $object_params['syntax'],
+						[$object_params['oid'], $object_name, $object_params['mib'], $object_params['syntax'],
 							$object_params['otype'], $object_params['kind'], $object_params['max-access'],
-							str_replace("\r\n", '<br>', trim($object_params['description']))));
+							str_replace("\r\n", '<br>', trim($object_params['description']))]);
 
 					if ($object_params['otype'] == 'NOTIFICATION-TYPE') {
 						foreach ($object_params['objects'] as $notification_object_index => $notification_object) {
 							db_execute_prepared('INSERT INTO `snmpagent_cache_notifications`
 								(`name`, `mib`, `attribute`, `sequence_id`)
 								VALUES (?, ?, ?, ?)',
-								array($object_name, $object_params['mib'], $notification_object, $notification_object_index));
+								[$object_name, $object_params['mib'], $notification_object, $notification_object_index]);
 						}
 					}
 				} else {
 					db_execute_prepared('INSERT INTO `snmpagent_cache_textual_conventions`
 						(`name`, `mib`, `type`, `description`)
 						VALUES (?, ?, ?, ?)',
-						array($object_name, $object_params['mib'], $object_params['syntax'], nl2br($object_params['description'])));
+						[$object_name, $object_params['mib'], $object_params['syntax'], nl2br($object_params['description'])]);
 				}
 			}
 
@@ -136,7 +136,7 @@ class MibCache {
 					WHERE `mib` = ?
 					AND `name` = ?
 					AND `type` = "SEQUENCE OF"',
-					array($this->active_mib, $table));
+					[$this->active_mib, $table]);
 
 				if ($oid_table) {
 					/* cache table oid and columns */
@@ -181,7 +181,7 @@ class MibCache {
 			SET `value` = ?
 			WHERE `mib` = ?
 			AND `name` = ?',
-			array($value, $this->active_mib, $this->active_object));
+			[$value, $this->active_mib, $this->active_object]);
 	}
 
 	public function get() {
@@ -189,7 +189,7 @@ class MibCache {
 			FROM snmpagent_cache
 			WHERE name = ?
 			AND mib = ?',
-			array($this->active_object, $this->active_mib));
+			[$this->active_object, $this->active_mib]);
 	}
 
 	public function count() {
@@ -199,7 +199,7 @@ class MibCache {
 			WHEN `type`="Counter64" AND `value`= 18446744073709551615 THEN 0
 			ELSE `value`+1 END
 			WHERE `mib` = ? AND `name` = ?',
-			array($this->active_mib, $this->active_object));
+			[$this->active_mib, $this->active_object]);
 	}
 
 	public function insert($values) {
@@ -223,9 +223,9 @@ class MibCache {
 						ON DUPLICATE KEY UPDATE `name`=VALUES(`name`), `mib`=VALUES(`mib`),
 						`type`=VALUES(`type`), `otype`=VALUES(`otype`), `kind`=VALUES(`kind`),
 						`max-access`=VALUES(`max-access`), `value`=VALUES(`value`)',
-						array($column_params['oid'], $column_params['name'], $column_params['mib'],
+						[$column_params['oid'], $column_params['name'], $column_params['mib'],
 							$column_params['type'], $column_params['otype'], 'Column Data',
-							$column_params['max-access'], trim($column_params['value'])));
+							$column_params['max-access'], trim($column_params['value'])]);
 				}
 
 				return true;
@@ -236,7 +236,7 @@ class MibCache {
 	}
 
 	public function select($column=false) {
-		$result = array();
+		$result = [];
 
 		if ($this->active_table_entry) {
 			/* focus on a dedicated MIB table row only */
@@ -252,7 +252,7 @@ class MibCache {
 						WHERE oid LIKE ?
 						GROUP BY name
 						ORDER BY oid',
-						array($filter));
+						[$filter]);
 
 					if ($entries && cacti_sizeof($entries) > 0) {
 						foreach ($entries as $entry) {
@@ -270,7 +270,7 @@ class MibCache {
 						WHERE name = ?
 						AND oid LIKE ?
 						LIMIT 1',
-						array($column, $filter));
+						[$column, $filter]);
 				} elseif (is_array($column) && cacti_sizeof($column) > 0) {
 					$filter = $oid_entry . '.%.' . $this->active_table_entry;
 
@@ -281,7 +281,7 @@ class MibCache {
 						AND oid LIKE ?
 						GROUP BY name
 						ORDER BY oid",
-						array($filter));
+						[$filter]);
 
 					if ($entries && cacti_sizeof($entries) > 0) {
 						foreach ($entries as $entry) {
@@ -306,14 +306,14 @@ class MibCache {
 					FROM snmpagent_cache
 					WHERE oid LIKE ?
 					ORDER BY oid',
-					array($filter));
+					[$filter]);
 
 				if ($num_columns && $entries && cacti_sizeof($entries)) {
 					$num_entries        = cacti_sizeof($entries);
 					$entries_per_object = $num_entries / $num_columns;
 
 					for ($i = 0; $i < $entries_per_object; $i++) {
-						$result[$i]=array();
+						$result[$i]=[];
 
 						for ($j=0; $j < $num_columns; $j++) {
 							$result[$i][$entries[$i + $j * $entries_per_object]['name']] = $entries[$i + $j * $entries_per_object]['value'];
@@ -333,7 +333,7 @@ class MibCache {
 					WHERE name = ?
 					AND oid LIKE ?
 					ORDER BY oid",
-					array($column, $filter));
+					[$column, $filter]);
 			} elseif (is_array($column) && cacti_sizeof($column) > 0) {
 				/* fetch values of specific columns given */
 				$filter = $oid_entry . '.%.%';
@@ -342,7 +342,7 @@ class MibCache {
 					FROM snmpagent_cache
 					WHERE name IN ('" . implode("','", $column) . "')
 					AND oid LIKE ?
-					ORDER BY oid", array($filter));
+					ORDER BY oid", [$filter]);
 
 				if (cacti_sizeof($entries)) {
 					$num_objects        = cacti_sizeof($column);
@@ -350,7 +350,7 @@ class MibCache {
 					$entries_per_object = ceil($num_entries / $num_objects);
 
 					for ($i = 0; $i < $entries_per_object; $i++) {
-						$result[$i]=array();
+						$result[$i]=[];
 
 						for ($j=0; $j < $num_objects; $j++) {
 							$index                                = (int) $i + ($j * $entries_per_object);
@@ -378,7 +378,7 @@ class MibCache {
 			if ($columns && cacti_sizeof($columns) > 0) {
 				foreach ($columns as $column_params) {
 					$column_params['oid'] .= '.' . $this->active_table_entry;
-					db_execute_prepared('DELETE FROM `snmpagent_cache` WHERE `oid` = ?', array($column_params['oid']));
+					db_execute_prepared('DELETE FROM `snmpagent_cache` WHERE `oid` = ?', [$column_params['oid']]);
 				}
 
 				return true;
@@ -395,7 +395,7 @@ class MibCache {
 			$columns = $this->cache__tables_columns[$this->active_mib][$this->active_table];
 
 			if (cacti_sizeof($columns) > 0) {
-				$sql = array();
+				$sql = [];
 
 				foreach ($columns as $column_params) {
 					$column_params['oid'] .= '.' . $this->active_table_entry;
@@ -431,7 +431,7 @@ class MibCache {
 			WHERE `mib` = ?
 			AND `otype` = "DATA"
 			AND `oid` LIKE ?',
-			array($this->active_mib, $oid_entry));
+			[$this->active_mib, $oid_entry]);
 
 		return true;
 	}
@@ -446,7 +446,7 @@ class MibCache {
 			WHERE `oid` LIKE ?
 			GROUP BY name
 			ORDER BY oid',
-			array($filter));
+			[$filter]);
 	}
 
 	private function exists() {
@@ -454,7 +454,7 @@ class MibCache {
 
 		/* check if entry exists */
 		$exists = db_fetch_cell_prepared('SELECT 1 FROM `snmpagent_cache` WHERE `oid` = ?',
-			array($oid_entry . '.1.' . $this->active_table_entry));
+			[$oid_entry . '.1.' . $this->active_table_entry]);
 
 		return ($exists) ? $oid_entry : false;
 	}

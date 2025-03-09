@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -104,7 +104,6 @@ switch (get_request_var('action')) {
 		debug('End:Performing Network Discovery Request');
 
 		break;
-
 	default:
 		if (!api_plugin_hook_function('remote_agent', get_request_var('action'))) {
 			debug('WARNING: Unknown Agent Request');
@@ -168,7 +167,7 @@ function remote_client_authorized() {
 				return true;
 			}
 
-			if (in_array($client_addr,$remote_agent_whitelist)) {
+			if (in_array($client_addr,$remote_agent_whitelist, true)) {
 				return true;
 			}
 		}
@@ -186,14 +185,14 @@ function get_graph_data() {
 	get_filter_request_var('graph_width');
 	get_filter_request_var('local_graph_id');
 	get_filter_request_var('rra_id');
-	get_filter_request_var('graph_theme', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
-	get_filter_request_var('graph_nolegend', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
+	get_filter_request_var('graph_theme', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
+	get_filter_request_var('graph_nolegend', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
 	get_filter_request_var('effective_user');
 
 	$local_graph_id   = get_filter_request_var('local_graph_id');
 	$rra_id           = get_filter_request_var('rra_id');
 
-	$graph_data_array = array();
+	$graph_data_array = [];
 
 	/* override: graph start time (unix time) */
 	if (!isempty_request_var('graph_start') && get_request_var('graph_start') < FILTER_VALIDATE_MAX_DATE_AS_INT) {
@@ -244,7 +243,7 @@ function get_graph_data() {
 
 	$graph_data_array['graphv'] = true;
 
-	$xport_options = array();
+	$xport_options = [];
 
 	print @rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, null, $xport_options, $user);
 
@@ -256,7 +255,7 @@ function get_snmp_data() {
 	$oid     = get_nfilter_request_var('oid');
 
 	if (!empty($host_id)) {
-		$host    = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
+		$host    = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [$host_id]);
 		$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
 			$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
 			$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
@@ -278,7 +277,7 @@ function get_snmp_data_walk() {
 	$oid     = get_nfilter_request_var('oid');
 
 	if (!empty($host_id)) {
-		$host    = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
+		$host    = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [$host_id]);
 		$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
 			$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
 			$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
@@ -310,11 +309,11 @@ function poll_for_data() {
 	$local_data_ids = get_nfilter_request_var('local_data_ids');
 	$host_id        = get_filter_request_var('host_id');
 	$poller_id      = get_nfilter_request_var('poller_id');
-	$return         = array();
+	$return         = [];
 
 	/* ensure we have a valid poller_id */
 	if (!preg_match('/^[a-z0-9]+$/i', $poller_id)) {
-		return array();
+		return [];
 	}
 
 	$i = 0;
@@ -327,14 +326,14 @@ function poll_for_data() {
 				FROM poller_item
 				WHERE host_id = ?
 				AND local_data_id = ?',
-				array($host_id, $local_data_id));
+				[$host_id, $local_data_id]);
 
 			$script_server_calls = db_fetch_cell_prepared('SELECT COUNT(*)
 				FROM poller_item
 				WHERE host_id = ?
 				AND local_data_id = ?
 				AND action = 2',
-				array($host_id, $local_data_id));
+				[$host_id, $local_data_id]);
 
 			if (cacti_sizeof($items)) {
 				foreach ($items as $item) {
@@ -343,7 +342,7 @@ function poll_for_data() {
 							if (($item['snmp_version'] == 0) || (($item['snmp_community'] == '') && ($item['snmp_version'] != 3))) {
 								$output = 'U';
 							} else {
-								$host    = db_fetch_row_prepared('SELECT ping_retries, max_oids FROM host WHERE hostname = ?', array($item['hostname']));
+								$host    = db_fetch_row_prepared('SELECT ping_retries, max_oids FROM host WHERE hostname = ?', [$item['hostname']]);
 								$session = cacti_snmp_session($item['hostname'], $item['snmp_community'], $item['snmp_version'],
 									$item['snmp_username'], $item['snmp_password'], $item['snmp_auth_protocol'], $item['snmp_priv_passphrase'],
 									$item['snmp_priv_protocol'], $item['snmp_context'], $item['snmp_engine_id'], $item['snmp_port'],
@@ -391,11 +390,11 @@ function poll_for_data() {
 
 							break;
 						case POLLER_ACTION_SCRIPT_PHP: /* script (php script server) */
-							$cactides = array(
-								0 => array('pipe', 'r'), // stdin is a pipe that the child will read from
-								1 => array('pipe', 'w'), // stdout is a pipe that the child will write to
-								2 => array('pipe', 'w')  // stderr is a pipe to write to
-							);
+							$cactides = [
+								0 => ['pipe', 'r'], // stdin is a pipe that the child will read from
+								1 => ['pipe', 'w'], // stdout is a pipe that the child will write to
+								2 => ['pipe', 'w']  // stderr is a pipe to write to
+							];
 
 							if (function_exists('proc_open')) {
 								$cactiphp            = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . cacti_escapeshellarg($poller_id), $cactides, $pipes);

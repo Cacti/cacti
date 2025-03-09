@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -23,40 +23,40 @@
 */
 
 function upgrade_to_1_1_4() {
-	db_install_add_key('cdef', 'index', 'hash', array('hash'));
+	db_install_add_key('cdef', 'index', 'hash', ['hash']);
 	db_install_drop_key('cdef_items', 'index', 'cdef_id');
-	db_install_add_key('cdef_items', 'index', 'cdef_id_sequence', array('cdef_id', 'sequence'));
+	db_install_add_key('cdef_items', 'index', 'cdef_id_sequence', ['cdef_id', 'sequence']);
 
 	db_install_drop_key('data_input_fields', 'index', 'type_code');
-	db_install_add_key('data_input_fields', 'index', 'type_code_data_input_id', array('type_code', 'data_input_id'));
+	db_install_add_key('data_input_fields', 'index', 'type_code_data_input_id', ['type_code', 'data_input_id']);
 
 	db_install_drop_key('data_local', 'index', 'host_id');
-	db_install_add_key('data_local', 'index', 'host_id_snmp_query_id', array('host_id', 'snmp_query_id'));
+	db_install_add_key('data_local', 'index', 'host_id_snmp_query_id', ['host_id', 'snmp_query_id']);
 
 	db_install_drop_key('snmpagent_cache', 'index', 'mib');
-	db_install_add_key('snmpagent_cache', 'index', 'mib_name', array('mib', 'name'));
+	db_install_add_key('snmpagent_cache', 'index', 'mib_name', ['mib', 'name']);
 
-	db_install_add_key('host', 'index', 'hostname', array('hostname'));
+	db_install_add_key('host', 'index', 'hostname', ['hostname']);
 
 	db_install_drop_key('snmpagent_managers_notifications', 'index', 'manager_id');
 	db_install_drop_key('snmpagent_managers_notifications', 'index', 'manager_id2');
-	db_install_add_key('snmpagent_managers_notifications', 'index', 'manager_id_notification', array('manager_id', 'notification'));
+	db_install_add_key('snmpagent_managers_notifications', 'index', 'manager_id_notification', ['manager_id', 'notification']);
 
 	db_install_drop_key('snmpagent_notifications_log', 'index', 'manager_id');
 	db_install_drop_key('snmpagent_notifications_log', 'index', 'manager_id2');
-	db_install_add_key('snmpagent_notifications_log', 'index', 'manager_id_notification', array('manager_id', 'notification'));
+	db_install_add_key('snmpagent_notifications_log', 'index', 'manager_id_notification', ['manager_id', 'notification']);
 
 	db_install_drop_key('user_auth_group_members', 'index', 'group_id');
 	db_install_drop_key('user_auth_group_realm', 'index', 'group_id');
 	db_install_drop_key('user_log', 'index', 'username');
 
-	db_install_add_key('vdef', 'index', 'hash', array('hash'));
+	db_install_add_key('vdef', 'index', 'hash', ['hash']);
 
 	db_install_drop_key('vdef_items', 'index', 'vdef_id');
-	db_install_add_key('vdef_items', 'index', 'vdef_id_sequence', array('vdef_id', 'sequence'));
+	db_install_add_key('vdef_items', 'index', 'vdef_id_sequence', ['vdef_id', 'sequence']);
 
-	db_install_add_key('graph_templates_item', 'index', 'lgi_gti', array('local_graph_id', 'graph_template_id'));
-	db_install_add_key('poller_item', 'index', 'poller_id_host_id', array('poller_id', 'host_id'));
+	db_install_add_key('graph_templates_item', 'index', 'lgi_gti', ['local_graph_id', 'graph_template_id']);
+	db_install_add_key('poller_item', 'index', 'poller_id_host_id', ['poller_id', 'host_id']);
 
 	if (!db_column_exists('automation_networks', 'site_id')) {
 		db_install_execute('ALTER TABLE `automation_networks` ADD COLUMN `site_id` INT UNSIGNED DEFAULT "1" AFTER `poller_id`');

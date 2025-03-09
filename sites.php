@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -24,21 +24,21 @@
 
 include('./include/auth.php');
 
-$actions = array(
+$actions = [
 	1 => __('Delete'),
 	2 => __('Duplicate'),
 	3 => __('Enable'),
 	4 => __('Disable')
-);
+];
 
 /* file: sites.php, action: edit */
-$fields_site_edit = array(
-	'spacer0' => array(
+$fields_site_edit = [
+	'spacer0' => [
 		'method'        => 'spacer',
 		'friendly_name' => __('Site Information'),
 		'collapsible'   => 'true'
-	),
-	'name' => array(
+	],
+	'name' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Name'),
 		'description'   => __('The primary name for the Site.'),
@@ -46,21 +46,21 @@ $fields_site_edit = array(
 		'size'          => '50',
 		'default'       => __('New Site'),
 		'max_length'    => '100'
-	),
-	'disabled' => array(
+	],
+	'disabled' => [
 		'method'        => 'checkbox',
 		'friendly_name' => __('Disable Site'),
 		'description'   => __('Check this box to disable all checks for hosts in this site.'),
 		'value'         => '|arg1:disabled|',
 		'default'       => '',
 		'form_id'       => false
-	),
-	'spacer1' => array(
+	],
+	'spacer1' => [
 		'method'        => 'spacer',
 		'friendly_name' => __('Address Information'),
 		'collapsible'   => 'true'
-	),
-	'address1' => array(
+	],
+	'address1' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Address1'),
 		'description'   => __('The primary address for the Site.'),
@@ -68,8 +68,8 @@ $fields_site_edit = array(
 		'placeholder'   => __('Enter the Site Address'),
 		'size'          => '70',
 		'max_length'    => '100'
-	),
-	'address2' => array(
+	],
+	'address2' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Address2'),
 		'description'   => __('Additional address information for the Site.'),
@@ -77,8 +77,8 @@ $fields_site_edit = array(
 		'placeholder'   => __('Additional Site Address information'),
 		'size'          => '70',
 		'max_length'    => '100'
-	),
-	'city' => array(
+	],
+	'city' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('City'),
 		'description'   => __('The city or locality for the Site.'),
@@ -86,8 +86,8 @@ $fields_site_edit = array(
 		'placeholder'   => __('Enter the City or Locality'),
 		'size'          => '30',
 		'max_length'    => '30'
-	),
-	'state' => array(
+	],
+	'state' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('State'),
 		'description'   => __('The state for the Site.'),
@@ -95,8 +95,8 @@ $fields_site_edit = array(
 		'placeholder'   => __('Enter the state'),
 		'size'          => '15',
 		'max_length'    => '20'
-	),
-	'postal_code' => array(
+	],
+	'postal_code' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Postal/Zip Code'),
 		'description'   => __('The postal or zip code for the Site.'),
@@ -104,8 +104,8 @@ $fields_site_edit = array(
 		'placeholder'   => __('Enter the postal code'),
 		'size'          => '20',
 		'max_length'    => '20'
-	),
-	'country' => array(
+	],
+	'country' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Country'),
 		'description'   => __('The country for the Site.'),
@@ -113,8 +113,8 @@ $fields_site_edit = array(
 		'placeholder'   => __('Enter the country'),
 		'size'          => '20',
 		'max_length'    => '30'
-	),
-	'region' => array(
+	],
+	'region' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Region'),
 		'description'   => __('The Region of the world that this site is in.'),
@@ -122,8 +122,8 @@ $fields_site_edit = array(
 		'placeholder'   => __('Enter the region of the world'),
 		'size'          => '20',
 		'max_length'    => '30'
-	),
-	'timezone' => array(
+	],
+	'timezone' => [
 		'method'        => 'drop_callback',
 		'friendly_name' => __('TimeZone'),
 		'description'   => __('The TimeZone for the Site.'),
@@ -131,13 +131,13 @@ $fields_site_edit = array(
 		'action'        => 'ajax_tz',
 		'id'            => '|arg1:timezone|',
 		'value'         => '|arg1:timezone|'
-	),
-	'spacer2' => array(
+	],
+	'spacer2' => [
 		'method'        => 'spacer',
 		'friendly_name' => __('Geolocation Information'),
 		'collapsible'   => 'true'
-	),
-	'latitude' => array(
+	],
+	'latitude' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Latitude'),
 		'description'   => __('The Latitude for this Site.'),
@@ -145,8 +145,8 @@ $fields_site_edit = array(
 		'placeholder'   => __('example 38.889488'),
 		'size'          => '20',
 		'max_length'    => '30'
-	),
-	'longitude' => array(
+	],
+	'longitude' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Longitude'),
 		'description'   => __('The Longitude for this Site.'),
@@ -154,8 +154,8 @@ $fields_site_edit = array(
 		'placeholder'   => __('example -77.0374678'),
 		'size'          => '20',
 		'max_length'    => '30'
-	),
-	'zoom' => array(
+	],
+	'zoom' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Zoom'),
 		'description'   => __('The default Map Zoom for this Site.  Values can be from 0 to 23. Note that some regions of the planet have a max Zoom of 15.'),
@@ -164,13 +164,13 @@ $fields_site_edit = array(
 		'default'       => '12',
 		'size'          => '4',
 		'max_length'    => '4'
-	),
-	'spacer3' => array(
+	],
+	'spacer3' => [
 		'method'        => 'spacer',
 		'friendly_name' => __('Additional Information'),
 		'collapsible'   => 'true'
-	),
-	'notes' => array(
+	],
+	'notes' => [
 		'method'        => 'textarea',
 		'friendly_name' => __('Notes'),
 		'textarea_rows' => '3',
@@ -180,8 +180,8 @@ $fields_site_edit = array(
 		'max_length'    => '255',
 		'placeholder'   => __('Enter some useful information about the Site.'),
 		'class'         => 'textAreaNotes'
-	),
-	'alternate_id' => array(
+	],
+	'alternate_id' => [
 		'method'        => 'textbox',
 		'friendly_name' => __('Alternate Name'),
 		'description'   => __('Used for cases where a Site has an alternate named used to describe it'),
@@ -189,16 +189,16 @@ $fields_site_edit = array(
 		'placeholder'   => __('If the Site is known by another name enter it here.'),
 		'size'          => '50',
 		'max_length'    => '30'
-	),
-	'id' => array(
+	],
+	'id' => [
 		'method' => 'hidden_zero',
 		'value'  => '|arg1:id|'
-	),
-	'save_component_site' => array(
+	],
+	'save_component_site' => [
 		'method' => 'hidden',
 		'value'  => '1'
-	)
-);
+	]
+];
 
 /* set default action */
 set_default_action();
@@ -218,7 +218,7 @@ switch (get_request_var('action')) {
 			WHERE Name LIKE ?
 			ORDER BY Name
 			LIMIT ' . read_config_option('autocomplete_rows'),
-			array('%' . get_nfilter_request_var('term') . '%')));
+			['%' . get_nfilter_request_var('term') . '%']));
 
 		break;
 	case 'edit':
@@ -229,7 +229,6 @@ switch (get_request_var('action')) {
 		bottom_footer();
 
 		break;
-
 	default:
 		top_header();
 
@@ -284,8 +283,8 @@ function form_save() {
 
 function disable_site($sites) {
 	if (cacti_sizeof($sites)) {
-		foreach($sites as $id) {
-			db_execute_prepared('UPDATE sites SET disabled = "on" WHERE id = ?', array($id));
+		foreach ($sites as $id) {
+			db_execute_prepared('UPDATE sites SET disabled = "on" WHERE id = ?', [$id]);
 		}
 
 		/**
@@ -299,8 +298,8 @@ function disable_site($sites) {
 
 function enable_site($sites) {
 	if (cacti_sizeof($sites)) {
-		foreach($sites as $id) {
-			db_execute_prepared('UPDATE sites SET disabled = "" WHERE id = ?', array($id));
+		foreach ($sites as $id) {
+			db_execute_prepared('UPDATE sites SET disabled = "" WHERE id = ?', [$id]);
 		}
 
 		/**
@@ -314,17 +313,17 @@ function enable_site($sites) {
 
 function duplicate_site($template_id, $name) {
 	if (!is_array($template_id)) {
-		$template_id = array($template_id);
+		$template_id = [$template_id];
 	}
 
 	foreach ($template_id as $id) {
 		$site = db_fetch_row_prepared('SELECT *
 			FROM sites
 			WHERE id = ?',
-			array($id));
+			[$id]);
 
 		if (cacti_sizeof($site)) {
-			$save = array();
+			$save = [];
 
 			$save['id'] = 0;
 
@@ -364,7 +363,7 @@ function form_actions() {
 	global $actions;
 
 	/* ================= input validation ================= */
-	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
+	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
@@ -396,7 +395,7 @@ function form_actions() {
 		exit;
 	} else {
 		$ilist  = '';
-		$iarray = array();
+		$iarray = [];
 
 		/* loop through each of the graphs selected on the previous page and get more info about them */
 		foreach ($_POST as $var => $val) {
@@ -405,54 +404,54 @@ function form_actions() {
 				input_validate_input_number($matches[1], 'chk[1]');
 				/* ==================================================== */
 
-				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM sites WHERE id = ?', array($matches[1]))) . '</li>';
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM sites WHERE id = ?', [$matches[1]])) . '</li>';
 				$iarray[] = $matches[1];
 			}
 		}
 
-		$form_data = array(
-			'general' => array(
+		$form_data = [
+			'general' => [
 				'page'       => 'sites.php',
 				'actions'    => $actions,
 				'optvar'     => 'drp_action',
 				'item_array' => $iarray,
 				'item_list'  => $ilist
-			),
-			'options' => array(
-				1 => array(
+			],
+			'options' => [
+				1 => [
 					'smessage' => __('Click \'Continue\' to Delete the following Site.'),
 					'pmessage' => __('Click \'Continue\' to Delete following Sites.'),
 					'scont'    => __('Delete Site'),
 					'pcont'    => __('Delete Sites')
-				),
-				2 => array(
+				],
+				2 => [
 					'smessage' => __('Click \'Continue\' to Duplicate the following Site.'),
 					'pmessage' => __('Click \'Continue\' to Duplicate following Sites.'),
 					'scont'    => __('Duplicate Site'),
 					'pcont'    => __('Duplicate Sites'),
-					'extra'    => array(
-						'site_name' => array(
+					'extra'    => [
+						'site_name' => [
 							'method'  => 'textbox',
 							'title'   => __('Site Name'),
 							'default' => '<site> (1)',
 							'width'   => 25
-						)
-					)
-				),
-				3 => array(
+						]
+					]
+				],
+				3 => [
 					'smessage' => __('Click \'Continue\' to Enable the following Site.'),
 					'pmessage' => __('Click \'Continue\' to Enable following Sites.'),
 					'scont'    => __('Enable Site'),
 					'pcont'    => __('Enable Sites')
-				),
-				4 => array(
+				],
+				4 => [
 					'smessage' => __('Click \'Continue\' to Disable the following Site.'),
 					'pmessage' => __('Click \'Continue\' to Disable following Sites.'),
 					'scont'    => __('Disable Site'),
 					'pcont'    => __('Disable Sites')
-				),
-			)
-		);
+				],
+			]
+		];
 
 		form_continue_confirmation($form_data);
 	}
@@ -466,7 +465,7 @@ function site_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$site         = db_fetch_row_prepared('SELECT * FROM sites WHERE id = ?', array(get_request_var('id')));
+		$site         = db_fetch_row_prepared('SELECT * FROM sites WHERE id = ?', [get_request_var('id')]);
 		$header_label = __esc('Site [edit: %s]', $site['name']);
 	} else {
 		$header_label = __('Site [new]');
@@ -477,10 +476,10 @@ function site_edit() {
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
-		array(
-			'config' => array('no_form_tag' => true),
-			'fields' => inject_form_variables($fields_site_edit, (isset($site) ? $site : array()))
-		)
+		[
+			'config' => ['no_form_tag' => true],
+			'fields' => inject_form_variables($fields_site_edit, (isset($site) ? $site : []))
+		]
 	);
 
 	html_end_box(true, true);
@@ -512,7 +511,7 @@ function sites() {
 
 	$sql = "SELECT COUNT(*) FROM sites $sql_where";
 
-	$total_rows = get_total_row_data($_SESSION[SESS_USER_ID], $sql, array(), 'site');
+	$total_rows = get_total_row_data($_SESSION[SESS_USER_ID], $sql, [], 'site');
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
@@ -534,50 +533,50 @@ function sites() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$display_text = array(
-		'name' => array(
+	$display_text = [
+		'name' => [
 			'display' => __('Site Name'),
 			'align'   => 'left',
 			'sort'    => 'ASC',
 			'tip'     => __('The name of this Site.')
-		),
-		'id' => array(
+		],
+		'id' => [
 			'display' => __('ID'),
 			'align'   => 'right',
 			'sort'    => 'ASC',
 			'tip'     => __('The unique id associated with this Site.')
-		),
-		'disabled' => array(
+		],
+		'disabled' => [
 			'display' => __('Monitoring State'),
 			'align'   => 'right',
 			'sort'    => 'DESC',
 			'tip'     => __('The state of this Site.')
-		),
-		'hosts' => array(
+		],
+		'hosts' => [
 			'display' => __('Devices'),
 			'align'   => 'right',
 			'sort'    => 'DESC',
 			'tip'     => __('The number of Devices associated with this Site.')
-		),
-		'city' => array(
+		],
+		'city' => [
 			'display' => __('City'),
 			'align'   => 'left',
 			'sort'    => 'DESC',
 			'tip'     => __('The City associated with this Site.')
-		),
-		'state' => array(
+		],
+		'state' => [
 			'display' => __('State'),
 			'align'   => 'left',
 			'sort'    => 'DESC',
 			'tip'     => __('The State associated with this Site.')
-		),
-		'country' => array(
+		],
+		'country' => [
 			'display' => __('Country'),
 			'align'   => 'left',
 			'sort'    => 'DESC',
 			'tip'     => __('The Country associated with this Site.')
-		)
-	);
+		]
+	];
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 

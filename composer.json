@@ -54,9 +54,9 @@
         "stevenmaguire/oauth2-keycloak": "^5.1",
         "stevenmaguire/oauth2-microsoft": "^2.2"
     },
-	"suggest": {
+    "suggest": {
         "friendsofphp/php-cs-fixer": "^3.13"
-	},
+    },
     "authors": [
         {
             "name": "The Cacti Group",

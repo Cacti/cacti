@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -33,7 +33,7 @@ set_time_limit(0);
 chdir(__DIR__);
 
 /* translate well-known textual conventions and SNMP base types to net-snmp */
-$smi_base_datatypes = array(
+$smi_base_datatypes = [
 	'integer'           => 'INTEGER',
 	'integer32'         => 'Integer32',
 	'unsigned32'        => 'Unsigned32',
@@ -64,11 +64,11 @@ $smi_base_datatypes = array(
 	'storagetype'       => 'INTEGER',
 	'tdomain'           => 'OBJECT IDENTIFIER',
 	'taddress'          => 'OCTET STRING'
-);
+];
 
-$data = false;
-$eol = "\n";
-$cache = array();
+$data               = false;
+$eol                = "\n";
+$cache              = [];
 $cache_last_refresh = false;
 
 /* process command line options */
@@ -185,17 +185,17 @@ function get_options() {
 	$parms = $_SERVER['argv'];
 	array_shift($parms);
 
-	$options = array();
+	$options = [];
 
 	if (sizeof($parms)) {
 		$shortopts = 'VvHh';
 
-		$longopts = array(
+		$longopts = [
 			'foreground',
 			'debug',
 			'version',
 			'help'
-		);
+		];
 
 		$options = getopt($shortopts, $longopts);
 

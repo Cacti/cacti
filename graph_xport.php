@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -45,7 +45,7 @@ ob_end_clean();
 
 cacti_session_close();
 
-$graph_data_array = array();
+$graph_data_array = [];
 
 /* override: graph start time (unix time) */
 if (!isempty_request_var('graph_start') && is_numeric(get_request_var('graph_start')) && get_request_var('graph_start') < FILTER_VALIDATE_MAX_DATE_AS_INT) {
@@ -80,10 +80,10 @@ if (!isempty_request_var('show_source')) {
 $graph_info = db_fetch_row_prepared('SELECT *
 	FROM graph_templates_graph
 	WHERE local_graph_id = ?',
-	array(get_request_var('local_graph_id')));
+	[get_request_var('local_graph_id')]);
 
 /* for bandwidth, NThPercentile */
-$xport_meta = array();
+$xport_meta = [];
 
 /* tell function we are csv */
 $graph_data_array['export_csv'] = true;
@@ -175,9 +175,9 @@ if (is_array($xport_array['meta']) && isset($xport_array['meta']['start'])) {
 		print "<div class='cactiTableTitleRow'>
 			<div class='cactiTableTitle'>" . __('Summary Details') . "</div>
 			<div class='cactiTableButton'>
-				<span><a href='#' role='link' class='download linkOverDark' id='graph_" . $xport_array['meta']['local_graph_id'] . "'>" . __('Download as CSV') . "</a></span>
+				<span><a href='#' role='link' class='download linkOverDark' id='graph_" . $xport_array['meta']['local_graph_id'] . "'>" . __('Download as CSV') . '</a></span>
 			</div>
-		</div>";
+		</div>';
 
 		/* print the header information */
 		print "<table class='cactiTable selectable'>";

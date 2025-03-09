@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -52,7 +52,7 @@ $displayHostTemplates = false;
 $displayCommunities   = false;
 $quietMode            = false;
 
-$overrides = array();
+$overrides = [];
 
 foreach ($parms as $parameter) {
 	if (strpos($parameter, '=')) {
@@ -209,7 +209,6 @@ foreach ($parms as $parameter) {
 					$overrides['availability_method'] = AVAIL_SNMP_OR_PING;
 
 					break;
-
 				default:
 					print "ERROR: Invalid Availability Parameter: ($value)\n\n";
 					display_help();
@@ -232,7 +231,6 @@ foreach ($parms as $parameter) {
 					$overrides['ping_method'] = PING_UDP;
 
 					break;
-
 				default:
 					print "ERROR: Invalid Ping Method: ($value)\n\n";
 					display_help();
@@ -302,7 +300,6 @@ foreach ($parms as $parameter) {
 			$quietMode = true;
 
 			break;
-
 		default:
 			print "ERROR: Invalid Argument: ($arg)\n\n";
 			display_help();
@@ -318,7 +315,7 @@ if (empty($device_id)) {
 	exit(1);
 }
 
-$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($device_id));
+$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [$device_id]);
 
 if (!cacti_sizeof($host)) {
 	print "ERROR: device-id $device_id not found.\n";

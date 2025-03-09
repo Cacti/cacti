@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -53,7 +53,7 @@ global $user_time, $system_time, $real_time;
 (double) $total_system = 0;
 (double) $total_user   = 0;
 (double) $total_real   = 0;
-$total_dsses  = 0;
+$total_dsses           = 0;
 
 $system_time  = 0;
 $user_time    = 0;
@@ -147,7 +147,7 @@ dsstats_debug('Polling Starting');
 
 /* clear the cache if there has been a change in key settings */
 if (read_config_option('dsstats_mode') != read_config_option('dsstats_temp_mode') ||
-	read_config_option('dsstats_peak') != read_config_option('dsstats_temp_peak')) {
+	read_config_option('dsstats_peak')    != read_config_option('dsstats_temp_peak')) {
 	db_execute('TRUNCATE TABLE data_source_stats_command_cache');
 }
 
@@ -216,8 +216,8 @@ function dsstats_purge_hourly_cache() {
 	$hourly_window  = date('Y-m-d H:i:s', time() - (read_config_option('dsstats_hourly_duration') * 60));
 
 	/* remove old records from the cache first */
-	if (db_fetch_cell_prepared('SELECT COUNT(*) FROM data_source_stats_hourly_cache WHERE time < ?', array($hourly_window))) {
-		db_execute_prepared('DELETE FROM data_source_stats_hourly_cache WHERE time < ?', array($hourly_window));
+	if (db_fetch_cell_prepared('SELECT COUNT(*) FROM data_source_stats_hourly_cache WHERE time < ?', [$hourly_window])) {
+		db_execute_prepared('DELETE FROM data_source_stats_hourly_cache WHERE time < ?', [$hourly_window]);
 	}
 }
 
@@ -379,16 +379,16 @@ function dsstats_prune_partitions($table_name, $partitions_to_keep) {
 	$tables = db_fetch_assoc_prepared("SELECT TABLE_NAME
 		FROM information_schema.TABLES
 		WHERE TABLE_NAME LIKE '{$table_name}_v%' AND TABLE_SCHEMA = ?",
-		array($database_default));
+		[$database_default]);
 
 	if (cacti_sizeof($tables) > $partitions_to_keep) {
 		$partitions_to_delete = cacti_sizeof($tables) - $partitions_to_keep;
 
-		$partitions = array();
+		$partitions = [];
 
-		foreach($tables as $table) {
-			$tname = $table['TABLE_NAME'];
-			$parts = explode('_v', $tname);
+		foreach ($tables as $table) {
+			$tname        = $table['TABLE_NAME'];
+			$parts        = explode('_v', $tname);
 			$partitions[] = $parts[1];
 		}
 
@@ -396,7 +396,7 @@ function dsstats_prune_partitions($table_name, $partitions_to_keep) {
 
 		$i = 0;
 
-		while($i < $partitions_to_delete) {
+		while ($i < $partitions_to_delete) {
 			$remove_table = $table_name . '_v' . $partitions[$i];
 
 			if (db_table_exists($remove_table)) {
@@ -481,7 +481,6 @@ function sig_handler($signo) {
 			exit(1);
 
 			break;
-
 		default:
 			/* ignore all other signals */
 	}

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -28,10 +28,10 @@ function upgrade_to_0_8_8() {
 		db_install_execute("ALTER TABLE `poller_item` MODIFY COLUMN `host_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0'");
 	}
 
-	db_install_add_key('poller_output', 'key', 'PRIMARY', array('local_data_id', 'rrd_name', 'time'));
+	db_install_add_key('poller_output', 'key', 'PRIMARY', ['local_data_id', 'rrd_name', 'time']);
 
 	/* speed up user management */
-	db_install_add_key('user_log', 'key', 'user_id', array('user_id'));
+	db_install_add_key('user_log', 'key', 'user_id', ['user_id']);
 
 	/* Plugin Architecture
 	 * be prepared to find those data already present
@@ -95,5 +95,5 @@ function upgrade_to_0_8_8() {
 	db_install_execute('REPLACE INTO user_auth_realm VALUES (101,1)');
 
 	/* create index on data_template_data on data_input_id */
-	db_install_add_key('data_template_data', 'key', 'data_input_id', array('data_input_id'));
+	db_install_add_key('data_template_data', 'key', 'data_input_id', ['data_input_id']);
 }

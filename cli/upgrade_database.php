@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -43,7 +43,7 @@ global $debug, $cli_upgrade, $database_upgrade_status, $cacti_upgrade_version;
 $debug       = false;
 $cli_upgrade = true;
 $local       = false;
-$session     = array();
+$session     = [];
 $forcever    = '';
 
 if (cacti_sizeof($parms)) {
@@ -158,7 +158,7 @@ foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code) {
 		}
 
 		if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<')) {
-			db_execute_prepared("UPDATE version SET cacti = ?", array($cacti_upgrade_version));
+			db_execute_prepared('UPDATE version SET cacti = ?', [$cacti_upgrade_version]);
 
 			$orig_cacti_version = $cacti_upgrade_version;
 		}
@@ -166,7 +166,7 @@ foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code) {
 		$prev_cacti_version = $cacti_upgrade_version;
 	}
 
-	db_execute_prepared("UPDATE version SET cacti = ?", array($cacti_upgrade_version));
+	db_execute_prepared('UPDATE version SET cacti = ?', [$cacti_upgrade_version]);
 
 	if (cacti_version_compare(CACTI_VERSION, $cacti_upgrade_version, '=')) {
 		db_execute("UPDATE version SET cacti = '" . CACTI_VERSION_FULL . "'");
@@ -193,7 +193,7 @@ function db_install_errors($cacti_version) {
 	$error_status = DB_STATUS_SKIPPED;
 
 	if (!isset($database_upgrade_status)) {
-		$database_upgrade_status = array();
+		$database_upgrade_status = [];
 	}
 
 	if (cacti_sizeof($database_upgrade_status)) {

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -104,7 +104,7 @@ if ($auth_method == AUTH_METHOD_BASIC && !isset($_SESSION[SESS_USER_ID])) {
 			FROM user_auth
 			WHERE realm = 2
 			AND username = ?',
-			array($username));
+			[$username]);
 
 		if (cacti_sizeof($current_user)) {
 			$_SESSION[SESS_USER_ID]     = $current_user['id'];
@@ -118,7 +118,7 @@ if ($auth_method == AUTH_METHOD_BASIC && !isset($_SESSION[SESS_USER_ID])) {
 			db_execute_prepared('INSERT IGNORE INTO user_log
 				(username, user_id, result, ip, time)
 				VALUES (?, ?, 1, ?, NOW())',
-				array($username, $current_user['id'], $_SESSION[SESS_CLIENT_ADDR]));
+				[$username, $current_user['id'], $_SESSION[SESS_CLIENT_ADDR]]);
 
 			return true;
 		} else {
@@ -145,6 +145,7 @@ if (CACTI_WEB && isset($_SESSION[SESS_USER_ID])) {
 				print '<h1>' . __('Cacti is Locked Out for Maintenance') . '</h1>';
 				print '<p>'. __('The primary Cacti administrator has locked out the Cacti user interface for maintenance for activities such as upgrades.  If you feel this is in error, please contact your Cacti adminnistrator.  This lockout will stay in place for approximately 30 minutes.') . '</p>';
 				bottom_footer();
+
 				exit;
 			}
 		}
@@ -172,7 +173,7 @@ if (isset($guest_account)) {
 		$current_user = db_fetch_row_prepared('SELECT *
 			FROM user_auth
 			WHERE id = ?',
-			array($_SESSION[SESS_USER_ID]));
+			[$_SESSION[SESS_USER_ID]]);
 
 		return true;
 	}
@@ -193,11 +194,11 @@ if (!isset($guest_account) && isset($_SESSION[SESS_USER_ID])) {
 if (empty($_SESSION[SESS_USER_ID])) {
 	if (isset($auth_json) && $auth_json == true) {
 		print json_encode(
-			array(
+			[
 				'status'       => '500',
 				'statusText'   => __('Not Logged In'),
 				'responseText' => __('You must be logged in to access this area of Cacti.')
-			)
+			]
 		);
 	} elseif (isset($auth_text) && $auth_text == true) {
 		/* handle graph_image.php to respond with text. */
@@ -213,7 +214,7 @@ if (empty($_SESSION[SESS_USER_ID])) {
 			$user_2fa = db_fetch_cell_prepared('SELECT tfa_enabled
 				FROM user_auth
 				WHERE id = ?',
-				array($_SESSION[SESS_USER_ID])
+				[$_SESSION[SESS_USER_ID]]
 			);
 
 			if (!empty($user_2fa)) {
@@ -242,7 +243,7 @@ if (empty($_SESSION[SESS_USER_ID])) {
 				FROM user_auth_realm AS uar
 				WHERE uar.realm_id = ?';
 
-		$install_sql_params = array($realm_id);
+		$install_sql_params = [$realm_id];
 
 		/* See if the group realms exist and if so, check if permission exists there too */
 		if (db_table_exists('user_auth_group_realm') &&
@@ -259,7 +260,7 @@ if (empty($_SESSION[SESS_USER_ID])) {
 				WHERE uag.enabled="on"
 				AND uagr.realm_id = ?';
 
-			$install_sql_params = array_merge($install_sql_params, array($realm_id));
+			$install_sql_params = array_merge($install_sql_params, [$realm_id]);
 		}
 
 		$install_sql_query .= '
@@ -292,7 +293,7 @@ if (empty($_SESSION[SESS_USER_ID])) {
 				WHERE uar.user_id = ?
 				AND uar.realm_id = ?';
 
-		$auth_sql_params = array($_SESSION[SESS_USER_ID], $realm_id);
+		$auth_sql_params = [$_SESSION[SESS_USER_ID], $realm_id];
 
 		/* Because we now expect installation to be done by authorized users, check the group_realm *
 		 * exists before using it as this may not be present if upgrading from pre-1.x              */
@@ -311,7 +312,7 @@ if (empty($_SESSION[SESS_USER_ID])) {
 				AND uagm.user_id = ?
 				AND uagr.realm_id = ?';
 
-			$auth_sql_params = array_merge($auth_sql_params, array($_SESSION[SESS_USER_ID], $realm_id));
+			$auth_sql_params = array_merge($auth_sql_params, [$_SESSION[SESS_USER_ID], $realm_id]);
 		}
 
 		$auth_sql_query .= '
@@ -380,5 +381,5 @@ if (empty($_SESSION[SESS_USER_ID])) {
 	$current_user = db_fetch_row_prepared('SELECT *
 		FROM user_auth
 		WHERE id = ?',
-		array($_SESSION[SESS_USER_ID]));
+		[$_SESSION[SESS_USER_ID]]);
 }

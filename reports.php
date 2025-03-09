@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -41,7 +41,7 @@ get_filter_request_var('site_id');
 get_filter_request_var('host_id');
 get_filter_request_var('host_template_id');
 get_filter_request_var('graph_template_id');
-get_filter_request_var('tab', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
+get_filter_request_var('tab', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
 
 /* set a longer execution time for large reports */
 ini_set('max_execution_time', '300');
@@ -198,4 +198,3 @@ switch (get_request_var('action')) {
 
 		break;
 }
-

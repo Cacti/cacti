@@ -1,7 +1,7 @@
 <?php
 /*
   +-------------------------------------------------------------------------+
-  | Copyright (C) 2004-2024 The Cacti Group                                 |
+  | Copyright (C) 2004-2025 The Cacti Group                                 |
   |                                                                         |
   | This program is free software; you can redistribute it and/or           |
   | modify it under the terms of the GNU General Public License             |
@@ -27,14 +27,14 @@ error_reporting(0);
 include(__DIR__ . '/../include/cli_check.php');
 include(__DIR__ . '/../lib/snmp.php');
 
-$oids = array(
+$oids = [
 	'total'       => '.1.3.6.1.2.1.25.2.3.1.5',
 	'used'        => '.1.3.6.1.2.1.25.2.3.1.6',
 	'failures'    => '.1.3.6.1.2.1.25.2.3.1.7',
 	'index'       => '.1.3.6.1.2.1.25.2.3.1.1',
 	'description' => '.1.3.6.1.2.1.25.2.3.1.3',
 	'sau'         => '.1.3.6.1.2.1.25.2.3.1.4'
-);
+];
 
 $hostname   = $_SERVER['argv'][1];
 $host_id    = $_SERVER['argv'][2];
@@ -113,7 +113,7 @@ if ($cmd == 'index') {
 			WHERE host_id = ?
 			AND field_name = "hrStorageAllocationUnits"
 			AND snmp_index = ?',
-			array($host_id, $index));
+			[$host_id, $index]);
 
 		print(cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol,$snmp_priv_passphrase,$snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, SNMP_POLLER) * $sau);
 	} else {
@@ -124,7 +124,7 @@ if ($cmd == 'index') {
 }
 
 function reindex($arr) {
-	$return_arr = array();
+	$return_arr = [];
 
 	for ($i=0;($i < cacti_sizeof($arr));$i++) {
 		$return_arr[$i] = $arr[$i]['value'];

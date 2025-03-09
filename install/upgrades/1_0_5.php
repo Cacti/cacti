@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -36,7 +36,7 @@ function upgrade_to_1_0_5() {
 		db_install_execute('UPDATE data_template_data
 			SET data_source_profile_id = ?
 			WHERE data_source_profile_id = 0',
-			array($profile_id));
+			[$profile_id]);
 	}
 
 	/* engine id length */
@@ -56,7 +56,7 @@ function upgrade_to_1_0_5() {
 		$order         = 1;
 
 		foreach ($links as $link) {
-			db_install_execute('UPDATE external_links SET sortorder = ? WHERE id = ?', array($order, $link['id']));
+			db_install_execute('UPDATE external_links SET sortorder = ? WHERE id = ?', [$order, $link['id']]);
 			$order++;
 		}
 	}
@@ -64,6 +64,6 @@ function upgrade_to_1_0_5() {
 	/* add external id column */
 	if (!db_column_exists('host', 'external_id')) {
 		db_install_execute('ALTER TABLE host ADD COLUMN external_id VARCHAR(40) DEFAULT NULL AFTER notes');
-		db_install_add_key('host', 'index', 'external_id', array('external_id'));
+		db_install_add_key('host', 'index', 'external_id', ['external_id']);
 	}
 }

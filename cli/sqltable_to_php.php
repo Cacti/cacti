@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -94,7 +94,7 @@ function sqltable_to_php($table, $create, $plugin = '') {
 
 	$result = db_fetch_assoc('SHOW tables FROM `' . $database_default . '`');
 
-	$tables = array();
+	$tables = [];
 	$text   = '';
 
 	if (cacti_sizeof($result)) {
@@ -112,9 +112,9 @@ function sqltable_to_php($table, $create, $plugin = '') {
 	if (in_array($table, $tables, true)) {
 		$result = db_fetch_assoc("SHOW FULL columns FROM $table");
 
-		$cols   = array();
-		$pri    = array();
-		$keys   = array();
+		$cols   = [];
+		$pri    = [];
+		$keys   = [];
 		$text   = "\n\$data = array();\n";
 
 		if (cacti_sizeof($result)) {
@@ -167,7 +167,7 @@ function sqltable_to_php($table, $create, $plugin = '') {
 		$result = db_fetch_assoc("SHOW INDEX FROM $table");
 
 		if (cacti_sizeof($result)) {
-			$unique_keys = array();
+			$unique_keys = [];
 
 			foreach ($result as $r) {
 				if ($r['Key_name'] == 'PRIMARY') {
@@ -207,7 +207,7 @@ function sqltable_to_php($table, $create, $plugin = '') {
 			FROM information_schema.TABLES tbl JOIN information_schema.COLLATIONS coll ON tbl.TABLE_COLLATION=coll.COLLATION_NAME
 			WHERE TABLE_SCHEMA = SCHEMA()
 			AND TABLE_NAME = ?',
-			array($table));
+			[$table]);
 
 		if (cacti_sizeof($result)) {
 			$text .= "\$data['type'] = '" . $result['ENGINE'] . "';\n";
@@ -238,7 +238,7 @@ function sqltable_to_php($table, $create, $plugin = '') {
 }
 
 function sql_clean($text) {
-	$text = str_replace(array('\\', '/', "'", '"', '|'), '', $text);
+	$text = str_replace(['\\', '/', "'", '"', '|'], '', $text);
 
 	return $text;
 }

@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -111,7 +111,6 @@ if (cacti_sizeof($parms)) {
 				$debug = true;
 
 				break;
-
 			default:
 				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 				display_help();
@@ -152,7 +151,7 @@ if ($host_id === false) {
 		db_fetch_assoc_prepared('SELECT DISTINCT SUBSTRING_INDEX(command, ":", 1) AS host_id
 			FROM poller_command
 			WHERE poller_id = ?',
-			array($poller_id), true, $poller_db_cnn_id),
+			[$poller_id], true, $poller_db_cnn_id),
 		'host_id', 'host_id'
 	);
 
@@ -178,7 +177,7 @@ if ($host_id === false) {
 
 		/* insert poller stats into the settings table */
 		db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)',
-			array('stats_recache_' . $poller_id, $recache_stats), true, $poller_db_cnn_id);
+			['stats_recache_' . $poller_id, $recache_stats], true, $poller_db_cnn_id);
 
 		unregister_process('commands', 'master', $poller_id);
 	} else {
@@ -202,7 +201,7 @@ if ($host_id === false) {
 		FROM poller_command
 		WHERE poller_id = ?
 		AND SUBSTRING_INDEX(command, ":", 1) = ?',
-		array($poller_id, $host_id), '', true, $poller_db_cnn_id);
+		[$poller_id, $host_id], '', true, $poller_db_cnn_id);
 
 	/**
 	 * Get the poller command records for the host
@@ -213,7 +212,7 @@ if ($host_id === false) {
 		WHERE poller_id = ?
 		AND last_updated <= FROM_UNIXTIME(?)
 		AND SUBSTRING_INDEX(command, ":", 1) = ?',
-		array($poller_id, $max_updated, $host_id), true, $poller_db_cnn_id);
+		[$poller_id, $max_updated, $host_id], true, $poller_db_cnn_id);
 
 	if (cacti_sizeof($poller_commands)) {
 		foreach ($poller_commands as $command) {
@@ -244,7 +243,6 @@ if ($host_id === false) {
 					cacti_log("Device[$device_id] PURGE: Purged successfully.", true, 'PCOMMAND', $verbosity);
 
 					break;
-
 				default:
 					cacti_log('ERROR: Unknown poller command issued', true, 'PCOMMAND');
 			}
@@ -264,7 +262,7 @@ if ($host_id === false) {
 			WHERE poller_id = ?
 			AND SUBSTRING_INDEX(command, ":", 1) = ?
 			AND last_updated <= FROM_UNIXTIME(?)',
-			array($poller_id, $host_id, $max_updated), true, $poller_db_cnn_id);
+			[$poller_id, $host_id, $max_updated], true, $poller_db_cnn_id);
 	}
 
 	unregister_process('commands', 'child', $host_id + 1000);
@@ -396,7 +394,6 @@ function sig_handler($signo) {
 			exit(1);
 
 			break;
-
 		default:
 			/* ignore all other signals */
 	}
@@ -416,7 +413,7 @@ function commands_kill_running_processes() {
         WHERE tasktype = "commands"
         AND taskname IN ("child")
         AND pid != ?',
-		array(getmypid()));
+		[getmypid()]);
 
 	if (cacti_sizeof($processes)) {
 		foreach ($processes as $p) {

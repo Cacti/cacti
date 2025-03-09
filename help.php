@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -44,19 +44,19 @@ if (isset_request_var('error')) {
 		admin_email(__('Cacti System Warning'), __('WARNING: Cacti Page:%s for User:%s Generated a Fatal Error %d!', $page, $username, $error));
 	}
 } elseif (isset_request_var('page')) {
-	get_filter_request_var('page', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
+	get_filter_request_var('page', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
 
 	$page = str_replace('.html', '.md', get_request_var('page'));
 
-	$fgc_contextoption = array(
-		'ssl' => array(
+	$fgc_contextoption = [
+		'ssl' => [
 			'verify_peer'       => false,
 			'verify_peer_name'  => false,
 			'allow_self_signed' => true,
 			'timeout'           => 2,
 			'ignore_errors'     => true
-		)
-	);
+		]
+	];
 
 	if (read_config_option('local_documentation') != 'on') {
 		$fgc_context   = stream_context_create($fgc_contextoption);
@@ -69,38 +69,38 @@ if (isset_request_var('error')) {
 
 	if ($response_code != 200) {
 		print json_encode(
-			array(
+			[
 				'status'  => 'Not Reachable',
 				'message' => __('The Document page \'%s\' count not be reached.  The Cacti Documentation site is not reachable.  The http error was \'%s\'.  Consider downloading an official release to obtain the latest documentation and hosting the documentation locally.', $page, $response_code)
-			)
+			]
 		);
 	} elseif ($contents != '' && !preg_match('/does not appear to exist/i', $contents)) {
 		print json_encode(
-			array(
+			[
 				'status'   => 'Success',
 				'location' => 'https://docs.cacti.net/' . $page
-			)
+			]
 		);
 	} elseif ($contents != '' && preg_match('/does not appear to exist/i', $contents)) {
 		print json_encode(
-			array(
+			[
 				'status'   => 'Not Found',
 				'location' => __esc('The Help File %s was not located on the Cacti Documentation Website.', $page) . '<br><br>' . __esc('Open a ticket at ') . '<a target="_blank" href="https://github.com/cacti/cacti/issues">' . __esc('Cacti GitHub Site') . '</a>.'
-			)
+			]
 		);
 	} elseif (file_exists(CACTI_PATH_DOCS . '/' . $page)) {
 		print json_encode(
-			array(
+			[
 				'status'   => 'Success',
 				'location' => CACTI_PATH_URL . 'docs/' . $page
-			)
+			]
 		);
 	} else {
 		print json_encode(
-			array(
+			[
 				'status'  => 'Not Reachable',
 				'message' => __('The Document page \'%s\' count not be reached locally.', $page, $response_code)
-			)
+			]
 		);
 	}
 }

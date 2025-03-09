@@ -2,7 +2,7 @@
 
 $header = <<<'EOF'
 +-------------------------------------------------------------------------+
-| Copyright (C) 2004-2024 The Cacti Group                                 |
+| Copyright (C) 2004-2025 The Cacti Group                                 |
 |                                                                         |
 | This program is free software; you can redistribute it and/or           |
 | modify it under the terms of the GNU General Public License             |
@@ -50,7 +50,7 @@ $config
             'syntax' => 'long'
         ],
         'array_syntax' => [
-            'syntax' => 'long'
+            'syntax' => 'short'
         ],
         'trim_array_spaces' => false,
         'no_whitespace_before_comma_in_array' => true,
@@ -125,6 +125,11 @@ $config
                 '|' => 'single_space',
                 '=>' => 'align',
                 '!=' => 'align',
+                '.=' => 'align',
+                '+=' => 'align',
+                '*=' => 'align',
+                '-=' => 'align',
+                '/=' => 'align',
             ],
         ],
         'not_operator_with_space' => false,
@@ -160,9 +165,9 @@ $config
         //],
         'blank_line_before_statement' => [
             'statements' => [
-                'break', 'continue', 'declare', 'default', 'do', 'exit',
+                'break', 'continue', 'declare', 'do', 'exit', 'return',
                 'for', 'foreach', 'goto', 'if', 'return', 'switch',
-                'throw', 'try', 'while', 'yield', 'yield_from'
+                'throw', 'try', 'while', 'yield', 'yield_from', 'throw', 'try'
             ],
         ],
         'explicit_string_variable' => false,

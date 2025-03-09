@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -35,7 +35,6 @@ if (isset_request_var('method')) {
 		case 'float':
 		case 'absolute':
 			break;
-
 		default:
 			print __("FATAL: Spike Kill method '%s' is Invalid", html_escape(get_nfilter_request_var('method'))) . PHP_EOL;
 
@@ -51,7 +50,7 @@ if (is_realm_allowed(1043)) {
 		LEFT JOIN data_template_rrd
 		ON graph_templates_item.task_item_id=data_template_rrd.id
 		WHERE graph_templates_item.local_graph_id = ?',
-		array(get_filter_request_var('local_graph_id')));
+		[get_filter_request_var('local_graph_id')]);
 
 	$results = '';
 
@@ -112,7 +111,7 @@ if (is_realm_allowed(1043)) {
 		}
 	}
 
-	print json_encode(array('local_graph_id' => get_request_var('local_graph_id'), 'results' => $results));
+	print json_encode(['local_graph_id' => get_request_var('local_graph_id'), 'results' => $results]);
 } else {
 	print __('FATAL: Spike Kill Not Allowed') . PHP_EOL;
 }

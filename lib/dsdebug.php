@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -60,10 +60,10 @@ function log_dsdebug_statistics($type, $checks, $issues) {
    @arg $linenum - (int) The line number where the error occurred
    @arg $vars - (mixed) The current state of PHP variables.
    @returns - (bool) always returns true for some reason */
-function dsdebug_error_handler($errno, $errmsg, $filename, $linenum, $vars = array()) {
+function dsdebug_error_handler($errno, $errmsg, $filename, $linenum, $vars = []) {
 	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_DEBUG) {
 		/* define all error types */
-		$errortype = array(
+		$errortype = [
 			E_ERROR             => 'Error',
 			E_WARNING           => 'Warning',
 			E_PARSE             => 'Parsing Error',
@@ -76,7 +76,7 @@ function dsdebug_error_handler($errno, $errmsg, $filename, $linenum, $vars = arr
 			E_USER_WARNING      => 'User Warning',
 			E_USER_NOTICE       => 'User Notice',
 			E_STRICT            => 'Runtime Notice'
-		);
+		];
 
 		if (defined('E_RECOVERABLE_ERROR')) {
 			$errortype[E_RECOVERABLE_ERROR] = 'Catchable Fatal Error';
@@ -129,7 +129,7 @@ function dsdebug_poller_output(&$rrd_update_array) {
 
 							$c['info']['last_result'] = $item['times'][key($item['times'])];
 							$c['info']                = serialize($c['info']);
-							db_execute_prepared('UPDATE data_debug SET `info` = ? WHERE `id` = ?', array($c['info'], $c['id']));
+							db_execute_prepared('UPDATE data_debug SET `info` = ? WHERE `id` = ?', [$c['info'], $c['id']]);
 						}
 					}
 				}
@@ -163,13 +163,13 @@ function dsdebug_poller_bottom() {
 		$total_issues = 0;
 
 		foreach ($checks as $c) {
-			$c['issue'] = array();
-			$info = cacti_unserialize($c['info']);
+			$c['issue'] = [];
+			$info       = cacti_unserialize($c['info']);
 
 			$dtd = db_fetch_row_prepared('SELECT *
 				FROM data_template_data
 				WHERE local_data_id = ?',
-				array($c['datasource']));
+				[$c['datasource']]);
 
 			if (!isset($dtd['local_data_id'])) {
 				$c['issue'][] = __('Data Source ID %s does not exist', $c['datasource']);
@@ -194,6 +194,7 @@ function dsdebug_poller_bottom() {
 
 				// active
 				$info['active'] = $dtd['active'];
+
 				// owner
 				if ($config['cacti_server_os'] == 'win32') {
 					$info['owner'] = '<unable to determine on windows>';
@@ -237,7 +238,6 @@ function dsdebug_poller_bottom() {
 					if ($info['rra_timestamp'] != ''
 						&& isset($rrdinfo['last_update'])
 						&& $info['rra_timestamp'] != $rrdinfo['last_update']) {
-
 						$info['rra_timestamp2'] = $rrdinfo['last_update'];
 					}
 
@@ -246,16 +246,17 @@ function dsdebug_poller_bottom() {
 					}
 
 					$c['done'] = 1;
-					$f = array();
+					$f         = [];
+
 					foreach ($info as $k => $v) {
 						if ($v === '') {
 							$c['done'] = 0;
-							$f[] = $k;
+							$f[]       = $k;
 						}
 					}
 
 					if ($c['started'] < time() - ($dtd['rrd_step'] * 5)) {
-						$c['done'] = 1;
+						$c['done']    = 1;
 						$c['issue'][] = __('Debug not completed after 5 pollings');
 						$c['issue'][] = __('Failed fields: ') . implode(', ', $f);
 
@@ -267,7 +268,7 @@ function dsdebug_poller_bottom() {
 					// Log permanent fails first
 					if ($info['active'] != 'on') {
 						$c['issue'][] = __('Data Source is not set as Active');
-						$c['done'] = 1;
+						$c['done']    = 1;
 
 						$total_issues++;
 					}
@@ -275,12 +276,12 @@ function dsdebug_poller_bottom() {
 					// File Permissions
 					if ((!$info['rrd_exists'] || !$info['rrd_writable']) && !$info['rrd_folder_writable']) {
 						$c['issue'][] = __('RRDfile Folder (rra) is not writable by Poller.  Folder owner: %s.  Poller runs as: %s', $o, $info['runas_poller']);
-						$c['done'] = 1;
+						$c['done']    = 1;
 
 						$total_issues++;
 					} elseif (!$info['rrd_writable']) {
 						$c['issue'][] = __('RRDfile is not writable by Poller.  RRDfile owner: %s.  Poller runs as %s', $o, $info['runas_poller']);
-						$c['done'] = 1;
+						$c['done']    = 1;
 
 						$total_issues++;
 					}
@@ -323,7 +324,7 @@ function dsdebug_poller_bottom() {
 				db_execute_prepared('UPDATE data_debug
 					SET `done` = ?, `info` = ?, `issue` = ?
 					WHERE id = ?',
-					array($c['done'], $info, trim(implode("\n", $c['issue'])), $c['id']));
+					[$c['done'], $info, trim(implode("\n", $c['issue'])), $c['id']]);
 			}
 		}
 
@@ -337,7 +338,7 @@ function dsdebug_run_repair($id) {
 	$check = db_fetch_row_prepared('SELECT *
 		FROM data_debug
 		WHERE datasource = ?',
-		array($id));
+		[$id]);
 
 	if (cacti_sizeof($check)) {
 		$check['info'] = cacti_unserialize($check['info']);

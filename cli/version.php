@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -25,7 +25,7 @@
 
 require(__DIR__ . '/../include/cli_check.php');
 
-$fail_msg = array();
+$fail_msg = [];
 define_exit('EXIT_UNKNOWN', -1, "ERROR: Failed due to unknown reason\n");
 define_exit('EXIT_NORMAL',  0, '');
 define_exit('EXIT_ARGERR',  1, "ERROR: Invalid Argument: (%s)\n\n");
@@ -84,12 +84,12 @@ if (cacti_sizeof($parms)) {
 }
 
 if ($debug) {
-	$tests = array(
+	$tests = [
 		'CACTI_VERSION'          => CACTI_VERSION,
 		'CACTI_VERSION_FULL'     => CACTI_VERSION_FULL,
 		'get_cacti_db_version()' => get_cacti_db_version(),
 		'is_install_needed()'    => is_install_needed(),
-	);
+	];
 
 	foreach ($tests as $name => $value) {
 		printf("%35s = (Rel %1s, Dev %1s) %s\n", $name, is_cacti_release($value), is_cacti_develop($value), $value);
@@ -97,13 +97,13 @@ if ($debug) {
 
 	print PHP_EOL;
 
-	$tests = array(
+	$tests = [
 		'CACTI_VERSION_TEXT'            => CACTI_VERSION_TEXT,
 		'CACTI_VERSION_TEXT_FULL'       => CACTI_VERSION_TEXT_FULL,
 		'CACTI_VERSION_TEXT_CLI'        => CACTI_VERSION_TEXT_CLI,
 		'get_cacti_version_text(false)' => get_cacti_version_text(false),
 		'get_cacti_version_text(true)'  => get_cacti_version_text(true),
-	);
+	];
 
 	foreach ($tests as $name => $value) {
 		printf("%35s = %s\n", $name, $value);
@@ -111,7 +111,7 @@ if ($debug) {
 
 	print PHP_EOL;
 
-	$tests  = array(
+	$tests  = [
 		'Fresh'       => 'new_install',
 		//		'1.3.0'	   => '1.3.0',
 		//		'Develop'	 => CACTI_VERSION_FULL,
@@ -126,17 +126,17 @@ if ($debug) {
 		'0.8.8h'	  => '0.8.8h',
 		//		'0.8.8b'	  => '0.8.8b',
 		//		'0.8.8'	   => '0.8.8',
-	);
+	];
 
 	$sources = $tests;
 
-	$keys = array();
+	$keys = [];
 
 	foreach (array_keys($tests) as $index => $key) {
 		$keys[$key] = chr($index + ord('a'));
 	}
 
-	$matrix = array();
+	$matrix = [];
 	$dkeys  = $keys;
 
 	foreach ($keys as $key) {
@@ -220,14 +220,14 @@ function display_help() {
 	print "         --debug    show debug testing and matrix\n\n";
 }
 
-function fail($exit_value, $args = array(), $display_help = 0) {
+function fail($exit_value, $args = [], $display_help = 0) {
 	global $quiet, $fail_msg;
 
 	if (!$quiet) {
 		if (!isset($args)) {
-			$args = array();
+			$args = [];
 		} elseif (!is_array($args)) {
-			$args = array($args);
+			$args = [$args];
 		}
 
 		if (!array_key_exists($exit_value, $fail_msg)) {
@@ -249,7 +249,7 @@ function define_exit($name, $value, $text) {
 	global $fail_msg;
 
 	if (!isset($fail_msg)) {
-		$fail_msg = array();
+		$fail_msg = [];
 	}
 
 	define($name, $value);

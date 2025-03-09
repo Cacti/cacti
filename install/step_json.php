@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -46,23 +46,23 @@ $auth_json = true;
 
 $debug = false;
 
-$initialData = array();
+$initialData = [];
 /* ================= input validation ================= */
-get_nfilter_request_var('data', array());
+get_nfilter_request_var('data', []);
 
 if (isset_request_var('data') && get_nfilter_request_var('data')) {
 	log_install_debug('json','Using supplied data');
 	$initialData = get_nfilter_request_var('data');
 
 	if (!is_array($initialData)) {
-		$initialData = array($initialData);
+		$initialData = [$initialData];
 	}
 }
 
 $json_level = log_install_level('json',POLLER_VERBOSITY_NONE);
 log_install_high('json','Start: ' . clean_up_lines(json_encode($initialData)));
 
-$initialData = array_merge(array('Runtime' => 'Web'), $initialData);
+$initialData = array_merge(['Runtime' => 'Web'], $initialData);
 
 if (isset($initialData['step']) && $initialData['step'] == Installer::STEP_TEST_REMOTE) {
 	$json       = install_test_remote_database_connection();

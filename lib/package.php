@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -29,7 +29,7 @@ function get_export_hash($export_type, $export_item_id) {
 				return db_fetch_cell_prepared('SELECT hash
 					FROM host_template
 					WHERE id = ?',
-					array($export_item_id));
+					[$export_item_id]);
 			} else {
 				return db_fetch_cell('SELECT hash
 					FROM host_template
@@ -43,7 +43,7 @@ function get_export_hash($export_type, $export_item_id) {
 				return db_fetch_cell_prepared('SELECT hash
 					FROM graph_templates
 					WHERE id = ?',
-					array($export_item_id));
+					[$export_item_id]);
 			} else {
 				return db_fetch_cell('SELECT hash
 					FROM graph_templates
@@ -57,7 +57,7 @@ function get_export_hash($export_type, $export_item_id) {
 				return db_fetch_cell_prepared('SELECT hash
 					FROM snmp_query
 					WHERE id = ?',
-					array($export_item_id));
+					[$export_item_id]);
 			} else {
 				return db_fetch_cell('SELECT hash
 					FROM snmp_query
@@ -68,6 +68,7 @@ function get_export_hash($export_type, $export_item_id) {
 			break;
 		default:
 			return '';
+
 			break;
 	}
 }
@@ -100,6 +101,7 @@ function save_packager_metadata($hash, $info) {
 		}
 	} else {
 		set_config_option('package_export_' . $hash, json_encode($info));
+
 		return true;
 	}
 }
@@ -158,6 +160,7 @@ function open_packager_metadata_table() {
 
 	if (is_writable(dirname($db_file))) {
 		$create = true;
+
 		if (file_exists($db_file)) {
 			$create = false;
 		}
@@ -203,15 +206,15 @@ function get_packager_metadata($hash) {
 function get_package_contents($export_type, $export_item_id, $include_deps = true) {
 	global $config, $export_errors;
 
-	$types = array(
+	$types = [
 		'host_template',
 		'graph_template',
 		'data_query'
-	);
+	];
 
-	$graph_templates = array();
-	$queries = array();
-	$query_graph_templates = array();
+	$graph_templates       = [];
+	$queries               = [];
+	$query_graph_templates = [];
 
 	switch($export_type) {
 		case 'host_template':
@@ -220,14 +223,14 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 				INNER JOIN graph_templates AS gt
 				ON gt.id = htg.graph_template_id
 				WHERE host_template_id = ?',
-				array($export_item_id));
+				[$export_item_id]);
 
 			$queries = db_fetch_assoc_prepared('SELECT sq.*
 				FROM host_template_snmp_query AS htsq
 				INNER JOIN snmp_query AS sq
 				ON sq.id = htsq.snmp_query_id
 				WHERE host_template_id = ?',
-				array($export_item_id));
+				[$export_item_id]);
 
 			break;
 		case 'data_query':
@@ -236,25 +239,26 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 				INNER JOIN snmp_query AS sq
 				ON sq.id = htsq.snmp_query_id
 				WHERE host_template_id = ?',
-				array($export_item_id));
+				[$export_item_id]);
 
 			$query_graph_templates = db_fetch_assoc_prepared('SELECT sqg.graph_template_id, sqg.name
 				FROM host_template_snmp_query AS htsq
 				INNER JOIN snmp_query_graph AS sqg
 				ON htsq.snmp_query_id = sqg.snmp_query_id
 				WHERE host_template_id = ?',
-				array($export_item_id));
+				[$export_item_id]);
 
 			break;
 		case 'graph_template':
 			$graph_templates = db_fetch_assoc_prepared('SELECT *
 				FROM graph_templates AS gt
 				WHERE id = ?',
-				array($export_item_id));
+				[$export_item_id]);
 
 			if (cacti_sizeof($graph_templates)) {
 				$in = '';
-				foreach($graph_templates as $gt) {
+
+				foreach ($graph_templates as $gt) {
 					$in .= ($in != '' ? ',':'') . $gt['id'];
 				}
 
@@ -273,14 +277,14 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 	// Determine what files are included
 	$export_errors = 0;
 	$xml_data      = get_item_xml($export_type, $export_item_id, $include_deps);
-	$files         = array();
+	$files         = [];
 
 	if (!$export_errors) {
 		$files = find_dependent_files($xml_data, true);
 
 		/* search xml files for scripts */
 		if (cacti_sizeof($files)) {
-			foreach($files as $file) {
+			foreach ($files as $file) {
 				if (str_contains($file['file'], '.xml')) {
 					$files = array_merge($files, find_dependent_files(file_get_contents($file['file']), $file));
 				}
@@ -295,14 +299,14 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 	 * and process their XML files for additional scripts
 	 */
 	if ($export_type == 'graph_template' && cacti_sizeof($queries)) {
-		foreach($queries as $dq) {
+		foreach ($queries as $dq) {
 			$xml_data = get_item_xml('data_query', $dq['id'], $include_deps);
 
 			$nfiles = find_dependent_files($xml_data, true);
 
 			/* search xml files for scripts */
 			if (cacti_sizeof($nfiles)) {
-				foreach($nfiles as $file) {
+				foreach ($nfiles as $file) {
 					if (str_contains($file['file'], '.xml')) {
 						$files = array_merge($files, find_dependent_files(file_get_contents($file['file']), $file));
 					}
@@ -318,7 +322,7 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 
 		$output .= '<div class="formHeader"><div class="formHeaderText">' . __('Graph Templates') . '</div></div>';
 
-		foreach($graph_templates as $t) {
+		foreach ($graph_templates as $t) {
 			$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . $t['name'] . '</div></div>';
 		}
 
@@ -329,7 +333,7 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 		$output .= '<div class="flexChild" style="vertical-align:top;width:24%;padding:0px 5px;">';
 		$output .= '<div class="formHeader"><div class="formHeaderText">' . __('Data Queries') . '</div></div>';
 
-		foreach($queries as $q) {
+		foreach ($queries as $q) {
 			$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . $q['name'] . '</div></div>';
 		}
 
@@ -340,7 +344,7 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 		$output .= '<div class="flexChild" style="50%;vertical-align:top;width:24%;padding:0px 5px;">';
 		$output .= '<div class="formHeader"><div class="formHeaderText">' . __('Data Query Graph Templates') . '</div></div>';
 
-		foreach($graph_templates as $t) {
+		foreach ($graph_templates as $t) {
 			$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . $t['name'] . '</div></div>';
 		}
 
@@ -351,8 +355,8 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 		$output .= '<div class="flexChild" style="vertical-align:top;width:24%;padding:0px 5px;">';
 		$output .= '<div class="formHeader"><div class="formHeaderText">' . __('Resource Files') . '</div></div>';
 
-		foreach($queries as $q) {
-			$file = str_replace('<path_cacti>', CACTI_PATH_BASE, $q['xml_path']);
+		foreach ($queries as $q) {
+			$file   = str_replace('<path_cacti>', CACTI_PATH_BASE, $q['xml_path']);
 			$exists = file_exists($file);
 			$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . html_escape(basename($file)) . ($exists ? '<i class="fa-solid fa-circle-check deviceUp"></i>':'<i class="fa fa-cross deviceDown"></i>') . '</div></div>';
 		}
@@ -364,10 +368,10 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 		$output .= '<div class="flexChild" style="vertical-align:top;width:24%;padding:0px 5px;">';
 		$output .= '<div class="formHeader"><div class="formHeaderText">' . __('Script Files') . '</div></div>';
 
-		$found = array();
+		$found = [];
 
-		foreach($files as $file) {
-			if (array_search($file, $found) === false) {
+		foreach ($files as $file) {
+			if (array_search($file, $found, true) === false) {
 				if (!str_contains($file['file'], '/resource/')) {
 					$exists = file_exists($file['file']);
 					$output .= '<div class="formRow"><div class="formColumnLeft nowrap">' . html_escape(basename($file['file'])) .  ($exists ? '<i class="fa-solid fa-circle-check deviceUp"></i>':'<i class="fa fa-cross deviceDown"></i>') . '</div></div>';
@@ -392,6 +396,7 @@ function get_package_private_key() {
 		return 'file://' . CACTI_PATH_PKI . '/package.key';
 	} else {
 		print 'FATAL: You must run genkey.php to generate your key first' . PHP_EOL;
+
 		return false;
 	}
 }
@@ -401,37 +406,41 @@ function get_package_public_key() {
 
 	if (file_exists(CACTI_PATH_PKI . '/package.pem')) {
 		$key = openssl_pkey_get_public('file://' . CACTI_PATH_PKI . '/package.pem');
+
 		if ($key === false) {
 			cacti_log('FATAL: Unable to extract Public Key from Pem File.');
+
 			return false;
 		} else {
 			$keyData = openssl_pkey_get_details($key);
+
 			return $keyData['key'];
 		}
 	} else {
 		print 'FATAL: You must run genkey.php to generate your key first' . PHP_EOL;
+
 		return false;
 	}
 }
 
 function find_dependent_files($xml_data, $raise_message = false) {
-	$files = array();
+	$files = [];
 	$data  = explode("\n", $xml_data);
 
-	foreach($data as $line) {
+	foreach ($data as $line) {
 		if (str_contains($line, '<xml_path>')) {
 			$line = str_replace('<xml_path>', '', $line);
 			$line = str_replace('</xml_path>', '', $line);
 
 			$files = process_paths($line, $files, $raise_message);
 		} elseif (str_contains($line, '<script_path>')) {
-			$line = str_replace('<script_path>', '', $line);
-			$line = str_replace('</script_path>', '', $line);
+			$line  = str_replace('<script_path>', '', $line);
+			$line  = str_replace('</script_path>', '', $line);
 			$files = process_paths($line, $files, $raise_message);
 		} elseif (str_contains($line, '<input_string>')) {
 			$line  = str_replace('<input_string>', '', $line);
 			$line  = str_replace('</input_string>', '', $line);
-			$line  = base64_decode($line);
+			$line  = base64_decode($line, true);
 			$line  = xml_character_decode($line);
 			$line  = str_replace('><', '> <', $line);
 			$line  = str_replace('>""<', '>" "<', $line);
@@ -445,13 +454,14 @@ function find_dependent_files($xml_data, $raise_message = false) {
 
 function process_paths($line, $files, $raise_message) {
 	$paths = find_paths(trim($line));
+
 	if (cacti_sizeof($paths['paths'])) {
 		$files = array_merge($files, $paths['paths']);
 	}
 
 	if (cacti_sizeof($paths['missing_paths'])) {
 		if ($raise_message) {
-			foreach($paths['missing_paths'] as $p) {
+			foreach ($paths['missing_paths'] as $p) {
 				raise_message('missing_' . $p['file'], __('A Critical Template file \'%s\' is missing.  Please locate this file before packaging', $p['file']), MESSAGE_LEVEL_ERROR);
 			}
 		}
@@ -465,17 +475,19 @@ function process_paths($line, $files, $raise_message) {
  * xml          => location found in template xml <xml_path>
  * script       => location found in xml <input_string>
  * resource_xml => location found in resource xml file
+ * @param mixed $input
+ * @param mixed $type
  */
 function find_paths($input, $type = 'cacti_xml') {
 	global $config;
 
-	$excluded_paths = array(
+	$excluded_paths = [
 		'/bin/',
 		'/usr/bin/',
 		'/usr/local/bin/'
-	);
+	];
 
-	$excluded_basenames = array(
+	$excluded_basenames = [
 		'bash',
 		'snmpwalk',
 		'snmpget',
@@ -490,49 +502,54 @@ function find_paths($input, $type = 'cacti_xml') {
 		'grep',
 		'awk',
 		'wc'
-	);
+	];
 
-	$paths  = array();
-	$mpaths = array();
+	$paths  = [];
+	$mpaths = [];
 
 	$input = htmlspecialchars_decode($input);
 	$parts = preg_split('/\s+/', $input);
 
-	foreach($parts as $part) {
+	foreach ($parts as $part) {
 		$opath = htmlspecialchars($part);
 		$part  = str_replace('<path_cacti>', CACTI_PATH_BASE, $part);
 		$part  = str_replace('|path_cacti|', CACTI_PATH_BASE, $part);
 		$part  = str_replace('|path_php_binary|', '', $part);
 
-		if (trim($part) == '') continue;
+		if (trim($part) == '') {
+			continue;
+		}
 
 		$valid = true;
+
 		if (file_exists($part)) {
-			foreach($excluded_paths as $path) {
+			foreach ($excluded_paths as $path) {
 				if (str_contains($part, $path)) {
 					$valid = false;
+
 					break;
 				}
 			}
 
 			if ($valid) {
-				foreach($excluded_basenames as $binary) {
+				foreach ($excluded_basenames as $binary) {
 					if (str_contains($binary, basename($part))) {
 						$valid = false;
+
 						break;
 					}
 				}
 			}
 
 			if ($valid) {
-				$paths[] = array('opath' => $opath, 'file' => $part);
+				$paths[] = ['opath' => $opath, 'file' => $part];
 			}
-		} elseif (str_contains($part, '/') || str_contains($part, "\\")) {
-			$mpaths[] = array('opath' => $opath, 'file' => $part);
+		} elseif (str_contains($part, '/') || str_contains($part, '\\')) {
+			$mpaths[] = ['opath' => $opath, 'file' => $part];
 		}
 	}
 
-	return array('paths' => $paths, 'missing_paths' => $mpaths);;
+	return ['paths' => $paths, 'missing_paths' => $mpaths];
 }
 
 function package_template(&$template, &$info, &$files, &$debug) {
@@ -563,7 +580,7 @@ function package_template(&$template, &$info, &$files, &$debug) {
 	/* create the package xml file */
 	$xml = "<xml>\n";
 	$xml .= "   <info>\n";
-	$xml .= "     <name>" . $info['name'] . "</name>\n";
+	$xml .= '     <name>' . $info['name'] . "</name>\n";
 
 	if (isset($info['author'])) {
 		$xml   .= '     <author>' . $info['author'] . "</author>\n";
@@ -617,9 +634,10 @@ function package_template(&$template, &$info, &$files, &$debug) {
 	$debug .= ' Files Specified: ' . count($files) . "\n";
 
 	/* calculate directories */
-	$directories = array();
+	$directories = [];
+
 	if (cacti_sizeof($files)) {
-		foreach($files as $file) {
+		foreach ($files as $file) {
 			$directories[dirname($file['file'])] = dirname($file['file']);
 		}
 	}
@@ -627,19 +645,21 @@ function package_template(&$template, &$info, &$files, &$debug) {
 	$debug .= ' Directories extracted: ' . count($directories) . "\n";
 
 	$xml .= "   <directories>\n";
+
 	if (cacti_sizeof($directories)) {
 		foreach ($directories as $dir) {
 			$debug .= "   Adding Directory: $dir\n";
-			$xml .= "       <directory>" . str_replace($my_base, '', $dir) . "</directory>\n";
+			$xml   .= '       <directory>' . str_replace($my_base, '', $dir) . "</directory>\n";
 		}
 	}
 	$xml .= "   </directories>\n";
 
-	$files['template'] = array('file' => $xmlfile, 'type' => 'template');
+	$files['template'] = ['file' => $xmlfile, 'type' => 'template'];
 
 	$xml .= "   <files>\n";
 
-	$dupfiles = array();
+	$dupfiles = [];
+
 	foreach ($files as $file) {
 		$name = $file['file'];
 
@@ -667,9 +687,9 @@ function package_template(&$template, &$info, &$files, &$debug) {
 		$xml .= "       <file>\n";
 
 		if ($type != '') {
-			$xml .= "           <name>" . basename($name) . "</name>\n";
+			$xml .= '           <name>' . basename($name) . "</name>\n";
 		} else {
-			$xml .= "           <name>" . str_replace($my_base, '', $name) . "</name>\n";
+			$xml .= '           <name>' . str_replace($my_base, '', $name) . "</name>\n";
 		}
 
 		if ($opath != '') {
@@ -693,13 +713,13 @@ function package_template(&$template, &$info, &$files, &$debug) {
 		}
 
 		$xml .= "           <data>$data</data>\n";
-		$xml .= "           <filesignature>" . base64_encode($binary_signature) . "</filesignature>\n";
+		$xml .= '           <filesignature>' . base64_encode($binary_signature) . "</filesignature>\n";
 		$xml .= "       </file>\n";
 	}
 
 	$xml .= "   </files>\n";
-	$xml .= "   <publickeyname>" . $info['author']                  . "</publickeyname>\n";
-	$xml .= "   <publickey>"     . base64_encode($public_key)       . "</publickey>\n";
+	$xml .= '   <publickeyname>' . $info['author']                  . "</publickeyname>\n";
+	$xml .= '   <publickey>'     . base64_encode($public_key)       . "</publickey>\n";
 
 	/* get rid of the temp file */
 	unlink($files['template']['file']);
@@ -718,20 +738,22 @@ function package_template(&$template, &$info, &$files, &$debug) {
 	} elseif ($ok == 0) {
 		$basesig = '';
 		$debug .= "ERROR: Could not sign\n";
+
 		return false;
 	} else {
 		$basesig = '';
 		$debug .= "ERROR: Could not sign\n";
+
 		return false;
 	}
 
-	$xml .= "   <signature>" . $basesig . "</signature>\n</xml>";
+	$xml .= '   <signature>' . $basesig . "</signature>\n</xml>";
 
 	$name = get_item_name(get_request_var('export_type'), get_request_var('export_item_id'));
 
-	$debug .= "NOTE: Creating compressed template xml \"" . clean_up_name($name) . ".xml.gz\"\n";
+	$debug .= 'NOTE: Creating compressed template xml "' . clean_up_name($name) . ".xml.gz\"\n";
 
-	$f = fopen("compress.zlib://$tmpdir/" . clean_up_name($name) . ".xml.gz",'wb');
+	$f = fopen("compress.zlib://$tmpdir/" . clean_up_name($name) . '.xml.gz','wb');
 	fwrite($f, $xml, strlen($xml));
 	fclose($f);
 
@@ -746,15 +768,15 @@ function get_item_name($export_type, $export_id) {
 	$name = match ($export_type) {
 		'host_template' => db_fetch_cell_prepared('SELECT name
 			FROM host_template
-			WHERE id = ?', array($export_id)),
+			WHERE id = ?', [$export_id]),
 		'graph_template' => db_fetch_cell_prepared('SELECT name
 			FROM graph_templates
 			WHERE id = ?',
-			array($export_id)),
+			[$export_id]),
 		'data_query' => db_fetch_cell_prepared('SELECT name
 			FROM snmp_query
 			WHERE id = ?',
-			array($export_id)),
+			[$export_id]),
 		default => $name,
 	};
 

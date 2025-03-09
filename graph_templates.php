@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -33,13 +33,13 @@ include_once('./lib/utility.php');
 
 ini_set('max_execution_time', '0');
 
-$actions = array(
+$actions = [
 	1 => __('Delete'),
 	2 => __('Duplicate'),
 	3 => __('Change Settings'),
 	4 => __('Full Sync Graphs'),
 	5 => __('Quick Sync Graphs')
-);
+];
 
 /* set default action */
 set_default_action();
@@ -66,7 +66,7 @@ switch (get_request_var('action')) {
 			WHERE dtr.local_data_id = 0
 			AND (dtr.data_template_id = ? OR dtr.id = ?)
 			ORDER BY dt.name, dtr.data_source_name",
-			array($data_template_id, $task_item_id)
+			[$data_template_id, $task_item_id]
 		);
 
 		$output = '';
@@ -93,7 +93,7 @@ switch (get_request_var('action')) {
 		$sequences         = get_nfilter_request_var('item_ids');
 
 		if (cacti_sizeof($sequences)) {
-			foreach($sequences as $index => $s) {
+			foreach ($sequences as $index => $s) {
 				$new_seq = $index++;
 
 				/* graph template first */
@@ -101,7 +101,7 @@ switch (get_request_var('action')) {
 					SET sequence = ?
 					WHERE local_graph_template_item_id = ?
 					AND graph_template_id = ?',
-					array($new_seq, $s, $graph_template_id));
+					[$new_seq, $s, $graph_template_id]);
 
 				/* graphs next */
 				db_execute_prepared('UPDATE graph_templates_item
@@ -109,7 +109,7 @@ switch (get_request_var('action')) {
 					WHERE id = ?
 					AND local_graph_id = 0
 					AND graph_template_id = ?',
-					array($new_seq, $s, $graph_template_id));
+					[$new_seq, $s, $graph_template_id]);
 			}
 		}
 
@@ -210,7 +210,7 @@ function form_save() {
 				FROM graph_templates_graph
 				WHERE graph_template_id = ?
 				AND local_graph_id = 0',
-				array($graph_template_id));
+				[$graph_template_id]);
 
 			if ($prev_title == get_nfilter_request_var('title')) {
 				$push_title = false;
@@ -328,67 +328,67 @@ function form_save() {
 
 		global $graph_item_types;
 
-		$items[0] = array();
+		$items[0] = [];
 
 		if ($graph_item_types[get_nfilter_request_var('graph_type_id')] == 'LEGEND') {
 			/* this can be a major time saver when creating lots of graphs with the typical
 			GPRINT LAST/AVERAGE/MAX legends */
-			$items = array(
-				0 => array(
+			$items = [
+				0 => [
 					'color_id'                  => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '4',
 					'text_format'               => __('Cur:'),
 					'hard_return'               => ''
-				),
-				1 => array(
+				],
+				1 => [
 					'color_id'                  => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '1',
 					'text_format'               => __('Avg:'),
 					'hard_return'               => ''
-				),
-				2 => array(
+				],
+				2 => [
 					'color_id'                  => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '3',
 					'text_format'               => __('Max:'),
 					'hard_return'               => 'on'
-				)
-			);
+				]
+			];
 		} elseif ($graph_item_types[get_nfilter_request_var('graph_type_id')] == 'LEGEND_CAMM') {
 			/* this can be a major time saver when creating lots of graphs with the typical
 				GPRINT LAST/AVERAGE/MAX legends */
-			$items = array(
-				0 => array(
+			$items = [
+				0 => [
 					'color_id'                  => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '4',
 					'text_format'               => __('Cur:'),
 					'hard_return'               => ''
-				),
-				1 => array(
+				],
+				1 => [
 					'color_id'                  => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '1',
 					'text_format'               => __('Avg:'),
 					'hard_return'               => ''
-				),
-				2 => array(
+				],
+				2 => [
 					'color_id'                  => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '2',
 					'text_format'               => __('Min:'),
 					'hard_return'               => ''
-				),
-				3 => array(
+				],
+				3 => [
 					'color_id'                  => '0',
 					'graph_type_id'             => '9',
 					'consolidation_function_id' => '3',
 					'text_format'               => __('Max:'),
 					'hard_return'               => 'on'
-				)
-			);
+				]
+			];
 		}
 
 		$sequence = get_request_var('sequence');
@@ -405,7 +405,7 @@ function form_save() {
 				$task_item_id = db_fetch_cell_prepared('SELECT task_item_id
 					FROM graph_templates_item
 					WHERE id = ?',
-					array(get_request_var('graph_template_item_id'))
+					[get_request_var('graph_template_item_id')]
 				);
 
 				if (get_nfilter_request_var('task_item_id') == get_nfilter_request_var('_task_item_id')) {
@@ -453,7 +453,6 @@ function form_save() {
 						$save['line_width'] = 3;
 
 						break;
-
 					default:
 						$save['line_width'] = 0;
 				}
@@ -489,7 +488,7 @@ function form_save() {
 					ON gtid.graph_template_item_id = gti.id
 					WHERE gtin.graph_template_id = ?
 					AND gtin.column_name = 'task_item_id'
-					GROUP BY gti.task_item_id", array($save['graph_template_id']));
+					GROUP BY gti.task_item_id", [$save['graph_template_id']]);
 
 				$orig_data_source_to_input = array_rekey($orig_data_source_graph_inputs, 'task_item_id', 'id');
 
@@ -504,7 +503,7 @@ function form_save() {
 							/* It changed.  Delete any old associations */
 							db_execute_prepared('DELETE FROM graph_template_input_defs
 								WHERE graph_template_item_id = ?',
-								array($graph_template_item_id)
+								[$graph_template_item_id]
 							);
 
 							/* Input for current data source exists and has changed.  Update the association */
@@ -512,7 +511,7 @@ function form_save() {
 								db_execute_prepared('REPLACE INTO graph_template_input_defs
 									(graph_template_input_id, graph_template_item_id)
 									VALUES (?, ?)',
-									array($orig_data_source_to_input[$save['task_item_id']], $graph_template_item_id)
+									[$orig_data_source_to_input[$save['task_item_id']], $graph_template_item_id]
 								);
 							}
 						}
@@ -522,13 +521,13 @@ function form_save() {
 							$ds_name = db_fetch_cell_prepared('SELECT data_source_name
 								FROM data_template_rrd
 								WHERE id = ?',
-								array(get_nfilter_request_var('task_item_id'))
+								[get_nfilter_request_var('task_item_id')]
 							);
 
 							db_execute_prepared("REPLACE INTO graph_template_input
 								(hash, graph_template_id, name, column_name)
 								VALUES (?, ?, ?, 'task_item_id')",
-								array(get_hash_graph_template(0, 'graph_template_input'), $save['graph_template_id'], "Data Source [$ds_name]")
+								[get_hash_graph_template(0, 'graph_template_input'), $save['graph_template_id'], "Data Source [$ds_name]"]
 							);
 
 							$graph_template_input_id = db_fetch_insert_id();
@@ -537,7 +536,7 @@ function form_save() {
 								FROM graph_templates_item
 								WHERE graph_template_id = ?
 								AND task_item_id = ?',
-								array($save['graph_template_id'], get_nfilter_request_var('task_item_id'))
+								[$save['graph_template_id'], get_nfilter_request_var('task_item_id')]
 							);
 
 							if (cacti_sizeof($graph_items)) {
@@ -545,7 +544,7 @@ function form_save() {
 									db_execute_prepared('REPLACE INTO graph_template_input_defs
 										(graph_template_input_id, graph_template_item_id)
 										VALUES (?, ?)',
-										array($graph_template_input_id, $graph_item['id'])
+										[$graph_template_input_id, $graph_item['id']]
 									);
 								}
 							}
@@ -556,7 +555,7 @@ function form_save() {
 
 					if (isset($orig_data_source_to_input[get_nfilter_request_var('task_item_id')])) {
 						/* make sure all current graphs using this graph input are aware of this change */
-						push_out_graph_input($orig_data_source_to_input[get_nfilter_request_var('task_item_id')], $graph_template_item_id, array($graph_template_item_id => $graph_template_item_id));
+						push_out_graph_input($orig_data_source_to_input[get_nfilter_request_var('task_item_id')], $graph_template_item_id, [$graph_template_item_id => $graph_template_item_id]);
 					}
 				} else {
 					raise_message(2);
@@ -574,15 +573,15 @@ function form_save() {
 			db_execute_prepared('UPDATE graph_templates
 				SET last_updated = NOW()
 				WHERE id = ?',
-				array(get_nfilter_request_var('graph_template_id')));
+				[get_nfilter_request_var('graph_template_id')]);
 
 			header('Location: graph_templates.php?action=template_edit&id=' . get_nfilter_request_var('graph_template_id'));
 
 			exit;
 		}
 	} elseif ((isset_request_var('save_component_input')) && (!is_error_message())) {
-		$graph_input_values   = array();
-		$selected_graph_items = array();
+		$graph_input_values   = [];
+		$selected_graph_items = [];
 
 		/* ================= input validation ================= */
 		get_filter_request_var('graph_template_input_id');
@@ -607,7 +606,7 @@ function form_save() {
 					db_fetch_assoc_prepared('SELECT graph_template_item_id
 						FROM graph_template_input_defs
 						WHERE graph_template_input_id = ?',
-						array($graph_template_input_id)),
+						[$graph_template_input_id]),
 					'graph_template_item_id', 'graph_template_item_id'
 				);
 
@@ -632,15 +631,15 @@ function form_save() {
 
 				if ((isset($new_members)) && (cacti_sizeof($new_members) > 0)) {
 					foreach ($new_members as $item_id) {
-						push_out_graph_input($graph_template_input_id, $item_id, (isset($new_members) ? $new_members : array()));
+						push_out_graph_input($graph_template_input_id, $item_id, (isset($new_members) ? $new_members : []));
 					}
 				}
 
-				db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_input_id = ?', array($graph_template_input_id));
+				db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_input_id = ?', [$graph_template_input_id]);
 
 				if (cacti_sizeof($selected_graph_items) > 0) {
 					foreach ($selected_graph_items as $graph_template_item_id) {
-						db_execute_prepared('INSERT INTO graph_template_input_defs (graph_template_input_id, graph_template_item_id) VALUES (?, ?)', array($graph_template_input_id, $graph_template_item_id));
+						db_execute_prepared('INSERT INTO graph_template_input_defs (graph_template_input_id, graph_template_item_id) VALUES (?, ?)', [$graph_template_input_id, $graph_template_item_id]);
 					}
 				}
 			} else {
@@ -656,7 +655,7 @@ function form_save() {
 			db_execute_prepared('UPDATE graph_templates
 				SET last_updated = NOW()
 				WHERE id = ?',
-				array(get_nfilter_request_var('graph_template_id')));
+				[get_nfilter_request_var('graph_template_id')]);
 
 			header('Location: graph_templates.php?action=template_edit&id=' . get_nfilter_request_var('graph_template_id'));
 
@@ -681,7 +680,7 @@ function item_movedown() {
 	$graph_type = db_fetch_cell_prepared('SELECT graph_type_id
 		FROM graph_templates_item
 		WHERE id = ?',
-		array(get_request_var('id'))
+		[get_request_var('id')]
 	);
 
 	$text_type  = $graph_item_types[$graph_type];
@@ -714,7 +713,7 @@ function item_moveup() {
 	$graph_type = db_fetch_cell_prepared('SELECT graph_type_id
 		FROM graph_templates_item
 		WHERE id = ?',
-		array(get_request_var('id'))
+		[get_request_var('id')]
 	);
 
 	$text_type  = $graph_item_types[$graph_type];
@@ -739,8 +738,8 @@ function item_remove() {
 	get_filter_request_var('graph_template_id');
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM graph_templates_item WHERE id = ?', array(get_request_var('id')));
-	db_execute_prepared('DELETE FROM graph_templates_item WHERE local_graph_template_item_id = ?', array(get_request_var('id')));
+	db_execute_prepared('DELETE FROM graph_templates_item WHERE id = ?', [get_request_var('id')]);
+	db_execute_prepared('DELETE FROM graph_templates_item WHERE local_graph_template_item_id = ?', [get_request_var('id')]);
 
 	/* delete the graph item input if it is empty */
 	$graph_item_inputs = db_fetch_assoc_prepared('SELECT graph_template_input.id
@@ -748,17 +747,17 @@ function item_remove() {
 		WHERE graph_template_input.id = graph_template_input_defs.graph_template_input_id
 		AND graph_template_input.graph_template_id = ?
 		AND graph_template_input_defs.graph_template_item_id = ?
-		GROUP BY graph_template_input.id', array(get_request_var('graph_template_id'), get_request_var('id')));
+		GROUP BY graph_template_input.id', [get_request_var('graph_template_id'), get_request_var('id')]);
 
 	if (cacti_sizeof($graph_item_inputs) > 0) {
 		foreach ($graph_item_inputs as $graph_item_input) {
-			if (cacti_sizeof(db_fetch_assoc_prepared('SELECT graph_template_input_id FROM graph_template_input_defs WHERE graph_template_input_id = ?', array($graph_item_input['id']))) == 1) {
-				db_execute_prepared('DELETE FROM graph_template_input WHERE id = ?', array($graph_item_input['id']));
+			if (cacti_sizeof(db_fetch_assoc_prepared('SELECT graph_template_input_id FROM graph_template_input_defs WHERE graph_template_input_id = ?', [$graph_item_input['id']])) == 1) {
+				db_execute_prepared('DELETE FROM graph_template_input WHERE id = ?', [$graph_item_input['id']]);
 			}
 		}
 	}
 
-	db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_item_id = ?', array(get_request_var('id')));
+	db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_item_id = ?', [get_request_var('id')]);
 }
 
 function item_edit() {
@@ -771,20 +770,20 @@ function item_edit() {
 	/* ==================================================== */
 
 	/* ================= input validation and session storage ================= */
-	$filters = array(
-		'data_template_id' => array(
+	$filters = [
+		'data_template_id' => [
 			'filter'  => FILTER_VALIDATE_INT,
 			'pageset' => true,
 			'default' => '0'
-		),
-	);
+		],
+	];
 
 	validate_store_request_vars($filters, 'sess_gti_' . get_filter_request_var('graph_template_id'));
 	/* ================= input validation ================= */
 
 	if (get_request_var('graph_template_id') > 0 || isset_request_var('id')) {
 		$sql_where  = '';
-		$sql_params = array();
+		$sql_params = [];
 
 		if (get_request_var('id') > 0) {
 			$sql_where .= ' AND gti.id = ?';
@@ -823,7 +822,7 @@ function item_edit() {
 
 	form_start('graph_templates.php', 'graph_items');
 
-	$header_label = __esc('Graph Template Items [edit graph: %s]', db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id'))));
+	$header_label = __esc('Graph Template Items [edit graph: %s]', db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', [get_request_var('graph_template_id')]));
 
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
@@ -831,7 +830,7 @@ function item_edit() {
 		$template_item = db_fetch_row_prepared('SELECT *
 			FROM graph_templates_item
 			WHERE id = ?',
-			array(get_request_var('id'))
+			[get_request_var('id')]
 		);
 	}
 
@@ -842,7 +841,7 @@ function item_edit() {
 			WHERE graph_template_id = ?
 			AND local_graph_id = 0
 			ORDER BY sequence DESC',
-			array(get_request_var('graph_template_id'))
+			[get_request_var('graph_template_id')]
 		);
 
 		if (cacti_sizeof($default) > 0) {
@@ -858,8 +857,8 @@ function item_edit() {
 		$sql_where = '';
 	}
 
-	$data_template_helper = array(
-		'data_template_id' => array(
+	$data_template_helper = [
+		'data_template_id' => [
 			'friendly_name' => __('Data Template Filter'),
 			'method'        => 'drop_sql',
 			'sql'           => 'SELECT id, name FROM data_template ORDER BY name',
@@ -867,8 +866,8 @@ function item_edit() {
 			'value'         => (isset_request_var('data_template_id') ? get_filter_request_var('data_template_id') : '0'),
 			'none_value'    => __('Any'),
 			'description'   => __('This filter will limit the Data Sources visible in the Data Source dropdown.')
-		)
-	);
+		]
+	];
 
 	/* modifications to the default graph items array */
 	$struct_graph_item['task_item_id']['sql'] = "SELECT dtr.id,
@@ -882,10 +881,10 @@ function item_edit() {
 
 	$mystruct_graph_item = array_merge($data_template_helper, $struct_graph_item);
 
-	$form_array = array();
+	$form_array = [];
 
 	foreach ($mystruct_graph_item as $field_name => $field_array) {
-		$form_array += array($field_name => $mystruct_graph_item[$field_name]);
+		$form_array += [$field_name => $mystruct_graph_item[$field_name]];
 
 		if ($field_name != 'data_template_id') {
 			$form_array[$field_name]['value']   = (isset($template_item) ? $template_item[$field_name] : '');
@@ -908,21 +907,25 @@ function item_edit() {
 				$data_source = db_fetch_cell_prepared('SELECT data_source_name
 					FROM data_template_rrd
 					WHERE id = ? AND local_data_id = 0',
-					array($template_item['task_item_id']));
+					[$template_item['task_item_id']]);
 
 				if ($data_source != '') {
 					switch($template_item['consolidation_function_id']) {
 						case 1:
 							$data_source .= ' (AVG)';
+
 							break;
 						case 2:
 							$data_source .= ' (MIN)';
+
 							break;
 						case 3:
 							$data_source .= ' (MAX)';
+
 							break;
 						case 4:
 							$data_source .= ' (LAST)';
+
 							break;
 					}
 
@@ -932,10 +935,10 @@ function item_edit() {
 	}
 
 	draw_edit_form(
-		array(
-			'config' => array('no_form_tag' => true),
+		[
+			'config' => ['no_form_tag' => true],
 			'fields' => $form_array
-		)
+		]
 	);
 
 	html_end_box(true, true);
@@ -1054,7 +1057,7 @@ function form_actions() {
 	global $actions, $config, $image_types, $graph_template_classes;
 
 	/* ================= input validation ================= */
-	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
+	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
@@ -1094,7 +1097,7 @@ function form_actions() {
 				if (cacti_sizeof($graph_template_input) > 0) {
 					foreach ($graph_template_input as $item) {
 						db_execute_prepared('DELETE FROM graph_template_input_defs
-							WHERE graph_template_input_id = ?', array($item['id']));
+							WHERE graph_template_input_id = ?', [$item['id']]);
 					}
 				}
 
@@ -1131,18 +1134,18 @@ function form_actions() {
 				get_filter_request_var('graph_height');
 				get_filter_request_var('image_format_id');
 
-				foreach($selected_items as $graph_template_id) {
-					$variables = array('height', 'width', 'image_format_id');
+				foreach ($selected_items as $graph_template_id) {
+					$variables = ['height', 'width', 'image_format_id'];
 
-					foreach($variables as $v) {
+					foreach ($variables as $v) {
 						if (isset_request_var($v) && isset_request_var("t_$v")) {
 							db_execute_prepared("UPDATE graph_templates_graph
 								SET $v = ?
 								WHERE graph_template_id = ?",
-								array(
+								[
 									get_nfilter_request_var($v),
 									$graph_template_id
-								)
+								]
 							);
 						}
 					}
@@ -1151,10 +1154,10 @@ function form_actions() {
 						db_execute_prepared('UPDATE graph_templates
 							SET class = ?
 							WHERE id = ?',
-							array(
+							[
 								get_nfilter_request_var('class'),
 								$graph_template_id
-							)
+							]
 						);
 					}
 				}
@@ -1165,7 +1168,7 @@ function form_actions() {
 					$graph_template_name = db_fetch_cell_prepared('SELECT name
 						FROM graph_templates
 						WHERE id = ?',
-						array($selected_items[$i]));
+						[$selected_items[$i]]);
 
 					if (isset($_SESSION['sess_gt_repairs']) && $_SESSION['sess_gt_repairs'] > 0) {
 						raise_message('gt_repair' . $selected_items[$i], __('Sync of Graph Template \'%s\' Resulted in %s Repairs!', $graph_template_name, $_SESSION['sess_gt_repairs']), MESSAGE_LEVEL_WARN);
@@ -1180,7 +1183,7 @@ function form_actions() {
 					$graph_template_name = db_fetch_cell_prepared('SELECT name
 						FROM graph_templates
 						WHERE id = ?',
-						array($selected_items[$i]));
+						[$selected_items[$i]]);
 
 					if (isset($_SESSION['sess_gt_repairs']) && $_SESSION['sess_gt_repairs'] > 0) {
 						raise_message('gt_repair' . $selected_items[$i], __('Sync of Graph Template \'%s\' Resulted in %s Repairs!', $graph_template_name, $_SESSION['sess_gt_repairs']), MESSAGE_LEVEL_WARN);
@@ -1196,7 +1199,7 @@ function form_actions() {
 		exit;
 	} else {
 		$ilist  = '';
-		$iarray = array();
+		$iarray = [];
 
 		/* loop through each of the graphs selected on the previous page and get more info about them */
 		foreach ($_POST as $var => $val) {
@@ -1205,92 +1208,92 @@ function form_actions() {
 				input_validate_input_number($matches[1], 'chk[1]');
 				/* ==================================================== */
 
-				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($matches[1]))) . '</li>';
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', [$matches[1]])) . '</li>';
 				$iarray[] = $matches[1];
 			}
 		}
 
-		$form_data = array(
-			'general' => array(
+		$form_data = [
+			'general' => [
 				'page'       => 'graph_templates.php',
 				'actions'    => $actions,
 				'optvar'     => 'drp_action',
 				'item_array' => $iarray,
 				'item_list'  => $ilist
-			),
-			'options' => array(
-				1 => array(
+			],
+			'options' => [
+				1 => [
 					'smessage' => __('Click \'Continue\' to Delete the following Graph Template.'),
 					'pmessage' => __('Click \'Continue\' to Delete following Graph Templates.'),
 					'scont'    => __('Delete Graph Template'),
 					'pcont'    => __('Delete Graph Templates')
-				),
-				2 => array(
+				],
+				2 => [
 					'smessage' => __('Click \'Continue\' to Duplicate the following Graph Template.'),
 					'pmessage' => __('Click \'Continue\' to Duplicate following Graph Templates.'),
 					'scont'    => __('Duplicate Graph Template'),
 					'pcont'    => __('Duplicate Graph Templates'),
-					'extra'    => array(
-						'title_format' => array(
+					'extra'    => [
+						'title_format' => [
 							'method'  => 'textbox',
 							'title'   => __('Title Format'),
 							'default' => '<template_title> (1)',
 							'width'   => 45
-						)
-					)
-				),
-				3 => array(
+						]
+					]
+				],
+				3 => [
 					'smessage' => __('Click \'Continue\' to Resize the following Graph Template.'),
 					'pmessage' => __('Click \'Continue\' to Resize following Graph Templates.'),
 					'scont'    => __('Resize Graph Template'),
 					'pcont'    => __('Resize Graph Templates'),
-					'extra'    => array(
-						'class' => array(
+					'extra'    => [
+						'class' => [
 							'method'  => 'drop_array',
 							'title'   => __('Template Class'),
 							'default' => 'unspecified',
 							'array'   => $graph_template_classes,
 							'confirm' => true
-						),
-						'height' => array(
+						],
+						'height' => [
 							'method'  => 'textbox',
 							'title'   => __('Graph Height'),
 							'default' => read_config_option('default_graph_height'),
 							'width'   => 5,
 							'size'    => 5,
 							'confirm' => true
-						),
-						'width' => array(
+						],
+						'width' => [
 							'method'  => 'textbox',
 							'title'   => __('Graph Width'),
 							'default' => read_config_option('default_graph_width'),
 							'width'   => 5,
 							'size'    => 5,
 							'confirm' => true
-						),
-						'image_format_id' => array(
+						],
+						'image_format_id' => [
 							'method'   => 'drop_array',
 							'title'    => __('Image Format'),
 							'array'    => $image_types,
 							'default'  => read_config_option('default_image_format'),
-							'confirm' => true
-						)
-					)
-				),
-				4 => array(
+							'confirm'  => true
+						]
+					]
+				],
+				4 => [
 					'smessage' => __('Click \'Continue\' to perform a Full Synchronization between your Graphs and the chosen Graph Template. If you simply have a situation where the Graph Items don\'t match the Graph Template, try the Quick Sync Graphs option first as it will take much less time.  This function is important if you have Graphs that exist with multiple versions of a Graph Template and wish to make them all common in appearance.'),
 					'pmessage' => __('Click \'Continue\' to perform a Full Synchronization between your Graphs and the chosen Graph Templates. If you simply have a situation where the Graph Items don\'t match the Graph Template, try the Quick Sync Graphs option first as it will take much less time.  This function is important if you have Graphs that exist with multiple versions of a Graph Template and wish to make them all common in appearance.'),
-					'scont'   => __('Synchronize Graphs to Graph Template'),
-					'pcont'   => __('Synchronize Graphs to Graph Templates'),
-				),
-				5 => array(
-					'smessage' =>  __('Click \'Continue\' to perform a Quick Synchronization of your Graphs for the following Graph Template. Use this option if your Graphs have Graph Items that do not match your Graph Template.  If this option does not work, use the Full Sync Graphs option, which will take more time to complete.'),
-					'pmessage' =>  __('Click \'Continue\' to perform a Quick Synchronization of your Graphs for the following Graph Templates. Use this option if your Graphs have Graph Items that do not match your Graph Template.  If this option does not work, use the Full Sync Graphs option, which will take more time to complete.'),
-					'scont'   => __('Synchronize Graphs to Graph Template'),
-					'pcont'   => __('Synchronize Graphs to Graph Templates'),
-				)
-			)
-		);
+					'scont'    => __('Synchronize Graphs to Graph Template'),
+					'pcont'    => __('Synchronize Graphs to Graph Templates'),
+				],
+				5 => [
+					'smessage' => __('Click \'Continue\' to perform a Quick Synchronization of your Graphs for the following Graph Template. Use this option if your Graphs have Graph Items that do not match your Graph Template.  If this option does not work, use the Full Sync Graphs option, which will take more time to complete.'),
+					'pmessage' => __('Click \'Continue\' to perform a Quick Synchronization of your Graphs for the following Graph Templates. Use this option if your Graphs have Graph Items that do not match your Graph Template.  If this option does not work, use the Full Sync Graphs option, which will take more time to complete.'),
+					'scont'    => __('Synchronize Graphs to Graph Template'),
+					'pcont'    => __('Synchronize Graphs to Graph Templates'),
+				]
+			]
+		];
 
 		form_continue_confirmation($form_data);
 	}
@@ -1304,7 +1307,7 @@ function item() {
 	/* ==================================================== */
 
 	if (isempty_request_var('id')) {
-		$template_item_list = array();
+		$template_item_list = [];
 
 		$header_label = 'Graph Template Items [new]';
 	} else {
@@ -1334,9 +1337,9 @@ function item() {
 			WHERE gti.graph_template_id = ?
 			AND gti.local_graph_id = 0
 			ORDER BY gti.sequence",
-			array(get_request_var('id')));
+			[get_request_var('id')]);
 
-		$header_label = __esc('Graph Template Items [edit: %s]', db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('id'))));
+		$header_label = __esc('Graph Template Items [edit: %s]', db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', [get_request_var('id')]));
 	}
 
 	html_start_box($header_label, '100%', '', '3', 'center', 'graph_templates.php?action=item_edit&graph_template_id=' . get_request_var('id'));
@@ -1352,6 +1355,7 @@ function item() {
 	$database = utilities_get_mysql_info();
 
 	$sql_order = 'ORDER BY name';
+
 	if ($database['database'] == 'MariaDB') {
 		if (cacti_version_compare($database['version'], '10.7', '>')) {
 			$sql_order = 'ORDER BY NATURAL_SORT_KEY(name)';
@@ -1362,7 +1366,7 @@ function item() {
 		FROM graph_template_input
 		WHERE graph_template_id = ?
 		$sql_order",
-		array(get_request_var('id')));
+		[get_request_var('id')]);
 
 	$i = 0;
 
@@ -1421,13 +1425,13 @@ function template_edit() {
 		$template = db_fetch_row_prepared('SELECT *
 			FROM graph_templates
 			WHERE id = ?',
-			array(get_request_var('id')));
+			[get_request_var('id')]);
 
 		$template_graph = db_fetch_row_prepared('SELECT *
 			FROM graph_templates_graph
 			WHERE graph_template_id = ?
 			AND local_graph_id=0',
-			array(get_request_var('id')));
+			[get_request_var('id')]);
 
 		$header_label = __esc('Graph Template [edit: %s]', $template['name']);
 	} else {
@@ -1443,20 +1447,20 @@ function template_edit() {
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
-		array(
-			'config' => array('no_form_tag' => true),
-			'fields' => inject_form_variables($fields_graph_template_template_edit, (isset($template) ? $template : array()), (isset($template_graph) ? $template_graph : array()))
-		)
+		[
+			'config' => ['no_form_tag' => true],
+			'fields' => inject_form_variables($fields_graph_template_template_edit, (isset($template) ? $template : []), (isset($template_graph) ? $template_graph : []))
+		]
 	);
 
 	html_end_box(true, true);
 
 	html_start_box(__('Graph Template Options'), '100%', true, '3', 'center', '');
 
-	$form_array = array();
+	$form_array = [];
 
 	foreach ($struct_graph as $field_name => $field_array) {
-		$form_array += array($field_name => $struct_graph[$field_name]);
+		$form_array += [$field_name => $struct_graph[$field_name]];
 
 		if ($form_array[$field_name]['method'] != 'spacer') {
 			$form_array[$field_name]['value'] = (isset($template_graph[$field_name]) ? $template_graph[$field_name] : '');
@@ -1465,19 +1469,19 @@ function template_edit() {
 		$form_array[$field_name]['form_id'] = (isset($template_graph['id']) ? $template_graph['id'] : '0');
 
 		if ($form_array[$field_name]['method'] != 'spacer') {
-			$form_array[$field_name]['sub_checkbox'] = array(
+			$form_array[$field_name]['sub_checkbox'] = [
 				'name'          => 't_' . $field_name,
 				'friendly_name' => __esc('Check this checkbox if you wish to allow the user to override the value on the right during Graph creation.'),
 				'value'         => (isset($template_graph['t_' . $field_name]) ? $template_graph['t_' . $field_name] : '')
-			);
+			];
 		}
 	}
 
 	draw_edit_form(
-		array(
-			'config' => array('no_form_tag' => true),
+		[
+			'config' => ['no_form_tag' => true],
 			'fields' => $form_array
-		)
+		]
 	);
 
 	form_hidden_box('rrdtool_version', get_rrdtool_version(), '');
@@ -1528,10 +1532,10 @@ function graph_templates() {
 
 	/* form the 'where' clause for our main sql query */
 	$sql_where  = '';
-	$sql_params = array();
+	$sql_params = [];
 
 	if (get_request_var('filter') != '') {
-		$sql_where = 'WHERE gt.name LIKE ?';
+		$sql_where    = 'WHERE gt.name LIKE ?';
 		$sql_params[] = '%' . get_request_var('filter') . '%';
 	}
 
@@ -1590,73 +1594,73 @@ function graph_templates() {
 		$sql_limit",
 		$sql_params);
 
-	$display_text = array(
-		'name' => array(
+	$display_text = [
+		'name' => [
 			'display' => __('Graph Template Name'),
 			'align'   => 'left',
 			'sort'    => 'ASC',
 			'tip'     => __('The name of this Graph Template.')
-		),
-		'gt.id' => array(
+		],
+		'gt.id' => [
 			'display' => __('ID'),
 			'align'   => 'right',
 			'sort'    => 'ASC',
 			'tip'     => __('The internal ID for this Graph Template.  Useful when performing automation or debugging.')
-		),
-		'class' => array(
+		],
+		'class' => [
 			'display' => __('Class'),
 			'align'   => 'right',
 			'sort'    => 'ASC',
 			'tip'     => __('The Class of this Graph Template')
-		),
-		'version' => array(
+		],
+		'version' => [
 			'display' => __('Version'),
 			'align'   => 'right',
 			'sort'    => 'ASC',
 			'tip'     => __('The Version of this Graph Template')
-		),
-		'nosort3' => array(
+		],
+		'nosort3' => [
 			'display' => __('Deletable'),
 			'align'   => 'right',
 			'tip'     => __('Graph Templates that are in use cannot be Deleted.  In use is defined as being referenced by a Graph.')
-		),
-		'graph_items' => array(
+		],
+		'graph_items' => [
 			'display' => __('Graph Items'),
 			'align'   => 'right',
 			'sort'    => 'DESC',
 			'tip'     => __('The number of Graph Items in this Graph Template.')
-		),
-		'graphs' => array(
+		],
+		'graphs' => [
 			'display' => __('Graphs Using'),
 			'align'   => 'right',
 			'sort'    => 'DESC',
 			'tip'     => __('The number of Graphs using this Graph Template.')
-		),
-		'image_format_id' => array(
+		],
+		'image_format_id' => [
 			'display' => __('Image Format'),
 			'align'   => 'right',
 			'sort'    => 'ASC',
 			'tip'     => __('The default image format for the resulting Graphs.')
-		),
-		'size' => array(
+		],
+		'size' => [
 			'display' => __('Size'),
 			'align'   => 'right',
 			'sort'    => 'ASC',
 			'tip'     => __('The default size of the resulting Graphs.')
-		),
-		'vertical_label' => array(
+		],
+		'vertical_label' => [
 			'display' => __('Vertical Label'),
 			'align'   => 'right',
 			'sort'    => 'ASC',
 			'tip'     => __('The vertical label for the resulting Graphs.')
-		),
-		'last_updated' => array(
+		],
+		'last_updated' => [
 			'display' => __('Last Updated'),
 			'align'   => 'right',
 			'sort'    => 'ASC',
 			'tip'     => __('The last time this Template was updated.')
-		)
-	);
+		]
+	];
 
 	$nav = html_nav_bar('graph_templates.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Graph Templates'), 'page', 'main');
 
@@ -1718,8 +1722,8 @@ function input_remove() {
 	get_filter_request_var('graph_template_id');
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM graph_template_input WHERE id = ?', array(get_request_var('id')));
-	db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_input_id = ?', array(get_request_var('id')));
+	db_execute_prepared('DELETE FROM graph_template_input WHERE id = ?', [get_request_var('id')]);
+	db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_input_id = ?', [get_request_var('id')]);
 }
 
 function input_edit() {
@@ -1733,7 +1737,7 @@ function input_edit() {
 	get_filter_request_var('graph_template_id');
 	/* ==================================================== */
 
-	$header_label = __esc('Graph Item Inputs [edit graph: %s]', db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id'))));
+	$header_label = __esc('Graph Item Inputs [edit graph: %s]', db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', [get_request_var('graph_template_id')]));
 
 	/* get a list of all graph item field names and populate an array for user display */
 	foreach ($struct_graph_item as $field_name => $field_array) {
@@ -1743,7 +1747,7 @@ function input_edit() {
 	}
 
 	if (!isempty_request_var('id')) {
-		$graph_template_input = db_fetch_row_prepared('SELECT * FROM graph_template_input WHERE id = ?', array(get_request_var('id')));
+		$graph_template_input = db_fetch_row_prepared('SELECT * FROM graph_template_input WHERE id = ?', [get_request_var('id')]);
 	}
 
 	form_start('graph_templates.php');
@@ -1751,10 +1755,10 @@ function input_edit() {
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
-		array(
-			'config' => array('no_form_tag' => true),
-			'fields' => inject_form_variables($fields_graph_template_input_edit, (isset($graph_template_input) ? $graph_template_input : array()), (isset($graph_template_items) ? $graph_template_items : array()), $_REQUEST)
-		)
+		[
+			'config' => ['no_form_tag' => true],
+			'fields' => inject_form_variables($fields_graph_template_input_edit, (isset($graph_template_input) ? $graph_template_input : []), (isset($graph_template_items) ? $graph_template_items : []), $_REQUEST)
+		]
 	);
 
 	if (!isset_request_var('id')) {
@@ -1779,7 +1783,7 @@ function input_edit() {
 		WHERE gti.local_graph_id = 0
 		AND gti.graph_template_id = ?
 		ORDER BY gti.sequence",
-		array(get_request_var('id'), get_request_var('graph_template_id')));
+		[get_request_var('id'), get_request_var('graph_template_id')]);
 
 	html_start_box(__('Associated Graph Items'), '100%', false, '3', 'center', '');
 
@@ -1834,9 +1838,9 @@ function input_edit() {
 function create_graph_templates_filter() {
 	global $item_rows, $graph_template_classes;
 
-	$all     = array('-1' => __('All'));
-	$any     = array('-1' => __('Any'));
-	$none    = array('0'  => __('None'));
+	$all     = ['-1' => __('All')];
+	$any     = ['-1' => __('Any')];
+	$none    = ['0'  => __('None')];
 
 	if (isset_request_var('has_graphs')) {
 		$value = get_nfilter_request_var('has_graphs');
@@ -1890,20 +1894,20 @@ function create_graph_templates_filter() {
 
 	$vdefs = $all + $vdefs;
 
-	return array(
-		'rows' => array(
-			array(
-				'class' => array(
+	return [
+		'rows' => [
+			[
+				'class' => [
 					'method'         => 'drop_array',
 					'friendly_name'  => __('Class'),
 					'filter'         => FILTER_CALLBACK,
-					'filter_options' => array('options' => 'sanitize_search_string'),
+					'filter_options' => ['options' => 'sanitize_search_string'],
 					'default'        => '-1',
 					'pageset'        => true,
 					'array'          => $graph_template_classes,
 					'value'          => '-1'
-				),
-				'cdef_id' => array(
+				],
+				'cdef_id' => [
 					'method'         => 'drop_array',
 					'friendly_name'  => __('CDEFs'),
 					'filter'         => FILTER_VALIDATE_INT,
@@ -1911,8 +1915,8 @@ function create_graph_templates_filter() {
 					'pageset'        => true,
 					'array'          => $cdefs,
 					'value'          => '-1'
-				),
-				'vdef_id' => array(
+				],
+				'vdef_id' => [
 					'method'         => 'drop_array',
 					'friendly_name'  => __('VDEFs'),
 					'filter'         => FILTER_VALIDATE_INT,
@@ -1920,20 +1924,20 @@ function create_graph_templates_filter() {
 					'pageset'        => true,
 					'array'          => $vdefs,
 					'value'          => '-1'
-				),
-				'has_graphs' => array(
+				],
+				'has_graphs' => [
 					'method'         => 'filter_checkbox',
 					'friendly_name'  => __('Has Graphs'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => array('options' => array('regexp' => '(true|false)')),
+					'filter_options' => ['options' => ['regexp' => '(true|false)']],
 					'default'        => '',
 					'pageset'        => true,
 					'value'          => $value
-				)
-			),
-			array(
-				'filter' => array(
-					'method'        => 'textbox',
+				]
+			],
+			[
+				'filter' => [
+					'method'         => 'textbox',
 					'friendly_name'  => __('Search'),
 					'filter'         => FILTER_VALIDATE_IS_REGEX,
 					'placeholder'    => __('Enter a search term'),
@@ -1942,8 +1946,8 @@ function create_graph_templates_filter() {
 					'pageset'        => true,
 					'max_length'     => '120',
 					'value'          => ''
-				),
-				'rows' => array(
+				],
+				'rows' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Graph Templates'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -1951,26 +1955,26 @@ function create_graph_templates_filter() {
 					'pageset'       => true,
 					'array'         => $item_rows,
 					'value'         => '-1'
-				)
-			)
-		),
-		'buttons' => array(
-			'go' => array(
+				]
+			]
+		],
+		'buttons' => [
+			'go' => [
 				'method'  => 'submit',
 				'display' => __('Go'),
 				'title'   => __('Apply filter to table'),
-			),
-			'clear' => array(
+			],
+			'clear' => [
 				'method'  => 'button',
 				'display' => __('Clear'),
 				'title'   => __('Reset filter to default values'),
-			)
-		),
-		'sort' => array(
+			]
+		],
+		'sort' => [
 			'sort_column'    => 'name',
 			'sort_direction' => 'ASC'
-		)
-	);
+		]
+	];
 }
 
 function draw_graph_templates_filter($render = false) {
@@ -1988,4 +1992,3 @@ function draw_graph_templates_filter($render = false) {
 		$pageFilter->sanitize();
 	}
 }
-

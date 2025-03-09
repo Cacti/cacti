@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -35,14 +35,14 @@ function duplicate_reports($_id, $_title) {
 	$report = db_fetch_row_prepared('SELECT *
 		FROM reports
 		WHERE id = ?',
-		array($_id));
+		[$_id]);
 
 	$reports_items = db_fetch_assoc_prepared('SELECT *
 		FROM reports_items
 		WHERE report_id = ?',
-		array($_id));
+		[$_id]);
 
-	$save = array();
+	$save = [];
 
 	foreach ($fields_reports_edit as $field => $array) {
 		if (!preg_match('/^hidden/', $array['method']) &&
@@ -76,7 +76,7 @@ function reports_add_devices($report_id, $device_ids, $timespan, $align) {
 	$report_user = db_fetch_cell_prepared('SELECT user_id
 		FROM reports
 		WHERE id = ?',
-		array($report_id));
+		[$report_id]);
 
 	if ($report_user != $_SESSION[SESS_USER_ID]) {
 		raise_message('reports_not_owner');
@@ -89,7 +89,7 @@ function reports_add_devices($report_id, $device_ids, $timespan, $align) {
 			$sequence = db_fetch_cell_prepared('SELECT MAX(sequence)
 				FROM reports_items
 				WHERE report_id = ?',
-				array($report_id)) + 1;
+				[$report_id]) + 1;
 
 			$exists = db_fetch_cell_prepared('SELECT id
 				FROM reports_items
@@ -97,29 +97,29 @@ function reports_add_devices($report_id, $device_ids, $timespan, $align) {
 				AND item_type = 5
 				AND report_id = ?
 				AND timespan = ?',
-				array($device_id, $report_id, $timespan));
+				[$device_id, $report_id, $timespan]);
 
 			$device_exists = db_fetch_cell_prepared('SELECT id
 				FROM host
 				WHERE id = ?',
-				array($device_id));
+				[$device_id]);
 
 			$description = db_fetch_cell_prepared('SELECT description
 				FROM host
 				WHERE id = ?',
-				array($device_id));
+				[$device_id]);
 
 			if (!$exists) {
 				if ($device_exists > 0) {
 					$host_template_id = db_fetch_cell_prepared('SELECT host_template_id
 						FROM host
 						WHERE id = ?',
-						array($device_id));
+						[$device_id]);
 
 					$site_id = db_fetch_cell_prepared('SELECT site_id
 						FROM host
 						WHERE id = ?',
-						array($device_id));
+						[$device_id]);
 
 					// Setup defaults
 					$graph_template_id = -1;
@@ -128,7 +128,7 @@ function reports_add_devices($report_id, $device_ids, $timespan, $align) {
 					db_execute_prepared('INSERT INTO reports_items
 						(report_id, item_type, host_template_id, site_id, host_id, graph_template_id, local_graph_id, timespan, align, sequence)
 						VALUES (?, 5, ?, ?, ?, ?, ?, ?, ?, ?)',
-						array(
+						[
 							$report_id,
 							$host_template_id,
 							$site_id,
@@ -138,7 +138,7 @@ function reports_add_devices($report_id, $device_ids, $timespan, $align) {
 							$timespan,
 							$align,
 							$sequence
-						)
+						]
 					);
 
 					raise_message('reports_add_device_' . $device_id, __('Device \'%s\' successfully added to Report.', $description), MESSAGE_LEVEL_INFO);
@@ -164,7 +164,7 @@ function reports_add_graphs($report_id, $local_graph_id, $timespan, $align) {
 	$report_user = db_fetch_cell_prepared('SELECT user_id
 		FROM reports
 		WHERE id = ?',
-		array($report_id));
+		[$report_id]);
 
 	if ($report_user != $_SESSION[SESS_USER_ID]) {
 		raise_message('reports_not_owner');
@@ -174,31 +174,31 @@ function reports_add_graphs($report_id, $local_graph_id, $timespan, $align) {
 		$sequence = db_fetch_cell_prepared('SELECT MAX(sequence)
 			FROM reports_items
 			WHERE report_id = ?',
-			array($report_id)) + 1;
+			[$report_id]) + 1;
 
 		$exists = db_fetch_cell_prepared('SELECT id
 			FROM reports_items
 			WHERE local_graph_id = ?
 			AND report_id = ?
 			AND timespan = ?',
-			array($local_graph_id, $report_id, $timespan));
+			[$local_graph_id, $report_id, $timespan]);
 
 		if (!$exists) {
 			$gd = db_fetch_row_prepared('SELECT *
 				FROM graph_local
 				WHERE id = ?',
-				array($local_graph_id));
+				[$local_graph_id]);
 
 			$host_template_id = db_fetch_cell_prepared('SELECT host_template_id
 				FROM host
 				WHERE id = ?',
-				array($gd['host_id']));
+				[$gd['host_id']]);
 
 			if (cacti_sizeof($gd)) {
 				db_execute_prepared('INSERT INTO reports_items
 					(report_id, item_type, host_template_id, host_id, graph_template_id, local_graph_id, timespan, align, sequence)
 					VALUES (?, 1, ?, ?, ?, ?, ?, ?, ?)',
-					array(
+					[
 						$report_id,
 						$host_template_id,
 						$gd['host_id'],
@@ -207,7 +207,7 @@ function reports_add_graphs($report_id, $local_graph_id, $timespan, $align) {
 						$timespan,
 						$align,
 						$sequence
-					)
+					]
 				);
 
 				return true;
@@ -228,11 +228,11 @@ function reports_add_graphs($report_id, $local_graph_id, $timespan, $align) {
  * @return string - string defining the datetime format specific to this user
  */
 function reports_date_time_format() {
-	$datechar = array(
+	$datechar = [
 		GDC_HYPHEN => '-',
 		GDC_SLASH  => '/',
 		GDC_DOT    => '.'
-	);
+	];
 
 	$graph_date = '';
 
@@ -340,7 +340,6 @@ function reports_interval_start($interval, $count, $offset, $timestamp) {
 			$ts = utime_add($timestamp, $count, 0, 0, 0, 0, $offset);
 
 			break;
-
 		default:
 			$ts = 0;
 
@@ -447,8 +446,8 @@ function generate_report($schedule_id, $report, $force = false) {
 	$first_weekdayid = read_user_setting('first_weekdayid', false, false, $report['user_id']);
 
 	$offset      = 0;
-	$graphs      = array();
-	$attachments = array();
+	$graphs      = [];
+	$attachments = [];
 
 	while (true) {
 		$pos = strpos($body, '<GRAPH:', $offset);
@@ -469,19 +468,19 @@ function generate_report($schedule_id, $report, $force = false) {
 
 	$user = $report['user_id'];
 
-	$xport_meta = array();
+	$xport_meta = [];
 
 	if (cacti_sizeof($graphs)) {
 		foreach ($graphs as $key => $local_graph_id) {
 			$arr    = explode(':', $key);
 			$timesp = $arr[1];
 
-			$timespan = array();
+			$timespan = [];
 			# get start/end time-since-epoch for actual time (now()) and given current-session-timespan
 			get_timespan($timespan, $start_time, $timesp, $first_weekdayid);
 
 			# provide parameters for rrdtool graph
-			$graph_data_array = array(
+			$graph_data_array = [
 				'graph_start'    => $timespan['begin_now'],
 				'graph_end'      => $timespan['end_now'],
 				'graph_width'    => $report['graph_width'],
@@ -490,7 +489,7 @@ function generate_report($schedule_id, $report, $force = false) {
 				'graph_theme'    => $theme,
 				'output_flag'    => RRDTOOL_OUTPUT_STDOUT,
 				'disable_cache'  => true
-			);
+			];
 
 			if ($report['thumbnails'] == 'on') {
 				$graph_data_array['graph_nolegend'] = true;
@@ -498,69 +497,69 @@ function generate_report($schedule_id, $report, $force = false) {
 
 			switch($report['attachment_type']) {
 				case REPORTS_TYPE_INLINE_PNG:
-					$attachments[] = array(
+					$attachments[] = [
 						'attachment'     => base64_encode(rrdtool_function_graph($local_graph_id, '', $graph_data_array, null, $xport_meta, $user)),
 						'filename'       => 'graph_' . $local_graph_id . '.png',
 						'mime_type'      => 'image/png',
 						'local_graph_id' => $local_graph_id,
 						'timespan'       => $timesp,
 						'inline'         => 'inline'
-					);
+					];
 
 					break;
 				case REPORTS_TYPE_INLINE_JPG:
-					$attachments[] = array(
+					$attachments[] = [
 						'attachment'     => base64_encode(png2jpeg(rrdtool_function_graph($local_graph_id, '', $graph_data_array, null, $xport_meta, $user))),
 						'filename'       => 'graph_' . $local_graph_id . '.jpg',
 						'mime_type'      => 'image/jpg',
 						'local_graph_id' => $local_graph_id,
 						'timespan'       => $timesp,
 						'inline'         => 'inline'
-					);
+					];
 
 					break;
 				case REPORTS_TYPE_INLINE_GIF:
-					$attachments[] = array(
+					$attachments[] = [
 						'attachment'     => base64_encode(png2gif(rrdtool_function_graph($local_graph_id, '', $graph_data_array, null, $xport_meta, $user))),
 						'filename'       => 'graph_' . $local_graph_id . '.gif',
 						'mime_type'      => 'image/gif',
 						'local_graph_id' => $local_graph_id,
 						'timespan'       => $timesp,
 						'inline'         => 'inline'
-					);
+					];
 
 					break;
 				case REPORTS_TYPE_ATTACH_PNG:
-					$attachments[] = array(
+					$attachments[] = [
 						'attachment'     => base64_encode(rrdtool_function_graph($local_graph_id, '', $graph_data_array, null, $xport_meta, $user)),
 						'filename'       => 'graph_' . $local_graph_id . '.png',
 						'mime_type'      => 'image/png',
 						'local_graph_id' => $local_graph_id,
 						'timespan'       => $timesp,
 						'inline'         => 'attachment'
-					);
+					];
 
 					break;
 				case REPORTS_TYPE_ATTACH_JPG:
-					$attachments[] = array(
+					$attachments[] = [
 						'attachment'     => base64_encode(png2jpeg(rrdtool_function_graph($local_graph_id, '', $graph_data_array, null, $xport_meta, $user))),
 						'filename'       => 'graph_' . $local_graph_id . '.jpg',
 						'mime_type'      => 'image/jpg',
 						'local_graph_id' => $local_graph_id,
 						'timespan'       => $timesp,
 						'inline'         => 'attachment'
-					);
+					];
 
 					break;
 				case REPORTS_TYPE_ATTACH_GIF:
-					$attachments[] = array(
+					$attachments[] = [
 						'attachment'     => base64_encode(png2gif(rrdtool_function_graph($local_graph_id, '', $graph_data_array, null, $xport_meta, $user))),
 						'filename'       => 'graph_' . $local_graph_id . '.gif',
 						'mime_type'      => 'image/gif',
 						'local_graph_id' => $local_graph_id,
 						'timespan'       => $timesp,
 						'inline'         => 'attachment'
-					);
+					];
 
 					break;
 			}
@@ -600,7 +599,7 @@ function generate_report($schedule_id, $report, $force = false) {
 		$error = reports_log_and_notify($schedule_id, $start_time, 'html', 'reports', $report['id'], $subject, $raw_data, $output_raw, $body, $output_text, $attachments, $headers);
 	} else {
 		$error = mailer(
-			array($report['from_email'], $report['from_name']),
+			[$report['from_email'], $report['from_name']],
 			$report['email'],
 			'',
 			$report['bcc'],
@@ -618,12 +617,11 @@ function generate_report($schedule_id, $report, $force = false) {
 	db_execute_prepared('UPDATE reports
 		SET last_started = ?, last_runtime = ?
 		WHERE id = ?',
-		array(date('Y-m-d H:i:s', $start_time), $end - $start, $report['id']));
+		[date('Y-m-d H:i:s', $start_time), $end - $start, $report['id']]);
 
 	if ($error != '') {
 		if (isset_request_var('id')) {
 			raise_message('report_message', __esc('Problems sending Report \'%s\' Problem with e-mail Subsystem Error is \'%s\'', $report['name'], $error), MESSAGE_LEVEL_ERROR);
-
 		} else {
 			reports_log(__FUNCTION__ . ", Problems sending Report '" . $report['name'] . "'.  Problem with e-mail Subsystem Error is '$error'", false, 'REPORTS', POLLER_VERBOSITY_LOW);
 		}
@@ -648,7 +646,7 @@ function generate_report($schedule_id, $report, $force = false) {
 function reports_load_format_file($format_file, &$output, &$report_tag_included, &$theme) {
 	global $config;
 
-	$contents = array();
+	$contents = [];
 
 	if ($format_file == '') {
 		$format_file = 'cacti_group.format';
@@ -699,8 +697,8 @@ function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_
 
 	$sql_where  = '';
 	$sql_swhere = '';
-	$graphs     = array();
-	$new_graphs = array();
+	$graphs     = [];
+	$new_graphs = [];
 
 	if ($search_key != '') {
 		$sql_swhere = " AND gtg.title_cache REGEXP '" . $search_key . "'";
@@ -710,7 +708,7 @@ function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_
 		FROM graph_tree_items
 		WHERE id = ?
 		AND graph_tree_id = ?',
-		array($branch_id, $tree_id));
+		[$branch_id, $tree_id]);
 
 	if ($device_id > 0) {
 		$graphs = array_rekey(db_fetch_assoc("SELECT gl.id
@@ -766,13 +764,13 @@ function reports_generate_history_html($history_id, $output = REPORTS_OUTPUT_STD
 	$data   = db_fetch_row_prepared('SELECT *
 		FROM reports_log
 		WHERE id = ?',
-		array($history_id));
+		[$history_id]);
 
 	if (cacti_sizeof($data)) {
 		$oreport = db_fetch_row_prepared('SELECT *
 			FROM reports
 			WHERE id = ?',
-			array($data['source_id']));
+			[$data['source_id']]);
 
 		/* here is the report html as sent to the user */
 		$report = $data['report_html_output'];
@@ -784,7 +782,7 @@ function reports_generate_history_html($history_id, $output = REPORTS_OUTPUT_STD
 			$nreport  = '';
 			$lines    = explode("\n", $report);
 
-			foreach($lines as $l) {
+			foreach ($lines as $l) {
 				if (str_contains($l, '<style')) {
 					$instyle = true;
 				} elseif (str_contains($l, '</style>')) {
@@ -815,9 +813,9 @@ function reports_generate_history_html($history_id, $output = REPORTS_OUTPUT_STD
 			$report = str_replace('<table>', '<table class="cactiTable">', $report);
 		}
 
-		$graph_data = json_decode(base64_decode($data['report_attachments']), true);
+		$graph_data = json_decode(base64_decode($data['report_attachments'], true), true);
 
-		foreach($graph_data as $graph) {
+		foreach ($graph_data as $graph) {
 			$report = str_replace('<GRAPH:' . $graph['local_graph_id'] . ':' . $graph['timespan'] . '>',
 				'<img class="graph" src="data:image/png;base64,' . $graph['attachment'] . '">', $report);
 		}
@@ -828,13 +826,13 @@ function reports_generate_history_html($history_id, $output = REPORTS_OUTPUT_STD
 
 function reports_remove_history($history_id, $report_id = 0) {
 	if ($report_id == 0) {
-		$report_id = db_fetch_cell_prepared('SELECT source_id FROM reports_log WHERE id = ?', array($history_id));
+		$report_id = db_fetch_cell_prepared('SELECT source_id FROM reports_log WHERE id = ?', [$history_id]);
 	}
 
-	$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', array($report_id));
+	$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', [$report_id]);
 
 	if (is_reports_admin() || $report['user_id'] == SESS_USER_ID) {
-		db_execute_prepared('DELETE FROM reports_log WHERE id = ?', array($history_id));
+		db_execute_prepared('DELETE FROM reports_log WHERE id = ?', [$history_id]);
 
 		raise_message('remove_message', __('Report \'%s\' History Removed by user \'%s\' or a Report Administrator can remove the report.', $report['name'], get_username($_SESSION[SESS_USER_ID])), MESSAGE_LEVEL_INFO);
 	} else {
@@ -858,13 +856,13 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 	$report = db_fetch_row_prepared('SELECT *
 		FROM reports
 		WHERE id = ?',
-		array($reports_id));
+		[$reports_id]);
 
 	$reports_items = db_fetch_assoc_prepared('SELECT *
 		FROM reports_items
 		WHERE report_id = ?
 		ORDER BY sequence',
-		array($report['id']));
+		[$report['id']]);
 
 	$format_data = '';
 	$report_tag  = false;
@@ -946,7 +944,7 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 
 			if ($item['item_type'] == REPORTS_ITEM_GRAPH) {
 				if (is_graph_allowed($item['local_graph_id'], $report['user_id'])) {
-					$timespan = array();
+					$timespan = [];
 					# get start/end time-since-epoch for actual time (now()) and given current-session-timespan
 					get_timespan($timespan, $time, $item['timespan'], $first_weekdayid);
 
@@ -1064,7 +1062,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 		AND host_id = 0
 		AND local_graph_id = 0
 		AND graph_tree_id = ?
-		ORDER BY position', array($branch_id, $item['tree_id']));
+		ORDER BY position', [$branch_id, $item['tree_id']]);
 
 	if (cacti_sizeof($tree_branches)) {
 		foreach ($tree_branches as $branch) {
@@ -1148,14 +1146,14 @@ function reports_expand_device(&$report, $item, $device_id, $output, $format_ok,
 
 	$user = $report['user_id'];
 
-	$timespan = array();
+	$timespan = [];
 
 	# get start/end time-since-epoch for actual time (now()) and given current-session-timespan
 	get_timespan($timespan, $time, $item['timespan'], $first_weekdayid);
 
 	$outstr = '';
 
-	$graphs = array();
+	$graphs = [];
 
 	$sql_where       = '';
 	$title_delimiter = '';
@@ -1164,10 +1162,10 @@ function reports_expand_device(&$report, $item, $device_id, $output, $format_ok,
 	$description = db_fetch_cell_prepared('SELECT h.description
 		FROM host AS h
 		WHERE h.id = ?',
-		array($device_id));
+		[$device_id]);
 
 	if ($description != '') {
-		$title = $title_delimiter . __('Device:') . " " . html_escape($description);
+		$title           = $title_delimiter . __('Device:') . ' ' . html_escape($description);
 		$title_delimiter = ' > ';
 	}
 
@@ -1182,16 +1180,16 @@ function reports_expand_device(&$report, $item, $device_id, $output, $format_ok,
 				ON gtg.local_graph_id=gl.id
 				WHERE gl.host_id = ?
 				ORDER BY gt.name',
-				array($device_id)),
+				[$device_id]),
 			'id', 'name'
 		);
 
 		/* for graphs without a template */
 		array_push($graph_templates,
-			array(
+			[
 				'id'   => '0',
 				'name' => __('(No Graph Template)')
-			)
+			]
 		);
 	} else {
 		$graph_templates = array_rekey(
@@ -1200,7 +1198,7 @@ function reports_expand_device(&$report, $item, $device_id, $output, $format_ok,
 				FROM graph_templates AS gt
 				WHERE id = ?
 				ORDER BY gt.name',
-				array($item['graph_template_id'])),
+				[$item['graph_template_id']]),
 			'id', 'name'
 		);
 	}
@@ -1213,7 +1211,7 @@ function reports_expand_device(&$report, $item, $device_id, $output, $format_ok,
 		}
 	}
 
-	$outgraphs = array();
+	$outgraphs = [];
 
 	if (cacti_sizeof($graph_templates)) {
 		foreach ($graph_templates as $id => $name) {
@@ -1230,7 +1228,7 @@ function reports_expand_device(&$report, $item, $device_id, $output, $format_ok,
 				AND gl.host_id = ?
 				$sql_where
 				ORDER BY gtg.title_cache",
-				array($id, $device_id));
+				[$id, $device_id]);
 
 			if (cacti_sizeof($graphs)) {
 				foreach ($graphs as $key => $graph) {
@@ -1299,7 +1297,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 
 	$user = $report['user_id'];
 
-	$timespan = array();
+	$timespan = [];
 
 	# get start/end time-since-epoch for actual time (now()) and given current-session-timespan
 	get_timespan($timespan, $time, $item['timespan'], $first_weekdayid);
@@ -1312,7 +1310,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 		FROM graph_tree_items
 		WHERE id = ?
 		AND graph_tree_id = ?',
-		array($parent, $tree_id));
+		[$parent, $tree_id]);
 
 	$outstr = '';
 
@@ -1322,19 +1320,19 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 			WHERE graph_tree_id = ?
 			AND parent = ?
 			ORDER BY position',
-			array($tree_id, $parent));
+			[$tree_id, $parent]);
 	} elseif (is_device_allowed($device_id, $user)) {
 		$leaves = db_fetch_assoc_prepared('SELECT *
 			FROM graph_tree_items
 			WHERE graph_tree_id = ?
 			AND id = ?
 			ORDER BY position',
-			array($tree_id, $parent));
+			[$tree_id, $parent]);
 	} else {
-		$leaves = array();
+		$leaves = [];
 	}
 
-	$graphs = array();
+	$graphs = [];
 
 	if (cacti_sizeof($leaves)) {
 		foreach ($leaves as $leaf) {
@@ -1363,14 +1361,14 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 				$tree_name = db_fetch_cell_prepared('SELECT name
 					FROM graph_tree
 					WHERE id = ?',
-					array($tree_id));
+					[$tree_id]);
 			}
 
 			if (!empty($parent)) {
 				$leaf_name = db_fetch_cell_prepared('SELECT title
 					FROM graph_tree_items
 					WHERE id = ?',
-					array($parent));
+					[$parent]);
 			}
 
 			if (!empty($leaf_id)) {
@@ -1379,7 +1377,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 					INNER JOIN host AS h
 					ON h.id = gti.host_id
 					WHERE gti.id = ?',
-					array($leaf_id));
+					[$leaf_id]);
 			}
 
 			if ($leaf_type == 'graph') {
@@ -1387,7 +1385,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 					gtg.title_cache AS title
 					FROM graph_templates_graph AS gtg
 					WHERE gtg.local_graph_id = ?',
-					array($leaf['local_graph_id']));
+					[$leaf['local_graph_id']]);
 			}
 
 			if (!empty($tree_name) && empty($leaf_name) && empty($host_name)) {
@@ -1415,7 +1413,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 			}
 
 			if ($leaf_type == 'header' && $nested) {
-				$mygraphs = array();
+				$mygraphs = [];
 
 				$graphs = db_fetch_assoc("SELECT DISTINCT
 					gti.local_graph_id, gtg.title_cache
@@ -1496,7 +1494,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 					}
 				}
 
-				$graph_list = array(array('local_graph_id' => $leaf['local_graph_id'], 'title_cache' => $graph_name));
+				$graph_list = [['local_graph_id' => $leaf['local_graph_id'], 'title_cache' => $graph_name]];
 
 				$outstr .= reports_graph_area($graph_list, $report, $item, $timespan, $output, $format_ok, $theme);
 			} elseif ($leaf_type == 'host') {
@@ -1513,7 +1511,7 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 								ON gtg.local_graph_id=gl.id
 								WHERE gl.host_id = ?
 								ORDER BY gt.name',
-								array($leaf['host_id'])),
+								[$leaf['host_id']]),
 							'id', 'name'
 						);
 
@@ -1527,13 +1525,13 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 
 						/* for graphs without a template */
 						array_push($graph_templates,
-							array(
+							[
 								'id'   => '0',
 								'name' => __('(No Graph Template)')
-							)
+							]
 						);
 
-						$outgraphs = array();
+						$outgraphs = [];
 
 						if (cacti_sizeof($graph_templates)) {
 							foreach ($graph_templates as $id => $name) {
@@ -1588,15 +1586,15 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 							ON gl.snmp_query_id=sq.id
 							WHERE gl.host_id = ?
 							ORDER BY sq.name',
-							array($leaf['host_id']));
+							[$leaf['host_id']]);
 
 						/* for graphs without a data query */
 						if (empty($data_query_id)) {
 							array_push($data_queries,
-								array(
+								[
 									'id'   => '0',
 									'name' => __('(Non Query Based)')
-								)
+								]
 							);
 						}
 
@@ -1666,14 +1664,14 @@ function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $the
 								}
 
 								/* using the sorted data as they key; grab each snmp index from the master list */
-								$graph_list = array();
+								$graph_list = [];
 
 								foreach ($sort_field_data as $snmp_index => $sort_field_value) {
 									/* render each graph for the current data query index */
 									if (isset($snmp_index_to_graph[$snmp_index])) {
 										foreach ($snmp_index_to_graph[$snmp_index] as $local_graph_id => $graph_title) {
 											/* reformat the array so it's compatible with the html_graph* area functions */
-											array_push($graph_list, array('local_graph_id' => $local_graph_id, 'title_cache' => $graph_title));
+											array_push($graph_list, ['local_graph_id' => $local_graph_id, 'title_cache' => $graph_title]);
 										}
 									}
 								}
@@ -1917,7 +1915,7 @@ function png2gif($png_data) {
 function reports_get_format_files() {
 	global $config;
 
-	$formats = array();
+	$formats = [];
 	$dir     = CACTI_PATH_FORMATS .  '';
 
 	if (is_dir($dir)) {
@@ -1998,7 +1996,7 @@ function reports_graphs_action_prepare($save) {
 					FROM reports
 					WHERE user_id = ?
 					ORDER by name',
-			array($_SESSION[SESS_USER_ID])), 'name', 'id', '', '', '0');
+			[$_SESSION[SESS_USER_ID]]), 'name', 'id', '', '', '0');
 
 		print '<br><p>' . __('Graph Timespan:') . '<br>';
 		form_dropdown('timespan', $graph_timespans, '', '', '0', '', '', '');
@@ -2039,7 +2037,7 @@ function reports_graphs_action_execute($action) {
 				$report = db_fetch_row_prepared('SELECT *
 					FROM reports
 					WHERE id = ?',
-					array($reports_id));
+					[$reports_id]);
 
 				foreach ($selected_items as $local_graph_id) {
 					/* see if the graph is already added */
@@ -2048,26 +2046,26 @@ function reports_graphs_action_execute($action) {
 						WHERE local_graph_id = ?
 						AND report_id = ?
 						AND timespan = ?',
-						array($local_graph_id, $reports_id, get_nfilter_request_var('timespan')));
+						[$local_graph_id, $reports_id, get_nfilter_request_var('timespan')]);
 
 					if (!$exists) {
 						$sequence = db_fetch_cell_prepared('SELECT MAX(sequence)
 							FROM reports_items
 							WHERE report_id = ?',
-							array($reports_id));
+							[$reports_id]);
 
 						$sequence++;
 
 						$graph_data = db_fetch_row_prepared('SELECT *
 							FROM graph_local
 							WHERE id = ?',
-							array($local_graph_id));
+							[$local_graph_id]);
 
 						if ($graph_data['host_id']) {
 							$host_template = db_fetch_cell_prepared('SELECT host_template_id
 								FROM host
 								WHERE id = ?',
-								array($graph_data['host_id']));
+								[$graph_data['host_id']]);
 						} else {
 							$host_template = 0;
 						}
@@ -2130,25 +2128,27 @@ function reports_graphs_action_execute($action) {
  * @param  string    $oput_text    - The text output if any
  * @param  array     $attachments - The attachments required to reproduce the report
  * @param  array     $headers      - Any report specific Email headers
+ * @param mixed $raw_data
  */
 function reports_log_and_notify($id, $start_time, $report_type, $source, $source_id, $subject,
-	&$raw_data, &$oput_raw, &$oput_html, &$oput_text, $attachments = array(), $headers = false) {
-
+	&$raw_data, &$oput_raw, &$oput_html, &$oput_text, $attachments = [], $headers = false) {
 	$report = db_fetch_row_prepared('SELECT *
 		FROM reports_queued
 		WHERE id = ?',
-		array($id));
+		[$id]);
 
 	if ($oput_text == null) {
 		$oput_text = '';
 	}
 
 	$fromemail = read_config_option('settings_from_email');
+
 	if ($fromemail == '') {
 		$fromemail = 'cacti@cacti.net';
 	}
 
 	$fromname = read_config_option('settings_from_name');
+
 	if ($fromname == '') {
 		$fromname = __('Cacti %s', ucfirst($source));
 	}
@@ -2160,11 +2160,12 @@ function reports_log_and_notify($id, $start_time, $report_type, $source, $source
 		if ($report['notification'] != '') {
 			$notifications = json_decode($report['notification'], true);
 
-			foreach($notifications as $type => $data) {
+			foreach ($notifications as $type => $data) {
 				switch($type) {
 					case 'email':
 						if (!isset($data['to_email'])) {
 							cacti_log(sprintf("WARNING: Email Report '%s' not sent!  Missing 'to_email' attribute in request", $report['name']), false, 'REPORTS');
+
 							break;
 						} else {
 							$to_emails = $data['to_email'];
@@ -2198,6 +2199,7 @@ function reports_log_and_notify($id, $start_time, $report_type, $source, $source
 					case 'notification_list':
 						if (!isset($data['id'])) {
 							cacti_log(sprintf("WARNING: Email Report '%s' not sent!  Missing notification list 'id' attribute in request", $report['name']), false, 'REPORTS');
+
 							break;
 						} else {
 							if (isset($data['from']) && ((is_array($data['from']) && cacti_sizeof($data['from'])) || $data['from'] != '')) {
@@ -2207,7 +2209,7 @@ function reports_log_and_notify($id, $start_time, $report_type, $source, $source
 							$list = db_fetch_row_prepared('SELECT *
 								FROM plugin_notification_lists
 								WHERE id = ?',
-								array($data['id']));
+								[$data['id']]);
 
 							if (cacti_sizeof($list)) {
 								/* process the format file */
@@ -2254,7 +2256,7 @@ function reports_log_and_notify($id, $start_time, $report_type, $source, $source
 
 		/* prepare attachments for storage */
 		if (cacti_sizeof($attachments)) {
-			foreach($attachments as $index => $a) {
+			foreach ($attachments as $index => $a) {
 				if ($a['inline'] == 'attachment') {
 					if (file_exists($a['attachment'])) {
 						$attachments[$index]['attachment'] = file_get_contents($a['attachment']);
@@ -2266,7 +2268,7 @@ function reports_log_and_notify($id, $start_time, $report_type, $source, $source
 
 		$end_time = microtime(true);
 
-		$save = array();
+		$save = [];
 
 		$save['id']                 = 0;
 		$save['name']               = $report['name'];
@@ -2295,7 +2297,7 @@ function reports_queue($name, $request_type, $source, $source_id, $command, $not
 		$requested_by = db_fetch_cell_prepared('SELECT username
 			FROM user_auth
 			WHERE id = ?',
-			array($requested_id));
+			[$requested_id]);
 
 		if ($requested_by == '') {
 			$requested_by = 'unknown';
@@ -2305,7 +2307,7 @@ function reports_queue($name, $request_type, $source, $source_id, $command, $not
 		$requested_by = 'system';
 	}
 
-	$save = array();
+	$save = [];
 
 	$save['id']             = 0;
 	$save['name']           = $name;
@@ -2346,13 +2348,13 @@ function reports_run($id) {
 	$report = db_fetch_row_prepared('SELECT *
 		FROM reports_queued
 		WHERE id = ?',
-		array($id));
+		[$id]);
 
 	if (cacti_sizeof($report)) {
 		db_execute_prepared('UPDATE reports_queued
 			SET status = ?, start_time = ?
 			WHERE id = ?',
-			array('running', date('Y-m-d H:i:s'), $id));
+			['running', date('Y-m-d H:i:s'), $id]);
 	} else {
 		return false;
 	}
@@ -2360,7 +2362,7 @@ function reports_run($id) {
 	$start = microtime(true);
 
 	$return_code = 0;
-	$output      = array();
+	$output      = [];
 	$command     = $report['run_command'] . ' --report-id=' . $report['source_id'] . ' --queue-id=' . $id;
 	$timeout     = $report['run_timeout'];
 	$source      = strtoupper($report['source']);
@@ -2375,11 +2377,11 @@ function reports_run($id) {
 
 	$end  = microtime(true);
 
-	$stats = sprintf("$source STATS: Time:%0.2f Report:'%s' Id:'%s'", $end-$start, $report['name'], $report['source_id']);
+	$stats = sprintf("$source STATS: Time:%0.2f Report:'%s' Id:'%s'", $end - $start, $report['name'], $report['source_id']);
 
 	cacti_log($stats, false, 'SYSTEM');
 
-	db_execute_prepared('DELETE FROM reports_queued WHERE id = ?', array($id));
+	db_execute_prepared('DELETE FROM reports_queued WHERE id = ?', [$id]);
 }
 
 function get_notification_emails($id = '', $recipient = 'to') {
@@ -2396,15 +2398,14 @@ function get_notification_emails($id = '', $recipient = 'to') {
 			return trim(db_fetch_cell_prepared('SELECT emails
 				FROM plugin_notification_lists
 				WHERE id = ?',
-				array($id)));
+				[$id]));
 		} else {
 			return trim(db_fetch_cell_prepared('SELECT bcc_emails
 				FROM plugin_notification_lists
 				WHERE id = ?',
-				array($id)));
+				[$id]));
 		}
 	} else {
 		return '';
 	}
 }
-

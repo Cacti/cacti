@@ -1,7 +1,7 @@
 <?php
 /*
   +-------------------------------------------------------------------------+
-  | Copyright (C) 2004-2024 The Cacti Group                                 |
+  | Copyright (C) 2004-2025 The Cacti Group                                 |
   |                                                                         |
   | This program is free software; you can redistribute it and/or           |
   | modify it under the terms of the GNU General Public License             |
@@ -27,10 +27,10 @@ error_reporting(0);
 include(__DIR__ . '/../include/cli_check.php');
 include(__DIR__ . '/../lib/snmp.php');
 
-$oids = array(
+$oids = [
 	'index' => '.1.3.6.1.2.1.25.3.3.1',
 	'usage' => '.1.3.6.1.2.1.25.3.3.1'
-);
+];
 
 $hostname 	 = $_SERVER['argv'][1];
 $host_id 	  = $_SERVER['argv'][2];
@@ -112,7 +112,7 @@ if ($cmd == 'index') {
 
 function get_cpu_usage($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids) {
 	$arr        = reindex(cacti_snmp_walk($hostname, $snmp_community, '.1.3.6.1.2.1.25.3.3.1', $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids, SNMP_POLLER));
-	$return_arr = array();
+	$return_arr = [];
 
 	$j = 0;
 
@@ -128,7 +128,7 @@ function get_cpu_usage($hostname, $snmp_community, $snmp_version, $snmp_auth_use
 
 function get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids) {
 	$arr        = reindex(cacti_snmp_walk($hostname, $snmp_community, '.1.3.6.1.2.1.25.3.3.1', $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $snmp_retries, $max_oids, SNMP_POLLER));
-	$return_arr = array();
+	$return_arr = [];
 
 	$j = 0;
 
@@ -143,7 +143,7 @@ function get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_usern
 }
 
 function reindex($arr) {
-	$return_arr = array();
+	$return_arr = [];
 
 	for ($i=0;($i < cacti_sizeof($arr));$i++) {
 		$return_arr[$i] = $arr[$i]['value'];

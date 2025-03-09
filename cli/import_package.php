@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -70,6 +70,7 @@ if (cacti_sizeof($parms)) {
 			case '--with-profile':
 				if ($profile_set) {
 					print 'The argument --with-profile can not be used in conjunction with --profile-id.' . PHP_EOL;
+
 					exit(1);
 				}
 
@@ -93,6 +94,7 @@ if (cacti_sizeof($parms)) {
 			case '--profile-id':
 				if ($profile_set) {
 					print 'The argument --profile-id can not be used in conjunction with --with-profile.' . PHP_EOL;
+
 					exit(1);
 				}
 
@@ -153,7 +155,7 @@ if (cacti_sizeof($parms)) {
 		$exists = db_fetch_cell_prepared('SELECT id
 			FROM data_source_profiles
 			WHERE id = ?',
-			array($profile_id));
+			[$profile_id]);
 
 		if (empty($exists)) {
 			print 'FATAL: Data Source Profile ID ' . $profile_id . ' does not exist!' . PHP_EOL;

@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -207,7 +207,7 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 		WHERE (port.local_data_id=poller_item.local_data_id
 		AND port.rrd_name=poller_item.rrd_name)
 		AND port.poller_id = ?',
-		array($poller_id));
+		[$poller_id]);
 
 	if (cacti_sizeof($results) > 0) {
 		/* create an array keyed off of each .rrd file */
@@ -276,12 +276,12 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 						INNER JOIN data_input_fields AS dif
 						ON dtr.data_input_field_id = dif.id
 						AND dtr.local_data_id = ?',
-						array($item['local_data_id'])),
+						[$item['local_data_id']]),
 					'data_name', 'data_source_name'
 				);
 
 				if (cacti_sizeof($values)) {
-					foreach($values as $value) {
+					foreach ($values as $value) {
 						$matches = explode(':', $value);
 
 						if (isset($rrd_field_names[$matches[0]])) {
@@ -306,7 +306,7 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 				AND rrd_name = ?
 				AND time = ?
 				AND poller_id = ?',
-				array($item['local_data_id'], $item['rrd_name'], $item['time'], $poller_id));
+				[$item['local_data_id'], $item['rrd_name'], $item['time'], $poller_id]);
 		}
 
 		$rrds_processed = rrdtool_function_update($rrd_update_array, $rrdtool_pipe);

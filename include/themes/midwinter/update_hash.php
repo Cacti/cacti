@@ -1,7 +1,7 @@
 <?php
 /*
   +-------------------------------------------------------------------------+
-  | Copyright (C) 2004-2024 The Cacti Group                                 |
+  | Copyright (C) 2004-2025 The Cacti Group                                 |
   |                                                                         |
   | This program is free software; you can redistribute it and/or           |
   | modify it under the terms of the GNU General Public License             |
@@ -26,7 +26,7 @@ function update_hash($file) {
 }
 
 function file_search($folder, $pattern_array) {
-	$return = array();
+	$return = [];
 	$iti    = new RecursiveDirectoryIterator($folder);
 
 	foreach (new RecursiveIteratorIterator($iti) as $file) {
@@ -53,10 +53,10 @@ function file_hash($match) {
 function file_update($cssFile) {
 	$fileContents = file($cssFile);
 	$fileUpdated  = preg_replace_callback_array(
-		array(
+		[
 			'/(@import url\(\')([^?]*)(\?.*)*(\'\))/' => 'file_hash',
 			'/(@import url\(")([^?]*)(\?.*)*("\))/'   => 'file_hash',
-		), $fileContents
+		], $fileContents
 	);
 
 	if ($fileContents != $fileUpdated) {
@@ -66,7 +66,7 @@ function file_update($cssFile) {
 }
 
 global $cssFile;
-$cssFiles   = file_search(__DIR__ . '/css', array('css'));
+$cssFiles   = file_search(__DIR__ . '/css', ['css']);
 $cssFiles[] = __DIR__ . '/main.css';
 $cssFiles[] = __DIR__ . '/billboard.midwinter.css';
 

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -37,8 +37,8 @@
  *
  * @return array The processed form array with injected variables.
  */
-function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $arg3 = array(), $arg4 = array()) {
-	$check_fields = array('id', 'value', 'array', 'friendly_name', 'description', 'sql', 'sql_print', 'form_id', 'items', 'tree_id');
+function inject_form_variables(&$form_array, $arg1 = [], $arg2 = [], $arg3 = [], $arg4 = []) {
+	$check_fields = ['id', 'value', 'array', 'friendly_name', 'description', 'sql', 'sql_print', 'form_id', 'items', 'tree_id'];
 
 	/* loop through each available field */
 	if (cacti_sizeof($form_array)) {
@@ -55,7 +55,7 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 					 * for each arg1:arg2:arg3 variables.
 					 */
 					while (true) {
-						$matches = array();
+						$matches = [];
 
 						//if (preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $form_array[$field_name][$field_to_check], $matches)) {
 						if (preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $field_array[$field_to_check], $matches)) {
@@ -91,7 +91,7 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 								}
 
 								// Double check to see if the replacement went as planned
-								$matches = array();
+								$matches = [];
 								preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $string, $matches);
 
 								if (!cacti_sizeof($matches)) {
@@ -252,6 +252,7 @@ function form_selectable_cell($contents, $id, $width = '', $style_or_class = '',
 	static $tableColumns = null;
 
 	$table_id = form_get_table_id();
+
 	if (!isset($tableColumns[$table_id])) {
 		$tableColumns[$table_id] = json_decode(read_user_setting("visible_columns_{$table_id}{$tableCount[$table_id]}"), true);
 	}
@@ -314,7 +315,7 @@ function form_selectable_cell($contents, $id, $width = '', $style_or_class = '',
 	}
 
 	if ($title != '') {
-		$wrapper = "<span class='cactiTooltipHint' style='padding:0px;margin:0px;' title='" . str_replace(array('"', "'"), '', $title) . "'>" . $contents . '</span>';
+		$wrapper = "<span class='cactiTooltipHint' style='padding:0px;margin:0px;' title='" . str_replace(['"', "'"], '', $title) . "'>" . $contents . '</span>';
 	} else {
 		$wrapper = $contents;
 	}
@@ -325,9 +326,13 @@ function form_selectable_cell($contents, $id, $width = '', $style_or_class = '',
 function form_get_table_id() {
 	if (isset_request_var('action') && get_nfilter_request_var('action') != '' && isset_request_var('tab') && get_nfilter_request_var('tab') != '') {
 		return basename(get_current_page(), '.php') . ':action-tab-' . get_nfilter_request_var('action') . '-' . get_nfilter_request_var('tab') . ':';
-	} elseif (isset_request_var('action') && get_nfilter_request_var('action') != '') {
+	}
+
+	if (isset_request_var('action') && get_nfilter_request_var('action') != '') {
 		return basename(get_current_page(), '.php') . ':action-' . get_nfilter_request_var('action') . ':';
-	} elseif (isset_request_var('tab') && get_nfilter_request_var('tab') != '') {
+	}
+
+	if (isset_request_var('tab') && get_nfilter_request_var('tab') != '') {
 		return basename(get_current_page(), '.php') . ':tab-' . get_nfilter_request_var('tab') . ':';
 	} else {
 		return basename(get_current_page(), '.php') . ':';
@@ -344,6 +349,7 @@ function form_get_table_id() {
  *        Default is an empty string. If it contains a colon (:), it is treated as a style
  *        attribute; otherwise, as a class attribute.
  * @param string $title          Optional. The tooltip text for the table cell. Default is an empty string.
+ * @param mixed $table_id
  *
  * @return void
  */
@@ -392,7 +398,7 @@ function form_selectable_vcell($contents, $table_id = '', $columnid = '', $style
 	}
 
 	if ($title != '') {
-		$wrapper = "<span class='cactiTooltipHint' style='padding:0px;margin:0px;' title='" . str_replace(array('"', "'"), '', $title) . "'>" . $contents . '</span>';
+		$wrapper = "<span class='cactiTooltipHint' style='padding:0px;margin:0px;' title='" . str_replace(['"', "'"], '', $title) . "'>" . $contents . '</span>';
 	} else {
 		$wrapper = $contents;
 	}
@@ -419,9 +425,9 @@ function form_process_visible_display_text($table_id, $display_text) {
 		if (isset_request_var('clear') || isset_request_var('reset')) {
 			db_execute_prepared('DELETE FROM settings_user
 				WHERE user_id = ? AND name = ?',
-				array($_SESSION[SESS_USER_ID], "visible_columns_{$table_id}{$tableCount[$table_id]}"));
+				[$_SESSION[SESS_USER_ID], "visible_columns_{$table_id}{$tableCount[$table_id]}"]);
 
-			$tableColumns[$table_id] = array();
+			$tableColumns[$table_id] = [];
 		} else {
 			$tableColumns[$table_id] = json_decode(read_user_setting("visible_columns_{$table_id}{$tableCount[$table_id]}"), true);
 		}
@@ -432,9 +438,9 @@ function form_process_visible_display_text($table_id, $display_text) {
 		if (isset_request_var('clear') || isset_request_var('reset')) {
 			db_execute_prepared('DELETE FROM settings_user
 				WHERE user_id = ? AND name = ?',
-				array($_SESSION[SESS_USER_ID], "visible_columns_{$table_id}{$tableCount[$table_id]}"));
+				[$_SESSION[SESS_USER_ID], "visible_columns_{$table_id}{$tableCount[$table_id]}"]);
 
-			$tableColumns[$table_id] = array();
+			$tableColumns[$table_id] = [];
 		} else {
 			$tableColumns[$table_id] = json_decode(read_user_setting("visible_columns_{$table_id}{$tableCount[$table_id]}"), true);
 		}
@@ -442,16 +448,16 @@ function form_process_visible_display_text($table_id, $display_text) {
 
 	/* reset if the developer is making changes to the page layout */
 	if (cacti_sizeof($tableColumns[$table_id]) && cacti_sizeof($display_text) != cacti_sizeof($tableColumns[$table_id])) {
-		cacti_log("WARNING: Detected a change in base table topology", false, 'DEVELOP');
+		cacti_log('WARNING: Detected a change in base table topology', false, 'DEVELOP');
 
-		$tableColumns[$table_id] = array();
+		$tableColumns[$table_id] = [];
 	}
 
 	if (isset_request_var('columns_add')) {
 		$columns = get_nfilter_request_var('columns_add');
 
 		if (is_array($columns)) {
-			foreach($columns as $column) {
+			foreach ($columns as $column) {
 				if (isset($tableCount[$table_id][$column])) {
 					$tableColumns[$table_id][$column] = true;
 				}
@@ -465,7 +471,7 @@ function form_process_visible_display_text($table_id, $display_text) {
 		$columns = get_nfilter_request_var('columns_remove');
 
 		if (is_array($columns)) {
-			foreach($columns as $column) {
+			foreach ($columns as $column) {
 				if (isset($tableCount[$table_id][$column])) {
 					$tableColumns[$table_id][$column] = false;
 				}
@@ -481,11 +487,11 @@ function form_process_visible_display_text($table_id, $display_text) {
 		$initialize = false;
 	}
 
-	$return_array = array();
-	$coldata      = array();
+	$return_array = [];
+	$coldata      = [];
 
 	if (cacti_sizeof($display_text)) {
-		foreach($display_text as $id => $column) {
+		foreach ($display_text as $id => $column) {
 			// Convert the array to a standard array
 			if (is_numeric($id)) {
 				$id = "autocol$id";
@@ -519,26 +525,26 @@ function form_process_visible_display_text($table_id, $display_text) {
 
 			if (isset($tableColumns[$table_id][$id]) && $tableColumns[$table_id][$id] == true) {
 				$return_array[$id]['visible'] = true;
-				$coldata[$id] = true;
+				$coldata[$id]                 = true;
 			} elseif (isset($column['nohide']) && $column['nohide'] === true) {
 				$return_array[$id]['visible'] = true;
-				$coldata[$id] = true;
+				$coldata[$id]                 = true;
 			} elseif ($initialize) {
 				if (isset($column['default'])) {
 					if ($column['default'] === true) {
 						$return_array[$id]['visible'] = true;
-						$coldata[$id] = true;
+						$coldata[$id]                 = true;
 					} else {
 						$return_array[$id]['visible'] = false;
-						$coldata[$id] = false;
+						$coldata[$id]                 = false;
 					}
 				} else {
 					$return_array[$id]['visible'] = true;
-					$coldata[$id] = true;
+					$coldata[$id]                 = true;
 				}
 			} else {
 				$return_array[$id]['visible'] = false;
-				$coldata[$id] = false;
+				$coldata[$id]                 = false;
 			}
 		}
 	}
@@ -551,7 +557,6 @@ function form_process_visible_display_text($table_id, $display_text) {
 
 	return $return_array;
 }
-
 
 /**
  * Format's a tables checkbox form element so that the cacti js actions work on it
@@ -771,7 +776,7 @@ function get_request_var_request(string $name, mixed $default = ''): mixed {
  *
  * @return mixed
  */
-function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT, array $options = array()):mixed {
+function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT, array $options = []):mixed {
 	if (isset_request_var($name)) {
 		if (isempty_request_var($name)) {
 			set_request_var($name, get_nfilter_request_var($name));
@@ -802,7 +807,7 @@ function get_filter_request_var(string $name, int $filter = FILTER_VALIDATE_INT,
 				$value = '';
 			} elseif ($filter == FILTER_VALIDATE_IS_REGEX) {
 				if (is_base64_encoded($_REQUEST[$name])) {
-					$_REQUEST[$name] = mb_convert_encoding(base64_decode($_REQUEST[$name]), 'UTF-8');
+					$_REQUEST[$name] = mb_convert_encoding(base64_decode($_REQUEST[$name], true), 'UTF-8');
 				}
 
 				$valid = validate_is_regex($_REQUEST[$name]);
@@ -1042,7 +1047,7 @@ function validate_store_request_vars(array $filters, string $sess_prefix = ''):v
 					$value = '';
 				} elseif ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
 					if (is_base64_encoded($_REQUEST[$variable])) {
-						$_REQUEST[$variable] = mb_convert_encoding(base64_decode($_REQUEST[$variable]), 'UTF-8');
+						$_REQUEST[$variable] = mb_convert_encoding(base64_decode($_REQUEST[$variable], true), 'UTF-8');
 					}
 
 					$valid = validate_is_regex($_REQUEST[$variable]);
@@ -1187,7 +1192,7 @@ function update_order_string($inplace = false) {
 			}
 
 			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_nfilter_request_var('sort_direction');
-			$_SESSION['sort_string'][$page] = 'ORDER BY ';
+			$_SESSION['sort_string'][$page]                               = 'ORDER BY ';
 
 			foreach ($_SESSION['sort_data'][$page] as $column => $direction) {
 				if (!str_contains($column, '(') && !str_contains($column, '`')) {
@@ -1334,13 +1339,13 @@ function validate_is_regex($regex) {
 
 	ini_set('track_errors', $track_errors);
 
-	$errors = array(
+	$errors = [
 		PREG_INTERNAL_ERROR         => __('There was an internal error!'),
 		PREG_BACKTRACK_LIMIT_ERROR  => __('Backtrack limit was exhausted!'),
 		PREG_RECURSION_LIMIT_ERROR  => __('Recursion limit was exhausted!'),
 		PREG_BAD_UTF8_ERROR         => __('Bad UTF-8 error!'),
 		PREG_BAD_UTF8_OFFSET_ERROR  => __('Bad UTF-8 offset error!'),
-	);
+	];
 
 	$error = preg_last_error();
 
@@ -1398,7 +1403,7 @@ function get_colored_device_status($disabled, $status, $thold_failure_count = -1
 	} else {
 		if ($status != HOST_RECOVERING && $thold_failure_count > 0) {
 			if ($status_event_count >= $thold_failure_count) {
-				return "<span class='deviceDown'>" . __('Down (Thold)') . "</span>";
+				return "<span class='deviceDown'>" . __('Down (Thold)') . '</span>';
 			}
 		}
 
@@ -1423,6 +1428,7 @@ function get_colored_device_status($disabled, $status, $thold_failure_count = -1
  */
 function get_colored_site_status(bool $disabled, ?string $site_name) {
 	$class = '';
+
 	if ($disabled) {
 		$class = 'deviceDown';
 	}
@@ -1580,7 +1586,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 		$return_to = 'main';
 	}
 
-	$url .= $page_var;
+	$url             .= $page_var;
 	$url_page_select .= "<script type='text/javascript'>
 	function goto$page_var(pageNo) {
 		if (typeof url_graph === 'function') {

@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -33,7 +33,7 @@ array_shift($parms);
 global $debug;
 
 $debug   = false;
-$options = array('Runtime' => 'Cli');
+$options = ['Runtime' => 'Cli'];
 
 $should_install = false;
 $force_install  = false;
@@ -195,7 +195,7 @@ include_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 $options['Step'] = Installer::STEP_INSTALL_CONFIRM;
 
-$results     = array('Step' => $options['Step']);
+$results     = ['Step' => $options['Step']];
 $update_char = 'o';
 
 debug_install_array('Options', $options);
@@ -254,14 +254,13 @@ switch ($installer->getStep()) {
 		break;
 	case Installer::STEP_ERROR:
 		log_install_always('cli', 'One or more errors occurred during install, please refer to log files');
-		process_install_errors(array('Errors'=>$installer->getErrors()));
+		process_install_errors(['Errors'=>$installer->getErrors()]);
 
 		break;
 	case Installer::STEP_COMPLETE:
 		log_install_always('cli', 'Installation has now completed, you may launch the web console');
 
 		break;
-
 	default:
 		log_install_always('cli', 'Unexpected step (' . $installer->getStep() . ')');
 

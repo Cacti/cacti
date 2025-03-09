@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -168,7 +168,7 @@ if ($poller_interval * 2.0 > $new_heartbeat) {
 }
 
 $sql_where  = '';
-$sql_params = array();
+$sql_params = [];
 
 if ($data_template_id !== false && $data_template_id > 0) {
 	$sql_params[] = $data_template_id;
@@ -198,7 +198,7 @@ if ($prev_heartbeat !== false && (!is_numeric($prev_heartbeat) || $prev_heartbea
 	$sql_params[] = $prev_heartbeat;
 }
 
-$sql_params1 = array_merge(array(CACTI_PATH_RRA), $sql_params);
+$sql_params1 = array_merge([CACTI_PATH_RRA], $sql_params);
 
 $rrdfiles = db_fetch_assoc_prepared("SELECT dtr.local_data_id, dtd.name_cache, dt.name,
 	REPLACE(dtd.data_source_path, '<path_rra>', ?) AS rrd,
@@ -270,7 +270,7 @@ if (cacti_sizeof($rrdfiles)) {
 				$command .= " --heartbeat $ds:$new_heartbeat";
 			}
 
-			$output      = array();
+			$output      = [];
 			$return_code = 0;
 
 			if (1 == 2) {
@@ -286,7 +286,7 @@ if (cacti_sizeof($rrdfiles)) {
 				db_execute_prepared('UPDATE data_template_rrd
 					SET rrd_heartbeat = ?
 					WHERE local_data_id = ?',
-					array($new_heartbeat, $f['local_data_id']));
+					[$new_heartbeat, $f['local_data_id']]);
 			}
 		} else {
 			printf('WARNING: RRDfile \'%s\' does not exist!' . PHP_EOL);
@@ -306,7 +306,7 @@ if (cacti_sizeof($rrdfiles)) {
 			SET rrd_heartbeat = ?
 			WHERE local_data_id = 0
 			AND data_template_id = ?',
-			array($new_heartbeat, $data_template_id));
+			[$new_heartbeat, $data_template_id]);
 	}
 
 	if ($force) {
@@ -314,7 +314,7 @@ if (cacti_sizeof($rrdfiles)) {
 			db_execute_prepared('UPDATE data_source_profiles
 				SET heartbeat = ?
 				WHERE id = ?',
-				array($new_heartbeat, $pid['id']));
+				[$new_heartbeat, $pid['id']]);
 		}
 
 		if ($data_template_id > 0) {
@@ -322,12 +322,12 @@ if (cacti_sizeof($rrdfiles)) {
 				SET rrd_heartbeat = ?
 				WHERE local_data_id = 0
 				AND data_template_id = ?',
-				array($new_heartbeat, $data_template_id));
+				[$new_heartbeat, $data_template_id]);
 		} else {
 			db_execute_prepared('UPDATE data_template_rrd
 				SET rrd_heartbeat = ?
 				WHERE local_data_id = 0',
-				array($new_heartbeat));
+				[$new_heartbeat]);
 		}
 	}
 }

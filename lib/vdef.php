@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -28,7 +28,7 @@
 function get_vdef_item_name($vdef_item_id) {
 	global $vdef_functions, $vdef_item_types;
 
-	$vdef_item          = db_fetch_row_prepared('SELECT type, value FROM vdef_items WHERE id = ?', array($vdef_item_id));
+	$vdef_item          = db_fetch_row_prepared('SELECT type, value FROM vdef_items WHERE id = ?', [$vdef_item_id]);
 	$current_vdef_value = $vdef_item['value'];
 
 	switch ($vdef_item['type']) {
@@ -43,7 +43,7 @@ function get_vdef_item_name($vdef_item_id) {
    @param $vdef_id - the id of the vdef to resolve
    @returns - a text-based representation of the vdef */
 function get_vdef($vdef_id, $display = false) {
-	$vdef_items = db_fetch_assoc_prepared('SELECT * FROM vdef_items WHERE vdef_id = ? ORDER BY sequence', array($vdef_id));
+	$vdef_items = db_fetch_assoc_prepared('SELECT * FROM vdef_items WHERE vdef_id = ? ORDER BY sequence', [$vdef_id]);
 
 	$i           = 0;
 	$vdef_string = '';
@@ -69,25 +69,25 @@ function get_vdef($vdef_id, $display = false) {
 }
 
 function preset_vdef_form_list() {
-	$fields_vdef_edit = array(
-		'name' => array(
+	$fields_vdef_edit = [
+		'name' => [
 			'method'        => 'textbox',
 			'friendly_name' => __('Name'),
 			'description'   => __('A useful name for this VDEF.'),
 			'value'         => '|arg1:name|',
 			'max_length'    => '255',
-		),
-	);
+		],
+	];
 
 	return $fields_vdef_edit;
 }
 
 function preset_vdef_item_form_list() {
-	$fields_vdef_item_edit = array(
+	$fields_vdef_item_edit = [
 		'sequence' => 'sequence',
 		'type'     => 'type',
 		'value'    => 'value'
-	);
+	];
 
 	return $fields_vdef_item_edit;
 }

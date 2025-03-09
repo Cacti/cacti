@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -51,7 +51,7 @@ if ($debug == false) {
 		set_request_var('graph_nolegend', 'true');
 	}
 
-	get_filter_request_var('graph_theme', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
+	get_filter_request_var('graph_theme', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
 	/* ==================================================== */
 } else {
 	set_request_var('graph_width', 700);
@@ -66,7 +66,7 @@ if ($debug == false) {
 
 cacti_session_close();
 
-$graph_data_array = array();
+$graph_data_array = [];
 
 /* override: graph start time (unix time) */
 if (!isempty_request_var('graph_start') && get_request_var('graph_start') < FILTER_VALIDATE_MAX_DATE_AS_INT) {
@@ -125,7 +125,7 @@ if (!isset_request_var('image_format')) {
 	$type   = db_fetch_cell_prepared('SELECT image_format_id
 		FROM graph_templates_graph
 		WHERE local_graph_id = ?',
-		array(get_request_var('local_graph_id')));
+		[get_request_var('local_graph_id')]);
 
 	switch($type) {
 		case '1':
@@ -136,7 +136,6 @@ if (!isset_request_var('image_format')) {
 			$gtype = 'svg+xml';
 
 			break;
-
 		default:
 			$gtype = 'png';
 
@@ -152,7 +151,6 @@ if (!isset_request_var('image_format')) {
 			$gtype = 'svg+xml';
 
 			break;
-
 		default:
 			$gtype = 'png';
 
@@ -163,7 +161,7 @@ if (!isset_request_var('image_format')) {
 $graph_data_array['image_format'] = $gtype;
 
 if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
-	$xport_meta = array();
+	$xport_meta = [];
 
 	$output = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, null, $xport_meta, $_SESSION[SESS_USER_ID]);
 
@@ -198,7 +196,7 @@ if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
 }
 
 $output = trim($output);
-$oarray = array('type' => $gtype, 'local_graph_id' => get_request_var('local_graph_id'), 'rra_id' => $rra_id);
+$oarray = ['type' => $gtype, 'local_graph_id' => get_request_var('local_graph_id'), 'rra_id' => $rra_id];
 
 // Check if we received back something populated from rrdtool
 if ($output !== false && $output != '' && strpos($output, 'image = ') !== false) {
@@ -235,24 +233,25 @@ if ($output !== false && $output != '' && strpos($output, 'image = ') !== false)
 
 		$datapoints = json_decode(implode("\n", $dp_output), true);
 
-		foreach($datapoints as $name => $value) {
+		foreach ($datapoints as $name => $value) {
 			$oarray[$name] = $value;
 		}
 	}
 
 	foreach ($header_lines as $line) {
-		$parts = explode(' = ', $line);
+		$parts             = explode(' = ', $line);
 		$oarray[$parts[0]] = trim($parts[1]);
 	}
 
 	if (isset($oarray['meta'])) {
-		if(isset($oarray['meta']['legend']) & isset($xport_meta['legend'])) {
+		if (isset($oarray['meta']['legend']) & isset($xport_meta['legend'])) {
 			foreach ($oarray['meta']['legend'] as $key => $value) {
-				$legend = trim(preg_replace( '/[^a-z0-9 _()]/i', '', $value ));
-				if($legend) {
-					$color = (isset($xport_meta['legend'][$legend])) ? $xport_meta['legend'][$legend] : '';
-					$oarray['meta']['legend'][$key] = array('legend' => $legend, 'color' => $color);
-				}else{
+				$legend = trim(preg_replace('/[^a-z0-9 _()]/i', '', $value));
+
+				if ($legend) {
+					$color                          = (isset($xport_meta['legend'][$legend])) ? $xport_meta['legend'][$legend] : '';
+					$oarray['meta']['legend'][$key] = ['legend' => $legend, 'color' => $color];
+				} else {
 					unset($oarray['meta']['legend'][$key]);
 				}
 			}
@@ -270,10 +269,10 @@ if ($output !== false && $output != '' && strpos($output, 'image = ') !== false)
 	 * output data as it interferes with the hover output.
 	 */
 	if (isset($oarray['data']) && isset($xport_meta['ignoreItems'])) {
-		$new_array = array();
+		$new_array = [];
 
-		foreach($oarray['data'] as $index => $data) {
-			foreach($data as $i => $value) {
+		foreach ($oarray['data'] as $index => $data) {
+			foreach ($data as $i => $value) {
 				if ($i == 0 || $i > $xport_meta['ignoreItems']) {
 					$new_array[$index][] = $value;
 				}
@@ -290,7 +289,7 @@ if ($output !== false && $output != '' && strpos($output, 'image = ') !== false)
 
 	$graph_data_array['get_error'] = true;
 
-	$null_param = array();
+	$null_param = [];
 
 	rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, null, $null_param, $_SESSION[SESS_USER_ID]);
 
@@ -320,12 +319,12 @@ if ($output !== false && $output != '' && strpos($output, 'image = ') !== false)
 		$oarray['image_width'] = round(db_fetch_cell_prepared('SELECT width
 			FROM graph_templates_graph
 			WHERE local_graph_id = ?',
-			array(get_request_var('local_graph_id'))), 0);
+			[get_request_var('local_graph_id')]), 0);
 
 		$oarray['image_height'] = round(db_fetch_cell_prepared('SELECT height
 			FROM graph_templates_graph
 			WHERE local_graph_id = ?',
-			array(get_request_var('local_graph_id'))), 0);
+			[get_request_var('local_graph_id')]), 0);
 	}
 
 	if ($image !== false) {

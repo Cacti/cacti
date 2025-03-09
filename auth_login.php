@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -37,7 +37,7 @@ set_default_action();
 $username = auth_get_username(); // Get the username from either basic auth or the login form
 
 /* initialize some variables */
-$user          = array();                             // An array that will include all user details
+$user          = [];                             // An array that will include all user details
 $user_enabled  = true;                                // A variable to let plugins know that the user is enabled
 $guest_user    = false;                               // Indicates the Guest account is being used
 $realm         = 0;                                   // The compensated realm used for template and user validation
@@ -98,7 +98,6 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 			$user = domains_login_process($username);
 
 			break;
-
 		default: // Login Realm not determined
 			$error     = true;
 			$error_msg = __esc('Unable to determine user Login Realm or Domain. Please contact your System Administrator.');
@@ -123,7 +122,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 		$user = db_fetch_row_prepared('SELECT *
 			FROM user_auth
 			WHERE id = ?',
-			array(get_guest_account())
+			[get_guest_account()]
 		);
 
 		if ($user) {
@@ -151,7 +150,6 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 
 	/* We have a valid user, do final checks, log their login attempt, and redirect as required */
 	if (!$error && cacti_sizeof($user)) {
-
 		$client_addr = get_client_addr();
 
 		if (!$guest_user) {
@@ -163,7 +161,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 		db_execute_prepared('INSERT IGNORE INTO user_log
 			(username, user_id, result, ip, time)
 			VALUES (?, ?, 1, ?, NOW())',
-			array($username, $user['id'], $client_addr)
+			[$username, $user['id'], $client_addr]
 		);
 
 		/* check if the user account is enabled with the exception of guest users */
@@ -224,7 +222,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 					ON uag.id=uagm.group_id
 					WHERE user_id = ?
 					AND login_opts != 4',
-					array($_SESSION[SESS_USER_ID])
+					[$_SESSION[SESS_USER_ID]]
 				);
 
 				if (!empty($group_options)) {
@@ -245,7 +243,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 			FROM user_auth
 			WHERE username = ?
 			AND realm = ?',
-			array($username, $frv_realm)
+			[$username, $frv_realm]
 		);
 
 		switch ($frv_realm) {
@@ -258,7 +256,6 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 				$realm_name = 'LDAP';
 
 				break;
-
 			default:
 				$realm_name = 'Domains LDAP';
 
@@ -269,7 +266,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 		db_execute_prepared('INSERT IGNORE INTO user_log
 			(username, user_id, result, ip, time)
 			VALUES (?, ?, 0, ?, NOW())',
-			array($username, !empty($id) ? $id : 0, get_client_addr())
+			[$username, !empty($id) ? $id : 0, get_client_addr()]
 		);
 
 		cacti_log('LOGIN FAILED: ' . $realm_name . " Login Failed for user '" . $username . "' from IP Address '" . get_client_addr() . "'.", false, 'AUTH');
@@ -287,13 +284,13 @@ html_auth_header(
 	__('Login to Cacti'),
 	__('User Login'),
 	__('Enter your Username and Password below'),
-	array(
+	[
 		'error'        => $error,
 		'error_msg'    => $error_msg,
 		'username'     => $username,
 		'user_enabled' => $user_enabled,
 		'action'       => get_nfilter_request_var('action')
-	)
+	]
 );
 ?>
 <tr>
@@ -341,7 +338,6 @@ if (read_config_option('auth_method') == AUTH_METHOD_LDAP || read_config_option(
 	</tr>
 <?php
 }
-
 
 if (isset($_SERVER['HTTPS']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
 	$is_https = true;

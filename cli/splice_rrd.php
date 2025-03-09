@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -560,7 +560,7 @@ function recreateXML($new_rrd) {
 			$rrd .= "\t\t\t\t<unknown_datapoints> " . $pdp['unknown_datapoints'] . " </unknown_datapoints>\n";
 			$rrd .= "\t\t\t</ds>\n";
 
-			$output = array();
+			$output = [];
 
 			foreach ($new_rrd['rra'][$rra_num]['database'] as $dsnum => $v) {
 				foreach ($v as $time => $value) {
@@ -627,8 +627,8 @@ function memoryUsage() {
 function flattenXML(&$xml) {
 	global $debug;
 
-	$newxml   = array();
-	$maxarray = array();
+	$newxml   = [];
+	$maxarray = [];
 	$mintime  = 'NaN';
 
 	if (cacti_sizeof($xml['rra'])) {
@@ -762,8 +762,8 @@ function getAvgValue(&$data) {
  * @param mixed $output
  */
 function processXML(&$output) {
-	$rrd        = array();
-	$dsnames    = array();
+	$rrd        = [];
+	$dsnames    = [];
 	$rra_num    = 0;
 	$ds_num     = 0;
 	$cdp_ds_num = 0;
@@ -879,7 +879,7 @@ function createRRDFileFromXML($xmlfile, $rrdfile) {
 	/* execute the dump command */
 	print 'NOTE: Re-Importing \'' . $xmlfile . '\' to \'' . $rrdfile . '\'' . PHP_EOL;
 	$return_code = 0;
-	$output      = array();
+	$output      = [];
 	$command     = "$rrdtool restore -f -r $xmlfile $rrdfile";
 	$result      = exec($command, $output, $return_var);
 
@@ -888,7 +888,7 @@ function createRRDFileFromXML($xmlfile, $rrdfile) {
 	} else {
 		print "WARNING: File $rrdfile Encountered Errors.  Errors below:" . PHP_EOL;
 
-		foreach($output as $l) {
+		foreach ($output as $l) {
 			print "WARNING: $l" . PHP_EOL;
 		}
 	}
@@ -943,7 +943,7 @@ function preProcessXML(&$output) {
 					$row = strpos($line, '<row>');
 
 					if ($row > 0) {
-						$date = trim(substr($line,strpos($line,'/')+1,11));
+						$date = trim(substr($line,strpos($line,'/') + 1,11));
 					}
 
 					if ($comment_start == 0) {
@@ -1045,7 +1045,7 @@ function loadTable($db, &$records) {
 
 function display_version() {
 	if (!defined('COPYRIGHT_YEARS')) {
-		define('COPYRIGHT_YEARS', '2004-2024');
+		define('COPYRIGHT_YEARS', '2004-2025');
 	}
 
 	$version = get_cacti_cli_version();

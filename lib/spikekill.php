@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -42,7 +42,7 @@ class spikekill {
 
 	private $user      = '';
 
-	private $user_info = array();
+	private $user_info = [];
 
 	// Required variables
 	public $rrdfile   = '';
@@ -102,22 +102,22 @@ class spikekill {
 
 	private $total_kills = 0;
 
-	private $rra_cf      = array();
+	private $rra_cf      = [];
 
-	private $ds_name     = array();
+	private $ds_name     = [];
 
-	private $rra_pdp     = array();
+	private $rra_pdp     = [];
 
 	private $step        = 0;
 
 	// For error handling
-	private $errors = array();
+	private $errors = [];
 
 	public function __construct($rrdfile = '', $method = '', $avgnan = '', $stddev = '',
 		$out_start = '', $out_end = '', $outliers = '', $percent = '', $numspike = '',
 		$dsfilter = '', $absmax = '') {
 		$this->username  = 'OsUser:' . get_current_user();
-		$this->user_info = array();
+		$this->user_info = [];
 
 		if (isset($_SESSION[SESS_USER_ID])) {
 			$this->user = $_SESSION[SESS_USER_ID];
@@ -126,7 +126,7 @@ class spikekill {
 			$this->user_info = db_fetch_row_prepared('SELECT id, username
 				FROM user_auth
 				WHERE id = ?',
-				array($this->user));
+				[$this->user]);
 
 			if (cacti_sizeof($this->user_info)) {
 				$this->username = 'CactiUser:' . $this->user_info['username'];
@@ -349,7 +349,6 @@ class spikekill {
 				$this->method = SPIKE_METHOD_FLOAT;
 
 				break;
-
 			default:
 				$this->set_error("FATAL: You must specify either 'stddev', 'variance', 'float', or 'fill' as methods.");
 		}
@@ -367,7 +366,6 @@ class spikekill {
 			case 'last':
 			case 'nan':
 				break;
-
 			default:
 				$this->set_error("FATAL: You must specify either 'last', 'avg' or 'nan' as a replacement method.");
 		}
@@ -428,7 +426,6 @@ class spikekill {
 					$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm, OutStart:$this->out_start, OutEnd:$this->out_end, AvgNan:$this->avgnan";
 
 					break;
-
 				default:
 					$mm  = 'Undefined';
 					$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm";
@@ -502,9 +499,9 @@ class spikekill {
 		   The we don't need to know the type of rra, only it's number for this analysis
 		   the same applies for the ds' as well.
 		*/
-		$rra           = array();
-		$this->rra_cf  = array();
-		$this->rra_pdp = array();
+		$rra           = [];
+		$this->rra_cf  = [];
+		$this->rra_pdp = [];
 
 		$rra_num = 0;
 		$ds_num  = 0;
@@ -514,10 +511,10 @@ class spikekill {
 		$in_rra  = false;
 		$in_db   = false;
 
-		$this->ds_min  = array();
-		$this->ds_max  = array();
+		$this->ds_min  = [];
+		$this->ds_max  = [];
 
-		$this->ds_name = array();
+		$this->ds_name = [];
 
 		/**
 		 * perform a first pass on the array and do the following:
@@ -798,7 +795,7 @@ class spikekill {
 
 								/* remove NaN entries from the data set */
 								if (cacti_sizeof($myds)) {
-									foreach($myds as $timestamp => $value) {
+									foreach ($myds as $timestamp => $value) {
 										if (stripos($value, 'nan') !== false) {
 											unset($myds[$timestamp]);
 										}
@@ -1057,8 +1054,8 @@ class spikekill {
 		/* variance subroutine */
 		$rra_num   = 0;
 		$ds_num    = 0;
-		$last_num  = array();
-		$new_array = array();
+		$last_num  = [];
+		$new_array = [];
 
 		if (cacti_sizeof($output)) {
 			foreach ($output as $line) {
@@ -1222,16 +1219,16 @@ class spikekill {
 					$new_array[] = $out_row;
 				} else {
 					if (substr_count($line, '</rra>')) {
-						$ds_minmax = array();
+						$ds_minmax = [];
 						$rra_num++;
 
 						$kills    = 0;
-						$last_num = array();
+						$last_num = [];
 					} elseif (substr_count($line, '</database>')) {
 						$ds_num++;
 
 						$kills    = 0;
-						$last_num = array();
+						$last_num = [];
 					}
 
 					$new_array[] = $line;
@@ -1333,16 +1330,15 @@ class spikekill {
 	private function calculateStandardDeviation($items) {
 		if (!function_exists('stats_standard_deviation')) {
 			function stats_standard_deviation($items, $sample = false) {
-
-				$sum = 0;
+				$sum         = 0;
 				$total_items = 0;
 
 				/* remove NaN entries from the data set */
 				if (cacti_sizeof($items)) {
-					foreach($items as $key => $value) {
+					foreach ($items as $key => $value) {
 						if (is_int($value) || is_float($value)) {
 							$total_items++;
-							cacti_log(print_r($sum,true) . ":::" . print_r($value,true));
+							cacti_log(print_r($sum,true) . ':::' . print_r($value,true));
 							$sum += $value;
 						} else {
 							unset($items[$key]);

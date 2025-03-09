@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -49,20 +49,20 @@ array_shift($parms);
 if (cacti_sizeof($parms)) {
 	/* setup defaults */
 	$graph_type                  = '';
-	$templateGraph               = array();
-	$dsGraph                     = array();
+	$templateGraph               = [];
+	$dsGraph                     = [];
 	$dsGraph['snmpFieldSpec']    = '';
 	$dsGraph['snmpQueryId']      = '';
 	$dsGraph['snmpQueryType']    = '';
-	$dsGraph['snmpField']        = array();
-	$dsGraph['snmpValue']        = array();
-	$dsGraph['snmpValueRegex']   = array();
-	$dsGraph['snmpFieldExclude'] = array();
-	$dsGraph['snmpValueExclude'] = array();
+	$dsGraph['snmpField']        = [];
+	$dsGraph['snmpValue']        = [];
+	$dsGraph['snmpValueRegex']   = [];
+	$dsGraph['snmpFieldExclude'] = [];
+	$dsGraph['snmpValueExclude'] = [];
 	$dsGraph['reindex_method']   = DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME;
 
-	$input_fields  = array();
-	$values['cg']  = array();
+	$input_fields  = [];
+	$values['cg']  = [];
 
 	$hosts          = getHosts();
 	$graphTemplates = getGraphTemplates();
@@ -87,7 +87,7 @@ if (cacti_sizeof($parms)) {
 
 	$shortopts = 'VvHh';
 
-	$longopts = array(
+	$longopts = [
 		'host-id::',
 		'graph-type::',
 		'graph-template-id::',
@@ -115,7 +115,7 @@ if (cacti_sizeof($parms)) {
 		'list-graph-templates',
 		'version',
 		'help'
-	);
+	];
 
 	$options = getopt($shortopts, $longopts);
 
@@ -157,7 +157,7 @@ if (cacti_sizeof($parms)) {
 				break;
 			case 'snmp-field':
 				if (!is_array($value)) {
-					$value = array($value);
+					$value = [$value];
 				}
 
 				$dsGraph['snmpField'] = $value;
@@ -167,7 +167,7 @@ if (cacti_sizeof($parms)) {
 				break;
 			case 'snmp-value-regex':
 				if (!is_array($value)) {
-					$value = array($value);
+					$value = [$value];
 				}
 
 				foreach ($value as $item) {
@@ -185,7 +185,7 @@ if (cacti_sizeof($parms)) {
 				break;
 			case 'snmp-value':
 				if (!is_array($value)) {
-					$value = array($value);
+					$value = [$value];
 				}
 
 				$dsGraph['snmpValue'] = $value;
@@ -195,7 +195,7 @@ if (cacti_sizeof($parms)) {
 				break;
 			case 'snmp-field-exclude':
 				if (!is_array($value)) {
-					$value = array($value);
+					$value = [$value];
 				}
 
 				$dsGraph['snmpFieldExclude'] = $value;
@@ -205,7 +205,7 @@ if (cacti_sizeof($parms)) {
 				break;
 			case 'snmp-value-exclude':
 				if (!is_array($value)) {
-					$value = array($value);
+					$value = [$value];
 				}
 
 				foreach ($value as $item) {
@@ -244,7 +244,6 @@ if (cacti_sizeof($parms)) {
 							$dsGraph['reindex_method'] = DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION;
 
 							break;
-
 						default:
 							print 'ERROR: You must supply a valid reindex method for this graph!' . PHP_EOL;
 
@@ -404,7 +403,7 @@ if (cacti_sizeof($parms)) {
 				FROM host_snmp_query
 				WHERE host_id = ?
 				AND snmp_query_id = ?',
-				array($host_id, $dsGraph['snmpQueryId']));
+				[$host_id, $dsGraph['snmpQueryId']]);
 
 			if ((isset($exists_already)) &&
 				($exists_already > 0)) {
@@ -413,7 +412,7 @@ if (cacti_sizeof($parms)) {
 				db_execute_prepared('REPLACE INTO host_snmp_query
 					(host_id, snmp_query_id, reindex_method)
 					VALUES (?, ?, ?)',
-					array($host_id, $dsGraph['snmpQueryId'], $dsGraph['reindex_method']));
+					[$host_id, $dsGraph['snmpQueryId'], $dsGraph['reindex_method']]);
 
 				/* recache snmp data, this is time consuming,
 				 * but should happen only once even if multiple graphs
@@ -442,7 +441,7 @@ if (cacti_sizeof($parms)) {
 			exit(0);
 		}
 
-		$snmpValues = array();
+		$snmpValues = [];
 
 		/* More sanity checking */
 		/* Testing SnmpValues and snmpFields args */
@@ -652,7 +651,7 @@ if (cacti_sizeof($parms)) {
 		object_cache_get_totals('device_state', $host_id);
 	}
 
-	$returnArray = array();
+	$returnArray = [];
 
 	if ($graph_type == 'cg') {
 		$existsAlready = db_fetch_cell_prepared('SELECT gl.id
@@ -662,7 +661,7 @@ if (cacti_sizeof($parms)) {
 			WHERE graph_template_id = ?
 			AND host_id = ?
 			AND multiple = \'\'',
-			array($template_id, $host_id));
+			[$template_id, $host_id]);
 
 		if ((isset($existsAlready)) &&
 			($existsAlready > 0) &&
@@ -673,7 +672,7 @@ if (cacti_sizeof($parms)) {
 				ON gti.task_item_id = dtr.id
 				WHERE gti.local_graph_id = ?
 				LIMIT 1',
-				array($existsAlready));
+				[$existsAlready]);
 
 			print "NOTE: Not Adding Graph - this graph already exists - graph-id: ($existsAlready) - data-source-id: ($dataSourceId)" . PHP_EOL;
 
@@ -688,7 +687,7 @@ if (cacti_sizeof($parms)) {
 				db_execute_prepared('UPDATE graph_templates_graph
 					SET title = ?
 					WHERE local_graph_id = ?',
-					array($graphTitle, $returnArray['local_graph_id']));
+					[$graphTitle, $returnArray['local_graph_id']]);
 
 				update_graph_title_cache($returnArray['local_graph_id']);
 			}
@@ -711,7 +710,7 @@ if (cacti_sizeof($parms)) {
 			db_execute_prepared('REPLACE INTO host_graph
 				(host_id, graph_template_id) VALUES
 				(?, ?)',
-				array($host_id, $template_id));
+				[$host_id, $template_id]);
 
 			print 'Graph Added - Graph[' . $returnArray['local_graph_id'] . "] - DS[$dataSourceId]" . PHP_EOL;
 		} else {
@@ -725,7 +724,7 @@ if (cacti_sizeof($parms)) {
 			exit(1);
 		}
 
-		$snmp_query_array                        = array();
+		$snmp_query_array                        = [];
 		$snmp_query_array['snmp_query_id']       = $dsGraph['snmpQueryId'];
 		$snmp_query_array['snmp_index_on']       = get_best_data_query_index_type($host_id, $dsGraph['snmpQueryId']);
 		$snmp_query_array['snmp_query_graph_id'] = $dsGraph['snmpQueryType'];
@@ -778,14 +777,14 @@ if (cacti_sizeof($parms)) {
 					AND snmp_query_id = ?
 					AND snmp_index = ?
 					AND multiple = \'\'',
-					array($template_id, $host_id, $dsGraph['snmpQueryId'], $snmp_query_array['snmp_index']));
+					[$template_id, $host_id, $dsGraph['snmpQueryId'], $snmp_query_array['snmp_index']]);
 
 				if (isset($existsAlready) && $existsAlready > 0) {
 					if ($graphTitle != '') {
 						db_execute_prepared('UPDATE graph_templates_graph
 							SET title = ?
 							WHERE local_graph_id = ?',
-							array($graphTitle, $existsAlready));
+							[$graphTitle, $existsAlready]);
 
 						update_graph_title_cache($existsAlready);
 					}
@@ -796,14 +795,14 @@ if (cacti_sizeof($parms)) {
 						ON gti.task_item_id = dtr.id
 						WHERE gti.local_graph_id = ?
 						LIMIT 1',
-						array($existsAlready));
+						[$existsAlready]);
 
 					print "NOTE: Not Adding Graph - this graph already exists - graph-id: ($existsAlready) - data-source-id: ($dataSourceId)" . PHP_EOL;
 
 					continue;
 				}
 
-				$isempty = array(); /* Suggested Values are not been implemented */
+				$isempty = []; /* Suggested Values are not been implemented */
 
 				$returnArray = create_complete_graph_from_template($template_id, $host_id, $snmp_query_array, $isempty);
 
@@ -812,7 +811,7 @@ if (cacti_sizeof($parms)) {
 						db_execute_prepared('UPDATE graph_templates_graph
 							SET title = ?
 							WHERE local_graph_id = ?',
-							array($graphTitle, $returnArray['local_graph_id']));
+							[$graphTitle, $returnArray['local_graph_id']]);
 
 						update_graph_title_cache($returnArray['local_graph_id']);
 					}
@@ -823,7 +822,7 @@ if (cacti_sizeof($parms)) {
 						ON gti.task_item_id = dtr.id
 						WHERE gti.local_graph_id = ?
 						LIMIT 1',
-						array($returnArray['local_graph_id']));
+						[$returnArray['local_graph_id']]);
 
 					foreach ($returnArray['local_data_id'] as $item) {
 						push_out_host($host_id, $item);

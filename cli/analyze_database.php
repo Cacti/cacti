@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -99,7 +99,7 @@ if (cacti_sizeof($tables)) {
 			$status = db_execute('ANALYZE TABLE ' . $table['Tables_in_' . $database_default] . $form);
 		}
 
-		print($status == 0 ? ' Failed' : ' Successful') . "\n";
+		print ($status == 0 ? ' Failed' : ' Successful') . "\n";
 	}
 
 	cacti_log('ANALYSIS STATS: Analyzing Cacti Tables Complete.  Total time ' . (time() - $start) . ' seconds.', false, 'SYSTEM');

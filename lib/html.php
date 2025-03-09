@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -57,6 +57,7 @@
  * @param bool|string $add_label - used with legacy behavior to add specific text to the link.
  *   This parameter is only used in the legacy behavior.
  * @param bool $showcols - Show the column selector icon
+ * @param mixed $add_url_or_buttons
  *
  * @return void
  */
@@ -198,6 +199,12 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_url_or
 /**
  * Wrapper function for the html_start_box to control filters which presently are displayed
  * as tables in Cacti.  This function will show the three bar show/hide column setting
+ * @param mixed $title
+ * @param mixed $add_url_or_buttons
+ * @param mixed $div
+ * @param mixed $showcols
+ * @param mixed $add_label
+ * @param mixed $width
  */
 function html_filter_start_box($title, $add_url_or_buttons = '', $div = false, $showcols = true, $add_label = false, $width = '100%') {
 	html_start_box($title, $width, $div, 3, 'center', $add_url_or_buttons, $add_label, $showcols);
@@ -356,11 +363,11 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 	 				LEFT JOIN host AS h
 					ON gl.host_id = h.id
      				WHERE gl.id = ?',
-					array($graph['local_graph_id']));
+					[$graph['local_graph_id']]);
 			}
 
 			?>
-			<div class='graphWrapperOuter cols<?php print $columns;?>' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>'>
+			<div class='graphWrapperOuter cols<?php print $columns;?>' data-disabled='<?php print($graph['disabled'] == 'on' ? 'true':'false');?>'>
 				<div>
 					<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
 					<?php if (is_realm_allowed(27)) { ?>
@@ -369,7 +376,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 					</div>
 					<?php } ?>
 				</div>
-				<?php print (read_user_setting('show_graph_title') == 'on' ? "<div>" . html_escape($graph['title_cache']) . '</div>' : '');?>
+				<?php print(read_user_setting('show_graph_title') == 'on' ? '<div>' . html_escape($graph['title_cache']) . '</div>' : '');?>
 			</div>
 			<?php
 		}
@@ -442,7 +449,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 	 				LEFT JOIN host AS h
       				ON gl.host_id = h.id
 	   				WHERE gl.id = ?',
-					array($graph['local_graph_id']));
+					[$graph['local_graph_id']]);
 			}
 
 			if (isset($graph['graph_template_name'])) {
@@ -472,7 +479,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 			}
 
 			?>
-			<div class='graphWrapperOuter cols<?php print $columns;?>' data-disabled='<?php print ($graph['disabled'] == 'on' ? 'true':'false');?>'>
+			<div class='graphWrapperOuter cols<?php print $columns;?>' data-disabled='<?php print($graph['disabled'] == 'on' ? 'true':'false');?>'>
 				<div>
 					<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' graph_width='<?php print read_user_setting('default_width');?>' graph_height='<?php print read_user_setting('default_height');?>'></div>
 					<?php if (is_realm_allowed(27)) { ?>
@@ -481,7 +488,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 					</div>
 					<?php } ?>
 				</div>
-				<?php print (read_user_setting('show_graph_title') == 'on' ? "<div class='center'>" . html_escape($graph['title_cache']) . '</div>' : '');?>
+				<?php print(read_user_setting('show_graph_title') == 'on' ? "<div class='center'>" . html_escape($graph['title_cache']) . '</div>' : '');?>
 			</div>
 			<?php
 		}
@@ -521,7 +528,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 	$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id
 		FROM graph_local
 		WHERE id = ?',
-		array($local_graph_id));
+		[$local_graph_id]);
 
 	print "<div class='iconWrapper'>";
 	print "<a class='iconLink utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><i class='drillDown fa fa-cog actionCog' title='" . __esc('Graph Details, Zooming and Debugging Utilities') . "'></i></a><br>";
@@ -532,7 +539,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 		$host_id = db_fetch_cell_prepared('SELECT host_id
 			FROM graph_local
 			WHERE id = ?',
-			array($local_graph_id));
+			[$local_graph_id]);
 
 		if ($host_id > 0) {
 			print "<a class='iconLink' href='" . html_escape(CACTI_PATH_URL . "host.php?action=edit&id=$host_id") . "' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_de'><i id='de" . $host_id . '_' . $rand . "' class='drillDown fa fa-server editDevice' title='" . __esc('Edit Device') . "'></i></a>";
@@ -563,13 +570,13 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_i
 		print $aggregate_url;
 	}
 
-	api_plugin_hook($type, array(
+	api_plugin_hook($type, [
 		'hook'           => $type,
 		'local_graph_id' => $local_graph_id,
 		'rra'            => 0,
 		'view_type'      => $tree_id > 0 ? 'tree':'preview',
 		'tree_id'        => $tree_id,
-		'branch_id'      => $branch_id)
+		'branch_id'      => $branch_id]
 	);
 
 	print '</div>';
@@ -723,7 +730,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 	if (isset($_SESSION['sort_data'][$page])) {
 		$order_data = $_SESSION['sort_data'][$page];
 	} else {
-		$order_data = array(get_request_var('sort_column') => get_request_var('sort_direction'));
+		$order_data = [get_request_var('sort_column') => get_request_var('sort_direction')];
 	}
 
 	foreach ($order_data as $key => $direction) {
@@ -732,10 +739,10 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		break;
 	}
 
-	$table_visibility = array(
+	$table_visibility = [
 		'table_id' => $table_id,
 		'columns'  => $header_items
-	);
+	];
 
 	print "<thead><tr class='tableHeader' data-columns='" . base64_encode(json_encode($table_visibility)) . "'>";
 
@@ -913,7 +920,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 	if (isset($_SESSION['sort_data'][$page])) {
 		$order_data = $_SESSION['sort_data'][$page];
 	} else {
-		$order_data = array(get_request_var('sort_column') => get_request_var('sort_direction'));
+		$order_data = [get_request_var('sort_column') => get_request_var('sort_direction')];
 	}
 
 	foreach ($order_data as $key => $direction) {
@@ -927,10 +934,10 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		$form_action = get_current_page();
 	}
 
-	$table_visibility = array(
+	$table_visibility = [
 		'table_id' => $table_id,
 		'columns'  => $header_items
-	);
+	];
 
 	print "<thead><tr class='tableHeader' data-columns='" . base64_encode(json_encode($table_visibility)) . "'>";
 
@@ -1066,6 +1073,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
  * @param array $header_items - an array containing a list of items to be included in the header
  *   alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
  * @param int $last_item_colspan - the TD 'colspan' to apply to the last cell in the row
+ * @param mixed $resizable
  *
  * @return void
  */
@@ -1074,10 +1082,10 @@ function html_header($header_items, $last_item_colspan = 1, $resizable = true) {
 
 	$header_items = form_process_visible_display_text($table_id, $header_items);
 
-	$table_visibility = array(
+	$table_visibility = [
 		'table_id' => $table_id,
 		'columns'  => $header_items
-	);
+	];
 
 	print "<thead><tr class='tableHeader " . ($last_item_colspan > 1 || !$resizable ? 'tableFixed':'') . "' data-columns='" . base64_encode(json_encode($table_visibility)) . "'>";
 
@@ -1126,6 +1134,8 @@ function html_header($header_items, $last_item_colspan = 1, $resizable = true) {
  * @param array $header_name - an array of the display name of the header for the section and
  *   optional alignment.
  * @param int $last_item_colspan - the TD 'colspan' to apply to the last cell in the row
+ * @param mixed $header_item
+ * @param mixed $resizable
  *
  * @return void
  */
@@ -1164,10 +1174,10 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 		$form_action = get_current_page();
 	}
 
-	$table_visibility = array(
+	$table_visibility = [
 		'table_id' => $table_id,
 		'columns'  => $header_items
-	);
+	];
 
 	print "<thead><tr class='tableHeader " . (!$resizable ? 'tableFixed':'') . "' data-columns='" . base64_encode(json_encode($table_visibility)) . "'>";
 
@@ -1389,53 +1399,53 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
 
-	$display_text = array(
-		array(
+	$display_text = [
+		[
 			'display' => __('Data Source'),
 			'align'   => 'left'
-		),
-		array(
+		],
+		[
 			'display' => __('Seq#'),
 			'align'   => 'center'
-		),
-		array(
+		],
+		[
 			'display' => __('Type'),
 			'align'   => 'left'
-		),
-		array(
+		],
+		[
 			'display' => __('Consolidation'),
 			'align'   => 'left'
-		),
-		array(
+		],
+		[
 			'display' => __('Legend'),
 			'tip'     => __('When exporting or showing the values while hovering over the Graph, what legend to you want displayed?  If empty, it will default to data_source_name (consolidation function).  This does not work for some Cacti items such as TOTAL_ALL_DATA_SOURCES for example.'),
 			'align'   => 'left'
-		),
-		array(
+		],
+		[
 			'display' => __('GPrint'),
 			'align'   => 'left'
-		),
-		array(
+		],
+		[
 			'display' => __('CDEF'),
 			'align'   => 'left'
-		),
-		array(
+		],
+		[
 			'display' => __('VDEF'),
 			'align'   => 'left'
-		),
-		array(
+		],
+		[
 			'display' => __('Primary Color'),
 			'align'   => 'left'
-		),
-		array(
+		],
+		[
 			'display' => __('Gradient Color'),
 			'align'   => 'left'
-		),
-		array(
+		],
+		[
 			'display' => __('Actions'),
 			'align'   => 'right'
-		)
-	);
+		]
+	];
 
 	html_header($display_text);
 
@@ -1465,7 +1475,6 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 				$group_counter++;
 			}
-
 
 			/* alternating row color */
 			if ($use_custom_class == false) {
@@ -1542,6 +1551,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 			/* grpint display */
 			print "<td class='prewrap' style='$this_row_style'>";
+
 			if ($item['gprint_name'] != '') {
 				print html_escape($item['gprint_name']);
 			} else {
@@ -1551,6 +1561,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 			/* cdef display */
 			print "<td class='prewrap' style='$this_row_style'>";
+
 			if ($item['cdef_name'] != '') {
 				print $item['cdef_name'];
 			} else {
@@ -1560,6 +1571,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 			/* vdef display */
 			print "<td class='prewrap' style='$this_row_style'>";
+
 			if ($item['vdef_name'] != '') {
 				print $item['vdef_name'];
 			} else {
@@ -1616,6 +1628,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 				} else {
 					/* color 1 */
 					print "<td class='nowrap'>";
+
 					if ($color1 != $blank) {
 						print "<div style='display:table-cell;min-width:16px;background-color:#{$color1}'></div>";
 						print "<div style='display:table-cell;padding-left:5px;'>{$color1}</div>";
@@ -1666,11 +1679,11 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
  * @param string $menu_url - url of current page
  *
  * @return bool true if active, false if not
-*/
+ */
 function is_menu_pick_active($menu_url) {
 	static $url_array, $url_parts;
 
-	$menu_parts = array();
+	$menu_parts = [];
 
 	/* special case for host.php?action=edit&create=true */
 	if (str_contains($_SERVER['REQUEST_URI'], 'host.php?action=edit&create=true')) {
@@ -1686,7 +1699,7 @@ function is_menu_pick_active($menu_url) {
 		if (isset($url_array['query'])) {
 			parse_str($url_array['query'], $url_parts);
 		} else {
-			$url_parts = array();
+			$url_parts = [];
 		}
 	}
 
@@ -1709,7 +1722,7 @@ function is_menu_pick_active($menu_url) {
 		if (isset($menu_array['query'])) {
 			parse_str($menu_array['query'], $menu_parts);
 		} else {
-			$menu_parts = array();
+			$menu_parts = [];
 		}
 
 		if (isset($menu_parts['id'])) {
@@ -1750,7 +1763,7 @@ function draw_menu($user_menu = '') {
 
 	/* loop through each header */
 	$i       = 0;
-	$headers = array();
+	$headers = [];
 
 	foreach ($user_menu as $header_name => $header_array) {
 		/* pass 1: see if we are allowed to view any children */
@@ -2027,6 +2040,7 @@ function form_area($text) {
  * is_console_page - determines if current passed url is considered to be a console page
  *
  * @param string url - url to be checked
+ * @param mixed $url
  *
  * @return bool true if console page, false if not
  */
@@ -2073,7 +2087,7 @@ function is_console_page($url) {
 function html_show_tabs_left() {
 	global $config, $tabs_left;
 
-	$realm_allowed     = array();
+	$realm_allowed     = [];
 	$realm_allowed[7]  = is_realm_allowed(7);
 	$realm_allowed[8]  = is_realm_allowed(8);
 	$realm_allowed[18] = is_realm_allowed(18);
@@ -2089,11 +2103,11 @@ function html_show_tabs_left() {
 
 	if ($show_console_tab) {
 		$tabs_left[] =
-		array(
+		[
 			'title' => __('Console'),
 			'id'	   => 'tab-console',
 			'url'   => CACTI_PATH_URL . 'index.php',
-		);
+		];
 	}
 
 	if ($realm_allowed[7]) {
@@ -2101,11 +2115,11 @@ function html_show_tabs_left() {
 			// Don't show the graphs tab when offline
 		} else {
 			$tabs_left[] =
-				array(
+				[
 					'title' => __('Graphs'),
 					'id'	   => 'tab-graphs',
 					'url'   => CACTI_PATH_URL . 'graph_view.php',
-				);
+				];
 		}
 	}
 
@@ -2114,21 +2128,21 @@ function html_show_tabs_left() {
 			// Don't show the reports tab on other pollers
 		} else {
 			$tabs_left[] =
-				array(
+				[
 					'title' => __('Reporting'),
 					'id'	   => 'tab-reports',
 					'url'   => CACTI_PATH_URL . 'reports.php'
-				);
+				];
 		}
 	}
 
 	if ($realm_allowed[18] || $realm_allowed[19]) {
 		$tabs_left[] =
-			array(
+			[
 				'title' => __('Logs'),
 				'id'	   => 'tab-logs',
 				'url'   => CACTI_PATH_URL . ($realm_allowed[18] ? 'clog.php':'clog_user.php'),
-			);
+			];
 	}
 
 	// Get Plugin Text Out of Band
@@ -2196,7 +2210,7 @@ function html_show_tabs_left() {
 			$count++;
 		}
 
-		$tabs_left[] = array('title' => ucwords($alt), 'id' => 'tab-' . $id, 'url' => $href);
+		$tabs_left[] = ['title' => ucwords($alt), 'id' => 'tab-' . $id, 'url' => $href];
 	}
 
 	if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
@@ -2212,11 +2226,11 @@ function html_show_tabs_left() {
 			foreach ($external_links as $tab) {
 				if (is_realm_allowed($tab['id'] + 10000)) {
 					$tabs_left[] =
-						array(
+						[
 							'title' => $tab['title'],
 							'id'    => 'tab-link' . $tab['id'],
 							'url'   => CACTI_PATH_URL . 'link.php?id=' . $tab['id']
-						);
+						];
 				}
 			}
 		}
@@ -2266,33 +2280,33 @@ function html_graph_tabs_right() {
 
 	$theme = get_selected_theme();
 
-	$tabs_right = array();
+	$tabs_right = [];
 
 	if (is_view_allowed('show_tree')) {
-		$tabs_right[] = array(
+		$tabs_right[] = [
 			'title' => __('Tree View'),
 			'image' => get_theme_paths('%s', 'images/tab_tree.gif'),
 			'id'    => 'tree',
 			'url'   => 'graph_view.php?action=tree',
-		);
+		];
 	}
 
 	if (is_view_allowed('show_list')) {
-		$tabs_right[] = array(
+		$tabs_right[] = [
 			'title' => __('List View'),
 			'image' => get_theme_paths('%s', 'images/tab_list.gif'),
 			'id'    => 'list',
 			'url'   => 'graph_view.php?action=list',
-		);
+		];
 	}
 
 	if (is_view_allowed('show_preview')) {
-		$tabs_right[] = array(
+		$tabs_right[] = [
 			'title' => __('Preview'),
 			'image' => get_theme_paths('%s', 'images/tab_preview.gif'),
 			'id'    => 'preview',
 			'url'   => 'graph_view.php?action=preview',
-		);
+		];
 	}
 
 	$i = 0;
@@ -2352,19 +2366,19 @@ function html_graph_tabs_right() {
 }
 
 function html_transform_graph_template_ids($ids) {
-	$return_ids = array();
+	$return_ids = [];
 
 	if (str_contains($ids, ',')) {
 		$ids = explode(',', $ids);
 	} else {
-		$ids = array($ids);
+		$ids = [$ids];
 	}
 
-	foreach($ids as $id) {
+	foreach ($ids as $id) {
 		if (is_numeric($id)) {
 			$return_ids[] = $id;
 		} elseif (str_contains($id, 'cg_')) {
-			$new_id = str_replace('cg_', '', $id);
+			$new_id       = str_replace('cg_', '', $id);
 			$return_ids[] = $new_id;
 		} else {
 			$id = str_replace('dq_', '', $id);
@@ -2372,7 +2386,7 @@ function html_transform_graph_template_ids($ids) {
 			$return_ids[] = db_fetch_cell_prepared('SELECT graph_template_id
 				FROM snmp_query_graph
 				WHERE id = ?',
-				array($id));
+				[$id]);
 		}
 	}
 
@@ -2406,19 +2420,19 @@ function html_make_device_where() {
 }
 
 function html_graph_order_filter_array() {
-	$return  = array();
+	$return  = [];
 
 	if (read_config_option('dsstats_enable') == '') {
-		$data_sources = array('-1' => __('Enable Data Source Statistics to Sort'));
+		$data_sources = ['-1' => __('Enable Data Source Statistics to Sort')];
 
-		$return['graph_source'] = array(
+		$return['graph_source'] = [
 			'method'         => 'drop_array',
 			'friendly_name'  => __('Source'),
 			'filter'         => FILTER_CALLBACK,
-			'filter_options' => array('options' => 'sanitize_search_string'),
+			'filter_options' => ['options' => 'sanitize_search_string'],
 			'array'          => $data_sources,
 			'value'          => ''
-		);
+		];
 	} else {
 		$mode = read_config_option('dsstats_mode'); // 0 - Peak/Average only, 1 - Kitchen Sink
 		$peak = read_config_option('dsstats_peak'); // '' - Average CF Only, 'on' - Average and Max CF's
@@ -2429,25 +2443,25 @@ function html_graph_order_filter_array() {
 			if (str_contains($graph_templates, ',') || $graph_templates == '' || $graph_templates <= 0) {
 				$show_sort    = false;
 
-				$data_sources = array('-1' => __('Select a Single Template'));
+				$data_sources = ['-1' => __('Select a Single Template')];
 			} else {
 				$show_sort    = true;
 
 				$data_sources = array_rekey(
-					db_fetch_assoc_prepared("SELECT DISTINCT data_source_name AS graph_source
+					db_fetch_assoc_prepared('SELECT DISTINCT data_source_name AS graph_source
 						FROM graph_templates_item AS gti
 						INNER JOIN data_template_rrd AS dtr
 						ON dtr.id = gti.task_item_id
 						WHERE graph_template_id = ?
 						AND local_graph_id = 0
-						ORDER BY data_source_name",
-						array($graph_templates)),
+						ORDER BY data_source_name',
+						[$graph_templates]),
 					'graph_source', 'graph_source'
 				);
 
 				if (get_nfilter_request_var('graph_source') == '' ||
 					get_nfilter_request_var('graph_source') == '-1' ||
-					!in_array(get_nfilter_request_var('graph_source'), $data_sources)) {
+					!in_array(get_nfilter_request_var('graph_source'), $data_sources, true)) {
 					if (cacti_sizeof($data_sources)) {
 						set_request_var('graph_source', array_keys($data_sources)[0]);
 						set_request_var('graph_order', 'desc');
@@ -2455,64 +2469,64 @@ function html_graph_order_filter_array() {
 				}
 			}
 
-			$return['graph_source'] = array(
+			$return['graph_source'] = [
 				'method'         => 'drop_array',
 				'friendly_name'  => __('Source'),
 				'filter'         => FILTER_CALLBACK,
-				'filter_options' => array('options' => 'sanitize_search_string'),
+				'filter_options' => ['options' => 'sanitize_search_string'],
 				'array'          => $data_sources,
 				'value'          => ''
-			);
+			];
 
 			if ($show_sort) {
-				$options = array(
+				$options = [
 					'asc'  => __('Ascending'),
 					'desc' => __('Descending')
-				);
+				];
 
-				$return['graph_order'] = array(
+				$return['graph_order'] = [
 					'method'         => 'drop_array',
 					'friendly_name'  => __('Order'),
 					'filter'         => FILTER_CALLBACK,
-					'filter_options' => array('options' => 'sanitize_search_string'),
+					'filter_options' => ['options' => 'sanitize_search_string'],
 					'default'        => 'desc',
 					'array'          => $options,
 					'value'          => 'desc'
-				);
+				];
 
 				if ($peak == 'on') {
-					$options = array(
+					$options = [
 						'0' => __esc('Average'),
 						'1' => __esc('Maximum')
-					);
+					];
 
-					$return['cf'] = array(
+					$return['cf'] = [
 						'method'         => 'drop_array',
 						'friendly_name'  => __('CF'),
 						'filter'         => FILTER_VALIDATE_INT,
 						'default'        => '0',
 						'array'          => $options,
 						'value'          => get_nfilter_request_var('cf')
-					);
+					];
 				}
 
 				if ($mode == 0) {
-					$options = array(
+					$options = [
 						'average' => __esc('Average'),
 						'peak'    => __esc('Maximum')
-					);
+					];
 
-					$return['measure'] = array(
+					$return['measure'] = [
 						'method'         => 'drop_array',
 						'friendly_name'  => __('Measure'),
 						'filter'         => FILTER_CALLBACK,
-						'filter_options' => array('options' => 'sanitize_search_string'),
+						'filter_options' => ['options' => 'sanitize_search_string'],
 						'default'        => 'average',
 						'array'          => $options,
 						'value'          => get_nfilter_request_var('measure')
-					);
+					];
 				} else {
-					$options = array(
+					$options = [
 						'average' => __esc('Average'),
 						'peak'    => __esc('Maximum'),
 						'p25n'    => __esc('25th Percentile'),
@@ -2521,30 +2535,30 @@ function html_graph_order_filter_array() {
 						'p90n'    => __esc('90th Percentile'),
 						'p95n'    => __esc('95th Percentile'),
 						'sum'     => __esc('Total/Sum/Bandwidth')
-					);
+					];
 
-					$return['measure'] = array(
+					$return['measure'] = [
 						'method'         => 'drop_array',
 						'friendly_name'  => __('Measure'),
 						'filter'         => FILTER_CALLBACK,
-						'filter_options' => array('options' => 'sanitize_search_string'),
+						'filter_options' => ['options' => 'sanitize_search_string'],
 						'default'        => 'average',
 						'array'          => $options,
 						'value'          => get_nfilter_request_var('measure')
-					);
+					];
 				}
 			}
 		} else {
-			$data_sources = array('-1' => __('Select a Single Template'));
+			$data_sources = ['-1' => __('Select a Single Template')];
 
-			$return['graph_source'] = array(
+			$return['graph_source'] = [
 				'method'         => 'drop_array',
 				'friendly_name'  => __('Source'),
 				'filter'         => FILTER_CALLBACK,
-				'filter_options' => array('options' => 'sanitize_search_string'),
+				'filter_options' => ['options' => 'sanitize_search_string'],
 				'array'          => $data_sources,
 				'value'          => ''
-			);
+			];
 		}
 	}
 
@@ -2552,16 +2566,16 @@ function html_graph_order_filter_array() {
 }
 
 function html_thumbnails_filter($callBack = 'applyGraphFilter') {
-	$output  = "<input id='thumbnails' type='checkbox' onClick='$callBack()' " . (get_request_var('thumbnails') == 'true' ? 'checked':'') . ">";
-	$output .= "<label for='thumbnails'>" . __('Thumbnails') . "</label>";
+	$output  = "<input id='thumbnails' type='checkbox' onClick='$callBack()' " . (get_request_var('thumbnails') == 'true' ? 'checked':'') . '>';
+	$output .= "<label for='thumbnails'>" . __('Thumbnails') . '</label>';
 
 	return $output;
 }
 
 function html_business_hours_filter($callBack = 'applyGraphFilter') {
 	if (read_config_option('business_hours_enable') == 'on') {
-		$output  = "<input id='business_hours' type='checkbox' onClick='$callBack()' " . (get_request_var('business_hours') == 'true' ? 'checked':'') . ">";
-		$output .= "<label for='business_hours'>" . __('Business Hours') . "</label>";
+		$output  = "<input id='business_hours' type='checkbox' onClick='$callBack()' " . (get_request_var('business_hours') == 'true' ? 'checked':'') . '>';
+		$output .= "<label for='business_hours'>" . __('Business Hours') . '</label>';
 
 		return $output;
 	}
@@ -2602,12 +2616,12 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 				$devices = get_allowed_devices($sql_where);
 
-				if (cacti_sizeof($devices)) {
-					foreach ($devices as $device) {
-						print "<option value='{$device['id']}'" . ($host_id == $device['id'] ? ' selected':'') . '>' . html_escape(strip_domain($device['description'])) . '</option>';
-					}
-				}
-				?>
+		if (cacti_sizeof($devices)) {
+			foreach ($devices as $device) {
+				print "<option value='{$device['id']}'" . ($host_id == $device['id'] ? ' selected':'') . '>' . html_escape(strip_domain($device['description'])) . '</option>';
+			}
+		}
+		?>
 			</select>
 		</td>
 		<?php
@@ -2616,7 +2630,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 			$hostname = db_fetch_cell_prepared('SELECT description
 				FROM host
 				WHERE id = ?',
-				array($host_id));
+				[$host_id]);
 		} elseif ($host_id == 0) {
 			$hostname = __('None');
 		} else {
@@ -2668,12 +2682,12 @@ function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 			$sites = get_allowed_sites($sql_where);
 
-			if (cacti_sizeof($sites)) {
-				foreach ($sites as $site) {
-					print "<option value='" . $site['id'] . "'" . ($site_id == $site['id'] ? ' selected':'') . '>' . html_escape($site['name']) . '</option>';
-				}
-			}
-			?>
+	if (cacti_sizeof($sites)) {
+		foreach ($sites as $site) {
+			print "<option value='" . $site['id'] . "'" . ($site_id == $site['id'] ? ' selected':'') . '>' . html_escape($site['name']) . '</option>';
+		}
+	}
+	?>
 		</select>
 	</td>
 	<?php
@@ -2711,24 +2725,24 @@ function html_location_filter($location = '', $call_back = 'applyFilter', $sql_w
 				$sql_where = 'WHERE ' . $sql_where;
 			}
 
-			$locations = array_rekey(
-				db_fetch_assoc("SELECT DISTINCT location
+	$locations = array_rekey(
+		db_fetch_assoc("SELECT DISTINCT location
 					FROM host AS h
 					$sql_where
 					ORDER BY location ASC"),
-				'location', 'location'
-			);
+		'location', 'location'
+	);
 
-			if (cacti_sizeof($locations)) {
-				foreach ($locations as $l) {
-					if ($l == '') {
-						continue;
-					}
-
-					print "<option value='" . html_escape($l) . "'" . ($location == $l ? ' selected':'') . '>' . html_escape($l) . '</option>';
-				}
+	if (cacti_sizeof($locations)) {
+		foreach ($locations as $l) {
+			if ($l == '') {
+				continue;
 			}
-			?>
+
+			print "<option value='" . html_escape($l) . "'" . ($location == $l ? ' selected':'') . '>' . html_escape($l) . '</option>';
+		}
+	}
+	?>
 		</select>
 	</td>
 	<?php
@@ -3109,6 +3123,8 @@ function html_spikekill_js() {
  *
  * @param string title - the title of the page to place in the browser
  * @param string selectedTheme - optionally sets a specific theme over the current one
+ * @param mixed $title
+ * @param mixed $selectedTheme
  *
  * @return void
  */
@@ -3233,7 +3249,7 @@ function html_common_header($title, $selectedTheme = '') {
 		var userSettings=<?php print is_view_allowed('graph_settings') ? 'true':'false';?>;
 		var utilityView = '<?php print __esc('Utility View');?>';
 		var allSelectedText = '<?php print __('All Graph Templates');?>';
-		var templatesSelected = '<?php print __esc('Templates Selected');;?>';
+		var templatesSelected = '<?php print __esc('Templates Selected');?>';
 		var notTemplated = '<?php print __esc('Not Templated');?>';
 		var allText = '<?php __esc('All');?>';
 		var noneText = '<?php print __esc('None');?>';
@@ -3320,8 +3336,8 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/purify.js');
 	print get_md5_include_js('include/realtime.js');
 	print get_md5_include_js('include/js/ui-notices.js');
-    print get_md5_include_js('include/js/lzjs.js');
-    print get_md5_include_js('include/js/big.js');
+	print get_md5_include_js('include/js/lzjs.js');
+	print get_md5_include_js('include/js/big.js');
 
 	/* Main theme based scripts (included last to allow overrides) */
 	print get_md5_include_js('include/css/', theme: $selectedTheme, file: 'main.js');
@@ -3368,7 +3384,7 @@ function html_common_header($title, $selectedTheme = '') {
 function html_help_page($page) {
 	global $config, $help;
 
-	$help = array(
+	$help = [
 		'aggregates.php'              => 'Aggregates.html',
 		'aggregate_templates.php'     => 'Aggregate-Templates.html',
 		'automation_networks.php'     => 'Automation-Networks.html',
@@ -3421,7 +3437,7 @@ function html_help_page($page) {
 		'reports.php:events'          => 'Reports-Events.html',
 		'clog.php'                    => 'Cacti-Log.html',
 		'clog_user.php'               => 'Cacti-Log.html',
-	);
+	];
 
 	$help = api_plugin_hook_function('help_page', $help);
 
@@ -3447,7 +3463,7 @@ function html_help_page($page) {
  *
  * @return void
  */
-function html_auth_header($section, $browser_title, $legend, $title, $hook_args = array()) {
+function html_auth_header($section, $browser_title, $legend, $title, $hook_args = []) {
 	global $themes;
 
 	?>
@@ -3513,4 +3529,3 @@ function html_auth_footer($section, $error = '', $html = '') {
 </html>
 <?php
 }
-

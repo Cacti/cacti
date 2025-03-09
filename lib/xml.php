@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -27,14 +27,14 @@ function xml2array($data) {
 	original ripped from  on the php-manual:gdemartini@bol.com.br
 	to be used for data retrieval(result-structure is Data oriented) */
 	$p     = xml_parser_create();
-	$vals  = array();
-	$index = array();
+	$vals  = [];
+	$index = [];
 	xml_parser_set_option($p, XML_OPTION_SKIP_WHITE, 1);
 	xml_parser_set_option($p, XML_OPTION_CASE_FOLDING, 0);
 	xml_parse_into_struct($p, $data, $vals, $index);
 	xml_parser_free($p);
 
-	$tree = array();
+	$tree = [];
 	$i    = 0;
 	$tree = get_children($vals, $i);
 
@@ -42,7 +42,7 @@ function xml2array($data) {
 }
 
 function get_children($vals, &$i) {
-	$children = array();
+	$children = [];
 
 	if (isset($vals[$i]['value'])) {
 		if ($vals[$i]['value']) {
@@ -88,7 +88,7 @@ function get_children($vals, &$i) {
 
 function rrdxport2array($data) {
 	// Bug force encoding to UTF-8
-	$data = str_replace(array('US-ASCII', 'ISO-8859-1'), 'UTF-8', $data);
+	$data = str_replace(['US-ASCII', 'ISO-8859-1'], 'UTF-8', $data);
 
 	/* bug #1436 */
 	/* scan XML for bad data RRDtool 1.2.30 */
@@ -98,7 +98,7 @@ function rrdxport2array($data) {
 		if (str_starts_with(trim($array[0]), '<')) {
 			/* continue */
 		} else {
-			$new_array = array();
+			$new_array = [];
 
 			foreach ($array as $element) {
 				if (str_starts_with(trim($element), '<')) {
@@ -116,15 +116,15 @@ function rrdxport2array($data) {
 	original ripped from  on the php-manual:gdemartini@bol.com.br
 	to be used for data retrieval(result-structure is Data oriented) */
 	$p     = xml_parser_create('UTF-8');
-	$vals  = array();
-	$index = array();
+	$vals  = [];
+	$index = [];
 	xml_parser_set_option($p, XML_OPTION_SKIP_WHITE, 1);
 	xml_parser_set_option($p, XML_OPTION_CASE_FOLDING, 0);
 	xml_parser_set_option($p, XML_OPTION_TARGET_ENCODING, 'UTF-8');
 	xml_parse_into_struct($p, $data, $vals, $index);
 	xml_parser_free($p);
 
-	$tree   = array();
+	$tree   = [];
 	$i      = 0;
 	$column = 0;
 	$row    = 0;
@@ -134,7 +134,7 @@ function rrdxport2array($data) {
 }
 
 function get_rrd_children($vals, &$i, &$column, &$row) {
-	$children = array();
+	$children = [];
 
 	if (isset($vals[$i]['value'])) {
 		if ($vals[$i]['value']) {
@@ -170,7 +170,6 @@ function get_rrd_children($vals, &$i, &$column, &$row) {
 							$children['col' . $column] = $vals[$i]['value'];
 
 							break;
-
 						default:
 							$children[$vals[$i]['tag']] = $vals[$i]['value'];
 					}

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -24,11 +24,11 @@
 
 include_once('./include/auth.php');
 
-$actions = array(
+$actions = [
 	1 => __('Delete'),
 	3 => __('Enable'),
 	2 => __('Disable')
-);
+];
 
 set_default_action();
 
@@ -68,7 +68,7 @@ switch (get_request_var('action')) {
 
 		header('Location: links.php');
 
-        break;
+		break;
 	case 'save':
 		$save['id']      = isset_request_var('id') ? get_filter_request_var('id') : 0;
 		$save['title']   = form_input_validate(get_nfilter_request_var('title'), 'title', '', false, 3);
@@ -110,7 +110,7 @@ switch (get_request_var('action')) {
 			$id = sql_save($save, 'external_links');
 
 			// always give the login account access
-			db_execute_prepared('REPLACE INTO user_auth_realm (user_id, realm_id) VALUES (?, ?)', array($_SESSION[SESS_USER_ID], $id + 10000));
+			db_execute_prepared('REPLACE INTO user_auth_realm (user_id, realm_id) VALUES (?, ?)', [$_SESSION[SESS_USER_ID], $id + 10000]);
 
 			raise_message(1);
 
@@ -148,13 +148,13 @@ function links_reorder($new_order) {
 	if (cacti_sizeof($new_order)) {
 		$sort = 1;
 
-		foreach($new_order as $l) {
+		foreach ($new_order as $l) {
 			$link_id = str_replace('line', '', $l);
 
 			db_execute_prepared('UPDATE external_links
 				SET sortorder = ?
 				WHERE id = ?',
-				array($sort, $link_id));
+				[$sort, $link_id]);
 
 			$sort++;
 		}
@@ -175,17 +175,17 @@ function form_actions() {
 		if ($selected_items != false) {
 			if (get_request_var('drp_action') == '3') { // Enable Page
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
-					db_execute_prepared("UPDATE external_links SET enabled='on' WHERE id = ?", array($selected_items[$i]));
+					db_execute_prepared("UPDATE external_links SET enabled='on' WHERE id = ?", [$selected_items[$i]]);
 				}
 			} elseif (get_request_var('drp_action') == '2') { // Disable Page
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
-					db_execute_prepared("UPDATE external_links SET enabled='' WHERE id = ?", array($selected_items[$i]));
+					db_execute_prepared("UPDATE external_links SET enabled='' WHERE id = ?", [$selected_items[$i]]);
 				}
 			} elseif (get_request_var('drp_action') == '1') { // Delete Page
 				for ($i = 0; ($i < cacti_count($selected_items)); $i++) {
-					db_execute_prepared('DELETE FROM external_links WHERE id = ?', array($selected_items[$i]));
-					db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', array($selected_items[$i] + 10000));
-					db_execute_prepared('DELETE FROM user_auth_group_realm WHERE realm_id = ?', array($selected_items[$i] + 10000));
+					db_execute_prepared('DELETE FROM external_links WHERE id = ?', [$selected_items[$i]]);
+					db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', [$selected_items[$i] + 10000]);
+					db_execute_prepared('DELETE FROM user_auth_group_realm WHERE realm_id = ?', [$selected_items[$i] + 10000]);
 				}
 			}
 		}
@@ -195,7 +195,7 @@ function form_actions() {
 		exit;
 	} else {
 		$ilist  = '';
-		$iarray = array();
+		$iarray = [];
 
 		/* loop through each of the pages selected on the previous page and get more info about them */
 		foreach ($_POST as $var => $val) {
@@ -204,41 +204,41 @@ function form_actions() {
 				input_validate_input_number($matches[1], 'chk[1]');
 				/* ==================================================== */
 
-				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT title FROM external_links WHERE id = ?', array($matches[1]))) . '</li>';
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT title FROM external_links WHERE id = ?', [$matches[1]])) . '</li>';
 
 				$iarray[] = $matches[1];
 			}
 		}
 
-		$form_data = array(
-			'general' => array(
+		$form_data = [
+			'general' => [
 				'page'       => 'links.php',
 				'actions'    => $actions,
 				'optvar'     => 'drp_action',
 				'item_array' => $iarray,
 				'item_list'  => $ilist
-			),
-			'options' => array(
-				1 => array(
+			],
+			'options' => [
+				1 => [
 					'smessage' => __('Click \'Continue\' to Delete the following External Link.'),
 					'pmessage' => __('Click \'Continue\' to Delete following External Links.'),
 					'scont'    => __('Delete External Link'),
 					'pcont'    => __('Delete External Links')
-				),
-				2 => array(
+				],
+				2 => [
 					'smessage' => __('Click \'Continue\' to Disable the following External Link.'),
 					'pmessage' => __('Click \'Continue\' to Disable following External Links.'),
 					'scont'    => __('Disable External Link'),
 					'pcont'    => __('Disable External Links')
-				),
-				3 => array(
+				],
+				3 => [
 					'smessage' => __('Click \'Continue\' to Enable the following External Link.'),
 					'pmessage' => __('Click \'Continue\' to Enable following External Links.'),
 					'scont'    => __('Enable External Link'),
 					'pcont'    => __('Enable External Links'),
-				)
-			)
-		);
+				]
+			]
+		];
 
 		form_continue_confirmation($form_data);
 	}
@@ -260,12 +260,12 @@ function pages() {
 		$rows = get_request_var('rows');
 	}
 
-	$style_translate = array(
+	$style_translate = [
 		'CONSOLE'    => __('Console'),
 		'TAB'        => __('Top Tab'),
 		'FRONT'      => __('Bottom Console'),
 		'FRONTTOP'   => __('Top Console')
-	);
+	];
 
 	if (get_request_var('filter') != '') {
 		$sql_where = ' WHERE title LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR contentfile LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
@@ -295,38 +295,38 @@ function pages() {
 
 	html_start_box('', '100%', '', '4', 'center', '');
 
-	$display_text = array(
-		'nosort0' => array(
+	$display_text = [
+		'nosort0' => [
 			'display' => __('Actions'),
 			'align'   => 'left',
 			'sort'    => ''
-		),
-		'contentfile' => array(
+		],
+		'contentfile' => [
 			'display' => __('Page'),
 			'align'   => 'left',
 			'sort'    => 'ASC'
-		),
-		'title' => array(
+		],
+		'title' => [
 			'display' => __('Title'),
 			'align'   => 'left',
 			'sort'    => 'ASC'
-		),
-		'style' => array(
+		],
+		'style' => [
 			'display' => __('Style'),
 			'align'   => 'left',
 			'sort'    => 'ASC'
-		),
-		'disabled' => array(
+		],
+		'disabled' => [
 			'display' => __('Enabled'),
 			'align'   => 'left',
 			'sort'    => 'ASC'
-		),
-		'sortorder' => array(
+		],
+		'sortorder' => [
 			'display' => __('Order'),
 			'align'   => 'center',
 			'sort'    => 'ASC'
-		)
-	);
+		]
+	];
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'));
 
@@ -405,9 +405,9 @@ function pages() {
 }
 
 function page_delete($id) {
-	db_execute_prepared('DELETE FROM external_links WHERE id = ?', array($id));
-	db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', array($id + 10000));
-	db_execute_prepared('DELETE FROM user_auth_group_realm WHERE realm_id = ?', array($id + 10000));
+	db_execute_prepared('DELETE FROM external_links WHERE id = ?', [$id]);
+	db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', [$id + 10000]);
+	db_execute_prepared('DELETE FROM user_auth_group_realm WHERE realm_id = ?', [$id + 10000]);
 
 	page_resort();
 }
@@ -419,20 +419,20 @@ function page_resort() {
 
 	if (cacti_sizeof($pages)) {
 		foreach ($pages as $page) {
-			db_execute_prepared('UPDATE external_links SET sortorder = ? WHERE id = ?' . array($i, $page['id']));
+			db_execute_prepared('UPDATE external_links SET sortorder = ? WHERE id = ?' . [$i, $page['id']]);
 			$i++;
 		}
 	}
 }
 
 function page_move($pageid, $junk, $direction) {
-	$oldorder = db_fetch_cell_prepared('SELECT sortorder FROM external_links WHERE id = ?', array($pageid));
+	$oldorder = db_fetch_cell_prepared('SELECT sortorder FROM external_links WHERE id = ?', [$pageid]);
 	$neworder = $oldorder + $direction;
-	$otherid  = db_fetch_cell_prepared('SELECT id FROM external_links WHERE sortorder = ?', array($neworder));
+	$otherid  = db_fetch_cell_prepared('SELECT id FROM external_links WHERE sortorder = ?', [$neworder]);
 
 	if (!empty($otherid)) {
-		db_execute_prepared('UPDATE external_links SET sortorder = ? WHERE id = ?', array($neworder, $pageid));
-		db_execute_prepared('UPDATE external_links SET sortorder = ? WHERE id = ?', array($oldorder, $otherid));
+		db_execute_prepared('UPDATE external_links SET sortorder = ? WHERE id = ?', [$neworder, $pageid]);
+		db_execute_prepared('UPDATE external_links SET sortorder = ? WHERE id = ?', [$oldorder, $otherid]);
 	}
 }
 
@@ -445,7 +445,7 @@ function edit_page() {
 		GROUP BY extendedstyle
 		ORDER BY extendedstyle");
 
-	$sec_ar                   = array();
+	$sec_ar                   = [];
 	$sec_ar['External Links'] = __('External Links');
 
 	foreach ($sections as $sec) {
@@ -456,63 +456,63 @@ function edit_page() {
 	$sec_ar['__NEW__'] = 'New Name Below';
 
 	if (isset_request_var('id')) {
-		$data = db_fetch_row_prepared('SELECT * FROM external_links WHERE id = ?', array(get_filter_request_var('id')));
+		$data = db_fetch_row_prepared('SELECT * FROM external_links WHERE id = ?', [get_filter_request_var('id')]);
 	} else {
-		$data = array();
+		$data = [];
 	}
 
 	$myrefresh[0] = __('Disabled');
 	$myrefresh   += $poller_intervals;
 
-	$field_array = array(
-		'id' => array(
+	$field_array = [
+		'id' => [
 			'friendly_name' => __('Style'),
 			'method'        => 'hidden',
 			'value'         => isset_request_var('id') ? get_request_var('id') : 0
-		),
-		'style' => array(
+		],
+		'style' => [
 			'friendly_name' => __('Style'),
 			'method'        => 'drop_array',
-			'array'         => array(
+			'array'         => [
 				'TAB'        => __('Top Tab'),
 				'CONSOLE'    => __('Console Menu'),
 				'FRONT'      => __('Bottom of Console Page'),
 				'FRONTTOP'   => __('Top of Console Page')
-			),
+			],
 			'description' => __('Where should this page appear?'),
 			'value'       => (isset($data['style']) ? $data['style'] : '')
-		),
-		'consolesection' => array(
+		],
+		'consolesection' => [
 			'friendly_name' => __('Console Menu Section'),
 			'method'        => 'drop_array',
 			'array'         => $sec_ar,
 			'description'   => __('Under which Console heading should this item appear? (All External Link menus will appear between Configuration and Utilities)'),
 			'value'         => (isset($data['extendedstyle']) ? $data['extendedstyle'] : '')
-		),
-		'consolenewsection' => array(
+		],
+		'consolenewsection' => [
 			'friendly_name' => __('New Console Section'),
 			'method'        => 'textbox',
 			'max_length'    => 20,
 			'description'   => __('If you don\'t like any of the choices above, type a new title in here.'),
 			'value'         => (isset($data['extendedstyle']) ? $data['extendedstyle'] : '')
-		),
-		'title' => array(
+		],
+		'title' => [
 			'friendly_name' => __('Tab/Menu Name'),
 			'method'        => 'textbox',
 			'max_length'    => 20,
 			'description'   => __('The text that will appear in the tab or menu.'),
 			'value'         => (isset($data['title']) ? $data['title'] : '')
-		),
-		'filename' => array(
+		],
+		'filename' => [
 			'friendly_name' => __('Content File/URL'),
 			'method'        => 'drop_files',
 			'directory'     => CACTI_PATH_INCLUDE . '/content',
-			'exclusions'    => array('README', 'index.php'),
+			'exclusions'    => ['README', 'index.php'],
 			'none_value'    => __('Web URL Below'),
 			'description'   => __('The file that contains the content for this page. This file needs to be in the Cacti \'include/content/\' directory.'),
 			'value'         => (isset($data['contentfile']) ? $data['contentfile'] : '')
-		),
-		'fileurl' => array(
+		],
+		'fileurl' => [
 			'friendly_name' => __('Web URL Location'),
 			'method'        => 'textbox',
 			'description'   => __('The valid URL to use for this external link.  Must include the type, for example http://www.cacti.net.  Note that many websites do not allow them to be embedded in an iframe from a foreign site, and therefore External Linking may not work.'),
@@ -520,22 +520,22 @@ function edit_page() {
 			'size'          => 80,
 			'default'       => 'http://www.cacti.net',
 			'value'         => (isset($data['contentfile']) ? $data['contentfile'] : '')
-		),
-		'enabled' => array(
+		],
+		'enabled' => [
 			'friendly_name' => __('Enabled'),
 			'method'        => 'checkbox',
 			'description'   => __('If checked, the page will be available immediately to the admin user.'),
 			'default'       => 'on',
 			'value'         => (isset($data['enabled']) ? 'on' : '')
-		),
-		'refresh' => array(
+		],
+		'refresh' => [
 			'friendly_name' => __('Automatic Page Refresh'),
 			'method'        => 'drop_array',
 			'array'         => $myrefresh,
 			'description'   => __('How often do you wish this page to be refreshed automatically.'),
 			'value'         => (isset($data['refresh']) ? $data['refresh'] : '')
-		),
-	);
+		],
+	];
 
 	form_start('links.php', 'link_edit');
 
@@ -546,10 +546,10 @@ function edit_page() {
 	}
 
 	draw_edit_form(
-		array(
-			'config' => array('no_form_tag' => true),
+		[
+			'config' => ['no_form_tag' => true],
 			'fields' => $field_array
-		)
+		]
 	);
 
 	html_end_box(true, true);

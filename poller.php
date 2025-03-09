@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -75,7 +75,6 @@ function sig_handler($signo) {
 			exit;
 
 			break;
-
 		default:
 			// ignore all other signals
 	}
@@ -154,20 +153,20 @@ if (!db_column_exists('poller', 'dbhost')) {
 $phostname = db_fetch_cell_prepared('SELECT hostname
 	FROM poller
 	WHERE id = ?',
-	array($poller_id), '', true, $poller_db_cnn_id);
+	[$poller_id], '', true, $poller_db_cnn_id);
 
 // update the pollers hostname if it is blank, otherwise allow the user to edit it
 if ($phostname == '' || $phostname == 'localhost' || $phostname == '127.0.0.1') {
 	db_execute_prepared('UPDATE poller
 		SET hostname = ?
 		WHERE id = ?',
-		array($hostname, $poller_id), true, $poller_db_cnn_id);
+		[$hostname, $poller_id], true, $poller_db_cnn_id);
 }
 
 $dbhostname = db_fetch_cell_prepared('SELECT dbhost
 	FROM poller
 	WHERE id = ?',
-	array($poller_id), '', true, $poller_db_cnn_id);
+	[$poller_id], '', true, $poller_db_cnn_id);
 
 // update the database hostname based upon the entry
 if ($dbhostname == '' || $dbhostname == 'localhost' || $dbhostname == '127.0.0.1') {
@@ -178,7 +177,7 @@ if ($dbhostname == '' || $dbhostname == 'localhost' || $dbhostname == '127.0.0.1
 	db_execute_prepared('UPDATE poller
 		SET dbhost = ?
 		WHERE id = ?',
-		array($hostname, $poller_id), true, $poller_db_cnn_id);
+		[$hostname, $poller_id], true, $poller_db_cnn_id);
 }
 
 // if you have more than one poller, boost must be enabled
@@ -230,7 +229,7 @@ if ($poller_lastrun % 14440 < $current_time % 14440 || empty($poller_lastrun)) {
 $poller = db_fetch_row_prepared('SELECT *
 	FROM poller
 	WHERE id = ?',
-	array($poller_id), true, $poller_db_cnn_id);
+	[$poller_id], true, $poller_db_cnn_id);
 
 // get the current cron interval from the database
 $cron_interval = read_config_option('cron_interval');
@@ -270,14 +269,14 @@ $ds_needing_fixes = db_fetch_assoc_prepared('SELECT local_data_id,
 	AND rrd_num > 1
 	GROUP BY local_data_id
 	HAVING instances > 1',
-	array($poller_id));
+	[$poller_id]);
 
 if (cacti_sizeof($ds_needing_fixes)) {
 	foreach ($ds_needing_fixes as $ds) {
 		db_execute_prepared('UPDATE poller_item
 			SET rrd_next_step = ?
 			WHERE local_data_id = ?',
-			array($ds['next_step'], $ds['local_data_id']));
+			[$ds['next_step'], $ds['local_data_id']]);
 	}
 }
 
@@ -431,20 +430,23 @@ $totals = db_fetch_assoc_prepared('SELECT action, COUNT(*) AS totals
 	FROM poller_item AS pi
 	WHERE pi.poller_id = ?
 	GROUP BY action',
-	array($poller_id));
+	[$poller_id]);
 
 if (cacti_sizeof($totals)) {
-	foreach($totals as $value) {
+	foreach ($totals as $value) {
 		switch($value['action']) {
-		case '0': // SNMP
-			$snmp = $value['totals'];
-			break;
-		case '1': // Script
-			$script = $value['totals'];
-			break;
-		case '2': // Server
-			$server = $value['totals'];
-			break;
+			case '0': // SNMP
+				$snmp = $value['totals'];
+
+				break;
+			case '1': // Script
+				$script = $value['totals'];
+
+				break;
+			case '2': // Server
+				$server = $value['totals'];
+
+				break;
 		}
 	}
 }
@@ -452,7 +454,7 @@ if (cacti_sizeof($totals)) {
 $devices = db_fetch_cell_prepared('SELECT COUNT(DISTINCT host_id)
 	FROM poller_item AS pi
 	WHERE pi.poller_id = ?',
-	array($poller_id));
+	[$poller_id]);
 
 /**
  * Update poller data source statistics in the poller table
@@ -466,7 +468,7 @@ db_execute_prepared('INSERT INTO poller (id, devices, snmp, script, server, last
 		server=VALUES(server),
 		last_status=VALUES(last_status),
 		status=VALUES(status)',
-	array($poller_id, $devices, $snmp, $script, $server), true, $poller_db_cnn_id);
+	[$poller_id, $devices, $snmp, $script, $server], true, $poller_db_cnn_id);
 
 /**
  * Freshen the field mappings in cases where they
@@ -504,14 +506,14 @@ while ($poller_runs_completed < $poller_runs) {
 			AND IFNULL(h.disabled,'') != 'on'
 			$sql_where
 			ORDER BY id",
-			array($poller_id));
+			[$poller_id]);
 
 		$total_polling_hosts = cacti_sizeof($polling_hosts);
 
 		if ($total_polling_hosts) {
-			$polling_hosts = array_merge(array(0 => array('id' => '0')), $polling_hosts);
+			$polling_hosts = array_merge([0 => ['id' => '0']], $polling_hosts);
 		} else {
-			$polling_hosts = array(0 => array('id' => '0'));
+			$polling_hosts = [0 => ['id' => '0']];
 		}
 	} else {
 		$polling_hosts = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . " h.id
@@ -523,7 +525,7 @@ while ($poller_runs_completed < $poller_runs) {
 			AND IFNULL(h.disabled, '') != 'on'
 			$sql_where
 			ORDER BY id",
-			array($poller_id));
+			[$poller_id]);
 
 		$total_polling_hosts = cacti_sizeof($polling_hosts);
 	}
@@ -572,7 +574,7 @@ while ($poller_runs_completed < $poller_runs) {
 		FROM poller_time
 		WHERE poller_id = ?
 		AND end_time="0000-00-00 00:00:00"',
-		array($poller_id), '', true, $poller_db_cnn_id);
+		[$poller_id], '', true, $poller_db_cnn_id);
 
 	if ($running_processes) {
 		cacti_log("WARNING: There are $running_processes processes detected as overrunning a polling cycle, please investigate", true, 'POLLER');
@@ -581,17 +583,17 @@ while ($poller_runs_completed < $poller_runs) {
 
 	db_execute_prepared('DELETE FROM poller_time
 		WHERE poller_id = ?',
-		array($poller_id), true, $poller_db_cnn_id);
+		[$poller_id], true, $poller_db_cnn_id);
 
 	/**
 	 * only report issues for the main poller or from bad local
 	 * data ids, other pollers may insert somewhat asynchronously
 	 */
-	$issues       = array();
+	$issues       = [];
 
 	$issues_limit = 20;
 	$issues_check = ($poller_id == 1 || $config['connection'] == 'online');
-	$issues_param = array( $current_time, $poller_id, $poller_id );
+	$issues_param = [ $current_time, $poller_id, $poller_id ];
 
 	$issues_sql = ' FROM poller_output AS po
 		LEFT JOIN data_local AS dl
@@ -613,7 +615,7 @@ while ($poller_runs_completed < $poller_runs) {
 			COUNT(*)' . $issues_sql,
 			$issues_param);
 
-		$issues_list = array();
+		$issues_list = [];
 
 		foreach ($issues as $issue) {
 			$issues_list[]= $issue['local_data_id'];
@@ -662,7 +664,7 @@ while ($poller_runs_completed < $poller_runs) {
 	 * This table is required due to spine using multiple
 	 * threads per device.
 	 */
-	db_execute_prepared('DELETE FROM host_errors WHERE poller_id = ?', array($poller_id));
+	db_execute_prepared('DELETE FROM host_errors WHERE poller_id = ?', [$poller_id]);
 
 	// mainline
 	if (read_config_option('poller_enabled') == 'on') {
@@ -785,7 +787,7 @@ while ($poller_runs_completed < $poller_runs) {
 					FROM poller_time
 					WHERE poller_id = ?
 					AND end_time >'0000-00-00 00:00:00'",
-					array($poller_id), '', true, $poller_db_cnn_id);
+					[$poller_id], '', true, $poller_db_cnn_id);
 
 				if ($finished_processes >= $started_processes) {
 					// all scheduled pollers are finished
@@ -861,7 +863,7 @@ while ($poller_runs_completed < $poller_runs) {
 				db_execute_prepared('INSERT INTO poller_time
 					(pid, poller_id, start_time, end_time)
 					VALUES (?, ?, ?, ?)',
-					array(rand(), $poller_id, $start_end, $start_end), true, $poller_db_cnn_id);
+					[rand(), $poller_id, $start_end, $start_end], true, $poller_db_cnn_id);
 			}
 		}
 
@@ -869,7 +871,7 @@ while ($poller_runs_completed < $poller_runs) {
 		$commands = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
 			FROM poller_command
 			WHERE poller_id = ?',
-			array($poller_id), '', true, $poller_db_cnn_id);
+			[$poller_id], '', true, $poller_db_cnn_id);
 
 		if ($commands > 0) {
 			$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
@@ -971,14 +973,14 @@ function poller_heartbeat_check() {
 		WHERE disabled = ""
 		HAVING heartbeat > ? * 2
 		OR status = 6',
-		array($poller_interval));
+		[$poller_interval]);
 
 	if (cacti_sizeof($heartbeat_pollers)) {
-		foreach($heartbeat_pollers as $p) {
-			db_execute_prepared('UPDATE poller SET status = 6 WHERE id = ?', array($p['id']));
+		foreach ($heartbeat_pollers as $p) {
+			db_execute_prepared('UPDATE poller SET status = 6 WHERE id = ?', [$p['id']]);
 
 			if (debounce_run_notification('poller_heartbeat_' . $p['id'], 1800)) {
-				$log_message = sprintf('WARNING: Poller[%s] with Name:%s is in Heartbeat Status', $p['id'], $p['name']);
+				$log_message   = sprintf('WARNING: Poller[%s] with Name:%s is in Heartbeat Status', $p['id'], $p['name']);
 				$email_message = __('WARNING: PollerID:%s with Name:%s is in Heartbeat Status', $p['id'], $p['name']);
 				cacti_log($log_message, false, 'POLLER');
 				admin_email(__('Poller in Heartbeat Mode'), $email_message);
@@ -1130,7 +1132,7 @@ function poller_enabled_check($poller_id) {
 	$poller_disabled = db_fetch_cell_prepared('SELECT disabled
 		FROM poller
 		WHERE id = ?',
-		array($poller_id), '', true, $poller_db_cnn_id);
+		[$poller_id], '', true, $poller_db_cnn_id);
 
 	$system_enabled = read_config_option('poller_enabled');
 
@@ -1150,7 +1152,7 @@ function poller_enabled_check($poller_id) {
 		db_execute_prepared('UPDATE poller
 			SET last_status=NOW()
 			WHERE id = ?',
-			array($poller_id), true, $poller_db_cnn_id);
+			[$poller_id], true, $poller_db_cnn_id);
 
 		exit(1);
 	}
@@ -1164,7 +1166,7 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 	$poller = db_fetch_row_prepared('SELECT *
 		FROM poller
 		WHERE id = ?',
-		array($poller_id), true, $poller_db_cnn_id);
+		[$poller_id], true, $poller_db_cnn_id);
 
 	/* update the host table error count first */
 	db_execute_prepared('UPDATE host AS h
@@ -1172,7 +1174,7 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 		ON h.id = e.host_id
 		SET h.current_errors = e.errors
 		WHERE h.poller_id = ?',
-		array($poller_id));
+		[$poller_id]);
 
 	if ($hosts_per_process == -1) {
 		$hosts_per_process = 0;
@@ -1183,7 +1185,7 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 	}
 
 	if ($poller_id == 1) {
-		$error_lines = db_fetch_assoc("SELECT * FROM host_errors");
+		$error_lines = db_fetch_assoc('SELECT * FROM host_errors');
 
 		db_execute('CREATE TEMPORARY TABLE IF NOT EXISTS host_errors_normalized (
 			`host_id` mediumint(8) unsigned NOT NULL DEFAULT 0,
@@ -1193,13 +1195,14 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 
 		$sql = 'INSERT INTO host_errors_normalized (host_id, local_data_id) VALUES ';
 
-		$i = 0;
-		$params = array();
+		$i      = 0;
+		$params = [];
+
 		if (cacti_sizeof($error_lines)) {
-			foreach($error_lines as $l) {
+			foreach ($error_lines as $l) {
 				$local_data_ids = array_unique(preg_split('/\s+/', $l['local_data_ids']), SORT_NUMERIC);
 
-				foreach($local_data_ids as $ldi) {
+				foreach ($local_data_ids as $ldi) {
 					$sql .= ($i == 0 ? '':',') . '(?, ?)';
 					$params[] = $l['host_id'];
 					$params[] = $ldi;
@@ -1227,7 +1230,7 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 	$errors = db_fetch_row_prepared('SELECT COUNT(DISTINCT host_id) AS errorHosts, SUM(errors) AS totalErrors
 		FROM host_errors
 		WHERE poller_id = ?',
-		array($poller_id));
+		[$poller_id]);
 
 	if (cacti_sizeof($errors)) {
 		$errorHosts  = $errors['errorHosts'] ?? 0;
@@ -1245,7 +1248,7 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 	// take time and log performance data
 	$loop_end = microtime(true);
 
-	$perf_data = array(
+	$perf_data = [
 		round($loop_end - $loop_start,4),
 		$method,
 		$concurrent_processes,
@@ -1256,7 +1259,7 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 		$rrds_processed,
 		$errorHosts,
 		$totalErrors
-	);
+	];
 
 	$cacti_stats = vsprintf('Time:%01.4f Method:%s Processes:%s Threads:%s Hosts:%s HostsPerProcess:%s DataSources:%s RRDsProcessed:%s ErrorHosts:%s TotalErrors:%s', $perf_data);
 	cacti_log('STATS: ' . $cacti_stats , true, 'SYSTEM');
@@ -1300,7 +1303,7 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 			last_update = VALUES(last_update),
 			last_status = VALUES(last_status),
 			status = VALUES(status)',
-			array($poller_id, round($total_time, 4), $min_time, $max_time, $avg_time, $total_polls + 1), true, $poller_db_cnn_id);
+			[$poller_id, round($total_time, 4), $min_time, $max_time, $avg_time, $total_polls + 1], true, $poller_db_cnn_id);
 	}
 
 	// update snmpcache
@@ -1335,10 +1338,10 @@ function poller_run_stats($loop_start) {
 		if ($count > 0) {
 			$ratio = round($sum / $count, 2);
 
-			cacti_log(sprintf("24 Hour Average Poller run time is %0.2f seconds, min: %s , max: %s", $ratio, $min, $max), true, 'POLLER');
+			cacti_log(sprintf('24 Hour Average Poller run time is %0.2f seconds, min: %s , max: %s', $ratio, $min, $max), true, 'POLLER');
 
 			if ($ratio / $poller_interval > $threshold_24h / 100 && $threshold_24h > 0) {
-				cacti_log(sprintf("WARNING: 24 Hour Poller Average run time reached more than %s percent of time limit.", $threshold_24h), true, 'POLLER');
+				cacti_log(sprintf('WARNING: 24 Hour Poller Average run time reached more than %s percent of time limit.', $threshold_24h), true, 'POLLER');
 
 				admin_email(__('Cacti System Warning'), __('WARNING: 24 Hour Poller[%d] Average run time threshold breached.  It is %f seconds (more than %d &#37; of threshold.)', $poller_id, $ratio, $threshold_24h));
 			}
@@ -1351,10 +1354,10 @@ function poller_run_stats($loop_start) {
 			FROM poller_time_stats
 			WHERE time > DATE_SUB(NOW(), INTERVAL 60 minute)
 			AND (total_time/?) > (?/100)',
-			array($poller_interval, $threshold_1h));
+			[$poller_interval, $threshold_1h]);
 
 		if ($count > $threshold_1h_count && $threshold_1h_count > 0) {
-			cacti_log(sprintf("WARNING: In the last hour, the Poller run time exceeded the threshold %d times (limit %d) by %d percent of time limit.", $count, $threshold_1h_count, $threshold_1h) , true, 'POLLER');
+			cacti_log(sprintf('WARNING: In the last hour, the Poller run time exceeded the threshold %d times (limit %d) by %d percent of time limit.', $count, $threshold_1h_count, $threshold_1h) , true, 'POLLER');
 
 			admin_email(__('Cacti System Warning'), __('WARNING: In last hour Poller[%d] run time exceeded the threshold %d times (limit %d) by %d percent of the time limit.', $poller_id, $count, $threshold_1h_count, $threshold_1h));
 		}
@@ -1363,7 +1366,7 @@ function poller_run_stats($loop_start) {
 	// poller time statistics for last day
 	db_execute_prepared('INSERT INTO poller_time_stats (poller_id,total_time,time)
 		VALUES (?,?,now())',
-		array($poller_id, round($total_time, 4)));
+		[$poller_id, round($total_time, 4)]);
 
 	// delete old stats
 	db_execute('DELETE FROM poller_time_stats WHERE `time` <  DATE_SUB(NOW(), INTERVAL 24 HOUR)');

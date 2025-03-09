@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -135,7 +135,7 @@ if (is_numeric($template) && $template > 0) {
 $exists = db_fetch_cell_prepared('SELECT id
 	FROM host_template
 	WHERE id = ?',
-	array($template));
+	[$template]);
 
 if ($exists > 0) {
 	$hosts = db_fetch_assoc("SELECT * FROM host $sql_where");
@@ -147,7 +147,7 @@ if ($exists > 0) {
 			$snmp_queries = db_fetch_assoc_prepared('SELECT snmp_query_id
 				FROM host_template_snmp_query
 				WHERE host_template_id = ?',
-				array($host['host_template_id']));
+				[$host['host_template_id']]);
 
 			if (cacti_sizeof($snmp_queries) > 0) {
 				print "NOTE: Updating Data Queries. There were '" . cacti_sizeof($snmp_queries) . "' Found\n";
@@ -158,7 +158,7 @@ if ($exists > 0) {
 					db_execute_prepared('INSERT IGNORE INTO host_snmp_query
 						(host_id, snmp_query_id, reindex_method)
 						VALUES (?, ?, ?)',
-						array($host['id'], $snmp_query['snmp_query_id'], DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME));
+						[$host['id'], $snmp_query['snmp_query_id'], DATA_QUERY_AUTOINDEX_BACKWARDS_UPTIME]);
 
 					/* recache snmp data */
 					run_data_query($host['id'], $snmp_query['snmp_query_id']);
@@ -172,7 +172,7 @@ if ($exists > 0) {
 			$graph_templates = db_fetch_assoc_prepared('SELECT graph_template_id
 				FROM host_template_graph
 				WHERE host_template_id = ?',
-				array($host['host_template_id']));
+				[$host['host_template_id']]);
 
 			if (cacti_sizeof($graph_templates) > 0) {
 				print "NOTE: Updating Graph Templates. There were '" . cacti_sizeof($graph_templates) . "' Found\n";
@@ -181,11 +181,11 @@ if ($exists > 0) {
 					db_execute_prepared('INSERT IGNORE INTO host_graph
 						(host_id, graph_template_id)
 						VALUES (?, ?)',
-						array($host['id'], $graph_template['graph_template_id']));
+						[$host['id'], $graph_template['graph_template_id']]);
 
 					automation_hook_graph_template($host['id'], $graph_template['graph_template_id']);
 
-					api_plugin_hook_function('add_graph_template_to_host', array('host_id' => $host['id'], 'graph_template_id' => $graph_template['graph_template_id']));
+					api_plugin_hook_function('add_graph_template_to_host', ['host_id' => $host['id'], 'graph_template_id' => $graph_template['graph_template_id']]);
 				}
 			}
 

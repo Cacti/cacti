@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -48,11 +48,11 @@ function getHostTemplates(): array {
  * @return array|false Returns an array of hosts that match the given description, or false on failure.
  */
 function getHostsByDescription(array|false $hostTemplateIds = false): array|false {
-	$hosts = array();
+	$hosts = [];
 
 	if ($hostTemplateIds !== false) {
 		if (!is_array($hostTemplateIds)) {
-			$hostTemplateIds = array($hostTemplateIds);
+			$hostTemplateIds = [$hostTemplateIds];
 		}
 	}
 
@@ -90,7 +90,7 @@ function getHostsByDescription(array|false $hostTemplateIds = false): array|fals
  * @return array An array containing the list of sites.
  */
 function getSites(): array {
-	$sites    = array();
+	$sites    = [];
 	$tmpArray = db_fetch_assoc('SELECT * FROM sites ORDER BY id');
 
 	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
@@ -111,11 +111,11 @@ function getSites(): array {
  * @return array|false Returns an array of hosts if successful, or false on failure.
  */
 function getHosts(array|false $hostTemplateIds = false): array|false {
-	$hosts = array();
+	$hosts = [];
 
 	if ($hostTemplateIds !== false) {
 		if (!is_array($hostTemplateIds)) {
-			$hostTemplateIds = array($hostTemplateIds);
+			$hostTemplateIds = [$hostTemplateIds];
 		}
 	}
 
@@ -154,7 +154,7 @@ function getHosts(array|false $hostTemplateIds = false): array|false {
  * @return array An array of input fields associated with the specified template ID.
  */
 function getInputFields(int $templateId): array {
-	$fields = array();
+	$fields = [];
 
 	$tmpArray = db_fetch_assoc_prepared("SELECT DISTINCT dif.data_name AS `name`, dif.name AS `description`,
 		did.value AS `default`, dtd.data_template_id, dif.id AS `data_input_field_id`
@@ -184,7 +184,7 @@ function getInputFields(int $templateId): array {
 		ON gt.id = gti.graph_template_id
 		WHERE gt.id = ?
 		AND dif.input_output IN ('in', 'inout')",
-		array($templateId));
+		[$templateId]);
 
 	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
 		foreach ($tmpArray as $row) {
@@ -201,7 +201,7 @@ function getInputFields(int $templateId): array {
  * @return array An array of addresses.
  */
 function getAddresses(): array {
-	$addresses = array();
+	$addresses = [];
 	$tmpArray  = db_fetch_assoc('SELECT id, hostname FROM host ORDER BY hostname');
 
 	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
@@ -221,7 +221,7 @@ function getAddresses(): array {
  * @return array An array of SNMP fields for the specified host.
  */
 function getSNMPFields(string $hostId, string $snmp_query_id = ''): array {
-	$fieldNames = array();
+	$fieldNames = [];
 
 	if ($snmp_query_id != '') {
 		$sql_where = " AND snmp_query_id=$snmp_query_id";
@@ -253,7 +253,7 @@ function getSNMPFields(string $hostId, string $snmp_query_id = ''): array {
  * @return array An array of SNMP values.
  */
 function getSNMPValues(string $hostId, string $field, string $snmp_query_id = ''): array {
-	$values   = array();
+	$values   = [];
 
 	if ($snmp_query_id != '') {
 		$sql_where = " AND snmp_query_id=$snmp_query_id";
@@ -283,7 +283,7 @@ function getSNMPValues(string $hostId, string $field, string $snmp_query_id = ''
  * @return array An array containing SNMP queries.
  */
 function getSNMPQueries(): array {
-	$queries  = array();
+	$queries  = [];
 	$tmpArray = db_fetch_assoc('SELECT id, name FROM snmp_query ORDER by id');
 
 	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
@@ -302,13 +302,13 @@ function getSNMPQueries(): array {
  * @return array An array of SNMP query types.
  */
 function getSNMPQueryTypes(int $snmpQueryId): array {
-	$types    = array();
+	$types    = [];
 
 	$tmpArray = db_fetch_assoc_prepared('SELECT id, name
 		FROM snmp_query_graph
 		WHERE snmp_query_id = ?
 		ORDER BY id',
-		array($snmpQueryId));
+		[$snmpQueryId]);
 
 	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
 		foreach ($tmpArray as $type) {
@@ -325,7 +325,7 @@ function getSNMPQueryTypes(int $snmpQueryId): array {
  * @return array An array of graph templates.
  */
 function getGraphTemplates(): array {
-	$graph_templates = array();
+	$graph_templates = [];
 
 	$tmpArray = db_fetch_assoc('SELECT id, name FROM graph_templates ORDER BY id');
 
@@ -346,11 +346,11 @@ function getGraphTemplates(): array {
  * @return array|false Returns an array of graph templates if found, or false on failure.
  */
 function getGraphTemplatesByHostTemplate(array|false $host_template_ids = false): array|false {
-	$graph_templates = array();
+	$graph_templates = [];
 
 	if ($host_template_ids !== false) {
 		if (!is_array($host_template_ids)) {
-			$host_template_ids = array($host_template_ids);
+			$host_template_ids = [$host_template_ids];
 		}
 	}
 
@@ -685,7 +685,7 @@ function displayTreeNodes(int $tree_id, string $nodeType = '', int $parentNode =
 		FROM graph_tree_items
 		WHERE graph_tree_id = ?
 		AND parent = ?
-		ORDER BY position', array($tree_id, $parentNode));
+		ORDER BY position', [$tree_id, $parentNode]);
 
 	if (cacti_sizeof($nodes)) {
 		foreach ($nodes as $node) {
@@ -734,7 +734,7 @@ function displayTreeNodes(int $tree_id, string $nodeType = '', int $parentNode =
 						/* fetch the title for that graph */
 						$graph_title = db_fetch_cell_prepared('SELECT gtg.title_cache AS name
 							FROM graph_templates_graph AS gtg
-							WHERE gtg.local_graph_id = ?', array($node['local_graph_id']));
+							WHERE gtg.local_graph_id = ?', [$node['local_graph_id']]);
 
 						print $graph_title . "\t";
 						print PHP_EOL;
@@ -752,7 +752,7 @@ function displayTreeNodes(int $tree_id, string $nodeType = '', int $parentNode =
 							print $parentNode . "\t";
 						}
 
-						$name = db_fetch_cell_prepared('SELECT hostname FROM host WHERE id = ?', array($node['host_id']));
+						$name = db_fetch_cell_prepared('SELECT hostname FROM host WHERE id = ?', [$node['host_id']]);
 
 						print $name . "\t";
 						print $host_group_types[$node['host_grouping_type']] . "\t";
@@ -821,7 +821,7 @@ function displayHostGraphs(int $host_id, bool $quietMode = false): void {
 		WHERE graph_local.id = graph_templates_graph.local_graph_id
 		AND graph_local.host_id = ?
 		ORDER BY graph_templates_graph.local_graph_id',
-		array($host_id));
+		[$host_id]);
 
 	if (cacti_sizeof($graphs)) {
 		foreach ($graphs as $graph) {

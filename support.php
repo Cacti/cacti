@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -53,7 +53,7 @@ function support_lockout() {
 		if ($status == '') {
 			raise_message('lockout', __('Cacti has been locked out by \'%s\'.  Press the button again after Cacti maintenance is over.', get_username($admin)), MESSAGE_LEVEL_WARN);
 			cacti_log('WARNING: Cacti has been locked out by the primary administrator!');
-			set_config_option('cacti_lockout_status', json_encode(array('session' => session_id(), 'time' => time())));
+			set_config_option('cacti_lockout_status', json_encode(['session' => session_id(), 'time' => time()]));
 		} else {
 			raise_message('lockout', __('Cacti maintenance lockout has been cleared by \'%s\'.  Press the button again after Cacti maintenance is over.', get_username($admin)), MESSAGE_LEVEL_INFO);
 			cacti_log('WARNING: Cacti maintenance lockout has been cleared by the primary administrator!');
@@ -70,52 +70,52 @@ function support_view_tech() {
 	global $database_hostname, $poller_options, $input_types, $local_db_cnn_id;
 
 	/* ================= input validation ================= */
-	get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-z_A-Z]+)$/')));
+	get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-z_A-Z]+)$/']]);
 	/* ==================================================== */
 
 	/* present a tabbed interface */
-	$tabs = array(
-		'summary' => array(
+	$tabs = [
+		'summary' => [
 			'display' => __('Summary'),
 			'header'  => true
-		),
-		'database' => array(
+		],
+		'database' => [
 			'display' => __('Database Tables'),
 			'header'  => true
-		),
-		'dbsettings' => array(
+		],
+		'dbsettings' => [
 			'display' => __('Database Settings'),
 			'header'  => true
-		),
-		'dbstatus' => array(
+		],
+		'dbstatus' => [
 			'display' => __('Database Status'),
 			'header'  => true
-		),
-		'dbperms' => array(
+		],
+		'dbperms' => [
 			'display' => __('Database Permissions'),
 			'header'  => true
-		),
-		'processes' => array(
+		],
+		'processes' => [
 			'display' => __('Database Queries'),
 			'header'  => false
-		),
-		'background' => array(
+		],
+		'background' => [
 			'display' => __('Background Processes'),
 			'header'  => false
-		),
-		'poller' => array(
+		],
+		'poller' => [
 			'display' => __('Poller Stats'),
 			'header'  => true
-		),
-		'phpinfo' => array(
+		],
+		'phpinfo' => [
 			'display' => __('PHP Info'),
 			'header'  => true
-		),
-		'changelog' => array(
+		],
+		'changelog' => [
 			'display' => __('ChangeLog'),
 			'header'  => true
-		),
-	);
+		],
+	];
 
 	/* set the default tab */
 	load_current_session_value('tab', 'sess_ts_tabs', 'summary');
@@ -125,11 +125,11 @@ function support_view_tech() {
 	$page = 'support.php?tab=' . $current_tab;
 
 	if ($current_tab != 'processes' && $current_tab != 'background') {
-		$refresh = array(
+		$refresh = [
 			'seconds' => 999999,
 			'page'    => $page,
 			'logout'  => 'false'
-		);
+		];
 
 		set_page_refresh($refresh);
 	}
@@ -163,33 +163,43 @@ function support_view_tech() {
 	switch (get_request_var('tab')) {
 		case 'summary':
 			show_tech_summary();
+
 			break;
 		case 'dbstatus':
 			show_database_status();
+
 			break;
 		case 'dbperms':
 			show_database_permissions();
+
 			break;
 		case 'dbsettings':
 			show_database_settings();
+
 			break;
 		case 'changelog':
 			show_cacti_changelog();
+
 			break;
 		case 'database':
 			show_database_tables();
+
 			break;
 		case 'poller':
 			show_cacti_poller();
+
 			break;
 		case 'phpinfo':
 			show_php_modules();
+
 			break;
 		case 'processes':
 			show_database_processes();
+
 			break;
 		case 'background':
 			show_cacti_processes();
+
 			break;
 	}
 
@@ -223,36 +233,36 @@ function support_view_tech() {
 function create_database_process_filter() {
 	global $item_rows;
 
-	$any  = array('-1' => __('Any'));
-	$none = array('0'  => __('None'));
+	$any  = ['-1' => __('Any')];
+	$none = ['0'  => __('None')];
 
-	$refresh = array(
+	$refresh = [
 		1  => __esc('%d Seconds', 1),
 		3  => __esc('%d Seconds', 3),
 		5  => __esc('%d Seconds', 5),
 		10 => __esc('%d Seconds', 10),
 		15 => __esc('%d Seconds', 15),
 		20 => __esc('%d Seconds', 20)
-	);
+	];
 
-	$pollers = array(
+	$pollers = [
 		'0' => __('No'),
 		'1' => __('Yes')
-	);
+	];
 
-	$chars = array(
+	$chars = [
 		150  => __esc('%d Chars', 150),
 		180  => __esc('%d Chars', 180),
 		300  => __esc('%d Chars', 300),
 		500  => __esc('%d Chars', 500),
 		1000 => __esc('%d Chars', 1000),
-	);
+	];
 
-	return array(
-		'rows' => array(
-			array(
-				'filter' => array(
-					'method'        => 'textbox',
+	return [
+		'rows' => [
+			[
+				'filter' => [
+					'method'         => 'textbox',
 					'friendly_name'  => __('Search'),
 					'filter'         => FILTER_DEFAULT,
 					'placeholder'    => __('Enter a search term'),
@@ -261,8 +271,8 @@ function create_database_process_filter() {
 					'pageset'        => true,
 					'max_length'     => '120',
 					'value'          => ''
-				),
-				'refresh' => array(
+				],
+				'refresh' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Refresh'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -270,8 +280,8 @@ function create_database_process_filter() {
 					'pageset'       => true,
 					'array'         => $refresh,
 					'value'         => '5'
-				),
-				'poller' => array(
+				],
+				'poller' => [
 					'method'         => 'drop_array',
 					'friendly_name'  => __('Include Poller'),
 					'filter'         => FILTER_VALIDATE_INT,
@@ -279,8 +289,8 @@ function create_database_process_filter() {
 					'pageset'        => true,
 					'array'          => $pollers,
 					'value'          => '0'
-				),
-				'length' => array(
+				],
+				'length' => [
 					'method'         => 'drop_array',
 					'friendly_name'  => __('Template'),
 					'filter'         => FILTER_VALIDATE_INT,
@@ -288,8 +298,8 @@ function create_database_process_filter() {
 					'pageset'        => true,
 					'array'          => $chars,
 					'value'          => '180'
-				),
-				'rows' => array(
+				],
+				'rows' => [
 					'method'         => 'drop_array',
 					'friendly_name'  => __('Queries'),
 					'filter'         => FILTER_VALIDATE_INT,
@@ -297,29 +307,29 @@ function create_database_process_filter() {
 					'pageset'        => true,
 					'array'          => $item_rows,
 					'value'          => '-1'
-				)
-			)
-		),
-		'buttons' => array(
-			'go' => array(
+				]
+			]
+		],
+		'buttons' => [
+			'go' => [
 				'method'  => 'submit',
 				'display' => __('Go'),
 				'title'   => __('Apply Filter to Table'),
-			),
-			'clear' => array(
+			],
+			'clear' => [
 				'method'  => 'button',
 				'display' => __('Clear'),
 				'title'   => __('Reset Filter to Default Values'),
-			)
-		),
-		'sort' => array(
+			]
+		],
+		'sort' => [
 			'sort_column'    => 'runtime',
 			'sort_direction' => 'DESC'
-		),
-		'javascript' => array(
+		],
+		'javascript' => [
 			'ready' => "$('#refresh').click(function() { clearTimeout(myRefresh); });"
-		)
-	);
+		]
+	];
 }
 
 function draw_database_process_filter($render = false) {
@@ -351,7 +361,7 @@ function show_database_processes() {
 	}
 
 	$sql_where  = 'WHERE info NOT LIKE "%FROM processlist%" AND info != "NULL"';
-	$sql_params = array();
+	$sql_params = [];
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
@@ -373,7 +383,7 @@ function show_database_processes() {
 		$sql_params);
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 	$info_len  = get_request_var('length');
 
 	$processes = db_fetch_assoc_prepared("SELECT id, query_id, user, state, ROUND(time_ms/1000,2) AS runtime, LENGTH(info) AS query_len,
@@ -384,47 +394,47 @@ function show_database_processes() {
 		$sql_limit",
 		$sql_params);
 
-	$display_text = array(
-		'id' => array(
+	$display_text = [
+		'id' => [
 			'display' => __('Process ID'),
 			'align'   => 'left',
 			'sort'    => 'ASC',
 			'tip'     => __('The Connection ID of the running process.')
-		),
-		'query_id' => array(
+		],
+		'query_id' => [
 			'display' => __('Query ID'),
 			'align'   => 'left',
 			'sort'    => 'ASC',
 			'tip'     => __('The Query ID of the currently running Query.')
-		),
-		'user' => array(
+		],
+		'user' => [
 			'display' => __('User'),
 			'align'   => 'left',
 			'sort'    => 'ASC',
 			'tip'     => __('The MariaDB/MySQL user currently running the Query.')
-		),
-		'runtime' => array(
+		],
+		'runtime' => [
 			'display' => __('Run Time'),
 			'align'   => 'right',
 			'tip'     => __('The Runtime of the current query in seconds.')
-		),
-		'query_len' => array(
+		],
+		'query_len' => [
 			'display' => __('Query Length'),
 			'align'   => 'right',
 			'tip'     => __('The total string length of the Query.')
-		),
-		'state' => array(
+		],
+		'state' => [
 			'display' => __('Query State'),
 			'align'   => 'center',
 			'sort'    => 'ASC',
 			'tip'     => __('The MariaDB/MySQL process state.')
-		),
-		'info' => array(
+		],
+		'info' => [
 			'display' => __('Query Details'),
 			'align'   => 'left',
 			'tip'     => __('The Query Details for the current query upto a maximum string length.')
-		)
-	);
+		]
+	];
 
 	$nav = html_nav_bar('support.php?tab=processes', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Queries'), 'page', 'main');
 
@@ -449,7 +459,7 @@ function show_database_processes() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Database Queries Found') . '</em></td></tr>';
+		print "<tr class='tableRow odd'><td colspan='" . (cacti_sizeof($display_text) + 1) . "'><em>" . __('No Database Queries Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -462,24 +472,24 @@ function show_database_processes() {
 function create_cacti_process_filter($tables) {
 	global $item_rows;
 
-	$all  = array('all' => __('All'));
+	$all  = ['all' => __('All')];
 
-	$refresh = array(
+	$refresh = [
 		1  => __esc('%d Seconds', 1),
 		3  => __esc('%d Seconds', 3),
 		5  => __esc('%d Seconds', 5),
 		10 => __esc('%d Seconds', 10),
 		15 => __esc('%d Seconds', 15),
 		20 => __esc('%d Seconds', 20)
-	);
+	];
 
 	$tables = $all + $tables;
 
-	return array(
-		'rows' => array(
-			array(
-				'filter' => array(
-					'method'        => 'textbox',
+	return [
+		'rows' => [
+			[
+				'filter' => [
+					'method'         => 'textbox',
 					'friendly_name'  => __('Search'),
 					'filter'         => FILTER_DEFAULT,
 					'placeholder'    => __('Enter a search term'),
@@ -488,18 +498,18 @@ function create_cacti_process_filter($tables) {
 					'pageset'        => true,
 					'max_length'     => '120',
 					'value'          => ''
-				),
-				'tasks' => array(
+				],
+				'tasks' => [
 					'method'         => 'drop_array',
 					'friendly_name'  => __('Task Type'),
 					'filter'         => FILTER_CALLBACK,
-					'filter_options' => array('options' => 'sanitize_search_string'),
+					'filter_options' => ['options' => 'sanitize_search_string'],
 					'default'        => 'all',
 					'pageset'        => true,
 					'array'          => $tables,
 					'value'          => 'all'
-				),
-				'refresh' => array(
+				],
+				'refresh' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Refresh'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -507,8 +517,8 @@ function create_cacti_process_filter($tables) {
 					'pageset'       => true,
 					'array'         => $refresh,
 					'value'         => '5'
-				),
-				'rows' => array(
+				],
+				'rows' => [
 					'method'         => 'drop_array',
 					'friendly_name'  => __('Processes'),
 					'filter'         => FILTER_VALIDATE_INT,
@@ -516,32 +526,32 @@ function create_cacti_process_filter($tables) {
 					'pageset'        => true,
 					'array'          => $item_rows,
 					'value'          => '-1'
-				)
-			)
-		),
-		'buttons' => array(
-			'go' => array(
+				]
+			]
+		],
+		'buttons' => [
+			'go' => [
 				'method'  => 'submit',
 				'display' => __('Go'),
 				'title'   => __('Apply Filter to Table'),
-			),
-			'clear' => array(
+			],
+			'clear' => [
 				'method'  => 'button',
 				'display' => __('Clear'),
 				'title'   => __('Reset Filter to Default Values'),
-			)
-		),
-		'sort' => array(
+			]
+		],
+		'sort' => [
 			'sort_column'    => 'runtime',
 			'sort_direction' => 'DESC'
-		),
-		'javascript' => array(
+		],
+		'javascript' => [
 			'ready' => "$('#refresh').click(function() { clearTimeout(myRefresh); });"
-		)
-	);
+		]
+	];
 }
 
-function draw_cacti_process_filter($render = false, $tables = array()) {
+function draw_cacti_process_filter($render = false, $tables = []) {
 	$filters = create_cacti_process_filter($tables);
 
 	$header = __('Technical Support [ Background Processes ]');
@@ -562,7 +572,7 @@ function show_cacti_processes() {
 	global $item_rows;
 
 	/* the full set of process tables known to Cacti */
-	$tables = array(
+	$tables = [
 		'poller_time'                   => __('Cacti Poller'),          // Core Cacti poller table
 		'processes'                     => __('Cacti Process'),         // Cacti process table
 		'grid_processes'                => __('RTM Process'),           // RTM process table
@@ -572,10 +582,10 @@ function show_cacti_processes() {
 		'plugin_webseer_processes'      => __('WebSeer Process'),       // WebSeer process table
 		'plugin_servcheck_processes'    => __('Service Check Process'), // Service Check process table
 		'mac_track_processes'           => __('MacTrack Process'),      // WebSeer process table
-	);
+	];
 
 	/* reduce the set of tables based if they exist */
-	foreach($tables as $table => $name) {
+	foreach ($tables as $table => $name) {
 		if (!db_table_exists($table)) {
 			unset($tables[$table]);
 		}
@@ -592,7 +602,7 @@ function show_cacti_processes() {
 	$poller_interval = read_config_option('poller_interval');
 
 	$sql_where  = '';
-	$sql_params = array();
+	$sql_params = [];
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
@@ -604,15 +614,15 @@ function show_cacti_processes() {
 	}
 
 	if (get_request_var('tasks') != 'all') {
-		$tables = array(
+		$tables = [
 			get_request_var('tasks') => $tables[get_request_var('tasks')]
-		);
+		];
 	}
 
 	$total_rows_sql = 'SELECT COUNT(*) FROM (';
 	$sql_inner      = '';
 
-	foreach($tables as $table => $name) {
+	foreach ($tables as $table => $name) {
 		switch($table) {
 			case 'poller_time':
 				$sql_inner .= ($sql_inner != '' ? ' UNION ':'') .
@@ -706,7 +716,7 @@ function show_cacti_processes() {
 		$sql_params);
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$processes = db_fetch_assoc_prepared("SELECT *
 		FROM ($sql_inner) AS rs
@@ -715,54 +725,54 @@ function show_cacti_processes() {
 		$sql_limit",
 		$sql_params);
 
-	$display_text = array(
-		'tasktype' => array(
+	$display_text = [
+		'tasktype' => [
 			'display' => __('Task Type'),
 			'align'   => 'left',
 			'sort'    => 'ASC',
 			'tip'     => __('The Type of Task.  Generally represents the plugin and task within the plugin.')
-		),
-		'taskname' => array(
+		],
+		'taskname' => [
 			'display' => __('Task Name'),
 			'align'   => 'left',
 			'sort'    => 'ASC',
 			'tip'     => __('The name of the Task.')
-		),
-		'taskid' => array(
+		],
+		'taskid' => [
 			'display' => __('Task ID'),
 			'align'   => 'right',
 			'sort'    => 'DESC',
 			'tip'     => __('The ID of the Task which is often times the LSF clusterid or the License Service ID, but can be other metrics as well.')
-		),
-		'runtime' => array(
+		],
+		'runtime' => [
 			'display' => __('Run/Update Time'),
 			'align'   => 'right',
 			'tip'     => __('The Process runtime or times since last heartbeat.')
-		),
-		'pid' => array(
+		],
+		'pid' => [
 			'display' => __('Process ID'),
 			'align'   => 'right',
 			'tip'     => __('The Process ID for the task.')
-		),
-		'timeout' => array(
+		],
+		'timeout' => [
 			'display' => __('Timeout'),
 			'align'   => 'right',
 			'sort'    => 'DESC',
 			'tip'     => __('The background process timeout in seconds when a Cacti process.  Otherwise controlled by the individual plugins.')
-		),
-		'started' => array(
+		],
+		'started' => [
 			'display' => __('Start Time'),
 			'align'   => 'right',
 			'sort'    => 'DESC',
 			'tip'     => __('Time the background process started for a Cacti process.  The start time may or may not be supported for various plugins.')
-		),
-		'last_update' => array(
+		],
+		'last_update' => [
 			'display' => __('Last Updated'),
 			'align'   => 'right',
 			'sort'    => 'DESC',
 			'tip'     => __('Time the process last registered its status to the status tables.')
-		)
-	);
+		]
+	];
 
 	$nav = html_nav_bar('support.php?tab=background', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Processes'), 'page', 'main');
 
@@ -817,8 +827,8 @@ function show_php_modules() {
 
 	html_section_header(__('PHP Module Information'), 2);
 	$php_info = str_replace(
-		array('width="600"', 'th colspan="2"', ','),
-		array('', 'th class="subHeaderColumn"', ', '),
+		['width="600"', 'th colspan="2"', ','],
+		['', 'th class="subHeaderColumn"', ', '],
 		$php_info
 	);
 	print "<tr><td colspan='2'>" . $php_info . '</td></tr>';
@@ -981,7 +991,9 @@ function show_cacti_changelog() {
 	foreach ($changelog as $s) {
 		if (trim($s) == '') {
 			continue;
-		} elseif (strlen(trim($s)) && stripos($s, 'CHANGELOG') === false) {
+		}
+
+		if (strlen(trim($s)) && stripos($s, 'CHANGELOG') === false) {
 			if (strpos($s, '-') === false || strpos($s, '-dev') !== false) {
 				html_section_header(__('Version %s', $s), 2);
 			} else {
@@ -1020,10 +1032,10 @@ function show_database_settings() {
 function show_database_permissions() {
 	$status = db_get_permissions(true);
 
-	$display_text = array(
+	$display_text = [
 		__('Permission Name'), __('Database'), __('Value'),
 		__('Permission Name'), __('Database'), __('Value')
-	);
+	];
 
 	html_header($display_text);
 
@@ -1032,9 +1044,9 @@ function show_database_permissions() {
 
 	foreach ($status as $database => $perms) {
 		$first = true;
-		$r = 0;
+		$r     = 0;
 
-		foreach($perms as $key => $value) {
+		foreach ($perms as $key => $value) {
 			if (($r % 2) == 0 || $first) {
 				form_alternate_row("line$j");
 			}
@@ -1102,7 +1114,7 @@ function show_tech_summary() {
 	$rrdtool_release  = __('Unknown');
 	$storage_location = read_config_option('storage_location');
 
-	$out_array = array();
+	$out_array = [];
 
 	if ($storage_location == 0) {
 		if ((file_exists(read_config_option('path_rrdtool'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_rrdtool'))))) {
@@ -1130,7 +1142,7 @@ function show_tech_summary() {
 	}
 
 	/* Check RRDtool issues */
-	$rrdtool_errors = array();
+	$rrdtool_errors = [];
 
 	if (cacti_version_compare($rrdtool_version, get_rrdtool_version(), '<')) {
 		$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: Installed RRDtool version does not exceed configured version.<br>Please visit the %s and select the correct RRDtool Utility Version.', "<a href='" . html_escape('settings.php?tab=general') . "'>" . __('Configuration Settings') . '</a>') . '</span>';
@@ -1146,7 +1158,7 @@ function show_tech_summary() {
 	$spine_version = 'Unknown';
 
 	if ((file_exists(read_config_option('path_spine'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_spine'))))) {
-		$out_array = array();
+		$out_array = [];
 		exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
 
 		if (cacti_sizeof($out_array) > 0) {
@@ -1162,12 +1174,13 @@ function show_tech_summary() {
 	form_alternate_row();
 
 	print '<td>' . __('Cacti Lockout Status') . '</td>';
+
 	if ($enabled >= 0) {
 		if ($lockout !=  '') {
 			$lockout = json_decode($lockout, true);
 
 			$unlock_time = $lockout['time'] + (30 * 60);
-			$unlock_hms = date('H:i', $unlock_time);
+			$unlock_hms  = date('H:i', $unlock_time);
 
 			print '<td><input class="deviceDown" type="button" id="lockout" value="' . __('Cacti in Maintenance Mode until approximately %s!', $unlock_hms) . '" title="' . __('To Unlock, press this button again.') . '"></td>';
 		} else {
@@ -1328,12 +1341,12 @@ function show_tech_summary() {
 
 	if (POLLER_ID == 1) {
 		$max_connections       = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "max_connections"');
-		$max_local_connections = array();
+		$max_local_connections = [];
 	} elseif ($config['connection'] == 'online') {
 		$max_connections        = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "max_connections"');
 		$max_local_connections  = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "max_connections"', false, $local_db_cnn_id);
 	} else {
-		$max_connections        = array();
+		$max_connections        = [];
 		$max_local_connections  = db_fetch_row('SHOW GLOBAL VARIABLES LIKE "max_connections"');
 	}
 

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -24,9 +24,9 @@
 
 include('./include/auth.php');
 
-$actions = array(
+$actions = [
 	'1' => __('Delete')
-);
+];
 
 /* set default action */
 set_default_action();
@@ -66,7 +66,6 @@ switch (get_request_var('action')) {
 		bottom_footer();
 
 		break;
-
 	default:
 		top_header();
 
@@ -134,7 +133,7 @@ function form_actions() {
 	global $actions;
 
 	/* ================= input validation ================= */
-	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
+	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
@@ -152,7 +151,7 @@ function form_actions() {
 		exit;
 	} else {
 		$ilist  = '';
-		$iarray = array();
+		$iarray = [];
 
 		/* loop through each of the graphs selected on the previous page and get more info about them */
 		foreach ($_POST as $var => $val) {
@@ -161,7 +160,7 @@ function form_actions() {
 				input_validate_input_number($matches[1], 'chk[1]');
 				/* ==================================================== */
 
-				$color = db_fetch_row_prepared('SELECT name, hex FROM colors WHERE id = ?', array($matches[1]));
+				$color = db_fetch_row_prepared('SELECT name, hex FROM colors WHERE id = ?', [$matches[1]]);
 
 				$ilist .= '<li>' . ($color['name'] != '' ? html_escape($color['name']): __('Unnamed Color')) . ' (<span style="background-color:#' . $color['hex'] . '">' . $color['hex'] . '</span>)</li>';
 
@@ -169,23 +168,23 @@ function form_actions() {
 			}
 		}
 
-		$form_data = array(
-			'general' => array(
+		$form_data = [
+			'general' => [
 				'page'       => 'color.php',
 				'actions'    => $actions,
 				'optvar'     => 'drp_action',
 				'item_array' => $iarray,
 				'item_list'  => $ilist
-			),
-			'options' => array(
-				1 => array(
+			],
+			'options' => [
+				1 => [
 					'smessage' => __('Click \'Continue\' to Delete the following Color.'),
 					'pmessage' => __('Click \'Continue\' to Delete following Colors.'),
 					'scont'    => __('Delete Color'),
 					'pcont'    => __('Delete Colors')
-				),
-			)
-		);
+				],
+			]
+		];
 
 		form_continue_confirmation($form_data);
 	}
@@ -194,15 +193,15 @@ function form_actions() {
 function color_import_processor(&$colors) {
 	$i            = 0;
 	$hexcol       = 0;
-	$return_array = array();
+	$return_array = [];
 
 	if (cacti_sizeof($colors)) {
 		foreach ($colors as $color_line) {
 			/* parse line */
 			$line_array     = explode(',', $color_line);
-			$insert_columns = array();
-			$save_order    = '(';
-			$update_suffix = '';
+			$insert_columns = [];
+			$save_order     = '(';
+			$update_suffix  = '';
 
 			/* header row */
 			if ($i == 0) {
@@ -237,7 +236,6 @@ function color_import_processor(&$colors) {
 								$required++;
 
 								break;
-
 							default:
 								/* ignore unknown columns */
 						}
@@ -394,7 +392,7 @@ function color_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$color        = db_fetch_row_prepared('SELECT * FROM colors WHERE id = ?', array(get_request_var('id')));
+		$color        = db_fetch_row_prepared('SELECT * FROM colors WHERE id = ?', [get_request_var('id')]);
 		$header_label = __esc('Colors [edit: %s]', $color['hex']);
 	} else {
 		$header_label = __('Colors [new]');
@@ -404,10 +402,10 @@ function color_edit() {
 
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
-	draw_edit_form(array(
-		'config' => array('no_form_tag' => true),
-		'fields' => inject_form_variables($fields_color_edit, (isset($color) ? $color : array()))
-		)
+	draw_edit_form([
+		'config' => ['no_form_tag' => true],
+		'fields' => inject_form_variables($fields_color_edit, (isset($color) ? $color : []))
+		]
 	);
 
 	html_end_box(true, true);
@@ -506,50 +504,50 @@ function color() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$display_text = array(
-		'hex' => array(
+	$display_text = [
+		'hex' => [
 			'display' => __('Hex'),
-			'align' => 'left',
-			'sort' => 'DESC',
-			'tip' => __('The Hex Value for this Color.')
-		),
-		'name' => array(
+			'align'   => 'left',
+			'sort'    => 'DESC',
+			'tip'     => __('The Hex Value for this Color.')
+		],
+		'name' => [
 			'display' => __('Color Name'),
-			'align' => 'left',
-			'sort' => 'ASC',
-			'tip' => __('The name of this Color definition.')
-		),
-		'read_only' => array(
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The name of this Color definition.')
+		],
+		'read_only' => [
 			'display' => __('Named Color'),
-			'align' => 'left',
-			'sort' => 'ASC',
-			'tip' => __('Is this color a named color which are read only.')
-		),
-		'nosort1' => array(
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('Is this color a named color which are read only.')
+		],
+		'nosort1' => [
 			'display' => __('Color'),
-			'align' => 'center',
-			'sort' => 'DESC',
-			'tip' => __('The Color as shown on the screen.')
-		),
-		'nosort' => array(
+			'align'   => 'center',
+			'sort'    => 'DESC',
+			'tip'     => __('The Color as shown on the screen.')
+		],
+		'nosort' => [
 			'display' => __('Deletable'),
-			'align' => 'right',
-			'sort' => '',
-			'tip' => __('Colors in use cannot be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template.')
-		),
-		'graphs' => array(
+			'align'   => 'right',
+			'sort'    => '',
+			'tip'     => __('Colors in use cannot be Deleted.  In use is defined as being referenced either by a Graph or a Graph Template.')
+		],
+		'graphs' => [
 			'display' => __('Graphs Using'),
-			'align' => 'right',
-			'sort' => 'DESC',
-			'tip' => __('The number of Graph using this Color.')
-		),
-		'templates' => array(
+			'align'   => 'right',
+			'sort'    => 'DESC',
+			'tip'     => __('The number of Graph using this Color.')
+		],
+		'templates' => [
 			'display' => __('Templates Using'),
-			'align' => 'right',
-			'sort' => 'DESC',
-			'tip' => __('The number of Graph Templates using this Color.')
-		)
-	);
+			'align'   => 'right',
+			'sort'    => 'DESC',
+			'tip'     => __('The number of Graph Templates using this Color.')
+		]
+	];
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 

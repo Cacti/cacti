@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -161,7 +161,7 @@ if (cacti_sizeof($entries)) {
 				foreach ($local_graph_ids as $local_graph_id) {
 					$title = get_graph_title_cache($local_graph_id);
 					printf('Removing Graph %s, "%s"' . PHP_EOL, $title, $local_graph_id);
-					$id                  = array();
+					$id                  = [];
 					$id[$local_graph_id] = $local_graph_id;
 					api_delete_graphs($id, '2');
 				}

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -37,5 +37,5 @@ function upgrade_to_1_2_3() {
 		AND data_source_type_id IN(3,7)");
 
 	// Speed up Data Sources page
-	db_install_add_key('data_template_data', 'key', 'name_cache', array('name_cache(191)'));
+	db_install_add_key('data_template_data', 'key', 'name_cache', ['name_cache(191)']);
 }

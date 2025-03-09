@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -24,11 +24,11 @@
 
 include_once('./include/auth.php');
 
-$actions = array(
+$actions = [
 	1 => __('Delete'),
 	2 => __('Duplicate'),
 	3 => __('Sync Aggregates')
-);
+];
 
 /* set default action */
 set_default_action();
@@ -113,11 +113,11 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 	global $config;
 	global $struct_color_template_item;
 
-	$display_text = array(
-		array('display' => __('Color Item'), 'align' => 'left', 'nohide' => true),
-		array('display' => __('Color'), 'align' => 'left', 'nohide' => true),
-		array('display' => __('Hex'), 'align' => 'left', 'nohide' => true),
-	);
+	$display_text = [
+		['display' => __('Color Item'), 'align' => 'left', 'nohide' => true],
+		['display' => __('Color'), 'align' => 'left', 'nohide' => true],
+		['display' => __('Hex'), 'align' => 'left', 'nohide' => true],
+	];
 
 	html_header($display_text, 2);
 
@@ -213,7 +213,7 @@ function form_save() {
 		get_filter_request_var('sequence');
 		/* ==================================================== */
 
-		$items[0] = array();
+		$items[0] = [];
 		$sequence = get_nfilter_request_var('sequence');
 
 		foreach ($items as $item) {
@@ -287,7 +287,7 @@ function form_actions() {
 		exit;
 	} else {
 		$ilist  = '';
-		$iarray = array();
+		$iarray = [];
 
 		/* loop through each of the color templates selected on the previous page and get more info about them */
 		foreach ($_POST as $var => $val) {
@@ -299,50 +299,50 @@ function form_actions() {
 				$name = db_fetch_cell_prepared('SELECT name
 					FROM color_templates
 					WHERE color_template_id = ?',
-					array($matches[1]));
+					[$matches[1]]);
 
 				$ilist .= '<li>' . html_escape($name) . '</li>';
 				$iarray[] = $matches[1];
 			}
 		}
 
-		$form_data = array(
-			'general' => array(
+		$form_data = [
+			'general' => [
 				'page'       => 'color_templates.php',
 				'actions'    => $actions,
 				'optvar'     => 'drp_action',
 				'item_array' => $iarray,
 				'item_list'  => $ilist
-			),
-			'options' => array(
-				1 => array(
+			],
+			'options' => [
+				1 => [
 					'smessage' => __('Click \'Continue\' to Delete the following Color Template.'),
 					'pmessage' => __('Click \'Continue\' to Delete following Color Templates.'),
 					'scont'    => __('Delete Color Template'),
 					'pcont'    => __('Delete Color Templates')
-				),
-				2 => array(
+				],
+				2 => [
 					'smessage' => __('Click \'Continue\' to Duplicate the following Color Template.'),
 					'pmessage' => __('Click \'Continue\' to Duplicate following Color Templates.'),
 					'scont'    => __('Duplicate Color Template'),
 					'pcont'    => __('Duplicate Color Templates'),
-					'extra'    => array(
-						'title_format' => array(
+					'extra'    => [
+						'title_format' => [
 							'method'  => 'textbox',
 							'title'   => __('Title Format'),
 							'default' => '<template_title> (1)',
 							'width'   => 25
-						)
-					)
-				),
-				3 => array(
+						]
+					]
+				],
+				3 => [
 					'smessage' => __('Click \'Continue\' to Synchronize the following Color Template to its Aggregates.'),
 					'pmessage' => __('Click \'Continue\' to Synchronize the following Color Templates to its Aggregates.'),
 					'scont'    => __('Synchronize Color Template'),
 					'pcont'    => __('Synchronize Color Templates')
-				),
-			)
-		);
+				],
+			]
+		];
 
 		form_continue_confirmation($form_data);
 	}
@@ -365,7 +365,7 @@ function color_templates_item_dnd() {
 				db_execute_prepared('UPDATE color_template_items
 					SET sequence = ?
 					WHERE color_template_item_id = ?',
-					array($sequence, $option));
+					[$sequence, $option]);
 
 				$sequence++;
 			}
@@ -389,7 +389,7 @@ function color_item_movedown() {
 	$current_sequence = db_fetch_row_prepared('SELECT color_template_item_id, sequence
 		FROM color_template_items
 		WHERE color_template_item_id = ?',
-		array(get_request_var('color_template_item_id')));
+		[get_request_var('color_template_item_id')]);
 
 	cacti_log('movedown Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'],
 		false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
@@ -399,7 +399,7 @@ function color_item_movedown() {
 		WHERE sequence > ?
 		AND color_template_id = ?
 		ORDER BY sequence ASC limit 1',
-		array($current_sequence['sequence'], get_request_var('color_template_id')));
+		[$current_sequence['sequence'], get_request_var('color_template_id')]);
 
 	cacti_log('movedown Id: ' . $next_sequence['color_template_item_id'] . ' Seq:' . $next_sequence['sequence'],
 		false, POLLER_VERBOSITY_DEBUG);
@@ -408,13 +408,13 @@ function color_item_movedown() {
 		SET sequence = ?
 		WHERE color_template_id = ?
 		AND color_template_item_id = ?',
-		array($next_sequence['sequence'], get_request_var('color_template_id'), $current_sequence['color_template_item_id']));
+		[$next_sequence['sequence'], get_request_var('color_template_id'), $current_sequence['color_template_item_id']]);
 
 	db_execute_prepared('UPDATE color_template_items
 		SET sequence = ?
 		WHERE color_template_id = ?
 		AND color_template_item_id = ?',
-		array($current_sequence['sequence'], get_request_var('color_template_id'), $next_sequence['color_template_item_id']));
+		[$current_sequence['sequence'], get_request_var('color_template_id'), $next_sequence['color_template_item_id']]);
 }
 
 /**
@@ -429,7 +429,7 @@ function color_item_moveup() {
 	$current_sequence = db_fetch_row_prepared('SELECT color_template_item_id, sequence
 		FROM color_template_items
 		WHERE color_template_item_id = ?',
-		array(get_request_var('color_template_item_id')));
+		[get_request_var('color_template_item_id')]);
 
 	cacti_log('moveup Id: ' . $current_sequence['color_template_item_id'] . ' Seq:' . $current_sequence['sequence'],
 		false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
@@ -439,7 +439,7 @@ function color_item_moveup() {
 		WHERE sequence < ?
 		AND color_template_id = ?
 		ORDER BY sequence DESC limit 1',
-		array($current_sequence['sequence'], get_request_var('color_template_id')));
+		[$current_sequence['sequence'], get_request_var('color_template_id')]);
 
 	cacti_log('moveup Id: ' . $previous_sequence['color_template_item_id'] . ' Seq:' . $previous_sequence['sequence'],
 		false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
@@ -448,13 +448,13 @@ function color_item_moveup() {
 		SET sequence = ?
 		WHERE color_template_id = ?
 		AND color_template_item_id = ?',
-		array($previous_sequence['sequence'], get_request_var('color_template_id'), $current_sequence['color_template_item_id']));
+		[$previous_sequence['sequence'], get_request_var('color_template_id'), $current_sequence['color_template_item_id']]);
 
 	db_execute_prepared('UPDATE color_template_items
 		SET sequence = ?
 		WHERE color_template_id = ?
 		AND color_template_item_id = ?',
-		array($current_sequence['sequence'], get_request_var('color_template_id'), $previous_sequence['color_template_item_id']));
+		[$current_sequence['sequence'], get_request_var('color_template_id'), $previous_sequence['color_template_item_id']]);
 }
 
 function color_item_remove_confirm() {
@@ -470,17 +470,17 @@ function color_item_remove_confirm() {
 	$template   = db_fetch_row_prepared('SELECT *
 		FROM color_templates
 		WHERE color_template_id = ?',
-		array(get_request_var('id')));
+		[get_request_var('id')]);
 
 	$color_item = db_fetch_row_prepared('SELECT *
 		FROM color_template_items
 		WHERE color_template_item_id = ?',
-		array(get_request_var('color_id')));
+		[get_request_var('color_id')]);
 
 	$color_hex  = db_fetch_cell_prepared('SELECT hex
 		FROM colors
 		WHERE id = ?',
-		array($color_item['color_id']));
+		[$color_item['color_id']]);
 
 	?>
 	<tr>
@@ -535,7 +535,7 @@ function color_item_remove() {
 
 	db_execute_prepared('DELETE FROM color_template_items
 		WHERE color_template_item_id = ?',
-		array(get_request_var('color_id')));
+		[get_request_var('color_id')]);
 }
 
 /**
@@ -552,17 +552,17 @@ function color_item_edit() {
 	$template = db_fetch_row_prepared('SELECT *
 		FROM color_templates
 		WHERE color_template_id = ?',
-		array(get_request_var('color_template_id')));
+		[get_request_var('color_template_id')]);
 
 	if (isset_request_var('color_template_item_id') && (get_request_var('color_template_item_id') > 0)) {
 		$template_item = db_fetch_row_prepared('SELECT *
 			FROM color_template_items
 			WHERE color_template_item_id = ?',
-			array(get_request_var('color_template_item_id')));
+			[get_request_var('color_template_item_id')]);
 
 		$header_label = __esc('Color Template Items [edit Report Item: %s]', $template['name']);
 	} else {
-		$template_item = array();
+		$template_item = [];
 		$header_label  = __esc('Color Template Items [new Report Item: %s]', $template['name']);
 	}
 
@@ -570,10 +570,10 @@ function color_item_edit() {
 
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
-	draw_edit_form(array(
-		'config' => array('no_form_tag' => true),
-		'fields' => inject_form_variables($struct_color_template_item, (isset($template_item) ? $template_item : array()))
-	));
+	draw_edit_form([
+		'config' => ['no_form_tag' => true],
+		'fields' => inject_form_variables($struct_color_template_item, (isset($template_item) ? $template_item : []))
+	]);
 
 	html_end_box(true, true);
 
@@ -596,7 +596,7 @@ function color_item() {
 	/* ==================================================== */
 
 	if (isempty_request_var('color_template_id')) {
-		$template_item_list = array();
+		$template_item_list = [];
 
 		$header_label = __('Color Template Items [new]');
 	} else {
@@ -607,12 +607,12 @@ function color_item() {
 			ON cti.color_id=colors.id
 			WHERE cti.color_template_id = ?
 			ORDER BY cti.sequence ASC',
-			array(get_request_var('color_template_id')));
+			[get_request_var('color_template_id')]);
 
 		$name = db_fetch_cell_prepared('SELECT name
 			FROM color_templates
 			WHERE color_template_id = ?',
-			array(get_request_var('color_template_id')));
+			[get_request_var('color_template_id')]);
 
 		$header_label = __esc('Color Template Items [edit: %s]', $name);
 	}
@@ -679,7 +679,7 @@ function color_template_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('color_template_id')) {
-		$template     = db_fetch_row_prepared('SELECT * FROM color_templates WHERE color_template_id = ?', array(get_request_var('color_template_id')));
+		$template     = db_fetch_row_prepared('SELECT * FROM color_templates WHERE color_template_id = ?', [get_request_var('color_template_id')]);
 		$header_label = __esc('Color Template [edit: %s]', $template['name']);
 	} else {
 		$header_label = __('Color Template [new]');
@@ -690,10 +690,10 @@ function color_template_edit() {
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
-		array(
-			'config' => array('no_form_tag' => true),
-			'fields' => inject_form_variables($fields_color_template_template_edit, (isset($template) ? $template : array()))
-		)
+		[
+			'config' => ['no_form_tag' => true],
+			'fields' => inject_form_variables($fields_color_template_template_edit, (isset($template) ? $template : []))
+		]
 	);
 
 	html_end_box(true, true);
@@ -717,13 +717,13 @@ function sync_color_templates($color_template) {
 	$name = db_fetch_cell_prepared('SELECT name
 		FROM color_templates
 		WHERE color_template_id = ?',
-		array($color_template));
+		[$color_template]);
 
 	$aggregate_templates = array_rekey(
 		db_fetch_assoc_prepared('SELECT DISTINCT aggregate_template_id
 			FROM aggregate_graph_templates_item
 			WHERE color_template = ?',
-			array($color_template)),
+			[$color_template]),
 		'aggregate_template_id', 'aggregate_template_id'
 	);
 
@@ -747,7 +747,7 @@ function sync_color_templates($color_template) {
 		WHERE (ag.aggregate_template_id > 0 AND ag.template_propogation = "")
 		OR ag.aggregate_template_id = 0
 		AND agi.color_template = ?',
-		array($color_template));
+		[$color_template]);
 
 	if (cacti_sizeof($aggregate_graphs)) {
 		$found  = true;
@@ -818,27 +818,27 @@ function color_template() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$display_text = array(
-		'name' => array(
+	$display_text = [
+		'name' => [
 			'display' => __('Template Title'),
 			'sort'    => 'ASC'
-		),
-		'nosort' => array(
+		],
+		'nosort' => [
 			'display' => __('Deletable'),
 			'align'   => 'right',
 			'tip'     => __('Color Templates that are in use cannot be Deleted. In use is defined as being referenced by an Aggregate Template.')
-		),
-		'graphs'    => array(
+		],
+		'graphs'    => [
 			'display' => __('Graphs'),
 			'align'   => 'right',
 			'sort'    => 'DESC'
-		),
-		'templates' => array(
+		],
+		'templates' => [
 			'display' => __('Templates'),
 			'align'   => 'right',
 			'sort'    => 'DESC'
-		)
-	);
+		]
+	];
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 

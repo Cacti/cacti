@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -27,10 +27,10 @@ include_once('./lib/data_query.php');
 include_once('./lib/poller.php');
 include_once('./lib/utility.php');
 
-$actions = array(
+$actions = [
 	1 => __('Delete'),
 	2 => __('Duplicate')
-);
+];
 
 /* set default action */
 set_default_action();
@@ -112,7 +112,6 @@ switch (get_request_var('action')) {
 		bottom_footer();
 
 		break;
-
 	default:
 		top_header();
 
@@ -140,7 +139,7 @@ function form_save() {
 			$previous_input_id = db_fetch_cell_prepared('SELECT data_input_id
 				FROM snmp_query
 				WHERE id = ?',
-				array($save['id']));
+				[$save['id']]);
 		}
 
 		if (!is_error_message()) {
@@ -192,18 +191,18 @@ function form_save() {
 						db_execute_prepared('DELETE
 							FROM snmp_query_graph_rrd_sv
 							WHERE snmp_query_graph_id = ?',
-							array($snmp_query_graph_id));
+							[$snmp_query_graph_id]);
 
 						db_execute_prepared('DELETE
 							FROM snmp_query_graph_sv
 							WHERE snmp_query_graph_id = ?',
-							array($snmp_query_graph_id));
+							[$snmp_query_graph_id]);
 					}
 
 					db_execute_prepared('DELETE
 						FROM snmp_query_graph_rrd
 						WHERE snmp_query_graph_id = ?',
-						array($snmp_query_graph_id));
+						[$snmp_query_graph_id]);
 
 					foreach ($_POST as $var => $val) {
 						if (preg_match('/^dsdt_([0-9]+)_([0-9]+)_check/i', $var)) {
@@ -217,14 +216,14 @@ function form_save() {
 							db_execute_prepared('REPLACE INTO snmp_query_graph_rrd
 								(snmp_query_graph_id, data_template_id, data_template_rrd_id, snmp_field_name)
 								VALUES (?, ?, ?, ?)',
-								array(
+								[
 									$snmp_query_graph_id,
 									$data_template_id,
 									$data_template_rrd_id,
 									get_nfilter_request_var('dsdt_' .
 									$data_template_id . '_' .
 									$data_template_rrd_id . '_snmp_field_output')
-								)
+								]
 							);
 						}
 					}
@@ -264,19 +263,19 @@ function form_save() {
 		db_execute_prepared('INSERT INTO snmp_query_graph_sv
 			(hash, snmp_query_graph_id, sequence, field_name, text)
 			VALUES (?, ?, ?, ?, ?)',
-			array(
+			[
 				$hash,
 				get_request_var('id'),
 				$sequence,
 				get_nfilter_request_var('svg_field'),
 				get_nfilter_request_var('svg_text')
-			)
+			]
 		);
 
 		db_execute_prepared('UPDATE snmp_query
 			SET last_updated = NOW()
 			WHERE id = ?',
-			array(get_request_var('id')));
+			[get_request_var('id')]);
 
 		clear_messages();
 
@@ -313,20 +312,20 @@ function form_save() {
 			db_execute_prepared('INSERT INTO snmp_query_graph_rrd_sv
 				(hash, snmp_query_graph_id, data_template_id, sequence, field_name, text)
 				VALUES (?, ?, ?, ?, ?, ?)',
-				array(
+				[
 					$hash,
 					get_request_var('id'),
 					$svds_id,
 					$sequence,
 					get_nfilter_request_var('svds_field'),
 					get_nfilter_request_var('svds_text')
-				)
+				]
 			);
 
 			db_execute_prepared('UPDATE snmp_query
 				SET last_updated = NOW()
 				WHERE id = ?',
-				array(get_request_var('id')));
+				[get_request_var('id')]);
 
 			clear_messages();
 
@@ -339,7 +338,7 @@ function form_actions() {
 	global $actions;
 
 	/* ================= input validation ================= */
-	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
+	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
@@ -352,8 +351,8 @@ function form_actions() {
 					data_query_remove($selected_items[$i]);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
-					 data_query_duplicate($selected_items[$i], get_nfilter_request_var('name_format'));
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
+					data_query_duplicate($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
 			}
 		} else {
@@ -365,7 +364,7 @@ function form_actions() {
 		exit;
 	} else {
 		$ilist  = '';
-		$iarray = array();
+		$iarray = [];
 
 		/* loop through each of the data queries and process them */
 		foreach ($_POST as $var => $val) {
@@ -377,7 +376,7 @@ function form_actions() {
 				$name = db_fetch_cell_prepared('SELECT name
 					FROM snmp_query
 					WHERE id = ?',
-					array($matches[1]));
+					[$matches[1]]);
 
 				$ilist .= '<li>' . html_escape($name) . '</li>';
 
@@ -385,37 +384,37 @@ function form_actions() {
 			}
 		}
 
-		$form_data = array(
-			'general' => array(
+		$form_data = [
+			'general' => [
 				'page'       => 'data_queries.php',
 				'actions'    => $actions,
 				'optvar'     => 'drp_action',
 				'item_array' => $iarray,
 				'item_list'  => $ilist
-			),
-			'options' => array(
-				1 => array(
+			],
+			'options' => [
+				1 => [
 					'smessage' => __('Click \'Continue\' to Delete the following Data Query.'),
 					'pmessage' => __('Click \'Continue\' to Delete following Data Queries.'),
 					'scont'    => __('Delete Data Query'),
 					'pcont'    => __('Delete Data Queries')
-				),
-				2 => array(
+				],
+				2 => [
 					'smessage' => __('Click \'Continue\' to Duplicate the following Data Query.'),
 					'pmessage' => __('Click \'Continue\' to Duplicate following Data Queries.'),
 					'scont'    => __('Duplicate Data Query'),
 					'pcont'    => __('Duplicate Data Queries'),
-					'extra'    => array(
-						'name_format' => array(
+					'extra'    => [
+						'name_format' => [
 							'method'  => 'textbox',
 							'title'   => __('Name Format'),
 							'default' => '<dataquery_name> (1)',
 							'width'   => 25
-						)
-					)
-				)
-			)
-		);
+						]
+					]
+				]
+			]
+		];
 
 		form_continue_confirmation($form_data);
 	}
@@ -446,7 +445,7 @@ function data_query_item_remove_gsv() {
 
 	db_execute_prepared('DELETE FROM snmp_query_graph_sv
 		WHERE id = ?',
-		array(get_request_var('id')));
+		[get_request_var('id')]);
 }
 
 function data_query_item_movedown_dssv() {
@@ -485,7 +484,7 @@ function data_query_sv_check_sequences($type, $snmp_query_graph_id, $field_name)
 		WHERE sequence <= 0
 		AND field_name = ?
 		AND snmp_query_graph_id = ?",
-		array($field_name, $snmp_query_graph_id));
+		[$field_name, $snmp_query_graph_id]);
 
 	$dup_seq = db_fetch_cell_prepared("SELECT SUM(count)
 		FROM (
@@ -496,7 +495,7 @@ function data_query_sv_check_sequences($type, $snmp_query_graph_id, $field_name)
 			GROUP BY sequence
 		) AS t
 		WHERE t.count > 1",
-		array($field_name, $snmp_query_graph_id));
+		[$field_name, $snmp_query_graph_id]);
 
 	// report any bad or duplicate sequences to the log for reporting purposes
 	if ($bad_seq > 0) {
@@ -516,7 +515,7 @@ function data_query_sv_check_sequences($type, $snmp_query_graph_id, $field_name)
 			WHERE field_name = ?
 			AND snmp_query_graph_id = ?
 			ORDER BY sequence, id;",
-			array($field_name, $snmp_query_graph_id));
+			[$field_name, $snmp_query_graph_id]);
 	}
 }
 
@@ -528,7 +527,7 @@ function data_query_item_remove_dssv() {
 	db_execute_prepared('DELETE
 		FROM snmp_query_graph_rrd_sv
 		WHERE id = ?',
-		array(get_request_var('id')));
+		[get_request_var('id')]);
 }
 
 function data_query_item_remove_confirm() {
@@ -546,7 +545,7 @@ function data_query_item_remove_confirm() {
 	$graph_template = db_fetch_row_prepared('SELECT *
 		FROM snmp_query_graph
 		WHERE id = ?',
-		array(get_request_var('id')));
+		[get_request_var('id')]);
 
 	?>
 	<tr>
@@ -604,22 +603,22 @@ function data_query_item_remove() {
 	db_execute_prepared('DELETE
 		FROM snmp_query_graph
 		WHERE id = ?',
-		array(get_request_var('id')));
+		[get_request_var('id')]);
 
 	db_execute_prepared('DELETE
 		FROM snmp_query_graph_rrd
 		WHERE snmp_query_graph_id = ?',
-		array(get_request_var('id')));
+		[get_request_var('id')]);
 
 	db_execute_prepared('DELETE
 		FROM snmp_query_graph_rrd_sv
 		WHERE snmp_query_graph_id = ?',
-		array(get_request_var('id')));
+		[get_request_var('id')]);
 
 	db_execute_prepared('DELETE
 		FROM snmp_query_graph_sv
 		WHERE snmp_query_graph_id = ?',
-		array(get_request_var('id')));
+		[get_request_var('id')]);
 }
 
 function data_query_item_edit() {
@@ -634,13 +633,13 @@ function data_query_item_edit() {
 		$snmp_query_item = db_fetch_row_prepared('SELECT *
 			FROM snmp_query_graph
 			WHERE id = ?',
-			array(get_request_var('id')));
+			[get_request_var('id')]);
 	}
 
 	$snmp_query   = db_fetch_row_prepared('SELECT name, xml_path
 		FROM snmp_query
 		WHERE id = ?',
-		array(get_request_var('snmp_query_id')));
+		[get_request_var('snmp_query_id')]);
 
 	if (cacti_sizeof($snmp_query)) {
 		$header_label = __esc('Associated Graph/Data Templates [edit: %s]', $snmp_query['name']);
@@ -653,10 +652,10 @@ function data_query_item_edit() {
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
-		array(
-			'config' => array('no_form_tag' => true),
-			'fields' => inject_form_variables($fields_data_query_item_edit, (isset($snmp_query_item) ? $snmp_query_item : array()), $_REQUEST)
-		)
+		[
+			'config' => ['no_form_tag' => true],
+			'fields' => inject_form_variables($fields_data_query_item_edit, (isset($snmp_query_item) ? $snmp_query_item : []), $_REQUEST)
+		]
 	);
 
 	html_end_box(true, true);
@@ -690,7 +689,7 @@ function data_query_item_edit() {
 			AND graph_templates_item.local_graph_id = 0
 			AND graph_templates_item.graph_template_id = ?
 			GROUP BY data_template.id
-			ORDER BY data_template.name', array($snmp_query_item['graph_template_id']));
+			ORDER BY data_template.name', [$snmp_query_item['graph_template_id']]);
 
 		$i = 0;
 
@@ -710,7 +709,7 @@ function data_query_item_edit() {
 					WHERE dtr.data_template_id = ?
 					AND dtr.local_data_id = 0
 					ORDER BY dtr.data_source_name',
-					array(get_request_var('id'), $data_template['id'], $data_template['id']));
+					[get_request_var('id'), $data_template['id'], $data_template['id']]);
 
 				$i = 0;
 
@@ -736,7 +735,7 @@ function data_query_item_edit() {
 									<td>
 										<?php
 										$snmp_queries = get_data_query_array(get_request_var('snmp_query_id'));
-						$xml_outputs      = array();
+						$xml_outputs      = [];
 
 						if (isset($snmp_queries['fields']) && cacti_sizeof($snmp_queries['fields'])) {
 							foreach ($snmp_queries['fields'] as $field_name => $field_array) {
@@ -772,13 +771,13 @@ function data_query_item_edit() {
 			FROM snmp_query_graph_sv
 			WHERE snmp_query_graph_id = ?
 			ORDER BY field_name, sequence',
-			array(get_request_var('id')));
+			[get_request_var('id')]);
 
-		html_header(array(
-			array('display' => __('Name'), 'align' => 'left'),
-			array('display' => __('Order'), 'align' => 'center'),
-			array('display' => __('Equation'), 'align' => 'left')
-		), 2);
+		html_header([
+			['display' => __('Name'), 'align' => 'left'],
+			['display' => __('Order'), 'align' => 'center'],
+			['display' => __('Equation'), 'align' => 'left']
+		], 2);
 
 		$i            = 0;
 		$total_values = cacti_sizeof($suggested_values);
@@ -871,20 +870,20 @@ function data_query_item_edit() {
 					FROM snmp_query_graph_rrd_sv
 					WHERE snmp_query_graph_id = ?
 					AND data_template_id = ?
-					ORDER BY field_name, sequence', array(get_request_var('id'), $data_template['id']));
+					ORDER BY field_name, sequence', [get_request_var('id'), $data_template['id']]);
 
 				$name = db_fetch_cell_prepared('SELECT name
 					FROM data_template
 					WHERE id = ?',
-					array($data_template['id']));
+					[$data_template['id']]);
 
 				print "<tr class='tableHeader'><td colspan='4'>" . html_escape($name) . '</td></tr><tr>';
 
-				html_header(array(
-					array('display' => __('Name'), 'align' => 'left'),
-					array('display' => __('Order'), 'align' => 'center'),
-					array('display' => __('Equation'), 'align' => 'left')
-				), 2);
+				html_header([
+					['display' => __('Name'), 'align' => 'left'],
+					['display' => __('Order'), 'align' => 'center'],
+					['display' => __('Equation'), 'align' => 'left']
+				], 2);
 
 				$i            = 0;
 				$total_values = cacti_sizeof($suggested_values);
@@ -1055,41 +1054,41 @@ function data_query_remove($id) {
 	$snmp_query_graph = db_fetch_assoc_prepared('SELECT id
 		FROM snmp_query_graph
 		WHERE snmp_query_id = ?',
-		array($id));
+		[$id]);
 
 	if (cacti_sizeof($snmp_query_graph)) {
 		foreach ($snmp_query_graph as $item) {
 			db_execute_prepared('DELETE
 				FROM snmp_query_graph_rrd
 				WHERE snmp_query_graph_id = ?',
-				array($item['id']));
+				[$item['id']]);
 		}
 	}
 
 	db_execute_prepared('DELETE
 		FROM snmp_query
 		WHERE id = ?',
-		array($id));
+		[$id]);
 
 	db_execute_prepared('DELETE
 		FROM snmp_query_graph
 		WHERE snmp_query_id = ?',
-		array($id));
+		[$id]);
 
 	db_execute_prepared('DELETE
 		FROM host_template_snmp_query
 		WHERE snmp_query_id = ?',
-		array($id));
+		[$id]);
 
 	db_execute_prepared('DELETE
 		FROM host_snmp_query
 		WHERE snmp_query_id = ?',
-		array($id));
+		[$id]);
 
 	db_execute_prepared('DELETE
 		FROM host_snmp_cache
 		WHERE snmp_query_id = ?',
-		array($id));
+		[$id]);
 
 	update_replication_crc(0, 'poller_replicate_snmp_query_crc');
 }
@@ -1105,11 +1104,12 @@ function data_query_edit() {
 		$snmp_query = db_fetch_row_prepared('SELECT *
 			FROM snmp_query WHERE
 			id = ?',
-			array(get_request_var('id')));
+			[get_request_var('id')]);
 
 		if (!cacti_sizeof($snmp_query)) {
 			raise_message('data_query_missing', __('The Data Query ID [%s] that you are trying to Edit does not exist.  Please run the repair_database.php CLI script to resolve this database issue.', get_request_var('id')), MESSAGE_LEVEL_ERROR);
 			header('Location: data_queries.php');
+
 			exit;
 		}
 
@@ -1123,17 +1123,17 @@ function data_query_edit() {
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
-		array(
-			'config' => array('no_form_tag' => true),
-			'fields' => inject_form_variables($fields_data_query_edit, (isset($snmp_query) ? $snmp_query : array()))
-		)
+		[
+			'config' => ['no_form_tag' => true],
+			'fields' => inject_form_variables($fields_data_query_edit, (isset($snmp_query) ? $snmp_query : []))
+		]
 	);
 
 	html_end_box(false, true);
 
 	if (!empty($snmp_query['id'])) {
-		$search       = array('<path_cacti>', '<path_snmpget>', '<path_php_binary>');
-		$replace      = array(CACTI_PATH_BASE, read_config_option('path_snmpget'), read_config_option('path_php_binary'));
+		$search       = ['<path_cacti>', '<path_snmpget>', '<path_php_binary>'];
+		$replace      = [CACTI_PATH_BASE, read_config_option('path_snmpget'), read_config_option('path_php_binary')];
 		$xml_filename = str_replace($search, $replace, $snmp_query['xml_path']);
 
 		if ((file_exists($xml_filename)) && (is_file($xml_filename))) {
@@ -1148,28 +1148,28 @@ function data_query_edit() {
 		print "<tr class='tableRow debug'><td>$text</td></tr>";
 		html_end_box(false);
 
-		$display_text = array(
-			array(
+		$display_text = [
+			[
 				'display' => __('Name'),
 				'align'   => 'left'
-			),
-			array(
+			],
+			[
 				'display' => __('Graph Template Name'),
 				'align'   => 'left'
-			),
-			array(
+			],
+			[
 				'display' => __('Graphs Using'),
 				'align'   => 'right'
-			),
-			array(
+			],
+			[
 				'display' => __('Mapping ID'),
 				'align'   => 'right'
-			),
-			array(
+			],
+			[
 				'display' => __('Action'),
-				'align' => 'right'
-			)
-		);
+				'align'   => 'right'
+			]
+		];
 
 		html_start_box(__('Associated Graph Templates'), '100%', '', '3', 'center', 'data_queries.php?action=item_edit&snmp_query_id=' . $snmp_query['id']);
 
@@ -1186,7 +1186,7 @@ function data_query_edit() {
 			WHERE sqg.snmp_query_id = ?
 			GROUP BY sqg.id
 			ORDER BY sqg.name',
-			array($snmp_query['id']));
+			[$snmp_query['id']]);
 
 		if (cacti_sizeof($snmp_query_graphs)) {
 			$i = 0;
@@ -1318,49 +1318,49 @@ function data_query() {
 		$sql_order
 		$sql_limit");
 
-	$display_text = array(
-		'name' => array(
+	$display_text = [
+		'name' => [
 			'display' => __('Data Query Name'),
 			'align'   => 'left',
 			'sort'    => 'ASC',
 			'tip'     => __('The name of this Data Query.')
-		),
-		'id' => array(
+		],
+		'id' => [
 			'display' => __('ID'),
 			'align'   => 'right',
 			'sort'    => 'ASC',
 			'tip'     => __('The internal ID for this Graph Template.  Useful when performing automation or debugging.')
-		),
-		'nosort' => array(
+		],
+		'nosort' => [
 			'display' => __('Deletable'),
 			'align'   => 'right',
 			'tip'     => __('Data Queries that are in use cannot be Deleted. In use is defined as being referenced by either a Graph or a Graph Template.')
-		),
-		'graphs' => array(
+		],
+		'graphs' => [
 			'display' => __('Graphs Using'),
 			'align'   => 'right',
 			'sort'    => 'DESC',
 			'tip'     => __('The number of Graphs using this Data Query.')
-		),
-		'templates' => array(
+		],
+		'templates' => [
 			'display' => __('Templates Using'),
 			'align'   => 'right',
 			'sort'    => 'DESC',
 			'tip'     => __('The number of Graphs Templates using this Data Query.')
-		),
-		'data_input_method' => array(
+		],
+		'data_input_method' => [
 			'display' => __('Data Input Method'),
 			'align'   => 'right',
 			'sort'    => 'ASC',
 			'tip'     => __('The Data Input Method used to collect data for Data Sources associated with this Data Query.')
-		),
-		'last_updated' => array(
+		],
+		'last_updated' => [
 			'display' => __('Last Updated'),
 			'align'   => 'right',
 			'sort'    => 'ASC',
 			'tip'     => __('The last time this Template was updated.')
-		)
-	);
+		]
+	];
 
 	$nav = html_nav_bar('data_queries.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Data Queries'), 'page', 'main');
 

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -44,7 +44,7 @@ function draw_edit_form($array) {
 
 	if (cacti_sizeof($fields_array)) {
 		if (!isset($config_array['no_form_tag'])) {
-			print "<form class='cactiForm' method='post' autocomplete='off' action='" . ($config_array['post_to'] ?? get_current_page()) . "'" . ((isset($config_array['form_name'])) ? " name='" . $config_array['form_name'] . "'" : '') . ((isset($config_array['enctype'])) ? " enctype='" . $config_array['enctype'] . "'" : '') . ">";
+			print "<form class='cactiForm' method='post' autocomplete='off' action='" . ($config_array['post_to'] ?? get_current_page()) . "'" . ((isset($config_array['form_name'])) ? " name='" . $config_array['form_name'] . "'" : '') . ((isset($config_array['enctype'])) ? " enctype='" . $config_array['enctype'] . "'" : '') . '>';
 		}
 
 		$i         = 0;
@@ -88,7 +88,7 @@ function draw_edit_form($array) {
 
 				print "<div class='spacer formHeader" . ($collapsible ? ' collapsible' : '') . "' id='row_$field_name'><div class='formHeaderText'>" . html_escape($field_array['friendly_name']);
 				print '<div class="formTooltip">' . (isset($field_array['description']) ? display_tooltip($field_array['description']) : '') . '</div>';
-				print($collapsible ? "<div class='formHeaderAnchor'><i class='fa fa-angle-double-up'></i></div>" : '') . '</div></div>';
+				print ($collapsible ? "<div class='formHeaderAnchor'><i class='fa fa-angle-double-up'></i></div>" : '') . '</div></div>';
 			} else {
 				// Make a row using a div
 				if (isset($config_array['force_row_color'])) {
@@ -136,7 +136,7 @@ function draw_edit_form($array) {
 				print html_escape($field_array['friendly_name']);
 
 				if (read_config_option('hide_form_description') == 'on') {
-					print '<br><span class="formFieldDescription">' . ($field_array['description'] ?? '') . "</span>";
+					print '<br><span class="formFieldDescription">' . ($field_array['description'] ?? '') . '</span>';
 				} else {
 					print '<div class="formTooltip">';
 					print display_tooltip($field_array['description'] ?? '');
@@ -174,6 +174,7 @@ function draw_edit_form($array) {
  *
  * @param string $field_name The name of the control.
  * @param array an array containing data for this control. see include/global_form.php for more specific syntax
+ * @param mixed $field_array
  *
  */
 function draw_edit_control($field_name, &$field_array) {
@@ -299,7 +300,7 @@ function draw_edit_control($field_name, &$field_array) {
 
 			break;
 		case 'drop_files':
-			$array_files = array();
+			$array_files = [];
 
 			if (isset($field_array['directory'])) {
 				$dir = $field_array['directory'];
@@ -530,7 +531,6 @@ function draw_edit_control($field_name, &$field_array) {
 			);
 
 			break;
-
 		default:
 			if (isset($field_array['value'])) {
 				print '<em>' . html_escape($field_array['value']) . '</em>';
@@ -592,8 +592,8 @@ function form_submit($form_name, $value, $title = '', $action = '') {
  * @return void
  */
 function form_file($form_name, $form_size = 30, $form_accept = '') {
-	print "<div>";
-	print "<label class='import_label' for='$form_name'>" . __('Select a File') . "</label>";
+	print '<div>';
+	print "<label class='import_label' for='$form_name'>" . __('Select a File') . '</label>';
 	print "<input type='file'";
 
 	if (isset($_SESSION[SESS_ERROR_FIELDS]) && !empty($_SESSION[SESS_ERROR_FIELDS][$form_name])) {
@@ -603,9 +603,9 @@ function form_file($form_name, $form_size = 30, $form_accept = '') {
 		print " class='import_button ui-state-default ui-corner-all'";
 	}
 
-	print " id='$form_name' name='$form_name' size='$form_size'" . ($form_accept != '' ? " accept='$form_accept'" : '') . ">";
+	print " id='$form_name' name='$form_name' size='$form_size'" . ($form_accept != '' ? " accept='$form_accept'" : '') . '>';
 	print "<span class='import_text'></span>";
-	print "</div>";
+	print '</div>';
 }
 
 /**
@@ -784,6 +784,7 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
  * @param string $form_name - the name of this form element
  * @param string $form_previous_value - the current value of this form element
  * @param bool $form_default_value - the value of this form element to use if there is no current value available
+ * @param mixed $in_form
  *
  * @return void
  */
@@ -816,6 +817,7 @@ function form_hidden_box($form_name, $form_previous_value, $form_default_value, 
  * @param string $css_class - any css that needs to be applied to this form element
  * @param string $on_change - onChange modifier
  * @param string $display_name - The display name for this form object
+ * @param mixed $class
  *
  * @return void
  */
@@ -887,6 +889,7 @@ function form_dropdown($form_name, $form_data, $column_display, $column_id, $for
  * @param string $form_default_value - the value of this form element to use if there is no current value available
  * @param string $css_class - any css that needs to be applied to this form element
  * @param string $on_change - onChange modifier
+ * @param mixed $class
  *
  * @return void
  */
@@ -1218,13 +1221,13 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
 function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $column_id, $class = '', $on_change = '') {
 	if (!is_array($sql_previous_values) && $sql_previous_values != '') {
 		$values              = explode(',', $sql_previous_values);
-		$sql_previous_values = array();
+		$sql_previous_values = [];
 
 		foreach ($values as $value) {
 			$sql_previous_values[][$column_id] = $value;
 		}
 	} elseif ($sql_previous_values == '') {
-		$values = db_fetch_cell_prepared('SELECT value FROM settings WHERE name = ?', array($form_name));
+		$values = db_fetch_cell_prepared('SELECT value FROM settings WHERE name = ?', [$form_name]);
 
 		if ($values != '') {
 			$values = explode(',', $values);
@@ -1300,7 +1303,7 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 	$current_color = db_fetch_cell_prepared('SELECT hex
 		FROM colors
 		WHERE id = ?',
-		array($form_previous_value)
+		[$form_previous_value]
 	);
 
 	if ($on_change != '') {
@@ -1474,7 +1477,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
  *
  * @return void - Data is streamed through stdout
  */
-function form_continue_confirmation($form_data, $plugin_hook = '', $save = array()) {
+function form_continue_confirmation($form_data, $plugin_hook = '', $save = []) {
 	$page      = $form_data['general']['page'];
 	$actions   = $form_data['general']['actions'];
 	$drpvar    = $form_data['general']['optvar'];
@@ -1514,7 +1517,9 @@ function form_continue_confirmation($form_data, $plugin_hook = '', $save = array
 			header('Location: ' . $page);
 
 			exit;
-		} elseif (cacti_sizeof($iarray) > 1) {
+		}
+
+		if (cacti_sizeof($iarray) > 1) {
 			if (isset($data['pmessage'])) {
 				$message = $data['pmessage'];
 			} elseif (isset($data['message'])) {
@@ -1599,17 +1604,17 @@ function form_continue_confirmation($form_data, $plugin_hook = '', $save = array
 
 	if (isset($data['extra'])) {
 		/* prepend checkboxes for this form */
-		$form_array = array();
+		$form_array = [];
 
-		foreach($data['extra'] as $field_name => $field_array) {
-			$form_array += array($field_name => $field_array);
+		foreach ($data['extra'] as $field_name => $field_array) {
+			$form_array += [$field_name => $field_array];
 
 			$form_array[$field_name]['value'] = '';
 
 			/* two form overrides */
 			if (isset($field_array['title'])) {
 				$form_array[$field_name]['friendly_name'] = $field_array['title'];
-			} elseif(!isset($form_array[$field_name]['friendly_name'])) {
+			} elseif (!isset($form_array[$field_name]['friendly_name'])) {
 				$form_array[$field_name]['friendly_name'] = '';
 			}
 
@@ -1624,22 +1629,22 @@ function form_continue_confirmation($form_data, $plugin_hook = '', $save = array
 			$form_array[$field_name]['form_id'] = 0;
 
 			if (isset($field_array['confirm'])) {
-				$form_array[$field_name]['sub_checkbox'] = array(
+				$form_array[$field_name]['sub_checkbox'] = [
 					'name'          => 't_' . $field_name,
 					'friendly_name' => __('Update this Field'),
 					'class'         => 'ui-state-disabled',
 					'value'         => ''
-				);
+				];
 			}
 		}
 
 		print "<div class='confirm_actions'>";
 
 		draw_edit_form(
-			array(
-				'config' => array('no_form_tag' => true),
+			[
+				'config' => ['no_form_tag' => true],
 				'fields' => $form_array
-			)
+			]
 		);
 
 		print '</div>';
@@ -1700,6 +1705,7 @@ function form_continue_confirmation($form_data, $plugin_hook = '', $save = array
  * @param string $body_text - the text to prompt the user with on this form
  * @param string $cancel_url - the url to go to when the user clicks 'cancel'
  * @param string $action_url - the url to go to when the user clicks 'delete'
+ * @param mixed $title_text
  *
  * @return void
  */
@@ -1714,8 +1720,8 @@ function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
 					</tr>
 					<?php
 					form_area($body_text);
-					form_confirm_buttons($action_url, $cancel_url);
-					?>
+	form_confirm_buttons($action_url, $cancel_url);
+	?>
 				</table>
 			</td>
 		</tr>
@@ -1837,7 +1843,7 @@ function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_fi
 	if ($cancel_url == '') {
 		if (isset($_SERVER['HTTP_REFERER'])) {
 			$url_components = parse_url($_SERVER['HTTP_REFERER']);
-			$cancel_url = $url_components['path'];
+			$cancel_url     = $url_components['path'];
 		} else {
 			$cancel_url = '';
 		}
@@ -1848,6 +1854,7 @@ function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_fi
 			$alt = __esc('Create');
 		} else {
 			$alt = __esc('Save');
+
 			if ($force_type != '') {
 				$calt   = __esc('Return');
 			} else {
@@ -1865,6 +1872,7 @@ function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_fi
 	} elseif ($force_type == 'export') {
 		$alt = __esc('Export');
 	}
+
 	if ($force_type != 'import' && $force_type != 'export' && $force_type != 'save' && $force_type != 'close' && $cancel_url != '') {
 		$cancel_action = "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo(\"" . html_escape($cancel_url, ENT_QUOTES) . "\")' value='" . $calt . "'>";
 	} else {
@@ -1951,7 +1959,7 @@ function form_start($action, $id = '', $multipart = false) {
 
 	$form_action = $action;
 
-	print "<form class='cactiFormStart' id='$form_id' name='$form_id' action='$form_action' autocomplete='off' method='post'" . ($multipart ? " enctype='multipart/form-data'" : '') . ">";
+	print "<form class='cactiFormStart' id='$form_id' name='$form_id' action='$form_action' autocomplete='off' method='post'" . ($multipart ? " enctype='multipart/form-data'" : '') . '>';
 }
 
 /**

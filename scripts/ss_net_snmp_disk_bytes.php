@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -47,7 +47,7 @@ function ss_net_snmp_disk_bytes($host_id_or_hostname = '') {
 		$host_id = db_fetch_cell_prepared('SELECT id
 			FROM host
 			WHERE hostname = ?',
-			array($host_id_or_hostname));
+			[$host_id_or_hostname]);
 	} else {
 		$host_id = $host_id_or_hostname;
 	}
@@ -69,15 +69,15 @@ function ss_net_snmp_disk_bytes($host_id_or_hostname = '') {
 	} else {
 		if ($environ != 'realtime') {
 			$dimension = $host_id . '_bytes';
-			$ttl = -1;
+			$ttl       = -1;
 		} else {
 			$dimension = $host_id . '_' . $poller_id . '_bytes_rt';
-			$ttl = 300;
+			$ttl       = 300;
 		}
 	}
 
 	$found    = false;
-	$previous = array();
+	$previous = [];
 
 	if (!db_table_exists('host_value_cache')) {
 		if (is_file("$tmpdir/$tmpfile")) {
@@ -91,7 +91,7 @@ function ss_net_snmp_disk_bytes($host_id_or_hostname = '') {
 				WHERE host_id = ?
 				AND dimension = ?
 				LIMIT 1',
-				array($host_id, $dimension)), true
+				[$host_id, $dimension]), true
 		);
 
 		/* remove the old entry or entries */
@@ -99,7 +99,7 @@ function ss_net_snmp_disk_bytes($host_id_or_hostname = '') {
 			WHERE host_id = ?
 			AND dimension = ?
 			AND time_to_live = ?',
-			array($host_id, $dimension, $ttl));
+			[$host_id, $dimension, $ttl]);
 
 		if (!empty($previous)) {
 			$found = true;
@@ -108,12 +108,12 @@ function ss_net_snmp_disk_bytes($host_id_or_hostname = '') {
 		}
 	}
 
-	$indexes = array();
+	$indexes = [];
 
 	$host = db_fetch_row_prepared('SELECT *
 		FROM host
 		WHERE id = ?',
-		array($host_id));
+		[$host_id]);
 
 	if (!cacti_sizeof($host)) {
 		return 'reads:0 writes:0';
@@ -267,7 +267,7 @@ function ss_net_snmp_disk_bytes($host_id_or_hostname = '') {
 
 			db_execute_prepared('REPLACE INTO host_value_cache (host_id, dimension, value, time_to_live)
 				VALUES (?, ?, ?, ?)',
-				array($host_id, $dimension, $data, $ttl));
+				[$host_id, $dimension, $data, $ttl]);
 		}
 	}
 

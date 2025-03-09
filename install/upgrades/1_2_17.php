@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -88,7 +88,7 @@ function database_fix_mediumint_columns() {
 	$total = 0;
 
 	// Known Tables
-	$tables = array(
+	$tables = [
 		'data_input_data' => 'data_template_data_id',
 
 		'data_template_data' => 'id, local_data_template_data_id, local_data_id',
@@ -119,7 +119,7 @@ function database_fix_mediumint_columns() {
 
 		'settings_tree'        => 'graph_tree_item_id',
 		'snmp_query_graph_rrd' => 'data_template_rrd_id'
-	);
+	];
 
 	$known_columns['graph_id'] = 'graph_id';
 	$known_columns['data_id']  = 'data_id';
@@ -172,7 +172,7 @@ function database_fix_mediumint_columns() {
 
 	foreach ($other_tables as $t) {
 		$table   = $t['Tables_in_' . $database_default];
-		$columns = array();
+		$columns = [];
 
 		if (!array_key_exists($table, $tables)) {
 			$i   = 0;
@@ -180,7 +180,7 @@ function database_fix_mediumint_columns() {
 
 			$columns = array_rekey(
 				db_fetch_assoc('SHOW COLUMNS FROM ' . $table),
-				'Field', array('Type', 'Null', 'Key', 'Default', 'Extra')
+				'Field', ['Type', 'Null', 'Key', 'Default', 'Extra']
 			);
 
 			foreach ($columns as $field => $attribs) {

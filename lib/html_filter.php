@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -29,18 +29,31 @@
 class CactiTableFilter {
 	/* constructor variables */
 	public $form_header      = '';
+
 	public $form_action      = '';
+
 	public $form_id          = '';
+
 	public $form_method      = 'get';
+
 	public $session_var      = 'sess_';
+
 	public $action_url       = '';
+
 	public $action_label     = '';
+
 	public $show_columns     = true;
-	public $default_filter   = array();
+
+	public $default_filter   = [];
+
 	public $rows_label       = '';
+
 	public $associated_label = '';
+
 	public $js_extra         = '';
+
 	public $dynamic          = true;
+
 	public $def_refresh      = 300;
 
 	/**
@@ -50,31 +63,47 @@ class CactiTableFilter {
 	 * filter.
 	 */
 	public $has_graphs     = false;
+
 	public $has_data       = false;
+
 	public $has_save       = false;
+
 	public $has_import     = false;
+
 	public $has_export     = false;
+
 	public $has_purge      = false;
+
 	public $has_named      = false;
+
 	public $has_associated = false;
+
 	public $has_refresh    = false;
+
 	public $inject_content = false;
 
 	private $initialized   = false;
 
-	private $sort_array    = array();
-	private $button_array  = array();
-	private $link_array    = array();
-	private $append_array  = array();
-	private $item_rows     = array();
-	private $timespans     = array();
-	private $timeshifts    = array();
-	private $filter_array  = array();
-	private $frequencies   = array();
+	private $sort_array    = [];
+
+	private $button_array  = [];
+
+	private $link_array    = [];
+
+	private $append_array  = [];
+
+	private $item_rows     = [];
+
+	private $timespans     = [];
+
+	private $timeshifts    = [];
+
+	private $filter_array  = [];
+
+	private $frequencies   = [];
 
 	public function __construct($form_header = '', $form_action = '', $form_id = '',
 		$session_var = '', $action_url = '', $action_label = false, $show_columns = true) {
-
 		global $item_rows, $graph_timespans, $graph_timeshifts;
 
 		$this->form_header   = $form_header;
@@ -90,7 +119,7 @@ class CactiTableFilter {
 		$this->timeshifts    = $graph_timeshifts;
 		$this->rows_label    = __('Rows');
 
-		$this->frequencies = array(
+		$this->frequencies = [
 			5   => __('%d Seconds', 5),
 			10  => __('%d Seconds', 10),
 			20  => __('%d Seconds', 20),
@@ -99,7 +128,7 @@ class CactiTableFilter {
 			60  => __('%d Minute', 1),
 			120 => __('%d Minutes', 2),
 			300 => __('%d Minutes', 5)
-		);
+		];
 
 		if ($this->session_var == '') {
 			$action = get_nfilter_request_var('action');
@@ -123,11 +152,11 @@ class CactiTableFilter {
 
 	private function create_default() {
 		/* default filter */
-		return array(
-			'rows' => array(
-				array(
-					'filter' => array(
-						'method'        => 'textbox',
+		return [
+			'rows' => [
+				[
+					'filter' => [
+						'method'         => 'textbox',
 						'friendly_name'  => __('Search'),
 						'filter'         => FILTER_DEFAULT,
 						'placeholder'    => __('Enter a search term'),
@@ -136,8 +165,8 @@ class CactiTableFilter {
 						'pageset'        => true,
 						'max_length'     => '120',
 						'value'          => ''
-					),
-					'rows' => array(
+					],
+					'rows' => [
 						'method'        => 'drop_array',
 						'friendly_name' => $this->rows_label,
 						'filter'        => FILTER_VALIDATE_INT,
@@ -145,26 +174,26 @@ class CactiTableFilter {
 						'pageset'       => true,
 						'array'         => $this->item_rows,
 						'value'         => '-1'
-					)
-				)
-			),
-			'buttons' => array(
-				'go' => array(
+					]
+				]
+			],
+			'buttons' => [
+				'go' => [
 					'method'  => 'submit',
 					'display' => __('Go'),
 					'title'   => __('Apply filter to table'),
-				),
-				'clear' => array(
+				],
+				'clear' => [
 					'method'  => 'button',
 					'display' => __('Clear'),
 					'title'   => __('Reset filter to default values'),
-				)
-			),
-			'sort' => array(
+				]
+			],
+			'sort' => [
 				'sort_column'    => 'name',
 				'sort_direction' => 'ASC'
-			)
-		);
+			]
+		];
 	}
 
 	public function __destruct() {
@@ -200,10 +229,10 @@ class CactiTableFilter {
 	}
 
 	public function set_sort_array($sort_column, $sort_direction) {
-		$this->sort_array = array(
+		$this->sort_array = [
 			'sort_column'    => $sort_column,
 			'sort_direction' => $sort_direction
-		);
+		];
 	}
 
 	public function add_button($id, $button) {
@@ -273,8 +302,8 @@ class CactiTableFilter {
 		}
 
 		if (cacti_sizeof($this->append_array)) {
-			foreach($this->append_array as $row => $data) {
-				foreach($data as $id => $filter) {
+			foreach ($this->append_array as $row => $data) {
+				foreach ($data as $id => $filter) {
 					$this->filter_array['rows'][$row][$id] = $filter;
 				}
 			}
@@ -288,16 +317,16 @@ class CactiTableFilter {
 				$value = $this->def_refresh;
 			}
 
-			$this->filter_array['rows'][0] += array(
-				'refresh' => array(
+			$this->filter_array['rows'][0] += [
+				'refresh' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Refresh'),
 					'filter'        => FILTER_VALIDATE_INT,
 					'default'       => $this->def_refresh,
 					'array'         => $this->frequencies,
 					'value'         => $value
-				)
-			);
+				]
+			];
 		}
 
 		if ($this->has_graphs) {
@@ -307,17 +336,17 @@ class CactiTableFilter {
 				$value = read_config_option('default_has') == 'on' ? 'true':'false';
 			}
 
-			$this->filter_array['rows'][0] += array(
-				'has_graphs' => array(
+			$this->filter_array['rows'][0] += [
+				'has_graphs' => [
 					'method'         => 'filter_checkbox',
 					'friendly_name'  => __('Has Graphs'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => array('options' => array('regexp' => '(true|false)')),
+					'filter_options' => ['options' => ['regexp' => '(true|false)']],
 					'default'        => read_config_option('default_has') == 'on' ? 'true':'false',
 					'pageset'        => true,
 					'value'          => $value
-				)
-			);
+				]
+			];
 		}
 
 		if ($this->has_data) {
@@ -327,17 +356,17 @@ class CactiTableFilter {
 				$value = read_config_option('default_has') == 'on' ? 'true':'false';
 			}
 
-			$this->filter_array['rows'][0] += array(
-				'has_data' => array(
+			$this->filter_array['rows'][0] += [
+				'has_data' => [
 					'method'         => 'filter_checkbox',
 					'friendly_name'  => __('Has Data Sources'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => array('options' => array('regexp' => '(true|false)')),
+					'filter_options' => ['options' => ['regexp' => '(true|false)']],
 					'default'        => read_config_option('default_has') == 'on' ? 'true':'false',
 					'pageset'        => true,
 					'value'          => $value
-				)
-			);
+				]
+			];
 		}
 
 		if ($this->has_named) {
@@ -347,17 +376,17 @@ class CactiTableFilter {
 				$value = read_config_option('default_has') == 'on' ? 'true':'false';
 			}
 
-			$this->filter_array['rows'][0] += array(
-				'named' => array(
+			$this->filter_array['rows'][0] += [
+				'named' => [
 					'method'         => 'filter_checkbox',
 					'friendly_name'  => __('Named Colors'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => array('options' => array('regexp' => '(true|false)')),
+					'filter_options' => ['options' => ['regexp' => '(true|false)']],
 					'default'        => read_config_option('default_has') == 'on' ? 'true':'false',
 					'pageset'        => true,
 					'value'          => $value
-				)
-			);
+				]
+			];
 		}
 
 		if ($this->has_associated) {
@@ -367,52 +396,52 @@ class CactiTableFilter {
 				$value = read_config_option('default_has') == 'on' ? 'true':'false';
 			}
 
-			$this->filter_array['rows'][0] += array(
-				'associated' => array(
+			$this->filter_array['rows'][0] += [
+				'associated' => [
 					'method'         => 'filter_checkbox',
 					'friendly_name'  => ($this->associated_label != '' ? $this->associated_label : __('Associated')),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => array('options' => array('regexp' => '(true|false)')),
+					'filter_options' => ['options' => ['regexp' => '(true|false)']],
 					'default'        => read_config_option('default_has') == 'on' ? 'true':'false',
 					'pageset'        => true,
 					'value'          => $value
-				)
-			);
+				]
+			];
 		}
 
 		if ($this->has_save) {
-			$this->filter_array['buttons']['save'] = array(
+			$this->filter_array['buttons']['save'] = [
 				'method'  => 'button',
 				'display' => __('Save'),
 				'title'   => __('Save Filter Defaults'),
 				'status'  => __('Saving Filter')
-			);
+			];
 		}
 
 		if ($this->has_import) {
-			$this->filter_array['buttons']['import'] = array(
+			$this->filter_array['buttons']['import'] = [
 				'method'  => 'button',
 				'display' => __('Import'),
 				'title'   => __('Import Data'),
-			);
+			];
 		}
 
 		if ($this->has_export) {
-			$this->filter_array['buttons']['export'] = array(
-				'method'  => 'button',
-				'display' => __('Export'),
-				'title'   => __('Export Data'),
+			$this->filter_array['buttons']['export'] = [
+				'method'   => 'button',
+				'display'  => __('Export'),
+				'title'    => __('Export Data'),
 				'callback' => 'document.location = \'' . get_current_page() . '?action=export\'',
-			);
+			];
 		}
 
 		if ($this->has_purge) {
-			$this->filter_array['buttons']['purge'] = array(
+			$this->filter_array['buttons']['purge'] = [
 				'method'  => 'button',
 				'display' => __('Purge'),
 				'title'   => __('Purge Data'),
 				'status'  => __('Purging Data')
-			);
+			];
 		}
 
 		if (isset($this->filter_array['buttons']) && cacti_sizeof($this->filter_array['buttons'])) {
@@ -429,26 +458,26 @@ class CactiTableFilter {
 		$text_appended = false;
 
 		if (isset($this->filter_array['links']) && cacti_sizeof($this->filter_array['links'])) {
-			$linkButtons = array();
+			$linkButtons = [];
 
 			if ($this->action_url != '') {
-				$linkButtons[] = array(
+				$linkButtons[] = [
 					'id'       => 'add',
 					'href'     => $this->action_url,
 					'title'    => $this->action_label,
 					'callback' => true,
 					'class'    => 'fa fa-plus plusAdd'
-				);
+				];
 			}
 
-			foreach($this->filter_array['links'] as $index => $link) {
-				$linkButtons[] = array(
+			foreach ($this->filter_array['links'] as $index => $link) {
+				$linkButtons[] = [
 					'id'       => 'dynamic' . $index,
 					'href'     => $link['url'],
 					'title'    => $link['display'],
 					'callback' => true,
 					'class'    => $link['class']
-				);
+				];
 			}
 
 			html_filter_start_box($this->form_header, $linkButtons, true, $this->show_columns, $this->action_label);
@@ -459,7 +488,7 @@ class CactiTableFilter {
 		if (isset($this->filter_array['rows'])) {
 			print "<form id='" . $this->form_id . "' action='" . $this->form_action . "' method='" . $this->form_method . "'>";
 
-			foreach($this->filter_array['rows'] as $index => $row) {
+			foreach ($this->filter_array['rows'] as $index => $row) {
 				if ($index > 0 && !$text_appended) {
 					print "<div class='filterColumnButton' id='text'></div>";
 					$text_appended = true;
@@ -527,7 +556,7 @@ class CactiTableFilter {
 							print '<div class="filterColumn">';
 							print '<select id="predefined_timespan" class="' . $class . '">';
 
-							$this->timespans = array_merge(array(GT_CUSTOM => __('Custom')), $this->timespans);
+							$this->timespans = array_merge([GT_CUSTOM => __('Custom')], $this->timespans);
 
 							$start_val = 0;
 							$end_val   = cacti_sizeof($this->timespans);
@@ -569,7 +598,7 @@ class CactiTableFilter {
 								print '<i id="shift_left" class="shiftArrow fa fa-backward" title="' . __esc('Shift Time Backward') . '"></i>';
 								print '<select id="predefined_timeshift" title="' . __esc('Define Shifting Interval') . '" class="' . $class . '">';
 
-								$start_val = 1;
+								$start_val  = 1;
 								$end_val    = cacti_sizeof($this->timeshifts) + 1;
 
 								if (cacti_sizeof($this->timeshifts)) {
@@ -648,23 +677,23 @@ class CactiTableFilter {
 	}
 
 	private function make_function($buttonId, $buttonArray, $buttonAction) {
-		$func_nl = "\n\t\t\t";
-		$func_el = "\n\t\t";
+		$func_nl        = "\n\t\t\t";
+		$func_el        = "\n\t\t";
 		$buttonFunction = '';
 
 		if (isset($buttonArray['url'])) {
 			if (!isset($buttonArray['status'])) {
 				$buttonFunction .= PHP_EOL . "\t\tfunction {$buttonId}Function () {" . $func_nl .
-					"clearTimeout(myRefresh);" . $func_nl .
+					'clearTimeout(myRefresh);' . $func_nl .
 					"loadUrl({ url: '{$buttonArray['url']}' });" . $func_el .
-				"};" . PHP_EOL;
+				'};' . PHP_EOL;
 			} else {
 				$buttonFunction .= PHP_EOL . "\t\tfunction {$buttonId}Function () {" . $func_nl .
-					"clearTimeout(myRefresh);" . $func_nl .
+					'clearTimeout(myRefresh);' . $func_nl .
 					"$('#text').text('{$buttonArray['status']}');" . $func_nl .
 					"pulsate('#text');" . $func_nl .
 					"loadUrl({ url: '{$buttonArray['url']}', funcEnd: 'finishFinalize' });" . $func_el .
-				"};" . PHP_EOL;
+				'};' . PHP_EOL;
 			}
 		} else {
 			if (!isset($buttonArray['status'])) {
@@ -675,10 +704,10 @@ class CactiTableFilter {
 				}
 
 				$buttonFunction .= PHP_EOL . "\t\tfunction {$buttonId}Function () {" . $func_nl .
-					"clearTimeout(myRefresh);" . $func_nl .
-					$callbackFunction . ";" . $func_el .
-					"Pace.stop();" . $func_el .
-				"};" . PHP_EOL;
+					'clearTimeout(myRefresh);' . $func_nl .
+					$callbackFunction . ';' . $func_el .
+					'Pace.stop();' . $func_el .
+				'};' . PHP_EOL;
 			} else {
 				if (isset($buttonArray['callback'])) {
 					$callbackFunction = $buttonArray['callback'];
@@ -687,12 +716,12 @@ class CactiTableFilter {
 				}
 
 				$buttonFunction .= PHP_EOL . "\t\tfunction {$buttonId}Function () {" . $func_nl .
-					"clearTimeout(myRefresh);" . $func_nl .
+					'clearTimeout(myRefresh);' . $func_nl .
 					"$('#text').text('{$buttonArray['status']}');" . $func_nl .
 					"pulsate('#text');" . $func_nl .
-					$callbackFunction . ";" . $func_el .
-					"Pace.stop();" . $func_el .
-					"};" . PHP_EOL;
+					$callbackFunction . ';' . $func_el .
+					'Pace.stop();' . $func_el .
+					'};' . PHP_EOL;
 			}
 		}
 
@@ -738,8 +767,8 @@ class CactiTableFilter {
 		$globalAdd       = '';
 
 		if (isset($this->filter_array['rows'])) {
-			foreach($this->filter_array['rows'] as $row) {
-				foreach($row as $field_name => $field_array) {
+			foreach ($this->filter_array['rows'] as $row) {
+				foreach ($row as $field_name => $field_array) {
 					switch($field_array['method']) {
 						case 'content':
 						case 'validate':
@@ -774,33 +803,33 @@ class CactiTableFilter {
 							if (!isset($field_array['span_function'])) {
 								$readyAdd .= "$('#predefined_timespan').change( function() { applyGraphTimespan(); });" . PHP_EOL;
 							} else {
-								$readyAdd .= "$('#predefined_timespan').change( function() { " . $field_array['span_function'] . "; });" . PHP_EOL;
+								$readyAdd .= "$('#predefined_timespan').change( function() { " . $field_array['span_function'] . '; });' . PHP_EOL;
 							}
 
 							if (isset($field_array['shifter']) && $field_array['shifter'] === true) {
 								if (!isset($field_array['lshift_function'])) {
 									$readyAdd .= "$('#shift_left').click( function() { timeshiftGraphFilterLeft(); });" . PHP_EOL;
 								} else {
-									$readyAdd .= "$('#shift_left').click( function() { " . $field_array['lshift_function'] . "; });" . PHP_EOL;
+									$readyAdd .= "$('#shift_left').click( function() { " . $field_array['lshift_function'] . '; });' . PHP_EOL;
 								}
 
 								if (!isset($field_array['rshift_function'])) {
 									$readyAdd .= "$('#shift_right').click( function() { timeshiftGraphFilterRight(); });" . PHP_EOL;
 								} else {
-									$readyAdd .= "$('#shift_right').click( function() { " . $field_array['rshift_function'] . "; });" . PHP_EOL;
+									$readyAdd .= "$('#shift_right').click( function() { " . $field_array['rshift_function'] . '; });' . PHP_EOL;
 								}
 							}
 
 							if (!isset($field_array['refresh_function'])) {
 								$readyAdd .= "$('#tsrefresh').click( function() { refreshGraphTimespanFilter(); });" . PHP_EOL;
 							} else {
-								$readyAdd .= "$('#tsrefresh').click( function() { " . $field_array['refresh_function'] . "; });" . PHP_EOL;
+								$readyAdd .= "$('#tsrefresh').click( function() { " . $field_array['refresh_function'] . '; });' . PHP_EOL;
 							}
 
 							if (!isset($field_array['clear_function'])) {
 								$readyAdd .= "$('#tsclear').click( function() { clearGraphTimespanFilter(); });" . PHP_EOL;
 							} else {
-								$readyAdd .= "$('#tsclear').click( function() { " . $field_array['clear_function'] . "; });" . PHP_EOL;
+								$readyAdd .= "$('#tsclear').click( function() { " . $field_array['clear_function'] . '; });' . PHP_EOL;
 							}
 
 							break;
@@ -828,7 +857,6 @@ class CactiTableFilter {
 							break;
 						case 'submit':
 							break;
-
 						default:
 							break;
 					}
@@ -842,12 +870,12 @@ class CactiTableFilter {
 			if ($filterLength == 0) {
 				$applyFilter .= "';";
 			} else {
-				$applyFilter .= ";";
+				$applyFilter .= ';';
 			}
 		}
 
 		if (isset($this->filter_array['javascript']['ready']) && $this->filter_array['javascript']['ready'] != '') {
-			$readyAdd .= "\t\t" . trim($this->filter_array['javascript']['ready']) . PHP_EOL;;
+			$readyAdd .= "\t\t" . trim($this->filter_array['javascript']['ready']) . PHP_EOL;
 		}
 
 		if (isset($this->filter_array['javascript']['global']) && $this->filter_array['javascript']['global'] != '') {
@@ -861,7 +889,7 @@ class CactiTableFilter {
 		if ($clickChain != '') {
 			$clickReady = "$('" . $clickChain . "').click(function() {\n\t\t\t\t" .
 				"$changeFunction;\n\t\t\t" .
-			"});" . PHP_EOL;
+			'});' . PHP_EOL;
 		} else {
 			$clickReady = '';
 		}
@@ -869,7 +897,7 @@ class CactiTableFilter {
 		if ($changeChain != '') {
 			$changeReady = "$('" . $changeChain . "').change(function() {\n\t\t\t\t" .
 				"$changeFunction;\n\t\t\t" .
-			"});" . PHP_EOL;
+			'});' . PHP_EOL;
 		} else {
 			$changeReady = '';
 		}
@@ -925,16 +953,15 @@ class CactiTableFilter {
 	}
 
 	private function sanitize_filter_variables() {
-		$filters = array();
+		$filters = [];
 
 		if (isset($this->filter_array['rows'])) {
-			foreach($this->filter_array['rows'] as $row) {
-				foreach($row as $field_name => $field_array) {
+			foreach ($this->filter_array['rows'] as $row) {
+				foreach ($row as $field_name => $field_array) {
 					switch($field_array['method']) {
 						case 'timespan':
 						case 'button':
 						case 'submit':
-
 							break;
 						default:
 							$filters[$field_name]['filter'] = $field_array['filter'];
@@ -968,11 +995,11 @@ class CactiTableFilter {
 
 		if (isset($this->filter_array['sort'])) {
 			$filters['sort_column']['filter']     = FILTER_CALLBACK;
-			$filters['sort_column']['options']    = array('options' => 'sanitize_search_string');
+			$filters['sort_column']['options']    = ['options' => 'sanitize_search_string'];
 			$filters['sort_column']['default']    = $this->filter_array['sort']['sort_column'];
 
 			$filters['sort_direction']['filter']  = FILTER_CALLBACK;
-			$filters['sort_direction']['options'] = array('options' => 'sanitize_search_string');
+			$filters['sort_direction']['options'] = ['options' => 'sanitize_search_string'];
 			$filters['sort_direction']['default'] = $this->filter_array['sort']['sort_direction'];
 		}
 

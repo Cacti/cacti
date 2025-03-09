@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -67,7 +67,7 @@ function form_save() {
 
 	$xml_data = get_item_xml(get_nfilter_request_var('export_type'), get_nfilter_request_var('export_item_id'), (((isset_request_var('include_deps') ? get_nfilter_request_var('include_deps') : '') == '') ? false : true));
 
-	$info                 = array();
+	$info                 = [];
 	$info['name']         = get_nfilter_request_var('name');
 	$info['author']       = get_nfilter_request_var('author');
 	$info['homepage']     = get_nfilter_request_var('homepage');
@@ -91,7 +91,7 @@ function form_save() {
 
 		/* search xml files for scripts */
 		if (cacti_sizeof($files)) {
-			foreach($files as $file) {
+			foreach ($files as $file) {
 				if (strpos($file['file'], '.xml') !== false) {
 					$files = array_merge($files, find_dependent_files(file_get_contents($file['file'])));
 				}
@@ -104,14 +104,18 @@ function form_save() {
 		print __('WARNING: Export Errors Encountered. Refresh Browser Window for Details!') . "\n";
 		print $xml_data;
 		bottom_footer();
+
 		exit;
 	}
 
 	if ($export_errors || !$success) {
 		raise_message('package_error', __('There were errors packaging your Templates.  Errors Follow. ') . str_replace("\n", '<br>', $debug), MESSAGE_LEVEL_ERROR);
 		header('Location: package.php');
+
 		exit;
-	} elseif ($package_file != '') {
+	}
+
+	if ($package_file != '') {
 		header('Content-Type: application/gzip');
 		header('Content-Disposition: attachment; filename="' . basename($package_file) . '"');
 		header('Content-Length: ' . filesize($package_file));
@@ -120,6 +124,7 @@ function form_save() {
 		header('Expires: 0');
 		readfile($package_file);
 		unlink($package_file);
+
 		exit;
 	}
 }
@@ -159,10 +164,14 @@ function export() {
 					<td>
 						<select id='export_type'>
 							<?php
-							foreach($export_types as $key => $array) {
-								print "<option value='$key'"; if (get_nfilter_request_var('export_type') == $key) { print ' selected'; } print '>' . html_escape($array['name']) . "</option>";
+							foreach ($export_types as $key => $array) {
+								print "<option value='$key'";
+
+								if (get_nfilter_request_var('export_type') == $key) {
+									print ' selected';
+								} print '>' . html_escape($array['name']) . '</option>';
 							}
-							?>
+	?>
 						</select>
 					</td>
 				</tr>
@@ -174,17 +183,19 @@ function export() {
 	html_end_box();
 
 	$info = check_get_author_info();
+
 	if ($info === false) {
 		exit;
 	}
 
 	// Let's get any saved package details from the last time the template was packaged
-	$data = array();
+	$data = [];
 	$hash = get_export_hash(get_nfilter_request_var('export_type'), get_nfilter_request_var('export_item_id'));
 
 	// Two methods, one with SQLite and one without
 
-	$data = array();
+	$data = [];
+
 	if (class_exists('SQLite3')) {
 		$data = get_packager_metadata($hash);
 	}
@@ -212,7 +223,7 @@ function export() {
 				$detail = db_fetch_row_prepared('SELECT *
 					FROM host_template
 					WHERE id = ?',
-					array(get_filter_request_var('export_item_id')));
+					[get_filter_request_var('export_item_id')]);
 			}
 
 			break;
@@ -228,7 +239,7 @@ function export() {
 				$detail = db_fetch_row_prepared('SELECT *
 					FROM graph_templates
 					WHERE id = ?',
-					array(get_filter_request_var('export_item_id')));
+					[get_filter_request_var('export_item_id')]);
 			}
 
 			break;
@@ -244,7 +255,7 @@ function export() {
 				$detail = db_fetch_row_prepared('SELECT id, name
 					FROM snmp_query
 					WHERE id = ?',
-					array(get_filter_request_var('export_item_id')));
+					[get_filter_request_var('export_item_id')]);
 			}
 
 			break;
@@ -254,18 +265,21 @@ function export() {
 		switch(get_nfilter_request_var('export_type')) {
 			case 'host_template':
 				$data['description'] = __('%s Device Package', $detail['name']);
+
 				break;
 			case 'graph_template':
 				$data['description'] = __('%s Graph Template Package', $detail['name']);
+
 				break;
 			case 'data_query':
 				$data['description'] = __('%s Data Query Package', $detail['name']);
+
 				break;
 		}
 
-		$meta_columns = array('version', 'class', 'author', 'email', 'tags', 'copyright', 'installation');
+		$meta_columns = ['version', 'class', 'author', 'email', 'tags', 'copyright', 'installation'];
 
-		foreach($meta_columns as $m) {
+		foreach ($meta_columns as $m) {
 			if (isset($detail[$m]) && $detail[$m] != '') {
 				$data[$m] = $detail[$m];
 			} else {
@@ -288,122 +302,122 @@ function export() {
 
 	html_start_box(__('Available Templates [%s]', $export_types[get_nfilter_request_var('export_type')]['name']), '100%', '', '3', 'center', '');
 
-	$package_form = array(
-		'spacer0' => array(
-			'method' => 'spacer',
+	$package_form = [
+		'spacer0' => [
+			'method'        => 'spacer',
 			'friendly_name' => __('Available Templates'),
-		),
-		'export_item_id' => array(
-			'method' => 'drop_sql',
+		],
+		'export_item_id' => [
+			'method'        => 'drop_sql',
 			'friendly_name' => __('%s to Export', $export_types[get_nfilter_request_var('export_type')]['name']),
-			'description' => __('Choose the exact items to export in the Package.'),
-			'value' => (isset_request_var('export_item_id') ? get_filter_request_var('export_item_id'):'|arg1:export_item_id|'),
-			'sql' => $export_types[get_nfilter_request_var('export_type')]['dropdown_sql']
-		),
-		'include_deps' => array(
-			'method' => 'checkbox',
+			'description'   => __('Choose the exact items to export in the Package.'),
+			'value'         => (isset_request_var('export_item_id') ? get_filter_request_var('export_item_id'):'|arg1:export_item_id|'),
+			'sql'           => $export_types[get_nfilter_request_var('export_type')]['dropdown_sql']
+		],
+		'include_deps' => [
+			'method'        => 'checkbox',
 			'friendly_name' => __('Include Dependencies'),
-			'description' => __('Some templates rely on other items in Cacti to function properly. It is highly recommended that you select this box or the resulting import may fail.'),
-			'value' => 'on',
-			'sql' => $export_types[get_nfilter_request_var('export_type')]['dropdown_sql']
-		),
-		'spacer1' => array(
-			'method' => 'spacer',
+			'description'   => __('Some templates rely on other items in Cacti to function properly. It is highly recommended that you select this box or the resulting import may fail.'),
+			'value'         => 'on',
+			'sql'           => $export_types[get_nfilter_request_var('export_type')]['dropdown_sql']
+		],
+		'spacer1' => [
+			'method'        => 'spacer',
 			'friendly_name' => __('Package Information'),
-		),
-		'description' => array(
-			'method' => 'textbox',
+		],
+		'description' => [
+			'method'        => 'textbox',
 			'friendly_name' => __('Description'),
-			'description' => __('The Package Description.'),
-			'value' => (isset($info['description']) ? $info['description']:read_config_option('package_description', true)),
-			'max_length' => '255',
-			'size' => '80'
-		),
-		'copyright' => array(
-			'method' => 'drop_array',
+			'description'   => __('The Package Description.'),
+			'value'         => (isset($info['description']) ? $info['description']:read_config_option('package_description', true)),
+			'max_length'    => '255',
+			'size'          => '80'
+		],
+		'copyright' => [
+			'method'        => 'drop_array',
 			'friendly_name' => __('Copyright'),
-			'description' => __('The license type for this package.'),
-			'value' => (isset($info['copyright']) ? $info['copyright']:'GNU General Public License'),
-			'array' => array(
+			'description'   => __('The license type for this package.'),
+			'value'         => (isset($info['copyright']) ? $info['copyright']:'GNU General Public License'),
+			'array'         => [
 				'Apache License 2.0'                 => __('Apache License 2.0'),
 				'Creative Commons'                   => __('Creative Commons'),
 				'GNU General Public License'         => __('GNU General Public License'),
 				'MIT License'                        => __('MIT License'),
 				'Eclipse Public License version 2.0' => __('Eclipse Public License version 2.0'),
-			),
+			],
 			'default' => 'GNU General Public License'
-		),
-		'version' => array(
-			'method' => 'textbox',
+		],
+		'version' => [
+			'method'        => 'textbox',
 			'friendly_name' => __('Version'),
-			'description' => __('The version number to publish for this Package.'),
-			'value' => (isset($info['version']) ? $info['version']:read_config_option('package_version', true)),
-			'max_length' => '10',
-			'size' => '10'
-		),
-		'class' => array(
-			'method' => 'drop_array',
+			'description'   => __('The version number to publish for this Package.'),
+			'value'         => (isset($info['version']) ? $info['version']:read_config_option('package_version', true)),
+			'max_length'    => '10',
+			'size'          => '10'
+		],
+		'class' => [
+			'method'        => 'drop_array',
 			'friendly_name' => __('Class'),
-			'description' => __('The Classification of the Package.'),
-			'value' => (isset($info['class']) ? $info['class']:read_config_option('package_class', true)),
-			'array' => $classes,
-			'default' => 'unassigned'
-		),
-		'tags' => array(
-			'method' => 'textarea',
+			'description'   => __('The Classification of the Package.'),
+			'value'         => (isset($info['class']) ? $info['class']:read_config_option('package_class', true)),
+			'array'         => $classes,
+			'default'       => 'unassigned'
+		],
+		'tags' => [
+			'method'        => 'textarea',
 			'friendly_name' => __('Tags'),
-			'description' => __('Assign various searchable attributes to the Package.'),
-			'value' => (isset($info['tags']) ? $info['tags']:read_config_option('package_tags', true)),
+			'description'   => __('Assign various searchable attributes to the Package.'),
+			'value'         => (isset($info['tags']) ? $info['tags']:read_config_option('package_tags', true)),
 			'textarea_rows' => '2',
 			'textarea_cols' => '80'
-		),
-		'installation' => array(
-			'method' => 'textarea',
+		],
+		'installation' => [
+			'method'        => 'textarea',
 			'friendly_name' => __('Installation Instructions'),
-			'description' => __('Some Packages require additional changes outside of Cacti\'s scope such as setting up an SNMP Agent Extension on the Devices to be monitored.  You should add those instructions here..'),
-			'value' => (isset($info['installation']) ? $info['installation']:read_config_option('package_installation', true)),
+			'description'   => __('Some Packages require additional changes outside of Cacti\'s scope such as setting up an SNMP Agent Extension on the Devices to be monitored.  You should add those instructions here..'),
+			'value'         => (isset($info['installation']) ? $info['installation']:read_config_option('package_installation', true)),
 			'textarea_rows' => '5',
 			'textarea_cols' => '80'
-		),
-		'spacer2' => array(
-			'method' => 'spacer',
+		],
+		'spacer2' => [
+			'method'        => 'spacer',
 			'friendly_name' => __('Author Information'),
-		),
-		'author' => array(
-			'method' => 'other',
+		],
+		'author' => [
+			'method'        => 'other',
 			'friendly_name' => __('Author Name'),
-			'description' => __('The Registered Authors Name.'),
-			'value' => $info['author'],
-			'max_length' => '40',
-			'size' => '40'
-		),
-		'homepage' => array(
-			'method' => 'other',
+			'description'   => __('The Registered Authors Name.'),
+			'value'         => $info['author'],
+			'max_length'    => '40',
+			'size'          => '40'
+		],
+		'homepage' => [
+			'method'        => 'other',
 			'friendly_name' => __('Homepage'),
-			'description' => __('The Registered Authors Home Page.'),
-			'value' => $info['homepage'],
-			'max_length' => '60',
-			'size' => '60'
-		),
-		'email' => array(
-			'method' => 'other',
+			'description'   => __('The Registered Authors Home Page.'),
+			'value'         => $info['homepage'],
+			'max_length'    => '60',
+			'size'          => '60'
+		],
+		'email' => [
+			'method'        => 'other',
 			'friendly_name' => __('Email Address'),
-			'description' => __('The Registered Authors Email Address.'),
-			'value' => $info['email'],
-			'max_length' => '60',
-			'size' => '60'
-		),
-		'export_type' => array(
+			'description'   => __('The Registered Authors Email Address.'),
+			'value'         => $info['email'],
+			'max_length'    => '60',
+			'size'          => '60'
+		],
+		'export_type' => [
 			'method' => 'hidden',
-			'value' => get_nfilter_request_var('export_type')
-		)
-	);
+			'value'  => get_nfilter_request_var('export_type')
+		]
+	];
 
 	draw_edit_form(
-		array(
-			'config' => array('no_form_tag' => true),
+		[
+			'config' => ['no_form_tag' => true],
 			'fields' => $package_form
-		)
+		]
 	);
 
 	html_end_box();
@@ -482,4 +496,3 @@ function export() {
 
 	html_end_box();
 }
-
