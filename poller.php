@@ -459,7 +459,7 @@ $devices = db_fetch_cell_prepared('SELECT COUNT(DISTINCT host_id)
 /**
  * Update poller data source statistics in the poller table
  */
-if (db_column_exists('poller', 'device')) {
+if (db_column_exists('poller', 'devices')) {
 	db_execute_prepared('INSERT INTO poller (id, devices, snmp, script, server, last_status, status)
 		VALUES (?, ?, ?, ?, ?, NOW(), 1)
 		ON DUPLICATE KEY UPDATE
