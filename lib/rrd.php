@@ -721,11 +721,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = n
 	/* ok, if that passes lets check to make sure an rra does not already
 	exist, the last thing we want to do is overright data! */
 	if ($show_source != true) {
-		if (read_config_option('storage_location')) {
-			if (rrdtool_execute("file_exists $data_source_path", true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER')) {
-				return -1;
-			}
-		} elseif (file_exists($data_source_path)) {
+		if (!rrdtool_file_exists($data_source_path, $rrdtool_pipe)) {
 			return -1;
 		}
 	}
@@ -929,12 +925,7 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = null) {
 		$create_rrd_file = false;
 
 		if (is_array($rrd_fields['times']) && cacti_sizeof($rrd_fields['times'])) {
-			/* create the rrd if one does not already exist */
-			if (read_config_option('storage_location') > 0) {
-				$file_exists = rrdtool_execute("file_exists $rrd_path" , true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER');
-			} else {
-				$file_exists = file_exists($rrd_path);
-			}
+			$file_exists = rrdtool_file_exists($rrd_path, $rrdtool_pipe);
 
 			ksort($rrd_fields['times']);
 
@@ -1821,6 +1812,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$data_source_path = $realtimeCachePath . '/user_' . hash('sha256',session_id()) . '_' . $graph_item['local_data_id'] . '.rrd';
 				} else {
 					$data_source_path = get_data_source_path($graph_item['local_data_id'], true);
+				}
+
+				if (!rrdtool_file_exists($data_source_path, $rrdtool_pipe)) {
+					return false;
 				}
 
 				/* FOR WIN32: Escape all colon for drive letters (ex. D\:/path/to/rra) */
@@ -3094,6 +3089,28 @@ function rrdtool_function_get_resstep($local_data_ids, $graph_start, $graph_end,
 }
 
 /**
+ * rrdtool_file_exists - given a data source path check either
+ *   the local file system of the rrdtool proxy to see if the
+ *   data source path exists.
+ *
+ * @param  string   The data source rrdfile path
+ * @param  ?resource The rrdtool pipe if available
+ *
+ * @return (array) an array containing all data from rrdtool info command
+ */
+function rrdtool_file_exists($data_source_path, $rrdtool_pipe = null) {
+	if (read_config_option('storage_location')) {
+		if (!rrdtool_execute("file_exists $data_source_path", true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER')) {
+			return false;
+		}
+	} elseif (!file_exists($data_source_path)) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
  * rrdtool_function_info - given a data source id, return rrdtool info array
  *
  * @param  (int)      $local_data_id - data source id
@@ -3105,11 +3122,7 @@ function rrdtool_function_info($local_data_id, $rrdtool_pipe = null) {
 	/* Get the path to rrdtool file */
 	$data_source_path = get_data_source_path($local_data_id, true);
 
-	if (read_config_option('storage_location')) {
-		if (!rrdtool_execute("file_exists $data_source_path", true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'POLLER')) {
-			return false;
-		}
-	} elseif (!file_exists($data_source_path)) {
+	if (!rrdtool_file_exists($data_source_path, $rrdtool_pipe)) {
 		return false;
 	}
 

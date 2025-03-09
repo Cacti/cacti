@@ -3526,7 +3526,11 @@ function get_rrd_cfs($local_data_id) {
 
 	$rrdfile = get_data_source_path($local_data_id, true);
 
-	$output = rrdtool_execute("info $rrdfile", false, RRDTOOL_OUTPUT_STDOUT);
+	if (rrdtool_file_exists($rrdfile)) {
+		$output = rrdtool_execute("info $rrdfile", false, RRDTOOL_OUTPUT_STDOUT);
+	} else {
+		$output = '';
+	}
 
 	/* search for
 	 * 		rra[0].cf = 'LAST'

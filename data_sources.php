@@ -1223,7 +1223,7 @@ function ds_edit() {
 
 		$rrd_info = rrdtool_function_info(get_request_var('id'));
 
-		if (cacti_sizeof($rrd_info['rra'])) {
+		if (cacti_sizeof($rrd_info) && cacti_sizeof($rrd_info['rra'])) {
 			$diff = rrdtool_cacti_compare(get_request_var('id'), $rrd_info);
 
 			rrdtool_info2html($rrd_info, $diff);

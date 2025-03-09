@@ -1205,7 +1205,6 @@ function display_matching_trees(string $rule_id, $rule_type, array $item, string
 		$sql_tables
 		$sql_where AND ($sql_filter)";
 
-	cacti_log($rows_query);
 	$total_rows = cacti_sizeof(db_fetch_assoc($rows_query, false));
 
 	$sortby = get_request_var('sort_column');
