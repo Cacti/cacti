@@ -729,7 +729,7 @@ function display_matching_graphs(array $rule, string $rule_type, string $url): v
  * Generates the SQL query to retrieve new graphs based on the provided rule.
  *
  * @param array $rule An associative array containing the rule parameters for the SQL query.
- * 
+ *
  * @return array|false Returns an array of new graphs if successful, or false on failure.
  */
 function automation_get_new_graphs_sql(array $rule): array|false {
@@ -1795,7 +1795,7 @@ function duplicate_automation_tree_rules(int $_id, string $_title): void {
  *
  * @param array $rule An associative array containing the rule details, including 'snmp_query_id'.
  * @param string $filter The filter string to be used in the LIKE clause. If null or empty, no HAVING clause is generated.
- * 
+ *
  * @return string The generated SQL HAVING clause if the filter is not empty, otherwise null.
  */
 function build_graph_object_sql_having(array $rule, string $filter): string {
@@ -1824,7 +1824,7 @@ function build_graph_object_sql_having(array $rule, string $filter): string {
 /**
  * Builds a SQL query string for retrieving data based on the provided rule.
  *
- * @param array $rule An associative array containing the rule parameters. 
+ * @param array $rule An associative array containing the rule parameters.
  *
  * @return string The constructed SQL query string.
  */
@@ -2129,7 +2129,7 @@ function get_matching_graphs(array $rule, string $rule_type, string $sql_where =
  * Retrieves the graphs created based on the specified rule.
  *
  * @param array $rule An associative array containing the criteria for selecting the created graphs.
- * 
+ *
  * @return array An array of graphs that match the specified rule.
  */
 function get_created_graphs(array $rule): array {
@@ -3768,7 +3768,7 @@ function automation_get_valid_ip(string $range): string|false {
  * Retrieves a valid subnet CIDR from the given range.
  *
  * @param string $range The IP range to validate and extract the subnet CIDR from.
- * @return array|false Returns an array containing the valid subnet CIDR if found, 
+ * @return array|false Returns an array containing the valid subnet CIDR if found,
  *                     otherwise returns false if the range is invalid.
  */
 function automation_get_valid_subnet_cidr(string $range): array|false {
@@ -3956,7 +3956,7 @@ function automation_get_network_info(string $range): array|false {
  * @param int $range The range value used to calculate the start time.
  * @return int|false The calculated start time.
  */
-function automation_calculate_start(int $range): int|false {
+function automation_calculate_start(string $range): string|false {
 	$detail = automation_get_network_info($range);
 
 	if ($detail) {
@@ -5023,7 +5023,7 @@ function automation_device_rule_export(array $template_ids): array {
  *
  * @param array $tree_data An associative array containing the tree data.
  * @param array $branch_data Data related to the branches of the tree.
- * 
+ *
  * @return array The resulting tree structure as an associative array.
  */
 function automation_tree_rule_create_tree(array $tree_data, array $branch_data): array {
