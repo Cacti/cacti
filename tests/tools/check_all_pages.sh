@@ -37,7 +37,7 @@ echo "---------------------------------------------------------------------"
 # ------------------------------------------------------------------------------
 # This script supports both http:// and https://
 # ------------------------------------------------------------------------------
-WEBHOST="http://localhost/cacti";
+WEBHOST="https://localhost/cacti";
 WAUSER="admin";
 WAPASS="admin";
 
@@ -300,39 +300,39 @@ fi
 set_cacti_admin_password() {
 	echo "NOTE: Setting Cacti admin password and unsetting forced password change"
 
-	$mysql "$MYSQL_AUTH_USR" -e "UPDATE user_auth SET password=MD5('$WAPASS') WHERE id = 1 ;" "$DBNAME"
-	$mysql "$MYSQL_AUTH_USR" -e "UPDATE user_auth SET password_change='', must_change_password='' WHERE id = 1 ;" "$DBNAME"
-	$mysql "$MYSQL_AUTH_USR" -e "REPLACE INTO settings (name, value) VALUES ('secpass_forceold', '') ;" "$DBNAME"
+	$mysql $MYSQL_AUTH_USR -e "UPDATE user_auth SET password=MD5('$WAPASS') WHERE id = 1 ;" "$DBNAME"
+	$mysql $MYSQL_AUTH_USR -e "UPDATE user_auth SET password_change='', must_change_password='' WHERE id = 1 ;" "$DBNAME"
+	$mysql $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('secpass_forceold', '') ;" "$DBNAME"
 }
 
 enable_log_validation() {
 	echo "NOTE: Setting Cacti to log validation issues"
 
-	$mysql "$MYSQL_AUTH_USR" -e "REPLACE INTO settings (name, value) VALUES ('log_validation','on') ;" "$DBNAME"
+	$mysql $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_validation','on') ;" "$DBNAME"
 }
 
 set_log_level_none() {
 	echo "NOTE: Setting Cacti log verbosity to none"
 
-	$mysql "$MYSQL_AUTH_USR" -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '1') ;" "$DBNAME"
+	$mysql $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '1') ;" "$DBNAME"
 }
 
 set_log_level_normal() {
 	echo "NOTE: Setting Cacti log verbosity to low"
 
-	$mysql "$MYSQL_AUTH_USR" -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '2') ;" "$DBNAME"
+	$mysql $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '2') ;" "$DBNAME"
 }
 
 set_log_level_debug() {
 	echo "NOTE: Setting Cacti log verbosity to DEBUG"
 
-	$mysql "$MYSQL_AUTH_USR" -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '6') ;" "$DBNAME"
+	$mysql $MYSQL_AUTH_USR -e "REPLACE INTO settings (name, value) VALUES ('log_verbosity', '6') ;" "$DBNAME"
 }
 
 set_stderr_logging() {
 	echo "NOTE: Setting Cacti standard error log location"
 
-	$mysql "$MYSQL_AUTH_USR" -e "REPLACE INTO cacti.settings (name, value) VALUES ('path_stderrlog', '${CACTI_ERRLOG}');" "$DBNAME"
+	$mysql $MYSQL_AUTH_USR -e "REPLACE INTO cacti.settings (name, value) VALUES ('path_stderrlog', '${CACTI_ERRLOG}');" "$DBNAME"
 }
 
 allow_index_following() {
@@ -392,7 +392,6 @@ tmpFile1=$(mktemp)
 tmpFile2=$(mktemp)
 logFile1=$(mktemp)
 cookieFile=$(mktemp)
-loadSaveCookie="--load-cookies \"${cookieFile}\" --keep-session-cookies --save-cookies \"${cookieFile}\""
 started=1
 
 # ------------------------------------------------------------------------------
@@ -417,7 +416,7 @@ magic=$(grep "var csrfMagicToken='" "${tmpFile1}" | sed "s/.*var csrfMagicToken=
 postData="action=login&login_username=${WAUSER}&login_password=${WAPASS}&__csrf_magic=${magic}"
 
 echo "NOTE: Logging into the Cacti User Interface"
-wget -q --no-check-certificate $loadSaveCookie --post-data="${postData}" --output-document="${tmpFile2}" "${WEBHOST}/index.php"
+wget -q --no-check-certificate --load-cookies=${cookieFile} --keep-session-cookies --save-cookies=${cookieFile} --post-data="${postData}" --output-document="${tmpFile2}" "${WEBHOST}/index.php"
 
 # ------------------------------------------------------------------------------
 # Now loop over all the available links (but don't log out and don't delete or
@@ -425,7 +424,7 @@ wget -q --no-check-certificate $loadSaveCookie --post-data="${postData}" --outpu
 # ------------------------------------------------------------------------------
 echo "NOTE: Recursively Checking all Base and Enabled Plugin Pages"
 echo "NOTE: This will take several minutes!!!"
-wget --no-check-certificate $loadSaveCookie --output-file="${logFile1}" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable)" --recursive --level=0 --execute=robots=off "${WEBHOST}/index.php"
+wget --no-check-certificate --load-cookies=${cookieFile} --keep-session-cookies --save-cookies=${cookieFile} --output-file="${logFile1}" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable)" --recursive --level=0 --execute=robots=off "${WEBHOST}/index.php"
 error=$?
 
 if [ $error -eq 8 ]; then
