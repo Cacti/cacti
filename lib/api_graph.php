@@ -190,7 +190,9 @@ function api_graph_remove_aggregate_items($local_graph_ids) {
 
 		if (cacti_sizeof($aggregate_graphs)) {
 			foreach ($aggregate_graphs as $ag) {
-				api_aggregate_disassociate($ag, $lgid);
+				$lgids = array($lgid);
+
+				api_aggregate_disassociate($ag, $lgids);
 			}
 		}
 	}
