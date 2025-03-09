@@ -1832,11 +1832,11 @@ function form_actions() {
 							'items' => array(
 								0 => array(
 									'radio_value' => '2',
-									'radio_caption' => __n('Delete the Data Sources referenced by this Graph', 'Delete the Data Sources reference by these Graphs.', cacti_sizeof($iarray))
+									'radio_caption' => __n('Delete the Data Sources referenced by this Graph', 'Delete the Data Sources reference by these Graphs', cacti_sizeof($iarray))
 								),
 								1 => array(
 									'radio_value' => '1',
-									'radio_caption' => __n('Leave the Data Source untouched.', 'Leave the Data Sources untouched', cacti_sizeof($data_sources))
+									'radio_caption' => __n('Leave the Data Source Untouched', 'Leave the Data Sources Untouched', cacti_sizeof($data_sources))
 								)
 							)
 						)

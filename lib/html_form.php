@@ -1610,6 +1610,8 @@ function form_continue_confirmation($form_data, $plugin_hook = '', $save = array
 			/* two form overrides */
 			if (isset($field_array['title'])) {
 				$form_array[$field_name]['friendly_name'] = $field_array['title'];
+			} elseif(!isset($form_array[$field_name]['friendly_name'])) {
+				$form_array[$field_name]['friendly_name'] = '';
 			}
 
 			if (isset($field_array['width'])) {
