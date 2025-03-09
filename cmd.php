@@ -388,12 +388,21 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 
 				$errors = cacti_sizeof($error_ds);
 
-				db_execute_prepared('UPDATE host
-					SET polling_time = ?, current_errors = ?
-					WHERE id = ?
-					AND deleted = ""',
-					[($host_end - $host_start), $errors, $last_host]
-				);
+				if (db_column_exists('host', 'current_errors')) {
+					db_execute_prepared('UPDATE host
+						SET polling_time = ?, current_errors = ?
+						WHERE id = ?
+						AND deleted = ""',
+						[($host_end - $host_start), $errors, $last_host]
+					);
+				} else {
+					db_execute_prepared('UPDATE host
+						SET polling_time = ?
+						WHERE id = ?
+						AND deleted = ""',
+						[($host_end - $host_start), $last_host]
+					);
+				}
 
 				cacti_log(sprintf('Device[%d] Time[%3.2f] Items[%d] Errors[%d]', $last_host, $host_end - $host_start, $itemcnt, $errors), $print_data_to_stdout, 'POLLER', $hmedium);
 
@@ -492,12 +501,21 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 
 	$errors = cacti_sizeof($error_ds);
 
-	db_execute_prepared('UPDATE host
-		SET polling_time = ?, current_errors = ?
-		WHERE id = ?
-		AND deleted = ""',
-		[($host_end - $host_start), $errors, $host_id]
-	);
+	if (db_column_exists('host', 'current_errors')) {
+		db_execute_prepared('UPDATE host
+			SET polling_time = ?, current_errors = ?
+			WHERE id = ?
+			AND deleted = ""',
+			[($host_end - $host_start), $errors, $host_id]
+		);
+	} else {
+		db_execute_prepared('UPDATE host
+			SET polling_time = ?
+			WHERE id = ?
+			AND deleted = ""',
+			[($host_end - $host_start), $host_id]
+		);
+	}
 
 	cacti_log(sprintf('Device[%d] Time[%3.2f] Items[%d] Errors[%d]', $last_host, $host_end - $host_start, $itemcnt, $errors), $print_data_to_stdout, 'POLLER', $hmedium);
 
@@ -666,7 +684,7 @@ function open_snmp_session($host_id, &$item) {
 			$item['snmp_engine_id'],
 			$item['snmp_port'],
 			$item['snmp_timeout'],
-			$item['snmp_retries'],
+			$item['snmp_retries'] ?? read_config_option('ping_retries'),
 			$item['max_oids']
 		);
 

@@ -459,16 +459,28 @@ $devices = db_fetch_cell_prepared('SELECT COUNT(DISTINCT host_id)
 /**
  * Update poller data source statistics in the poller table
  */
-db_execute_prepared('INSERT INTO poller (id, devices, snmp, script, server, last_status, status)
-	VALUES (?, ?, ?, ?, ?, NOW(), 1)
-	ON DUPLICATE KEY UPDATE
-		devices=VALUES(devices),
-		snmp=VALUES(snmp),
-		script=VALUES(script),
-		server=VALUES(server),
-		last_status=VALUES(last_status),
-		status=VALUES(status)',
-	[$poller_id, $devices, $snmp, $script, $server], true, $poller_db_cnn_id);
+if (db_column_exists('poller', 'device')) {
+	db_execute_prepared('INSERT INTO poller (id, devices, snmp, script, server, last_status, status)
+		VALUES (?, ?, ?, ?, ?, NOW(), 1)
+		ON DUPLICATE KEY UPDATE
+			devices=VALUES(devices),
+			snmp=VALUES(snmp),
+			script=VALUES(script),
+			server=VALUES(server),
+			last_status=VALUES(last_status),
+			status=VALUES(status)',
+		[$poller_id, $devices, $snmp, $script, $server], true, $poller_db_cnn_id);
+} else {
+	db_execute_prepared('INSERT INTO poller (id, snmp, script, server, last_status, status)
+		VALUES (?, ?, ?, ?, NOW(), 1)
+		ON DUPLICATE KEY UPDATE
+			snmp=VALUES(snmp),
+			script=VALUES(script),
+			server=VALUES(server),
+			last_status=VALUES(last_status),
+			status=VALUES(status)',
+		[$poller_id, $devices, $snmp, $script, $server], true, $poller_db_cnn_id);
+}
 
 /**
  * Freshen the field mappings in cases where they

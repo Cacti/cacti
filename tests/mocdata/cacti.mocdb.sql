@@ -3717,7 +3717,7 @@ CREATE TABLE `user_auth` (
 
 LOCK TABLES `user_auth` WRITE;
 /*!40000 ALTER TABLE `user_auth` DISABLE KEYS */;
-INSERT INTO `user_auth` VALUES (1,'admin','$2y$10$WoPnbfzJA30IDdL9pdrUduJNV7cy7kMvU6C7TcTlLv6GvC5823DGC',0,'Administrator','','','on','on','on','on','on',2,1,1,1,1,'on',-1,-1,'-1','',0,0,0,'',''),(3,'guest','43e9a4ab75570f5b',0,'Guest Account','','on','on','on','on','on','3',1,1,1,1,1,'',-1,-1,'-1','',0,0,0,'','');
+INSERT INTO `user_auth` VALUES (1,'admin','',0,'Administrator','','','on','on','on','on','on',2,1,1,1,1,'on',-1,-1,'-1','',0,0,0,'',''),(3,'guest','43e9a4ab75570f5b',0,'Guest Account','','on','on','on','on','on','3',1,1,1,1,1,'',-1,-1,'-1','',0,0,0,'','');
 /*!40000 ALTER TABLE `user_auth` ENABLE KEYS */;
 UNLOCK TABLES;
 
