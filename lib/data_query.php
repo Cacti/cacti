@@ -1303,11 +1303,12 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 						if ($field_name == 'ifOperStatus' || $field_name == 'ifAdminStatus') {
 							$value = match (true) {
-								preg_match('/^(down|2)/i', $value)       => 'Down',
-								preg_match('/^(up|1)/i', $value)         => 'Up',
-								preg_match('/^(notpresent|6)/i', $value) => 'notPresent',
-								default                                  => 'Testing',
+								preg_match('/^(down|2)/i', $value) > 0 => 'Down',
+								preg_match('/^(up|1)/i', $value)   > 0 => 'Up',
+								preg_match('/^(not|6)/i', $value)  > 0 => 'notPresent',
+								default                                => 'Testing',
 							};
+
 							$mode = 'value';
 						} elseif (preg_match('/VALUE\/REGEXP:(.*)/', $field_array['source'], $matches)) {
 							$modified_value = preg_replace('/' . $matches[1] . '/', '\\1', $value);
