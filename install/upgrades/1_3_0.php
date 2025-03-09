@@ -410,7 +410,7 @@ function upgrade_to_1_3_0() {
 	$data['columns'][]  = ['name' => 'author', 'type' => 'varchar(40)', 'NULL' => false, 'default' => ''];
 	$data['columns'][]  = ['name' => 'homepage', 'type' => 'varchar(128)', 'NULL' => false, 'default' => ''];
 	$data['columns'][]  = ['name' => 'email_address', 'type' => 'varchar(60)', 'NULL' => false, 'default' => ''];
-	$data['columns'][]  = ['name' => 'public_key', 'type' => 'varchar(1024)', 'NULL' => true, 'default' => ''];
+	$data['columns'][]  = ['name' => 'public_key', 'type' => 'varchar(768)', 'NULL' => true, 'default' => ''];
 	$data['primary']    = 'id';
 	$data['keys'][]     = ['name' => 'md5sum', 'columns' => ['md5sum'], 'unique' => true];
 	$data['type']       = 'InnoDB';
