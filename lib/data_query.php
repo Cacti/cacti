@@ -1615,7 +1615,8 @@ function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite
 
 					if (!isset($data_query_rewrite_indexes_cache[$hash])) {
 						$data_query_rewrite_indexes_cache[$hash] = array();
-						$iv                                      = db_qstr($iv);
+
+						$iv = db_qstr($iv);
 
 						$field_values = db_fetch_assoc_prepared('SELECT snmp_index, field_value
 							FROM host_snmp_cache

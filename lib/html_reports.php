@@ -230,8 +230,7 @@ function reports_item_dnd() {
 				$item_id = str_replace('line', '', $item);
 				input_validate_input_number($item_id, 'item_id');
 
-				db_execute_prepared(
-					'UPDATE reports_items
+				db_execute_prepared('UPDATE reports_items
                     SET sequence = ?
                     WHERE id = ?
 					AND report_id = ?',
@@ -446,8 +445,7 @@ function reports_form_actions() {
 					}
 				} elseif (get_nfilter_request_var('drp_action') == REPORTS_DISABLE) { // disable
 					if ($type == 'reports') {
-						db_execute_prepared(
-							'UPDATE reports
+						db_execute_prepared('UPDATE reports
 							SET enabled=""
 							WHERE id = ?',
 							array($report_id)

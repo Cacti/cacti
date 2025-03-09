@@ -125,8 +125,7 @@ function aggregate_form_save() {
 
 	/* do a quick comparison to see if anything changed */
 	if ($is_new == false) {
-		$old = db_fetch_row_prepared(
-			'SELECT *
+		$old = db_fetch_row_prepared('SELECT *
 			FROM aggregate_graph_templates
 			WHERE id = ?',
 			array($save1['id'])
@@ -150,8 +149,7 @@ function aggregate_form_save() {
 		$id = sql_save($save1, 'aggregate_graph_templates', 'id');
 
 		/* update children of the template */
-		db_execute_prepared(
-			"UPDATE aggregate_graphs
+		db_execute_prepared("UPDATE aggregate_graphs
 			SET gprint_prefix = ?, gprint_format = ?, graph_type = ?, total = ?, total_prefix = ?, order_type = ?
 			WHERE aggregate_template_id = ?
 			AND template_propogation='on'",
@@ -183,8 +181,7 @@ function aggregate_form_save() {
 	 * rebuild existing graphs if needed. */
 	$params_changed = false;
 
-	$params_old = db_fetch_row_prepared(
-		'SELECT *
+	$params_old = db_fetch_row_prepared('SELECT *
 		FROM aggregate_graph_templates_graph
 		WHERE aggregate_template_id = ?',
 		array($id)
@@ -353,8 +350,7 @@ function aggregate_template_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$template = db_fetch_row_prepared(
-			'SELECT *
+		$template = db_fetch_row_prepared('SELECT *
 			FROM aggregate_graph_templates
 			WHERE id = ?',
 			array(get_request_var('id'))
@@ -381,8 +377,7 @@ function aggregate_template_edit() {
 	$helper_string = '|host_description|';
 
 	if (isset($template)) {
-		$data_query = db_fetch_cell_prepared(
-			'SELECT snmp_query_id
+		$data_query = db_fetch_cell_prepared('SELECT snmp_query_id
 			FROM snmp_query_graph
 			WHERE graph_template_id = ?',
 			array($template['graph_template_id'])

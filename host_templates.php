@@ -172,8 +172,7 @@ function template_item_add_dq() {
 	get_filter_request_var('snmp_query_id');
 	/* ==================================================== */
 
-	db_execute_prepared(
-		'REPLACE INTO host_template_snmp_query
+	db_execute_prepared('REPLACE INTO host_template_snmp_query
 		(host_template_id, snmp_query_id)
 		VALUES (?, ?)',
 		array(get_request_var('host_template_id'), get_request_var('snmp_query_id'))
@@ -188,8 +187,7 @@ function template_item_add_gt() {
 	get_filter_request_var('graph_template_id');
 	/* ==================================================== */
 
-	db_execute_prepared(
-		'REPLACE INTO host_template_graph
+	db_execute_prepared('REPLACE INTO host_template_graph
 		(host_template_id, graph_template_id)
 		VALUES (?, ?)',
 		array(get_request_var('host_template_id'), get_request_var('graph_template_id'))

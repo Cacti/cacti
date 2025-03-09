@@ -9072,8 +9072,7 @@ function text_regex_device($matches, $link = false) {
 
 		foreach ($dev_ids as $id) {
 			if (!isset($host_cache[$id])) {
-				$host_cache[$id] = db_fetch_cell_prepared(
-					'SELECT description
+				$host_cache[$id] = db_fetch_cell_prepared('SELECT description
 					FROM host
 		            WHERE id = ?',
 					array($id)
@@ -9242,8 +9241,7 @@ function text_regex_graphs($matches, $link = false) {
 
 		foreach ($graph_ids as $id) {
 			if (!isset($graph_cache[$id])) {
-				$graph_cache[$id] = db_fetch_cell_prepared(
-					'SELECT title_cache AS title
+				$graph_cache[$id] = db_fetch_cell_prepared('SELECT title_cache AS title
 					FROM graph_templates_graph AS gtg
 					WHERE local_graph_id = ?',
 					array($id)
@@ -9308,8 +9306,7 @@ function text_regex_users($matches, $link = false) {
 
 		foreach ($user_ids as $id) {
 			if (!isset($users_cache[$id])) {
-				$users_cache[$id] = db_fetch_cell_prepared(
-					'SELECT username
+				$users_cache[$id] = db_fetch_cell_prepared('SELECT username
 					FROM user_auth
 					WHERE id = ?',
 					array($id)
@@ -9332,8 +9329,7 @@ function text_regex_rule($matches, $link = false) {
 		$rules_cache = array_rekey(
 			db_fetch_assoc('SELECT id, name
 				FROM automation_graph_rules'),
-			'id',
-			'name'
+			'id', 'name'
 		);
 	}
 

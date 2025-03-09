@@ -221,22 +221,19 @@ function form_save() {
 }
 
 function api_networks_remove($network_id) {
-	db_execute_prepared(
-		'DELETE FROM automation_networks
+	db_execute_prepared('DELETE FROM automation_networks
 		WHERE id = ?',
 		array($network_id)
 	);
 
-	db_execute_prepared(
-		'DELETE FROM automation_devices
+	db_execute_prepared('DELETE FROM automation_devices
 		WHERE network_id = ?',
 		array($network_id)
 	);
 }
 
 function api_networks_enable($network_id) {
-	db_execute_prepared(
-		'UPDATE automation_networks
+	db_execute_prepared('UPDATE automation_networks
 		SET enabled="on"
 		WHERE id = ?',
 		array($network_id)
@@ -244,8 +241,7 @@ function api_networks_enable($network_id) {
 }
 
 function api_networks_disable($network_id) {
-	db_execute_prepared(
-		'UPDATE automation_networks
+	db_execute_prepared('UPDATE automation_networks
 		SET enabled=""
 		WHERE id = ?',
 		array($network_id)
@@ -253,8 +249,7 @@ function api_networks_disable($network_id) {
 }
 
 function api_networks_cancel($network_id) {
-	db_execute_prepared(
-		'UPDATE IGNORE automation_processes
+	db_execute_prepared('UPDATE IGNORE automation_processes
 		SET command="cancel"
 		WHERE task="tmaster"
 		AND network_id = ?',
@@ -314,29 +309,25 @@ function api_networks_change_options($network_ids, $post) {
 function api_networks_discover($network_id, $discover_debug, $discover_dryrun) {
 	global $config;
 
-	$enabled   = db_fetch_cell_prepared(
-		'SELECT enabled
+	$enabled   = db_fetch_cell_prepared('SELECT enabled
 		FROM automation_networks
 		WHERE id = ?',
 		array($network_id)
 	);
 
-	$running = db_fetch_cell_prepared(
-		'SELECT count(*)
+	$running = db_fetch_cell_prepared('SELECT count(*)
 		FROM automation_processes
 		WHERE network_id = ?',
 		array($network_id)
 	);
 
-	$name = db_fetch_cell_prepared(
-		'SELECT name
+	$name = db_fetch_cell_prepared('SELECT name
 		FROM automation_networks
 		WHERE id = ?',
 		array($network_id)
 	);
 
-	$poller_id = db_fetch_cell_prepared(
-		'SELECT poller_id
+	$poller_id = db_fetch_cell_prepared('SELECT poller_id
 		FROM automation_networks
 		WHERE id = ?',
 		array($network_id)
@@ -1125,8 +1116,7 @@ function networks() {
 				$status       = array();
 				$updown['up'] = $updown['snmp'] = '0';
 			} else {
-				$running = db_fetch_cell_prepared(
-					'SELECT COUNT(*)
+				$running = db_fetch_cell_prepared('SELECT COUNT(*)
 					FROM automation_processes
 					WHERE network_id = ?
 					AND status != "done"',
@@ -1134,8 +1124,7 @@ function networks() {
 				);
 
 				if ($running > 0) {
-					$status = db_fetch_row_prepared('SELECT
-						COUNT(*) AS total,
+					$status = db_fetch_row_prepared('SELECT COUNT(*) AS total,
 						SUM(CASE WHEN status=0 THEN 1 ELSE 0 END) AS pending,
 						SUM(CASE WHEN status=1 THEN 1 ELSE 0 END) AS running,
 						SUM(CASE WHEN status=2 THEN 1 ELSE 0 END) AS done
@@ -1159,8 +1148,7 @@ function networks() {
 						$updown['snmp'] = 0;
 					}
 				} else {
-					db_execute_prepared(
-						'DELETE FROM automation_processes
+					db_execute_prepared('DELETE FROM automation_processes
 						WHERE network_id = ?',
 						array($network['id'])
 					);

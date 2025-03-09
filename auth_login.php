@@ -120,8 +120,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 	/* Guest account checking - Not for builtin */
 	if (!$error && !cacti_sizeof($user) && get_guest_account() > 0) {
 		/* Locate guest user record */
-		$user = db_fetch_row_prepared(
-			'SELECT *
+		$user = db_fetch_row_prepared('SELECT *
 			FROM user_auth
 			WHERE id = ?',
 			array(get_guest_account())
@@ -219,8 +218,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 			}
 
 			if (db_table_exists('user_auth_group')) {
-				$group_options = db_fetch_cell_prepared(
-					'SELECT MAX(login_opts)
+				$group_options = db_fetch_cell_prepared('SELECT MAX(login_opts)
 					FROM user_auth_group AS uag
 					INNER JOIN user_auth_group_members AS uagm
 					ON uag.id=uagm.group_id
@@ -243,8 +241,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 			auth_login_redirect($user['login_opts']);
 		}
 	} else {
-		$id = db_fetch_cell_prepared(
-			'SELECT id
+		$id = db_fetch_cell_prepared('SELECT id
 			FROM user_auth
 			WHERE username = ?
 			AND realm = ?',
@@ -269,8 +266,7 @@ if (get_nfilter_request_var('action') == 'login' || $auth_method == AUTH_METHOD_
 		}
 
 		/* BAD username/password builtin and LDAP */
-		db_execute_prepared(
-			'INSERT IGNORE INTO user_log
+		db_execute_prepared('INSERT IGNORE INTO user_log
 			(username, user_id, result, ip, time)
 			VALUES (?, ?, 0, ?, NOW())',
 			array($username, !empty($id) ? $id : 0, get_client_addr())

@@ -1297,8 +1297,7 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 		$class = " class='colordropdown'";
 	}
 
-	$current_color = db_fetch_cell_prepared(
-		'SELECT hex
+	$current_color = db_fetch_cell_prepared('SELECT hex
 		FROM colors
 		WHERE id = ?',
 		array($form_previous_value)

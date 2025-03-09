@@ -167,8 +167,7 @@ function form_save() {
 		);
 
 		/* update title in aggregate graphs table */
-		db_execute_prepared(
-			'UPDATE aggregate_graphs
+		db_execute_prepared('UPDATE aggregate_graphs
 			SET title_format = ?
 			WHERE id = ?',
 			array($graph_title, $aggregate_graph_id)
