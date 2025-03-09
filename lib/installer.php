@@ -1717,11 +1717,20 @@ class Installer implements JsonSerializable {
 	public function exitWithReason($reason) {
 		global $config;
 
-		return match ($reason) {
-			Installer::EXIT_DB_EMPTY => $this->exitSqlNeeded(),
-			Installer::EXIT_DB_OLD   => $this->exitDbTooOld(),
-			default                  => $this->exitWithUnknownReason($reason),
-		};
+		switch ($reason) {
+			case Installer::EXIT_DB_EMPTY:
+				return $this->exitSqlNeeded();
+
+				break;
+			case Installer::EXIT_DB_OLD:
+				return $this->exitDbTooOld();
+
+				break;
+			default:
+				return $this->exitWithUnknownReason($reason);
+
+				break;
+		}
 	}
 
 	private function exitWithUnknownReason($reason) {
@@ -1870,20 +1879,21 @@ class Installer implements JsonSerializable {
 			return $this->exitWithReason($exitReason);
 		}
 
-		return match ($this->stepCurrent) {
-			Installer::STEP_WELCOME                         => $this->processStepWelcome(),
-			Installer::STEP_CHECK_DEPENDENCIES              => $this->processStepCheckDependencies(),
-			Installer::STEP_INSTALL_TYPE                    => $this->processStepMode(),
-			Installer::STEP_BINARY_LOCATIONS                => $this->processStepBinaryLocations(),
-			Installer::STEP_PERMISSION_CHECK                => $this->processStepPermissionCheck(),
-			Installer::STEP_INPUT_VALIDATION                => $this->processStepNoticesRecommendations(),
-			Installer::STEP_PROFILE_AND_AUTOMATION          => $this->processStepProfileAndAutomation(),
-			Installer::STEP_TEMPLATE_INSTALL                => $this->processStepTemplateInstall(),
-			Installer::STEP_CHECK_TABLES                    => $this->processStepCheckTables(),
-			Installer::STEP_INSTALL_CONFIRM                 => $this->processStepInstallConfirm(),
-			Installer::STEP_INSTALL                         => $this->processStepInstall(),
-			Installer::STEP_ERROR, Installer::STEP_COMPLETE => $this->processStepComplete(),
-			default                                         => $this->exitWithReason((0 - $this->stepCurrent)),
+		 switch ($this->stepCurrent) {
+			case Installer::STEP_WELCOME:                return $this->processStepWelcome();break;
+			case Installer::STEP_CHECK_DEPENDENCIES:     return $this->processStepCheckDependencies();break;
+			case Installer::STEP_INSTALL_TYPE:           return $this->processStepMode();break;
+			case Installer::STEP_BINARY_LOCATIONS:       return $this->processStepBinaryLocations();break;
+			case Installer::STEP_PERMISSION_CHECK:       return $this->processStepPermissionCheck();break;
+			case Installer::STEP_INPUT_VALIDATION:       return $this->processStepNoticesRecommendations();break;
+			case Installer::STEP_PROFILE_AND_AUTOMATION: return $this->processStepProfileAndAutomation();break;
+			case Installer::STEP_TEMPLATE_INSTALL:       return $this->processStepTemplateInstall();break;
+			case Installer::STEP_CHECK_TABLES:           return $this->processStepCheckTables();break;
+			case Installer::STEP_INSTALL_CONFIRM:        return $this->processStepInstallConfirm();break;
+			case Installer::STEP_INSTALL:                return $this->processStepInstall();break;
+			case Installer::STEP_ERROR:                  return $this->processStepComplete();break;
+			case Installer::STEP_COMPLETE:               return $this->processStepComplete();break;
+			default:                                     return $this->exitWithReason(($this->stepCurrent));break;
 		};
 	}
 
@@ -2957,14 +2967,31 @@ class Installer implements JsonSerializable {
 		$output .= Installer::sectionNormal(__('The following General Install Options will be applied.'));
 		$output .= Installer::sectionNormal('<b>' . __('EULA') . '</b>: '   . __('GPL License Accepted'));
 
-		match ($opt['install_mode']) {
-			Installer::MODE_INSTALL   => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('New Install')),
-			Installer::MODE_UPGRADE   => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('Upgrade')),
-			Installer::MODE_DOWNGRADE => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('Downgrade')),
-			// Add this case for poller
-			Installer::MODE_POLLER    => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: ' . __('Poller')),
-			Installer::MODE_NONE      => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('None')),
-			default                   => $output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('Unknown')),
+		switch ($opt['install_mode']) {
+			case Installer::MODE_INSTALL:
+				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('New Install'));
+
+				break;
+			case Installer::MODE_UPGRADE:
+				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('Upgrade'));
+
+				break;
+			case Installer::MODE_DOWNGRADE:
+				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('Downgrade'));
+
+				break;
+			case Installer::MODE_POLLER:
+				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: ' . __('Poller'));
+
+				break;
+			case Installer::MODE_NONE:
+				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('None'));
+
+				break;
+			default:
+				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('Unknown'));
+
+				break;
 		};
 
 		$topts = db_fetch_assoc('SELECT *
@@ -3315,12 +3342,22 @@ class Installer implements JsonSerializable {
 
 	private function install() {
 		global $config;
+
 		$failure = '';
 
-		$which = match ($this->mode) {
-			Installer::MODE_UPGRADE   => 'UPGRADE',
-			Installer::MODE_DOWNGRADE => 'DOWNGRADE',
-			default                   => 'INSTALL',
+		switch ($this->mode) {
+			case Installer::MODE_UPGRADE:
+				$which = 'UPGRADE';
+
+				break;
+			case Installer::MODE_DOWNGRADE:
+				$which = 'DOWNGRADE';
+
+				break;
+			default:
+				$which = 'INSTALL';
+
+				break;
 		};
 
 		log_install_always('', __('Starting %s Process for v%s', $which, CACTI_VERSION_FULL));
