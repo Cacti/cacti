@@ -1313,8 +1313,6 @@ function display_matching_trees(string $rule_id, $rule_type, array $item, string
 function api_automation_column_exists(string $column, array $tables): bool {
 	$column = str_replace(['h.', 'ht.', 'gt.', 'gl.', 'gtg.'], ['', '', '', '', ''], $column);
 
-	cacti_log("The column is now $column");
-
 	if (cacti_sizeof($tables)) {
 		foreach ($tables as $table) {
 			if (db_column_exists($table, $column)) {
