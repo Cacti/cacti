@@ -3950,8 +3950,8 @@ function automation_get_network_info(string $range): array|false {
 /**
  * Calculates the start time for an automation process based on the given range.
  *
- * @param int $range The range value used to calculate the start time.
- * @return int|false The calculated start time.
+ * @param string $range The range value used to calculate the start time.
+ * @return string|false The calculated start time.
  */
 function automation_calculate_start(string $range): string|false {
 	$detail = automation_get_network_info($range);
