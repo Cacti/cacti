@@ -98,9 +98,9 @@ function set_auth_cookie(array $user): void {
 /**
  * Clears the authentication cookie and removes the user session from the cache.
  *
- * @return bool
+ * @return int|false The user of the session cookie, otherwise false
  */
-function check_auth_cookie(): bool {
+function check_auth_cookie(): int|false {
 	if (isset($_COOKIE['cacti_remembers']) &&
 		read_config_option('auth_cache_enabled') == 'on' &&
 		db_table_exists('user_auth_cache')) {
