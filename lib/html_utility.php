@@ -455,7 +455,7 @@ function form_process_visible_display_text($table_id, $display_text) {
 
 	/* reset if the developer is making changes to the page layout */
 	if (cacti_sizeof($tableColumns[$table_id]) && cacti_sizeof($display_text) != cacti_sizeof($tableColumns[$table_id])) {
-		cacti_log('WARNING: Detected a change in base table topology', false, 'DEVELOP');
+		cacti_log('WARNING: Detected a change in base table topology', false, 'DEVELOP', POLLER_VERBOSITY_MEDIUM);
 
 		$tableColumns[$table_id] = [];
 	}
