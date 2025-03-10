@@ -22,7 +22,18 @@
  +-------------------------------------------------------------------------+
 */
 
-function api_delete_graphs(&$local_graph_ids, $delete_type, $update_totals = true) {
+/**
+ * Deletes graphs based on the provided local graph IDs and delete type.
+ *
+ * @param array $local_graph_ids An array of local graph IDs to be deleted.
+ * @param int $delete_type The type of deletion to perform:
+ *                         - 1: Remove graphs only.
+ *                         - 2: Remove graphs and all associated data sources.
+ * @param bool $update_totals Optional. Whether to update object cache totals. Default is true.
+ *
+ * @return void
+ */
+function api_delete_graphs(array &$local_graph_ids, int $delete_type, bool $update_totals = true): void {
 	/* check for a bad local_graph_id = 0, and remove graphs */
 	api_graph_remove_bad_graphs($local_graph_ids);
 
@@ -118,7 +129,14 @@ function api_delete_graphs(&$local_graph_ids, $delete_type, $update_totals = tru
 	set_config_option('time_last_change_graph', time());
 }
 
-function api_graph_remove($local_graph_id) {
+/**
+ * Removes a graph and its associated items from the database.
+ *
+ * @param int $local_graph_id The ID of the local graph to be removed.
+ *
+ * @return void
+ */
+function api_graph_remove(int $local_graph_id): void {
 	if (empty($local_graph_id)) {
 		$local_graph_ids = [$local_graph_id];
 		api_graph_remove_bad_graphs($local_graph_ids);
@@ -147,7 +165,15 @@ function api_graph_remove($local_graph_id) {
 	set_config_option('time_last_change_graph', time());
 }
 
-function api_graph_remove_bad_graphs(&$local_graph_ids = []) {
+/**
+ * Removes bad graphs from the provided list of local graph IDs and deletes
+ * corresponding entries from the database.
+ *
+ * @param array $local_graph_ids An array of local graph IDs to be checked and cleaned.
+ *
+ * @return void
+ */
+function api_graph_remove_bad_graphs(array &$local_graph_ids = []): void {
 	if (cacti_sizeof($local_graph_ids)) {
 		$bad_graph = array_search(0, $local_graph_ids, true);
 
@@ -174,7 +200,14 @@ function api_graph_remove_bad_graphs(&$local_graph_ids = []) {
 	set_config_option('time_last_change_graph', time());
 }
 
-function api_graph_remove_aggregate_items($local_graph_ids) {
+/**
+ * Removes aggregate items associated with the given local graph IDs.
+ *
+ * @param array|string $local_graph_ids An array of local graph IDs or a comma-separated string of local graph IDs.
+ *
+ * @return void
+ */
+function api_graph_remove_aggregate_items(array|string $local_graph_ids): void {
 	if (!is_array($local_graph_ids)) {
 		$local_graph_ids = explode(',', $local_graph_ids);
 	}
@@ -198,7 +231,14 @@ function api_graph_remove_aggregate_items($local_graph_ids) {
 	}
 }
 
-function api_graph_remove_multi($local_graph_ids) {
+/**
+ * Removes multiple graphs based on their local graph IDs.
+ *
+ * @param array $local_graph_ids An array of local graph IDs to be removed.
+ *
+ * @return void
+ */
+function api_graph_remove_multi(array $local_graph_ids): void {
 	/* check for a bad local_graph_id = 0, and remove graphs */
 	api_graph_remove_bad_graphs($local_graph_ids);
 
@@ -255,12 +295,16 @@ function api_graph_remove_multi($local_graph_ids) {
 	}
 }
 
-/* api_resize_graphs - resizes the selected graph, overriding the template value
-   @arg $graph_templates_graph_id - the id of the graph to resize
-   @arg $graph_width - the width of the resized graph
-   @arg $graph_height - the height of the resized graph
-  */
-function api_resize_graphs($local_graph_id, $graph_width, $graph_height) {
+/**
+ * Resizes the selected graph, overriding the template value
+ *
+ * @param int $local_graph_id The ID of the local graph to resize.
+ * @param int $graph_width The new width of the graph.
+ * @param int $graph_height The new height of the graph.
+ *
+ * @return void
+ */
+function api_resize_graphs(int $local_graph_id, int $graph_width, int $graph_height): void {
 	/* get graphs template id */
 	db_execute_prepared('UPDATE graph_templates_graph
 		SET width = ?, height = ?
@@ -268,12 +312,14 @@ function api_resize_graphs($local_graph_id, $graph_width, $graph_height) {
 		[$graph_width, $graph_height, $local_graph_id]);
 }
 
-/* api_reapply_suggested_graph_title - reapplies the suggested name to a graph title
-   @param int $graph_templates_graph_id - the id of the graph to reapply the name to
-*/
-function api_reapply_suggested_graph_title($local_graph_id) {
-	global $config;
-
+/**
+ * Reapplies the suggested graph title for a given local graph ID.
+ *
+ * @param int $local_graph_id The ID of the local graph to update.
+ *
+ * @return bool True if the title was successfully updated, false otherwise.
+ */
+function api_reapply_suggested_graph_title(int $local_graph_id): bool {
 	/* get graphs template id */
 	$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id
 		FROM graph_templates_graph
@@ -282,7 +328,7 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 
 	/* if a non-template graph, simply return */
 	if ($graph_template_id == 0) {
-		return;
+		return false;
 	}
 
 	/* get the host associated with this graph for data queries only
@@ -294,12 +340,12 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 
 	/* if this is not a data query graph, simply return */
 	if (!isset($graph_local['host_id'])) {
-		return;
+		return false;
 	}
 
 	/* no snmp query graph id found */
 	if ($graph_local['snmp_query_graph_id'] == 0) {
-		return;
+		return false;
 	}
 
 	/* get the suggested values from the suggested values cache */
@@ -347,11 +393,14 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 	return false;
 }
 
-/* api_get_graphs_from_datasource - get's all graphs related to a data source
-   @arg $local_data_id - the id of the data source
-   @returns - array($id => $name_cache) returns the graph id's and names of the graphs
-  */
-function api_get_graphs_from_datasource($local_data_id) {
+/**
+ * Retrieves a list of graphs associated with a specific data source.
+ *
+ * @param int $local_data_id The local data ID of the data source.
+ *
+ * @return array An associative array of graphs with graph IDs as keys and graph names as values.
+ */
+function api_get_graphs_from_datasource(int $local_data_id): array {
 	return array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT graph_templates_graph.local_graph_id AS id,
 		graph_templates_graph.title_cache AS name
 		FROM (graph_templates_graph
@@ -363,7 +412,17 @@ function api_get_graphs_from_datasource($local_data_id) {
 		AND data_template_rrd.local_data_id = ?', [$local_data_id]), 'id', 'name');
 }
 
-function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title, $map_to_data_query = true) {
+/**
+ * Duplicates a graph or graph template.
+ *
+ * @param int    $_local_graph_id    The ID of the local graph to duplicate. If provided, the function will duplicate this graph.
+ * @param int    $_graph_template_id The ID of the graph template to duplicate. If provided, the function will duplicate this template.
+ * @param string $graph_title        The title for the new graph or template. Placeholders in the title will be replaced accordingly.
+ * @param bool   $map_to_data_query  Whether to map the duplicated graph template to a data query. Default is true.
+ *
+ * @return int|false The ID of the newly created local graph or graph template, or false on failure.
+ */
+function api_duplicate_graph(int $_local_graph_id, int $_graph_template_id, string $graph_title, bool $map_to_data_query = true): int|false {
 	global $struct_graph, $struct_graph_item;
 
 	if (!empty($_local_graph_id)) {
@@ -623,7 +682,15 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 	}
 }
 
-function api_graph_change_device($local_graph_id, $host_id) {
+/**
+ * Changes the device associated with a given graph.
+ *
+ * @param int $local_graph_id The ID of the local graph to update.
+ * @param int $host_id The ID of the new host to associate with the graph.
+ *
+ * @return bool Returns true if the device was successfully changed, false otherwise.
+ */
+function api_graph_change_device(int $local_graph_id, int $host_id): bool {
 	$dqgraph = db_fetch_cell_prepared('SELECT snmp_query_id
 		FROM graph_local
 		WHERE id = ?',

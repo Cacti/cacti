@@ -23,30 +23,26 @@
 */
 
 /**
- * api_device_crc_update - update hash stored in settings table to inform
- * remote pollers to update their caches
+ * Update hash stored in settings table to inform remote pollers to update their caches
  *
- * @param  (int)    The id of the poller impacted by hash update
- * @param  (string) The hash variable prefix for the replication setting.
- * @param mixed $poller_id
- * @param mixed $variable
+ * @param string $poller_id The ID of the poller for which the device cache CRC is being updated.
+ * @param string $variable The base name of the variable to store the hash. Defaults to 'poller_replicate_device_cache_crc'.
  *
- * @return (void)
+ * @return void
  */
-function api_device_cache_crc_update($poller_id, $variable = 'poller_replicate_device_cache_crc') {
-	$hash = hash('ripemd160', date('Y-m-d H:i:s') . random_int(0, mt_getrandmax()) . $poller_id);
+function api_device_cache_crc_update(int $poller_id, string $variable = 'poller_replicate_device_cache_crc'): void {
+	$hash = hash('ripemd160', date('Y-m-d H:i:s') . random_int(0, mt_getrandmax()) . "$poller_id");
 
 	db_execute_prepared("REPLACE INTO settings SET value = ?, name='$variable" . '_' . "$poller_id'", [$hash]);
 }
 
 /**
- * api_device_remove - removes a device
+ * Removes a device from the system.
  *
- * @param  $device_id - the id of the device to remove
+ * @param int $device_id The ID of the device to be removed.
+ * @return void
  */
-function api_device_remove(int $device_id) {
-	global $config;
-
+function api_device_remove(int $device_id): void {
 	$poller_id = db_fetch_cell_prepared('SELECT poller_id
 		FROM host WHERE id = ?',
 		[$device_id]);
@@ -106,12 +102,14 @@ function api_device_remove(int $device_id) {
 }
 
 /**
- * api_device_purge_from_remote - removes a device from a remote data collectors
+ * Removes a device from a remote data collectors
  *
- * @param  $device_ids - device id or an array of device_ids of a host or hosts
- * @param  $poller_id  - the previous poller if it changed
+ * @param array|int $device_ids An array of device IDs or a single device ID to be purged.
+ * @param int $poller_id The ID of the remote poller. Default is 0.
+ *
+ * @return void
  */
-function api_device_purge_from_remote($device_ids, $poller_id = 0) {
+function api_device_purge_from_remote(array|int $device_ids, int $poller_id = 0): void {
 	if (!is_array($device_ids)) {
 		$device_ids = [$device_ids];
 	}
@@ -152,12 +150,11 @@ function api_device_purge_from_remote($device_ids, $poller_id = 0) {
 }
 
 /**
- * api_device_purge_deleted_devices - Remove any devices from the database that are
- *   marked for deletion.
+ * Remove any devices from the database that are marked for deletion.
  *
- * @return (void)
+ * @return void
  */
-function api_device_purge_deleted_devices() {
+function api_device_purge_deleted_devices(): void {
 	$devices = db_fetch_assoc_prepared('SELECT id, poller_id
 		FROM host
 		WHERE deleted = "on"
@@ -184,18 +181,14 @@ function api_device_purge_deleted_devices() {
 }
 
 /**
- * api_device_remove_multi - removes multiple devices in one call
+ * Removes multiple devices in one call
  *
- * @param  (array) An array of device id's to remove
- * @param  (int)   Boolean to keep data source and graphs or remove
- * @param mixed $device_ids
- * @param mixed $delete_type
+ * @param array $device_ids An array of device IDs to be removed.
+ * @param int $delete_type The type of deletion to perform
  *
- * @return (void)
+ * @return void
  */
-function api_device_remove_multi($device_ids, $delete_type = 2) {
-	global $config;
-
+function api_device_remove_multi(array $device_ids, int $delete_type = 2): void {
 	$devices_to_delete = '';
 	$i                 = 0;
 
@@ -293,16 +286,13 @@ function api_device_remove_multi($device_ids, $delete_type = 2) {
 }
 
 /**
- * api_device_disable_devices - Disable an array of device ids
+ * Disable an array of device ids
  *
- * @param  (array) An array of device ids
- * @param mixed $device_ids
+ * @param array $device_ids An array of device IDs to be disabled.
  *
- * @return (void)
+ * @return void
  */
-function api_device_disable_devices($device_ids) {
-	global $config;
-
+function api_device_disable_devices(array $device_ids): void {
 	$raised = [];
 
 	foreach ($device_ids as $device_id) {
@@ -335,16 +325,13 @@ function api_device_disable_devices($device_ids) {
 }
 
 /**
- * api_device_enable_devices - Enable an array of device ids
+ * Enable an array of device ids
  *
- * @param  (array) An array of device ids
- * @param mixed $device_ids
+ * @param array $device_ids An array of device IDs to be enabled.
  *
- * @return (void)
+ * @return void
  */
-function api_device_enable_devices($device_ids) {
-	global $config;
-
+function api_device_enable_devices(array $device_ids): void {
 	$raised = [];
 
 	foreach ($device_ids as $device_id) {
@@ -431,18 +418,15 @@ function api_device_enable_devices($device_ids) {
 }
 
 /**
- * api_device_change_options - Given an array of device ids and the
- *   post variable, update a series of Device settings.
+ *  Given an array of device ids and the post variable, update a series of Device settings.
  *
- * @param  (array) An array of device ids
- * @param  (array) An array representing the $_POST variable
- * @param mixed $device_ids
- * @param mixed $post
+ * @param array $device_ids An array of device IDs to update.
+ * @param array $post An associative array containing the POST data with the new options.
  *
- * @return (void)
+ * @return void
  */
-function api_device_change_options($device_ids, $post) {
-	global $config, $fields_host_edit;
+function api_device_change_options(array $device_ids, array $post): void {
+	global $fields_host_edit;
 
 	$previous_poller = -1;
 	$poller_ids      = [];
@@ -510,17 +494,13 @@ function api_device_change_options($device_ids, $post) {
 }
 
 /**
- * api_device_clear_statistics - Clear all device level statistics and reset as if the
- *   device was new in Cacti
+ * Clear all device level statistics and reset as if the device was new in Cacti
  *
- * @param  (array) An array of device ids
- * @param mixed $device_ids
+ * @param array $device_ids An array of device IDs for which the statistics need to be cleared.
  *
- * @return (void)
+ * @return void
  */
-function api_device_clear_statistics($device_ids) {
-	global $config;
-
+function api_device_clear_statistics(array $device_ids): void {
 	$raised = [];
 
 	foreach ($device_ids as $device_id) {
@@ -563,9 +543,14 @@ function api_device_clear_statistics($device_ids) {
  *
  * @return (void)
  */
-function api_device_sync_device_templates($device_ids) {
-	global $config;
-
+/**
+ * SSync an array of device ids with their parent Device Template
+ *
+ * @param array $device_ids An array of device IDs to synchronize templates for.
+ *
+ * @return void
+ */
+function api_device_sync_device_templates(array $device_ids): void {
 	foreach ($device_ids as $device_id) {
 		$device_template_id = db_fetch_cell_prepared('SELECT host_template_id
 			FROM host
@@ -579,19 +564,15 @@ function api_device_sync_device_templates($device_ids) {
 }
 
 /**
- * api_device_dq_add - adds a device->data query mapping
- * @param  (int)  The id of the device which contains the mapping
- * @param  (int)  The id of the data query to remove the mapping for
- * @param  (int)  The reindex method to user when adding the data query
- * @param mixed $device_id
- * @param mixed $data_query_id
- * @param mixed $reindex_method
+ * Adds a device->data query mapping
  *
- * @return (void)
+ * @param int $device_id The ID of the device to which the data query is being added.
+ * @param int $data_query_id The ID of the data query to be added.
+ * @param string $reindex_method The method used for reindexing.
+ *
+ * @return void
  */
-function api_device_dq_add($device_id, $data_query_id, $reindex_method) {
-	global $config;
-
+function api_device_dq_add(int $device_id, int $data_query_id, string $reindex_method): void {
 	db_execute_prepared('REPLACE INTO host_snmp_query
 		(host_id, snmp_query_id, reindex_method)
 		VALUES (?, ?, ?)',
@@ -619,18 +600,13 @@ function api_device_dq_add($device_id, $data_query_id, $reindex_method) {
 }
 
 /**
- * api_device_dq_remove - removes a device->data query mapping
+ * Removes a device->data query mapping
  *
- * @param  (int) The id of the device which contains the mapping
- * @param  (int) The id of the data query to remove the mapping for
- * @param mixed $device_id
- * @param mixed $data_query_id
- *
- * @return (void)
+ * @param int $device_id The ID of the device.
+ * @param int $data_query_id The ID of the data query to be removed.
+ * @return void
  */
-function api_device_dq_remove($device_id, $data_query_id) {
-	global $config;
-
+function api_device_dq_remove(int $device_id, int $data_query_id): void {
 	db_execute_prepared('DELETE FROM host_snmp_cache
 		WHERE snmp_query_id = ?
 		AND host_id = ?',
@@ -675,20 +651,15 @@ function api_device_dq_remove($device_id, $data_query_id) {
 }
 
 /**
- * api_device_dq_change - changes a device->data query mapping
+ * Changes a device->data query mapping
  *
- * @param  (int) The id of the device which contains the mapping
- * @param  (int) The id of the data query to remove the mapping for
- * @param  (int) The reindex method to use when changing the data query
- * @param mixed $device_id
- * @param mixed $data_query_id
- * @param mixed $reindex_method
+ * @param int $device_id The ID of the device.
+ * @param int $data_query_id The ID of the data query.
+ * @param string $reindex_method The reindex method to be used.
  *
- * @return (void)
+ * @return void
  */
-function api_device_dq_change($device_id, $data_query_id, $reindex_method) {
-	global $config;
-
+function api_device_dq_change(int $device_id, int $data_query_id, string $reindex_method): void {
 	db_execute_prepared('INSERT INTO host_snmp_query
 		(host_id, snmp_query_id, reindex_method)
 		VALUES (?, ?, ?)
@@ -726,18 +697,14 @@ function api_device_dq_change($device_id, $data_query_id, $reindex_method) {
 }
 
 /**
- * api_device_gt_remove - removes a device->graph template mapping
+ * Removes a device->graph template mapping
  *
- * @param  (int) The id of the device which contains the mapping
- * @param  (int) The id of the graph template to remove the mapping for
- * @param mixed $device_id
- * @param mixed $graph_template_id
+ * @param int $device_id The ID of the device.
+ * @param int $graph_template_id The ID of the graph template.
  *
- * @return (void)
+ * @return void
  */
-function api_device_gt_remove($device_id, $graph_template_id) {
-	global $config;
-
+function api_device_gt_remove(int $device_id, int $graph_template_id): void {
 	db_execute_prepared('DELETE FROM host_graph
 		WHERE graph_template_id = ?
 		AND host_id = ?',
@@ -762,18 +729,13 @@ function api_device_gt_remove($device_id, $graph_template_id) {
 }
 
 /**
- * api_device_replicate_out - Replace device settings to the remote data collectors
+ * Replace device settings to the remote data collectors
  *
- * @param  (int) The id of the device
- * @param  (int) The poller id of the device.  If null, we determine it
- * @param mixed $device_id
- * @param mixed $poller_id
- *
- * @return (void)
+ * @param int $device_id The ID of the device to replicate.
+ * @param int $poller_id The ID of the poller to replicate to. Defaults to 1.
+ * @return bool Returns true on success, false on failure.
  */
-function api_device_replicate_out($device_id, $poller_id = 1) {
-	global $config;
-
+function api_device_replicate_out(int $device_id, int $poller_id = 1): bool {
 	$rcnn_id = false;
 
 	if ($poller_id > 1) {
@@ -956,83 +918,52 @@ function api_device_replicate_out($device_id, $poller_id = 1) {
 }
 
 /**
- * api_device_save - Save a device and update the poller cache for the device is required.
+ * Save a device and update the poller cache for the device is required.
  *   The function will determine if the poller cache needs updating by reviewing the changed
  *   settings.  If no settings changed that require an update of the poller cache, the
  *   device level settings will simply be updated, otherwise the poller cache will be refreshed
  *   for the device.
  *
- * @param  (int)    The id of the device
- * @param  (int)    The device template for the device
- * @param  (string) A device description
- * @param  (string) The devices hostname
- * @param  (string) The devices snmp community in the case of v1/v2c
- * @param  (int)    The devices snmp_version 1|2|3
- * @param  (string) The devices snmp username in the case of v3
- * @param  (string) The devices snmp auth password in the case of v3
- * @param  (int)    The devices snmp port if in use.  Default to 161
- * @param  (int)    The devices snmp timeout in milliseconds
- * @param  (bool)   True of 'on' if the device is disabled
- * @param  (int)    The devices availability/reachability type
- * @param  (int)    The devices availability/reachability test ping method
- * @param  (int)    The devices ping port to be used in the case of TCP or UDP
- * @param  (int)    The ping timeout in milliseconds
- * @param  (int)    The number of times to retry the ping of the device
- * @param  (strong) Operator notes for the device.  Can be used by plugins
- * @param  (int)    The snmp authentication protocol
- * @param  (string) The snmp privilege protocol passphrase
- * @param  (int)    The snmp privilege protocol to use
- * @param  (string) The snmp context to use to reach the device
- * @param  (string) The snmp engine id if required to reach the devices
- * @param  (int)    The maximum number of OID's to gather in a single snmpget request
- * @param  (int)    When using spine, the number of threads to use to collect data source information
- * @param  (int)    The id of the data collector.  The default is 1
- * @param  (int)    The id of the site that the device belongs to
- * @param  (string) External ID's to be used by plugins and other cmdb like functions
- * @param  (string) A location attribute such as rack and enclosure, closet location within a site.
- * @param  (int)    A variable that tells cacti to find detect the optimal bulk walk size for the device
- * @param  (int)    A variable that tells Cacti what SNMP options it should try to recover a device
- * @param  (int)    The number of times to communicate with an snmp device
- * @param mixed $id
- * @param mixed $device_template_id
- * @param mixed $description
- * @param mixed $hostname
- * @param mixed $snmp_community
- * @param mixed $snmp_version
- * @param mixed $snmp_username
- * @param mixed $snmp_password
- * @param mixed $snmp_port
- * @param mixed $snmp_timeout
- * @param mixed $disabled
- * @param mixed $availability_method
- * @param mixed $ping_method
- * @param mixed $ping_port
- * @param mixed $ping_timeout
- * @param mixed $ping_retries
- * @param mixed $notes
- * @param mixed $snmp_auth_protocol
- * @param mixed $snmp_priv_passphrase
- * @param mixed $snmp_priv_protocol
- * @param mixed $snmp_context
- * @param mixed $snmp_engine_id
- * @param mixed $max_oids
- * @param mixed $device_threads
- * @param mixed $poller_id
- * @param mixed $site_id
- * @param mixed $external_id
- * @param mixed $location
- * @param mixed $bulk_walk_size
- * @param mixed $snmp_options
- * @param mixed $snmp_retries
+ * @param int $id The ID of the device. If 0, a new device will be created.
+ * @param int $device_template_id The ID of the device template.
+ * @param string $description The description of the device.
+ * @param string $hostname The hostname of the device.
+ * @param string $snmp_community The SNMP community string.
+ * @param int $snmp_version The SNMP version.
+ * @param string $snmp_username The SNMP username (for SNMP v3).
+ * @param string $snmp_password The SNMP password (for SNMP v3).
+ * @param int $snmp_port The SNMP port.
+ * @param int $snmp_timeout The SNMP timeout.
+ * @param string $disabled Whether the device is disabled ('on' or '').
+ * @param int $availability_method The availability method.
+ * @param int $ping_method The ping method.
+ * @param int $ping_port The ping port.
+ * @param int $ping_timeout The ping timeout.
+ * @param int $ping_retries The number of ping retries.
+ * @param string $notes Notes about the device.
+ * @param string $snmp_auth_protocol The SNMP authentication protocol (for SNMP v3).
+ * @param string $snmp_priv_passphrase The SNMP privacy passphrase (for SNMP v3).
+ * @param string $snmp_priv_protocol The SNMP privacy protocol (for SNMP v3).
+ * @param string $snmp_context The SNMP context (for SNMP v3).
+ * @param string $snmp_engine_id The SNMP engine ID (for SNMP v3).
+ * @param int $max_oids The maximum number of OIDs.
+ * @param int $device_threads The number of device threads.
+ * @param int $poller_id The poller ID.
+ * @param int $site_id The site ID.
+ * @param string $external_id The external ID.
+ * @param string $location The location of the device.
+ * @param int $bulk_walk_size The bulk walk size.
+ * @param int $snmp_options The SNMP options.
+ * @param int $snmp_retries The number of SNMP retries.
  *
- * @return (int)    The id of the device
+ * @return int The ID of the saved device.
  */
-function api_device_save($id, $device_template_id, $description, $hostname, $snmp_community, $snmp_version,
-	$snmp_username, $snmp_password, $snmp_port, $snmp_timeout, $disabled,
-	$availability_method, $ping_method, $ping_port, $ping_timeout, $ping_retries,
-	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_engine_id,
-	$max_oids = 5, $device_threads = 1, $poller_id = 1, $site_id = 1, $external_id = '', $location = '', $bulk_walk_size = -1,
-	$snmp_options = 0, $snmp_retries = 3) {
+function api_device_save(int $id, int $device_template_id, string $description, string $hostname, string $snmp_community, int $snmp_version,
+string $snmp_username, string $snmp_password, int $snmp_port, int $snmp_timeout, string $disabled,
+	int $availability_method, int $ping_method, int $ping_port, int $ping_timeout, int $ping_retries,
+	string $notes, string $snmp_auth_protocol, string $snmp_priv_passphrase, string $snmp_priv_protocol, string $snmp_context, string $snmp_engine_id,
+	int $max_oids = 5, int $device_threads = 1, int $poller_id = 1, int $site_id = 1, string $external_id = '', string $location = '', int $bulk_walk_size = -1,
+	int $snmp_options = 0, int $snmp_retries = 3): int {
 	global $config;
 
 	include_once(CACTI_PATH_LIBRARY . '/utility.php');
@@ -1315,15 +1246,13 @@ function api_device_save($id, $device_template_id, $description, $hostname, $snm
 }
 
 /**
- * api_device_quick_save - checks if the poller cache needs to be
- *   rebuilt as a part of a device save.
+ * Checks if the poller cache needs to be rebuilt as a part of a device save.
  *
- * @param  (array) The devices "save" structure for the device
- * @param mixed $save
+ * @param array $save An associative array containing device information to be saved.
  *
- * @return (bool)  If the device can be quickly saved, or will the device have to be pushed out
+ * @return bool Returns true if the device information has not changed, false otherwise.
  */
-function api_device_quick_save(&$save) {
+function api_device_quick_save(array &$save): bool {
 	if ($save['id'] > 0) {
 		$device = db_fetch_row_prepared('SELECT *
 			FROM host
@@ -1360,14 +1289,14 @@ function api_device_quick_save(&$save) {
 }
 
 /**
- * api_device_update_host_template - changes the host template of a host
+ * Changes the host template of a host
  *
- * @param  (int)  The id of the device which contains the mapping
- * @param  (int)  The id of the device template alter the device to
+ * @param int $device_id The ID of the device to update.
+ * @param int $device_template_id The ID of the new device template to assign to the device.
  *
- * @return (void)
+ * @return void
  */
-function api_device_update_host_template(int $device_id, int $device_template_id) {
+function api_device_update_host_template(int $device_id, int $device_template_id): void {
 	static $raised = [];
 
 	if ($device_id > 0) {
@@ -1536,18 +1465,14 @@ function api_device_update_host_template(int $device_id, int $device_template_id
 }
 
 /**
- * api_device_change_field_match - Checks the global $device_change_fields array
- *   against the field name and returns true or false if it matches the rule
+ * Checks the global $device_change_fields array against the field name
+ *   and returns true or false if it matches the rule
  *
- * This function can be used by plugins to allow the modification of additional
- * device fields from the change device rule.
+ * @param string $field_name The name of the field to check against the rules.
  *
- * @param  string      The field name to check
- * @param mixed $field_name
- *
- * @return bool        True or false if it matches one of the rules
+ * @return bool Returns true if the field name matches any rule, otherwise false.
  */
-function api_device_change_field_match($field_name) {
+function api_device_change_field_match(string $field_name): bool {
 	global $device_change_fields;
 
 	$matches = false;
@@ -1574,18 +1499,15 @@ function api_device_change_field_match($field_name) {
 }
 
 /**
- * api_device_template_sync_template - updates the device template mapping for all devices mapped to a template
+ * Updates the device template mapping for all devices mapped to a template
  *
- * @param  (int)       The device template to synchronize
- * @param  (int|array) An array of device_ids or a string with a single device_id
- * @param  (bool)      Also update mapping of down devices
- * @param mixed $device_template
- * @param mixed $device_ids
- * @param mixed $down_devices
+ * @param int $device_template The ID of the device template to synchronize.
+ * @param array|string $device_ids An array or comma-separated string of device IDs to update. Default is an empty string.
+ * @param bool $down_devices Whether to include down devices in the synchronization. Default is false.
  *
- * @return (void)
+ * @return void
  */
-function api_device_template_sync_template($device_template, $device_ids = '', $down_devices = false) {
+function api_device_template_sync_template(int $device_template, array|string $device_ids = '', bool $down_devices = false): void {
 	if ($down_devices == true) {
 		$status_where = '';
 	} else {
@@ -1617,17 +1539,15 @@ function api_device_template_sync_template($device_template, $device_ids = '', $
 }
 
 /**
- * api_device_ping_device - given a device id and optional indicator of where the ping request
- *   came from, ping the device.  The ping results are echoed to standard output for the browser
+ * Given a device id and optional indicator of where the ping request came from, ping the device.
+ *   The ping results are echoed to standard output for the browser
  *
- * @param (int)  The device id in question
- * @param (bool) Whether the source of the ping request is coming from a remote data collector.
- * @param mixed $device_id
- * @param mixed $from_remote
+ * @param string|null $device_id The ID of the device to ping. If null or empty, an error message is printed.
+ * @param bool $from_remote Indicates if the request is from a remote source. Default is false.
  *
- * @return (void)
+ * @return void
  */
-function api_device_ping_device($device_id, $from_remote = false) {
+function api_device_ping_device(?string $device_id, bool $from_remote = false): void {
 	global $config, $snmp_error;
 
 	if (empty($device_id)) {
@@ -1792,16 +1712,14 @@ function api_device_ping_device($device_id, $from_remote = false) {
 }
 
 /**
- * api_duplicate_device_template - given a device_template_id, and a title, duplicate it.
+ * Duplicates a device template.
  *
- * @param (int)    The Device Template id to duplicate
- * @param (string) The name of the new Device Template
- * @param mixed $_host_template_id
- * @param mixed $host_template_title
+ * @param int $_host_template_id The ID of the host template to duplicate.
+ * @param string $host_template_title The title of the new host template.
  *
- * @return (void)
+ * @return int|bool The result of the duplication process.
  */
-function api_duplicate_device_template($_host_template_id, $host_template_title) {
+function api_duplicate_device_template(int $_host_template_id, string $host_template_title): int|bool {
 	global $fields_host_template_edit;
 
 	$host_template              = db_fetch_row_prepared('SELECT * FROM host_template WHERE id = ?', [$_host_template_id]);
@@ -1851,17 +1769,14 @@ function api_duplicate_device_template($_host_template_id, $host_template_title)
 }
 
 /**
- * api_clone_message - Displays a clone specific log
- *   message if there to CLI and the Cacti log
+ * Displays a clone specific log message if there to CLI and the Cacti log
  *
- * @param string - The message to output
- * @param bool - Is the output for CLI or the web only
- * @param mixed $message
- * @param mixed $force
+ * @param string $message The message to be logged.
+ * @param bool $force Optional. If true, forces the message to be logged regardless of the debug setting. Default is false.
  *
- * @return null
+ * @return void
  */
-function api_clone_message($message, $force = false) {
+function api_clone_message($message, $force = false): void {
 	global $debug, $config;
 
 	if ($debug || $force) {
@@ -1874,21 +1789,14 @@ function api_clone_message($message, $force = false) {
 }
 
 /**
- * api_clone_get_unique_name - Get a unique name for
- *   a cacti object based upon the table and column
- *   name.
+ * Get a unique name for a cacti object based upon the table and column name
  *
- * @param string - The desired object name
- * @param string - The table to be checked for that name
- * @param string - The column name to check for the name
- * @param mixed $name
- * @param mixed $table
- * @param mixed $column
- *
- * @return string|bool - The correct name for the object, else false
- *    If more than 20 attempts are made to find a good name.
+ * @param string $name The base name to check for uniqueness.
+ * @param string $table The name of the database table to check.
+ * @param string $column The name of the column in the table to check for the name. Default is 'name'.
+ * @return string|false The unique name if found, or false if a unique name could not be generated within 20 attempts.
  */
-function api_clone_get_unique_name($name, $table, $column = 'name') {
+function api_clone_get_unique_name(string $name, string $table, string $column = 'name'): string|false {
 	$i = 0;
 
 	while ($i < 20) {
@@ -1914,16 +1822,12 @@ function api_clone_get_unique_name($name, $table, $column = 'name') {
 }
 
 /**
- * api_clone_get_unique_filename - Get a unique file name for
- *   a Cacti object based upon the file name.
+ * Get a unique file name for a Cacti object based upon the file name
  *
- * @param string - The current filename
- * @param mixed $file_name
- *
- * @return string|bool - The correct name for the object, else false
- *    If more than 20 attempts are made to find a good name.
+ * @param string $file_name The original file name to be used as the base for generating a unique filename.
+ * @return string|false The unique filename if found, or false if no unique filename could be generated within 20 attempts.
  */
-function api_clone_get_unique_filename($file_name) {
+function api_clone_get_unique_filename(string $file_name): string|false {
 	$i = 1;
 
 	$file_data = pathinfo($file_name);
@@ -1945,36 +1849,25 @@ function api_clone_get_unique_filename($file_name) {
 }
 
 /**
- * api_clone_device_template_check_for_errors - This function will validate the
- *   input and return warnings and errors before allowing users to proceed.  This
- *   option is skipped when using the quiet option.
+ * This function will validate the input and return warnings and errors before allowing users to proceed.
+ *   This option is skipped when using the quiet option.
  *
- * @param int    - The device template id to be cloned
- * @param string - The include Graph Templates list
- * @param string - The clone Graph Templates list
- * @param string - The include Data Queries list
- * @param string - The clone Data Queries list
- * @param string - The include Data Templates list
- * @param string - The clone Data Templates list
- * @param string - The suffix for the clone operation
- * @param bool   - Should Data Query XML be cloned.  Will be updated if incorrect.
- * @param bool   - Should Data Input Method be cloned.  Will be updated if incorrect.
- * @param mixed $device_template_id
- * @param mixed $device_template_name
- * @param mixed $include_gt
- * @param mixed $clone_gt
- * @param mixed $include_dq
- * @param mixed $clone_dq
- * @param mixed $include_dt
- * @param mixed $clone_dt
- * @param mixed $suffix
- * @param mixed $clone_xml
- * @param mixed $clone_script
+ * @param int $device_template_id The ID of the device template to clone.
+ * @param string $device_template_name The name of the device template to clone.
+ * @param string $include_gt Whether to include graph templates ('all', comma-separated list of IDs, or empty).
+ * @param string $clone_gt Whether to clone graph templates ('all', comma-separated list of IDs, or empty).
+ * @param string $include_dq Whether to include data queries ('all', comma-separated list of IDs, or empty).
+ * @param string $clone_dq Whether to clone data queries ('all', comma-separated list of IDs, or empty).
+ * @param string $include_dt Whether to include data templates ('all', comma-separated list of IDs, or empty).
+ * @param string $clone_dt Whether to clone data templates ('all', comma-separated list of IDs, or empty).
+ * @param string &$suffix The suffix to append to cloned items.
+ * @param bool &$clone_xml Whether to clone XML files.
+ * @param bool &$clone_script Whether to clone script files.
  *
- * @return array - An array of warning and error message to provide to the user.
+ * @return array An array containing 'warnings' and 'errors' keys with respective messages.
  */
-function api_clone_device_template_check_for_errors($device_template_id, $device_template_name, $include_gt, $clone_gt,
-	$include_dq, $clone_dq, $include_dt, $clone_dt, &$suffix, &$clone_xml, &$clone_script) {
+function api_clone_device_template_check_for_errors(int $device_template_id, string $device_template_name, string $include_gt, string $clone_gt,
+string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, string &$suffix, bool &$clone_xml, bool &$clone_script): array {
 	global $config;
 
 	$return = [
@@ -2429,17 +2322,15 @@ function api_clone_device_template_check_for_errors($device_template_id, $device
 }
 
 /**
- * api_clone_device_template_get_objects - This function returns the core components
- *   from the Device Template for validating cloning actions.  Once these values
- *   are returned, the device template API will be able to clone the Device
+ * This function returns the core components from the Device Template for validating cloning actions.
+ *   Once these values are returned, the device template API will be able to clone the Device
  *   Template without errors.
  *
- * @param int - The Device Template ID to return objects for
- * @param mixed $device_template_id
+ * @param int $device_template_id The ID of the device template to retrieve objects for.
  *
- * @return array - All the Device Template Objects
+ * @return array An associative array containing the following keys:
  */
-function api_clone_device_template_get_objects($device_template_id) {
+function api_clone_device_template_get_objects(int $device_template_id): array {
 	global $config;
 
 	$objects = [
@@ -2574,38 +2465,26 @@ function api_clone_device_template_get_objects($device_template_id) {
 }
 
 /**
- * api_clone_device_template - Clones a device template and in some cases
- *   also updates duplicates Graph Templates, Data Templates, Data Input Methods
- *   and making copies of scripts, and XML files as well.
+ * Clones a device template and in some cases also updates duplicates Graph Templates,
+ *   Data Templates, Data Input Methods and making copies of scripts, and XML files as well.
  *
- * @param int    - The Device Template ID
- * @param string - The proposed Device Template Name
- * @param string - A comma delimited list of Graph Template ID's to Include
- * @param string - A comma delimited list of Graph Template ID's to Clone
- * @param string - A comma delimited list of Data Query ID's to Include
- * @param string - A comma delimited list of Data Query ID's to Clone
- * @param string - A comma delimited list of Data Templates to Include
- * @param string - A comma delimited list of Data Templates to Clone
- * @param string - The suffix to use for Cloning objects
- * @param bool   - Boolean to direct Cacti to clone the XML
- * @param bool   - Boolean to direct to Clone scripts
- * @param mixed $template_id
- * @param mixed $template_name
- * @param mixed $include_gt
- * @param mixed $clone_gt
- * @param mixed $include_dq
- * @param mixed $clone_dq
- * @param mixed $include_dt
- * @param mixed $clone_dt
- * @param mixed $suffix
- * @param mixed $clone_xml
- * @param mixed $clone_script
- * @param mixed $cli
+ * @param int $template_id The ID of the template to clone.
+ * @param string $template_name The name for the new template. If empty, the original name with a suffix will be used.
+ * @param string $include_gt Comma-separated list of graph template IDs to include. If 'all', includes all graph templates.
+ * @param string $clone_gt Comma-separated list of graph template IDs to clone. If 'all', clones all graph templates.
+ * @param string $include_dq Comma-separated list of data query IDs to include. If 'all', includes all data queries.
+ * @param string $clone_dq Comma-separated list of data query IDs to clone. If 'all', clones all data queries.
+ * @param string $include_dt Comma-separated list of data template IDs to include. If 'all', includes all data templates.
+ * @param string $clone_dt Comma-separated list of data template IDs to clone. If 'all', clones all data templates.
+ * @param string $suffix The suffix to append to the new template name if no name is provided.
+ * @param bool $clone_xml Whether to clone XML files associated with data queries.
+ * @param bool $clone_script Whether to clone script files associated with data queries.
+ * @param bool $cli Whether the function is being called from the command line interface.
  *
- * @return int|false - Either the new Device Template ID or false on error
+ * @return int|bool The ID of the newly created template.
  */
-function api_clone_device_template($template_id, $template_name, $include_gt, $clone_gt,
-	$include_dq, $clone_dq, $include_dt, $clone_dt, $suffix, $clone_xml, $clone_script, $cli = false) {
+function api_clone_device_template(int $template_id, string $template_name, string $include_gt, string $clone_gt,
+	string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, string $suffix, bool $clone_xml, bool $clone_script, bool $cli = false): int|bool {
 	global $config;
 
 	/* The list of duplicated Data Templates.  Dont do it more than once */
@@ -3017,6 +2896,7 @@ function api_clone_device_template($template_id, $template_name, $include_gt, $c
 
 	exit;
 
+	/* FIXME : Unused Code after exit */
 	if ($clone_dt != '') {
 		api_clone_message('NOTE: Cloning Non Data Query Draph Templates');
 
@@ -3067,7 +2947,15 @@ function api_clone_device_template($template_id, $template_name, $include_gt, $c
 	return $new_template;
 }
 
-function api_device_template_download($type, $ids) {
+/**
+ * Downloads device templates or archives as a compressed tar file.
+ *
+ * @param string $type The type of download, either 'templates' or 'archives'.
+ * @param array $ids An array of template or archive IDs to be included in the download.
+ *
+ * @return void
+ */
+function api_device_template_download(string $type, array $ids): void {
 	if (cacti_sizeof($ids) == 1) {
 		if ($type == 'templates') {
 			$name = clean_up_name(db_fetch_cell_prepared('SELECT name FROM host_template WHERE id = ?', $ids));
@@ -3126,8 +3014,15 @@ function api_device_template_download($type, $ids) {
 	unlink($tmpfile);
 }
 
-function api_device_template_archive_for_export($id) {
-	global $export_types, $export_errors, $debug, $package_file;
+/**
+ * Archives a device template for export.
+ *
+ * @param string $id The ID of the device template to archive for export.
+ *
+ * @return false|string The contents of the package file if successful, or false on failure.
+ */
+function api_device_template_archive_for_export(string $id): false|string {
+	global $export_errors, $debug, $package_file;
 
 	$export_okay = false;
 
@@ -3201,8 +3096,16 @@ function api_device_template_archive_for_export($id) {
 	}
 }
 
-function api_device_template_archive($id, $archive_note) {
-	global $export_types, $export_errors, $debug, $package_file;
+/**
+ * Archives a device template by exporting its data and saving it to the database.
+ *
+ * @param string $id The ID of the device template to archive.
+ * @param string $archive_note A note to include with the archive.
+ *
+ * @return bool Returns true if the device template was archived successfully, false otherwise.
+ */
+function api_device_template_archive(string $id, string $archive_note): bool {
+	global $export_errors, $debug, $package_file;
 
 	$export_okay = false;
 

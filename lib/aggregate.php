@@ -607,7 +607,7 @@ function aggregate_change_graph_type(int $graph_index, int $old_graph_type, int 
 		case GRAPH_ITEM_TYPE_LINE2:
 		case GRAPH_ITEM_TYPE_LINE3:
 		case GRAPH_ITEM_TYPE_LINESTACK:
-			default:
+		default:
 			return $new_graph_type;
 
 			break;

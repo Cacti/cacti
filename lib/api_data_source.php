@@ -22,21 +22,29 @@
  +-------------------------------------------------------------------------+
 */
 
-/* api_data_source_crc_update - update hash stored in settings table to inform
-   remote pollers to update their caches
-   @arg $poller_id - the id of the poller impacted by hash update
-   @arg $variable  - the hash variable prefix for the replication setting. */
-function api_data_source_cache_crc_update($poller_id, $variable = 'poller_replicate_data_source_cache_crc') {
-	$hash = hash('ripemd160', date('Y-m-d H:i:s') . random_int(0, mt_getrandmax()) . $poller_id);
+/**
+ * Update hash stored in settings table to inform remote pollers to update their caches
+ *
+ * @param int $poller_id The ID of the poller impacted by hash update
+ * @param string $variable The hash variable prefix for the replication setting
+ *
+ * @return void
+ */
+function api_data_source_cache_crc_update(int $poller_id, string $variable = 'poller_replicate_data_source_cache_crc'): void {
+	$hash = hash('ripemd160', date('Y-m-d H:i:s') . random_int(0, mt_getrandmax()) . "$poller_id");
 
 	db_execute_prepared("REPLACE INTO settings
 		SET value = ?, name='$variable" . '_' . "$poller_id'",
 		[$hash]);
 }
 
-/* api_data_source_deletable - tells you if a data source can be removed
-   @arg $local_data_id - the id of the poller impacted by hash update */
-function api_data_source_deletable($local_data_id) {
+/**
+ * Determines if a data source can be deleted.
+ *
+ * @param int $local_data_id The ID of the local data source to check.
+ * @return bool Returns true if the data source can be deleted, false otherwise.
+ */
+function api_data_source_deletable(int $local_data_id): bool {
 	$graphs = db_fetch_cell_prepared('SELECT COUNT(DISTINCT gti.local_graph_id)
 		FROM data_local AS dl
 		INNER JOIN data_template_rrd AS dtr
@@ -54,7 +62,15 @@ function api_data_source_deletable($local_data_id) {
 	}
 }
 
-function api_data_source_remove($local_data_id, $update_totals = true) {
+/**
+ * Removes a data source from the system.
+ *
+ * @param int  $local_data_id  The ID of the local data source to be removed.
+ * @param bool $update_totals  Whether to update object cache totals after deletion. Default is true.
+ *
+ * @return void
+ */
+function api_data_source_remove(int $local_data_id, bool $update_totals = true): void {
 	if (empty($local_data_id)) {
 		return;
 	}
@@ -185,7 +201,15 @@ function api_data_source_remove($local_data_id, $update_totals = true) {
 	}
 }
 
-function api_data_source_remove_multi($local_data_ids, $update_totals = true) {
+/**
+ * Removes multiple data sources from the system.
+ *
+ * @param array $local_data_ids An array of local data IDs to be removed.
+ * @param bool $update_totals   Optional. Whether to update totals after removal. Default is true.
+ *
+ * @return void
+ */
+function api_data_source_remove_multi(array $local_data_ids, bool $update_totals = true): void {
 	// Shortcut out if no data
 	if (!cacti_sizeof($local_data_ids)) {
 		return;
@@ -340,7 +364,14 @@ function api_data_source_remove_multi($local_data_ids, $update_totals = true) {
 	}
 }
 
-function api_data_source_enable($local_data_id) {
+/**
+ * Enables a data source by setting its status to 'on' in the database.
+ *
+ * @param int $local_data_id The ID of the local data source to enable.
+ *
+ * @return void
+ */
+function api_data_source_enable(int $local_data_id): void {
 	db_execute_prepared("UPDATE data_template_data
 		SET active = 'on'
 		WHERE local_data_id = ?",
@@ -361,7 +392,14 @@ function api_data_source_enable($local_data_id) {
 	update_poller_cache($local_data_id, true);
 }
 
-function api_data_source_disable($local_data_id) {
+/**
+ * Disables a data source by deleting its poller items and updating its status.
+ *
+ * @param int $local_data_id The ID of the local data source to be disabled.
+ *
+ * @return void
+ */
+function api_data_source_disable(int $local_data_id): void {
 	db_execute_prepared('DELETE FROM poller_item
 		WHERE local_data_id = ?',
 		[$local_data_id]);
@@ -388,7 +426,14 @@ function api_data_source_disable($local_data_id) {
 	}
 }
 
-function api_data_source_disable_multi($local_data_ids) {
+/**
+ * Disables multiple data sources by their local data IDs.
+ *
+ * @param array $local_data_ids An array of local data IDs to be disabled.
+ *
+ * @return void
+ */
+function api_data_source_disable_multi(array $local_data_ids): void {
 	/* initialize variables */
 	$ids_to_disable = '';
 	$poller_ids     = [];
@@ -460,7 +505,17 @@ function api_data_source_disable_multi($local_data_ids) {
 	}
 }
 
-function api_data_source_get_interface_speed($data_local) {
+/**
+ * Retrieves the interface speed for a given data source.
+ *
+ * @param array $data_local An associative array containing the following keys:
+ *                          - 'host_id': The ID of the host.
+ *                          - 'snmp_query_id': The ID of the SNMP query.
+ *                          - 'snmp_index': The SNMP index.
+ *
+ * @return int The interface speed in bits per second.
+ */
+function api_data_source_get_interface_speed(array $data_local): int {
 	$ifHighSpeed = db_fetch_cell_prepared('SELECT field_value
 		FROM host_snmp_cache
 		WHERE host_id = ?
@@ -509,10 +564,18 @@ function api_data_source_get_interface_speed($data_local) {
 		}
 	}
 
-	return $speed;
+	return (int) $speed;
 }
 
-function api_data_source_change_host($data_sources, $device_id) {
+/**
+ * Change the host for a list of data sources.
+ *
+ * @param array $data_sources An array of data source IDs to be updated.
+ * @param int $device_id The ID of the new host device.
+ *
+ * @return void
+ */
+function api_data_source_change_host(array $data_sources, int $device_id): void {
 	if (cacti_sizeof($data_sources)) {
 		foreach ($data_sources as $data_source) {
 			db_execute_prepared('UPDATE data_local
@@ -534,7 +597,14 @@ function api_data_source_change_host($data_sources, $device_id) {
 	}
 }
 
-function api_reapply_suggested_data_source_data($local_data_id) {
+/**
+ * Reapplies suggested data source data for a given local data ID.
+ *
+ * @param int $local_data_id The local data ID for which to reapply suggested data source data.
+ *
+ * @return void
+ */
+function api_reapply_suggested_data_source_data(int $local_data_id): void {
 	$data_template_data_id = db_fetch_cell_prepared('SELECT id
 		FROM data_template_data
 		WHERE local_data_id = ?',
@@ -621,7 +691,16 @@ function api_reapply_suggested_data_source_data($local_data_id) {
 	}
 }
 
-function api_data_source_duplicate($_local_data_id, $_data_template_id, $data_source_title) {
+/**
+ * Duplicates a data source or data template.
+ *
+ * @param int $_local_data_id The ID of the local data to duplicate. If provided, the function will duplicate the data source.
+ * @param int $_data_template_id The ID of the data template to duplicate. If provided, the function will duplicate the data template.
+ * @param string $data_source_title The title for the new data source or data template.
+ * 
+ * @return int|false The ID of the newly created local data or data template, or false on failure.
+ */
+function api_data_source_duplicate(int $_local_data_id, int $_data_template_id, string $data_source_title): int|false {
 	global $struct_data_source, $struct_data_source_item;
 
 	if (!empty($_local_data_id)) {
@@ -776,7 +855,14 @@ function api_data_source_duplicate($_local_data_id, $_data_template_id, $data_so
 	}
 }
 
-function api_data_input_duplicate($_data_input_id, $input_title) {
+/**
+ * Duplicates a data input entry and its associated fields.
+ *
+ * @param int $_data_input_id The ID of the data input entry to duplicate.
+ * @param string $input_title The title for the new duplicated data input entry.
+ * @return int|false The ID of the newly created data input entry on success, or false on failure.
+ */
+function api_data_input_duplicate(int $_data_input_id, string $input_title): int|false {
 	$orig_input = db_fetch_row_prepared('SELECT *
 		FROM data_input
 		WHERE id = ?',
@@ -824,7 +910,14 @@ function api_data_input_duplicate($_data_input_id, $input_title) {
 	return false;
 }
 
-function api_data_input_remove($id) {
+/**
+ * Removes a data input and its associated fields and data.
+ *
+ * @param int $id The ID of the data input to be removed.
+ *
+ * @return void
+ */
+function api_data_input_remove(int $id): void {
 	$data_input_fields = db_fetch_assoc_prepared('SELECT id
 		FROM data_input_fields
 		WHERE data_input_id = ?',
@@ -850,7 +943,14 @@ function api_data_input_remove($id) {
 	update_replication_crc(0, 'poller_replicate_data_input_crc');
 }
 
-function api_data_input_more_inputs($id, $input_string) {
+/**
+ * Checks if the number of input fields in the input string is greater than the existing input fields in the database.
+ *
+ * @param int $id The ID of the data input.
+ * @param string $input_string The input string containing the input fields.
+ * @return bool Returns true if the number of input fields in the input string is greater than the existing input fields, otherwise false.
+ */
+function api_data_input_more_inputs(int $id, string $input_string): bool {
 	$input_string = str_replace('<path_cacti>', '', $input_string);
 	$inputs       = substr_count($input_string, '<');
 

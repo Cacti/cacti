@@ -4408,6 +4408,7 @@ function ping_netbios_name(string $ip, int $timeout_ms = 1000): bool {
 			return false;
 		}
 	}
+
 	return false;
 }
 
