@@ -487,6 +487,8 @@ FILTERED_LOG="$(grep -v \
 	-e "IMPORT NOTE: File is Signed Correctly" \
 	-e "MAILER INFO:" \
 	-e "LMSENSORS" \
+	-e "REINDEX Child" \
+	-e "REINDEX Poller" \
 	-e "BOOST INFO:" \
 	-e "PUSHOUT Child" \
 	-e "STATS:" \
