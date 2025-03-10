@@ -874,6 +874,8 @@ function aggregate_reorder_ds_graph(int $base, string $graph_template_id, int $a
 
 	/* restore original error handler */
 	restore_error_handler();
+
+	return true;
 }
 
 /**
