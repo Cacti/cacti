@@ -424,7 +424,7 @@ wget -q --no-check-certificate --load-cookies=${cookieFile} --keep-session-cooki
 # ------------------------------------------------------------------------------
 echo "NOTE: Recursively Checking all Base and Enabled Plugin Pages"
 echo "NOTE: This will take several minutes!!!"
-wget --no-check-certificate --load-cookies=${cookieFile} --keep-session-cookies --save-cookies=${cookieFile} --output-file="${logFile1}" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable)" --recursive --level=0 --execute=robots=off "${WEBHOST}/index.php"
+wget --no-check-certificate --load-cookies=${cookieFile} --keep-session-cookies --save-cookies=${cookieFile} --output-file="${logFile1}" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable|moveup|movedown)" --recursive --level=0 --execute=robots=off "${WEBHOST}/index.php"
 error=$?
 
 if [ $error -eq 8 ]; then
