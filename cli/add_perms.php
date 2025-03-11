@@ -185,6 +185,12 @@ if (cacti_sizeof($parms) == 0) {
 		exit(1);
 	}
 
+    if ($displayGroups) {
+		displayGroups($quietMode);
+
+		exit(1);
+	}
+
 	/* verify, that a valid userid is provided */
 	$userIds = [];
 
@@ -280,11 +286,4 @@ function display_help() {
 	print "    --list-trees\n";
 	print "    --list-graph-templates\n";
 	print "    --list-graphs --host-id=[ID]\n";
-}
-
-function displayGroups() {
-	/**
-	 * Todo implement
-	 */
-	print 'This option has not yet been implemented';
 }

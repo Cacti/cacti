@@ -865,3 +865,33 @@ function displayUsers(bool $quietMode = false): void {
 		print PHP_EOL;
 	}
 }
+
+/**
+ * Displays the list of groups.
+ *
+ * @param bool $quietMode If set to true, suppresses output.
+ *
+ * @return void
+ */
+function displayGroups(bool $quietMode = false) {
+        if (!$quietMode) {
+                print 'Known Groups: (id, name, description)'. PHP_EOL;
+        }
+
+        $groups = db_fetch_assoc('SELECT id, name, description
+                FROM user_auth_group
+                ORDER BY id');
+
+        if (cacti_sizeof($groups)) {
+                foreach ($groups as $group) {
+                        print $group['id']      ."\t";
+                        print $group['name']    ."\t";
+                        print $group['description'] . PHP_EOL;
+                }
+        }
+
+        if (!$quietMode) {
+                print PHP_EOL;
+        }
+        exit(1);
+}
