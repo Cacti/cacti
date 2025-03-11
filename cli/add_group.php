@@ -184,7 +184,7 @@ function display_version() {
 function display_help() {
 	display_version();
 
-	print "\nusage: np_add_groups.php --type=[add_group|group_perm] --name=[name] --description=[description]\n";
+	print "\nusage: add_groups.php --type=[add_group|group_perm] --name=[name] --description=[description]\n";
 	print "[--quiet]\n\n";
 	print "List Options:\n";
 	print "    --list-users\n";
