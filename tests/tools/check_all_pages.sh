@@ -52,6 +52,11 @@ DBUSER="cactiuser";
 DBSLEEP=2
 
 # ------------------------------------------------------------------------------
+# --- Moc Data
+# ------------------------------------------------------------------------------
+MOCDATA="../mocdata/cacti.mocdb.sql"
+
+# ------------------------------------------------------------------------------
 # --- Shell defaults
 # ------------------------------------------------------------------------------
 if id apache > /dev/null 2>&1; then
@@ -157,6 +162,10 @@ while [ -n "$1" ]; do
 		"-dp")
 			DBPASS="$2"
 			DBSLEEP=0
+			shift
+			;;
+		"-md")
+			MOCDATA="$2"
 			shift
 			;;
 		*)
@@ -335,6 +344,16 @@ set_stderr_logging() {
 	$mysql $MYSQL_AUTH_USR -e "REPLACE INTO cacti.settings (name, value) VALUES ('path_stderrlog', '${CACTI_ERRLOG}');" "$DBNAME"
 }
 
+load_moc_data() {
+	echo "NOTE: Loading Moc Data from \"$MOCDATA\""
+
+	if [ -f "$MOCDATA" ]; then
+		$mysql $MYSQL_AUTH_USR "$DBNAME" < $MOCDATA
+	else
+		echo "WARNING: Unable to locate \"$MOCDATA\""
+	fi
+}
+
 allow_index_following() {
 	echo "NOTE: Altering Cacti to allow following pages"
 
@@ -383,6 +402,7 @@ empty_log_files
 # ------------------------------------------------------------------------------
 # Make a backup copy of the Cacti settings table and enable log validation
 # ------------------------------------------------------------------------------
+load_moc_data
 set_cacti_admin_password
 enable_log_validation
 set_stderr_logging
