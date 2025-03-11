@@ -22,7 +22,12 @@
  +-------------------------------------------------------------------------+
 */
 
-function api_scheduler_form() {
+/**
+ * Generates the form configuration array for the API scheduler.
+ *
+ * @return array The form configuration array.
+ */
+function api_scheduler_form(): array {
 	global $sched_types, $heartbeats;
 
 	return [
@@ -161,7 +166,12 @@ function api_scheduler_form() {
 	];
 }
 
-function api_scheduler_javascript() {
+/**
+ * Outputs the JavaScript code for the scheduler functionality.
+ *
+ * @return void
+ */
+function api_scheduler_javascript(): void {
 	?>
 	<script type='text/javascript'>
 	$(function() {
@@ -300,7 +310,15 @@ function api_scheduler_javascript() {
 	<?php
 }
 
-function api_scheduler_augment_save($save, $post) {
+/**
+ * Augments the save array with scheduler settings and validates the input data.
+ *
+ * @param array $save The array to be augmented with scheduler settings.
+ * @param array $post The array containing the input data to be validated and saved.
+ * 
+ * @return array The augmented save array with validated scheduler settings.
+ */
+function api_scheduler_augment_save(array $save, array $post): array {
 	/* scheduler settings */
 	$save['sched_type']    = form_input_validate($post['sched_type'], 'sched_type', '^[0-9]+$', false, 3);
 	$save['start_at']      = form_input_validate($post['start_at'], 'start_at', '', false, 3);
@@ -394,7 +412,15 @@ function api_scheduler_augment_save($save, $post) {
 	return $save;
 }
 
-function api_scheduler_is_time_to_start($schedule, $table = 'automation_networks') {
+/**
+ * Determines if it is time to start a scheduled task based on the provided schedule.
+ *
+ * @param array  $schedule The schedule details
+ * @param string $table    The name of the table to update the next start time in. Default is 'automation_networks'.
+ *
+ * @return bool Returns true if it is time to start the scheduled task, false otherwise.
+ */
+function api_scheduler_is_time_to_start(array $schedule, string $table = 'automation_networks'): bool {
 	$now   = time();
 
 	if (empty($schedule['next_start'])) {
@@ -505,9 +531,18 @@ function api_scheduler_is_time_to_start($schedule, $table = 'automation_networks
 
 			break;
 	}
+
+	return false;
 }
 
-function api_scheduler_calculate_next_start($schedule) {
+/**
+ * Calculate the next start time for a given schedule.
+ *
+ * @param array $schedule The schedule configuration array.
+ *
+ * @return int|false The timestamp of the next start time, or false if no valid next start time is found.
+ */
+function api_scheduler_calculate_next_start(array $schedule): int|false {
 	$now    = time();
 	$dates  = [];
 
