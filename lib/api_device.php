@@ -67,7 +67,7 @@ function api_device_remove(int $device_id): void {
 	db_execute_prepared('DELETE FROM poller_item      WHERE host_id = ?', [$device_id]);
 	db_execute_prepared('DELETE FROM poller_reindex   WHERE host_id = ?', [$device_id]);
 	db_execute_prepared('DELETE FROM graph_tree_items WHERE host_id = ?', [$device_id]);
-	db_execute_prepared('DELETE FROM reports_items    WHERE host_id = ?', [$device_id . ':%']);
+	db_execute_prepared('DELETE FROM reports_items    WHERE host_id = ?', [$device_id]);
 	db_execute_prepared('DELETE FROM poller_command   WHERE command LIKE ?', [$device_id . ':%']);
 
 	if ($poller_id > 1) {
@@ -170,7 +170,7 @@ function api_device_purge_deleted_devices(): void {
 			db_execute_prepared('DELETE FROM poller_item      WHERE host_id = ?', [$d['id']]);
 			db_execute_prepared('DELETE FROM poller_reindex   WHERE host_id = ?', [$d['id']]);
 			db_execute_prepared('DELETE FROM graph_tree_items WHERE host_id = ?', [$d['id']]);
-			db_execute_prepared('DELETE FROM reports_items    WHERE host_id = ?', [$d['id'] . ':%']);
+			db_execute_prepared('DELETE FROM reports_items    WHERE host_id = ?', [$d['id']]);
 			db_execute_prepared('DELETE FROM poller_command   WHERE command LIKE ?', [$d['id'] . ':%']);
 			db_execute_prepared('DELETE FROM data_local       WHERE host_id = ?', [$d['id']]);
 			db_execute_prepared('DELETE FROM graph_local      WHERE host_id = ?', [$d['id']]);
