@@ -234,7 +234,7 @@ function api_tree_release_lock(string $lockname): void {
  *
  * @return void
  */
-function api_tree_create_node(int $tree_id, int $node_id, int $position, string $title = ''): void {
+function api_tree_create_node(int $tree_id, int|string $node_id, int $position, string $title = ''): void {
 	input_validate_input_number($tree_id, 'tree_id');
 	input_validate_input_number($position, 'position');
 
