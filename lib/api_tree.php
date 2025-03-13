@@ -374,10 +374,6 @@ function api_tree_graph_exists(int $tree_id, int $parent, int $local_graph_id): 
 	return $id > 0 ? $id : false;
 }
 
-/* api_tree_delete - given a tree and a branch/leaf, delete the node and it's content
- * @arg $tree_id - The tree to remove from
- * @arg $leaf_id - The branch to remove
- * @returns - null */
 /**
  * Given a tree and a branch/leaf, delete the node and it's content
  *
