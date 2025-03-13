@@ -562,16 +562,32 @@ function form_actions() {
 
 		if (cacti_sizeof($trees)) {
 			foreach ($trees as $tree) {
+				$branches = db_fetch_assoc_prepared('SELECT id, title
+					FROM graph_tree_items
+					WHERE graph_tree_id = ?
+					AND host_id = 0
+					AND local_graph_id = 0
+					AND parent = 0
+					ORDER BY parent, position',
+					array($tree['id']));
+
+				if (cacti_sizeof($branches)) {
+					$branches = array_rekey($branches, 'id', 'title');
+				} else {
+					$branches[0] = '[root]';
+				}
+
 				$form_data['options']['tr_' . $tree['id']] = [
 					'smessage' => __esc('Click \'Continue\' to Place the following Device on Tree %s.', $tree['name']),
-					'pmessage' => __esc('Click \'Continue\' to Duplicate following Devices on Tree %s.', $tree['name']),
+					'pmessage' => __esc('Click \'Continue\' to Place the following Devices on Tree %s.', $tree['name']),
 					'scont'    => __('Place Device on Tree'),
 					'pcont'    => __('Place Devices on Tree'),
 					'extra'    => [
 						'tree_item_id' => [
-							'method'  => 'drop_branch',
+							'method'  => 'drop_array',
 							'title'   => __('Destination Branch'),
-							'id'      => $tree['id']
+							'array'   => $branches,
+							'default' => array_key_first($branches),
 						]
 					],
 					'eaction'   => 'tree_id',
