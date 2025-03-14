@@ -1,17 +1,5 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: developers@cacti.net\n"
-"POT-Creation-Date: 2024-04-20 18:16-0400\n"
-"PO-Revision-Date: 2024-04-20 19:23-0400\n"
-"Last-Translator: Anonymous <anonymous@cacti.net>\n"
-"Language-Team: Swedish <http://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\n"
-"Language: sv_SE\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 3.4.2\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2025-03-14 01:33+0000\nLast-Translator: Daniel Nylander <weblate@danielnylander.se>\nLanguage-Team: Swedish <http://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -28,7 +16,7 @@ msgstr "Vänligen se den officiella %sCacti-webbplatsen %s för information, sup
 
 #: about.php:48
 msgid "Active Developers"
-msgstr "Kaktusutvecklare"
+msgstr "Aktiva utvecklare"
 
 #: about.php:49
 msgid "Developers working on Cacti, its Architecture, Documentation and Future Releases."
@@ -65,7 +53,7 @@ msgstr "Användarna av Cacti"
 
 #: about.php:90
 msgid "Especially anyone who has taken the time to create an issue report, or otherwise help fix a Cacti related problems. Also to anyone who has contributed to supporting Cacti."
-msgstr "Särskilt alla som har tagit tid att skapa en problemrapport, eller på annat sätt hjälpa till att åtgärda problem med Cacti. Också till alla som har bidragit till att stödja kaktus."
+msgstr "Särskilt alla som har tagit tid att skapa en problemrapport, eller på annat sätt hjälpa till att åtgärda problem med Cacti. Också till alla som har bidragit till att stödja Cacti."
 
 #: about.php:95
 msgid "License"
@@ -652,7 +640,7 @@ msgstr "Inga grafer funna"
 
 #: aggregate_graphs.php:1503
 msgid " [ Custom Graphs List Applied - Clear to Reset ]"
-msgstr "[Anpassad graflista tillämpad - Filter FROM List]"
+msgstr " [ Lista över anpassade grafer tillämpas - rensa för att återställa ]"
 
 #: aggregate_graphs.php:1503 aggregate_graphs.php:1613
 #: include/global_arrays.php:2768
@@ -792,7 +780,7 @@ msgstr "Samlade mallar som används kan inte raderas. Används definieras som re
 #: gprint_presets.php:397 graph_templates.php:843 host_templates.php:927
 #: vdef.php:891
 msgid "Deletable"
-msgstr "deletable"
+msgstr "Borttagbar"
 
 #: aggregate_templates.php:693 cdef.php:886 color.php:704 data_queries.php:1151
 #: data_queries.php:1423 gprint_presets.php:402 graph_templates.php:848
@@ -838,7 +826,7 @@ msgstr "Lösenordskrav inkluderar:"
 #: auth_changepassword.php:311
 #, php-format
 msgid "Must be at least %d characters in length"
-msgstr "Måste vara minst% d tecken i längd"
+msgstr "Måste vara minst %d tecken långt"
 
 #: auth_changepassword.php:315
 msgid "Must include mixed case"
@@ -855,7 +843,7 @@ msgstr "Måste innehålla minst 1 specialtecken"
 #: auth_changepassword.php:327
 #, php-format
 msgid "Cannot be reused for %d password changes"
-msgstr "Kan inte återanvändas för% d lösenord ändringar"
+msgstr "Kan inte återanvändas för %d lösenordsbyten"
 
 #: auth_changepassword.php:380
 msgid "There are problems with the Change Password page.  Contact your Cacti administrator right away."
@@ -1113,12 +1101,12 @@ msgstr "Tillagd manuellt via enhetens automationsgränssnitt."
 #: automation_devices.php:123
 #, php-format
 msgid "Device %s Added to Cacti"
-msgstr "Enhet %s tillagd i kaktusar"
+msgstr "Enhet %s tillagd i Cacti"
 
 #: automation_devices.php:125
 #, php-format
 msgid "Device %s Not Added to Cacti"
-msgstr "Enhet %s inte tillagd i kaktusar"
+msgstr "Enhet %s inte tillagd i Cacti"
 
 #: automation_devices.php:135
 msgid "Devices Removed from Cacti Automation database"
@@ -1319,7 +1307,7 @@ msgstr "Rubrikformat"
 
 #: automation_graph_rules.php:265 automation_tree_rules.php:267
 msgid "rule_name"
-msgstr "Regelnamn"
+msgstr "regel_namn"
 
 #: automation_graph_rules.php:271 automation_tree_rules.php:273
 msgid "Click 'Continue' to enable the following Rule(s)."
@@ -1596,7 +1584,7 @@ msgstr "Associerad webbplats"
 
 #: automation_networks.php:454
 msgid "Choose the Cacti Site that you wish to associate discovered Devices with."
-msgstr "Välj den kaktiska webbplatsen som du vill associera upptäckta enheter med."
+msgstr "Välj den Cacti-platsen som du vill associera upptäckta enheter med."
 
 #: automation_networks.php:462
 msgid "Subnet Range"
@@ -1645,7 +1633,7 @@ msgstr "Ange antal trådar som ska användas för att upptäcka detta nätverkso
 #: automation_networks.php:498
 #, php-format
 msgid "%d Thread"
-msgstr "% d tråd"
+msgstr "%d Tråd"
 
 #: automation_networks.php:499 automation_networks.php:500
 #: automation_networks.php:501 automation_networks.php:502
@@ -1659,7 +1647,7 @@ msgstr "% d tråd"
 #: include/global_arrays.php:832 include/global_arrays.php:833
 #, php-format
 msgid "%d Threads"
-msgstr "% d trådar"
+msgstr "%d Trådar"
 
 #: automation_networks.php:515
 msgid "Run Limit"
@@ -1672,7 +1660,7 @@ msgstr "Efter den valda körgränsen avslutas upptäckten."
 #: automation_networks.php:519 automation_networks.php:1209 pollers.php:911
 #, php-format
 msgid "%d Minute"
-msgstr "% d minut"
+msgstr "%d minut"
 
 #: automation_networks.php:520 automation_networks.php:521
 #: automation_networks.php:522 automation_networks.php:523
@@ -1743,11 +1731,11 @@ msgstr "Använd NetBIOS för att försöka lösa upp värdens värdnamn."
 
 #: automation_networks.php:546
 msgid "Automatically Add to Cacti"
-msgstr "Lägg automatiskt till kaktus"
+msgstr "Lägg automatiskt till Cacti"
 
 #: automation_networks.php:547
 msgid "For any newly discovered Devices that are reachable using SNMP and who match a Device Rule, add them to Cacti."
-msgstr "För alla nyupptäckta enheter som kan nås med SNMP och som matchar en Device Rule, lägg till dem till kaktus."
+msgstr "För alla nyupptäckta enheter som kan nås med SNMP och som matchar en Device Rule, lägg till dem till Cacti."
 
 #: automation_networks.php:552
 msgid "Allow same sysName on different hosts"
@@ -2167,7 +2155,7 @@ msgstr "namn"
 
 #: automation_snmp.php:295
 msgid "Automation SNMP Options has been Duplicated."
-msgstr "Automatisering SNMP-alternativ"
+msgstr "Automation SNMP Options har duplicerats."
 
 #: automation_snmp.php:297
 msgid "Automation Item does not exist.  Can not Duplicate."
@@ -2296,7 +2284,7 @@ msgstr "Åtgärd"
 #: lib/api_automation.php:1387 lib/api_automation.php:1455
 #, php-format
 msgid "Item#%d"
-msgstr "Post #% d"
+msgstr "Artikel#%d"
 
 #: automation_snmp.php:559
 msgid "none"
@@ -2577,7 +2565,7 @@ msgstr[1] "Klicka på &quot;Fortsätt&quot; för att duplicera följande CDEF-fi
 #: data_templates.php:473 graph_templates.php:382 host_templates.php:234
 #: vdef.php:276
 msgid "Title Format:"
-msgstr "Rubrikformat"
+msgstr "Titelformat:"
 
 #: cdef.php:287
 msgid "Duplicate CDEF"
@@ -2643,7 +2631,7 @@ msgstr "Artikelvärde"
 #: cdef.php:603 vdef.php:602
 #, php-format
 msgid "Item #%d"
-msgstr "Artikelnummer% d"
+msgstr "Artikel #%d"
 
 #: cdef.php:678
 msgid "Delete CDEF Item"
@@ -2824,7 +2812,7 @@ msgstr "Inga färger hittades"
 
 #: color_templates.php:30
 msgid "Sync Aggregates"
-msgstr "aggregat"
+msgstr "Synkronisera aggregat"
 
 #: color_templates.php:73
 msgid "Color Item"
@@ -2834,7 +2822,7 @@ msgstr "Färgartikel"
 #: lib/api_aggregate.php:1839 lib/html.php:1231 lib/html_reports.php:1735
 #, php-format
 msgid "Item # %d"
-msgstr "Artikelnummer% d"
+msgstr "Artikel # %d"
 
 #: color_templates.php:133 graph_templates_inputs.php:235
 #: lib/api_aggregate.php:1891 lib/html.php:1332
@@ -2902,7 +2890,7 @@ msgstr "Färgmall [ny]"
 #: color_templates.php:465
 #, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
-msgstr "Färgmall '%s' hade% d Aggregatmallar skjutits ut och% d Icke-mallade aggregeringar skjutits ut"
+msgstr "Färgmall '%s' hade %d Aggregatmallar utskjutna och %d Icke-templerade Aggregat utskjutna"
 
 #: color_templates.php:467
 #, php-format
@@ -2958,7 +2946,7 @@ msgstr "Ta bort kontroll"
 
 #: data_debug.php:52
 msgid "Data Source debug started."
-msgstr "Datakälla Felsökning"
+msgstr "Felsökning av datakälla påbörjad."
 
 #: data_debug.php:55
 msgid "Data Source debug received an invalid Data Source ID."
@@ -3108,7 +3096,7 @@ msgstr "Inga initiala hittades! Väntar på RRDfile-uppdatering"
 
 #: data_debug.php:734
 msgid "Waiting on analysis and RRDfile update"
-msgstr "Var RRDfilen uppdaterad?"
+msgstr "Väntar på analys och uppdatering av RRD-fil"
 
 #: data_debug.php:741
 msgid "RRDfile Owner"
@@ -3160,7 +3148,7 @@ msgstr "Skulle vi kunna konvertera titeln?"
 
 #: data_debug.php:802
 msgid "Data Source matches the RRDfile?"
-msgstr "Datakälla blev inte pollad"
+msgstr "Datakälla matchar RRD-filen?"
 
 #: data_debug.php:816
 #, php-format
@@ -3487,7 +3475,7 @@ msgstr[1] "Klicka på &quot;Fortsätt&quot; för att radera följande datafrågo
 
 #: data_queries.php:418 lib/html_reports.php:520
 msgid "Name Format:"
-msgstr "Namnformat"
+msgstr "Namnformat:"
 
 #: data_queries.php:426
 msgid "Duplicate Data Query"
@@ -3783,7 +3771,7 @@ msgstr "Ange ett giltigt antal rader för att få RRA-storleken."
 #: include/global_arrays.php:1475 include/global_settings.php:1597
 #, php-format
 msgid "%d Years"
-msgstr "% d år"
+msgstr "%d År"
 
 #: data_source_profiles.php:815
 msgid "1 Year"
@@ -3793,7 +3781,7 @@ msgstr "1 år"
 #: include/global_arrays.php:1469 rrdcleaner.php:521
 #, php-format
 msgid "%d Month"
-msgstr "% d månad"
+msgstr "%d månad"
 
 #: data_source_profiles.php:824 include/global_arrays.php:787
 #: include/global_arrays.php:788 include/global_arrays.php:789
@@ -3803,14 +3791,14 @@ msgstr "% d månad"
 #: rrdcleaner.php:524
 #, php-format
 msgid "%d Months"
-msgstr "% d månader"
+msgstr "%d månader"
 
 #: data_source_profiles.php:833 include/global_arrays.php:727
 #: include/global_arrays.php:783 include/global_arrays.php:1467
 #: rrdcleaner.php:517 rrdcleaner.php:518
 #, php-format
 msgid "%d Week"
-msgstr "% d Vecka"
+msgstr "%d vecka"
 
 #: data_source_profiles.php:833 include/global_arrays.php:784
 #: include/global_arrays.php:785 include/global_arrays.php:1468
@@ -3818,7 +3806,7 @@ msgstr "% d Vecka"
 #: include/global_settings.php:2893 rrdcleaner.php:519 rrdcleaner.php:520
 #, php-format
 msgid "%d Weeks"
-msgstr "% d veckor"
+msgstr "%d veckor"
 
 #: data_source_profiles.php:842 include/global_arrays.php:726
 #: include/global_arrays.php:770 include/global_arrays.php:780
@@ -4062,11 +4050,11 @@ msgstr "Redigera datamall."
 
 #: data_sources.php:876
 msgid "Disable Data Source."
-msgstr "Inaktivera datakälla"
+msgstr "Inaktivera datakälla."
 
 #: data_sources.php:876
 msgid "Enable Data Source."
-msgstr "Aktivera datakälla"
+msgstr "Aktivera datakälla."
 
 #: data_sources.php:942
 msgid "Selected Data Template"
@@ -4156,7 +4144,7 @@ msgstr "Observera att denna fråga kan ta lite tid att köra."
 
 #: data_sources.php:1449 graphs.php:2032
 msgid "Orphaned"
-msgstr "föräldralösa"
+msgstr "Föräldralös"
 
 #: data_sources.php:1626 utilities.php:2191
 msgid "Data Source Name"
@@ -4233,7 +4221,7 @@ msgstr "Klicka på &quot;Fortsätt&quot; för att duplicera följande datamall (
 
 #: data_templates.php:473
 msgid "template_title"
-msgstr "Mallens titel"
+msgstr "mall_titel"
 
 #: data_templates.php:477
 msgid "Duplicate Data Template(s)"
@@ -4433,7 +4421,7 @@ msgstr "CSV-export"
 
 #: graph.php:143 graph.php:416 lib/html.php:526
 msgid "Edit Graph Template"
-msgstr "Redigera grafmall."
+msgstr "Redigera grafmall"
 
 #: graph.php:148 lib/html.php:532 lib/html.php:534
 msgid "Click to view just this Graph in Real-time"
@@ -4477,7 +4465,7 @@ msgstr "Bildcache-katalogen är inte skrivbar. Ange behörigheter och försök s
 
 #: graph_realtime.php:373
 msgid "Cacti Real-time Graphing"
-msgstr "Kaktusgrafik i realtid"
+msgstr "Cacti-grafik i realtid"
 
 #: graph_realtime.php:411 lib/html_graph.php:238 lib/html_reports.php:124
 #: lib/html_tree.php:1066
@@ -4487,11 +4475,11 @@ msgstr "Miniatyrer"
 #: graph_realtime.php:415
 #, php-format
 msgid "%d seconds left."
-msgstr "% d sekunder kvar."
+msgstr "%d sekunder kvar."
 
 #: graph_realtime.php:431
 msgid " seconds left."
-msgstr "sekunder kvar."
+msgstr " sekunder kvar."
 
 #: graph_templates.php:39
 msgid "Change Settings"
@@ -4654,7 +4642,7 @@ msgstr "Cur:"
 #: graph_templates_items.php:142 graph_templates_items.php:168
 #: graphs_items.php:148
 msgid "Avg:"
-msgstr "Medel."
+msgstr "Avg:"
 
 #: graph_templates_items.php:149 graph_templates_items.php:182
 #: graphs_items.php:162
@@ -4663,7 +4651,7 @@ msgstr "Max:"
 
 #: graph_templates_items.php:175 graphs_items.php:155
 msgid "Min:"
-msgstr "Min"
+msgstr "Min:"
 
 #: graph_templates_items.php:503
 #, php-format
@@ -4855,7 +4843,7 @@ msgstr "Konvertera till grafmall"
 
 #: graphs.php:151 graphs.php:166
 msgid "No Device - "
-msgstr "No Device"
+msgstr "Ingen enhet - "
 
 #: graphs.php:252
 #, php-format
@@ -4944,7 +4932,7 @@ msgstr "Klicka på &quot;Fortsätt&quot; för att skapa en aggregerad graf från
 
 #: graphs.php:1017
 msgid "The following Data Sources are in use by these Graphs:"
-msgstr "Följande datakälla (er) används av dessa graf (er)."
+msgstr "Följande datakällor används av dessa grafer:"
 
 #: graphs.php:1076
 msgid "Please confirm"
@@ -5214,21 +5202,20 @@ msgstr "VARNING: Cacti Page:%s för användare:%s Genererade ett allvarligt fel 
 #: help.php:74
 #, php-format
 msgid "The Document page '%s' count not be reached.  The Cacti Documentation site is not reachable.  The http error was '%s'.  Consider downloading an official release to obtain the latest documentation and hosting the documentation locally."
-msgstr "Antalet för dokumentsidan \"%s\" har inte uppnåtts.  Webbplatsen för kaktusdokumentation kan inte nås.  Http-felet var \"%s\".  Överväg att ladda ner en officiell version för att få den senaste dokumentationen och vara värd för dokumentationen lokalt."
+msgstr "Antalet för dokumentsidan \"%s\" har inte uppnåtts.  Webbplatsen för Cacti-dokumentation kan inte nås.  Http-felet var \"%s\".  Överväg att ladda ner en officiell version för att få den senaste dokumentationen och vara värd för dokumentationen lokalt."
 
 #: help.php:88
 msgid "Cacti GitHub Site"
 msgstr "Cacti GitHub-webbplats"
 
 #: help.php:88
-#, fuzzy
 msgid "Open a ticket at "
-msgstr "ÖPPNA EN BILJETT"
+msgstr "Öppna ett ärende på "
 
 #: help.php:88
 #, php-format
 msgid "The Help File %s was not located on the Cacti Documentation Website."
-msgstr "Hjälpfilen %s hittades inte på webbplatsen för kaktusdokumentation."
+msgstr "Hjälpfilen %s hittades inte på webbplatsen för Cacti-dokumentation."
 
 #: help.php:102
 #, php-format
@@ -5253,7 +5240,7 @@ msgstr "Placera enhet (er) på träd"
 
 #: host.php:121
 msgid "Data Query Re-indexed."
-msgstr "Data Query Index"
+msgstr "Datafråga omindexerad."
 
 #: host.php:129
 msgid "Device Data Query Re-indexed.  Verbose output displayed."
@@ -5265,7 +5252,7 @@ msgstr "Enhetsfelsökning aktiverad för enhet."
 
 #: host.php:155
 msgid "Device Debugging Disabled for Device."
-msgstr "Enheten är inaktiverad"
+msgstr "Enhetsfelsökning avaktiverad för enheten."
 
 #: host.php:163
 msgid "Poller Cache for Device Refreshed."
@@ -5273,7 +5260,7 @@ msgstr "Vagncache för enhet uppdaterad."
 
 #: host.php:165
 msgid "ERROR: Invalid Device ID."
-msgstr "FEL: Enhet ["
+msgstr "ERROR: Ogiltigt enhets-ID."
 
 #: host.php:205
 #, php-format
@@ -5477,7 +5464,7 @@ msgstr "Åtgärder"
 #: host.php:952
 #, php-format
 msgid " [%d Items, %d Rows]"
-msgstr "[% d objekt,% d rader]"
+msgstr " [%d objekt, %d rader]"
 
 #: host.php:952
 msgid "Fail"
@@ -5784,7 +5771,7 @@ msgstr "Inte Inloggad"
 
 #: include/auth.php:160
 msgid "You must be logged in to access this area of Cacti."
-msgstr "Du måste vara inloggad för att komma till detta område av kaktus."
+msgstr "Du måste vara inloggad för att komma till detta område av Cacti."
 
 #: include/auth.php:165
 msgid "FATAL: You must be logged in to access this area of Cacti."
@@ -5806,7 +5793,7 @@ msgstr "Om du känner att detta är ett fel. Vänligen kontakta din Cacti Admini
 
 #: include/auth.php:282 lib/functions.php:7023 permission_denied.php:54
 msgid "You are not permitted to access this section of Cacti."
-msgstr "Du har inte tillåtelse att komma åt den här delen av kaktuserna."
+msgstr "Du har inte tillåtelse att komma åt den här delen av Cacti."
 
 #: include/auth.php:285
 msgid "Installation In Progress"
@@ -5822,7 +5809,7 @@ msgstr "Det finns en installation eller uppgradering pågår."
 
 #: include/global.php:573
 msgid "The Main Data Collector has returned to an Online Status"
-msgstr "Förra gången denna datasamlare var full synkroniserad med huvudkaktisidan."
+msgstr "Huvuddatainsamlaren har återgått till online-status"
 
 #: include/global.php:577
 msgid "The Main Data Collector has gone to an Offline or Recovering Status"
@@ -6090,7 +6077,7 @@ msgstr "Det går inte att skapa MySQL-anslutning med Remote Data Collector."
 
 #: include/global_arrays.php:342
 msgid "Data Collector synchronization must be initiated from the main Cacti server."
-msgstr "Synkroniseringen av datasamlare måste initieras från huvudkaktiservern."
+msgstr "Synkroniseringen av datasamlare måste initieras från Cacti-huvudservern."
 
 #: include/global_arrays.php:345
 msgid "Synchronization does not include the Central Cacti Database server."
@@ -6294,7 +6281,7 @@ msgstr "Används inte"
 #: include/global_arrays.php:886
 #, php-format
 msgid "Version %d"
-msgstr "Version% d"
+msgstr "Version %d"
 
 #: include/global_arrays.php:647 include/global_arrays.php:657
 msgid "[None]"
@@ -6414,7 +6401,7 @@ msgstr "Valda Poller Intervall"
 #: include/global_arrays.php:806 include/global_arrays.php:807
 #, php-format
 msgid "Every %d Seconds"
-msgstr "Varje% d sekunder"
+msgstr "Varje %d sekund"
 
 #: include/global_arrays.php:735 include/global_arrays.php:808
 #: include/global_arrays.php:853
@@ -6443,7 +6430,7 @@ msgstr "Varje timme"
 #: include/global_settings.php:2513
 #, php-format
 msgid "Every %d Hours"
-msgstr "Varje% d timmar"
+msgstr "Varje %d timme"
 
 #: include/global_arrays.php:746
 #, php-format
@@ -6451,15 +6438,15 @@ msgid "Every %d Day"
 msgstr "Varje %d dag"
 
 #: include/global_arrays.php:758
-#, fuzzy, php-format
+#, php-format
 msgid "%0.1f Minutes"
-msgstr "0 minuter"
+msgstr "%0.1f Protokoll"
 
 #: include/global_arrays.php:791 include/global_arrays.php:1474
 #: include/global_settings.php:1596 rrdcleaner.php:525
 #, php-format
 msgid "%d Year"
-msgstr "% d år"
+msgstr "%d år"
 
 #: include/global_arrays.php:813
 msgid "Disabled/Manual"
@@ -6875,7 +6862,7 @@ msgstr "Alla linjer"
 #: include/global_arrays.php:1139 include/global_arrays.php:1140
 #, php-format
 msgid "%d Lines"
-msgstr "% d linjer"
+msgstr "%d Linjer"
 
 #: include/global_arrays.php:1218
 msgid "Console Access"
@@ -7006,7 +6993,7 @@ msgstr "Senaste timmen"
 #: include/global_arrays.php:1429 include/global_arrays.php:1430
 #, php-format
 msgid "Last %d Hours"
-msgstr "Senaste% d timmar"
+msgstr "Senaste %d timmar"
 
 #: include/global_arrays.php:1431
 msgid "Last Day"
@@ -7016,7 +7003,7 @@ msgstr "Sista dagen"
 #: include/global_arrays.php:1434
 #, php-format
 msgid "Last %d Days"
-msgstr "Senaste% d dagar"
+msgstr "Senaste %d dagar"
 
 #: include/global_arrays.php:1435
 msgid "Last Week"
@@ -7025,7 +7012,7 @@ msgstr "Förra veckan"
 #: include/global_arrays.php:1436
 #, php-format
 msgid "Last %d Weeks"
-msgstr "Senaste% d veckor"
+msgstr "Senaste %d veckorna"
 
 #: include/global_arrays.php:1437
 msgid "Last Month"
@@ -7035,7 +7022,7 @@ msgstr "Föregående månad"
 #: include/global_arrays.php:1440 include/global_arrays.php:1441
 #, php-format
 msgid "Last %d Months"
-msgstr "Senaste% d månaderna"
+msgstr "Senaste %d månaderna"
 
 #: include/global_arrays.php:1442
 msgid "Last Year"
@@ -7044,7 +7031,7 @@ msgstr "Föregående år"
 #: include/global_arrays.php:1443
 #, php-format
 msgid "Last %d Years"
-msgstr "Senaste% d år"
+msgstr "Senaste %d åren"
 
 #: include/global_arrays.php:1444
 msgid "Day Shift"
@@ -7052,7 +7039,7 @@ msgstr "Dagskift"
 
 #: include/global_arrays.php:1445
 msgid "This Day"
-msgstr "dag"
+msgstr "%d dygn"
 
 #: include/global_arrays.php:1446
 msgid "This Week"
@@ -7085,7 +7072,7 @@ msgstr "Föregående år"
 #: include/global_arrays.php:1457
 #, php-format
 msgid "%d Min"
-msgstr "% d Min"
+msgstr "%d min"
 
 #: include/global_arrays.php:1512
 msgid "Month Number, Day, Year"
@@ -7121,7 +7108,7 @@ msgstr "Efter förstärkning"
 #: include/global_arrays.php:1604
 #, php-format
 msgid "%d MBytes"
-msgstr "% d MBytes"
+msgstr "%d MBytes"
 
 #: include/global_arrays.php:1542
 msgid "1 GByte"
@@ -7139,7 +7126,7 @@ msgstr "%s GBytes"
 #: include/global_arrays.php:1611 include/global_arrays.php:1612
 #, php-format
 msgid "%d GBytes"
-msgstr "% d GBytes"
+msgstr "%d GBytes"
 
 #: include/global_arrays.php:1565
 msgid "2,000 Data Source Items"
@@ -7198,7 +7185,7 @@ msgstr "%s Timmar"
 #: include/global_arrays.php:1605
 #, php-format
 msgid "%d GByte"
-msgstr "% d GBytes"
+msgstr "%d GByte"
 
 #: include/global_arrays.php:1613 utilities.php:2710 utilities.php:2711
 #: utilities.php:2760
@@ -7230,7 +7217,7 @@ msgstr "1 Megabyte"
 #: include/global_arrays.php:1647 include/global_arrays.php:1648
 #, php-format
 msgid "%d Megabytes"
-msgstr "% d megabyte"
+msgstr "%d Megabyte"
 
 #: include/global_arrays.php:1652
 msgid "Send Now"
@@ -7450,11 +7437,11 @@ msgstr "är större än eller lika med"
 
 #: include/global_arrays.php:1758
 msgid "is unknown"
-msgstr "Okänd"
+msgstr "är okänd"
 
 #: include/global_arrays.php:1759
 msgid "is not unknown"
-msgstr "Okänd"
+msgstr "är inte okänd"
 
 #: include/global_arrays.php:1760
 msgid "is empty"
@@ -7491,7 +7478,7 @@ msgstr "Varje vecka"
 #: include/global_arrays.php:1878 include/global_arrays.php:1879
 #, php-format
 msgid "Every %d Weeks"
-msgstr "Varje% d veckor"
+msgstr "Varje %d veckor"
 
 #: include/global_arrays.php:1910
 msgctxt "A short textual representation of a month, three letters"
@@ -7885,7 +7872,7 @@ msgstr "Åtgärd"
 
 #: include/global_arrays.php:2636
 msgid "Cacti Help"
-msgstr "Kaktus Hem"
+msgstr "Cacti-hjälp"
 
 #: include/global_arrays.php:2648
 msgid "Export Results"
@@ -8058,9 +8045,9 @@ msgid "The number of SNMP OIDs that can be obtained in a single SNMP Get request
 msgstr "Anges antalet OID-filer som kan erhållas i en enda SNMP-förfrågan."
 
 #: include/global_form.php:152
-#, fuzzy, php-format
+#, php-format
 msgid "%d OID"
-msgstr "objekt-ID, OID"
+msgstr "%d OID"
 
 #: include/global_form.php:153 include/global_form.php:154
 #: include/global_form.php:155 include/global_form.php:156
@@ -8103,9 +8090,9 @@ msgstr "%d Repitition"
 #: include/global_form.php:190 include/global_form.php:191
 #: include/global_form.php:192 include/global_form.php:193
 #: include/global_form.php:194
-#, fuzzy, php-format
+#, php-format
 msgid "%d Repetitions"
-msgstr "Upprepningar"
+msgstr "%d Upprepningar"
 
 #: include/global_form.php:202
 msgid "SNMP Retries"
@@ -8330,7 +8317,7 @@ msgstr "Datakälla Aktiv"
 
 #: include/global_form.php:613
 msgid "Whether Cacti should gather data for this data source or not."
-msgstr "Oavsett om kaktuserna ska samla in data för den här datakällan eller inte."
+msgstr "Oavsett om Cacti ska samla in data för den här datakällan eller inte."
 
 #: include/global_form.php:621
 msgid "Internal Data Source Name"
@@ -8603,7 +8590,7 @@ msgstr "Right Axis Formatter (- right-axis-formatterare &lt;formatname&gt;)"
 
 #: include/global_form.php:903
 msgid "When you setup the right axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length and --right-axis-format.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
-msgstr "När du ställer in rätt axelmärkning, tillämpa en regel på dataformatet. Understödda format inkluderar &quot;numerisk&quot; där data behandlas som numerisk, &quot;tidsstämpel&quot; där värden tolkas som UNIX-tidsstämplar (antal sekunder sedan januari 1970) och uttryckt med strtimeformat (standard är% Y-% m-% d% H :%FRÖKEN&quot;). Se också - enhetens längd och - rätt axelformat. Slutligen &quot;duration&quot; där värden tolkas som varaktighet i millisekunder. Formatering följer reglerna för valstrfduration kvalificerad PRINT / GPRINT."
+msgstr "När du konfigurerar högeraxelns märkning ska du tillämpa en regel för dataformatet.  Format som stöds är \"numeric\" där data behandlas som numeriska, \"timestamp\" där värden tolkas som UNIX-tidsstämplar (antal sekunder sedan januari 1970) och uttrycks med strftime-format (standard är \"%Y-%m-%d %H:%M:%S\").  Se även --units-length och --right-axis-format.  Slutligen \"duration\" där värden tolkas som varaktighet i millisekunder.  Formatering följer reglerna för valstrfduration kvalificerad PRINT/GPRINT."
 
 #: include/global_form.php:906
 msgid "Left Axis Formatter (--left-axis-formatter &lt;formatname&gt;)"
@@ -8611,7 +8598,7 @@ msgstr "Vänsteraxelformaterare (--axelaxelformat &lt;formatnamn&gt;)"
 
 #: include/global_form.php:911
 msgid "When you setup the left axis labeling, apply a rule to the data format.  Supported formats include \"numeric\" where data is treated as numeric, \"timestamp\" where values are interpreted as UNIX timestamps (number of seconds since January 1970) and expressed using strftime format (default is \"%Y-%m-%d %H:%M:%S\").  See also --units-length.  Finally \"duration\" where values are interpreted as duration in milliseconds.  Formatting follows the rules of valstrfduration qualified PRINT/GPRINT."
-msgstr "När du ställer in vänsteraxelmärkning, tillämpa en regel på dataformatet. Understödda format inkluderar &quot;numerisk&quot; där data behandlas som numerisk, &quot;tidsstämpel&quot; där värden tolkas som UNIX-tidsstämplar (antal sekunder sedan januari 1970) och uttryckt med strtimeformat (standard är% Y-% m-% d% H :%FRÖKEN&quot;). Se också - enhetens längd. Slutligen &quot;duration&quot; där värden tolkas som varaktighet i millisekunder. Formatering följer reglerna för valstrfduration kvalificerad PRINT / GPRINT."
+msgstr "När du konfigurerar märkningen av vänster axel tillämpar du en regel för dataformatet.  Format som stöds är \"numeric\" där data behandlas som numeriska, \"timestamp\" där värden tolkas som UNIX-tidsstämplar (antal sekunder sedan januari 1970) och uttrycks med strftime-format (standard är \"%Y-%m-%d %H:%M:%S\").  Se även --units-length.  Slutligen \"duration\" där värden tolkas som varaktighet i millisekunder.  Formatering följer reglerna för valstrfduration kvalificerad PRINT/GPRINT."
 
 #: include/global_form.php:914
 msgid "Legend Options"
@@ -9169,7 +9156,7 @@ msgstr "Använd den här alternativen för att skapa t.ex. STACKed-grafer. <br> 
 #: include/global_form.php:1855 include/global_form.php:1941
 #: include/global_form.php:2046
 msgid "Totaling"
-msgstr "totalt"
+msgstr "Totalsumma"
 
 #: include/global_form.php:1856 include/global_form.php:1942
 #: include/global_form.php:2047
@@ -9273,7 +9260,7 @@ msgstr "Fältnamnet som ska användas för detta regelobjekt."
 
 #: include/global_form.php:2148 include/global_form.php:2190
 msgid "Operator."
-msgstr "Operatör"
+msgstr "Operatör."
 
 #: include/global_form.php:2155 include/global_form.php:2197
 #: include/global_form.php:2340
@@ -9287,7 +9274,7 @@ msgstr "Mönstret ska matchas mot."
 #: include/global_form.php:2164 include/global_form.php:2206
 #: include/global_form.php:2357
 msgid "Sequence."
-msgstr "Sekvens"
+msgstr "Sekvens."
 
 #: include/global_form.php:2215 include/global_form.php:2260
 msgid "A useful name for this Rule."
@@ -9367,19 +9354,19 @@ msgstr "Utskriftssträngmönstret för användning som trädhuvud. <br> Se en ma
 
 #: include/global_languages.php:906
 msgid " T"
-msgstr "T"
+msgstr " T"
 
 #: include/global_languages.php:908
 msgid " G"
-msgstr "G"
+msgstr " G"
 
 #: include/global_languages.php:910
 msgid " M"
-msgstr "M"
+msgstr " M"
 
 #: include/global_languages.php:912
 msgid " K"
-msgstr "K"
+msgstr " K"
 
 #: include/global_settings.php:39
 msgid "Paths"
@@ -9575,7 +9562,7 @@ msgstr "RRDfile Auto Clean"
 
 #: include/global_settings.php:239
 msgid "Automatically archive or delete RRDfiles when their corresponding Data Sources are removed from Cacti"
-msgstr "Arkivera eller radera RRDfiles automatiskt när motsvarande datakällor tas bort från kaktus"
+msgstr "Arkivera eller radera RRDfiles automatiskt när motsvarande datakällor tas bort från Cacti"
 
 #: include/global_settings.php:244
 msgid "RRDfile Auto Clean Method"
@@ -9583,7 +9570,7 @@ msgstr "RRDfile Auto Clean Method"
 
 #: include/global_settings.php:245
 msgid "The method used to Clean RRDfiles from Cacti after their Data Sources are deleted."
-msgstr "Metoden som används för att rengöra RRDfiles från kaktus efter datakällor raderas."
+msgstr "Metoden som används för att rengöra RRDfiles från Cacti efter datakällor raderas."
 
 #: include/global_settings.php:249
 msgid "Archive"
@@ -9687,7 +9674,7 @@ msgstr "Språkstöd"
 
 #: include/global_settings.php:342
 msgid "Choose 'enabled' to allow the localization of Cacti. The strict mode requires that the requested language will also be supported by all plugins being installed at your system. If that's not the fact everything will be displayed in English."
-msgstr "Välj &quot;aktiverat&quot; för att tillåta lokalisering av kaktus. Strikt läge kräver att det begärda språket också stöds av alla plugins som installeras på ditt system. Om det inte är så kommer allt att visas på engelska."
+msgstr "Välj &quot;aktiverat&quot; för att tillåta lokalisering av Cacti. Strikt läge kräver att det begärda språket också stöds av alla plugins som installeras på ditt system. Om det inte är så kommer allt att visas på engelska."
 
 #: include/global_settings.php:348
 msgid "Language"
@@ -9743,7 +9730,7 @@ msgstr "Andra inställningar"
 
 #: include/global_settings.php:401
 msgid "Show only site specific locations"
-msgstr "Ange några grafspecifika alternativ här."
+msgstr "Visa endast platsspecifika platser"
 
 #: include/global_settings.php:402
 msgid "Show only locations that are available at a devices selected site."
@@ -9839,7 +9826,7 @@ msgstr "Graf / Data Source Creation Method"
 
 #: include/global_settings.php:467
 msgid "When enabled, Cacti will set Radio Button to Delete related Data Sources of a Graph when removing Graphs.  Note: Cacti will not allow the removal of Data Sources if they are used in other Graphs."
-msgstr "När det är aktiverat kommer Cacti att ställa in radioknappen för att ta bort relaterade datakällor för en graf när du tar bort diagram. Obs! Kaktus tillåter inte borttagning av datakällor om de används i andra diagram."
+msgstr "När det är aktiverat kommer Cacti att ställa in radioknappen för att ta bort relaterade datakällor för en graf när du tar bort diagram. Obs! Cacti tillåter inte borttagning av datakällor om de används i andra diagram."
 
 #: include/global_settings.php:472
 msgid "Graphs Auto Unlock"
@@ -9847,7 +9834,7 @@ msgstr "Graph Match Rule"
 
 #: include/global_settings.php:473
 msgid "When enabled, Cacti will not lock Graphs.  This allow a faster manual modification of Data Sources related to a Graph."
-msgstr "När det är aktiverat låser inte kaktus grafer. Detta möjliggör en snabbare manuell modifiering av datakällor relaterade till en graf."
+msgstr "När det är aktiverat låser inte Cacti grafer. Detta möjliggör en snabbare manuell modifiering av datakällor relaterade till en graf."
 
 #: include/global_settings.php:478
 msgid "Hide Cacti Dashboard"
@@ -9883,7 +9870,7 @@ msgstr "Tillåt osäkra JavaScript-eval () -samtal"
 
 #: include/global_settings.php:503
 msgid "Certain Cacti plugins require the use of unsafe JavaScript eval() calls.  If you select this option, they will be allowed in Cacti."
-msgstr "Vissa Cacti-plugins kräver användning av osäkra JavaScript eval () -samtal. Om du väljer det här alternativet tillåts de i kaktusar."
+msgstr "Vissa Cacti-plugins kräver användning av osäkra JavaScript eval () -samtal. Om du väljer det här alternativet tillåts de i Cacti."
 
 #: include/global_settings.php:511
 msgid "Content-Security Alternate Sources"
@@ -9982,18 +9969,18 @@ msgid "The default number of Device Threads.  This is only applicable when using
 msgstr "Standardnumret för Device Threads. Detta gäller endast när Spine Data Collector används."
 
 #: include/global_settings.php:628
-#, fuzzy, php-format
+#, php-format
 msgid "%s Thread"
-msgstr "Tråd"
+msgstr "%s Tråd"
 
 #: include/global_settings.php:629 include/global_settings.php:630
 #: include/global_settings.php:631 include/global_settings.php:632
 #: include/global_settings.php:633 include/global_settings.php:634
 #: include/global_settings.php:635 include/global_settings.php:636
 #: include/global_settings.php:637
-#, fuzzy, php-format
+#, php-format
 msgid "%s Threads"
-msgstr "Gängor"
+msgstr "%s Trådar"
 
 #: include/global_settings.php:641
 msgid "Re-index Method for Data Queries"
@@ -10137,7 +10124,7 @@ msgstr "Ping-typ"
 
 #: include/global_settings.php:782
 msgid "Default Ping type for all new Devices.</i>"
-msgstr "Standard Ping-typ för alla nya enheter."
+msgstr "Standard Ping-typ för alla nya enheter.</i>"
 
 #: include/global_settings.php:789
 msgid "Default Ping Port for all new Devices.  With TCP, Cacti will attempt to Syn the port.  With UDP, Cacti requires either a successful connection, or a 'port not reachable' error to determine if the Device is up or not."
@@ -10182,7 +10169,7 @@ msgstr "Tema"
 
 #: include/global_settings.php:841 include/global_settings.php:2547
 msgid "Please select one of the available Themes to skin your Cacti with."
-msgstr "Var god välj ett av de tillgängliga teman för att skära din kaktus med."
+msgstr "Var god välj ett av de tillgängliga teman för att klä din Cacti med."
 
 #: include/global_settings.php:847
 msgid "Table Settings"
@@ -10334,7 +10321,7 @@ msgstr "Aktivera grafik i realtid"
 
 #: include/global_settings.php:990
 msgid "When an option is checked, users will be able to put Cacti into Real-time mode."
-msgstr "När ett alternativ är markerat kan användarna lägga kaktus i realtidsläge."
+msgstr "När ett alternativ är markerat kan användarna lägga Cacti i realtidsläge."
 
 #: include/global_settings.php:996
 msgid "This timespan you wish to see on the default graph."
@@ -10503,9 +10490,8 @@ msgid "Only show business hours during weekdays."
 msgstr "Visa endast öppettider under vardagar."
 
 #: include/global_settings.php:1148
-#, fuzzy
 msgid "Show business hours"
-msgstr "Våra arbetstider"
+msgstr "Visa öppettider"
 
 #: include/global_settings.php:1149
 msgid "Display business hours on rrd graphs."
@@ -10569,7 +10555,7 @@ msgstr "Cron Intervall"
 
 #: include/global_settings.php:1213
 msgid "The frequency that the Cacti data collector will be started.  You can use either crontab, a scheduled task (for windows), or the cactid systemd service to control launching the Cacti data collector.  For instructions on using the cactid daemon, review the README.md file in the service directory."
-msgstr "Frekvensen som Cacti -datainsamlaren startas. Du kan använda antingen crontab, en schemalagd uppgift (för Windows) eller cactid systemd -tjänsten för att styra lanseringen av Cacti -datainsamlaren. Om du vill ha instruktioner om hur du använder kaktiddemonen läser du filen README.md i servicekatalogen."
+msgstr "Frekvensen som Cacti -datainsamlaren startas. Du kan använda antingen crontab, en schemalagd uppgift (för Windows) eller cactid systemd -tjänsten för att styra lanseringen av Cacti -datainsamlaren. Om du vill ha instruktioner om hur du använder cactid-demonen läser du filen README.md i servicekatalogen."
 
 #: include/global_settings.php:1219
 msgid "Balance Process Load"
@@ -10585,7 +10571,7 @@ msgstr "Utmatningsbredd"
 
 #: include/global_settings.php:1226
 msgid "If you choose this option, Cacti will check for output that exceeds Cacti's ability to store it and issue a warning when it finds it."
-msgstr "Om du väljer det här alternativet kommer kaktuserna att kontrollera efter utdata som överstiger kaktis förmåga att lagra den och utfärda en varning när den hittar den."
+msgstr "Om du väljer det här alternativet kommer Cacti att kontrollera efter utdata som överstiger Cactis förmåga att lagra den och utfärda en varning när den hittar den."
 
 #: include/global_settings.php:1231
 msgid "Disable increasing OID Check"
@@ -10637,7 +10623,7 @@ msgstr "Som standard kommer huvudsakliga Cacti Data Collector att cache hela web
 
 #: include/global_settings.php:1289
 msgid "Additional Data Collector Settings"
-msgstr "Remote Data Collector Status:"
+msgstr "Ytterligare inställningar för datainsamlare"
 
 #: include/global_settings.php:1294
 msgid "Invalid Data Logging"
@@ -10669,7 +10655,7 @@ msgstr "Script och Script Server Timeout Value"
 
 #: include/global_settings.php:1314
 msgid "The maximum time that spine will wait on a script to complete.  This timeout value is in seconds and is only valid for the spine Data Collector."
-msgstr "Den maximala tiden som Cacti väntar på ett manus för att slutföra. Detta timeout-värde är i sekunder"
+msgstr "Den maximala tid som spine väntar på att ett skript ska slutföras.  Detta timeoutvärde anges i sekunder och gäller endast för Spine Data Collector."
 
 #: include/global_settings.php:1321
 msgid "Periodic All Device Re-Index"
@@ -10794,7 +10780,7 @@ msgstr "1 Process"
 #: include/global_settings.php:2263 include/global_settings.php:2264
 #, php-format
 msgid "%d Processes"
-msgstr "% d Processer"
+msgstr "%d Processer"
 
 #: include/global_settings.php:1425
 msgid "Maintenance Background Generation Timeout"
@@ -10842,7 +10828,7 @@ msgstr "Autentiseringsmetod"
 
 #: include/global_settings.php:1486
 msgid "<blockquote><i>Built-in Authentication</i> - Cacti handles user authentication, which allows you to create users and give them rights to different areas within Cacti.<br><br><i>Web Basic Authentication</i> - Authentication is handled by the web server. Users can be added or created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used.<br><br><i>LDAP Authentication</i> - Allows for authentication against a LDAP server. Users will be created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used.  If PHPs LDAP module is not enabled, LDAP Authentication will not appear as a selectable option.<br><br><i>Multiple LDAP/AD Domain Authentication</i> - Allows administrators to support multiple disparate groups from different LDAP/AD directories to access Cacti resources.  Just as LDAP Authentication, the PHP LDAP module is required to utilize this method.</blockquote>"
-msgstr "<blockquote> <i>Inbyggd autentisering</i> - Cacti hanterar användarautentisering, som låter dig skapa användare och ge dem rättigheter till olika områden inom kaktus. <br><br> <i>Web Basic Authentication</i> - Autentisering hanteras av webbservern. Användare kan läggas till eller skapas automatiskt vid första inloggningen om Mallanvändaren är definierad, annars kommer de definierade gästbehörigheterna att användas. <br><br> <i>LDAP-autentisering</i> - Tillåter autentisering mot en LDAP-server. Användare kommer att skapas automatiskt vid första inloggningen om Mallanvändaren är definierad, annars kommer de definierade gästbehörigheterna att användas. Om PHPs LDAP-modul inte är aktiverad visas LDAP-autentisering inte som ett valbart alternativ. <br><br> <i>Multipla LDAP / AD Domain Authentication</i> - Tillåter administratörer att stödja flera olika grupper från olika LDAP / AD-kataloger för att få tillgång till Cacti-resurser. Precis som LDAP-autentisering krävs PHP LDAP-modulen för att använda denna metod. </blockquote>"
+msgstr "<blockquote> <i>Inbyggd autentisering</i> - Cacti hanterar användarautentisering, som låter dig skapa användare och ge dem rättigheter till olika områden inom Cacti. <br><br> <i>Web Basic Authentication</i> - Autentisering hanteras av webbservern. Användare kan läggas till eller skapas automatiskt vid första inloggningen om Mallanvändaren är definierad, annars kommer de definierade gästbehörigheterna att användas. <br><br> <i>LDAP-autentisering</i> - Tillåter autentisering mot en LDAP-server. Användare kommer att skapas automatiskt vid första inloggningen om Mallanvändaren är definierad, annars kommer de definierade gästbehörigheterna att användas. Om PHPs LDAP-modul inte är aktiverad visas LDAP-autentisering inte som ett valbart alternativ. <br><br> <i>Multipla LDAP / AD Domain Authentication</i> - Tillåter administratörer att stödja flera olika grupper från olika LDAP / AD-kataloger för att få tillgång till Cacti-resurser. Precis som LDAP-autentisering krävs PHP LDAP-modulen för att använda denna metod. </blockquote>"
 
 #: include/global_settings.php:1492
 msgid "Support Authentication Cookies"
@@ -10862,7 +10848,7 @@ msgstr "Primäradministratör"
 
 #: include/global_settings.php:1504
 msgid "The name of the primary administrative account that will automatically receive Emails when the Cacti system experiences issues.  To receive these Emails, ensure that your mail settings are correct, and the administrative account has an Email address that is set."
-msgstr "Namnet på det primära administrativa kontot som automatiskt mottar e-postmeddelanden när kaktisystemet upplever problem. För att ta emot dessa e-postmeddelanden, se till att dina e-postinställningar är korrekta och det administrativa kontot har en e-postadress som är inställd."
+msgstr "Namnet på det primära administrativa kontot som automatiskt mottar e-postmeddelanden när Cacti-systemet upplever problem. För att ta emot dessa e-postmeddelanden, se till att dina e-postinställningar är korrekta och det administrativa kontot har en e-postadress som är inställd."
 
 #: include/global_settings.php:1506 include/global_settings.php:1514
 #: include/global_settings.php:1522 user_domains.php:344
@@ -10985,7 +10971,7 @@ msgstr "1 Ändra"
 #: include/global_settings.php:1630
 #, php-format
 msgid "%d Changes"
-msgstr "% d ändringar"
+msgstr "%d Förändringar"
 
 #: include/global_settings.php:1633
 msgid "Account Locking"
@@ -11112,7 +11098,7 @@ msgstr "Läge"
 
 #: include/global_settings.php:1753
 msgid "Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the user's Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the user's Distinguished Name (DN)."
-msgstr "Läge vilken kaktus försöker autentisera mot LDAP-servern. <blockquote> <i>Ingen sökning</i> - <i>Sökning utan</i> Distinguished Name (DN) sker, försök bara binda med det angivna Distinguished Name-formatet (DN). <br><br> <i>Anonym Sökning</i> - Försök att söka efter användarnamn mot LDAP-katalog via anonym bindning för att lokalisera användarens Distinguished Name (DN). <br><br> <i>Särskild</i> sökning - Försök att söka efter användarnamn mot LDAP-katalog via Specifikt Distinguished Name (DN) och Specifikt lösenord för bindning för att lokalisera användarens Distinguished Name (DN)."
+msgstr "Läge vilken Cacti försöker autentisera mot LDAP-servern. <blockquote> <i>Ingen sökning</i> - <i>Sökning utan</i> Distinguished Name (DN) sker, försök bara binda med det angivna Distinguished Name-formatet (DN). <br><br> <i>Anonym Sökning</i> - Försök att söka efter användarnamn mot LDAP-katalog via anonym bindning för att lokalisera användarens Distinguished Name (DN). <br><br> <i>Särskild</i> sökning - Försök att söka efter användarnamn mot LDAP-katalog via Specifikt Distinguished Name (DN) och Specifikt lösenord för bindning för att lokalisera användarens Distinguished Name (DN)."
 
 #: include/global_settings.php:1759 user_domains.php:422
 msgid "Distinguished Name (DN)"
@@ -11120,7 +11106,7 @@ msgstr "Distinguished Name (DN)"
 
 #: include/global_settings.php:1760 user_domains.php:423
 msgid "The \"Distinguished Name\" syntax, applicable for both OpenLDAP and Windows AD configurations, offers flexibility in defining user identity. For OpenLDAP, the format follows this structure: <i>\"uid=&lt;username&gt;,ou=people,dc=domain,dc=local\"</i>. Windows AD provides an alternative syntax: <i>\"&lt;username&gt;@win2kdomain.local\"</i>, commonly known as \"userPrincipalName (UPN)\". In this context, \"&lt;username&gt;\" represents the specific username provided during the login prompt. This is particularly pertinent when operating in \"No Searching\" mode, or \"Require Group Membership\" enabled."
-msgstr ""
+msgstr "Syntaxen \"Distinguished Name\", som gäller för både OpenLDAP- och Windows AD-konfigurationer, ger flexibilitet när det gäller att definiera användaridentitet. För OpenLDAP följer formatet den här strukturen: <i>\"uid=&lt;användarnamn&gt;,ou=folk,dc=domän,dc=lokal</i>\". Windows AD tillhandahåller en alternativ syntax: <i>\"&lt;användarnamn&gt;@win2kdomain.local\"</i>, allmänt känt som \"userPrincipalName (UPN)\". I det här sammanhanget representerar \"&lt;användarnamn&gt;\" det specifika användarnamn som anges i inloggningsprompten. Detta är särskilt relevant när du arbetar i läget \"Ingen sökning\" eller \"Kräv gruppmedlemskap\" är aktiverat."
 
 #: include/global_settings.php:1766 user_domains.php:430
 msgid "Require Group Membership"
@@ -11180,7 +11166,7 @@ msgstr "Sökfilter"
 
 #: include/global_settings.php:1811
 msgid "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>'(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))'</i> or for OpenLDAP: <i>'(&(objectClass=account)(uid=&lt;username&gt))'</i>.  '&lt;username&gt' is replaced with the username that was supplied at the login prompt. "
-msgstr "Sökfilter som används för att lokalisera användaren i LDAP-katalogen, till exempel för Windows: <i>&#39;(&amp; (objectclass = user) (objektkategori = användare) (userPrincipalName = &lt;användarnamn&gt; *)) &quot;</i> eller för OpenLDAP: <i>&#39; (&amp; (objectClass = konto) (uid = &lt;användarnamn&gt;)) &quot;</i> . &#39;&lt;användarnamn&gt;&#39; ersätts med användarnamnet som levererades vid inloggningsprompten."
+msgstr "Sökfilter som ska användas för att hitta användaren i LDAP-katalogen, t.ex. för Windows: <i>'(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*)</i> )' eller för OpenLDAP: ' <i>(&amp;(objectClass=account)(uid=&lt;username&amp;gt</i>))'. \"&lt;username&amp;gt\" ersätts med det användarnamn som angavs vid inloggningsprompten. "
 
 #: include/global_settings.php:1816 user_domains.php:479
 msgid "Search Distinguished Name (DN)"
@@ -11204,7 +11190,7 @@ msgstr "LDAP CN-inställningar"
 
 #: include/global_settings.php:1833 user_domains.php:498
 msgid "Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: displayname) "
-msgstr "Fält som ersätter det fullständiga namnet när du skapar en ny användare, taget från LDAP. (på windows: displayname)"
+msgstr "Fält som ersätter det fullständiga namnet när du skapar en ny användare, hämtat från LDAP. (på Windows: displayname) "
 
 #: include/global_settings.php:1838 package_import.php:463
 msgid "Email"
@@ -11432,7 +11418,7 @@ msgstr "Aktivera RRD-uppdatering på begäran"
 
 #: include/global_settings.php:2044
 msgid "Should Boost enable on demand RRD updating in Cacti?  If you disable, this change will not take affect until after the next polling cycle.  When you have Remote Data Collectors, this settings is required to be on."
-msgstr "Bör Boost aktivera efterfrågan RRD uppdatering i kaktus? Om du inaktiverar kommer denna ändring inte att träda i kraft förrän efter nästa omröstningscykel. När du har fjärrdatasamlare måste dessa inställningar vara på."
+msgstr "Bör Boost aktivera efterfrågan RRD uppdatering i Cacti? Om du inaktiverar kommer denna ändring inte att träda i kraft förrän efter nästa omröstningscykel. När du har fjärrdatasamlare måste dessa inställningar vara på."
 
 #: include/global_settings.php:2049
 msgid "System Level RRD Updater"
@@ -11496,7 +11482,7 @@ msgstr "Maximal RRD Update Script Run Time"
 
 #: include/global_settings.php:2121
 msgid "If the boost poller exceeds this runtime, a warning will be placed in the cacti log,"
-msgstr "Om boost pollen execeds denna körtid, kommer en varning att placeras i kaktistloggen,"
+msgstr "Om boost pollen execeds denna körtid, kommer en varning att placeras i Cacti-loggen,"
 
 #: include/global_settings.php:2127
 msgid "Enable direct population of poller_output_boost table"
@@ -11544,7 +11530,7 @@ msgstr "Aktivera datakällans statistiksamling"
 
 #: include/global_settings.php:2167
 msgid "Should Data Source Statistics be collected for this Cacti system?"
-msgstr "Ska datakällans statistik samlas in för detta kaktisystem?"
+msgstr "Ska datakällans statistik samlas in för detta Cacti-system?"
 
 #: include/global_settings.php:2172
 msgid "Number of DSStats Processes"
@@ -11596,7 +11582,7 @@ msgstr "Aktivera regel"
 
 #: include/global_settings.php:2235
 msgid "Should RRDfile check be enabled for this Cacti system?"
-msgstr "Ska datakällans statistik samlas in för detta kaktisystem?"
+msgstr "Ska datakällans statistik samlas in för detta Cacti-system?"
 
 #: include/global_settings.php:2240
 msgid "Number of RRDfile Check Processes"
@@ -11636,7 +11622,7 @@ msgstr "Strukturerade RRD-banor"
 
 #: include/global_settings.php:2296
 msgid "Use a separate subfolder for each hosts RRD files.  The naming of the RRDfiles will be one of the following:<br><ul><li>&lt;path_cacti&gt;/rra/host_id/local_data_id.rrd,</li><li>&lt;path_cacti&gt;/rra/device_id/data_query_id/local_data_id.rrd,</li><li>&lt;path_cacti&gt;/rra/device_hash/device_id/local_data_id.rrd,</li><li>&lt;path_cacti&gt;/rra/device_hash/device_id/data_query_id/local_data_id.rrd.</li></ul><br>You can make this change after install by running the CLI script <b>structure_rra_paths.php</b> after you make the change.  NOTE: If you change Max Directories value to decrease the number of directories, or if you change the Directory Pattern, empty directories will not be pruned after you rerun the <b>structure_rra_paths.php</b> script."
-msgstr ""
+msgstr "Använd en separat undermapp för varje värd RRD-filer.  Namngivningen av RRD-filerna kommer att vara en av följande:<br><ul><li>&lt;path_cacti&gt;/rra/host_id/local_data_id.rrd,</li><li>&lt;path_cacti&gt;/rra/device_id/data_query_id/local_data_id.rrd,</li><li>&lt;path_cacti&gt;/rra/device_hash/device_id/local_data_id.rrd,</li><li>&lt;path_cacti&gt;/rra/device_hash/device_id/data_query_id/local_data_id.rrd.</li></ul><br>Du kan göra den här ändringen efter installationen genom att köra CLI-skriptet <b>structure_rra_paths.php</b> efter att du har gjort ändringen.  OBS: Om du ändrar värdet Max Directories för att minska antalet kataloger, eller om du ändrar Directory Pattern, kommer tomma kataloger inte att beskäras när du kör skriptet <b>structure_rra_paths.php</b> igen."
 
 #: include/global_settings.php:2300
 msgid "Directory Pattern"
@@ -11672,7 +11658,7 @@ msgstr "Det maximala antalet enhetskataloger som ska skapas baserat på hashade 
 
 #: include/global_settings.php:2325 include/global_settings.php:2357
 msgid "Proxy Server"
-msgstr "Proxy Server"
+msgstr "Proxyserver"
 
 #: include/global_settings.php:2326
 msgid "The DNS hostname or IP address of the RRDtool proxy server."
@@ -11776,7 +11762,7 @@ msgstr "Något värde som är så många standardavvikelser över genomsnittet k
 #: include/global_settings.php:2424
 #, php-format
 msgid "%d Standard Deviations"
-msgstr "% d Standardavvikelser"
+msgstr "%d Standardavvikelser"
 
 #: include/global_settings.php:2428 lib/html.php:2266
 msgid "Variance Percentage"
@@ -11804,7 +11790,7 @@ msgstr "Detta värde representerar antalet höga och låga genomsnittliga prover
 #: include/global_settings.php:2469
 #, php-format
 msgid "%d High/Low Samples"
-msgstr "% d Höga / Lågprover"
+msgstr "%d Hög/Låg provtagning"
 
 #: include/global_settings.php:2473
 msgid "Max Kills Per RRA"
@@ -11822,7 +11808,7 @@ msgstr "Detta värde representerar det maximala antalet spikes som ska tas bort 
 #: include/global_settings.php:2488 include/global_settings.php:2489
 #, php-format
 msgid "%d Spikes"
-msgstr "% d Spikes"
+msgstr "%d Spikar"
 
 #: include/global_settings.php:2493
 msgid "RRDfile Backup Directory"
@@ -11926,7 +11912,7 @@ msgstr "Döljer funktionshindrade enheter och grafer när du tittar utanför fli
 
 #: include/global_settings.php:2589
 msgid "Show Device Aggregates"
-msgstr "aggregat"
+msgstr "Visa enhetsaggregat"
 
 #: include/global_settings.php:2590
 msgid "If a Device Data Source is included in an Aggregate Graph, show that Graph along with other Device Graphs"
@@ -12022,7 +12008,7 @@ msgstr "Miniatyr sektioner"
 
 #: include/global_settings.php:2690
 msgid "Which portions of Cacti display Thumbnails by default."
-msgstr "Vilka delar av kaktus som standard visar miniatyrbilder."
+msgstr "Vilka delar av Cacti som standard visar miniatyrbilder."
 
 #: include/global_settings.php:2704
 msgid "Preview Thumbnail Columns"
@@ -12047,7 +12033,7 @@ msgstr "1 kolumn"
 #: lib/html_tree.php:1060
 #, php-format
 msgid "%d Columns"
-msgstr "% d kolumner"
+msgstr "%d kolumner"
 
 #: include/global_settings.php:2718
 msgid "Tree View Thumbnail Columns"
@@ -12259,7 +12245,7 @@ msgstr "Vänta vänta medan installationssystemet för Cacti Version %s initiali
 
 #: install/install.php:118
 msgid "FATAL: We are unable to continue with this installation. In order to install Cacti, PHP must be at version 5.4 or later."
-msgstr "FATAL: Vi kan inte fortsätta med den här installationen. För att installera kaktus måste PHP vara i version 5.4 eller senare."
+msgstr "FATAL: Vi kan inte fortsätta med den här installationen. För att installera Cacti måste PHP vara i version 5.4 eller senare."
 
 #: install/install.php:121
 msgid "See the PHP Manual: <a href=\"http://php.net/manual/en/book.json.php\">JavaScript Object Notation</a>."
@@ -12516,7 +12502,7 @@ msgstr "Värd"
 
 #: lib/api_device.php:1573
 msgid "System:"
-msgstr "System"
+msgstr "System:"
 
 #: lib/api_device.php:1580
 msgid "Uptime:"
@@ -12584,11 +12570,11 @@ msgstr "Enhet+Mall:(%s%s)"
 
 #: lib/auth.php:2371 lib/auth.php:2378 lib/auth.php:2387
 msgid "Restricted By: "
-msgstr "Begränsat"
+msgstr "Begränsad av: "
 
 #: lib/auth.php:2375
 msgid "Granted By: "
-msgstr "Beviljad av:"
+msgstr "Beviljas av: "
 
 #: lib/auth.php:2382
 msgid "Granted"
@@ -12627,7 +12613,7 @@ msgstr "Web Basic Authentication konfigurerad, men inget användarnamn skickades
 #: lib/auth.php:3622
 #, php-format
 msgid "%s authenticated by Web Server, but both Template and Guest Users are not defined in Cacti."
-msgstr "%s autentiseras av webbserver, men både mall och gästanvändare är inte definierade i kaktus."
+msgstr "%s autentiseras av webbserver, men både mall och gästanvändare är inte definierade i Cacti."
 
 #: lib/auth.php:3728
 #, php-format
@@ -12664,7 +12650,7 @@ msgstr "Din Cacti-administratör har tvingat komplexa lösenord för inloggninga
 #: lib/auth.php:4203
 #, php-format
 msgid "Password must be at least %d characters!"
-msgstr "Lösenordet måste vara minst% d tecken!"
+msgstr "Lösenordet måste innehålla minst %d tecken!"
 
 #: lib/auth.php:4209
 msgid "Your password must contain at least 1 numerical character!"
@@ -12687,9 +12673,9 @@ msgid "Authentication was previously not set.  Attempted to set to Local Authent
 msgstr "Autentisering var tidigare inte inställd. Försökte ställa in på lokal autentisering, men inget administratörskonto hittades."
 
 #: lib/boost.php:63 utilities.php:2762
-#, fuzzy, php-format
+#, php-format
 msgid "%s MBytes"
-msgstr "Mibyte"
+msgstr "%s MBytes"
 
 #: lib/boost.php:66
 #, php-format
@@ -12720,25 +12706,25 @@ msgstr "Loggfiltrar"
 
 #: lib/clog_webapi.php:274
 msgid " - Admin Filter active"
-msgstr "- Adminfiltret aktivt"
+msgstr " - Admin Filter aktiv"
 
 #: lib/clog_webapi.php:276
 msgid " - Admin Unfiltered"
-msgstr "- Adminfiltrerad"
+msgstr " - Admin ofiltrerad"
 
 #: lib/clog_webapi.php:279
 msgid " - Admin view"
-msgstr "- Adminvisning"
+msgstr " - Admin vy"
 
 #: lib/clog_webapi.php:284
 #, php-format
 msgid "Log [Total Lines: %d %s - Filter active]"
-msgstr "Log [Totalt antal linjer:% d %s - Aktiv filter]"
+msgstr "Logga [Totalt antal rader: %d %s - Filter aktivt]"
 
 #: lib/clog_webapi.php:286
 #, php-format
 msgid "Log [Total Lines: %d %s - Unfiltered]"
-msgstr "Log [Totalt antal linjer:% d %s - Ej filtrerat]"
+msgstr "Logga [Totalt antal rader: %d %s - Ofiltrerad]"
 
 #: lib/clog_webapi.php:296 utilities.php:1518 utilities.php:1866
 #: utilities.php:2089 utilities.php:2184 utilities.php:3052 utilities.php:3262
@@ -12795,11 +12781,11 @@ msgstr "Enheter som använder"
 
 #: lib/clog_webapi.php:561
 msgid "Recaches"
-msgstr "träffar"
+msgstr "Återvinningar"
 
 #: lib/clog_webapi.php:565
 msgid "Threshold"
-msgstr "tröskel"
+msgstr "Tröskel"
 
 #: lib/clog_webapi.php:579 tree.php:833
 msgid "Display"
@@ -12815,7 +12801,7 @@ msgstr "Äldsta först"
 
 #: lib/clog_webapi.php:612
 msgid "Matches"
-msgstr "träffar"
+msgstr "Matcher"
 
 #: lib/clog_webapi.php:613
 msgid "Does Not Match"
@@ -12869,7 +12855,7 @@ msgstr "Indexändring upptäckt! CurrentIndex: %s, PreviousIndex: %s"
 #: lib/data_query.php:310
 #, php-format
 msgid "Transient Index Removal Detected! PreviousIndex: %s.  No action taken."
-msgstr "Hämtning av index upptäckt! PreviousIndex: %s"
+msgstr "Övergående indexborttagning upptäckt! FöregåendeIndex: %s.  Ingen åtgärd vidtagen."
 
 #: lib/data_query.php:313
 #, php-format
@@ -13034,7 +13020,7 @@ msgstr "Hittade objektet [ %s = &#39; %s&#39;] index: %s"
 #: lib/data_query.php:782 lib/data_query.php:797
 #, php-format
 msgid "Total: %f, Delta: %f, %s"
-msgstr "Totalt:% f, Delta:% f, %s"
+msgstr "Totalt: %f, Delta: %f, %s"
 
 #: lib/data_query.php:822
 #, php-format
@@ -13271,7 +13257,7 @@ msgstr "Felsökning inte slutförd efter 5 omröstningar"
 
 #: lib/dsdebug.php:254
 msgid "Failed fields: "
-msgstr "Felaktiga fält:"
+msgstr "Misslyckade fält: "
 
 #: lib/dsdebug.php:263
 msgid "Data Source is not set as Active"
@@ -13297,7 +13283,7 @@ msgstr "RRD-filen är inte uppdaterad efter omröstningen"
 
 #: lib/dsdebug.php:297
 msgid "Data Source returned Bad Results for "
-msgstr "Datakälla gav dåliga resultat för"
+msgstr "Datakällan gav dåliga resultat för "
 
 #: lib/dsdebug.php:302
 msgid "Data Source was not polled"
@@ -13314,12 +13300,12 @@ msgstr "RRD-filen är inte uppdaterad efter omröstningen"
 #: lib/functions.php:449 settings.php:268
 #, php-format
 msgid "Settings save to Data Collector %d skipped due to heartbeat."
-msgstr "Inställningar spara till Data Collector% d Misslyckades."
+msgstr "Inställningar sparas till datainsamlare %d hoppades över på grund av hjärtslag."
 
 #: lib/functions.php:461 settings.php:280
 #, php-format
 msgid "Settings save to Data Collector %d Failed."
-msgstr "Inställningar spara till Data Collector% d Misslyckades."
+msgstr "Inställningar sparas i datainsamlaren %d Misslyckades."
 
 #: lib/functions.php:928 lib/functions.php:1019
 msgid "Message Not Found."
@@ -13403,11 +13389,11 @@ msgstr "Anslutningen misslyckades: %s"
 
 #: lib/functions.php:5272
 msgid "SMTP error: "
-msgstr "SMTP-fel:"
+msgstr "SMTP-fel: "
 
 #: lib/functions.php:5285
 msgid "This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings."
-msgstr "Detta är ett testmeddelande som genereras av kaktus. Det här meddelandet skickades för att testa konfigurationen av dina e-postinställningar."
+msgstr "Detta är ett testmeddelande som genereras av Cacti. Det här meddelandet skickades för att testa konfigurationen av dina e-postinställningar."
 
 #: lib/functions.php:5286
 msgid "Your email settings are currently set as follows"
@@ -13468,7 +13454,7 @@ msgstr "Meddelandet skickades inte på grund av pingfel."
 #: lib/functions.php:5943 lib/functions.php:6012
 #, php-format
 msgid "Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details."
-msgstr "Kaktusaktiverad plugin %s på grund av följande fel: %s! Se Cacti loggfilen för mer information."
+msgstr "Cacti inaktiverad plugin %s på grund av följande fel: %s! Se Cacti loggfilen för mer information."
 
 #: lib/functions.php:6102
 #, php-format
@@ -13525,7 +13511,7 @@ msgstr "Ange nyckelord"
 
 #: lib/html.php:440 lib/reports.php:1518 lib/reports.php:1522
 msgid "Data Query:"
-msgstr "Dataförfrågning"
+msgstr "Datafrågeställning:"
 
 #: lib/html.php:509
 msgid "CSV Export of Graph Data"
@@ -13550,7 +13536,7 @@ msgstr "Föregående"
 #: lib/html.php:587
 #, php-format
 msgid "%d to %d of %s [ %s ]"
-msgstr "% d till% d av %s [ %s]"
+msgstr "%d till %d av %s [ %s ]"
 
 #: lib/html.php:590 lib/html.php:619 lib/installer.php:1630
 msgid "Next"
@@ -13559,12 +13545,12 @@ msgstr "Nästa"
 #: lib/html.php:597
 #, php-format
 msgid "All %d %s"
-msgstr "Alla% d %s"
+msgstr "Alla %d %s"
 
 #: lib/html.php:616
-#, fuzzy, php-format
+#, php-format
 msgid "Current Page: %s"
-msgstr "Aktuell sida"
+msgstr "Aktuell sida: %s"
 
 #: lib/html.php:632
 #, php-format
@@ -13581,7 +13567,7 @@ msgstr "GPrint"
 
 #: lib/html.php:1193
 msgid "Alpha %"
-msgstr "alfaversion"
+msgstr "Alfa %"
 
 #: lib/html.php:1237
 msgid "No Source"
@@ -13702,7 +13688,7 @@ msgstr "Hjälp"
 
 #: lib/html.php:2521
 msgid "Cacti Home"
-msgstr "Kaktus Hem"
+msgstr "Cacti - Hem"
 
 #: lib/html.php:2523
 msgid "Miscellaneous"
@@ -13762,7 +13748,7 @@ msgstr "Rapportera ett fel"
 
 #: lib/html.php:2544
 msgid "Cacti"
-msgstr "Kaktusväxter"
+msgstr "Cacti"
 
 #: lib/html.php:2546
 msgid "Click to Show/Hide Filter"
@@ -14003,7 +13989,7 @@ msgstr "Ange en giltig katalogväg"
 #: lib/html_form.php:1193
 #, php-format
 msgid "Cacti Color (%s)"
-msgstr "Kaktusfärg ( %s)"
+msgstr "Cacti-färg ( %s)"
 
 #: lib/html_form.php:1253
 msgid "NO FONT VERIFICATION POSSIBLE"
@@ -14050,7 +14036,7 @@ msgstr "Kolumner"
 #: lib/html_graph.php:227 lib/html_tree.php:1055
 #, php-format
 msgid "%d Column"
-msgstr "% d kolumn"
+msgstr "%d kolumn"
 
 #: lib/html_graph.php:257 lib/html_tree.php:1085
 msgid "Custom"
@@ -14386,7 +14372,7 @@ msgstr "Ska alla barn filialer Grafer ska göras?"
 
 #: lib/html_reports.php:993
 msgid "Select a Site to filter for Devices and Graphs."
-msgstr "Välj en enhet för att ange en graf"
+msgstr "Välj en Site för att filtrera efter enheter och grafer."
 
 #: lib/html_reports.php:1003
 msgid "Select a Device Template to use to filter for Devices or Graphs."
@@ -14463,9 +14449,9 @@ msgid "[new]"
 msgstr "[nytt]"
 
 #: lib/html_reports.php:1482
-#, fuzzy, php-format
+#, php-format
 msgid "Details %s"
-msgstr "Detaljer"
+msgstr "Detaljer %s"
 
 #: lib/html_reports.php:1531
 #, php-format
@@ -14473,9 +14459,9 @@ msgid "Report Items %s"
 msgstr "Rapportera objekt %s"
 
 #: lib/html_reports.php:1572
-#, fuzzy, php-format
+#, php-format
 msgid "Scheduled Events %s"
-msgstr "Schemalagda händelser"
+msgstr "Planerade händelser %s"
 
 #: lib/html_reports.php:1583
 #, php-format
@@ -14487,9 +14473,9 @@ msgid "Item Details"
 msgstr "Objektsdetaljer"
 
 #: lib/html_reports.php:1624
-#, fuzzy, php-format
+#, php-format
 msgid "Graph: %s"
-msgstr "Diagram:"
+msgstr "Graf: %s"
 
 #: lib/html_reports.php:1627 lib/html_reports.php:1653
 #: lib/html_reports.php:1666 lib/html_reports.php:1667
@@ -14517,9 +14503,9 @@ msgid ", Using RegEx: \"%s\""
 msgstr ", Använder RegEx: \"%s\""
 
 #: lib/html_reports.php:1691
-#, fuzzy, php-format
+#, php-format
 msgid "Tree: %s"
-msgstr "Träd:"
+msgstr "Träd: %s"
 
 #: lib/html_reports.php:1699
 #, php-format
@@ -14527,9 +14513,9 @@ msgid ", Device: %s"
 msgstr "(Från Enhet: %s)"
 
 #: lib/html_reports.php:1701
-#, fuzzy, php-format
+#, php-format
 msgid ", Branch: %s"
-msgstr "Gren:"
+msgstr ", Branch: %s"
 
 #: lib/html_reports.php:1704
 msgid "(All Branches)"
@@ -14602,7 +14588,7 @@ msgstr "Inga rapporter hittades"
 
 #: lib/html_tree.php:920 lib/html_tree.php:928 lib/html_tree.php:936
 msgid "Graph Template:"
-msgstr "Grafmall"
+msgstr "Grafmall:"
 
 #: lib/html_tree.php:936
 msgid "Template Based"
@@ -14618,7 +14604,7 @@ msgstr "Webbplats:"
 
 #: lib/html_tree.php:953
 msgid "Leaf:"
-msgstr "Blad"
+msgstr "Blad:"
 
 #: lib/html_tree.php:959
 msgid "Device Template:"
@@ -14659,7 +14645,7 @@ msgstr "Cacti reguljära uttryck är begränsade till 50 tecken endast av säker
 
 #: lib/html_utility.php:870
 msgid "Cacti regular expressions can not includes the semi-color character."
-msgstr "Kaktusreguljära uttryck kan inte innehålla semifärgtecknet."
+msgstr "Cacti-reguljära uttryck kan inte innehålla semifärgtecknet."
 
 #: lib/html_utility.php:890
 msgid "There was an internal error!"
@@ -14712,7 +14698,7 @@ msgstr "existerar inte"
 
 #: lib/import.php:570
 msgid "not writable"
-msgstr "Skrivbar"
+msgstr "inte skrivbar"
 
 #: lib/import.php:1687 lib/import.php:1704
 #, php-format
@@ -14738,11 +14724,11 @@ msgstr "Importera resultat"
 
 #: lib/import.php:2586
 msgid "Cacti would make the following changes if the Package was imported:"
-msgstr "Kaktuserna skulle göra följande ändringar om paketet importerades:"
+msgstr "Cacti skulle göra följande ändringar om paketet importerades:"
 
 #: lib/import.php:2588
 msgid "Cacti has imported the following items for the Package:"
-msgstr "Kaktus har importerat följande artiklar för paketet:"
+msgstr "Cacti har importerat följande poster för paketet:"
 
 #: lib/import.php:2591
 msgid "Package Files"
@@ -14750,7 +14736,7 @@ msgstr "Paketfiler"
 
 #: lib/import.php:2595
 msgid "[preview] "
-msgstr "Förhandsvisa"
+msgstr "[förhandsvisa] "
 
 #: lib/import.php:2600
 msgid "Cacti would make the following changes if the Template was imported:"
@@ -14758,7 +14744,7 @@ msgstr "Cacti skulle göra följande ändringar om mallen importerades:"
 
 #: lib/import.php:2602
 msgid "Cacti has imported the following items for the Template:"
-msgstr "Kaktus har importerat följande objekt till mallen:"
+msgstr "Cacti har importerat följande poster till mallen:"
 
 #: lib/import.php:2617
 msgid "[success]"
@@ -14859,7 +14845,7 @@ msgstr "Installatören kunde inte fortsätta på grund av ett oväntat fel."
 
 #: lib/installer.php:1578
 msgid "Please report this to the Cacti Group."
-msgstr "Vänligen anmäla detta till kaktikoncernen."
+msgstr "Rapportera detta till Cacti-gruppen."
 
 #: lib/installer.php:1579
 #, php-format
@@ -14949,7 +14935,7 @@ msgstr "Se till att du har läst och följt de nödvändiga stegen som behövs f
 #: lib/installer.php:1757
 #, php-format
 msgid "This process will guide you through the steps for upgrading from version '%s'. "
-msgstr "Denna process leder dig genom stegen för uppgradering från versionen &#39; %s&#39;."
+msgstr "Den här processen guidar dig genom stegen för att uppgradera från version '%s'. "
 
 #: lib/installer.php:1758
 #, php-format
@@ -14974,7 +14960,7 @@ msgstr "Godkänn GPL Licensavtal"
 
 #: lib/installer.php:1806
 msgid "Select default theme: "
-msgstr "Välj standardtema:"
+msgstr "Välj standardtema: "
 
 #: lib/installer.php:1829
 msgid "Pre-installation Checks"
@@ -14991,7 +14977,7 @@ msgstr "FEL:"
 
 #: lib/installer.php:1866
 msgid "Please update config.php with the correct relative URI location of Cacti (url_path)."
-msgstr "Uppdatera config.php med rätt relativ URI-plats för kaktus (url_path)."
+msgstr "Uppdatera config.php med rätt relativ URI-plats för Cacti (url_path)."
 
 #: lib/installer.php:1869
 msgid "Your Cacti configuration has the relative correct path (url_path) in config.php."
@@ -15048,7 +15034,7 @@ msgstr "PHP - Modulstöd (Obligatoriskt)"
 
 #: lib/installer.php:1948
 msgid "Cacti requires several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected. In addition, for optimal system performance Cacti should be run with certain MySQL system variables set.  Please follow the MySQL recommendations at your discretion.  Always seek the MySQL documentation if you have any questions."
-msgstr "Kaktus kräver att flera PHP-moduler installeras för att fungera korrekt. Om någon av dessa inte är installerade kan du inte fortsätta installationen förrän den korrigeras. Dessutom bör Cacti för optimal systemprestanda köras med vissa MySQL-systemvariabler. Vänligen följ MySQL-rekommendationerna efter eget gottfinnande. Sök alltid MySQL-dokumentationen om du har några frågor."
+msgstr "Cacti kräver att flera PHP-moduler installeras för att fungera korrekt. Om någon av dessa inte är installerade kan du inte fortsätta installationen förrän den korrigeras. Dessutom bör Cacti för optimal systemprestanda köras med vissa MySQL-systemvariabler. Vänligen följ MySQL-rekommendationerna efter eget gottfinnande. Sök alltid MySQL-dokumentationen om du har några frågor."
 
 #: lib/installer.php:1950
 msgid "The following PHP extensions are mandatory, and MUST be installed before continuing your Cacti install."
@@ -15104,7 +15090,7 @@ msgstr "MySQL - Inställningar"
 
 #: lib/installer.php:2032
 msgid "These MySQL performance tuning settings will help your Cacti system perform better without issues for a longer time."
-msgstr "Dessa MySQL-inställningar för prestandatestning hjälper din kaktisystem att fungera bättre utan problem under en längre tid."
+msgstr "Dessa MySQL-inställningar för prestandatestning hjälper din Cacti-system att fungera bättre utan problem under en längre tid."
 
 #: lib/installer.php:2034
 msgid "Recommended MySQL System Variable Settings"
@@ -15215,7 +15201,7 @@ msgstr "Konfiguration av Poller"
 
 #: lib/installer.php:2181
 msgid "Your Remote Cacti Poller information has not been included in your config.php file.  Please review the config.php.dist, and set the variables: <i>$rdatabase_default, $rdatabase_username</i>, etc.  These variables must be set and point back to your Primary Cacti database server.  Correct this and try again."
-msgstr "Din Remote Cacti Poller-information har inte inkluderats i din config.php-fil. Vänligen granska config.php.dist och ställ in variablerna: <i>$ rdatabase_default, $ rdatabase_username</i> etc. Dessa variabler måste ställas in och peka tillbaka till din primära kaktis databasserver. Korrigera detta och försök igen."
+msgstr "Din Remote Cacti Poller-information har inte inkluderats i din config.php-fil. Granska config.php.dist och ställ in variablerna: <i>$ rdatabase_default, $ rdatabase_username</i> etc. Dessa variabler måste ställas in och peka tillbaka till din primära Cactis databasserver. Korrigera detta och försök igen."
 
 #: lib/installer.php:2185
 msgid "Remote Poller Variables"
@@ -15295,7 +15281,7 @@ msgstr "Potentiella tillståndsproblem"
 
 #: lib/installer.php:2389
 msgid "Please make sure that your webserver has read/write access to the cacti folders that show errors below."
-msgstr "Se till att din webbserver har läs / skrivåtkomst till kaktimapparna som visar fel nedan."
+msgstr "Se till att din webbserver har läs / skrivåtkomst till Cacti-mapparna som visar fel nedan."
 
 #: lib/installer.php:2392
 msgid "If SELinux is enabled on your server, you can either permanently disable this, or temporarily disable it and then add the appropriate permissions using the SELinux command-line tools."
@@ -15308,11 +15294,11 @@ msgstr "Användaren &#39; %s&#39; ska ha MODIFY-behörighet för att aktivera l�
 
 #: lib/installer.php:2410
 msgid "An example of how to set folder permissions is shown here, though you may need to adjust this depending on your operating system, user accounts and desired permissions."
-msgstr "Ett exempel på hur du anger mappbehörigheter visas här, men du kan behöva justera detta beroende på operativsystem, användarkonton och önskade behörigheter"
+msgstr "Här visas ett exempel på hur du ställer in mappbehörigheter, men du kan behöva justera detta beroende på operativsystem, användarkonton och önskade behörigheter."
 
 #: lib/installer.php:2411
 msgid "EXAMPLE:"
-msgstr "EXEMPEL"
+msgstr "EXEMPEL:"
 
 #: lib/installer.php:2412
 msgid "Once installation has completed the CSRF path, should be set to read-only."
@@ -15328,11 +15314,11 @@ msgstr "Input Validation Whitelist Protection"
 
 #: lib/installer.php:2427
 msgid "Cacti Data Input methods that call a script can be exploited in ways that a non-administrator can perform damage to either files owned by the poller account, and in cases where someone runs the Cacti poller as root, can compromise the operating system allowing attackers to exploit your infrastructure."
-msgstr "Inmatningsmetoder för kaktusdata som kallar ett skript kan utnyttjas på ett sätt som en icke-administratör kan utföra skador på endera filer som ägs av pollarkontot, och i fall där någon kör Cacti-pollaren som rot, kan kompromissa med operativsystemet så att angripare kan utnyttja din infrastruktur."
+msgstr "Inmatningsmetoder för Cacti-data som kallar ett skript kan utnyttjas på ett sätt som en icke-administratör kan utföra skador på endera filer som ägs av pollarkontot, och i fall där någon kör Cacti-pollaren som rot, kan kompromissa med operativsystemet så att angripare kan utnyttja din infrastruktur."
 
 #: lib/installer.php:2428
 msgid "Therefore, several versions ago, Cacti was enhanced to provide Whitelist capabilities on the these types of Data Input Methods.  Though this does secure Cacti more thoroughly, it does increase the amount of work required by the Cacti administrator to import and manage Templates and Packages."
-msgstr "Därför förbättrades Cacti för flera versioner sedan för att ge whitelistfunktioner för dessa typer av datainmatningsmetoder. Även om detta säkerställer kaktus mer noggrant ökar det mängden arbete som krävs av Cacti-administratören för att importera och hantera mallar och paket."
+msgstr "Därför förbättrades Cacti för flera versioner sedan för att ge whitelistfunktioner för dessa typer av datainmatningsmetoder. Även om detta säkerställer Cacti mer noggrant ökar det mängden arbete som krävs av Cacti-administratören för att importera och hantera mallar och paket."
 
 #: lib/installer.php:2429
 msgid "The way that the Whitelisting works is that when you first import a Data Input Method, or you re-import a Data Input Method, and the script and or arguments change in any way, the Data Input Method, and all the corresponding Data Sources will be immediatly disabled until the administrator validates that the Data Input Method is valid."
@@ -15432,7 +15418,7 @@ msgstr "Tema Setup"
 
 #: lib/installer.php:2562
 msgid "Please select the Device Templates that you wish to update during the Upgrade."
-msgstr "Välj den Malltyp du vill exportera från Kaktus."
+msgstr "Välj den Malltyp du vill exportera från Cacti."
 
 #: lib/installer.php:2563
 msgid "Updating Templates that you have already made modifications to is not advisable.  The Upgrade of the Templates will NOT remove modifications to Graph and Data Templates, and can lead to unexpected behavior.  However, if you have not made changes to any Graph, Data Query, or Data Template, reimporting the Package should not have any affect.  In that case, you would have to 'Sync Graphs' to from the Templates after update."
@@ -15452,7 +15438,7 @@ msgstr "Startsida"
 
 #: lib/installer.php:2589
 msgid "Device Templates allow you to monitor and graph a vast assortment of data within Cacti.  After you select the desired Device Templates, press 'Next' and the installation will complete.  Please be patient on this step, as the importation of the Device Templates can take a few minutes."
-msgstr "Enhetsmallar låter dig övervaka och gradera ett stort sortiment av data inom kaktus. När du har valt de önskade Enhetsmallarna trycker du på &#39;Slutför&#39; och installationen kommer att slutföras. Var försiktig på det här steget, eftersom importen av enhetsmallarna kan ta några minuter."
+msgstr "Enhetsmallar låter dig övervaka och gradera ett stort sortiment av data inom Cacti. När du har valt de önskade Enhetsmallarna trycker du på &#39;Slutför&#39; och installationen kommer att slutföras. Var försiktig på det här steget, eftersom importen av enhetsmallarna kan ta några minuter."
 
 #: lib/installer.php:2597
 msgid "Server Collation"
@@ -15464,7 +15450,7 @@ msgstr "Din serverns samling verkar vara UTF8-kompatibel"
 
 #: lib/installer.php:2607
 msgid "Your server collation does NOT appear to be fully UTF8 compliant. "
-msgstr "Din serverkollning verkar INTE vara helt UTF8-kompatibel."
+msgstr "Din servers kollationering verkar INTE vara helt UTF8-kompatibel. "
 
 #: lib/installer.php:2608
 msgid "Under the [mysqld] section, locate the entries named 'character-set-server' and 'collation-server' and set them as follows:"
@@ -15480,11 +15466,11 @@ msgstr "Din standardkollation för databas verkar vara UTF8-kompatibel"
 
 #: lib/installer.php:2623
 msgid "Your database default collation does NOT appear to be full UTF8 compliant. "
-msgstr "Din databas standardkollation verkar INTE vara full UTF8-kompatibel."
+msgstr "Databasens standardkollation verkar INTE vara helt UTF8-kompatibel. "
 
 #: lib/installer.php:2624
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
-msgstr "Alla tabeller som skapats av plugins kan ha problem kopplade till Cacti Core-tabeller om collationen inte matchas. Se till att din databas ändras till &quot;utf8mb4_unicode_ci&quot; genom att köra följande:"
+msgstr "Alla tabeller som skapas av insticksprogram kan ha problem med att länkas mot Cacti Core-tabeller om kollationen inte matchas.   Se till att din databas ändras till 'utf8mb4_unicode_ci' genom att köra följande: "
 
 #: lib/installer.php:2631
 msgid "Table Setup"
@@ -15517,7 +15503,7 @@ msgstr "Radformat"
 
 #: lib/installer.php:2682
 msgid "One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: "
-msgstr "Ett eller flera tabeller är för stora för att konvertera under installationen. Du bör använda cli / convert_tables.php-skriptet för att utföra konverteringen och uppdatera sedan den här sidan. Till exempel:"
+msgstr "En eller flera tabeller är för stora för att konverteras under installationen.  Du bör använda skriptet cli/convert_tables.php för att utföra konverteringen och sedan uppdatera den här sidan. Ett exempel: "
 
 #: lib/installer.php:2686
 msgid "The following tables should be converted to UTF8 and InnoDB with a Dynamic row format.  Please select the tables that you wish to convert during the installation process."
@@ -15549,7 +15535,7 @@ msgstr "NEDGRADE DETECTED"
 
 #: lib/installer.php:2717
 msgid "YOU MUST MANUALLY CHANGE THE CACTI DATABASE TO REVERT ANY UPGRADE CHANGES THAT HAVE BEEN MADE.<br/>THE INSTALLER HAS NO METHOD TO DO THIS AUTOMATICALLY FOR YOU"
-msgstr "DU MÅSTE MANUELLT BYTE KAKTDATABASET FÖR ATT GÖRA NÅGRA UPPGRÄNSNINGAR ÄNDRAT SOM HAR GJÄNT. <br/> INSTALLATÖREN HAR INTE METOD ATT GÖR DET AUTOMATISKT FÖR DIG"
+msgstr "DU MÅSTE MANUELLT BYTE CACTI-DATABASET FÖR ATT GÖRA NÅGRA UPPGRÄNSNINGAR ÄNDRAT SOM HAR GJÄNT. <br/> INSTALLATÖREN HAR INTE METOD ATT GÖR DET AUTOMATISKT FÖR DIG"
 
 #: lib/installer.php:2718
 msgid "Downgrading should only be performed when absolutely necessary and doing so may break your installation"
@@ -15697,7 +15683,7 @@ msgstr "Det gick inte att uppdatera inställningen Automatiseringsalternativ %s"
 
 #: lib/installer.php:3248
 msgid "Failed to find any automation option set"
-msgstr "Misslyckades med att hitta data för att kopiera!"
+msgstr "Hittade inte någon uppsättning automatiseringsalternativ"
 
 #: lib/installer.php:3278
 #, php-format
@@ -15718,7 +15704,7 @@ msgstr "Inga malldiagram för standardenheter hittades"
 
 #: lib/installer.php:3323
 msgid "WARNING: Device Template for your Operating System Not Found.  You will need to import Device Templates or Cacti Packages to monitor your Cacti server."
-msgstr "VARNING: Enhetsmall för ditt operativsystem hittades inte. Du måste importera enhetsmallar eller kaktipaket för att övervaka din Cacti-server."
+msgstr "VARNING: Enhetsmall för ditt operativsystem hittades inte. Du måste importera enhetsmallar eller Cacti-paket för att övervaka din Cacti-server."
 
 #: lib/installer.php:3330
 msgid "Running first-time data query for local host"
@@ -15836,7 +15822,7 @@ msgstr "Autentiseringsframgång"
 
 #: lib/ldap.php:286
 msgid "Authentication Failure"
-msgstr "Behörighetskontroll misslyckades. Försök igen."
+msgstr "Felaktig autentisering"
 
 #: lib/ldap.php:290
 msgid "PHP LDAP not enabled"
@@ -15872,9 +15858,9 @@ msgid "Protocol Error, Unable to bind, LDAP result: (%s) on Server (%s)"
 msgstr "Protokollfel, Kan inte binda, LDAP-resultat: (%s) på server (%s)"
 
 #: lib/ldap.php:318
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to Connect to Server (%s)"
-msgstr "Det går inte att ansluta till servern"
+msgstr "Det går inte att ansluta till servern (%s)"
 
 #: lib/ldap.php:322
 #, php-format
@@ -15982,7 +15968,7 @@ msgstr "Ping utförs inte på grund av inställningen."
 #: lib/plugins.php:670
 #, php-format
 msgid "%s Version %s or above is required for %s. "
-msgstr "%s Version %s eller över krävs för %s."
+msgstr "%s Version %s eller högre krävs för %s. "
 
 #: lib/plugins.php:674
 #, php-format
@@ -16067,7 +16053,7 @@ msgstr "Välj rapporten för att associera dessa grafer med. Standardvärdena f�
 
 #: lib/reports.php:1854
 msgid "Report:"
-msgstr "Rapportera"
+msgstr "Rapport:"
 
 #: lib/reports.php:1862
 msgid "Graph Timespan:"
@@ -16115,7 +16101,7 @@ msgstr "RRD-minsta för datakälla &#39; %s&#39; ska vara &#39; %s&#39;"
 #: lib/rrd.php:3006
 #, php-format
 msgid "DS '%s' missing in Cacti definition"
-msgstr "DS &#39; %s&#39; saknas i kakti definition"
+msgstr "DS ‘%s’ saknas i Cactis definition"
 
 #: lib/rrd.php:3020 lib/rrd.php:3021
 #, php-format
@@ -16135,7 +16121,7 @@ msgstr "Pdp_per_row för '%s' är ogiltig för rra '%s' ska vara '%s'.  Övervä
 #: lib/rrd.php:3074
 #, php-format
 msgid "The XFF for Cacti RRA id is '%s' but should be '%s'"
-msgstr "XFF för kaktus RRA-id &#39; %s&#39; ska vara &#39; %s&#39;"
+msgstr "XFF för Cacti RRA-id &#39; ‘%s’ ska vara ‘%s’"
 
 #: lib/rrd.php:3078
 #, php-format
@@ -16150,7 +16136,7 @@ msgstr "RRA &#39; %s&#39; saknas i RRDfile"
 #: lib/rrd.php:3103
 #, php-format
 msgid "RRA '%s' missing in Cacti definition"
-msgstr "RRA &#39; %s&#39; saknas i kakti definition"
+msgstr "RRA &#39; %s&#39; saknas i Cactis definition"
 
 #: lib/rrd.php:3124
 msgid "RRD File Information"
@@ -16234,12 +16220,12 @@ msgstr "Ett fel uppstod när du analyserade XML-filen av RRDtool-dumpning"
 #: lib/rrd.php:3765
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file"
-msgstr "RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF =% 1.2f) borttagen från RRD-fil"
+msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) borttagen från filen RRD"
 
 #: lib/rrd.php:3802
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file"
-msgstr "RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF =% 1.2f) lägger till RRD-fil"
+msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) läggs till i RRD-filen"
 
 #: lib/rrd.php:3832 lib/rrd.php:3846
 #, php-format
@@ -16332,7 +16318,7 @@ msgstr "Med fjärrkontrollfunktioner synkroniseras stora mängder data från huv
 #: lib/utility.php:1053
 #, php-format
 msgid "If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10%% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status."
-msgstr ""
+msgstr "Om du använder Cacti Performance Booster och väljer en minneslagringsmotor måste du vara noga med att tömma Performance Booster-bufferten innan systemet får slut på utrymme i minnestabellen.  Detta görs på två sätt, först genom att minska storleken på din utdatakolumn till precis rätt storlek.  Den här kolumnen finns i tabellerna poller_output och poller_output_boost.  Det andra du kan göra är att allokera mer minne till minnestabellerna.  Vi har godtyckligt valt ett rekommenderat värde på 10%% av systemminnet, men om du använder SSD-diskar eller har ett mindre system kan du ignorera denna rekommendation eller välja en annan lagringsmotor.  Du kan se den förväntade förbrukningen av Performance Booster-tabellerna under Console -> System Utilities -> View Boost Status."
 
 #: lib/utility.php:1059
 msgid "When executing subqueries, having a larger temporary table size, keep those temporary tables in memory."
@@ -16340,7 +16326,7 @@ msgstr "När du utför en undersökning med en större temporär tabellstorlek, 
 
 #: lib/utility.php:1065 lib/utility.php:1071
 msgid "When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.  As this is a per connection memory allocation, care must be taken not to increase it too high.  The sum of the join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB memory should be below 80%.  If the recommendation is negative, you must decrease this and or the sort_buffer_size until the recommendation fits within the allowable memory."
-msgstr ""
+msgstr "När du utför sammankopplingar kommer de, om de är mindre än denna storlek, att sparas i minnet och aldrig skrivas till en temporär fil.  Eftersom detta är en minnesallokering per anslutning måste man vara försiktig så att den inte blir för hög.  Summan av join_buffer_size + sort_buffer_size + read_buffer_size + read_rnd_buffer_size + thread_stack + binlog_cache_size + Core MySQL/MariaDB-minne bör vara under 80%.  Om rekommendationen är negativ måste du minska denna och eller sort_buffer_size tills rekommendationen passar inom det tillåtna minnet."
 
 #: lib/utility.php:1077
 #, php-format
@@ -16606,7 +16592,7 @@ msgstr "Webbadress nedan"
 
 #: links.php:548
 msgid "The file that contains the content for this page. This file needs to be in the Cacti 'include/content/' directory."
-msgstr "Filen som innehåller innehållet för den här sidan. Den här filen måste vara i kaktusen &#39;include / content /&#39; katalog."
+msgstr "Filen som innehåller innehållet för den här sidan. Den här filen måste vara i Cactis ‘include/content /‘-katalog."
 
 #: links.php:552
 msgid "Web URL Location"
@@ -16639,19 +16625,19 @@ msgstr "Externa länkar [ny]"
 
 #: logout.php:50
 msgid "You have been logged out of Cacti due to a session timeout."
-msgstr "Du har blivit utloggad av kaktus på grund av en session timeout."
+msgstr "Du har blivit utloggad av Cacti på grund av en session timeout."
 
 #: logout.php:52
 msgid "You have been logged out of Cacti due to an account suspension."
-msgstr "Du har blivit utloggad av kaktus på grund av en session timeout."
+msgstr "Du har blivit utloggad av Cacti på grund av en session timeout."
 
 #: logout.php:54
 msgid "You have been logged out of Cacti due to a Remote Data Collector state change"
-msgstr "Du har blivit utloggad av kaktus på grund av en session timeout."
+msgstr "Du har blivit utloggad från Cacti på grund av en ändring i Remote Data Collector-tillståndet"
 
 #: logout.php:62
 msgid "Logout of Cacti"
-msgstr "Utloggning av kaktusar"
+msgstr "Utloggning från Cacti"
 
 #: logout.php:69
 msgid "Automatic Logout"
@@ -16706,7 +16692,7 @@ msgstr "objekt-ID, OID"
 
 #: managers.php:567
 msgid "Kind"
-msgstr "art"
+msgstr "Typ"
 
 #: managers.php:568 utilities.php:3058
 msgid "Max-Access"
@@ -16714,7 +16700,7 @@ msgstr "Max-Access"
 
 #: managers.php:569
 msgid "Monitored"
-msgstr "övervakad"
+msgstr "Övervakad"
 
 #: managers.php:605
 msgid "No SNMP Notifications"
@@ -16837,7 +16823,7 @@ msgstr "Paketnedladdningen eller valideringen misslyckades"
 
 #: package_import.php:416
 msgid "Package XML File Damaged."
-msgstr "Paketfiler"
+msgstr "Package XML File Damaged."
 
 #: package_import.php:416
 msgid "The XML files appears to be invalid.  Please contact the package author"
@@ -16861,7 +16847,7 @@ msgstr "Enhetsregler"
 
 #: package_import.php:472
 msgid "Copyright"
-msgstr "right"
+msgstr "Upphovsrätt"
 
 #: package_import.php:497
 msgid "Import Package Filenames [ None selected imports all, Check to import selectively ]"
@@ -16901,11 +16887,11 @@ msgstr "Uppdatera"
 
 #: package_import.php:657 templates_import.php:357
 msgid "Orphans"
-msgstr "föräldralösa"
+msgstr "Föräldralösa"
 
 #: package_import.php:710
 msgid "File Differences for: "
-msgstr "Filskillnader för:"
+msgstr "Filskillnader för: "
 
 #: package_import.php:817
 msgid "Local Package Import File"
@@ -16917,7 +16903,7 @@ msgstr "Filen *.xml.gz som finns på din lokala dator för att ladda upp och imp
 
 #: package_import.php:823
 msgid "Automatically Trust Signer"
-msgstr "Lägg automatiskt till kaktus"
+msgstr "Lägg automatiskt till Cacti"
 
 #: package_import.php:825
 msgid "If checked, Cacti will automatically Trust the Signer for this and any future Packages by that author."
@@ -17009,7 +16995,7 @@ msgstr "Det här pluginet kräver att följande pluggar installeras först."
 
 #: plugins.php:609
 msgid "The version of this Plugin."
-msgstr "Versionen av denna plugin"
+msgstr "Versionen av detta Plugin."
 
 #: plugins.php:612
 msgid "Load Order"
@@ -17135,7 +17121,7 @@ msgstr "Maximal körtid på %d sekunder har överskridits för undersöknings-id
 
 #: poller.php:895
 msgid "WARNING: Cacti Polling Cycle Exceeded Poller Interval by "
-msgstr "VARNING: Cacti Polling Cycle överskred Poller Intervall med"
+msgstr "VARNING: Cacti Polling Cycle överskred pollningsintervall med "
 
 #: poller.php:920
 #, php-format
@@ -17156,7 +17142,7 @@ msgstr "OBS: En andra Cacti-datainsamlare har lagts till. Därför möjliggör b
 
 #: poller_automation.php:53
 msgid "WARNING: Main Cacti database offline or in recovery"
-msgstr "VARNING: Huvudkaktusdatabasen offline eller i återställning"
+msgstr "VARNING: Cactis huvuddatabas är offline eller i återställning"
 
 #: poller_automation.php:954 poller_automation.php:1005
 msgid "Cacti Primary Admin"
@@ -17326,7 +17312,7 @@ msgstr "Du har redan använt den här databasen värdnamn '%s'. Vänligen ange e
 
 #: pollers.php:519
 msgid "Data Collector Statistics cleared."
-msgstr "Datakällor"
+msgstr "Datainsamlarens statistik rensad."
 
 #: pollers.php:554
 msgid "Click 'Continue' to delete the following Data Collector.  Note, all devices will be disassociated from this Data Collector and mapped back to the Main Cacti Data Collector."
@@ -17379,8 +17365,8 @@ msgstr[1] "Klicka på &quot;Fortsätt&quot; för att aktivera följande datainsa
 #: pollers.php:595
 msgid "Clear Statistics for Data Collector"
 msgid_plural "Clear Statistics for Data Collectors"
-msgstr[0] "Status för denna datasamlare."
-msgstr[1] "Status för denna datasamlare."
+msgstr[0] "Rensa statistik för datainsamlare"
+msgstr[1] "Tydlig statistik för datainsamlare"
 
 #: pollers.php:636 sites.php:429
 #, php-format
@@ -17401,7 +17387,7 @@ msgstr "Test databasanslutning"
 
 #: pollers.php:885
 msgid "Collectors"
-msgstr "samlare"
+msgstr "Samlare"
 
 #: pollers.php:995
 msgid "Collector Name"
@@ -17489,7 +17475,7 @@ msgstr "Senast uppdaterad"
 
 #: pollers.php:1070
 msgid "The last time this Data Collector checked in with the main Cacti site."
-msgstr "Den sista gången denna datasamlare checkade in med huvudkaktisidan."
+msgstr "Den sista gången denna datasamlare checkade in med Cactis huvudplats."
 
 #: pollers.php:1073
 msgid "Last Sync"
@@ -17497,7 +17483,7 @@ msgstr "Senaste synkronisering"
 
 #: pollers.php:1076
 msgid "The last time this Data Collector was full synced with main Cacti site."
-msgstr "Förra gången denna datasamlare var full synkroniserad med huvudkaktisidan."
+msgstr "Förra gången denna datasamlare var full synkroniserad med Cactis huvudplats."
 
 #: pollers.php:1130
 msgid "No Data Collectors Found"
@@ -17667,7 +17653,7 @@ msgstr "OBS! Sökvägsinställningar på den här fliken sparas endast lokalt!"
 #: settings.php:381
 #, php-format
 msgid "Cacti Settings (%s)%s"
-msgstr "Kaktusinställningar (%s)%s"
+msgstr "Cacti-inställningar (%s)%s"
 
 #: settings.php:487
 msgid "Changing Permission Model Warning"
@@ -17956,7 +17942,7 @@ msgstr "Vad vill du exportera?"
 
 #: templates_export.php:110
 msgid "Select the Template type that you wish to export from Cacti."
-msgstr "Välj den Malltyp du vill exportera från Kaktus."
+msgstr "Välj den Malltyp du vill exportera från Cacti."
 
 #: templates_export.php:120
 msgid "Device Template to Export"
@@ -17972,7 +17958,7 @@ msgstr "Inkludera beroenden"
 
 #: templates_export.php:129
 msgid "Some templates rely on other items in Cacti to function properly. It is highly recommended that you select this box or the resulting import may fail."
-msgstr "Vissa mallar är beroende av andra objekt i kaktusen för att fungera korrekt. Det rekommenderas starkt att du markerar den här rutan eller att den resulterande importen misslyckas."
+msgstr "Vissa mallar är beroende av andra objekt i Cacti för att fungera korrekt. Det rekommenderas starkt att du markerar den här rutan eller att den resulterande importen misslyckas."
 
 #: templates_export.php:135
 msgid "Output Format"
@@ -18042,9 +18028,9 @@ msgid "Damaged"
 msgstr "Datakälla, diagram"
 
 #: templates_import.php:321
-#, fuzzy, php-format
+#, php-format
 msgid "Met: %d"
-msgstr "Uppfyllt"
+msgstr "Möt: %d"
 
 #: templates_import.php:325
 #, php-format
@@ -18327,11 +18313,11 @@ msgstr "Batch Copy"
 
 #: user_admin.php:257
 msgid "You are not allowed to delete the current login account"
-msgstr "Du har inte tillåtelse att ändra lösenord."
+msgstr "Du får inte ta bort det aktuella inloggningskontot"
 
 #: user_admin.php:269
 msgid "You are not allowed to disable the current login account"
-msgstr "Du har inte tillåtelse att ändra lösenord."
+msgstr "Du får inte inaktivera det aktuella inloggningskontot"
 
 #: user_admin.php:338
 msgid "Click 'Continue' to delete the selected User(s)."
@@ -18523,7 +18509,7 @@ msgstr "Tillgång beviljad"
 #: user_group_admin.php:1186 user_group_admin.php:1190
 #: user_group_admin.php:1318 user_group_admin.php:1322
 msgid "Access Restricted"
-msgstr "begränsad åtkomst"
+msgstr "Begränsad åtkomst"
 
 #: user_admin.php:1175 user_group_admin.php:1058
 msgid "No Matching Devices Found"
@@ -18775,7 +18761,7 @@ msgstr "Kryptering som servern stöder. TLS stöds endast av protokollversion 3.
 
 #: user_domains.php:416
 msgid "Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the users Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the users Distinguished Name (DN)."
-msgstr "Läge vilken kaktus försöker autentisera mot LDAP-servern. <blockquote> <i>Ingen sökning</i> - <i>Sökning utan</i> Distinguished Name (DN) sker, försök bara binda med det angivna Distinguished Name-formatet (DN). <br><br> <i>Anonym Sökning</i> - Försök att söka efter användarnamn mot LDAP-katalog via anonym bindning för att hitta användarna Distinguished Name (DN). <br><br> <i>Särskild</i> sökning - Försök söka efter användarnamn mot LDAP-katalog via Specifikt Distinguished Name (DN) och Specifikt lösenord för bindning för att hitta användarnas Distinguished Name (DN)."
+msgstr "Läge vilken Cacti försöker autentisera mot LDAP-servern. <blockquote> <i>Ingen sökning</i> - <i>Sökning utan</i> Distinguished Name (DN) sker, försök bara binda med det angivna Distinguished Name-formatet (DN). <br><br> <i>Anonym Sökning</i> - Försök att söka efter användarnamn mot LDAP-katalog via anonym bindning för att hitta användarna Distinguished Name (DN). <br><br> <i>Särskild</i> sökning - Försök söka efter användarnamn mot LDAP-katalog via Specifikt Distinguished Name (DN) och Specifikt lösenord för bindning för att hitta användarnas Distinguished Name (DN)."
 
 #: user_domains.php:466
 msgid "Search base for searching the LDAP directory, such as <i>\"dc=win2kdomain,dc=local\"</i> or <i>\"ou=people,dc=domain,dc=local\"</i>."
@@ -18791,7 +18777,7 @@ msgstr "eMail"
 
 #: user_domains.php:505
 msgid "Field that will replace the email taken from LDAP. (on windows: mail) "
-msgstr "Fält som ersätter e-post som tas från LDAP. (på windows: mail)"
+msgstr "Fält som ersätter e-postmeddelandet som hämtas från LDAP. (på Windows: mail) "
 
 #: user_domains.php:530
 msgid "Domain Properties"
@@ -19029,7 +19015,7 @@ msgstr "Rensa"
 
 #: utilities.php:94
 msgid "Data Source Statistics Purged."
-msgstr "Datakällor"
+msgstr "Statistiken för datakällan rensad."
 
 #: utilities.php:146
 msgid "Database"
@@ -19072,7 +19058,7 @@ msgstr "FEL: Den installerade RRDtool-versionen överskrider inte den konfigurer
 #: utilities.php:250
 #, php-format
 msgid "ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d\" graph(s) and/or templates have GIF set as the image format."
-msgstr "FEL: RRDtool 1.2.x + stöder inte GIF-bildformatet, men% d &quot;graf (er) och / eller mallar har GIF som bildformat."
+msgstr "FEL: RRDtool 1.2.x+ stöder inte GIF-bildformatet, men %d\" graf(er) och/eller mallar har GIF inställt som bildformat."
 
 #: utilities.php:263
 msgid "General Information"
@@ -19105,7 +19091,7 @@ msgstr "Poller Information"
 
 #: utilities.php:348
 msgid "Different version of Cacti and Spine!"
-msgstr "Olika version av kaktus och ryggrad!"
+msgstr "Olika version av Cacti och spinn!"
 
 #: utilities.php:366
 #, php-format
@@ -19122,11 +19108,11 @@ msgstr "Namn: "
 
 #: utilities.php:378
 msgid "Procs: "
-msgstr "1 Process"
+msgstr "Procs: "
 
 #: utilities.php:385
 msgid "Threads: "
-msgstr "Diskussioner"
+msgstr "Trådar: "
 
 #: utilities.php:391
 msgid "Concurrent Processes"
@@ -19152,7 +19138,7 @@ msgstr "Nuvarande: %s, Min krävs: %s"
 
 #: utilities.php:464
 msgid "Minimum Connections:"
-msgstr "Testa anslutning"
+msgstr "Minsta antal anslutningar:"
 
 #: utilities.php:466
 msgid "Assumes 100 spare connections for Web page users and other various connections."
@@ -19195,7 +19181,7 @@ msgstr "MySQL/MariaDB-minnesstatistik (källa: MySQL Tuner)"
 
 #: utilities.php:650 utilities.php:659 utilities.php:665
 msgid "Max Total Memory Possible"
-msgstr "Max Poller minne tillåtet:"
+msgstr "Max Totalt Minne Möjligt"
 
 #: utilities.php:655
 #, php-format
@@ -19204,16 +19190,15 @@ msgstr "Minska MySQL/MariaDB-minnet till mindre än 80% of systemminne.  Bevara 
 
 #: utilities.php:673 utilities.php:678 utilities.php:706
 msgid "Max Core Memory Possible"
-msgstr "Max Poller minne tillåtet:"
+msgstr "Max kärnminne möjligt"
 
 #: utilities.php:674
 msgid "Reduce Total Core Memory"
 msgstr "Minska det totala kärnminnet"
 
 #: utilities.php:684 utilities.php:701
-#, fuzzy
 msgid "Calculation Formula"
-msgstr "beräkningsformel"
+msgstr "Beräkningsformel"
 
 #: utilities.php:690 utilities.php:695 utilities.php:711
 msgid "Max Connection Memory Possible"
@@ -19364,12 +19349,12 @@ msgstr "Visa ordning"
 #: utilities.php:1506
 #, php-format
 msgid "Log [Total Lines: %d - Non-Matching Items Hidden]"
-msgstr "Log [Totalt antal linjer:% d - Felaktiga objekt dolda]"
+msgstr "Logga [Totalt antal rader: %d - Icke-matchande objekt dolda]"
 
 #: utilities.php:1508
 #, php-format
 msgid "Log [Total Lines: %d - All Items Shown]"
-msgstr "Log [Totalt antal linjer:% d - alla objekt visas]"
+msgstr "Logga [Totalt antal rader: %d - Alla objekt visas]"
 
 #: utilities.php:1602
 msgid "Clear Cacti Log"
@@ -19429,7 +19414,7 @@ msgstr "Gemenskapen:"
 
 #: utilities.php:2221 utilities.php:2225
 msgid "OID:"
-msgstr "objekt-ID, OID"
+msgstr "OID:"
 
 #: utilities.php:2225
 msgid "User:"
@@ -19449,7 +19434,7 @@ msgstr "RRD:"
 
 #: utilities.php:2265
 msgid "Cacti technical support page.  Used by developers and technical support persons to assist with issues in Cacti.  Includes checks for common configuration issues."
-msgstr "Cacti teknisk support sida. Används av utvecklare och teknisk supportpersoner för att hjälpa till med problem i kaktus. Inkluderar kontroller för vanliga konfigurationsproblem."
+msgstr "Cacti teknisk support sida. Används av utvecklare och teknisk supportpersoner för att hjälpa till med problem i Cacti. Inkluderar kontroller för vanliga konfigurationsproblem."
 
 #: utilities.php:2269
 msgid "The Cacti Log stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application."
@@ -19477,7 +19462,7 @@ msgstr "Uppgradera Poller Cache"
 
 #: utilities.php:2289
 msgid "The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems."
-msgstr "Poller Cache kommer att genereras om du väljer det här alternativet. Använd det här alternativet endast om en databaskrasch uppstår om du upplever problem efter kraschen och redan har kört reparationsverktygen för databasen. Alternativt, om du har problem med en viss enhet, lagrar du bara den enheten för att återuppbygga dess Poller Cache. Det finns också ett kommandoradsgränssnitt som motsvarar det här kommandot som rekommenderas för stora system. <i class=\"deviceDown\">OBS! I stora system kan det här kommandot ta flera minuter till timmar för att slutföra och bör därför inte köras från Cacti-gränssnittet. Du kan helt enkelt köra &#39;php -q cli / rebuild_poller_cache.php --help&#39; på kommandoraden för mer information.</i>"
+msgstr "Poller-cachen kommer att genereras på nytt om du väljer detta alternativ. Använd detta alternativ endast i händelse av en databaskrasch om du upplever problem efter kraschen och redan har kört databasreparationsverktygen.  Alternativt, om du har problem med en viss enhet, kan du helt enkelt spara om den enheten för att återuppbygga dess Poller Cache.  Det finns också ett kommandoradsgränssnitt som motsvarar detta kommando och som rekommenderas för stora system."
 
 #: utilities.php:2291
 msgid "NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run 'php -q cli/rebuild_poller_cache.php --help' at the command line for more information."
@@ -19489,7 +19474,7 @@ msgstr "Återuppbygga resurscache"
 
 #: utilities.php:2298
 msgid "When operating multiple Data Collectors in Cacti, Cacti will attempt to maintain state for key files on all Data Collectors.  This includes all core, non-install related website and plugin files.  When you force a Resource Cache rebuild, Cacti will clear the local Resource Cache, and then rebuild it at the next scheduled poller start.  This will trigger all Remote Data Collectors to recheck their website and plugin files for consistency."
-msgstr "När du använder flera datainsamlare i kaktus, försöker Cacti att behålla tillståndet för nyckelfiler på alla datainsamlare. Detta inkluderar alla kärna, icke-installerade relaterade webbplatser och plugin-filer. När du tvingar om en Resource Cache-ombyggnad, kommer Cacti att rensa den lokala resurscachen och sedan bygga om den vid nästa planerade pollerstart. Detta kommer att utlösa alla fjärrdatasamlare att kontrollera deras hemsida och plugga in filer för konsekvens."
+msgstr "När du använder flera datainsamlare i Cacti, försöker Cacti att behålla tillståndet för nyckelfiler på alla datainsamlare. Detta inkluderar alla kärna, icke-installerade relaterade webbplatser och plugin-filer. När du tvingar om en Resource Cache-ombyggnad, kommer Cacti att rensa den lokala resurscachen och sedan bygga om den vid nästa planerade pollerstart. Detta kommer att utlösa alla fjärrdatasamlare att kontrollera deras hemsida och plugga in filer för konsekvens."
 
 #: utilities.php:2302
 msgid "Boost Utilities"
@@ -19525,7 +19510,7 @@ msgstr "RRDfile Cleaner"
 
 #: utilities.php:2322
 msgid "When you delete Data Sources from Cacti, the corresponding RRDfiles are not removed automatically.  Use this utility to facilitate the removal of these old files."
-msgstr "När du tar bort datakällor från kaktusen tas inte motsvarande RRD-filer automatiskt bort. Använd det här verktyget för att underlätta avlägsnandet av dessa gamla filer."
+msgstr "När du tar bort datakällor från Cacti tas inte motsvarande RRD-filer automatiskt bort. Använd det här verktyget för att underlätta avlägsnandet av dessa gamla filer."
 
 #: utilities.php:2327
 msgid "Use this utility to display problems with missing rrd files or missing values in rrdfiles. You need enable rrdcheck in Configuration->Settings->Data"
@@ -19593,11 +19578,11 @@ msgstr "Förbättra uppdatering efter behov:"
 
 #: utilities.php:2633
 msgid "Running Processes:"
-msgstr "Samtidiga processer"
+msgstr "Löpande processer:"
 
 #: utilities.php:2638
 msgid "Total Poller Items:"
-msgstr "Poller Cache-objekt"
+msgstr "Totalt Poller-artiklar:"
 
 #: utilities.php:2644
 msgid "Total Data Sources:"
@@ -19605,7 +19590,7 @@ msgstr "Totala datakällor:"
 
 #: utilities.php:2648
 msgid "Remaining Data Sources:"
-msgstr "Felsökning av datakälla"
+msgstr "Återstående datakällor:"
 
 #: utilities.php:2648
 msgid "TBD"
@@ -19642,7 +19627,7 @@ msgstr "Gem Bytes / Record:"
 #: utilities.php:2704
 #, php-format
 msgid "%d Bytes"
-msgstr "% d Bytes"
+msgstr "%d Byte"
 
 #: utilities.php:2704
 msgid "Max Record Length:"
@@ -19745,7 +19730,7 @@ msgstr "Uppdateringsfrekvens:"
 
 #: utilities.php:2847
 msgid "Concurrent Processes:"
-msgstr "Samtidiga processer"
+msgstr "Samtidiga processer:"
 
 #: utilities.php:2850
 msgid "Next Start Time:"
