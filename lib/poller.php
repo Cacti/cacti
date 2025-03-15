@@ -2434,9 +2434,24 @@ function is_process_running($tasktype, $taskname, $taskid = 0) {
 		} else {
 			return 99;
 		}
-	} elseif ($r['pid'] > 0 && posix_kill($r['pid'], 0)) {
-		// Process Running and fine
-		return true;
+	} elseif ($r['pid'] > 0) {
+		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { // for Windows
+			$win_output = [];
+			exec('tasklist /FI "PID eq ' . $r['pid'] . '" 2>NUL', $win_output);
+
+			foreach ($win_output as $win_line) {
+				if (isset($win_output[3]) && strpos($win_line, (string)$pid) !== false) {
+					$pid_exists = true;
+				}
+			}
+			$pid_exists = 97;
+		} else { // for other OS
+			$pid_exists = (posix_kill($r['pid'], 0) ? true : 97);
+		}
+		if ($pid_exists == 97) {
+			unregister_process($tasktype, $taskname, $taskid);
+		}
+		return $pid_exists;
 	} else {
 		// Exited process but not unregistered
 		unregister_process($tasktype, $taskname, $taskid);
@@ -2482,7 +2497,12 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 		if ($r['pid'] > 0) {
 			cacti_log(sprintf('ERROR: Process being killed due to timeout! (%s, %s, %s, Process %s, Time %s, Timeout %s, Timestamp %s)', $tasktype, $taskname, $taskid, $r['pid'], $r['timeout_exceeded'], $r['timeout'], $r['current_timestamp']), false, 'POLLER');
 
-			posix_kill($r['pid'], SIGTERM);
+			// Check the operating system
+			if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { // for Windows
+				exec('taskkill /PID ' . $r['pid'] . ' /F');
+			} else { // for other OS
+				posix_kill($r['pid'], SIGTERM);
+			}
 
 			unregister_process($tasktype, $taskname, $taskid);
 			register_process($tasktype, $taskname, $taskid, $pid, $timeout);
@@ -2492,10 +2512,25 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
 
 			return false;
 		}
-	} elseif ($r['pid'] > 0 && posix_kill($r['pid'], 0)) {
-		cacti_log(sprintf('NOTE: Failed registering process.  Old process still running and has not timed out! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $pid), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
+	} elseif ($r['pid'] > 0) {
+		// Check the operating system
+		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { // for Windows
+			$win_output = [];
+			exec('tasklist /FI "PID eq ' . $r['pid'] . '" 2>NUL', $win_output);
 
-		return false;
+			foreach ($win_output as $win_line) {
+				if (isset($win_output[3]) && strpos($win_line, (string)$pid) !== false) {
+					$pid_exists = true;
+				}
+			}
+			$pid_exists = false;
+		} else { // for other OS
+			$pid_exists = posix_kill($r['pid'], 0);
+		}
+		if ($pid_exists) {
+			cacti_log(sprintf('NOTE: Failed registering process.  Old process still running and has not timed out! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $pid), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
+			return false;
+		}
 	} else {
 		cacti_log(sprintf('WARNING: Detected process that is exited and did not unregister first! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $pid), false, 'POLLER');
 
@@ -2626,9 +2661,31 @@ function timeout_kill_registered_processes($tasktype = '', $taskname = '', $task
 
 	if (cacti_sizeof($processes)) {
 		foreach ($processes as $r) {
-			if ($r['pid'] > 0 && posix_kill($r['pid'], 0)) {
-				cacti_log(sprintf('ERROR: Process killed due to timeout! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']), false, 'POLLER');
-				posix_kill($r['pid'], SIGTERM);
+			if ($r['pid'] > 0) {
+				if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { // for Windows
+					$win_output = [];
+					exec('tasklist /FI "PID eq ' . $r['pid'] . '" 2>NUL', $win_output);
+
+					foreach ($win_output as $win_line) {
+						if (strpos($win_line, (string)$pid) !== false) {
+							$pid_exists = true;
+						}
+					}
+					$pid_exists = false;
+				} else { // for other OS
+					$pid_exists = posix_kill($r['pid'], 0);
+				}
+				if ($pid_exists) {
+					cacti_log(sprintf('ERROR: Process killed due to timeout! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']), false, 'POLLER');
+					// Check the operating system
+					if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { // for Windows
+						// Windows-specific process termination
+						exec('taskkill /PID ' . $r['pid'] . ' /F'); // /F forces termination
+					} else { // for other OS
+						// Unix, Linux-like systems use posix_kill with SIGTERM
+						posix_kill($r['pid'], SIGTERM);
+					}
+				}
 			} else {
 				cacti_log(sprintf('ERROR: Detected process that is gone and did not unregister first! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']), false, 'POLLER');
 			}
