@@ -464,7 +464,7 @@ label {
 	color: rgba(22,22,22,0.8);
 	font-size: 10pt;
 	font-weight: bold;
-	background-color: rgba(148, 179, 107, 0.8);
+	background-color: #28B428;
 }
 
 .deviceDownBg {
@@ -491,7 +491,7 @@ label {
 	color: rgba(22,22,22,0.8);
 	font-size: 10pt;
 	font-weight: bold;
-	background-color: #ff8f1e;
+	background-color: #FF8C00;
 }
 
 .deviceErrorBg {
@@ -526,14 +526,14 @@ label {
 	color: rgba(22,22,22,0.8);
 	font-size: 10pt;
 	font-weight: bold;
-	background-color: #aa7807;
+	background-color: #EA9827;
 }
 
 .deviceAlertBg {
 	color: rgba(22,22,22,0.8);
 	font-size: 10pt;
 	font-weight: bold;
-	background-color: #660000;
+	background-color: #EA5F27;
 }
 
 .beingGraphed {
