@@ -83,7 +83,11 @@ function sig_handler($signo) {
 
 				if (cacti_sizeof($pids)) {
 					foreach ($pids as $pid) {
-						posix_kill($pid, SIGTERM);
+						if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+							exec('taskkill /PID ' . $pid . ' /F'); // for Windows
+						} else {
+							posix_kill($pid, SIGTERM); // for other OS
+						}
 					}
 				}
 
@@ -104,7 +108,11 @@ function sig_handler($signo) {
 
 				if (cacti_sizeof($pids)) {
 					foreach ($pids as $pid) {
-						posix_kill($pid, SIGTERM);
+						if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+							exec('taskkill /PID ' . $pid . ' /F'); // for Windows
+						} else {
+							posix_kill($pid, SIGTERM); // for other OS
+						}
 					}
 				}
 
@@ -970,11 +978,40 @@ function display_help() {
 }
 
 function isProcessRunning($pid) {
-	return posix_kill($pid, 0);
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        // Windows-specific process check
+        $win_output = [];
+        exec('tasklist /FI "PID eq ' . $pid .'" 2>NUL', $win_output);
+
+        // If the process is found in the tasklist, it is running
+        foreach ($win_output as $win_line) {
+            if (isset($win_output[3]) && strpos($win_line, (string)$pid) !== false) {
+                return true;
+            }
+        }
+        return false;
+    } else {
+        // Unix, Linux-like systems use posix_kill
+        return posix_kill($pid, 0);
+    }
 }
 
 function killProcess($pid) {
-	return posix_kill($pid, SIGTERM);
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        // Windows-specific process termination
+        $win_cmd = 'taskkill /PID ' . $pid . ' /F'; // /F forces termination
+        exec($win_cmd, $win_output, $returnCode);
+
+        // Return true if the command was successful (return code 0)
+	if ($returnCode === 0) {
+		return true;
+	} else {
+		return false;
+	}
+    } else {
+        // Unix-like systems use posix_kill with SIGTERM
+        return posix_kill($pid, SIGTERM);
+    }
 }
 
 function removeMyProcess($pid, $network_id) {
