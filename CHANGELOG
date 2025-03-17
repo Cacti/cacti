@@ -197,6 +197,7 @@ Cacti CHANGELOG
 -issue#6099: When transferring a system from a backup if the poller has not run recently rrdtool issues are found
 -issue#6172: Quoting issues leading to translation issue in form messaging in Chinese language
 -issue#6173: Deprecation warning when using boost for the first time
+-issue#6183: Checkbox is displayed always on in some cases
 
 1.2.29
 -security#GHSA-pv2c-97pp-vxwg: Local File Inclusion (LFI) Vulnerability via Poller Standard Error Log Path
