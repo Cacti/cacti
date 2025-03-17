@@ -1,6 +1,6 @@
 /*
   +-------------------------------------------------------------------------+
-  | Copyright (C) 2004-2024 The Cacti Group                                 |
+  | Copyright (C) 2004-2025 The Cacti Group                                 |
   |                                                                         |
   | This program is free software; you can redistribute it and/or           |
   | modify it under the terms of the GNU General Public License             |
@@ -479,7 +479,7 @@ function processStepCheckTables(StepData) {
 
 }
 
-function processStepNoticesRecomendations(StepData) {
+function processStepNoticesRecommendations(StepData) {
 	if ($('#confirm').length) {
 		$('#confirm').click(function() {
 			if ($(this).is(':checked')) {
@@ -690,7 +690,7 @@ function performStep(installStep, suppressRefresh, forceReload) {
 			} else if (data.Step == STEP_BINARY_LOCATIONS) {
 				processStepBinaryLocations(data.StepData);
 			} else if (data.Step == STEP_INPUT_VALIDATION) {
-				processStepNoticesRecomendations(data.StepData);
+				processStepNoticesRecommendations(data.StepData);
 			} else if (data.Step == STEP_PROFILE_AND_AUTOMATION) {
 				processStepProfileAndAutomation(data.StepData);
 			} else if (data.Step == STEP_TEMPLATE_INSTALL) {

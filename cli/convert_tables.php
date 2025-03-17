@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -40,7 +40,7 @@ $force       = false;
 $rebuild     = false;
 $dynamic     = false;
 $table_name  = '';
-$skip_tables = array();
+$skip_tables = [];
 $installer   = false;
 $local       = false;
 
@@ -90,6 +90,7 @@ if (cacti_sizeof($parms)) {
 			case '-l':
 			case '--latin1':
 				$latin = true;
+
 				break;
 			case '-n':
 			case '--skip-innodb':
@@ -195,18 +196,18 @@ if ($innodb) {
 }
 
 if (strlen($table_name)) {
-	$tables = array($table_name);
+	$tables = [$table_name];
 } else {
 	$tables = get_cacti_base_tables();
 }
 
 if (cacti_sizeof($tables)) {
-	foreach($tables AS $table) {
+	foreach ($tables as $table) {
 		$table_data = db_fetch_row_prepared('SELECT *
 			FROM information_schema.TABLES
 			WHERE TABLE_NAME = ?
 			AND TABLE_SCHEMA = ?',
-			array($table, $database_default));
+			[$table, $database_default]);
 
 		$canConvert = $rebuild;
 		$canInnoDB  = false;

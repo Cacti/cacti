@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -229,8 +229,8 @@ $scanned_directory = array(
 	);
 */
 
-$known_cfs      = array(1 => 'AVERAGE', 2 => 'MIN', 3 => 'MAX', 4 => 'LAST');
-$known_ds_types = array(1 => 'GAUGE', 2 => 'COUNTER', 3 => 'DERIVE', 4 => 'ABSOLUTE');
+$known_cfs      = [1 => 'AVERAGE', 2 => 'MIN', 3 => 'MAX', 4 => 'LAST'];
+$known_ds_types = [1 => 'GAUGE', 2 => 'COUNTER', 3 => 'DERIVE', 4 => 'ABSOLUTE'];
 
 if ($scanned_directory['folders']) {
 	/* create backup folder */
@@ -254,10 +254,10 @@ if ($scanned_directory['folders']) {
 		'SELECT DISTINCT host_id
 		FROM data_local
 		WHERE data_template_id = ?',
-		array($data_template_id)
+		[$data_template_id]
 	);
 
-	$dt_hosts = array();
+	$dt_hosts = [];
 
 	if (sizeof($db_hosts) > 0) {
 		foreach ($db_hosts as $key => $value) {
@@ -274,10 +274,10 @@ if ($scanned_directory['folders']) {
 		FROM data_template_data
 		WHERE data_template_id = ?
 		AND data_source_path IS NOT NULL',
-		array($data_template_id)
+		[$data_template_id]
 	);
 
-	$dt_data_sources = array();
+	$dt_data_sources = [];
 
 	if (sizeof($db_data_sources) > 0) {
 		foreach ($db_data_sources as $key => $value) {
@@ -337,7 +337,7 @@ if ($scanned_directory['folders']) {
 					'SELECT *
 					FROM data_template_data
 					WHERE data_source_path = ?',
-					array(db_qstr($search_pattern))
+					[db_qstr($search_pattern)]
 				);
 
 				if ($local_data) {
@@ -360,7 +360,7 @@ if ($scanned_directory['folders']) {
 						FROM data_template_rrd
 						WHERE hash != ''
 						AND data_template_id = ? ORDER BY id",
-						array($local_data['data_template_id'])
+						[$local_data['data_template_id']]
 					);
 					$data_template_ds_counter    = sizeof($data_template_ds);
 					$data_template_data_settings = db_fetch_assoc_prepared(
@@ -371,7 +371,7 @@ if ($scanned_directory['folders']) {
 						RIGHT JOIN rra_cf
 						ON rra_cf.rra_id = rra.id
 						WHERE data_template_data_rra.data_template_data_id = ?',
-						array($local_data['id'])
+						[$local_data['id']]
 					);
 					f_notify(false, "\033[0;32m[COMPLETED]\033[0m");
 				} else {
@@ -459,7 +459,7 @@ if ($scanned_directory['folders']) {
 						}
 					}
 
-					$ds_superfluous_ids = array();
+					$ds_superfluous_ids = [];
 
 					if ($ds_mismatch == true) {
 						if ($ds_error == 'missing') {
@@ -544,6 +544,7 @@ if ($scanned_directory['folders']) {
 
 				if (strpos($file_dump, 'ERROR')) {
 					f_notify(false, "\033[0;31m[FAILED]\033[0m");
+
 					### log_missing
 					continue;
 				} else {
@@ -551,6 +552,7 @@ if ($scanned_directory['folders']) {
 
 					if ($rrd_data === false) {
 						f_notify(false, "\033[0;31m[FAILED]\033[0m");
+
 						### log_missing
 						continue;
 					} else {
@@ -561,7 +563,7 @@ if ($scanned_directory['folders']) {
 				/***************** Re-configuration process starts *****************************/
 				f_notify('Rebuilding RRAs');
 
-				$rra_timespans = array();
+				$rra_timespans = [];
 				$tmp_step      = $rrd_info['step'];
 
 				foreach ($tmp_rras as $rra_index => $rra_settings) {
@@ -571,11 +573,11 @@ if ($scanned_directory['folders']) {
 					$end   = $rrd_info['last_update'] - $rrd_info['last_update'] % ($tmp_step * $rra_settings['pdp_per_row']);
 					$start = $end - ($rra_settings['rows'] - 1) * $step;
 
-					$rra_timespans[$rra_settings['cf']][$rra_index] = array(
+					$rra_timespans[$rra_settings['cf']][$rra_index] = [
 						'step'  => $step,
 						'start' => $start,
 						'end'   => $end
-					);
+					];
 				}
 
 				$rrd_new_header = '<?xml version="1.0" encoding="utf-8"?>' . PHP_EOL .
@@ -613,7 +615,7 @@ if ($scanned_directory['folders']) {
 				if ($data_template_ds_counter == 1) {
 					$row_copy_fake = 'NaN';
 				} else {
-					$row_copy_fake = array();
+					$row_copy_fake = [];
 
 					for ($i = 0; $i < $data_template_ds_counter; $i++) {
 						$row_copy_fake[] = 'NaN';
@@ -719,6 +721,7 @@ if ($scanned_directory['folders']) {
 								f_notify(false, "\033[0;31m[FAILED]\033[0m");
 								print_r($rra_timespans);
 								print $timestamp . '::' . $defined_cf;
+
 								//print $rrd_new_body;
 								/// log_missing
 								continue 4;
@@ -728,11 +731,11 @@ if ($scanned_directory['folders']) {
 							/* calculate the correct index number of the selected archive */
 							$calculated_index             = ($timestamp - $timestamp % $g_rra_settings['step'] - $g_rra_settings['start'] - $defined_step) / $g_rra_settings['step'];
 							$high_granulary_rows_required = round($defined_step / $g_rra_settings['step'], 0);
-							$consolidated_ds_values       = array();
+							$consolidated_ds_values       = [];
 
 							if (is_array($rrd_data['rra'][$selected_archive_index]['database']['row'][$calculated_index]['v'])) {
 								foreach ($rrd_data['rra'][$selected_archive_index]['database']['row'][$calculated_index]['v'] as $ds_index => $ds_value) {
-									$unconsolidated_ds_values = array();
+									$unconsolidated_ds_values = [];
 
 									for ($i = 0; $i < $high_granulary_rows_required; $i++) {
 										$unconsolidated_ds_values[] = $rrd_data['rra'][$selected_archive_index]['database']['row'][$calculated_index + $i]['v'][$ds_index];
@@ -771,7 +774,7 @@ if ($scanned_directory['folders']) {
 									}
 								}
 							} else {
-								$unconsolidated_ds_values = array();
+								$unconsolidated_ds_values = [];
 
 								for ($i = 0; $i < $high_granulary_rows_required; $i++) {
 									$unconsolidated_ds_values[] = $rrd_data['rra'][$selected_archive_index]['database']['row'][$calculated_index + $i]['v'];
@@ -858,6 +861,7 @@ if ($scanned_directory['folders']) {
 
 				if (strpos($file_restore, 'ERROR')) {
 					f_notify(false, "\033[0;31m[FAILED]\033[0m");
+
 					/// log_missing
 					continue;
 				} else {
@@ -909,7 +913,7 @@ if (!$debug_mode) {
 exit;
 
 function rrdtool_parse_info($lines) {
-	$store = array();
+	$store = [];
 	$lines = explode(PHP_EOL, trim($lines));
 
 	foreach ($lines as $line) {
@@ -921,7 +925,7 @@ function rrdtool_parse_info($lines) {
 
 		foreach ($keys as $key_num => $key) {
 			if (!array_key_exists($key, $pointer)) {
-				$pointer[$key] = array();
+				$pointer[$key] = [];
 			}
 			$pointer = &$pointer[$key];
 
@@ -935,18 +939,18 @@ function rrdtool_parse_info($lines) {
 }
 
 function rrdtool_pipe_init($path_rrdtool) {
-	$fds = array(
-		0 => array('pipe', 'r'),		// stdin
-		1 => array('pipe', 'w'),		// stdout
-		2 => array('file', '/dev/null', 'a')	// stderr
-	);
+	$fds = [
+		0 => ['pipe', 'r'],		// stdin
+		1 => ['pipe', 'w'],		// stdout
+		2 => ['file', '/dev/null', 'a']	// stderr
+	];
 	$process = proc_open($path_rrdtool . ' -', $fds, $pipes);
 
 	/* make stdin/stdout/stderr non-blocking */
 	stream_set_blocking($pipes[0], 0);
 	stream_set_blocking($pipes[1], 0);
 
-	return array($process, $pipes);
+	return [$process, $pipes];
 }
 
 function rrdtool_pipe_close($process) {
@@ -959,6 +963,7 @@ function rrdtool_pipe_execute($command, $pipes) {
 
 	while (!feof($pipes[1])) {
 		$line = fgets($pipes[1], 8092);
+
 		/* return the complete output cause the logic behind a proxy should be as simple as possible */
 		if (substr_count($line, 'OK u')) {
 			break;
@@ -977,13 +982,13 @@ function dirToArray($dir) {
 	$files   = 0;
 	$folders = 0;
 
-	$result = array();
+	$result = [];
 
 	$cdir = scandir($dir);
 
 	if ($cdir) {
 		foreach ($cdir as $key => $value) {
-			if (!in_array($value, array('.', '..'), true)) {
+			if (!in_array($value, ['.', '..'], true)) {
 				if (is_dir($dir . DIRECTORY_SEPARATOR . $value)) {
 					$folders++;
 					$result[$value] = dirToArray($dir . DIRECTORY_SEPARATOR . $value);
@@ -998,7 +1003,7 @@ function dirToArray($dir) {
 		}
 	}
 
-	return $summary = array('files' => $files, 'folders' => $folders, 'content' => $result);
+	return $summary = ['files' => $files, 'folders' => $folders, 'content' => $result];
 }
 
 function f_notify($category = false, $status = false, $debug_mode_only = true) {
@@ -1052,4 +1057,3 @@ function display_help() {
 	print '    --debug, -d                 show detail processing data' . PHP_EOL;
 	print '    --list-data-templates       list all data templates' . PHP_EOL . PHP_EOL;
 }
-

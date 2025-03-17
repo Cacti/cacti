@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -67,7 +67,6 @@ function sig_handler($signo) {
 			exit;
 
 			break;
-
 		default:
 			/* ignore all other signals */
 	}
@@ -195,13 +194,13 @@ if ($run) {
 	db_execute_prepared('REPLACE INTO settings
 		(name, value)
 		VALUES ("recovery_pid", ?)',
-		array($my_pid), true, $local_db_cnn_id);
+		[$my_pid], true, $local_db_cnn_id);
 
 	/* let the console know you are in recovery mode */
 	db_execute_prepared('UPDATE poller
 		SET status = "5"
 		WHERE id = ?',
-		array($poller_id), true, $remote_db_cnn_id);
+		[$poller_id], true, $remote_db_cnn_id);
 
 	poller_push_reindex_data_to_poller(0, 0, true);
 
@@ -227,11 +226,11 @@ if ($run) {
 				FROM poller_output_boost
 				WHERE time <= ?
 				ORDER BY time ASC, local_data_id ASC',
-				array($max_time));
+				[$max_time]);
 
 			if (cacti_sizeof($rows)) {
 				$packet_size = 0;
-				$sql_array   = array();
+				$sql_array   = [];
 
 				foreach ($rows as $r) {
 					$sql      = '(' . $r['local_data_id'] . ',' . db_qstr($r['rrd_name']) . ',' . db_qstr($r['time']) . ',' . db_qstr($r['output']) . ')';
@@ -248,7 +247,7 @@ if ($run) {
 							VALUES ' . implode(',', $sql_array), true, $remote_db_cnn_id);
 
 						$records_inserted += $record_count;
-						$sql_array   = array();
+						$sql_array   = [];
 						$packet_size = 0;
 					}
 
@@ -273,7 +272,7 @@ if ($run) {
 				if (is_object($local_db_cnn_id)) {
 					db_execute_prepared('DELETE FROM poller_output_boost
 						WHERE time <= ?',
-						array($max_time), true, $local_db_cnn_id);
+						[$max_time], true, $local_db_cnn_id);
 				}
 			}
 
@@ -284,7 +283,7 @@ if ($run) {
 	/* let the console know you are in online mode */
 	db_execute_prepared('UPDATE poller
 		SET status="2"
-		WHERE id= ?', array($poller_id), false, $remote_db_cnn_id);
+		WHERE id= ?', [$poller_id], false, $remote_db_cnn_id);
 } else {
 	debug('Recovery process still running, exiting');
 	cacti_log('RECOVERY: Recovery process still running for Poller ' . $poller_id . '.  PID is ' . $recovery_pid, false, 'POLLER');

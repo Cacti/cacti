@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -33,7 +33,7 @@ set_time_limit(0);
 chdir(__DIR__);
 
 $last_time = time() - 30;
-$cache     = array();
+$cache     = [];
 
 $path_mibcache      = CACTI_PATH_CACHE. '/mibcache/mibcache.tmp';
 $path_mibcache_lock = CACTI_PATH_CACHE. '/mibcache/mibcache.lock';
@@ -42,26 +42,26 @@ $path_mibcache_lock = CACTI_PATH_CACHE. '/mibcache/mibcache.lock';
 $mibcache_changed = db_fetch_cell_prepared("SHOW TABLE STATUS
 	WHERE `Name` LIKE 'snmpagent_cache'
 	AND (UNIX_TIMESTAMP(`Update_time`)) >= ?",
-	array($last_time));
+	[$last_time]);
 
 if ($mibcache_changed !== null || file_exists($path_mibcache) === false) {
 	$objects = db_fetch_assoc('SELECT `oid`, LOWER(type) as type, `otype`, `max-access`, `value`
 		FROM snmpagent_cache');
 
 	if (cacti_sizeof($objects)) {
-		$oids = array();
+		$oids = [];
 
 		foreach ($objects as &$object) {
 			$oids[] = $object['oid'];
 
-			$object = ($object['otype'] == 'DATA' && $object['max-access'] != 'not-accessible') ? array('type' => $object['type'], 'value' => $object['value']) : false;
+			$object = ($object['otype'] == 'DATA' && $object['max-access'] != 'not-accessible') ? ['type' => $object['type'], 'value' => $object['value']] : false;
 		}
 
 		/* natural sorting with MySQL is not available - especially not for OIDs */
 		natsort($oids);
 
 		$last_accessible_object          = false;
-		$next_accessible_object_required = array();
+		$next_accessible_object_required = [];
 
 		foreach ($oids as $key => $oid) {
 			if ($objects[$key]) {
@@ -74,7 +74,7 @@ if ($mibcache_changed !== null || file_exists($path_mibcache) === false) {
 						$cache[$next_accessible_object_required_oid]['next'] = $oid;
 					}
 
-					$next_accessible_object_required = array();
+					$next_accessible_object_required = [];
 				}
 
 				$last_accessible_object = $oid;

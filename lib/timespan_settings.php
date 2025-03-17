@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -25,14 +25,14 @@
 /* ================= input validation ================= */
 get_filter_request_var('predefined_timespan');
 get_filter_request_var('predefined_timeshift');
-get_filter_request_var('date1', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
-get_filter_request_var('date2', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
+get_filter_request_var('date1', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
+get_filter_request_var('date2', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
 /* ==================================================== */
 
 include_once(CACTI_PATH_LIBRARY . '/time.php');
 
 /* initialize the timespan array */
-$timespan = array();
+$timespan = [];
 
 /* set variables for first time use */
 $reset     = initialize_timespan($timespan);
@@ -54,7 +54,7 @@ function initialize_timespan(&$timespan) {
 		$default_timespan  = read_user_setting('default_timespan');
 		$default_timeshift = read_user_setting('default_timeshift');
 
-		if (empty($detault_timespan)) {
+		if (empty($default_timespan)) {
 			$default_timespan = 7;
 			set_user_setting('predefined_timespan', $default_timespan);
 		}
@@ -120,6 +120,8 @@ function process_html_variables() {
 /**
  * when a span time preselection has been defined update the span time fields
  * someone hit a button and not a dropdown
+ * @param mixed $timespan
+ * @param mixed $timeshift
  */
 function process_user_input(&$timespan, $timeshift) {
 	/**
@@ -157,7 +159,7 @@ function process_user_input(&$timespan, $timeshift) {
 			if (isset($_SESSION['sess_current_date1'])) {
 				set_request_var('date1', $_SESSION['sess_current_date1']);
 			} else {
-				set_request_var('date1', date('Y-m-d H:i:s', time()-86400));
+				set_request_var('date1', date('Y-m-d H:i:s', time() - 86400));
 			}
 
 			if (isset($_SESSION['sess_current_date2'])) {

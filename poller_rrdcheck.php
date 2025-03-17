@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -211,12 +211,11 @@ function rrdcheck_master_handler($forcerun) {
 		// determine if it's time to determine hourly averages
 		if (empty($last_run)) {
 			// since the poller has never run before, let's fake it out
-			set_config_option('rrdcheck_last_run_time', ($current_time-86400));
+			set_config_option('rrdcheck_last_run_time', ($current_time - 86400));
 		}
 
 		// if it's time to check, do so now
 		if ((!empty($last_run) && (($last_run + ($run_interval * 60)) < $current_time)) || $forcerun) {
-
 			rrdcheck_launch_children($type);
 
 			// Wait for all processes to continue
@@ -291,7 +290,6 @@ function sig_handler($signo) {
 			exit(1);
 
 			break;
-
 		default:
 			/* ignore all other signals */
 	}

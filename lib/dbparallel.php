@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -31,6 +31,11 @@
  * @param  (int)           The number of parallel threads to use
  * @param  (bool)          Whether to log error messages, defaults to true
  * @param  (bool|resource) The connection to use or false to use the default
+ * @param mixed $sql
+ * @param mixed $col_name
+ * @param mixed $threads
+ * @param mixed $log
+ * @param mixed $db_conn
  *
  * @return (bool)  The output of the sql query as a single variable
  */
@@ -41,7 +46,7 @@ function db_fetch_cell_parallel($sql, $col_name = '', $threads = 2, $log = true,
 		db_echo_sql('db_fetch_cell($sql, $col_name = \'' . $col_name . '\', $log = true, $db_conn = false)' . "\n");
 	}
 
-	return db_fetch_cell_prepared($sql, array(), $col_name, $log, $db_conn);
+	return db_fetch_cell_prepared($sql, [], $col_name, $log, $db_conn);
 }
 
 /**
@@ -54,10 +59,16 @@ function db_fetch_cell_parallel($sql, $col_name = '', $threads = 2, $log = true,
  * @param  (int)           The number of parallel threads to use
  * @param  (bool)          Whether to log error messages, defaults to true
  * @param  (bool|resource) The connection to use or false to use the default
+ * @param mixed $sql
+ * @param mixed $params
+ * @param mixed $col_name
+ * @param mixed $threads
+ * @param mixed $log
+ * @param mixed $db_conn
  *
  * @return (bool) The output of the sql query as a single variable
  */
-function db_fetch_cell_parallel_prepared($sql, $params = array(), $col_name = '', $threads = 2, $log = true, $db_conn = false) {
+function db_fetch_cell_parallel_prepared($sql, $params = [], $col_name = '', $threads = 2, $log = true, $db_conn = false) {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -74,6 +85,10 @@ function db_fetch_cell_parallel_prepared($sql, $params = array(), $col_name = ''
  * @param  (int)           The number of parallel threads to use
  * @param  (bool)          Whether to log error messages, defaults to true
  * @param  (bool|resource) The connection to use or false to use the default
+ * @param mixed $sql
+ * @param mixed $threads
+ * @param mixed $log
+ * @param mixed $db_conn
  *
  * @return (bool|array) The first row of the result or false if failed
  */
@@ -84,7 +99,7 @@ function db_fetch_row_parallel($sql, $threads = 2, $log = true, $db_conn = false
 		db_echo_sql('db_fetch_row(\'' . clean_up_lines($sql) . '\', $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') .')' . "\n");
 	}
 
-	return db_fetch_row_prepared($sql, array(), $log, $db_conn);
+	return db_fetch_row_prepared($sql, [], $log, $db_conn);
 }
 
 /**
@@ -95,10 +110,15 @@ function db_fetch_row_parallel($sql, $threads = 2, $log = true, $db_conn = false
  * @param  (int)           The number of parallel threads to use
  * @param  (bool)          Whether to log error messages, defaults to true
  * @param  (bool|resource) The connection to use or false to use the default
+ * @param mixed $sql
+ * @param mixed $params
+ * @param mixed $threads
+ * @param mixed $log
+ * @param mixed $db_conn
  *
  * @return (bool|array) The first row of the result or false if failed
  */
-function db_fetch_row_parallel_prepared($sql, $params = array(), $threads = 2, $log = true, $db_conn = false) {
+function db_fetch_row_parallel_prepared($sql, $params = [], $threads = 2, $log = true, $db_conn = false) {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -115,6 +135,10 @@ function db_fetch_row_parallel_prepared($sql, $params = array(), $threads = 2, $
  * @param  (int)           The number of parallel threads to use
  * @param  (bool)          Whether to log error messages, defaults to true
  * @param  (bool|resource) The connection to use or false to use the default
+ * @param mixed $sql
+ * @param mixed $threads
+ * @param mixed $log
+ * @param mixed $db_conn
  *
  * @return (bool|array)    The entire result set or false on error
  */
@@ -125,7 +149,7 @@ function db_fetch_assoc_parallel($sql, $threads = 2, $log = true, $db_conn = fal
 		db_echo_sql('db_fetch_assoc($sql, $log = true, $db_conn = false)' . "\n");
 	}
 
-	return db_fetch_assoc_prepared($sql, array(), $log, $db_conn);
+	return db_fetch_assoc_prepared($sql, [], $log, $db_conn);
 }
 
 /**
@@ -136,17 +160,22 @@ function db_fetch_assoc_parallel($sql, $threads = 2, $log = true, $db_conn = fal
  * @param  (int)           The number of parallel threads to use
  * @param  (bool)          Whether to log error messages, defaults to true
  * @param  (bool|resource) The connection to use or false to use the default
+ * @param mixed $sql
+ * @param mixed $params
+ * @param mixed $threads
+ * @param mixed $log
+ * @param mixed $db_conn
  *
  * @return (bool|array)    The entire result or false on error
  */
-function db_fetch_assoc_parallel_prepared($sql, $params = array(), $threads = 2, $log = true, $db_conn = false) {
+function db_fetch_assoc_parallel_prepared($sql, $params = [], $threads = 2, $log = true, $db_conn = false) {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
 		db_echo_sql('db_fetch_assoc_prepared($sql, $params = array(), $log = true, $db_conn = false)' . "\n");
 	}
 
-	return db_execute_prepared($sql, $params, $log, $db_conn, 'Row', array(), 'db_fetch_assoc_return');
+	return db_execute_prepared($sql, $params, $log, $db_conn, 'Row', [], 'db_fetch_assoc_return');
 }
 
 /**
@@ -182,6 +211,9 @@ function db_fetch_assoc_parallel_prepared($sql, $params = array(), $threads = 2,
  * @params (string)        The query to execute
  * @param  (bool)          Whether to log error messages, defaults to true
  * @param  (bool|resource) The connection to use or false to use the default
+ * @param mixed $sql
+ * @param mixed $log
+ * @param mixed $db_conn
  * @params (bool)          If set to true, the temporary table will be created
  *
  * @return (array)         The query pieces, the map and reduce components with
@@ -195,7 +227,7 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 	 * any query that includes these custom keyword options.
 	 *
 	 */
-	$ignores = array(
+	$ignores = [
 		'DISTINCTROW',
 		'HIGH_PRIORITY',
 		'SQL_SMALL_RESULT',
@@ -206,9 +238,9 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 		'SQL_CALC_FOUND_ROWS',
 		'FOR UPDATE',
 		'LOCK IN SHARE MODE'
-	);
+	];
 
-	$replaces = array('', '', '', '', '', '', '', '', '');
+	$replaces = ['', '', '', '', '', '', '', '', ''];
 
 	$sql = str_replace($ignores, $replaces, $sql);
 
@@ -231,8 +263,8 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 	 * - Remove extra spaces
 	 */
 	$sql = str_replace(
-		array("\n", "\t", "\r", ';'),
-		array(' ', ' ', ' ', ''),
+		["\n", "\t", "\r", ';'],
+		[' ', ' ', ' ', ''],
 		$sql
 	);
 
@@ -259,7 +291,7 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 		// Aggregation Functions
 		'|VARIANCE'            . // Aggregation Function
 		'|VAR_'                . // Aggregation Function
- 		'|STD'                 . // Aggregation Function
+		'|STD'                 . // Aggregation Function
 		'|STDDEV'              . // Aggregation Function
 		'|COUNT\(DISTINCT'     . // Aggregation Function
 
@@ -289,14 +321,14 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 	 * Our response object which can then be used by the caller
 	 * to create the table, perform queries, etc.
 	 */
- 	$response = array(
+	$response = [
 		'error'              => false,
 		'error_message'      => '',
 		'temp_table_name'    => 'par_' . generate_hash() . '_res', // Limited to 40 characters due to process table length limit
 		'temp_create_syntax' => '',
 		'reduce_query'       => '',
-		'map_queries'        => array()
-	);
+		'map_queries'        => []
+	];
 
 	// Check for disallowed tokens
 	if (preg_match($disallowed, $sql)) {
@@ -313,7 +345,7 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 	 * We need to track the partitions for operating on partitioned
 	 * tables for the MAP phase.
 	 */
-	$partitions = array();
+	$partitions = [];
 
 	/**
 	 * Perform some pre-checks, UNION queries, by their nature are parallelizable.
@@ -321,8 +353,8 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 	 */
 	if (stripos($sql, 'UNION') === false && stripos($sql, 'UNION ALL') === false) {
 		// Find the table name if not a union query
-		if (sizeof($from_split) > 1) {
-			$bits = explode(' ', trim($from_split[1]));
+		if (count($from_split) > 1) {
+			$bits       = explode(' ', trim($from_split[1]));
 			$table_name = trim($bits[0], '`');
 
 			if (!db_table_partitioned($table_name, $log, $db_conn, $partitions)) {
@@ -348,7 +380,7 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 		 * to skip the checks below GROUP BY, LIMIT, ORDER, etc. below as
 		 * they are each contained within the UNION's themselves.
 		 */
-		if (substr(trim($from_split[1]), 0, 1) == '(') {
+		if (str_starts_with(trim($from_split[1]), '(')) {
 			$simple_union = false;
 		} else {
 			$simple_union = true;
@@ -385,7 +417,7 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 	 *
 	 */
 
-	$tokens = array(
+	$tokens = [
 		'raw_select'   => '',
 		'outer_select' => '',
 		'inner_select' => '',
@@ -395,7 +427,7 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 		'having'       => '',
 		'orderby'      => '',
 		'limit'        => ''
-	);
+	];
 
 	/**
 	 * Tokenizing the SQL query can be handled in many ways.  I'm taking the
@@ -415,9 +447,9 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 			$parts   = explode('LIMIT', $tempstr);
 
 			$elements        = cacti_sizeof($parts);
-			$tokens['limit'] = 'LIMIT ' . trim($parts[$elements-1]);
+			$tokens['limit'] = 'LIMIT ' . trim($parts[$elements - 1]);
 
-			unset($parts[$elements-1]);
+			unset($parts[$elements - 1]);
 
 			$tokenstr = trim(implode('LIMIT', $parts));
 		}
@@ -427,9 +459,9 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 			$parts   = explode('ORDER BY', $tempstr);
 
 			$elements          = cacti_sizeof($parts);
-			$tokens['orderby'] = 'ORDER BY ' . trim($parts[$elements-1]);
+			$tokens['orderby'] = 'ORDER BY ' . trim($parts[$elements - 1]);
 
-			unset($parts[$elements-1]);
+			unset($parts[$elements - 1]);
 
 			$tokenstr = trim(implode('ORDER BY', $parts));
 		}
@@ -439,9 +471,9 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 			$parts   = explode('HAVING', $tempstr);
 
 			$elements          = cacti_sizeof($parts);
-			$tokens['having']  = 'HAVING ' . trim($parts[$elements-1]);
+			$tokens['having']  = 'HAVING ' . trim($parts[$elements - 1]);
 
-			unset($parts[$elements-1]);
+			unset($parts[$elements - 1]);
 
 			$tokenstr = trim(implode('HAVING', $parts));
 		}
@@ -451,9 +483,9 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 			$parts   = explode('GROUP BY', $tempstr);
 
 			$elements          = cacti_sizeof($parts);
-			$tokens['groupby'] = 'GROUP BY ' . trim($parts[$elements-1]);
+			$tokens['groupby'] = 'GROUP BY ' . trim($parts[$elements - 1]);
 
-			unset($parts[$elements-1]);
+			unset($parts[$elements - 1]);
 
 			$tokenstr = trim(implode('GROUP BY', $parts));
 		}
@@ -463,9 +495,9 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 			$parts   = explode('WHERE', $tempstr);
 
 			$elements          = cacti_sizeof($parts);
-			$tokens['where']   = 'WHERE ' . trim($parts[$elements-1]);
+			$tokens['where']   = 'WHERE ' . trim($parts[$elements - 1]);
 
-			unset($parts[$elements-1]);
+			unset($parts[$elements - 1]);
 
 			$tokenstr = trim(implode('WHERE', $parts));
 		}
@@ -474,14 +506,15 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 
 		// Format the raw inner and outer selectors
 		if (stripos($selectstr, 'SELECT') !== false) {
-			$tempstr = str_ireplace('select', '', $selectstr);
+			$tempstr              = str_ireplace('select', '', $selectstr);
 			$tokens['raw_select'] = trim($tempstr);
 		}
 
 		// Modify the outer selector to remove aliases
 		$outer = explode(',', $tokens['raw_select']);
 		$inner = '';
-		foreach($outer as $index => $o) {
+
+		foreach ($outer as $index => $o) {
 			$aggregate = db_get_aggregate($o);
 
 			if ($aggregate != '' && $debug) {
@@ -490,26 +523,28 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 
 			if ($aggregate == '') {
 				$parts = explode('.', $o);
+
 				if (cacti_sizeof($parts) > 1) {
 					if (stripos($parts[1], 'AS') !== false) {
-						$parts[1] = str_ireplace('as', 'AS', $parts[1]);
-						$bits = explode('AS', $parts[1]);
+						$parts[1]      = str_ireplace('as', 'AS', $parts[1]);
+						$bits          = explode('AS', $parts[1]);
 						$outer[$index] = trim($bits[1]);
 					} else {
 						$outer[$index] = trim($parts[1]);
 					}
 				} elseif (stripos($o, 'AS') !== false) {
-					$o = str_ireplace('as', 'AS', $o);
-					$bits = explode('AS', $o);
+					$o             = str_ireplace('as', 'AS', $o);
+					$bits          = explode('AS', $o);
 					$outer[$index] = trim($bits[1]);
 				} else {
 					$outer[$index] = trim($parts[0]);
 				}
 			} else {
 				$alias = $index;
+
 				if (stripos($o, 'AS') !== false) {
-					$o = str_ireplace('as', 'AS', $o);
-					$bits = explode('AS', $o);
+					$o     = str_ireplace('as', 'AS', $o);
+					$bits  = explode('AS', $o);
 					$alias = trim($bits[1]);
 				}
 
@@ -531,7 +566,7 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 
 		$tokens['outer_select'] = implode(',', $outer);
 	} else {
-		$sql = str_ireplace(array('union all', 'union'), array('UNION ALL', 'UNION'), $sql);
+		$sql = str_ireplace(['union all', 'union'], ['UNION ALL', 'UNION'], $sql);
 
 		if ($is_union_all) {
 			$partitions = explode('UNION ALL', $sql);
@@ -540,7 +575,7 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 		}
 
 		if (cacti_sizeof($partitions)) {
-			foreach($partitions as $index => $p) {
+			foreach ($partitions as $index => $p) {
 				$partitions[$index] = trim($p);
 			}
 		}
@@ -562,27 +597,28 @@ function db_query_parallelize($sql, $log = true, $db_conn = false) {
 		print_r($partitions);
 	}
 
-	return array('tokens' => $tokens, 'partitions' => $partitions);
+	return ['tokens' => $tokens, 'partitions' => $partitions];
 }
 
 /**
  * db_get_aggregate - Return the aggregate function from a SQL select item
  *
  * @param  (string)        The SQL column string
+ * @param mixed $colsql
  *
  * @return (string)        The column aggregate function
  */
 function db_get_aggregate($colsql) {
 	// Decompose and prepare the query for parallelization
-	$aggregators = array(
+	$aggregators = [
 		'SUM(',
 		'COUNT(',
 		'MIN(',
 		'MAX(',
 		'AVG('
-	);
+	];
 
-	foreach($aggregators as $a) {
+	foreach ($aggregators as $a) {
 		if (stripos($colsql, $a) !== false) {
 			return trim($a, '(');
 		}
@@ -598,10 +634,14 @@ function db_get_aggregate($colsql) {
  * @param  (bool)          Whether to log error messages, defaults to true
  * @param  (bool|resource) The connection to use or false to use the default
  * @param  (array)         The connection to use or false to use the default
+ * @param mixed $table
+ * @param mixed $log
+ * @param mixed $db_conn
+ * @param mixed $partitions
  *
  * @return (bool) The output of the sql query as a single variable
  */
-function db_table_partitioned($table, $log = true, $db_conn = false, &$partitions = array()) {
+function db_table_partitioned($table, $log = true, $db_conn = false, &$partitions = []) {
 	static $results;
 
 	if (isset($results[$table]) && !defined('IN_CACTI_INSTALL') && !defined('IN_PLUGIN_INSTALL')) {
@@ -627,16 +667,16 @@ function db_table_partitioned($table, $log = true, $db_conn = false, &$partition
 
 			$parts = explode("\n", $create);
 
-			foreach($parts as $l) {
+			foreach ($parts as $l) {
 				if (stripos($l, 'PARTITION ') !== false && stripos($l, 'PARTITION BY') === false) {
-					$comp = explode(' ', trim($l));
+					$comp         = explode(' ', trim($l));
 					$partitions[] = trim($comp[1], '`');
 				}
 			}
 
 			$results[$table]['partitions'] = $partitions;
 		} else {
-			$results[$table]['partitions'] = array();
+			$results[$table]['partitions'] = [];
 			$results[$table]['result']     = false;
 		}
 
@@ -645,4 +685,3 @@ function db_table_partitioned($table, $log = true, $db_conn = false, &$partition
 
 	return false;
 }
-

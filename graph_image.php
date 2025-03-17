@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -43,19 +43,19 @@ if (isset_request_var('graph_nolegend')) {
 	set_request_var('graph_nolegend', 'true');
 }
 
-get_filter_request_var('graph_theme', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
+get_filter_request_var('graph_theme', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
 /* ==================================================== */
 
 api_plugin_hook_function('graph_image');
 
-$graph_data_array = array();
+$graph_data_array = [];
 
 // Determine the graph type of the output
 if (!isset_request_var('image_format')) {
 	$type   = db_fetch_cell_prepared('SELECT image_format_id
 		FROM graph_templates_graph
 		WHERE local_graph_id = ?',
-		array(get_request_var('local_graph_id')));
+		[get_request_var('local_graph_id')]);
 
 	switch($type) {
 		case '1':
@@ -77,7 +77,6 @@ if (!isset_request_var('image_format')) {
 			$gtype = 'svg+xml';
 
 			break;
-
 		default:
 			$gtype = 'png';
 
@@ -140,14 +139,14 @@ if (isset_request_var('rra_id')) {
 }
 
 if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
-	$null_param = array();
-	$output = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
+	$null_param = [];
+	$output     = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
 } else {
 	$url  = CACTI_PATH_URL . 'remote_agent.php?action=graph_json';
 	$url .= '&local_graph_id=' . get_request_var('local_graph_id');
 	$url .= '&rra_id=' . $rra_id;
 
-	foreach($graph_data_array as $variable => $value) {
+	foreach ($graph_data_array as $variable => $value) {
 		$url .= '&' . $variable . '=' . $value;
 	}
 
@@ -179,7 +178,7 @@ if ($output !== false && $output != '') {
 	/* get the error string */
 	$graph_data_array['get_error'] = true;
 
-	$null_param = array();
+	$null_param = [];
 
 	rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, null, $null_param, $_SESSION['sess_user_id']);
 

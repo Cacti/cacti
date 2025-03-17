@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -27,6 +27,7 @@
  * that match a given data template
  *
  * @param  int     - The ID of the data template to match
+ * @param mixed $data_template_id
  *
  * @return null
  */
@@ -35,7 +36,7 @@ function update_data_source_title_cache_from_template($data_template_id) {
 		FROM data_template_data
 		WHERE data_template_id = ?
 		AND local_data_id > 0',
-		array($data_template_id));
+		[$data_template_id]);
 
 	if (cacti_sizeof($data)) {
 		foreach ($data as $item) {
@@ -57,7 +58,7 @@ function update_data_source_title_cache_from_query($snmp_query_id, $snmp_index) 
 		FROM data_local
 		WHERE snmp_query_id = ?
 		AND snmp_index = ?',
-		array($snmp_query_id, $snmp_index));
+		[$snmp_query_id, $snmp_index]);
 
 	if (cacti_sizeof($data) > 0) {
 		foreach ($data as $item) {
@@ -73,28 +74,31 @@ function update_data_source_title_cache_from_query($snmp_query_id, $snmp_index) 
  * @param  int     - The ID of the host to match
  * @param  int     - The ID of the snmp query
  * @param  array   - An array of local data ids
+ * @param mixed $host_id
+ * @param mixed $query_id
+ * @param mixed $ids
  *
  * @return null
  */
-function update_data_source_title_cache_from_host($host_id, $query_id = 0, $ids = array()) {
+function update_data_source_title_cache_from_host($host_id, $query_id = 0, $ids = []) {
 	if ($query_id > 0 && !cacti_sizeof($ids)) {
 		$data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 		FROM data_local
 			WHERE host_id = ?
 			AND snmp_query_id = ?',
-			array($host_id, $query_id));
+			[$host_id, $query_id]);
 	} elseif ($query_id > 0) {
 		$data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 			FROM data_local
 			WHERE host_id = ?
 			AND snmp_query_id = ?
 			AND id IN (?)',
-			array($host_id, $query_id, implode(',', $ids)));
+			[$host_id, $query_id, implode(',', $ids)]);
 	} else {
 		$data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 			FROM data_local
 			WHERE host_id = ?',
-			array($host_id));
+			[$host_id]);
 	}
 
 	if (cacti_sizeof($data)) {
@@ -108,6 +112,7 @@ function update_data_source_title_cache_from_host($host_id, $query_id = 0, $ids 
  * update_data_source_title_cache - updates the title cache for a single data source
  *
  * @param  int     - The ID of the data source to update the title cache for
+ * @param mixed $local_data_id
  *
  * @return null    - Output is returned through stdout
  */
@@ -115,16 +120,16 @@ function update_data_source_title_cache($local_data_id) {
 	$old_title = db_fetch_cell_prepared('SELECT name_cache
 		FROM data_template_data
 		WHERE local_data_id = ?',
-		array($local_data_id));
+		[$local_data_id]);
 
 	$data_source = get_data_source_title($local_data_id);
 
-	if (strstr($data_source, '|query_') !== false || strstr($data_source, '|host_') !== false) {
+	if (str_contains($data_source, '|query_') || str_contains($data_source, '|host_')) {
 		if ($old_title == '') {
 			db_execute_prepared('UPDATE data_template_data
 				SET name_cache = ?
 				WHERE local_data_id = ?',
-				array($data_source, $local_data_id));
+				[$data_source, $local_data_id]);
 
 			api_plugin_hook_function('update_data_source_title_cache', $local_data_id);
 		}
@@ -132,7 +137,7 @@ function update_data_source_title_cache($local_data_id) {
 		db_execute_prepared('UPDATE data_template_data
 			SET name_cache = ?
 			WHERE local_data_id = ?',
-			array($data_source, $local_data_id));
+			[$data_source, $local_data_id]);
 
 		api_plugin_hook_function('update_data_source_title_cache', $local_data_id);
 	}
@@ -143,6 +148,7 @@ function update_data_source_title_cache($local_data_id) {
  * that match a given graph template
  *
  * @param  int     - The ID of the graph template to match
+ * @param mixed $graph_template_id
  *
  * @return null
  */
@@ -151,7 +157,7 @@ function update_graph_title_cache_from_template($graph_template_id) {
 		FROM graph_templates_graph
 		WHERE graph_template_id = ?
 		AND local_graph_id > 0',
-		array($graph_template_id));
+		[$graph_template_id]);
 
 	if (cacti_sizeof($graphs) > 0) {
 		foreach ($graphs as $item) {
@@ -166,6 +172,8 @@ function update_graph_title_cache_from_template($graph_template_id) {
  *
  * @param  int     - The ID of the data query to match
  * @param  int     - The index within the data query to match
+ * @param mixed $snmp_query_id
+ * @param mixed $snmp_index
  *
  * @return null
  */
@@ -174,7 +182,7 @@ function update_graph_title_cache_from_query($snmp_query_id, $snmp_index) {
 		FROM graph_local
 		WHERE snmp_query_id = ?
 		AND snmp_index = ?',
-		array($snmp_query_id, $snmp_index));
+		[$snmp_query_id, $snmp_index]);
 
 	if (cacti_sizeof($graphs) > 0) {
 		foreach ($graphs as $item) {
@@ -192,13 +200,13 @@ function update_graph_title_cache_from_query($snmp_query_id, $snmp_index) {
  *
  * @return null
  */
-function update_graph_title_cache_from_host($host_id, $query_id = 0, $ids = array()) {
+function update_graph_title_cache_from_host($host_id, $query_id = 0, $ids = []) {
 	if ($query_id > 0 && !cacti_sizeof($ids)) {
 		$graphs = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 		FROM graph_local
 			WHERE host_id = ?
 			AND snmp_query_id = ?',
-			array($host_id, $query_id));
+			[$host_id, $query_id]);
 	} elseif ($query_id > 0) {
 		$graphs = db_fetch_assoc_prepared('SELECT DISTINCT ' . SQL_NO_CACHE . ' gl.id
 			FROM graph_local AS gl
@@ -209,12 +217,12 @@ function update_graph_title_cache_from_host($host_id, $query_id = 0, $ids = arra
 			WHERE host_id = ?
 			AND snmp_query_id = ?
 			AND dtr.local_data_id IN(?)',
-			array($host_id, $query_id, implode(',', $ids)));
+			[$host_id, $query_id, implode(',', $ids)]);
 	} else {
 		$graphs = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 			FROM graph_local
 			WHERE host_id = ?',
-			array($host_id));
+			[$host_id]);
 	}
 
 	if (cacti_sizeof($graphs)) {
@@ -228,6 +236,7 @@ function update_graph_title_cache_from_host($host_id, $query_id = 0, $ids = arra
  * update_graph_title_cache - updates the title cache for a single graph
  *
  * @param  int     - The ID of the graph to update the title cache for
+ * @param mixed $local_graph_id
  *
  * @return null
  */
@@ -235,22 +244,22 @@ function update_graph_title_cache($local_graph_id) {
 	$old_title = db_fetch_cell_prepared('SELECT title_cache
 		FROM graph_templates_graph
 		WHERE local_graph_id = ?',
-		array($local_graph_id));
+		[$local_graph_id]);
 
 	$graph_title = get_graph_title($local_graph_id);
 
-	if (strstr($graph_title, '|query_') !== false || strstr($graph_title, '|host_') !== false) {
+	if (str_contains($graph_title, '|query_') || str_contains($graph_title, '|host_')) {
 		if ($old_title == '') {
 			db_execute_prepared('UPDATE graph_templates_graph
 				SET title_cache = ?
 				WHERE local_graph_id = ?',
-				array($graph_title, $local_graph_id));
+				[$graph_title, $local_graph_id]);
 		}
 	} else {
 		db_execute_prepared('UPDATE graph_templates_graph
 			SET title_cache = ?
 			WHERE local_graph_id = ?',
-			array($graph_title, $local_graph_id));
+			[$graph_title, $local_graph_id]);
 	}
 }
 
@@ -259,6 +268,7 @@ function update_graph_title_cache($local_graph_id) {
  * do not have values.
  *
  * @param  string  - The string to clean out unsubstituted variables for
+ * @param mixed $string
  *
  * @return         - The cleaned up string
  */
@@ -278,6 +288,10 @@ function null_out_substitutions($string) {
  * @param  int     - The data query ID to match
  * @param  int     - The data query index to match
  * @param  string  - The original string that contains the data query variables
+ * @param mixed $host_id
+ * @param mixed $snmp_query_id
+ * @param mixed $snmp_index
+ * @param mixed $title
  *
  * @return - the original string with all of the variable substitutions made
  */
@@ -292,12 +306,12 @@ function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
 		$title = null_out_substitutions($title);
 	}
 
-	$data = array(
+	$data = [
 		'host_id'       => $host_id,
 		'snmp_query_id' => $snmp_query_id,
 		'snmp_index'    => $snmp_index,
 		'title'         => $title
-	);
+	];
 
 	$data = api_plugin_hook_function('expand_title', $data);
 
@@ -313,6 +327,7 @@ function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
  * variables contained in it.
  *
  * @param  string  - The string to make path variable substitutions on
+ * @param mixed $path
  *
  * @return string  - The original string with all of the variable substitutions made
  */
@@ -332,6 +347,10 @@ function substitute_script_query_path($path) {
  * @param  string  - The character used to escape each variable on the left side
  * @param  string  - The character used to escape each variable on the right side
  * @param  int     - The host ID to match
+ * @param mixed $string
+ * @param mixed $l_escape_string
+ * @param mixed $r_escape_string
+ * @param mixed $host_id
  *
  * @return string   - the original string with all of the variable substitutions made
  */
@@ -341,14 +360,14 @@ function substitute_host_data($string, $l_escape_string, $r_escape_string, $host
 			FROM host AS h
 			LEFT JOIN sites AS s
 			ON h.site_id = s.id
-			WHERE h.id = ?', array($host_id));
+			WHERE h.id = ?', [$host_id]);
 
 		if (!cacti_sizeof($host)) {
 			return $string;
 		}
 
-		$search  = array();
-		$replace = array();
+		$search  = [];
+		$replace = [];
 
 		$search[]  = $l_escape_string . 'host_management_ip' . $r_escape_string; /* for compatibility */
 		$replace[] = $host['hostname']; /* for compatibility */
@@ -430,7 +449,7 @@ function substitute_host_data($string, $l_escape_string, $r_escape_string, $host
 
 		$temp = api_plugin_hook_function(
 			'substitute_host_data',
-			array('string' => $string, 'l_escape_string' => $l_escape_string, 'r_escape_string' => $r_escape_string, 'host_id' => $host_id)
+			['string' => $string, 'l_escape_string' => $l_escape_string, 'r_escape_string' => $r_escape_string, 'host_id' => $host_id]
 		);
 
 		$string = $temp['string'];
@@ -448,6 +467,11 @@ function substitute_host_data($string, $l_escape_string, $r_escape_string, $host
  * @param  int     - The data query ID to match
  * @param  int     - The data query index to match
  * @param  int     - The maximum number of characters to substitute
+ * @param mixed $string
+ * @param mixed $host_id
+ * @param mixed $snmp_query_id
+ * @param mixed $snmp_index
+ * @param mixed $max_chars
  *
  * @return string  - the original string with all of the variable substitutions made
  */
@@ -458,14 +482,14 @@ function substitute_snmp_query_data($string, $host_id, $snmp_query_id, $snmp_ind
 			WHERE host_id = ?
 			AND snmp_query_id = ?
 			AND snmp_index = ?',
-			array($host_id, $snmp_query_id, $snmp_index));
+			[$host_id, $snmp_query_id, $snmp_index]);
 	} else {
 		$snmp_cache_data = db_fetch_assoc_prepared('SELECT DISTINCT ' . SQL_NO_CACHE . ' field_name, field_value
 			FROM host_snmp_cache
 			WHERE snmp_query_id = ?
 			AND snmp_index = ?
 			AND host_id = 0',
-			array($snmp_query_id, $snmp_index));
+			[$snmp_query_id, $snmp_index]);
 	}
 
 	if (cacti_sizeof($snmp_cache_data)) {
@@ -477,7 +501,7 @@ function substitute_snmp_query_data($string, $host_id, $snmp_query_id, $snmp_ind
 
 				$string = stri_replace('|query_' . $data['field_name'] . '|', $data['field_value'], $string);
 
-				if (strpos($string, 'query_') === false) {
+				if (!str_contains($string, 'query_')) {
 					break;
 				}
 			}
@@ -494,6 +518,10 @@ function substitute_snmp_query_data($string, $host_id, $snmp_query_id, $snmp_ind
  * @param  string  - The original string that contains the data input variables
  * @param  int     - The local data id to match
  * @param  int     - The maximum number of characters to substitute
+ * @param mixed $string
+ * @param mixed $graph
+ * @param mixed $local_data_id
+ * @param mixed $max_chars
  *
  * @return string  - the original string with all of the variable substitutions made
  */
@@ -504,7 +532,7 @@ function substitute_data_input_data($string, $graph, $local_data_id, $max_chars 
 				FROM data_template_rrd
 				INNER JOIN graph_templates_item
 				ON data_template_rrd.id = graph_templates_item.task_item_id
-				WHERE local_graph_id = ?', array($graph['local_graph_id'])), 'local_data_id', 'local_data_id');
+				WHERE local_graph_id = ?', [$graph['local_graph_id']]), 'local_data_id', 'local_data_id');
 
 			if (cacti_sizeof($local_data_ids)) {
 				$data_template_data_id = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' id
@@ -520,7 +548,7 @@ function substitute_data_input_data($string, $graph, $local_data_id, $max_chars 
 		$data_template_data_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' id
 			FROM data_template_data
 			WHERE local_data_id = ?',
-			array($local_data_id));
+			[$local_data_id]);
 	}
 
 	if (!empty($data_template_data_id)) {
@@ -531,7 +559,7 @@ function substitute_data_input_data($string, $graph, $local_data_id, $max_chars 
 			ON dif.id = did.data_input_field_id
 			WHERE data_template_data_id = ?
 			AND input_output = 'in'",
-			array($data_template_data_id));
+			[$data_template_data_id]);
 
 		if (cacti_sizeof($data)) {
 			foreach ($data as $item) {
@@ -556,6 +584,10 @@ function substitute_data_input_data($string, $graph, $local_data_id, $max_chars 
  * @param  string  - The original string that contains the data input variables
  * @param  int     - The local data id to match
  * @param  int     - The maximum number of characters to substitute
+ * @param mixed $string
+ * @param mixed $graph
+ * @param mixed $local_data_id
+ * @param mixed $max_chars
  *
  * @return string  - the original string with all of the variable substitutions made
  */
@@ -567,7 +599,7 @@ function substitute_poller_data($string, $graph, $local_data_id, $max_chars = 0)
 				INNER JOIN poller AS p
 				ON h.poller_id = p.id
 				WHERE h.id = ?',
-				array($graph['host_id']));
+				[$graph['host_id']]);
 
 			if (!cacti_sizeof($poller)) {
 				return $string;
@@ -575,8 +607,8 @@ function substitute_poller_data($string, $graph, $local_data_id, $max_chars = 0)
 
 			$columns = array_keys($poller);
 
-			foreach($columns as $c) {
-				if (strpos($string, '|poller_' . $c . '|') !== false) {
+			foreach ($columns as $c) {
+				if (str_contains($string, '|poller_' . $c . '|')) {
 					$string = stri_replace('|poller_' . $c . '|', $poller[$c], $string);
 				}
 			}
@@ -589,7 +621,7 @@ function substitute_poller_data($string, $graph, $local_data_id, $max_chars = 0)
 			INNER JOIN poller AS p
 			ON h.poller_id = p.id
 			WHERE dl.id = ?',
-			array($local_data_id));
+			[$local_data_id]);
 
 		if (!cacti_sizeof($poller)) {
 			return $string;
@@ -597,8 +629,8 @@ function substitute_poller_data($string, $graph, $local_data_id, $max_chars = 0)
 
 		$columns = array_keys($poller);
 
-		foreach($columns as $c) {
-			if (strpos($string, '|poller_' . $c . '|') !== false) {
+		foreach ($columns as $c) {
+			if (str_contains($string, '|poller_' . $c . '|')) {
 				$string = stri_replace('|poller_' . $c . '|', $poller[$c], $string);
 			}
 		}
@@ -615,6 +647,10 @@ function substitute_poller_data($string, $graph, $local_data_id, $max_chars = 0)
  * @param  array   - The Cacti graph object
  * @param  int     - The local data id to match
  * @param  int     - The maximum number of characters to substitute
+ * @param mixed $string
+ * @param mixed $graph
+ * @param mixed $local_data_id
+ * @param mixed $max_chars
  *
  * @return string  - the original string with all of the variable substitutions made
  */
@@ -626,7 +662,7 @@ function substitute_site_data($string, $graph, $local_data_id, $max_chars = 0) {
 				INNER JOIN sites AS s
 				ON h.site_id = s.id
 				WHERE h.id = ?',
-				array($graph['host_id']));
+				[$graph['host_id']]);
 
 			if (!cacti_sizeof($site)) {
 				return $string;
@@ -634,8 +670,8 @@ function substitute_site_data($string, $graph, $local_data_id, $max_chars = 0) {
 
 			$columns = array_keys($site);
 
-			foreach($columns as $c) {
-				if (strpos($string, '|site_' . $c . '|') !== false) {
+			foreach ($columns as $c) {
+				if (str_contains($string, '|site_' . $c . '|')) {
 					$string = stri_replace('|site_' . $c . '|', $site[$c], $string);
 				}
 			}
@@ -648,7 +684,7 @@ function substitute_site_data($string, $graph, $local_data_id, $max_chars = 0) {
 			INNER JOIN sites AS s
 			ON h.site_id = s.id
 			WHERE dl.id = ?',
-			array($local_data_id));
+			[$local_data_id]);
 
 		if (!cacti_sizeof($site)) {
 			return $string;
@@ -656,8 +692,8 @@ function substitute_site_data($string, $graph, $local_data_id, $max_chars = 0) {
 
 		$columns = array_keys($site);
 
-		foreach($columns as $c) {
-			if (strpos($string, '|site_' . $c . '|') !== false) {
+		foreach ($columns as $c) {
+			if (str_contains($string, '|site_' . $c . '|')) {
 				$string = stri_replace('|site_' . $c . '|', $site[$c], $string);
 			}
 		}

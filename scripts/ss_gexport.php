@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -79,14 +79,14 @@ function ss_gexport($cmd = 'index', $arg1 = '', $arg2 = '') {
 					$value = db_fetch_cell_prepared('SELECT last_runtime
 						FROM graph_exports
 						WHERE id = ?',
-						array($index));
+						[$index]);
 
 					break;
 				case 'totalGraphs':
 					$value = db_fetch_cell_prepared('SELECT total_graphs
 						FROM graph_exports
 						WHERE id = ?',
-						array($index));
+						[$index]);
 
 					break;
 			}

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -110,11 +110,11 @@ function die_html_input_error($variable = null, $value = null, $message = '') {
 
 	if (isset_request_var('json')) {
 		print json_encode(
-			array(
+			[
 				'status'       => '500',
 				'statusText'   => __('Validation Error'),
 				'responseText' => $message
-			)
+			]
 		);
 	} else {
 		print "<table style='width:100%;text-align:center;'><tr><td>$message</td></tr></table>";

@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -44,7 +44,7 @@ function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port =
 
 	$ping = new Net_Ping;
 
-	$time           = array();
+	$time           = [];
 	$total_time     = 0;
 	$failed_results = 0;
 
@@ -61,7 +61,7 @@ function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port =
 	$ping_timeout = db_fetch_cell_prepared('SELECT ping_timeout
 		FROM host
 		WHERE hostname = ?',
-		array($hostname));
+		[$hostname]);
 
 	if (empty($ping_timeout)) {
 		$ping_timeout = read_config_option('ping_timeout');
@@ -122,6 +122,7 @@ function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port =
 
 		if ($failed_results > $ping_sweeps / 4) {
 			$ping_sweeps = $failed_results;
+
 			break;
 		}
 	}
@@ -136,7 +137,7 @@ function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port =
 		$predev = 0;
 
 		foreach ($time as $sample) {
-			$predev += pow(($sample - $avg),2);
+			$predev += ($sample - $avg) ** 2;
 		}
 
 		$dev = sqrt($predev / cacti_count($time));

@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -77,49 +77,49 @@ function ss_webseer($cmd = 'index', $arg1 = '', $arg2 = '') {
 					$value = db_fetch_cell_prepared('SELECT namelookup_time
 						FROM plugin_webseer_urls
 						WHERE id = ?',
-						array($index));
+						[$index]);
 
 					break;
 				case 'connectTime':
 					$value = db_fetch_cell_prepared('SELECT connect_time
 						FROM plugin_webseer_urls
 						WHERE id = ?',
-						array($index));
+						[$index]);
 
 					break;
 				case 'redirectTime':
 					$value = db_fetch_cell_prepared('SELECT redirect_time
 						FROM plugin_webseer_urls
 						WHERE id = ?',
-						array($index));
+						[$index]);
 
 					break;
 				case 'totalTime':
 					$value = db_fetch_cell_prepared('SELECT total_time
 						FROM plugin_webseer_urls
 						WHERE id = ?',
-						array($index));
+						[$index]);
 
 					break;
 				case 'downloadSpeed':
 					$value = db_fetch_cell_prepared('SELECT speed_download
 						FROM plugin_webseer_urls
 						WHERE id = ?',
-						array($index));
+						[$index]);
 
 					break;
 				case 'downloadSize':
 					$value = db_fetch_cell_prepared('SELECT size_download
 						FROM plugin_webseer_urls
 						WHERE id = ?',
-						array($index));
+						[$index]);
 
 					break;
 				case 'checkStatus':
 					$value = db_fetch_cell_prepared('SELECT result
 						FROM plugin_webseer_urls
 						WHERE id = ?',
-						array($index));
+						[$index]);
 
 					break;
 			}

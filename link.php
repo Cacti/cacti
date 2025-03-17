@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -28,7 +28,7 @@ $page = db_fetch_row_prepared('SELECT
 	id, title, style, contentfile, enabled, refresh
 	FROM external_links AS el
 	WHERE id = ?',
-	array(get_filter_request_var('id')));
+	[get_filter_request_var('id')]);
 
 // Prevent redirect loops
 if (isset($_SERVER['HTTP_REFERER'])) {

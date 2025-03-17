@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -99,7 +99,6 @@ if (cacti_sizeof($parms)) {
 				$quietMode = true;
 
 				break;
-
 			default:
 				print "ERROR: Invalid Argument: ($arg)\n\n";
 				display_help();
@@ -183,7 +182,7 @@ if (cacti_sizeof($parms)) {
 			object_cache_update_totals('diff');
 		}
 
-		api_plugin_hook_function('add_graph_template_to_host', array('host_id' => $host_id, 'graph_template_id' => $graph_template_id));
+		api_plugin_hook_function('add_graph_template_to_host', ['host_id' => $host_id, 'graph_template_id' => $graph_template_id]);
 	}
 
 	if (is_error_message()) {

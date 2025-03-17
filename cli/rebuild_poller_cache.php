@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -112,6 +112,7 @@ foreach ($parms as $parameter) {
 		case '--threads':
 			if (!is_numeric(trim($value))) {
 				print 'ERROR: You must supply a valid Number of Treads or skip this parameter for default value (' . $threads . ')' . PHP_EOL;
+
 				exit(1);
 			}
 
@@ -159,6 +160,7 @@ foreach ($parms as $parameter) {
  * poller cache are done in succession in background.
  */
 $rp_type = '';
+
 if ($host_id !== false) {
 	$rp_type .= ($rp_type != '' ? ',':':') . "hi:$host_id";
 }
@@ -185,7 +187,7 @@ ini_set('max_execution_time', '0');
 ini_set('memory_limit', '-1');
 
 $sql_where = '';
-$params    = array();
+$params    = [];
 
 if ($host_id > 0) {
 	$sql_where = ' AND h.id = ?';
@@ -222,7 +224,7 @@ switch ($type) {
 		$child_start = microtime(true);
 
 		$sql_where  = '';
-		$sql_params = array();
+		$sql_params = [];
 
 		if ($host_id !== false) {
 			$sql_where .= 'AND id = ?';
@@ -236,9 +238,9 @@ switch ($type) {
 
 		$rows = db_fetch_cell_prepared("SELECT count(id) FROM host WHERE disabled='' " . $sql_where, $sql_params);
 
-		$hosts_per_process = ceil($rows/$threads);
+		$hosts_per_process = ceil($rows / $threads);
 
-		$sql_where .= ' GROUP BY h.id ORDER BY h.id LIMIT ' . (($thread_id-1)*$hosts_per_process) . ',' . $hosts_per_process;
+		$sql_where .= ' GROUP BY h.id ORDER BY h.id LIMIT ' . (($thread_id - 1) * $hosts_per_process) . ',' . $hosts_per_process;
 
 		$rows = db_fetch_assoc_prepared("SELECT h.id AS id, COUNT(dl.id) AS dl_count
 			FROM host AS h
@@ -247,7 +249,7 @@ switch ($type) {
 			WHERE h.disabled='' " . $sql_where,
 			$sql_params);
 
-		cacti_log(sprintf('Child Started Process %s with %d hosts, from: %d', $thread_id, $hosts_per_process, ($thread_id-1)*$hosts_per_process), true, 'PUSHOUT');
+		cacti_log(sprintf('Child Started Process %s with %d hosts, from: %d', $thread_id, $hosts_per_process, ($thread_id - 1) * $hosts_per_process), true, 'PUSHOUT');
 
 		foreach ($rows as $row) {
 			if (!$debug) {
@@ -257,7 +259,7 @@ switch ($type) {
 			if ($row['dl_count'] > 0) {
 				push_out_host($row['id'], 0, $data_template_id);
 			} else {
-				db_execute_prepared('DELETE FROM poller_item WHERE host_id = ?', array($row['id']));
+				db_execute_prepared('DELETE FROM poller_item WHERE host_id = ?', [$row['id']]);
 			}
 		}
 
@@ -272,12 +274,11 @@ pushout_debug('Polling Ending');
 
 exit(0);
 
-
 function pushout_master_handler($forcerun, $host_id, $host_template_id, $data_template_id, $threads) {
 	global $type;
 
 	$sql_where  = '';
-	$sql_params = array();
+	$sql_params = [];
 
 	if ($host_id !== false) {
 		$sql_where .= 'AND id = ?';
@@ -294,12 +295,12 @@ function pushout_master_handler($forcerun, $host_id, $host_template_id, $data_te
 		WHERE disabled = '' " . $sql_where, $sql_params);
 
 	if ($rows == 0) {
-		print 'WARNING: There are no hosts to process' . PHP_EOL;;
+		print 'WARNING: There are no hosts to process' . PHP_EOL;
 
 		return false;
 	}
 
-	$hosts_per_process = ceil($rows/$threads);
+	$hosts_per_process = ceil($rows / $threads);
 
 	print "There are $rows hosts, $threads threads and $hosts_per_process hosts to process per thread" . PHP_EOL;
 
@@ -317,7 +318,6 @@ function pushout_master_handler($forcerun, $host_id, $host_template_id, $data_te
 
 	while (true) {
 		if ($starting) {
-
 			sleep(5);
 			$starting = false;
 		}
@@ -340,6 +340,7 @@ function pushout_master_handler($forcerun, $host_id, $host_template_id, $data_te
  *   the maximum number of threads and the process type
  *
  * @param $thread_id  (int)    The Thread id to launch
+ * @param mixed $threads
  *
  * @return - NULL
  */
@@ -445,7 +446,6 @@ function sig_handler($signo) {
 			exit(1);
 
 			break;
-
 		default:
 			/* ignore all other signals */
 	}
@@ -465,7 +465,7 @@ function pushout_kill_running_processes() {
 		WHERE tasktype = "pushout"
 		AND taskname IN ("child")
 		AND pid != ?',
-		array(getmypid()));
+		[getmypid()]);
 
 	if (cacti_sizeof($processes)) {
 		foreach ($processes as $p) {
@@ -476,4 +476,3 @@ function pushout_kill_running_processes() {
 		}
 	}
 }
-

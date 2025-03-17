@@ -1,7 +1,7 @@
 <?php
 /*
   +-------------------------------------------------------------------------+
-  | Copyright (C) 2004-2024 The Cacti Group                                 |
+  | Copyright (C) 2004-2025 The Cacti Group                                 |
   |                                                                         |
   | This program is free software; you can redistribute it and/or           |
   | modify it under the terms of the GNU General Public License             |
@@ -32,7 +32,7 @@ if (php_sapi_name() == 'cli') {
 	return;
 }
 
-function cacti_db_session_check() {
+function cacti_db_session_check(): void {
 	if (!db_column_exists('sessions', 'user_id')) {
 		db_execute('ALTER TABLE sessions
 			ADD COLUMN user_id int unsigned NOT NULL default "0",
@@ -46,28 +46,28 @@ function cacti_db_session_check() {
 	}
 }
 
-function cacti_db_session_open($savePath = '', $sessionName = '') {
+function cacti_db_session_open(string $savePath = '', string $sessionName = ''): bool {
 	// Cacti database is already active
 	cacti_db_session_check();
 
 	return true;
 }
 
-function cacti_db_session_close() {
+function cacti_db_session_close(): bool {
 	// Cacti database is not closed by sessions
 	return true;
 }
 
-function cacti_db_session_read($id) {
+function cacti_db_session_read(string $id) {
 	db_execute_prepared('UPDATE IGNORE sessions
 		SET access = ?
 		WHERE id = ?',
-		array(time(), $id));
+		[time(), $id]);
 
 	$session = db_fetch_cell_prepared('SELECT data
 		FROM sessions
 		WHERE id = ?',
-		array($id));
+		[$id]);
 
 	// work with PHP 7.1
 	if (empty($session)) {
@@ -77,7 +77,7 @@ function cacti_db_session_read($id) {
 	return $session;
 }
 
-function cacti_db_session_write($id, $data) {
+function cacti_db_session_write(string $id, string $data): bool {
 	$access = time();
 
 	cacti_db_session_check();
@@ -93,7 +93,7 @@ function cacti_db_session_write($id, $data) {
 	}
 
 	$client_addr = get_client_addr();
-	$user_agent  = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT']:'Unknown';
+	$user_agent  = $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown';
 
 	if ($user_id > 0) {
 		db_execute_prepared('INSERT INTO sessions
@@ -104,8 +104,8 @@ function cacti_db_session_write($id, $data) {
 				access = VALUES(access),
 				user_agent = VALUES(user_agent),
 				transactions = transactions + 1',
-			array($id, $client_addr, $access, $data, $user_id, $user_agent));
-	} elseif (strpos($data, 'ses_user_id') !== false) {
+			[$id, $client_addr, $access, $data, $user_id, $user_agent]);
+	} elseif (str_contains($data, 'ses_user_id')) {
 		db_execute_prepared('INSERT INTO sessions
 			(id, remote_addr, access, data, user_agent)
 			VALUES (?, ?, ?, ?, ?)
@@ -114,26 +114,26 @@ function cacti_db_session_write($id, $data) {
 				access = VALUES(access),
 				user_agent = VALUES(user_agent),
 				transactions = transactions + 1',
-			array($id, $client_addr, $access, $data, $user_agent));
+			[$id, $client_addr, $access, $data, $user_agent]);
 	}
 
 	return true;
 }
 
-function cacti_db_session_destroy($id) {
+function cacti_db_session_destroy(string $id): bool {
 	db_execute_prepared('DELETE FROM sessions
 		WHERE id = ?',
-		array($id));
+		[$id]);
 
 	return true;
 }
 
-function cacti_db_session_clean($max) {
+function cacti_db_session_clean(int $max): bool {
 	$old = time() - $max;
 
 	db_execute_prepared('DELETE FROM sessions
 		WHERE access < ?',
-		array($old));
+		[$old]);
 
 	return true;
 }

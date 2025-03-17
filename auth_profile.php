@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -83,20 +83,20 @@ switch (get_request_var('action')) {
 		unset($_SESSION['custom']);
 
 		/* ================= input validation ================= */
-		get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([0-9a-z_A-Z]+)$/')));
+		get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([0-9a-z_A-Z]+)$/']]);
 		/* ==================================================== */
 
 		/* present a tabbed interface */
-		$tabs = array(
-			'general'  => array(
+		$tabs = [
+			'general'  => [
 				'display' => __('General'),
 				'url'     => CACTI_PATH_URL . 'auth_profile.php?tab=general'
-			),
-			'2fa' => array(
+			],
+			'2fa' => [
 				'display' => __('2FA'),
 				'url'     => CACTI_PATH_URL . 'auth_profile.php?tab=2fa'
-			),
-		);
+			],
+		];
 
 		if (read_config_option('secpass_2fa_enabled') == '') {
 			unset($tabs['2fa']);
@@ -117,12 +117,12 @@ switch (get_request_var('action')) {
 			foreach ($tabs as $tab_short_name => $attribs) {
 				print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") .
 					" href='" . html_escape($attribs['url']) .
-					"'>" . $attribs['display'] . "</a></li>";
+					"'>" . $attribs['display'] . '</a></li>';
 
 				$i++;
 			}
 
-			print "</ul></nav></div>";
+			print '</ul></nav></div>';
 		}
 
 		if ($current_tab == 'general') {
@@ -145,7 +145,7 @@ function api_auth_logout_everywhere() {
 	if (!empty($user)) {
 		db_execute_prepared('DELETE FROM user_auth_cache
 			WHERE user_id = ?',
-			array($user)
+			[$user]
 		);
 	}
 }
@@ -157,7 +157,7 @@ function api_auth_clear_user_settings() {
 		if (isset_request_var('tab') && get_nfilter_request_var('tab') == 'general') {
 			db_execute_prepared('DELETE FROM settings_user
 				WHERE user_id = ?',
-				array($user)
+				[$user]
 			);
 
 			kill_session_var(OPTIONS_USER);
@@ -183,7 +183,7 @@ function api_auth_clear_user_setting($name) {
 			db_execute_prepared('DELETE FROM settings_user
 				WHERE user_id = ?
 				AND name = ?',
-				array($user, $name)
+				[$user, $name]
 			);
 
 			foreach ($settings_user as $tab => $settings) {
@@ -192,7 +192,7 @@ function api_auth_clear_user_setting($name) {
 						db_execute_prepared('INSERT INTO settings_user
 							(name, value, user_id)
 							VALUES (?, ?, ?)',
-							array($name, $settings[$name]['default'], $user)
+							[$name, $settings[$name]['default'], $user]
 						);
 
 						header('Content-Type: application/json');
@@ -220,7 +220,7 @@ function api_auth_update_user_setting($name, $value) {
 			db_execute_prepared("UPDATE user_auth
 				SET $name = ?
 				WHERE id = ?",
-				array($value, $user)
+				[$value, $user]
 			);
 		} else {
 			foreach ($settings_user as $tab => $settings) {
@@ -228,7 +228,7 @@ function api_auth_update_user_setting($name, $value) {
 					db_execute_prepared('REPLACE INTO settings_user
 						(name, value, user_id)
 						VALUES (?, ?, ?)',
-						array($name, $value, $user)
+						[$name, $value, $user]
 					);
 
 					kill_session_var(OPTIONS_USER);
@@ -250,15 +250,15 @@ function form_save() {
 		db_execute_prepared('UPDATE user_auth
 			SET full_name = ?, email_address = ?
 			WHERE id = ?',
-			array(
+			[
 				get_nfilter_request_var('full_name'),
 				get_nfilter_request_var('email_address'),
 				$_SESSION[SESS_USER_ID]
-			)
+			]
 		);
 	}
 
-	$errors = array();
+	$errors = [];
 
 	// Save the users graph settings if they have permission
 	if (is_view_allowed('graph_settings') == true && isset_request_var('tab') && get_nfilter_request_var('tab') == 'general') {
@@ -319,7 +319,7 @@ function settings() {
 	$current_user = db_fetch_row_prepared('SELECT *
 		FROM user_auth
 		WHERE id = ?',
-		array($_SESSION[SESS_USER_ID])
+		[$_SESSION[SESS_USER_ID]]
 	);
 
 	if (!cacti_sizeof($current_user)) {
@@ -348,24 +348,24 @@ function settings() {
 	}
 
 	/* file: user_admin.php, action: user_edit (host) */
-	$fields_user = array(
-		'username' => array(
+	$fields_user = [
+		'username' => [
 			'method'        => 'value',
 			'friendly_name' => __('User Name'),
 			'description'   => __('The login name for this user.'),
 			'value'         => '|arg1:username|',
 			'max_length'    => '40',
 			'size'          => '40'
-		),
-		'full_name' => array(
+		],
+		'full_name' => [
 			'method'        => 'textbox',
 			'friendly_name' => __('Full Name'),
 			'description'   => __('A more descriptive name for this user, that can include spaces or special characters.'),
 			'value'         => '|arg1:full_name|',
 			'max_length'    => '120',
 			'size'          => '60'
-		),
-		'email_address' => array(
+		],
+		'email_address' => [
 			'method'        => 'textbox',
 			'type'          => 'email',
 			'friendly_name' => __('Email Address'),
@@ -373,40 +373,40 @@ function settings() {
 			'value'         => '|arg1:email_address|',
 			'max_length'    => '60',
 			'size'          => '60'
-		),
-		'clear_settings' => array(
+		],
+		'clear_settings' => [
 			'method'        => 'button',
 			'friendly_name' => __('Clear User Settings'),
 			'description'   => __('Return all User Settings to Default values.'),
 			'value'         => __('Clear User Settings'),
 			'on_click'      => 'clearUserSettings()'
-		),
-		'private_data' => array(
+		],
+		'private_data' => [
 			'method'        => 'button',
 			'friendly_name' => __('Clear Private Data'),
 			'description'   => __('Clear Private Data including Column sizing.'),
 			'value'         => __('Clear Private Data'),
 			'on_click'      => 'clearPrivateData()'
-		)
-	);
+		]
+	];
 
 	if (read_config_option('auth_cache_enabled') == 'on') {
-		$fields_user += array(
-			'logout_everywhere' => array(
+		$fields_user += [
+			'logout_everywhere' => [
 				'method'        => 'button',
 				'friendly_name' => __('Logout Everywhere'),
 				'description'   => __('Clear all your Login Session Tokens from all devices that you have logged into using your session cookies.'),
 				'value'         => __('Logout Everywhere'),
 				'on_click'      => 'logoutEverywhere()'
-			)
-		);
+			]
+		];
 	}
 
 	draw_edit_form(
-		array(
-			'config' => array('no_form_tag' => true),
-			'fields' => inject_form_variables($fields_user, (isset($current_user) ? $current_user : array()))
-		)
+		[
+			'config' => ['no_form_tag' => true],
+			'fields' => inject_form_variables($fields_user, (isset($current_user) ? $current_user : []))
+		]
 	);
 
 	html_end_box(true, true);
@@ -423,12 +423,12 @@ function settings() {
 		foreach ($settings_user as $tab_short_name => $tab_fields) {
 			$collapsible = true;
 
-			print "<div class='spacer formHeader" . ($collapsible ? ' collapsible' : '') . "' id='row_$tab_short_name'><div class='formHeaderText'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>" : '') . "</div></div>";
+			print "<div class='spacer formHeader" . ($collapsible ? ' collapsible' : '') . "' id='row_$tab_short_name'><div class='formHeaderText'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>" : '') . '</div></div>';
 
-			$form_array = array();
+			$form_array = [];
 
 			foreach ($tab_fields as $field_name => $field_array) {
-				$form_array += array($field_name => $tab_fields[$field_name]);
+				$form_array += [$field_name => $tab_fields[$field_name]];
 
 				if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
@@ -440,7 +440,7 @@ function settings() {
 							FROM settings_user
 							WHERE name = ?
 							AND user_id = ?',
-							array($sub_field_name, $_SESSION[SESS_USER_ID])
+							[$sub_field_name, $_SESSION[SESS_USER_ID]]
 						);
 					}
 				} else {
@@ -452,7 +452,7 @@ function settings() {
 						FROM settings_user
 						WHERE name = ?
 						AND user_id = ?',
-						array($field_name, $_SESSION[SESS_USER_ID])
+						[$field_name, $_SESSION[SESS_USER_ID]]
 					);
 
 					if (cacti_sizeof($user_row)) {
@@ -466,29 +466,29 @@ function settings() {
 			}
 
 			draw_edit_form(
-				array(
-					'config' => array(
+				[
+					'config' => [
 						'no_form_tag' => true
-					),
+					],
 					'fields' => $form_array
-				)
+				]
 			);
 		}
 
-		print "</td></tr>";
+		print '</td></tr>';
 
 		html_end_box(true, true);
 	}
 
 	form_hidden_box('save_component_graph_config', '1', '');
 
-	$buttons = array(
-		array(
+	$buttons = [
+		[
 			'id'     => 'return',
 			'value'  => __('Return'),
 			'method' => 'return'
-		)
-	);
+		]
+	];
 
 	form_save_buttons($buttons, $_SESSION['profile_referer']);
 
@@ -528,23 +528,23 @@ function settings_2fa() {
 	$current_user = db_fetch_row_prepared('SELECT *
 		FROM user_auth
 		WHERE id = ?',
-		array($_SESSION[SESS_USER_ID])
+		[$_SESSION[SESS_USER_ID]]
 	);
 
 	if (!cacti_sizeof($current_user)) {
 		return;
 	}
 
-	$fields_user = array(
-		'username' => array(
+	$fields_user = [
+		'username' => [
 			'method'        => 'value',
 			'friendly_name' => __('User Name'),
 			'description'   => __('The login name for this user.'),
 			'value'         => '|arg1:username|',
 			'max_length'    => '40',
 			'size'          => '40',
-		),
-		'tfa_enabled' => array(
+		],
+		'tfa_enabled' => [
 			'method'        => 'checkbox',
 			'friendly_name' => __('2FA Enabled'),
 			'description'   => __('Whether 2FA is enabled for this user.'),
@@ -552,49 +552,49 @@ function settings_2fa() {
 			'on_click'      => 'toggle2FA()',
 			'max_length'    => '40',
 			'size'          => '40',
-		),
-		'tfa_qr_code' => array(
+		],
+		'tfa_qr_code' => [
 			'method'        => 'value',
 			'friendly_name' => __('2FA QA Code'),
 			'description'   => __('The 2FA QA Code to be scanned with Google Authenticator, Authy or any compatible 2FA app'),
 			'value'         => '	',
 			'max_length'    => '40',
 			'size'          => '40',
-		),
-		'tfa_token' => array(
+		],
+		'tfa_token' => [
 			'method'        => 'textbox',
 			'friendly_name' => __('2FA App Token'),
 			'description'   => __('The token generated by Google Authenticator, Auth or any compatible 2FA app'),
 			'value'         => '',
 			'max_length'    => '40',
 			'size'          => '40',
-		),
-		'tfa_verify' => array(
+		],
+		'tfa_verify' => [
 			'method'        => 'button',
 			'friendly_name' => __('Verify App Token'),
 			'description'   => __('Verify the 2FA App token entered above'),
 			'value'         => __('Verify App Token'),
 			'max_length'    => '40',
 			'size'          => '40',
-		),
-	);
+		],
+	];
 
 	draw_edit_form(
-		array(
-			'config' => array('no_form_tag' => true),
+		[
+			'config' => ['no_form_tag' => true],
 			'fields' => inject_form_variables($fields_user, $current_user),
-		)
+		]
 	);
 
 	html_end_box(true, true);
 
-	$buttons = array(
-		array(
+	$buttons = [
+		[
 			'id'     => 'return',
 			'value'  => __('Return'),
 			'method' => 'return'
-		)
-	);
+		]
+	];
 
 	form_save_buttons($buttons, $_SESSION['profile_referer']);
 
@@ -675,7 +675,7 @@ function settings_2fa() {
 function settings_javascript() {
 	global $config;
 
-?>
+	?>
 	<script type='text/javascript'>
 		var themeFonts = <?php print read_config_option('font_method'); ?>;
 		var currentTab = '<?php print get_nfilter_request_var('tab'); ?>';

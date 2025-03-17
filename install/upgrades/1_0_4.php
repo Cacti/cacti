@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -23,5 +23,5 @@
 */
 
 function upgrade_to_1_0_4() {
-	db_install_add_key('poller_output_boost', 'KEY', 'PRIMARY', array('local_data_id', 'time', 'rrd_name'), 'BTREE');
+	db_install_add_key('poller_output_boost', 'KEY', 'PRIMARY', ['local_data_id', 'time', 'rrd_name'], 'BTREE');
 }

@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -48,7 +48,7 @@ if (cacti_sizeof($parms)) {
 	$ip          = '';
 	$host_id     = '';
 
-	$ids_id      = array();
+	$ids_id      = [];
 	$quietMode   = false;
 	$confirm     = false;
 	$quiet       = false;
@@ -87,7 +87,7 @@ if (cacti_sizeof($parms)) {
 				if (strpos($id, ',') !== false) {
 					$ids_id = explode(',', $id);
 				} else {
-					$ids_id = array($id);
+					$ids_id = [$id];
 				}
 
 				break;
@@ -116,8 +116,8 @@ if (cacti_sizeof($parms)) {
 	}
 
 	/* process the various lists into validation arrays */
-	$ids_host  = array();
-	$ids_ip    = array();
+	$ids_host  = [];
+	$ids_ip    = [];
 
 	/* process host description */
 	if ($description != '') {
@@ -130,12 +130,13 @@ if (cacti_sizeof($parms)) {
 				FROM host
 				WHERE description RLIKE ?
 				OR description LIKE ?',
-				array($description, '%' . $description . '%')),
+				[$description, '%' . $description . '%']),
 			'id', 'id'
 		);
 
 		if (cacti_sizeof($ids_host) == 0) {
 			print "ERROR: Unable to find host in the database matching description ($description)" . PHP_EOL;
+
 			exit(1);
 		}
 	}
@@ -150,18 +151,20 @@ if (cacti_sizeof($parms)) {
 				FROM host
 				WHERE hostname RLIKE ?
 				OR hostname LIKE ?',
-				array($ip, '%' . $ip . '%')),
+				[$ip, '%' . $ip . '%']),
 			'id', 'id'
 		);
 
 		if (cacti_sizeof($ids_ip) == 0) {
 			print "ERROR: Unable to find host in the database matching IP ($ip)" . PHP_EOL;
+
 			exit(1);
 		}
 	}
 
 	if (cacti_sizeof($ids_host) == 0 && cacti_sizeof($ids_ip) == 0) {
 		print 'ERROR: No matches found, was IP or Description set properly?' . PHP_EOL;
+
 		exit(1);
 	}
 
@@ -174,16 +177,17 @@ if (cacti_sizeof($parms)) {
 	}
 
 	$ids_sql = implode(',', $ids);
+
 	if ($debug) {
 		print "Finding devices with ids $ids_sql" . PHP_EOL;
 	}
 
-	$ids_found = array();
+	$ids_found = [];
 
 	$hosts = db_fetch_assoc_prepared('SELECT id, hostname, description
 		FROM host
 		WHERE id IN (?)',
-		array($ids_found));
+		[$ids_found]);
 
 	if (!$quiet) {
 		if (cacti_sizeof($hosts)) {
@@ -263,18 +267,18 @@ function display_help() {
 function preg_array_key_match($needle, $haystack) {
 	global $debug;
 
-	$matches = array();
+	$matches = [];
 
 	if (isset($haystack)) {
 		if (!is_array($haystack)) {
-			$haystack = array($haystack);
+			$haystack = [$haystack];
 		}
 	} else {
-		$haystack = array();
+		$haystack = [];
 	}
 
 	if ($debug) {
-		print "Attempting to match against '$needle' against " . cacti_sizeof($haystack) . " entries" . PHP_EOL;
+		print "Attempting to match against '$needle' against " . cacti_sizeof($haystack) . ' entries' . PHP_EOL;
 	}
 
 	foreach ($haystack as $str => $value) {

@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -28,7 +28,7 @@ error_reporting(0);
 if (!isset($called_by_script_server)) {
 	include_once(__DIR__ . '/../include/cli_check.php');
 
-	$checks = array(
+	$checks = [
 		'ss_poller',
 		'ss_poller_items',
 		'ss_recache',
@@ -51,7 +51,7 @@ if (!isset($called_by_script_server)) {
 		'ss_spike_stats',
 		'ss_webseer_counts',
 		'ss_webseer_stats',
-	);
+	];
 
 	foreach ($checks as $check) {
 		if (function_exists($check)) {
@@ -187,7 +187,7 @@ function ss_poller() {
 }
 
 function ss_webseer_counts() {
-	$stats = array();
+	$stats = [];
 
 	if (db_table_exists('plugin_webseer_urls')) {
 		$stats = db_fetch_row('SELECT SUM(triggered) AS triggered,
@@ -222,7 +222,7 @@ function ss_poller_items() {
 		FROM poller_item
 		GROUP BY action');
 
-	$entries = array(0, 0, 0);
+	$entries = [0, 0, 0];
 
 	if (cacti_sizeof($poller_cache)) {
 		foreach ($poller_cache as $item) {

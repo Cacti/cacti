@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -26,9 +26,9 @@ include_once('./include/auth.php');
 include_once('./lib/api_aggregate.php');
 include_once('./lib/data_query.php');
 
-$actions = array(
+$actions = [
 	1 => __('Delete')
-);
+];
 
 /* set default action */
 set_default_action();
@@ -54,7 +54,6 @@ switch (get_request_var('action')) {
 		bottom_footer();
 
 		break;
-
 	default:
 		top_header();
 		aggregate_template();
@@ -74,7 +73,7 @@ function aggregate_form_save() {
 		return null;
 	}
 
-	$save1 = array();
+	$save1 = [];
 
 	/* updating existing template or creating a new one? */
 	if (isset_request_var('id') && get_request_var('id') > 0) {
@@ -125,11 +124,10 @@ function aggregate_form_save() {
 
 	/* do a quick comparison to see if anything changed */
 	if ($is_new == false) {
-		$old = db_fetch_row_prepared(
-			'SELECT *
+		$old = db_fetch_row_prepared('SELECT *
 			FROM aggregate_graph_templates
 			WHERE id = ?',
-			array($save1['id'])
+			[$save1['id']]
 		);
 
 		$save_me = 0;
@@ -150,15 +148,14 @@ function aggregate_form_save() {
 		$id = sql_save($save1, 'aggregate_graph_templates', 'id');
 
 		/* update children of the template */
-		db_execute_prepared(
-			"UPDATE aggregate_graphs
+		db_execute_prepared("UPDATE aggregate_graphs
 			SET gprint_prefix = ?, gprint_format = ?, graph_type = ?, total = ?, total_prefix = ?, order_type = ?
 			WHERE aggregate_template_id = ?
 			AND template_propogation='on'",
-			array(
+			[
 				$save1['gprint_prefix'], $save1['gprint_format'], $save1['graph_type'],
 				$save1['total'], $save1['total_prefix'],  $save1['order_type'], $id
-			)
+			]
 		);
 
 		cacti_log('AGGREGATE GRAPH TEMPLATE Saved ID: ' . $id, false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
@@ -183,11 +180,10 @@ function aggregate_form_save() {
 	 * rebuild existing graphs if needed. */
 	$params_changed = false;
 
-	$params_old = db_fetch_row_prepared(
-		'SELECT *
+	$params_old = db_fetch_row_prepared('SELECT *
 		FROM aggregate_graph_templates_graph
 		WHERE aggregate_template_id = ?',
-		array($id)
+		[$id]
 	);
 
 	if (!empty($params_old)) {
@@ -214,28 +210,28 @@ function aggregate_form_save() {
 			FROM graph_templates_item
 			WHERE local_graph_id = 0
 			AND graph_template_id = ?',
-			array($save1['graph_template_id'])
+			[$save1['graph_template_id']]
 		),
-		'id', array('sequence')
+		'id', ['sequence']
 	);
 
 	/* get existing aggregate template items */
 	$aggregate_template_items_old = array_rekey(
 		db_fetch_assoc_prepared('SELECT *
 			FROM aggregate_graph_templates_item
-			WHERE aggregate_template_id = ?', array($id)),
+			WHERE aggregate_template_id = ?', [$id]),
 		'graph_templates_item_id',
-		array('sequence', 'color_template', 't_graph_type_id', 'graph_type_id', 't_cdef_id', 'cdef_id', 'item_skip', 'item_total')
+		['sequence', 'color_template', 't_graph_type_id', 'graph_type_id', 't_cdef_id', 'cdef_id', 'item_skip', 'item_total']
 	);
 
 	/* update graph template item values with posted values */
 	aggregate_validate_graph_items($_POST, $graph_templates_items);
 
 	$items_changed = false;
-	$items_to_save = array();
+	$items_to_save = [];
 
 	foreach ($graph_templates_items as $item_id => $data) {
-		$item_new                            = array();
+		$item_new                            = [];
 		$item_new['aggregate_template_id']   = $id;
 		$item_new['graph_templates_item_id'] = $item_id;
 
@@ -251,6 +247,7 @@ function aggregate_form_save() {
 		} else {
 			// fill in missing fields with db values
 			$item_new = array_merge($aggregate_template_items_old[$item_id], $item_new);
+
 			/* compare data from user to data from DB */
 			foreach ($data as $field => $new_value) {
 				if ($aggregate_template_items_old[$item_id][$field] != $new_value) {
@@ -305,7 +302,7 @@ function aggregate_form_actions() {
 		exit;
 	} else {
 		$ilist  = '';
-		$iarray = array();
+		$iarray = [];
 
 		/* loop through each of the color templates selected on the previous page and get more info about them */
 		foreach ($_POST as $var => $val) {
@@ -314,29 +311,29 @@ function aggregate_form_actions() {
 				input_validate_input_number($matches[1], 'chk[1]');
 				/* ==================================================== */
 
-				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM aggregate_graph_templates WHERE id = ?', array($matches[1]))) . '</li>';
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM aggregate_graph_templates WHERE id = ?', [$matches[1]])) . '</li>';
 
 				$iarray[] = $matches[1];
 			}
 		}
 
-		$form_data = array(
-			'general' => array(
+		$form_data = [
+			'general' => [
 				'page'       => 'aggregate_templates.php',
 				'actions'    => $actions,
 				'optvar'     => 'drp_action',
 				'item_array' => $iarray,
 				'item_list'  => $ilist
-			),
-			'options' => array(
-				1 => array(
+			],
+			'options' => [
+				1 => [
 					'smessage' => __('Click \'Continue\' to Delete the following Aggregate Graph Template.'),
 					'pmessage' => __('Click \'Continue\' to Delete following Aggregate Graph Templates.'),
 					'scont'    => __('Delete Aggregate Graph Template'),
 					'pcont'    => __('Delete Aggregate Graph Templates')
-				)
-			)
-		);
+				]
+			]
+		];
 
 		form_continue_confirmation($form_data);
 	}
@@ -353,11 +350,10 @@ function aggregate_template_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$template = db_fetch_row_prepared(
-			'SELECT *
+		$template = db_fetch_row_prepared('SELECT *
 			FROM aggregate_graph_templates
 			WHERE id = ?',
-			array(get_request_var('id'))
+			[get_request_var('id')]
 		);
 
 		$header_label = __esc('Aggregate Template [edit: %s]', $template['name']);
@@ -381,11 +377,10 @@ function aggregate_template_edit() {
 	$helper_string = '|host_description|';
 
 	if (isset($template)) {
-		$data_query = db_fetch_cell_prepared(
-			'SELECT snmp_query_id
+		$data_query = db_fetch_cell_prepared('SELECT snmp_query_id
 			FROM snmp_query_graph
 			WHERE graph_template_id = ?',
-			array($template['graph_template_id'])
+			[$template['graph_template_id']]
 		);
 
 		if ($data_query > 0) {
@@ -400,18 +395,18 @@ function aggregate_template_edit() {
 	}
 
 	// Append the helper string
-	$struct_aggregate_template['suggestions'] = array(
+	$struct_aggregate_template['suggestions'] = [
 		'method'        => 'other',
 		'friendly_name' => __('Prefix Replacement Values'),
 		'description'   => __('You may use these replacement values for the Prefix in the Aggregate Graph'),
 		'value'         => $helper_string
-	);
+	];
 
 	draw_edit_form(
-		array(
-			'config' => array('no_form_tag' => true),
-			'fields' => inject_form_variables($struct_aggregate_template, (isset($template) ? $template : array()))
-		)
+		[
+			'config' => ['no_form_tag' => true],
+			'fields' => inject_form_variables($struct_aggregate_template, (isset($template) ? $template : []))
+		]
 	);
 
 	html_end_box(true, true);
@@ -589,28 +584,28 @@ function aggregate_template() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$display_text = array(
-		'pgt.name' => array(
+	$display_text = [
+		'pgt.name' => [
 			'display' => __('Template Title'),
 			'align'   => 'left',
 			'sort'    => 'ASC'
-		),
-		'nosort' => array(
+		],
+		'nosort' => [
 			'display' => __('Deletable'),
 			'align'   => 'right',
 			'tip'     => __('Aggregate Templates that are in use can not be Deleted.  In use is defined as being referenced by an Aggregate.')
-		),
-		'nosort1' => array(
+		],
+		'nosort1' => [
 			'display' => __('Graphs Using'),
 			'align'   => 'right',
 			'sort'    => 'DESC'
-		),
-		'graph_template_name' => array(
+		],
+		'graph_template_name' => [
 			'display' => __('Graph Template'),
 			'align'   => 'left',
 			'sort'    => 'ASC'
-		)
-	);
+		]
+	];
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 

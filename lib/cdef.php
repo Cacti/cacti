@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -35,7 +35,7 @@
 function get_cdef_item_name($cdef_item_id) {
 	global $cdef_functions, $cdef_operators;
 
-	$cdef_item          = db_fetch_row_prepared('SELECT type, value FROM cdef_items WHERE id = ?', array($cdef_item_id));
+	$cdef_item          = db_fetch_row_prepared('SELECT type, value FROM cdef_items WHERE id = ?', [$cdef_item_id]);
 	$current_cdef_value = $cdef_item['value'];
 
 	switch ($cdef_item['type']) {
@@ -48,7 +48,7 @@ function get_cdef_item_name($cdef_item_id) {
 		case '4': return $current_cdef_value;
 
 			break;
-		case '5': return db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', array($current_cdef_value));
+		case '5': return db_fetch_cell_prepared('SELECT name FROM cdef WHERE id = ?', [$current_cdef_value]);
 
 			break;
 		case '6': return $current_cdef_value;
@@ -68,7 +68,7 @@ function get_cdef_item_name($cdef_item_id) {
  * @return string The constructed CDEF string.
  */
 function get_cdef($cdef_id) {
-	$cdef_items = db_fetch_assoc_prepared('SELECT id, type, value FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', array($cdef_id));
+	$cdef_items = db_fetch_assoc_prepared('SELECT id, type, value FROM cdef_items WHERE cdef_id = ? ORDER BY sequence', [$cdef_id]);
 
 	$i           = 0;
 	$cdef_string = '';

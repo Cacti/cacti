@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -42,7 +42,7 @@ function upgrade_to_1_2_19() {
 
 	// Add missing indexes to graph_templates_item table
 	$alter   = '';
-	$indexes = array('cdef_id', 'vdef_id', 'color_id', 'gprint_id', 'local_graph_template_item_id');
+	$indexes = ['cdef_id', 'vdef_id', 'color_id', 'gprint_id', 'local_graph_template_item_id'];
 
 	foreach ($indexes as $i) {
 		if (!db_index_exists('graph_templates_item', $i, false)) {

@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -34,7 +34,8 @@ ini_set('memory_limit', '-1');
 chdir('..');
 
 if ($config['poller_id'] > 1) {
-	print "FATAL: This utility is designed for the main Data Collector only" . PHP_EOL;
+	print 'FATAL: This utility is designed for the main Data Collector only' . PHP_EOL;
+
 	exit(1);
 }
 
@@ -48,17 +49,17 @@ $force = false;
 if (cacti_sizeof($parms)) {
 	$shortopts = 'VvHh';
 
-	$longopts = array(
+	$longopts = [
 		// Options without a value
 		'debug',
 		'force',
 		'version',
 		'help',
-	);
+	];
 
 	$options = getopt($shortopts, $longopts);
 
-	foreach($options as $arg => $value) {
+	foreach ($options as $arg => $value) {
 		switch($arg) {
 			case 'debug':
 				$debug = true;
@@ -72,15 +73,18 @@ if (cacti_sizeof($parms)) {
 			case 'V':
 			case 'v':
 				display_version();
+
 				exit(0);
 			case 'help':
 			case 'H':
 			case 'h':
 				display_help();
+
 				exit(0);
 			default:
 				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -92,7 +96,8 @@ $php_binary = read_config_option('path_php_binary');
 
 if (!$force) {
 	if (!register_process_start('pfetch', 'master', 0, 900)) {
-		print "WARNING: Another plugin fetch process is running" . PHP_EOL;
+		print 'WARNING: Another plugin fetch process is running' . PHP_EOL;
+
 		exit(0);
 	}
 } else {
@@ -140,4 +145,3 @@ function debug($message) {
 		print('DEBUG: ' . $message . "\n");
 	}
 }
-

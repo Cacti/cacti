@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -24,14 +24,14 @@
 
 function upgrade_to_0_8_7c() {
 	/* speed up the UI, missed in 0.8.7b upgrade, avoid failures if index already exists */
-	db_install_add_key('data_local', 'index', 'host_id', array('host_id'));
+	db_install_add_key('data_local', 'index', 'host_id', ['host_id']);
 
 	if (db_column_exists('host_snmp_cache', 'field_name')) {
-		db_install_add_key('host_snmp_cache', 'index', 'field_name', array('field_name'));
+		db_install_add_key('host_snmp_cache', 'index', 'field_name', ['field_name']);
 	}
 
 	if (db_column_exists('host_snmp_cache', 'field_value')) {
-		db_install_add_key('host_snmp_cache', 'index', 'field_value', array('field_value'));
+		db_install_add_key('host_snmp_cache', 'index', 'field_value', ['field_value']);
 	}
 
 	/* speed up graph automations some more */

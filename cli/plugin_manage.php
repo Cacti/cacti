@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -31,12 +31,12 @@ $enable    = false;
 $disable   = false;
 $uninstall = false;
 $allperms  = false;
-$plugins   = array();
+$plugins   = [];
 
 if (cacti_sizeof($parms)) {
 	$shortopts = 'VvHh';
 
-	$longopts = array(
+	$longopts = [
 		'plugin::',
 		'install',
 		'enable',
@@ -45,7 +45,7 @@ if (cacti_sizeof($parms)) {
 		'allperms',
 		'version',
 		'help'
-	);
+	];
 
 	$options = getopt($shortopts, $longopts);
 
@@ -83,15 +83,18 @@ if (cacti_sizeof($parms)) {
 			case 'V':
 			case 'v':
 				display_version();
+
 				exit(0);
 			case 'help':
 			case 'H':
 			case 'h':
 				display_help();
+
 				exit(0);
 			default:
 				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
 				display_help();
+
 				exit(1);
 		}
 	}
@@ -195,9 +198,9 @@ function plugin_manage_install_allrealms($plugin) {
 	$realms = db_fetch_assoc_prepared('SELECT *
 		FROM plugin_realms
 		WHERE plugin = ?',
-		array($plugin));
+		[$plugin]);
 
-	foreach($realms as $realm) {
+	foreach ($realms as $realm) {
 		api_plugin_register_realm($plugin, $realm['file'], $realm['display'], 1);
 	}
 }

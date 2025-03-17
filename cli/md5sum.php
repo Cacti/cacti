@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -25,7 +25,7 @@
 
 require(__DIR__ . '/../include/cli_check.php');
 
-$fail_msg = array();
+$fail_msg = [];
 define_exit('EXIT_UNKNOWN',-1, "ERROR: Failed due to unknown reason\n");
 define_exit('EXIT_NORMAL',  0, '');
 define_exit('EXIT_ARGERR',  1, "ERROR: Invalid Argument: (%s)\n\n");
@@ -126,7 +126,7 @@ if (!strlen($md5_file)) {
 	$md5_file = $base_dir . '/.md5sum';
 }
 
-$ignore_files = array(
+$ignore_files = [
 	// Ignore . and .. folders
 	'\/\.$',
 	'\/\.\.$',
@@ -150,7 +150,7 @@ $ignore_files = array(
 	'/log$',
 	'/plugins$',
 	'/rra$'
-);
+];
 
 $ignore_regex='';
 
@@ -191,14 +191,14 @@ if ($create) {
 	}
 	$contents     = explode("\n",$contents);
 	$line         = 0;
-	$verify_array = array();
+	$verify_array = [];
 
 	foreach ($contents as $md5) {
 		$line++;
 
 		if (strlen($md5)) {
 			if ($md5[32] != ' ') {
-				fail(EXIT_MD5LIN,array($line,$md5));
+				fail(EXIT_MD5LIN,[$line,$md5]);
 			}
 
 			$filename                = trim(substr($md5,33));
@@ -239,7 +239,7 @@ if ($create) {
 function dirToArray($dir,$base,$ignore) {
 	global $debug,$quiet;
 
-	$result = array();
+	$result = [];
 
 	$fulldir = $base;
 
@@ -252,14 +252,14 @@ function dirToArray($dir,$base,$ignore) {
 		if (is_dir($fulldir)) {
 			$cdir = scandir($fulldir);
 		} else {
-			$cdir = array();
+			$cdir = [];
 		}
 
 		if (!$quiet && $debug) {
 			print "\nSearching '$fulldir' ... \n";
 		}
 
-		$dir_list = array();
+		$dir_list = [];
 
 		foreach ($cdir as $key => $value) {
 			$fullpath = $fulldir.DIRECTORY_SEPARATOR.$value;
@@ -319,14 +319,14 @@ function display_help() {
 	print "\nWhen no filename is passed, .md5sum is assumed. Only one filename allowed\n";
 }
 
-function fail($exit_value,$args = array(),$display_help = 0) {
+function fail($exit_value,$args = [],$display_help = 0) {
 	global $quiet,$fail_msg;
 
 	if (!$quiet) {
 		if (!isset($args)) {
-			$args = array();
+			$args = [];
 		} elseif (!is_array($args)) {
-			$args = array($args);
+			$args = [$args];
 		}
 
 		if (!array_key_exists($exit_value,$fail_msg)) {
@@ -348,7 +348,7 @@ function define_exit($name, $value, $text) {
 	global $fail_msg;
 
 	if (!isset($fail_msg)) {
-		$fail_msg = array();
+		$fail_msg = [];
 	}
 
 	define($name,$value);

@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -43,7 +43,7 @@ if (cacti_sizeof($parms) == 0) {
 	$userId    = 0;
 
 	/* TODO replace magic numbers by global constants, treat user_admin as well */
-	$itemTypes = array('graph' => 1, 'tree' => 2, 'host' => 3, 'graph_template' => 4);
+	$itemTypes = ['graph' => 1, 'tree' => 2, 'host' => 3, 'graph_template' => 4];
 
 	$itemType = 0;
 	$itemId   = 0;
@@ -185,8 +185,14 @@ if (cacti_sizeof($parms) == 0) {
 		exit(1);
 	}
 
+    if ($displayGroups) {
+		displayGroups($quietMode);
+
+		exit(1);
+	}
+
 	/* verify, that a valid userid is provided */
-	$userIds = array();
+	$userIds = [];
 
 	if (isset($userId) && $userId > 0) {
 		/* verify existing user id */
@@ -280,11 +286,4 @@ function display_help() {
 	print "    --list-trees\n";
 	print "    --list-graph-templates\n";
 	print "    --list-graphs --host-id=[ID]\n";
-}
-
-function displayGroups() {
-	/**
-	 * Todo implement
-	 */
-	print 'This option has not yet been implemented';
 }

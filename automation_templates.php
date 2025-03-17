@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -28,10 +28,10 @@ include_once('./lib/api_tree.php');
 include_once('./lib/poller.php');
 include_once('./lib/utility.php');
 
-$actions = array(
+$actions = [
 	1 => __('Delete'),
 	2 => __('Export')
-);
+];
 
 /* set default action */
 set_default_action();
@@ -173,10 +173,10 @@ function automation_export() {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if(cacti_sizeof($selected_items) == 1) {
+			if (cacti_sizeof($selected_items) == 1) {
 				$export_data = automation_device_rule_export($selected_items[0]);
 			} else {
-				foreach($selected_items as $id) {
+				foreach ($selected_items as $id) {
 					$snmp_option_ids[] = $id;
 				}
 
@@ -198,31 +198,31 @@ function automation_export() {
 }
 
 function automation_import() {
-	$form_data = array(
-		'import_file' => array(
-			'friendly_name' => __('Import Device Rules from Local File',),
-			'description' => __('If the JSON file containing the Device Rules data is located on your local machine, select it here.'),
-			'method' => 'file',
-			'accept' => '.json'
-		),
-		'import_text' => array(
-			'method' => 'textarea',
+	$form_data = [
+		'import_file' => [
+			'friendly_name' => __('Import Device Rules from Local File'),
+			'description'   => __('If the JSON file containing the Device Rules data is located on your local machine, select it here.'),
+			'method'        => 'file',
+			'accept'        => '.json'
+		],
+		'import_text' => [
+			'method'        => 'textarea',
 			'friendly_name' => __('Import Device Rules from Text'),
-			'description' => __('If you have the JSON file containing the Device Rules data as text, you can paste it into this box to import it.'),
-			'value' => '',
-			'default' => '',
+			'description'   => __('If you have the JSON file containing the Device Rules data as text, you can paste it into this box to import it.'),
+			'value'         => '',
+			'default'       => '',
 			'textarea_rows' => '10',
 			'textarea_cols' => '80',
-			'class' => 'textAreaNotes'
-		),
-		'import_trees_branches' => array(
+			'class'         => 'textAreaNotes'
+		],
+		'import_trees_branches' => [
 			'friendly_name' => __('Import Device Rules Trees and Branches'),
 			'description'   => __('Automatically Recreate the Trees and Branches if they do not exist upon Import.'),
 			'method'        => 'checkbox',
 			'value'         => '',
 			'default'       => ''
-		)
-	);
+		]
+	];
 
 	form_start('automation_templates.php', 'chk', true);
 
@@ -243,10 +243,10 @@ function automation_import() {
 	html_start_box(__('Import Device Rules'), '80%', false, '3', 'center', '');
 
 	draw_edit_form(
-		array(
-			'config' => array('no_form_tag' => true),
+		[
+			'config' => ['no_form_tag' => true],
 			'fields' => $form_data
-		)
+		]
 	);
 
 	form_hidden_box('save_component_import', '1', '');
@@ -329,7 +329,7 @@ function automation_template_dnd() {
 			db_execute_prepared('UPDATE automation_templates
 				SET sequence = ?
 				WHERE id = ?',
-				array($sequence, $id));
+				[$sequence, $id]);
 
 			$sequence++;
 		}
@@ -352,24 +352,24 @@ function automation_templates_item_movedown() {
 		WHERE template_id = ?
 		AND rule_type = ?
 		AND id = ?',
-		array(get_request_var('template_id'), get_request_var('rule_type'), get_request_var('id')));
+		[get_request_var('template_id'), get_request_var('rule_type'), get_request_var('id')]);
 
 	$other_id = db_fetch_cell_prepared('SELECT id
 		FROM automation_templates_rules
 		WHERE template_id = ?
 		AND rule_type = ?
 		AND sequence = ?',
-		array(get_request_var('template_id'), get_request_var('rule_type'), $cur_sequence + 1));
+		[get_request_var('template_id'), get_request_var('rule_type'), $cur_sequence + 1]);
 
 	db_execute_prepared('UPDATE automation_templates_rules
 		SET sequence = ?
 		WHERE id = ?',
-		array($cur_sequence + 1, get_request_var('id')));
+		[$cur_sequence + 1, get_request_var('id')]);
 
 	db_execute_prepared('UPDATE automation_templates_rules
 		SET sequence = ?
 		WHERE id = ?',
-		array($cur_sequence, $other_id));
+		[$cur_sequence, $other_id]);
 
 	automation_resequence_rules(get_request_var('template_id'));
 }
@@ -386,24 +386,24 @@ function automation_templates_item_moveup() {
 		WHERE template_id = ?
 		AND rule_type = ?
 		AND id = ?',
-		array(get_request_var('template_id'), get_request_var('rule_type'), get_request_var('id')));
+		[get_request_var('template_id'), get_request_var('rule_type'), get_request_var('id')]);
 
 	$other_id = db_fetch_cell_prepared('SELECT id
 		FROM automation_templates_rules
 		WHERE template_id = ?
 		AND rule_type = ?
 		AND sequence = ?',
-		array(get_request_var('template_id'), get_request_var('rule_type'), $cur_sequence - 1));
+		[get_request_var('template_id'), get_request_var('rule_type'), $cur_sequence - 1]);
 
 	db_execute_prepared('UPDATE automation_templates_rules
 		SET sequence = ?
 		WHERE id = ?',
-		array($cur_sequence - 1, get_request_var('id')));
+		[$cur_sequence - 1, get_request_var('id')]);
 
 	db_execute_prepared('UPDATE automation_templates_rules
 		SET sequence = ?
 		WHERE id = ?',
-		array($cur_sequence, $other_id));
+		[$cur_sequence, $other_id]);
 
 	automation_resequence_rules(get_request_var('template_id'));
 }
@@ -428,7 +428,7 @@ function automation_template_graph_item_dnd() {
 				WHERE template_id = ?
 				AND id = ?
 				AND rule_type = 1',
-				array($sequence, $template_id, $id));
+				[$sequence, $template_id, $id]);
 
 			$sequence++;
 		}
@@ -445,8 +445,8 @@ function automation_template_tree_item_dnd() {
 	/* ================= Input validation ================= */
 
 	if (isset_request_var('template_ids') && is_array(get_nfilter_request_var('template_ids'))) {
-		$aids     = get_nfilter_request_var('template_ids');
-		$sequence = 1;
+		$aids        = get_nfilter_request_var('template_ids');
+		$sequence    = 1;
 		$template_id = get_request_var('id');
 
 		foreach ($aids as $id) {
@@ -459,7 +459,7 @@ function automation_template_tree_item_dnd() {
 				WHERE template_id = ?
 				AND id = ?
 				AND rule_type = 2',
-				array($sequence, $template_id, $id));
+				[$sequence, $template_id, $id]);
 
 			$sequence++;
 		}
@@ -478,7 +478,7 @@ function automation_template_tree_exit_on_change() {
 	db_execute_prepared('UPDATE automation_templates_rules
 		SET exit_rules = ?
 		WHERE id = ?',
-		array($newvalue, $id));
+		[$newvalue, $id]);
 
 	header('Location: automation_templates.php?action=edit&id=' . $template_id);
 }
@@ -492,7 +492,7 @@ function automation_moveup() {
 }
 
 function automation_remove() {
-	db_execute_prepared('DELETE FROM automation_templates WHERE id = ?', array(get_filter_request_var('id')));
+	db_execute_prepared('DELETE FROM automation_templates WHERE id = ?', [get_filter_request_var('id')]);
 }
 
 function automation_add_graph_rule() {
@@ -501,7 +501,7 @@ function automation_add_graph_rule() {
 	get_filter_request_var('rule_id');
 	/* ==================================================== */
 
-	$save = array();
+	$save = [];
 
 	$save['id']          = 0;
 	$save['hash']        = get_hash_automation(0, 'automation_templates_rules');
@@ -527,11 +527,11 @@ function automation_add_threshold_template() {
 	$host_template_id = db_fetch_cell_prepared('SELECT host_template
 		FROM automation_templates
 		WHERE id = ?',
-		array(get_request_var('template_id')));
+		[get_request_var('template_id')]);
 
-	$save = array();
+	$save = [];
 
-	$save['id']          = 0;
+	$save['id']                = 0;
 	$save['host_template_id']  = $host_template_id;
 	$save['thold_template_id'] = get_request_var('thold_template_id');
 
@@ -546,7 +546,7 @@ function automation_add_tree_rule() {
 	get_filter_request_var('rule_id');
 	/* ==================================================== */
 
-	$save = array();
+	$save = [];
 
 	$save['id']          = 0;
 	$save['hash']        = get_hash_automation(0, 'automation_templates_rules');
@@ -567,7 +567,7 @@ function form_actions() {
 	global $actions;
 
 	/* ================= input validation ================= */
-	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
+	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
@@ -597,6 +597,7 @@ function form_actions() {
 				<iframe id="download_iframe" style="display:none;"></iframe>';
 
 				bottom_footer();
+
 				exit;
 			}
 		}
@@ -606,7 +607,7 @@ function form_actions() {
 		exit;
 	} else {
 		$ilist  = '';
-		$iarray = array();
+		$iarray = [];
 
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
@@ -614,35 +615,35 @@ function form_actions() {
 				input_validate_input_number($matches[1], 'chk[1]');
 				/* ==================================================== */
 
-				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT ht.name FROM automation_templates AS at INNER JOIN host_template AS ht ON ht.id=at.host_template WHERE at.id = ?', array($matches[1]))) . '</li>';
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT ht.name FROM automation_templates AS at INNER JOIN host_template AS ht ON ht.id=at.host_template WHERE at.id = ?', [$matches[1]])) . '</li>';
 
 				$iarray[] = $matches[1];
 			}
 		}
 
-		$form_data = array(
-			'general' => array(
+		$form_data = [
+			'general' => [
 				'page'       => 'automation_templates.php',
 				'actions'    => $actions,
 				'optvar'     => 'drp_action',
 				'item_array' => $iarray,
 				'item_list'  => $ilist
-			),
-			'options' => array(
-				1 => array(
+			],
+			'options' => [
+				1 => [
 					'smessage' => __('Click \'Continue\' to Delete the following Device Rule.'),
 					'pmessage' => __('Click \'Continue\' to Delete following Device Rules.'),
 					'scont'    => __('Delete Device Rule'),
 					'pcont'    => __('Delete Device Rules')
-				),
-				2 => array(
+				],
+				2 => [
 					'smessage' => __('Click \'Continue\' to Export the following Device Rule.'),
 					'pmessage' => __('Click \'Continue\' to Export following Device Rules.'),
 					'scont'    => __('Export Device Rule'),
 					'pcont'    => __('Export Device Rules'),
-				)
-			)
-		);
+				]
+			]
+		];
 
 		form_continue_confirmation($form_data);
 	}
@@ -700,7 +701,7 @@ function automation_remove_ttr_confirm() {
 	$rule = db_fetch_row_prepared('SELECT *
 		FROM plugin_thold_host_template
 		WHERE id = ?',
-		array(get_request_var('rule_id')));
+		[get_request_var('rule_id')]);
 
 	if (cacti_sizeof($rule)) {
 		$name = db_fetch_cell_prepared('SELECT tt.name
@@ -708,7 +709,7 @@ function automation_remove_ttr_confirm() {
 			INNER JOIN plugin_thold_host_template AS tht
 			ON tt.id = tht.thold_template_id
 			WHERE tht.id = ?',
-			array(get_request_var('rule_id')));
+			[get_request_var('rule_id')]);
 	} else {
 		$name = __('Unknown');
 	}
@@ -768,13 +769,13 @@ function automation_remove_agr_confirm() {
 	$rule = db_fetch_row_prepared('SELECT *
 		FROM automation_templates_rules
 		WHERE id = ?',
-		array(get_request_var('rule_id')));
+		[get_request_var('rule_id')]);
 
 	if (cacti_sizeof($rule)) {
 		$name = db_fetch_cell_prepared('SELECT name
 			FROM automation_graph_rules
 			WHERE id = ?',
-			array($rule['rule_id']));
+			[$rule['rule_id']]);
 	} else {
 		$name = __('Unknown');
 	}
@@ -830,7 +831,7 @@ function automation_remove_agr() {
 		WHERE id = ?
 		AND rule_type = 1
 		AND template_id = ?',
-		array(get_request_var('rule_id'), get_request_var('template_id')));
+		[get_request_var('rule_id'), get_request_var('template_id')]);
 
 	automation_resequence_rules(get_request_var('template_id'));
 
@@ -843,16 +844,16 @@ function automation_resequence_rules($template_id) {
 		WHERE template_id = ?
 		AND rule_type = 1
 		ORDER BY sequence',
-		array($template_id));
+		[$template_id]);
 
 	if (cacti_sizeof($gr_seq)) {
 		$sequence = 1;
 
-		foreach($gr_seq as $s) {
+		foreach ($gr_seq as $s) {
 			db_execute_prepared('UPDATE automation_templates_rules
 				SET `sequence` = ?
 				WHERE id = ?',
-				array($sequence, $s['id']));
+				[$sequence, $s['id']]);
 
 			$sequence++;
 		}
@@ -863,16 +864,16 @@ function automation_resequence_rules($template_id) {
 		WHERE template_id = ?
 		AND rule_type = 2
 		ORDER BY sequence',
-		array($template_id));
+		[$template_id]);
 
 	if (cacti_sizeof($tr_seq)) {
 		$sequence = 1;
 
-		foreach($tr_seq as $s) {
+		foreach ($tr_seq as $s) {
 			db_execute_prepared('UPDATE automation_templates_rules
 				SET `sequence` = ?
 				WHERE id = ?',
-				array($sequence, $s['id']));
+				[$sequence, $s['id']]);
 
 			$sequence++;
 		}
@@ -892,13 +893,13 @@ function automation_remove_atr_confirm() {
 	$rule = db_fetch_row_prepared('SELECT *
 		FROM automation_templates_rules
 		WHERE id = ?',
-		array(get_request_var('rule_id')));
+		[get_request_var('rule_id')]);
 
 	if (cacti_sizeof($rule)) {
 		$name = db_fetch_cell_prepared('SELECT name
 			FROM automation_tree_rules
 			WHERE id = ?',
-			array($rule['rule_id']));
+			[$rule['rule_id']]);
 	} else {
 		$name = __('Unknown');
 	}
@@ -954,7 +955,7 @@ function automation_remove_atr() {
 		WHERE id = ?
 		AND rule_type = 2
 		AND template_id = ?',
-		array(get_request_var('rule_id'), get_request_var('template_id')));
+		[get_request_var('rule_id'), get_request_var('template_id')]);
 
 	automation_resequence_rules(get_request_var('template_id'));
 
@@ -970,7 +971,7 @@ function automation_remove_ttr() {
 	db_execute_prepared('DELETE FROM plugin_thold_host_template
 		WHERE id = ?
 		AND host_template_id = ?',
-		array(get_request_var('rule_id'), get_request_var('template_id')));
+		[get_request_var('rule_id'), get_request_var('template_id')]);
 
 	raise_message('rule_remove', __('The Threshold Template has been removed from the Device Automation Rule'), MESSAGE_LEVEL_INFO);
 }
@@ -982,7 +983,7 @@ function automation_get_child_branches($tree_id, $id, $spaces, $headers) {
 		AND host_id = 0
 		AND local_graph_id = 0
 		AND parent = ?
-		ORDER BY position', array($tree_id, $id));
+		ORDER BY position', [$tree_id, $id]);
 
 	$spaces .= '--';
 
@@ -998,7 +999,7 @@ function automation_get_child_branches($tree_id, $id, $spaces, $headers) {
 }
 
 function automation_get_tree_headers() {
-	$headers = array();
+	$headers = [];
 	$trees   = db_fetch_assoc('SELECT id, name FROM graph_tree ORDER BY name');
 
 	foreach ($trees as $tree) {
@@ -1021,7 +1022,7 @@ function template_edit() {
 
 	$host_template_names = db_fetch_assoc('SELECT id, name FROM host_template');
 
-	$template_names = array();
+	$template_names = [];
 
 	if (cacti_sizeof($host_template_names)) {
 		foreach ($host_template_names as $ht) {
@@ -1029,52 +1030,52 @@ function template_edit() {
 		}
 	}
 
-	$fields = array(
-		'spacer0' => array(
+	$fields = [
+		'spacer0' => [
 			'method'        => 'spacer',
 			'friendly_name' => __('Matching Settings'),
-		),
-		'host_template' => array(
+		],
+		'host_template' => [
 			'method'        => 'drop_array',
 			'friendly_name' => __('Device Template'),
 			'description'   => __('Select a Device Template that Devices will be matched to.'),
 			'value'         => '|arg1:host_template|',
 			'array'         => $template_names,
-		),
-		'availability_method' => array(
+		],
+		'availability_method' => [
 			'method'        => 'drop_array',
 			'friendly_name' => __('Availability Method'),
 			'description'   => __('Choose the Availability Method to use for Discovered Devices.'),
 			'value'         => '|arg1:availability_method|',
 			'default'       => read_config_option('availability_method'),
 			'array'         => $availability_options,
-		),
-		'sysDescr' => array(
+		],
+		'sysDescr' => [
 			'method'        => 'textbox',
 			'friendly_name' => __('System Description Match'),
 			'description'   => __('This is a unique string that will be matched to a devices sysDescr string to pair it to this Device Rule.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
 			'value'         => '|arg1:sysDescr|',
 			'max_length'    => '255',
-		),
-		'sysName' => array(
+		],
+		'sysName' => [
 			'method'        => 'textbox',
 			'friendly_name' => __('System Name Match'),
 			'description'   => __('This is a unique string that will be matched to a devices sysName string to pair it to this Device Rule.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
 			'value'         => '|arg1:sysName|',
 			'max_length'    => '128',
-		),
-		'sysOid' => array(
+		],
+		'sysOid' => [
 			'method'        => 'textbox',
 			'friendly_name' => __('System OID Match'),
 			'description'   => __('This is a unique string that will be matched to a devices sysOid string to pair it to this Device Rule.  Any Perl regular expression can be used in addition to any SQL Where expression.'),
 			'value'         => '|arg1:sysOid|',
 			'max_length'    => '128',
-		),
-		'spacer1' => array(
+		],
+		'spacer1' => [
 			'method'        => 'spacer',
 			'friendly_name' => __('Device Creation Defaults'),
-		),
-		'description_pattern' => array(
+		],
+		'description_pattern' => [
 			'method'        => 'textbox',
 			'friendly_name' => __('Device Description Pattern'),
 			'description'   => __('Represents the final desired Device description to be used in Cacti.  The following replacement values can be used: |sysName|, |ipAddress|, |dnsName|, |dnsShortName|, |sysLocation|.  The following functions can also be used: CONCAT(), SUBSTRING(), SUBSTRING_INDEX().  See the MySQL/MariaDB documentation for examples on how to use these functions.  An example would be: CONCAT(\'|sysName|\', SUBSTRING(\'|sysLocation|\',1,3)).  Take care to include quoting around the variables names when used in the supported MySQL/MariaDB function examples.'),
@@ -1082,29 +1083,29 @@ function template_edit() {
 			'default'       => '|sysName|',
 			'max_length'    => '128',
 			'size'          => '80'
-		),
-		'populate_location' => array(
+		],
+		'populate_location' => [
 			'method'        => 'checkbox',
 			'friendly_name' => __('Populate Location with sysLocation'),
 			'description'   => __('If checked, when the Automation Network is scanned if a Device is found that will be added to Cacti, its Location will be updated to match the Devices sysLocation.'),
 			'value'         => '|arg1:populate_location|',
 			'default'       => ''
-		),
-		'id' => array(
+		],
+		'id' => [
 			'method' => 'hidden_zero',
 			'value'  => '|arg1:id|'
-		),
-		'save_component_template' => array(
+		],
+		'save_component_template' => [
 			'method' => 'hidden',
 			'value'  => '1'
-		)
-	);
+		]
+	];
 
 	if (!isempty_request_var('id')) {
 		$template = db_fetch_row_prepared('SELECT *
 			FROM automation_templates
 			WHERE id = ?',
-			array(get_request_var('id')));
+			[get_request_var('id')]);
 
 		if (isset($template_names[$template['host_template']])) {
 			$header_label = __esc('Device Rules [edit: %s]', $template_names[$template['host_template']]);
@@ -1121,10 +1122,10 @@ function template_edit() {
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
 	draw_edit_form(
-		array(
-			'config' => array('no_form_tag' => 'true'),
-			'fields' => inject_form_variables($fields, (isset($template) ? $template : array()))
-		)
+		[
+			'config' => ['no_form_tag' => 'true'],
+			'fields' => inject_form_variables($fields, (isset($template) ? $template : []))
+		]
 	);
 
 	html_end_box();
@@ -1142,22 +1143,22 @@ function template_edit() {
 			AND atr.rule_type = 1
 			WHERE template_id = ?
 			ORDER BY sequence',
-			array(get_request_var('id')));
+			[get_request_var('id')]);
 
-		$display_text = array(
-			array(
+		$display_text = [
+			[
 				'display' => __('Graph Rule Name'),
 				'align'   => 'left',
-			),
-			array(
+			],
+			[
 				'display' => __('Sequence'),
 				'align'   => 'right',
-			),
-			array(
+			],
+			[
 				'display' => __('Actions'),
 				'align'   => 'right',
-			)
-		);
+			]
+		];
 
 		html_header($display_text, false);
 
@@ -1166,7 +1167,7 @@ function template_edit() {
 		if (cacti_sizeof($graph_rules)) {
 			$i = 0;
 
-			foreach($graph_rules as $rule) {
+			foreach ($graph_rules as $rule) {
 				$id = "gr{$rule['id']}";
 
 				form_alternate_row($id, true);
@@ -1175,6 +1176,7 @@ function template_edit() {
 				form_selectable_cell($rule['sequence'], $id, '', 'right');
 
 				$action = '';
+
 				if (!$dnd) {
 					if ($i != cacti_sizeof($graph_rules) - 1) {
 						$action .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('automation_templates.php?action=item_movedown&template_id=' . get_request_var('id') . '&id=' . $rule['id'] . '&rule_type=1') . '" title="' . __esc('Move Down') . '"></a>';
@@ -1217,7 +1219,7 @@ function template_edit() {
 				AND template_id = ?
 			)
 			ORDER BY ar.name',
-			array(get_request_var('id')));
+			[get_request_var('id')]);
 
 		$button_id     = 'add_agr';
 		$button_label  = __esc('Add');
@@ -1239,26 +1241,26 @@ function template_edit() {
 			AND atr.rule_type = 2
 			WHERE template_id = ?
 			ORDER BY sequence',
-			array(get_request_var('id')));
+			[get_request_var('id')]);
 
-		$display_text = array(
-			array(
+		$display_text = [
+			[
 				'display' => __('Tree Rule Name'),
 				'align'   => 'left',
-			),
-			array(
+			],
+			[
 				'display' => __('Exit On Match'),
 				'align'   => 'left',
-			),
-			array(
+			],
+			[
 				'display' => __('Sequence'),
 				'align'   => 'right',
-			),
-			array(
+			],
+			[
 				'display' => __('Actions'),
 				'align'   => 'right',
-			)
-		);
+			]
+		];
 
 		html_header($display_text, false);
 
@@ -1267,7 +1269,7 @@ function template_edit() {
 		if (cacti_sizeof($tree_rules)) {
 			$i = 0;
 
-			foreach($tree_rules as $rule) {
+			foreach ($tree_rules as $rule) {
 				$id = "tr{$rule['id']}";
 
 				$exit_on_url = CACTI_PATH_URL . 'automation_templates.php' .
@@ -1285,6 +1287,7 @@ function template_edit() {
 				form_selectable_cell($rule['sequence'], $id, '', 'right');
 
 				$action = '';
+
 				if (!$dnd) {
 					if ($i != cacti_sizeof($tree_rules) - 1) {
 						$action .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('automation_templates.php?action=item_movedown&template_id=' . get_request_var('id') . '&id=' . $rule['id'] . '&rule_type=2') . '" title="' . __esc('Move Down') . '"></a>';
@@ -1323,7 +1326,7 @@ function template_edit() {
 				AND template_id = ?
 			)
 			ORDER BY ar.name',
-			array(get_request_var('id')));
+			[get_request_var('id')]);
 
 		$button_id     = 'add_atr';
 		$button_label  = __esc('Add');
@@ -1345,23 +1348,23 @@ function template_edit() {
 				ON tht.thold_template_id = tt.id
 				WHERE tht.host_template_id = ?
 				ORDER BY name',
-				array($template['host_template']));
+				[$template['host_template']]);
 
-			$display_text = array(
-				array(
+			$display_text = [
+				[
 					'display' => __('Threshold Template Name'),
 					'align'   => 'left',
-				),
-				array(
+				],
+				[
 					'display' => __('Actions'),
 					'align'   => 'right',
-				)
-			);
+				]
+			];
 
 			html_header($display_text, false);
 
 			if (cacti_sizeof($graph_rules)) {
-				foreach($thold_rules as $rule) {
+				foreach ($thold_rules as $rule) {
 					$id = "tt{$rule['rule_id']}";
 
 					form_alternate_row($id, true);
@@ -1379,7 +1382,7 @@ function template_edit() {
 			$host_template_id = db_fetch_cell_prepared('SELECT host_template
 				FROM automation_templates
 				WHERE id = ?',
-				array(get_request_var('id')));
+				[get_request_var('id')]);
 
 			html_end_box();
 
@@ -1397,7 +1400,7 @@ function template_edit() {
 					WHERE host_template_id = ?
 				)
 				ORDER BY tt.name',
-				array($host_template_id));
+				[$host_template_id]);
 
 			$button_id     = 'add_ttr';
 			$button_label  = __esc('Add');
@@ -1592,31 +1595,31 @@ function template() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$display_text = array(
-		array(
+	$display_text = [
+		[
 			'display' => __('Template Name'),
 			'align'   => 'left'
-		),
-		array(
+		],
+		[
 			'display' => __('Availability Method'),
 			'align'   => 'left'
-		),
-		array(
+		],
+		[
 			'display' => __('System Description Match'),
 			'align'   => 'left'
-		),
-		array(
+		],
+		[
 			'display' => __('System Name Match'),
 			'align'   => 'left'
-		),
-		array(
+		],
+		[
 			'display' => __('System ObjectId Match'),
 			'align'   => 'left'
-		)
-	);
+		]
+	];
 
 	if (read_config_option('drag_and_drop') == '') {
-		$display_text[] = array('display' => __('Order'), 'align' => 'center');
+		$display_text[] = ['display' => __('Order'), 'align' => 'center'];
 	}
 
 	html_header_checkbox($display_text, false);
@@ -1704,4 +1707,3 @@ function template() {
 	</script>
 	<?php
 }
-

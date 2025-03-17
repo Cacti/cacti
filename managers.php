@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -24,27 +24,27 @@
 
 include('./include/auth.php');
 
-$actions = array(
+$actions = [
 	1 => __('Delete'),
 	2 => __('Disable'),
 	3 => __('Enable'),
-);
+];
 
-$mactions = array(
+$mactions = [
 	1 => __('Disable'),
 	2 => __('Enable')
-);
+];
 
-$tabs_manager_edit = array(
+$tabs_manager_edit = [
 	'general'       => __('General'),
 	'notifications' => __('Notifications'),
 	'logs'          => __('Logs'),
-);
+];
 
 /* set default action */
 set_default_action();
 
-get_filter_request_var('tab', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
+get_filter_request_var('tab', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
 
 switch (get_request_var('action')) {
 	case 'save':
@@ -61,7 +61,6 @@ switch (get_request_var('action')) {
 		bottom_footer();
 
 		break;
-
 	default:
 		top_header();
 		manager();
@@ -118,14 +117,14 @@ function manager() {
 		$sql_order
 		$sql_limit");
 
-	$display_text = array(
-		'description'  => array( __('Description'), 'ASC'),
-		'id'           => array( __('Id'), 'ASC'),
-		'disabled'     => array( __('Status'), 'ASC'),
-		'hostname'     => array( __('Hostname'), 'ASC'),
-		'count_notify' => array( __('Notifications'), 'ASC'),
-		'count_log'    => array( __('Logs'), 'ASC')
-	);
+	$display_text = [
+		'description'  => [ __('Description'), 'ASC'],
+		'id'           => [ __('Id'), 'ASC'],
+		'disabled'     => [ __('Status'), 'ASC'],
+		'hostname'     => [ __('Hostname'), 'ASC'],
+		'count_notify' => [ __('Notifications'), 'ASC'],
+		'count_log'    => [ __('Logs'), 'ASC']
+	];
 
 	/* generate page list */
 	$nav = html_nav_bar('managers.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Receivers'), 'page', 'main');
@@ -193,7 +192,7 @@ function manager_edit() {
 	$id	= (isset_request_var('id') ? get_request_var('id') : '0');
 
 	if ($id) {
-		$manager      = db_fetch_row_prepared('SELECT * FROM snmpagent_managers WHERE id = ?', array(get_request_var('id')));
+		$manager      = db_fetch_row_prepared('SELECT * FROM snmpagent_managers WHERE id = ?', [get_request_var('id')]);
 		$header_label = __esc('SNMP Notification Receiver [edit: %s]', $manager['description']);
 	} else {
 		$header_label = __('SNMP Notification Receiver [new]');
@@ -246,17 +245,16 @@ function manager_edit() {
 			manager_logs($id, $header_label);
 
 			break;
-
 		default:
 			form_start('managers.php');
 
 			html_start_box($header_label, '100%', true, '3', 'center', '');
 
 			draw_edit_form(
-				array(
-					'config' => array('no_form_tag' => true),
-					'fields' => inject_form_variables($fields_manager_edit, (isset($manager) ? $manager : array()))
-				)
+				[
+					'config' => ['no_form_tag' => true],
+					'fields' => inject_form_variables($fields_manager_edit, (isset($manager) ? $manager : []))
+				]
 			);
 
 			html_end_box(true, true);
@@ -295,10 +293,10 @@ function create_manager_notification_filter() {
 		'id', 'name'
 	);
 
-	return array(
-		'rows' => array(
-			array(
-				'filter' => array(
+	return [
+		'rows' => [
+			[
+				'filter' => [
 					'method'         => 'textbox',
 					'friendly_name'  => __('Search'),
 					'filter'         => FILTER_DEFAULT,
@@ -308,18 +306,18 @@ function create_manager_notification_filter() {
 					'pageset'        => true,
 					'max_length'     => '120',
 					'value'          => ''
-				),
-				'mib' => array(
+				],
+				'mib' => [
 					'method'         => 'drop_array',
 					'friendly_name'  => __('MIB'),
 					'filter'         => FILTER_CALLBACK,
-					'filter_options' => array('options' => 'sanitize_search_string'),
+					'filter_options' => ['options' => 'sanitize_search_string'],
 					'default'        => 'any',
 					'pageset'        => true,
 					'array'          => $mibs,
 					'value'          => 'any'
-				),
-				'rows' => array(
+				],
+				'rows' => [
 					'method'         => 'drop_array',
 					'friendly_name'  => __('Entries'),
 					'filter'         => FILTER_VALIDATE_INT,
@@ -327,25 +325,25 @@ function create_manager_notification_filter() {
 					'pageset'        => true,
 					'array'          => $item_rows,
 					'value'          => '-1'
-				)
-			)
-		),
-		'buttons' => array(
-			'go' => array(
+				]
+			]
+		],
+		'buttons' => [
+			'go' => [
 				'method'  => 'submit',
 				'display' => __('Go'),
 				'title'   => __('Apply Filter to Table'),
-			),
-			'clear' => array(
+			],
+			'clear' => [
 				'method'  => 'button',
 				'display' => __('Clear'),
 				'title'   => __('Reset Filter to Default Values'),
-			)
-		)
-	);
+			]
+		]
+	];
 }
 
-function process_sanitize_draw_manager_notification_filter($render = false, $header_label = '') {
+function draw_manager_notification_filter($render = false, $header_label = '') {
 	$filters = create_manager_notification_filter();
 
 	/* create the page filter */
@@ -364,7 +362,7 @@ function process_sanitize_draw_manager_notification_filter($render = false, $hea
 function manager_notifications($id, $header_label) {
 	global $item_rows, $mactions;
 
-	process_sanitize_draw_manager_notification_filter(true, $header_label);
+	draw_manager_notification_filter(true, $header_label);
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
@@ -374,8 +372,8 @@ function manager_notifications($id, $header_label) {
 
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
-	$sql_where = "WHERE `kind`='Notification'";
-	$sql_params = array();
+	$sql_where  = "WHERE `kind`='Notification'";
+	$sql_params = [];
 
 	/* filter by host */
 	if (get_request_var('mib') != 'any' && get_request_var('mib') != '-1') {
@@ -412,9 +410,9 @@ function manager_notifications($id, $header_label) {
 	$registered_notifications = db_fetch_assoc_prepared('SELECT notification, mib
 		FROM snmpagent_managers_notifications
 		WHERE manager_id = ?',
-		array($id));
+		[$id]);
 
-	$notifications = array();
+	$notifications = [];
 
 	if ($registered_notifications && cacti_sizeof($registered_notifications) > 0) {
 		foreach ($registered_notifications as $registered_notification) {
@@ -422,14 +420,14 @@ function manager_notifications($id, $header_label) {
 		}
 	}
 
-	$display_text = array(
+	$display_text = [
 		__('Name'),
 		__('OID'),
 		__('MIB'),
 		__('Kind'),
 		__('Max-Access'),
 		__('Monitored')
-	);
+	];
 
 	/* generate page list */
 	$nav = html_nav_bar('managers.php?action=edit&id=' . $id . '&tab=notifications&mib=' . get_request_var('mib') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Notifications'), 'page', 'main');
@@ -484,14 +482,14 @@ function manager_notifications($id, $header_label) {
 function create_manager_log_filter($severity_levels) {
 	global $item_rows;
 
-	$all = array('-1' => __('All'));
+	$all = ['-1' => __('All')];
 
 	$severity_levels = $all + $severity_levels;
 
-	return array(
-		'rows' => array(
-			array(
-				'filter' => array(
+	return [
+		'rows' => [
+			[
+				'filter' => [
 					'method'         => 'textbox',
 					'friendly_name'  => __('Search'),
 					'filter'         => FILTER_DEFAULT,
@@ -501,8 +499,8 @@ function create_manager_log_filter($severity_levels) {
 					'pageset'        => true,
 					'max_length'     => '120',
 					'value'          => ''
-				),
-				'severity' => array(
+				],
+				'severity' => [
 					'method'         => 'drop_array',
 					'friendly_name'  => __('Severity'),
 					'filter'         => FILTER_VALIDATE_INT,
@@ -510,8 +508,8 @@ function create_manager_log_filter($severity_levels) {
 					'pageset'        => true,
 					'array'          => $severity_levels,
 					'value'          => '-1'
-				),
-				'rows' => array(
+				],
+				'rows' => [
 					'method'         => 'drop_array',
 					'friendly_name'  => __('Entries'),
 					'filter'         => FILTER_VALIDATE_INT,
@@ -519,30 +517,30 @@ function create_manager_log_filter($severity_levels) {
 					'pageset'        => true,
 					'array'          => $item_rows,
 					'value'          => '-1'
-				)
-			)
-		),
-		'buttons' => array(
-			'go' => array(
+				]
+			]
+		],
+		'buttons' => [
+			'go' => [
 				'method'  => 'submit',
 				'display' => __('Go'),
 				'title'   => __('Apply Filter to Table'),
-			),
-			'clear' => array(
+			],
+			'clear' => [
 				'method'  => 'button',
 				'display' => __('Clear'),
 				'title'   => __('Reset Filter to Default Values'),
-			),
-			'purge' => array(
+			],
+			'purge' => [
 				'method'  => 'button',
 				'display' => __('Purge'),
 				'title'   => __('Purge the Notification Receiver Log'),
-			)
-		)
-	);
+			]
+		]
+	];
 }
 
-function process_sanitize_draw_manager_log_filter($render = false, $severity_levels = '', $header_label = '') {
+function draw_manager_log_filter($render = false, $severity_levels = '', $header_label = '') {
 	$filters = create_manager_log_filter($severity_levels);
 
 	/* create the page filter */
@@ -559,26 +557,26 @@ function process_sanitize_draw_manager_log_filter($render = false, $severity_lev
 }
 
 function manager_logs($id, $header_label) {
-	$severity_levels = array(
+	$severity_levels = [
 		SNMPAGENT_EVENT_SEVERITY_LOW      => 'LOW',
 		SNMPAGENT_EVENT_SEVERITY_MEDIUM   => 'MEDIUM',
 		SNMPAGENT_EVENT_SEVERITY_HIGH     => 'HIGH',
 		SNMPAGENT_EVENT_SEVERITY_CRITICAL => 'CRITICAL'
-	);
+	];
 
-	$severity_colors = array(
+	$severity_colors = [
 		SNMPAGENT_EVENT_SEVERITY_LOW      => '#00FF00',
 		SNMPAGENT_EVENT_SEVERITY_MEDIUM   => '#FFFF00',
 		SNMPAGENT_EVENT_SEVERITY_HIGH     => '#FF0000',
 		SNMPAGENT_EVENT_SEVERITY_CRITICAL => '#FF00FF'
-	);
+	];
 
 	if (get_request_var('action') == 'purge') {
-		db_execute_prepared('DELETE FROM snmpagent_notifications_log WHERE manager_id = ?', array($id));
+		db_execute_prepared('DELETE FROM snmpagent_notifications_log WHERE manager_id = ?', [$id]);
 		set_request_var('clear', true);
 	}
 
-	process_sanitize_draw_manager_log_filter(true, $severity_levels, $header_label);
+	draw_manager_log_filter(true, $severity_levels, $header_label);
 	/* ==================================================== */
 
 	if (get_request_var('rows') == '-1') {
@@ -587,7 +585,7 @@ function manager_logs($id, $header_label) {
 		$rows = get_request_var('rows');
 	}
 
-	$sql_params   = array();
+	$sql_params   = [];
 
 	$sql_where    = 'WHERE snl.manager_id = ?';
 	$sql_params[] = $id;
@@ -623,12 +621,12 @@ function manager_logs($id, $header_label) {
 
 	$logs = db_fetch_assoc_prepared($sql_query, $sql_params);
 
-	$display_text = array(
+	$display_text = [
 		__('Data'),
 		__('Time'),
 		__('Notification'),
 		__('Varbinds')
-	);
+	];
 
 	$nav = html_nav_bar('managers.php?action=exit&id=' . $id . '&tab=logs&mib=' . get_request_var('mib') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, cacti_sizeof($display_text), __('Receivers'), 'page', 'main');
 
@@ -699,7 +697,6 @@ function form_save() {
 			header('Location: managers.php?action=edit&tab=notifications&id=' . get_request_var('id'));
 
 			break;
-
 		default:
 			$save['id']             = get_request_var('id');
 			$save['description']    = form_input_validate(trim(get_nfilter_request_var('description')), 'description', '', false, 3);
@@ -788,7 +785,7 @@ function form_actions() {
 								AND `mib` = ?
 								AND `notification` = ?
 								LIMIT 1',
-								array(get_nfilter_request_var('id'), $mib, $notification));
+								[get_nfilter_request_var('id'), $mib, $notification]);
 						}
 					}
 				} elseif (get_nfilter_request_var('drp_action') == '2') { // enable
@@ -797,7 +794,7 @@ function form_actions() {
 							db_execute_prepared('INSERT IGNORE INTO snmpagent_managers_notifications
 								(`manager_id`, `notification`, `mib`)
 								VALUES (?, ?, ?)',
-								array(get_nfilter_request_var('id'), $notification, $mib));
+								[get_nfilter_request_var('id'), $notification, $mib]);
 						}
 					}
 				}
@@ -809,7 +806,7 @@ function form_actions() {
 		}
 	} elseif (isset_request_var('action_receivers')) {
 		$ilist  = '';
-		$iarray = array();
+		$iarray = [];
 
 		foreach ($_POST as $key => $value) {
 			if (strstr($key, 'chk_')) {
@@ -819,47 +816,47 @@ function form_actions() {
 				input_validate_input_number($id, 'id');
 				/* ==================================================== */
 
-				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT description FROM snmpagent_managers WHERE id = ?', array($id))) . '</li>';
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT description FROM snmpagent_managers WHERE id = ?', [$id])) . '</li>';
 
 				$iarray[] = $id;
 			}
 		}
 
-		$form_data = array(
-			'general' => array(
+		$form_data = [
+			'general' => [
 				'page'       => 'managers.php',
 				'actions'    => $actions,
 				'eaction'    => 'action_receivers',
 				'optvar'     => 'drp_action',
 				'item_array' => $iarray,
 				'item_list'  => $ilist
-			),
-			'options' => array(
-				1 => array(
+			],
+			'options' => [
+				1 => [
 					'smessage' => __('Click \'Continue\' to Delete the following Notification Receiver.'),
 					'pmessage' => __('Click \'Continue\' to Delete following Notification Receivers.'),
 					'scont'    => __('Delete Notification Receiver'),
 					'pcont'    => __('Delete Notification Receivers')
-				),
-				2 => array(
+				],
+				2 => [
 					'smessage' => __('Click \'Continue\' to Disable the following Notification Receiver.'),
 					'pmessage' => __('Click \'Continue\' to Disable following Notification Receivers.'),
 					'scont'    => __('Disable Notification Receiver'),
 					'pcont'    => __('Disable Notification Receivers')
-				),
-				3 => array(
+				],
+				3 => [
 					'smessage' => __('Click \'Continue\' to Enable the following Notification Receiver.'),
 					'pmessage' => __('Click \'Continue\' to Enable following Notification Receivers.'),
 					'scont'    => __('Enable Notification Receiver'),
 					'pcont'    => __('Enable Notification Receivers'),
-				)
-			)
-		);
+				]
+			]
+		];
 
 		form_continue_confirmation($form_data);
 	} else {
 		$ilist  = '';
-		$iarray = array();
+		$iarray = [];
 
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
@@ -878,30 +875,30 @@ function form_actions() {
 			}
 		}
 
-		$form_data = array(
-			'general' => array(
+		$form_data = [
+			'general' => [
 				'page'       => 'managers.php?action=edit&tab=notifications&id=' . get_request_var('id'),
 				'actions'    => $mactions,
 				'eaction'    => 'action_receiver_notifications',
 				'optvar'     => 'drp_action',
 				'item_array' => $iarray,
 				'item_list'  => $ilist
-			),
-			'options' => array(
-				1 => array(
+			],
+			'options' => [
+				1 => [
 					'smessage' => __('Click \'Continue\' to Disable Forwarding the following Notification Object the following Notification Receiver.'),
 					'pmessage' => __('Click \'Continue\' to Disable Forwarding the following Notification Objects to the following Notification Receiver.'),
 					'scont'    => __('Disable Forwarding Object'),
 					'pcont'    => __('Disable Forwarding Objects')
-				),
-				2 => array(
+				],
+				2 => [
 					'smessage' => __('Click \'Continue\' to Enable Forwarding the following Notification Object to this Notification Receiver.'),
 					'pmessage' => __('Click \'Continue\' to Enable Forwarding the following Notification Objects Notification Receivers.'),
 					'scont'    => __('Enable Forwarding Object'),
 					'pcont'    => __('Enable Forwarding Objects')
-				)
-			)
-		);
+				]
+			]
+		];
 
 		form_continue_confirmation($form_data);
 	}

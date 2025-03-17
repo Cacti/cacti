@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -50,7 +50,7 @@ if (cacti_sizeof($parms)) {
 
 	$shortopts = 'VvHh';
 
-	$longopts = array(
+	$longopts = [
 		'privkey::',
 		'pubkey::',
 		'author::',
@@ -65,135 +65,151 @@ if (cacti_sizeof($parms)) {
 		'generate',
 		'version',
 		'help'
-	);
+	];
 
 	$options = getopt($shortopts, $longopts);
 
-	foreach($options as $arg => $value) {
+	foreach ($options as $arg => $value) {
 		switch($arg) {
-		case 'replace':
-			$replace = true;
+			case 'replace':
+				$replace = true;
 
-			break;
-		case 'generate':
-			$generate = true;
+				break;
+			case 'generate':
+				$generate = true;
 
-			break;
-		case 'author':
-			$author = $value;
+				break;
+			case 'author':
+				$author = $value;
 
-			break;
-		case 'homepage':
-			$homepage = $value;
+				break;
+			case 'homepage':
+				$homepage = $value;
 
-			break;
-		case 'email':
-			$email = $value;
+				break;
+			case 'email':
+				$email = $value;
 
-			break;
-		case 'country':
-			$country = $value;
+				break;
+			case 'country':
+				$country = $value;
 
-			break;
-		case 'state':
-			$state = $value;
+				break;
+			case 'state':
+				$state = $value;
 
-			break;
-		case 'org':
-			$org = $value;
+				break;
+			case 'org':
+				$org = $value;
 
-			break;
-		case 'unit':
-			$unit = $value;
+				break;
+			case 'unit':
+				$unit = $value;
 
-			break;
-		case 'privkey':
-			$privkey = $value;
+				break;
+			case 'privkey':
+				$privkey = $value;
 
-			break;
-		case 'pubkey':
-			$pubkey = $value;
+				break;
+			case 'pubkey':
+				$pubkey = $value;
 
-			break;
-		case 'days':
-			$days = $value;
+				break;
+			case 'days':
+				$days = $value;
 
-			break;
-		case 'version':
-		case 'V':
-		case 'v':
-			display_version();
-			exit;
-		case 'help':
-		case 'H':
-		case 'h':
-			display_help();
-			exit(0);
-		default:
-			print "FATAL: Invalid Argument: ($arg)\n\n";
-			display_help();
-			exit(1);
+				break;
+			case 'version':
+			case 'V':
+			case 'v':
+				display_version();
+
+				exit;
+			case 'help':
+			case 'H':
+			case 'h':
+				display_help();
+
+				exit(0);
+			default:
+				print "FATAL: Invalid Argument: ($arg)\n\n";
+				display_help();
+
+				exit(1);
 		}
 	}
 }
 
-if (!$replace && !$generate) {
+if (!isset($replace) && !isset($generate)) {
 	display_help();
+
 	exit(0);
 }
 
 if ($author == -1) {
-	print "FATAL: The parameter --author is required." . PHP_EOL;
+	print 'FATAL: The parameter --author is required.' . PHP_EOL;
+
 	exit(1);
 }
 
 if ($homepage == -1) {
-	print "FATAL: The parameter --homepage is required." . PHP_EOL;
+	print 'FATAL: The parameter --homepage is required.' . PHP_EOL;
+
 	exit(1);
 }
 
 if ($email == -1) {
-	print "FATAL: The parameter --email is required." . PHP_EOL;
+	print 'FATAL: The parameter --email is required.' . PHP_EOL;
+
 	exit(1);
 }
 
 if (is_array($privkey)) {
-	print "FATAL: The private key can only be specified once." . PHP_EOL;
+	print 'FATAL: The private key can only be specified once.' . PHP_EOL;
+
 	exit(1);
-} elseif ($privkey != '' && !file_exists($privkey)) {
+}
+
+if ($privkey != '' && !file_exists($privkey)) {
 	print "FATAL: Private key '$privkey' does not exist" . PHP_EOL;
+
 	exit(1);
 }
 
 if (is_array($pubkey)) {
-	print "FATAL: The public key can only be specified once" . PHP_EOL;
+	print 'FATAL: The public key can only be specified once' . PHP_EOL;
+
 	exit(1);
-} elseif ($pubkey != '' && !file_exists($pubkey)) {
+}
+
+if ($pubkey != '' && !file_exists($pubkey)) {
 	print "FATAL: Public key '$pubkey' does not exist" . PHP_EOL;
+
 	exit(1);
 }
 
 if (($pubkey != '' && $privkey == '') || ($privkey != '' && $pubkey == '')) {
-	print "FATAL: You must specify both public and private keys if you wish to use them" . PHP_EOL;
+	print 'FATAL: You must specify both public and private keys if you wish to use them' . PHP_EOL;
+
 	exit(1);
 }
 
 if ((file_exists($keypair_path . '/package.pem') || file_exists($keypair_path . '/package.info')) && !$replace) {
-	print "FATAL: Package private key or info file exists.  You must use the --replace option to replace it" . PHP_EOL;
+	print 'FATAL: Package private key or info file exists.  You must use the --replace option to replace it' . PHP_EOL;
 } else {
-	$package_info  = "[info]"               . PHP_EOL;
+	$package_info  = '[info]'               . PHP_EOL;
 	$package_info .= "author = $author"     . PHP_EOL;
 	$package_info .= "homepage = $homepage" . PHP_EOL;
 	$package_info .= "email = $email"       . PHP_EOL;
 
 	file_put_contents("$keypair_path/package.info", $package_info);
 
-	$config = array(
-		'digest_alg' => 'sha256',
+	$config = [
+		'digest_alg'       => 'sha256',
 		'private_key_type' => OPENSSL_KEYTYPE_RSA
-	);
+	];
 
-	$subject = array(
+	$subject = [
 		'countryName'            => $country,
 		'stateOrProvinceName'    => $state,
 		'localityName'           => $homepage,
@@ -201,7 +217,7 @@ if ((file_exists($keypair_path . '/package.pem') || file_exists($keypair_path . 
 		'organizationalUnitName' => $unit,
 		'commonName'             => $author,
 		'emailAddress'           => $email,
-	);
+	];
 
 	if ($privkey != '') {
 		print 'NOTE: Using user provided public/private key pair.' . PHP_EOL;
@@ -212,11 +228,13 @@ if ((file_exists($keypair_path . '/package.pem') || file_exists($keypair_path . 
 
 		if ($privKey === false) {
 			print "FATAL: Unable to open your private key $privkey" . PHP_EOL;
+
 			exit(0);
 		}
 
 		if ($pubKey === false) {
 			print "FATAL: Unable to open your public key $pubkey" . PHP_EOL;
+
 			exit(0);
 		}
 	} else {
@@ -227,22 +245,27 @@ if ((file_exists($keypair_path . '/package.pem') || file_exists($keypair_path . 
 
 		if ($res !== false) {
 			print 'NOTE: Generated private key' . PHP_EOL;
+
 			// Generate a private key and certificate
 			if (openssl_pkey_export($res, $privKey)) {
 				$details  = openssl_pkey_get_details($res);
+
 				if ($details !== false) {
 					print 'NOTE: Gathered key details from private key' . PHP_EOL;
 					$pubKey   = $details['key'];
 				} else {
 					print 'FATAL: Unable to get key details.' . PHP_EOL;
+
 					exit(1);
 				}
 			} else {
 				print 'FATAL: Unable to export private key.' . PHP_EOL;
+
 				exit(1);
 			}
 		} else {
 			print 'FATAL: Unable to generate private key.' . PHP_EOL;
+
 			exit(1);
 		}
 	}
@@ -254,22 +277,26 @@ if ((file_exists($keypair_path . '/package.pem') || file_exists($keypair_path . 
 	if ($csr !== false) {
 		print 'NOTE: Gathered CSR records for certificate.' . PHP_EOL;
 
-		$x509 = openssl_csr_sign($csr, null, $privKey, $days, array('digest_alg' => 'sha256'));
+		$x509 = openssl_csr_sign($csr, null, $privKey, $days, ['digest_alg' => 'sha256']);
 
 		if ($x509 !== false) {
 			print 'NOTE: Signed CSR record.' . PHP_EOL;
+
 			if (openssl_x509_export_to_file($x509, "$keypair_path/package.pem")) {
 				print 'NOTE: Generated certificate file package.pem.' . PHP_EOL;
 			} else {
 				print 'FATAL: Unable to generate certificate file package.pem.' . PHP_EOL;
+
 				exit(1);
 			}
 		} else {
 			print 'FATAL: Unable to Sign CSR record.' . PHP_EOL;
+
 			exit(1);
 		}
 	} else {
 		print 'FATAL: Unable to create CSR record.' . PHP_EOL;
+
 		exit(1);
 	}
 
@@ -279,6 +306,7 @@ if ((file_exists($keypair_path . '/package.pem') || file_exists($keypair_path . 
 			print 'NOTE: Generated private key file package.key.' . PHP_EOL;
 		} else {
 			print 'FATAL: Unable to generate private key file package.key.' . PHP_EOL;
+
 			exit(1);
 		}
 	} else {
@@ -287,6 +315,7 @@ if ((file_exists($keypair_path . '/package.pem') || file_exists($keypair_path . 
 				print 'NOTE: Generated private key file package.key.' . PHP_EOL;
 			} else {
 				print 'FATAL: Unable to generate private key file package.key.' . PHP_EOL;
+
 				exit(1);
 			}
 		} else {
@@ -300,6 +329,7 @@ if ((file_exists($keypair_path . '/package.pem') || file_exists($keypair_path . 
 			print 'NOTE: Generated public key file package.pub.' . PHP_EOL;
 		} else {
 			print 'FATAL: Unable to generate public key file package.pub.' . PHP_EOL;
+
 			exit(1);
 		}
 	}

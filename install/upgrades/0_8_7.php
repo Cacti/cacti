@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -24,8 +24,8 @@
 
 function upgrade_to_0_8_7() {
 	/* add slope mode as an option */
-	db_install_add_column('graph_templates_graph', array('name' => 't_slope_mode', 'type' => 'CHAR(2)', 'default' => '0', 'after' => 'vertical_label'));
-	db_install_add_column('graph_templates_graph', array('name' => 'slope_mode', 'type' => 'CHAR(2)', 'default' => 'on', 'after' => 't_slope_mode'));
+	db_install_add_column('graph_templates_graph', ['name' => 't_slope_mode', 'type' => 'CHAR(2)', 'default' => '0', 'after' => 'vertical_label']);
+	db_install_add_column('graph_templates_graph', ['name' => 'slope_mode', 'type' => 'CHAR(2)', 'default' => 'on', 'after' => 't_slope_mode']);
 
 	/* change the width of the last error field */
 	db_install_execute('ALTER TABLE `host` MODIFY COLUMN `status_last_error` VARCHAR(255);');
@@ -34,38 +34,38 @@ function upgrade_to_0_8_7() {
 	db_install_execute('ALTER TABLE `data_template_rrd` MODIFY COLUMN `rrd_maximum` VARCHAR(20) NOT NULL DEFAULT 0, MODIFY COLUMN `rrd_minimum` VARCHAR(20) NOT NULL DEFAULT 0');
 
 	/* speed up the poller */
-	db_install_add_key('host', 'index', 'disabled', array('disabled'));
-	db_install_add_key('poller_item', 'index', 'rrd_next_step', array('rrd_next_step'));
+	db_install_add_key('host', 'index', 'disabled', ['disabled']);
+	db_install_add_key('poller_item', 'index', 'rrd_next_step', ['rrd_next_step']);
 
 	/* speed up the UI */
-	db_install_add_key('poller_item', 'index', 'action', array('action'));
-	db_install_add_key('user_auth', 'index', 'username', array('username'));
-	db_install_add_key('user_auth', 'index', 'realm', array('realm'));
-	db_install_add_key('user_log', 'index', 'username', array('username'));
-	db_install_add_key('data_input', 'index', 'name', array('name'));
+	db_install_add_key('poller_item', 'index', 'action', ['action']);
+	db_install_add_key('user_auth', 'index', 'username', ['username']);
+	db_install_add_key('user_auth', 'index', 'realm', ['realm']);
+	db_install_add_key('user_log', 'index', 'username', ['username']);
+	db_install_add_key('data_input', 'index', 'name', ['name']);
 
 	/* Add enable/disable to users */
-	db_install_add_column('user_auth', array('name' => 'enabled', 'type' => 'CHAR(2)', 'default' => 'on'));
-	db_install_add_key('user_auth', 'index', 'enabled', array('enabled'));
+	db_install_add_column('user_auth', ['name' => 'enabled', 'type' => 'CHAR(2)', 'default' => 'on']);
+	db_install_add_key('user_auth', 'index', 'enabled', ['enabled']);
 
 	/* add additional fields to the host table */
-	db_install_add_column('host', array('name' => 'availability_method', 'type' => 'SMALLINT(5) UNSIGNED', 'NULL' => false, 'default' => '2', 'after' => 'snmp_timeout'));
-	db_install_add_column('host', array('name' => 'ping_method', 'type' => 'SMALLINT(5) UNSIGNED', 'default' => '0', 'after' => 'availability_method'));
-	db_install_add_column('host', array('name' => 'ping_port', 'type' => 'INT(12) UNSIGNED', 'default' => '0', 'after' => 'ping_method'));
-	db_install_add_column('host', array('name' => 'ping_timeout', 'type' => 'INT(12) UNSIGNED', 'default' => '500', 'after' => 'ping_port'));
-	db_install_add_column('host', array('name' => 'ping_retries', 'type' => 'INT(12) UNSIGNED', 'default' => '2', 'after' => 'ping_timeout'));
-	db_install_add_column('host', array('name' => 'max_oids', 'type' => 'INT(12) UNSIGNED', 'default' => '10', 'after' => 'ping_retries'));
-	db_install_add_column('host', array('name' => 'notes', 'type' => 'TEXT', 'after' => 'hostname'));
-	db_install_add_column('host', array('name' => 'snmp_auth_protocol', 'type' => 'CHAR(5)', 'default' => '', 'after' => 'snmp_password'));
-	db_install_add_column('host', array('name' => 'snmp_priv_passphrase', 'type' => 'varchar(200)', 'default' => '', 'after' => 'snmp_auth_protocol'));
-	db_install_add_column('host', array('name' => 'snmp_priv_protocol', 'type' => 'CHAR(6)', 'default' => '', 'after' => 'snmp_priv_passphrase'));
-	db_install_add_column('host', array('name' => 'snmp_context', 'type' => 'VARCHAR(64)', 'default' => '', 'after' => 'snmp_priv_protocol'));
+	db_install_add_column('host', ['name' => 'availability_method', 'type' => 'SMALLINT(5) UNSIGNED', 'NULL' => false, 'default' => '2', 'after' => 'snmp_timeout']);
+	db_install_add_column('host', ['name' => 'ping_method', 'type' => 'SMALLINT(5) UNSIGNED', 'default' => '0', 'after' => 'availability_method']);
+	db_install_add_column('host', ['name' => 'ping_port', 'type' => 'INT(12) UNSIGNED', 'default' => '0', 'after' => 'ping_method']);
+	db_install_add_column('host', ['name' => 'ping_timeout', 'type' => 'INT(12) UNSIGNED', 'default' => '500', 'after' => 'ping_port']);
+	db_install_add_column('host', ['name' => 'ping_retries', 'type' => 'INT(12) UNSIGNED', 'default' => '2', 'after' => 'ping_timeout']);
+	db_install_add_column('host', ['name' => 'max_oids', 'type' => 'INT(12) UNSIGNED', 'default' => '10', 'after' => 'ping_retries']);
+	db_install_add_column('host', ['name' => 'notes', 'type' => 'TEXT', 'after' => 'hostname']);
+	db_install_add_column('host', ['name' => 'snmp_auth_protocol', 'type' => 'CHAR(5)', 'default' => '', 'after' => 'snmp_password']);
+	db_install_add_column('host', ['name' => 'snmp_priv_passphrase', 'type' => 'varchar(200)', 'default' => '', 'after' => 'snmp_auth_protocol']);
+	db_install_add_column('host', ['name' => 'snmp_priv_protocol', 'type' => 'CHAR(6)', 'default' => '', 'after' => 'snmp_priv_passphrase']);
+	db_install_add_column('host', ['name' => 'snmp_context', 'type' => 'VARCHAR(64)', 'default' => '', 'after' => 'snmp_priv_protocol']);
 
 	/* additional poller items fields required */
-	db_install_add_column('poller_item', array('name' => 'snmp_auth_protocol', 'type' => 'CHAR(5)', 'default' => '', 'after' => 'snmp_password'));
-	db_install_add_column('poller_item', array('name' => 'snmp_priv_passphrase', 'type' => 'varchar(200)', 'default' => '', 'after' => 'snmp_auth_protocol'));
-	db_install_add_column('poller_item', array('name' => 'snmp_priv_protocol', 'type' => 'CHAR(6)', 'default' => '', 'after' => 'snmp_priv_passphrase'));
-	db_install_add_column('poller_item', array('name' => 'snmp_context', 'type' => 'VARCHAR(64)', 'default' => '', 'after' => 'snmp_priv_protocol'));
+	db_install_add_column('poller_item', ['name' => 'snmp_auth_protocol', 'type' => 'CHAR(5)', 'default' => '', 'after' => 'snmp_password']);
+	db_install_add_column('poller_item', ['name' => 'snmp_priv_passphrase', 'type' => 'varchar(200)', 'default' => '', 'after' => 'snmp_auth_protocol']);
+	db_install_add_column('poller_item', ['name' => 'snmp_priv_protocol', 'type' => 'CHAR(6)', 'default' => '', 'after' => 'snmp_priv_passphrase']);
+	db_install_add_column('poller_item', ['name' => 'snmp_context', 'type' => 'VARCHAR(64)', 'default' => '', 'after' => 'snmp_priv_protocol']);
 
 	/* Convert to new authentication system */
 	$global_auth            = 'on';
@@ -124,21 +124,21 @@ function upgrade_to_0_8_7() {
 					$ping_port = 0;
 				}
 
-				$fields = array(
+				$fields = [
 					'snmp_priv_protocol',
 					'availability_method',
 					'ping_method',
 					'ping_timeout',
 					'ping_retries',
-				);
+				];
 
-				$params = array(
+				$params = [
 					'[None]',
 					$availability_method,
 					$ping_method,
 					$ping_timeout,
 					$ping_retries
-				);
+				];
 
 				if (!empty($ping_port)) {
 					$fields['ping_port'] = '?';
@@ -170,7 +170,7 @@ function upgrade_to_0_8_7() {
 	if (db_table_exists('rra')) {
 		db_install_execute("INSERT INTO rra VALUES (DEFAULT,'283ea2bf1634d92ce081ec82a634f513','Hourly (1 Minute Average)',0.5,1,500,14400)");
 		$rrd_id = db_fetch_cell("SELECT id FROM rra WHERE hash='283ea2bf1634d92ce081ec82a634f513'");
-		db_install_execute('INSERT INTO `rra_cf` VALUES (?,1), (?,3)', array($rrd_id, $rrd_id));
+		db_install_execute('INSERT INTO `rra_cf` VALUES (?,1), (?,3)', [$rrd_id, $rrd_id]);
 	}
 
 	/* rename cactid path to spine path */

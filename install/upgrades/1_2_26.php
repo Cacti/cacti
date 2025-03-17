@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -35,17 +35,17 @@ function upgrade_to_1_2_26() {
 	if (cacti_sizeof($duplicates['data'])) {
 		$duplicates = $duplicates['data'];
 
-		foreach($duplicates as $duplicate) {
+		foreach ($duplicates as $duplicate) {
 			$hexes_results = db_install_fetch_assoc('SELECT id, hex
 				FROM colors
 				WHERE hex = ?
 				ORDER BY id ASC',
-				array($duplicate['hex']), true);
+				[$duplicate['hex']], true);
 			$hexes = $hexes_results['data'];
 
 			$first = true;
 
-			foreach($hexes as $hex) {
+			foreach ($hexes as $hex) {
 				if ($first) {
 					$keephex = $hex['id'];
 					$first   = false;
@@ -53,23 +53,22 @@ function upgrade_to_1_2_26() {
 					db_install_execute('UPDATE graph_templates_item
 						SET color_id = ?
 						WHERE color_id = ?',
-						array($keephex, $hex['id']));
+						[$keephex, $hex['id']]);
 
 					if (db_table_exists('color_template_items')) {
 						db_install_execute('UPDATE color_template_items
 							SET color_id = ?
 							WHERE color_id = ?',
-							array($keephex, $hex['id']));
+							[$keephex, $hex['id']]);
 					}
 
-					db_install_execute('DELETE FROM colors WHERE id = ?', array($hex['id']));
+					db_install_execute('DELETE FROM colors WHERE id = ?', [$hex['id']]);
 				}
 			}
 		}
 
 		if (!db_index_exists('colors', 'hex')) {
-			db_install_add_key('colors', 'UNIQUE INDEX', 'hex', array('hex'));
+			db_install_add_key('colors', 'UNIQUE INDEX', 'hex', ['hex']);
 		}
 	}
 }
-

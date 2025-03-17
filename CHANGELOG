@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.3.0-dev
+-issue#6165: Update billboard.js and billboard.css to resolve servcheck graph legend overlapping issue.
 -issue#2205: Allow admins to disable RRDtool watermark
 -issue#3066: Enable the secure flag on cookies when HTTPS is enabled.
 -issue#3074: ss_net_snmp_disk_bytes.php and ss_net_snmp_disk_io.php do now report mmcblk data.
@@ -33,6 +34,7 @@ Cacti CHANGELOG
 -issue#5968: Removing jQuery Sparklines API as we are not using it and have adequate charting libraries
 -issue#5969: If System Level Browser TimeZone Support is disabled don't show the User Profile Option
 -issue#5973: Multiple Issues with database API function db_update_table() preventing correct update of an existing table
+-issue#6163: Checkbox is displayed always on in some cases
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors
@@ -4225,4 +4227,4 @@ Cacti CHANGELOG
 -initial release
 
 -----------------------------------------------
-Copyright (c) 2004-2024 - The Cacti Group, Inc.
+Copyright (c) 2004-2025 - The Cacti Group, Inc.

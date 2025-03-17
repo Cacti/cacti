@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -28,8 +28,8 @@ include_once('./lib/poller.php');
 /* set default action */
 set_default_action();
 
-get_filter_request_var('tab', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
-get_filter_request_var('filter', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
+get_filter_request_var('tab', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
+get_filter_request_var('filter', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
 
 global $disable_log_rotation, $local_db_cnn_id;
 
@@ -99,7 +99,7 @@ function display_settings() {
 		set_config_option('boost_redirect', 'on');
 	}
 
-	$system_tabs = array(
+	$system_tabs = [
 		'general',
 		'path',
 		'logging',
@@ -111,20 +111,20 @@ function display_settings() {
 		'boost',
 		'spikes',
 		'mail'
-	);
+	];
 
 	/* draw the categories tabs on the top of the page */
-	print "<div>";
+	print '<div>';
 	print "<div id='settings' class='tabs' style='float:left;'><nav style='display:none;'><ul role='tablist'>";
 
 	if (cacti_sizeof($tabs)) {
 		foreach (array_keys($tabs) as $tab_short_name) {
-			print "<li id='$tab_short_name' class='subTab" . (!in_array($tab_short_name, $system_tabs) ? ' pluginTab':'') . "'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . html_escape("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . "</a></li>";
+			print "<li id='$tab_short_name' class='subTab" . (!in_array($tab_short_name, $system_tabs, true) ? ' pluginTab':'') . "'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . html_escape("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . '</a></li>';
 		}
 	}
 
-	print "</ul></nav></div>";
-	print "</div>";
+	print '</ul></nav></div>';
+	print '</div>';
 	print "<div id='form_settings_wrap' style='display:none'>";
 
 	form_start('settings.php', 'form_settings');
@@ -137,7 +137,7 @@ function display_settings() {
 
 	html_start_box(__('Cacti Settings (%s)%s', $tabs[$current_tab], $suffix), '100%', true, '3', 'center', '');
 
-	$form_array = array();
+	$form_array = [];
 
 	// Remove log rotation is disabled by package maintainer
 	if (isset($disable_log_rotation) && $disable_log_rotation == true) {
@@ -167,7 +167,7 @@ function display_settings() {
 
 	if (isset($settings[$current_tab])) {
 		foreach ($settings[$current_tab] as $field_name => $field_array) {
-			$form_array += array($field_name => $field_array);
+			$form_array += [$field_name => $field_array];
 
 			if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 				foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
@@ -179,12 +179,12 @@ function display_settings() {
 						$form_array[$field_name]['items'][$sub_field_name]['value'] = db_fetch_cell_prepared('SELECT value
 							FROM settings
 							WHERE name = ?',
-							array($sub_field_name), '', true, $local_db_cnn_id);
+							[$sub_field_name], '', true, $local_db_cnn_id);
 					} else {
 						$form_array[$field_name]['items'][$sub_field_name]['value'] = db_fetch_cell_prepared('SELECT value
 							FROM settings
 							WHERE name = ?',
-							array($sub_field_name));
+							[$sub_field_name]);
 					}
 				}
 			} else {
@@ -196,12 +196,12 @@ function display_settings() {
 					$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value
 						FROM settings
 						WHERE name = ?',
-						array($field_name), '', true, $local_db_cnn_id);
+						[$field_name], '', true, $local_db_cnn_id);
 				} else {
 					$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value
 						FROM settings
 						WHERE name = ?',
-						array($field_name));
+						[$field_name]);
 				}
 			}
 		}
@@ -232,10 +232,10 @@ function display_settings() {
 	}
 
 	draw_edit_form(
-		array(
-			'config' => array('no_form_tag' => true),
+		[
+			'config' => ['no_form_tag' => true],
 			'fields' => $form_array
-		)
+		]
 	);
 
 	html_end_box(true, true);
@@ -449,7 +449,7 @@ function display_settings() {
 			}).trigger('change');
 		} else if (currentTab == 'mail') {
 			$('#row_settings_email_header div.formHeaderText').append('<div id="emailtest" class="emailtest"><?php print __('Send a Test Email');?></div>');
-			$('#row_settings_oauth2_header div.formHeaderText').append('<div id="oauth2token" class="emailtest"><?php print __('Generate OAuth2 Refresh Token');?></div>');
+			$('#row_settings_oauth2_header div.formHeaderText').append('<div id="oauth2token" class="emailtest"><?php print __('Generate OAuth2 Refresh Token in new window');?></div>');
 
 			initMail();
 
@@ -485,34 +485,9 @@ function display_settings() {
 						getPresentHTTPError(data);
 					});
 			});
-			
-			$('#oauth2token').click(function() {
-				$.get('oauth2.php')
-					.done(function(data) {
-						$('body').append('<div id="oatoken" title="<?php print __esc('Get OAuth2 Token');?>"></div>');
-						$('#oatoken').html(data);
 
-						$('#oatoken').dialog({
-							autoOpen: false,
-							modal: true,
-							minHeight: 300,
-							maxHeight: 600,
-							height: 450,
-							width: 500,
-							autoOpen: true,
-							show: {
-								effect: 'appear',
-								duration: 100
-							},
-							hide: {
-								effect: 'appear',
-								duration: 100
-							}
-						});
-					})
-					.fail(function(data) {
-						getPresentHTTPError(data);
-					});
+			$('#oauth2token').click(function() {
+				window.open('<?php print read_config_option('settings_oauth2_redirect_uri');?>', '_blank');
 			});
 		} else if (currentTab == 'visual') {
 			currentTheme = $('#selected_theme').val();
@@ -1291,13 +1266,13 @@ function display_settings() {
 
 function validate_settings_filter() {
 	/* ================= input validation and session storage ================= */
-	$filters = array(
-		'filter' => array(
-			'filter' => FILTER_DEFAULT,
+	$filters = [
+		'filter' => [
+			'filter'  => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => ''
-		)
-	);
+		]
+	];
 
 	validate_store_request_vars($filters, 'sess_settings');
 	/* ================= input validation ================= */
@@ -1310,18 +1285,18 @@ function settings_search() {
 
 	$filter = get_request_var('filter');
 
-	$response = array(
-		'tabs'    => array(),
-		'rows'    => array(),
-		'spacers' => array()
-	);
+	$response = [
+		'tabs'    => [],
+		'rows'    => [],
+		'spacers' => []
+	];
 
 	$last_spacer = '';
-	$tabs        = array();
-	$spacers     = array();
+	$tabs        = [];
+	$spacers     = [];
 
-	foreach($settings as $tab => $page) {
-		foreach($page as $field_name => $field_array) {
+	foreach ($settings as $tab => $page) {
+		foreach ($page as $field_name => $field_array) {
 			if ($field_array['method'] == 'spacer') {
 				$last_spacer = $field_name;
 			} elseif ($field_array['method'] != 'hidden') {
@@ -1349,7 +1324,7 @@ function settings_search() {
 				}
 
 				if ($friendly_key !== false || $description_key !== false) {
-					$tabs[] = $tab;
+					$tabs[]             = $tab;
 					$response['rows'][] = $field_name;
 
 					if ($last_spacer != '') {
@@ -1374,11 +1349,11 @@ function settings_search() {
 function save_settings() {
 	global $config, $settings, $local_db_cnn_id;
 
-	$errors = array();
-	$inserts = array();
+	$errors  = [];
+	$inserts = [];
 
 	foreach ($settings[get_request_var('tab')] as $field_name => $field_array) {
-		if (($field_array['method'] == 'header') || ($field_array['method'] == 'spacer' )){
+		if (($field_array['method'] == 'header') || ($field_array['method'] == 'spacer')) {
 			/* do nothing */
 		} elseif ($field_array['method'] == 'checkbox') {
 			if (isset_request_var($field_name)) {
@@ -1386,13 +1361,13 @@ function save_settings() {
 				db_execute_prepared("REPLACE INTO settings
 					(name, value)
 					VALUES (?, 'on')",
-					array($field_name));
+					[$field_name]);
 			} else {
 				$inserts[] = '(' . db_qstr($field_name) . ', "")';
 				db_execute_prepared("REPLACE INTO settings
 					(name, value)
 					VALUES (?, '')",
-					array($field_name));
+					[$field_name]);
 			}
 		} elseif ($field_array['method'] == 'checkbox_group') {
 			foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
@@ -1401,32 +1376,32 @@ function save_settings() {
 					db_execute_prepared("REPLACE INTO settings
 					(name, value)
 					VALUES (?, 'on')",
-					array($sub_field_name));
+						[$sub_field_name]);
 				} else {
 					$inserts[] = '(' . db_qstr($field_name) . ', "on")';
 					db_execute_prepared("REPLACE INTO settings
 					(name, value)
 					VALUES (?, '')",
-					array($sub_field_name));
+						[$sub_field_name]);
 				}
 			}
 		} elseif ($field_array['method'] == 'dirpath') {
 			if (get_nfilter_request_var($field_name) != '' && !is_dir(get_nfilter_request_var($field_name))) {
 				$_SESSION['sess_error_fields'][$field_name] = $field_name;
 				$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
-				$errors[8] = 8;
+				$errors[8]                                  = 8;
 			} else {
 				if (get_request_var('tab') == 'path' && is_remote_path_setting($field_name)) {
 					db_execute_prepared('REPLACE INTO settings
 						(name, value)
 						VALUES (?, ?)',
-						array($field_name, get_nfilter_request_var($field_name)), true, $local_db_cnn_id);
+						[$field_name, get_nfilter_request_var($field_name)], true, $local_db_cnn_id);
 				} else {
 					$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
 					db_execute_prepared('REPLACE INTO settings
 						(name, value)
 						VALUES (?, ?)',
-						array($field_name, get_nfilter_request_var($field_name)));
+						[$field_name, get_nfilter_request_var($field_name)]);
 				}
 			}
 		} elseif ($field_array['method'] == 'filepath') {
@@ -1436,7 +1411,7 @@ function save_settings() {
 				file_exists(get_nfilter_request_var($field_name)) === false) {
 				$_SESSION['sess_error_fields'][$field_name] = $field_name;
 				$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
-				$errors[36] = 36;
+				$errors[36]                                 = 36;
 			} else {
 				$continue = true;
 
@@ -1446,13 +1421,13 @@ function save_settings() {
 					if ($extension != 'log') {
 						$_SESSION['sess_error_fields'][$field_name] = $field_name;
 						$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
-						$errors[9] = 9;
-						$continue = false;
+						$errors[9]                                  = 9;
+						$continue                                   = false;
 					}
 				} elseif (get_nfilter_request_var($field_name) != '' && !is_valid_pathname(get_nfilter_request_var($field_name))) {
 					$_SESSION['sess_error_fields'][$field_name] = $field_name;
 					$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
-					$errors[36] = 36;
+					$errors[36]                                 = 36;
 				}
 
 				if ($continue) {
@@ -1460,13 +1435,13 @@ function save_settings() {
 						db_execute_prepared('REPLACE INTO settings
 							(name, value)
 							VALUES (?, ?)',
-							array($field_name, get_nfilter_request_var($field_name)), true, $local_db_cnn_id);
+							[$field_name, get_nfilter_request_var($field_name)], true, $local_db_cnn_id);
 					} else {
 						$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
 						db_execute_prepared('REPLACE INTO settings
 							(name, value)
 							VALUES (?, ?)',
-							array($field_name, get_nfilter_request_var($field_name)));
+							[$field_name, get_nfilter_request_var($field_name)]);
 					}
 				}
 			}
@@ -1474,14 +1449,17 @@ function save_settings() {
 			if (isset_request_var($field_name . '_confirm') && get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name . '_confirm')) {
 				$_SESSION['sess_error_fields'][$field_name] = $field_name;
 				$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
-				$errors[4] = 4;
+				$errors[4]                                  = 4;
+
 				break;
-			} elseif (!isempty_request_var($field_name)) {
+			}
+
+			if (!isempty_request_var($field_name)) {
 				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
 				db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
-					array($field_name, get_nfilter_request_var($field_name)));
+					[$field_name, get_nfilter_request_var($field_name)]);
 			}
 		} elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 			foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
@@ -1490,7 +1468,7 @@ function save_settings() {
 					db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
-					array($sub_field_name, get_nfilter_request_var($sub_field_name)));
+						[$sub_field_name, get_nfilter_request_var($sub_field_name)]);
 				}
 			}
 		} elseif ($field_array['method'] == 'drop_multi') {
@@ -1500,20 +1478,20 @@ function save_settings() {
 					db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
-					array($field_name, implode(',', get_nfilter_request_var($field_name))));
+						[$field_name, implode(',', get_nfilter_request_var($field_name))]);
 				} else {
 					$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
 					db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
-					array($field_name, get_nfilter_request_var($field_name)));
+						[$field_name, get_nfilter_request_var($field_name)]);
 				}
 			} else {
 				$inserts[] = '(' . db_qstr($field_name) . ', "")';
 				db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, "")',
-					array($field_name));
+					[$field_name]);
 			}
 		} elseif (isset_request_var($field_name)) {
 			if ($field_array['method'] == 'textbox' && isset($field_array['filter'])) {
@@ -1522,25 +1500,28 @@ function save_settings() {
 				} else {
 					$value = filter_var(get_nfilter_request_var($field_name), $field_array['filter']);
 				}
+
 				if ($value === false) {
 					$_SESSION['sess_error_fields'][$field_name] = $field_name;
 					$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
-					$errors[3] = 3;
+					$errors[3]                                  = 3;
+
 					continue;
 				}
 			}
+
 			if (is_array(get_nfilter_request_var($field_name))) {
 				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(implode(',', get_nfilter_request_var($field_name))) . ')';
 				db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
-					array($field_name, implode(',', get_nfilter_request_var($field_name))));
+					[$field_name, implode(',', get_nfilter_request_var($field_name))]);
 			} else {
 				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
 				db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
-					array($field_name, get_nfilter_request_var($field_name)));
+					[$field_name, get_nfilter_request_var($field_name)]);
 			}
 		}
 
@@ -1572,7 +1553,7 @@ function save_settings() {
 		db_execute_prepared('UPDATE user_auth
 			SET enabled=""
 			WHERE id = ?',
-			array(get_nfilter_request_var('user_template')));
+			[get_nfilter_request_var('user_template')]);
 	}
 
 	// Update snmpcache
@@ -1603,7 +1584,7 @@ function save_settings() {
 				VALUES ' . implode(', ', $inserts) . '
 				ON DUPLICATE KEY UPDATE value=VALUES(value)';
 
-			foreach($pollers as $p => $t) {
+			foreach ($pollers as $p => $t) {
 				if ($t > $gone_time) {
 					raise_message('poller_' . $p, __('Settings save to Data Collector %d skipped due to heartbeat.', $p), MESSAGE_LEVEL_WARN);
 				} else {
@@ -1629,7 +1610,7 @@ function save_settings() {
 	} else {
 		raise_message(35);
 
-		foreach($errors as $error) {
+		foreach ($errors as $error) {
 			raise_message($error);
 		}
 	}

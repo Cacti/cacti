@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -33,7 +33,7 @@ function render_external_links($style = 'FRONT') {
 	$consoles = db_fetch_assoc_prepared('SELECT id, contentfile
 		FROM external_links
 		WHERE enabled = "on"
-		AND style = ?', array($style));
+		AND style = ?', [$style]);
 
 	if (cacti_sizeof($consoles)) {
 		foreach ($consoles as $page) {

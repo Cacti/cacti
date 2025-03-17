@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -34,7 +34,7 @@ get_filter_request_var('graph_start');
 get_filter_request_var('graph_end');
 get_filter_request_var('graph_height');
 get_filter_request_var('graph_width');
-get_filter_request_var('graph_nolegend', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '(true|false)')));
+get_filter_request_var('graph_nolegend', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '(true|false)']]);
 get_filter_request_var('local_graph_id');
 get_filter_request_var('size');
 get_filter_request_var('ds_step');
@@ -80,7 +80,6 @@ switch (get_request_var('action')) {
 				load_current_session_value('graph_nolegend', 'sess_realtime_nolegend',    read_user_setting('realtime_nolegend', 'false'));
 
 				break;
-
 			default:
 				load_current_session_value('ds_step',        'sess_realtime_ds_step',     read_user_setting('realtime_interval', 10));
 				load_current_session_value('graph_start',    'sess_realtime_graph_start', read_user_setting('realtime_gwindow', 60));
@@ -90,7 +89,7 @@ switch (get_request_var('action')) {
 				break;
 		}
 
-		$graph_data_array = array();
+		$graph_data_array = [];
 
 		/* ds */
 		$graph_data_array['ds_step'] = read_user_setting('realtime_interval', 10);
@@ -132,7 +131,7 @@ switch (get_request_var('action')) {
 			$graph_data = db_fetch_row_prepared('SELECT width, height
 			FROM graph_templates_graph
 			WHERE local_graph_id = ?',
-				array(get_request_var('local_graph_id')));
+				[get_request_var('local_graph_id')]);
 
 			if (cacti_sizeof($graph_data)) {
 				$graph_data_array['graph_height'] = $graph_data['height'];
@@ -177,7 +176,7 @@ switch (get_request_var('action')) {
 			$type   = db_fetch_cell_prepared('SELECT image_format_id
 			FROM graph_templates_graph
 			WHERE local_graph_id = ?',
-				array(get_request_var('local_graph_id')));
+				[get_request_var('local_graph_id')]);
 
 			switch($type) {
 				case '1':
@@ -188,7 +187,6 @@ switch (get_request_var('action')) {
 					$gtype = 'svg+xml';
 
 					break;
-
 				default:
 					$gtype = 'png';
 
@@ -204,7 +202,6 @@ switch (get_request_var('action')) {
 					$gtype = 'svg+xml';
 
 					break;
-
 				default:
 					$gtype = 'png';
 
@@ -224,7 +221,7 @@ switch (get_request_var('action')) {
 		/* construct the image name  */
 		$graph_data_array['export_realtime'] = $graph_rrd;
 		$graph_data_array['output_flag']     = RRDTOOL_OUTPUT_GRAPH_DATA;
-		$null_param                          = array();
+		$null_param                          = [];
 
 		$output = rrdtool_function_graph(get_request_var('local_graph_id'), '', $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]);
 
@@ -241,7 +238,7 @@ switch (get_request_var('action')) {
 
 		if (empty($output) && empty($error)) {
 			$graph_data_array['get_error'] = true;
-			$null_param                    = array();
+			$null_param                    = [];
 			rrdtool_function_graph(get_request_var('local_graph_id'), '', $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]);
 
 			$error = ob_get_contents();
@@ -285,7 +282,7 @@ switch (get_request_var('action')) {
 		$_SESSION['sess_realtime_nolegend']    = get_request_var('graph_nolegend');
 
 		/* send text information back to browser as well as image information */
-		$return_array = array(
+		$return_array = [
 			'local_graph_id' => get_request_var('local_graph_id'),
 			'top'            => get_request_var('top'),
 			'left'           => get_request_var('left'),
@@ -295,7 +292,7 @@ switch (get_request_var('action')) {
 			'thumbnails'     => html_escape(isset($_SESSION['sess_realtime_nolegend']) ? $_SESSION['sess_realtime_nolegend']:'false'),
 			'data'           => (isset($data) ? $data:''),
 			'image_format'   => $graph_data_array['image_format']
-		);
+		];
 
 		print json_encode($return_array);
 
@@ -312,7 +309,6 @@ switch (get_request_var('action')) {
 		exit;
 
 		break;
-
 	default:
 		load_current_session_value('ds_step',        'sess_realtime_ds_step',     read_user_setting('realtime_interval', 10));
 		load_current_session_value('graph_start',    'sess_realtime_graph_start', read_user_setting('realtime_gwindow', 60));
@@ -381,7 +377,7 @@ if (!is_writable(read_config_option('realtime_cache_path'))) {
 
 $selectedTheme = get_selected_theme();
 
-$sizes = array(
+$sizes = [
 	'100' => '100%',
 	'90'  => '90%',
 	'80'  => '80%',
@@ -389,7 +385,7 @@ $sizes = array(
 	'60'  => '60%',
 	'50'  => '50%',
 	'40'  => '40%'
-);
+];
 
 ?>
 <html>
@@ -408,29 +404,29 @@ $sizes = array(
 							$interval, $interval == abs(get_request_var('graph_start')) ? ' selected="selected"' : '', $text
 						);
 					}
-					?>
+?>
 				</select>
 				<select id='ds_step' onChange='imageOptionsChanged("interval")'>
 					<?php
-					$min_refresh = read_config_option('realtime_interval');
+$min_refresh = read_config_option('realtime_interval');
 
-					foreach ($realtime_refresh as $interval => $text) {
-						if ($interval >= $min_refresh) {
-							printf('<option value="%d"%s>%s</option>',
-								$interval, $interval == get_request_var('ds_step') ? ' selected="selected"' : '', $text
-							);
-						}
-					}
-					?>
+foreach ($realtime_refresh as $interval => $text) {
+	if ($interval >= $min_refresh) {
+		printf('<option value="%d"%s>%s</option>',
+			$interval, $interval == get_request_var('ds_step') ? ' selected="selected"' : '', $text
+		);
+	}
+}
+?>
 				</select>
 				<select id='size' onChange='imageOptionsChanged("interval")'>
 					<?php
-						foreach ($sizes as $key => $value) {
-							printf('<option value="%d"%s>%s</option>',
-								$key, $key == get_request_var('size') ? ' selected="selected"' : '', $value
-							);
-						}
-					?>
+	foreach ($sizes as $key => $value) {
+		printf('<option value="%d"%s>%s</option>',
+			$key, $key == get_request_var('size') ? ' selected="selected"' : '', $value
+		);
+	}
+?>
 				</select>
 				<input type='checkbox' id='thumbnails' onChange='imageOptionsChanged("interval")' <?php print get_request_var('graph_nolegend') == 'true' ? 'checked':'';?>>
 				<label for='thumbnails'><?php print __('Thumbnails');?></label>

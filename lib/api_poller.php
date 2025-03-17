@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -23,7 +23,7 @@
 */
 
 function api_poller_cache_item_add($host_id, $host_field_override, $local_data_id, $rrd_step, $poller_action_id, $data_source_item_name, $num_rrd_items, $arg1 = '', $arg2 = '', $arg3 = '') {
-	static $hosts = array();
+	static $hosts = [];
 
 	if (!isset($hosts[$host_id])) {
 		$host = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
@@ -33,7 +33,7 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 			snmp_timeout, snmp_retries, disabled
 			FROM host
 			WHERE id = ?',
-			array($host_id));
+			[$host_id]);
 
 		if (cacti_sizeof($host)) {
 			$hosts[$host_id] = $host;

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -23,5 +23,5 @@
 */
 
 function upgrade_to_1_2_7() {
-	db_install_add_key('data_input_data', 'index', 'data_template_data_id', array('data_template_data_id'));
+	db_install_add_key('data_input_data', 'index', 'data_template_data_id', ['data_template_data_id']);
 }

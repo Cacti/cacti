@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -64,7 +64,7 @@ $poller_id   = 1;
 $environ     = 'cmd';
 $conn_mode   = 'online';
 $legacy      = true;
-$options     = array();
+$options     = [];
 $help        = false;
 $version     = false;
 
@@ -72,13 +72,13 @@ $called_by_script_server = false;
 
 $shortopts = 'VvHh';
 
-$longopts = array(
+$longopts = [
 	'environ::',
 	'poller::',
 	'mode::',
 	'version',
 	'help'
-);
+];
 
 $options = getopt($shortopts, $longopts);
 
@@ -180,14 +180,14 @@ while (1) {
 	$input_string    = fgets(STDIN, 1024);
 	$function        = '';
 	$parameters      = '';
-	$parameter_array = array();
+	$parameter_array = [];
 
 	$isParentRunning = true;
 
 	if (empty($input_string)) {
 		if (!empty($parent_pid)) {
 			if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-				$out = array();
+				$out = [];
 				exec("TASKLIST /FO LIST /FI \"PID eq $parent_pid\"", $out);
 
 				$isParentRunning = (cacti_count($out) > 1);
@@ -328,9 +328,9 @@ while (1) {
 }
 
 function parseArgs($string, &$str_list, $debug = false) {
-	$delimiters = array("'",'"');
+	$delimiters = ["'",'"'];
 	$delimited  = false;
-	$str_list   = array();
+	$str_list   = [];
 
 	if ($debug) {
 		print "String: '" . $string . "'\n";
@@ -411,7 +411,6 @@ function parseArgs($string, &$str_list, $debug = false) {
 				$msg      = 'Backtic (`) characters not allowed';
 
 				break;
-
 			default:
 				if ($escaping) {
 					$parse_ok = false;
@@ -466,7 +465,6 @@ function sig_handler($signo) {
 			exit;
 
 			break;
-
 		default:
 			cacti_log("WARNING: Script Server received signal '$signo' in file:'$include_file', function:'$function', params:'$parameters'", false, 'PHPSVR', POLLER_VERBOSITY_HIGH);
 

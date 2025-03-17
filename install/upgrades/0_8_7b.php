@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -24,8 +24,8 @@
 
 function upgrade_to_0_8_7b() {
 	/* add Task Item Id Index */
-	db_install_add_key('graph_templates_item', 'index', 'task_item_id', array('task_item_id'));
+	db_install_add_key('graph_templates_item', 'index', 'task_item_id', ['task_item_id']);
 
 	/* make CLI more responsive */
-	db_install_add_key('data_input_data', 'index', 't_value', array('t_value'));
+	db_install_add_key('data_input_data', 'index', 't_value', ['t_value']);
 }

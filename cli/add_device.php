@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -230,7 +230,6 @@ if (cacti_sizeof($parms)) {
 						$avail = AVAIL_SNMP_OR_PING;
 
 						break;
-
 					default:
 						print "ERROR: Invalid Availability Parameter: ($value)\n\n";
 						display_help();
@@ -253,7 +252,6 @@ if (cacti_sizeof($parms)) {
 						$ping_method = PING_UDP;
 
 						break;
-
 					default:
 						print "ERROR: Invalid Ping Method: ($value)\n\n";
 						display_help();
@@ -330,7 +328,6 @@ if (cacti_sizeof($parms)) {
 				$quietMode = true;
 
 				break;
-
 			default:
 				print "ERROR: Invalid Argument: ($arg)\n\n";
 				display_help();
@@ -392,7 +389,7 @@ if (cacti_sizeof($parms)) {
 	/* process ip */
 	if (isset($addresses[$ip])) {
 		$id    = $addresses[$ip];
-		$phost = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($id));
+		$phost = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', [$id]);
 		$fail  = false;
 
 		if ($phost['snmp_version'] < '3' && $snmp_ver < '3') {

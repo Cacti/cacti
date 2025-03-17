@@ -178,7 +178,7 @@ class navigationButton {
             this.#icon.onclick = onclick;
         }
 
-        this.#container = '<div class="compact_nav_icon hide" data-subtitle="'+this.#icon.title+'" data-helper="'+this.#icon.helper+'" title="'+this.#icon.tooltip+'" role="button" tabindex="0" aria-pressed="false"><i class="'+this.#icon.class+'"></i></div>';
+        this.#container = '<div class="compact_nav_icon hide" data-subtitle="'+this.#icon.title+'" data-helper="'+this.#icon.helper+'" data-tooltip="'+this.#icon.tooltip+'" role="button" tabindex="0" aria-pressed="false"><i class="'+this.#icon.class+'"></i></div>';
 
         /* avoid duplicates */
         if( $(this.#icon.destination + ' > div[class^="compact_nav_icon"][data-helper="' + this.#icon.helper + '"]').length === 0 ) {
@@ -240,7 +240,7 @@ function get_dashboards_content(){
             compact_tab_menu_content +=
                 '<li class="menuitem" id="menu_home">'
                 +    '<a class="menu_parent" href="#" inert>'
-                +        '<i class="menu_glyph ignore fa fa-home"></i>'
+                +        '<i class="menu_glyph ignore fa fa-crown"></i>'
                 +        '<span>'+cactiHome+'</span>'
                 +    '</a>'
                 +    '<ul>'
@@ -254,7 +254,7 @@ function get_dashboards_content(){
             compact_tab_menu_content +=
                 '<li class="menuitem" id="menu_tab_dashboard">'
                 +    '<a class="menu_parent" href="#" inert>'
-                +        '<i class="menu_glyph ignore fa fa-chart-area"></i>'
+                +        '<i class="menu_glyph ignore fas fa-binoculars"></i>'
                 +        '<span>Views</span>'
                 +    '</a>'
                 +    '<ul>'
@@ -309,7 +309,7 @@ function get_help_content() {
            '<ul class="nav">'
         +   '<li class="menuitem" id="menu_user_help">'
         +       '<a class="menu_parent" href="#" inert>'
-        +           '<i class="menu_glyph fas fa-book-medical"></i>'
+        +           '<i class="menu_glyph fas fa-parachute-box"></i>'
         +           '<span>'+cactiGeneral+'</span>'
         +       '</a>'
         +       '<ul>'
@@ -337,7 +337,7 @@ function get_help_content() {
         +           '<span>'+cactiKeyboard+'</span>'
         +       '</a>'
         +       '<ul>'
-        +           '<li><a href="#" class="dialog_client">'+cactiShortcuts+'</a></li>'
+        +           '<li><a href="#" class="dialog_client" data-scope="theme" data-func="togglePopOver">'+cactiShortcuts+'</a></li>'
         +       '</ul>'
         +   '</li>'
         +   '<li class="menuitem" id="menu_user_help">'
@@ -453,7 +453,7 @@ function get_user_content() {
 
 function get_tree_content() {
     let compact_tree_content =
-        '<div class="mdw_tree" id="mdw_tree">'
+        '<div class="mdw_tree" id="jstree">'
         +   '<div class="mdw-treen_content" id="mdw_tree_content">'
         +   '</div>'
         +'</div>';

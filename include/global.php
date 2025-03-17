@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -30,7 +30,7 @@
 
 */
 global $config;
-$config = array();
+$config = [];
 
 /* define if cacti is in CLI mode */
 define('CACTI_CLI', (php_sapi_name() == 'cli'));
@@ -87,16 +87,17 @@ $database_password = 'cactiuser';
 $database_port     = '3306';
 $database_retries  = 2;
 
-$database_ssl        = false;
-$database_ssl_key    = '';
-$database_ssl_cert   = '';
-$database_ssl_ca     = '';
-$database_ssl_capath = '';
+$database_ssl                    = false;
+$database_ssl_key                = '';
+$database_ssl_cert               = '';
+$database_ssl_ca                 = '';
+$database_ssl_capath             = '';
 $database_ssl_verify_server_cert = true;
-$database_persist    = true;
+$database_persist                = true;
 
 /* Default session name - Session name must contain alpha characters */
 $cacti_session_name = 'Cacti';
+
 if (isset($_COOKIE['CactiTab'])) {
 	$cacti_session_name = 'CactiTabId:' . $_COOKIE['CactiTab'];
 }
@@ -126,7 +127,7 @@ if (isset($config['cacti_version'])) {
 include_once(__DIR__ . '/global_path.php');
 
 /* Should we allow proxy ip headers? */
-$config['proxy_headers'] = $proxy_headers ?? array();
+$config['proxy_headers'] = $proxy_headers ?? [];
 
 /* Set the poller_id */
 if (isset($poller_id)) {
@@ -137,23 +138,23 @@ if (isset($poller_id)) {
 	define('POLLER_ID', 1);
 }
 
-$db_var_defaults = array(
-	'database_type'       => 'mysql',
-	'database_default'    => null,
-	'database_hostname'   => null,
-	'database_username'   => null,
-	'database_password'   => null,
-	'database_port'       => '3306',
-	'database_retries'    => 2,
-	'database_ssl'        => false,
-	'database_ssl_key'    => '',
-	'database_ssl_cert'   => '',
-	'database_ssl_ca'     => '',
-	'database_ssl_capath' => '',
+$db_var_defaults = [
+	'database_type'                   => 'mysql',
+	'database_default'                => null,
+	'database_hostname'               => null,
+	'database_username'               => null,
+	'database_password'               => null,
+	'database_port'                   => '3306',
+	'database_retries'                => 2,
+	'database_ssl'                    => false,
+	'database_ssl_key'                => '',
+	'database_ssl_cert'               => '',
+	'database_ssl_ca'                 => '',
+	'database_ssl_capath'             => '',
 	'database_ssl_verify_server_cert' => true,
-);
+];
 
-$db_var_prefixes = array('');
+$db_var_prefixes = [''];
 
 if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	$db_var_prefixes[] = 'r';
@@ -165,9 +166,9 @@ foreach ($db_var_prefixes as $db_var_prefix) {
 	foreach ($db_var_defaults as $db_var_name => $db_var_default) {
 		$db_var_full = $db_var_prefix . $db_var_name;
 
-		if (!isset($$db_var_full)) {
+		if (!isset(${$db_var_full})) {
 			if ($db_var_default !== null) {
-				$$db_var_full = $db_var_default;
+				${$db_var_full} = $db_var_default;
 			} else {
 				$db_missing_vars .= (($db_missing_vars == '') ? 'missing ' : ', ') . $db_var_full;
 			}
@@ -182,7 +183,7 @@ if (!empty($db_missing_vars)) {
 /* set the local for international users */
 setlocale(LC_CTYPE, 'en_US.UTF-8');
 
-$colors = array();
+$colors = [];
 
 /* required for Windows */
 if ($config['cacti_server_os'] == 'win32') {
@@ -225,7 +226,7 @@ if (isset($input_whitelist)) {
 
 /* define any additional paths as constants */
 foreach ($config as $key => $value) {
-	if (substr($key, -5) == '_path') {
+	if (str_ends_with($key, '_path')) {
 		$path_name     = substr($key, 0, -5);
 		$constant_name = 'CACTI_PATH_' . strtoupper($path_name);
 
@@ -271,6 +272,7 @@ if (isset($no_http_headers) && $no_http_headers == true) {
 
 	if (isset($_REQUEST) && cacti_sizeof($_REQUEST) || !isset($_SERVER['argv'])) {
 		print 'FATAL: This file can only be called from the command line.' . PHP_EOL;
+
 		exit;
 	}
 }
@@ -347,16 +349,16 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 
 	if ($config['is_web'] && is_object($remote_db_cnn_id) && $config['connection'] != 'recovery' && $config['cacti_db_version'] != 'new_install' && !defined('IN_CACTI_INSTALL')) {
 		// Connection worked, so now override the default settings so that it will always utilize the remote connection
-		$database_default    = $rdatabase_default;
-		$database_hostname   = $rdatabase_hostname;
-		$database_username   = $rdatabase_username;
-		$database_password   = $rdatabase_password;
-		$database_port       = $rdatabase_port;
-		$database_ssl        = $rdatabase_ssl;
-		$database_ssl_key    = $rdatabase_ssl_key;
-		$database_ssl_cert   = $rdatabase_ssl_cert;
-		$database_ssl_ca     = $rdatabase_ssl_ca;
-		$database_ssl_capath = $rdatabase_ssl_capath;
+		$database_default                = $rdatabase_default;
+		$database_hostname               = $rdatabase_hostname;
+		$database_username               = $rdatabase_username;
+		$database_password               = $rdatabase_password;
+		$database_port                   = $rdatabase_port;
+		$database_ssl                    = $rdatabase_ssl;
+		$database_ssl_key                = $rdatabase_ssl_key;
+		$database_ssl_cert               = $rdatabase_ssl_cert;
+		$database_ssl_ca                 = $rdatabase_ssl_ca;
+		$database_ssl_capath             = $rdatabase_ssl_capath;
 		$database_ssl_verify_server_cert = $rdatabase_ssl_verify_server_cert;
 	} elseif (is_object($remote_db_cnn_id)) {
 		if ($config['connection'] != 'recovery') {
@@ -460,17 +462,17 @@ if ($config['poller_id'] > 1) {
 	$timezone = db_fetch_cell_prepared('SELECT timezone
 		FROM poller
 		WHERE id = ?',
-		array($config['poller_id']));
+		[$config['poller_id']]);
 
 	if ($timezone != '') {
-		db_execute_prepared('SET time_zone = ?', array($timezone));
+		db_execute_prepared('SET time_zone = ?', [$timezone]);
 	}
 
 	if (db_column_exists('poller', 'log_level')) {
 		$poller_log_level = db_fetch_cell_prepared('SELECT log_level
 			FROM poller
 			WHERE id = ?',
-			array($config['poller_id']));
+			[$config['poller_id']]);
 
 		if ($poller_log_level > 0) {
 			define('POLLER_LOG_LEVEL', $poller_log_level);
@@ -509,11 +511,11 @@ if ($config['is_web']) {
 	ini_set('session.cookie_path', CACTI_PATH_URL);
 	ini_set('session.use_strict_mode', true);
 
-	$options = array(
+	$options = [
 		COOKIE_OPTIONS_HTTPONLY => true,
 		COOKIE_OPTIONS_PATH     => CACTI_PATH_URL,
 		COOKIE_OPTIONS_STRICT   => true
-	);
+	];
 
 	if (isset($cacti_cookie_domain) && $cacti_cookie_domain != '') {
 		ini_set('session.cookie_domain', $cacti_cookie_domain);
@@ -580,12 +582,12 @@ if ($config['is_web']) {
 
 /* emulate 'register_globals' = 'off' if turned on */
 if ((bool)ini_get('register_globals')) {
-	$not_unset = array('_GET', '_POST', '_COOKIE', '_SERVER', '_SESSION', '_ENV', '_FILES', 'database_type', 'database_default', 'database_hostname', 'database_username', 'database_password', 'config', 'colors');
+	$not_unset = ['_GET', '_POST', '_COOKIE', '_SERVER', '_SESSION', '_ENV', '_FILES', 'database_type', 'database_default', 'database_hostname', 'database_username', 'database_password', 'config', 'colors'];
 
 	/* Not only will array_merge give a warning if a parameter is not an array, it will
 	 * actually fail. So we check if HTTP_SESSION_VARS has been initialised. */
 	if (!isset($_SESSION)) {
-		$_SESSION = array();
+		$_SESSION = [];
 	}
 
 	/* Merge all into one extremely huge array; unset this later */
@@ -596,7 +598,7 @@ if ((bool)ini_get('register_globals')) {
 
 	foreach ($input as $var => $val) {
 		if (!in_array($var, $not_unset, true)) {
-			unset($$var);
+			unset(${$var});
 		}
 	}
 
@@ -687,7 +689,7 @@ if ($config['is_web']) {
 	if (isset_request_var('action')) {
 		$action = get_nfilter_request_var('action');
 
-		$bad_actions = array('save', 'update_data', 'changepassword');
+		$bad_actions = ['save', 'update_data', 'changepassword'];
 
 		foreach ($bad_actions as $bad) {
 			if ($action == $bad && !isset($_POST['__csrf_magic'])) {

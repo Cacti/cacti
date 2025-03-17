@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -40,7 +40,7 @@
 function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $field_name_format = '|field|', $header_title = '', $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
 	global $struct_graph;
 
-	$form_array       = array();
+	$form_array       = [];
 	$draw_any_items   = false;
 	$num_fields_drawn = 0;
 
@@ -49,17 +49,17 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 		FROM graph_templates_graph
 		WHERE graph_template_id = ?
 		AND local_graph_id = 0',
-		array($graph_template_id));
+		[$graph_template_id]);
 
 	foreach ($struct_graph as $field_name => $field_array) {
 		/* find our field name */
 		$form_field_name = str_replace('|field|', $field_name, $field_name_format);
 
-		$form_array += array($form_field_name => $struct_graph[$field_name]);
+		$form_array += [$form_field_name => $struct_graph[$field_name]];
 
 		/* modifications to the default form array */
-		$form_array[$form_field_name]['value']   = (isset($values_array[$field_name]) ? $values_array[$field_name] : '');
-		$form_array[$form_field_name]['form_id'] = (isset($values_array['id']) ? $values_array['id'] : '0');
+		$form_array[$form_field_name]['value']   = ($values_array[$field_name] ?? '');
+		$form_array[$form_field_name]['form_id'] = ($values_array['id'] ?? '0');
 		unset($form_array[$form_field_name]['default']);
 
 		if ($field_array['method'] == 'spacer') {
@@ -70,7 +70,7 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 			} else {
 				unset($form_array[$form_field_name]);
 			}
-		} elseif ((!empty($snmp_query_graph_id)) && (cacti_sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_sv WHERE snmp_query_graph_id = ? AND field_name = ?', array($snmp_query_graph_id, $field_name))) > 0)) {
+		} elseif ((!empty($snmp_query_graph_id)) && (cacti_sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_sv WHERE snmp_query_graph_id = ? AND field_name = ?', [$snmp_query_graph_id, $field_name])) > 0)) {
 			if ($include_hidden_fields == true) {
 				$form_array[$form_field_name]['method'] = 'hidden';
 			} else {
@@ -88,17 +88,17 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 
 	/* setup form options */
 	if ($alternate_colors == true) {
-		$form_config_array = array('no_form_tag' => true);
+		$form_config_array = ['no_form_tag' => true];
 	} else {
-		$form_config_array = array('no_form_tag' => true, 'force_row_color' => true);
+		$form_config_array = ['no_form_tag' => true, 'force_row_color' => true];
 	}
 
 	if (cacti_sizeof($form_array)) {
 		draw_edit_form(
-			array(
+			[
 				'config' => $form_config_array,
 				'fields' => $form_array
-			)
+			]
 		);
 	}
 
@@ -131,14 +131,14 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 		FROM graph_template_input
 		WHERE graph_template_id = ?
 		ORDER BY column_name, name',
-		array($graph_template_id));
+		[$graph_template_id]);
 
 	/* modifications to the default graph items array */
 	if (!empty($local_graph_id)) {
 		$host_id = db_fetch_cell_prepared('SELECT host_id
 			FROM graph_local
 			WHERE id = ?',
-			array($local_graph_id));
+			[$local_graph_id]);
 
 		$struct_graph_item['task_item_id']['method'] = 'drop_callback';
 		$struct_graph_item['task_item_id']['action'] = 'ajax_get_graphitem';
@@ -173,7 +173,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 				exit;
 			}
 
-			$form_array = array();
+			$form_array = [];
 
 			if (!empty($local_graph_id)) {
 				$current_def_value = db_fetch_row_prepared('SELECT gti.' . $item['column_name'] . ', gti.id
@@ -183,7 +183,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 					WHERE gtid.graph_template_input_id = ?
 					AND gti.local_graph_id = ?
 					LIMIT 1',
-					array($item['id'], $local_graph_id));
+					[$item['id'], $local_graph_id]);
 			} else {
 				$current_def_value = db_fetch_row_prepared('SELECT gti.' . $item['column_name'] . ', gti.id
 					FROM graph_templates_item AS gti
@@ -192,7 +192,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 					WHERE gtid.graph_template_input_id = ?
 					AND gti.graph_template_id = ?
 					LIMIT 1',
-					array($item['id'], $graph_template_id));
+					[$item['id'], $graph_template_id]);
 			}
 
 			/* find our field name */
@@ -204,7 +204,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 				$struct_graph_item['task_item_id']['action']   = 'ajax_graph_items' . (isset($host_id) ? '&host_id=' . $host_id:'') . '&rrd_id=' . $current_def_value[$item['column_name']];
 			}
 
-			$form_array += array($form_field_name => $struct_graph_item[$item['column_name']]);
+			$form_array += [$form_field_name => $struct_graph_item[$item['column_name']]];
 
 			/* modifications to the default form array */
 			$form_array[$form_field_name]['friendly_name'] = $item['name'];
@@ -216,7 +216,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 			}
 
 			if ($locked == 'true') {
-				if (strpos($form_field_name, 'task_item_id') !== false) {
+				if (str_contains($form_field_name, 'task_item_id')) {
 					$form_array[$form_field_name]['method'] = 'value';
 
 					if (isset($current_def_value[$item['column_name']])) {
@@ -227,13 +227,13 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 							WHERE data_template_rrd.local_data_id=data_local.id
 							AND data_template_data.local_data_id=data_local.id
 							AND data_template_rrd.id = ?",
-							array($current_def_value[$item['column_name']]));
+							[$current_def_value[$item['column_name']]]);
 
 						$form_array[$form_field_name]['value'] = $value;
 					}
 				}
 			} else {
-				if (strpos($form_field_name, 'task_item_id') !== false) {
+				if (str_contains($form_field_name, 'task_item_id')) {
 					if (isset($current_def_value[$item['column_name']])) {
 						$value = db_fetch_cell_prepared("SELECT
 							CONCAT_WS('', CASE WHEN host.description IS NULL THEN 'No Device - ' ELSE '' END, data_template_data.name_cache, ' (', data_template_rrd.data_source_name, ')') AS name
@@ -242,7 +242,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 							WHERE data_template_rrd.local_data_id=data_local.id
 							AND data_template_data.local_data_id=data_local.id
 							AND data_template_rrd.id = ?",
-							array($current_def_value[$item['column_name']]));
+							[$current_def_value[$item['column_name']]]);
 
 						$form_array[$form_field_name]['value'] = $value;
 					}
@@ -264,17 +264,17 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 
 			/* setup form options */
 			if ($alternate_colors == true) {
-				$form_config_array = array('no_form_tag' => true);
+				$form_config_array = ['no_form_tag' => true];
 			} else {
-				$form_config_array = array('no_form_tag' => true, 'force_row_color' => true);
+				$form_config_array = ['no_form_tag' => true, 'force_row_color' => true];
 			}
 
 			if (cacti_sizeof($form_array)) {
 				draw_edit_form(
-					array(
+					[
 						'config' => $form_config_array,
 						'fields' => $form_array
-					)
+					]
 				);
 			}
 		}
@@ -305,7 +305,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 function draw_nontemplated_fields_data_source($data_template_id, $local_data_id, &$values_array, $field_name_format = '|field|', $header_title = '', $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
 	global $struct_data_source;
 
-	$form_array       = array();
+	$form_array       = [];
 	$draw_any_items   = false;
 	$num_fields_drawn = 0;
 
@@ -314,21 +314,21 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 		FROM data_template_data
 		WHERE data_template_id = ?
 		AND local_data_id = 0',
-		array($data_template_id));
+		[$data_template_id]);
 
 	foreach ($struct_data_source as $field_name => $field_array) {
 		/* find our field name */
 		$form_field_name = str_replace('|field|', $field_name, $field_name_format);
 
-		$form_array += array($form_field_name => $struct_data_source[$field_name]);
+		$form_array += [$form_field_name => $struct_data_source[$field_name]];
 
 		/* modifications to the default form array */
-		$form_array[$form_field_name]['value']   = (isset($values_array[$field_name]) ? $values_array[$field_name] : '');
-		$form_array[$form_field_name]['form_id'] = (isset($values_array['id']) ? $values_array['id'] : '0');
+		$form_array[$form_field_name]['value']   = ($values_array[$field_name] ?? '');
+		$form_array[$form_field_name]['form_id'] = ($values_array['id'] ?? '0');
 		unset($form_array[$form_field_name]['default']);
 
-		$current_flag          = (isset($field_array['flags']) ? $field_array['flags'] : '');
-		$current_template_flag = (isset($data_template['t_' . $field_name]) ? $data_template['t_' . $field_name] : 'on');
+		$current_flag          = ($field_array['flags'] ?? '');
+		$current_template_flag = ($data_template['t_' . $field_name] ?? 'on');
 
 		if (($current_template_flag != 'on') || ($current_flag == 'ALWAYSTEMPLATE')) {
 			if ($include_hidden_fields == true) {
@@ -336,7 +336,7 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 			} else {
 				unset($form_array[$form_field_name]);
 			}
-		} elseif ((!empty($snmp_query_graph_id)) && (cacti_sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id = ? AND data_template_id = ? AND field_name = ?', array($snmp_query_graph_id, $data_template_id, $field_name))) > 0)) {
+		} elseif ((!empty($snmp_query_graph_id)) && (cacti_sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id = ? AND data_template_id = ? AND field_name = ?', [$snmp_query_graph_id, $data_template_id, $field_name])) > 0)) {
 			if ($include_hidden_fields == true) {
 				$form_array[$form_field_name]['method'] = 'hidden';
 			} else {
@@ -360,17 +360,17 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 
 	/* setup form options */
 	if ($alternate_colors == true) {
-		$form_config_array = array('no_form_tag' => true);
+		$form_config_array = ['no_form_tag' => true];
 	} else {
-		$form_config_array = array('no_form_tag' => true, 'force_row_color' => true);
+		$form_config_array = ['no_form_tag' => true, 'force_row_color' => true];
 	}
 
 	if (cacti_sizeof($form_array)) {
 		draw_edit_form(
-			array(
+			[
 				'config' => $form_config_array,
 				'fields' => $form_array
-			)
+			]
 		);
 	}
 
@@ -393,13 +393,13 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 function draw_nontemplated_fields_data_source_item($data_template_id, &$values_array, $field_name_format = '|field_id|', $header_title = '', $draw_title_for_each_item = true, $alternate_colors = true, $include_hidden_fields = true, $snmp_query_graph_id = 0) {
 	global $struct_data_source_item;
 
-	$form_array       = array();
+	$form_array       = [];
 	$draw_any_items   = false;
 	$num_fields_drawn = 0;
 
 	if (cacti_sizeof($values_array)) {
 		foreach ($values_array as $rrd) {
-			$form_array = array();
+			$form_array = [];
 
 			/**
 			 * if the user specifies a title, we only want to draw that. if not, we should create our
@@ -415,7 +415,7 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 				$data_template_rrd = db_fetch_row_prepared('SELECT *
 					FROM data_template_rrd
 					WHERE id = ?',
-					array($rrd['local_data_template_rrd_id']));
+					[$rrd['local_data_template_rrd_id']]);
 			}
 
 			foreach ($struct_data_source_item as $field_name => $field_array) {
@@ -423,11 +423,11 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 				$form_field_name = str_replace('|field|', $field_name, $field_name_format);
 				$form_field_name = str_replace('|id|', $rrd['id'], $form_field_name);
 
-				$form_array += array($form_field_name => $struct_data_source_item[$field_name]);
+				$form_array += [$form_field_name => $struct_data_source_item[$field_name]];
 
 				/* modifications to the default form array */
-				$form_array[$form_field_name]['value']   = (isset($rrd[$field_name]) ? $rrd[$field_name] : '');
-				$form_array[$form_field_name]['form_id'] = (isset($rrd['id']) ? $rrd['id'] : '0');
+				$form_array[$form_field_name]['value']   = ($rrd[$field_name] ?? '');
+				$form_array[$form_field_name]['form_id'] = ($rrd['id'] ?? '0');
 				unset($form_array[$form_field_name]['default']);
 
 				/* append the data source item name so the user will recognize it */
@@ -441,7 +441,7 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 					} else {
 						unset($form_array[$form_field_name]);
 					}
-				} elseif ((!empty($snmp_query_graph_id)) && (cacti_sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id = ? AND data_template_id = ? AND field_name = ?', array($snmp_query_graph_id, $data_template_id, $field_name))) > 0)) {
+				} elseif ((!empty($snmp_query_graph_id)) && (cacti_sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id = ? AND data_template_id = ? AND field_name = ?', [$snmp_query_graph_id, $data_template_id, $field_name])) > 0)) {
 					if ($include_hidden_fields == true) {
 						$form_array[$form_field_name]['method'] = 'hidden';
 					} else {
@@ -465,7 +465,7 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 							FROM data_template_data
 							WHERE data_template_id = ?
 							AND local_data_id = 0',
-							array($rrd['data_template_id']));
+							[$rrd['data_template_id']]);
 
 						$form_array[$form_field_name]['sql'] = "SELECT id, CONCAT(data_name,' - ',name) AS name
 							FROM data_input_fields
@@ -479,17 +479,17 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 
 			/* setup form options */
 			if ($alternate_colors == true) {
-				$form_config_array = array('no_form_tag' => true);
+				$form_config_array = ['no_form_tag' => true];
 			} else {
-				$form_config_array = array('no_form_tag' => true, 'force_row_color' => true);
+				$form_config_array = ['no_form_tag' => true, 'force_row_color' => true];
 			}
 
 			if (cacti_sizeof($form_array)) {
 				draw_edit_form(
-					array(
+					[
 						'config' => $form_config_array,
 						'fields' => $form_array
-					)
+					]
 				);
 			}
 		}
@@ -521,20 +521,20 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 	$data = db_fetch_row_prepared('SELECT id, data_input_id, data_template_id, name, local_data_id
 		FROM data_template_data
 		WHERE id = ?',
-		array($data_template_data_id));
+		[$data_template_data_id]);
 
 	$host_id = db_fetch_cell_prepared('SELECT host.id
 		FROM host
 		INNER JOIN data_local
 		ON data_local.host_id=host.id
 		WHERE data_local.id = ?',
-		array($data['local_data_id']));
+		[$data['local_data_id']]);
 
 	$template_data = db_fetch_row_prepared('SELECT id, data_input_id
 		FROM data_template_data
 		WHERE data_template_id = ?
 		AND local_data_id = 0',
-		array($data['data_template_id']));
+		[$data['data_template_id']]);
 
 	/* get each INPUT field for this data input source */
 	$fields = db_fetch_assoc_prepared('SELECT *
@@ -542,7 +542,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 		WHERE data_input_id = ?
 		AND input_output = "in"
 		ORDER BY sequence',
-		array($data['data_input_id']));
+		[$data['data_input_id']]);
 
 	/* loop through each field found */
 	if (cacti_sizeof($fields)) {
@@ -551,7 +551,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 				FROM data_input_data
 				WHERE data_template_data_id = ?
 				AND data_input_field_id = ?',
-				array($data['id'], $field['id']));
+				[$data['id'], $field['id']]);
 
 			if (cacti_sizeof($data_input_data)) {
 				$old_value = $data_input_data['value'];
@@ -567,7 +567,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 					FROM data_input_data
 					WHERE data_template_data_id = ?
 					AND data_input_field_id = ?',
-					array($template_data['id'], $field['id']));
+					[$template_data['id'], $field['id']]);
 			}
 
 			/* find our field name */
@@ -628,21 +628,21 @@ function draw_custom_data_row($field_name, $data_input_field_id, $data_template_
 	$field = db_fetch_row_prepared('SELECT data_name, type_code
 		FROM data_input_fields
 		WHERE id = ?',
-		array($data_input_field_id));
+		[$data_input_field_id]);
 
 	$local_data = db_fetch_row_prepared('SELECT dl.*
 		FROM data_template_data AS dtd
 		INNER JOIN data_local AS dl
 		ON dl.id=dtd.local_data_id
 		WHERE dtd.id = ?',
-		array($data_template_data_id));
+		[$data_template_data_id]);
 
 	if ($field['type_code'] == 'index_type' && cacti_sizeof($local_data)) {
 		$index_type = db_fetch_assoc_prepared('SELECT DISTINCT hsc.field_name
 			FROM host_snmp_cache AS hsc
 			WHERE hsc.host_id = ?
 			AND hsc.snmp_query_id = ?',
-			array($local_data['host_id'], $local_data['snmp_query_id']));
+			[$local_data['host_id'], $local_data['snmp_query_id']]);
 
 		if (cacti_sizeof($index_type) == 0) {
 			print '<em>' . __('Data Query Data Sources must be created through %s', "<a href='graphs_new.php'>" . __('New Graphs') . '.</a>') . "</em>\n";
@@ -654,7 +654,7 @@ function draw_custom_data_row($field_name, $data_input_field_id, $data_template_
 			FROM snmp_query_graph AS sqg
 			WHERE snmp_query_id = ?
 			ORDER BY name',
-			array($local_data['snmp_query_id']));
+			[$local_data['snmp_query_id']]);
 
 		if (cacti_sizeof($output_type) == 0) {
 			print '<em>' . __('Data Query Data Sources must be created through %s', "<a href='graphs_new.php'>" . __('New Graphs') . '.</a>') . "</em>\n";

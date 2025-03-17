@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -59,12 +59,12 @@ if ($cacti_db_session == true) {
 	$session_counter_active = db_fetch_cell_prepared('SELECT count(*)
 		FROM sessions
 		WHERE access >= ?',
-		array($active_interval_begin));
+		[$active_interval_begin]);
 
 	$session_counter_sleeping = db_fetch_cell_prepared('SELECT count(*)
 		FROM sessions
 		WHERE access < ?',
-		array($active_interval_begin));
+		[$active_interval_begin]);
 
 	// These stats have little use when using the database session
 	$user_counter_active     = $session_counter_active;
@@ -80,22 +80,22 @@ if ($cacti_db_session == true) {
 		$session_maxlifetime = ini_get('session.gc_maxlifetime');
 
 		if ($session_dir_handle) {
-			$user_ids_active          = array();
-			$user_ids_sleeping        = array();
+			$user_ids_active          = [];
+			$user_ids_sleeping        = [];
 			$session_counter_active   = 0;
 			$session_counter_sleeping = 0;
 			$session_counter_garbage  = 0;
 
 			while (false !== ($filename = readdir($session_dir_handle))) {
 				/* a real user session should be greater than 400 Bytes */
-				if (strpos($filename, 'sess_') !== false && filesize($session_save_path . '/' . $filename) > 400) {
+				if (str_contains($filename, 'sess_') && filesize($session_save_path . '/' . $filename) > 400) {
 					$session = file_get_contents($session_save_path . '/' . $filename);
 
 					/* first off check if we are allowed to read the session
 					 * file. Then we are only interested in sessions of
 					 * authenticated Cacti users
 					 */
-					if ($session !== false && strpos($session, 'cacti_cwd') !== false && preg_match('/sess_user_id\|s:[0-9]*:\"[0-9]*\"/', $session, $match)) {
+					if ($session !== false && str_contains($session, 'cacti_cwd') && preg_match('/sess_user_id\|s:[0-9]*:\"[0-9]*\"/', $session, $match)) {
 						$session_user_id = substr($match[0], strpos($match[0], ':"') + 2, -1);
 						/* due to the fact that ATIME could be unsupported/disabled we have to use MTIME instead */
 						$mtime = filemtime($session_save_path . '/' . $filename);

@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -130,10 +130,10 @@ if ($report_id === false) {
 
 	reports_log('Cacti Reports reports found: ' . cacti_sizeof($reports), true, 'REPORTS', POLLER_VERBOSITY_MEDIUM);
 
-	$queued = array();
+	$queued = [];
 
-    $command  = read_config_option('path_php_binary');
-    $command .= ' ' . CACTI_PATH_BASE . '/poller_reports.php';
+	$command  = read_config_option('path_php_binary');
+	$command .= ' ' . CACTI_PATH_BASE . '/poller_reports.php';
 
 	/* execute each of those reports */
 	if (cacti_sizeof($reports)) {
@@ -144,7 +144,7 @@ if ($report_id === false) {
 				$id     = $report['id'];
 				$name   = $report['name'];
 				$notify = $report['notify_list'];
-				$from   = array();
+				$from   = [];
 
 				if (isset($report['from_email']) && $report['from_email'] != '') {
 					$from_email = $report['from_email'];
@@ -172,7 +172,7 @@ if ($report_id === false) {
 					$reply_to = '';
 				}
 
-				$notification = array();
+				$notification = [];
 
 				if (cacti_sizeof($to_emails) || cacti_sizeof($bcc_emails)) {
 					$notification['email']['to_email']  = $to_emails;
@@ -194,7 +194,7 @@ if ($report_id === false) {
 		$number_sent = cacti_sizeof($queued);
 
 		if (cacti_sizeof($queued)) {
-			foreach($queued as $qid) {
+			foreach ($queued as $qid) {
 				reports_run($qid);
 			}
 		}
@@ -205,7 +205,7 @@ if ($report_id === false) {
 		/* log statistics */
 		$reports_stats = sprintf('Time:%01.4f Reports:%s', $end - $start, $number_sent);
 		reports_log('REPORTS STATS: ' . $reports_stats, true, 'REPORTS', POLLER_VERBOSITY_LOW);
-		db_execute_prepared('REPLACE INTO settings (name, value) VALUES ("stats_reports", ?)', array($reports_stats));
+		db_execute_prepared('REPLACE INTO settings (name, value) VALUES ("stats_reports", ?)', [$reports_stats]);
 	}
 
 	if (!$force) {
@@ -219,18 +219,18 @@ if ($report_id === false) {
 	$report = db_fetch_row_prepared('SELECT *
 		FROM reports
 		WHERE id = ?',
-		array($report_id));
+		[$report_id]);
 
 	if (cacti_sizeof($report)) {
 		reports_log('Reports processing report: ' . $report['name'], true, 'REPORTS');
 
-		$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($report['user_id']));
+		$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', [$report['user_id']]);
 
 		if (isset($report['email'])) {
 			db_execute_prepared('UPDATE reports
 				SET last_started = ?
 				WHERE id = ?',
-				array(date('Y-m-d H:i:s'), $report['id']));
+				[date('Y-m-d H:i:s'), $report['id']]);
 
 			generate_report($queue_id, $report, false, 'poller');
 		}
@@ -278,9 +278,7 @@ function sig_handler($signo) {
 			exit(1);
 
 			break;
-
 		default:
 			/* ignore all other signals */
 	}
 }
-

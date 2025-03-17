@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -51,7 +51,7 @@ switch (get_request_var('action')) {
 function view_user_log() {
 	global $auth_realms, $item_rows;
 
-	process_sanitize_draw_filter(true);
+	draw_user_log_filter(true);
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
@@ -60,7 +60,7 @@ function view_user_log() {
 	}
 
 	$sql_where  = '';
-	$sql_params = array();
+	$sql_params = [];
 
 	/* filter by username */
 	if (get_request_var('user_id') == '-2') {
@@ -98,21 +98,22 @@ function view_user_log() {
 		ul.time, ul.result, ul.ip
 		FROM user_auth AS ua
 		RIGHT JOIN user_log AS ul
-		ON ua.username=ul.username
+		ON ua.username = ul.username
+		AND ua.id = ul.user_id
 		$sql_where
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
 		LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$user_log = db_fetch_assoc_prepared($user_log_sql, $sql_params);
 
-	$display_text = array(
-		'username'  => array(__('User'), 'ASC'),
-		'full_name' => array(__('Full Name'), 'ASC'),
-		'realm'     => array(__('Authentication Realm'), 'ASC'),
-		'time'      => array(__('Date'), 'DESC'),
-		'result'    => array(__('Result'), 'DESC'),
-		'ip'        => array(__('IP Address'), 'DESC')
-	);
+	$display_text = [
+		'username'  => [__('User'), 'ASC'],
+		'full_name' => [__('Full Name'), 'ASC'],
+		'realm'     => [__('Authentication Realm'), 'ASC'],
+		'time'      => [__('Date'), 'DESC'],
+		'result'    => [__('Result'), 'DESC'],
+		'ip'        => [__('IP Address'), 'DESC']
+	];
 
 	$nav = html_nav_bar('user_log.php?user_id=' . get_request_var('user_id') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, __('Login Attempts'), 'page', 'main');
 
@@ -127,37 +128,26 @@ function view_user_log() {
 	if (cacti_sizeof($user_log)) {
 		foreach ($user_log as $item) {
 			form_alternate_row('line' . $i, true);
-			?>
-			<td class='nowrap'>
-				<?php print filter_value($item['username'], get_request_var('filter'));?>
-			</td>
-			<td class='nowrap'>
-				<?php if (isset($item['full_name'])) {
-					print filter_value($item['full_name'], get_request_var('filter'));
-				} else {
-					print __('(User Removed)');
-				}
-			?>
-			</td>
-			<td class='nowrap'>
-				<?php if (isset($auth_realms[$item['realm']])) {
-					print filter_value($auth_realms[$item['realm']], get_request_var('filter'));
-				} else {
-					print __('N/A');
-				}
-			?>
-			</td>
-			<td class='nowrap'>
-				<?php print filter_value($item['time'], get_request_var('filter'));?>
-			</td>
-			<td class='nowrap'>
-				<?php print($item['result'] == 0 ? __('Failed'):($item['result'] == 1 ? __('Success - Password'):($item['result'] == 3 ? __('Success - Password Change'):__('Success - Token'))));?>
-			</td>
-			<td class='nowrap'>
-				<?php print filter_value($item['ip'], get_request_var('filter'));?>
-			</td>
-			</tr>
-			<?php
+
+			form_selectable_cell(filter_value($item['username'], get_request_var('filter')), $i, '', 'nowrap');
+
+			if (isset($item['full_name'])) {
+				form_selectable_cell(filter_value($item['full_name'], get_request_var('filter')), $i);
+			} else {
+				form_selectable_cell(__('(User Removed)'), $i);
+			}
+
+			if (isset($auth_realms[$item['realm']])) {
+				form_selectable_cell(filter_value($auth_realms[$item['realm']]['name'], get_request_var('filter')), $i);
+			} else {
+				form_selectable_cell(__('N/A'), $i);
+			}
+
+			form_selectable_cell(filter_value($item['time'], get_request_var('filter')), $i);
+
+			form_selectable_cell(($item['result'] == 0 ? __('Failed'):($item['result'] == 1 ? __('Success - Password'):($item['result'] == 3 ? __('Success - Password Change'):__('Success - Token')))), $i);
+
+			form_selectable_cell(filter_value($item['ip'], get_request_var('filter')), $i);
 
 			$i++;
 		}
@@ -177,13 +167,13 @@ function clear_user_log() {
 		/* remove active users */
 		foreach ($users as $user) {
 			// Check how many rows for the current user with a valid token
-			foreach (array(1, 2) as $result) {
+			foreach ([1, 2] as $result) {
 				$total_rows = db_fetch_cell_prepared('SELECT COUNT(username)
 					FROM user_log
 					WHERE username = ?
 					AND user_id = ?
 					AND result = ?',
-					array($user['username'], $user['id'], $result));
+					[$user['username'], $user['id'], $result]);
 
 				if ($total_rows > 1) {
 					db_execute_prepared('DELETE
@@ -192,7 +182,7 @@ function clear_user_log() {
 						AND user_id = ?
 						AND result = ?
 						ORDER BY time LIMIT ' . ($total_rows - 1),
-						array($user['username'], $user['id'], $result));
+						[$user['username'], $user['id'], $result]);
 				}
 			}
 
@@ -201,7 +191,7 @@ function clear_user_log() {
 				WHERE username = ?
 				AND user_id = ?
 				AND result = 0',
-				array($user['username'], $user['id']));
+				[$user['username'], $user['id']]);
 		}
 
 		/* delete inactive users */
@@ -245,11 +235,11 @@ function purge_user_log() {
 	html_end_box();
 }
 
-function create_filter() {
+function create_user_log_filter() {
 	global $item_rows;
 
-	$all     = array('-1' => __('All'));
-	$deleted = array('-2' => __('Deleted/Invalid'));
+	$all     = ['-1' => __('All')];
+	$deleted = ['-2' => __('Deleted/Invalid')];
 	$users   = db_fetch_assoc('SELECT DISTINCT id,
 		IF(ud.domain_name != "",
 			CONCAT(ua.username, " (", ud.domain_name, ")"),
@@ -269,19 +259,19 @@ function create_filter() {
 
 	$users = $all + $deleted + $users;
 
-	$results = array(
+	$results = [
 		'-1' => __('Any'),
 		'1'  => __('Success - Password'),
 		'2'  => __('Success - Token'),
 		'3'  => __('Success - Password Change'),
 		'0'  => __('Failed')
-	);
+	];
 
-	return array(
-		'rows' => array(
-			array(
-				'filter' => array(
-					'method'        => 'textbox',
+	return [
+		'rows' => [
+			[
+				'filter' => [
+					'method'         => 'textbox',
 					'friendly_name'  => __('Search'),
 					'filter'         => FILTER_DEFAULT,
 					'placeholder'    => __('Enter a search term'),
@@ -290,8 +280,8 @@ function create_filter() {
 					'pageset'        => true,
 					'max_length'     => '120',
 					'value'          => ''
-				),
-				'user_id' => array(
+				],
+				'user_id' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('User'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -299,8 +289,8 @@ function create_filter() {
 					'pageset'       => true,
 					'array'         => $users,
 					'value'         => '-1'
-				),
-				'result' => array(
+				],
+				'result' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Result'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -308,8 +298,8 @@ function create_filter() {
 					'pageset'       => true,
 					'array'         => $results,
 					'value'         => '-1'
-				),
-				'rows' => array(
+				],
+				'rows' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Attempts'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -317,36 +307,36 @@ function create_filter() {
 					'pageset'       => true,
 					'array'         => $item_rows,
 					'value'         => '-1'
-				)
-			)
-		),
-		'buttons' => array(
-			'go' => array(
+				]
+			]
+		],
+		'buttons' => [
+			'go' => [
 				'method'  => 'submit',
 				'display' => __('Go'),
 				'title'   => __('Apply filter to table'),
-			),
-			'clear' => array(
+			],
+			'clear' => [
 				'method'  => 'button',
 				'display' => __('Clear'),
 				'title'   => __('Reset filter to default values'),
-			),
-			'purge' => array(
+			],
+			'purge' => [
 				'method'  => 'button',
 				'display' => __('Purge'),
 				'action'  => 'default',
 				'title'   => __('Purge User log of all but the last login attempt'),
-			)
-		),
-		'sort' => array(
+			]
+		],
+		'sort' => [
 			'sort_column'    => 'time',
 			'sort_direction' => 'DESC'
-		)
-	);
+		]
+	];
 }
 
-function process_sanitize_draw_filter($render = false) {
-	$filters = create_filter();
+function draw_user_log_filter($render = false) {
+	$filters = create_user_log_filter();
 
 	/* create the page filter */
 	$pageFilter = new CactiTableFilter(__('User Login History'), 'user_log.php', 'form_userlog', 'sess_userlog');
@@ -360,4 +350,3 @@ function process_sanitize_draw_filter($render = false) {
 		$pageFilter->sanitize();
 	}
 }
-

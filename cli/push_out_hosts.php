@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -32,7 +32,6 @@ require_once(CACTI_PATH_LIBRARY . '/utility.php');
 ini_set('max_execution_time', '0');
 ini_set('memory_limit', '-1');
 
-
 /* process calling arguments */
 $parms = $_SERVER['argv'];
 array_shift($parms);
@@ -43,10 +42,10 @@ $parameters = implode(' ', $parms);
 
 cacti_log('WARNING: Deprecated script push_out_hosts.php. Please use rebuild_poller_cache.php.', false, 'PUSHOUT');
 
-if (in_array('-v', $parms) || in_array('-V', $parms) || in_array('--version', $parms)) {
+if (in_array('-v', $parms, true) || in_array('-V', $parms, true) || in_array('--version', $parms, true)) {
 	// exception for github tests
 	print 'Cacti Repopulate poller cache Tool, Version ' . CACTI_VERSION . ' ' . COPYRIGHT_YEARS . PHP_EOL;
 } else {
 	print 'WARNING: Deprecated script push_out_hosts.php. Please use rebuild_poller_cache.php.' . PHP_EOL;
-	passthru ($php_binary . ' ' . CACTI_PATH_CLI . '/rebuild_poller_cache.php ' . $parameters);
+	passthru($php_binary . ' ' . CACTI_PATH_CLI . '/rebuild_poller_cache.php ' . $parameters);
 }

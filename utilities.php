@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -207,13 +207,13 @@ function utilities_clear_logfile() {
 	html_end_box();
 }
 
-function create_data_query_filter() {
+function create_data_query_filter($session_var) {
 	global $item_rows;
 
-	$all     = array('-1' => __('All'));
-	$any     = array('-1' => __('Any'));
-	$none    = array('0'  => __('None'));
-	$deleted = array('-2' => __('Deleted/Invalid'));
+	$all     = ['-1' => __('All')];
+	$any     = ['-1' => __('Any')];
+	$none    = ['0'  => __('None')];
+	$deleted = ['-2' => __('Deleted/Invalid')];
 
 	$sites   = array_rekey(
 		db_fetch_assoc('SELECT id, name
@@ -223,23 +223,29 @@ function create_data_query_filter() {
 	);
 	$sites   = $any + $none + $sites;
 
-	$status = array(
+	$status = [
 		'-1' => __('Any'),
 		'1'  => __('Enabled'),
 		'0'  => __('Disabled')
-	);
+	];
 
-	$pactions = array(
+	$pactions = [
 		'-1' => __('Any'),
 		'0'  => __('SNMP'),
 		'1'  => __('Script'),
 		'2'  => __('Script Server')
-	);
+	];
 
 	$sql_where  = '';
-	$sql_params = array();
+	$sql_params = [];
 
-	$host_id = get_filter_request_var('host_id');
+	if (isset_request_var('host_id')) {
+		$host_id = get_request_var('host_id');
+	} elseif (isset($_SESSION[$session_var . '_host_id'])) {
+		$host_id = $_SESSION[$session_var . '_host_id'];
+	} else {
+		$host_id = '-1';
+	}
 
 	if ($host_id > 0) {
 		/* for the templates dropdown */
@@ -249,7 +255,7 @@ function create_data_query_filter() {
 		$hostname = db_fetch_cell_prepared('SELECT description
 			FROM host
 			WHERE id = ?',
-			array($host_id));
+			[$host_id]);
 	} elseif ($host_id == '' || $host_id == '-1') {
 		$host_id  = '-1';
 		$hostname = __('Any');
@@ -284,10 +290,10 @@ function create_data_query_filter() {
 		$value = read_config_option('default_has') == 'on' ? 'true':'false';
 	}
 
-	return array(
-		'rows' => array(
-			array(
-				'site_id' => array(
+	return [
+		'rows' => [
+			[
+				'site_id' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Site'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -295,8 +301,8 @@ function create_data_query_filter() {
 					'pageset'       => true,
 					'array'         => $sites,
 					'value'         => '-1'
-				),
-				'host_id' => array(
+				],
+				'host_id' => [
 					'method'        => 'drop_callback',
 					'friendly_name' => __('Device'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -307,8 +313,8 @@ function create_data_query_filter() {
 					'id'            => $host_id,
 					'value'         => $hostname,
 					'on_change'     => 'applyFilter()'
-				),
-				'snmp_query_id' => array(
+				],
+				'snmp_query_id' => [
 					'method'         => 'drop_array',
 					'friendly_name'  => __('Data Query'),
 					'filter'         => FILTER_VALIDATE_INT,
@@ -316,10 +322,10 @@ function create_data_query_filter() {
 					'pageset'        => true,
 					'array'          => $data_queries,
 					'value'          => '-1'
-				),
-			),
-			array(
-				'filter' => array(
+				],
+			],
+			[
+				'filter' => [
 					'method'         => 'textbox',
 					'friendly_name'  => __('Search'),
 					'filter'         => FILTER_DEFAULT,
@@ -329,8 +335,8 @@ function create_data_query_filter() {
 					'pageset'        => true,
 					'max_length'     => '120',
 					'value'          => ''
-				),
-				'rows' => array(
+				],
+				'rows' => [
 					'method'         => 'drop_array',
 					'friendly_name'  => __('Entries'),
 					'filter'         => FILTER_VALIDATE_INT,
@@ -338,35 +344,35 @@ function create_data_query_filter() {
 					'pageset'        => true,
 					'array'          => $item_rows,
 					'value'          => '-1'
-				),
-				'with_index' => array(
+				],
+				'with_index' => [
 					'method'         => 'filter_checkbox',
 					'friendly_name'  => __('Include Index'),
 					'filter'         => FILTER_VALIDATE_REGEXP,
-					'filter_options' => array('options' => array('regexp' => '(true|false)')),
+					'filter_options' => ['options' => ['regexp' => '(true|false)']],
 					'default'        => '',
 					'pageset'        => true,
 					'value'          => $value
-				)
-			)
-		),
-		'buttons' => array(
-			'go' => array(
+				]
+			]
+		],
+		'buttons' => [
+			'go' => [
 				'method'  => 'submit',
 				'display' => __('Go'),
 				'title'   => __('Apply Filter to Table'),
-			),
-			'clear' => array(
+			],
+			'clear' => [
 				'method'  => 'button',
 				'display' => __('Clear'),
 				'title'   => __('Reset Filter to Default Values'),
-			)
-		)
-	);
+			]
+		]
+	];
 }
 
-function process_sanitize_draw_data_query_filter($render = false) {
-	$filters = create_data_query_filter();
+function draw_data_query_filter($render = false) {
+	$filters = create_data_query_filter('sess_usnmp');
 
 	/* create the page filter */
 	$pageFilter = new CactiTableFilter(__('Data Query Cache Items'), 'utilities.php?action=view_snmp_cache', 'form_snmpcache', 'sess_usnmp');
@@ -384,7 +390,7 @@ function process_sanitize_draw_data_query_filter($render = false) {
 function utilities_view_snmp_cache() {
 	global $poller_actions, $item_rows;
 
-	process_sanitize_draw_data_query_filter(true);
+	draw_data_query_filter(true);
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
@@ -393,7 +399,7 @@ function utilities_view_snmp_cache() {
 	}
 
 	$sql_where  = '';
-	$sql_params = array();
+	$sql_params = [];
 
 	/* filter by host */
 	if (get_request_var('host_id') == '0') {
@@ -453,14 +459,14 @@ function utilities_view_snmp_cache() {
 
 	$snmp_cache = db_fetch_assoc_prepared($snmp_cache_sql, $sql_params);
 
-	$display_text = array(
+	$display_text = [
 		__('Device'),
 		__('Data Query Name'),
 		__('Index'),
 		__('Field Name'),
 		__('Field Value'),
 		__('OID')
-	);
+	];
 
 	$nav = html_nav_bar('utilities.php?action=view_snmp_cache&host_id=' . get_request_var('host_id') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, __('Entries'), 'page', 'main');
 
@@ -499,7 +505,7 @@ function utilities_view_snmp_cache() {
 function utilities_view_poller_cache() {
 	global $poller_actions, $item_rows;
 
-	process_sanitize_draw_poller_cache_filter(true);
+	draw_poller_cache_filter(true);
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
@@ -509,9 +515,9 @@ function utilities_view_poller_cache() {
 
 	/* form the 'where' clause for our main sql query */
 	$sql_where  = '';
-	$sql_params = array();
+	$sql_params = [];
 
-	if (get_request_var('site_id') > 0 ) {
+	if (get_request_var('site_id') > 0) {
 		$sql_where   .= ($sql_where != '' ? ' AND ':' WHERE') . ' h.site_id = ?';
 		$sql_params[] = get_request_var('site_id');
 	}
@@ -597,11 +603,11 @@ function utilities_view_poller_cache() {
 
 	$items = db_fetch_assoc_prepared($poller_sql, $sql_params);
 
-	$display_text = array(
-		'dtd.name_cache' => array(__('Data Source Name'), 'ASC'),
-		'h.description'  => array(__('Device Description'), 'ASC'),
-		'nosort'         => array(__('Details'), 'ASC')
-	);
+	$display_text = [
+		'dtd.name_cache' => [__('Data Source Name'), 'ASC'],
+		'h.description'  => [__('Device Description'), 'ASC'],
+		'nosort'         => [__('Details'), 'ASC']
+	];
 
 	$nav = html_nav_bar('utilities.php?action=view_poller_cache&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 3, __('Entries'), 'page', 'main');
 
@@ -658,13 +664,13 @@ function utilities_view_poller_cache() {
 	}
 }
 
-function create_poller_cache_filter() {
+function create_poller_cache_filter($session_var) {
 	global $item_rows;
 
-	$all     = array('-1' => __('All'));
-	$any     = array('-1' => __('Any'));
-	$none    = array('0'  => __('None'));
-	$deleted = array('-2' => __('Deleted/Invalid'));
+	$all     = ['-1' => __('All')];
+	$any     = ['-1' => __('Any')];
+	$none    = ['0'  => __('None')];
+	$deleted = ['-2' => __('Deleted/Invalid')];
 
 	$sites   = array_rekey(
 		db_fetch_assoc('SELECT id, name
@@ -674,23 +680,29 @@ function create_poller_cache_filter() {
 	);
 	$sites   = $any + $none + $sites;
 
-	$status = array(
+	$status = [
 		'-1' => __('Any'),
 		'1'  => __('Enabled'),
 		'0'  => __('Disabled')
-	);
+	];
 
-	$pactions = array(
+	$pactions = [
 		'-1' => __('Any'),
 		'0'  => __('SNMP'),
 		'1'  => __('Script'),
 		'2'  => __('Script Server')
-	);
+	];
 
 	$sql_where  = '';
-	$sql_params = array();
+	$sql_params = [];
 
-	$host_id = get_filter_request_var('host_id');
+	if (isset_request_var('host_id')) {
+		$host_id = get_filter_request_var('host_id');
+	} elseif (isset($_SESSION[$session_var . '_host_id'])) {
+		$host_id = $_SESSION[$session_var . '_host_id'];
+	} else {
+		$host_id = '-1';
+	}
 
 	if ($host_id > 0) {
 		/* for the templates dropdown */
@@ -700,7 +712,7 @@ function create_poller_cache_filter() {
 		$hostname = db_fetch_cell_prepared('SELECT description
 			FROM host
 			WHERE id = ?',
-			array($host_id));
+			[$host_id]);
 	} elseif ($host_id == '' || $host_id == '-1') {
 		$host_id  = '-1';
 		$hostname = __('Any');
@@ -732,10 +744,10 @@ function create_poller_cache_filter() {
 
 	$templates = $any + $templates;
 
-	return array(
-		'rows' => array(
-			array(
-				'site_id' => array(
+	return [
+		'rows' => [
+			[
+				'site_id' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Site'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -743,8 +755,8 @@ function create_poller_cache_filter() {
 					'pageset'       => true,
 					'array'         => $sites,
 					'value'         => '-1'
-				),
-				'host_id' => array(
+				],
+				'host_id' => [
 					'method'        => 'drop_callback',
 					'friendly_name' => __('Device'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -755,8 +767,8 @@ function create_poller_cache_filter() {
 					'id'            => $host_id,
 					'value'         => $hostname,
 					'on_change'     => 'applyFilter()'
-				),
-				'template_id' => array(
+				],
+				'template_id' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Template'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -764,11 +776,11 @@ function create_poller_cache_filter() {
 					'pageset'       => true,
 					'array'         => $templates,
 					'value'         => '-1'
-				)
-			),
-			array(
-				'filter' => array(
-					'method'        => 'textbox',
+				]
+			],
+			[
+				'filter' => [
+					'method'         => 'textbox',
 					'friendly_name'  => __('Search'),
 					'filter'         => FILTER_DEFAULT,
 					'placeholder'    => __('Enter a search term'),
@@ -777,8 +789,8 @@ function create_poller_cache_filter() {
 					'pageset'        => true,
 					'max_length'     => '120',
 					'value'          => ''
-				),
-				'status' => array(
+				],
+				'status' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Status'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -786,8 +798,8 @@ function create_poller_cache_filter() {
 					'pageset'       => true,
 					'array'         => $status,
 					'value'         => '-1'
-				),
-				'poller_action' => array(
+				],
+				'poller_action' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Actions'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -795,8 +807,8 @@ function create_poller_cache_filter() {
 					'pageset'       => true,
 					'array'         => $pactions,
 					'value'         => '-1'
-				),
-				'rows' => array(
+				],
+				'rows' => [
 					'method'        => 'drop_array',
 					'friendly_name' => __('Entries'),
 					'filter'        => FILTER_VALIDATE_INT,
@@ -804,30 +816,30 @@ function create_poller_cache_filter() {
 					'pageset'       => true,
 					'array'         => $item_rows,
 					'value'         => '-1'
-				)
-			)
-		),
-		'buttons' => array(
-			'go' => array(
+				]
+			]
+		],
+		'buttons' => [
+			'go' => [
 				'method'  => 'submit',
 				'display' => __('Go'),
 				'title'   => __('Apply Filter to Table'),
-			),
-			'clear' => array(
+			],
+			'clear' => [
 				'method'  => 'button',
 				'display' => __('Clear'),
 				'title'   => __('Reset Filter to Default Values'),
-			)
-		),
-		'sort' => array(
+			]
+		],
+		'sort' => [
 			'sort_column'    => 'dtd.name_cache',
 			'sort_direction' => 'DESC'
-		)
-	);
+		]
+	];
 }
 
-function process_sanitize_draw_poller_cache_filter($render = false) {
-	$filters = create_poller_cache_filter();
+function draw_poller_cache_filter($render = false) {
+	$filters = create_poller_cache_filter('sess_pollerc');
 
 	$running = is_process_running('pushout', 'rmaster', 0);
 
@@ -870,79 +882,79 @@ function process_sanitize_draw_poller_cache_filter($render = false) {
 function utilities() {
 	global $config, $utilities;
 
-	$utilities[__('Technical Support')] = array(
-		__('Technical Support') => array(
+	$utilities[__('Technical Support')] = [
+		__('Technical Support') => [
 			'link'        => 'support.php?tab=summary',
 			'description' => __('Cacti technical support page.  Used by developers and technical support persons to assist with issues in Cacti.  Includes checks for common configuration issues.')
-		),
-		__('Log Administration') => array(
+		],
+		__('Log Administration') => [
 			'link'        => 'utilities.php?action=view_logfile',
 			'description' => __('The Cacti Log stores statistic, error and other message depending on system settings.  This information can be used to identify problems with the poller and application.')
-		),
-		__('View User Log') => array(
+		],
+		__('View User Log') => [
 			'link'        => 'utilities.php?action=view_user_log',
 			'description' => __('Allows Administrators to browse the user log.  Administrators can filter and export the log as well.')
-		)
-	);
+		]
+	];
 
-	$utilities[__('Poller Cache Administration')] = array(
-		__('View Poller Cache') => array(
+	$utilities[__('Poller Cache Administration')] = [
+		__('View Poller Cache') => [
 			'link'        => 'utilities.php?action=view_poller_cache',
 			'description' => __('This is the data that is being passed to the poller each time it runs. This data is then in turn executed/interpreted and the results are fed into the RRDfiles for graphing or the database for display.')
-		),
-		__('View Data Query Cache') => array(
+		],
+		__('View Data Query Cache') => [
 			'link'        => 'utilities.php?action=view_snmp_cache',
 			'description' => __('The Data Query Cache stores information gathered from Data Query input types. The values from these fields can be used in the text area of Graphs for Legends, Vertical Labels, and GPRINTS as well as in CDEF\'s.')
-		),
-		__('Rebuild Poller Cache') => array(
+		],
+		__('Rebuild Poller Cache') => [
 			'link'        => 'utilities.php?action=clear_poller_cache',
 			'mode'        => 'online',
 			'description' => __('The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems.'),
-			'note'        => array (
+			'note'        => [
 				'message' => __('NOTE: On large systems, this command may take several minutes to hours to complete and therefore should not be run from the Cacti UI.  You can simply run \'php -q cli/rebuild_poller_cache.php --help\' at the command line for more information.'),
 				'class'   => 'textWarning'
-			)
-		),
-		__('Rebuild Resource Cache') => array(
+			]
+		],
+		__('Rebuild Resource Cache') => [
 			'link'        => 'utilities.php?action=rebuild_resource_cache',
 			'mode'        => 'online',
 			'description' => __('When operating multiple Data Collectors in Cacti, Cacti will attempt to maintain state for key files on all Data Collectors.  This includes all core, non-install related website and plugin files.  When you force a Resource Cache rebuild, Cacti will clear the local Resource Cache, and then rebuild it at the next scheduled poller start.  This will trigger all Remote Data Collectors to recheck their website and plugin files for consistency.')
-		),
-	);
+		],
+	];
 
-	$utilities[__('Boost Utilities')] = array(
-		__('View Boost Status') => array(
+	$utilities[__('Boost Utilities')] = [
+		__('View Boost Status') => [
 			'link'        => 'utilities.php?action=view_boost_status',
 			'description' => __('This menu pick allows you to view various boost settings and statistics associated with the current running Boost configuration.')
-		),
-	);
+		],
+	];
 
-	$utilities[__('Data Source Statistics Utilities')] = array(
-		__('Purge Data Source Statistics') => array(
+	$utilities[__('Data Source Statistics Utilities')] = [
+		__('Purge Data Source Statistics') => [
 			'link'        => 'utilities.php?action=purge_data_source_statistics',
 			'mode'        => 'online',
 			'description' => __('This menu pick will purge all existing Data Source Statistics from the Database.  If Data Source Statistics is enabled, the Data Sources Statistics will start collection again on the next Data Collector pass.')
-		),
-	);
+		],
+	];
 
 	if (snmpagent_enabled()) {
-		$utilities[__('SNMP Agent Utilities')] = array(
-			__('View SNMP Agent Cache') => array(
+		$utilities[__('SNMP Agent Utilities')] = [
+			__('View SNMP Agent Cache') => [
 				'link'        => 'utilities.php?action=view_snmpagent_cache',
 				'mode'        => 'online',
 				'description' => __('This shows all objects being handled by the SNMP Agent.')
-			),
-			__('Rebuild SNMP Agent Cache') => array(
+			],
+			__('Rebuild SNMP Agent Cache') => [
 				'link'        => 'utilities.php?action=rebuild_snmpagent_cache',
 				'mode'        => 'online',
 				'description' => __('The SNMP cache will be cleared and re-generated if you select this option. Note that it takes another poller run to restore the SNMP cache completely.')
-			),
-			__('View SNMP Agent Notification Log') => array(
+			],
+			__('View SNMP Agent Notification Log') => [
 				'link'        => 'utilities.php?action=view_snmpagent_events',
 				'mode'        => 'online',
 				'description' => __('This menu pick allows you to view the latest events SNMP Agent has handled in relation to the registered notification receivers.')
-			)
-		);
+			]
+		];
 	}
 
 	api_plugin_hook('utilities_array');
@@ -965,7 +977,7 @@ function utilities() {
 				print '<td>';
 				print html_escape($details['description']);
 
-				if(isset($details['note'])) {
+				if (isset($details['note'])) {
 					print '<br/><i class="' . $details['note']['class'] . '">' . html_escape($details['note']['message']) . '</i>';
 				}
 
@@ -983,7 +995,7 @@ function utilities() {
 }
 
 function purge_data_source_statistics() {
-	$tables = array(
+	$tables = [
 		'data_source_stats_daily',
 		'data_source_stats_hourly',
 		'data_source_stats_hourly_cache',
@@ -991,7 +1003,7 @@ function purge_data_source_statistics() {
 		'data_source_stats_monthly',
 		'data_source_stats_weekly',
 		'data_source_stats_yearly'
-	);
+	];
 
 	foreach ($tables as $table) {
 		db_execute('TRUNCATE TABLE ' . $table);
@@ -1132,6 +1144,7 @@ function boost_display_run_status() {
 	$avg_row_length = ($total_records ? intval($data_length / $total_records) : 0);
 
 	$boost_status = read_config_option('boost_poller_status', true);
+
 	if ($boost_status != '' && $boost_status != 'disabled') {
 		$boost_status_array = explode(':', $boost_status);
 
@@ -1153,7 +1166,7 @@ function boost_display_run_status() {
 			$status = '<span class="deviceDown">' . __('Other') . '</span>';
 		}
 	} else {
-		$status = '<span class="deviceDisabled">' . __('Disabled') . '</span>';
+		$status            = '<span class="deviceDisabled">' . __('Disabled') . '</span>';
 		$boost_status_date = null;
 	}
 
@@ -1174,7 +1187,7 @@ function boost_display_run_status() {
 
 	/* get cache directory size/contents */
 	$cache_directory    = read_config_option('boost_png_cache_directory', true);
-	$directory_contents = array();
+	$directory_contents = [];
 
 	if (is_dir($cache_directory)) {
 		if ($handle = @opendir($cache_directory)) {
@@ -1337,7 +1350,7 @@ function boost_display_run_status() {
 		print '<td class="utilityPick">' . __('Last Run Duration:') . '</td><td>';
 
 		if (is_numeric($boost_last_run_duration)) {
-			print($boost_last_run_duration > 60 ? __('%d minutes', (int)$boost_last_run_duration / 60) . ', ': '') . __('%d seconds', (int) $boost_last_run_duration % 60);
+			print ($boost_last_run_duration > 60 ? __('%d minutes', (int)$boost_last_run_duration / 60) . ', ': '') . __('%d seconds', (int) $boost_last_run_duration % 60);
 
 			if ($rrd_updates != '') {
 				print ' (' . __('%0.2f percent of update frequency)', round(100 * $boost_last_run_duration / $update_interval / 60));
@@ -1419,14 +1432,14 @@ function boost_display_run_status() {
 				$rows_to_process = db_fetch_cell_prepared('SELECT COUNT(*)
 					FROM poller_output_boost_local_data_ids
 					WHERE process_handler = ?',
-					array($process));
+					[$process]);
 
 				$runtime = db_fetch_cell_prepared('SELECT UNIX_TIMESTAMP() - UNIX_TIMESTAMP(started)
 					FROM processes
 					WHERE tasktype = "boost"
 					AND taskname = "child"
 					AND taskid = ?',
-					array($process));
+					[$process]);
 
 				form_alternate_row();
 
@@ -1483,10 +1496,10 @@ function create_snmp_agent_cache_filter() {
 		'id', 'name'
 	);
 
-	return array(
-		'rows' => array(
-			array(
-				'filter' => array(
+	return [
+		'rows' => [
+			[
+				'filter' => [
 					'method'         => 'textbox',
 					'friendly_name'  => __('Search'),
 					'filter'         => FILTER_DEFAULT,
@@ -1496,18 +1509,18 @@ function create_snmp_agent_cache_filter() {
 					'pageset'        => true,
 					'max_length'     => '120',
 					'value'          => ''
-				),
-				'mib' => array(
+				],
+				'mib' => [
 					'method'         => 'drop_array',
 					'friendly_name'  => __('MIB'),
 					'filter'         => FILTER_CALLBACK,
-					'filter_options' => array('options' => 'sanitize_search_string'),
+					'filter_options' => ['options' => 'sanitize_search_string'],
 					'default'        => 'any',
 					'pageset'        => true,
 					'array'          => $mibs,
 					'value'          => 'any'
-				),
-				'rows' => array(
+				],
+				'rows' => [
 					'method'         => 'drop_array',
 					'friendly_name'  => __('Entries'),
 					'filter'         => FILTER_VALIDATE_INT,
@@ -1515,25 +1528,25 @@ function create_snmp_agent_cache_filter() {
 					'pageset'        => true,
 					'array'          => $item_rows,
 					'value'          => '-1'
-				)
-			)
-		),
-		'buttons' => array(
-			'go' => array(
+				]
+			]
+		],
+		'buttons' => [
+			'go' => [
 				'method'  => 'submit',
 				'display' => __('Go'),
 				'title'   => __('Apply Filter to Table'),
-			),
-			'clear' => array(
+			],
+			'clear' => [
 				'method'  => 'button',
 				'display' => __('Clear'),
 				'title'   => __('Reset Filter to Default Values'),
-			)
-		)
-	);
+			]
+		]
+	];
 }
 
-function process_sanitize_draw_snmp_agent_cache_filter($render = false) {
+function draw_snmp_agent_cache_filter($render = false) {
 	$filters = create_snmp_agent_cache_filter();
 
 	/* create the page filter */
@@ -1556,8 +1569,8 @@ function process_sanitize_draw_snmp_agent_cache_filter($render = false) {
  * @return
  */
 function snmpagent_utilities_run_cache() {
-	$mibs = db_fetch_assoc('SELECT DISTINCT mib FROM snmpagent_cache');
-	$registered_mibs = array();
+	$mibs            = db_fetch_assoc('SELECT DISTINCT mib FROM snmpagent_cache');
+	$registered_mibs = [];
 
 	if ($mibs && $mibs > 0) {
 		foreach ($mibs as $mib) {
@@ -1565,7 +1578,7 @@ function snmpagent_utilities_run_cache() {
 		}
 	}
 
-	process_sanitize_draw_snmp_agent_cache_filter(true);
+	draw_snmp_agent_cache_filter(true);
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
@@ -1574,7 +1587,7 @@ function snmpagent_utilities_run_cache() {
 	}
 
 	$sql_where  = '';
-	$sql_params = array();
+	$sql_params = [];
 
 	/* filter by host */
 	if (!isempty_request_var('mib') && get_request_var('mib') != 'any') {
@@ -1607,14 +1620,14 @@ function snmpagent_utilities_run_cache() {
 
 	$snmp_cache = db_fetch_assoc_prepared($snmp_cache_sql, $sql_params);
 
-	$display_text = array(
+	$display_text = [
 		__('OID'),
 		__('Name'),
 		__('MIB'),
 		__('Type'),
 		__('Max-Access'),
 		__('Value')
-	);
+	];
 
 	/* generate page list */
 	$nav = html_nav_bar('utilities.php?action=view_snmpagent_cache&mib=' . get_request_var('mib') . '&filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Entries'), 'page', 'main');
@@ -1645,7 +1658,7 @@ function snmpagent_utilities_run_cache() {
 			form_selectable_cell($mib, $item['oid']);
 			form_selectable_ecell($item['kind'], $item['oid']);
 			form_selectable_cell($max_access, $item['oid']);
-			form_selectable_ecell((in_array($item['kind'], array(__('Scalar'), __('Column Data')), true) ? $item['value'] : __('N/A')), $item['oid']);
+			form_selectable_ecell((in_array($item['kind'], [__('Scalar'), __('Column Data')], true) ? $item['value'] : __('N/A')), $item['oid']);
 
 			form_end_row();
 		}
@@ -1663,7 +1676,7 @@ function snmpagent_utilities_run_cache() {
 function create_snmp_agent_events_filter() {
 	global $item_rows, $severity_levels, $severity_colors, $receivers;
 
-	$any = array('-1' => __('Any'));
+	$any = ['-1' => __('Any')];
 
 	$mibs = array_rekey(
 		db_fetch_assoc("SELECT 'any' AS id, '" . __esc('Any') . "' AS name
@@ -1674,10 +1687,10 @@ function create_snmp_agent_events_filter() {
 
 	$receivers = $any + $receivers;
 
-	return array(
-		'rows' => array(
-			array(
-				'filter' => array(
+	return [
+		'rows' => [
+			[
+				'filter' => [
 					'method'         => 'textbox',
 					'friendly_name'  => __('Search'),
 					'filter'         => FILTER_DEFAULT,
@@ -1687,8 +1700,8 @@ function create_snmp_agent_events_filter() {
 					'pageset'        => true,
 					'max_length'     => '120',
 					'value'          => ''
-				),
-				'severity' => array(
+				],
+				'severity' => [
 					'method'         => 'drop_array',
 					'friendly_name'  => __('Severity'),
 					'filter'         => FILTER_CALLBACK,
@@ -1696,8 +1709,8 @@ function create_snmp_agent_events_filter() {
 					'pageset'        => true,
 					'array'          => $severity_levels,
 					'value'          => '-1'
-				),
-				'receiver' => array(
+				],
+				'receiver' => [
 					'method'         => 'drop_array',
 					'friendly_name'  => __('Receiver'),
 					'filter'         => FILTER_VALIDATE_INT,
@@ -1705,8 +1718,8 @@ function create_snmp_agent_events_filter() {
 					'pageset'        => true,
 					'array'          => $receivers,
 					'value'          => '-1'
-				),
-				'rows' => array(
+				],
+				'rows' => [
 					'method'         => 'drop_array',
 					'friendly_name'  => __('Events'),
 					'filter'         => FILTER_VALIDATE_INT,
@@ -1714,31 +1727,31 @@ function create_snmp_agent_events_filter() {
 					'pageset'        => true,
 					'array'          => $item_rows,
 					'value'          => '-1'
-				)
-			)
-		),
-		'buttons' => array(
-			'go' => array(
+				]
+			]
+		],
+		'buttons' => [
+			'go' => [
 				'method'  => 'submit',
 				'display' => __('Go'),
 				'title'   => __('Apply Filter to Table'),
-			),
-			'clear' => array(
+			],
+			'clear' => [
 				'method'  => 'button',
 				'display' => __('Clear'),
 				'title'   => __('Reset Filter to Default Values'),
-			),
-			'purge' => array(
+			],
+			'purge' => [
 				'method'  => 'button',
 				'display' => __('Purge'),
 				'title'   => __('Purge the SNMP Agent Event Log'),
 				'url'     => 'utilities.php?action=view_snmpagent_events&purge=true'
-			)
-		)
-	);
+			]
+		]
+	];
 }
 
-function process_sanitize_draw_snmp_agent_events_filter($render = false) {
+function draw_snmp_agent_events_filter($render = false) {
 	$filters = create_snmp_agent_events_filter();
 
 	/* create the page filter */
@@ -1757,19 +1770,19 @@ function process_sanitize_draw_snmp_agent_events_filter($render = false) {
 function snmpagent_utilities_run_eventlog() {
 	global $severity_levels, $severity_colors, $receivers;
 
-	$severity_levels = array(
+	$severity_levels = [
 		SNMPAGENT_EVENT_SEVERITY_LOW      => 'LOW',
 		SNMPAGENT_EVENT_SEVERITY_MEDIUM   => 'MEDIUM',
 		SNMPAGENT_EVENT_SEVERITY_HIGH     => 'HIGH',
 		SNMPAGENT_EVENT_SEVERITY_CRITICAL => 'CRITICAL'
-	);
+	];
 
-	$severity_colors = array(
+	$severity_colors = [
 		SNMPAGENT_EVENT_SEVERITY_LOW      => '#00FF00',
 		SNMPAGENT_EVENT_SEVERITY_MEDIUM   => '#FFFF00',
 		SNMPAGENT_EVENT_SEVERITY_HIGH     => '#FF0000',
 		SNMPAGENT_EVENT_SEVERITY_CRITICAL => '#FF00FF'
-	);
+	];
 
 	$receivers = array_rekey(
 		db_fetch_assoc('SELECT DISTINCT manager_id, hostname
@@ -1786,7 +1799,7 @@ function snmpagent_utilities_run_eventlog() {
 		set_request_var('clear', true);
 	}
 
-	process_sanitize_draw_snmp_agent_events_filter(true);
+	draw_snmp_agent_events_filter(true);
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
@@ -1795,7 +1808,7 @@ function snmpagent_utilities_run_eventlog() {
 	}
 
 	$sql_where  = '';
-	$sql_params = array();
+	$sql_params = [];
 
 	/* filter by severity */
 	if (get_request_var('receiver') != '-1') {
@@ -1807,7 +1820,6 @@ function snmpagent_utilities_run_eventlog() {
 	if (!isempty_request_var('severity') && get_request_var('severity') != '-1') {
 		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . ' snl.severity = ?';
 		$sql_params[] = get_request_var('severity');
-
 	}
 
 	/* filter by search string */
@@ -1842,7 +1854,7 @@ function snmpagent_utilities_run_eventlog() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	html_header(array(' ', __('Time'), __('Receiver'), __('Notification'), __('Varbinds')));
+	html_header([' ', __('Time'), __('Receiver'), __('Notification'), __('Varbinds')]);
 
 	if (cacti_sizeof($logs)) {
 		foreach ($logs as $item) {
@@ -1875,4 +1887,3 @@ function snmpagent_utilities_run_eventlog() {
 		print $nav;
 	}
 }
-

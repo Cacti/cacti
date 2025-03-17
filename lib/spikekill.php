@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -42,39 +42,39 @@ class spikekill {
 
 	private $user      = '';
 
-	private $user_info = array();
+	private $user_info = [];
 
 	// Required variables
-	var $rrdfile   = '';
+	public $rrdfile   = '';
 
-	var $method    = '';
+	public $method    = '';
 
-	var $avgnan    = '';
+	public $avgnan    = '';
 
-	var $stddev    = '';
+	public $stddev    = '';
 
-	var $out_start = '';
+	public $out_start = '';
 
-	var $out_end   = '';
+	public $out_end   = '';
 
-	var $outliers  = '';
+	public $outliers  = '';
 
-	var $percent   = '';
+	public $percent   = '';
 
-	var $numspike  = '';
+	public $numspike  = '';
 
-	var $dsfilter  = '';
+	public $dsfilter  = '';
 
-	var $absmax  = '';
+	public $absmax  = '';
 
 	// Overridable
-	var $html      = true;
+	public $html      = true;
 
-	var $backup    = false;
+	public $backup    = false;
 
-	var $debug     = false;
+	public $debug     = false;
 
-	var $dryrun    = false;
+	public $dryrun    = false;
 
 	// Defaults from cacti settings
 	private $dmethod   = 1;
@@ -96,28 +96,28 @@ class spikekill {
 
 	private $strout      = '';
 
-	private $ds_min      = '';
+	private $ds_min      = [];
 
-	private $ds_max      = '';
+	private $ds_max      = [];
 
 	private $total_kills = 0;
 
-	private $rra_cf      = array();
+	private $rra_cf      = [];
 
-	private $ds_name     = array();
+	private $ds_name     = [];
 
-	private $rra_pdp     = array();
+	private $rra_pdp     = [];
 
 	private $step        = 0;
 
 	// For error handling
-	private $errors = array();
+	private $errors = [];
 
 	public function __construct($rrdfile = '', $method = '', $avgnan = '', $stddev = '',
 		$out_start = '', $out_end = '', $outliers = '', $percent = '', $numspike = '',
 		$dsfilter = '', $absmax = '') {
 		$this->username  = 'OsUser:' . get_current_user();
-		$this->user_info = array();
+		$this->user_info = [];
 
 		if (isset($_SESSION[SESS_USER_ID])) {
 			$this->user = $_SESSION[SESS_USER_ID];
@@ -126,7 +126,7 @@ class spikekill {
 			$this->user_info = db_fetch_row_prepared('SELECT id, username
 				FROM user_auth
 				WHERE id = ?',
-				array($this->user));
+				[$this->user]);
 
 			if (cacti_sizeof($this->user_info)) {
 				$this->username = 'CactiUser:' . $this->user_info['username'];
@@ -237,7 +237,7 @@ class spikekill {
 		/* set the correct value */
 		if ($this->avgnan == '') {
 			if (!isset($uavgnan)) {
-				$this->avgnan = $davgnan;
+				$this->avgnan = $this->davgnan;
 			} else {
 				$this->avgnan = $uavgnan;
 			}
@@ -245,7 +245,7 @@ class spikekill {
 
 		if ($this->method == '') {
 			if (!isset($umethod)) {
-				$this->method = $dmethod;
+				$this->method = $this->dmethod;
 			} else {
 				$this->method = $umethod;
 			}
@@ -253,7 +253,7 @@ class spikekill {
 
 		if ($this->numspike == '') {
 			if (!isset($unumspike)) {
-				$this->numspike = $dnumspike;
+				$this->numspike = $this->dnumspike;
 			} else {
 				$this->numspike = $unumspike;
 			}
@@ -261,7 +261,7 @@ class spikekill {
 
 		if ($this->stddev == '') {
 			if (!isset($ustddev)) {
-				$this->stddev = $dstddev;
+				$this->stddev = $this->dstddev;
 			} else {
 				$this->stddev = $ustddev;
 			}
@@ -269,7 +269,7 @@ class spikekill {
 
 		if ($this->percent == '') {
 			if (!isset($upercent)) {
-				$this->percent = $dpercent;
+				$this->percent = $this->dpercent;
 			} else {
 				$this->percent = $upercent;
 			}
@@ -277,7 +277,7 @@ class spikekill {
 
 		if ($this->outliers == '') {
 			if (!isset($uoutliers)) {
-				$this->outliers = $doutliers;
+				$this->outliers = $this->doutliers;
 			} else {
 				$this->outliers = $uoutliers;
 			}
@@ -309,7 +309,7 @@ class spikekill {
 
 		if ($this->percent != '') {
 			if (is_numeric($this->percent) && $this->percent > 0) {
-				$this->percent = $this->percent / 100;
+				$this->percent /= 100;
 			} else {
 				$this->set_error('FATAL: Percent deviation must be a positive floating point number.');
 			}
@@ -349,7 +349,6 @@ class spikekill {
 				$this->method = SPIKE_METHOD_FLOAT;
 
 				break;
-
 			default:
 				$this->set_error("FATAL: You must specify either 'stddev', 'variance', 'float', or 'fill' as methods.");
 		}
@@ -367,7 +366,6 @@ class spikekill {
 			case 'last':
 			case 'nan':
 				break;
-
 			default:
 				$this->set_error("FATAL: You must specify either 'last', 'avg' or 'nan' as a replacement method.");
 		}
@@ -428,7 +426,6 @@ class spikekill {
 					$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm, OutStart:$this->out_start, OutEnd:$this->out_end, AvgNan:$this->avgnan";
 
 					break;
-
 				default:
 					$mm  = 'Undefined';
 					$mes = "$this->username, File:" . basename($this->rrdfile) . ", Method:$mm";
@@ -502,9 +499,9 @@ class spikekill {
 		   The we don't need to know the type of rra, only it's number for this analysis
 		   the same applies for the ds' as well.
 		*/
-		$rra           = array();
-		$this->rra_cf  = array();
-		$this->rra_pdp = array();
+		$rra           = [];
+		$this->rra_cf  = [];
+		$this->rra_pdp = [];
 
 		$rra_num = 0;
 		$ds_num  = 0;
@@ -514,10 +511,10 @@ class spikekill {
 		$in_rra  = false;
 		$in_db   = false;
 
-		$this->ds_min  = array();
-		$this->ds_max  = array();
+		$this->ds_min  = [];
+		$this->ds_max  = [];
 
-		$this->ds_name = array();
+		$this->ds_name = [];
 
 		/**
 		 * perform a first pass on the array and do the following:
@@ -537,7 +534,7 @@ class spikekill {
 					/* get the timestamp */
 					$timestamp_part = $linearray[0];
 
-					if (strpos($timestamp_part, '<timestamp>') !== false) {
+					if (str_contains($timestamp_part, '<timestamp>')) {
 						$timestamp_part = str_replace('<row><timestamp>', '', $timestamp_part);
 						$timestamp_part = str_replace('</timestamp>', '', $timestamp_part);
 						$timestamp      = trim($timestamp_part);
@@ -798,7 +795,7 @@ class spikekill {
 
 								/* remove NaN entries from the data set */
 								if (cacti_sizeof($myds)) {
-									foreach($myds as $timestamp => $value) {
+									foreach ($myds as $timestamp => $value) {
 										if (stripos($value, 'nan') !== false) {
 											unset($myds[$timestamp]);
 										}
@@ -994,7 +991,7 @@ class spikekill {
 								$this->ds_name[$dskey],
 								$this->rra_cf[$rra_key],
 								$ds['totalsamples'],
-								(isset($ds['numsamples']) ? $ds['numsamples'] : '0'),
+								($ds['numsamples'] ?? '0'),
 								($ds['average'] != 'N/A' ? round($ds['average'],2) : $ds['average']),
 								($ds['standard_deviation'] != 'N/A' ? round($ds['standard_deviation'],2) : $ds['standard_deviation']),
 								(isset($ds['max_value']) ? round($ds['max_value'],2) : 'N/A'),
@@ -1034,7 +1031,7 @@ class spikekill {
 								$this->ds_name[$dskey],
 								$this->rra_cf[$rra_key],
 								$ds['totalsamples'],
-								(isset($ds['numsamples']) ? $ds['numsamples'] : '0'),
+								($ds['numsamples'] ?? '0'),
 								($ds['average'] != 'N/A' ? round($ds['average'],2) : $ds['average']),
 								($ds['standard_deviation'] != 'N/A' ? round($ds['standard_deviation'],2) : $ds['standard_deviation']),
 								(isset($ds['max_value']) ? round($ds['max_value'],2) : 'N/A'),
@@ -1057,8 +1054,8 @@ class spikekill {
 		/* variance subroutine */
 		$rra_num   = 0;
 		$ds_num    = 0;
-		$last_num  = array();
-		$new_array = array();
+		$last_num  = [];
+		$new_array = [];
 
 		if (cacti_sizeof($output)) {
 			foreach ($output as $line) {
@@ -1068,7 +1065,7 @@ class spikekill {
 					/* get the timestamp */
 					$timestamp_part = $linearray[0];
 
-					if (strpos($timestamp_part, '<timestamp>') !== false) {
+					if (str_contains($timestamp_part, '<timestamp>')) {
 						$timestamp_part = str_replace('<row><timestamp>', '', $timestamp_part);
 						$timestamp_part = str_replace('</timestamp>', '', $timestamp_part);
 						$timestamp      = trim($timestamp_part);
@@ -1222,16 +1219,16 @@ class spikekill {
 					$new_array[] = $out_row;
 				} else {
 					if (substr_count($line, '</rra>')) {
-						$ds_minmax = array();
+						$ds_minmax = [];
 						$rra_num++;
 
 						$kills    = 0;
-						$last_num = array();
+						$last_num = [];
 					} elseif (substr_count($line, '</database>')) {
 						$ds_num++;
 
 						$kills    = 0;
-						$last_num = array();
+						$last_num = [];
 					}
 
 					$new_array[] = $line;
@@ -1266,7 +1263,7 @@ class spikekill {
 							$line = trim(substr($line,0,$comment_start - 1) . substr($line,$comment_end + 3));
 						}
 
-						if (strpos($line, '<row>') !== false) {
+						if (str_contains($line, '<row>')) {
 							/* capture the timestamp */
 							$stamp     = trim(substr($oline, $comment_start + 4, $comment_end - 4));
 							$stamp     = explode('/', $stamp);
@@ -1292,17 +1289,17 @@ class spikekill {
 		if ($total_time < 60) {
 			return $total_time . ' secs';
 		} else {
-			$total_time = $total_time / 60;
+			$total_time /= 60;
 
 			if ($total_time < 60) {
 				return $total_time . ' mins';
 			} else {
-				$total_time = $total_time / 60;
+				$total_time /= 60;
 
 				if ($total_time < 24) {
 					return $total_time . ' hours';
 				} else {
-					$total_time = $total_time / 24;
+					$total_time /= 24;
 
 					return $total_time . ' days';
 				}
@@ -1333,16 +1330,15 @@ class spikekill {
 	private function calculateStandardDeviation($items) {
 		if (!function_exists('stats_standard_deviation')) {
 			function stats_standard_deviation($items, $sample = false) {
-
-				$sum = 0;
+				$sum         = 0;
 				$total_items = 0;
 
 				/* remove NaN entries from the data set */
 				if (cacti_sizeof($items)) {
-					foreach($items as $key => $value) {
+					foreach ($items as $key => $value) {
 						if (is_int($value) || is_float($value)) {
 							$total_items++;
-							cacti_log(print_r($sum,true) . ":::" . print_r($value,true));
+							cacti_log(print_r($sum,true) . ':::' . print_r($value,true));
 							$sum += $value;
 						} else {
 							unset($items[$key]);

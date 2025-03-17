@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -28,7 +28,7 @@ require(__DIR__ . '/../include/cli_check.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$data          = array('tfa_enabled' => '', 'tfa_secret' => '');
+$data          = ['tfa_enabled' => '', 'tfa_secret' => ''];
 $salt          = '';
 $new_user      = '';
 $template_user = '';

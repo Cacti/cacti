@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -47,8 +47,8 @@ if (cacti_sizeof($parms)) {
 	$graphId    = 0;   # The ID of the graph to add (gets added to parentNode)
 	$siteId     = 0;   # The ID of the site to add
 
-	$sortMethods = array('manual' => 1, 'alpha' => 2, 'natural' => 4, 'numeric' => 3);
-	$nodeTypes   = array('header' => 1, 'graph' => 2, 'host' => 3);
+	$sortMethods = ['manual' => 1, 'alpha' => 2, 'natural' => 4, 'numeric' => 3];
+	$nodeTypes   = ['header' => 1, 'graph' => 2, 'host' => 3];
 
 	$hostId         = 0;
 	$hostGroupStyle = 1; # 1 = Graph Template,  2 = Data Query Index
@@ -213,7 +213,7 @@ if (cacti_sizeof($parms)) {
 			exit(1);
 		}
 
-		$treeOpts              = array();
+		$treeOpts              = [];
 		$treeOpts['id']        = 0; # Zero means create a new one rather than save over an existing one
 		$treeOpts['name']      = $name;
 

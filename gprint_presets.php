@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -24,9 +24,9 @@
 
 include('./include/auth.php');
 
-$actions = array(
+$actions = [
 	1 => __('Delete')
-);
+];
 
 /* set default action */
 set_default_action();
@@ -48,7 +48,6 @@ switch (get_request_var('action')) {
 		bottom_footer();
 
 		break;
-
 	default:
 		top_header();
 
@@ -96,7 +95,7 @@ function form_actions() {
 	global $actions;
 
 	/* ================= input validation ================= */
-	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
+	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
 	/* ==================================================== */
 
 	/* if we are to save this form, instead of display it */
@@ -114,7 +113,7 @@ function form_actions() {
 		exit;
 	} else {
 		$ilist  = '';
-		$iarray = array();
+		$iarray = [];
 
 		/* loop through each of the graphs selected on the previous page and get more info about them */
 		foreach ($_POST as $var => $val) {
@@ -123,29 +122,29 @@ function form_actions() {
 				input_validate_input_number($matches[1], 'chk[1]');
 				/* ==================================================== */
 
-				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates_gprint WHERE id = ?', array($matches[1]))) . '</li>';
+				$ilist .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates_gprint WHERE id = ?', [$matches[1]])) . '</li>';
 
 				$iarray[] = $matches[1];
 			}
 		}
 
-		$form_data = array(
-			'general' => array(
+		$form_data = [
+			'general' => [
 				'page'       => 'gprint_presets.php',
 				'actions'    => $actions,
 				'optvar'     => 'drp_action',
 				'item_array' => $iarray,
 				'item_list'  => $ilist
-			),
-			'options' => array(
-				1 => array(
+			],
+			'options' => [
+				1 => [
 					'smessage' => __('Click \'Continue\' to Delete the following GPRINT Preset.'),
 					'pmessage' => __('Click \'Continue\' to Delete following GPRINT Presets.'),
 					'scont'    => __('Delete GPRINT Preset'),
 					'pcont'    => __('Delete GPRINT Presets')
-				),
-			)
-		);
+				],
+			]
+		];
 
 		form_continue_confirmation($form_data);
 	}
@@ -159,7 +158,7 @@ function gprint_presets_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$gprint_preset = db_fetch_row_prepared('SELECT * FROM graph_templates_gprint WHERE id = ?', array(get_request_var('id')));
+		$gprint_preset = db_fetch_row_prepared('SELECT * FROM graph_templates_gprint WHERE id = ?', [get_request_var('id')]);
 		$header_label  = __esc('GPRINT Presets [edit: %s]', $gprint_preset['name']);
 	} else {
 		$header_label = __('GPRINT Presets [new]');
@@ -170,10 +169,10 @@ function gprint_presets_edit() {
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
-		array(
-			'config' => array('no_form_tag' => true),
-			'fields' => inject_form_variables($fields_grprint_presets_edit, (isset($gprint_preset) ? $gprint_preset : array()))
-		)
+		[
+			'config' => ['no_form_tag' => true],
+			'fields' => inject_form_variables($fields_grprint_presets_edit, (isset($gprint_preset) ? $gprint_preset : []))
+		]
 	);
 
 	html_end_box(true, true);
@@ -221,37 +220,37 @@ function gprint_presets() {
 		$sql_order
 		$sql_limit");
 
-	$display_text = array(
-		'name' => array(
+	$display_text = [
+		'name' => [
 			'display' => __('GPRINT Preset Name'),
 			'align'   => 'left',
 			'sort'    => 'ASC',
 			'tip'     => __('The name of this GPRINT Preset.')
-		),
-		'gprint_text' => array(
+		],
+		'gprint_text' => [
 			'display' => __('Format'),
 			'align'   => 'right',
 			'sort'    => 'ASC',
 			'tip'     => __('The GPRINT format string.')
-		),
-		'nosort' => array(
+		],
+		'nosort' => [
 			'display' => __('Deletable'),
 			'align'   => 'right',
 			'tip'     => __('GPRINTs that are in use cannot be Deleted.  In use is defined as being referenced by either a Graph or a Graph Template.')
-		),
-		'graphs' => array(
+		],
+		'graphs' => [
 			'display' => __('Graphs Using'),
 			'align'   => 'right',
 			'sort'    => 'DESC',
 			'tip'     => __('The number of Graphs using this GPRINT.')
-		),
-		'templates' => array(
+		],
+		'templates' => [
 			'display' => __('Templates Using'),
 			'align'   => 'right',
 			'sort'    => 'DESC',
 			'tip'     => __('The number of Graphs Templates using this GPRINT.')
-		)
-	);
+		]
+	];
 
 	$nav = html_nav_bar('gprint_presets.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('GPRINTs'), 'page', 'main');
 

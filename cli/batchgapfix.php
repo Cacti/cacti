@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -292,7 +292,7 @@ if ($child == 0) {
 
 	db_execute_prepared('UPDATE graph_local_spikekill
 		SET data_source_path = REPLACE(data_source_path, "<path_rra>", ?)',
-		array(CACTI_PATH_RRA));
+		[CACTI_PATH_RRA]);
 
 	print "NOTE: There are $rrdfiles RRDfiles that will be checked for gaps and fixed" . PHP_EOL;
 
@@ -304,7 +304,7 @@ if ($child == 0) {
 			SET child = ?
 			WHERE child = 0
 			LIMIT $rrds_per_thread",
-			array($i));
+			[$i]);
 	}
 
 	$now = date('H:i:s');
@@ -384,7 +384,7 @@ if ($child == 0) {
 	$rrdfiles = db_fetch_assoc_prepared('SELECT *
 		FROM graph_local_spikekill
 		WHERE child = ?',
-		array($child));
+		[$child]);
 
 	$start = microtime(true);
 
@@ -392,7 +392,7 @@ if ($child == 0) {
 	$failed    = 0;
 
 	foreach ($rrdfiles as $rrdfile) {
-		$output     = array();
+		$output     = [];
 		$return_var = 0;
 
 		// Format the command
@@ -409,7 +409,7 @@ if ($child == 0) {
 		db_execute_prepared('UPDATE graph_local_spikekill
 			SET started = NOW()
 			WHERE id = ?',
-			array($rrdfile['id']));
+			[$rrdfile['id']]);
 
 		// Run the command
 		debug("NOTE: Running command: $command");
@@ -419,7 +419,7 @@ if ($child == 0) {
 		db_execute_prepared('UPDATE graph_local_spikekill
 			SET ended = NOW(), exit_code = ?
 			WHERE id = ?',
-			array($return_var, $rrdfile['id']));
+			[$return_var, $rrdfile['id']]);
 
 		if ($return_var == 0) {
 			printf('SUCCESS: Gap Fills for RRDfile:%s' . PHP_EOL, $rrdfile['data_source_path']);
@@ -460,7 +460,6 @@ function sig_handler($signo) {
 			exit(1);
 
 			break;
-
 		default:
 			/* ignore all other signals */
 	}

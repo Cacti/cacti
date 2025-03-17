@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -26,18 +26,18 @@ include('./include/auth.php');
 include_once('./lib/poller.php');
 include_once('./lib/utility.php');
 
-$actions = array(
+$actions = [
 	1 => __('Delete'),
 	2 => __('Disable'),
 	3 => __('Enable'),
 	4 => __('Default')
-);
+];
 
-$types = array(
+$types = [
 	0 => __('GitHub Based'),
 	1 => __('File Based'),
 	2 => __('Direct URL')
-);
+];
 
 /* set default action */
 set_default_action();
@@ -57,6 +57,7 @@ switch (get_request_var('action')) {
 		repo_edit();
 
 		bottom_footer();
+
 		break;
 	default:
 		top_header();
@@ -64,11 +65,12 @@ switch (get_request_var('action')) {
 		repos();
 
 		bottom_footer();
+
 		break;
 }
 
 /* --------------------------
-    The Save Function
+	The Save Function
    -------------------------- */
 
 function form_save() {
@@ -108,12 +110,12 @@ function form_save() {
 				} elseif ($save['repo_type'] == 2) {
 					$file = $save['repo_location'] . '/package.manifest';
 
-					$context = array(
-						'ssl' =>array(
+					$context = [
+						'ssl' => [
 							'verify_peer'      => false,
 							'verify_peer_name' => false,
-						),
-					);
+						],
+					];
 
 					$data = file_get_contents($file, false, stream_context_create($context));
 
@@ -151,22 +153,22 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == '1') { // delete
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					package_remove($selected_items[$i]);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '2') { // disable
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					package_disable($selected_items[$i]);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '3') { // enable
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
+				for ($i=0;($i < cacti_count($selected_items));$i++) {
 					package_enable($selected_items[$i]);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '4') { // default
 				if (cacti_sizeof($selected_items) > 1) {
 					/* error message */
 				} else {
-					for ($i=0;($i<cacti_count($selected_items));$i++) {
+					for ($i=0;($i < cacti_count($selected_items));$i++) {
 						package_default($selected_items[$i]);
 					}
 				}
@@ -174,12 +176,13 @@ function form_actions() {
 		}
 
 		header('Location: package_repos.php?header=false');
+
 		exit;
 	}
 
 	/* setup some variables */
-	$p_list = '';
-	$p_array = array();
+	$p_list  = '';
+	$p_array = [];
 
 	/* loop through each of the data queries and process them */
 	foreach ($_POST as $var => $val) {
@@ -188,7 +191,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$p_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM package_repositories WHERE id = ?', array($matches[1]))) . '</li>';
+			$p_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM package_repositories WHERE id = ?', [$matches[1]])) . '</li>';
 			$p_array[] = $matches[1];
 		}
 	}
@@ -240,6 +243,7 @@ function form_actions() {
 	} else {
 		raise_message(40);
 		header('Location: package_repos.php?header=false');
+
 		exit;
 	}
 
@@ -260,21 +264,21 @@ function form_actions() {
 }
 
 function repo_remove($id) {
-	db_execute_prepared('DELETE FROM package_repositories WHERE id = ?', array($id));
-	db_execute_prepared('DELETE FROM package_repositories WHERE id = ?', array($id));
+	db_execute_prepared('DELETE FROM package_repositories WHERE id = ?', [$id]);
+	db_execute_prepared('DELETE FROM package_repositories WHERE id = ?', [$id]);
 }
 
 function repo_disable($id) {
-	db_execute_prepared('UPDATE package_repositories SET enabled = "" WHERE id = ?', array($id));
+	db_execute_prepared('UPDATE package_repositories SET enabled = "" WHERE id = ?', [$id]);
 }
 
 function repo_enable($id) {
-	db_execute_prepared('UPDATE package_repositories SET enabled = "on" WHERE id = ?', array($id));
+	db_execute_prepared('UPDATE package_repositories SET enabled = "on" WHERE id = ?', [$id]);
 }
 
 function repo_default($id) {
 	db_execute('UPDATE package_repositories SET `default` = ""');
-	db_execute_prepared('UPDATE package_repositories SET `default` = "on" WHERE id = ?', array($id));
+	db_execute_prepared('UPDATE package_repositories SET `default` = "on" WHERE id = ?', [$id]);
 }
 
 function repo_edit() {
@@ -285,11 +289,11 @@ function repo_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$repo = db_fetch_row_prepared('SELECT * FROM package_repositories WHERE id = ?', array(get_request_var('id')));
+		$repo         = db_fetch_row_prepared('SELECT * FROM package_repositories WHERE id = ?', [get_request_var('id')]);
 		$header_label = __esc('Package Repository [edit: %s]', $repo['name']);
 	} else {
 		$header_label = __('Package Repository [new]');
-		$repo = array();
+		$repo         = [];
 	}
 
 	if (cacti_sizeof($repo)) {
@@ -302,79 +306,79 @@ function repo_edit() {
 		$method = 'textbox';
 	}
 
-	$fields_package = array(
-		'name' => array(
-			'method' => 'textbox',
+	$fields_package = [
+		'name' => [
+			'method'        => 'textbox',
 			'friendly_name' => __('Name'),
-			'description' => __('Enter a meaningful name for this Package Repository.'),
-			'value' => '|arg1:name|',
-			'max_length' => '32',
-		),
-		'repo_type' => array(
-			'method' => 'drop_array',
+			'description'   => __('Enter a meaningful name for this Package Repository.'),
+			'value'         => '|arg1:name|',
+			'max_length'    => '32',
+		],
+		'repo_type' => [
+			'method'        => 'drop_array',
 			'friendly_name' => __('Repository Type'),
-			'description' => __('Choose what Package Repository type this is.'),
-			'value' => '|arg1:repo_type|',
-			'array' => $types,
-			'default' => '0'
-		),
-		'repo_location' => array(
-			'method' => $method,
+			'description'   => __('Choose what Package Repository type this is.'),
+			'value'         => '|arg1:repo_type|',
+			'array'         => $types,
+			'default'       => '0'
+		],
+		'repo_location' => [
+			'method'        => $method,
 			'friendly_name' => __('Location'),
-			'description' => __('Either the full path on the Cacti Web Server to the Repository or a URL to the Repository.  For example: https://github.com/Cacti/packages/'),
-			'value' => '|arg1:repo_location|',
-			'max_length' => '128',
-			'size' => '120'
-		),
-		'repo_branch' => array(
-			'method' => 'textbox',
+			'description'   => __('Either the full path on the Cacti Web Server to the Repository or a URL to the Repository.  For example: https://github.com/Cacti/packages/'),
+			'value'         => '|arg1:repo_location|',
+			'max_length'    => '128',
+			'size'          => '120'
+		],
+		'repo_branch' => [
+			'method'        => 'textbox',
 			'friendly_name' => __('Branch'),
-			'description' => __('For GitHub based repositories, the branch to include such as \'develop\', \'master\', etc.'),
-			'value' => '|arg1:repo_branch|',
-			'max_length' => '128',
-			'size' => '10'
-		),
-		'repo_api_key' => array(
-			'method' => 'textbox',
+			'description'   => __('For GitHub based repositories, the branch to include such as \'develop\', \'master\', etc.'),
+			'value'         => '|arg1:repo_branch|',
+			'max_length'    => '128',
+			'size'          => '10'
+		],
+		'repo_api_key' => [
+			'method'        => 'textbox',
 			'friendly_name' => __('API Key (optional)'),
-			'description' => __('For GitHub based repositories, the optional API key required to access the repository.'),
-			'value' => '|arg1:repo_api_key|',
-			'max_length' => '128',
-			'size' => '100'
-		),
-		'enabled' => array(
-			'method' => 'checkbox',
+			'description'   => __('For GitHub based repositories, the optional API key required to access the repository.'),
+			'value'         => '|arg1:repo_api_key|',
+			'max_length'    => '128',
+			'size'          => '100'
+		],
+		'enabled' => [
+			'method'        => 'checkbox',
 			'friendly_name' => __('Enabled'),
-			'description' => __('If this checkbox is checked, you will be able to import packages from this Repository.'),
-			'value' => '|arg1:enabled|',
-			'default' => 'on',
-		),
-		'default' => array(
-			'method' => 'checkbox',
+			'description'   => __('If this checkbox is checked, you will be able to import packages from this Repository.'),
+			'value'         => '|arg1:enabled|',
+			'default'       => 'on',
+		],
+		'default' => [
+			'method'        => 'checkbox',
 			'friendly_name' => __('Default'),
-			'description' => __('If this checkbox is checked, this will be the first Repository shown to the user.'),
-			'value' => '|arg1:default|',
-			'default' => '',
-		),
-		'id' => array(
+			'description'   => __('If this checkbox is checked, this will be the first Repository shown to the user.'),
+			'value'         => '|arg1:default|',
+			'default'       => '',
+		],
+		'id' => [
 			'method' => 'hidden_zero',
-			'value' => '|arg1:id|'
-		),
-		'save_component_repo' => array(
+			'value'  => '|arg1:id|'
+		],
+		'save_component_repo' => [
 			'method' => 'hidden',
-			'value' => '1'
-		)
-	);
+			'value'  => '1'
+		]
+	];
 
 	form_start('package_repos.php');
 
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
 	draw_edit_form(
-		array(
-			'config' => array(),
-			'fields' => inject_form_variables($fields_package, (isset($repo) ? $repo : array()))
-		)
+		[
+			'config' => [],
+			'fields' => inject_form_variables($fields_package, (isset($repo) ? $repo : []))
+		]
 	);
 
 	html_end_box(true);
@@ -420,7 +424,7 @@ function repos() {
 	}
 
 	$sql_where  = '';
-	$sql_params = array();
+	$sql_params = [];
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
@@ -433,7 +437,7 @@ function repos() {
 	}
 
 	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$total_rows = db_fetch_cell_prepared("SELECT COUNT(*)
 		FROM package_repositories
@@ -447,37 +451,37 @@ function repos() {
 		$sql_limit",
 		$sql_params);
 
-	$display_text = array(
-		'name' => array(
+	$display_text = [
+		'name' => [
 			'display' => __('Name'),
 			'sort'    => 'ASC'
-		),
-		'repo_type' => array(
+		],
+		'repo_type' => [
 			'display' => __('Type'),
 			'sort'    => 'ASC'
-		),
-		'repo_location' => array(
+		],
+		'repo_location' => [
 			'display' => __('Location'),
 			'sort'    => 'ASC'
-		),
-		'repo_branch' => array(
+		],
+		'repo_branch' => [
 			'display' => __('Branch'),
 			'align'   => 'center',
 			'sort'    => 'ASC'
-		),
-		'enabled' => array(
+		],
+		'enabled' => [
 			'display' => __('Enabled'),
 			'align'   => 'center',
 			'sort'    => 'ASC'
-		),
-		'default' => array(
+		],
+		'default' => [
 			'display' => __('Default'),
 			'align'   => 'center',
 			'sort'    => 'ASC'
-		),
-	);
+		],
+	];
 
-	$nav = html_nav_bar('package_repos.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, sizeof($display_text)+1, __('Package Repositories'), 'page', 'main');
+	$nav = html_nav_bar('package_repos.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, sizeof($display_text) + 1, __('Package Repositories'), 'page', 'main');
 
 	form_start('package_repos.php', 'chk');
 
@@ -503,7 +507,7 @@ function repos() {
 			form_end_row();
 		}
 	} else {
-		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No Package Repositories Found') . '</em></td></tr>';
+		print '<tr class="tableRow odd"><td colspan="' . (cacti_sizeof($display_text) + 1) . '"><em>' . __('No Package Repositories Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);

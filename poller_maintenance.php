@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -167,7 +167,7 @@ function unlock_cacti() {
 	if ($lockout != '') {
 		$lockout = json_decode($lockout, true);
 
-		if (time() - (30*60) > $lockout['time']) {
+		if (time() - (30 * 60) > $lockout['time']) {
 			set_config_option('cacti_lockout_status', '');
 
 			cacti_log('WARNING: Cacti Maintenance Mode cleared by main Cacti Data Collector automatically!', true, 'SYSTEM');
@@ -188,7 +188,7 @@ function device_recovery_sweep() {
 
 	$start = microtime(true);
 
-	maint_debug("Attempting to Recover Downed Devices using SNMP Options");
+	maint_debug('Attempting to Recover Downed Devices using SNMP Options');
 
 	$devices = db_fetch_assoc_prepared('SELECT *
 		FROM host
@@ -198,9 +198,9 @@ function device_recovery_sweep() {
 		AND snmp_options > 0
 		AND status_options_date < DATE_SUB(NOW(), INTERVAL ? SECOND)
 		AND poller_id = ?',
-		array(HOST_DOWN, read_config_option('snmp_options_retry_interval'), $config['poller_id']));
+		[HOST_DOWN, read_config_option('snmp_options_retry_interval'), $config['poller_id']]);
 
-	$snmp_columns = array(
+	$snmp_columns = [
 		'snmp_version',
 		'snmp_community',
 		'snmp_timeout',
@@ -212,7 +212,7 @@ function device_recovery_sweep() {
 		'snmp_priv_passphrase',
 		'snmp_context',
 		'snmp_engine_id'
-	);
+	];
 
 	$recovered    = 0;
 	$down_devices = cacti_sizeof($devices);
@@ -224,17 +224,17 @@ function device_recovery_sweep() {
 		$names   = array_rekey(db_fetch_assoc('SELECT * FROM automation_snmp'), 'id', 'name');
 
 		if (cacti_sizeof($options)) {
-			foreach($devices as $d) {
+			foreach ($devices as $d) {
 				$device_up = false;
 
 				$start = microtime(true);
 
-				foreach($options as $o) {
+				foreach ($options as $o) {
 					$ping = new Net_Ping;
 
 					$thost = $d;
 
-					foreach($snmp_columns as $c) {
+					foreach ($snmp_columns as $c) {
 						$thost[$c] = $o[$c];
 					}
 
@@ -242,6 +242,7 @@ function device_recovery_sweep() {
 						case AVAIL_NONE:
 						case AVAIL_PING:
 							$thost['availability_method'] = AVAIL_SNMP;
+
 							break;
 					}
 
@@ -252,9 +253,9 @@ function device_recovery_sweep() {
 						cacti_log(sprintf('RECOVERY STATS: Time:%0.2f Device[%s] STATUS: Device \'%s\' brought UP with Options Set [%s]', microtime(true) - $start, $thost['id'], $thost['hostname'], $names[$o['snmp_id']]), true, 'SYSTEM');
 
 						$sql        = 'UPDATE host SET ';
-						$sql_params = array();
+						$sql_params = [];
 
-						foreach($snmp_columns as $i => $c) {
+						foreach ($snmp_columns as $i => $c) {
 							$sql         .= ($i > 0 ? ', ':'') . "$c = ?";
 							$sql_params[] = $thost[$c];
 						}
@@ -272,8 +273,8 @@ function device_recovery_sweep() {
 				}
 
 				if (!$device_up) {
-					cacti_log(sprintf('RECOVERY STATS: Time:%0.2f Device[%s] STATUS: Device \'%s\' remains Down. No matching Options Sets.', microtime(true)-$start, $thost['id'], $thost['hostname']), true, 'SYSTEM');
-					db_execute_prepared('UPDATE host SET status_options_date = NOW() WHERE id = ?', array($thost['id']));
+					cacti_log(sprintf('RECOVERY STATS: Time:%0.2f Device[%s] STATUS: Device \'%s\' remains Down. No matching Options Sets.', microtime(true) - $start, $thost['id'], $thost['hostname']), true, 'SYSTEM');
+					db_execute_prepared('UPDATE host SET status_options_date = NOW() WHERE id = ?', [$thost['id']]);
 				}
 			}
 		}
@@ -283,7 +284,7 @@ function device_recovery_sweep() {
 
 	$time = microtime(true) - $start;
 
-	return array('devices' => $down_devices, 'recovered' => $recovered, 'sweeptime' => $time);
+	return ['devices' => $down_devices, 'recovered' => $recovered, 'sweeptime' => $time];
 }
 
 function update_graphs_data_source_templates_totals($force) {
@@ -365,7 +366,7 @@ function remove_aged_row_cache() {
 		foreach ($classes as $name => $ts) {
 			db_execute_prepared('DELETE FROM user_auth_row_cache
 				WHERE class = ? AND UNIX_TIMESTAMP(time) < ?',
-				array($name, $ts));
+				[$name, $ts]);
 		}
 	}
 }
@@ -425,7 +426,7 @@ function authcache_purge() {
 	if (read_config_option('auth_cache_enabled') == 'on') {
 		db_execute_prepared('DELETE FROM user_auth_cache
 			WHERE last_update < ?',
-			array(date('Y-m-d H:i:s', time() - (86400 * 90))));
+			[date('Y-m-d H:i:s', time() - (86400 * 90))]);
 	} else {
 		db_execute('TRUNCATE TABLE user_auth_cache');
 	}
@@ -515,7 +516,7 @@ function logrotate_rotatenow() {
 
 	$poller_start = microtime(true);
 
-	$logs = array();
+	$logs = [];
 	$log  = read_config_option('path_cactilog');
 
 	if (empty($log)) {
@@ -570,6 +571,9 @@ function logrotate_rotatenow() {
 
 /**
  * logrotate_file_rotate() - rotates the specified log file, appending date given
+ * @param mixed $name
+ * @param mixed $log
+ * @param mixed $date
  */
 function logrotate_file_rotate($name, $log, $date) {
 	if (empty($log)) {
@@ -624,6 +628,10 @@ function logrotate_file_rotate($name, $log, $date) {
 
 /**
  * logrotate_file_clean - Cleans up any old log files that should be removed
+ * @param mixed $name
+ * @param mixed $log
+ * @param mixed $date
+ * @param mixed $rotation
  */
 function logrotate_file_clean($name, $log, $date, $rotation) {
 	global $config;
@@ -700,7 +708,7 @@ function secpass_check_expired() {
 			WHERE lastlogin = -1
 			AND realm = 0
 			AND enabled = 'on'",
-			array($t));
+			[$t]);
 
 		$t = $t - (intval($e) * 86400);
 
@@ -710,7 +718,7 @@ function secpass_check_expired() {
 			AND enabled = 'on'
 			AND lastlogin < ?
 			AND id > 1",
-			array($t));
+			[$t]);
 	}
 
 	$e = read_config_option('secpass_expirepass');
@@ -722,7 +730,7 @@ function secpass_check_expired() {
 			WHERE lastchange = -1
 			AND realm = 0
 			AND enabled = 'on'",
-			array($t));
+			[$t]);
 
 		$t = $t - (intval($e) * 86400);
 
@@ -731,7 +739,7 @@ function secpass_check_expired() {
 			WHERE realm = 0
 			AND enabled = 'on'
 			AND lastchange < ?",
-			array($t));
+			[$t]);
 	}
 }
 
@@ -769,7 +777,7 @@ function remove_files($file_array) {
 
 		if (read_config_option('storage_location') == 0) {
 			switch ($file['action']) {
-				case '1' :
+				case '1':
 					if (file_exists($real_file)) {
 						if (unlink($real_file)) {
 							maint_debug('Deleted: ' . $real_file);
@@ -780,9 +788,10 @@ function remove_files($file_array) {
 					}
 
 					break;
-				case '3' :
+				case '3':
 					$target_file = $rrd_archive . '/' . $base_file;
 					$target_dir  = dirname($target_file);
+
 					if (!is_dir($target_dir)) {
 						rrdclean_create_path($target_dir);
 					}
@@ -826,7 +835,7 @@ function remove_files($file_array) {
 		/* drop from data_source_purge_action table */
 		db_execute_prepared('DELETE FROM `data_source_purge_action`
 			WHERE name = ?',
-			array($file['name']));
+			[$file['name']]);
 
 		maint_debug('Delete from data_source_purge_action: ' . $file['name']);
 
@@ -840,7 +849,7 @@ function remove_files($file_array) {
 			INNER JOIN data_local AS dl
 			ON dtr.local_data_id=dl.id
 			WHERE (local_data_id=?)',
-			array($file['local_data_id']));
+			[$file['local_data_id']]);
 
 		if (cacti_sizeof($lgis)) {
 			/* anything found? */
@@ -901,8 +910,8 @@ function rrdclean_create_path($path) {
 function cleanup_ds_and_graphs() {
 	global $config;
 
-	$remove_ldis = array();
-	$remove_lgis = array();
+	$remove_ldis = [];
+	$remove_lgis = [];
 
 	maint_debug('RRDClean now cleans up all data sources and graphs');
 
@@ -964,7 +973,7 @@ function maint_debug($message) {
 	global $debug;
 
 	if ($debug) {
-		print "DEBUG: " . trim($message) . "\n";
+		print 'DEBUG: ' . trim($message) . "\n";
 	}
 }
 
@@ -1016,6 +1025,6 @@ function phpversion_check($force = false) {
 
 	if ($phpbad_ver && ($date_next < $date_now || $force)) {
 		cacti_log('WARNING: PHP Version "' . PHP_VERSION .'"will not be supported by the develop branch in the future.  If you cannot upgrade to PHP 7.1 or higher, please switch branches', false, 'CACTI');
-		db_execute_prepared('REPLACE INTO settings (name, value) VALUES ("phpver_last", ?)', array($now));
+		db_execute_prepared('REPLACE INTO settings (name, value) VALUES ("phpver_last", ?)', [$now]);
 	}
 }

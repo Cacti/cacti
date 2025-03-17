@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -110,7 +110,6 @@ if (cacti_sizeof($parms)) {
 							$reindex_method = DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION;
 
 							break;
-
 						default:
 							print "ERROR: You must supply a valid reindex method for all hosts!\n";
 
@@ -143,7 +142,6 @@ if (cacti_sizeof($parms)) {
 				$quietMode = true;
 
 				break;
-
 			default:
 				print "ERROR: Invalid Argument: ($arg)\n\n";
 				display_help();

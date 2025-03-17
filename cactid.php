@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -46,7 +46,6 @@ function sig_handler($signo) {
 			exit(1);
 
 			break;
-
 		default:
 			/* ignore all other signals */
 	}
@@ -226,17 +225,17 @@ function get_options() {
 	$parms = $_SERVER['argv'];
 	array_shift($parms);
 
-	$options = array();
+	$options = [];
 
 	if (sizeof($parms)) {
 		$shortopts = 'VvHh';
 
-		$longopts = array(
+		$longopts = [
 			'foreground',
 			'debug',
 			'version',
 			'help'
-		);
+		];
 
 		$options = getopt($shortopts, $longopts);
 

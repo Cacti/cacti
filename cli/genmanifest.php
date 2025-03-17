@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -40,82 +40,89 @@ if (cacti_sizeof($parms)) {
 
 	$shortopts = 'VvHh';
 
-	$longopts = array(
+	$longopts = [
 		'directory::',
 		'list',
 		'generate',
 		'debug',
 		'version',
 		'help'
-	);
+	];
 
 	$options = getopt($shortopts, $longopts);
 
-	foreach($options as $arg => $value) {
+	foreach ($options as $arg => $value) {
 		switch($arg) {
-		case 'list':
-			$list = true;
+			case 'list':
+				$list = true;
 
-			break;
-		case 'generate':
-			$generate = true;
+				break;
+			case 'generate':
+				$generate = true;
 
-			break;
-		case 'directory':
-			$directory = $value;
+				break;
+			case 'directory':
+				$directory = $value;
 
-			break;
-		case 'debug':
-			$debug = true;
+				break;
+			case 'debug':
+				$debug = true;
 
-			break;
-		case 'version':
-		case 'V':
-		case 'v':
-			display_version();
-			exit;
-		case 'help':
-		case 'H':
-		case 'h':
-			display_help();
-			exit(0);
-		default:
-			print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
-			display_help();
-			exit(1);
+				break;
+			case 'version':
+			case 'V':
+			case 'v':
+				display_version();
+
+				exit;
+			case 'help':
+			case 'H':
+			case 'h':
+				display_help();
+
+				exit(0);
+			default:
+				print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
+				display_help();
+
+				exit(1);
 		}
 	}
 }
 
 if (!$list && !$generate) {
 	display_help();
+
 	exit(0);
 }
 
 if ($directory === false) {
 	print 'FATAL: The Package Directory is a mandatory option.' . PHP_EOL;
 	display_help();
+
 	exit(1);
 }
 
 if (!cacti_sizeof($directory)) {
-	$directory = array($directory);
+	$directory = [$directory];
 }
 
-$manifest = array();
-$keys     = array();
+$manifest = [];
+$keys     = [];
 $keycnt   = 0;
 $pkgcnt   = 0;
 
 if (cacti_sizeof($directory)) {
-	foreach($directory as $dir) {
+	foreach ($directory as $dir) {
 		if (!is_dir($dir)) {
 			print "FATAL: The Package Directory '$dir' must be exist and must contain packages. Skipping!" . PHP_EOL;
+
 			continue;
 		}
 
 		if (!is_writable($dir)) {
 			print "FATAL: The Package Directory '$dir' must be writable. Skipping!" . PHP_EOL;
+
 			continue;
 		}
 
@@ -123,13 +130,14 @@ if (cacti_sizeof($directory)) {
 		$keyfound = false;
 
 		pkg_debug('Processing files');
+
 		if (cacti_sizeof($files)) {
-			foreach($files as $file) {
+			foreach ($files as $file) {
 				pkg_debug("Processing file: $file");
 
 				if (is_readable($file)) {
 					$filename = "compress.zlib://$file";
-					$data = file_get_contents($filename);
+					$data     = file_get_contents($filename);
 
 					if ($data != '') {
 						$xmldata = simplexml_load_string($data);
@@ -139,23 +147,23 @@ if (cacti_sizeof($directory)) {
 						$name = $pkgdata['info']['name'];
 						unset($pkgdata['info']['name']);
 
-						$manifest[$pkgcnt] = array(
+						$manifest[$pkgcnt] = [
 							'kind'       => 'Package',
 							'name'       => $name,
 							'filename'   => basename($file),
 							'metadata'   => $pkgdata['info']
-						);
+						];
 
 						$pkgcnt++;
 
 						if (isset($pkgdata['publickey'])) {
-							$keys[$keycnt]['publickey'] = base64_decode($pkgdata['publickey']);
-							$keyfound = true;
+							$keys[$keycnt]['publickey'] = base64_decode($pkgdata['publickey'], true);
+							$keyfound                   = true;
 						}
 
 						if (isset($pkgdata['publickeyname'])) {
 							$keys[$keycnt]['publickeyname'] = $pkgdata['publickeyname'];
-							$keyfound = true;
+							$keyfound                       = true;
 						}
 
 						if ($keyfound) {
@@ -179,11 +187,11 @@ if (cacti_sizeof($directory)) {
 			if (cacti_sizeof($keys)) {
 				print @json_encode(array_unique($keys), JSON_PRETTY_PRINT) . PHP_EOL;
 			} else {
-				print "WARNING: Your packages contained no public keys.  Consider repackaging" . PHP_EOL;
+				print 'WARNING: Your packages contained no public keys.  Consider repackaging' . PHP_EOL;
 			}
 			print '-----------------------------------------------------------' . PHP_EOL;
 		} else {
-			$package_manifest = array();
+			$package_manifest             = [];
 			$package_manifest['manifest'] = $manifest;
 			$package_manifest['keys']     = @array_unique($keys);
 			file_put_contents("$dir/package.manifest", json_encode($package_manifest, JSON_PRETTY_PRINT));
@@ -235,4 +243,3 @@ function display_help() {
 	print 'Required:' . PHP_EOL;
 	print '  --directory=path  Path to a writable directory containing packages.' . PHP_EOL;
 }
-

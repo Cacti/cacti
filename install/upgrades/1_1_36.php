@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -41,7 +41,7 @@ function upgrade_to_1_1_36() {
 					SET value = ?
 					WHERE user_id = ?
 					AND name = ?',
-					array($locale, $user['user_id'], $user['name']));
+					[$locale, $user['user_id'], $user['name']]);
 			}
 		}
 	}
@@ -60,7 +60,7 @@ function upgrade_to_1_1_36() {
 					SET value = ?
 					WHERE group_id = ?
 					AND name = ?',
-					array($locale, $group['group_id'], $group['name']));
+					[$locale, $group['group_id'], $group['name']]);
 			}
 		}
 	}

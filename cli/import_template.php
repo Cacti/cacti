@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -104,7 +104,7 @@ if (cacti_sizeof($parms)) {
 		if ($with_profile) {
 			print "WARNING: '--with-profile' and '--profile-id=N' are exclusive. Ignoring '--with-profile'" . PHP_EOL;
 		} else {
-			$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles WHERE id = ?', array($profile_id));
+			$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles WHERE id = ?', [$profile_id]);
 
 			if (empty($id)) {
 				print "WARNING: Data Source Profile ID $profile_id not found. Using System Default" . PHP_EOL;
@@ -131,7 +131,7 @@ if (cacti_sizeof($parms)) {
 
 			$debug_data = import_xml_data($xml_data, false, $id, $remove_orphans, $replace_svalues);
 
-			import_display_results($debug_data, array(), $preview_only);
+			import_display_results($debug_data, [], $preview_only);
 		} else {
 			print "ERROR: file $filename is not readable, or does not exist" . PHP_EOL . PHP_EOL;
 

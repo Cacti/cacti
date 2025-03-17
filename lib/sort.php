@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -104,7 +104,7 @@ function usort_natural($a, $b) {
 /* sort_by_subkey - takes the list of templates and perform a final sort
    @returns - (array) an array of sorted templates */
 function sort_by_subkey(&$array, $subkey, $sort = SORT_ASC) {
-	$keys = array();
+	$keys = [];
 
 	foreach ($array as $subarray) {
 		$keys[] = $subarray[$subkey];

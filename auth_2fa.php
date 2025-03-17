@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -36,7 +36,7 @@ if (!isset($_SESSION[SESS_USER_ID])) {
 $user = db_fetch_row_prepared('SELECT id, username, tfa_enabled, tfa_secret, login_opts
 	FROM user_auth
 	WHERE id = ?',
-	array($_SESSION[SESS_USER_ID]));
+	[$_SESSION[SESS_USER_ID]]);
 
 $message = '';
 $tfaMins = intval(read_config_option('secpass_mfatime'));
@@ -104,7 +104,7 @@ if (get_nfilter_request_var('action') == 'login_2fa') {
 			db_execute_prepared('INSERT IGNORE INTO user_log
 				(username, user_id, result, ip, time)
 				VALUES (?, ?, 2, ?, NOW())',
-				array($user['username'], $user['id'], $client_addr));
+				[$user['username'], $user['id'], $client_addr]);
 		}
 	} else {
 		/* BAD token */
@@ -113,7 +113,7 @@ if (get_nfilter_request_var('action') == 'login_2fa') {
 		db_execute_prepared('INSERT IGNORE INTO user_log
 			(username, user_id, result, ip, time)
 			VALUES (?, 0, 3, ?, NOW())',
-			array($user['username'], get_client_addr('')));
+			[$user['username'], get_client_addr('')]);
 
 		$message = __('Failed to verify token');
 	}
@@ -136,10 +136,10 @@ if (api_plugin_hook_function('custom_2fa_login', OPER_MODE_NATIVE) == OPER_MODE_
 $selectedTheme = get_selected_theme();
 
 html_auth_header('login_2fa', __('2nd Factor Authentication'), __('2FA Verification'), __('Enter your token'),
-	array(
+	[
 		'username' => $user['username'],
 		'action'   => get_nfilter_request_var('action')
-	)
+	]
 );
 ?>
 <tr>

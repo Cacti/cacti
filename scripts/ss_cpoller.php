@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -96,63 +96,63 @@ function ss_cpoller($cmd = 'index', $arg1 = '', $arg2 = '') {
 				$value = db_fetch_cell_prepared('SELECT avg_time
 					FROM poller
 					WHERE id = ?',
-					array($index));
+					[$index]);
 
 				break;
 			case 'minTime':
 				$value = db_fetch_cell_prepared('SELECT min_time
 					FROM poller
 					WHERE id = ?',
-					array($index));
+					[$index]);
 
 				break;
 			case 'maxTime':
 				$value = db_fetch_cell_prepared('SELECT max_time
 					FROM poller
 					WHERE id = ?',
-					array($index));
+					[$index]);
 
 				break;
 			case 'processCount':
 				$value = db_fetch_cell_prepared('SELECT processes
 					FROM poller
 					WHERE id = ?',
-					array($index));
+					[$index]);
 
 				break;
 			case 'threadCount':
 				$value = db_fetch_cell_prepared('SELECT threads
 					FROM poller
 					WHERE id = ?',
-					array($index));
+					[$index]);
 
 				break;
 			case 'pollerTime':
 				$value = db_fetch_cell_prepared('SELECT total_time
 					FROM poller
 					WHERE id = ?',
-					array($index));
+					[$index]);
 
 				break;
 			case 'getSNMP':
 				$value = db_fetch_cell_prepared('SELECT snmp
 					FROM poller
 					WHERE id = ?',
-					array($index));
+					[$index]);
 
 				break;
 			case 'getScript':
 				$value = db_fetch_cell_prepared('SELECT script
 					FROM poller
 					WHERE id = ?',
-					array($index));
+					[$index]);
 
 				break;
 			case 'getScriptServer':
 				$value = db_fetch_cell_prepared('SELECT server
 					FROM poller
 					WHERE id = ?',
-					array($index));
+					[$index]);
 
 				break;
 		}

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -45,7 +45,7 @@ function upgrade_to_1_2_2() {
 					)
 					GROUP BY dtr.local_data_id
 					HAVING graphs = 1',
-				array($a));
+				[$a]);
 
 			$orphans = array_rekey($orphans_results, 'local_data_id', 'local_data_id');
 
@@ -60,7 +60,7 @@ function upgrade_to_1_2_2() {
 						FROM data_template_rrd AS dtr
 						WHERE local_data_id IN (' . implode(', ', $orphans) . ')
 					)',
-					array($a));
+					[$a]);
 			}
 		}
 	}

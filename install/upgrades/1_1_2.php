@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -24,12 +24,12 @@
 
 function upgrade_to_1_1_2() {
 	db_install_drop_key('graph_templates_item', 'key', 'local_graph_id');
-	db_install_add_key('graph_templates_item', 'index', 'local_graph_id_sequence', array('local_graph_id', 'sequence'));
+	db_install_add_key('graph_templates_item', 'index', 'local_graph_id_sequence', ['local_graph_id', 'sequence']);
 
 	db_install_drop_key('graph_tree_items', 'index', 'parent');
-	db_install_add_key('graph_tree_items', 'index', 'parent_position', array('parent', 'position'));
+	db_install_add_key('graph_tree_items', 'index', 'parent_position', ['parent', 'position']);
 
-	db_install_add_key('graph_tree', 'index', 'sequence', array('sequence'));
+	db_install_add_key('graph_tree', 'index', 'sequence', ['sequence']);
 
 	db_install_execute('ALTER TABLE `graph_template_input_defs`
 		COMMENT = \'Stores the relationship for what graph items are associated\';');

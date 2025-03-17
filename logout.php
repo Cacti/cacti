@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -30,6 +30,7 @@ global $config;
 /* forcibly unlock cacti if the user logg's out */
 $admin_user = read_config_option('admin_user');
 $lockout    = read_config_option('cacti_lockout_status', true);
+
 if ($lockout != '') {
 	$lockout = json_decode($lockout, true);
 

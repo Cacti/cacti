@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -43,7 +43,7 @@ function ss_count_oids($hostid = '', $oid = '') {
 			snmp_port, snmp_timeout, max_oids, snmp_engine_id
 			FROM host
 			WHERE id = ?',
-			array($hostid));
+			[$hostid]);
 
 		if (cacti_sizeof($host)) {
 			$walk = cacti_snmp_walk($host['hostname'], $host['snmp_community'], $oid, $host['snmp_version'],

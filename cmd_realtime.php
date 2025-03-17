@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -60,7 +60,7 @@ if ($interval <= 0) {
 $start = microtime(true);
 
 /* initialize the polling items */
-$polling_items = array();
+$polling_items = [];
 
 /* get poller_item for graph_id */
 $local_data_ids = db_fetch_assoc_prepared('SELECT DISTINCT dtr.local_data_id, dl.host_id
@@ -71,7 +71,7 @@ $local_data_ids = db_fetch_assoc_prepared('SELECT DISTINCT dtr.local_data_id, dl
 	ON dl.id=dtr.local_data_id
 	WHERE gti.local_graph_id = ?
 	AND dtr.local_data_id > 0',
-	array($graph_id));
+	[$graph_id]);
 
 if (!cacti_count($local_data_ids)) {
 	print "No local_graph_id found\n\n";
@@ -79,9 +79,9 @@ if (!cacti_count($local_data_ids)) {
 	exit(-1);
 }
 
-$ids      = array();
-$hosts    = array();
-$idbyhost = array();
+$ids      = [];
+$hosts    = [];
+$idbyhost = [];
 
 foreach ($local_data_ids as $row) {
 	if ($row['local_data_id'] > 0 && $row['host_id'] != '') {
@@ -109,11 +109,11 @@ if (cacti_sizeof($idbyhost)) {
 
 	/* startup Cacti php polling server and include the include file for script processing */
 	if ($script_server_calls > 0) {
-		$cactides = array(
-			0 => array('pipe', 'r'), // stdin is a pipe that the child will read from
-			1 => array('pipe', 'w'), // stdout is a pipe that the child will write to
-			2 => array('pipe', 'w')  // stderr is a pipe to write to
-		);
+		$cactides = [
+			0 => ['pipe', 'r'], // stdin is a pipe that the child will read from
+			1 => ['pipe', 'w'], // stdout is a pipe that the child will write to
+			2 => ['pipe', 'w']  // stderr is a pipe to write to
+		];
 
 		if (function_exists('proc_open')) {
 			$cactiphp            = proc_open(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_BASE . '/script_server.php realtime ' . $poller_id, $cactides, $pipes);
@@ -132,17 +132,17 @@ if (cacti_sizeof($idbyhost)) {
 	foreach ($idbyhost as $host_id => $local_data_ids) {
 		$col_poller_id = db_fetch_cell_prepared('SELECT poller_id
 			FROM host
-			WHERE id = ?', array($host_id));
+			WHERE id = ?', [$host_id]);
 
-		$local_data_ids = array(
+		$local_data_ids = [
 			'local_data_ids' => $local_data_ids
-		);
+		];
 
 		if ($col_poller_id > 1) {
 			$hostname = db_fetch_cell_prepared('SELECT hostname
 				FROM poller
 				WHERE id = ?',
-				array($col_poller_id));
+				[$col_poller_id]);
 
 			$url = CACTI_PATH_URL . '/remote_agent.php' .
 				'?action=polldata' .
@@ -173,7 +173,7 @@ if (cacti_sizeof($idbyhost)) {
 				FROM poller_item
 				WHERE host_id = ?
 				AND local_data_id IN(' . implode(',', $local_data_ids['local_data_ids']) . ')',
-				array($host_id));
+				[$host_id]);
 
 			if (cacti_sizeof($poller_items)) {
 				foreach ($poller_items as $item) {
@@ -185,7 +185,7 @@ if (cacti_sizeof($idbyhost)) {
 								$host = db_fetch_row_prepared('SELECT ping_retries, max_oids
 								FROM host
 								WHERE id = ?',
-									array($host_id));
+									[$host_id]);
 
 								if (!cacti_sizeof($host)) {
 									$host['ping_retries'] = 1;
@@ -255,7 +255,7 @@ if (cacti_sizeof($idbyhost)) {
 							(local_data_id, rrd_name, time, poller_id, output)
 							VALUES
 							(?, ?, ?, ?, ?)',
-							array($item['local_data_id'], $item['rrd_name'], $host_update_time, $poller_id, $output));
+							[$item['local_data_id'], $item['rrd_name'], $host_update_time, $poller_id, $output]);
 					}
 				}
 			}

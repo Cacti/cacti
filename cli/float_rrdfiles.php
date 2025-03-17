@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -51,7 +51,7 @@ $end_time          = false;
 $host_id           = false;
 $host_template_id  = false;
 $graph_template_id = false;
-$local_graph_ids   = array();
+$local_graph_ids   = [];
 $step              = false;
 
 /* optional for threading and verbose display */
@@ -273,7 +273,7 @@ switch ($type) {
 		$rrdfiles = db_fetch_assoc_prepared('SELECT *
 			FROM poller_float_rrdfiles_not_done
 			WHERE process = ?',
-			array($thread_id));
+			[$thread_id]);
 
 		$child_start = microtime(true);
 
@@ -293,7 +293,7 @@ switch ($type) {
 
 			db_execute_prepared('DELETE FROM poller_float_rrdfiles_not_done
 				WHERE local_data_id = ?',
-				array($data['local_data_id']));
+				[$data['local_data_id']]);
 		}
 
 		$total_time = microtime(true) - $child_start;
@@ -344,7 +344,7 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 	$tmp_file   = $tmp_dir . '/' . $local_data_id . '.xml';
 
 	$return     = 0;
-	$output     = array();
+	$output     = [];
 	$command    = "$rrdtool_bin dump $rrd_path";
 	$db_prefix  = '                       ';
 
@@ -456,7 +456,7 @@ function float_rrdfile($rrd_path, $local_data_id, $step, $start_time, $end_time)
 
 				/* restore the file */
 				$return  = 0;
-				$output  = array();
+				$output  = [];
 				$command = "$rrdtool_bin restore -f $tmp_file $rrd_path";
 
 				$response = exec($command, $output, $return);
@@ -509,7 +509,7 @@ function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $
 	}
 
 	$sql_where  = '';
-	$sql_params = array();
+	$sql_params = [];
 
 	if ($host_id !== false) {
 		$sql_where .= 'WHERE h.id = ?';
@@ -575,7 +575,7 @@ function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $
 		return false;
 	}
 
-	$rrdfiles_per_process = ceil(db_fetch_cell_prepared('SELECT COUNT(*)/? FROM poller_float_rrdfiles_not_done', array($threads)));
+	$rrdfiles_per_process = ceil(db_fetch_cell_prepared('SELECT COUNT(*)/? FROM poller_float_rrdfiles_not_done', [$threads]));
 
 	print "There are $threads and $rrdfiles_per_process RRDfiles to process per thread" . PHP_EOL;
 
@@ -584,7 +584,7 @@ function float_master_handler($forcerun, $resume, $host_id, $host_template_id, $
 			SET process = ?
 			WHERE process = 0
 			LIMIT $rrdfiles_per_process",
-			array($thread_id));
+			[$thread_id]);
 
 		float_debug("Launching Process ID $thread_id");
 
@@ -737,7 +737,6 @@ function sig_handler($signo) {
 			exit(1);
 
 			break;
-
 		default:
 			/* ignore all other signals */
 	}
@@ -757,7 +756,7 @@ function float_kill_running_processes() {
 		WHERE tasktype = "rfloat"
 		AND taskname IN ("child")
 		AND pid != ?',
-		array(getmypid()));
+		[getmypid()]);
 
 	if (cacti_sizeof($processes)) {
 		foreach ($processes as $p) {

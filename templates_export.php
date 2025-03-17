@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -33,7 +33,6 @@ switch (get_request_var('action')) {
 		form_save();
 
 		break;
-
 	default:
 		top_header();
 
@@ -102,65 +101,65 @@ function export() {
 		set_request_var('export_type', 'host_template');
 	}
 
-	$form_template_export1 = array(
-		'export_type' => array(
+	$form_template_export1 = [
+		'export_type' => [
 			'friendly_name' => __('What would you like to export?'),
 			'description'   => __('Select the Template type that you wish to export from Cacti.'),
 			'method'        => 'drop_array',
 			'value'         => get_nfilter_request_var('export_type'),
 			'array'         => $export_array,
 			'default'       => 'host_template'
-		)
-	);
+		]
+	];
 
-	$form_template_export2 = array(
-		'export_item_id' => array(
+	$form_template_export2 = [
+		'export_item_id' => [
 			'friendly_name' => __('Device Template to Export'),
 			'description'   => __('Choose the Template to export to XML.'),
 			'method'        => 'drop_sql',
 			'value'         => '0',
 			'default'       => '0',
 			'sql'           => $export_types[get_nfilter_request_var('export_type')]['dropdown_sql']
-		),
-		'include_deps' => array(
+		],
+		'include_deps' => [
 			'friendly_name' => __('Include Dependencies'),
 			'description'   => __('Some templates rely on other items in Cacti to function properly. It is highly recommended that you select this box or the resulting import may fail.'),
 			'value'         => 'on',
 			'method'        => 'checkbox',
 			'default'       => 'on'
-		),
-		'output_format' => array(
+		],
+		'output_format' => [
 			'friendly_name' => __('Output Format'),
 			'description'   => __('Choose the format to output the resulting XML file in.'),
 			'method'        => 'radio',
 			'value'         => '3',
 			'default'       => '0',
-			'items'         => array(
-				0 => array(
+			'items'         => [
+				0 => [
 					'radio_value'   => '1',
 					'radio_caption' => __('Output to the Browser (within Cacti)'),
-					),
-				1 => array(
+					],
+				1 => [
 					'radio_value'   => '2',
 					'radio_caption' => __('Output to the Browser (raw XML)'),
-					),
-				2 => array(
+					],
+				2 => [
 					'radio_value'   => '3',
 					'radio_caption' => __('Save File Locally')
-				)
-			)
-		)
-	);
+				]
+			]
+		]
+	];
 
 	form_start('templates_export.php', 'export');
 
 	html_start_box(__('Export Templates'), '100%', '', '3', 'center', '');
 
 	draw_edit_form(
-		array(
-			'config' => array('no_form_tag' => true),
+		[
+			'config' => ['no_form_tag' => true],
 			'fields' => $form_template_export1
-		)
+		]
 	);
 
 	html_end_box();
@@ -168,10 +167,10 @@ function export() {
 	html_start_box(__('Available Templates [%s]', $export_types[get_nfilter_request_var('export_type')]['name']), '100%', '', '3', 'center', '');
 
 	draw_edit_form(
-		array(
-			'config' => array('no_form_tag' => true),
+		[
+			'config' => ['no_form_tag' => true],
 			'fields' => $form_template_export2
-		)
+		]
 	);
 
 	form_hidden_box('save_component_export','1','');

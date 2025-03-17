@@ -1243,7 +1243,7 @@
 		}
 
 		function zoomLiveData_show(e) {
-			if (zoom.raw.data.length > 0) {
+			if (zoom.raw.data.length > 0 && zoom.refs.menu.css('display') === 'none') {
 				if (e.type === 'mousemove' || e.type === 'mouseenter') {
 					let container_y_pos = e.pageY;
 					let container_y_offset = 10;
@@ -1272,9 +1272,12 @@
 							for (let key in zoom.raw.legend) {
 								let dataIndex = key;
 								dataIndex++;
-								let value = zoom.raw.data[index][dataIndex];
-								if (value !== null) {
-									value = zoomFormatNumToSI(value);
+								let value = null;
+								if(zoom.raw.data.hasOwnProperty(index) && zoom.raw.data[index][dataIndex] !== undefined) {
+									value = zoom.raw.data[index][dataIndex];
+									if (value !== null) {
+										value = zoomFormatNumToSI(value);
+									}
 								}
 								zoom.refs.livedata.items[key].value.html(value === null ? 'n/a  ' : value);
 							}
@@ -1351,6 +1354,9 @@
 			let menu_height_level_1	= Math.abs($('.zoom-menu .first_li span').outerHeight());
 			let menu_height_level_2	= Math.abs($('.zoom-menu .sec_li span').outerHeight());
 
+			/* hide livedata */
+			zoomLiveData_hide();
+
 			/* let the menu occur on the right per default if possible, otherwise move it to the left: */
 			if (( menu_x_pos + menu_x_offset + menu_width) > window_size_x_2 ) {
 				menu_x_offset += (-1*menu_width);
@@ -1377,7 +1383,6 @@
 		function zoomContextMenu_toggle(e){
 			(zoom.refs.menu.css('display') === 'none') ? zoomContextMenu_show(e) : zoomContextMenu_hide();
 		}
-
 	};
 
 })(jQuery);

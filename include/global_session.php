@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -89,7 +89,7 @@ if (isset($_SESSION['refresh'])) {
 	$myrefresh['seconds'] = 99999999;
 	$myrefresh['page']    = 'index.php';
 	$refreshIsLogout      = 'false';
-} elseif (!isset($_SESSION[SESS_USER_ID]) && isset($_SERVER['REQUEST_URL']) && strpos($_SERVER['REQUEST_URI'], 'index.php') !== false) {
+} elseif (!isset($_SESSION[SESS_USER_ID]) && isset($_SERVER['REQUEST_URL']) && str_contains($_SERVER['REQUEST_URI'], 'index.php')) {
 	$myrefresh['seconds'] = 99999999;
 	$myrefresh['page']    = sanitize_uri($_SERVER['REQUEST_URI']);
 	$refreshIsLogout      = 'false';
@@ -110,7 +110,7 @@ if (isset($_SESSION[SESS_USER_ID]) && $_SESSION[SESS_USER_ID] == read_config_opt
 if (read_config_option('auth_method') == 2) {
 	$myrefresh['seconds'] = 99999999;
 	$myrefresh['page']    = sanitize_uri($_SERVER['REQUEST_URI']);
-	$refreshIsLogout = 'false';
+	$refreshIsLogout      = 'false';
 }
 
 if ($graphs) {
@@ -123,7 +123,7 @@ if ($graphs) {
 <script type='text/javascript'>
 	var cactiVersion='<?php print $config['cacti_version'];?>';
 	var cactiServerOS='<?php print $config['cacti_server_os'];?>';
-	var cactiAction='<?php print get_filter_request_var('action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([-a-zA-Z0-9_\s]+)$/')));?>';
+	var cactiAction='<?php print get_filter_request_var('action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([-a-zA-Z0-9_\s]+)$/']]);?>';
 	var theme='<?php print get_selected_theme();?>';
 	var refreshIsLogout=<?php print $refreshIsLogout;?>;
 	var refreshPage='<?php print $myrefresh['page'];?>';

@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -143,7 +143,7 @@ if (timeToRun()) {
 		$kills);
 
 	/* log to the database */
-	db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("stats_spikekill", ?)', array($cacti_stats));
+	db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("stats_spikekill", ?)', [$cacti_stats]);
 
 	/* log to the logfile */
 	cacti_log('SPIKEKILL STATS: ' . $cacti_stats , true, 'SYSTEM');
@@ -172,12 +172,14 @@ function timeToRun() {
 
 		if (empty($lastrun) && ($now < $baseupper) && ($now > $baselower)) {
 			debug('Time to Run');
-			db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?)', array(time()));
+			db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?)', [time()]);
 
 			return true;
-		} elseif (($now - $lastrun > $frequency) && ($now < $baseupper) && ($now > $baselower)) {
+		}
+
+		if (($now - $lastrun > $frequency) && ($now < $baseupper) && ($now > $baselower)) {
 			debug('Time to Run');
-			db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?)', array(time()));
+			db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?)', [time()]);
 
 			return true;
 		} else {
@@ -187,7 +189,7 @@ function timeToRun() {
 		}
 	} elseif ($forcerun) {
 		debug('Force to Run');
-		db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?', array(time()));
+		db_execute_prepared('REPLACE INTO settings (name,value) VALUES ("spikekill_lastrun", ?', [time()]);
 
 		return true;
 	} else {
@@ -218,7 +220,7 @@ function purge_spike_backups() {
 	$earlytime = time() - $retention;
 
 	if ($directory != '' && is_dir($directory) && is_writable($directory)) {
-		$files = array_diff(scandir($directory), array('.', '..'));
+		$files = array_diff(scandir($directory), ['.', '..']);
 
 		if (cacti_sizeof($files)) {
 			foreach ($files as $file) {

@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -67,7 +67,6 @@ function ss_hstats($host_id = 0, $stat = '') {
 			$column = $stat;
 
 			break;
-
 		default:
 			return '0';
 	}
@@ -76,7 +75,7 @@ function ss_hstats($host_id = 0, $stat = '') {
 		$value = db_fetch_cell_prepared("SELECT $column
 			FROM host
 			WHERE id = ?",
-			array($host_id));
+			[$host_id]);
 
 		return ($value == '' ? 'U' : $value);
 	}

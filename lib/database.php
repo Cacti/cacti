@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -72,7 +72,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 	$odevice = $device;
 
-	$flags = array();
+	$flags = [];
 
 	if ($db_type == 'mysql') {
 		/**
@@ -105,7 +105,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 				if (file_exists($db_ssl_ca)) {
 					$flags[PDO::MYSQL_ATTR_SSL_CA] = $db_ssl_ca;
 				}
-			} else if ($db_ssl_capath != '') {
+			} elseif ($db_ssl_capath != '') {
 				if (is_dir($db_ssl_capath)) {
 					$flags[PDO::MYSQL_ATTR_SSL_CAPATH] = $db_ssl_capath;
 				}
@@ -130,7 +130,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 	while ($i <= $retries) {
 		try {
-			if (strpos($device, '/') !== false && filetype($device) == 'socket') {
+			if (str_contains($device, '/') && filetype($device) == 'socket') {
 				$cnn_id = new PDO("$db_type:unix_socket=$device;dbname=$db_name;charset=utf8", $user, $pass, $flags);
 			} else {
 				$cnn_id = new PDO("$db_type:host=$device;port=$port;dbname=$db_name;charset=utf8", $user, $pass, $flags);
@@ -141,7 +141,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 				error_log(sprintf('NOTE: New connection to %s:%s/%s.', $device, $port, $db_name));
 			}
 
-			$bad_modes = array(
+			$bad_modes = [
 				'STRICT_TRANS_TABLES',
 				'STRICT_ALL_TABLES',
 				'TRADITIONAL',
@@ -149,41 +149,41 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 				'NO_ZERO_IN_DATE',
 				'ONLY_FULL_GROUP_BY',
 				'NO_AUTO_VALUE_ON_ZERO'
-			);
+			];
 
 			$database_sessions["$odevice:$port:$db_name"] = $cnn_id;
 
 			$object_hash = spl_object_hash($cnn_id);
 
-			$database_details[$object_hash] = array(
-				'database_conn'     => $cnn_id,
-				'database_hostname' => $device,
-				'database_username' => $user,
-				'database_password' => $pass,
-				'database_default'  => $db_name,
-				'database_type'     => $db_type,
-				'database_port'     => $port,
-				'database_retries'  => $retries,
-				'database_ssl'      => $db_ssl,
-				'database_ssl_key'  => $db_ssl_key,
-				'database_ssl_cert' => $db_ssl_cert,
-				'database_ssl_ca'   => $db_ssl_ca,
-				'database_ssl_capath'   => $db_ssl_capath,
+			$database_details[$object_hash] = [
+				'database_conn'                     => $cnn_id,
+				'database_hostname'                 => $device,
+				'database_username'                 => $user,
+				'database_password'                 => $pass,
+				'database_default'                  => $db_name,
+				'database_type'                     => $db_type,
+				'database_port'                     => $port,
+				'database_retries'                  => $retries,
+				'database_ssl'                      => $db_ssl,
+				'database_ssl_key'                  => $db_ssl_key,
+				'database_ssl_cert'                 => $db_ssl_cert,
+				'database_ssl_ca'                   => $db_ssl_ca,
+				'database_ssl_capath'               => $db_ssl_capath,
 				'database_ssl_verify_server_cert'   => $db_ssl_verify_server_cert,
-				'database_persist'  => $persist,
-			);
+				'database_persist'                  => $persist,
+			];
 
 			$ver = db_get_global_variable('version', $cnn_id);
 
-			if (strpos($ver, 'MariaDB') !== false) {
-				$srv  = 'MariaDB';
-				$ver  = str_replace('-MariaDB', '', $ver);
+			if (str_contains($ver, 'MariaDB')) {
+				$srv              = 'MariaDB';
+				$ver              = str_replace('-MariaDB', '', $ver);
 				$required_modes[] = 'NO_ENGINE_SUBSTITUTION';
 			} else {
 				$srv = 'MySQL';
 
 				if (version_compare('8.0.0', $ver, '<=')) {
-					$bad_modes[] = 'NO_AUTO_CREATE_USER';
+					$bad_modes[]      = 'NO_AUTO_CREATE_USER';
 					$required_modes[] = 'NO_ENGINE_SUBSTITUTION';
 				}
 
@@ -194,7 +194,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 			// Get rid of bad modes
 			$modes     = explode(',', db_fetch_cell('SELECT @@sql_mode', '', false));
-			$new_modes = array();
+			$new_modes = [];
 
 			foreach ($modes as $mode) {
 				if (array_search($mode, $bad_modes, true) === false) {
@@ -213,19 +213,19 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 			$sql_mode = implode(',', $new_modes);
 
-			db_execute_prepared('SET SESSION sql_mode = ?', array($sql_mode), false);
+			db_execute_prepared('SET SESSION sql_mode = ?', [$sql_mode], false);
 
 			if (db_column_exists('poller', 'timezone')) {
 				$timezone = db_fetch_cell_prepared('SELECT timezone
 					FROM poller
 					WHERE id = ?',
-					array($config['poller_id']), false);
+					[$config['poller_id']], false);
 			} else {
 				$timezone = '';
 			}
 
 			if ($timezone != '') {
-				db_execute_prepared('SET SESSION time_zone = ?', array($timezone), false);
+				db_execute_prepared('SET SESSION time_zone = ?', [$timezone], false);
 			}
 
 			if (!empty($config['DEBUG_READ_CONFIG_OPTION'])) {
@@ -242,13 +242,13 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			return $cnn_id;
 		} catch (PDOException $e) {
 			if (!isset($config['DATABASE_ERROR'])) {
-				$config['DATABASE_ERROR'] = array();
+				$config['DATABASE_ERROR'] = [];
 			}
 
-			$config['DATABASE_ERROR'][] = array(
+			$config['DATABASE_ERROR'][] = [
 				'Code'  => $e->getCode(),
 				'Error' => $e->getMessage(),
-			);
+			];
 
 			// Must catch this exception or else PDO will display an error with our username/password
 			//print $e->getMessage();
@@ -268,6 +268,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
  *
  * @param bool|object  The connection to check
  * @param bool         Whether or not to log the connection check
+ * @param mixed $log
  *
  * @return bool        The database true is the database is connected else false
  */
@@ -295,18 +296,18 @@ function db_check_reconnect(object|false $db_conn = false, $log = true) {
 	if (cacti_sizeof($database_details) && $db_conn !== false) {
 		foreach ($database_details as $det) {
 			if (spl_object_hash($det['database_conn']) == spl_object_hash($db_conn)) {
-				$database_hostname   = $det['database_hostname'];
-				$database_username   = $det['database_username'];
-				$database_password   = $det['database_password'];
-				$database_default    = $det['database_default'];
-				$database_type       = $det['database_type'];
-				$database_port       = $det['database_port'];
-				$database_retries    = $det['database_retries'];
-				$database_ssl        = $det['database_ssl'];
-				$database_ssl_key    = $det['database_ssl_key'];
-				$database_ssl_cert   = $det['database_ssl_cert'];
-				$database_ssl_ca     = $det['database_ssl_ca'];
-				$database_ssl_capath = $det['database_ssl_capath'];
+				$database_hostname               = $det['database_hostname'];
+				$database_username               = $det['database_username'];
+				$database_password               = $det['database_password'];
+				$database_default                = $det['database_default'];
+				$database_type                   = $det['database_type'];
+				$database_port                   = $det['database_port'];
+				$database_retries                = $det['database_retries'];
+				$database_ssl                    = $det['database_ssl'];
+				$database_ssl_key                = $det['database_ssl_key'];
+				$database_ssl_cert               = $det['database_ssl_cert'];
+				$database_ssl_ca                 = $det['database_ssl_ca'];
+				$database_ssl_capath             = $det['database_ssl_capath'];
 				$database_ssl_verify_server_cert = $det['database_ssl_verify_server_cert'];
 
 				break;
@@ -386,7 +387,7 @@ function db_check_reconnect(object|false $db_conn = false, $log = true) {
 	}
 }
 
-function db_warning_handler($errno, $errstr, $errfile, $errline, $errcontext = array()) {
+function db_warning_handler($errno, $errstr, $errfile, $errline, $errcontext = []) {
 	throw new Exception($errstr, $errno);
 }
 
@@ -456,6 +457,7 @@ function db_close(&$db_conn = false) {
 	} elseif (!empty($config['DEBUG_SQL_CONNECT'])) {
 		$id   = spl_object_id($db_conn);
 		$hash = spl_object_hash($db_conn);
+
 		if (isset($database_details[$hash])) {
 			$det = $database_details[$hash];
 
@@ -493,7 +495,7 @@ function db_close(&$db_conn = false) {
  * @return (bool) '1' for success, false on error
  */
 function db_execute($sql, $log = true, $db_conn = false) {
-	return db_execute_prepared($sql, array(), $log, $db_conn);
+	return db_execute_prepared($sql, [], $log, $db_conn);
 }
 
 /**
@@ -518,7 +520,7 @@ function db_execute($sql, $log = true, $db_conn = false) {
  *
  * @return mixed '1' for success, false for failed, or the return value of the return function
  */
-function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = false, $execute_name = 'Exec', $default_value = true, $return_func = 'no_return_function', $return_params = array()) {
+function db_execute_prepared($sql, $params = [], $log = true, $db_conn = false, $execute_name = 'Exec', $default_value = true, $return_func = 'no_return_function', $return_params = []) {
 	global $database_sessions, $error_logged, $database_default, $config, $database_hostname, $database_port, $database_total_queries, $database_last_error, $database_log, $affected_rows, $database_details;
 
 	$database_total_queries++;
@@ -555,7 +557,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 			if (isset($database_details[$hash])) {
 				$det = $database_details[$hash];
 
-				error_log(sprintf("NOTE: Execute Using %s:%s/%s.", $det['database_hostname'], $det['database_port'], $det['database_default']));
+				error_log(sprintf('NOTE: Execute Using %s:%s/%s.', $det['database_hostname'], $det['database_port'], $det['database_default']));
 			} else {
 				error_log("WARNING: Execute Using Object ID: $id.");
 			}
@@ -595,7 +597,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 		} catch (Exception $ex) {
 			$code      = $ex->getCode();
 			$en        = $code;
-			$errorinfo = array(1=>$code, 2=>$ex->getMessage());
+			$errorinfo = [1=>$code, 2=>$ex->getMessage()];
 		}
 		restore_error_handler();
 
@@ -625,11 +627,11 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 			$return_value = $default_value;
 
 			if (function_exists($return_func)) {
-				$return_array = array($query);
+				$return_array = [$query];
 
 				if (!empty($return_params)) {
 					if (!is_array($return_params)) {
-						$return_params = array($return_params);
+						$return_params = [$return_params];
 					}
 					$return_array = array_merge($return_array, $return_params);
 				}
@@ -650,7 +652,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 
 			return $return_value;
 		} else {
-			$database_last_error = 'DB ' . $execute_name . ' Failed!, Error ' . $en . ': ' . (isset($errorinfo[2]) ? $errorinfo[2] : '<no error>');
+			$database_last_error = 'DB ' . $execute_name . ' Failed!, Error ' . $en . ': ' . ($errorinfo[2] ?? '<no error>');
 
 			if (isset($query)) {
 				$query->closeCursor();
@@ -688,7 +690,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 					cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . $errorinfo[2], false);
 					cacti_debug_backtrace('SQL', false, true, 0, 1);
 
-					$database_last_error = 'DB ' . $execute_name . ' Failed!, Error ' . $en . ': ' . (isset($errorinfo[2]) ? $errorinfo[2] : '<no error>');
+					$database_last_error = 'DB ' . $execute_name . ' Failed!, Error ' . $en . ': ' . ($errorinfo[2] ?? '<no error>');
 				}
 			}
 
@@ -731,7 +733,7 @@ function db_fetch_cell($sql, $col_name = '', $log = true, $db_conn = false) {
 		db_echo_sql('db_fetch_cell($sql, $col_name = \'' . $col_name . '\', $log = true, $db_conn = false)' . "\n");
 	}
 
-	return db_fetch_cell_prepared($sql, array(), $col_name, $log, $db_conn);
+	return db_fetch_cell_prepared($sql, [], $col_name, $log, $db_conn);
 }
 
 /**
@@ -751,7 +753,7 @@ function db_fetch_cell($sql, $col_name = '', $log = true, $db_conn = false) {
  *
  * @return bool|string The output of the sql query as a single variable
  */
-function db_fetch_cell_prepared($sql, $params = array(), $col_name = '', $log = true, $db_conn = false) {
+function db_fetch_cell_prepared($sql, $params = [], $col_name = '', $log = true, $db_conn = false) {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -813,7 +815,7 @@ function db_fetch_row($sql, $log = true, $db_conn = false) {
 		db_echo_sql('db_fetch_row(\'' . clean_up_lines($sql) . '\', $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') .')' . "\n");
 	}
 
-	return db_fetch_row_prepared($sql, array(), $log, $db_conn);
+	return db_fetch_row_prepared($sql, [], $log, $db_conn);
 }
 
 /**
@@ -830,7 +832,7 @@ function db_fetch_row($sql, $log = true, $db_conn = false) {
  *
  * @return (bool|array) The first row of the result or false if failed
  */
-function db_fetch_row_prepared($sql, $params = array(), $log = true, $db_conn = false) {
+function db_fetch_row_prepared($sql, $params = [], $log = true, $db_conn = false) {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -860,7 +862,7 @@ function db_fetch_row_return($query) {
 		$r = $query->fetchAll(PDO::FETCH_ASSOC);
 	}
 
-	return (isset($r[0])) ? $r[0] : array();
+	return $r[0] ?? [];
 }
 
 /**
@@ -882,7 +884,7 @@ function db_fetch_assoc($sql, $log = true, $db_conn = false) {
 		db_echo_sql('db_fetch_assoc($sql, $log = true, $db_conn = false)' . "\n");
 	}
 
-	return db_fetch_assoc_prepared($sql, array(), $log, $db_conn);
+	return db_fetch_assoc_prepared($sql, [], $log, $db_conn);
 }
 
 /**
@@ -899,14 +901,14 @@ function db_fetch_assoc($sql, $log = true, $db_conn = false) {
  *
  * @return (bool|array)    The entire result or false on error
  */
-function db_fetch_assoc_prepared($sql, $params = array(), $log = true, $db_conn = false) {
+function db_fetch_assoc_prepared($sql, $params = [], $log = true, $db_conn = false) {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
 		db_echo_sql('db_fetch_assoc_prepared($sql, $params = array(), $log = true, $db_conn = false)' . "\n");
 	}
 
-	return db_execute_prepared($sql, $params, $log, $db_conn, 'Row', array(), 'db_fetch_assoc_return');
+	return db_execute_prepared($sql, $params, $log, $db_conn, 'Row', [], 'db_fetch_assoc_return');
 }
 
 /**
@@ -927,7 +929,7 @@ function db_fetch_assoc_return($query) {
 
 	$r = $query->fetchAll(PDO::FETCH_ASSOC);
 
-	return (is_array($r)) ? $r : array();
+	return (is_array($r)) ? $r : [];
 }
 
 /**
@@ -1010,7 +1012,7 @@ function db_add_column($table, $column, $log = true, $db_conn = false) {
 		return false;
 	}
 
-	$columns = array();
+	$columns = [];
 
 	foreach ($result as $arr) {
 		$columns[] = $arr['Field'];
@@ -1037,7 +1039,7 @@ function db_add_column($table, $column, $log = true, $db_conn = false) {
 			}
 
 			if (isset($column['default'])) {
-				if (in_array(strtolower($column['type']), array('timestamp', 'datetime', 'date'), true) && strpos($column['default'], 'CURRENT_TIMESTAMP') !== false) {
+				if (in_array(strtolower($column['type']), ['timestamp', 'datetime', 'date'], true) && str_contains($column['default'], 'CURRENT_TIMESTAMP')) {
 					$sql .= ' default ' . $column['default'];
 				} else {
 					$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
@@ -1094,7 +1096,7 @@ function db_change_column($table, $column, $log = true, $db_conn = false) {
 		return false;
 	}
 
-	$columns = array();
+	$columns = [];
 
 	foreach ($result as $arr) {
 		$columns[] = $arr['Field'];
@@ -1184,7 +1186,7 @@ function db_remove_column($table, $column, $log = true, $db_conn = false) {
 	}
 
 	$result  = db_fetch_assoc('SHOW columns FROM `' . $table . '`', $log, $db_conn);
-	$columns = array();
+	$columns = [];
 
 	foreach ($result as $arr) {
 		$columns[] = $arr['Field'];
@@ -1219,7 +1221,7 @@ function db_remove_column($table, $column, $log = true, $db_conn = false) {
  */
 function db_add_index($table, $type, $key, $columns, $log = true, $db_conn = false) {
 	if (!is_array($columns)) {
-		$columns = array($columns);
+		$columns = [$columns];
 	}
 
 	$sql = 'ALTER TABLE `' . $table . '` ADD ' . $type . ' `' . $key . '`(`' . implode('`,`', $columns) . '`)';
@@ -1297,14 +1299,14 @@ function db_index_matches($table, $index, $columns, $log = true, $db_conn = fals
 	}
 
 	if (!is_array($columns)) {
-		$columns = array($columns);
+		$columns = [$columns];
 	}
 
 	$_log         = $database_log;
 	$database_log = false;
 
 	$_data = db_fetch_assoc("SHOW KEYS FROM `$table`", $log, $db_conn);
-	$_cols = array();
+	$_cols = [];
 
 	if ($_data !== false) {
 		foreach ($_data as $key_col) {
@@ -1413,15 +1415,15 @@ function db_cacti_initialized($is_web = true) {
 		print($is_web ? '<table style="height:40px;"><tr><td></td></tr></table>':'');
 		print($is_web ? '<table style="margin-left:auto;margin-right:auto;width:80%;border:1px solid rgba(98,125,77,1)" class="cactiTable"><tr class="cactiTableTitle"><td style="color:snow;font-weight:bold;">Fatal Error - Cacti Database Not Initialized</td></tr>':'');
 		print($is_web ? '<tr class="installArea"><td>':'');
-		print($is_web ? '<p>':'') . 'The Cacti Database has not been initialized.  Please initialize it before continuing.' . ($is_web ? '</p>':"\n");
-		print($is_web ? '<p>':'') . 'To initialize the Cacti database, issue the following commands either as root or using a valid account.' . ($is_web ? '</p>':"\n");
-		print($is_web ? '<p style="font-weight:bold;padding-left:25px;">':'') . '  mysqladmin -uroot -p create cacti' . ($is_web ? '</p>':"\n");
-		print($is_web ? '<p style="font-weight:bold;padding-left:25px;">':'') . '  mysql -uroot -p -e "grant all on cacti.* to \'someuser\'@\'localhost\' identified by \'somepassword\'"' . ($is_web ? '</p>':"\n");
-		print($is_web ? '<p style="font-weight:bold;padding-left:25px;">':'') . '  mysql -uroot -p -e "grant select on mysql.time_zone_name to \'someuser\'@\'localhost\' identified by \'somepassword\'"' . ($is_web ? '</p>':"\n");
-		print($is_web ? '<p style="font-weight:bold;padding-left:25px;">':'') . '  mysql -uroot -p cacti < /pathcacti/cacti.sql' . ($is_web ? '</p>':"\n");
-		print($is_web ? '<p>':'') . 'Where <b>/pathcacti/</b> is the path to your Cacti install location.' . ($is_web ? '</p>':"\n");
-		print($is_web ? '<p>':'') . 'Change <b>someuser</b> and <b>somepassword</b> to match your site preferences.  The defaults are <b>cactiuser</b> for both user and password.' . ($is_web ? '</p>':"\n");
-		print($is_web ? '<p>':'') . '<b>NOTE:</b> When installing a remote poller, the <b>config.php</b> file must be writable by the Web Server account, and must include valid connection information to the main Cacti server.  The file should be changed to read only after the install is completed.' . ($is_web ? '</p>':"\n");
+		print ($is_web ? '<p>':'') . 'The Cacti Database has not been initialized.  Please initialize it before continuing.' . ($is_web ? '</p>':"\n");
+		print ($is_web ? '<p>':'') . 'To initialize the Cacti database, issue the following commands either as root or using a valid account.' . ($is_web ? '</p>':"\n");
+		print ($is_web ? '<p style="font-weight:bold;padding-left:25px;">':'') . '  mysqladmin -uroot -p create cacti' . ($is_web ? '</p>':"\n");
+		print ($is_web ? '<p style="font-weight:bold;padding-left:25px;">':'') . '  mysql -uroot -p -e "grant all on cacti.* to \'someuser\'@\'localhost\' identified by \'somepassword\'"' . ($is_web ? '</p>':"\n");
+		print ($is_web ? '<p style="font-weight:bold;padding-left:25px;">':'') . '  mysql -uroot -p -e "grant select on mysql.time_zone_name to \'someuser\'@\'localhost\' identified by \'somepassword\'"' . ($is_web ? '</p>':"\n");
+		print ($is_web ? '<p style="font-weight:bold;padding-left:25px;">':'') . '  mysql -uroot -p cacti < /pathcacti/cacti.sql' . ($is_web ? '</p>':"\n");
+		print ($is_web ? '<p>':'') . 'Where <b>/pathcacti/</b> is the path to your Cacti install location.' . ($is_web ? '</p>':"\n");
+		print ($is_web ? '<p>':'') . 'Change <b>someuser</b> and <b>somepassword</b> to match your site preferences.  The defaults are <b>cactiuser</b> for both user and password.' . ($is_web ? '</p>':"\n");
+		print ($is_web ? '<p>':'') . '<b>NOTE:</b> When installing a remote poller, the <b>config.php</b> file must be writable by the Web Server account, and must include valid connection information to the main Cacti server.  The file should be changed to read only after the install is completed.' . ($is_web ? '</p>':"\n");
 		print($is_web ? '</td></tr></table>':'');
 
 		exit;
@@ -1443,7 +1445,7 @@ function db_cacti_initialized($is_web = true) {
  * @return (bool) The output of the sql query as a single variable
  */
 function db_column_exists($table, $column, $log = true, $db_conn = false) {
-	static $results = array();
+	static $results = [];
 
 	if ($db_conn == false) {
 		$index = '-1';
@@ -1483,11 +1485,11 @@ function db_get_table_column_types($table, $db_conn = false) {
 	}
 
 	$columns = db_fetch_assoc("SHOW COLUMNS FROM $table", false, $db_conn);
-	$cols    = array();
+	$cols    = [];
 
 	if (cacti_sizeof($columns)) {
 		foreach ($columns as $col) {
-			$cols[$col['Field']] = array('type' => $col['Type'], 'null' => $col['Null'], 'default' => $col['Default'], 'extra' => $col['Extra']);
+			$cols[$col['Field']] = ['type' => $col['Type'], 'null' => $col['Null'], 'default' => $col['Default'], 'extra' => $col['Extra']];
 		}
 	}
 
@@ -1554,7 +1556,7 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 		db_execute("ALTER TABLE `$table` ROW_FORMAT = " . $data['row_format'], $log, $db_conn);
 	}
 
-	$allcolumns  = array();
+	$allcolumns  = [];
 	$prev_column = false;
 
 	foreach ($data['columns'] as $column) {
@@ -1575,7 +1577,7 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 			// FIXME: Need to still check default value
 			$arr = db_fetch_row("SHOW columns FROM `$table` LIKE '" . $column['name'] . "'", $log, $db_conn);
 
-			if (strpos(strtolower($arr['Type']), ' unsigned') !== false) {
+			if (str_contains(strtolower($arr['Type']), ' unsigned')) {
 				$arr['Type']     = str_ireplace(' unsigned', '', $arr['Type']);
 				$arr['unsigned'] = true;
 			}
@@ -1651,7 +1653,7 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 
 	// Correct any indexes
 	$indexes    = db_fetch_assoc("SHOW INDEX FROM `$table`", $log, $db_conn);
-	$allindexes = array();
+	$allindexes = [];
 
 	foreach ($indexes as $index) {
 		$allindexes[$index['Key_name']][$index['Seq_in_index'] - 1] = $index['Column_name'];
@@ -1690,7 +1692,7 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 	if (isset($data['keys'])) {
 		foreach ($data['keys'] as $k) {
 			if (!isset($allindexes[$k['name']])) {
-				if (!db_execute("ALTER TABLE `$table` ADD" . (isset($k['unique']) ? ' UNIQUE':'') . " INDEX `" . $k['name'] . '` (' . db_format_index_create($k['columns']) . ')', $log, $db_conn)) {
+				if (!db_execute("ALTER TABLE `$table` ADD" . (isset($k['unique']) ? ' UNIQUE':'') . ' INDEX `' . $k['name'] . '` (' . db_format_index_create($k['columns']) . ')', $log, $db_conn)) {
 					return false;
 				}
 			}
@@ -1715,7 +1717,7 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 			}
 		} else {
 			if (!is_array($data['primary'])) {
-				$data['primary'] = array($data['primary']);
+				$data['primary'] = [$data['primary']];
 			}
 
 			$add = array_diff($data['primary'], $allindexes['PRIMARY']);
@@ -1750,7 +1752,7 @@ function db_format_index_create($indexes) {
 		foreach ($indexes as $index) {
 			$index = trim($index);
 
-			if (substr($index, -1) == ')') {
+			if (str_ends_with($index, ')')) {
 				$outindex .= ($outindex != '' ? ',':'') . $index;
 			} else {
 				$outindex .= ($outindex != '' ? ',':'') . '`' . $index . '`';
@@ -1761,7 +1763,7 @@ function db_format_index_create($indexes) {
 	} else {
 		$indexes = trim($indexes);
 
-		if (substr($indexes, -1) == ')') {
+		if (str_ends_with($indexes, ')')) {
 			return $indexes;
 		} else {
 			return '`' . trim($indexes, ' `') . '`';
@@ -1849,7 +1851,7 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 
 		if (isset($data['primary'])) {
 			if (is_array($data['primary'])) {
-				$sql .= ",\n PRIMARY KEY (`" . implode('`,`'. $data['primary']) . '`)';
+				$sql .= ",\n PRIMARY KEY (`" . implode('`,`', $data['primary']) . '`)';
 			} else {
 				$sql .= ",\n PRIMARY KEY (`" . $data['primary'] . '`)';
 			}
@@ -1859,9 +1861,9 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 			foreach ($data['keys'] as $key) {
 				if (isset($key['name'])) {
 					if (is_array($key['columns'])) {
-						$sql .= ",\n " . (isset($key['unique']) ? ' UNIQUE':'') . " INDEX `" . $key['name'] . '` (`' . implode('`,`', $key['columns']) . '`)';
+						$sql .= ",\n " . (isset($key['unique']) ? ' UNIQUE':'') . ' INDEX `' . $key['name'] . '` (`' . implode('`,`', $key['columns']) . '`)';
 					} else {
-						$sql .= ",\n " . (isset($key['unique']) ? ' UNIQUE':'') . " INDEX `" . $key['name'] . '` (`' . $key['columns'] . '`)';
+						$sql .= ",\n " . (isset($key['unique']) ? ' UNIQUE':'') . ' INDEX `' . $key['name'] . '` (`' . $key['columns'] . '`)';
 					}
 				}
 			}
@@ -2104,7 +2106,7 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
 	}
 
 	if (!is_array($keyCols)) {
-		$keyCols = array($keyCols);
+		$keyCols = [$keyCols];
 	}
 
 	$sql  = "INSERT INTO $table (";
@@ -2116,10 +2118,10 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
 
 	foreach ($fieldArray as $k => $v) {
 		if (!$first) {
-			$sql .= ', ';
+			$sql  .= ', ';
 			$sql2 .= ', ';
 		}
-		$sql .= "`$k`";
+		$sql  .= "`$k`";
 		$sql2 .= $v;
 		$first  = false;
 
@@ -2194,15 +2196,15 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 			return false;
 		}
 
-		if (strstr($cols[$key]['type'], 'int') !== false ||
-			strstr($cols[$key]['type'], 'float') !== false ||
-			strstr($cols[$key]['type'], 'double') !== false ||
-			strstr($cols[$key]['type'], 'decimal') !== false) {
+		if (str_contains($cols[$key]['type'], 'int') ||
+			str_contains($cols[$key]['type'], 'float') ||
+			str_contains($cols[$key]['type'], 'double') ||
+			str_contains($cols[$key]['type'], 'decimal')) {
 			if ($value == '') {
 				if ($cols[$key]['null'] == 'YES') {
 					// TODO: We should make 'NULL', but there are issues that need to be addressed first
 					$array_items[$key] = 0;
-				} elseif (strpos($cols[$key]['extra'], 'auto_increment') !== false) {
+				} elseif (str_contains($cols[$key]['extra'], 'auto_increment')) {
 					$array_items[$key] = 0;
 				} elseif ($cols[$key]['default'] == '') {
 					// TODO: We should make 'NULL', but there are issues that need to be addressed first
@@ -2266,7 +2268,7 @@ function db_qstr($s, $db_conn = false) {
 		return $db_conn->quote($s);
 	}
 
-	$s = str_replace(array('\\', "\0", "'"), array('\\\\', "\\\0", "\\'"), $s);
+	$s = str_replace(['\\', "\0", "'"], ['\\\\', "\\\0", "\\'"], $s);
 
 	return "'" . $s . "'";
 }
@@ -2307,7 +2309,7 @@ function db_get_column_attributes($table, $columns) {
 		AND table_name = ?
 		AND column_name IN (';
 
-	$column_names = array();
+	$column_names = [];
 
 	foreach ($columns as $column) {
 		if (!empty($column)) {
@@ -2317,7 +2319,7 @@ function db_get_column_attributes($table, $columns) {
 	}
 	$sql .= ')';
 
-	$params = array_merge(array($table), $column_names);
+	$params = array_merge([$table], $column_names);
 
 	return db_fetch_assoc_prepared($sql, $params);
 }
@@ -2506,7 +2508,7 @@ function db_switch_main_to_local() {
  *
  * @return (int) return status of the executed command
  */
-function db_dump_data($database = '', $tables = '', $credentials = array(), $output_file = false, $options = '--extended-insert=FALSE') {
+function db_dump_data($database = '', $tables = '', $credentials = [], $output_file = false, $options = '--extended-insert=FALSE') {
 	global $database_default, $database_username, $database_password;
 
 	$credentials_string = '';
@@ -2519,7 +2521,7 @@ function db_dump_data($database = '', $tables = '', $credentials = array(), $out
 		foreach ($credentials as $key => $value) {
 			$name = trim($key);
 
-			if (strstr($name, '--') !== false) {      //name like --host
+			if (str_contains($name, '--')) {      //name like --host
 				if ($name == '--password') {
 					$password = $value;
 				} elseif ($name == '--user') {
@@ -2527,7 +2529,7 @@ function db_dump_data($database = '', $tables = '', $credentials = array(), $out
 				} else {
 					$credentials_string .= $name . '=' . $value . ' ';
 				}
-			} elseif (strstr($name, '-') !== false) { //name like -h
+			} elseif (str_contains($name, '-')) { //name like -h
 				if ($name == '-p') {
 					$password = $value;
 				} elseif ($name == '-u') {
@@ -2561,7 +2563,7 @@ function db_dump_data($database = '', $tables = '', $credentials = array(), $out
 		$dump = 'mysqldump';
 	}
 
-	if (strstr($options, '--defaults-extra-file') !== false) {
+	if (str_contains($options, '--defaults-extra-file')) {
 		exec("$dump $options $credentials_string $database $tables > $output_file", $output, $retval);
 	} else {
 		exec("$dump $options $credentials_string $database version >/dev/null 2>&1", $output, $retval);
@@ -2577,7 +2579,7 @@ function db_dump_data($database = '', $tables = '', $credentials = array(), $out
 }
 
 function db_create_permissions_array($database, $default = false) {
-	$permissions = array(
+	$permissions = [
 		'ALTER'                   => $default,
 		'ALTER ROUTINE'           => $default,
 		'CREATE'                  => $default,
@@ -2611,9 +2613,9 @@ function db_create_permissions_array($database, $default = false) {
 		'TRIGGER'                 => $default,
 		'UPDATE'                  => $default,
 		'USAGE'                   => $default,
-	);
+	];
 
-	return array($database => $permissions);
+	return [$database => $permissions];
 }
 
 function db_get_grants($log = false, $db_conn = false) {
@@ -2627,7 +2629,7 @@ function db_get_permissions($include_unknown = false, $log = false, $db_conn = f
 
 	$perms = db_create_permissions_array($database_default, false);
 
-	$db_names  = array($database_default, 'mysql');
+	$db_names  = [$database_default, 'mysql'];
 	$db_grants = db_fetch_assoc('SHOW GRANTS FOR CURRENT_USER', $log, $db_conn);
 
 	if (cacti_sizeof($db_grants)) {
@@ -2637,9 +2639,9 @@ function db_get_permissions($include_unknown = false, $log = false, $db_conn = f
 				if (preg_match('/GRANT (.*) ON (.+)\.(.+) TO/i', $db_grant, $db_grant_match)) {
 					// Replace any * used with .* for preg_match
 					// Replace any % used with .* for preg_match
-					$db_grant_regex = str_replace(array('*', '%'), array('.*', '.*'), $db_grant_match[2]);
+					$db_grant_regex = str_replace(['*', '%'], ['.*', '.*'], $db_grant_match[2]);
 
-					foreach($db_names as $db_name) {
+					foreach ($db_names as $db_name) {
 						// See if we match the database name
 						$db_regex_match = preg_match('/' . $db_grant_regex . '/', '`' . $db_name . '`');
 
@@ -2660,15 +2662,15 @@ function db_get_permissions($include_unknown = false, $log = false, $db_conn = f
 									}
 
 									if (array_key_exists($db_grant_perm, $perms)) {
-										if (strpos($db_grant, "`$database_default`.*") !== false) {
+										if (str_contains($db_grant, "`$database_default`.*")) {
 											$perms[$db_name][$db_grant_perm . ' ON *'] = true;
 										} else {
 											$perms[$db_name][$db_grant_perm] = true;
 										}
 									} elseif ($include_unknown) {
-										$gs = explode('.', $db_grant);
-										$table = explode(' ', $gs[1]);
-										$table = str_replace('`', '', $table[0]);
+										$gs                                                = explode('.', $db_grant);
+										$table                                             = explode(' ', $gs[1]);
+										$table                                             = str_replace('`', '', $table[0]);
 										$perms[$db_name][$db_grant_perm . ' ON ' . $table] = true;
 									}
 								}
@@ -2693,16 +2695,17 @@ function db_has_permissions($permissions, $database = false, $log = false, $db_c
 	$perms = db_get_permissions(false, $log, $db_conn);
 
 	if (!is_array($permissions)) {
-		$permissions = array($permissions);
+		$permissions = [$permissions];
 	}
 
 	$found = false;
 
 	foreach ($permissions as $permission) {
-		foreach($perms as $db => $perm) {
+		foreach ($perms as $db => $perm) {
 			if ($database == $db || $database == 'all') {
 				if (!empty($perm[$permission])) {
 					$found = true;
+
 					break 2;
 				}
 			}

@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2024 The Cacti Group                                 |
+ | Copyright (C) 2004-2025 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -47,7 +47,7 @@ $debug     = false;
 if (cacti_sizeof($parms)) {
 	$shortopts = 'VvHhDd';
 
-	$longopts = array(
+	$longopts = [
 		'create',
 		'load',
 		'report',
@@ -57,7 +57,7 @@ if (cacti_sizeof($parms)) {
 		'version',
 		'debug',
 		'help'
-	);
+	];
 
 	$options = getopt($shortopts, $longopts);
 
@@ -161,7 +161,7 @@ function upgrade_database() {
 	cacti_log('NOTE: Upgrading Cacti, this will take a few minutes.', true, 'UPGRADE');
 
 	$return_var = 0;
-	$output     = array();
+	$output     = [];
 
 	exec('php ' . CACTI_PATH_CLI . '/upgrade_database.php --debug', $output, $return_var);
 
@@ -223,7 +223,7 @@ function upgrade_database() {
 				$old = db_fetch_cell_prepared('SELECT version
 					FROM plugin_config
 					WHERE directory = ?',
-					array($pname));
+					[$pname]);
 
 				if ($version != $old) {
 					if (file_exists($plugin . '/setup.php')) {
@@ -252,7 +252,7 @@ function upgrade_database() {
 						if (file_exists($plugin . '/database_upgrade.php')) {
 							cacti_log("NOTE: Upgrading Plugin $pname from $old to $version using upgrade script.", true, 'UPGRADE');
 							$return_var = 0;
-							$output     = array();
+							$output     = [];
 
 							exec('php ' . CACTI_PATH_PLUGINS . '/' . $pname . '/database_upgrade.php --type=large --force-ver=' . $old, $output, $return_var);
 
@@ -301,10 +301,10 @@ function upgrade_database() {
 					api_plugin_uninstall($pname, false);
 				} else {
 					cacti_log("NOTE: Uninstalling Plugin $pname which is not supported and setup.php not found.  Preserving tables.", true, 'UPGRADE');
-					db_execute_prepared('DELETE FROM plugin_config WHERE directory = ?', array($pname));
-					db_execute_prepared('DELETE FROM plugin_db_changes WHERE plugin = ?', array($pname));
-					db_execute_prepared('DELETE FROM plugin_hooks WHERE name = ?', array($pname));
-					db_execute_prepared('DELETE FROM plugin_realms WHERE plugin = ?', array($pname));
+					db_execute_prepared('DELETE FROM plugin_config WHERE directory = ?', [$pname]);
+					db_execute_prepared('DELETE FROM plugin_db_changes WHERE plugin = ?', [$pname]);
+					db_execute_prepared('DELETE FROM plugin_hooks WHERE name = ?', [$pname]);
+					db_execute_prepared('DELETE FROM plugin_realms WHERE plugin = ?', [$pname]);
 				}
 			}
 		}
@@ -323,7 +323,7 @@ function plugin_installed($plugin) {
 		FROM plugin_config
 		WHERE directory = ?
 		AND status = 1',
-		array($plugin));
+		[$plugin]);
 
 	return $installed ? true:false;
 }
@@ -333,7 +333,7 @@ function repair_database($run = true) {
 
 	$alters = report_audit_results(false);
 
-	if (!db_has_permissions(array('ALTER', 'DROP','INSERT','LOCK TABLES'))) {
+	if (!db_has_permissions(['ALTER', 'DROP','INSERT','LOCK TABLES'])) {
 		print 'ERROR: Required a required permission is missing for DB repair' . PHP_EOL;
 
 		exit(1);
@@ -348,7 +348,7 @@ function repair_database($run = true) {
 				FROM information_schema.tables
 				WHERE TABLE_SCHEMA = ?
 				AND TABLE_NAME = ?',
-				array($database_default, $table));
+				[$database_default, $table]);
 
 			if (isset($tblinfo['COLLATION'])) {
 				$collation = $tblinfo['COLLATION'];
@@ -389,7 +389,7 @@ function repair_database($run = true) {
 	print '------------------------------------------------------------------------------------------------' . PHP_EOL;
 
 	if ($bad == 0 && $good == 0) {
-		print($altersopt ? '-- ' : '') . 'Repair Completed!  No changes performed.' . PHP_EOL;
+		print ($altersopt ? '-- ' : '') . 'Repair Completed!  No changes performed.' . PHP_EOL;
 	} elseif ($bad) {
 		print 'Repair Completed!  ' . $good . ' Alters succeeded and ' . $bad . ' failed!' . PHP_EOL;
 	} else {
@@ -406,28 +406,28 @@ function report_audit_results($output = true) {
 
 	$tables = db_fetch_assoc('SHOW TABLES');
 
-	$alters  = array();
+	$alters  = [];
 
-	$cols = array(
+	$cols = [
 		'table_type'    => 'Type',
 		'table_null'    => 'Null',
 		'table_key'     => 'Key',
 		'table_default' => 'Default',
 		'table_extra'   => 'Extra'
-	);
+	];
 
-	$idxs = array(
+	$idxs = [
 		'idx_non_unique'   => 'Non_unique',
 		'idx_key_name'     => 'Key_name',
 		'idx_seq_in_index' => 'Seq_in_index',
 		'idx_column_name'  => 'Column_name',
 		'idx_packed'       => 'Packed',
 		'idx_comment'      => 'Comment'
-	);
+	];
 
 	if (cacti_sizeof($tables)) {
 		foreach ($tables as $table) {
-			$alter_cmds = array();
+			$alter_cmds = [];
 			$table_name = $table[$db_name];
 
 			$status  = db_fetch_row('SHOW TABLE STATUS LIKE "' . $table_name . '"');
@@ -448,14 +448,14 @@ function report_audit_results($output = true) {
 			$table_exists = db_fetch_cell_prepared('SELECT COUNT(*)
 				FROM table_columns
 				WHERE table_name = ?',
-				array($table_name));
+				[$table_name]);
 
 			if (!$table_exists) {
 				$plugin_table = db_fetch_row_prepared('SELECT *
 					FROM plugin_db_changes
 					WHERE `table` = ?
 					AND method = ?',
-					array($table_name, 'create'));
+					[$table_name, 'create']);
 
 				if (!cacti_sizeof($plugin_table)) {
 					if ($output) {
@@ -485,13 +485,13 @@ function report_audit_results($output = true) {
 			$i         = 1;
 			$errors    = 0;
 			$warnings  = 0;
-			$col_added = array();
-			$col_alter = array();
+			$col_added = [];
+			$col_alter = [];
 
 			$columns = db_fetch_assoc('SHOW COLUMNS IN ' . $table_name);
 			$exists  = db_fetch_cell_prepared('SELECT COUNT(*) FROM table_columns
 				WHERE table_name = ?',
-				array($table_name));
+				[$table_name]);
 
 			if ($exists) {
 				if (cacti_sizeof($columns)) {
@@ -502,7 +502,7 @@ function report_audit_results($output = true) {
 							FROM table_columns
 							WHERE table_name = ?
 							AND table_field = ?',
-							array($table_name, $c['Field']));
+							[$table_name, $c['Field']]);
 
 						if (!cacti_sizeof($dbc)) {
 							$plugin_column = db_fetch_row_prepared('SELECT *
@@ -510,7 +510,7 @@ function report_audit_results($output = true) {
 								WHERE `table` = ?
 								AND `column` = ?
 								AND method = ?',
-								array($table_name, $c['Field'], 'addcolumn'));
+								[$table_name, $c['Field'], 'addcolumn']);
 
 							if (!cacti_sizeof($plugin_column)) {
 								if ($output) {
@@ -580,7 +580,7 @@ function report_audit_results($output = true) {
 				$db_columns = db_fetch_assoc_prepared('SELECT *
 					FROM table_columns
 					WHERE table_name = ?',
-					array($table_name));
+					[$table_name]);
 
 				if (cacti_sizeof($db_columns)) {
 					foreach ($db_columns as $dbc) {
@@ -606,8 +606,8 @@ function report_audit_results($output = true) {
 
 				$indexes = db_fetch_assoc('SHOW INDEXES IN ' . $table_name);
 
-				$idx_added   = array();
-				$idx_dropped = array();
+				$idx_added   = [];
+				$idx_dropped = [];
 
 				if (cacti_sizeof($indexes)) {
 					foreach ($indexes as $i) {
@@ -615,7 +615,7 @@ function report_audit_results($output = true) {
 							FROM table_indexes
 							WHERE idx_table_name = ?
 							AND idx_key_name = ?',
-							array($i['Table'], $i['Key_name']));
+							[$i['Table'], $i['Key_name']]);
 
 						$dbc = db_fetch_row_prepared('SELECT *
 							FROM table_indexes
@@ -624,7 +624,7 @@ function report_audit_results($output = true) {
 							AND idx_seq_in_index = ?
 							AND idx_column_name = ?
 							ORDER BY idx_seq_in_index',
-							array($i['Table'], $i['Key_name'], $i['Seq_in_index'], $i['Column_name']));
+							[$i['Table'], $i['Key_name'], $i['Seq_in_index'], $i['Column_name']]);
 
 						if (!cacti_sizeof($dbc)) {
 							if ($key_exists) {
@@ -667,7 +667,7 @@ function report_audit_results($output = true) {
 				$db_indexes = db_fetch_assoc_prepared('SELECT *
 					FROM table_indexes
 					WHERE idx_table_name = ?',
-					array($table_name));
+					[$table_name]);
 
 				if (cacti_sizeof($db_indexes)) {
 					foreach ($db_indexes as $i) {
@@ -686,7 +686,7 @@ function report_audit_results($output = true) {
 								FROM table_indexes
 								WHERE idx_table_name = ?
 								AND idx_key_name = ?',
-								array($table_name, $i['idx_key_name']));
+								[$table_name, $i['idx_key_name']]);
 
 							$curr_seq = get_sequence_count($table_name, $i['idx_key_name']);
 
@@ -819,7 +819,7 @@ function get_previous_column($table, $column) {
 		FROM table_columns
 		WHERE table_name = ?
 		AND table_field = ?',
-		array($table, $column));
+		[$table, $column]);
 
 	if (!empty($sequence)) {
 		if ($sequence == 1) {
@@ -829,7 +829,7 @@ function get_previous_column($table, $column) {
 				FROM table_columns
 				WHERE table_name = ?
 				AND table_sequence = ?',
-				array($table, $sequence - 1));
+				[$table, $sequence - 1]);
 
 			return $previous;
 		}
@@ -837,7 +837,7 @@ function get_previous_column($table, $column) {
 }
 
 function make_index_alter($table, $key) {
-	$alter_cmds      = array();
+	$alter_cmds      = [];
 	$alter_cmd       = '';
 	$primary_dropped = false;
 
@@ -846,7 +846,7 @@ function make_index_alter($table, $key) {
 		WHERE idx_table_name = ?
 		AND idx_key_name = ?
 		ORDER BY idx_seq_in_index',
-		array($table, $key));
+		[$table, $key]);
 
 	$sequence_cnt = get_sequence_count($table, $key);
 
@@ -988,7 +988,7 @@ function create_tables($load = true) {
 	}
 
 	if ($load) {
-		if (!db_has_permissions(array('DROP','INSERT','LOCK TABLES'))) {
+		if (!db_has_permissions(['DROP','INSERT','LOCK TABLES'])) {
 			print 'ERROR: Required a required permission is missing for DB load' . PHP_EOL;
 
 			exit(1);
@@ -1009,7 +1009,7 @@ function create_tables($load = true) {
 		db_execute('TRUNCATE table_columns');
 		db_execute('TRUNCATE table_indexes');
 
-		$output = array();
+		$output = [];
 		$error  = 0;
 
 		if (file_exists(CACTI_PATH_DOCS . '/audit_schema.sql')) {
@@ -1031,7 +1031,7 @@ function create_tables($load = true) {
 			}
 
 			if ($error == 0) {
-				print($altersopt ? '-- ' : '') . 'SUCCESS: Loaded the Audit Schema' . PHP_EOL;
+				print ($altersopt ? '-- ' : '') . 'SUCCESS: Loaded the Audit Schema' . PHP_EOL;
 			} else {
 				print '@ ' . CACTI_PATH_DOCS . '/audit_schema.sql' . PHP_EOL;
 				print 'FATAL: Failed Load the Audit Schema' . PHP_EOL;
@@ -1050,7 +1050,7 @@ function load_audit_database() {
 
 	$db_name = 'Tables_in_' . $database_default;
 
-	if (!db_has_permissions(array('DROP','INSERT','LOCK TABLES'))) {
+	if (!db_has_permissions(['DROP','INSERT','LOCK TABLES'])) {
 		print 'ERROR: Required a required permission is missing for DB load' . PHP_EOL;
 
 		exit(1);
@@ -1079,7 +1079,7 @@ function load_audit_database() {
 					db_execute_prepared('INSERT INTO table_columns
 						(table_name, table_sequence, table_field, table_type, table_null, table_key, table_default, table_extra)
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-						array(
+						[
 							$table_name,
 							$i,
 							$c['Field'],
@@ -1088,7 +1088,7 @@ function load_audit_database() {
 							$c['Key'],
 							$c['Default'],
 							$c['Extra']
-						)
+						]
 					);
 
 					$i++;
@@ -1103,7 +1103,7 @@ function load_audit_database() {
 						(idx_table_name, idx_non_unique, idx_key_name, idx_seq_in_index, idx_column_name,
 						idx_collation, idx_cardinality, idx_sub_part, idx_packed, idx_null, idx_index_type, idx_comment)
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-						array(
+						[
 							$i['Table'],
 							$i['Non_unique'],
 							$i['Key_name'],
@@ -1116,7 +1116,7 @@ function load_audit_database() {
 							$i['Null'],
 							$i['Index_type'],
 							$i['Comment']
-						)
+						]
 					);
 				}
 			}
@@ -1126,7 +1126,7 @@ function load_audit_database() {
 	if (is_dir(CACTI_PATH_DOCS . '')) {
 		print PHP_EOL . 'Exporting Table Audit Table Creation Logic to ' . CACTI_PATH_DOCS . '/audit_schema.sql' . PHP_EOL;
 
-		$retval = db_dump_data($database_default, 'table_columns table_indexes', array(), CACTI_PATH_DOCS . '/audit_schema.sql');
+		$retval = db_dump_data($database_default, 'table_columns table_indexes', [], CACTI_PATH_DOCS . '/audit_schema.sql');
 
 		if ($retval) {
 			print 'Finished Creating Audit Schema with ERROR' . PHP_EOL . PHP_EOL;
