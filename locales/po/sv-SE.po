@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2025-03-14 13:09+0000\nLast-Translator: Daniel Nylander <weblate@danielnylander.se>\nLanguage-Team: Swedish <http://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2025-03-17 14:46+0000\nLast-Translator: Daniel Nylander <weblate@danielnylander.se>\nLanguage-Team: Swedish <http://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -12,7 +12,7 @@ msgstr "Cacti är utformad för att vara en komplett grafisk lösning baserad p�
 #: about.php:44
 #, php-format
 msgid "Please see the official %sCacti website%s for information on how to use Cacti, get support, and updates."
-msgstr "Vänligen se den officiella %sCacti-webbplatsen %s för information, support och uppdateringar."
+msgstr "Se den officiella %sCacti-webbplatsen%s för information om hur du använder Cacti, får support och uppdateringar."
 
 #: about.php:48
 msgid "Active Developers"
@@ -244,7 +244,7 @@ msgstr "Det finns för närvarande inga aggregerade mallar definierade för de v
 #: aggregate_graphs.php:435
 #, php-format
 msgid "In order to migrate the Aggregate Graphs below to a Template based Aggregate, first create an Aggregate Template for the Graph Template '%s'."
-msgstr "För att migrera Aggregatgraferna nedan till ett Mallbaserat aggregat skapar du först en Aggregate Template för grafmallen &#39; %s&#39;."
+msgstr "För att migrera de aggregerade graferna nedan till en mallbaserad aggregering skapar du först en aggregeringsmall för grafmallen '%s'."
 
 #: aggregate_graphs.php:436
 msgid "Please press 'Return' to continue."
@@ -1580,7 +1580,7 @@ msgstr "Välj Cacti Data Collector / Poller som används för att samla data fr�
 
 #: automation_networks.php:453
 msgid "Associated Site"
-msgstr "Associerad webbplats"
+msgstr "Associerad plats"
 
 #: automation_networks.php:454
 msgid "Choose the Cacti Site that you wish to associate discovered Devices with."
