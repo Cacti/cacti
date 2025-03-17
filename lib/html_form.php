@@ -980,7 +980,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
    @param boolean $show_label - show the form caption in the checkbox
 */
 function form_checkbox($form_name, $form_previous_value, $form_caption, $form_default_value, $current_id = 0, $class = '', $on_change = '', $title = '', $show_label = false) {
-	if (($form_previous_value == '') && (empty($current_id))) {
+	if (($form_previous_value === null) && (empty($current_id))) {
 		$form_previous_value = $form_default_value;
 	}
 
