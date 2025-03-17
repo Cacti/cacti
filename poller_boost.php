@@ -1287,8 +1287,10 @@ function boost_log_statistics($rrd_updates) {
 				$outstr .= ($outstr != '' ? ', ':'') . "$key:" . round($end - $start, 2);
 			} elseif ($key == 'RRDUpdates') {
 				$outstr .= ($outstr != '' ? ', ':'') . "$key:" . round($output[$key], 0);
+			} elseif (isset($output[$key])) {
+				$outstr .= ($outstr != '' ? ', ':'') . "$key:" . round($output[$key]/$processes, 0);
 			} else {
-				$outstr .= ($outstr != '' ? ', ':'') . "$key:" . round($output[$key] / $processes, 0);
+				$outstr .= ($outstr != '' ? ', ':'') . "$key:0";
 			}
 		}
 
