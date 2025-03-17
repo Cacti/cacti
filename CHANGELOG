@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -issue#6089: Cannot Add New User due to incorrect array structure
 -issue#6090: Undefined function warnings in Automation
 -issue#6099: When transferring a system from a backup if the poller has not run recently rrdtool issues are found
+-issue#6173: Deprecation warning when using boost for the first time
 
 1.2.29
 -security#GHSA-c5j8-jxj3-hh36: Authenticated RCE via multi-line SNMP responses
