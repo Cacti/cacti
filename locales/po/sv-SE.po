@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2025-03-17 14:46+0000\nLast-Translator: Daniel Nylander <weblate@danielnylander.se>\nLanguage-Team: Swedish <http://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2025-03-18 07:08+0000\nLast-Translator: Daniel Nylander <weblate@danielnylander.se>\nLanguage-Team: Swedish <http://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 4.8.1\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -856,7 +856,7 @@ msgstr "Ändra lösenord"
 
 #: auth_changepassword.php:407
 msgid "Please enter your current password and your new<br>Cacti password."
-msgstr "Ange ditt nuvarande lösenord och ditt nya <br> Cacti lösenord."
+msgstr "Ange ditt nuvarande lösenord och ditt nya lösenord för<br>Cacti."
 
 #: auth_changepassword.php:409
 msgid "Please enter your new Cacti password."
@@ -5533,7 +5533,7 @@ msgstr "Odefinierat"
 #: host.php:1572 include/global_settings.php:607 lib/html.php:2159
 #: lib/html_reports.php:990
 msgid "Site"
-msgstr "Webbplats"
+msgstr "Plats"
 
 #: host.php:1657
 msgid "Export Devices"
@@ -6161,7 +6161,7 @@ msgstr "Anpassad sträng"
 
 #: include/global_arrays.php:511 include/global_arrays.php:968
 msgid "Current Graph Item Data Source"
-msgstr "Aktuell grafartikeldatakälla"
+msgstr "Aktuellt diagramobjekts datakälla"
 
 #: include/global_arrays.php:517 include/global_arrays.php:524
 msgid "Script/Command"
@@ -6440,7 +6440,7 @@ msgstr "Varje %d dag"
 #: include/global_arrays.php:758
 #, php-format
 msgid "%0.1f Minutes"
-msgstr "%0.1f Protokoll"
+msgstr "%0.1f minuter"
 
 #: include/global_arrays.php:791 include/global_arrays.php:1474
 #: include/global_settings.php:1596 rrdcleaner.php:525
@@ -9878,7 +9878,7 @@ msgstr "Alternativa källor för innehållssäkerhet"
 
 #: include/global_settings.php:512
 msgid "Space delimited domain names that will be permitted to be accessed outside of the Web Server itself.  This is important for users choosing to use a CDN, or hosting site.  Sources can includes wildcards for example: *.mydomain.com, or a protocol, for example: https://*.example.com.  These Alternate Sources include Image, CSS and JavaScript types only."
-msgstr "Utrymme avgränsade domännamn som kommer att få åtkomst utanför själva webbservern. Detta är viktigt för användare som väljer att använda ett CDN eller en webbsajt. Källor kan innehålla jokertecken till exempel: *.mydomain.com eller ett protokoll, till exempel: https: //*.example.com. Dessa alternativa källor inkluderar endast bild-, CSS- och JavaScript -typer."
+msgstr "Mellanslagsavgränsade domännamn som ska vara tillåtna att nås utanför själva webbservern.  Detta är viktigt för användare som väljer att använda ett CDN eller en hosting-plats.  Källor kan innehålla jokertecken, t.ex: *.mindomän.se, eller ett protokoll, till exempel: https://*.exempel.se.  Dessa alternativa källor omfattar endast bild-, CSS- och JavaScript-typer."
 
 #: include/global_settings.php:525
 msgid "Enable Automatic Graph Creation"
