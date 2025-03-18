@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-03-17 20:56+0000\n"
+"PO-Revision-Date: 2025-03-18 09:57+0000\n"
 "Last-Translator: Daniel Nylander <weblate@danielnylander.se>\n"
 "Language-Team: Swedish <http://translate.cacti.net/projects/cacti/core/sv/>\n"
 "Language: sv-SE\n"
@@ -12259,7 +12259,7 @@ msgstr ""
 
 #: include/global_settings.php:604
 msgid "Enable Unsafe Plugin Installs"
-msgstr "Aktivera osäkra plugin-installationer"
+msgstr "Aktivera osäkra tilläggsinstallationer"
 
 #: include/global_settings.php:605
 msgid "If you would like to allow the installation of Cacti Plugins from their 'develop' branch, check this checkbox."
@@ -15348,10 +15348,10 @@ msgstr ""
 #: index.php:94
 msgid "<strong>NOTE:</strong> None of the Core Cacti Plugins, to date, have been re-designed to work with Remote Data Collectors.  Therefore, Plugins such as MacTrack, and HMIB, which require direct access to devices will not work with Remote Data Collectors at this time.  However, plugins such as Thold will work so long as the Remote Data Collector is in <b>'online'</b> mode."
 msgstr ""
-"<strong>OBS:</strong> Inget av Core Cacti-pluginprogrammen har hittills "
-"omarbetats för att fungera med fjärrinmatade datainsamlare.  Därför fungerar "
-"inte insticksprogram som MacTrack och HMIB, som kräver direktåtkomst till "
-"enheter, med fjärrstyrda datainsamlare för närvarande.  Plugins som Thold "
+"<strong>OBS:</strong> Inget av Core Cacti-tilläggen har hittills omarbetats "
+"för att fungera med fjärrinmatade datainsamlare.  Därför fungerar inte "
+"insticksprogram som MacTrack och HMIB, som kräver direktåtkomst till "
+"enheter, med fjärrstyrda datainsamlare för närvarande.  Tillägg som Thold "
 "kommer dock att fungera så länge som den fjärranslutna datainsamlaren är i "
 "<b>\"online\"</b> -läge."
 
@@ -16062,7 +16062,7 @@ msgstr " - Admin ofiltrerad"
 
 #: lib/clog_webapi.php:285
 msgid " - Admin view"
-msgstr " - Admin vy"
+msgstr " - Adminvy"
 
 #: lib/clog_webapi.php:290
 #, php-format
@@ -18193,7 +18193,7 @@ msgstr ", Grafmall: %s"
 #: lib/html_reports.php:1754 lib/html_reports.php:1824
 #, php-format
 msgid ", Using RegEx: \"%s\""
-msgstr ", Använda RegEx: \"%s\""
+msgstr ", Använder RegEx: \"%s\""
 
 #: lib/html_reports.php:1800
 #, php-format
@@ -18212,11 +18212,11 @@ msgstr ", Branch: %s"
 
 #: lib/html_reports.php:1816
 msgid "(All Branches)"
-msgstr "(Alla avdelningar)"
+msgstr "(Alla grenar)"
 
 #: lib/html_reports.php:1818
 msgid "(Current Branch)"
-msgstr "(Nuvarande gren)"
+msgstr "(Aktuell gren)"
 
 #: lib/html_reports.php:1871
 msgid "No Report Items"
@@ -19345,9 +19345,9 @@ msgstr "Databasens standardkollation verkar INTE vara helt UTF8-kompatibel. "
 #: lib/installer.php:2824
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
 msgstr ""
-"Alla tabeller som skapas av insticksprogram kan ha problem med att länkas "
-"mot Cacti Core-tabeller om kollationen inte matchas.   Se till att din "
-"databas ändras till 'utf8mb4_unicode_ci' genom att köra följande: "
+"Alla tabeller som skapas av tillägg kan ha problem med att länkas mot Cacti "
+"Core-tabeller om kollationen inte matchas.   Se till att din databas ändras "
+"till 'utf8mb4_unicode_ci' genom att köra följande: "
 
 #: lib/installer.php:2831
 msgid "Table Setup"
@@ -21975,7 +21975,7 @@ msgstr "Återställning av arkiv"
 
 #: plugins.php:54
 msgid "Archive Delete"
-msgstr "Arkiv Radera"
+msgstr "Arkivborttagning"
 
 #: plugins.php:57
 msgid "Install from Downloaded Plugins"
@@ -22529,7 +22529,7 @@ msgstr "Plugin har redan arkiverats och är oförändrat i arkivet."
 
 #: plugins.php:1809
 msgid "archive the Plugin in its current state."
-msgstr "Arkivera tillägget i dess nuvarande tillstånd."
+msgstr "arkivera tillägget i dess nuvarande tillstånd."
 
 #: plugins.php:1814
 msgid "Check Plugins Configuration"
@@ -22542,7 +22542,7 @@ msgstr ""
 
 #: plugins.php:1830
 msgid "Enable Plugin"
-msgstr "Aktivera plugin"
+msgstr "Aktivera tillägg"
 
 #: plugins.php:1833 plugins.php:1851
 msgid "Plugin already archived and Unchanged in the archive."
@@ -22586,7 +22586,7 @@ msgstr "Plugin är inte kompatibelt"
 
 #: plugins.php:1897
 msgid "Enable Plugin Locally"
-msgstr "Aktivera pluginet lokalt"
+msgstr "Aktivera tillägget lokalt"
 
 #: poller.php:405
 #, php-format
@@ -23249,7 +23249,7 @@ msgstr "Ta bort alla okända RRD-filer"
 
 #: rrdcleaner.php:562
 msgid "Archive All"
-msgstr "Arkiv Alla"
+msgstr "Arkivera allt"
 
 #: rrdcleaner.php:562
 msgid "Archive All Unknown RRDfiles"
