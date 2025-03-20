@@ -6739,7 +6739,7 @@ function enable_device_debug(int $host_id): bool {
 	$devices = [];
 
 	if ($device_debug != '') {
-		$devices = explode(',', $device_debug);
+		$devices = array_map('intval', explode(',', $device_debug));
 	}
 
 	if (!in_array($host_id, $devices, true)) {
@@ -6782,7 +6782,7 @@ function disable_device_debug(int $host_id): bool {
  */
 function is_device_debug_enabled(int $host_id): bool {
 	$device_debug = read_config_option('selective_device_debug', true);
-	$devices      = explode(',', $device_debug);
+	$devices      = array_map('intval', explode(',', $device_debug));
 
 	if (in_array($host_id, $devices, true)) {
 		return true;
