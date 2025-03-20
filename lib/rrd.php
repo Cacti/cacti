@@ -348,9 +348,9 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 
 			$attempts = 0;
 
-			while ($attempts < 5) {
-				$full_commandline = read_config_option('path_rrdtool') . $debug . ' ' . escape_command($command_line);
+			$full_commandline = read_config_option('path_rrdtool') . $debug . ' ' . escape_command($command_line);
 
+			while ($attempts < 5) {
 				if (0 == 1) {
 					/**
 					 * For debugging issue associated with RRDtool, for now I'm commenting out this line
@@ -718,21 +718,24 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = n
 
 	$data_source_path = get_data_source_path($local_data_id, true);
 
-	/* ok, if that passes lets check to make sure an rra does not already
-	exist, the last thing we want to do is overright data! */
+	/**
+	 * ok, if that passes lets check to make sure an rra does not already
+	 * exist, the last thing we want to do is overright data! 
+	 */
 	if ($show_source != true) {
-		if (!rrdtool_file_exists($data_source_path, $rrdtool_pipe)) {
+		if (rrdtool_file_exists($data_source_path, $rrdtool_pipe)) {
 			return -1;
 		}
 	}
 
-	/* the first thing we must do is make sure there is at least one
-	rra associated with this data source... *
-	UPDATE: As of version 0.6.6, we are splitting this up into two
-	SQL strings because of the multiple DS per RRD support. This is
-	not a big deal however since this function gets called once per
-	data source */
-
+	/**
+	 * the first thing we must do is make sure there is at least one
+	 * rra associated with this data source... *
+	 * UPDATE: As of version 0.6.6, we are splitting this up into two
+	 * SQL strings because of the multiple DS per RRD support. This is
+	 * not a big deal however since this function gets called once per
+	 * data source 
+	 */
 	$rras = db_fetch_assoc_prepared('SELECT dtd.rrd_step, dsp.x_files_factor,
 		dspr.steps, dspr.rows, dspc.consolidation_function_id,
 		(dspr.rows*dspr.steps) AS rra_order
