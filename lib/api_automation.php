@@ -3655,9 +3655,10 @@ function automation_add_tree(int $host_id, int $tree): void {
  * @param string $sysDescr The system description.
  * @param string $sysObject The system object identifier.
  * @param string $sysName The system name.
- * @return string|false The identified operating system.
+ *
+ * @return array|false The identified operating system.
  */
-function automation_find_os(string $sysDescr, string $sysObject, string $sysName): string|false {
+function automation_find_os(string $sysDescr, string $sysObject, string $sysName): array|false {
 	$sql_where  = '';
 
 	if ($sysDescr != '') {
