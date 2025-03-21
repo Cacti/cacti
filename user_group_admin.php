@@ -504,7 +504,7 @@ function form_save() {
 		}
 
 		$save['id']             = get_nfilter_request_var('id');
-		$save['name']           = form_input_validate(get_nfilter_request_var('name'), 'name', "^[A-Za-z0-9\._\\\@\ -]+$", false, 3);
+		$save['name']           = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 		$save['description']    = form_input_validate(get_nfilter_request_var('description'), 'description', '', true, 3);
 		$save['show_tree']      = form_input_validate(get_nfilter_request_var('show_tree', ''), 'show_tree', '', true, 3);
 		$save['show_list']      = form_input_validate(get_nfilter_request_var('show_list', ''), 'show_list', '', true, 3);
