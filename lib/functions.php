@@ -7115,49 +7115,47 @@ function repair_system_data_input_methods($step = 'import') {
 	}
 }
 
-if (isset($config['cacti_server_os']) && $config['cacti_server_os'] == 'win32' && !function_exists('posix_kill')) {
-	function posix_kill($pid, $signal = SIGTERM) {
-		if (!defined('SIGTERM')) {
-			define('SIGTERM', 15);
-		}
+if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' && !function_exists('posix_kill')) {
+    function posix_kill($pid, $signal = SIGTERM) {
+        if (!defined('SIGTERM')) {
+            define('SIGTERM', 15);
+        }
 
-		if (!defined('SIGKILL')) {
-			define('SIGKILL', 9);
-		}
+        if (!defined('SIGKILL')) {
+            define('SIGKILL', 9);
+        }
 
-		if (!defined('SIGHUP')) {
-			define('SIGHUP', 1);
-		}
+        if (!defined('SIGHUP')) {
+            define('SIGHUP', 1);
+        }
 
-		if (!defined('SIGINT')) {
-			define('SIGINT', 2);
-		}
+        if (!defined('SIGINT')) {
+            define('SIGINT', 2);
+        }
 
-		$wmi   = new COM('winmgmts:{impersonationLevel=impersonate}!\\\\.\\root\\cimv2');
-		$procs = $wmi->ExecQuery("SELECT ProcessId FROM Win32_Process WHERE ProcessId='" . $pid . "'");
+        // Check if the process exists
+        $checkProcessCmd = "powershell.exe -Command \"Get-Process -Id $pid -ErrorAction SilentlyContinue\"";
+        $processExists = trim(shell_exec($checkProcessCmd));
 
-		if (cacti_sizeof($procs)) {
-			if ($signal == 0) {
-				return true;  // The process is running
-			}
-
-			if ($signal == SIGTERM || $signal == SIGINT || $signal == SIGKILL) {
-				foreach ($procs as $proc) {
-					$proc->Terminate();
-				}
-			} elseif ($signal == SIGHUP) {
-				cacti_log("WARNING: SIGHUP Signal for pid: $pid is not supported on Windows", false, 'POLLER');
-			} else {
-				cacti_log("WARNING: Unknown Signal Number $signal in posix_kill", false, 'POLLER');
-
-				return false;
-			}
-		} elseif ($signal == 0) {
-			return false;
-		} else {
-			return true;
-		}
-	}
+        if (!empty($processExists)) {
+            if ($signal == 0) {
+                return true;  // The process is running
+            } elseif ($signal == SIGTERM || $signal == SIGINT || $signal == SIGKILL) {
+                // Kill the process
+                $killCmd = "powershell.exe -Command \"Stop-Process -Id $pid -Force\"";
+                shell_exec($killCmd);
+            } elseif ($signal == SIGHUP) {
+                cacti_log("WARNING: SIGHUP Signal for pid: $pid is not supported on Windows", false, 'POLLER');
+            } else {
+                cacti_log("WARNING: Unknown Signal Number $signal in posix_kill", false, 'POLLER');
+                return false;
+            }
+        } elseif ($signal == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
 
 function is_ipaddress($ip_address = '') {
