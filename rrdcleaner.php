@@ -325,7 +325,7 @@ function list_rrd() {
 		ON dt.id = rc.data_template_id
 		$sql_where",
 		$sql_params);
-
+	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 
 	$file_list = db_fetch_assoc_prepared("SELECT rc.id, rc.name, rc.last_mod, rc.size,
@@ -334,6 +334,7 @@ function list_rrd() {
 		LEFT JOIN data_template AS dt
 		ON dt.id = rc.data_template_id
 		$sql_where
+		$sql_order
 		$sql_limit",
 		$sql_params);
 
