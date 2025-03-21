@@ -218,7 +218,8 @@ function get_files() {
 		rrd_close($rrdtool_pipe);
 
 		if ($scan) {
-			$files = explode("\r\n", $scan);
+			$scan = str_replace("\r\n", "\n", $scan); // Replace \r\n with \n
+			$files = explode("\n", $scan);            // Split based on \n
 
 			foreach ($files as $file) {
 				list($pathname, $size, $mtime) = explode(',', $file);
@@ -242,7 +243,7 @@ function get_files() {
 
 		foreach ($iterator as $file) {
 			if (substr($file->getPathname(), -3) == 'rrd' && !($archive && strstr($file->getPathname(), $arcbase . '/') !== false)) {
-				$sql[] = "('" . str_replace($rra_path, '', $file->getPathname()) . "', " . $file->getSize() . ", '" . date('Y-m-d H:i:s', $file->getMTime()) . "',0)";
+				$sql[] = "('" . $file->getFilename() . "', " . $file->getSize() . ", '" . date('Y-m-d H:i:s', $file->getMTime()) . "',0)";
 				$size++;
 
 				if ($size == 400) {
@@ -324,7 +325,6 @@ function list_rrd() {
 		ON dt.id = rc.data_template_id
 		$sql_where",
 		$sql_params);
-
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 

@@ -224,39 +224,53 @@ class Net_Ping {
 				}
 			}
 
-			if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN' || ($fping != '' && file_exists($fping))) {
+			if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN' || ($fping != '' && file_exists($fping))) { // for non-Windows OS or fping.exe exists (in any OS including Win)
+				// $results would look like:
+				// 172.24.254.2 : xmt/rcv/%loss = 1/1/0%, min/avg/max = 7.01/7.01/7.01
 				$position = strpos($result, 'min/avg/max');
-
 				if ($position > 0) {
-					$output  = trim(str_replace(' ms', '', substr($result, $position)));
-					$pieces  = explode('=', $output);
-					$results = explode('/', $pieces[1]);
-
+					$output  = substr($result, $position);
 					$this->ping_status   = $results[1];
-					$this->ping_response = __('ICMP Ping Success (%s ms)', $results[1]);
+					$this->ping_response = __('ICMP Ping Success (fping.exe) (%s ms)', $output);
 
 					return true;
 				} else {
 					$this->ping_status   = 'down';
-					$this->ping_response = __('ICMP ping Timed out');
+					$this->ping_response = __('ICMP Ping Timed Out (fping.exe) (' . $this->host['hostname'] . '), Result [' . $result . ']');
 
 					return false;
 				}
-			} else {
+			} else { // for Windows (in case fping.exe is not installed)
+				/*
+				if the OS is Windows AND fping.exe does NOT exist, then ping.exe is to be used.
+				the out of ping.exe would look like:
+
+				ping -w 500 -n 3 abc
+
+				Pinging abc [216.239.38.120] with 32 bytes of data:
+				Reply from 216.239.38.120: bytes=32 time=30ms TTL=53
+				Reply from 216.239.38.120: bytes=32 time=22ms TTL=53
+				Reply from 216.239.38.120: bytes=32 time=25ms TTL=53
+
+				Ping statistics for 216.239.38.120:
+					Packets: Sent = 3, Received = 3, Lost = 0 (0% loss),
+				Approximate round trip times in milli-seconds:
+					Minimum = 22ms, Maximum = 30ms, Average = 25ms
+				*/
 				$position = strpos($result, 'Minimum');
 
 				if ($position > 0) {
 					$output  = trim(substr($result, $position));
 					$pieces  = explode(',', $output);
-					$results = explode('=', $pieces[2]);
+					$results = explode('=', $pieces[2]); //Average
 
-					$this->ping_status   = trim(str_replace('ms', '', $results[1]));
-					$this->ping_response = __('ICMP Ping Success (%s ms)', $this->ping_status);
+					$this->ping_status   = trim(str_replace('ms', '', $output));
+					$this->ping_response = __('ICMP Ping Success (ping.exe) (%s ms)', $this->ping_status);
 
 					return true;
 				} else {
 					$this->ping_status   = 'down';
-					$this->ping_response = __('ICMP ping Timed out');
+					$this->ping_response = __('ICMP Ping Timed Out (ping.exe) (' . $this->host['hostname'] . '), Result [' . $result . ']');
 
 					return false;
 				}

@@ -1147,7 +1147,7 @@ function dsstats_boost_bottom() {
 			sleep(2);
 		}
 
-		dsstats_get_and_store_ds_avgpeak_values('daily', 'child', 0);
+		dsstats_get_and_store_ds_avgpeak_values('daily', 'child', 1);
 
 		dsstats_log_statistics('DAILY');
 	}
