@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-03-14 13:09+0000\n"
+"PO-Revision-Date: 2025-03-18 09:57+0000\n"
 "Last-Translator: Daniel Nylander <weblate@danielnylander.se>\n"
 "Language-Team: Swedish <http://translate.cacti.net/projects/cacti/core/sv/>\n"
 "Language: sv-SE\n"
@@ -966,8 +966,7 @@ msgstr ""
 
 #: auth_changepassword.php:410
 msgid "Please enter your current password and your new<br>Cacti password."
-msgstr ""
-"Vänligen ange ditt nuvarande lösenord och ditt nya lösenord för<br>Cacti."
+msgstr "Ange ditt nuvarande lösenord och ditt nya lösenord för<br>Cacti."
 
 #: auth_changepassword.php:412 auth_resetpassword.php:263
 msgid "Please enter your new Cacti password."
@@ -2071,7 +2070,7 @@ msgstr ""
 
 #: automation_networks.php:760
 msgid "Associated Site"
-msgstr "Associerad webbplats"
+msgstr "Associerad plats"
 
 #: automation_networks.php:761
 msgid "Choose the Cacti Site that you wish to associate discovered Devices with."
@@ -2194,7 +2193,7 @@ msgstr "%d Minut"
 #: pollers.php:976 pollers.php:977
 #, php-format
 msgid "%d Minutes"
-msgstr "%d Protokoll"
+msgstr "%d minuter"
 
 #: automation_networks.php:833 include/global_arrays.php:790
 #: include/global_arrays.php:800 include/global_arrays.php:1596
@@ -3823,7 +3822,7 @@ msgstr "Färg Artikel"
 #: color_templates.php:177 graph_templates.php:2003 lib/api_aggregate.php:1949
 #: lib/html.php:1661
 msgid "No Items"
-msgstr "%s objekt"
+msgstr "Inga objekt"
 
 #: color_templates.php:319
 msgid "Click 'Continue' to Delete the following Color Template."
@@ -4030,7 +4029,7 @@ msgstr "Skrivbar"
 
 #: data_debug.php:483
 msgid "Determines if the Data Collector or the Web Site have Write access."
-msgstr "Avgör om datainsamlaren eller webbplatsen har skrivåtkomst."
+msgstr "Avgör om datainsamlaren eller platsen har skrivåtkomst."
 
 #: data_debug.php:486 templates_import.php:233
 msgid "Exists"
@@ -6682,13 +6681,13 @@ msgstr "VARNING: Cacti-sida:%s för användare:%s genererade ett fatalt fel %d!"
 #, php-format
 msgid "The Document page '%s' count not be reached.  The Cacti Documentation site is not reachable.  The http error was '%s'.  Consider downloading an official release to obtain the latest documentation and hosting the documentation locally."
 msgstr ""
-"Dokumentsidan '%s' kan inte nås.  Dokumentationswebbplatsen för Cacti kan "
-"inte nås.  Http-felet var '%s'.  Överväg att ladda ner en officiell version "
-"för att få den senaste dokumentationen och hosta dokumentationen lokalt."
+"Dokumentsidan '%s' kan inte nås.  Dokumentationsplatsen för Cacti kan inte "
+"nås.  Http-felet var '%s'.  Överväg att ladda ner en officiell version för "
+"att få den senaste dokumentationen och hosta dokumentationen lokalt."
 
 #: help.php:88
 msgid "Cacti GitHub Site"
-msgstr "Cacti GitHub-webbplats"
+msgstr "Cacti GitHub-plats"
 
 #: help.php:88
 msgid "Open a ticket at "
@@ -6697,7 +6696,7 @@ msgstr "Öppna ett ärende på "
 #: help.php:88
 #, php-format
 msgid "The Help File %s was not located on the Cacti Documentation Website."
-msgstr "Hjälpfilen %s fanns inte på webbplatsen för Cacti-dokumentation."
+msgstr "Hjälpfilen %s fanns inte på platsen för Cacti-dokumentation."
 
 #: help.php:102
 #, php-format
@@ -7036,7 +7035,7 @@ msgstr "Odefinierad"
 #: host.php:1538 host.php:1541 host.php:1796 include/global_settings.php:795
 #: lib/html.php:2566 lib/html.php:2569 lib/html_reports.php:1099
 msgid "Site"
-msgstr "Webbplats"
+msgstr "Plats"
 
 #: host.php:1625
 msgid "Export Devices"
@@ -7109,7 +7108,7 @@ msgstr ""
 
 #: host.php:1799
 msgid "The site associated to this Device"
-msgstr "Den webbplats som är kopplad till denna enhet"
+msgstr "Den plats som är kopplad till denna enhet"
 
 #: host.php:1805
 msgid "The Availability/Reachability method used to communicate with the device.  In some cases, the Availability/Reachability method will be 'none', which is not uncommon for some devices"
@@ -7827,7 +7826,7 @@ msgstr "Anpassad sträng"
 
 #: include/global_arrays.php:514 include/global_arrays.php:1043
 msgid "Current Graph Item Data Source"
-msgstr "Aktuellt diagramobjekt Datakälla"
+msgstr "Aktuellt diagramobjekts datakälla"
 
 #: include/global_arrays.php:520 include/global_arrays.php:529
 msgid "Script/Command"
@@ -8157,7 +8156,7 @@ msgstr "Varje %d dag"
 #: include/global_arrays.php:783
 #, php-format
 msgid "%0.1f Minutes"
-msgstr "%0.1f Protokoll"
+msgstr "%0.1f minuter"
 
 #: include/global_arrays.php:816 include/global_arrays.php:836
 #: include/global_arrays.php:848 include/global_arrays.php:849
@@ -9067,7 +9066,7 @@ msgstr "6 timmar"
 #: include/global_settings.php:1681 include/global_settings.php:1682
 #, php-format
 msgid "%s Hours"
-msgstr "%s Timmar"
+msgstr "%s timmar"
 
 #: include/global_arrays.php:1743
 #, php-format
@@ -9093,7 +9092,7 @@ msgstr "Obegränsad"
 #: include/global_settings.php:1677 include/global_settings.php:1678
 #, php-format
 msgid "%s Minutes"
-msgstr "%s Protokoll"
+msgstr "%s minuter"
 
 #: include/global_arrays.php:1780
 msgid "1 Megabyte"
@@ -10960,7 +10959,7 @@ msgstr "Poller Association"
 
 #: include/global_form.php:1282
 msgid "Device Site Association"
-msgstr "Enhetens webbplatsförening"
+msgstr "Enhetens platsförening"
 
 #: include/global_form.php:1283
 msgid "What Site is this Device associated with."
@@ -12260,7 +12259,7 @@ msgstr ""
 
 #: include/global_settings.php:604
 msgid "Enable Unsafe Plugin Installs"
-msgstr "Aktivera osäkra plugin-installationer"
+msgstr "Aktivera osäkra tilläggsinstallationer"
 
 #: include/global_settings.php:605
 msgid "If you would like to allow the installation of Cacti Plugins from their 'develop' branch, check this checkbox."
@@ -12304,7 +12303,7 @@ msgstr ""
 
 #: include/global_settings.php:638
 msgid "Site Security"
-msgstr "Säkerhet på webbplatsen"
+msgstr "Säkerhet på platsen"
 
 #: include/global_settings.php:643
 msgid "Force Connections over HTTPS"
@@ -12333,11 +12332,11 @@ msgstr "Innehåll-Säkerhet Alternativa källor"
 #: include/global_settings.php:660
 msgid "Space delimited domain names that will be permitted to be accessed outside of the Web Server itself.  This is important for users choosing to use a CDN, or hosting site.  Sources can includes wildcards for example: *.mydomain.com, or a protocol, for example: https://*.example.com.  These Alternate Sources include Image, CSS and JavaScript types only."
 msgstr ""
-"Rymdavgränsade domännamn som ska vara tillåtna att nås utanför själva "
+"Mellanslagsavgränsade domännamn som ska vara tillåtna att nås utanför själva "
 "webbservern.  Detta är viktigt för användare som väljer att använda ett CDN "
-"eller en hosting-webbplats.  Källor kan innehålla jokertecken, t.ex: *."
-"mydomain.com, eller ett protokoll, till exempel: https://*.example.com.  "
-"Dessa alternativa källor omfattar endast bild-, CSS- och JavaScript-typer."
+"eller en hosting-plats.  Källor kan innehålla jokertecken, t.ex: *."
+"mindomän.se, eller ett protokoll, till exempel: https://*.exempel.se.  Dessa "
+"alternativa källor omfattar endast bild-, CSS- och JavaScript-typer."
 
 #: include/global_settings.php:667
 msgid "Remote Agent"
@@ -13288,8 +13287,8 @@ msgstr "Inaktivera replikering av resurscache"
 msgid "By default, the main Cacti Data Collector will cache the entire web site and plugins into a Resource Cache.  Then, periodically the Remote Data Collectors will update themselves with any updates from the main Cacti Data Collector.  This Resource Cache essentially allows Remote Data Collectors to self upgrade.  If you do not wish to use this option, you can disable it using this setting."
 msgstr ""
 "Som standard kommer den huvudsakliga Cacti-datainsamlaren att cachelagra "
-"hela webbplatsen och insticksprogrammen i en resurscache.  Sedan uppdaterar "
-"de avlägsna datainsamlarna sig själva med jämna mellanrum med eventuella "
+"hela platsen och insticksprogrammen i en resurscache.  Sedan uppdaterar de "
+"avlägsna datainsamlarna sig själva med jämna mellanrum med eventuella "
 "uppdateringar från den huvudsakliga Cacti-datainsamlaren.  Denna resurscache "
 "gör det i huvudsak möjligt för fjärruppsamlare att uppgradera sig själva.  "
 "Om du inte vill använda det här alternativet kan du inaktivera det med hjälp "
@@ -13435,7 +13434,7 @@ msgstr ""
 #: include/global_settings.php:1679
 #, php-format
 msgid "%s Hour"
-msgstr "%s Timme"
+msgstr "%s timme"
 
 #: include/global_settings.php:1614
 msgid "Poller Commands Timeout"
@@ -13978,7 +13977,7 @@ msgstr "URL för serverbas"
 msgid "This is a the server location that will be used for links to the Cacti site. This should include the subdirectory if Cacti does not run from root folder."
 msgstr ""
 "Detta är den serverplats som kommer att användas för länkar till Cacti-"
-"webbplatsen. Detta bör inkludera underkatalogen om Cacti inte körs från "
+"platsen. Detta bör inkludera underkatalogen om Cacti inte körs från "
 "rotmappen."
 
 #: include/global_settings.php:2079
@@ -15335,24 +15334,24 @@ msgstr "Antal offline-poster:"
 msgid "<strong>NOTE:</strong> You are logged into a Remote Data Collector.  When <b>'online'</b>, you will be able to view and control much of the Main Cacti Web Site just as if you were logged into it.  Also, it's important to note that Remote Data Collectors are required to use the Cacti's Performance Boosting Services <b>'On Demand Updating'</b> feature, and we always recommend using Spine.  When the Remote Data Collector is <b>'offline'</b>, the Remote Data Collectors Web Site will contain much less information.  However, it will cache all updates until the Main Cacti Database and Web Server are reachable.  Then it will dump it's Boost table output back to the Main Cacti Database for updating."
 msgstr ""
 "<strong>OBS:</strong> Du är inloggad på en fjärrdatainsamlare.  När du är <b>"
-"\"online\"</b> kommer du att kunna se och styra mycket av Cactis "
-"huvudwebbplats precis som om du vore inloggad på den.  Det är också viktigt "
-"att notera att fjärrdatainsamlare måste använda funktionen <b>\"On Demand "
-"Updating</b> \" i Cactis Performance Boosting Services, och vi rekommenderar "
-"alltid att du använder Spine.  När fjärrdatainsamlaren är <b>\"offline\"</b> "
-"kommer fjärrdatainsamlarens webbplats att innehålla mycket mindre "
-"information.  Den kommer dock att cacha alla uppdateringar tills "
-"huvuddatabasen och webbservern för Cacti är nåbara.  Då kommer den att dumpa "
-"sin Boost-tabellutmatning tillbaka till den huvudsakliga Cacti-databasen för "
+"\"online\"</b> kommer du att kunna se och styra mycket av Cactis huvudplats "
+"precis som om du vore inloggad på den.  Det är också viktigt att notera att "
+"fjärrdatainsamlare måste använda funktionen <b>\"On Demand Updating</b> \" i "
+"Cactis Performance Boosting Services, och vi rekommenderar alltid att du "
+"använder Spine.  När fjärrdatainsamlaren är <b>\"offline\"</b> kommer "
+"fjärrdatainsamlarens plats att innehålla mycket mindre information.  Den "
+"kommer dock att cacha alla uppdateringar tills huvuddatabasen och "
+"webbservern för Cacti är nåbara.  Då kommer den att dumpa sin Boost-"
+"tabellutmatning tillbaka till den huvudsakliga Cacti-databasen för "
 "uppdatering."
 
 #: index.php:94
 msgid "<strong>NOTE:</strong> None of the Core Cacti Plugins, to date, have been re-designed to work with Remote Data Collectors.  Therefore, Plugins such as MacTrack, and HMIB, which require direct access to devices will not work with Remote Data Collectors at this time.  However, plugins such as Thold will work so long as the Remote Data Collector is in <b>'online'</b> mode."
 msgstr ""
-"<strong>OBS:</strong> Inget av Core Cacti-pluginprogrammen har hittills "
-"omarbetats för att fungera med fjärrinmatade datainsamlare.  Därför fungerar "
-"inte insticksprogram som MacTrack och HMIB, som kräver direktåtkomst till "
-"enheter, med fjärrstyrda datainsamlare för närvarande.  Plugins som Thold "
+"<strong>OBS:</strong> Inget av Core Cacti-tilläggen har hittills omarbetats "
+"för att fungera med fjärrinmatade datainsamlare.  Därför fungerar inte "
+"insticksprogram som MacTrack och HMIB, som kräver direktåtkomst till "
+"enheter, med fjärrstyrda datainsamlare för närvarande.  Tillägg som Thold "
 "kommer dock att fungera så länge som den fjärranslutna datainsamlaren är i "
 "<b>\"online\"</b> -läge."
 
@@ -16063,7 +16062,7 @@ msgstr " - Admin ofiltrerad"
 
 #: lib/clog_webapi.php:285
 msgid " - Admin view"
-msgstr " - Admin vy"
+msgstr " - Adminvy"
 
 #: lib/clog_webapi.php:290
 #, php-format
@@ -17772,7 +17771,7 @@ msgstr "Graf Länkad"
 
 #: lib/html_reports.php:91
 msgid "Should the Graphs be linked back to the Cacti site?"
-msgstr "Bör graferna länkas tillbaka till Cacti-webbplatsen?"
+msgstr "Bör graferna länkas tillbaka till Cacti-platsen?"
 
 #: lib/html_reports.php:95
 msgid "Graph Settings"
@@ -18194,7 +18193,7 @@ msgstr ", Grafmall: %s"
 #: lib/html_reports.php:1754 lib/html_reports.php:1824
 #, php-format
 msgid ", Using RegEx: \"%s\""
-msgstr ", Använda RegEx: \"%s\""
+msgstr ", Använder RegEx: \"%s\""
 
 #: lib/html_reports.php:1800
 #, php-format
@@ -18213,11 +18212,11 @@ msgstr ", Branch: %s"
 
 #: lib/html_reports.php:1816
 msgid "(All Branches)"
-msgstr "(Alla avdelningar)"
+msgstr "(Alla grenar)"
 
 #: lib/html_reports.php:1818
 msgid "(Current Branch)"
-msgstr "(Nuvarande filial)"
+msgstr "(Aktuell gren)"
 
 #: lib/html_reports.php:1871
 msgid "No Report Items"
@@ -18901,7 +18900,7 @@ msgstr "Alternativ för installation:"
 
 #: lib/installer.php:2263
 msgid "Choose this for the Primary site."
-msgstr "Välj detta för den primära webbplatsen."
+msgstr "Välj detta för den primära platsen."
 
 #: lib/installer.php:2263 lib/installer.php:2316
 msgid "New Primary Server"
@@ -19056,15 +19055,14 @@ msgstr ""
 msgid "These directories will be required to stay read writable after the install so that the Cacti remote synchronization process can update them as the Main Cacti Web Site changes"
 msgstr ""
 "Dessa kataloger måste vara skrivbara efter installationen så att Cactis "
-"fjärrsynkroniseringsprocess kan uppdatera dem när Cactis huvudwebbplats "
-"ändras"
+"fjärrsynkroniseringsprocess kan uppdatera dem när Cactis huvudplats ändras"
 
 #: lib/installer.php:2492
 msgid "If you are installing packages, once the packages are installed, you should change the scripts directory back to read only as this presents some exposure to the web site."
 msgstr ""
 "Om du installerar paket bör du, när paketen är installerade, ändra tillbaka "
 "skriptkatalogen till skrivskyddad eftersom detta innebär en viss exponering "
-"för webbplatsen."
+"för platsen."
 
 #: lib/installer.php:2494
 msgid "For remote pollers, it is critical that the paths that you will be updating frequently, including the plugins, scripts, and resources paths have read/write access as the data collector will have to update these paths from the main web server content."
@@ -19347,9 +19345,9 @@ msgstr "Databasens standardkollation verkar INTE vara helt UTF8-kompatibel. "
 #: lib/installer.php:2824
 msgid "Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to 'utf8mb4_unicode_ci' by running the following: "
 msgstr ""
-"Alla tabeller som skapas av insticksprogram kan ha problem med att länkas "
-"mot Cacti Core-tabeller om kollationen inte matchas.   Se till att din "
-"databas ändras till 'utf8mb4_unicode_ci' genom att köra följande: "
+"Alla tabeller som skapas av tillägg kan ha problem med att länkas mot Cacti "
+"Core-tabeller om kollationen inte matchas.   Se till att din databas ändras "
+"till 'utf8mb4_unicode_ci' genom att köra följande: "
 
 #: lib/installer.php:2831
 msgid "Table Setup"
@@ -20217,15 +20215,15 @@ msgstr ""
 #, php-format
 msgid "There were '%s' Plugins found at The Cacti Groups GitHub site and '%s' Plugins Tags/Releases were retrieved and updated in %0.2f seconds."
 msgstr ""
-"Det fanns '%s' Plugins på The Cacti Groups GitHub-webbplats och '%s' Plugins "
+"Det fanns '%s' Plugins på The Cacti Groups GitHub-plats och '%s' Plugins "
 "Taggar/Releaser hämtades och uppdaterades på %0.2f sekunder."
 
 #: lib/plugins.php:2240
 #, php-format
 msgid "Unable to reach The Cacti Groups GitHub site.  No plugin data retrieved in %0.2f seconds."
 msgstr ""
-"Det går inte att nå The Cacti Groups GitHub-webbplats.  Ingen plugin-data "
-"hämtad på %0.2f sekunder."
+"Det går inte att nå The Cacti Groups GitHub-plats.  Ingen plugin-data hämtad "
+"på %0.2f sekunder."
 
 #: lib/reports.php:144
 #, php-format
@@ -21046,9 +21044,9 @@ msgstr "Webbadressens plats"
 msgid "The valid URL to use for this external link.  Must include the type, for example http://www.cacti.net.  Note that many websites do not allow them to be embedded in an iframe from a foreign site, and therefore External Linking may not work."
 msgstr ""
 "Den giltiga URL som ska användas för denna externa länk.  Måste innehålla "
-"typen, t.ex. http://www.cacti.net.  Observera att många webbplatser inte "
-"tillåter att de bäddas in i en iframe från en utländsk webbplats, och därför "
-"kan det hända att extern länkning inte fungerar."
+"typen, t.ex. http://www.cacti.net.  Observera att många platser inte "
+"tillåter att de bäddas in i en iframe från en utländsk plats, och därför kan "
+"det hända att extern länkning inte fungerar."
 
 #: links.php:577
 msgid "If checked, the page will be available immediately to the admin user."
@@ -21977,7 +21975,7 @@ msgstr "Återställning av arkiv"
 
 #: plugins.php:54
 msgid "Archive Delete"
-msgstr "Arkiv Radera"
+msgstr "Arkivborttagning"
 
 #: plugins.php:57
 msgid "Install from Downloaded Plugins"
@@ -22067,8 +22065,8 @@ msgstr "Arkiverade"
 #, php-format
 msgid "The action '%s' on Plugin '%s' can not be performed due to the Plugin in it's current state."
 msgstr ""
-"Åtgärden '%s' på Plugin '%s' kan inte utföras på grund av Plugin i dess "
-"nuvarande tillstånd."
+"Åtgärden '%s' på tillägget '%s' kan inte utföras på grund av tillägget i "
+"dess nuvarande tillstånd."
 
 #: plugins.php:169
 #, php-format
@@ -22128,8 +22126,8 @@ msgstr "Är du säker på att du vill ta bort alla Plugin-data och inställninga
 #: plugins.php:586
 msgid "Restoring this Plugin Archive will overwrite the current Plugin directory.  If you really want to Restore this Plugin Archive, click 'Restore' below.  Otherwise click 'Cancel'."
 msgstr ""
-"Om du återställer detta Plugin-arkiv skrivs den aktuella Plugin-katalogen "
-"över.  Om du verkligen vill återställa detta Plugin-arkiv klickar du på "
+"Om du återställer detta tilläggsarkiv skrivs den aktuella tilläggskatalogen "
+"över.  Om du verkligen vill återställa detta tilläggsarkiv klickar du på "
 "\"Återställ\" nedan.  Annars klickar du på \"Avbryt\"."
 
 #: plugins.php:587
@@ -22531,7 +22529,7 @@ msgstr "Plugin har redan arkiverats och är oförändrat i arkivet."
 
 #: plugins.php:1809
 msgid "archive the Plugin in its current state."
-msgstr "arkivera pluginet i dess nuvarande tillstånd."
+msgstr "arkivera tillägget i dess nuvarande tillstånd."
 
 #: plugins.php:1814
 msgid "Check Plugins Configuration"
@@ -22544,7 +22542,7 @@ msgstr ""
 
 #: plugins.php:1830
 msgid "Enable Plugin"
-msgstr "Aktivera plugin"
+msgstr "Aktivera tillägg"
 
 #: plugins.php:1833 plugins.php:1851
 msgid "Plugin already archived and Unchanged in the archive."
@@ -22552,7 +22550,7 @@ msgstr "Plugin redan arkiverat och oförändrat i arkivet."
 
 #: plugins.php:1835 plugins.php:1853
 msgid "Archive the Plugin in its current state."
-msgstr "Arkivera pluginet i dess nuvarande tillstånd."
+msgstr "Arkivera tillägget i dess nuvarande tillstånd."
 
 #: plugins.php:1848
 msgid "Plugin was Disabled due to a Plugin Error.  Click to Re-enable the Plugin.  Search for 'DISABLING' in the Cacti log to find the reason."
@@ -22588,7 +22586,7 @@ msgstr "Plugin är inte kompatibelt"
 
 #: plugins.php:1897
 msgid "Enable Plugin Locally"
-msgstr "Aktivera pluginet lokalt"
+msgstr "Aktivera tillägget lokalt"
 
 #: poller.php:405
 #, php-format
@@ -23104,7 +23102,7 @@ msgstr "Senaste synkronisering"
 msgid "The last time this Data Collector was full synced with main Cacti site."
 msgstr ""
 "Förra gången var denna datainsamlare helt synkroniserad med den huvudsakliga "
-"Cacti-webbplatsen."
+"Cacti-platsen."
 
 #: pollers.php:1196
 msgid "No Data Collectors Found"
@@ -23251,7 +23249,7 @@ msgstr "Ta bort alla okända RRD-filer"
 
 #: rrdcleaner.php:562
 msgid "Archive All"
-msgstr "Arkiv Alla"
+msgstr "Arkivera allt"
 
 #: rrdcleaner.php:562
 msgid "Archive All Unknown RRDfiles"
@@ -23327,21 +23325,21 @@ msgstr "Sidinformation"
 
 #: sites.php:44
 msgid "The primary name for the Site."
-msgstr "Det primära namnet för webbplatsen."
+msgstr "Det primära namnet för platsen."
 
 #: sites.php:47
 msgid "New Site"
-msgstr "Ny webbplats"
+msgstr "Ny plats"
 
 #: sites.php:52 sites.php:441
 msgid "Disable Site"
-msgstr "Inaktivera webbplats"
+msgstr "Inaktivera plats"
 
 #: sites.php:53
 msgid "Check this box to disable all checks for hosts in this site."
 msgstr ""
 "Markera den här rutan om du vill inaktivera alla kontroller för värdar på "
-"den här webbplatsen."
+"den här platsen."
 
 #: sites.php:60
 msgid "Address Information"
@@ -23353,11 +23351,11 @@ msgstr "Adress 1"
 
 #: sites.php:66
 msgid "The primary address for the Site."
-msgstr "Den primära adressen för webbplatsen."
+msgstr "Den primära adressen för platsen."
 
 #: sites.php:68
 msgid "Enter the Site Address"
-msgstr "Ange webbplatsens adress"
+msgstr "Ange platsens adress"
 
 #: sites.php:74
 msgid "Address2"
@@ -23365,7 +23363,7 @@ msgstr "Adress 2"
 
 #: sites.php:75
 msgid "Additional address information for the Site."
-msgstr "Ytterligare adressinformation för webbplatsen."
+msgstr "Ytterligare adressinformation för platsen."
 
 #: sites.php:77
 msgid "Additional Site Address information"
@@ -23377,7 +23375,7 @@ msgstr "Stad"
 
 #: sites.php:84
 msgid "The city or locality for the Site."
-msgstr "Staden eller orten för webbplatsen."
+msgstr "Staden eller orten för platsen."
 
 #: sites.php:86
 msgid "Enter the City or Locality"
@@ -23389,7 +23387,7 @@ msgstr "Län"
 
 #: sites.php:93
 msgid "The state for the Site."
-msgstr "Staten för webbplatsen."
+msgstr "Staten för platsen."
 
 #: sites.php:95
 msgid "Enter the state"
@@ -23401,7 +23399,7 @@ msgstr "Postnummer"
 
 #: sites.php:102
 msgid "The postal or zip code for the Site."
-msgstr "Postnummer eller postnummer för webbplatsen."
+msgstr "Postnummer eller postnummer för platsen."
 
 #: sites.php:104
 msgid "Enter the postal code"
@@ -23413,7 +23411,7 @@ msgstr "Land"
 
 #: sites.php:111
 msgid "The country for the Site."
-msgstr "Landet för webbplatsen."
+msgstr "Landet för platsen."
 
 #: sites.php:113
 msgid "Enter the country"
@@ -23421,7 +23419,7 @@ msgstr "Ange land"
 
 #: sites.php:120
 msgid "The TimeZone for the Site."
-msgstr "Tidszon för webbplatsen."
+msgstr "Tidszon för platsen."
 
 #: sites.php:128
 msgid "Geolocation Information"
@@ -23433,7 +23431,7 @@ msgstr "Latitud"
 
 #: sites.php:134
 msgid "The Latitude for this Site."
-msgstr "Latitud för denna webbplats."
+msgstr "Latitud för denna plats."
 
 #: sites.php:136
 msgid "example 38.889488"
@@ -23445,7 +23443,7 @@ msgstr "Longitud"
 
 #: sites.php:143
 msgid "The Longitude for this Site."
-msgstr "Longitud för denna webbplats."
+msgstr "Longitud för denna plats."
 
 #: sites.php:145
 msgid "example -77.0374678"
@@ -23458,8 +23456,8 @@ msgstr "Zooma"
 #: sites.php:152
 msgid "The default Map Zoom for this Site.  Values can be from 0 to 23. Note that some regions of the planet have a max Zoom of 15."
 msgstr ""
-"Standardzoom för kartan för den här webbplatsen.  Värdena kan vara från 0 "
-"till 23. Observera att vissa regioner på planeten har en maxzoom på 15."
+"Standardzoom för kartan för den här platsen.  Värdena kan vara från 0 till "
+"23. Observera att vissa regioner på planeten har en maxzoom på 15."
 
 #: sites.php:154
 msgid "0 - 23"
@@ -23472,12 +23470,11 @@ msgstr "Ytterligare information"
 #: sites.php:169
 msgid "Additional area use for random notes related to this Site."
 msgstr ""
-"Ytterligare område för slumpmässiga anteckningar relaterade till denna "
-"webbplats."
+"Ytterligare område för slumpmässiga anteckningar relaterade till denna plats."
 
 #: sites.php:172
 msgid "Enter some useful information about the Site."
-msgstr "Ange lite användbar information om webbplatsen."
+msgstr "Ange lite användbar information om platsen."
 
 #: sites.php:177
 msgid "Alternate Name"
@@ -23486,84 +23483,84 @@ msgstr "Alternativt namn"
 #: sites.php:178
 msgid "Used for cases where a Site has an alternate named used to describe it"
 msgstr ""
-"Används för fall där en webbplats har ett alternativt namn som används för "
-"att beskriva den"
+"Används för fall där en plats har ett alternativt namn som används för att "
+"beskriva den"
 
 #: sites.php:180
 msgid "If the Site is known by another name enter it here."
-msgstr "Om webbplatsen är känd under ett annat namn, ange det här."
+msgstr "Om platsen är känd under ett annat namn, ange det här."
 
 #: sites.php:341
 msgid "Template Site was not found! Unable to duplicate."
-msgstr "Mallens webbplats hittades inte! Det går inte att duplicera."
+msgstr "Mallens plats hittades inte! Det går inte att duplicera."
 
 #: sites.php:413
 msgid "Click 'Continue' to Delete the following Site."
-msgstr "Klicka på \"Fortsätt\" för att ta bort följande webbplats."
+msgstr "Klicka på \"Fortsätt\" för att ta bort följande plats."
 
 #: sites.php:414
 msgid "Click 'Continue' to Delete following Sites."
-msgstr "Klicka på \"Fortsätt\" för att ta bort följande webbplatser."
+msgstr "Klicka på \"Fortsätt\" för att ta bort följande platser."
 
 #: sites.php:415
 msgid "Delete Site"
-msgstr "Ta bort webbplats"
+msgstr "Ta bort plats"
 
 #: sites.php:416
 msgid "Delete Sites"
-msgstr "Ta bort webbplatser"
+msgstr "Ta bort platser"
 
 #: sites.php:419
 msgid "Click 'Continue' to Duplicate the following Site."
-msgstr "Klicka på \"Fortsätt\" för att duplicera följande webbplats."
+msgstr "Klicka på \"Fortsätt\" för att duplicera följande plats."
 
 #: sites.php:420
 msgid "Click 'Continue' to Duplicate following Sites."
-msgstr "Klicka på \"Fortsätt\" för att duplicera följande webbplatser."
+msgstr "Klicka på \"Fortsätt\" för att duplicera följande platser."
 
 #: sites.php:421
 msgid "Duplicate Site"
-msgstr "Duplicerad webbplats"
+msgstr "Duplicerad plats"
 
 #: sites.php:422
 msgid "Duplicate Sites"
-msgstr "Duplicerade webbplatser"
+msgstr "Duplicerade platser"
 
 #: sites.php:433
 msgid "Click 'Continue' to Enable the following Site."
-msgstr "Klicka på \"Fortsätt\" för att aktivera följande webbplats."
+msgstr "Klicka på \"Fortsätt\" för att aktivera följande plats."
 
 #: sites.php:434
 msgid "Click 'Continue' to Enable following Sites."
-msgstr "Klicka på \"Fortsätt\" för att aktivera följande webbplatser."
+msgstr "Klicka på \"Fortsätt\" för att aktivera följande platser."
 
 #: sites.php:435
 msgid "Enable Site"
-msgstr "Aktivera webbplats"
+msgstr "Aktivera plats"
 
 #: sites.php:436
 msgid "Enable Sites"
-msgstr "Aktivera webbplatser"
+msgstr "Aktivera platser"
 
 #: sites.php:439
 msgid "Click 'Continue' to Disable the following Site."
-msgstr "Klicka på \"Fortsätt\" för att inaktivera följande webbplats."
+msgstr "Klicka på \"Fortsätt\" för att inaktivera följande plats."
 
 #: sites.php:440
 msgid "Click 'Continue' to Disable following Sites."
-msgstr "Klicka på \"Fortsätt\" för att inaktivera följande webbplatser."
+msgstr "Klicka på \"Fortsätt\" för att inaktivera följande platser."
 
 #: sites.php:442
 msgid "Disable Sites"
-msgstr "Inaktivera webbplatser"
+msgstr "Inaktivera platser"
 
 #: sites.php:635
 msgid "The name of this Site."
-msgstr "Namnet på denna webbplats."
+msgstr "Namnet på denna plats."
 
 #: sites.php:641
 msgid "The unique id associated with this Site."
-msgstr "Det unika id som är kopplat till denna webbplats."
+msgstr "Det unika id som är kopplat till denna plats."
 
 #: sites.php:644
 msgid "Monitoring State"
@@ -23571,27 +23568,27 @@ msgstr "Övervakning av tillstånd"
 
 #: sites.php:647
 msgid "The state of this Site."
-msgstr "Tillståndet för denna webbplats."
+msgstr "Tillståndet för denna plats."
 
 #: sites.php:653
 msgid "The number of Devices associated with this Site."
-msgstr "Antalet enheter som är kopplade till denna webbplats."
+msgstr "Antalet enheter som är kopplade till denna plats."
 
 #: sites.php:659
 msgid "The City associated with this Site."
-msgstr "Den stad som är förknippad med denna webbplats."
+msgstr "Den stad som är förknippad med denna plats."
 
 #: sites.php:665
 msgid "The State associated with this Site."
-msgstr "Den stat som är kopplad till denna webbplats."
+msgstr "Den stat som är kopplad till denna plats."
 
 #: sites.php:671
 msgid "The Country associated with this Site."
-msgstr "Det land som är förknippat med denna webbplats."
+msgstr "Det land som är förknippat med denna plats."
 
 #: sites.php:697
 msgid "No Sites Found"
-msgstr "Inga webbplatser hittades"
+msgstr "Inga platser hittades"
 
 #: spikekill.php:40
 #, php-format
@@ -24395,7 +24392,7 @@ msgstr "Trädföremål"
 
 #: tree.php:863
 msgid "Available Sites"
-msgstr "Tillgängliga webbplatser"
+msgstr "Tillgängliga platser"
 
 #: tree.php:898
 msgid "Available Devices"
@@ -25746,11 +25743,11 @@ msgid "When operating multiple Data Collectors in Cacti, Cacti will attempt to m
 msgstr ""
 "När du använder flera datainsamlare i Cacti kommer Cacti att försöka "
 "upprätthålla tillståndet för nyckelfiler på alla datainsamlare.  Detta "
-"inkluderar alla kärnfiler, icke-installationsrelaterade webbplats- och "
-"plugin-filer.  När du tvingar fram en återuppbyggnad av resurscachen kommer "
-"Cacti att rensa den lokala resurscachen och sedan återuppbygga den vid nästa "
+"inkluderar alla kärnfiler, icke-installationsrelaterade plats- och plugin-"
+"filer.  När du tvingar fram en återuppbyggnad av resurscachen kommer Cacti "
+"att rensa den lokala resurscachen och sedan återuppbygga den vid nästa "
 "schemalagda pollerstart.  Detta kommer att få alla fjärrdatainsamlare att "
-"kontrollera att deras webbplats- och plugin-filer är konsekventa."
+"kontrollera att deras plats- och plugin-filer är konsekventa."
 
 #: utilities.php:1260
 msgid "Boost Utilities"

@@ -68,13 +68,13 @@ function api_tree_unlock(int $tree_id, int $user_id = 0, bool $web = true): void
  * Copies a node within a tree to a new parent node at a specified position.
  *
  * @param int $tree_id The ID of the tree.
- * @param int $node_id The ID of the node to copy.
- * @param int $new_parent The ID of the new parent node.
+ * @param int|string $node_id The ID of the node to copy.
+ * @param int|string $new_parent The ID of the new parent node.
  * @param int $new_position The position under the new parent node.
  *
  * @return void
  */
-function api_tree_copy_node(int $tree_id, int $node_id, int $new_parent, int $new_position): void {
+function api_tree_copy_node(int $tree_id, int|string $node_id, int|string $new_parent, int $new_position): void {
 	input_validate_input_number($tree_id, 'tree_id');
 	input_validate_input_number($new_position, 'new_position');
 
@@ -228,7 +228,7 @@ function api_tree_release_lock(string $lockname): void {
  *   Data is not returned, it is printed to the screen.
  *
  * @param int    $tree_id  The ID of the tree where the node will be created.
- * @param int    $node_id  The ID of the node to be created.
+ * @param int|string    $node_id  The ID of the node to be created.
  * @param int    $position The position of the node within the tree.
  * @param string $title    The title of the node. Defaults to 'New Branch' if not provided.
  *
@@ -378,11 +378,11 @@ function api_tree_graph_exists(int $tree_id, int $parent, int $local_graph_id): 
  * Given a tree and a branch/leaf, delete the node and it's content
  *
  * @param int $tree_id The ID of the tree from which the node will be deleted.
- * @param int $node_id The ID of the node to be deleted.
+ * @param int|string $node_id The ID of the node to be deleted.
  *
  * @return void
  */
-function api_tree_delete_node(int $tree_id, int $node_id): void {
+function api_tree_delete_node(int $tree_id, int|string $node_id): void {
 	input_validate_input_number($tree_id, 'tree_id');
 
 	// Basic Error Checking
@@ -398,7 +398,7 @@ function api_tree_delete_node(int $tree_id, int $node_id): void {
 		return;
 	}
 
-	$data  = api_tree_parse_node_data($node_id);
+	$data = api_tree_parse_node_data($node_id);
 
 	if (isset($data['leaf_id']) && $data['leaf_id'] > 0) {
 		if ($data['host'] == 0 && $data['graph'] == 0 && $data['site'] == 0) {
@@ -455,13 +455,13 @@ function api_tree_delete_node_content(int $tree_id, int $leaf_id): void {
  * Moves a node to a new parent and position within a tree.
  *
  * @param int $tree_id The ID of the tree.
- * @param int $node_id The ID of the node to move.
+ * @param int|string $node_id The ID of the node to move.
  * @param int|string $new_parent The ID of the new parent node or '#' for the root.
  * @param int $new_position The new position of the node within the new parent.
  *
  * @return void
  */
-function api_tree_move_node(int $tree_id, int $node_id, int|string $new_parent, int $new_position): void {
+function api_tree_move_node(int $tree_id, int|string $node_id, int|string $new_parent, int $new_position): void {
 	input_validate_input_number($tree_id, 'tree_id');
 	input_validate_input_number($new_position, 'new_position');
 

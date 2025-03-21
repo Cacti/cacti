@@ -34,7 +34,6 @@ Cacti CHANGELOG
 -issue#5968: Removing jQuery Sparklines API as we are not using it and have adequate charting libraries
 -issue#5969: If System Level Browser TimeZone Support is disabled don't show the User Profile Option
 -issue#5973: Multiple Issues with database API function db_update_table() preventing correct update of an existing table
--issue#6163: Checkbox is displayed always on in some cases
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors
@@ -190,6 +189,14 @@ Cacti CHANGELOG
 -feature: Add class and version columns to Graph Template to support Streams feature
 -feature: Allow Reports to be sent to a Notification List if thold is installed
 -feature: Remove legacy Lotus Notes Attachment Types from Reports
+
+1.2.30
+-issue#6089: Cannot Add New User due to incorrect array structure
+-issue#6090: Undefined function warnings in Automation
+-issue#6099: When transferring a system from a backup if the poller has not run recently rrdtool issues are found
+-issue#6172: Quoting issues leading to translation issue in form messaging in Chinese language
+-issue#6173: Deprecation warning when using boost for the first time
+-issue#6183: Checkbox is displayed always on in some cases
 
 1.2.29
 -security#GHSA-pv2c-97pp-vxwg: Local File Inclusion (LFI) Vulnerability via Poller Standard Error Log Path

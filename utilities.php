@@ -1444,9 +1444,9 @@ function boost_display_run_status() {
 				form_alternate_row();
 
 				if ($rows_to_process > 0) {
-					print '<td class="utilityPick">' . __esc('Process: %d', $process) . '</td><td>' . __('Status: <span class="deviceUp"><b>Running</b></span>, Remaining: %s (dses), CurrentRuntime: %s (secs), PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)', number_format_i18n($rows_to_process), number_format_i18n($runtime), number_format_i18n($time), number_format_i18n($rrds)) . '</td>';
+					print '<td class="utilityPick">' . __esc('Process: %d', $process) . '</td><td>' . __('Status: <span class="deviceUp"><b>Running</b></span>, Remaining: %s (dses), CurrentRuntime: %s (secs), PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)', number_format_i18n((int) $rows_to_process), number_format_i18n((float) $runtime), number_format_i18n((float) $time), number_format_i18n((int) $rrds)) . '</td>';
 				} else {
-					print '<td class="utilityPick">' . __esc('Process: %d', $process) . '</td><td>' . __('Status: <span class="deviceRecovering"><b>Idle</b></span>, PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)', number_format_i18n($time), number_format_i18n($rrds)) . '</td>';
+					print '<td class="utilityPick">' . __esc('Process: %d', $process) . '</td><td>' . __('Status: <span class="deviceRecovering"><b>Idle</b></span>, PrevRuntime: %s (secs), PrevProcessed: %10s (ds rows)', number_format_i18n((float) $time), number_format_i18n((int) $rrds)) . '</td>';
 				}
 			}
 		}
