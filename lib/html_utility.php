@@ -1164,16 +1164,28 @@ function update_order_string($inplace = false) {
 		$del = '';
 	}
 
+	$database = utilities_get_mysql_info();
+	$natural  = false;
+
+	if ($database['database'] == 'MariaDB') {
+		if (cacti_version_compare($database['version'], '10.7', '>')) {
+			$natural = true;
+		}
+	}
+
 	if ($inplace) {
 		$_SESSION['sort_string'][$page] = 'ORDER BY ';
 
 		foreach ($_SESSION['sort_data'][$page] as $column => $direction) {
 			if ($column == 'ip' || $column == 'ip_address') {
 				$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ') ' . $direction;
+			} elseif ($column == 'hostname' && $natural) {
+				$order .= ($order != '' ? ', ':'') . 'NATURAL_SORT_KEY(' . $column . ') ' . $direction;
 			} else {
 				$order .= ($order != '' ? ', ':'') . $column . ' ' . $direction;
 			}
 		}
+
 		$_SESSION['sort_string'][$page] .= $order;
 	} else {
 		if (isset_request_var('clear')) {
@@ -1190,6 +1202,8 @@ function update_order_string($inplace = false) {
 
 			if ($column == 'ip' || $column == 'ip_address') {
 				$_SESSION['sort_string'][$page] = 'ORDER BY INET_ATON(' . $column . ') ' . $direction;
+			} elseif ($column == 'hostname' && $natural) {
+				$_SESSION['sort_string'][$page] = 'ORDER BY NATURAL_SORT_KEY(' . $del . implode($del . '.'. $del, explode('.', get_request_var('sort_column'))) . $del . ') ' . get_request_var('sort_direction');
 			} else {
 				$_SESSION['sort_string'][$page] = 'ORDER BY ' . $del . implode($del . '.'. $del, explode('.', get_request_var('sort_column'))) . $del . ' ' . get_request_var('sort_direction');
 			}
@@ -1200,7 +1214,8 @@ function update_order_string($inplace = false) {
 			}
 
 			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_nfilter_request_var('sort_direction');
-			$_SESSION['sort_string'][$page]                               = 'ORDER BY ';
+
+			$_SESSION['sort_string'][$page] = 'ORDER BY ';
 
 			foreach ($_SESSION['sort_data'][$page] as $column => $direction) {
 				if (!str_contains($column, '(') && !str_contains($column, '`')) {
@@ -1213,10 +1228,12 @@ function update_order_string($inplace = false) {
 			}
 
 			foreach ($_SESSION['sort_data'][$page] as $column => $direction) {
-				if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
+				if ($column == 'ip' || $column == 'ip_address') {
 					$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ') ' . $direction;
+				} elseif ($column == 'hostname' && $natural) {
+					$order .= ($order != '' ? ', ':'') . 'NATURAL_SORT_KEY(' . $del . implode($del . '.' . $del, explode('.', $column)) . $del . ') ' . $direction;
 				} else {
-					$order .= ($order != '' ? ', ' . $del:$del) . implode($del . '.' . $del, explode('.', $column)) . $del . ' ' . $direction;
+					$order .= ($order != '' ? ', ':'') . $del . implode($del . '.' . $del, explode('.', $column)) . $del . ' ' . $direction;
 				}
 			}
 
