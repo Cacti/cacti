@@ -42,7 +42,7 @@ if (defined('CACTI_CLI_ONLY') && CACTI_WEB) {
 }
 
 /* this should be auto-detected, set it manually if needed */
-$config['cacti_server_os'] = ((str_starts_with(PHP_OS, 'WIN'))) ? 'win32' : 'unix';
+$config['cacti_server_os'] = (str_starts_with(PHP_OS, 'WIN')) ? 'win32' : 'unix';
 $config['is_web']          = CACTI_WEB;
 
 /* load cacti version from file */
