@@ -35,7 +35,7 @@ ini_set('output_buffering', 'Off');
    @arg $signo - (int) the signal that was thrown by the interface.
    @returns - null */
 function sig_handler($signo) {
-	global $config, $hostname;
+	global $hostname;
 
 	switch ($signo) {
 		case SIGTERM:
@@ -76,7 +76,7 @@ if (function_exists('pcntl_signal')) {
 	pcntl_signal(SIGINT, 'sig_handler');
 }
 
-global $config, $hostname, $debug;
+global $hostname, $debug;
 
 // process calling arguments
 $options = get_options();
@@ -200,7 +200,7 @@ function wait_for_start($frequency = -1) {
 }
 
 function run_poller() {
-	global $config, $debug;
+	global $debug;
 
 	debug('Cacti Data Collector');
 
@@ -209,7 +209,7 @@ function run_poller() {
 	$php_binary = read_config_option('path_php_binary');
 
 	if (empty($php_binary)) {
-		if ($config['cacti_server_os'] == 'win32') {
+		if (CACTI_SERVER_OS == 'win32') {
 			$php_binary = 'php';
 		} else {
 			$php_binary = '/usr/bin/php';
@@ -280,8 +280,6 @@ function debug($string) {
 }
 
 function display_version() {
-	global $config;
-
 	$version = get_cacti_cli_version();
 	print 'The Cacti Daemon (cactid), Version ' . $version . ', ' . COPYRIGHT_YEARS . PHP_EOL;
 }

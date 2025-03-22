@@ -35,8 +35,6 @@ function update_replication_crc($poller_id, $variable) {
 }
 
 function repopulate_poller_cache() {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
 
 	$poller_data = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' dl.*, h.poller_id
@@ -117,8 +115,6 @@ function repopulate_poller_cache() {
 }
 
 function update_poller_cache_from_query($host_id, $data_query_id, $local_data_ids) {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
 
 	$poller_data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
@@ -162,8 +158,6 @@ function update_poller_cache_from_query($host_id, $data_query_id, $local_data_id
 }
 
 function update_poller_cache($data_source, $commit = false) {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 	include_once(CACTI_PATH_LIBRARY . '/api_poller.php');
 
@@ -610,8 +604,6 @@ function push_out_data_input_method($data_input_id) {
  * @param int $poller_id - the poller_id of the buffer
  */
 function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items, $poller_id = 1) {
-	global $config;
-
 	$ids    = '';
 	$raised = false;
 
@@ -791,8 +783,6 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
  * works on table data_input_data and poller cache
  */
 function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
 
 	/* ok here's the deal: first we need to find every data source that uses this host.
@@ -991,19 +981,17 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 }
 
 function data_input_whitelist_check($data_input_id) {
-	global $config;
-
 	static $data_input_whitelist = null;
 	static $validated_input_ids  = null;
 	static $notified             = [];
 
 	// no whitelist file defined, everything whitelisted
-	if (!isset($config['input_whitelist'])) {
+	if (!defined('CACTI_WHITELIST')) {
 		return true;
 	}
 
 	// whitelist is configured but does not exist, means nothing whitelisted
-	if (!file_exists($config['input_whitelist'])) {
+	if (!file_exists(CACTI_WHITELIST)) {
 		return false;
 	}
 
@@ -1014,10 +1002,10 @@ function data_input_whitelist_check($data_input_id) {
 			'hash', ['id', 'name', 'input_string']
 		);
 
-		$data_input_whitelist = json_decode(file_get_contents($config['input_whitelist']), true);
+		$data_input_whitelist = json_decode(file_get_contents(CACTI_WHITELIST), true);
 
 		if ($data_input_whitelist === null) {
-			cacti_log('ERROR: Failed to parse input whitelist file: ' . $config['input_whitelist']);
+			cacti_log('ERROR: Failed to parse input whitelist file: ' . CACTI_WHITELIST);
 
 			return true;
 		}
@@ -1090,7 +1078,7 @@ function utilities_get_mysql_info($poller_id = 1) {
 }
 
 function utilities_get_mysql_recommendations() {
-	global $config, $local_db_cnn_id;
+	global $local_db_cnn_id;
 
 	// MySQL/MariaDB Important Variables
 	// Assume we are successfully, until we aren't!
@@ -1098,7 +1086,7 @@ function utilities_get_mysql_recommendations() {
 
 	$memInfo = utilities_get_system_memory();
 
-	$mysql_info = utilities_get_mysql_info($config['poller_id']);
+	$mysql_info = utilities_get_mysql_info(POLLER_ID);
 
 	$database  = $mysql_info['database'];
 	$version   = $mysql_info['version'];
@@ -1494,14 +1482,14 @@ function utilities_get_mysql_recommendations() {
 						break;
 					}
 
-					if ($config['poller_id'] == 1) {
+					if (POLLER_ID == 1) {
 						$maxConnections = db_fetch_cell('SELECT @@GLOBAL.max_connections');
 					} else {
 						$maxConnections = db_fetch_cell('SELECT @@GLOBAL.max_connections', '', false, $local_db_cnn_id);
 					}
 
 					if ($name == 'sort_buffer_size') {
-						if ($config['poller_id'] == 1) {
+						if (POLLER_ID == 1) {
 							if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
 								$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
 								@@GLOBAL.query_cache_size +
@@ -1553,7 +1541,7 @@ function utilities_get_mysql_recommendations() {
 							}
 						}
 					} else {
-						if ($config['poller_id'] == 1) {
+						if (POLLER_ID == 1) {
 							if (($database == 'MySQL' && version_compare($version, '8.0', '<')) || $database == 'MariaDB') {
 								$totalMemorySans = db_fetch_cell('SELECT @@GLOBAL.key_buffer_size +
 								@@GLOBAL.query_cache_size +
@@ -1622,7 +1610,7 @@ function utilities_get_mysql_recommendations() {
 					// Divide the buffer pool size by 128MB, and ensure 1 or more
 					$pool_instances = round(($innodb_pool_size / 1024 / 1024 / 128) + 0.5);
 
-					if ($config['cacti_server_os'] == 'win32') {
+					if (CACTI_SERVER_OS == 'win32') {
 						$nproc = getenv('NUMBER_OF_PROCESSORS');
 					} else {
 						$nproc = system('nproc');
@@ -1742,11 +1730,9 @@ function memory_readable($val) {
 }
 
 function utilities_get_system_memory() {
-	global $config;
-
 	$memInfo = [];
 
-	if ($config['cacti_server_os'] == 'win32') {
+	if (CACTI_SERVER_OS == 'win32') {
 		exec('wmic os get FreePhysicalMemory', $memInfo['FreePhysicalMemory']);
 		exec('wmic os get FreeSpaceInPagingFiles', $memInfo['FreeSpaceInPagingFiles']);
 		exec('wmic os get FreeVirtualMemory', $memInfo['FreeVirtualMemory']);
@@ -1830,8 +1816,6 @@ function utility_php_sort_extensions($a, $b) {
 }
 
 function utility_php_extensions() {
-	global $config;
-
 	$php      = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
 	$php_file = cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' extensions';
 	$json     = shell_exec($php . ' -q ' . $php_file);
@@ -1844,8 +1828,6 @@ function utility_php_extensions() {
 }
 
 function utility_php_verify_extensions(&$extensions, $source) {
-	global $config;
-
 	if (empty($extensions)) {
 		$extensions = [
 			'ctype'     => ['cli' => false, 'web' => false],
@@ -1872,7 +1854,7 @@ function utility_php_verify_extensions(&$extensions, $source) {
 			'zlib'      => ['cli' => false, 'web' => false]
 		];
 
-		if ($config['cacti_server_os'] == 'unix') {
+		if (CACTI_SERVER_OS == 'unix') {
 			$extensions['posix'] = ['cli' => false, 'web' => false];
 			$extensions['pcntl'] = ['cli' => false, 'web' => true];
 		} else {
@@ -1890,8 +1872,6 @@ function utility_php_verify_extensions(&$extensions, $source) {
 }
 
 function utility_php_recommends() {
-	global $config;
-
 	$php        = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
 	$php_file   = cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' recommends';
 	$json       = shell_exec($php . ' -q ' . $php_file);
@@ -2014,8 +1994,6 @@ function utility_php_set_recommends_text(&$recs) {
 }
 
 function utility_php_optionals() {
-	global $config;
-
 	$php      = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
 	$php_file = cacti_escapeshellarg(CACTI_PATH_INSTALL . '/cli_check.php') . ' optionals';
 	$json     = shell_exec($php . ' -q ' . $php_file);

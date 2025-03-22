@@ -927,7 +927,7 @@ function automation_get_new_graphs_sql(array $rule): array|false {
  * @return void
  */
 function display_new_graphs(array $rule, string $url): void {
-	global $config, $item_rows;
+	global $item_rows;
 
 	/* create the page filter */
 	$pageFilter             = new CactiTableFilter(__('Matching Indexes'), $url, 'form', 'sess_auto_mo', false, false, false);
@@ -2373,7 +2373,7 @@ function automation_string_replace(string $search, array|string $replace, string
  * @return void
  */
 function global_item_edit(string $rule_id, string $rule_item_id, string $rule_type): void {
-	global $config, $fields_automation_match_rule_item_edit, $fields_automation_graph_rule_item_edit;
+	global $fields_automation_match_rule_item_edit, $fields_automation_graph_rule_item_edit;
 	global $fields_automation_tree_rule_item_edit, $automation_tree_header_types;
 	global $automation_op_array;
 
@@ -2565,8 +2565,6 @@ function global_item_edit(string $rule_id, string $rule_item_id, string $rule_ty
  * @return void
  */
 function automation_hook_graph_template(string $host_id, string $graph_template_id): void {
-	global $config;
-
 	$function = automation_function_with_pid(__FUNCTION__);
 
 	cacti_log($function . ' called: Device[' . $host_id . '], GT[' . $graph_template_id . ']', false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -2591,8 +2589,6 @@ function automation_hook_graph_template(string $host_id, string $graph_template_
  * @return array
  */
 function automation_hook_graph_create_tree(array $data): array {
-	global $config;
-
 	$function = automation_function_with_pid(__FUNCTION__);
 
 	cacti_log($function . ' called: ' . json_encode($data), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -2618,8 +2614,6 @@ function automation_hook_graph_create_tree(array $data): array {
  * @return void
  */
 function automation_execute_data_query(string $host_id, int $snmp_query_id): void {
-	global $config;
-
 	$function = automation_function_with_pid(__FUNCTION__);
 
 	cacti_log($function . ' Device[' . $host_id . "] - start - data query: $snmp_query_id", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -2798,8 +2792,6 @@ function automation_graph_automation_eligible(int $graph_template_id): bool {
  * @return void
  */
 function automation_execute_graph_template(string $host_id, string $graph_template_id): void {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/template.php');
 	include_once(CACTI_PATH_LIBRARY . '/api_automation_tools.php');
 	include_once(CACTI_PATH_LIBRARY . '/utility.php');
@@ -2888,8 +2880,6 @@ function automation_execute_graph_template(string $host_id, string $graph_templa
  * @return void
  */
 function automation_execute_device_create_tree(string $host_id): void {
-	global $config;
-
 	/* the $data array holds all information about the host we're just working on
 	 * even if we selected multiple hosts, the calling code will scan through the list
 	 * so we only have a single host here
@@ -2985,8 +2975,6 @@ function automation_execute_device_create_tree(string $host_id): void {
  * @return void
  */
 function automation_execute_graph_create_tree(string $graph_id): void {
-	global $config;
-
 	/* the $data array holds all information about the graph we're just working on
 	 * even if we selected multiple graphs, the calling code will scan through the list
 	 * so we only have a single graph here
@@ -3085,7 +3073,7 @@ function automation_execute_graph_create_tree(string $graph_id): void {
  * @return bool
  */
 function create_dq_graphs(int $host_id, int $snmp_query_id, array $rule): bool {
-	global $config, $automation_op_array, $automation_oper;
+	global $automation_op_array, $automation_oper;
 
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . ' Device[' . $host_id . "] - snmp query: $snmp_query_id - rule: " . $rule['name'], false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -3253,7 +3241,7 @@ function create_dq_graphs(int $host_id, int $snmp_query_id, array $rule): bool {
  * @return int the last tree item that was hooked into the tree
  */
 function create_all_header_nodes(string $item_id, array $rule): int {
-	global $config, $automation_tree_header_types;
+	global $automation_tree_header_types;
 
 	# get all related rules that are enabled
 	$tree_items = db_fetch_assoc_prepared('SELECT *
@@ -3339,8 +3327,6 @@ function create_all_header_nodes(string $item_id, array $rule): int {
  * @return int
  */
 function create_multi_header_node(string $object, array $rule, array $tree_item, int $parent_tree_item_id): int {
-	global $config;
-
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . " - object: '" . $object . "', Header: '" . $tree_item['search_pattern'] . "', parent: " . $parent_tree_item_id, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
@@ -3373,8 +3359,6 @@ function create_multi_header_node(string $object, array $rule, array $tree_item,
  * @return int|bool
  */
 function create_header_node(string $title, array $rule, array $item, int $parent_tree_item_id): int|bool {
-	global $config;
-
 	$id             = 0;  # create a new entry
 	$local_graph_id = 0;  # headers don't need no graph_id
 	$host_id        = 0;  # or a host_id
@@ -3416,8 +3400,6 @@ function create_header_node(string $title, array $rule, array $item, int $parent
  * @return int id of new item
  */
 function create_device_node(int $host_id, int $parent, array $rule): int {
-	global $config;
-
 	$id             = 0;      # create a new entry
 	$local_graph_id = 0;      # hosts don't need no graph_id
 	$site_id        = 0;      # hosts don't need no site_id
@@ -3459,8 +3441,6 @@ function create_device_node(int $host_id, int $parent, array $rule): int {
  * @return int id of new item
  */
 function create_site_node(int $site_id, int $parent, array $rule): int {
-	global $config;
-
 	$id             = 0;      # create a new entry
 	$local_graph_id = 0;      # hosts don't need no graph_id
 	$host_id        = 0;      # hosts don't need no host_id
@@ -3502,8 +3482,6 @@ function create_site_node(int $site_id, int $parent, array $rule): int {
  * @return int id of new item
  */
 function create_graph_node(int $graph_id, int $parent, array $rule): int {
-	global $config;
-
 	$id        = 0;      # create a new entry
 	$host_id   = 0;      # graphs don't need no host_id
 	$site_id   = 0;      # graphs don't need no site_id
@@ -3541,8 +3519,6 @@ function create_graph_node(int $graph_id, int $parent, array $rule): int {
  * @return void
  */
 function automation_poller_bottom(): void {
-	global $config;
-
 	$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 
 	// If its not set, just assume its in the path
@@ -3564,7 +3540,7 @@ function automation_poller_bottom(): void {
  * @return int The ID of the device that was added.
  */
 function automation_add_device(array $device, bool $web = false): int {
-	global $plugins, $config;
+	global $plugins;
 
 	$template_id          = $device['host_template'];
 	$snmp_sysName         = $device['snmp_sysName'];
@@ -3704,7 +3680,7 @@ function automation_find_os(string $sysDescr, string $sysObject, string $sysName
  * @return void
  */
 function automation_debug(string $text): void {
-	global $debug, $config;
+	global $debug;
 	static $message = '';
 
 	if (str_contains($text, "\n")) {
@@ -3725,7 +3701,7 @@ function automation_debug(string $text): void {
 		}
 		$message = '';
 	} else {
-		if (!$config['is_web']) {
+		if (!CACTI_WEB) {
 			print $text;
 		}
 		$message .= $text;
@@ -5435,8 +5411,6 @@ function automation_validate_upload(): array|bool {
  * @return array An array containing the results of the import operation.
  */
 function automation_snmp_option_import(array $snmp): array {
-	global $config;
-
 	$debug_data = [];
 
 	foreach ($snmp as $column => $coldata) {
@@ -5451,13 +5425,13 @@ function automation_snmp_option_import(array $snmp): array {
 				$snmp_id      = sql_save($save, 'automation_snmp');
 
 				if ($snmp_id) {
-					if ($config['is_web']) {
+					if (CACTI_WEB) {
 						$debug_data['success'][] = __esc('Automation Network SNMP Rule \'%s\' %s!', $save['name'], ($save['id'] > 0 ? __('Updated'):__('Imported')));
 					} else {
 						$debug_data['success'][] = __('Automation Network SNMP Rule \'%s\' %s!', $save['name'], ($save['id'] > 0 ? __('Updated'):__('Imported')));
 					}
 				} else {
-					if ($config['is_web']) {
+					if (CACTI_WEB) {
 						$debug_data['failure'][] = __esc('Automation Network SNMP Rule \'%s\' %s Failed!', $save['name'], ($save['id'] > 0 ? __('Update'):__('Import')));
 					} else {
 						$debug_data['failure'][] = __('Automation Network SNMP Rule \'%s\' %s Failed!', $save['name'], ($save['id'] > 0 ? __('Update'):__('Import')));
@@ -5488,13 +5462,13 @@ function automation_snmp_option_import(array $snmp): array {
 					$opt_id = sql_save($save, 'automation_snmp_items');
 
 					if ($opt_id) {
-						if ($config['is_web']) {
+						if (CACTI_WEB) {
 							$debug_data['success'][] = __esc('Automation Network SNMP Option %s!', ($save['id'] > 0 ? __('Updated'):__('Imported')));
 						} else {
 							$debug_data['success'][] = __('Automation Network SNMP Option %s!', ($save['id'] > 0 ? __('Updated'):__('Imported')));
 						}
 					} else {
-						if ($config['is_web']) {
+						if (CACTI_WEB) {
 							$debug_data['failure'][] = __esc('Automation Network SNMP Option %s Failed!', ($save['id'] > 0 ? __('Update'):__('Import')));
 						} else {
 							$debug_data['failure'][] = __('Automation Network SNMP Option %s Failed!', ($save['id'] > 0 ? __('Update'):__('Import')));
@@ -5516,8 +5490,6 @@ function automation_snmp_option_import(array $snmp): array {
  * @return array An array containing the results of the import operation.
  */
 function automation_network_import(string $json_data): array {
-	global $config;
-
 	$debug_data = [];
 
 	/**
@@ -5589,13 +5561,13 @@ function automation_network_import(string $json_data): array {
 				$id = sql_save($save, 'automation_networks');
 
 				if ($id) {
-					if ($config['is_web']) {
+					if (CACTI_WEB) {
 						$debug_data['success'][] = __esc('Automation Network Rule \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 					} else {
 						$debug_data['success'][] = __('Automation Network Rule \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 					}
 				} else {
-					if ($config['is_web']) {
+					if (CACTI_WEB) {
 						$debug_data['failure'][] = __esc('Automation Network Rule \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
 					} else {
 						$debug_data['failure'][] = __('Automation Network Rule \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
@@ -5617,8 +5589,6 @@ function automation_network_import(string $json_data): array {
  * @return array An array containing the results of the import process.
  */
 function automation_graph_rule_import(string $json_data): array {
-	global $config;
-
 	$debug_data = [];
 
 	/**
@@ -5683,13 +5653,13 @@ function automation_graph_rule_import(string $json_data): array {
 				$graph_rule_ids[] = $graph_rule_id;
 
 				if ($graph_rule_id) {
-					if ($config['is_web']) {
+					if (CACTI_WEB) {
 						$debug_data['success'][] = __esc('Automation Graph Rule \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 					} else {
 						$debug_data['success'][] = __('Automation Graph Rule \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 					}
 				} else {
-					if ($config['is_web']) {
+					if (CACTI_WEB) {
 						$debug_data['failure'][] = __esc('Automation Graph Rule \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
 					} else {
 						$debug_data['failure'][] = __('Automation Graph Rule \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
@@ -5710,13 +5680,13 @@ function automation_graph_rule_import(string $json_data): array {
 						$graph_rule_item_ids[] = $rule_item_id;
 
 						if ($rule_item_id) {
-							if ($config['is_web']) {
+							if (CACTI_WEB) {
 								$debug_data['success'][] = __esc('Automation Graph Rule Item \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 							} else {
 								$debug_data['success'][] = __('Automation Graph Rule Item \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 							}
 						} else {
-							if ($config['is_web']) {
+							if (CACTI_WEB) {
 								$debug_data['failure'][] = __esc('Automation Graph Rule Item \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
 							} else {
 								$debug_data['failure'][] = __('Automation Graph Rule Item \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
@@ -5739,13 +5709,13 @@ function automation_graph_rule_import(string $json_data): array {
 						$graph_rule_item_ids[] = $rule_item_id;
 
 						if ($rule_item_id) {
-							if ($config['is_web']) {
+							if (CACTI_WEB) {
 								$debug_data['success'][] = __esc('Automation Graph Rule Match Item \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 							} else {
 								$debug_data['success'][] = __('Automation Graph Rule Match Item \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 							}
 						} else {
-							if ($config['is_web']) {
+							if (CACTI_WEB) {
 								$debug_data['failure'][] = __esc('Automation Graph Rule Match Item \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
 							} else {
 								$debug_data['failure'][] = __('Automation Graph Rule Match Item \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
@@ -5770,8 +5740,6 @@ function automation_graph_rule_import(string $json_data): array {
  * @return array An array containing the results of the import process.
  */
 function automation_tree_rule_import(array $json_data, bool $tree_branches = false): array {
-	global $config;
-
 	$debug_data = [];
 
 	/**
@@ -5818,13 +5786,13 @@ function automation_tree_rule_import(array $json_data, bool $tree_branches = fal
 			$tree_rule_ids[] = $tree_rule_id;
 
 			if ($tree_rule_id) {
-				if ($config['is_web']) {
+				if (CACTI_WEB) {
 					$debug_data['success'][] = __esc('Automation Tree Rule \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 				} else {
 					$debug_data['success'][] = __('Automation Tree Rule \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 				}
 			} else {
-				if ($config['is_web']) {
+				if (CACTI_WEB) {
 					$debug_data['failure'][] = __esc('Automation Tree Device Rule \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
 				} else {
 					$debug_data['failure'][] = __('Automation Tree Device Rule \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
@@ -5843,13 +5811,13 @@ function automation_tree_rule_import(array $json_data, bool $tree_branches = fal
 					$rule_item_id = sql_save($save, 'automation_tree_rule_items');
 
 					if ($rule_item_id) {
-						if ($config['is_web']) {
+						if (CACTI_WEB) {
 							$debug_data['success'][] = __esc('Automation Tree Rule Item \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 						} else {
 							$debug_data['success'][] = __('Automation Tree Rule Item \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 						}
 					} else {
-						if ($config['is_web']) {
+						if (CACTI_WEB) {
 							$debug_data['failure'][] = __esc('Automation Tree Device Rule Item \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
 						} else {
 							$debug_data['failure'][] = __('Automation Tree Device Rule Item \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
@@ -5874,13 +5842,13 @@ function automation_tree_rule_import(array $json_data, bool $tree_branches = fal
 					$tree_rule_item_ids[] = $rule_item_id;
 
 					if ($rule_item_id) {
-						if ($config['is_web']) {
+						if (CACTI_WEB) {
 							$debug_data['success'][] = __esc('Automation Tree Rule Match Item \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 						} else {
 							$debug_data['success'][] = __('Automation Tree Rule Match Item \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 						}
 					} else {
-						if ($config['is_web']) {
+						if (CACTI_WEB) {
 							$debug_data['failure'][] = __esc('Automation Tree Device Rule Match Item \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
 						} else {
 							$debug_data['failure'][] = __('Automation Tree Device Rule Match Item \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
@@ -5904,8 +5872,6 @@ function automation_tree_rule_import(array $json_data, bool $tree_branches = fal
  * @return array An array containing the result of the import process.
  */
 function automation_template_import(array $json_data, bool $tree_branches = false): array {
-	global $config;
-
 	$debug_data = [];
 
 	/**
@@ -5988,13 +5954,13 @@ function automation_template_import(array $json_data, bool $tree_branches = fals
 					[$save['host_template']]);
 
 				if ($device_rule_id) {
-					if ($config['is_web']) {
+					if (CACTI_WEB) {
 						$debug_data['success'][] = __esc('Automation Device Rule \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 					} else {
 						$debug_data['success'][] = __('Automation Device Rule \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 					}
 				} else {
-					if ($config['is_web']) {
+					if (CACTI_WEB) {
 						$debug_data['failure'][] = __esc('Automation Device Rule \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
 					} else {
 						$debug_data['failure'][] = __('Automation Device Rule \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
@@ -6043,13 +6009,13 @@ function automation_template_import(array $json_data, bool $tree_branches = fals
 						$graph_rule_ids[] = $graph_rule_id;
 
 						if ($graph_rule_id) {
-							if ($config['is_web']) {
+							if (CACTI_WEB) {
 								$debug_data['success'][] = __esc('Automation Graph Rule \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 							} else {
 								$debug_data['success'][] = __('Automation Graph Rule \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 							}
 						} else {
-							if ($config['is_web']) {
+							if (CACTI_WEB) {
 								$debug_data['failure'][] = __esc('Automation Graph Rule \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
 							} else {
 								$debug_data['failure'][] = __('Automation Graph Rule \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
@@ -6070,13 +6036,13 @@ function automation_template_import(array $json_data, bool $tree_branches = fals
 								$graph_rule_item_ids[] = $rule_item_id;
 
 								if ($rule_item_id) {
-									if ($config['is_web']) {
+									if (CACTI_WEB) {
 										$debug_data['success'][] = __esc('Automation Graph Rule Item \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 									} else {
 										$debug_data['success'][] = __('Automation Graph Rule Item \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 									}
 								} else {
-									if ($config['is_web']) {
+									if (CACTI_WEB) {
 										$debug_data['failure'][] = __esc('Automation Graph Rule Item \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
 									} else {
 										$debug_data['failure'][] = __('Automation Graph Rule Item \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
@@ -6099,13 +6065,13 @@ function automation_template_import(array $json_data, bool $tree_branches = fals
 								$graph_rule_item_ids[] = $rule_item_id;
 
 								if ($rule_item_id) {
-									if ($config['is_web']) {
+									if (CACTI_WEB) {
 										$debug_data['success'][] = __esc('Automation Graph Rule Match Item \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 									} else {
 										$debug_data['success'][] = __('Automation Graph Rule Match Item \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 									}
 								} else {
-									if ($config['is_web']) {
+									if (CACTI_WEB) {
 										$debug_data['failure'][] = __esc('Automation Graph Rule Match Item \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
 									} else {
 										$debug_data['failure'][] = __('Automation Graph Rule Match Item \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
@@ -6149,13 +6115,13 @@ function automation_template_import(array $json_data, bool $tree_branches = fals
 						$tree_rule_ids[] = $tree_rule_id;
 
 						if ($tree_rule_id) {
-							if ($config['is_web']) {
+							if (CACTI_WEB) {
 								$debug_data['success'][] = __esc('Automation Tree Rule \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 							} else {
 								$debug_data['success'][] = __('Automation Tree Rule \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 							}
 						} else {
-							if ($config['is_web']) {
+							if (CACTI_WEB) {
 								$debug_data['failure'][] = __esc('Automation Tree Device Rule \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
 							} else {
 								$debug_data['failure'][] = __('Automation Tree Device Rule \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
@@ -6174,13 +6140,13 @@ function automation_template_import(array $json_data, bool $tree_branches = fals
 								$rule_item_id = sql_save($save, 'automation_tree_rule_items');
 
 								if ($rule_item_id) {
-									if ($config['is_web']) {
+									if (CACTI_WEB) {
 										$debug_data['success'][] = __esc('Automation Tree Rule Item \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 									} else {
 										$debug_data['success'][] = __('Automation Tree Rule Item \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 									}
 								} else {
-									if ($config['is_web']) {
+									if (CACTI_WEB) {
 										$debug_data['failure'][] = __esc('Automation Tree Device Rule Item \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
 									} else {
 										$debug_data['failure'][] = __('Automation Tree Device Rule Item \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
@@ -6205,13 +6171,13 @@ function automation_template_import(array $json_data, bool $tree_branches = fals
 								$tree_rule_item_ids[] = $rule_item_id;
 
 								if ($rule_item_id) {
-									if ($config['is_web']) {
+									if (CACTI_WEB) {
 										$debug_data['success'][] = __esc('Automation Tree Rule Match Item \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 									} else {
 										$debug_data['success'][] = __('Automation Tree Rule Match Item \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 									}
 								} else {
-									if ($config['is_web']) {
+									if (CACTI_WEB) {
 										$debug_data['failure'][] = __esc('Automation Tree Device Rule Match Item \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
 									} else {
 										$debug_data['failure'][] = __('Automation Tree Device Rule Match Item \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
@@ -6256,13 +6222,13 @@ function automation_template_import(array $json_data, bool $tree_branches = fals
 						$id = sql_save($save, 'automation_templates_rules');
 
 						if ($id) {
-							if ($config['is_web']) {
+							if (CACTI_WEB) {
 								$debug_data['success'][] = __esc('Automation Device Rule Item \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 							} else {
 								$debug_data['success'][] = __('Automation Device Rule Item \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 							}
 						} else {
-							if ($config['is_web']) {
+							if (CACTI_WEB) {
 								$debug_data['failure'][] = __esc('Automation Device Rule Item \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
 							} else {
 								$debug_data['failure'][] = __('Automation Device Rule Item \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
@@ -6308,13 +6274,13 @@ function automation_template_import(array $json_data, bool $tree_branches = fals
 							$thold_template_id = sql_save($save, 'thold_template');
 
 							if ($thold_template_id) {
-								if ($config['is_web']) {
+								if (CACTI_WEB) {
 									$debug_data['success'][] = __esc('Automation Threshold Template \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 								} else {
 									$debug_data['success'][] = __('Automation Threshold Template \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 								}
 							} else {
-								if ($config['is_web']) {
+								if (CACTI_WEB) {
 									$debug_data['failure'][] = __esc('Automation Threshold Template Device \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
 								} else {
 									$debug_data['failure'][] = __('Automation Threshold Template Device \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));

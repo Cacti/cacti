@@ -25,8 +25,6 @@
 define('CACTI_IN_INSTALL', 1);
 include('./include/auth.php');
 
-global $config;
-
 /* forcibly unlock cacti if the user logg's out */
 $admin_user = read_config_option('admin_user');
 $lockout    = read_config_option('cacti_lockout_status', true);

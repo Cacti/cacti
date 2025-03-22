@@ -138,7 +138,7 @@ if (isset_request_var('rra_id')) {
 	$rra_id = null;
 }
 
-if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
+if (POLLER_ID == 1 || read_config_option('storage_location')) {
 	$null_param = [];
 	$output     = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
 } else {

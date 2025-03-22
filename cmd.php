@@ -52,7 +52,7 @@ $sessions   = [];
 $downhosts  = [];
 $host_count = 0;
 $tot_errors = 0;
-$poller_id  = $config['poller_id'];
+$poller_id  = POLLER_ID;
 $pmessage   = false;
 $help       = false;
 $version    = false;
@@ -142,7 +142,7 @@ if ($pmessage) {
 	cacti_log('Forcing poller to ' . $value, true, 'POLLER', POLLER_VERBOSITY_HIGH);
 }
 
-if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
+if (POLLER_ID > 1 && CACTI_CONNECTION == 'online') {
 	$poller_db_cnn_id = $remote_db_cnn_id;
 } else {
 	$poller_db_cnn_id = false;
@@ -341,7 +341,7 @@ if (cacti_sizeof($poller_items) && read_config_option('poller_enabled') == 'on')
 			CACTI_PATH_BASE . '/script_server.php ' .
 			' --environ=cmd '    .
 			' --poller='         . $poller_id .
-			' --mode='           . $config['connection'];
+			' --mode='           . CACTI_CONNECTION;
 
 		$cactiphp = proc_open($command, $cactides, $pipes);
 		$output   = fgets($pipes[1], 1024);

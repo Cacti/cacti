@@ -51,7 +51,7 @@ require_once(CACTI_PATH_LIBRARY . '/sort.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
-$poller_id = $config['poller_id'];
+$poller_id = POLLER_ID;
 $debug     = false;
 $host_id   = false;
 $forcerun  = false;
@@ -60,7 +60,7 @@ $threads   = read_config_option('commands_processes');
 
 global $poller_db_cnn_id, $remote_db_cnn_id, $type, $host_id, $poller_id;
 
-if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
+if (POLLER_ID > 1 && CACTI_CONNECTION == 'online') {
 	$poller_db_cnn_id = $remote_db_cnn_id;
 } else {
 	$poller_db_cnn_id = false;
@@ -320,7 +320,7 @@ function commands_master_handler($forcerun, &$hosts, $threads) {
  * @return (void)
  */
 function commands_launch_child($host_id) {
-	global $config, $seebug;
+	global $seebug;
 
 	$php_binary = read_config_option('path_php_binary');
 

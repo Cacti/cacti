@@ -278,7 +278,7 @@ function aggregate_get_graph_items($table, $id) {
  * aggregate_form_actions - the action function
  */
 function aggregate_form_actions() {
-	global $actions, $config;
+	global $actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action');
@@ -533,7 +533,7 @@ function aggregate_template_edit() {
  * aggregate_template
  */
 function aggregate_template() {
-	global $actions, $item_rows, $config;
+	global $actions, $item_rows;
 
 	/* create the page filter */
 	$pageFilter = new CactiTableFilter(__('Aggregate Templates'), 'aggregate_templates.php', 'forms', 'sess_agg_tmp', 'aggregate_templates.php?action=edit');

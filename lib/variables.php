@@ -332,8 +332,6 @@ function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
  * @return string  - The original string with all of the variable substitutions made
  */
 function substitute_script_query_path($path) {
-	global $config;
-
 	$path = clean_up_path(str_replace('|path_cacti|', CACTI_PATH_BASE, $path));
 	$path = clean_up_path(str_replace('|path_php_binary|', read_config_option('path_php_binary'), $path));
 

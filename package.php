@@ -130,7 +130,7 @@ function form_save() {
 }
 
 function export() {
-	global $export_types, $config, $device_classes, $graph_template_classes, $copyrights;
+	global $export_types, $device_classes, $graph_template_classes, $copyrights;
 
 	/* 'graph_template' should be the default */
 	if (!isset_request_var('export_type')) {

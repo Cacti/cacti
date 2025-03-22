@@ -53,7 +53,7 @@ switch (get_request_var('action')) {
 }
 
 function display_settings() {
-	global $config, $settings, $tabs, $local_db_cnn_id;
+	global $settings, $tabs, $local_db_cnn_id;
 
 	top_header();
 
@@ -129,7 +129,7 @@ function display_settings() {
 
 	form_start('settings.php', 'form_settings');
 
-	if ($config['poller_id'] > 1 && $current_tab == 'path') {
+	if (POLLER_ID > 1 && $current_tab == 'path') {
 		$suffix = ' [<span class="deviceDown">' . __('NOTE: Path Settings on this Tab are only saved locally!') . '</span>]';
 	} else {
 		$suffix = '';
@@ -161,7 +161,7 @@ function display_settings() {
 	}
 
 	// RRDtool is not required for remote data collectors
-	if ($config['poller_id'] > 1) {
+	if (POLLER_ID > 1) {
 		$settings['path']['path_rrdtool']['method'] = 'other';
 	}
 
@@ -1347,7 +1347,7 @@ function settings_search() {
 }
 
 function save_settings() {
-	global $config, $settings, $local_db_cnn_id;
+	global $settings, $local_db_cnn_id;
 
 	$errors  = [];
 	$inserts = [];
@@ -1573,12 +1573,12 @@ function save_settings() {
 		'id', 'last_polled'
 	);
 
-	if (get_request_var('tab') == 'path' && $config['poller_id'] > 1) {
+	if (get_request_var('tab') == 'path' && POLLER_ID > 1) {
 		raise_message('poller_paths');
 	}
 
 	if (cacti_sizeof($errors) == 0) {
-		if (cacti_sizeof($pollers) && $config['poller_id'] == 1) {
+		if (cacti_sizeof($pollers) && POLLER_ID == 1) {
 			$sql = 'INSERT INTO settings
 				(name, value)
 				VALUES ' . implode(', ', $inserts) . '

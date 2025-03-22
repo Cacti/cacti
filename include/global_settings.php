@@ -133,7 +133,7 @@ $mail_methods = [
 	CACTI_MAIL_OAUTH2   => __('OAuth 2')
 ];
 
-if ($config['cacti_server_os'] == 'win32') {
+if (CACTI_SERVER_OS == 'win32') {
 	unset($mail_methods[CACTI_MAIL_SENDMAIL]);
 }
 
@@ -3392,7 +3392,7 @@ $settings_user = [
 	]
 ];
 
-if ($config['cacti_server_os'] == 'win32') {
+if (CACTI_SERVER_OS == 'win32') {
 	unset($settings['mail']['settings_sendmail_header']);
 	unset($settings['mail']['settings_sendmail_path']);
 }

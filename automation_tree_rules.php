@@ -378,7 +378,6 @@ function form_save() {
 
 function automation_tree_rules_form_actions() {
 	global $actions;
-	global $config;
 
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
@@ -559,8 +558,6 @@ function automation_tree_rules_item_remove() {
 }
 
 function automation_tree_rules_item_edit() {
-	global $config;
-
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
 	get_filter_request_var('item_id');
@@ -684,7 +681,6 @@ function automation_tree_rules_remove() {
 }
 
 function automation_tree_rules_edit() {
-	global $config;
 	global $fields_automation_tree_rules_edit1, $fields_automation_tree_rules_edit2, $fields_automation_tree_rules_edit3;
 
 	include_once(CACTI_PATH_LIBRARY . '/html_tree.php');
@@ -1023,7 +1019,7 @@ function draw_tree_rules_filter($render = false) {
 }
 
 function automation_tree_rules() {
-	global $actions, $config, $item_rows;
+	global $actions, $item_rows;
 	global $automation_tree_item_types, $host_group_types;
 
 	draw_tree_rules_filter(true);

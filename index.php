@@ -28,8 +28,6 @@ top_header();
 api_plugin_hook('console_before');
 
 function render_external_links($style = 'FRONT') {
-	global $config;
-
 	$consoles = db_fetch_assoc_prepared('SELECT id, contentfile
 		FROM external_links
 		WHERE enabled = "on"
@@ -77,10 +75,10 @@ if (read_config_option('hide_console') != 'on') {
 			<strong><?php print CACTI_VERSION_TEXT_FULL;?></strong>
 		</td>
 	</tr>
-	<?php if ($config['poller_id'] > 1) {?>
+	<?php if (POLLER_ID > 1) {?>
 	<tr class='tableRow'><td colspan='2'><hr></td></tr>
-	<tr class='tableRow'><td colspan='2'><strong><?php print __('Remote Data Collector Status:');?></strong>  <?php print '<i>' . ($config['connection'] == 'online' ? __('Online') : ($config['connection'] == 'recovery' ? __('Recovery') : __('Offline'))) . '</i>';?></td></tr>
-	<?php if ($config['connection'] != 'online') {?>
+	<tr class='tableRow'><td colspan='2'><strong><?php print __('Remote Data Collector Status:');?></strong>  <?php print '<i>' . (CACTI_CONNECTION == 'online' ? __('Online') : (CACTI_CONNECTION == 'recovery' ? __('Recovery') : __('Offline'))) . '</i>';?></td></tr>
+	<?php if (CACTI_CONNECTION != 'online') {?>
 	<tr class='tableRow'><td colspan='2'><strong><?php print __('Number of Offline Records:');?></strong>  <?php print '<i>' . number_format_i18n(db_fetch_cell('SELECT COUNT(*) FROM poller_output_boost', '', true, $local_db_cnn_id)) . '</i>';?></td></tr>
 	<?php }?>
 	<tr class='tableRow'><td colspan='2'><hr></td></tr>

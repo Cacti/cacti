@@ -76,8 +76,6 @@ function clear_auth_cookie(): void {
  * @return void
  */
 function set_auth_cookie(array $user): void {
-	global $config;
-
 	if (db_table_exists('user_auth_cache')) {
 		clear_auth_cookie();
 
@@ -175,7 +173,7 @@ function check_auth_cookie(): int|false {
  *   Template accounts could be accounts used for the administrative email, for both
  *   the guest and template accounts, or a user that is specified by a plugin as a
  *   template account.
- * 
+ *
  * @param null|int|string $user_id The user ID or username to check.
  *
  * @return bool True if the user is a template account, false otherwise.
@@ -286,7 +284,7 @@ function get_basic_auth_username(): string|false {
  * @param int $new_realm The realm of the new user. Default is 0.
  * @param bool $overwrite Whether to overwrite an existing user with the same username and realm. Default is false.
  * @param array $data_override An associative array of fields to override in the new user's data. Default is an empty array.
- * 
+ *
  * @return int|false The ID of the new user if successful, or false if the operation failed.
  */
 function user_copy(string $template_user, string $new_user, int $template_realm = 0, int $new_realm = 0, bool $overwrite = false, array $data_override = []): int|false {
@@ -1386,7 +1384,7 @@ function get_allowed_tree_header_graphs(int $tree_id,int  $leaf_id = 0, string $
  * @param int &$total_rows Reference to a variable to store the total number of rows.
  * @param int $user_id User ID for which to retrieve the graphs.
  * @param int $graph_id Specific graph ID to retrieve.
- * 
+ *
  * @return array An array of allowed graphs.
  */
 function get_allowed_graphs(string $sql_where = '', string $sql_order = 'gtg.title_cache', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $graph_id = 0): array {
@@ -2684,7 +2682,7 @@ function get_allowed_branches(string $sql_where = '', string $sql_order = 'name'
  * @param int &$total_rows Reference to a variable to store the total number of rows found.
  * @param int $user_id The ID of the user for whom to retrieve allowed devices. Default is 0.
  * @param int $device_id The ID of a specific device to retrieve. Default is 0.
- * 
+ *
  * @return array An array of allowed devices for the user.
  */
 function get_allowed_devices(string $sql_where = '', string $sql_order = 'description', string $sql_limit = '', int &$total_rows = 0, int $user_id = 0, int $device_id = 0): array {
@@ -2967,7 +2965,7 @@ function get_allowed_site_devices(int $site_id, string $sql_where = '', string $
  * @param int|null &$total_rows Reference to a variable to store the total number of rows.
  * @param int $user_id ID of the user to validate permissions.
  * @param int $graph_template_id ID of the graph template to filter the results.
- * 
+ *
  * @return array An associative array of allowed graph templates, keyed by their IDs and names.
  */
 function get_allowed_graph_templates_normalized(string $sql_where = '', string $sql_order = 'name', string $sql_limit = '', ?int &$total_rows = 0, int $user_id = 0, int $graph_template_id = 0): array {
@@ -3364,7 +3362,7 @@ function get_allowed_ajax_graphs(string $sql_where = ''): array {
  * @param string $sql_order SQL ORDER BY clause to sort the graph items. Default is 'name'.
  * @param int|string $sql_limit SQL LIMIT clause to limit the number of graph items. Default is 20.
  * @param int $user_id The ID of the user to check permissions for. Default is 0.
- * 
+ *
  * @return array An array of allowed graph items, each containing 'id' and 'name'.
  */
 function get_allowed_graph_items(string $sql_where, string $sql_order = 'name', int|string $sql_limit = 20, int $user_id = 0): array {
@@ -3445,7 +3443,7 @@ function auth_get_username(): string {
  *
  * @param string $username The username of the account to check.
  * @param int $realm The realm associated with the user account.
- * 
+ *
  * @return void
  */
 function auth_checkclear_lockout(string $username, int $realm): void {
@@ -4547,9 +4545,8 @@ function secpass_check_history(int $id, string $password): bool {
  * @return void
  */
 function rsa_check_keypair(): void {
-	global $config;
-
 	set_include_path(CACTI_PATH_INCLUDE . '/vendor/phpseclib/');
+
 	include('Crypt/Base.php');
 	include('Math/BigInteger.php');
 	include('Crypt/Hash.php');
@@ -4720,7 +4717,7 @@ function compat_password_needs_rehash(string $password, string|int $algo, array 
  * Verify that the user account has some access to cacti
  *
  * @param array $user The user data array containing user information.
- * 
+ *
  * @return bool True if the user has access, false otherwise.
  */
 function auth_user_has_access(array $user): bool {

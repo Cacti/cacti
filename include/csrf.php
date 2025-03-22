@@ -26,13 +26,11 @@ require_once(CACTI_PATH_INCLUDE .'/vendor/csrf/csrf-conf.php');
 
 /* cross site request forgery library */
 function csrf_startup(): void {
-	global $config;
-
-	if ($config['is_web']) {
+	if (CACTI_WEB) {
 		/* If you need to debug CSRF, uncomment the following line */
 		//csrf_conf('log_file', dirname(read_config_option('path_cactilog')) . '/csrf.log');
-		if (!empty($config['path_csrf_secret'])) {
-			csrf_conf('path_secret', $config['path_csrf_secret']);
+		if (CACTI_CSRF_SECRET != '') {
+			csrf_conf('path_secret', CACTI_CSRF_SECRET);
 		}
 
 		csrf_conf('rewrite-js', CACTI_PATH_URL . 'include/vendor/csrf/csrf-magic.js');

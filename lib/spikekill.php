@@ -374,8 +374,6 @@ class spikekill {
 	}
 
 	public function remove_spikes() {
-		global $config;
-
 		$this->initialize_spikekill();
 
 		if ($this->is_error_set()) {
@@ -385,7 +383,7 @@ class spikekill {
 		/* determine the temporary file name */
 		$this->seed = mt_rand();
 
-		if ($config['cacti_server_os'] == 'win32') {
+		if (CACTI_SERVER_OS == 'win32') {
 			$this->tempdir  = read_config_option('spikekill_backupdir');
 			$xmlfile        = $this->tempdir . '/' . str_replace('.rrd', '', basename($this->rrdfile)) . '.dump.' . $this->seed;
 			$bakfile        = $this->tempdir . '/' . str_replace('.rrd', '', basename($this->rrdfile)) . '.backup.' . $this->seed . '.rrd';

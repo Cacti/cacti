@@ -31,7 +31,7 @@
  * @param string $_graph_title The title of the graph.
  * @param int $_aggregate_template_id The aggregate template ID (optional, default is 0).
  * @param array $graph_data Additional graph data (optional).
- * 
+ *
  * @return int The ID of the newly inserted graph.
  */
 function aggregate_graph_save(string $_local_graph_id, string $_graph_template_id, string $_graph_title, int $_aggregate_template_id = 0, array $graph_data = []): int {
@@ -196,7 +196,7 @@ function aggregate_graph_templates_graph_save(int $local_graph_id, int $graph_te
 function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph_id, int $_graph_template_id,
 	array $_skip, array $_totali, int $_graph_item_sequence, int $_selected_graph_index, array $_color_templates, array $_graph_item_types, array $_cdefs,
 	string $_graph_type, string $_gprint_prefix, string $_gprint_format, int $_total, string $_total_type = '', array $member_graphs = []): int {
-	global $struct_graph_item, $graph_item_types, $config;
+	global $struct_graph_item, $graph_item_types;
 
 	// Remove filter item
 	unset($struct_graph_item['data_template_id']);
@@ -471,7 +471,7 @@ function aggregate_graphs_insert_graph_items(int $_new_graph_id, int $_old_graph
 
 /**
  * Insert or update aggregate graph items in DB tables
- * 
+ *
  * @param array $items
  * @param string $table
  * @return bool true if save was successful, false otherwise
@@ -550,7 +550,7 @@ function aggregate_graph_items_save(array $items, string $table): bool {
 /**
  * Validate extra graph parameters posted from graph edit form.
  * You can check for validation errors with cacti function is_error_message
- * 
+ *
  * @param array $posted      - values posted from form
  * @param bool $has_override - form had override checkboxes
  * @return array             - cleaned up graph parameters
@@ -621,7 +621,7 @@ function aggregate_validate_graph_params(array $posted, bool $has_override = fal
 /**
  * Populate graph items array with posted values.
  * $graph_items array must be keyed on graph item id.
- * 
+ *
  * @param array $posted      - values posted from form
  * @param array $graph_items - reference to graph items array to update with form values
  * @return void
@@ -682,8 +682,6 @@ function aggregate_validate_graph_items(array $posted, array &$graph_items): voi
  * @return void
  */
 function aggregate_graphs_cleanup(int $base, int $aggregate, int $reorder): void {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');
 
 	cacti_log(__FUNCTION__ . ' called. Base ' . $base . ' Aggregate ' . $aggregate . ' Reorder: ' . $reorder, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
@@ -710,8 +708,6 @@ function aggregate_graphs_cleanup(int $base, int $aggregate, int $reorder): void
  * @return bool
  */
 function aggregate_reorder_ds_graph(int $base, string $graph_template_id, int $aggregate, int $reorder, int $graph_type): bool {
-	global $config;
-
 	cacti_log(__FUNCTION__ . ' called. Base Graph ' . $base . ' Graph Template ' . $graph_template_id . ' Aggregate Graph ' . $aggregate . ' Reorder: ' . $reorder, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	/* suppress warnings */
@@ -1101,8 +1097,6 @@ function push_out_aggregates(int $aggregate_template_id, int $local_graph_id = 0
  * @return void
  */
 function aggregate_create_update(int &$local_graph_id, array $member_graphs, array $attribs): void {
-	global $config;
-
 	cacti_log(__FUNCTION__ . ' called. Graph id: ' . $local_graph_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	/* suppress warnings */
@@ -1665,7 +1659,7 @@ function aggregate_handle_stacked_lines(int $local_graph_id, string $_orig_graph
  * @param array $data_sources Array to store the retrieved data sources.
  * @param array $graph_template Template for the graphs.
  * @param string $message Optional. Message to store any errors or information.
- * 
+ *
  * @return bool True on success, false on failure.
  */
 function aggregate_get_data_sources(array &$graph_array, array &$data_sources, array &$graph_template, string &$message = ''): bool {
@@ -1727,8 +1721,6 @@ function aggregate_get_data_sources(array &$graph_array, array &$data_sources, a
  * @return void
  */
 function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_template_id = 0, array $_object = []): void {
-	global $config;
-
 	/**
 	 * @var array $consolidation_functions
 	 * @var array $graph_item_types

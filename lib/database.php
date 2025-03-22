@@ -219,7 +219,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 				$timezone = db_fetch_cell_prepared('SELECT timezone
 					FROM poller
 					WHERE id = ?',
-					[$config['poller_id']], false);
+					[POLLER_ID], false);
 			} else {
 				$timezone = '';
 			}
@@ -273,7 +273,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
  * @return bool        The database true is the database is connected else false
  */
 function db_check_reconnect(object|false $db_conn = false, $log = true) {
-	global $config, $database_details;
+	global $database_details;
 
 	if (file_exists(CACTI_PATH_INCLUDE . '/config.php')) {
 		include(CACTI_PATH_INCLUDE . '/config.php');
@@ -431,7 +431,7 @@ function db_get_active_replicas() {
  * @return (bool) the result of the close command
  */
 function db_close(&$db_conn = false) {
-	global $database_sessions, $error_logged, $database_default, $database_hostname, $database_port, $database_persist, $database_details;
+	global $config, $database_sessions, $error_logged, $database_default, $database_hostname, $database_port, $database_persist, $database_details;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {

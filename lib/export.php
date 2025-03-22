@@ -463,8 +463,6 @@ function cdef_to_xml($cdef_id) {
  * @return string       - XML text of encoded VDEF
  */
 function vdef_to_xml($vdef_id) {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/vdef.php');
 
 	$hash['vdef'] = get_hash_version('vdef') . get_hash_vdef($vdef_id);

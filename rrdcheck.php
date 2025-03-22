@@ -55,7 +55,7 @@ function rrdcheck_purge() {
  * Display all rrdcheck entries
  */
 function rrdcheck_display_problems() {
-	global $config, $item_rows;
+	global $item_rows;
 
 	/* suppress warnings */
 	error_reporting(0);

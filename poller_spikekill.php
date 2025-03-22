@@ -246,7 +246,7 @@ function purge_spike_backups() {
 }
 
 function kill_spikes($templates, &$found) {
-	global $debug, $config;
+	global $debug;
 
 	$rrdfiles = array_rekey(db_fetch_assoc('SELECT DISTINCT rrd_path
 		FROM graph_templates AS gt

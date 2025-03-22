@@ -104,8 +104,6 @@ function dsdebug_error_handler($errno, $errmsg, $filename, $linenum, $vars = [])
 }
 
 function dsdebug_poller_output(&$rrd_update_array) {
-	global $config;
-
 	/* suppress warnings */
 	if (defined('E_DEPRECATED')) {
 		error_reporting(E_ALL ^ E_DEPRECATED);
@@ -142,7 +140,7 @@ function dsdebug_poller_output(&$rrd_update_array) {
 }
 
 function dsdebug_poller_bottom() {
-	global $config, $start;
+	global $start;
 
 	/* install the dsstats error handler */
 	set_error_handler('dsdebug_error_handler');
@@ -196,7 +194,7 @@ function dsdebug_poller_bottom() {
 				$info['active'] = $dtd['active'];
 
 				// owner
-				if ($config['cacti_server_os'] == 'win32') {
+				if (CACTI_SERVER_OS == 'win32') {
 					$info['owner'] = '<unable to determine on windows>';
 				} else {
 					$o             = posix_getpwuid(fileowner($real_path));

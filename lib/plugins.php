@@ -43,7 +43,7 @@ function api_user_realm_auth($filename = '') {
  * @return mixed $data
  */
 function api_plugin_hook($name) {
-	global $config, $plugin_hooks, $plugins_integrated;
+	global $plugin_hooks, $plugins_integrated;
 
 	static $hook_cache = [];
 
@@ -109,7 +109,7 @@ function api_plugin_hook($name) {
 }
 
 function api_plugin_hook_function($name, $parm = null) {
-	global $config, $plugin_hooks, $plugins_integrated;
+	global $plugin_hooks, $plugins_integrated;
 
 	static $hook_cache = [];
 
@@ -183,9 +183,9 @@ function api_plugin_hook_function($name, $parm = null) {
 }
 
 function api_plugin_run_plugin_hook($hook, $plugin, $function, $args) {
-	global $config, $menu;
+	global $menu;
 
-	if ($config['poller_id'] > 1) {
+	if (POLLER_ID > 1) {
 		// Let's control the menu
 		$orig_menu = $menu;
 
@@ -219,9 +219,9 @@ function api_plugin_run_plugin_hook($hook, $plugin, $function, $args) {
 			if (api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities, $plugin)) {
 				$function($args);
 			}
-		} elseif ($config['connection'] == 'online' ||
+		} elseif (CACTI_CONNECTION == 'online' ||
 			((api_plugin_has_capability($plugin, 'offline_mgmt') || api_plugin_has_capability($plugin, 'offline_view'))
-			&& $config['connection'] != 'online')) {
+			&& CACTI_CONNECTION != 'online')) {
 			$function($args);
 		} else {
 			// Don't run as they are not required
@@ -233,7 +233,7 @@ function api_plugin_run_plugin_hook($hook, $plugin, $function, $args) {
 			'config_insert',
 		];
 
-		if (in_array($hook, $remote_hooks, true) && ($config['connection'] == 'offline' || $config['connection'] == 'recovery')) {
+		if (in_array($hook, $remote_hooks, true) && (CACTI_CONNECTION == 'offline' || CACTI_CONNECTION == 'recovery')) {
 			if (!api_plugin_has_capability($plugin, 'offline_mgmt')) {
 				if ($orig_menu !== $menu) {
 					$menu = $orig_menu;
@@ -248,9 +248,7 @@ function api_plugin_run_plugin_hook($hook, $plugin, $function, $args) {
 }
 
 function api_plugin_run_plugin_hook_function($hook, $plugin, $function, $ret) {
-	global $config;
-
-	if ($config['poller_id'] > 1) {
+	if (POLLER_ID > 1) {
 		$required_capabilities = [
 			// Poller related
 			'poller_output'            => ['remote_collect'],              // Processing poller output, api_plugin_hook_function
@@ -305,8 +303,6 @@ function api_plugin_hook_is_remote_collect($hook, $plugin, $required_capabilitie
 }
 
 function api_plugin_get_dependencies($plugin) {
-	global $config;
-
 	$file = CACTI_PATH_PLUGINS . '/' . $plugin . '/INFO';
 
 	$returndeps = [];
@@ -366,7 +362,7 @@ function api_plugin_installed($plugin) {
 }
 
 function api_plugin_remote_capabilities($plugin) {
-	global $config, $info_data;
+	global $info_data;
 
 	if ($plugin == 'internal') {
 		return 'online_view:1 online_mgmt:1 offline_view:1 offline_mgmt:1 remote_collect:1';
@@ -404,9 +400,7 @@ function api_plugin_has_capability($plugin, $capability) {
 }
 
 function api_plugin_status_run($hook, $required_capabilities, $plugin_capabilities, $plugin = '') {
-	global $config;
-
-	$status = $config['connection'];
+	$status = CACTI_CONNECTION;
 
 	if ($plugin == '') {
 		cacti_log('WARNING: The function \'api_plugin_status_run\' API has changed.  Please add the $plugin attribute to the last position', false, 'PLUGIN');
@@ -461,8 +455,6 @@ function api_plugin_status_run($hook, $required_capabilities, $plugin_capabiliti
 }
 
 function api_plugin_db_table_create($plugin, $table, $data) {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/database.php');
 
 	$result = db_fetch_assoc('SHOW TABLES');
@@ -610,7 +602,7 @@ function api_plugin_db_changes_remove($plugin) {
 }
 
 function api_plugin_db_add_column($plugin, $table, $column) {
-	global $config, $database_default;
+	global $database_default;
 
 	// Example: api_plugin_db_add_column ('thold', 'plugin_config',
 	//	array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false));
@@ -693,8 +685,6 @@ function api_plugin_can_install($plugin, &$message) {
 }
 
 function api_plugin_install($plugin) {
-	global $config;
-
 	if (!defined('IN_CACTI_INSTALL')) {
 		define('IN_CACTI_INSTALL', 1);
 		define('IN_PLUGIN_INSTALL', 1);
@@ -802,8 +792,6 @@ function api_plugin_install($plugin) {
  * @return  bool    True if the version changed else false
  */
 function api_plugin_upgrade_register($plugin) {
-	global $config;
-
 	$info = plugin_load_info_file(CACTI_PATH_PLUGINS . '/' . $plugin . '/INFO');
 
 	if ($info) {
@@ -842,7 +830,7 @@ function api_plugin_upgrade_register($plugin) {
 }
 
 function api_plugin_uninstall_integrated() {
-	global $config, $plugin_hooks, $plugins_integrated;
+	global $plugin_hooks, $plugins_integrated;
 
 	foreach ($plugins_integrated as $plugin) {
 		api_plugin_uninstall($plugin, false);
@@ -858,8 +846,6 @@ function api_plugin_realms_found($plugin) {
 }
 
 function api_plugin_uninstall($plugin, $tables = true) {
-	global $config;
-
 	$plugin_found = false;
 
 	if (file_exists(CACTI_PATH_PLUGINS . "/$plugin/setup.php")) {
@@ -903,8 +889,6 @@ function api_plugin_uninstall($plugin, $tables = true) {
 }
 
 function api_plugin_check_config($plugin) {
-	global $config;
-
 	clearstatcache();
 
 	if (file_exists(CACTI_PATH_PLUGINS . "/$plugin/setup.php")) {
@@ -992,8 +976,6 @@ function api_plugin_remove_data($plugin) {
 }
 
 function api_plugin_replicate_config() {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 	$gone_time = read_config_option('poller_interval') * 2;
@@ -1018,8 +1000,6 @@ function api_plugin_replicate_config() {
 }
 
 function api_plugin_drop_remote_table($table) {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 	$gone_time = read_config_option('poller_interval') * 2;
@@ -1734,9 +1714,9 @@ function api_plugin_archive($plugin, $note = '') {
 }
 
 function plugin_config_arrays() {
-	global $config, $menu;
+	global $menu;
 
-	if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
+	if (POLLER_ID == 1 || CACTI_CONNECTION == 'online') {
 		$menu[__('Configuration')]['plugins.php'] = __('Plugins');
 	}
 
@@ -1750,8 +1730,6 @@ function plugin_draw_navigation_text($nav) {
 }
 
 function plugin_is_compatible($plugin) {
-	global $config;
-
 	$info = plugin_load_info_file(CACTI_PATH_PLUGINS . '/' . $plugin . '/INFO');
 
 	if ($info !== false) {

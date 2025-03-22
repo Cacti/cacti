@@ -673,8 +673,6 @@ function settings_2fa() {
 }
 
 function settings_javascript() {
-	global $config;
-
 	?>
 	<script type='text/javascript'>
 		var themeFonts = <?php print read_config_option('font_method'); ?>;

@@ -1014,7 +1014,7 @@ function automation_get_tree_headers() {
 }
 
 function template_edit() {
-	global $availability_options, $config;
+	global $availability_options;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');

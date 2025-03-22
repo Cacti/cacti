@@ -488,7 +488,7 @@ function site_edit() {
 }
 
 function sites() {
-	global $actions, $item_rows, $config;
+	global $actions, $item_rows;
 
 	/* create the page filter */
 	$pageFilter = new CactiTableFilter(__('Sites'), 'sites.php', 'form_site', 'sess_site', 'sites.php?action=edit');

@@ -40,7 +40,7 @@ require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 $debug = false;
 
-if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
+if (POLLER_ID > 1 && CACTI_CONNECTION == 'online') {
 	if (get_nfilter_request_var('action') == 'runquery') {
 		db_force_remote_cnn();
 	}
@@ -132,7 +132,7 @@ function remote_agent_strip_domain($host) {
 }
 
 function remote_client_authorized() {
-	global $config, $poller_db_cnn_id, $remote_agent_whitelist;
+	global $poller_db_cnn_id, $remote_agent_whitelist;
 
 	/* don't allow to run from the command line */
 	$client_addr = get_client_addr();
@@ -304,8 +304,6 @@ function ping_device() {
 }
 
 function poll_for_data() {
-	global $config;
-
 	$local_data_ids = get_nfilter_request_var('local_data_ids');
 	$host_id        = get_filter_request_var('host_id');
 	$poller_id      = get_nfilter_request_var('poller_id');
@@ -456,9 +454,7 @@ function run_remote_data_query() {
 }
 
 function run_remote_discovery() {
-	global $config;
-
-	$poller_id = cacti_escapeshellarg($config['poller_id']);
+	$poller_id = cacti_escapeshellarg(POLLER_ID);
 	$network   = cacti_escapeshellarg(get_filter_request_var('network'));
 	$php       = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 	$path      = cacti_escapeshellarg(read_config_option('path_webroot') . '/poller_automation.php');

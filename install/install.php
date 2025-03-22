@@ -57,7 +57,7 @@ if ($hasEverything) {
 
 $help = '';
 
-if ($config['cacti_server_os'] == 'unix') {
+if (CACTI_SERVER_OS == 'unix') {
 	if ($config['cacti_db_version'] == 'new_install') {
 		if (isset($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'], 'Apache') !== false) {
 			$help = 'Install-Under-CentOS_LAMP.html';

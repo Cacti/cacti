@@ -31,7 +31,7 @@ include_once('./lib/utility.php');
 
 /* check edit/alter permissions */
 if (!clog_admin()) {
-	if ($config['poller_id'] > 1) {
+	if (POLLER_ID > 1) {
 		header('Location: logout.php?action=remote');
 	} else {
 		header('Location: permission_denied.php');

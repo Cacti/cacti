@@ -1094,7 +1094,7 @@ function data_query_remove($id) {
 }
 
 function data_query_edit() {
-	global $fields_data_query_edit, $config;
+	global $fields_data_query_edit;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');

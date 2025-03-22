@@ -39,8 +39,6 @@ function clog_get_graphs_from_datasource($local_data_id) {
 }
 
 function clog_validate_filename(&$file, &$filepath, &$filename, $filecheck = false) {
-	global $config;
-
 	$logfile = read_config_option('path_cactilog');
 
 	if ($logfile == '') {
@@ -78,8 +76,6 @@ function clog_validate_filename(&$file, &$filepath, &$filename, $filecheck = fal
 }
 
 function clog_purge_logfile() {
-	global $config;
-
 	$filename = get_nfilter_request_var('filename');
 
 	if (!clog_validate_filename($filename, $logpath, $logname)) {
@@ -121,7 +117,7 @@ function clog_purge_logfile() {
 }
 
 function clog_view_logfile() {
-	global $config, $base_page;
+	global $base_page;
 
 	$exclude_reported = false;
 
@@ -344,8 +340,6 @@ function filter_sort($a, $b) {
 }
 
 function clog_get_logfiles() {
-	global $config;
-
 	$stdFileArray  = $stdLogFileArray = $stdErrFileArray = $boostFileArray = [];
 	$configLogPath = read_config_option('path_cactilog');
 	$configLogBase = basename($configLogPath);

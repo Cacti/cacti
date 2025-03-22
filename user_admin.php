@@ -1825,7 +1825,7 @@ function settings_edit($header_label) {
 }
 
 function user_edit() {
-	global $config, $fields_user_edit;
+	global $fields_user_edit;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -2116,7 +2116,7 @@ function create_user_filter() {
 }
 
 function user() {
-	global $config, $auth_realms, $actions, $item_rows;
+	global $auth_realms, $actions, $item_rows;
 
 	$filters = create_user_filter();
 

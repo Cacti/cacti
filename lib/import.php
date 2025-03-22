@@ -23,7 +23,7 @@
 */
 
 function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphans = false, $replace_svalues = false, $import_hashes = []) {
-	global $config, $hash_type_codes, $cacti_version_codes, $ignorable_hashes, $preview_only;
+	global $hash_type_codes, $cacti_version_codes, $ignorable_hashes, $preview_only;
 	global $import_debug_info, $import_messages, $legacy_template;
 
 	include_once(CACTI_PATH_LIBRARY . '/xml.php');
@@ -401,8 +401,6 @@ function import_package_get_details($xmlfile) {
 }
 
 function import_validate_signature($xmlfile) {
-	global $config;
-
 	// Cacti public key first
 	$cacti_key1   = get_public_key_sha1();
 	$cacti_key2   = get_public_key_sha256();
@@ -591,7 +589,7 @@ function import_read_package_data($xmlfile, &$public_key, $preview = false) {
  */
 function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $replace_svalues = false,
 	$preview = false, $info_only = false, $limitex = true, $import_hashes = [], $import_files = []) {
-	global $config, $preview_only;
+	global $preview_only;
 
 	$preview_only = $preview;
 	$public_key   = '';
@@ -1464,7 +1462,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 }
 
 function xml_to_data_query($hash, &$xml_array, &$hash_cache, &$files, $replace_svalues = false) {
-	global $config, $fields_data_query_edit, $fields_data_query_item_edit, $preview_only, $import_debug_info;
+	global $fields_data_query_edit, $fields_data_query_item_edit, $preview_only, $import_debug_info;
 
 	/* track changes */
 	$status = 0;
@@ -2159,7 +2157,7 @@ function xml_to_cdef($hash, &$xml_array, &$hash_cache) {
 }
 
 function xml_to_vdef($hash, &$xml_array, &$hash_cache) {
-	global $config, $preview_only, $import_debug_info;
+	global $preview_only, $import_debug_info;
 
 	include_once(CACTI_PATH_LIBRARY . '/vdef.php');
 
@@ -2790,7 +2788,7 @@ function check_hash_type($hash_type) {
 }
 
 function check_hash_version($hash_version) {
-	global $cacti_version_codes, $config, $import_messages;
+	global $cacti_version_codes, $import_messages;
 
 	foreach ($cacti_version_codes as $version => $code) {
 		if ($version == CACTI_VERSION) {

@@ -186,7 +186,7 @@ if ($child == false) {
 		}
 
 		/* we will warn if the process is taking extra long */
-		if (!register_process_start('boost', 'master', $config['poller_id'], read_config_option('boost_rrd_update_max_runtime') * 3)) {
+		if (!register_process_start('boost', 'master', POLLER_ID, read_config_option('boost_rrd_update_max_runtime') * 3)) {
 			exit(0);
 		}
 
@@ -266,7 +266,7 @@ if ($child == false) {
 
 		cacti_log('INFO: Boost unregistering master process', true, 'BOOST');
 
-		unregister_process('boost', 'master', $config['poller_id'], getmypid());
+		unregister_process('boost', 'master', POLLER_ID, getmypid());
 
 		/* log the end time of the process */
 		set_config_option('boost_last_end_time', time());
@@ -309,7 +309,7 @@ if ($child == false) {
 }
 
 function sig_handler($signo) {
-	global $child, $config, $current_lock;
+	global $child, $current_lock;
 
 	$rrdtool_version = read_config_option('rrdtool_version');
 
@@ -324,7 +324,7 @@ function sig_handler($signo) {
 			if ($child) {
 				unregister_process('boost', 'child', $child, getmypid());
 			} else {
-				unregister_process('boost', 'master', $config['poller_id'], getmypid());
+				unregister_process('boost', 'master', POLLER_ID, getmypid());
 			}
 
 			exit;
@@ -371,7 +371,7 @@ function boost_processes_running() {
 }
 
 function boost_prepare_process_table() {
-	global $start_time, $archive_table, $max_run_duration, $config, $database_default, $debug, $get_memory, $memory_used;
+	global $start_time, $archive_table, $max_run_duration, $database_default, $debug, $get_memory, $memory_used;
 
 	boost_debug('Parallel Process Setup Begins.');
 
@@ -499,7 +499,7 @@ function boost_prepare_process_table() {
 }
 
 function boost_launch_children() {
-	global $config, $debug, $boost_log, $boost_debug, $cacti_log;
+	global $debug, $boost_log, $boost_debug, $cacti_log;
 
 	$processes = read_config_option('boost_parallel');
 
@@ -612,7 +612,7 @@ function boost_time_to_run($forcerun, $current_time, $last_run_time, $next_run_t
 }
 
 function boost_output_rrd_data($child) {
-	global $start, $archive_table, $max_run_duration, $config, $database_default, $debug, $get_memory, $memory_used;
+	global $start, $archive_table, $max_run_duration, $database_default, $debug, $get_memory, $memory_used;
 
 	$rrd_updates      = 0;
 	$rrdtool_pipe     = rrd_init();
@@ -718,7 +718,7 @@ function boost_output_rrd_data($child) {
    @arg $child - the current process
    @arg $rrdtool_pipe - the socket that has been opened for the RRDtool operation */
 function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
-	global $config, $archive_table, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used, $current_lock;
+	global $archive_table, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used, $current_lock;
 	global $boost_debug, $boost_log;
 
 	/* cache this call as it takes time */

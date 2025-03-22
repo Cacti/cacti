@@ -383,8 +383,6 @@ function form_save() {
  *   Inserting new items here is not possible. Just editing existing ones.
  */
 function form_save_aggregate() {
-	global $config;
-
 	if (!isset_request_var('save_component_item')) {
 		return;
 	}
@@ -500,7 +498,7 @@ function item_remove() {
 }
 
 function item_edit() {
-	global $config, $struct_graph_item, $graph_item_types, $consolidation_functions;
+	global $struct_graph_item, $graph_item_types, $consolidation_functions;
 
 	// Remove filter item
 	unset($struct_graph_item['data_template_id']);
@@ -991,7 +989,7 @@ function form_actions() {
 }
 
 function graph_edit() {
-	global $config, $struct_graph, $struct_aggregate_graph, $image_types;
+	global $struct_graph, $struct_aggregate_graph, $image_types;
 	global $consolidation_functions, $graph_item_types, $struct_graph_item;
 
 	// Remove filter item
@@ -1180,7 +1178,7 @@ function graph_edit() {
 						<span class='textInfo'><?php print __('RRDtool Command:'); ?></span><br>
 						<?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]); ?>
 						<span class='textInfo'><?php print __('RRDtool Says:'); ?></span><br><?php unset($graph_data_array['print_source']); ?>
-						<pre class='monoSpace tableRow left'><?php print($config['poller_id'] == 1 ? @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]) : __esc('Not Checked')); ?></pre>
+						<pre class='monoSpace tableRow left'><?php print(POLLER_ID == 1 ? @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION[SESS_USER_ID]) : __esc('Not Checked')); ?></pre>
 					</div>
 					<script type='text/javascript'>
 						$(function() {

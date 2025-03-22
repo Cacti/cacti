@@ -43,7 +43,7 @@ require_once(CACTI_PATH_LIBRARY . '/rrdcheck.php');
 
 global $poller_db_cnn_id, $remote_db_cnn_id, $logged;
 
-if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
+if (POLLER_ID > 1 && CACTI_CONNECTION == 'online') {
 	$poller_db_cnn_id = $remote_db_cnn_id;
 } else {
 	$poller_db_cnn_id = false;
@@ -87,7 +87,7 @@ $mibs      = false;
 $logged    = false;
 
 // set the poller_id
-$poller_id = $config['poller_id'];
+$poller_id = POLLER_ID;
 $hostname  = php_uname('n');
 
 // requires for remote poller stage out
@@ -207,7 +207,7 @@ poller_table_maintenance();
 api_plugin_hook('poller_top');
 
 // prime the poller_resource_cache for multiple pollers
-if ($config['connection'] == 'online') {
+if (CACTI_CONNECTION == 'online') {
 	update_resource_cache($poller_id);
 }
 
@@ -359,7 +359,7 @@ if (isset($items_perhost) && cacti_sizeof($items_perhost)) {
 }
 
 // some text formatting for platform specific vocabulary
-if ($config['cacti_server_os'] == 'unix') {
+if (CACTI_SERVER_OS == 'unix') {
 	$task_type = 'Cactid/Cron';
 } else {
 	$task_type = 'Scheduled Task';
@@ -561,7 +561,7 @@ while ($poller_runs_completed < $poller_runs) {
 	$first_host        = 0;
 	$last_host         = 0;
 	$rrds_processed    = 0;
-	$webroot           = addslashes(($config['cacti_server_os'] == 'win32') ? strtr(strtolower(substr(__DIR__, 0, 1)) . substr(__DIR__, 1),'\\', '/') : __DIR__);
+	$webroot           = addslashes((CACTI_SERVER_OS == 'win32') ? strtr(strtolower(substr(__DIR__, 0, 1)) . substr(__DIR__, 1),'\\', '/') : __DIR__);
 
 	// update web paths for the poller
 	set_config_option('path_webroot', $webroot);
@@ -604,7 +604,7 @@ while ($poller_runs_completed < $poller_runs) {
 	$issues       = [];
 
 	$issues_limit = 20;
-	$issues_check = ($poller_id == 1 || $config['connection'] == 'online');
+	$issues_check = ($poller_id == 1 || CACTI_CONNECTION == 'online');
 	$issues_param = [ $current_time, $poller_id, $poller_id ];
 
 	$issues_sql = ' FROM poller_output AS po
@@ -707,7 +707,7 @@ while ($poller_runs_completed < $poller_runs) {
 			$method         = 'spine';
 			$total_procs    = $concurrent_processes * $max_threads;
 			chdir(dirname(read_config_option('path_spine')));
-		} elseif ($config['cacti_server_os'] == 'unix') {
+		} elseif (CACTI_SERVER_OS == 'unix') {
 			$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 			$extra_args     = '-q ' . cacti_escapeshellarg(CACTI_PATH_BASE . '/cmd.php');
 			$method         = 'cmd.php';
@@ -719,14 +719,14 @@ while ($poller_runs_completed < $poller_runs) {
 			$total_procs    = $concurrent_processes;
 		}
 
-		if (read_config_option('path_stderrlog') != '' && $config['cacti_server_os'] != 'win32') {
+		if (read_config_option('path_stderrlog') != '' && CACTI_SERVER_OS != 'win32') {
 			$extra_parms = '>> ' . read_config_option('path_stderrlog') . ' 2>&1';
 		} else {
 			$extra_parms = '';
 		}
 
 		if ($poller_id > 1) {
-			$extra_args .= ' --mode=' . $config['connection'];
+			$extra_args .= ' --mode=' . CACTI_CONNECTION;
 		}
 
 		/* Populate each execution file with appropriate information */
@@ -810,7 +810,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 					if ($poller_id == 1) {
 						$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe, true);
-					} elseif ($config['connection'] != 'online') {
+					} elseif (CACTI_CONNECTION != 'online') {
 						/* truncate until formal remote management is supported */
 						db_execute('TRUNCATE poller_output');
 					}
@@ -830,7 +830,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 					if ($poller_id == 1) {
 						$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe);
-					} elseif ($config['connection'] != 'online') {
+					} elseif (CACTI_CONNECTION != 'online') {
 						/* truncate until formal remote management is supported */
 						db_execute('TRUNCATE poller_output');
 					}
@@ -1020,7 +1020,7 @@ if ($poller_id == 1) {
 	poller_heartbeat_check();
 } else {
 	// flush the boost table if in recovery mode
-	if ($poller_id > 1 && $config['connection'] == 'recovery') {
+	if ($poller_id > 1 && CACTI_CONNECTION == 'recovery') {
 		cacti_log('NOTE: Remote Data Collection to force processing of boost records.', true, 'POLLER');
 		poller_recovery_flush_boost($poller_id);
 	}
@@ -1111,7 +1111,6 @@ function poller_table_maintenance() {
 }
 
 function poller_replicate_check() {
-	global $config;
 	include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 	$sync_interval = read_config_option('poller_sync_interval');
@@ -1404,8 +1403,6 @@ function multiple_poller_boost_check() {
  * function for bulk spikekill that only runs on the main cacti server
  */
 function spikekill_poller_bottom() {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 	$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));

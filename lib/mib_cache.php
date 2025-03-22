@@ -57,8 +57,6 @@ class MibCache {
 	}
 
 	public function install($path, $replace=false, $mib_name='optional') {
-		global $config;
-
 		include_once(CACTI_PATH_INCLUDE . '/vendor/phpsnmp/mib_parser.php');
 
 		$mp = new MibParser();

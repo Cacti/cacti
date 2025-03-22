@@ -245,7 +245,7 @@ function form_actions() {
 }
 
 function pages() {
-	global $item_rows, $config, $actions;
+	global $item_rows, $actions;
 
 	/* create the page filter */
 	$pageFilter = new CactiTableFilter(__('External Links'), 'links.php', 'links', 'sess_links', 'links.php?action=edit');
@@ -437,7 +437,7 @@ function page_move($pageid, $junk, $direction) {
 }
 
 function edit_page() {
-	global $config, $poller_intervals;
+	global $poller_intervals;
 
 	$sections = db_fetch_assoc("SELECT extendedstyle
 		FROM external_links

@@ -299,7 +299,7 @@ switch($action) {
 
 		break;
 	case 'remote_enable':
-		if ($config['poller_id'] > 1) {
+		if (POLLER_ID > 1) {
 			db_execute_prepared('UPDATE plugin_config
 				SET status = 1
 				WHERE directory = ?',
@@ -310,7 +310,7 @@ switch($action) {
 
 		break;
 	case 'remote_disable':
-		if ($config['poller_id'] > 1) {
+		if (POLLER_ID > 1) {
 			db_execute_prepared('UPDATE plugin_config
 				SET status = 4
 				WHERE directory = ?',
@@ -373,7 +373,7 @@ function plugins_temp_table_exists($table) {
 }
 
 function plugins_load_temp_table() {
-	global $config, $plugins, $plugins_integrated, $local_db_cnn_id;
+	global $plugins, $plugins_integrated, $local_db_cnn_id;
 
 	$table = 'plugin_temp_table_' . rand();
 
@@ -406,7 +406,7 @@ function plugins_load_temp_table() {
 			ADD COLUMN dir_md5sum varchar(32) DEFAULT NULL");
 	}
 
-	if ($config['poller_id'] > 1) {
+	if (POLLER_ID > 1) {
 		$status = db_fetch_assoc('SELECT directory AS plugin, status
 			FROM plugin_config', false, $local_db_cnn_id);
 
@@ -539,7 +539,7 @@ function plugins_load_temp_table() {
 }
 
 function update_show_current() {
-	global $plugins, $pluginslist, $config, $status_names, $actions, $item_rows;
+	global $plugins, $pluginslist, $status_names, $actions, $item_rows;
 
 	/* ================= input validation and session storage ================= */
 	$filters = [
@@ -1112,7 +1112,7 @@ function update_show_current() {
 					'tip'     => __('Hover over the Notes column to see the Archive notes.')
 				],
 				'pi.status' => [
-					'display' => $config['poller_id'] == 1 ? __('Status'):__('Main / Remote Status'),
+					'display' => POLLER_ID == 1 ? __('Status'):__('Main / Remote Status'),
 					'align'   => 'left',
 					'sort'    => 'ASC',
 					'tip'     => __('The Status of this available Plugin.  Loadable means it is currently not installed and can be loaded.')
@@ -1183,7 +1183,7 @@ function update_show_current() {
 					'tip'     => __('A description that the Plugins author has given to the Plugin.')
 				],
 				'status' => [
-					'display' => $config['poller_id'] == 1 ? __('Status'):__('Main / Remote Status'),
+					'display' => POLLER_ID == 1 ? __('Status'):__('Main / Remote Status'),
 					'align'   => 'left',
 					'sort'    => 'ASC',
 					'tip'     => __('The status of this Plugin.')
@@ -1260,7 +1260,7 @@ function update_show_current() {
 					'tip'     => __('A description that the Plugins author has given to the Plugin.')
 				],
 				'pi.status' => [
-					'display' => $config['poller_id'] == 1 ? __('Status'):__('Main / Remote Status'),
+					'display' => POLLER_ID == 1 ? __('Status'):__('Main / Remote Status'),
 					'align'   => 'left',
 					'sort'    => 'ASC',
 					'tip'     => __('The Status of this available Plugin.  Loadable means it is currently not installed and can be loaded.')
@@ -1365,7 +1365,7 @@ function update_show_current() {
 }
 
 function format_plugin_row($plugin, $last_plugin, $include_ordering, $table) {
-	global $status_names, $config;
+	global $status_names;
 	static $first_plugin = true;
 	static $row_id       = 1;
 
@@ -1415,7 +1415,7 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $table) {
 		$row .= ", <a class='pic deviceUp' href='" . html_escape('plugins.php?action=list&state=6&type=3&filter=' . $plugin['plugin']) . "'>" . __('New Version') . '</a>';
 	}
 
-	if ($config['poller_id'] > 1) {
+	if (POLLER_ID > 1) {
 		if (isset($plugin['capabilities']) && (strpos($plugin['capabilities'], 'remote_collect:1') !== false || strpos($plugin['capabilities'], 'remote_poller:1') !== false)) {
 			if ($plugin['remote_status'] == '-1') {
 				$status = plugin_is_compatible($plugin['plugin']);
@@ -1497,7 +1497,7 @@ function plugin_check_available_status($plugin) {
 }
 
 function format_available_plugin_row($plugin, $table) {
-	global $status_names, $config;
+	global $status_names;
 
 	/* action icons */
 	$row  = "<td class='nowrap' style='width:1%'>";
@@ -1622,7 +1622,7 @@ function format_available_plugin_row($plugin, $table) {
 }
 
 function format_archive_plugin_row($plugin, $table) {
-	global $status_names, $config;
+	global $status_names;
 	static $first_plugin = true;
 
 	/* action icons */
@@ -1824,7 +1824,7 @@ function plugin_get_install_links($plugin, $table) {
 }
 
 function plugin_actions($plugin, $table) {
-	global $config, $pluginslist, $plugins_integrated;
+	global $pluginslist, $plugins_integrated;
 
 	$link = '<td style="width:1%" class="nowrap">';
 
@@ -1933,8 +1933,8 @@ function plugin_actions($plugin, $table) {
 			break;
 	}
 
-	if ($config['poller_id'] > 1) {
-		if (isset($plugins['capabilities']) && (strpos($plugin['capabilities'], 'remote_collect:1') !== false || strpos($plugin['capabilities'], 'remote_poller:1') !== false)) {
+	if (POLLER_ID > 1) {
+		if (isset($plugin['capabilities']) && (strpos($plugin['capabilities'], 'remote_collect:1') !== false || strpos($plugin['capabilities'], 'remote_poller:1') !== false)) {
 			if ($plugin['remote_status'] == 1) { // Installed and Active
 				// ToDo: Disabling here does not make much sense as the main will be replicated
 				// with any change of any other plugin thus undoing.  Fix that moving forward

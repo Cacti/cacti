@@ -23,8 +23,6 @@
 */
 
 function get_rrdfiles($thread_id = 1, $max_threads = 1) {
-	global $config;
-
 	static $newrows = [];
 
 	if (cacti_sizeof($newrows)) {
@@ -48,7 +46,7 @@ function get_rrdfiles($thread_id = 1, $max_threads = 1) {
 		ON gl.id = gti.local_graph_id
 		LEFT JOIN host as h
 		ON h.id = gl.host_id
-		WHERE dtd.local_data_id != 0 
+		WHERE dtd.local_data_id != 0
 		AND h.disabled != "on"
 		GROUP BY dtd.local_data_id',
 		[CACTI_PATH_RRA]);
@@ -93,7 +91,7 @@ function rrdcheck_debug($message) {
  * @return - NULL
  */
 function do_rrdcheck($thread_id = 1) {
-	global $config, $type;
+	global $type;
 	global $total_user, $total_system, $total_real, $total_dsses;
 	global $user_time, $system_time, $real_time, $rrd_files;
 
@@ -718,8 +716,6 @@ function rrdcheck_error_handler($errno, $errmsg, $filename, $linenum, $vars = []
  * @return - NULL
  */
 function rrdcheck_boost_bottom() {
-	global $config;
-
 	if (read_config_option('rrdcheck_enable') == 'on') {
 		include_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
@@ -748,8 +744,6 @@ function rrdcheck_boost_bottom() {
  * @return - NULL
  */
 function rrdcheck_poller_bottom() {
-	global $config;
-
 	if (read_config_option('rrdcheck_enable') == 'on') {
 		include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
@@ -758,7 +752,7 @@ function rrdcheck_poller_bottom() {
 		$command_string = read_config_option('path_php_binary');
 
 		if (read_config_option('path_rrdcheck_log') != '') {
-			if ($config['cacti_server_os'] == 'unix') {
+			if (CACTI_SERVER_OS == 'unix') {
 				$extra_args = '-q ' . CACTI_PATH_BASE . '/poller_rrdcheck.php >> ' . read_config_option('path_rrdcheck_log') . ' 2>&1';
 			} else {
 				$extra_args = '-q ' . CACTI_PATH_BASE . '/poller_rrdcheck.php >> ' . read_config_option('path_rrdcheck_log');
@@ -780,9 +774,7 @@ function rrdcheck_poller_bottom() {
  *   with RRDtool.
  */
 function rrdcheck_rrdtool_init() {
-	global $config;
-
-	if ($config['cacti_server_os'] == 'unix') {
+	if (CACTI_SERVER_OS == 'unix') {
 		$fds = [
 			0 => ['pipe', 'r'], // stdin
 			1 => ['pipe', 'w'], // stdout
@@ -879,7 +871,7 @@ function rrdcheck_rrdtool_close($process) {
  * @return - NULL
  */
 function rrdcheck_launch_children($type) {
-	global $config, $debug;
+	global $debug;
 
 	$processes = read_config_option('rrdcheck_parallel');
 

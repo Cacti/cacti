@@ -216,8 +216,6 @@ function profile_import() {
 }
 
 function profile_import_execute($json_data) {
-	global $config;
-
 	$debug_data = [];
 
 	/**
@@ -346,13 +344,13 @@ function profile_import_execute($json_data) {
 				[$data_source_profile_id]);
 
 			if ($data_source_profile_id > 0) {
-				if ($config['is_web']) {
+				if (CACTI_WEB) {
 					$debug_data['success'][] = __esc('Data Source Profile \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 				} else {
 					$debug_data['success'][] = __('Data Source Profile \'%s\' %s!', $name, ($save['id'] > 0 ? __('Updated'):__('Imported')));
 				}
 			} else {
-				if ($config['is_web']) {
+				if (CACTI_WEB) {
 					$debug_data['failure'][] = __esc('Data Source Profile \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
 				} else {
 					$debug_data['failure'][] = __('Data Source Profile \'%s\' %s Failed!', $name, ($save['id'] > 0 ? __('Update'):__('Import')));
@@ -1334,7 +1332,7 @@ function get_span($duration) {
 }
 
 function profile() {
-	global $actions, $item_rows, $sampling_intervals, $heartbeats, $config;
+	global $actions, $item_rows, $sampling_intervals, $heartbeats;
 
 	/* create the page filter */
 	$pageFilter = new CactiTableFilter(__('Data Source Profiles'), 'data_source_profiles.php', 'snmp_dsp', 'sess_dsp', 'data_source_profiles.php?action=edit');

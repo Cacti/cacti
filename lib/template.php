@@ -1541,8 +1541,6 @@ function data_source_to_data_template($local_data_id, $data_source_title) {
 	  $values['sg'][data_query_id][data_template_id]['data_template'][field_name] = $value  // data template (w/ data query)
 	  $values['sg'][data_query_id][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item (w/ data query) */
 function create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, &$suggested_vals) {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
 	if (!graph_template_whitelist_check($graph_template_id)) {
@@ -2406,17 +2404,15 @@ function verify_data_input($hash, $input_string) {
 }
 
 function verify_data_input_whitelist($hash, $input_string) {
-	global $config;
-
-	if (!isset($config['input_whitelist'])) {
+	if (!defined('CACTI_WHITELIST')) {
 		return true;
 	}
 
-	if (isset($config['input_whitelist']) && !file_exists($config['input_whitelist'])) {
+	if (!file_exists(CACTI_WHITELIST)) {
 		return true;
 	}
 
-	$whitelist = json_decode(file_get_contents($config['input_whitelist']), true);
+	$whitelist = json_decode(file_get_contents(CACTI_WHITELIST), true);
 
 	if (isset($whitelist[$hash])) {
 		if ($input_string == $whitelist[$hash]) {
@@ -2430,27 +2426,25 @@ function verify_data_input_whitelist($hash, $input_string) {
 }
 
 function graph_template_whitelist_check($graph_template_id) {
-	global $config;
-
 	static $data_input_whitelist = null;
 	static $notified             = [];
 
 	// no whitelist file defined, everything whitelisted
-	if (!isset($config['input_whitelist'])) {
+	if (!defined('CACTI_WHITELIST')) {
 		return true;
 	}
 
 	// whitelist is configured but does not exist, means nothing whitelisted
-	if (!file_exists($config['input_whitelist'])) {
+	if (!file_exists(CACTI_WHITELIST)) {
 		return false;
 	}
 
 	// load whitelist, but only once within process execution
 	if ($data_input_whitelist == null) {
-		$data_input_whitelist = json_decode(file_get_contents($config['input_whitelist']), true);
+		$data_input_whitelist = json_decode(file_get_contents(CACTI_WHITELIST), true);
 
 		if ($data_input_whitelist === null) {
-			cacti_log('ERROR: Failed to parse input whitelist file: ' . $config['input_whitelist']);
+			cacti_log('ERROR: Failed to parse input whitelist file: ' . CACTI_WHITELIST);
 
 			return true;
 		}
@@ -2485,7 +2479,7 @@ function graph_template_whitelist_check($graph_template_id) {
 			}
 
 			if (!$found && !isset($notified[$dii['data_input_id']])) {
-				cacti_log('WARNING: Data input script not found in input whitelist file: ' . $config['input_whitelist']);
+				cacti_log('WARNING: Data input script not found in input whitelist file: ' . CACTI_WHITELIST);
 				$notified[$dii['data_input_id']] = true;
 			}
 		}

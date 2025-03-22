@@ -45,7 +45,7 @@ switch (get_request_var('action')) {
 }
 
 function changelog_view() {
-	global $database_default, $config, $rrdtool_versions, $poller_options, $input_types, $local_db_cnn_id;
+	global $database_default, $rrdtool_versions, $poller_options, $input_types, $local_db_cnn_id;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-z_A-Z]+)$/']]);

@@ -192,7 +192,11 @@ if ($config['cacti_server_os'] == 'win32') {
 
 if (!empty($path_csrf_secret)) {
 	$config['path_csrf_secret'] = $path_csrf_secret;
+} else {
+	$config['path_csrf_secret'] = CACTI_PATH_INCLUDE . '/vendor/csrf/csrf-secret.php';
 }
+
+define('CACTI_CSRF_SECRET', $config['path_csrf_secret']);
 
 /* built-in snmp support */
 if ((isset($php_snmp_support) && $php_snmp_support == false) || !function_exists('snmpget')) {
@@ -200,6 +204,8 @@ if ((isset($php_snmp_support) && $php_snmp_support == false) || !function_exists
 } else {
 	$config['php_snmp_support'] = class_exists('SNMP');
 }
+
+define('CACTI_PHP_SNMP', $config['php_snmp_support']);
 
 /* PHP binary location */
 if (isset($php_path)) {
@@ -220,6 +226,7 @@ if (empty($database_port)) {
 
 if (isset($input_whitelist)) {
 	$config['input_whitelist'] = $input_whitelist;
+	define('CACTI_WHITELIST', $input_whitelist);
 }
 
 /* define required path as constants */
@@ -435,6 +442,8 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1');
 }
 
+define('CACTI_CONNECTION', $config['connection']);
+
 /* check cacti log is available */
 $log_filename = cacti_log_file();
 
@@ -536,7 +545,7 @@ if ($config['is_web']) {
 	$config[COOKIE_OPTIONS]     = $options;
 	$config[CACTI_SESSION_NAME] = $cacti_session_name;
 
-	if (isset($cacti_db_session) && $cacti_db_session && db_table_exists('sessions') && $config['connection'] == 'online') {
+	if (isset($cacti_db_session) && $cacti_db_session && db_table_exists('sessions') && CACTI_CONNECTION == 'online') {
 		include(__DIR__ . '/session.php');
 	} else {
 		$cacti_db_session = false;
@@ -640,20 +649,20 @@ if ($config['is_web']) {
 			$previous_mode = $_SESSION['connection_mode'];
 			$reload        = false;
 
-			cacti_log('Connection: ' . $config['connection'] . ', Previous Mode: ' . $previous_mode . ', Page: ' . $_SERVER['SCRIPT_NAME'], false, 'WEBUI', POLLER_VERBOSITY_DEBUG);
+			cacti_log('Connection: ' . CACTI_CONNECTION . ', Previous Mode: ' . $previous_mode . ', Page: ' . $_SERVER['SCRIPT_NAME'], false, 'WEBUI', POLLER_VERBOSITY_DEBUG);
 
-			if ($config['connection'] == 'online' && ($config['connection'] != $previous_mode)) {
+			if (CACTI_CONNECTION == 'online' && (CACTI_CONNECTION != $previous_mode)) {
 				$reload  = true;
 				$message = __('The Main Data Collector has returned to an Online Status');
 				$level   = MESSAGE_LEVEL_INFO;
-			} elseif ($config['connection'] != 'online' && $previous_mode == 'online') {
+			} elseif (CACTI_CONNECTION != 'online' && $previous_mode == 'online') {
 				$reload  = true;
 				$message = __('The Main Data Collector has gone to an Offline or Recovering Status');
 				$level   = MESSAGE_LEVEL_ERROR;
 			}
 
 			if ($reload) {
-				$_SESSION['connection_mode'] = $config['connection'];
+				$_SESSION['connection_mode'] = CACTI_CONNECTION;
 
 				raise_message('connection_state', $message, $level);
 
@@ -664,11 +673,11 @@ if ($config['is_web']) {
 				exit;
 			}
 		} else {
-			cacti_log('Connection: ' . $config['connection'] . ', Previous Mode: notset', false, 'WEBUI', POLLER_VERBOSITY_DEBUG);
+			cacti_log('Connection: ' . CACTI_CONNECTION . ', Previous Mode: notset', false, 'WEBUI', POLLER_VERBOSITY_DEBUG);
 
-			$previous_mode = $config['connection'];
+			$previous_mode = CACTI_CONNECTION;
 
-			$_SESSION['connection_mode'] = $config['connection'];
+			$_SESSION['connection_mode'] = CACTI_CONNECTION;
 		}
 	}
 
