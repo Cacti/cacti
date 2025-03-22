@@ -35,14 +35,14 @@ $config = [];
 /* define if cacti is in CLI mode */
 define('CACTI_CLI', (php_sapi_name() == 'cli'));
 define('CACTI_WEB', (php_sapi_name() != 'cli'));
-define('CACTI_SERVER_OS', strstr(PHP_OS, 'WIN') ? 'win32' : 'unix');
+define('CACTI_SERVER_OS', (str_starts_with(PHP_OS, 'WIN')) ? 'win32' : 'unix');
 
 if (defined('CACTI_CLI_ONLY') && CACTI_WEB) {
 	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
 /* this should be auto-detected, set it manually if needed */
-$config['cacti_server_os'] = (strstr(PHP_OS, 'WIN')) ? 'win32' : 'unix';
+$config['cacti_server_os'] = ((str_starts_with(PHP_OS, 'WIN'))) ? 'win32' : 'unix';
 $config['is_web']          = CACTI_WEB;
 
 /* load cacti version from file */
