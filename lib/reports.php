@@ -417,7 +417,7 @@ function reports_log($string, $output = false, $environ = 'REPORTS', $level = PO
  * @param bool $force        - when forced, lastsent time will not be entered (e.g. Send Now)
  */
 function generate_report($schedule_id, $report, $force = false) {
-	global $config, $alignment, $reports_interval, $attach_types;
+	global $alignment, $reports_interval, $attach_types;
 
 	include_once(CACTI_PATH_LIBRARY . '/time.php');
 	include_once(CACTI_PATH_LIBRARY . '/rrd.php');
@@ -644,8 +644,6 @@ function generate_report($schedule_id, $report, $force = false) {
  * @return bool						- whether or not the format file was processed correctly
  */
 function reports_load_format_file($format_file, &$output, &$report_tag_included, &$theme) {
-	global $config;
-
 	$contents = [];
 
 	if ($format_file == '') {
@@ -691,8 +689,6 @@ function reports_load_format_file($format_file, &$output, &$report_tag_included,
  * @param string $search_key	- search key
  */
 function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_key) {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/html_tree.php');
 
 	$sql_where  = '';
@@ -847,7 +843,6 @@ function reports_remove_history($history_id, $report_id = 0) {
  * @return string			- generated html output
  */
 function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$theme = '') {
-	global $config;
 	global $alignment;
 
 	include_once(CACTI_PATH_LIBRARY . '/time.php');
@@ -1083,8 +1078,6 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
  * @return string		- generated html
  */
 function reports_graph_image($report, $item, $timespan, $output, $theme = 'modern') {
-	global $config;
-
 	$out = '';
 
 	if ($output == REPORTS_OUTPUT_STDOUT) {
@@ -1132,7 +1125,7 @@ function reports_graph_image($report, $item, $timespan, $output, $theme = 'moder
  * @return string			- html
  */
 function reports_expand_device(&$report, $item, $device_id, $output, $format_ok, $theme = 'modern') {
-	global $config, $alignment;
+	global $alignment;
 
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
@@ -1281,7 +1274,7 @@ function reports_expand_device(&$report, $item, $device_id, $output, $format_ok,
  * @return string			- html
  */
 function reports_expand_tree(&$report, $item, $parent, $output, $format_ok, $theme = 'modern', $nested = false) {
-	global $config, $alignment;
+	global $alignment;
 
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
@@ -1831,8 +1824,6 @@ function reports_graph_area($graphs, &$report, $item, $timespan, $output, $forma
  * @return string			- the jpeg image as a stream
  */
 function png2jpeg($png_data) {
-	global $config;
-
 	if ($png_data != '') {
 		$fn = '/tmp/' . time() . '.png';
 
@@ -1873,8 +1864,6 @@ function png2jpeg($png_data) {
  * @return string			- the gif image as a stream
  */
 function png2gif($png_data) {
-	global $config;
-
 	if ($png_data != '') {
 		$fn = '/tmp/' . time() . '.png';
 
@@ -1913,8 +1902,6 @@ function png2gif($png_data) {
  * @return array	- available format files
  */
 function reports_get_format_files() {
-	global $config;
-
 	$formats = [];
 	$dir     = CACTI_PATH_FORMATS .  '';
 
@@ -1956,7 +1943,6 @@ function reports_get_format_files() {
  * define the reports code that will be processed at the end of each polling event
  */
 function reports_poller_bottom() {
-	global $config;
 	include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 	$command_string = read_config_option('path_php_binary');
@@ -1983,7 +1969,7 @@ function reports_graphs_action_array($action) {
  * returns array $save				-
  *  */
 function reports_graphs_action_prepare($save) {
-	global $config, $graph_timespans, $alignment;
+	global $graph_timespans, $alignment;
 
 	if ($save['drp_action'] == 'reports') { /* report */
 		print "<tr>
@@ -2018,8 +2004,6 @@ function reports_graphs_action_prepare($save) {
  * return -
  *  */
 function reports_graphs_action_execute($action) {
-	global $config;
-
 	if ($action == 'reports') { /* report */
 		$message = '';
 
@@ -2341,9 +2325,7 @@ function reports_queue($name, $request_type, $source, $source_id, $command, $not
 }
 
 function reports_run($id) {
-	global $config;
-
-	include_once($config['base_path'] . '/lib/poller.php');
+	include_once(CACTI_PATH_BASE . '/lib/poller.php');
 
 	$report = db_fetch_row_prepared('SELECT *
 		FROM reports_queued

@@ -110,7 +110,6 @@ switch (get_request_var('action')) {
  * @param bool $disable_controls 	- whether to hide all edit/delete functionality on this form
  */
 function draw_color_template_items_list($item_list, $filename, $url_data, $disable_controls) {
-	global $config;
 	global $struct_color_template_item;
 
 	$display_text = [
@@ -256,7 +255,7 @@ function form_save() {
  * form_actions	the action function
  */
 function form_actions() {
-	global $actions, $config;
+	global $actions;
 	include_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');
 
 	/* ================= input validation ================= */
@@ -589,8 +588,6 @@ function color_item_edit() {
  * color_item show all color template items
  */
 function color_item() {
-	global $config;
-
 	/* ================= input validation ================= */
 	get_filter_request_var('color_template_id');
 	/* ==================================================== */
@@ -670,7 +667,7 @@ function color_item() {
  * color_template_edit	edit the color template
  */
 function color_template_edit() {
-	global $config, $image_types, $fields_color_template_template_edit, $struct_aggregate;
+	global $image_types, $fields_color_template_template_edit, $struct_aggregate;
 
 	include_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');
 
@@ -710,8 +707,6 @@ function color_template_edit() {
 }
 
 function sync_color_templates($color_template) {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');
 
 	$name = db_fetch_cell_prepared('SELECT name
@@ -769,7 +764,7 @@ function sync_color_templates($color_template) {
  * color_template maintain color templates
  */
 function color_template() {
-	global $actions, $item_rows, $config;
+	global $actions, $item_rows;
 
 	include_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');
 

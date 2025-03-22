@@ -70,7 +70,7 @@ switch (get_request_var('action')) {
 }
 
 function manager() {
-	global $config, $actions, $item_rows;
+	global $actions, $item_rows;
 
 	/* create the page filter */
 	$pageFilter = new CactiTableFilter(__('SNMP Notification Receivers'), 'managers.php', 'form_snmpagent_managers', 'sess_snmp_mgr', 'managers.php?action=edit');
@@ -179,7 +179,7 @@ function manager() {
 }
 
 function manager_edit() {
-	global $config, $snmp_auth_protocols, $snmp_priv_protocols, $snmp_versions,
+	global $snmp_auth_protocols, $snmp_priv_protocols, $snmp_versions,
 	$tabs_manager_edit, $fields_manager_edit, $mactions;
 
 	/* ================= input validation ================= */

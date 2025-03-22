@@ -37,8 +37,6 @@
  * @return string The constructed URL as a hyperlink.
  */
 function aggregate_build_children_url(int $local_graph_id, int $graph_start = -1, int $graph_end = -1, int $rra_id = -1): string {
-	global $config;
-
 	aggregate_prune_graphs($local_graph_id);
 
 	$aggregate_data = db_fetch_row_prepared('SELECT *
@@ -669,8 +667,6 @@ function duplicate_color_template(int $_color_template_id, string $color_templat
  * @return int					- id of the 'Make 0' cdef
  */
 function aggregate_cdef_make0(): int {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/cdef.php');
 
 	cacti_log(__FUNCTION__ . ' called', true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
@@ -725,8 +721,6 @@ function aggregate_cdef_make0(): int {
  * @return void
  */
 function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence, int $_total_type): void {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/cdef.php');
 
 	cacti_log(__FUNCTION__ . ' called. Working on Graph: ' . $_new_graph_id . ' sequence: ' .  $_graph_item_sequence  . ' totalling: ' . $_total_type, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
@@ -934,8 +928,6 @@ function auto_title(int $_local_graph_id): string {
  * @return void
  */
 function api_aggregate_remove_multi(array $graphs): void {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/api_graph.php');
 
 	if (cacti_sizeof($graphs)) {
@@ -966,7 +958,7 @@ function api_aggregate_remove_multi(array $graphs): void {
 /**
  * Prunes orphaned graphs and their associated items from the database.
  *
- * @param int $local_graph_id Optional. The ID of a specific local graph to prune. If greater than 0, 
+ * @param int $local_graph_id Optional. The ID of a specific local graph to prune. If greater than 0,
  *                            only the specified local graph and its associated items will be pruned.
  *                            Defaults to 0, which means all orphaned graphs will be pruned.
  *

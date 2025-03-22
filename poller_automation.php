@@ -47,8 +47,8 @@ require_once(CACTI_PATH_LIBRARY . '/sort.php');
 require_once(CACTI_PATH_LIBRARY . '/template.php');
 require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
-if ($config['poller_id'] > 1) {
-	if ($config['connection'] == 'online') {
+if (POLLER_ID > 1) {
+	if (CACTI_CONNECTION == 'online') {
 		db_force_remote_cnn();
 	} elseif (debounce_run_notification('db_offline')) {
 		cacti_log(sprintf('WARNING: Main Cacti database %s offline or in recovery.  Can not run automation', $rdatabase_hostname), true, 'AUTOM8');
@@ -139,7 +139,7 @@ $debug        = false;
 $force        = false;
 $dryrun       = false;
 $network_id   = 0;
-$poller_id    = $config['poller_id'];
+$poller_id    = POLLER_ID;
 $thread       = 0;
 $master       = false;
 $serial_scans = read_config_option('automation_serial_scans') == 'on' ? true:false;

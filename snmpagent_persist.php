@@ -151,7 +151,7 @@ function cache_get_next($oid) {
 }
 
 function cache_refresh() {
-	global $config, $cache, $cache_last_refresh;
+	global $cache, $cache_last_refresh;
 
 	$path_mibcache      = CACTI_PATH_CACHE. '/mibcache/mibcache.tmp';
 	$path_mibcache_lock = CACTI_PATH_CACHE. '/mibcache/mibcache.lock';
@@ -230,8 +230,6 @@ function get_options() {
 }
 
 function display_version() {
-	global $config;
-
 	$version = get_cacti_cli_version();
 	print 'The Cacti SNMP Agent Daemon, Version ' . $version . ', ' . COPYRIGHT_YEARS . PHP_EOL;
 }

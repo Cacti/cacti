@@ -77,8 +77,6 @@ function nth_percentile($local_data_ids, $start_seconds, $end_seconds, $percenti
  * @return string JSON data containing each data source item, and its 95th percentile
  */
 function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $percentile = 95, $resolution = 0, $peak = false, $rrdtool_pipe = null) {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
 	if (!is_array($local_data_ids)) {

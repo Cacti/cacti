@@ -2204,7 +2204,7 @@ function is_multi_device_graph($local_graph_id) {
 }
 
 function graph_edit() {
-	global $config, $struct_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;
+	global $struct_graph, $image_types, $consolidation_functions, $graph_item_types, $struct_graph_item;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -2505,7 +2505,7 @@ function graph_edit() {
 				<pre><?php print html_escape(rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, null, $null_param, $_SESSION[SESS_USER_ID]));?></pre>
 				<span class='textInfo'><?php print __('RRDtool Says:');?></span><br>
 				<?php unset($graph_data_array['print_source']);?>
-				<pre><?php print($config['poller_id'] == 1 ? html_escape(rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, null, $null_param, $_SESSION[SESS_USER_ID])):__esc('Not Checked'));?></pre>
+				<pre><?php print(POLLER_ID == 1 ? html_escape(rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, null, $null_param, $_SESSION[SESS_USER_ID])):__esc('Not Checked'));?></pre>
 			</div>
 		<?php
 		}
@@ -2667,7 +2667,7 @@ function validate_graph_request_vars() {
 }
 
 function graphs() {
-	global $actions, $graph_sources, $item_rows, $image_types, $config;
+	global $actions, $graph_sources, $item_rows, $image_types;
 
 	/* for custom non-stored request vars */
 	validate_graph_request_vars();

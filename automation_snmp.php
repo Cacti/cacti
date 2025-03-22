@@ -333,7 +333,7 @@ function form_save() {
 }
 
 function form_actions() {
-	global $config, $actions;
+	global $actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action');
@@ -587,7 +587,7 @@ function automation_snmp_item_remove() {
 }
 
 function automation_snmp_item_edit() {
-	global $config, $snmp_auth_protocols, $snmp_priv_protocols, $snmp_versions, $snmp_security_levels;
+	global $snmp_auth_protocols, $snmp_priv_protocols, $snmp_versions, $snmp_security_levels;
 
 	#include_once(CACTI_PATH_LIBRARY . '/automation_functions.php');
 
@@ -660,7 +660,7 @@ function automation_snmp_item_edit() {
 }
 
 function automation_snmp_edit() {
-	global $config, $fields_automation_snmp_edit;
+	global $fields_automation_snmp_edit;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -875,7 +875,7 @@ function automation_snmp_edit() {
 }
 
 function automation_snmp() {
-	global $config, $item_rows, $actions;
+	global $item_rows, $actions;
 
 	/* create the page filter */
 	$pageFilter = new CactiTableFilter(__('SNMP Options'), 'automation_snmp.php', 'snmp_form', 'sess_autom_snmp', 'automation_snmp.php?action=edit');

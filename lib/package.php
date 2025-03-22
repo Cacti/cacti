@@ -112,8 +112,6 @@ function check_template_dependencies($export_type, $template_id) {
 }
 
 function check_get_author_info() {
-	global $config;
-
 	if (file_exists(CACTI_PATH_PKI . '/package.info')) {
 		$info = parse_ini_file(CACTI_PATH_PKI . '/package.info', true);
 		$info = $info['info'];
@@ -141,8 +139,6 @@ function check_get_author_info() {
 }
 
 function open_packager_metadata_table() {
-	global $config;
-
 	$db_file   = CACTI_PATH_PKI . '/package.db';
 	$db_struct = 'CREATE TABLE package (
 		hash char(32) NOT NULL,
@@ -204,7 +200,7 @@ function get_packager_metadata($hash) {
 }
 
 function get_package_contents($export_type, $export_item_id, $include_deps = true) {
-	global $config, $export_errors;
+	global $export_errors;
 
 	$types = [
 		'host_template',
@@ -390,8 +386,6 @@ function get_package_contents($export_type, $export_item_id, $include_deps = tru
 }
 
 function get_package_private_key() {
-	global $config;
-
 	if (file_exists(CACTI_PATH_PKI . '/package.key')) {
 		return 'file://' . CACTI_PATH_PKI . '/package.key';
 	} else {
@@ -402,8 +396,6 @@ function get_package_private_key() {
 }
 
 function get_package_public_key() {
-	global $config;
-
 	if (file_exists(CACTI_PATH_PKI . '/package.pem')) {
 		$key = openssl_pkey_get_public('file://' . CACTI_PATH_PKI . '/package.pem');
 
@@ -479,8 +471,6 @@ function process_paths($line, $files, $raise_message) {
  * @param mixed $type
  */
 function find_paths($input, $type = 'cacti_xml') {
-	global $config;
-
 	$excluded_paths = [
 		'/bin/',
 		'/usr/bin/',
@@ -553,7 +543,7 @@ function find_paths($input, $type = 'cacti_xml') {
 }
 
 function package_template(&$template, &$info, &$files, &$debug) {
-	global $config, $export_errors, $package_file;
+	global $export_errors, $package_file;
 
 	$binary_signature = '';
 	$debug            = '';
@@ -567,7 +557,7 @@ function package_template(&$template, &$info, &$files, &$debug) {
 	ini_set('zlib.output_compression', '0');
 
 	/* establish a temp directory */
-	if ($config['cacti_server_os'] == 'unix') {
+	if (CACTI_SERVER_OS == 'unix') {
 		$tmpdir = '/tmp/';
 	} else {
 		$tmpdir = getenv('TEMP');

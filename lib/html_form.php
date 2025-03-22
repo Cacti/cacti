@@ -1367,8 +1367,6 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
  * @return void
  */
 function form_font_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0, $placeholder = '') {
-	global $config;
-
 	if (($form_previous_value == '') && (empty($current_id))) {
 		$form_previous_value = $form_default_value;
 	}
@@ -1739,7 +1737,6 @@ function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
  * @return void
  */
 function form_confirm_buttons($action_url, $cancel_url) {
-	global $config;
 	?>
 	<tr>
 		<td class='right'>

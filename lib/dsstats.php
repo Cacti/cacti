@@ -112,8 +112,6 @@ function dsstats_debug($message) {
  * @return - NULL
  */
 function dsstats_get_and_store_ds_avgpeak_values($interval, $type, $thread_id = 1) {
-	global $config;
-
 	global $total_user, $total_system, $total_real, $total_dsses;
 	global $user_time, $system_time, $real_time, $rrd_files;
 
@@ -334,7 +332,7 @@ function dsstats_write_buffer(&$stats_array, $interval, $mode) {
  * @return - (mixed) An array of AVERAGE, and MAX values in an RRDfile by Data Source name
  */
 function dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $interval, $mode, $peak, $rrd_process) {
-	global $config, $user_time, $system_time, $real_time;
+	global $user_time, $system_time, $real_time;
 
 	$use_proxy = (read_config_option('storage_location') ? true : false);
 
@@ -463,7 +461,7 @@ function dsstats_obtain_data_source_avgpeak_values($local_data_id, $rrdfile, $in
 }
 
 function dsstats_get_stats_command($local_data_id, $rrdfile, $use_proxy, $mode, $peak, $rrd_process) {
-	global $config, $user_time, $system_time, $real_time;
+	global $user_time, $system_time, $real_time;
 
 	/* high speed or snail speed */
 	if ($use_proxy) {
@@ -530,7 +528,7 @@ function dsstats_get_stats_command($local_data_id, $rrdfile, $use_proxy, $mode, 
 		$dsvalues = [];
 
 		/* escape the file name if on Windows */
-		if ($config['cacti_server_os'] != 'unix') {
+		if (CACTI_SERVER_OS != 'unix') {
 			$rrdfile = str_replace(':', '\\:', $rrdfile);
 		}
 
@@ -820,8 +818,6 @@ function dsstats_error_handler($errno, $errmsg, $filename, $linenum, $vars = [])
  * @return - NULL
  */
 function dsstats_poller_output(&$rrd_update_array) {
-	global $config;
-
 	static $ds_types = [];
 	static $ds_multi = [];
 
@@ -1123,8 +1119,6 @@ function dsstats_poller_output(&$rrd_update_array) {
  * @return - NULL
  */
 function dsstats_boost_bottom() {
-	global $config;
-
 	global $total_user, $total_system, $total_real, $total_dsses;
 
 	$total_user   = 0;
@@ -1172,8 +1166,6 @@ function dsstats_memory_limit() {
  * @return - NULL
  */
 function dsstats_poller_bottom() {
-	global $config;
-
 	if (read_config_option('dsstats_enable') == 'on') {
 		include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
@@ -1182,7 +1174,7 @@ function dsstats_poller_bottom() {
 		$command_string = read_config_option('path_php_binary');
 
 		if (read_config_option('path_dsstats_log') != '') {
-			if ($config['cacti_server_os'] == 'unix') {
+			if (CACTI_SERVER_OS == 'unix') {
 				$extra_args = '-q ' . CACTI_PATH_BASE . '/poller_dsstats.php >> ' . read_config_option('path_dsstats_log') . ' 2>&1';
 			} else {
 				$extra_args = '-q ' . CACTI_PATH_BASE . '/poller_dsstats.php >> ' . read_config_option('path_dsstats_log');
@@ -1204,9 +1196,7 @@ function dsstats_poller_bottom() {
  *   with RRDtool.
  */
 function dsstats_rrdtool_init() {
-	global $config;
-
-	if ($config['cacti_server_os'] == 'unix') {
+	if (CACTI_SERVER_OS == 'unix') {
 		$fds = [
 			0 => ['pipe', 'r'], // stdin
 			1 => ['pipe', 'w'], // stdout
@@ -1315,7 +1305,7 @@ function dsstats_rrdtool_close($rrd_process) {
  * @return - null
  */
 function dsstats_launch_children($type) {
-	global $config, $debug;
+	global $debug;
 
 	$processes = read_config_option('dsstats_parallel');
 

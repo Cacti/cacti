@@ -470,7 +470,7 @@ function field_edit() {
 }
 
 function data_edit() {
-	global $config, $fields_data_input_edit;
+	global $fields_data_input_edit;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -497,7 +497,7 @@ function data_edit() {
 		$header_label = __('Data Input Method [new]');
 	}
 
-	if (!isset($config['input_whitelist'])) {
+	if (!defined('CACTI_WHITELIST')) {
 		unset($fields_data_input_edit['whitelist_verification']);
 	}
 
@@ -525,7 +525,7 @@ function data_edit() {
 				break;
 		}
 
-		if (isset($config['input_whitelist']) && isset($data_input['hash'])) {
+		if (defined('CACTI_WHITELIST') && isset($data_input['hash'])) {
 			$aud = verify_data_input_whitelist($data_input['hash'], $data_input['input_string']);
 
 			if ($aud === true) {

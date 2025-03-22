@@ -40,7 +40,7 @@ error_reporting(E_ALL);
 $dir = __DIR__;
 chdir($dir);
 
-global $config, $database_default, $archived, $purged, $disable_log_rotation, $poller_start;
+global $database_default, $archived, $purged, $disable_log_rotation, $poller_start;
 
 /* record the start time */
 $poller_start = microtime(true);
@@ -98,14 +98,14 @@ maint_debug('Checking for Purge Actions');
 
 /* silently end if the registered process is still running, or process table missing */
 if (!$force) {
-	if (!register_process_start('maintenance', 'master', $config['poller_id'], read_config_option('maintenance_timeout'))) {
+	if (!register_process_start('maintenance', 'master', POLLER_ID, read_config_option('maintenance_timeout'))) {
 		cacti_log('INFO: Another maintenance session is already running', false, 'MAINTENANCE', POLLER_VERBOSITY_LOW);
 
 		exit(0);
 	}
 }
 
-if ($config['poller_id'] == 1) {
+if (POLLER_ID == 1) {
 	rrdfile_purge($force);
 
 	authcache_purge();
@@ -132,14 +132,14 @@ logrotate_check($force);
 remove_aged_row_cache();
 
 // Update Object Totals Caches
-if ($config['poller_id'] == 1) {
+if (POLLER_ID == 1) {
 	update_graphs_data_source_templates_totals($force);
 }
 
 // Remove expired host value cache
 purge_host_value_cache();
 
-if ($config['poller_id'] > 1) {
+if (POLLER_ID > 1) {
 	api_plugin_hook('poller_remote_maint');
 }
 
@@ -156,7 +156,7 @@ if ($stats['devices'] > 0) {
 cacti_log(sprintf('MAINT TOTAL STATS: Time:%0.2f', $end - $start), false, 'SYSTEM');
 
 if (!$force) {
-	unregister_process('maintenance', 'master', $config['poller_id']);
+	unregister_process('maintenance', 'master', POLLER_ID);
 }
 
 exit(0);
@@ -184,8 +184,6 @@ function purge_host_value_cache() {
 }
 
 function device_recovery_sweep() {
-	global $config;
-
 	$start = microtime(true);
 
 	maint_debug('Attempting to Recover Downed Devices using SNMP Options');
@@ -198,7 +196,7 @@ function device_recovery_sweep() {
 		AND snmp_options > 0
 		AND status_options_date < DATE_SUB(NOW(), INTERVAL ? SECOND)
 		AND poller_id = ?',
-		[HOST_DOWN, read_config_option('snmp_options_retry_interval'), $config['poller_id']]);
+		[HOST_DOWN, read_config_option('snmp_options_retry_interval'), POLLER_ID]);
 
 	$snmp_columns = [
 		'snmp_version',
@@ -311,8 +309,6 @@ function update_graphs_data_source_templates_totals($force) {
 }
 
 function reindex_devices() {
-	global $config;
-
 	$schedule = read_config_option('automatic_reindex');
 
 	// 0 - Disabled
@@ -512,8 +508,6 @@ function realtime_purge_cache() {
  * logrotate_rotatenow - Rotates the cacti log
  */
 function logrotate_rotatenow() {
-	global $config;
-
 	$poller_start = microtime(true);
 
 	$logs = [];
@@ -634,8 +628,6 @@ function logrotate_file_rotate($name, $log, $date) {
  * @param mixed $rotation
  */
 function logrotate_file_clean($name, $log, $date, $rotation) {
-	global $config;
-
 	if (empty($log)) {
 		return false;
 	}
@@ -747,7 +739,7 @@ function secpass_check_expired() {
  * remove_files - remove all unwanted files; the list is given by table data_source_purge_action
  */
 function remove_files($file_array) {
-	global $config, $debug, $archived, $purged;
+	global $debug, $archived, $purged;
 
 	maint_debug('RRDClean is now running on ' . cacti_sizeof($file_array) . ' items');
 
@@ -771,7 +763,7 @@ function remove_files($file_array) {
 	/* now scan the files */
 	foreach ($file_array as $file) {
 		$real_file = str_replace('<path_rra>', $rra_path, $file['name']);
-		$real_file = str_replace('<path_cacti>', $config['base_path'], $real_file);
+		$real_file = str_replace('<path_cacti>', CACTI_PATH_BASE, $real_file);
 		$base_file = str_replace('<path_rra>', '', $file['name']);
 		$base_file = str_replace('<path_cacti>', '', $base_file);
 
@@ -882,13 +874,11 @@ function remove_files($file_array) {
 }
 
 function rrdclean_create_path($path) {
-	global $config;
-
 	if (!is_dir($path)) {
 		if (mkdir($path, 0775, true)) {
-			if ($config['cacti_server_os'] != 'win32') {
-				$owner_id      = fileowner(CACTI_PATH_RRA);
-				$group_id      = filegroup(CACTI_PATH_RRA);
+			if (CACTI_SERVER_OS != 'win32') {
+				$owner_id = fileowner(CACTI_PATH_RRA);
+				$group_id = filegroup(CACTI_PATH_RRA);
 
 				// NOTE: chown/chgrp fails for non-root users, checking their
 				// result is therefore irrelevant
@@ -908,8 +898,6 @@ function rrdclean_create_path($path) {
  * cleanup_ds_and_graphs - courtesy John Rembo
  */
 function cleanup_ds_and_graphs() {
-	global $config;
-
 	$remove_ldis = [];
 	$remove_lgis = [];
 

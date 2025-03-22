@@ -1054,7 +1054,7 @@ function item_edit() {
 }
 
 function form_actions() {
-	global $actions, $config, $image_types, $graph_template_classes;
+	global $actions, $image_types, $graph_template_classes;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);

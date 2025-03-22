@@ -35,7 +35,7 @@ $actions = [
 	POLLER_CLEAR_STATS => __('Clear Statistics'),
 ];
 
-if ($config['poller_id'] == 1) {
+if (POLLER_ID == 1) {
 	$actions += [POLLER_RESYNC   => __('Full Sync')];
 	$actions += [POLLER_AUTHSYNC => __('Auth Sync')];
 }
@@ -467,7 +467,7 @@ function poller_host_duplicate($poller_id, $host) {
 }
 
 function form_actions() {
-	global $config, $actions;
+	global $actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);

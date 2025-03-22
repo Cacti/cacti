@@ -443,7 +443,7 @@ function draw_graphs_new_filter($render = false, $header_label = '', $host = [],
 }
 
 function graphs() {
-	global $config, $item_rows;
+	global $item_rows;
 
 	if (get_filter_request_var('host_id') > 0) {
 		$host = db_fetch_row_prepared('SELECT id, description, hostname, host_template_id

@@ -760,8 +760,6 @@ function db_install_add_cache($status, $sql, $params = null) {
 }
 
 function find_search_paths($os = 'unix') {
-	global $config;
-
 	if ($os == 'win32') {
 		$search_suffix = ';';
 		$search_slash  = '\\';
@@ -844,9 +842,7 @@ function db_install_swap_setting($old_setting, $new_setting) {
 }
 
 function find_best_path($binary_name) {
-	global $config;
-
-	$search_paths = find_search_paths($config['cacti_server_os']);
+	$search_paths = find_search_paths(CACTI_SERVER_OS);
 
 	if (cacti_sizeof($search_paths)) {
 		foreach ($search_paths as $path) {
@@ -862,8 +858,6 @@ function find_best_path($binary_name) {
 }
 
 function install_setup_get_templates() {
-	global $config;
-
 	if (CACTI_WEB) {
 		ini_set('zlib.output_compression', '0');
 	}
@@ -1006,9 +1000,9 @@ this to work. Cacti also uses different default values depending on what OS it i
 running on. */
 
 function install_tool_path($name, $defaultPaths) {
-	global $config, $settings;
+	global $settings;
 
-	$os = $config['cacti_server_os'];
+	$os = CACTI_SERVER_OS;
 
 	if (!isset($defaultPaths[$os])) {
 		return false;
@@ -1056,7 +1050,7 @@ function install_tool_path($name, $defaultPaths) {
 }
 
 function install_file_paths() {
-	global $config, $settings;
+	global $settings;
 
 	$input = [];
 
@@ -1069,7 +1063,7 @@ function install_file_paths() {
 	);
 
 	// Workaround to support xampp
-	if ($config['cacti_server_os'] == 'win32') {
+	if (CACTI_SERVER_OS == 'win32') {
 		$paths = ['c:/php/php.exe', 'd:/php/php.exe', 'c:/xampp/php/php.exe', 'd:/xampp/php/php.exe'];
 
 		foreach ($paths as $path) {
@@ -1153,7 +1147,7 @@ function install_file_paths() {
 	);
 
 	// Workaround to support *BSD systems
-	if ($config['cacti_server_os'] == 'unix') {
+	if (CACTI_SERVER_OS == 'unix') {
 		$paths = ['/usr/local/spine/bin/spine', '/usr/local/bin/spine'];
 
 		foreach ($paths as $path) {
@@ -1192,7 +1186,7 @@ function install_file_paths() {
 	}
 
 	/* RRDtool Version */
-	if ((@file_exists($input['path_rrdtool']['default'])) && (($config['cacti_server_os'] == 'win32') || (is_executable($input['path_rrdtool']['default'])))) {
+	if ((@file_exists($input['path_rrdtool']['default'])) && ((CACTI_SERVER_OS == 'win32') || (is_executable($input['path_rrdtool']['default'])))) {
 		$input['rrdtool_version'] = $settings['general']['rrdtool_version'] ?? [];
 
 		$temp_ver = get_installed_rrdtool_version();
@@ -1212,7 +1206,7 @@ function install_file_paths() {
 }
 
 function remote_update_config_file() {
-	global $config, $rdatabase_type, $rdatabase_hostname, $rdatabase_username,
+	global $rdatabase_type, $rdatabase_hostname, $rdatabase_username,
 	$rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_retries,
 	$rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca, $rdatabase_ssl_capath, $rdatabase_verify_server_cert;
 
@@ -1320,7 +1314,7 @@ function remote_update_config_file() {
  * @return null        - nothing is returned
  */
 function set_install_config_option($name, $value) {
-	global $config, $local_db_cnn_id;
+	global $local_db_cnn_id;
 
 	/* some additional extension checks */
 	switch($name) {
@@ -1328,7 +1322,7 @@ function set_install_config_option($name, $value) {
 			$extension = pathinfo($value, PATHINFO_EXTENSION);
 
 			if ($extension != 'log') {
-				$value = $config['base_path'] . '/log/cacti.log';
+				$value = CACTI_PATH_BASE . '/log/cacti.log';
 			}
 
 			break;
@@ -1336,7 +1330,7 @@ function set_install_config_option($name, $value) {
 			$extension = pathinfo($value, PATHINFO_EXTENSION);
 
 			if ($extension != 'log') {
-				$value = $config['base_path'] . '/log/cacti.stderr.log';
+				$value = CACTI_PATH_BASE . '/log/cacti.stderr.log';
 			}
 
 			break;
@@ -1350,8 +1344,6 @@ function set_install_config_option($name, $value) {
 }
 
 function import_colors() {
-	global $config;
-
 	if (!file_exists(__DIR__ . '/colors.csv')) {
 		return false;
 	}
@@ -1482,7 +1474,7 @@ function log_install_level_name($level) {
 }
 
 function log_install_to_file($section, $data, $flags = FILE_APPEND, $level = POLLER_VERBOSITY_DEBUG, $force = false) {
-	global $config, $debug;
+	global $debug;
 	$log_level = log_install_section_level($section);
 
 	$can_log     = $level <= $log_level;
@@ -1579,8 +1571,6 @@ function repair_automation() {
 }
 
 function install_full_sync() {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 	$pinterval = read_config_option('poller_interval');

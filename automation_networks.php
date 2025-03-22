@@ -309,8 +309,6 @@ function api_networks_change_options($network_ids, $post) {
 }
 
 function api_networks_discover($network_id, $discover_debug, $discover_dryrun) {
-	global $config;
-
 	$enabled   = db_fetch_cell_prepared('SELECT enabled
 		FROM automation_networks
 		WHERE id = ?',
@@ -337,7 +335,7 @@ function api_networks_discover($network_id, $discover_debug, $discover_dryrun) {
 
 	if ($enabled == 'on') {
 		if (!$running) {
-			if ($config['poller_id'] == $poller_id) {
+			if (POLLER_ID == $poller_id) {
 				$args_debug  = ($discover_debug) ? ' --debug' : '';
 				$args_debug .= ($discover_dryrun) ? ' --dryrun' : '';
 				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --network=$network_id --force" . $args_debug);
@@ -438,7 +436,7 @@ function api_networks_save($post) {
 }
 
 function form_actions() {
-	global $config, $actions;
+	global $actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action');
@@ -666,7 +664,7 @@ function form_actions() {
 }
 
 function network_get_field_array($network = []) {
-	global $config, $ping_methods, $sched_types;
+	global $ping_methods, $sched_types;
 
 	$ping_methods[PING_SNMP] = __('SNMP Get');
 
@@ -951,7 +949,7 @@ function network_edit_javascript() {
 }
 
 function network_edit() {
-	global $config, $ping_methods;
+	global $ping_methods;
 
 	$ping_methods[PING_SNMP] = __('SNMP Get');
 
@@ -1015,7 +1013,7 @@ function get_networks(&$sql_where, $rows, $apply_limits = true) {
 }
 
 function networks() {
-	global $actions, $networks, $config, $item_rows, $sched_types;
+	global $actions, $networks, $item_rows, $sched_types;
 
 	/* create the page filter */
 	$pageFilter = new CactiTableFilter(__('Network Rules'), 'automation_networks.php', 'networks', 'sess_networks', 'automation_networks.php?action=edit');

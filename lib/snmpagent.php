@@ -297,8 +297,6 @@ function snmpagent_poller_exiting($poller_index = 1) {
 }
 
 function snmpagent_poller_bottom() {
-	global $config;
-
 	if (!db_table_exists('snmpagent_cache')) {
 		return true;
 	}
@@ -519,7 +517,7 @@ function snmpagent_poller_bottom() {
 }
 
 function snmpagent_get_pluginslist() {
-	global $config, $plugins, $plugins_integrated;
+	global $plugins, $plugins_integrated;
 	/* update the list of known plugins only once per polling cycle. In all other cases we would
 	   have to create too many new hooks to update that MIB table just in time.
 	   We have to do the same like function plugins_load_temp_table(), which will not be available
@@ -558,8 +556,6 @@ function snmpagent_get_pluginslist() {
  * @return
  */
 function snmpagent_cache_install() {
-	global $config;
-
 	if (!snmpagent_enabled()) {
 		return false;
 	}

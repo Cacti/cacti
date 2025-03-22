@@ -98,7 +98,7 @@ function check_tmp_dir() {
 }
 
 function form_actions() {
-	global $config, $actions;
+	global $actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([a-zA-Z0-9_]+)$/']]);
@@ -396,7 +396,7 @@ function form_actions() {
 }
 
 function form_save() {
-	global $config, $preview_only;
+	global $preview_only;
 
 	validate_request_vars();
 
@@ -644,8 +644,6 @@ function package_file_get_contents($package_location, $package_file, $filename) 
 }
 
 function package_diff_file() {
-	global $config;
-
 	$package_location = get_filter_request_var('package_location');
 	$package_file     = get_request_var('package_file');
 	$filename         = get_request_var('filename');
@@ -948,7 +946,7 @@ function import_validate_public_key($xmlfile, $accept = false) {
 }
 
 function import_display_package_data($templates, $files, $package_name, $filename, $data, $multipackage = true) {
-	global $config, $device_classes;
+	global $device_classes;
 
 	if (!$multipackage) {
 		$details = import_package_get_details($filename);

@@ -390,7 +390,7 @@ function draw_preview_filter($render = false, $page = '', $action = 'get') {
 }
 
 function inject_realtime_form() {
-	global $graphs_per_page, $realtime_window, $realtime_refresh, $graph_timeshifts, $graph_timespans, $config;
+	global $graphs_per_page, $realtime_window, $realtime_refresh, $graph_timeshifts, $graph_timespans;
 
 	$content = "<div class='filterTable'>
 		<div id='realtime' class='filterRow' style='display:none;'>
@@ -443,12 +443,11 @@ function inject_realtime_form() {
  * @global array $realtime_refresh Array of real-time refresh interval options.
  * @global array $graph_timeshifts Array of graph time shift options.
  * @global array $graph_timespans Array of graph time span options.
- * @global array $config Configuration settings.
  *
  * @return void
  */
 function html_graph_preview_filter($page, $action, $devices_where = '', $templates_where = '') {
-	global $graphs_per_page, $realtime_window, $realtime_refresh, $graph_timeshifts, $graph_timespans, $config;
+	global $graphs_per_page, $realtime_window, $realtime_refresh, $graph_timeshifts, $graph_timespans;
 
 	initialize_realtime_step_and_window();
 
@@ -1696,8 +1695,6 @@ function html_graph_get_info() {
 }
 
 function html_graph_single_view() {
-	global $config;
-
 	html_graph_single_validate();
 
 	html_graph_check_access();
@@ -1942,8 +1939,6 @@ function html_graph_single_view() {
 }
 
 function html_graph_zoom() {
-	global $config;
-
 	html_graph_single_validate();
 
 	html_graph_check_access();
@@ -2263,8 +2258,6 @@ function html_graph_zoom() {
 }
 
 function html_graph_properties() {
-	global $config;
-
 	html_graph_single_validate();
 
 	html_graph_check_access();
@@ -2310,7 +2303,7 @@ function html_graph_properties() {
 				<span class='cactiTableTitleRow'><?php print __('RRDtool Says:'); ?></span>
 				<span class='left'>
 					<?php
-		if ($config['poller_id'] == 1) {
+		if (POLLER_ID == 1) {
 			print @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, null, $null_param, $_SESSION[SESS_USER_ID]);
 		} else {
 			print __esc('Not Checked');

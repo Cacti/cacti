@@ -381,7 +381,7 @@ function form_save() {
 }
 
 function automation_graph_rules_form_actions() {
-	global $config, $actions;
+	global $actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action');
@@ -559,8 +559,6 @@ function automation_graph_rules_item_remove() {
 }
 
 function automation_graph_rules_item_edit() {
-	global $config;
-
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
 	get_filter_request_var('item_id');
@@ -666,7 +664,6 @@ function automation_change_query_type() {
 }
 
 function automation_graph_rules_edit() {
-	global $config;
 	global $fields_automation_graph_rules_edit1;
 	global $fields_automation_graph_rules_edit2;
 	global $fields_automation_graph_rules_edit3;
@@ -911,7 +908,7 @@ function draw_graph_rules_filter($render = false) {
 }
 
 function automation_graph_rules() {
-	global $actions, $config, $item_rows;
+	global $actions, $item_rows;
 
 	draw_graph_rules_filter(true);
 

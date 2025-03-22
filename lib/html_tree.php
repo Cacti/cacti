@@ -60,8 +60,6 @@ function process_tree_settings() {
  * @return void
  */
 function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tree_item_id = '', $tier = 0) {
-	global $config;
-
 	$tier++;
 
 	$branches = db_fetch_assoc_prepared('SELECT gti.id, gti.title, parent
@@ -109,8 +107,6 @@ function grow_dropdown_tree($tree_id, $parent = 0, $form_name = '', $selected_tr
  * @return void
  */
 function grow_dhtml_trees() {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
 	draw_tree_filter();
@@ -592,8 +588,6 @@ function draw_dhtml_tree_level($tree_id, $parent = 0, $editing = false) {
  * @return array The generated HTML structure as an array of strings.
  */
 function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
 	$hierarchy = get_allowed_tree_content($tree_id, $parent);
@@ -640,7 +634,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
  * @return array An array of strings representing the DHTML tree structure.
  */
 function create_site_branch($leaf) {
-	global $config, $unique_id;
+	global $unique_id;
 
 	$unique_id++;
 
@@ -713,8 +707,6 @@ function create_site_branch($leaf) {
  * @return array An array containing the generated HTML for the leaf node.
  */
 function create_branch($leaf) {
-	global $config;
-
 	$dhtml_tree = [];
 
 	$children = db_fetch_cell_prepared('SELECT COUNT(*)
@@ -738,7 +730,7 @@ function create_branch($leaf) {
  * @return array The DHTML tree structure with the host branch added.
  */
 function create_host_branch($leaf, $site_id = -1, $ht = -1) {
-	global $config, $unique_id;
+	global $unique_id;
 
 	$unique_id++;
 
@@ -784,7 +776,7 @@ function create_host_branch($leaf, $site_id = -1, $ht = -1) {
  * @return array An array of HTML list items representing the graph templates.
  */
 function create_graph_template_branch($leaf, $site_id = -1, $ht = -1) {
-	global $config, $unique_id;
+	global $unique_id;
 
 	$dhtml_tree = [];
 
@@ -818,7 +810,7 @@ function create_graph_template_branch($leaf, $site_id = -1, $ht = -1) {
  * @return array The generated DHTML tree structure.
  */
 function create_data_query_branch($leaf, $site_id = -1, $ht = -1) {
-	global $config, $unique_id;
+	global $unique_id;
 
 	$dhtml_tree = [];
 
@@ -1169,7 +1161,7 @@ function draw_tree_filter($render = false) {
  * @return void
  */
 function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
-	global $current_user, $config, $graphs_per_page, $graph_timeshifts;
+	global $current_user, $graphs_per_page, $graph_timeshifts;
 
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');

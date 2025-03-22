@@ -144,7 +144,7 @@ if ($version) {
 /* record the script start time */
 $start = microtime(true);
 
-if ($config['cacti_server_os'] == 'win32') {
+if (CACTI_SERVER_OS == 'win32') {
 	cacti_log('DEBUG: GETCWD: ' . strtolower(strtr(getcwd(),'\\','/')), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 	cacti_log('DEBUG: DIRNAM: ' . strtolower(strtr(__DIR__,'\\','/')), false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 } else {
@@ -275,7 +275,7 @@ while (1) {
 					 * quirk in php on Windows, believe it or not....
 					 * path must be lower case
 					 */
-					if ($config['cacti_server_os'] == 'win32') {
+					if (CACTI_SERVER_OS == 'win32') {
 						$include_file = strtolower($include_file);
 					}
 

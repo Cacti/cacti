@@ -964,7 +964,6 @@ string $snmp_username, string $snmp_password, int $snmp_port, int $snmp_timeout,
 	string $notes, string $snmp_auth_protocol, string $snmp_priv_passphrase, string $snmp_priv_protocol, string $snmp_context, string $snmp_engine_id,
 	int $max_oids = 5, int $device_threads = 1, int $poller_id = 1, int $site_id = 1, string $external_id = '', string $location = '', int $bulk_walk_size = -1,
 	int $snmp_options = 0, int $snmp_retries = 3): int {
-	global $config;
 
 	include_once(CACTI_PATH_LIBRARY . '/utility.php');
 	include_once(CACTI_PATH_LIBRARY . '/variables.php');
@@ -1177,21 +1176,21 @@ string $snmp_username, string $snmp_password, int $snmp_port, int $snmp_timeout,
 			$hash_id = $device_id % $maxdirs;
 
 			if ($pattern == 'device' || $pattern == '') {
-				$host_dir = $config['rra_path'] . "/$device_id";
+				$host_dir = CACTI_PATH_RRA . "/$device_id";
 			} elseif ($pattern == 'device_dq') {
-				$host_dir = $config['rra_path'] . "/$device_id";
+				$host_dir = CACTI_PATH_RRA . "/$device_id";
 			} elseif ($pattern == 'hash_device') {
-				$host_dir = $config['rra_path'] . "/$hash_id/$device_id";
+				$host_dir = CACTI_PATH_RRA . "/$hash_id/$device_id";
 			} elseif ($pattern == 'hash_device_dq') {
-				$host_dir = $config['rra_path'] . "/$hash_id/$device_id";
+				$host_dir = CACTI_PATH_RRA . "/$hash_id/$device_id";
 			} else {
-				$host_dir = $config['rra_path'] . "/$device_id";
+				$host_dir = CACTI_PATH_RRA . "/$device_id";
 			}
 
 			if (!is_dir($host_dir)) {
-				if (is_writable($config['rra_path'])) {
+				if (is_writable(CACTI_PATH_RRA)) {
 					if (mkdir($host_dir, 0775, true)) {
-						if ($config['cacti_server_os'] != 'win32') {
+						if (CACTI_SERVER_OS != 'win32') {
 							$owner_id      = fileowner(CACTI_PATH_RRA);
 							$group_id      = filegroup(CACTI_PATH_RRA);
 
@@ -1548,7 +1547,7 @@ function api_device_template_sync_template(int $device_template, array|string $d
  * @return void
  */
 function api_device_ping_device(?string $device_id, bool $from_remote = false): void {
-	global $config, $snmp_error;
+	global $snmp_error;
 
 	if (empty($device_id)) {
 		print __('ERROR: Device ID is Blank');
@@ -1574,7 +1573,7 @@ function api_device_ping_device(?string $device_id, bool $from_remote = false): 
 	$am   = $host['availability_method'];
 	$anym = false;
 
-	if ($config['poller_id'] != $host['poller_id'] && $from_remote == false) {
+	if (POLLER_ID != $host['poller_id'] && $from_remote == false) {
 		$url = CACTI_PATH_URL . 'remote_agent.php?action=ping&host_id=' . $host['id'];
 
 		$results = call_remote_data_collector($host['poller_id'], $url);
@@ -1777,10 +1776,10 @@ function api_duplicate_device_template(int $_host_template_id, string $host_temp
  * @return void
  */
 function api_clone_message($message, $force = false): void {
-	global $debug, $config;
+	global $debug;
 
 	if ($debug || $force) {
-		if (!$config['is_web']) {
+		if (!CACTI_WEB) {
 			print trim($message) . PHP_EOL;
 		}
 
@@ -1868,8 +1867,6 @@ function api_clone_get_unique_filename(string $file_name): string|false {
  */
 function api_clone_device_template_check_for_errors(int $device_template_id, string $device_template_name, string $include_gt, string $clone_gt,
 string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, string &$suffix, bool &$clone_xml, bool &$clone_script): array {
-	global $config;
-
 	$return = [
 		'warnings' => [],
 		'errors'   => []
@@ -2081,7 +2078,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 					$xml_clone  = str_replace('.xml', '', $data_query['xml_path']);
 					$xml_clone .= $suffix . '.xml';
 					$name     = $data_query['name'];
-					$xml_base = trim(str_replace($config['base_path'], '', $xml_clone), '/');
+					$xml_base = trim(str_replace(CACTI_PATH_BASE, '', $xml_clone), '/');
 
 					if (file_exists($xml_clone)) {
 						if (!is_writable(dirname($xml_clone))) {
@@ -2111,7 +2108,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 					$name  = $data_query['name'];
 
 					$xml_script = $parts[0] . $suffix . (isset($parts[1]) ? '.' . $parts[1]:'');
-					$xml_base   = trim(str_replace($config['base_path'], '', $xml_script), '/');
+					$xml_base   = trim(str_replace(CACTI_PATH_BASE, '', $xml_script), '/');
 
 					if (file_exists($xml_script)) {
 						if (!is_writable(dirname($xml_script))) {
@@ -2139,7 +2136,7 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
 					$name  = $data_template['name'];
 
 					$script_path = $parts[0] . $suffix . (isset($parts[1]) ? '.' . $parts[1]:'');
-					$script_base = trim(str_replace($config['base_path'], '', $script_path), '/');
+					$script_base = trim(str_replace(CACTI_PATH_BASE, '', $script_path), '/');
 
 					if (file_exists($script_path)) {
 						if (!is_writable($script_path)) {
@@ -2331,8 +2328,6 @@ string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, stri
  * @return array An associative array containing the following keys:
  */
 function api_clone_device_template_get_objects(int $device_template_id): array {
-	global $config;
-
 	$objects = [
 		'graph_templates'               => [],
 		'data_templates'                => [],
@@ -2361,7 +2356,7 @@ function api_clone_device_template_get_objects(int $device_template_id): array {
 			INNER JOIN data_input AS di
 			ON di.id = sq.data_input_id
 			WHERE host_template_id = ?',
-			[$config['base_path'], $config['base_path'], $device_template_id]),
+			[CACTI_PATH_BASE, CACTI_PATH_BASE, $device_template_id]),
 		'id', ['name', 'hash', 'dihash', 'data_input_id', 'xml_path', 'input_string']
 	);
 
@@ -2370,7 +2365,7 @@ function api_clone_device_template_get_objects(int $device_template_id): array {
 			$snmp_query_data = get_data_query_array($id);
 
 			if (isset($snmp_query_data['script_path'])) {
-				$objects['data_queries'][$id]['script_path'] = str_replace('|path_cacti|', $config['base_path'], $snmp_query_data['script_path']);
+				$objects['data_queries'][$id]['script_path'] = str_replace('|path_cacti|', CACTI_PATH_BASE, $snmp_query_data['script_path']);
 			}
 		}
 	}
@@ -2378,7 +2373,7 @@ function api_clone_device_template_get_objects(int $device_template_id): array {
 	if (cacti_sizeof($objects['graph_templates'])) {
 		$objects['data_templates'] = array_rekey(
 			db_fetch_assoc_prepared('SELECT DISTINCT dt.id, dt.name, dt.hash, dtd.data_input_id, di.hash AS dihash,
-				REPLACE(di.input_string, "<path_cacti>", "' . $config['base_path'] . '") AS input_string
+				REPLACE(di.input_string, "<path_cacti>", "' . CACTI_PATH_BASE . '") AS input_string
 				FROM data_template AS dt
 				INNER JOIN data_template_data AS dtd
 				ON dt.id = dtd.data_template_id
@@ -2406,7 +2401,7 @@ function api_clone_device_template_get_objects(int $device_template_id): array {
 					$parts = explode(' ', $data_template['input_string']);
 
 					foreach ($parts as $p) {
-						if (str_contains($p, $config['base_path'])) {
+						if (str_contains($p, CACTI_PATH_BASE)) {
 							if (file_exists($p)) {
 								$objects['data_templates'][$id]['script_path'] = $p;
 
@@ -2485,7 +2480,6 @@ function api_clone_device_template_get_objects(int $device_template_id): array {
  */
 function api_clone_device_template(int $template_id, string $template_name, string $include_gt, string $clone_gt,
 	string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, string $suffix, bool $clone_xml, bool $clone_script, bool $cli = false): int|bool {
-	global $config;
 
 	/* The list of duplicated Data Templates.  Dont do it more than once */
 	$duped_graph_templates[]    = [];
@@ -2654,9 +2648,9 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 
 			if ($clone_xml) {
 				$old_xmlfile = $objects['data_queries'][$id]['xml_path'];
-				$old_xmlbase = str_replace($config['base_path'], '', $old_xmlfile);
+				$old_xmlbase = str_replace(CACTI_PATH_BASE, '', $old_xmlfile);
 				$new_xmlfile = api_clone_get_unique_filename($old_xmlfile);
-				$new_xmlbase = str_replace($config['base_path'], '', $new_xmlfile);
+				$new_xmlbase = str_replace(CACTI_PATH_BASE, '', $new_xmlfile);
 
 				if (!isset($duped_xmlfiles[$old_xmlfile])) {
 					api_clone_message(sprintf('NOTE: Copying XML Base \'%s\' to \'%s\'', $old_xmlbase, $new_xmlbase));
@@ -2668,9 +2662,9 @@ function api_clone_device_template(int $template_id, string $template_name, stri
 					if ($clone_script) {
 						if (isset($objects['data_queries'][$id]['script_path'])) {
 							$old_scriptfile = $objects['data_queries'][$id]['script_path'];
-							$old_scriptbase = str_replace($config['base_path'], '', $old_scriptfile);
+							$old_scriptbase = str_replace(CACTI_PATH_BASE, '', $old_scriptfile);
 							$new_scriptfile = api_clone_get_unique_filename($old_scriptfile);
-							$new_scriptbase = str_replace($config['base_path'], '', $new_scriptfile);
+							$new_scriptbase = str_replace(CACTI_PATH_BASE, '', $new_scriptfile);
 
 							if ($new_xmlfile !== false) {
 								if (!isset($duped_scripts[$old_scriptfile])) {

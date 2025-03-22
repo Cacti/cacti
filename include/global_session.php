@@ -122,7 +122,7 @@ if ($graphs) {
 ?>
 <script type='text/javascript'>
 	var cactiVersion='<?php print $config['cacti_version'];?>';
-	var cactiServerOS='<?php print $config['cacti_server_os'];?>';
+	var cactiServerOS='<?php print CACTI_SERVER_OS;?>';
 	var cactiAction='<?php print get_filter_request_var('action', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/^([-a-zA-Z0-9_\s]+)$/']]);?>';
 	var theme='<?php print get_selected_theme();?>';
 	var refreshIsLogout=<?php print $refreshIsLogout;?>;

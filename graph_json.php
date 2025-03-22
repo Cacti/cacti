@@ -160,7 +160,7 @@ if (!isset_request_var('image_format')) {
 
 $graph_data_array['image_format'] = $gtype;
 
-if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
+if (POLLER_ID == 1 || read_config_option('storage_location')) {
 	$xport_meta = [];
 
 	$output = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, null, $xport_meta, $_SESSION[SESS_USER_ID]);

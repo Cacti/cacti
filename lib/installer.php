@@ -579,11 +579,7 @@ class Installer implements JsonSerializable {
 			'spikekill' => CACTI_PATH_CACHE . '/spikekill'
 		];
 
-		$csrf_path = CACTI_PATH_INCLUDE . '/vendor/csrf/csrf-secret.php';
-
-		if (!empty($config['path_csrf_secret'])) {
-			$csrf_path = $config['path_csrf_secret'];
-		}
+		$csrf_path = CACTI_CSRF_SECRET;
 
 		if (is_dir($csrf_path)) {
 			$csrf_path = rtrim($csrf_path ?? '', '/') . '/csrf-secret.php';
@@ -743,26 +739,23 @@ class Installer implements JsonSerializable {
 
 	/* setCSRFSecret() - Initializes the csrf secret file for csrf protection */
 	private function setCSRFSecret() {
-		global $config;
-
 		$this->setProgress(Installer::PROGRESS_CSRF_BEGIN);
 
-		if (!empty($config['path_csrf_secret'])) {
-			$path_csrf_secret = $config['path_csrf_secret'];
-			log_install_debug('csrf', 'setCSRFSecret(): secret ' . $path_csrf_secret);
+		if (!CACTI_CSRF_SECRET != '') {
+			log_install_debug('csrf', 'setCSRFSecret(): secret ' . CACTI_CSRF_SECRET);
 
-			$secret = @file_exists($path_csrf_secret) ? file_get_contents($path_csrf_secret) : '';
+			$secret = @file_exists(CACTI_CSRF_SECRET) ? file_get_contents(CACTI_CSRF_SECRET) : '';
 			log_install_debug('csrf', 'setCSRFSecret(): secret ' . (empty($secret) ? 'not ' : '') . 'empty');
 
 			if (empty($secret)) {
-				if (is_resource_writable($path_csrf_secret)) {
-					log_install_medium('csrf', 'setCSRFSecret(): Updated CSRF secret - "' . $path_csrf_secret . '"');
-					install_create_csrf_secret($path_csrf_secret);
+				if (is_resource_writable(CACTI_CSRF_SECRET)) {
+					log_install_medium('csrf', 'setCSRFSecret(): Updated CSRF secret - "' . CACTI_CSRF_SECRET . '"');
+					install_create_csrf_secret(CACTI_CSRF_SECRET);
 				} else {
-					log_install_high('csrf', 'setCSRFSecret(): Unable to create file - "' . $path_csrf_secret . '"');
+					log_install_high('csrf', 'setCSRFSecret(): Unable to create file - "' . CACTI_CSRF_SECRET . '"');
 				}
 			} else {
-				log_install_debug('csrf', 'setCSRFSecret(): Secret already exists - "' . $path_csrf_secret . '"');
+				log_install_debug('csrf', 'setCSRFSecret(): Secret already exists - "' . CACTI_CSRF_SECRET . '"');
 			}
 		}
 
@@ -777,8 +770,6 @@ class Installer implements JsonSerializable {
 	 * Errors: will add an error at STEP_BINARY_LOCATIONS if invalid version
 	 *         was detected */
 	private function setRRDVersion($param_rrdver = '', $prefix = '') {
-		global $config;
-
 		if (isset($param_rrdver) && strlen($param_rrdver)) {
 			$rrdver = $this->sanitizeRRDVersion($param_rrdver, '');
 
@@ -817,8 +808,6 @@ class Installer implements JsonSerializable {
 	 * Errors: will add an error at STEP_BINARY_WELCOME if invalid theme
 	 *         was detected */
 	private function setTheme($param_theme = '') {
-		global $config;
-
 		if (isset($param_theme) && strlen($param_theme)) {
 			log_install_medium('theme', 'Checking theme: ' . $param_theme);
 			$themePath = CACTI_PATH_INCLUDE . '/themes/' . $param_theme . '/main.css';
@@ -868,8 +857,6 @@ class Installer implements JsonSerializable {
 	 * Errors: will add an error to STEP_BINARY_LOCATIONS if a problem is
 	 *         found with the value. */
 	private function setPaths($param_paths = []) {
-		global $config;
-
 		if (is_array($param_paths)) {
 			log_install_debug('paths', 'setPaths(' . $this->stepCurrent . ', ' . cacti_count($param_paths) . ')');
 
@@ -1196,8 +1183,6 @@ class Installer implements JsonSerializable {
 	/* getModules() - returns a list of required modules and their
 	 *                installation status */
 	private function getModules() {
-		global $config;
-
 		if (isset($this->extensions) || empty($this->extensions)) {
 			$extensions = utility_php_extensions();
 
@@ -1214,8 +1199,6 @@ class Installer implements JsonSerializable {
 	}
 
 	private function getDefaultTemplate($force = false) {
-		global $config;
-
 		$default_template = read_config_option('default_template', true);
 
 		if (read_config_option('install_get_template_message_logged', true) == '') {
@@ -1223,7 +1206,7 @@ class Installer implements JsonSerializable {
 			set_config_option('install_get_template_message_logged', 'on');
 		}
 
-		$sysDescrMatch = $config['cacti_server_os'] == 'win32' ? 'Windows' : 'Linux';
+		$sysDescrMatch = CACTI_SERVER_OS == 'win32' ? 'Windows' : 'Linux';
 
 		foreach ($this->defaultAutomation as $item) {
 			if ($item['sysDescrMatch'] == $sysDescrMatch || !empty($default_template)) {
@@ -1700,8 +1683,6 @@ class Installer implements JsonSerializable {
 	}
 
 	public function isConfigurationWritable() {
-		global $config;
-
 		return is_resource_writable(CACTI_PATH_INCLUDE . '/config.php');
 	}
 
@@ -1715,8 +1696,6 @@ class Installer implements JsonSerializable {
 	}
 
 	public function exitWithReason($reason) {
-		global $config;
-
 		switch ($reason) {
 			case Installer::EXIT_DB_EMPTY:
 				return $this->exitSqlNeeded();
@@ -1755,14 +1734,14 @@ class Installer implements JsonSerializable {
 	}
 
 	private function exitSqlNeeded() {
-		global $config, $database_username, $database_default, $database_password;
+		global $database_username, $database_default, $database_password;
 		$output  = Installer::sectionTitleError();
 		$output .= Installer::sectionNormal(__("You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:"));
 		$output .= Installer::sectionCode(sprintf('mysql -u %s -p %s < cacti.sql', $database_username, $database_default));
 		$output .= Installer::sectionNormal(__('This error may also be generated if the cacti database user does not have correct permissions on the Cacti database. Please ensure that the Cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database.'));
 		$output .= Installer::sectionNormal(__('You <b>MUST</b> also import MySQL TimeZone information into MySQL and grant the Cacti user SELECT access to the mysql.time_zone_name table'));
 
-		if ($config['cacti_server_os'] == 'unix') {
+		if (CACTI_SERVER_OS == 'unix') {
 			$output .= Installer::sectionNormal(__("On Linux/UNIX, run the following as 'root' in a shell:"));
 			$output .= Installer::sectionCode(sprintf('mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql'));
 		} else {
@@ -1898,7 +1877,7 @@ class Installer implements JsonSerializable {
 	}
 
 	public function processStepWelcome() {
-		global $config, $cacti_version_codes;
+		global $cacti_version_codes;
 
 		$output  = Installer::sectionTitle(__('Cacti Version') . ' ' . CACTI_VERSION_BRIEF . ' - ' . __('License Agreement'));
 
@@ -1974,7 +1953,7 @@ class Installer implements JsonSerializable {
 	}
 
 	public function processStepCheckDependencies() {
-		global $config, $local_db_cnn_id, $remote_db_cnn_id;
+		global $local_db_cnn_id, $remote_db_cnn_id;
 		global $database_default, $database_username, $database_port;
 		global $rdatabase_default, $rdatabase_username, $rdatabase_port;
 
@@ -2176,7 +2155,7 @@ class Installer implements JsonSerializable {
 
 		$output .= Installer::sectionSubTitle(__('MySQL - TimeZone Support'), 'mysql_timezone');
 
-		if ($config['poller_id'] == 1) {
+		if (POLLER_ID == 1) {
 			$mysql_timezone_access = db_fetch_assoc('SHOW COLUMNS FROM mysql.time_zone_name', false);
 		} else {
 			$mysql_timezone_access = db_fetch_assoc('SHOW COLUMNS FROM mysql.time_zone_name', false, $local_db_cnn_id);
@@ -2229,7 +2208,6 @@ class Installer implements JsonSerializable {
 	}
 
 	public function processStepMode() {
-		global $config;
 		global $database_default, $database_username, $database_hostname, $database_port;
 		global $rdatabase_default, $rdatabase_username, $rdatabase_hostname, $rdatabase_port;
 		// install/upgrade
@@ -2330,7 +2308,7 @@ class Installer implements JsonSerializable {
 					__('Database User: <b>%s</b>', $database_username) . '<br>' .
 					__('Database Hostname: <b>%s</b>', $database_hostname) . '<br>' .
 					__('Port: <b>%s</b>', $database_port) . '<br>' .
-					__('Server Operating System Type: <b>%s</b>', $config['cacti_server_os']) . '<br>'
+					__('Server Operating System Type: <b>%s</b>', CACTI_SERVER_OS) . '<br>'
 				);
 
 				$output .= Installer::sectionSubTitleEnd();
@@ -2342,7 +2320,7 @@ class Installer implements JsonSerializable {
 					__('Database User: <b>%s</b>', $rdatabase_username) . '<br>' .
 					__('Database Hostname: <b>%s</b>', $rdatabase_hostname) . '<br>' .
 					__('Port: <b>%s</b>', $rdatabase_port) . '<br>' .
-					__('Server Operating System Type: <b>%s</b>', $config['cacti_server_os']) . '<br>'
+					__('Server Operating System Type: <b>%s</b>', CACTI_SERVER_OS) . '<br>'
 				);
 
 				$output .= Installer::sectionSubTitleEnd();
@@ -2477,8 +2455,6 @@ class Installer implements JsonSerializable {
 	}
 
 	public function processStepPermissionCheck() {
-		global $config;
-
 		/* Print message and error logs */
 		$output = Installer::sectionTitle(__('Directory Permission Checks'));
 		$output .= Installer::sectionNormal(__('Please ensure the directory permissions below are correct before proceeding.  During the install, these directories need to be owned by the Web Server user.  These permission changes are required to allow the Installer to install Device Template packages which include XML and script files that will be placed in these directories.  If you choose not to install the packages, there is an \'install_package.php\' cli script that can be used from the command line after the install is complete.'));
@@ -2574,7 +2550,7 @@ class Installer implements JsonSerializable {
 			$text                    = __('Please make sure that your webserver has read/write access to the cacti folders that show errors below.');
 			$paths                   = array_merge($this->permissions['install'], $this->permissions['always']);
 
-			if ($config['cacti_server_os'] == 'unix') {
+			if (CACTI_SERVER_OS == 'unix') {
 				$text .= '  ' . __('If SELinux is enabled on your server, you can either permanently disable this, or temporarily disable it and then add the appropriate permissions using the SELinux command-line tools.');
 				$code = '';
 
@@ -2795,7 +2771,6 @@ class Installer implements JsonSerializable {
 	}
 
 	public function processStepCheckTables() {
-		global $config;
 		$output = Installer::sectionTitle(__('Server Collation'));
 
 		$collation_vars = array_rekey(db_fetch_assoc('SHOW VARIABLES LIKE "collation_%";'), 'Variable_name', 'Value');
@@ -3072,7 +3047,6 @@ class Installer implements JsonSerializable {
 	}
 
 	public function processStepInstall() {
-		global $config;
 		$time = intval(read_config_option('install_updated', true));
 
 		$output  = Installer::sectionTitle(__('Installing Cacti Server v%s', CACTI_VERSION_FULL));
@@ -3341,8 +3315,6 @@ class Installer implements JsonSerializable {
 	 *****************************************************************/
 
 	private function install() {
-		global $config;
-
 		$failure = '';
 
 		switch ($this->mode) {
@@ -3419,8 +3391,6 @@ class Installer implements JsonSerializable {
 	}
 
 	private function installTemplate() {
-		global $config;
-
 		$templates = db_fetch_assoc("SELECT value
 			FROM settings
 			WHERE name LIKE 'install_tp_%'
@@ -3519,8 +3489,6 @@ class Installer implements JsonSerializable {
 	}
 
 	private function installServer() {
-		global $config;
-
 		$this->setProgress(Installer::PROGRESS_PROFILE_START);
 
 		$profile_id = intval($this->profile);
@@ -3633,7 +3601,7 @@ class Installer implements JsonSerializable {
 		$this->setProgress(Installer::PROGRESS_DEVICE_START);
 
 		// Add the correct device type
-		if ($config['cacti_server_os'] == 'win32') {
+		if (CACTI_SERVER_OS == 'win32') {
 			$hash         = '5b8300be607dce4f030b026a381b91cd';
 			$version      = 2;
 			$community    = 'public';
@@ -3755,8 +3723,6 @@ class Installer implements JsonSerializable {
 	}
 
 	private function convertDatabase() {
-		global $config;
-
 		$tables = db_fetch_assoc("SELECT value FROM settings WHERE name like 'install_table_%'");
 
 		if (cacti_sizeof($tables)) {
@@ -3791,7 +3757,7 @@ class Installer implements JsonSerializable {
 	}
 
 	private function upgradeDatabase() {
-		global $cacti_version_codes, $config, $cacti_upgrade_version, $database_statuses, $database_upgrade_status;
+		global $cacti_version_codes, $cacti_upgrade_version, $database_statuses, $database_upgrade_status;
 		$failure = DB_STATUS_SKIPPED;
 
 		$cachePrev = read_config_option('install_cache_db', true);
@@ -3965,8 +3931,6 @@ class Installer implements JsonSerializable {
 	}
 
 	public static function getInstallLog() {
-		global $config;
-
 		$page_nr     = 1;
 		$total_rows  = 500;
 		$logcontents = tail_file(CACTI_PATH_LOG . '/cacti.log', 100, -1, ' INSTALL:', $page_nr, $total_rows);
@@ -4056,7 +4020,7 @@ class Installer implements JsonSerializable {
 	}
 
 	private static function disableInvalidPlugins() {
-		global $plugins_integrated, $config;
+		global $plugins_integrated;
 
 		foreach ($plugins_integrated as $plugin) {
 			if (api_plugin_is_enabled($plugin)) {

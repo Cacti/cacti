@@ -197,8 +197,6 @@ switch (get_request_var('action')) {
 }
 
 function host_reindex() {
-	global $config;
-
 	$start = microtime(true);
 
 	shell_exec(read_config_option('path_php_binary') . ' -q ' . CACTI_PATH_CLI . '/poller_reindex_hosts.php --qid=all --id=' . get_filter_request_var('host_id'));
@@ -1151,7 +1149,7 @@ function host_edit() {
 }
 
 function device_reindex_methods($item, $host) {
-	global $config, $reindex_types, $reindex_types_tips;
+	global $reindex_types, $reindex_types_tips;
 
 	$selectedTheme = get_selected_theme();
 
@@ -1627,7 +1625,7 @@ function get_device_records(&$total_rows, $rows) {
 }
 
 function host() {
-	global $actions, $item_rows, $config, $availability_options;
+	global $actions, $item_rows, $availability_options;
 
 	draw_hosts_filter(true);
 

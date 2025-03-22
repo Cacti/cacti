@@ -66,27 +66,21 @@ if (cacti_sizeof($parms)) {
 /* issue warnings and start message if applicable */
 print 'NOTE: Updating csrf_secret file with new information' . PHP_EOL;
 
-if (isset($config['path_csrf_secret'])) {
-	$path_csrf_secret = $config['path_csrf_secret'];
-} else {
-	$path_csrf_secret = CACTI_PATH_INCLUDE . '/vendor/csrf/csrf-secret.php';
-}
-
-if (!file_exists($path_csrf_secret)) {
+if (!file_exists(CACTI_CSRF_SECRET)) {
 	print 'WARNING: csrf_secret.php file does not exist!' . PHP_EOL;
-} elseif (!is_writable($path_csrf_secret)) {
+} elseif (!is_writable(CACTI_CSRF_SECRET)) {
 	print 'FATAL: unable to unlink csrf_secret.php!' . PHP_EOL;
 
 	exit(1);
 } else {
 	print 'NOTE: Removing old csrf_secret.php file.' . PHP_EOL;
-	unlink($path_csrf_secret);
+	unlink(CACTI_CSRF_SECRET);
 }
 
 $new_secret = csrf_generate_secret();
 
-if (csrf_writable($path_csrf_secret)) {
-	$fh = fopen($path_csrf_secret, 'w');
+if (csrf_writable(CACTI_CSRF_SECRET)) {
+	$fh = fopen(CACTI_CSRF_SECRET, 'w');
 	fwrite($fh, '<?php $secret = "' . $new_secret . '";' . PHP_EOL);
 	fclose($fh);
 	print 'NOTE: New csrf_secret.php file written.' . PHP_EOL;

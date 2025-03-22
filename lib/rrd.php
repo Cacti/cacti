@@ -83,8 +83,6 @@ function rrd_init($output_to_term = true) {
 }
 
 function __rrd_init($output_to_term = true) {
-	global $config;
-
 	/* set the rrdtool default font */
 	if (read_config_option('path_rrdtool_default_font')) {
 		putenv('RRD_DEFAULT_FONT=' . read_config_option('path_rrdtool_default_font'));
@@ -94,7 +92,7 @@ function __rrd_init($output_to_term = true) {
 
 	if ($output_to_term) {
 		$command = read_config_option('path_rrdtool') . ' - ';
-	} elseif ($config['cacti_server_os'] == 'win32') {
+	} elseif (CACTI_SERVER_OS == 'win32') {
 		$command = read_config_option('path_rrdtool') . ' - > nul';
 	} else {
 		$command = read_config_option('path_rrdtool') . ' - > /dev/null 2>&1';
@@ -287,8 +285,6 @@ function rrdtool_execute() {
 }
 
 function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pipe = null, $logopt = 'WEBLOG') {
-	global $config;
-
 	static $last_command;
 
 	if (!is_numeric($output_flag)) {
@@ -308,14 +304,14 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 	/* if we want to see the error output from rrdtool; make sure to specify this */
 	$debug = '';
 
-	if ($config['cacti_server_os'] != 'win32') {
+	if (CACTI_SERVER_OS != 'win32') {
 		if (($output_flag == RRDTOOL_OUTPUT_STDERR || $output_flag == RRDTOOL_OUTPUT_RETURN_STDERR) && !is_resource($rrdtool_pipe)) {
 			$debug .= ' 2>&1';
 		}
 	}
 
 	/* use popen to eliminate the zombie issue */
-	if ($config['cacti_server_os'] == 'unix') {
+	if (CACTI_SERVER_OS == 'unix') {
 		$pipe_mode = 'r';
 	} else {
 		$pipe_mode = 'rb';
@@ -339,7 +335,7 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 				1 => ['pipe', 'w']
 			];
 
-			if ($config['is_web']) {
+			if (CACTI_WEB) {
 				if (isset($_COOKIE['CactiTimeZone'])) {
 					$gmt_offset = $_COOKIE['CactiTimeZone'];
 					cacti_time_zone_set($gmt_offset);
@@ -500,7 +496,6 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 }
 
 function rrdtool_trim_output(&$output) {
-	global $config;
 	global $user_time, $system_time, $real_time;
 
 	/* When using RRDtool with proc_open for long strings
@@ -510,7 +505,7 @@ function rrdtool_trim_output(&$output) {
 	 * string.  So, therefore, we have to prune that
 	 * output.
 	 */
-	if ($config['cacti_server_os'] == 'win32') {
+	if (CACTI_SERVER_OS == 'win32') {
 		$output = rtrim($output, "OK \n\r");
 	} else {
 		$okpos = strrpos($output, 'OK u:');
@@ -545,7 +540,7 @@ function rrdtool_trim_output(&$output) {
 }
 
 function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp = '', $logopt = 'WEBLOG') {
-	global $config, $encryption;
+	global $encryption;
 
 	static $last_command;
 	$end_of_packet   = "_EOP_\r\n";
@@ -712,7 +707,7 @@ function rrdtool_function_interface_speed($data_local) {
 }
 
 function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = null) {
-	global $config, $data_source_types, $consolidation_functions, $encryption;
+	global $data_source_types, $consolidation_functions, $encryption;
 
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
 
@@ -720,7 +715,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = n
 
 	/**
 	 * ok, if that passes lets check to make sure an rra does not already
-	 * exist, the last thing we want to do is overright data! 
+	 * exist, the last thing we want to do is overright data!
 	 */
 	if ($show_source != true) {
 		if (rrdtool_file_exists($data_source_path, $rrdtool_pipe)) {
@@ -734,7 +729,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = n
 	 * UPDATE: As of version 0.6.6, we are splitting this up into two
 	 * SQL strings because of the multiple DS per RRD support. This is
 	 * not a big deal however since this function gets called once per
-	 * data source 
+	 * data source
 	 */
 	$rras = db_fetch_assoc_prepared('SELECT dtd.rrd_step, dsp.x_files_factor,
 		dspr.steps, dspr.rows, dspc.consolidation_function_id,
@@ -849,7 +844,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = n
 		$create_rra .= 'RRA:' . $consolidation_functions[$rra['consolidation_function_id']] . ':' . $rra['x_files_factor'] . ':' . $rra['steps'] . ':' . $rra['rows'] . RRD_NL;
 	}
 
-	if ($config['cacti_server_os'] != 'win32') {
+	if (CACTI_SERVER_OS != 'win32') {
 		$owner_id = fileowner(CACTI_PATH_RRA);
 		$group_id = filegroup(CACTI_PATH_RRA);
 	}
@@ -866,9 +861,9 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = n
 				}
 			}
 		} elseif (!is_dir(dirname($data_source_path))) {
-			if ($config['is_web'] == false || is_writable(CACTI_PATH_RRA)) {
+			if (CACTI_WEB == false || is_writable(CACTI_PATH_RRA)) {
 				if (mkdir(dirname($data_source_path), 0775, true)) {
-					if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
+					if (CACTI_SERVER_OS != 'win32' && posix_getuid() == 0) {
 						$success  = true;
 						$paths    = explode('/', str_replace(CACTI_PATH_RRA, '/', dirname($data_source_path)));
 						$spath    = '';
@@ -912,7 +907,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = n
 	} else {
 		$success = rrdtool_execute("create $data_source_path $create_ds$create_rra", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
 
-		if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
+		if (CACTI_SERVER_OS != 'win32' && posix_getuid() == 0) {
 			shell_exec("chown $owner_id:$group_id $data_source_path");
 		}
 
@@ -1004,169 +999,7 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = null) {
 }
 
 function rrdtool_function_tune($rrd_tune_array) {
-	global $config, $data_source_types;
-
-	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
-
-	$data_source_name = get_data_source_item_name($rrd_tune_array['data_source_id']);
-	$data_source_type = $data_source_types[$rrd_tune_array['data-source-type']];
-	$data_source_path = get_data_source_path($rrd_tune_array['data_source_id'], true);
-
-	$rrd_tune = '';
-
-	if ($rrd_tune_array['heartbeat'] != '') {
-		$rrd_tune .= " --heartbeat $data_source_name:" . $rrd_tune_array['heartbeat'];
-	}
-
-	if ($rrd_tune_array['minimum'] != '') {
-		$rrd_tune .= " --minimum $data_source_name:" . $rrd_tune_array['minimum'];
-	}
-
-	if ($rrd_tune_array['maximum'] != '') {
-		$rrd_tune .= " --maximum $data_source_name:" . $rrd_tune_array['maximum'];
-	}
-
-	if ($rrd_tune_array['data-source-type'] != '') {
-		$rrd_tune .= " --data-source-type $data_source_name:" . $data_source_type;
-	}
-
-	if ($rrd_tune_array['data-source-rename'] != '') {
-		$rrd_tune .= " --data-source-rename $data_source_name:" . $rrd_tune_array['data-source-rename'];
-	}
-
-	if ($rrd_tune != '') {
-		if (file_exists($data_source_path) == true) {
-			if (is_file(read_config_option('path_rrdtool')) && is_executable(read_config_option('path_rrdtool'))) {
-				$fp = popen(read_config_option('path_rrdtool') . " tune $data_source_path $rrd_tune", 'r');
-				pclose($fp);
-
-				cacti_log('CACTI2RRD: ' . read_config_option('path_rrdtool') . " tune $data_source_path $rrd_tune", false, 'WEBLOG', POLLER_VERBOSITY_DEBUG);
-			} else {
-				cacti_log("ERROR: RRDtool executable not found, not executable or error in path '" . read_config_option('path_rrdtool') . "'.  No output written to RRDfile.");
-			}
-		}
-	}
-}
-
-/**
- * rrdtool_function_fetch - given a data source, return all of its data in an array
- *
- * @param int         $local_data_id - the data source to fetch data for
- * @param int         $start_time - the start time to use for the data calculation. this value can
- *   either be absolute (unix timestamp) or relative (to now)
- * @param int         $end_time - the end time to use for the data calculation. this value can
- *   either be absolute (unix timestamp) or relative (to now)
- * @param int         $resolution - the accuracy of the data measured in seconds
- * @param bool        $show_unknown - Show unknown 'NAN' values in the output as 'U'
- * @param string|null $rrdtool_file - Don't force Cacti to calculate the file
- * @param string      $cf - Specify the consolidation function to use
- * @param null|res    $rrdtool_pipe - a pipe to an rrdtool command
- *
- * @return array an array containing all data in this data source broken down
- *   by each data source item. the maximum of all data source items is included in
- *   an item called 'nth_percentile_maximum'.  The array will look as follows:
- *
- *   $fetch_array['data_source_names'][0] = 'ds1'
- *   $fetch_array['data_source_names'][1] = 'ds2'
- *   $fetch_array['data_source_names'][2] = 'nth_percentile_maximum'
- *   $fetch_array['start_time'] = $timestamp;
- *   $fetch_array['end_time']   = $timestamp;
- *   $fetch_array['values'][$dsindex1][...]  = $value;
- *   $fetch_array['values'][$dsindex2][...]  = $value;
- *   $fetch_array['values'][$nth_index][...] = $value;
- *
- *   Again, the 'nth_percentile_maximum' will have the maximum value amongst all the
- *   data sources for each set of data.  So, if you have traffic_in and traffic_out,
- *   each member element in the array will have the maximum of traffic_in and traffic_out
- *   in it.
- */
-function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0, $show_unknown = false, $rrdtool_file = null, $cf = 'AVERAGE', $rrdtool_pipe = null) {
-	global $config;
-
-	include_once(CACTI_PATH_LIBRARY . '/boost.php');
-
-	/* validate local data id */
-	if (empty($local_data_id) && is_null($rrdtool_file)) {
-		return [];
-	}
-
-	$time = time();
-
-	/* initialize fetch array */
-	$fetch_array = [];
-
-	/* check if we have been passed a file instead of local data source to look up */
-	if (is_null($rrdtool_file)) {
-		$data_source_path = get_data_source_path($local_data_id, true);
-	} else {
-		$data_source_path = $rrdtool_file;
-	}
-
-	// Find the correct resolution
-	if ($resolution == 0) {
-		$resolution = rrdtool_function_get_resstep($local_data_id, $start_time, $end_time, 'res');
-	}
-
-	/* update the rrdfile if performing a fetch */
-	boost_fetch_cache_check($local_data_id, $rrdtool_pipe);
-
-	/* build and run the rrdtool fetch command with all of our data */
-	$cmd_line = "fetch $data_source_path $cf -s $start_time -e $end_time";
-
-	if ($resolution > 0) {
-		$cmd_line .= " -r $resolution";
-	}
-
-	$output = rrdtool_execute($cmd_line, false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe);
-	$output = explode("\n", $output);
-
-	$first  = true;
-	$count  = 0;
-
-	if (cacti_sizeof($output)) {
-		$timestamp = 0;
-
-		foreach ($output as $line) {
-			$line      = trim($line);
-			$max_array = [];
-
-			if ($first) {
-				/* get the data source names */
-				$fetch_array['data_source_names'] = preg_split('/\s+/', $line);
-				$first                            = false;
-			} elseif ($line != '') {
-				/* process the data sources into an array */
-				$parts     = explode(':', $line);
-				$timestamp = $parts[0];
-				$data      = explode(' ', trim($parts[1]));
-
-				if (!isset($fetch_array['timestamp']['start_time'])) {
-					$fetch_array['timestamp']['start_time'] = $timestamp;
-				}
-
-				/* process out bad data */
-				foreach ($data as $index => $number) {
-					if (strtolower($number) == 'nan' || strtolower($number) == '-nan') {
-						if ($show_unknown) {
-							$fetch_array['values'][$index][$timestamp] = 'U';
-						}
-					} elseif (is_numeric($number)) {
-						$fetch_array['values'][$index][$timestamp] = $number;
-					} elseif ($show_unknown) {
-						$fetch_array['values'][$index][$timestamp] = 'U';
-					}
-				}
-			}
-		}
-
-		$fetch_array['timestamp']['end_time'] = $timestamp;
-	}
-
-	return $fetch_array;
-}
-
-function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &$graph_data_array) {
-	global $config, $image_types;
+	global $image_types;
 
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
 
@@ -1495,7 +1328,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 }
 
 function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rrdtool_pipe = null, &$xport_meta = [], $user = 0) {
-	global $config, $consolidation_functions, $graph_item_types, $encryption;
+	global $consolidation_functions, $graph_item_types, $encryption;
 
 	include_once(CACTI_PATH_LIBRARY . '/cdef.php');
 	include_once(CACTI_PATH_LIBRARY . '/vdef.php');
@@ -2763,7 +2596,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			print '<pre>' . wordwrap(html_escape($source_command_line), 160, PHP_EOL, true) . '</pre>';
 			print '<span class="textInfo">' . 'RRDtool Command lengths = ' . $source_command_line_lengths . ' characters.</span><br>';
 
-			if ($config['cacti_server_os'] == 'win32' && $source_command_line_lengths > 8191) {
+			if (CACTI_SERVER_OS == 'win32' && $source_command_line_lengths > 8191) {
 				print '<pre>' . 'Warning: The Cacti OS is Windows system, RRDtool Command lengths should not exceed 8191 characters.' . '</pre>';
 			}
 		} else {
@@ -2887,8 +2720,6 @@ function rrdtool_function_format_graph_date(&$graph_data_array) {
 }
 
 function rrdtool_function_theme_font_options(&$graph_data_array) {
-	global $config;
-
 	/* implement theme colors */
 	$graph_opts  = '';
 	$themefonts  = [];
@@ -2955,8 +2786,6 @@ function rrdtool_set_font($type, $no_legend = '', $themefonts = []) {
 }
 
 function rrdtool_function_set_font($type, $no_legend, $themefonts) {
-	global $config;
-
 	if (read_config_option('font_method') == 0) {
 		if (read_user_setting('custom_fonts') == 'on') {
 			$font = read_user_setting($type . '_font');
@@ -3533,8 +3362,6 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
  * @return (string) - html code
  */
 function rrdtool_info2html($info_array, $diff=[]) {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/time.php');
 
 	html_start_box(__('RRD File Information'), '100%', '', '3', 'center', '');
@@ -4322,8 +4149,6 @@ function rrdtool_replacement_legend($local_graph_id) {
 }
 
 function rrdtool_parse_error($string) {
-	global $config;
-
 	if (preg_match('/ERROR. opening \'(.*)\': (No such|Permiss).*/', $string, $matches)) {
 		if (cacti_sizeof($matches) >= 2) {
 			$filename = $matches[1];
@@ -4365,7 +4190,7 @@ function rrdtool_parse_error($string) {
 }
 
 function rrdtool_create_error_image($string, $width = '', $height = '') {
-	global $config, $dejavu_paths;
+	global $dejavu_paths;
 
 	$string = rrdtool_parse_error($string);
 
@@ -4379,7 +4204,7 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	$shadea      = 'CBCBCB';
 	$shadeb      = '999999';
 
-	if ($config['cacti_server_os'] == 'unix') {
+	if (CACTI_SERVER_OS == 'unix') {
 		foreach ($dejavu_paths as $dejavupath) {
 			if (file_exists($dejavupath . '/DejaVuSans.ttf')) {
 				$font_file = $dejavupath . '/DejaVuSans.ttf';

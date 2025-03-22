@@ -98,7 +98,7 @@ array_shift($parms);
 $debug          = false;
 $forcerun       = false;
 $verbose        = false;
-$poller_id      = $config['poller_id'];
+$poller_id      = POLLER_ID;
 
 if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {

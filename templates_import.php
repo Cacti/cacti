@@ -206,8 +206,6 @@ function prepare_template_display(&$import_info) {
 }
 
 function display_template_data(&$templates) {
-	global $config;
-
 	if (isset($templates['files'])) {
 		$files = $templates['files'];
 

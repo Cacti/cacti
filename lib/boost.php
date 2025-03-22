@@ -144,15 +144,15 @@ function boost_check_correct_enabled() {
 }
 
 function boost_poller_on_demand(&$results) {
-	global $config, $remote_db_cnn_id;
+	global $remote_db_cnn_id;
 
-	if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
+	if (POLLER_ID > 1 && CACTI_CONNECTION == 'online') {
 		$conn = $remote_db_cnn_id;
 	} else {
 		$conn = false;
 	}
 
-	if (read_config_option('boost_rrd_update_enable') == 'on' || $config['poller_id'] > 1) {
+	if (read_config_option('boost_rrd_update_enable') == 'on' || POLLER_ID > 1) {
 		set_config_option('boost_rrd_update_enable', 'on');
 
 		/* suppress warnings */
@@ -250,14 +250,12 @@ function boost_poller_on_demand(&$results) {
 }
 
 function boost_poller_id_check() {
-	global $config;
-
 	$storage_location = read_config_option('storage_location');
 
 	/* error out if running from a remote poller and the storage
 	 * location is not the RRDproxy */
-	if ($config['poller_id'] > 1) {
-		if ($config['connection'] == 'online') {
+	if (POLLER_ID > 1) {
+		if (CACTI_CONNECTION == 'online') {
 			if ($storage_location == 0) {
 				return false;
 			} else {
@@ -272,8 +270,6 @@ function boost_poller_id_check() {
 }
 
 function boost_fetch_cache_check($local_data_id, $rrdtool_pipe = null) {
-	global $config;
-
 	if (read_config_option('boost_rrd_update_enable') == 'on') {
 		/* include poller processing routines */
 		include_once(CACTI_PATH_LIBRARY . '/poller.php');
@@ -337,8 +333,6 @@ function boost_return_cached_image(&$graph_data_array) {
 }
 
 function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe = null, &$graph_data_array = [], $return = true) {
-	global $config;
-
 	/* include poller processing routines */
 	include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
@@ -525,7 +519,7 @@ function boost_prep_graph_array($graph_data_array) {
 }
 
 function boost_graph_set_file(&$output, $local_graph_id, $rra_id) {
-	global $config, $boost_sock, $graph_data_array;
+	global $boost_sock, $graph_data_array;
 
 	/* get access to the SNMP Cache of BOOST*/
 	$mc = new MibCache('CACTI-BOOST-MIB');
@@ -705,7 +699,7 @@ function boost_get_arch_table_names($latest_table = '') {
  * @return int
  */
 function boost_process_poller_output($local_data_id, $rrdtool_pipe = null) {
-	global $config, $database_default, $boost_sock, $boost_timeout, $get_memory, $memory_used;
+	global $database_default, $boost_sock, $boost_timeout, $get_memory, $memory_used;
 
 	static $archive_table = false;
 	static $warning_issued;
@@ -1280,8 +1274,6 @@ function boost_get_rrd_filename_and_template($local_data_id) {
 }
 
 function boost_rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe) {
-	global $config;
-
 	/**
 	 * @var array $data_source_types
 	 * @var array $consolidation_functions
@@ -1410,7 +1402,7 @@ function boost_rrdtool_function_create($local_data_id, $show_source, $rrdtool_pi
 		$create_rra .= 'RRA:' . $consolidation_functions[$rra['consolidation_function_id']] . ':' . $rra['x_files_factor'] . ':' . $rra['steps'] . ':' . $rra['rows'] . RRD_NL;
 	}
 
-	if ($config['cacti_server_os'] != 'win32') {
+	if (CACTI_SERVER_OS != 'win32') {
 		$owner_id = fileowner(CACTI_PATH_RRA);
 		$group_id = filegroup(CACTI_PATH_RRA);
 	}
@@ -1427,9 +1419,9 @@ function boost_rrdtool_function_create($local_data_id, $show_source, $rrdtool_pi
 				}
 			}
 		} elseif (!is_dir(dirname($data_source_path))) {
-			if ($config['is_web'] == false || is_writable(CACTI_PATH_RRA)) {
+			if (CACTI_WEB == false || is_writable(CACTI_PATH_RRA)) {
 				if (mkdir(dirname($data_source_path), 0775, true)) {
-					if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
+					if (CACTI_SERVER_OS != 'win32' && posix_getuid() == 0) {
 						$success  = true;
 						$paths    = explode('/', str_replace(CACTI_PATH_RRA, '/', dirname($data_source_path)));
 						$spath    = '';
@@ -1473,7 +1465,7 @@ function boost_rrdtool_function_create($local_data_id, $show_source, $rrdtool_pi
 	} else {
 		$success = rrdtool_execute("create $data_source_path $create_ds$create_rra", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
 
-		if ($config['cacti_server_os'] != 'win32' && posix_getuid() == 0) {
+		if (CACTI_SERVER_OS != 'win32' && posix_getuid() == 0) {
 			shell_exec("chown $owner_id:$group_id $data_source_path");
 		}
 
@@ -1555,8 +1547,6 @@ function boost_memory_limit() {
 }
 
 function boost_poller_bottom() {
-	global $config;
-
 	if (read_config_option('boost_rrd_update_enable') == 'on') {
 		include_once(CACTI_PATH_LIBRARY . '/poller.php');
 
@@ -1583,7 +1573,7 @@ function boost_poller_bottom() {
 		$command_string = read_config_option('path_php_binary');
 
 		if ($boost_debug && $boost_log != '') {
-			if ($config['cacti_server_os'] == 'unix') {
+			if (CACTI_SERVER_OS == 'unix') {
 				$extra_args    = '-q '  . CACTI_PATH_BASE . '/poller_boost.php --debug';
 				$redirect_args =  '>> ' . $boost_log . ' 2>&1';
 			} else {
@@ -1599,7 +1589,6 @@ function boost_poller_bottom() {
 }
 
 function boost_update_snmp_statistics() {
-	global $config;
 	$mc = new MibCache('CACTI-BOOST-MIB');
 
 	/* get the boost table status */

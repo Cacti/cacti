@@ -252,7 +252,7 @@ function reports_item_dnd() {
  * @return void
  */
 function reports_form_save() {
-	global $config, $messages;
+	global $messages;
 
 	if (isset_request_var('save_component_report')) {
 		/* ================= input validation ================= */
@@ -395,7 +395,7 @@ function reports_form_save() {
  * @return void
  */
 function reports_form_actions() {
-	global $config, $reports_actions;
+	global $reports_actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action');
@@ -562,8 +562,6 @@ function reports_form_actions() {
  * @return void
  */
 function reports_send($id) {
-	global $config;
-
 	/* ================= input validation ================= */
 	input_validate_input_number($id, 'id');
 	/* ==================================================== */
@@ -894,7 +892,7 @@ function reports_item_validate() {
  * @return void
  */
 function reports_item_edit() {
-	global $config, $item_types, $graph_timespans, $alignment;
+	global $item_types, $graph_timespans, $alignment;
 
 	$trees           = [];
 	$branches        = [];
@@ -1411,8 +1409,6 @@ function reports_item_edit() {
  * @return void
  */
 function reports_tabs($report_id) {
-	global $config;
-
 	if ($report_id > 0) {
 		$tabs = ['details' => __('Details'), 'items' => __('Items'), 'preview' => __('View Reports')];
 	} else {
@@ -1454,7 +1450,7 @@ function reports_tabs($report_id) {
  * @return void
  */
 function reports_edit() {
-	global $config, $attach_types, $alignment, $reports_interval, $fields_reports_edit;
+	global $attach_types, $alignment, $reports_interval, $fields_reports_edit;
 
 	/* ================= input validation and session storage ================= */
 	$filters = [
@@ -2033,7 +2029,7 @@ function draw_reports_filter($render = false) {
  * @return void
  */
 function reports() {
-	global $config, $item_rows, $reports_interval;
+	global $item_rows, $reports_interval;
 	global $reports_actions, $attach_types, $sched_types;
 
 	draw_reports_filter(true);

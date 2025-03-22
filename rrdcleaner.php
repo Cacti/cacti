@@ -79,7 +79,7 @@ switch (get_request_var('action')) {
  * Fill RRDCleaner's table
  */
 function rrdclean_fill_table() {
-	global $config, $rra_path;
+	global $rra_path;
 
 	/* suppress warnings */
 	error_reporting(0);
@@ -113,8 +113,6 @@ function rrdcleaner_lastupdate() {
  * Delete RRDCleaner's intermediate tables
  */
 function rrdclean_truncate_tables() {
-	global $config;
-
 	/* suppress warnings */
 	error_reporting(0);
 
@@ -181,7 +179,7 @@ function rrdclean_error_handler($errno, $errmsg, $filename, $linenum, $vars = []
  * and get file system information for them
  */
 function get_files() {
-	global $config, $rra_path;
+	global $rra_path;
 
 	/* suppress warnings */
 	error_reporting(0);
@@ -274,7 +272,7 @@ function get_files() {
  * Display all rrd file entries
  */
 function list_rrd() {
-	global $config, $item_rows, $ds_actions, $rra_path;
+	global $item_rows, $ds_actions, $rra_path;
 
 	/* suppress warnings */
 	error_reporting(0);
@@ -405,7 +403,7 @@ function rrdcleaner_legend($total_size) {
 }
 
 function remove_all_rrds() {
-	global $config, $rra_path;
+	global $rra_path;
 
 	/* suppress warnings */
 	error_reporting(0);
@@ -435,7 +433,7 @@ function remove_all_rrds() {
  * a temporary table for the poller
  */
 function do_rrd() {
-	global $config, $rra_path;
+	global $rra_path;
 
 	/* suppress warnings */
 	error_reporting(0);

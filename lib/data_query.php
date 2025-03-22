@@ -59,7 +59,7 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 
 	$poller_id = $status['poller_id'];
 
-	if ($poller_id != $config['poller_id']) {
+	if ($poller_id != POLLER_ID) {
 		$hostname = db_fetch_cell_prepared('SELECT hostname
 			FROM poller
 			WHERE id = ?',
@@ -439,14 +439,14 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 		}
 	}
 
-	if ($config['poller_id'] == 1) {
+	if (POLLER_ID == 1) {
 		/* perform any automation on reindex */
 		automation_execute_data_query($host_id, $snmp_query_id);
 		query_debug_timer_offset('data_query', __esc('Automation Executing for Data Query complete'));
 
 		api_plugin_hook_function('run_data_query', ['host_id' => $host_id, 'snmp_query_id' => $snmp_query_id]);
 		query_debug_timer_offset('data_query', __esc('Plugin hooks complete'));
-	} elseif ($config['connection'] == 'online') {
+	} elseif (CACTI_CONNECTION == 'online') {
 		poller_push_reindex_data_to_poller($host_id, $snmp_query_id);
 
 		automation_execute_data_query($host_id, $snmp_query_id);
@@ -610,7 +610,7 @@ function data_query_update_input_method($snmp_query_id, $previous_input_id, $new
 }
 
 function get_data_query_array($snmp_query_id) {
-	global $config, $data_query_xml_arrays;
+	global $data_query_xml_arrays;
 
 	include_once(CACTI_PATH_LIBRARY . '/xml.php');
 
@@ -817,7 +817,7 @@ function query_debug_timer_stop($section, $message) {
 }
 
 function query_snmp_host($host_id, $snmp_query_id) {
-	global $config, $data_query_rewrite_indexes_cache;
+	global $data_query_rewrite_indexes_cache;
 
 	include_once(CACTI_PATH_LIBRARY . '/snmp.php');
 
@@ -1988,8 +1988,6 @@ function update_data_source_data_query_cache($local_data_id, $host_id = '', $dat
    @returns - an array formatted like the following:
 	$arr[snmp_index] = 'formatted data query index string' */
 function get_formatted_data_query_indexes($host_id, $data_query_id) {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/sort.php');
 
 	if (empty($data_query_id)) {
@@ -2409,8 +2407,6 @@ function get_best_data_query_index_type($host_id, $data_query_id) {
    @arg $host_id - the id of the host that this script query belongs to
    @returns - a full path to the script query script containing all arguments */
 function get_script_query_path($args, $script_path, $host_id) {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/variables.php');
 
 	/* get any extra arguments that need to be passed to the script */

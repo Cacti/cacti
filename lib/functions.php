@@ -281,8 +281,6 @@ function user_setting_exists(string $config_name, ?int $user_id):bool {
  * @return void
  */
 function clear_user_setting(string $config_name, ?int $user = null):void {
-	global $config;
-
 	/* users must have cacti user auth turned on to use this, or the guest account must be active */
 	$effective_uid = $user ?? ($_SESSION[SESS_USER_ID] ?? 0);
 
@@ -345,8 +343,6 @@ function read_default_user_setting(string $config_name): mixed {
  * @return mixed the current value of the user setting
  */
 function read_user_setting(string $config_name, mixed $default = false, bool $force = false, ?int $user = 0):mixed {
-	global $config;
-
 	/* users must have cacti user auth turned on to use this, or the guest account must be active */
 	if ($user == 0 && isset($_SESSION[SESS_USER_ID])) {
 		$effective_uid = $_SESSION[SESS_USER_ID];
@@ -383,8 +379,8 @@ function read_user_setting(string $config_name, mixed $default = false, bool $fo
 			$user_config_array[$config_name] = read_default_user_setting($config_name);
 		}
 
-		$set_var = $config['is_web'] ? '_SESSION' : 'config';
-		$set_key = $config['is_web'] ? OPTIONS_USER : 'config_user_options_array';
+		$set_var = CACTI_WEB ? '_SESSION' : 'config';
+		$set_key = CACTI_WEB ? OPTIONS_USER : 'config_user_options_array';
 
 		${$set_var}[$set_key] = $user_config_array;
 	}
@@ -403,9 +399,7 @@ function read_user_setting(string $config_name, mixed $default = false, bool $fo
  * @return bool - true if the setting should be saved locally
  */
 function is_remote_path_setting(string $config_name):bool {
-	global $config;
-
-	if ($config['poller_id'] > 1 && (str_contains($config_name, 'path_') || str_contains($config_name, '_path'))) {
+	if (POLLER_ID > 1 && (str_contains($config_name, 'path_') || str_contains($config_name, '_path'))) {
 		return true;
 	} else {
 		return false;
@@ -474,8 +468,8 @@ function set_config_option(string $config_name, mixed $value, bool $remote = fal
 		}
 	}
 
-	$set_var = $config['is_web'] ? '_SESSION' : 'config';
-	$set_key = $config['is_web'] ? OPTIONS_WEB : OPTIONS_CLI;
+	$set_var = CACTI_WEB ? '_SESSION' : 'config';
+	$set_key = CACTI_WEB ? OPTIONS_WEB : OPTIONS_CLI;
 
 	// Store whatever value we have in the array
 	if (!isset(${$set_var}[$set_key]) || !is_array(${$set_var}[$set_key])) {
@@ -549,8 +543,6 @@ function read_default_config_option(string $config_name):mixed {
  * @return array
  */
 function cache_common_config_settings():array {
-	global $config;
-
 	//$start = microtime(true);
 
 	$common_settings = [
@@ -578,7 +570,7 @@ function cache_common_config_settings():array {
 		'max_tree_width',
 	];
 
-	if ($config['is_web']) {
+	if (CACTI_WEB) {
 		$extra_settings = [
 			// Common all pages
 			'force_https',
@@ -662,8 +654,8 @@ function cache_common_config_settings():array {
 	);
 
 	if (cacti_sizeof($settings)) {
-		$set_var = $config['is_web'] ? '_SESSION' : 'config';
-		$set_key = $config['is_web'] ? OPTIONS_WEB : OPTIONS_CLI;
+		$set_var = CACTI_WEB ? '_SESSION' : 'config';
+		$set_key = CACTI_WEB ? OPTIONS_WEB : OPTIONS_CLI;
 
 		// Store whatever value we have in the array
 		if (!isset(${$set_var}[$set_key]) || !is_array(${$set_var}[$set_key])) {
@@ -694,8 +686,8 @@ function read_config_option(string $config_name, bool $force = false):string|fal
 
 	$loaded = false;
 
-	$set_var = $config['is_web'] ? '_SESSION' : 'config';
-	$set_key = $config['is_web'] ? OPTIONS_WEB : OPTIONS_CLI;
+	$set_var = CACTI_WEB ? '_SESSION' : 'config';
+	$set_key = CACTI_WEB ? OPTIONS_WEB : OPTIONS_CLI;
 
 	// Store whatever value we have in the array
 	if (!isset(${$set_var}[$set_key]) || !is_array(${$set_var}[$set_key])) {
@@ -760,7 +752,7 @@ function read_config_option(string $config_name, bool $force = false):string|fal
  * @return mixed the theme name
  */
 function get_selected_theme():mixed {
-	global $config, $themes;
+	global $themes;
 
 	// shortcut if theme is set in session
 	if (isset($_SESSION['selected_theme']) && isset($_SESSION[SESS_USER_ID])) {
@@ -825,7 +817,7 @@ function get_selected_theme():mixed {
  * @return boolean
  */
 function is_valid_theme(?string &$theme, int $set_user = 0):bool {
-	global $themes, $config;
+	global $themes;
 
 	$valid = true;
 
@@ -941,7 +933,7 @@ function check_changed($request, $session) {
  * @return mixed whether the messages array contains an error or not
  */
 function is_error_message() {
-	global $config, $messages;
+	global $messages;
 
 	if (isset($_SESSION[SESS_ERROR_FIELDS]) && cacti_sizeof($_SESSION[SESS_ERROR_FIELDS])) {
 		return true;
@@ -1079,7 +1071,7 @@ function get_message_max_type(?array $output_messages = null) {
  * @param  string|null $message_title  Title of the message to be displayed
  */
 function raise_message(string|int $message_id, string $message = '', int $message_level = MESSAGE_LEVEL_NONE, ?string $message_title = null) {
-	global $config, $messages, $no_http_headers;
+	global $messages, $no_http_headers;
 
 	// This function should always exist, if not its an invalid install
 	if (function_exists('session_status')) {
@@ -1303,10 +1295,8 @@ function kill_session_var($var_name) {
  * @return bool
  */
 function force_session_data() {
-	global $config;
-
 	// This function should always exist, if not its an invalid install
-	if (!function_exists('session_status') || !$config['is_web']) {
+	if (!function_exists('session_status') || !CACTI_WEB) {
 		return false;
 	}
 
@@ -1446,7 +1436,7 @@ function get_selective_log_level(): ?int {
  * @return bool
  */
 function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
-	global $config, $database_log;
+	global $database_log;
 
 	static $start = null;
 
@@ -1512,7 +1502,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 
 	/* format the message */
 	if ($environ == 'POLLER') {
-		$prefix = "$date - " . ($environ != '' ? "$environ: ":'') . 'Poller[' . $config['poller_id'] . '] PID[' . getmypid() . '] ';
+		$prefix = "$date - " . ($environ != '' ? "$environ: ":'') . 'Poller[' . POLLER_ID . '] PID[' . getmypid() . '] ';
 
 		if ($output) {
 			$oprefix = sprintf('Total[%3.4f] ', microtime(true) - $start);
@@ -1559,7 +1549,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 		}
 
 		if ($log_type != '') {
-			if ($config['cacti_server_os'] == 'win32') {
+			if (CACTI_SERVER_OS == 'win32') {
 				openlog('Cacti', LOG_NDELAY | LOG_PID, LOG_USER);
 			} else {
 				openlog('Cacti', LOG_NDELAY | LOG_PID, LOG_SYSLOG);
@@ -2859,8 +2849,6 @@ function test_data_source($data_template_id, $host_id, $snmp_query_id = 0, $snmp
  * @return string|bool the full script path or (bool) false for an error
  */
 function get_full_test_script_path(int $data_template_id, int $host_id):string|false {
-	global $config;
-
 	$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
 		dtd.id,
 		dtd.data_input_id,
@@ -2920,8 +2908,6 @@ function get_full_test_script_path(int $data_template_id, int $host_id):string|f
  * @return string|false the full script path or (bool) false for an error
  */
 function get_full_script_path(int $local_data_id):string|false {
-	global $config;
-
 	$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' dtd.id, dtd.data_input_id,
 		di.type_id, di.input_string
 		FROM data_template_data AS dtd
@@ -3135,12 +3121,10 @@ function clean_up_file_name(?string $string): ?string {
  * @return null|string the modified path
  */
 function clean_up_path(?string $path): ?string {
-	global $config;
-
 	if ($path !== null) {
-		if ($config['cacti_server_os'] == 'win32') {
+		if (CACTI_SERVER_OS == 'win32') {
 			$path = str_replace('/', '\\', $path);
-		} elseif ($config['cacti_server_os'] == 'unix' || read_config_option('using_cygwin') == 'on' || read_config_option('storage_location')) {
+		} elseif (CACTI_SERVER_OS == 'unix' || read_config_option('using_cygwin') == 'on' || read_config_option('storage_location')) {
 			$path = str_replace('\\', '/', $path);
 		}
 	}
@@ -3389,8 +3373,6 @@ function get_execution_user() {
  * @return mixed the new generated path
  */
 function generate_data_source_path($local_data_id) {
-	global $config;
-
 	static $extended_paths = false;
 	static $pattern        = false;
 
@@ -3618,7 +3600,7 @@ function generate_graph_def_name($graph_item_id) {
  * @return void
  */
 function generate_data_input_field_sequences($string, $data_input_id) {
-	global $config, $registered_cacti_names;
+	global $registered_cacti_names;
 
 	if (preg_match_all('/<([_a-zA-Z0-9]+)>/', $string, $matches)) {
 		$j = 0;
@@ -4040,8 +4022,6 @@ function get_web_browser() {
  * @param  mixed $using_guest_account
  */
 function draw_login_status($using_guest_account = false) {
-	global $config;
-
 	$guest_account = get_guest_account();
 	$auth_method   = read_config_option('auth_method');
 
@@ -4094,7 +4074,7 @@ function draw_login_status($using_guest_account = false) {
  * @return mixed Either the navigation text or title
  */
 function draw_navigation_text($type = 'url') {
-	global $config, $navigation;
+	global $navigation;
 
 	$navigation      = api_plugin_hook_function('draw_navigation_text', $navigation);
 	$current_page    = get_current_page();
@@ -4743,7 +4723,7 @@ function get_hash_data_query($data_query_id, $sub_type = 'data_query') {
  * @return mixed a 24-bit hexadecimal hash (8-bits for type, 16-bits for version)
  */
 function get_hash_version(string $type): string {
-	global $hash_type_codes, $cacti_version_codes, $config;
+	global $hash_type_codes, $cacti_version_codes;
 
 	return $hash_type_codes[$type] . $cacti_version_codes[CACTI_VERSION];
 }
@@ -4796,7 +4776,7 @@ function debug_log_insert_section_end($type) {
 function debug_log_insert($type, $text) {
 	global $config;
 
-	if ($config['poller_id'] == 1 || isset($_SESSION)) {
+	if (POLLER_ID == 1 || isset($_SESSION)) {
 		if (!isset($_SESSION['debug_log'][$type])) {
 			$_SESSION['debug_log'][$type] = [];
 		}
@@ -5029,13 +5009,11 @@ function sanitize_unserialize_selected_graphs(?string $items): array {
 }
 
 function cacti_escapeshellcmd($string) {
-	global $config;
-
 	if ($string == '') {
 		return $string;
 	}
 
-	if ($config['cacti_server_os'] == 'unix') {
+	if (CACTI_SERVER_OS == 'unix') {
 		return escapeshellcmd($string);
 	}
 
@@ -5059,8 +5037,6 @@ function cacti_escapeshellcmd($string) {
  * @return	string	- the escaped [quoted|unquoted] string
  */
 function cacti_escapeshellarg(string $string, bool $quote = true): string {
-	global $config;
-
 	if ($string == '') {
 		return $string;
 	}
@@ -5073,7 +5049,7 @@ function cacti_escapeshellarg(string $string, bool $quote = true): string {
 	 * characters that the shell might interpret. the ucd-snmp binaries on Windows flip out when
 	 * you do this, but are perfectly happy with a quotation mark.
 	 */
-	if ($config['cacti_server_os'] == 'unix') {
+	if (CACTI_SERVER_OS == 'unix') {
 		$string = escapeshellarg($string);
 
 		if ($quote) {
@@ -5134,7 +5110,7 @@ function set_page_refresh($refresh) {
 }
 
 function bottom_footer() {
-	global $config, $no_session_write;
+	global $no_session_write;
 
 	include_once(CACTI_PATH_INCLUDE . '/global_session.php');
 	include_once(CACTI_PATH_INCLUDE . '/bottom_footer.php');
@@ -5158,20 +5134,14 @@ function bottom_footer() {
 }
 
 function top_header() {
-	global $config;
-
 	include_once(CACTI_PATH_INCLUDE . '/top_header.php');
 }
 
 function top_graph_header() {
-	global $config;
-
 	include_once(CACTI_PATH_INCLUDE . '/top_graph_header.php');
 }
 
 function general_header() {
-	global $config;
-
 	include_once(CACTI_PATH_INCLUDE . '/top_general_header.php');
 }
 
@@ -5840,8 +5810,6 @@ function create_emailtext($e) {
 }
 
 function ping_mail_server($host, $port, $user, $password, $timeout = 10, $secure = 'none') {
-	global $config;
-
 	//Create a new SMTP instance
 	$smtp = new PHPMailer\PHPMailer\SMTP;
 
@@ -5888,8 +5856,6 @@ function ping_mail_server($host, $port, $user, $password, $timeout = 10, $secure
 }
 
 function email_test() {
-	global $config;
-
 	$message =  __('This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings.') . '<br><br>';
 	$message .= __('Your email settings are currently set as follows') . '<br><br>';
 	$message .= '<b>' . __('Method') . '</b>: ';
@@ -6092,8 +6058,6 @@ function get_dns_from_ip($ip, $dns, $timeout = 1000) {
 }
 
 function poller_maintenance() {
-	global $config;
-
 	$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 
 	// If its not set, just assume its in the path
@@ -6147,8 +6111,6 @@ function clog_authorized() {
 }
 
 function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limit = 0, $skip = 0) {
-	global $config;
-
 	$skip  = $skip >= 0 ? $skip : 1;
 	$limit = $limit > 0 ? ($limit + $skip) : 0;
 
@@ -6381,7 +6343,7 @@ function padleft($pad = '', $value = '', $min = 2) {
 }
 
 function get_classic_tabimage($text, $down = false) {
-	global $config, $dejavu_paths;
+	global $dejavu_paths;
 
 	$images = [
 		false => 'tab_template_blue.gif',
@@ -7763,14 +7725,14 @@ function get_rrdtool_version() {
 }
 
 function get_installed_rrdtool_version() {
-	global $config, $rrdtool_versions;
+	global $rrdtool_versions;
 	static $version = '';
 
 	if ($version == '') {
 		$rrdtool = read_config_option('path_rrdtool');
 
 		if (!empty($rrdtool)) {
-			if ($config['cacti_server_os'] == 'win32') {
+			if (CACTI_SERVER_OS == 'win32') {
 				$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v');
 			} else {
 				$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v 2>&1');
@@ -8080,8 +8042,6 @@ function recursive_chown(string $path, string|int $uid, string|int $gid): bool {
  * @return void
  */
 function get_validated_theme(?string $theme, string $defaultTheme) {
-	global $config;
-
 	if (isset($theme) && strlen($theme)) {
 		$themePath = CACTI_PATH_INCLUDE . '/themes/' . $theme . '/main.css';
 
@@ -8289,12 +8249,10 @@ function get_client_addr():string|false {
  * cacti.sql file in the base Cacti directory.
  */
 function get_cacti_base_tables() {
-	global $config;
-
 	$base_tables = [];
 
-	if (file_exists($config['base_path'] . '/cacti.sql')) {
-		$schema = file($config['base_path'] . '/cacti.sql');
+	if (file_exists(CACTI_PATH_BASE . '/cacti.sql')) {
+		$schema = file(CACTI_PATH_BASE . '/cacti.sql');
 	} else {
 		return $base_tables;
 	}
@@ -9014,8 +8972,6 @@ function text_get_regex_array(?array $extraSubstitutions = []) {
 }
 
 function text_regex_replace($id, $link, $url, $matches, $cache) {
-	global $config;
-
 	if ($link) {
 		return $matches[1] . '<a href=\'' . html_escape(CACTI_PATH_URL . sprintf($url,  $id)) . '\'>' . (isset($cache[$id]) ? html_escape($cache[$id]) : $id) . '</a>' . $matches[3];
 	} else {
@@ -9235,8 +9191,6 @@ function text_regex_rra($matches, $link = false) {
 }
 
 function text_regex_graphs($matches, $link = false) {
-	global $config;
-
 	static $graph_cache = null;
 
 	$result = $matches[0];

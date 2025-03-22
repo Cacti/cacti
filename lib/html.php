@@ -62,8 +62,6 @@
  * @return void
  */
 function html_start_box($title, $width, $div, $cell_padding, $align, $add_url_or_buttons, $add_label = false, $showcols = false) {
-	global $config;
-
 	static $table_suffix = 1;
 	static $help_count   = 0;
 	static $mode_count   = 0;
@@ -79,12 +77,12 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_url_or
 		$beta_count++;
 	}
 
-	if ($config['poller_id'] > 1 && $title != '' && $mode_count == 0) {
+	if (POLLER_ID > 1 && $title != '' && $mode_count == 0) {
 		$title .= ' [ ' . __('Remote Server') . ': ';
 
-		if ($config['connection'] == 'offline') {
+		if (CACTI_CONNECTION == 'offline') {
 			$title .= '<span class="deviceDown">' . __('Offline') . '</span>';
-		} elseif ($config['connection'] == 'recovery') {
+		} elseif (CACTI_CONNECTION == 'recovery') {
 			$title .= '<span class="deviceRecovering">' . __('Recovering') . '</span>';
 		} else {
 			$title .= __('Online');
@@ -321,8 +319,6 @@ function html_filter_end_box() {
  * @return void
  */
 function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args = '', $header = '', $columns = 0, $tree_id = 0, $branch_id = 0) {
-	global $config;
-
 	$i = 0;
 	$k = 0;
 	$j = 0;
@@ -406,7 +402,6 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
  * @return void
  */
 function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extra_url_args = '', $header = '', $columns = 0, $tree_id = 0, $branch_id = 0) {
-	global $config;
 	$i = 0;
 	$k = 0;
 	$j = 0;
@@ -514,13 +509,9 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
  * @param int $tree_id The ID of the tree, default is 0.
  * @param int $branch_id The ID of the branch, default is 0.
  *
- * @global array $config The global configuration array.
- *
  * @return void
  */
 function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons', $tree_id = 0, $branch_id = 0) {
-	global $config;
-
 	static $rand = 0;
 
 	$aggregate_url = aggregate_build_children_url($local_graph_id);
@@ -1395,8 +1386,6 @@ function html_split_string($string, $length = 90, $forgiveness = 10) {
  * @return void
  */
 function draw_graph_items_list($item_list, $filename, $url_data, $disable_controls) {
-	global $config;
-
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
 
 	$display_text = [
@@ -1753,7 +1742,7 @@ function is_menu_pick_active($menu_url) {
  * @return void
  */
 function draw_menu($user_menu = '') {
-	global $config, $user_auth_realm_filenames, $menu, $menu_glyphs;
+	global $user_auth_realm_filenames, $menu, $menu_glyphs;
 
 	if (!is_array($user_menu)) {
 		$user_menu = $menu;
@@ -1914,8 +1903,6 @@ function draw_menu($user_menu = '') {
  * @return void
  */
 function draw_actions_dropdown($actions_array, $delete_action = 1) {
-	global $config;
-
 	if ($actions_array === null || cacti_sizeof($actions_array) == 0) {
 		return;
 	}
@@ -2085,7 +2072,7 @@ function is_console_page($url) {
 }
 
 function html_show_tabs_left() {
-	global $config, $tabs_left;
+	global $tabs_left;
 
 	$realm_allowed     = [];
 	$realm_allowed[7]  = is_realm_allowed(7);
@@ -2111,7 +2098,7 @@ function html_show_tabs_left() {
 	}
 
 	if ($realm_allowed[7]) {
-		if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
+		if (POLLER_ID > 1 && CACTI_CONNECTION != 'online') {
 			// Don't show the graphs tab when offline
 		} else {
 			$tabs_left[] =
@@ -2124,7 +2111,7 @@ function html_show_tabs_left() {
 	}
 
 	if ($realm_allowed[21] || $realm_allowed[22]) {
-		if ($config['poller_id'] > 1) {
+		if (POLLER_ID > 1) {
 			// Don't show the reports tab on other pollers
 		} else {
 			$tabs_left[] =
@@ -2213,7 +2200,7 @@ function html_show_tabs_left() {
 		$tabs_left[] = ['title' => ucwords($alt), 'id' => 'tab-' . $id, 'url' => $href];
 	}
 
-	if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
+	if (POLLER_ID > 1 && CACTI_CONNECTION != 'online') {
 		// Only show external links when online
 	} else {
 		$external_links = db_fetch_assoc('SELECT id, title
@@ -2276,7 +2263,7 @@ function html_show_tabs_left() {
 }
 
 function html_graph_tabs_right() {
-	global $config, $tabs_right;
+	global $tabs_right;
 
 	$theme = get_selected_theme();
 
@@ -3383,7 +3370,7 @@ function html_common_header($title, $selectedTheme = '') {
  * @return string|false The URL to the help documentation if the page is found, false otherwise.
  */
 function html_help_page($page) {
-	global $config, $help;
+	global $help;
 
 	$help = [
 		'aggregates.php'              => 'Aggregates.html',

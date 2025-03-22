@@ -1072,7 +1072,7 @@ $copyrights = [
 	'Eclipse Public License version 2.0' => __('Eclipse Public License version 2.0'),
 ];
 
-if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
+if (POLLER_ID || $config['connection'] == 'online') {
 	$menu = [
 		__('Main Console') => [
 			'index.php' => __('Console Page')
@@ -1145,7 +1145,7 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 		]
 	];
 
-	if ($config['poller_id'] > 1) {
+	if (POLLER_ID > 1) {
 		unset($menu[__('Utilities')]['rrdcleaner.php']);
 		unset($menu[__('Troubleshooting')]['rrdcheck.php']);
 	}
@@ -1247,7 +1247,7 @@ if ((isset($_SESSION[SESS_USER_ID]))) {
 
 		if (cacti_sizeof($consoles)) {
 			foreach ($consoles as $page) {
-				if (!$config['is_web'] || is_realm_allowed($page['id'] + 10000)) {
+				if (!CACTI_WEB || is_realm_allowed($page['id'] + 10000)) {
 					$menuname = (isset($page['extendedstyle']) && $page['extendedstyle'] != '' ? html_escape($page['extendedstyle']) : __('External Links'));
 
 					$menu[$menuname]['link.php?id=' . $page['id']] = html_escape($page['title']);
@@ -1798,7 +1798,7 @@ $reports_actions = [
 	REPORTS_SEND_NOW  => __('Send Now'),
 ];
 
-if (!$config['is_web'] || is_realm_allowed(21)) {
+if (!CACTI_WEB || is_realm_allowed(21)) {
 	$reports_actions[REPORTS_OWN] = __('Take Ownership');
 }
 
@@ -3095,7 +3095,7 @@ $sched_types = [
 	SCHEDULE_MONTHLY_ON_DAY => __('Monthly on Day')
 ];
 
-if ($config['cacti_server_os'] == 'unix') {
+if (CACTI_SERVER_OS == 'unix') {
 	$dejavu_paths = [
 		'/usr/share/fonts/dejavu/', //RHEL/CentOS
 		'/usr/share/fonts/truetype/', //SLES

@@ -104,8 +104,6 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 }
 
 function api_poller_get_rrd_next_step($host_id, $rrd_step, $local_data_id) {
-	global $config;
-
 	static $rrd_step_counter = 0;
 	static $last_host        = -1;
 	static $last_data_id     = -1;

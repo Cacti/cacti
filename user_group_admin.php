@@ -601,7 +601,7 @@ function perm_remove() {
 }
 
 function user_group_members_edit($header_label) {
-	global $config, $auth_realms;
+	global $auth_realms;
 
 	member_filter($header_label);
 
@@ -710,7 +710,7 @@ function user_group_members_edit($header_label) {
 }
 
 function user_group_graph_perms_edit($tab, $header_label) {
-	global $config, $assoc_actions;
+	global $assoc_actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -1693,7 +1693,7 @@ function user_group_settings_edit($header_label) {
 }
 
 function group_edit() {
-	global $config, $fields_user_group_edit;
+	global $fields_user_group_edit;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');

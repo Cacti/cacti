@@ -31,8 +31,6 @@
  * @return (string) the output of $command after execution
  */
 function exec_poll($command, $timeout = 5) {
-	global $config;
-
 	$output = [];
 	$return = 0;
 
@@ -62,8 +60,6 @@ function exec_poll($command, $timeout = 5) {
  *   server
  */
 function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
-	global $config;
-
 	$output = '';
 
 	/* execute using php process */
@@ -90,7 +86,7 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 		$command = read_config_option('path_php_binary') . ' ' . $command;
 
 		if (function_exists('popen')) {
-			if ($config['cacti_server_os'] == 'unix') {
+			if (CACTI_SERVER_OS == 'unix') {
 				$fp = popen($command, 'r');
 			} else {
 				$fp = popen($command, 'rb');
@@ -125,13 +121,13 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
  * @return (void)
  */
 function exec_background($filename, $args = '', $redirect_args = '') {
-	global $config, $debug;
+	global $debug;
 
 	cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args]", true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_DEBUG));
 
 	if ($filename != '') {
 		if (file_exists($filename)) {
-			if ($config['cacti_server_os'] == 'win32') {
+			if (CACTI_SERVER_OS == 'win32') {
 				if (!file_escaped($filename)) {
 					$filename = cacti_escapeshellcmd($filename);
 				}
@@ -270,8 +266,6 @@ function file_escaped($file) {
  * @return (void)
  */
 function update_reindex_cache($host_id, $data_query_id) {
-	global $config;
-
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 	include_once(CACTI_PATH_LIBRARY . '/snmp.php');
 
@@ -502,7 +496,7 @@ function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$re
  * @return (int) - The number of rrdfiles processed
  */
 function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
-	global $config, $debug;
+	global $debug;
 
 	static $rrd_field_names = [];
 	static $checked_bad     = false;
@@ -859,9 +853,9 @@ function process_poller_output(&$rrdtool_pipe, $remainder = 0) {
  * @return (void)
  */
 function update_resource_cache($poller_id = 1) {
-	global $config, $remote_db_cnn_id;
+	global $remote_db_cnn_id;
 
-	if ($config['cacti_server_os'] == 'win32') {
+	if (CACTI_SERVER_OS == 'win32') {
 		return;
 	}
 
@@ -1000,7 +994,7 @@ function update_resource_cache($poller_id = 1) {
 				}
 			}
 		}
-	} elseif ($poller_id > 1 && $config['connection'] == 'online') {
+	} elseif ($poller_id > 1 && CACTI_CONNECTION == 'online') {
 		if (read_config_option('disable_cache_replication') == 'on') {
 			cacti_log('NOTE: Resource Cache Replication is currently Disabled!  Skipping Replication.', true, 'REPLICATE');
 
@@ -1044,8 +1038,6 @@ function update_resource_cache($poller_id = 1) {
  * @return (void)
  */
 function cache_in_path($path, $type, $recursive = true) {
-	global $config;
-
 	if (is_dir($path)) {
 		$curr_md5      = md5sum_path($path, $recursive);
 		$settings_path = "md5dirsum_$type";
@@ -1120,8 +1112,6 @@ function cache_in_path($path, $type, $recursive = true) {
  * @return (void)
  */
 function update_db_from_path($path, $type, $recursive = true) {
-	global $config;
-
 	$excluded_extensions = ['tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo'];
 
 	if (is_dir($path)) {
@@ -1225,7 +1215,7 @@ function update_db_from_path($path, $type, $recursive = true) {
  * @return (void)
  */
 function resource_cache_out($type, $path) {
-	global $config, $remote_db_cnn_id;
+	global $remote_db_cnn_id;
 
 	$settings_path = "md5dirsum_$type";
 	$php_path      = read_config_option('path_php_binary');
@@ -1405,7 +1395,6 @@ function md5sum_path($path, $recursive = true) {
  * @return (bool|resource) The connection or false when the connection fails
  */
 function poller_push_to_remote_db_connect($device_or_poller, $is_poller = false) {
-	global $config;
 	static $device_poller_ids = [];
 
 	$rcnn_id = false;
@@ -1420,8 +1409,9 @@ function poller_push_to_remote_db_connect($device_or_poller, $is_poller = false)
 
 		if (!empty($poller_id)) {
 			$device_poller_ids[$device_or_poller] = $poller_id;
-		} elseif ($config['poller_id'] > 1) {
-			$poller_id                            = $config['poller_id'];
+		} elseif (POLLER_ID > 1) {
+			$poller_id = POLLER_ID;
+
 			$device_poller_ids[$device_or_poller] = $poller_id;
 		}
 	} else {
@@ -1446,17 +1436,17 @@ function poller_push_to_remote_db_connect($device_or_poller, $is_poller = false)
  * @return (bool|resource) The connection or false when the connection fails
  */
 function poller_connect_to_remote($poller_id) {
-	global $config, $local_db_cnn_id;
+	global $local_db_cnn_id;
 
 	if ($poller_id == 1) {
 		return false;
 	}
 
-	if ($config['poller_id'] > 1 && $config['poller_id'] == $poller_id) {
+	if (POLLER_ID > 1 && POLLER_ID == $poller_id) {
 		return $local_db_cnn_id;
 	}
 
-	if ($config['poller_id'] == 1) {
+	if (POLLER_ID == 1) {
 		$cinfo = db_fetch_row_prepared('SELECT *
 			FROM poller
 			WHERE id = ?',
@@ -1517,8 +1507,6 @@ function poller_connect_to_remote($poller_id) {
  * @return (bool)
  */
 function replicate_out($remote_poller_id = 1, $class = 'all') {
-	global $config;
-
 	replicate_log('Attempting to replicate to Poller ' . $remote_poller_id);
 
 	$rcnn_id = poller_connect_to_remote($remote_poller_id);
@@ -1817,7 +1805,7 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			[$stats['snmp'], $stats['script'], $stats['server'], $remote_poller_id]);
 	}
 
-	if ($class != 'plugins' && $config['is_web']) {
+	if ($class != 'plugins' && CACTI_WEB) {
 		replicate_log('Synchronization of Poller ' . $remote_poller_id . ' completed', POLLER_VERBOSITY_LOW);
 		raise_message('poller_sync');
 	}
@@ -2005,7 +1993,7 @@ function poller_push_reindex_only_data_to_main($device_id, $data_query_id) {
 }
 
 function poller_push_reindex_data_to_poller($device_id = 0, $data_query_id = 0, $force = false, $db_cnn_id = false) {
-	global $config, $remote_db_cnn_id, $local_db_cnn_id, $database_hostname, $rdatabase_hostname;
+	global $remote_db_cnn_id, $local_db_cnn_id, $database_hostname, $rdatabase_hostname;
 
 	// If the hostnames are the same, replication is from main to remote
 	if ($db_cnn_id) {
@@ -2183,10 +2171,8 @@ function replicate_table_to_poller($conn, &$data, $table, $exclude = false) {
 }
 
 function poller_recovery_flush_boost($poller_id) {
-	global $config;
-
 	if ($poller_id > 1) {
-		if ($config['connection'] == 'recovery') {
+		if (CACTI_CONNECTION == 'recovery') {
 			$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 			$extra_args     = '-q ' . cacti_escapeshellarg(CACTI_PATH_BASE . '/poller_recovery.php');
 			exec_background($command_string, $extra_args);
@@ -2195,9 +2181,9 @@ function poller_recovery_flush_boost($poller_id) {
 }
 
 function poller_push_data_to_main() {
-	global $config, $remote_db_cnn_id;
+	global $remote_db_cnn_id;
 
-	if ($config['poller_id'] > 1) {
+	if (POLLER_ID > 1) {
 		$host_records = db_fetch_assoc_prepared('SELECT id, snmp_sysDescr, snmp_sysObjectID,
 			snmp_sysUpTimeInstance, snmp_sysContact, snmp_sysName, snmp_sysLocation,
 			status, status_event_count, status_fail_date, status_rec_date,
@@ -2205,7 +2191,7 @@ function poller_push_data_to_main() {
 			total_polls, failed_polls, availability, last_updated
 			FROM host
 			WHERE poller_id = ?',
-			[$config['poller_id']]);
+			[POLLER_ID]);
 
 		$updates = [
 			'snmp_sysDescr',
@@ -2235,7 +2221,7 @@ function poller_push_data_to_main() {
 		$poller_item_records = db_fetch_assoc_prepared('SELECT local_data_id, host_id, rrd_name, rrd_step, rrd_next_step
 			FROM poller_item
 			WHERE poller_id = ?',
-			[$config['poller_id']]);
+			[POLLER_ID]);
 
 		$updates = [
 			'rrd_next_step'
@@ -2246,7 +2232,7 @@ function poller_push_data_to_main() {
 		$host_errors = db_fetch_assoc_prepared('SELECT *
 			FROM host_errors
 			WHERE poller_id = ?',
-			[$config['poller_id']]);
+			[POLLER_ID]);
 
 		$updates = [
 			'errors',

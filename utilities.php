@@ -880,7 +880,7 @@ function draw_poller_cache_filter($render = false) {
 }
 
 function utilities() {
-	global $config, $utilities;
+	global $utilities;
 
 	$utilities[__('Technical Support')] = [
 		__('Technical Support') => [
@@ -965,7 +965,7 @@ function utilities() {
 		$i = 0;
 
 		foreach ($content as $title => $details) {
-			if ((isset($details['mode']) && $details['mode'] == 'online' && $config['connection'] == 'online') || !isset($details['mode'])) {
+			if ((isset($details['mode']) && $details['mode'] == 'online' && CACTI_CONNECTION == 'online') || !isset($details['mode'])) {
 				if ($i == 0) {
 					html_section_header($header, 2);
 				}
@@ -1019,7 +1019,7 @@ function purge_data_source_statistics() {
 }
 
 function boost_display_run_status() {
-	global $config, $refresh_interval, $boost_utilities_interval, $boost_refresh_interval, $boost_max_runtime;
+	global $refresh_interval, $boost_utilities_interval, $boost_refresh_interval, $boost_max_runtime;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('refresh');
@@ -1114,7 +1114,7 @@ function boost_display_run_status() {
 		$max_data_length = $table['MAX_DATA_LENGTH'];
 	}
 
-	if ($config['connection'] == 'online' && db_table_exists('poller_output_boost_local_data_ids')) {
+	if (CACTI_CONNECTION == 'online' && db_table_exists('poller_output_boost_local_data_ids')) {
 		$pending_ds = db_fetch_cell('SELECT COUNT(local_data_id) FROM poller_output_boost_local_data_ids');
 	} else {
 		$pending_ds = 0;
@@ -1235,7 +1235,7 @@ function boost_display_run_status() {
 	/* boost status display */
 	html_section_header(__('Current Boost Status'), 2);
 
-	if ($config['connection'] == 'online') {
+	if (CACTI_CONNECTION == 'online') {
 		form_alternate_row();
 		print '<td>' . __('Boost On-demand Updating:') . '</td><td><b>' . $status . '</b></td>';
 
@@ -1254,7 +1254,7 @@ function boost_display_run_status() {
 		form_alternate_row();
 		print '<td>' . __('Total Data Sources:') . '</td><td>' . number_format_i18n($data_sources) . '</td>';
 
-		if ($config['connection'] == 'online') {
+		if (CACTI_CONNECTION == 'online') {
 			form_alternate_row();
 			print '<td>' . __('Remaining Data Sources:') . '</td><td>' . ($pending_ds > 0 ? number_format_i18n($pending_ds) . " ($premaining %)":__('TBD')) . '</td>';
 		}
@@ -1262,7 +1262,7 @@ function boost_display_run_status() {
 		form_alternate_row();
 		print '<td>' . __('Queued Boost Records:') . '</td><td>' . number_format_i18n($pending_records) . '</td>';
 
-		if ($config['connection'] == 'online') {
+		if (CACTI_CONNECTION == 'online') {
 			form_alternate_row();
 			print '<td>' . __('Approximate in Process:') . '</td><td>' . number_format_i18n($remaining) . '</td>';
 
@@ -1333,7 +1333,7 @@ function boost_display_run_status() {
 	form_alternate_row();
 	print '<td>' . __('Estimated Maximum Records:') . '</td><td>' . $max_table_records . ' Records</td>';
 
-	if ($config['connection'] == 'online') {
+	if (CACTI_CONNECTION == 'online') {
 		/* boost last runtime display */
 		html_section_header(__('Previous Runtime Statistics'), 2);
 

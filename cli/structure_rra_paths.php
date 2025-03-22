@@ -218,7 +218,7 @@ foreach ($data_sources as $info) {
 		if (mkdir($new_base_path, 0775, true)) {
 			struct_debug("NOTE: New Directory '$new_base_path' Created for RRD Files");
 
-			if ($config['cacti_server_os'] != 'win32') {
+			if (CACTI_SERVER_OS != 'win32') {
 				if (sp_recursive_chown($new_base_path, $owner_id) && sp_recursive_chgrp($new_base_path, $group_id)) {
 					struct_debug("NOTE: New Directory '$new_base_path' Permissions Set");
 				} else {
@@ -283,7 +283,7 @@ foreach ($data_sources as $info) {
 
 				struct_debug("Move Completed for: '" . $old_rrd_path . "' > '" . $new_rrd_path . "'");
 
-				if ($config['cacti_server_os'] != 'win32') {
+				if (CACTI_SERVER_OS != 'win32') {
 					if (sp_recursive_chown($new_rrd_path, $owner_id) && sp_recursive_chgrp($new_rrd_path, $group_id)) {
 						struct_debug("Permissions set for '$new_rrd_path'");
 					} else {
