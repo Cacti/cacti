@@ -26,7 +26,7 @@
 global $config;
 
 if (empty($config['cacti_server_os'])) {
-	$config['cacti_server_os'] = (strstr(PHP_OS, 'WIN')) ? 'win32' : 'unix';
+	$config['cacti_server_os'] = (str_starts_with(PHP_OS, 'WIN')) ? 'win32' : 'unix';
 }
 
 if ($config['cacti_server_os'] == 'win32') {
