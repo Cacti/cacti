@@ -161,6 +161,7 @@ Cacti CHANGELOG
 -issue#5612: Database reconnection can cause errors to be reported incorrectly
 -issue#5613: Fix returned value if $sau is empty
 -issue#5641: Cmd poller - add availability test for devices without poller items
+-issue#6194: Latest PHP 8.4 causes deprecation warnings in plugins
 -feature#5577: Add Aruba switch, Aruba controller and HPE iLO templates
 -feature#5597: Add OSCX 6x00 templates
 
