@@ -219,9 +219,12 @@ class Net_Ping {
 			}
 
 			if ($using_fping) {
-				// $results would look like:
-				// 172.24.254.2 : xmt/rcv/%loss = 1/1/0%, min/avg/max = 7.01/7.01/7.01
-				$position = strpos($result, 'min/avg/max');
+				/**
+				 * Prototype fping output below:
+				 * www.google.com : xmt/rcv/%loss = 1/1/0%, min/avg/max = 25.6/25.6/25.6
+				 * 172.24.254.2 : xmt/rcv/%loss = 1/1/0%, min/avg/max = 7.01/7.01/7.01
+				 */
+				$position = strpos($result, 'min/avg/max =');
 
 				if ($position > 0) {
 					$output  = substr($result, $position);
