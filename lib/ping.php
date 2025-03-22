@@ -24,39 +24,22 @@
 
 class Net_Ping {
 	public $socket;
-
 	public $host;
-
 	public $port;
-
 	public $ping_status;
-
 	public $ping_response;
-
 	public $snmp_status;
-
 	public $snmp_response;
-
 	public $request;
-
 	public $request_len;
-
 	public $reply;
-
 	public $timeout;
-
 	public $retries;
-
 	public $precision;
-
 	public $time;
-
 	public $timer_start_time;
-
 	public $sqn;
-
 	public $avail_method;
-
 	public $ping_type;
 
 	function __construct() {
@@ -180,17 +163,26 @@ class Net_Ping {
 			$fping = read_config_option('path_fping');
 
 			if ($fping != '' && file_exists($fping) && is_executable($fping)) {
+				$using_fping = true;
+
 				if (str_contains($this->host['hostname'], ':')) {
-					$result = shell_exec('/usr/sbin/fping6 -q -t ' . $this->timeout . ' -c 1 -r ' . $this->retries . ' ' . $this->host['hostname'] . ' 2>&1');
-				} else {
-					$result = shell_exec($fping . ' -q -t ' . $this->timeout . ' -c 1 -r ' . $this->retries . ' ' . $this->host['hostname'] . ' 2>&1');
+					if (file_exists('/usr/sbin/fping6')) {
+						$fping = '/usr/sbin/fping6';
+					} elseif (file_exists('/usr/bin/fping6')) {
+						$fping = '/usr/bin/fping6';
+					}
 				}
+
+				$result = shell_exec($fping . ' -q -t ' . $this->timeout . ' -c 1 -r ' . $this->retries . ' ' . $this->host['hostname'] . ' 2>&1');
 			} else {
-				/* host timeout given in ms, recalculate to sec, but make it an integer
-				 * we might consider to use escapeshellarg on hostname,
-				 * but this field has already been verified.
-				 * The other fields are numerical fields only and thus
-				 * not vulnerable for command injection */
+				$using_fping = false;
+
+				/**
+				 * The host timeout is given in ms, recalculate to sec, but make
+				 * it an integer we might consider to use escapeshellarg on hostname,
+				 * but this field has already been verified. The other fields are
+				 * numerical fields only and thus not vulnerable for command injection.
+				 */
 				if (substr_count(strtolower(PHP_OS), 'sun')) {
 					$result = shell_exec('ping ' . $this->host['hostname']);
 				} elseif (substr_count(strtolower(PHP_OS), 'hpux')) {
@@ -212,10 +204,12 @@ class Net_Ping {
 				} elseif (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 					$result = shell_exec('chcp 437 && ping -w ' . $this->timeout . ' -n ' . $this->retries . ' ' . $this->host['hostname']);
 				} else {
-					/* please know, that when running SELinux, httpd will throw
+					/**
+					 * Please know, that when running SELinux, httpd will throw
 					 * ping: cap_set_proc: Permission denied
 					 * as it now tries to open an ICMP socket and fails
-					 * $result will be empty, then. */
+					 * $result will be empty, then.
+					 */
 					if (str_contains($host_ip, ':')) {
 						$result = shell_exec('ping -6 -W ' . ceil($this->timeout / 1000) . ' -c ' . $this->retries . ' -p ' . $pattern . ' ' . $this->host['hostname']);
 					} else {
@@ -224,10 +218,11 @@ class Net_Ping {
 				}
 			}
 
-			if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN' || ($fping != '' && file_exists($fping))) { // for non-Windows OS or fping.exe exists (in any OS including Win)
+			if ($using_fping) {
 				// $results would look like:
 				// 172.24.254.2 : xmt/rcv/%loss = 1/1/0%, min/avg/max = 7.01/7.01/7.01
 				$position = strpos($result, 'min/avg/max');
+
 				if ($position > 0) {
 					$output  = substr($result, $position);
 					$this->ping_status   = $results[1];
@@ -240,23 +235,23 @@ class Net_Ping {
 
 					return false;
 				}
-			} else { // for Windows (in case fping.exe is not installed)
-				/*
-				if the OS is Windows AND fping.exe does NOT exist, then ping.exe is to be used.
-				the out of ping.exe would look like:
+			} elseif (str_starts_with(PHP_OS, 'WIN')) {
+				/**
+				 * The native ping command was used for windows platform has output
+				 * as follows.
+				 *
+				 * ping -w 500 -n 3 abc
 
-				ping -w 500 -n 3 abc
+				 * Pinging abc [216.239.38.120] with 32 bytes of data:
+				 * Reply from 216.239.38.120: bytes=32 time=30ms TTL=53
+				 * Reply from 216.239.38.120: bytes=32 time=22ms TTL=53
+				 * Reply from 216.239.38.120: bytes=32 time=25ms TTL=53
 
-				Pinging abc [216.239.38.120] with 32 bytes of data:
-				Reply from 216.239.38.120: bytes=32 time=30ms TTL=53
-				Reply from 216.239.38.120: bytes=32 time=22ms TTL=53
-				Reply from 216.239.38.120: bytes=32 time=25ms TTL=53
-
-				Ping statistics for 216.239.38.120:
-					Packets: Sent = 3, Received = 3, Lost = 0 (0% loss),
-				Approximate round trip times in milli-seconds:
-					Minimum = 22ms, Maximum = 30ms, Average = 25ms
-				*/
+				 * Ping statistics for 216.239.38.120:
+				 * Packets: Sent = 3, Received = 3, Lost = 0 (0% loss),
+				 * Approximate round trip times in milli-seconds:
+				 * Minimum = 22ms, Maximum = 30ms, Average = 25ms
+				 */
 				$position = strpos($result, 'Minimum');
 
 				if ($position > 0) {
@@ -271,6 +266,24 @@ class Net_Ping {
 				} else {
 					$this->ping_status   = 'down';
 					$this->ping_response = __('ICMP Ping Timed Out (ping.exe) (' . $this->host['hostname'] . '), Result [' . $result . ']');
+
+					return false;
+				}
+			} else {
+				$position = strpos($result, 'min/avg/max');
+
+				if ($position > 0) {
+					$output  = trim(str_replace(' ms', '', substr($result, $position)));
+					$pieces  = explode('=', $output);
+					$results = explode('/', $pieces[1]);
+
+					$this->ping_status   = $results[1];
+					$this->ping_response = __('ICMP Ping Success (%s ms)', $results[1]);
+
+					return true;
+				} else {
+					$this->ping_status   = 'down';
+					$this->ping_response = __('ICMP ping Timed out');
 
 					return false;
 				}
