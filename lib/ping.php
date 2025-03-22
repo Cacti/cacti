@@ -228,8 +228,9 @@ class Net_Ping {
 
 				if ($position > 0) {
 					$output  = substr($result, $position);
+					$results = explode('/', $output);
 					$this->ping_status   = $results[1];
-					$this->ping_response = __('ICMP Ping Success (fping.exe) (%s ms)', $output);
+					$this->ping_response = __('ICMP Ping Success (fping.exe) (%s ms)', $results[1]);
 
 					return true;
 				} else {
