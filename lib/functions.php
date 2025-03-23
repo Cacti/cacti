@@ -49,9 +49,9 @@ function title_trim(string $text, int $max_length): string {
  * @param string $filter - the search term to filter for
  * @param string $href - the href if you wish to have an anchor returned
  *
- * @return null|string the filtered string
+ * @return string the filtered string
  */
-function filter_value(?string $value, string $filter, string $href = '', string $title = ''): ?string {
+function filter_value(?string $value, string $filter, string $href = '', string $title = ''): string {
 	static $charset;
 
 	if ($charset == '') {
@@ -63,7 +63,7 @@ function filter_value(?string $value, string $filter, string $href = '', string 
 	}
 
 	if (empty($value)) {
-		return $value;
+		return '';
 	}
 
 	$value =  html_escape($value);
