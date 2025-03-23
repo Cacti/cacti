@@ -49,7 +49,6 @@ repos:
     - id: php-stan
       args:
         - analyze
-        - .
         - "--level 5"
         - "--configuration=.phpstan.neon"
       files: \.(php)$
