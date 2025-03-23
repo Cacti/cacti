@@ -1,12 +1,12 @@
 Cacti CHANGELOG
 
 1.2.30
--issue#6089: Cannot Add New User due to incorrect array structure
--issue#6090: Undefined function warnings in Automation
+-issue#6089: Unable to add new users
+-issue#6090: When using Automation Rules, specifying graph criteria may cause issues
 -issue#6099: When transferring a system from a backup if the poller has not run recently rrdtool issues are found
--issue#6172: Quoting issues leading to translation issue in form messaging in Chinese language
--issue#6173: Deprecation warning when using boost for the first time
--issue#6183: Checkbox is displayed always on in some cases
+-issue#6172: When translating, quotes may cause incorrect text to appear
+-issue#6173: When using Boost for the first time, warnings may appear
+-issue#6183: When refreshing forms, items may be checked incorrectly by xmacan
 
 1.2.29
 -security#GHSA-c5j8-jxj3-hh36: Authenticated RCE via multi-line SNMP responses
