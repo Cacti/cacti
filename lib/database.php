@@ -2714,3 +2714,42 @@ function db_has_permissions($permissions, $database = false, $log = false, $db_c
 
 	return $found;
 }
+
+/**
+ * Function that returns information about mysql or mariadb
+ *
+ * @param int $poller_id The poller to get information from
+ *
+ * @return array Information about the database server
+ */
+function get_mysql_info($poller_id = 1) {
+	global $local_db_cnn_id;
+
+	if ($poller_id == 1) {
+		$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES'), 'Variable_name', 'Value');
+	} else {
+		$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES', false, $local_db_cnn_id), 'Variable_name', 'Value');
+	}
+
+	if (str_contains($variables['version'], 'MariaDB')) {
+		$database = 'MariaDB';
+		$version  = str_replace('-MariaDB', '', $variables['version']);
+
+		if (isset($variables['innodb_version'])) {
+			$link_ver = substr($variables['innodb_version'], 0, 3);
+		} else {
+			$link_ver = $version;
+		}
+	} else {
+		$database = 'MySQL';
+		$version  = $variables['version'];
+		$link_ver = substr($variables['version'], 0, 3);
+	}
+
+	return [
+		'database'  => $database,
+		'version'   => $version,
+		'link_ver'  => $link_ver,
+		'variables' => $variables
+	];
+}

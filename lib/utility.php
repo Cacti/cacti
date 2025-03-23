@@ -1045,38 +1045,6 @@ function data_input_whitelist_check($data_input_id) {
 	}
 }
 
-function utilities_get_mysql_info($poller_id = 1) {
-	global $local_db_cnn_id;
-
-	if ($poller_id == 1) {
-		$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES'), 'Variable_name', 'Value');
-	} else {
-		$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES', false, $local_db_cnn_id), 'Variable_name', 'Value');
-	}
-
-	if (str_contains($variables['version'], 'MariaDB')) {
-		$database = 'MariaDB';
-		$version  = str_replace('-MariaDB', '', $variables['version']);
-
-		if (isset($variables['innodb_version'])) {
-			$link_ver = substr($variables['innodb_version'], 0, 3);
-		} else {
-			$link_ver = $version;
-		}
-	} else {
-		$database = 'MySQL';
-		$version  = $variables['version'];
-		$link_ver = substr($variables['version'], 0, 3);
-	}
-
-	return [
-		'database'  => $database,
-		'version'   => $version,
-		'link_ver'  => $link_ver,
-		'variables' => $variables
-	];
-}
-
 function utilities_get_mysql_recommendations() {
 	global $local_db_cnn_id;
 
@@ -1086,7 +1054,7 @@ function utilities_get_mysql_recommendations() {
 
 	$memInfo = utilities_get_system_memory();
 
-	$mysql_info = utilities_get_mysql_info(POLLER_ID);
+	$mysql_info = get_mysql_info(POLLER_ID);
 
 	$database  = $mysql_info['database'];
 	$version   = $mysql_info['version'];

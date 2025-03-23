@@ -1164,7 +1164,7 @@ function update_order_string($inplace = false) {
 		$del = '';
 	}
 
-	$database = utilities_get_mysql_info();
+	$database = get_mysql_info();
 	$natural  = false;
 
 	if ($database['database'] == 'MariaDB') {

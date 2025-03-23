@@ -1352,7 +1352,7 @@ function item() {
 	DrawMatrixHeaderItem(__('Name'),'',2);
 	print '</tr>';
 
-	$database = utilities_get_mysql_info();
+	$database = get_mysql_info();
 
 	$sql_order = 'ORDER BY name';
 

@@ -1463,7 +1463,7 @@ function show_tech_summary() {
 		form_end_row();
 	}
 
-	$mysql_info = utilities_get_mysql_info(POLLER_ID);
+	$mysql_info = get_mysql_info(POLLER_ID);
 
 	$database  = $mysql_info['database'];
 	$version   = $mysql_info['version'];

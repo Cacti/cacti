@@ -999,6 +999,166 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = null) {
 }
 
 function rrdtool_function_tune($rrd_tune_array) {
+	global $data_source_types;
+
+	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
+
+	$data_source_name = get_data_source_item_name($rrd_tune_array['data_source_id']);
+	$data_source_type = $data_source_types[$rrd_tune_array['data-source-type']];
+	$data_source_path = get_data_source_path($rrd_tune_array['data_source_id'], true);
+
+	$rrd_tune = '';
+
+	if ($rrd_tune_array['heartbeat'] != '') {
+		$rrd_tune .= " --heartbeat $data_source_name:" . $rrd_tune_array['heartbeat'];
+	}
+
+	if ($rrd_tune_array['minimum'] != '') {
+		$rrd_tune .= " --minimum $data_source_name:" . $rrd_tune_array['minimum'];
+	}
+
+	if ($rrd_tune_array['maximum'] != '') {
+		$rrd_tune .= " --maximum $data_source_name:" . $rrd_tune_array['maximum'];
+	}
+
+	if ($rrd_tune_array['data-source-type'] != '') {
+		$rrd_tune .= " --data-source-type $data_source_name:" . $data_source_type;
+	}
+
+	if ($rrd_tune_array['data-source-rename'] != '') {
+		$rrd_tune .= " --data-source-rename $data_source_name:" . $rrd_tune_array['data-source-rename'];
+	}
+
+	if ($rrd_tune != '') {
+		if (file_exists($data_source_path) == true) {
+			if (is_file(read_config_option('path_rrdtool')) && is_executable(read_config_option('path_rrdtool'))) {
+				$fp = popen(read_config_option('path_rrdtool') . " tune $data_source_path $rrd_tune", 'r');
+				pclose($fp);
+
+				cacti_log('CACTI2RRD: ' . read_config_option('path_rrdtool') . " tune $data_source_path $rrd_tune", false, 'WEBLOG', POLLER_VERBOSITY_DEBUG);
+			} else {
+				cacti_log("ERROR: RRDtool executable not found, not executable or error in path '" . read_config_option('path_rrdtool') . "'.  No output written to RRDfile.");
+			}
+		}
+	}
+}
+
+/**
+ * rrdtool_function_fetch - given a data source, return all of its data in an array
+ *
+ * @param int         $local_data_id - the data source to fetch data for
+ * @param int         $start_time - the start time to use for the data calculation. this value can
+ *   either be absolute (unix timestamp) or relative (to now)
+ * @param int         $end_time - the end time to use for the data calculation. this value can
+ *   either be absolute (unix timestamp) or relative (to now)
+ * @param int         $resolution - the accuracy of the data measured in seconds
+ * @param bool        $show_unknown - Show unknown 'NAN' values in the output as 'U'
+ * @param string|null $rrdtool_file - Don't force Cacti to calculate the file
+ * @param string      $cf - Specify the consolidation function to use
+ * @param null|res    $rrdtool_pipe - a pipe to an rrdtool command
+ *
+ * @return array an array containing all data in this data source broken down
+ *   by each data source item. the maximum of all data source items is included in
+ *   an item called 'nth_percentile_maximum'.  The array will look as follows:
+ *
+ *   $fetch_array['data_source_names'][0] = 'ds1'
+ *   $fetch_array['data_source_names'][1] = 'ds2'
+ *   $fetch_array['data_source_names'][2] = 'nth_percentile_maximum'
+ *   $fetch_array['start_time'] = $timestamp;
+ *   $fetch_array['end_time']   = $timestamp;
+ *   $fetch_array['values'][$dsindex1][...]  = $value;
+ *   $fetch_array['values'][$dsindex2][...]  = $value;
+ *   $fetch_array['values'][$nth_index][...] = $value;
+ *
+ *   Again, the 'nth_percentile_maximum' will have the maximum value amongst all the
+ *   data sources for each set of data.  So, if you have traffic_in and traffic_out,
+ *   each member element in the array will have the maximum of traffic_in and traffic_out
+ *   in it.
+ */
+function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0, $show_unknown = false, $rrdtool_file = null, $cf = 'AVERAGE', $rrdtool_pipe = null) {
+	include_once(CACTI_PATH_LIBRARY . '/boost.php');
+
+	/* validate local data id */
+	if (empty($local_data_id) && is_null($rrdtool_file)) {
+		return [];
+	}
+
+	$time = time();
+
+	/* initialize fetch array */
+	$fetch_array = [];
+
+	/* check if we have been passed a file instead of local data source to look up */
+	if (is_null($rrdtool_file)) {
+		$data_source_path = get_data_source_path($local_data_id, true);
+	} else {
+		$data_source_path = $rrdtool_file;
+	}
+
+	// Find the correct resolution
+	if ($resolution == 0) {
+		$resolution = rrdtool_function_get_resstep($local_data_id, $start_time, $end_time, 'res');
+	}
+
+	/* update the rrdfile if performing a fetch */
+	boost_fetch_cache_check($local_data_id, $rrdtool_pipe);
+
+	/* build and run the rrdtool fetch command with all of our data */
+	$cmd_line = "fetch $data_source_path $cf -s $start_time -e $end_time";
+
+	if ($resolution > 0) {
+		$cmd_line .= " -r $resolution";
+	}
+
+	$output = rrdtool_execute($cmd_line, false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe);
+	$output = explode("\n", $output);
+
+	$first  = true;
+	$count  = 0;
+
+	if (cacti_sizeof($output)) {
+		$timestamp = 0;
+
+		foreach ($output as $line) {
+			$line      = trim($line);
+			$max_array = [];
+
+			if ($first) {
+				/* get the data source names */
+				$fetch_array['data_source_names'] = preg_split('/\s+/', $line);
+				$first                            = false;
+			} elseif ($line != '') {
+				/* process the data sources into an array */
+				$parts     = explode(':', $line);
+				$timestamp = $parts[0];
+				$data      = explode(' ', trim($parts[1]));
+
+				if (!isset($fetch_array['timestamp']['start_time'])) {
+					$fetch_array['timestamp']['start_time'] = $timestamp;
+				}
+
+				/* process out bad data */
+				foreach ($data as $index => $number) {
+					if (strtolower($number) == 'nan' || strtolower($number) == '-nan') {
+						if ($show_unknown) {
+							$fetch_array['values'][$index][$timestamp] = 'U';
+						}
+					} elseif (is_numeric($number)) {
+						$fetch_array['values'][$index][$timestamp] = $number;
+					} elseif ($show_unknown) {
+						$fetch_array['values'][$index][$timestamp] = 'U';
+					}
+				}
+			}
+		}
+
+		$fetch_array['timestamp']['end_time'] = $timestamp;
+	}
+
+	return $fetch_array;
+}
+
+function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &$graph_data_array) {
 	global $image_types;
 
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
