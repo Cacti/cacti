@@ -1,0 +1,47 @@
+# For use with pre-commit.
+# See usage instructions at http://pre-commit.com
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks.git
+    rev: 'v5.0.0'
+    hooks:
+    - id: check-added-large-files
+      args: ['--maxkb=512']
+    - id: check-executables-have-shebangs
+    - id: check-json
+    - id: detect-aws-credentials
+    - id: detect-private-key
+    - id: end-of-file-fixer
+    - id: mixed-line-ending
+    - id: pretty-format-json
+    - id: trailing-whitespace
+
+  - repo: https://github.com/codespell-project/codespell.git
+    rev: 'v2.0.0'
+    hooks:
+    - id: codespell
+      args: [--config .codespellrc]
+      exclude: (^.git\/|^css\/|^fonts\/|^img\/|^js\/|^twig\/|^vendor\/|\.png$|\.gif$|\.eot$|\.ttf$|\.woff$|\.woff2$|\.ico$|\.phar$|\.map$|\.psd$)
+
+  - repo: https://github.com/markdownlint/markdownlint.git
+    rev: 'v0.11.0'
+    hooks:
+    - id: markdownlint
+      files: \.(md|MD)$
+      exclude: ^(js|vendor)\/.*$
+
+  - repo: https://github.com/cigamit/pre-commit-php.git
+    rev: '511692fd4e9f93f3bf556086e3966caf647e47e0'
+    hooks:
+    - id: php-lint
+    - id: php-lint-all
+    - id: php-cs-fixer
+      args: [--path-mode=intersection]
+      files: \.(php)$
+    - id: php-stan
+      args: 
+        - analyze
+        - ./src
+        - "--level 8"
+        - "--configuration=src/phpstan.neon"
+      files: \.(php)$
