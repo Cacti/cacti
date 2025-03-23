@@ -721,6 +721,8 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		2 => __('Deny')
 	];
 
+	$policy = [];
+
 	if (!isempty_request_var('id')) {
 		$policy = db_fetch_row_prepared('SELECT policy_graphs, policy_trees, policy_hosts, policy_graph_templates
 			FROM user_auth_group
@@ -1440,7 +1442,7 @@ function user_group_realms_edit($header_label) {
 				unset($all_realms[$realm]);
 
 				print '<div class="flexChild">';
-				form_checkbox('section' . $realm, $old_value, $display, '', '', '', (!isempty_request_var('id') ? 1 : 0), $display, true);
+				form_checkbox('section' . $realm, $old_value, $display, '', '', '', '', $display, true);
 				print '</div>';
 			}
 		}
@@ -1491,7 +1493,7 @@ function user_group_realms_edit($header_label) {
 			}
 
 			print '<div class="flexChild">';
-			form_checkbox('section' . $realm, $old_value, $description, '', '', '', (!isempty_request_var('id') ? 1 : 0), $description, true);
+			form_checkbox('section' . $realm, $old_value, $description, '', '', '', '', $description, true);
 			print '</div>';
 		}
 
@@ -1545,7 +1547,7 @@ function user_group_realms_edit($header_label) {
 			}
 
 			print '<div class="flexChild">';
-			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', (!isempty_request_var('id') ? 1 : 0), $r['display'], true);
+			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', '', $r['display'], true);
 			print '</div>';
 		}
 
@@ -1575,7 +1577,7 @@ function user_group_realms_edit($header_label) {
 			$pos = (strpos($user_auth_realms[$realm], '->') !== false ? strpos($user_auth_realms[$realm], '->') + 2:0);
 
 			print '<div class="flexChild">';
-			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', (!isempty_request_var('id') ? 1 : 0), $r['display'], true);
+			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', '', $r['display'], true);
 			print '</div>';
 		}
 

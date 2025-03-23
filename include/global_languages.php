@@ -1021,12 +1021,12 @@ function read_user_i18n_setting(string $config_name): string|false {
  * This function attempts to use the `NumberFormatter` class if available,
  * otherwise it falls back to using PHP's `number_format` function with locale settings.
  *
- * @param float|int $number The number to format.
+ * @param mixed $number The number to format.
  * @param int|null $decimals The number of decimal points. If null, defaults to 0.
- * @param int $baseu The base unit for formatting large numbers (default is 1024).
+ * @param int|null $baseu The base unit for formatting large numbers (default is 1024).
  * @return string The formatted number.
  */
-function number_format_i18n(float|int $number, ?int $decimals = null, int $baseu = 1024): string {
+function number_format_i18n(mixed $number, int $decimals = null, int $baseu = 1024): string {
 	global $cacti_locale, $cacti_country;
 
 	$country = strtoupper($cacti_country);

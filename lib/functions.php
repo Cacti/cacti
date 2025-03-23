@@ -681,7 +681,7 @@ function cache_common_config_settings():array {
  *
  * @return string|false|null          The current value of the configuration option
  */
-function read_config_option(string $config_name, bool $force = false):string|false|null {
+function read_config_option(string $config_name, bool $force = false): string|bool|null {
 	global $config, $database_hostname, $database_default, $database_port, $database_sessions;
 
 	$loaded = false;

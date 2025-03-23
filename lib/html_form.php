@@ -1063,7 +1063,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $a
  * @param string $form_caption - the text to display to the right of the checkbox
  * @param string $form_default_value - the value of this form element to use if there is
  *   no current value available
- * @param int $current_id - used to determine if a current value for this form element
+ * @param string|int $current_id - used to determine if a current value for this form element
  *   exists or not. a $current_id of '0' indicates that no current value exists,
  *   a non-zero value indicates that a current value does exist
  * @param string $class - specify a css class

@@ -322,6 +322,8 @@ function form_selectable_cell(string $contents, int|string $id, string $width = 
 	}
 
 	print "\t<td " . $output . '>' . $wrapper . "</td>\n";
+
+	return true;
 }
 
 function form_get_table_id(?bool $increment = false) {

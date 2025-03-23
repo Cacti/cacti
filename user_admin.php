@@ -1570,7 +1570,7 @@ function user_realms_edit($header_label) {
 				unset($all_realms[$realm]);
 
 				print '<div class="flexChild">';
-				form_checkbox('section' . $realm, $old_value, $display, '', '', '', (!isempty_request_var('id') ? 1 : 0), $display, true);
+				form_checkbox('section' . $realm, $old_value, $display, '', '', '', '', $display, true);
 				print '</div>';
 			}
 		}
@@ -1621,7 +1621,7 @@ function user_realms_edit($header_label) {
 			}
 
 			print '<div class="flexChild">';
-			form_checkbox('section' . $realm, $old_value, $description, '', '', '', (!isempty_request_var('id') ? 1 : 0), $description, true);
+			form_checkbox('section' . $realm, $old_value, $description, '', '', '', '', $description, true);
 			print '</div>';
 		}
 
@@ -1677,7 +1677,7 @@ function user_realms_edit($header_label) {
 			}
 
 			print '<div class="flexChild">';
-			form_checkbox('section' . $realm, $old_value, trim(substr($local_user_auth_realms, $pos)), '', '', '', (!isempty_request_var('id') ? 1 : 0), $r['display'], true);
+			form_checkbox('section' . $realm, $old_value, trim(substr($local_user_auth_realms, $pos)), '', '', '', '', $r['display'], true);
 			print '</div>';
 		}
 
@@ -1706,7 +1706,7 @@ function user_realms_edit($header_label) {
 			$pos = (strpos($user_auth_realms[$realm], '->') !== false ? strpos($user_auth_realms[$realm], '->') + 2:0);
 
 			print '<div class="flexChild">';
-			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', (!isempty_request_var('id') ? 1 : 0), $r['display'], true);
+			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', '', $r['display'], true);
 			print '</div>';
 		}
 
