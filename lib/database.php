@@ -2716,13 +2716,25 @@ function db_has_permissions($permissions, $database = false, $log = false, $db_c
 }
 
 /**
+ * Legacy wrapper function for Cacti plugins that may still
+ * be using the funtion under it's old name
+ *
+ * @param int $poller_id The poller to get server info from
+ *
+ * @return array Information about the database server
+ */
+function utilities_get_mysql_info(int $poller_id = 1) : array {
+	return get_mysql_info($poller_id);
+}
+
+/**
  * Function that returns information about mysql or mariadb
  *
  * @param int $poller_id The poller to get information from
  *
  * @return array Information about the database server
  */
-function get_mysql_info($poller_id = 1) {
+function get_mysql_info(int $poller_id = 1) : array {
 	global $local_db_cnn_id;
 
 	if ($poller_id == 1) {
