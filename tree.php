@@ -325,7 +325,7 @@ function get_host_sort_type() {
 			foreach ($ndata as $n) {
 				$parts = explode(':', $n);
 
-				if (isset($parts[0]) && $parts[0] == 'tbranch') {
+				if ($parts[0] == 'tbranch') {
 					$branch = $parts[1];
 					input_validate_input_number($branch, 'branch');
 
@@ -363,7 +363,7 @@ function set_host_sort_type() {
 			foreach ($ndata as $n) {
 				$parts = explode(':', $n);
 
-				if (isset($parts[0]) && $parts[0] == 'tbranch') {
+				if ($parts[0] == 'tbranch') {
 					$branch = $parts[1];
 					input_validate_input_number($branch, 'branch');
 
@@ -395,7 +395,7 @@ function get_branch_sort_type() {
 			foreach ($ndata as $n) {
 				$parts = explode(':', $n);
 
-				if (isset($parts[0]) && $parts[0] == 'tbranch') {
+				if ($parts[0] == 'tbranch') {
 					$branch = $parts[1];
 
 					input_validate_input_number($branch, 'branch');
@@ -457,7 +457,7 @@ function set_branch_sort_type() {
 			foreach ($ndata as $n) {
 				$parts = explode(':', $n);
 
-				if (isset($parts[0]) && $parts[0] == 'tbranch') {
+				if ($parts[0] == 'tbranch') {
 					$branch = $parts[1];
 					input_validate_input_number($branch, 'branch');
 
@@ -574,7 +574,7 @@ function form_save() {
 			}
 		}
 
-		header("Location: tree.php?action=edit&id=$tree_id");
+		header('Location: tree.php?action=edit&id=' . (isset($tree_id) ? $tree_id : ''));
 
 		exit;
 	}
@@ -784,7 +784,7 @@ function tree_edit($partial = false) {
 	draw_edit_form(
 		[
 			'config' => ['no_form_tag' => true],
-			'fields' => inject_form_variables($fields_tree_edit, (isset($tree) ? $tree : []))
+			'fields' => inject_form_variables($fields_tree_edit, $tree)
 		]
 	);
 

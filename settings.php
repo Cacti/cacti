@@ -53,7 +53,7 @@ switch (get_request_var('action')) {
 }
 
 function display_settings() {
-	global $settings, $tabs, $local_db_cnn_id;
+	global $settings, $tabs, $local_db_cnn_id, $disable_log_rotation;
 
 	top_header();
 

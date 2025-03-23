@@ -930,9 +930,9 @@ function check_changed($request, $session) {
  * is_error_message - finds whether an error message has been raised and has not been outputted to the
  * user
  *
- * @return mixed whether the messages array contains an error or not
+ * @return bool whether the messages array contains an error or not
  */
-function is_error_message() {
+function is_error_message() : bool {
 	global $messages;
 
 	if (isset($_SESSION[SESS_ERROR_FIELDS]) && cacti_sizeof($_SESSION[SESS_ERROR_FIELDS])) {
@@ -941,6 +941,7 @@ function is_error_message() {
 		return false;
 	}
 }
+
 /**
  * Get the level for the current message
  *
@@ -3338,10 +3339,11 @@ function get_template_account($user = '') {
 /**
  * get_username - returns the username for the selected user
  *
- * @param int $user_id - The ID of the user
+ * @param string|int $user_id - The ID of the user
  *
- * @return mixed the username */
-function get_username($user_id = 0) {
+ * @return mixed the username
+ */
+function get_username(string|int $user_id = 0) : mixed {
 	if ($user_id == 0) {
 		$user_id = $_SESSION[SESS_USER_ID];
 	}
@@ -8375,7 +8377,7 @@ function cacti_ptoa($title, $addr) {
 	}
 }
 
-function cacti_sizeof($array) {
+function cacti_sizeof($array) : int {
 	return ($array === false || !is_array($array)) ? 0 : count($array);
 }
 

@@ -39,8 +39,6 @@ if (isset_request_var('method')) {
 			print __("FATAL: Spike Kill method '%s' is Invalid", html_escape(get_nfilter_request_var('method'))) . PHP_EOL;
 
 			exit(1);
-
-			break;
 	}
 }
 

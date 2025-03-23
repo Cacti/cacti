@@ -34,10 +34,10 @@ set_default_action();
 $action  = get_request_var('action');
 $is_save = isset_request_var('save_component_import');
 
-$tmp_dir = sys_get_temp_dir();
-$tmp_len = strlen($tmp_dir);
+$tmp_dir  = sys_get_temp_dir();
+$tmp_len  = strlen($tmp_dir);
 $tmp_dir .= ($tmp_len !== 0 && substr($tmp_dir, -$tmp_len) === '/') ? '': '/';
-$is_tmp = is_tmp_writable(sys_get_temp_dir());
+$is_tmp   = is_tmp_writable();
 
 if ($is_tmp && $is_save && $action == 'save') {
 	form_save();

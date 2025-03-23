@@ -419,7 +419,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	}
 
 	if (!db_table_exists('settings') || !db_table_exists('version')) {
-		print $ps . 'FATAL: Connection to Cacti database succeed but `Settings` table not found. Please ensure: ' . $ul;
+		print $ps . 'FATAL: Connection to Cacti database succeed but `settings` table not found. Please ensure: ' . $ul;
 		print $li . 'the PHP MySQL module is installed and enabled.' . $il;
 		print $li . 'the database is running.' . $il;
 		print $li . 'the cacti.sql has been imported.' . $il;

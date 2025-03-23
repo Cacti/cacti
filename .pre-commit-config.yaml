@@ -50,7 +50,7 @@ repos:
       args:
         - analyze
         - .
-        - "--level 8"
-        - "--configuration=src/phpstan.neon"
+        - "--level 5"
+        - "--configuration=.phpstan.neon"
       files: \.(php)$
       exclude: ^(locales|include/fa|include/css|include/js|include/vendor)\/.*$

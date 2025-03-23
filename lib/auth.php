@@ -1946,13 +1946,13 @@ function get_policy_join_select(array $policies): array {
  * Parse the policies in order to downselect matching graphs
  *   without the use of the SQL Having clause which is very inefficient
  *
- * @param int $graph_auth_method The graph auth method: permissive, restrictive, device, graph_template
+ * @param string|int $graph_auth_method The graph auth method: permissive, restrictive, device, graph_template
  * @param array $policies The list of user and group policies.
  * @param string $sql_where The SQL where filter provided by the calling function.
  *
  * @return string Updated sql_where value
  */
-function get_policy_where(int $graph_auth_method, array $policies, string $sql_where): string {
+function get_policy_where(string|int $graph_auth_method, array $policies, string $sql_where): string {
 	if ($graph_auth_method == 1) {
 		// Policy Rows include
 		// id, type (group|user), policy_graphs, policy_hosts, policy_graph_templates

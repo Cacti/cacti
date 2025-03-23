@@ -87,7 +87,8 @@ function export() {
 		set_request_var('export_type', 'host_template');
 	}
 
-	$type_found = false;
+	$type_found   = false;
+	$export_array = [];
 
 	foreach ($export_types as $id => $type) {
 		$export_array[$id] = $type['name'];

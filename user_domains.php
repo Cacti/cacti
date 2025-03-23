@@ -79,7 +79,7 @@ function form_save() {
 		$save['domain_name'] = form_input_validate(get_nfilter_request_var('domain_name'), 'domain_name', '', false, 3);
 		$save['enabled']     = (isset_request_var('enabled') ? form_input_validate(get_nfilter_request_var('enabled'), 'enabled', '', true,  3) : '');
 
-		if (!is_error_message()) {
+		if (is_error_message() === false) {
 			$domain_id = sql_save($save, 'user_domains', 'domain_id');
 
 			if ($domain_id) {
@@ -93,7 +93,7 @@ function form_save() {
 				raise_message(2);
 			}
 
-			if (!is_error_message()) {
+			if (is_error_message() === false) {
 				/* ================= input validation ================= */
 				get_filter_request_var('domain_id');
 				get_filter_request_var('port');
@@ -126,7 +126,7 @@ function form_save() {
 				$save['cn_full_name']        = get_nfilter_request_var('cn_full_name');
 				$save['cn_email']            = get_nfilter_request_var('cn_email');
 
-				if (!is_error_message()) {
+				if (is_error_message() === false) {
 					$insert_id = sql_save($save, 'user_domains_ldap', 'domain_id', false);
 
 					if ($insert_id) {
@@ -150,7 +150,7 @@ function form_save() {
 		$save['user_id']     = get_nfilter_request_var('user_id');
 		$save['enabled']     = (isset_request_var('enabled') ? form_input_validate(get_nfilter_request_var('enabled'), 'enabled', '', true,  3) : '');
 
-		if (!is_error_message()) {
+		if (is_error_message() === false) {
 			$domain_id = sql_save($save, 'user_domains', 'domain_id');
 
 			if ($domain_id) {
@@ -496,7 +496,7 @@ function domain_edit() {
 
 		draw_edit_form([
 			'config' => [],
-			'fields' => inject_form_variables($fields_domain_ldap_edit, (isset($domain) ? $domain : []))
+			'fields' => inject_form_variables($fields_domain_ldap_edit, $domain)
 		]);
 
 		html_end_box(true, true);

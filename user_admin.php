@@ -302,7 +302,7 @@ function form_actions() {
 							WHERE id = ?',
 							[$selected_items[$i]]);
 
-						if ((isset($user)) && (isset($template))) {
+						if (cacti_sizeof($user) && cacti_sizeof($template)) {
 							if (user_copy($template['username'], $user['username'], $template['realm'], $user['realm'], true) === false) {
 								$copy_error = true;
 							}
@@ -581,12 +581,15 @@ function form_save() {
 						$save['username'],
 						read_config_option('base_url') . CACTI_PATH_URL . 'auth_resetpassword.php?action=formreset&hash=' . $hash
 					];
+
 					$search = ['<CACTIURL>', '<USERNAME>', '<PWDRESETLINK>'];
 
 					db_execute_prepared('INSERT INTO user_auth_reset_hashes
 						(user_id, hash, expiry)
 						VALUES (?, ?, date_add(now(), interval ? minute))',
 						[$user_id, $hash, read_config_option('secnotify_resetlink_timeout')]);
+				} else {
+					$search = $replacement = '';
 				}
 
 				if ($save['id'] == 0) {
@@ -1753,9 +1756,7 @@ function settings_edit($header_label) {
 	html_start_box(__esc('User Settings %s', $header_label), '100%', true, 3, 'center', '');
 
 	foreach ($settings_user as $tab_short_name => $tab_fields) {
-		$collapsible = true;
-
-		print "<div class='spacer formHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$tab_short_name'><div style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":'') . '</div></div>';
+		print "<div class='spacer formHeader collapsible' id='row_$tab_short_name'><div style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div></div></div>";
 
 		$form_array = [];
 
@@ -1907,7 +1908,7 @@ function user_edit() {
 		<script type='text/javascript'>
 
 		var templateAccount=<?php print is_template_account(get_filter_request_var('id')) ? 'true':'false';?>;
-		var consoleAllowed=<?php print(isset($user['id']) ? (is_realm_allowed(8, (isset($user) ? $user['id'] : 0)) ? 'true':'false'):'false');?>;
+		var consoleAllowed=<?php print(isset($user['id']) ? (is_realm_allowed(8, $user['id']) ? 'true':'false'):'false');?>;
 
 		function changeRealm() {
 			if ($('#realm').val() != 0) {
