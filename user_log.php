@@ -119,7 +119,7 @@ function view_user_log() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1, 'user_log.php');
 
@@ -205,7 +205,7 @@ function clear_user_log() {
 function purge_user_log() {
 	form_start('user_log.php');
 
-	html_start_box(__('Purge User Log'), '50%', '', '3', 'center', '');
+	html_start_box(__('Purge User Log'), '60%', false, 3, 'center', '');
 
 	print "<tr>
 			<td class='textArea'>

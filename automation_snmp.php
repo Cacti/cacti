@@ -175,7 +175,7 @@ function automation_import() {
 	form_start('automation_snmp.php', 'chk', true);
 
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
-		html_start_box(__('Import Results'), '80%', '', '3', 'center', '');
+		html_start_box(__('Import Results'), '60%', false, 3, 'center', '');
 
 		print '<tr class="tableHeader"><th>' . __('Cacti has Imported the following SNMP Options'). '</th></tr>';
 
@@ -188,7 +188,7 @@ function automation_import() {
 		kill_session_var('import_debug_info');
 	}
 
-	html_start_box(__('Import SNMP Options'), '80%', false, '3', 'center', '');
+	html_start_box(__('Import SNMP Options'), '60%', false, 3, 'center', '');
 
 	draw_edit_form(
 		[
@@ -524,7 +524,7 @@ function automation_snmp_item_remove_confirm() {
 
 	form_start('automation_snmp.php');
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$snmp = db_fetch_row_prepared('SELECT * FROM automation_snmp WHERE id = ?', [get_request_var('id')]);
 	$item = db_fetch_row_prepared('SELECT * FROM automation_snmp_items WHERE id = ?', [get_request_var('item_id')]);
@@ -617,7 +617,7 @@ function automation_snmp_item_edit() {
 
 	form_start('automation_snmp.php', 'automation_item_edit');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	/* this is snmp we are talking about here */
 	unset($snmp_versions[0]);
@@ -679,7 +679,7 @@ function automation_snmp_edit() {
 
 	form_start('automation_snmp.php', 'automation_snmp_group');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	/* file: automation_snmp.php, action: edit */
 	$fields_automation_snmp_edit = [
@@ -710,7 +710,7 @@ function automation_snmp_edit() {
 			WHERE snmp_id = ?
 			ORDER BY sequence', [get_request_var('id')]);
 
-		html_start_box(__('SNMP Options'), '100%', '', '3', 'center', 'automation_snmp.php?action=item_edit&id=' . get_request_var('id'));
+		html_start_box(__('SNMP Options'), '100%', false, 3, 'center', 'automation_snmp.php?action=item_edit&id=' . get_request_var('id'));
 
 		$display_text = [
 			[
@@ -931,7 +931,7 @@ function automation_snmp() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
 		'name' => [

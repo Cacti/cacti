@@ -660,7 +660,7 @@ function user_group_members_edit($header_label) {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_checkbox($display_text, false);
 
@@ -747,7 +747,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			form_start('user_group_admin.php', 'policy');
 
 			/* box: device permissions */
-			html_start_box(__('Default Graph Policy'), '100%', '', '3', 'center', '');
+			html_start_box(__('Default Graph Policy'), '100%', false, 3, 'center', '');
 
 			?>
 		<tr class='even'>
@@ -862,7 +862,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 			print $nav;
 
-			html_start_box('', '100%', '', '3', 'center', '');
+			html_start_box('', '100%', false, 3, 'center', '');
 
 			$display_text = [ __('Graph Title'), __('ID'), __('Effective Policy')];
 
@@ -931,7 +931,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			form_start('user_group_admin.php', 'policy');
 
 			/* box: device permissions */
-			html_start_box(__('Default Device Policy'), '100%', '', '3', 'center', '');
+			html_start_box(__('Default Device Policy'), '100%', false, 3, 'center', '');
 
 			?>
 			<tr class='even'>
@@ -1038,7 +1038,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 			print $nav;
 
-			html_start_box('', '100%', '', '3', 'center', '');
+			html_start_box('', '100%', false, 3, 'center', '');
 
 			html_header_checkbox($display_text, false);
 
@@ -1109,7 +1109,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			form_start('user_group_admin.php', 'policy');
 
 			/* box: device permissions */
-			html_start_box(__('Default Graph Template Policy'), '100%', '', '3', 'center', '');
+			html_start_box(__('Default Graph Template Policy'), '100%', false, 3, 'center', '');
 
 			?>
 		<tr class='even'>
@@ -1184,7 +1184,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 			print $nav;
 
-			html_start_box('', '100%', '', '3', 'center', '');
+			html_start_box('', '100%', false, 3, 'center', '');
 
 			$display_text = [ __('Template Name'), __('ID'), __('Effective Policy'), __('Total Graphs')];
 
@@ -1254,7 +1254,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			form_start('user_group_admin.php', 'policy');
 
 			/* box: device permissions */
-			html_start_box(__('Default Tree Policy'), '100%', '', '3', 'center', '');
+			html_start_box(__('Default Tree Policy'), '100%', false, 3, 'center', '');
 
 			?>
 			<tr class='even'>
@@ -1318,7 +1318,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 			print $nav;
 
-			html_start_box('', '100%', '', '3', 'center', '');
+			html_start_box('', '100%', false, 3, 'center', '');
 
 			$display_text = [ __('Tree Name'), __('ID'), __('Effective Policy')];
 
@@ -1409,7 +1409,7 @@ function user_group_realms_edit($header_label) {
 
 	$all_realms = $user_auth_realms;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	/* do cacti realms first */
 	foreach ($user_auth_roles as $role_name => $perms) {
@@ -1619,7 +1619,7 @@ function user_group_settings_edit($header_label) {
 
 	form_start('user_group_admin.php', 'chk');
 
-	html_start_box(__esc('User Settings %s', $header_label), '100%', true, '3', 'center', '');
+	html_start_box(__esc('User Settings %s', $header_label), '100%', true, 3, 'center', '');
 
 	foreach ($settings_user as $tab_short_name => $tab_fields) {
 		$collapsible = true;
@@ -1754,7 +1754,7 @@ function group_edit() {
 
 			form_start('user_group_admin.php');
 
-			html_start_box($header_label, '100%', true, '3', 'center', '');
+			html_start_box($header_label, '100%', true, 3, 'center', '');
 
 			draw_edit_form([
 				'config' => ['no_form_tag' => true],
@@ -1917,7 +1917,7 @@ function user_group() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 

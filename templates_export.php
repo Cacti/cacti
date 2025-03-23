@@ -153,7 +153,7 @@ function export() {
 
 	form_start('templates_export.php', 'export');
 
-	html_start_box(__('Export Templates'), '100%', '', '3', 'center', '');
+	html_start_box(__('Export Templates'), '100%', false, 3, 'center', '');
 
 	draw_edit_form(
 		[
@@ -164,7 +164,7 @@ function export() {
 
 	html_end_box();
 
-	html_start_box(__('Available Templates [%s]', $export_types[get_nfilter_request_var('export_type')]['name']), '100%', '', '3', 'center', '');
+	html_start_box(__('Available Templates [%s]', $export_types[get_nfilter_request_var('export_type')]['name']), '100%', false, 3, 'center', '');
 
 	draw_edit_form(
 		[

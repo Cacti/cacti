@@ -2865,7 +2865,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 	ob_start();
 
 	if (cacti_sizeof($import_debug_info)) {
-		html_start_box(($preview ? __('Import Preview Results'):__('Import Results')), '100%', '', '3', 'center', '');
+		html_start_box(($preview ? __('Import Preview Results'):__('Import Results')), '100%', false, 3, 'center', '');
 
 		if (cacti_sizeof($filestatus)) {
 			if ($preview) {

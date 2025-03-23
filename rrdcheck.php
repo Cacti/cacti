@@ -32,7 +32,7 @@ top_header();
 set_default_action();
 
 if (read_config_option('rrdcheck_enable') != 'on') {
-	html_start_box(__('RRD check'), '100%', '', '3', 'center', '');
+	html_start_box(__('RRD check'), '100%', false, 3, 'center', '');
 	print __('RRD check is disabled, please enable in Configuration -> Settings -> Data');
 	html_end_box();
 }
@@ -125,7 +125,7 @@ function rrdcheck_display_problems() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
 		'description' => [

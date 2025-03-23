@@ -293,7 +293,7 @@ function pages() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '4', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
 		'nosort0' => [
@@ -540,9 +540,9 @@ function edit_page() {
 	form_start('links.php', 'link_edit');
 
 	if (isset($data['title'])) {
-		html_start_box(__('External Links [edit: %s]', html_escape($data['title'])), '100%', true, '3', 'center', '');
+		html_start_box(__('External Links [edit: %s]', html_escape($data['title'])), '100%', true, 3, 'center', '');
 	} else {
-		html_start_box(__('External Links [new]'), '100%', true, '3', 'center', '');
+		html_start_box(__('External Links [new]'), '100%', true, 3, 'center', '');
 	}
 
 	draw_edit_form(

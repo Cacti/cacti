@@ -299,7 +299,7 @@ function form_actions() {
 
 	form_start('package_import.php');
 
-	html_start_box(__('Package %s', $actions[get_nfilter_request_var('drp_action')]), '60%', '', '3', 'center', '');
+	html_start_box(__('Package %s', $actions[get_nfilter_request_var('drp_action')]), '60%', false, 3, 'center', '');
 
 	if (isset($pkg_array) && cacti_sizeof($pkg_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* import */
@@ -951,7 +951,7 @@ function import_display_package_data($templates, $files, $package_name, $filenam
 	if (!$multipackage) {
 		$details = import_package_get_details($filename);
 
-		html_start_box(__('Packages Details'), '100%', '', '1', 'center', '');
+		html_start_box(__('Packages Details'), '100%', false, 3, 'center', '');
 
 		$display_text = [
 			[
@@ -1000,7 +1000,7 @@ function import_display_package_data($templates, $files, $package_name, $filenam
 
 	// Show the filename status'
 	if (cacti_sizeof($files)) {
-		html_start_box(__('Import Package Filenames [ None selected imports all, Check to import selectively ]'), '100%', '', '1', 'center', '');
+		html_start_box(__('Import Package Filenames [ None selected imports all, Check to import selectively ]'), '100%', false, 3, 'center', '');
 
 		$display_text = [
 			[
@@ -1075,7 +1075,7 @@ function import_display_package_data($templates, $files, $package_name, $filenam
 	}
 
 	if (cacti_sizeof($templates)) {
-		html_start_box(__('Import Package Templates [ None selected imports all, Check to import selectively ]'), '100%', '', '1', 'center', '');
+		html_start_box(__('Import Package Templates [ None selected imports all, Check to import selectively ]'), '100%', false, 3, 'center', '');
 
 		if ($multipackage) {
 			$display_text = [
@@ -1502,7 +1502,7 @@ function package_import() {
 	$form = get_import_form(get_filter_request_var('package_location'), $default_profile);
 
 	if (isset_request_var('package_location') && get_nfilter_request_var('package_location') == 0) {
-		html_start_box(__('Package Import'), '100%', '', '3', 'center', '');
+		html_start_box(__('Package Import'), '100%', false, 3, 'center', '');
 
 		draw_edit_form(
 			[
@@ -1513,7 +1513,7 @@ function package_import() {
 
 		html_end_box();
 
-		html_start_box(__('Local Package Import'), '100%', true, '3', 'center', '');
+		html_start_box(__('Local Package Import'), '100%', true, 3, 'center', '');
 
 		draw_edit_form(
 			[
@@ -1533,7 +1533,7 @@ function package_import() {
 
 		form_dialog_box();
 	} else {
-		html_start_box(__('Package Import'), '100%', '', '3', 'center', '');
+		html_start_box(__('Package Import'), '100%', false, 3, 'center', '');
 
 		draw_edit_form(
 			[
@@ -1544,7 +1544,7 @@ function package_import() {
 
 		html_end_box();
 
-		html_start_box(__('Package Import Preferences'), '100%', true, '3', 'center', '');
+		html_start_box(__('Package Import Preferences'), '100%', true, 3, 'center', '');
 
 		draw_edit_form(
 			[
@@ -1555,7 +1555,7 @@ function package_import() {
 
 		html_end_box(true, true);
 
-		html_start_box(__('Repository Based Package Import'), '100%', '', '3', 'center', '');
+		html_start_box(__('Repository Based Package Import'), '100%', false, 3, 'center', '');
 
 		$display_text = [
 			'name' => [

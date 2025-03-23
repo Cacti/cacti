@@ -540,7 +540,7 @@ function data_query_item_remove_confirm() {
 
 	form_start('data_queries.php?action=edit&id' . get_request_var('snmp_query_id'));
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$graph_template = db_fetch_row_prepared('SELECT *
 		FROM snmp_query_graph
@@ -649,7 +649,7 @@ function data_query_item_edit() {
 
 	form_start('data_queries.php', 'data_queries');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	draw_edit_form(
 		[
@@ -679,7 +679,7 @@ function data_query_item_edit() {
 	<?php
 
 	if (!empty($snmp_query_item['id'])) {
-		html_start_box(__('Associated Data Templates'), '100%', '', '3', 'center', '');
+		html_start_box(__('Associated Data Templates'), '100%', false, 3, 'center', '');
 
 		$data_templates = db_fetch_assoc_prepared('SELECT data_template.id, data_template.name
 			FROM (data_template, data_template_rrd, graph_templates_item)
@@ -764,7 +764,7 @@ function data_query_item_edit() {
 
 		html_end_box();
 
-		html_start_box(__('Suggested Values - Graphs'), '100%', '', '3', 'center', '');
+		html_start_box(__('Suggested Values - Graphs'), '100%', false, 3, 'center', '');
 
 		/* suggested values for graphs templates */
 		$suggested_values = db_fetch_assoc_prepared('SELECT text, field_name, snmp_query_graph_id, id
@@ -861,7 +861,7 @@ function data_query_item_edit() {
 
 		html_end_box();
 
-		html_start_box(__('Suggested Values - Data Sources'), '100%', '', '3', 'center', '');
+		html_start_box(__('Suggested Values - Data Sources'), '100%', false, 3, 'center', '');
 
 		/* suggested values for data templates */
 		if (cacti_sizeof($data_templates)) {
@@ -1120,7 +1120,7 @@ function data_query_edit() {
 
 	form_start('data_queries.php', 'data_queries');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	draw_edit_form(
 		[
@@ -1144,7 +1144,7 @@ function data_query_edit() {
 			$xml_file_exists = false;
 		}
 
-		html_start_box('', '100%', '', '3', 'center', '');
+		html_start_box('', '100%', false, 3, 'center', '');
 		print "<tr class='tableRow debug'><td>$text</td></tr>";
 		html_end_box(false);
 
@@ -1171,7 +1171,7 @@ function data_query_edit() {
 			]
 		];
 
-		html_start_box(__('Associated Graph Templates'), '100%', '', '3', 'center', 'data_queries.php?action=item_edit&snmp_query_id=' . $snmp_query['id']);
+		html_start_box(__('Associated Graph Templates'), '100%', false, 3, 'center', 'data_queries.php?action=item_edit&snmp_query_id=' . $snmp_query['id']);
 
 		html_header($display_text, 1);
 
@@ -1204,7 +1204,7 @@ function data_query_edit() {
 
 				form_selectable_ecell($snmp_query_graph['graph_template_name'], $i);
 
-				form_selectable_cell(number_format_i18n($snmp_query_graph['graphs'], '-1'), $i, '', 'right');
+				form_selectable_cell(number_format_i18n($snmp_query_graph['graphs'], -1), $i, '', 'right');
 				form_selectable_cell($snmp_query_graph['id'], $i, '', 'right');
 
 				if ($snmp_query_graph['graphs'] == 0) {
@@ -1368,7 +1368,7 @@ function data_query() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -1384,8 +1384,8 @@ function data_query() {
 			form_selectable_cell(filter_value($snmp_query['name'], get_request_var('filter'), 'data_queries.php?action=edit&id=' . $snmp_query['id']), $snmp_query['id']);
 			form_selectable_cell($snmp_query['id'], $snmp_query['id'], '', 'right');
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $snmp_query['id'], '', 'right');
-			form_selectable_cell(number_format_i18n($snmp_query['graphs'], '-1'), $snmp_query['id'], '', 'right');
-			form_selectable_cell(number_format_i18n($snmp_query['templates'], '-1'), $snmp_query['id'], '', 'right');
+			form_selectable_cell(number_format_i18n($snmp_query['graphs'], -1), $snmp_query['id'], '', 'right');
+			form_selectable_cell(number_format_i18n($snmp_query['templates'], -1), $snmp_query['id'], '', 'right');
 			form_selectable_cell(filter_value($snmp_query['data_input_method'], get_request_var('filter')), $snmp_query['id'], '', 'right');
 			form_selectable_cell($snmp_query['last_updated'], $snmp_query['id'], '', 'right');
 

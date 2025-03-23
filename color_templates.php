@@ -464,7 +464,7 @@ function color_item_remove_confirm() {
 
 	form_start('color_templates.php');
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$template   = db_fetch_row_prepared('SELECT *
 		FROM color_templates
@@ -567,7 +567,7 @@ function color_item_edit() {
 
 	form_start('color_templates.php', 'aggregate_color_item_edit');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	draw_edit_form([
 		'config' => ['no_form_tag' => true],
@@ -614,7 +614,7 @@ function color_item() {
 		$header_label = __esc('Color Template Items [edit: %s]', $name);
 	}
 
-	html_start_box($header_label, '100%', '', '3', 'center', 'color_templates.php?action=item_edit&color_template_id=' . html_escape_request_var('color_template_id'));
+	html_start_box($header_label, '100%', false, 3, 'center', 'color_templates.php?action=item_edit&color_template_id=' . html_escape_request_var('color_template_id'));
 
 	draw_color_template_items_list($template_item_list, 'color_templates.php', 'color_template_id=' . html_escape_request_var('color_template_id'), false);
 
@@ -684,7 +684,7 @@ function color_template_edit() {
 
 	form_start('color_templates.php', 'color_template_edit');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	draw_edit_form(
 		[
@@ -811,7 +811,7 @@ function color_template() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
 		'name' => [

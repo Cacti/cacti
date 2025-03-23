@@ -1535,7 +1535,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	print $nav;
 
-	html_start_box('', '100%', false, '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	/* start graph display */
 	print "<div class='tableHeaderGraph left'><span>$title</span></div>";

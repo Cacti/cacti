@@ -480,7 +480,7 @@ function domain_edit() {
 
 	form_start('user_domains.php');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	draw_edit_form([
 		'config' => [],
@@ -492,7 +492,7 @@ function domain_edit() {
 	if (!isempty_request_var('domain_id')) {
 		$domain = db_fetch_row_prepared('SELECT * FROM user_domains_ldap WHERE domain_id = ?', [get_request_var('domain_id')]);
 
-		html_start_box(__('Domain Properties'), '100%', true, '3', 'center', '');
+		html_start_box(__('Domain Properties'), '100%', true, 3, 'center', '');
 
 		draw_edit_form([
 			'config' => [],
@@ -621,7 +621,7 @@ function domains() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 

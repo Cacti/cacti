@@ -227,7 +227,7 @@ function automation_import() {
 	form_start('automation_templates.php', 'chk', true);
 
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
-		html_start_box(__('Import Results'), '80%', '', '3', 'center', '');
+		html_start_box(__('Import Results'), '60%', false, 3, 'center', '');
 
 		print '<tr class="tableHeader"><th>' . __('Cacti has Imported the following Device Rules'). '</th></tr>';
 
@@ -240,7 +240,7 @@ function automation_import() {
 		kill_session_var('import_debug_info');
 	}
 
-	html_start_box(__('Import Device Rules'), '80%', false, '3', 'center', '');
+	html_start_box(__('Import Device Rules'), '60%', false, 3, 'center', '');
 
 	draw_edit_form(
 		[
@@ -696,7 +696,7 @@ function automation_remove_ttr_confirm() {
 
 	form_start('automation_templates.php?action=edit&id=' . get_request_var('id'));
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$rule = db_fetch_row_prepared('SELECT *
 		FROM plugin_thold_host_template
@@ -764,7 +764,7 @@ function automation_remove_agr_confirm() {
 
 	form_start('automation_templates.php?action=edit&id=' . get_request_var('template_id'));
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$rule = db_fetch_row_prepared('SELECT *
 		FROM automation_templates_rules
@@ -888,7 +888,7 @@ function automation_remove_atr_confirm() {
 
 	form_start('automation_templates.php?action=edit&id=' . get_request_var('template_id'));
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$rule = db_fetch_row_prepared('SELECT *
 		FROM automation_templates_rules
@@ -1119,7 +1119,7 @@ function template_edit() {
 
 	form_start('automation_templates.php', 'form_network');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', false, 3, 'center', '');
 
 	draw_edit_form(
 		[
@@ -1134,7 +1134,7 @@ function template_edit() {
 		/**
 		 * Start Graph Rules here.
 		 */
-		html_start_box(__('Associated Graph Rules'), '100%', '', '3', 'center', '');
+		html_start_box(__('Associated Graph Rules'), '100%', false, 3, 'center', '');
 
 		$graph_rules = db_fetch_assoc_prepared('SELECT atr.*, gr.name
 			FROM automation_templates_rules AS atr
@@ -1203,7 +1203,7 @@ function template_edit() {
 
 		html_end_box();
 
-		html_start_box('', '100%', '', '3', 'center', '');
+		html_start_box('', '100%', false, 3, 'center', '');
 
 		$field_label  = __('Add Graph Rule');
 		$field_name   = 'graph_rule';
@@ -1232,7 +1232,7 @@ function template_edit() {
 		/**
 		 * Start Tree Rules here.
 		 */
-		html_start_box(__('Associated Tree Rules'), '100%', '', '3', 'center', '');
+		html_start_box(__('Associated Tree Rules'), '100%', false, 3, 'center', '');
 
 		$tree_rules = db_fetch_assoc_prepared('SELECT atr.*, tr.name
 			FROM automation_templates_rules AS atr
@@ -1340,7 +1340,7 @@ function template_edit() {
 			/**
 			 * Start Threshold Template here.
 			 */
-			html_start_box(__('Associated Threshold Templates'), '100%', '', '3', 'center', '');
+			html_start_box(__('Associated Threshold Templates'), '100%', false, 3, 'center', '');
 
 			$thold_rules = db_fetch_assoc_prepared('SELECT tht.id AS rule_id, tt.id, tt.name
 				FROM thold_template AS tt
@@ -1386,7 +1386,7 @@ function template_edit() {
 
 			html_end_box();
 
-			html_start_box('', '100%', '', '3', 'center', '');
+			html_start_box('', '100%', false, 3, 'center', '');
 
 			$field_label  = __('Add Threshold Rule');
 			$field_name   = 'thold_rule';
@@ -1593,7 +1593,7 @@ function template() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
 		[

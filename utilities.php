@@ -183,7 +183,7 @@ function utilities_clear_logfile() {
 		$logfile = './log/cacti.log';
 	}
 
-	html_start_box(__('Clear Cacti Log'), '100%', '', '3', 'center', '');
+	html_start_box(__('Clear Cacti Log'), '100%', false, 3, 'center', '');
 
 	if (file_exists($logfile)) {
 		if (is_writable($logfile)) {
@@ -472,7 +472,7 @@ function utilities_view_snmp_cache() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header($display_text, 1);
 
@@ -613,7 +613,7 @@ function utilities_view_poller_cache() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1, 'utilities.php?action=view_poller_cache');
 
@@ -959,7 +959,7 @@ function utilities() {
 
 	api_plugin_hook('utilities_array');
 
-	html_start_box(__('Cacti System Utilities'), '100%', '', '3', 'center', '');
+	html_start_box(__('Cacti System Utilities'), '100%', false, 3, 'center', '');
 
 	foreach ($utilities as $header => $content) {
 		$i = 0;
@@ -1045,7 +1045,7 @@ function boost_display_run_status() {
 
 	set_page_refresh($refresh);
 
-	html_start_box(__('Boost Status'), '100%', '', '3', 'center', '');
+	html_start_box(__('Boost Status'), '100%', false, 3, 'center', '');
 
 	?>
 	<script type='text/javascript'>
@@ -1086,7 +1086,7 @@ function boost_display_run_status() {
 	<?php
 	html_end_box(true);
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	/* get the boost table status */
 	$boost_table_status = db_fetch_assoc("SELECT *
@@ -1634,7 +1634,7 @@ function snmpagent_utilities_run_cache() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header($display_text);
 
@@ -1852,7 +1852,7 @@ function snmpagent_utilities_run_eventlog() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header([' ', __('Time'), __('Receiver'), __('Notification'), __('Varbinds')]);
 

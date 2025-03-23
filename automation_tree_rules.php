@@ -181,7 +181,7 @@ function automation_import() {
 	form_start('automation_tree_rules.php', 'chk', true);
 
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
-		html_start_box(__('Import Results'), '80%', '', '3', 'center', '');
+		html_start_box(__('Import Results'), '60%', false, 3, 'center', '');
 
 		print '<tr class="tableHeader"><th>' . __('Cacti has Imported the following Tree Rules'). '</th></tr>';
 
@@ -194,7 +194,7 @@ function automation_import() {
 		kill_session_var('import_debug_info');
 	}
 
-	html_start_box(__('Import Tree Rules'), '80%', false, '3', 'center', '');
+	html_start_box(__('Import Tree Rules'), '60%', false, 3, 'center', '');
 
 	draw_edit_form(
 		[
@@ -742,7 +742,7 @@ function automation_tree_rules_edit() {
 		 */
 		form_start('automation_tree_rules.php', 'form_automation_tree_rule_edit');
 
-		html_start_box($header_label, '100%', true, '3', 'center', '');
+		html_start_box($header_label, '100%', true, 3, 'center', '');
 
 		if (get_request_var('id') > 0) {
 			/* display whole rule */
@@ -1081,7 +1081,7 @@ function automation_tree_rules() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
 		'name' => [

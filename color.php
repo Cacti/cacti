@@ -325,7 +325,7 @@ function color_import() {
 	form_start('color.php?action=import', '', true);
 
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
-		html_start_box('Import Results', '100%', '', '3', 'center', '');
+		html_start_box('Import Results', '100%', false, 3, 'center', '');
 
 		print "<tr class='even'><td>
 			<p class='textArea'>" . __('Cacti has imported the following items:') . "</p>
@@ -342,7 +342,7 @@ function color_import() {
 		kill_session_var('import_debug_info');
 	}
 
-	html_start_box(__('Import Colors'), '100%', '', '3', 'center', '');
+	html_start_box(__('Import Colors'), '100%', false, 3, 'center', '');
 
 	form_alternate_row();?>
 		<td width='50%'><font class='textEditTitle'><?php print __('Import Colors from Local File'); ?></font><br>
@@ -366,7 +366,7 @@ function color_import() {
 
 	html_end_box(false);
 
-	html_start_box(__('Required File Format Notes'), '100%', '', '3', 'center', '');
+	html_start_box(__('Required File Format Notes'), '100%', false, 3, 'center', '');
 
 	form_alternate_row();?>
 		<td><strong><?php print __('The file must contain a header row with the following column headings.');?></strong>
@@ -400,7 +400,7 @@ function color_edit() {
 
 	form_start('color.php', 'color');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	draw_edit_form([
 		'config' => ['no_form_tag' => true],
@@ -502,7 +502,7 @@ function color() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
 		'hex' => [
@@ -574,8 +574,8 @@ function color() {
 			form_selectable_cell($color['read_only'] == 'on' ? __('Yes'):__('No'), $color['id']);
 			form_selectable_cell('', $color['id'], '', 'text-align:right;background-color:#' . $color['hex'] . ';min-width:30%');
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $color['id'], '', 'text-align:right');
-			form_selectable_cell(number_format_i18n($color['graphs'], '-1'), $color['id'], '', 'right');
-			form_selectable_cell(number_format_i18n($color['templates'], '-1'), $color['id'], '', 'right');
+			form_selectable_cell(number_format_i18n($color['graphs'], -1), $color['id'], '', 'right');
+			form_selectable_cell(number_format_i18n($color['templates'], -1), $color['id'], '', 'right');
 			form_checkbox_cell($color['name'], $color['id'], $disabled);
 
 			form_end_row();

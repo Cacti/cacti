@@ -724,9 +724,9 @@ function db_execute_prepared($sql, $params = [], $log = true, $db_conn = false, 
  * @param mixed $log
  * @param mixed $db_conn
  *
- * @return bool|string  The output of the sql query as a single variable
+ * @return mixed The output of the sql query as a single variable
  */
-function db_fetch_cell($sql, $col_name = '', $log = true, $db_conn = false) {
+function db_fetch_cell($sql, $col_name = '', $log = true, $db_conn = false) : mixed {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
@@ -751,9 +751,9 @@ function db_fetch_cell($sql, $col_name = '', $log = true, $db_conn = false) {
  * @param mixed $log
  * @param mixed $db_conn
  *
- * @return bool|string The output of the sql query as a single variable
+ * @return mixed output of the sql query as a single variable
  */
-function db_fetch_cell_prepared($sql, $params = [], $col_name = '', $log = true, $db_conn = false) {
+function db_fetch_cell_prepared($sql, $params = [], $col_name = '', $log = true, $db_conn = false) : mixed {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {

@@ -574,7 +574,7 @@ function item_edit() {
 		}
 	}
 
-	html_start_box(__('Override Values for Graph Item'), '100%', true, '3', 'center', '');
+	html_start_box(__('Override Values for Graph Item'), '100%', true, 3, 'center', '');
 
 	$form_array = [];
 
@@ -1145,7 +1145,7 @@ function graph_edit() {
 		);
 
 		if (!cacti_sizeof($graph)) {
-			html_start_box(__('Aggregate Preview Does Not Exist'), '100%', '', '3', 'center', '');
+			html_start_box(__('Aggregate Preview Does Not Exist'), '100%', false, 3, 'center', '');
 			print "<tr><td id='imagewindow' class='center'>" . __('Aggregate Graph does not Exist') . '</tr></tr>';
 			html_end_box(false);
 			raise_message('noaggregate', __('Aggregate Graph does not Exist'), MESSAGE_LEVEL_ERROR);
@@ -1153,7 +1153,7 @@ function graph_edit() {
 			return false;
 		}
 
-		html_start_box(__('Aggregate Preview %s', $header_label), '100%', '', '3', 'center', '');
+		html_start_box(__('Aggregate Preview %s', $header_label), '100%', false, 3, 'center', '');
 		?>
 		<tr>
 			<td id='imagewindow' class='center'>
@@ -1208,7 +1208,7 @@ function graph_edit() {
 		if (cacti_sizeof($template)) {
 			print "<div id='templated'>";
 
-			html_start_box(__('Aggregate Graph %s', $header_label), '100%', true, '3', 'center', '');
+			html_start_box(__('Aggregate Graph %s', $header_label), '100%', true, 3, 'center', '');
 
 			$helper_string = '|host_description|';
 
@@ -1416,7 +1416,7 @@ function graph_edit() {
 		<?php
 
 		if (empty($graphs['graph_template_id'])) {
-			html_start_box(__('Graph Configuration'), '100%', true, '3', 'center', '');
+			html_start_box(__('Graph Configuration'), '100%', true, 3, 'center', '');
 
 			$form_array = [];
 
@@ -1734,7 +1734,7 @@ function aggregate_items() {
 	/* print checkbox form for validation */
 	form_start('aggregate_graphs.php', 'chk');
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$nav = html_nav_bar('aggregate_graphs.php?action=edit&tab=items&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('Graphs'), 'page', 'main');
 
@@ -2076,7 +2076,7 @@ function aggregate_graph() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false, 'aggregate_graphs.php?filter=' . get_request_var('filter'));
 

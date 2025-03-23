@@ -133,7 +133,7 @@ function manager() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -248,7 +248,7 @@ function manager_edit() {
 		default:
 			form_start('managers.php');
 
-			html_start_box($header_label, '100%', true, '3', 'center', '');
+			html_start_box($header_label, '100%', true, 3, 'center', '');
 
 			draw_edit_form(
 				[
@@ -370,7 +370,7 @@ function manager_notifications($id, $header_label) {
 		$rows = get_request_var('rows');
 	}
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', false, 3, 'center', '');
 
 	$sql_where  = "WHERE `kind`='Notification'";
 	$sql_params = [];
@@ -434,7 +434,7 @@ function manager_notifications($id, $header_label) {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_checkbox($display_text, true, 'managers.php?action=edit&tab=notifications&id=' . $id);
 
@@ -632,7 +632,7 @@ function manager_logs($id, $header_label) {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header($display_text);
 

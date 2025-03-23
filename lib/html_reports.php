@@ -1183,7 +1183,7 @@ function reports_item_edit() {
 	form_start(get_current_page(), 'chk');
 
 	# ready for displaying the fields
-	html_start_box($header_label, '100%', true, '3', 'center', get_reports_page() . '?action=item_edit&id=' . get_request_var('id'));
+	html_start_box($header_label, '100%', true, 3, 'center', get_reports_page() . '?action=item_edit&id=' . get_request_var('id'));
 
 	draw_edit_form(
 		[
@@ -1507,7 +1507,7 @@ function reports_edit() {
 		case 'details':
 			form_start(get_reports_page());
 
-			html_start_box(__esc('Details %s', $header_label), '100%', true, '3', 'center', '');
+			html_start_box(__esc('Details %s', $header_label), '100%', true, 3, 'center', '');
 
 			if (!db_table_exists('plugin_notification_lists')) {
 				unset($fields_reports_edit['notify_list']);
@@ -1549,7 +1549,7 @@ function reports_edit() {
 
 			break;
 		case 'items':
-			html_start_box(__esc('Report Items %s', $header_label), '100%', '', '3', 'center', get_reports_page() . '?action=item_edit&id=' . get_request_var('id'));
+			html_start_box(__esc('Report Items %s', $header_label), '100%', false, 3, 'center', get_reports_page() . '?action=item_edit&id=' . get_request_var('id'));
 
 			/* display the items */
 			if (!empty($report['id'])) {
@@ -2204,7 +2204,7 @@ function reports() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 

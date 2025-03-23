@@ -372,7 +372,7 @@ function aggregate_template_edit() {
 
 	form_start('aggregate_templates.php', 'template_edit');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	$helper_string = '|host_description|';
 
@@ -582,7 +582,7 @@ function aggregate_template() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
 		'pgt.name' => [
@@ -624,7 +624,7 @@ function aggregate_template() {
 
 			$url = 'aggregate_graphs.php?reset=true&template_id=' . $template['id'];
 
-			form_selectable_cell(filter_value(number_format_i18n($template['graphs'], '-1'), '', $url), $template['id'], '', 'right');
+			form_selectable_cell(filter_value(number_format_i18n($template['graphs'], -1), '', $url), $template['id'], '', 'right');
 
 			form_selectable_cell(filter_value($template['graph_template_name'], get_request_var('filter')), $template['id']);
 

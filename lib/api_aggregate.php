@@ -1807,7 +1807,7 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 	}
 
 	# draw list of graph items
-	html_start_box(($is_templated ? __('Graph Template Items'):__('Graph Items')), '100%', '', '3', 'center', '');
+	html_start_box(($is_templated ? __('Graph Template Items'):__('Graph Items')), '100%', false, 3, 'center', '');
 
 	# print column header
 	print "<tr class='tableHeader'>";
@@ -2000,7 +2000,7 @@ function draw_aggregate_graph_items_list(int $_graph_id = 0, int $_graph_templat
 function draw_aggregate_template_graph_config(int $aggregate_template_id, int $graph_template_id): void {
 	global $struct_graph;
 
-	html_start_box(__('Graph Configuration'), '100%', true, '3', 'center', '');
+	html_start_box(__('Graph Configuration'), '100%', true, 3, 'center', '');
 
 	$aggregate_templates_graph = db_fetch_row_prepared('SELECT *
 		FROM aggregate_graph_templates_graph
