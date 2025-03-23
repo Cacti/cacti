@@ -220,7 +220,6 @@ html {
         font-size: var(--fs-semilarge);
         height: 3.5rem;
         margin: 2px 3px;
-        cursor: pointer;
         border-radius: 4px;
         border: 2px solid transparent;
 
@@ -236,8 +235,8 @@ html {
             position: relative;
             z-index: auto;
             html[data-controls-subtitle="on"] & {
-                height: 2rem;
-                background: transparent url("./../../images/cacti_logo.svg") no-repeat scroll 50% 50% / min(10px) auto;
+                flex: 1;
+                background: transparent url("./../../images/cacti_logo.svg") no-repeat scroll 50% 14% / min(20px) auto;
             }
         }
 

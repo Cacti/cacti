@@ -47,6 +47,7 @@
     justify-content: center;
     cursor: pointer;
     position: relative;
+    flex-direction: column;
 
     &.mdw-active {
         background: var(--background-active-section);
