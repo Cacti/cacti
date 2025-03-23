@@ -415,7 +415,7 @@ function template_item_remove_gt_confirm() {
 
 	form_start('host_templates.php?action=edit&id' . get_request_var('host_template_id'));
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$template = db_fetch_row_prepared('SELECT *
 		FROM graph_templates
@@ -484,7 +484,7 @@ function template_item_remove_dq_confirm() {
 
 	form_start('host_templates.php?action=edit&id' . get_request_var('host_template_id'));
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$query = db_fetch_row_prepared('SELECT * FROM snmp_query WHERE id = ?', [get_request_var('id')]);
 
@@ -583,7 +583,7 @@ function template_edit() {
 
 	form_start('host_templates.php', 'form_network');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	draw_edit_form(
 		[
@@ -599,7 +599,7 @@ function template_edit() {
 	html_end_box(true, true);
 
 	if (!isempty_request_var('id')) {
-		html_start_box(__('Associated Graph Templates'), '100%', '', '3', 'center', '');
+		html_start_box(__('Associated Graph Templates'), '100%', false, 3, 'center', '');
 
 		$selected_graph_templates = db_fetch_assoc_prepared('SELECT graph_templates.id, graph_templates.name
 			FROM (graph_templates,host_template_graph)
@@ -657,7 +657,7 @@ function template_edit() {
 		<?php
 		html_end_box();
 
-		html_start_box(__('Associated Data Queries'), '100%', '', '3', 'center', '');
+		html_start_box(__('Associated Data Queries'), '100%', false, 3, 'center', '');
 
 		$selected_data_queries = db_fetch_assoc_prepared('SELECT snmp_query.id, snmp_query.name
 			FROM (snmp_query, host_template_snmp_query)
@@ -1096,7 +1096,7 @@ function device_templates() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false, 'host_templates.php?action=template');
 
@@ -1130,7 +1130,7 @@ function device_templates() {
 
 			$url = 'host.php?reset=true&host_template_id=' . $template['id'];
 
-			form_selectable_cell(filter_value(number_format_i18n($template['hosts'], '-1'), '', $url), $template['id'], '', 'right');
+			form_selectable_cell(filter_value(number_format_i18n($template['hosts'], -1), '', $url), $template['id'], '', 'right');
 
 			form_checkbox_cell($template['name'], $template['id'], $disabled);
 
@@ -1500,7 +1500,7 @@ function device_archives() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false, 'host_templates.php?action=archives');
 

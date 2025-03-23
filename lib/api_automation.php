@@ -187,7 +187,7 @@ function display_matching_hosts(array $rule, string $rule_type, string $url): vo
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
 		'description' => [
@@ -647,7 +647,7 @@ function display_matching_graphs(array $rule, string $rule_type, string $url): v
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
 		'title_cache' => [
@@ -953,7 +953,7 @@ function display_new_graphs(array $rule, string $url): void {
 
 		print $nav;
 
-		html_start_box(__('Matching Indexes [ %s ]&nbsp;', html_escape($name)) . display_tooltip(__('A blue font color indicates that the rule will be applied to the objects in question.  Other objects will not be subject to the rule.')), '100%', '', '3', 'center', '');
+		html_start_box(__('Matching Indexes [ %s ]&nbsp;', html_escape($name)) . display_tooltip(__('A blue font color indicates that the rule will be applied to the objects in question.  Other objects will not be subject to the rule.')), '100%', false, 3, 'center', '');
 
 		/**
 		 * print the Data Query table's header
@@ -1040,7 +1040,7 @@ function display_new_graphs(array $rule, string $url): void {
 	} else {
 		$display_text = [__('Error Message')];
 
-		html_start_box(__('Index Errors [ %s ]', html_escape($details['xml_array']['name'])), '100%', '', '3', 'center', '');
+		html_start_box(__('Index Errors [ %s ]', html_escape($details['xml_array']['name'])), '100%', false, 3, 'center', '');
 		html_header($display_text);
 		print "<tr class='tableRow odd'><td class='deviceDown'>" . __('Error in data query') . '</td></tr>';
 		html_end_box();
@@ -1225,7 +1225,7 @@ function display_matching_trees(string $rule_id, $rule_type, array $item, string
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
 		'description' => [
@@ -1346,7 +1346,7 @@ function display_match_rule_items(string $title, array $rule, string $rule_type,
 		ORDER BY sequence',
 		[$rule_id, $rule_type]);
 
-	html_start_box($title . '&nbsp;<i id="show_device_sql" title="' . __esc('Show Matching Device SQL Query') . '" class="cactiTooltipHint fa fa-stethoscope" style="cursor:pointer"></i>', '100%', '', '3', 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
+	html_start_box($title . '&nbsp;<i id="show_device_sql" title="' . __esc('Show Matching Device SQL Query') . '" class="cactiTooltipHint fa fa-stethoscope" style="cursor:pointer"></i>', '100%', false, 3, 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
 
 	$display_text = [
 		[
@@ -1473,7 +1473,7 @@ function display_graph_rule_items(string $title, array &$rule, string $rule_type
 		ORDER BY sequence',
 		[$rule_id]);
 
-	html_start_box($title . '&nbsp;<i id="show_sql" title="' . __esc('Show Matching Indexes SQL Query') . '" class="cactiTooltipHint fa fa-stethoscope" style="cursor:pointer"></i>', '100%', '', '3', 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
+	html_start_box($title . '&nbsp;<i id="show_sql" title="' . __esc('Show Matching Indexes SQL Query') . '" class="cactiTooltipHint fa fa-stethoscope" style="cursor:pointer"></i>', '100%', false, 3, 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
 
 	$display_text = [
 		['display' => __('Item'),      'align' => 'left'],
@@ -1574,7 +1574,7 @@ function display_tree_rule_items(string $title, array $rule, string $item_type, 
 		ORDER BY sequence',
 		[$rule_id]);
 
-	html_start_box($title, '100%', '', '3', 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
+	html_start_box($title, '100%', false, 3, 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
 
 	$display_text = [
 		['display' => __('Item'),             'align' => 'left'],
@@ -2544,7 +2544,7 @@ function global_item_edit(string $rule_id, string $rule_item_id, string $rule_ty
 
 	form_start($module, 'form_automation_global_item_edit');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	draw_edit_form(
 		[

@@ -157,7 +157,7 @@ function changelog_view() {
 
 	foreach ($vers as $ver => $changelog) {
 		if (!empty($ver)) {
-			html_start_box(__('Version %s', $ver), '100%', '', '3', 'center', '');
+			html_start_box(__('Version %s', $ver), '100%', false, 3, 'center', '');
 			ksort($changelog);
 
 			foreach ($changelog as $type => $details) {

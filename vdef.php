@@ -93,7 +93,7 @@ switch (get_request_var('action')) {
 		break;
 }
 
-function draw_vdef_preview($vdef_id) {
+function draw_vdef_preview(int $vdef_id) : void {
 	?>
 	<tr class='even'>
 		<td style='padding:4px'>
@@ -103,7 +103,7 @@ function draw_vdef_preview($vdef_id) {
 	<?php
 }
 
-function vdef_form_save() {
+function vdef_form_save() : void {
 	if (isset_request_var('save_component_vdef')) {
 		$save['id']   = get_filter_request_var('id');
 		$save['hash'] = get_hash_vdef(get_request_var('id'));
@@ -129,6 +129,8 @@ function vdef_form_save() {
 		$save['sequence'] = $sequence;
 		$save['type']     = get_nfilter_request_var('type');
 		$save['value']    = get_nfilter_request_var('value');
+
+		$vdef_item_id     = 0;
 
 		if (!is_error_message()) {
 			$vdef_item_id = sql_save($save, 'vdef_items');
@@ -291,7 +293,7 @@ function vdef_item_remove_confirm() {
 
 	form_start('vdef.php');
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$vdef       = db_fetch_row_prepared('SELECT * FROM vdef WHERE id = ?', [get_request_var('id')]);
 	$vdef_item  = db_fetch_row_prepared('SELECT * FROM vdef_items WHERE id = ?', [get_request_var('vdef_id')]);
@@ -380,7 +382,7 @@ function vdef_item_edit() {
 		$vdef = [];
 	}
 
-	html_start_box(__('VDEF Preview'), '100%', '', '3', 'center', '');
+	html_start_box(__('VDEF Preview'), '100%', false, 3, 'center', '');
 	draw_vdef_preview(get_request_var('vdef_id'));
 	html_end_box();
 
@@ -397,7 +399,7 @@ function vdef_item_edit() {
 
 	form_start('vdef.php', 'chk');
 
-	html_start_box($header_label, '100%', '', '3', 'center', '');
+	html_start_box($header_label, '100%', false, 3, 'center', '');
 
 	if (isset_request_var('type_select')) {
 		$current_type = get_request_var('type_select');
@@ -545,18 +547,20 @@ function vdef_edit() {
 
 		$header_label = __esc('VDEFs [edit: %s]', $vdef['name']);
 	} else {
+		$vdef = [];
+
 		$header_label = __('VDEFs [new]');
 	}
 
 	form_start('vdef.php', 'vdef_edit');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	$preset_vdef_form_list = preset_vdef_form_list();
 	draw_edit_form(
 		[
 			'config' => ['no_form_tag' => true],
-			'fields' => inject_form_variables($preset_vdef_form_list, (isset($vdef) ? $vdef : []))
+			'fields' => inject_form_variables($preset_vdef_form_list, $vdef)
 		]
 	);
 
@@ -565,12 +569,12 @@ function vdef_edit() {
 	form_hidden_box('id', (isset($vdef['id']) ? $vdef['id'] : '0'), '');
 	form_hidden_box('save_component_vdef', '1', '');
 
-	if (!isempty_request_var('id')) {
-		html_start_box('', '100%', '', '3', 'center', '');
+	if (cacti_sizeof($vdef) && !isempty_request_var('id')) {
+		html_start_box('', '100%', false, 3, 'center', '');
 		draw_vdef_preview(get_request_var('id'));
 		html_end_box();
 
-		html_start_box(__('VDEF Items'), '100%', '', '3', 'center', 'vdef.php?action=item_edit&vdef_id=' . $vdef['id'], false, false);
+		html_start_box(__('VDEF Items'), '100%', false, 3, 'center', 'vdef.php?action=item_edit&vdef_id=' . $vdef['id'], false, false);
 
 		$header_items = [
 			['display' => __('Item'), 'align' => 'left'],
@@ -738,7 +742,7 @@ function vdef($refresh = true) {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
 		'name' => [
@@ -783,8 +787,8 @@ function vdef($refresh = true) {
 
 			form_selectable_cell(filter_value($vdef['name'], get_request_var('filter'), 'vdef.php?action=edit&id=' . $vdef['id']), $vdef['id']);
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $vdef['id'], '', 'right');
-			form_selectable_cell(filter_value(number_format_i18n($vdef['graphs'], '-1'), '', $graphs_url), $vdef['id'], '', 'right');
-			form_selectable_cell(filter_value(number_format_i18n($vdef['templates'], '-1'), '', $templates_url), $vdef['id'], '', 'right');
+			form_selectable_cell(filter_value(number_format_i18n($vdef['graphs'], -1), '', $graphs_url), $vdef['id'], '', 'right');
+			form_selectable_cell(filter_value(number_format_i18n($vdef['templates'], -1), '', $templates_url), $vdef['id'], '', 'right');
 
 			form_checkbox_cell($vdef['name'], $vdef['id'], $disabled);
 

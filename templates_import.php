@@ -211,7 +211,7 @@ function display_template_data(&$templates) {
 
 		unset($templates['files']);
 
-		html_start_box(__('Import Files [ If Files are missing, locate and install before using ]'), '100%', '', '1', 'center', '');
+		html_start_box(__('Import Files [ If Files are missing, locate and install before using ]'), '100%', false, 3, 'center', '');
 
 		$display_text = [
 			[
@@ -247,7 +247,7 @@ function display_template_data(&$templates) {
 	}
 
 	if (cacti_sizeof($templates)) {
-		html_start_box(__('Import Templates [ None selected imports all, Check to import selectively ]'), '100%', '', '1', 'center', '');
+		html_start_box(__('Import Templates [ None selected imports all, Check to import selectively ]'), '100%', false, 3, 'center', '');
 
 		$display_text = [
 			[
@@ -369,7 +369,7 @@ function display_template_data(&$templates) {
 }
 
 function bad_tmp() {
-	html_start_box(__('Import Template'), '60%', '', '1', 'center', '');
+	html_start_box(__('Import Template'), '60%', false, 3, 'center', '');
 	form_alternate_row();
 	print "<td class='textarea'><p><strong>" . __('ERROR') . ':</strong> ' .__('Failed to access temporary folder, import functionality is disabled') . "</p></td></tr>\n";
 	html_end_box();
@@ -456,7 +456,7 @@ function import() {
 		$fields_template_import['graph_height']['value'] = read_config_option('default_graph_height');
 	}
 
-	html_start_box(__('Import Template'), '100%', true, '3', 'center', '');
+	html_start_box(__('Import Template'), '100%', true, 3, 'center', '');
 
 	draw_edit_form(
 		[

@@ -769,7 +769,7 @@ function graph_perms_edit($tab, $header_label) {
 			}
 
 			/* box: device permissions */
-			html_start_box(__('Default Graph Policy'), '100%', '', '3', 'center', '');
+			html_start_box(__('Default Graph Policy'), '100%', false, 3, 'center', '');
 
 			?>
 			<tr class='even'>
@@ -881,7 +881,7 @@ function graph_perms_edit($tab, $header_label) {
 
 			print $nav;
 
-			html_start_box('', '100%', '', '3', 'center', '');
+			html_start_box('', '100%', false, 3, 'center', '');
 
 			$display_text = [__('Graph Title'), __('ID'), __('Effective Policy')];
 
@@ -1003,7 +1003,7 @@ function graph_perms_edit($tab, $header_label) {
 
 			print $nav;
 
-			html_start_box('', '100%', '', '3', 'center', '');
+			html_start_box('', '100%', false, 3, 'center', '');
 
 			$display_text = [__('Name'), __('Description'), __('Member'), __('ID'), __('Policies (Graph/Device/Template)'), __('Enabled')];
 
@@ -1058,7 +1058,7 @@ function graph_perms_edit($tab, $header_label) {
 
 			form_start('user_admin.php', 'policy');
 
-			html_start_box(__('Default Device Policy'), '100%', '', '3', 'center', '');
+			html_start_box(__('Default Device Policy'), '100%', false, 3, 'center', '');
 
 			?>
 			<tr class='even'>
@@ -1152,7 +1152,7 @@ function graph_perms_edit($tab, $header_label) {
 
 			print $nav;
 
-			html_start_box('', '100%', '', '3', 'center', '');
+			html_start_box('', '100%', false, 3, 'center', '');
 
 			$display_text = [__('Description'), __('ID'), __('Effective Policy'), __('Graphs'), __('Data Sources'), __('Status'), __('Hostname')];
 
@@ -1228,7 +1228,7 @@ function graph_perms_edit($tab, $header_label) {
 
 			form_start('user_admin.php', 'policy');
 
-			html_start_box(__('Default Graph Template Policy'), '100%', '', '3', 'center', '');
+			html_start_box(__('Default Graph Template Policy'), '100%', false, 3, 'center', '');
 
 			?>
 			<tr class='even'>
@@ -1312,7 +1312,7 @@ function graph_perms_edit($tab, $header_label) {
 
 			print $nav;
 
-			html_start_box('', '100%', '', '3', 'center', '');
+			html_start_box('', '100%', false, 3, 'center', '');
 
 			html_header_checkbox($display_text, false);
 
@@ -1384,7 +1384,7 @@ function graph_perms_edit($tab, $header_label) {
 
 			form_start('user_admin.php', 'policy');
 
-			html_start_box(__('Default Tree Policy'), '100%', '', '3', 'center', '');
+			html_start_box(__('Default Tree Policy'), '100%', false, 3, 'center', '');
 
 			?>
 			<tr class='even'>
@@ -1459,7 +1459,7 @@ function graph_perms_edit($tab, $header_label) {
 
 			print $nav;
 
-			html_start_box('', '100%', '', '3', 'center', '');
+			html_start_box('', '100%', false, 3, 'center', '');
 
 			if (cacti_sizeof($trees)) {
 				foreach ($trees as $t) {
@@ -1539,7 +1539,7 @@ function user_realms_edit($header_label) {
 
 	form_start('user_admin.php', 'chk');
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	/* do cacti realms first */
 	foreach ($user_auth_roles as $role_name => $perms) {
@@ -1750,7 +1750,7 @@ function settings_edit($header_label) {
 
 	form_start('user_admin.php');
 
-	html_start_box(__esc('User Settings %s', $header_label), '100%', true, '3', 'center', '');
+	html_start_box(__esc('User Settings %s', $header_label), '100%', true, 3, 'center', '');
 
 	foreach ($settings_user as $tab_short_name => $tab_fields) {
 		$collapsible = true;
@@ -1890,7 +1890,7 @@ function user_edit() {
 
 			form_start('user_admin.php');
 
-			html_start_box(__esc('User Management %s', $header_label), '100%', '', '3', 'center', '');
+			html_start_box(__esc('User Management %s', $header_label), '100%', false, 3, 'center', '');
 
 			draw_edit_form(
 				[
@@ -2255,7 +2255,7 @@ function user() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 

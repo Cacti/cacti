@@ -157,7 +157,7 @@ function support_view_tech() {
 
 	/* Display tech information */
 	if (!isset($tabs[$current_tab]['header']) || $tabs[$current_tab]['header'] === true) {
-		html_start_box($header_label, '100%', '', '3', 'center', '');
+		html_start_box($header_label, '100%', false, 3, 'center', '');
 	}
 
 	switch (get_request_var('tab')) {
@@ -440,7 +440,7 @@ function show_database_processes() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1, 'support.php?tab=processes', 'main');
 
@@ -778,7 +778,7 @@ function show_cacti_processes() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1, 'support.php?tab=background', 'main');
 

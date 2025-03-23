@@ -950,7 +950,7 @@ function item_edit() {
 
 	form_start('graphs.php', 'graph_edit');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	/* by default, select the LAST DS chosen to make everyone's lives easier */
 	if (!isempty_request_var('local_graph_id')) {
@@ -2164,7 +2164,7 @@ function item() {
 		$anchor_link  = 'host_id=' . $host_id . '&local_graph_id=' . get_request_var('id');
 	}
 
-	html_start_box($header_label, '100%', '', '3', 'center', $add_text);
+	html_start_box($header_label, '100%', false, 3, 'center', $add_text);
 
 	draw_graph_items_list($template_item_list, 'graphs.php', $anchor_link, (empty($graph_template_id) || empty($host_id) ? false : true));
 
@@ -2467,7 +2467,7 @@ function graph_edit() {
 
 	/* only display the "inputs" area if we are using a graph template for this graph */
 	if (!empty($graph['graph_template_id'])) {
-		html_start_box(__('Supplemental Graph Template Data'), '100%', true, '3', 'center', '');
+		html_start_box(__('Supplemental Graph Template Data'), '100%', true, 3, 'center', '');
 
 		draw_nontemplated_fields_graph($graph['graph_template_id'], $graph, '|field|', __('Graph Fields'), true, true, 0);
 		draw_nontemplated_fields_graph_item($graph['graph_template_id'], get_request_var('id'), '|field|_|id|', __('Graph Item Fields'), true, $locked);
@@ -2516,7 +2516,7 @@ function graph_edit() {
 	}
 
 	if (((isset_request_var('id')) || (isset_request_var('new'))) && (empty($graph['graph_template_id']))) {
-		html_start_box(__('Graph Configuration'), '100%', true, '3', 'center', '');
+		html_start_box(__('Graph Configuration'), '100%', true, 3, 'center', '');
 
 		$form_array = [];
 
@@ -2872,7 +2872,7 @@ function graphs() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
 		'title_cache' => [

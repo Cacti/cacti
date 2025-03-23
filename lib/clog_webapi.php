@@ -161,7 +161,7 @@ function clog_view_logfile() {
 	if ($clogAdmin && get_nfilter_request_var('action') == 'purge') {
 		form_start(get_current_page());
 
-		html_start_box(__('Purge'), '50%', '', '3', 'center', '');
+		html_start_box(__('Purge'), '60%', false, 3, 'center', '');
 
 		print "<tr>
 			<td class='textArea'>
@@ -242,7 +242,7 @@ function clog_view_logfile() {
 
 	print $nav;
 
-	html_start_box($start_string, '100%', '', '3', 'center', '');
+	html_start_box($start_string, '100%', false, 3, 'center', '');
 
 	$linecolor = false;
 

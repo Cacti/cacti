@@ -3526,7 +3526,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 function rrdtool_info2html($info_array, $diff=[]) {
 	include_once(CACTI_PATH_LIBRARY . '/time.php');
 
-	html_start_box(__('RRD File Information'), '100%', '', '3', 'center', '');
+	html_start_box(__('RRD File Information'), '100%', false, 3, 'center', '');
 
 	# header data
 	$header_items = [
@@ -3568,7 +3568,7 @@ function rrdtool_info2html($info_array, $diff=[]) {
 		['display' => __('Unknown Sec'),       'align' => 'right']
 	];
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header($header_items, 1);
 
@@ -3626,7 +3626,7 @@ function rrdtool_info2html($info_array, $diff=[]) {
 		['display' => __('CDP Unknown Data points (0)'), 'align' => 'right']
 	];
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header($header_items, 1);
 

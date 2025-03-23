@@ -132,7 +132,7 @@ function automation_import() {
 	form_start('automation_networks.php', 'chk', true);
 
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
-		html_start_box(__('Import Results'), '80%', '', '3', 'center', '');
+		html_start_box(__('Import Results'), '60%', false, 3, 'center', '');
 
 		print '<tr class="tableHeader"><th>' . __('Cacti has imported the following items:'). '</th></tr>';
 
@@ -145,7 +145,7 @@ function automation_import() {
 		kill_session_var('import_debug_info');
 	}
 
-	html_start_box(__('Import Network Discovery Rule'), '80%', false, '3', 'center', '');
+	html_start_box(__('Import Network Discovery Rule'), '60%', false, 3, 'center', '');
 
 	draw_edit_form(
 		[
@@ -969,7 +969,7 @@ function network_edit() {
 
 	form_start('automation_networks.php', 'form_network');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	draw_edit_form(
 		[
@@ -1043,7 +1043,7 @@ function networks() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
 		'name' => [

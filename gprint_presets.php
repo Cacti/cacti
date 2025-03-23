@@ -166,7 +166,7 @@ function gprint_presets_edit() {
 
 	form_start('gprint_presets.php', 'gprint_presets');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	draw_edit_form(
 		[
@@ -258,7 +258,7 @@ function gprint_presets() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -277,8 +277,8 @@ function gprint_presets() {
 			form_selectable_cell(filter_value($gp['name'], get_request_var('filter'), 'gprint_presets.php?action=edit&id=' . $gp['id']), $gp['id']);
 			form_selectable_ecell($gp['gprint_text'], $gp['id'], '', 'right');
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $gp['id'], '', 'right');
-			form_selectable_cell(number_format_i18n($gp['graphs'], '-1'), $gp['id'], '', 'right');
-			form_selectable_cell(number_format_i18n($gp['templates'], '-1'), $gp['id'], '', 'right');
+			form_selectable_cell(number_format_i18n($gp['graphs'], -1), $gp['id'], '', 'right');
+			form_selectable_cell(number_format_i18n($gp['templates'], -1), $gp['id'], '', 'right');
 			form_checkbox_cell($gp['name'], $gp['id'], $disabled);
 
 			form_end_row();

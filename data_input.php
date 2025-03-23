@@ -278,7 +278,7 @@ function field_remove_confirm() {
 
 	form_start('data_input.php?action=edit&id' . get_request_var('data_input_id'));
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$field = db_fetch_row_prepared('SELECT *
 		FROM data_input_fields
@@ -437,7 +437,7 @@ function field_edit() {
 	}
 	form_start('data_input.php', 'data_input');
 
-	html_start_box($header_name, '100%', true, '3', 'center', '');
+	html_start_box($header_name, '100%', true, 3, 'center', '');
 
 	$form_array = [];
 
@@ -503,7 +503,7 @@ function data_edit() {
 
 	form_start('data_input.php', 'data_input');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	if (cacti_sizeof($data_input)) {
 		switch ($data_input['type_id']) {
@@ -560,7 +560,7 @@ function data_edit() {
 			__('Field Order')
 		];
 
-		html_start_box(__('Input Fields'), '100%', '', '3', 'center', $url);
+		html_start_box(__('Input Fields'), '100%', false, 3, 'center', $url);
 
 		html_header($display_text, 2);
 
@@ -630,7 +630,7 @@ function data_edit() {
 			__('Update RRA')
 		];
 
-		html_start_box(__('Output Fields'), '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=out&data_input_id=' . get_request_var('id'));
+		html_start_box(__('Output Fields'), '100%', false, 3, 'center', 'data_input.php?action=field_edit&type=out&data_input_id=' . get_request_var('id'));
 
 		html_header($display_text, 2);
 
@@ -756,7 +756,7 @@ function data() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
 		'name'         => ['display' => __('Data Input Name'),    'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Data Input Method.')],
@@ -809,8 +809,8 @@ function data() {
 			form_selectable_cell(filter_value($data_input['name'], get_request_var('filter'), 'data_input.php?action=edit&id=' . $data_input['id']), $data_input['id']);
 			form_selectable_cell($data_input['id'], $data_input['id'], '', 'right');
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $data_input['id'], '', 'right');
-			form_selectable_cell(number_format_i18n($data_input['data_sources'], '-1'), $data_input['id'],'', 'right');
-			form_selectable_cell(number_format_i18n($data_input['templates'], '-1'), $data_input['id'],'', 'right');
+			form_selectable_cell(number_format_i18n($data_input['data_sources'], -1), $data_input['id'],'', 'right');
+			form_selectable_cell(number_format_i18n($data_input['templates'], -1), $data_input['id'],'', 'right');
 			form_selectable_cell($input_types[$data_input['type_id']], $data_input['id'], '', 'right');
 
 			form_checkbox_cell($data_input['name'], $data_input['id'], $disabled);

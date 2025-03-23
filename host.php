@@ -873,7 +873,7 @@ function host_edit() {
 
 	form_start('host.php', 'host_form');
 
-	html_start_box('', '100%', true, '3', 'center', '');
+	html_start_box('', '100%', true, 3, 'center', '');
 
 	/* preserve the host template id if passed in via a GET variable */
 	if (!isempty_request_var('host_template_id')) {
@@ -892,7 +892,7 @@ function host_edit() {
 	device_javascript(!empty($host['id']));
 
 	if (!empty($host['id'])) {
-		html_start_box(__('Associated Graph Templates'), '100%', '', '3', 'center', '');
+		html_start_box(__('Associated Graph Templates'), '100%', false, 3, 'center', '');
 
 		html_header(
 			[
@@ -1017,7 +1017,7 @@ function host_edit() {
 			<?php
 		}
 
-		html_start_box(__('Associated Data Queries'), '100%', '', '3', 'center', '');
+		html_start_box(__('Associated Data Queries'), '100%', false, 3, 'center', '');
 
 		html_header(
 			[
@@ -1752,7 +1752,7 @@ function host() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -1803,11 +1803,11 @@ function host() {
 			form_selectable_cell(filter_value($host['id'], get_request_var('filter')), $host['id'], '', 'right');
 			form_selectable_cell($host['device_threads'], $host['id'], '', 'right');
 
-			form_selectable_cell(filter_value(number_format_i18n($host['graphs'], '-1'), '', $graphs_url), $host['id'], '', 'right');
+			form_selectable_cell(filter_value(number_format_i18n($host['graphs'], -1), '', $graphs_url), $host['id'], '', 'right');
 
-			form_selectable_cell(filter_value(number_format_i18n($host['data_sources'], '-1'), '', $data_source_url), $host['id'], '', 'right');
+			form_selectable_cell(filter_value(number_format_i18n($host['data_sources'], -1), '', $data_source_url), $host['id'], '', 'right');
 
-			form_selectable_cell(filter_value(number_format_i18n($host['current_errors'], '-1'), '', $errors_url), $host['id'], '', 'right');
+			form_selectable_cell(filter_value(number_format_i18n($host['current_errors'], -1), '', $errors_url), $host['id'], '', 'right');
 
 			form_selectable_cell($host_status, $host['id'], '', 'center');
 

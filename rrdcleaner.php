@@ -342,7 +342,7 @@ function list_rrd() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
 		'name'               => [__('RRDfile Name'), 'ASC'],
@@ -393,7 +393,7 @@ function list_rrd() {
 }
 
 function rrdcleaner_legend($total_size) {
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 	print '<tr>';
 	print '<td><b>' . __('Total Size [MB]:') . '</b> ' . round($total_size / 1024 / 1024, 2) . '</td>';
 	print '</tr><tr>';

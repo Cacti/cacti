@@ -57,7 +57,7 @@ function display_settings() {
 
 	top_header();
 
-	html_start_box(__('Cacti Settings'), '100%', true, '3', 'left', '');
+	html_start_box(__('Cacti Settings'), '100%', true, 3, 'left', '');
 
 	validate_settings_filter();
 
@@ -135,7 +135,7 @@ function display_settings() {
 		$suffix = '';
 	}
 
-	html_start_box(__('Cacti Settings (%s)%s', $tabs[$current_tab], $suffix), '100%', true, '3', 'center', '');
+	html_start_box(__('Cacti Settings (%s)%s', $tabs[$current_tab], $suffix), '100%', true, 3, 'center', '');
 
 	$form_array = [];
 

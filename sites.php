@@ -473,7 +473,7 @@ function site_edit() {
 
 	form_start('sites.php', 'site');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	draw_edit_form(
 		[
@@ -531,7 +531,7 @@ function sites() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
 		'name' => [
@@ -591,7 +591,7 @@ function sites() {
 			form_selectable_cell(filter_value($site['name'], get_request_var('filter'), 'sites.php?action=edit&id=' . $site['id']), $site['id']);
 			form_selectable_cell($site['id'], $site['id'], '', 'right');
 			form_selectable_cell($site['disabled'] == 'on' ? __('Disabled'):__('Enabled'), $site['id'], '', 'right');
-			form_selectable_cell(filter_value(number_format_i18n($site['hosts'], '-1'), '', $devices_url), $site['id'], '', 'right');
+			form_selectable_cell(filter_value(number_format_i18n($site['hosts'], -1), '', $devices_url), $site['id'], '', 'right');
 			form_selectable_ecell($site['city'], $site['id'], '', 'left');
 			form_selectable_ecell($site['state'], $site['id'], '', 'left');
 			form_selectable_ecell($site['country'], $site['id'], '', 'left');
