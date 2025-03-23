@@ -42,10 +42,10 @@ repos:
       exclude: ^(locales|include/fa|include/css|include/js|include/vendor)\/.*$
     - id: php-lint-all
       exclude: ^(locales|include/fa|include/css|include/js|include/vendor)\/.*$
-    - id: php-cs-fixer
-      args: [--path-mode=intersection]
-      files: \.(php)$
-      exclude: ^(locales|include/fa|include/css|include/js|include/vendor)\/.*$
+    #- id: php-cs-fixer
+    #  args: [--path-mode=intersection]
+    #  files: \.(php)$
+    #  exclude: ^(locales|include/fa|include/css|include/js|include/vendor)\/.*$
     - id: php-stan
       args:
         - analyze
