@@ -791,7 +791,7 @@ function __(): false|string {
  * @param string $plural The plural form of the string to be translated.
  * @param int $number The number to determine singular or plural form.
  * @param string $domain The text domain for the translation. Default is 'cacti'.
- * 
+ *
  * @return string The translated and correctly pluralized string.
  */
 function __xn(string $context, string $singular, string $plural, int $number, string $domain = 'cacti'): string {

@@ -567,7 +567,7 @@ function form_actions() {
 					AND local_graph_id = 0
 					AND parent = 0
 					ORDER BY parent, position',
-					array($tree['id']));
+					[$tree['id']]);
 
 				if (cacti_sizeof($branches)) {
 					$branches = array_rekey($branches, 'id', 'title');

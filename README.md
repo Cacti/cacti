@@ -17,10 +17,10 @@
 
 We currently have two functioning versions of Cacti on this site, and several
 Cacti plugins supported by The Cacti Group.  Our current long lived version
-of Cacti in the `1.2.x` branch.  The current release version of this branch 
-is Cacti 1.2.27.  
+of Cacti in the `1.2.x` branch.  The current release version of this branch
+is Cacti 1.2.27.
 
-This pending maintenance release has several bugs fixes, and significantly more 
+This pending maintenance release has several bugs fixes, and significantly more
 welcomed feature enhancements.  You can review the CHANGELOG for the `1.2.x`
 branch for more information on that.
 
@@ -47,7 +47,7 @@ to install those dependencies.
 | Net-SNMP   | 5.5+         | 5.8+        |
 
 For Cacti 1.2.x, it is reasonable to run with RHEL/CentOS 7 or equivalent.  However,
-for Cacti 1.3.x, it would be better to run on RHEL 9 +, CentOS Stream 9+, or Rocky 9+ 
+for Cacti 1.3.x, it would be better to run on RHEL 9 +, CentOS Stream 9+, or Rocky 9+
 or equivalent as these OS versions makes PHP 8.1+ available via a DNF Stream.  Of course
 Ubuntu/Debian is also well supported.
 
@@ -57,13 +57,13 @@ have to build RRDtool 1.9.1+ from source, which is straightforward on any modern
 Linux OS such as Rocky Linux 9.x.
 
 If you wish to take advantag of dynamic hover over Graphs, you will need RRDtool 1.9.1+.
-However, as of January 10, 2025, it has not been released.  So, you will likely need 
-to run the develop version until it's released.  Upon release, depending on Tobi's 
+However, as of January 10, 2025, it has not been released.  So, you will likely need
+to run the develop version until it's released.  Upon release, depending on Tobi's
 discretion, the release may be 2.0 or some other version.  So, keep your eye on Github.
 
 Due to the recent oauth2 Email feature enhancement in the develop branch, we were
-forced to increase the minimum PHP version for Cacti 1.3+ from PHP 8.0 to 8.1. So, keep 
-this in mind if you are planning to upgrade and don't already have PHP 8.2+ installed 
+forced to increase the minimum PHP version for Cacti 1.3+ from PHP 8.0 to 8.1. So, keep
+this in mind if you are planning to upgrade and don't already have PHP 8.2+ installed
 and operations.
 
 In the sections below, you can find some important first steps before installing
@@ -79,7 +79,7 @@ of any version with Cacti 1.2.x and above.
 ## IMPORTANT
 
 When using source or by downloading the code directly from the repository, it is
-important to note that periodically, you may have to rerun the database upgrade 
+important to note that periodically, you may have to rerun the database upgrade
 cli script to bring in new columns.  You can use the --forcever=1.2.22 option
 to assume you are upgrading from an earlier cacti version:
 

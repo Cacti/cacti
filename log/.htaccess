@@ -38,8 +38,8 @@ Order allow,deny
 Deny from all
 </Files>
 
-# Prevent Access to browser reading .log files 
-<FilesMatch "\.(log)$">           
+# Prevent Access to browser reading .log files
+<FilesMatch "\.(log)$">
 Order allow,deny
 Deny from all
 

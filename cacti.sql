@@ -2250,7 +2250,7 @@ CREATE TABLE `package_public_keys` (
   `email_address` varchar(60) NOT NULL DEFAULT '',
   `public_key` varchar(1024) DEFAULT '',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `md5sum` (`md5sum`) 
+  UNIQUE KEY `md5sum` (`md5sum`)
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC COMMENT='Hold Trusted Package Public Keys';
 
 --
@@ -3521,4 +3521,3 @@ INNER JOIN data_template_data AS dtd
 ON did.data_template_data_id = dtd.id
 INNER JOIN data_local AS dl ON dl.id = dtd.local_data_id
 SET did.host_id = dl.host_id;
-

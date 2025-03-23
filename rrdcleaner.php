@@ -216,7 +216,7 @@ function get_files() {
 		rrd_close($rrdtool_pipe);
 
 		if ($scan) {
-			$scan = str_replace("\r\n", "\n", $scan); // Replace \r\n with \n
+			$scan  = str_replace("\r\n", "\n", $scan); // Replace \r\n with \n
 			$files = explode("\n", $scan);            // Split based on \n
 
 			foreach ($files as $file) {

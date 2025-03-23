@@ -1442,7 +1442,7 @@ function poller_connect_to_remote($poller_id) {
 		return false;
 	}
 
-	if (POLLER_ID > 1 && POLLER_ID == $poller_id) {
+	if (POLLER_ID > 1 && $poller_id == POLLER_ID) {
 		return $local_db_cnn_id;
 	}
 

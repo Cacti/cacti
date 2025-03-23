@@ -874,24 +874,25 @@ function displayUsers(bool $quietMode = false): void {
  * @return void
  */
 function displayGroups(bool $quietMode = false) {
-        if (!$quietMode) {
-                print 'Known Groups: (id, name, description)'. PHP_EOL;
-        }
+	if (!$quietMode) {
+		print 'Known Groups: (id, name, description)'. PHP_EOL;
+	}
 
-        $groups = db_fetch_assoc('SELECT id, name, description
+	$groups = db_fetch_assoc('SELECT id, name, description
                 FROM user_auth_group
                 ORDER BY id');
 
-        if (cacti_sizeof($groups)) {
-                foreach ($groups as $group) {
-                        print $group['id']      ."\t";
-                        print $group['name']    ."\t";
-                        print $group['description'] . PHP_EOL;
-                }
-        }
+	if (cacti_sizeof($groups)) {
+		foreach ($groups as $group) {
+			print $group['id']      ."\t";
+			print $group['name']    ."\t";
+			print $group['description'] . PHP_EOL;
+		}
+	}
 
-        if (!$quietMode) {
-                print PHP_EOL;
-        }
-        exit(1);
+	if (!$quietMode) {
+		print PHP_EOL;
+	}
+
+	exit(1);
 }

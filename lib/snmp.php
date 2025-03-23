@@ -998,7 +998,6 @@ function snmp_escape_string($string) {
 
 function snmp_get_method($type = 'walk', $version = 1, $context = '', $engineid = '',
 	$value_output_format = SNMP_STRING_OUTPUT_GUESS) {
-
 	if (!CACTI_PHP_SNMP) {
 		return SNMP_METHOD_BINARY;
 	}

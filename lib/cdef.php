@@ -29,7 +29,7 @@
  * the corresponding name or value based on the item's type.
  *
  * @param int $cdef_item_id The ID of the CDEF item.
- * 
+ *
  * @return string The name or value of the CDEF item.
  */
 function get_cdef_item_name($cdef_item_id) {
@@ -64,7 +64,7 @@ function get_cdef_item_name($cdef_item_id) {
  * constructs the CDEF string by iterating through the items, and handles nested CDEFs recursively.
  *
  * @param int $cdef_id The ID of the CDEF to retrieve.
- * 
+ *
  * @return string The constructed CDEF string.
  */
 function get_cdef($cdef_id) {

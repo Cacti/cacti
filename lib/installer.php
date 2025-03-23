@@ -1858,22 +1858,50 @@ class Installer implements JsonSerializable {
 			return $this->exitWithReason($exitReason);
 		}
 
-		 switch ($this->stepCurrent) {
-			case Installer::STEP_WELCOME:                return $this->processStepWelcome();break;
-			case Installer::STEP_CHECK_DEPENDENCIES:     return $this->processStepCheckDependencies();break;
-			case Installer::STEP_INSTALL_TYPE:           return $this->processStepMode();break;
-			case Installer::STEP_BINARY_LOCATIONS:       return $this->processStepBinaryLocations();break;
-			case Installer::STEP_PERMISSION_CHECK:       return $this->processStepPermissionCheck();break;
-			case Installer::STEP_INPUT_VALIDATION:       return $this->processStepNoticesRecommendations();break;
-			case Installer::STEP_PROFILE_AND_AUTOMATION: return $this->processStepProfileAndAutomation();break;
-			case Installer::STEP_TEMPLATE_INSTALL:       return $this->processStepTemplateInstall();break;
-			case Installer::STEP_CHECK_TABLES:           return $this->processStepCheckTables();break;
-			case Installer::STEP_INSTALL_CONFIRM:        return $this->processStepInstallConfirm();break;
-			case Installer::STEP_INSTALL:                return $this->processStepInstall();break;
-			case Installer::STEP_ERROR:                  return $this->processStepComplete();break;
-			case Installer::STEP_COMPLETE:               return $this->processStepComplete();break;
-			default:                                     return $this->exitWithReason(($this->stepCurrent));break;
-		};
+		switch ($this->stepCurrent) {
+			case Installer::STEP_WELCOME:                return $this->processStepWelcome();
+
+				break;
+			case Installer::STEP_CHECK_DEPENDENCIES:     return $this->processStepCheckDependencies();
+
+				break;
+			case Installer::STEP_INSTALL_TYPE:           return $this->processStepMode();
+
+				break;
+			case Installer::STEP_BINARY_LOCATIONS:       return $this->processStepBinaryLocations();
+
+				break;
+			case Installer::STEP_PERMISSION_CHECK:       return $this->processStepPermissionCheck();
+
+				break;
+			case Installer::STEP_INPUT_VALIDATION:       return $this->processStepNoticesRecommendations();
+
+				break;
+			case Installer::STEP_PROFILE_AND_AUTOMATION: return $this->processStepProfileAndAutomation();
+
+				break;
+			case Installer::STEP_TEMPLATE_INSTALL:       return $this->processStepTemplateInstall();
+
+				break;
+			case Installer::STEP_CHECK_TABLES:           return $this->processStepCheckTables();
+
+				break;
+			case Installer::STEP_INSTALL_CONFIRM:        return $this->processStepInstallConfirm();
+
+				break;
+			case Installer::STEP_INSTALL:                return $this->processStepInstall();
+
+				break;
+			case Installer::STEP_ERROR:                  return $this->processStepComplete();
+
+				break;
+			case Installer::STEP_COMPLETE:               return $this->processStepComplete();
+
+				break;
+			default:                                     return $this->exitWithReason(($this->stepCurrent));
+
+				break;
+		}
 	}
 
 	public function processStepWelcome() {
@@ -2967,7 +2995,7 @@ class Installer implements JsonSerializable {
 				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('Unknown'));
 
 				break;
-		};
+		}
 
 		$topts = db_fetch_assoc('SELECT *
 			FROM settings
@@ -3330,7 +3358,7 @@ class Installer implements JsonSerializable {
 				$which = 'INSTALL';
 
 				break;
-		};
+		}
 
 		log_install_always('', __('Starting %s Process for v%s', $which, CACTI_VERSION_FULL));
 

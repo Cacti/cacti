@@ -697,7 +697,7 @@ function api_reapply_suggested_data_source_data(int $local_data_id): void {
  * @param int $_local_data_id The ID of the local data to duplicate. If provided, the function will duplicate the data source.
  * @param int $_data_template_id The ID of the data template to duplicate. If provided, the function will duplicate the data template.
  * @param string $data_source_title The title for the new data source or data template.
- * 
+ *
  * @return int|false The ID of the newly created local data or data template, or false on failure.
  */
 function api_data_source_duplicate(int $_local_data_id, int $_data_template_id, string $data_source_title): int|false {

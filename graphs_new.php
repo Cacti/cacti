@@ -294,7 +294,7 @@ function create_graphs_new_filter($host, $snmp_queries) {
 	$gt  = ['-1' => __('Graph Template Based')];
 
 	if (!cacti_sizeof($host)) {
-		$host['id'] = '';
+		$host['id']          = '';
 		$host['description'] = __('Select a Device');
 	}
 

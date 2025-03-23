@@ -484,4 +484,3 @@ foreach ($realtime_refresh as $interval => $text) {
 	</form>
 </body>
 </html>
-

@@ -651,7 +651,7 @@ if ($config['is_web']) {
 
 			cacti_log('Connection: ' . CACTI_CONNECTION . ', Previous Mode: ' . $previous_mode . ', Page: ' . $_SERVER['SCRIPT_NAME'], false, 'WEBUI', POLLER_VERBOSITY_DEBUG);
 
-			if (CACTI_CONNECTION == 'online' && (CACTI_CONNECTION != $previous_mode)) {
+			if (CACTI_CONNECTION == 'online' && ($previous_mode != CACTI_CONNECTION)) {
 				$reload  = true;
 				$message = __('The Main Data Collector has returned to an Online Status');
 				$level   = MESSAGE_LEVEL_INFO;

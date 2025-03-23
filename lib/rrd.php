@@ -3087,6 +3087,8 @@ function rrdtool_function_get_resstep($local_data_ids, $graph_start, $graph_end,
  *
  * @param  string   The data source rrdfile path
  * @param  ?resource The rrdtool pipe if available
+ * @param mixed $data_source_path
+ * @param null|mixed $rrdtool_pipe
  *
  * @return (array) an array containing all data from rrdtool info command
  */

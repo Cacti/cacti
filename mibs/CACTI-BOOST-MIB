@@ -114,7 +114,7 @@ boost MODULE-IDENTITY
     "
     REVISION        "201603080000Z"
     DESCRIPTION
-        "- With decommission of the BOOST SERVER status of: 
+        "- With decommission of the BOOST SERVER status of:
             boostApplServerEnabled, boostApplServerMultiprocess, boostApplServerHostname
             boostApplServerListenPort, boostApplServerTimeOut and cactiStatsPollerRunTime
            has been set to obsolete."

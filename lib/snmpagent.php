@@ -261,7 +261,7 @@ function snmpagent_device_action_bottom($data) {
 						cacti_log('WARNING: SNMPAgent: ' . $e->getMessage(), false, 'SNMPAGENT', POLLER_VERBOSITY_MEDIUM);
 					}
 				}
-				$mc->object('cactiStatsLastUpdate')->set(time());;
+				$mc->object('cactiStatsLastUpdate')->set(time());
 
 				break;
 			default:

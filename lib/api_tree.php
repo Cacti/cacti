@@ -919,7 +919,7 @@ function api_tree_get_item_type(int $tree_item_id): string {
 /**
  * Callback to naturally sort an array
  *   This function is used to sort graphs and trees.
- * 
+ *
  * @deprecated
  *
  * @param array $a The first graph data array to compare.
