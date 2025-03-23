@@ -31,27 +31,26 @@ let midWinter_tap_clientY = 0;
 
 /* cache local and vendor libs */
 let midWinter_classes = [];
-let midWinter_path = 'include/themes/midwinter/';
+let midWinter_path = 'include/js/';
 
-loadScript('navigationBox',	midWinter_path + 'midwinter.js');
-loadScript('navigationTree',	midWinter_path + 'midwinter.jstree.js');
-loadScript('hotkeys',			midWinter_path + 'vendor/hotkeys/hotkeys.min.js');
-loadScript('mark',			midWinter_path + 'vendor/mark/jquery.mark.js');
-loadScript('moment',			midWinter_path + 'vendor/moment/moment.min.js');
-loadScript('daterangepicker',	midWinter_path + 'vendor/daterangepicker/daterangepicker.js');
+loadScript('navigationBox',   midWinter_path + 'navigationBox.js');
+loadScript('navigationTree',  midWinter_path + 'navigationTree.jstree.js');
+loadScript('hotkeys',         midWinter_path + 'vendor/hotkeys/hotkeys.min.js');
+loadScript('mark',            midWinter_path + 'vendor/mark/jquery.mark.js');
+loadScript('moment',          midWinter_path + 'vendor/moment/moment.min.js');
+loadScript('daterangepicker', midWinter_path + 'vendor/daterangepicker/daterangepicker.js');
 
 /* global functionalities and default values */
-initStorageItem('midWinter_Color_Mode',			'dark',	'theme-color');
-initStorageItem('midWinter_Color_Mode_Auto',		'on',	'theme-color-auto');
-initStorageItem('midWinter_Font_Size',			'75',	'zoom-level');
-initStorageItem('midWinter_Animations',			'on',	'animations');
-initStorageItem('midWinter_Auto_Table_Layout',	'on',	'auto-table-layout');
-initStorageItem('midWinter_Controls_SubTitle',	'off',	'controls-subtitle');
+initStorageItem('midWinter_Color_Mode',        'dark', 'theme-color');
+initStorageItem('midWinter_Color_Mode_Auto',   'on',   'theme-color-auto');
+initStorageItem('midWinter_Font_Size',         '75',   'zoom-level');
+initStorageItem('midWinter_Animations',        'on',   'animations');
+initStorageItem('midWinter_Auto_Table_Layout', 'on',   'auto-table-layout');
+initStorageItem('midWinter_Controls_SubTitle', 'off',  'controls-subtitle');
 
 setHotKeys();
 
 function themeReady() {
-
 	setupTheme();
 	setupDefaultElements();
 
