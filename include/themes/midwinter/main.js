@@ -22,7 +22,9 @@
 */
 
 /* global setup */
-select2Setup["displayDefaultLabel"] = true;
+select2Setup = {
+	displayDefaultLabel : true
+}
 
 /* global midwinter variables */
 let midWinter_tap_count = 0;
@@ -412,9 +414,10 @@ function toggleCactiNavigationBox(event) {
 		caller.addClass('selected');
 		navigationBox.addClass('visible');
 		compact_nav_icon.addClass('selected');
+
 		if(event.data && event.data.filter) {
-			let navBox_input_field = $("input[name=navBox-search]", navigationBox);
-			$('.navBox-search', navigationBox).removeClass('hide');
+			let navBox_input_field = $("input[name=navBox-header-search]", navigationBox);
+			$('.navBox-header-search', navigationBox).removeClass('hide');
 			if(event.data.filter !== 'reset') {
 				navBox_input_field.trigger('focus').val(event.data.filter).trigger('input');
 			}else {
@@ -586,7 +589,7 @@ function setupDefaultElements() {
 
 
 //	let btn_filter1 	= new navigationButton('displayDockTop', 'Filter', 'Show Filter Dock','fas fa-filter', '#navFilter', 'toggleCactiDockNavigationBox', 'Top');
-	let btn_filter 	= new navigationButton('displayFilterOptions', 'Filter', 'Show Filter Dock','fas fa-filter', '#navFilter');
+	let btn_filter 	= new navigationButton('displayFilterOptions', 'Filter', 'Show Display Filter','fas fa-filter', '#navFilter');
 	let btn_calendar	= new navigationButton('daterangepicker', 'Calendar', 'Select Timeframe', 'fas fa-calendar-alt', '#navFilter', '', '');
 	let btn_add		= new navigationButton('formAction', 'New', 'Add','fa fa-plus', '#navFilter');
 
@@ -621,13 +624,17 @@ function setupDefaultElements() {
 
 	// ensure that table tabs shown within #main will stay on top
 	if ($("#main>div.tabs:first").length) {
-		$('<div id="tabsOnTop" class="stickyContainer hide">').prependTo('#navigation_right');
-		$("#main>div.tabs:first").closest('div').detach().prependTo('#tabsOnTop');
-		$("#tabsOnTop").removeClass('hide');
+		$('<div id="elementsOnTop" class="stickyContainer hide">').prependTo('#navigation_right');
+		$("#main>div.tabs:first").closest('div').detach().prependTo('#elementsOnTop');
+		$("#elementsOnTop").removeClass('hide');
 	}else if($("#main >div .tabs:first").length) {
-		$('<div id="tabsOnTop" class="stickyContainer hide">').prependTo('#navigation_right');
-		$("#main >div .tabs:first").closest('div').detach().prependTo('#tabsOnTop');
-		$("#tabsOnTop").removeClass('hide');
+		$('<div id="elementsOnTop" class="stickyContainer hide">').prependTo('#navigation_right');
+
+		$("#elementsOnTop").removeClass('hide');
+	}else if ($("#main >div >div.cactiTableTitleRow").length) {
+		$('<div id="tableTitleOnTop" class="stickyContainer hide">').prependTo('#navigation_right');
+		$("#main >div >div.cactiTableTitleRow").closest('div').detach().prependTo('#tableTitleOnTop');
+		$("#tableTitleOnTop").removeClass('hide');
 	}
 
 	/* display option: table layout */

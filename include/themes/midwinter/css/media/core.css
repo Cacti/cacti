@@ -46,13 +46,16 @@ html {
 }
 
 body {
-    overflow: hidden;
+    position: relative;
+    overflow: hidden !important;
     width: 100vw !important;
+    min-height: 100vh !important;
     height: 100vh !important;
     margin: 0;
     opacity: 0;
     color: var(--text-color-normal);
-    background-color: var(--background);
+    /* background-color: var(--background); */
+    background: transparent;
 
     [data-theme-state="ready"] & {
         animation: fadeInAnimation ease 0.5s;
@@ -61,8 +64,7 @@ body {
     }
 }
 
-
-    /* elements */
+/* elements */
 img {
     border: none;
 }
@@ -79,7 +81,7 @@ fieldset {
 
 /* main Layout */
 main {
-    scrollbar-gutter: stable;
+    padding: 0 1px;
     @supports (scrollbar-width: auto) {
         scrollbar-color: var(--scrollbar-thumb) var(--background-content);
     }
@@ -288,22 +290,27 @@ input[type="checkbox"]:focus-within + label:before {
         display: unset !important;              /* ensure to reset inline styles driven by layout.js ;( */
         overflow-y: auto !important;            /* ensure to reset inline styles driven by layout.js ;( */
         overflow-x: auto !important;            /* ensure to reset inline styles driven by layout.js ;( */
-        padding: 0 0 0.5rem 1rem;
         width: 100%;
         height: 100%;
 
-        &:has(.navBarNavigation) {
+        & .cactiTable {
             scrollbar-gutter: unset;
+            overflow: auto;
+        }
+
+        &:has(.navBarNavigation) {
 
             & form {
-                height: 100%;
+                height: 99%;
                 width: 100%;
             }
 
             & .cactiTable {
-                    scrollbar-gutter: stable;
-                    overflow: auto;
-                    max-height: calc(100% - 4rem);
+                scrollbar-gutter: stable;
+                overflow: auto;
+                max-height: calc(100% - 4rem);
+                box-sizing: border-box;
+                width: calc(100% - 10px);
             }
 
             & .cactiTable:has(.cactiTableTitleRow) {
@@ -343,6 +350,7 @@ input[type="checkbox"]:focus-within + label:before {
 
                 & th {
                     white-space: nowrap;
+                    border-radius: 0 !important;
                 }
 
                 & thead th:first-of-type,
@@ -402,7 +410,6 @@ input[type="checkbox"]:focus-within + label:before {
 
 /* Cacti Table */
 .cactiTable table {
-    width: calc(100% - 10px); /* required to suppress overflow-x due to scrollbar-gutter stable */
     border-spacing: 0;
     border-collapse: separate;
     text-align: left;
@@ -1233,7 +1240,6 @@ legend::before {
 .actionsDropdown {
     display: table;
     width: 100%;
-    padding: 3px;
     text-align: right;
     vertical-align: middle;
 }
@@ -1327,6 +1333,23 @@ legend::before {
 .graphWrapper {
     width: fit-content;
     position: relative;
+    &:hover {
+        &::after {
+            color: var(--text-color-normal);
+            background: var(--background-content);
+            content: "\22EE";
+            display: block;
+            position: absolute;
+            right: 0;
+            top: 0;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-bottom-left-radius: 4px;
+            border-top-right-radius: 2px;
+            opacity: 0.98;
+        }
+    }
+
 }
 
 .graphimage {
@@ -1506,14 +1529,7 @@ legend::before {
 
 .textSubHeaderDark, .textSubHeaderDark:visited {
     font-size: var(--fs-semismall);
-    margin: 2px 0 3px 5px;
     outline-style: none;
-}
-
-.cactiBorderWall {
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgba(255,255,255,0.2);
 }
 
 .cactiTable {
@@ -1537,33 +1553,27 @@ table.cactiTable {
 }
 
 .cactiTableTitleRow {
-    display: table-column;
-    float: left;
-    width: 100%;
-    padding: 3px 0 3px 5px;
-    text-align: left;
-    background-color: #242635;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--background-navigation);
+    height: 2.5rem;
+    padding: 0 0.5rem;
+
+
 }
 
 .cactiTableTitle {
     font-size: var(--fs-big);
-    display: table-column;
     float: left;
-    width: 70%;
-    padding: 3px 0 3px 0;
     text-align: left;
-    border-color: rgba(255,255,255,0.2);
 }
 
 .cactiTableButton {
     font-size: var(--fs-semismall);
-    display: table-column;
     float: right;
-    width: 30%;
-    padding: 3px 0;
     text-align: right;
     white-space: nowrap;
-    border-color: rgba(255,255,255,0.2);
 }
 
 .cactiTableButton.debug {
@@ -1576,7 +1586,6 @@ table.cactiTable {
     padding: 0;
     vertical-align: middle;
     white-space: nowrap;
-    margin-left: 5px;
 }
 
 .cactiTableButton i {
@@ -1742,7 +1751,7 @@ table.cactiTable {
 
 .tableHeader {
     display: table-row;
-    height: 3.5rem;
+    height: 3rem;
 
     & th {
         font-weight: var(--fw-semibold);
@@ -2236,7 +2245,7 @@ tr {
 }
 
 #nav li ul li, .nav li ul li {
-    border: 1px solid transparent;
+    border: 1px solid var(--background-menu);
     border-radius: 4px;
     &:hover {
         color: var(--text-color-high-contrast);
@@ -2433,7 +2442,7 @@ hr.menu {
 }
 
 .cactiInstallArea {
-    background-color: #1c1e2d;
+
 }
 
 .cactiInstallSqlResults {

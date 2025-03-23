@@ -42,9 +42,15 @@
 .compact_nav_icon,
 .navBox-header-button {
     color: var(--text-color-normal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
 
     &.mdw-active {
         background: var(--background-active-section);
+        color: snow;
     }
 
     &.selected {
@@ -55,7 +61,7 @@
     &:focus-visible {
         color: white;
         outline: none !important;
-        box-shadow: var(--background-content) 0px 0px 0px -2px, var(--border-color-highlight) 0px 0px 0px 1px;
+        box-shadow: var(--background-content) 0 0 0 -2px, var(--border-color-highlight) 0 0 0 1px;
         background-color: hsla( 208, 69%, 40%, 0.5);
     }
 
@@ -120,6 +126,18 @@
 }
 
 
+.mdw-PopOver {
+    top: 10%;
+    left: 50%;
+    box-shadow: -2px 4px 10px 2px var(--box-shadow-color);
+    background-color: var(--background-menu);
+    border-radius: 2px;
+    border: 1px solid var(--border-color);
+    height: clamp(40vh, 53%, 80vh);
+    color: var(--text-color-normal);
+}
+
+
     /* Main Content Area */
     .mdw-Main {
         display: grid;
@@ -132,7 +150,33 @@
         grid-area: main;
 
         &:has(.saveRowParent) {
-            padding-bottom: 4rem;
+            & #main {
+                margin-bottom: 4rem;
+            }
+
+            & #main::-webkit-scrollbar-button {
+                width: 40px;
+                height: 40px;
+
+            }
+
+            .saveRowParent & {
+                padding-bottom: 0.5rem;
+            }
+            & .saveRowParent {
+                width: 100%;
+                background: red;
+                .saveRow {
+                    position: absolute;
+                    top:100%;
+                    width: 100%;
+                    -webkit-transform: translateY(-100%);
+                    -ms-transform: translateY(-100%);
+                    transform: translateY(-100%);
+                    border-top: 1px solid var(--border-color-semilight);
+                    right: 0;
+                }
+            }
         }
 
         & .mdw-DockTop {
@@ -147,7 +191,6 @@
             height: auto;
             border-right: 1px solid var(--border-color-semilight);
             width: min-content;
-            padding: 0 0.5rem;
 
             & .cactiTable {
                 width: 100% !important;
@@ -187,6 +230,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            box-shadow: 0 2px 5px -1px var(--box-shadow-color);
 
             & .mdw-ConsoleNavigationBox {
                 visibility: visible !important;     /* NavigationBoxes within docks cannot be hidden */
@@ -215,7 +259,6 @@
             }
 
             & > div {
-                display: block;
                 height: 100%;
                 position: unset;
                 transform: translate(0);
@@ -226,8 +269,13 @@
             }
             .navBox-header {
                 font-size: var(--fs-regular);
-                background: var(--background-content-element);
                 border-bottom: 1px solid var(--border-color-semilight);
+                border-top: 1px solid var(--border-color-semilight);
+            }
+            & .mdw-ConsoleNavigationBox:first-of-type {
+                .navBox-header{
+                    border-top: none;
+                }
             }
         }
     }
@@ -330,18 +378,31 @@
     }
 
     .cactiAuthBody {
+        top: 0;
+        position: absolute;
         display: flex;
-        height: 100%;
-        width: 100%;
+        height: 100dvh !important;
+        width: 100dvw !important;
         justify-items: center;
+        justify-content: center;
         flex-direction: column;
         align-items: center;
-        background: var(--background-content);
-        justify-items: center;
+        background: transparent;
         overflow-y: auto;
         overflow-x: hidden;
+        color: var(--text-color-normal);
         @media screen and (max-width: 768px) {
             background: var(--background-navigation-top);
+        }
+
+    }
+
+    .cactiInstallTable {
+        box-shadow: -2px 4px 10px 2px var(--box-shadow-color);
+        border-radius: 2px;
+        border: 1px solid var(--border-color);
+        & > div {
+
         }
     }
 
@@ -359,28 +420,29 @@
         display: flex;
         align-items: center;
         flex-direction: column-reverse;
-        justify-content: flex-end;
+        justify-content: center;
         padding-top: 1rem;
         padding-bottom: 1rem;
         color: var(--text-color-white);
         border: 1px solid var(--border-color-semilight);
         border-radius: 4px;
         background: var(--background-navigation-top);
-        height: fit-content;
+        flex-shrink: 1;
         width: max-content;
         min-width: 40rem;
         max-width: 100dvw !important;
-        margin: auto 0;
 
         @media screen and (max-width: 768px) {
             border: 1px solid transparent;
         }
     }
 
-    html[data-theme-color="light"] {
-        background: rgba(0,0,0,0.25);
+    html {
+        background: rgba(0,0,0,99.99);
     }
-
+    html[data-theme-color="light"] {
+        background: rgba(0,0,0,0.01);
+    }
 
     .cactiAuthCenter hr {
         display:none;
@@ -411,7 +473,7 @@
 
         & i {
             position: relative;
-            top: -4rem;
+            top: -3.87rem;
             left: 0.5rem;
             width: calc( var(--fs-semilarge) + 1rem );
             padding: 0.5rem;
@@ -439,7 +501,7 @@
         }
 
         & input:not([type="checkbox"]) {
-            line-height: 3.5rem;
+            line-height: 3rem;
             background: rgba(0, 0, 0, 0.6);
             html[data-theme-color="light"] & {
                 background: var(--background-content);
@@ -513,3 +575,20 @@
         grid-area: middle;
     }
 
+    .stickyContainer {
+        display: flex;
+        flex-direction: column;
+        border-bottom: 1px solid var(--border-color);
+        background: none;
+        height: 3rem;
+        padding-left: 8px;
+        & >div {
+            height: 100%;
+        }
+        & div {
+            background: none;
+        }
+        &:empty {
+            display: none;      /* hide empty stickyContainer */
+        }
+    }

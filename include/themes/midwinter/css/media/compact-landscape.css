@@ -29,6 +29,7 @@ html {
 
         .mdw-Main {
             height: 100vh;
+            width: 100vw;
             border-top: none;
             /*
                         &:has(.saveRowParent) {
@@ -46,11 +47,11 @@ html {
 
 .mdw-GridContainer {
     display: grid;
-    grid-template-areas: "sidebar header"
-                         "sidebar main"
-                         "sidebar footer";
-    grid-template-columns: 4rem calc(100dvw - 4rem);
-    grid-template-rows: 4rem calc(100dvh - 4rem);
+    grid-template-areas: "sidebar  header    header   header"
+                         "sidebar  dockLeft  dockTop  dockRight"
+                         "sidebar  dockLeft  main     dockRight";
+    grid-template-columns: 4rem minmax(0, min-content) 1fr minmax(0, min-content);
+    grid-template-rows: 3.5rem minmax(0rem, auto) clamp( calc( 100dvh - 8rem), calc( 100dvh - 3.5rem), 100dvh);
 }
 
 .mdw-ConsolePageHead {
@@ -58,47 +59,47 @@ html {
     align-items: center;
     flex-direction: row;
     flex-wrap: nowrap;
-    height: 4rem;
-    background-color: var(--background-navigation-top);
+    background-image: linear-gradient(90deg, var(--background-navigation-top-darkblue) 35%, var(--background-navigation-top-lightblue));
     grid-area: header;
-    padding: 2px 0 3px 0;
 
     * {
         float: left;
         padding-bottom: 0;
+        color: snow !important;
     }
 
     > div {
         height: 100%;
         display: flex;
         align-items: center;
-        color: var(--text-color-normal);
         background: transparent;
         font-size: var(--fs-big);
         font-weight: var(--fw-medium);
 
         .compact_nav_icon {
-            position: relative;
             font-size: var(--fs-regular);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 3rem;
-            height: 100%;
-            cursor: pointer;
-            border: 1px solid transparent;
+            width: 2.5rem;
+            height: 2.5rem;
+            margin: 2px 3px;
+            border: 2px solid transparent;
             border-radius: 4px;
 
-            &[data-tooltip]:not([data-tooltip=""])::after {
-                top: 125%;
-                right:90%;
+            &[data-tooltip]:not([data-tooltip=""]) {
+                &::before {
+                    width: fit-content;
+                    position: absolute;
+                    left: unset !important;
+                    top: 3.8rem;
+                    transition: 0s;
+                    right: 2.5rem;
+                }
             }
         }
     }
 }
 
 .navBreadCrumb {
-    padding: 0 0 0 1.5rem;
+    padding: 0 0 0 18px;
     display: flex;
     overflow: hidden;
     flex-wrap: nowrap;
@@ -163,7 +164,7 @@ html {
 
     .compact_nav_icon.selected {
         color: var(--text-color-normal);
-        background-color: transparent;
+        background-color: rgba(0,0,0,0.2);
         &::after {
             height: 25px;
             width: 25px;
@@ -173,7 +174,7 @@ html {
         }
         &:hover {
             color: var(--text-color-white);
-            background-color: var(--background-progress-semilight);
+            background-color: rgba(0,0,0,0.3);
         }
     }
 }
@@ -184,21 +185,7 @@ html {
 }
 
 /* ensure that save buttons stay at the bottom. no solution has been found yet to use grid-area: footer instead */
-.saveRowParent {
-    position: fixed;
-    z-index: 100;
-    bottom: 0;
-    left: 4rem;
-    width: calc(100vw - 4rem);
-    height: 4rem;
-    padding-right: 0.5rem;
-    border-top: 1px solid var(--border-color-semilight);
-    background: var(--background-content);
 
-    & .formRow {
-        display: block;
-    }
-}
 
 /* Console Navigation Area */
 .mdw-ConsoleNavigation {
@@ -209,11 +196,10 @@ html {
     flex-direction: column;
     justify-content: flex-start;
     width: 100%;
-    border-right: 1px solid var(--border-color-semilight);
     background: var(--background-navigation);
     grid-area: sidebar;
     padding-bottom: 2px;
-
+    box-shadow: -2px 10px 5px 2px var(--box-shadow-color);
 
     .compact_nav_icon_menu {
         &:last-child {
@@ -223,31 +209,32 @@ html {
             flex-direction: column;
             justify-content: flex-end;
         }
+        &:has(.navBackdrop){
+            height: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: var(--background-navigation-top-blue);
+        }
     }
 
     .compact_nav_icon {
         font-size: var(--fs-semilarge);
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
         height: 3.5rem;
-        margin: 1px 2px;
+        margin: 2px 3px;
         cursor: pointer;
         border-radius: 4px;
         border: 2px solid transparent;
 
         &:has(.navBackdrop){
-            height: calc(4rem - 2px);
+            height: 5rem;
         }
 
 
         & .navBackdrop {
             width: 100%;
-            height: 3.5rem;
-            background: transparent url("./../../images/cacti_logo.svg") no-repeat scroll 50% 50% / 20px auto;
-
+            height: 5rem;
+            background: transparent url("./../../images/cacti_logo.svg") no-repeat scroll 50% 50% / 25px auto;
+            position: relative;
+            z-index: auto;
             html[data-controls-subtitle="on"] & {
                 height: 2rem;
                 background: transparent url("./../../images/cacti_logo.svg") no-repeat scroll 50% 50% / min(10px) auto;
@@ -284,36 +271,40 @@ html {
 
 * {
     /* CSS driven tooltip */
-    &[data-tooltip]:not([data-tooltip=""])::after {
-        z-index: 300;
-        font-size: var(--fs-regular);
-        position: absolute;
-        width: fit-content;
-        height: fit-content;
-        padding: 0.5rem 1rem;
-        content: attr(data-tooltip);
-        transition: 0.1s;
-        transform: translate(0, 0) scale(0);
-        transform-origin: center;
-        text-align: center;
-        white-space: nowrap;
-        opacity: 0;
-        color: var(--text-color-normal);
-        border: 1px solid var(--border-color);
-        border-radius: 5px;
-        background: var(--background-navigation-top);
-        box-shadow: var(--box-shadow-color) 0 10px 20px;
+    &[data-tooltip]:not([data-tooltip=""]) {
+        &::before {
+            z-index: 1500;
+            font-size: var(--fs-regular);
+            position: absolute;
+            left: 10px;
+            width: fit-content;
+            height: fit-content;
+            padding: 0.5rem 1rem;
+            content: attr(data-tooltip);
+            transition: 0.05s;
+            transform: translate(0, 0) scale(0);
+            transform-origin: center;
+            text-align: center;
+            white-space: nowrap;
+            opacity: 0;
+            color: var(--text-color-normal);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background: var(--background-navigation-top);
+            box-shadow: var(--box-shadow-color) 0 10px 20px;
+        }
     }
 
-    &[data-tooltip]:not([data-tooltip=""]):not(.selected):hover:after {
-        opacity: 1;
-        animation: scaleDelay ease 0.1s;
-        animation-delay: 0.75s;
-        animation-iteration-count: 1;
-        animation-fill-mode: forwards;
+    &[data-tooltip]:not([data-tooltip=""]):not(.selected):hover {
+        &:before {
+            opacity: 1;
+            animation: scaleDelay ease 0.1s;
+            animation-delay: 0.75s;
+            animation-iteration-count: 1;
+            animation-fill-mode: forwards;
+        }
     }
 }
-
 
 
 .mdw-ConsoleNavigationBox {
@@ -321,14 +312,14 @@ html {
                                        items are focusable while the navigation box is outside the viewport. */
     position: absolute;
     z-index: 900;
-    top: 4rem;
+    top: 3.5rem;
     left: 4rem;
     display: flex;
     flex-direction: column;
     width: 55rem;
     min-width: 19rem;
     max-width: calc(100vw - 5rem);
-    height: calc(100vh - 4rem);
+    height: calc(100vh - 3.5rem);
     transition: visibility 0.5s linear, transform 0.5s ease-in-out;
     transform: translateX(-125%);
     border-top: 1px solid var(--border-color-light);
@@ -336,7 +327,6 @@ html {
     border-bottom: 1px solid var(--background-navigation);
     border-radius: 2px;
     background-color: var(--background-menu);
-    box-shadow: -2px 10px 5px 2px var(--box-shadow-color);
 
     &[data-align="right"] {
         right: 0;
@@ -355,6 +345,7 @@ html {
         .navBox-content {
             overflow-y: auto;
             padding: 0 1rem;
+            flex: 1;
         }
     }
 
@@ -463,7 +454,7 @@ html {
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    height: 3.5rem;
+    height: 3rem;
     text-align: center;
     background: var(--background-navigation);
     padding: 2px 0.5rem 3px 0.75rem;
@@ -520,7 +511,7 @@ html {
 
 /* Dropdown Content (Hidden by Default) */
 .navBox-header-dropdown-content {
-    font-family: 'Segoe UI', 'Segoe UI Web Regular', 'Segoe UI Symbol', 'Helvetica Neue', 'BBAlpha Sans', 'S60 Sans', Arial, sans-serif;
+    font-family: "Segoe UI", "Segoe UI Web Regular", "Segoe UI Symbol", "Helvetica Neue", "BBAlpha Sans", "S60 Sans", Arial, sans-serif;
     position: absolute;
     z-index: 1;
     top: 2rem;
@@ -580,6 +571,7 @@ html {
     padding: 1rem 0 0 1rem;
     height: calc( 100% - 3.5rem );
     border-top: 1px solid var(--background-navigation-top);
+    background-color: var(--background-menu);
 
     &:has(.mdw_tree) {
         padding: 1rem 1rem 0 1rem;

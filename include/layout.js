@@ -999,7 +999,7 @@ function applySkin() {
 		checkPasswordConfirm();
 	});
 
-	keepWindowSize();
+	//keepWindowSize();
 
 	sessionMessageDisplay();
 	sessionNoticesDisplay();
@@ -3297,7 +3297,11 @@ function setZoneInfo() {
 	document.cookie = CactiTimeZone;
 }
 
-$(function () {
+$(function (){
+	cactiReady();
+});
+
+function cactiReady() {
 	statePushed = false;
 	popFired = false;
 	var tapped = false;
@@ -3357,7 +3361,7 @@ $(function () {
 			setTimeout(function () { window.scrollTo(0, 1); }, 0);
 		});
 	}
-});
+}
 
 /* only perform the recalculation of elements at the final end of the windows resize event */
 var waitForFinalEvent = (function () {
