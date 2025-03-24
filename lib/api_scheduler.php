@@ -440,8 +440,8 @@ function api_scheduler_is_time_to_start(array $schedule, string $table = 'automa
 				$recur = $schedule['recur_every'] * 86400; // days
 			}
 
-			$start = strtotime((int) $schedule['start_at']);
-			$next  = strtotime((int) $schedule['next_start']);
+			$start = strtotime($schedule['start_at']);
+			$next  = strtotime($schedule['next_start']);
 
 			if ($schedule['next_start'] == '0000-00-00 00:00:00') {
 				$target = $start;
@@ -469,8 +469,8 @@ function api_scheduler_is_time_to_start(array $schedule, string $table = 'automa
 			break;
 		case SCHEDULE_WEEKLY:
 			$recur = $schedule['recur_every'] * 86400 * 7; // weeks
-			$start = strtotime((int) $schedule['start_at']);
-			$next  = strtotime((int) $schedule['next_start']);
+			$start = strtotime($schedule['start_at']);
+			$next  = strtotime($schedule['next_start']);
 			$days  = explode(',', $schedule['day_of_week']);
 			$day   = 86400;
 			$week  = 86400 * 7;
