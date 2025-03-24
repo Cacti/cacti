@@ -700,7 +700,7 @@ function template_edit() {
 
 	form_start('data_templates.php', 'data_templates');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	draw_edit_form([
 		'config' => ['no_form_tag' => 'true'],
@@ -710,7 +710,7 @@ function template_edit() {
 
 	html_end_box(true, true);
 
-	html_start_box(__('Data Source'), '100%', true, '3', 'center', '');
+	html_start_box(__('Data Source'), '100%', true, 3, 'center', '');
 
 	/* make sure 'data source path' doesn't show up for a template... we should NEVER template this field */
 	unset($struct_data_source['data_source_path']);
@@ -802,9 +802,9 @@ function template_edit() {
 	}
 
 	if (!$isSNMPGet && !$readOnly) {
-		html_start_box(__('Data Source Item [%s]', (isset($template_rrd) ? html_escape($template_rrd['data_source_name']) : '')), '100%', true, '0', 'center', (!isempty_request_var('id') ? 'data_templates.php?action=rrd_add&id=' . get_request_var('id'):''), __('New'));
+		html_start_box(__('Data Source Item [%s]', (isset($template_rrd) ? html_escape($template_rrd['data_source_name']) : '')), '100%', true, 3, 'center', (!isempty_request_var('id') ? 'data_templates.php?action=rrd_add&id=' . get_request_var('id'):''), __('New'));
 	} else {
-		html_start_box(__('Data Source Item [%s]', (isset($template_rrd) ? html_escape($template_rrd['data_source_name']) : '')), '100%', true, '0', 'center', '', '');
+		html_start_box(__('Data Source Item [%s]', (isset($template_rrd) ? html_escape($template_rrd['data_source_name']) : '')), '100%', true, 3, 'center', '', '');
 	}
 
 	/* data input fields list */
@@ -876,7 +876,7 @@ function template_edit() {
 			WHERE id = ?',
 			[$template_data['data_input_id']]);
 
-		html_start_box(__('Custom Data [data input: %s]', html_escape($name)), '100%', true, '3', 'center', '');
+		html_start_box(__('Custom Data [data input: %s]', html_escape($name)), '100%', true, 3, 'center', '');
 
 		/* loop through each field found */
 		if (cacti_sizeof($fields)) {
@@ -1143,7 +1143,7 @@ function data_templates() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 

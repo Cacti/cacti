@@ -1858,22 +1858,50 @@ class Installer implements JsonSerializable {
 			return $this->exitWithReason($exitReason);
 		}
 
-		 switch ($this->stepCurrent) {
-			case Installer::STEP_WELCOME:                return $this->processStepWelcome();break;
-			case Installer::STEP_CHECK_DEPENDENCIES:     return $this->processStepCheckDependencies();break;
-			case Installer::STEP_INSTALL_TYPE:           return $this->processStepMode();break;
-			case Installer::STEP_BINARY_LOCATIONS:       return $this->processStepBinaryLocations();break;
-			case Installer::STEP_PERMISSION_CHECK:       return $this->processStepPermissionCheck();break;
-			case Installer::STEP_INPUT_VALIDATION:       return $this->processStepNoticesRecommendations();break;
-			case Installer::STEP_PROFILE_AND_AUTOMATION: return $this->processStepProfileAndAutomation();break;
-			case Installer::STEP_TEMPLATE_INSTALL:       return $this->processStepTemplateInstall();break;
-			case Installer::STEP_CHECK_TABLES:           return $this->processStepCheckTables();break;
-			case Installer::STEP_INSTALL_CONFIRM:        return $this->processStepInstallConfirm();break;
-			case Installer::STEP_INSTALL:                return $this->processStepInstall();break;
-			case Installer::STEP_ERROR:                  return $this->processStepComplete();break;
-			case Installer::STEP_COMPLETE:               return $this->processStepComplete();break;
-			default:                                     return $this->exitWithReason(($this->stepCurrent));break;
-		};
+		switch ($this->stepCurrent) {
+			case Installer::STEP_WELCOME:                return $this->processStepWelcome();
+
+				break;
+			case Installer::STEP_CHECK_DEPENDENCIES:     return $this->processStepCheckDependencies();
+
+				break;
+			case Installer::STEP_INSTALL_TYPE:           return $this->processStepMode();
+
+				break;
+			case Installer::STEP_BINARY_LOCATIONS:       return $this->processStepBinaryLocations();
+
+				break;
+			case Installer::STEP_PERMISSION_CHECK:       return $this->processStepPermissionCheck();
+
+				break;
+			case Installer::STEP_INPUT_VALIDATION:       return $this->processStepNoticesRecommendations();
+
+				break;
+			case Installer::STEP_PROFILE_AND_AUTOMATION: return $this->processStepProfileAndAutomation();
+
+				break;
+			case Installer::STEP_TEMPLATE_INSTALL:       return $this->processStepTemplateInstall();
+
+				break;
+			case Installer::STEP_CHECK_TABLES:           return $this->processStepCheckTables();
+
+				break;
+			case Installer::STEP_INSTALL_CONFIRM:        return $this->processStepInstallConfirm();
+
+				break;
+			case Installer::STEP_INSTALL:                return $this->processStepInstall();
+
+				break;
+			case Installer::STEP_ERROR:                  return $this->processStepComplete();
+
+				break;
+			case Installer::STEP_COMPLETE:               return $this->processStepComplete();
+
+				break;
+			default:                                     return $this->exitWithReason(($this->stepCurrent));
+
+				break;
+		}
 	}
 
 	public function processStepWelcome() {
@@ -2020,7 +2048,7 @@ class Installer implements JsonSerializable {
 
 				ob_start();
 
-				html_start_box(__('PHP Recommendations' . ' (' . $recommends[0]['value'] . ')'), '100%', false, '4', '', false);
+				html_start_box(__('PHP Recommendations' . ' (' . $recommends[0]['value'] . ')'), '100%', false, 3, '', false);
 				html_header([__('Name'), __('Current'), __('Recommended'), __('Status'), __('Description')]);
 
 				$status = DB_STATUS_SUCCESS;
@@ -2101,7 +2129,7 @@ class Installer implements JsonSerializable {
 
 		ob_clean();
 
-		html_start_box(__('Required PHP Modules'), '100%', false, '3', '', false);
+		html_start_box(__('Required PHP Modules'), '100%', false, 3, 'center', false);
 		html_header([__('Name'), __('Required'), __('Installed')]);
 
 		$enabled['php_modules'] = DB_STATUS_SUCCESS;
@@ -2131,7 +2159,7 @@ class Installer implements JsonSerializable {
 
 		$ext = utility_php_optionals();
 
-		html_start_box(__('Optional Modules'), '100%', false, '3', '', false);
+		html_start_box(__('Optional Modules'), '100%', false, 3, 'center', false);
 		html_header([__('Name'), __('Optional'), __('Installed')]);
 
 		foreach ($ext as $id => $e) {
@@ -2182,7 +2210,7 @@ class Installer implements JsonSerializable {
 		$output .= Installer::sectionSubTitle(__('MySQL - Settings'), 'mysql_performance');
 		$output .= Installer::sectionNormal(__('These MySQL performance tuning settings will help your Cacti system perform better without issues for a longer time.'));
 
-		html_start_box(__('Recommended MySQL System Variable Settings'), '100%', false, '3', '', false);
+		html_start_box(__('Recommended MySQL System Variable Settings'), '100%', false, 3, 'center', false);
 		$output_temp = ob_get_contents();
 		ob_clean();
 
@@ -2735,7 +2763,7 @@ class Installer implements JsonSerializable {
 
 		$templates = install_setup_get_templates();
 		ob_start();
-		html_start_box(__('Templates'), '100%', false, '3', 'center', '', '');
+		html_start_box(__('Templates'), '100%', false, 3, 'center', '', '');
 		html_header_checkbox([__('Name'), __('Description'), __('Author'), __('Homepage')]);
 
 		foreach ($templates as $id => $p) {
@@ -2826,7 +2854,7 @@ class Installer implements JsonSerializable {
 				$output .= Installer::sectionNote('max_input_vars: ' . $max_vars . ', tables: ' . cacti_count($tables));
 				$show_warning = false;
 				ob_start();
-				html_start_box(__('Tables'), '100%', false, '3', 'center', '', '');
+				html_start_box(__('Tables'), '100%', false, 3, 'center', '', false);
 				html_header_checkbox([__('Name'), __('Collation'), __('Row Format'), __('Engine'), __('Rows')]);
 
 				foreach ($tables as $id => $p) {
@@ -2967,7 +2995,7 @@ class Installer implements JsonSerializable {
 				$output .= Installer::sectionNormal('<b>' . __('Install Type') . '</b>: '   . __('Unknown'));
 
 				break;
-		};
+		}
 
 		$topts = db_fetch_assoc('SELECT *
 			FROM settings
@@ -3330,7 +3358,7 @@ class Installer implements JsonSerializable {
 				$which = 'INSTALL';
 
 				break;
-		};
+		}
 
 		log_install_always('', __('Starting %s Process for v%s', $which, CACTI_VERSION_FULL));
 

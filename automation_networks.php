@@ -132,7 +132,7 @@ function automation_import() {
 	form_start('automation_networks.php', 'chk', true);
 
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
-		html_start_box(__('Import Results'), '80%', '', '3', 'center', '');
+		html_start_box(__('Import Results'), '60%', false, 3, 'center', '');
 
 		print '<tr class="tableHeader"><th>' . __('Cacti has imported the following items:'). '</th></tr>';
 
@@ -145,7 +145,7 @@ function automation_import() {
 		kill_session_var('import_debug_info');
 	}
 
-	html_start_box(__('Import Network Discovery Rule'), '80%', false, '3', 'center', '');
+	html_start_box(__('Import Network Discovery Rule'), '60%', false, 3, 'center', '');
 
 	draw_edit_form(
 		[
@@ -335,7 +335,7 @@ function api_networks_discover($network_id, $discover_debug, $discover_dryrun) {
 
 	if ($enabled == 'on') {
 		if (!$running) {
-			if (POLLER_ID == $poller_id) {
+			if ($poller_id == POLLER_ID) {
 				$args_debug  = ($discover_debug) ? ' --debug' : '';
 				$args_debug .= ($discover_dryrun) ? ' --dryrun' : '';
 				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --network=$network_id --force" . $args_debug);
@@ -969,7 +969,7 @@ function network_edit() {
 
 	form_start('automation_networks.php', 'form_network');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	draw_edit_form(
 		[
@@ -1043,7 +1043,7 @@ function networks() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
 		'name' => [

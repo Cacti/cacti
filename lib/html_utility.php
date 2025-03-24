@@ -216,28 +216,28 @@ function form_alternate_row($row_id = '', $light = false, $disabled = false) {
 }
 
 /**
- * A wrapper to form_selectable_cell that escapes the contents
+ * A wrapper to form_selectable_ecell that escapes the contents
  *
  * This function creates a selectable table cell with the provided contents,
  * ensuring that the contents are properly escaped to prevent XSS attacks.
  *
  * @param string $contents The content to be displayed inside the cell.
- * @param string $id The ID attribute for the cell.
+ * @param int|string $id The ID attribute for the cell.
  * @param string $width Optional. The width of the cell. Default is an empty string.
  * @param string $style_or_class Optional. The style or class attribute for the cell. Default is an empty string.
  * @param string $title Optional. The title attribute for the cell. Default is an empty string.
  *
  * @return void
  */
-function form_selectable_ecell($contents, $id, $width = '', $style_or_class = '', $title = '') {
-	form_selectable_cell(html_escape($contents), $id, $width, $style_or_class, $title);
+function form_selectable_ecell(string $contents, int|string $id, string $width = '', string $style_or_class = '', string $title = '') : ?bool {
+	return form_selectable_cell(html_escape($contents), $id, $width, $style_or_class, $title);
 }
 
 /**
  * Format's a table row such that it can be highlighted using cacti's js actions
  *
  * @param string $contents The content to be placed inside the table cell.
- * @param string $id The ID attribute for the table cell (not used in the function).
+ * @param int|string $id The ID attribute for the table cell (not used in the function).
  * @param string $width Optional. The width of the table cell. Default is an empty string.
  * @param string $style_or_class Optional. The style or class attribute for the table cell.
  *        Default is an empty string. If it contains a colon (:), it is treated as a style
@@ -246,7 +246,7 @@ function form_selectable_ecell($contents, $id, $width = '', $style_or_class = ''
  *
  * @return void
  */
-function form_selectable_cell($contents, $id, $width = '', $style_or_class = '', $title = '') {
+function form_selectable_cell(string $contents, int|string $id, string $width = '', string $style_or_class = '', string $title = '') : ?bool {
 	global $tableCount;
 
 	static $tableColumns = null;
@@ -322,6 +322,8 @@ function form_selectable_cell($contents, $id, $width = '', $style_or_class = '',
 	}
 
 	print "\t<td " . $output . '>' . $wrapper . "</td>\n";
+
+	return true;
 }
 
 function form_get_table_id(?bool $increment = false) {

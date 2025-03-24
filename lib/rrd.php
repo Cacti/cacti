@@ -3087,6 +3087,8 @@ function rrdtool_function_get_resstep($local_data_ids, $graph_start, $graph_end,
  *
  * @param  string   The data source rrdfile path
  * @param  ?resource The rrdtool pipe if available
+ * @param mixed $data_source_path
+ * @param null|mixed $rrdtool_pipe
  *
  * @return (array) an array containing all data from rrdtool info command
  */
@@ -3524,7 +3526,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 function rrdtool_info2html($info_array, $diff=[]) {
 	include_once(CACTI_PATH_LIBRARY . '/time.php');
 
-	html_start_box(__('RRD File Information'), '100%', '', '3', 'center', '');
+	html_start_box(__('RRD File Information'), '100%', false, 3, 'center', '');
 
 	# header data
 	$header_items = [
@@ -3566,7 +3568,7 @@ function rrdtool_info2html($info_array, $diff=[]) {
 		['display' => __('Unknown Sec'),       'align' => 'right']
 	];
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header($header_items, 1);
 
@@ -3624,7 +3626,7 @@ function rrdtool_info2html($info_array, $diff=[]) {
 		['display' => __('CDP Unknown Data points (0)'), 'align' => 'right']
 	];
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header($header_items, 1);
 

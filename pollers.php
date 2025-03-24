@@ -666,7 +666,7 @@ function poller_edit() {
 
 	form_start('pollers.php', 'poller');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	if (cacti_sizeof($poller)) {
 		if ($poller['id'] == 1) {
@@ -943,7 +943,7 @@ function pollers() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
 		'name' => [
@@ -1067,10 +1067,10 @@ function pollers() {
 			form_selectable_cell($poller['processes'] . '/' . ($pt == 2 ? $poller['threads'] : '-'), $poller['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($poller['total_time'], 2), $poller['id'], '', 'right');
 			form_selectable_cell($mma, $poller['id'], '', 'right');
-			form_selectable_cell(number_format_i18n($poller['hosts'], '-1'), $poller['id'], '', 'right');
-			form_selectable_cell(number_format_i18n($poller['snmp'], '-1'), $poller['id'], '', 'right');
-			form_selectable_cell(number_format_i18n($poller['script'], '-1'), $poller['id'], '', 'right');
-			form_selectable_cell(number_format_i18n($poller['server'], '-1'), $poller['id'], '', 'right');
+			form_selectable_cell(number_format_i18n($poller['hosts'], -1), $poller['id'], '', 'right');
+			form_selectable_cell(number_format_i18n($poller['snmp'], -1), $poller['id'], '', 'right');
+			form_selectable_cell(number_format_i18n($poller['script'], -1), $poller['id'], '', 'right');
+			form_selectable_cell(number_format_i18n($poller['server'], -1), $poller['id'], '', 'right');
 			form_selectable_cell(substr($poller['last_update'], 5), $poller['id'], '', 'right');
 			form_selectable_cell(substr($poller['last_status'], 5), $poller['id'], '', 'right');
 

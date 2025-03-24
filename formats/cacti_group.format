@@ -31,23 +31,23 @@ h3 {
 	text-align: center;
 	border: 0;
 	width: 100%;
-    border: 3px outset #CCCCCC; 
-    padding: 4px;
+	border: 3px outset #CCCCCC;
+	padding: 4px;
 	margin: auto;
 }
 
 .title_row {
 	background-color: #EAEAEA;
-    border: 2px double #CCCCCC; 
-    padding: 3px;
+	border: 2px double #CCCCCC;
+	padding: 3px;
 }
 
 .title {
 	background-color: #EAEAEA;
 	font-size: 16pt;
 	text-align: left;
-    border: 2px double #CCCCCC; 
-    padding: 3px;
+	border: 2px double #CCCCCC;
+	padding: 3px;
 }
 
 .image_table {
@@ -74,8 +74,8 @@ h3 {
 	background-color: #EAEAEA;
 	font-size: 16pt;
 	text-align: left;
-    border: 1px solid #CCCCCC; 
-    padding: 0px;
+	border: 1px solid #CCCCCC;
+	padding: 0px;
 
 }
 
@@ -83,8 +83,8 @@ h3 {
 	background-color: #3F750F;
 	text-align: center;
 	width: 100%;
-    border: 3px ridge #3F750F; 
-    padding: 4px;
+	border: 3px ridge #3F750F;
+	padding: 4px;
 	margin: auto;
 }
 

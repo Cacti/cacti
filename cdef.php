@@ -297,7 +297,7 @@ function cdef_item_remove_confirm() {
 
 	form_start('cdef.php');
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$cdef       = db_fetch_row_prepared('SELECT * FROM cdef WHERE id = ?', [get_request_var('id')]);
 	$cdef_item  = db_fetch_row_prepared('SELECT * FROM cdef_items WHERE id = ?', [get_request_var('cdef_id')]);
@@ -408,7 +408,7 @@ function item_edit() {
 		$cdef = [];
 	}
 
-	html_start_box(__('CDEF Preview'), '100%', '', '3', 'center', '');
+	html_start_box(__('CDEF Preview'), '100%', false, 3, 'center', '');
 	draw_cdef_preview(get_request_var('cdef_id'));
 	html_end_box();
 
@@ -419,7 +419,7 @@ function item_edit() {
 		WHERE id = ?',
 		[get_request_var('cdef_id')]);
 
-	html_start_box(__esc('CDEF Items [edit: %s]', $cdef_name), '100%', '', '3', 'center', '');
+	html_start_box(__esc('CDEF Items [edit: %s]', $cdef_name), '100%', false, 3, 'center', '');
 
 	if (isset_request_var('type_select')) {
 		$current_type = get_request_var('type_select');
@@ -559,7 +559,7 @@ function cdef_edit() {
 
 	form_start('cdef.php', 'cdef');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	draw_edit_form(
 		[
@@ -571,11 +571,11 @@ function cdef_edit() {
 	html_end_box(true, true);
 
 	if (!isempty_request_var('id')) {
-		html_start_box('', '100%', '', '3', 'center', '');
+		html_start_box('', '100%', false, 3, 'center', '');
 		draw_cdef_preview(get_request_var('id'));
 		html_end_box();
 
-		html_start_box(__('CDEF Items'), '100%', '', '3', 'center', 'cdef.php?action=item_edit&cdef_id=' . $cdef['id'], false, false);
+		html_start_box(__('CDEF Items'), '100%', false, 3, 'center', 'cdef.php?action=item_edit&cdef_id=' . $cdef['id'], false, false);
 
 		$display_text = [
 			['display' => __('Item'), 'align' => 'left'],
@@ -736,7 +736,7 @@ function cdef() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
 		'name' => [
@@ -781,8 +781,8 @@ function cdef() {
 
 			form_selectable_cell(filter_value($cdef['name'], get_request_var('filter'), 'cdef.php?action=edit&id=' . $cdef['id']), $cdef['id']);
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $cdef['id'], '', 'right');
-			form_selectable_cell(filter_value(number_format_i18n($cdef['graphs'], '-1'), '', $graphs_url), $cdef['id'], '', 'right');
-			form_selectable_cell(filter_value(number_format_i18n($cdef['templates'], '-1'), '', $templates_url), $cdef['id'], '', 'right');
+			form_selectable_cell(filter_value(number_format_i18n($cdef['graphs'], -1), '', $graphs_url), $cdef['id'], '', 'right');
+			form_selectable_cell(filter_value(number_format_i18n($cdef['templates'], -1), '', $templates_url), $cdef['id'], '', 'right');
 
 			form_checkbox_cell($cdef['name'], $cdef['id'], $disabled);
 

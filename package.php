@@ -153,7 +153,7 @@ function export() {
 			set_request_var('export_type', 'host_template');
 	}
 
-	html_start_box(__('Package Templates'), '100%', '', '3', 'center', '');
+	html_start_box(__('Package Templates'), '100%', false, 3, 'center', '');
 
 	?>
 	<tr class='tableRow'>
@@ -300,7 +300,7 @@ function export() {
 
 	form_start('package.php', 'form_id');
 
-	html_start_box(__('Available Templates [%s]', $export_types[get_nfilter_request_var('export_type')]['name']), '100%', '', '3', 'center', '');
+	html_start_box(__('Available Templates [%s]', $export_types[get_nfilter_request_var('export_type')]['name']), '100%', false, 3, 'center', '');
 
 	$package_form = [
 		'spacer0' => [
@@ -485,7 +485,7 @@ function export() {
 	</script>
 	<?php
 
-	html_start_box(__('Package Contents Include'), '100%', '', '3', 'center', '');
+	html_start_box(__('Package Contents Include'), '100%', false, 3, 'center', '');
 
 	if (isset_request_var('export_type') && isset_request_var('export_item_id')) {
 		print get_package_contents(get_request_var('export_type'), get_request_var('export_item_id'));

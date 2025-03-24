@@ -175,7 +175,7 @@ function profile_import() {
 	form_start('data_source_profiles.php', 'chk', true);
 
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
-		html_start_box(__('Import Results'), '80%', '', '3', 'center', '');
+		html_start_box(__('Import Results'), '60%', false, 3, 'center', '');
 
 		print '<tr class="tableHeader"><th>' . __('Cacti has imported the following items:'). '</th></tr>';
 
@@ -188,7 +188,7 @@ function profile_import() {
 		kill_session_var('import_debug_info');
 	}
 
-	html_start_box(__('Import Data Source Profiles'), '80%', false, '3', 'center', '');
+	html_start_box(__('Import Data Source Profiles'), '60%', false, 3, 'center', '');
 
 	draw_edit_form(
 		[
@@ -859,7 +859,7 @@ function profile_item_remove_confirm() {
 
 	form_start('data_source_profiles.php');
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$profile = db_fetch_row_prepared('SELECT *
 		FROM data_source_profiles_rra
@@ -991,7 +991,7 @@ function item_edit() {
 		WHERE id = ?',
 		[get_request_var('id')]);
 
-	html_start_box(__esc('RRA [edit: %s %s]', $name, ($readonly ? __('(Some Elements Read Only)'):'')), '100%', true, '3', 'center', '');
+	html_start_box(__esc('RRA [edit: %s %s]', $name, ($readonly ? __('(Some Elements Read Only)'):'')), '100%', true, 3, 'center', '');
 
 	draw_edit_form([
 		'config' => ['no_form_tag' => true],
@@ -1089,7 +1089,7 @@ function profile_edit() {
 
 	form_start('data_source_profiles.php', 'profile');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	draw_edit_form([
 		'config' => ['no_form_tag' => true],
@@ -1101,9 +1101,9 @@ function profile_edit() {
 
 	if (!isempty_request_var('id')) {
 		if (!$readonly) {
-			html_start_box(__('Data Source Profile RRAs (press save to update timespans)'), '100%', '', '3', 'center', 'data_source_profiles.php?action=item_edit&profile_id=' . $profile['id']);
+			html_start_box(__('Data Source Profile RRAs (press save to update timespans)'), '100%', false, 3, 'center', 'data_source_profiles.php?action=item_edit&profile_id=' . $profile['id']);
 		} else {
-			html_start_box(__('Data Source Profile RRAs (Read Only)'), '100%', '', '3', 'center', '');
+			html_start_box(__('Data Source Profile RRAs (Read Only)'), '100%', false, 3, 'center', '');
 		}
 
 		$display_text = [
@@ -1427,7 +1427,7 @@ function profile() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -1448,15 +1448,15 @@ function profile() {
 			}
 
 			if ($profile['data_sources'] > 0) {
-				$ds = '<a class="linkEditMain" href="' . CACTI_PATH_URL . 'data_sources.php?reset=true&profile=' . $profile['id'] . '">' . number_format_i18n($profile['data_sources'], '-1') . '</a>';
+				$ds = '<a class="linkEditMain" href="' . CACTI_PATH_URL . 'data_sources.php?reset=true&profile=' . $profile['id'] . '">' . number_format_i18n($profile['data_sources'], -1) . '</a>';
 			} else {
-				$ds = number_format_i18n($profile['data_sources'], '-1');
+				$ds = number_format_i18n($profile['data_sources'], -1);
 			}
 
 			if ($profile['templates'] > 0) {
-				$dt = '<a class="linkEditMain" href="' . CACTI_PATH_URL . 'data_templates.php?reset=true&profile=' . $profile['id'] . '">' . number_format_i18n($profile['templates'], '-1') . '</a>';
+				$dt = '<a class="linkEditMain" href="' . CACTI_PATH_URL . 'data_templates.php?reset=true&profile=' . $profile['id'] . '">' . number_format_i18n($profile['templates'], -1) . '</a>';
 			} else {
-				$dt = number_format_i18n($profile['templates'], '-1');
+				$dt = number_format_i18n($profile['templates'], -1);
 			}
 
 			form_alternate_row('line' . $profile['id'], false, $disabled);

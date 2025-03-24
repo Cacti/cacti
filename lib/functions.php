@@ -49,9 +49,9 @@ function title_trim(string $text, int $max_length): string {
  * @param string $filter - the search term to filter for
  * @param string $href - the href if you wish to have an anchor returned
  *
- * @return null|string the filtered string
+ * @return string the filtered string
  */
-function filter_value(?string $value, string $filter, string $href = '', string $title = ''): ?string {
+function filter_value(?string $value, string $filter, string $href = '', string $title = ''): string {
 	static $charset;
 
 	if ($charset == '') {
@@ -63,7 +63,7 @@ function filter_value(?string $value, string $filter, string $href = '', string 
 	}
 
 	if (empty($value)) {
-		return $value;
+		return '';
 	}
 
 	$value =  html_escape($value);
@@ -681,7 +681,7 @@ function cache_common_config_settings():array {
  *
  * @return string|false|null          The current value of the configuration option
  */
-function read_config_option(string $config_name, bool $force = false):string|false|null {
+function read_config_option(string $config_name, bool $force = false): string|bool|null {
 	global $config, $database_hostname, $database_default, $database_port, $database_sessions;
 
 	$loaded = false;
@@ -930,9 +930,9 @@ function check_changed($request, $session) {
  * is_error_message - finds whether an error message has been raised and has not been outputted to the
  * user
  *
- * @return mixed whether the messages array contains an error or not
+ * @return bool whether the messages array contains an error or not
  */
-function is_error_message() {
+function is_error_message() : bool {
 	global $messages;
 
 	if (isset($_SESSION[SESS_ERROR_FIELDS]) && cacti_sizeof($_SESSION[SESS_ERROR_FIELDS])) {
@@ -941,6 +941,7 @@ function is_error_message() {
 		return false;
 	}
 }
+
 /**
  * Get the level for the current message
  *
@@ -3338,10 +3339,11 @@ function get_template_account($user = '') {
 /**
  * get_username - returns the username for the selected user
  *
- * @param int $user_id - The ID of the user
+ * @param string|int $user_id - The ID of the user
  *
- * @return mixed the username */
-function get_username($user_id = 0) {
+ * @return mixed the username
+ */
+function get_username(string|int $user_id = 0) : mixed {
 	if ($user_id == 0) {
 		$user_id = $_SESSION[SESS_USER_ID];
 	}
@@ -7078,46 +7080,49 @@ function repair_system_data_input_methods($step = 'import') {
 }
 
 if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' && !function_exists('posix_kill')) {
-    function posix_kill($pid, $signal = SIGTERM) {
-        if (!defined('SIGTERM')) {
-            define('SIGTERM', 15);
-        }
+	function posix_kill($pid, $signal = SIGTERM) {
+		if (!defined('SIGTERM')) {
+			define('SIGTERM', 15);
+		}
 
-        if (!defined('SIGKILL')) {
-            define('SIGKILL', 9);
-        }
+		if (!defined('SIGKILL')) {
+			define('SIGKILL', 9);
+		}
 
-        if (!defined('SIGHUP')) {
-            define('SIGHUP', 1);
-        }
+		if (!defined('SIGHUP')) {
+			define('SIGHUP', 1);
+		}
 
-        if (!defined('SIGINT')) {
-            define('SIGINT', 2);
-        }
+		if (!defined('SIGINT')) {
+			define('SIGINT', 2);
+		}
 
-        // Check if the process exists
-        $checkProcessCmd = "powershell.exe -Command \"Get-Process -Id $pid -ErrorAction SilentlyContinue\"";
-        $processExists = trim(shell_exec($checkProcessCmd));
+		// Check if the process exists
+		$checkProcessCmd = "powershell.exe -Command \"Get-Process -Id $pid -ErrorAction SilentlyContinue\"";
+		$processExists   = trim(shell_exec($checkProcessCmd));
 
-        if (!empty($processExists)) {
-            if ($signal == 0) {
-                return true;  // The process is running
-            } elseif ($signal == SIGTERM || $signal == SIGINT || $signal == SIGKILL) {
-                // Kill the process
-                $killCmd = "powershell.exe -Command \"Stop-Process -Id $pid -Force\"";
-                shell_exec($killCmd);
-            } elseif ($signal == SIGHUP) {
-                cacti_log("WARNING: SIGHUP Signal for pid: $pid is not supported on Windows", false, 'POLLER');
-            } else {
-                cacti_log("WARNING: Unknown Signal Number $signal in posix_kill", false, 'POLLER');
-                return false;
-            }
-        } elseif ($signal == 0) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+		if (!empty($processExists)) {
+			if ($signal == 0) {
+				return true;  // The process is running
+			}
+
+			if ($signal == SIGTERM || $signal == SIGINT || $signal == SIGKILL) {
+				// Kill the process
+				$killCmd = "powershell.exe -Command \"Stop-Process -Id $pid -Force\"";
+				shell_exec($killCmd);
+			} elseif ($signal == SIGHUP) {
+				cacti_log("WARNING: SIGHUP Signal for pid: $pid is not supported on Windows", false, 'POLLER');
+			} else {
+				cacti_log("WARNING: Unknown Signal Number $signal in posix_kill", false, 'POLLER');
+
+				return false;
+			}
+		} elseif ($signal == 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 }
 
 function is_ipaddress($ip_address = '') {
@@ -8372,7 +8377,7 @@ function cacti_ptoa($title, $addr) {
 	}
 }
 
-function cacti_sizeof($array) {
+function cacti_sizeof($array) : int {
 	return ($array === false || !is_array($array)) ? 0 : count($array);
 }
 

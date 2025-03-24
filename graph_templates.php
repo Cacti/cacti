@@ -824,7 +824,7 @@ function item_edit() {
 
 	$header_label = __esc('Graph Template Items [edit graph: %s]', db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', [get_request_var('graph_template_id')]));
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	if (!isempty_request_var('id')) {
 		$template_item = db_fetch_row_prepared('SELECT *
@@ -1342,11 +1342,11 @@ function item() {
 		$header_label = __esc('Graph Template Items [edit: %s]', db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', [get_request_var('id')]));
 	}
 
-	html_start_box($header_label, '100%', '', '3', 'center', 'graph_templates.php?action=item_edit&graph_template_id=' . get_request_var('id'));
+	html_start_box($header_label, '100%', false, 3, 'center', 'graph_templates.php?action=item_edit&graph_template_id=' . get_request_var('id'));
 	draw_graph_items_list($template_item_list, 'graph_templates.php', 'graph_template_id=' . get_request_var('id'), false);
 	html_end_box();
 
-	html_start_box(__('Graph Item Inputs'), '100%', '', '3', 'center', 'graph_templates.php?action=input_edit&graph_template_id=' . get_request_var('id'));
+	html_start_box(__('Graph Item Inputs'), '100%', false, 3, 'center', 'graph_templates.php?action=input_edit&graph_template_id=' . get_request_var('id'));
 
 	print "<tr class='tableHeader'>";
 	DrawMatrixHeaderItem(__('Name'),'',2);
@@ -1444,7 +1444,7 @@ function template_edit() {
 
 	form_start('graph_templates.php', 'graph_templates');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	draw_edit_form(
 		[
@@ -1455,7 +1455,7 @@ function template_edit() {
 
 	html_end_box(true, true);
 
-	html_start_box(__('Graph Template Options'), '100%', true, '3', 'center', '');
+	html_start_box(__('Graph Template Options'), '100%', true, 3, 'center', '');
 
 	$form_array = [];
 
@@ -1668,7 +1668,7 @@ function graph_templates() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -1689,8 +1689,8 @@ function graph_templates() {
 			form_selectable_cell($graph_template_classes[$template['class']], $template['id'], '', 'right');
 			form_selectable_ecell($template['version'], $template['id'], '', 'right');
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['id'], '', 'right');
-			form_selectable_cell(number_format_i18n($template['graph_items'], '-1'), $template['id'], '', 'right');
-			form_selectable_cell(number_format_i18n($template['graphs'], '-1'), $template['id'], '', 'right');
+			form_selectable_cell(number_format_i18n($template['graph_items'], -1), $template['id'], '', 'right');
+			form_selectable_cell(number_format_i18n($template['graphs'], -1), $template['id'], '', 'right');
 			form_selectable_cell($image_types[$template['image_format_id']], $template['id'], '', 'right');
 			form_selectable_ecell($template['size'], $template['id'], '', 'right');
 			form_selectable_ecell($template['vertical_label'], $template['id'], '', 'right');
@@ -1752,7 +1752,7 @@ function input_edit() {
 
 	form_start('graph_templates.php');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	draw_edit_form(
 		[
@@ -1785,7 +1785,7 @@ function input_edit() {
 		ORDER BY gti.sequence",
 		[get_request_var('id'), get_request_var('graph_template_id')]);
 
-	html_start_box(__('Associated Graph Items'), '100%', false, '3', 'center', '');
+	html_start_box(__('Associated Graph Items'), '100%', false, 3, 'center', '');
 
 	$i = 0;
 

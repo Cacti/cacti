@@ -294,7 +294,7 @@ function create_graphs_new_filter($host, $snmp_queries) {
 	$gt  = ['-1' => __('Graph Template Based')];
 
 	if (!cacti_sizeof($host)) {
-		$host['id'] = '';
+		$host['id']          = '';
 		$host['description'] = __('Select a Device');
 	}
 
@@ -528,7 +528,7 @@ function graphs() {
 	$script = "<script type='text/javascript'>\nvar created_graphs = new Array();\n";
 
 	if (get_request_var('graph_type') < 0) {
-		html_start_box(__('New Graph Template'), '100%', '', '3', 'center', '');
+		html_start_box(__('New Graph Template'), '100%', false, 3, 'center', '');
 
 		$available_graph_templates = db_fetch_assoc_prepared('SELECT gt.id, gt.name
 			FROM graph_templates AS gt
@@ -559,7 +559,7 @@ function graphs() {
 
 		html_end_box();
 
-		html_start_box(__('Graph Templates'), '100%', '', '3', 'center', '');
+		html_start_box(__('Graph Templates'), '100%', false, 3, 'center', '');
 
 		print "<tr class='tableHeader'>
 			<th class='tableSubHeaderColumn'>" . __('Graph Template Name') . "</th>
@@ -852,7 +852,7 @@ function graphs() {
 
 						print $nav;
 
-						html_start_box('', '100%', '', '3', 'center', '');
+						html_start_box('', '100%', false, 3, 'center', '');
 
 						foreach ($xml_array['fields'] as $field_name => $field_array) {
 							if (($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') && cacti_sizeof($field_names)) {
@@ -933,12 +933,12 @@ function graphs() {
 							}
 						}
 					} else {
-						html_start_box('', '100%', '', '3', 'center', '');
+						html_start_box('', '100%', false, 3, 'center', '');
 
 						print "<tr class='odd'><td class='textError'>" . __('Search Returned no Rows.') . '</td></tr>';
 					}
 				} else {
-					html_start_box('', '100%', '', '3', 'center', '');
+					html_start_box('', '100%', false, 3, 'center', '');
 
 					print "<tr class='odd'><td class='textError'>" . __('Error in Data Query.  This could be due to the following: File Permissions, or a missing or improperly formatted Data Query XML file.') . '</td></tr>';
 				}
@@ -957,7 +957,7 @@ function graphs() {
 				} elseif (cacti_sizeof($data_query_graphs) > 1) {
 					print "<div class='break'></div>";
 
-					html_start_box('', '100%', '', '3', 'center', '');
+					html_start_box('', '100%', false, 3, 'center', '');
 
 					$selected = store_get_selected_dq_index($snmp_query['id']);
 

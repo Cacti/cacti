@@ -88,7 +88,7 @@ function form_actions() {
 
 	form_start('package_keys.php');
 
-	html_start_box($actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box($actions[get_nfilter_request_var('drp_action')], '60%', false, 3, 'center', '');
 
 	if (isset($p_array) && cacti_sizeof($p_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { // delete
@@ -201,7 +201,7 @@ function public_keys() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 

@@ -200,7 +200,7 @@ function form_actions() {
 
 	form_start('package_repos.php');
 
-	html_start_box($actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
+	html_start_box($actions[get_nfilter_request_var('drp_action')], '60%', false, 3, 'center', '');
 
 	if (isset($p_array) && cacti_sizeof($p_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { // delete
@@ -372,7 +372,7 @@ function repo_edit() {
 
 	form_start('package_repos.php');
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	draw_edit_form(
 		[
@@ -487,7 +487,7 @@ function repos() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 

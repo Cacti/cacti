@@ -645,7 +645,7 @@ function data_edit($incform = true) {
 			WHERE id = ?',
 			[$data['data_input_id']]);
 
-		html_start_box(__('Custom Data [data input: %s]', html_escape($data_input_name)), '100%', '', '3', 'center', '');
+		html_start_box(__('Custom Data [data input: %s]', html_escape($data_input_name)), '100%', false, 3, 'center', '');
 
 		/* loop through each field found */
 		if (cacti_sizeof($fields) > 0) {
@@ -981,7 +981,7 @@ function ds_edit() {
 	$pageFilter->set_filter_array($filters);
 	$pageFilter->render();
 
-	html_start_box(__(''), '100%', true, '3', 'center', '');
+	html_start_box(__(''), '100%', true, 3, 'center', '');
 
 	$form_array = [
 		'data_template_id' => [
@@ -1045,7 +1045,7 @@ function ds_edit() {
 			ORDER BY data_source_name',
 			[get_request_var('id')]);
 
-		html_start_box(__('Supplemental Data Template Data'), '100%', true, '3', 'center', '');
+		html_start_box(__('Supplemental Data Template Data'), '100%', true, 3, 'center', '');
 
 		draw_nontemplated_fields_data_source($data['data_template_id'], $data['local_data_id'], $data, '|field|', __('Data Source Fields'), true, true, 0);
 		draw_nontemplated_fields_data_source_item($data['data_template_id'], $template_data_rrds, '|field|_|id|', __('Data Source Item Fields'), true, true, true, 0);
@@ -1057,7 +1057,7 @@ function ds_edit() {
 	}
 
 	if (((isset_request_var('id')) || (isset_request_var('new'))) && (empty($data['data_template_id']))) {
-		html_start_box(__('Data Source'), '100%', true, '3', 'center', '');
+		html_start_box(__('Data Source'), '100%', true, 3, 'center', '');
 
 		$form_array = [];
 
@@ -1142,7 +1142,7 @@ function ds_edit() {
 			}
 		}
 
-		html_start_box('', '100%', true, '3', 'center', '');
+		html_start_box('', '100%', true, 3, 'center', '');
 
 		print "<div class='tableHeader'>
 			<div class='tableSubHeaderColumn left'>
@@ -1229,7 +1229,7 @@ function ds_edit() {
 			rrdtool_info2html($rrd_info, $diff);
 
 			if (cacti_sizeof($diff)) {
-				html_start_box(__('RRDtool Tune Info'), '100%', '', '3', 'center', '');
+				html_start_box(__('RRDtool Tune Info'), '100%', false, 3, 'center', '');
 
 				rrdtool_tune($rrd_info['filename'], $diff, true);
 
@@ -1443,7 +1443,7 @@ function data_sources() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
 		'name_cache' => [

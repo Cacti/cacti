@@ -314,7 +314,7 @@ function settings() {
 
 	form_start('auth_profile.php', 'chk');
 
-	html_start_box(__('User Account Details'), '100%', true, '3', 'center', '');
+	html_start_box(__('User Account Details'), '100%', true, 3, 'center', '');
 
 	$current_user = db_fetch_row_prepared('SELECT *
 		FROM user_auth
@@ -418,7 +418,7 @@ function settings() {
 
 		$settings_user['tree']['default_tree_id']['sql'] = get_allowed_trees(false, true);
 
-		html_start_box(__('User Settings'), '100%', true, '3', 'center', '');
+		html_start_box(__('User Settings'), '100%', true, 3, 'center', '');
 
 		foreach ($settings_user as $tab_short_name => $tab_fields) {
 			$collapsible = true;
@@ -523,7 +523,7 @@ function settings_2fa() {
 
 	form_start('auth_profile.php', 'chk');
 
-	html_start_box(__('2FA Settings'), '100%', true, '3', 'center', '');
+	html_start_box(__('2FA Settings'), '100%', true, 3, 'center', '');
 
 	$current_user = db_fetch_row_prepared('SELECT *
 		FROM user_auth

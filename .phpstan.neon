@@ -1,0 +1,31 @@
+parameters:
+    scanDirectories:
+        - include
+    excludePaths:
+        analyse:
+           - vendor/*
+           - include/vendor/*
+    paths:
+        - include
+        - lib
+        - install
+        - .
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        - identifier: missingType.iterableValue
+# PHPStan gets confused about dynamic constants
+        - identifier: if.alwaysFalse
+        - identifier: notEqual.alwaysFalse
+        - identifier: notEqual.alwaysTrue
+        - identifier: equal.alwaysTrue
+        - identifier: if.alwaysTrue
+        - identifier: while.alwaysTrue
+        - identifier: greater.alwaysFalse
+        - identifier: identical.alwaysTrue
+        - identifier: identical.alwaysFalse
+        - identifier: booleanAnd.leftAlwaysTrue
+        - identifier: booleanAnd.leftAlwaysFalse
+# L9       - '/^Parameter #1 \$value of function strval expects bool\|float\|int\|resource\|string\|null, mixed given.$/'
+# L9       - '/^Parameter #1 \$value of function intval expects array\|bool\|float\|int\|resource\|string\|null, mixed given.$/'
+    parallel:
+        maximumNumberOfProcesses: 8

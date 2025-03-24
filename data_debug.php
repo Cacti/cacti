@@ -518,7 +518,7 @@ function debug_wizard() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -764,11 +764,11 @@ function debug_view() {
 	$debug_status = debug_process_status($id);
 
 	if ($debug_status == 'waiting') {
-		html_start_box(__('Data Source Troubleshooter [ Auto Refreshing till Complete ] %s', '<i class="reloadquery fa fa-sync" data-id="' . $id . '" title="' . __esc('Refresh Now') . '"></i>'), '100%', '', '3', 'center', '');
+		html_start_box(__('Data Source Troubleshooter [ Auto Refreshing till Complete ] %s', '<i class="reloadquery fa fa-sync" data-id="' . $id . '" title="' . __esc('Refresh Now') . '"></i>'), '100%', false, 3, 'center', '');
 	} elseif ($debug_status == 'analysis') {
-		html_start_box(__('Data Source Troubleshooter [ Auto Refreshing till RRDfile Update ] %s', '<i class="reloadquery fa fa-sync" data-id="' . $id . '" title="' . __esc('Refresh Now') . '"></i>'), '100%', '', '3', 'center', '');
+		html_start_box(__('Data Source Troubleshooter [ Auto Refreshing till RRDfile Update ] %s', '<i class="reloadquery fa fa-sync" data-id="' . $id . '" title="' . __esc('Refresh Now') . '"></i>'), '100%', false, 3, 'center', '');
 	} else {
-		html_start_box(__('Data Source Troubleshooter [ Analysis Complete! %s ]', '<a href="#" class="rerun linkEditMain" data-id="' . $id . '" style="cursor:pointer;">' . __('Rerun Analysis') . '</a>'), '100%', '', '3', 'center', '');
+		html_start_box(__('Data Source Troubleshooter [ Analysis Complete! %s ]', '<a href="#" class="rerun linkEditMain" data-id="' . $id . '" style="cursor:pointer;">' . __('Rerun Analysis') . '</a>'), '100%', false, 3, 'center', '');
 	}
 
 	html_header(
@@ -824,7 +824,7 @@ function debug_view() {
 	html_end_box();
 
 	if ($check_exists > 0 && isset($check['info']['rrd_match_array']['ds']) && $check['info']['rrd_match'] == 0) {
-		html_start_box(__('Data Source Repair Recommendations'), '', '', '2', 'center', '');
+		html_start_box(__('Data Source Repair Recommendations'), '100%', false, 3, 'center', '');
 
 		html_header(
 			[
@@ -858,9 +858,9 @@ function debug_view() {
 			$path = get_data_source_path($id, true);
 
 			if (is_writeable($path)) {
-				html_start_box(__('Repair Steps [ %s ]', '<a href="#" class="repairme linkEditMain" data-id="' . $id . '" style="cursor:pointer;">' . __('Apply Suggested Fixes') . '</a>'), '', '', '2', 'center', '');
+				html_start_box(__('Repair Steps [ %s ]', '<a href="#" class="repairme linkEditMain" data-id="' . $id . '" style="cursor:pointer;">' . __('Apply Suggested Fixes') . '</a>'), '100%', false, 3, 'center', '');
 			} else {
-				html_start_box(__('Repair Steps [ Run Fix from Command Line ]', $path), '', '', '2', 'center', '');
+				html_start_box(__('Repair Steps [ Run Fix from Command Line ]', $path), '100%', false, 3, 'center', '');
 			}
 
 			html_header([__('Command')]);
@@ -878,7 +878,7 @@ function debug_view() {
 			html_end_box();
 		}
 	} else {
-		html_start_box(__('Data Source Repair Recommendations'), '', '', '2', 'center', '');
+		html_start_box(__('Data Source Repair Recommendations'), '100%', false, 3, 'center', '');
 		form_alternate_row('line3_0', true);
 		form_selectable_cell(__('Waiting on Data Source Check to Complete'), 'line3_0');
 		form_end_row();

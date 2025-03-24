@@ -325,7 +325,7 @@ function get_host_sort_type() {
 			foreach ($ndata as $n) {
 				$parts = explode(':', $n);
 
-				if (isset($parts[0]) && $parts[0] == 'tbranch') {
+				if ($parts[0] == 'tbranch') {
 					$branch = $parts[1];
 					input_validate_input_number($branch, 'branch');
 
@@ -363,7 +363,7 @@ function set_host_sort_type() {
 			foreach ($ndata as $n) {
 				$parts = explode(':', $n);
 
-				if (isset($parts[0]) && $parts[0] == 'tbranch') {
+				if ($parts[0] == 'tbranch') {
 					$branch = $parts[1];
 					input_validate_input_number($branch, 'branch');
 
@@ -395,7 +395,7 @@ function get_branch_sort_type() {
 			foreach ($ndata as $n) {
 				$parts = explode(':', $n);
 
-				if (isset($parts[0]) && $parts[0] == 'tbranch') {
+				if ($parts[0] == 'tbranch') {
 					$branch = $parts[1];
 
 					input_validate_input_number($branch, 'branch');
@@ -457,7 +457,7 @@ function set_branch_sort_type() {
 			foreach ($ndata as $n) {
 				$parts = explode(':', $n);
 
-				if (isset($parts[0]) && $parts[0] == 'tbranch') {
+				if ($parts[0] == 'tbranch') {
 					$branch = $parts[1];
 					input_validate_input_number($branch, 'branch');
 
@@ -574,7 +574,7 @@ function form_save() {
 			}
 		}
 
-		header("Location: tree.php?action=edit&id=$tree_id");
+		header('Location: tree.php?action=edit&id=' . (isset($tree_id) ? $tree_id : ''));
 
 		exit;
 	}
@@ -775,7 +775,7 @@ function tree_edit($partial = false) {
 	// Remove inherit from the main tree option
 	unset($fields_tree_edit['sort_type']['array'][0]);
 
-	html_start_box($header_label, '100%', true, '3', 'center', '');
+	html_start_box($header_label, '100%', true, 3, 'center', '');
 
 	if (!cacti_sizeof($tree)) {
 		unset($fields_tree_edit['enabled']);
@@ -784,7 +784,7 @@ function tree_edit($partial = false) {
 	draw_edit_form(
 		[
 			'config' => ['no_form_tag' => true],
-			'fields' => inject_form_variables($fields_tree_edit, (isset($tree) ? $tree : []))
+			'fields' => inject_form_variables($fields_tree_edit, $tree)
 		]
 	);
 
@@ -839,7 +839,7 @@ function tree_edit($partial = false) {
 
 		print "<tr class='tableRow'><td class='treeArea'>\n";
 
-		html_start_box(__('Tree Items'), '100%', '', '3', 'center', '');
+		html_start_box(__('Tree Items'), '100%', false, 3, 'center', '');
 
 		print "<tr class='tableRow'><td style='padding:7px;'><div id='ctree'></div></td></tr>\n";
 
@@ -847,7 +847,7 @@ function tree_edit($partial = false) {
 
 		print "</td><td class='treeItemsArea treeItemsAreaSite'>\n";
 
-		html_start_box(__('Available Sites'), '100%', '', '3', 'center', '');
+		html_start_box(__('Available Sites'), '100%', false, 3, 'center', '');
 
 		?>
 		<tr class='even noprint'>
@@ -872,7 +872,7 @@ function tree_edit($partial = false) {
 
 		$display_text = [__('Site Name')];
 
-		html_start_box('', '100%', '', '3', 'center', '');
+		html_start_box('', '100%', false, 3, 'center', '');
 		html_header($display_text);
 
 		print "<tr class='tableRow'><td style='padding:7px;'><div id='sites' style='display:none;'>\n";
@@ -883,7 +883,7 @@ function tree_edit($partial = false) {
 
 		print "</td><td class='treeItemsArea treeItemsAreaDevice'>\n";
 
-		html_start_box(__('Available Devices'), '100%', '', '3', 'center', '');
+		html_start_box(__('Available Devices'), '100%', false, 3, 'center', '');
 
 		?>
 		<tr class='even noprint'>
@@ -908,7 +908,7 @@ function tree_edit($partial = false) {
 
 		$display_text = [__('Device Description')];
 
-		html_start_box('', '100%', '', '3', 'center', '');
+		html_start_box('', '100%', false, 3, 'center', '');
 		html_header($display_text);
 
 		print "<tr class='tableRow'><td style='padding:7px;'><div id='hosts' style='display:none;'>\n";
@@ -919,7 +919,7 @@ function tree_edit($partial = false) {
 
 		print "</td><td class='treeItemsArea treeItemsAreaGraph'>\n";
 
-		html_start_box(__('Available Graphs'), '100%', '', '3', 'center', '');
+		html_start_box(__('Available Graphs'), '100%', false, 3, 'center', '');
 
 		?>
 		<tr class='even noprint'>
@@ -943,7 +943,7 @@ function tree_edit($partial = false) {
 
 		$display_text = [__('Graph Name')];
 
-		html_start_box('', '100%', '', '3', 'center', '');
+		html_start_box('', '100%', false, 3, 'center', '');
 		html_header($display_text);
 
 		print "<tr class='tableRow'><td style='padding:7px;'><div id='graphs' style='display:none;'>\n";
@@ -2103,7 +2103,7 @@ function tree() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
 		'name' => [
@@ -2214,10 +2214,10 @@ function tree() {
 			form_selectable_cell($sequence, $tree['id'], '', 'nowrap center');
 			form_selectable_cell(substr($tree['last_modified'],0,16), $tree['id'], '', 'right');
 			form_selectable_cell(get_username($tree['modified_by']), $tree['id'], '', 'right');
-			form_selectable_cell($tree['sites'] > 0 ? number_format_i18n($tree['sites'], '-1'):'-', $tree['id'], '', 'right');
-			form_selectable_cell($tree['branches'] > 0 ? number_format_i18n($tree['branches'], '-1'):'-', $tree['id'], '', 'right');
-			form_selectable_cell($tree['hosts'] > 0 ? number_format_i18n($tree['hosts'], '-1'):'-', $tree['id'], '', 'right');
-			form_selectable_cell($tree['graphs'] > 0 ? number_format_i18n($tree['graphs'], '-1'):'-', $tree['id'], '', 'right');
+			form_selectable_cell($tree['sites'] > 0 ? number_format_i18n($tree['sites'], -1):'-', $tree['id'], '', 'right');
+			form_selectable_cell($tree['branches'] > 0 ? number_format_i18n($tree['branches'], -1):'-', $tree['id'], '', 'right');
+			form_selectable_cell($tree['hosts'] > 0 ? number_format_i18n($tree['hosts'], -1):'-', $tree['id'], '', 'right');
+			form_selectable_cell($tree['graphs'] > 0 ? number_format_i18n($tree['graphs'], -1):'-', $tree['id'], '', 'right');
 
 			form_checkbox_cell($tree['name'], $tree['id']);
 

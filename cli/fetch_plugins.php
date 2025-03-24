@@ -119,7 +119,7 @@ debug(sprintf('Fetch Process has Completed in %0.2f seconds', $fend - $fstart));
 exit(0);
 
 /**
- * display_version - displays version information 
+ * display_version - displays version information
  */
 function display_version() {
 	$version = get_cacti_cli_version();
@@ -127,7 +127,7 @@ function display_version() {
 }
 
 /**
- * display_help - displays the usage of the function 
+ * display_help - displays the usage of the function
  */
 function display_help() {
 	display_version();

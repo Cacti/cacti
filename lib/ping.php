@@ -24,22 +24,39 @@
 
 class Net_Ping {
 	public $socket;
+
 	public $host;
+
 	public $port;
+
 	public $ping_status;
+
 	public $ping_response;
+
 	public $snmp_status;
+
 	public $snmp_response;
+
 	public $request;
+
 	public $request_len;
+
 	public $reply;
+
 	public $timeout;
+
 	public $retries;
+
 	public $precision;
+
 	public $time;
+
 	public $timer_start_time;
+
 	public $sqn;
+
 	public $avail_method;
+
 	public $ping_type;
 
 	function __construct() {
@@ -225,8 +242,8 @@ class Net_Ping {
 				$position = strpos($result, 'min/avg/max =');
 
 				if ($position > 0) {
-					$output  = substr($result, $position);
-					$results = explode('/', $output);
+					$output              = substr($result, $position);
+					$results             = explode('/', $output);
 					$this->ping_status   = $results[1];
 					$this->ping_response = __('ICMP Ping Success (fping.exe) (%s ms)', $results[1]);
 
@@ -243,12 +260,12 @@ class Net_Ping {
 				 * as follows.
 				 *
 				 * ping -w 500 -n 3 abc
-
+				 *
 				 * Pinging abc [216.239.38.120] with 32 bytes of data:
 				 * Reply from 216.239.38.120: bytes=32 time=30ms TTL=53
 				 * Reply from 216.239.38.120: bytes=32 time=22ms TTL=53
 				 * Reply from 216.239.38.120: bytes=32 time=25ms TTL=53
-
+				 *
 				 * Ping statistics for 216.239.38.120:
 				 * Packets: Sent = 3, Received = 3, Lost = 0 (0% loss),
 				 * Approximate round trip times in milli-seconds:

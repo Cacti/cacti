@@ -660,7 +660,7 @@ function user_group_members_edit($header_label) {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_checkbox($display_text, false);
 
@@ -721,6 +721,8 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		2 => __('Deny')
 	];
 
+	$policy = [];
+
 	if (!isempty_request_var('id')) {
 		$policy = db_fetch_row_prepared('SELECT policy_graphs, policy_trees, policy_hosts, policy_graph_templates
 			FROM user_auth_group
@@ -747,7 +749,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			form_start('user_group_admin.php', 'policy');
 
 			/* box: device permissions */
-			html_start_box(__('Default Graph Policy'), '100%', '', '3', 'center', '');
+			html_start_box(__('Default Graph Policy'), '100%', false, 3, 'center', '');
 
 			?>
 		<tr class='even'>
@@ -862,7 +864,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 			print $nav;
 
-			html_start_box('', '100%', '', '3', 'center', '');
+			html_start_box('', '100%', false, 3, 'center', '');
 
 			$display_text = [ __('Graph Title'), __('ID'), __('Effective Policy')];
 
@@ -931,7 +933,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			form_start('user_group_admin.php', 'policy');
 
 			/* box: device permissions */
-			html_start_box(__('Default Device Policy'), '100%', '', '3', 'center', '');
+			html_start_box(__('Default Device Policy'), '100%', false, 3, 'center', '');
 
 			?>
 			<tr class='even'>
@@ -1038,7 +1040,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 			print $nav;
 
-			html_start_box('', '100%', '', '3', 'center', '');
+			html_start_box('', '100%', false, 3, 'center', '');
 
 			html_header_checkbox($display_text, false);
 
@@ -1109,7 +1111,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			form_start('user_group_admin.php', 'policy');
 
 			/* box: device permissions */
-			html_start_box(__('Default Graph Template Policy'), '100%', '', '3', 'center', '');
+			html_start_box(__('Default Graph Template Policy'), '100%', false, 3, 'center', '');
 
 			?>
 		<tr class='even'>
@@ -1184,7 +1186,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 			print $nav;
 
-			html_start_box('', '100%', '', '3', 'center', '');
+			html_start_box('', '100%', false, 3, 'center', '');
 
 			$display_text = [ __('Template Name'), __('ID'), __('Effective Policy'), __('Total Graphs')];
 
@@ -1254,7 +1256,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			form_start('user_group_admin.php', 'policy');
 
 			/* box: device permissions */
-			html_start_box(__('Default Tree Policy'), '100%', '', '3', 'center', '');
+			html_start_box(__('Default Tree Policy'), '100%', false, 3, 'center', '');
 
 			?>
 			<tr class='even'>
@@ -1318,7 +1320,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 			print $nav;
 
-			html_start_box('', '100%', '', '3', 'center', '');
+			html_start_box('', '100%', false, 3, 'center', '');
 
 			$display_text = [ __('Tree Name'), __('ID'), __('Effective Policy')];
 
@@ -1409,7 +1411,7 @@ function user_group_realms_edit($header_label) {
 
 	$all_realms = $user_auth_realms;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	/* do cacti realms first */
 	foreach ($user_auth_roles as $role_name => $perms) {
@@ -1440,7 +1442,7 @@ function user_group_realms_edit($header_label) {
 				unset($all_realms[$realm]);
 
 				print '<div class="flexChild">';
-				form_checkbox('section' . $realm, $old_value, $display, '', '', '', (!isempty_request_var('id') ? 1 : 0), $display, true);
+				form_checkbox('section' . $realm, $old_value, $display, '', '', '', '', $display, true);
 				print '</div>';
 			}
 		}
@@ -1491,7 +1493,7 @@ function user_group_realms_edit($header_label) {
 			}
 
 			print '<div class="flexChild">';
-			form_checkbox('section' . $realm, $old_value, $description, '', '', '', (!isempty_request_var('id') ? 1 : 0), $description, true);
+			form_checkbox('section' . $realm, $old_value, $description, '', '', '', '', $description, true);
 			print '</div>';
 		}
 
@@ -1545,7 +1547,7 @@ function user_group_realms_edit($header_label) {
 			}
 
 			print '<div class="flexChild">';
-			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', (!isempty_request_var('id') ? 1 : 0), $r['display'], true);
+			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', '', $r['display'], true);
 			print '</div>';
 		}
 
@@ -1575,7 +1577,7 @@ function user_group_realms_edit($header_label) {
 			$pos = (strpos($user_auth_realms[$realm], '->') !== false ? strpos($user_auth_realms[$realm], '->') + 2:0);
 
 			print '<div class="flexChild">';
-			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', (!isempty_request_var('id') ? 1 : 0), $r['display'], true);
+			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', '', $r['display'], true);
 			print '</div>';
 		}
 
@@ -1619,12 +1621,10 @@ function user_group_settings_edit($header_label) {
 
 	form_start('user_group_admin.php', 'chk');
 
-	html_start_box(__esc('User Settings %s', $header_label), '100%', true, '3', 'center', '');
+	html_start_box(__esc('User Settings %s', $header_label), '100%', true, 3, 'center', '');
 
 	foreach ($settings_user as $tab_short_name => $tab_fields) {
-		$collapsible = true;
-
-		print "<div class='spacer formHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$tab_short_name'><div style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . ($collapsible ? "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div>":'') . '</div></div>';
+		print "<div class='spacer formHeader collapsible' id='row_$tab_short_name'><div style='cursor:pointer;' class='tableSubHeaderColumn'>" . $tabs_graphs[$tab_short_name] . "<div style='float:right;padding-right:4px;'><i class='fa fa-angle-double-up'></i></div></div></div>";
 
 		$form_array = [];
 
@@ -1754,7 +1754,7 @@ function group_edit() {
 
 			form_start('user_group_admin.php');
 
-			html_start_box($header_label, '100%', true, '3', 'center', '');
+			html_start_box($header_label, '100%', true, 3, 'center', '');
 
 			draw_edit_form([
 				'config' => ['no_form_tag' => true],
@@ -1917,7 +1917,7 @@ function user_group() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 

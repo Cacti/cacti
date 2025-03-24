@@ -100,8 +100,11 @@ include/vendor/csrf/csrf-secret.php
 .vscode/**
 
 # Ignore vendor folders
-include/vendor/*
-vendor/*
+include/vendor/**
+vendor/**
 
 # Ignore the API for now
-api/*
+api/**
+
+# Ignore the composer lock file
+composer.lock

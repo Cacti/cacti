@@ -677,7 +677,12 @@ function upgrade_to_1_0_0() {
 						host_template_id = ?,
 						graph_template_id = ?
 						WHERE id = ?',
-						[$host['id'],$host['host_template_id'],$graph_template,$row['id']], false);
+						array(
+							$host['id'],
+							$host['host_template_id'],
+							$graph_template['data'],
+							$row['id']
+						), false);
 				}
 			}
 		}

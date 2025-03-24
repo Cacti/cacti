@@ -53,15 +53,11 @@ switch (get_request_var('action')) {
 		header('Location: utilities.php?action=view_poller_cache');
 
 		exit;
-
-		break;
 	case 'rebuild_resource_cache':
 		rebuild_resource_cache();
 		header('Location: utilities.php');
 
 		exit;
-
-		break;
 	case 'view_snmp_cache':
 		top_header();
 		utilities_view_snmp_cache();
@@ -127,8 +123,6 @@ switch (get_request_var('action')) {
 		header('Location: utilities.php?action=view_snmpagent_cache');
 
 		exit;
-
-		break;
 	case 'view_snmpagent_events':
 		top_header();
 		snmpagent_utilities_run_eventlog();
@@ -183,7 +177,7 @@ function utilities_clear_logfile() {
 		$logfile = './log/cacti.log';
 	}
 
-	html_start_box(__('Clear Cacti Log'), '100%', '', '3', 'center', '');
+	html_start_box(__('Clear Cacti Log'), '100%', false, 3, 'center', '');
 
 	if (file_exists($logfile)) {
 		if (is_writable($logfile)) {
@@ -249,7 +243,7 @@ function create_data_query_filter($session_var) {
 
 	if ($host_id > 0) {
 		/* for the templates dropdown */
-		$sql_where    = ($sql_where != '' ? ' AND ':'WHERE ') . 'h.id = ?';
+		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . 'h.id = ?';
 		$sql_params[] = $host_id;
 
 		$hostname = db_fetch_cell_prepared('SELECT description
@@ -265,7 +259,7 @@ function create_data_query_filter($session_var) {
 	}
 
 	if (get_request_var('site_id') >= 0) {
-		$sql_where    = ($sql_where != '' ? ' AND ':'WHERE ') . 'site_id = ?';
+		$sql_where   .= ($sql_where != '' ? ' AND ':'WHERE ') . 'site_id = ?';
 		$sql_params[] = get_filter_request_var('site_id');
 	}
 
@@ -472,7 +466,7 @@ function utilities_view_snmp_cache() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header($display_text, 1);
 
@@ -613,7 +607,7 @@ function utilities_view_poller_cache() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1, 'utilities.php?action=view_poller_cache');
 
@@ -959,7 +953,7 @@ function utilities() {
 
 	api_plugin_hook('utilities_array');
 
-	html_start_box(__('Cacti System Utilities'), '100%', '', '3', 'center', '');
+	html_start_box(__('Cacti System Utilities'), '100%', false, 3, 'center', '');
 
 	foreach ($utilities as $header => $content) {
 		$i = 0;
@@ -1045,7 +1039,7 @@ function boost_display_run_status() {
 
 	set_page_refresh($refresh);
 
-	html_start_box(__('Boost Status'), '100%', '', '3', 'center', '');
+	html_start_box(__('Boost Status'), '100%', false, 3, 'center', '');
 
 	?>
 	<script type='text/javascript'>
@@ -1086,7 +1080,7 @@ function boost_display_run_status() {
 	<?php
 	html_end_box(true);
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	/* get the boost table status */
 	$boost_table_status = db_fetch_assoc("SELECT *
@@ -1305,11 +1299,13 @@ function boost_display_run_status() {
 		if (strcmp($engine, 'MEMORY') == 0) {
 			$max_length = db_fetch_cell('SELECT MAX(LENGTH(output)) FROM poller_output_boost');
 		} else {
-			$max_length = '0';
+			$max_length = 0;
 		}
 		db_execute("REPLACE INTO settings (name, value) VALUES ('boost_max_output_length', '" . time() . ':' . $max_length . "')");
-	} else {
+	} elseif (isset($parts[1])) {
 		$max_length = $parts[1];
+	} else {
+		$max_length = 0;
 	}
 
 	if ($max_length != 0) {
@@ -1338,13 +1334,17 @@ function boost_display_run_status() {
 		html_section_header(__('Previous Runtime Statistics'), 2);
 
 		form_alternate_row();
-		print '<td class="utilityPick">' . __('Last Start Time:') . '</td><td>' . (is_numeric($last_run_time) ? date('Y-m-d H:i:s', $last_run_time):$last_run_time) . '</td>';
+		if (is_numeric($last_run_time)) {
+			print '<td class="utilityPick">' . __('Last Start Time:') . '</td><td>' . date('Y-m-d H:i:s', (int) $last_run_time) . '</td>';
+		} else {
+			print '<td class="utilityPick">' . __('Last Start Time:') . '</td><td>' . $last_run_time . '</td>';
+		}
 
 		/* get the last end time */
 		$last_end_time = read_config_option('boost_last_end_time', true);
 
 		form_alternate_row();
-		print '<td class="utilityPick">' . __('Last End Time:') . '</td><td>' . ($last_end_time != '' ? date('Y-m-d H:i:s', $last_end_time):__('Never Run')) . '</td>';
+		print '<td class="utilityPick">' . __('Last End Time:') . '</td><td>' . ($last_end_time != '' ? date('Y-m-d H:i:s', (int) $last_end_time):__('Never Run')) . '</td>';
 
 		form_alternate_row();
 		print '<td class="utilityPick">' . __('Last Run Duration:') . '</td><td>';
@@ -1353,7 +1353,7 @@ function boost_display_run_status() {
 			print ($boost_last_run_duration > 60 ? __('%d minutes', (int)$boost_last_run_duration / 60) . ', ': '') . __('%d seconds', (int) $boost_last_run_duration % 60);
 
 			if ($rrd_updates != '') {
-				print ' (' . __('%0.2f percent of update frequency)', round(100 * $boost_last_run_duration / $update_interval / 60));
+				print ' (' . __('%0.2f percent of update frequency)', round(100 * (float) $boost_last_run_duration / (float) $update_interval / 60));
 			}
 		} else {
 			print __('N/A');
@@ -1461,7 +1461,7 @@ function boost_display_run_status() {
 		print '<td class="utilityPick">' . __('Concurrent Processes:') . '</td><td>' . read_config_option('boost_parallel') . '</td>';
 
 		form_alternate_row();
-		print '<td class="utilityPick">' . __('Next Start Time:') . '</td><td>' . (is_numeric($next_run_time) ? date('Y-m-d H:i:s', $next_run_time):$next_run_time) . '</td>';
+		print '<td class="utilityPick">' . __('Next Start Time:') . '</td><td>' . (is_numeric($next_run_time) ? date('Y-m-d H:i:s', (int) $next_run_time):$next_run_time) . '</td>';
 
 		form_alternate_row();
 		print '<td class="utilityPick">' . __('Maximum Records:') . '</td><td>' . number_format_i18n($max_records) . ' ' . __('Records') . '</td>';
@@ -1565,14 +1565,14 @@ function draw_snmp_agent_cache_filter($render = false) {
 /**
  * snmpagent_utilities_run_cache()
  *
- * @param mixed
- * @return
+ * @return void
  */
 function snmpagent_utilities_run_cache() {
-	$mibs            = db_fetch_assoc('SELECT DISTINCT mib FROM snmpagent_cache');
+	$mibs = db_fetch_assoc('SELECT DISTINCT mib FROM snmpagent_cache');
+
 	$registered_mibs = [];
 
-	if ($mibs && $mibs > 0) {
+	if (cacti_sizeof($mibs)) {
 		foreach ($mibs as $mib) {
 			$registered_mibs[] = $mib['mib'];
 		}
@@ -1634,7 +1634,7 @@ function snmpagent_utilities_run_cache() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header($display_text);
 
@@ -1852,7 +1852,7 @@ function snmpagent_utilities_run_eventlog() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	html_header([' ', __('Time'), __('Receiver'), __('Notification'), __('Varbinds')]);
 

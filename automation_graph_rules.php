@@ -173,7 +173,7 @@ function automation_import() {
 	form_start('automation_graph_rules.php', 'chk', true);
 
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
-		html_start_box(__('Import Results'), '80%', '', '3', 'center', '');
+		html_start_box(__('Import Results'), '60%', false, 3, 'center', '');
 
 		print '<tr class="tableHeader"><th>' . __('Cacti has Imported the following Graph Rules'). '</th></tr>';
 
@@ -186,7 +186,7 @@ function automation_import() {
 		kill_session_var('import_debug_info');
 	}
 
-	html_start_box(__('Import Graph Rules'), '80%', false, '3', 'center', '');
+	html_start_box(__('Import Graph Rules'), '60%', false, 3, 'center', '');
 
 	draw_edit_form(
 		[
@@ -711,7 +711,7 @@ function automation_graph_rules_edit() {
 	if (get_nfilter_request_var('tab') == 'rule') {
 		form_start('automation_graph_rules.php', 'chk');
 
-		html_start_box($header_label, '100%', true, '3', 'center', '');
+		html_start_box($header_label, '100%', true, 3, 'center', '');
 
 		if (!isempty_request_var('id')) {
 			/* display whole rule */
@@ -970,7 +970,7 @@ function automation_graph_rules() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	$display_text = [
 		'name' => [

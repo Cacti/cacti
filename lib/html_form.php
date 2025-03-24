@@ -782,13 +782,13 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
  * Draws a standard html hidden element
  *
  * @param string $form_name - the name of this form element
- * @param string $form_previous_value - the current value of this form element
- * @param bool $form_default_value - the value of this form element to use if there is no current value available
+ * @param int|string $form_previous_value - the current value of this form element
+ * @param int|string $form_default_value - the value of this form element to use if there is no current value available
  * @param mixed $in_form
  *
  * @return void
  */
-function form_hidden_box($form_name, $form_previous_value, $form_default_value, $in_form = false) {
+function form_hidden_box(string $form_name, int|string $form_previous_value, int|string $form_default_value, mixed $in_form = false) : void {
 	if ($form_previous_value == '') {
 		$form_previous_value = $form_default_value;
 	}
@@ -808,7 +808,7 @@ function form_hidden_box($form_name, $form_previous_value, $form_default_value, 
  *   $array[0]["name"] = "Red";
  * @param string $column_display - used to identify the key to be used for display data. this
  *   is only applicable if the array is formatted using the second method above
- * @param string $column_id - used to identify the key to be used for id data. this
+ * @param int|string $column_id - used to identify the key to be used for id data. this
  *   is only applicable if the array is formatted using the second method above
  * @param mixed $form_previous_value - the current value of this form element
  * @param string $form_none_entry - the name to use for a default 'none' element in the dropdown
@@ -821,7 +821,7 @@ function form_hidden_box($form_name, $form_previous_value, $form_default_value, 
  *
  * @return void
  */
-function form_dropdown($form_name, $form_data, $column_display, $column_id, $form_previous_value, $form_none_entry, $form_default_value, $class = '', $on_change = '', $display_name = '') {
+function form_dropdown(string $form_name, array $form_data, string $column_display, int|string $column_id, mixed $form_previous_value, string $form_none_entry, mixed $form_default_value, string $class = '', string $on_change = '', string $display_name = '') : void {
 	if ($form_previous_value == '') {
 		$form_previous_value = $form_default_value;
 	}
@@ -1063,7 +1063,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $a
  * @param string $form_caption - the text to display to the right of the checkbox
  * @param string $form_default_value - the value of this form element to use if there is
  *   no current value available
- * @param int $current_id - used to determine if a current value for this form element
+ * @param string|int $current_id - used to determine if a current value for this form element
  *   exists or not. a $current_id of '0' indicates that no current value exists,
  *   a non-zero value indicates that a current value does exist
  * @param string $class - specify a css class
@@ -1553,7 +1553,7 @@ function form_continue_confirmation($form_data, $plugin_hook = '', $save = []) {
 
 	form_start($page, 'action_confirm');
 
-	html_start_box($actions[$drpval], '60%', true, '3', 'center', '');
+	html_start_box($actions[$drpval], '60%', true, 3, 'center', '');
 
 	if (isset($message)) {
 		print "<div class='left'><p>$message</p></div>";

@@ -964,7 +964,6 @@ string $snmp_username, string $snmp_password, int $snmp_port, int $snmp_timeout,
 	string $notes, string $snmp_auth_protocol, string $snmp_priv_passphrase, string $snmp_priv_protocol, string $snmp_context, string $snmp_engine_id,
 	int $max_oids = 5, int $device_threads = 1, int $poller_id = 1, int $site_id = 1, string $external_id = '', string $location = '', int $bulk_walk_size = -1,
 	int $snmp_options = 0, int $snmp_retries = 3): int {
-
 	include_once(CACTI_PATH_LIBRARY . '/utility.php');
 	include_once(CACTI_PATH_LIBRARY . '/variables.php');
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
@@ -1573,7 +1572,7 @@ function api_device_ping_device(?string $device_id, bool $from_remote = false): 
 	$am   = $host['availability_method'];
 	$anym = false;
 
-	if (POLLER_ID != $host['poller_id'] && $from_remote == false) {
+	if ($host['poller_id'] != POLLER_ID && $from_remote == false) {
 		$url = CACTI_PATH_URL . 'remote_agent.php?action=ping&host_id=' . $host['id'];
 
 		$results = call_remote_data_collector($host['poller_id'], $url);
@@ -2480,7 +2479,6 @@ function api_clone_device_template_get_objects(int $device_template_id): array {
  */
 function api_clone_device_template(int $template_id, string $template_name, string $include_gt, string $clone_gt,
 	string $include_dq, string $clone_dq, string $include_dt, string $clone_dt, string $suffix, bool $clone_xml, bool $clone_script, bool $cli = false): int|bool {
-
 	/* The list of duplicated Data Templates.  Dont do it more than once */
 	$duped_graph_templates[]    = [];
 	$duped_data_templates[]     = [];

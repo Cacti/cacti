@@ -654,7 +654,7 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 	if ($display) {
 		form_start('graphs_new.php', 'new_graphs');
 
-		html_start_box($header, '100%', '', '3', 'center', '');
+		html_start_box($header, '100%', false, 3, 'center', '');
 	}
 
 	/* ================= input validation ================= */
@@ -906,7 +906,7 @@ function html_graph_preview_view() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	if (get_request_var('thumbnails') == 'true') {
 		html_graph_thumbnail_area($graphs, '', 'graph_start=' . get_current_graph_start() . '&graph_end=' . get_current_graph_end(), '', get_request_var('columns'));
@@ -1262,7 +1262,7 @@ function html_graph_list_view() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	if (is_realm_allowed(10)) {
 		$display_text = [
@@ -1723,7 +1723,7 @@ function html_graph_single_view() {
 
 	print "<div class='cactiTable'>";
 
-	html_start_box(__esc('Graph Utility View for Graph: %s', $graph_title), '100%', true, '3', 'center', '');
+	html_start_box(__esc('Graph Utility View for Graph: %s', $graph_title), '100%', true, 3, 'center', '');
 
 	api_plugin_hook_function(
 		'page_buttons',
@@ -2055,7 +2055,7 @@ function html_graph_zoom() {
 
 	print "<div class='cactiTable'>";
 
-	html_start_box(__esc('Graph Utility View for Graph: %s', $graph_title), '100%', true, '3', 'center', '');
+	html_start_box(__esc('Graph Utility View for Graph: %s', $graph_title), '100%', true, 3, 'center', '');
 	?>
 	<div class='graphPage'>
 		<div class='graphWrapperOuter cols1' data-disabled='<?php print($graph['disabled'] == 'on' ? 'true':'false');?>'>

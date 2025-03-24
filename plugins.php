@@ -602,7 +602,7 @@ function update_show_current() {
 
 	$archive_title = __esc('Are you sure you want to Archive this Plugin?');
 
-	html_filter_start_box(__('Plugin Management'), '100%', '', '3', 'center', '');
+	html_filter_start_box(__('Plugin Management'), '100%', false, 3, 'center', '');
 
 	?>
 	<tr class='even noprint'>
@@ -1083,7 +1083,7 @@ function update_show_current() {
 
 	print $nav;
 
-	html_start_box('', '100%', '', '3', 'center', '');
+	html_start_box('', '100%', false, 3, 'center', '');
 
 	switch(get_request_var('state')) {
 		case 8:
