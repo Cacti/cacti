@@ -2356,7 +2356,7 @@ $settings['mail'] = [
 		'description'   => __('Please check this URI. It could be accessible from internet.'),
 		'method'        => 'textbox',
 		'max_length'    => 255,
-		'default'       => read_config_option('base_url') . 'oauth2.php'
+		'default'       => 'http://' . gethostname() . CACTI_PATH_URL . 'oauth2.php'
 	],
 	'settings_oauth2_refresh_token' => [
 		'friendly_name' => __('OAuth2 refresh token'),
