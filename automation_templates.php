@@ -1037,7 +1037,7 @@ function template_edit() {
 		],
 		'host_template' => [
 			'method'        => 'drop_array',
-			'friendly_name' => __('Device Template'),
+			'friendly_name' => __('Template Name'),
 			'description'   => __('Select a Device Template that Devices will be matched to.'),
 			'value'         => '|arg1:host_template|',
 			'array'         => $template_names,
@@ -1613,7 +1613,7 @@ function template() {
 			'align'   => 'left'
 		],
 		[
-			'display' => __('System ObjectId Match'),
+			'display' => __('System OID Match'),
 			'align'   => 'left'
 		]
 	];

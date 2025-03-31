@@ -713,12 +713,12 @@ function automation_tree_rules_edit() {
 
 		if ($rule['leaf_type'] == TREE_ITEM_TYPE_HOST) {
 			$tabs = [
-				'rule'    => __('Rule'),
+				'rule'    => __('Rule Name'),
 				'hosts'   => __('Matching Devices')
 			];
 		} else {
 			$tabs = [
-				'rule'     => __('Rule'),
+				'rule'     => __('Rule Name'),
 				'graphs'   => __('Matching Graphs')
 			];
 		}
@@ -728,7 +728,7 @@ function automation_tree_rules_edit() {
 		$header_label = __esc('Tree Rule Selection [edit: %s]', $rule['name']);
 	} else {
 		$tabs = [
-			'rule'    => __('Rule')
+			'rule'    => __('Rule Name')
 		];
 
 		html_sub_tabs($tabs, 'action=edit&id=' . get_filter_request_var('id'));
@@ -1095,22 +1095,22 @@ function automation_tree_rules() {
 			'sort'    => 'ASC'
 		],
 		'tree_name' => [
-			'display' => __('Hook into Tree'),
+			'display' => __('Tree'),
 			'align'   => 'left',
 			'sort'    => 'ASC'
 		],
 		'subtree_name' => [
-			'display' => __('At Subtree'),
+			'display' => __('Sub-Tree Item'),
 			'align'   => 'left',
 			'sort'    => 'ASC'
 		],
 		'leaf_type' => [
-			'display' => __('This Type'),
+			'display' => __('Leaf Item Type'),
 			'align'   => 'left',
 			'sort'    => 'ASC'
 		],
 		'host_grouping_type' => [
-			'display' => __('Using Grouping'),
+			'display' => __('Graph Grouping Style'),
 			'align'   => 'left',
 			'sort'    => 'ASC'
 		],

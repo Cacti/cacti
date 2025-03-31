@@ -687,7 +687,7 @@ function automation_graph_rules_edit() {
 		$header_label = __esc('Rule Selection [edit: %s]', $rule['name']);
 
 		$tabs = [
-			'rule'    => __('Rule'),
+			'rule'    => __('Rule Name'),
 			'hosts'   => __('Matching Devices'),
 			'objects' => __('Matching Indexes')
 		];
@@ -702,7 +702,7 @@ function automation_graph_rules_edit() {
 		$header_label = __('Rule Selection [new]');
 
 		$tabs = [
-			'rule'    => __('Rule')
+			'rule'    => __('Rule Name')
 		];
 
 		html_sub_tabs($tabs, 'action=edit&id=' . get_request_var('id'));

@@ -1362,7 +1362,7 @@ function display_match_rule_items(string $title, array $rule, string $rule_type,
 			'align'   => 'left'
 		],
 		[
-			'display' => __('Field'),
+			'display' => __('Field Name'),
 			'align'   => 'left'
 		],
 		[
@@ -1370,7 +1370,7 @@ function display_match_rule_items(string $title, array $rule, string $rule_type,
 			'align'   => 'left'
 		],
 		[
-			'display' => __('Pattern'),
+			'display' => __('Matching Pattern'),
 			'align'   => 'left'
 		],
 		[
@@ -1479,9 +1479,9 @@ function display_graph_rule_items(string $title, array &$rule, string $rule_type
 		['display' => __('Item'),      'align' => 'left'],
 		['display' => __('Sequence'),  'align' => 'left'],
 		['display' => __('Operation'), 'align' => 'left'],
-		['display' => __('Field'),     'align' => 'left'],
+		['display' => __('Field Name'),     'align' => 'left'],
 		['display' => __('Operator'),  'align' => 'left'],
-		['display' => __('Pattern'),   'align' => 'left'],
+		['display' => __('Matching Pattern'),   'align' => 'left'],
 		['display' => __('Actions'),   'align' => 'right']
 	];
 
@@ -1582,8 +1582,8 @@ function display_tree_rule_items(string $title, array $rule, string $item_type, 
 		['display' => __('Field Name'),       'align' => 'left'],
 		['display' => __('Sorting Type'),     'align' => 'left'],
 		['display' => __('Propagate Change'), 'align' => 'left'],
-		['display' => __('Search Pattern'),   'align' => 'left'],
-		['display' => __('Replace Pattern'),  'align' => 'left'],
+		['display' => __('Matching Pattern'),   'align' => 'left'],
+		['display' => __('Replacement Pattern'),  'align' => 'left'],
 		['display' => __('Actions'),          'align' => 'right']
 	];
 
