@@ -1877,11 +1877,11 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate
 			foreach ($cols as $col) {
 				if ($exclude !== false) {
 					if (array_search($col, $exclude, true) === false) {
-						$suffix .= ($i > 0 ? ', ':'') . " $col=VALUES($col)";
+						$suffix .= ($i > 0 ? ', ':'') . " `$col`=VALUES($col)";
 						$i++;
 					}
 				} else {
-					$suffix .= ($i > 0 ? ', ':'') . " $col=VALUES($col)";
+					$suffix .= ($i > 0 ? ', ':'') . " `$col`=VALUES($col)";
 					$i++;
 				}
 			}
@@ -1898,7 +1898,7 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id, $truncate
 			if (!db_column_exists($table, $c, false, $conn)) {
 				$skipcols[$index] = $c;
 			} else {
-				$prefix .= ($colcnt > 0 ? ', ':'') . $c;
+				$prefix .= ($colcnt > 0 ? ', ':'') . "`$c`";
 				$colcnt++;
 			}
 		}
