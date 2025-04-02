@@ -1,0 +1,83 @@
+<query>
+        <name>Cisco BGP statistics</name>
+        <oid_index>.1.3.6.1.2.1.15.3.1.7</oid_index>
+        <oid_index_parse>OID/REGEXP:.*\.([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})$</oid_index_parse>
+        <fields>
+                       <bgpPeerEntry>
+                        <name>Remote BGP Peer Address</name>
+                        <method>walk</method>
+                        <source>index</source>
+                        <direction>input</direction>
+                </bgpPeerEntry>
+                <bgpPeerRemoteAs>
+                        <name>BGP Remote AS</name>
+                        <method>walk</method>
+                        <source>value</source>
+                        <direction>input</direction>
+                        <oid>.1.3.6.1.2.1.15.3.1.9</oid>
+                </bgpPeerRemoteAs>
+                <bgpPeerLocalAddr>
+                        <name>BGP Local Address</name>
+                        <method>walk</method>
+                        <source>value</source>
+                        <direction>input</direction>
+                        <oid>.1.3.6.1.2.1.15.3.1.5</oid>
+                </bgpPeerLocalAddr>
+                <bgpPeerState>
+                        <name>BGP Peer State</name>
+                        <method>walk</method>
+                        <source>value</source>
+                        <direction>output</direction>
+                        <oid>.1.3.6.1.2.1.15.3.1.2</oid>
+                </bgpPeerState>
+                <bgpPeer>
+                        <name>Peer Address</name>
+                        <method>walk</method>
+                        <source>value</source>
+                        <direction>input</direction>
+                        <oid>.1.3.6.1.2.1.15.3.1.7</oid>
+                </bgpPeer>
+                <bgpPeerAdminStatus>
+                        <name>Admin Status(1-down,2-up)</name>
+                        <method>walk</method>
+                        <source>value</source>
+                        <direction>input</direction>
+                        <oid>.1.3.6.1.2.1.15.3.1.3</oid>
+                </bgpPeerAdminStatus>
+                <bgpPeerRemoteAs>
+                        <name>Remote AS</name>
+                        <method>walk</method>
+                        <source>value</source>
+                        <direction>input</direction>
+                        <oid>.1.3.6.1.2.1.15.3.1.9</oid>
+                </bgpPeerRemoteAs>
+                <bgpPeerInUpdates>
+                        <name>bgpPeerInUpdates</name>
+                        <method>walk</method>
+                        <source>value</source>
+                        <direction>output</direction>
+                        <oid>.1.3.6.1.2.1.15.3.1.10</oid>
+                </bgpPeerInUpdates>
+                <bgpPeerOutUpdates>
+                        <name>bgpPeerOutUpdates</name>
+                        <method>walk</method>
+                        <source>value</source>
+                        <direction>output</direction>
+                        <oid>.1.3.6.1.2.1.15.3.1.11</oid>
+                </bgpPeerOutUpdates>
+                <bgpPeerInTotalMessages>
+                        <name>bgpPeerInTotalMessages</name>
+                        <method>walk</method>
+                        <source>value</source>
+                        <direction>output</direction>
+                        <oid>.1.3.6.1.2.1.15.3.1.12</oid>
+                </bgpPeerInTotalMessages>
+                <bgpPeerOutTotalMessages>
+                        <name>bgpPeerOutTotalMessages</name>
+                        <method>walk</method>
+                        <source>value</source>
+                        <direction>output</direction>
+                        <oid>.1.3.6.1.2.1.15.3.1.13</oid>
+                </bgpPeerOutTotalMessages>
+        </fields>
+</query>
