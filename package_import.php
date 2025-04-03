@@ -22,14 +22,14 @@
  +-------------------------------------------------------------------------+
 */
 
-include('./include/auth.php');
-include_once('./lib/import.php');
-include_once('./lib/poller.php');
-include_once('./lib/template.php');
-include_once('./lib/utility.php');
-include_once('./lib/xml.php');
-include_once('./include/vendor/phpdiff/Diff.php');
-include_once('./include/vendor/phpdiff/Renderer/Html/Inline.php');
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/import.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/template.php');
+require_once(CACTI_PATH_LIBRARY . '/utility.php');
+require_once(CACTI_PATH_LIBRARY . '/xml.php');
+require_once('./include/vendor/phpdiff/Diff.php');
+require_once('./include/vendor/phpdiff/Renderer/Html/Inline.php');
 
 /* set default action */
 set_default_action();

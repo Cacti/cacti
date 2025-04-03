@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-include('./include/auth.php');
+require('./include/auth.php');
 
 $version = CACTI_VERSION_TEXT;
 

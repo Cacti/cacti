@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-include('./include/auth.php');
+require('./include/auth.php');
 
 set_default_action();
 

@@ -22,11 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
-include('./include/auth.php');
-include_once('./lib/export.php');
-include_once('./lib/import.php');
-include_once('./lib/package.php');
-include_once('./lib/xml.php');
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/export.php');
+require_once(CACTI_PATH_LIBRARY . '/import.php');
+require_once(CACTI_PATH_LIBRARY . '/package.php');
+require_once(CACTI_PATH_LIBRARY . '/xml.php');
 
 /* set default action */
 set_default_action();

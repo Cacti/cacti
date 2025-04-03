@@ -22,11 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
-include('./include/auth.php');
-include_once('./lib/import.php');
-include_once('./lib/poller.php');
-include_once('./lib/template.php');
-include_once('./lib/utility.php');
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/import.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/template.php');
+require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 /* set default action */
 set_default_action();

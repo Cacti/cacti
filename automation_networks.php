@@ -23,10 +23,10 @@
 */
 
 /* include cacti base functions */
-include('./include/auth.php');
-include_once('./lib/api_scheduler.php');
-include_once('./lib/snmp.php');
-include_once('./lib/poller.php');
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/api_scheduler.php');
+require_once(CACTI_PATH_LIBRARY . '/snmp.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 $actions = [
 	1 => __('Delete'),

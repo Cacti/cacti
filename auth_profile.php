@@ -23,7 +23,7 @@
 */
 
 $guest_account = true;
-include('./include/auth.php');
+require('./include/auth.php');
 
 /* set default action */
 set_default_action();

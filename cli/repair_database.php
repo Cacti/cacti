@@ -24,9 +24,9 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once(__DIR__ . '/../lib/template.php');
-require_once(__DIR__ . '/../lib/utility.php');
-include_once(__DIR__ . '/../lib/data_query.php');
+require_once(CACTI_PATH_LIBRARY . '/template.php');
+require_once(CACTI_PATH_LIBRARY . '/utility.php');
+include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];

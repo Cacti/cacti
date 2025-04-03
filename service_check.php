@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-include('./include/global.php');
+require('./include/global.php');
 
 $result = db_fetch_cell('SELECT cacti FROM version');
 

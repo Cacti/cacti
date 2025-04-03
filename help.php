@@ -24,7 +24,7 @@
 
 $guest_account = true;
 
-include('./include/auth.php');
+require('./include/auth.php');
 
 if (isset_request_var('error')) {
 	$page  = basename(get_nfilter_request_var('page'));

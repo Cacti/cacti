@@ -22,11 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
-include('./include/auth.php');
-include_once('./lib/api_automation.php');
-include_once('./lib/api_tree.php');
-include_once('./lib/poller.php');
-include_once('./lib/utility.php');
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/api_automation.php');
+require_once(CACTI_PATH_LIBRARY . '/api_tree.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 $actions = [
 	1 => __('Delete'),

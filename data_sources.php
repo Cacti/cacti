@@ -22,16 +22,16 @@
  +-------------------------------------------------------------------------+
 */
 
-include('./include/auth.php');
-include_once('./lib/api_data_source.php');
-include_once('./lib/api_device.php');
-include_once('./lib/api_graph.php');
-include_once('./lib/data_query.php');
-include_once('./lib/html_form_template.php');
-include_once('./lib/poller.php');
-include_once('./lib/rrd.php');
-include_once('./lib/template.php');
-include_once('./lib/utility.php');
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
+require_once(CACTI_PATH_LIBRARY . '/api_device.php');
+require_once(CACTI_PATH_LIBRARY . '/api_graph.php');
+require_once(CACTI_PATH_LIBRARY . '/data_query.php');
+require_once(CACTI_PATH_LIBRARY . '/html_form_template.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/rrd.php');
+require_once(CACTI_PATH_LIBRARY . '/template.php');
+require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 $actions = [
 	1 => __('Delete'),

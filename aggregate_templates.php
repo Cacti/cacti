@@ -22,9 +22,9 @@
  +-------------------------------------------------------------------------+
 */
 
-include_once('./include/auth.php');
-include_once('./lib/api_aggregate.php');
-include_once('./lib/data_query.php');
+require_once('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');
+require_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
 $actions = [
 	1 => __('Delete')

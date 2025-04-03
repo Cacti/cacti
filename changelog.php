@@ -22,13 +22,13 @@
  +-------------------------------------------------------------------------+
 */
 
-include('./include/auth.php');
-include_once('./lib/api_data_source.php');
-include_once('./lib/boost.php');
-include_once('./lib/rrd.php');
-include_once('./lib/clog_webapi.php');
-include_once('./lib/poller.php');
-include_once('./lib/utility.php');
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
+require_once(CACTI_PATH_LIBRARY . '/boost.php');
+require_once(CACTI_PATH_LIBRARY . '/rrd.php');
+require_once(CACTI_PATH_LIBRARY . '/clog_webapi.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 /* set default action */
 set_default_action();

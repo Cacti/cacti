@@ -193,7 +193,7 @@ function display_help() {
 
 /* process_poller_output REAL TIME MODIFIED */
 function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
-	include_once(CACTI_PATH_LIBRARY . '/rrd.php');
+	require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
 	/* let's count the number of rrd files we processed */
 	$rrds_processed = 0;

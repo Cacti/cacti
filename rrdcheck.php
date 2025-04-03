@@ -22,8 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-include_once('./include/auth.php');
-include_once(CACTI_PATH_LIBRARY . '/functions.php');
+require_once('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/functions.php');
 
 $rra_path = CACTI_PATH_RRA . '/';
 

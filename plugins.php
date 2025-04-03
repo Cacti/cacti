@@ -22,8 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-include('./include/auth.php');
-include_once(CACTI_PATH_LIBRARY . '/poller.php');
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 global $local_db_cnn_id;
 

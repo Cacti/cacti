@@ -22,19 +22,19 @@
  +-------------------------------------------------------------------------+
 */
 
-include('./include/auth.php');
-include_once('./lib/api_data_source.php');
-include_once('./lib/api_device.php');
-include_once('./lib/api_graph.php');
-include_once('./lib/api_tree.php');
-include_once('./lib/data_query.php');
-include_once('./lib/export.php');
-include_once('./lib/import.php');
-include_once('./lib/package.php');
-include_once('./lib/poller.php');
-include_once('./lib/template.php');
-include_once('./lib/utility.php');
-include_once('./lib/xml.php');
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
+require_once(CACTI_PATH_LIBRARY . '/api_device.php');
+require_once(CACTI_PATH_LIBRARY . '/api_graph.php');
+require_once(CACTI_PATH_LIBRARY . '/api_tree.php');
+require_once(CACTI_PATH_LIBRARY . '/data_query.php');
+require_once(CACTI_PATH_LIBRARY . '/export.php');
+require_once(CACTI_PATH_LIBRARY . '/import.php');
+require_once(CACTI_PATH_LIBRARY . '/package.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
+require_once(CACTI_PATH_LIBRARY . '/template.php');
+require_once(CACTI_PATH_LIBRARY . '/utility.php');
+require_once(CACTI_PATH_LIBRARY . '/xml.php');
 
 if (!isset_request_var('action') || get_nfilter_request_var('action') == 'templates' || get_nfilter_request_var('action_type') == 'templates') {
 	$actions = [

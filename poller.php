@@ -1111,7 +1111,7 @@ function poller_table_maintenance() {
 }
 
 function poller_replicate_check() {
-	include_once(CACTI_PATH_LIBRARY . '/poller.php');
+	require_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 	$sync_interval = read_config_option('poller_sync_interval');
 
@@ -1403,7 +1403,7 @@ function multiple_poller_boost_check() {
  * function for bulk spikekill that only runs on the main cacti server
  */
 function spikekill_poller_bottom() {
-	include_once(CACTI_PATH_LIBRARY . '/poller.php');
+	require_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 	$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 	$extra_args     = '-q ' . cacti_escapeshellarg(CACTI_PATH_BASE . '/poller_spikekill.php');

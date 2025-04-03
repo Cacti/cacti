@@ -22,9 +22,9 @@
  +-------------------------------------------------------------------------+
 */
 
-include_once('./include/auth.php');
-include_once(CACTI_PATH_LIBRARY . '/functions.php');
-include_once(CACTI_PATH_LIBRARY . '/rrd.php');
+require_once('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/functions.php');
+require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
 $ds_actions = [
 	1 => __x('dropdown action', 'Delete'),

@@ -22,10 +22,10 @@
  +-------------------------------------------------------------------------+
 */
 
-include('./include/auth.php');
-include_once('./lib/api_automation.php');
-include_once('./lib/api_tree.php');
-include_once('./lib/data_query.php');
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/api_automation.php');
+require_once(CACTI_PATH_LIBRARY . '/api_tree.php');
+require_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
 $actions = [
 	AUTOMATION_ACTION_TREE_DUPLICATE => __('Duplicate'),
@@ -683,7 +683,7 @@ function automation_tree_rules_remove() {
 function automation_tree_rules_edit() {
 	global $fields_automation_tree_rules_edit1, $fields_automation_tree_rules_edit2, $fields_automation_tree_rules_edit3;
 
-	include_once(CACTI_PATH_LIBRARY . '/html_tree.php');
+	require_once(CACTI_PATH_LIBRARY . '/html_tree.php');
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');

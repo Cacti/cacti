@@ -23,7 +23,7 @@
 */
 
 define('CACTI_IN_INSTALL', 1);
-include('./include/auth.php');
+require('./include/auth.php');
 
 /* forcibly unlock cacti if the user logg's out */
 $admin_user = read_config_option('admin_user');

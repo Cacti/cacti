@@ -725,7 +725,7 @@ function boost_process_local_data_ids($last_id, $child, $rrdtool_pipe) {
 	static $archive_tables  = false;
 	static $rrdtool_version = null;
 
-	include_once(CACTI_PATH_LIBRARY . '/rrd.php');
+	require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
 	/* suppress warnings */
 	if (defined('E_DEPRECATED')) {

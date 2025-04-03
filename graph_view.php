@@ -24,14 +24,14 @@
 
 $guest_account = true;
 
-include('./include/auth.php');
-include_once('./lib/html_tree.php');
-include_once('./lib/html_graph.php');
-include_once('./lib/api_tree.php');
-include_once('./lib/graphs.php');
-include_once('./lib/reports.php');
-include_once('./lib/timespan_settings.php');
-include_once('./lib/rrd.php');
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/html_tree.php');
+require_once(CACTI_PATH_LIBRARY . '/html_graph.php');
+require_once(CACTI_PATH_LIBRARY . '/api_tree.php');
+require_once(CACTI_PATH_LIBRARY . '/graphs.php');
+require_once(CACTI_PATH_LIBRARY . '/reports.php');
+require_once(CACTI_PATH_LIBRARY . '/timespan_settings.php');
+require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
 /* set the default graph action */
 set_default_graph_action();

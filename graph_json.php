@@ -29,8 +29,8 @@ $guest_account = true;
 $auth_json     = true;
 $gtype         = 'png';
 
-include('./include/auth.php');
-include_once('./lib/rrd.php');
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
 api_plugin_hook_function('graph_image');
 

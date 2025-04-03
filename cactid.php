@@ -68,7 +68,7 @@ $foreground = false;
 $logrecon   = false;
 
 chdir(__DIR__);
-include_once('./include/cli_check.php');
+require_once('./include/cli_check.php');
 
 /* install signal handlers for Linux/UNIX only */
 if (function_exists('pcntl_signal')) {

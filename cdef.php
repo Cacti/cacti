@@ -22,8 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-include('./include/auth.php');
-include_once('./lib/cdef.php');
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/cdef.php');
 
 $actions = [
 	1 => __('Delete'),

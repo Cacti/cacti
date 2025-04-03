@@ -23,16 +23,16 @@
 */
 
 $guest_account = true;
-include('./include/auth.php');
-include_once(CACTI_PATH_LIBRARY . '/api_scheduler.php');
-include_once(CACTI_PATH_LIBRARY . '/reports.php');
-include_once(CACTI_PATH_LIBRARY . '/html_reports.php');
-include_once(CACTI_PATH_LIBRARY . '/timespan_settings.php');
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/api_scheduler.php');
+require_once(CACTI_PATH_LIBRARY . '/reports.php');
+require_once(CACTI_PATH_LIBRARY . '/html_reports.php');
+require_once(CACTI_PATH_LIBRARY . '/timespan_settings.php');
 
 $reportit_api = CACTI_PATH_BASE . '/plugins/reportit/lib/funct_reports.php';
 
 if (file_exists($reportit_api)) {
-	include_once($reportit_api);
+	require_once($reportit_api);
 }
 
 get_filter_request_var('id');

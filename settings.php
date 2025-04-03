@@ -22,8 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-include('./include/auth.php');
-include_once('./lib/poller.php');
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/poller.php');
 
 /* set default action */
 set_default_action();

@@ -25,7 +25,7 @@
 require(__DIR__ . '/include/global.php');
 require_once(CACTI_PATH_LIBRARY . '/api_device.php');
 require_once(CACTI_PATH_LIBRARY . '/api_data_source.php');
-include_once(CACTI_PATH_LIBRARY . '/data_query.php');
+require_once(CACTI_PATH_LIBRARY . '/data_query.php');
 require_once(CACTI_PATH_LIBRARY . '/api_graph.php');
 require_once(CACTI_PATH_LIBRARY . '/api_tree.php');
 require_once(CACTI_PATH_LIBRARY . '/data_query.php');

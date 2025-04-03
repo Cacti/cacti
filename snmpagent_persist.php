@@ -174,7 +174,7 @@ function cache_refresh() {
 
 			$cache_last_refresh = $cache_refresh_time;
 
-			include($path_mibcache);
+			require($path_mibcache);
 		}
 	}
 

@@ -22,9 +22,9 @@
  +-------------------------------------------------------------------------+
  */
 
-include('./include/auth.php');
-include_once('./lib/api_automation.php');
-include_once('./lib/snmp.php');
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/api_automation.php');
+require_once(CACTI_PATH_LIBRARY . '/snmp.php');
 
 $actions = [
 	1 => __('Delete'),
@@ -589,7 +589,7 @@ function automation_snmp_item_remove() {
 function automation_snmp_item_edit() {
 	global $snmp_auth_protocols, $snmp_priv_protocols, $snmp_versions, $snmp_security_levels;
 
-	#include_once(CACTI_PATH_LIBRARY . '/automation_functions.php');
+	#require_once(CACTI_PATH_LIBRARY . '/automation_functions.php');
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');

@@ -22,9 +22,9 @@
  +-------------------------------------------------------------------------+
 */
 
-include('./include/auth.php');
-include_once('./lib/api_automation.php');
-include_once('./lib/data_query.php');
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/api_automation.php');
+require_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
 $actions = [
 	AUTOMATION_ACTION_GRAPH_DUPLICATE => __('Duplicate'),

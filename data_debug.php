@@ -22,9 +22,9 @@
  +-------------------------------------------------------------------------+
 */
 
-include_once('include/auth.php');
-include_once('lib/rrd.php');
-include_once('lib/dsdebug.php');
+require_once('include/auth.php');
+require_once('lib/rrd.php');
+require_once('lib/dsdebug.php');
 
 $actions = [
 	1 => __('Run Check'),

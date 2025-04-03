@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-include('./include/auth.php');
+require('./include/auth.php');
 top_header();
 
 api_plugin_hook('console_before');
@@ -44,7 +44,7 @@ function render_external_links($style = 'FRONT') {
 					$file = CACTI_PATH_INCLUDE . '/content/' . $page['contentfile'];
 
 					if (file_exists($file)) {
-						include_once($file);
+						require_once($file);
 					} else {
 						print '<h1>The file \'' . $page['contentfile'] . '\' does not exist!!</h1>';
 					}

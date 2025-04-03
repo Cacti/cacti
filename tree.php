@@ -22,10 +22,10 @@
  +-------------------------------------------------------------------------+
 */
 
-include('./include/auth.php');
-include_once('./lib/api_tree.php');
-include_once('./lib/html_tree.php');
-include_once('./lib/data_query.php');
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/api_tree.php');
+require_once(CACTI_PATH_LIBRARY . '/html_tree.php');
+require_once(CACTI_PATH_LIBRARY . '/data_query.php');
 
 $actions = [
 	1 => __x('dropdown action', 'Delete'),

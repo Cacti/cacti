@@ -22,8 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-include('./include/auth.php');
-include_once('./lib/export.php');
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/export.php');
 
 /* set default action */
 set_default_action();

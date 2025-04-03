@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-include('./include/global.php');
+require('./include/global.php');
 
 set_default_action();
 

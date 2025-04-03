@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-include_once('./include/auth.php');
+require_once('./include/auth.php');
 
 $actions = [
 	1 => __('Delete'),
@@ -256,7 +256,7 @@ function form_save() {
  */
 function form_actions() {
 	global $actions;
-	include_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');
+	require_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action');
@@ -669,7 +669,7 @@ function color_item() {
 function color_template_edit() {
 	global $image_types, $fields_color_template_template_edit, $struct_aggregate;
 
-	include_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');
+	require_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');
 
 	/* ================= input validation ================= */
 	get_filter_request_var('color_template_id');
@@ -707,7 +707,7 @@ function color_template_edit() {
 }
 
 function sync_color_templates($color_template) {
-	include_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');
+	require_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');
 
 	$name = db_fetch_cell_prepared('SELECT name
 		FROM color_templates
@@ -766,7 +766,7 @@ function sync_color_templates($color_template) {
 function color_template() {
 	global $actions, $item_rows;
 
-	include_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');
+	require_once(CACTI_PATH_LIBRARY . '/api_aggregate.php');
 
 	/* create the page filter */
 	$pageFilter = new CactiTableFilter(__('Color Templates'), 'color_templates.php', 'form_template', 'sess_ct', 'color_templates.php?action=template_edit');

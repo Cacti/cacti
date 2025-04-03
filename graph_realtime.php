@@ -24,8 +24,8 @@
 
 $guest_account = true;
 
-include('./include/auth.php');
-include_once('./lib/rrd.php');
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
 $config['force_storage_location_local'] = true;
 
@@ -391,7 +391,7 @@ $sizes = [
 <html>
 <head>
 	<?php html_common_header(__('Cacti Real-time Graphing'));?>
-    <?php include(CACTI_PATH_INCLUDE . '/global_session.php'); ?>
+    <?php require(CACTI_PATH_INCLUDE . '/global_session.php'); ?>
 </head>
 <body style='font-size:12px;'>
 	<form method='post' action='graph_realtime.php' id='gform'>

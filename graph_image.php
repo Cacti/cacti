@@ -29,8 +29,8 @@ $guest_account = true;
 $auth_text     = true;
 $gtype         = 'png';
 
-include('./include/auth.php');
-include_once('./lib/rrd.php');
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
 /* ================= input validation ================= */
 get_filter_request_var('graph_start');

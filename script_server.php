@@ -287,7 +287,7 @@ while (1) {
 
 					/* turn on output buffering to avoid problems with nasty scripts */
 					ob_start();
-					include_once($include_file);
+					require_once($include_file);
 					ob_end_clean();
 
 					error_reporting(0);

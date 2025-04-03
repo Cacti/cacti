@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-include_once('./include/auth.php');
+require_once('./include/auth.php');
 
 $actions = [
 	1 => __('Delete'),

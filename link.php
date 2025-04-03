@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-include_once('./include/global.php');
+require_once('./include/global.php');
 
 $page = db_fetch_row_prepared('SELECT
 	id, title, style, contentfile, enabled, refresh
@@ -87,7 +87,7 @@ if (!cacti_sizeof($page)) {
 			$file     = realpath($basepath . '/' . $page['contentfile']);
 
 			if ($file !== false && substr($file, 0, strlen($basepath)) == $basepath) {
-				include_once($file);
+				require_once($file);
 			} else {
 				print '<h1>The file \'' . html_escape($page['contentfile']) . '\' does not exist!!</h1>';
 			}

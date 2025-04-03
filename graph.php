@@ -23,10 +23,10 @@
 */
 
 $guest_account = true;
-include('./include/auth.php');
-include_once('./lib/rrd.php');
-include_once('./lib/html_graph.php');
-include_once('./lib/html_tree.php');
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/rrd.php');
+require_once(CACTI_PATH_LIBRARY . '/html_graph.php');
+require_once(CACTI_PATH_LIBRARY . '/html_tree.php');
 
 /* set default action */
 set_default_action('view');

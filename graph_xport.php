@@ -27,8 +27,8 @@ ob_start();
 
 $guest_account = true;
 
-include('./include/auth.php');
-include_once('./lib/rrd.php');
+require('./include/auth.php');
+require_once(CACTI_PATH_LIBRARY . '/rrd.php');
 
 /* ================= input validation ================= */
 get_filter_request_var('graph_start');
