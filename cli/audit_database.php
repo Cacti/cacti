@@ -952,8 +952,18 @@ function create_tables($load = true) {
 		$output = array();
 		$error  = 0;
 
+		//Handel case to address Mariadb dropping the mysql command
+		if (file_exists('/usr/bin/mysql')) {
+			$db_shell = '/usr/bin/mysql';
+		} elseif (file_exists('/usr/bin/mariadb')) {
+			$db_shell = '/usr/bin/mariadb';
+		} else {
+			print 'FATAL: mysql or mariadb command not found' . PHP_EOL;
+			exit;
+		}
+
 		if (file_exists($config['base_path'] . '/docs/audit_schema.sql')) {
-			exec('mysql' .
+			exec($db_shell .
 				' -u' . cacti_escapeshellarg($database_username) .
 				' -p' . cacti_escapeshellarg($database_password) .
 				' -h' . cacti_escapeshellarg($database_hostname) .
