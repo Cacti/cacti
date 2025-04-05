@@ -2317,3 +2317,14 @@ function html_graph_properties() {
 
 	bottom_footer();
 }
+
+/**
+ * Wrapper for plugins - it is used in mactrack, microtic, hmib, ...
+ *
+ * @return void
+ */
+
+function html_graph_validate_preview_request_vars() {
+	validate_store_request_vars(create_preview_filter('sess_grview'), 'sess_grview');
+}
+
