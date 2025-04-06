@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.2.31
+-issue#6202: Adding devices via automation fails
+
 1.2.30
 -issue#6089: Unable to add new users
 -issue#6090: When using Automation Rules, specifying graph criteria may cause issues
