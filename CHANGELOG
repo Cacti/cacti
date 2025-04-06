@@ -192,6 +192,9 @@ Cacti CHANGELOG
 -feature: Allow Reports to be sent to a Notification List if thold is installed
 -feature: Remove legacy Lotus Notes Attachment Types from Reports
 
+1.2.31
+-issue#6202: Adding devices via automation fails
+
 1.2.30
 -issue#6089: Cannot Add New User due to incorrect array structure
 -issue#6090: Undefined function warnings in Automation
