@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.31
+-issue#6210: Fix Error: You have an error in your SQL syntax due to using table field without backtick.
 -issue#6202: Adding devices via automation fails
 
 1.2.30
