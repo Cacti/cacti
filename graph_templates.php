@@ -1939,7 +1939,8 @@ function create_graph_templates_filter() {
 				'filter' => [
 					'method'         => 'textbox',
 					'friendly_name'  => __('Search'),
-					'filter'         => FILTER_VALIDATE_IS_REGEX,
+					'filter'         => FILTER_CALLBACK,
+					'filter_options' => ['options' => 'sanitize_search_string'],
 					'placeholder'    => __('Enter a search term'),
 					'size'           => '30',
 					'default'        => '',
