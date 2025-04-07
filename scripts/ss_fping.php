@@ -140,7 +140,11 @@ function ss_fping($hostname = '', $ping_sweeps = 6, $ping_type = 'ICMP', $port =
 			$predev += ($sample - $avg) ** 2;
 		}
 
-		$dev = sqrt($predev / cacti_count($time));
+		if (cacti_sizeof($time)) {
+			$dev = sqrt($predev / cacti_count($time));
+		} else {
+			$dev = 0;
+		}
 
 		return sprintf('min:%0.4f avg:%0.4f max:%0.4f dev:%0.4f loss:%0.4f', $min, $avg, $max, $dev, $loss);
 	}
