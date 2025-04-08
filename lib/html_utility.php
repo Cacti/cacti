@@ -221,7 +221,7 @@ function form_alternate_row($row_id = '', $light = false, $disabled = false) {
  * This function creates a selectable table cell with the provided contents,
  * ensuring that the contents are properly escaped to prevent XSS attacks.
  *
- * @param string $contents The content to be displayed inside the cell.
+ * @param ?string $contents The content to be displayed inside the cell.
  * @param int|string $id The ID attribute for the cell.
  * @param string $width Optional. The width of the cell. Default is an empty string.
  * @param string $style_or_class Optional. The style or class attribute for the cell. Default is an empty string.
@@ -229,14 +229,14 @@ function form_alternate_row($row_id = '', $light = false, $disabled = false) {
  *
  * @return void
  */
-function form_selectable_ecell(string $contents, int|string $id, string $width = '', string $style_or_class = '', string $title = '') : ?bool {
+function form_selectable_ecell(?string $contents, int|string $id, string $width = '', string $style_or_class = '', string $title = '') : ?bool {
 	return form_selectable_cell(html_escape($contents), $id, $width, $style_or_class, $title);
 }
 
 /**
  * Format's a table row such that it can be highlighted using cacti's js actions
  *
- * @param string $contents The content to be placed inside the table cell.
+ * @param ?string $contents The content to be placed inside the table cell.
  * @param int|string $id The ID attribute for the table cell (not used in the function).
  * @param string $width Optional. The width of the table cell. Default is an empty string.
  * @param string $style_or_class Optional. The style or class attribute for the table cell.
@@ -246,7 +246,7 @@ function form_selectable_ecell(string $contents, int|string $id, string $width =
  *
  * @return void
  */
-function form_selectable_cell(string $contents, int|string $id, string $width = '', string $style_or_class = '', string $title = '') : ?bool {
+function form_selectable_cell(?string $contents, int|string $id, string $width = '', string $style_or_class = '', string $title = '') : ?bool {
 	global $tableCount;
 
 	static $tableColumns = null;
