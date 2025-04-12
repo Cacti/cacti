@@ -9331,3 +9331,32 @@ function get_keyup_delay() {
 function cacti_unserialize($strobj) {
 	return unserialize($strobj, ['allowed_classes' => false]);
 }
+
+
+function detect_cpu_cores() {
+
+	$cpu_cores = 0;
+
+	if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+		$output = shell_exec("powershell -Command \"Get-WmiObject Win32_Processor | Select-Object NumberOfLogicalProcessors\"");
+		if (!is_null($output) && $output !== false) {
+			preg_match_all('/\d+/', $output, $matches);
+			$cpu_cores = array_sum($matches[0]);
+		}
+	} elseif (substr_count(strtolower(PHP_OS), 'darwin')) {
+		$cpu_cores = shell_exec('sysctl -n hw.ncpu');
+	} else {
+		if (file_exists('/usr/bin/nproc')) {
+			$cpu_cores = shell_exec('/usr/bin/nproc');
+		} elseif (file_exists('/bin/nproc')) {
+			$cpu_cores = shell_exec('/bin/nproc');
+		} else {
+			$output = shell_exec('nproc');
+			if (!is_null($output) && $output !== false) {
+				$cpu_cores = $output;
+			}
+		}
+	}
+
+	return trim($cpu_cores);
+}

@@ -55,7 +55,10 @@ $local_graph_ids   = [];
 $step              = false;
 
 /* optional for threading and verbose display */
-$threads           = 20;
+$threads           = detect_cpu_cores();
+if ($threads == 0) {
+        $threads = 10;
+}
 $seebug            = false;
 
 /* optional for force handing and resume */
@@ -690,8 +693,11 @@ function display_help() {
 
 	print 'Cacti\'s RRDfile Data Float Tool.  This CLI script will float a' . PHP_EOL;
 	print 'range in select Cacti Graphs using the RRDtool dump/import utility.' . PHP_EOL . PHP_EOL;
-	print 'This utility will run in parallel with the given number of threads,' . PHP_EOL;
-	print 'except in the case when you have specified specific --graph-ids as' . PHP_EOL;
+
+	print 'This utility will run in parallel with the given number of threads.' . PHP_EOL;
+	print 'If threads argument is not specified, value is derived from the number of processor cores.' . PHP_EOL;
+	print 'In case of a detection problem, 10 threads are used.' . PHP_EOL;
+	print 'Except in the case when you have specified specific --graph-ids as' . PHP_EOL;
 	print 'show with the optional settings below.' . PHP_EOL . PHP_EOL;
 
 	print 'Required:' . PHP_EOL;
@@ -699,7 +705,7 @@ function display_help() {
 	print '    --end=TS    - The float range end time timestamp or date.' . PHP_EOL . PHP_EOL;
 
 	print 'Optional:' . PHP_EOL;
-	print '    --threads             - 20, The number of threads to use to update RRDfiles' . PHP_EOL;
+	print '    --threads             - 10, The number of threads to use to update RRDfiles' . PHP_EOL;
 	print '    --resume              - False, Resume a canceled float process' . PHP_EOL;
 	print '    --host-id=N           - N/A, Update a specific devices RRDfiles' . PHP_EOL;
 	print '    --host-template-id=N  - N/A, Update a specific Device Templates RRDfiles' . PHP_EOL;

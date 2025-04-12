@@ -61,7 +61,10 @@ $host_template_id = false;
 $data_template_id = false;
 
 /* optional for threading and verbose display */
-$threads           = 5;
+$threads           = detect_cpu_cores();
+if ($threads == 0) {
+	$threads = 2;
+}
 
 /* optional for force handing and resume */
 $forcerun          = false;
@@ -408,10 +411,12 @@ function display_help() {
 
 	print 'Cacti\'s repopulate poller cache tool.  This CLI script will ' . PHP_EOL;
 	print 'repopulate poller cache for all or specified hosts.' . PHP_EOL . PHP_EOL;
-	print 'This utility will run in parallel with the given number of threads,' . PHP_EOL;
+	print 'This utility will run in parallel with the given number of threads.' . PHP_EOL;
+	print 'If threads argument is not specified, value is derived from the number of processor cores.' . PHP_EOL;
+	print 'In case of a detection problem, 2 threads are used.' . PHP_EOL . PHP_EOL;
 
 	print 'Optional:' . PHP_EOL;
-	print ' --threads=N           - The number of threads to use to repopulate, default = 5' . PHP_EOL;
+	print ' --threads=N           - The number of threads to use to repopulate' . PHP_EOL;
 	print ' --host-id=N           - Run for a specific Device' . PHP_EOL;
 	print ' --host-template-id=N  - Run for a specific Device Template' . PHP_EOL;
 	print ' --data-template-id=N  - Run for a specific Data Template' . PHP_EOL;

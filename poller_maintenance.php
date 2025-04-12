@@ -128,6 +128,9 @@ api_device_purge_deleted_devices();
 // Rotate Cacti Logs
 logrotate_check($force);
 
+// Detect number of CPU cores and optimal settings
+cpu_cores_check();
+
 // Remove deleted devices
 remove_aged_row_cache();
 
@@ -1014,5 +1017,48 @@ function phpversion_check($force = false) {
 	if ($phpbad_ver && ($date_next < $date_now || $force)) {
 		cacti_log('WARNING: PHP Version "' . PHP_VERSION .'"will not be supported by the develop branch in the future.  If you cannot upgrade to PHP 7.1 or higher, please switch branches', false, 'CACTI');
 		db_execute_prepared('REPLACE INTO settings (name, value) VALUES ("phpver_last", ?)', [$now]);
+	}
+}
+
+function cpu_cores_check() {
+
+	$now = time();
+	$cores = detect_cpu_cores();
+	$name_last  = 'cpu_cores_last_' . POLLER_ID;
+	$name_count = 'cpu_cores_count_' . POLLER_ID;
+	$poller_type = read_config_option('poller_type');
+
+	$poller_settings = db_fetch_row_prepared('SELECT name, processes, threads
+		FROM poller
+		WHERE id = ?',
+		[POLLER_ID]);
+
+	$last_notify = db_fetch_cell_prepared('select value from settings where name = ?', [$name_last]);
+	$last_count  = db_fetch_cell_prepared('select value from settings where name = ?', [$name_count]);
+
+	if (!$last_count) {
+		db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', [$name_last, $now]);
+		db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', [$name_count, $cores]);
+	} else if ($cores != $last_count && $last_notify < ($now-86400)) {
+		cacti_log('WARNING: CPU cores changed. Maybe you should adjust the Poller settings (Processes and threads)', true, 'POLLER');
+		admin_email(__('Cacti System Warning'), __('WARNING: CPU cores changed for poller %d with name %s. Maybe you should adjust the Poller settings (Processes and threads)', POLLER_ID, $poller_settings['name']));
+		db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', [$name_last, $now]);
+		db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', [$name_count, $cores]);
+	}
+
+	if ($poller_type == 1 && $poller_settings['processes'] <= 2 && $cores > $poller_settings['processes']) {
+		cacti_log('WARNING: Default setting number of processes. It looks like this cmd poller uses default settings. To achieve optimal performance, change poller settings (Processes)', true, 'POLLER');
+		admin_email(__('Cacti System Warning'), __('WARNING: Default number of processes on poller %d with name %s. It looks like this cmd poller uses default settings. To achieve optimal performance, change poller settings (Processes)', POLLER_ID, $poller_settings['name']));
+		db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', [$name_last, $now]);
+	} else if ($poller_type == 2 && $poller_settings['threads'] <= 2 && $cores > $poller_settings['processes']) {
+		cacti_log('WARNING: Default setting number of processes/threads. It looks like this spine poller uses default settings. To achieve optimal performance, change poller settings (Processes and threads)', true, 'POLLER');
+		admin_email(__('Cacti System Warning'), __('WARNING: Default number of processes/threads on poller %d with name %s. It looks like this spine poller uses default settings. To achieve optimal performance, change poller settings (Processes and threads)', POLLER_ID, $poller_settings['name']));
+		db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', [$name_last, $now]);
+	}
+
+	if ($poller_type == 1 && ($cores*2) < $poller_settings['processes']) {
+		cacti_log('WARNING: Number of CMD poller processes is too high. To achieve optimal performance, change poller settings (Processes)', true, 'POLLER');
+		admin_email(__('Cacti System Warning'), __('WARNING: Number of CMD poller processes on poller %d with name %s is too high. To achieve optimal performance, change poller settings (Processes)', POLLER_ID, $poller_settings['name']));
+		db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', [$name_last, $now]);
 	}
 }
