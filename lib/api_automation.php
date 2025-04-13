@@ -3391,7 +3391,7 @@ function create_header_node(string $title, array $rule, array $item, int $parent
  * @return int			- id of new item
  */
 /**
- * Aadd a device to the tree
+ * Add a device to the tree
  *
  * @param int $host_id The ID of the host.
  * @param int $parent The parent node or identifier.
