@@ -70,7 +70,10 @@ $query_id     = false;
 $host_descr   = false;
 
 /* optional for threading and verbose display */
-$threads           = 5;
+$threads           = detect_cpu_cores();
+if ($threads == 0) {
+	$threads = 2;
+}
 
 /* optional for force handing and resume */
 $forcerun          = false;
@@ -435,12 +438,16 @@ function display_help() {
 
 	print 'usage: poller_reindex_hosts.php --id=[host_id|all] [--qid=[ID|all]]' . PHP_EOL . PHP_EOL;
 
+	print 'This utility will run in parallel with the given number of threads.' . PHP_EOL;
+	print 'If threads argument is not specified, value is derived from the number of processor cores.' . PHP_EOL;
+	print 'In case of a detection problem, 2 threads are used.' . PHP_EOL . PHP_EOL;
+
 	print 'Optional:' . PHP_EOL;
 	print '   [--host-descr=[description]] [--debug]' . PHP_EOL . PHP_EOL;
 	print '--id=host_id             - The host_id to have data queries reindexed or \'all\' to reindex all hosts' . PHP_EOL;
 	print '--qid=query_id           - Only index on a specific data query id; defaults to \'all\'' . PHP_EOL;
 	print '--host-descr=description - The host description to filter by (SQL filters acknowledged)' . PHP_EOL;
-	print '--threads=N              - The number of threads to use to repopulate, default = 5' . PHP_EOL;
+	print '--threads=N              - The number of threads to use to repopulate' . PHP_EOL;
 	print '--force                  - Force Graph and Data Source Suggested Name Re-mapping for all items' . PHP_EOL;
 	print '--debug                  - Display verbose output during execution' . PHP_EOL;
 
