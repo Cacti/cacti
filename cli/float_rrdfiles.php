@@ -57,7 +57,7 @@ $step              = false;
 /* optional for threading and verbose display */
 $threads           = detect_cpu_cores();
 if ($threads == 0) {
-        $threads = 10;
+        $threads = 2;
 }
 $seebug            = false;
 
@@ -696,7 +696,7 @@ function display_help() {
 
 	print 'This utility will run in parallel with the given number of threads.' . PHP_EOL;
 	print 'If threads argument is not specified, value is derived from the number of processor cores.' . PHP_EOL;
-	print 'In case of a detection problem, 10 threads are used.' . PHP_EOL;
+	print 'In case of a detection problem, 2 threads are used.' . PHP_EOL;
 	print 'Except in the case when you have specified specific --graph-ids as' . PHP_EOL;
 	print 'show with the optional settings below.' . PHP_EOL . PHP_EOL;
 

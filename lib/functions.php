@@ -9337,7 +9337,7 @@ function detect_cpu_cores() {
 
 	$cpu_cores = 0;
 
-	if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+	if (str_starts_with(strtoupper(PHP_OS), 'WIN')) {
 		$output = shell_exec("powershell -Command \"Get-WmiObject Win32_Processor | Select-Object NumberOfLogicalProcessors\"");
 		if (!is_null($output) && $output !== false) {
 			preg_match_all('/\d+/', $output, $matches);

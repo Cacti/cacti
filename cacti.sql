@@ -340,7 +340,7 @@ CREATE TABLE `automation_networks` (
   `ping_timeout` int(10) unsigned NOT NULL default '0',
   `ping_retries` int(10) unsigned default '0',
   `sched_type` int(10) unsigned NOT NULL default '0',
-  `threads` int(10) unsigned default '1',
+  `threads` int(10) unsigned default '2',
   `run_limit` int(10) unsigned default '0',
   `start_at` varchar(20) default NULL,
   `next_start` timestamp NOT NULL default '0000-00-00 00:00:00',
@@ -362,7 +362,7 @@ CREATE TABLE `automation_networks` (
 -- Dumping data for table `automation_networks`
 --
 
-INSERT INTO `automation_networks` VALUES (1,'',1,0,'Test Network','192.168.1.0/24','','','on','','','','',1,'on','on','',254,0,0,1,22,400,1,2,10,1200,'0000-00-00 00:00:00','0000-00-00 00:00:00',2,'4','','','','',0,'0000-00-00 00:00:00','','on');
+INSERT INTO `automation_networks` VALUES (1,'',1,0,'Test Network','192.168.1.0/24','','','on','','','','',1,'on','on','',254,0,0,1,22,400,1,2,2,1200,'0000-00-00 00:00:00','0000-00-00 00:00:00',2,'4','','','','',0,'0000-00-00 00:00:00','','on');
 
 --
 -- Table structure for table `automation_processes`
