@@ -54,16 +54,16 @@ function title_trim(string $text, int $max_length): string {
 function filter_value(?string $value, string $filter, string $href = '', string $title = ''): string {
 	static $charset;
 
+	if ($value == '') {
+		return '';
+	}
+
 	if ($charset == '') {
 		$charset = ini_get('default_charset');
 	}
 
 	if ($charset == '') {
 		$charset = 'UTF-8';
-	}
-
-	if ($value == '') {
-		return '';
 	}
 
 	$value =  html_escape($value);
