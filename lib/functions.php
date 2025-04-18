@@ -62,7 +62,7 @@ function filter_value(?string $value, string $filter, string $href = '', string 
 		$charset = 'UTF-8';
 	}
 
-	if (empty($value)) {
+	if ($value == '') {
 		return '';
 	}
 
