@@ -37,32 +37,18 @@ api_plugin_hook_function('graph_image');
 /* set the json variable for request validation handling */
 set_request_var('json', true);
 
-$debug = false;
+/* ================= input validation ================= */
+get_filter_request_var('graph_start');
+get_filter_request_var('graph_end');
+get_filter_request_var('graph_height');
+get_filter_request_var('graph_width');
+get_filter_request_var('local_graph_id');
 
-if ($debug == false) {
-	/* ================= input validation ================= */
-	get_filter_request_var('graph_start');
-	get_filter_request_var('graph_end');
-	get_filter_request_var('graph_height');
-	get_filter_request_var('graph_width');
-	get_filter_request_var('local_graph_id');
-
-	if (isset_request_var('graph_nolegend')) {
-		set_request_var('graph_nolegend', 'true');
-	}
-
-	get_filter_request_var('graph_theme', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
-	/* ==================================================== */
-} else {
-	set_request_var('graph_width', 700);
-	set_request_var('graph_height', 200);
-	set_request_var('title_font_size', 10);
-	set_request_var('view_type', 'tree');
-	set_request_var('graph_start', -1600);
-	set_request_var('graph_end', 0);
-	set_request_var('local_graph_id', 53);
-	set_request_var('rra_id', 0);
+if (isset_request_var('graph_nolegend')) {
+	set_request_var('graph_nolegend', 'true');
 }
+
+get_filter_request_var('graph_theme', FILTER_CALLBACK, ['options' => 'sanitize_search_string']);
 
 cacti_session_close();
 
