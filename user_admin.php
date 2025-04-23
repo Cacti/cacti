@@ -2275,7 +2275,7 @@ function user() {
 			}
 
 			if (isset($auth_realms[$user['realm']])) {
-				$realm = $auth_realms[$user['realm']];
+				$realm = $auth_realms[$user['realm']]['name'];
 			} else {
 				$realm = __('Unavailable');
 			}
