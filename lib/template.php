@@ -1862,7 +1862,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 							[
 								$data_input_field_id,
 								$data_template_data_id,
-								$data_template_id['id'],
+								$data_template['id'],
 								$cache_array['local_data_id'][$data_template['id']],
 								$host_id,
 								$field_value
