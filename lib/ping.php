@@ -185,6 +185,10 @@ class Net_Ping {
 						$fping = '/usr/sbin/fping6';
 					} elseif (file_exists('/usr/bin/fping6')) {
 						$fping = '/usr/bin/fping6';
+					} elseif (file_exists('/usr/local/sbin/fping6')) {
+						$fping = '/usr/local/sbin/fping6';
+					} elseif (file_exists('/usr/local/bin/fping6')) {
+						$fping = '/usr/local/bin/fping6';
 					}
 				}
 
@@ -244,7 +248,7 @@ class Net_Ping {
 				if ($position > 0) {
 					$output              = substr($result, $position);
 					$results             = explode('/', $output);
-					$this->ping_status   = $results[1];
+					$this->ping_status   = $results[3]; // avg
 					$this->ping_response = __('ICMP Ping Success (fping.exe) (%s ms)', $results[1]);
 
 					return true;
