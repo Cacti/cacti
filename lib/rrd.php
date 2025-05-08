@@ -626,7 +626,7 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = f
 		ON dsp.id=dspc.data_source_profile_id
 		WHERE dtd.local_data_id = ?
 		AND (dspr.steps IS NOT NULL OR dspr.rows IS NOT NULL)
-		ORDER BY dspc.consolidation_function_id, rra_order',
+		ORDER BY dspc.consolidation_function_id, rra_order, dspr.steps',
 		array($local_data_id)
 	);
 
