@@ -427,6 +427,10 @@ function api_scheduler_is_time_to_start(array $schedule, string $table = 'automa
 		$schedule['next_start'] = date('Y-m-d H:i:s', strtotime($schedule['start_at']) + 86400);
 	}
 
+	if (is_null($schedule['start_at'])) {
+		$schedule['start_at'] = date('Y-m-d H:i:s');
+	}
+
 	switch($schedule['sched_type']) {
 		case SCHEDULE_MANUAL:
 			return false;

@@ -2012,7 +2012,7 @@ function draw_reports_filter($render = false) {
 	$header = __('Reports [%s]', (is_reports_admin() ? __('Administrator Level') : __('User Level')));
 
 	/* create the page filter */
-	$pageFilter = new CactiTableFilter($header, 'reports.php', 'forms', 'sess_repv');
+	$pageFilter = new CactiTableFilter($header, 'reports.php', 'forms', 'sess_repv', 'reports.php?action=edit&tab=details');
 
 	$pageFilter->set_filter_array($filters);
 
