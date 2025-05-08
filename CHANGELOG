@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -issue#6099: When transferring a system from a backup if the poller has not run recently rrdtool issues are found
 -issue#6172: Quoting issues leading to translation issue in form messaging in Chinese language
 -issue#6173: Deprecation warning when using boost for the first time
+-issue#6240: Fix sorting exception in rrdtool_function_create function 
 
 1.2.29
 -security#GHSA-c5j8-jxj3-hh36: Authenticated RCE via multi-line SNMP responses
