@@ -1029,6 +1029,10 @@ function read_user_i18n_setting(string $config_name): string|false {
 function number_format_i18n(mixed $number, int $decimals = null, int $baseu = 1024): string {
 	global $cacti_locale, $cacti_country;
 
+	if (is_null($number)) {
+		return 0;
+	}
+
 	$country = strtoupper($cacti_country);
 
 	if (function_exists('numfmt_create')) {
@@ -1044,8 +1048,6 @@ function number_format_i18n(mixed $number, int $decimals = null, int $baseu = 10
 
 			if ($number !== null) {
 				return numfmt_format($fmt, $number);
-			} else {
-				return $number;
 			}
 		}
 		cacti_log('DEBUG: Number format \'' . $fmt_key .'\' was unavailable, using older methods',false,'i18n',POLLER_VERBOSITY_HIGH);
@@ -1063,9 +1065,7 @@ function number_format_i18n(mixed $number, int $decimals = null, int $baseu = 10
 		$locale['thousands_sep'] = ',';
 	}
 
-	if ($number == null) {
-		$number = 0;
-	} elseif ($decimals == -1 || $decimals == null) {
+	if ($decimals == -1 || $decimals == null) {
 		$number = number_format($number, 0, $locale['decimal_point'], $locale['thousands_sep']);
 	} elseif ($number >= $baseu ** 4) {
 		$number = number_format($number / $baseu ** 4, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
