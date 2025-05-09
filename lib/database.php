@@ -2717,7 +2717,7 @@ function db_has_permissions($permissions, $database = false, $log = false, $db_c
 
 /**
  * Legacy wrapper function for Cacti plugins that may still
- * be using the funtion under it's old name
+ * be using the function under it's old name
  *
  * @param int $poller_id The poller to get server info from
  *
