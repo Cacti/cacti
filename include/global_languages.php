@@ -1030,7 +1030,7 @@ function number_format_i18n(mixed $number, int $decimals = null, int $baseu = 10
 	global $cacti_locale, $cacti_country;
 
 	if (is_null($number)) {
-		return 0;
+		return '0';
 	}
 
 	$country = strtoupper($cacti_country);
