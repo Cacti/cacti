@@ -196,6 +196,8 @@ Cacti CHANGELOG
 
 1.2.31
 -issue#6202: Adding devices via automation fails
+-issue#6240: Fix sorting exception in rrdtool_function_create function 
+-issue#6249: Unable to send Email to users without a domain name
 
 1.2.30
 -issue#6089: Cannot Add New User due to incorrect array structure
