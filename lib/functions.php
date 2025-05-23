@@ -5199,8 +5199,16 @@ function parse_email_details($emails, $max_records = 0, $details = array()) {
 }
 
 function split_emaildetail($email) {
-	$rname  = '';
+	$rname = '';
 	$rmail = '';
+
+	/**
+	 * Handle the special case where sendmail is being used
+	 * without an email domain
+	 */
+	if (!is_array($email) && strpos($email, '@') === false) {
+		return array('name' => '', 'email' => $email);
+	}
 
 	if (!is_array($email)) {
 		$email = trim($email);
