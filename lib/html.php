@@ -308,12 +308,17 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 
 		foreach ($graph_array as $graph) {
 			if (!isset($graph['host_id'])) {
-				list($graph['host_id'], $graph['disabled']) = db_fetch_row_prepared('SELECT host_id, disabled
-    					FROM graph_local AS gl
-	 				LEFT JOIN host AS h
+				$graph_data = db_fetch_row_prepared('SELECT host_id, disabled
+					FROM graph_local AS gl
+					LEFT JOIN host AS h
 					ON gl.host_id = h.id
-     					WHERE gl.id = ?',
+					WHERE gl.id = ?',
 					array($graph['local_graph_id']));
+
+				if (cacti_sizeof($graph_data)) {
+					$graph['host_id']  = $graph_data['host_id'];
+					$graph['disabled'] = $graph_data['disabled'];
+				}
 			}
 
 			if ($i == 0) {
