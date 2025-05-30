@@ -864,6 +864,10 @@ function read_user_i18n_setting($config_name) {
 function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 	global $cacti_locale, $cacti_country;
 
+	if (is_null($number)) {
+		return '0';
+	}
+
 	$country = strtoupper($cacti_country);
 
 	if (function_exists('numfmt_create')) {
@@ -879,8 +883,6 @@ function number_format_i18n($number, $decimals = null, $baseu = 1024) {
 
 			if ($number !== null) {
 				return numfmt_format($fmt, $number);
-			} else {
-				return $number;
 			}
 		}
 		cacti_log('DEBUG: Number format \'' . $fmt_key .'\' was unavailable, using older methods',false,'i18n',POLLER_VERBOSITY_HIGH);
