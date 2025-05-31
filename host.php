@@ -736,7 +736,10 @@ function create_host_edit_filter($host, $content = '') {
 				]
 			]
 		],
-		'links' => [
+	];
+
+	if ($host['id'] > 0) {
+		$filters['links'] = [
 			[
 				'display' => __('Create New Device'),
 				'url'     => 'host.php?action=edit',
@@ -777,8 +780,8 @@ function create_host_edit_filter($host, $content = '') {
 				'url'     => 'graphs.php?reset=true&host_id=' . $host['id'] . '&graph_rows=30&filter=&template_id=-1&page=1',
 				'class'   => 'fa fa-th-large viewGraphs'
 			],
-		]
-	];
+		];
+	}
 
 	/* process plugin links */
 	ob_start();
