@@ -1163,7 +1163,6 @@ function draw_tree_filter($render = false) {
 function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	global $current_user, $graphs_per_page, $graph_timeshifts;
 
-
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 	include_once(CACTI_PATH_LIBRARY . '/html_utility.php');
