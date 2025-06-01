@@ -1163,6 +1163,7 @@ function draw_tree_filter($render = false) {
 function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	global $current_user, $graphs_per_page, $graph_timeshifts;
 
+
 	include(CACTI_PATH_INCLUDE . '/global_arrays.php');
 	include_once(CACTI_PATH_LIBRARY . '/data_query.php');
 	include_once(CACTI_PATH_LIBRARY . '/html_utility.php');
@@ -1432,7 +1433,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			$sql_where .= " (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "' OR gtg.title RLIKE '" . get_request_var('rfilter') . "')";
 		}
 
-		if (isset_request_var('graph_template_id') && get_request_var('graph_template_id') != '') {
+		if (isset_request_var('graph_template_id') && get_request_var('graph_template_id') != '' && get_request_var('graph_template_id') != -1) {
 			$graph_templates = html_transform_graph_template_ids(get_request_var('graph_template_id'));
 
 			$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . $graph_templates. '))';
