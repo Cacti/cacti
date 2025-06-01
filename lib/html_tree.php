@@ -1432,7 +1432,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			$sql_where .= " (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "' OR gtg.title RLIKE '" . get_request_var('rfilter') . "')";
 		}
 
-		if (isset_request_var('graph_template_id') && get_request_var('graph_template_id') != '') {
+		if (isset_request_var('graph_template_id') && get_request_var('graph_template_id') != '' && get_request_var('graph_template_id') != -1) {
 			$graph_templates = html_transform_graph_template_ids(get_request_var('graph_template_id'));
 
 			$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . $graph_templates. '))';
