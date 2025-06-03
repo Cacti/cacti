@@ -1663,7 +1663,7 @@ function tail_file(string $file_name, int $number_of_lines, ?int $message_type =
 
 	/**
 	 * Read the entire file into a display buffer checking the match
-	 * status along the way and odly enough returning true and false
+	 * status along the way and oddly enough returning true and false
 	 * instead of the line number from time to time for some reason.
 	 */
 	while (($line = fgets($fp)) !== false) {
