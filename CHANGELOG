@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -issue#6251: Cacti can issue a warning in a case where a user attempts to view a graph that no longer exists
 -issue#6168: RRD cleaner does not purge files
 -issue#6253: Unification of i18n behaviour when the input is null
+-issue#6257: Fix archive rrd with structural path, remove only rrd file check
 
 1.2.30
 -issue#6089: Unable to add new users
