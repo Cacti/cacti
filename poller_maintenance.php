@@ -559,20 +559,26 @@ function remove_files($file_array) {
 			$rrd_archive = $rra_path . '/archive';
 		}
 
+		$rrd_archive = rtrim($rrd_archive, '/');
 		rrdclean_create_path($rrd_archive);
 	}
 
 	/* now scan the files */
 	foreach ($file_array as $file) {
+		/* the variables shouldn't be here, but I'm keeping them just in case */
 		$real_file = str_replace('<path_rra>', $rra_path, $file['name']);
 		$real_file = str_replace('<path_cacti>', $config['base_path'], $real_file);
+		if ($real_file == $file['name']) {
+			$real_file= $rra_path . '/' . $file['name'];
+		}
+
 		$base_file = str_replace('<path_rra>', '', $file['name']);
 		$base_file = str_replace('<path_cacti>', '', $base_file);
 
 		if (read_config_option('storage_location') == 0) {
 			switch ($file['action']) {
 				case '1' :
-					if (file_exists($real_file)) {
+					if (file_exists($real_file) && strtolower(pathinfo($real_file, PATHINFO_EXTENSION)) === 'rrd') {
 						if (unlink($real_file)) {
 							maint_debug('Deleted: ' . $real_file);
 							$purged++;
@@ -585,6 +591,7 @@ function remove_files($file_array) {
 				case '3' :
 					$target_file = $rrd_archive . '/' . $base_file;
 					$target_dir = dirname($target_file);
+
 					if (!is_dir($target_dir)) {
 						rrdclean_create_path($target_dir);
 					}
