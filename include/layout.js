@@ -2530,7 +2530,7 @@ function getPresentHTTPErrorOrRedirect(data, url) {
 	if (typeof url != 'undefined') {
 		if (data.status >= 500) {
 			// Let the HTTP Error stick log an error
-			$.get(urlPath + 'help.php?page=' + escape(url) + '&error=' + data.status);
+			$.get(urlPath + 'help.php?page=' + encodeURIComponent(url) + '&error=' + data.status);
 		} else if (data.status >= 400) {
 			// Let the HTTP Error stick
 		} else if (data.statusText != 'abort') {
