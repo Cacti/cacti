@@ -1879,7 +1879,8 @@ ul#nav {
 }
 
 .clogError {
-	background-color: #FF3932;
+     color: #ccc;
+	background-color: #6f0a07;
 }
 
 .clogWarning {
