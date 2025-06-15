@@ -37,6 +37,7 @@ Cacti CHANGELOG
 -issue#5973: Multiple Issues with database API function db_update_table() preventing correct update of an existing table
 -issue#6240: Fix sorting exception in rrdtool_function_create function
 -issue#6255: Fix not showing any graphs in the subtree if there are only graphs without devices
+-issue#6258: Rename 'Data' to 'Data/Statistics' per customer request
 -feature#412: Import Export for Graph and Tree rules
 -feature#1214: Move Tree Create/Remove/Modify Functions to lib/api_tree.php
 -feature#1361: UI should update alternate row colors
