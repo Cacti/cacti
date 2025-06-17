@@ -36,10 +36,6 @@ $rra_path = CACTI_PATH_RRA . '/';
 /* set default action */
 set_default_action();
 
-if (isset_request_var('rescan')) {
-	set_request_var('action', 'restart');
-}
-
 switch (get_request_var('action')) {
 	case 'actions':
 		top_header();
@@ -50,6 +46,7 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'restart':
+	case 'rescan':
 		top_header();
 		/* fill files name table */
 		rrdclean_fill_table();
@@ -241,7 +238,7 @@ function get_files() {
 
 		foreach ($iterator as $file) {
 			if (substr($file->getPathname(), -3) == 'rrd' && !($archive && strstr($file->getPathname(), $arcbase . '/') !== false)) {
-				$sql[] = "('" . $file->getFilename() . "', " . $file->getSize() . ", '" . date('Y-m-d H:i:s', $file->getMTime()) . "',0)";
+				$sql[] = "('" . str_replace($rra_path, '', $file->getPathname()) . "', " . $file->getSize() . ", '" . date('Y-m-d H:i:s', $file->getMTime()) . "',0)";
 				$size++;
 
 				if ($size == 400) {
@@ -530,6 +527,7 @@ function create_rrdcleaner_filter() {
 				'display' => __('Rescan'),
 				'action'  => 'default',
 				'title'   => __('Rescan RRDfiles and their status'),
+				'url'     => 'rrdcleaner.php?action=rescan'
 			],
 			'remall' => [
 				'method'  => 'button',
