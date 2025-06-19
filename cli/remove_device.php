@@ -48,9 +48,7 @@ if (cacti_sizeof($parms)) {
 	$ip          = '';
 	$id          = '';
 	$ids_id      = array();
-//!!
-//	$host_id     = '';
-//	$id_ids      = false;
+	$host_id     = '';
 
 	$quietMode   = false;
 	$confirm     = false;
