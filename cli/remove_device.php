@@ -44,15 +44,16 @@ array_shift($parms);
 
 if (cacti_sizeof($parms)) {
 	/* setup defaults */
-	$description   = '';
-	$ip            = '';
-	$host_id       = '';
-	$id_ids        = false;
+	$description = '';
+	$ip          = '';
+	$id          = '';
+	$ids_id      = array();
+	$host_id     = '';
 
-	$quietMode     = false;
-	$confirm       = false;
-	$quiet         = false;
-	$debug         = false;
+	$quietMode   = false;
+	$confirm     = false;
+	$quiet       = false;
+	$debug       = false;
 
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
@@ -151,7 +152,7 @@ if (cacti_sizeof($parms)) {
 	$ids = array_merge($ids_host, $ids_ip);
 	$ids = array_unique($ids, SORT_NUMERIC);
 
-	if ($ids_id !== false) {
+	if (cacti_sizeof($ids_id)) {
 		$ids = array_merge($ids, $ids_id);
 		$ids = array_unique($ids, SORT_NUMERIC);
 	}
@@ -174,8 +175,6 @@ if (cacti_sizeof($parms)) {
 			printf('%8.d | %30.s | %30.s' . PHP_EOL,$host['id'],$host['hostname'],$host['description']);
 			$ids_found[] = $host['id'];
 		}
-
-
 
 		print PHP_EOL;
 	}
