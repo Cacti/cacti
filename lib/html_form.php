@@ -787,7 +787,7 @@ function form_dropdown($form_name, $form_data, $column_display, $column_id, $for
 		print "<option value='0'" . (empty($form_previous_value) ? ' selected' : '') . ">$form_none_entry</option>\n";
 	}
 
-	html_create_list($form_data, $column_display, $column_id, html_escape($form_previous_value));
+	html_create_list($form_data, $column_display, $column_id, $form_previous_value);
 
 	print "</select>\n";
 }
@@ -868,7 +868,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 
 		$form_data = db_fetch_assoc($classic_sql);
 
-		html_create_list($form_data, $column_display, $column_id, html_escape($previous_id));
+		html_create_list($form_data, $column_display, $column_id, $previous_id);
 
 		print "</select>\n";
 	} else {
