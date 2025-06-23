@@ -294,7 +294,7 @@ function form_save() {
 		$save['pattern']   = form_input_validate((isset_request_var('pattern') ? get_nfilter_request_var('pattern') : ''), 'pattern', '', true, 3);
 
 		/* Test for SQL injections */
-		$field_name = str_replace(['ht.', 'h.', 'gt.'], '', $save['field']);
+		$field_name = str_replace(array('ht.', 'h.', 'gt.', 'gtg.'), '', $save['field']);
 
 		$exists = db_fetch_cell_prepared('SELECT field_name
 			FROM host_snmp_cache
@@ -303,14 +303,17 @@ function form_save() {
 			[$field_name]);
 
 		if (!$exists) {
-			if (!db_column_exists('host', $field_name) && !db_column_exists('host_template', $field_name) && !db_column_exists('graph_templates', $field_name)) {
-				raise_message('sql_injection', __('An attempt was made to perform a SQL injection in Tree automation'), MESSAGE_LEVEL_ERROR);
+			/* check the case where there is no entry in the host_snmp_cache table yet */
+			if ("'$field_name'" != db_qstr($field_name)) {
+				if (!db_column_exists('host', $field_name) && !db_column_exists('host_template', $field_name) && !db_column_exists('graph_templates', $field_name) && !db_column_exists('graph_templates_graph', $field_name)) {
+					raise_message('sql_injection', __('An attempt was made to perform a SQL injection in Graph automation'), MESSAGE_LEVEL_ERROR);
 
-				cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
+					cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Graph Automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
 
-				header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id'));
+					header('Location: automation_graph_rules.php?header=false&action=edit&id=' . get_request_var('id'));
 
-				exit;
+					exit;
+				}
 			}
 		}
 
