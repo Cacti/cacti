@@ -1846,6 +1846,7 @@ function plugin_load_info_defaults($file, $info, $defaults = []) {
 		'version'      => __('Unknown'),
 		'author'       => __('Unknown'),
 		'homepage'     => $info['webpage'] ?? __('Not Stated'),
+		'compat'       => '1.0.0',
 		'capabilities' => '',
 		'directory'    => $dir,
 	];
@@ -1876,7 +1877,7 @@ function plugin_load_info_file($file) {
 
 	if (file_exists($file)) {
 		if (is_readable($file)) {
-			$info = parse_ini_file($file, true);
+			$info = parse_ini_file($file, true, INI_SCANNER_RAW);
 
 			if (cacti_sizeof($info) && array_key_exists('info', $info)) {
 				$info = plugin_load_info_defaults($file, $info['info']);
