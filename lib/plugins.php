@@ -1846,6 +1846,7 @@ function plugin_load_info_defaults($file, $info, $defaults = []) {
 		'version'      => __('Unknown'),
 		'author'       => __('Unknown'),
 		'homepage'     => $info['webpage'] ?? __('Not Stated'),
+		'compat'       => '1.0.0',
 		'capabilities' => '',
 		'directory'    => $dir,
 	];
