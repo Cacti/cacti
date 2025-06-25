@@ -4196,6 +4196,122 @@ function initializeGraphs(disable_cache) {
 	});
 }
 
+$.widget('ui.tooltip', $.ui.tooltip, {
+	_create: function() {
+		this._on( {
+			mouseover: 'open',
+			focusin: 'open'
+		} );
+
+		// IDs of generated tooltips, needed for destroy
+		this.tooltips = {};
+
+		// IDs of parent tooltips where we removed the title attribute
+		this.parents = {};
+
+		// Append the aria-live region so tooltips announce correctly,
+		// but only once !
+		let liveRegion = $('[role=log].ui-helper-hidden-accessible');
+		if ( liveRegion.length === 0 ) {
+			this.liveRegion = $( '<div>' )
+				.attr( {
+					role: 'log',
+					'aria-live': 'assertive',
+					'aria-relevant': 'additions'
+				} )
+				.appendTo( this.document[ 0 ].body );
+			this._addClass( this.liveRegion, null, 'ui-helper-hidden-accessible' );
+		}else{
+			this.liveRegion = liveRegion;
+		}
+		this.disabledTitles = $( [] );
+	},
+	_open: function( event, target, content ) {
+		var tooltipData, tooltip, delayedShow, a11yContent,
+			positionOption = $.extend( {}, this.options.position );
+
+		if ( !content ) {
+			return;
+		}
+
+		// Content can be updated multiple times. If the tooltip already
+		// exists, then just update the content and bail.
+		tooltipData = this._find( target );
+		if ( tooltipData ) {
+			tooltipData.tooltip.find( '.ui-tooltip-content' ).html( content );
+			return;
+		}
+
+		// If we have a title, clear it to prevent the native tooltip
+		// we have to check first to avoid defining a title if none exists
+		// (we don't want to cause an element to start matching [title])
+		//
+		// We use removeAttr only for key events, to allow IE to export the correct
+		// accessible attributes. For mouse events, set to empty string to avoid
+		// native tooltip showing up (happens only when removing inside mouseover).
+		if ( target.is( '[title]' ) ) {
+			if ( event && event.type === 'mouseover' ) {
+				target.attr( 'title', '' );
+			} else {
+				target.removeAttr( 'title' );
+			}
+		}
+
+		tooltipData = this._tooltip( target );
+		tooltip = tooltipData.tooltip;
+		this._addDescribedBy( target, tooltip.attr( 'id' ) );
+		tooltip.find( '.ui-tooltip-content' ).html( content );
+
+		// Support: Voiceover on OS X, JAWS on IE <= 9
+		// JAWS announces deletions even when aria-relevant="additions"
+		// Voiceover will sometimes re-read the entire log region's contents from the beginning
+		this.liveRegion.empty();
+		a11yContent = $( '<div>' ).html( tooltip.find( '.ui-tooltip-content' ).html() );
+		a11yContent.removeAttr( 'name' ).find( '[name]' ).removeAttr( 'name' );
+		a11yContent.removeAttr( 'id' ).find( '[id]' ).removeAttr( 'id' );
+		a11yContent.appendTo( this.liveRegion );
+
+		function position( event ) {
+			positionOption.of = event;
+			if ( tooltip.is( ':hidden' ) ) {
+				return;
+			}
+			tooltip.position( positionOption );
+		}
+		if ( this.options.track && event && /^mouse/.test( event.type ) ) {
+			this._on( this.document, {
+				mousemove: position
+			} );
+
+			// trigger once to override element-relative positioning
+			position( event );
+		} else {
+			tooltip.position( $.extend( {
+				of: target
+			}, this.options.position ) );
+		}
+
+		tooltip.hide();
+
+		this._show( tooltip, this.options.show );
+
+		// Handle tracking tooltips that are shown with a delay (#8644). As soon
+		// as the tooltip is visible, position the tooltip using the most recent
+		// event.
+		// Adds the check to add the timers only when both delay and track options are set (#14682)
+		if ( this.options.track && this.options.show && this.options.show.delay ) {
+			delayedShow = this.delayedShow = setInterval( function() {
+				if ( tooltip.is( ':visible' ) ) {
+					position( positionOption.of );
+					clearInterval( delayedShow );
+				}
+			}, 13 );
+		}
+
+		this._trigger( 'open', event, { tooltip: tooltip } );
+	},
+})
+
 $.widget('custom.languageselect', $.ui.selectmenu, {
 	_renderItem: function(ul, item) {
 		var li = $('<li>');
