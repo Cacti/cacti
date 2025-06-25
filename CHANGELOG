@@ -182,6 +182,7 @@ Cacti CHANGELOG
 -feature#6063: Change installer page Input Validation Whitelist Protection to Recommendations
 -feature#6066: Enable Drag and Drop for External Links
 -feature#6191: Adding Natural sorting options for Hostname
+-feature#6228: Add admin's email to installer and enable "Notify primary admin of issues" 
 -feature: Allow messages to be popup notifications
 -feature: Upgrade billboard.js to version 3.14.1
 -feature: Upgrade jQueryUI to version 1.14.1

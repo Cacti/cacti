@@ -157,6 +157,8 @@ class Installer implements JsonSerializable {
 
 	private $snmpOptions;
 
+	private $adminEmailAddress;
+
 	/*
 	 * class Installer initialization
 	 *
@@ -409,6 +411,10 @@ class Installer implements JsonSerializable {
 					$this->setSnmpOptions($value);
 
 					break;
+				case 'AdminEmailAddress':
+					$this->setAdminEmailAddress($value);
+
+					break;
 				case 'Runtime':
 					break;
 				default:
@@ -437,6 +443,7 @@ class Installer implements JsonSerializable {
 		$this->setAutomationRange($this->getAutomationRange());
 		$this->setRRDVersion($this->getRRDVersion(), 'default ');
 		$this->snmpOptions = $this->getSnmpOptions();
+		$this->setAdminEmailAddress($this->getAdminEmailAddress());
 		$this->setMode($this->getMode());
 
 		log_install_high('', 'Installer::processParameters(' . clean_up_lines(json_encode($install_params)) . ')');
@@ -1620,6 +1627,26 @@ class Installer implements JsonSerializable {
 		set_install_config_option('install_next', $this->stepNext);
 	}
 
+	private function setAdminEmailAddress($admin_email_address = '') {
+		if ($admin_email_address != '') {
+			if (filter_var($admin_email_address, FILTER_VALIDATE_EMAIL)) {
+				db_execute("UPDATE user_auth SET email_address = '" . $admin_email_address . "'");
+				log_install_always('email', 'Admin email address set to ' . $admin_email_address);
+			} else {
+				$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Email', __('Incorrect email address'));
+			}
+		} else {
+			log_install_always('email', 'Admin email address not set.');
+		}
+
+		$this->adminEmailAddress = $admin_email_address;
+	}
+
+	private function getAdminEmailAddress() {
+		$admin_email_address = db_fetch_cell("SELECT email_address FROM user_auth WHERE username = 'admin' LIMIT 1");
+		return $admin_email_address;
+	}
+
 	/* Some utility functions */
 
 	public function shouldRedirectToHome() {
@@ -2653,7 +2680,35 @@ class Installer implements JsonSerializable {
 			ORDER BY dsp.step, dsp.name');
 
 		if (cacti_sizeof($profiles)) {
-			$output  = Installer::sectionTitle(__('Default Profile'));
+			$output  = Installer::sectionTitle(__('Admin email address'));
+			$output .= Installer::sectionNormal(__('In case of problems cacti can send emails to the administrator. The address filled in here will be assigned to the admin account and "Notify Primary Admin of Issue" will be enabled. You can change this setting and the email address later. Do not forget to set up the email settings after installation.'));
+
+			$fields_admin_email = [
+				'admin_email_address' => [
+					'method'        => 'textbox',
+					'friendly_name' => __('Admin email address'),
+					'value'         => '|arg1:admin_email_address|',
+					'max_length'    => '100',
+				]
+			];
+
+			ob_start();
+
+			$values = [ 'admin_email_address' => $this->adminEmailAddress];
+
+			draw_edit_form(
+				[
+					'config' => ['no_form_tag' => true],
+					'fields' => inject_form_variables($fields_admin_email, $values),
+				]
+			);
+
+			$html = ob_get_contents();
+			ob_end_clean();
+
+			$output .= Installer::sectionNormal($html);
+
+			$output .= Installer::sectionTitle(__('Default Profile'));
 			$output .= Installer::sectionNormal(__('Please select the default Data Source Profile to be used for polling sources.  This is the maximum amount of time between scanning devices for information so the lower the polling interval, the more work is placed on the Cacti Server host.  Also, select the intended, or configured Cron interval that you wish to use for Data Collection.'));
 
 			$fields_schedule = [
