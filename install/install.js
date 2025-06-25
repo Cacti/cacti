@@ -78,6 +78,7 @@ const FIELDS_BINARY_LOCATIONS = {
 }
 
 const FIELDS_PROFILE = {
+	admin_email_address:   { type: 'textbox',  name: 'AdminEmailAddress'  },
 	default_profile:       { type: 'dropdown', name: 'Profile'            },
 	cron_interval:         { type: 'textbox',  name: 'CronInterval'       },
 	automation_mode:       { type: 'checkbox', name: 'AutomationMode'     },
