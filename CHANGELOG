@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -issue#6257: Fix archive rrd with structural path, remove only rrd file check
 -issue#6262: If the database service restarts during polling or other activities errors occur
 -issue#6270: Select list using special characters for the current value can not be displayed in thold
+-issue#6271: Improve validation logging to give administrators a clue where the error came from
 
 1.2.30
 -issue#6089: Unable to add new users
