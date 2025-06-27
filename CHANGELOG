@@ -35,6 +35,7 @@ Cacti CHANGELOG
 -issue#5968: Removing jQuery Sparklines API as we are not using it and have adequate charting libraries
 -issue#5969: If System Level Browser TimeZone Support is disabled don't show the User Profile Option
 -issue#5973: Multiple Issues with database API function db_update_table() preventing correct update of an existing table
+-issue#6177: autodiscovery use dns name in description field
 -issue#6240: Fix sorting exception in rrdtool_function_create function
 -issue#6255: Fix not showing any graphs in the subtree if there are only graphs without devices
 -issue#6258: Rename 'Data' to 'Data/Statistics' per customer request

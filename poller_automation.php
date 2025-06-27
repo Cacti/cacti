@@ -477,9 +477,9 @@ function discoverDevices($network_id, $thread) {
 			}
 
 			if ($dns != '') {
-				$dnsname = automation_get_dns_from_ip($device['ip_address'], $dns, 300);
+				$dnsname = automation_get_dns_from_ip($device['ip_address'], $dns, 1000);
 
-				if ($dnsname != $device['ip_address'] && $dnsname != 'timed_out') {
+				if ($dnsname != $device['ip_address'] && $dnsname != 'timed_out' && $dnsname != 'ERROR') {
 					automation_debug('Device: ' . $device['ip_address'] . ", Checking DNS: Found '" . $dnsname . "'");
 
 					db_execute_prepared('UPDATE automation_ips
@@ -519,7 +519,7 @@ function discoverDevices($network_id, $thread) {
 					$device['dnsname_short'] = '';
 				}
 			} else {
-				$dnsname            = @gethostbyaddr($device['ip_address']);
+				$dnsname            = gethostbyaddr($device['ip_address']);
 				$device['hostname'] = $dnsname;
 
 				if ($dnsname != $device['ip_address']) {
