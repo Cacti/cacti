@@ -109,6 +109,8 @@ function die_html_input_error($variable = null, $value = null, $message = '') {
 	}
 
 	if (isset_request_var('json')) {
+		cacti_debug_backtrace('Validation Error' . ($variable != '' ? ', Variable:' . html_escape($variable):'') . ($value != '' ? ', Value:' . html_escape($value):'') . ', Source: ' . get_client_addr() . ', Request: ' . json_encode($_REQUEST), false);
+
 		print json_encode(
 			[
 				'status'       => '500',
@@ -117,7 +119,10 @@ function die_html_input_error($variable = null, $value = null, $message = '') {
 			]
 		);
 	} else {
+		cacti_debug_backtrace('Validation Error' . ($variable != '' ? ', Variable:' . html_escape($variable):'') . ($value != '' ? ', Value:' . html_escape($value):'') . ', Source: ' . get_client_addr() . ', Request: ' . json_encode($_REQUEST), true);
+
 		print "<table style='width:100%;text-align:center;'><tr><td>$message</td></tr></table>";
+
 		bottom_footer();
 	}
 
