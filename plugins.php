@@ -598,7 +598,7 @@ function update_show_current() {
 
 	$archive_msg   = __esc('Archiving makes a backup of the plugin that you may restore at a later date.  Before archiving, you may enter an archive note that will be stored with the Archive for later reference.  If you really want to Archive the Plugin, click \'Delete\' below.  Otherwise click \'Cancel\'.');
 
-	$archive_form  = '<form name="dialogForm" id="dialogForm"><p><b><label for="archive_note">' . __('Archive Note') . '</label></b>&nbsp;<input type="text" class="ui-state-default ui-corner-all" size="80" value="" name="archive_note" id="archive_note"></p></form>';
+	$archive_form  = '<form name="dialogForm" id="dialogForm"><p><b><label for="archive_note">' . __('Archive Note') . '</label></b>&nbsp;<input type="text" class="ui-state-default ui-corner-all" size="60" value="" name="archive_note" id="archive_note"></p></form>';
 
 	$archive_title = __esc('Are you sure you want to Archive this Plugin?');
 
