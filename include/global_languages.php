@@ -738,6 +738,7 @@ function get_list_of_locales() {
 		'et-EE' => array('language' => 'Estonian',            'direction' => 'ltr', 'country' => 'ee', 'filename' => 'estonian_estonia'),
 		'fi-FI' => array('language' => 'Finnish',             'direction' => 'ltr', 'country' => 'fi', 'filename' => 'finnish_finland'),
 		'fr-FR' => array('language' => 'French',              'direction' => 'ltr', 'country' => 'fr', 'filename' => 'french_france'),
+		'ka-GE' => array('language' => 'Georgian',            'direction' => 'ltr', 'country' => 'ge', 'filename' => 'georgian_georgia'),
 		'de-DE' => array('language' => 'German',              'direction' => 'ltr', 'country' => 'de', 'filename' => 'german_germany'),
 		'el-GR' => array('language' => 'Greek',               'direction' => 'ltr', 'country' => 'gr', 'filename' => 'greek_greece'),
 		'he-IL' => array('language' => 'Hebrew',              'direction' => 'rtl', 'country' => 'il', 'filename' => 'hebrew_israel'),
