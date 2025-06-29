@@ -910,6 +910,7 @@ function get_list_of_locales(): array {
 		'et-EE' => ['language' => 'Estonian',            'direction' => 'ltr', 'country' => 'ee', 'filename' => 'estonian_estonia'],
 		'fi-FI' => ['language' => 'Finnish',             'direction' => 'ltr', 'country' => 'fi', 'filename' => 'finnish_finland'],
 		'fr-FR' => ['language' => 'French',              'direction' => 'ltr', 'country' => 'fr', 'filename' => 'french_france'],
+		'ka-GE' => ['language' => 'Georgian',            'direction' => 'ltr', 'country' => 'ge', 'filename' => 'georgian_georgia'],
 		'de-DE' => ['language' => 'German',              'direction' => 'ltr', 'country' => 'de', 'filename' => 'german_germany'],
 		'el-GR' => ['language' => 'Greek',               'direction' => 'ltr', 'country' => 'gr', 'filename' => 'greek_greece'],
 		'he-IL' => ['language' => 'Hebrew',              'direction' => 'rtl', 'country' => 'il', 'filename' => 'hebrew_israel'],
