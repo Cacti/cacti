@@ -1007,12 +1007,6 @@ function applySkin() {
 	renderLanguages();
 }
 
-function finalizeAuthProfile(options, data) {
-	if (name == 'selected_theme' || name == 'user_language') {
-		document.location = 'auth_profile.php?action=edit';
-	}
-}
-
 function checkPassword(url) {
 	var options = {
 		url: url,
@@ -1073,7 +1067,7 @@ function renderLanguages() {
 			if (page == 'auth_profile.php') {
 				postUrl({
 					url: 'auth_profile.php?tab=' + currentTab + '&action=update_data',
-					funcEnd: 'finalizeAuthProfile'
+					redirect: 'auth_profile.php'
 				}, {
 					__csrf_magic: csrfMagicToken,
 					name: name,

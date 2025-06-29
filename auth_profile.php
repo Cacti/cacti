@@ -827,7 +827,8 @@ function settings_javascript() {
 			});
 
 			$('select, input:not([data-scope="theme"], [type="button"])').unbind().delayKeyup(function() {
-				name = $(this).attr('id');
+				var name = $(this).attr('id');
+
 				if ($(this).attr('type') == 'checkbox') {
 					if ($(this).is(':checked')) {
 						value = 'on';
@@ -848,9 +849,11 @@ function settings_javascript() {
 					name: name,
 					value: value
 				}
+
 				postUrl(options, data);
 			}).change(function() {
-				name = $(this).attr('id');
+				var name = $(this).attr('id');
+
 				if ($(this).attr('type') == 'checkbox') {
 					if ($(this).is(':checked')) {
 						value = 'on';
