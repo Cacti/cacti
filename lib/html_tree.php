@@ -362,7 +362,9 @@ function grow_dhtml_trees() {
 					'data' : {
 						'url' : urlPath+'graph_view.php?action=get_node&tree_id=0',
 						'data' : function(node) {
-							return { 'id' : node.id }
+							if (node.id != '#') {
+								return { 'id' : node.id }
+							}
 						}
 					},
 					'animation' : 0,
