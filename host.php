@@ -1444,7 +1444,7 @@ function device_javascript(bool $hasHost = true) {
 function get_device_records(&$total_rows, $rows) {
 	$sql_where     = '';
 	$sql_params    = [];
-	$maint_devices = '';
+	$maint_devices = array();
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
@@ -1481,6 +1481,10 @@ function get_device_records(&$total_rows, $rows) {
 
 	$status = get_request_var('host_status');
 
+	if (api_plugin_is_enabled('maint')) {
+		$maint_devices = get_maint_hosts();
+	}
+
 	if ($status == '-2') {
 		$sql_where .= ($sql_where == '' ? ' WHERE ' : ' AND ') . "$host_where_disabled";
 	} elseif ($status == '-3') {
@@ -1495,62 +1499,8 @@ function get_device_records(&$total_rows, $rows) {
 			$sql_where .= ($sql_where == '' ? ' WHERE ':' AND ') . " (host.status != '3' OR host.disabled = 'on')";
 		}
 	} elseif ($status == -5 && api_plugin_is_enabled('maint')) {
-		$t         = time();
-		$schedules = [];
-
-		$all_sch = db_fetch_assoc("SELECT *
-			FROM plugin_maint_schedules
-			WHERE enabled = 'on'");
-
-		if (cacti_sizeof($all_sch)) {
-			foreach ($all_sch as $sch) {
-				if ($sch['mtype'] == 1 && ($t > $sch['stime'] && $t < $sch['etime'])) {
-					$schedules[] = $sch['id'];
-				}
-
-				if ($sch['mtype'] == 2) {
-					if ($sch['etime'] < $t) {
-						/* convert start and end to local so that hour stays same for
-						add days across daylight saving time change */
-						$starttimelocal = (new DateTime('@' . strval($sch['stime'])))->setTimezone(new DateTimeZone(date_default_timezone_get()));
-						$endtimelocal   = (new DateTime('@' . strval($sch['etime'])))->setTimezone(new DateTimeZone(date_default_timezone_get()));
-						$nowtime        = new DateTime();
-						/* add interval days */
-						$addday = new DateInterval('P' . strval($sch['minterval'] / 86400) . 'D');
-
-						while ($endtimelocal < $nowtime) {
-							$starttimelocal = $starttimelocal->add($addday);
-							$endtimelocal   = $endtimelocal->add($addday);
-						}
-
-						$sch['stime'] = $starttimelocal->getTimestamp();
-						$sch['etime'] = $endtimelocal->getTimestamp();
-					}
-
-					if ($t > $sch['stime'] && $t < $sch['etime']) {
-						$schedules[] = $sch['id'];
-					}
-				}
-			}
-
-			if (cacti_sizeof($schedules)) {
-				$maint_device_ids = db_fetch_row('SELECT host
-					FROM plugin_maint_hosts
-					WHERE type = 1 AND
-					schedule in (' . implode(',', $schedules) . ')');
-
-				if (cacti_sizeof($maint_device_ids)) { /* need later for all hosts */
-					$maint_devices = implode(',', $maint_device_ids);
-				}
-
-				if ($status == '-5') {
-					if (cacti_sizeof($maint_device_ids)) {
-						$sql_where .= ($sql_where == '' ? ' WHERE ':' AND ') . 'host.id in (' . $maint_devices . ')';
-					} else {
-						$sql_where .= ($sql_where == '' ? ' WHERE ':' AND ') . 'host.id = -1 ';
-					}
-				}
-			}
+		if (cacti_sizeof($maint_devices)) {
+			$sql_where .= ($sql_where == '' ? ' WHERE ':' AND ') . 'host.id in (' . implode(',', $maint_devices) . ')';
 		}
 	} elseif ($status != '-1') {
 		if (db_column_exists('host', 'thold_failure_count')) {
@@ -1614,7 +1564,7 @@ function get_device_records(&$total_rows, $rows) {
 			IF(UNIX_TIMESTAMP(status_rec_date) > 943916400, UNIX_TIMESTAMP() - UNIX_TIMESTAMP(status_rec_date),
 			IF(snmp_sysUptimeInstance>0 AND snmp_version > 0, snmp_sysUptimeInstance/100, UNIX_TIMESTAMP()
 		))))) AS unsigned) AS instate, " .
-		($maint_devices != '' ? "IF(host.id in($maint_devices), 1,0) as maint, " : '0 as maint, ') .
+		(cacti_sizeof($maint_devices) > 0 ? "IF(host.id in(" . implode(',', $maint_devices) . "), 1,0) as maint, " : '0 as maint, ') .
 		"s.name as site_name,
 		s.disabled as site_disabled
 		FROM host
@@ -2104,4 +2054,56 @@ function draw_hosts_filter($render = false) {
 	} else {
 		$pageFilter->sanitize();
 	}
+}
+
+function get_maint_hosts () {
+
+	$maint_devices = array();
+	$t             = time();
+	$schedules     = [];
+
+	$all_sch = db_fetch_assoc("SELECT *
+		FROM plugin_maint_schedules
+		WHERE enabled = 'on'");
+
+	if (cacti_sizeof($all_sch)) {
+		foreach ($all_sch as $sch) {
+			if ($sch['mtype'] == 1 && ($t > $sch['stime'] && $t < $sch['etime'])) {
+				$schedules[] = $sch['id'];
+			}
+
+			if ($sch['mtype'] == 2) {
+				if ($sch['etime'] < $t) {
+					/* convert start and end to local so that hour stays same for
+					add days across daylight saving time change */
+					$starttimelocal = (new DateTime('@' . strval($sch['stime'])))->setTimezone(new DateTimeZone(date_default_timezone_get()));
+					$endtimelocal   = (new DateTime('@' . strval($sch['etime'])))->setTimezone(new DateTimeZone(date_default_timezone_get()));
+					$nowtime        = new DateTime();
+					/* add interval days */
+					$addday = new DateInterval('P' . strval($sch['minterval'] / 86400) . 'D');
+
+					while ($endtimelocal < $nowtime) {
+						$starttimelocal = $starttimelocal->add($addday);
+						$endtimelocal   = $endtimelocal->add($addday);
+					}
+
+					$sch['stime'] = $starttimelocal->getTimestamp();
+					$sch['etime'] = $endtimelocal->getTimestamp();
+				}
+
+				if ($t > $sch['stime'] && $t < $sch['etime']) {
+					$schedules[] = $sch['id'];
+				}
+			}
+		}
+
+		if (cacti_sizeof($schedules)) {
+			$maint_devices = db_fetch_row('SELECT host
+				FROM plugin_maint_hosts
+				WHERE type = 1 AND
+				schedule in (' . implode(',', $schedules) . ')');
+		}
+	}
+
+	return $maint_devices;
 }
