@@ -1399,7 +1399,19 @@ function is_menu_pick_active($menu_url) {
 		return false;
 	}
 
-	if (basename($url_array['path']) == basename($menu_array['path'])) {
+	$base_url_path = basename($url_array['path'] ?? '');
+	if (empty($base_url_path)) {
+		cacti_log('INFO: Empty url path detceted - ' . json_encode($url_array), false, 'MENU', POLLER_VERBOSITY_DEBUG);
+		return false;
+	}
+
+	$base_menu_path = basename($menu_array['path'] ?? '');
+	if (empty($base_menu_path)) {
+		cacti_log('INFO: Empty menu path detceted - ' . json_encode($menu_array), false, 'MENU', POLLER_VERBOSITY_DEBUG);
+		return false;
+	}
+
+	if ($base_url_path == $base_menu_path) {
 		if (isset($menu_array['query'])) {
 			parse_str($menu_array['query'], $menu_parts);
 		} else {
