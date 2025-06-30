@@ -1649,7 +1649,7 @@ function api_device_ping_device(?string $device_id, bool $from_remote = false): 
 					} else {
 						$snmp_uptime = cacti_snmp_session_get($session, '.1.3.6.1.6.3.10.2.1.3.0');
 
-						if (!empty($snmp_uptime)) {
+						if (!empty($snmp_uptime) && is_numeric($snmp_uptime)) {
 							$snmp_uptime *= 100;
 						} else {
 							$snmp_uptime = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0');
