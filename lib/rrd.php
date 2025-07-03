@@ -1810,7 +1810,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					$data_source_path = get_data_source_path($graph_item['local_data_id'], true);
 				}
 
-				if (!rrdtool_file_exists($data_source_path, $rrdtool_pipe)) {
+				if (!rrdtool_file_exists($data_source_path, $rrdtool_pipe) && (isset($graph_data_array['export_realtime']) || isset($graph_data_array['export_csv']))) {
 					return false;
 				}
 
