@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-07-02 13:08+0000\n"
+"PO-Revision-Date: 2025-07-03 15:26+0000\n"
 "Last-Translator: Ekaterine papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <https://translate.cacti.net/projects/cacti/core/ka/>"
 "\n"
@@ -223,7 +223,7 @@ msgstr ""
 
 #: aggregate_graphs.php:911
 msgid "Aggregate Name"
-msgstr ""
+msgstr "აგრეგატის სახელი"
 
 #: aggregate_graphs.php:912
 msgid "New Aggregate"
@@ -327,7 +327,7 @@ msgstr ""
 
 #: aggregate_graphs.php:977
 msgid "Destination Branch:"
-msgstr ""
+msgstr "სამიზნე ბრენჩი:"
 
 #: aggregate_graphs.php:1037 data_sources.php:1075 lib/html_reports.php:1557
 #: user_admin.php:1833
@@ -814,7 +814,7 @@ msgstr "წაშლადი"
 #: data_queries.php:1411 gprint_presets.php:362 graph_templates.php:1819
 #: vdef.php:881
 msgid "Graphs Using"
-msgstr ""
+msgstr "გრაფიკები იყენებენ"
 
 #: aggregate_templates.php:687 graphs.php:2762 host_templates.php:722
 #: host_templates.php:725 include/global_arrays.php:1038
@@ -1641,7 +1641,7 @@ msgstr "წესი"
 #: automation_graph_rules.php:653 automation_tree_rules.php:689
 #: lib/api_automation.php:30
 msgid "Matching Devices"
-msgstr ""
+msgstr "მოწყობილობები, რომლებიც დაემთხვა"
 
 #: automation_graph_rules.php:654 lib/api_automation.php:501
 #: lib/api_automation.php:884 lib/api_automation.php:975
@@ -1706,7 +1706,7 @@ msgstr "ქსელის პარამეტრების შეცვლ�
 
 #: automation_networks.php:37
 msgid "Discover Now"
-msgstr ""
+msgstr "ახლა აღმოჩენა"
 
 #: automation_networks.php:38
 msgid "Cancel Discovery"
@@ -1962,7 +1962,7 @@ msgstr ""
 #: automation_networks.php:752 automation_networks.php:1354 host.php:1556
 #: host.php:1559
 msgid "Data Collector"
-msgstr ""
+msgstr "მონაცემების შემგროვებელი"
 
 #: automation_networks.php:753 include/global_form.php:1275
 msgid "Choose the Cacti Data Collector/Poller to be used to gather data from this Device."
@@ -2176,7 +2176,7 @@ msgstr ""
 
 #: automation_networks.php:895
 msgid "Rerun Every"
-msgstr ""
+msgstr "თავიდან გაშვება ყოველ"
 
 #: automation_networks.php:896
 msgid "Rerun discovery for this Network Range every X."
@@ -2361,7 +2361,7 @@ msgstr "წვდომადობის მორგება"
 #: include/global_form.php:1316 include/global_form.php:1917
 #: lib/installer.php:3034 lib/installer.php:3036
 msgid "SNMP Options"
-msgstr ""
+msgstr "SNMP-ის მორგება"
 
 #: automation_networks.php:1028
 msgid "Select the SNMP Options to use for discovery of this Network Range."
@@ -2436,7 +2436,7 @@ msgstr ""
 
 #: automation_networks.php:1197 automation_networks.php:1204
 msgid "every X."
-msgstr ""
+msgstr "ყოველი X."
 
 #: automation_networks.php:1204
 msgid "every X Weeks."
@@ -2486,7 +2486,7 @@ msgstr "რიგშია/გაშვებულია/მზადაა"
 
 #: automation_networks.php:1381
 msgid "Up/SNMP Hosts"
-msgstr ""
+msgstr "ჩართ/SNMP ჰოსტები"
 
 #: automation_networks.php:1386 host.php:1772 pollers.php:119
 msgid "Threads"
@@ -2494,7 +2494,7 @@ msgstr "ნაკადები"
 
 #: automation_networks.php:1391
 msgid "Last Runtime"
-msgstr ""
+msgstr "ბოლო გაშვების დრო"
 
 #: automation_networks.php:1396
 msgid "Next Start"
@@ -2566,7 +2566,7 @@ msgstr "გაფილტრულების გასუფთავებ�
 
 #: automation_networks.php:1561
 msgid "Import Networks"
-msgstr ""
+msgstr "ქსელების შემოტანა"
 
 #: automation_snmp.php:160
 msgid "Import SNMP Options from Local File"
@@ -2838,7 +2838,7 @@ msgstr ""
 
 #: automation_snmp.php:888 automation_snmp.php:891
 msgid "SNMP Rules"
-msgstr ""
+msgstr "SNMP-ის წესები"
 
 #: automation_snmp.php:994
 msgid "SNMP Option Sets"
@@ -3356,7 +3356,7 @@ msgstr ""
 
 #: cdef.php:264
 msgid "Delete CDEF"
-msgstr ""
+msgstr "CDEF-ის წაშლა"
 
 #: cdef.php:265
 msgid "Delete CDEFs"
@@ -3376,7 +3376,7 @@ msgstr "CDEF-ის დუბლირება"
 
 #: cdef.php:271
 msgid "Duplicate CDEFs"
-msgstr ""
+msgstr "CDEF-ების დუბლირება"
 
 #: cdef.php:309
 msgid "Click 'Continue' to delete the following CDEF Item."
@@ -3627,11 +3627,11 @@ msgstr ""
 
 #: color_templates.php:30
 msgid "Sync Aggregates"
-msgstr ""
+msgstr "აგრეგაციების სინქრონიზაცია"
 
 #: color_templates.php:117
 msgid "Color Item"
-msgstr ""
+msgstr "ფერადი ელემენტი"
 
 #: color_templates.php:177 graph_templates.php:2003 lib/api_aggregate.php:1949
 #: lib/html.php:1661
@@ -3692,11 +3692,11 @@ msgstr ""
 
 #: color_templates.php:489
 msgid "Color Name:"
-msgstr ""
+msgstr "ფერის სახელი:"
 
 #: color_templates.php:490
 msgid "Color Hex:"
-msgstr ""
+msgstr "ფერი თექვსმ:"
 
 #: color_templates.php:496
 msgid "Remove Color Item"
@@ -3763,7 +3763,7 @@ msgstr "შემოწმების გაშვება"
 
 #: data_debug.php:31
 msgid "Delete Check"
-msgstr ""
+msgstr "შემოწმების წაშლა"
 
 #: data_debug.php:52
 msgid "Data Source debug started."
@@ -3868,7 +3868,7 @@ msgstr ""
 
 #: data_debug.php:510
 msgid "RRD Updated"
-msgstr ""
+msgstr "RRD განახლდა"
 
 #: data_debug.php:513
 msgid "Determines if the RRDfile has been written to properly."
@@ -3896,7 +3896,7 @@ msgstr "გამართვის გარეშე"
 
 #: data_debug.php:653
 msgid "No Checks"
-msgstr ""
+msgstr "შემოწმებების გარეშე"
 
 #: data_debug.php:696 lib/api_automation.php:761 lib/graphs.php:79
 #: lib/graphs.php:103 templates_import.php:237
@@ -4131,7 +4131,7 @@ msgstr ""
 
 #: data_input.php:261
 msgid "Input Name"
-msgstr ""
+msgstr "შეიყვანეთ სახელი"
 
 #: data_input.php:292
 msgid "Click 'Continue' to delete the following Data Input Field."
@@ -4382,7 +4382,7 @@ msgstr "ველის სახელი"
 
 #: data_queries.php:838 data_queries.php:947
 msgid "Suggested Value"
-msgstr ""
+msgstr "შეთავაზებული მნიშვნელობა"
 
 #: data_queries.php:844
 msgid "Add Graph Title Suggested Name"
@@ -5379,7 +5379,7 @@ msgstr ""
 
 #: graph.php:418
 msgid "Graph Source/Properties"
-msgstr ""
+msgstr "გრაფიკის წყარო/თვისებები"
 
 #: graph.php:422
 msgid "Graph Data"
@@ -5417,7 +5417,7 @@ msgstr ""
 
 #: graph_realtime.php:456
 msgid " seconds left."
-msgstr ""
+msgstr " დარჩენილი წამი."
 
 #: graph_templates.php:39
 msgid "Change Settings"
@@ -5528,7 +5528,7 @@ msgstr "გრაფიკის სიმაღლე"
 
 #: graph_templates.php:1257 lib/html_reports.php:108
 msgid "Graph Width"
-msgstr ""
+msgstr "გრაფიკის სიგანე"
 
 #: graph_templates.php:1265 graph_templates.php:1825 graphs.php:3081
 msgid "Image Format"
@@ -5669,7 +5669,7 @@ msgstr ""
 #: graph_templates.php:1991
 #, php-format
 msgid "Item #%s"
-msgstr ""
+msgstr "ელემენტი #%s"
 
 #: graph_view.php:444
 msgid "Graph Preview Filters"
@@ -5733,7 +5733,7 @@ msgstr ""
 
 #: graph_view.php:876
 msgid "Site Location"
-msgstr ""
+msgstr "საიტის მდებარეობა"
 
 #: graph_view.php:878
 msgid "The Site Location for this Graph."
@@ -5803,7 +5803,7 @@ msgstr "მწკრივები სულ"
 
 #: graph_xport.php:129 graph_xport.php:191 lib/api_automation.php:652
 msgid "Graph ID"
-msgstr ""
+msgstr "გრაფიკის ID"
 
 #: graph_xport.php:130 graph_xport.php:196
 msgid "Host ID"
@@ -5903,7 +5903,7 @@ msgstr ""
 
 #: graphs.php:1761
 msgid "Delete Graphs"
-msgstr ""
+msgstr "გრაფიკების წაშლა"
 
 #: graphs.php:1763
 msgid "The following Data Source is used by this Graph."
@@ -6153,7 +6153,7 @@ msgstr ""
 
 #: graphs.php:2386
 msgid "Graph Fields"
-msgstr ""
+msgstr "გრაფიკის ველები"
 
 #: graphs.php:2387
 msgid "Graph Item Fields"
@@ -6194,7 +6194,7 @@ msgstr ""
 
 #: graphs.php:3117
 msgid "Empty Graph"
-msgstr ""
+msgstr "ცარიელი გრაფიკი"
 
 #: graphs_new.php:83
 msgid "Default Settings Saved"
@@ -6219,7 +6219,7 @@ msgstr ""
 
 #: graphs_new.php:411
 msgid "Graph Types"
-msgstr ""
+msgstr "გრაფიკის ტიპები"
 
 #: graphs_new.php:416 include/global_settings.php:518
 msgid "Graph Template Based"
@@ -6346,7 +6346,7 @@ msgstr ""
 
 #: host.php:45 pollers.php:35
 msgid "Clear Statistics"
-msgstr ""
+msgstr "სტატისტიკის გასუფთავება"
 
 #: host.php:47
 msgid "Sync to Device Template"
@@ -6424,7 +6424,7 @@ msgstr "მოწყობილობის ჩართვა"
 
 #: host.php:503
 msgid "Enable Devices"
-msgstr ""
+msgstr "მოწყობილობების ჩართვა"
 
 #: host.php:506
 msgid "Click 'Continue' to Disable the following Device."
@@ -6635,7 +6635,7 @@ msgstr "მოთხოვნის თავიდან ჩატვირთ�
 
 #: host.php:986
 msgid "Verbose Query"
-msgstr ""
+msgstr "მეტი შეტყობინება მოთხოვნის შესახებ"
 
 #: host.php:987
 msgid "Remove Query"
@@ -6777,7 +6777,7 @@ msgstr ""
 
 #: host.php:1844
 msgid "Create Date"
-msgstr ""
+msgstr "შექმნის თარიღი"
 
 #: host.php:1847
 msgid "The Date that the Device was added to Cacti."
@@ -7292,7 +7292,7 @@ msgstr ""
 
 #: include/global_arrays.php:360
 msgid "Report Saved"
-msgstr ""
+msgstr "ანგარიში შენახულია"
 
 #: include/global_arrays.php:363
 msgid "Report Save Failed"
@@ -7496,7 +7496,7 @@ msgstr ""
 #: include/global_arrays.php:960
 #, php-format
 msgid "Version %d"
-msgstr ""
+msgstr "ვერსია %d"
 
 #: include/global_arrays.php:658 include/global_arrays.php:668
 msgid "[None]"
@@ -7564,7 +7564,7 @@ msgstr ""
 
 #: include/global_arrays.php:686
 msgid "Syslog/Eventlog Only"
-msgstr ""
+msgstr "მხოლოდ Syslog/Eventlog"
 
 #: include/global_arrays.php:691
 msgid "Ping and SNMP Uptime"
@@ -7942,7 +7942,7 @@ msgstr "მონაცემების შეგროვება"
 #: include/global_arrays.php:1090 include/global_arrays.php:1155
 #: include/global_arrays.php:2343 pollers.php:929
 msgid "Data Collectors"
-msgstr ""
+msgstr "მონაცემების შემგროვებლები"
 
 #: include/global_arrays.php:1098 include/global_arrays.php:3090
 msgid "Aggregate"
@@ -7978,12 +7978,12 @@ msgstr "პაკეტების შემოტანა"
 #: include/global_arrays.php:1118 include/global_arrays.php:1376
 #: include/global_arrays.php:2805
 msgid "Import Templates"
-msgstr ""
+msgstr "შაბლონების შემოტანა"
 
 #: include/global_arrays.php:1119 include/global_arrays.php:1375
 #: include/global_arrays.php:2793 templates_export.php:157
 msgid "Export Templates"
-msgstr ""
+msgstr "შაბლონების გატანა"
 
 #: include/global_arrays.php:1120
 msgid "Create Packages"
@@ -8038,7 +8038,7 @@ msgstr ""
 
 #: include/global_arrays.php:1133
 msgid "SNMP Managers"
-msgstr ""
+msgstr "SNMP-ის მმართველები"
 
 #: include/global_arrays.php:1134 include/global_arrays.php:1178
 #: include/global_arrays.php:1248 include/global_arrays.php:1353
@@ -8099,7 +8099,7 @@ msgstr "ზოგადი მოწყობილობა"
 
 #: include/global_arrays.php:1190
 msgid "HPC/Grid Computing"
-msgstr ""
+msgstr "HPC/ბადოვანი ქსელები"
 
 #: include/global_arrays.php:1191
 msgid "Hypervisor Related"
@@ -8159,11 +8159,11 @@ msgstr ""
 
 #: include/global_arrays.php:1205
 msgid "Windows Related"
-msgstr ""
+msgstr "Windows"
 
 #: include/global_arrays.php:1206
 msgid "UPS Related"
-msgstr ""
+msgstr "UPS"
 
 #: include/global_arrays.php:1211
 msgid "Amon Server Stats"
@@ -8179,7 +8179,7 @@ msgstr "CPU-ის სტატისტიკა"
 
 #: include/global_arrays.php:1214
 msgid "Disk Stats"
-msgstr ""
+msgstr "დისკის სტატუსი"
 
 #: include/global_arrays.php:1215
 msgid "Disk I/O Stats"
@@ -8195,7 +8195,7 @@ msgstr "ვებსერვერის სტატისტიკა"
 
 #: include/global_arrays.php:1218
 msgid "Kafka Stats"
-msgstr ""
+msgstr "Kafka-ის სტატისტიკა"
 
 #: include/global_arrays.php:1219
 msgid "Kernel Stats"
@@ -8231,7 +8231,7 @@ msgstr ""
 
 #: include/global_arrays.php:1227
 msgid "Network Stats"
-msgstr ""
+msgstr "ქსელის სტატისტიკა"
 
 #: include/global_arrays.php:1228
 msgid "Process Stats"
@@ -8247,7 +8247,7 @@ msgstr ""
 
 #: include/global_arrays.php:1231
 msgid "Syslog Stats"
-msgstr ""
+msgstr "Syslog-ის სტატისტიკა"
 
 #: include/global_arrays.php:1232
 msgid "System Stats"
@@ -8313,7 +8313,7 @@ msgstr "ჟურნალის ადმინისტრაცია"
 
 #: include/global_arrays.php:1380
 msgid "Log Viewing"
-msgstr ""
+msgstr "ჟურნალის დათვალიერება"
 
 #: include/global_arrays.php:1382
 msgid "Reports Administration"
@@ -8321,7 +8321,7 @@ msgstr ""
 
 #: include/global_arrays.php:1383
 msgid "Reports Creation"
-msgstr ""
+msgstr "ანგარიშების შექმნა"
 
 #: include/global_arrays.php:1384
 msgid "Show Graph Action Icons"
@@ -8450,7 +8450,7 @@ msgstr "დღის ცვლა"
 
 #: include/global_arrays.php:1583
 msgid "This Day"
-msgstr ""
+msgstr "ეს დღე"
 
 #: include/global_arrays.php:1584
 msgid "This Week"
@@ -8511,7 +8511,7 @@ msgstr ""
 
 #: include/global_arrays.php:1665 include/global_arrays.php:1696
 msgid "After Boost"
-msgstr ""
+msgstr "Boost-ის შემდეგ"
 
 #: include/global_arrays.php:1675 include/global_arrays.php:1676
 #: include/global_arrays.php:1677 include/global_arrays.php:1678
@@ -8523,7 +8523,7 @@ msgstr "%d მბაიტი"
 
 #: include/global_arrays.php:1680
 msgid "1 GByte"
-msgstr ""
+msgstr "1 გბაიტი"
 
 #: include/global_arrays.php:1681 include/global_arrays.php:1744
 #: lib/boost.php:62
@@ -8597,7 +8597,7 @@ msgstr "%s საათი"
 #: include/global_arrays.php:1743
 #, php-format
 msgid "%d GByte"
-msgstr ""
+msgstr "%d გბაიტი"
 
 #: include/global_arrays.php:1751 utilities.php:1656 utilities.php:1657
 #: utilities.php:1706
@@ -8629,7 +8629,7 @@ msgstr "1 მეგაბაიტი"
 #: include/global_arrays.php:1785 include/global_arrays.php:1786
 #, php-format
 msgid "%d Megabytes"
-msgstr ""
+msgstr "%d მეგაბიტი"
 
 #: include/global_arrays.php:1794
 msgid "Send Now"
@@ -8637,7 +8637,7 @@ msgstr "ახლა გაგზავნა"
 
 #: include/global_arrays.php:1798
 msgid "Take Ownership"
-msgstr ""
+msgstr "მფლობელობის აღება"
 
 #: include/global_arrays.php:1802
 msgid "Inline PNG Image"
@@ -8765,7 +8765,7 @@ msgstr ""
 
 #: include/global_arrays.php:1864
 msgid "No Totals"
-msgstr ""
+msgstr "ჯამების გარეშე"
 
 #: include/global_arrays.php:1865
 msgid "Print All Legend Items"
@@ -9216,7 +9216,7 @@ msgstr ""
 #: include/global_arrays.php:2571 include/global_settings.php:273
 #: rrdcleaner.php:328
 msgid "RRD Cleaner"
-msgstr ""
+msgstr "RRD-ების გამსუფთავებელი"
 
 #: include/global_arrays.php:2583
 msgid "List unused Files"
@@ -9272,7 +9272,7 @@ msgstr ""
 
 #: include/global_arrays.php:2721 settings.php:60
 msgid "Cacti Settings"
-msgstr ""
+msgstr "Cacti-ის მორგება"
 
 #: include/global_arrays.php:2727
 msgid "External Link"
@@ -9288,7 +9288,7 @@ msgstr "Cacti-ის დახმარება"
 
 #: include/global_arrays.php:2799
 msgid "Export Results"
-msgstr ""
+msgstr "შედეგების გატანა"
 
 #: include/global_arrays.php:2817
 msgid "Package Cacti Template"
@@ -9314,7 +9314,7 @@ msgstr "ანგარიშის დამატება"
 
 #: include/global_arrays.php:2847 include/global_arrays.php:2877
 msgid "Report Delete"
-msgstr ""
+msgstr "ანგარიშების წაშლა"
 
 #: include/global_arrays.php:2853 include/global_arrays.php:2883
 msgid "Report Edit"
@@ -9463,7 +9463,7 @@ msgstr ""
 
 #: include/global_form.php:135
 msgid "SNMP Timeout"
-msgstr "SMTP-ის მოლოდინის ვადა"
+msgstr "SNMP-ის მოლოდინის ვადა"
 
 #: include/global_form.php:136
 msgid "The maximum number of milliseconds Cacti will wait for an SNMP response (does not work with php-snmp support)."
@@ -9471,7 +9471,7 @@ msgstr ""
 
 #: include/global_form.php:144 include/global_form.php:211
 msgid "SNMP Retries"
-msgstr ""
+msgstr "SNMP-ის თავიდან ცდები"
 
 #: include/global_form.php:145
 msgid "The maximum number of times SNMP will attempt to contact the remote device before giving up."
@@ -9569,7 +9569,7 @@ msgstr ""
 
 #: include/global_form.php:258
 msgid "Consolidation Functions"
-msgstr ""
+msgstr "კონსოლიდაციის ფუნქციები"
 
 #: include/global_form.php:259 include/global_form.php:291
 msgid "How data is to be entered in RRAs."
@@ -9688,7 +9688,7 @@ msgstr ""
 
 #: include/global_form.php:482
 msgid "Update RRDfile"
-msgstr ""
+msgstr "RRDfile-ის განახლება"
 
 #: include/global_form.php:483
 msgid "Whether data from this output field is to be entered into the RRDfile."
@@ -9818,7 +9818,7 @@ msgstr "საერთო პარამეტრები"
 
 #: include/global_form.php:713
 msgid "Title (--title)"
-msgstr ""
+msgstr "სათაური (--title)"
 
 #: include/global_form.php:717
 msgid "The name that is printed on the graph.  It can include replacement variables such as |host_description| or |query_fieldName|.  For a complete list of supported replacement tags, please see the Cacti documentation."
@@ -9842,7 +9842,7 @@ msgstr ""
 
 #: include/global_form.php:736
 msgid "Height (--height)"
-msgstr ""
+msgstr "სიმაღლე (--height)"
 
 #: include/global_form.php:740
 msgid "The height (in pixels) of the graph area within the graph. This area does not include the legend, axis legends, or title."
@@ -9994,7 +9994,7 @@ msgstr ""
 
 #: include/global_form.php:878
 msgid "Axis Options"
-msgstr ""
+msgstr "ღერძების მორგება"
 
 #: include/global_form.php:883
 msgid "Right Axis (--right-axis &lt;scale:shift&gt;)"
@@ -10231,7 +10231,7 @@ msgstr ""
 
 #: include/global_form.php:1120
 msgid "Dashes (dashes[=on_s[,off_s[,on_s,off_s]...]])"
-msgstr ""
+msgstr "ტირე (ტირეები[=on_s[,off_s[,on_s,off_s]...]])"
 
 #: include/global_form.php:1125
 msgid "The dashes modifier enables dashed line style."
@@ -10802,7 +10802,7 @@ msgstr "ოპერატორი."
 #: include/global_form.php:2286 include/global_form.php:2328
 #: include/global_form.php:2471
 msgid "Matching Pattern"
-msgstr ""
+msgstr "ნიმუში, რომელიც ემთხვევა"
 
 #: include/global_form.php:2287 include/global_form.php:2329
 msgid "The Pattern to be matched against."
@@ -10943,7 +10943,7 @@ msgstr "ელფოსტა/ანგარიში/DNS/პროქსი"
 
 #: include/global_settings.php:54
 msgid "Time Spanning/Shifting"
-msgstr ""
+msgstr "დროის ინტერვალი/წანაცვლება"
 
 #: include/global_settings.php:55
 msgid "Graph Thumbnail Settings"
@@ -11348,7 +11348,7 @@ msgstr "შემზღუდავი"
 
 #: include/global_settings.php:517
 msgid "Device Based"
-msgstr ""
+msgstr "მოწყობილობაზე ბაზირებული"
 
 #: include/global_settings.php:523
 msgid "Graph/Data Source Creation Method"
@@ -11480,7 +11480,7 @@ msgstr ""
 
 #: include/global_settings.php:631
 msgid "Template/Package Copyright"
-msgstr ""
+msgstr "შაბლონის/პაკეტის საავტორო უფლებები"
 
 #: include/global_settings.php:632
 msgid "The default copyright that you would like to use for your packaged Device Templates and Packages."
@@ -11632,7 +11632,7 @@ msgstr ""
 
 #: include/global_settings.php:811
 msgid "Device Threads"
-msgstr ""
+msgstr "მოწყობილობის ნაკადები"
 
 #: include/global_settings.php:812
 msgid "The default number of Device Threads.  This is only applicable when using the Spine Data Collector."
@@ -11875,7 +11875,7 @@ msgstr ""
 
 #: include/global_settings.php:1073
 msgid "Autocomplete Rows"
-msgstr ""
+msgstr "მწკრივების ავტოდასრულება"
 
 #: include/global_settings.php:1074
 msgid "The default number of rows to return from an autocomplete based select pattern match."
@@ -11883,7 +11883,7 @@ msgstr ""
 
 #: include/global_settings.php:1080
 msgid "Autocomplete Delay"
-msgstr ""
+msgstr "ავტოდასრულების დაყოვნება"
 
 #: include/global_settings.php:1081
 msgid "The number of milliseconds to wait before initiating a call to the server for autocomplete. Any value less than 500 will assume 500ms"
@@ -12229,7 +12229,7 @@ msgstr ""
 
 #: include/global_settings.php:1417
 msgid "Cron/Daemon Interval"
-msgstr ""
+msgstr "Cron-ის/დემონის ინტერვალი"
 
 #: include/global_settings.php:1418
 msgid "The frequency that the Cacti data collector will be started.  You can use either crontab, a scheduled task (for windows), or the cactid systemd service to control launching the Cacti data collector.  For instructions on using the cactid daemon, review the README.md file in the service directory."
@@ -12626,7 +12626,7 @@ msgstr "1 ცდა"
 #: include/global_settings.php:1824
 #, php-format
 msgid "%d Attempts"
-msgstr ""
+msgstr "%d მცდელობა"
 
 #: include/global_settings.php:1828
 msgid "Auto Unlock"
@@ -12844,7 +12844,7 @@ msgstr ""
 
 #: include/global_settings.php:2066
 msgid "URL Linking"
-msgstr ""
+msgstr "URL-ების მიბმა"
 
 #: include/global_settings.php:2071
 msgid "Server Base URL"
@@ -12900,7 +12900,7 @@ msgstr ""
 
 #: include/global_settings.php:2118 lib/html_reports.php:177
 msgid "From Name"
-msgstr ""
+msgstr "რა სახელისგან"
 
 #: include/global_settings.php:2119
 msgid "This is the actual name that the Email will appear from."
@@ -12916,11 +12916,11 @@ msgstr ""
 
 #: include/global_settings.php:2132
 msgid "Sendmail Options"
-msgstr ""
+msgstr "Sendmail-ის პარამეტრები"
 
 #: include/global_settings.php:2137 lib/functions.php:5851
 msgid "Sendmail Path"
-msgstr ""
+msgstr "Sendmail-ის ბილიკი"
 
 #: include/global_settings.php:2138
 msgid "This is the path to sendmail on your server. (Only used if Sendmail is selected as the Mail Service)"
@@ -12928,11 +12928,11 @@ msgstr ""
 
 #: include/global_settings.php:2146
 msgid "SMTP Options"
-msgstr ""
+msgstr "SMTP-ის მორგება"
 
 #: include/global_settings.php:2151
 msgid "SMTP Hostname"
-msgstr ""
+msgstr "SMTP ჰოსტის სახელი"
 
 #: include/global_settings.php:2152
 msgid "This is the hostname/IP of the SMTP Server you will send the Email to. For failover, separate your hosts using a semi-colon."
@@ -12980,7 +12980,7 @@ msgstr "TLS"
 
 #: include/global_settings.php:2189
 msgid "SMTP Timeout"
-msgstr ""
+msgstr "SMTP-ის მოლოდინის ვადა"
 
 #: include/global_settings.php:2190
 msgid "Please enter the SMTP timeout in seconds."
@@ -13172,7 +13172,7 @@ msgstr ""
 
 #: include/global_settings.php:2389 utilities.php:1805
 msgid "Image Caching"
-msgstr ""
+msgstr "გამოსახულებების დაკეშვა"
 
 #: include/global_settings.php:2394
 msgid "Enable Image Caching"
@@ -13212,7 +13212,7 @@ msgstr ""
 
 #: include/global_settings.php:2426
 msgid "Peak/Average Only"
-msgstr ""
+msgstr "მხოლოდ პიკური/საშუალო"
 
 #: include/global_settings.php:2427
 msgid "All Statistical Metrics"
@@ -13252,7 +13252,7 @@ msgstr ""
 
 #: include/global_settings.php:2479
 msgid "Maintenance Time"
-msgstr ""
+msgstr "რემონტის დრო"
 
 #: include/global_settings.php:2480
 msgid "What time of day should Weekly, Monthly, and Yearly Data be updated?  Format is HH:MM [am/pm]"
@@ -13312,7 +13312,7 @@ msgstr ""
 
 #: include/global_settings.php:2533
 msgid "RRDfile Check"
-msgstr ""
+msgstr "RRDfile-ის შემოწმება"
 
 #: include/global_settings.php:2538
 msgid "Enable RRDfile Check"
@@ -13332,7 +13332,7 @@ msgstr ""
 
 #: include/global_settings.php:2572
 msgid "Check Frequency"
-msgstr ""
+msgstr "შემოწმების სიხშირე"
 
 #: include/global_settings.php:2573
 msgid "How frequent should RRD be checked ?"
@@ -13418,7 +13418,7 @@ msgstr ""
 #: include/global_settings.php:2643 include/global_settings.php:2675
 #: support.php:1208
 msgid "RSA Fingerprint"
-msgstr ""
+msgstr "RSA ანაბეჭდი"
 
 #: include/global_settings.php:2644
 msgid "The fingerprint of the current public RSA key the proxy is using. This is required to establish a trusted connection."
@@ -13430,7 +13430,7 @@ msgstr ""
 
 #: include/global_settings.php:2656
 msgid "Load Balancing"
-msgstr ""
+msgstr "დატვირთვის განაწილება"
 
 #: include/global_settings.php:2657
 msgid "If both main and backup proxy are receivable this option allows to spread all requests against RRDtool."
@@ -13470,7 +13470,7 @@ msgstr ""
 
 #: include/global_settings.php:2701 lib/html.php:2770
 msgid "Replacement Method"
-msgstr ""
+msgstr "ჩანაცვლების მეთოდი"
 
 #: include/global_settings.php:2702
 msgid "There are three replacement methods.  The first method replaces the spike with the average of the data source in question.  The second method replaces the spike with a 'NaN'.  The last replaces the spike with the last known good value found."
@@ -13568,7 +13568,7 @@ msgstr "ათასი"
 
 #: include/global_settings.php:2804
 msgid "10 Thousand"
-msgstr ""
+msgstr "10 ათასი"
 
 #: include/global_settings.php:2805
 msgid "100 Thousand"
@@ -13612,7 +13612,7 @@ msgstr ""
 
 #: include/global_settings.php:2815
 msgid "1 Billion"
-msgstr ""
+msgstr "1 მილიარდი"
 
 #: include/global_settings.php:2816
 msgid "1.25 Billion (10 Gigabits)"
@@ -13724,7 +13724,7 @@ msgstr ""
 
 #: include/global_settings.php:2918
 msgid "Hide Disabled"
-msgstr ""
+msgstr "გათიშულების დამალვა"
 
 #: include/global_settings.php:2919
 msgid "Hides Disabled Devices and Graphs when viewing outside of Console tab."
@@ -13756,7 +13756,7 @@ msgstr ""
 
 #: include/global_settings.php:2950
 msgid "Page Refresh"
-msgstr ""
+msgstr "გვერდის განახლება"
 
 #: include/global_settings.php:2951
 msgid "The number of seconds between automatic page refreshes."
@@ -13824,7 +13824,7 @@ msgstr ""
 
 #: include/global_settings.php:3024
 msgid "Thumbnail Sections"
-msgstr ""
+msgstr "მინიატურის სექციები"
 
 #: include/global_settings.php:3025
 msgid "Which portions of Cacti display Thumbnails by default."
@@ -13881,7 +13881,7 @@ msgstr ""
 
 #: include/global_settings.php:3085
 msgid "Default Tree"
-msgstr ""
+msgstr "ნაგულისხმევი ხე"
 
 #: include/global_settings.php:3086
 msgid "The default graph tree to use when displaying graphs in tree mode."
@@ -14175,7 +14175,7 @@ msgstr ""
 
 #: lib/api_automation.php:1130
 msgid "Matching Items"
-msgstr ""
+msgstr "ელემენტები, რომლებიც ემთხვევა"
 
 #: lib/api_automation.php:1316
 msgid "Attempted SQL Injection found in Tree Automation for the field variable."
@@ -14460,7 +14460,7 @@ msgstr "კონტაქტი:"
 #: lib/api_device.php:1750 lib/functions.php:5882 lib/functions.php:5884
 #: lib/functions.php:5888
 msgid "Ping Results"
-msgstr ""
+msgstr "პინგის შედეგები"
 
 #: lib/api_device.php:1755
 msgid "No Ping or SNMP Availability Check in Use"
@@ -14507,11 +14507,11 @@ msgstr "მოწყობილობა+შაბლონი:(%s%s)"
 
 #: lib/auth.php:2488 lib/auth.php:2495 lib/auth.php:2504
 msgid "Restricted By: "
-msgstr ""
+msgstr "შეზღუდვის ავტორი: "
 
 #: lib/auth.php:2492
 msgid "Granted By: "
-msgstr ""
+msgstr "მინიჭების ავტორი: "
 
 #: lib/auth.php:2499
 msgid "Granted"
@@ -14657,7 +14657,7 @@ msgstr "%s მბაიტი"
 #: lib/boost.php:67
 #, php-format
 msgid "%s KBytes"
-msgstr ""
+msgstr "%s კბაიტი"
 
 #: lib/boost.php:70
 #, php-format
@@ -14721,7 +14721,7 @@ msgstr "ზედა ხაზები"
 #: lib/clog_webapi.php:541 lib/clog_webapi.php:544 utilities.php:323
 #: utilities.php:326
 msgid "Tail Lines"
-msgstr ""
+msgstr "ხაზები ბოლოში"
 
 #: lib/clog_webapi.php:553 lib/clog_webapi.php:558
 msgid "Expand Log"
@@ -14773,7 +14773,7 @@ msgstr "გაჩქარება"
 
 #: lib/clog_webapi.php:591
 msgid "Device Up/Down"
-msgstr ""
+msgstr "მოწყობილობა ჩრთ/გმრთ"
 
 #: lib/clog_webapi.php:592
 msgid "Recaches"
@@ -15253,7 +15253,7 @@ msgstr ""
 
 #: lib/dsdebug.php:260
 msgid "Failed fields: "
-msgstr ""
+msgstr "ჩავარდა ველები: "
 
 #: lib/dsdebug.php:269
 msgid "Data Source is not set as Active"
@@ -15420,7 +15420,7 @@ msgstr ""
 
 #: lib/functions.php:5839
 msgid "Checking Configuration...<br>"
-msgstr ""
+msgstr "კონფიგურაციის შემოწმება...<br>"
 
 #: lib/functions.php:5849
 msgid "PHP's Mailer Class"
@@ -15452,7 +15452,7 @@ msgstr ""
 
 #: lib/functions.php:5901
 msgid "Sending Message..."
-msgstr ""
+msgstr "შეტყობინება იგზავნება...."
 
 #: lib/functions.php:5905
 msgid "Cacti Test Message"
@@ -15522,7 +15522,7 @@ msgstr "არ განეკუთვნება"
 
 #: lib/graphs.php:86
 msgid "Damaged Graph"
-msgstr ""
+msgstr "დაზიანებული გრაფიკი"
 
 #: lib/html.php:81
 msgid "Remote Server"
@@ -15674,7 +15674,7 @@ msgstr "90-ე პერცენტილი"
 
 #: lib/html.php:2455
 msgid "95th Percentile"
-msgstr ""
+msgstr "95-ე პერცენტილი"
 
 #: lib/html.php:2456
 msgid "Total/Sum/Bandwidth"
@@ -15686,7 +15686,7 @@ msgstr ""
 
 #: lib/html.php:2777
 msgid "Standard Deviations"
-msgstr ""
+msgstr "სტანდარტული გადახრები"
 
 #: lib/html.php:2791
 msgid "Variance Outliers"
@@ -15882,7 +15882,7 @@ msgstr "ფაილი არჩეული არაა"
 
 #: lib/html.php:3102
 msgid "Passphrases match"
-msgstr ""
+msgstr "საკვანძო ფრაზები ემთხვევა"
 
 #: lib/html.php:3103
 msgid "Passphrase matches but too short"
@@ -16091,7 +16091,7 @@ msgstr ""
 
 #: lib/html_form.php:659
 msgid "File Found"
-msgstr ""
+msgstr "ფაილი აღმოჩენილია"
 
 #: lib/html_form.php:663
 msgid "Path is a Directory and not a File"
@@ -16267,7 +16267,7 @@ msgstr ""
 
 #: lib/html_reports.php:37
 msgid "New Report"
-msgstr ""
+msgstr "ახალი ანგარიში"
 
 #: lib/html_reports.php:38
 msgid "Give this Report a descriptive Name"
@@ -16275,7 +16275,7 @@ msgstr ""
 
 #: lib/html_reports.php:43 lib/html_reports.php:561
 msgid "Enable Report"
-msgstr ""
+msgstr "ანგარიშის ჩართვა"
 
 #: lib/html_reports.php:46
 msgid "Check this box to enable this Report."
@@ -16327,7 +16327,7 @@ msgstr ""
 
 #: lib/html_reports.php:95
 msgid "Graph Settings"
-msgstr ""
+msgstr "გრაფიკის მორგება"
 
 #: lib/html_reports.php:100
 msgid "Graph Columns"
@@ -16447,11 +16447,11 @@ msgstr ""
 
 #: lib/html_reports.php:535
 msgid "Delete Report"
-msgstr ""
+msgstr "ანგარიშის წაშლა"
 
 #: lib/html_reports.php:536
 msgid "Delete Reports"
-msgstr ""
+msgstr "ანგარიშების წაშლა"
 
 #: lib/html_reports.php:539
 msgid "Click 'Continue' to take ownership of the following Report."
@@ -16559,7 +16559,7 @@ msgstr ""
 
 #: lib/html_reports.php:1074
 msgid "Graph Tree"
-msgstr ""
+msgstr "გრაფიკის ხე"
 
 #: lib/html_reports.php:1077
 msgid "Select a Tree to use."
@@ -16686,7 +16686,7 @@ msgstr ""
 #: lib/html_reports.php:1727
 #, php-format
 msgid "Graph: %s"
-msgstr ""
+msgstr "გრაფიკი: %s"
 
 #: lib/html_reports.php:1730 lib/html_reports.php:1758
 #: lib/html_reports.php:1771 lib/html_reports.php:1772
@@ -16716,7 +16716,7 @@ msgstr ""
 #: lib/html_reports.php:1800
 #, php-format
 msgid "Tree: %s"
-msgstr ""
+msgstr "ხე: %s"
 
 #: lib/html_reports.php:1811
 #, php-format
@@ -16747,7 +16747,7 @@ msgstr "ადმინისტრატორის დონე"
 #: lib/html_reports.php:1957
 #, php-format
 msgid "Reports [%s]"
-msgstr ""
+msgstr "ანგარიშები [%s]"
 
 #: lib/html_reports.php:1957
 msgid "User Level"
@@ -16976,7 +16976,7 @@ msgstr "აღმოჩენილია დამოკიდებულე�
 
 #: lib/import.php:2771
 msgid "Unmet Dependency:"
-msgstr ""
+msgstr "დაუკმაყოფილებელი დამოკიდებულება:"
 
 #: lib/installer.php:632 lib/installer.php:642
 msgid "Path was not writable"
@@ -17168,7 +17168,7 @@ msgstr "დაყენებისწინა შემოწმებებ�
 
 #: lib/installer.php:1989
 msgid "Location checks"
-msgstr ""
+msgstr "მდებარეობის შემოწმებები"
 
 #: lib/installer.php:2025
 msgid "Please update config.php with the correct relative URI location of Cacti (url_path)."
@@ -17356,7 +17356,7 @@ msgstr ""
 #: lib/installer.php:2328 lib/installer.php:2340
 #, php-format
 msgid "Database: <b>%s</b>"
-msgstr ""
+msgstr "მონაცემთა ბაზა: <b>%s</b>"
 
 #: lib/installer.php:2329 lib/installer.php:2341
 #, php-format
@@ -17577,7 +17577,7 @@ msgstr ""
 
 #: lib/installer.php:2688
 msgid "Default Options"
-msgstr ""
+msgstr "ნაგულისხმევი პარამეტრები"
 
 #: lib/installer.php:2692
 msgid "Scan Mode"
@@ -17760,7 +17760,7 @@ msgstr "დაყენების ტიპი"
 
 #: lib/installer.php:2969
 msgid "New Install"
-msgstr ""
+msgstr "ახალი დაყენება"
 
 #: lib/installer.php:2995
 msgid "Default Theme"
@@ -17802,7 +17802,7 @@ msgstr ""
 
 #: lib/installer.php:3020
 msgid "Device/Graph Automation"
-msgstr ""
+msgstr "მოწყობილობის/გრაფიკის ავტომატიზაცია"
 
 #: lib/installer.php:3021
 msgid "The following Device and Graph Automation rules will be applied.  These rules allow you to quickly setup monitoring of your network or networks."
@@ -17886,7 +17886,7 @@ msgstr "დახმარების მიღება"
 
 #: lib/installer.php:3323
 msgid "Report Issue"
-msgstr ""
+msgstr "შეტყობინება პრობლემის შესახებ"
 
 #: lib/installer.php:3326
 msgid "Get Started"
@@ -18008,7 +18008,7 @@ msgstr ""
 #: lib/installer.php:3680
 #, php-format
 msgid "Output: %s."
-msgstr ""
+msgstr "გამოტანა: %s."
 
 #: lib/installer.php:3700
 msgid "Creating Graphs for Default Device"
@@ -18415,7 +18415,7 @@ msgstr ""
 
 #: lib/plugins.php:1752
 msgid "Legacy Plugin"
-msgstr ""
+msgstr "მოძველებული დამატება"
 
 #: lib/plugins.php:1857
 msgid "Not Stated"
@@ -19011,7 +19011,7 @@ msgstr "ფილტრების ჩამოყრა"
 
 #: links.php:332 links.php:527 user_admin.php:1557 user_group_admin.php:1414
 msgid "Top Tab"
-msgstr ""
+msgstr "ზედა ჩანართი"
 
 #: links.php:333 user_admin.php:1558 user_group_admin.php:1415
 msgid "Bottom Console"
@@ -19019,7 +19019,7 @@ msgstr "ქვედა კონსოლი"
 
 #: links.php:334 user_admin.php:1559 user_group_admin.php:1416
 msgid "Top Console"
-msgstr ""
+msgstr "ზედა კონსოლი"
 
 #: links.php:372
 msgid "Page"
@@ -19035,7 +19035,7 @@ msgstr "გვერდის ჩასწორება"
 
 #: links.php:409
 msgid "View Page"
-msgstr ""
+msgstr "გვერდის ნახვა"
 
 #: links.php:433
 msgid "Sort for Ordering"
@@ -19366,7 +19366,7 @@ msgstr ""
 
 #: package.php:705
 msgid "Available Templates"
-msgstr ""
+msgstr "ხელმისაწვდომი შაბლონები"
 
 #: package.php:709
 #, php-format
@@ -19379,7 +19379,7 @@ msgstr ""
 
 #: package.php:716 templates_export.php:126
 msgid "Include Dependencies"
-msgstr ""
+msgstr "დამოკიდებულებების ჩასმა"
 
 #: package.php:717 templates_export.php:127
 msgid "Some templates rely on other items in Cacti to function properly. It is highly recommended that you select this box or the resulting import may fail."
@@ -19635,7 +19635,7 @@ msgstr ""
 
 #: package_import.php:1033
 msgid "Packages Details"
-msgstr ""
+msgstr "პაკეტის დეტალები"
 
 #: package_import.php:1043
 msgid "Email"
@@ -19715,7 +19715,7 @@ msgstr ""
 
 #: package_import.php:1562
 msgid "Package Location"
-msgstr ""
+msgstr "პაკეტის მდებარეობა"
 
 #: package_import.php:1563
 msgid "Select the Location of the Packages that you wish to Import."
@@ -19723,7 +19723,7 @@ msgstr ""
 
 #: package_import.php:1585 package_import.php:1616
 msgid "Package Import"
-msgstr ""
+msgstr "პაკეტის შემოტანა"
 
 #: package_import.php:1596
 msgid "Local Package Import"
@@ -19803,7 +19803,7 @@ msgstr "GitHub-ზე დაფუძნებული"
 
 #: package_repos.php:38
 msgid "File Based"
-msgstr ""
+msgstr "ფაილში"
 
 #: package_repos.php:39
 msgid "Direct URL"
@@ -20140,7 +20140,7 @@ msgstr ""
 
 #: plugins.php:656
 msgid "Check Latest"
-msgstr ""
+msgstr "უახლესის შემოწმება"
 
 #: plugins.php:656
 msgid "Fetch the list of the latest Cacti Plugins"
@@ -20156,7 +20156,7 @@ msgstr "არქივის წაშლა"
 
 #: plugins.php:821
 msgid "Remove Data"
-msgstr ""
+msgstr "მონაცემების წაშლა"
 
 #: plugins.php:843
 msgid "Plugin Reame File"
@@ -20453,7 +20453,7 @@ msgstr ""
 
 #: plugins.php:1801 plugins.php:1827 plugins.php:1845
 msgid "Uninstall Plugin"
-msgstr ""
+msgstr "დამატების წაშლა"
 
 #: plugins.php:1804
 msgid "Disable Plugin"
@@ -20930,7 +20930,7 @@ msgstr ""
 
 #: pollers.php:1106
 msgid "SNMP Gets"
-msgstr ""
+msgstr "SNMP მოთხოვნები"
 
 #: pollers.php:1109
 msgid "The number of SNMP gets associated with this Collector."
@@ -21071,7 +21071,7 @@ msgstr ""
 
 #: rrdcleaner.php:384
 msgid "DS ID"
-msgstr ""
+msgstr "DS ID"
 
 #: rrdcleaner.php:385
 msgid "Template ID"
@@ -21204,7 +21204,7 @@ msgstr ""
 
 #: sites.php:60
 msgid "Address Information"
-msgstr ""
+msgstr "ინფორმაცია მისამართის შესახებ"
 
 #: sites.php:65
 msgid "Address1"
@@ -21284,7 +21284,7 @@ msgstr ""
 
 #: sites.php:128
 msgid "Geolocation Information"
-msgstr ""
+msgstr "ინფორმაცია გეოლოკაციის შესახებ"
 
 #: sites.php:133
 msgid "Latitude"
@@ -21336,7 +21336,7 @@ msgstr ""
 
 #: sites.php:177
 msgid "Alternate Name"
-msgstr ""
+msgstr "ალტერნატიული სახელი"
 
 #: sites.php:178
 msgid "Used for cases where a Site has an alternate named used to describe it"
@@ -21392,7 +21392,7 @@ msgstr ""
 
 #: sites.php:435
 msgid "Enable Site"
-msgstr ""
+msgstr "საიტის ჩართვა"
 
 #: sites.php:436
 msgid "Enable Sites"
@@ -21457,7 +21457,7 @@ msgstr ""
 
 #: support.php:48
 msgid "Database Tables"
-msgstr ""
+msgstr "მონაცემთა ბაზის ცხრილები"
 
 #: support.php:49
 msgid "Database Settings"
@@ -21465,7 +21465,7 @@ msgstr "მონაცემთა ბაზის პარამეტრე�
 
 #: support.php:50
 msgid "Database Status"
-msgstr ""
+msgstr "მონაცემთა ბაზის სტატუსი"
 
 #: support.php:51
 msgid "Database Permissions"
@@ -21477,11 +21477,11 @@ msgstr "მოთხოვნები მონაცემთა ბაზა�
 
 #: support.php:53
 msgid "Background Processes"
-msgstr ""
+msgstr "ფონური პროცესები"
 
 #: support.php:54
 msgid "Poller Stats"
-msgstr ""
+msgstr "გამომთხოვის სტატისტიკა"
 
 #: support.php:55
 msgid "PHP Info"
@@ -21498,7 +21498,7 @@ msgstr ""
 
 #: support.php:288
 msgid "Include Poller"
-msgstr ""
+msgstr "გამომთხოვის ჩასმა"
 
 #: support.php:299
 msgid "Info Length"
@@ -21516,7 +21516,7 @@ msgstr "მოთხოვნები"
 
 #: support.php:335 support.php:616
 msgid "Refresh Values"
-msgstr ""
+msgstr "მნიშვნელობების განახლება"
 
 #: support.php:336 support.php:617
 msgid "Reset Refresh"
@@ -21568,7 +21568,7 @@ msgstr ""
 
 #: support.php:419
 msgid "Query Details"
-msgstr ""
+msgstr "მოთხოვნის დეტალები"
 
 #: support.php:421
 msgid "The Query Details for the current query upto a maximum string length."
@@ -21580,11 +21580,11 @@ msgstr ""
 
 #: support.php:503 support.php:650
 msgid "Cacti Poller"
-msgstr ""
+msgstr "Cacti-ის გამომთხოვი"
 
 #: support.php:504
 msgid "Cacti Process"
-msgstr ""
+msgstr "Cacti-ის პროცესი"
 
 #: support.php:505
 msgid "RTM Process"
@@ -21596,7 +21596,7 @@ msgstr "ავტომატიზაციის პროცესი"
 
 #: support.php:507
 msgid "HMIB Process"
-msgstr ""
+msgstr "HMIB პროცესი"
 
 #: support.php:508
 msgid "MikroTik Process"
@@ -21604,7 +21604,7 @@ msgstr ""
 
 #: support.php:509
 msgid "WebSeer Process"
-msgstr ""
+msgstr "WebSeer-ის პროცესი"
 
 #: support.php:510
 msgid "Service Check Process"
@@ -21744,7 +21744,7 @@ msgstr "მონაცემთა ბაზა"
 
 #: support.php:1056 support.php:1057
 msgid "Permission Name"
-msgstr ""
+msgstr "წვდომის სახელი"
 
 #: support.php:1161
 msgid "NET-SNMP Not Installed or its paths are not set.  Please install if you wish to monitor SNMP enabled devices."
@@ -21752,7 +21752,7 @@ msgstr ""
 
 #: support.php:1168
 msgid "Configuration Settings"
-msgstr ""
+msgstr "მორგება"
 
 #: support.php:1168
 #, php-format
@@ -21820,7 +21820,7 @@ msgstr "ნაკადები: "
 
 #: support.php:1322
 msgid "Concurrent Processes"
-msgstr ""
+msgstr "ერთდროულად გაშვებული პროცესები"
 
 #: support.php:1327
 msgid "Max Threads"
@@ -21862,7 +21862,7 @@ msgstr "სკრიპტის მოლოდინის ვადა"
 
 #: support.php:1408
 msgid "Max OID"
-msgstr ""
+msgstr "მაქს OID"
 
 #: support.php:1413
 msgid "Last Run Statistics"
@@ -21914,11 +21914,11 @@ msgstr ""
 
 #: support.php:1665
 msgid "PHP Information"
-msgstr ""
+msgstr "ინფორმაცია PHP-ის შესახებ"
 
 #: support.php:1668
 msgid "PHP Version"
-msgstr ""
+msgstr "PHP-ის ვერსია"
 
 #: support.php:1673
 msgid "PHP Version 5.5.0+ is recommended due to strong password hashing support."
@@ -21934,7 +21934,7 @@ msgstr "PHP uname"
 
 #: support.php:1695
 msgid "PHP SNMP"
-msgstr ""
+msgstr "PHP SNMP"
 
 #: support.php:1699
 msgid "Installed. <span class=\"deviceDown\">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>"
@@ -22034,7 +22034,7 @@ msgstr "დაზიანებულია"
 #: templates_import.php:320
 #, php-format
 msgid "Met: %d"
-msgstr ""
+msgstr "მეტ: %d"
 
 #: templates_import.php:324
 #, php-format
@@ -22107,7 +22107,7 @@ msgstr ""
 
 #: tree.php:724
 msgid "Delete Tree"
-msgstr ""
+msgstr "ხის წაშლა"
 
 #: tree.php:725
 msgid "Delete Trees"
@@ -22123,11 +22123,11 @@ msgstr ""
 
 #: tree.php:730
 msgid "Publish Tree"
-msgstr ""
+msgstr "ხის გამოქვეყნება"
 
 #: tree.php:731
 msgid "Publish Trees"
-msgstr ""
+msgstr "ხეების გამოქვეყნება"
 
 #: tree.php:734
 msgid "Click 'Continue' to Un-Publish the following Tree."
@@ -22257,7 +22257,7 @@ msgstr ""
 
 #: tree.php:2222 user_admin.php:1434 user_group_admin.php:1284
 msgid "Tree Name"
-msgstr ""
+msgstr "ხის სახელი"
 
 #: tree.php:2225
 msgid "The name by which this Tree will be referred to as."
@@ -22329,7 +22329,7 @@ msgstr ""
 
 #: user_admin.php:32
 msgid "Batch Copy"
-msgstr ""
+msgstr "ბევრის კოპირება"
 
 #: user_admin.php:270
 msgid "You are not allowed to delete the current login account"
@@ -22361,7 +22361,7 @@ msgstr ""
 
 #: user_admin.php:368
 msgid "Copy User"
-msgstr ""
+msgstr "მომხმარებლის დაკოპირება"
 
 #: user_admin.php:372
 msgid "Template Username"
@@ -22397,7 +22397,7 @@ msgstr "მომხმარებლის გათიშვა"
 
 #: user_admin.php:405
 msgid "Disable Users"
-msgstr ""
+msgstr "მომხმარებლების გათიშვა"
 
 #: user_admin.php:408
 msgid "Click 'Continue' to Overwrite the User settings with the selected Template User settings and permissions.  The original User Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from the Template User."
@@ -22417,7 +22417,7 @@ msgstr ""
 
 #: user_admin.php:415
 msgid "Template User"
-msgstr ""
+msgstr "მომხმარებლის შაბლონი"
 
 #: user_admin.php:732 user_group_admin.php:711
 msgid "Deny"
@@ -22451,7 +22451,7 @@ msgstr ""
 #: user_admin.php:1434 user_group_admin.php:859 user_group_admin.php:1005
 #: user_group_admin.php:1151 user_group_admin.php:1284
 msgid "Effective Policy"
-msgstr ""
+msgstr "გამოყენებული პოლიტიკა"
 
 #: user_admin.php:901 user_group_admin.php:873
 msgid "No Matching Graphs Found"
@@ -22555,7 +22555,7 @@ msgstr ""
 
 #: user_admin.php:1294 user_group_admin.php:1151
 msgid "Total Graphs"
-msgstr ""
+msgstr "გრაფიკები სულ"
 
 #: user_admin.php:1322 user_group_admin.php:1179
 msgid "No Matching Graph Templates Found"
@@ -22575,7 +22575,7 @@ msgstr ""
 
 #: user_admin.php:1506 user_group_admin.php:1361
 msgid "User Permissions"
-msgstr ""
+msgstr "მომხმარებლის წვდომები"
 
 #: user_admin.php:1563 user_group_admin.php:1420
 msgid "External Link Permissions"
@@ -22587,7 +22587,7 @@ msgstr "დამატების წვდომები"
 
 #: user_admin.php:1663 user_group_admin.php:1518
 msgid "Legacy Permissions"
-msgstr ""
+msgstr "მოძველებული წვდომები"
 
 #: user_admin.php:1725 user_group_admin.php:1581
 #, php-format
@@ -22612,7 +22612,7 @@ msgstr "მოწყობილობის წვდომები"
 
 #: user_admin.php:1814 user_group_admin.php:1669
 msgid "Template Perms"
-msgstr ""
+msgstr "შაბლონის წვდომები"
 
 #: user_admin.php:1815 user_group_admin.php:1670
 msgid "Tree Perms"
@@ -22797,7 +22797,7 @@ msgstr ""
 
 #: user_domains.php:299
 msgid "Domains Type"
-msgstr ""
+msgstr "დომენების ტიპი"
 
 #: user_domains.php:300
 msgid "Choose what type of domain this is."
@@ -23029,7 +23029,7 @@ msgstr ""
 
 #: user_group_admin.php:80
 msgid "Group Description"
-msgstr ""
+msgstr "ჯგუფის აღწერა"
 
 #: user_group_admin.php:81
 msgid "A more descriptive name for this group, that can include spaces or special characters."
@@ -23206,7 +23206,7 @@ msgstr ""
 
 #: user_group_admin.php:2698
 msgid "Show Members"
-msgstr ""
+msgstr "წევრების ჩვენება"
 
 #: user_group_admin.php:2704
 msgctxt "filter reset"
@@ -23264,7 +23264,7 @@ msgstr "წაშლა"
 
 #: user_log.php:272
 msgid "User Logins"
-msgstr ""
+msgstr "მომხმარებლის შესვლები"
 
 #: user_log.php:284
 msgid "IP Address"
@@ -23390,7 +23390,7 @@ msgstr "სკრიპტი:"
 
 #: utilities.php:1188
 msgid "Script Server:"
-msgstr ""
+msgstr "სკრიპტის სერვერი:"
 
 #: utilities.php:1202
 msgid "RRD:"
@@ -23571,7 +23571,7 @@ msgstr "საშ ბაიტი/ჩანაწერი:"
 #: utilities.php:1649
 #, php-format
 msgid "%d Bytes"
-msgstr ""
+msgstr "%d ბაიტი"
 
 #: utilities.php:1649
 msgid "Max Record Length:"
@@ -23702,7 +23702,7 @@ msgstr ""
 
 #: utilities.php:1814
 msgid "Cached Files:"
-msgstr ""
+msgstr "დაკეშილი ფაილები:"
 
 #: utilities.php:1817
 msgid "Cached Files Size:"
@@ -23850,4 +23850,4 @@ msgstr ""
 
 #: vdef.php:913
 msgid "No VDEFs"
-msgstr ""
+msgstr "VDEF-ების გარეშე"
