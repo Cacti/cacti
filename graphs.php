@@ -2480,10 +2480,10 @@ function graph_edit() {
 		item();
 	}
 
-	$graph_start = -86400;
+	$graph_start = -14400;
 	$graph_end   = '-' . read_config_option('poller_interval');
 
-	$graph['src'] = html_escape(CACTI_PATH_URL . 'graph_json.php?local_graph_id=' . get_request_var('id') . '&rra_id=0&graph_start=' . $graph_start . '&graph_end=' . $graph_end . '&v=' . mt_rand());
+	$graph['src'] = CACTI_PATH_URL . 'graph_json.php?local_graph_id=' . get_request_var('id') . '&rra_id=0&graph_start=' . $graph_start . '&graph_end=' . $graph_end . '&v=' . mt_rand();
 
 	if (!isempty_request_var('id')) {
 		?>
