@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-07-04 12:42+0000\n"
+"PO-Revision-Date: 2025-07-04 17:23+0000\n"
 "Last-Translator: Ekaterine papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <https://translate.cacti.net/projects/cacti/core/ka/>"
 "\n"
@@ -3561,7 +3561,7 @@ msgstr ""
 
 #: color.php:400
 msgid "Colors [new]"
-msgstr ""
+msgstr "ფერები [ახალი]"
 
 #: color.php:501 color.php:516 color.php:519 color.php:645
 #: include/global_arrays.php:1113 include/global_arrays.php:2367
@@ -5955,7 +5955,7 @@ msgstr ""
 
 #: graphs.php:1799
 msgid "Duplicate Graph"
-msgstr ""
+msgstr "გრაფიკის დუბლირება"
 
 #: graphs.php:1800
 msgid "Duplicate Graphs"
@@ -8147,7 +8147,7 @@ msgstr "პრინტერი"
 
 #: include/global_arrays.php:1202
 msgid "Storage Related"
-msgstr ""
+msgstr "საცავი"
 
 #: include/global_arrays.php:1203
 msgid "Telco Related"
@@ -8361,7 +8361,7 @@ msgstr "CDEF ელემენტი"
 
 #: include/global_arrays.php:1493
 msgid "GPRINT Preset"
-msgstr ""
+msgstr "GPRINT-ის პრესეტი"
 
 #: include/global_arrays.php:1496
 msgid "Data Input Field"
@@ -10163,7 +10163,7 @@ msgstr ""
 
 #: include/global_form.php:1053
 msgid "VDEF Function"
-msgstr ""
+msgstr "VDEF ფუნქცია"
 
 #: include/global_form.php:1058
 msgid "A VDEF (math) function to apply to this item on the graph legend."
@@ -10863,7 +10863,7 @@ msgstr ""
 
 #: include/global_form.php:2446
 msgid "Header Type"
-msgstr ""
+msgstr "თავსართის ტიპი"
 
 #: include/global_form.php:2447
 msgid "Choose an Object to build a new Sub-header."
@@ -11698,7 +11698,7 @@ msgstr ""
 
 #: include/global_settings.php:851
 msgid "SNMP Defaults"
-msgstr ""
+msgstr "SNMP-ის ნაგულისხმევი მნიშვნელობები"
 
 #: include/global_settings.php:857
 msgid "Default SNMP version for all new Devices."
@@ -12710,7 +12710,7 @@ msgstr ""
 
 #: include/global_settings.php:1933
 msgid "Require Number"
-msgstr ""
+msgstr "ნომრის მოთხოვნა"
 
 #: include/global_settings.php:1934
 msgid "This will require new passwords to contain at least 1 numerical character."
@@ -17665,7 +17665,7 @@ msgstr ""
 
 #: lib/installer.php:2831
 msgid "Table Setup"
-msgstr ""
+msgstr "ცხრილის მორგება"
 
 #: lib/installer.php:2843
 #, php-format
@@ -19079,7 +19079,7 @@ msgstr ""
 
 #: links.php:550
 msgid "Tab/Menu Name"
-msgstr ""
+msgstr "ჩანართის/მენიუს სახელი"
 
 #: links.php:553
 msgid "The text that will appear in the tab or menu."
@@ -19087,7 +19087,7 @@ msgstr ""
 
 #: links.php:557
 msgid "Content File/URL"
-msgstr ""
+msgstr "შემცველობის ფაილი/ბმული"
 
 #: links.php:561
 msgid "Web URL Below"
@@ -19498,7 +19498,7 @@ msgstr ""
 #: package_import.php:298
 #, php-format
 msgid "Package %s"
-msgstr ""
+msgstr "პაკეტი %s"
 
 #: package_import.php:305
 msgid "Click 'Continue' to Import the following Package."
@@ -20477,7 +20477,7 @@ msgstr ""
 
 #: plugins.php:1830
 msgid "Enable Plugin"
-msgstr ""
+msgstr "დამატების ჩართვა"
 
 #: plugins.php:1833 plugins.php:1851
 msgid "Plugin already archived and Unchanged in the archive."
@@ -22245,7 +22245,7 @@ msgstr "ჩასმა"
 
 #: tree.php:2112
 msgid "Add Tree"
-msgstr ""
+msgstr "ხის დამატება"
 
 #: tree.php:2118 tree.php:2166
 msgid "Sort Trees Ascending"
@@ -23109,7 +23109,7 @@ msgstr ""
 
 #: user_group_admin.php:468
 msgid "Group Prefix"
-msgstr ""
+msgstr "ჯგუფის პრეფიქსი"
 
 #: user_group_admin.php:469
 msgid "New Group"
@@ -23788,7 +23788,7 @@ msgstr ""
 
 #: vdef.php:384
 msgid "VDEF Preview"
-msgstr ""
+msgstr "VDEF-ის მინიატურა"
 
 #: vdef.php:394
 #, php-format
