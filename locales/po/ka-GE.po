@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-07-07 04:26+0000\n"
+"PO-Revision-Date: 2025-07-07 12:51+0000\n"
 "Last-Translator: Ekaterine papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <https://translate.cacti.net/projects/cacti/core/ka/>"
 "\n"
@@ -1171,7 +1171,7 @@ msgstr "ირთვება..."
 
 #: auth_profile.php:697
 msgid "Private Data Cleared"
-msgstr ""
+msgstr "პირადი მონაცემები გასუფთავებულია"
 
 #: auth_profile.php:697
 msgid "Your Private Data has been cleared."
@@ -2315,7 +2315,7 @@ msgstr "მესამე"
 
 #: automation_networks.php:969
 msgid "Day(s) of Week"
-msgstr ""
+msgstr "კვირის დღე(ები)"
 
 #: automation_networks.php:985
 msgid "Notification Settings"
@@ -2974,7 +2974,7 @@ msgstr ""
 
 #: automation_templates.php:798
 msgid "Remove Tree Rule"
-msgstr ""
+msgstr "ხის წესის წაშლა"
 
 #: automation_templates.php:840
 msgid "The Tree Rule has been removed from the Device Automation Rule"
@@ -5241,7 +5241,7 @@ msgstr "მეთოდი"
 
 #: data_templates.php:1256
 msgid "Data Template Name"
-msgstr ""
+msgstr "მონაცემთა შაბლონის სახელი"
 
 #: data_templates.php:1259
 msgid "The name of this Data Template."
@@ -5500,7 +5500,7 @@ msgstr ""
 
 #: graph_templates.php:1224
 msgid "Duplicate Graph Templates"
-msgstr ""
+msgstr "გრაფიკის შამბლონების დუბლირება"
 
 #: graph_templates.php:1235
 msgid "Click 'Continue' to Resize the following Graph Template."
@@ -6527,7 +6527,7 @@ msgstr "მოწყობილობა [ჩასწორება: %s]"
 
 #: host.php:724
 msgid "Disable Device Debug"
-msgstr ""
+msgstr "მოწყობილობის გამართვის გათიშვა"
 
 #: host.php:726
 msgid "Enable Device Debug"
@@ -7560,7 +7560,7 @@ msgstr "მხოლოდ ჟურნალის ფაილი"
 
 #: include/global_arrays.php:685
 msgid "Logfile and Syslog/Eventlog"
-msgstr ""
+msgstr "ჟურნალის ფაილი და სისტემური/მოვლენების ჟურნალი"
 
 #: include/global_arrays.php:686
 msgid "Syslog/Eventlog Only"
@@ -7604,7 +7604,7 @@ msgstr "TCP პინგი"
 
 #: include/global_arrays.php:703
 msgid "TCP Ping Closed"
-msgstr ""
+msgstr "TCP პინგი დაიხურა"
 
 #: include/global_arrays.php:704
 msgid "UDP Ping"
@@ -9696,7 +9696,7 @@ msgstr ""
 
 #: include/global_form.php:490
 msgid "Regular Expression Match"
-msgstr ""
+msgstr "რეგულარული გამოსახულების დამთხვევა"
 
 #: include/global_form.php:491
 msgid "If you want to require a certain regular expression to be matched against input data, enter it here (preg_match format)."
@@ -9704,7 +9704,7 @@ msgstr ""
 
 #: include/global_form.php:498
 msgid "Allow Empty Input"
-msgstr ""
+msgstr "ცარიელი შეყვანის დაშვება"
 
 #: include/global_form.php:499
 msgid "Check here if you want to allow NULL input in this field from the user."
@@ -9834,7 +9834,7 @@ msgstr ""
 
 #: include/global_form.php:729
 msgid "Image Format (--imgformat)"
-msgstr ""
+msgstr "გამოსახულების ფორმატი (--imgformat)"
 
 #: include/global_form.php:733
 msgid "The type of graph that is generated; PNG, GIF or SVG.  The selection of graph image type is very RRDtool dependent."
@@ -10744,7 +10744,7 @@ msgstr ""
 
 #: include/global_form.php:2045
 msgid "Aggregate Graph Settings"
-msgstr ""
+msgstr "აგრეგირებული გრაფიფიკის მორგება"
 
 #: include/global_form.php:2050 include/global_form.php:2155
 msgid "A Prefix for all GPRINT lines to distinguish e.g. different hosts.  You may use both Host as well as Data Query replacement variables in this prefix."
@@ -10752,7 +10752,7 @@ msgstr ""
 
 #: include/global_form.php:2133
 msgid "Aggregate Template Name"
-msgstr ""
+msgstr "აგრეგირებული შაბლონის სახელი"
 
 #: include/global_form.php:2134
 msgid "Please name this Aggregate Template."
@@ -11899,7 +11899,7 @@ msgstr ""
 
 #: include/global_settings.php:1101 include/global_settings.php:3119
 msgid "Maximum Tree Width"
-msgstr ""
+msgstr "მაქსიმალური ხის სიგანე"
 
 #: include/global_settings.php:1102 include/global_settings.php:3120
 msgid "The Maximum width of the Tree to expand to, after which time, Tree branches will scroll on the page."
@@ -13409,7 +13409,7 @@ msgstr ""
 
 #: include/global_settings.php:2635 include/global_settings.php:2667
 msgid "Proxy Port Number"
-msgstr ""
+msgstr "პროქსის პორტის ნომერი"
 
 #: include/global_settings.php:2636
 msgid "TCP port for encrypted communication."
@@ -13534,7 +13534,7 @@ msgstr ""
 #: include/global_settings.php:2774
 #, php-format
 msgid "%d High/Low Samples"
-msgstr ""
+msgstr "%d მაღალი/დაბალი ნიმუში"
 
 #: include/global_settings.php:2778
 msgid "Max Kills Per RRA"
@@ -13917,7 +13917,7 @@ msgstr ""
 
 #: include/global_settings.php:3143
 msgid "Title Font File"
-msgstr ""
+msgstr "სათაურის ფონტის ფაილი"
 
 #: include/global_settings.php:3144
 msgid "The font file to use for Graph Titles"
@@ -14052,7 +14052,7 @@ msgstr ""
 
 #: install/install.php:110
 msgid "Refresh current page"
-msgstr ""
+msgstr "მიმდინარე გერდის განახლება"
 
 #: install/install.php:116
 msgid "Initializing"
@@ -14407,7 +14407,7 @@ msgstr ""
 
 #: lib/api_device.php:1637
 msgid "Device is Disabled"
-msgstr ""
+msgstr "მოწყობილობა გათიშულია"
 
 #: lib/api_device.php:1638
 msgid "Device Availability Check Bypassed"
@@ -16924,7 +16924,7 @@ msgstr "უცნობი ველი"
 
 #: lib/import.php:2678
 msgid "Import Preview Results"
-msgstr ""
+msgstr "მინიატურის შედეგების შემოტანა"
 
 #: lib/import.php:2682
 msgid "Cacti would make the following changes if the Package was imported:"
@@ -17472,7 +17472,7 @@ msgstr ""
 
 #: lib/installer.php:2565
 msgid "Potential permission issues"
-msgstr ""
+msgstr "პოტენციური წვდომის პრობლემები"
 
 #: lib/installer.php:2573
 msgid "Please make sure that your webserver has read/write access to the cacti folders that show errors below."
@@ -17751,7 +17751,7 @@ msgstr "EULA"
 
 #: lib/installer.php:2965
 msgid "GPL License Accepted"
-msgstr ""
+msgstr "GPL ლიცენზია მიღებულია"
 
 #: lib/installer.php:2969 lib/installer.php:2972 lib/installer.php:2975
 #: lib/installer.php:2978 lib/installer.php:2981
@@ -18632,7 +18632,7 @@ msgstr "მიმდ. მწკრ"
 
 #: lib/rrd.php:3598
 msgid "PDP per Row"
-msgstr ""
+msgstr "PDP თითოეულ მწკრივზე"
 
 #: lib/rrd.php:3600
 msgid "CDP Prep Value (0)"
@@ -18959,7 +18959,7 @@ msgstr ""
 
 #: links.php:201
 msgid "Delete External Link"
-msgstr ""
+msgstr "გარე ბმულის წაშლა"
 
 #: links.php:202
 msgid "Delete External Links"
@@ -19391,7 +19391,7 @@ msgstr "პაკეტის ინფორმაცია"
 
 #: package.php:728
 msgid "The Package Description."
-msgstr ""
+msgstr "პაკეტის აღწერა."
 
 #: package.php:736
 msgid "The license type for this package."
@@ -20671,7 +20671,7 @@ msgstr ""
 
 #: pollers.php:136
 msgid "Remote Database Connection"
-msgstr ""
+msgstr "კავშირი დაშორებულ მონაცემთა ბაზასთან"
 
 #: pollers.php:141
 msgid "The hostname for the remote database server."
@@ -20797,7 +20797,7 @@ msgstr "მონაცემთა შემგროვებლის წა�
 
 #: pollers.php:606
 msgid "Delete Data Collectors"
-msgstr ""
+msgstr "მონაცემთა შემგროვებლების წაშლა"
 
 #: pollers.php:609
 msgid "Click 'Continue' to Disable the following Data Collector."
@@ -22885,7 +22885,7 @@ msgstr ""
 
 #: user_domains.php:402
 msgid "LDAP Group Settings"
-msgstr ""
+msgstr "LDAP ჯგუფის მორგება"
 
 #: user_domains.php:406
 msgid "Group Distinguished Name (DN)"
@@ -22905,7 +22905,7 @@ msgstr ""
 
 #: user_domains.php:420
 msgid "Group Member Type"
-msgstr ""
+msgstr "ჯგუფის წევრის ტიპი"
 
 #: user_domains.php:421
 msgid "Defines if users use full Distinguished Name or just Username in the defined Group Member Attribute."
@@ -23422,7 +23422,7 @@ msgstr ""
 
 #: utilities.php:1244
 msgid "Rebuild Poller Cache"
-msgstr ""
+msgstr "გამომთხოვის კეშის თავიდან აგება"
 
 #: utilities.php:1247
 msgid "The Poller Cache will be re-generated if you select this option. Use this option only in the event of a database crash if you are experiencing issues after the crash and have already run the database repair tools.  Alternatively, if you are having problems with a specific Device, simply re-save that Device to rebuild its Poller Cache.  There is also a command line interface equivalent to this command that is recommended for large systems."
@@ -23546,7 +23546,7 @@ msgstr ""
 
 #: utilities.php:1599
 msgid "Approximate in Process:"
-msgstr ""
+msgstr "დაახლოებით პროცესში:"
 
 #: utilities.php:1602
 msgid "Total Boost Records:"
@@ -23666,7 +23666,7 @@ msgstr ""
 
 #: utilities.php:1787
 msgid "Run Time Configuration"
-msgstr ""
+msgstr "გაშვების დრის მორგება"
 
 #: utilities.php:1790
 msgid "Update Frequency:"
