@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-07-07 12:51+0000\n"
+"PO-Revision-Date: 2025-07-09 01:26+0000\n"
 "Last-Translator: Ekaterine papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <https://translate.cacti.net/projects/cacti/core/ka/>"
 "\n"
@@ -191,7 +191,7 @@ msgstr ""
 
 #: aggregate_graphs.php:889
 msgid "Delete Aggregate Graphs"
-msgstr ""
+msgstr "აგრეგირებული გრაფიკების წაშლა"
 
 #: aggregate_graphs.php:892
 msgid "Click 'Continue' to Migrate the following Legacy Aggregate to a Templated Aggregate Graph."
@@ -2802,7 +2802,7 @@ msgstr "ქმედება"
 #: lib/html_reports.php:1848 vdef.php:596
 #, php-format
 msgid "Item # %d"
-msgstr ""
+msgstr "ელემენტი # %d"
 
 #: automation_snmp.php:743
 msgid "none"
@@ -6859,7 +6859,7 @@ msgstr ""
 
 #: host_templates.php:356
 msgid "Remove Data Query"
-msgstr ""
+msgstr "მონაცემის გამოთხოვის წაშლა"
 
 #: host_templates.php:415
 #, php-format
@@ -11083,7 +11083,7 @@ msgstr ""
 
 #: include/global_settings.php:278
 msgid "RRDfile Auto Clean"
-msgstr ""
+msgstr "RRDfile-ის ავტოგასუფთავება"
 
 #: include/global_settings.php:279
 msgid "Automatically archive or delete RRDfiles when their corresponding Data Sources are removed from Cacti"
@@ -12550,7 +12550,7 @@ msgstr ""
 
 #: include/global_settings.php:1750
 msgid "Threads per Process"
-msgstr ""
+msgstr "ნაკადი თითო პროცესზე"
 
 #: include/global_settings.php:1751
 msgid "The Default Threads allowed per process.  NOTE: Starting in Cacti 1.2+, this setting is maintained in the Data Collector, and this is simply the Preset.  Using a higher number when using Spine will improve performance.  However, ensure that you have enough MySQL/MariaDB connections to support the following equation: connections = data collectors * processes * (threads + script servers).  You must also ensure that you have enough spare connections for user login connections as well."
@@ -12734,7 +12734,7 @@ msgstr ""
 
 #: include/global_settings.php:1951
 msgid "Expire Inactive Accounts"
-msgstr ""
+msgstr "არააქტიური ანგარიშების ნაძალადევი ვადის ამოწურვა"
 
 #: include/global_settings.php:1952
 msgid "This is maximum number of days before inactive accounts are disabled.  The Admin account is excluded from this policy."
@@ -14038,7 +14038,7 @@ msgstr "ახალი გამომთხოვი"
 
 #: install/install.php:91
 msgid "Cacti Install Help"
-msgstr ""
+msgstr "Cacti-ის დაყენების დახმარება"
 
 #: install/install.php:99
 #, php-format
@@ -14355,7 +14355,7 @@ msgstr ""
 
 #: lib/api_automation.php:5384
 msgid "Unknown Device Template"
-msgstr ""
+msgstr "უცნობი მოწყობილობის შაბლონი"
 
 #: lib/api_automation.php:5404 lib/api_automation.php:5406
 #, php-format
@@ -15581,7 +15581,7 @@ msgstr "ყველა %d %s"
 #: lib/html.php:700
 #, php-format
 msgid "Current Page: %s"
-msgstr ""
+msgstr "მიმდინარე გვერდი: %s"
 
 #: lib/html.php:731
 #, php-format
@@ -21608,7 +21608,7 @@ msgstr "WebSeer-ის პროცესი"
 
 #: support.php:510
 msgid "Service Check Process"
-msgstr ""
+msgstr "სერვისის შემოწმების პროცესი"
 
 #: support.php:511
 msgid "MacTrack Process"
@@ -23826,7 +23826,7 @@ msgstr "VDEF-ები [ახალი]"
 
 #: vdef.php:673
 msgid "Delete VDEF Item"
-msgstr ""
+msgstr "VDEF ელემენტის წაშლა"
 
 #: vdef.php:870
 msgid "VDEF Name"
