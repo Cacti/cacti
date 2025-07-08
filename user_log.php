@@ -137,8 +137,8 @@ function view_user_log() {
 				form_selectable_cell(__('(User Removed)'), $i);
 			}
 
-			if (isset($auth_realms[$item['realm']])) {
-				form_selectable_cell(filter_value($auth_realms[$item['realm']], get_request_var('filter')), $i);
+			if (isset($auth_realms[$item['realm']]['name'])) {
+				form_selectable_cell(filter_value($auth_realms[$item['realm']]['name'], get_request_var('filter')), $i);
 			} else {
 				form_selectable_cell(__('N/A'), $i);
 			}
