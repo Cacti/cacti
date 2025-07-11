@@ -210,6 +210,7 @@ Cacti CHANGELOG
 -issue#6262: If the database service restarts during polling or other activities errors occur
 -issue#6270: Select list using special characters for the current value can not be displayed in thold
 -issue#6271: Improve validation logging to give administrators a clue where the error came from
+-issue#6283: Divide by Zero if the $rows variable is not set
 
 1.2.30
 -issue#6089: Cannot Add New User due to incorrect array structure
