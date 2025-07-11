@@ -666,6 +666,14 @@ function user_group_members_edit($header_label) {
 
 	if (cacti_sizeof($members)) {
 		foreach ($members as $g) {
+			if (isset($auth_realms[$g['realm']]['name'])) {
+				$realm = $auth_realms[$g['realm']]['name'];
+			} elseif (isset($auth_realms[$g['realm']])) {
+				$realm = $auth_realms[$g['realm']];
+			} else {
+				$realm = __('Unavailable');
+			}
+
 			form_alternate_row('line' . $g['id'], true);
 
 			form_selectable_cell(filter_value($g['username'], get_request_var('filter'), 'user_admin.php?action=user_edit&id=' . $g['id']), $g['id']);
@@ -678,7 +686,7 @@ function user_group_members_edit($header_label) {
 				form_selectable_cell('<span class="accessRestricted">' . __('Non Member') . '</span>', $g['id']);
 			}
 			form_selectable_cell(($g['enabled'] == 'on' ? __('Enabled'):__('Disabled')), $g['id']);
-			form_selectable_cell((isset($auth_realms[$g['realm']]['name']) ? $auth_realms[$g['realm']]['name']:'Unknown'), $g['id']);
+			form_selectable_cell($realm, $g['id']);
 
 			form_checkbox_cell($g['full_name'], $g['id']);
 
