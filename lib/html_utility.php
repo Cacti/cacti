@@ -1022,8 +1022,6 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 
 	$url_ellipsis = '<li><span>...</span></li>';
 
-	$total_pages = ceil($total_rows / $rows_per_page);
-
 	if ($rows_per_page <= 0) {
 		$total_pages = 0;
 	} else {
