@@ -428,7 +428,7 @@ function export() {
 			<td class='saveRow'>
 				<input type='hidden' name='action' value='save'>
 				<input type='hidden' id='name' name='name' value='<?php print $detail['name'];?>'>
-				<button class='export' type='submit'><?php print __('Package');?></button>
+				<button class='export ui-button ui-corner-all ui-widget ui-state-active' type='submit'><?php print __('Package');?></button>
 			</td>
 		</tr>
 	</table>

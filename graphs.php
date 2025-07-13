@@ -2063,9 +2063,9 @@ function graph_aggregate_javascript() {
 
 	function checkSubmit() {
 		if ($('input[id^="agg_total"]:checked').length == 0) {
-			$('input[type="submit"]').prop('disable', true).addClass('ui-state-disabled');;
+			$('button[type="submit"]').prop('disable', true).addClass('ui-state-disabled');;
 		} else {
-			$('input[type="submit"]').prop('disable', true).removeClass('ui-state-disabled');;
+			$('button[type="submit"]').prop('disable', true).removeClass('ui-state-disabled');;
 		}
 	}
 

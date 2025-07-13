@@ -775,18 +775,6 @@ function settings_javascript() {
 			$('#navigation, #navigation_right').show();
 			$('#tabs').find('li a.selected').removeClass('selected');
 
-			$('input[value="<?php print __esc('Save'); ?>"]').unbind().click(function(event) {
-				event.preventDefault();
-				var options = {
-					url: 'auth_profile.php',
-					redirect: 'auth_profile.php?action=noreturn'
-				}
-
-				var data = $('input, select, textarea').serialize();
-
-				postUrl(options, data);
-			});
-
 			if (authMethod == <?= AUTH_METHOD_BASIC ?>) {
 				$('#row_logout_everywhere').hide();
 			}

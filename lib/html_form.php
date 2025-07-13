@@ -1903,7 +1903,7 @@ function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_fi
 						$type = 'submit';
 					}
 
-					print "<button type='$type' class='ui-button ui-corner-all ui-widget' id='" . $b['id'] . "' value='" . $b['id'] . "'";
+					print "<button type='$type' class='ui-button ui-corner-all ui-widget ui-state-active' id='" . $b['id'] . "' value='" . $b['id'] . "'";
 
 					$onclick = '';
 

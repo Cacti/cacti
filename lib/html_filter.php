@@ -538,7 +538,7 @@ class CactiTableFilter {
 							break;
 						case 'submit':
 							print '<div class="filterColumnButton">' . PHP_EOL;
-							print '<button type="submit" class="ui-button ui-corner-all ui-widget ui-state-active ' . $class . '" id="' . $field_name . '" value="' . $field_array['display'] . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title']:'') . '"><span class="button-text">' . $field_array['display'] . '</span></button>';
+							print '<button type="submit" class="ui-button ui-corner-all ui-widget ui-state-active ' . $class . '" id="' . $field_name . '" ' . (isset($field_array['title']) ? ' title="' . $field_array['title']:'') . '"><span class="button-text">' . $field_array['display'] . '</span></button>';
 							print '</div>' . PHP_EOL;
 
 							break;

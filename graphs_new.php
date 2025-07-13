@@ -553,7 +553,7 @@ function graphs() {
 
 		print '</td>
 			<td class="left">
-				<input type="submit" class="create ui-button ui-corner-all ui-widget ui-state-active" id="submit" value="' . __('Create') . '" role="button">
+				<button type="submit" class="create ui-button ui-corner-all ui-widget ui-state-active" id="submit" role="button">' . __('Create') . '</button>
 			</td>
 		</tr>';
 

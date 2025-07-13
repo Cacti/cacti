@@ -64,7 +64,7 @@ function display_settings() {
 	print '<div class="settingsFilter">';
 	print '<div>' . __('Search') . '</div>';
 	print '<div><input class="ui-state-default ui-corner-all" type="text" size="25" id="filter" value="' . html_escape_request_var('filter') . '"></div>';
-	print '<div><span><input class="ui-state-default ui-corner-all" type="button" id="clear" value="' . __esc('Clear') . '"></span></div>';
+	print '<div><span><button class="ui-state-default ui-corner-all" type="button" id="clear">' . __esc('Clear') . '</button></span></div>';
 	print '</div>';
 
 	html_end_box(false, true);

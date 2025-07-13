@@ -709,7 +709,7 @@ function poller_edit() {
 		$tooltip = '<div class="formTooltip">' . str_replace("\n", '', display_tooltip($tip_text)) . '</div>';
 	}
 
-	$row_html = '<div class="formRow odd"><div class="formColumnLeft"><div class="formFieldName">' . __('Test Database Connection') . $tooltip . '</div></div><div class="formColumnRight"><input type="button" class="ui-button ui-corner-all ui-widget" id="dbtest" value="' . __esc('Test Connection') . '"><span id="results"></span></div></div>';
+	$row_html = '<div class="formRow odd"><div class="formColumnLeft"><div class="formFieldName">' . __('Test Database Connection') . $tooltip . '</div></div><div class="formColumnRight"><button type="button" class="ui-button ui-corner-all ui-widget" id="dbtest">' . __esc('Test Connection') . '</button><span id="results"></span></div></div>';
 
 	$pt = read_config_option('poller_type');
 
