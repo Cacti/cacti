@@ -96,6 +96,7 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 	include_once(CACTI_PATH_LIBRARY . '/utility.php');
 
 	query_debug_timer_start();
+	$reindex_start = microtime(true);
 
 	// Load the XML structure for custom settings detection
 	$query_array = get_data_query_array($snmp_query_id);
@@ -465,6 +466,15 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 			kill_session_var('debug_log');
 		}
 	}
+
+	$cur_time = microtime(true);
+	$total    = $cur_time - $reindex_start;
+	db_execute_prepared('UPDATE host_snmp_query
+		SET reindex_last_runtime = CURRENT_TIMESTAMP(),
+		reindex_last_duration = ?
+		WHERE host_id = ?
+		AND snmp_query_id = ?',
+		[$total, $host_id, $snmp_query_id]);
 
 	// Remove orphans only if the data query expressly calls for it
 	if (cacti_sizeof($orphaned_ids) &&
