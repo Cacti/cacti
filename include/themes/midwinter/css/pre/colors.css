@@ -18,6 +18,7 @@
     --text-color-highlight-a: hsl(var(--accent2-hue), 64%, 60%);
     --text-color-navigation: hsl(var(--hue), 7%, 60%);
     --text-color-navigation-highlight: hsl(var(--hue), 7%, 85%);
+    --text-search-highlight: yellow;
     --background: hsl(var(--hue), 19%, 17%);
     --background-content: hsl(var(--hue), 23%, 5%);
     --background-content-element : hsl(var(--hue), 23%, 9%);
@@ -59,6 +60,8 @@
     --special-hue: 208;
     --special2-hue: 229;
     --progress-hue: 120;
+    --text-color-white: hsl(0, 0%, 100%);
+    --text-color-black: hsl(0, 0%, 5%);
     --text-color-normal: hsl(var(--hue), 0%, 10%);
     --text-color-medium: hsl(var(--hue), 0%, 20%);
     --text-color-light: hsl(var(--hue), 7%, 25%);
@@ -67,6 +70,7 @@
     --text-color-navigation: hsl(var(--special2-hue), 7%, 25%);
     --text-color-navigation-highlight:hsl(var(--hue), 7%, 100%);
     --text-color-highlight-a: hsl(var(--special2-hue), 100%, 50%);
+    --text-search-highlight: royalblue;
     --background: hsl(var(--hue), 27.3%, 97.1%);
     --background-content: hsl(var(--hue), 0%, 98%);
     --background-content-element : hsl(var(--hue), 0%, 94%);

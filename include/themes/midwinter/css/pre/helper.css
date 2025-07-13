@@ -10,5 +10,4 @@ div[class*=" fa-icon-"], span[class*=" fa-icon-"] {
     &.fa-icon-minus::after      { content: "\f068"; }
     &.fa-icon-search::after     { content: "\f002"; }
     &.fa-icon-check::after      { content: "\f003"; }
-
 }

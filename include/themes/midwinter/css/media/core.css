@@ -32,7 +32,12 @@
 @supports (scrollbar-width: auto) {
     * {
         scrollbar-color: var(--scrollbar-thumb) transparent;
-        scrollbar-width: thin;
+        @supports (-webkit-appearance: none) {
+            scrollbar-width: thin;
+        }
+        @supports (-moz-appearance: none) {
+            scrollbar-width: initial;
+        }
     }
 }
 
@@ -48,9 +53,9 @@ html {
 body {
     position: relative;
     overflow: hidden !important;
-    width: 100vw !important;
-    min-height: 100vh !important;
-    height: 100vh !important;
+    width: 100dvw !important;
+    min-height: 100dvh !important;
+    height: 100dvh !important;
     margin: 0;
     opacity: 0;
     color: var(--text-color-normal);
@@ -70,7 +75,8 @@ img {
 }
 
 mark {
-    color: yellow;
+    font-weight: var(--fw-medium);
+    color: var(--text-search-highlight);
     background-color: transparent;
 }
 
@@ -181,16 +187,21 @@ input[type="checkbox"] + label:before {
     font-family: "Font Awesome\ 5 Free", serif;
     font-weight: 600;
     font-size: var(--fs-semilarge);
-    margin: 0 0.5rem;
     content: "\f0c8";
     color: var(--border-color);
     cursor: pointer;
-    padding-top: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 2.5rem;
+    margin: auto 1rem;
 }
 
 input[type="checkbox"]:checked + label:before {
-    padding-top: 2px;
     content: "\f14a";
+}
+
+input[type="checkbox"]:checked:not(:disabled) + label:before {
     color: var(--background-progress);
 }
 
@@ -199,8 +210,8 @@ input[type="checkbox"]:checked + label, input[type="radio"]:not([name^="reindex"
 }
 
 input[type="checkbox"]:focus-within + label:before {
-    outline: none !important;
-    box-shadow: var(--background-content) 0 0 0 2px, var(--border-color-highlight) 0 0 0 3px;
+    /*outline: none !important;*/
+    /*box-shadow: var(--background-content) 0 0 0 2px, var(--border-color-highlight) 0 0 0 3px;*/
 }
 
 .cols1 {
@@ -277,6 +288,8 @@ input[type="checkbox"]:focus-within + label:before {
 
 .cactiGraphContentArea,
 .cactiConsoleContentArea {
+    container-type: inline-size;
+    container-name: contentArea;
     display: flex;
     overflow-y: hidden !important;              /* ensure to reset inline styles driven by layout.js ;( */
     overflow-x: auto !important;                /* ensure to reset inline styles driven by layout.js ;( */
@@ -292,25 +305,129 @@ input[type="checkbox"]:focus-within + label:before {
         overflow-x: auto !important;            /* ensure to reset inline styles driven by layout.js ;( */
         width: 100%;
         height: 100%;
+        flex: 1;
 
-        & .cactiTable {
+        & > div.cactiTable > table.cactiTable {
+            padding-left: 10px !important;
+            padding-right: 5px !important;
+            & th,
+            & td {
+                &:first-of-type {
+                    padding-left: 8px;
+                }
+                &:last-of-type {
+                    padding-right: 5px;
+                }
+            }
+        }
+
+        & .cactiTable:not(:has(table)) {
             scrollbar-gutter: unset;
             overflow: auto;
+        }
+
+        & .cactiTable {
+            position: relative;
+            z-index: 1;
+
+            & thead {
+                position: relative;
+                z-index: 3;
+            }
+            & th,
+            & td {
+                padding-right: 10px;
+                &:first-of-type {
+                    position: sticky;
+                    left: 0;
+                    z-index: 2;
+                    background: var(--background-content);
+                    border-top-left-radius: 4px;
+                    border-bottom-left-radius: 4px;
+                    padding: 0 0 0 8px;
+                }
+                &:last-of-type {
+                    border-top-right-radius: 4px;
+                    border-bottom-right-radius: 4px;
+                    padding-right: 0;
+                }
+            }
+
+            & th {
+                white-space: nowrap;
+                border-radius: 0 !important;
+                &:first-of-type {
+                    padding: 0 0 0 8px;
+                }
+            }
+
+            & thead th:first-of-type,
+            & thead th:last-of-type,
+            & tfoot th:first-of-type,
+            & tfoot th:last-of-type {
+                z-index: 3;
+                padding-right: 0;
+            }
+
+            & tr.selectable {
+                & td {
+                    background: var(--background-content);
+                }
+
+                &:hover{
+                    & td {
+                        background: var(--table-selectable);
+                    }
+                }
+            }
+
+            & tr.selected {
+                td {
+                    background: var(--table-selected);
+                    /*
+                    &:first-of-type::before {
+                        background: var(--background-progress);
+                        border-radius: 4px;
+                        content: " ";
+                        display: block;
+                        height: 100%;
+                        position: absolute;
+                        width: 0.15rem;
+                        left: -0.4rem;
+                    }
+                    */
+                }
+
+                &:hover {
+                    & td {
+                        background: var(--table-selectable);
+                    }
+                }
+            }
+
+            & th:last-child:not(:only-child),
+            & td:last-of-type:not(:only-of-type) {
+                position: sticky;
+                right: -1px;
+                z-index: 2;
+                text-align: right;
+            }
         }
 
         &:has(.navBarNavigation) {
 
             & form {
-                height: 99%;
+                height: calc(100% - 1px); /* important for static table header */
                 width: 100%;
             }
 
             & .cactiTable {
                 scrollbar-gutter: stable;
-                overflow: auto;
-                max-height: calc(100% - 4rem);
+                overflow-y: auto;
+                overflow-x: hidden;
+                max-height: 100%;
                 box-sizing: border-box;
-                width: calc(100% - 10px);
+                padding-left: 10px;
             }
 
             & .cactiTable:has(.cactiTableTitleRow) {
@@ -318,91 +435,7 @@ input[type="checkbox"]:focus-within + label:before {
             }
 
             & .cactiTable:not(:has(~ .actionsDropdown)) {
-                max-height: calc(100% - 2rem);
-            }
-
-            & .cactiTable {
-                position: relative;
-                z-index: 1;
-
-                & thead {
-                    position: relative;
-                    z-index: 3;
-                }
-                & th,
-                & td {
-                    padding-right: 0.75rem;
-                    &:first-of-type {
-                        position: sticky;
-                        left: 0;
-                        z-index: 2;
-                        background: var(--background-content);
-                        border-top-left-radius: 4px;
-                        border-bottom-left-radius: 4px;
-                        padding: 0 0 0 0.5rem;
-                    }
-                    &:last-of-type {
-                        padding-right: 0;
-                        border-top-right-radius: 4px;
-                        border-bottom-right-radius: 4px;
-                    }
-                }
-
-                & th {
-                    white-space: nowrap;
-                    border-radius: 0 !important;
-                }
-
-                & thead th:first-of-type,
-                & thead th:last-of-type,
-                & tfoot th:first-of-type,
-                & tfoot th:last-of-type {
-                    z-index: 3;
-                    padding-right: 0;
-                }
-
-                & tr.selectable {
-                    & td {
-                        background: var(--background-content);
-                    }
-
-                    &:hover{
-                        & td {
-                            background: var(--table-selectable);
-                        }
-                    }
-                }
-
-                & tr.selected {
-                    td {
-                        background: var(--table-selected);
-                        /*
-                        &:first-of-type::before {
-                            background: var(--background-progress);
-                            border-radius: 4px;
-                            content: " ";
-                            display: block;
-                            height: 100%;
-                            position: absolute;
-                            width: 0.15rem;
-                            left: -0.4rem;
-                        }
-                        */
-                    }
-
-                    &:hover {
-                        & td {
-                            background: var(--table-selectable);
-                        }
-                    }
-                }
-
-                & th:last-child,
-                & td:last-of-type {
-                    position: sticky;
-                    right: -1px;
-                    z-index: 2;
-                }
+                max-height: 100%;
             }
         }
     }
@@ -772,7 +805,7 @@ label.ui-state-hover > span {
     position: absolute;
     z-index: 850;
     top: 48px;
-    height: calc(100vh - 48px);
+    height: calc(100dvh - 48px);
     margin: 0;
     padding: 10px 0 10px 0;
     list-style: none;
@@ -803,7 +836,7 @@ label.ui-state-hover > span {
     right: 5px;
     display: block;
     float: right;
-    height: calc(100vh - 48px);
+    height: calc(100dvh - 48px);
     margin: 0;
     padding: 10px 0 10px 0;
     list-style: none;
@@ -1254,7 +1287,6 @@ legend::before {
     display: table-cell;
     float: right;
     margin-top: 0;
-    margin-right: 6px;
     margin-left: 3px;
     vertical-align: top;
 }
@@ -1379,7 +1411,7 @@ legend::before {
 
 .cactiGraphContentAreaPreview {
     overflow-y: auto !important;
-    height: 100vh;
+    height: 100dvh;
 }
 
 .cactiGraphContentAreaPreview span[align="center"] {
@@ -1424,7 +1456,6 @@ legend::before {
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
-    padding: 3px 0 3px 3px;
     cursor: pointer;
     white-space: nowrap;
     text-decoration: none;
@@ -1555,25 +1586,79 @@ table.cactiTable {
 .cactiTableTitleRow {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    background: var(--background-navigation);
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    background: var(--background-progress-semilight);
     height: 2.5rem;
-    padding: 0 0.5rem;
-
-
+    margin-top: 0.25rem;
+    padding-left: 18px;
+    & + table.cactiTable {
+        & th:first-child, td:first-child {
+            padding-left: 18px !important;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+        & th:last-child, td:last-child {
+            padding-right: 10px !important;
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+    }
 }
 
 .cactiTableTitle {
+    display: flex;
     font-size: var(--fs-big);
-    float: left;
-    text-align: left;
+    flex: 1;
+}
+
+.cactiTableAction {
+    display: flex;
+    flex-shrink: 1;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    & .actionsDropdownArrow {
+        display: none;
+    }
 }
 
 .cactiTableButton {
-    font-size: var(--fs-semismall);
-    float: right;
-    text-align: right;
-    white-space: nowrap;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    align-content: center;
+    align-items: center;
+    flex: 1;
+
+    & > span {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border-radius: 4px;
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: var(--fs-big);
+
+        &:hover {
+            background-color: hsla(208, 69%, 40%, 0.5);
+            & * {
+                color: white !important;
+            }
+        }
+        &:not(:has(a)){
+            display: none;
+        }
+
+        & > a {
+            display: inline-flex;
+            flex: 1;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-color-normal) !important;
+        }
+    }
 }
 
 .cactiTableButton.debug {
@@ -1586,6 +1671,11 @@ table.cactiTable {
     padding: 0;
     vertical-align: middle;
     white-space: nowrap;
+}
+
+.cactiTableTitle span {
+    max-width: 100%;
+    text-overflow: ellipsis;
 }
 
 .cactiTableButton i {
@@ -1626,7 +1716,10 @@ table.cactiTable {
     align-items: stretch;
     width: 100%;
     background-color: var(--background-content);
-    margin: 2px 0;
+    margin: 2px 0 0 0;
+    &.hidden {
+        margin: 0;
+    }
 }
 
 @media(min-width: 769px) {
@@ -1644,7 +1737,7 @@ table.cactiTable {
     display: inline-flex;
     align-items: flex-start;
     flex: 1;
-    padding: 1rem 4rem 1rem 1rem;
+    padding: 1rem 4rem 1rem 18px;
     background-color: var(--background-content-element);
 }
 
@@ -1687,16 +1780,12 @@ table.cactiTable {
     line-height: 25px;
     float: left;
     width: 100%;
-    margin-top: 0.25rem;
-    padding-left: 5px;
+    margin-top: 2px;
+    padding-left: 18px;
     text-align: left;
     text-transform: none;
     color: var(--text-color-normal);
     background-color: var(--background-progress-semilight);
-
-    html[data-theme-color="light"] & {
-        color: var(--text-color-white);
-}
 }
 
 
@@ -2259,7 +2348,7 @@ tr {
         box-shadow: var(--background-content) 0px 0px 0px -2px, var(--border-color-highlight) 0px 0px 0px 1px;
     }
     & a.selected {
-        color: var(--text-color-high-contrast);
+        color: var(--text-color-white);
     }
     & a:hover {
         color: var(--text-color-navigation-highlight);
@@ -2319,13 +2408,14 @@ ul.pagination {
 }
 
 ul.pagination li {
-    display: inline;
+    display: inline-flex;
+    align-self: baseline;
 }
 
 ul.pagination li a {
     float: left;
     margin: 0 1px;
-    padding: 0 2px 2px 2px;
+    padding: 2px;
     text-decoration: none;
     color: var(--text-color-light);
 }
@@ -2338,8 +2428,9 @@ ul.pagination li span {
 }
 
 ul.pagination li a.active {
-    color: var(--text-color-lighter);
+    color: var(--text-color-white);
     background-color: var(--background-progress);
+    border-radius: 2px;
 }
 
 ul.pagination li a:hover:not(.active) {
@@ -2512,22 +2603,33 @@ input[type="search"]::-webkit-search-cancel-button {
     cursor: pointer;
 }
 
-input[type="submit"].save {
+input[type="button"] {
+    border-radius: 4px;
+}
+
+input[type="submit"].save,
+input[type="submit"][id="save"] {
     color: var(--text-color-white);
-    background-color: var(--background-progress);
-    border-radius: 2px ;
-    border: 1px solid  var(--background-progress);
+    background-color: green;
+    border: 1px solid var(--background-progress);
     padding: 0.4rem 1.8rem;
     margin: 0 0.5rem;
 }
 
-input[type="submit"][role="button"],
-input[type="button"][id="return"] {
+input[type="button"][id="return"],
+input[type="button"][value="Return"] {
     background:  transparent;
-    color: var(--background-progress);
     border: 1px solid var(--background-progress);
-    border-radius: 5px;
     padding: 0.4rem 1.8rem;
+    font-weight: normal;
+    color: snow;
+
+
+    &::after {
+        font-family: "Font Awesome 5 Free", serif;
+        content: "\f058" ;
+        padding-right: 5px;
+    }
 }
 
 input[type="range"] {
@@ -2557,6 +2659,32 @@ input[type="range"] {
         cursor: pointer;
     }
 
+}
+
+button {
+    white-space: nowrap;
+    &:hover {
+        border: 1px solid var(--border-color-highlight) !important;
+    }
+    &::before {
+        font-family: "Font Awesome 6 Free", serif;
+        font-weight: 900;
+        padding-right: 5px;
+        display: inline-flex;
+        align-items: center;
+        width: 1.5rem;
+        height: 16px;
+        color: green;
+    }
+
+    &[type="submit"][value="Go"] { &::before { content: "\f058" ; color: green; } }
+    &[value="create"]            { &::before { content: "\f058" ; color: green; } }
+    &[value="cancel"]            { &::before { content: "\f057" ; color: red;   } }
+    &[value="return"]            { &::before { content: "\f2ea" ; } }
+    &[value="save"]              { &::before { content: "\f058" ; } }
+    &[value="clear"]             { &::before { content: "\f057" ; } }
+    &[value="export"]            { &::before { content: "\f56e" ; } }
+    &[value="import"]            { &::before { content: "\f56e" ; } }
 }
 
 /* Rounded.checkboxSliders */

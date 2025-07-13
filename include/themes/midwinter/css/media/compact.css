@@ -12,10 +12,13 @@
 /* kiosk mode */
 [class~=fullscreen],
 [class~=fullscreen] > div {
-    height: 100vh !important;
+    /*height: 100dvh !important;*/
+    height: 100% !important;
+
 }
 
-.hide {
+.hide,
+.hidden {
     display: none !important;
 }
 
@@ -24,9 +27,9 @@
 }
 
 .invisible {
-    visibility: hidden;
-    height: 0;
-    width: 0;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
 }
 
 .visible {
@@ -35,8 +38,6 @@
 
 .subTab {
     line-height: 2.0rem;
-    height: 3.5rem;
-
 }
 
 .compact_nav_icon,
@@ -56,7 +57,7 @@
 
     &.selected {
         color: white;
-        background: hsl( 208, 69%, 40%);
+        background: var(--background-active-section);
     }
 
     &:focus-visible {
@@ -127,15 +128,58 @@
 }
 
 
-.mdw-PopOver {
-    top: 10%;
+.mdw-GridContainer-PopOver {
+    position: fixed !important;
+    z-index: 3000;
+    top: 15%;
     left: 50%;
+    transform: translateX(-50%);
     box-shadow: -2px 4px 10px 2px var(--box-shadow-color);
     background-color: var(--background-menu);
     border-radius: 2px;
     border: 1px solid var(--border-color);
-    height: clamp(40vh, 53%, 80vh);
+    width: clamp(40dvw, 40dvw, 100dvw);
+    max-height: 50dvh;
+    height: fit-content;
+    min-height: 25dvh;
     color: var(--text-color-normal);
+    display: inline-flex;
+    flex-direction: column;
+
+    .mdw-PopOverTitle {
+
+    }
+    .mdw-PopOverContent {
+        flex: 1;
+        background: var(--background-content-element);
+        div.left:first-of-type {
+            padding: 1rem 1rem 1rem 18px;
+        }
+        div.itemlist {
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            padding: 1rem 0;
+        }
+    }
+    .mdw-PopOverFooter {
+        border-top: 1px solid var(--border-color);
+    }
+
+    div {
+        width: 100% !important;
+    }
+
+    .cactiTableTitleRow {
+        margin: 0;
+        padding: 2px 2px 3px 18px;
+        box-sizing: border-box;
+        height: unset;
+        cursor: move;
+        .cactiTableButton {
+            margin-left: 1rem;
+            align-items: flex-end;
+        }
+    }
 }
 
 
@@ -150,23 +194,28 @@
 
         grid-area: main;
 
+        & #main {
+            .navBarNavigation {
+                display: none;
+            }
+        }
+
         &:has(.saveRowParent) {
-            & #main {
+          /*  & #main {
                 margin-bottom: 4rem;
             }
-
+*/
             & #main::-webkit-scrollbar-button {
                 width: 40px;
                 height: 40px;
-
             }
-
+/*
             .saveRowParent & {
                 padding-bottom: 0.5rem;
             }
+
             & .saveRowParent {
                 width: 100%;
-                background: red;
                 .saveRow {
                     position: absolute;
                     top:100%;
@@ -178,6 +227,9 @@
                     right: 0;
                 }
             }
+
+ */
+
         }
 
         & .mdw-DockTop {
@@ -190,7 +242,7 @@
         & .mdw-DockLeft {
             grid-area: left;
             height: auto;
-            border-right: 1px solid var(--border-color-semilight);
+            /* border-right: 1px solid var(--border-color-semilight); */
             width: min-content;
 
             & .cactiTable {
@@ -222,29 +274,38 @@
 
                 }
             }
-        }
-
-        & .mdw-DockRight {
-            grid-area: right;
-            height: auto;
-            border-left: 1px solid var(--border-color-semilight);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 0 2px 5px -1px var(--box-shadow-color);
-
-            & .mdw-ConsoleNavigationBox {
-                visibility: visible !important;     /* NavigationBoxes within docks cannot be hidden */
-                height: 50%;                        /* we allow two Boxes per total per dock, in this case set initial height to 50% */
-            }
-
             & .mdw-ConsoleNavigationBox:only-child {
                 height: 100%;
             }
         }
 
+        & .mdw-DockRight {
+            grid-area: right;
+            height: auto;
+            /* border-left: 1px solid var(--border-color-semilight); */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 2px 5px -1px var(--box-shadow-color);
+            width: min-content;
+
+            & .mdw-ConsoleNavigationBox:only-child {
+                height: 100%;
+            }
+
+            & .navBox-header {
+                padding: 0 2px 0 10px;
+                text-align: unset;
+            }
+            & .navBox-header-button {
+                margin: 0 !important;
+            }
+
+        }
+
         & > div[class^="mdw-Dock"] {
             background: var(--background-navigation-top);
+            overflow-x: hidden;
             &:has(div) {
                 .cactiTable {
                     display: block !important;
@@ -270,9 +331,15 @@
             }
             .navBox-header {
                 font-size: var(--fs-regular);
-                border-bottom: 1px solid var(--border-color-semilight);
-                border-top: 1px solid var(--border-color-semilight);
             }
+
+            & .mdw-ConsoleNavigationBox {
+                visibility: visible;
+                height: clamp( 50%, 50%, 100%);                        /* we allow two Boxes per total per dock, in this case set initial height to 50% */
+                width: 100%;
+                border-top: 1px solid var(--box-shadow-color);
+            }
+
             & .mdw-ConsoleNavigationBox:first-of-type {
                 .navBox-header{
                     border-top: none;
@@ -290,15 +357,27 @@
             .tab-label {
                 display: inline-flex;
                 width: 100%;
-                margin-top: 1rem;
+                height: 2.5rem;
                 border-bottom: 3px solid transparent;
                 justify-content: space-between;
                 align-items: center;
                 cursor: pointer;
+                padding-left: 10px;
+                @supports (-moz-appearance: none) {
+                    padding: 0 10px;
+                }
+
 
                 &:hover {
-                    color: var(--text-color-white);
-                    background-color: var(--background-progress-semilight);
+                    color: var(--text-color-lighter);
+                }
+
+                & > i {
+                    height: 2.5rem;
+                    width: 2.5rem;
+                    display: inline-flex;
+                    justify-content: center;
+                    align-items: center;
                 }
             }
 
@@ -346,7 +425,11 @@
                 opacity: 0;
                 overflow: hidden;
                 border-bottom: 1px solid var(--border-color-semilight);
-                line-height: 3.5em;
+                line-height: 3rem;
+                padding-left: 10px;
+                @supports (-moz-appearance: none) {
+                    padding: 0 10px;
+                }
 
                 & div:nth-child(2n+1) {
                     float: left;
@@ -357,10 +440,9 @@
                 }
 
                 & div:nth-child(2n+0) {
-                    float: left;
+                    display: inline-flex;
+                    justify-content: flex-end;
                     width: 30%;
-                    text-align: right;
-                    padding-left: 2.1rem;
                 }
             }
 
@@ -382,8 +464,8 @@
         top: 0;
         position: absolute;
         display: flex;
-        height: 100dvh !important;
-        width: 100dvw !important;
+        height: 100% !important;
+        width: 100% !important;
         justify-items: center;
         justify-content: center;
         flex-direction: column;
@@ -424,7 +506,7 @@
         justify-content: center;
         padding-top: 1rem;
         padding-bottom: 1rem;
-        color: var(--text-color-white);
+        color: var(--text-color-normal);
         border: 1px solid var(--border-color-semilight);
         border-radius: 4px;
         background: var(--background-navigation-top);
@@ -569,20 +651,14 @@
         & > div {
             padding-left: 1rem;
         }
-
-        & :nth-child( 1 of .navBarNavigation ) {
-            display: none;
-        }
         grid-area: middle;
     }
 
     .stickyContainer {
         display: flex;
         flex-direction: column;
-        border-bottom: 1px solid var(--border-color);
         background: none;
-        height: 3rem;
-        padding-left: 8px;
+        min-height: 3rem;
         & >div {
             height: 100%;
         }
@@ -591,5 +667,126 @@
         }
         &:empty {
             display: none;      /* hide empty stickyContainer */
+        }
+    }
+
+    .elementsOnTop {
+        display: none;
+        grid-template-areas:    "left   middle right"
+                                "bottom bottom bottom";
+        grid-template-columns: repeat(auto-fit, minmax(0, 33.3%));
+        grid-template-rows: 3rem auto;
+        @container contentArea (max-width: 1024px) {
+            grid-template-areas: "left      right"
+                                 "middle    middle"
+                                 "bottom    bottom";
+            grid-template-columns: minmax(auto,60%) minmax(40%, auto);
+            grid-template-rows: 3rem auto auto;
+        }
+        padding-left: 18px !important;
+        border-bottom: 1px solid var(--border-color);
+        background: none;
+        min-height: 0;
+        max-width: calc(100% - 1px);
+
+        & > div {
+            margin-top: 0;
+            padding: unset !important;
+        }
+        & .cactiTableTitleRow {
+            padding: 0;
+            margin: 0;
+        }
+        & .elementOnTop {
+            display: flex;
+            div {
+                height: 100%;
+                display: inline-flex;
+                align-items: center;
+                max-width: 100%;
+            }
+        }
+
+        &:has(.elementOnTop:not(:empty)) {      /* only show elements on top with content */
+            display: grid;
+        }
+
+        & .tableTitleOnTop {
+            grid-area: left;
+        }
+
+        & .tableNavBarOnTop {
+            grid-area: middle;
+
+            justify-content: center;
+            @media screen and (max-width: 1024px) {
+
+            }
+            .navBarNavigation {
+                justify-content: center;
+            }
+            .navBarNavigationPrevious {
+                justify-content: flex-end;
+                & > a {
+                    font-size: 0;
+                    width: 16px;
+                    &::before {
+                        font-size: var(--fs-regular);
+                        font-family: "Font Awesome 6 Free", serif;
+                        font-weight: 900;
+                        content: "\f100";
+                    }
+                }
+            }
+            .navBarNavigationNone,
+            .navBarNavigationCenter {
+                justify-content: center;
+                width: max-content;
+                margin: 0 2rem;
+            }
+            .navBarNavigationNext {
+                justify-content: flex-start;
+                & > a {
+                    font-size: 0;
+                    width: 16px;
+                    &::before {
+                        font-size: var(--fs-regular);
+                        font-family: "Font Awesome 6 Free", serif;
+                        font-weight: 900;
+                        content: "\f101";
+                    }
+                }
+            }
+        }
+
+        & .tableActionOnTop {
+            grid-area: right;
+            justify-content: flex-end;
+            flex: 1;
+            align-items: center;
+            @media screen and (max-width: 1024px) {
+                order: 2;
+                width: 100%;
+            }
+            .actionsDropdown {
+                justify-content: flex-end;
+            }
+            .actionsDropdownArrow {
+                display: none;
+            }
+            .ui-selectmenu-button.ui-button {
+                width: max-content !important;
+                margin-right: .2rem;
+            }
+            button {
+                margin-right: 5px;
+                &:last-of-type {
+                    margin-right: 10px;
+                }
+            }
+        }
+
+        & .tableTabsOnTop {
+            grid-area: bottom;
         }
     }

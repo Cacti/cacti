@@ -202,36 +202,36 @@ function setupTheme() {
 
 	if ($('#cactiContent').length) {
 		$('<div id="mdw-GridContainer" class="mdw-GridContainer">' +
+			'<div id="mdw-GridContainer-Overlay" class="mdw-GridContainer-Overlay mdw-PopOver hidden"></div>' +
+			'<div id="mdw-GridContainer-PopOver" class="mdw-GridContainer-PopOver mdw-PopOver hidden">' +
+				'<div id="mdw-PopOverTitle" class="mdw-PopOverElements mdw-PopOverTitle"></div>' +
+				'<div id="mdw-PopOverContent" class="mdw-PopOverElements mdw-PopOverContent"></div>' +
+				'<div id="mdw-PopOverFooter" class="mdw-PopOverElements mdw-PopOverFooter"></div>' +
+			'</div>' +
 			'<div id="mdw-ConsoleNavigation" class="mdw-ConsoleNavigation"></div>' +
 			'<div id="mdw-ConsolePageHead" class="mdw-ConsolePageHead">' +
-			'<div id="navBreadCrumb" class="navBreadCrumb">' +
-				'<div class="home"><a href="' + urlPath + 'index.php" class="pic">Home</a></div>' +
-				'<div class="rubric"></div>' +
-				'<div class="category"></div>' +
-				'<div class="action"></div>' +
+				'<div id="navBreadCrumb" class="navBreadCrumb">' +
+					'<div class="home"><a href="' + urlPath + 'index.php" class="pic">Home</a></div>' +
+					'<div class="rubric"></div>' +
+					'<div class="category"></div>' +
+					'<div class="action"></div>' +
 				'</div>' +
 				'<div id="navSearch" class="navSearch"></div>' +
-				'<div id="navFilter" class="navFilter" >' +
-	/*
-				'<div id="reportrange"style="cursor: pointer; padding: 5px 10px; border: 1px solid var(--border-color);">' +
-				'<i className="fa fa-calendar"></i>&nbsp;<span></span> <i className="fa fa-caret-down"></i>' +
-				'</div>' +
-	*/
-				'</div>' +
+				'<div id="navFilter" class="navFilter"></div>' +
 				'<div id="navControl" class="navControl" ></div>' +
 			'</div>' +
 			'<div id="mdw-Main" class="mdw-Main">' +
-				'<div id="mdw-DockTop" class="mdw-DockTop invisible" ></div>'+
-				'<div id="mdw-DockLeft" class="mdw-DockLeft" data-helper="displayDockTop"></div>'+
+				'<div id="mdw-DockTop" class="mdw-DockTop invisible" ></div>' +
+				'<div id="mdw-DockLeft" class="mdw-DockLeft" data-helper="displayDockTop"></div>' +
 				'<div id="mdw-DockRight" class="mdw-DockRight invisible"></div>' +
-				'<div id="mdw-DockBottom" class="mdw-DockBottom invisible"></div>'+
+				'<div id="mdw-DockBottom" class="mdw-DockBottom invisible"></div>' +
 			'</div>' +
-		'</div><div popover=manual id="mdw-PopOver" class="mdw-PopOver">' +
-			'<button class="close-btn" popovertarget="mdw-PopOver" popovertargetaction="hide">' +
-				'<span aria-hidden="true">❌</span>' +
-				'<p class="sr-only">Close</p>' +
-			'</button>' +
-			'</div>'
+			'<div id="mdw-ActionBar" class="mdw-ActionBar">' +
+				'<div id="mdw-ActionBarTop" class="mdw-ActionBarTop"></div>' +
+				'<div id="mdw-ActionBarMiddle" class="mdw-ActionBarMiddle"></div>' +
+				'<div id="mdw-ActionBarBottom" class="mdw-ActionBarBottom"></div>' +
+			'</div>' +
+		'</div>'
 	).
 		insertBefore("#breadCrumbBar");
 
@@ -245,7 +245,7 @@ function setupTheme() {
 
 		if ($('#navBackdrop').length === 0 ) {
 			$('.mdw-ConsoleNavigation').empty().prepend('<div class="compact_nav_icon_menu">' +
-				'<div class="compact_nav_icon" data-subtitle="Console" id="navBackdrop" role="button" tabindex="0" aria-pressed="false">' +
+				'<div class="compact_nav_icon" data-subtitle="Console" id="navBackdrop" data-tooltip="Console" role="button" tabindex="0" aria-pressed="false">' +
 					'<div class="navBackdrop"></div>'+
 				'</div></div>');
 			if (cactiConsoleAllowed) {
@@ -376,6 +376,15 @@ function setupThemeActions() {
 	$('.mdw-ConsoleNavigationBox').off().on('click', hideDropDownMenu);
 	//$('.dropdown').off().on('click', toggleDropDownMenu);
 	document.addEventListener("fullscreenchange", fullScreenChangeHandler);
+
+	// make popover draggable
+	$('#mdw-GridContainer-PopOver').draggable({
+		containment: '#mdw-GridContainer',
+		scroll: false,
+		start: function() {
+			$(this).css('transform', 'translateX(0)');
+		}
+	});
 }
 
 function redirect(event) {
@@ -536,318 +545,351 @@ function togglePwdInputField(event) {
 }
 
 function setupDefaultElements() {
-	let storage = Storages.localStorage;
-	var pageName = basename($(location).attr('pathname'));
-	var hostTimer = false;
-	var clickTimeout = false;
-	var hostOpen = false;
 
-	$(function() {
+	let popover = $('#mdw-GridContainer-PopOver');
+console.log(popover.hasClass('hidden'));
+	if ( popover.hasClass('hidden') ) {
 
-		var start = moment();
-		var end = moment();
+		let storage = Storages.localStorage;
+		var pageName = basename($(location).attr('pathname'));
+		var hostTimer = false;
+		var clickTimeout = false;
+		var hostOpen = false;
 
-		function cb(start, end) {
-			$('#reportrange span').html(start.format() + ' - ' + end.format());
-		}
+		$(function () {
 
-		$('.compact_nav_icon[data-helper="daterangepicker"]').daterangepicker({
-			startDate: start,
-			endDate: end,
-			"timePicker": true,
-			"timePicker24Hour": true,
-			"timePickerSeconds": true,
-			ranges: {
-				'Last Half Hour': [moment().subtract(30, 'minutes'), moment()],
-				'Last Hour': [moment().subtract(60, 'minutes'), moment()],
-				'Last 2 Hours': [moment().subtract(90, 'minutes'), moment()],
-				'Today': [moment(), moment()],
-				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-				'This Month': [moment().startOf('month'), moment().endOf('month')],
-				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-			},
-			"opens": "left",
-		}, cb);
+			var start = moment();
+			var end = moment();
 
-		cb(start, end);
-
-	});
-
-	/* cleanup - remove unused elements */
-	//$('#breadCrumbBar, .cactiPageHead, .cactiShadow, .cactiConsoleNavigationArea, .cactiTreeNavigationArea').detach();
-	$('#breadCrumbBar, .cactiPageHead, .cactiShadow, .cactiConsoleNavigationArea').detach();
-
-// top right corner navigation bar - holds buttons
-	//$('#navFilter').removeClass('visible');
-
-	// ensure that filter table and 1st navBar will stay on top
-	if ($('.stickyContainer').length) {
-		$('.stickyContainer').remove();
-	}
-
-
-//	let btn_filter1 	= new navigationButton('displayDockTop', 'Filter', 'Show Filter Dock','fas fa-filter', '#navFilter', 'toggleCactiDockNavigationBox', 'Top');
-	let btn_filter 	= new navigationButton('displayFilterOptions', 'Filter', 'Show Display Filter','fas fa-filter', '#navFilter');
-	let btn_calendar	= new navigationButton('daterangepicker', 'Calendar', 'Select Timeframe', 'fas fa-calendar-alt', '#navFilter', '', '');
-	let btn_add		= new navigationButton('formAction', 'New', 'Add','fa fa-plus', '#navFilter');
-
-	if ($("#main .filterTable").length) {
-		let filter;
-		filter = $("#main .filterTable:first").closest('div.cactiTable').detach();
-
-		if( !$('[class^="mdw-ConsoleNavigationBox"][data-helper="displayFilterOptions"]').length ) {
-			new navigationBox('Filter', 'displayFilterOptions', 'auto', '1', {
-				close: true,
-				search: false,
-				resize: false,
-				dock: true,
-			}, 'right', 'Display Filter', '').build();
-		}
-		$('[class^="mdw-ConsoleNavigationBox"][data-helper="displayFilterOptions"] .navBox-content').html(filter);
-
-		/* custom content */
-		if($("#main >div:first .filterTable:first").closest('div').length === 1) {
-		//	$("#main >div:first .filterTable:first").closest('div').detach().prependTo('#filterTableOnTop');
-			$(".break:first").detach().appendTo('#filterTableOnTop');
-
-			/* hide filter table title */
-			$('#filterTableOnTop .cactiTableTitle').detach();
-			$("#filterTableOnTop").removeClass('hide');
-		}
-		btn_filter.show();
-	}else {
-		$(".mdw-DockTop").html('');
-		btn_filter.hide();
-	}
-
-	// ensure that table tabs shown within #main will stay on top
-	if ($("#main>div.tabs:first").length) {
-		$('<div id="elementsOnTop" class="stickyContainer hide">').prependTo('#navigation_right');
-		$("#main>div.tabs:first").closest('div').detach().prependTo('#elementsOnTop');
-		$("#elementsOnTop").removeClass('hide');
-	}else if($("#main >div .tabs:first").length) {
-		$('<div id="elementsOnTop" class="stickyContainer hide">').prependTo('#navigation_right');
-
-		$("#elementsOnTop").removeClass('hide');
-	}else if ($("#main >div >div.cactiTableTitleRow").length) {
-		$('<div id="tableTitleOnTop" class="stickyContainer hide">').prependTo('#navigation_right');
-		$("#main >div >div.cactiTableTitleRow").closest('div').detach().prependTo('#tableTitleOnTop');
-		$("#tableTitleOnTop").removeClass('hide');
-	}
-
-	/* display option: table layout */
-	let btn_table_layout = new navigationButton('displayOptions', 'Table', 'Setup Table Layout','fas fa-table-list', '#navFilter');
-
-	if ($('tr.tableHeader').length !== 0) {
-		let cArray = [];
-		let tClasses = [];
-		let cIndex = 1;
-		let cName;
-		let cTitle;
-		let cHideable = 0;
-		let cVisible = 1;
-		let tableID = $('tr.tableHeader').closest('.cactiTable').attr('id');
-		let cHeaderStr = '';
-		$('th', $('tr.tableHeader')).each(function () {
-			cName = 'n/a';
-			if ($(this).hasClass('sortable')) {
-				cName = $('div.sortinfo', $(this)).attr('sort-column');
+			function cb(start, end) {
+				$('#reportrange span').html(start.format() + ' - ' + end.format());
 			}
-			cHeaderStr += cName;
-		})
-		let tableHash = cyrb53(window.location.pathname + tableID + cHeaderStr);
-		let table_settings;
-		let storage_table_headers = storage.get('midWinter_' + tableHash);
 
+			$('.compact_nav_icon[data-helper="daterangepicker"]').daterangepicker({
+				startDate: start,
+				endDate: end,
+				"timePicker": true,
+				"timePicker24Hour": true,
+				"timePickerSeconds": true,
+				ranges: {
+					'Last Half Hour': [moment().subtract(30, 'minutes'), moment()],
+					'Last Hour': [moment().subtract(60, 'minutes'), moment()],
+					'Last 2 Hours': [moment().subtract(90, 'minutes'), moment()],
+					'Today': [moment(), moment()],
+					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+				},
+				"opens": "left",
+			}, cb);
 
-		/* internal structure of storage_table_headers as follows
-		*	[0] - contains a cached string of classes hiding all unselected columns (by user) to save processing cycles
-			[1] - contains all table columns identified described as follows
-				  [ index, internal name |n/a|, title |n/a|, hide-able |0|, visible |1| ]
-			[2] - contains i18n session locale
-		*/
+			cb(start, end);
 
+		});
 
-		/* make this table addressable */
-		$('#'+tableID).attr('data-table', tableHash);
+		/* cleanup - remove unused elements */
+		//$('#breadCrumbBar, .cactiPageHead, .cactiShadow, .cactiConsoleNavigationArea, .cactiTreeNavigationArea').detach();
+		$('#breadCrumbBar, .cactiPageHead, .cactiShadow, .cactiConsoleNavigationArea').detach();
 
-		if (storage_table_headers !== null) {
-			if (sessionLocale === storage_table_headers[2]) {
-				$('#' + tableID).addClass(storage_table_headers[0]);
-			}else {
-				/* user language change detected */
-				$('th', $('tr.tableHeader')).each(function () {
-					cTitle = 'n/a';
-					if ($(this).hasClass('sortable')) {
-						cTitle = $('i:first', $(this)).parent().text();
-					}else {
-						cTitle = $(this).text();
-					}
-					storage_table_headers[1][cIndex-1][2] = cTitle;
-					cIndex++;
-				});
-				storage_table_headers[2] = sessionLocale;
-				storage.set('midWinter_' + tableHash, JSON.stringify(storage_table_headers));
+		// ensure that filter table and 1st navBar will stay on top
+		if ($('.stickyContainer').length) {
+			$('.stickyContainer').remove();
+		}
+
+		let btn_filter = new navigationButton('displayFilterOptions', 'Filter', 'Show Display Filter', 'fas fa-filter', '#mdw-ActionBarTop');
+		let btn_calendar = new navigationButton('daterangepicker', 'Calendar', 'Select Timeframe', 'fas fa-calendar-alt', '#mdw-ActionBarTop', '', '');
+
+		if ($("#main .filterTable").length) {
+			let filter;
+			filter = $("#main .filterTable:first").closest('div.cactiTable').detach();
+
+			if (!$('[class^="mdw-ConsoleNavigationBox"][data-helper="displayFilterOptions"]').length) {
+				new navigationBox('Filter', 'displayFilterOptions', 'auto', '1', {
+					close: true,
+					search: false,
+					resize: false,
+					dock: true,
+				}, 'right', 'Display Filter', '').build();
 			}
+			$('[class^="mdw-ConsoleNavigationBox"][data-helper="displayFilterOptions"] .navBox-content').html(filter);
+
+			/* custom content */
+			if ($("#main >div:first .filterTable:first").closest('div').length === 1) {
+				//	$("#main >div:first .filterTable:first").closest('div').detach().prependTo('#filterTableOnTop');
+				$(".break:first").detach().appendTo('#filterTableOnTop');
+
+				/* hide filter table title */
+				$('#filterTableOnTop .cactiTableTitle').detach();
+				$("#filterTableOnTop").removeClass('hide');
+			}
+			btn_filter.show();
+			$('[class^="mdw-ConsoleNavigationBox"][data-helper="displayFilterOptions"]').show();
 		} else {
+			btn_filter.hide();
+			$('[class^="mdw-ConsoleNavigationBox"][data-helper="displayFilterOptions"]').hide();
+		}
+
+		// *********************************** Elements on Top (of Navigation right) ************************************
+		// ensure that elementsOnTop container is always available
+		if (!$("#elementsOnTop").length) {
+			$('<div id="elementsOnTop" class="elementsOnTop">' +
+				'<div id="tableTitleOnTop" class="elementOnTop tableTitleOnTop"></div>' +
+				'<div id="tableNavBarOnTop" class="elementOnTop tableNavBarOnTop"></div>' +
+				'<div id="tableActionOnTop" class="elementOnTop tableActionOnTop"></div>' +
+				'<div id="tableTabsOnTop" class="elementOnTop tableTabsOnTop"></div>' +
+				'</div>').prependTo('#navigation_right');
+		}
+
+		// empty all top elements first
+		$(".elementOnTop").empty();
+		// empty actionBar middle
+		$("#mdw-ActionBarMiddle").empty();
+
+		// move table tabs to top
+		if ($("#main>div.tabs:first").length) {
+			$("#main>div.tabs:first").closest('div').detach().appendTo('#tableTabsOnTop');
+		}
+
+		// move table title to top
+		if ($("#main div.cactiTableTitleRow").length) {
+
+			$("#main div.cactiTableTitleRow:first > .cactiTableTitle").detach().appendTo('#tableTitleOnTop');
+			$("#main div.cactiTableTitleRow:first > .cactiTableAction:not(:empty)").detach().appendTo('#tableActionOnTop');
+			$("#main div.cactiTableTitleRow:first > .cactiTableButton:not(:empty)").detach().appendTo('#mdw-ActionBarMiddle');
+			$("#main div.cactiTableTitleRow:first").remove();
+
+			if ($("#main div.saveRow").length) {
+				$("#main div.saveRow").detach().appendTo('#tableActionOnTop');
+			} else if ($("#main div.actionsDropdown").length) {
+				$("#main div.actionsDropdown > div > span").detach().appendTo('#tableActionOnTop');
+			}
+
+			if ($("#main div.navBarNavigation").length) {
+				$("#main div.navBarNavigation:first").clone().appendTo('#tableNavBarOnTop');
+			}
+		}
+		// **************************************************************************************************************
+
+
+		/* display option: table layout */
+		let btn_table_layout = new navigationButton('displayOptions', 'Table', 'Setup Table Layout', 'fas fa-pencil', '#mdw-ActionBarTop');
+
+		if ($('thead>tr.tableHeader:has(th:nth-of-type(2))').length !== 0) {
+			let cArray = [];
+			let tClasses = [];
+			let cIndex = 1;
+			let cName;
+			let cTitle;
+			let cHideable = 0;
+			let cVisible = 1;
+			let tableID = $('tr.tableHeader').closest('.cactiTable').attr('id');
+			let cHeaderStr = '';
 			$('th', $('tr.tableHeader')).each(function () {
 				cName = 'n/a';
-				cTitle = 'n/a';
-				cHideable = 0;
 				if ($(this).hasClass('sortable')) {
 					cName = $('div.sortinfo', $(this)).attr('sort-column');
-					cTitle = $('i:first', $(this)).parent().text();
-					cHideable = 1;
+				}
+				cHeaderStr += cName;
+			})
+			let tableHash = cyrb53(window.location.pathname + tableID + cHeaderStr);
+			let table_settings;
+			let storage_table_headers = storage.get('midWinter_' + tableHash);
+
+
+			/* internal structure of storage_table_headers as follows
+            *	[0] - contains a cached string of classes hiding all unselected columns (by user) to save processing cycles
+                [1] - contains all table columns identified described as follows
+                      [ index, internal name |n/a|, title |n/a|, hide-able |0|, visible |1| ]
+                [2] - contains i18n session locale
+            */
+
+
+			/* make this table addressable */
+			$('#' + tableID).attr('data-table', tableHash);
+
+			if (storage_table_headers !== null) {
+				if (sessionLocale === storage_table_headers[2]) {
+					$('#' + tableID).addClass(storage_table_headers[0]);
 				} else {
-					if (!$(this).hasClass('tableSubHeaderCheckbox')) {
-						cName = 'n/a';
-						cTitle = $(this).text();
+					/* user language change detected */
+					$('th', $('tr.tableHeader')).each(function () {
+						cTitle = 'n/a';
+						if ($(this).hasClass('sortable')) {
+							cTitle = $('i:first', $(this)).parent().text();
+						} else {
+							cTitle = $(this).text();
+						}
+						storage_table_headers[1][cIndex - 1][2] = cTitle;
+						cIndex++;
+					});
+					storage_table_headers[2] = sessionLocale;
+					storage.set('midWinter_' + tableHash, JSON.stringify(storage_table_headers));
+				}
+			} else {
+				$('th', $('tr.tableHeader')).each(function () {
+					cName = 'n/a';
+					cTitle = 'n/a';
+					cHideable = 0;
+					if ($(this).hasClass('sortable')) {
+						cName = $('div.sortinfo', $(this)).attr('sort-column');
+						cTitle = $('i:first', $(this)).parent().text();
 						cHideable = 1;
+					} else {
+						if (!$(this).hasClass('tableSubHeaderCheckbox')) {
+							cName = 'n/a';
+							cTitle = $(this).text();
+							cHideable = 1;
+						}
 					}
+					cArray.push([cIndex, cName, cTitle, cHideable, cVisible]);
+					cIndex++;
+				})
+
+				if (cArray.length) {
+					table_settings = [tClasses, cArray, sessionLocale];
+					storage.set('midWinter_' + tableHash, JSON.stringify(table_settings));
+					storage_table_headers = storage.get('midWinter_' + tableHash);
 				}
-				cArray.push([cIndex, cName, cTitle, cHideable, cVisible]);
-				cIndex++;
-			})
-
-			if (cArray.length) {
-				table_settings = [tClasses, cArray, sessionLocale];
-				storage.set('midWinter_' + tableHash, JSON.stringify(table_settings));
-				storage_table_headers = storage.get('midWinter_' + tableHash);
 			}
+
+			if (storage_table_headers !== null) {
+				let columns_filter = '';
+				let columns = storage_table_headers[1];
+				columns.forEach((columns) => {
+					cIndex = columns[0];
+					cName = columns[1];
+					cTitle = columns[2];
+					cHideable = columns[3];
+					cVisible = columns[4];
+
+					if (cHideable) {
+						columns_filter += '<div>' + cTitle + '</div>'
+							+ '<div>'
+							//+ '<label class="checkboxSwitch">'
+							+ '<input data-scope="theme" id="mdw_' + 'col_' + cIndex + '" data-func="toggleTableColumn" data-table="' + tableHash + '" data-column="' + cIndex + '" class="formCheckbox" type="checkbox" name="mdw_' + 'col_' + cIndex + '"' + (cVisible ? ' checked' : '') + ((cIndex === 1) ? ' disabled' : '') + '>'
+							//+ '<span class="checkboxSlider checkboxRound"></span>'
+							//+ '</label>'
+							//+ '<label class="checkboxLabel checkboxLabelWanted" for="mdw_' + 'col_' + cIndex + '"></label>'
+							+ '<label for="mdw_' + 'col_' + cIndex + '"></label>'
+							+ '</div>'
+					}
+				})
+
+				columns_filter += '<div id="mdw-columns-reset" class="mdw-columns-reset'
+					+ ((storage_table_headers[0].length === 0) ? ' inactive' : '')
+					+ '" data-helper="' + tableHash + '">Reset</div>';
+
+				$('[class^="mdw-ConsoleNavigationBox"][data-helper="displayOptions"] .tab-columns').html(columns_filter);
+				$('#mdw-columns-reset').off().on('click', resetTableColumns);
+				btn_table_layout.show();
+			}
+		} else {
+			$('[class^="mdw-ConsoleNavigationBox"][data-helper="displayOptions"] .tab-columns').html('');
+			btn_table_layout.hide();
 		}
 
-		if (storage_table_headers !== null) {
-			let columns_filter = '';
-			let columns = storage_table_headers[1];
-			columns.forEach( (columns) => {
-				cIndex = columns[0];
-				cName = columns[1];
-				cTitle = columns[2];
-				cHideable = columns[3];
-				cVisible = columns[4];
+		// Add nice search filter to filters
+		if ($('input[id="filter"]').length > 0 && $('input[id="filter"] > i[class="fa fa-search filter"]').length < 1) {
+			$('input[id="filter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
+		}
 
-				if(cHideable) {
-					columns_filter += '<div>' + cTitle + '</div>'
-						+ '<div>'
-						+ '<label class="checkboxSwitch">'
-						+ '<input data-scope="theme" id="mdw_' + 'col_' + cIndex +'" data-func="toggleTableColumn" data-table="'+tableHash+'" data-column="'+cIndex+'" class="formCheckbox" type="checkbox" name="mdw_' + 'col_' + cIndex + '"' + (cVisible ? ' checked' : '') + ( (cIndex===1) ? ' disabled' : '') + '>'
-						+ '<span class="checkboxSlider checkboxRound"></span>'
-						+ '</label>'
-						+ '<label class="checkboxLabel checkboxLabelWanted" for="mdw_' + 'col_' + cIndex + '"></label>'
-						+ '</div>'
+		if ($('input[id="filterd"]').length > 0 && $('input[id="filterd"] > i[class="fa fa-search filter"]').length < 1) {
+			$('input[id="filterd"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
+		}
+
+		if ($('input[id="rfilter"]').length > 0 && $('input[id="rfilter"] > i[class="fa fa-search filter"]').length < 1) {
+			$('input[id="rfilter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchRFilter).parent('td').css('white-space', 'nowrap');
+		}
+
+		$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
+		$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
+
+		/* Highlight sortable table columns */
+		$('.tableHeader th').has('i.fa-sort').removeClass('tableHeaderColumnHover tableHeaderColumnSelected');
+		$('.tableHeader th').has('i.fa-sort-up').addClass('tableHeaderColumnSelected');
+		$('.tableHeader th').has('i.fa-sort-down').addClass('tableHeaderColumnSelected');
+		$('.tableHeader th').has('i.fa-sort').hover(
+			function () {
+				$(this).addClass("tableHeaderColumnHover");
+			}, function () {
+				$(this).removeClass("tableHeaderColumnHover");
+			}
+		);
+
+
+		//$('td:nth-child(2), th:nth-child(2)').addClass('hide');
+
+
+		$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
+
+		$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
+
+		// really shitty workaround to make custom row checkboxes clickable again. :(
+		$('tr[id*="line"]:not(.disabled_row)').each(function (data) {
+			$(this).find('.formCheckboxLabel').removeAttr('for');
+		});
+
+		// Turn file buttons into jQueryUI buttons
+		$('.import_label').button();
+		$('.import_button').change(function () {
+			text = this.value;
+			setImportFile(text);
+		});
+
+		setImportFile(noFileSelected);
+
+		function setImportFile(fileText) {
+			$('.import_text').text(fileText);
+		}
+
+		// Hide the graph icons until you hover
+		$('.graphDrillDown').hover(
+			function () {
+				element = $(this);
+
+				// hide the previously shown element
+				if (element.attr('id').replace('dd', '') != graphMenuElement && graphMenuElement > 0) {
+					$('#dd' + graphMenuElement).find('.iconWrapper:first').hide(300);
 				}
-			})
 
-			columns_filter 	+= '<div id="mdw-columns-reset" class="mdw-columns-reset'
-							+ ((storage_table_headers[0].length === 0) ? ' inactive' : '')
-							+ '" data-helper="'+tableHash+'">Reset</div>';
+				clearTimeout(graphMenuTimer);
+				graphMenuTimer = setTimeout(function () {
+					showGraphMenu(element);
+				}, 400);
+			},
+			function () {
+				element = $(this);
+				clearTimeout(graphMenuTimer);
+				graphMenuTimer = setTimeout(function () {
+					hideGraphMenu(element);
+				}, 400);
 
-			$('[class^="mdw-ConsoleNavigationBox"][data-helper="displayOptions"] .tab-columns').html(columns_filter);
-			$('#mdw-columns-reset').off().on('click', resetTableColumns);
-			btn_table_layout.show();
-		}
-	}else {
-		$('[class^="mdw-ConsoleNavigationBox"][data-helper="displayOptions"] .tab-columns').html('');
-		btn_table_layout.hide();
-	}
-
-	// Add nice search filter to filters
-	if ($('input[id="filter"]').length > 0 && $('input[id="filter"] > i[class="fa fa-search filter"]').length < 1) {
-		$('input[id="filter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
-	}
-
-	if ($('input[id="filterd"]').length > 0 && $('input[id="filterd"] > i[class="fa fa-search filter"]').length < 1) {
-		$('input[id="filterd"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchFilter).parent('td').css('white-space', 'nowrap');
-	}
-
-	if ($('input[id="rfilter"]').length > 0 && $('input[id="rfilter"] > i[class="fa fa-search filter"]').length < 1) {
-		$('input[id="rfilter"]').after("<i class='fa fa-search filter'/>").attr('autocomplete', 'off').attr('placeholder', searchRFilter).parent('td').css('white-space', 'nowrap');
-	}
-
-	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
-	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
-
-	/* Highlight sortable table columns */
-	$('.tableHeader th').has('i.fa-sort').removeClass('tableHeaderColumnHover tableHeaderColumnSelected');
-	$('.tableHeader th').has('i.fa-sort-up').addClass('tableHeaderColumnSelected');
-	$('.tableHeader th').has('i.fa-sort-down').addClass('tableHeaderColumnSelected');
-	$('.tableHeader th').has('i.fa-sort').hover(
-		function() {
-			$(this).addClass("tableHeaderColumnHover");
-		}, function() {
-			$(this).removeClass("tableHeaderColumnHover");
-		}
-	);
-
-
-	//$('td:nth-child(2), th:nth-child(2)').addClass('hide');
-
-
-	$('input#filter, input#rfilter').addClass('ui-state-default ui-corner-all');
-
-	$('input[type="text"], input[type="password"], input[type="checkbox"], textarea').not('image').addClass('ui-state-default ui-corner-all');
-
-	// really shitty workaround to make custom row checkboxes clickable again. :(
-	$('tr[id*="line"]:not(.disabled_row)').each(function(data) {
-		$(this).find('.formCheckboxLabel').removeAttr('for');
-	});
-
-	// Turn file buttons into jQueryUI buttons
-	$('.import_label').button();
-	$('.import_button').change(function() {
-		text=this.value;
-		setImportFile(text);
-	});
-
-	setImportFile(noFileSelected);
-
-	function setImportFile(fileText) {
-		$('.import_text').text(fileText);
-	}
-
-	// Hide the graph icons until you hover
-	$('.graphDrillDown').hover(
-		function() {
-			element = $(this);
-
-			// hide the previously shown element
-			if (element.attr('id').replace('dd', '') != graphMenuElement && graphMenuElement > 0) {
-				$('#dd'+graphMenuElement).find('.iconWrapper:first').hide(300);
+				if (typeof spikeKillClose == 'function') {
+					spikeKillClose();
+				}
 			}
+		);
 
-			clearTimeout(graphMenuTimer);
-			graphMenuTimer = setTimeout(function() { showGraphMenu(element); }, 400);
-		},
-		function() {
-			element = $(this);
-			clearTimeout(graphMenuTimer);
-			graphMenuTimer = setTimeout(function() { hideGraphMenu(element); }, 400);
-
-			if (typeof spikeKillClose == 'function') {
-				spikeKillClose();
-			}
+		function showGraphMenu(element) {
+			element.find('.spikekillMenu').menu('disable');
+			element.find('.iconWrapper').show(300, function () {
+				graphMenuElement = element.attr('id').replace('dd', '');
+				$(this).find('.spikekillMenu').menu('enable');
+				$(this).css('display', 'block');
+			});
 		}
-	);
 
-	function showGraphMenu(element) {
-		element.find('.spikekillMenu').menu('disable');
-		element.find('.iconWrapper').show(300, function() {
-			graphMenuElement = element.attr('id').replace('dd', '');
-			$(this).find('.spikekillMenu').menu('enable');
-			$(this).css('display', 'block');
-		});
+		function hideGraphMenu(element) {
+			element.find('.spikekillMenu').menu('disable');
+			element.find('.iconWrapper').hide(300, function () {
+				$(this).find('.spikekillMenu').menu('enable');
+			});
+		}
+
+		setNavigationScroll();
 	}
-
-	function hideGraphMenu(element) {
-		element.find('.spikekillMenu').menu('disable');
-		element.find('.iconWrapper').hide(300, function() {
-			$(this).find('.spikekillMenu').menu('enable');
-		});
-	}
-
-	setNavigationScroll();
 }
 
 function initStorageItem(name, default_value, data_attribute= '') {
@@ -993,12 +1035,50 @@ function checkThemeColorSetup(color_mode) {
 	}
 }
 
-function togglePopOver() {
-	const popover = document.getElementById('mdw-PopOver');
-	const popupOpened = popover.togglePopover();
-	if (popupOpened !== undefined) {
-		this.innerText +=
-			popupOpened === true ? `\nOpened` : `\nClosed`;
+function preparePopOver(html) {
+	const container = 'mdw-GridContainer-PopOver';
+	const overlay = 'mdw-GridContainer-Overlay';
+
+	const popover = $('#'+container);
+	const screenOverlay = $('#'+overlay);
+
+	if ( popover !== 'undefined' && screenOverlay !== 'undefined' ) {
+
+		let title = popover.find('.mdw-PopOverTitle:first');
+		let content = popover.find('.mdw-PopOverContent:first');
+		let footer = popover.find('.mdw-PopOverFooter:first');
+
+		content.html(html);
+		title.html( content.find('.cactiTableTitleRow:first').detach() );
+		footer.html( content.find('.saveRow:first').detach() );
+
+		popover.find('button[value="cancel"]')
+				.attr('onclick', '')
+				.on('click', function(e) {
+					e.preventDefault();
+					e.stopPropagation();
+					togglePopOver(false);
+					return false;
+				});
+
+		popover.find('#action_confirm')
+				.on('submit', function(e) {
+					togglePopOver(false);
+						//popover.find('.mdw-PopOverElements').empty();
+				});
+
+		togglePopOver( true);
+	}
+}
+
+function togglePopOver(force) {
+	let popover = $('.mdw-PopOver');
+	if (popover !== 'undefined') {
+		if (typeof force == 'boolean') {
+			popover.toggleClass('hidden', (force !== true))
+		}else {
+			popover.toggleClass('hidden');
+		}
 	}
 }
 
@@ -1077,7 +1157,7 @@ function setHotKeys() {
 					loadUrl({url:urlPath+'graph_view.php?action=preview'});
 					break;
 				case 'F5':
-
+					togglePopOver( false);
 					loadUrl({url:window.location.href});
 					break;
 				case 'SHIFT+m+d':
@@ -1094,6 +1174,7 @@ function setHotKeys() {
 					break;
 				case 'ESC':
 					kioskMode(false);
+					togglePopOver( false);
 					break;
 				default:
 					alert(event);

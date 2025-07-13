@@ -720,11 +720,12 @@ button.ui-multiselect,
 	white-space: nowrap;
 	width: 100% !important;
 	max-width: 25rem !important;
-	border-radius: 5px;
+	border-radius: 4px;
 	display: inline-flex;
 	flex-direction: row-reverse;
 	justify-content: space-between;
 	align-items: center;
+	padding: 0.4rem 0.5em !important;
 	
 	&:active,
 	&:focus-within,

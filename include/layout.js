@@ -1440,13 +1440,13 @@ function makeFiltersResponsive() {
 					if (filterHeader.find('.cactiFilterState').length == 0) {
 						filterHeader.find('div.cactiTableButton').append('<a class="cactiFilterState" href="#"><i class="fa fa-angle-double-down"></i></a>');
 					} else {
-						filterHeader.find('div.cactiTableButton').find('.cactiFilterState').removeClass('ti-chevrons-up').addClass('ti-chevrons-down');
+						filterHeader.find('div.cactiTableButton').find('.cactiFilterState').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
 					}
 				} else {
 					if (filterHeader.find('.cactiFilterState').length == 0) {
 						filterHeader.find('div.cactiTableButton').append('<a class="cactiFilterState" href="#"><i class="fa fa-angle-double-up"></i></a>');
 					} else {
-						filterHeader.find('div.cactiTableButton').find('.cactiFilterState').removeClass('ti-chevrons-down').addClass('ti-chevrons-up');
+						filterHeader.find('div.cactiTableButton').find('.cactiFilterState').removeClass('fa-angle-double-down').addClass('fa-angle-double-up');
 					}
 				}
 
@@ -2702,9 +2702,20 @@ function handleAjaxResponse(html, options) {
 			pushState(myTitle, options);
 
 			if (html !== null && html.length > 0) {
-				$(elementId).hide().empty().hide();
-				$(elementId).html(htmlContent);
-				$(elementId).show();
+
+				/* detect confirmations */
+				let confirmation = '#action_confirm';
+				let htmlConfirm = findElement(htmlObject, confirmation).parent().html();
+
+				if (typeof htmlConfirm !== 'undefined' && typeof window['preparePopOver'] === 'function') {
+					preparePopOver(htmlConfirm);
+				}else {
+					$(elementId).hide().empty().hide();
+					$(elementId).html(htmlContent);
+					$(elementId).show();
+				}
+
+
 			}
 
 			if (options.pageName != '') {

@@ -166,7 +166,7 @@
 
 .ui-widget.ui-widget-content {
     border: 1px solid var(--border-color);
-    border-radius: 5px !important;
+    border-radius: 4px !important;
     box-shadow: var(--box-shadow-color) 0 5px 10px;
     background-color: var(--background-content);
 }
@@ -238,8 +238,8 @@
 }
 
 .ui-corner-all {
-    border-radius: 5px ;
-    -moz-border-radius: 5px;
+    border-radius: 4px ;
+    -moz-border-radius: 4px;
 }
 
 .ui-controlgroup {
@@ -282,7 +282,7 @@
 .ui-datepicker,
 .ui-selectmenu-menu,
 .ui-multiselect-menu {
-    z-index: 1000 !important;
+    z-index: 3001 !important;
 }
 
 .ui-selectmenu-search {

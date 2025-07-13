@@ -28,8 +28,8 @@ html {
         }
 
         .mdw-Main {
-            height: 100vh;
-            width: 100vw;
+            height: 100dvh;
+            width: 100dvw;
             border-top: none;
             /*
                         &:has(.saveRowParent) {
@@ -43,15 +43,29 @@ html {
             width: 100vw;
         }
     }
+
+    &[data-auto-table-layout="off"] {
+        .cactiTable {
+            overflow-x: unset !important;
+        }
+    }
 }
 
 .mdw-GridContainer {
     display: grid;
-    grid-template-areas: "sidebar  header    header   header"
-                         "sidebar  dockLeft  dockTop  dockRight"
-                         "sidebar  dockLeft  main     dockRight";
-    grid-template-columns: 4rem minmax(0, min-content) 1fr minmax(0, min-content);
+    grid-template-areas: "sidebar  header    header   header    header"
+                         "sidebar  dockLeft  dockTop  dockRight actionbar"
+                         "sidebar  dockLeft  main     dockRight actionbar";
+    grid-template-columns: 4rem minmax(0, min-content) 1fr minmax(0, min-content) minmax(0, min-content);
     grid-template-rows: 3.5rem minmax(0rem, auto) clamp( calc( 100dvh - 8rem), calc( 100dvh - 3.5rem), 100dvh);
+}
+
+.mdw-GridContainer-Overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 2000;
+    background: rgba( 0, 0, 0, 0.4);
 }
 
 .mdw-ConsolePageHead {
@@ -61,6 +75,7 @@ html {
     flex-wrap: nowrap;
     background-image: linear-gradient(90deg, var(--background-navigation-top-darkblue) 35%, var(--background-navigation-top-lightblue));
     grid-area: header;
+    padding: 0 0 0 18px;
 
     * {
         float: left;
@@ -79,13 +94,18 @@ html {
         .compact_nav_icon {
             font-size: var(--fs-regular);
             width: 2.5rem;
-            height: 2.5rem;
-            margin: 2px 3px;
+            height: 2.8rem;
+            margin: 2px 4px;
             border: 2px solid transparent;
             border-radius: 4px;
 
+            &:last-of-type {
+                margin-left: 12px;
+            }
+
             &[data-tooltip]:not([data-tooltip=""]) {
                 &::before {
+                    font-family: unset;
                     width: fit-content;
                     position: absolute;
                     left: unset !important;
@@ -99,7 +119,6 @@ html {
 }
 
 .navBreadCrumb {
-    padding: 0 0 0 18px;
     display: flex;
     overflow: hidden;
     flex-wrap: nowrap;
@@ -180,12 +199,8 @@ html {
 }
 
 .navControl {
-    /* padding-right: calc( 0.5rem + 5px); */
-    padding-right: 0.5rem;
+    font-size: var(--fs-regular);
 }
-
-/* ensure that save buttons stay at the bottom. no solution has been found yet to use grid-area: footer instead */
-
 
 /* Console Navigation Area */
 .mdw-ConsoleNavigation {
@@ -224,19 +239,19 @@ html {
         border: 2px solid transparent;
 
         &:has(.navBackdrop){
-            height: 5rem;
+            height: 4.8rem;
         }
 
 
         & .navBackdrop {
             width: 100%;
             height: 5rem;
-            background: transparent url("./../../images/cacti_logo.svg") no-repeat scroll 50% 50% / 25px auto;
+            background: transparent url("./../../images/cacti_logo.svg") no-repeat scroll 50% 50% / 2rem auto;
             position: relative;
             z-index: auto;
             html[data-controls-subtitle="on"] & {
                 flex: 1;
-                background: transparent url("./../../images/cacti_logo.svg") no-repeat scroll 50% 14% / min(20px) auto;
+                background: transparent url("./../../images/cacti_logo.svg") no-repeat scroll 50% 14% / min(1.5rem) auto;
             }
         }
 
@@ -268,10 +283,75 @@ html {
     left: -1px;
 }
 
+.mdw-ActionBar {
+    display: none;
+    grid-area: actionbar;
+    z-index: 1000;
+    float: left;
+    overflow-y: visible !important;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: auto;
+    background: var(--background-navigation);
+    align-items: center;
+    box-shadow: 3px 6px 5px 2px var(--box-shadow-color);
+
+    &:has( div[class^="mdw-Action"]:not(:empty) ) {     /* only show ActionBar with content */
+        display: flex;
+    }
+
+    .compact_nav_icon {
+        font-size: var(--fs-big);
+        width: 2.5rem;
+        height: 2.5rem;
+        margin: 4px 3px;
+        border-radius: 4px;
+        border: 2px solid transparent;
+
+        &[data-subtitle]:not([data-subtitle=""])::after {
+            display: block;
+            content: attr(data-subtitle);
+            font-size: var(--fs-small);
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        & > span {
+            display: none;
+        }
+    }
+
+    .mdw-ActionBarTop {
+        display: none;
+        &:has( div:not([class*="hide"])) {    /* only visible if at least one child is not marked as hidden */
+            display: block;
+        }
+        &:not(:empty):has( + .mdw-ActionBarMiddle:not(:empty))::after {         /* separator */
+                display: block;
+                content: " ";
+                width: 70%;
+                border-bottom: 1px solid var(--border-color);
+                margin: calc(0.4rem - 1px) auto 0 auto;
+        }
+    }
+
+    .mdw-ActionBarMiddle {
+        &:not(:empty) {
+            margin: 0.4rem auto;
+            width: 3rem;
+        }
+    }
+}
+
 * {
     /* CSS driven tooltip */
     &[data-tooltip]:not([data-tooltip=""]) {
         &::before {
+            font-family: var(--font-sans), serif;
+            font-weight: var(--fw-normal);
             z-index: 1500;
             font-size: var(--fs-regular);
             position: absolute;
@@ -317,8 +397,8 @@ html {
     flex-direction: column;
     width: 55rem;
     min-width: 19rem;
-    max-width: calc(100vw - 5rem);
-    height: calc(100vh - 3.5rem);
+    max-width: calc(100dvw - 5rem);
+    height: calc(100dvh - 3.5rem);
     transition: visibility 0.5s linear, transform 0.5s ease-in-out;
     transform: translateX(-125%);
     border-top: 1px solid var(--border-color-light);
@@ -328,7 +408,7 @@ html {
     background-color: var(--background-menu);
 
     &[data-align="right"] {
-        right: 0;
+        right: 3rem;
         left: unset;
         transform: translateX(+125%);
         border: unset;
@@ -337,15 +417,23 @@ html {
         border-left: 1px solid var(--border-color);
         box-shadow: 0 10px 5px 0 var(--box-shadow-color);
 
-        .navBox-header-button:last-child {
-            margin-right: calc(0.5rem + 4px);
+        .navBox-header {
+            padding: 0 10px;
         }
+
+        .navBox-header-title {
+            text-align: left;
+        }
+
 
         .navBox-content {
             overflow-y: auto;
-            padding: 0 1rem;
+            padding: 0;
             flex: 1;
+            scrollbar-gutter: stable;
         }
+
+
     }
 
     &.visible {
@@ -369,7 +457,7 @@ html {
         top: unset;
         bottom: 0;
         height: auto;
-        max-height: 100vh;
+        max-height: 100dvh;
     }
 
     &[data-height="half"] .navBox-header {
@@ -395,6 +483,7 @@ html {
         writing-mode: vertical-lr;
         flex-direction: row;
         justify-content: flex-start;
+        height: 100%;
 
         &::after{
             content: "";
@@ -413,14 +502,18 @@ html {
 
     & .filterRow {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: wrap;
 
         .filterColumnButton {
             order: 0;
-            float: left;
         }
         .filterColumn {
             order: 1;
+            width: 100%;
+        }
+        .filterColumn:not(:has(div.filterFieldName)) {
+            margin: 0.25rem 0;
         }
     }
 
@@ -428,18 +521,17 @@ html {
         line-height: 1.5rem;
     }
 
-    & button {
-        float: left;
-    }
-
-    button span.button-text {
-        display:none;
-    }
-    button::after {
-        margin: 0 0.5rem;
-        content: "\ea61";
-        display: block;
-        font-family: "tabler-icons";
+    & .filterColumnButton {
+        button {
+            font-family: "Font Awesome 6 Free", serif;
+            font-weight: 600;
+        }
+        button span.button-text {
+            display:none;
+        }
+        button[id=go]::after    { content: "\f0b0"; }
+        button[id=clear]::after { content: "\e17b"; }
+        button[id=save]::after  { content: "\f005"; font-weight: 400; }
     }
 }
 
@@ -478,7 +570,10 @@ html {
     width: 2.5rem;
     height: 2.5rem;
     &[aria-pressed="true"] {
-        background: var(--background-active-section);
+        /*background: var(--background-active-section);*/
+        box-shadow: 0 .33em 2em rgba(25,85,138,.67) inset,
+                    1px 1px 0 rgba(255,255,255,.25) inset,
+                    -1px -1px 0 rgba(255,255,255,.25) inset;
         &:has(~ .navBox-header-search) {
             ~ .navBox-header-search {
                 flex-grow: 5;
@@ -805,7 +900,7 @@ html {
 
     .cactiGraphContentArea, .cactiConsoleContentArea {
         & #main {
-            padding: 0 0.5rem 1rem 0.5rem;
+           /* padding: 0 0.5rem 1rem 0.5rem; */
         }
     }
 
