@@ -2677,14 +2677,15 @@ button {
         color: green;
     }
 
-    &[type="submit"][value="Go"] { &::before { content: "\f058" ; color: green; } }
-    &[value="create"]            { &::before { content: "\f058" ; color: green; } }
-    &[value="cancel"]            { &::before { content: "\f057" ; color: red;   } }
-    &[value="return"]            { &::before { content: "\f2ea" ; } }
-    &[value="save"]              { &::before { content: "\f058" ; } }
-    &[value="clear"]             { &::before { content: "\f057" ; } }
-    &[value="export"]            { &::before { content: "\f56e" ; } }
-    &[value="import"]            { &::before { content: "\f56e" ; } }
+    &[type="submit"][value="Go"]        { &::before { content: "\f058" ; color: green; } }
+    &[type="submit"][value="continue"]  { &::before { content: "\f058" ; color: green; } }
+    &[value="create"]                   { &::before { content: "\f058" ; color: green; } }
+    &[value="cancel"]                   { &::before { content: "\f057" ; color: red;   } }
+    &[value="return"]                   { &::before { content: "\f2ea" ; } }
+    &[value="save"]                     { &::before { content: "\f058" ; } }
+    &[value="clear"]                    { &::before { content: "\f057" ; } }
+    &[value="export"]                   { &::before { content: "\f56e" ; } }
+    &[value="import"]                   { &::before { content: "\f56e" ; } }
 }
 
 /* Rounded.checkboxSliders */

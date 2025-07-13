@@ -139,7 +139,7 @@
     border-radius: 2px;
     border: 1px solid var(--border-color);
     width: clamp(40dvw, 40dvw, 100dvw);
-    max-height: 50dvh;
+    max-height: 95dvh;
     height: fit-content;
     min-height: 25dvh;
     color: var(--text-color-normal);
@@ -155,10 +155,18 @@
         div.left:first-of-type {
             padding: 1rem 1rem 1rem 18px;
         }
+        div.textArea.left:not(:has(div.itemlist)) {
+            max-height: 40dvh;
+            overflow: auto;
+        }
+        div.textArea.left:not(:has(div.itemlist)):not(:has(div.formRow)) {
+            padding: 1rem 1rem 1rem 18px;
+        }
         div.itemlist {
             border-radius: 4px;
             border: 1px solid var(--border-color);
-            padding: 1rem 0;
+            padding: 1rem;
+            margin: 0 1rem 1rem 1rem;
         }
     }
     .mdw-PopOverFooter {
@@ -166,7 +174,7 @@
     }
 
     div {
-        width: 100% !important;
+        width: unset !important;
     }
 
     .cactiTableTitleRow {
