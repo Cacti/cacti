@@ -2132,7 +2132,7 @@ CREATE TABLE host_snmp_query (
   title_format varchar(50) NOT NULL default '',
   reindex_method tinyint(3) unsigned NOT NULL default '0',
   reindex_last_runtime timestamp NOT NULL default current_timestamp(), 
-  reindex_last_duration double unsigned NOT NULL default '0';
+  reindex_last_duration double unsigned NOT NULL default '0',
   PRIMARY KEY (host_id,snmp_query_id)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
