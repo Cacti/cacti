@@ -414,7 +414,7 @@ function inject_realtime_form() {
 	$content .= "</select>
 			</div>
 			<div class='filterColumn'>
-				<input type='button' class='ui-button ui-corner-all ui-widget' id='realtimeoff' value='" . __esc('Stop') . "'>
+				<button type='button' class='ui-button ui-corner-all ui-widget' id='realtimeoff'>" . __esc('Stop') . "</button>
 			</div>
 			<div class='filterColumn center'>
 				<span id='countdown'></span>
@@ -1419,7 +1419,7 @@ function html_graph_list_view() {
 	<div class='break'></div>
 	<div class='cactiTable'>
 		<div style='float:left'><img src='images/arrow.gif' alt=''>&nbsp;</div>
-		<div style='float:right'><input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('View');?>' title='<?php print __esc('View Graphs');?>' onClick='viewGraphs()'></div>
+		<div style='float:right'><button type='button' class='ui-button ui-corner-all ui-widget' title='<?php print __esc('View Graphs');?>' onClick='viewGraphs()'><?php print __esc('View');?></button></div>
 	</div>
 	<?php print $report_text;?>
 	<script type='text/javascript'>

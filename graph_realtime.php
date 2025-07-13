@@ -404,29 +404,27 @@ $sizes = [
 							$interval, $interval == abs(get_request_var('graph_start')) ? ' selected="selected"' : '', $text
 						);
 					}
-?>
+					?>
 				</select>
 				<select id='ds_step' onChange='imageOptionsChanged("interval")'>
 					<?php
-$min_refresh = read_config_option('realtime_interval');
+					$min_refresh = read_config_option('realtime_interval');
 
-foreach ($realtime_refresh as $interval => $text) {
-	if ($interval >= $min_refresh) {
-		printf('<option value="%d"%s>%s</option>',
-			$interval, $interval == get_request_var('ds_step') ? ' selected="selected"' : '', $text
-		);
-	}
-}
-?>
+					foreach ($realtime_refresh as $interval => $text) {
+						if ($interval >= $min_refresh) {
+							printf('<option value="%d"%s>%s</option>',
+								$interval, $interval == get_request_var('ds_step') ? ' selected="selected"' : '', $text
+							);
+						}
+					}
+					?>
 				</select>
 				<select id='size' onChange='imageOptionsChanged("interval")'>
 					<?php
-	foreach ($sizes as $key => $value) {
-		printf('<option value="%d"%s>%s</option>',
-			$key, $key == get_request_var('size') ? ' selected="selected"' : '', $value
-		);
-	}
-?>
+					foreach ($sizes as $key => $value) {
+						printf('<option value="%d"%s>%s</option>', $key, $key == get_request_var('size') ? ' selected="selected"' : '', $value);
+					}
+					?>
 				</select>
 				<input type='checkbox' id='thumbnails' onChange='imageOptionsChanged("interval")' <?php print get_request_var('graph_nolegend') == 'true' ? 'checked':'';?>>
 				<label for='thumbnails'><?php print __('Thumbnails');?></label>

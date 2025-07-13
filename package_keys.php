@@ -97,9 +97,9 @@ function form_actions() {
 					<p>" . __n('Click \'Continue\' to delete the following .', 'Click \'Continue\' to delete following Package Repositories.', cacti_sizeof($p_array)) . "</p>
 					<div class='itemlist'><ul>$p_list</ul></div>
 				</td>
-			</tr>\n";
+			</tr>";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Public Key', 'Delete Public Keys', cacti_sizeof($p_array)) . "'>";
+			$save_html = "<button type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>" . __esc('Cancel') . "</button><button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' title='" . __n('Delete Public Key', 'Delete Public Keys', cacti_sizeof($p_array)) . "'>" . __esc('Continue') . '</button>';
 		}
 	} else {
 		raise_message(40);

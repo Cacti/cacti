@@ -295,8 +295,8 @@ function field_remove_confirm() {
 	</tr>
 	<tr>
 		<td class='right'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' name='cancel'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Data Input Field');?>'>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel' name='cancel'><?php print __esc('Cancel');?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' name='continue' title='<?php print __esc('Remove Data Input Field');?>'><?php print __esc('Continue');?></button>
 		</td>
 	</tr>
 	<?php

@@ -875,8 +875,8 @@ function profile_item_remove_confirm() {
 	</tr>
 	<tr>
 		<td class='right'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' title='<?php print __esc('Remove Data Source Profile RRA');?>'>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel'  onClick='$("#cdialog").dialog("close");' name='cancel'><?php print __esc('Cancel');?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' title='<?php print __esc('Remove Data Source Profile RRA');?>'><?php print __esc('Continue');?></button>
 			<input type='hidden' id='rra_profile_id' value='<?php print $profile['data_source_profile_id'];?>'>
 			<input type='hidden' id='rra_id' value='<?php print get_request_var('id');?>'>
 		</td>

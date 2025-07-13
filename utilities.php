@@ -1067,10 +1067,10 @@ function boost_display_run_status() {
 								print ' selected';
 							} print '>' . $interval . '</option>';
 						}
-	?>
+						?>
 					</td>
 					<td>
-						<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Refresh');?>' onClick='applyFilter()'>
+						<button type='button' class='ui-button ui-corner-all ui-widget' onClick='applyFilter()'><?php print __esc('Refresh');?></button>
 					</td>
 				</tr>
 			</table>

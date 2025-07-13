@@ -984,7 +984,7 @@ function host_edit() {
 							<?php form_dropdown('graph_template_id', $available_graph_templates, 'name', 'id', '', '', ''); ?>
 						</td>
 						<td class='noHide'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Add'); ?>' id='add_gt' title='<?php print __esc('Add Graph Template to Device'); ?>'>
+							<button type='button' class='ui-button ui-corner-all ui-widget' id='add_gt' title='<?php print __esc('Add Graph Template to Device'); ?>'><?php print __esc('Add'); ?></button>
 						</td>
 					</tr>
 				</table>
@@ -1132,7 +1132,7 @@ function host_edit() {
 							<?php form_dropdown('reindex_method', $reindex_types, '', '', $default, '', ''); ?>
 						</td>
 						<td>
-							<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Add'); ?>' id='add_dq' title='<?php print __esc('Add Data Query to Device'); ?>'>
+							<button type='button' class='ui-button ui-corner-all ui-widget' id='add_dq' title='<?php print __esc('Add Data Query to Device'); ?>'><?php print __esc('Add'); ?></button>
 						</td>
 					</tr>
 				</table>

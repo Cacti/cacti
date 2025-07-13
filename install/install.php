@@ -139,9 +139,9 @@ if ($hasEverything) {
 			</div>
 		</div>
 		<div class='cactiInstallButtonArea saveRow'>
-			<input class='installButton' id='buttonPrevious' type='button' value='Previous' style='display: none'>
-			<input class='installButton' id='buttonNext' type='button' value='Next' style='display: none'>
-			<input class='installButton' id='buttonTest' type='button' value='Test' style='display:none'>
+			<button class='installButton' id='buttonPrevious' type='button' style='display: none'><?php print __esc('Previous');?></button>
+			<button class='installButton' id='buttonNext' type='button' style='display: none'><?php print __esc('Next');?></button>
+			<button class='installButton' id='buttonTest' type='button' style='display:none'><?php print __esc('Test');?></button>
 			<input id='installData' type='hidden'>
 		</div>
 		<div id='installDebug'></div>

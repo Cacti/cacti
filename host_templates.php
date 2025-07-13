@@ -431,8 +431,8 @@ function template_item_remove_gt_confirm() {
 	</tr>
 	<tr>
 		<td class='right'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel'); ?>' onClick='$("#cdialog").dialog("close")' name='cancel'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue'); ?>' name='continue' title='<?php print __esc('Remove Graph Template'); ?>'>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel' onClick='$("#cdialog").dialog("close")' name='cancel'><?php print __esc('Cancel'); ?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' name='continue' title='<?php print __esc('Remove Graph Template'); ?>'><?php print __esc('Continue'); ?></button>
 		</td>
 	</tr>
 	<?php
@@ -497,8 +497,8 @@ function template_item_remove_dq_confirm() {
 	</tr>
 	<tr>
 		<td class='right'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel'); ?>' onClick='$("#cdialog").dialog("close")' name='cancel'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue'); ?>' name='continue' title='<?php print __esc('Remove Data Query'); ?>'>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel' onClick='$("#cdialog").dialog("close")' name='cancel'><?php print __esc('Cancel'); ?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' name='continue' title='<?php print __esc('Remove Data Query'); ?>'><?php print __esc('Continue'); ?></button>
 		</td>
 	</tr>
 	<?php
@@ -594,7 +594,7 @@ function template_edit() {
 
 	/* we have to hide this button to make a form change in the main form trigger the correct
 	 * submit action */
-	print "<div style='display:none;'><input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Default Submit Button') . "'></div>";
+	print "<div style='display:none;'><button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active'>" . __esc('Default Submit Button') . "</button></div>";
 
 	html_end_box(true, true);
 
@@ -647,7 +647,7 @@ function template_edit() {
 								ORDER BY gt.name', [get_request_var('id')]), 'name', 'id', '', '', ''); ?>
 						</td>
 						<td class='noHide'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Add'); ?>' id='add_gt' title='<?php print __esc('Add Graph Template to Device Template'); ?>'>
+							<button type='button' class='ui-button ui-corner-all ui-widget' id='add_gt' title='<?php print __esc('Add Graph Template to Device Template'); ?>'><?php print __esc('Add'); ?></button>
 						</td>
 					</tr>
 				</table>
@@ -702,7 +702,7 @@ function template_edit() {
 								ORDER BY snmp_query.name', [get_request_var('id')]), 'name', 'id', '', '', ''); ?>
 						</td>
 						<td class='noHide'>
-							<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Add'); ?>' id='add_dq' title='<?php print __esc('Add Data Query to Device Template'); ?>'>
+							<button type='button' class='ui-button ui-corner-all ui-widget' id='add_dq' title='<?php print __esc('Add Data Query to Device Template'); ?>'><?php print __esc('Add'); ?></button>
 						</td>
 					</tr>
 				</table>

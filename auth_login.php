@@ -356,7 +356,7 @@ if (read_config_option('auth_cache_enabled') == 'on' && $is_https) { ?>
 } ?>
 <tr>
 	<td colspan='2'>
-		<input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Login'); ?>'>
+		<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' value='login'><?php print __esc('Login'); ?></button>
 	</td>
 </tr>
 <?php

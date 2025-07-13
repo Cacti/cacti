@@ -200,7 +200,7 @@ function automation_import() {
 	print "	<tr><td><hr/></td></tr><tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='save'>
-			<input type='submit' value='" . __esc('Import') . "' title='" . __esc('Import Graph Rules') . "' class='ui-button ui-corner-all ui-widget ui-state-active'>
+			<button type='submit' value='import' title='" . __esc('Import Graph Rules') . "' class='ui-button ui-corner-all ui-widget ui-state-active'>" . __esc('Import') . "</button>
 		</td>
 		<script type='text/javascript'>
 		$(function() {

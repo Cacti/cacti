@@ -159,7 +159,7 @@ html_auth_header('login_2fa', __('2nd Factor Authentication'), __('2FA Verificat
 <tr>
 	<td>&nbsp;</td>
 	<td>
-		<input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Verify');?>'>
+		<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' value='verify'><?php print __esc('Verify');?></button>
 	</td>
 </tr>
 <?php

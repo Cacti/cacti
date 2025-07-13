@@ -273,8 +273,8 @@ html_auth_header('reset_password', __('Reset Password'), __('Reset Password'), $
 		</tr>
 	<tr>
 		<td colspan='2' class='nowrap'>
-			<input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Send reset token by email'); ?>'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location="<?php print $return;?>"' value='<?php print __esc('Return');?>'>
+			<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' value='send'><?php print __esc('Send reset token by email'); ?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location="<?php print $return;?>"' value='return'><?php print __esc('Return');?></button>
 		</td>
 	</tr>
 	<tr>
@@ -299,8 +299,9 @@ if ($action == 'formreset') {?>
 		</td>
 	</tr>
 	<tr>
-		<td colspan='2' class='nowrap'><input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Save'); ?>'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location="<?php print $return;?>"' value='<?php print __esc('Return');?>'>
+		<td colspan='2' class='nowrap'>
+			<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' value='save'><?php print __esc('Save'); ?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location="<?php print $return;?>"' value='return'><?php print __esc('Return');?></button>
 		</td>
 	</tr>
 	<tr>

@@ -528,7 +528,6 @@ class CactiTableFilter {
 							print '<div class="filterColumnButton">' . PHP_EOL;
 
 							if (isset($field_array['display'])) {
-							//	print '<input type="button" class="ui-button ui-corner-all ui-widget' . $class . '" id="' . $field_name . '" value="' . $field_array['display'] . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title']:'') . '">';
 								print '<button type="button" class="ui-button ui-corner-all ui-widget" id="' . $field_name . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title']:'') . '"><span class="button-text">' . $field_array['display'] . '</span></button>';
 							} else {
 								print '<button type="button" class="ui-button ui-corner-all ui-widget" id="' . $field_name . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title']:'') . '"><i class="' . $field_array['class'] . '"></i></button>';
@@ -539,8 +538,7 @@ class CactiTableFilter {
 							break;
 						case 'submit':
 							print '<div class="filterColumnButton">' . PHP_EOL;
-						//	print '<input type="submit" class="ui-button ui-corner-all ui-widget' . $class . '" id="' . $field_name . '" value="' . $field_array['display'] . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title']:'') . '">';
-							print '<button type="submit" class="ui-button ui-corner-all ui-widget' . $class . '" id="' . $field_name . '" value="' . $field_array['display'] . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title']:'') . '"><span class="button-text">' . $field_array['display'] . '</span></button>';
+							print '<button type="submit" class="ui-button ui-corner-all ui-widget ui-state-active ' . $class . '" id="' . $field_name . '" value="' . $field_array['display'] . '"' . (isset($field_array['title']) ? ' title="' . $field_array['title']:'') . '"><span class="button-text">' . $field_array['display'] . '</span></button>';
 							print '</div>' . PHP_EOL;
 
 							break;

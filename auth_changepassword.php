@@ -450,8 +450,8 @@ html_auth_header('change_password', __('Change Password'), __('Change Password')
 		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password_confirm' name='password_confirm' autocomplete='off' size='15' maxlength='25' placeholder='********'></td><td id='pass_details_conf'><div id='passconfirm' style='float:left;'></div></td>
 	</tr>
 	<tr>
-		<td colspan='3' class='nowrap'><input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Save'); ?>'>
-			<?php print $user['must_change_password'] != 'on' ? "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location=\"$return\"' value='".  __esc('Return') . "'>":'';?>
+		<td colspan='3' class='nowrap'><button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' value='save'><?php print __esc('Save'); ?></button>
+			<?php print $user['must_change_password'] != 'on' ? "<button type='button' class='ui-button ui-corner-all ui-widget' onClick='document.location=\"$return\"'>".  __esc('Return') . "'></button>":'';?>
 		</td>
 	</tr>
 <?php

@@ -170,8 +170,8 @@ function clog_view_logfile() {
 		</tr>
 		<tr class='saveRow'>
 			<td colspan='2' class='right'>
-				<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='" . __esc('Cancel') . "'>&nbsp
-				<input type='button' class='ui-button ui-corner-all ui-widget' id='pc' name='purge_continue' value='" . __esc('Continue') . "' title='" . __esc('Purge Log') . "'>
+				<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel'>" . __esc('Cancel') . "</button>
+				<button type='button' class='ui-button ui-corner-all ui-widget' id='pc' name='purge_continue' title='" . __esc('Purge Log') . "'>" . __esc('Continue') . "</button>
 				<script type='text/javascript'>
 				$('#pc').click(function() {
 					strURL = location.pathname+'?purge_continue=1&filename=" . basename($logfile) . "';

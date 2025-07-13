@@ -782,7 +782,7 @@ function graph_perms_edit($tab, $header_label) {
 					<?php form_dropdown('policy_graphs',$policy_array,'','',$policy['policy_graphs'],'',''); ?>
 				</td>
 				<td>
-					<input type='submit' class='ui-button ui-corner-all ui-widget' name='update_policy' value='<?php print __esc('Update');?>'>
+					<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' name='update_policy'><?php print __esc('Update');?></button>
 					<input type='hidden' name='tab' value='<?php print $tab;?>'>
 					<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
 					<input type='hidden' name='update_policy' value='1'>
@@ -1071,7 +1071,7 @@ function graph_perms_edit($tab, $header_label) {
 					<?php form_dropdown('policy_hosts',$policy_array,'','',$policy['policy_hosts'],'',''); ?>
 				</td>
 				<td>
-					<input type='submit' class='ui-button ui-corner-all ui-widget' name='update_policy' value='<?php print __esc('Update');?>'>
+					<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' name='update_policy'><?php print __esc('Update');?></button>
 					<input type='hidden' name='tab' value='<?php print $tab;?>'>
 					<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
 					<input type='hidden' name='update_policy' value='1'>
@@ -1241,7 +1241,7 @@ function graph_perms_edit($tab, $header_label) {
 					<?php form_dropdown('policy_graph_templates',$policy_array,'','',$policy['policy_graph_templates'],'',''); ?>
 				</td>
 				<td>
-					<input type='submit' class='ui-button ui-corner-all ui-widget' name='update_policy' value='<?php print __esc('Update');?>'>
+					<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' name='update_policy'><?php print __esc('Update');?></button>
 					<input type='hidden' name='tab' value='<?php print $tab;?>'>
 					<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
 					<input type='hidden' name='update_policy' value='1'>
@@ -1397,7 +1397,7 @@ function graph_perms_edit($tab, $header_label) {
 					<?php form_dropdown('policy_trees',$policy_array,'','',$policy['policy_trees'],'',''); ?>
 				</td>
 				<td>
-					<input type='submit' class='ui-button ui-corner-all ui-widget' name='update_policy' value='<?php print __esc('Update');?>'>
+					<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' name='update_policy'><?php print __esc('Update');?></button>
 					<input type='hidden' name='tab' value='<?php print $tab;?>'>
 					<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
 					<input type='hidden' name='update_policy' value='1'>

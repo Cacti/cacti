@@ -760,24 +760,24 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			html_start_box(__('Default Graph Policy'), '100%', false, 3, 'center', '');
 
 			?>
-		<tr class='even'>
-			<td><table><tr>
-			<td class='nowrap'><?php print __('Default Graph Policy for this User Group');?></td>
-			<td>
-				<?php form_dropdown('policy_graphs', $policy_array, '', '', $policy['policy_graphs'], '', ''); ?>
-			</td>
-			<td>
-				<input type='submit' class='ui-button ui-corner-all ui-widget' name='update_policy' value='<?php print __esc('Update');?>'>
-				<input type='hidden' name='tab' value='<?php print $tab;?>'>
-				<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
-				<input type="hidden" name='update_policy' value='1'>
-			</td>
-			</tr></table></td>
-		</tr>
-		<tr class='even'>
-			<td><br><?php print $policy_note;?></td>
-		</tr>
-		<?php
+			<tr class='even'>
+				<td><table><tr>
+				<td class='nowrap'><?php print __('Default Graph Policy for this User Group');?></td>
+				<td>
+					<?php form_dropdown('policy_graphs', $policy_array, '', '', $policy['policy_graphs'], '', ''); ?>
+				</td>
+				<td>
+					<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' name='update_policy'><?php print __esc('Update');?></button>
+					<input type='hidden' name='tab' value='<?php print $tab;?>'>
+					<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
+					<input type="hidden" name='update_policy' value='1'>
+				</td>
+				</tr></table></td>
+			</tr>
+			<tr class='even'>
+				<td><br><?php print $policy_note;?></td>
+			</tr>
+			<?php
 
 			html_end_box();
 
@@ -951,7 +951,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 					<?php form_dropdown('policy_hosts',$policy_array,'','',$policy['policy_hosts'],'',''); ?>
 				</td>
 				<td>
-					<input type='submit' class='ui-button ui-corner-all ui-widget' name='update_policy' value='<?php print __esc('Update');?>'>
+					<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' name='update_policy'><?php print __esc('Update');?></button>
 					<input type='hidden' name='tab' value='<?php print $tab;?>'>
 					<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
 					<input type="hidden" name='update_policy' value='1'>
@@ -1122,21 +1122,21 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			html_start_box(__('Default Graph Template Policy'), '100%', false, 3, 'center', '');
 
 			?>
-		<tr class='even'>
-			<td><table><tr>
-			<td class='nowrap'><?php print __('Default Graph Template Policy for this User Group');?></td>
-			<td>
-				<?php form_dropdown('policy_graph_templates',$policy_array,'','',$policy['policy_graph_templates'],'',''); ?>
-			</td>
-			<td>
-				<input type='submit' class='ui-button ui-corner-all ui-widget' name='update_policy' value='<?php print __esc('Update');?>'>
-				<input type='hidden' name='tab' value='<?php print $tab;?>'>
-				<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
-				<input type="hidden" name='update_policy' value='1'>
-			</td>
-			</tr></table></td>
-		</tr>
-		<?php
+			<tr class='even'>
+				<td><table><tr>
+				<td class='nowrap'><?php print __('Default Graph Template Policy for this User Group');?></td>
+				<td>
+					<?php form_dropdown('policy_graph_templates',$policy_array,'','',$policy['policy_graph_templates'],'',''); ?>
+				</td>
+				<td>
+					<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' name='update_policy'><?php print __esc('Update');?></button>
+					<input type='hidden' name='tab' value='<?php print $tab;?>'>
+					<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
+					<input type="hidden" name='update_policy' value='1'>
+				</td>
+				</tr></table></td>
+			</tr>
+			<?php
 
 			html_end_box();
 
@@ -1274,7 +1274,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 					<?php form_dropdown('policy_trees',$policy_array,'','',$policy['policy_trees'],'',''); ?>
 				</td>
 				<td>
-					<input type='submit' class='ui-button ui-corner-all ui-widget' name='update_policy' value='<?php print __esc('Update');?>'>
+					<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' name='update_policy'><?php print __esc('Update');?></button>
 					<input type='hidden' name='tab' value='<?php print $tab;?>'>
 					<input type='hidden' name='id' value='<?php print get_request_var('id');?>'>
 					<input type='hidden' name='update_policy' value='1'>

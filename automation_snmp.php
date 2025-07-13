@@ -202,7 +202,7 @@ function automation_import() {
 	print "	<tr><td><hr/></td></tr><tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='save'>
-			<input type='submit' value='" . __esc('Import') . "' title='" . __esc('Import SNMP Options') . "' class='ui-button ui-corner-all ui-widget ui-state-active'>
+			<button type='submit' value='import' title='" . __esc('Import SNMP Options') . "' class='ui-button ui-corner-all ui-widget ui-state-active'>" . __esc('Import') . "</button>
 		</td>
 		<script type='text/javascript'>
 		$(function() {
@@ -540,8 +540,8 @@ function automation_snmp_item_remove_confirm() {
 	</tr>
 	<tr>
 		<td class='right'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove SNMP Item');?>'>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='cancel' name='cancel' onClick='$("#cdialog").dialog("close");'><?php print __esc('Cancel');?></button>
+			<button type='button' class='ui-button ui-corner-all ui-widget' id='continue' name='continue' title='<?php print __esc('Remove SNMP Item');?>'><?php print __esc('Continue');?></button>
 		</td>
 	</tr>
 	<?php

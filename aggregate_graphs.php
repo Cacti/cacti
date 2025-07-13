@@ -1715,8 +1715,8 @@ function aggregate_items() {
 						</td>
 						<td>
 							<span>
-								<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go'); ?>' title='<?php print __esc('Set/Refresh Filters'); ?>'>
-								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' onClick='clearFilter()' value='<?php print __esc('Clear'); ?>' title='<?php print __esc('Clear Filters'); ?>'>
+								<button type='submit' class='ui-button ui-corner-all ui-widget ui-state-active' id='go' value='go' title='<?php print __esc('Set/Refresh Filters'); ?>'><?php print __esc('Go'); ?></button>
+								<button type='button' class='ui-button ui-corner-all ui-widget' id='clear' onClick='clearFilter()' value='clear' title='<?php print __esc('Clear Filters'); ?>'><?php print __esc('Clear'); ?></button>
 							</span>
 						</td>
 					</tr>

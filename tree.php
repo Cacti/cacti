@@ -794,10 +794,17 @@ function tree_edit($partial = false) {
 	$editable = true;
 
 	if (isset($tree['locked']) && $tree['locked'] == 0) {
-		$lockdiv  = "<div style='padding:5px 5px 5px 0px'><table><tr><td><input type='button' class='ui-button ui-corner-all ui-widget' id='lock' value='" . __esc('Edit Tree') . "'></td><td style='font-weight:bold;'>" . __('To Edit this tree, you must first lock it by pressing the Edit Tree button.') . "</td></tr></table></div>\n";
+		$lockdiv  = "<div style='padding:5px 5px 5px 0px'><table><tr>
+			<td><button type='button' class='ui-button ui-corner-all ui-widget' id='lock'>" . __esc('Edit Tree') . "</button></td>
+			<td style='font-weight:bold;'>" . __('To Edit this tree, you must first lock it by pressing the Edit Tree button.') . "</td>
+		</tr></table></div>";
+
 		$editable = false;
 	} elseif (isset($tree['locked']) && $tree['locked'] == 1) {
-		$lockdiv = "<div style='padding:5px 5px 5px 0px'><table><tr><td><input type='button' class='ui-button ui-corner-all ui-widget' id='unlock' value='" . __esc('Finish Editing Tree') . "'></td><td><input type='button' class='ui-button ui-corner-all ui-widget' id='addbranch' value='" . __esc('Add Root Branch') . "' onClick='createNode()'></td><td style='font-weight:bold;'>" . __('This tree has been locked for Editing on %s by %s.', $tree['locked_date'], get_username($tree['modified_by']));
+		$lockdiv = "<div style='padding:5px 5px 5px 0px'><table><tr>
+			<td><button type='button' class='ui-button ui-corner-all ui-widget' id='unlock'>" . __esc('Finish Editing Tree') . "</button></td>
+			<td><button type='button' class='ui-button ui-corner-all ui-widget' id='addbranch' onClick='createNode()'>" .  __esc('Add Root Branch') . "</button></td>
+			<td style='font-weight:bold;'>" . __('This tree has been locked for Editing on %s by %s.', $tree['locked_date'], get_username($tree['modified_by']));
 
 		if ($tree['modified_by'] == $_SESSION[SESS_USER_ID]) {
 			$lockdiv .= '</td></tr></table></div>';

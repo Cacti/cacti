@@ -209,7 +209,7 @@ function csrf_callback($tokens) {
 			enabled.
 
 		</p>
-		<form method='post' action=''>$data<input type='submit' value='Try again' /></form>
+		<form method='post' action=''>$data<button type='submit'>" . __esc('Try Again'). "</button></form>
 		<p>Debug: $tokens</p></body></html>
 	</body>
 </html>";

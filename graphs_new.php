@@ -969,7 +969,7 @@ function graphs() {
 							" . __('Select a Graph Type to Create') . "
 						</td>
 						<td class='right'>
-							<input type='button' class='ui-button ui-corner-all ui-widget default' id='default_" .  $snmp_query['id'] . "' value='" . __esc('Set Default') . "' title='" . __esc('Make selection default') . "'>
+							<button type='button' class='ui-button ui-corner-all ui-widget default' id='default_" .  $snmp_query['id'] . "' title='" . __esc('Make selection default') . "'>" . __esc('Set Default') . "</button>
 						</td>
 						<td class='right'>
 							<select class='dqselect' name='sgg_" . $snmp_query['id'] . "' id='sgg_" . $snmp_query['id'] . "' onChange='dqUpdateDeps(" . $snmp_query['id'] . ',' . (isset($column_counter) ? $column_counter:'') . ");'>
