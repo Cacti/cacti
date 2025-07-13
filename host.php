@@ -1026,6 +1026,8 @@ function host_edit() {
 			[
 				['display' => __('Data Query Name'), 'align' => 'left', 'nohide' => true],
 				['display' => __('Re-Index Method'), 'align' => 'left', 'nohide' => true],
+				['display' => __('Last Reindex'), 'align' => 'left'],
+				['display' => __('Duration'), 'align' => 'left'],
 				['display' => __('Status'), 'align' => 'left'],
 				['display' => __('Actions'), 'align' => 'right']
 			], 1, false
@@ -1044,8 +1046,9 @@ function host_edit() {
 		$sql_where2   .= ' snmp_query.id NOT IN(SELECT snmp_query_id FROM host_snmp_query WHERE host_id = ?)';
 		$sql_params2[] = get_request_var('id');
 
-		$selected_data_queries = db_fetch_assoc_prepared("SELECT snmp_query.id,
-			snmp_query.name, host_snmp_query.reindex_method, IFNULL(`items`.`itemCount`, 0) AS itemCount, IFNULL(`rows`.`rowCount`, 0) AS rowCount
+		$selected_data_queries = db_fetch_assoc_prepared("SELECT snmp_query.id, host_snmp_query.reindex_last_runtime,
+			ROUND(host_snmp_query.reindex_last_duration, 4) AS `reindex_last_duration`, snmp_query.name, host_snmp_query.reindex_method,
+			IFNULL(`items`.`itemCount`, 0) AS itemCount, IFNULL(`rows`.`rowCount`, 0) AS rowCount
 			FROM snmp_query
 			INNER JOIN host_snmp_query
 			ON snmp_query.id = host_snmp_query.snmp_query_id
@@ -1092,6 +1095,12 @@ function host_edit() {
 				<td class='nowrap'>
 					<?php device_reindex_methods($item, $host); ?>
 				</td>
+				<td class='nowrap right'>
+					<?php print $item['reindex_last_runtime']; ?>
+				</td>
+				<td class='nowrap right'>
+					<?php print $item['reindex_last_duration']; ?>
+				</td>
 				<td>
 					<?php print (($status == 'success') ? "<span class='success'>" . __('Success') . '</span>' : "<span class='failed'>" . __('Fail')) . '</span>' . __(' [%d Items, %d Rows]', $item['itemCount'], $item['rowCount']); ?>
 				</td>
@@ -1104,7 +1113,7 @@ function host_edit() {
 					form_end_row();
 			}
 		} else {
-			print "<tr class='tableRow odd'><td colspan='4'><em>" . __('No Associated Data Queries.') . '</em></td></tr>';
+			print "<tr class='tableRow odd'><td colspan='6'><em>" . __('No Associated Data Queries.') . '</em></td></tr>';
 		}
 
 		if ($host['snmp_version'] == 0) {
@@ -1116,7 +1125,7 @@ function host_edit() {
 
 		?>
 		<tr class='odd'>
-			<td class='saveRow' colspan='4'>
+			<td class='saveRow' colspan='6'>
 				<table style='width:20%'>
 					<tr style='line-height:10px;'>
 						<td class='nowrap queryAdd' style='padding-right:15px;'>
