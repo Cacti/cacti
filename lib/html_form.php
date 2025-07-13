@@ -822,7 +822,9 @@ function form_hidden_box(string $form_name, int|string $form_previous_value, int
  * @return void
  */
 function form_dropdown(string $form_name, array $form_data, string $column_display, int|string $column_id, mixed $form_previous_value, string $form_none_entry, mixed $form_default_value, string $class = '', string $on_change = '', string $display_name = '') : void {
-	if ($form_previous_value == '') {
+	global $form_id;
+
+    if ($form_previous_value == '') {
 		$form_previous_value = $form_default_value;
 	}
 
@@ -853,7 +855,7 @@ function form_dropdown(string $form_name, array $form_data, string $column_displ
 		$on_change = " onChange='$on_change' ";
 	}
 
-	print "<select id='" . html_escape($form_name) . "' name='" . html_escape($form_name) . "'" . $display . $class . $on_change . '>';
+	print "<select id='" . html_escape($form_name) . "' name='" . html_escape($form_name) . "'" . $display . $class . $on_change . ' form="' . $form_id . '">';
 
 	if (!empty($form_none_entry)) {
 		print "<option value='0'" . (empty($form_previous_value) ? ' selected' : '') . ">$form_none_entry</option>";
@@ -1665,14 +1667,14 @@ function form_continue_confirmation($form_data, $plugin_hook = '', $save = []) {
 	}
 
 	print "<div class='saveRow'>";
-	print "<input type='hidden' name='action' value='actions'>";
+	print "<input type='hidden' name='action' value='actions' form='action_confirm'>";
 
 	if (isset($form_data['general']['eaction'])) {
 		if (!isset($form_data['general']['eactionid'])) {
 			$form_data['eactionid'] = 1;
 		}
 
-		print "<input type='hidden' name='{$form_data['general']['eaction']}' value='{$form_data['general']['eactionid']}'>";
+		print "<input type='hidden' name='{$form_data['general']['eaction']}' value='{$form_data['general']['eactionid']}' form='action_confirm'>";
 	}
 
 	if (isset($data['eaction'])) {
@@ -1680,13 +1682,13 @@ function form_continue_confirmation($form_data, $plugin_hook = '', $save = []) {
 			$data['eactionid'] = 1;
 		}
 
-		print "<input type='hidden' name='{$data['eaction']}' value='{$data['eactionid']}'>";
+		print "<input type='hidden' name='{$data['eaction']}' value='{$data['eactionid']}' form='action_confirm'>";
 	}
 
-	print "<input type='hidden' name='selected_items' value='" . (isset($iarray) ? serialize($iarray) : '') . "'>";
-	print "<input type='hidden' name='drp_action' value='" . html_escape($drpval) . "'>";
-	print "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo(\"$page\")' title='" . __('Return to previous page'). "'>&nbsp;";
-	print "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='$title'>";
+	print "<input type='hidden' name='selected_items' form='action_confirm' value='" . (isset($iarray) ? serialize($iarray) : '') . "'>";
+	print "<input type='hidden' name='drp_action' form='action_confirm' value='" . html_escape($drpval) . "'>";
+	print "<button type='button' class='ui-button ui-corner-all ui-widget' value='cancel' onClick='cactiReturnTo(\"$page\")' title='" . __('Return to previous page'). "'>" . __esc('Cancel') . "</button>&nbsp;";
+	print "<button type='submit' class='ui-button ui-corner-all ui-widget' value='continue' title='$title' form='action_confirm'>" . __esc('Continue') . "</button>";
 	print '</div>';
 
 	html_end_box(false, true);
@@ -1717,9 +1719,9 @@ function form_confirm($title_text, $body_text, $cancel_url, $action_url) { ?>
 						<td class='textHeaderDark'><?php print $title_text; ?></td>
 					</tr>
 					<?php
-					form_area($body_text);
-	form_confirm_buttons($action_url, $cancel_url);
-	?>
+					    form_area($body_text);
+                	    form_confirm_buttons($action_url, $cancel_url);
+	                ?>
 				</table>
 			</td>
 		</tr>
@@ -1740,8 +1742,8 @@ function form_confirm_buttons($action_url, $cancel_url) {
 	?>
 	<tr>
 		<td class='right'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo("<?php print html_escape(CACTI_PATH_URL . $cancel_url); ?>")' value='<?php print __esc('Cancel'); ?>'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo("<?php print html_escape(CACTI_PATH_URL . $action_url . '&confirm=true'); ?>")' value='<?php print __esc('Delete'); ?>'>
+			<button type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo("<?php print html_escape(CACTI_PATH_URL . $cancel_url); ?>")' value='cancel'><?php print __esc('Cancel'); ?></button>
+            <button type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo("<?php print html_escape(CACTI_PATH_URL . $action_url . '&confirm=true'); ?>")' value='delete'><?php print __esc('Delete'); ?></button>
 		</td>
 	</tr>
 	<?php
@@ -1760,34 +1762,44 @@ function form_confirm_buttons($action_url, $cancel_url) {
  * @return void
  */
 function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $ajax = true) {
+	global $form_id;
+    $catp = 'cancel';
 	$calt = __('Cancel');
 
 	if (empty($force_type) || $force_type == 'return') {
 		if (isempty_request_var($key_field)) {
+            $atp = 'create';
 			$alt = __esc('Create');
 		} else {
+			$atp = 'save';
 			$alt = __esc('Save');
 
 			if ($force_type != '') {
+				$catp = 'return';
 				$calt   = __esc('Return');
 			} else {
 				$calt   = __esc('Cancel');
 			}
 		}
 	} elseif ($force_type == 'save') {
+		$atp = 'save';
 		$alt = __esc('Save');
 	} elseif ($force_type == 'create') {
-		$alt = __esc('Create');
+		$atp = 'create';
+        $alt = __esc('Create');
 	} elseif ($force_type == 'close') {
+		$atp = 'close';
 		$alt = __esc('Close');
 	} elseif ($force_type == 'import') {
+		$atp = 'import';
 		$alt = __esc('Import');
 	} elseif ($force_type == 'export') {
+		$atp = 'export';
 		$alt = __esc('Export');
 	}
 
 	if ($force_type != 'import' && $force_type != 'export' && $force_type != 'save' && $force_type != 'close' && $cancel_url != '') {
-		$cancel_action = "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo(\"" . html_escape(sanitize_uri($cancel_url)) . "\")' value='" . $calt . "'>";
+		$cancel_action = "<button type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo(\"" . html_escape(sanitize_uri($cancel_url)) . "\")' value='" . $catp . "'>" . $calt . "</button>";
 	} else {
 		$cancel_action = '';
 	}
@@ -1796,9 +1808,9 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
 	<div class='cactiTable saveRowParent'>
 		<div class='formRow'>
 			<div class='saveRow'>
-				<input type='hidden' name='action' value='save'>
+				<input type='hidden' name='action' value='save' form='<?php print $form_id; ?>'>
 				<?php print $cancel_action; ?>
-				<input type='submit' class='<?php print $force_type; ?> ui-button ui-corner-all ui-widget' id='submit' value='<?php print $alt; ?>'>
+                <button type='submit' class='<?php print $force_type; ?> ui-button ui-corner-all ui-widget' id='submit' value='<?php print $atp; ?>' form='<?php print $form_id; ?>'><?php print $alt; ?></button>
 			</div>
 		</div>
 	</div>
@@ -1835,6 +1847,8 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
  * @return void
  */
 function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_field = 'id', $ajax = true) {
+    global $form_id;
+    $catp = 'cancel';
 	$calt = __('Cancel');
 
 	if ($cancel_url == '') {
@@ -1853,6 +1867,7 @@ function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_fi
 			$alt = __esc('Save');
 
 			if ($force_type != '') {
+				$catp = 'return';
 				$calt   = __esc('Return');
 			} else {
 				$calt   = __esc('Cancel');
@@ -1871,7 +1886,7 @@ function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_fi
 	}
 
 	if ($force_type != 'import' && $force_type != 'export' && $force_type != 'save' && $force_type != 'close' && $cancel_url != '') {
-		$cancel_action = "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo(\"" . html_escape($cancel_url, ENT_QUOTES) . "\")' value='" . $calt . "'>";
+		$cancel_action = "<button type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo(\"" . html_escape($cancel_url, ENT_QUOTES) . "\")' value='" . $catp . "'>" . $calt . "</button>";
 	} else {
 		$cancel_action = '';
 	}
@@ -1880,7 +1895,7 @@ function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_fi
 	<div class='cactiTable saveRowParent'>
 		<div class='formRow'>
 			<div class='saveRow'>
-				<input type='hidden' name='action' value='save'>
+				<input type='hidden' name='action' value='save' form='" . form_id . "'>
 				<?php foreach ($buttons as $b) {
 					$type = 'button';
 
@@ -1888,7 +1903,7 @@ function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_fi
 						$type = 'submit';
 					}
 
-					print "<input type='$type' class='ui-button ui-corner-all ui-widget' id='" . $b['id'] . "' value='" . html_escape($b['value']) . "'";
+					print "<button type='$type' class='ui-button ui-corner-all ui-widget' id='" . $b['id'] . "' value='" . $b['id'] . "'";
 
 					$onclick = '';
 
@@ -1924,7 +1939,11 @@ function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_fi
 						print " onclick='" . html_escape($onclick, ENT_QUOTES) . "'";
 					}
 
-					print '>' . PHP_EOL;
+                    if (!empty($form_id)) {
+                        print " form='" . $form_id . "'";
+                    }
+
+					print '>' . html_escape($b['value']) . '</button>' . PHP_EOL;
 				} ?>
 			</div>
 		</div>

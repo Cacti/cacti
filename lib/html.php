@@ -108,7 +108,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_url_or
 	if ($title != '') {
 		print "<div id='$table_id' class='cactiTable' style='width:$width;text-align:$align;'>";
 		print '<div class="cactiTableTitleRow">';
-		print "<div class='cactiTableTitle'><span>" . ($title != '' ? $title:'') . '</span></div>';
+		print "<div class='cactiTableTitle'>" . ($title != '' ? '<span>'.$title.'</span>' : '') . "</div>";
 		print "<div class='cactiTableButton'>";
 
 		$page      = get_current_page();
@@ -171,10 +171,10 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_url_or
 					}
 				}
 			} else {
-				print '<span> </span>';
+				print '';
 			}
 		}
-		print '</div></div>';
+		print '</div><div class="cactiTableAction"></div></div>';
 
 		if ($div === true) {
 			print "<div id='$table_id" . "_child' class='cactiTable'>";
@@ -1915,6 +1915,8 @@ function draw_menu($user_menu = '') {
  * @return void
  */
 function draw_actions_dropdown($actions_array, $delete_action = 1) {
+    global $form_id;
+
 	if ($actions_array === null || cacti_sizeof($actions_array) == 0) {
 		return;
 	}
@@ -1930,10 +1932,10 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 		<div>
 			<span class='actionsDropdownArrow'><img src='<?php print get_theme_paths('%s', 'images/arrow.gif') ?>' alt=''></span>
 			<?php form_dropdown('drp_action', $actions_array, '', '', '0', '', '');?>
-			<span class='actionsDropdownButton'><input type='submit' class='ui-button ui-corner-all ui-widget' id='submit' value='<?php print __esc('Go');?>' title='<?php print __esc('Execute Action');?>'></span>
+			<span class='actionsDropdownButton'><button type='submit' class='ui-button ui-corner-all ui-widget' id='submit' value='<?php print __esc('Go');?>' title='<?php print __esc('Execute Action');?>' form='<?php print $form_id;?>'><?php print __esc('Go');?></button></span>
 		</div>
 	</div>
-	<input type='hidden' id='action' name='action' value='actions'>
+	<input type='hidden' id='action' name='action' value='actions' form='<?php print $form_id;?>'/>
 	<script type='text/javascript'>
 
 	function setDisabled() {
@@ -3156,6 +3158,7 @@ function html_common_header($title, $selectedTheme = '') {
 
 	<title><?php print $title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<link rel='manifest' href='/manifest.json'>
 	<script type='text/javascript'>
 		var urlPath='<?php print CACTI_PATH_URL;?>';
 		var aboutCacti = '<?php print __esc('About Cacti');?>';
