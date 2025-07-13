@@ -88,6 +88,9 @@ function upgrade_to_1_3_0() {
 
 	db_add_index('poller_output_boost', 'INDEX', 'time', ['time']);
 
+	db_install_add_column('host_snmp_query', ['name' => 'reindex_last_runtime', 'type' => 'timestamp', 'null' => false, 'default' => 'CURRENT_TIMESTAMP']);
+	db_install_add_column('host_snmp_query', ['name' => 'reindex_last_duration', 'type' => 'double', 'unsigned' => true, 'null' => false, 'default' => '0']);
+
 	db_install_execute('UPDATE data_input_data AS did
 		INNER JOIN data_template_data AS dtd
 		ON did.data_template_data_id = dtd.id
