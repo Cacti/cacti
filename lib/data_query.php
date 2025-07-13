@@ -139,6 +139,16 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 
 	// If re-indexing fails, don't continue
 	if (!$result) {
+		$cur_time = microtime(true);
+		$total    = $cur_time - $reindex_start;
+
+		db_execute_prepared('UPDATE host_snmp_query
+			SET reindex_last_runtime = CURRENT_TIMESTAMP(),
+			reindex_last_duration = ?
+			WHERE host_id = ?
+			AND snmp_query_id = ?',
+			[$total, $host_id, $snmp_query_id]);
+
 		return false;
 	}
 
@@ -159,6 +169,16 @@ function run_data_query($host_id, $snmp_query_id, $automation = false, $force = 
 	}
 
 	if ($new_sort_field === false) {
+		$cur_time = microtime(true);
+		$total    = $cur_time - $reindex_start;
+
+		db_execute_prepared('UPDATE host_snmp_query
+			SET reindex_last_runtime = CURRENT_TIMESTAMP(),
+			reindex_last_duration = ?
+			WHERE host_id = ?
+			AND snmp_query_id = ?',
+			[$total, $host_id, $snmp_query_id]);
+
 		cacti_log('ERROR: Re-Indexing failed due to a NULL sort field for Device[' . $host_id . '] and DQ[' . $snmp_query_id . '].  Can not continue with Re-Index.', false, 'REINDEX');
 
 		return false;
