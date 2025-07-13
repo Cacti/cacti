@@ -1095,11 +1095,11 @@ function host_edit() {
 				<td class='nowrap'>
 					<?php device_reindex_methods($item, $host); ?>
 				</td>
-				<td class='nowrap right'>
+				<td class='nowrap left'>
 					<?php print $item['reindex_last_runtime']; ?>
 				</td>
-				<td class='nowrap right'>
-					<?php print $item['reindex_last_duration']; ?>
+				<td class='nowrap left'>
+					<?php print ($item['reindex_last_duration'] == 0 ? '-' : __('%0.2f secs', $item['reindex_last_duration'])); ?>
 				</td>
 				<td>
 					<?php print (($status == 'success') ? "<span class='success'>" . __('Success') . '</span>' : "<span class='failed'>" . __('Fail')) . '</span>' . __(' [%d Items, %d Rows]', $item['itemCount'], $item['rowCount']); ?>
