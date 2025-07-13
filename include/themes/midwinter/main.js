@@ -156,7 +156,7 @@ function setupTheme() {
 		/* suppress issues with autofocus while page is loading */
 		$('<input id="suppress_autofocus" type="text" style="display:none;" tab-index="-1" autofocus>').prependTo('.cactiAuth');
 
-		$(cactiAuthTable).find("input, label").each(
+		$(cactiAuthTable).find("input, button, label").each(
 			function() {
 				if( $(this).attr('type') === 'password' || $(this).attr('type') === 'text' ) {
 					if ($(this).attr('name') !== undefined) {
