@@ -2709,7 +2709,8 @@ class Installer implements JsonSerializable {
 			$output .= Installer::sectionNormal($html);
 
 			$output .= Installer::sectionTitle(__('Default Profile'));
-			$output .= Installer::sectionNormal(__('Please select the default Data Source Profile to be used for polling sources.  This is the maximum amount of time between scanning devices for information so the lower the polling interval, the more work is placed on the Cacti Server host.  Also, select the intended, or configured Cron interval that you wish to use for Data Collection.'));
+			$output .= Installer::sectionNormal(__('Please select the default Data Source Profile to be used for polling sources. This is the maximum amount of time between scanning devices for information so the lower the polling interval, the more work is placed on the Cacti Server host. Long retention profiles store more data, so they take up more disk capacity. Their advantage is that older data is not as consolidated and is therefore more accurate than using shorter retention.'));
+			$output .= Installer::sectionNormal(__('Also, select the intended, or configured Cron interval that you wish to use for Data Collection.'));
 
 			$fields_schedule = [
 				'default_profile' => [
