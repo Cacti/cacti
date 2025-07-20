@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-07-09 01:26+0000\n"
+"PO-Revision-Date: 2025-07-21 04:26+0000\n"
 "Last-Translator: Ekaterine papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <https://translate.cacti.net/projects/cacti/core/ka/>"
 "\n"
@@ -273,7 +273,7 @@ msgstr ""
 
 #: aggregate_graphs.php:948
 msgid "Convert Aggregate Graphs"
-msgstr ""
+msgstr "აგრეგირებული გრაფიკების გადაყვანა"
 
 #: aggregate_graphs.php:951
 msgid "Click 'Continue' to Associate the following Graph with the Aggregate Graph."
@@ -3093,7 +3093,7 @@ msgstr ""
 
 #: automation_templates.php:1098
 msgid "Associated Tree Rules"
-msgstr ""
+msgstr "ასოცირებული ხის წესები"
 
 #: automation_templates.php:1113
 msgid "Tree Rule Name"
@@ -3700,7 +3700,7 @@ msgstr "ფერი თექვსმ:"
 
 #: color_templates.php:496
 msgid "Remove Color Item"
-msgstr ""
+msgstr "ფერადი ელემენტის წაშლა"
 
 #: color_templates.php:563
 #, php-format
@@ -6115,7 +6115,7 @@ msgstr ""
 
 #: graphs.php:2265
 msgid "Edit Graph Template."
-msgstr ""
+msgstr "გრაფიკის შაბლონის ჩასწორება."
 
 #: graphs.php:2275
 #, php-format
@@ -6797,7 +6797,7 @@ msgstr ""
 
 #: host_templates.php:234
 msgid "Delete Device Template"
-msgstr ""
+msgstr "მოწყობილობის შაბლონის წაშლა"
 
 #: host_templates.php:235
 msgid "Delete Device Templates"
@@ -11472,7 +11472,7 @@ msgstr ""
 
 #: include/global_settings.php:623
 msgid "Author Email Address"
-msgstr ""
+msgstr "ავტორის ელფოსტის მისამართი"
 
 #: include/global_settings.php:624
 msgid "The Email address of the author that you wish published with the Device Template or Package."
@@ -13316,7 +13316,7 @@ msgstr "RRDfile-ის შემოწმება"
 
 #: include/global_settings.php:2538
 msgid "Enable RRDfile Check"
-msgstr ""
+msgstr "RRDfile-ის შემოწმების ჩართვა"
 
 #: include/global_settings.php:2539
 msgid "Should RRDfile Check be enabled for this Cacti system?"
@@ -13652,7 +13652,7 @@ msgstr ""
 
 #: include/global_settings.php:2850
 msgid "Once a Day"
-msgstr ""
+msgstr "დღეში ერთხელ"
 
 #: include/global_settings.php:2851
 msgid "Every Other Day"
@@ -14235,7 +14235,7 @@ msgstr ""
 
 #: lib/api_automation.php:2286 lib/api_automation.php:2351
 msgid "Device Match Rule"
-msgstr ""
+msgstr "მოწყობილობის დამთხვევის წესი"
 
 #: lib/api_automation.php:2307
 msgid "Create Graph Rule"
@@ -19711,7 +19711,7 @@ msgstr ""
 
 #: package_import.php:1558
 msgid "Local Package File"
-msgstr ""
+msgstr "ლოკალური პაკეტის ფაილი"
 
 #: package_import.php:1562
 msgid "Package Location"
@@ -21688,7 +21688,7 @@ msgstr ""
 
 #: support.php:850
 msgid "PHP Module Information"
-msgstr ""
+msgstr "PHP მოდულის ინფორმაცია"
 
 #: support.php:875
 msgid "Worst 20 Polling Time Devices"
@@ -22253,7 +22253,7 @@ msgstr ""
 
 #: tree.php:2124 tree.php:2167
 msgid "Sort Trees Descending"
-msgstr ""
+msgstr "ხეების დაღმავლად დალაგება"
 
 #: tree.php:2222 user_admin.php:1434 user_group_admin.php:1284
 msgid "Tree Name"
@@ -23647,7 +23647,7 @@ msgstr ""
 
 #: utilities.php:1744
 msgid "Previous Runtime Timers:"
-msgstr ""
+msgstr "წინა გაშვების დროის ტაიმერები:"
 
 #: utilities.php:1779 utilities.php:1781
 #, php-format
