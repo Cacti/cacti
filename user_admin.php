@@ -425,7 +425,14 @@ function form_actions() {
 							'id'       => 'id'
 						]
 					]
-				]
+				],
+				6 => [
+					'smessage' => __('Click \'Continue\' to Reset 2FA for User.'),
+					'pmessage' => __('Click \'Continue\' to Reset 2FA for following Users.'),
+					'scont'    => __('Reset 2FA for User'),
+					'pcont'    => __('Reset 2FA for Users')
+				],
+
 			]
 		];
 
