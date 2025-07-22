@@ -5234,7 +5234,7 @@ function is_2fa_enabled(int $user_id): bool {
 			[$user_id]
 		);
 
-		return isset($current_user['2fa_enabled']) && ($current_user['2fa_enabled'] != '');
+		return isset($current_user['tfa_enabled']) && ($current_user['tfa_enabled'] != '');
 	} else {
 		return false;
 	}
