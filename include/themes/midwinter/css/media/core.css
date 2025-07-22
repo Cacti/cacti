@@ -1710,7 +1710,7 @@ table.cactiTable {
 }
 
 .formRow {
-    line-height: 2rem;
+    line-height: unset;
     display: grid;
     overflow: hidden;
     align-items: stretch;
@@ -1719,6 +1719,9 @@ table.cactiTable {
     margin: 2px 0 0 0;
     &.hidden {
         margin: 0;
+    }
+    &:has(.formFieldDescription) {
+        line-height: 2rem;
     }
 }
 
@@ -1737,7 +1740,7 @@ table.cactiTable {
     display: inline-flex;
     align-items: flex-start;
     flex: 1;
-    padding: 1rem 4rem 1rem 18px;
+    padding: 0.75rem 4rem 0.75rem 18px;
     background-color: var(--background-content-element);
 }
 
@@ -1745,7 +1748,7 @@ table.cactiTable {
     display: inline-flex;
     align-items: center;
     flex: 1;
-    padding: 1rem;
+    padding: 0.75rem 1rem;
     text-align: left;
     background-color: var(--background-content-element);
 }
