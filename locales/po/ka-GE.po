@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-07-21 04:26+0000\n"
+"PO-Revision-Date: 2025-07-25 09:26+0000\n"
 "Last-Translator: Ekaterine papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <https://translate.cacti.net/projects/cacti/core/ka/>"
 "\n"
@@ -3623,7 +3623,7 @@ msgstr ""
 
 #: color.php:728
 msgid "No Colors Found"
-msgstr ""
+msgstr "ფერები აღმოჩენილი არაა"
 
 #: color_templates.php:30
 msgid "Sync Aggregates"
@@ -3652,7 +3652,7 @@ msgstr ""
 
 #: color_templates.php:322
 msgid "Delete Color Templates"
-msgstr ""
+msgstr "ფერის შაბლონების წაშლა"
 
 #: color_templates.php:325
 msgid "Click 'Continue' to Duplicate the following Color Template."
@@ -9858,7 +9858,7 @@ msgstr ""
 
 #: include/global_form.php:752
 msgid "Base Value (--base)"
-msgstr ""
+msgstr "საბაზისო მნიშვნელობა (--base)"
 
 #: include/global_form.php:756
 msgid "Should be set to 1024 for memory and 1000 for traffic measurements."
@@ -15404,7 +15404,7 @@ msgstr ""
 #: lib/functions.php:5819
 #, php-format
 msgid "Connect failed: %s"
-msgstr ""
+msgstr "კავშირი ჩავარდა: %s"
 
 #: lib/functions.php:5822
 msgid "SMTP error: "
@@ -16132,7 +16132,7 @@ msgstr ""
 
 #: lib/html_form.php:1475
 msgid "Proceed with action"
-msgstr ""
+msgstr "ქმედებაზე გაგრძელება"
 
 #: lib/html_form.php:1670
 msgid "Return to previous page"
@@ -16411,7 +16411,7 @@ msgstr ""
 
 #: lib/html_reports.php:193
 msgid "To Email Address(es)"
-msgstr ""
+msgstr "ელფოსტის მისამართ(ებ)-ზე"
 
 #: lib/html_reports.php:199
 msgid "Please separate multiple addresses by comma (,)"
@@ -16531,7 +16531,7 @@ msgstr ""
 
 #: lib/html_reports.php:574
 msgid "Send Reports Now"
-msgstr ""
+msgstr "ანგარიშის ახლა გაგზავნა"
 
 #: lib/html_reports.php:618
 #, php-format
