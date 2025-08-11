@@ -485,6 +485,10 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 			}
 		}
 
+		if ($value === null && isset($options['default']) && $options['default'] === null) {
+			$value = '';
+		}
+
 		if ($value === false) {
 			if ($filter == FILTER_VALIDATE_IS_REGEX) {
 				raise_message('custom', __('The regular expression "%s" is not valid. Error is %s', html_escape(get_nfilter_request_var($name)), html_escape($custom_error)), MESSAGE_LEVEL_ERROR);

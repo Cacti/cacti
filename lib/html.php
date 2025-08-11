@@ -1399,13 +1399,13 @@ function is_menu_pick_active($menu_url) {
 		return false;
 	}
 
-	$base_url_path = basename($url_array['path'] ?? '');
+	$base_url_path = isset($url_array['path']) ? basename($url_array['path']) : '';
 	if (empty($base_url_path)) {
 		cacti_log('INFO: Empty url path detceted - ' . json_encode($url_array), false, 'MENU', POLLER_VERBOSITY_DEBUG);
 		return false;
 	}
 
-	$base_menu_path = basename($menu_array['path'] ?? '');
+	$base_menu_path = isset($url_array['path']) ? basename($menu_array['path']) : '';
 	if (empty($base_menu_path)) {
 		cacti_log('INFO: Empty menu path detceted - ' . json_encode($menu_array), false, 'MENU', POLLER_VERBOSITY_DEBUG);
 		return false;
