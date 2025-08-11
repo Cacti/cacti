@@ -6378,7 +6378,7 @@ function repair_system_data_input_methods($step = 'import') {
 }
 
 if (isset($config['cacti_server_os']) && $config['cacti_server_os'] == 'win32' && !function_exists('posix_kill')) {
-	function posix_kill($pid, $signal = SIGTERM) {
+	function posix_kill($pid, $signal = 15) {
 		if (!defined('SIGTERM')) {
 			define('SIGTERM', 15);
 		}
