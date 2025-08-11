@@ -7088,23 +7088,23 @@ function repair_system_data_input_methods($step = 'import') {
 }
 
 if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' && !function_exists('posix_kill')) {
+	if (!defined('SIGTERM')) {
+		define('SIGTERM', 15);
+	}
+
+	if (!defined('SIGKILL')) {
+		define('SIGKILL', 9);
+	}
+
+	if (!defined('SIGHUP')) {
+		define('SIGHUP', 1);
+	}
+
+	if (!defined('SIGINT')) {
+		define('SIGINT', 2);
+	}
+
 	function posix_kill($pid, $signal = SIGTERM) {
-		if (!defined('SIGTERM')) {
-			define('SIGTERM', 15);
-		}
-
-		if (!defined('SIGKILL')) {
-			define('SIGKILL', 9);
-		}
-
-		if (!defined('SIGHUP')) {
-			define('SIGHUP', 1);
-		}
-
-		if (!defined('SIGINT')) {
-			define('SIGINT', 2);
-		}
-
 		// Check if the process exists
 		$checkProcessCmd = "powershell.exe -Command \"Get-Process -Id $pid -ErrorAction SilentlyContinue\"";
 		$processExists   = trim(shell_exec($checkProcessCmd));
