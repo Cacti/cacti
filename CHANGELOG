@@ -15,6 +15,8 @@ Cacti CHANGELOG
 -issue#6271: Improve validation logging to give administrators a clue where the error came from
 -issue#6283: Divide by Zero if the $rows variable is not set
 -issue#6292: Fatal validation errors occur if a request variable default value is null
+-issue#6294: Undefined variable $params in lib/api_automation.php
+-issue#6296: Issue with posix_kill function using Windows as your Cacti server
 
 1.2.30
 -issue#6089: Unable to add new users
