@@ -4845,15 +4845,9 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		$secure = read_config_option('settings_smtp_secure');
 		if (!empty($secure) && $secure != 'none') {
 			if ($secure == 'tls') {
-<<<<<<< Updated upstream
-				$mail->SMTPSecure = ENCRYPTION_STARTTLS;
-			} else {
-				$mail->SNTPSecure = ENCRYPTION_SMTPS;
-=======
 				$mail->SMTPSecure = $mail::ENCRYPTION_STARTTLS;
 			} else {
 				$mail->SNTPSecure = $mail::ENCRYPTION_SMTPS;
->>>>>>> Stashed changes
 			}
 
 			if (substr_count($mail->Host, ':') == 0) {
