@@ -17,6 +17,7 @@ Cacti CHANGELOG
 -issue#6292: Fatal validation errors occur if a request variable default value is null
 -issue#6294: Undefined variable $params in lib/api_automation.php
 -issue#6296: Issue with posix_kill function using Windows as your Cacti server
+-issue#6297: Enhance SMTP Security Settings to Higher Order TLS
 
 1.2.30
 -issue#6089: Unable to add new users

@@ -4842,9 +4842,14 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 			$mail->SMTPAuth = false;
 		}
 
-		$secure  = read_config_option('settings_smtp_secure');
+		$secure = read_config_option('settings_smtp_secure');
 		if (!empty($secure) && $secure != 'none') {
-			$mail->SMTPSecure = true;
+			if ($secure == 'tls') {
+				$mail->SMTPSecure = ENCRYPTION_STARTTLS;
+			} else {
+				$mail->SNTPSecure = ENCRYPTION_SMTPS;
+			}
+
 			if (substr_count($mail->Host, ':') == 0) {
 				$mail->Host = $secure . '://' . $mail->Host;
 			}
