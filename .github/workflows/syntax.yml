@@ -133,7 +133,7 @@ jobs:
       
     - name: Link Web Root
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
-      run: sudo ln -s /home/runner/work/cacti/cacti /var/www/html/cacti
+      run: sudo ln -s /home/runner/work/cacti/cacti /var/www/html
       
     - name: Configure Apache Site
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
