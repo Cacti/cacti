@@ -217,6 +217,7 @@ Cacti CHANGELOG
 -issue#6297: Enhance SMTP Security Settings to Higher Order TLS
 -issue#6299: Support SMTPUTF8 for modern Email Servers
 -feature: Update PHPMailer to 6.10 to support SMTPUTF8
+-feature: Update phpseclib for Service Check Plugin
 
 1.2.30
 -issue#6089: Cannot Add New User due to incorrect array structure

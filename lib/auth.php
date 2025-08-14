@@ -4545,7 +4545,7 @@ function secpass_check_history(int $id, string $password): bool {
  * @return void
  */
 function rsa_check_keypair(): void {
-	set_include_path(CACTI_PATH_INCLUDE . '/vendor/phpseclib/');
+	set_include_path(CACTI_PATH_INCLUDE . '/vendor/phpseclib/phpseclib/phpseclib');
 
 	include('Crypt/Base.php');
 	include('Math/BigInteger.php');
