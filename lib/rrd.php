@@ -106,7 +106,7 @@ function __rrd_proxy_init($logopt = 'WEBLOG') {
 	global $encryption;
 	$terminator = "_EOT_\r\n";
 	$encryption = true;
-	$rsa = new \phpseclib\Crypt\RSA();
+	$rsa = new \phpseclib\phpseclib\phpseclib\Crypt\RSA();
 
 	$rrdp_socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 	if ($rrdp_socket === false) {
@@ -213,9 +213,9 @@ function encrypt($output, $rsa_key) {
 	global $encryption;
 
 	if ($encryption) {
-		$rsa = new \phpseclib\Crypt\RSA();
-		$aes = new \phpseclib\Crypt\Rijndael();
-		$aes_key = \phpseclib\Crypt\Random::string(192);
+		$rsa = new \phpseclib\phpseclib\phpseclib\Crypt\RSA();
+		$aes = new \phpseclib\phpseclib\phpseclib\Crypt\Rijndael();
+		$aes_key = \phpseclib\phpseclib\phpseclib\Crypt\Random::string(192);
 
 		$aes->setKey($aes_key);
 		$ciphertext = base64_encode($aes->encrypt($output));
@@ -233,8 +233,8 @@ function decrypt($input) {
 	global $encryption;
 
 	if ($encryption) {
-		$rsa = new \phpseclib\Crypt\RSA();
-		$aes = new \phpseclib\Crypt\Rijndael();
+		$rsa = new \phpseclib\phpseclib\phpseclib\Crypt\RSA();
+		$aes = new \phpseclib\phpseclib\phpseclib\Crypt\Rijndael();
 
 		$rsa_private_key = read_config_option('rsa_private_key');
 
