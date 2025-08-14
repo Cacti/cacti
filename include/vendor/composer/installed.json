@@ -2,27 +2,27 @@
     "packages": [
         {
             "name": "paragonie/constant_time_encoding",
-            "version": "v3.0.0",
-            "version_normalized": "3.0.0.0",
+            "version": "v2.7.0",
+            "version_normalized": "2.7.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/constant_time_encoding.git",
-                "reference": "df1e7fde177501eee2037dd159cf04f5f301a512"
+                "reference": "52a0d99e69f56b9ec27ace92ba56897fe6993105"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/constant_time_encoding/zipball/df1e7fde177501eee2037dd159cf04f5f301a512",
-                "reference": "df1e7fde177501eee2037dd159cf04f5f301a512",
+                "url": "https://api.github.com/repos/paragonie/constant_time_encoding/zipball/52a0d99e69f56b9ec27ace92ba56897fe6993105",
+                "reference": "52a0d99e69f56b9ec27ace92ba56897fe6993105",
                 "shasum": ""
             },
             "require": {
-                "php": "^8"
+                "php": "^7|^8"
             },
             "require-dev": {
-                "phpunit/phpunit": "^9",
-                "vimeo/psalm": "^4|^5"
+                "phpunit/phpunit": "^6|^7|^8|^9",
+                "vimeo/psalm": "^1|^2|^3|^4"
             },
-            "time": "2024-05-08T12:36:18+00:00",
+            "time": "2024-05-08T12:18:48+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {

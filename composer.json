@@ -44,7 +44,9 @@
         "ext-sockets": "*",
         "ext-sqlite3": "*",
         "ext-xml": "*",
-        "phpseclib/phpseclib": "^3.0"
+        "phpseclib/phpseclib": "^3.0",
+		"paragonie/constant_time_encoding": "^2.0",
+		"paragonie/random_compat": "*"
     },
     "authors": [
         {
