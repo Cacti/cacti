@@ -559,6 +559,7 @@ include_once($config['library_path'] . '/snmpagent.php');
 include_once($config['library_path'] . '/aggregate.php');
 include_once($config['library_path'] . '/api_automation.php');
 include_once($config['include_path'] . '/csrf.php');
+include_once($config['include_path'] . '/vendor/autoload.php');
 
 if ($config['is_web']) {
 	/* raise a message and perform a page refresh if we've changed modes */

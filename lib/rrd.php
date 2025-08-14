@@ -26,17 +26,6 @@ define('RRD_NL', " \\\n");
 define('MAX_FETCH_CACHE_SIZE', 5);
 
 if (read_config_option('storage_location')) {
-	/* load crypt libraries only if the Cacti RRDtool Proxy Server is in use */
-	set_include_path($config['include_path'] . '/vendor/phpseclib/phpseclib/phpseclib');
-	include_once('Math/BigInteger.php');
-	include_once('Crypt/Common/SymmetricKey.php');
-	include_once('Crypt/Common/AsymmetricKey.php');
-	include_once('Crypt/Common/BlockCipher.php');
-	include_once('Crypt/Hash.php');
-	include_once('Crypt/Random.php');
-	include_once('Crypt/RSA.php');
-	include_once('Crypt/Rijndael.php');
-
 	global $encryption;
 	$encryption = true;
 }

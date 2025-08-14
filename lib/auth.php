@@ -22,6 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
+use phpseclib3\Crypt\RSA;
 
 /**
  * clear_auth_cookie - clears a users security token
@@ -4338,33 +4339,27 @@ function secpass_check_history($id, $password) {
 function rsa_check_keypair() {
 	global $config;
 
-	set_include_path($config['include_path'] . '/vendor/phpseclib/phpseclib/phpseclib/');
-//	include('Crypt/Base.php');
-	include('Crypt/Common/SymmetricKey.php');
-	include('Crypt/Common/AsymmetricKey.php');
-	include('Crypt/Common/BlockCipher.php');
-	include('Math/BigInteger.php');
-	include('Crypt/Hash.php');
-	include('Crypt/RSA.php');
-	include('Crypt/Rijndael.php');
-	include('Crypt/AES.php');
+//	set_include_path($config['include_path'] . '/vendor/phpseclib/');
+//	include_once('Math/BigInteger.php');
+//	include_once('Crypt/Common/SymmetricKey.php');
+//	include_once('Crypt/Common/AsymmetricKey.php');
+//	include_once('Crypt/Common/BlockCipher.php');
+//	include_once('Crypt/Hash.php');
+//	include_once('Crypt/Rijndael.php');
+//	include_once('Crypt/AES.php');
+//	include_once('Crypt/RSA.php');
 
 	$public_key = read_config_option('rsa_public_key');
 
-	if(!$public_key) {
-		$rsa = new phpseclib\phpseclib\phpseclib\Crypt\RSA();
-		$keys = $rsa->createKey(2048);
-		$rsa->loadKey($keys['publickey']);
-		$fingerprint = $rsa->getPublicKeyFingerprint();
+//	if (!$public_key) {
+		$private     = RSA::createKey(2048);
+		$public      = $private->getPublicKey();
+		$fingerprint = $public->getFingerprint();
 
 		db_execute_prepared("INSERT INTO settings
-			(`name`, `value`)
-			VALUES
-			('rsa_public_key', '" . $keys['publickey'] . "'),
-			('rsa_private_key', '" . $keys['privatekey'] . "'),
-			('rsa_fingerprint', '" . $fingerprint . "')"
-		);
-	}
+			(`name`, `value`) VALUES ('rsa_public_key', ?), ('rsa_private_key', ?), ('rsa_fingerprint', ?)",
+			array($public, $private, $fingerprint));
+//	}
 }
 
 /**
