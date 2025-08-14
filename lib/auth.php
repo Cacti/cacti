@@ -4339,7 +4339,10 @@ function rsa_check_keypair() {
 	global $config;
 
 	set_include_path($config['include_path'] . '/vendor/phpseclib/phpseclib/phpseclib/');
-	include('Crypt/Base.php');
+//	include('Crypt/Base.php');
+	include('Crypt/Common/SymmetricKey.php');
+	include('Crypt/Common/AsymmetricKey.php');
+	include('Crypt/Common/BlockCipher.php');
 	include('Math/BigInteger.php');
 	include('Crypt/Hash.php');
 	include('Crypt/RSA.php');

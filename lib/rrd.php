@@ -29,7 +29,9 @@ if (read_config_option('storage_location')) {
 	/* load crypt libraries only if the Cacti RRDtool Proxy Server is in use */
 	set_include_path($config['include_path'] . '/vendor/phpseclib/phpseclib/phpseclib');
 	include_once('Math/BigInteger.php');
-	include_once('Crypt/Base.php');
+	include_once('Crypt/Common/SymmetricKey.php');
+	include_once('Crypt/Common/AsymmetricKey.php');
+	include_once('Crypt/Common/BlockCipher.php');
 	include_once('Crypt/Hash.php');
 	include_once('Crypt/Random.php');
 	include_once('Crypt/RSA.php');
