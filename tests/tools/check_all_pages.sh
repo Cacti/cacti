@@ -71,11 +71,11 @@ if [ $WGET_RESULT -eq 127 ]; then
 	exit 1
 fi
 
-while [ -n "$1" ]; do
-	case $1 in
 # ------------------------------------------------------------------------------
 # Get inputs from user (Interactive mode)
 # ------------------------------------------------------------------------------
+while [ -n "$1" ]; do
+	case $1 in
 		"--interactive")
 			echo "Enter Database username"
 			read -r DBUSER
@@ -342,6 +342,16 @@ set_cacti_admin_password
 enable_log_validation
 set_stderr_logging
 allow_index_following
+
+# ------------------------------------------------------------------------------
+# Check the Apache Syntax and add the default site
+# ------------------------------------------------------------------------------
+apache2ctl -t
+
+if [ -f /usr/sbin/a2dissite ]; then
+  /usr/sbin/a2dissite 000-default.conf
+  /usr/sbin/a2ensite cacti
+fi
 
 tmpFile1=$(mktemp)
 tmpFile2=$(mktemp)
