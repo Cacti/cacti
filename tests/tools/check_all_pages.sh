@@ -348,9 +348,8 @@ allow_index_following
 # ------------------------------------------------------------------------------
 apache2ctl -t
 
-if [ -f /usr/sbin/a2dissite ]; then
-  /usr/sbin/a2dissite 000-default.conf
-  /usr/sbin/a2ensite cacti
+if [ -f /usr/sbin/a2ensite ]; then
+  /usr/sbin/a2ensite 000-default.conf
 fi
 
 tmpFile1=$(mktemp)
