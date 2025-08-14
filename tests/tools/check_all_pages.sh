@@ -357,6 +357,11 @@ fi
 # ------------------------------------------------------------------------------
 netstat -anp | grep apache
 
+# ------------------------------------------------------------------------------
+# Dump the Apache Configuration
+# ------------------------------------------------------------------------------
+cat /etc/apache2/sites-available/000-default.conf
+
 tmpFile1=$(mktemp)
 tmpFile2=$(mktemp)
 logFile1=$(mktemp)
