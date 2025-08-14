@@ -352,6 +352,11 @@ if [ -f /usr/sbin/a2ensite ]; then
   /usr/sbin/a2ensite 000-default.conf
 fi
 
+# ------------------------------------------------------------------------------
+# Check to see if apache2 is up and listening
+# ------------------------------------------------------------------------------
+netstat -anp | grep apache
+
 tmpFile1=$(mktemp)
 tmpFile2=$(mktemp)
 logFile1=$(mktemp)
