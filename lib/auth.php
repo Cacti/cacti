@@ -28,6 +28,8 @@ include(__DIR__ . '/../include/vendor/GoogleAuthenticator/GoogleAuthenticator.ph
 include(__DIR__ . '/../include/vendor/GoogleAuthenticator/GoogleQrUrl.php');
 include(__DIR__ . '/../include/vendor/GoogleAuthenticator/RuntimeException.php');
 
+use phpseclib3\Crypt\RSA;
+
 /**
  * Clears a users security token
  *
@@ -4548,18 +4550,13 @@ function rsa_check_keypair(): void {
 	$public_key = read_config_option('rsa_public_key');
 
 	if (!$public_key) {
-		$rsa  = new phpseclib\phpseclib\phpseclib\Crypt\RSA();
-		$keys = $rsa->createKey(2048);
-		$rsa->loadKey($keys['publickey']);
-		$fingerprint = $rsa->getPublicKeyFingerprint();
+		$private     = RSA::createKey(2048);
+		$public      = $private->getPublicKey();
+		$fingerprint = $public->getFingerprint();
 
 		db_execute_prepared("INSERT INTO settings
-			(`name`, `value`)
-			VALUES
-			('rsa_public_key', '" . $keys['publickey'] . "'),
-			('rsa_private_key', '" . $keys['privatekey'] . "'),
-			('rsa_fingerprint', '" . $fingerprint . "')"
-		);
+			(`name`, `value`) VALUES ('rsa_public_key', ?), ('rsa_private_key', ?), ('rsa_fingerprint', ?)",
+			array($public, $private, $fingerprint));
 	}
 }
 
