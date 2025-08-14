@@ -18,6 +18,8 @@ Cacti CHANGELOG
 -issue#6294: Undefined variable $params in lib/api_automation.php
 -issue#6296: Issue with posix_kill function using Windows as your Cacti server
 -issue#6297: Enhance SMTP Security Settings to Higher Order TLS
+-issue#6299: Support SMTPUTF8 for modern Email Servers
+-feature: Update PHPMailer to 6.10 to support SMTPUTF8
 
 1.2.30
 -issue#6089: Unable to add new users

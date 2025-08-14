@@ -4699,7 +4699,7 @@ function admin_email($subject, $message) {
 				$name  = read_config_option('settings_from_name');
 
 				if ($name != '') {
-					$from = '"' . $name . '" <' . $email . '>';
+					$from = "$name <$email>";
 				} else {
 					$from = $email;
 				}
@@ -4727,29 +4727,36 @@ function admin_email($subject, $message) {
 }
 
 function send_mail($to, $from, $subject, $body, $attachments = '', $headers = '', $html = false) {
-	$fromname = '';
-	if (is_array($from)) {
-		$fromname = $from[1];
-		$from     = $from[0];
-	}
+	if (!is_array($from)) {
+		$name = '';
 
-	if ($from == '') {
-		$from     = read_config_option('settings_from_email');
-		$fromname = read_config_option('settings_from_name');
-	} elseif ($fromname == '') {
-		$full_name = db_fetch_cell_prepared('SELECT full_name
-			FROM user_auth
-			WHERE email_address = ?',
-			array($from));
+		if (strpos($from, '<') === false) {
+			if ($from == '') {
+				$email = read_config_option('settings_from_email');
+				$name  = read_config_option('settings_from_name');
 
-		if (empty($full_name)) {
-			$fromname = $from;
-		} else {
-			$fromname = $full_name;
+				if ($name != '') {
+					$from = "$name <$email>";
+				} else {
+					$from = $email;
+				}
+			}
+
+			if ($name == '') {
+				$full_name = db_fetch_cell_prepared('SELECT full_name
+					FROM user_auth
+					WHERE email_address = ?',
+					array($from));
+
+				if ($full_name != '') {
+					$name = $full_name;
+
+					$from = "'$name' <$from>";
+				}
+			}
 		}
 	}
 
-	$from = array(0 => $from, 1 => $fromname);
 	return mailer($from, $to, '', '', '', $subject, $body, '', $attachments, $headers, $html);
 }
 
@@ -4771,14 +4778,43 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
  * @param $html        - if set to true, html is the default, otherwise text format will be used
  *
  * For contact parameters, they can accept arrays containing zero or more values in the forms of:
- *     'email@email.com,email2@email.com,email3@email.com'
- *     array('email1@email.com' => 'My email', 'email2@email.com' => 'Your email', 'email3@email.com' => 'Whose email')
- *     array(array('email' => 'email1@email.com', 'name' => 'My email'), array('email' => 'email2@email.com',
- *         'name' => 'Your email'), array('email' => 'email3@email.com', 'name' => 'Whose email'))
  *
- * The $from field will only use the first contact specified.  If no contact is provided for $replyto
- * then $from is used for that too. If $from is empty, it will default to cacti@<server> or if no server name can
- * be found, it will use cacti@cacti.net
+ *     1. A comma delimited string:
+ *
+ *        'email@email.com,email2@email.com,email3@email.com'
+ *
+ *        Emails can also be as follows: "Your Name" <myemail@mydomain.com>, ...
+ *
+ *     2. An array of Emails and Names:
+ *
+ *     array(
+ *       'email1@email.com' => 'My email',
+ *       'email2@email.com' => 'Your email',
+ *       'email3@email.com' => 'Whose email'
+ *     );
+ *
+ *     3. An array of arrays with keys of 'email' and 'name':
+ *
+ *     array(
+ *       array(
+ *         'email' => 'email1@email.com',
+ *         'name'  => 'My email'
+ *       ),
+ *       array(
+ *         'email' => 'email2@email.com',
+ *         'name'  => 'Your email'
+ *       ),
+ *       array(
+ *         'email' => 'email3@email.com',
+ *         'name'  => 'Whose email'
+ *       )
+ *     );
+ *
+ * The $from field will only use the first contact specified.
+ *
+ * If no contact is provided for $replyto then $from is used for that too.
+ * If $from is empty, it will default to cacti@<server> or if no server name can
+ * be found, it will use cacti@cacti.net.
  *
  * The $attachments parameter may either be a single string, or a list of attachments
  * either as strings or an array.  The array can have the following keys:
@@ -4811,11 +4847,16 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		$mail->Timeout = $timeout;
 	}
 
+	// Support SMTPUTF8
+	$mail::$validator = 'eai';
+
+	// Setup i18n
 	$langparts = explode('-', $cacti_locale);
 	if (file_exists($config['include_path'] . '/vendor/phpmailer/language/phpmailer.lang-' . $langparts[0] . '.php')) {
 		$mail->setLanguage($langparts[0], $config['include_path'] . '/vendor/phpmailer/language/');
 	}
 
+	// Determine the Email send method
 	$how = read_config_option('settings_how');
 	if ($how < 0 || $how > 2) {
 		$how = 0;
@@ -4828,8 +4869,8 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		$mail->isSendmail();
 	} elseif ($how == 2) {
 		$mail->isSMTP();
-		$mail->Host     = read_config_option('settings_smtp_host');
-		$mail->Port     = read_config_option('settings_smtp_port');
+		$mail->Host = read_config_option('settings_smtp_host');
+		$mail->Port = read_config_option('settings_smtp_port');
 
 		if (read_config_option('settings_smtp_username') != '') {
 			$mail->SMTPAuth = true;
@@ -4901,10 +4942,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		}
 	}
 
-	// Sanity test the from email
-	if (!filter_var($from['email'], FILTER_VALIDATE_EMAIL)) {
-		return 'Bad email address format. Invalid from email address ' . $from['email'];
-	}
+	$result = null;
 
 	$fromText  = add_email_details(array($from), $result, array($mail, 'setFrom'));
 
@@ -5148,7 +5186,7 @@ function add_email_details($emails, &$result, callable $addFunc) {
 	}
 
 	$text = implode(',', $arrText);
-	//print "add_email_sw_details(): $text\n";
+
 	return $text;
 }
 
@@ -5158,6 +5196,7 @@ function parse_email_details($emails, $max_records = 0, $details = array()) {
 	}
 
 	$update = array();
+
 	foreach ($emails as $check_email) {
 		if (!empty($check_email)) {
 			if (!is_array($check_email)) {
@@ -5165,9 +5204,11 @@ function parse_email_details($emails, $max_records = 0, $details = array()) {
 
 				foreach($emails as $email) {
 					$email_array = split_emaildetail($email);
+
 					$details[$email_array['email']] = $email_array;
 				}
 			} else {
+				// Case indexed array of Emails
 				$has_name  = array_key_exists('name', $check_email);
 				$has_email = array_key_exists('email', $check_email);
 
@@ -5179,7 +5220,7 @@ function parse_email_details($emails, $max_records = 0, $details = array()) {
 					$email = array_key_exists(0, $check_email) ? $check_email[0] : '';
 				}
 
-				$details[trim(strtolower($email))] = array('name' => trim($name), 'email' => trim(strtolower($email)));
+				$details[mb_strtolower($email)] = array('name' => $name, 'email' => mb_strtolower($email));
 			}
 		}
 	}
@@ -5189,6 +5230,7 @@ function parse_email_details($emails, $max_records = 0, $details = array()) {
 		$results = is_array($detail) ? $detail : array();
 	} elseif ($max_records != 0 && $max_records < count($details)) {
 		$results = array();
+
 		foreach ($details as $d) {
 			$results[] = $d;
 			$max_records--;
@@ -5215,25 +5257,43 @@ function split_emaildetail($email) {
 		return array('name' => '', 'email' => $email);
 	}
 
-	if (!is_array($email)) {
-		$email = trim($email);
+	/**
+	 * Handle the case where the Email is a tring, but may
+	 * include the name at the beginning of the Email.
+	 */
+	if (!is_array($email) && strpos($email, '@') !== false) {
+		if (strpos($email, '<') !== false) {
+			$parts = explode('<', $email);
+			$name  = str_replace(array('"', "'"), array('', ''), $parts[0]);
+			$email = str_replace('>', '', $parts[1]);
 
-		$sPattern = '/(?:"?([^"]*)"?\s)?(?:<?(.+@[^>]+)>?)/i';
-		preg_match($sPattern, $email, $aMatch);
-
-		if (isset($aMatch[1])) {
-			$rname = trim($aMatch[1]);
+			return array('name' => $name, 'email' => $email);
 		}
+	}
 
-		if (isset($aMatch[2])) {
-			$rmail = trim($aMatch[2]);
+	if (!is_array($email)) {
+		/**
+		 * Borrowing eai validation from PHPMailer
+		 *
+		 * @see https://html.spec.whatwg.org/#e-mail-state-(type=email)
+		 * @see https://en.wikipedia.org/wiki/International_email
+		 */
+		$sPattern = '/^[-\p{L}\p{N}\p{M}.!#$%&\'*+\/=?^_`{|}~]+@[\p{L}\p{N}\p{M}](?:[\p{L}\p{N}\p{M}-]{0,61}' .
+			'[\p{L}\p{N}\p{M}])?(?:\.[\p{L}\p{N}\p{M}]' .
+			'(?:[-\p{L}\p{N}\p{M}]{0,61}[\p{L}\p{N}\p{M}])?)*$/usD';
+
+		$valid = preg_match($sPattern, $email);
+
+		if ($valid) {
+			$rmail = $email;
+			$rname = '';
 		}
 	} else {
 		$rmail = $email[0];
 		$rname = $email[1];
 	}
 
-	return array('name' => $rname, 'email' => strtolower($rmail));
+	return array('name' => $rname, 'email' => mb_strtolower($rmail));
 }
 
 function create_emailtext($e) {
@@ -5304,7 +5364,7 @@ function ping_mail_server($host, $port, $user, $password, $timeout = 10, $secure
 function email_test() {
 	global $config;
 
-	$message =  __('This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings.') . '<br><br>';
+	$message  =  __('This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings.') . '<br><br>';
 	$message .= __('Your email settings are currently set as follows') . '<br><br>';
 	$message .= '<b>' . __('Method') . '</b>: ';
 
@@ -5317,14 +5377,16 @@ function email_test() {
 	if ($how == 0) {
 		$mail = __('PHP\'s Mailer Class');
 	} elseif ($how == 1) {
-		$mail = __('Sendmail') . '<br><b>' . __('Sendmail Path'). '</b>: ';
+		$mail     = __('Sendmail') . '<br><b>' . __('Sendmail Path'). '</b>: ';
 		$sendmail = read_config_option('settings_sendmail_path');
-		$mail .= $sendmail;
+		$mail    .= $sendmail;
 	} elseif ($how == 2) {
 		print __('Method: SMTP') . '<br>';
+
 		$mail = __('SMTP') . '<br>';
-		$smtp_host = read_config_option('settings_smtp_host');
-		$smtp_port = read_config_option('settings_smtp_port');
+
+		$smtp_host     = read_config_option('settings_smtp_host');
+		$smtp_port     = read_config_option('settings_smtp_port');
 		$smtp_username = read_config_option('settings_smtp_username');
 		$smtp_password = read_config_option('settings_smtp_password');
 		$smtp_secure   = read_config_option('settings_smtp_secure');
@@ -5357,6 +5419,7 @@ function email_test() {
 			$mail .= '<b>' . __('Ping Results') . '</b>: ' . __('Bypassed') . '<br>';
 		}
 	}
+
 	$message .= $mail;
 	$message .= '<br>';
 

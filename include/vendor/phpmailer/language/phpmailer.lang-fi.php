@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Finnish PHPMailer language file: refer to English translation for definitive list
  * @package PHPMailer
@@ -19,7 +20,6 @@ $PHPMAILER_LANG['instantiate']          = 'mail-funktion luonti epäonnistui.';
 $PHPMAILER_LANG['mailer_not_supported'] = 'postivälitintyyppiä ei tueta.';
 $PHPMAILER_LANG['provide_address']      = 'Aseta vähintään yksi vastaanottajan sähk&ouml;postiosoite.';
 $PHPMAILER_LANG['recipients_failed']    = 'SMTP-virhe: seuraava vastaanottaja osoite on virheellinen.';
-$PHPMAILER_LANG['encoding']             = 'Tuntematon koodaustyyppi: ';
 //$PHPMAILER_LANG['signing']              = 'Signing Error: ';
 //$PHPMAILER_LANG['smtp_connect_failed']  = 'SMTP Connect() failed.';
 //$PHPMAILER_LANG['smtp_error']           = 'SMTP server error: ';
