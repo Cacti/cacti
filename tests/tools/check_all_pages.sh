@@ -365,7 +365,7 @@ cat /etc/apache2/sites-available/000-default.conf
 # ------------------------------------------------------------------------------
 # List to contents of the web root
 # ------------------------------------------------------------------------------
-ls -altr /var/www/html/cacti
+ls -altr /var/www/html/cacti/*
 
 tmpFile1=$(mktemp)
 tmpFile2=$(mktemp)
