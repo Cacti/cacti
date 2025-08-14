@@ -128,9 +128,9 @@ jobs:
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: sudo apt-get install apache2 snmp rrdtool libapache2-mod-php${{ matrix.php }}
       
-    - name: Enable Proxy FCGI
+    - name: Link Web Root
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
-      run: sudo a2enmod setenvif actions alias
+      run: ln -s /home/runner/work/cacti/cacti /var/www/html/cacti
       
     - name: Configure Apache Site
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
