@@ -39,7 +39,7 @@ echo "NOTE: Check all Pages Script Starting"
 echo "---------------------------------------------------------------------"
 
 # --- Website defaults
-WEBHOST="http://localhost/cacti";
+WEBHOST="http://127.0.0.1/cacti";
 WAUSER="admin";
 WAPASS="admin";
 
