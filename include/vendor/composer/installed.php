@@ -3,7 +3,7 @@
         'name' => 'cacti/cacti',
         'pretty_version' => '1.2.x-dev',
         'version' => '1.2.9999999.9999999-dev',
-        'reference' => '9b7f86bf45272bf10ebc7be8f0795e36a6161425',
+        'reference' => 'e8cf8f66a927df6572b61b3253434cda044db080',
         'type' => 'composer-plugin',
         'install_path' => __DIR__ . '/../../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'cacti/cacti' => array(
             'pretty_version' => '1.2.x-dev',
             'version' => '1.2.9999999.9999999-dev',
-            'reference' => '9b7f86bf45272bf10ebc7be8f0795e36a6161425',
+            'reference' => 'e8cf8f66a927df6572b61b3253434cda044db080',
             'type' => 'composer-plugin',
             'install_path' => __DIR__ . '/../../../',
             'aliases' => array(),
