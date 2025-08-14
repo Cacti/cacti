@@ -126,7 +126,7 @@ jobs:
       
     - name: Install Apache and tools
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
-      run: sudo apt-get install apache2 snmp rrdtool libapache2-mod-${{ matrix.php }}
+      run: sudo apt-get install apache2 snmp rrdtool libapache2-mod-php${{ matrix.php }}
       
     - name: Enable Proxy FCGI
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
