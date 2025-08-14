@@ -4352,7 +4352,7 @@ function rsa_check_keypair() {
 	$public_key = read_config_option('rsa_public_key');
 
 	if(!$public_key) {
-		$rsa = new phpseclib\Crypt\RSA();
+		$rsa = new phpseclib\phpseclib\phpseclib\Crypt\RSA();
 		$keys = $rsa->createKey(2048);
 		$rsa->loadKey($keys['publickey']);
 		$fingerprint = $rsa->getPublicKeyFingerprint();
