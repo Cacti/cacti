@@ -4339,19 +4339,9 @@ function secpass_check_history($id, $password) {
 function rsa_check_keypair() {
 	global $config;
 
-//	set_include_path($config['include_path'] . '/vendor/phpseclib/');
-//	include_once('Math/BigInteger.php');
-//	include_once('Crypt/Common/SymmetricKey.php');
-//	include_once('Crypt/Common/AsymmetricKey.php');
-//	include_once('Crypt/Common/BlockCipher.php');
-//	include_once('Crypt/Hash.php');
-//	include_once('Crypt/Rijndael.php');
-//	include_once('Crypt/AES.php');
-//	include_once('Crypt/RSA.php');
-
 	$public_key = read_config_option('rsa_public_key');
 
-//	if (!$public_key) {
+	if (!$public_key) {
 		$private     = RSA::createKey(2048);
 		$public      = $private->getPublicKey();
 		$fingerprint = $public->getFingerprint();
@@ -4359,7 +4349,7 @@ function rsa_check_keypair() {
 		db_execute_prepared("INSERT INTO settings
 			(`name`, `value`) VALUES ('rsa_public_key', ?), ('rsa_private_key', ?), ('rsa_fingerprint', ?)",
 			array($public, $private, $fingerprint));
-//	}
+	}
 }
 
 /**
