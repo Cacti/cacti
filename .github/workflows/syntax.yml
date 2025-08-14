@@ -133,8 +133,6 @@ jobs:
     - name: Restart Apache2
       run: |
         sudo systemctl restart apache2
-        sudo systemctl restart irqbalance
-        sudo systemctl restart networkd-dispatcher
         sudo systemctl restart php${{ matrix.php }}-fpm
 
     - name: Setup the Cacti Root
