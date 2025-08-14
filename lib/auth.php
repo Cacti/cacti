@@ -4545,19 +4545,10 @@ function secpass_check_history(int $id, string $password): bool {
  * @return void
  */
 function rsa_check_keypair(): void {
-//	set_include_path(CACTI_PATH_INCLUDE . '/vendor/phpseclib/phpseclib/phpseclib');
-
-//	include('Crypt/Base.php');
-//	include('Math/BigInteger.php');
-//	include('Crypt/Hash.php');
-//	include('Crypt/RSA.php');
-//	include('Crypt/Rijndael.php');
-//	include('Crypt/AES.php');
-
 	$public_key = read_config_option('rsa_public_key');
 
 	if (!$public_key) {
-		$rsa  = new phpseclib\phpseclib\Crypt\RSA();
+		$rsa  = new phpseclib\phpseclib\phpseclib\Crypt\RSA();
 		$keys = $rsa->createKey(2048);
 		$rsa->loadKey($keys['publickey']);
 		$fingerprint = $rsa->getPublicKeyFingerprint();
