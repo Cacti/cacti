@@ -5174,14 +5174,14 @@ function admin_email(string $subject, string $message) : bool {
 				$name  = read_config_option('settings_from_name');
 
 				if ($name != '') {
-					$from = '"' . $name . '" <' . $email . '>';
+					$from = "$name <$email>";
 				} else {
 					$from = $email;
 				}
 
 				if ($admin_details['email_address'] != '') {
 					if ($admin_details['full_name'] != '') {
-						$to = '"' . $admin_details['full_name'] . '" <' . $admin_details['email_address'] . '>';
+						$to = $admin_details['full_name'] . ' <' . $admin_details['email_address'] . '>';
 					} else {
 						$to = $admin_details['email_address'];
 					}
@@ -5203,30 +5203,35 @@ function admin_email(string $subject, string $message) : bool {
 function send_mail(array|string $to, string|array|null $from = null, string $subject = null,
 	string $body = null, ?array $attachments = [], ?array $headers = [],
 	bool $html = false, $expandIds = false): string {
-	$fromname = '';
+	if (!is_array($from)) {
+		$name = '';
 
-	if (is_array($from)) {
-		$fromname = $from[1];
-		$from     = $from[0];
-	}
+		if (strpos($from, '<') === false) {
+			if ($from === null || $from == '') {
+				$email = read_config_option('settings_from_email');
+				$name  = read_config_option('settings_from_name');
 
-	if ($from === null || $from === '') {
-		$from     = read_config_option('settings_from_email');
-		$fromname = read_config_option('settings_from_name');
-	} elseif ($fromname == '') {
-		$full_name = db_fetch_cell_prepared('SELECT full_name
-			FROM user_auth
-			WHERE email_address = ?',
-			[$from]);
+				if ($name != '') {
+					$from = "$name <$email>";
+				} else {
+					$from = $email;
+				}
+			}
 
-		if (empty($full_name)) {
-			$fromname = $from;
-		} else {
-			$fromname = $full_name;
+			if ($name == '') {
+				$full_name = db_fetch_cell_prepared('SELECT full_name
+					FROM user_auth
+					WHERE email_address = ?',
+					array($from));
+
+				if ($full_name != '') {
+					$name = $full_name;
+
+					$from = "$name <$from>";
+				}
+			}
 		}
 	}
-
-	$from = [0 => $from, 1 => $fromname];
 
 	return mailer($from, $to, subject: $subject, body: $body, attachments: $attachments, headers: $headers, html: $html, expandIds: $expandIds);
 }
@@ -5235,14 +5240,43 @@ function send_mail(array|string $to, string|array|null $from = null, string $sub
  * function to send mails to users
  *
  * For contact parameters, they can accept arrays containing zero or more values in the forms of:
- *     'email@email.com,email2@email.com,email3@email.com'
- *     array('email1@email.com' => 'My email', 'email2@email.com' => 'Your email', 'email3@email.com' => 'Whose email')
- *     array(array('email' => 'email1@email.com', 'name' => 'My email'), array('email' => 'email2@email.com',
- *         'name' => 'Your email'), array('email' => 'email3@email.com', 'name' => 'Whose email'))
  *
- * The $from field will only use the first contact specified.  If no contact is provided for $replyto
- * then $from is used for that too. If $from is empty, it will default to cacti@<server> or if no server name can
- * be found, it will use cacti@cacti.net
+ *     1. A comma delimited string:
+ *
+ *        'email@email.com,email2@email.com,email3@email.com'
+ *
+ *        Emails can also be as follows: "Your Name" <myemail@mydomain.com>, ...
+ *
+ *     2. An array of Emails and Names:
+ *
+ *     [
+ *       'email1@email.com' => 'My email',
+ *       'email2@email.com' => 'Your email',
+ *       'email3@email.com' => 'Whose email'
+ *     ];
+ *
+ *     3. An array of arrays with keys of 'email' and 'name':
+ *
+ *     [
+ *       [
+ *         'email' => 'email1@email.com',
+ *         'name'  => 'My email'
+ *       ],
+ *       [
+ *         'email' => 'email2@email.com',
+ *         'name'  => 'Your email'
+ *       ],
+ *       [
+ *         'email' => 'email3@email.com',
+ *         'name'  => 'Whose email'
+ *       ]
+ *     ];
+ *
+ * The $from field will only use the first contact specified.
+ *
+ * If no contact is provided for $replyto then $from is used for that too.
+ * If $from is empty, it will default to cacti@<server> or if no server name can
+ * be found, it will use cacti@cacti.net.
  *
  * The $attachments parameter may either be a single string, or a list of attachments
  * either as strings or an array.  The array can have the following keys:
@@ -5294,8 +5328,11 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 		$mail->Timeout = $timeout;
 	}
 
-	$langparts = explode('-', $cacti_locale);
+	// Support SMTPUTF8
+	$mail::$validator = 'eai';
 
+	// Setup i18n
+	$langparts = explode('-', $cacti_locale);
 	if (file_exists(CACTI_PATH_INCLUDE . '/vendor/phpmailer/phpmailer/language/phpmailer.lang-' . $langparts[0] . '.php')) {
 		$mail->setLanguage($langparts[0], CACTI_PATH_INCLUDE . '/vendor/phpmailer/phpmailer/language/');
 	}
@@ -5450,11 +5487,6 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 		if (empty($from['name'])) {
 			$from['name'] = 'Cacti';
 		}
-	}
-
-	// Sanity test the from email
-	if (!filter_var($from['email'], FILTER_VALIDATE_EMAIL)) {
-		return 'Bad email address format. Invalid from email address ' . $from['email'];
 	}
 
 	$result    = false;
@@ -5731,7 +5763,8 @@ function parse_email_details($emails, int $max_records = 0, array $details = [])
 				$emails = explode(',', $check_email);
 
 				foreach ($emails as $email) {
-					$email_array                    = split_emaildetail($email);
+					$email_array = split_emaildetail($email);
+
 					$details[$email_array['email']] = $email_array;
 				}
 			} else {
@@ -5746,7 +5779,7 @@ function parse_email_details($emails, int $max_records = 0, array $details = [])
 					$email = array_key_exists(0, $check_email) ? $check_email[0] : '';
 				}
 
-				$details[trim(strtolower($email))] = ['name' => trim($name), 'email' => trim(strtolower($email))];
+				$details[mb_strtolower($email)] = ['name' => $name, 'email' => mb_strtolower($email)];
 			}
 		}
 	}
@@ -5781,28 +5814,46 @@ function split_emaildetail($email) {
 	 * without an email domain
 	 */
 	if (!is_array($email) && strpos($email, '@') === false) {
-		return array('name' => '', 'email' => $email);
+		return ['name' => '', 'email' => $email];
+	}
+
+	/**
+	 * Handle the case where the Email is a tring, but may
+	 * include the name at the beginning of the Email.
+	 */
+	if (!is_array($email) && strpos($email, '@') !== false) {
+		if (strpos($email, '<') !== false) {
+			$parts = explode('<', $email);
+			$name  = str_replace(['"', "'"], ['', ''], $parts[0]);
+			$email = str_replace('>', '', $parts[1]);
+
+			return ['name' => $name, 'email' => $email];
+		}
 	}
 
 	if (!is_array($email)) {
-		$email = trim($email);
+		/**
+		 * Borrowing eai validation from PHPMailer
+		 *
+		 * @see https://html.spec.whatwg.org/#e-mail-state-(type=email)
+		 * @see https://en.wikipedia.org/wiki/International_email
+		 */
+		$sPattern = '/^[-\p{L}\p{N}\p{M}.!#$%&\'*+\/=?^_`{|}~]+@[\p{L}\p{N}\p{M}](?:[\p{L}\p{N}\p{M}-]{0,61}' .
+			'[\p{L}\p{N}\p{M}])?(?:\.[\p{L}\p{N}\p{M}]' .
+			'(?:[-\p{L}\p{N}\p{M}]{0,61}[\p{L}\p{N}\p{M}])?)*$/usD';
 
-		$sPattern = '/(?:"?([^"]*)"?\s)?(?:<?(.+@[^>]+)>?)/i';
-		preg_match($sPattern, $email, $aMatch);
+		$valid = preg_match($sPattern, $email);
 
-		if (isset($aMatch[1])) {
-			$rname = trim($aMatch[1]);
-		}
-
-		if (isset($aMatch[2])) {
-			$rmail = trim($aMatch[2]);
+		if ($valid) {
+			$rmail = $email;
+			$rname = '';
 		}
 	} else {
 		$rmail = $email[0];
 		$rname = $email[1];
 	}
 
-	return ['name' => $rname, 'email' => strtolower($rmail)];
+	return ['name' => $rname, 'email' => mb_strtolower($rmail)];
 }
 
 function create_emailtext($e) {
