@@ -120,7 +120,7 @@ jobs:
         cd ${{ github.workspace }}/plugins/syslog
         cp -p config.php.dist config.php
         sed -i 's/\/\/\$syslog_install_options/\$syslog_install_options/g' config.php
-    
+
     - name: Move plugin config files
       run: |
         cp -p ${{ github.workspace }}/plugins/flowview/config.php.dist ${{ github.workspace }}/plugins/flowview/config.php
@@ -142,8 +142,6 @@ jobs:
       run: |
         sudo systemctl start snmpd
         sudo snmpwalk -c public -v2c -On localhost .1.3.6.1.2.1.1
-
-
 
     - name: Link Web Root and Fix Permissions and Disable Apparmor
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
@@ -233,7 +231,7 @@ jobs:
         sudo php cli/add_device.php --description=test_device --ip=127.0.0.1 --template=24
         sudo php cli/rebuild_poller_cache.php --debug
         sudo php cli/poller_reindex_hosts.php --id=all --debug
-  
+
     - name: Check all pages using recursive wget
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
