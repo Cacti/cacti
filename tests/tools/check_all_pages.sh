@@ -27,7 +27,7 @@
 # ------------------------------------------------------------------------------
 
 # Uncomment for debugging
-set -x
+# set -x
 
 # On a hunch
 sudo systemctl restart apache2
