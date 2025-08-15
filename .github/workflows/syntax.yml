@@ -213,7 +213,7 @@ jobs:
     - name: Run Cacti poller
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
-        sudo php ${{ github.workspace }}/cli/poller.php --poller=1 --force --debug
+        sudo php ${{ github.workspace }}/poller.php --poller=1 --force --debug
         if ! grep -q "SYSTEM STATS" ${{ github.workspace }}/log/cacti.log; then
           echo "Cacti poller did not finish successfully"
           exit 1
