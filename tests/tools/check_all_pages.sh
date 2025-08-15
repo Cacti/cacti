@@ -510,6 +510,7 @@ FILTERED_LOG="$(grep -v \
 	-e "STATS:" \
 	-e "IMPORT Importing XML Data for " \
 	-e "CMDPHP Not Already Set" \
+	-e "PCACHE NOTE" \
 	"$CACTI_LOG")" || true
 
 save_log_files
