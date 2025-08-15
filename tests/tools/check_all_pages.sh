@@ -346,10 +346,18 @@ allow_index_following
 # ------------------------------------------------------------------------------
 # Check the Apache Syntax and add the default site
 # ------------------------------------------------------------------------------
-apache2ctl -t
+if [ $DEBUG -eq 1 ]; then
+  echo "---------------------------------------------------------------------"
+  echo "Checking the Apache Config"
+  echo "---------------------------------------------------------------------"
+  apache2ctl -t
+fi
 
+echo "---------------------------------------------------------------------"
+echo "Enabling the Apache Site"
+echo "---------------------------------------------------------------------"
 if [ -f /usr/sbin/a2ensite ]; then
-  /usr/sbin/a2ensite 000-default.conf
+  /usr/sbin/a2ensite 000-default.conf 
 fi
 
 if [ $DEBUG -eq 1 ]; then
