@@ -408,13 +408,20 @@ echo "---------------------------------------------------------------------"
 echo "NOTE: Saving Cookie Data"
 wget -q --keep-session-cookies --save-cookies "$cookieFile" --output-document="$tmpFile1" "$WEBHOST"/index.php
 
-magic=$(grep "name='__csrf_magic' value=" "{$tmpFile1}" | sed "s/.*__csrf_magic' value=\"//" | sed "s/\" \/>//")
+if [ -f $tmpFile1 ]; then
+  magic=$(grep "name='__csrf_magic' value=" $tmpFile1 | sed "s/.*__csrf_magic' value=\"//" | sed "s/\" \/>//")
 
-if [ $DEBUG -eq 1 ]; then
+  if [ $DEBUG -eq 1 ]; then
+    echo "---------------------------------------------------------------------"
+    echo "The CSRF Magic Token is"
+    echo "---------------------------------------------------------------------"
+    cat ${magic}
+  fi
+else
   echo "---------------------------------------------------------------------"
-  echo "The CSRF Magic Token is"
+  echo "FATAL: Unable to locate output file"
   echo "---------------------------------------------------------------------"
-  cat ${magic}
+  exit 1
 fi
 
 postData="action=login&login_username=${WAUSER}&login_password=${WAPASS}&__csrf_magic=${magic}"
