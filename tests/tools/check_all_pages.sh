@@ -189,7 +189,7 @@ BASE_PATH=$( cd -- "${SCRIPT_PATH}/../../" &> /dev/null && pwd )
 
 echo "NOTE: Base Path is ${BASE_PATH}"
 
-DEBUG=1
+DEBUG=0
 CACTI_LOG="${BASE_PATH}/log/cacti.log"
 CACTI_ERRLOG="${BASE_PATH}/log/cacti.stderr.log"
 POLLER="${BASE_PATH}/poller.php"
@@ -415,7 +415,7 @@ if [ -f $tmpFile1 ]; then
     echo "---------------------------------------------------------------------"
     echo "The CSRF Magic Token is"
     echo "---------------------------------------------------------------------"
-    cat ${magic}
+    echo ${magic}
   fi
 else
   echo "---------------------------------------------------------------------"
