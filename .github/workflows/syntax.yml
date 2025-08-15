@@ -138,6 +138,7 @@ jobs:
       run: sudo apt-get install apache2 snmp snmpd rrdtool libapache2-mod-php${{ matrix.php }}
 
     - name: Start SNMPD agent and Test Agent
+      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         sudo systemctl start snmpd
         sudo snmpwalk -c public -v2c -On localhost .1.3.6.1.2.1.1
