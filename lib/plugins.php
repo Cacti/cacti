@@ -1895,6 +1895,8 @@ function plugin_load_info_file($file) {
 }
 
 function plugin_fetch_latest_plugins() {
+	global $debug;
+
 	$start = microtime(true);
 
 	$repo = trim(read_config_option('github_repository'), "/\n\r ");
@@ -1908,6 +1910,8 @@ function plugin_fetch_latest_plugins() {
 		}
 
 		return false;
+	} else {
+		debug("Fetched User $user with key");
 	}
 
 	$avail_plugins = [];
@@ -1929,6 +1933,8 @@ function plugin_fetch_latest_plugins() {
 
 	if (cacti_sizeof($plugins)) {
 		foreach ($plugins as $pi) {
+			debug("Queueing Plugin {$pi['full_name']}");
+
 			if (isset($pi['full_name'])) {
 				if (str_contains($pi['full_name'], 'plugin_')) {
 					$plugin = explode('plugin_', $pi['full_name'])[1];
