@@ -409,6 +409,14 @@ echo "NOTE: Saving Cookie Data"
 wget -q --keep-session-cookies --save-cookies "$cookieFile" --output-document="$tmpFile1" "$WEBHOST"/index.php
 
 magic=$(grep "name='__csrf_magic' value=" "{$tmpFile1}" | sed "s/.*__csrf_magic' value=\"//" | sed "s/\" \/>//")
+
+if [ $DEBUG -eq 1 ]; then
+  echo "---------------------------------------------------------------------"
+  echo "The CSRF Magic Token is"
+  echo "---------------------------------------------------------------------"
+  cat ${magic}
+fi
+
 postData="action=login&login_username=${WAUSER}&login_password=${WAPASS}&__csrf_magic=${magic}"
 
 echo "NOTE: Logging into the Cacti User Interface"
