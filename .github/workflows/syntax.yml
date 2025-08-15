@@ -144,12 +144,6 @@ jobs:
         sudo snmpwalk -c public -v2c -On localhost .1.3.6.1.2.1.1
 
 
-    - name: Setup Cacti Daemon
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
-      run: |
-        sudo cp ${{ github.workspace }}/tests/tools/cactid.service /etc/systemd/system/cactid.service
-        sudo systemctl enable cactid
-        sudo systemctl start cactid
 
     - name: Link Web Root and Fix Permissions and Disable Apparmor
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
@@ -196,6 +190,16 @@ jobs:
         cat ${{ github.workspace }}/include/config.php.dist | sed -r "s/localhost/127.0.0.1/g" > ${{ github.workspace }}/include/config.php
         sudo chmod 777 ${{ github.workspace }}/include/config.php
         cat ${{ github.workspace}}/include/config.php
+
+
+
+    - name: Setup Cacti Daemon
+      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
+      run: |
+        sudo cp ${{ github.workspace }}/tests/tools/cactid.service /etc/systemd/system/cactid.service
+        sudo systemctl enable cactid
+        sudo systemctl start cactid
+
 
     - name: Check install code for validity
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
