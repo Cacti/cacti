@@ -199,6 +199,7 @@ jobs:
         sudo cp ${{ github.workspace }}/tests/tools/cactid.service /etc/systemd/system/cactid.service
         sudo systemctl enable cactid
         sudo systemctl start cactid
+        sudo systemctl status cactid
 
 
     - name: Check install code for validity
