@@ -189,7 +189,7 @@ BASE_PATH=$( cd -- "${SCRIPT_PATH}/../../" &> /dev/null && pwd )
 
 echo "NOTE: Base Path is ${BASE_PATH}"
 
-DEBUG=0
+DEBUG=1
 CACTI_LOG="${BASE_PATH}/log/cacti.log"
 CACTI_ERRLOG="${BASE_PATH}/log/cacti.stderr.log"
 POLLER="${BASE_PATH}/poller.php"
