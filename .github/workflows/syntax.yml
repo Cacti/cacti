@@ -137,7 +137,8 @@ jobs:
         sudo ln -s /home/runner/work/cacti/cacti /var/www/html
         sudo find /home/runner/work/cacti -type d -exec chmod 755 {} \;
         sudo find /home/runner/work/cacti -type f -exec chmod 644 {} \;
-        sudo setenforce 0
+        sudo systemctl stop apparmor
+        sudo systemctl disable apparmor
       
     - name: Configure Apache Site
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
