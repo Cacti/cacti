@@ -512,6 +512,8 @@ FILTERED_LOG="$(grep -v \
 	-e "CMDPHP Not Already Set" \
 	-e "PCACHE NOTE" \
 	-e "LMSENSORS WARNING" \
+	-e "AUTOM8 \[PID\:" \
+	-e "DSDEBUG Bad Data" \
 	"$CACTI_LOG")" || true
 
 save_log_files
