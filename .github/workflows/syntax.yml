@@ -136,7 +136,7 @@ jobs:
       run: |
         sudo ln -s /home/runner/work/cacti/cacti /var/www/html
         sudo find /home/runner/work/cacti -type d -exec chmod 755 {} \;
-        sudo find /home/runner/work/cacti -type f -exec chmod 644 {} \;
+        sudo find /home/runner/work/cacti -type f -exec chmod 755 {} \;
         sudo systemctl stop apparmor
         sudo systemctl disable apparmor
       
