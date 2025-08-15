@@ -210,14 +210,6 @@ jobs:
           exit 1
         fi
 
-    - name: Run Cacti poller
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
-      run: |
-        sudo php ${{ github.workspace }}/poller.php --poller=1 --force --debug
-        if ! grep -q "SYSTEM STATS" ${{ github.workspace }}/log/cacti.log; then
-          echo "Cacti poller did not finish successfully"
-          exit 1
-        fi
 
 
     - name: Check install code for validity
@@ -251,6 +243,17 @@ jobs:
         sudo php cli/add_device.php --description=test_device --ip=127.0.0.1 --template=24
         sudo php cli/rebuild_poller_cache.php --debug
         sudo php cli/poller_reindex_hosts.php --id=all --debug
+
+
+    - name: Run Cacti poller
+      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
+      run: |
+        sudo php ${{ github.workspace }}/poller.php --poller=1 --force --debug
+        if ! grep -q "SYSTEM STATS" ${{ github.workspace }}/log/cacti.log; then
+          echo "Cacti poller did not finish successfully"
+          exit 1
+        fi
+
 
     - name: Check all pages using recursive wget
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
