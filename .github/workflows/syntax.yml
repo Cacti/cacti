@@ -131,12 +131,13 @@ jobs:
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: sudo apt-get install apache2 snmp rrdtool libapache2-mod-php${{ matrix.php }}
       
-    - name: Link Web Root and Fix Permissions
+    - name: Link Web Root and Fix Permissions and Disable Selinux
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         sudo ln -s /home/runner/work/cacti/cacti /var/www/html
         sudo find /home/runner/work/cacti -type d -exec chmod 755 {} \;
         sudo find /home/runner/work/cacti -type f -exec chmod 644 {} \;
+        sudo setenforce 0
       
     - name: Configure Apache Site
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
@@ -144,10 +145,6 @@ jobs:
         cat ${{ github.workspace }}/tests/tools/cacti.conf | sed -r 's#GITHUB_WORKSPACE#${{ github.workspace }}#g' > /tmp/cacti.conf
         sudo cp /tmp/cacti.conf /etc/apache2/sites-available/000-default.conf
 
-    - name: Open permissions for testing purposes
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
-      run: sudo chmod -R 777 ${{ github.workspace}}
-      
     - name: Restart Apache2
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: sudo systemctl restart apache2
