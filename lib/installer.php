@@ -4009,7 +4009,7 @@ class Installer implements JsonSerializable {
 		$dateBack = DateTime::createFromFormat('U.u', $backgroundTime);
 		$dateTime = DateTime::createFromFormat('U.u', $backgroundDone);
 
-		log_install_always('', __('Installation was started at %s, completed at %s', $dateBack->format('Y-m-d H:i:s'), $dateTime->format('Y-m-d H:i:s')));
+		log_install_always('', __('Installation was started at %s, completed at %s', (string) $dateBack->format('Y-m-d H:i:s'), (string) $dateTime->format('Y-m-d H:i:s')));
 
 		return true;
 	}
