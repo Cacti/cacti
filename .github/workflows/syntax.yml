@@ -134,8 +134,11 @@ jobs:
 
     - name: Install Apache and tools
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
-      run: sudo apt-get install apache2 snmp rrdtool libapache2-mod-php${{ matrix.php }}
-      
+      run: sudo apt-get install apache2 snmp snmpd rrdtool libapache2-mod-php${{ matrix.php }}
+
+    - name: Start SNMPD agent
+      run: sudo systemctl start snmpd
+
     - name: Link Web Root and Fix Permissions and Disable Selinux
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
