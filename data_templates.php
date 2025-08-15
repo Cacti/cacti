@@ -838,7 +838,7 @@ function template_edit() {
 		$form_array[$field_name]['sub_checkbox'] = array(
 			'name'          => 't_' . $field_name,
 			'friendly_name' => __esc('Check this checkbox if you wish to allow the user to override the value on the right during Data Source creation.'),
-			'value'         => (isset($template_rrd) ? $template_rrd['t_' . $field_name] : ''),
+			'value'         => (isset($template_rrd['t_' . $field_name]) ? $template_rrd['t_' . $field_name] : ''),
 			'default'       => ''
 		);
 	}
