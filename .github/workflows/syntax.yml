@@ -90,6 +90,12 @@ jobs:
         owner: 'Cacti'
         repository: 'plugin_mactrack'
 
+    - name: Checkout Intropage Plugin
+      uses: GuillaumeFalourd/clone-github-repo-action@v2
+      with:
+        owner: 'Cacti'
+        repository: 'plugin_intropage'
+
     - name: Checkout FlowView Plugin
       uses: GuillaumeFalourd/clone-github-repo-action@v2
       with:
@@ -115,6 +121,7 @@ jobs:
         mv plugin_mactrack ${{ github.workspace }}/plugins/mactrack
         mv plugin_audit ${{ github.workspace }}/plugins/audit
         mv plugin_flowview ${{ github.workspace }}/plugins/flowview
+        mv plugin_intropage ${{ github.workspace }}/plugins/intropage
         mv plugin_syslog ${{ github.workspace }}/plugins/syslog
         # With syslog we have to enable batch installs using the lines below
         cd ${{ github.workspace }}/plugins/syslog
@@ -198,6 +205,19 @@ jobs:
         sudo systemctl enable cactid
         sudo systemctl start cactid
         sudo systemctl status cactid
+        if ! systemctl is-active --quiet cactid; then
+          echo "Cacti daemon failed to start"
+          exit 1
+        fi
+
+    - name: Run Cacti poller
+      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
+      run: |
+        sudo php ${{ github.workspace }}/cli/poller.php --poller=1 --force --debug
+        if ! grep -q "SYSTEM STATS" ${{ github.workspace }}/log/cacti.log; then
+          echo "Cacti poller did not finish successfully"
+          exit 1
+        fi
 
 
     - name: Check install code for validity
@@ -222,7 +242,7 @@ jobs:
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         cd ${{ github.workspace }}
-        sudo php cli/plugin_manage.php --plugin=thold --plugin=monitor --plugin=mactrack --plugin=audit --plugin=flowview --plugin=syslog --install --enable --allperms
+        sudo php cli/plugin_manage.php --plugin=thold --plugin=intropage --plugin=monitor --plugin=mactrack --plugin=audit --plugin=flowview --plugin=syslog --install --enable --allperms
 
     - name: Add Device for Moc Test, Check CLI scripts for Errors
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
