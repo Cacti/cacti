@@ -406,7 +406,7 @@ echo "---------------------------------------------------------------------"
 echo "Starting Web Based Page Validation"
 echo "---------------------------------------------------------------------"
 echo "NOTE: Saving Cookie Data"
-wget -q --keep-session-cookies --save-cookies "$cookieFile" --output-document="$tmpFile1" "$WEBHOST"/index.php
+wget -q --keep-session-cookies --save-cookies "$cookieFile" --output-document="$tmpFile1" "$WEBHOST"/index.php >/dev/null 2>&1
 
 if [ -f $tmpFile1 ]; then
   magic=$(grep "name='__csrf_magic' value=" $tmpFile1 | sed "s/.*__csrf_magic' value=\"//" | sed "s/\" \/>//")
@@ -427,7 +427,7 @@ fi
 postData="action=login&login_username=${WAUSER}&login_password=${WAPASS}&__csrf_magic=${magic}"
 
 echo "NOTE: Logging into the Cacti User Interface"
-wget $loadSaveCookie --post-data="${postData}" --output-document="${tmpFile2}" "${WEBHOST}"/index.php
+wget $loadSaveCookie --post-data="${postData}" --output-document="${tmpFile2}" "${WEBHOST}"/index.php >/dev/null 2>&1
 
 if [ $DEBUG -eq 1 ]; then
   echo "---------------------------------------------------------------------"
@@ -441,7 +441,7 @@ fi
 # remove, don't uninstall, enable or disable plugins stuff.
 # ------------------------------------------------------------------------------
 echo "NOTE: Recursively Checking all Base Pages - Note this will take several minutes!!!"
-wget $loadSaveCookie --output-file="${logFile1}" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable)" --recursive --level=0 --execute=robots=off "${WEBHOST}"/index.php
+wget $loadSaveCookie --output-file="${logFile1}" --reject-regex="(logout\.php|remove|delete|uninstall|install|disable|enable)" --recursive --level=0 --execute=robots=off "${WEBHOST}"/index.php >/dev/null 2>&1
 error=$?
 
 if [ $error -eq 8 ]; then
