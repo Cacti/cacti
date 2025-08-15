@@ -509,7 +509,6 @@ FILTERED_LOG="$(grep -v \
 	-e "MAILER INFO:" \
 	-e "STATS:" \
 	-e "IMPORT Importing XML Data for " \
-	-e "CMDPHP SQL Backtrace: " \
 	-e "CMDPHP Not Already Set" \
 	"$CACTI_LOG")" || true
 
