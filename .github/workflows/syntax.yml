@@ -135,8 +135,8 @@ jobs:
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         sudo ln -s /home/runner/work/cacti/cacti /var/www/html
-        sudo find /home/runner/work/cacti -type d -exec chmod 755 {} \;
-        sudo find /home/runner/work/cacti -type f -exec chmod 755 {} \;
+        sudo find /home/runner/work/cacti -type d -exec chmod 777 {} \;
+        sudo find /home/runner/work/cacti -type f -exec chmod 777 {} \;
         sudo systemctl stop apparmor
         sudo systemctl disable apparmor
         sudo chown -R www-data:runner /home/runner/work/cacti
