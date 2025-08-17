@@ -1854,7 +1854,7 @@ function create_hosts_filter() {
 		$status[-5] = __('Maintenance');
 	}
 
-	if (get_request_var('site_id') > 0) {
+	if (get_filter_request_var('site_id') > 0) {
 		$sql_where    = 'AND site_id = ?';
 		$sql_params[] = get_request_var('site_id');
 	} else {

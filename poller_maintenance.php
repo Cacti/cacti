@@ -1052,7 +1052,7 @@ function cpu_cores_check() {
 		db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', [$name_count, $cores]);
 	}
 
-	if ($poller_type == 1 && $poller_settings['processes'] <= 2 && $cores > $poller_settings['processes']  && $last_notify < ($now-86400)) {
+	if ($poller_type == 1 && $poller_settings['processes'] < 2 && $cores > $poller_settings['processes'] && $last_notify < ($now-86400)) {
 		cacti_log('WARNING: Default setting number of processes. It looks like this cmd poller uses default settings. To achieve optimal performance, change poller settings (Processes)', true, 'POLLER');
 		admin_email(__('Cacti System Warning'), __('WARNING: Default number of processes on poller %d with name %s. It looks like this cmd poller uses default settings. To achieve optimal performance, change poller settings (Processes)', POLLER_ID, $poller_settings['name']));
 		db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)', [$name_last, $now]);
