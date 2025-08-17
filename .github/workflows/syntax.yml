@@ -137,7 +137,7 @@ jobs:
     - name: Check PHP syntax
       run: if find ${{ github.workspace }} -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
 
-    - name: Run and apt-get update
+    - name: Run apt-get update
       run: sudo apt-get update
 
     - name: Install Apache and Tools
@@ -148,7 +148,7 @@ jobs:
         sudo systemctl start snmpd
         sudo snmpwalk -c public -v2c -On localhost .1.3.6.1.2.1.1
 
-    - name: Link Web Root and Fix Permissions and Disable Apparmor
+    - name: Link Web Root, Fix Permissions, and Disable Apparmor
       run: |
         sudo ln -s /home/runner/work/cacti/cacti /var/www/html
         sudo find /home/runner/work/cacti -type d -exec chmod 777 {} \;
@@ -229,6 +229,11 @@ jobs:
       run: |
         cd ${{ github.workspace }}
         sudo php cli/install_cacti.php --accept-eula --install --force
+
+    - name: Install Cacti Packages through CLI
+      run: |
+        cd ${{ github.workspace }}
+        sudo for file in $(ls -1 ../install/templates/*.gz);do php cli/import_package.php --filename=$file;done
 
     - name: Audit the Installation Schema
       run: |
