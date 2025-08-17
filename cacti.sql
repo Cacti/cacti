@@ -2496,7 +2496,9 @@ CREATE TABLE snmp_query_graph (
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY (id),
   KEY `graph_template_id_name` (`graph_template_id`, `name`),
-  KEY `snmp_query_id_name` (`snmp_query_id`, `name`)
+  KEY `snmp_query_id_name` (`snmp_query_id`, `name`),
+  KEY `graph_template_id` (`graph_template_id`),
+  KEY `snmp_query_id` (`snmp_query_id`)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --

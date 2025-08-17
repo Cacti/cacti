@@ -623,7 +623,7 @@ INSERT INTO `table_columns` VALUES ('host',46,'polling_time','double','YES','','
 INSERT INTO `table_columns` VALUES ('host',47,'total_polls','int(10) unsigned','YES','','0','');
 INSERT INTO `table_columns` VALUES ('host',48,'failed_polls','int(10) unsigned','YES','','0','');
 INSERT INTO `table_columns` VALUES ('host',49,'availability','decimal(8,5)','NO','','100.00000','');
-INSERT INTO `table_columns` VALUES ('host',50,'last_updated','timestamp','NO','','current_timestamp()','on update current_timestamp()');
+INSERT INTO `table_columns` VALUES ('host',50,'last_updated','timestamp','YES','','current_timestamp()','on update current_timestamp()');
 INSERT INTO `table_columns` VALUES ('host_graph',1,'host_id','mediumint(8) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('host_graph',2,'graph_template_id','mediumint(8) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('host_snmp_cache',1,'host_id','mediumint(8) unsigned','NO','PRI','0','');
@@ -633,7 +633,7 @@ INSERT INTO `table_columns` VALUES ('host_snmp_cache',4,'field_value','varchar(5
 INSERT INTO `table_columns` VALUES ('host_snmp_cache',5,'snmp_index','varchar(255)','NO','PRI','','');
 INSERT INTO `table_columns` VALUES ('host_snmp_cache',6,'oid','text','NO','',NULL,'');
 INSERT INTO `table_columns` VALUES ('host_snmp_cache',7,'present','tinyint(3) unsigned','NO','MUL','1','');
-INSERT INTO `table_columns` VALUES ('host_snmp_cache',8,'last_updated','timestamp','NO','MUL','current_timestamp()','on update current_timestamp()');
+INSERT INTO `table_columns` VALUES ('host_snmp_cache',8,'last_updated','timestamp','YES','MUL','current_timestamp()','on update current_timestamp()');
 INSERT INTO `table_columns` VALUES ('host_snmp_query',1,'host_id','mediumint(8) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('host_snmp_query',2,'snmp_query_id','mediumint(8) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('host_snmp_query',3,'sort_field','varchar(50)','NO','','','');
@@ -705,7 +705,7 @@ INSERT INTO `table_columns` VALUES ('poller_command',1,'poller_id','smallint(5) 
 INSERT INTO `table_columns` VALUES ('poller_command',2,'time','timestamp','NO','','0000-00-00 00:00:00','');
 INSERT INTO `table_columns` VALUES ('poller_command',3,'action','tinyint(3) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('poller_command',4,'command','varchar(191)','NO','PRI','','');
-INSERT INTO `table_columns` VALUES ('poller_command',5,'last_updated','timestamp','NO','','current_timestamp()','on update current_timestamp()');
+INSERT INTO `table_columns` VALUES ('poller_command',5,'last_updated','timestamp','YES','','current_timestamp()','on update current_timestamp()');
 INSERT INTO `table_columns` VALUES ('poller_data_template_field_mappings',1,'data_template_id','int(10) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('poller_data_template_field_mappings',2,'data_name','varchar(40)','NO','PRI','','');
 INSERT INTO `table_columns` VALUES ('poller_data_template_field_mappings',3,'data_source_names','varchar(125)','NO','PRI','','');
@@ -715,7 +715,7 @@ INSERT INTO `table_columns` VALUES ('poller_item',2,'poller_id','int(10) unsigne
 INSERT INTO `table_columns` VALUES ('poller_item',3,'host_id','mediumint(8) unsigned','NO','MUL','0','');
 INSERT INTO `table_columns` VALUES ('poller_item',4,'action','tinyint(3) unsigned','NO','MUL','1','');
 INSERT INTO `table_columns` VALUES ('poller_item',5,'present','tinyint(3) unsigned','NO','MUL','1','');
-INSERT INTO `table_columns` VALUES ('poller_item',6,'last_updated','timestamp','NO','','current_timestamp()','on update current_timestamp()');
+INSERT INTO `table_columns` VALUES ('poller_item',6,'last_updated','timestamp','YES','','current_timestamp()','on update current_timestamp()');
 INSERT INTO `table_columns` VALUES ('poller_item',7,'hostname','varchar(100)','NO','','','');
 INSERT INTO `table_columns` VALUES ('poller_item',8,'snmp_community','varchar(100)','NO','','','');
 INSERT INTO `table_columns` VALUES ('poller_item',9,'snmp_version','tinyint(3) unsigned','NO','','0','');
@@ -778,7 +778,7 @@ INSERT INTO `table_columns` VALUES ('processes',3,'tasktype','varchar(20)','NO',
 INSERT INTO `table_columns` VALUES ('processes',4,'taskname','varchar(40)','NO','PRI','','');
 INSERT INTO `table_columns` VALUES ('processes',5,'taskid','int(10) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('processes',6,'timeout','int(10) unsigned','YES','','300','');
-INSERT INTO `table_columns` VALUES ('processes',7,'started','timestamp','NO','','current_timestamp()','');
+INSERT INTO `table_columns` VALUES ('processes',7,'started','timestamp','NO','','current_timestamp()','1');
 INSERT INTO `table_columns` VALUES ('processes',8,'last_update','timestamp','NO','','0000-00-00 00:00:00','');
 INSERT INTO `table_columns` VALUES ('reports',1,'id','mediumint(8) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('reports',2,'user_id','mediumint(8) unsigned','NO','','0','');
@@ -830,7 +830,7 @@ INSERT INTO `table_columns` VALUES ('sessions',3,'access','int(10) unsigned','YE
 INSERT INTO `table_columns` VALUES ('sessions',4,'data','mediumblob','YES','',NULL,'');
 INSERT INTO `table_columns` VALUES ('sessions',5,'user_id','int(10) unsigned','NO','','0','');
 INSERT INTO `table_columns` VALUES ('sessions',6,'user_agent','varchar(128)','NO','','','');
-INSERT INTO `table_columns` VALUES ('sessions',7,'start_time','timestamp','NO','','current_timestamp()','');
+INSERT INTO `table_columns` VALUES ('sessions',7,'start_time','timestamp','NO','','current_timestamp()','1');
 INSERT INTO `table_columns` VALUES ('sessions',8,'transactions','int(10) unsigned','NO','','1','');
 INSERT INTO `table_columns` VALUES ('settings',1,'name','varchar(255)','NO','PRI','','');
 INSERT INTO `table_columns` VALUES ('settings',2,'value','varchar(4096)','NO','','','');
@@ -980,7 +980,7 @@ INSERT INTO `table_columns` VALUES ('user_auth',25,'reset_perms','int(10) unsign
 INSERT INTO `table_columns` VALUES ('user_auth_cache',1,'id','int(10) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('user_auth_cache',2,'user_id','int(10) unsigned','NO','MUL','0','');
 INSERT INTO `table_columns` VALUES ('user_auth_cache',3,'hostname','varchar(100)','NO','MUL','','');
-INSERT INTO `table_columns` VALUES ('user_auth_cache',4,'last_update','timestamp','NO','MUL','current_timestamp()','');
+INSERT INTO `table_columns` VALUES ('user_auth_cache',4,'last_update','timestamp','NO','MUL','current_timestamp()','1');
 INSERT INTO `table_columns` VALUES ('user_auth_cache',5,'token','varchar(191)','NO','UNI','','');
 INSERT INTO `table_columns` VALUES ('user_auth_group',1,'id','int(10) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('user_auth_group',2,'name','varchar(20)','NO','',NULL,'');
@@ -1011,7 +1011,7 @@ INSERT INTO `table_columns` VALUES ('user_auth_row_cache',1,'user_id','mediumint
 INSERT INTO `table_columns` VALUES ('user_auth_row_cache',2,'class','varchar(20)','NO','PRI','','');
 INSERT INTO `table_columns` VALUES ('user_auth_row_cache',3,'hash','varchar(32)','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('user_auth_row_cache',4,'total_rows','int(10) unsigned','NO','','0','');
-INSERT INTO `table_columns` VALUES ('user_auth_row_cache',5,'time','timestamp','NO','','current_timestamp()','');
+INSERT INTO `table_columns` VALUES ('user_auth_row_cache',5,'time','timestamp','NO','','current_timestamp()','1');
 INSERT INTO `table_columns` VALUES ('user_domains',1,'domain_id','int(10) unsigned','NO','PRI',NULL,'auto_increment');
 INSERT INTO `table_columns` VALUES ('user_domains',2,'domain_name','varchar(20)','NO','',NULL,'');
 INSERT INTO `table_columns` VALUES ('user_domains',3,'type','int(10) unsigned','NO','','0','');
