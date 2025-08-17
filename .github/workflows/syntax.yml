@@ -140,11 +140,11 @@ jobs:
     - name: Run and apt-get update
       run: sudo apt-get update
 
-    - name: Install Apache and tools
+    - name: Install Apache and Tools
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: sudo apt-get install apache2 snmp snmpd rrdtool libapache2-mod-php${{ matrix.php }}
 
-    - name: Start SNMPD agent and Test Agent
+    - name: Start SNMPD Agent and Test Agent
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         sudo systemctl start snmpd
@@ -196,8 +196,6 @@ jobs:
         sudo chmod 777 ${{ github.workspace }}/include/config.php
         cat ${{ github.workspace}}/include/config.php
 
-
-
     - name: Setup Cacti Daemon
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
@@ -210,8 +208,6 @@ jobs:
           exit 1
         fi
 
-
-
     - name: Check install code for validity
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
@@ -223,6 +219,12 @@ jobs:
       run: |
         cd ${{ github.workspace }}
         sudo bash tests/tools/check_cli_version.sh
+
+    - name: Audit the Installation Schema
+      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
+      run: |
+        cd ${{ github.workspace }}
+        sudo php cli/audit_database.php --report
 
     - name: Install Cacti through the CLI
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
@@ -244,7 +246,6 @@ jobs:
         sudo php cli/rebuild_poller_cache.php --debug
         sudo php cli/poller_reindex_hosts.php --id=all --debug
 
-
     - name: Run Cacti poller
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
@@ -254,15 +255,14 @@ jobs:
           exit 1
         fi
 
-
-    - name: Check all pages using recursive wget
+    - name: Check All Pages Using Recursive wget
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         cd ${{ github.workspace }}
         echo -e "[client]\nuser = root\npassword = cactiroot\nhost = 127.0.0.1\n" > ${{ github.workspace }}/.my.cnf
         sudo tests/tools/check_all_pages.sh
 
-    - name: View contents of logs
+    - name: View Contents of Logs
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: sudo cat ${{ github.workspace }}/log/cacti.log
           
@@ -281,8 +281,8 @@ jobs:
 #    - name: Install dependencies
 #      run: composer install --prefer-dist --no-progress
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
-
-    # - name: Run test suite
-    #   run: composer run-script test
+# Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
+#   Docs: https://getcomposer.org/doc/articles/scripts.md
+#
+#    - name: Run test suite
+#      run: composer run-script test

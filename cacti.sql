@@ -212,7 +212,7 @@ CREATE TABLE `automation_devices` (
   `snmp_password` varchar(50) DEFAULT NULL,
   `snmp_auth_protocol` char(6) DEFAULT '',
   `snmp_priv_passphrase` varchar(200) DEFAULT '',
-  `snmp_priv_protocol` char(6) DEFAULT '',
+  `snmp_priv_protocol` char(7) DEFAULT '',
   `snmp_context` varchar(64) DEFAULT '',
   `snmp_engine_id` varchar(64) DEFAULT '',
   `sysName` varchar(100) NOT NULL DEFAULT '',
@@ -412,7 +412,7 @@ CREATE TABLE `automation_snmp_items` (
   `snmp_password` varchar(50) DEFAULT NULL,
   `snmp_auth_protocol` char(6) DEFAULT '',
   `snmp_priv_passphrase` varchar(200) DEFAULT '',
-  `snmp_priv_protocol` char(6) DEFAULT '',
+  `snmp_priv_protocol` char(7) DEFAULT '',
   `snmp_context` varchar(64) DEFAULT '',
   `snmp_engine_id` varchar(64) DEFAULT '',
   PRIMARY KEY (`id`,`snmp_id`)
@@ -1121,6 +1121,7 @@ CREATE TABLE data_input_data (
   value text,
   PRIMARY KEY (data_input_field_id,data_template_data_id),
   KEY data_template_data_id (data_template_data_id),
+  KEY data_input_field_id (data_input_field_id),
   KEY t_value (t_value)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
@@ -2409,7 +2410,7 @@ CREATE TABLE `reports_items` (
 --
 
 CREATE TABLE settings (
-  name varchar(75) NOT NULL default '',
+  name varchar(255) NOT NULL default '',
   value varchar(4096) NOT NULL default '',
   PRIMARY KEY (name)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
@@ -2982,7 +2983,7 @@ CREATE TABLE `snmpagent_managers` (
   `snmp_password` varchar(50) NOT NULL,
   `snmp_auth_protocol` char(6) NOT NULL,
   `snmp_priv_passphrase` varchar(200) NOT NULL,
-  `snmp_priv_protocol` char(6) NOT NULL,
+  `snmp_priv_protocol` char(7) NOT NULL,
   `snmp_engine_id` varchar(64) DEFAULT NULL,
   `snmp_port` mediumint(8) unsigned NOT NULL DEFAULT '161',
   `snmp_message_type` tinyint(4) NOT NULL,
