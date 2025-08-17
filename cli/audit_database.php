@@ -557,7 +557,12 @@ function report_audit_results($output = true) {
 								if (($c[$col] != $dbc[$dbcol] && $c[$col] != $adbccol) && $c[$col] != 'mediumtext') {
 									if ($output) {
 										if ($col != 'Key') {
-											print PHP_EOL . 'ERROR Col: \'' . $c['Field'] . '\', Attribute \'' . $col . '\' invalid. Should be: \'' . $dbc[$dbcol] . '\', Is: \'' . $c[$col] . '\'';
+											if ($col == 'Extra' && $dbc[$dbcol] == '1' && $c[$col] == '') {
+												// Handle Timestmap on DEFAULT/ON UPDATE irregularities
+												continue;
+											} else {
+												print PHP_EOL . 'ERROR Col: \'' . $c['Field'] . '\', Attribute \'' . $col . '\' invalid. Should be: \'' . $dbc[$dbcol] . '\', Is: \'' . $c[$col] . '\'';
+											}
 										}
 									}
 
