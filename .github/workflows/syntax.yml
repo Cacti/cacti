@@ -23,9 +23,9 @@ name: Cacti Commit Audit
 
 on:
   push:
-    branches: [ 1.2.x, develop ]
+    branches: [ develop ]
   pull_request:
-    branches: [ 1.2.x, develop ]
+    branches: [ develop ]
 
 permissions:
   contents: read
@@ -90,6 +90,12 @@ jobs:
         owner: 'Cacti'
         repository: 'plugin_mactrack'
 
+    - name: Checkout Intropage Plugin
+      uses: GuillaumeFalourd/clone-github-repo-action@v2
+      with:
+        owner: 'Cacti'
+        repository: 'plugin_intropage'
+
     - name: Checkout FlowView Plugin
       uses: GuillaumeFalourd/clone-github-repo-action@v2
       with:
@@ -115,31 +121,55 @@ jobs:
         mv plugin_mactrack ${{ github.workspace }}/plugins/mactrack
         mv plugin_audit ${{ github.workspace }}/plugins/audit
         mv plugin_flowview ${{ github.workspace }}/plugins/flowview
+        mv plugin_intropage ${{ github.workspace }}/plugins/intropage
         mv plugin_syslog ${{ github.workspace }}/plugins/syslog
         # With syslog we have to enable batch installs using the lines below
         cd ${{ github.workspace }}/plugins/syslog
         cp -p config.php.dist config.php
         sed -i 's/\/\/\$syslog_install_options/\$syslog_install_options/g' config.php
 
+    - name: Move plugin config files
+      run: |
+        cp -p ${{ github.workspace }}/plugins/flowview/config.php.dist ${{ github.workspace }}/plugins/flowview/config.php
+        cp -p ${{ github.workspace }}/plugins/syslog/config.php.dist ${{ github.workspace }}/plugins/syslog/config.php
+        sed -i 's/\/\/\$/\$/g' ${{ github.workspace }}/plugins/syslog/config.php
+
     - name: Check PHP syntax
       run: if find ${{ github.workspace }} -name '*.php' -exec php -l {} 2>&1 \; | grep -iv 'no syntax errors detected'; then exit 1; fi
 
-    - name: Install Apache and tools
-      run: sudo apt-get -y install apache2 snmp rrdtool fping bash
+    - name: Run and apt-get update
+      run: sudo apt-get update
 
-    - name: Open permissions for testing purposes
-      run: sudo chmod -R 777 ${{ github.workspace}}
+    - name: Install Apache and Tools
+      run: sudo apt-get install apache2 snmp snmpd rrdtool libapache2-mod-php${{ matrix.php }}
+
+    - name: Start SNMPD Agent and Test Agent
+      run: |
+        sudo systemctl start snmpd
+        sudo snmpwalk -c public -v2c -On localhost .1.3.6.1.2.1.1
+
+    - name: Link Web Root and Fix Permissions and Disable Apparmor
+      run: |
+        sudo ln -s /home/runner/work/cacti/cacti /var/www/html
+        sudo find /home/runner/work/cacti -type d -exec chmod 777 {} \;
+        sudo find /home/runner/work/cacti -type f -exec chmod 777 {} \;
+        sudo systemctl stop apparmor
+        sudo systemctl disable apparmor
+        sudo chown -R www-data:runner /home/runner/work/cacti
+        sudo chmod o+x /home
+        sudo chmod o+x /home/runner
+        sudo chmod o+x /home/runner/work
+        sudo chmod o+x /home/runner/work/cacti
+        sudo chmod o+x /home/runner/work/cacti/cacti
+      
+    - name: Configure Apache Site
+      run: |
+        cat ${{ github.workspace }}/tests/tools/cacti.conf | sed -r 's#GITHUB_WORKSPACE#${{ github.workspace }}#g' > /tmp/cacti.conf
+        sudo cp /tmp/cacti.conf /etc/apache2/sites-available/000-default.conf
 
     - name: Restart Apache2
-      run: |
-        sudo systemctl restart apache2
-        sudo systemctl restart php${{ matrix.php }}-fpm
-
-    - name: Setup the Cacti Root
-      run: |
-        sudo cp -rp ${{ github.workspace }} /var/www/html
-        sudo chown -R www-data:www-data /var/www/html/cacti
-
+      run: sudo systemctl restart apache2
+      
     - name: Create and Initialize Database
       env:
         MYSQL_AUTH_USR: '--defaults-file=~/.my.cnf'
@@ -152,12 +182,6 @@ jobs:
         mysql $MYSQL_AUTH_USR -e "FLUSH PRIVILEGES;"
         mysql $MYSQL_AUTH_USR cacti < ${{ github.workspace }}/cacti.sql
         mysql $MYSQL_AUTH_USR -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/bin/php')" cacti
-
-    - name: Prime Cacti config.php File
-      run: |
-        cat ${{ github.workspace }}/include/config.php.dist | sed -r "s/localhost/127.0.0.1/g" > ${{ github.workspace }}/include/config.php
-        sudo chmod 777 ${{ github.workspace }}/include/config.php
-        cat ${{ github.workspace}}/include/config.php
 
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
@@ -174,6 +198,23 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
+    - name: Prime Cacti config.php File
+      run: |
+        cat ${{ github.workspace }}/include/config.php.dist | sed -r "s/localhost/127.0.0.1/g" > ${{ github.workspace }}/include/config.php
+        sudo chmod 777 ${{ github.workspace }}/include/config.php
+        cat ${{ github.workspace}}/include/config.php
+
+    - name: Setup Cacti Daemon
+      run: |
+        sudo cp ${{ github.workspace }}/tests/tools/cactid.service /etc/systemd/system/cactid.service
+        sudo systemctl enable cactid
+        sudo systemctl start cactid
+        sudo systemctl status cactid
+        if ! systemctl is-active --quiet cactid; then
+          echo "Cacti daemon failed to start"
+          exit 1
+        fi
+
     - name: Check install code for validity
       run: |
         cd ${{ github.workspace }}
@@ -189,22 +230,57 @@ jobs:
         cd ${{ github.workspace }}
         sudo php cli/install_cacti.php --accept-eula --install --force
 
+    - name: Audit the Installation Schema
+      run: |
+        cd ${{ github.workspace }}
+        sudo php cli/audit_database.php --report
+
     - name: Install and Enable Plugins
       run: |
         cd ${{ github.workspace }}
-        sudo php cli/plugin_manage.php --plugin=thold --plugin=monitor --plugin=mactrack --plugin=audit --plugin=flowview --plugin=syslog --install --enable --allperms
+        sudo php cli/plugin_manage.php --plugin=thold --plugin=intropage --plugin=monitor --plugin=mactrack --plugin=audit --plugin=flowview --plugin=syslog --install --enable --allperms
 
-    - name: Check all pages using recursive wget
+    - name: Add Device for Moc Test, Check CLI scripts for Errors
+      run: |
+        cd ${{ github.workspace }}
+        sudo php cli/add_device.php --description=test_device --ip=127.0.0.1 --template=24
+        sudo php cli/rebuild_poller_cache.php --debug
+        sudo php cli/poller_reindex_hosts.php --id=all --debug
+
+    - name: Run Cacti poller
+      run: |
+        sudo php ${{ github.workspace }}/poller.php --poller=1 --force --debug
+        if ! grep -q "SYSTEM STATS" ${{ github.workspace }}/log/cacti.log; then
+          echo "Cacti poller did not finish successfully"
+          exit 1
+        fi
+
+    - name: Check All Pages Using Recursive wget
       run: |
         cd ${{ github.workspace }}
         echo -e "[client]\nuser = root\npassword = cactiroot\nhost = 127.0.0.1\n" > ${{ github.workspace }}/.my.cnf
         sudo tests/tools/check_all_pages.sh
 
-    - name: View contents of logs
+    - name: View Contents of Logs
       run: sudo cat ${{ github.workspace }}/log/cacti.log
+          
+#    - name: Validate composer.json and composer.lock
+#      run: composer validate --strict
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
+#    - name: Cache Composer packages
+#      id: composer-cache
+#      uses: actions/cache@v3
+#      with:
+#        path: vendor
+#        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+#        restore-keys: |
+#          ${{ runner.os }}-php-
+#
+#    - name: Install dependencies
+#      run: composer install --prefer-dist --no-progress
 
-    # - name: Run test suite
-    #   run: composer run-script test
+# Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
+#   Docs: https://getcomposer.org/doc/articles/scripts.md
+#
+#    - name: Run test suite
+#      run: composer run-script test
