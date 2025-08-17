@@ -220,17 +220,17 @@ jobs:
         cd ${{ github.workspace }}
         sudo bash tests/tools/check_cli_version.sh
 
-    - name: Audit the Installation Schema
-      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
-      run: |
-        cd ${{ github.workspace }}
-        sudo php cli/audit_database.php --report
-
     - name: Install Cacti through the CLI
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
       run: |
         cd ${{ github.workspace }}
         sudo php cli/install_cacti.php --accept-eula --install --force
+
+    - name: Audit the Installation Schema
+      if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
+      run: |
+        cd ${{ github.workspace }}
+        sudo php cli/audit_database.php --report
 
     - name: Install and Enable Plugins
       if: ${{ '5.4' != matrix.php && '7.0' != matrix.php }} # removed old php from page tests
