@@ -74,11 +74,21 @@
     "prefer-stable": true,
     "config": {
         "sort-packages": true,
-		"vendor-dir": "./include/vendor"
+		"vendor-dir": "./include/vendor",
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     },
     "scripts": {
         "lint": "phplint --no-cache src/",
-        "phpcsfixer": "php-cs-fixer fix --diff --dry-run --ansi",
+        "phpcsfixer": "php-cs-fixer fix check --ansi",
         "phpcsfixit": "php-cs-fixer fix --ansi"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.86",
+        "overtrue/phplint": "^9.6",
+        "pestphp/pest": "^3.8",
+        "phpstan/phpstan": "^2.1",
+        "rector/rector": "^2.1"
     }
 }

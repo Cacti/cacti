@@ -23,4 +23,4 @@
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 cd "${SCRIPTPATH}"
 
-./src-fixer --diff --dry-run $@
+./include/vendor/bin/php-cs-fixer check $@
