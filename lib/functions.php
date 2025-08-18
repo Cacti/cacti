@@ -4757,12 +4757,12 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
 		}
 
 		if ($from != '') {
-			return mailer($from, $to, subject: $subject, body: $body, attachments: $attachments, headers: $headers, html: $html, expandIds: $expandIds);
+			return mailer($from, $to, '', '', '', $subject, $body, '', $attachments, $headers, $html);
 		} else {
 			return 'ERROR: From Email Address Not Set';
 		}
 	} else {
-		return mailer($from, $to, subject: $subject, body: $body, attachments: $attachments, headers: $headers, html: $html, expandIds: $expandIds);
+		return mailer($from, $to, '', '', '', $subject, $body, '', $attachments, $headers, $html);
 	}
 }
 
