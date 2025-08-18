@@ -1047,7 +1047,7 @@ function host_status_cache_check() {
 		$now = time();
 		set_config_option('time_last_change_device', $now);
 		set_config_option('time_last_change_site_device', $now);
-		set_config_option('host_status_cache', $current);
+		set_config_option('host_status_cache', $current ?? '');
 	}
 }
 
