@@ -479,7 +479,7 @@ if (db_column_exists('poller', 'devices')) {
 			server=VALUES(server),
 			last_status=VALUES(last_status),
 			status=VALUES(status)',
-		[$poller_id, $devices, $snmp, $script, $server], true, $poller_db_cnn_id);
+		[$poller_id, $snmp, $script, $server], true, $poller_db_cnn_id);
 }
 
 /**
