@@ -38,5 +38,7 @@ function upgrade_to_1_2_31() {
 	if (!db_index_exists('snmp_query_graph', 'graph_template_id')) {
 		db_install_execute('ALTER TABLE snmp_query_graph ADD INDEX graph_template_id (graph_template_id)');
 	}
+
+	db_install_execute('ALTER TABLE settings_user MODIFY COLUMN name varchar(255) NOT NULL default ""');
 }
 

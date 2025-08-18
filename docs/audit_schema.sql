@@ -838,7 +838,7 @@ INSERT INTO `table_columns` VALUES ('settings_tree',1,'user_id','mediumint(8) un
 INSERT INTO `table_columns` VALUES ('settings_tree',2,'graph_tree_item_id','int(10) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('settings_tree',3,'status','tinyint(4)','NO','','0','');
 INSERT INTO `table_columns` VALUES ('settings_user',1,'user_id','smallint(8) unsigned','NO','PRI','0','');
-INSERT INTO `table_columns` VALUES ('settings_user',2,'name','varchar(75)','NO','PRI','','');
+INSERT INTO `table_columns` VALUES ('settings_user',2,'name','varchar(255)','NO','PRI','','');
 INSERT INTO `table_columns` VALUES ('settings_user',3,'value','varchar(4096)','NO','','','');
 INSERT INTO `table_columns` VALUES ('settings_user_group',1,'group_id','smallint(8) unsigned','NO','PRI','0','');
 INSERT INTO `table_columns` VALUES ('settings_user_group',2,'name','varchar(50)','NO','PRI','','');
