@@ -233,7 +233,7 @@ jobs:
     - name: Install Cacti Packages through CLI
       run: |
         cd ${{ github.workspace }}
-        sudo tests/tools/import_packages.sh
+        sudo tests/tools/install_packages.sh
 
     - name: Audit the Installation Schema
       run: |
