@@ -30,7 +30,7 @@ DELIMITER //
 SET @sqlmode= "";
 SET SESSION sql_mode = @sqlmode;
 
-ALTER DATABASE DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+ALTER DATABASE default CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 --
 -- Table structure for table `aggregate_graph_templates`
@@ -162,7 +162,7 @@ CREATE TABLE `aggregate_graphs` (
   `total_type` int(10) unsigned NOT NULL,
   `total_prefix` varchar(64) NOT NULL,
   `order_type` int(10) unsigned NOT NULL,
-  `created` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `created` timestamp NOT NULL default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `user_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `aggregate_template_id` (`aggregate_template_id`),
@@ -1299,12 +1299,12 @@ INSERT INTO `data_input_fields` VALUES (46,'3a33d4fc65b8329ab2ac46a36da26b72',2,
 
 CREATE TABLE `data_local` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `data_template_id` mediumint(8) unsigned NOT NULL DEFAULT 0,
-  `host_id` mediumint(8) unsigned NOT NULL DEFAULT 0,
-  `snmp_query_id` mediumint(8) NOT NULL DEFAULT 0,
-  `snmp_index` varchar(255) NOT NULL DEFAULT '',
-  `orphan` tinyint(3) unsigned NOT NULL DEFAULT 0,
-  `errored` tinyint(3) unsigned NOT NULL DEFAULT 0,
+  `data_template_id` mediumint(8) unsigned NOT NULL default 0,
+  `host_id` mediumint(8) unsigned NOT NULL default 0,
+  `snmp_query_id` mediumint(8) NOT NULL default 0,
+  `snmp_index` varchar(255) NOT NULL default '',
+  `orphan` tinyint(3) unsigned NOT NULL default 0,
+  `errored` tinyint(3) unsigned NOT NULL default 0,
   PRIMARY KEY (`id`),
   KEY `host_id_snmp_query_id` (`host_id`,`snmp_query_id`),
   KEY `snmp_index` (`snmp_index`),
@@ -2096,10 +2096,10 @@ CREATE TABLE host (
 --
 
 CREATE TABLE `host_errors` (
-  `host_id` mediumint(8) unsigned NOT NULL DEFAULT 0,
-  `poller_id` int(10) unsigned NOT NULL DEFAULT 1,
-  `errors` mediumint(8) unsigned NOT NULL DEFAULT 0,
-  `local_data_ids` text DEFAULT NULL,
+  `host_id` mediumint(8) unsigned NOT NULL default 0,
+  `poller_id` int(10) unsigned NOT NULL default 1,
+  `errors` mediumint(8) unsigned NOT NULL default 0,
+  `local_data_ids` text default NULL,
   PRIMARY KEY (`host_id`),
   KEY `poller_id` (`poller_id`)
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC COMMENT='Holds Device Error buffer for Spine';
@@ -2274,11 +2274,11 @@ CREATE TABLE host_template_snmp_query (
 
 CREATE TABLE `package_public_keys` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `md5sum` varchar(32) NOT NULL DEFAULT '',
-  `author` varchar(40) NOT NULL DEFAULT '',
-  `homepage` varchar(128) NOT NULL DEFAULT '',
-  `email_address` varchar(60) NOT NULL DEFAULT '',
-  `public_key` varchar(1024) DEFAULT '',
+  `md5sum` varchar(32) NOT NULL default '',
+  `author` varchar(40) NOT NULL default '',
+  `homepage` varchar(128) NOT NULL default '',
+  `email_address` varchar(60) NOT NULL default '',
+  `public_key` varchar(1024) default '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `md5sum` (`md5sum`)
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC COMMENT='Hold Trusted Package Public Keys';
@@ -2289,13 +2289,13 @@ CREATE TABLE `package_public_keys` (
 
 CREATE TABLE `package_repositories` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) NOT NULL DEFAULT '',
-  `enabled` char(2) NOT NULL DEFAULT 'on',
-  `default` char(2) NOT NULL DEFAULT '',
-  `repo_type` tinyint(3) unsigned NOT NULL DEFAULT 0,
-  `repo_location` varchar(128) NOT NULL DEFAULT '',
-  `repo_branch` varchar(20) NOT NULL DEFAULT '',
-  `repo_api_key` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(32) NOT NULL default '',
+  `enabled` char(2) NOT NULL default 'on',
+  `default` char(2) NOT NULL default '',
+  `repo_type` tinyint(3) unsigned NOT NULL default 0,
+  `repo_location` varchar(128) NOT NULL default '',
+  `repo_branch` varchar(20) NOT NULL default '',
+  `repo_api_key` varchar(100) NOT NULL default '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `location_branch` (`repo_location`,`repo_branch`)
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC COMMENT='Holds Repository Locations that hold Packages';
@@ -2314,18 +2314,18 @@ INSERT INTO `package_repositories` VALUES
 
 CREATE TABLE `plugin_archive` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `plugin` varchar(32) NOT NULL DEFAULT '',
-  `description` varchar(64) NOT NULL DEFAULT '',
-  `author` varchar(64) NOT NULL DEFAULT '',
-  `webpage` varchar(255) NOT NULL DEFAULT '',
-  `user_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `version` varchar(10) NOT NULL DEFAULT '',
-  `requires` varchar(128) DEFAULT '',
-  `compat` varchar(20) NOT NULL DEFAULT '',
-  `dir_md5sum` varchar(32) NOT NULL DEFAULT '',
-  `last_updated` timestamp NULL DEFAULT NULL,
-  `archive_note` varchar(256) NOT NULL DEFAULT '',
-  `archive` longblob DEFAULT NULL,
+  `plugin` varchar(32) NOT NULL default '',
+  `description` varchar(64) NOT NULL default '',
+  `author` varchar(64) NOT NULL default '',
+  `webpage` varchar(255) NOT NULL default '',
+  `user_id` int(10) unsigned NOT NULL default 0,
+  `version` varchar(10) NOT NULL default '',
+  `requires` varchar(128) default '',
+  `compat` varchar(20) NOT NULL default '',
+  `dir_md5sum` varchar(32) NOT NULL default '',
+  `last_updated` timestamp NULL default NULL,
+  `archive_note` varchar(256) NOT NULL default '',
+  `archive` longblob default NULL,
   PRIMARY KEY (`id`),
   KEY `directory` (`plugin`)
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
@@ -2335,20 +2335,20 @@ CREATE TABLE `plugin_archive` (
 --
 
 CREATE TABLE `plugin_available` (
-  `plugin` varchar(32) NOT NULL DEFAULT '',
-  `description` varchar(128) NOT NULL DEFAULT '',
-  `author` varchar(40) NOT NULL DEFAULT '',
-  `webpage` varchar(128) NOT NULL DEFAULT '',
-  `tag_name` varchar(20) NOT NULL DEFAULT '',
-  `published_at` timestamp NULL DEFAULT NULL,
-  `compat` varchar(20) NOT NULL DEFAULT '',
-  `requires` varchar(128) NOT NULL DEFAULT '',
-  `body` blob DEFAULT NULL,
-  `info` blob DEFAULT NULL,
-  `readme` blob DEFAULT NULL,
-  `changelog` blob DEFAULT NULL,
-  `archive` longblob DEFAULT NULL,
-  `last_updated` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `plugin` varchar(32) NOT NULL default '',
+  `description` varchar(128) NOT NULL default '',
+  `author` varchar(40) NOT NULL default '',
+  `webpage` varchar(128) NOT NULL default '',
+  `tag_name` varchar(20) NOT NULL default '',
+  `published_at` timestamp NULL default NULL,
+  `compat` varchar(20) NOT NULL default '',
+  `requires` varchar(128) NOT NULL default '',
+  `body` blob default NULL,
+  `info` blob default NULL,
+  `readme` blob default NULL,
+  `changelog` blob default NULL,
+  `archive` longblob default NULL,
+  `last_updated` timestamp NULL default current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`plugin`,`tag_name`)
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
 
@@ -2752,21 +2752,21 @@ CREATE TABLE `reports_items` (
 
 CREATE TABLE `reports_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) NOT NULL DEFAULT '',
-  `source` varchar(20) NOT NULL DEFAULT '',
-  `source_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `report_output_type` varchar(5) NOT NULL DEFAULT '',
-  `report_raw_data` longblob DEFAULT NULL,
-  `report_raw_output` longblob DEFAULT NULL,
-  `report_txt_output` longblob DEFAULT NULL,
-  `report_html_output` longblob DEFAULT NULL,
-  `report_attachments` longblob DEFAULT NULL,
-  `notification` blob NOT NULL DEFAULT '',
-  `send_type` int(10) unsigned NOT NULL DEFAULT 0,
-  `send_time` timestamp NOT NULL DEFAULT current_timestamp(),
-  `run_time` double NOT NULL DEFAULT 0,
-  `sent_by` varchar(20) NOT NULL DEFAULT '',
-  `sent_id` int(11) NOT NULL DEFAULT -1,
+  `name` varchar(64) NOT NULL default '',
+  `source` varchar(20) NOT NULL default '',
+  `source_id` int(10) unsigned NOT NULL default 0,
+  `report_output_type` varchar(5) NOT NULL default '',
+  `report_raw_data` longblob default NULL,
+  `report_raw_output` longblob default NULL,
+  `report_txt_output` longblob default NULL,
+  `report_html_output` longblob default NULL,
+  `report_attachments` longblob default NULL,
+  `notification` blob NOT NULL default '',
+  `send_type` int(10) unsigned NOT NULL default 0,
+  `send_time` timestamp NOT NULL default current_timestamp(),
+  `run_time` double NOT NULL default 0,
+  `sent_by` varchar(20) NOT NULL default '',
+  `sent_id` int(11) NOT NULL default -1,
   PRIMARY KEY (`id`),
   KEY `source` (`source`),
   KEY `source_id` (`source_id`)
@@ -2778,18 +2778,18 @@ CREATE TABLE `reports_log` (
 
 CREATE TABLE `reports_queued` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) NOT NULL DEFAULT '',
-  `source` varchar(20) NOT NULL DEFAULT '',
-  `source_id` int(10) unsigned NOT NULL DEFAULT 0,
-  `status` varchar(10) NOT NULL DEFAULT 'pending',
-  `scheduled_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `start_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `run_command` varchar(512) NOT NULL DEFAULT '',
-  `run_timeout` int(11) NOT NULL DEFAULT 60,
-  `notification` blob NOT NULL DEFAULT '',
-  `request_type` int(10) unsigned NOT NULL DEFAULT 0,
-  `requested_by` varchar(20) NOT NULL DEFAULT '',
-  `requested_id` int(11) NOT NULL DEFAULT -1,
+  `name` varchar(64) NOT NULL default '',
+  `source` varchar(20) NOT NULL default '',
+  `source_id` int(10) unsigned NOT NULL default 0,
+  `status` varchar(10) NOT NULL default 'pending',
+  `scheduled_time` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `start_time` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `run_command` varchar(512) NOT NULL default '',
+  `run_timeout` int(11) NOT NULL default 60,
+  `notification` blob NOT NULL default '',
+  `request_type` int(10) unsigned NOT NULL default 0,
+  `requested_by` varchar(20) NOT NULL default '',
+  `requested_id` int(11) NOT NULL default -1,
   PRIMARY KEY (`id`),
   KEY `source` (`source`),
   KEY `source_id` (`source_id`)
