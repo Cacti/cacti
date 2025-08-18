@@ -4730,18 +4730,18 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
 	if (!is_array($from)) {
 		$name = '';
 
-		if (strpos($from, '<') === false) {
-			if ($from == '') {
-				$email = read_config_option('settings_from_email');
-				$name  = read_config_option('settings_from_name');
+		if (empty($from)) {
+			$email = read_config_option('settings_from_email');
+			$name  = read_config_option('settings_from_name');
 
-				if ($name != '') {
-					$from = "$name <$email>";
-				} else {
-					$from = $email;
-				}
+			if ($name != '') {
+				$from = "$name <$email>";
+			} else {
+				$from = $email;
 			}
+		}
 
+		if ($from != '' && strpos($from, '<') === false) {
 			if ($name == '') {
 				$full_name = db_fetch_cell_prepared('SELECT full_name
 					FROM user_auth
@@ -4751,13 +4751,19 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
 				if ($full_name != '') {
 					$name = $full_name;
 
-					$from = "'$name' <$from>";
+					$from = "$name <$from>";
 				}
 			}
 		}
-	}
 
-	return mailer($from, $to, '', '', '', $subject, $body, '', $attachments, $headers, $html);
+		if ($from != '') {
+			return mailer($from, $to, subject: $subject, body: $body, attachments: $attachments, headers: $headers, html: $html, expandIds: $expandIds);
+		} else {
+			return 'ERROR: From Email Address Not Set';
+		}
+	} else {
+		return mailer($from, $to, subject: $subject, body: $body, attachments: $attachments, headers: $headers, html: $html, expandIds: $expandIds);
+	}
 }
 
 /**
