@@ -2800,7 +2800,7 @@ CREATE TABLE `reports_queued` (
 --
 
 CREATE TABLE settings (
-  name varchar(75) NOT NULL default '',
+  name varchar(255) NOT NULL default '',
   value varchar(4096) NOT NULL default '',
   PRIMARY KEY (name)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
