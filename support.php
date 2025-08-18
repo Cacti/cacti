@@ -386,7 +386,9 @@ function show_database_processes() {
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 	$info_len  = get_request_var('length');
 
-	if (db_column_exists('information_schema.processlist', 'query_id')) {
+	$version   = db_get_global_setting('innodb_version');
+
+	if (version_compare($version, '11', '>=')) {
 		$query_id = 'query_id';
 	} else {
 		$query_id = "'N/A' AS query_id";

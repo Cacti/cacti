@@ -2820,7 +2820,7 @@ INSERT INTO settings VALUES ('notify_admin', 'on');
 
 CREATE TABLE settings_user (
   user_id smallint(8) unsigned NOT NULL default '0',
-  name varchar(75) NOT NULL default '',
+  name varchar(255) NOT NULL default '',
   value varchar(4096) NOT NULL default '',
   PRIMARY KEY (user_id, name)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
