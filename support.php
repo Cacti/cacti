@@ -386,7 +386,13 @@ function show_database_processes() {
 	$sql_limit = ' LIMIT ' . ($rows * (get_request_var('page') - 1)) . ',' . $rows;
 	$info_len  = get_request_var('length');
 
-	$processes = db_fetch_assoc_prepared("SELECT id, query_id, user, state, ROUND(time_ms/1000,2) AS runtime, LENGTH(info) AS query_len,
+	if (db_column_exists('information_schema.processlist', 'query_id')) {
+		$query_id = 'query_id';
+	} else {
+		$query_id = "'N/A' AS query_id";
+	}
+
+	$processes = db_fetch_assoc_prepared("SELECT id, $query_id, user, state, ROUND(time_ms/1000,2) AS runtime, LENGTH(info) AS query_len,
 		SUBSTRING(REPLACE(REPLACE(REPLACE(info, '\n', ' '), ',', ', '), '\t', ' '), 1, $info_len) AS info
 		FROM information_schema.processlist
 		$sql_where

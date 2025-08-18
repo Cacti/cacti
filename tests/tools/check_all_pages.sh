@@ -513,6 +513,8 @@ FILTERED_LOG="$(grep -v \
 	-e "PCACHE NOTE" \
 	-e "LMSENSORS WARNING" \
 	-e "AUTOM8 \[PID\:" \
+	-e "REINDEX Child" \
+	-e "REINDEX Poller" \
 	-e "DSDEBUG Bad Data" \
 	"$CACTI_LOG")" || true
 
