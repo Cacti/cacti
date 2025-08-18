@@ -137,7 +137,7 @@ INSERT INTO `table_columns` VALUES ('aggregate_graphs',10,'total','int(10) unsig
 INSERT INTO `table_columns` VALUES ('aggregate_graphs',11,'total_type','int(10) unsigned','NO','',NULL,'');
 INSERT INTO `table_columns` VALUES ('aggregate_graphs',12,'total_prefix','varchar(64)','NO','',NULL,'');
 INSERT INTO `table_columns` VALUES ('aggregate_graphs',13,'order_type','int(10) unsigned','NO','',NULL,'');
-INSERT INTO `table_columns` VALUES ('aggregate_graphs',14,'created','timestamp','NO','','current_timestamp()','on update current_timestamp()');
+INSERT INTO `table_columns` VALUES ('aggregate_graphs',14,'created','timestamp','NO','','current_timestamp()','');
 INSERT INTO `table_columns` VALUES ('aggregate_graphs',15,'user_id','int(10) unsigned','NO','MUL',NULL,'');
 INSERT INTO `table_columns` VALUES ('aggregate_graphs_graph_item',1,'aggregate_graph_id','int(10) unsigned','NO','PRI',NULL,'');
 INSERT INTO `table_columns` VALUES ('aggregate_graphs_graph_item',2,'graph_templates_item_id','int(10) unsigned','NO','PRI',NULL,'');
