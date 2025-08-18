@@ -390,11 +390,13 @@ function show_database_processes() {
 
 	if (version_compare($version, '11', '>=')) {
 		$query_id = 'query_id';
+        $time_ms  = 'ROUND(time_ms/1000,2) AS runtime';
 	} else {
 		$query_id = "'N/A' AS query_id";
+        $time_md  = '`time` AS runtime';
 	}
 
-	$processes = db_fetch_assoc_prepared("SELECT id, $query_id, user, state, ROUND(time_ms/1000,2) AS runtime, LENGTH(info) AS query_len,
+	$processes = db_fetch_assoc_prepared("SELECT id, $query_id, user, state, $time_ms, LENGTH(info) AS query_len,
 		SUBSTRING(REPLACE(REPLACE(REPLACE(info, '\n', ' '), ',', ', '), '\t', ' '), 1, $info_len) AS info
 		FROM information_schema.processlist
 		$sql_where
