@@ -162,7 +162,7 @@ CREATE TABLE `aggregate_graphs` (
   `total_type` int(10) unsigned NOT NULL,
   `total_prefix` varchar(64) NOT NULL,
   `order_type` int(10) unsigned NOT NULL,
-  `created` timestamp NOT NULL default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `user_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `aggregate_template_id` (`aggregate_template_id`),
