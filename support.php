@@ -388,12 +388,12 @@ function show_database_processes() {
 
 	$version   = db_get_global_variable('innodb_version');
 
-	if (version_compare($version, '11', '>=')) {
+    if (db_column_exists('information_schema`.`processlist', 'query_id')) {
 		$query_id = 'query_id';
         $time_ms  = 'ROUND(time_ms/1000,2) AS runtime';
 	} else {
 		$query_id = "'N/A' AS query_id";
-        $time_md  = '`time` AS runtime';
+        $time_ms  = '`time` AS runtime';
 	}
 
 	$processes = db_fetch_assoc_prepared("SELECT id, $query_id, user, state, $time_ms, LENGTH(info) AS query_len,
