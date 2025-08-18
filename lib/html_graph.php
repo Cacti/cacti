@@ -2325,6 +2325,8 @@ function html_graph_properties() {
  */
 
 function html_graph_validate_preview_request_vars() {
-	validate_store_request_vars(create_preview_filter('sess_grview'), 'sess_grview');
+    $filters = create_preview_filter('sess_pview');
+
+	validate_store_request_vars($filters, 'sess_pview');
 }
 
