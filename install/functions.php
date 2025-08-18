@@ -454,7 +454,7 @@ function install_test_remote_database_connection() {
 		$rdatabase_ssl_cert,
 		$rdatabase_ssl_ca,
 		$rdatabase_ssl_capath,
-		$rdatabase_ssl_verify_server_path
+		$rdatabase_ssl_verify_server_cert
 	);
 
 	if (is_object($connection)) {
@@ -1208,12 +1208,12 @@ function install_file_paths() {
 function remote_update_config_file() {
 	global $rdatabase_type, $rdatabase_hostname, $rdatabase_username,
 	$rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_retries,
-	$rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca, $rdatabase_ssl_capath, $rdatabase_verify_server_cert;
+	$rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca, $rdatabase_ssl_capath, $rdatabase_ssl_verify_server_cert;
 
 	global $database_type, $database_hostname, $database_username,
 	$database_password, $database_default, $database_type, $database_port, $database_retries,
 	$database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca,
-	$database_ssl_capath, $database_verify_server_cert;
+	$database_ssl_capath, $database_ssl_verify_server_cert;
 
 	$failure     = '';
 	$newfile     = [];
