@@ -1261,7 +1261,7 @@ function remote_update_config_file() {
 			$save['dbsslkey']              = $database_ssl_key;
 			$save['dbsslcert']             = $database_ssl_cert;
 			$save['dbsslca']               = $database_ssl_ca;
-			$save['dbsslcapath']           = $database_ssl_ca_path;
+			$save['dbsslcapath']           = $database_ssl_capath;
 			$save['dbsslverifyservercert'] = $database_ssl_verify_server_cert ? 'on' : '';
 
 			$poller_id = sql_save($save, 'poller', 'id', true, $connection);
