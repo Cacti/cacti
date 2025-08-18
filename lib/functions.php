@@ -5231,12 +5231,14 @@ function send_mail(array|string $to, string|array|null $from = null, string $sub
 				}
 			}
 		}
-	}
 
-	if ($from != '') {
-		return mailer($from, $to, subject: $subject, body: $body, attachments: $attachments, headers: $headers, html: $html, expandIds: $expandIds);
+		if ($from != '') {
+			return mailer($from, $to, subject: $subject, body: $body, attachments: $attachments, headers: $headers, html: $html, expandIds: $expandIds);
+		} else {
+			return 'ERROR: From Email Address Not Set';
+		}
 	} else {
-		return 'ERROR: From Email Address Not Set';
+		return mailer($from, $to, subject: $subject, body: $body, attachments: $attachments, headers: $headers, html: $html, expandIds: $expandIds);
 	}
 }
 
