@@ -516,6 +516,7 @@ FILTERED_LOG="$(grep -v \
 	-e "REINDEX Child" \
 	-e "REINDEX Poller" \
 	-e "DSDEBUG Bad Data" \
+	-e "PUSHOUT Child Started" \
 	"$CACTI_LOG")" || true
 
 save_log_files
