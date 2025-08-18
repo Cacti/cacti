@@ -316,6 +316,7 @@ function create_preview_filter($session_var) {
 					'refresh'        => true,
 					'clear'          => true,
 					'shifter'        => true,
+					'default'        => read_user_setting('default_timespan')
 				],
 				'graph_list' => [
 					'method'         => 'validate',
@@ -2323,10 +2324,16 @@ function html_graph_properties() {
  *
  * @return void
  */
-
 function html_graph_validate_preview_request_vars() {
-    $filters = create_preview_filter('sess_pview');
+    $filters  = create_preview_filter('sess_pview');
+	$validate = [];
 
-	validate_store_request_vars($filters, 'sess_pview');
+	foreach($filters['rows'] as $row) {
+		foreach($row as $variable => $options) {
+			$validate[$variable] = $options;
+		}
+	}
+
+	validate_store_request_vars($validate, 'sess_pview');
 }
 

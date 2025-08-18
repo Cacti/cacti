@@ -2432,7 +2432,8 @@ function html_graph_order_filter_array() {
 			'filter'         => FILTER_CALLBACK,
 			'filter_options' => ['options' => 'sanitize_search_string'],
 			'array'          => $data_sources,
-			'value'          => ''
+			'value'          => '',
+			'default'        => ''
 		];
 	} else {
 		$mode = read_config_option('dsstats_mode'); // 0 - Peak/Average only, 1 - Kitchen Sink
