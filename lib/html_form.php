@@ -1895,7 +1895,7 @@ function form_save_buttons($buttons, $cancel_url = '', $force_type = '', $key_fi
 	<div class='cactiTable saveRowParent'>
 		<div class='formRow'>
 			<div class='saveRow'>
-				<input type='hidden' name='action' value='save' form='" . form_id . "'>
+				<input type='hidden' name='action' value='save' form='<?php print $form_id; ?>'>
 				<?php foreach ($buttons as $b) {
 					$type = 'button';
 
