@@ -5373,7 +5373,11 @@ function mailer(array|string $from, array|string $to, null|array|string $cc = nu
 		$secure  = read_config_option('settings_smtp_secure');
 
 		if (!empty($secure) && $secure != 'none') {
-			$mail->SMTPSecure = true;
+			if ($secure == 'tls') {
+				$mail->SMTPSecure = $mail::ENCRYPTION_STARTTLS;
+			} else {
+				$mail->SMTPSecure = $mail::ENCRYPTION_SMTPS;
+			}
 
 			if (substr_count($mail->Host, ':') == 0) {
 				$mail->Host = $secure . '://' . $mail->Host;
