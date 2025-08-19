@@ -4894,7 +4894,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 			if ($secure == 'tls') {
 				$mail->SMTPSecure = $mail::ENCRYPTION_STARTTLS;
 			} else {
-				$mail->SNTPSecure = $mail::ENCRYPTION_SMTPS;
+				$mail->SMTPSecure = $mail::ENCRYPTION_SMTPS;
 			}
 
 			if (substr_count($mail->Host, ':') == 0) {
