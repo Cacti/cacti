@@ -102,9 +102,3 @@ include/vendor/csrf/csrf-secret.php
 # Ignore vendor folders
 include/vendor/**
 vendor/**
-
-# Ignore the API for now
-api/**
-
-# Ignore the composer lock file
-composer.lock

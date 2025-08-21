@@ -16,6 +16,7 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
         '8825ede83f2f289127722d4e842cf7e8' => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme/bootstrap.php',
         'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
+        '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '23c18046f52bef3eea034657bafda50f' => __DIR__ . '/..' . '/symfony/polyfill-php81/bootstrap.php',
         'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
@@ -50,6 +51,7 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
             'Symfony\\Component\\Console\\' => 26,
             'Symfony\\Component\\Cache\\' => 24,
             'Stevenmaguire\\OAuth2\\Client\\' => 28,
+            'Slim\\' => 5,
         ),
         'R' => 
         array (
@@ -64,6 +66,7 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
         'P' => 
         array (
             'Psr\\Log\\' => 8,
+            'Psr\\Http\\Server\\' => 16,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Http\\Client\\' => 16,
             'Psr\\EventDispatcher\\' => 20,
@@ -101,6 +104,7 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
         array (
             'Firebase\\JWT\\' => 13,
             'Fidry\\CpuCoreCounter\\' => 21,
+            'FastRoute\\' => 10,
         ),
         'E' => 
         array (
@@ -202,8 +206,12 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
         ),
         'Stevenmaguire\\OAuth2\\Client\\' => 
         array (
-            0 => __DIR__ . '/..' . '/stevenmaguire/oauth2-microsoft/src',
-            1 => __DIR__ . '/..' . '/stevenmaguire/oauth2-keycloak/src',
+            0 => __DIR__ . '/..' . '/stevenmaguire/oauth2-keycloak/src',
+            1 => __DIR__ . '/..' . '/stevenmaguire/oauth2-microsoft/src',
+        ),
+        'Slim\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/slim/slim/Slim',
         ),
         'React\\Stream\\' => 
         array (
@@ -236,6 +244,11 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/src',
+        ),
+        'Psr\\Http\\Server\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-server-middleware/src',
+            1 => __DIR__ . '/..' . '/psr/http-server-handler/src',
         ),
         'Psr\\Http\\Message\\' => 
         array (
@@ -284,8 +297,8 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
         ),
         'League\\OAuth2\\Client\\' => 
         array (
-            0 => __DIR__ . '/..' . '/league/oauth2-google/src',
-            1 => __DIR__ . '/..' . '/league/oauth2-client/src',
+            0 => __DIR__ . '/..' . '/league/oauth2-client/src',
+            1 => __DIR__ . '/..' . '/league/oauth2-google/src',
         ),
         'Hayageek\\OAuth2\\Client\\' => 
         array (
@@ -314,6 +327,10 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
         'Fidry\\CpuCoreCounter\\' => 
         array (
             0 => __DIR__ . '/..' . '/fidry/cpu-core-counter/src',
+        ),
+        'FastRoute\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/nikic/fast-route/src',
         ),
         'Evenement\\' => 
         array (

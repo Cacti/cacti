@@ -52,6 +52,7 @@
         "php-mqtt/client": "^2.2",
         "phpmailer/phpmailer": "^6.7.3",
         "phpseclib/phpseclib": "^3.0",
+        "slim/slim": "^4.14",
         "stevenmaguire/oauth2-keycloak": "^5.1",
         "stevenmaguire/oauth2-microsoft": "^2.2"
     },
