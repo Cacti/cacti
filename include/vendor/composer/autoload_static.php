@@ -206,8 +206,8 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
         ),
         'Stevenmaguire\\OAuth2\\Client\\' => 
         array (
-            0 => __DIR__ . '/..' . '/stevenmaguire/oauth2-keycloak/src',
-            1 => __DIR__ . '/..' . '/stevenmaguire/oauth2-microsoft/src',
+            0 => __DIR__ . '/..' . '/stevenmaguire/oauth2-microsoft/src',
+            1 => __DIR__ . '/..' . '/stevenmaguire/oauth2-keycloak/src',
         ),
         'Slim\\' => 
         array (
@@ -297,8 +297,8 @@ class ComposerStaticInit4457df976b6743d4cf060b8bfc645118
         ),
         'League\\OAuth2\\Client\\' => 
         array (
-            0 => __DIR__ . '/..' . '/league/oauth2-client/src',
-            1 => __DIR__ . '/..' . '/league/oauth2-google/src',
+            0 => __DIR__ . '/..' . '/league/oauth2-google/src',
+            1 => __DIR__ . '/..' . '/league/oauth2-client/src',
         ),
         'Hayageek\\OAuth2\\Client\\' => 
         array (
