@@ -197,7 +197,7 @@ function get_graph_list($host_id = 0) {
             "rrd_name" => $row['rrd_name']
         ];
     }
-    return ["graphs", $graphs];
+    return ["graphs" => $graphs];
 }
 
 
