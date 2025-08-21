@@ -97,7 +97,7 @@ $app->get("/status/boost_status", function (Request $request, Response $response
 });
 
 $app->get("/status/api_db_ping", function (Request $request, Response $response) {
-    $ping_result = db_fetch_row("SELECT 1 from version");
+    $ping_result = db_fetch_row("SELECT 1 FROM version");
     if (!$ping_result) {
         $response->getBody()->write(json_encode(['error' => 'Database connection failed']));
         return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
