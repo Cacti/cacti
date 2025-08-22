@@ -26,3 +26,10 @@ $allowed_thold_filter = [
     'data_source_name',
     'template_id'
 ];
+
+
+$allowed_automation_networks_filter = [
+    'id',
+    'network_name',
+    'network_subnet',
+];

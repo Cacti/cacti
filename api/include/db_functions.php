@@ -98,7 +98,7 @@ function get_hosts($params = []) {
         $sql .= " WHERE " . implode(" AND ", $conditions);
     }
 
-    return db_fetch_assoc($sql, $values);
+    return $values ? db_fetch_assoc_prepared($sql, $values) : db_fetch_assoc($sql);
 }
 
 
@@ -124,7 +124,7 @@ function get_graph_list($host_id = 0) {
             INNER JOIN data_template_data AS dtd ON dtd.local_data_id = pi.local_data_id
             INNER JOIN host AS h ON pi.host_id = h.id
             WHERE rrd_name != '' AND h.id = ?";
-    $rows = db_fetch_assoc($sql, [$host_id]);
+    $rows = db_fetch_assoc_prepared($sql, [$host_id]);
     $graphs = [];
     if (is_array($rows)) {
         foreach ($rows as $row) {
@@ -163,22 +163,22 @@ function get_poller_status($poller_id = 0) {
         $values[] = $poller_id;
     }
 
-    return db_fetch_assoc($sql, $values);
+    return $values ? db_fetch_assoc_prepared($sql, $values) : db_fetch_assoc($sql);
 }
 
 
 
 
 function get_host_templates($template_id = 0) {
-    $sql = "SELECT id,name,class FROM host_template";
+    $sql = 'SELECT id,name,class FROM host_template';
     $values = [];
 
     if ($template_id > 0) {
-        $sql .= " WHERE id = ?";
+        $sql .= ' WHERE id = ?';
         $values[] = $template_id;
     }
 
-    return db_fetch_assoc($sql, $values);
+    return $values ? db_fetch_assoc_prepared($sql, $values) : db_fetch_assoc($sql);
 }
 
 
@@ -299,9 +299,8 @@ function get_thresholds($params = []) {
         return ["thold_status" => "Thresholds plugin is not installed"];
     }
 
-    $sql = "SELECT 
-    h.id as HOST_ID ,description AS HOST_DESCRIPTION,h.hostname,data_source_name,thold_hi,thold_low,lastread,lastchanged,thold_fail_count,thold_enabled
-    FROM thold_data td inner join host h ON td.host_id = h.id";
+    $sql = "SELECT h.id as HOST_ID, description AS HOST_DESCRIPTION, h.hostname, data_source_name, thold_hi, thold_low, lastread, lastchanged, thold_fail_count, thold_enabled
+            FROM thold_data td INNER JOIN host h ON td.host_id = h.id";
     $conditions = [];
     $values = [];
 
@@ -317,6 +316,7 @@ function get_thresholds($params = []) {
             $values = array_merge($values, $params['host_id']);
         }
     }
+
 
     if (isset($params["host_description"])) {
         $conditions[] = "h.description LIKE ?";
@@ -343,10 +343,11 @@ function get_thresholds($params = []) {
         }
     }
 
+
     if (!empty($conditions)) {
         $sql .= " WHERE " . implode(" AND ", $conditions);
     }
-    $rows = db_fetch_assoc($sql, $values);
+    $rows = $values ? db_fetch_assoc_prepared($sql, $values) : db_fetch_assoc($sql);
     $thresholds = [];
     if (is_array($rows)) {
         foreach ($rows as $row) {
@@ -402,4 +403,66 @@ function get_threshold_status() {
             "disabled_thresholds" => $disabled_thresholds
         ]
     ];
+}
+
+
+// automation functions
+function get_automation_networks($params = []) {
+    $sql = "SELECT 
+                id,
+                poller_id, 
+                name, 
+                subnet_range, 
+                ignore_ips,
+                dns_servers, 
+                enabled, 
+                notification_email, 
+                up_hosts, 
+                snmp_hosts, 
+                ping_method, 
+                ping_timeout, 
+                ping_retries,
+                start_at,
+                next_start,
+                last_runtime,
+                last_started,
+                last_status
+            FROM automation_networks";
+    $conditions = [];
+    $values = [];
+
+    if (isset($params['network_id']) && $params['network_id'] !== '') {
+        if (!is_array($params['network_id'])) {
+            $params['network_id'] = explode(',', $params['network_id']);
+        }
+        $params['network_id'] = array_map('trim', $params['network_id']);
+        $params['network_id'] = array_filter($params['network_id'], fn($v) => $v !== '');
+        if (!empty($params['network_id'])) {
+            $placeholders = implode(',', array_fill(0, count($params['network_id']), '?'));
+            $conditions[] = "id IN ($placeholders)";
+            $values = array_merge($values, $params['network_id']);
+        }
+    }
+
+
+    if (isset($params['network_name']) && $params['network_name'] !== '') {
+        $conditions[] = "name LIKE ?";
+        $values[] = '%' . $params['network_name'] . '%';
+    }
+
+
+    if (isset($params['subnet_range']) && $params['subnet_range'] !== '') {
+        $conditions[] = "subnet_range LIKE ?";
+        $values[] = '%' . $params['subnet_range'] . '%';
+    }
+
+    if (!empty($conditions)) {
+        $sql .= " WHERE " . implode(" AND ", $conditions);
+    }
+
+    // Use prepared variant when values exist (placeholders present)
+    if (!empty($values)) {
+        return db_fetch_assoc_prepared($sql, $values);
+    }
+    return db_fetch_assoc($sql);
 }

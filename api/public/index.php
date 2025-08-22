@@ -84,6 +84,20 @@ $app->group('/v1', function (RouteCollectorProxy $group) {
             $response->getBody()->write($json);
             return $response->withHeader('Content-Type', 'application/json');
         });
+
+        $infoGroup->get('/automation_networks', function (Request $request, Response $response) {
+            global $allowed_automation_networks_filter, $client_ip;
+            $params = $request->getQueryParams();
+            $validation_error = validate_parameters($params, $allowed_automation_networks_filter);
+            if ($validation_error) {
+                $response->getBody()->write(json_encode($validation_error));
+                cacti_log( $validation_error . " By HOST: " . $client_ip, false, 'CACTI_API');
+                return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
+            }
+            $json = json_encode(get_automation_networks($params));
+            $response->getBody()->write($json);
+            return $response->withHeader('Content-Type', 'application/json');
+        });
     });
 
     // Status endpoints
