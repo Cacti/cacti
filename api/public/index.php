@@ -35,7 +35,7 @@ $app->get("/", function (Request $request, Response $response) {
 function validate_parameters($params, $allowed_params) {
     foreach ($params as $key => $value) {
         if (!in_array($key, $allowed_params)) {
-            return 'ERROR: Invalid parameter Passed: "' . $key . '"';
+            return 'ERROR: Invalid parameter Passed: "' . htmlspecialchars($key) . '"';
         }
     }
 }
