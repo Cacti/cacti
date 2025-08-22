@@ -31,5 +31,5 @@ $allowed_thold_filter = [
 $allowed_automation_networks_filter = [
     'network_id',
     'network_name',
-    'network_subnet',
+    'subnet_range',
 ];
