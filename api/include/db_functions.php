@@ -1,5 +1,4 @@
 <?php
-
 function get_hosts($params = []) {
     $sql = "SELECT 
                 id as host_id, 
@@ -172,16 +171,13 @@ function get_host_templates($template_id = 0) {
 
 function get_cacti_status() {
     // Get Cacti version
-    $version_row = db_fetch_assoc("SELECT cacti AS version FROM version LIMIT 1");
-    $cacti_version = isset($version_row['version']) ? $version_row['version'] : null;
-    $poller_type_row = db_fetch_assoc("SELECT value FROM settings WHERE name = 'poller_type'");
-    $poller_enabled_row = db_fetch_assoc("SELECT value FROM settings WHERE name = 'poller_enabled'");
-    $poller_type = isset($poller_type_row['value']) ? $poller_type_row['value'] : null;
-    $poller_enabled = isset($poller_enabled_row['value']) ? $poller_enabled_row['value'] : null;
-    $total_hosts = db_fetch_assoc("SELECT COUNT(*) as count FROM host");
-    $total_data_sources = db_fetch_assoc("SELECT COUNT(*) as count FROM data_local");
-    $poller_output_size = db_fetch_assoc("SELECT COUNT(*) as count FROM poller_output");
-    $boost_table_size = db_fetch_assoc("SELECT COUNT(*) as count FROM poller_output_boost");
+    $cacti_version = db_fetch_cell("SELECT cacti AS version FROM version LIMIT 1");
+    $poller_type = read_config_option('poller_type');
+    $poller_enabled = read_config_option('poller_enabled');
+    $total_hosts = db_fetch_cell("SELECT COUNT(*) as count FROM host");
+    $total_data_sources = db_fetch_cell("SELECT COUNT(*) as count FROM data_local");
+    $poller_output_size = db_fetch_cell("SELECT COUNT(*) as count FROM poller_output");
+    $boost_table_size = db_fetch_cell("SELECT COUNT(*) as count FROM poller_output_boost");
 
     if ($poller_enabled === "on") {
         $poller_enabled = "Global Polling is enabled";
@@ -189,11 +185,7 @@ function get_cacti_status() {
         $poller_enabled = "Global polling is disabled";
     }
 
-    if ($poller_type === "2") {
-        $poller_type = "Spine";
-    } elseif ($poller_type === "1") {
-        $poller_type = "cmd.php";
-    }
+    $poller_type = ($poller_type === "2") ? "Spine" : (($poller_type === "1") ? "cmd.php" : $poller_type);
 
     // Get installed plugins
     $plugins = db_fetch_assoc("SELECT name, status, version FROM plugin_config");
@@ -232,25 +224,26 @@ function get_cacti_status() {
 
 
 function get_boost_status() {
-    $boost_rrd_update_enable = db_fetch_assoc("SELECT value FROM settings WHERE name = 'boost_rrd_update_enable'");
-    if ($boost_rrd_update_enable['value'] !== 'on') {
+    $boost_rrd_update_enable = read_config_option('boost_rrd_update_enable');
+    echo "Boost RRD Update Enable: " . $boost_rrd_update_enable;
+    if ($boost_rrd_update_enable !== 'on') {
         return ['boost_rrd_update_enable' => 'Boost is disabled'];
 
     }
 
-    $boost_last_end_time = db_fetch_assoc("SELECT value FROM settings WHERE name = 'boost_last_end_time'");
-    $boost_last_start_time = db_fetch_assoc("SELECT value FROM settings WHERE name = 'boost_last_run_time'");
-    $boost_next_run_time = db_fetch_assoc("SELECT value FROM settings WHERE name = 'boost_next_run_time'");
-    $stats_detail_boost = db_fetch_assoc("SELECT value FROM settings WHERE name = 'stats_detail_boost'");
+    $boost_last_end_time = read_config_option('boost_last_end_time');
+    $boost_last_start_time = read_config_option('boost_last_start_time');
+    $boost_next_run_time = read_config_option('boost_next_run_time');
+    $stats_detail_boost = read_config_option('stats_detail_boost');
     $total_boost_records = db_fetch_assoc("SELECT COUNT(*) as count FROM poller_output_boost");
 
     $boost_status = [
-        "boost_rrd_update_enable" => $boost_rrd_update_enable['value'],
-        "boost_last_end_time" => $boost_last_end_time['value'],
-        "boost_last_start_time" => $boost_last_start_time['value'],
-        "boost_next_run_time" => $boost_next_run_time['value'],
-        "stats_detail_boost" => $stats_detail_boost['value'],
-        "total_boost_records" => $total_boost_records['count']
+        "boost_rrd_update_enable" => $boost_rrd_update_enable,
+        "boost_last_end_time" => $boost_last_end_time,
+        "boost_last_start_time" => $boost_last_start_time,
+        "boost_next_run_time" => $boost_next_run_time,
+        "stats_detail_boost" => $stats_detail_boost,
+        "total_boost_records" => $total_boost_records['count'] ?? 0
     ];
 
     return ["boost_status" => $boost_status];
@@ -369,20 +362,20 @@ function get_threshold_status() {
         return ["thold_status" => "Thresholds plugin is not installed"];
     }
 
-    $check_daemon_enabled = db_fetch_assoc("SELECT value FROM settings WHERE name = 'thold_daemon_enable'");
+    $check_daemon_enabled = read_config_option('thold_daemon_enable');
     $daemon_status = [];
-    if (empty($check_daemon_enabled['value'])) {
+    if (empty($check_daemon_enabled)) {
         $daemon_status = ["thold_status" => "Thold daemon is not enabled"];
     } else {
         $daemon_status = [
-            "thold_daemon_dead_notification" => db_fetch_assoc("SELECT value FROM settings WHERE name = 'thold_daemon_dead_notification'")['value'] ?? null,
-            "thold_daemon_debug" => ((db_fetch_assoc("SELECT value FROM settings WHERE name = 'thold_daemon_debug'")['value'] ?? '') === 'on') ? 'enabled' : 'disabled',
-            "thold_daemon_down_notify_time" => db_fetch_assoc("SELECT value FROM settings WHERE name = 'thold_daemon_down_notify_time'")['value'] ?? null,
-            "thold_daemon_enable" => (($check_daemon_enabled['value'] ?? '') === 'on') ? 'enabled' : 'disabled'
+            "thold_daemon_dead_notification" => read_config_option('thold_daemon_dead_notification'),
+            "thold_daemon_debug" => (read_config_option('thold_daemon_debug') === 'on') ? 'enabled' : 'disabled',
+            "thold_daemon_down_notify_time" => read_config_option('thold_daemon_down_notify_time'),
+            "thold_daemon_enable" => ($check_daemon_enabled === 'on') ? 'enabled' : 'disabled'
         ];
     }
 
-    $poller_stats = db_fetch_assoc("SELECT value FROM settings WHERE name = 'stats_thold'");
+    $poller_stats = read_config_option('stats_thold');
     $total_thresholds = db_fetch_assoc("SELECT COUNT(*) as cnt FROM thold_data")['cnt'] ?? 0;
     $enabled_thresholds = db_fetch_assoc("SELECT COUNT(*) as cnt FROM thold_data WHERE thold_enabled = 1")['cnt'] ?? 0;
     $disabled_thresholds = db_fetch_assoc("SELECT COUNT(*) as cnt FROM thold_data WHERE thold_enabled = 0")['cnt'] ?? 0;
