@@ -118,6 +118,9 @@ function get_hosts($params = []) {
  *               - "rrd_name" (string): The name of the RRD file.
  */
 function get_graph_list($host_id = 0) {
+    if (filter_var($host_id, FILTER_VALIDATE_INT) === false || $host_id < 0) {
+        return ["graphs" => ["Host must be a valid INT"]]; 
+    }
     $sql = "SELECT DISTINCT h.id as host_id, dl.id as graph_id, dtd.name_cache as rrd_name, pi.rrd_name as rrd_path
             FROM poller_item AS pi
             INNER JOIN data_local AS dl ON dl.id = pi.local_data_id
@@ -140,6 +143,9 @@ function get_graph_list($host_id = 0) {
 
 
 function get_poller_status($poller_id = 0) {
+    if (filter_var($poller_id, FILTER_VALIDATE_INT) === false || $poller_id < 0) {
+        return ["graphs" => ["Host must be a valid INT"]]; 
+    }
     $sql = "SELECT 
                 id, 
                 name, 
