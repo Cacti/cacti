@@ -1,5 +1,5 @@
 <?php
-include  '../../include/global.php';
+include  '../../lib/database.php';
 
 
 function get_hosts($params = []) {
@@ -129,12 +129,14 @@ function get_graph_list($host_id = 0) {
             WHERE rrd_name != '' AND h.id = ?";
     $rows = db_fetch_assoc($sql, [$host_id]);
     $graphs = [];
-    foreach ($rows as $row) {
-        $graphs[] = [
-            "host_id" => $row['host_id'],
-            "graph_id" => $row['graph_id'],
-            "rrd_name" => $row['rrd_name']
-        ];
+    if (is_array($rows)) {
+        foreach ($rows as $row) {
+            $graphs[] = [
+                "host_id" => $row['host_id'],
+                "graph_id" => $row['graph_id'],
+                "rrd_name" => $row['rrd_name']
+            ];
+        }
     }
     return ["graphs" => $graphs];
 }
@@ -172,8 +174,8 @@ function get_host_templates($template_id = 0) {
 
 function get_cacti_status() {
     // Get Cacti version
-    $version_row = db_fetch_assoc("SELECT * FROM version");
-    $cacti_version = $version_row ? reset($version_row) : null;
+    $version_row = db_fetch_assoc("SELECT cacti AS version FROM version LIMIT 1");
+    $cacti_version = isset($version_row['version']) ? $version_row['version'] : null;
     $poller_type_row = db_fetch_assoc("SELECT value FROM settings WHERE name = 'poller_type'");
     $poller_enabled_row = db_fetch_assoc("SELECT value FROM settings WHERE name = 'poller_enabled'");
     $poller_type = isset($poller_type_row['value']) ? $poller_type_row['value'] : null;
@@ -198,13 +200,15 @@ function get_cacti_status() {
     // Get installed plugins
     $plugins = db_fetch_assoc("SELECT name, status, version FROM plugin_config");
     $installed_plugins = [];
-    foreach ($plugins as $plugin) {
-        $status = ($plugin['status'] == 1) ? "enabled" : "disabled";
-        $installed_plugins[] = [
-            "name" => $plugin['name'],
-            "status" => $status,
-            "version" => $plugin['version']
-        ];
+    if (is_array($plugins)) {
+        foreach ($plugins as $plugin) {
+            $status = ($plugin['status'] == 1) ? "enabled" : "disabled";
+            $installed_plugins[] = [
+                "name" => $plugin['name'],
+                "status" => $status,
+                "version" => $plugin['version']
+            ];
+        }
     }
 
     $cacti_status = [
@@ -221,7 +225,7 @@ function get_cacti_status() {
         ]
     ];
 
-    return ["cacti_status", $cacti_status];
+    return ["cacti_status" => $cacti_status];
 }
 
 
@@ -240,7 +244,7 @@ function get_boost_status() {
     $boost_last_start_time = db_fetch_assoc("SELECT value FROM settings WHERE name = 'boost_last_run_time'");
     $boost_next_run_time = db_fetch_assoc("SELECT value FROM settings WHERE name = 'boost_next_run_time'");
     $stats_detail_boost = db_fetch_assoc("SELECT value FROM settings WHERE name = 'stats_detail_boost'");
-    $total_boost_records = db_fetch_assoc("SELECT COUNT(*) FROM poller_output_boost");
+    $total_boost_records = db_fetch_assoc("SELECT COUNT(*) as count FROM poller_output_boost");
 
     $boost_status = [
         "boost_rrd_update_enable" => $boost_rrd_update_enable['value'],
@@ -248,7 +252,7 @@ function get_boost_status() {
         "boost_last_start_time" => $boost_last_start_time['value'],
         "boost_next_run_time" => $boost_next_run_time['value'],
         "stats_detail_boost" => $stats_detail_boost['value'],
-        "total_boost_records" => $total_boost_records['value']
+        "total_boost_records" => $total_boost_records['count']
     ];
 
     return ["boost_status" => $boost_status];
@@ -340,19 +344,21 @@ function get_thresholds($params = []) {
     }
     $rows = db_fetch_assoc($sql, $values);
     $thresholds = [];
-    foreach ($rows as $row) {
-        $thresholds[] = [
-            "host_id" => $row['HOST_ID'],
-            "host_description" => $row['HOST_DESCRIPTION'],
-            "hostname" => $row['hostname'],
-            "data_source_name" => $row['data_source_name'],
-            "thold_hi" => $row['thold_hi'],
-            "thold_low" => $row['thold_low'],
-            "lastread" => $row['lastread'],
-            "lastchanged" => $row['lastchanged'],
-            "thold_fail_count" => $row['thold_fail_count'],
-            "thold_enabled" => $row['thold_enabled']
-        ];
+    if (is_array($rows)) {
+        foreach ($rows as $row) {
+            $thresholds[] = [
+                "host_id" => $row['HOST_ID'],
+                "host_description" => $row['HOST_DESCRIPTION'],
+                "hostname" => $row['hostname'],
+                "data_source_name" => $row['data_source_name'],
+                "thold_hi" => $row['thold_hi'],
+                "thold_low" => $row['thold_low'],
+                "lastread" => $row['lastread'],
+                "lastchanged" => $row['lastchanged'],
+                "thold_fail_count" => $row['thold_fail_count'],
+                "thold_enabled" => $row['thold_enabled']
+            ];
+        }
     }
     return ["thresholds" => $thresholds];
 }
