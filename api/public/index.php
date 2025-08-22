@@ -129,6 +129,12 @@ $app->group('/v1', function (RouteCollectorProxy $group) {
             return $response->withHeader('Content-Type', 'application/json');
         });
 
+        $statusGroup->get('/dsstats', function (Request $request, Response $response) {
+            $json = json_encode(get_dsstats_status());
+            $response->getBody()->write($json);
+            return $response->withHeader('Content-Type', 'application/json');
+        });
+
         $statusGroup->get('/api_db_ping', function (Request $request, Response $response) {
             $ping_result = db_fetch_row("SELECT 1 from version");
             if (!$ping_result) {

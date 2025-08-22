@@ -262,6 +262,28 @@ function get_boost_status() {
     return ["boost_status" => $boost_status];
 }
 
+function get_dsstats_status() {
+    $check_dsstats_enabled = read_config_option('dsstats_enable');
+    if ($check_dsstats_enabled !== 'on') {
+        return ['dsstats_status' => 'Data Source Statistics is disabled'];
+    }
+
+    $dssatst_status = [
+        "dsstats_poller_memory_limit" => read_config_option('dsstats_poller_mem_limit'),
+        "dsstats_timeout" => read_config_option('dsstats_timeout'),
+        "dsstats_parallel_processes" => read_config_option('dsstats_parallel'),
+        "dsstats_mode" => (read_config_option('dsstats_mode') == 0 ? "Peak/Average Only" : "All Metrics"),
+        "dsstats_hourly_duration" => read_config_option('dsstats_hourly_duration'),
+        "dsstats_daily_interval" => read_config_option('dsstats_daily_interval'),
+        "dsstats_weekly_retention" => read_config_option('dsstats_weekly_retention'),
+        "dsstats_monthly_retention" => read_config_option('dsstats_monthly_retention'),
+        "dsstats_yearly_retention" => read_config_option('dsstats_yearly_retention'),
+        "dsstats_last_run_time" => read_config_option('dsstats_last_major_run_time'),
+        "dsstats_peak" => read_config_option('dsstats_peak'),
+    ];
+    return ["dsstats_status" => $dssatst_status];
+
+}
 
 
 function get_cacti_db_status() {
