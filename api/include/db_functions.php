@@ -144,7 +144,7 @@ function get_graph_list($host_id = 0) {
 
 function get_poller_status($poller_id = 0) {
     if (filter_var($poller_id, FILTER_VALIDATE_INT) === false || $poller_id < 0) {
-        return ["graphs" => ["Host must be a valid INT"]]; 
+        return ["error" => "Poller ID must be a valid INT"];
     }
     $sql = "SELECT 
                 id, 
