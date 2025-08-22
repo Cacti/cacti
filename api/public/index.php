@@ -34,6 +34,7 @@ $app->group('/v1', function (RouteCollectorProxy $group) {
             foreach($params as $key => $value) {
                 if (!in_array($key, $allowed_hosts_filter)) {
                     $response->getBody()->write(json_encode(['error' => 'Invalid parameter: ' . $key]));
+                    cacti_log("ERROR: Invalid parameter Passed: " . $key, false, 'CACTI_API');
                     return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
                 }
             }
@@ -48,6 +49,7 @@ $app->group('/v1', function (RouteCollectorProxy $group) {
             foreach($params as $key => $value) {
                 if (!in_array($key, $allowed_host_templates_filter)) {
                     $response->getBody()->write(json_encode(['error' => 'Invalid parameter: ' . $key]));
+                    cacti_log("ERROR: Invalid parameter Passed: " . $key, false, 'CACTI_API');
                     return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
                 }
             }
@@ -72,8 +74,7 @@ $app->group('/v1', function (RouteCollectorProxy $group) {
             $params = $request->getQueryParams();
             $poller_id = $params['poller_id'] ?? 0;
             $hosts = get_poller_status($poller_id);
-            $json = json_encode($hosts);
-            $response->getBody()->write($json);
+            $response->getBody()->write(json_encode($hosts));
             return $response->withHeader('Content-Type', 'application/json');
         });
 
@@ -131,6 +132,7 @@ $app->group('/v1', function (RouteCollectorProxy $group) {
                 return $response->withHeader('Content-Type', 'application/json');
             });
         });
+        
     });
 });
 
