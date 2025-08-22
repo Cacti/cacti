@@ -225,7 +225,6 @@ function get_cacti_status() {
 
 function get_boost_status() {
     $boost_rrd_update_enable = read_config_option('boost_rrd_update_enable');
-    echo "Boost RRD Update Enable: " . $boost_rrd_update_enable;
     if ($boost_rrd_update_enable !== 'on') {
         return ['boost_rrd_update_enable' => 'Boost is disabled'];
 
