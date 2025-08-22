@@ -10,12 +10,20 @@ THIS IS NOT PROD READY!
 
 To run the API php -S 127.0.0.1:8080 -t public ( Which for Prod will be replaced with a WSGI server)
 
+## API Versioning
+
+The API uses URL path versioning. All endpoints are prefixed with a version number:
+- `/v1/` - Current stable version
+
 ## Endpoints
 
 - `GET /`  
   Returns a welcome message.
 
-- `GET /info/hosts`  
+### Version 1 (v1) Endpoints
+
+#### Info Endpoints
+- `GET /v1/info/hosts`  
   Returns a list of hosts.  
   **Allowed query parameters:**  
   - `host_id`
@@ -24,35 +32,40 @@ To run the API php -S 127.0.0.1:8080 -t public ( Which for Prod will be replaced
   - `template_id`
   - `status`
 
-- `GET /info/host_templates`  
+- `GET /v1/info/host_templates`  
   Returns host template information. Accepts `template_id` as a query parameter.
 
-- `GET /status/poller_status`  
+- `GET /v1/info/graph_list`  
+  Returns a list of graphs. Accepts `host_id` as a query parameter.
+
+#### Status Endpoints
+- `GET /v1/status/poller_status`  
   Returns poller status. Accepts `poller_id` as a query parameter.
 
-- `GET /graph_list`  
-  Returns a list of graphs.
-
-- `GET /status/cacti_status`  
+- `GET /v1/status/cacti_status`  
   Returns the status of the Cacti system.
 
-- `GET /status/boost_status`  
+- `GET /v1/status/boost_status`  
   Returns the status of the Cacti Boost system.
 
-- `GET /status/api_db_ping`  
+- `GET /v1/status/api_db_ping`  
   Checks database connectivity.
 
-- `GET /plugin/thold/thresholds`  
-  Returns threshold information from the thold plugin. (not dont yet )
-
-- `GET /status/cacti_db_status`
+- `GET /v1/status/cacti_db_status`
    Returns some metrics of the Main cacti DB
+
+#### Plugin Endpoints
+- `GET /v1/plugin/thold/thresholds`  
+  Returns threshold information from the thold plugin.
+
+- `GET /v1/plugin/thold/status`  
+  Returns threshold status information.
 
 ## Usage
 
 1. Install dependencies with Composer.
 2. Configure your web server to serve the `public/` directory.
-3. Access the API endpoints as described above.
+3. Access the API endpoints as described above using the versioned URLs (e.g., `/v1/info/hosts`).
 
 ## Requirements
 
@@ -60,8 +73,9 @@ To run the API php -S 127.0.0.1:8080 -t public ( Which for Prod will be replaced
 - Composer
 - Cacti database and configuration
 
-
 ## TODO
  - Import Cacti base db_functions
  - Logging
- - Plugin endpoint like thold,syslog etc
+ - Authentication/Authorization
+ - Rate limiting
+ - API documentation (OpenAPI/Swagger)
