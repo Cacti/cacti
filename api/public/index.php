@@ -30,7 +30,7 @@ $app->get("/", function (Request $request, Response $response) {
  *
  * @param array $params The parameters to validate (key-value pairs)
  * @param array $allowed_params Array of allowed parameter names
- * @return string|null Returns an error message if invalid parameter found, null otherwise
+ * @return string|null Returns an error message if invalid parameters are found, otherwise null
  */
 function validate_parameters($params, $allowed_params) {
     foreach ($params as $key => $value) {
@@ -38,7 +38,9 @@ function validate_parameters($params, $allowed_params) {
             return 'ERROR: Invalid parameter Passed: "' . htmlspecialchars($key) . '"';
         }
     }
+    return null;
 }
+
 
 
 // V1 API Routes Group
@@ -130,13 +132,13 @@ $app->group('/v1', function (RouteCollectorProxy $group) {
         $pluginGroup->group('/thold', function (RouteCollectorProxy $tholdGroup) {
             
             $tholdGroup->get('/thresholds', function (Request $request, Response $response) {
-                global $allowed_thold_filter;
+                global $allowed_thold_filter, $client_ip;
                 $params = $request->getQueryParams();
-                foreach ($params as $key => $value) {
-                    if (!in_array($key, $allowed_thold_filter)) {
-                        $response->getBody()->write(json_encode(['error' => 'Invalid parameter: ' . $key]));
-                        return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
-                    }
+                $validation_error = validate_parameters($params, $allowed_thold_filter);
+                if ($validation_error) {
+                    $response->getBody()->write(json_encode($validation_error));
+                    cacti_log( $validation_error . " By HOST: " . $client_ip, false, 'CACTI_API');
+                    return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
                 }
                 $json = json_encode(get_thresholds($params));
                 $response->getBody()->write($json);
