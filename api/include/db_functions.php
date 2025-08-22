@@ -206,10 +206,10 @@ function get_cacti_status() {
             "cacti_version" => $cacti_version,
             "poller_type" => $poller_type,
             "poller_enabled" => $poller_enabled,
-            "total_hosts" => $total_hosts['count'] ?? 0,
-            "poller_output_size" => $poller_output_size['count'] ?? 0,
-            "boost_table_size" => $boost_table_size['count'] ?? 0,
-            "total_data_sources" => $total_data_sources['count'] ?? 0,
+            "total_hosts" => $total_hosts,
+            "poller_output_size" => $poller_output_size,
+            "boost_table_size" => $boost_table_size,
+            "total_data_sources" => $total_data_sources,
             "installed_plugins" => $installed_plugins
 
         ]
