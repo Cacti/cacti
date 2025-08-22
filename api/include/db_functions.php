@@ -286,7 +286,7 @@ function get_thresholds($params = []) {
         return ["thold_status" => "Thresholds plugin is not installed"];
     }
 
-    $sql="SELECT 
+    $sql = "SELECT 
     h.id as HOST_ID ,description AS HOST_DESCRIPTION,h.hostname,data_source_name,thold_hi,thold_low,lastread,lastchanged,thold_fail_count,thold_enabled
     FROM thold_data td inner join host h ON td.host_id = h.id";
     $conditions = [];
