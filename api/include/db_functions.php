@@ -140,8 +140,22 @@ function get_graph_list($host_id = 0) {
 
 
 function get_poller_status($poller_id = 0) {
-    $sql = "SELECT id, name, disabled, status, hostname, total_time, max_time, min_time, avg_time, total_polls, processes, threads, last_update, last_status
-             FROM poller";
+    $sql = "SELECT 
+                id, 
+                name, 
+                disabled, 
+                status, 
+                hostname, 
+                total_time, 
+                max_time, 
+                min_time, 
+                avg_time, 
+                total_polls, 
+                processes, 
+                threads, 
+                last_update, 
+                last_status
+            FROM poller";
     $values = [];
     
     if ($poller_id > 0) {
@@ -235,7 +249,7 @@ function get_boost_status() {
     $boost_last_start_time = read_config_option('boost_last_start_time');
     $boost_next_run_time = read_config_option('boost_next_run_time');
     $stats_detail_boost = read_config_option('stats_detail_boost');
-    $total_boost_records = db_fetch_assoc("SELECT COUNT(*) as count FROM poller_output_boost");
+    $total_boost_records = db_fetch_cell("SELECT COUNT(*) as count FROM poller_output_boost");
 
     $boost_status = [
         "boost_rrd_update_enable" => $boost_rrd_update_enable,
@@ -243,7 +257,7 @@ function get_boost_status() {
         "boost_last_start_time" => $boost_last_start_time,
         "boost_next_run_time" => $boost_next_run_time,
         "stats_detail_boost" => $stats_detail_boost,
-        "total_boost_records" => $total_boost_records['count'] ?? 0
+        "total_boost_records" => $total_boost_records
     ];
 
     return ["boost_status" => $boost_status];
@@ -383,7 +397,7 @@ function get_threshold_status() {
     return [
         "thold_status" => [
             "daemon" => $daemon_status,
-            "poller_stats" => $poller_stats['value'] ?? null,
+            "poller_stats" => $poller_stats,
             "total_thresholds" => $total_thresholds,
             "enabled_thresholds" => $enabled_thresholds,
             "disabled_thresholds" => $disabled_thresholds
