@@ -1,18 +1,5 @@
 <?php
-include  '../../include/config.php';
-include  '../../lib/database.php';
-
-
-function db_connect() {
-    // Assumes $db_host, $db_user, $db_password, $db_name are set in config.php
-    global $db_host, $db_user, $db_password, $db_name;
-    $conn = new mysqli($db_host, $db_user, $db_password, $db_name);
-    if ($conn->connect_error) {
-        die("Connection failed: {$conn->connect_error}");
-    }
-    return $conn;
-}
-
+include  '../../include/global.php';
 
 
 function get_hosts($params = []) {
