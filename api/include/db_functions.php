@@ -290,7 +290,7 @@ function get_dsstats_status() {
         "dsstats_last_run_time" => read_config_option('dsstats_last_major_run_time'),
         "dsstats_peak" => read_config_option('dsstats_peak'),
     ];
-    return ["dsstats_status" => $dssatst_status];
+    return ["dsstats_status" => $dsstats_status];
 
 }
 
