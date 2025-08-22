@@ -138,6 +138,14 @@ $app->group('/v1', function (RouteCollectorProxy $group) {
             $response->getBody()->write(json_encode(['status' => 'Database connection test successful']));
             return $response->withHeader('Content-Type', 'application/json');
         });
+
+        
+        //automation status endpoint
+        $statusGroup->get('/automation', function (Request $request, Response $response) {
+            $json = json_encode(get_automation_status());
+            $response->getBody()->write($json);
+            return $response->withHeader('Content-Type', 'application/json');
+        });
     });
 
     // Plugin endpoints

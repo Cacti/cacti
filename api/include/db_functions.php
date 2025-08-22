@@ -466,3 +466,28 @@ function get_automation_networks($params = []) {
     }
     return db_fetch_assoc($sql);
 }
+
+
+function get_automation_status() {
+    $sql = "
+        SELECT DISTINCT ap.network_id, 
+                        an.name, 
+                        an.subnet_range, 
+                        an.last_started
+        FROM automation_processes ap
+        INNER JOIN automation_networks an ON ap.network_id = an.id
+    ";
+    $rows = db_fetch_assoc($sql);
+    $automation_status = [];
+    if (is_array($rows)) {
+        foreach ($rows as $row) {
+            $automation_status[] = [
+                "network_id" => $row['network_id'],
+                "network_name" => $row['name'],
+                "subnet_range" => $row['subnet_range'],
+                "last_started" => $row['last_started']
+            ];
+        }
+    }
+    return ["running_automations" => $automation_status];
+}
