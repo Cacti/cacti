@@ -176,6 +176,9 @@ function get_poller_status($poller_id = 0) {
 
 
 function get_host_templates($template_id = 0) {
+    if (filter_var($template_id, FILTER_VALIDATE_INT) === false || $template_id < 0) {
+        return ["templates" => ["Template ID must be a valid INT"]]; 
+    }
     $sql = 'SELECT id,name,class FROM host_template';
     $values = [];
 
