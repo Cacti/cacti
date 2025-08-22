@@ -389,9 +389,9 @@ function get_threshold_status() {
     }
 
     $poller_stats = read_config_option('stats_thold');
-    $total_thresholds = db_fetch_assoc("SELECT COUNT(*) as cnt FROM thold_data")['cnt'] ?? 0;
-    $enabled_thresholds = db_fetch_assoc("SELECT COUNT(*) as cnt FROM thold_data WHERE thold_enabled = 1")['cnt'] ?? 0;
-    $disabled_thresholds = db_fetch_assoc("SELECT COUNT(*) as cnt FROM thold_data WHERE thold_enabled = 0")['cnt'] ?? 0;
+    $total_thresholds = db_fetch_cell("SELECT COUNT(*) as cnt FROM thold_data") ?? 0;
+    $enabled_thresholds = db_fetch_cell("SELECT COUNT(*) as cnt FROM thold_data WHERE thold_enabled = 1") ?? 0;
+    $disabled_thresholds = db_fetch_cell("SELECT COUNT(*) as cnt FROM thold_data WHERE thold_enabled = 0") ?? 0;
 
     return [
         "thold_status" => [
