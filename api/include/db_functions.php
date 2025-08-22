@@ -1,6 +1,4 @@
 <?php
-include  '../../lib/database.php';
-
 
 function get_hosts($params = []) {
     $sql = "SELECT 
