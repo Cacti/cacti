@@ -1,5 +1,8 @@
 <?php
-include 'config.php';
+include  '../../include/config.php';
+include  '../../lib/database.php';
+
+
 function db_connect() {
     // Assumes $db_host, $db_user, $db_password, $db_name are set in config.php
     global $db_host, $db_user, $db_password, $db_name;
@@ -9,57 +12,6 @@ function db_connect() {
     }
     return $conn;
 }
-
-function db_query_prepared($sql, $params = []) {
-    $conn = db_connect();
-    $stmt = $conn->prepare($sql);
-    if ($stmt === false) {
-        die("Prepare failed: " . $conn->error);
-    }
-    if (!empty($params)) {
-        $types = '';
-        foreach ($params as $param) {
-            if (is_int($param)) {
-                $types .= 'i';
-            } elseif (is_double($param)) {
-                $types .= 'd';
-            } elseif (is_string($param)) {
-                $types .= 's';
-            } else {
-                $types .= 'b';
-            }
-        }
-        $stmt->bind_param($types, ...$params);
-    }
-    $stmt->execute();
-    $result = $stmt->get_result();
-    // If SELECT, return result set as array; otherwise, return affected rows
-    if ($result !== false) {
-        $data = $result->fetch_all(MYSQLI_ASSOC);
-        $stmt->close();
-        $conn->close();
-        return $data;
-    } else {
-        $affected = $stmt->affected_rows;
-        $stmt->close();
-        $conn->close();
-        return $affected;
-    }
-}
-
-
-
-function db_fetch_row($sql, $params = []) {
-    $data = db_query_prepared($sql, $params);
-    return !empty($data) ? $data[0] : null;
-}
-
-
-function db_fetch_assoc($sql, $params = []) {
-    $data = db_query_prepared($sql, $params);
-    return !empty($data) ? $data[0] : null;
-}
-
 
 
 
@@ -162,7 +114,7 @@ function get_hosts($params = []) {
         $sql .= " WHERE " . implode(" AND ", $conditions);
     }
 
-    return db_query_prepared($sql, $values);
+    return db_fetch_assoc($sql, $values);
 }
 
 
@@ -188,7 +140,7 @@ function get_graph_list($host_id = 0) {
             INNER JOIN data_template_data AS dtd ON dtd.local_data_id = pi.local_data_id
             INNER JOIN host AS h ON pi.host_id = h.id
             WHERE rrd_name != '' AND h.id = ?";
-    $rows = db_query_prepared($sql, [$host_id]);
+    $rows = db_fetch_assoc($sql, [$host_id]);
     $graphs = [];
     foreach ($rows as $row) {
         $graphs[] = [
@@ -211,7 +163,7 @@ function get_poller_status($poller_id = 0) {
         $values[] = $poller_id;
     }
 
-    return db_query_prepared($sql, $values);
+    return db_fetch_assoc($sql, $values);
 }
 
 
@@ -226,23 +178,23 @@ function get_host_templates($template_id = 0) {
         $values[] = $template_id;
     }
 
-    return db_query_prepared($sql, $values);
+    return db_fetch_assoc($sql, $values);
 }
 
 
 
 function get_cacti_status() {
     // Get Cacti version
-    $version_row = db_fetch_row("SELECT * FROM version");
+    $version_row = db_fetch_assoc("SELECT * FROM version");
     $cacti_version = $version_row ? reset($version_row) : null;
-    $poller_type_row = db_fetch_row("SELECT value FROM settings WHERE name = 'poller_type'");
-    $poller_enabled_row = db_fetch_row("SELECT value FROM settings WHERE name = 'poller_enabled'");
+    $poller_type_row = db_fetch_assoc("SELECT value FROM settings WHERE name = 'poller_type'");
+    $poller_enabled_row = db_fetch_assoc("SELECT value FROM settings WHERE name = 'poller_enabled'");
     $poller_type = isset($poller_type_row['value']) ? $poller_type_row['value'] : null;
     $poller_enabled = isset($poller_enabled_row['value']) ? $poller_enabled_row['value'] : null;
-    $total_hosts = db_fetch_row("SELECT COUNT(*) as count FROM host");
-    $total_data_sources = db_fetch_row("SELECT COUNT(*) as count FROM data_local");
-    $poller_output_size = db_fetch_row("SELECT COUNT(*) as count FROM poller_output");
-    $boost_table_size = db_fetch_row("SELECT COUNT(*) as count FROM poller_output_boost");
+    $total_hosts = db_fetch_assoc("SELECT COUNT(*) as count FROM host");
+    $total_data_sources = db_fetch_assoc("SELECT COUNT(*) as count FROM data_local");
+    $poller_output_size = db_fetch_assoc("SELECT COUNT(*) as count FROM poller_output");
+    $boost_table_size = db_fetch_assoc("SELECT COUNT(*) as count FROM poller_output_boost");
 
     if ($poller_enabled === "on") {
         $poller_enabled = "Global Polling is enabled";
@@ -257,7 +209,7 @@ function get_cacti_status() {
     }
 
     // Get installed plugins
-    $plugins = db_query_prepared("SELECT name, status, version FROM plugin_config");
+    $plugins = db_fetch_assoc("SELECT name, status, version FROM plugin_config");
     $installed_plugins = [];
     foreach ($plugins as $plugin) {
         $status = ($plugin['status'] == 1) ? "enabled" : "disabled";
@@ -291,17 +243,17 @@ function get_cacti_status() {
 
 
 function get_boost_status() {
-    $boost_rrd_update_enable = db_fetch_row("SELECT value FROM settings WHERE name = 'boost_rrd_update_enable'");
+    $boost_rrd_update_enable = db_fetch_assoc("SELECT value FROM settings WHERE name = 'boost_rrd_update_enable'");
     if ($boost_rrd_update_enable['value'] !== 'on') {
         return ['boost_rrd_update_enable' => 'Boost is disabled'];
 
     }
 
-    $boost_last_end_time = db_fetch_row("SELECT value FROM settings WHERE name = 'boost_last_end_time'");
-    $boost_last_start_time = db_fetch_row("SELECT value FROM settings WHERE name = 'boost_last_run_time'");
-    $boost_next_run_time = db_fetch_row("SELECT value FROM settings WHERE name = 'boost_next_run_time'");
-    $stats_detail_boost = db_fetch_row("SELECT value FROM settings WHERE name = 'stats_detail_boost'");
-    $total_boost_records = db_fetch_row("SELECT COUNT(*) FROM poller_output_boost");
+    $boost_last_end_time = db_fetch_assoc("SELECT value FROM settings WHERE name = 'boost_last_end_time'");
+    $boost_last_start_time = db_fetch_assoc("SELECT value FROM settings WHERE name = 'boost_last_run_time'");
+    $boost_next_run_time = db_fetch_assoc("SELECT value FROM settings WHERE name = 'boost_next_run_time'");
+    $stats_detail_boost = db_fetch_assoc("SELECT value FROM settings WHERE name = 'stats_detail_boost'");
+    $total_boost_records = db_fetch_assoc("SELECT COUNT(*) FROM poller_output_boost");
 
     $boost_status = [
         "boost_rrd_update_enable" => $boost_rrd_update_enable['value'],
@@ -319,7 +271,7 @@ function get_boost_status() {
 
 function get_cacti_db_status() {
 
-    $status_rows = db_query_prepared("SHOW STATUS");
+    $status_rows = db_fetch_assoc("SHOW STATUS");
     $status_assoc = [];
     foreach ($status_rows as $row) {
         if (isset($row['Variable_name']) && isset($row['Value'])) {
@@ -347,7 +299,7 @@ function get_cacti_db_status() {
 
 
 function get_thresholds($params = []) {
-    $check_thold_installed = db_query_prepared("SHOW TABLES LIKE 'thold_data'");
+    $check_thold_installed = db_fetch_assoc("SHOW TABLES LIKE 'thold_data'");
     if (empty($check_thold_installed)) {
         return ["thold_status" => "Thresholds plugin is not installed"];
     }
@@ -399,7 +351,7 @@ function get_thresholds($params = []) {
     if (!empty($conditions)) {
         $sql .= " WHERE " . implode(" AND ", $conditions);
     }
-    $rows = db_query_prepared($sql, $values);
+    $rows = db_fetch_assoc($sql, $values);
     $thresholds = [];
     foreach ($rows as $row) {
         $thresholds[] = [
@@ -421,28 +373,28 @@ function get_thresholds($params = []) {
 
 
 function get_threshold_status() {
-    $check_thold_installed = db_query_prepared("SHOW TABLES LIKE 'thold_data'");
+    $check_thold_installed = db_fetch_assoc("SHOW TABLES LIKE 'thold_data'");
     if (empty($check_thold_installed)) {
         return ["thold_status" => "Thresholds plugin is not installed"];
     }
 
-    $check_daemon_enabled = db_fetch_row("SELECT value FROM settings WHERE name = 'thold_daemon_enable'");
+    $check_daemon_enabled = db_fetch_assoc("SELECT value FROM settings WHERE name = 'thold_daemon_enable'");
     $daemon_status = [];
     if (empty($check_daemon_enabled['value'])) {
         $daemon_status = ["thold_status" => "Thold daemon is not enabled"];
     } else {
         $daemon_status = [
-            "thold_daemon_dead_notification" => db_fetch_row("SELECT value FROM settings WHERE name = 'thold_daemon_dead_notification'")['value'] ?? null,
-            "thold_daemon_debug" => ((db_fetch_row("SELECT value FROM settings WHERE name = 'thold_daemon_debug'")['value'] ?? '') === 'on') ? 'enabled' : 'disabled',
-            "thold_daemon_down_notify_time" => db_fetch_row("SELECT value FROM settings WHERE name = 'thold_daemon_down_notify_time'")['value'] ?? null,
+            "thold_daemon_dead_notification" => db_fetch_assoc("SELECT value FROM settings WHERE name = 'thold_daemon_dead_notification'")['value'] ?? null,
+            "thold_daemon_debug" => ((db_fetch_assoc("SELECT value FROM settings WHERE name = 'thold_daemon_debug'")['value'] ?? '') === 'on') ? 'enabled' : 'disabled',
+            "thold_daemon_down_notify_time" => db_fetch_assoc("SELECT value FROM settings WHERE name = 'thold_daemon_down_notify_time'")['value'] ?? null,
             "thold_daemon_enable" => (($check_daemon_enabled['value'] ?? '') === 'on') ? 'enabled' : 'disabled'
         ];
     }
 
-    $poller_stats = db_fetch_row("SELECT value FROM settings WHERE name = 'stats_thold'");
-    $total_thresholds = db_fetch_row("SELECT COUNT(*) as cnt FROM thold_data")['cnt'] ?? 0;
-    $enabled_thresholds = db_fetch_row("SELECT COUNT(*) as cnt FROM thold_data WHERE thold_enabled = 1")['cnt'] ?? 0;
-    $disabled_thresholds = db_fetch_row("SELECT COUNT(*) as cnt FROM thold_data WHERE thold_enabled = 0")['cnt'] ?? 0;
+    $poller_stats = db_fetch_assoc("SELECT value FROM settings WHERE name = 'stats_thold'");
+    $total_thresholds = db_fetch_assoc("SELECT COUNT(*) as cnt FROM thold_data")['cnt'] ?? 0;
+    $enabled_thresholds = db_fetch_assoc("SELECT COUNT(*) as cnt FROM thold_data WHERE thold_enabled = 1")['cnt'] ?? 0;
+    $disabled_thresholds = db_fetch_assoc("SELECT COUNT(*) as cnt FROM thold_data WHERE thold_enabled = 0")['cnt'] ?? 0;
 
     return [
         "thold_status" => [

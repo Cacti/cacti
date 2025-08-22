@@ -7,7 +7,8 @@ use Slim\Routing\RouteCollectorProxy;
 
 include __DIR__ . '/../include/db_functions.php';
 include __DIR__ . '/../include/arrays.php';
-require __DIR__ . '/../vendor/autoload.php';
+include  '../../include/global.php';
+
 
 // Instantiate App
 $app = AppFactory::create();
