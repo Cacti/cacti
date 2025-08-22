@@ -8,12 +8,11 @@ use Slim\Routing\RouteCollectorProxy;
 include __DIR__ . '/../include/db_functions.php';
 include __DIR__ . '/../include/arrays.php';
 include  '../../include/global.php';
+$client_ip = $_SERVER['REMOTE_ADDR'];
 
 
-// Instantiate App
+
 $app = AppFactory::create();
-
-// Add error middleware
 $app->addErrorMiddleware(true, true, true);
 
 
@@ -22,6 +21,26 @@ $app->get("/", function (Request $request, Response $response) {
     return $response;
 });
 
+
+/**
+ * Validates that all provided parameters are within the allowed parameter list.
+ *
+ * This function checks each parameter key against a list of allowed parameters
+ * and returns an error message if any invalid parameters are found.
+ *
+ * @param array $params The parameters to validate (key-value pairs)
+ * @param array $allowed_params Array of allowed parameter names
+ * @return string|null Returns an error message if invalid parameter found, null otherwise
+ */
+function validate_parameters($params, $allowed_params) {
+    foreach ($params as $key => $value) {
+        if (!in_array($key, $allowed_params)) {
+            return 'ERROR: Invalid parameter Passed: "' . $key . '"';
+        }
+    }
+}
+
+
 // V1 API Routes Group
 $app->group('/v1', function (RouteCollectorProxy $group) {
     
@@ -29,14 +48,13 @@ $app->group('/v1', function (RouteCollectorProxy $group) {
     $group->group('/info', function (RouteCollectorProxy $infoGroup) {
         
         $infoGroup->get('/hosts', function (Request $request, Response $response) {
-            global $allowed_hosts_filter;
+            global $allowed_hosts_filter, $client_ip;
             $params = $request->getQueryParams();
-            foreach($params as $key => $value) {
-                if (!in_array($key, $allowed_hosts_filter)) {
-                    $response->getBody()->write(json_encode(['error' => 'Invalid parameter: ' . $key]));
-                    cacti_log("ERROR: Invalid parameter Passed: " . $key, false, 'CACTI_API');
-                    return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
-                }
+            $validation_error = validate_parameters($params, $allowed_hosts_filter);
+            if ($validation_error) {
+                $response->getBody()->write(json_encode($validation_error));
+                cacti_log( $validation_error . " By HOST: " . $client_ip, false, 'CACTI_API');
+                return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
             }
             $json = json_encode(get_hosts($params));
             $response->getBody()->write($json);
@@ -44,14 +62,13 @@ $app->group('/v1', function (RouteCollectorProxy $group) {
         });
 
         $infoGroup->get('/host_templates', function (Request $request, Response $response) {
-            global $allowed_host_templates_filter;
+            global $allowed_host_templates_filter, $client_ip;
             $params = $request->getQueryParams();
-            foreach($params as $key => $value) {
-                if (!in_array($key, $allowed_host_templates_filter)) {
-                    $response->getBody()->write(json_encode(['error' => 'Invalid parameter: ' . $key]));
-                    cacti_log("ERROR: Invalid parameter Passed: " . $key, false, 'CACTI_API');
-                    return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
-                }
+            $validation_error = validate_parameters($params, $allowed_host_templates_filter);
+            if ($validation_error) {
+                $response->getBody()->write(json_encode($validation_error));
+                cacti_log( $validation_error . " By HOST: " . $client_ip, false, 'CACTI_API');
+                return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
             }
             $json = json_encode(get_host_templates($params['template_id'] ?? 0));
             $response->getBody()->write($json);
