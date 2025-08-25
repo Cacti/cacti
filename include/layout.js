@@ -482,9 +482,28 @@ $.fn.getObjectDetails = function () {
 };
 
 $.fn.serializeForm = function () {
-	var arrayData, objectData;
+	var arrayData, objectData, hiddenSelectData;
 	arrayData = this.serializeArray();
+
+	/* for some reason the new selectmenus are not serialized */
+	hiddenSelectData = $('select:hidden').serializeArray();
+
+	$.each(hiddenSelectData, function(id, fd) {
+		var found = false;
+
+		$.each(arrayData, function(aid, afd) {
+			if (fd.name == afd.name) {
+				found = true;
+			}
+		});
+
+		if (!found) {
+			arrayData = arrayData.concat(fd);
+		}
+	});
+
 	formID = $(this).attr('id');
+
 	arrayData = arrayData.concat(
 		$('#' + formID + ' input[type=checkbox]:not(:checked)').map(function () {
 			return { "name": this.name, "value": $(this).is(':checked') ? 'on' : '' }
@@ -516,8 +535,26 @@ $.fn.serializeForm = function () {
 };
 
 $.fn.serializeObject = function () {
-	var arrayData, objectData, formID;
+	var arrayData, objectData, formID, hiddenSelectData;
 	arrayData = this.serializeArray();
+
+	/* for some reason the new selectmenus are not serialized */
+	hiddenSelectData = $('select:hidden').serializeArray();
+
+	$.each(hiddenSelectData, function(id, fd) {
+		var found = false;
+
+		$.each(arrayData, function(aid, afd) {
+			if (fd.name == afd.name) {
+				found = true;
+			}
+		});
+
+		if (!found) {
+			arrayData = arrayData.concat(fd);
+		}
+	});
+
 	formID = $(this).attr('id');
 
 	objectData = {};
@@ -3396,7 +3433,6 @@ function setSelectMenus() {
 			});
 
 			if (typeof(attr['data-defaultLabel']) !== 'undefined') {
-
 				if(this.menuWrap.find('input').length === 0) {
 					this.menuWrap.prepend('<div class="ui-selectmenu-search"><input type="search" class="ui-state-default ui-corner-all" data-scope="theme" placeholder="' + searchPlaceholder + '"></div>');
 				}
