@@ -31,26 +31,6 @@ if (function_exists('pcntl_async_signals')) {
 
 ini_set('output_buffering', 'Off');
 
-/* sig_handler - provides a generic means to catch exceptions to the Cacti log.
-   @arg $signo - (int) the signal that was thrown by the interface.
-   @returns - null */
-function sig_handler($signo) {
-	global $hostname;
-
-	switch ($signo) {
-		case SIGTERM:
-		case SIGINT:
-			cacti_log('WARNING: Cacti Daemon PID[' . getmypid() . '] Terminated on Device[' . gethostname() . ']', true, 'CACTID');
-			admin_email(__('Cacti System Warning'), __('WARNING: Cacti Daemon PID[' . getmypid() . '] Terminated on Device[' . gethostname() . ']', true, 'CACTID'));
-
-			exit(1);
-
-			break;
-		default:
-			/* ignore all other signals */
-	}
-}
-
 /* let's report all errors */
 error_reporting(E_ALL);
 
@@ -162,7 +142,38 @@ while (true) {
 	$logrecon  = true;
 }
 
-function wait_for_start($frequency = -1) {
+/**
+ * sig_handler - provides a generic means to catch exceptions to the Cacti log.
+ * 
+ * @param int $signo - the signal that was thrown by the interface.
+ * 
+ * @return void
+ */
+function sig_handler(int $signo) {
+	global $hostname;
+
+	switch ($signo) {
+		case SIGTERM:
+		case SIGINT:
+			cacti_log('WARNING: Cacti Daemon PID[' . getmypid() . '] Terminated on Device[' . gethostname() . ']', true, 'CACTID');
+			admin_email(__('Cacti System Warning'), __('WARNING: Cacti Daemon PID[' . getmypid() . '] Terminated on Device[' . gethostname() . ']', true, 'CACTID'));
+
+			exit(1);
+
+			break;
+		default:
+			/* ignore all other signals */
+	}
+}
+
+/**
+ * wait_for_start
+ *
+ * @param  int $frequency
+ * 
+ * @return void
+ */
+function wait_for_start(int $frequency = -1) {
 	$prev_time = -1;
 	$i         = 0;
 
@@ -199,6 +210,11 @@ function wait_for_start($frequency = -1) {
 	return $frequency;
 }
 
+/**
+ * run_poller
+ *
+ * @return void
+ */
 function run_poller() {
 	global $debug;
 
@@ -221,6 +237,11 @@ function run_poller() {
 	exec_background($php_binary, $command);
 }
 
+/**
+ * get_options
+ *
+ * @return void
+ */
 function get_options() {
 	$parms = $_SERVER['argv'];
 	array_shift($parms);
@@ -269,7 +290,14 @@ function get_options() {
 	return $options;
 }
 
-function debug($string) {
+/**
+ * debug
+ *
+ * @param  string $string
+ * 
+ * @return void
+ */
+function debug(string $string) {
 	global $debug;
 
 	if ($debug) {
@@ -279,12 +307,21 @@ function debug($string) {
 	}
 }
 
+/**
+ * display_version
+ *
+ * @return void
+ */
 function display_version() {
 	$version = get_cacti_cli_version();
 	print 'The Cacti Daemon (cactid), Version ' . $version . ', ' . COPYRIGHT_YEARS . PHP_EOL;
 }
 
-/*	display_help - displays the usage of the function */
+/**
+ * display_help - displays the usage of the function
+ *
+ * @return void
+ */
 function display_help() {
 	display_version();
 
