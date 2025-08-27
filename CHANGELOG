@@ -216,6 +216,7 @@ Cacti CHANGELOG
 -issue#6296: Issue with posix_kill function using Windows as your Cacti server
 -issue#6297: Enhance SMTP Security Settings to Higher Order TLS
 -issue#6299: Support SMTPUTF8 for modern Email Servers
+-issue#6313: Errors when editing multiple devices with unset value
 -feature: Update PHPMailer to 6.10 to support SMTPUTF8
 -feature: Update phpseclib for Service Check Plugin
 
