@@ -741,7 +741,7 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 	}
 }
 
-function api_duplicate_data_input($_data_input_id, $input_title) {
+function api_data_input_duplicate($_data_input_id, $input_title) {
 	$orig_input = db_fetch_row_prepared('SELECT *
 		FROM data_input
 		WHERE id = ?',
