@@ -30,6 +30,7 @@ ini_set('memory_limit', '-1');
 ini_set('max_execution_time', '900');
 
 $actions = [
+	POLLER_DELETE      => __('Delete'),
 	POLLER_DISABLE     => __('Disable'),
 	POLLER_ENABLE      => __('Enable'),
 	POLLER_CLEAR_STATS => __('Clear Statistics'),
