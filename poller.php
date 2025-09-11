@@ -965,8 +965,33 @@ while ($poller_runs_completed < $poller_runs) {
 				$sql_where");
 		}
 	} else {
-		cacti_log('WARNING: Cacti Polling Cycle Exceeded Poller Interval by ' . round($loop_end - $loop_start - $poller_interval, 2) . ' seconds', true, 'POLLER', $level);
-		admin_email(__('Cacti System Warning'), __('WARNING: Cacti Polling Cycle Exceeded Poller Interval by ' . round($loop_end - $loop_start - $poller_interval, 2) . ' seconds', true, 'POLLER', $level));
+		$pr_exceeded = read_config_option('poller_runtime_exceeded');
+		$exceeds     = intval(read_config_option('poller_runtime_exceeded_count_' . $poller_id));
+		$exceedstot  = intval(read_config_option('poller_runtime_exceeded_time_' . $poller_id));
+
+		if ($pr_exceeded == '') {
+			set_config_option('poller_runtime_exceeded', '3600');
+			$pr_exceeded = 3600;
+		}
+
+		$exceeds++;
+		$exceedstot += $loop_end - $loop_start - $poller_interval;
+
+		set_config_option('poller_runtime_exceeded_count_' . $poller_id, $exceeds);
+		set_config_option('poller_runtime_exceeded_total_' . $poller_id, $exceedstot);
+
+		if ($pr_exceeded == 0 || debounce_run_notification('poller_runtime_exeeded', $pr_exceeded)) {
+			$message = 'Cacti Polling Cycle Exceeded Poller Interval by an average of %s seconds over the last %s hours.';
+			$memail  = __($message, round($exceedstot/$exceeds, 2), round($pr_exceeded/3600,2));
+			$mlog    = sprintf($message, round($exceedstot/$exceeds, 2), round($pr_exceeded/3600,2));
+
+			cacti_log('WARNING:' . $mlog, true, 'POLLER', $level);
+
+			admin_email(__('Cacti System Warning'), $memail, true, 'POLLER', $level);
+
+			set_config_option('poller_runtime_exceeded_count_' . $poller_id, 0);
+			set_config_option('poller_runtime_exceeded_time_' . $poller_id, 0);
+		}
 	}
 
 	if (!$logged) {
