@@ -127,6 +127,12 @@ function api_aggregate_convert_template(array $graphs): void {
 		}
 
 		push_out_aggregates($aggregate_template_id, $graph);
+
+		/**
+		 * Save the last time a aggregate was altered/updated
+		 * for Caching.
+		 */
+		set_config_option('time_last_change_aggregate_graph', time());
 	}
 }
 
@@ -174,6 +180,12 @@ function api_aggregate_associate(int $local_graph_id, array $graphs): void {
 		}
 
 		push_out_aggregates($aggregate_template, $local_graph_id);
+
+		/**
+		 * Save the last time a aggregate was altered/updated
+		 * for Caching.
+		 */
+		set_config_option('time_last_change_aggregate_graph', time());
 	}
 }
 
@@ -211,6 +223,12 @@ function api_aggregate_disassociate(int $local_graph_id, array $graphs): void {
 		}
 
 		push_out_aggregates($aggregate_template, $local_graph_id);
+
+		/**
+		 * Save the last time a aggregate was altered/updated
+		 * for Caching.
+		 */
+		set_config_option('time_last_change_aggregate_graph', time());
 	}
 }
 

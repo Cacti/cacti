@@ -205,6 +205,9 @@ if ($child == false) {
 		$time_end   = time();
 		cacti_log('INFO: Boost prepare tables took ' . ($time_end - $time_start) . ' seconds.', true, 'BOOST');
 
+		/* prune old memory stats */
+		boost_prune_memstats();
+
 		/* Launch the boost children */
 		if ($continue) {
 			/* Allow mysql to flush the rename transaction */
@@ -496,6 +499,15 @@ function boost_prepare_process_table() {
 	boost_debug('Parallel Process Setup Complete.  Ready to spawn children.');
 
 	return true;
+}
+
+function boost_prune_memstats() {
+	$processes = read_config_option('boost_parallel');
+
+	db_execute_prepared('DELETE FROM settings
+		WHERE name LIKE "boost_peak_memory%"
+		AND REPLACE(name, "boost_peak_memory_", "") > ?',
+		array($processes));
 }
 
 function boost_launch_children() {

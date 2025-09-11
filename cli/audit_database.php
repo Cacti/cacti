@@ -771,8 +771,10 @@ function make_column_props(&$dbc) {
 			// Ignore
 		} elseif ($dbc['table_default'] === '') {
 			// Ignore
-		} else {
+		} elseif ($dbc['table_default'] != 'CURRENT_TIMESTAMP') {
 			$alter_cmd .= ' DEFAULT "' . $dbc['table_default'] . '"';
+		} else {
+			$alter_cmd .= ' DEFAULT CURRENT_TIMESTAMP';
 		}
 	} elseif ($dbc['table_default'] !== 'NULL' && $dbc['table_default'] !== null) {
 		if ($dbc['table_default'] == 'CURRENT_TIMESTAMP') {
@@ -781,7 +783,7 @@ function make_column_props(&$dbc) {
 			if (strpos($dbc['table_type'], 'int(') !== false && $dbc['table_default'] == '') {
 				$alter_cmd .= ' DEFAULT "0"';
 			} else {
-				$alter_cmd .= ' DEFAULT \'' . $dbc['table_default'] . '\'';
+				$alter_cmd .= " DEFAULT '" . $dbc['table_default'] . "'";
 			}
 		}
 	}

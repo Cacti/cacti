@@ -907,7 +907,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 								AND data_template_data_id = ?',
 								[$template_field['id'], $data_source['id']]);
 
-							if ($old_data['value'] != $host[$field]) {
+							if (isset($old_value['value']) && $old_data['value'] != $host[$field]) {
 								cacti_log("WARNING: Poller Cache updated Device[{$host['id']}], Field[$field], Old[{$old_data['value']}], New[{$host[$field]}]", false, 'PCACHE', POLLER_VERBOSITY_MEDIUM);
 							}
 

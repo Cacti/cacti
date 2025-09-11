@@ -34,6 +34,9 @@ concurrency:
   group: build-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+env:
+  "COMPOSER_ALLOW_SUPERUSER": 1
+
 jobs:
   check:
     runs-on: ${{ matrix.os }}
@@ -184,7 +187,7 @@ jobs:
         mysql $MYSQL_AUTH_USR -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/bin/php')" cacti
 
     - name: Validate composer.json and composer.lock
-      run: composer validate --strict
+      run: sudo composer validate --strict
 
     - name: Cache Composer packages
       id: composer-cache
@@ -196,7 +199,7 @@ jobs:
           ${{ runner.os }}-php-
 
     - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
+      run: sudo composer install --prefer-dist --no-progress
 
     - name: Prime Cacti config.php File
       run: |

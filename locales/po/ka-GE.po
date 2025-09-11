@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-08-19 17:26+0000\n"
+"PO-Revision-Date: 2025-08-31 02:26+0000\n"
 "Last-Translator: Ekaterine papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <https://translate.cacti.net/projects/cacti/core/ka/>"
 "\n"
@@ -3680,7 +3680,7 @@ msgstr ""
 
 #: color_templates.php:341
 msgid "Synchronize Color Template"
-msgstr ""
+msgstr "ფერის შაბლონის სინქრონიზაცია"
 
 #: color_templates.php:342
 msgid "Synchronize Color Templates"
@@ -12237,7 +12237,7 @@ msgstr ""
 
 #: include/global_settings.php:1424
 msgid "Balance Process Load"
-msgstr ""
+msgstr "პროცესის დატვირთვის დაბალანსება"
 
 #: include/global_settings.php:1425
 msgid "If you choose this option, Cacti will attempt to balance the load of each poller process by equally distributing poller items per process."
@@ -13280,7 +13280,7 @@ msgstr ""
 
 #: include/global_settings.php:2505
 msgid "Daily Partition Retention"
-msgstr ""
+msgstr "დღიური დანაყოფის შენარჩუნება"
 
 #: include/global_settings.php:2506
 msgid "The number of Days, Weeks, Months, or Years to keep daily statistics."
@@ -13556,7 +13556,7 @@ msgstr "%d წვეტი"
 
 #: include/global_settings.php:2798
 msgid "Absolute Maximum Value"
-msgstr ""
+msgstr "აბსოლუტური მაქსიმალური მნიშვნელობა"
 
 #: include/global_settings.php:2799
 msgid "This value represents the maximum raw value of any data point to remove from a Graph RRA."
@@ -14691,7 +14691,7 @@ msgstr " - ადმინისტრატორი გაუფილტრ�
 
 #: lib/clog_webapi.php:285
 msgid " - Admin view"
-msgstr ""
+msgstr " - ადმინის ხედი"
 
 #: lib/clog_webapi.php:290
 #, php-format
@@ -15662,7 +15662,7 @@ msgstr "25-ე პერცენტილი"
 
 #: lib/html.php:2452
 msgid "50th Percentile (Median)"
-msgstr ""
+msgstr "50-ე პერ პროცენტილი (მედიანი)"
 
 #: lib/html.php:2453
 msgid "75th Percentile"
@@ -17237,7 +17237,7 @@ msgstr ""
 
 #: lib/installer.php:2122
 msgid "Required PHP Modules"
-msgstr ""
+msgstr "აუცილებელი PHP-ის მოდულები"
 
 #: lib/installer.php:2123 lib/installer.php:2153
 msgid "Installed"
@@ -22768,7 +22768,7 @@ msgstr ""
 
 #: user_domains.php:242
 msgid "Enable User Domain"
-msgstr ""
+msgstr "მომხმარებლის დომენის ჩართვა"
 
 #: user_domains.php:243
 msgid "Enable User Domains"
