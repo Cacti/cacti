@@ -11,13 +11,9 @@ $allowed_hosts_filter = [
     'description'
 ];
 
-
 $allowed_host_templates_filter = [
     'template_id'
 ];
-
-
-
 
 $allowed_thold_filter = [
     'host_id',
@@ -26,7 +22,6 @@ $allowed_thold_filter = [
     'data_source_name',
     'template_id'
 ];
-
 
 $allowed_automation_networks_filter = [
     'network_id',
