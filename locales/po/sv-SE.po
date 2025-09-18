@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2025-03-18 09:57+0000\nLast-Translator: Daniel Nylander <weblate@danielnylander.se>\nLanguage-Team: Swedish <http://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 4.8.1\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2025-09-18 16:07+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -2234,7 +2234,7 @@ msgstr "Version"
 
 #: automation_snmp.php:536 include/global_settings.php:675
 msgid "Community"
-msgstr "Community"
+msgstr "Gemenskap"
 
 #: automation_snmp.php:537 lib/functions.php:5312
 msgid "Port"
@@ -3813,7 +3813,7 @@ msgstr "%d Veckor"
 #: include/global_arrays.php:1463
 #, php-format
 msgid "%d Day"
-msgstr "%d Dag"
+msgstr "%d dygn"
 
 #: data_source_profiles.php:842 include/global_arrays.php:771
 #: include/global_arrays.php:781 include/global_arrays.php:782
@@ -14994,7 +14994,7 @@ msgstr "PHP-rekommendationer ("
 
 #: lib/installer.php:1882
 msgid "Current"
-msgstr "Nuvarande"
+msgstr "Aktuell"
 
 #: lib/installer.php:1882
 msgid "Recommended"
@@ -17537,7 +17537,7 @@ msgstr "%d timmar"
 #: rrdcheck.php:239
 #, php-format
 msgid "%d day"
-msgstr "%d dag"
+msgstr "%d dygn"
 
 #: rrdcheck.php:240 rrdcheck.php:241
 #, php-format
@@ -19087,7 +19087,7 @@ msgstr "Totalt: %s"
 
 #: utilities.php:340
 msgid "Poller Information"
-msgstr "Poller-information"
+msgstr "Poller Information"
 
 #: utilities.php:348
 msgid "Different version of Cacti and Spine!"
