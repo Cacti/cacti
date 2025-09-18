@@ -3,15 +3,16 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-03-18 09:57+0000\n"
-"Last-Translator: Daniel Nylander <weblate@danielnylander.se>\n"
-"Language-Team: Swedish <http://translate.cacti.net/projects/cacti/core/sv/>\n"
+"PO-Revision-Date: 2025-09-18 16:07+0000\n"
+"Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
+"Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
+"\n"
 "Language: sv-SE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.8.1\n"
+"X-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2781 lib/html.php:3046
 msgid "About Cacti"
@@ -2889,7 +2890,7 @@ msgstr "Version"
 
 #: automation_snmp.php:718 include/global_settings.php:863
 msgid "Community"
-msgstr "Community"
+msgstr "Gemenskap"
 
 #: automation_snmp.php:719 lib/functions.php:5865
 msgid "Port"
@@ -4908,7 +4909,7 @@ msgstr "%d Veckor"
 #: include/global_arrays.php:1601 include/global_settings.php:1863
 #, php-format
 msgid "%d Day"
-msgstr "%d Dag"
+msgstr "%d dygn"
 
 #: data_source_profiles.php:851 include/global_arrays.php:796
 #: include/global_arrays.php:806 include/global_arrays.php:807
@@ -18719,7 +18720,7 @@ msgstr "PHP-rekommendationer ("
 
 #: lib/installer.php:2042
 msgid "Current"
-msgstr "Nuvarande"
+msgstr "Aktuell"
 
 #: lib/installer.php:2042
 msgid "Recommended"
@@ -23154,7 +23155,7 @@ msgstr "%d timmar"
 #: rrdcheck.php:239
 #, php-format
 msgid "%d day"
-msgstr "%d dag"
+msgstr "%d dygn"
 
 #: rrdcheck.php:240 rrdcheck.php:241
 #, php-format
@@ -23951,7 +23952,7 @@ msgstr "Totalt: %s"
 
 #: support.php:1268
 msgid "Poller Information"
-msgstr "Poller-information"
+msgstr "Poller Information"
 
 #: support.php:1278
 msgid "Different version of Cacti and Spine!"
