@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-08-31 02:26+0000\n"
+"PO-Revision-Date: 2025-09-23 05:09+0000\n"
 "Last-Translator: Ekaterine papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <https://translate.cacti.net/projects/cacti/core/ka/>"
 "\n"
@@ -129,7 +129,7 @@ msgstr ""
 
 #: aggregate_graphs.php:50
 msgid "Associate with Aggregate"
-msgstr ""
+msgstr "ასოცირება აგრეგატთან"
 
 #: aggregate_graphs.php:51
 msgid "Disassociate with Aggregate"
@@ -187,7 +187,7 @@ msgstr ""
 
 #: aggregate_graphs.php:888
 msgid "Delete Aggregate Graph"
-msgstr ""
+msgstr "აგრეგატი გრაფიკის წაშლა"
 
 #: aggregate_graphs.php:889
 msgid "Delete Aggregate Graphs"
@@ -269,7 +269,7 @@ msgstr ""
 
 #: aggregate_graphs.php:947
 msgid "Convert Aggregate Graph"
-msgstr ""
+msgstr "აგრეგატი გრაფიკის გადაყვანა"
 
 #: aggregate_graphs.php:948
 msgid "Convert Aggregate Graphs"
@@ -368,7 +368,7 @@ msgstr ""
 
 #: aggregate_graphs.php:1137 aggregate_graphs.php:1475
 msgid "Show Item Details"
-msgstr ""
+msgstr "ელემენტი დეტალების ჩვენება"
 
 #: aggregate_graphs.php:1150
 msgid "Aggregate Preview Does Not Exist"
@@ -873,7 +873,7 @@ msgstr ""
 
 #: auth_changepassword.php:328 auth_resetpassword.php:233
 msgid "Password requirements include:"
-msgstr ""
+msgstr "პაროლის მოთხოვნა შეიცავს:"
 
 #: auth_changepassword.php:332 auth_resetpassword.php:237
 #, php-format
@@ -1511,7 +1511,7 @@ msgstr ""
 
 #: automation_graph_rules.php:180 automation_graph_rules.php:194
 msgid "Import Graph Rules"
-msgstr ""
+msgstr "გრაფიკის წესების შემოტანა"
 
 #: automation_graph_rules.php:194 automation_graph_rules.php:887
 #: automation_networks.php:170 automation_networks.php:1561
@@ -2148,7 +2148,7 @@ msgstr ""
 
 #: automation_networks.php:867
 msgid "Rerun Data Queries"
-msgstr ""
+msgstr "მონაცემთა გამოთხოვების თავიდან გაშვება"
 
 #: automation_networks.php:868
 msgid "If a device previously added to Cacti is found, rerun its data queries."
@@ -3168,7 +3168,7 @@ msgstr ""
 
 #: automation_tree_rules.php:180 automation_tree_rules.php:194
 msgid "Import Tree Rules"
-msgstr ""
+msgstr "ხის წესების შემოტანა"
 
 #: automation_tree_rules.php:433
 msgid "Click 'Continue' to Delete the following Tree Rule."
@@ -3196,7 +3196,7 @@ msgstr ""
 
 #: automation_tree_rules.php:441
 msgid "Enable Tree Rule"
-msgstr ""
+msgstr "ხის წესის ჩართვა"
 
 #: automation_tree_rules.php:442
 msgid "Enable Tree Rules"
@@ -3244,7 +3244,7 @@ msgstr ""
 
 #: automation_tree_rules.php:459
 msgid "Duplicate Tree Rule"
-msgstr ""
+msgstr "ხის წესის დუბლირება"
 
 #: automation_tree_rules.php:460
 msgid "Duplicate Tree Rules"
@@ -3905,7 +3905,7 @@ msgstr "აღმოჩენილი არაა"
 
 #: data_debug.php:717 data_debug.php:723
 msgid "Not Checked Yet"
-msgstr ""
+msgstr "ჯერ შემოწმებული არაა"
 
 #: data_debug.php:742
 msgid "Issues found!  Waiting on RRDfile update"
@@ -4352,7 +4352,7 @@ msgstr ""
 
 #: data_queries.php:673
 msgid "Associated Data Templates"
-msgstr ""
+msgstr "ასოცირებული მონაცემთა შაბლონები"
 
 #: data_queries.php:690
 #, php-format
@@ -5125,7 +5125,7 @@ msgstr "მონაცემთა შაბლონის წაშლა"
 
 #: data_templates.php:493
 msgid "Delete Data Templates"
-msgstr ""
+msgstr "მონაცემთა შაბლონების წაშლა"
 
 #: data_templates.php:496
 msgid "Click 'Continue' to Duplicate the following Data Template."
@@ -5403,7 +5403,7 @@ msgstr ""
 
 #: graph_realtime.php:397
 msgid "Cacti Real-time Graphing"
-msgstr ""
+msgstr "Cacti-ის გრაფიკები რეალურ დროში"
 
 #: graph_realtime.php:436 lib/html_graph.php:357 lib/html_reports.php:124
 #: lib/html_tree.php:1350
@@ -5480,7 +5480,7 @@ msgstr ""
 
 #: graph_templates.php:1217
 msgid "Delete Graph Template"
-msgstr ""
+msgstr "გრაფიკის შაბლონის წაშლა"
 
 #: graph_templates.php:1218
 msgid "Delete Graph Templates"
@@ -6223,7 +6223,7 @@ msgstr "გრაფიკის ტიპები"
 
 #: graphs_new.php:416 include/global_settings.php:518
 msgid "Graph Template Based"
-msgstr ""
+msgstr "გრაფიკის შაბლონი ეყრდნობა"
 
 #: graphs_new.php:443
 msgid "Save Filters"
@@ -6274,7 +6274,7 @@ msgstr ""
 #: graphs_new.php:740
 #, php-format
 msgid "Data Query [%s]"
-msgstr ""
+msgstr "მონაცემების გამოთხოვა [%s]"
 
 #: graphs_new.php:867
 msgid "From there you can get more information."
@@ -6817,7 +6817,7 @@ msgstr "მოწყობილობის შაბლონის დუბ�
 
 #: host_templates.php:241
 msgid "Duplicate Device Templates"
-msgstr ""
+msgstr "მოწყობილობის შაბლონების დუბლირება"
 
 #: host_templates.php:252
 msgid "Click 'Continue' to Sync Devices to the following Device Template."
@@ -6868,7 +6868,7 @@ msgstr ""
 
 #: host_templates.php:417
 msgid "Device Templates [new]"
-msgstr ""
+msgstr "მოწყობილობის შაბლონები [ახალი]"
 
 #: host_templates.php:450
 msgid "Default Submit Button"
@@ -7718,7 +7718,7 @@ msgstr "ვების საბაზისო ავთენტიკაც�
 
 #: include/global_arrays.php:948
 msgid "LDAP/AD User Domains"
-msgstr ""
+msgstr "LDAP/AD მომხმარებლის დომენები"
 
 #: include/global_arrays.php:952 lib/auth.php:574
 msgid "LDAP"
@@ -8155,7 +8155,7 @@ msgstr "Telco"
 
 #: include/global_arrays.php:1204
 msgid "Web Server Related"
-msgstr ""
+msgstr "ეხება ვებსერვერს"
 
 #: include/global_arrays.php:1205
 msgid "Windows Related"
@@ -8645,7 +8645,7 @@ msgstr "PNG გამოსახულება ხაზშივე"
 
 #: include/global_arrays.php:1807
 msgid "Inline JPEG Image"
-msgstr ""
+msgstr "ხაზშივე JPEG გამოსახულება"
 
 #: include/global_arrays.php:1808
 msgid "Inline GIF Image"
@@ -8653,7 +8653,7 @@ msgstr "ხაზშივე GIF გამოსახულება"
 
 #: include/global_arrays.php:1811
 msgid "Attached PNG Image"
-msgstr ""
+msgstr "მიმაგრებული PNG გამოსახულება"
 
 #: include/global_arrays.php:1814
 msgid "Attached JPEG Image"
@@ -10215,7 +10215,7 @@ msgstr ""
 
 #: include/global_form.php:1106
 msgid "Insert Hard Return"
-msgstr ""
+msgstr "მყარი დაბრუნების ჩასმა"
 
 #: include/global_form.php:1109
 msgid "Forces the legend to the next line after this item."
@@ -10311,7 +10311,7 @@ msgstr "გამომთხოვის ასოცირება"
 
 #: include/global_form.php:1282
 msgid "Device Site Association"
-msgstr ""
+msgstr "მოწყობილობის საიტის ასოციაცია"
 
 #: include/global_form.php:1283
 msgid "What Site is this Device associated with."
@@ -10648,7 +10648,7 @@ msgstr ""
 
 #: include/global_form.php:1909
 msgid "Maximum Log Size"
-msgstr ""
+msgstr "ჟურნალის მაქსიმალური ზომა"
 
 #: include/global_form.php:1910
 msgid "Maximum number of day's notification log entries for this receiver need to be stored."
@@ -11263,7 +11263,7 @@ msgstr ""
 
 #: include/global_settings.php:449
 msgid "Preferred Language Processor"
-msgstr ""
+msgstr "რჩეული ენის პროცესორი"
 
 #: include/global_settings.php:450
 msgid "Cacti includes support for multiple alternate Language Translation Processors.  If none is selected Cacti will attempt to use the first one found."
@@ -11271,7 +11271,7 @@ msgstr ""
 
 #: include/global_settings.php:456
 msgid "Client TimeZone Support"
-msgstr ""
+msgstr "კლიენტის დროის სარტყლის მხარდაჭერა"
 
 #: include/global_settings.php:457
 msgid "How should Cacti support Client Dates based upon the Client browsers timezone."
@@ -12043,7 +12043,7 @@ msgstr ""
 
 #: include/global_settings.php:1242
 msgid "Custom Date Format"
-msgstr ""
+msgstr "მომხმარებლის თარიღის ფორმატი"
 
 #: include/global_settings.php:1243
 msgid "To be used when formatting |date_time| on a graph"
@@ -12133,7 +12133,7 @@ msgstr ""
 
 #: include/global_settings.php:1318 include/global_settings.php:3175
 msgid "Unit Font Size"
-msgstr ""
+msgstr "ერთეულის ფონტის ზომა"
 
 #: include/global_settings.php:1319 include/global_settings.php:3176
 msgid "The size of the font used for Graph Units"
@@ -12201,7 +12201,7 @@ msgstr ""
 
 #: include/global_settings.php:1390
 msgid "Data Collection Enabled"
-msgstr ""
+msgstr "მონაცემების მოგროვება ჩართულია"
 
 #: include/global_settings.php:1391
 msgid "If you wish to stop the polling process completely, uncheck this box."
@@ -12261,7 +12261,7 @@ msgstr ""
 
 #: include/global_settings.php:1442
 msgid "Remote Agent Timeout"
-msgstr ""
+msgstr "დაშორებული აგენტის მოლოდინის ვადა ამოიწურა"
 
 #: include/global_settings.php:1454
 msgid "SNMP Bulkwalk Fetch Size"
@@ -13296,7 +13296,7 @@ msgstr ""
 
 #: include/global_settings.php:2519
 msgid "Monthly Partition Retention"
-msgstr ""
+msgstr "თვიური დანაყოფის შენარჩუნება"
 
 #: include/global_settings.php:2520
 msgid "The number of Days, Weeks, Months, or Years to keep monthly statistics."
@@ -13889,7 +13889,7 @@ msgstr ""
 
 #: include/global_settings.php:3092
 msgid "Graphs Per Page"
-msgstr ""
+msgstr "გრაფიკი ერთ გვერდზე"
 
 #: include/global_settings.php:3099
 msgid "Expand Devices"
@@ -14187,7 +14187,7 @@ msgstr "მიღებული ბრენჩი"
 
 #: lib/api_automation.php:1402
 msgid "No Items Found"
-msgstr ""
+msgstr "ელემენტები აღმოჩენილი არაა"
 
 #: lib/api_automation.php:1438
 msgid "Show Matching Device SQL Query"
@@ -15778,7 +15778,7 @@ msgstr "სხვადასხვა"
 
 #: lib/html.php:3063
 msgid "Cacti Project Page"
-msgstr ""
+msgstr "Cacti-ის პროექტის გვერდი"
 
 #: lib/html.php:3064
 msgid "RRDProxy"
@@ -16672,7 +16672,7 @@ msgstr "ანგარიშის ელემენტები %s"
 #: lib/html_reports.php:1664
 #, php-format
 msgid "Scheduled Events %s"
-msgstr ""
+msgstr "დაგეგმილი მოვლენები %s"
 
 #: lib/html_reports.php:1676
 #, php-format
@@ -17597,7 +17597,7 @@ msgstr ""
 
 #: lib/installer.php:2737
 msgid "Error Locating Profiles"
-msgstr ""
+msgstr "პროფილების აღმოჩენის შეცდომა"
 
 #: lib/installer.php:2738
 msgid "The installation cannot continue because no profiles could be found."
@@ -19091,7 +19091,7 @@ msgstr "შემცველობის ფაილი/ბმული"
 
 #: links.php:561
 msgid "Web URL Below"
-msgstr ""
+msgstr "Web URL ქვემოთ"
 
 #: links.php:562
 msgid "The file that contains the content for this page. This file needs to be in the Cacti 'include/content/' directory."
@@ -19269,7 +19269,7 @@ msgstr ""
 
 #: managers.php:1035
 msgid "Disable Notification Receiver"
-msgstr ""
+msgstr "გაფრთხილებების მიმღების გამორთვა"
 
 #: managers.php:1036
 msgid "Disable Notification Receivers"
@@ -19347,7 +19347,7 @@ msgstr ""
 #: package.php:667
 #, php-format
 msgid "%s Device Package"
-msgstr ""
+msgstr "%s მოწყობილობის პაკეტი"
 
 #: package.php:670
 #, php-format
@@ -19584,7 +19584,7 @@ msgstr ""
 
 #: package_import.php:781
 msgid "All Packages Trusted"
-msgstr ""
+msgstr "ყველა პაკეტი სანდოა"
 
 #: package_import.php:782
 msgid "All Package Signatures Validated"
@@ -20028,7 +20028,7 @@ msgstr "დაყენებადი"
 
 #: plugins.php:83
 msgid "Disabled by Error"
-msgstr ""
+msgstr "გათიშულია შეცდომის მიერ"
 
 #: plugins.php:84 plugins.php:619
 msgid "Archived"
@@ -20627,7 +20627,7 @@ msgstr ""
 
 #: pollers.php:81
 msgid "Custom Log Level"
-msgstr ""
+msgstr "მომხმარებლის ჟურნალის დონე"
 
 #: pollers.php:82
 msgid "In Cases where you need to perform debugging for a single Data Collector Only, you can change it's log level here."
@@ -21252,7 +21252,7 @@ msgstr ""
 
 #: sites.php:95
 msgid "Enter the state"
-msgstr ""
+msgstr "შეიყვანეთ მდგომარეობა"
 
 #: sites.php:101
 msgid "Postal/Zip Code"
@@ -21276,7 +21276,7 @@ msgstr ""
 
 #: sites.php:113
 msgid "Enter the country"
-msgstr ""
+msgstr "შეიყვანეთ ქვეყანა"
 
 #: sites.php:120
 msgid "The TimeZone for the Site."
@@ -21987,7 +21987,7 @@ msgstr ""
 
 #: templates_export.php:149
 msgid "Save File Locally"
-msgstr ""
+msgstr "ფაილის შენახვა ლოკალურად"
 
 #: templates_import.php:118
 msgid "The Template Import Succeeded."
@@ -23057,7 +23057,7 @@ msgstr ""
 
 #: user_group_admin.php:114
 msgid "Graph List Rights"
-msgstr ""
+msgstr "გრაფიკის სიის უფლებები"
 
 #: user_group_admin.php:116
 msgid "Should Users of this Group have access to the Graph List?"
@@ -23518,7 +23518,7 @@ msgstr "Boost-ის მიმდინარე სტატუსი"
 
 #: utilities.php:1572
 msgid "Boost On-demand Updating:"
-msgstr ""
+msgstr "მოთხოვნისამებრ განახლების გააქტიურება:"
 
 #: utilities.php:1576
 msgid "Running Processes:"
@@ -23591,7 +23591,7 @@ msgstr "წინა გაშვების დროის სტატის
 
 #: utilities.php:1673
 msgid "Last Start Time:"
-msgstr ""
+msgstr "ბოლო დაწყების დრო:"
 
 #: utilities.php:1679
 msgid "Last End Time:"
@@ -23739,7 +23739,7 @@ msgstr "ჟურნალის ჩანაწერები"
 #: utilities.php:2310
 #, php-format
 msgid "Severity Level: %s"
-msgstr ""
+msgstr "სიმძიმის დონე: %s"
 
 #: vdef.php:256
 msgid "Click 'Continue' to Delete the following VDEF."
