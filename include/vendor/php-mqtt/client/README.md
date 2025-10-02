@@ -249,6 +249,111 @@ $connectionSettings = (new \PhpMqtt\Client\ConnectionSettings)
      ->setTlsAlpn(null);
 ```
 
+### Hooks
+
+The client includes a flexible and powerful hook system to allow custom behaviors during different stages of the MQTT lifecycle. Hooks are registered using closures and can be added or removed dynamically at runtime.
+
+> 💡 All hooks receive the MQTT client instance (`MqttClient`) as their first argument, allowing full access to the client's capabilities from within the hook.
+
+> 💡 Each hook is executed in a `try-catch` block to ensure no individual exception can crash the loop or hook processing.
+
+#### Loop Event Hooks
+
+Called on each iteration of the MQTT client's loop. This hook is especially useful to implement timeouts or other deadlock-prevention logic.
+
+##### Register
+
+```php
+$callback = function (MqttClient $mqtt, float $elapsedTime) {
+    echo "Running for {$elapsedTime} seconds already.";
+};
+
+$mqtt->registerLoopEventHandler($callback);
+```
+
+##### Unregister
+
+```php
+$mqtt->unregisterLoopEventHandler($callback); // Unregister specific event handler
+$mqtt->unregisterLoopEventHandler(); // Unregister all event handlers
+```
+
+#### Publish Event Hooks
+
+Triggered every time a message is published to the broker. This hook is useful to implement centralized logging or metrics.
+
+##### Register
+
+```php
+$callback = function (
+    MqttClient $mqtt,
+    string $topic,
+    string $message,
+    ?int $messageId,
+    int $qualityOfService,
+    bool $retain
+) {
+    echo "Published to [{$topic}]: {$message}";
+};
+
+$mqtt->registerPublishEventHandler($callback);
+```
+
+##### Unregister
+
+```php
+$mqtt->unregisterPublishEventHandler($callback); // Unregister specific event handler
+$mqtt->unregisterPublishEventHandler(); // Unregister all event handlers
+```
+
+#### Message Received Hooks
+
+Executed when a message is received from the broker as part of a subscription. This hook is useful to implement centralized logging or metrics.
+
+##### Register
+
+```php
+$callback = function (
+    MqttClient $mqtt,
+    string $topic,
+    string $message,
+    int $qualityOfService,
+    bool $retained
+) {
+    echo "Message on [{$topic}]: {$message}";
+};
+
+$mqtt->registerMessageReceivedEventHandler($callback);
+```
+
+##### Unregister
+
+```php
+$mqtt->unregisterMessageReceivedEventHandler($callback); // Unregister specific event handler
+$mqtt->unregisterMessageReceivedEventHandler(); // Unregister all event handlers
+```
+
+#### Connected Hooks
+
+Invoked when the client connects to the broker (initial or auto-reconnect).
+
+##### Register
+
+```php
+$callback = function (MqttClient $mqtt, bool $isAutoReconnect) {
+    echo $isAutoReconnect ? "Auto-reconnected!" : "Connected!";
+};
+
+$mqtt->registerConnectedEventHandler($callback);
+```
+
+##### Unregister
+
+```php
+$mqtt->unregisterConnectedEventHandler($callback); // Unregister specific event handler
+$mqtt->unregisterConnectedEventHandler(); // Unregister all event handlers
+```
+
 ## Features
 
 - Supported MQTT Versions

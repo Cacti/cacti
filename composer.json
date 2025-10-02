@@ -32,6 +32,7 @@
         "ext-dom": "*",
         "ext-gd": "*",
         "ext-gmp": "*",
+        "ext-iconv": "*",
         "ext-intl": "*",
         "ext-json": "*",
         "ext-ldap": "*",
