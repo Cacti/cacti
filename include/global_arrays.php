@@ -675,9 +675,9 @@ $snmp_priv_protocols = [
 	'AES'      => __('AES'),
 	'AES128'   => __('AES-128'),
 	'AES192'   => __('AES-192'),
-		'AES192C' => __('AES-192-C'),
-		'AES256'  => __('AES-256'),
-		'AES256C' => __('AES-256-C')
+	'AES192C'  => __('AES-192-C'),
+	'AES256'   => __('AES-256'),
+	'AES256C'  => __('AES-256-C')
 ];
 
 $banned_snmp_strings = [
