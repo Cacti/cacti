@@ -418,9 +418,10 @@ function cacti_snmp_getnext($hostname, $community, $oid, $version, $auth_user = 
 }
 
 function cacti_get_snmpv3_auth($auth_proto, $auth_user, $auth_pass, $priv_proto, $priv_pass, $context, $engineid) {
-	global $snmp_priv_protocols;
+	global $snmp_priv_protocols, $snmp_auth_protocols;
 
-	$sec_details = ' -a ' . snmp_escape_string($auth_proto) . ' -A ' . snmp_escape_string($auth_pass);
+	$sec_details = ' -a ' . snmp_escape_string($snmp_auth_protocols[$auth_proto]) . ' -A ' . snmp_escape_string($auth_pass);
+
 	if ($priv_proto == '[None]' || $priv_pass == '') {
 		if ($auth_pass == '' || $auth_proto == '[None]') {
 			$sec_level   = 'noAuthNoPriv';
