@@ -219,6 +219,7 @@ Cacti CHANGELOG
 -issue#6313: Errors when editing multiple devices with unset value
 -issue#6314: Newly Added Items in Aggregation Chart Don’t Reflect in Item Count
 -issue#6315: Undefined function error duplicating a data input method
+-issue#6329: PHP Error on LDAP access
 -feature: Update PHPMailer to 6.10 to support SMTPUTF8
 -feature: Update phpseclib for Service Check Plugin
 
