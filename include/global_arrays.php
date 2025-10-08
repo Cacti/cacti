@@ -656,7 +656,7 @@ $snmp_auth_protocols = array(
 	'SHA'    => __('SHA'),
 	'SHA224' => __('SHA-224'),
 	'SHA256' => __('SHA-256'),
-	'SHA392' => __('SHA-392'),
+	'SHA384' => __('SHA-384'),
 	'SHA512' => __('SHA-512'),
 );
 
