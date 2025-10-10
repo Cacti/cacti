@@ -32,6 +32,12 @@ function upgrade_to_1_0_5() {
 	/* bad data source profile id's */
 	$data = db_install_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 
+	if (is_array($profile_id)) {
+		$profile_id = isset($profile_id['data']) ? $profile_id['data'] : reset($profile_id);
+	}
+	$profile_id = (int)$profile_id;
+
+
 	if (cacti_sizeof($data)) {
 		$profile_id = $data['data'];
 
