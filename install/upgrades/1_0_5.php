@@ -37,7 +37,6 @@ function upgrade_to_1_0_5() {
 	}
 	$profile_id = (int)$profile_id;
 
-
 	if (cacti_sizeof($data)) {
 		$profile_id = $data['data'];
 
