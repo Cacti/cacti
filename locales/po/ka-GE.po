@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-09-23 05:09+0000\n"
+"PO-Revision-Date: 2025-10-13 01:26+0000\n"
 "Last-Translator: Ekaterine papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <https://translate.cacti.net/projects/cacti/core/ka/>"
 "\n"
@@ -3668,7 +3668,7 @@ msgstr "ფერის შაბლონის დუბლირება"
 
 #: color_templates.php:328
 msgid "Duplicate Color Templates"
-msgstr ""
+msgstr "ფერის შაბლონების დუბლირება"
 
 #: color_templates.php:339
 msgid "Click 'Continue' to Synchronize the following Color Template to its Aggregates."
@@ -8442,7 +8442,7 @@ msgstr "შარშან"
 #: include/global_arrays.php:1581
 #, php-format
 msgid "Last %d Years"
-msgstr ""
+msgstr "ბოლო %d წელი"
 
 #: include/global_arrays.php:1582
 msgid "Day Shift"
@@ -9826,7 +9826,7 @@ msgstr ""
 
 #: include/global_form.php:721
 msgid "Vertical Label (--vertical-label)"
-msgstr ""
+msgstr "ვერტიკალური ჭდე (--vertical-label)"
 
 #: include/global_form.php:725
 msgid "The label vertically printed to the left of the graph."
@@ -11015,7 +11015,7 @@ msgstr ""
 
 #: include/global_settings.php:198
 msgid "RRDtool Binary Path"
-msgstr ""
+msgstr "RRDtool-ის გამშვები ფაილის ბილიკი"
 
 #: include/global_settings.php:199
 msgid "The path to the rrdtool binary."
@@ -11678,7 +11678,7 @@ msgstr ""
 
 #: include/global_settings.php:843
 msgid "10 Gbps Ethernet"
-msgstr ""
+msgstr "10 გბ/წმ ინტერნეტი"
 
 #: include/global_settings.php:844
 msgid "25 Gbps Ethernet"
@@ -12015,7 +12015,7 @@ msgstr ""
 
 #: include/global_settings.php:1214
 msgid "Minimum Refresh Interval"
-msgstr ""
+msgstr "მინიმალური განახლების შუალედი"
 
 #: include/global_settings.php:1215
 msgid "This is the minimal supported time between Graph updates.  This value is also used to set certain RRDfile attributes.  If you have a Device that caches data and does not provide realtime updates, you may have to increase the default Minimum Refresh Interval to prevent creating Graphs with gaps."
@@ -13487,7 +13487,7 @@ msgstr "NaN-ები"
 
 #: include/global_settings.php:2708 lib/html.php:2768
 msgid "Last Known Good"
-msgstr ""
+msgstr "ბოლო კარგი"
 
 #: include/global_settings.php:2712
 msgid "Number of Standard Deviations"
@@ -13700,7 +13700,7 @@ msgstr ""
 
 #: include/global_settings.php:2899
 msgid "Cacti Server Timezone"
-msgstr ""
+msgstr "Cacti-ის სერვერის დროის სარტყელი"
 
 #: include/global_settings.php:2900
 msgid "My Browsers Timezone"
@@ -18492,7 +18492,7 @@ msgstr ""
 
 #: lib/reports.php:1891
 msgid "Add to Report"
-msgstr ""
+msgstr "ჩასმა ანგარიშში"
 
 #: lib/reports.php:1909
 msgid "Choose the Report to associate these graphs with.  The defaults for alignment will be used for each graph in the list below."
@@ -19305,7 +19305,7 @@ msgstr ""
 
 #: managers.php:1083
 msgid "Disable Forwarding Objects"
-msgstr ""
+msgstr "ობიექტების გადაგზავნის გამორთვა"
 
 #: managers.php:1086
 msgid "Click 'Continue' to Enable Forwarding the following Notification Object to this Notification Receiver."
@@ -19940,7 +19940,7 @@ msgstr "დაყენების კითხვის დადასტუ�
 
 #: plugins.php:45
 msgid "Remove Plugin Data"
-msgstr ""
+msgstr "დამატების მონაცემების წაშლა"
 
 #: plugins.php:53
 msgid "Archive Restore"
@@ -22703,7 +22703,7 @@ msgstr "ყველას ჩვენება"
 #: user_admin.php:2658
 #, php-format
 msgid "Group Membership %s"
-msgstr ""
+msgstr "ჯგუფის წევრობა %s"
 
 #: user_admin.php:2758 user_group_admin.php:2343
 #, php-format
