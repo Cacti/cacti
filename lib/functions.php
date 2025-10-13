@@ -5819,6 +5819,10 @@ function split_emaildetail($email) {
 	$rname = '';
 	$rmail = '';
 
+	if (!is_array($email)) {
+		$email = trim($email);
+	}
+
 	/**
 	 * Handle the special case where sendmail is being used
 	 * without an email domain
@@ -5828,7 +5832,7 @@ function split_emaildetail($email) {
 	}
 
 	/**
-	 * Handle the case where the Email is a tring, but may
+	 * Handle the case where the Email is a string, but may
 	 * include the name at the beginning of the Email.
 	 */
 	if (!is_array($email) && strpos($email, '@') !== false) {
