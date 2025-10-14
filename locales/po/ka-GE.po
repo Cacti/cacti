@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti 1.3.0.-1\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-10-13 01:26+0000\n"
+"PO-Revision-Date: 2025-10-15 05:26+0000\n"
 "Last-Translator: Ekaterine papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <https://translate.cacti.net/projects/cacti/core/ka/>"
 "\n"
@@ -3732,7 +3732,7 @@ msgstr ""
 
 #: color_templates.php:685
 msgid "Color Template [new]"
-msgstr ""
+msgstr "ფერის ნიმუში [ახალი]"
 
 #: color_templates.php:762
 #, php-format
@@ -4786,7 +4786,7 @@ msgstr "მონაცემების წყაროს წაშლა"
 
 #: data_sources.php:541
 msgid "Delete Data Sources"
-msgstr ""
+msgstr "მონაცემთა წყაროების წაშლა"
 
 #: data_sources.php:543
 msgid "The following Graph is using this Data Source."
@@ -8433,7 +8433,7 @@ msgstr "ბოლო თვე"
 #: include/global_arrays.php:1578 include/global_arrays.php:1579
 #, php-format
 msgid "Last %d Months"
-msgstr ""
+msgstr "ბოლო %d თვე"
 
 #: include/global_arrays.php:1580
 msgid "Last Year"
@@ -11163,7 +11163,7 @@ msgstr ""
 
 #: include/global_settings.php:349
 msgid "Selective File Debug"
-msgstr ""
+msgstr "არჩევითი ფაილის გამართვა"
 
 #: include/global_settings.php:350
 msgid "Select which files you wish to place in Debug mode regardless of the Generic Log Level setting.  Any files selected will be treated as they are in Debug mode."
