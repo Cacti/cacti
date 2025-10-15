@@ -805,6 +805,7 @@ class Ldap {
 		if (ldap_bind($ldap_conn, $this->specific_dn, $this->specific_password)) {
 			/* Search */
 			$ldap_results = ldap_search($ldap_conn, $this->search_base, $this->search_filter, array('dn'));
+
 			if ($ldap_results) {
 				$ldap_entries = ldap_get_entries($ldap_conn, $ldap_results);
 
@@ -913,6 +914,7 @@ class Ldap {
 
 			if ($ldap_results) {
 				$ldap_entries =  ldap_get_entries($ldap_conn, $ldap_results);
+
 				/* We find 1 entries */
 				if ($ldap_entries['count'] == 1) {
 					$output = LdapError::GetErrorDetails(LdapError::Success);
@@ -973,11 +975,16 @@ class Ldap {
 
 	function isUserInLDAPGroup($ldapConn, $ldapbasedn, $groupDN, $ldapUser) {
 		$query       = "(&(distinguishedName=$ldapUser)(memberOf:1.2.840.113556.1.4.1941:=$groupDN))";
-		$ldapSearch  = @ldap_search($ldapConn,$ldapbasedn,$query,array("dn"));
-		$ldapResults = @ldap_get_entries($ldapConn, $ldapSearch);
+		$ldapSearch  = ldap_search($ldapConn, $ldapbasedn, $query, array("dn"));
 
-		// user should only be returned once IF they're a member of the group
-		return isset($ldapResults['count']) && $ldapResults['count'] == 1 ? true:false;
+		if ($ldapSearch) {
+			$ldapResults = ldap_get_entries($ldapConn, $ldapSearch);
+
+			// user should only be returned once IF they're a member of the group
+			return isset($ldapResults['count']) && $ldapResults['count'] == 1 ? true:false;
+		} else {
+			return false;
+		}
 	}
 }
 

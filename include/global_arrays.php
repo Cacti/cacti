@@ -639,8 +639,8 @@ $image_types = array(
 
 $snmp_security_levels = array(
 	'noAuthNoPriv' => 'noAuthNoPriv',
-	'authNoPriv' => 'authNoPriv',
-	'authPriv' => 'authPriv'
+	'authNoPriv'   => 'authNoPriv',
+	'authPriv'     => 'authPriv'
 );
 
 $snmp_versions = array(0 =>
@@ -656,19 +656,19 @@ $snmp_auth_protocols = array(
 	'SHA'    => __('SHA'),
 	'SHA224' => __('SHA-224'),
 	'SHA256' => __('SHA-256'),
-	'SHA392' => __('SHA-392'),
+	'SHA384' => __('SHA-384'),
 	'SHA512' => __('SHA-512'),
 );
 
 $snmp_priv_protocols = array(
-	'[None]' => __('[None]'),
-	'DES'    => __('DES'),
-	'AES'    => __('AES'),
-	'AES128' => __('AES-128'),
-	'AES192' => __('AES-192'),
-        'AES192C' => __('AES-192-C'),
-        'AES256' => __('AES-256'),
-        'AES256C' => __('AES-256-C')
+	'[None]'  => __('[None]'),
+	'DES'     => __('DES'),
+	'AES'     => __('AES'),
+	'AES128'  => __('AES-128'),
+	'AES192'  => __('AES-192'),
+	'AES192C' => __('AES-192-C'),
+	'AES256'  => __('AES-256'),
+	'AES256C' => __('AES-256-C')
 );
 
 $banned_snmp_strings = array(

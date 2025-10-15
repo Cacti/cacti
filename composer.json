@@ -45,8 +45,8 @@
         "ext-sqlite3": "*",
         "ext-xml": "*",
         "phpseclib/phpseclib": "^3.0",
-		"paragonie/constant_time_encoding": "^2.0",
-		"paragonie/random_compat": "*"
+        "paragonie/constant_time_encoding": "^2.0",
+        "paragonie/random_compat": "*"
     },
     "authors": [
         {
@@ -64,6 +64,6 @@
     "prefer-stable": true,
     "config": {
         "sort-packages": true,
-		"vendor-dir": "./include/vendor"
+        "vendor-dir": "./include/vendor"
     }
 }

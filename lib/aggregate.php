@@ -103,6 +103,12 @@ function api_aggregate_convert_template($graphs) {
 		}
 
 		push_out_aggregates($aggregate_template_id, $graph);
+
+		/**
+		 * Save the last time a aggregate was altered/updated
+		 * for Caching.
+		 */
+		set_config_option('time_last_change_aggregate_graph', time());
 	}
 }
 
@@ -137,6 +143,12 @@ function api_aggregate_associate($local_graph_id, $graphs) {
 		}
 
 		push_out_aggregates($aggregate_template, $local_graph_id);
+
+		/**
+		 * Save the last time a aggregate was altered/updated
+		 * for Caching.
+		 */
+		set_config_option('time_last_change_aggregate_graph', time());
 	}
 }
 
@@ -160,6 +172,12 @@ function api_aggregate_disassociate($local_graph_id, $graphs) {
 		}
 
 		push_out_aggregates($aggregate_template, $local_graph_id);
+
+		/**
+		 * Save the last time a aggregate was altered/updated
+		 * for Caching.
+		 */
+		set_config_option('time_last_change_aggregate_graph', time());
 	}
 }
 
