@@ -24,6 +24,7 @@ Cacti CHANGELOG
 -issue#6315: Undefined function error duplicating a data input method
 -issue#6326: Issues with Cisco Devices and Higher Levels of Privacy
 -issue#6329: PHP Error on LDAP access
+-issue#6335: Fix incorrect parsing of email address containing whitespace
 -feature: Update PHPMailer to 6.10 to support SMTPUTF8
 -feature: Update phpseclib for the Service Check plugin
 
