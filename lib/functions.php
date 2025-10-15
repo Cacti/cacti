@@ -5255,6 +5255,10 @@ function split_emaildetail($email) {
 	$rname = '';
 	$rmail = '';
 
+	if (!is_array($email)) {
+		$email = trim($email);
+	}
+
 	/**
 	 * Handle the special case where sendmail is being used
 	 * without an email domain
