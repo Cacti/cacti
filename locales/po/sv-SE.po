@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2025-09-18 16:07+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2025-10-16 18:18+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -557,7 +557,7 @@ msgstr "Ställ in/uppdatera filter"
 #: user_admin.php:2784 user_admin.php:2881 user_admin.php:2978
 #: user_admin.php:3075 user_domains.php:681
 msgid "Clear"
-msgstr "Rensa"
+msgstr "Töm"
 
 #: aggregate_graphs.php:1267 aggregate_graphs.php:1557 automation_snmp.php:719
 #: automation_templates.php:416 cdef.php:776 color.php:564 data_debug.php:1052
@@ -576,7 +576,7 @@ msgstr "Rensa"
 #: utilities.php:1433 utilities.php:1767 utilities.php:2054 utilities.php:3014
 #: utilities.php:3279
 msgid "Clear Filters"
-msgstr "Rensa filter"
+msgstr "Töm filter"
 
 #: aggregate_graphs.php:1292 aggregate_graphs.php:1622 graphs.php:1221
 #: lib/api_automation.php:574 user_admin.php:886 user_group_admin.php:882
@@ -1264,7 +1264,7 @@ msgstr "Rensning av upptäckta enheter"
 #: utilities.php:2745 utilities.php:2753 utilities.php:2764 utilities.php:2775
 #: utilities.php:2798 utilities.php:2844 utilities.php:3078
 msgid "N/A"
-msgstr "N/A"
+msgstr "Inte tillgänglig"
 
 #: automation_graph_rules.php:29 automation_snmp.php:30
 #: automation_tree_rules.php:29 cdef.php:30 color_templates.php:29
@@ -1397,7 +1397,7 @@ msgstr "Datafrågeställning"
 #: user_group_admin.php:695 user_group_admin.php:2020 utilities.php:2073
 #: utilities.php:2862
 msgid "Enabled"
-msgstr "Aktiverad"
+msgstr "Aktiverat"
 
 #: automation_graph_rules.php:777 automation_graph_rules.php:915
 #: automation_networks.php:1088 automation_tree_rules.php:822
@@ -1415,7 +1415,7 @@ msgstr "Aktiverad"
 #: user_admin.php:1012 user_domains.php:412 user_group_admin.php:695
 #: utilities.php:2074 utilities.php:2559 utilities.php:2862
 msgid "Disabled"
-msgstr "Inaktiverad"
+msgstr "Inaktiverat"
 
 #: automation_graph_rules.php:895 automation_tree_rules.php:935
 msgid "Rule Name"
@@ -2242,7 +2242,7 @@ msgstr "Port"
 
 #: automation_snmp.php:538 include/global_settings.php:753
 msgid "Timeout"
-msgstr "Timeout"
+msgstr "Tidsgräns"
 
 #: automation_snmp.php:539 include/global_settings.php:761
 msgid "Retries"
@@ -3023,7 +3023,7 @@ msgstr "Avgör om datakällan finns i Poller Cache."
 #: data_debug.php:483 data_sources.php:1656 data_templates.php:1259
 #: plugins.php:39 plugins.php:471
 msgid "Active"
-msgstr "Aktiv"
+msgstr "Aktivt"
 
 #: data_debug.php:486
 msgid "Determines if the Data Source is Enabled."
@@ -3355,7 +3355,7 @@ msgstr "Skriptserverförfrågan"
 
 #: data_input.php:532
 msgid "White List Verification Succeeded."
-msgstr "White List Verification Succeeded."
+msgstr "Vitlistverifiering lyckades."
 
 #: data_input.php:534
 msgid "White List Verification Failed.  Run CLI script input_whitelist.php to correct."
@@ -3729,7 +3729,7 @@ msgstr "Datalagring"
 #: data_source_profiles.php:637 include/global_settings.php:995
 #: lib/html_reports.php:1051
 msgid "Graph Timespan"
-msgstr "Tidsåtgång för grafen"
+msgstr "Diagrammets tidsintervall"
 
 #: data_source_profiles.php:638
 msgid "Steps"
@@ -4250,7 +4250,7 @@ msgstr "Data Templates [redigera: %s]"
 
 #: data_templates.php:656
 msgid "Edit Data Input Method."
-msgstr "Edit Data Input Method."
+msgstr "Redigera metod för datainmatning."
 
 #: data_templates.php:665
 msgid "Data Templates [new]"
@@ -4525,11 +4525,11 @@ msgstr "Klicka på &quot;Fortsätt&quot; för att ändra storlek på följande g
 
 #: graph_templates.php:399 lib/html_reports.php:116
 msgid "Graph Height"
-msgstr "Grafens höjd"
+msgstr "Diagramhöjd"
 
 #: graph_templates.php:401 lib/html_reports.php:108
 msgid "Graph Width"
-msgstr "Grafbredd"
+msgstr "Diagrambredd"
 
 #: graph_templates.php:403 graph_templates.php:860
 msgid "Image Format"
@@ -4642,7 +4642,7 @@ msgstr "Cur:"
 #: graph_templates_items.php:142 graph_templates_items.php:168
 #: graphs_items.php:148
 msgid "Avg:"
-msgstr "Avg:"
+msgstr "Medel:"
 
 #: graph_templates_items.php:149 graph_templates_items.php:182
 #: graphs_items.php:162
@@ -4995,7 +4995,7 @@ msgstr "Lås upp Graph."
 
 #: graphs.php:1555
 msgid "Lock Graph."
-msgstr "Lock Graph."
+msgstr "Lås graf."
 
 #: graphs.php:1584
 msgid "Selected Graph Template"
@@ -5024,7 +5024,7 @@ msgstr "Fält för grafobjekt"
 
 #: graphs.php:1975
 msgid "Graph Management [ Custom Graphs List Applied - Clear to Reset ]"
-msgstr "Graph Management [ Custom Graphs List Applied - Clear to Reset ]"
+msgstr "Grafhantering [ Anpassad graflista tillämpad - Töm för att nollställa ]"
 
 #: graphs.php:1977
 msgid "Graph Management [ All Devices ]"
@@ -7108,7 +7108,7 @@ msgstr "Efter Boost"
 #: include/global_arrays.php:1604
 #, php-format
 msgid "%d MBytes"
-msgstr "%d MBytes"
+msgstr "%d MByte"
 
 #: include/global_arrays.php:1542
 msgid "1 GByte"
@@ -7118,7 +7118,7 @@ msgstr "1 GByte"
 #: lib/boost.php:61
 #, php-format
 msgid "%s GBytes"
-msgstr "%s GBytes"
+msgstr "%s GByte"
 
 #: include/global_arrays.php:1544 include/global_arrays.php:1545
 #: include/global_arrays.php:1607 include/global_arrays.php:1608
@@ -7126,7 +7126,7 @@ msgstr "%s GBytes"
 #: include/global_arrays.php:1611 include/global_arrays.php:1612
 #, php-format
 msgid "%d GBytes"
-msgstr "%d GBytes"
+msgstr "%d GByte"
 
 #: include/global_arrays.php:1565
 msgid "2,000 Data Source Items"
@@ -8075,7 +8075,7 @@ msgstr "Automatisk detektering vid återindexering"
 
 #: include/global_form.php:178
 msgid "Auto Detect/Set on first Re-Index"
-msgstr "Auto Detect/Set on first Re-Index"
+msgstr "Identifiera automatiskt/Ställ in vid första omindexering"
 
 #: include/global_form.php:179
 #, php-format
@@ -8369,7 +8369,7 @@ msgstr "Ange ett namn för denna GPRINT-förinställning, se till att det är n�
 
 #: include/global_form.php:680
 msgid "GPRINT Text"
-msgstr "GPRINT Text"
+msgstr "GPRINT-text"
 
 #: include/global_form.php:681
 msgid "Enter the custom GPRINT string here."
@@ -8489,7 +8489,7 @@ msgstr "Använd SI-enheter för logaritmisk skalning istället för att använda
 
 #: include/global_form.php:806
 msgid "Rigid Boundaries Mode (--rigid)"
-msgstr "Rigid Boundaries Mode (--rigid)"
+msgstr "Läge för fasta gränser (--rigid)"
 
 #: include/global_form.php:809
 msgid "Do not expand the lower and upper limit if the graph contains a value outside the valid range."
@@ -8622,7 +8622,7 @@ msgstr "Rita linjemarkörer som en linje."
 
 #: include/global_form.php:931
 msgid "Force Rules Legend (--force-rules-legend)"
-msgstr "Force Rules Legend (--force-rules-legend)"
+msgstr "Tvinga regelförklaring (--force-rules-legend)"
 
 #: include/global_form.php:934
 msgid "Force the generation of HRULE and VRULE legends."
@@ -11646,7 +11646,7 @@ msgstr "Enhetens hash/enhetens ID"
 
 #: include/global_settings.php:2308
 msgid "Device Hash/Device ID/Data Query ID"
-msgstr "Device Hash/Device ID/Data Query ID"
+msgstr "Enhetshash/Enhets-id/Datafråge-id"
 
 #: include/global_settings.php:2312
 msgid "Max Device Hash Directories"
@@ -11812,7 +11812,7 @@ msgstr "%d Spikar"
 
 #: include/global_settings.php:2493
 msgid "RRDfile Backup Directory"
-msgstr "RRDfile Backup Directory"
+msgstr "Katalog för RRDfile-säkerhetskopior"
 
 #: include/global_settings.php:2494
 msgid "If this directory is not empty, then your original RRDfiles will be backed up to this location."
@@ -12105,7 +12105,7 @@ msgstr "Den teckensnittsfil som ska användas för grafiska titlar"
 
 #: include/global_settings.php:2821
 msgid "Legend Font File"
-msgstr "Legend Font File"
+msgstr "Typsnittsfil för förklaring"
 
 #: include/global_settings.php:2822
 msgid "The font file to be used for Graph Legend items"
@@ -12675,12 +12675,12 @@ msgstr "Autentisering var tidigare inte inställd.  Försökte ställa in lokal 
 #: lib/boost.php:63 utilities.php:2762
 #, php-format
 msgid "%s MBytes"
-msgstr "%s MBytes"
+msgstr "%s MByte"
 
 #: lib/boost.php:66
 #, php-format
 msgid "%s KBytes"
-msgstr "%s KBytes"
+msgstr "%s KByte"
 
 #: lib/boost.php:69
 #, php-format
@@ -14438,7 +14438,7 @@ msgstr "Rapportobjekt [ny rapport: %s]"
 
 #: lib/html_reports.php:1381
 msgid "Events"
-msgstr "Evenemang"
+msgstr "Händelser"
 
 #: lib/html_reports.php:1411
 msgid "Send Report"
@@ -16005,7 +16005,7 @@ msgstr "Kräver: Cacti >= %s"
 
 #: lib/plugins.php:1279
 msgid "Legacy Plugin"
-msgstr "Legacy Plugin"
+msgstr "Föråldrat tillägg"
 
 #: lib/plugins.php:1304
 msgid "Not Stated"
@@ -16061,7 +16061,7 @@ msgstr "Grafens tidsintervall:"
 
 #: lib/reports.php:1865
 msgid "Graph Alignment:"
-msgstr "Graph Alignment:"
+msgstr "Grafjustering:"
 
 #: lib/reports.php:1953
 #, php-format
@@ -16172,7 +16172,7 @@ msgstr "Round Robin arkiv"
 
 #: lib/rrd.php:3217
 msgid "Cur Row"
-msgstr "Cur Row"
+msgstr "Akt rad"
 
 #: lib/rrd.php:3218
 msgid "PDP per Row"
@@ -16823,7 +16823,7 @@ msgstr "Nedladdningen eller valideringen av paketet misslyckades"
 
 #: package_import.php:416
 msgid "Package XML File Damaged."
-msgstr "Package XML File Damaged."
+msgstr "XML-fil för paket skadad."
 
 #: package_import.php:416
 msgid "The XML files appears to be invalid.  Please contact the package author"
@@ -17427,7 +17427,7 @@ msgstr "Den senaste datainsamlingstiden för denna datainsamlare."
 
 #: pollers.php:1031
 msgid "Avg/Max"
-msgstr "Avg/Max"
+msgstr "Genom/Max"
 
 #: pollers.php:1034
 msgid "The Average and Maximum Collector timings for this Data Collector."
@@ -17628,7 +17628,7 @@ msgstr "RRDfiles"
 
 #: rrdcleaner.php:547
 msgid "Rescan"
-msgstr "Rescan"
+msgstr "Sök igen"
 
 #: rrdcleaner.php:552
 msgid "Delete All"
@@ -19035,7 +19035,7 @@ msgstr "PHP-info"
 
 #: utilities.php:150
 msgid "ChangeLog"
-msgstr "ChangeLog"
+msgstr "Ändringslogg"
 
 #: utilities.php:167
 #, php-format
@@ -19358,7 +19358,7 @@ msgstr "Logga [Totalt antal rader: %d - Alla objekt visas]"
 
 #: utilities.php:1602
 msgid "Clear Cacti Log"
-msgstr "Clear Cacti Log"
+msgstr "Töm Cacti-logg"
 
 #: utilities.php:1615
 msgid "Cacti Log Cleared"
@@ -19606,7 +19606,7 @@ msgstr "Ungefärlig i process:"
 
 #: utilities.php:2659
 msgid "Total Boost Records:"
-msgstr "Total Boost Records:"
+msgstr "Totalt antal Boost-poster:"
 
 #: utilities.php:2664
 msgid "Boost Storage Statistics"
@@ -19682,7 +19682,7 @@ msgstr "RRD uppdateringar:"
 
 #: utilities.php:2753
 msgid "MBytes"
-msgstr "MBytes"
+msgstr "MByte"
 
 #: utilities.php:2753
 msgid "Peak Poller Memory:"
@@ -19738,7 +19738,7 @@ msgstr "Nästa starttid:"
 
 #: utilities.php:2853
 msgid "Maximum Records:"
-msgstr "Maximum Records:"
+msgstr "Maximalt antal poster:"
 
 #: utilities.php:2853
 msgid "Records"
