@@ -569,7 +569,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 			unset($query);
 
 			if ($log) {
-				if ($en == 1213 || $en == 1205) {
+				if ($en == 1213 || $en == 1205 || $en == 1020) {
 					$errors++;
 					if ($errors > 30) {
 						cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . clean_up_lines($sql) . "'", true, 'DBCALL', POLLER_VERBOSITY_DEBUG);
