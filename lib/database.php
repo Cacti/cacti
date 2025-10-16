@@ -664,7 +664,7 @@ function db_execute_prepared($sql, $params = [], $log = true, $db_conn = false, 
 			}
 
 			if ($log) {
-				if ($en == 1213 || $en == 1205) {
+				if ($en == 1213 || $en == 1205 || $en == 1020) {
 					$errors++;
 
 					if ($errors > 30) {
