@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-10-16 18:18+0000\n"
+"PO-Revision-Date: 2025-10-18 11:25+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -21,10 +21,10 @@ msgstr "Om Cacti"
 #: about.php:44
 msgid "Cacti is designed to be a complete graphing solution based on the RRDtool Time Series Database (TSDB) and Graphing solution. Its goal is to make the Network Administrator's job easier by taking care of all the important details necessary to create meaningful Graphs."
 msgstr ""
-"Cacti är utformat för att vara en komplett graflösning baserad på RRDtools "
-"Time Series Database (TSDB) och graflösning. Målet är att göra "
-"nätverksadministratörens jobb enklare genom att ta hand om alla viktiga "
-"detaljer som krävs för att skapa meningsfulla grafer."
+"Cacti är utformat för att vara en komplett grafritande lösning baserad på "
+"RRDtools Time Series Database (TSDB) och grafritande lösning. Målet är att "
+"göra nätverksadministratörens jobb enklare genom att ta hand om alla viktiga "
+"detaljer som krävs för att skapa meningsfulla diagram."
 
 #: about.php:46
 #, php-format
@@ -210,7 +210,7 @@ msgstr "Du har för närvarande inga rapporter definierade."
 
 #: aggregate_graphs.php:886
 msgid "Click 'Continue' to Delete the following Aggregate Graph."
-msgstr "Klicka på \"Fortsätt\" för att ta bort följande aggregerade graf."
+msgstr "Klicka på \"Fortsätt\" för att ta bort följande aggregerade diagram."
 
 #: aggregate_graphs.php:887
 msgid "Click 'Continue' to Delete following Aggregate Graphs."
@@ -218,31 +218,31 @@ msgstr "Klicka på \"Fortsätt\" för att ta bort följande aggregerade diagram.
 
 #: aggregate_graphs.php:888
 msgid "Delete Aggregate Graph"
-msgstr "Ta bort aggregerad graf"
+msgstr "Ta bort aggregerat diagram"
 
 #: aggregate_graphs.php:889
 msgid "Delete Aggregate Graphs"
-msgstr "Ta bort aggregerade grafer"
+msgstr "Ta bort aggregerade diagram"
 
 #: aggregate_graphs.php:892
 msgid "Click 'Continue' to Migrate the following Legacy Aggregate to a Templated Aggregate Graph."
 msgstr ""
 "Klicka på \"Fortsätt\" för att migrera följande äldre aggregering till en "
-"mallad aggregeringsgraf."
+"mallat aggregeringsdiagram."
 
 #: aggregate_graphs.php:893
 msgid "Click 'Continue' to Migrate the following Legacy Aggregates to Templated Aggregate Graphs."
 msgstr ""
 "Klicka på \"Fortsätt\" för att migrera följande äldre aggregeringar till "
-"mallade aggregeringsgrafer."
+"mallade aggregeringsdiagram."
 
 #: aggregate_graphs.php:894
 msgid "Migrate to Aggregate Graph"
-msgstr "Migrera till aggregerad graf"
+msgstr "Migrera till aggregerat diagram"
 
 #: aggregate_graphs.php:895
 msgid "Migrate to Aggregate Graphs"
-msgstr "Migrera till aggregerade grafer"
+msgstr "Migrera till aggregerade diagram"
 
 #: aggregate_graphs.php:900 aggregate_graphs.php:2121 graphs.php:1872
 msgid "Aggregate Template"
@@ -851,7 +851,7 @@ msgstr "Mallar"
 #: color_templates.php:860 gprint_presets.php:266 graph_templates.php:1639
 #: vdef.php:727
 msgid "Has Graphs"
-msgstr "Har grafer"
+msgstr "Har diagram"
 
 #: aggregate_templates.php:684 color_templates.php:913
 msgid "Template Title"
@@ -1241,7 +1241,7 @@ msgstr "Inaktiverat"
 #: user_group_admin.php:87 user_group_admin.php:656 user_group_admin.php:672
 #: user_group_admin.php:1976 utilities.php:1026 utilities.php:1808
 msgid "Enabled"
-msgstr "Aktiverat"
+msgstr "Aktiverad"
 
 #: auth_profile.php:604
 msgid "Enabling..."
@@ -8816,7 +8816,7 @@ msgstr "Normal användare"
 
 #: include/global_arrays.php:1391
 msgid "Template Editor"
-msgstr "Redaktör för mallar"
+msgstr "Mallredigerare"
 
 #: include/global_arrays.php:1392
 msgid "General Administration"
@@ -23171,7 +23171,7 @@ msgstr "Meddelanden"
 #: user_group_admin.php:2506 user_group_admin.php:2605
 msgctxt "filter: reset"
 msgid "Clear"
-msgstr "Rensa"
+msgstr "Töm"
 
 #: rrdcheck.php:267
 msgctxt "filter: purge"
