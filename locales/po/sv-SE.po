@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2025-10-16 18:18+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2025-10-18 11:25+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -7,7 +7,7 @@ msgstr "Om Cacti"
 
 #: about.php:42
 msgid "Cacti is designed to be a complete graphing solution based on the RRDtool Time Series Database (TSDB) and Graphing solution. Its goal is to make the Network Administrator's job easier by taking care of all the important details necessary to create meaningful Graphs."
-msgstr "Cacti är utformat för att vara en komplett graflösning baserad på RRDtools Time Series Database (TSDB) och graflösning. Målet är att göra nätverksadministratörens jobb enklare genom att ta hand om alla viktiga detaljer som krävs för att skapa meningsfulla grafer."
+msgstr "Cacti är utformat för att vara en komplett grafritande lösning baserad på RRDtools Time Series Database (TSDB) och grafritande lösning. Målet är att göra nätverksadministratörens jobb enklare genom att ta hand om alla viktiga detaljer som krävs för att skapa meningsfulla diagram."
 
 #: about.php:44
 #, php-format
@@ -764,7 +764,7 @@ msgstr "Mallar"
 #: color_templates.php:562 gprint_presets.php:285 graph_templates.php:726
 #: vdef.php:727
 msgid "Has Graphs"
-msgstr "Har grafer"
+msgstr "Har diagram"
 
 #: aggregate_templates.php:691 color_templates.php:640
 msgid "Template Title"
@@ -1397,7 +1397,7 @@ msgstr "Datafrågeställning"
 #: user_group_admin.php:695 user_group_admin.php:2020 utilities.php:2073
 #: utilities.php:2862
 msgid "Enabled"
-msgstr "Aktiverat"
+msgstr "Aktiverad"
 
 #: automation_graph_rules.php:777 automation_graph_rules.php:915
 #: automation_networks.php:1088 automation_tree_rules.php:822
@@ -6930,7 +6930,7 @@ msgstr "Normal användare"
 
 #: include/global_arrays.php:1259
 msgid "Template Editor"
-msgstr "Redaktör för mallar"
+msgstr "Mallredigerare"
 
 #: include/global_arrays.php:1260
 msgid "General Administration"
@@ -17561,7 +17561,7 @@ msgstr "Start"
 #: user_group_admin.php:2536 user_group_admin.php:2633
 msgctxt "filter: reset"
 msgid "Clear"
-msgstr "Rensa"
+msgstr "Töm"
 
 #: rrdcheck.php:263
 msgctxt "filter: purge"
