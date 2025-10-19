@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-10-18 11:25+0000\n"
+"PO-Revision-Date: 2025-10-20 08:18+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -294,7 +294,7 @@ msgstr "Rapportnamn"
 #: aggregate_graphs.php:932 graph_view.php:988 graphs.php:1892 host.php:544
 #: lib/html_reports.php:1713
 msgid "Timespan"
-msgstr "Tidsperiod"
+msgstr "Tidsintervall"
 
 #: aggregate_graphs.php:938 graph_view.php:996 graphs.php:1898 host.php:550
 msgid "Align"
@@ -1223,7 +1223,7 @@ msgstr "Verifiera den 2FA App-token som angetts ovan"
 #: user_group_admin.php:672 utilities.php:1027 utilities.php:1501
 #: utilities.php:1808
 msgid "Disabled"
-msgstr "Inaktiverat"
+msgstr "Inaktiverad"
 
 #: auth_profile.php:602 automation_graph_rules.php:864
 #: automation_graph_rules.php:1014 automation_graph_rules.php:1033
@@ -1471,7 +1471,7 @@ msgstr "Status"
 
 #: automation_devices.php:358
 msgid "Last Check"
-msgstr "Sista kontrollen"
+msgstr "Senaste kontroll"
 
 #: automation_devices.php:385 automation_devices.php:768
 msgid "Not Detected"
@@ -1780,7 +1780,7 @@ msgstr ""
 #: include/global_form.php:2064 include/global_form.php:2169
 #: include/global_form.php:2364
 msgid "Graph Type"
-msgstr "Typ av diagram"
+msgstr "Diagramtyp"
 
 #: automation_graph_rules.php:1039
 msgid "No Graph Rules Found"
@@ -3308,7 +3308,7 @@ msgstr "Matchning av systemets ObjectId"
 #: automation_templates.php:1469 data_queries.php:768 data_queries.php:874
 #: links.php:392 tree.php:2252
 msgid "Order"
-msgstr "Order"
+msgstr "Ordning"
 
 #: automation_templates.php:1481
 msgid "Unknown Template"
@@ -4042,7 +4042,7 @@ msgstr "Avgör om datakällan finns i Poller Cache."
 
 #: data_debug.php:492 data_sources.php:1673 data_templates.php:1330
 msgid "Active"
-msgstr "Aktivt"
+msgstr "Aktiv"
 
 #: data_debug.php:495
 msgid "Determines if the Data Source is Enabled."
@@ -5241,7 +5241,7 @@ msgstr "Datakällans artikel %s"
 #: data_sources.php:1108 data_templates.php:807 package_import.php:1137
 #: package_import.php:1215 templates_import.php:291
 msgid "New"
-msgstr "Ny"
+msgstr "Nytt"
 
 #: data_sources.php:1167
 msgid "Data Source Debug"
@@ -5719,7 +5719,7 @@ msgstr "Grafer för snabb synkronisering"
 
 #: graph_templates.php:339 graph_templates.php:365 graphs.php:568
 msgid "Cur:"
-msgstr "Cur:"
+msgstr "Akt:"
 
 #: graph_templates.php:346 graph_templates.php:372 graphs.php:575
 msgid "Avg:"
@@ -6015,7 +6015,7 @@ msgstr "Lägg till i en rapport"
 
 #: graph_view.php:730
 msgid "Report"
-msgstr "Rapportera"
+msgstr "Rapport"
 
 #: graph_view.php:754 lib/html.php:296 lib/html.php:301 lib/html_graph.php:282
 #: lib/html_tree.php:1281
@@ -7321,7 +7321,7 @@ msgstr "Versionen av denna Device Template."
 #: package_import.php:1037 package_import.php:1645 package_keys.php:266
 #: plugins.php:1079 plugins.php:1156 plugins.php:1233
 msgid "Author"
-msgstr "Författare"
+msgstr "Upphovsperson"
 
 #: host_templates.php:956
 msgid "The author of this Device Template."
@@ -11794,7 +11794,7 @@ msgstr "Alternativ Poller-väg"
 
 #: include/global_settings.php:257
 msgid "Spine Binary File Location"
-msgstr "Spine Binary File Location"
+msgstr "Plats för binärfilen för Spine"
 
 #: include/global_settings.php:258
 msgid "The path to Spine binary."
@@ -17633,7 +17633,7 @@ msgstr "Från"
 
 #: lib/html_graph.php:395 lib/html_tree.php:1388
 msgid "Start Date Selector"
-msgstr "Väljare för startdatum"
+msgstr "Välj startdatum"
 
 #: lib/html_graph.php:399 lib/html_reports.php:2066 lib/html_reports.php:2077
 #: lib/html_tree.php:1392
@@ -17642,19 +17642,19 @@ msgstr "Till"
 
 #: lib/html_graph.php:404 lib/html_tree.php:1397
 msgid "End Date Selector"
-msgstr "Väljare för slutdatum"
+msgstr "Välj slutdatum"
 
 #: lib/html_graph.php:409 lib/html_tree.php:1402
 msgid "Shift Time Backward"
-msgstr "Flytta tiden bakåt"
+msgstr "Förskjut tiden bakåt"
 
 #: lib/html_graph.php:410 lib/html_tree.php:1403
 msgid "Define Shifting Interval"
-msgstr "Definiera växlingsintervall"
+msgstr "Definiera förskjutningsintervall"
 
 #: lib/html_graph.php:422 lib/html_tree.php:1415
 msgid "Shift Time Forward"
-msgstr "Skifta tiden framåt"
+msgstr "Förskjut tiden framåt"
 
 #: lib/html_graph.php:427 lib/html_tree.php:1420
 msgid "Refresh selected time span"
@@ -17737,7 +17737,7 @@ msgstr ""
 
 #: lib/html_reports.php:64
 msgid "Format File to Use"
-msgstr "Format Fil som ska användas"
+msgstr "Formatfil som ska användas"
 
 #: lib/html_reports.php:67
 msgid "Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the 'formats' directory."
@@ -18259,7 +18259,7 @@ msgstr "Nästa körning"
 
 #: lib/html_reports.php:2072
 msgid "Report Title"
-msgstr "Rapportens titel"
+msgstr "Rapporttitel"
 
 #: lib/html_reports.php:2104
 msgid "Report Disabled - No Owner"
@@ -20937,7 +20937,7 @@ msgstr "Länkar"
 
 #: links.php:317
 msgid "Apply Filter"
-msgstr "Använd filter"
+msgstr "Tillämpa filter"
 
 #: links.php:318
 msgid "Reset filters"
@@ -21744,7 +21744,7 @@ msgstr "Repository-baserad import av paket"
 
 #: package_import.php:1681
 msgid "Not Set"
-msgstr "Ej inställt"
+msgstr "Inte inställd"
 
 #: package_import.php:1705
 msgid "No Packages Found"
@@ -23206,7 +23206,7 @@ msgstr "DS ID"
 
 #: rrdcleaner.php:385
 msgid "Template ID"
-msgstr "Mall ID"
+msgstr "Mall-ID"
 
 #: rrdcleaner.php:387
 msgid "Last Modified"
@@ -23384,7 +23384,7 @@ msgstr "Ange stad eller ort"
 
 #: sites.php:92 sites.php:662
 msgid "State"
-msgstr "Län"
+msgstr "Tillstånd"
 
 #: sites.php:93
 msgid "The state for the Site."
