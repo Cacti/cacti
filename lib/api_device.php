@@ -1060,10 +1060,10 @@ function api_device_save(int $id, int $device_template_id, string $description, 
 	$save['max_oids']             = form_input_validate($max_oids, 'max_oids', '^[0-9]+$', false, 3);
 	$save['bulk_walk_size']       = form_input_validate($bulk_walk_size, 'bulk_walk_size', '^[-0-9]+$', false, 3);
 	$save['device_threads']       = form_input_validate($device_threads, 'device_threads', '^[0-9]+$', true, 3);
+
 	$device_id = 0;
 
 	if (!is_error_message()) {
-
 		$save = api_plugin_hook_function('api_device_save', $save);
 
 		$device_id = sql_save($save, 'host');
