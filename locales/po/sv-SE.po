@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2025-10-20 08:18+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2025-10-20 20:28+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -2075,7 +2075,7 @@ msgstr "Trådar"
 
 #: automation_networks.php:1077
 msgid "Last Runtime"
-msgstr "Sista körtiden"
+msgstr "Senaste körtid"
 
 #: automation_networks.php:1078
 msgid "Next Start"
@@ -2083,7 +2083,7 @@ msgstr "Nästa Start"
 
 #: automation_networks.php:1079
 msgid "Last Started"
-msgstr "Senast påbörjad"
+msgstr "Senast startad"
 
 #: automation_networks.php:1108 pollers.php:45 utilities.php:2550
 msgid "Running"
@@ -2091,7 +2091,7 @@ msgstr "Kör"
 
 #: automation_networks.php:1132 pollers.php:46 utilities.php:2548
 msgid "Idle"
-msgstr "Sysslolös"
+msgstr "Overksam"
 
 #: automation_networks.php:1148 include/global_arrays.php:896
 #: include/global_arrays.php:1214 include/global_settings.php:2537
@@ -4586,7 +4586,7 @@ msgstr "Markera den här kryssrutan om du vill tillåta att användaren åsidos�
 #: include/global_arrays.php:2240 lib/html_tree.php:556 user_admin.php:1284
 #: user_group_admin.php:1165
 msgid "Graph Templates"
-msgstr "Grafmallar"
+msgstr "Diagrammallar"
 
 #: graph_templates.php:834
 msgid "The name of this Graph Template."
@@ -12049,7 +12049,7 @@ msgstr "Miniatyr-höjd"
 
 #: include/global_settings.php:2733
 msgid "The height of Thumbnail graphs in pixels."
-msgstr "Höjden på miniatyrgraferna i pixlar."
+msgstr "Höjden på miniatyrdiagrammen i bildpunkter."
 
 #: include/global_settings.php:2740
 msgid "Thumbnail Width"
@@ -12069,7 +12069,7 @@ msgstr "Standardgrafträdet som ska användas när grafer visas i trädläge."
 
 #: include/global_settings.php:2757
 msgid "Graphs Per Page"
-msgstr "Grafer per sida"
+msgstr "Diagram per sida"
 
 #: include/global_settings.php:2764
 msgid "Expand Devices"
@@ -13361,7 +13361,7 @@ msgstr "Blad"
 #: lib/functions.php:3857 lib/html_tree.php:663 lib/html_tree.php:699
 #: lib/html_tree.php:928 lib/html_tree.php:936 lib/html_tree.php:1510
 msgid "Non Query Based"
-msgstr "Icke frågebaserad"
+msgstr "Icke-frågebaserad"
 
 #: lib/functions.php:3893
 #, php-format
