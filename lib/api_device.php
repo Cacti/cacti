@@ -959,7 +959,7 @@ function api_device_replicate_out(int $device_id, int $poller_id = 1): bool {
  * @return int The ID of the saved device.
  */
 function api_device_save(int $id, int $device_template_id, string $description, string $hostname, string $snmp_community, int $snmp_version,
-string $snmp_username, string $snmp_password, int $snmp_port, int $snmp_timeout, string $disabled,
+	string $snmp_username, string $snmp_password, int $snmp_port, int $snmp_timeout, string $disabled,
 	int $availability_method, int $ping_method, int $ping_port, int $ping_timeout, int $ping_retries,
 	string $notes, string $snmp_auth_protocol, string $snmp_priv_passphrase, string $snmp_priv_protocol, string $snmp_context, string $snmp_engine_id,
 	int $max_oids = 5, int $device_threads = 1, int $poller_id = 1, int $site_id = 1, string $external_id = '', string $location = '', int $bulk_walk_size = -1,
