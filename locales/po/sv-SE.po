@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2025-10-18 11:25+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2025-10-20 08:18+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -274,7 +274,7 @@ msgstr "Rapportnamn"
 #: aggregate_graphs.php:476 graph_view.php:834 graphs.php:1278 host.php:536
 #: lib/html_reports.php:1613
 msgid "Timespan"
-msgstr "Tidsperiod"
+msgstr "Tidsintervall"
 
 #: aggregate_graphs.php:480 graph_view.php:841 graphs.php:1282 host.php:540
 msgid "Align"
@@ -1212,7 +1212,7 @@ msgstr "Status"
 
 #: automation_devices.php:287
 msgid "Last Check"
-msgstr "Sista kontrollen"
+msgstr "Senaste kontroll"
 
 #: automation_devices.php:306 automation_devices.php:640
 msgid "Not Detected"
@@ -1332,7 +1332,7 @@ msgstr "Är du säker?"
 #: automation_graph_rules.php:420
 #, php-format
 msgid "Are you sure you want to delete the Rule '%s'?"
-msgstr "Är du säker på att du vill ta bort regeln &#39; %s&#39;?"
+msgstr "Är du säker på att du vill ta bort regeln '%s'?"
 
 #: automation_graph_rules.php:535
 #, php-format
@@ -1415,7 +1415,7 @@ msgstr "Aktiverad"
 #: user_admin.php:1012 user_domains.php:412 user_group_admin.php:695
 #: utilities.php:2074 utilities.php:2559 utilities.php:2862
 msgid "Disabled"
-msgstr "Inaktiverat"
+msgstr "Inaktiverad"
 
 #: automation_graph_rules.php:895 automation_tree_rules.php:935
 msgid "Rule Name"
@@ -1433,7 +1433,7 @@ msgstr "Det interna databas-ID:t för den här regeln.  Användbart vid felsökn
 #: include/global_form.php:1933 include/global_form.php:2038
 #: include/global_form.php:2233
 msgid "Graph Type"
-msgstr "Typ av diagram"
+msgstr "Diagramtyp"
 
 #: automation_graph_rules.php:921
 msgid "No Graph Rules Found"
@@ -2425,7 +2425,7 @@ msgstr "Matchning av systemets ObjectId"
 #: automation_templates.php:499 data_queries.php:778 data_queries.php:883
 #: links.php:384 tree.php:2238
 msgid "Order"
-msgstr "Order"
+msgstr "Ordning"
 
 #: automation_templates.php:509
 msgid "Unknown Template"
@@ -2450,7 +2450,7 @@ msgstr "Skapade träd"
 #: automation_tree_rules.php:486
 #, php-format
 msgid "Are you sure you want to DELETE the Rule '%s'?"
-msgstr "Är du säker på att du vill ta bort regeln &#39; %s&#39;?"
+msgstr "Är du säker på att du vill TA BORT regeln '%s'?"
 
 #: automation_tree_rules.php:544
 msgid "Eligible Objects"
@@ -2856,14 +2856,14 @@ msgstr[1] "Duplicera färgmallar"
 #: color_templates.php:259
 msgid "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Template."
 msgid_plural "Click 'Continue' to Synchronize all Aggregate Graphs with the selected Color Templates."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att skapa en aggregerad graf från vald graf (er)."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att skapa en aggregerad graf från vald graf (er)."
+msgstr[0] "Klicka på 'Fortsätt' för att synkronisera alla aggregerade grafer med vald färgmall."
+msgstr[1] "Klicka på 'Fortsätt' för att synkronisera alla aggregerade grafer med valda färgmallar."
 
 #: color_templates.php:264
 msgid "Synchronize Color Template"
 msgid_plural "Synchronize Color Templates"
-msgstr[0] "Synkronisera grafer till grafmallar"
-msgstr[1] "Synkronisera grafer till grafmallar"
+msgstr[0] "Synkronisera diagrammall"
+msgstr[1] "Synkronisera diagrammallar"
 
 #: color_templates.php:301
 msgid "Color Template Items [new]"
@@ -3023,7 +3023,7 @@ msgstr "Avgör om datakällan finns i Poller Cache."
 #: data_debug.php:483 data_sources.php:1656 data_templates.php:1259
 #: plugins.php:39 plugins.php:471
 msgid "Active"
-msgstr "Aktivt"
+msgstr "Aktiv"
 
 #: data_debug.php:486
 msgid "Determines if the Data Source is Enabled."
@@ -3275,8 +3275,8 @@ msgstr "Felsökning"
 #: data_input.php:246
 msgid "Click 'Continue' to delete the following Data Input Method"
 msgid_plural "Click 'Continue' to delete the following Data Input Method"
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att radera följande datainmatningsmetod"
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att radera följande datainmatningsmetod"
+msgstr[0] "Klicka på 'Fortsätt' för att radera följande datainmatningsmetod"
+msgstr[1] "Klicka på 'Fortsätt' för att radera följande datainmatningsmetoder"
 
 #: data_input.php:253
 msgid "Click 'Continue' to duplicate the following Data Input Method(s). You can optionally change the title format for the new Data Input Method(s)."
@@ -3465,7 +3465,7 @@ msgstr[1] "Klicka på &quot;Fortsätt&quot; för att radera följande datafrågo
 msgid "Delete Data Query"
 msgid_plural "Delete Data Queries"
 msgstr[0] "Ta bort datafråga"
-msgstr[1] "Ta bort datafråga"
+msgstr[1] "Ta bort datafrågor"
 
 #: data_queries.php:416
 msgid "Click 'Continue' to duplicate the following Data Query."
@@ -3480,8 +3480,8 @@ msgstr "Namnformat:"
 #: data_queries.php:426
 msgid "Duplicate Data Query"
 msgid_plural "Duplicate Data Queries"
-msgstr[0] "Ta bort datafråga"
-msgstr[1] "Ta bort datafråga"
+msgstr[0] "Duplicera datafråga"
+msgstr[1] "Duplicera datafrågor"
 
 #: data_queries.php:584
 msgid "Click 'Continue' to delete the following Data Query Graph Association."
@@ -4100,7 +4100,7 @@ msgstr "Datakällans artikel %s"
 #: data_sources.php:1106 data_templates.php:772 package_import.php:563
 #: package_import.php:622 templates_import.php:292
 msgid "New"
-msgstr "Ny"
+msgstr "Nytt"
 
 #: data_sources.php:1165
 msgid "Data Source Debug"
@@ -4433,7 +4433,7 @@ msgstr "Utsikt över verktyg"
 
 #: graph.php:394
 msgid "Graph Utility View"
-msgstr "Graph Utility View"
+msgstr "Grafverktygsvy"
 
 #: graph.php:407
 msgid "Graph Source/Properties"
@@ -4445,7 +4445,7 @@ msgstr "Grafdata"
 
 #: graph.php:598
 msgid "RRDtool Graph Syntax"
-msgstr "RRDtool Graph Syntax"
+msgstr "RRDtool grafsyntax"
 
 #: graph_image.php:181 graph_json.php:225 graph_realtime.php:237
 msgid "The Cacti Poller has not run yet."
@@ -4637,7 +4637,7 @@ msgstr "Artikel #%s"
 #: graph_templates_items.php:135 graph_templates_items.php:161
 #: graphs_items.php:141
 msgid "Cur:"
-msgstr "Cur:"
+msgstr "Akt:"
 
 #: graph_templates_items.php:142 graph_templates_items.php:168
 #: graphs_items.php:148
@@ -4708,7 +4708,7 @@ msgstr "Lägg till i en rapport"
 
 #: graph_view.php:633
 msgid "Report"
-msgstr "Rapportera"
+msgstr "Rapport"
 
 #: graph_view.php:646 lib/html.php:211 lib/html.php:216 lib/html_graph.php:157
 #: lib/html_tree.php:992
@@ -8080,7 +8080,7 @@ msgstr "Identifiera automatiskt/Ställ in vid första omindexering"
 #: include/global_form.php:179
 #, php-format
 msgid "%d Repitition"
-msgstr "%d Repitition"
+msgstr "%d upprepning"
 
 #: include/global_form.php:180 include/global_form.php:181
 #: include/global_form.php:182 include/global_form.php:183
@@ -8092,7 +8092,7 @@ msgstr "%d Repitition"
 #: include/global_form.php:194
 #, php-format
 msgid "%d Repetitions"
-msgstr "%d Upprepningar"
+msgstr "%d upprepningar"
 
 #: include/global_form.php:202
 msgid "SNMP Retries"
@@ -9542,7 +9542,7 @@ msgstr "Alternativ Poller-väg"
 
 #: include/global_settings.php:217
 msgid "Spine Binary File Location"
-msgstr "Spine Binary File Location"
+msgstr "Plats för binärfilen för Spine"
 
 #: include/global_settings.php:218
 msgid "The path to Spine binary."
@@ -11062,7 +11062,7 @@ msgstr "Vänligen ange SMTP-timeout på några sekunder."
 
 #: include/global_settings.php:1722
 msgid "LDAP Debug Mode"
-msgstr "LDAP Debug Mode"
+msgstr "LDAP-felsökningsläge"
 
 #: include/global_settings.php:1723
 msgid "If Checked Cacti will log extra LDAP information to the Cacti log during Binding and Searching activities."
@@ -14049,7 +14049,7 @@ msgstr "Från"
 
 #: lib/html_graph.php:276 lib/html_tree.php:1104
 msgid "Start Date Selector"
-msgstr "Väljare för startdatum"
+msgstr "Välj startdatum"
 
 #: lib/html_graph.php:280 lib/html_reports.php:1937 lib/html_reports.php:1948
 #: lib/html_tree.php:1108
@@ -14058,19 +14058,19 @@ msgstr "Till"
 
 #: lib/html_graph.php:285 lib/html_tree.php:1113
 msgid "End Date Selector"
-msgstr "Väljare för slutdatum"
+msgstr "Välj slutdatum"
 
 #: lib/html_graph.php:290 lib/html_tree.php:1118
 msgid "Shift Time Backward"
-msgstr "Flytta tiden bakåt"
+msgstr "Förskjut tiden bakåt"
 
 #: lib/html_graph.php:291 lib/html_tree.php:1119
 msgid "Define Shifting Interval"
-msgstr "Definiera växlingsintervall"
+msgstr "Definiera förskjutningsintervall"
 
 #: lib/html_graph.php:302 lib/html_tree.php:1130
 msgid "Shift Time Forward"
-msgstr "Skifta tiden framåt"
+msgstr "Förskjut tiden framåt"
 
 #: lib/html_graph.php:307 lib/html_tree.php:1135
 msgid "Refresh selected time span"
@@ -14152,7 +14152,7 @@ msgstr "Markera den här rutan om du vill använda anpassad html och CSS för ra
 
 #: lib/html_reports.php:64
 msgid "Format File to Use"
-msgstr "Format Fil som ska användas"
+msgstr "Formatfil som ska användas"
 
 #: lib/html_reports.php:67
 msgid "Choose the custom html wrapper and CSS file to use.  This file contains both html and CSS to wrap around your report.  If it contains more than simply CSS, you need to place a special <REPORT> tag inside of the file.  This format tag will be replaced by the report content.  These files are located in the 'formats' directory."
@@ -14564,7 +14564,7 @@ msgstr "Nästa körning"
 
 #: lib/html_reports.php:1943
 msgid "Report Title"
-msgstr "Rapportens titel"
+msgstr "Rapporttitel"
 
 #: lib/html_reports.php:1974
 msgid "Report Disabled - No Owner"
@@ -14930,7 +14930,7 @@ msgstr "Tack för att du tog dig tid att ladda ner och installera Cacti, den kom
 #: lib/installer.php:1754
 #, php-format
 msgid "Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href=\"%s\">Unix</a> and <a href=\"%s\">Win32</a>-based operating systems."
-msgstr "Se till att du har läst och följt de nödvändiga stegen som behövs för att installera Cacti innan du fortsätter. Installationsinformation finns för <a href=\"%1$s\">Unix</a> och <a href=\"%2$s\">Win32-</a> baserade operativsystem."
+msgstr "Se till att du har läst och följt de nödvändiga stegen som behövs för att installera Cacti innan du fortsätter. Installationsinformation finns för <a href=\"%s\">Unix</a> och <a href=\"%s\">Win32-</a>-baserade operativsystem."
 
 #: lib/installer.php:1757
 #, php-format
@@ -15430,7 +15430,7 @@ msgstr "Välj de enhetsmallar som du vill använda efter installationen.  Om du 
 
 #: lib/installer.php:2571 package_import.php:457 plugins.php:594
 msgid "Author"
-msgstr "Författare"
+msgstr "Upphovsperson"
 
 #: lib/installer.php:2571 package_import.php:460
 msgid "Homepage"
@@ -15973,7 +15973,7 @@ msgstr "%s Version %s eller högre krävs för %s. "
 #: lib/plugins.php:674
 #, php-format
 msgid "%s is required for %s, and it is not installed. "
-msgstr "%s krävs för %s, och det är inte installerat."
+msgstr "%s krävs för %s, och det är inte installerat. "
 
 #: lib/plugins.php:697
 msgid "Plugin cannot be installed."
@@ -16500,7 +16500,7 @@ msgstr "Länkar"
 
 #: links.php:330
 msgid "Apply Filter"
-msgstr "Använd filter"
+msgstr "Tillämpa filter"
 
 #: links.php:331
 msgid "Reset filters"
@@ -17596,7 +17596,7 @@ msgstr "DS ID"
 
 #: rrdcleaner.php:382
 msgid "Template ID"
-msgstr "Mall ID"
+msgstr "Mall-ID"
 
 #: rrdcleaner.php:384
 msgid "Last Modified"
@@ -17757,7 +17757,7 @@ msgstr "Ange stad eller ort"
 
 #: sites.php:82 sites.php:600
 msgid "State"
-msgstr "Län"
+msgstr "Tillstånd"
 
 #: sites.php:83
 msgid "The state for the Site."
@@ -17878,8 +17878,8 @@ msgstr[1] "Radera webbplatser"
 #: sites.php:386
 msgid "Click 'Continue' to Duplicate the following Site."
 msgid_plural "Click 'Continue' to Duplicate all following Sites."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att radera följande träd."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att radera följande träd."
+msgstr[0] "Klicka på 'Fortsätt' för att duplicera följande plats."
+msgstr[1] "Klicka på 'Fortsätt' för att duplicera alla följande platser."
 
 #: sites.php:388
 msgid "Site Name:"
@@ -18096,8 +18096,8 @@ msgstr "numeriska"
 #: tree.php:682
 msgid "Click 'Continue' to delete the following Tree."
 msgid_plural "Click 'Continue' to delete following Trees."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att radera följande träd."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att radera följande träd."
+msgstr[0] "Klicka på 'Fortsätt' för att radera följande träd."
+msgstr[1] "Klicka på 'Fortsätt' för att radera följande träd."
 
 #: tree.php:687
 msgid "Delete Tree"
@@ -18108,8 +18108,8 @@ msgstr[1] "Ta bort träd"
 #: tree.php:691
 msgid "Click 'Continue' to publish the following Tree."
 msgid_plural "Click 'Continue' to publish following Trees."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att publicera följande träd."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att publicera följande träd."
+msgstr[0] "Klicka på 'Fortsätt' för att publicera följande träd."
+msgstr[1] "Klicka på 'Fortsätt' för att publicera följande träd."
 
 #: tree.php:696
 msgid "Publish Tree"
@@ -18120,8 +18120,8 @@ msgstr[1] "Publicera träd"
 #: tree.php:700
 msgid "Click 'Continue' to un-publish the following Tree."
 msgid_plural "Click 'Continue' to un-publish following Trees."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att publicera följande träd."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att publicera följande träd."
+msgstr[0] "Klicka på 'Fortsätt' för att avpublicera följande träd."
+msgstr[1] "Klicka på 'Fortsätt' för att avpublicera följande träd."
 
 #: tree.php:705
 msgid "Un-publish Tree"
@@ -18132,8 +18132,8 @@ msgstr[1] "Un-publicera Trees"
 #: tree.php:709
 msgid "Click 'Continue' to un-lock the following Tree."
 msgid_plural "Click 'Continue' to un-lock following Trees."
-msgstr[0] "Klicka på &quot;Fortsätt&quot; för att publicera följande träd."
-msgstr[1] "Klicka på &quot;Fortsätt&quot; för att publicera följande träd."
+msgstr[0] "Klicka på 'Fortsätt' för att låsa upp följande träd."
+msgstr[1] "Klicka på 'Fortsätt' för att låsa upp följande träd."
 
 #: tree.php:714
 msgid "Un-lock Tree"
@@ -18169,7 +18169,7 @@ msgstr "Avsluta redigering av träd"
 #: tree.php:803
 #, php-format
 msgid "This tree has been locked for Editing on %s by %s."
-msgstr "Detta träd har blivit låst för redigering på%1$s av%2$s."
+msgstr "Detta träd har blivit låst för redigering den %s av %s."
 
 #: tree.php:808
 msgid "To edit the tree, you must first unlock it and then lock it as yourself"
