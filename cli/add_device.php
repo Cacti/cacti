@@ -152,6 +152,10 @@ if (cacti_sizeof($parms)) {
 				$external_id  = $value;
 
 				break;
+			case '--security-level':
+				$snmp_security_level = strtolower(trim($value));
+
+				break;
 			case '--username':
 				$snmp_username = trim($value);
 
@@ -386,6 +390,41 @@ if (cacti_sizeof($parms)) {
 		exit(1);
 	}
 
+	if (isset($snmp_security_level)) {
+		switch ($snmp_security_level) {
+
+			case 'noauthnopriv':
+				if (empty($snmp_username)) {
+					print "ERROR: For SNMP security level noAuthNoPriv, you must enter a username\n";
+					exit(1);
+				} else {
+					$snmp_auth_protocol = '[None]';
+					$snmp_priv_protocol = '[None]';
+				}
+				break;
+			case 'authnopriv':
+				if (empty($snmp_username) || empty($snmp_auth_protocol) || empty($snmp_password)) {
+					print "ERROR: For SNMP security level authNoPriv, you must enter username, password and SNMP auth protocol\n";
+					exit(1);
+				} else {
+					$snmp_priv_protocol = '[None]';
+				}
+				break;
+			case 'authpriv':
+				if (empty($snmp_username) || empty($snmp_auth_protocol) || empty($snmp_password) || empty($snmp_priv_passphrase) || empty($snmp_priv_protocol)) {
+					print "ERROR: For SNMP security level authNoPriv, you must enter username, password, SNMP auth protocol, priv protocol and priv passphrase\n";
+					exit(1);
+				}
+
+				break;
+			default:
+				print "ERROR: SNMP security level incorrect. Correct values are noAuthNoPriv, authNoPriv or authPriv.\n";
+				exit(1);
+
+				break;
+		}
+	}
+
 	/* process ip */
 	if (isset($addresses[$ip])) {
 		$id    = $addresses[$ip];
@@ -410,7 +449,7 @@ if (cacti_sizeof($parms)) {
 			// assuming a proxy
 		} elseif ($phost['snmp_version'] == '3' && $snmp_ver == '3') {
 			$changed = 0;
-			$changed += ($phost['snmp_username'] != $username ? 1:0);
+			$changed += ($phost['snmp_username'] != $snmp_username ? 1:0);
 			$changed += ($phost['snmp_context'] != $snmp_context ? 1:0);
 			$changed += ($phost['snmp_engine_id'] != $snmp_engine_id ? 1:0);
 			$changed += ($phost['snmp_auth_protocol'] != $snmp_auth_protocol ? 1:0);
@@ -476,8 +515,8 @@ if (cacti_sizeof($parms)) {
 	if ($snmp_ver < 3) {
 		/* snmp community can be blank */
 	} else {
-		if ($snmp_username == '' || $snmp_password == '') {
-			print "ERROR: When using snmpv3 you must supply an username and password\n";
+		if ($snmp_username == '') {
+			print "ERROR: When using snmpv3 you must supply an username\n";
 
 			exit(1);
 		}
@@ -496,7 +535,11 @@ if (cacti_sizeof($parms)) {
 		$disable = 'on';
 	}
 
-	print "Adding $description ($ip) as \"" . $host_templates[$template_id] . "\" using SNMP v$snmp_ver with community \"$community\"\n";
+	if ($snmp_ver < 3) {
+		print "Adding $description ($ip) as \"" . $host_templates[$template_id] . "\" using SNMP v$snmp_ver with community \"$community\"\n";
+	} else {
+		print "Adding $description ($ip) as \"" . $host_templates[$template_id] . "\" using SNMP v$snmp_ver with username \"$snmp_username\"\n";
+	}
 
 	$host_id = api_device_save('0', $template_id, $description, $ip,
 		$community, $snmp_ver, $snmp_username, $snmp_password,
@@ -537,38 +580,39 @@ function display_help() {
 	print "    [--username= --password=] [--authproto=] [--privpass= --privproto=] [--context=] [--engineid=]\n";
 	print "    [--quiet]\n\n";
 	print "Required:\n";
-	print "    --description  the name that will be displayed by Cacti in the graphs\n";
-	print "    --ip           self explanatory (can also be a FQDN)\n\n";
+	print "    --description    the name that will be displayed by Cacti in the graphs\n";
+	print "    --ip             self explanatory (can also be a FQDN)\n\n";
 	print "Optional:\n";
-	print "    --proxy        if specified, allows adding a second host with same ip address\n";
-	print "    --template     0, is a number (read below to get a list of templates)\n";
-	print "    --location     '', The physical location of the Device.\n";
-	print "    --notes        '', General information about this host.  Must be enclosed using double quotes.\n";
-	print "    --external-id  '', An external ID to align Cacti devices with devices from other systems.\n";
-	print "    --disable      0, 1 to add this host but to disable checks and 0 to enable it\n";
-	print "    --poller       0, numeric poller id that will perform data collection for the device.\n";
-	print "    --site         0, numeric site id that will be associated with the device.\n";
-	print "    --threads      1, numeric number of threads to poll device with.\n";
-	print "    --avail        pingsnmp, [ping][none, snmp, pingsnmp, pingorsnmp]\n";
-	print "    --ping_method  tcp, icmp|tcp|udp\n";
-	print "    --ping_port    '', 1-65534\n";
-	print "    --ping_retries 2, the number of time to attempt to communicate with a host\n";
-	print "    --ping_timeout N, the ping timeout in milliseconds.  Defaults to database setting.\n";
-	print "    --version      1, 0|1|2|3, snmp version.  0 for no snmp\n";
-	print "    --community    '', snmp community string for snmpv1 and snmpv2.  Leave blank for no community\n";
-	print "    --port         161\n";
-	print "    --timeout      500, The default snmp timeout\n";
-	print "    --retries      3, The number of snmp retries\n";
-	print "    --options      0, The SNMP Recovery Template Options set to use\n";
-	print "    --username     '', snmp username for snmpv3\n";
-	print "    --password     '', snmp password for snmpv3\n";
-	print "    --authproto    '', snmp authentication protocol for snmpv3\n";
-	print "    --privpass     '', snmp privacy passphrase for snmpv3\n";
-	print "    --privproto    '', snmp privacy protocol for snmpv3\n";
-	print "    --context      '', snmp context for snmpv3\n";
-	print "    --engineid     '', snmp engineid for snmpv3\n";
-	print "    --max_oids     10, 1-60, the number of OIDs that can be obtained in a single SNMP Get request\n\n";
-	print "    --bulk_walk    -1, 1-60, the bulk walk chunk size that will be used for bulk walks.  Use -1 for auto-tune.\n\n";
+	print "    --proxy          if specified, allows adding a second host with same ip address\n";
+	print "    --template       0, is a number (read below to get a list of templates)\n";
+	print "    --location       '', The physical location of the Device.\n";
+	print "    --notes          '', General information about this host.  Must be enclosed using double quotes.\n";
+	print "    --external-id    '', An external ID to align Cacti devices with devices from other systems.\n";
+	print "    --disable        0, 1 to add this host but to disable checks and 0 to enable it\n";
+	print "    --poller         0, numeric poller id that will perform data collection for the device.\n";
+	print "    --site           0, numeric site id that will be associated with the device.\n";
+	print "    --threads        1, numeric number of threads to poll device with.\n";
+	print "    --avail          pingsnmp, [ping][none, snmp, pingsnmp, pingorsnmp]\n";
+	print "    --ping_method    tcp, icmp|tcp|udp\n";
+	print "    --ping_port      '', 1-65534\n";
+	print "    --ping_retries   2, the number of time to attempt to communicate with a host\n";
+	print "    --ping_timeout   N, the ping timeout in milliseconds.  Defaults to database setting.\n";
+	print "    --version        1, 0|1|2|3, snmp version. 0 for no snmp\n";
+	print "    --community      '', snmp community string for snmpv1 and snmpv2.  Leave blank for no community\n";
+	print "    --port           161\n";
+	print "    --timeout        500, The default snmp timeout\n";
+	print "    --retries        3, The number of snmp retries\n";
+	print "    --options        0, The SNMP Recovery Template Options set to use\n";
+	print "    --security-level '', noAuthNoPriv|authNoPriv|authPriv, security level for snmpv3\n";
+	print "    --username       '', snmp username for snmpv3\n";
+	print "    --password       '', snmp password for snmpv3\n";
+	print "    --authproto      '', [None]|MD5|SHA|SHA224|SHA256|SHA392|SHA512$, snmp authentication protocol for snmpv3\n";
+	print "    --privpass       '', snmp privacy passphrase for snmpv3\n";
+	print "    --privproto      '', [None]|DES|AES|AES128|AES192|AES192C|AES256|AES256C$, snmp privacy protocol for snmpv3\n";
+	print "    --context        '', snmp context for snmpv3\n";
+	print "    --engineid       '', snmp engineid for snmpv3\n";
+	print "    --max_oids       10, 1-60, the number of OIDs that can be obtained in a single SNMP Get request\n\n";
+	print "    --bulk_walk      -1, 1-60, the bulk walk chunk size that will be used for bulk walks.  Use -1 for auto-tune.\n\n";
 	print "List Options:\n";
 	print "    --list-host-templates\n";
 	print "    --list-communities\n";
