@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2025-10-20 20:28+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2025-10-22 13:18+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -2374,7 +2374,7 @@ msgstr "Välj den tillgänglighetsmetod som ska användas för upptäckta enhete
 
 #: automation_templates.php:289 automation_templates.php:493
 msgid "System Description Match"
-msgstr "Systembeskrivning Match"
+msgstr "Match för systembeskrivning"
 
 #: automation_templates.php:290
 msgid "This is a unique string that will be matched to a devices sysDescr string to pair it to this Automation Template.  Any Perl regular expression can be used in addition to any SQL Where expression."
@@ -2689,7 +2689,7 @@ msgstr[1] "Radera färger"
 
 #: color.php:352
 msgid "Cacti has imported the following items:"
-msgstr "Cacti har importerat följande artiklar:"
+msgstr "Cacti har importerat följande objekt:"
 
 #: color.php:366 color.php:569
 msgid "Import Colors"
@@ -2721,7 +2721,7 @@ msgstr "Tillåta att befintliga rader uppdateras?"
 
 #: color.php:390
 msgid "Required File Format Notes"
-msgstr "Obligatoriskt filformat Anmärkningar"
+msgstr "Anteckningar för obligatoriska filformat"
 
 #: color.php:393
 msgid "The file must contain a header row with the following column headings."
@@ -4676,7 +4676,7 @@ msgstr "DU HAR INTE RÄTTIGHETER FÖR FÖRSIKTIGHETSFRÅGOR"
 
 #: graph_view.php:411
 msgid "Graph Preview Filters"
-msgstr "Filter för förhandsgranskning av grafer"
+msgstr "Filter för diagramförhandsvisning"
 
 #: graph_view.php:411
 msgid "[ Custom Graph List Applied - Filtering from List ]"
@@ -4700,7 +4700,7 @@ msgstr "Visa"
 
 #: graph_view.php:631 graph_view.php:855 include/global_arrays.php:1219
 msgid "View Graphs"
-msgstr "Visa grafer"
+msgstr "Visa diagram"
 
 #: graph_view.php:633
 msgid "Add to a Report"
@@ -5546,7 +5546,7 @@ msgstr "Inte uppe"
 #: host.php:1681 lib/api_automation.php:174 lib/api_automation.php:1100
 #: lib/html.php:81 lib/html_utility.php:952 pollers.php:49
 msgid "Recovering"
-msgstr "Återhämtning"
+msgstr "Återhämtar"
 
 #: host.php:1682 lib/api_automation.php:175 lib/api_automation.php:1101
 #: lib/auth.php:2391 lib/html_utility.php:961 lib/import.php:349
@@ -5574,7 +5574,7 @@ msgstr "Värdnamn"
 
 #: host.php:1767
 msgid "Either an IP address, or hostname.  If a hostname, it must be resolvable by either DNS, or from your hosts file."
-msgstr "Antingen en IP-adress eller ett värdnamn.  Om det är ett värdnamn måste det kunna lösas med antingen DNS eller från din hosts-fil."
+msgstr "Antingen en IP-adress eller värdnamn.  Om det är ett värdnamn måste det kunna slås upp med antingen DNS eller från din hosts-fil."
 
 #: host.php:1773
 msgid "The internal database ID for this Device.  Useful when performing automation or debugging."
@@ -7950,7 +7950,7 @@ msgstr "Välj SNMP-version för den här värden."
 
 #: include/global_form.php:44
 msgid "SNMP Community String"
-msgstr "SNMP gemenskapsstring"
+msgstr "Sträng för SNMP Community"
 
 #: include/global_form.php:45
 msgid "Fill in the SNMP read community for this device."
@@ -8030,7 +8030,7 @@ msgstr "Ange UDP-portnumret som ska användas för SNMP (standard är 161)."
 
 #: include/global_form.php:135
 msgid "SNMP Timeout"
-msgstr "SNMP tidsgräns"
+msgstr "SNMP-tidsgräns"
 
 #: include/global_form.php:136
 msgid "The maximum number of milliseconds Cacti will wait for an SNMP response (does not work with php-snmp support)."
@@ -8096,7 +8096,7 @@ msgstr "%d upprepningar"
 
 #: include/global_form.php:202
 msgid "SNMP Retries"
-msgstr "SNMP försöker igen"
+msgstr "SNMP-försök"
 
 #: include/global_form.php:203
 msgid "The maximum number of attempts to reach a device via an SNMP readstring prior to giving up."
@@ -11258,7 +11258,7 @@ msgstr "Detta är den e-postadress som e-postmeddelandet kommer att skickas frå
 
 #: include/global_settings.php:1898 lib/html_reports.php:177
 msgid "From Name"
-msgstr "Från namn"
+msgstr "Från-namn"
 
 #: include/global_settings.php:1899
 msgid "This is the actual name that the Email will appear from."
@@ -11402,7 +11402,7 @@ msgstr "Ange den sekundära DNS-IP-adressen som ska användas för omvända sök
 
 #: include/global_settings.php:2028
 msgid "DNS Timeout"
-msgstr "DNS tidsgräns"
+msgstr "DNS-tidsgräns"
 
 #: include/global_settings.php:2029
 msgid "Please enter the DNS timeout in milliseconds.  Cacti uses a PHP based DNS resolver."
@@ -14720,7 +14720,7 @@ msgstr "Importera förhandsgranskningsresultat"
 
 #: lib/import.php:2582
 msgid "Import Results"
-msgstr "Utbetalning Import Resultat"
+msgstr "Importresultat"
 
 #: lib/import.php:2586
 msgid "Cacti would make the following changes if the Package was imported:"
@@ -15046,7 +15046,7 @@ msgstr "Nödvändiga PHP-moduler"
 
 #: lib/installer.php:1955 lib/installer.php:1985 plugins.php:42 plugins.php:472
 msgid "Installed"
-msgstr "Installerad"
+msgstr "Installerade"
 
 #: lib/installer.php:1955
 msgid "Required"
@@ -19087,7 +19087,7 @@ msgstr "Totalt: %s"
 
 #: utilities.php:340
 msgid "Poller Information"
-msgstr "Poller Information"
+msgstr "Pollarerinformation"
 
 #: utilities.php:348
 msgid "Different version of Cacti and Spine!"
