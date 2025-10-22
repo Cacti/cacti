@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-10-21 17:54+0000\n"
+"PO-Revision-Date: 2025-10-23 19:18+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -1354,7 +1354,7 @@ msgstr "Lägg till upptäckta enheter"
 #: automation_devices.php:233 include/global_settings.php:43
 #: include/global_settings.php:803
 msgid "Poller"
-msgstr "Poller"
+msgstr "Pollare"
 
 #: automation_devices.php:241 automation_templates.php:899
 #: include/global_arrays.php:1503 include/global_form.php:1291
