@@ -53,8 +53,8 @@ $host_ids      = '';
 $quietMode     = false;
 
 // Migration output files
-$migration_log_file = $config['base_path'] . '/log/migration_log.txt';
-$migration_csv_file = $config['base_path'] . '/log/migration_list.csv';
+$migration_log_file = $config['base_path'] . '/log/migration_log_' . date('Y-m-d_H-i-s') . '.txt';
+$migration_csv_file = $config['base_path'] . '/log/migration_list_' . date('Y-m-d_H-i-s') . '.csv';
 
 foreach ($parms as $parameter) {
 	if (strpos($parameter, '=')) {
@@ -223,33 +223,17 @@ function log_migration($message) {
 }
 
 /**
- * Write device migration record to CSV for rollback purposes
+ * Write device migration record to log for rollback purposes
  * @param array $device Device information
  * @param int $dest_poller Destination poller ID
  */
-function write_migration_csv($device, $dest_poller) {
-	global $migration_csv_file;
+function write_migration_log($device, $dest_poller) {
+	global $migration_log_file;
 
-	// Create CSV file with headers if it doesn't exist
-	if (!file_exists($migration_csv_file)) {
-		$headers = array('device_id', 'device_ip', 'device_description', 'original_poller', 'dest_poller');
-		$fp = fopen($migration_csv_file, 'w');
-		fputcsv($fp, $headers);
-		fclose($fp);
-	}
+	$message = "Migrated device ID: {$device['id']}, Hostname: {$device['hostname']}, Description: {$device['description']}, From Poller: {$device['poller_id']} to Poller: $dest_poller";
 
-	// Append device data
-	$csv_data = array(
-		$device['id'],
-		$device['hostname'],
-		$device['description'],
-		$device['poller_id'],
-		$dest_poller
-	);
-
-	$fp = fopen($migration_csv_file, 'a');
-	fputcsv($fp, $csv_data);
-	fclose($fp);
+	// Append to log file
+	file_put_contents($migration_log_file, date('Y-m-d H:i:s') . " - $message\n", FILE_APPEND);
 }
 
 /**
@@ -303,8 +287,8 @@ function migrate_device($device, $dest_poller) {
 	// Log the migration
 	log_migration("Moving device {$device['description']} (ID: {$device['id']}) from Poller {$device['poller_id']} to Poller $dest_poller");
 
-	// Write to rollback CSV
-	write_migration_csv($device, $dest_poller);
+	// Write to rollback log
+	write_migration_log($device, $dest_poller);
 
 	return true;
 }
