@@ -298,6 +298,8 @@ function migrate_device($device, $dest_poller) {
 	);
 
 	if (is_error_message() || $host_id != $device['id']) {
+		$reason = is_error_message() ? 'API save failure' : 'ID mismatch after save';
+		cacti_log("Device migration failed for '{$device['description']}' (ID: {$device['id']}): $reason. Host ID returned: $host_id, Expected: {$device['id']}");
 		return false;
 	}
 
