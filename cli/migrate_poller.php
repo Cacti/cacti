@@ -53,8 +53,8 @@ $host_ids      = '';
 $quietMode     = false;
 
 // Migration output files
-$migration_log_file = 'migration_log.txt';
-$migration_csv_file = 'migration_list.csv';
+$migration_log_file = $config['base_path'] . '/log/migration_log.txt';
+$migration_csv_file = $config['base_path'] . '/log/migration_list.csv';
 
 foreach ($parms as $parameter) {
 	if (strpos($parameter, '=')) {
