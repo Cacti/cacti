@@ -463,10 +463,9 @@ function migrate_from_host_ids($host_ids_string, $source_poller, $dest_poller, $
 	}
 }
 
-/*  display_version - displays version information */
 function display_version() {
-	print "Cacti Poller Device Migration Utility, Version 2.0, Copyright 2025\n";
-	print "Author: Sean Mancini\n";
+	$version = get_cacti_cli_version();
+	print "Cacti Add Permissions Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 function display_help() {
