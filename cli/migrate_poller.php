@@ -219,10 +219,7 @@ function get_devices_by_poller($poller_id) {
  * @param string $message The message to log
  */
 function log_migration($message) {
-	global $migration_log_file;
-	$timestamp = date('Y-m-d H:i:s');
-	$log_entry = "[$timestamp] $message\n";
-	file_put_contents($migration_log_file, $log_entry, FILE_APPEND | LOCK_EX);
+	cacti_log($message, false, 'MIGRATE');
 }
 
 /**
