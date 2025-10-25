@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2025-10-23 19:18+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2025-10-25 08:48+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -342,7 +342,7 @@ msgstr "Detaljer"
 #: aggregate_graphs.php:611 graphs_new.php:842 lib/html_reports.php:1381
 #: utilities.php:361
 msgid "Items"
-msgstr "Artiklar"
+msgstr "Objekt"
 
 #: aggregate_graphs.php:612 aggregate_graphs.php:618 lib/html.php:2024
 #: lib/html_reports.php:1381
@@ -1188,7 +1188,7 @@ msgstr "OS"
 
 #: automation_devices.php:284 host.php:1800 include/global_arrays.php:530
 msgid "Uptime"
-msgstr "Drifttid"
+msgstr "Upptid"
 
 #: automation_devices.php:285 automation_devices.php:540
 #: include/global_arrays.php:1023 utilities.php:2083
@@ -3266,7 +3266,7 @@ msgstr "Alla"
 
 #: data_debug.php:1083 utilities.php:1057 utilities.php:1188
 msgid "Failed"
-msgstr "Misslyckad"
+msgstr "Misslyckades"
 
 #: data_debug.php:1089 data_debug.php:1094
 msgid "Debugging"
@@ -6454,7 +6454,7 @@ msgstr "Inaktiverad/Manuell"
 
 #: include/global_arrays.php:820
 msgid "Every day"
-msgstr "Varje dag"
+msgstr "Varje dygn"
 
 #: include/global_arrays.php:824
 msgid "1 Thread"
@@ -6862,7 +6862,7 @@ msgstr "Alla linjer"
 #: include/global_arrays.php:1139 include/global_arrays.php:1140
 #, php-format
 msgid "%d Lines"
-msgstr "%d Linjer"
+msgstr "%d rader"
 
 #: include/global_arrays.php:1218
 msgid "Console Access"
@@ -7469,7 +7469,7 @@ msgstr "Var 1:a timme"
 
 #: include/global_arrays.php:1876
 msgid "Every Day"
-msgstr "Dagligen"
+msgstr "Varje dygn"
 
 #: include/global_arrays.php:1877
 msgid "Every Week"
@@ -10112,7 +10112,7 @@ msgstr "Standard SNMP-försök för alla nya enheter."
 
 #: include/global_settings.php:769
 msgid "Availability/Reachability"
-msgstr "Tillgänglighet/Reachability"
+msgstr "Tillgänglighet/Nåbarhet"
 
 #: include/global_settings.php:775
 msgid "Default Availability/Reachability for all new Devices.  The method Cacti will use to determine if a Device is available for polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</i>"
@@ -11006,7 +11006,7 @@ msgstr "Ett konto kommer automatiskt att låsas upp efter så många minuter.  �
 
 #: include/global_settings.php:1669 include/global_settings.php:2889
 msgid "1 Day"
-msgstr "1 dag"
+msgstr "1 dygn"
 
 #: include/global_settings.php:1672
 msgid "LDAP General Settings"
@@ -11735,7 +11735,7 @@ msgstr "Det finns tre ersättningsmetoder.  Den första metoden ersätter spiken
 
 #: include/global_settings.php:2401 lib/html.php:2250
 msgid "Average"
-msgstr "Medel"
+msgstr "Genomsnitt"
 
 #: include/global_settings.php:2402 lib/html.php:2251
 msgid "NaN's"
@@ -12785,7 +12785,7 @@ msgstr "Återvinningar"
 
 #: lib/clog_webapi.php:565
 msgid "Threshold"
-msgstr "Tröskel"
+msgstr "Tröskelvärde"
 
 #: lib/clog_webapi.php:579 tree.php:833
 msgid "Display"
@@ -13708,7 +13708,7 @@ msgstr "Projektsida för Cacti"
 
 #: lib/html.php:2531
 msgid "Spine"
-msgstr "Rygg"
+msgstr "Spine"
 
 #: lib/html.php:2532
 msgid "RRDProxy"
@@ -14994,7 +14994,7 @@ msgstr "PHP-rekommendationer ("
 
 #: lib/installer.php:1882
 msgid "Current"
-msgstr "Aktuell"
+msgstr "Aktuellt"
 
 #: lib/installer.php:1882
 msgid "Recommended"
@@ -16608,7 +16608,7 @@ msgstr "Om den är markerad kommer sidan att vara tillgänglig omedelbart för a
 
 #: links.php:568
 msgid "Automatic Page Refresh"
-msgstr "Automatisk uppdatering av sidan"
+msgstr "Automatisk siduppdatering"
 
 #: links.php:571
 msgid "How often do you wish this page to be refreshed automatically."
@@ -17162,7 +17162,7 @@ msgstr "Full synkronisering"
 
 #: pollers.php:44
 msgid "New/Idle"
-msgstr "Ny/Idle"
+msgstr "Ny/Overksam"
 
 #: pollers.php:57
 msgid "Data Collector Information"
@@ -19087,7 +19087,7 @@ msgstr "Totalt: %s"
 
 #: utilities.php:340
 msgid "Poller Information"
-msgstr "Pollarerinformation"
+msgstr "Pollareinformation"
 
 #: utilities.php:348
 msgid "Different version of Cacti and Spine!"
@@ -19299,7 +19299,7 @@ msgstr "Framgång - Lösenord"
 
 #: utilities.php:1055 utilities.php:1188
 msgid "Success - Token"
-msgstr "Framgång - Token"
+msgstr "Lyckades - Token"
 
 #: utilities.php:1056 utilities.php:1188
 msgid "Success - Password Change"
@@ -19655,7 +19655,7 @@ msgstr "Sista sluttid:"
 
 #: utilities.php:2733
 msgid "Never Run"
-msgstr "Spring aldrig"
+msgstr "Kör aldrig"
 
 #: utilities.php:2736
 msgid "Last Run Duration:"
