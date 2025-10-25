@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-10-23 19:18+0000\n"
+"PO-Revision-Date: 2025-10-25 08:48+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -404,7 +404,7 @@ msgstr "Detaljer"
 #: aggregate_graphs.php:1046 graphs_new.php:848 lib/html_reports.php:1463
 #: support.php:1291
 msgid "Items"
-msgstr "Artiklar"
+msgstr "Objekt"
 
 #: aggregate_graphs.php:1047 lib/html.php:2289 lib/html_reports.php:1463
 msgid "Preview"
@@ -1443,7 +1443,7 @@ msgstr "OS"
 
 #: automation_devices.php:343 host.php:1814 include/global_arrays.php:535
 msgid "Uptime"
-msgstr "Drifttid"
+msgstr "Upptid"
 
 #: automation_devices.php:348 automation_devices.php:659
 #: automation_devices.php:662 include/global_arrays.php:1110 utilities.php:1036
@@ -4291,7 +4291,7 @@ msgstr "Alla"
 
 #: data_debug.php:1115 user_log.php:182 user_log.php:318
 msgid "Failed"
-msgstr "Misslyckad"
+msgstr "Misslyckades"
 
 #: data_debug.php:1121 data_debug.php:1124 data_debug.php:1126
 msgid "Debugging"
@@ -8176,7 +8176,7 @@ msgstr "Inaktiverad/Manuell"
 
 #: include/global_arrays.php:895
 msgid "Every day"
-msgstr "Varje dag"
+msgstr "Varje dygn"
 
 #: include/global_arrays.php:899
 msgid "1 Thread"
@@ -8744,7 +8744,7 @@ msgstr "Alla linjer"
 #: include/global_arrays.php:1269 include/global_arrays.php:1270
 #, php-format
 msgid "%d Lines"
-msgstr "%d Linjer"
+msgstr "%d rader"
 
 #: include/global_arrays.php:1349
 msgid "Console Access"
@@ -9356,7 +9356,7 @@ msgstr "Var 1:a timme"
 
 #: include/global_arrays.php:2015
 msgid "Every Day"
-msgstr "Dagligen"
+msgstr "Varje dygn"
 
 #: include/global_arrays.php:2016
 msgid "Every Week"
@@ -12660,7 +12660,7 @@ msgstr "Standard SNMP-försök för alla nya enheter."
 
 #: include/global_settings.php:957
 msgid "Availability/Reachability"
-msgstr "Tillgänglighet/Reachability"
+msgstr "Tillgänglighet/Nåbarhet"
 
 #: include/global_settings.php:963
 msgid "Default Availability/Reachability for all new Devices.  The method Cacti will use to determine if a Device is available for polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</i>"
@@ -13721,7 +13721,7 @@ msgstr ""
 
 #: include/global_settings.php:1845 include/global_settings.php:3224
 msgid "1 Day"
-msgstr "1 dag"
+msgstr "1 dygn"
 
 #: include/global_settings.php:1849
 msgid "2FA Timeout"
@@ -14727,7 +14727,7 @@ msgstr ""
 #: include/global_settings.php:2706 lib/html.php:2431 lib/html.php:2441
 #: lib/html.php:2449 lib/html.php:2766
 msgid "Average"
-msgstr "Medel"
+msgstr "Genomsnitt"
 
 #: include/global_settings.php:2707 lib/html.php:2767
 msgid "NaN's"
@@ -16157,7 +16157,7 @@ msgstr "Säkerhetsfrågor"
 
 #: lib/clog_webapi.php:597
 msgid "Threshold"
-msgstr "Tröskel"
+msgstr "Tröskelvärde"
 
 #: lib/clog_webapi.php:607 lib/clog_webapi.php:610 tree.php:844
 msgid "Display"
@@ -17219,7 +17219,7 @@ msgstr "Genvägar"
 
 #: lib/html.php:3066
 msgid "Spine"
-msgstr "Rygg"
+msgstr "Spine"
 
 #: lib/html.php:3068
 msgid "Help in Translating"
@@ -18720,7 +18720,7 @@ msgstr "PHP-rekommendationer ("
 
 #: lib/installer.php:2042
 msgid "Current"
-msgstr "Aktuell"
+msgstr "Aktuellt"
 
 #: lib/installer.php:2042
 msgid "Recommended"
@@ -21057,7 +21057,7 @@ msgstr ""
 
 #: links.php:582
 msgid "Automatic Page Refresh"
-msgstr "Automatisk uppdatering av sidan"
+msgstr "Automatisk siduppdatering"
 
 #: links.php:585
 msgid "How often do you wish this page to be refreshed automatically."
@@ -22684,7 +22684,7 @@ msgstr "Full synkronisering"
 
 #: pollers.php:43
 msgid "New/Idle"
-msgstr "Ny/Idle"
+msgstr "Ny/Overksam"
 
 #: pollers.php:53
 msgid "Use Cacti Log Level"
@@ -23952,7 +23952,7 @@ msgstr "Totalt: %s"
 
 #: support.php:1268
 msgid "Poller Information"
-msgstr "Pollarerinformation"
+msgstr "Pollareinformation"
 
 #: support.php:1278
 msgid "Different version of Cacti and Spine!"
@@ -25508,7 +25508,7 @@ msgstr "Framgång - Lösenord"
 
 #: user_log.php:180 user_log.php:318
 msgid "Success - Token"
-msgstr "Framgång - Token"
+msgstr "Lyckades - Token"
 
 #: user_log.php:181 user_log.php:318
 msgid "Success - Password Change"
@@ -25919,7 +25919,7 @@ msgstr "Sista sluttid:"
 
 #: utilities.php:1679
 msgid "Never Run"
-msgstr "Spring aldrig"
+msgstr "Kör aldrig"
 
 #: utilities.php:1682
 msgid "Last Run Duration:"
