@@ -222,6 +222,7 @@ Cacti CHANGELOG
 -issue#6326: Issues with Cisco Devices and Higher Levels of Privacy
 -issue#6329: PHP Error on LDAP access
 -issue#6335: Fix incorrect parsing of email address containing whitespace
+-issue#6441: Spikekill Purge Using the wrong variable
 -issue#6444: Applying Title Cache Changes for Data Input Methods using |data_xxxx| not working
 -feature: Update PHPMailer to 6.10 to support SMTPUTF8
 -feature: Update phpseclib for Service Check Plugin
