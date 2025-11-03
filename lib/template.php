@@ -1574,8 +1574,6 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 		}
 	}
 
-	update_graph_title_cache($cache_array['local_graph_id']);
-
 	/* create each data source, but don't duplicate */
 	$data_templates = db_fetch_assoc_prepared('SELECT dt.id, dt.name, dtr.data_source_name
 		FROM data_template AS dt
@@ -1820,6 +1818,8 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 			update_graph_data_query_cache($cache_array['local_graph_id']);
 		}
 	}
+
+	update_graph_title_cache($cache_array['local_graph_id']);
 
 	/* now that we have the id of the new host, we may plugin postprocessing code */
 	if (isset($cache_array['local_graph_id'])) {
