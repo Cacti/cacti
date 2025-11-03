@@ -30,11 +30,9 @@ function upgrade_to_1_0_5() {
 	db_install_execute('ALTER TABLE snmpagent_notifications_log MODIFY COLUMN notification varchar(180) NOT NULL');
 
 	/* bad data source profile id's */
-	$data = db_install_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
+	$profile_id = db_install_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 
-	if (cacti_sizeof($data)) {
-		$profile_id = $data['data'];
-
+	if ($profile_id > 0) {
 		db_install_execute('UPDATE data_template_data
 			SET data_source_profile_id = ?
 			WHERE data_source_profile_id = 0',
