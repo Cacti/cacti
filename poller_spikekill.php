@@ -192,7 +192,7 @@ function debug($message) {
 
 function purge_spike_backups() {
 	$directory = read_config_option('spikekill_backupdir');
-	$retention = read_config_option('spikekil_backup');
+	$retention = read_config_option('spikekill_purge');
 
 	$purges = 0;
 
