@@ -175,7 +175,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 			// test if cacti database is imported from SQL file
 			$table_exists = db_fetch_cell("SELECT count(*) FROM information_schema.tables
-				WHERE table_schema = DATABASE() and TABLE_NAME ='poller'");
+				WHERE table_schema = DATABASE() and TABLE_NAME = 'poller'");
 
 			if (!$table_exists) {
 				error_log(sprintf('NOTE: Database %s does not contain cacti tables. Import cacti.sql first', $db_name));
