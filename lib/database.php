@@ -173,6 +173,15 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 				'database_persist'                  => $persist,
 			];
 
+			// test if cacti database is imported from SQL file
+			$table_exists = db_fetch_cell("SELECT count(*) FROM information_schema.tables
+				WHERE table_schema = DATABASE() and TABLE_NAME ='poller'");
+
+			if (!$table_exists) {
+				error_log(sprintf('NOTE: Database %s does not contain cacti tables. Import cacti.sql first', $db_name));
+				die('ERROR: Database does not contain cacti tables. If this is a new installation, first import the SQL dump');
+			}
+
 			$ver = db_get_global_variable('version', $cnn_id);
 
 			if (str_contains($ver, 'MariaDB')) {
