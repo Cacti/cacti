@@ -1222,7 +1222,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 					FROM graph_templates_item
 					WHERE color_id > 0' .
 					(cacti_sizeof($member_graphs) ? ' AND ' . array_to_sql_or($member_graphs, 'local_graph_id'):'') .
-					(cacti_sizeof($skipped_items) ? ' AND local_graph_id NOT IN(' . implode(',', $skipped_items) . ')':'') . '
+					(cacti_sizeof($skipped_items) ? ' AND sequence NOT IN(' . implode(',', $skipped_items) . ')':'') . '
 					ORDER BY sequence ASC
 					LIMIT 1');
 
@@ -1346,7 +1346,7 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 			FROM graph_templates_item
 			WHERE graph_type_id IN(' . GRAPH_ITEM_TYPE_COMMENT . ',' . GRAPH_ITEM_TYPE_HRULE . ')' .
 			(cacti_sizeof($template_graph) ? ' AND ' . array_to_sql_or($template_graph, 'local_graph_id'):'') .
-			(cacti_sizeof($skipped_items) ? ' AND local_graph_id NOT IN(' . implode(',', $skipped_items) . ')':'') . '
+			(cacti_sizeof($skipped_items) ? ' AND sequence NOT IN(' . implode(',', $skipped_items) . ')':'') . '
 			AND (text_format != "" || value != "")
 			ORDER BY local_graph_id, sequence ASC');
 

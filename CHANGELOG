@@ -24,6 +24,7 @@ Cacti CHANGELOG
 -issue#6315: Undefined function error duplicating a data input method
 -issue#6326: Issues with Cisco Devices and Higher Levels of Privacy
 -issue#6329: PHP Error on LDAP access
+-issue#6334: Unable to hide HRULE and COMMENT items for Aggregate of Interface Traffic graph (which includes 95th percentile)
 -issue#6335: Fix incorrect parsing of email address containing whitespace
 -issue#6441: Spikekill Purge Using the wrong variable
 -issue#6444: Applying Title Cache Changes for Data Input Methods using |data_xxxx| not working
