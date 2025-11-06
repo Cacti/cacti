@@ -1329,7 +1329,8 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 			FROM graph_templates_item
 			WHERE graph_type_id IN (?, ?)
 			AND graph_template_id = ?
-			AND local_graph_id = 0
+			AND local_graph_id = 0' .
+			(cacti_sizeof($skipped_items) ? ' AND sequence NOT IN (' . implode(',', $skipped_items) . ')' : '') . '
 			AND (text_format != "" || value != "")
 			ORDER BY sequence ASC',
 			array(GRAPH_ITEM_TYPE_COMMENT, GRAPH_ITEM_TYPE_HRULE, $agg_info['graph_template_id']));
