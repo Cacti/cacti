@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2024-12-11 09:12-0500\n"
-"PO-Revision-Date: 2025-10-27 10:09+0000\n"
+"PO-Revision-Date: 2025-11-11 04:26+0000\n"
 "Last-Translator: Daniel Nylander <daniel@danielnylander.se>\n"
 "Language-Team: Swedish <https://translate.cacti.net/projects/cacti/core/sv/>"
 "\n"
@@ -13983,7 +13983,7 @@ msgstr ""
 
 #: include/global_settings.php:2079
 msgid "Emailing Options"
-msgstr "Alternativ för e-post"
+msgstr "E-postalternativ"
 
 #: include/global_settings.php:2083
 msgid "Notify Primary Admin of Issues"
