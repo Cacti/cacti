@@ -1,5 +1,5 @@
 msgid ""
-msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2025-10-27 10:09+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
+msgstr "Project-Id-Version: \nReport-Msgid-Bugs-To: developers@cacti.net\nPOT-Creation-Date: 2024-04-20 18:16-0400\nPO-Revision-Date: 2025-11-11 04:26+0000\nLast-Translator: Daniel Nylander <daniel@danielnylander.se>\nLanguage-Team: Swedish <https://translate.cacti.net/projects/cacti/core-v1-2-x/sv/>\nLanguage: sv-SE\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=n != 1;\nX-Generator: Weblate 5.11.4\n"
 
 #: about.php:29 include/global_arrays.php:2630 lib/html.php:2543
 msgid "About Cacti"
@@ -2565,7 +2565,7 @@ msgstr[1] "Klicka på &quot;Fortsätt&quot; för att duplicera följande CDEF-fi
 #: data_templates.php:473 graph_templates.php:382 host_templates.php:234
 #: vdef.php:276
 msgid "Title Format:"
-msgstr "Rubrikformat"
+msgstr "Rubrikformat:"
 
 #: cdef.php:287
 msgid "Duplicate CDEF"
@@ -11214,7 +11214,7 @@ msgstr "Detta är den serverplats som kommer att användas för länkar till Cac
 
 #: include/global_settings.php:1859
 msgid "Emailing Options"
-msgstr "Alternativ för e-post"
+msgstr "E-postalternativ"
 
 #: include/global_settings.php:1863
 msgid "Notify Primary Admin of Issues"
