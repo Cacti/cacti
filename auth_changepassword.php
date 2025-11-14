@@ -438,7 +438,7 @@ html_auth_header('change_password', __('Change Password'), __('Change Password')
 		<td class='nowrap'><input type='hidden' id='current' name='current_password' value=''><?php print $user['username'];?></td>
 <?php } else { ?>
 		<td><?php print __('Current password');?></td>
-		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='current' name='current_password' autocomplete='off' size='15' maxlength='25' placeholder='********'></td><td></td>
+		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='current' name='current_password' autocomplete='current-password' size='15' maxlength='25' placeholder='********'></td><td></td>
 <?php } ?>
 	</tr>
 	<tr>

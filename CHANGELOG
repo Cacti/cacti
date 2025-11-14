@@ -220,6 +220,7 @@ Cacti CHANGELOG
 -issue#6314: Newly Added Items in Aggregation Chart Don’t Reflect in Item Count
 -issue#6315: Undefined function error duplicating a data input method
 -issue#6326: Issues with Cisco Devices and Higher Levels of Privacy
+-issue#6327: Update Browser Login and Change Password Autocomplete to new Browser Standard
 -issue#6329: PHP Error on LDAP access
 -issue#6335: Fix incorrect parsing of email address containing whitespace
 -issue#6441: Spikekill Purge Using the wrong variable
