@@ -126,7 +126,14 @@ function clog_view_logfile() {
 	/* enable page refreshes */
 	kill_session_var('custom');
 
-	$logfile = basename(get_nfilter_request_var('filename'));
+	if (isset_request_var('filename')) {
+		$logfile = basename(get_nfilter_request_var('filename'));
+	} elseif (isset($_SESSION['sess_clog']['filename'])) {
+		$logfile = basename($_SESSION['sess_clog']['filename']);
+	} else {
+		$logfile = 'cacti.log';
+	}
+
 	$logname = '';
 
 	if (!clog_validate_filename($logfile, $logpath, $logname, true)) {
