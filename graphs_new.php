@@ -445,7 +445,6 @@ function draw_graphs_new_filter($render = false, $header_label = '', $host = [],
 function graphs() {
 	global $item_rows;
 
-	if (get_filter_request_var('host_id') > 0) {
 		$host = db_fetch_row_prepared('SELECT id, description, hostname, host_template_id
 			FROM host
 			WHERE id = ?',
@@ -848,7 +847,7 @@ function graphs() {
 							load_current_session_value('page' . $query['id'], 'sess_grn_page' . $query['id'], '1');
 						}
 
-						$nav = html_nav_bar('graphs_new.php', MAX_DISPLAY_PAGES, $page, $rows, $total_rows, 15, __('Items'), 'page' . $snmp_query['id']);
+						$nav = html_nav_bar('graphs_new.php?host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, $page, $rows, $total_rows, 15, __('Items'), 'page' . $snmp_query['id']);
 
 						print $nav;
 
