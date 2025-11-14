@@ -1,13 +1,13 @@
 Cacti CHANGELOG
 
 1.2.31
+-issue#6168: RRD cleaner does not purge files
 -issue#6202: Adding devices via automation fails
 -issue#6204: Automation breaks if the field does not previously exist in the host_snmp_cache table
 -issue#6210: Fix Error: You have an error in your SQL syntax due to using table field without backtick.
 -issue#6240: Fix sorting exception in rrdtool_function_create function 
 -issue#6249: Unable to send Email to users without a domain name
 -issue#6251: Cacti can issue a warning in a case where a user attempts to view a graph that no longer exists
--issue#6168: RRD cleaner does not purge files
 -issue#6253: Unification of i18n behaviour when the input is null
 -issue#6257: Fix archive rrd with structural path, remove only rrd file check
 -issue#6262: If the database service restarts during polling or other activities errors occur
