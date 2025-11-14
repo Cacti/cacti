@@ -423,11 +423,11 @@ if ($skip_current) {
 						</tr>
 						<tr>
 							<td><?php print __('New password');?></td>
-							<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='new-password' size='20' placeholder='********'><?php print display_tooltip($secpass_tooltip);?></td>
+							<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='20' placeholder='********'><?php print display_tooltip($secpass_tooltip);?></td>
 						</tr>
 						<tr>
 							<td><?php print __('Confirm new password');?></td>
-							<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password_confirm' name='password_confirm' autocomplete='new-password' size='20' placeholder='********'></td>
+							<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password_confirm' name='password_confirm' autocomplete='off' size='20' placeholder='********'></td>
 						</tr>
 						<tr>
 							<td class='nowrap' colspan='2'><input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Save'); ?>'>
