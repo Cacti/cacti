@@ -223,6 +223,7 @@ Cacti CHANGELOG
 -issue#6326: Issues with Cisco Devices and Higher Levels of Privacy
 -issue#6327: Update Browser Login and Change Password Autocomplete to new Browser Standard
 -issue#6329: PHP Error on LDAP access
+-issue#6331: Upgrading from old versions of Cacti prior to 1_0_5 generates errors
 -issue#6334: Unable to hide HRULE and COMMENT items for Aggregate of Interface Traffic graph (which includes 95th percentile)
 -issue#6335: Fix incorrect parsing of email address containing whitespace
 -issue#6441: Spikekill Purge Using the wrong variable

@@ -32,6 +32,12 @@ function upgrade_to_1_0_5() {
 	/* bad data source profile id's */
 	$profile_id = db_install_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 
+	if (isset($profile_id['id'])) {
+		$profile_id = $profile_id['id'];
+	} else {
+		$profile_id = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY id LIMIT 1');
+	}
+
 	if ($profile_id > 0) {
 		db_install_execute('UPDATE data_template_data
 			SET data_source_profile_id = ?
