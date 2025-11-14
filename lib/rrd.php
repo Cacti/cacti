@@ -327,10 +327,7 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 			];
 
 			if (CACTI_WEB) {
-				if (isset($_COOKIE['CactiTimeZone'])) {
-					$gmt_offset = $_COOKIE['CactiTimeZone'];
-					cacti_time_zone_set($gmt_offset);
-				}
+				cacti_time_zone_set();
 			}
 
 			$attempts = 0;
@@ -2858,6 +2855,10 @@ function rrdtool_function_format_graph_date(&$graph_data_array) {
 			break;
 	}
 
+	if (CACTI_WEB) {
+		cacti_time_zone_set();
+	}
+
 	/* display the timespan for zoomed graphs */
 	if ((isset($graph_data_array['graph_start'])) && (isset($graph_data_array['graph_end']))) {
 		if (($graph_data_array['graph_start'] < 0) && ($graph_data_array['graph_end'] < 0)) {
@@ -2865,6 +2866,10 @@ function rrdtool_function_format_graph_date(&$graph_data_array) {
 		} elseif (($graph_data_array['graph_start'] >= 0) && ($graph_data_array['graph_end'] >= 0)) {
 			$graph_legend = 'COMMENT:"From ' . str_replace(':', '\:', date($graph_date, $graph_data_array['graph_start'])) . ' To ' . str_replace(':', '\:', date($graph_date, $graph_data_array['graph_end'])) . '\\c"' . RRD_NL . 'COMMENT:"  \\n"' . RRD_NL;
 		}
+	}
+
+	if (CACTI_WEB) {
+		cacti_system_zone_set();
 	}
 
 	return $graph_legend;

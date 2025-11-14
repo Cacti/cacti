@@ -709,11 +709,7 @@ if ($config['is_web']) {
 		}
 	}
 
-	if (isset($_COOKIE['CactiTimeZone'])) {
-		$gmt_offset = $_COOKIE['CactiTimeZone'];
-
-		cacti_time_zone_set($gmt_offset);
-	}
+	cacti_time_zone_set();
 }
 
 api_plugin_hook('config_insert');

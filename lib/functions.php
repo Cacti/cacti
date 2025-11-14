@@ -8753,9 +8753,17 @@ function cacti_browser_zone_enabled() {
  *
  * @return mixed null
  */
-function cacti_time_zone_set($gmt_offset) {
+function cacti_time_zone_set($gmt_offset = null) {
 	if (!cacti_browser_zone_enabled()) {
 		return;
+	}
+
+	if ($gmt_offset === null) {
+		if (isset($_COOKIE['CactiTimeZone'])) {
+			$gmt_offset = $_COOKIE['CactiTimeZone'];
+		} else {
+			return;
+		}
 	}
 
 	$hours     = floor($gmt_offset / 60);
