@@ -401,7 +401,7 @@ function form_actions() {
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '2') { // duplicate
 				for ($i=0;($i < cacti_count($selected_items));$i++) {
-					api_duplicate_data_source(0, $selected_items[$i], get_nfilter_request_var('title_format'));
+					api_data_source_duplicate(0, $selected_items[$i], get_nfilter_request_var('title_format'));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '3') { // change data source profile
 				$step = db_fetch_cell_prepared('SELECT step
