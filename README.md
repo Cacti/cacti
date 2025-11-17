@@ -18,7 +18,7 @@
 We currently have two functioning versions of Cacti on this site, and several
 Cacti plugins supported by The Cacti Group.  Our current long lived version
 of Cacti in the `1.2.x` branch.  The current release version of this branch
-is Cacti 1.2.27.
+is Cacti 1.2.30.
 
 This pending maintenance release has several bugs fixes, and significantly more
 welcomed feature enhancements.  You can review the CHANGELOG for the `1.2.x`
@@ -38,16 +38,22 @@ distribution, all the vendor included packages are pre-packeged and tested
 by the Cacti group, so there is no reason to use package management tools
 to install those dependencies.
 
+We have recently changed the minimum required PHP to 8.1+ for the Cacti 1.2.x
+series of releases due to the expected longevity of that branch of the Cacti
+core code.  We have been, over the last few years, updated the core Cacti API's
+to be compatible with PHP 8.1+.  As a part of that process, we simply need
+to move away from these older and no longer supported PHP versions.
+
 | Dependency | Cacti 1.2.x  | Cacti 1.3.x |
 |------------|--------------|-------------|
-| MariaDB    | 5.5+         | 10.2.x+     |
-| MySQL      | 5.5+         | 8.0+        |
-| PHP        | 5.4+         | 8.1+        |
+| MariaDB    | 5.6+         | 10.2.x+     |
+| MySQL      | 5.6+         | 8.0+        |
+| PHP        | 8.1+         | 8.1+        |
 | RRDtool    | 1.4+         | 1.8+        |
 | Net-SNMP   | 5.5+         | 5.8+        |
 
-For Cacti 1.2.x, it is reasonable to run with RHEL/CentOS 7 or equivalent.  However,
-for Cacti 1.3.x, it would be better to run on RHEL 9 +, CentOS Stream 9+, or Rocky 9+
+For Cacti 1.2.x, it is reasonable to run with RHEL/Rocky/Alma 8 or equivalent.  However,
+for Cacti 1.3.x, it would be better to run on RHEL/Rocky/Alma 9+ or CentOS Stream 9+
 or equivalent as these OS versions makes PHP 8.1+ available via a DNF Stream.  Of course
 Ubuntu/Debian is also well supported.
 
@@ -78,6 +84,17 @@ of any version with Cacti 1.2.x and above.
 
 ## IMPORTANT
 
+### Requirement for Composer
+
+Starting with Cacti 1.2.31, we will be requiring PHP composer for package
+management.  Make sure you have PHP Composer installed, and be prepared to have
+to periodically freshen your dependencies if CVE's occur in the various dependent
+packages.  With Cacti 1.2.31, you should not need to run it as all the required
+files will be included in the package, but starting with Cacti 1.3, you may
+be required to run the `composer update` periodically.
+
+### Steps to Fully Upgrade Database Schema
+
 When using source or by downloading the code directly from the repository, it is
 important to note that periodically, you may have to rerun the database upgrade
 cli script to bring in new columns.  You can use the --forcever=1.2.22 option
@@ -94,17 +111,24 @@ the --forcever option.
 
 ## Upgrading from Pre-Cacti 1.x Releases
 
-When Cacti was first developed nearly 20 years ago, MySQL was not as mature as it
-is now.  When The Cacti Group went about engineering Cacti 1.x, a decision was
-made to force users to use the InnoDB storage engine for many of the Tables.  This
-was done as the InnoDB storage engine provides a better user experience when your
-web site has several concurrent logins.  Though a little slower, it also provides
-greater resiliency for the developers.
+When Cacti was first developed over 20 years ago.  At that time, MySQL was not as 
+mature as it is now.  When The Cacti Group went about engineering Cacti 1.x, 
+a decision was made to force users to use the InnoDB storage engine for many of 
+the Tables.  This was done as the InnoDB storage engine provides a better user 
+experience when your web site has several concurrent logins.  Though a little 
+slower, it also provides greater resiliency for the developers.
 
 With that said, there are several changes that you MUST perform to MySQL/MariaDB
 before you upgrade, and a service restart is required.  Depending on your release
 of MariaDB or MySQL, the following settings will either be required, or already
 enabled as default:
+
+### MariaDB and MySQL Divergence and Deprecation of Settings
+
+As time has gone on, MariaDB and MySQL have diverged in many of their core
+settings.  So, it's important to perform research and review your MariaDB and 
+MySQL logs as some of the recommendations below have changed depending on 
+your MariaDB and MySQL versions.
 
 ```
 [mysqld]
@@ -130,15 +154,15 @@ innodb_buffer_pool_size = XXX
 innodb_sort_buffer_size = XXX
 innodb_doublewrite = ON
 
-# required
+# Required but deprecated with newer MariaDB versions
 innodb_file_per_table = ON
 innodb_file_format = Barracuda
 innodb_large_prefix = 1
 
-# not all version support
+# Not all version support
 innodb_flush_log_at_timeout = 3
 
-# for SSD's/NVMe
+# for SSD's/NVMe Read (cores * 2), Write (cores)
 innodb_read_io_threads = 32
 innodb_write_io_threads = 16
 innodb_io_capacity = 10000
@@ -175,15 +199,14 @@ sudo -u cacti php -q cli/upgrade_database.php --forcever=`cat include/cacti_vers
 
 ## Updating Cacti Version in Database
 
-```
-update version set cacti = '1.1.38';
-```
+Use the `upgrade_database.php --forcever=older_version` to force the re-upgrade 
+of your Cacti schema if you find you need to rerun the upgrade due to missing
+MariaDB/MySQL settings that caused the upgrade to fail.
 
-***Note:*** Change the above version to the correct version or risk the
-installer upgrading from a previous version.
+Also, use the `audit_database.php --report` script to tell you of any schema
+inconsistencies that you may have in your database.
 
 -----------------------------------------------------------------------------
-
 # About Cacti
 
 Cacti is a complete network graphing solution designed to harness the power of
@@ -214,32 +237,41 @@ Enterprise Networks and Data Centers.
 Cacti should be able to run on any Linux, UNIX, or Windows based operating
 system with the following requirements:
 
-- PHP 7.4+
+- PHP 8.1+
 
-- MySQL 5.6+
+- MariaDB/MySQL 5.6+
 
-- RRDtool 1.3+, 1.5+ recommended
+- RRDtool 1.4+ (1.9+ recommended for new Cacti features)
 
-- NET-SNMP 5.5+
+- NET-SNMP 5.5+ (5.9+ recommended for SNMPv3)
 
 - Web Server with PHP support
 
 PHP Must also be compiled as a standalone cgi or cli binary. This is required
-for data gathering via cron.
+for data gathering via cron though Cacti provides a systemd service units file
+if you wish to manage Cacti as a service.
 
 ### php-snmp
 
 We mark the php-snmp module as optional.  So long as you are not using ipv6
-devices, or using snmpv3 engine IDs or contexts, then using php-snmp should be
-safe.  Otherwise, you should consider uninstalling the php-snmp module as it
-will create problems.  We are aware of the problem with php-snmp and looking to
-get involved in the php project to resolve these issues.
+devices, or using SNMPv3, then using php-snmp should be safe.  Otherwise, you 
+should consider uninstalling the php-snmp module as it will create problems.
+
+We are aware of the problem with php-snmp and looking to get involved in the 
+php project to resolve these issues.  However, there are only so many of us
+and we all have day jobs.  So, this work was deferred.
 
 ### RRDtool
 
 RRDtool is available in multiple versions and a majority of them are supported
 by Cacti. Please remember to confirm your Cacti settings for the RRDtool version
-if you having problem rendering graphs.
+if you having problem rendering graphs.  
+
+### IMPORTANT Note on RRDtool
+
+If you use RRDtool 1.9+ with the Cacti 1.3, you will be able to hover over your 
+graphs and be able to see numeric values in a tooltip like with many other HTML5 
+JavaScript charting API's.
 
 ## Documentation
 
