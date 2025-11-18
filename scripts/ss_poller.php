@@ -183,7 +183,7 @@ function ss_poller() {
 		FROM settings
 		WHERE name="stats_poller"');
 
-	return empty($stats) ? 'Time:0 Method:0 Processes:0 Threads:0 Hosts:0 HostsPerProcess:0 DataSources:0 RRDsProcessed:0' : trim($stats);
+	return empty($stats) ? 'Time:0 Method:0 Processes:0 Threads:0 Hosts:0 HostsPerProcess:0 DataSources:0 RRDsProcessed:0 ErrorHosts:0 TotalErrors:0' : trim($stats);
 }
 
 function ss_webseer_counts() {

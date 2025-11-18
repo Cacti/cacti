@@ -155,6 +155,16 @@ function ss_cpoller($cmd = 'index', $arg1 = '', $arg2 = '') {
 					[$index]);
 
 				break;
+			case 'getErrorHosts':
+				$value = db_fetch_cell_prepared('SELECT COUNT(DISTINCT host_id)
+					FROM host_errors WHERE poller_id = ?', [$index]);
+
+				break;
+			case 'getTotalErrors':
+				$value = db_fetch_cell_prepared('SELECT SUM(errors)
+					FROM host_errors WHERE poller_id = ?', [$index]);
+
+				break;
 		}
 
 		return ($value == '' ? '0' : $value);
