@@ -78,5 +78,15 @@
 			<direction>output</direction>
 			<query_name>getScriptServer</query_name>
 		</getScriptServer>
+		<getErrorHosts>
+			<name>Error Hosts</name>
+			<direction>output</direction>
+			<query_name>getErrorHosts</query_name>
+		</getErrorHosts>
+		<getTotalErrors>
+			<name>Total Errors</name>
+			<direction>output</direction>
+			<query_name>getTotalErrors</query_name>
+		</getTotalErrors>
 	</fields>
 </poller>
