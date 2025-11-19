@@ -172,6 +172,8 @@ function automation_export() {
 	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
+		$snmp_option_ids = [];
+
 		if ($selected_items != false) {
 			if (cacti_sizeof($selected_items) == 1) {
 				$export_data = automation_device_rule_export($selected_items[0]);
@@ -270,6 +272,8 @@ function automation_import() {
 function automation_import_process() {
 	$json_data = json_decode(get_nfilter_request_var('import_text'), true);
 
+	$debug_data = [];
+
 	// If we have text, then we were trying to import text, otherwise we are uploading a file for import
 	if (empty($json_data)) {
 		$json_data = automation_validate_upload();
@@ -286,21 +290,21 @@ function automation_import_process() {
 	if (sizeof($return_data) && isset($return_data['success'])) {
 		foreach ($return_data['success'] as $message) {
 			$debug_data[] = '<span class="deviceUp">' . __('NOTE:') . '</span> ' . $message;
-			automation_log('NOTE: Automation Device Rules Import Succeeded!.  Message: '. $message, AUTOMATION_LOG_LOW);
+			automation_log('NOTE: Automation Device Rules Import Succeeded!  Message: ' . $message, AUTOMATION_LOG_LOW);
 		}
 	}
 
 	if (isset($return_data['errors'])) {
 		foreach ($return_data['errors'] as $error) {
 			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $error;
-			automation_log('NOTE: Automation Device Rules Import Error!.  Message: '. $message, AUTOMATION_LOG_LOW);
+			automation_log('NOTE: Automation Device Rules Import Error!  Message: ' . $error, AUTOMATION_LOG_LOW);
 		}
 	}
 
 	if (isset($return_data['failure'])) {
 		foreach ($return_data['failure'] as $message) {
 			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $message;
-			automation_log('NOTE: Automation Device Rules Import Failed!.  Message: '. $message, AUTOMATION_LOG_LOW);
+			automation_log('NOTE: Automation Device Rules Import Failed!  Message: ' . $message, AUTOMATION_LOG_LOW);
 		}
 	}
 
@@ -1114,6 +1118,8 @@ function template_edit() {
 		}
 	} else {
 		$header_label = __('Device Rules [new]');
+		$template     = [];
+
 		set_request_var('id', 0);
 	}
 
@@ -1124,7 +1130,7 @@ function template_edit() {
 	draw_edit_form(
 		[
 			'config' => ['no_form_tag' => 'true'],
-			'fields' => inject_form_variables($fields, (isset($template) ? $template : []))
+			'fields' => inject_form_variables($fields, $template)
 		]
 	);
 
@@ -1362,6 +1368,8 @@ function template_edit() {
 			];
 
 			html_header($display_text, false);
+
+			$action = '';
 
 			if (cacti_sizeof($graph_rules)) {
 				foreach ($thold_rules as $rule) {

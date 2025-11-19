@@ -595,8 +595,8 @@ function item_edit() {
 			];
 		}
 
-		$form_array[$field_name]['value']   = (isset($template_item) ? $template_item[$field_name] : '');
-		$form_array[$field_name]['form_id'] = (isset($template_item) ? $template_item['id'] : '0');
+		$form_array[$field_name]['value']   = (cacti_sizeof($template_item) ? $template_item[$field_name] : '');
+		$form_array[$field_name]['form_id'] = (cacti_sizeof($template_item) ? $template_item['id'] : '0');
 	}
 
 	draw_edit_form(
@@ -609,11 +609,11 @@ function item_edit() {
 	);
 
 	form_hidden_box('local_graph_id', get_request_var('local_graph_id'), '0');
-	form_hidden_box('graph_template_item_id', (isset($template_item) ? $template_item['id'] : '0'), '');
-	form_hidden_box('local_graph_template_item_id', (isset($template_item) ? $template_item['local_graph_template_item_id'] : '0'), '');
-	form_hidden_box('graph_template_id', (isset($template_item) ? $template_item['graph_template_id'] : '0'), '');
-	form_hidden_box('sequence', (isset($template_item) ? $template_item['sequence'] : '0'), '');
-	form_hidden_box('_graph_type_id', (isset($template_item) ? $template_item['graph_type_id'] : '0'), '');
+	form_hidden_box('graph_template_item_id', (cacti_sizeof($template_item) ? $template_item['id'] : '0'), '');
+	form_hidden_box('local_graph_template_item_id', (cacti_sizeof($template_item) ? $template_item['local_graph_template_item_id'] : '0'), '');
+	form_hidden_box('graph_template_id', (cacti_sizeof($template_item) ? $template_item['graph_template_id'] : '0'), '');
+	form_hidden_box('sequence', (cacti_sizeof($template_item) ? $template_item['sequence'] : '0'), '');
+	form_hidden_box('_graph_type_id', (cacti_sizeof($template_item) ? $template_item['graph_type_id'] : '0'), '');
 	form_hidden_box('save_component_item', '1', '');
 	form_hidden_box('invisible_alpha', $form_array['alpha']['value'], 'FF');
 	form_hidden_box('rrdtool_version', get_rrdtool_version(), '');

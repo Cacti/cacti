@@ -126,6 +126,8 @@ function automation_export() {
 	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
+		$snmp_option_ids = [];
+
 		if ($selected_items != false) {
 			if (cacti_sizeof($selected_items) == 1) {
 				$export_data = automation_snmp_option_export($selected_items[0]);
@@ -220,12 +222,13 @@ function automation_import() {
 function automation_import_process() {
 	$json_data = json_decode(get_nfilter_request_var('import_text'), true);
 
+	$debug_data  = [];
+	$return_data = [];
+
 	// If we have text, then we were trying to import text, otherwise we are uploading a file for import
 	if (empty($json_data)) {
 		$json_data = automation_validate_upload();
 	}
-
-	$return_data = [];
 
 	if (is_array($json_data) && cacti_sizeof($json_data) && isset($json_data['snmp'])) {
 		foreach ($json_data['snmp'] as $snmp) {
@@ -236,21 +239,21 @@ function automation_import_process() {
 	if (cacti_sizeof($return_data) && isset($return_data['success'])) {
 		foreach ($return_data['success'] as $message) {
 			$debug_data[] = '<span class="deviceUp">' . __('NOTE:') . '</span> ' . $message;
-			automation_log('NOTE: SNMP Options Import Succeeded!.  Message: '. $message, AUTOMATION_LOG_LOW);
+			automation_log('NOTE: SNMP Options Import Succeeded!  Message: ' . $message, AUTOMATION_LOG_LOW);
 		}
 	}
 
 	if (isset($return_data['errors'])) {
 		foreach ($return_data['errors'] as $error) {
 			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $error;
-			automation_log('NOTE: SNMP Options Import Error!.  Message: '. $message, AUTOMATION_LOG_LOW);
+			automation_log('NOTE: SNMP Options Import Error!  Message: ' . $error, AUTOMATION_LOG_LOW);
 		}
 	}
 
 	if (isset($return_data['failure'])) {
 		foreach ($return_data['failure'] as $message) {
 			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $message;
-			automation_log('NOTE: Automation SNMP Option Import Failed!.  Message: '. $message, AUTOMATION_LOG_LOW);
+			automation_log('NOTE: Automation SNMP Option Import Failed!  Message: ' . $message, AUTOMATION_LOG_LOW);
 		}
 	}
 
@@ -311,6 +314,8 @@ function form_save() {
 		$save['max_oids']             = form_input_validate(get_nfilter_request_var('max_oids'), 'max_oids', '^[0-9]+$', false, 3);
 		$save['bulk_walk_size']       = form_input_validate(get_nfilter_request_var('bulk_walk_size'), 'bulk_walk_size', '^[\-0-9]+$', false, 3);
 
+		$item_id = null;
+
 		if (!is_error_message()) {
 			$item_id = sql_save($save, 'automation_snmp_items');
 
@@ -322,7 +327,7 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_snmp.php?action=item_edit&id=' . get_nfilter_request_var('id') . '&item_id=' . (empty($item_id) ? get_filter_request_var('id') : $item_id));
+			header('Location: automation_snmp.php?action=item_edit&id=' . get_nfilter_request_var('id') . '&item_id=' . ($item_id === null ? get_filter_request_var('id') : $item_id));
 		} else {
 			header('Location: automation_snmp.php?action=edit&id=' . get_nfilter_request_var('id'));
 		}
@@ -635,7 +640,7 @@ function automation_snmp_item_edit() {
 
 	draw_edit_form([
 		'config' => ['no_form_tag' => true],
-		'fields' => inject_form_variables($fields_automation_snmp_item_edit, (isset($automation_snmp_item) ? $automation_snmp_item : []))
+		'fields' => inject_form_variables($fields_automation_snmp_item_edit, $automation_snmp_item)
 	]);
 
 	html_end_box(true, true);
