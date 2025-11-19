@@ -341,7 +341,7 @@ function settings() {
 		$graph_views[2] = __('Preview View');
 	}
 
-	if (cacti_sizeof($graph_views)) {
+	if (isset($graph_views) &&cacti_sizeof($graph_views)) {
 		$settings_user['general']['default_view_mode']['array'] = $graph_views;
 	} else {
 		unset($settings_user['general']['default_view_mode']);
@@ -405,7 +405,7 @@ function settings() {
 	draw_edit_form(
 		[
 			'config' => ['no_form_tag' => true],
-			'fields' => inject_form_variables($fields_user, (isset($current_user) ? $current_user : []))
+			'fields' => inject_form_variables($fields_user, $current_user)
 		]
 	);
 

@@ -116,6 +116,8 @@ switch (get_request_var('action')) {
 function automation_export() {
 	draw_graph_rules_filter(false);
 
+	$snmp_option_ids = [];
+
 	/* if we are to save this form, instead of display it */
 	if (isset_request_var('selected_items')) {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
@@ -216,6 +218,8 @@ function automation_import() {
 function automation_import_process() {
 	$json_data = json_decode(get_nfilter_request_var('import_text'), true);
 
+	$debug_data = [];
+
 	// If we have text, then we were trying to import text, otherwise we are uploading a file for import
 	if (empty($json_data)) {
 		$json_data = automation_validate_upload();
@@ -233,7 +237,7 @@ function automation_import_process() {
 	if (isset($return_data['errors'])) {
 		foreach ($return_data['errors'] as $error) {
 			$debug_data[] = '<span class="deviceDown">' . __('ERROR:') . '</span> ' . $error;
-			automation_log('NOTE: Automation Graph Rules Import Error!.  Message: '. $message, AUTOMATION_LOG_LOW);
+			automation_log('NOTE: Automation Graph Rules Import Error!.  Message: '. $error, AUTOMATION_LOG_LOW);
 		}
 	}
 
@@ -317,6 +321,8 @@ function form_save() {
 			}
 		}
 
+		$item_id = null;
+
 		if (!is_error_message()) {
 			$item_id = sql_save($save, 'automation_graph_rule_items');
 
@@ -328,7 +334,7 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_graph_rules.php?action=item_edit&id=' . get_request_var('id') . '&item_id=' . (empty($item_id) ? get_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
+			header('Location: automation_graph_rules.php?action=item_edit&id=' . get_request_var('id') . '&item_id=' . ($item_id === null ? get_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
 		} else {
 			header('Location: automation_graph_rules.php?action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_ACTION);
 		}
@@ -338,7 +344,8 @@ function form_save() {
 		get_filter_request_var('item_id');
 		/* ==================================================== */
 
-		unset($save);
+		$save = [];
+
 		$save['id']        = form_input_validate(get_request_var('item_id'), 'item_id', '^[0-9]+$', false, 3);
 		$save['hash']      = get_hash_automation(get_request_var('item_idid'), 'automation_match_rule_items');
 		$save['rule_id']   = form_input_validate(get_request_var('id'), 'id', '^[0-9]+$', false, 3);
@@ -362,6 +369,8 @@ function form_save() {
 			exit;
 		}
 
+		$item_id = null;
+
 		if (!is_error_message()) {
 			$item_id = sql_save($save, 'automation_match_rule_items');
 
@@ -373,7 +382,7 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_graph_rules.php?action=item_edit&id=' . get_request_var('id') . '&item_id=' . (empty($item_id) ? get_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
+			header('Location: automation_graph_rules.php?action=item_edit&id=' . get_request_var('id') . '&item_id=' . ($item_id === null ? get_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
 		} else {
 			header('Location: automation_graph_rules.php?action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_GRAPH_MATCH);
 		}
@@ -732,7 +741,7 @@ function automation_graph_rules_edit() {
 		draw_edit_form(
 			[
 				'config' => ['no_form_tag' => true],
-				'fields' => inject_form_variables($form_array, (isset($rule) ? $rule : []))
+				'fields' => inject_form_variables($form_array, $rule)
 			]
 		);
 
