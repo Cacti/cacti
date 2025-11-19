@@ -242,6 +242,8 @@ function api_aggregate_disassociate(int $local_graph_id, array $graphs): void {
  * @return void
  */
 function api_aggregate_create(string $aggregate_name, array $graphs, int $agg_template_id = 0): void {
+	$graph_items = [];
+
 	/* get the first aggregate graph */
 	if ($agg_template_id == 0) {
 		$agg_template = db_fetch_row_prepared('SELECT *
@@ -308,7 +310,7 @@ function api_aggregate_create(string $aggregate_name, array $graphs, int $agg_te
 		}
 
 		# update title cache
-		if (!empty($_local_graph_id)) {
+		if (!empty($local_graph_id)) {
 			update_graph_title_cache($local_graph_id);
 		}
 
@@ -451,12 +453,14 @@ function aggregate_is_pure_stacked_graph(int $_local_graph_id): bool {
 /**
  * find out, if graph has a STACK
  * @param int $_local_graph_id	- graph to be examined
+ *
  * @return bool					- true, if pure STACKed graph
  */
 function aggregate_is_stacked_graph(int $_local_graph_id): bool {
 	cacti_log(__FUNCTION__ . ' local_graph: ' . $_local_graph_id, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
 	$_pure_stacked_graph = false;
+	$_stacked_graph      = false;
 
 	if (!empty($_local_graph_id)) {
 		# fetch all AREA graph items
@@ -742,6 +746,8 @@ function aggregate_cdef_totalling(int $_new_graph_id, int $_graph_item_sequence,
 	include_once(CACTI_PATH_LIBRARY . '/cdef.php');
 
 	cacti_log(__FUNCTION__ . ' called. Working on Graph: ' . $_new_graph_id . ' sequence: ' .  $_graph_item_sequence  . ' totalling: ' . $_total_type, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
+
+	$graph_template_items = [];
 
 	# take graph item data for the totalling items
 	if (!empty($_new_graph_id)) {
