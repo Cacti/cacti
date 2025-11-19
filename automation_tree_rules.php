@@ -226,6 +226,8 @@ function automation_import() {
 function automation_import_process() {
 	$json_data = json_decode(get_nfilter_request_var('import_text'), true);
 
+	$debug_data = [];
+
 	// If we have text, then we were trying to import text, otherwise we are uploading a file for import
 	if (empty($json_data)) {
 		$json_data = automation_validate_upload();
@@ -320,7 +322,7 @@ function form_save() {
 
 			cacti_log(sprintf('ERROR: An attempt was made to perform a SQL Injection in Tree automation from client address \'%s\'', get_client_addr()), false, 'SECURITY');
 
-			header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' . get_request_var('id') . '&item_id=' . (empty($item_id) ? get_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
+			header('Location: automation_tree_rules.php?header=false&action=item_edit&id=' . get_request_var('id') . '&item_id=' . get_request_var('item_id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
 
 			exit;
 		}
@@ -336,7 +338,7 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_tree_rules.php?action=item_edit&id=' . get_request_var('id') . '&item_id=' . (empty($item_id) ? get_request_var('item_id') : $item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
+			header('Location: automation_tree_rules.php?action=item_edit&id=' . get_request_var('id') . '&item_id=' . get_request_var('item_id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
 		} else {
 			header('Location: automation_tree_rules.php?action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_MATCH);
 		}
@@ -346,7 +348,8 @@ function form_save() {
 		get_filter_request_var('item_id');
 		/* ==================================================== */
 
-		unset($save);
+		$save = [];
+
 		$save['id']                = form_input_validate(get_request_var('item_id'), 'item_id', '^[0-9]+$', false, 3);
 		$save['hash']              = get_hash_automation(get_request_var('item_id'), 'automation_tree_rule_items');
 		$save['rule_id']           = form_input_validate(get_request_var('id'), 'id', '^[0-9]+$', false, 3);
@@ -356,6 +359,8 @@ function form_save() {
 		$save['propagate_changes'] = (isset_request_var('propagate_changes') ? 'on' : '');
 		$save['search_pattern']    = isset_request_var('search_pattern') ? form_input_validate(get_nfilter_request_var('search_pattern'), 'search_pattern', '', false, 3) : '';
 		$save['replace_pattern']   = isset_request_var('replace_pattern') ? form_input_validate(get_nfilter_request_var('replace_pattern'), 'replace_pattern', '', true, 3) : '';
+
+		$automation_graph_rule_item_id = null;
 
 		if (!is_error_message()) {
 			$automation_graph_rule_item_id = sql_save($save, 'automation_tree_rule_items');
@@ -368,7 +373,7 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: automation_tree_rules.php?action=item_edit&id=' . get_request_var('id') . '&item_id=' . (empty($automation_graph_rule_item_id) ? get_request_var('item_id') : $automation_graph_rule_item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
+			header('Location: automation_tree_rules.php?action=item_edit&id=' . get_request_var('id') . '&item_id=' . ($automation_graph_rule_item_id === null ? get_request_var('item_id') : $automation_graph_rule_item_id) . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
 		} else {
 			header('Location: automation_tree_rules.php?action=edit&id=' . get_request_var('id') . '&rule_type=' . AUTOMATION_RULE_TYPE_TREE_ACTION);
 		}
@@ -566,6 +571,8 @@ function automation_tree_rules_item_edit() {
 	get_filter_request_var('rule_type');
 	/* ==================================================== */
 
+	$item = [];
+
 	if (!isempty_request_var('id')) {
 		$tabs = [
 			'rule'    => __('Rule Item')
@@ -582,7 +589,7 @@ function automation_tree_rules_item_edit() {
 					$tabs['objects'] = __('Matching Items');
 				}
 			}
-		} else {
+		} elseif (isset($tabs['objects'])) {
 			unset($tabs['objects']);
 		}
 
@@ -609,7 +616,7 @@ function automation_tree_rules_item_edit() {
 		}
 
 		form_save_button('automation_tree_rules.php?action=edit&id=' . get_request_var('id') . '&rule_type=' . get_request_var('rule_type'));
-	} elseif (!isempty_request_var('rule_type') && !isempty_request_var('item_id')) {
+	} elseif (!isempty_request_var('rule_type') && !isempty_request_var('item_id') && cacti_sizeof($item)) {
 		/* display list of matching trees */
 		if (get_request_var('rule_type') == AUTOMATION_RULE_TYPE_TREE_ACTION &&
 			$item['field'] != AUTOMATION_TREE_ITEM_TYPE_STRING) {
@@ -782,7 +789,7 @@ function automation_tree_rules_edit() {
 
 		draw_edit_form([
 			'config' => ['no_form_tag' => true],
-			'fields' => inject_form_variables($form_array, (isset($rule) ? $rule : []))
+			'fields' => inject_form_variables($form_array, $rule)
 		]);
 
 		form_hidden_box('id', (isset($rule['id']) ? $rule['id'] : '0'), '');

@@ -102,7 +102,7 @@ function draw_cdef_preview($cdef_id) {
 	?>
 	<tr class='even'>
 		<td style='padding:4px'>
-			<pre>cdef=<?php print html_escape(get_cdef($cdef_id, true)); ?></pre>
+			<pre>cdef=<?php print html_escape(get_cdef($cdef_id)); ?></pre>
 		</td>
 	</tr>
 	<?php
@@ -151,6 +151,8 @@ function form_save() {
 		$save['type']     = form_input_validate(get_nfilter_request_var('type'), 'type', '^[0-9]+$', false, 3);
 		$save['value']    = form_input_validate(get_nfilter_request_var('value'), 'value', '', false, 3);
 
+		$cdef_item_id = null;
+
 		if (!is_error_message()) {
 			$cdef_item_id = sql_save($save, 'cdef_items');
 
@@ -162,7 +164,7 @@ function form_save() {
 		}
 
 		if (is_error_message()) {
-			header('Location: cdef.php?action=item_edit&cdef_id=' . get_nfilter_request_var('cdef_id') . '&id=' . (empty($cdef_item_id) ? get_nfilter_request_var('id') : $cdef_item_id));
+			header('Location: cdef.php?action=item_edit&cdef_id=' . get_nfilter_request_var('cdef_id') . '&id=' . ($cdef_item_id === null ? get_nfilter_request_var('id') : $cdef_item_id));
 		} else {
 			header('Location: cdef.php?action=edit&id=' . get_nfilter_request_var('cdef_id'));
 		}
@@ -554,6 +556,7 @@ function cdef_edit() {
 		$cdef         = db_fetch_row_prepared('SELECT * FROM cdef WHERE id = ?', [get_request_var('id')]);
 		$header_label = __esc('CDEF [edit: %s]', $cdef['name']);
 	} else {
+		$cdef         = [];
 		$header_label = __('CDEF [new]');
 	}
 
@@ -564,13 +567,13 @@ function cdef_edit() {
 	draw_edit_form(
 		[
 			'config' => ['no_form_tag' => true],
-			'fields' => inject_form_variables($fields_cdef_edit, (isset($cdef) ? $cdef : []))
+			'fields' => inject_form_variables($fields_cdef_edit, $cdef)
 		]
 	);
 
 	html_end_box(true, true);
 
-	if (!isempty_request_var('id')) {
+	if (!isempty_request_var('id') && cacti_sizeof($cdef)) {
 		html_start_box('', '100%', false, 3, 'center', '');
 		draw_cdef_preview(get_request_var('id'));
 		html_end_box();
@@ -607,7 +610,7 @@ function cdef_edit() {
 				$actions = '';
 
 				if (read_config_option('drag_and_drop') == '') {
-					if ($i < $total_items && $total_items > 0) {
+					if ($i < $total_items) {
 						$actions .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('cdef.php?action=item_movedown&id=' . $cdef_item['id'] . '&cdef_id=' . $cdef_item['cdef_id']) . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						$actions .= '<span class="moveArrowNone"></span>';
