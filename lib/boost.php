@@ -675,7 +675,7 @@ function boost_prep_graph_array(array $graph_data_array) : array {
  * such as graph ID, RRA ID, theme, timespan, and graph dimensions. It then writes
  * the graph image data to the cache file if the cache directory is writable.
  *
- * @param string $output          The graph image data to be cached.
+ * @param string|null $output          The graph image data to be cached.
  * @param int    $local_graph_id  The ID of the local graph.
  * @param int    $rra_id          The RRA (Round Robin Archive) ID.
  *
@@ -683,7 +683,7 @@ function boost_prep_graph_array(array $graph_data_array) : array {
  *
  * @return void
  */
-function boost_graph_set_file( string &$output, int $local_graph_id, int $rra_id) : void {
+function boost_graph_set_file( string|null &$output, int $local_graph_id, int $rra_id) : void {
 	global $graph_data_array;
 
 	/* get access to the SNMP Cache of BOOST*/

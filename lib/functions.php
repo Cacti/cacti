@@ -338,9 +338,9 @@ function read_default_user_setting(string $config_name): string {
  *
  * @param  int|null $user_id      the id of the user to read the setting for
  *
- * @return string the current value of the user setting
+ * @return string|null the current value of the user setting
  */
-function read_user_setting(string $config_name, mixed $default = false, bool $force = false, int|null $user = 0) : string {
+function read_user_setting(string $config_name, mixed $default = false, bool $force = false, int|null $user = 0) : string|null {
 	/* users must have cacti user auth turned on to use this, or the guest account must be active */
 	if ($user == 0 && isset($_SESSION[SESS_USER_ID])) {
 		$effective_uid = $_SESSION[SESS_USER_ID];
