@@ -529,6 +529,8 @@ function item_edit() {
 		die('We should have redirected somewhere but we ended up here instead' . PHP_EOL);
 	}
 
+	$template_item = [];
+
 	if (!isempty_request_var('id')) {
 		$template_item = db_fetch_row_prepared('SELECT *
 			FROM graph_templates_item
@@ -563,7 +565,7 @@ function item_edit() {
 			[get_request_var($id_field), get_request_var('id')]);
 	}
 
-	if (isset($template_item)) {
+	if (cacti_sizeof($template_item)) {
 		foreach (array_keys($template_item) as $field_name) {
 			if (!array_key_exists($field_name, $item_overrides)) {
 				continue;
