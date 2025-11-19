@@ -551,7 +551,7 @@ function item_edit() {
 		$item_new = [
 			$id_field                 => get_request_var($id_field),
 			'graph_templates_item_id' => get_request_var('id'),
-			'sequence'                => $template_item['sequence']
+			'sequence'                => $template_item['sequence'] ?? 1
 		];
 
 		aggregate_graph_items_save([$item_new], $table_name);
@@ -563,14 +563,16 @@ function item_edit() {
 			[get_request_var($id_field), get_request_var('id')]);
 	}
 
-	foreach (array_keys($template_item) as $field_name) {
-		if (!array_key_exists($field_name, $item_overrides)) {
-			continue;
-		}
+	if (isset($template_item)) {
+		foreach (array_keys($template_item) as $field_name) {
+			if (!array_key_exists($field_name, $item_overrides)) {
+				continue;
+			}
 
-		# t_<field_name> column in aggregate table must be "on" to override
-		if (array_key_exists('t_'.$field_name, $item_overrides) && $item_overrides['t_'.$field_name] == 'on') {
-			$template_item[$field_name] = $item_overrides[$field_name];
+			# t_<field_name> column in aggregate table must be "on" to override
+			if (array_key_exists('t_'.$field_name, $item_overrides) && $item_overrides['t_'.$field_name] == 'on') {
+				$template_item[$field_name] = $item_overrides[$field_name];
+			}
 		}
 	}
 
@@ -776,6 +778,8 @@ function form_actions() {
 
 		if (cacti_sizeof($iarray)) {
 			if (get_request_var('drp_action') == '2') {
+				$local_graph_ids = [];
+
 				/* determine the common graph template if any */
 				foreach ($_POST as $var => $val) {
 					if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
@@ -1212,20 +1216,18 @@ function graph_edit() {
 
 			$helper_string = '|host_description|';
 
-			if (isset($template)) {
-				$data_query = db_fetch_cell_prepared('SELECT snmp_query_id
-					FROM snmp_query_graph
-					WHERE graph_template_id = ?',
-					[$template['graph_template_id']]
-				);
+			$data_query = db_fetch_cell_prepared('SELECT snmp_query_id
+				FROM snmp_query_graph
+				WHERE graph_template_id = ?',
+				[$template['graph_template_id']]
+			);
 
-				if ($data_query > 0) {
-					$data_query_info = get_data_query_array($data_query);
+			if ($data_query > 0) {
+				$data_query_info = get_data_query_array($data_query);
 
-					foreach ($data_query_info['fields'] as $field_name => $field_array) {
-						if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
-							$helper_string .= ($helper_string != '' ? ', ' : '') . '|query_' . $field_name . '|';
-						}
+				foreach ($data_query_info['fields'] as $field_name => $field_array) {
+					if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
+						$helper_string .= ($helper_string != '' ? ', ' : '') . '|query_' . $field_name . '|';
 					}
 				}
 			}
@@ -1242,15 +1244,13 @@ function graph_edit() {
 			draw_edit_form(
 				[
 					'config' => ['no_form_tag' => true],
-					'fields' => inject_form_variables($struct_aggregate_graph, (isset($aginfo) ? $aginfo : []))
+					'fields' => inject_form_variables($struct_aggregate_graph, $aginfo)
 				]
 			);
 
 			html_end_box(true, true);
 
-			if (isset($template)) {
-				draw_aggregate_graph_items_list(0, $template['graph_template_id'], $aginfo);
-			}
+			draw_aggregate_graph_items_list(0, $template['graph_template_id'], $aginfo);
 
 			form_hidden_box('save_component_template', '1', '');
 
@@ -1411,8 +1411,8 @@ function graph_edit() {
 		print "<div id='classic'>";
 
 		?>
-		<input type='hidden' id='graph_template_graph_id' name='graph_template_graph_id' value='<?php print(isset($graphs) ? $graphs['id'] : '0'); ?>'>
-		<input type='hidden' id='local_graph_template_graph_id' name='local_graph_template_graph_id' value='<?php print(isset($graphs) ? $graphs['local_graph_template_graph_id'] : '0'); ?>'>
+		<input type='hidden' id='graph_template_graph_id' name='graph_template_graph_id' value='<?php print(cacti_sizeof($graphs) ? $graphs['id'] : '0'); ?>'>
+		<input type='hidden' id='local_graph_template_graph_id' name='local_graph_template_graph_id' value='<?php print(cacti_sizeof($graphs) ? $graphs['local_graph_template_graph_id'] : '0'); ?>'>
 		<?php
 
 		if (empty($graphs['graph_template_id'])) {
@@ -1425,8 +1425,8 @@ function graph_edit() {
 					if ($field_name != 'title') {
 						$form_array += [$field_name => $struct_graph[$field_name]];
 
-						$form_array[$field_name]['value']   = (isset($graphs) ? $graphs[$field_name] : '');
-						$form_array[$field_name]['form_id'] = (isset($graphs) ? $graphs['id'] : '0');
+						$form_array[$field_name]['value']   = (cacti_sizeof($graphs) ? $graphs[$field_name] : '');
+						$form_array[$field_name]['form_id'] = (cacti_sizeof($graphs) ? $graphs['id'] : '0');
 
 						if (!(($use_graph_template == false) || ($graphs['t_' . $field_name] == 'on'))) {
 							$form_array[$field_name]['method']      = 'template_' . $form_array[$field_name]['method'];

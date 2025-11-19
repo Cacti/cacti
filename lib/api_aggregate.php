@@ -1657,12 +1657,12 @@ function aggregate_handle_stacked_lines(int $local_graph_id, string $_orig_graph
  *
  * @param array $graph_array Array of graphs to aggregate.
  * @param array $data_sources Array to store the retrieved data sources.
- * @param array $graph_template Template for the graphs.
+ * @param mixed $graph_template Template for the graphs.
  * @param string $message Optional. Message to store any errors or information.
  *
  * @return bool True on success, false on failure.
  */
-function aggregate_get_data_sources(array &$graph_array, array &$data_sources, array &$graph_template, string &$message = ''): bool {
+function aggregate_get_data_sources(array &$graph_array, array &$data_sources, mixed &$graph_template, string &$message = ''): bool {
 	if (isset($graph_array)) {
 		# fetch all data sources for all selected graphs
 		$data_sources = db_fetch_assoc('SELECT dtd.local_data_id, dtd.name_cache
