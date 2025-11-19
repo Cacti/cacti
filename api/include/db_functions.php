@@ -1,9 +1,9 @@
 <?php
 function get_hosts($params = []) {
-	$sql = 'SELECT id as host_id, description as host_description, hostname, host_template_id, 
-        poller_id, site_id, disabled, status, status_fail_date AS last_fail_date, 
+	$sql = 'SELECT id as host_id, description as host_description, hostname, host_template_id,
+        poller_id, site_id, disabled, status, status_fail_date AS last_fail_date,
         status_rec_date AS last_recovery_date, status_last_error AS last_error,
-        availability, polling_time, total_polls, failed_polls, snmp_sysDescr AS snmp_description, 
+        availability, polling_time, total_polls, failed_polls, snmp_sysDescr AS snmp_description,
         snmp_sysUpTimeInstance AS snmp_uptime, snmp_sysLocation AS snmp_location, last_updated
         FROM host';
 
@@ -94,7 +94,7 @@ function get_hosts($params = []) {
  * It returns an array of graphs, each containing the host ID, graph ID, and RRD name.
  *
  * @param int $host_id The ID of the host for which to retrieve the graph list. Defaults to 0.
- * 
+ *
  * @return array An associative array with the key "graphs" containing a list of graphs.
  *               Each graph is represented as an associative array with the following keys:
  *               - "host_id" (int): The ID of the host.
@@ -108,13 +108,13 @@ function get_graph_list($host_id = 0) {
 
 	$sql = "SELECT DISTINCT h.id as host_id, dl.id as graph_id, dtd.name_cache as rrd_name, pi.rrd_name as rrd_path
         FROM poller_item AS pi
-        INNER JOIN data_local AS dl 
+        INNER JOIN data_local AS dl
         ON dl.id = pi.local_data_id
-        INNER JOIN data_template_data AS dtd 
+        INNER JOIN data_template_data AS dtd
         ON dtd.local_data_id = pi.local_data_id
-        INNER JOIN host AS h 
+        INNER JOIN host AS h
         ON pi.host_id = h.id
-        WHERE rrd_name != '' 
+        WHERE rrd_name != ''
         AND h.id = ?";
 
 	$rows   = db_fetch_assoc_prepared($sql, [$host_id]);
@@ -138,7 +138,7 @@ function get_poller_status($poller_id = 0) {
 		return ['error' => 'Poller ID must be a valid INT'];
 	}
 
-	$sql = 'SELECT id, name, disabled, status, hostname, total_time, max_time, 
+	$sql = 'SELECT id, name, disabled, status, hostname, total_time, max_time,
         min_time, avg_time, total_polls, processes, threads, last_update, last_status
         FROM poller';
 
@@ -252,7 +252,7 @@ function get_dsstats_status() {
 		return ['dsstats_status' => 'Data Source Statistics is disabled'];
 	}
 
-	$dssatst_status = [
+	$dsstats_status = [
 		'dsstats_poller_memory_limit' => read_config_option('dsstats_poller_mem_limit'),
 		'dsstats_timeout'             => read_config_option('dsstats_timeout'),
 		'dsstats_parallel_processes'  => read_config_option('dsstats_parallel'),
@@ -304,8 +304,8 @@ function get_thresholds($params = []) {
 	}
 
 	$sql = 'SELECT h.id as HOST_ID, description AS HOST_DESCRIPTION, h.hostname, data_source_name, thold_hi, thold_low, lastread, lastchanged, thold_fail_count, thold_enabled
-        FROM thold_data td 
-        INNER JOIN host h 
+        FROM thold_data td
+        INNER JOIN host h
         ON td.host_id = h.id';
 
 	$conditions = [];
@@ -423,7 +423,7 @@ function get_threshold_status() {
 
 // automation functions
 function get_automation_networks($params = []) {
-	$sql = 'SELECT id, poller_id, name, subnet_range, ignore_ips, dns_servers, enabled, 
+	$sql = 'SELECT id, poller_id, name, subnet_range, ignore_ips, dns_servers, enabled,
         notification_email, up_hosts, snmp_hosts, ping_method, ping_timeout, ping_retries,
         start_at, next_start, last_runtime, last_started, last_status
         FROM automation_networks';

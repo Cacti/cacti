@@ -99,7 +99,7 @@ if (get_nfilter_request_var('action') == 'login_2fa') {
 		if (isset($user['tfa_enabled'])) {
 			cacti_log("LOGIN: User '" . $user['username'] . "' 2FA Authenticated", false, 'AUTH');
 
-			$client_addr = get_client_addr('');
+			$client_addr = get_client_addr();
 
 			db_execute_prepared('INSERT IGNORE INTO user_log
 				(username, user_id, result, ip, time)
@@ -113,7 +113,7 @@ if (get_nfilter_request_var('action') == 'login_2fa') {
 		db_execute_prepared('INSERT IGNORE INTO user_log
 			(username, user_id, result, ip, time)
 			VALUES (?, 0, 3, ?, NOW())',
-			[$user['username'], get_client_addr('')]);
+			[$user['username'], get_client_addr()]);
 
 		$message = __('Failed to verify token');
 	}
